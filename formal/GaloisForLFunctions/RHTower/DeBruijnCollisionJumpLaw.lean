@@ -914,6 +914,40 @@ theorem nonrealZeroCount_eq_sum_collisionMass {t : ℝ} (ht : 0 < t) :
   rw [hF8, hFt] at h
   exact h.symm
 
+/-- The total collision mass of the flow after time `t > 0` (`0` for `t ≤ 0`). -/
+def collisionMassAfter (t : ℝ) : ℕ :=
+  if ht : 0 < t then ∑ s ∈ (finite_collisionTimes ht).toFinset, collisionMass s else 0
+
+theorem nonrealZeroCount_eq_collisionMassAfter {t : ℝ} (ht : 0 < t) :
+    nonrealZeroCount t = collisionMassAfter t := by
+  rw [collisionMassAfter, dif_pos ht, nonrealZeroCount_eq_sum_collisionMass ht]
+
+/-- **RH is the absence of collisions.** RH holds iff no nonreal zero of the flow lands on the real
+axis at any positive time. -/
+theorem riemannHypothesis_iff_forall_collisionMass_eq_zero :
+    RiemannHypothesis ↔ ∀ t, 0 < t → collisionMass t = 0 := by
+  rw [riemannHypothesis_iff_eventually_nonrealZeroCount_eq_zero]
+  constructor
+  · intro h t ht
+    -- the count vanishes at every positive time, so it never jumps
+    have hzero : ∀ u, 0 < u → nonrealZeroCount u = 0 := by
+      intro u hu
+      obtain ⟨v, hv, hv0⟩ := (h.and (Ioo_mem_nhdsGT hu)).exists
+      have := nonrealZeroCount_antitoneOn (mem_Ioi.mpr hv0.1) (mem_Ioi.mpr hu) hv0.2.le
+      omega
+    rcases le_or_gt t (1 / 8) with ht8 | ht8
+    · obtain ⟨δ, hδ, hL⟩ := exists_left_nonrealZeroCount ht ht8
+      have e := hL (t - min δ t / 2) (by linarith [min_le_left δ t, lt_min hδ ht])
+        (by linarith [lt_min hδ ht])
+      rw [hzero _ (by linarith [min_le_right δ t]), hzero t ht] at e
+      omega
+    · exact collisionMass_eq_zero_of_eighth_le ht8.le
+  · intro h
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    rw [nonrealZeroCount_eq_sum_collisionMass ht]
+    exact Finset.sum_eq_zero fun s hs =>
+      h s (ht.trans ((Set.Finite.mem_toFinset _).mp hs).1)
+
 end
 
 end RHTower.DeBruijn

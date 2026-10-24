@@ -36,7 +36,7 @@ This module resolves Open Problem 1 and the arithmetic sieve half of Open Proble
    `2 √X log X`, yielding the explicit finite-height bound
    `|coalSum Ω g X θ₀ − primeCoalSum Ω g X θ₀| ≤ (16√2 / π) L M₀ (log X)² θ₀ √X`.
    At bandwidth `λ = 4/3` (`√X ≤ T^{2/3}`) and `θ₀ = T^{−1+η}` (`η < 1/3`), proper prime powers
-   contribute `O(T^{−1/3+η} log T) = o(N(T, 2T))`, making `CoalescentSurplusAtMost β`
+   contribute `O(T^{2/3+η} log T) = o(N(T, 2T))`, making `CoalescentSurplusAtMost β`
    unconditionally equivalent to `PrimeCoalescentSurplusAtMost β`.
 
 4. **Parity-Halved Shift-Unrestricted 2D Selberg Prime-Pair Sieve
@@ -582,12 +582,12 @@ theorem eventually_primeCoalescentSurplus_eq_oddEvenShift (u : ℝ → ℝ) {η 
 /-- **Unconditional Prime-Power Negligibility at Bandwidth `4/3`.**
 For any window profile `u` and any `0 < η < 1/3`, the difference between the full von Mangoldt
 `coalescentSurplus u η T` and the pure prime `primeCoalescentSurplus u η T` is bounded by
-`(128 √2 / π) (log T) T^{−1/3+η}` for all large `T`, hence is `o(1)` (and `o(N(T, 2T))`). -/
+`(128 √2 / π) (log T) T^{2/3+η}` for all large `T`, hence is `o(T)` and `o(N(T, 2T))`. -/
 theorem eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le
     {ε₁ : ℝ} {u : ℝ → ℝ} (hu : WindowProfile ε₁ u) {η : ℝ} (hη1 : η < 1) :
     ∀ᶠ T in atTop,
       |coalescentSurplus u η T - primeCoalescentSurplus u η T| ≤
-        (128 * Real.sqrt 2 / π) * Real.log T * T ^ (-1 / 3 + η) := by
+        (128 * Real.sqrt 2 / π) * Real.log T * T ^ (2 / 3 + η) := by
   have hP := paramsValidFam_params43
   obtain ⟨TL, hTL⟩ := localHypsCoreW_eventually_fam hP
   have hneg : -1 + η < 0 := by linarith
@@ -641,7 +641,7 @@ theorem eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le
           mul_le_mul_of_nonneg_left hsX' (by positivity)
       _ = (16 * Real.sqrt 2 / π) * params43.L T ^ 3 * (T * T ^ (-1 + η) * T ^ (2 / 3 : ℝ)) := by
           ring
-  have hrpow : T * T ^ (-1 + η) * T ^ (2 / 3 : ℝ) = T ^ (-1 / 3 + η) := by
+  have hrpow : T * T ^ (-1 + η) * T ^ (2 / 3 : ℝ) = T ^ (2 / 3 + η) := by
     have h1 : T * T ^ (-1 + η) = T ^ η := by
       rw [← Real.rpow_one_add' hT0.le (by linarith)]
       ring_nf
@@ -651,15 +651,15 @@ theorem eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le
   rw [div_le_iff₀ hden0]
   calc |coalSum (profileΩ u T) (params43.localFun T).g (params43.X T) (T ^ (-1 + η)) -
         primeCoalSum (profileΩ u T) (params43.localFun T).g (params43.X T) (T ^ (-1 + η))|
-      ≤ (16 * Real.sqrt 2 / π) * params43.L T ^ 3 * T ^ (-1 / 3 + η) := hnum
-    _ = (64 * Real.sqrt 2 / π) * params43.L T * T ^ (-1 / 3 + η)
+      ≤ (16 * Real.sqrt 2 / π) * params43.L T ^ 3 * T ^ (2 / 3 + η) := hnum
+    _ = (64 * Real.sqrt 2 / π) * params43.L T * T ^ (2 / 3 + η)
           * ((1 / 4 : ℝ) * params43.L T ^ 2) := by ring
-    _ ≤ (64 * Real.sqrt 2 / π) * (2 * Real.log T) * T ^ (-1 / 3 + η)
+    _ ≤ (64 * Real.sqrt 2 / π) * (2 * Real.log T) * T ^ (2 / 3 + η)
           * (params43.a T * params43.L T) ^ 2 := by
         refine mul_le_mul ?_ ha2_sq (by positivity) (by positivity)
         exact mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_left hL_le (by positivity)) (by positivity)
-    _ = (128 * Real.sqrt 2 / π) * Real.log T * T ^ (-1 / 3 + η)
+    _ = (128 * Real.sqrt 2 / π) * Real.log T * T ^ (2 / 3 + η)
           * (params43.a T * params43.L T) ^ 2 := by ring
 
 /-- **The Smooth-Window Coalescent Surplus Hypothesis at Budget `β`** (with `0 < η < 1/3`). -/
@@ -711,9 +711,32 @@ theorem eventually_T_mul_log_div_eight_pi_le_Ncount :
   have e : T * Real.log T / (4 * π) = 2 * (T * Real.log T / (8 * π)) := by ring
   linarith only [h1, hMlow, hCRlog, e]
 
+/-- **Relative `N(T, 2T)`-Normalised Prime-Power Bound (`T^{−1/3+η}` Decay).**
+Normalising `|coalescentSurplus u η T - primeCoalescentSurplus u η T|` by the zero-counting scale
+`N(T, 2T) ≥ T log T / (8π)` absorbs the factor `T log T` and yields the relative power-saving bound
+`1024 √2 · T^{−1/3+η} · N(T, 2T)`. -/
+theorem eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le_mul_Ncount
+    {ε₁ : ℝ} {u : ℝ → ℝ} (hu : WindowProfile ε₁ u) {η : ℝ} (hη1 : η < 1) :
+    ∀ᶠ T in atTop,
+      |coalescentSurplus u η T - primeCoalescentSurplus u η T| ≤
+        1024 * Real.sqrt 2 * T ^ (-1 / 3 + η) * (Ncount T (2 * T) : ℝ) := by
+  have hπ := Real.pi_pos
+  filter_upwards [eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le hu hη1,
+    eventually_T_mul_log_div_eight_pi_le_Ncount, eventually_ge_atTop (1 : ℝ)]
+    with T hdiff hNlow hT1
+  have hT0 : 0 < T := by linarith
+  have hrpow : T ^ (2 / 3 + η) = T * T ^ (-1 / 3 + η) := by
+    rw [show (2 / 3 + η : ℝ) = 1 + (-1 / 3 + η) by ring, Real.rpow_add hT0, Real.rpow_one]
+  calc |coalescentSurplus u η T - primeCoalescentSurplus u η T|
+      ≤ (128 * Real.sqrt 2 / π) * Real.log T * T ^ (2 / 3 + η) := hdiff
+    _ = 1024 * Real.sqrt 2 * T ^ (-1 / 3 + η) * (T * Real.log T / (8 * π)) := by
+        rw [hrpow]; ring
+    _ ≤ 1024 * Real.sqrt 2 * T ^ (-1 / 3 + η) * (Ncount T (2 * T) : ℝ) :=
+        mul_le_mul_of_nonneg_left hNlow (by positivity)
+
 /-- **Unconditional Equivalence of Full and Prime-Only Coalescent Surplus Hypotheses.**
 Because proper prime powers in the coalescent band `0 < |log(n/m)| ≤ T^{−1+η}` (`η < 1/3`)
-contribute `O(T^{−1/3+η} log T) = o(N(T, 2T))`, `CoalescentSurplusAtMost β` is unconditionally
+contribute `O(T^{2/3+η} log T) = o(N(T, 2T))`, `CoalescentSurplusAtMost β` is unconditionally
 equivalent to `PrimeCoalescentSurplusAtMost β`. -/
 theorem coalescentSurplusAtMost_iff_primeCoalescentSurplusAtMost (β : ℝ) :
     CoalescentSurplusAtMost β ↔ PrimeCoalescentSurplusAtMost β := by
@@ -724,7 +747,7 @@ theorem coalescentSurplusAtMost_iff_primeCoalescentSurplusAtMost (β : ℝ) :
         |coalescentSurplus u η T - primeCoalescentSurplus u η T| ≤
           δ * (Ncount T (2 * T) : ℝ) := by
     intro u ε₁ η δ hu hη3 hδ
-    have hexp : -1 / 3 + η < 1 := by linarith
+    have hexp : 2 / 3 + η < 1 := by linarith
     have hK : 0 ≤ 128 * Real.sqrt 2 / π := by positivity
     have hrate := eventually_log_pow_rpow_le 1 hexp hK (by positivity : (0 : ℝ) < δ / (8 * π))
     filter_upwards [eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le hu (by linarith),
@@ -732,7 +755,7 @@ theorem coalescentSurplusAtMost_iff_primeCoalescentSurplusAtMost (β : ℝ) :
       eventually_ge_atTop (1 : ℝ)]
       with T hdiff hNlow hrt ⟨hlog1, _, _, _⟩ hT1
     have hT0 : 0 < T := by linarith
-    have hrt' : (128 * Real.sqrt 2 / π) * Real.log T * T ^ (-1 / 3 + η) ≤ δ / (8 * π) * T := by
+    have hrt' : (128 * Real.sqrt 2 / π) * Real.log T * T ^ (2 / 3 + η) ≤ δ / (8 * π) * T := by
       simpa [pow_one, mul_assoc] using hrt
     have h1 : δ / (8 * π) * T ≤ δ * (T * Real.log T / (8 * π)) := by
       have hmul : δ / (8 * π) * T * 1 ≤ δ / (8 * π) * T * Real.log T :=

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.TransThresholdPairCorrelation.CoalescentSieveAnatomyAndModelCalibration
+import GaloisForLFunctions.TransThresholdPairCorrelation.SmoothWindowContinuousForm
 import GaloisForLFunctions.BezoutValuationIncidence.HardyLittlewoodSingularSeriesOfTheDampedSource
 import GaloisForLFunctions.BezoutValuationIncidence.RamanujanLagCoefficientAndTotientQuotient
 
@@ -81,7 +81,7 @@ theorem cosTransform_ge_half_of_le_pi_div_three {Ω : ℝ → ℝ} {a b θ : ℝ
     (hθ : |θ| ≤ π / (3 * b)) :
     (1 / 2) * cosTransform Ω 0 ≤ cosTransform Ω θ := by
   rw [cosTransform_zero_eq_integral, ← integral_const_mul, cosTransform]
-  refine integral_mono (hInt.const_mul (1 / 2)) (cosTransform_integrable hInt θ) fun τ => ?_
+  refine integral_mono (hInt.const_mul (1 / 2)) (integrable_window_mul_cos hInt θ) fun τ => ?_
   by_cases hτ : τ ∈ Icc a b
   · obtain ⟨hτa, hτb⟩ := mem_Icc.mp hτ
     have hτ0 : 0 ≤ τ := ha.trans hτa
@@ -154,11 +154,10 @@ theorem two_sin_mul_trapezoidal_sum_cos_succ (k : ℕ) (ϕ : ℝ) :
     have hstep : 2 * Real.sin x *
         (Real.cos A + 1 / 2 * Real.cos (A + 2 * x) - 1 / 2 * Real.cos A) =
         (Real.sin (A + 2 * x) - Real.sin A) * Real.cos x := by
-      rw [Real.cos_add, Real.sin_add, Real.sin_two_mul, Real.cos_two_mul']
-      have hsq : Real.sin x ^ 2 = 1 - Real.cos x ^ 2 := Real.sin_sq x
-      linear_combination -2 * Real.sin A * Real.sin x * hsq
+      rw [Real.cos_add, Real.sin_add, Real.sin_two_mul, Real.cos_two_mul]
+      linear_combination -2 * Real.sin A * Real.cos x * Real.sin_sq x
     have hnext : ((k + 1 + 1 : ℕ) : ℝ) * ϕ = A + 2 * x := by
-      push_cast; ring
+      dsimp [A, x]; push_cast; ring
     rw [hnext]
     linarith
 
@@ -212,7 +211,7 @@ theorem sum_divisors_moebiusReal_div_mul {q : ℕ} (hq : 1 ≤ q) :
 
 /-- For `d ∣ q` (`q, R ≥ 1`), summing a function over multiples of `d` in `Icc 1 (qR − 1)`
 bijects with `r ∈ Icc 1 ((q/d) R − 1)` via `h = d r`. -/
-theorem sum_Icc_filter_dvd_eq {q d R : ℕ} (hR : 1 ≤ R) (hd : d ∈ q.divisors) (f : ℕ → ℝ) :
+theorem sum_Icc_filter_dvd_eq {q d R : ℕ} (_hR : 1 ≤ R) (hd : d ∈ q.divisors) (f : ℕ → ℝ) :
     ∑ h ∈ Finset.Icc 1 (q * R - 1), (if d ∣ h then f h else 0) =
       ∑ r ∈ Finset.Icc 1 ((q / d) * R - 1), f (d * r) := by
   classical
@@ -237,12 +236,13 @@ theorem sum_Icc_filter_dvd_eq {q d R : ℕ} (hR : 1 ≤ R) (hd : d ∈ q.divisor
   · intro h hh
     simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_Icc] at hh
     obtain ⟨⟨hh1, hh2⟩, hdh⟩ := hh
-    refine ⟨h / d, ?_, Nat.mul_div_cancel' hdh⟩
+    refine ⟨h / d, ?_, by dsimp; exact Nat.mul_div_cancel' hdh⟩
     simp only [Finset.mem_coe, Finset.mem_Icc]
     have hd_eq : d * (h / d) = h := Nat.mul_div_cancel' hdh
     have hr1 : 1 ≤ h / d := by
       rcases Nat.eq_zero_or_pos (h / d) with h0 | hpos
-      · omega
+      · rw [h0, mul_zero] at hd_eq
+        omega
       · exact hpos
     have hr2 : h / d < (q / d) * R := by
       by_contra! hge
@@ -363,34 +363,44 @@ theorem trapezoidal_ramanujan_cos_eq {q R : ℕ} {θ : ℝ}
 For `0 < x ≤ 1`, `|cos x / sin x − 1 / x| ≤ x`. -/
 theorem abs_cos_div_sin_sub_inv_le {x : ℝ} (hx0 : 0 < x) (hx1 : x ≤ 1) :
     |Real.cos x / Real.sin x - 1 / x| ≤ x := by
-  have hx2 : x ^ 2 ≤ 1 := by nlinarith
+  have hx2 : x ^ 2 ≤ 1 := by nlinarith only [hx0, hx1]
+  have hx30 : 0 < x ^ 3 := pow_pos hx0 3
   have hx3 : x ^ 3 ≤ x := by
-    have : x ^ 3 = x * x ^ 2 := by ring
-    nlinarith
+    calc x ^ 3 = x * x ^ 2 := by ring
+      _ ≤ x * 1 := mul_le_mul_of_nonneg_left hx2 hx0.le
+      _ = x := mul_one _
   have hx5 : x ^ 5 ≤ x ^ 3 := by
-    have : 0 < x ^ 3 := pow_pos hx0 3
-    have : x ^ 5 = x ^ 3 * x ^ 2 := by ring
-    nlinarith
+    calc x ^ 5 = x ^ 3 * x ^ 2 := by ring
+      _ ≤ x ^ 3 * 1 := mul_le_mul_of_nonneg_left hx2 hx30.le
+      _ = x ^ 3 := mul_one _
   have hsin_lo : x - x ^ 3 / 6 < Real.sin x := Real.sin_gt_sub_cube hx0
   have hsin_hi : Real.sin x ≤ x := Real.sin_le hx0.le
-  have hsin_pos : 0 < Real.sin x := by linarith
+  have hsin_pos : 0 < Real.sin x := by linarith only [hsin_lo, hx30, hx3]
   have hcos_lo : 1 - x ^ 2 / 2 ≤ Real.cos x := Real.one_sub_sq_div_two_le_cos
-  have hcos_hi : Real.cos x ≤ 1 - x ^ 2 / 2 + x ^ 4 / 24 := by
+  have hcos_hi : Real.cos x ≤ 1 - x ^ 2 / 2 + x ^ 4 * (5 / 96) := by
     have hb := Real.cos_bound (x := x) (by rw [abs_of_pos hx0]; exact hx1)
     rw [abs_of_pos hx0] at hb
-    have h4 : (4 : ℕ).factorial = 24 := by decide
-    rw [h4] at hb
-    linarith [(abs_le.mp hb).2]
+    linarith only [(abs_le.mp hb).2]
   have hrw : Real.cos x / Real.sin x - 1 / x = (x * Real.cos x - Real.sin x) / (x * Real.sin x) := by
     field_simp
   rw [hrw, abs_div, abs_of_pos (mul_pos hx0 hsin_pos), div_le_iff₀ (mul_pos hx0 hsin_pos), abs_le]
-  have h1 : x * (1 - x ^ 2 / 2) ≤ x * Real.cos x := mul_le_mul_of_nonneg_left hcos_lo hx0.le
-  have h2 : x * Real.cos x ≤ x * (1 - x ^ 2 / 2 + x ^ 4 / 24) :=
-    mul_le_mul_of_nonneg_left hcos_hi hx0.le
-  have h3 : x ^ 2 * (x - x ^ 3 / 6) ≤ x * (x * Real.sin x) := by
+  have h1 : x - x ^ 3 / 2 ≤ x * Real.cos x := by
+    have := mul_le_mul_of_nonneg_left hcos_lo hx0.le
+    linarith
+  have h2 : x * Real.cos x ≤ x - x ^ 3 / 2 + x ^ 5 * (5 / 96) := by
+    have := mul_le_mul_of_nonneg_left hcos_hi hx0.le
+    linarith
+  have h3 : x ^ 3 - x ^ 5 / 6 ≤ x * (x * Real.sin x) := by
     have := mul_le_mul_of_nonneg_left hsin_lo.le (sq_nonneg x)
     linarith
-  constructor <;> nlinarith
+  have h4 : x * (x * Real.sin x) ≤ x * Real.sin x := by
+    calc x * (x * Real.sin x) ≤ 1 * (x * Real.sin x) :=
+          mul_le_mul_of_nonneg_right hx1 (mul_pos hx0 hsin_pos).le
+      _ = x * Real.sin x := one_mul _
+  have h5 : 0 < x * Real.sin x := mul_pos hx0 hsin_pos
+  constructor
+  · linarith only [h1, hsin_hi, h3, h4, hx5]
+  · linarith only [h2, hsin_lo, hx5, hx30, h5]
 
 /-- For each divisor `d ∣ q` (`q ≥ 2`) and `0 < θ ≤ 2 / q`, the scaled cotangent residual satisfies
 `|d cos(dθ/2) / (2 sin(dθ/2)) − 1 / θ| ≤ d² θ / 4`. -/
@@ -464,7 +474,7 @@ theorem abs_sum_ramanujanLagCoefficient_mul_cos_add_le {q R : ℕ} {θ : ℝ}
     rw [abs_mul]
     have hμ : |moebiusReal (q / d)| ≤ 1 := by
       unfold moebiusReal
-      exact_mod_cast ArithmeticFunction.abs_moebius_le_one (q / d)
+      exact_mod_cast ArithmeticFunction.abs_moebius_le_one
     have hcot := abs_divisor_cot_sub_inv_le hq hd hθ0 hθ
     calc |moebiusReal (q / d)| *
           |(d : ℝ) * Real.cos ((d : ℝ) * θ / 2) / (2 * Real.sin ((d : ℝ) * θ / 2)) - 1 / θ|
@@ -513,12 +523,12 @@ theorem abs_sum_ramanujanLagCoefficient_mul_cosTransform_add_le
     unfold S1 cosTransform
     simp_rw [← integral_const_mul]
     rw [← integral_finset_sum (Finset.Icc 1 (q * R))
-      (fun h _ => (cosTransform_integrable hInt ((h : ℝ) / m)).const_mul _)]
+      (fun h _ => (integrable_window_mul_cos hInt ((h : ℝ) / m)).const_mul _)]
     have hdiff_int : (∫ τ, (q.totient : ℝ) / 2 * (Ω τ * Real.cos (τ * 0))) -
         (∫ τ, (q.totient : ℝ) / 2 * (Ω τ * Real.cos (τ * (((q * R : ℕ) : ℝ) / m)))) =
         ∫ τ, (q.totient : ℝ) / 2 * Ω τ * (1 - Real.cos (((q * R : ℕ) : ℝ) * (τ / m))) := by
-      rw [← integral_sub ((cosTransform_integrable hInt 0).const_mul _)
-        ((cosTransform_integrable hInt _).const_mul _)]
+      rw [← integral_sub ((integrable_window_mul_cos hInt 0).const_mul _)
+        ((integrable_window_mul_cos hInt _).const_mul _)]
       refine integral_congr_ae (Eventually.of_forall fun τ => ?_)
       simp only [mul_zero, Real.cos_zero]
       rw [show τ * (((q * R : ℕ) : ℝ) / m) = ((q * R : ℕ) : ℝ) * (τ / m) by ring]
@@ -536,14 +546,14 @@ theorem abs_sum_ramanujanLagCoefficient_mul_cosTransform_add_le
         ring
       rw [hsum_eq]
       ring
-    · exact integrable_finset_sum _ fun h _ => (cosTransform_integrable hInt ((h : ℝ) / m)).const_mul _
-    · have h1 := (cosTransform_integrable hInt 0).const_mul ((q.totient : ℝ) / 2)
-      have h2 := (cosTransform_integrable hInt (((q * R : ℕ) : ℝ) / m)).const_mul ((q.totient : ℝ) / 2)
+    · exact integrable_finset_sum _ fun h _ => (integrable_window_mul_cos hInt ((h : ℝ) / m)).const_mul _
+    · have h1 := (integrable_window_mul_cos hInt 0).const_mul ((q.totient : ℝ) / 2)
+      have h2 := (integrable_window_mul_cos hInt (((q * R : ℕ) : ℝ) / m)).const_mul ((q.totient : ℝ) / 2)
       refine (h1.sub h2).congr (Eventually.of_forall fun τ => ?_)
       simp only [Pi.sub_apply, mul_zero, Real.cos_zero]
       rw [show τ * (((q * R : ℕ) : ℝ) / m) = ((q * R : ℕ) : ℝ) * (τ / m) by ring]
       ring
-  rw [hS1_int, cosTransform_zero_eq_integral, ← integral_const_mul]
+  rw [hS1_int, cosTransform_zero_eq_integral, ← integral_const_mul, ← Real.norm_eq_abs]
   refine (norm_integral_le_integral_norm _).trans ?_
   refine integral_mono_of_nonneg (Eventually.of_forall fun _ => norm_nonneg _)
     (hInt.const_mul _) (Eventually.of_forall fun τ => ?_)
@@ -735,7 +745,8 @@ theorem narrowStrip_coalescent_gain_pos {B δ : ℝ} (hB : 0 ≤ B) (hδ0 : 0 < 
   have h3B1_pos : 0 < 3 * B + 1 := by linarith
   have hmul : (3 * B + 1) * δ < 2 := by
     rwa [lt_div_iff₀ h3B1_pos, mul_comm] at hδ
-  have hδ_lt2 : δ < 2 := by nlinarith
+  have hBδ : 0 ≤ B * δ := mul_nonneg hB hδ0.le
+  have hδ_lt2 : δ < 2 := by linarith only [hmul, hBδ]
   have hnum : 0 < 2 + (1 - 3 * B) * δ - δ ^ 2 := by
     have hid : 2 + (1 - 3 * B) * δ - δ ^ 2 = (2 - (3 * B + 1) * δ) + δ * (2 - δ) := by ring
     rw [hid]

@@ -101,8 +101,8 @@ def orbitSurface (x : E) : PolarSurface (D.orbitSpan x) :=
 
 theorem corr_smul (c : ℝ) (ξ : Correspondence G) (x : E) : D.corr (c • ξ) x = c • D.corr ξ x := by
   simp only [corr]
-  rw [Finsupp.sum_smul_index' (fun _ => zero_smul ℝ _), Finsupp.smul_sum]
-  simp only [smul_smul]
+  rw [Finsupp.sum_smul_index (fun _ => zero_smul ℝ _), Finsupp.smul_sum]
+  simp only [mul_smul]
 
 /-- Every element of the span of the orbit is the action of a correspondence. -/
 theorem exists_corr_of_mem_span_orbit (x : E) {w : E}
@@ -172,12 +172,12 @@ theorem scalingAction_V (t : ℝ) :
 theorem zetaScalingDatum_fibreCompatible : zetaScalingDatum.FibreCompatible :=
   fun t => ⟨scalingAction_H t, scalingAction_V t⟩
 
-theorem configScalingDatum_fibreCompatible (Z : ZeroConfig) (hZ : TemperedConfig Z) :
+theorem configScalingDatum_fibreCompatible (Z : Zeta23.ZeroConfig) (hZ : TemperedConfig Z) :
     (configScalingDatum Z hZ).FibreCompatible :=
   fun t => ⟨scalingAction_H t, scalingAction_V t⟩
 
 /-- **On a configuration, Riemann–Roch on the orbit surface is blindness to the off-line zeros.** -/
-theorem configOrbitSurface_riemannRoch_iff_blind (Z : ZeroConfig) (hZ : TemperedConfig Z)
+theorem configOrbitSurface_riemannRoch_iff_blind (Z : Zeta23.ZeroConfig) (hZ : TemperedConfig Z)
     (hFE : FESymmetric Z) (x : ScalingCycle) {E' : Set ((configScalingDatum Z hZ).orbitSpan x)}
     (hdeg : ∀ w ∈ E', 0 ≤ ((configScalingDatum Z hZ).orbitSurface x).pair w
       ((configScalingDatum Z hZ).orbitSurface x).ample)

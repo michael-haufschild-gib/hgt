@@ -141,6 +141,9 @@ constant. A sieve bounds the close pairs only against nonnegative weights, while
 | Dyadic cosine kernel | `f_dyadic(u) = ∫_1^2 cos(tu)dt = (sin 2u − sin u)/u` | `dyadicCosineKernel` |
 | Affine trans-threshold model | `F_{β,γ}(α) = α` on `[0, 1]`, `β + γ(α − 1)` on `(1, ∞)` | `affineTransModel` |
 | Narrow-strip Cesàro energy | `E(δ) = (2/δ²)∫_1^{1+δ}(1 + δ − α)F(α)dα` | `narrowStripCesaroEnergy` |
+| Pure prime coalescent sum | `π⁻¹ Σ_{n,m prime, n≠m} a_n a_m g(log m) Ω̂(log n − log m)` on `|log(n/m)| ≤ θ₀` | `primeCoalSum`, `primeCoalescentSurplus` |
+| Odd-prime even-shift coalescent sum | `primeCoalSum` restricted to `3 ≤ n, m` and `2 ∣ |n − m|` | `oddEvenShiftPrimeCoalSum`, `oddEvenShiftPrimeCoalescentSurplus` |
+| Narrow-strip quadratic gain | `2 − (1/(1+δ) + (1+δ)/3) − Bδ²/(1+δ)² − 2/3` | `narrowStripGain` |
 
 **Words.**
 
@@ -345,6 +348,80 @@ two-window mixture of bandwidths `1` and `4/3` has the exact optimal envelope
 `2/3 + (181 − 18B)²/(1728(91 + 9B))` under `F ≤ B`, and reaches `3/4` at weight `4/9` iff
 `B ≤ 2954/1035` (`mixOpt_values_and_three_quarters_criterion`). No bound on `β` is proved.
 
+### 3.13 Unconditional prime-power elimination, odd-prime even-shift reduction, and the parity-halved 2D Selberg sieve
+
+In `CoalescentPrimeReductionAndParitySieve`, the smooth-window coalescent surplus is reduced
+unconditionally to pure odd prime pairs at even shifts:
+
+* **Sub-Nyquist vanishing and `2`-adic parity doubling.** Since `|log n − log m| ≥ |n − m|/max(n, m)`,
+  every off-diagonal term of `coalSum` with `max(n, m) < 1/θ₀` vanishes identically
+  (`coalSum_term_eq_zero_of_lt_inv`), and every same-parity off-diagonal term with
+  `max(n, m) < 2/θ₀` vanishes identically (`coalSum_odd_term_eq_zero_of_lt_two_div`).
+* **Complete isolation of `p = 2` and even-shift reduction.** Since `log 3 − log 2 > 1/3`
+  (`log_sub_log_two_ge_one_third`), for every `θ₀ < 1/3` the prime `2` has no coalescent partner
+  and every prime pair `(p, q)` in the coalescent band consists of odd primes `p, q ≥ 3` separated
+  by an even gap `2 ∣ |p − q|` (`primeCoalSum_eq_oddEvenShiftPrimeCoalSum`,
+  `eventually_primeCoalescentSurplus_eq_oddEvenShift`).
+* **Unconditional prime-power elimination.** For each `n ≤ X`, the number of `m ≠ n` with
+  `|log n − log m| ≤ θ₀ ≤ 1/2` is at most `4θ₀n` (`card_coalescent_partners_le`), while
+  `a_n a_m ≤ √2 Λ(n) (log X)/n` (`acoef_mul_acoef_le_of_coalescent`). The `n` cancels, so summing
+  over proper prime powers via Chebyshev's `ψ(X) − θ(X) ≤ 2√X log X` gives
+  `|coalSum − primeCoalSum| ≤ (16√2/π) L M₀ (log X)² θ₀ √X` (`abs_coalSum_sub_primeCoalSum_le`).
+  At `λ = 4/3` and `θ₀ = T^{−1+η}`, this yields the absolute bound
+  `|coalescentSurplus − primeCoalescentSurplus| ≤ (128√2/π)(log T)T^{2/3+η}`
+  (`eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le`), the `N(T, 2T)`-normalised
+  decay `1024√2 · T^{−1/3+η} · N(T, 2T)`
+  (`eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le_mul_Ncount`), and the
+  unconditional equivalence `CoalescentSurplusAtMost β ↔ PrimeCoalescentSurplusAtMost β` for
+  `0 < η < 1/3` (`coalescentSurplusAtMost_iff_primeCoalescentSurplusAtMost`).
+* **Parity-halved shift-unrestricted 2D Selberg sieve.** Because all odd shifts `d % 2 = 1` have
+  zero prime pairs `m, m + d > h ≥ 2` (`primePair_filter_odd_eq_empty`) and every even shift
+  `d = 2r` has `2 ∣ d` so `shiftCorrection h (2r) ≥ 2 (1 − 1/h) shiftCorrection h r`
+  (`sum_inv_shiftCorrection_even_le`), summing the 2D Selberg prime-pair bound over `1 ≤ d ≤ 2K`
+  cuts both the main term and the sieve remainder of `RHTower.Sieve.sum_card_primePair_le_sharp` in
+  half and removes the shift restriction `K ≤ P₁^{P₁}`
+  (`sum_card_primePair_le_parity_unrestricted`, `sum_card_shift_bigPrimeSet_le_parity_unrestricted`).
+
+### 3.14 The lobe-cancellation dichotomy, exact trapezoidal Dirichlet–Ramanujan transfer, and narrow-strip gain
+
+In `RamanujanDirichletCoalescentTransfer`, the analytic and arithmetic mechanisms governing Open
+Problems 2–5 are established:
+
+* **The lobe-cancellation dichotomy.** For any non-negative window `Ω` supported in `[a, b]`
+  (`0 ≤ a ≤ b`, `0 < b`), on the inner coalescent core `|θ| ≤ π/(3b)` we have `cos(τθ) ≥ 1/2`, so
+  `cosTransform Ω θ ≥ (1/2) cosTransform Ω 0` (`cosTransform_ge_half_of_le_pi_div_three`). Hence
+  for `K₁ δ ≤ π/(3b)` (`K₁ ≤ R`), the unsigned shift sum satisfies
+  `∑_{r=1}^R |cosTransform Ω (rδ)| ≥ (K₁/2) cosTransform Ω 0`
+  (`sum_Icc_abs_cosTransform_ge_inner_lobe`), which at `δ = q/m` scales with `K₁ ≍ m/(qT) ≍ T^{α−1}`
+  and diverges relative to the zero-lag scale whenever `α > 1`. By contrast, the signed shift sum
+  satisfies the exact trapezoidal Dirichlet-kernel identity
+  `2 sin(ϕ/2)(1/2 + ∑_{r=1}^{M−1} cos(rϕ) + (1/2) cos(Mϕ)) = sin(Mϕ) cos(ϕ/2)`
+  (`two_sin_mul_trapezoidal_sum_cos`, `trapezoidal_sum_cos_eq_div`), where the oscillating lobes
+  cancel and leave the negative zero-lag residue `−1/2`.
+* **Exact trapezoidal Dirichlet–Ramanujan identity and Ward–Mertens repulsion transfer.** Expanding
+  `ramanujanLagCoefficient q h = ∑_{d ∣ q} μ(q/d) d 1_{d ∣ h}` over `1 ≤ h ≤ qR − 1` and applying
+  the trapezoidal Dirichlet identity to each divisor progression `h = dr` (`1 ≤ r ≤ (q/d)R − 1`,
+  where the endpoint phase `((q/d)R)(dθ) = qRθ` is independent of `d`) yields
+  `φ(q)/2 + ∑_{h=1}^{qR−1} c_q(h) cos(hθ) + (φ(q)/2) cos(qRθ)
+    = sin(qRθ) ∑_{d ∣ q} μ(q/d) (d cos(dθ/2)/(2 sin(dθ/2)) − 1/θ)`
+  (`trapezoidal_ramanujan_cos_eq`), where the `1/θ` Dirichlet-kernel pole cancels identically across
+  divisors because `∑_{d ∣ q} μ(q/d) = 0` for `q ≥ 2` (`sum_divisors_moebiusReal_div`). The
+  elementary cotangent residual bound `|cos x / sin x − 1/x| ≤ x` on `0 < x ≤ 1`
+  (`abs_cos_div_sin_sub_inv_le`) then gives the `R`-independent pointwise bound
+  `|(∑_{h=1}^{qR} c_q(h) cos(hθ)) + (φ(q)/2)(1 − cos(qRθ))| ≤ (∑_{d ∣ q} d²)(θ/4)` for `0 < θ ≤ 2/q`
+  (`abs_sum_ramanujanLagCoefficient_mul_cos_add_le`). Integrating against `Ω` and weighting by
+  `μ(q)²/φ(q)²` transfers the finite-height singular-series sum to the negative Ward–Mertens
+  repulsion sum `−(1/2) cosTransform Ω 0 ∑_{q=2}^Q sqfreeTotientInv q`
+  (`abs_sum_ramanujanLagCoefficient_mul_cosTransform_add_le`,
+  `abs_sum_singularSeries_cosTransform_add_le`).
+* **General-bandwidth narrow-strip proportion envelope and optimal gain.** At `λ = 1 + δ > 1`, any
+  quadratic coalescent surplus bound `β(δ) ≤ Bδ²/(1 + δ)²` (`B ≥ 0`) certifies a proportion gain
+  `narrowStripGain B δ = δ(2 + (1 − 3B)δ − δ²)/(3(1 + δ)²) > 0` for all `0 < δ < 2/(3B + 1)`
+  (`narrowStrip_coalescent_proportion_gain_eq`, `narrowStrip_coalescent_gain_pos`), achieving at
+  `δ_*(B) = 1/(3B + 2)` the closed-form gain `(3B² + 7B + 3)/(9(B + 1)²(3B + 2)) > 0`
+  (`narrowStrip_optimal_delta_gain`) and preserving half the gain after smooth-window collar
+  subtraction (`narrowStrip_collar_preserves_gain`).
+
 ---
 
 ## 4. Foundational pillar theorems
@@ -385,6 +462,23 @@ All unconditional.
     a smooth window with `N₀*(T, 2T) ≥ (29/36 − ε)N(T, 2T) − coalescentSurplus u η T` for all large
     `T` (`zeta_coalescent_certificate`); the surplus is the smooth-window pair sum over
     `0 < |log(n/m)| ≤ T^{−1+η}` normalised by `(aL)²`.
+12. **Unconditional prime-power elimination and parity-halved 2D Selberg sieve.** For `0 < η < 1/3`,
+    proper prime powers in the coalescent band contribute `O((log T)T^{2/3+η}) = O(T^{−1/3+η}N(T, 2T))`
+    (`eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le`,
+    `eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le_mul_Ncount`), so
+    `CoalescentSurplusAtMost β ↔ PrimeCoalescentSurplusAtMost β`
+    (`coalescentSurplusAtMost_iff_primeCoalescentSurplusAtMost`), while `p = 2` and odd shifts
+    vanish identically for `θ₀ < 1/3` (`primeCoalSum_eq_oddEvenShiftPrimeCoalSum`) and 2-adic parity
+    halves the 2D Selberg prime-pair bound (`sum_card_primePair_le_parity_unrestricted`).
+13. **Lobe-cancellation dichotomy, exact Dirichlet–Ramanujan pole cancellation, and narrow-strip gain.**
+    Unsigned shift sums over `cosTransform Ω` diverge with the inner lobe `K₁ ≍ m/(qT)`
+    (`sum_Icc_abs_cosTransform_ge_inner_lobe`), whereas signed Ramanujan cosine sums satisfy an
+    exact trapezoidal identity in which the `1/θ` Dirichlet-kernel pole cancels across `d ∣ q`
+    (`trapezoidal_ramanujan_cos_eq`, `abs_sum_ramanujanLagCoefficient_mul_cos_add_le`), transferring
+    the finite-height singular-series sum to the negative Ward–Mertens repulsion sum
+    (`abs_sum_singularSeries_cosTransform_add_le`); at `λ = 1 + δ`, any quadratic surplus bound
+    `Bδ²/(1+δ)²` yields the closed-form gain `(3B² + 7B + 3)/(9(B+1)²(3B+2)) > 0` at
+    `δ_*(B) = 1/(3B+2)` (`narrowStrip_optimal_delta_gain`).
 
 ---
 
@@ -461,6 +555,14 @@ Built and reusable:
 - *Smooth-window certificate*: the convolution `Φ² ⋆ v` for slowly varying, decaying and prime
   densities; the exact coalescent kernel; the nine-channel evaluation; the grid comparison with the
   lattice deficit; the collar form of the weighted trace; the seam assembly at `λ = 4/3`.
+- *Unconditional prime-power elimination and parity-halved 2D Selberg sieve*: sub-Nyquist vanishing;
+  complete isolation of `p = 2` and odd-prime even-shift reduction; `O((log T)T^{2/3+η}) = O(T^{−1/3+η}N(T, 2T))`
+  prime-power bound and equivalence `CoalescentSurplusAtMost β ↔ PrimeCoalescentSurplusAtMost β`;
+  parity-halved shift-unrestricted 2D Selberg prime-pair bound.
+- *Trapezoidal Dirichlet–Ramanujan transfer and narrow-strip optimal gain*: unsigned inner-lobe
+  divergence vs. trapezoidal Dirichlet-kernel identity; exact Dirichlet–Ramanujan pole-cancellation
+  identity; Ward–Mertens singular-series repulsion transfer; closed-form narrow-strip optimal gain
+  `(3B² + 7B + 3)/(9(B+1)²(3B+2)) > 0` at `δ_*(B) = 1/(3B+2)`.
 
 To be built:
 
@@ -473,29 +575,41 @@ To be built:
 
 ## 7. Open problems
 
-1. **The coalescent surplus at bandwidth `4/3`.** By the smooth-window certificate (§3.11),
-   `RHTower.PrimeSurplusFourThirds` is equivalent, up to `o(1)`, to
-   `coalescentSurplus u η T ≤ (1/18 + o(1))N(T, 2T)` for one profile and one `η > 0`: a bound on the
-   smooth-window pair sum over `0 < |log(n/m)| ≤ T^{−1+η}` alone. After the linearization of §3.9
-   this is a sign-sensitive estimate for `Σ_{m,h} Λ(m)Λ(m + h) m⁻¹ K(Th/m)` on `T < m ≤ T^{4/3}`,
-   `0 < h ≪ m/T`. Every intermediate budget is a result (§3.12): `β < 5/36` beats `2/3`,
-   `β ≤ 577/4500` beats `HD(1)`.
-2. **What a size-only sieve can reach.** In the unsigned additive model the factor-two parity
-   limit gives `β = 1/8` and the proportion `49/72 > HD(1)`, while `3/4` needs `Υ ≤ 8/9 < 1`, below
-   parity (§3.12). Open: whether an upper-bound sieve applied to the actual coalescent band, which
-   sees the kernel only through its size, obeys the model's bound; and, for `3/4`, which signed
-   correlation of prime pairs at distance `≲ m/T` breaks the parity barrier.
-3. **The signed mixed mean value.** The identity of §3.2 is exact. Find the arithmetic structure of
-   `C_g` and `C_1` (both prime Dirichlet polynomials of length `T^{4/3}`, one Fourier-weighted) that
-   makes their correlation over `[T, 2T]` smaller than the product of their sizes, at the constant
-   `(4/9 + 1/18)(aL)²Tℓ₁/2π`.
-4. **From the finite prime-pair sum to the form factor.** The calibration of §3.9 and the
-   narrow-strip criterion of §3.10 are statements about `F(α)`. An unconditional asymptotic transfer
-   from the finite height-averaged prime-pair sum at `[T, 2T]` to `F(α)` on `(1, 1 + δ]` is not
-   available; without it no bound on `F` is a bound on the certificate.
-5. **The exchange rate just above `λ = 1`.** Transfer the finite-`T` narrow-strip close-pair bound
-   through the smooth-weighted grid assembly without losing the `O(δ)` diagonal gain to the
-   finite-height window tails.
+1. **The coalescent surplus at bandwidth `4/3`.** By the smooth-window certificate (§3.11) and
+   unconditional prime-power elimination (§3.13, `coalescentSurplusAtMost_iff_primeCoalescentSurplusAtMost`,
+   `eventually_primeCoalescentSurplus_eq_oddEvenShift`), `RHTower.PrimeSurplusFourThirds` reduces to
+   `oddEvenShiftPrimeCoalescentSurplus u η T ≤ (1/18 + o(1))N(T, 2T)` for one profile and one
+   `0 < η < 1/3`: a sign-sensitive bound on pure odd prime pairs `p, q ≥ 3` separated by even shifts
+   `2 ∣ |p − q|` at multiplicative distance at most `T^{−1+η}` alone. Every intermediate budget is a
+   result (§3.12): `β < 5/36` beats `2/3`, `β ≤ 577/4500` beats `HD(1)`.
+2. **What a size-only sieve can reach.** On the discrete shift side, 2-adic parity halves both the
+   main term and the remainder of the 2D Selberg prime-pair sieve and removes the shift restriction
+   `K ≤ P₁^{P₁}` (`sum_card_primePair_le_parity_unrestricted`). On the kernel side, however, any
+   unsigned size-only bound applied to `|cosTransform Ω|` diverges over the inner lobe by the
+   trans-threshold blowup `K₁ ≍ m/(qT) ≍ T^{α−1}` (`sum_Icc_abs_cosTransform_ge_inner_lobe`), whereas
+   the signed shift sum obeys the trapezoidal Dirichlet-kernel identity
+   (`two_sin_mul_trapezoidal_sum_cos`). Closing `β < 5/36` or `β ≤ 1/18` requires transferring the
+   signed lobe cancellation to the prime indicator `1_ℙ(m) 1_ℙ(m + 2r)`.
+3. **The signed mixed mean value and singular-series repulsion.** Expanding the Ramanujan lag
+   coefficient `c_q(h)` across divisor progressions cancels the `1/θ` Dirichlet-kernel pole
+   identically (`trapezoidal_ramanujan_cos_eq`) and bounds the finite-horizon Ramanujan cosine sum
+   uniformly in the period count `R` (`abs_sum_ramanujanLagCoefficient_mul_cos_add_le`,
+   `abs_sum_ramanujanLagCoefficient_mul_cosTransform_add_le`). What remains open is an unconditional
+   additive-divisor control on the error between the prime-pair correlation and its truncated
+   Hardy–Littlewood singular series.
+4. **From the finite prime-pair sum to the form factor.** Weighting the finite-height Ramanujan
+   transfer by `μ(q)²/φ(q)²` transfers the singular-series correlation to the negative Ward–Mertens
+   repulsion sum `−(1/2) cosTransform Ω 0 ∑_{q=2}^Q sqfreeTotientInv q` with explicit finite-height
+   error (`abs_sum_singularSeries_cosTransform_add_le`). An unconditional asymptotic transfer from
+   the actual prime-pair sum to `F(α)` on `(1, 1 + δ]` still requires controlling the prime-pair
+   error beyond the singular-series main term.
+5. **The exchange rate just above `λ = 1`.** Under any quadratic coalescent surplus bound
+   `β(δ) ≤ Bδ²/(1 + δ)²` (`B ≥ 0`) at bandwidth `λ = 1 + δ`, the smooth-window certificate with
+   collar `ε₁ = narrowStripGain B δ / (64π)` certifies a critical-line proportion strictly exceeding
+   `2/3` for all `0 < δ < 2/(3B + 1)` and achieves the closed-form gain
+   `(3B² + 7B + 3)/(9(B+1)²(3B+2)) > 0` at `δ_*(B) = 1/(3B + 2)` (`narrowStrip_optimal_delta_gain`,
+   `narrowStrip_collar_preserves_gain`). Proving `β(δ) ≤ Bδ²/(1 + δ)²` unconditionally for the
+   signed coalescent sum remains open.
 
 ---
 
@@ -535,3 +649,5 @@ To be built:
 | `SmoothWindowFrobeniusBound` | the smooth-window Frobenius bound at one height |
 | `SmoothWeightedCertificateAtFourThirds` | rates, one-height trace and Frobenius bounds, the seam assembly; `zeta_coalescent_certificate` |
 | `NarrowStripClosePairEnergyAndExchangeRate` | narrow-strip Cesàro energy and `2/3` escape criterion; exact sub-threshold close-pair vanishing; `2`-adic parity collar doubling (`X ≤ 2/b`); quadratic `O(δ²)` small-shift sieve strip bound |
+| `CoalescentPrimeReductionAndParitySieve` | sub-Nyquist vanishing; isolation of `p = 2` and odd-prime even-shift reduction (`primeCoalSum_eq_oddEvenShiftPrimeCoalSum`); unconditional prime-power elimination (`coalescentSurplusAtMost_iff_primeCoalescentSurplusAtMost`); parity-halved shift-unrestricted 2D Selberg sieve (`sum_card_primePair_le_parity_unrestricted`) |
+| `RamanujanDirichletCoalescentTransfer` | unsigned inner-lobe divergence (`sum_Icc_abs_cosTransform_ge_inner_lobe`) vs. trapezoidal Dirichlet-kernel identity; exact Dirichlet–Ramanujan pole-cancellation identity (`trapezoidal_ramanujan_cos_eq`) and Ward–Mertens repulsion transfer (`abs_sum_singularSeries_cosTransform_add_le`); optimal narrow-strip gain (`narrowStrip_optimal_delta_gain`) |

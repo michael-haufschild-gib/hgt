@@ -71,10 +71,10 @@ theorem ccmPrimeDeficitSignedWorkDensity_eq (t : ℝ) :
     ccmPrimeDeficitSignedWorkDensity t =
       -ccmPrimeDeficitIncoming t * normalizedLogError t := by
   unfold ccmPrimeDeficitSignedWorkDensity ccmPrimeDeficitIncoming normalizedLogError logError
-  have hexp : Real.exp (-t / 2) * Real.exp (-t / 2) = Real.exp (-t) := by
+  have hexp : Real.exp (-t) = Real.exp (-t / 2) * Real.exp (-t / 2) := by
     rw [← Real.exp_add]; congr 1; ring
-  linear_combination
-    -ccmLogChebyshevDeficitPrimitive t * (Chebyshev.psi (Real.exp t) - Real.exp t) * hexp
+  rw [hexp]
+  ring
 
 /-- Exact completion of the square for the signed work density:
 `2 W(t) = (1/2) E(t) + 2 Ẽ(t)² − (1/2) (ccmPrimeDeficitIncoming t + 2 Ẽ(t))²`. -/
@@ -154,13 +154,13 @@ theorem integral_abs_Icc_le_of_pos {g : ℝ → ℝ} (hg : Continuous g) (τ : �
     (∫ t in Icc (τ - 4) (τ + 4), |g t|) ≤
       4 * μ + (∫ t in Icc (τ - 4) (τ + 4), g t ^ 2) / (2 * μ) := by
   set s := Icc (τ - 4) (τ + 4)
-  have hI1 : IntegrableOn (fun _ : ℝ => μ / 2) s := integrableOn_const (by norm_num)
+  have hI1 : IntegrableOn (fun _ : ℝ => μ / 2) s := continuous_const.integrableOn_Icc
   have hI2 : IntegrableOn (fun t : ℝ => g t ^ 2 / (2 * μ)) s :=
     ((hg.pow 2).div_const (2 * μ)).integrableOn_Icc
   have hle : (∫ t in s, |g t|) ≤ ∫ t in s, (μ / 2 + g t ^ 2 / (2 * μ)) := by
     refine setIntegral_mono_on hg.abs.integrableOn_Icc (hI1.add hI2) measurableSet_Icc fun t _ => ?_
     have hdiv : μ / 2 + g t ^ 2 / (2 * μ) = (μ ^ 2 + g t ^ 2) / (2 * μ) := by
-      field_simp; ring
+      field_simp
     rw [hdiv, le_div_iff₀ (by positivity)]
     nlinarith [sq_nonneg (μ - |g t|), sq_abs (g t)]
   rw [integral_add hI1 hI2, setIntegral_const, Real.volume_real_Icc_of_le (by linarith),
@@ -337,11 +337,11 @@ theorem xiZeroHalfPlaneBound_of_criticalDeficitEnergyRate {β : ℝ} (hβ : 0 �
           hsub.eventuallyLE
     _ ≤ C * Real.exp (2 * β * (τ + 4)) := hC (τ + 4) (by linarith)
     _ = C * Real.exp (8 * β) * Real.exp (2 * β * τ) := by
-        rw [mul_assoc, ← Real.exp_add]; congr 2; ring
+        rw [show 2 * β * (τ + 4) = 8 * β + 2 * β * τ by ring, Real.exp_add]
+        ring
 
-/-- A pointwise critical-deficit energy rate `β ≥ 0` implies a cumulative critical-deficit energy
-rate? Even more directly: on `[τ − 4, τ + 4]` it bounds the local window integral by
-`8 C e^{8β} e^{2βτ}`, hence implies `XiZeroHalfPlaneBound β`. -/
+/-- A pointwise critical-deficit energy rate `β ≥ 0` bounds the local window integral on
+`[τ − 4, τ + 4]` by `8 C e^{8β} e^{2βτ}`, hence implies `XiZeroHalfPlaneBound β`. -/
 theorem xiZeroHalfPlaneBound_of_criticalDeficitPointwiseRate {β : ℝ} (hβ : 0 ≤ β)
     (h : CriticalDeficitPointwiseRate β) : XiZeroHalfPlaneBound β := by
   obtain ⟨C, hC0, hC⟩ := h
@@ -351,7 +351,7 @@ theorem xiZeroHalfPlaneBound_of_criticalDeficitPointwiseRate {β : ℝ} (hβ : 0
       ∫ _t in Icc (τ - 4) (τ + 4), (C * Real.exp (2 * β * (τ + 4)) : ℝ) := by
     refine setIntegral_mono_on
       continuous_ccmPrimeDeficitCriticalEnergy.integrableOn_Icc
-      (integrableOn_const (by norm_num)) measurableSet_Icc fun t ht => ?_
+      continuous_const.integrableOn_Icc measurableSet_Icc fun t ht => ?_
     calc ccmPrimeDeficitCriticalEnergy t
         ≤ C * Real.exp (2 * β * t) := hC t (by linarith [ht.1])
       _ ≤ C * Real.exp (2 * β * (τ + 4)) :=
@@ -359,9 +359,11 @@ theorem xiZeroHalfPlaneBound_of_criticalDeficitPointwiseRate {β : ℝ} (hβ : 0
             (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left ht.2 (by linarith))) hC0
   rw [setIntegral_const, Real.volume_real_Icc_of_le (by linarith), smul_eq_mul] at hle
   calc ∫ t in Icc (τ - 4) (τ + 4), ccmPrimeDeficitCriticalEnergy t
-      ≤ 8 * (C * Real.exp (2 * β * (τ + 4))) := hle
+      ≤ (τ + 4 - (τ - 4)) * (C * Real.exp (2 * β * (τ + 4))) := hle
     _ = 8 * C * Real.exp (8 * β) * Real.exp (2 * β * τ) := by
-        rw [mul_assoc, mul_assoc, ← Real.exp_add]; congr 2; ring
+        rw [show τ + 4 - (τ - 4) = 8 by ring,
+          show 2 * β * (τ + 4) = 8 * β + 2 * β * τ by ring, Real.exp_add]
+        ring
 
 /-- An outgoing prime-deficit flux rate `β ≥ 0` implies a cumulative critical-deficit energy rate
 `β` (by `ccmPrimeDeficitCriticalEnergy_integral_le_outgoing`), and hence `XiZeroHalfPlaneBound β`. -/
@@ -370,8 +372,8 @@ theorem criticalDeficitEnergyRate_of_outgoingDeficitFluxRate {β : ℝ} (hβ : 0
   obtain ⟨C, hC0, hC⟩ := h
   refine ⟨C + (Real.eulerMascheroniConstant + 1) ^ 2, by positivity, fun T hT => ?_⟩
   have h1 := ccmPrimeDeficitCriticalEnergy_integral_le_outgoing T
-  rw [intervalIntegral.integral_of_le hT, integral_Icc_eq_integral_Ioc,
-    intervalIntegral.integral_of_le hT, integral_Icc_eq_integral_Ioc] at h1
+  rw [intervalIntegral.integral_of_le hT, ← integral_Icc_eq_integral_Ioc,
+    intervalIntegral.integral_of_le hT, ← integral_Icc_eq_integral_Ioc] at h1
   have hexp : 1 ≤ Real.exp (2 * β * T) := Real.one_le_exp (by positivity)
   have h2 := hC T hT
   nlinarith [sq_nonneg (Real.eulerMascheroniConstant + 1)]
@@ -385,8 +387,8 @@ theorem criticalDeficitEnergyRate_of_weilLagEnergyRate {β : ℝ} (hβ : 0 ≤ �
   have hK0 : 0 ≤ K := by positivity
   refine ⟨2 * C + K, by positivity, fun T hT => ?_⟩
   have h1 := ccmPrimeDeficitCriticalEnergy_integral_le_weilLag_sq hT
-  rw [intervalIntegral.integral_of_le hT, integral_Icc_eq_integral_Ioc,
-    intervalIntegral.integral_of_le hT, integral_Icc_eq_integral_Ioc] at h1
+  rw [intervalIntegral.integral_of_le hT, ← integral_Icc_eq_integral_Ioc,
+    intervalIntegral.integral_of_le hT, ← integral_Icc_eq_integral_Ioc] at h1
   have hexp : 1 ≤ Real.exp (2 * β * T) := Real.one_le_exp (by positivity)
   have h2 := hC T hT
   nlinarith

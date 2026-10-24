@@ -1,7 +1,5 @@
 # Astra: research beyond the RH walls
 
-Research date: 2026-10-24.
-
 ## 1. Answer
 
 **There are opportunities for new mechanisms, but I found no established bypass of all three walls.** The promising change is to study which *signed defects the actual arithmetic source can sustain*, especially defects escaping to large heights or horizons. Constructing another detector of those defects would add little.
@@ -10,7 +8,7 @@ My priorities are:
 
 1. **Quantitative rigidity of escaping arithmetic defects.** Couple actual Möbius/prime data, successor relations, cofactor dilations, residue phases and the polar correction in one estimate. The missing theorem concerns their joint signed covariance.
 2. **For WD, source-derived positivity of local finite-factor coefficients.** The exact tail and even the heated finite-head transfer are already available. The retained polynomial is the sharply localized unpaid object.
-3. **Directed residue transport with one global budget.** Preserve singularities, ordering and multiplicities through the prime–Gamma landing, then bound a genuine collision charge or force the Ward cap to vanish.
+3. **Arithmetic control of divisor charges.** Preserve singularities and multiplicities through the source landing, then bound horizontal collision charge, bound the total positive-heat collision mass near heat zero, or force the Ward cap to vanish.
 
 These are research directions, not proofs. Their claimed novelty is the proposed *producer theorem*, not the existing receivers, cocycles, compensation identities, Schur complements or orientation language.
 
@@ -18,15 +16,17 @@ A new field would best develop as **arithmetic defect rigidity**: a quantitative
 
 The walls do not prove that mathematics lacks suitable tools, or that a new field is necessary. They exclude specified mechanisms and identify missing theorems. Existing mathematics might still supply those theorems. The blueprints below explain what additional mathematics would have to accomplish.
 
+[Fable](fable.md) contributes a useful WD emphasis: the $17/25$ heat-positivity constant and the two thresholds, including their touching criterion. These strengthen the research programme without changing the central recommendation. Its claim that every possible route must pass through successor counting and quasi-RH is unsupported. Several proposed implications are false, and its uniform hypercube target is contradicted by inspected Lean source. Section 10 separates these issues from promising but unproved ideas.
+
 ## 2. Scope and evidence
 
-I read all five requested reports and all fifteen requested programme READMEs in full. No other existing repository Markdown was read. I used the Lean corpus search tool, then inspected selected Lean definitions, statements and proof text. Later changes to the two permitted READMEs for APT and AOG were incorporated.
+I read all five requested reports, all fifteen requested programme READMEs, and Fable's report in full. These and this report were the only repository Markdown documents read. I used the Lean corpus search tool, then inspected selected Lean definitions, statements and proof text.
 
-**No builds, Lean compilation or axiom checks were run.** “Corpus result” below means a result recorded in the requested documents or present in inspected Lean source; it does not claim a fresh dependency audit. In particular, the WD finite-head files and several additional developments were changing during this review. Those are identified as inspected source where material.
+**No builds, Lean compilation or axiom checks were run.** “Corpus result” below means a result recorded in the requested documents or present in inspected Lean source; it does not claim a fresh dependency audit. The distinctions below concern the statements and proof text inspected, not a newly certified build of the repository.
 
 Searches also found relevant Lean work in SignedSuccessorArithmetic. Its Markdown was not opened. This matters: proposing a successor–dilation cocycle or finite-field Jacobi-sum calibration as a new construction would duplicate work already present.
 
-The durable research record is [the research log](../../../logs/astra-research-2026-10-24.txt). The report distinguishes **corpus results**, **deductions from those results**, and **unproved research targets**.
+The durable research records are [the corpus research log](../../../logs/astra-research-2026-10-24.txt) and [the Fable comparison evidence](../../../logs/astra-fable-review-2026-10-24.txt). The report distinguishes **corpus results**, **deductions from those results**, and **unproved research targets**.
 
 ## 3. What the walls now ask
 
@@ -53,6 +53,8 @@ For a receiver that reads $\Delta$, one fixed exponent $\sigma<1/2$ already give
 
 The useful question is therefore **which arithmetic relation supplies a genuinely stronger signed estimate?** A conjectural power saving must be labelled as quasi-RH strength where the corpus proves that equivalence. It is not an inexpensive first lemma.
 
+This is a strength classification, not a compulsory order of proof. A cofinal family of sufficiently strong estimates, an exact all-height coefficient certificate, or a subquantum collision bound can imply RH directly. A TTPC proportion improvement need not imply even quasi-RH. Nor does every improvement of a Gram entry automatically give a width improvement.
+
 For the critical-energy programmes, the issue is more precise than “find cancellation.” Diagonal terms, predecessor terms, several scalar works and very small *relative* remainders are already controlled. The unpaid quantity is an absolute signed interior/covariance contribution, uniformly in the horizon.
 
 ### 3.2 Wall 3: preserve information and pay its cost
@@ -71,7 +73,7 @@ The square-root aperture $\frac12\log T$ connects several faces of this wall: te
 
 ### 3.3 Wall 14: derive orientation from arithmetic
 
-Integrality, functional-equation symmetry, lambda-ring identities, Adams operations, section counts and formal correspondences do not themselves force purity. The golden Beurling datum and other countermodels make this concrete.
+Integrality, functional-equation symmetry, lambda-ring identities, Adams operations, section counts and formal correspondences do not themselves force purity. The golden Beurling datum and other countermodels make this concrete. This does **not** mean the golden datum passes every finite test: the [width-functor source](../../../formal/GaloisForLFunctions/ArithmeticOrientationTheory/TheWidthFunctor.lean), `selectivityBattery_goldenDatum_nonObject`, explicitly proves failure of the Bézout axiom on the finite window $\{0,1\}$.
 
 Likewise, a source defined through zeros can be an exact diagnostic without being a producer. A source-defined positive quantity can be genuine but still require an unproved identification with the adverse divisor quantity.
 
@@ -88,6 +90,7 @@ The [walls ledger](walls-ledger.md) supplies unusually strong design constraints
 - Critical Wiener units preserve the **whole repairing ideal**, not merely the truth of admission.
 - Finite Euler-factor deletion is already invisible to damped Möbius payment, its ideal and its hull. Below half damping, the full Möbius kernel is not an element of the critical Wiener algebra.
 - An isolated admitted damping gives the corpus's translation constraints on zeros; one cannot replace those with a strip conclusion without the necessary interval or accumulation argument.
+- Failure of specified bounded observations does not prohibit a finite identity proving a uniform theorem. The quantifiers “each finite battery has a countermodel” and “one countermodel passes every battery” are different.
 
 These constraints rule out shortcuts, not all routes.
 
@@ -100,11 +103,11 @@ This table records the frontier relevant to a new mechanism, rather than repeati
 | [Arithmetic Positivity Theory](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md) | Exact reflection defect; positive high-scale families; negative critical prime channel on linear-width windows; scale-independent Schur estimates; general admissible harmonic stencils beyond the dyadic case | Isolated low-scale positivity and complete receiver transfer without consuming the high-scale archimedean gain |
 | [BiScale Uncertainty](../../../formal/GaloisForLFunctions/BiScaleUncertainty/README.md) | Additive–multiplicative transport, coprime shears, coercivity and quantitative moment recovery | A bound for actual signed arithmetic energy, with recovery cost included |
 | [Trans-Horizon Incidence Mechanics](../../../formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md) | Exact global prefix-defect laws; cofactor rows; successor-selective Bézout identities; residue-phase refinement; signed Vaughan Gram decomposition | Control of mixed Gram entries and actual below-half energy |
-| [Bézout–Valuation Incidence](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/README.md) | Compensated diagonal/predecessor terms; qualitative actual-source gains even in balanced cross-scale rows; readout uncertainty; critical damping-chain structure | A quantitative gain strong enough after summation, or a source-specific interior contraction |
+| [Bézout–Valuation Incidence](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/README.md) | Compensated diagonal/predecessor terms; qualitative actual-source gains even in balanced cross-scale rows; readout uncertainty; critical damping-chain structure; raw hypercube divergence below half damping | A quantitative gain for the actual compensated receiver, not uniformity over arbitrary squarefree hypercube cutoffs |
 | [Arithmetic Criticality Theory](../../../formal/GaloisForLFunctions/ArithmeticCriticalityTheory/README.md) | All-test small-aperture positivity, larger odd windows, exact first-variation receivers and supersolution obstructions | All-profile sign at growing aperture |
 | [Square-Root Threshold](../../../formal/GaloisForLFunctions/SquareRootThreshold/README.md) | Width/rate laws, continuum lag detection, hiding models and depth-mass limitations | Actual late-lag sign or arithmetic containment of escaping witnesses |
 | [Arithmetic Incidence Positivity](../../../formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md) | Exact complete ledger, balanced lattice model, sharp thin-strip capacities, prime-comb asymptotics | One signed continuum allocation including prime sums, Gamma and pole |
-| [Arithmetic Continuation and Critical Energy](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md) | Exact signed-work continuation, stable dilation-step observation, self-improving identity and paid scalar terms | Uniform signed work/cross-covariance, not another continuation equivalence |
+| [Arithmetic Continuation and Critical Energy](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md) | Exact signed-work continuation, stable dilation-step observation, self-improving identity, paid scalar terms and exact aperture shell-flux law | Uniform signed work/cross-covariance and an arithmetic bound on the aperture flux |
 | [Scale-Signed Incidence Criticality](../../../formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md) | Classification of reading losses and exact rate currencies | An actual-source quantitative reading with correct norm and horizon |
 | [Arithmetic Compensation Theory](../../../formal/GaloisForLFunctions/ArithmeticCompensationTheory/README.md) | Correctors, summable relative motion, two-scale estimates, normalized blow-up profiles and exact surviving cofactor laws | Absolute control on the region carrying escaping energy |
 | [Arithmetic Castelnuovo–Severi](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md) | Scaling surface, Lefschetz–adjunction identities, finite Hodge defect and low-blind RR/ample positivity | Source-derived effectivity or Hasse–Weil control of the remaining sector |
@@ -172,6 +175,8 @@ The successor laws give an arithmetic relation absent from the purely multiplica
 
 A concrete place to search is the compensated Bézout interior or the mixed entries of the signed Vaughan Gram matrix. One would retain the arithmetic residue relation, apply reciprocity or an additive transform to the *mixed term*, and sum with its true pronic weights before taking absolute values.
 
+Fable's Kloosterman suggestion is a useful specialization. Its missing step is quantitative: a complete exponential-sum bound does not automatically control an incomplete, weighted single-modulus statistic or the dual norm $\sum_p |\Lambda_p(c')|/p$. A proposed transform must preserve the actual row and price completion, endpoints, modulus dependence and the final summation. An average is acceptable if a proved transfer delivers the receiver's required estimate; banning averages would discard possible tools without a theorem justifying the ban.
+
 **Unproved target:** obtain a signed estimate for that aggregate stronger than the current coefficient-one identity, with all boundary and cofactor-tail terms included. A schematic sufficient output is
 
 \[
@@ -185,6 +190,10 @@ uniformly in $T$, for an appropriate family of positive dampings approaching zer
 The displayed contraction is already recognizable as the endpoint. The new work would be an explicit decomposition whose constants follow from independently proved arithmetic estimates. Calling the residual “curvature” or “dissipation” does not establish that estimate.
 
 This direction could use a weaker integrated signed statement than a uniform pointwise short-window power saving. It still must cross the corpus's critical barrier somewhere. It is not a way to obtain quasi-RH from estimates already known at exponent $1/2$.
+
+**A nearby target is false.** The inspected [hypercube divergence theorem](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/TheHypercubeDirichletFormDivergesBelowHalfDamping.lean), `not_bddAbove_hypercubeDilationDirichletForm`, proves that for every $r>1$ and $0\le\varepsilon<1/2$, the raw form is unbounded over squarefree cutoffs $P$ coprime to $r$. Both the Möbius form and its positive parity twin diverge along the stated prime-block products. Thus Fable's proposed cutoff-uniform bound below half damping cannot be the missing selective estimate. The theorem does not settle $\varepsilon=1/2$.
+
+The positive survivor is a sharper distinction between **arbitrary prime-support truncation** and **the actual compensated arithmetic prefix**. A viable estimate must retain the latter's cofactor, boundary and polar terms, or use a specific truncation schedule with a proved transfer. It cannot demand boundedness of the refuted raw form.
 
 ### 5.3 Act on the repairing obstruction with genuinely new arithmetic structure
 
@@ -219,11 +228,25 @@ This is a plausible new interface between AOT and the successor programmes. It i
 
 ### 5.4 Global low-sector control by a signed boundary flux
 
-An aperture flow or Schur evolution can organize how the unpaid sector changes. However, Schur reduction, signed Kron elimination and fixed-aperture compactness already exist.
+An aperture flow or Schur evolution can organize how the unpaid sector changes. Schur reduction, signed Kron elimination and fixed-aperture compactness already exist. So does an exact [aperture shell-flux law](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/TheApertureFlowIsAShellFlux.lean).
 
-The missing mechanism would be a **source-specific inequality for the newly entering boundary and its mixed coupling**, with the Gamma/polar reserve carried forward exactly once. A recursion that cancels only the unchanged interior does not control newly added cells.
+For normalized ground states $u_a,u_b$, $a\le b$, its residual satisfies
+
+\[
+\Phi_{a,b}(v)=q_b(\operatorname{ext}u_a,v)
+ -\mu(a)\langle J\operatorname{ext}u_a,Jv\rangle,
+\qquad
+\Phi_{a,b}(u_b)=(\mu(b)-\mu(a))
+ \langle J\operatorname{ext}u_a,Ju_b\rangle.
+\]
+
+It vanishes on the smaller form domain. The jump $\mu(a)-\mu(b)$ is exactly a nonnegative relaxation energy for the form shifted by $\mu(b)$. These identities hold for generic compatible remainder families, including perturbed and prime-free families. They do not force $\mu(b)\ge0$.
+
+The missing mechanism is therefore a **source-specific bound on this known flux**, with the Gamma/polar reserve carried forward exactly once. The shell is a quotient of form domains, not merely the list of primes newly satisfying $\log p\le2b$. Existing translations also couple interior and shell vectors.
 
 A legitimate target could be a permitted vanishing or negative floor, or a nonnegative complete form. It should not demand a fixed positive spectral gap contradicted by the ground-energy ceiling.
+
+Aperture $a$ and damping $\varepsilon$ are different parameters. A relative flux estimate on an aperture interval does not imply $\Theta\le1/2+a$ by substituting $a$ into a damping theorem; that requires a separate bridge.
 
 I rank this below the preceding directions as a claim of novelty: it is a natural development of existing programmes. Its value depends entirely on producing the new signed boundary inequality.
 
@@ -232,6 +255,20 @@ I rank this below the preceding directions as a claim of novelty: it is a natura
 Arithmetic anti-collapse bounds would repair an important width-to-$L^2$ transfer. Sharper nonbox tower capacities could reduce shared-budget losses. TTPC's actual surplus bound could improve the proved proportion of critical-line zeros.
 
 These are substantial targets. They should not be advertised as complete routes until the final sign and quantifiers are supplied. In particular, a density-one statement permits finitely many off-line zeros.
+
+### 5.6 What an enumerative mechanism must actually prove
+
+Counting is a plausible producer, especially in light of the existing finite-field calibration. The sign of the proposed identity matters. If $D$ is a nonnegative defect, then
+
+\[
+h=D+R,\qquad h\ge0,\quad R\ge0
+\]
+
+does not force $D=0$: $2=1+1$ already disproves the inference. Fable's proposed section-count identity has exactly this problem.
+
+A sufficient pattern is instead $D+H=B$, with $H\ge0$ and an independently proved $B<1$ when $D$ is integer-valued. For the even collision charge, $B<2$ suffices. An exact identity $D+H=0$ also suffices. The hard input is the upper bound or the correctly signed identity, not the existence of a nonnegative count.
+
+This suggests an **enumerative subprogramme** within arithmetic defect rigidity: construct source-defined incidence complexes, identify their obstruction term with an existing defect, and prove a dimension or cancellation bound in the required direction. It is one possible source of positivity. The corpus does not establish that every successful producer must be enumerative.
 
 ## 6. Blueprint: arithmetic defect rigidity
 
@@ -279,6 +316,7 @@ These are requirements for theorem design, not additional axioms about zeta.
 7. **Respect countermodels.** A proposed sufficient condition must fail for the relevant impure or unpaid models.
 8. **Allow singular and growing carriers.** Fixed finite frames, bounded landings and positive gaps are not default assumptions.
 9. **Separate theorem strength.** Record whether a result gives a local estimate, a proportion, a fixed strip, or RH.
+10. **Keep the method open.** Analytic estimates, exact counts and signed averages are admissible if their source selectivity and receiver transfer are proved. Neither a successor label nor reflection-oddness is a universal prerequisite.
 
 ### 6.4 A concrete target theorem
 
@@ -295,7 +333,7 @@ The hardest issue is likely **diffuse escape**. There need not be one compact �
 ### 6.5 Research topics and useful first outputs
 
 | Topic | First worthwhile output | Inadequate substitute |
----|---|---|
+|---|---|---|
 | Joint defect extraction | A limit preserving the exact signed energy pairing and forcing | Weak convergence to zero |
 | Successor selectivity | A quantitative statistic using actual prime data that excludes conductor-three and other surviving models | Universal multiplicativity cocycle |
 | Mixed Bézout covariance | A summable signed gain after correct residue centering | A qualitative small leading coefficient with no usable rate |
@@ -304,6 +342,7 @@ The hardest issue is likely **diffuse escape**. There need not be one compact �
 | Continuum shared allocation | One global certificate including frustration and pole | Reusing local Gamma surplus |
 | Arithmetic anti-collapse | A local depth-mass estimate with correct multiplicity | Total zero count $O(\log T)$ |
 | Source effectivity | An independent section/energy law implying the desired sign | Defining sections by that sign |
+| Enumerative certificates | A correctly signed identity with an independent subquantum upper bound | A nonnegative count equal to defect plus another nonnegative term |
 
 The analogue of a finite-field proof must include a valid transfer theorem. The existing Jacobi-sum identity is an excellent calibration; integer arithmetic has no automatic finite-field orthogonality.
 
@@ -383,7 +422,7 @@ The cofinal subquantum endpoint is already proved. The missing input is an arith
 
 ### 7.3 The exact tail is harmless for coefficient positivity
 
-This is the most useful sharpening found in the inspected WD source.
+This is the most useful localization of the coefficient problem in the inspected WD source.
 
 For a zero copy write
 
@@ -455,13 +494,74 @@ The current [KKL detector source](../../../formal/GaloisForLFunctions/RHTower/Xi
 
 An off-line zero of depth at least $\delta$ at sufficiently large height forces a negative heated coefficient at every heat $\kappa/\log t$ with $0<\kappa\le\kappa_0(\delta)$. The source supplies the explicit height bound $e^{16}$ for its stated detector application.
 
-By contrast, [effective unconditional positivity](../../../formal/GaloisForLFunctions/RHTower/XiSliceHeatEffectiveKKL.lean) is available eventually at heat at least $100/\log|t|$. Positivity propagates toward larger heat; this gives no reverse implication at the much smaller detector constant.
+The stronger inspected unconditional producer is [XiSliceHeatRateInteriorLindelof](../../../formal/GaloisForLFunctions/RHTower/XiSliceHeatRateInteriorLindelof.lean), `exists_xiSliceHeatTransfer_pos_heat_interior`:
 
-The newer geometric profile $\lambda\ge x_0(t)^2/3$ improves its earlier geometric bound, but does not supply the required $\kappa_0(\delta)/\log t$ estimate.
+\[
+\exists t_0\ge80\quad\forall |t|\ge t_0\quad
+\forall\lambda\ge\frac{17/25}{\log|t|}\quad
+\forall m\ge0:\quad T_{2m}(\lambda,0,t)>0.
+\]
 
-For a fixed $\delta$, an eventual detector-scale sign excludes deep zeros only above its threshold. It does not eliminate finitely many exceptions. Together with the critical-strip bounds on that finite remainder it yields quasi-RH strength, not automatically the exact global strip advertised by the eventual estimate.
+Its proof combines bounds from zeta growth profiles for low orders with coefficient positivity for high orders. This is materially stronger than the $100/\log|t|$ result. Positivity propagates toward larger heat; it gives no reverse implication at the much smaller detector constant. The producer's growth estimates and the detector's cluster-sensitive lower bound are different obligations.
 
-### 7.6 Ordered orientation cannot be scalarized away
+The geometric profile $\lambda\ge x_0(t)^2/3$ is another available criterion, but does not supply the required $\kappa_0(\delta)/\log t$ estimate.
+
+For a fixed $0<\delta<1/2$, an eventual detector-scale sign excludes deep zeros only above its threshold. It does not eliminate finitely many exceptions. Together with the strict critical-strip bounds on that finite remainder it yields quasi-RH strength, not automatically the exact global strip advertised by the eventual estimate.
+
+Even positivity eventually at **every** rate $\kappa/\log t$, $\kappa>0$, would only give, for each fixed $\delta>0$, finitely many zeros deeper than $\delta$. This is the conclusion of `exists_im_le_of_heat_rate_zero`. It permits finite off-line exceptions, or infinitely many off-line zeros whose depths tend to zero. It does not by itself give the global supremum $\Theta=1/2$.
+
+### 7.6 Two heat thresholds and the order of contact
+
+Let $\lambda_{\rm WD}$ be the infimum of heats at which all heated slice coefficients are nonnegative at every height, and let $\Lambda$ be the de Bruijn–Newman constant. The inspected [threshold-touching source](../../../formal/GaloisForLFunctions/RHTower/XiSliceHeatThresholdTouching.lean) proves:
+
+\[
+\mathrm{RH}\iff\lambda_{\rm WD}=0
+\iff\lambda_{\rm WD}=\Lambda,
+\qquad
+\neg\mathrm{RH}\Longrightarrow0<\lambda_{\rm WD}<\Lambda.
+\]
+
+The admissible heats are exactly $[\lambda_{\rm WD},\infty)$. Every even coefficient is strictly positive above the threshold. At the threshold some coefficient vanishes. Moreover,
+
+\[
+\mathrm{RH}\iff
+\exists t\in\mathbb R:\ T_0(\lambda_{\rm WD},0,t)=0.
+\]
+
+At positive heat $T_0$ is strictly positive. Consequently, if RH fails, threshold contact occurs only at an even order at least two. This provides a precise alternative target: an arithmetic theorem excluding such higher-order contact at the boundary of the full coefficient cone.
+
+There are **two distinct heat constructions** here. WD applies forward horizontal heat $e^{(\lambda/2)\partial_x^2}$ to the original slice. The de Bruijn–Newman flow evolves the entire function $H_\lambda$. WD's heated coefficients are Gaussian height averages of the slice moments of $H_\lambda$; they are not those unaveraged moments. A cap built from the zeros of $H_\lambda$ therefore needs its own source identity and a proved bridge to whichever WD endpoint consumes it.
+
+### 7.7 Global heat collisions and the limit at zero are already understood
+
+For heat $h>0$, let $N_{\rm nr}(h)$ count nonreal zeros of $H_h$ with multiplicity. Define the collision mass at a positive heat $v$ by
+
+\[
+J(v)=\sum_{\substack{z\text{ real multiple zero}\text{ of }H_v}}
+2\left\lfloor\frac{m_z}{2}\right\rfloor.
+\]
+
+The inspected [global collision law](../../../formal/GaloisForLFunctions/RHTower/DeBruijnCollisionJumpLaw.lean), `nonrealZeroCount_eq_sum_collisionMass`, proves
+
+\[
+N_{\rm nr}(h)=\sum_{v>h}J(v),\qquad h>0.
+\]
+
+The sum is finite for every positive $h$; collisions vanish at and above heat $1/8$. Just before a collision at $v$, the nonreal count is $N_{\rm nr}(v)+J(v)$. Thus making the fibre collision law global is not an unpaid construction for this observable.
+
+The inspected [right-limit source](../../../formal/GaloisForLFunctions/RHTower/DeBruijnNonrealCountRightLimit.lean) also proves:
+
+- every finite off-real block of $H_0=\Xi$ persists, with multiplicity, at all sufficiently small positive heats;
+- if $\Xi$ has finitely many nonreal copies, say $K$, then $N_{\rm nr}(h)=K$ for all sufficiently small $h>0$;
+- if there are infinitely many, $N_{\rm nr}(h)\to\infty$ as $h\downarrow0$;
+- RH is equivalent to $N_{\rm nr}(h)=0$ for all sufficiently small $h>0$;
+- finitely many off-line zeros are equivalent to a uniform bound on $N_{\rm nr}(h)$ over positive heats.
+
+The source defines its count to be zero at nonpositive heat by convention. The substantive result is about the **right limit**, not evaluation of that definition at zero.
+
+These theorems sharply isolate the missing input: a source-derived bound on the total collision mass as the lower heat cutoff approaches zero. Positive-heat finiteness alone gives no such uniform bound. This heat count, horizontal collision charge $C(T)$, and weighted Ward cap are three distinct currencies.
+
+### 7.8 Ordered orientation cannot be scalarized away
 
 The inspected [ordered prime-cross source](../../../formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionOrderedPrimeCrossCurvature.lean) contains the exact function
 
@@ -474,7 +574,9 @@ It is negative for $a>0$, positive for $a<0$, odd, and zero exactly at $a=0$. Th
 
 But summing it over a reflection-stable finite carrier gives **zero identically**. A successful use must preserve ordered channels through a faithful source landing. The global scalar sum has already lost the desired orientation.
 
-### 7.7 The carrier must retain divisor singularities
+This does not make reflection-oddness a requirement for every proof. Depth and collision charge are reflection-even and detect an off-line pair perfectly well. The label requirement concerns a proposed *signed orientation channel*, not every way of excluding the pair.
+
+### 7.9 The carrier must retain divisor singularities
 
 The [finite local spectral-frame obstruction](../../../formal/GaloisForLFunctions/RHTower/XiFiniteLocalSpectralFrameObstruction.lean) proves more than failure of one ansatz:
 
@@ -536,7 +638,7 @@ The certificate must work for $k$ up to the degree of the actual local head at h
 
 **What remains:** the arithmetic coefficient inequality, with growing degree and arbitrary local multiplicity. This is the decisive wall, now isolated.
 
-### 8.2 Alternative: source residue transport giving a subquantum bound
+### 8.2 Alternative: an arithmetic budget below the first collision quantum
 
 A second mechanism would construct the collision observable directly from arithmetic source currents, then prove
 
@@ -551,7 +653,17 @@ The attractive feature is quantization: a strictly subquantum estimate can exclu
 
 A plausible research object is a domain-sensitive residue current with a proved conservation/boundary law. Its hard theorem would be that the complete signed source budget dominates the collision charge with total error below two. A positive diagonal estimate does not control the required negative-cross terms.
 
-This direction avoids asking for coefficient positivity, but not source orientation. I rank it behind the finite-head target because its missing landing and budget are less localized.
+The heat formulation has an equally precise target. Write
+
+\[
+B(h)=\sum_{v>h}J(v)=N_{\rm nr}(h).
+\]
+
+**Deduction from the inspected collision and right-limit theorems:** a source bound $B(h_j)<2$ for positive $h_j\downarrow0$ would imply RH. Every summand is even, so $B(h_j)=0$; antitonicity then gives zero at every positive heat, and the right-limit criterion applies. A merely uniform finite bound instead proves finitely many off-line zeros.
+
+The useful new research object would be an arithmetic representation of $B(h)$, or a complete source budget dominating it, with constants controlled as $h\downarrow0$. The theta heat integral supplies a source definition of $H_h$, but an Euler product or an unchanged prime–Gamma formula for $H_h$ cannot be assumed. Any arithmetic current must be derived through the heat transformation with its boundary terms.
+
+This direction avoids coefficient positivity. Its receiver and collision bookkeeping are available; its unpaid step is an independent arithmetic upper bound. It deserves a parallel investigation alongside the finite-head target.
 
 ### 8.3 Direct cap cancellation remains a valid target
 
@@ -561,11 +673,35 @@ The desired identity must include the completed source, its residues and all mix
 
 An exact cancellation or conservation theorem could be stronger than an estimate of individual prime terms. No such theorem emerged from the inspected corpus. Calling the cap a boundary term is not yet a proof that the boundary contributes zero.
 
+### 8.4 Improve detection and production as separate problems
+
+Fable's height-averaged detector is worth investigating, but the asserted improvement from $\delta^2/\log(3/\delta)$ to a constant times $\delta$ is unproved. A local zero-count bound does not control local depth mass, the slice's small values, or the relative growth needed by `re_xiSliceHeatTransfer_neg_of_relative_growth`. Even a two-sided count comparable to $\log t$ would not by itself supply those properties. Fable's displayed unit-window asymptotic is not established by the cited detector theorem.
+
+A useful intermediate theorem would quantify a set of nearby heights on which the actual slice has the required relative-growth or transversality bound, then prove that the averaged detector still detects the original off-line block. Moving the center may weaken the witness as well as improve its growth. Both effects must be measured.
+
+On the producer side, seek an arithmetic improvement of the low-order heat integral or a direct finite-head certificate. An improved detector alone does not lower the $17/25$ positivity constant. Neither improvement removes finite-height exceptions without an additional argument.
+
+### 8.5 Heat transport needs the right observable and direction
+
+The fibre identity in [HorizontalChargeTransfer](../../../formal/GaloisForLFunctions/HTGeometry/HorizontalChargeTransfer.lean) conserves the sum of off-line collision charge and repeated-point multiplicity charge **at the collision**. It is not a global conservation law for horizontal square mass minus divisor mass.
+
+A local polynomial model makes the distinction explicit. The backward-heat solution $H_h(z)=z^2+a^2-2h$, $a>0$, has off-real charge and multiplicity charge
+
+\[
+(2,0)\ \longrightarrow\ (0,2)\ \longrightarrow\ (0,0)
+\]
+
+before, at, and after $h=a^2/2$. The two real roots separate after collision; a sufficiently large fixed window loses no root. Thus window-boundary crossing is not the only issue in Fable's proposed conservation argument. This is a generic local model, not an assertion about a zeta zero. The correct global count in §7.7 already records the lost nonreal multiplicity as collision mass.
+
+Likewise, a nonnegative heated cap decreasing to zero at a later heat may have been positive earlier. Useful transport requires a proved bound on its total variation, or a sign in the direction forcing its earlier value to vanish. A derivative bound at one positive heat is not by itself a zero-free-strip theorem for $H_0$.
+
+The viable heat-current programme is therefore: define the source current, prove its divisor identity, include level crossings and collision jumps, and establish an arithmetic bound uniform down to heat zero. Monotonicity alone leaves that endpoint unpaid.
+
 ## 9. WD-specific field: arithmetic local divisor geometry
 
 ### 9.1 Central question
 
-**Why do the actual theta/Euler source and its prime–Gamma compatibility force every local divisor block to have the correct coefficient orientation, or force every adverse residue charge to vanish?**
+**Why do the actual theta/Euler source and its prime–Gamma compatibility force every local divisor block into the coefficient cone, exclude higher-order threshold contact, or force the total adverse collision charge to vanish?**
 
 The field would study local factors and their transition laws before imposing any real-zero condition. It would retain the singular information excluded by the entire-frame no-go.
 
@@ -578,6 +714,7 @@ The field would study local factors and their transition laws before imposing an
 5. **Ordered channels:** prime/Gamma cross terms retained before reflection or scalarization.
 6. **Transition data:** factors entering or leaving a moving contour and the corresponding changes in degree, residues and coefficients.
 7. **Arithmetic certificates:** finite source expressions with proved sign and controlled passage across all heights.
+8. **Heat collision measures and contact data:** $J$, its cumulative mass $B(h)$, the two thresholds and the vanishing order at $\lambda_{\rm WD}$.
 
 The language would distinguish the coefficient cone from real-axis nonnegativity, and both from positive Hermitian forms. The example $(x^2-\delta^2)^2$ makes that distinction indispensable.
 
@@ -590,6 +727,8 @@ The language would distinguish the coefficient cone from real-axis nonnegativity
 - **Retain ordered mixed terms.** Reflection invariance can erase an orientation detector.
 - **Match the endpoint's charge.** Weighted cap, multiplicity mass, collision count and negative index are separate observables.
 - **Control joint limits.** Height, degree, contour radius, heat and zero separation must be handled in the order the receiver needs.
+- **Distinguish the two heats.** Use the Gaussian-average bridge between WD coefficients and $H_\lambda$ moments; do not identify them pointwise.
+- **Allow either orientation or exclusion.** An odd signed channel needs ordering; an even nonnegative defect can exclude a reflected pair without choosing one partner.
 
 ### 9.4 Research questions
 
@@ -600,8 +739,10 @@ The language would distinguish the coefficient cone from real-axis nonnegativity
 | What arithmetic relation selects the coefficient cone? | A relation proved for the actual source and violated by relevant impure models | Symmetry and real-axis norm-square positivity |
 | Can ordered prime curvature reach the divisor without cancellation? | A faithful, singularity-preserving landing and bound on mixed terms | The scalar odd detector |
 | Can source currents control integer collision charge? | A cofinal bound strictly below two | Positive weighted Ward cap or density-one estimates |
-| Can detector-scale head positivity be proved first for one fixed depth? | Correct $\kappa_0(\delta)/\log t$ scale, all required orders and finite-height accounting | Positivity at $100/\log t$ |
+| Can detector-scale head positivity be proved first for one fixed depth? | Correct $\kappa_0(\delta)/\log t$ scale, all required orders and finite-height accounting | Positivity at $(17/25)/\log t$ |
 | Can local degree and clustering be priced? | Bounds that remain sufficient at the actual height and multiplicity | Fixed-degree asymptotics |
+| Can arithmetic control total heat collision mass? | A bound for $B(h)$ uniform as $h\downarrow0$, with $B(h_j)<2$ giving RH | Finiteness at each positive heat or the known jump law |
+| What forbids higher-order contact at the WD threshold? | A source-specific rigidity theorem forcing a zeroth-order contact | The threshold/touching equivalence itself |
 
 ### 9.5 A viable order of work
 
@@ -609,7 +750,7 @@ The language would distinguish the coefficient cone from real-axis nonnegativity
 2. **Test candidate identities on small local blocks.** Include central multiplicities and a reflected off-line pair. A certificate that accepts the latter at its own ordinate is invalid.
 3. **Find a selective arithmetic identity.** Test it against shifted/impure data and preserve the complete Gamma/polar terms.
 4. **Prove a nontrivial family of head certificates with growing degree.** Identify exactly what prevents extending the family.
-5. **Supply all-height control.** Use either a full coefficient theorem, detector-scale bounds with the required depth/height quantifiers, or a cofinal collision-charge theorem.
+5. **Supply the endpoint uniformly.** Use a full coefficient theorem, detector-scale bounds with finite-height exceptions removed, a cofinal horizontal collision bound, or a subquantum heat-collision bound as heat approaches zero.
 
 The first three stages can yield useful unconditional mathematics even if the final stage remains open. They should produce explicit formulas, obstructions or stability laws—not merely another definition of a positive head.
 
@@ -620,46 +761,75 @@ Any one of the following, derived independently from the actual source, would su
 - coefficient nonnegativity of every fixed-radius head;
 - almost-everywhere nonpositivity of the real Ward cap at a suitable fixed positive $\tau$;
 - collision charge below two on cofinal cutoffs.
+- total heat collision mass below two on a sequence of positive heats approaching zero;
+- a source theorem forcing zeroth-order contact at the WD threshold.
 
 A finite-order calculation, a positive averaged kernel, a model Gaussian statement, or a generic local real-rootedness criterion would not suffice.
 
-The strongest practical recommendation is therefore **put the source coefficient cone at the center of WD research**. Its exact receiver and tail transfer are already in place. Keep directed residue transport as the alternative if coefficient identities consistently expose an irreducible mixed current.
+The strongest practical recommendation is therefore **put the source coefficient cone at the center of WD research**, with arithmetic control of total heat collision mass as a parallel target. Both have exact receivers. The question is which admits an independent source inequality.
 
-## 10. Corrections and status distinctions affecting the recommendations
+## 10. Assessment of Fable and conflicting frontier claims
 
-### 10.1 BVI's readout target
+### 10.1 What Fable gets right
 
-The BVI README's “faster than $\log N$” formulation is incompatible with the inspected [readout uncertainty theorem](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/ReadoutEnergyUncertaintyPrinciple.lean):
+Fable correctly insists on an independently proved arithmetic producer, distinguishes the detector constant from the heat-positivity constant, and emphasizes quantized endpoints. Its $17/25$ producer and two-threshold description are supported by inspected source and belong in the WD research programme. Balanced Bézout covariance, correctly signed enumerative certificates, and heat-current source identities are worthwhile directions.
+
+Its best WD question is concrete: **what property of the actual arithmetic source forbids higher-order contact at $\lambda_{\rm WD}$?** The threshold theorem makes that a precise research target. Its collision proposal is also useful once based on the existing global jump and right-limit laws rather than on a presumed window invariant.
+
+### 10.2 Claims that exceed the cited theorems
+
+Fable's §§0, 2.1–2.2 and 3 assert that every exit reduces to one signed, single-scale, successor-selective estimate, that every proof must obtain quasi-RH first, and that analytic positivity cannot supply the missing input. The corpus does not establish these universal necessity claims.
+
+The cited [Class III theorem](../../../formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/CompleteSignedTransHorizonEnergyAndTransferSelectivity.lean), `selectivity_class_III_bezout_successor_selective_laws`, is a conjunction of specified successor identities and separation examples. It is not a theorem quantifying over all possible proof mechanisms. Likewise, the [unification ledger](route-unification-ledger.md) preserves distinct producer families; receiver equivalence does not identify their possible constructions.
+
+Three methodological corrections follow:
+
+- **Quasi-RH is one useful intermediate target.** The cap, full coefficient-cone and cofinal collision endpoints already imply RH directly. A proportion theorem can be weaker than quasi-RH. The strength of a result must be derived from its own quantifiers.
+- **Counting and successor structure are candidates, not compulsory axioms.** Source-specific analytic identities or signed averaged estimates remain possible. Generic archimedean estimates can pay part of a proof even when they cannot close it alone.
+- **Selectivity is required of the sufficient package.** It need not hold for every lemma. A universal algebraic identity or averaging step is legitimate when combined with a selective arithmetic input and a loss-controlled transfer.
+
+The field charter in §6 therefore keeps Fable's emphasis on signs, arithmetic compatibility and exact accounting, but rejects a blanket ban on analysis, averaging or direct RH mechanisms.
+
+### 10.3 Concrete errors and unsupported deductions
+
+| Fable claim | Correction and evidence |
+|---|---|
+| §2.3B: uniformly bound the raw hypercube form at some $0\le\varepsilon<1/2$ | **Contradicted by inspected source.** `not_bddAbove_hypercubeDilationDirichletForm` proves unboundedness for every such damping and every $r>1$, over squarefree cutoffs coprime to $r$. Both parity partners diverge. See §5.2. |
+| §2.3C: $h=D+R$, with $h,R\ge0$, forces defect $D=0$ | **False implication.** It supplies no upper bound on $D$; $2=1+1$ is a counterexample. A subquantum upper bound or an identity with the opposite controlling sign is needed. See §5.6. |
+| §1.6: the golden datum passes every finite battery | **Contradicted by the cited theorem.** `selectivityBattery_goldenDatum_nonObject` includes failure of Bézout on $\{0,1\}$. The finite-test hiding statements have different quantifiers. See §3.3. |
+| §4.4: eventual positivity for every $\kappa/\log t$ gives global $\Theta=1/2$ | **False deduction from the stated receiver.** `exists_im_le_of_heat_rate_zero` gives bounded heights beyond each fixed depth. Finite exceptions can retain positive global width. See §7.5. |
+| §4.3.3: fibre conservation can be used as a heat-window invariant, with window entry/exit the obstruction | **Incomplete conservation claim.** Off-line charge converts to multiplicity charge, which can then disappear when real roots separate inside the window. The global nonreal-count law already provides the correct collision bookkeeping. See §§7.7 and 8.5. |
+| §2.3D: an aperture-interval relative-flux bound gives $\Theta\le1/2+a_0$ by the damping analogue | **Unjustified substitution of parameters.** Aperture and damping have different receivers. No such implication follows without an additional theorem connecting them. See §5.4. |
+| §4.3.1: a local zero count yields enough good nearby heights to improve detection to linear scale in $\delta$ | **Unproved anti-collapse inference.** Counts do not supply the relative-growth hypothesis or preserve the witness after shifting height. The proposed averaging theorem remains a substantive missing input. See §8.4. |
+| §4.3.4: monotonicity of a heated cap, or a derivative bound at one positive heat, supplies the required strip information | **Missing direction and endpoint estimate.** Decay to a later zero value does not force the initial value to vanish. A source identity, jump terms and control toward heat zero are required. See §8.5. |
+
+Other distinctions matter:
+
+- Fable's §3.5 identifies “mass” with $m^2$ and “index” with $m$. The corpus distinguishes linear multiplicity in the Weil form, quadratic packet mass, and an index counting distinct directions. Ward caps are weighted real charges, not quantized collision counts.
+- Cap nonnegativity in the inspected theorem has the range $0<\tau\le12$. Vanishing at one level excludes zeros beyond that level; the all-level or almost-everywhere argument is needed for RH.
+- Reflection-even readers cannot tell partners apart, but they can detect their common nonzero depth. Therefore an external orientation label is not mandatory for every WD proof.
+- The statement that nonreal content is “invisible” in power sums is too broad. Full power sums of a finite block determine its divisor through Newton identities; the sums used in §8.1 determine the head polynomial. The missing property is a usable source sign or bound, not mere recoverability. Infinite-divisor versions require their own convergence and information-loss analysis.
+
+### 10.4 Constructions already present and targets ruled out
+
+The exact finite-head tail positivity and heated transfers, successor cocycle and finite-field calibration, aperture shell-flux and relaxation identity, global heat collision law, and right-limit classification are already present in inspected source. They should be inputs to research, not proposed deliverables. In particular, Fable's statement that no sign-definite aperture-jump identity is known is incompatible with `energy_sub_energy_eq_shiftedForm`. That identity is generic and does not supply the missing arithmetic no-crossing bound.
+
+Two discrepancies in the programme documents also affect target selection.
+
+The BVI README's “faster than $\log N$” readout target conflicts with the inspected [readout uncertainty theorem](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/ReadoutEnergyUncertaintyPrinciple.lean):
 
 \[
-\kappa R_N(c)^2\le(\log N-\kappa)Q_N(c),
-\qquad \kappa>0.
+\kappa R_N(c)^2\le(\log N-\kappa)Q_N(c),\qquad\kappa>0.
 \]
 
-For positive $Q_N$, this gives $R_N^2/Q_N=O(\log N)$. The same module proves RH equivalent to the ratio being **unbounded**, not superlogarithmic. The correct target can be much smaller than logarithmic growth.
+For positive $Q_N$, the ratio is $O(\log N)$. The same module proves RH equivalent to this ratio being **unbounded**, not superlogarithmic. Qualitative actual-source gains at balanced scales are also available; the unpaid issue is their quantitative summability.
 
-The README's earlier balanced-row “open” wording must also be read alongside its later actual-source balanced qualitative gains. The unpaid problem is a quantitative summable estimate.
+The AIP documents contain a polynomial-majorant target for the raw prime-comb energy as well as an obstruction proving exponential size. The polynomial raw-energy target is refuted; signed completed compensation survives.
 
-### 10.2 AIP's raw prime-comb target
+For WD, the hard-obstacles report gives $\delta^2/[100(\log(2/\delta)+1)]$, while the inspected detector source defines $\delta^2/[200(\log(3/\delta)+1)]$. This report uses the source constant. The unconditional producer used here is $17/25$, with the quantifiers in §7.5.
 
-The requested documents contain both an older open polynomial-majorant target and the later obstruction showing the raw comb energy has exponential size. The latter governs. Signed completed compensation remains meaningful; a polynomial bound for the raw positive energy is not a surviving target.
+### 10.5 Status of the proposed fields
 
-### 10.3 WD's detector constant
+“Signed Successor Arithmetic” already names corpus work, and arithmetic orientation theory and geometry are established programmes here. A worthwhile new field must therefore contribute a quantitative producer theorem, not merely rename their objects.
 
-The hard-obstacles report records $\delta^2/[100(\log(2/\delta)+1)]$. The inspected current source defines $\delta^2/[200(\log(3/\delta)+1)]$. This report uses the latter; no stronger constant is assumed.
-
-### 10.4 WD's exact reductions
-
-The frontier reports emphasize Gaussian comparisons. The inspected finite-head positivity and heat-reduction sources now supply stronger exact transfers. The report therefore does not propose proving those transfers again.
-
-### 10.5 Additional construction already present
-
-The later permitted README changes include APT's general stencil calculus and AOG's finite Euler-factor invariance and finite-orbit orientation. Corpus search additionally found the successor cocycle and its finite-field/counting calibration. All are treated as existing work.
-
-### 10.6 Meaning of “new”
-
-The searches support a proposed next theorem, not a proof of worldwide novelty. The present report establishes no new RH implication beyond elementary deductions from the inspected receivers, and no unconditional arithmetic producer closing a wall.
-
-Its substantive recommendation is narrower: **develop quantitative source rigidity on escaping defects; for WD, pursue source certificates for the exact local coefficient cone.** Those targets survive the reviewed obstructions while explicitly retaining the arithmetic theorem still needed.
-
-
+The searches support the proposed targets, not a claim of worldwide novelty. This report supplies no unconditional arithmetic estimate closing a wall. Its two blueprints identify what such an estimate must preserve and what would count as progress: quantitative source rigidity on escaping defects in general; source certificates for exact local coefficients or uniform heat-collision budgets for WD.

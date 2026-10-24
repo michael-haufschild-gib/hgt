@@ -170,8 +170,8 @@ theorem integral_Ioi_windowValue_mul_exp_of_large {g : ℝ → ℝ} (hg : ContDi
   have hInt : IntegrableOn (fun L => windowValue g L n * Real.exp (-σ * L)) (Ioi 0) :=
     ((continuous_windowValue hg hgc n).mul (by fun_prop)).integrable_of_hasCompactSupport
       (hasCompactSupport_windowValue hsupp n).mul_right |>.integrableOn
-  refine setIntegral_eq_of_subset_of_ae_diff_eq_zero measurableSet_Ioi hsub ?_ hInt
-  filter_upwards with L hL
+  refine setIntegral_eq_of_subset_of_ae_diff_eq_zero measurableSet_Ioi.nullMeasurableSet hsub
+    (Eventually.of_forall fun L hL => ?_) hInt
   have hL0 : 0 < L := hL.1
   have hLL₀ : L ≤ L₀ := not_lt.mp hL.2
   have h1 : 1 / 2 < |Real.log n - L| := by
@@ -193,7 +193,7 @@ theorem exists_wide_windowSum_shiftedPairVonMangoldt_gt_shiftMajorant {g : ℝ �
     (hL₀ : 0 ≤ L₀) :
     ∃ L : ℝ, L₀ < L ∧ shiftMajorant g C L < windowSum hg hgc hsupp (shiftedPairVonMangoldt a) L := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   set σ : ℝ := 1 / 2 + |a|
   have ha_pos : 0 < |a| := abs_pos.mpr ha
   have hσ : 1 / 2 < σ := by unfold σ; linarith
@@ -225,7 +225,8 @@ theorem exists_wide_windowSum_shiftedPairVonMangoldt_gt_shiftMajorant {g : ℝ �
         |>.integrable_of_hasCompactSupport
           ((hasCompactSupport_windowValue hsupp n).mono (Function.support_subset_iff'.mpr fun L hL => by
             simp only [Function.mem_support, not_not] at hL
-            simp [F, hL])) |>.integrableOn
+            dsimp [F]
+            simp [hL])) |>.integrableOn
     have hsum_le : ∀ L ∈ Ioi L₀,
         ∑ n ∈ Finset.Icc N₀ N, F n L ≤ shiftMajorant g (max C 0) L * Real.exp (-σ * L) := by
       intro L hL
@@ -239,8 +240,8 @@ theorem exists_wide_windowSum_shiftedPairVonMangoldt_gt_shiftMajorant {g : ℝ �
         linarith [le_max_left C 0]
       exact h1.trans (h2.trans h3)
     have hint_le : ∫ L in Ioi L₀, (∑ n ∈ Finset.Icc N₀ N, F n L) ≤ B :=
-      setIntegral_mono_on (integrable_finset_sum _ hF_int) hMint measurableSet_Ioi hsum_le
-    rw [integral_finset_sum _ hF_int] at hint_le
+      setIntegral_mono_on (integrable_finsetSum _ hF_int) hMint measurableSet_Ioi hsum_le
+    rw [integral_finsetSum _ hF_int] at hint_le
     have hterm : ∀ n ∈ Finset.Icc N₀ N,
         autoLaplaceReal g σ * ((ArithmeticFunction.vonMangoldt n : ℝ) / (n : ℝ)) ≤
           ∫ L in Ioi L₀, F n L := by
@@ -324,7 +325,7 @@ theorem exists_wide_shiftPair_shiftedPairVonMangoldt_neg {g : ℝ → ℝ}
         (EF.weilTest (shiftPair g 1 L) (shiftPair g 1 L))).re < 0 := by
   have hlog2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
   obtain ⟨L, hL, hgt⟩ := exists_wide_windowSum_shiftedPairVonMangoldt_gt_shiftMajorant
-    hg hgc hsupp hg0 hint ha (2 * poleConst g + 2 * archConst g) (max_nonneg hL₀ hlog2)
+    hg hgc hsupp hg0 hint ha (2 * poleConst g + 2 * archConst g) (le_max_of_le_left hL₀)
   refine ⟨L, hL, hgt, ?_⟩
   by_contra hnonneg
   rw [not_lt] at hnonneg
@@ -404,7 +405,7 @@ theorem not_summable_shiftedPairWindowRingMajorant_of_half_le {a : ℝ} (ha : 1 
 /-- **Prefix growth of the shifted-pair window-ring majorant.** On the near-ring prefix `2 ≤ r ≤ L`,
 the window factor `min(1, √(L/r))` equals `1`, so the partial sum of `shiftedPairWindowRingMajorant`
 dominates `∑_{2 ≤ r ≤ L} Λ(r) r^{|a| - 1}`. -/
-theorem shiftedPairWindowRingMajorant_prefix_ge (a : ℝ) {L : ℕ} (hL : 2 ≤ L) :
+theorem shiftedPairWindowRingMajorant_prefix_ge (a : ℝ) (L : ℕ) :
     ∑ r ∈ Finset.Icc 2 L, (ArithmeticFunction.vonMangoldt r : ℝ) * (r : ℝ) ^ (|a| - 1) ≤
       ∑ r ∈ Finset.Icc 2 L, shiftedPairWindowRingMajorant a L r := by
   refine Finset.sum_le_sum fun r hr => ?_
@@ -438,7 +439,7 @@ theorem shiftedPairHarmonicCharge_zero (m : ℕ) :
     shiftedPairHarmonicCharge 0 m = 2 * factorialCriticalPrimeHarmonicCharge m := by
   unfold shiftedPairHarmonicCharge factorialCriticalPrimeHarmonicCharge shiftedPairVonMangoldt
   simp only [neg_zero, Real.rpow_zero]
-  rw [mul_left_comm, ← Finset.mul_sum]
+  rw [← mul_assoc, mul_comm 2 (dyadicHarmonicChi m), mul_assoc, Finset.mul_sum]
   congr 1
   refine Finset.sum_congr rfl fun r _ => ?_
   ring
@@ -476,7 +477,7 @@ private theorem shifted_chi_divisor (m r : ℕ) (hr : r ∈ m.divisors) (hm : m 
     norm_num [Nat.mul_mod, hR, hQ] at hmod <;>
     norm_num [dyadicHarmonicChi, Nat.mul_mod, hr2, hq2, hR, hQ]
 
-private theorem shifted_even_vonMangoldt_zero (r : ℕ) (hr : r ≠ 2)
+private theorem shifted_even_vonMangoldt_zero (a : ℝ) (r : ℕ) (hr : r ≠ 2)
     (hodd : ¬ r % 2 = 1) (hfour : r % 4 ≠ 0) :
     shiftedPairVonMangoldt a r = 0 := by
   unfold shiftedPairVonMangoldt
@@ -531,7 +532,9 @@ theorem shiftedPairHarmonicCharge_sign (a : ℝ) (m : ℕ) :
       · by_cases hf4 : r % 4 = 0
         · have ht2 : ¬ r % 4 = 2 := by omega
           simp [dyadicHarmonicChi, hodd, ht2]
-        · simp [shifted_even_vonMangoldt_zero r hr2 hodd hf4]
+        · rw [shifted_even_vonMangoldt_zero a r hr2 hodd hf4]
+          ring_nf
+          exact le_rfl
     have h4 : ¬ 4 ∣ m := fun h => hfour (Nat.mod_eq_zero_of_dvd h)
     obtain ⟨p, hp, hpd, hpodd⟩ :=
       (Nat.four_dvd_or_exists_odd_prime_and_dvd_of_two_lt hm).resolve_left h4
@@ -554,7 +557,7 @@ theorem shiftedPairHarmonicCharge_sign (a : ℝ) (m : ℕ) :
       have hsub := Finset.sum_le_sum_of_subset_of_nonneg hpair fun r _ hrnot =>
         hnn r (fun hr2 => hrnot (by simp [hr2]))
       rw [Finset.sum_pair hpne2.symm] at hsub
-      have h2term : (2 : ℝ) * shiftedPairVonMangoldt a 2 * dyadicHarmonicChi 2 =
+      have h2term : ((2 : ℕ) : ℝ) * shiftedPairVonMangoldt a 2 * dyadicHarmonicChi 2 =
           -2 * Real.log 2 * ((2 : ℝ) ^ a + (2 : ℝ) ^ (-a)) := by
         norm_num [shiftedPairVonMangoldt, dyadicHarmonicChi,
           ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
@@ -866,10 +869,8 @@ def TemperedPrimeWeight (w : ℕ → ℝ) (C : ℝ) : Prop :=
 
 /-- The prime atom of `criticalTruncatedSource V S b` against an arbitrary arithmetic weight `w`. -/
 def weightedTruncatedPrimeAtom (w : ℕ → ℝ) (V : ℝ) (S : Finset ℕ) (b : ℕ → ℝ) (r : ℕ) : ℝ :=
-  if 2 ≤ r then
-    w r / Real.sqrt r *
-      ∫ x : ℝ, criticalTruncatedSource V S b x * criticalTruncatedSource V S b (x - Real.log r)
-  else 0
+  (if 2 ≤ r then w r / Real.sqrt (r : ℝ) else 0) *
+    ∫ x : ℝ, criticalTruncatedSource V S b x * criticalTruncatedSource V S b (x - Real.log r)
 
 /-- The prime energy of `criticalTruncatedSource V S b` against an arbitrary arithmetic weight `w`. -/
 def weightedTruncatedPrimeEnergy (w : ℕ → ℝ) (V : ℝ) (S : Finset ℕ) (b : ℕ → ℝ) : ℝ :=
@@ -892,21 +893,19 @@ theorem weightedTruncatedPrimeAtom_eq_zero_of_gt {w : ℕ → ℝ} {V : ℝ} (hV
     (S : Finset ℕ) (b : ℕ → ℝ) {r : ℕ} (hr : 2 * V < (r : ℝ)) :
     weightedTruncatedPrimeAtom w V S b r = 0 := by
   unfold weightedTruncatedPrimeAtom
-  split_ifs with hr2
-  · have hzero : (fun x : ℝ =>
-        criticalTruncatedSource V S b x * criticalTruncatedSource V S b (x - Real.log r)) =
-        fun _ => 0 := by
-      funext x
-      by_cases hx : x ∈ Icc (-Real.log (2 * V)) 0
-      · have hnot : x - Real.log r ∉ Icc (-Real.log (2 * V)) 0 := by
-          intro hmem
-          have hlog : Real.log (2 * V) < Real.log r :=
-            Real.log_lt_log (by positivity) hr
-          linarith [hx.2, hmem.1]
-        rw [criticalTruncatedSource_eq_zero hV S b hnot, mul_zero]
-      · rw [criticalTruncatedSource_eq_zero hV S b hx, zero_mul]
-    rw [hzero, integral_zero, mul_zero]
-  · rfl
+  have hzero : (fun x : ℝ =>
+      criticalTruncatedSource V S b x * criticalTruncatedSource V S b (x - Real.log r)) =
+      fun _ => 0 := by
+    funext x
+    by_cases hx : x ∈ Icc (-Real.log (2 * V)) 0
+    · have hnot : x - Real.log r ∉ Icc (-Real.log (2 * V)) 0 := by
+        intro hmem
+        have hlog : Real.log (2 * V) < Real.log r :=
+          Real.log_lt_log (by positivity) hr
+        linarith [hx.2, hmem.1]
+      rw [criticalTruncatedSource_eq_zero hV S b hnot, mul_zero]
+    · rw [criticalTruncatedSource_eq_zero hV S b hx, zero_mul]
+  rw [hzero, integral_zero, mul_zero]
 
 theorem summable_weightedTruncatedPrimeAtom (w : ℕ → ℝ) {V : ℝ} (hV : 0 < V)
     (S : Finset ℕ) (b : ℕ → ℝ) :
@@ -933,9 +932,7 @@ theorem re_weilFullFunctional_criticalTruncatedTest_eq (w : ℕ → ℝ) {V : �
   set g := criticalTruncatedSource V S b
   set k := EF.weilTest (fun x => (f x : ℂ)) (fun x => (f x : ℂ))
   have hΛ : compactFullWeilEnergy f =
-      (weilFullFunctional (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) k).re := by
-    rw [← fullZeroForm_eq_compactFullWeilEnergy,
-      fullZeroForm_eq_re_weilFullFunctional f.continuous f.hasCompactSupport]
+      (weilFullFunctional (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) k).re := rfl
   have hk_apply : ∀ y : ℝ, k y = (sourceAutocorrelation g y : ℂ) := by
     intro y
     change EF.weilTest (liftC g) (liftC g) y = _
@@ -965,27 +962,30 @@ theorem re_weilFullFunctional_criticalTruncatedTest_eq (w : ℕ → ℝ) {V : �
       rw [Finset.mem_range, not_lt] at hr
       have hgt : 2 * V < (r : ℝ) :=
         lt_of_lt_of_le (Nat.lt_floor_add_one (2 * V)) (by exact_mod_cast hr)
-      have hz := weightedTruncatedPrimeAtom_eq_zero_of_gt (w := fun _ => 1) hV S b hgt
-      have hr2 : 2 ≤ r := by
-        by_contra hlt
-        have : (r : ℝ) ≤ 1 := by exact_mod_cast (by omega : r ≤ 1)
-        have h1 : 1 ≤ ⌊2 * V⌋₊ + 1 := by omega
-        omega
-      unfold weightedTruncatedPrimeAtom at hz
-      rw [if_pos hr2, one_div, mul_eq_zero, inv_eq_zero,
-        (Real.sqrt_pos.mpr (by exact_mod_cast (by omega : 0 < r))).ne', false_or] at hz
+      have hzero : (fun x : ℝ =>
+          criticalTruncatedSource V S b x * criticalTruncatedSource V S b (x - Real.log r)) =
+          fun _ => 0 := by
+        funext x
+        by_cases hx : x ∈ Icc (-Real.log (2 * V)) 0
+        · have hnot : x - Real.log r ∉ Icc (-Real.log (2 * V)) 0 := by
+            intro hmem
+            have hlog : Real.log (2 * V) < Real.log r :=
+              Real.log_lt_log (by positivity) hgt
+            linarith [hx.2, hmem.1]
+          rw [criticalTruncatedSource_eq_zero hV S b hnot, mul_zero]
+        · rw [criticalTruncatedSource_eq_zero hV S b hx, zero_mul]
       rw [hk_apply, hk_apply, hk_symm]
       change _ * ((sourceAutocorrelation g (Real.log r) : ℂ) +
         (sourceAutocorrelation g (Real.log r) : ℂ)) = 0
       unfold sourceAutocorrelation
-      rw [hz, Complex.ofReal_zero, add_zero, mul_zero]
+      rw [hzero, integral_zero, Complex.ofReal_zero, add_zero, mul_zero]
     rw [Complex.re_tsum hs]
     simp_rw [hterm u]
     rw [tsum_mul_left]
     rfl
   rw [hΛ]
   unfold weilFullFunctional
-  simp only [Complex.sub_re]
+  simp only [Complex.add_re, Complex.sub_re]
   rw [hsum_re w, hsum_re (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)),
     weightedTruncatedPrimeEnergy_vonMangoldt]
   ring
@@ -999,9 +999,9 @@ theorem abs_weightedTruncatedPrimeAtom_le_of_tempered {w : ℕ → ℝ} {C : ℝ
   · rw [abs_mul, abs_mul, abs_div, abs_div, ← mul_assoc,
       abs_of_nonneg ArithmeticFunction.vonMangoldt_nonneg]
     refine mul_le_mul_of_nonneg_right ?_ (abs_nonneg _)
-    rw [mul_div_assoc]
+    rw [← mul_div_assoc]
     exact div_le_div_of_nonneg_right (hw.2 r hr) (abs_nonneg _)
-  · simp [hw.1]
+  · simp
 
 /-- **Uniform-in-`V` logarithmic prime-window bound for arbitrary `C`-tempered weights.**
 For every `w` satisfying `TemperedPrimeWeight w C`, every truncation `V > 0`, and every scale window
@@ -1050,6 +1050,7 @@ theorem abs_weightedTruncatedPrimeEnergy_le_of_window {w : ℕ → ℝ} {C : ℝ
         _ = C * K * (L : ℝ) ^ ε * ((ArithmeticFunction.vonMangoldt r : ℝ) / (r * r ^ ε)) := by
             unfold K; field_simp
     · have := ArithmeticFunction.vonMangoldt_nonneg (n := r)
+      have hrp : 0 ≤ (r : ℝ) ^ (1 + ε) := Real.rpow_nonneg (Nat.cast_nonneg r) _
       positivity
   have hmaj : Summable fun r : ℕ =>
       C * K * (L : ℝ) ^ ε * ((ArithmeticFunction.vonMangoldt r : ℝ) / (r : ℝ) ^ (1 + ε)) :=
@@ -1207,7 +1208,7 @@ theorem exists_temperedWeight_polynomial_window_weilFullFunctional_pos (C : ℝ)
   rw [re_weilFullFunctional_criticalTruncatedTest_eq w hVpos S b]
   refine ⟨by positivity, ?_⟩
   have h1 := mul_le_mul_of_nonneg_right hgap hE.le
-  unfold W at h1 ⊢
+  dsimp only [W] at h1
   linarith
 
 /-- The Liouville-twisted von Mangoldt weight `w_λ(r) = (-1)^{Ω(r)} Λ(r)`. -/
@@ -1227,6 +1228,7 @@ theorem temperedPrimeWeight_deletedFour :
     TemperedPrimeWeight
       (fun r => if r = 4 then 0 else (ArithmeticFunction.vonMangoldt r : ℝ)) 1 := by
   refine ⟨zero_le_one, fun r _ => ?_⟩
+  dsimp only
   rw [one_mul]
   split_ifs
   · rw [abs_zero]; exact ArithmeticFunction.vonMangoldt_nonneg
@@ -1237,6 +1239,7 @@ theorem temperedPrimeWeight_primesOnly :
     TemperedPrimeWeight
       (fun r => if r.Prime then (ArithmeticFunction.vonMangoldt r : ℝ) else 0) 1 := by
   refine ⟨zero_le_one, fun r _ => ?_⟩
+  dsimp only
   rw [one_mul]
   split_ifs
   · rw [abs_of_nonneg ArithmeticFunction.vonMangoldt_nonneg]
@@ -1300,29 +1303,14 @@ theorem abs_weightedTruncatedPrimeEnergy_le_at_fixed_V (w : ℕ → ℝ) {V : �
     |weightedTruncatedPrimeEnergy w V S b| ≤
       (∑ r ∈ Finset.range (⌊2 * V⌋₊ + 1), |w r|) *
         (4 / Real.pi ^ 4 * criticalTruncatedWindowConstant) * ∑ n ∈ S, b n ^ 2 := by
-  set w_trunc : ℕ → ℝ := fun r =>
-    if r ∈ Finset.range (⌊2 * V⌋₊ + 1) then w r else 0
-  have heq : weightedTruncatedPrimeEnergy w V S b =
-      weightedTruncatedPrimeEnergy w_trunc V S b := by
-    unfold weightedTruncatedPrimeEnergy
-    refine tsum_congr fun r => ?_
-    by_cases hr : r ∈ Finset.range (⌊2 * V⌋₊ + 1)
-    · simp [w_trunc, hr, weightedTruncatedPrimeAtom]
-    · rw [Finset.mem_range, not_lt] at hr
-      have hgt : 2 * V < (r : ℝ) :=
-        lt_of_lt_of_le (Nat.lt_floor_add_one (2 * V)) (by exact_mod_cast hr)
-      rw [weightedTruncatedPrimeAtom_eq_zero_of_gt hV S b hgt,
-        weightedTruncatedPrimeAtom_eq_zero_of_gt hV S b hgt]
-  rw [heq]
   unfold weightedTruncatedPrimeEnergy
   rw [tsum_eq_sum (s := Finset.range (⌊2 * V⌋₊ + 1))]
   · refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
     rw [Finset.sum_mul, Finset.sum_mul]
-    refine Finset.sum_le_sum fun r hr => ?_
+    refine Finset.sum_le_sum fun r _ => ?_
     unfold weightedTruncatedPrimeAtom
     split_ifs with hr2
-    · simp only [w_trunc, if_pos hr]
-      have hr0 : (0 : ℝ) < r := by positivity
+    · have hr0 : (0 : ℝ) < r := by positivity
       have hsr : 0 < Real.sqrt r := Real.sqrt_pos.mpr hr0
       have hl : 0 ≤ (r : ℝ) / V := by positivity
       have hw : (∫ v in Ioi 1, criticalCollarWeight v * criticalUpperCutoff (r * v / V) *
@@ -1332,16 +1320,20 @@ theorem abs_weightedTruncatedPrimeEnergy_le_at_fixed_V (w : ℕ → ℝ) {V : �
         refine setIntegral_congr_fun measurableSet_Ioi fun v _ => ?_
         simp only [criticalTruncatedWeight]
         rw [show (r : ℝ) / V * v = r * v / V by ring]
-      have hcorr := abs_criticalTruncatedWindowCorrelation_le hl hM hL hS b (r := r) (by omega)
+      have hK0 := criticalTruncatedWindowConstant_nonneg
+      have hE0 : 0 ≤ ∑ n ∈ S, b n ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
+      have hmin1 : min 1 (Real.sqrt (L / r)) ≤ 1 := min_le_left _ _
+      have hcorr : |∫ v in Ioi 1, criticalTruncatedWeight ((r : ℝ) / V) v *
+          (realPhaseCombination S b v * realPhaseCombination S b (r * v))| ≤
+          4 / Real.pi ^ 4 * (criticalTruncatedWindowConstant * 1) * ∑ n ∈ S, b n ^ 2 :=
+        (abs_criticalTruncatedWindowCorrelation_le hl hM hL hS b (r := r) (by omega)).trans
+          (by gcongr)
       have hint_eq := integral_criticalTruncatedSource_mul_dilate hV S b hr2
       rw [hint_eq, hw, abs_mul, abs_mul, abs_div, abs_of_pos hsr,
         abs_of_pos (by positivity : 0 < 1 / Real.sqrt r)]
       have hrr : Real.sqrt r * Real.sqrt r = r := Real.mul_self_sqrt hr0.le
-      have hmin1 : min 1 (Real.sqrt (L / r)) ≤ 1 := min_le_left _ _
       have hdiv_le : |w r| / (r : ℝ) ≤ |w r| :=
         div_le_self (abs_nonneg _) (by exact_mod_cast (by omega : 1 ≤ r))
-      have hK0 := criticalTruncatedWindowConstant_nonneg
-      have hE0 : 0 ≤ ∑ n ∈ S, b n ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
       calc |w r| / Real.sqrt r * (1 / Real.sqrt r * |_|)
           ≤ |w r| / Real.sqrt r * (1 / Real.sqrt r *
               (4 / Real.pi ^ 4 * (criticalTruncatedWindowConstant * 1) * ∑ n ∈ S, b n ^ 2)) := by
@@ -1354,11 +1346,13 @@ theorem abs_weightedTruncatedPrimeEnergy_le_at_fixed_V (w : ℕ → ℝ) {V : �
             gcongr
     · have hK0 := criticalTruncatedWindowConstant_nonneg
       have hE0 : 0 ≤ ∑ n ∈ S, b n ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
-      simp only [abs_zero]
+      rw [zero_mul, abs_zero]
       positivity
   · intro r hr
-    unfold weightedTruncatedPrimeAtom
-    simp [w_trunc, hr]
+    rw [Finset.mem_range, not_lt] at hr
+    have hgt : 2 * V < (r : ℝ) :=
+      lt_of_lt_of_le (Nat.lt_floor_add_one (2 * V)) (by exact_mod_cast hr)
+    exact weightedTruncatedPrimeAtom_eq_zero_of_gt hV S b hgt
 
 /-- **Quantifier Separation (`∀ V, ∃ M₀` vs. `∃ M₀, ∀ V`) on the Critical Family.**
 At any **fixed** truncation `V ≥ criticalTruncationThreshold` and **any** arithmetic weight
@@ -1469,7 +1463,7 @@ theorem exists_fixedV_polynomial_window_pos_for_any_weight (w : ℕ → ℝ) {V 
   rw [re_weilFullFunctional_criticalTruncatedTest_eq w hVpos S b]
   refine ⟨by positivity, ?_⟩
   have h1 := mul_le_mul_of_nonneg_right hgap hE.le
-  unfold Wv at h1 ⊢
+  dsimp only [Wv] at h1
   linarith
 
 end GaloisForLFunctions.ArithmeticPositivityTheory

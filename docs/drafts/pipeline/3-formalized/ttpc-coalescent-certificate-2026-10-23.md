@@ -64,11 +64,19 @@ Fix `λ = 4/3`, `X = T^{4/3}`, the profile `u` of collar `ε₁` [`WindowProfile
 `HeightAveragedCoalescentLocalization`, `FejerWeightedPrimeMeanSquare`, `SmoothGridWeightKernel`,
 `SmoothWindowContinuousForm`, `SmoothWindowFrobeniusChannels`, `SmoothWindowGridComparison`,
 `SmoothWindowWeightedTrace`, `SmoothWindowProfile`, `SmoothWindowFrobeniusBound`,
-`SmoothWeightedCertificateAtFourThirds`.
+`SmoothWeightedCertificateAtFourThirds`, `CoalescentPrimeReductionAndParitySieve`,
+`RamanujanDirichletCoalescentTransfer`.
 
 ## Next
-Open problem 1 ⇔ `coalescentSurplus u η T ≤ (1/18 + o(1)) N(T,2T)` (open problem 3).
+- `CoalescentPrimeReductionAndParitySieve`:
+  - Sub-Nyquist vanishing (`coalSum_term_eq_zero_of_lt_inv`, `coalSum_odd_term_eq_zero_of_lt_two_div`), complete isolation of `p = 2`, and even-shift reduction (`primeCoalSum_eq_oddEvenShiftPrimeCoalSum`, `eventually_primeCoalescentSurplus_eq_oddEvenShift`).
+  - Unconditional prime-power elimination (`abs_coalSum_sub_primeCoalSum_le`, `eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le`, `eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le_mul_Ncount`, `coalescentSurplusAtMost_iff_primeCoalescentSurplusAtMost`).
+  - Parity-halved shift-unrestricted 2D Selberg prime-pair sieve (`sum_card_primePair_le_parity_unrestricted`, `sum_card_shift_bigPrimeSet_le_parity_unrestricted`).
+- `RamanujanDirichletCoalescentTransfer`:
+  - Lobe-cancellation dichotomy: unsigned inner-lobe divergence (`cosTransform_ge_half_of_le_pi_div_three`, `sum_Icc_abs_cosTransform_ge_inner_lobe`) vs. trapezoidal Dirichlet-kernel identity (`two_sin_mul_trapezoidal_sum_cos`, `trapezoidal_sum_cos_eq_div`).
+  - Exact trapezoidal Dirichlet–Ramanujan pole-cancellation identity (`trapezoidal_ramanujan_cos_eq`), elementary cotangent residual bound (`abs_cos_div_sin_sub_inv_le`), `R`-independent Ramanujan cosine sum bound (`abs_sum_ramanujanLagCoefficient_mul_cos_add_le`), and Ward–Mertens singular-series repulsion transfer (`abs_sum_ramanujanLagCoefficient_mul_cosTransform_add_le`, `abs_sum_singularSeries_cosTransform_add_le`).
+  - General-bandwidth narrow-strip coalescent proportion envelope and closed-form optimal gain `(3B² + 7B + 3)/(9(B+1)²(3B+2)) > 0` at `δ_*(B) = 1/(3B+2)` (`narrowStrip_coalescent_proportion_gain_eq`, `narrowStrip_coalescent_gain_pos`, `narrowStrip_optimal_delta_gain`, `narrowStrip_collar_preserves_gain`).
 
 ## Log
 - 2026-10-23 — created; route chosen.
-- 2026-10-24 — formalized.
+- 2026-10-24 — formalized (`SmoothWeightedCertificateAtFourThirds`, `CoalescentPrimeReductionAndParitySieve`, `RamanujanDirichletCoalescentTransfer`).

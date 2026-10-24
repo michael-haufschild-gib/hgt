@@ -242,7 +242,8 @@ private theorem plateau_window {r y : ℕ} (hr : 1 < r) (hry : r ≤ y) :
   have hry' : r * y = (r - 1) * y + y := by
     conv_lhs => rw [← Nat.sub_add_cancel hr.le]
     ring
-  refine ⟨Nat.one_le_iff_ne_zero.mpr (Nat.mul_ne_zero (by omega) (by omega : y + h ≠ 0)), ?_⟩
+  refine ⟨Nat.one_le_iff_ne_zero.mpr (Nat.mul_ne_zero (by omega)
+    (Nat.ne_of_gt (Nat.lt_of_lt_of_le (by omega : 0 < y) (Nat.le_add_right y h)))), ?_⟩
   rw [Nat.mul_add, hry']
   generalize (r - 1) * y = t
   generalize (r - 1) * h = u at hu ⊢

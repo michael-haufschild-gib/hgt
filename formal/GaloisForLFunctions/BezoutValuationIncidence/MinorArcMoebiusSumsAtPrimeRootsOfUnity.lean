@@ -212,7 +212,7 @@ theorem sum_Ioc_geomMajorant_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsPri
 
 /-! ## §5. The Type-II block: Cauchy–Schwarz in the long variable -/
 
-theorem filter_Icc_div_eq {N D d d' : ℕ} (hD : 0 < D) (hd : D < d) (hd' : D < d') :
+theorem filter_Icc_div_eq {N D d d' : ℕ} (hD : 0 < D) (hd : D < d) :
     (Icc 1 (N / D)).filter (fun k => k ≤ N / d ∧ k ≤ N / d') = Icc 1 (min (N / d) (N / d')) := by
   have h1 : N / d ≤ N / D := Nat.div_le_div_left hd.le hD
   ext k
@@ -231,9 +231,10 @@ theorem masked_mul_conj (N d d' k : ℕ) (a a' : ℝ) (ζ : ℂ) :
       ← pow_mul, ← pow_mul]
     push_cast
     ring
-  · rw [if_pos h1, if_neg h2, if_neg (fun h => h2 h.2), _root_.map_zero, mul_zero]
-  · rw [if_neg h1, if_neg (fun h => h1 h.1), zero_mul]
-  · rw [if_neg h1, if_neg (fun h => h1 h.1), zero_mul]
+  · rw [if_pos h1, if_neg h2, _root_.map_zero, mul_zero,
+      if_neg (show ¬(k ≤ N / d ∧ k ≤ N / d') from fun h => h2 h.2)]
+  · rw [if_neg h1, zero_mul, if_neg (show ¬(k ≤ N / d ∧ k ≤ N / d') from fun h => h1 h.1)]
+  · rw [if_neg h1, zero_mul, if_neg (show ¬(k ≤ N / d ∧ k ≤ N / d') from fun h => h1 h.1)]
 
 /-- **The Type-II block bound.** For `|α| ≤ 1`, a primitive `p`-th root `ζ` and `D ≥ 1`,
 `‖Σ_{D<d≤2D} Σ_{k≤N/d} α(d) β(k) ζ^{dk}‖² ≤ (Σ_{k≤N/D} β(k)²) · D (D/p + 1)(N/D + W_p)`. -/
@@ -278,8 +279,8 @@ theorem norm_sq_typeII_block_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsPri
     rw [sum_comm]
     refine sum_congr rfl fun d hd => ?_
     rw [sum_comm]
-    refine sum_congr rfl fun d' hd' => ?_
-    rw [← sum_filter, filter_Icc_div_eq hD (mem_Ioc.mp hd).1 (mem_Ioc.mp hd').1, mul_sum]
+    refine sum_congr rfl fun d' _ => ?_
+    rw [← sum_filter, filter_Icc_div_eq hD (mem_Ioc.mp hd).1, mul_sum]
   have hnormζ : ‖ζ‖ = 1 := hζ.norm'_eq_one hp.ne_zero
   have hK0 : (0 : ℝ) ≤ ((N / D : ℕ) : ℝ) := Nat.cast_nonneg _
   have hdiag : ∑ k ∈ Icc 1 (N / D), ‖X k‖ ^ 2 ≤
@@ -458,7 +459,7 @@ theorem norm_sum_moebius_typeI_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsP
   calc _ ≤ ∑ d ∈ Icc 1 N, (if d ≤ U then 1 else 0) * rootHarmonicSum p :=
         (norm_sum_le _ _).trans (sum_le_sum hterm)
     _ = ∑ d ∈ Icc 1 N, (if d ≤ U then rootHarmonicSum p else 0) :=
-        sum_congr rfl fun d _ => by split_ifs <;> ring
+        sum_congr rfl fun d _ => by rw [ite_mul, one_mul, zero_mul]
     _ ≤ U * rootHarmonicSum p := sum_Icc_ite_le_le N U (rootHarmonicSum_nonneg p)
 
 /-! ## §8. The Type-II part of `μ` on dyadic blocks, and the minor-arc law -/
@@ -472,7 +473,7 @@ theorem sum_Ioc_eq_sum_dyadic (F : ℕ → ℂ) (U I : ℕ) :
   | succ I ih =>
     have h1 : U ≤ 2 ^ I * U := Nat.le_mul_of_pos_left U (Nat.two_pow_pos I)
     have h2 : 2 ^ I * U ≤ 2 * (2 ^ I * U) := Nat.le_mul_of_pos_left _ (by norm_num)
-    rw [sum_range_succ, ← ih, show 2 ^ (I + 1) * U = 2 * (2 ^ I * U) by ring,
+    rw [Finset.sum_range_succ, ← ih, show 2 ^ (I + 1) * U = 2 * (2 ^ I * U) by ring,
       sum_Ioc_consecutive _ h1 h2]
 
 /-- The Type-II block majorant `2(1 + H_N³)(N²/p + N²/U + N² W_p/(Up) + N W_p)`. -/
@@ -512,7 +513,7 @@ theorem norm_sq_moebius_typeII_block_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
       ring
     rw [h0, zero_mul]
     exact typeIIBlockBound_nonneg p U N
-  push_neg at hLU
+  push Not at hLU
   have hE : ∑ k ∈ Icc 1 L, typeIIShort U k ^ 2 ≤ 2 * L * (1 + invSum N ^ 3) := by
     have h := sum_typeIIShort_sq_le U L
     have hsq : ∀ k, ‖((typeIIShort U k : ℝ) : ℂ)‖ ^ (2 : ℕ) = typeIIShort U k ^ 2 := fun k => by
@@ -568,17 +569,14 @@ theorem norm_sum_moebius_typeII_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : Is
       (Nat.log 2 N + 1) * Real.sqrt (typeIIBlockBound p U N) := by
   set b := (moebius : ArithmeticFunction ℝ) - truncAF (moebius : ArithmeticFunction ℝ) U
   set F : ℕ → ℂ := fun d => ∑ k ∈ Icc 1 (N / d), ((b d * typeIIShort U k : ℝ) : ℂ) * ζ ^ (d * k)
-  set I := Nat.log 2 N + 1
   have hb0 : ∀ d, d ≤ U → b d = 0 := fun d hd => by
     show (moebius : ArithmeticFunction ℝ) d - truncAF (moebius : ArithmeticFunction ℝ) U d = 0
     rw [truncAF_apply, if_pos hd, sub_self]
-  have hNI : N < 2 ^ I * U := lt_of_lt_of_le (Nat.lt_pow_succ_log_self (by norm_num) N)
+  have hNI : N < 2 ^ (Nat.log 2 N + 1) * U := lt_of_lt_of_le (Nat.lt_pow_succ_log_self (by norm_num) N)
     (Nat.le_mul_of_pos_right _ hU)
   have hconv : ∑ n ∈ Icc 1 N, (((b * typeIIShort U) n : ℝ) : ℂ) * ζ ^ n = ∑ d ∈ Icc 1 N, F d := by
     rw [sum_Icc_mul_conv]
-    refine sum_congr rfl fun d _ => sum_congr rfl fun k _ => ?_
-    rw [pow_mul]
-  have hext : ∑ d ∈ Icc 1 N, F d = ∑ d ∈ Ioc U (2 ^ I * U), F d := by
+  have hext : ∑ d ∈ Icc 1 N, F d = ∑ d ∈ Ioc U (2 ^ (Nat.log 2 N + 1) * U), F d := by
     have hFbig : ∀ d, N < d → F d = 0 := fun d hd => by
       simp only [F]
       rw [Nat.div_eq_of_lt hd]
@@ -586,14 +584,15 @@ theorem norm_sum_moebius_typeII_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : Is
     have hFsmall : ∀ d, d ≤ U → F d = 0 := fun d hd => by
       simp only [F, hb0 d hd, zero_mul, Complex.ofReal_zero]
       simp
-    rw [← Nat.Icc_succ_left, ← sum_subset (show Ioc 0 N ⊆ Ioc 0 (2 ^ I * U) from
+    have hIcc : Icc 1 N = Ioc 0 N := Finset.Icc_add_one_left_eq_Ioc 0 N
+    rw [hIcc, sum_subset (show Ioc 0 N ⊆ Ioc 0 (2 ^ (Nat.log 2 N + 1) * U) from
         Ioc_subset_Ioc_right hNI.le) (fun d hd hdN => hFbig d (by
           simp only [mem_Ioc, not_and, not_le] at hd hdN; exact hdN hd.1)),
-      ← sum_Ioc_consecutive _ (Nat.zero_le U) (by omega : U ≤ 2 ^ I * U),
-      sum_eq_zero (fun d hd => hFsmall d (mem_Ioc.mp hd).2), zero_add]
+      ← sum_Ioc_consecutive _ (Nat.zero_le U) (Nat.le_mul_of_pos_left U (Nat.two_pow_pos _)),
+      sum_eq_zero (s := Ioc 0 U) (f := F) (fun d hd => hFsmall d (mem_Ioc.mp hd).2), zero_add]
   rw [hconv, hext, sum_Ioc_eq_sum_dyadic]
-  calc ‖∑ i ∈ range I, ∑ d ∈ Ioc (2 ^ i * U) (2 * (2 ^ i * U)), F d‖
-      ≤ ∑ i ∈ range I, Real.sqrt (typeIIBlockBound p U N) := by
+  calc ‖∑ i ∈ range (Nat.log 2 N + 1), ∑ d ∈ Ioc (2 ^ i * U) (2 * (2 ^ i * U)), F d‖
+      ≤ ∑ i ∈ range (Nat.log 2 N + 1), Real.sqrt (typeIIBlockBound p U N) := by
         refine (norm_sum_le _ _).trans (sum_le_sum fun i _ => ?_)
         have h := norm_sq_moebius_typeII_block_le hp hζ hU N i
         have := Real.abs_le_sqrt h
@@ -650,5 +649,7 @@ theorem norm_sum_moebius_mul_pow_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : �
         ‖∑ n ∈ Icc 1 N, (((b * typeIIShort U) n : ℝ) : ℂ) * ζ ^ n‖ := by
         gcongr; exact norm_sub_le _ _
     _ ≤ _ := by linarith
+
+end
 
 end GaloisForLFunctions.BezoutValuationIncidence

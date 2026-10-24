@@ -49,9 +49,13 @@ arithmetic estimates to make a dictionary applicable.
   still require inspection; a novelty verdict is not a theorem audit.
 - J3 is not discharged by `guthMaynardLargeValuesBound_holds`: the requested
   pair-sum and all-k statements must each be checked independently.
-- The explicit-collar module's 76 public declarations and the linear-window
-  module's 23 public declarations have passed transitive axiom audits and
-  canonical leaf checks. Joint import compatibility remains to be checked.
+- All 22 integration leaves in `logs/just-work-2410/inventory.json` passed
+  canonical leaf checks and transitive axiom audits of 440 public declarations.
+  Every recorded source hash matches the current source. Only `propext`,
+  `Classical.choice`, and `Quot.sound` occur. Per-leaf commands, source hashes,
+  declaration lists, and outputs are retained in `logs/just-work-2410/`.
+  This includes the explicit-collar module's 76 declarations and the
+  linear-window module's 23 declarations; their joint import remains to be checked.
 - Concurrent work now supplies `CHMDSharpGeneratorDomain` and the literal
   `SuzukiCriticalLiteralFamilyContraction` result. The former's formalized
   card records domain admission, exact action, skew-adjointness, a uniform
@@ -118,7 +122,8 @@ trusted computation, or resource-limit increases. Preserve concurrent work.
 ## Gates
 
 - [x] Exact J1–J8 inventory and concrete source-selection policy.
-- [ ] J1 and J2 checked and audited.
+- [x] J1 integration leaves wired, checked, and audited.
+- [ ] J2 joint import compatibility checked after the name repair.
 - [ ] J3 exact published bounds formalized and audited.
 - [ ] J4 exact four paper results formalized or subsumed with checked bridges.
 - [ ] J5–J7 concrete inputs, bounds and applications certified.
