@@ -443,6 +443,12 @@ This is the square-root threshold of the aperture as a sampling threshold.
    `{ρ, ρ̄}`, `ρ = 1 − ε + it`, when `ζ(ρ) ≠ 0` (`mem_obstructionHull_oscillating_iff`), and is empty
    iff `ζ(ρ) = 0` (`obstructionHull_oscillating_nonempty_iff`): the zeros of `ζ` in the strip are the
    points where the receiver's obstruction vanishes.
+4. **The Möbius receiver** (`TheOffLineZerosObstructTheMoebiusReceiver`). If `k ⋆ μ(d)d^{−ε}` is
+   paid (`0 < ε < ½`, `k` critical Wiener) and `ζ(ρ) = 0` with `½ + ε < Re ρ < 1`, then
+   `ζ(ρ − ε) K(ρ − ε) = 0` (`riemannZeta_mul_lSeries_eq_zero_of_repairs`: the paid receiver continues
+   `ζ(s)(K(s)/ζ(s+ε) − m)` across the strip, the residue unit clears the pole of `ζ(s+ε)`). So each
+   such zero with `ζ(ρ − ε) ≠ 0` is an obstruction point `ρ − ε` of the damped Möbius weight
+   (`mem_obstructionHull_moebius_of_zero`); `k = δ₁` is the known zero translation.
 
 ### 3.6‴ An orientation-faithful norm over the odd squarefree weight (`AnOrientationFaithfulNormOverTheOddSquarefreeWeight`)
 
@@ -722,12 +728,9 @@ To be built (§7): the aperture-derivative identity.
    reading built from source data (node counts on the logarithmic box, the defect `E(s)`, the
    Frobenius mass) whose cone has the same calibration and whose Bézout axiom is proved without
    that sign.
-9. **An index formula for the actual receiver.** The receiver's pole orders and zero
-   multiplicities are section counts of explicit jet readings (§3.11), and the node divisor has
-   Euler characteristic `e^s + s − 1 − ψ(e^s)`. These turn laws the corpus already proves into
-   counts. Open: the Möbius receiver itself as a count — a formula for its class in terms of
-   arithmetic sections, the index theorem asked for by Trans-Horizon Incidence Mechanics (its
-   research topic 5).
+9. **An index formula for the actual receiver.** The hull of `μ(d)d^{−ε}` contains every translated
+   off-line zero `ρ − ε` with `ζ(ρ − ε) ≠ 0` (§3.6⁗). Open: the reverse inclusion (repairing kernels
+   off the zeros), which would make the hull exactly the translated zero set.
 10. **The trichotomy of readings.** Prove that every orientation-faithful reading of the critical
     form crosses the Nyquist aperture, reads a magnitude, or adds data of a third kind (mass,
     dilution), and compute the precision cost of each branch. This is the Scale-Signed Incidence

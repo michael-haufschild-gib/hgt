@@ -554,7 +554,7 @@ multiplicative. If on `1 < Re w ≤ 2`, `0 < Im w ≤ T` (`T ≥ 2`), off the he
 `|F(w)| ≤ A(1 + ∑_{k ∈ K} |Im w − t_k|^{-b_k})` with `0 ≤ b_k` and `2b_k < 1`, and
 `|F(w)| ≤ B₁(Im w)^{1/4}` for `Im w > T`, then `f(d) d^{-1/2}` has bounded receiver. -/
 theorem receiverBounded_pattern_half_of_sum_bounds {ι : Type*} (K : Finset ι) {f : ℕ →*₀ ℝ}
-    (hf : ∀ n, |f n| ≤ 1) {t b : ι → ℝ} {T A B₁ : ℝ} (hT : 2 ≤ T) (hA : 0 ≤ A)
+    (hf : ∀ n, |f n| ≤ 1) {t b : ι → ℝ} {T A B₁ : ℝ} (hT : 2 ≤ T) (_hA : 0 ≤ A)
     (hb1 : ∀ k ∈ K, 2 * b k < 1)
     (hsmall : ∀ w : ℂ, 1 < w.re → w.re ≤ 2 → 0 < w.im → w.im ≤ T → (∀ k ∈ K, w.im ≠ t k) →
       ‖∑' n : ℕ, (f n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤ A * (1 + ∑ k ∈ K, |w.im - t k| ^ (-b k)))
@@ -1157,15 +1157,18 @@ theorem not_receiverBounded_multiPhaseWeight_of_eq_one {ι : Type*} (K : Finset 
     exact ⟨r, |B|, hr, fun u τ hu hur hτ hτr =>
       (neg_le_neg (le_abs_self B)).trans (hB u τ hu hur hτ hτr)⟩
   -- combine `r` and `B` across `J` by finite induction
-  have hJ_sum : ∃ rJ BJ : ℝ, 0 < rJ ∧ ∀ u τ : ℝ, 0 < u → u ≤ rJ → 0 ≤ τ → τ ≤ rJ →
-      -BJ ≤ ∑ k ∈ J, (primeDirichletSeries (phasePattern (a k) (t k) (φ k))
-        (((1 + u : ℝ) : ℂ) + ((t k₀ + τ : ℝ) : ℂ) * I)).re := by
-    induction J using Finset.induction with
-    | empty => exact ⟨1, 0, zero_lt_one, fun _ _ _ _ _ _ => by simp⟩
+  have hJ_sum : ∀ S : Finset ι, (∀ k ∈ S, ∃ r B : ℝ, 0 < r ∧ ∀ u τ : ℝ, 0 < u → u ≤ r →
+      0 ≤ τ → τ ≤ r →
+        -B ≤ (primeDirichletSeries (phasePattern (a k) (t k) (φ k))
+          (((1 + u : ℝ) : ℂ) + ((t k₀ + τ : ℝ) : ℂ) * I)).re) →
+      ∃ rJ BJ : ℝ, 0 < rJ ∧ ∀ u τ : ℝ, 0 < u → u ≤ rJ → 0 ≤ τ → τ ≤ rJ →
+        -BJ ≤ ∑ k ∈ S, (primeDirichletSeries (phasePattern (a k) (t k) (φ k))
+          (((1 + u : ℝ) : ℂ) + ((t k₀ + τ : ℝ) : ℂ) * I)).re := by
+    intro S
+    induction S using Finset.induction with
+    | empty => intro _; exact ⟨1, 0, zero_lt_one, fun _ _ _ _ _ _ => by simp⟩
     | @insert j s hj ih =>
-      have hjJ : ∀ k ∈ insert j s, ∃ r B : ℝ, 0 < r ∧ ∀ u τ : ℝ, 0 < u → u ≤ r → 0 ≤ τ → τ ≤ r →
-          -B ≤ (primeDirichletSeries (phasePattern (a k) (t k) (φ k))
-            (((1 + u : ℝ) : ℂ) + ((t k₀ + τ : ℝ) : ℂ) * I)).re := hJ
+      intro hjJ
       obtain ⟨rj, Bj, hrj, hBj⟩ := hjJ j (Finset.mem_insert_self j s)
       obtain ⟨rs, Bs, hrs, hBs⟩ := ih (fun k hk => hjJ k (Finset.mem_insert_of_mem hk))
       refine ⟨min rj rs, Bj + Bs, lt_min hrj hrs, fun u τ hu hur hτ hτr => ?_⟩
@@ -1173,7 +1176,7 @@ theorem not_receiverBounded_multiPhaseWeight_of_eq_one {ι : Type*} (K : Finset 
       have h1' := hBj u τ hu (hur.trans (min_le_left _ _)) hτ (hτr.trans (min_le_left _ _))
       have h2' := hBs u τ hu (hur.trans (min_le_right _ _)) hτ (hτr.trans (min_le_right _ _))
       linarith
-  obtain ⟨rJ, BJ, hrJ, hBJ⟩ := hJ_sum
+  obtain ⟨rJ, BJ, hrJ, hBJ⟩ := hJ_sum J hJ
   refine not_receiverBounded_pattern_half_of_primeDirichletSeries_re_ge hf hz
     (r₁ := min r₀ rJ) (B := B₀ + BJ) (lt_min hr₀ hrJ) fun u τ hu hur hτ hτr => ?_
   set w : ℂ := ((1 + u : ℝ) : ℂ) + ((t k₀ + τ : ℝ) : ℂ) * I
@@ -1492,13 +1495,17 @@ theorem cos_coeff_eq_zero_of_receiverBounded_multiPhase_damped {ι : Type*} (K :
       hkne (hinj (Finset.mem_coe.mpr hkK) (Finset.mem_coe.mpr hk₀) h)
     exact exists_abs_primeDirichletSeries_phasePattern_re_le_of_ne
       (ha k hkK) (ht k hkK) (ht k₀ hk₀) htne
-  have hJ_sum : ∃ rJ BJ : ℝ, 0 < rJ ∧ ∀ u : ℝ, 0 < u → u ≤ rJ →
-      |∑ k ∈ J, (primeDirichletSeries (phasePattern (a k) (t k) (φ k))
-        (((1 + u : ℝ) : ℂ) + (t k₀ : ℂ) * I)).re| ≤ BJ := by
-    induction J using Finset.induction with
-    | empty => exact ⟨1, 0, zero_lt_one, fun _ _ _ => by simp⟩
+  have hJ_sum : ∀ S : Finset ι, (∀ k ∈ S, ∃ r B : ℝ, 0 < r ∧ ∀ u : ℝ, 0 < u → u ≤ r →
+      |(primeDirichletSeries (phasePattern (a k) (t k) (φ k))
+        (((1 + u : ℝ) : ℂ) + (t k₀ : ℂ) * I)).re| ≤ B) →
+      ∃ rJ BJ : ℝ, 0 < rJ ∧ ∀ u : ℝ, 0 < u → u ≤ rJ →
+        |∑ k ∈ S, (primeDirichletSeries (phasePattern (a k) (t k) (φ k))
+          (((1 + u : ℝ) : ℂ) + (t k₀ : ℂ) * I)).re| ≤ BJ := by
+    intro S
+    induction S using Finset.induction with
+    | empty => intro _; exact ⟨1, 0, zero_lt_one, fun _ _ _ => by simp⟩
     | @insert j s hj ih =>
-      have hjJ := hJ
+      intro hjJ
       obtain ⟨rj, Bj, hrj, hBj⟩ := hjJ j (Finset.mem_insert_self j s)
       obtain ⟨rs, Bs, hrs, hBs⟩ := ih (fun k hk => hjJ k (Finset.mem_insert_of_mem hk))
       refine ⟨min rj rs, Bj + Bs, lt_min hrj hrs, fun u hu hur => ?_⟩
@@ -1506,7 +1513,7 @@ theorem cos_coeff_eq_zero_of_receiverBounded_multiPhase_damped {ι : Type*} (K :
       refine (abs_add_le _ _).trans (add_le_add ?_ ?_)
       · exact hBj u hu (hur.trans (min_le_left _ _))
       · exact hBs u hu (hur.trans (min_le_right _ _))
-  obtain ⟨rJ, BJ, hrJ, hBJ⟩ := hJ_sum
+  obtain ⟨rJ, BJ, hrJ, hBJ⟩ := hJ_sum J hJ
   have hν_lt : |a k₀ * Real.cos (φ k₀) / 2| < 1 := by
     rw [abs_div, abs_two, abs_mul]
     have := mul_le_one₀ (ha k₀ hk₀) (abs_nonneg _) (Real.abs_cos_le_one (φ k₀))
@@ -1521,8 +1528,8 @@ theorem cos_coeff_eq_zero_of_receiverBounded_multiPhase_damped {ι : Type*} (K :
         (fun p hp => multiPhasePattern_prime_eq_sum_phasePattern K a t φ hp) hwre
       rw [hsum, Complex.re_sum, ← Finset.insert_erase hk₀,
         Finset.sum_insert (Finset.notMem_erase k₀ K)]
-      have h_main := hB₀ u hu (hur.trans (min_le_right _ _)).le
-      have h_rest := hBJ u hu (hur.trans (min_le_left _ _)).le
+      have h_main := hB₀ u hu (hur.le.trans (min_le_right _ _))
+      have h_rest := hBJ u hu (hur.le.trans (min_le_left _ _))
       calc |(primeDirichletSeries (phasePattern (a k₀) (t k₀) (φ k₀)) w).re +
               (∑ x ∈ J, (primeDirichletSeries (phasePattern (a x) (t x) (φ x)) w).re) -
               a k₀ * Real.cos (φ k₀) / 2 * Real.log (u⁻¹)|
@@ -1684,7 +1691,7 @@ theorem criticalWiener_mul_patternMoebiusAF {f' : ArithmeticFunction ℝ} (hf' :
     have hbound : ∀ k : ℕ, M (p ^ k) ≤ μk k := fun k => by
       rcases k with _ | _ | m
       · simp [M, μk, hg.map_one]
-      · simp only [pow_one, hM1, μk, if_neg (by omega : 1 ≠ 0), if_pos rfl]; linarith
+      · simp [zero_add, pow_one, hM1, μk]
       · have hm := hMk (m + 1) (by omega)
         simp only [μk, if_neg (by omega : m + 2 ≠ 0), if_neg (by omega : m + 2 ≠ 1)]
         linarith

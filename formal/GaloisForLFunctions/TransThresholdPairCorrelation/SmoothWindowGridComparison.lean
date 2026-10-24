@@ -187,4 +187,184 @@ theorem integrable_lor1_mul_abs (hν : NuBound p B ν) (hT : 1 ≤ p.T) (hνc : 
   nlinarith [mul_le_mul_of_nonneg_left (h.trans (by linarith [hsq] :
     B + Real.sqrt |τ - 3 * p.T / 2| ≤ B + Real.sqrt |a - 3 * p.T / 2| + Real.sqrt |τ - a|)) hl]
 
+theorem integral_lorentzW {R : ℝ} (hR : 0 < R) (c : ℝ) : ∫ τ, lorentzW R c τ = R * π := by
+  have e : (fun τ => lorentzW R c τ) = fun τ => (fun r => lor1 r) ((τ - c) / R) := by
+    funext τ; rfl
+  rw [e, integral_sub_right_eq_self (fun τ => (fun r => lor1 r) (τ / R)) c,
+    Measure.integral_comp_div (fun r => lor1 r) R, abs_of_pos hR, smul_eq_mul, integral_lor1]
+
+/-! ## 2. The Lorentz mean square of `ν_X` -/
+
+variable {cϱ : ℝ} {F : LocalFun}
+
+theorem PiX_sq_le_lor1 (hF : LocalHypsCoreW cϱ p F) (τ : ℝ) :
+    Zeta23.PiX p.X τ ^ 2 ≤ 9 * p.X * lor1 τ := by
+  have h1 : Zeta23.PiX p.X τ ^ 2 ≤ (3 * Real.sqrt p.X / (1 + |τ|)) ^ 2 := by
+    rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) (hF.PiX_bound τ) 2
+  have h2 : (3 * Real.sqrt p.X / (1 + |τ|)) ^ 2 = 9 * p.X * ((1 + |τ|) ^ 2)⁻¹ := by
+    rw [div_pow, mul_pow, Real.sq_sqrt (Setting.X_pos p).le]; ring
+  have h3 : ((1 + |τ|) ^ 2)⁻¹ ≤ lor1 τ := by
+    unfold lor1
+    exact inv_anti₀ (by positivity) (by nlinarith [abs_nonneg τ, sq_abs τ])
+  have hX := (Setting.X_pos p).le
+  nlinarith [mul_le_mul_of_nonneg_left h3 (by positivity : (0:ℝ) ≤ 9 * p.X)]
+
+/-- **The Lorentz mean square of `ν_X`.** With `|μ| ≤ C₀ l + log⁺(|τ|/4T)`, `T ≥ 1`, `X ≥ 1`:
+`∫ ν_X² lorentz_T(· − 3T/2) ≤ 3 (2πT(C₀l)² + 16 T ∫lor1√|·| + 9πX
+  + 4π √e log X (3ψ(X) + T Σ_{n≤X} Λ(n)/n))`. -/
+theorem integral_lorentz_mul_nuX_sq_le (hF : LocalHypsCoreW cϱ p F) {C₀ : ℝ} (hC₀ : 0 ≤ C₀)
+    (hμ : NuBound p (C₀ * p.l) Zeta23.mu) (hμc : Continuous Zeta23.mu) (hT1 : 1 ≤ p.T)
+    (hX : 1 ≤ p.X) :
+    ∫ τ, lorentzW p.T (3 * p.T / 2) τ * Zeta23.nuX p.X τ ^ 2
+      ≤ 3 * (2 * (C₀ * p.l) ^ 2 * (p.T * π) + 16 * (p.T * ∫ r, lor1 r * Real.sqrt |r|)
+        + 9 * π * p.X
+        + 4 * π * Real.sqrt (Real.exp 1) * Real.log p.X
+          * (3 * ∑ n ∈ primeRange p.X, (Λ n : ℝ) + p.T * ∑ n ∈ primeRange p.X, (Λ n : ℝ) / n)) := by
+  have hT0 : 0 < p.T := by linarith
+  set c := 3 * p.T / 2 with hc
+  have hcT : |c| ≤ 4 * p.T := by rw [abs_of_pos (by positivity)]; linarith
+  have hl0 : 0 ≤ p.l := by linarith [hF.one_le_l]
+  have hB0 : 0 ≤ C₀ * p.l := mul_nonneg hC₀ hl0
+  set w := lorentzW p.T c with hw
+  have hwc : Continuous w := continuous_lorentzW c
+  have hwi : Integrable w := integrable_lorentzW hT0 c
+  have hw0 : ∀ τ, 0 ≤ w τ := lorentzW_nonneg _ _
+  have hw1 : ∀ τ, w τ ≤ 1 := lorentzW_le_one _ _
+  have hPic := hF.PiX_cont
+  have hPc := continuous_PX' p.X
+  -- integrability of the three pieces
+  have hIμ : Integrable fun τ => w τ * Zeta23.mu τ ^ 2 := integrable_lorentzW_mul_sq hμ hB0 hT0 hμc hcT
+  have hIPi : Integrable fun τ => w τ * Zeta23.PiX p.X τ ^ 2 := by
+    refine ((integrable_lor1).const_mul (9 * p.X)).mono' ((hwc.mul (hPic.pow 2)).aestronglyMeasurable)
+      (Eventually.of_forall fun τ => ?_)
+    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (hw0 τ) (sq_nonneg _))]
+    exact (mul_le_of_le_one_left (sq_nonneg _) (hw1 τ)).trans (PiX_sq_le_lor1 hF τ)
+  have hIP : Integrable fun τ => w τ * Zeta23.PX p.X τ ^ 2 :=
+    hwi.mul_bdd (c := ((1 / π) * ∑ n ∈ primeRange p.X, acoef n) ^ 2) ((hPc.pow 2).aestronglyMeasurable)
+      (Eventually.of_forall fun τ => by
+        rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _), ← sq_abs]
+        exact pow_le_pow_left₀ (abs_nonneg _) (abs_PX_le' p.X τ) 2)
+  -- the pointwise split `ν² ≤ 3(μ² + Π² + P²)`
+  have hpt : ∀ τ, w τ * Zeta23.nuX p.X τ ^ 2
+      ≤ 3 * (w τ * Zeta23.mu τ ^ 2) + 3 * (w τ * Zeta23.PiX p.X τ ^ 2)
+        + 3 * (w τ * Zeta23.PX p.X τ ^ 2) := by
+    intro τ
+    unfold Zeta23.nuX
+    have h := hw0 τ
+    nlinarith [mul_nonneg h (sq_nonneg (Zeta23.mu τ - Zeta23.PiX p.X τ)),
+      mul_nonneg h (sq_nonneg (Zeta23.mu τ - Zeta23.PX p.X τ)),
+      mul_nonneg h (sq_nonneg (Zeta23.PiX p.X τ - Zeta23.PX p.X τ))]
+  have hIν : Integrable fun τ => w τ * Zeta23.nuX p.X τ ^ 2 := by
+    refine (((hIμ.const_mul 3).add (hIPi.const_mul 3)).add (hIP.const_mul 3)).mono'
+      ((hwc.mul ((hμc.add hPic).add hPc |>.pow 2)).aestronglyMeasurable |>.congr
+        (Eventually.of_forall fun τ => by simp [Zeta23.nuX])) (Eventually.of_forall fun τ => ?_)
+    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (hw0 τ) (sq_nonneg _))]
+    exact hpt τ
+  -- the three mean squares
+  have hμ2 : ∫ τ, w τ * Zeta23.mu τ ^ 2
+      ≤ 2 * (C₀ * p.l) ^ 2 * (p.T * π) + 16 * (p.T * ∫ r, lor1 r * Real.sqrt |r|) := by
+    have hmaj : Integrable fun τ => 2 * (C₀ * p.l) ^ 2 * w τ
+        + 16 * (w τ * Real.sqrt (|τ - c| / p.T)) :=
+      (hwi.const_mul _).add ((integrable_lorentzW_mul_sqrt hT0 c).const_mul _)
+    refine (integral_mono hIμ hmaj fun τ => ?_).trans (le_of_eq ?_)
+    · have h := mul_le_mul_of_nonneg_left (sq_le_of_nuBound hμ hB0 hT0 hcT τ) (hw0 τ)
+      simp only; linarith
+    · rw [integral_add (hwi.const_mul _) ((integrable_lorentzW_mul_sqrt hT0 c).const_mul _),
+        integral_const_mul, integral_const_mul, hw, integral_lorentzW hT0, integral_lorentzW_mul_sqrt hT0]
+  have hPi2 : ∫ τ, w τ * Zeta23.PiX p.X τ ^ 2 ≤ 9 * π * p.X := by
+    calc ∫ τ, w τ * Zeta23.PiX p.X τ ^ 2 ≤ ∫ τ, 9 * p.X * lor1 τ :=
+          integral_mono hIPi (integrable_lor1.const_mul _) fun τ =>
+            (mul_le_of_le_one_left (sq_nonneg _) (hw1 τ)).trans (PiX_sq_le_lor1 hF τ)
+      _ = 9 * π * p.X := by rw [integral_const_mul, integral_lor1]; ring
+  have hP2 := integral_lorentz_mul_PX_sq_le hT1 c hX
+  calc ∫ τ, w τ * Zeta23.nuX p.X τ ^ 2
+      ≤ ∫ τ, (3 * (w τ * Zeta23.mu τ ^ 2) + 3 * (w τ * Zeta23.PiX p.X τ ^ 2)
+          + 3 * (w τ * Zeta23.PX p.X τ ^ 2)) :=
+        integral_mono hIν (((hIμ.const_mul 3).add (hIPi.const_mul 3)).add (hIP.const_mul 3)) hpt
+    _ = 3 * ((∫ τ, w τ * Zeta23.mu τ ^ 2) + (∫ τ, w τ * Zeta23.PiX p.X τ ^ 2)
+          + ∫ τ, w τ * Zeta23.PX p.X τ ^ 2) := by
+        rw [integral_add ((hIμ.const_mul 3).add (hIPi.const_mul 3)) (hIP.const_mul 3),
+          integral_add (hIμ.const_mul 3) (hIPi.const_mul 3), integral_const_mul, integral_const_mul,
+          integral_const_mul]; ring
+    _ ≤ _ := by
+        have : (∫ τ, w τ * Zeta23.PX p.X τ ^ 2)
+            ≤ 4 * π * Real.sqrt (Real.exp 1) * Real.log p.X
+              * (3 * ∑ n ∈ primeRange p.X, (Λ n : ℝ) + p.T * ∑ n ∈ primeRange p.X, (Λ n : ℝ) / n) := hP2
+        linarith
+
+/-! ## 3. The lattice deficit inside the window -/
+
+theorem integral_psiA_sq_Ioi_le (hF : LocalHypsCoreW cϱ p F) {Δ : ℝ} (hΔ : 0 < Δ) :
+    ∫ r in Ioi Δ, psiA cϱ p r ^ 2 ≤ (cϱ / p.w) ^ 2 / (3 * Δ ^ 3) := by
+  have hw := hF.one_le_w
+  have hI := (integrableOn_Ioi_rpow_of_lt (by norm_num : (-4:ℝ) < -1) hΔ).const_mul ((cϱ / p.w) ^ 2)
+  calc ∫ r in Ioi Δ, psiA cϱ p r ^ 2 ≤ ∫ r in Ioi Δ, (cϱ / p.w) ^ 2 * r ^ (-4:ℝ) := by
+        refine setIntegral_mono_on hF.psi_sq_integrable.integrableOn hI measurableSet_Ioi
+          fun r hr => ?_
+        have hr0 : 0 < r := hΔ.trans hr
+        have h1 := psiA_le_div_sq (cϱ := cϱ) (p := p) hr0.ne'
+        have h0 := psiA_nonneg_of hF r
+        have e : (cϱ / p.w) ^ 2 * r ^ (-4:ℝ) = (cϱ / (p.w * r ^ 2)) ^ 2 := by
+          rw [Real.rpow_neg hr0.le, show (4:ℝ) = ((4:ℕ):ℝ) by norm_num, Real.rpow_natCast]
+          field_simp
+        rw [e]; exact pow_le_pow_left₀ h0 h1 2
+    _ = (cϱ / p.w) ^ 2 / (3 * Δ ^ 3) := by
+        rw [integral_const_mul, integral_Ioi_rpow_of_lt (by norm_num) hΔ]
+        rw [show (-4:ℝ) + 1 = -3 by norm_num, Real.rpow_neg hΔ.le,
+          show (3:ℝ) = ((3:ℕ):ℝ) by norm_num, Real.rpow_natCast]
+        push_cast
+        field_simp
+
+theorem Wfun_le (hF : LocalHypsCoreW cϱ p F) {Δ : ℝ} (hΔ : 0 < Δ) :
+    Wfun cϱ p Δ ≤ (cϱ / p.w) ^ 2 * (1 / Δ ^ 4 + 1 / (3 * p.h * Δ ^ 3)) := by
+  unfold Wfun
+  have hh := h_pos hF
+  have h1 : psiA cϱ p Δ ^ 2 ≤ (cϱ / p.w) ^ 2 * (1 / Δ ^ 4) := by
+    have := pow_le_pow_left₀ (psiA_nonneg_of hF Δ) (psiA_le_div_sq (cϱ := cϱ) (p := p) hΔ.ne') 2
+    refine this.trans (le_of_eq ?_)
+    field_simp
+  have h2 : (p.h)⁻¹ * ∫ r in Ioi Δ, psiA cϱ p r ^ 2 ≤ (cϱ / p.w) ^ 2 * (1 / (3 * p.h * Δ ^ 3)) := by
+    refine (mul_le_mul_of_nonneg_left (integral_psiA_sq_Ioi_le hF hΔ) (inv_nonneg.mpr hh.le)).trans
+      (le_of_eq ?_)
+    field_simp
+  linarith
+
+/-- **The lattice deficit at distance `D ≥ 2` from the window ends.** -/
+theorem rho_le_of_dist (hF : LocalHypsCoreW cϱ p F) (hT : 0 < p.T) {D : ℝ} (hD : 2 ≤ D) {τ : ℝ}
+    (hτ : τ ∈ Icc (p.T + D) (2 * p.T - D)) :
+    rho p F τ ≤ (cϱ / p.w) ^ 2 * (2 / D ^ 4 + 2 / (3 * p.h * D ^ 3) + 1 / (D - 1) ^ 4) := by
+  have hh := h_pos hF
+  have hh1 := h_le_one hF
+  have hτI : τ ∈ Icc p.T (2 * p.T) := ⟨by linarith [hτ.1], by linarith [hτ.2]⟩
+  have hmaj := rho_le_majorant hF hT hτI
+  have hD0 : 0 < D := by linarith
+  have hmono : ∀ {Δ : ℝ}, D ≤ Δ → Wfun cϱ p Δ ≤ (cϱ / p.w) ^ 2 * (1 / D ^ 4 + 1 / (3 * p.h * D ^ 3)) := by
+    intro Δ hΔ
+    refine (Wfun_le hF (hD0.trans_le hΔ)).trans (mul_le_mul_of_nonneg_left ?_ (sq_nonneg _))
+    have h4 : D ^ 4 ≤ Δ ^ 4 := pow_le_pow_left₀ hD0.le hΔ 4
+    have h3 : D ^ 3 ≤ Δ ^ 3 := pow_le_pow_left₀ hD0.le hΔ 3
+    exact add_le_add (one_div_le_one_div_of_le (by positivity) h4)
+      (one_div_le_one_div_of_le (by positivity) (by nlinarith))
+  have hW1 := hmono (Δ := τ - p.T) (by linarith [hτ.1])
+  have hW2 := hmono (Δ := 2 * p.T - τ) (by linarith [hτ.2])
+  have htd := tau_d_gt hF.L_pos hT
+  have hdist : D - 1 ≤ p.tau p.d - τ := by linarith [hτ.2]
+  have hD1 : 0 < D - 1 := by linarith
+  have hpsi : psiA cϱ p (p.tau p.d - τ) ^ 2 ≤ (cϱ / p.w) ^ 2 * (1 / (D - 1) ^ 4) := by
+    have hpos : 0 < p.tau p.d - τ := hD1.trans_le hdist
+    have h1 := pow_le_pow_left₀ (psiA_nonneg_of hF _)
+      (psiA_le_div_sq (cϱ := cϱ) (p := p) hpos.ne') 2
+    refine h1.trans ?_
+    have hw0 : p.w ≠ 0 := by linarith [hF.one_le_w]
+    have h4 : (D - 1) ^ 4 ≤ (p.tau p.d - τ) ^ 4 := pow_le_pow_left₀ hD1.le hdist 4
+    have e : (cϱ / (p.w * (p.tau p.d - τ) ^ 2)) ^ 2 = (cϱ / p.w) ^ 2 * (1 / (p.tau p.d - τ) ^ 4) := by
+      field_simp [hpos.ne']; ring
+    rw [e]
+    exact mul_le_mul_of_nonneg_left (one_div_le_one_div_of_le (by positivity) h4) (sq_nonneg _)
+  calc rho p F τ ≤ _ := hmaj
+    _ ≤ (cϱ / p.w) ^ 2 * (1 / D ^ 4 + 1 / (3 * p.h * D ^ 3))
+        + (cϱ / p.w) ^ 2 * (1 / D ^ 4 + 1 / (3 * p.h * D ^ 3))
+        + (cϱ / p.w) ^ 2 * (1 / (D - 1) ^ 4) := add_le_add (add_le_add hW1 hW2) hpsi
+    _ = _ := by ring
+
 end GaloisForLFunctions.TransThresholdPairCorrelation

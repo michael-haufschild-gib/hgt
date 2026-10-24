@@ -719,7 +719,7 @@ theorem exists_norm_zeta_le_mul_of_zero {s₀ : ℂ} (hs₀ : s₀ ≠ 1) (hz : 
     nlinarith [mul_nonneg hL hn]
 
 /-- `lam < max(0, −log d)` with `lam = −log δ`, `δ ≤ 1`, forces `d < δ`. -/
-theorem lt_of_neg_log_lt_max {d δ : ℝ} (hd : 0 < d) (hδ : 0 < δ) (hδ1 : δ ≤ 1)
+theorem lt_of_neg_log_lt_max {d δ : ℝ} (hδ : 0 < δ) (hδ1 : δ ≤ 1)
     (h : -Real.log δ < max 0 (-Real.log d)) : d < δ := by
   by_contra hle
   push Not at hle
@@ -981,30 +981,34 @@ theorem exists_norm_spectralSeries_le_large {c₀ : ℝ} {t : Fin K → ℝ} {B 
         mul_le_mul_of_nonneg_left hq (by positivity)
     _ = _ := by ring
 
-/-- **The paid range.** If `c₀ < 1/2` and at every frequency `Re B_k < 1` or
-`ζ(1/2 + it_k) = 0`, the half-damped spectral weight is paid. At each height at most one
-singularity is near; a frequency with `Re B_k < 1` is integrable, a frequency at a critical zero
-is cancelled by `|ζ(s)| ≤ L|s − s_k|` (with `Re B_k ≤ 2`). -/
-theorem receiverBounded_spectralWeight_of {c₀ : ℝ} {t : Fin K → ℝ} {B : Fin K → ℂ}
-    (hg : ∀ x, |spectralProfile c₀ t B x| ≤ 1) (ht : ∀ k, 0 < t k)
-    (hinj : Function.Injective t) (hc₀ : c₀ < 1 / 2)
-    (hB : ∀ k, (B k).re < 1 ∨ riemannZeta (1 / 2 + (t k : ℂ) * I) = 0) :
-    ReceiverBounded (spectralWeight c₀ t B) := by
+/-- The heights whose singularity no critical zero cancels: the mean height `0`, and every `t_k`
+with `ζ(1/2 + it_k) ≠ 0`. -/
+noncomputable def spectralUncancelled (t : Fin K → ℝ) : Finset (Option (Fin K)) := by
   classical
+  exact Finset.univ.filter fun j =>
+    ¬ (j.elim False fun k => riemannZeta (1 / 2 + (t k : ℂ) * I) = 0)
+
+/-- **The upper factorization on the box.** On `1 < Re w ≤ 2`, `0 < Im w ≤ T` the distances to
+the heights are at most `D` and `|F(w)|² ≤ R (1 + Σ_j Y_j²)`,
+`Y_j = exp(e_j⁺ max(0, −log|w − 1 − iη_j|))`: at most one height is near `w`. -/
+theorem exists_sq_norm_spectralSeries_le {c₀ : ℝ} {t : Fin K → ℝ} {B : Fin K → ℂ}
+    (hg : ∀ x, |spectralProfile c₀ t B x| ≤ 1) (ht : ∀ k, 0 < t k)
+    (hinj : Function.Injective t) (T : ℝ) :
+    ∃ R D : ℝ, 0 ≤ R ∧ 1 ≤ D ∧ ∀ w : ℂ, 1 < w.re → w.re ≤ 2 → 0 < w.im → w.im ≤ T →
+      (∀ j, ‖w - 1 - spectralHeight t j * I‖ ≤ D) ∧
+      ‖spectralSeries c₀ t B w‖ ^ 2 ≤ R * (1 + ∑ j, Real.exp (max (spectralExponent c₀ B j) 0 *
+        max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖)) ^ 2) := by
   obtain ⟨δ, hδ, hδ1, hsep⟩ := exists_two_mul_le_abs_sub (spectralHeight_injective ht hinj)
   have hηm := spectralHeight_mem ht
   obtain ⟨St, hSt⟩ : ∃ St : ℝ, St = ∑ k, t k := ⟨_, rfl⟩
   have hSt0 : 0 ≤ St := by rw [hSt]; exact Finset.sum_nonneg fun k _ => (ht k).le
   have hηSt : ∀ j, spectralHeight t j ≤ St := fun j => by rw [hSt]; exact (hηm j).2
-  have htk : ∀ k, t k ≤ St := fun k => hηSt (some k)
   have htδ : ∀ k, 2 * δ ≤ t k := fun k => by
     have h := hsep (some k) none (Option.some_ne_none k)
     simp only [spectralHeight, Option.elim, sub_zero, abs_of_pos (ht k)] at h
     exact h
-  obtain ⟨T, hT_def⟩ : ∃ T : ℝ, T = 2 * St + 18 := ⟨_, rfl⟩
-  have hT : 2 ≤ T := by rw [hT_def]; linarith
-  obtain ⟨D, hD_def⟩ : ∃ D : ℝ, D = 2 + 2 * T := ⟨_, rfl⟩
-  have hD1 : 1 ≤ D := by rw [hD_def]; linarith
+  obtain ⟨D, hD_def⟩ : ∃ D : ℝ, D = 2 + |T| + St := ⟨_, rfl⟩
+  have hD1 : 1 ≤ D := by rw [hD_def]; linarith [abs_nonneg T]
   obtain ⟨C₁, hC₁⟩ := exists_abs_log_norm_spectralSeries_sub_le hg T
   obtain ⟨lam, hlam_def⟩ : ∃ lam : ℝ, lam = -Real.log δ := ⟨_, rfl⟩
   have hlam : 0 ≤ lam := by rw [hlam_def]; exact neg_nonneg.mpr (Real.log_nonpos hδ.le hδ1)
@@ -1012,6 +1016,275 @@ theorem receiverBounded_spectralWeight_of {c₀ : ℝ} {t : Fin K → ℝ} {B : 
       (∑ k, |(B k).re / 2|) * (|Real.log δ| + |Real.log D|) := ⟨_, rfl⟩
   obtain ⟨Q, hQ⟩ : ∃ Q : ℝ,
       Q = Real.exp (C₁ + C₂ + (∑ j, max (spectralExponent c₀ B j) 0) * lam) := ⟨_, rfl⟩
+  refine ⟨Q ^ 2 * (2 * ((K : ℝ) + 1)), D, by positivity, hD1,
+    fun w hw1 hw2 hτ hτT => ?_⟩
+  have hwT : |w.im| ≤ T := by rw [abs_of_pos hτ]; exact hτT
+  have hdre : ∀ η : ℝ, (w - 1 - (η : ℂ) * I).re = w.re - 1 := fun η => by simp
+  have hdim : ∀ η : ℝ, (w - 1 - (η : ℂ) * I).im = w.im - η := fun η => by simp
+  have hd0 : ∀ j, 0 < ‖w - 1 - spectralHeight t j * I‖ := fun j => by
+    have := Complex.abs_re_le_norm (w - 1 - spectralHeight t j * I)
+    rw [hdre, abs_of_pos (by linarith)] at this
+    linarith
+  have hdτ : ∀ j, |w.im - spectralHeight t j| ≤ ‖w - 1 - spectralHeight t j * I‖ := fun j => by
+    have := Complex.abs_im_le_norm (w - 1 - spectralHeight t j * I)
+    rwa [hdim] at this
+  have hdD : ∀ j, ‖w - 1 - spectralHeight t j * I‖ ≤ D := fun j => by
+    have h := Complex.norm_le_abs_re_add_abs_im (w - 1 - spectralHeight t j * I)
+    rw [hdre, hdim, abs_of_pos (by linarith)] at h
+    have h' : |w.im - spectralHeight t j| ≤ |T| + St := (abs_sub _ _).trans (by
+      rw [abs_of_pos hτ, abs_of_nonneg (hηm j).1]
+      linarith [hηSt j, le_abs_self T])
+    rw [hD_def]
+    linarith
+  have hdp : ∀ k, δ ≤ ‖w + t k * I - 1‖ ∧ ‖w + t k * I - 1‖ ≤ D := fun k => by
+    have hre' : (w + t k * I - 1).re = w.re - 1 := by simp
+    have him' : (w + t k * I - 1).im = w.im + t k := by simp
+    constructor
+    · have h := Complex.abs_im_le_norm (w + t k * I - 1)
+      rw [him', abs_of_pos (by linarith [ht k])] at h
+      linarith [htδ k]
+    · have h := Complex.norm_le_abs_re_add_abs_im (w + t k * I - 1)
+      rw [hre', him', abs_of_pos (by linarith), abs_of_pos (by linarith [ht k])] at h
+      rw [hD_def]
+      linarith [hηSt (some k), le_abs_self T]
+  refine ⟨hdD, ?_⟩
+  obtain ⟨Λ, hΛ⟩ : ∃ Λ : ℝ, Λ = ∑ j, max (spectralExponent c₀ B j) 0 *
+      max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖) := ⟨_, rfl⟩
+  obtain ⟨Y, hY⟩ : ∃ Y : Option (Fin K) → ℝ, Y = fun j => Real.exp
+      (max (spectralExponent c₀ B j) 0 * max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖)) :=
+    ⟨_, rfl⟩
+  have hYsum2 : ∑ j, Real.exp (max (spectralExponent c₀ B j) 0 *
+      max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖)) ^ 2 = ∑ j, Y j ^ 2 := by rw [hY]
+  rw [hYsum2]
+  have hFac := spectralLogFactor_le (c₀ := c₀) (B := B) hδ hD1 (fun j => ⟨hd0 j, hdD j⟩) hdp
+  rw [← hC₂, ← hΛ] at hFac
+  have hloc := (abs_le.mp (hC₁ w hw1 hw2 hwT)).2
+  -- at most one height is within `δ`
+  have huniq : ∀ i j, lam < max 0 (-Real.log ‖w - 1 - spectralHeight t i * I‖) →
+      lam < max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖) → i = j := by
+    intro i j hi hj
+    rw [hlam_def] at hi hj
+    have hi' := lt_of_neg_log_lt_max hδ hδ1 hi
+    have hj' := lt_of_neg_log_lt_max hδ hδ1 hj
+    by_contra hij
+    have h := hsep i j hij
+    have h1 := hdτ i
+    have h2 := hdτ j
+    have h3 : |spectralHeight t i - spectralHeight t j| ≤
+        |w.im - spectralHeight t i| + |w.im - spectralHeight t j| := by
+      calc |spectralHeight t i - spectralHeight t j|
+          = |(w.im - spectralHeight t j) - (w.im - spectralHeight t i)| := by ring_nf
+        _ ≤ |w.im - spectralHeight t j| + |w.im - spectralHeight t i| := abs_sub _ _
+        _ = _ := add_comm _ _
+    linarith
+  have hexp := exp_sum_le_of_unique_large (a := fun j => max (spectralExponent c₀ B j) 0)
+    (ℓ := fun j => max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖))
+    (fun j => le_max_right _ _) hlam huniq
+  beta_reduce at hexp
+  have hYsum : ∑ j, Real.exp (max (spectralExponent c₀ B j) 0 *
+      max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖)) = ∑ j, Y j := by rw [hY]
+  rw [← hΛ, hYsum] at hexp
+  have hF0 := norm_pos_iff.mpr (spectralSeries_ne_zero hg hw1)
+  have hFle : ‖spectralSeries c₀ t B w‖ ≤ Q * (1 + ∑ j, Y j) := by
+    have hlog : Real.log ‖spectralSeries c₀ t B w‖ ≤ C₁ + C₂ + Λ := by linarith
+    calc ‖spectralSeries c₀ t B w‖ = Real.exp (Real.log ‖spectralSeries c₀ t B w‖) :=
+          (Real.exp_log hF0).symm
+      _ ≤ Real.exp (C₁ + C₂ + Λ) := Real.exp_le_exp.mpr hlog
+      _ = Real.exp (C₁ + C₂) * Real.exp Λ := Real.exp_add _ _
+      _ ≤ Real.exp (C₁ + C₂) * (Real.exp ((∑ j, max (spectralExponent c₀ B j) 0) * lam) *
+            (1 + ∑ j, Y j)) := mul_le_mul_of_nonneg_left hexp (Real.exp_pos _).le
+      _ = Q * (1 + ∑ j, Y j) := by rw [hQ, Real.exp_add (C₁ + C₂)]; ring
+  -- Cauchy–Schwarz over the `K + 1` heights
+  have hY0 : ∀ j, 0 ≤ Y j := fun j => by rw [hY]; exact (Real.exp_pos _).le
+  have hCS : (∑ j, Y j) ^ 2 ≤ ((K : ℝ) + 1) * ∑ j, Y j ^ 2 := by
+    have h := sq_sum_le_card_mul_sum_sq (s := (Finset.univ : Finset (Option (Fin K)))) (f := Y)
+    rwa [Finset.card_univ, Fintype.card_option, Fintype.card_fin, Nat.cast_add,
+      Nat.cast_one] at h
+  have hS0 : 0 ≤ ∑ j, Y j := Finset.sum_nonneg fun j _ => hY0 j
+  have hY2 : 0 ≤ ∑ j, Y j ^ 2 := Finset.sum_nonneg fun j _ => sq_nonneg _
+  have hK : (0 : ℝ) ≤ K := Nat.cast_nonneg K
+  have h2 : (1 + ∑ j, Y j) ^ 2 ≤ 2 * ((K : ℝ) + 1) * (1 + ∑ j, Y j ^ 2) := by
+    have e1 : 2 * ((K : ℝ) + 1) * (1 + ∑ j, Y j ^ 2) =
+        2 * ((K : ℝ) + 1) + 2 * (((K : ℝ) + 1) * ∑ j, Y j ^ 2) := by ring
+    linarith [sq_nonneg (1 - ∑ j, Y j)]
+  calc ‖spectralSeries c₀ t B w‖ ^ 2 ≤ (Q * (1 + ∑ j, Y j)) ^ 2 :=
+        pow_le_pow_left₀ (norm_nonneg _) hFle 2
+    _ = Q ^ 2 * (1 + ∑ j, Y j) ^ 2 := by ring
+    _ ≤ Q ^ 2 * (2 * ((K : ℝ) + 1) * (1 + ∑ j, Y j ^ 2)) :=
+        mul_le_mul_of_nonneg_left h2 (sq_nonneg _)
+    _ = _ := by ring
+
+/-- **The pointwise majorant.** On `1/2 < σ < 3/4`, `0 < τ ≤ T`, `τ` off the heights: each
+uncancelled height contributes `|τ − η_j|^{-2e_j⁺}`, each height at a critical zero is cancelled by
+`|ζ(s)| ≤ L|s − s_k|` (using `Re B_k ≤ 2`). -/
+theorem lineIntegrand_spectralWeight_le {c₀ : ℝ} {t : Fin K → ℝ} {B : Fin K → ℂ}
+    (hg : ∀ x, |spectralProfile c₀ t B x| ≤ 1) (ht : ∀ k, 0 < t k)
+    (hinj : Function.Injective t) {T R D Z₀ : ℝ} {L : Fin K → ℝ} (hR0 : 0 ≤ R) (hD1 : 1 ≤ D)
+    (hbox : ∀ w : ℂ, 1 < w.re → w.re ≤ 2 → 0 < w.im → w.im ≤ T →
+      (∀ j, ‖w - 1 - spectralHeight t j * I‖ ≤ D) ∧
+      ‖spectralSeries c₀ t B w‖ ^ 2 ≤ R * (1 + ∑ j, Real.exp (max (spectralExponent c₀ B j) 0 *
+        max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖)) ^ 2))
+    (hZ : ∀ σ τ : ℝ, 1 / 2 ≤ σ → σ ≤ 3 / 4 → |τ| ≤ T → ‖riemannZeta ((σ : ℂ) + τ * I)‖ ≤ Z₀)
+    (hL0 : ∀ k, 0 ≤ L k)
+    (hL : ∀ k, riemannZeta (1 / 2 + (t k : ℂ) * I) = 0 → ∀ σ τ : ℝ, 1 / 2 ≤ σ → σ ≤ 3 / 4 →
+      |τ| ≤ T → ‖riemannZeta ((σ : ℂ) + τ * I)‖ ≤
+        L k * ‖(σ : ℂ) + τ * I - (1 / 2 + (t k : ℂ) * I)‖)
+    {P σ τ : ℝ} (hσ : 1 / 2 < σ) (hσ' : σ < 3 / 4) (hτ : 0 < τ) (hτT : τ ≤ T)
+    (hτS : τ ∉ Set.range (spectralHeight t)) :
+    lineIntegrand (spectralWeight c₀ t B) P σ τ ≤
+      4 * (2 * (R * (Z₀ ^ 2 + (Z₀ ^ 2 + (∑ k, L k) ^ 2 * D ^ 2) * ((K : ℝ) + 1))) +
+        2 * (Z₀ ^ 2 * P ^ 2)) + 4 * (2 * (R * (Z₀ ^ 2 + (∑ k, L k) ^ 2 * D ^ 2))) *
+          ∑ j ∈ spectralUncancelled t,
+            |τ - spectralHeight t j| ^ (-(2 * max (spectralExponent c₀ B j) 0)) := by
+  classical
+  obtain ⟨M₀, hM₀⟩ : ∃ M₀ : ℝ, M₀ = Z₀ ^ 2 + (∑ k, L k) ^ 2 * D ^ 2 := ⟨_, rfl⟩
+  rw [← hM₀]
+  have hM₀Z : Z₀ ^ 2 ≤ M₀ := by
+    have := mul_nonneg (sq_nonneg (∑ k, L k)) (sq_nonneg D)
+    rw [hM₀]; linarith
+  obtain ⟨w, hw_def⟩ : ∃ w : ℂ, w = (σ : ℂ) + τ * I + 1 / 2 := ⟨_, rfl⟩
+  have hwre : w.re = σ + 1 / 2 := by rw [hw_def]; simp
+  have hwim : w.im = τ := by rw [hw_def]; simp
+  obtain ⟨hdD, hF2⟩ := hbox w (by rw [hwre]; linarith) (by rw [hwre]; linarith)
+    (by rw [hwim]; exact hτ) (by rw [hwim]; exact hτT)
+  obtain ⟨Y, hY⟩ : ∃ Y : Option (Fin K) → ℝ, Y = fun j => Real.exp
+      (max (spectralExponent c₀ B j) 0 * max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖)) :=
+    ⟨_, rfl⟩
+  have hYsum2 : ∑ j, Real.exp (max (spectralExponent c₀ B j) 0 *
+      max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖)) ^ 2 = ∑ j, Y j ^ 2 := by rw [hY]
+  rw [hYsum2] at hF2
+  have hd0 : ∀ j, 0 < ‖w - 1 - spectralHeight t j * I‖ := fun j => by
+    have := Complex.abs_re_le_norm (w - 1 - spectralHeight t j * I)
+    have hre : (w - 1 - spectralHeight t j * I).re = σ - 1 / 2 := by
+      simp only [Complex.sub_re, Complex.one_re, Complex.mul_re, Complex.ofReal_re,
+        Complex.ofReal_im, Complex.I_re, Complex.I_im, hwre]
+      ring
+    rw [hre, abs_of_pos (by linarith)] at this
+    linarith
+  have hdτ : ∀ j, |τ - spectralHeight t j| ≤ ‖w - 1 - spectralHeight t j * I‖ := fun j => by
+    have := Complex.abs_im_le_norm (w - 1 - spectralHeight t j * I)
+    have him : (w - 1 - spectralHeight t j * I).im = τ - spectralHeight t j := by
+      simp only [Complex.sub_im, Complex.one_im, Complex.mul_im, Complex.ofReal_re,
+        Complex.ofReal_im, Complex.I_re, Complex.I_im, hwim]
+      ring
+    rwa [him] at this
+  have hζ0 : ‖riemannZeta ((σ : ℂ) + τ * I)‖ ≤ Z₀ :=
+    hZ σ τ hσ.le hσ'.le (by rw [abs_of_pos hτ]; exact hτT)
+  have hz2 : ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 ≤ Z₀ ^ 2 :=
+    pow_le_pow_left₀ (norm_nonneg _) hζ0 2
+  -- each height: integrable, or cancelled by a critical zero
+  have hj : ∀ j, ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * Y j ^ 2 ≤
+      M₀ * (1 + if j ∈ spectralUncancelled t then
+        |τ - spectralHeight t j| ^ (-(2 * max (spectralExponent c₀ B j) 0)) else 0) := by
+    intro j
+    by_cases hjb : j ∈ spectralUncancelled t
+    · rw [if_pos hjb]
+      have hx : 0 < |τ - spectralHeight t j| :=
+        abs_pos.mpr (sub_ne_zero.mpr fun h => hτS ⟨j, h.symm⟩)
+      have hx0 := Real.rpow_nonneg (abs_nonneg (τ - spectralHeight t j))
+        (-(2 * max (spectralExponent c₀ B j) 0))
+      have hYj : Y j ^ 2 ≤ 1 + |τ - spectralHeight t j| ^
+          (-(2 * max (spectralExponent c₀ B j) 0)) := by
+        rw [hY]; exact exp_mul_sq_le (le_max_right _ _) hx (hdτ j)
+      calc _ ≤ Z₀ ^ 2 * (1 + |τ - spectralHeight t j| ^
+            (-(2 * max (spectralExponent c₀ B j) 0))) :=
+            mul_le_mul hz2 hYj (sq_nonneg _) (sq_nonneg _)
+        _ ≤ _ := mul_le_mul_of_nonneg_right hM₀Z (by linarith)
+    · rw [if_neg hjb, add_zero, mul_one]
+      have hgood : (j.elim False fun k => riemannZeta (1 / 2 + (t k : ℂ) * I) = 0) := by
+        by_contra h
+        exact hjb (by
+          unfold spectralUncancelled
+          exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, h⟩)
+      cases j with
+      | none => exact (hgood : False).elim
+      | some k =>
+        have hz : riemannZeta (1 / 2 + (t k : ℂ) * I) = 0 := hgood
+        have hcap : max (spectralExponent c₀ B (some k)) 0 ≤ 1 :=
+          max_le (by
+            show (B k).re / 2 ≤ 1
+            linarith [spectralAmplitude_re_le_two hg ht hinj k]) zero_le_one
+        have hζk := hL k hz σ τ hσ.le hσ'.le (by rw [abs_of_pos hτ]; exact hτT)
+        have hds : (σ : ℂ) + τ * I - (1 / 2 + (t k : ℂ) * I) =
+            w - 1 - spectralHeight t (some k) * I := by
+          rw [hw_def]; simp only [spectralHeight, Option.elim]; ring
+        rw [hds] at hζk
+        have hLk : L k ≤ ∑ i, L i := Finset.single_le_sum (fun i _ => hL0 i) (Finset.mem_univ k)
+        have hYk : ‖w - 1 - spectralHeight t (some k) * I‖ ^ 2 * Y (some k) ^ 2 ≤ D ^ 2 := by
+          rw [hY]; exact sq_mul_exp_sq_le hcap (hd0 (some k)) (hdD (some k)) hD1
+        have hzk : ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 ≤
+            L k ^ 2 * ‖w - 1 - spectralHeight t (some k) * I‖ ^ 2 := by
+          rw [← mul_pow]; exact pow_le_pow_left₀ (norm_nonneg _) hζk 2
+        have hL2 : L k ^ 2 ≤ (∑ i, L i) ^ 2 := pow_le_pow_left₀ (hL0 k) hLk 2
+        calc ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * Y (some k) ^ 2
+            ≤ L k ^ 2 * ‖w - 1 - spectralHeight t (some k) * I‖ ^ 2 * Y (some k) ^ 2 :=
+              mul_le_mul_of_nonneg_right hzk (sq_nonneg _)
+          _ = L k ^ 2 * (‖w - 1 - spectralHeight t (some k) * I‖ ^ 2 * Y (some k) ^ 2) := by
+              ring
+          _ ≤ L k ^ 2 * D ^ 2 := mul_le_mul_of_nonneg_left hYk (sq_nonneg _)
+          _ ≤ (∑ i, L i) ^ 2 * D ^ 2 := mul_le_mul_of_nonneg_right hL2 (sq_nonneg _)
+          _ ≤ M₀ := by rw [hM₀]; linarith [sq_nonneg Z₀]
+  have hsumj : ∑ j, ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * Y j ^ 2 ≤
+      M₀ * ((K : ℝ) + 1) + M₀ * ∑ j ∈ spectralUncancelled t,
+        |τ - spectralHeight t j| ^ (-(2 * max (spectralExponent c₀ B j) 0)) := by
+    refine (Finset.sum_le_sum fun j _ => hj j).trans (le_of_eq ?_)
+    rw [← Finset.mul_sum, Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ,
+      Fintype.card_option, Fintype.card_fin, nsmul_eq_mul, Finset.sum_ite_mem,
+      Finset.univ_inter]
+    push_cast
+    ring
+  -- assemble
+  have hCP : ‖spectralSeries c₀ t B w - (P : ℂ)‖ ^ 2 ≤
+      2 * ‖spectralSeries c₀ t B w‖ ^ 2 + 2 * P ^ 2 := by
+    have h := norm_sub_le (spectralSeries c₀ t B w) (P : ℂ)
+    rw [Complex.norm_real, Real.norm_eq_abs] at h
+    have h2 := pow_le_pow_left₀ (norm_nonneg _) h 2
+    linarith [sq_abs P, sq_nonneg (‖spectralSeries c₀ t B w‖ - |P|)]
+  have hZs := sq_nonneg ‖riemannZeta ((σ : ℂ) + τ * I)‖
+  have h1 : ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * ‖spectralSeries c₀ t B w‖ ^ 2 ≤
+      R * (Z₀ ^ 2 + (M₀ * ((K : ℝ) + 1) + M₀ * ∑ j ∈ spectralUncancelled t,
+        |τ - spectralHeight t j| ^ (-(2 * max (spectralExponent c₀ B j) 0)))) := by
+    calc _ ≤ ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * (R * (1 + ∑ j, Y j ^ 2)) :=
+          mul_le_mul_of_nonneg_left hF2 hZs
+      _ = R * (‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 +
+            ∑ j, ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * Y j ^ 2) := by
+          rw [Finset.mul_sum]; ring
+      _ ≤ _ := mul_le_mul_of_nonneg_left (add_le_add hz2 hsumj) hR0
+  have h2 : ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * P ^ 2 ≤ Z₀ ^ 2 * P ^ 2 :=
+    mul_le_mul_of_nonneg_right hz2 (sq_nonneg _)
+  have h3 := mul_le_mul_of_nonneg_left hCP hZs
+  have hs2 : (1 / 2 : ℝ) ^ 2 ≤ ‖(σ : ℂ) + τ * I‖ ^ 2 := by
+    have hsn : σ ≤ ‖(σ : ℂ) + τ * I‖ := by
+      have := Complex.abs_re_le_norm ((σ : ℂ) + τ * I)
+      simp only [add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im, mul_one, sub_self,
+        add_zero] at this
+      linarith [le_abs_self σ]
+    exact pow_le_pow_left₀ (by norm_num) (by linarith) 2
+  have hden : 0 < ‖(σ : ℂ) + τ * I‖ ^ 2 := lt_of_lt_of_le (by norm_num) hs2
+  simp only [lineIntegrand, norm_div, norm_mul, div_pow, mul_pow]
+  rw [weightDirichletSeries_spectralWeight, ← hw_def, div_le_iff₀ hden]
+  have hmain : ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 *
+      ‖spectralSeries c₀ t B w - (P : ℂ)‖ ^ 2 * 4 ≤
+        4 * (2 * (R * (Z₀ ^ 2 + M₀ * ((K : ℝ) + 1))) + 2 * (Z₀ ^ 2 * P ^ 2)) +
+          4 * (2 * (R * M₀)) * ∑ j ∈ spectralUncancelled t,
+            |τ - spectralHeight t j| ^ (-(2 * max (spectralExponent c₀ B j) 0)) := by
+    linarith
+  have hG0 := mul_nonneg (mul_nonneg hZs (sq_nonneg ‖spectralSeries c₀ t B w - (P : ℂ)‖))
+    (show (0 : ℝ) ≤ 4 by norm_num)
+  nlinarith
+
+/-- **The paid range.** If `c₀ < 1/2` and at every frequency `Re B_k < 1` or
+`ζ(1/2 + it_k) = 0`, the half-damped spectral weight is paid. -/
+theorem receiverBounded_spectralWeight_of {c₀ : ℝ} {t : Fin K → ℝ} {B : Fin K → ℂ}
+    (hg : ∀ x, |spectralProfile c₀ t B x| ≤ 1) (ht : ∀ k, 0 < t k)
+    (hinj : Function.Injective t) (hc₀ : c₀ < 1 / 2)
+    (hB : ∀ k, (B k).re < 1 ∨ riemannZeta (1 / 2 + (t k : ℂ) * I) = 0) :
+    ReceiverBounded (spectralWeight c₀ t B) := by
+  obtain ⟨St, hSt⟩ : ∃ St : ℝ, St = ∑ k, t k := ⟨_, rfl⟩
+  have hSt0 : 0 ≤ St := by rw [hSt]; exact Finset.sum_nonneg fun k _ => (ht k).le
+  obtain ⟨T, hT_def⟩ : ∃ T : ℝ, T = 2 * St + 18 := ⟨_, rfl⟩
+  have hT : 2 ≤ T := by rw [hT_def]; linarith
+  obtain ⟨R, D, hR0, hD1, hbox⟩ := exists_sq_norm_spectralSeries_le hg ht hinj T
   -- Lipschitz constants at the critical zeros
   have hLip : ∀ k, ∃ L : ℝ, 0 ≤ L ∧ (riemannZeta (1 / 2 + (t k : ℂ) * I) = 0 →
       ∀ σ τ : ℝ, 1 / 2 ≤ σ → σ ≤ 3 / 4 → |τ| ≤ T →
@@ -1024,16 +1297,11 @@ theorem receiverBounded_spectralWeight_of {c₀ : ℝ} {t : Fin K → ℝ} {B : 
       exact ⟨L, hL0, fun _ => hL⟩
     · exact ⟨0, le_rfl, fun h => absurd h hz⟩
   choose L hL0 hL using hLip
-  obtain ⟨Z₀, hZ₀, hZ⟩ := exists_norm_zeta_le_on_tall_box T
-  obtain ⟨M₀, hM₀⟩ : ∃ M₀ : ℝ, M₀ = Z₀ ^ 2 + (∑ k, L k) ^ 2 * D ^ 2 := ⟨_, rfl⟩
-  have hM₀Z : Z₀ ^ 2 ≤ M₀ := by rw [hM₀]; nlinarith [sq_nonneg ((∑ k, L k) * D)]
-  have hM₀0 : 0 ≤ M₀ := (sq_nonneg Z₀).trans hM₀Z
+  obtain ⟨Z₀, -, hZ⟩ := exists_norm_zeta_le_on_tall_box T
   set P : ℝ := ∑' d : ℕ, spectralWeight c₀ t B d / d
-  -- the heights whose singularity no critical zero cancels
-  set bad : Finset (Option (Fin K)) := Finset.univ.filter fun j =>
-    ¬ (j.elim False fun k => riemannZeta (1 / 2 + (t k : ℂ) * I) = 0)
-  have hbad : ∀ j ∈ bad, 2 * max (spectralExponent c₀ B j) 0 < 1 := by
+  have hbad : ∀ j ∈ spectralUncancelled t, 2 * max (spectralExponent c₀ B j) 0 < 1 := by
     intro j hj
+    unfold spectralUncancelled at hj
     have hj' := (Finset.mem_filter.mp hj).2
     cases j with
     | none =>
@@ -1046,240 +1314,27 @@ theorem receiverBounded_spectralWeight_of {c₀ : ℝ} {t : Fin K → ℝ} {B : 
       show 2 * max ((B k).re / 2) 0 < 1
       have := max_lt (by linarith : (B k).re / 2 < 1 / 2) (by norm_num : (0 : ℝ) < 1 / 2)
       linarith
-  obtain ⟨R, hR⟩ : ∃ R : ℝ, R = Q ^ 2 * (2 * ((K : ℝ) + 1)) := ⟨_, rfl⟩
-  have hR0 : 0 ≤ R := by rw [hR]; positivity
-  obtain ⟨A₁, hA₁⟩ : ∃ A₁ : ℝ,
-      A₁ = 4 * (2 * (R * (Z₀ ^ 2 + M₀ * ((K : ℝ) + 1))) + 2 * (Z₀ ^ 2 * P ^ 2)) := ⟨_, rfl⟩
-  obtain ⟨A₂, hA₂⟩ : ∃ A₂ : ℝ, A₂ = 4 * (2 * (R * M₀)) := ⟨_, rfl⟩
-  obtain ⟨G, hG⟩ : ∃ G : ℝ → ℝ, G = fun τ => A₁ + A₂ * ∑ j ∈ bad,
-      |τ - spectralHeight t j| ^ (-(2 * max (spectralExponent c₀ B j) 0)) := ⟨_, rfl⟩
-  have hGi : IntegrableOn G (Ioc 0 T) := by
+  obtain ⟨A₁, hA₁⟩ : ∃ A₁ : ℝ, A₁ = 4 * (2 * (R * (Z₀ ^ 2 + (Z₀ ^ 2 + (∑ k, L k) ^ 2 * D ^ 2) *
+      ((K : ℝ) + 1))) + 2 * (Z₀ ^ 2 * P ^ 2)) := ⟨_, rfl⟩
+  obtain ⟨A₂, hA₂⟩ : ∃ A₂ : ℝ, A₂ = 4 * (2 * (R * (Z₀ ^ 2 + (∑ k, L k) ^ 2 * D ^ 2))) :=
+    ⟨_, rfl⟩
+  have hGi : IntegrableOn (fun τ => A₁ + A₂ * ∑ j ∈ spectralUncancelled t,
+      |τ - spectralHeight t j| ^ (-(2 * max (spectralExponent c₀ B j) 0))) (Ioc 0 T) := by
     have hc : IntegrableOn (fun _ : ℝ => A₁) (Ioc 0 T) :=
       (intervalIntegrable_iff_integrableOn_Ioc_of_le (by linarith)).mp intervalIntegrable_const
-    have hs : IntegrableOn (fun τ : ℝ => ∑ j ∈ bad,
+    have hs : IntegrableOn (fun τ : ℝ => ∑ j ∈ spectralUncancelled t,
         |τ - spectralHeight t j| ^ (-(2 * max (spectralExponent c₀ B j) 0))) (Ioc 0 T) :=
-      integrable_finset_sum bad fun j hj =>
+      integrable_finsetSum _ fun j hj =>
         (intervalIntegrable_iff_integrableOn_Ioc_of_le (by linarith)).mp
           (intervalIntegrable_abs_sub_rpow (by linarith [hbad j hj]) _ 0 T)
-    rw [hG]
     exact hc.add (hs.const_mul A₂)
-  -- the pointwise majorant on the box
   have hsmall : ∀ σ τ : ℝ, 1 / 2 < σ → σ < 3 / 4 → 0 < τ → τ ≤ T →
-      τ ∉ Set.range (spectralHeight t) → lineIntegrand (spectralWeight c₀ t B) P σ τ ≤ G τ := by
-    intro σ τ hσ hσ' hτ hτT hτS
-    obtain ⟨w, hw_def⟩ : ∃ w : ℂ, w = (σ : ℂ) + τ * I + 1 / 2 := ⟨_, rfl⟩
-    have hwre : w.re = σ + 1 / 2 := by rw [hw_def]; simp
-    have hwim : w.im = τ := by rw [hw_def]; simp
-    have hw1 : 1 < w.re := by rw [hwre]; linarith
-    have hw2 : w.re ≤ 2 := by rw [hwre]; linarith
-    have hwT : |w.im| ≤ T := by rw [hwim, abs_of_pos hτ]; exact hτT
-    have hdre : ∀ η : ℝ, (w - 1 - (η : ℂ) * I).re = σ - 1 / 2 := fun η => by
-      simp only [Complex.sub_re, Complex.one_re, Complex.mul_re, Complex.ofReal_re,
-        Complex.ofReal_im, Complex.I_re, Complex.I_im, hwre]
-      ring
-    have hdim : ∀ η : ℝ, (w - 1 - (η : ℂ) * I).im = τ - η := fun η => by
-      simp only [Complex.sub_im, Complex.one_im, Complex.mul_im, Complex.ofReal_re,
-        Complex.ofReal_im, Complex.I_re, Complex.I_im, hwim]
-      ring
-    have hd0 : ∀ j, 0 < ‖w - 1 - spectralHeight t j * I‖ := fun j => by
-      have := Complex.abs_re_le_norm (w - 1 - spectralHeight t j * I)
-      rw [hdre, abs_of_pos (by linarith)] at this
-      linarith
-    have hdτ : ∀ j, |τ - spectralHeight t j| ≤ ‖w - 1 - spectralHeight t j * I‖ := fun j => by
-      have := Complex.abs_im_le_norm (w - 1 - spectralHeight t j * I)
-      rwa [hdim] at this
-    have hdD : ∀ j, ‖w - 1 - spectralHeight t j * I‖ ≤ D := fun j => by
-      have h := Complex.norm_le_abs_re_add_abs_im (w - 1 - spectralHeight t j * I)
-      rw [hdre, hdim, abs_of_pos (by linarith)] at h
-      have h' : |τ - spectralHeight t j| ≤ T + St := (abs_sub _ _).trans (by
-        rw [abs_of_pos hτ, abs_of_nonneg (hηm j).1]; linarith [hηSt j])
-      rw [hD_def]
-      linarith
-    have hdp : ∀ k, δ ≤ ‖w + t k * I - 1‖ ∧ ‖w + t k * I - 1‖ ≤ D := fun k => by
-      have hre' : (w + t k * I - 1).re = σ - 1 / 2 := by
-        simp only [Complex.sub_re, Complex.add_re, Complex.one_re, Complex.mul_re,
-          Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, hwre]
-        ring
-      have him' : (w + t k * I - 1).im = τ + t k := by
-        simp only [Complex.sub_im, Complex.add_im, Complex.one_im, Complex.mul_im,
-          Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, hwim]
-        ring
-      constructor
-      · have h := Complex.abs_im_le_norm (w + t k * I - 1)
-        rw [him', abs_of_pos (by linarith [ht k])] at h
-        linarith [htδ k]
-      · have h := Complex.norm_le_abs_re_add_abs_im (w + t k * I - 1)
-        rw [hre', him', abs_of_pos (by linarith), abs_of_pos (by linarith [ht k])] at h
-        rw [hD_def]
-        linarith [htk k]
-    -- the upper factorization: one singular height at a time
-    obtain ⟨Λ, hΛ⟩ : ∃ Λ : ℝ, Λ = ∑ j, max (spectralExponent c₀ B j) 0 *
-        max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖) := ⟨_, rfl⟩
-    obtain ⟨Y, hY⟩ : ∃ Y : Option (Fin K) → ℝ, Y = fun j => Real.exp
-        (max (spectralExponent c₀ B j) 0 * max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖)) :=
-      ⟨_, rfl⟩
-    have hFac := spectralLogFactor_le (c₀ := c₀) (B := B) hδ hD1 (fun j => ⟨hd0 j, hdD j⟩) hdp
-    rw [← hC₂, ← hΛ] at hFac
-    have hloc := (abs_le.mp (hC₁ w hw1 hw2 hwT)).2
-    have huniq : ∀ i j, lam < max 0 (-Real.log ‖w - 1 - spectralHeight t i * I‖) →
-        lam < max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖) → i = j := by
-      intro i j hi hj
-      rw [hlam_def] at hi hj
-      have hi' := lt_of_neg_log_lt_max (hd0 i) hδ hδ1 hi
-      have hj' := lt_of_neg_log_lt_max (hd0 j) hδ hδ1 hj
-      by_contra hij
-      have h := hsep i j hij
-      have h1 := hdτ i
-      have h2 := hdτ j
-      have h3 : |spectralHeight t i - spectralHeight t j| ≤
-          |τ - spectralHeight t i| + |τ - spectralHeight t j| := by
-        calc |spectralHeight t i - spectralHeight t j|
-            = |(τ - spectralHeight t j) - (τ - spectralHeight t i)| := by ring_nf
-          _ ≤ |τ - spectralHeight t j| + |τ - spectralHeight t i| := abs_sub _ _
-          _ = _ := add_comm _ _
-      linarith
-    have hexp := exp_sum_le_of_unique_large (a := fun j => max (spectralExponent c₀ B j) 0)
-      (ℓ := fun j => max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖))
-      (fun j => le_max_right _ _) hlam huniq
-    beta_reduce at hexp
-    have hYsum : ∑ j, Real.exp (max (spectralExponent c₀ B j) 0 *
-        max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖)) = ∑ j, Y j := by rw [hY]
-    rw [← hΛ, hYsum] at hexp
-    have hF0 := norm_pos_iff.mpr (spectralSeries_ne_zero hg hw1)
-    have hFle : ‖spectralSeries c₀ t B w‖ ≤ Q * (1 + ∑ j, Y j) := by
-      have hlog : Real.log ‖spectralSeries c₀ t B w‖ ≤ C₁ + C₂ + Λ := by linarith
-      calc ‖spectralSeries c₀ t B w‖ = Real.exp (Real.log ‖spectralSeries c₀ t B w‖) :=
-            (Real.exp_log hF0).symm
-        _ ≤ Real.exp (C₁ + C₂ + Λ) := Real.exp_le_exp.mpr hlog
-        _ = Real.exp (C₁ + C₂) * Real.exp Λ := Real.exp_add _ _
-        _ ≤ Real.exp (C₁ + C₂) * (Real.exp ((∑ j, max (spectralExponent c₀ B j) 0) * lam) *
-              (1 + ∑ j, Y j)) := mul_le_mul_of_nonneg_left hexp (Real.exp_pos _).le
-        _ = Q * (1 + ∑ j, Y j) := by rw [hQ, Real.exp_add (C₁ + C₂)]; ring
-    -- Cauchy–Schwarz over the `K + 1` heights
-    have hY0 : ∀ j, 0 ≤ Y j := fun j => by rw [hY]; exact (Real.exp_pos _).le
-    have hCS : (∑ j, Y j) ^ 2 ≤ ((K : ℝ) + 1) * ∑ j, Y j ^ 2 := by
-      have h := sq_sum_le_card_mul_sum_sq (s := (Finset.univ : Finset (Option (Fin K)))) (f := Y)
-      rwa [Finset.card_univ, Fintype.card_option, Fintype.card_fin, Nat.cast_add,
-        Nat.cast_one] at h
-    have hF2 : ‖spectralSeries c₀ t B w‖ ^ 2 ≤ R * (1 + ∑ j, Y j ^ 2) := by
-      have hS0 : 0 ≤ ∑ j, Y j := Finset.sum_nonneg fun j _ => hY0 j
-      have hY2 : 0 ≤ ∑ j, Y j ^ 2 := Finset.sum_nonneg fun j _ => sq_nonneg _
-      have hK : (0 : ℝ) ≤ K := Nat.cast_nonneg K
-      have h1 := pow_le_pow_left₀ (norm_nonneg _) hFle 2
-      have h2 : (1 + ∑ j, Y j) ^ 2 ≤ 2 * ((K : ℝ) + 1) * (1 + ∑ j, Y j ^ 2) := by
-        calc (1 + ∑ j, Y j) ^ 2 ≤ 2 + 2 * (∑ j, Y j) ^ 2 := by
-              nlinarith [sq_nonneg (1 - ∑ j, Y j)]
-          _ ≤ 2 + 2 * (((K : ℝ) + 1) * ∑ j, Y j ^ 2) := by linarith [hCS]
-          _ ≤ 2 * ((K : ℝ) + 1) * (1 + ∑ j, Y j ^ 2) := by nlinarith
-      calc ‖spectralSeries c₀ t B w‖ ^ 2 ≤ (Q * (1 + ∑ j, Y j)) ^ 2 := h1
-        _ = Q ^ 2 * (1 + ∑ j, Y j) ^ 2 := by ring
-        _ ≤ Q ^ 2 * (2 * ((K : ℝ) + 1) * (1 + ∑ j, Y j ^ 2)) :=
-            mul_le_mul_of_nonneg_left h2 (sq_nonneg _)
-        _ = R * (1 + ∑ j, Y j ^ 2) := by rw [hR]; ring
-    -- each height: cancelled by a zero, or integrable
-    have hζ0 : ‖riemannZeta ((σ : ℂ) + τ * I)‖ ≤ Z₀ :=
-      hZ σ τ hσ.le hσ'.le (by rw [abs_of_pos hτ]; exact hτT)
-    have hz2 : ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 ≤ Z₀ ^ 2 :=
-      pow_le_pow_left₀ (norm_nonneg _) hζ0 2
-    have hj : ∀ j, ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * Y j ^ 2 ≤
-        M₀ * (1 + if j ∈ bad then
-          |τ - spectralHeight t j| ^ (-(2 * max (spectralExponent c₀ B j) 0)) else 0) := by
-      intro j
-      by_cases hjb : j ∈ bad
-      · rw [if_pos hjb]
-        have hx : 0 < |τ - spectralHeight t j| :=
-          abs_pos.mpr (sub_ne_zero.mpr fun h => hτS ⟨j, h.symm⟩)
-        have hYj : Y j ^ 2 ≤ 1 + |τ - spectralHeight t j| ^
-            (-(2 * max (spectralExponent c₀ B j) 0)) := by
-          rw [hY]; exact exp_mul_sq_le (le_max_right _ _) hx (hdτ j)
-        calc _ ≤ Z₀ ^ 2 * (1 + |τ - spectralHeight t j| ^
-              (-(2 * max (spectralExponent c₀ B j) 0))) :=
-              mul_le_mul hz2 hYj (sq_nonneg _) (sq_nonneg _)
-          _ ≤ _ := mul_le_mul_of_nonneg_right hM₀Z
-              (by have := Real.rpow_nonneg (abs_nonneg (τ - spectralHeight t j))
-                    (-(2 * max (spectralExponent c₀ B j) 0)); linarith)
-      · rw [if_neg hjb, add_zero, mul_one]
-        have hgood : (j.elim False fun k => riemannZeta (1 / 2 + (t k : ℂ) * I) = 0) := by
-          by_contra h
-          exact hjb (Finset.mem_filter.mpr ⟨Finset.mem_univ _, h⟩)
-        cases j with
-        | none => exact (hgood : False).elim
-        | some k =>
-          have hz : riemannZeta (1 / 2 + (t k : ℂ) * I) = 0 := hgood
-          have hcap : max (spectralExponent c₀ B (some k)) 0 ≤ 1 :=
-            max_le (by
-              show (B k).re / 2 ≤ 1
-              linarith [spectralAmplitude_re_le_two hg ht hinj k]) zero_le_one
-          have hζk := hL k hz σ τ hσ.le hσ'.le (by rw [abs_of_pos hτ]; exact hτT)
-          have hds : (σ : ℂ) + τ * I - (1 / 2 + (t k : ℂ) * I) =
-              w - 1 - spectralHeight t (some k) * I := by
-            rw [hw_def]; simp only [spectralHeight, Option.elim]; ring
-          rw [hds] at hζk
-          have hLk : L k ≤ ∑ i, L i := Finset.single_le_sum (fun i _ => hL0 i) (Finset.mem_univ k)
-          have hYk : ‖w - 1 - spectralHeight t (some k) * I‖ ^ 2 * Y (some k) ^ 2 ≤ D ^ 2 := by
-            rw [hY]; exact sq_mul_exp_sq_le hcap (hd0 (some k)) (hdD (some k)) hD1
-          have hzk : ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 ≤
-              L k ^ 2 * ‖w - 1 - spectralHeight t (some k) * I‖ ^ 2 := by
-            rw [← mul_pow]; exact pow_le_pow_left₀ (norm_nonneg _) hζk 2
-          have hL2 : L k ^ 2 ≤ (∑ i, L i) ^ 2 := pow_le_pow_left₀ (hL0 k) hLk 2
-          calc ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * Y (some k) ^ 2
-              ≤ L k ^ 2 * ‖w - 1 - spectralHeight t (some k) * I‖ ^ 2 * Y (some k) ^ 2 :=
-                mul_le_mul_of_nonneg_right hzk (sq_nonneg _)
-            _ = L k ^ 2 * (‖w - 1 - spectralHeight t (some k) * I‖ ^ 2 * Y (some k) ^ 2) := by
-                ring
-            _ ≤ L k ^ 2 * D ^ 2 := mul_le_mul_of_nonneg_left hYk (sq_nonneg _)
-            _ ≤ (∑ i, L i) ^ 2 * D ^ 2 := mul_le_mul_of_nonneg_right hL2 (sq_nonneg _)
-            _ ≤ M₀ := by rw [hM₀]; nlinarith [sq_nonneg Z₀]
-    have hsumj : ∑ j, ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * Y j ^ 2 ≤
-        M₀ * ((K : ℝ) + 1) + M₀ * ∑ j ∈ bad,
-          |τ - spectralHeight t j| ^ (-(2 * max (spectralExponent c₀ B j) 0)) := by
-      refine (Finset.sum_le_sum fun j _ => hj j).trans (le_of_eq ?_)
-      rw [← Finset.mul_sum, Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ,
-        Fintype.card_option, Fintype.card_fin, nsmul_eq_mul, Finset.sum_ite_mem,
-        Finset.univ_inter]
-      push_cast
-      ring
-    -- assemble
-    have hCP : ‖spectralSeries c₀ t B w - (P : ℂ)‖ ^ 2 ≤
-        2 * ‖spectralSeries c₀ t B w‖ ^ 2 + 2 * P ^ 2 := by
-      have h := norm_sub_le (spectralSeries c₀ t B w) (P : ℂ)
-      rw [Complex.norm_real, Real.norm_eq_abs] at h
-      have h2 := pow_le_pow_left₀ (norm_nonneg _) h 2
-      nlinarith [sq_abs P, sq_nonneg (‖spectralSeries c₀ t B w‖ - |P|)]
-    have hmain : ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 *
-        ‖spectralSeries c₀ t B w - (P : ℂ)‖ ^ 2 ≤ G τ / 4 := by
-      have hZs := sq_nonneg ‖riemannZeta ((σ : ℂ) + τ * I)‖
-      have h1 : ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * ‖spectralSeries c₀ t B w‖ ^ 2 ≤
-          R * (Z₀ ^ 2 + (M₀ * ((K : ℝ) + 1) + M₀ * ∑ j ∈ bad,
-            |τ - spectralHeight t j| ^ (-(2 * max (spectralExponent c₀ B j) 0)))) := by
-        calc _ ≤ ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * (R * (1 + ∑ j, Y j ^ 2)) :=
-              mul_le_mul_of_nonneg_left hF2 hZs
-          _ = R * (‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 +
-                ∑ j, ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * Y j ^ 2) := by
-              rw [Finset.mul_sum]; ring
-          _ ≤ _ := mul_le_mul_of_nonneg_left (add_le_add hz2 hsumj) hR0
-      have h2 : ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * P ^ 2 ≤ Z₀ ^ 2 * P ^ 2 :=
-        mul_le_mul_of_nonneg_right hz2 (sq_nonneg _)
-      have h3 := mul_le_mul_of_nonneg_left hCP hZs
-      rw [hG, hA₁, hA₂]
-      nlinarith
-    have hs2 : (1 / 2 : ℝ) ^ 2 ≤ ‖(σ : ℂ) + τ * I‖ ^ 2 := by
-      have hsn : σ ≤ ‖(σ : ℂ) + τ * I‖ := by
-        have := Complex.abs_re_le_norm ((σ : ℂ) + τ * I)
-        simp only [add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im, mul_one, sub_self,
-          add_zero] at this
-        linarith [le_abs_self σ]
-      exact pow_le_pow_left₀ (by norm_num) (by linarith) 2
-    have hden : 0 < ‖(σ : ℂ) + τ * I‖ ^ 2 := lt_of_lt_of_le (by norm_num) hs2
-    have hG0 : 0 ≤ G τ := by
-      have := mul_nonneg (sq_nonneg ‖riemannZeta ((σ : ℂ) + τ * I)‖)
-        (sq_nonneg ‖spectralSeries c₀ t B w - (P : ℂ)‖)
-      linarith
-    simp only [lineIntegrand, norm_div, norm_mul, div_pow, mul_pow]
-    rw [weightDirichletSeries_spectralWeight, ← hw_def, div_le_iff₀ hden]
-    calc _ ≤ G τ / 4 := hmain
-      _ = G τ * (1 / 2) ^ 2 := by ring
-      _ ≤ G τ * ‖(σ : ℂ) + τ * I‖ ^ 2 := mul_le_mul_of_nonneg_left hs2 hG0
+      τ ∉ Set.range (spectralHeight t) → lineIntegrand (spectralWeight c₀ t B) P σ τ ≤
+        A₁ + A₂ * ∑ j ∈ spectralUncancelled t,
+          |τ - spectralHeight t j| ^ (-(2 * max (spectralExponent c₀ B j) 0)) :=
+    fun σ τ hσ hσ' hτ hτT hτS => by
+      rw [hA₁, hA₂]
+      exact lineIntegrand_spectralWeight_le hg ht hinj hR0 hD1 hbox hZ hL0 hL hσ hσ' hτ hτT hτS
   -- large heights
   obtain ⟨B₁, hB₁⟩ := exists_norm_spectralSeries_le_large hg ht
   have hlarge : ∀ σ τ : ℝ, 1 / 2 < σ → σ < 3 / 4 → T < τ →
@@ -1342,7 +1397,7 @@ theorem receiverBounded_cubicPattern_iff {t₀ : ℝ} (ht₀ : 0 < t₀) :
       have := hre (-(1 / 8)) (3 * (t₀ * x)); push_cast at this ⊢
       rw [show (3 : ℂ) * (t₀ * x) = 3 * t₀ * x by ring] at this; exact this
     simp only [spectralProfile, Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one,
-      Matrix.head_cons, zero_add]
+      zero_add]
     rw [e1, e2, Real.cos_three_mul]
     have hc := Real.abs_cos_le_one (t₀ * x)
     rw [abs_le] at hc ⊢

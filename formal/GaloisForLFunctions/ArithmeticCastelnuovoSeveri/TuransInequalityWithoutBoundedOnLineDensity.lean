@@ -254,7 +254,7 @@ theorem zeta_powCluster_le_of_offLineCopiesLocallyBounded {M : ℕ}
     (hrec : ∀ z : ℂ, evenCoeff zetaZeroConfig b z ≠ 0 → 0 < z.re →
       ‖evenCoeff zetaZeroConfig b z‖ * Real.exp (z.re * V) ≤
         ‖evenCoeff zetaZeroConfig b z₁‖ * Real.exp (z₁.re * V))
-    {κ r : ℝ} (hκ : 0 < κ) (hσ : 0 < z₁.re - κ / V) (hr : 0 < r) (hr4 : r ≤ 4)
+    {κ r : ℝ} (_hκ : 0 < κ) (hσ : 0 < z₁.re - κ / V) (hr : 0 < r) (hr4 : r ≤ 4)
     (hVr : 4 * π * j ≤ V * r) (S : Finset ℂ)
     (hiso : ∀ z, z ∉ S → evenCoeff zetaZeroConfig b z ≠ 0 →
       r ≤ ‖z - ((z₁.re - κ / V : ℝ) + z₁.im * I)‖) :
@@ -1365,7 +1365,11 @@ theorem paperFT_scaledBump_ofReal_sq_eq_norm_sq (w x : ℝ) :
     paperFT (scaledBump w) (x : ℂ) ^ 2 = ((‖paperFT (scaledBump w) (x : ℂ)‖ ^ 2 : ℝ) : ℂ) := by
   have hconj : conj (paperFT (scaledBump w) (x : ℂ)) = paperFT (scaledBump w) (x : ℂ) := by
     rw [conj_paperFT_scaledBump, Complex.conj_ofReal]
-  rw [sq, ← hconj, Complex.mul_conj, Complex.normSq_eq_norm_sq]
+  calc paperFT (scaledBump w) (x : ℂ) ^ 2
+      = paperFT (scaledBump w) (x : ℂ) * conj (paperFT (scaledBump w) (x : ℂ)) := by
+        rw [sq, hconj]
+    _ = ((‖paperFT (scaledBump w) (x : ℂ)‖ ^ 2 : ℝ) : ℂ) := by
+        rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
 
 /-- **On-line non-cancellation law for modulated bumps.** At every on-line exponent `z` (`Re z = 0`),
 the modulated coefficient `evenCoeff Z (modScaledBump w c) z` is a nonnegative real number equal to
@@ -1390,7 +1394,7 @@ theorem evenCoeff_modScaledBump_onLine_eq_norm (Z : ZeroConfig) {w : ℝ} (hw : 
     rw [evenCoeff, hr₁, hr₂, Complex.conj_ofReal, Complex.ofReal_add]
   have hnorm : ‖evenCoeff Z (modScaledBump w c) z‖ = r₁ + r₂ := by
     rw [hev, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith)]
-  rw [hev, hnorm]
+  rw [hnorm, hev]
 
 /-- **Exact on-line/off-line identity for `2 Re S(0)`.** Because every on-line coefficient has
 `Re D_c(z) = ‖D_c(z)‖ ≥ 0`, on-line zeros in `2 Re S(0)` never cancel:
@@ -1415,7 +1419,7 @@ theorem two_re_lagStructure_zero_eq_onLineEvenMass_add_offLine {w : ℝ} (hw : 0
   have hs_off : Summable (fun z : ℂ => if z.re = 0 then 0 else (D z).re) :=
     Summable.of_norm_bounded hsD fun z => by
       split_ifs
-      · rw [Real.norm_zero]; exact norm_nonneg _
+      · rw [norm_zero]; exact norm_nonneg _
       · rw [Real.norm_eq_abs]; exact Complex.abs_re_le_norm _
   have hre_eq : 2 * (lagStructure zetaZeroConfig b 0).re = ∑' z : ℂ, (D z).re := by
     have := congrArg Complex.re h0.2
@@ -1425,8 +1429,10 @@ theorem two_re_lagStructure_zero_eq_onLineEvenMass_add_offLine {w : ℝ} (hw : 0
   rw [← hb, ← hD, ← Summable.tsum_add hs_on hs_off]
   refine tsum_congr fun z => ?_
   by_cases hz : z.re = 0
-  · rw [if_pos hz, if_pos hz, add_zero, hD, hb,
-      evenCoeff_modScaledBump_onLine_eq_norm zetaZeroConfig hw c hz, Complex.ofReal_re]
+  · rw [if_pos hz, if_pos hz, add_zero]
+    have heq := congrArg Complex.re (evenCoeff_modScaledBump_onLine_eq_norm zetaZeroConfig hw c hz)
+    rw [Complex.ofReal_re] at heq
+    exact heq
   · rw [if_neg hz, if_neg hz, zero_add]
 
 /-- **Deviation of `2 Re S(0)` from the on-line mass is bounded by the off-line mass.** -/
@@ -1460,7 +1466,7 @@ center `c ∈ ℝ`. -/
 theorem sum_offLine_inv_four_le_of_offLineCopiesLocallyBounded {M : ℕ}
     (hM : OffLineCopiesLocallyBounded M) (c : ℝ) (S : Finset ℂ)
     (hS : ∀ z ∈ S, (1 / 2 + z) ∈ zetaZeroConfig.carrier ∧ z.re ≠ 0) :
-    ∑ z ∈ S, 1 / (1 + |z.im - c|) ^ 4 ≤ 12 * M := by
+    ∑ z ∈ S, 1 / (1 + |z.im - c|) ^ 4 ≤ 12 * (M : ℝ) := by
   classical
   set j : ℂ → ℤ := fun z => ⌊z.im - c⌋ with hj
   set J := S.image j with hJ
@@ -1500,7 +1506,7 @@ theorem sum_offLine_inv_four_le_of_offLineCopiesLocallyBounded {M : ℕ}
       have hmax : max 1 (windowDist k) ≤ 1 + |z.im - c| :=
         max_le (by linarith [abs_nonneg (z.im - c)]) hd
       have hpow : max 1 (windowDist k) ^ 3 ≤ (1 + |z.im - c|) ^ 4 :=
-        (pow_le_pow_left₀ (le_max_left 1 _) hmax 3).trans
+        (pow_le_pow_left₀ (by positivity) hmax 3).trans
           (pow_le_pow_right₀ (by linarith [abs_nonneg (z.im - c)]) (by omega))
       exact div_le_div_of_nonneg_left (by norm_num) (by positivity) hpow
     calc ∑ z ∈ Sk, 1 / (1 + |z.im - c|) ^ 4 ≤ ∑ _z ∈ Sk, 1 / max 1 (windowDist k) ^ 3 :=
@@ -1761,7 +1767,8 @@ theorem nearTopHeightOffLine_conditions {M : ℕ} {w γ : ℝ} (hw : 0 < w)
     linarith
   have h1γ : 192 * ((M : ℝ) + 1) * K₀ < a ^ 2 * (1 + γ) := by
     have hlt : 192 * ((M : ℝ) + 1) * K₀ / a ^ 2 < 1 + γ := by linarith
-    rwa [div_lt_iff₀ (by positivity)] at hlt
+    rw [div_lt_iff₀ (by positivity)] at hlt
+    linarith
   have hpow1 : 1 + γ ≤ (1 + γ) ^ 4 := by
     simpa using pow_le_pow_right₀ (by linarith : 1 ≤ 1 + γ) (by omega : 1 ≤ 4)
   have hpow2 : 1 + γ ≤ (1 + 2 * γ) ^ 4 :=
@@ -1773,16 +1780,25 @@ theorem nearTopHeightOffLine_conditions {M : ℕ} {w γ : ℝ} (hw : 0 < w)
   have hE : Real.exp 1 < 3 := by linarith [Real.exp_one_lt_d9]
   have hE0 : 0 < Real.exp 1 := Real.exp_pos 1
   have hM0 : (0 : ℝ) ≤ M := Nat.cast_nonneg M
+  have hMK : ((M : ℝ) + 1) * K₀ * Real.exp 1 ≤ ((M : ℝ) + 1) * K₀ * 3 :=
+    mul_le_mul_of_nonneg_left hE.le (by positivity)
+  have hMK0 : (M : ℝ) * K₀ * Real.exp 1 ≤ ((M : ℝ) + 1) * K₀ * 3 :=
+    (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (by linarith) hK0) hE0.le).trans hMK
+  have hMle : (M : ℝ) * K₀ ≤ ((M : ℝ) + 1) * K₀ := by linarith
+  have hMle2 : 2 * (M : ℝ) * K₀ * (2 * Real.exp 1) ≤ 12 * ((M : ℝ) + 1) * K₀ := by
+    calc 2 * (M : ℝ) * K₀ * (2 * Real.exp 1) = 4 * ((M : ℝ) * K₀ * Real.exp 1) := by ring
+      _ ≤ 4 * (((M : ℝ) + 1) * K₀ * 3) := by linarith [hMK0]
+      _ = 12 * ((M : ℝ) + 1) * K₀ := by ring
   refine ⟨hγ1, ?_, ?_, ?_⟩
   · rw [div_le_iff₀ (by positivity)]
     have := mul_le_mul_of_nonneg_left hpow2 (show 0 ≤ a ^ 2 / 2 by positivity)
-    nlinarith
+    linarith
   · rw [div_lt_div_iff₀ (by positivity) (by positivity)]
     have := mul_le_mul_of_nonneg_left hpowhalf (show 0 ≤ a ^ 2 by positivity)
-    nlinarith
+    linarith
   · rw [div_div, div_le_div_iff₀ (by positivity) (by positivity)]
     have := mul_le_mul_of_nonneg_left hpow1 (show 0 ≤ a ^ 2 by positivity)
-    nlinarith
+    linarith
 
 /-- **Where the loud record of a near-top zero sits without `recordHeightEnvelope`.** Under
 `OffLineCopiesLocallyBounded M`, for a `1/V`-near-top zero `½ + z₀` right of the line above
@@ -2516,12 +2532,15 @@ theorem zeta_near_top_visible_at_explicit_onLineMass_lag {M : ℕ}
   have hB4 : (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / (1 + z₀.im) ^ 4 ≤
       centerAmplitude w ^ 2 / (2 * Real.exp 1) / (2 * (M + 1)) / 16 := by
     have hM1 : (0 : ℝ) < M + 1 := by positivity
-    rw [div_div, div_div, div_le_div_iff₀ (by positivity) (by positivity)]
-    rw [div_le_div_iff₀ (by positivity) (by positivity)] at hB32
-    linarith
+    calc (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / (1 + z₀.im) ^ 4
+        = (((M : ℝ) + 1) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / (1 + z₀.im) ^ 4) /
+            (M + 1) := by field_simp
+      _ ≤ (centerAmplitude w ^ 2 / (2 * Real.exp 1) / 32) / (M + 1) :=
+          div_le_div_of_nonneg_right hB32 hM1.le
+      _ = centerAmplitude w ^ 2 / (2 * Real.exp 1) / (2 * (M + 1)) / 16 := by field_simp; ring
   have e1 : centerAmplitude w ^ 2 / (2 * Real.exp 1) / (M + 1) =
       2 * (centerAmplitude w ^ 2 / (2 * Real.exp 1) / (2 * (M + 1))) := by
-    field_simp; ring
+    field_simp
   have hpos2M : 0 < centerAmplitude w ^ 2 / (2 * Real.exp 1) / (2 * (M + 1)) := by positivity
   have hH : H₀ ^ 2 ≤ centerAmplitude w ^ 2 / (2 * Real.exp 1) / (M + 1) -
       (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / (1 + z₀.im) ^ 4 := by
