@@ -208,7 +208,7 @@ theorem scaledHermiteExtremizer_rootMultiplicity {r : ℝ} (hr : 0 < r) (m : ℕ
     apply rootMultiplicity_eq_two hp
     · rw [hfac]
       simp only [eval_mul, eval_pow, eval_sub, eval_X, eval_C, sub_self, zero_pow
-        (by decide : 2 ≠ 0), zero_mul]
+        (by omega : 2 ≠ 0), zero_mul]
     · rw [hfac]
       simp [derivative_mul, derivative_pow, derivative_sub, derivative_C, derivative_X]
     · rw [hfac, second_derivative_squared_pair_eval]
@@ -218,3 +218,6 @@ theorem scaledHermiteExtremizer_rootMultiplicity {r : ℝ} (hr : 0 < r) (m : ℕ
 
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
+
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.scaledHermiteExtremizer_positive_cofactor
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.scaledHermiteExtremizer_rootMultiplicity

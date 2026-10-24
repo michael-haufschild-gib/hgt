@@ -1,105 +1,97 @@
-# Arithmetic defect rigidity: source constraints on escaping critical energy
+# Arithmetic defect rigidity: quantitative foundations
 
-Status: completion of existing proofs and individual audits in progress.
+Status: paper proofs complete; individual Lean checks in progress.
 
 ## Objective
 
-Develop the programme specified by §6 of `docs/reports/review-2410/astra.md`: construct quantitative tools retaining signed covariance, cofactor and successor data, moving forcing and source budgets; prove substantive unconditional arithmetic results; organize them under `GaloisForLFunctions.ArithmeticDefectRigidity` with a foundational README.
+Finish the existing foundational proof package for Arithmetic Defect Rigidity: quantitative
+source constraints preserving signed energy, forcing, cofactor operations and moving support.
+The package implements concrete parts of §6 of `docs/reports/review-2410/astra.md`.
 
-The full objective includes the exclusion problem for actual arithmetic defects. A normalized-profile framework alone does not complete it.
+The arithmetic no-escape theorem remains an open research objective. Completing these
+foundations does not assert source exclusion, critical-energy admission or RH.
 
-## Existing inputs
+## Mathematical outputs
 
-- Exact normalized Möbius receiver, energy ratios and cofactor inversion: `ArithmeticCompensationTheory.TheNormalizedReceiverBlowUpProfile`.
-- Horizon escape at the source growth scale: `ArithmeticCompensationTheory.TheReceiverEnergyEscapesToTheHorizon`.
-- Critical-energy, compensation, repairing-ideal and shared-budget programmes identified in the report.
+For each fixed damping `0 < ε < 1/2`:
 
-## Research obligations
+| Mechanism | Exact output |
+|---|---|
+| Two source scales | Positive power-law forcing floor, actual VK comparison, `E/F → 0`, `F/E → ∞`, and impossibility of a common scalar normalization. |
+| Signed Gram geometry | Exact receiver distance and determinant; forcing normalization loses the distance retained at receiver normalization. |
+| Cofactor tails | Uniform head/tail budgets and a source-defined growing window whose complementary tail retains the complete forcing. |
+| Successor/cofactor words | Explicit denominator and boundary cost; uniform displacement energy and complete-forcing work bounds, with fixed-word collapse on escape. |
+| Paid subtraction | Explicit forcing power plus globally bounded pronic remainder; signed antipodality and total-variation control, including arbitrary bounded moving localizations. |
+| Absolute forcing mass | Exact prime-power mass and logarithmic derivative, finite-horizon bounds, convergence and uniformly decaying new-cell budgets for bounded word errors. |
+| Boundary trace | Absolute actual-source Mellin trace, exact forcing coefficient, linear cofactor subtraction on its proved domain, and actual-image domain membership. |
+| Fixed trace-domain dilations | Absolute summability proved by finite blocks, exact mass scaling and harmonic trace weights for finite cofactor packets. |
+| Paid commutator | Exact rank-one dilation commutator and uniform trace budget, including arbitrary moving integer dilations. |
+| Energy quantiles | First crossings, monotonicity, bounded overshoot, diffuse energy transport and signed cofactor work with uniform endpoint error. |
+| Joint fixed-cofactor limits | One subsequence retaining all signed entries, unit receiver mass, finite packet positivity and simultaneous dilation contraction. |
+| Exact reconstruction | Residual/trace pair injective; residual kernel contained in the explicit inverse-power line; actual-source reconstruction. |
 
-1. Preserve signed pairings and forcing on moving energy supports.
-2. Obtain selective quantitative arithmetic relations and mixed covariance control.
-3. Define and price source operations on repairing obstructions.
-4. Control absolute horizon costs and global shared allocation.
-5. Develop multiplicity-sensitive anti-collapse and correctly signed effectivity/counting certificates.
-6. Identify which proved outputs are consumed by existing receivers, without placing the unpaid estimate in a premise.
+The existing THIM smooth-power expansion, Mellin-cell calculus, first-moment identity,
+countable compactness and weighted Möbius floor inversion are reused inputs, not new claims.
+Actual source membership and every arithmetic budget used above are proved independently of
+critical-energy admission.
 
-## Current mathematical question
+## Lean status
 
-Can normalized cofactor forcing be retained in a useful defect state when its pointwise limit vanishes but its global pronic norm does not? Determine the exact forcing scale and which pairings, rather than separate norms, admit compactness or arithmetic bounds.
+Eleven modules passed their required dependency checks:
 
-## Deliverables and verification
+- `TheForcingDominatesTheReceiver`
+- `ForcingScaleSeparation`
+- `FixedSuccessorsDisappearFromEscapingProfiles`
+- `TheCofactorTailCarriesTheForcing`
+- `TheForcingSplitsIntoAPowerAndAnAdmittedRemainder`
+- `TheForcingHasFinitePronicMass`
+- `TheActualReceiverHasAnAbsolutePoleTrace`
+- `TheRenormalizedCofactorIsAntipodalOnEscape`
+- `EnergyQuantilesRetainDiffuseEscape`
+- `ThePoleTraceDefinesALinearCofactorRenormalization`
+- `CofactorSuccessorWordsHaveABoundaryCost`
 
-- Own Lean subfolder and umbrella, wired into the appropriate umbrella.
-- Foundational README explaining motivation, objects, language, mechanisms, traps, research questions, tools, pillar theorems, programme relationships and contribution criteria.
-- Substantive theorem modules, unconditional actual-source consequences and explicit remaining gaps.
-- Foreground `lake --old env lean` checks of each new module; no umbrella/full build or raised limits.
-- Persistent research evidence in `logs/arithmetic-defect-rigidity-research.txt`.
+`FixedCofactorsHaveAHarmonicBoundaryTrace` is undergoing its required dependency check.
+Eight leaf modules await their ordinary checks:
 
-## Proof status
+- `TheReceiverIsTheGramTangent`
+- `ForcingEscapesAMovingCofactorWindow`
+- `BoundedWordErrorsHaveAnAbsoluteHorizonTail`
+- `EnergyQuantilesPreserveTheSignedCofactorPairing`
+- `CountableCofactorCovariancesHaveACommonLimit`
+- `CofactorRenormalizationHasABoundedDilationCommutator`
+- `TheResidualAndPoleTraceDetermineTheRow`
+- `MovingLocalizationsRetainTheSignedDensity`
 
-The forcing floor and actual-source VK comparison in `TheForcingDominatesTheReceiver.lean`
-passed Lean. `ForcingScaleSeparation.lean` also passed: vanishing receiver/forcing ratio,
-divergent inverse ratio, exact unsigned-majorant comparison and impossibility of one common
-scalar normalization. `FixedSuccessorsDisappearFromEscapingProfiles.lean` passed with bounded
-actual increments, quadratic successor cost and an admission-or-collapse dichotomy.
-`TheCofactorTailCarriesTheForcing.lean` passed with uniform cutoff and VK budgets, and convergence
-of every fixed signed cofactor tail to the complete forcing.
-`TheForcingSplitsIntoAPowerAndAnAdmittedRemainder.lean` passed its required dependency build:
-the explicit power subtraction and the global remainder budget are accepted.
-`TheForcingHasFinitePronicMass.lean` also passed: its exact prime-power mass, least-upper-bound
-property and logarithmic derivative identity are accepted.
-`TheActualReceiverHasAnAbsolutePoleTrace.lean` passed its dependency build: absolute endpoint
-trace, dominated boundary passage and exact forcing coefficient are accepted.
-`TheRenormalizedCofactorIsAntipodalOnEscape.lean` passed: signed antipodality and total-variation
-control of the localized signed density error are accepted.
-Twelve further modules have paper arguments and Lean sources; their audits remain unfinished:
+All twenty final checks that write no object files remain pending. Exact per-module status is
+maintained in `logs/arithmetic-defect-rigidity-final-audits.txt`. Accepted modules are wired
+into `formal/GaloisForLFunctions/ArithmeticDefectRigidity.lean`, which is imported by
+`MainTheorems.lean`; neither umbrella is compiled.
 
-- `MovingLocalizationsRetainTheSignedDensity`: arbitrary bounded horizon-dependent cell
-  multipliers retain the signed density with one uniform remainder budget.
-- `TheResidualAndPoleTraceDetermineTheRow`: exact inverse reconstruction, injectivity of
-  the residual/trace pair and containment of any residual kernel in one explicit row line.
-- `CofactorRenormalizationHasABoundedDilationCommutator`: exact rank-one commutator and
-  uniform source trace budget, including moving integer dilations.
-- `CountableCofactorCovariancesHaveACommonLimit`: one common subsequence retaining every fixed
-  signed cofactor covariance, unit receiver mass, finite packet positivity and simultaneous
-  dilation contraction.
-- `TheReceiverIsTheGramTangent`: exact signed Gram distance and determinant, degeneration in
-  forcing normalization, unit distance in receiver normalization.
-- `CofactorSuccessorWordsHaveABoundaryCost`: the word action's denominator/boundary sandwich,
-  actual receiver energy cost, bounded forcing work and fixed-word collapse in both quantities.
-- `ForcingEscapesAMovingCofactorWindow`: a source-defined growing cutoff
-  `floor(log(F_T/E_T))` beyond which the signed tail still carries the complete forcing.
-- `BoundedWordErrorsHaveAnAbsoluteHorizonTail`: absolute new-cell forcing and word-work
-  budgets decaying with cutoff, uniformly in every final horizon.
-- `ThePoleTraceDefinesALinearCofactorRenormalization`: a proved trace submodule, linear
-  boundary functional and cofactor subtraction, with actual-source membership and paid residual.
-- `FixedCofactorsHaveAHarmonicBoundaryTrace`: proved fixed-dilation domain stability and
-  exact harmonic trace budget for finite damped cofactor packets.
-- `EnergyQuantilesRetainDiffuseEscape`: source cell-energy and block budgets, first crossings,
-  monotonicity, uniform overshoot and normalized interval errors.
-- `EnergyQuantilesPreserveTheSignedCofactorPairing`: uniform transport of actual signed
-  renormalized cofactor work to energy coordinates, with explicit error tending to zero on escape.
+Checks run directly from `formal/` with `lake --old env lean`, one owned Lean process at a
+time. Missing dependency objects are generated only for already written consumers. No
+Python orchestration, `lake build`, umbrella build, axiom checks or raised limits are used.
 
-`EnergyQuantilesRetainDiffuseEscape` is being rechecked after repairs to finite-sum expansion,
-a successor/cast simplification loop and a subtype-coercion mismatch. The prior failed check
-generated no dependency object. Diagnostics are saved in
-`logs/arithmetic-defect-rigidity-quantile-audit.txt`.
+## Remaining research questions
 
-The foundational README explains these mechanisms and the complete programme. Its theorem
-claims must be reconciled with the finished audits. The own umbrella and MainTheorems import
-are wired for the eight accepted modules; remaining imports and final no-output-file audits remain. Global source exclusion, complete
-joint extraction, stronger signed covariance,
-repairing-module transport, global allocation, multiplicity-sensitive anti-collapse and source
-effectivity remain open. These are substantive parts of the user's goal, not optional follow-ups.
+These are unproved research leads, not completed paper arguments awaiting transcription:
 
-## Next mathematical targets
+- Reconcile fixed-cofactor covariance limits, energy quantiles and the full moving cofactor
+  boundary in one carrier retaining the necessary spatial data and rates.
+- Prove a selective arithmetic estimate excluding nonzero escaping states.
+- Determine general domain invariance and quantitative bounds for the full renormalized
+  cofactor operator.
+- Establish trace-domain membership and trace value of the inverse-power row before claiming
+  a nonzero residual kernel; exact reconstruction does not supply those analytic inputs.
+- Define domain-correct successor transport on repairing data, then prove its source-selective
+  effect. Row-valued bounds do not automatically establish the coefficient mean summability
+  required by the existing repairing ideal.
+- Supply full unbounded-receiver compensation, shared Gamma/polar allocation, multiplicity-
+  sensitive anti-collapse, source effectivity and correctly signed enumerative bounds.
 
-The smooth-power asymptotic, first-pronic-moment law, Mellin-cell dilation law and bounded-energy
-Mellin functional are existing THIM results, reused rather than reproposed. The forcing
-subtraction defines an affine residual of the actual source. A linear operator on the absolute
-trace domain is written but awaits audit; its boundedness and domain invariance are not proved.
+## Evidence
 
-The energy-quantile carrier and its signed renormalized cofactor pairing now have quantitative
-paper proofs and Lean sources. Countable fixed-cofactor covariance extraction has a paper proof and a Lean source awaiting
-audit. A complete joint state must additionally retain successor data, rates and moving support. The quantile transport does not provide
-the missing arithmetic exclusion estimate.
+The foundational README is `formal/GaloisForLFunctions/ArithmeticDefectRigidity/README.md`.
+Corpus searches, inspected source arguments, paper proofs and diagnostics are recorded in
+`logs/arithmetic-defect-rigidity-research.txt`. The report is rewritten around the mathematical
+results and open questions, without a history section.

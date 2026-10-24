@@ -133,3 +133,6 @@ theorem radiusHead_depth_sq_le_hermite_edge {q : XiZeroCopy}
 
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
+
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.localDivisorPolynomial_degree
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.radiusHead_depth_sq_le_hermite_edge

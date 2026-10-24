@@ -162,7 +162,7 @@ theorem tendsto_norm_sub_indicatorCutoff_Icc_atTop (φ : SoninL2) :
   exact hsqrt.congr fun R => Real.sqrt_sq (norm_nonneg _)
 
 private theorem inner_indicatorCutoff_additiveTranslationUnitary_eq_zero {R a : ℝ}
-    (hR : 0 < R) (ha : 2 * R < |a|) (φ ψ : SoninL2) :
+    (_hR : 0 < R) (ha : 2 * R < |a|) (φ ψ : SoninL2) :
     ⟪indicatorCutoff (Icc (-R) R) measurableSet_Icc φ,
       MellinL2.additiveTranslationUnitary a
         (indicatorCutoff (Icc (-R) R) measurableSet_Icc ψ)⟫_ℂ = 0 := by
@@ -184,7 +184,7 @@ private theorem inner_indicatorCutoff_additiveTranslationUnitary_eq_zero {R a : 
       have ht_abs : |t| ≤ R := abs_le.mpr ht
       have hta_abs : |t + a| ≤ R := abs_le.mpr hmem
       have habs : |a| ≤ |t + a| + |t| := by
-        calc |a| = |(t + a) - t| := by ring_nf
+        calc |a| = |(t + a) - t| := by congr 1; ring
           _ ≤ |t + a| + |t| := abs_sub _ _
       linarith
     rw [indicator_of_notMem hta, inner_zero_right]
@@ -687,7 +687,7 @@ theorem forall_toeplitz_re_nonneg_iff_eq_zero {τ : ℝ → ℂ} (hτ : Continuo
     rw [abs_le]
     constructor <;> linarith
   have htri : |κ u₀ * M ^ 2| ≤ |I_u| + |I_u - κ u₀ * M ^ 2| := by
-    calc |κ u₀ * M ^ 2| = |I_u - (I_u - κ u₀ * M ^ 2)| := by ring_nf
+    calc |κ u₀ * M ^ 2| = |I_u - (I_u - κ u₀ * M ^ 2)| := by congr 1; ring
       _ ≤ |I_u| + |I_u - κ u₀ * M ^ 2| := abs_sub _ _
   rw [abs_mul, abs_of_pos (sq_pos_of_pos hM_pos)] at htri
   have hε_def : |κ u₀| = 2 * ε := by unfold ε; ring
@@ -1025,7 +1025,7 @@ theorem integral_norm_sq_ccmMultiPacket_eq {ι : Type*} [Fintype ι]
       rw [abs_mul, abs_of_pos hL_pos, mul_comm |α j - α i| L]
       exact (div_le_iff₀ hα_pos).mp hle_L
     have hsum_abs : |(α j - α i) * L| ≤ |x - α i * L| + |x - α j * L| := by
-      calc |(α j - α i) * L| = |(x - α i * L) - (x - α j * L)| := by ring_nf
+      calc |(α j - α i) * L| = |(x - α i * L) - (x - α j * L)| := by congr 1; ring
         _ ≤ |x - α i * L| + |-(x - α j * L)| := abs_add_le _ _
         _ = |x - α i * L| + |x - α j * L| := by rw [abs_neg]
     rcases le_or_gt g₀.radius |x - α i * L| with hi | hi

@@ -33,8 +33,10 @@ private theorem sum_mellin_dilation_blocks (σ : ℝ) (f : ℕ → ℝ) (hf0 : f
           f T * mellinCell σ (T * j + r) := by
       intro r hr
       rw [show (T * j + r) / j = T by
-        rw [Nat.add_comm, Nat.add_mul_div_right _ _ j.property,
-          Nat.div_eq_of_lt (mem_range.mp hr), zero_add]]
+        calc
+          (T * j + r) / j = (r + T * (j : ℕ)) / (j : ℕ) := by rw [Nat.add_comm]
+          _ = r / (j : ℕ) + T := Nat.add_mul_div_right r T j.property
+          _ = T := by rw [Nat.div_eq_of_lt (mem_range.mp hr), zero_add]]
     rw [sum_congr rfl hdiv, ← mul_sum, sum_range_mellinCell]
     rcases Nat.eq_zero_or_pos T with rfl | hT
     · simp only [hf0, zero_mul, mul_zero]
@@ -120,9 +122,14 @@ theorem poleTrace_traceDilation (ε : SubcriticalDamping) (j : ℕ+) (v : poleTr
   change (∑' n, v (n / j) * mellinCell (1 - (ε : ℝ)) n) / (1 - (ε : ℝ)) =
     (j : ℝ) ^ (-(1 - (ε : ℝ))) *
       ((∑' n, v n * mellinCell (1 - (ε : ℝ)) n) / (1 - (ε : ℝ)))
-  rw [tsum_comp_div_mul_mellinCell v.property.1 j.property v.property.2
-    (summable_dilated_poleTrace ε v j)]
-  ring
+  have hd := tsum_comp_div_mul_mellinCell (σ := 1 - (ε : ℝ))
+    (f := (v : ℕ → ℝ)) (j := (j : ℕ)) v.property.1 j.property v.property.2
+    (summable_dilated_poleTrace ε v j)
+  calc
+    _ = ((j : ℝ) ^ (-(1 - (ε : ℝ))) *
+        ∑' n, v n * mellinCell (1 - (ε : ℝ)) n) / (1 - (ε : ℝ)) :=
+      congrArg (fun x : ℝ => x / (1 - (ε : ℝ))) hd
+    _ = _ := by ring
 
 /-- At the cofactor pole, a damped cofactor has exactly the harmonic trace weight `1/j`. -/
 theorem poleTrace_weighted_dilation (ε : SubcriticalDamping) (j : ℕ+) (v : poleTraceDomain ε) :

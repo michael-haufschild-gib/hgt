@@ -20,7 +20,7 @@ private theorem forwardHeat_sum {ι : Type*} (s : ℝ) (A : Finset ι) (f : ι �
     forwardPolyHeat s (∑ i ∈ A, f i) = ∑ i ∈ A, forwardPolyHeat s (f i) := by
   classical
   induction A using Finset.induction_on with
-  | empty => simpa only [Finset.sum_empty] using forwardPolyHeat_C s 0
+  | empty => simpa only [Finset.sum_empty, C_0] using forwardPolyHeat_C s 0
   | insert a A ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, forwardPolyHeat_add, ih]
 
 /-- Inverse unit Gaussian heat expands a polynomial in the Hermite basis. -/
@@ -148,7 +148,10 @@ theorem nonnegative_root_le_hermiteEdge_of_heat_cone {p : ℝ[X]} {n : ℕ}
     (hdeg : p.natDegree = n + 2) (hp : ∀ x : ℝ, 0 ≤ p.eval x)
     (hc : CoeffNonneg (forwardPolyHeat (1 / 2) p)) {x : ℝ} (hx : p.eval x = 0) :
     x ≤ hermiteEdge n := by
-  have hmin : IsLocalMin p.eval x := Filter.Eventually.of_forall fun y => by rw [hx]; exact hp y
+  have hmin : IsLocalMin p.eval x := Filter.Eventually.of_forall fun y => by
+    change p.eval x ≤ p.eval y
+    rw [hx]
+    exact hp y
   exact stationary_le_hermiteEdge_of_heat_cone hdeg hc (hmin.hasDerivAt_eq_zero (p.hasDerivAt x))
 
 /-- At the boundary, a globally nonnegative polynomial is the shifted Hermite extremizer. -/
@@ -159,7 +162,10 @@ theorem nonnegative_edge_root_rigidity {p : ℝ[X]} {n : ℕ}
     ∃ c : ℝ, 0 < c ∧ p =
       C c * (hermiteReal (n + 2) - C ((hermiteReal (n + 2)).eval (hermiteEdge n))) := by
   have hmin : IsLocalMin p.eval (hermiteEdge n) :=
-    Filter.Eventually.of_forall fun y => by rw [hx]; exact hp y
+    Filter.Eventually.of_forall fun y => by
+      change p.eval (hermiteEdge n) ≤ p.eval y
+      rw [hx]
+      exact hp y
   have hd := hmin.hasDerivAt_eq_zero (p.hasDerivAt (hermiteEdge n))
   have h := inverseHeat_edge_root_rigidity (degree_unit_heat hdeg) hc
     (by rwa [inverse_unit_heat]) (by rwa [inverse_unit_heat])
@@ -199,7 +205,10 @@ theorem nonnegative_root_le_sqrt_mul_hermiteEdge {p : ℝ[X]} {n : ℕ} {lam : �
     (hlam : 0 < lam) (hdeg : p.natDegree = n + 2) (hp : ∀ y : ℝ, 0 ≤ p.eval y)
     (hc : CoeffNonneg (forwardPolyHeat (lam / 2) p)) {x : ℝ} (hx : p.eval x = 0) :
     x ≤ Real.sqrt lam * hermiteEdge n := by
-  have hmin : IsLocalMin p.eval x := Filter.Eventually.of_forall fun y => by rw [hx]; exact hp y
+  have hmin : IsLocalMin p.eval x := Filter.Eventually.of_forall fun y => by
+    change p.eval x ≤ p.eval y
+    rw [hx]
+    exact hp y
   exact stationary_le_sqrt_mul_hermiteEdge hlam hdeg hc (hmin.hasDerivAt_eq_zero (p.hasDerivAt x))
 
 /-- At every positive scale, boundary equality determines the entire polynomial. -/

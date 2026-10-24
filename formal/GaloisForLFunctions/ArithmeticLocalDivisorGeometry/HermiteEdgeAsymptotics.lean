@@ -1,21 +1,6 @@
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.HermiteRootEdge
 import Mathlib.Analysis.SpecificLimits.Basic
 
-/-!
-# The largest Hermite zero at large degree
-
-Summing the positive quotient recurrence over a terminal block gives a lower bound matching
-the power-based upper bound. Two elementary order limits yield the sharp squared-edge scale.
--/
-
-/-!
-# The asymptotic Hermite edge
-
-Summing the three-term recurrence over a terminal block of positive Hermite ratios gives
-the lower bound. Together with the power upper bound it proves that the squared largest
-zero divided by degree tends to four, without a spectral or Airy asymptotic input.
--/
-
 open Polynomial Filter Topology
 open GaloisForLFunctions.HTGeometry
 namespace GaloisForLFunctions.ArithmeticLocalDivisorGeometry
@@ -131,11 +116,14 @@ private theorem edge_ratio_lower (k j : ℕ) (hj : k + 1 ≤ j) :
   subst j
   have h := div_le_div_of_nonneg_right (edgeBlockConstant_mul_le n k)
     (show (0 : ℝ) ≤ (n + k + 1 : ℕ) + 1 by positivity)
-  have hden : ((n + k + 1 : ℕ) : ℝ) + 1 ≠ 0 := by positivity
-  convert h using 1
-  push_cast
-  field_simp
-  ring
+  have he : edgeBlockConstant k * (((k : ℝ) + 2) *
+      ((n + k + 1 : ℕ) / ((n + k + 1 : ℕ) + 1 : ℝ)) - (k + 1)) =
+      edgeBlockConstant k * n / ((n + k + 1 : ℕ) + 1 : ℝ) := by
+    push_cast
+    field_simp
+    ring
+  rw [he]
+  exact h
 
 private theorem edge_ratio_upper (j : ℕ) : hermiteEdge j ^ 2 / (j + 1 : ℝ) < 4 := by
   have h := hermiteEdge_lt_two_sqrt j
@@ -150,7 +138,8 @@ theorem tendsto_hermiteEdge_sq_div_degree :
     Tendsto (fun j : ℕ => hermiteEdge j ^ 2 / (j + 1 : ℝ)) atTop (𝓝 4) := by
   have hbase := tendsto_natCast_div_add_atTop (1 : ℝ)
   have hconst : Tendsto edgeBlockConstant atTop (𝓝 4) := by
-    simpa only [edgeBlockConstant, one_pow, mul_one] using (hbase.pow 2).const_mul 4
+    change Tendsto (fun k : ℕ => 4 * ((k : ℝ) / (k + 1)) ^ 2) atTop (𝓝 4)
+    simpa only [one_pow, mul_one] using (hbase.pow 2).const_mul 4
   apply tendsto_order.mpr
   constructor
   · intro a ha
@@ -174,8 +163,9 @@ theorem tendsto_hermiteEdge_sq_div_successor_degree :
     filter_upwards [eventually_ge_atTop N] with j hj
     omega
   have hr : Tendsto (fun j : ℕ => ((j : ℝ) + 1) / (j + 2)) atTop (𝓝 1) := by
-    simpa only [Function.comp_apply, Nat.cast_add, Nat.cast_one, add_assoc, one_add_one_eq_two]
-      using (tendsto_natCast_div_add_atTop (1 : ℝ)).comp hshift
+    apply ((tendsto_natCast_div_add_atTop (1 : ℝ)).comp hshift).congr
+    intro j
+    simp only [Function.comp_apply, Nat.cast_add, Nat.cast_one, add_assoc, one_add_one_eq_two]
   have hp := tendsto_hermiteEdge_sq_div_degree.mul hr
   rw [mul_one] at hp
   refine hp.congr fun j => ?_
@@ -190,8 +180,11 @@ theorem tendsto_even_hermiteEdge_sq_div_degree :
     intro N
     filter_upwards [eventually_ge_atTop N] with m hm
     omega
-  simpa only [Function.comp_apply, Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat, add_assoc]
-    using tendsto_hermiteEdge_sq_div_successor_degree.comp hmap
+  apply (tendsto_hermiteEdge_sq_div_successor_degree.comp hmap).congr
+  intro m
+  simp only [Function.comp_apply, Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat]
+  congr 1
+  ring
 
 /-- In degree `2d`, the squared largest zero of `He_(2d-1)` divided by `2d` tends to four. -/
 theorem tendsto_hermiteDerivativeEdge_sq_div_even_degree :
@@ -208,3 +201,5 @@ theorem tendsto_hermiteDerivativeEdge_sq_div_even_degree :
 
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
+
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.tendsto_even_hermiteEdge_sq_div_degree

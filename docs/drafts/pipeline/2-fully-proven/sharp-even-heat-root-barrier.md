@@ -126,8 +126,15 @@ Current resumption targets extremizer attainment, exact double roots and positiv
 the complete scaled heat-time ray, the elementary Hermite edge limit, sharpness of four,
 and the central-masking comparison. Existing `/tmp/aldg_extremizers_draft.lean` and
 `/tmp/aldg_edge_asymptotic_draft.lean` have been restored as programme leaves for checking.
-The inherited foreground dependency batch (shell PID `65216`) is still running; its
-completion and logs must be inspected before starting another owned Lean process.
+Concurrent work is consolidated into `HermiteExtremizers`, `HermiteExtremizerFactorization`,
+`HermiteEdgeAsymptotics`, and `HermiteOptimalHeat`; duplicate alternative leaves were removed.
+An independent foreground check of `HermiteEdgeAsymptotics` is active (session `8173`),
+building its missing olean because `HermiteOptimalHeat` imports it. The other task's dependency
+batch (shell PID `65216`) owns the support checks. Dilation passed; Sonin and barrier failures
+have been corrected but still need successful retries and final audits.
+The first asymptotic check completed: the recurrence and block inequalities passed; four
+elaboration failures in the rational lower bound and composition of limits were corrected.
+The direct paper indexing `hermiteEdge (2*d-2)^2 / (2*d) → 4` is also included.
 No new mathematical premise or numerical computation is permitted.
 
 The user cleared the goal before this theorem's Lean gates closed. Complete unchecked drafts

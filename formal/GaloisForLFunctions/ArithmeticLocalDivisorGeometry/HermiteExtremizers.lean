@@ -1,22 +1,6 @@
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.HermiteSonin
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.HermiteHeatRootBarrier
 
-/-!
-# Sharp Hermite heat extremizers
-
-Subtracting the outermost critical value gives a globally nonnegative even polynomial with
-exactly two real roots. Its full coefficient cone begins at the unit Gaussian heat time;
-positive dilation gives every scale, and boundary equality determines the polynomial.
--/
-
-/-!
-# Attainment of the sharp heat-root barrier
-
-Shifting an even Hermite polynomial by its outermost critical value gives a nonnegative
-extremizer. Its only real roots are the outer critical pair, and its coefficient heat cone
-starts exactly at one half. Dilation gives every positive Gaussian scale.
--/
-
 open Polynomial
 open GaloisForLFunctions.HTGeometry
 namespace GaloisForLFunctions.ArithmeticLocalDivisorGeometry
@@ -42,8 +26,9 @@ theorem hermiteExtremizer_monic (m : ℕ) : (hermiteExtremizer m).Monic := by
   rw [← coeff_natDegree, hermiteExtremizer_degree]
   simp only [hermiteExtremizer, coeff_sub, coeff_C,
     if_neg (show 2 * m + 4 ≠ 0 by omega), sub_zero]
-  rw [← natDegree_hermiteReal (2 * m + 4), coeff_natDegree]
-  exact ((hermite_monic (2 * m + 4)).map (Int.castRingHom ℝ)).leadingCoeff
+  have hc : (hermiteReal (2 * m + 4)).leadingCoeff = 1 :=
+    ((hermite_monic (2 * m + 4)).map (Int.castRingHom ℝ)).leadingCoeff
+  simpa only [← coeff_natDegree, natDegree_hermiteReal] using hc
 
 @[simp] theorem hermiteExtremizer_eval_edge (m : ℕ) :
     (hermiteExtremizer m).eval (hermiteEdge (2 * m + 2)) = 0 := by
@@ -148,6 +133,14 @@ theorem scaledHermiteExtremizer_degree {r : ℝ} (hr : 0 < r) (m : ℕ) :
   rw [scaledHermiteExtremizer, natDegree_C_mul (pow_ne_zero _ hr.ne'), natDegree_comp,
     natDegree_C_mul (inv_ne_zero hr.ne'), natDegree_X, mul_one, hermiteExtremizer_degree]
 
+theorem scaledHermiteExtremizer_monic {r : ℝ} (hr : 0 < r) (m : ℕ) :
+    (scaledHermiteExtremizer r m).Monic := by
+  change (scaledHermiteExtremizer r m).leadingCoeff = 1
+  rw [← coeff_natDegree, scaledHermiteExtremizer_degree hr m]
+  simp only [scaledHermiteExtremizer, coeff_C_mul, comp_C_mul_X_coeff]
+  rw [← hermiteExtremizer_degree m, coeff_natDegree, (hermiteExtremizer_monic m).leadingCoeff,
+    one_mul, ← mul_pow, mul_inv_cancel₀ hr.ne', one_pow]
+
 theorem scaledHermiteExtremizer_nonneg {r : ℝ} (hr : 0 < r) (m : ℕ) (x : ℝ) :
     0 ≤ (scaledHermiteExtremizer r m).eval x := by
   simp only [scaledHermiteExtremizer, eval_mul, eval_C, eval_comp, eval_X]
@@ -237,3 +230,6 @@ theorem nonnegative_boundary_eq_scaledHermiteExtremizer {p : ℝ[X]} {r : ℝ}
 
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
+
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.coeffNonneg_heat_scaledHermiteExtremizer_iff
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.nonnegative_boundary_eq_scaledHermiteExtremizer

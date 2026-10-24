@@ -123,3 +123,7 @@ theorem tendsto_central_to_optimal_heat_times {a : ℝ} (ha : 0 < a) :
 
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
+
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.isLeast_fixed_depth_heat
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.hermite_degree_constant_optimal
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.tendsto_central_to_optimal_heat_times

@@ -20,13 +20,25 @@ The walls do not prove that mathematics lacks suitable tools, or that a new fiel
 
 ## 2. Scope and evidence
 
-I read all five requested reports, all fifteen requested programme READMEs, and Fable's report in full. These and this report were the only repository Markdown documents read. I used the Lean corpus search tool, then inspected selected Lean definitions, statements and proof text.
+The review covers all five requested reports, all fifteen requested programme READMEs, and
+Fable's report. The Lean corpus search tool supplies leads whose definitions, statements and
+proof text are then inspected. The Arithmetic Defect Rigidity README and proof card document
+the foundational results developed from this blueprint.
 
-**No builds, Lean compilation or axiom checks were run.** “Corpus result” below means a result recorded in the requested documents or present in inspected Lean source; it does not claim a fresh dependency audit. The distinctions below concern the statements and proof text inspected, not a newly certified build of the repository.
+“Corpus result” means a result recorded in the requested documents or present in inspected
+Lean source; it does not claim a fresh audit of the repository. Individual checks of the
+Arithmetic Defect Rigidity modules are recorded in the
+[audit ledger](../../../logs/arithmetic-defect-rigidity-final-audits.txt).
+No `lake build`, umbrella compilation or axiom checks are used. Dependency objects are
+generated only when missing and required by a written consumer.
 
 Searches also found relevant Lean work in SignedSuccessorArithmetic. Its Markdown was not opened. This matters: proposing a successor–dilation cocycle or finite-field Jacobi-sum calibration as a new construction would duplicate work already present.
 
-The durable research records are [the corpus research log](../../../logs/astra-research-2026-10-24.txt) and [the Fable comparison evidence](../../../logs/astra-fable-review-2026-10-24.txt). The report distinguishes **corpus results**, **deductions from those results**, and **unproved research targets**.
+The durable research records are [the corpus research log](../../../logs/astra-research-2026-10-24.txt),
+[the Fable comparison evidence](../../../logs/astra-fable-review-2026-10-24.txt), and
+[the defect-rigidity proof log](../../../logs/arithmetic-defect-rigidity-research.txt).
+The report distinguishes **corpus results**, **deductions from those results**, and
+**unproved research targets**.
 
 ## 3. What the walls now ask
 
@@ -346,9 +358,18 @@ These are requirements for theorem design, not additional axioms about zeta.
 
 A useful flagship would be an **arithmetic no-escape theorem**:
 
-> For the actual centered damped Möbius prefixes, every sequence with diverging pronic energy has a nonzero normalized defect state preserving the full cofactor, successor and forcing identities; the actual arithmetic identities exclude every such state for dampings in a family sufficient for the admission receiver.
+> For the actual centered damped Möbius prefixes, every sequence with diverging pronic energy has a nonzero normalized defect state preserving the signed cofactor and renormalized forcing relations, together with the moving arithmetic observations and their proved costs; an independently proved source estimate excludes every such state for dampings in a family sufficient for the admission receiver.
 
 This contains two research tasks, not a proved theorem. The extraction half must prevent mass or signed covariance from disappearing. The exclusion half must use an explicit source property, not “the state is positive” or an RH-equivalent hypothesis.
+
+Fixed successor information cannot be assumed to remain nontrivial at receiver normalization.
+The [finite-word theorem](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/CofactorSuccessorWordsHaveABoundaryCost.lean)
+proves that each fixed successor–cofactor word collapses to its pure dilation on escape.
+Its positive output is a quantitative moving-word budget: squared displacement costs at most
+$B(w)^2$, while complete-forcing work costs at most $B(w)L_\varepsilon$. Here $B(w)$ is the
+total successor translation length and $L_\varepsilon=\sum_{n\ge1}\rho_\varepsilon(n)/(n(n+1))$
+is the proved finite forcing mass. A proposed state must
+either respect that collapse or retain a different, explicitly priced observation.
 
 An alternative flagship is a constructive estimate of the form in §5.2. Either would turn existing compensation and continuation machinery into a producer.
 
