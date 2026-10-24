@@ -535,8 +535,20 @@ defect of the inversion law is moreover **nonnegative**, `0 ≤ ρ_ε(n) ≤ n`,
 `(density).re = 1/realZetaSeries(1+ε)`, so only the positive excursions of the centred source feed
 the explicit term and the criterion becomes one-sided: a sublinear bound on the *positive part* of
 the source against an explicit positive weight, plus a lower bound on the off-diagonal
-anti-correlation (`TheInversionDefectIsPositive`). A criterion that reads the signs of the source is
-what the regime below half damping demands.
+anti-correlation (`TheInversionDefectIsPositive`). Crucially, the inversion defect is the negative
+majorant prefix times the density, `ρ_ε(n) = −m₀(ε) A_ε^{maj}(n)`, so `‖ρ_ε‖_T² = m₀(ε)² E_T^{maj}(ε)`
+(`pronicNorm_inversionDefect_sq_eq`). Hence `‖ρ_ε‖_T` diverges for `0 < ε ≤ ½`
+(`not_bddAbove_pronicNorm_inversionDefect_of_le_half`) and is uniformly bounded for `ε > ½`
+(`exists_pronicNorm_inversionDefect_le_of_half_lt`), establishing the exact threshold dichotomy
+`Admits majorantEnergy ε ↔ ½ < ε` (`admits_majorantEnergy_iff_half_lt`) and unconditional one-sided
+sublinear pairings `⟪A_ε⁺, ρ_ε⟫_T ≤ κ√E_T(ε)` and `|⟪A_ε, D^{ζ_ε,≥2}A_ε⟫_T| ≤ κ√E_T(ε)` above half
+damping (`exists_onesided_sublinear_pairings_of_half_lt`). At any damping `ε > 0` and integer scale
+`q ≥ 2`, admission `Admits dampedMobiusEnergy ε`, `ε ∈ receiverDampings`, localized block-energy
+admission `Admits (dampedBlockEnergy q) ε`, and the combined sublinear pairing bound
+`⟪A_ε, ρ_ε⟫_T − ⟪A_ε, D^{ζ_ε,≥2}A_ε⟫_T ≤ κ√E_T(ε) + κ'` are four-way equivalent
+(`singleDamping_admission_tfae`), with `dampedBlockEnergy q ε` unconditionally bounded above
+`Θ − ½` and on the Vinogradov–Korobov band (`admits_dampedBlockEnergy_of_zetaZeroAbscissa_sub_half_lt`,
+`exists_dampedBlockEnergy_le_on_vinogradovKorobovBand`).
 
 ### Dilation graph and block energy
 
@@ -868,10 +880,21 @@ To be built:
    unconditionally on `(Θ − ½, ∞)` and on the Vinogradov–Korobov band
    (`exists_relative_precision_inv_T_primePair_above_zeroWidth`,
    `exists_relative_precision_inv_T_primePair_on_vinogradovKorobovBand`).
-4. **The one-sided sublinear pairing at a single damping.** Bound the positive part of the centred
-   source against the explicit positive inversion defect, and the anti-correlation with its own
-   proper dilations, each by `κ√E_T + κ'` at one damping. This gives admission with no transport at
-   all; above half damping the dilation series does it.
+4. **The one-sided sublinear pairing at a single damping (Resolved: `SingleDampingSublinearPairingAndBlockEnergy`).**
+   The inversion defect satisfies `ρ_ε(n) = −m₀(ε) A_ε^{maj}(n)` and `‖ρ_ε‖_T² = m₀(ε)² E_T^{maj}(ε)`
+   (`inversionDefect_eq_neg_density_mul_majorantCenteredPrefix`, `pronicNorm_inversionDefect_sq_eq`),
+   so `‖ρ_ε‖_T` diverges on `(0, ½]` (`not_bddAbove_pronicNorm_inversionDefect_of_le_half`) and is
+   bounded on `(½, ∞)` (`exists_pronicNorm_inversionDefect_le_of_half_lt`), giving the exact
+   majorant threshold `Admits majorantEnergy ε ↔ ½ < ε` (`admits_majorantEnergy_iff_half_lt`) and
+   unconditional one-sided sublinear pairings `⟪A_ε, ρ_ε⟫_T ≤ ⟪A_ε⁺, ρ_ε⟫_T ≤ κ√E_T(ε)` and
+   `|⟪A_ε, D^{ζ_ε,≥2}A_ε⟫_T| ≤ κ√E_T(ε)` for `ε > ½`
+   (`exists_onesided_sublinear_pairings_of_half_lt`). At any `ε > 0` and integer scale `q ≥ 2`,
+   `Admits dampedMobiusEnergy ε`, `ε ∈ receiverDampings`, `Admits (dampedBlockEnergy q) ε`, and the
+   combined sublinear pairing bound `⟪A_ε, ρ_ε⟫_T − ⟪A_ε, D^{ζ_ε,≥2}A_ε⟫_T ≤ κ√E_T(ε) + κ'` are
+   four-way equivalent (`singleDamping_admission_tfae`), and `dampedBlockEnergy q` is unconditionally
+   controlled above `Θ − ½` (`admits_dampedBlockEnergy_of_zetaZeroAbscissa_sub_half_lt`) and on the
+   Vinogradov–Korobov band (`exists_dampedBlockEnergy_le_on_vinogradovKorobovBand`,
+   `eventually_dampedBlockEnergy_le_vk_saving`).
 5. **Which terms obstruct.** Express the work through the owned divisor, Vaughan and logarithmic
    covariance identities and classify the terms whose negative part is not controlled uniformly in
    the horizon. The Markov face says one such term is the jump energy of the arithmetic chain; the

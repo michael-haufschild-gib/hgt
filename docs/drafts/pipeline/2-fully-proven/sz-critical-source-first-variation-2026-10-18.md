@@ -231,18 +231,28 @@ Leaf status:
 - `SuzukiCriticalTranslatedCusp.lean` compiles: the squared uniform cusp bound, its
   explicit vanishing error, uniform convergence over all translations, and
   specialization of the primary first variation to compact `C²` sources. Its
-  olean was produced for the pole-pairing leaf. Final direct-source check and
-  public-declaration axiom audit remain pending.
+  olean was produced for the pole-pairing leaf. Its 11 public declarations passed
+  the transitive axiom audit; only `propext`, `Classical.choice`, and `Quot.sound`
+  occur. Final direct-source check remains pending.
 - `SuzukiCriticalLogKernel.lean` compiles: exact logarithmic transport of the literal
   Beta–pole convolution and the full signed source identity. The pole identity
   holds for all real logarithmic arguments: for nonpositive arguments both
   integration regions are empty. The signed source identity is asserted for
   positive arguments, avoiding the source's separately totalized endpoint. Its
-  olean was produced for the pole-pairing leaf; final axiom audit remains pending.
-- `SuzukiCriticalPolePairing.lean` (draft): `L¹` compact-test Fubini, the tested
+  olean was produced for the pole-pairing leaf. All 5 public declarations passed
+  the same axiom audit; final direct-source check remains pending.
+- `SuzukiCriticalPolePairing.lean` compiles: `L¹` compact-test Fubini, the tested
   pole limit, translated full-source convergence, and the full archimedean
   source first variation with the growing pole retained. Arithmetic assembly
-  and identification with the complete Weil functional still remain.
+  and identification with the complete Weil functional still remain. Its 10
+  public declarations passed the same axiom audit. The cutoff and source
+  integrability are derived from compact support. Final direct-source check
+  remains pending. The three finished leaves are wired into `RHTower.lean`;
+  the umbrella has not been compiled.
+- Concurrently available drafts `SuzukiCriticalWeilNormalization.lean` and
+  `SuzukiCriticalArithmeticVariation.lean` cover the remaining finite arithmetic
+  assembly and Gamma normalization. Their files are preserved and reused; they
+  do not yet supply a verified complete-source capstone in this checkpoint.
 
 For the remaining compact-test Fubini step, the primary density belongs to
 `L¹`, but need not belong to `L²` at small shifts. Use `L¹` convolution

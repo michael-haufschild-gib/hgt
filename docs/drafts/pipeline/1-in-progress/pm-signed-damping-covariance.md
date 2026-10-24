@@ -762,3 +762,70 @@ produced no significant closed paper proof, no Lean module, no audit, and
 no RH proof. No computation, build, subagent, added axiom, or hidden premise
 was used. The goal remains active, with no user-input or external-state
 blocker.
+
+
+## 2026-10-24: two-scale connection and the literal sector profile
+
+Previous turn: no frontier progress. This batch tested whether compatible
+prime-sector decompositions can supply the missing absolute estimate.
+The exact two-scale source and projection formulas were read, not inferred
+from their theorem names.
+
+Write S_P for the complete Ramanujan prefix at cutoff P^2-1, L_P for
+`pmRamanujanLargePrimeSector`, and C_P=S_P-L_P. The established estimate
+for S_Q-S_P cancels the same cutoff-independent divisor remainder on both
+sides. It controls cutoff error, not that remainder. Telescoping these
+estimates on a fixed common head does not control energy in newly added
+physical cells. No summation over enlarging heads was justified by it.
+
+### Source-specific direction attempt
+
+The exact prime-cofactor head theorem supplies, for Q>=2 and N<Q,
+
+`L_Q(N) = H_Q m N + sum_(Q<p<=2Q) w_p S_(floor(Q^2/p)-1)(N)`,
+
+where `w_p=1/(p^(1+epsilon)-1)>0`, `H_Q=sum w_p`, m is the actual density,
+and the subscript on S in this displayed formula denotes the literal
+Ramanujan cutoff, not its square-root parameter. This is just
+`pmRamanujanPrimeCofactorPacket_head` summed over the selected prime band.
+No cofactor or mean is discarded.
+
+For 0<epsilon and 0<=a<=1 with 1<epsilon+a, the existing uniform estimate
+`norm_pmPowerDampedRamanujanCumulativePrefix_le_rpow` consequently gives
+
+`|L_Q(N)-H_Q m N| <= H_Q C_(epsilon,a) N^a`,
+`C_(epsilon,a)=sum_(d>=1) d^(-(epsilon+a))`.
+
+Thus the sector's common-head direction can be compared with the explicit
+linear density profile. This was the proposed new input beyond scalar
+amplitude convergence. Its significance test fails for the present goal:
+the correction is a weighted average of the complete shorter-cutoff
+prefixes whose absolute energy is unpaid. Direction comparison alone neither
+bounds that average in critical energy nor bounds new physical shells.
+The generic projector identity
+
+`R_Q-R_P = (I-Pi_Q)(S_Q-S_P) + (Pi_P-Pi_Q)S_P`
+
+also retains the complete source norm in its connection term. Moreover,
+using a projector defined on a common head changes the full-head amplitude
+used by `pmCompensationAmplitude`; these were not silently identified.
+No direction-only theorem was formalized as a substitute for absolute
+signed compensation.
+
+### Outcome
+
+Corpus searches covered actual interscale connection energy, exact sector
+definitions, sector directions, and density subtraction. The source
+`PMRamanujanGrowingCofactorHead` confirms the selected band is (Q,2Q],
+with every cofactor through floor(Q^2/p), and that its head contains the
+linear density term as well as the centered prefix. The frontier and
+killed-route entries explicitly retain the distinction between relative
+alignment and absolute admission.
+
+No actual horizon-uniform signed estimate, significant closed paper proof,
+or Lean premise discharge was obtained. No Lean build, compiled artifact,
+umbrella edit, numerical experiment, web search, subagent, added axiom, or
+conditional replacement for the missing estimate was introduced. Goal
+remains active; there is no user-input or external-state blocker. The
+next attempt must control the actual signed energy in the growing physical
+shell, not just the changing cutoff or the coherent sector's direction.

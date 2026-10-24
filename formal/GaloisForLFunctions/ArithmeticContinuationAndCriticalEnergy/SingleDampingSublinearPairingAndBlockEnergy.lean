@@ -240,7 +240,7 @@ theorem exists_onesided_sublinear_pairings_of_half_lt {ε : ℝ} (hε : 1 / 2 < 
         ≤ S * dampedMobiusEnergy ε T :=
           hoff.trans (mul_le_mul_of_nonneg_right (hS T) (dampedMobiusEnergy_nonneg ε T))
       _ = (S * Real.sqrt (dampedMobiusEnergy ε T)) * Real.sqrt (dampedMobiusEnergy ε T) := by
-          rw [← Real.sq_sqrt (dampedMobiusEnergy_nonneg ε T)]; ring
+          rw [mul_assoc, Real.mul_self_sqrt (dampedMobiusEnergy_nonneg ε T)]
       _ ≤ (S * Real.sqrt (max B 0)) * Real.sqrt (dampedMobiusEnergy ε T) :=
           mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hsqrt_le hS0) (Real.sqrt_nonneg _)
       _ ≤ max K (S * Real.sqrt (max B 0)) * Real.sqrt (dampedMobiusEnergy ε T) :=

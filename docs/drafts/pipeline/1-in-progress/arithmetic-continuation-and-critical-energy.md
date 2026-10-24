@@ -284,3 +284,16 @@ This card is the programme card: folder, umbrella, README and the continuation c
     `Θ − ½` (`exists_relative_precision_inv_T_primePair_above_zeroWidth`,
     `tendsto_relative_precision_primePair_zero_above_zeroWidth`) and on the Vinogradov–Korobov band
     (`exists_relative_precision_inv_T_primePair_on_vinogradovKorobovBand`).
+- 2026-10-24 (cont. 3) — Open Problem 4 resolved (`SingleDampingSublinearPairingAndBlockEnergy`):
+  - Exact link between the inversion defect and the majorant source:
+    `inversionDefect_eq_neg_density_mul_majorantCenteredPrefix`, `pronicNorm_inversionDefect_sq_eq`,
+    `not_bddAbove_pronicNorm_inversionDefect_of_le_half`, `exists_pronicNorm_inversionDefect_le_of_half_lt`,
+    and the sharp majorant threshold `admits_majorantEnergy_iff_half_lt` (`Admits majorantEnergy ε ↔ 1/2 < ε`).
+  - Unconditional one-sided sublinear pairings above half damping
+    (`exists_onesided_sublinear_pairings_of_half_lt`).
+  - Four-way single-damping equivalence `singleDamping_admission_tfae` connecting
+    `Admits dampedMobiusEnergy ε`, `ε ∈ receiverDampings`, `Admits (dampedBlockEnergy q) ε`, and the
+    combined sublinear pairing bound, plus unconditional block-energy bounds above `Θ − ½` and on
+    the Vinogradov–Korobov band (`admits_dampedBlockEnergy_of_zetaZeroAbscissa_sub_half_lt`,
+    `exists_dampedBlockEnergy_le_on_vinogradovKorobovBand`,
+    `eventually_dampedBlockEnergy_le_vk_saving`).

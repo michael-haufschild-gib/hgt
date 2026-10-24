@@ -422,6 +422,21 @@ every tower to every other, and a sum of independent rank-one squares, one per p
    and reflected-diagonal dominance (`archReflectedDiagWeight_lt_shiftedPrimeDiag_of_one_le`) reverse
    at every prime power `p^i` (`cosetToeplitz_dominance_and_shiftedPair_selectivity_synthesis`).
 
+**The continuum tower retains a reflected mode** (`ContinuumTowerReflectionCholesky`).
+For a real continuous half-line profile supported below `(N+1)L`, let `M` be its squared
+mass, `R = Σ_{k=1}^N r^k ∫ F(x)F(x+kL) dx`, and
+`H = Σ_{k=1}^{2N+1} r^k ∫_0^{kL} F(x)F(kL-x) dx`.
+The fibre tails `U_j(θ) = Σ_{i=j}^N r^{i-j}F(θ+iL)` satisfy
+`H = r ∫_0^L U_0(θ)U_0(L-θ) dθ` (`continuumTowerCrossing_eq_reflected_pairing`),
+so the continuum product term is a reflected pairing, rather than the lattice Mellin square.
+The exact decomposition, with norms on `[0,L]`, is
+`M + 2R - H = (1-r)‖U_0‖² + (r/2)‖U_0-U_0(L-·)‖² + (1-r²)Σ_{j=1}^N‖U_j‖²`
+(`continuumTower_reflection_cholesky`). It is nonnegative for `0 ≤ r ≤ 1`.
+At `L=log p`, `r=p^{-1/2}`, the literal von Mangoldt tower is `log p·(2R-H)`
+(`continuumPrimeTower_eq`), and adding `log p·M` pays it for every profile of either sign
+(`continuumPrimeTower_compensated_nonneg`). The diagonal mass is charged separately for
+each prime; the identity supplies no shared all-prime payment.
+
 ### 3.3 The Nyquist rank bound (`TheNyquistRankBound`)
 
 1. **Rank–nullity Riemann–Roch.** `h0 A + rank A = dim` (`h0_add_rank`), sections exist

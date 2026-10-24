@@ -1,8 +1,8 @@
 # Continuum prime towers retain a reflected Cholesky mode
 
 - **ID:** continuum-prime-tower-reflection-cholesky
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** Arithmetic Orientation Theory's finite KMS identity; TG source-orientation investigation.
 - **Statement:** The complete half-line ratio-minus-product tower, plus one diagonal mass, is a sum of three nonnegative continuum energies.
 
@@ -15,7 +15,7 @@ No external novelty claim is made.
 
 ## Exact theorem and proof
 
-Fix `L>0`, `0<r<1`, and a continuous real function `F`, zero above
+Fix `L>=0`, `0<=r<=1`, and a continuous real function `F`, zero above
 `(N+1)L`. Only its restriction to the nonnegative half-line is used. Put
 
 ```
@@ -50,6 +50,9 @@ Expansion of the difference square proves the displayed decomposition.
 All integrands are continuous on finite intervals; all sums are finite.
 Every coefficient on the right is nonnegative.
 
+The degenerate interval `L=0` gives zero on both sides. The same algebra
+and coefficient signs include `r=0` and `r=1` without a limiting argument.
+
 For a prime `p`, take `L=log p` and `r=p^(-1/2)`, and multiply by
 `log p`. These are the literal critical prime-power weights, with the
 ratio and reflected correlations both retained. A compact half-line test
@@ -66,5 +69,36 @@ the aggregate diagonal through the complete signed source.
 
 - [x] Well-posed, source-preserving continuum statement.
 - [x] Dependency-closed paper proof.
-- [ ] Exact Lean theorem, direct leaf check, transitive axiom audit.
-- [ ] Umbrella import.
+- [x] Exact Lean theorems and transitive axiom audit.
+- [x] Final direct source check.
+- [x] Umbrella import; umbrella not compiled.
+
+## Lean certificate
+
+Module: `GaloisForLFunctions.ArithmeticOrientationTheory.ContinuumTowerReflectionCholesky`.
+
+- `continuumTowerCrossing_eq_reflected_pairing`: exact reflected continuum pairing.
+- `continuumTower_reflection_cholesky`: complete three-term decomposition.
+- `continuumTower_compensated_nonneg`: positivity after the single diagonal payment.
+- `continuumPrimeTower_eq`: equality with literal von Mangoldt prime-power weights.
+- `continuumPrimeTower_compensated_nonneg`: unconditional prime-tower specialization.
+
+The source-copy audit passed with `lake --old env lean` and `#print axioms`.
+The decomposition, reflected-pairing identity, literal arithmetic equality,
+and arithmetic positivity theorem depend only on `propext`,
+`Classical.choice`, and `Quot.sound`. No new olean or raised limits were used.
+
+Final command, exit 0 without warnings:
+
+```
+lake --old env lean GaloisForLFunctions/ArithmeticOrientationTheory/ContinuumTowerReflectionCholesky.lean
+```
+
+## Research assessment
+
+The finite KMS identity was already in the corpus. The addition is its exact
+continuum transfer, the reflected-fibre term, and the equality to the literal
+von Mangoldt tower. This does not discharge TG's shared residual-area sign.
+No new criterion or assumed analytic estimate was added. The remaining
+research must attack the joint signed source payment, rather than treating
+further regularity or a separate bound for each tower as the requested advance.

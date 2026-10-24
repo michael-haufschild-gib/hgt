@@ -113,3 +113,8 @@ theorem abs_suzukiCriticalSourcePairing_sub_mass_le {f : ℝ → ℝ} (hf : Cont
 
 end
 end RHTower
+
+#print axioms RHTower.suzukiCriticalCuspRadius
+#print axioms RHTower.abs_suzukiCriticalPoleCusp_le
+#print axioms RHTower.abs_suzukiCriticalSourceCusp_sub_mass_le
+#print axioms RHTower.abs_suzukiCriticalSourcePairing_sub_mass_le

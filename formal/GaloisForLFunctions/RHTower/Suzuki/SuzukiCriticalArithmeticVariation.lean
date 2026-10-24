@@ -64,8 +64,9 @@ private theorem integrable_sourceCusp_full {f : ℝ → ℝ} (hf : ContDiff ℝ 
   apply hi.congr
   filter_upwards with t
   by_cases ht : 0 < t
-  · rw [indicator_of_mem ht]
-  · rw [indicator_of_notMem ht, sourceDensity_zero (le_of_not_gt ht), mul_zero]
+  · rw [indicator_of_mem (show t ∈ Ioi 0 from ht)]
+  · rw [indicator_of_notMem (show t ∉ Ioi 0 from ht),
+      sourceDensity_zero (le_of_not_gt ht), mul_zero]
 
 private theorem integrable_shifted_source {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f)
     (hfc : HasCompactSupport f) {omega u : ℝ} (homega : 0 < omega)
@@ -96,7 +97,6 @@ private theorem shifted_source_integral {f : ℝ → ℝ} {omega u : ℝ} (hu : 
       suzukiCriticalSourceDensity omega (t - u)) u]
   apply integral_congr_ae
   filter_upwards with t
-  dsimp only
   rw [add_sub_cancel_left]
 
 private theorem source_log_atom (omega t : ℝ) {n : ℕ} (hn : 1 ≤ n) :
@@ -131,7 +131,6 @@ private theorem source_pairing_integrand {f : ℝ → ℝ} {A : ℝ}
     rw [Finset.mul_sum, Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro n hn
-    dsimp only
     have he := source_log_atom omega t (Finset.mem_Icc.mp hn).1
     linear_combination autocorr f t * suzukiShiftedCoefficient omega n * he
 
@@ -164,7 +163,7 @@ theorem suzukiCriticalSourcePairing_eq_finite {f : ℝ → ℝ} (hf : ContDiff �
     Real.log_nonneg (by exact_mod_cast (Finset.mem_Icc.mp hn).1)
   rw [suzukiCriticalSourcePairing]
   simp_rw [source_pairing_integrand hcut]
-  rw [integral_finset_sum]
+  rw [integral_finsetSum]
   · apply Finset.sum_congr rfl
     intro n hn
     rw [integral_const_mul, shifted_source_integral (hlog hn)]
@@ -204,7 +203,7 @@ theorem tendsto_suzukiCriticalSourcePairing_firstVariation_finite {f : ℝ → �
       (𝓝 (∑ n ∈ Finset.Icc 2 ⌊Real.exp A⌋₊,
         (2 * ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n / 2)) *
           autocorr f (Real.log n))) := by
-    apply tendsto_finset_sum
+    apply tendsto_finsetSum
     intro n hn
     have hn2 := (Finset.mem_Icc.mp hn).1
     have hlog : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast (show 1 ≤ n by omega))
@@ -231,6 +230,7 @@ theorem tendsto_suzukiCriticalSourcePairing_firstVariation_finite {f : ℝ → �
       simp only [Finset.mem_Icc, Finset.mem_insert]
       omega
     rw [hset, Finset.sum_insert (by simp)]
+    simp only [Nat.cast_one]
   have hunit : (suzukiShiftedCoefficient omega 1 * Real.exp (-Real.log 1 / 2)) *
       suzukiCriticalSourceCusp f omega (Real.log 1) = suzukiCriticalSourceCusp f omega 0 := by
     simp [suzukiShiftedCoefficient]
@@ -250,3 +250,9 @@ theorem tendsto_suzukiCriticalSourcePairing_firstVariation_finite {f : ℝ → �
 
 end
 end RHTower
+
+#print axioms RHTower.suzukiCriticalSourcePairing
+#print axioms RHTower.exists_suzukiCriticalCorrelation_cutoff
+#print axioms RHTower.integrableOn_suzukiCriticalSourcePairing
+#print axioms RHTower.suzukiCriticalSourcePairing_eq_finite
+#print axioms RHTower.tendsto_suzukiCriticalSourcePairing_firstVariation_finite

@@ -93,3 +93,16 @@ Draft assembly leaves: `SuzukiCriticalWeilNormalization`,
 `SuzukiCriticalArithmeticVariation`, `SuzukiCriticalCuspEstimate`,
 `SuzukiCriticalFirstVariation`. No draft theorem is certified until its
 canonical Lean check and transitive-axiom audit pass.
+
+## Verification record
+
+- `SuzukiCriticalWeilNormalization`: dependency olean built successfully;
+  canonical source checked again after removing redundant tactics.
+  `#print axioms RHTower.suzukiCriticalWeil_normalization` reports exactly
+  `propext`, `Classical.choice`, `Quot.sound`.
+- The concurrent `SuzukiCriticalLogKernel`, `SuzukiCriticalTranslatedCusp`, and
+  `SuzukiCriticalPolePairing` dependency oleans now exist. Their full public
+  declaration audit remains part of the final capstone audit.
+- Arithmetic assembly, signed cusp estimate, and full Weil capstone are written.
+  Arithmetic assembly is undergoing its first canonical compile. No success
+  claim for these three leaves yet.

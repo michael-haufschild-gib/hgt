@@ -172,8 +172,9 @@ weaken the ultimate TG target or add the comparison as an assumption.
 
 ## Status
 
-RH unproved. Neither C1 nor C2 has a complete paper proof. No new Lean result
-claimed. External searches and novelty checks excluded by user instruction.
+RH unproved. Neither C1 nor C2 has a complete paper proof. The continuum
+prime-tower bridge below is proved and kernel-audited; the aggregate signed
+payment needed by TG is still open. External searches and novelty checks excluded by user instruction.
 Existing unrelated worktree changes preserved.
 
 ## Formalization requested
@@ -247,8 +248,6 @@ that limit to C1's residual filling has been proved here.
 C3 remain open. No new Lean module, conditional substitute, or frontier
 advancement is recorded. The exploratory API scratch and the completed
 endpoint-audit scratch were removed after their results were recorded.
-
-## Log
 
 ## Cross-programme conjecture loop
 
@@ -326,9 +325,25 @@ the full prime-power tower, with both correlations retained.
 **Status and limit.** This is a source-coordinate bridge, not a new RH
 criterion or an all-prime estimate. Its diagonal payment `M` is charged
 once per prime, so this proof alone does not give the required aggregate
-bound. The result is not yet formalized. The next construction must retain
+bound. The exact result is formalized in
+`ArithmeticOrientationTheory.ContinuumTowerReflectionCholesky`, with a
+separate equality to the literal von Mangoldt tower and its unconditional
+compensated positivity theorem. The source-copy check and transitive axiom
+audit passed; only `propext`, `Classical.choice`, and `Quot.sound` occur.
+The final direct source check passed without warnings. Its paper proof and certificate
+are recorded in `3-formalized/continuum-prime-tower-reflection-cholesky.md`.
+The next construction must retain
 the reflected fibre term and pay the shared diagonal from the complete
 source; merely summing the nonnegative tower identities would not do so.
+
+The finite KMS mechanism was already known internally. The proved addition
+is the continuum identification, not a new bound for the complete Weil form.
+Do not count a routine all-L2 extension, a separate Laplace-column admission
+lemma, or a per-prime constant improvement as the next significant TG step.
+The next loop must use the complete signed source to prove joint payment or
+construct the actual residual transgression. C1 and C4 remain the open cores.
+
+## Log
 
 - 2026-10-24 — Read attached task and TG ledger; inspected actual source
   statements and previous TG attempts. Began direct source-comparison and

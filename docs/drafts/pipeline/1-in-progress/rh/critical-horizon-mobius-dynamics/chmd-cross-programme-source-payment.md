@@ -122,6 +122,42 @@ rank-one corrections alone do not establish that identification.
 new premise. Start from literal theta sources and literal centred prime
 rows. Preserve all mixed terms and both source polar moments.
 
+### 5. The aperture completion is the entire supported maximal graph
+
+**Conjecture with paper proof.** A CHMD maximal graph vector belongs to the
+aperture-core completion exactly when its physical source vanishes outside
+the closed aperture. Thus localized rough nodal lobes have actual CCM form
+coordinates, including sources touching the aperture boundary.
+
+**Proof.** The forward implication is established. For the converse, first
+take a bounded measurable graph source supported in `[-a,a]`. Mollify it
+with the existing normalized smooth kernels of radius at most `1/4`.
+Multiplication by theta gives real smooth physical sources in aperture
+`a+1`. The existing stationary-energy convolution bound and finite prime
+measure bound give a uniform full graph-norm bound. The source coordinates
+converge strongly. Weak Hilbert compactness and source-map injectivity
+therefore put the original graph vector in the closed aperture-`a+1` core.
+
+For an unbounded supported source, clip its values and choose the compact
+representative by multiplying by the aperture indicator. Endpoint
+nonsingularity preserves its graph differences. The existing graph-norm
+convergence of clipping and closedness give the same larger-aperture
+admission. Transport to the CCM domain there. Its physical support still
+lies in `[-a,a]`, so the very same weighted Fourier vector belongs to the
+aperture-`a` CCM kernel. The real-domain identification gives a graph lift
+at aperture `a`; physical-source injectivity identifies that lift with the
+original graph vector. This removes the temporary aperture enlargement.
+
+**Forced consequence.** Positive part, negative part and modulus preserve
+the completed aperture graph, since they preserve zero outside the
+aperture. Their transferred CCM coordinates retain the literal CHMD nodal
+cross-pairing. This discharges domain admission for local rough nodal
+estimates; it does not assert the still-open arithmetic payment.
+
+**Status.** Dependency-closed mathematical argument; exact API and Lean
+formalization pending. No hypothesis of smoothing convergence in the full
+graph norm is needed: boundedness plus strong source convergence suffices.
+
 ## Proof integrity
 
 Each claim must be checked against its Lean statement. No external search,

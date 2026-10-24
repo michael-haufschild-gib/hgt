@@ -83,6 +83,24 @@ criterion. No external novelty claim is made.
    nor arithmetic terms can cancel an infinite positive compensated limit.
 6. The Gamma recurrence and `w_arch-K=2exp(-t/2)` give the displayed normalization.
 
+## Positive bounded profiles: first exact Lean target
+
+For every bounded measurable `D : R -> [0,infinity)`, with no finite-energy premise,
+
+`integral_0^infinity^+ D(t)*B_w(t)/w -> integral_0^infinity^+ D(t)*K(t)`
+
+in `[0,infinity]`. If the right side is infinite, Fatou gives the limit. If it is finite,
+boundedness of `D` makes `integral D(t)*2exp(-t/2)` finite. Since
+`w_arch=K+2exp(-t/2)`, the full Lévy majorant is integrable. The already proved real
+compensated tangent then applies, and continuity of `ENNReal.ofReal` gives the asserted
+extended integral limit. For each positive small shift, boundedness also gives absolute
+integrability against `B_w/w`. Thus this statement retains the ordinary real integrals
+where they exist and never interprets a divergent limiting energy as zero.
+
+This strengthens the existing primary finite-energy theorem by proving convergence on
+every bounded nonnegative profile, including the infinite-energy branch. The source
+application is `D(t)=C(0)-C(t)`, bounded between zero and `2C(0)` by the L² correlation laws.
+
 ## Dependency audit and Lean obligations
 
 - L² correlation continuity, compact support, and Krein dependencies are checked above.

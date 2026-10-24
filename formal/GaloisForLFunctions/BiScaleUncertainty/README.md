@@ -321,7 +321,8 @@ translation with error $C\varepsilon^\alpha$ from fifth and sixth arrays within 
 | grid source, infinite-grid energy source | `LogarithmicGridSource`, `InfiniteGridEnergySource` |
 | blind on a node set, gapped node set, zero-pole positivity on a node set | `BlindOn`, `GappedNodeSet`, `ZeroPoleBlindPositiveOn` |
 | mass, archimedean part without pole, pole mass, node values | `massOf`, `nodeArchOnly`, `nodePoleMass`, `nodeVector` |
-| blind and zero-pole symbol slack on a node set | `BlindSymbolSlackOn`, `ZeroPoleBlindSymbolSlackOn` |
+| blind and zero-pole symbol slack and exact value on a node set | `BlindSymbolSlackOn`, `ZeroPoleBlindSymbolSlackOn`, `blindSymbolValue`, `zeroPoleBlindSymbolValue` |
+| combination Lévy energy, blind Lévy infimum, window-supported cone, window Lévy tail floor | `combinationLevyEnergy`, `blindLevyInfimum`, `zeroPoleBlindLevyInfimum`, `WindowSupported`, `windowLevyTailFloor` |
 | combined spectral density, phase measure | `combinationSpectralDensity`, `exists_phase_measure` |
 | folded symbol, period mean $m_q$, cosine coefficient $\varphi_d$, orbit average $F_d$ | `foldedSymbol`, `symbolPeriodMean`, `foldedCosineCoefficient`, `orbitAverage` |
 | moment value $V_q(J)$, designs and their moments | `powerMomentValue`, `designMoment`, `designValue` |
@@ -428,13 +429,17 @@ and size $\asymp e^{T/2}$, and has archimedean part bounded uniformly in $T$: ev
 available at arbitrarily small archimedean cost, every blind mixture is $\varepsilon$-close in
 archimedean energy to a zero-pole blind mixture, and zero-pole positivity fails. The same holds
 on every node set of sub-square-root window density: a pigeonhole node-free point at distance
-$1/(2(K+1))$ hosts the pair of the bump compressed by $L=K+1$, with pole $\asymp e^{X/2}/L^2$ and
-archimedean part $O((1+\log L)/L)$, so the transport cost $O(L(1+\log L)e^{-X/2})$ tends to zero.
-The $S$-smooth integers of any finite set $S$ of primes have at most
-$(\lfloor(X+1)/\log2\rfloor+1)^{|S|}$ nodes per window and fall on this side; the full grid,
-with $\asymp e^X$ nodes per window, is RH. The pole weight $e^{x/2}$ makes square-root node
-density the critical density for pole visibility. On a gapped node set the zero-pole slack
-equals the slack, so every blind-cone constant below is simultaneously a zero-pole constant.
+$1/(2(K+1))$ hosts the pair of the bump compressed by $L=K+1$, with pole $\asymp e^{X/2}/L^2$,
+archimedean part $O((1+\log L)/L)$, and $L^2$ mass $O((1+\log L)/L)$, so the transport cost
+$O(L(1+\log L)e^{-X/2})$ tends to zero in both archimedean energy and total mass
+(`exists_blindOn_poleMass_eq_small_of_density`).
+The $S$-smooth integers of any finite set $S$ of primes — and hence every subset such as the union
+of two power towers — have at most $(\lfloor(X+1)/\log2\rfloor+1)^{|S|}$ nodes per window and fall
+on this side; the full grid, with $\asymp e^X$ nodes per window, is RH. The pole weight $e^{x/2}$
+makes square-root node density the critical density for pole visibility. On every gapped or
+sub-square-root-density node set the exact zero-pole symbol slack equals the blind symbol slack
+(`zeroPoleBlindSymbolSlackOn_iff_of_density`, `zeroPoleBlindSymbolValue_eq_of_density`), so every
+blind-cone constant on power towers or smooth node sets is simultaneously a zero-pole constant.
 
 For finite coefficient trains on a common seed with separation at least two, a smooth all-grid
 source exists exactly when every active positive lag misses the grid, and then the normalized
@@ -549,6 +554,32 @@ with the last term nonnegative and zero exactly when the spectral density lives 
 fundamental period. Every power node is priced by one Fourier coefficient of the folded symbol
 in an exact signed identity; blind combinations recover the bathtub and the removal law is its
 one-free-node case.
+
+**Exact symbol values, line designs, and the window Lévy cone.** For any node set $\mathcal N$, the
+admissible blind and zero-pole symbol slacks form closed upper rays bounded below by
+$\Omega(0)$, with exact least elements `blindSymbolValue 𝒩` and `zeroPoleBlindSymbolValue 𝒩`
+(`isLeast_blindSymbolSlackOn`, `isLeast_zeroPoleBlindSymbolSlackOn`). For any nonnegative
+combination $c$ of real compact $C^2$ sources, the combined Lévy energy
+$\mathcal J(c)=\sum_f c_f\mathcal J(f)$ satisfies $A(c)=\Omega(0)\,\mathrm{mass}(c)+\mathcal J(c)$,
+so the blind and zero-pole Lévy infima $\inf\mathcal J(c)/\mathrm{mass}(c)$ shift the exact symbol
+values by $|\Omega(0)|$ (`blindLevyInfimum_eq_abs_gammaBracket_add_blindSymbolValue`,
+`zeroPoleBlindLevyInfimum_eq_abs_gammaBracket_add_zeroPoleBlindSymbolValue`); on the full grid
+`blindSymbolValue univ < 0` (`blindSymbolValue_univ_neg`), while RH is the statement that the
+zero-pole Lévy infimum on `primePowerNodes` (equivalently on `univ`) is at least $|\Omega(0)|$
+(`riemannHypothesis_iff_abs_gammaBracket_le_zeroPoleBlindLevyInfimum_primePowerNodes`). On arbitrary
+node sets, finite-cutoff line designs — finite weighted atom lists $D$ whose cosine moments on
+$\mathcal N\cap[2,K]$ vanish — are realized by modulated pairs with compressed bump parameter
+$\delta=1/(4\log(K+1))$ at explicit envelope overhead $O(1/\log(K+1))$ (`exists_blindOn_of_lineDesign`,
+`blindSymbolValue_le_of_lineDesign_family`), and on two power towers they enclose both the blind and
+the zero-pole symbol values (`two_tower_blindSymbolValue_enclosure`). For combinations supported in
+windows of length $L$, prime-power blindness holds iff every active prime power has $\log n<L$
+(`blindOn_primePowerNodes_iff_window_lt`), and because $f$ and $f(\cdot+x)$ have disjoint supports
+for $x\ge L$, the Lévy tail integral $\int_L^\infty w_{\mathrm{arch}}(x)\,dx$ acts as an
+unconditional energy floor: $\mathcal J(c)\ge(\int_L^\infty w_{\mathrm{arch}})\,\mathrm{mass}(c)$ and
+$A(c)\ge(\Omega(0)+\int_L^\infty w_{\mathrm{arch}})\,\mathrm{mass}(c)$ for every $L$-window
+combination (`windowLevyTailFloor_mul_massOf_le_combinationLevyEnergy`,
+`window_levy_tail_mul_massOf_le_nodeArchOnly`), forcing $A(c)\ge0$ unconditionally whenever
+$\int_L^\infty w_{\mathrm{arch}}\ge|\Omega(0)|$.
 
 ### 3.7 Hyperbolic multipliers and the odd sector
 
@@ -1132,9 +1163,10 @@ from one explicit energy bound.
    (`autocorr_krein_increment_sq_le`, `autocorr_zero_sub_progressionSmoothed_le`); on an
    integer-log blind source the correlation tail is controlled at logarithmic modulus
    (`integral_Ioi_autocorr_sq_le_of_integerLog_blind`).
-2. **Gaps against density.** On every gapped node set the pole is carried at vanishing
-   archimedean cost, so zero-pole positivity fails there; on the full grid it is RH
-   (`not_zeroPoleBlindPositiveOn_of_gapped`, `not_zeroPoleBlindPositiveOn_powers`). The boundary
+2. **Gaps against density.** On every gapped or sub-square-root-density node set the pole is
+   carried at vanishing archimedean and $L^2$ cost, so zero-pole positivity fails there and the
+   exact zero-pole symbol slack equals the blind symbol slack (`not_zeroPoleBlindPositiveOn_of_gapped`,
+   `zeroPoleBlindSymbolValue_eq_of_density`); on the full grid it is RH. The boundary
    is the logarithmic density of the nodes, not their finiteness.
 3. **The power-grid moment theorem.** Every blind or zero-pole symbol slack on the powers of one
    integer is the value of a circle moment problem for the folded symbol, with closed forms for
@@ -1143,8 +1175,8 @@ from one explicit energy bound.
    `powerMomentValue_punctured`, `powerMomentValue_offMultiples`); one more node strictly
    improves the slack exactly when it is multiplicatively independent of that integer
    (`exists_lt_blindSymbolSlackOn_insert_of_not_mem`, `blindSymbolSlackOn_insert_iff_of_mem`), and
-   two towers are enclosed by line certificates and product designs
-   (`blindSymbolSlack_two_towers_enclosure`).
+   two towers have equal blind and zero-pole values enclosed by line certificates and line designs
+   (`two_tower_blindSymbolValue_enclosure`).
 4. **The band law and Cramér's limiting constant.** $\int_0^L\tilde E^2=O(L)$ iff RH, equivalently
    linear Laplace energy of $\nu_N$ or linear band energy; no growth strictly between linear and
    exponential is possible; the exponential rate is twice the zero width, and under RH the band
@@ -1323,19 +1355,26 @@ and third only after averaging over a family, and multiplicative tools are Beurl
 
 ### 7.2 The blind cone
 
-On the powers of one integer the slack is completely known. On the powers of two integers the
-spectral law is a probability law on the line with uniform projections on both circles
-$r\mapsto r\ell_i\bmod2\pi$; the joint phase winds densely around the torus and the symbol
-$\gamma(r)$ is a function on the line, not on the torus. Weak duality holds with *line
-certificates*, continuous circle observables with $P_1(r\ell_1)+P_2(r\ell_2)\le\gamma(r)$ for all
-real $r$, and product midpoint designs $\omega_a\pm\omega'_b$, whose cosine sums factor, attain the
-mean $T(q_1,q_2)$ of $\gamma$ under the convolution of the two uniform period laws. Hence the exact
-slack lies in $[-T(q_1,q_2),\,-m_{q_1}-\eta(q_1,q_2)]$ (`TwoTowerBlindSlackEnclosure`). Open: its
-exact value (the box convolution is the admissible law of smallest support, not expected to be
-optimal); the infimum of $\mathcal J/h(0)$ on the full blind polar class against $|\Omega(0)|$,
-which is prime-blind archimedean positivity; and, since zero-pole positivity on a node set is
-decided by incidence rather than density, the slack of the cone blind at exactly the prime powers
-as a function of the window length, between the Euler prices of §3.16 and the full-grid value.
+On the powers of one integer the slack is completely known. On any node set $\mathcal N$, the
+exact blind and zero-pole symbol values `blindSymbolValue 𝒩` and `zeroPoleBlindSymbolValue 𝒩` are
+attained as the least elements of the admissible slack rays (`isLeast_blindSymbolSlackOn`,
+`isLeast_zeroPoleBlindSymbolSlackOn`), and shift by $|\Omega(0)|$ to the Lévy energy infima
+$\inf\mathcal J(c)/\mathrm{mass}(c)$ (`blindLevyInfimum_eq_abs_gammaBracket_add_blindSymbolValue`,
+`zeroPoleBlindLevyInfimum_eq_abs_gammaBracket_add_zeroPoleBlindSymbolValue`). Whenever $\mathcal N$
+has sub-square-root window density — including every $S$-smooth set and the union of two power
+towers — the pole constraint is invisible (`zeroPoleBlindSymbolValue_eq_of_density`). On the powers
+of two integers the spectral law is a probability law on the line with uniform projections on both
+circles $r\mapsto r\ell_i\bmod2\pi$; weak duality with line certificates and finite-cutoff line
+designs encloses both the blind and zero-pole values in
+$[-T(q_1,q_2),\,-m_{q_1}-\eta(q_1,q_2)]$ (`two_tower_blindSymbolValue_enclosure`,
+`blindSymbolValue_le_of_lineDesign_family`). For $L$-window-supported combinations, prime-power
+blindness reduces to the finite node set $\mathcal N\cap[2,e^L)$
+(`blindOn_primePowerNodes_iff_window_lt`), and disjointness of shifted supports imposes the
+unconditional Lévy tail floor $\mathcal J(c)\ge(\int_L^\infty w_{\mathrm{arch}})\,\mathrm{mass}(c)$
+(`windowLevyTailFloor_mul_massOf_le_combinationLevyEnergy`). Open: the exact closed-form value on
+two towers beyond the line-certificate / product-design enclosure, and the unconditional zero-pole
+positivity $\inf\mathcal J/h(0)\ge|\Omega(0)|$ on the full prime-power-blind polar class (which is
+RH, `riemannHypothesis_iff_abs_gammaBracket_le_zeroPoleBlindLevyInfimum_primePowerNodes`).
 
 ### 7.3 The odd sector
 
