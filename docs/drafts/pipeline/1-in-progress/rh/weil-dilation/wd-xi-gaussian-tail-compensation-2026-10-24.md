@@ -1,9 +1,9 @@
 # Xi finite head and compensated Gaussian tail
 
 - **Stage:** 1-in-progress.
-- **Type:** THEOREM (paper), Lean in progress; stronger source-scale conjecture open.
+- **Type:** THEOREM (Lean); complete C1–C9 proofs, named final audits running.
 - **Route:** WD: directed source current → negative-cross control or collision charge < 2 → RH.
-- **Open core:** global cap vanishing, full signed prime–Gamma contraction, uniform zero-block absorption.
+- **Remaining RH core:** global cap vanishing, full signed prime–Gamma contraction, uniform zero-block absorption.
 
 ## Programme connection
 
@@ -289,8 +289,9 @@ and the exact one-sided estimate
       * [(x/mu)^4 + 6*(x/mu)^2*(lambda/mu) + 3*(lambda/mu)^2].
 ```
 
-**Proof.** The tail is a measurable pointwise infinite product of continuous
-factors and is positive real on the real axis. Its upper Gaussian majorant
+**Proof.** The copy type is countable by local finiteness of the actual Xi
+divisor. Therefore the tail, a pointwise infinite product of continuous
+factors, is measurable. C7 makes it positive real on the real axis. Its upper Gaussian majorant
 is integrable by the completed-square identity from the model module.
 Multiply `0<=exp(a*y^2)-T_R(y)<=B_R*y^4*exp(a*y^2)` by the positive heat
 kernel and integrate. The upper integral is exactly the already proved
@@ -304,15 +305,12 @@ is fixed, `a_u->infinity`, and `B_u->0`. C6 even gives `B_u*a_u^2->0`.
 This transfers the actual background through heat; it still does not
 transfer the model's negative coefficient through the retained finite head.
 
-**Status:** paper proof complete. Full Lean draft, including absolute
-integrability, the explicit heat bound, and locally uniform normalized heat
-convergence, is in `/tmp/wd_gaussian_tail_heat.lean`; not checked yet. Intended
-production name: `RHTower/XiSliceGaussianTailHeat.lean`. This draft imports C6
-and C7, authorizing their oleans when the dependencies are ready.
-
-Direct leaf checks only; no umbrella build. Audit transitive axioms, wire the
-completed modules, remove owned scratch files. No web, novelty audit, numerical
-experiment, unproved analytic premise, or raised Lean limit.
+**Lean:** `RHTower/XiSliceGaussianTailHeat.lean` contains actual-tail
+integrability, the one-sided comparison, the explicit relative-error bound,
+and locally uniform normalized heat convergence. The complete scratch proof
+and all four transitive axiom audits passed: only `propext`,
+`Classical.choice`, `Quot.sound`. Production module and umbrella import are
+written; the named final check remains.
 
 ### C9. Retain the central zero instead of dividing by it — paper proof
 
@@ -323,15 +321,17 @@ finite set, the uniform genus-one pair identity, and the tail product limit
 after removing every copy at the center. Reuse those results rather than
 assuming nonvanishing of the whole slice.
 
-For `H=H(t,R)`, `R>=0`, let `P` be the canonical product outside `H` and set
+For `H=H(t,R)`, `R>=0`, write `z_q=xiSpectralPoint(q)`, let `P` be the
+canonical product outside `H`, and set
 
 ```
 K = XiC(0)^2 P(t)^2 product_(q in H) exp(2t/z_q)/z_q^2,
 Q(x) = K product_(q in H) [x^2+(z_q-t)^2].
 ```
 
-All copies at `t` belong to `H`; therefore `P(t)!=0` and `K!=0`. The
-uniform genus-one pair identity gives the finite polynomial factor, while
+All copies at `t` belong to `H`; therefore `P(t)!=0`. The source facts
+`XiC_zero_ne` and `xiSpectralPoint_ne_zero`, and nonvanishing of the
+complex exponential, then give `K!=0`. The uniform genus-one pair identity gives the finite polynomial factor, while
 the existing complementary-product limit gives
 `P(t-ix)P(t+ix)=P(t)^2 T_H(x)`. Thus `S_t(x)=Q(x)T_H(x)` for every complex
 `x`, including centers where `XiC(t)=0`. Copies at the center contribute
@@ -350,14 +350,15 @@ For complex `x` with `|x|<=R`, C3 gives the corresponding bound with
 **Audit:** BRIDGE. The finite factorization is already present inside a
 corpus proof; the new connection removes the central nonvanishing premise
 from the Gaussian comparison. It does not establish coefficient-sign transfer through the finite head
-or claim new knowledge relative to external literature. Paper proof
-complete; complete Lean draft saved in `/tmp/wd_gaussian_finite_head.lean`.
-Frontier ledger must not be edited.
+or claim new knowledge relative to external literature. The complete Lean proof and all four capstone axiom audits passed, using
+only `propext`, `Classical.choice`, and `Quot.sound`. Production module
+`RHTower/XiSliceGaussianFiniteHead.lean` and its umbrella import are written;
+the named final audit remains. Frontier ledger must not be edited.
 
 ## Declaration map
 
 All source paths below are under `formal/GaloisForLFunctions/RHTower/`.
-C8 and C9 remain drafts until their pending kernel checks pass.
+All nine modules are integrated; the six outstanding named leaf audits are running.
 
 | Part | Module | Main declarations |
 |---|---|---|
@@ -385,14 +386,13 @@ ledger. No broader RH result is claimed.
 - C6 and C7: complete scratch checks and capstone axiom audits passed;
   production modules and umbrella imports exist. Their named final checks
   remain pending. C6, C7, and the Gaussian model olean builds passed;
-  the C8 scratch proof is now undergoing its kernel and axiom checks.
-- C8: complete paper proof and full draft in `/tmp/wd_gaussian_tail_heat.lean`.
-  Integrability, the one-sided heat bound, and the explicit relative-error
-  theorem passed their kernel and standard-three-axiom audits. The uniform
-  convergence proof had one redundant terminal `rfl`; it was removed and
-  the complete draft is being checked again.
-- C9: complete paper proof and full draft in `/tmp/wd_gaussian_finite_head.lean`;
-  kernel verification pending.
+  the C8 complete scratch proof and all four axiom audits passed.
+- C8: complete scratch proof and all four capstone axiom audits passed.
+  `XiSliceGaussianTailHeat.lean` is written and wired; named final check pending.
+- C9: complete scratch proof and all four capstone axiom audits passed.
+  `XiSliceGaussianFiniteHead.lean` is written and wired; named final check pending.
+- The sequential named no-output audit batch covers C2, C5, C6, C7, C8,
+  and C9. Completed leaves are recorded in `/tmp/wd_gaussian_final_checks.log`.
 - The C1–C6 combined audit reported only `propext`, `Classical.choice`, and
   `Quot.sound` for all fifteen capstones; C7's four capstones have the same
   axiom set. No placeholders or raised proof limits occur in these modules

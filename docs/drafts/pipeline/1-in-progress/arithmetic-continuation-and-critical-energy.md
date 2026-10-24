@@ -353,3 +353,13 @@ This card is the programme card: folder, umbrella, README and the continuation c
     discrete-to-continuous upgrade `compensatedWidthFloor_of_discrete_aperture_sequence` along
     bounded-gap sequences `A_{j+1} − A_j ≤ Δ`, and zero-width / damping-continuation consequences
     `zetaZeroWidth_le_of_graded_aperture_step`, `averagedDampingContinuation_of_graded_aperture_step`.
+- 2026-10-24 (cont. 8) — Open Problem 9 resolved (`SignedObservationStabilityAndOriginSelectivity`):
+  - Exact recovery / injectivity of `dilationStepObservation q` (`dilationStepObservation_eq_zero_iff`,
+    `dilationStepObservation_injective_of_eq_zero`, `anchoredDilationStepObservation_injective`).
+  - Horizon-uniform two-sided quantitative stability in the pronic norm
+    `dilationStepObservation_two_sided_stability` and sharp quadratic origin-shift stability
+    `originShiftObservation_two_sided_stability`, `originShiftObservation_sharp_constant`.
+  - Sign-reading selectivity against both the size-blind majorant
+    (`not_bddAbove_dilationStepObservation_majorant`) and the Ramanujan-isometric parity twin
+    (`dilationStepObservation_parityTwin_ge`,
+    `exists_dilationStepObservation_vk_band_and_parityTwin_separation`).

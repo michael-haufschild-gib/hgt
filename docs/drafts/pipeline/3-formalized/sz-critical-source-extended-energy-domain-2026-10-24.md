@@ -1,17 +1,17 @@
 # Literal critical source on the compact L² energy domain
 
 - **ID:** sz-critical-source-extended-energy-domain-2026-10-24
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `sz-critical-source-first-variation-2026-10-18`; corpus Krein increments and critical Beta kernel.
 - **Statement:** Every real compactly supported L² source has an extended-real critical first variation of the literal Suzuki arithmetic source, equal to its complete Weil energy, including value `+infinity` when its Lévy energy is infinite.
 
 ## Route and significance
 
 WL still requires an arithmetic one-sided critical bound at every positive exponential slack.
-This paper theorem concerns the analytic source domain, not that missing sign. It makes the
+This theorem concerns the analytic source domain, not that missing sign. It makes the
 literal critical source available on the closed energy domain without a smoothness premise,
-and would identify exactly what happens to sequences whose energy escapes to infinity.
+and identifies the positive critical divergence of sources with infinite energy.
 The compact C² parent theorem is now certified, including its literal arithmetic terms:
 `../3-formalized/sz-critical-source-first-variation-2026-10-18.md`.
 
@@ -111,27 +111,14 @@ application is `D(t)=C(0)-C(t)`, bounded between zero and `2C(0)` by the L² cor
   declarations of `SuzukiCriticalBetaKernel.lean`; none assumes RH or source positivity.
 - Fatou is the nonnegative integral inequality `lintegral_liminf_le`; no limiting integral
   is represented by a totalized nonintegrable real Bochner integral.
-- Formalize the primary weak convergence without finite-energy domination.
-- Close the extended-real Fatou passage and the literal fixed-cutoff arithmetic assembly.
-- Keep the ordinary finite-energy and infinite-energy branches separate in Lean so that the
-  totalized real Bochner integral cannot silently turn an infinite energy into zero.
+- Uniform primary weak convergence follows from smooth L² density and the exact kernel-mass stability bound.
+- The extended-real Fatou passage and literal fixed-cutoff arithmetic assembly are implemented in the canonical leaves below.
+- The ordinary finite-energy and infinite-energy branches are kept separate; divergent limiting energy is never represented by a totalized real integral.
 
-The paper proof is complete. `SuzukiCriticalExtendedEnergy.lean` passes its direct source
-check. Its theorem `tendsto_suzukiCriticalCompensatedEnergy` proves the bounded-profile
-limit in `ENNReal`, including the infinite-energy branch, without a finite-energy premise.
-`SuzukiCriticalL2Energy.lean` also compiles. Its capstone
-`tendsto_suzukiCriticalCompensatedEnergy_autocorr` discharges all profile conditions
-for every real L² source, without compact support, smoothness, or finite energy.
-Public-declaration axiom audits are in progress. The complete compact C² parent is
-certified in stage 3; the full compact-L² extension remains unfinished in Lean.
-
-`SuzukiCriticalL2Cusp.lean` now also compiles. Its theorem
-`tendstoUniformly_suzukiCriticalPrimaryCusp_of_memLp` proves the weak primary limit
-uniformly over every real translation for every real L² source. Its stability
-estimate `abs_suzukiCriticalPrimaryCusp_sub_le_L2_norms` pays all translations by
-one Hilbert-space approximation error. These three new leaves are wired into the
-umbrella; no umbrella compilation was run. The signed pole, extended-real
-quotient, and complete arithmetic assembly remain the active Lean obligations.
+The complete paper proof is implemented by nine canonical Lean leaves. The
+source-domain hypotheses are exactly real L² membership and compact support;
+no differentiability or finite limiting-energy premise is added. All canonical
+source checks and all 42 public transitive axiom audits passed.
 
 For the L² specialization, let `q` be the source's Hilbert-space class and `T_t` the
 measure-preserving translation isometry. Almost-everywhere representative invariance gives
@@ -189,61 +176,44 @@ pole and avoids extending the earlier private convolution lemmas.
 
 - [x] Precise source-domain conjecture and attack mechanism.
 - [x] Dependency-closed paper proof with the L² and extended-limit dependencies checked.
-- [ ] Canonical Lean check and public-declaration axiom audit.
+- [x] Canonical Lean check and public-declaration axiom audit.
 
-## Lean checkpoint
+## Lean implementation
 
-- Compiled canonical leaves: `SuzukiCriticalExtendedEnergy` (3 public declarations),
-  `SuzukiCriticalL2Energy` (8), `SuzukiCriticalL2Cusp` (5), and
-  `SuzukiCriticalL2PrimaryVariation` (4), and `SuzukiCriticalPolePointwise` (8). Their dependency oleans
-  were created for actual downstream imports. Do not rebuild existing oleans.
-- The first 28 declarations' `#print axioms` outputs contain only `propext`,
-  `Classical.choice`, and `Quot.sound`; the combined final clean audit remains pending.
-- `SuzukiCriticalL2PrimaryVariation.lean` proves the actual L² primary quotient
-  in `EReal`. Its four declarations passed their imported axiom inspection.
-- `SuzukiCriticalPolePointwise.lean` contains the full first-moment, pole
-  measurability, pointwise bound, and pole-limit proof; its canonical source check
-  and dependency olean creation both passed. Its eight declarations passed their
-  imported axiom inspection.
-- `SuzukiCriticalL2Pole.lean` contains compact L² pole testing, signed cusp
-  convergence, and extended signed cusp variation. The scratch and first canonical checks found one
-  composition/coercion simplification issue. An isolated extended-real scratch
-  proof now passes: explicitly expose the sum-valued function before rewriting
-  its limit, rather than simplifying casts beneath an inferred composition.
-  That correction passed: the canonical file and its downstream dependency
-  olean are now checked. All six public declarations are proved; their combined
-  axiom audit remains pending. The normalization scratch check is active.
-- `SuzukiCriticalL2Arithmetic.lean` extends the exact literal finite sum and its
-  extended first variation. `SuzukiCriticalL2WeilNormalization.lean` identifies
-  the existing extended `sourceLevyEnergy` by the finite exponential correction
-  and Gamma recurrence. The normalization scratch check verified the required
-  integral and EReal APIs; two elaboration issues were fixed by an explicit
-  `IntegrableOn` type and exposing positive-ray membership. Its canonical source
-  and dependency olean now pass. The arithmetic leaf also passed its canonical
-  check and dependency olean creation. The capstone scratch check, including
-  the complete 42-declaration axiom inspection, is active.
-- `SuzukiCriticalL2FirstVariation.lean` contains the complete cutoff-free capstone
-  and eventual strict deficit for infinite-energy compact L² sources. It awaits
-  the arithmetic and normalization dependency checks.
-- The concrete unsmoothed critical-family consequence has a complete paper proof
-  in `sz-critical-family-literal-source-deficit-2026-10-24.md` and a pending draft
-  `/tmp/sz-critical-family-literal-api.lean`; finish the L² capstone first.
-- Remaining: check and canonicalize these drafts, extend the exact finite arithmetic
-  assembly to L² sources, identify the compensated energy with the existing
-  `ArithmeticPositivityTheory.sourceLevyEnergy` plus its finite exponential correction,
-  and finish one dependency-closed canonical audit. The parent compact-C² card is
-  already certified in stage 3 by shared work; preserve its completed leaves.
+All paths below are under `formal/GaloisForLFunctions/RHTower/Suzuki/`.
 
-## Finalization scope
+| Module | Public declarations | Contribution |
+|---|---:|---|
+| `SuzukiCriticalExtendedEnergy` | 3 | Bounded-profile extended energy limit |
+| `SuzukiCriticalL2Energy` | 8 | L² correlation and energy laws |
+| `SuzukiCriticalL2Cusp` | 5 | Uniform translated primary convergence |
+| `SuzukiCriticalL2PrimaryVariation` | 4 | Exact extended primary quotient |
+| `SuzukiCriticalPolePointwise` | 8 | First moment and pointwise growing-pole limit |
+| `SuzukiCriticalL2Pole` | 6 | Compact L² pole and signed-cusp limits |
+| `SuzukiCriticalL2Arithmetic` | 3 | Literal arithmetic assembly and tangent |
+| `SuzukiCriticalL2WeilNormalization` | 3 | Positive-tail and Gamma normalization |
+| `SuzukiCriticalL2FirstVariation` | 2 | Full extended first variation and infinite-energy deficit |
 
-The user paused the broader RH goal and requested completion of the current
-Lean work. Finish the compact-L² capstone, the direct literal compact-family
-consequence, and the already written varying-primary Fatou draft. Complete
-canonical checks, all public axiom inspections, umbrella imports, and cleanup.
-Do not begin the untruncated-source formalization or the remaining full
-moving-source Gamma-limit assembly in this finalization batch.
+The capstones are
+`RHTower.tendsto_suzukiCriticalSourcePairing_extended_firstVariation` and
+`RHTower.eventually_suzukiCriticalSourcePairing_lt_mass_of_infiniteEnergy`.
+The limit reuses `ArithmeticPositivityTheory.sourceLevyEnergy` and
+`SignedPrimePolar.fullPairing`; it does not introduce an assumed positivity
+interface or a totalized divergent spectral integral.
 
-The capstone scratch check writes `/tmp/sz-critical-l2-source-check.log`.
-Remaining drafts are `/tmp/sz-critical-family-literal-api.lean` and
-`/tmp/sz-critical-moving-primary-api.lean`. Planned canonical leaves are
-`SuzukiCriticalLiteralFamilyContraction` and `SuzukiCriticalMovingPrimaryEnergy`.
+## Verification
+
+All nine canonical modules compile. All 42 public declarations have transitive
+axioms contained in `propext`, `Classical.choice`, and `Quot.sound`. The combined
+audit runs in `SuzukiCriticalLiteralFamilyContraction.lean`, which imports the
+complete chain and prints these 42 declarations plus its two consequences:
+
+```sh
+cd formal
+lake --old env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalLiteralFamilyContraction.lean
+```
+
+This command passed. No placeholders, extra axioms, trusted-computation shortcuts,
+or raised proof limits occur in these modules. Only oleans required by written
+downstream modules were created. Each finished module is imported once by
+`RHTower.lean`; no umbrella compilation was run.

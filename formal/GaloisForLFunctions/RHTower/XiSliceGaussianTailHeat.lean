@@ -6,11 +6,11 @@ import Mathlib.MeasureTheory.Constructions.Polish.Basic
 /-!
 # Gaussian heat of the actual Xi tail
 
-Reflection pairing makes the radius tail positive on the real axis. Its global
-fourth-moment Gaussian bound proves heat integrability and an explicit one-sided
-comparison with the Gaussian heat background. At height `exp(u⁴)`, cutoff `u³`,
-and scaled heat `κ/a` with `0 < κ < 1/2`, the normalized heat integral converges
-to one uniformly on bounded real intervals.
+For radius at least four, reflection pairing makes the tail positive on the real
+axis. Its fourth-moment Gaussian bound proves heat integrability and an explicit
+one-sided comparison with the Gaussian background. At height `exp(u⁴)` and cutoff
+`u³`, let `a` be the quadratic tail coefficient. At heat `κ/a`, `0 < κ < 1/2`,
+the normalized heat integral converges to one uniformly on bounded real intervals.
 -/
 
 open MeasureTheory Filter Topology

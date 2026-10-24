@@ -765,7 +765,7 @@ theorem criticalEndpointCurvature_le_four : criticalEndpointCurvature ≤ 4 := b
 
 /-- The critical prime majorant `envelopePrimeMajorant 1` coincides pointwise with
 `r ↦ Λ(r) / r^{3/2}`. -/
-theorem envelopePrimeMajorant_one_eq (r : ℕ) :
+theorem envelopePrimeMajorant_one_eq_rpow (r : ℕ) :
     envelopePrimeMajorant 1 r =
       (ArithmeticFunction.vonMangoldt r : ℝ) / (r : ℝ) ^ (3 / 2 : ℝ) := by
   unfold envelopePrimeMajorant
@@ -777,7 +777,7 @@ theorem envelopePrimeMajorant_one_eq (r : ℕ) :
 /-- **Explicit critical prime majorant bound.** `∑_r Λ(r) r^{-3/2} ≤ 18`. -/
 theorem tsum_envelopePrimeMajorant_one_le :
     (∑' r : ℕ, envelopePrimeMajorant 1 r) ≤ 18 := by
-  simp_rw [envelopePrimeMajorant_one_eq]
+  simp_rw [envelopePrimeMajorant_one_eq_rpow]
   have h := RHTower.tsum_vonMangoldt_div_rpow_le_six (s := 3 / 2) (by norm_num)
   norm_num at h
   exact h

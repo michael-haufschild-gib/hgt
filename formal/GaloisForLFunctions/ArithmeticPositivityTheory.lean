@@ -99,3 +99,4 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».LowScaleCoupledPosit
 import GaloisForLFunctions.«arithmetic-positivity-theory».ExplicitCollarThresholdsAndKernelShape
 import GaloisForLFunctions.«arithmetic-positivity-theory».DenseScaleWindowsAndMultiWindowPositivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».FromTheCriticalFamilyToTheReceiver
+import GaloisForLFunctions.«arithmetic-positivity-theory».QuantitativeGridTentDetection

@@ -46,6 +46,15 @@ Four pillars organise the theory:
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Carries the source's signs into the incidence kernel and its positive majorants. |
 | [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Reads the non-Z-type obstruction of §§3.5–3.7 as frustration. A signed incidence form has zero ground energy iff it is balanced, its ground energy is bounded by the frustration mass, and the odd Weil ledger is frustrated only on prime-sum edges, which are the prime anti-diagonals of §3.7. |
 
+On the RH frontier ACT is itself a live route. Fix one shift $a>0$: RH is equivalent to the
+pole-free variation inequality $D_a(u)\le 2S_a(u)+V_a(u)$ for every even compact $C^2$ profile $u$,
+with every reflected prime term retained (§3.8), and the open estimate is that inequality. Other
+routes consume the theory: the restricted Weil ground-energy route RW uses the path $\mu(A)$, its
+small-aperture floors and the doubly exponential ceiling (§3.14); the lag route SRT reads the same
+path at the centred difference test; the Suzuki route meets it in the window floor, which is
+Suzuki's small-aperture main term with $\mu_1$ removed; and the grid-tent transfers of Arithmetic
+Positivity Theory carry the $3/10$ window to the critical family.
+
 **The shared target.** The programmes in the table work on one object: RH as the sign of the
 complete critical arithmetic form, read through pairwise incidence (Arithmetic Incidence
 Positivity), lag (Square-Root Threshold) and aperture. ACT owns the aperture face — the ground-energy
@@ -150,7 +159,7 @@ vanishing near the origin is `F/m_a`, an even `C²_c` profile.
 |---|---|---|
 | Jump measure | `dm(t) = ω(t) dt + Σ_{n≥2} Λ(n) n^{−1/2} δ_{log n}` on `t > 0` | `archLevyDensity`, `vonMangoldtAtom` |
 | Potential | `ρ(x) = Θ(x) cosh(x/2)` | `phiDoobCoshMass` |
-| Doob jump energy | `E(v) = E_arch(v) + E_prime(v) = ∫ dm(t) ∫_ℝ Θ(x)Θ(x+t)(v(x) − v(x+t))² dx` | `phiDoobArchJump`, `phiDoobPrimeJump` |
+| Doob jump energy | `E(v) = E_arch(v) + E_prime(v) = ∫ dm(t) ∫_ℝ Θ(x)Θ(x+t)(v(x) − v(x+t))² dx` | `phiDoobArchJumpEnergy`, `phiDoobPrimeJump` |
 | Single-length jump energy | `J_ℓ(v) = ∫ Θ(x)Θ(x+ℓ)(v(x) − v(x+ℓ))² dx` | `shiftJumpEnergy` |
 | Markov energy | `Q(Θv) = E(v) − ∫ ρ v²` | `markovEnergy (phiDoobTest v)` |
 | Pole-free Weil operator | `𝒲M(x) = Σ_n Λ(n)n^{−1/2}(M(x+log n) + M(x−log n)) − ∫_0^∞ [2ν(u)M(x) − ω(u)(M(x+u) + M(x−u))] du + (γ + log π)M(x)`, `ν(u) = e^{−2u}/(1 − e^{−2u})` | `poleFreeWeilOperator` |
@@ -221,14 +230,14 @@ with **conductances** `M(x)M(x+t)`, negative exactly on the jumps that cross a n
 | Reflected prime mass | `P_M(x) = Σ_{log n > x} Λ(n) n^{−1/2} M(log n − x)` | `reflectedPrimeMass` |
 | Direct prime mass | `Σ_{log n ≤ x} Λ(n) n^{−1/2} M(x − log n)` | `directPrimeMass` |
 | Reflected collar mass | `C_a(x) = ∫ dm(t) m_a(t − x)⁺`, and `C_φ`, `C_M` for other gauges | `shiftedCollarMass` |
-| Collar ratio | `R(a) = lim_{x→∞} C_a(x)/(sinh(a/2) sinh(x/2)) = 2 + 2∫_0^∞ e^{−r/2} m_a / sinh(a/2)` | `collarRatio` |
+| Collar ratio | `R(a) = lim_{x→∞} C_a(x)/(sinh(a/2) sinh(x/2)) = 2 + 2∫_0^∞ e^{−r/2} m_a / sinh(a/2)` | `two_lt_collarRatio` |
 | Half-line measure | `μ_a = m_a(x) sinh(x/2) dx` on `(0, ∞)`, total mass `sinh(a/2)/2`; in general `μ = M sinh(x/2)` | — |
 | Profile mean and variance | `ū = 2∫ u dμ_a / sinh(a/2)`, `V_a(u) = 4 sinh(a/2) ∫ (u − ū)² dμ_a` | `profileMoment`, `profileVariance` |
 | Fold-excess weight | `W_a(x) = ∫_{t>2x} dm(t) (m_a(t−x) − m_a(x+t))⁺` | `foldExcessWeight` |
 | Autocorrelation | `G = Θ ∗ Θ`, even, `0 ≤ G(z) ≤ Θ(\|z\|/2)`, `∫ G cosh(s/2) = 1/4` | `riemannAutocorr` |
 | Averaged kernel | `K(x,y) = ∫_0^∞ m_a(x) m_a(y) da = G(x−y) − G(x+y)` | `averagedKernel` |
 | Smooth plateau | `u_L(x) = τ(L+1−x) τ(L+1+x)`, `τ` the smooth transition | `smoothPlateau` |
-| Capacity | `S(g) = ∫ 2 sinh(u/2) g`, Markov form `M_N(g)` of the Weil–Markov–pole split; **capacity ratio** `S(g)²/(2M_N(g))` | `capacityRatio` |
+| Capacity | `S(g) = ∫ 2 sinh(u/2) g`, Markov form `M_N(g)` of the Weil–Markov–pole split; **capacity ratio** `S(g)²/(2M_N(g))` | `tendsto_capacityRatio_spanPlateau` |
 
 ### 2.6 The forms and the criticality vocabulary
 
@@ -265,12 +274,12 @@ the tests stay away from zero. The **theta span** is the span of the translates 
 | Markov energy, zero form, full zero form | `markovEnergy`, `zeroForm`, `fullZeroForm` |
 | same-side, reflected sum and difference energies; archimedean and prime parts | `sameSideEnergy`, `reflectedSumEnergy`, `reflectedDifferenceEnergy`, `archSameSideEnergy`, `archReflectedDifferenceEnergy` |
 | signed jump energy, variance energy, cross energy, single-length jump energy | `signedJumpEnergy`, `varianceEnergy`, `crossEnergy`, `shiftJumpEnergy` |
-| collar mass, collar ratio, reflected and direct prime masses | `shiftedCollarMass`, `collarRatio`, `reflectedPrimeMass`, `directPrimeMass` |
+| collar mass, collar ratio, reflected and direct prime masses | `shiftedCollarMass`, `two_lt_collarRatio`, `reflectedPrimeMass`, `directPrimeMass` |
 | cosh moment, jump-measure moment, pole moments | `coshMoment`, `jumpMeasureMoment`, `evenPoleMoment`, `oddPoleMoment` |
 | profile moment and variance, fold-excess weight | `profileMoment`, `profileVariance`, `foldExcessWeight` |
 | autocorrelation, averaged kernel, smooth plateau | `riemannAutocorr`, `averagedKernel`, `smoothPlateau` |
 | folded admissibility, finite model | `FoldedAdmissible`, `FiniteJumpFormAllegrettoPiepenbrink` |
-| Doob jump energies, cosh mass, capacity ratio | `phiDoobArchJump`, `phiDoobPrimeJump`, `phiDoobCoshMass`, `capacityRatio` |
+| Doob jump energies, cosh mass, capacity ratio | `phiDoobArchJumpEnergy`, `phiDoobPrimeJump`, `phiDoobCoshMass`, `tendsto_capacityRatio_spanPlateau` |
 | restricted and polar ground energies, window floor | `ccmRestrictedWeilGroundEnergy`, `ccmRestrictedWeilPolarGroundEnergy`, `windowFloor` |
 | quadratic folded potential, origin-balanced profile | `quadraticFoldedPotential`, `originBalancedProfile` |
 | RH criteria (entry points) | `riemannHypothesis_iff_forall_odd_zeroForm_nonneg`, `riemannHypothesis_iff_forall_fullZeroForm_nonneg`, `riemannHypothesis_iff_forall_smearedGauge_jumpForm_nonneg`, `riemannHypothesis_iff_forall_nonneg_cone`, `riemannHypothesis_iff_nonneg_and_no_hardyWeight`, `riemannHypothesis_iff_isLeast_primeRate` |

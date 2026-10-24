@@ -44,6 +44,14 @@ it lives on the Frobenius orbit of the diagonal.
 `RHTower` supplies the explicit formula, the Weil criterion, the Lévy–Khintchine form of the
 archimedean symbol and the matrix inertia calculus.
 
+On the RH frontier ACS is a live route: source-defined sections, all-aperture Riemann–Roch with
+ampleness, the scaling Hodge index, RH. Its proved part is the receiver (item 18), the
+low-frequency-blind subsurfaces with Riemann–Roch and ampleness (item 20), the local floors and the
+finite-model classifications (items 23–24); its open estimate is source Riemann–Roch on a
+Hecke-stable cone of nonnegative degree at every aperture (§7.1). Trans-Threshold Pair Correlation
+supplies the analytic engine of its route to `3/4`, and Arithmetic Orientation Theory takes the
+scaling surface as its geometric core.
+
 **The shared target.** The programmes in the table work on RH as the sign of one critical arithmetic
 form. ACS reads that sign as the Hodge index of the scaling surface and asks for the geometric input
 that produced it over `𝔽_q`: an effectivity with Riemann–Roch supply. Every positivity route of the
@@ -516,8 +524,11 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
     distinct zeros and at most `(819/5000 + ε)N` right zeros (`two_thirds_lt_HD_one`,
     `five_sixths_lt_GD_one`), yet stays below `3/4` (`HD_one_lt_three_quarters`): no profile supported
     below `λ = 1` reaches `3/4`. Beyond `λ = 1`, a flat-top window under a pair-correlation bound
-    `F ≤ B` gives `2/3 + 1/(3(3B − 2))`, and a two-window mixture of bandwidths `1` and `4/3` reaches
-    `3/4` iff `B ≤ 117/41` (at mixing weight `7/16`) and beats `2/3` for every `B < 181/18`.
+    `F ≤ B` gives `2/3 + 1/(3(3B − 2))`. A two-window mixture of bandwidths `1` and `4/3` has the exact
+    optimal envelope `2/3 + (181 − 18B)²/(1728(91 + 9B))` at mixing weight `(1 + 36B)/(2(91 + 9B))`,
+    which lies in `(0, 1)` and beats `2/3` for `−1/36 < B < 181/18`; it reaches `3/4` at weight `4/9`
+    iff `B ≤ 2954/1035` (slightly past `117/41`, the threshold at weight `7/16`), and beats `HD(1)`
+    up to `B = 7` (`two_sub_mixQ_le_mixOpt_and_eq_at_weight`, `mixOpt_values_and_three_quarters_criterion`).
 28. **Two routes past the blind spot, each with one unproved input.** The pair `(P, Q)` remembers
     what `Â` forgets. Adding the full spectral slack to the rank–trace functional cancels its
     prime-side part identically and leaves `(c²/4) rank P` minus a coupling defect
@@ -529,7 +540,22 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
     and non-coalescence alone is not enough (`macroscopic_displacedPair_counterexample_at_four_thirds`).
     The other route is `RHTower.PrimeSurplusFourThirds`, filling the margin `1/18` above the
     diagonal constant `43/36` at bandwidth `4/3` (`zeta_three_quarters_from_prime_surplus`); its
-    analytic decomposition is the subject of Trans-Threshold Pair Correlation. The certified
+    analytic decomposition is the subject of Trans-Threshold Pair Correlation. There the smooth-window
+    certificate removes, unconditionally, every channel except the coalescent prime pairs
+    `0 < |log(n/m)| ≤ T^{−1+η}`: `N₀*(T, 2T) ≥ (29/36 − ε)N(T, 2T) − coalescentSurplus`
+    (`TransThresholdPairCorrelation.zeta_coalescent_certificate`). So the second route is one
+    number, the normalised coalescent surplus `β`: `29/36 − β` beats `2/3` iff `β < 5/36`, beats
+    `HD(1)` once `β ≤ 577/4500`, and reaches `3/4` iff `β ≤ 1/18`
+    (`zeta_N0star_and_offLineMoment_of_coalescentSurplus`,
+    `coalescent_budget_thresholds_for_two_thirds_HD_one_and_three_quarters`). The affine models of
+    the trans-threshold form factor calibrate `β`: an unsigned additive sieve at its factor-two
+    parity limit gives `49/72 > HD(1)` but reaches `3/4` only below `Υ = 8/9`, so `3/4` needs signed
+    cancellation in the coalescent band; the spectral sieve reaches `3/4` exactly at the parity
+    limit; the Hardy–Littlewood (GUE) model has negative surplus and gives `13/16`
+    (`five_model_separation_of_HD_one_and_three_quarters`). No bound on the coalescent surplus is
+    proved. The proportions transfer without a simplicity hypothesis, through the reflection bound
+    `2R(T₁, T₂) + N₀*(T₁, T₂) ≤ N(T₁, T₂)` for the right-zero multiplicity `R`
+    (`two_mul_sum_right_add_N0star_le`, `cumulative_N0star_of_dyadic_N0star`). The certified
     proportions feed back into the corpus unconditionally: the dyadic off-line moment improves from
     `(67/1000)T` to `(66/1000)T` (`eventually_dyadicWindowTail_le_sixtySix_thousandths`; `57/1000`
     under the prime surplus), and the double-exponential uniqueness threshold for even functions
@@ -706,7 +732,7 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
 | A finite degree certifies positivity | No degree works for all configurations over `ℚ`; over `𝔽_q` the window `2g` does. |
 | The comb aggregate is an intersection number | On resonators the prime intersection has no cross-prime terms; the aggregate is a mean-field shadow. |
 | The pronic weight is the successor intersection | It is the pole mass of the cell; the intersection is the collar `ω(log(1 + 1/k)) ≍ k/2`. |
-| The three-quarters modules prove that 75% of the zeros are on the line | They prove `(3/4)N` *conditionally*: on a zero-side slack `S(T) ≥ N/12`, or on `PrimeSurplusFourThirds`. The unconditional content is `(2/3 − ε)N + S(T) ≤ N₀*` with the slack retained, the `43/36` diagonal constant and the `O(T^{5/6}log²T)` cross term. |
+| The three-quarters modules prove that 75% of the zeros are on the line | They prove `(3/4)N` *conditionally*: on a zero-side slack `S(T) ≥ N/12`, or on `PrimeSurplusFourThirds`. The unconditional content is `(2/3 − ε)N + S(T) ≤ N₀*` with the slack retained, the `43/36` diagonal constant, the `O(T^{5/6}log²T)` cross term, and `N₀* ≥ (29/36 − ε)N − coalescentSurplus` with the surplus unbounded. |
 | Adams operations make the scaling surface a Weil surface | They give Frobenius, graphs and Lefschetz numbers; the golden datum has them too. Riemann–Roch is still missing. |
 | The rank–trace form is capped at `2/3` | The form has capacity `2 − κ` (reaching `1` at `κ = 1`); `2/3` is `2 − κ(1)` from stopping pair correlation at `λ = 1`. |
 | A rank-based section count is selective | Diagonal reweighting leaves kernels and `h⁰` unchanged; the shifted pair and `Λ` have the same counts. Selectivity needs a norm or the defect `E(s)`. |
@@ -783,121 +809,49 @@ Built and reusable:
 
 ## 7. Open problems
 
-1. **Riemann–Roch for `ℤ` — the open core.** The structural questions are settled
-   (`SectionEffectivityAndTheUniversalFloorLaw`): on any polar surface, every cone `E` of
-   nonnegative ample degree with `AmpleAxiom` obeys
-   `RiemannRochAxiom E ↔ openPositiveCone ⊆ E ∧ ∀ x, 0 ≤ defect(x, x)`
-   (`riemannRoch_iff_openPositiveCone_subset_and_defect_nonneg`), so no ample cone of nonnegative
-   degree can have a `RiemannRochAxiom` that escapes equivalence to the defect floor; source section
-   readings satisfy `BezoutAxiom` without reading `x²` (`sourceCone_bezout_of_defect_sq_le`);
-   prime-power node vanishing gives `dim W − ψ(e^{2r})/log 2 ≤ dim W − #(primePowerNodes r) ≤ h⁰`
-   (`finrank_sub_card_le_primeNodeH0`, `finrank_sub_primeNodeCount_div_log_two_le_primeNodeH0`) with
-   `∫_0^s(e^u + 1)du − ψ(e^s) = E(s)`; on the odd subsurface the pole charge `2A(F)²` cancels
-   identically between `polar` and `defect` (`scalingSubsurface_odd_pair_self_eq_poleFreeLedger`);
-   and away from the low-frequency divisor `D_a` uncompensated `RiemannRochAxiom`, `AmpleAxiom` and
-   `HodgeIndex` hold unconditionally at every degree (`lowBlindTests_effectivity`). Open: closing
-   the finitely many low-frequency directions read by `D_a` and the pole, or proving `0 ≤ δ(x, x)`
-   across all apertures.
-2. **Near-radical count (Landau–Widom).** Settled (`LandauWidomNearRadicalLaw`): dyadic summation of
-   the Riemann–von Mangoldt formula yields `|N(0, T) − (T/2π)log(T/2πe)| ≤ C log²T`
-   (`zeroCount_lower`, `zeroCount_twoSided`), and the exact variational identity
-   `shannonZeroSurplus L T = 2e^{2L} − 2e^{2L}(u log u − u + 1) ≤ 2e^{2L}` (`u = T / (2πe^{2L})`,
-   equality iff `T = 2πe^{2L}`) gives the uniform unconditional upper bound
-   `2TL/π − 2N(0, T) ≤ (2 + η)e^{2L}` across *all* bandwidths `T ≥ 0`
-   (`eventually_shannon_sub_zetaZeroCount_le`). Together with the sharp Bessel–Shannon bound
-   `dim V ≤ 4LT_ε(L)/π` (`zeta_near_radical_finrank_le_shannon`, `hodgeDefectAt_zeta_le_shannon`)
-   and the Bessel–projection law on constraint kernels (`finrank_mul_le_sub_of_concentrated_ker`),
-   this gives the unconditional two-sided `(2 ∓ η)e^{2L}` dimension law
-   (`zeta_landau_widom_two_sided_dimension_law`), the Landau–Widom rate
-   `−log μ(L) ≍ 2π² N(T*)/log N(T*)` (`exists_twoSided_truncKernel_log_energy_landauRate`,
-   `eventually_near_radical_subspace_landauRate`), and critical-line zero-side coercivity
-   (`sum_norm_sq_paperFT_le_re_W_of_criticalLine`).
-3. **Aperture over `ℚ`.** Settled (`TuransInequalityWithoutBoundedOnLineDensity`,
-   `DoublyLogarithmicVisibilityAndExcludedDepthLaw`): the degree at which `n` right zeros become
-   visible is explicit in terms of on-line mass, local density and logarithmic density, and
-   height-uniform under a uniform window count (item 15); no degree works uniformly over all
-   configurations. For `ζ`, under a local off-line bound `OffLineCopiesLocallyBounded M` (with no
-   bound on on-line density), on-line exponential damping (`e^{(Re z − σ)V} ≤ 1` for `Re z ≤ 0`,
-   `σ > 0`) eliminates the `log γ₀` factor in the Riemann–von Mangoldt cubic potential tail of the
-   Turán inequality, removes `recordHeightOf` and `oneParamRecordHeight` from the unmodulated
-   (`c = 0`) visibility and contact-aperture laws, makes the modulated (`c = γ₀`) visibility lag
-   explicit in `(M, onLineEvenMass w γ₀, δ₀)` with zero `log γ₀` factor, and reduces the
-   unconditional modulated visibility lag to `nearTopLogLogLagOffLine M w γ₀ δ₀ = Θ_{w, M}((1 + log log(|γ₀| + 4)) / δ₀)`
-   (`nearTopLogLogLagOffLine_two_sided`). The remaining `log log γ₀` is intrinsic when on-line
-   density is unconstrained: the Riemann–von Mangoldt window lower bound forces
-   `c_w log γ₀ ≤ onLineEvenMass w γ₀ ≤ C_w(C_ξ + log(|γ₀| + 4))`
-   (`exists_onLineEvenMass_two_sided_log_of_offLineCopiesLocallyBounded`), any `θ`-decoherent lag has
-   nonnegative difference test up to `(1/δ₀)log(θ·onLineEvenMass/offLineEvenMass − 1) = Ω_{w,M}((log log γ₀)/δ₀)`
-   (`re_W_twoBump_modScaledBump_nonneg_of_lag_le_log_ratio`), and across *all* `C²_c([−a, a])` tests
-   on `isolatedPairConfig` at the Riemann–von Mangoldt density `L = (1/2π)log(γ₀/2π)` the Hodge
-   defect vanishes for `a ≤ (1/(2δ₀))log(4δ₀ L)` and equals `1` above `(1/(2δ₀))log(6δ₀ L + 1)`
-   (`hodgeDefectAt_isolatedPair_rvmDensity_eq_zero`, `hodgeDefectAt_isolatedPair_rvmDensity_eq_one`).
-   Inverting `nearTopLogLogLagOffLine` gives the doubly-logarithmic excluded depth
-   `nearTopLogLogExcludedDepthOffLine M w γ₀ V = O_{M,w}((1 + log log(|γ₀| + 4))/(V − Drift))` and
-   the modulated contact-aperture bound `zetaContactAperture ≤ V/2 + w`
-   (`zetaContactAperture_le_of_near_top_loglog_of_offLineCopiesLocallyBounded`,
-   `re_lt_nearTopLogLogExcludedDepthOffLine_of_pos_on_Icc`,
-   `re_lt_nearTopLogLogExcludedDepthOffLine_of_lt_contactAperture`).
-4. **The collar between towers.** Settled (`CrossTowerCollarAndFiniteEulerLatticePositivity`):
-   using `primeCofactor p a = a / p^{v_p(a)}`, on any `P`-smooth support `S` the prime incidence form
-   splits as `heckeFormOn S c = Σ_{p ∈ P} primeSliceForm p S c` with zero cross-prime prime coupling
-   (`heckeFormOn_eq_sum_primeSliceForm`), bounded by `(Σ_{p ∈ P} E_p) Σ_{a ∈ S} c(a)²`
-   (`abs_heckeFormOn_le_sum_eulerEnvelope`) and asymptotically attained by `c ≡ 1` on product boxes
-   (`exists_towerForm_one_gt_of_lt_eulerEnvelope`, `exists_heckeForm_box_one_gt_of_lt_add_eulerEnvelope`).
-   The rank-`P` resonator remainder obeys `rankPResonatorRemainder P S c ≤ −(Σ_{p ∈ P} (E_p − (|P| − 1) w_p²)) Σ_{a ∈ S} c(a)²`
-   (`rankPResonatorRemainder_le`, `rankPResonatorRemainder_le_card`) and is negative definite for all
-   `1 ≤ |P| ≤ 3` (`two_mul_resonatorWeight_sq_lt_eulerEnvelope`, `rankPResonatorRemainder_neg_of_card_le_three`).
-   Between any `1 ≤ a < b`, `ω(log(b/a)) = b√(ab)/(b² − a²)` (`archLevyDensity_log_div_nat`), and
-   `collarFormOn S c = intraTowerCollarForm P S c + crossTowerCollarForm P S c`
-   (`collarFormOn_eq_intra_add_cross`): the intra-tower collar is bounded against the Euler envelopes
-   by `(Σ_{p ∈ P} (p²/((p² − 1)log p)) E_p) Σ_{a ∈ S} c(a)²` (`abs_intraTowerCollarForm_le`), while
-   the cross-tower collar (`heckeIncidence a b = 0`) is bounded pointwise by `(b/4)(√(b/a) + √(a/b))`
-   against the pole pairing (`collarWeight_le_polarWeight_mul`), by `(4/3)√(a/b)` when `2a ≤ b`
-   (`collarWeight_le_of_two_mul_le`), and on disjointly supported bumps `{g_a}_{a ∈ S}` by the
-   diagonal shift-jump self-energy (`disjoint_family_shift_sq_eq`, `disjoint_lattice_collar_le_selfJump`).
-   Consequently, `finiteEulerLatticeForm S κ c` is positive semidefinite for `κ ≥ Σ_{p ∈ P} E_p`
-   (`finiteEulerLatticeForm_nonneg_of_sum_eulerEnvelope_le`) and universally nonnegative on `{p, q}`-boxes
-   iff `κ ≥ E_p + E_q` (`box_finiteEulerForm_nonneg_forall_iff`), with matching coercivity and
-   pole-compensated positivity laws for `collarCoupledEulerLatticeForm`
-   (`collarCoupledEulerLatticeForm_nonneg`, `poleCompensatedCollarLatticeForm_nonneg`).
-5. **Effectivity from the `λ`-ring.** Settled (`LambdaRingEffectivityAndHeckeLefschetzRigidity`):
-   without `λ`-ring invariance, `ampleHalfSpace = {x | 0 ≤ x·(H + V)}` satisfies `RiemannRochAxiom`
-   unconditionally (`ampleHalfSpace_riemannRoch`), failing only `AmpleAxiom`. Once `S` carries even
-   a single correspondence `T` scaling `(x·H, x·V)` by `(1, a)` or `(a, 1)` (`a > 1`), `T`-invariance
-   substitutes for `AmpleAxiom` completely: for *every* `T`-invariant `E ⊆ ampleHalfSpace` — **without
-   assuming `AmpleAxiom E`** — `RiemannRochAxiom E ↔ openPositiveCone ⊆ E ∧ ∀ x, 0 ≤ defect(x, x)`
-   (`riemannRoch_iff_openPositiveCone_subset_and_defect_nonneg_of_hecke`,
-   `scalingSurface_hecke_riemannRoch_iff`, `scalingSurface_adams_riemannRoch_iff`). Thus no
-   Hecke-stable cone of nonnegative ample degree can satisfy `RiemannRochAxiom` without forcing the
-   coercive defect floor `∀ x, 0 ≤ δ(x, x)`. Over `𝔽_q`, the Rosati square-sampling energy defines
-   `D.rosatiSourceCone S`, which satisfies `defect ≤ rosatiSourceEnergy` and
-   `rosatiSourceCone S ⊆ positiveCone` unconditionally on every `CurveDatum D`, is invariant under
-   `spanAdams m` and `spanHecke m` and satisfies `RiemannRochAxiom` and `BezoutAxiom` on every
-   unitary curve, and **is violated by `goldenDatum` at `S = {1}`**
-   (`rosatiSourceCone_riemannRoch_iff_unitary`, `goldenDatum_not_rosatiSourceCone_riemannRoch`,
-   `goldenHeckeEscape_violates_spanHecke_ample`). On `scalingSurface`, the Adams coboundary
-   `adamsVar a x = ψ^a x − x` reverses the sign of `polar` on `nefQuadrant` (`polar_adamsVar_self`)
-   and gives the pole-cancelled Lefschetz–adjunction identity
-   `arithLefschetz x a − ((a + 1)/2)(x·x) = ((√a − 1)²/2) defect(x, x) + (√a/2) defect(ψ^a x − x, ψ^a x − x)`
-   (`arithLefschetz_eq_selfPair_add_defect_add_adamsVar`); the Adams- and Hecke-stable cone
-   `lefschetzEnvelopeCone` satisfies `RiemannRochAxiom` (without `AmpleAxiom`) iff `RiemannHypothesis`
-   (`lefschetzEnvelopeCone_riemannRoch_tfae`), and on any `heckeSpanCycle` the defect is the
-   negative quadratic form in `b · arithLefschetz (prim (diagCycle g)) (a/b)`
-   (`defect_heckeSpanCycle_eq_sum_arithLefschetz_prim`).
-6. **Beyond `2/3` and `HD(1)`.** The flat-top cap `2/3` and the variational sub-threshold profile
-   are explained, and no sub-threshold profile reaches `3/4` (§3.8). Open: either input that gives
-   `3/4` — a zero-side spectral slack `S(T) ≥ N(T, 2T)/12` near `λ = 1` (requiring macroscopic
-   hyperbolic pair displacement), or trans-threshold pair correlation beyond `λ = 1`
-   (`RHTower.PrimeSurplusFourThirds` at bandwidth `4/3`, or `F ≤ B` with `B ≤ 117/41` through the
-   two-window mixture).
-7. **One prime against two.** Two primes carry the whole defect; one prime carries every visible
-   outer eigenvalue `p^{ρ − ½}` whenever the real parts of the right zeros contain no strictly
-   increasing sequence, however the eigenvalues accumulate, and every visible class on an attained
-   top (item 17). Open: real parts increasing to their supremum. There the closure argument cannot
-   work: the difference of two positive Wolff measures of equal mass on disjoint annuli
-   (`HTGeometry.PositiveWolffMeasure.exists_positive_wolff_annulus`, atoms accumulating at the outer
-   radius) kills every Laurent moment, so negative vectors can leave the closed span of the tower.
-   Whether the tower's negative index nevertheless counts the visible classes is the question.
+1. **Riemann–Roch for `ℤ` — the open core.** The structure is settled: every cone of nonnegative
+   ample degree with the ample axiom, and every Hecke-stable cone in the ample half-space, has
+   Riemann–Roch exactly when the open positive cone lies in it and the defect is nonnegative
+   (items 29, 33); source section readings give Bézout positivity without reading `x²`; prime-power
+   node vanishing gives `h⁰ ≥ dim W − #(prime-power nodes)` with the deficit equal to `E(s)`; and away
+   from the low-frequency divisor `D_a` and the pole the Hodge index, Riemann–Roch and ampleness
+   hold unconditionally at every degree (item 20). Open: close the finitely many low-frequency
+   directions read by `D_a` and the pole, at every degree, by an effectivity defined without the
+   sign of the form. Equivalently, prove `0 ≤ δ(x, x)` on those directions.
+2. **An arithmetic section law.** The source cones are well defined, ample and Hecke-stable, and
+   their Riemann–Roch is a coercive floor (item 20); the Rosati source cone over `𝔽_q` has
+   Riemann–Roch exactly on unitary data and the golden datum violates it (item 29). Open: a
+   source-defined cone over `ℤ` whose Riemann–Roch follows from a law of its sections — a count, a
+   vanishing, a Riemann–Roch-type inequality — rather than from the floor, and which reduces over
+   `𝔽_q` to Weil's.
+3. **The degree floor at a rate below one half.** The Sobolev-normalised floor rate is the zero
+   width, unconditionally (item 32); the known floors have rate `½`. Any rate below `½` is a
+   zero-free strip. Which effectivity input, if any, lowers the rate before it reaches the sign?
+4. **Beyond `2/3` and `HD(1)`.** No profile supported below `λ = 1` reaches `3/4` (item 27). Open:
+   either input that gives `3/4` — a zero-side spectral slack `S(T) ≥ N(T, 2T)/12` near `λ = 1`, which
+   needs macroscopic hyperbolic pair displacement, or a bound `β ≤ 1/18` on the coalescent prime
+   surplus at bandwidth `4/3` (item 28), or `F ≤ B` with `B ≤ 2954/1035` through the two-window
+   mixture. The sieve calibration says the coalescent bound needs signed cancellation among
+   coalescent prime pairs; any `β < 5/36` already beats `2/3`. Trans-Threshold Pair Correlation owns
+   the trans-threshold inputs.
+5. **One prime against two.** Two primes carry the whole defect; one prime tower carries every
+   visible outer eigenvalue whenever the real parts of the right zeros contain no strictly
+   increasing sequence, and every visible class on an attained top (item 17). Open: real parts
+   increasing to their supremum. There the closure argument cannot work — the difference of two
+   positive Wolff measures of equal mass on disjoint annuli kills every Laurent moment
+   (`HTGeometry.PositiveWolffMeasure.exists_positive_wolff_annulus`), so negative vectors can leave the
+   closed span of the tower. Does the tower's negative index nevertheless count the visible classes?
+6. **Visibility when off-line zeros cluster.** Unconditionally, either every near-top zero is
+   visible at the doubly-logarithmic lag and the degree-defect floor rate equals the zero width, or
+   off-line zeros cluster without bound in unit windows (item 15,
+   `scalingSurface_defectRate_eq_zetaZeroWidth_or_offLine_cluster`). Open: the clustering branch —
+   either exclude it, or prove visibility and the rate law inside it.
+7. **From lattice forms to the form of `ζ`.** On finite `P`-smooth supports the prime incidence, the
+   resonator remainders and the finite-Euler-product form are decided exactly (items 23–24), but
+   cross-tower collar positivity uses a bound premise, the pole-compensated form needs `c ≥ 0` and
+   a pole weight at least `max S/4`, and no lattice form is identified with the complete form of
+   `ζ`. Open: a lattice-to-continuum identification that carries these positivity laws to Weil's
+   form, with the archimedean collar and signed coefficients.
 
 ---
 
@@ -952,8 +906,8 @@ Weil's argument.
 | `TheHodgeDefectIsCyclic`, `TheHeckeTowerOfAPrimeIsThePeriodQuotient`, `AlmostEveryPrimeSeesEveryRightZero`, `TheTowerDefectCountsTheFrobeniusEigenvalues`, `OnePrimeSeesEveryWellFoundedLevel` | cyclic Pontryagin law; prime towers, Frobenius eigenvalues and weights; resonant primes; top-down class extraction, the tower law without finiteness, attained tops |
 | `ResonatorKroneckerLaw`, `HeckeIncidenceCartesianLaw`, `TheResonatorRemainderIsNegative`, `TheAdjunctionConjectureMeanField`, `CrossTowerCollarAndFiniteEulerLatticePositivity` | Hecke incidence: Cartesian and rank-`P` Kronecker laws, rank-`P` resonator remainders, intra- and cross-tower collar bounds against `Σ_p E_p` and the pole pairing, positivity decision for the finite-Euler-product form on lattice tests, mean field |
 | `ThePronicWeightIsThePoleMassOfTheSuccessorCell`, `TheSuccessorCollar` | the successor cell |
-| `TheTwoThirdsConstantIsPairCorrelation`, `BreakingTheCoalescenceBlindSpotAndThreeQuarters`, `SpectralSlackConservationAndTheHyperbolicDisplacementThreshold`, `WhatAGramFunctionalCertifiesWithoutEffectivity` | rank–trace inertia, the coalescence blind spot, spectral slack, routes to `3/4`, corpus upgrades |
-| `TheLambdaRingOfTheScalingSurface` | `λ`-ring, Adams operations, Hecke cycles, Lefschetz splitting |
+| `TheTwoThirdsConstantIsPairCorrelation`, `BreakingTheCoalescenceBlindSpotAndThreeQuarters`, `SpectralSlackConservationAndTheHyperbolicDisplacementThreshold`, `WhatAGramFunctionalCertifiesWithoutEffectivity`, `CoalescentSurplusAndTransThresholdProportionLaws` | rank–trace inertia, the coalescence blind spot, spectral slack, routes to `3/4`, corpus upgrades; coalescent-band budgets, sieve calibration of the surplus, the exact two-window envelope, the `N₀*` reflection bound |
+| `TheLambdaRingOfTheScalingSurface`, `LambdaRingEffectivityAndHeckeLefschetzRigidity` | `λ`-ring, Adams operations, Hecke cycles, Lefschetz splitting, Adams–Hecke and Rosati source-cone Riemann–Roch rigidity, primitive arithmetic Lefschetz traces |
 | `RiemannRochForZAndTheReflectedPrimePolarLedger` | tautological cones, Lorentz–polar identity, odd-sector ledgers, `75e^r` and `(3 + ε)e^r` floors, first- and second-order de la Vallée Poussin Sobolev floors, shared derivative payment bootstrap, degree floor ⟺ zero width |
 | `WhichArithmeticDataForceTheSign` | Toeplitz–Rosati reflection identity, pole masking of point counts, forcing equivalences over `𝔽_q` and on the scaling surface |
 | `SectionCountRiemannRochAndPrimeBlindSelectivity`, `SectionEffectivityAndTheUniversalFloorLaw` | nef quadrant and Hecke-stable ampleness, universal floor law `RiemannRochAxiom E ↔ openPositiveCone ⊆ E ∧ ∀ x, 0 ≤ defect(x, x)` for ample cones, sign-free Bézout positivity from source section readings, prime-power node section counts `h⁰ ≥ DoF − node count`, `DoF − node count = E(s)`, exact odd pole-charge cancellation, prime-blind section vanishing, diagonal relabeling invariance vs. Frobenius selectivity |

@@ -1,8 +1,8 @@
 # Sharp boundary admission for the actual arithmetic generator
 
 - **ID:** chmd-sharp-generator-boundary-domain
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper and Lean)
 - **Statement:** Every half-line source projection preserves the domain of the actual CHMD arithmetic generator. Its generator commutator is an everywhere-defined bounded skew-adjoint operator on mass L2, with norm bounded independently of the cut location.
 
 ## Route and contribution
@@ -106,10 +106,29 @@ an assumed domain admission or unproved sampling estimate.
 ## Gates
 
 - [x] Complete paper proof, including full-domain boundary integrability.
-- [ ] Concrete real boundary operator and exact graph pairing in Lean.
-- [ ] Actual generator-domain admission and action in Lean.
-- [ ] Candidate and final repository checks; standard-axiom audit.
-- [ ] Umbrella wiring and scratch cleanup.
+- [x] Concrete real boundary operator and exact graph pairing in Lean.
+- [x] Actual generator-domain admission and action in Lean.
+- [x] Candidate and final repository checks; standard-axiom audit.
+- [x] Umbrella wiring and scratch cleanup.
 
 No global multiplier-domain theorem for a different CCM operator is
 claimed here. No arithmetic positivity or RH conclusion is asserted.
+
+## Lean declarations and verification
+
+Module: `GaloisForLFunctions.RHTower.CHMDSharpGeneratorDomain`.
+
+- `sharpGammaCommutator_inner`: absolute boundary-kernel representation.
+- `sharpLowerGraph_pairing`: the full form defect on actual graph vectors.
+- `sharpMassCutoff_mem_arithmeticGenerator_domain`: sharp half-line
+  restriction preserves the actual arithmetic generator domain.
+- `arithmeticGeneratorSharpCut_apply`: the exact localized generator equation.
+- `sharpFullCommutator_adjoint`: skew-adjointness of the complete forcing.
+- `exists_uniform_sharpFullCommutator_bound`: one bound for all cut locations.
+
+Candidate check passed. All six declarations above were audited with
+`#print axioms`: only `propext`, `Classical.choice`, `Quot.sound` occur.
+The actual repository leaf also passed
+`lake --old env lean GaloisForLFunctions/RHTower/CHMDSharpGeneratorDomain.lean`.
+The module is imported exactly once by `RHTower.lean`. The owned temporary
+proof was removed. No heartbeat or recursion limits were raised.

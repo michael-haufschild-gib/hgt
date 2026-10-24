@@ -52,6 +52,12 @@ assembly into the complete receiver, not the existence of any arithmetic improve
 | [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Places the pronic Báez–Duarte criterion in the width dictionary as its Báez–Duarte unit. Shows that the damping flow transports the sign pattern of residue-mode combinations exactly, so the open question of the chain concerns magnitudes in the pronic norm, not orientation. |
 | [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | The other place where signed prime-row statistics beyond the large sieve are required: close prime pairs beyond the Montgomery–Vaughan threshold, against BVI's balanced-scale single-modulus statistics. |
 
+In the RH frontier BVI is a supporting framework, not a route: it supplies incidence, reciprocity,
+successor and pronic-energy estimates to the physical-model route PM (the cofactor row and its
+damping chain), to Möbius cancellation MC (fixed-modulus and window cancellation, prime-negative
+bounds on the band) and to the chronological Báez–Duarte route CTF (the von Mangoldt readout and the
+centred pronic residual). It owns the arithmetic those routes share and none of their receivers.
+
 **The shared target.** The programmes in the table work on RH as the sign of one critical
 arithmetic form and on the critical cancellation of the actual Möbius and prime source it needs. BVI
 supplies the additive, single-modulus structure of the integers that the continuous faces cannot see
@@ -933,7 +939,7 @@ scale-invariant Rayleigh floor $Q^{\mathrm{ec}}(c)/Q(c)\ge\kappa/\log N$ (`exist
 For the power-damped cofactor row $-w_{\varepsilon,Q}$, the residual is
 $(1-m(\varepsilon,Q))^2+V(\varepsilon,Q)$: because $m(\varepsilon,Q)\to m(\varepsilon)\to 1$ as
 $Q\to\infty$ and $\varepsilon\downarrow 0$, the readout obligation $(1-m(\varepsilon,Q))^2\to 0$ is
-discharged unconditionally (`exists_Filter_tendsto_cofactor_readout_defect_zero`), reducing
+discharged unconditionally (`readout_defect_eventually_small`), reducing
 vanishing of the cofactor residual to $V(\varepsilon,Q)\to 0$ alone
 (`cofactor_residual_vanishing_iff_eventually_variance_small`,
 `riemannHypothesis_of_cofactor_variance_small`) and yielding the unconditional variance floor
@@ -1072,6 +1078,19 @@ and by $O_\varepsilon(T^{1-2\varepsilon}e^{-\kappa\sigma(T)/270})$ for every $0<
 `eventually_abs_compensated_interiorMartingale_le_growth_of_pos`,
 `eventually_abs_compensated_interiorMartingale_le_mul_periodEnergy_of_pos`).
 
+**The Vaughan calibration.** The literal moving floor kernel splits the centred source into the five
+pieces of Vaughan's identity at cutoffs $U,V$, and the interior energy is exactly the sum of the
+$25$ weighted pronic Gram entries $G_{ij}$ of those pieces
+(`pmInteriorPronicEnergy_eq_vaughanGram`), equivalently the diagonal plus a mixed remainder
+$R^{\mathrm{mix}}$ (`pmInteriorPronicEnergy_eq_diagonal_add_mixed`). Logarithmic Möbius cancellation
+bounds the signed mixed remainder relative to the diagonal, uniformly in both Vaughan cutoffs
+(`pmPronicVaughanMixedRemainder_logarithmic_bound`), but the squared pointwise majorant of the
+source is nonsummable at every $0<\varepsilon<\tfrac12$ (`not_summable_pmPronicLogMajorant`), so the
+bound does not close. The diagonal entries are invariant under the sign flip of any one component
+(`pmPronicVaughan_flip_diagonal`), and flipping component $k$ changes the energy by
+$4(\sum_jG_{kj}-G_{kk})$ (`pmPronicVaughan_flip_energy_gap`): the diagonal is sign-blind, and the
+signed information a receiver bound needs is the mixed observation the diagonal omits.
+
 ### 3.9 Dilation profiles and the Bézout seed
 
 The continuous profile $\Phi_r(p/q)$ equals the reciprocal pairing of the integer jump streams
@@ -1102,6 +1121,18 @@ $\mathcal G^{\mathrm{ec}}(p,q)$, zero mass $\sum_{p\in S}a_p=0$ cancels the diag
 conditional negative-definiteness law
 $(\sum_{p\in S}a_p\log p)^2\le-\frac12\sum_{p,q\in S}a_pa_qE_{\mathrm{gap}}(p,q)$
 (`primePacketBilinear_eq_of_primePacketMass_eq_zero`).
+
+**Dyadic windows reduce divisor edges to one Bézout pair.** Inside a dyadic window $(X/2,2X)$
+every quotient $\lfloor N/p\rfloor$ lies in $\{0,1,2,3\}$, every ordered pair $p<q$ has
+$\lfloor q/p\rfloor\in\{1,2,3\}$, and a divisor edge $a\mid b$, $a<b$, with both ends in the window is
+a doubling $b=2a$ or a tripling $b=3a$ (`div_mem_zero_one_two_three_of_inDyadicWindow`,
+`div_mem_one_two_three_of_lt_inDyadicWindow`). Two edges land on consecutive integers $b_2=b_1+1$
+exactly when one doubles and the other triples with $3a_2=2a_1+1$ or $2a_2=3a_1+1$
+(`divisor_edges_consecutive_iff`): the single Bézout pair $(2,3)$, parametrised by
+$(a_1,a_2)=(3t+1,2t+1)$ or $(2t+1,3t+2)$ with $\gcd(a_1,a_2)=1$, and at the tripling endpoint the
+four sawtooth phases lock (`bezout_two_three_iff_param`, `coprime_of_bezout_two_three`,
+`sawtooth_phases_at_bezout_tripling_endpoint_left`). The additive incidence of consecutive edges in
+a dyadic window is a one-parameter family, not a two-modulus problem.
 
 This is the point at which additive structure enters the spectral half of the theory: the
 profile is treated as a sum over solutions of a linear Diophantine equation, not only as an
@@ -1846,325 +1877,98 @@ To be built:
 
 ### 7.1 The receiver
 
-For every $\delta>0$ exhibit $\varepsilon\in(0,\delta)$ with $\sup_TE_T(\varepsilon)<\infty$.
-At every fixed $\varepsilon>0$, this is proved equivalent to $\sup_TE^{\mathrm{int}}_T(\varepsilon)<\infty$,
-to boundedness of the compensated interior martingale bracket
-$2M^{\mathrm{int}}_T(\varepsilon)+2c^{\mathrm{int}}(\varepsilon)H^{\mathrm{comp}}_T$, to the strict
-interior contraction of §3.8 against either $E_T(\varepsilon)$ or $E_T^{\mathrm{int}}(\varepsilon)$
-(`mem_receiverDampings_iff_all_interior_forms`), to square summability of the first column or of all
-columns of the centred damping chain $C_\varepsilon$, and to $C_\varepsilon b\in\ell^2(\mathbb N)$
-for all finitely supported $b\in c_0(\mathbb N,\mathbb R)$
-(`mem_receiverDampings_iff_summable_first_column`,
-`mem_receiverDampings_iff_forall_column_summable`,
-`mem_receiverDampings_iff_finitelySupported_image_summable`). All of these equivalent forms hold
-unconditionally on the exact zero-width half-line $\varepsilon>\Theta-\tfrac12$ with common
-derived-set infimum $\Theta-\tfrac12$ (`exists_pmBezoutInteriorPronicEnergy_budget_of_zetaZeroAbscissa_lt`,
-`sInf_derivedSet_interiorReceiverDampings_eq_zetaZeroAbscissa_sub_half`), propagate zero
-multiplicity by iterated shifts $\operatorname{ord}_\rho\zeta\le\operatorname{ord}_{\rho-k\varepsilon}\zeta$
-up to $\Re\rho\ge\tfrac12+k\varepsilon$
-(`analyticOrderAt_le_analyticOrderAt_sub_nat_mul_of_mem_receiverDampings`), and hold uniformly on
-the Vinogradov–Korobov zero-free band $\tfrac12-\kappa\sigma(T)/(480\log T)\le\varepsilon\le\tfrac12$
-across the entire range $\varepsilon\in[\varepsilon_0,\tfrac12]$ for any $\varepsilon_0>0$
-(`exists_receiver_le_on_vinogradovKorobovBand_of_pos`,
-`exists_interiorPronic_le_on_vinogradovKorobovBand_of_pos`). Establishing admission at cofinally
-small $\varepsilon>0$ (or on a band of fixed positive width below $\tfrac12$) is equivalent to the
-Riemann Hypothesis (respectively a zero-free strip). On the period torus the primitive energy of the
-damped row grows like $N^{1-2\varepsilon}$ for every $0<\varepsilon<1/2$, and both $E_N(\varepsilon)$
-and $E_N^{\mathrm{int}}(\varepsilon)$ are smaller than it by the Vinogradov–Korobov factor
-$e^{-\kappa\sigma(N)/270}$ (`eventually_receiver_le_mul_periodEnergy_of_pos`,
-`eventually_interiorPronic_le_mul_periodEnergy_of_pos`), so the cancellation is carried by the
-pronic weighting of small arguments below the first period, and its unconditional size is the
-zero-free region.
+For every $\delta>0$ exhibit $\varepsilon\in(0,\delta)$ with $\sup_TE_T(\varepsilon)<\infty$. At every
+fixed $\varepsilon>0$ this is one statement in many coordinates: bounded interior energy, a bounded
+compensated interior bracket, strict interior contraction, square-summable first or every column
+of the centred damping chain, a bounded dual residual (§§3.7, 3.8, 3.16). All of them hold for
+$\varepsilon>\Theta-\tfrac12$ and on the Vinogradov–Korobov band; admission at cofinally small
+$\varepsilon$ is RH, and on a band of fixed width below $\tfrac12$ a zero-free strip. On the period
+torus the damped row's primitive energy grows like $N^{1-2\varepsilon}$, and the receiver is smaller
+only by the factor $e^{-\kappa\sigma(N)/270}$: the cancellation lives in the pronic weighting of the
+prefix below the first period, and its unconditional size is the zero-free region. What is missing
+is a single fixed $\varepsilon<\tfrac12$ at which it is bounded.
 
 ### 7.2 The interior martingale
 
-After the canonical drifts are subtracted, the active-deleted diagonal and the predecessor-peak
-bracket are bounded for every positive damping; the whole obligation sits in the Bézout interior
-martingale $M^{\mathrm{int}}_T$, whose required cancellation rate per $\log T$ has small-damping
-slope $\ge 7/24$. The interior is a sum of signed atoms along progressions $n\equiv-1\ (d)$ with
-conditional means $(e-\gcd(d,e))/(2e^2)$. Keeping the signed sum over interior moduli $e$ collapses
-the conditional drift at each jump modulus $d$ to the finite divisor sum
-$-\frac12\sum_{u\mid d,\,u>1}(\mu(u)Y_{N,c}(u)+(\varphi(u)-\mu(u))Y_{N,c/e}(u))$ in Selberg
-coordinates (`sum_Icc_mul_interiorJumpOrbitMean_eq_selbergMultiplesCoord`), which converges as
-$N\to\infty$ for $c_\varepsilon$ to the squarefree-divisor Ramanujan sum $\mathcal M_\varepsilon(d)$,
-depends on $d$ only through its radical (`pmSignedInteriorJumpOrbitMean_eq_of_primeFactors_eq`), and
-makes the double-modulus drift series $\sum_d(c_\varepsilon(d)/d)\mathcal M_\varepsilon(d)$
-absolutely summable (`summable_pmPowerDampedRealWeight_div_mul_pmSignedInteriorJumpOrbitMean`).
-Retaining the signed sum over $e$ inside $I_\varepsilon(n)$ eliminates the external modulus cutoff
-along every progression $n=d-1+dk$ (`exists_abs_pmBezoutInteriorPrefix_jump_compensated_le_vk_all_pos`),
-bounds the compensated interior bracket $2M^{\mathrm{int}}_T(\varepsilon)+2c^{\mathrm{int}}(\varepsilon)H^{\mathrm{comp}}_T$
-uniformly on the Vinogradov–Korobov zero-free band, and proves the unconditional sub-half-damping
-growth bound $O_\varepsilon(T^{1-2\varepsilon}e^{-\kappa\sigma(T)/270})$ and period-energy decay
-$\le C_\varepsilon e^{-\kappa\sigma(N)/270}\mathcal E_{\mathrm{prim}}(N)$ for every
-$0<\varepsilon<1/2$ (`eventually_abs_compensated_interiorMartingale_le_growth_of_pos`,
-`eventually_abs_compensated_interiorMartingale_le_mul_periodEnergy_of_pos`). An inequality
-$2M^{\mathrm{int}}_T+2\,\mathrm{Counterterm}\cdot H^{\mathrm{comp}}_T\le(1-\delta)E_T+C_\varepsilon$ with
-$\delta>0$ is equivalent to the receiver (`mem_receiverDampings_iff_all_interior_forms`), holds
-unconditionally for all $\varepsilon>\Theta-\tfrac12$, and at cofinally small $\varepsilon>0$ is
-equivalent to the Riemann Hypothesis.
+After canonical compensation the whole obligation is the Bézout interior martingale $M^{\mathrm{int}}_T$
+(§3.8), with required cancellation slope at least $7/24$ per $\log T$. Keeping the signed sum over
+interior moduli collapses its conditional drift to Selberg coordinates on the divisors of the jump
+modulus, radical-invariant and absolutely summable in the double-modulus series. Open: the
+coercive contraction
+$$
+2M^{\mathrm{int}}_T+2\,\mathrm{Counterterm}\cdot H^{\mathrm{comp}}_T\ \le\ (1-\delta)E_T+C_\varepsilon,\qquad\delta>0,
+$$
+at one fixed $\varepsilon<\tfrac12$. Summation by parts cannot produce it (§3.8, non-circularity); it
+must come from the signed sum over moduli, or equivalently from the mixed Vaughan entries $G_{ij}$,
+$i\ne j$.
 
 ### 7.3 The dual problem
 
-RH is the statement that rows exist whose shifted prefix discrepancy has arbitrarily small
-pronic energy, equivalently with readout near one and vanishing centered energy, equivalently with
-unbounded ratio $\mathcal R(c)^2/Q^{\mathrm{ec}}(c)$. Minimizing $\mathrm{residual}(t\,c)$ over the
-scalar $t\in\mathbb R$ yields the exact Rayleigh identity
-$\inf_t\mathrm{residual}(t\,c)=Q^{\mathrm{ec}}(c)/Q(c)=1/(1+\mathcal R(c)^2/Q^{\mathrm{ec}}(c))$
-at $t^\star=\mathcal R(c)/Q(c)$ (`baezDuarteResidual_optimal_scale_eq_rayleigh`), so a rescaled row
-attains residual $\le C/\log N$ if and only if $\mathcal R(c)^2/Q^{\mathrm{ec}}(c)\ge(\log N)/C-1$
-(`exists_rescaled_residual_le_iff_readout_ratio_ge`), against the unconditional critical-zero floor
-$Q^{\mathrm{ec}}(c)/Q(c)\ge\kappa/\log N$ (`exists_rayleigh_centered_energy_floor`). For the
-power-damped cofactor rows $-w_{\varepsilon,Q}$, the readout defect $(1-m(\varepsilon,Q))^2\to 0$ is
-discharged unconditionally (`exists_Filter_tendsto_cofactor_readout_defect_zero`), so vanishing of the
-cofactor residual is equivalent to $V(\varepsilon,Q)\to 0$ alone
-(`cofactor_residual_vanishing_iff_eventually_variance_small`), any unbounded path for
-$m(\varepsilon,Q)^2/V(\varepsilon,Q)$ implies RH
-(`riemannHypothesis_of_cofactor_mean_variance_ratio_unbounded`), and unconditionally
-$V(\varepsilon,Q)\ge\kappa/(2\log(Q+1))$ in the readout band
-(`exists_pmPowerDampedRamanujanEnergyVariance_log_floor`). Both the literal dual residual
-$R(\varepsilon,T)$ and the cofactor residual $(1-m(\varepsilon,Q))^2+V(\varepsilon,Q)$ inherit the
-unconditional linear-in-$\varepsilon$ critical-zero cusp floor $\kappa\varepsilon$ with
-$\kappa=1/(4\lvert\rho\rvert^2)$ (`exists_criticalZero_linear_cofactorResidual_floor`), while on the
-finite prefix $\bigl\lvert\sqrt{R(\varepsilon,T)}-\sqrt{E_T(\varepsilon)}\bigr\rvert\le 1$
-(`abs_sqrt_pmPowerDampedDualResidual_sub_sqrt_discreteEnergy_le_one`) identifies boundedness of
-$R(\varepsilon,T)$ with the primal receiver at every damping (`exists_pmPowerDampedDualResidual_budget_iff`,
-`riemannHypothesis_iff_forall_pos_dualResidual_bounded`) and transfers both the Vinogradov–Korobov
-band bound and the $O_\varepsilon(T^{1-2\varepsilon}e^{-\kappa\sigma(T)/270})$ sub-half-damping bound
-to $R(\varepsilon,T)$ (`exists_dualResidual_le_on_vinogradovKorobovBand_of_pos`,
-`eventually_dualResidual_le_growth_of_pos`).
+RH is the existence of rows with readout near one and vanishing centred energy, equivalently with
+unbounded ratio $\mathcal R(c)^2/Q^{\mathrm{ec}}(c)$ (§3.7). For the damped cofactor rows the readout
+obligation is discharged unconditionally and the residual vanishes iff the energy variance
+$V(\varepsilon,Q)$ does; unconditionally $V\ge\kappa/(2\log(Q+1))$, and a critical zero forces a
+residual floor linear in the damping. Open: an explicit family of rows on which
+$\mathcal R^2/Q^{\mathrm{ec}}$ grows faster than $\log N$ along the readout band, or a proof that every
+family which can do so is equivalent to the primal receiver bound of §7.1.
 
 ### 7.4 Bilinear dispersion of the actual rows
 
-The reciprocity $\{N/pq\}\leftrightarrow\bar p/q+\bar q/p$ converts correlations between moduli into
-exponential sums with modular inverses, the Vasyunin reciprocity law holds with $O(p+q)$ error, and
-the cross-scale form is explicit to every order (§3.13): rank two at diagonal quality for
-$Q\ge P^{5/3}$ with arbitrary coefficients, sharply; exact loss the $\ell^1$ residue discrepancy;
-dual norm $\sum_p\lvert\Lambda_p(c')\rvert/p$. At fixed moduli the statistics are known: $o(1/Q)$ for the
-Möbius row, and for the prime row the omitted-class value $-\pi^2(p^2-1)^2/(144p^2(p-1)Q)$, which
-is not small and must be centred. Because $\sum_{p\in S}p^{-4}\le 1$, Cauchy–Schwarz gives the
-support-size-free bound $\sum_{p\in S}\lvert c(p)\rvert/p\le\sqrt{\sum_{p\in S}c(p)^2p^2}$
-(`sum_abs_div_prime_le_sqrt_sum_sq_mul_sq`) and absorbs the block-mass terms into the leading
-$\varepsilon$-large-sieve factor at every scale $Q\ge 1$ (`div_mul_sum_abs_div_prime_le_largeSieve`),
-while $|\Lambda(n)-1|\le(\Lambda(n)-1)+2$ sums the $n^{-3}$ and $n^{-4}$ tails of both the Möbius and
-centred prime blocks without logarithmic loss (`sum_Icc_abs_moebiusWindowRow_div_cube_le`,
-`eventually_sum_Icc_abs_centredPrimeBlock_div_cube_fourth_le`). Combined with the $17/30$
-short-window transfer at $\alpha=7/12<3/5$, this controls both the bilinear form and the dual norm of
-the centred prime block uniformly across the balanced regime $P\le Q\le BP$ with block masses
-absorbed and $n^{-3},n^{-4}$ tails summed (`exists_balanced_centredPrimeBlock_rowBilinear_tail_summed_le`,
-`exists_balanced_centredPrimeBlock_dualNorm_tail_summed_le`), and absorbs all three remainders into a
-single $\varepsilon\sqrt{\sum c(p)^2p^2}\sqrt{Q+2Q_0^2}Q^{-3/2}$ term whenever $Q_0=o(Q)$
-(`eventually_moebiusWindowRow_pure_largeSieve_le`,
-`eventually_centredPrimeBlock_pure_largeSieve_le`). Upgrading the qualitative $o(1)$ short-window
-mean-square saving of either row to a power saving at some window exponent $\alpha\in(0,1)$ is
-equivalent to $\Theta<1$, to $\mathrm{receiverDampingRate}<1/2$, and to admission of the complete
-coupled receiver on a fixed-width sub-half-damping band $\mathrm{Ioo}\,\varepsilon_0\,(1/2)$
-(`primePowerWindowSaving_iff_all_receiver_forms`,
-`moebiusPowerWindowSaving_iff_all_receiver_forms`). Generic Type-II and pronic-window
-counterexamples use different coefficient classes and different exponent parameters; they do not
-refute additional cancellation of the literal rows.
+The cross-scale form is explicit to every order and reduces to the dual norm
+$\sum_{p\in S}\lvert\Lambda_p(c')\rvert/p$ (§3.13). The actual Möbius and centred prime rows beat the
+generic Type-II and large-sieve bounds qualitatively on every range, the balanced range $Q\asymp P$
+included; the uncentred prime row carries its omitted-class term, which must be subtracted. Open:
+a quantitative gain at balanced scales strong enough to be summed into the receiver. A power
+saving in the short-window mean square at a fixed window exponent is equivalent to $\Theta<1$, so
+that route reaches a zero-free strip, not RH; Kloosterman-sum methods over primes would act at
+exactly this point.
 
 ### 7.5 Bézout coupling and cross-depth cancellation
 
-The least seed $pa=qb+1$ is isolated inside the dilation profile with inverse-scale error, its
-complete fibre has mass $r\mu(r)$, and the profile is evaluated exactly at every prime ratio.
-For every modulus $R=r+2$ and every pair of distinct primes $p,q$, the normalized clock-successor
-signed complement is globally bounded (`abs_ramanujanClockSignedComplement_le`) and deviates from
-the diagonal $\mathcal G(R,R)$ by at most
-$\frac{\varphi(R)^2(p+q)+\mathrm{Budget}(R)\,B_{\mathrm{gap}}(p,q)+2RB_R^2}{2\sqrt{pq}}$, which is
-uniformly $O_R(1)$ on every dyadic prime band $p\le q\le\lambda p$
-(`abs_diag_sub_ramanujanClockSignedComplement_le_gap_budget`,
-`abs_diag_sub_ramanujanClockSignedComplement_dyadic_le`). Every signed scaled dilation packet
-$\sum_{d_1,d_2\in D}w(d_1)w(d_2)\sqrt{d_1d_2}\,\Phi_r(d_1/d_2)$ and every signed prime packet
-$\sum_{p,q\in S}a_pa_q\mathcal G^{\mathrm{ec}}(p,q)$ are positive semidefinite
-(`sum_mul_pmRamanujanDilationProfile_nonneg`, `primePacketBilinear_self_nonneg`) and decompose into
-their moment-product diagonal minus half the pairwise residue-gap form
-(`scaled_dilationProfile_packet_eq_diag_sub_gap`,
-`primePacketBilinear_eq_diag_sub_residueGap_add_log`), so mean-zero packets cancel the diagonal
-identically and satisfy $(\sum_{p\in S}a_p\log p)^2\le-\frac12\sum_{p,q\in S}a_pa_qE_{\mathrm{gap}}(p,q)$
-(`abs_scaled_dilationProfile_packet_le_of_sum_eq_zero`,
-`primePacketBilinear_eq_of_primePacketMass_eq_zero`). Across the $2^{\omega(P)}\times 2^{\omega(P)}$
-hypercube, the Dirichlet form of the profile has cutoff-uniform diagonal bound
-$\zeta(1+2\varepsilon)\,\mathcal G(r,r)$ for all $\varepsilon>0$
-(`all_depth_dilationProfile_cube_diag_sum_le_tsum`), cutoff-uniform full bound
-$\zeta(\tfrac12+\varepsilon)^2\mathcal G(r,r)$ for all $\varepsilon>\tfrac12$
-(`hypercubeDilationDirichletForm_le_tsum_sq_of_half_lt`), and cutoff-uniform cancelled Euler first
-moment $\prod_{p\mid P}\frac{p^{1+\varepsilon}-p}{p^{1+\varepsilon}-1}\in(0,1]$ for all
-$\varepsilon>0$ (`eulerCancelledFirstMoment_pos_and_le_one`,
-`hypercubeGram_eq_cancelled_diag_sub_residueGap`), while on every physical prefix $[0,H]$ the
-Dirichlet dilation primitive truncates to divisors $d\le H$ and has cutoff-uniform head and
-tail-mean energies at every $\varepsilon\ge 0$
-(`dirichletDilationHeadEnergy_and_tailMean_le_uniform_in_cutoff`).
+The least seed $pa=qb+1$ is isolated inside the dilation profile, signed dilation and prime
+packets are positive semidefinite with a moment-product diagonal minus half a residue-gap form,
+and across the divisor hypercube of a squarefree $P$ the Euler-cancelled first moment is bounded
+uniformly in $P$ (§§3.6, 3.9). Open: cross-depth cancellation of the hypercube Dirichlet form
+uniformly in $P$ for $0<\varepsilon\le\tfrac12$ (it is proved for $\varepsilon>\tfrac12$), which is the
+finite form of $\zeta(1+\varepsilon)\cdot\zeta(1+\varepsilon)^{-1}=1$ the receiver needs; and whether the
+clock-successor signed complement, bounded on every dyadic prime band, has a sign.
 
 ### 7.6 The damping chain in receiver coordinates
 
-The chain is a Markov semigroup in the damping whose positive-time centred operators are compact on
-$c_0$, with an exactly computed entrance law, dense residue modes, and an entrance tail that is not
-square-summable below half damping while the reciprocal observable is. Admission is the ordinary
-$\ell^2$ orbit of the reciprocal, equivalently square summability of the first column. The centred
-operator is $\ell^2$-bounded for every $\eta\ge\tfrac12$, Hilbert–Schmidt strictly above, with the
-Möbius signs entering at half damping only through $1/\zeta$ on the one-line (§3.16). For any
-cutoff $D\ge T$ and $n<T$, $\lfloor(n+1)/d\rfloor=0$ for $d>D$, so the reciprocal orbit splits
-identically into the finite residue-mode sum $\sum_{d\le D}\mu(d)d^{-\eta}v_d(n)$ and the constant
-Bézout boundary defect $\delta_\eta(D)=\sum_{d\le D}\mu(d)d^{-1-\eta}-\rho_\eta$
-(`normalizedCenteredPrefix_eq_residuePartialPrefix_add_boundaryDefect`), expanding the partial orbit
-energy into the exact signed residue-mode Gram form (retaining all diagonal $d=e$ and mixed $d\ne e$
-terms) plus the linear and quadratic drift of $\delta_\eta(D)$
-(`orbit_partial_energy_eq_residueGram_add_boundaryDefect`); on the Vinogradov–Korobov band and at
-every fixed $0<\eta<1/2$, both the reciprocal orbit and every column $\mathrm{col}_k(C_\eta)$ obey
-unconditional sub-half-damping bounds (`exists_orbit_and_columns_le_on_vinogradovKorobovBand_of_pos`,
-`eventually_orbit_and_columns_le_growth_of_pos`). The damping derivative is an exact finite Markov
-boundary-flux identity, `E′ = boundaryFlux − jumpEnergy − density forcing`
-([DampingWorkAsArithmeticMarkovBoundaryFlux](DampingWorkAsArithmeticMarkovBoundaryFlux.lean)), whose
-paired Markov work integrates over $[\delta,\eta]\subset(0,\infty)$ to $E_T(\eta)-E_T(\delta)$
-(`integral_arithmeticDampingMarkovWork_eq_energy_sub`), converges as $T\to\infty$ to
-$E_\infty(\eta)-E_\infty(\delta)$ for admitted $\delta,\eta\in\mathrm{receiverDampings}$
-(`tendsto_integral_arithmeticDampingMarkovWork_atTop`), and characterizes admission of $\delta$
-equivalently to `AveragedDampingContinuation δ η` (`mem_receiverDampings_iff_integral_markovWork_bound`),
-while the zero-damping signed work has the ordered limit
-$\lim_T\lim_{\varepsilon\downarrow0}\mathrm{work}(\varepsilon,T)=-4\gamma$ with an absolutely
-summable harmonic trace
-([ZeroDampingSignedWorkHasFiniteHarmonicTrace](ZeroDampingSignedWorkHasFiniteHarmonicTrace.lean)).
-
-Conjugating by the size-bias $h$-transform $h(k)=1/(k+1)$ (`sizeBiasHTransform`) maps the
-unit-pronic-norm constant ground state $\mathbf 1(k)=1$ to the reciprocal observable $r(k)=1/(k+1)$,
-gives a bounded $h$-transformed entrance functional on the pronic space at every $\eta>0$
-(`exists_sizeBiasHEntrance_pronicStateEnergy_bound`,
-`summable_sizeBiasHEntrance_mul_of_pronic_summable`), and transforms the centred matrix to
-$K_\eta^{(h)}(n,k)=\frac{n+1}{k+1}C_\eta(n,k)$ with ground-state pronic energy
-$\mathrm{pronicStateEnergy}(T,C_\eta^{(h)}\mathbf 1)=E_T(\eta)$
-(`pronicStateEnergy_hTransformed_const_one`), residue-mode eigenfunctions
-$C_\eta^{(h)}V_d=d^{-\eta}V_d$ where $V_d(k)=(k+1)v_d(k)$
-(`hTransformedCenteredAction_hTransformedResidueMode`), and column-$k$ pronic energy bounded by
-$16(E_T(\eta)+\rho_\eta^2)(k+1)^{-1-2\eta}$ (`pronicStateEnergy_hTransformed_col_le`), which is
-summable over $k\in\mathbb N$ for every $\eta>0$
-(`summable_and_tsum_pronicStateEnergy_hTransformed_col_le`). Consequently, at any fixed $\eta>0$,
-admission $\eta\in\mathrm{receiverDampings}$ is equivalent to the ground-state pronic Poincaré bound
-on $C_\eta^{(h)}\mathbf 1$, to first-column pronic boundedness, and to uniform Hilbert–Schmidt
-boundedness $\sum_{k=0}^\infty\mathrm{pronicStateEnergy}(T,\mathrm{col}_k(K_\eta^{(h)}))\le B$ from
-$\ell^2(\mathbb N)$ into $\ell^2_{\mathrm{pronic}}(\mathbb N)$
-(`mem_receiverDampings_iff_hTransformed_hilbertSchmidt`).
+After the size-bias $h$-transform the entrance functional is bounded on the pronic space at every
+positive damping, admission is uniform Hilbert–Schmidt boundedness of the transformed chain into
+$\ell^2_{\mathrm{pronic}}$, and every column is unconditionally bounded on the band (§3.16). Open:
+forward $\ell^2$ boundedness of the centred chain at one fixed $\eta<\tfrac12$, the operator form of
+§7.1. Sign-blind arguments stop at $\eta=\tfrac12$, so the bound must read the Möbius signs; the
+damping work identity of Arithmetic Continuation and Critical Energy turns it into a signed
+Markov work estimate.
 
 ### 7.7 Observation constants
 
-The exact arbitrary-phase observability horizon
-$L_{\mathrm{obs}}(N)=\inf\{L\mid\forall A,c,\ s_{N,c}=0\text{ on }[A,A+L)\implies c=0\text{ on }[1,N]\}$
-is attained at every $N$ and satisfies $L_{\mathrm{obs}}(N)\le\Phi(N)\le N(N+1)/2$
-(`arbitraryPhaseObservabilityHorizon_spec`), while $2N-3$ holds at common returns and for $N=3,4$
-everywhere. Replacing the factorial $(2^{m+1})!$ in the alternating-grid witness by
-$\operatorname{lcm}(1,\dots,2^{m+1}-1)$ proves $mN<L_{\mathrm{obs}}(N)$ whenever
-$(m+2)\operatorname{lcm}(1,\dots,2^{m+1}-1)(1+2^{m+1})\le N$ and hence $L_{\mathrm{obs}}(N)/N\to\infty$
-(`exists_zero_response_window_lcm`, `mul_lt_arbitraryPhaseObservabilityHorizon_of_lcm_le`,
-`tendsto_arbitraryPhaseObservabilityHorizon_div_atTop`); the exact growth between superlinear and
-$\Phi(N)$ remains open. The optimal window sandwich constant $S_{\mathrm{opt}}(N)$ satisfies
-$N^2/8+N-(N/2)H_N-2\le\Phi(N)-2\le S_{\mathrm{opt}}(N)\le N(N-1)$
-(`optimalWindowSandwichConstant_quadratic_brackets`), and the Montgomery–Vaughan cosecant bound
-halves the lag-covariance sandwich constant to $N(N-1)$ (`abs_windowLagCovariance_sub_le_mv`) and
-sharpens single-window Selberg energy recovery to
-$H_N^2N(N-1)V(c)/K\le(1+\log N)^2N(N-1)V(c)/K$ (`abs_lagSpectrumReadout_window_sub_le_mv`).
-For every odd mode $q\in[1,N]$, the zero-product $5$-tuple
-$(\zeta,\zeta,\zeta^{q-2},\zeta,\zeta^{-1})$ isolates $Y(q)^5$ in the degree-$5$ relation spectrum
-(`exists_zeroProductTuple_five_odd_pow`), and the identity
-$16(x^5-y^5)-(x-y)^5=5(x-y)(x+y)^2((x+y)^2+2(x-y)^2)$ gives unconditional fifth-root coordinate
-stability $\lvert Y_c(q)-Y_e(q)\rvert^5\le 16\,\|A_c-A_e\|_2$ directly from degree-$5$ relation
-spectra and polynomial windows at unknown phase (`abs_selbergMultiplesCoord_sub_pow_five_le_of_odd`,
-`abs_selbergMultiplesCoord_sub_pow_five_le_of_windows_five`), while rows with a unit top-order
-coordinate and degree-$5,6$ moments within $\delta^3$ agree within $2\delta$ in every coordinate
-and $2\Phi(N)\delta$ in every response value up to `companion N c`
-(`exists_self_or_companion_coord_and_response_error`). In the cofinal Möbius laws (§3.10),
-splitting the harmonic-fibre expansion of $\gamma_t$ at any cutoff $J\ge 1$ with $2(J+1)\le t$
-gives the explicit three-term quantitative rate
-$\lvert\gamma_t-\kappa\rvert\le C(J+1)^2/t+C(1+\log t)/(1+\log(J+1))^4+C/(1+\log(J+1))^2$
-(`exists_abs_cofinalBandSlope_sub_cofinalMobiusSlope_le`), while a closed form for
-$\kappa\approx0.4407$ remains open. Every shared-birth unit-gap cell covariance satisfies
-$0\le\mathrm{sharedBirthUnitGapCovariance}(g,l,\mathrm{offset})\le 2/(l+\mathrm{offset})$
-(`sharedBirthUnitGapCovariance_le_inv`), and because $L_N(N!,c)=0$ forces the von Mangoldt
-functional to vanish whenever $Q^{\mathrm{ec}}_N(c)=0$, the energy-centered pronic Gram
-$\mathcal G^{\mathrm{ec}}$ and the Vasyunin prime kernel $K(p,q)$ are **strictly positive definite**
-on every finite set of moduli $\ge 2$ (`sieveEnergyCenteredPronicGramForm_eq_zero_iff`,
-`sum_sum_mul_pmRamanujanEnergyCenteredGram_pos_iff`,
-`sum_sum_mul_vasyuninPrimeKernel_pos_iff`,
-`vonMangoldt_sum_sq_lt_sievePronicDiscrepancyGramForm_iff`).
+The arbitrary-phase observability horizon is superlinear and at most $\Phi(N)\asymp N^2$; the optimal
+window sandwich constant has exact order $N^2$, within the bracket
+$[\Phi(N)-2,\,N(N-1)]$; the cofinal Möbius slope $\kappa\approx0.4407$ has an explicit
+three-term convergence rate. Open: the exact growth of $L_{\mathrm{obs}}(N)$ between linear and
+quadratic, the exact constant $S_{\mathrm{opt}}(N)/N^2$, and a closed form for $\kappa$.
 
 ### 7.8 Research topics
 
-1. **Single-modulus statistics of arithmetic rows.** The bilinear dispersion of
-   $\sum_{p\sim P}\sum_{q\sim Q}a_pb_q\mathcal G^{ec}(p,q)$ (§3.13) is reduced exactly to the dual norm
-   $\sum_p\lvert\Lambda_p(c')\rvert/p$ of the large-scale row; bound it for the Möbius and prime rows at
-   moduli growing with the window, through the reciprocity and without an external character or
-   modulus average, after subtracting the omitted-class term of the prime row. Through the explicit
-   Euler–Fermat modular inverses $\bar n=n^{\varphi(d)-1}\bmod d$ and $n^{p-2}\bmod p$, both the
-   Bernoulli kernel and the second-order Gram approximation have witness-free Kloosterman reciprocity
-   (`bernoulliKernel_eq_reciprocity_totient`, `bernoulliKernel_eq_reciprocity_fermat`,
-   `abs_pmRamanujanEnergyCenteredGram_sub_reciprocity_fermat_le`,
-   `sum_bernoulliKernel_eq_divisible_add_kloosterman`). Because the flat indicator $\mathbf 1_{(Q,2Q]}$
-   has $o(1/Q)$ statistic (`tendsto_mul_kernelStatistic_windowIndicatorRow`), the flat-centred prime
-   row $(\Lambda-1)\mathbf 1_{(Q,2Q]}$ still has $1/Q$ statistic
-   $-\pi^2(p^2-1)^2/(144p^2(p-1))$ (`tendsto_mul_kernelStatistic_centredPrimeWindowRow`), whereas
-   subtracting the omitted-class main term, restoring mass $p/(p-1)$ on multiples of $p$, or centering
-   against $\frac p{p-1}\mathbf 1_{\gcd(\cdot,p)=1}$ cancels the $1/Q$ statistic to $0$
-   (`tendsto_mul_kernelStatistic_primeWindowRow_sub_omittedClassMainTerm`,
-   `tendsto_mul_kernelStatistic_restoredPrimeWindowRow`,
-   `tendsto_mul_kernelStatistic_coprimeCentredPrimeWindowRow`). The unit is the
-   cross-scale exponent $\theta=2\log P/\log Q$: Type II stands at $6/5$, sharp cutoffs at $4/3$, rows
-   smooth to order $K-1$ at $2K/(K+1)$, the receiver at $\theta=2$; short-window mean squares with
-   block-mass absorption and tail summation reach the balanced range $Q\asymp P$ qualitatively
-   (`exists_balanced_centredPrimeBlock_dualNorm_tail_summed_le`). On the damping side the unit is
-   the band: the receiver is bounded through $\varepsilon=\tfrac12-\kappa\sigma(T)/(480\log T)$, and every
-   wider band is a zero-free region. Expanding the Kloosterman fraction $k\bar n/p$ in Kloosterman
-   sums over primes would bring trace-function bounds for $\sum_{q\le x}\Lambda(q)K(q)$, which save a
-   power for $x\ge p^{3/4+\varepsilon}$ (Fouvry–Kowalski–Michel), to the balanced range $Q\asymp P$; a
-   power saving in the window form is equivalent to a zero-free strip
-   (`primePowerWindowSaving_iff_all_receiver_forms`, `moebiusPowerWindowSaving_iff_all_receiver_forms`),
-   so this attacks the quasi-Riemann hypothesis, not RH.
-2. **The signed sum over moduli** of the interior martingale, equivalently the coercive contraction
-   (§7.2): retaining the signed sum over $e$ collapses the conditional jump drift to the finite
-   Selberg divisor sum (`sum_Icc_mul_interiorJumpOrbitMean_eq_selbergMultiplesCoord`) and the
-   squarefree Ramanujan sum $\mathcal M_\varepsilon(d)$ (`pmSignedInteriorJumpOrbitMean_eq_sum_divisors`),
-   removes the external modulus cutoff along $n\equiv -1\pmod d$, and identifies strict interior
-   contraction with `receiverDampings` (`mem_receiverDampings_iff_all_interior_forms`).
-3. **Additive window structure for the incidence face.** Inside a dyadic window $(X/2,2X)$
-   (`InDyadicWindow X`), every pair $N,p$ satisfies $\lfloor N/p\rfloor\in\{0,1,2,3\}$ and
-   $\{N/p\}=N/p-\lfloor N/p\rfloor$ (`div_mem_zero_one_two_three_of_inDyadicWindow`,
-   `fract_div_eq_sub_of_inDyadicWindow`), every ordered pair $p<q$ has
-   $\lfloor q/p\rfloor\in\{1,2,3\}$ (`div_mem_one_two_three_of_lt_inDyadicWindow`), and every proper
-   divisor $b\mid N$ with $b\le\sqrt{2X}$ has $2\le b\le 3$ (`proper_divisor_eq_two_or_three_of_inDyadicWindow`),
-   so consecutive proper divisor edges $N_1=a_1b_1$, $N_2=N_1+1=a_2b_2$ with $b_2=b_1+1$ reduce to the
-   single Bézout pair $(b_1,b_2)=(2,3)$, parametrized by $(a_1,a_2)=(3t+1,2t+1)$ when $N_2=2N_1+1$
-   and $(2t+1,3t+2)$ when $N_2=N_1+1$, where $\gcd(a_1,a_2)=1$ and the fractional parts at the
-   tripling endpoint lock at $(\lfloor N/a_1\rfloor,N\bmod a_1,\lfloor(N+1)/a_2\rfloor,(N+1)\bmod a_2)=(2,0,3,0)$
-   (`divisor_edges_consecutive_iff`, `bezout_two_three_iff_param`, `bezout_three_two_iff_param`,
-   `coprime_of_bezout_two_three`, `sawtooth_phases_at_bezout_tripling_endpoint_left`,
-   `sawtooth_phases_at_bezout_tripling_endpoint_right`).
-4. **The parity pair** with Trans-Horizon Incidence Mechanics: at every cutoff $N\ge 1$ and damping
-   $\varepsilon>0$, the finite Ramanujan reconstructions of $c_\varepsilon$ and $c'_\varepsilon$ have
-   identical complete-period mean, identical centered and uncentered complete-period quadratic forms,
-   and identical diagonal pronic Gram energies in $\mathcal G,\mathcal G^{\mathrm{ec}},\mathcal G^{\mathrm{mc}}$
-   (`parityPair_finiteRamanujanRow_completePeriod_and_diagGram_eq`), while $\Lambda(e)$ and
-   $W_{c_\varepsilon}(e)$ intersect purely on the primes $e=p$ where $\mu(p)=-1$, making their von
-   Mangoldt readouts exact negatives with strictly opposite signs for $N\ge 2$
-   (`vonMangoldt_mul_weightRamanujanCoeff_parityTwin`,
-   `vonMangoldtReadout_parityPair_finiteRamanujanRow_eq_neg`,
-   `vonMangoldtReadout_parityPair_finiteRamanujanRow_opposite_signs`), and the Vinogradov–Korobov band
-   separates the pair and all multiplicative weights with $f(p)=\pm 1$ across $[\varepsilon_0,1/2]$ for
-   every $\varepsilon_0>0$ (`parityPair_separated_on_vinogradovKorobovBand_of_pos`,
-   `prime_sign_dichotomy_on_vinogradovKorobovBand_of_pos`).
-5. **Selectivity.** Multiplicative identities alone survive generalized number systems; against
-   $F_a(s)=\zeta(s-a)\zeta(s+a)$, the identity $\Lambda_a(n)-2\Lambda(n)=\Lambda(n)(n^{a/2}-n^{-a/2})^2$
-   forces strict pointwise excess at every prime power for $a\ne 0$ and separates the shifted-pair
-   pronic readout from $2\mathcal R_N(c)$ iff $a\ne 0$, while $\Lambda_a$ leaves `WeilPositiveFull`
-   for all $a$, lies in `WeilPositiveDegree 2` iff $\mathrm{RH}\wedge a=0$, violates the Ramanujan
-   bound for $\varepsilon<\lvert a\rvert$, and the Vinogradov–Korobov scale exceeds the Beurling
-   de la Vallée Poussin scale by $\sigma(x)/\sqrt{\log x}=(\log x)^{1/10}(\log\log x)^{-5/3}\to\infty$
-   (`shiftedPairVonMangoldt_sub_two_mul_eq_sq`, `shiftedPairReadout_eq_two_mul_iff_eq_zero`,
-   `tendsto_vkScale_div_sqrt_log_atTop`, `shiftedPair_and_vkBand_selectivity`).
-6. **The chain in receiver coordinates** (§7.6), through the size-bias $h$-transform
-   $h(k)=1/(k+1)$ (`sizeBiasHTransform`), which maps the unit-pronic-norm constant ground state
-   $\mathbf 1$ to the reciprocal observable $r(k)=1/(k+1)$, gives a bounded $h$-transformed entrance
-   functional on $\ell^2_{\mathrm{pronic}}(\mathbb N)$ at every $\eta>0$, and identifies admission
-   $\eta\in\mathrm{receiverDampings}$ with the ground-state pronic Poincaré bound on
-   $C_\eta^{(h)}\mathbf 1$ and with uniform Hilbert–Schmidt boundedness of $K_\eta^{(h)}$ from
-   $\ell^2(\mathbb N)$ into $\ell^2_{\mathrm{pronic}}(\mathbb N)$
-   (`mem_receiverDampings_iff_hTransformed_hilbertSchmidt`).
+1. **Single-modulus statistics of arithmetic rows at growing moduli.** The unit is the cross-scale
+   exponent $\theta=2\log P/\log Q$: Type II stands at $6/5$, sharp cutoffs at $4/3$, rows smooth to
+   order $K-1$ at $2K/(K+1)$, the receiver at $2$. Bound the dual norm of the Möbius and centred
+   prime rows at moduli growing with the window through the Kloosterman reciprocity of §3.13,
+   without an external character or modulus average.
+2. **The signed sum over moduli** of the interior martingale (§7.2), or equivalently the mixed
+   Vaughan entries: which Bézout-selective identity controls them?
+3. **Additive structure beyond the dyadic window.** Inside a dyadic window consecutive divisor edges
+   reduce to the Bézout pair $(2,3)$ (§3.9). At wider windows the admissible pairs grow; does the reduction
+   remain a finite list of one-parameter families, and does it organise the interior moduli?
+4. **The parity pair.** At every cutoff the damped Möbius row and its twin share every
+   complete-period form and every diagonal Gram energy, and have opposite von Mangoldt readouts
+   (§3.15). Which finite statistic, quantitative in the cutoff, separates them below the band?
+5. **Selectivity.** Every proposed estimate is run against Beurling systems and the shifted pair
+   $\zeta(s-a)\zeta(s+a)$; the Vinogradov–Korobov band is the first selective receiver statement.
+   A selective statement at a fixed damping below $\tfrac12$ is the target.
 
 ---
 

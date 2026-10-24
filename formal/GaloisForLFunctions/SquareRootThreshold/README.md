@@ -43,6 +43,15 @@ actual prime source.
 `RHTower` and `Zeta23` supply the explicit formula, lattice configurations, zero counts and analytic
 continuation tools.
 
+On the RH frontier SRT is the live route of prime-side lag localisation: fix one generic width
+`0 < w < (log 2)/2`; the actual prime–archimedean sign on the unmodulated difference bumps
+`κ_w(t + v/2) − κ_w(t − v/2)` for all `v ≥ V` is RH, and the open estimate is that sign at every
+positive exponential slack. Its units are consumed everywhere: the aperture and zero-width
+dictionaries (§3, mechanisms 39–40) price every positivity and cancellation route; Arithmetic
+Positivity Theory's tent detection goes through the visibility theorems; the ground-energy path of
+Arithmetic Criticality Theory is the same law read through the Rayleigh bridge; and the prime-pair
+problem beyond `X = T` is Trans-Threshold Pair Correlation's.
+
 **The shared target.** The positivity programmes work on RH as the sign of one critical arithmetic
 form, read through pairwise incidence, lag and aperture. SRT owns the lag face — one window
 inequality $P_v\ge0$ per scale for the difference tests of one generic width — and the common units
@@ -50,7 +59,8 @@ in which every face reports progress: the zero width, the aperture, the visibili
 excluded depth below a height.
 
 Read §2 for conventions; the lattice and lag mechanisms in §3 are the basic pillars, collected with
-their Lean names in §4; §§6–7 give the questions and open problems. The later width dictionary records both equivalences and one-way implications: fixed-aperture
+their Lean names in §4; mechanisms 41–44 treat single heights, the prime weight and the
+function-field calibration; §§6–7 give the questions and open problems. The later width dictionary records both equivalences and one-way implications: fixed-aperture
 odd, even, polar and blind certificates must remain distinct.
 
 ---
@@ -810,6 +820,55 @@ for moment and phase calculations; diagonal low moments alone do not determine t
 prime–polar pairing at every height. The tool to seek is an estimate converting this growing
 independence order into control at the lag and height actually required by the receiver.
 
+### Single heights, the prime weight, and two calibrations
+
+41. **A certificate of radius `R` reads the primes below `e^{2R}`.** The Weil functional of a
+    prime weight `w` pairs `w` against the autocorrelation `f ⋆ f̃`, which vanishes at every lag
+    `|v| ≥ 2R`; two weights that agree on `2 ≤ n < e^{2R}` have the same functional on every test of
+    aperture `R` (`weilFullFunctional_weilTest_congr_of_agree_below`), and for `2R ≤ log 2` no weight
+    is read at all. Since `3/10 < (log 2)/2 < 9/25`, the aperture-`3/10` certificate holds verbatim for
+    every prime weight, the Liouville twist included, and the odd certificate through `181/500` reads
+    exactly one prime: on that window
+    `Re W_w(F ⋆ F̃) ≥ (1/1000)∫F² + ((log 2 − w(2))/√2) Re(k_F(log 2) + k_F(−log 2))`
+    (`re_weilFullFunctional_ge_of_odd_window_sub_atom_two`). Window certificates are nonselective
+    except through the primes their window reaches, and their selectivity can be read off exactly.
+42. **The phase-selective single-height law.** Retaining the signed prime polynomial at one height
+    `ξ` instead of its `ℓ¹` envelope gives
+    `Re W_ζ(S_ξ f, S_ξ f) ≥ (log(1 + π|ξ|/4) − 10 − 2S(a))‖f‖² − B_f²/(8(1 + π|ξ|)) − Re Π_f(⌊e^{2a}⌋, ξ)`
+    (`zetaZeroConfig_re_W_heightShift_ge_sub_re_primePolynomial`). The height-uniform archimedean
+    horizon is `exp(C_ε + (4 + ε)√X)`, with the coefficient `4` optimal for height-uniform bounds on
+    the prime symbol, since `P_X(0) ~ −(2/π)√X`. At a height where `Re Π_f ≤ c e^a ‖f‖²` the cost
+    `4e^a` becomes `c e^a` (`zetaZeroConfig_re_W_heightShift_nonneg_of_phase_bound`), and at heights
+    where `Re Π_f ≤ 0`, which exist because the windowed mean of `Π_f` is zero, and at Kronecker
+    troughs, the prime cost disappears (`exists_height_re_W_ge_archPart`,
+    `exists_kronecker_trough_height_re_W_ge_archPart_add`). What the law needs at a prescribed height
+    is a bound on the actual phases there.
+43. **The function-field calibration.** On the scaling surface of a curve datum over `F_q`
+    (`ℓ = log q`, traces `t_m = Re Σ_i β_i^m`, `t_0 = 2g`) all-test Weil positivity at aperture `a` is
+    vanishing of the negative index of the span Gram of size `⌈2a/log q⌉`
+    (`curveConfig_weil_nonneg_iff_negIndex_spanGram_eq_zero`); it holds for every datum below
+    `log q/2`, and from `⌈2a/log q⌉ ≥ 2g` it is equivalent to purity `|β_i| = 1`
+    (`curveConfig_weil_nonneg_iff_unitary_of_card_le`). The lag family is silent up to
+    `v = log q − 2w`, reads `2 log q ‖κ_w‖²(2g − t_n)` at each tooth `v = n log q`, and is positive in
+    the gaps; lag positivity at the teeth is purity, with Turán's lemma placing a negative tooth in
+    any `2g` consecutive ones (`curveConfig_lagTest_nonneg_iff_unitary`). The golden fake curve
+    `q = 5`, `β = (φ, φ⁻¹)` is Weil-positive exactly up to `log 5/2` and its comb is negative from the
+    threshold tooth on (`goldenDatum_weil_nonneg_iff_le_half_log_five`,
+    `goldenDatum_twoBump_comb_at_threshold`): the square-root threshold and the first negative lag
+    are calibrated on a model where everything is computable.
+44. **Every height: head-conditioned decoupling.** The orbit `τ ↦ ζ(· + iτ)` recurs on every
+    zero-free disc, and RH is local disc recurrence at every point of the strip, equivalently the
+    coupled criterion `Re Π_f ≤ Re A_f` of mechanism 37. Conditioning on the return set of a finite
+    Euler head costs nothing: the mean value theorem holds at arbitrary distinct integer frequencies,
+    and the mean square of the `y`-rough positive-frequency prime polynomial is unchanged under
+    weighting by the return kernel of any set of primes below `y`
+    (`tendsto_primeReturnKernel_weighted_roughPosPrime_meanSquare`), with an effective error from
+    integrality of the frequencies, `|log(A/B)| ≥ 1/max(A, B)`, which a Beurling system does not have.
+    At a strip point `Re z = ½ + δ` the disc values damp the rough variance by at least `y^{−2δ}`
+    (`rough_strip_variance_le_rpow_neg_mul_roughPosPrimeVariance`), and on the critical line they
+    leave the rough polynomial free. The orbit reads the prime phases at bandwidth zero; the localized
+    criterion needs them at `√X ≳ log T`.
+
 ---
 
 ## 4. Foundational pillar theorems
@@ -942,213 +1001,77 @@ To be built:
 ## 7. Open problems
 
 1. **Beyond the square-root threshold.** Bound the off-diagonal prime pairs at bandwidth
-   `λ = log X/log T > 1`. A bound for the pair correlation of the zeros on `(1, λ)` turns into a
-   proportion of simple zeros on the critical line above `2/3`. Each known route stops at `X = T`,
-   for a different reason:
+   `λ = log X/log T > 1`. Each known route stops at `X = T`, for its own reason:
    * **Coefficient sizes.** Size-only bounds have an excess `O(rX)` that is attained for aligned
      phases.
-   * **Upper-bound sieve.** It requires `w ≥ 0`, but the height phase changes sign
-     (mechanism 18). Using the phase requires prime-pair asymptotics with error terms: the parity
-     problem.
+   * **Upper-bound sieve.** It requires `w ≥ 0`, but the height phase changes sign (mechanism 18).
+     Using the phase requires prime-pair asymptotics with error terms: the parity problem.
    * **Zero side.** An off-line zero of depth `δ` has weight `T^{2λδ}`, so the needed estimate is
      `N(½ + δ, T) ≪ T^{1 − 2λδ + ε}`. The density hypothesis gives `λ ≤ 1` exactly.
 
-   The pair-correlation conjecture is open on `(1, λ)` even under RH. Organizing the localized
-   explicit formula around the threshold (`ThresholdLocalizedExplicitFormulaAndParityVarianceLaw`)
-   shows that the sub-threshold core `2r(n + 1) ≤ 1` has empty `2r`-neighbourhood at every cutoff,
-   the local neighbour bound `|closeSet(n, b)| ≤ n(e^{2r} − e^{−2r})` cancels `1/n` inside the sum
-   to leave the Chebyshev tail `(e^{2r} − e^{−2r}) Σ_{2r(n+1)>1} Λ(n)²(|k_f(log n)|² + |k_f(−log n)|²)`,
-   the `2`-adic sector `Π_f^even` is globally diagonal for `2r ≤ log 2`, and the odd sector
-   `Π_f^odd` is diagonal through the doubled threshold `rX ≤ 1` (`2rX ≤ 2`) with half-density
-   trans-threshold excess beyond `r(n + 2) > 1`. Trans-Threshold Pair Correlation works on the
-   remaining odd trans-threshold regime at `λ = 4/3`. There the diagonal, archimedean and pole core of
-   the Gram trace drops to `43/36`, and three-quarters of the zeros on the line reduces to a
-   prime-surplus bound with budget `1/18`, equivalently `∫_1^{4/3}(4/3 − α)F(α)dα ≤ 1/9`. The
-   sine half of the off-diagonal kernel has no close-pair pole, the cosine half reduces to a mixed
-   mean value of prime Dirichlet polynomials, and smooth height weighting (`zeta_coalescent_certificate`)
-   confines the off-diagonal to the coalescent band `|log(n/m)| ≤ 2r` at fixed bandwidth `λ = 4/3`.
-   Montgomery's shifted Fejér majorant, which uses only `F ≥ 0` and the sub-threshold
-   identity, misses the budget by the factor `8/3` (`fejer_shifted_bound_gap`): the missing input is
-   arithmetic information on `[1, 4/3]`, the signed correlation of odd prime pairs `(m, m + 2h)`,
-   `h ≪ m/T`.
-2. **Clusters without a depth gap.** For periodic configurations visibility is a Toeplitz question
-   about cosh-weighted modes; for finite off-line sets the aperture is `(1/2g) log M` with `g` the
-   gap below the deepest level (mechanism 9). Every off-line zero is visible at some aperture,
-   whatever the other off-line zeros do. When the top depth is attained, the aperture is, up to
-   one Ingham window `4π/g`, the larger of half the relaxation lag of the depth-deficit transform
-   and `(1/2D) log M`, whether or not depths accumulate at the top. When the top depth `R` is not
-   attained, the inter-level conservation law `G(r, v) + L(r) + E(r, v) = e^{(R − r)v}(G(R, v) + L(R))`
-   (`level_transfer_law` in `LevelTransferAndHorizonEscapeLaw`) equates the normalized excess limit
-   `lim_{v → ∞} e^{−(R − r)v} E(r, v)` to the top-level weight `L(R)` (`tendsto_exp_neg_mul_depthExcess_of_top`),
-   so for an unattained top `E(r, v) ≤ e^{(R − r)v} G(R, v) = o(e^{(R − r)v})` and `E(r, 0) → 0` as
-   `r → R`, giving explicit visibility windows `[V, V + 4π/g]` (`exists_minor_fails_of_unattained_top_level`).
-   For `ζ` itself the finite-range theory of mechanisms 22–25 (with coherent-core and empty-annulus
-   partial elimination in `ZetaNearTopZerosAreVisibleBelowAnExplicitHeight`) removes the pair-correlation
-   cluster alternative: a near-top zero is seen at an explicit polylogarithmic lag, and positivity on
-   `[0, V]` past `boxHorizon w H` forces deeper zeros with `|Im z| > H` and smaller transform amplitude
-   (`one_param_horizon_law_forces_height_and_amplitude_escape`, `modulated_horizon_law`). The remaining
-   global question is unconditional exclusion of high-ordinate escape beyond every finite horizon.
-3. **Sharper constants.** Weil positivity of `ζ` holds unconditionally on every test of aperture
-   `a ≤ 3/10`, with `Re W ≥ ‖f‖²/5000` (`ZetaWeilPositivityThroughApertureThreeTenths`: the
-   zero-side form splits as `Ẑ(Re f) + Ẑ(Im f)`, so every all-profile window of the full zero form
-   transfers with its constant; the three archimedean bands alone give `a ≤ 1/100`,
-   `Re W ≥ ‖f‖²/25`), and on every complex odd test of aperture `a ≤ 181/500`, with
-   `Re W ≥ ‖f‖²/1000` (`zetaZeroConfig_re_W_ge_of_odd_aperture_le_oneHundredEightyOneFiveHundredths`
-   in `SharperOddWindowAndPhaseSelectiveSingleHeightLaw`). The remaining distance to Yoshida's
-   aperture `(log 2)/2` is the all-profile window of the aperture face; on the family `P_v` itself
-   the odd window reaches `v/2 + w ≤ 181/500 = 362/1000`, covering the entire prime-`2` window for
-   `0 < w ≤ 77/10000` (mechanism 27). The height-uniform archimedean horizon is
-   `exp(C_ε + (4 + ε)√X)`, so the localized forms at height `T` are uniformly positive for
-   `√X ≤ (¼ − ε) log T`. The coefficient `4` is optimal for bounds on the prime symbol that are
-   uniform in height, since `P_X(0) = −(1/π) Σ_{n ≤ X} Λ(n)/√n ~ −(2/π)√X`. Retaining the exact
-   signed prime polynomial at height `ξ` (`zetaZeroConfig_re_W_heightShift_ge_sub_re_primePolynomial`)
-   gives the phase-selective single-height lower bound
-   `Re W_ζ(S_ξ f, S_ξ f) ≥ (log(1 + π|ξ|/4) − 10 − 2S(a))‖f‖² − B_f²/(8(1 + π|ξ|)) − Re Π_f(⌊e^{2a}⌋, ξ)`,
-   which replaces the `4e^a` exponent by `c e^a` at every height where `Re Π_f ≤ c e^a ‖f‖²`
-   (`zetaZeroConfig_re_W_heightShift_nonneg_of_phase_bound`) and removes the `4√X` prime cost
-   completely at heights where `Re Π_f ≤ 0` (`exists_height_re_W_ge_archPart`) or at Kronecker
-   troughs (`exists_kronecker_trough_height_re_W_ge_archPart_add`). These window certificates are
-   nonselective (`WindowCertificatesAndThePrimeWeight`): the Weil functional of a weight `w` reads
-   `w(n)` only where `log n` meets the support of `f ⋆ f̃`, so the aperture-`3/10` certificate holds
-   verbatim for every prime weight (the Liouville twist `λΛ` included), and the odd window
-   `[−181/500, 181/500]` satisfies the exact weight-selective lower bound
-   `Re W_w(F ⋆ F̃) ≥ (1/1000)∫F² + ((log 2 − w(2))/√2) Re(k_F(log 2) + k_F(−log 2))`
-   (`re_weilFullFunctional_ge_of_odd_window_sub_atom_two`).
+   Organised around the threshold (mechanism 16), the sub-threshold core is silent, the `2`-adic
+   sector is diagonal, and the odd sector is diagonal through the doubled threshold `rX ≤ 1`; what is
+   left is the odd trans-threshold regime. Trans-Threshold Pair Correlation works there at
+   `λ = 4/3`, where three-quarters of the zeros on the line reduces to a prime-surplus budget `1/18`
+   and Montgomery's shifted Fejér majorant misses it by `8/3`. The missing input is arithmetic: the
+   signed correlation of odd prime pairs `(m, m + 2h)`, `h ≪ m/T`. The pair-correlation conjecture on
+   `(1, λ)` is open even under RH.
+2. **Beyond every finite horizon.** For `ζ` the finite-range theory (mechanisms 22–25, 38) removes
+   every alternative inside a horizon: a near-top zero is seen at an explicit polylogarithmic lag,
+   hiding needs collapsed clusters, and positivity on `[0, V]` past `boxHorizon w H` forces deeper
+   zeros of large height and small transform amplitude. Open: exclude that escape, i.e. bound the
+   depth of the zeros above every finite height cutoff. Any such bound turns into an explicit
+   negative lag of the family (`one_param_primeWindow_neg_of_height_cutoff`); excluding the escape
+   entirely is RH.
+3. **The all-profile window to `(log 2)/2`.** Weil positivity holds on every test of aperture
+   `≤ 3/10` and on every odd test of aperture `≤ 181/500`; the even pole direction between `3/10` and
+   Yoshida's aperture `(log 2)/2` is unpaid. These windows read at most the prime `2` (mechanism 41);
+   a window certificate becomes selective only by reading more primes, and the second prime window
+   `(log 3)/2` lies beyond the archimedean odd ceiling of the current mechanism.
+4. **The `L²`-normalised width arrow.** The width bounds the floor in the energy and the archimedean
+   normalisations unconditionally, and in `L²` under one single-window hypothesis (mechanism 36),
+   with a sharp alternative: either the ground-energy exponent is the width, or off-line depth mass
+   clusters without bound on unit windows at exponential heights. Open: rule out the clustering
+   branch, or prove the exponent identity without a local count. Averaged zero-density theorems do
+   not reach a single window, and the log-mean route stops at `S(T)`, which is unbounded
+   (mechanism 28).
+5. **`P_v ≥ 0` beyond an explicit lag.** For one generic width the first selective, cofinal,
+   weight-specific estimate: `P_v ≥ 0` for all `v ≥ V`. Unconditionally the family is positive through
+   `v ≤ 362/500 − 2w` and bounded below at large lags by the de la Vallée Poussin and
+   Vinogradov–Korobov envelopes, which keep rate `½` (mechanism 26). Any envelope `−Ce^{σv}` with
+   `σ < ½` is a strip and a heat time `σ²/2`.
+6. **The visibility tradeoff.** The excluded-depth law `δ(n, R) = 1/R` below
+   `clusterHorizonHeight`, and the exact lag–depth inversions, fix what a window at aperture `R`
+   excludes (mechanism 30). Open: the optimal pair `(δ(n, R), T(n, R))` — how much depth an aperture
+   `R` can exclude, at which height — and whether the height cutoff can be made polynomial in
+   `e^R` rather than `exp(R/(10⁵ A₀ (log R)²))`.
+7. **Window incidence into pair payment.** Inside one lag window the incidence is rigid: only
+   doublings and triplings, at most one crossing pair per prime `2, 3`, paid with an exponential
+   lag discount, and low-order multiplicative relations trivial up to an order growing with the lag.
+   Open: an estimate converting this growing independence order into control of the signed
+   prime–polar pairing at the lag and height the receiver needs; diagonal low moments alone do not
+   determine it.
+8. **Every height.** Conditioning on the head return set leaves the rough mean square unchanged,
+   not small (mechanism 44). Open: control of `log ζ(s) − Σ_{p ≤ y} p^{−s}` at a single fixed `s`,
+   conditioned on the head return set, and through it the near-top zeros beyond a finite horizon.
+   The orbit lane and the localized criterion meet only at the square-root threshold (problem 1).
 
 ### Research topics
 
-1. **`P_v ≥ 0` beyond an explicit lag `V` for one generic width**: the first selective, cofinal,
-   weight-specific estimate; the unit is `V`. Unconditionally, odd-sector Schur lending certifies
-   `Re P_{w,v} ≥ (1/500)‖κ_w‖²` through `v/2 + w ≤ 181/500` (`v ≤ 362/500 − 2w`, covering the
-   prime-`2` window for `w ≤ 77/10000`), while at large lags `v ≥ max(230², 1/(100η₀²))` the
-   explicit zero-free envelope gives `P_v ≥ −|φ(0)| − (W + S₂)e^{v/2 − √v/10}` (and
-   `−(W + S₂)e^{v/2 − v^ex}` for `0 < ex < 3/5`, mechanism 26).
-2. **Beyond the horizon.** The attainment premise of the grids is replaced by the horizon law
-   (mechanism 25): a first negative lag exists, at an explicit lag, unless zeros lie beyond the
-   horizon. By depth-antitonicity of the explicit lags and finiteness of `zetaZeroConfig` in each
-   height box `|Im z| ≤ H` (`LevelTransferAndHorizonEscapeLaw`), escaping `[0, V]` past `boxHorizon w H`
-   forces `Re z > Re z₀ + 1/V`, `|Im z| > H`, and `V < oneParamLag w ‖h_w(−iz)‖ (Re z₀)` (and on the
-   modulated family `V < nearTopLag w (Im z) (Re z₀)`), so any high-ordinate depth bound above `H`
-   yields an explicit negative prime-window lag (`one_param_primeWindow_neg_of_height_cutoff`).
-   Whether the actual zero configuration of `ζ` has no negative lag is RH itself.
-3. **Localized explicit formula at height `T`** with the off-diagonal pair structure at bandwidth
-   `λ > 1`, organized around the square-root threshold rather than the cutoff
-   (`ThresholdLocalizedExplicitFormulaAndParityVarianceLaw`: sub-threshold core silence for
-   `2r(n + 1) ≤ 1`, degree-cancelled Chebyshev off-diagonal tail, global diagonalization of `Π_f^even`
-   for `2r ≤ log 2`, and `2`-adic parity threshold doubling `rX ≤ 1` with half-density trans-threshold
-   neighbour bound on `Π_f^odd`).
-4. **The visibility tradeoff.** The exact relation between aperture, height localization and
-   arithmetic length needed to make a given off-line configuration visible, and the strongest
-   estimate available at that length; the unit is `δ(n, R)` below `T(n, R)`
-   (`VisibilityTradeoffAndExcludedDepthLaw`): at aperture `R ≥ e⁶` (arithmetic length `X = e^{2R}`),
-   the level-`R` Hodge index excludes depth `δ(n, R) = 1/R = 2/log X` below
-   `clusterHorizonHeight A₀ n R = exp(R/100 − (n + 1)(log R)²)/A₀ − 4` for zeros with at most `n`
-   local companions (`abs_re_sub_half_lt_of_hodgeIndex_of_local_count`), and unconditionally for `ζ`
-   below `zetaClusterHorizonHeight A₀ R = exp(R/(10⁵ A₀ (log R)²)) − 306` under `HodgeIndexAtLevel`,
-   `ZetaWindowPositive R`, or `R < zetaContactAperture` (`zeta_abs_re_sub_half_lt_of_hodgeIndex`,
-   `zeta_abs_re_sub_half_lt_of_lt_contact`, `zetaContactAperture_le_of_offLine_zero`); for `1/V`-near-top
-   zeros the exact lag-depth inversions `nearTopExcludedDepth` and `oneParamExcludedDepth` give
-   `δ(γ₀, V) ≍ (log γ₀)² log log γ₀/(V − nearTopDrift)` (`nearTopLag_le_iff_nearTopExcludedDepth_le`,
-   `oneParamLag_le_iff_oneParamExcludedDepth_le`), and for an `n`-pair equal-depth cluster at step `ℓ`
-   each pair costs `ℓ/2` of aperture (`equalDepthCluster_visible_of_excludedDepth_le`), paired with
-   the converse zero-to-aperture height reduction below `zetaHorizonHeight A₀ R ≤ exp(7000 e^R + O(1))`
-   (`zeta_visibility_and_height_reduction_tradeoff`).
-5. **Window incidence.** The window tests `lagPrimeWindow` carry the incidence structure proved in
-   `ArithmeticIncidencePositivity` (doublings, triplings, consecutive powers of `2` and `3`); turn it
-   into a lag-side statement about which prime pairs a window inequality must pay
-   (`LagPrimeWindowIncidenceAndPairPaymentLaw`): for `2w < log 2`, `lagPrimeWindowRHS v w k` is
-   supported on `lagPrimePowWindow v w` (`lagPrimeWindowRHS_eq_sum_lagPrimePowWindow`), where primes
-   `p ≥ 5` have at most one power (`lagPrimeWindow_exponent_eq_of_five_le`), the divisor poset has
-   height at most `1` (`not_dvd_chain_in_lagPrimeWindow`), the same-side ratio energy is exhausted by
-   `lagDoublingEnergy` (`b = 2a`) and `lagTriplingEnergy` (`b = 3a`)
-   (`ratioEnergy_eq_lagDoublingEnergy_add_lagTriplingEnergy`), and the crossing prime-power pairs
-    consist of at most one `(2^i, 2^{i+1})` and at most one `(3^j, 3^{j+1})`
-   (`unique_crossing_pair_in_lagPrimeWindow`), paid by the doubling and tripling energies with an
-   exponential lag discount `e^{−(v − 2w)}` (`productEnergy_le_exp_neg_mul_of_subset_lagPrimeWindow`,
-   `skeletonEnergy_ge_one_sub_exp_neg_mul_of_subset_lagPrimeWindow`), while doublings and triplings
-   decouple completely across windows separated by `v₂ − v₁ ≥ log 12`
-   (`four_le_div_of_mem_lagPrimeWindows_of_twelve_mul_exp_le`).
-6. **Calibration** of the threshold and of the first-negative-lag law over `F_q[T]`
-   (`FunctionFieldThresholdAndFirstNegativeLagCalibration`): on the scaling surface `D.curveConfig hD`
-   of a curve datum `D` (`ℓ = log q`, `t_m = D.trace m = Re Σ_i β_i^m`, `t_0 = 2g`), all-test Weil
-   positivity on `[-a, a]` holds iff `hermNegIndex (D.spanGram ⌈2a/log q⌉₊) = 0`
-   (`curveConfig_weil_nonneg_iff_negIndex_spanGram_eq_zero`), which holds unconditionally for every
-   datum below `a ≤ log q / 2` (`curveConfig_weil_nonneg_of_le_half_log_q`) and is equivalent to
-   purity (`∀ i, ‖D.β i‖ = 1`) once `⌈2a/log q⌉₊ ≥ 2g` (`a > (2g − 1) log q / 2`,
-   `curveConfig_weil_nonneg_iff_unitary_of_card_le`); on the golden fake curve `goldenDatum`
-   (`q = 5`, `β = (φ, φ⁻¹)`), all-test Weil positivity at aperture `a > 0` holds iff `a ≤ log 5 / 2`
-   (`goldenDatum_weil_nonneg_iff_le_half_log_five`). On the SRT difference family
-   `f_v = κ_w(t + v/2) − κ_w(t − v/2)` (`4w < log q`), `Re W(f_v, f_v) ≥ 0` for `0 ≤ v ≤ log q − 2w`
-   (`re_W_curveConfig_twoBump_neg_one_nonneg_of_le`), each tooth `v = n log q` reads
-   `2 log q · ‖κ_w‖² · (2g − t_n)` (`re_W_curveConfig_twoBump_neg_one_nat_mul`, negative iff
-   `2g < t_n`, `curveConfig_twoBump_neg_one_nat_mul_neg_iff`), and each gap `|v − n log q| > 2w` reads
-   `4g log q · ‖κ_w‖² > 0` (`W_curveConfig_twoBump_neg_one_gap`); across `s = ±1`, lag positivity
-   at `n log q` is equivalent to purity with Turán locating a negative tooth in `[M + 1, M + 2g]`
-   (`curveConfig_lagTest_nonneg_iff_unitary`), while on `goldenDatum` every tooth `v = n log 5`
-   (`n ≥ 1`) of the pure difference family (`τ = −1`) is strictly negative starting at the threshold
-   `v = log 5` (`goldenDatum_twoBump_comb_at_threshold`).
-7. **Every height.** Conditioned-tail estimates for the orbit `τ ↦ ζ(· + iτ)` on a prescribed disc
-   (the Bagchi lane of `RHTower`, connected to the localized explicit formula in
-   `EveryHeightOrbitAndConditionedTailBridge`): recurrence holds on every zero-free disc, RH is
-   local disc recurrence at every point of the strip, equivalent to the coupled criterion
-   `Re Π_f(ξ) ≤ Re A_f(ξ)` and to rank-two pole compression
-   (`forall_strip_exists_zetaDiscStronglyRecurrentOn_iff_riemannHypothesis`,
-   `forall_strip_exists_zetaDiscStronglyRecurrentOn_iff_primePolynomial_le_archPart`,
-   `forall_strip_exists_zetaDiscStronglyRecurrentOn_iff_poleCompression`, and at width `σ ≥ 0` to
-   `Re P_{w,v} ≥ −Ce^{σv}`, `forall_right_exists_zetaDiscStronglyRecurrentOn_iff_lag_primeWindow_ge_neg_exp`),
-   and the object to control is the tail conditioned on the return set of the finite Euler head.
-   The conditioning itself costs nothing: head-conditioned decoupling (`RHTower/HeadConditionedRoughDecoupling`)
-   proves a mean value theorem at arbitrary *distinct* integer frequencies and, from it, that
-   splitting `primePolynomial f N` at a head cutoff `y` into `smoothPrimePolynomial f y N` and
-   `roughPrimePolynomial f y N` (`primePolynomial_eq_smooth_add_rough`, `primeVariance_eq_smooth_add_rough`)
-   leaves the `y`-rough positive-frequency polynomial's mean square `roughPosPrimeVariance f y N`
-   unchanged under weighting by `primeReturnKernel P τ` for any `P ⊆ Nat.primesBelow y`
-   (`tendsto_primeReturnKernel_weighted_roughPosPrime_meanSquare`,
-   `norm_integral_primeReturnKernel_mul_roughPosPrime_sub_diag_le`,
-   `le_setIntegral_primeReturnKernel_goodHeights_roughPosPrime`), with the effective error coming
-   from integrality of the frequencies (`|log(A/B)| ≥ 1/max(A, B)`) and therefore native to `ℕ`: a
-   Beurling system keeps the exact diagonal and loses the effective form. The residual is that the
-   rough mean square is *unchanged*, not small, while the lane needs the tail to return: the
-   uncontrolled object is `log ζ(s) − Σ_{p ≤ y} p^{−s}` at a single fixed `s`, and with it the
-   control of near-top zeros beyond a finite horizon (mechanism 25).
-   The orbit lane has Voronin universality and recurrence modulo the local zero divisor at
-   every point (`RHTower/ZetaVoroninUniversalityOnSmallDiscs`,
-   `RHTower/ZetaRecurrenceAtEveryPointModuloItsZeros`, `every_strip_point_recurrence_and_dichotomy`);
-   the cofactor-return heights fix the phases of the primes `≤ y` only through the disc values
-   `Σ Λ(n) ω(n) n^{−z} ≈ −g′/g`, weights `n^{−Re z}` with `Re z = 1/2 + δ > 1/2`, which damp the
-   `y`-rough variance by at least `y^{−2δ}` (`rough_strip_variance_le_rpow_neg_mul_roughPosPrimeVariance`)
-   and leave `roughPrimePolynomial f y N` free on the critical line (`δ = 0`) once `N ≥ y` exceeds the
-   base cutoff (`roughPrimePolynomial_eq_zero_of_lt`, `mem_roughPrimeIndexSet_of_prime`): the orbit
-   reads the prime phases at bandwidth zero, the localized criterion needs them at `√X ≳ log T`.
-   The two lanes meet only at the square-root threshold (open problem 1).
-8. **The `L²`-normalised width arrow, and the clustering alternative.** Mechanism 31 proves
-   `width < β ⟹` floor at rate `2β` with an `H¹` datum in the normalisation
-   (`exists_fullZeroForm_ge_neg_of_zetaZeroWidth_lt`, and in plain `L²` on any test class with
-   `|gaugeDerivative (autocorr F) t| ≤ K ∫ F²`, `exists_fullZeroForm_ge_neg_mass_of_zetaZeroWidth_lt`).
-   The `L²` form, which is what the ground-energy path and the graded ledger consume, is proved
-   under one explicit single-window hypothesis: at most `M` off-line copies per unit height window
-   (or bounded squared depth mass `OffLineDepthLocallyBounded W`, equivalent to
-   `UnsignedDepthSamplingBound a₀ B` at any single positive aperture `a₀`,
-   `exists_unsignedDepthSamplingBound_iff_forall_aperture` in
-   `NormalisationBridgeAndLocalClusterExclusionLaw`) gives
-   `μ(A) ≥ −M(2A + 2π)e^{2π}e^{2σA}` (respectively `−depthFloorConst W A.1`) and the exponent
-   identity, and more generally any sub-exponential depth-floor factor `W(A) = o(e^{εA})` forces
-   `polarGroundEnergyRate = zetaZeroWidth`
-   (`polarGroundEnergyRate_eq_zetaZeroWidth_of_subexponential_depthFloor`). The alternative is
-   sharp (`polarGroundEnergyRate_eq_zetaZeroWidth_or_high_depthMass_window_escape`, mechanism 36):
-   either the ground-energy exponent equals the width, or unsigned depth sampling is unbounded at
-   every aperture, the depth floor fails super-exponentially, and unit windows `[T − 1, T + 1]`
-   carry arbitrarily large squared depth mass `> W`, multiplicity `> W / zetaZeroWidth²`, and
-   exponential height `180|T| > exp(W / (40 · zetaZeroWidth²))` (`|T| ≥ 4`). The open problem is to
-   rule out the clustering branch, or to prove the exponent identity without a local count. Note
-   what the clustering branch would cost: unboundedly many off-line copies per unit window, which
-   is far stronger than anything a zero-density theorem permits on average — and yet no
-   unconditional theorem excludes it, because the log-mean route cannot be pushed further
-   (Littlewood's lemma on a unit window has horizontal edges of size `S(T)`, which mechanism 28
-   proves unbounded). The unconditional archimedean-normalised floor (mechanism 35, unified with the
-   `H¹` and `L²` floors in `three_normalisation_weil_floor_bridge`) shows the difficulty is purely
-   one of normalisation: the form is bounded below in the weight that the zero count naturally
-   supplies, and the question is whether `L²` is reachable from it.
+1. **The lag face in its own unit.** Every new estimate on the family `P_v` reports its lag `V`,
+   or its envelope rate `σ`.
+2. **Calibration transfer.** On the function-field scaling surface the threshold, the comb and the
+   first negative lag are computable and purity is lag positivity (mechanism 43). Which step of the
+   proof of purity has a counterpart on the actual zeta configuration, and which is specific to a
+   finite span Gram?
+3. **Phase-selective heights.** The single-height law removes the prime cost wherever the actual
+   phases are favourable (mechanism 42). Classify the heights at which `Re Π_f ≤ c e^a ‖f‖²` holds
+   with `c < 4`, uniformly in the profile, and compare their density with the bad-height bound
+   `O((log X/log T)²)` of mechanism 37.
+4. **Selectivity of window certificates.** A certificate of radius `R` is a statement about the
+   weights on `2 ≤ n < e^{2R}` (mechanism 41). For each certificate, record which weights it holds
+   for, and test it against the Liouville twist and the shifted pair before reading it as
+   information about `ζ`.
 
 ---
 

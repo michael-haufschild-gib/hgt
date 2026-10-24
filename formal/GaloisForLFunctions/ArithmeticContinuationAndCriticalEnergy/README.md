@@ -44,6 +44,12 @@ Neither reduction supplies the missing estimate on the actual source.
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Studies the source's signed incidence kernel, a possible input to continuation. |
 | [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Lists cofinal admission as the damping unit of the width dictionary. Shows that on residue-mode combinations the damping flow keeps the sign pattern of the coefficients exactly: what transport must control is magnitude in the pronic norm, not orientation. |
 
+On the RH frontier ACCE is a supporting framework. The restricted Weil ground-energy route RW
+takes its compensated width floor and its vanishing-floor aperture transport; the physical-model
+route PM takes the classification of obstructing terms, the complementary-sector propagation and
+the signed-observation stability law. In both, ACCE fixes the exact quantity a route must bound
+and proves which weaker quantities cannot replace it.
+
 **The shared target.** The programmes in the table work on RH as the sign of one critical
 arithmetic form and on the critical cancellation of the actual Möbius source. ACCE supplies what no
 fixed-parameter face states: the transport of a finite critical energy along damping, cutoff or
@@ -681,23 +687,61 @@ closes `polarGroundEnergyRate = groundEnergyRate = zetaZeroWidth`
 ### Iterated compensation
 
 A compensation between a sector and its complement is useful only if it iterates. The abstract shape
-is the affine recurrence `F_{j+1} ≤ q_j F_j + r_j`, with closed form `affineEnvelope_eq` and the
+is the affine recurrence `F_{j+1} ≤ q_jF_j + r_j`, with closed form `affineEnvelope_eq` and the
 usable criterion: multipliers below `θ < 1` and sources below `R` give the stage-free bound
-`max(F₀, R/(1−θ))` (`affineEnvelope_le_of_contraction`). The contraction is not a formality —
-`affineEnvelope_one_one` shows unit multipliers with unit sources diverge linearly — so a scheme that
-merely cancels at leading order per stage proves nothing. On the actual source along the dyadic
-Ramanujan schedule `(Q_j, R_j) = (2^j, 2^{m(j+1)})`, the complementary denominator defect
-`D_{Q,R} = A_ε − R_Q` obeys the exact two-stage identity
-`R_{Q_{j+1}} = R_{Q_j} + S_{Q_j, Q_{j+1}}`, `D_{Q_{j+1}} = D_{Q_j} − S_{Q_j, Q_{j+1}}`
-(`ramanujanPrefix_stage_step`, `complementarySector_step_eq`), and for every contraction parameter
-`θ ∈ (0, 1)` the reweighted shell residual `F_j = θ^j ‖R_{Q_j}(R_j)‖² + E^{shell}_j` satisfies the
-exact contracting recurrence `F_{j+1} ≤ θ F_j + r_j` (`reweightedShellResidual_step_le`) with stage-
-uniform ceiling `F_j ≤ max(F_0, R/(1−θ))` (`exists_reweightedShellResidual_contracting_bound_of_admits`).
-Moreover, admission `Admits dampedMobiusEnergy ε`, `ε ∈ receiverDampings`, bounded dyadic Ramanujan
-prefix energy `BddAbove (range (dyadicRamanujanPrefixEnergy m ε))`, and the contracting affine
-envelope bound are four-way equivalent (`complementarySectorPropagation_tfae`), holding
-unconditionally on `(Θ − ½, ∞)` (`exists_dyadicRamanujanPrefixEnergy_le_of_zetaZeroAbscissa_sub_half_lt`)
-and on the Vinogradov–Korobov band (`exists_dyadicRamanujanPrefixEnergy_le_on_vinogradovKorobovBand`).
+`max(F₀, R/(1 − θ))` (`affineEnvelope_le_of_contraction`). The contraction is not a formality —
+unit multipliers with unit sources diverge linearly (`not_bddAbove_affineEnvelope_one_one`) — so a
+scheme that merely cancels at leading order per stage proves nothing.
+
+On the actual source, at denominator cutoff `P²` the literal complement `C_P` of the large-prime
+denominator sector `L_P` is anti-aligned with it: with the compensation amplitude
+`α_P = −⟪L_P, C_P⟫/‖L_P‖²` the head energy splits exactly as
+`(1 − α_P)²‖L_P‖² + ‖R_P‖²` (`pmCompleteHeadEnergy_eq_sector_compensation`), and for `0 < ε < ½`,
+`α_P → 1` and `‖R_P‖²/‖L_P‖² → 0` (`tendsto_sectorCompensationAmplitude_one`,
+`tendsto_sectorTransverseEnergy_div_sectorEnergy_zero`): the cancellation is leading-order exact,
+which is exactly what does not suffice. Across scale transitions the cutoff-transport energy along a
+compatible dyadic schedule `Q_j = 2^{mj}`, `mε > 1`, is bounded by a geometric envelope with ratio
+`shellRatio ε m < 1` (`ramanujanCutoffTransportEnergy_dyadic_le_envelope`,
+`dyadicCutoffTransportEnvelope_recurrence`), and on the square schedule `P_j² = 2^{2j}` by an
+envelope contracting at `2^{1−4β}` for `¼ < β < ε` (`twoScaleSquareCutoffEnvelope_recurrence`). The
+dyadic stage prefix energy and the receiver energy bound each other up to the geometric shell error,
+so for `mε > 1` admission, membership in `receiverDampings`, a contractive affine recurrence for the
+stage energy, and one with the canonical multiplier `shellRatio ε m` are equivalent
+(`complementarySector_propagation_tfae`); all hold above `Θ − ½` and on the Vinogradov–Korobov band
+(`exists_contractive_affine_propagation_above_zeroWidth`,
+`exists_dyadicRamanujanPrefixEnergy_le_on_vinogradovKorobovBand`). The cutoff transitions contract
+for free; the bounded source term `r_j` is the admission problem again.
+
+### Five faces of the obstruction, and a stable signed observation
+
+**One obstruction, five exact coordinates.** Twice the negative signed work has five exact
+decompositions, and each names the same arithmetic obligation in a different language:
+deviation minus core, `−2W = −2 workDeviation − 2 workCore`
+(`neg_two_mul_signedDampingWork_eq_deviation_sub_core`); dilation jump energy minus edge mass
+minus the polar correction (`neg_two_mul_signedDampingWork_eq_dilationJump_sub_edgeMass`); the
+Markov face, jump energy plus forcing minus boundary flux (`neg_two_mul_signedDampingWork_eq_markov`);
+the window-mean correlation (`neg_two_mul_signedDampingWork_eq_windowMean`); and the Möbius-factored
+tangent pairing (`signedDampingWork_eq_moebiusDilation_pairing`). On a compact positive interval
+`[a, c]` the core is harmless, `0 ≤ ∫_a^c workCore ≤ log ζ(1 + a) − log ζ(1 + c)` uniformly in the
+horizon (`integral_workCore_bounds_on_positive_interval`), and admission at `a` is equivalent to a
+horizon-uniform bound on any one of the four negative integrals, deviation, jump-minus-edge-mass,
+Markov or window-mean (`obstructingTerms_positive_interval_tfae`). The zero-anchored divergence of
+the core is a statement about the joint limit `ε ↓ 0`, `T → ∞`; on a fixed interval the whole
+obligation is the signed deviation. The faces are coordinates, not independent estimates.
+
+**A stable signed observation.** For `q ≥ 2` the dilation-step observation
+`O_q(v)(n) = v(n) − v(⌊n/q⌋)` is injective on root-anchored rows and two-sided stable in the
+receiver's own pronic norm, with horizon-free constants `(2(1 + 1/q))⁻¹` and `q/(√q − 1)²`
+(`dilationStepObservation_two_sided_stability`). On the actual source `‖O_qA_ε‖²` is the block
+energy, whose boundedness is admission (`admits_iff_bounded_dilationStepObservation`); on the
+size-blind majorant it is unbounded at every `ε ≤ ½`
+(`not_bddAbove_dilationStepObservation_majorant`); and on the Ramanujan-isometric parity twin it
+grows at least like `((√q − 1)²/q) c_twin (log(T + 1) − log 100)` while the actual source is bounded
+on the Vinogradov–Korobov band (`exists_dilationStepObservation_vk_band_and_parityTwin_separation`).
+This is the first observation in the corpus that is at once complete, stable in the receiver
+norm and selective against both size-blind and sign-blind models. An origin shift by `k` cells
+costs the sharp factor `(k + 1)(k + 2)/2` (`originShiftObservation_sharp_constant`): what is lost
+at the origin is lost quadratically.
 
 ### What is already paid, and what is not
 
@@ -771,6 +815,12 @@ All unconditional; RH appears only inside equivalences or as a conclusion.
 11. **Admission translates zeros with multiplicity, up to the boundary**
     (`analyticOrderAt_le_analyticOrderAt_sub_of_mem_receiverDampings`).
 12. **The cutoff parameter is free** given admission (`TheCutoffParameterCostsNothingBeyondAdmission`).
+13. **One obstruction, one stable observation.** On a compact positive interval admission is a
+    horizon-uniform bound on the signed deviation, in any of four exact faces
+    (`obstructingTerms_positive_interval_tfae`), and the dilation-step observation is complete,
+    pronic-stable and selective against the majorant and the parity twin
+    (`dilationStepObservation_two_sided_stability`,
+    `exists_dilationStepObservation_vk_band_and_parityTwin_separation`).
 
 ---
 
@@ -815,11 +865,16 @@ All unconditional; RH appears only inside equivalences or as a conclusion.
   zero unconditionally. Relative transport may have a product tending to zero; positivity at each
   finite stage, or a graded negative floor, is the relevant demand.
 - **Recovery is not control.** An injective observation map, even a complete invariant, supplies no
-  bound. All logarithmic pronic moments determine a damped source, and yet admission is incompatible
-  with an unweighted uniform lower modulus
+  bound without a stability estimate. All logarithmic pronic moments determine a damped source, and
+  yet admission is incompatible with an unweighted uniform lower modulus
   (`RHTower.not_exists_uniform_lower_bound_primeGammaCauchyHorizonGrade`); rows agreeing in every
-  stationary translated moment split the receiver. A theorem using finitely many moments must state
-  how its constants depend on the number of moments, the damping and the horizon.
+  stationary translated moment split the receiver. By contrast, the dilation-step signed observation
+  `O_q(v)(n) = v(n) − v(⌊n/q⌋)` (`q ≥ 2`) is both injective on root-anchored rows (`v(0) = 0`) and
+  two-sided quantitatively stable in the receiver's pronic norm with horizon-free constants
+  `(2(1 + 1/q))⁻¹` and `q/(√q − 1)²` (`dilationStepObservation_injective_of_eq_zero`,
+  `dilationStepObservation_two_sided_stability`), while an origin shift by `k` cells is priced by the
+  sharp quadratic factor `(k+1)(k+2)/2` (`originShiftObservation_two_sided_stability`,
+  `originShiftObservation_sharp_constant`).
 - **Compactness in the wrong space is not an estimate.** The chain's centered transition is compact
   on `c₀` and its rows converge in total variation, but the entrance tail is not square-summable at
   or below half damping while the reciprocal observable's omitted tail is. Those objects belong to
@@ -859,182 +914,60 @@ Built and reusable:
 
 - *Energy families* with the admission hierarchy and horizon sampling laws.
 - *The master inequality* with linear, Osgood and superlinear scales; discrete relative and additive
-  transport; the affine envelope.
-- *Work identities*: the exact derivative, the Markov face, the work integral, the zero anchor.
-- *The tangent autocorrelation* with polarisation, relative stability and second-tangent control.
+  transport; the affine envelope and the contractive dyadic Ramanujan cutoff transport.
+- *Work identities*: the exact derivative, the Markov face, the work integral, the zero anchor, and
+  the five equivalent obstructing decompositions on compact positive intervals.
+- *The tangent autocorrelation* with polarisation, relative stability, second-tangent control, and
+  the nonnegative double damping integral `∫_a^c ∫_a^c K_T = ‖A_c − A_a‖_T²`.
 - *The dilation calculus* on integer prefixes: composition, inversion law, pronic contraction,
-  window means, positive core, Hardy and block-energy inequalities.
-- *Coordinates*: prime-pair (Nyman–Beurling max-kernel), polar calibration, level collapse.
-- *Calibrations*: the majorant row, the function-field source, the escape family.
-
-To be built:
-
-- a source-derived signed estimate of the averaged relative loss on a compact interval below the
-  admission frontier;
-- a contraction factor for an iterated sector-compensation scheme on the actual Möbius row;
-- a uniform pronic mean square of the short blocks `(⌊n/q⌋, n]` of the centred divisor sum;
-- an aperture step estimate compatible with the doubly exponential ceiling.
+  window means, positive core, Hardy and block-energy inequalities, and the two-sided stable
+  dilation-step signed observation `O_q(v)(n) = v(n) − v(⌊n/q⌋)`.
+- *Coordinates*: prime-pair (Nyman–Beurling max-kernel), polar calibration, level collapse, and
+  relative-precision `1/T` cancellation above `Θ − ½` and on the Vinogradov–Korobov band.
+- *Aperture bridges*: exact Weil polarisation `Q_a(u) = E_+(u) − E_−(u)` on the smooth core,
+  equivalence of `CompensatedSamplingBound a B` with `−B ≤ μ(a)`, ceiling-renormalized Lyapunov
+  transport, and discrete-to-continuous graded negative-floor transport.
+- *Calibrations and adversaries*: the majorant row, the Ramanujan-isometric parity twin, the
+  function-field source, and the escape family.
 
 ---
 
 ## 7. Open problems
 
-1. **Signed averaged continuation (Resolved: `SignedAveragedContinuationAndTheZeroWidthBand`).**
-   For `0 < a ≤ c` with admitted `c`, admission at `a`, `a ∈ receiverDampings`, relative-loss
-   averaged continuation `∫_a^c r_T ≤ C`, dyadic relative-loss continuation `∫_a^c r_{2^k} ≤ C`,
-   additive signed work continuation `∫_a^c −2W_T ≤ C`, dyadic additive work continuation, Cesàro
-   additive work continuation, and residual averaged continuation `AveragedResidualContinuation a c`
-   are eight-way equivalent (`signedAveragedContinuation_tfae`). All eight hold unconditionally on
-   every compact interval `[a, c] ⊂ (Θ − ½, ∞)`, the infimum threshold for continuation is
-   `Δ = Θ − ½` (`sInf_averagedContinuationThresholds_eq_zetaZeroAbscissa_sub_half`), boundary
-   continuation at `Δ` forces a critical-line shadow zero of at least the extremal multiplicity
-   (`analyticOrderAt_le_of_averagedDampingContinuation_at_zeroWidth`), and on the Vinogradov–Korobov
-   band `a ≥ ½ − κ σ(T)/(480 log T)` the signed work and relative-loss integrals are bounded
-   uniformly in `(T, a, c)` (`exists_signedWorkIntegral_and_relativeLoss_le_on_vinogradovKorobovBand`)
-   with sub-power saving `O_a(T^{1−2a} exp(−κ σ(T)/270))` at every fixed `0 < a < ½`
-   (`eventually_signedWorkIntegral_and_relativeLoss_le_vk_saving`).
-2. **Source-specific angle or shape control (Resolved: `SourceAngleShapeHierarchyAndIntegratedAutocorrelation`).**
-   At `T = 1`, `K_1(η, ε) = m(η)m(ε)/2 > 0` while `W_1(ε) < 0` on `(0, δ₀)`
-   (`exists_damping_tangentCorrelation_one_pos_and_signedDampingWork_one_neg`); relative tangent
-   stability is strictly stronger than `0 ≤ K_T` (`exists_pos_pairing_not_relative_stability`);
-   monotone work is strictly stronger than single sign change (`exists_single_sign_change_not_monotoneOn`);
-   and no-interior-bump forces `UniformlyAdmitsOn dampedMobiusEnergy (Ioc 0 (1/2))`
-   (`uniformlyAdmitsOn_of_no_interior_bump`). The weaker signed integrated estimate that survives
-   off-diagonal negativity is the double damping integral
-   `∫_a^c ∫_a^c K_T(η, ε) dη dε = ‖A_c − A_a‖_T² ≥ 0`
-   (`double_integral_tangentCorrelation_eq_pronicNorm_sub_sq`,
-   `double_integral_tangentCorrelation_nonneg`), whose horizon-uniform boundedness is **equivalent**
-   to admission at `a` (`admits_iff_bounded_double_integral_tangentCorrelation`) and holds
-   unconditionally on `(Θ − ½, ∞)` and on the Vinogradov–Korobov band
-   (`exists_double_integral_tangentCorrelation_le_of_zetaZeroAbscissa_sub_half_lt`,
-   `exists_double_integral_tangentCorrelation_le_on_vinogradovKorobovBand`).
-3. **The prime-pair form to relative precision `1/T` (Resolved: `PrimePairLevelSumAndRelativePrecisionCancellation`).**
-   The polar-calibrated prime-pair form `P_T(η, ε) − m(ε)R_T(η) − m(η)R_T(ε) + m(η)m(ε)(2T − H_T)`
-   equals the single-scale level sum `L_T(η, ε)` (`polarCalibratedPrimePairForm_eq_levelSum`), is
-   unconditionally nonnegative up to `E_ε(T)²/(T+1)` on the diagonal
-   (`diagonal_polarCalibratedPrimePairForm_ge_boundary`), and satisfies the unconditional integrated
-   positivity law `∫_a^c ∫_a^c L_T(η, ε) dη dε = ‖A_c − A_a‖_T² + (A_c(T) − A_a(T))²/(T+1) ≥ ∫_a^c ∫_a^c boundary ≥ 0`
-   on every `[a, c] × [a, c]` (`double_integral_polarCalibratedPrimePairForm_ge_boundary`). Relative
-   to the linear scale `T + 1`, cancellation of the boundary-adjusted integral at precision
-   `C/(T+1)` is equivalent to admission (`admits_iff_relative_precision_inv_T_primePair`) and holds
-   unconditionally on `(Θ − ½, ∞)` and on the Vinogradov–Korobov band
-   (`exists_relative_precision_inv_T_primePair_above_zeroWidth`,
-   `exists_relative_precision_inv_T_primePair_on_vinogradovKorobovBand`).
-4. **The one-sided sublinear pairing at a single damping (Resolved: `SingleDampingSublinearPairingAndBlockEnergy`).**
-   The inversion defect satisfies `ρ_ε(n) = −m₀(ε) A_ε^{maj}(n)` and `‖ρ_ε‖_T² = m₀(ε)² E_T^{maj}(ε)`
-   (`inversionDefect_eq_neg_density_mul_majorantCenteredPrefix`, `pronicNorm_inversionDefect_sq_eq`),
-   so `‖ρ_ε‖_T` diverges on `(0, ½]` (`not_bddAbove_pronicNorm_inversionDefect_of_le_half`) and is
-   bounded on `(½, ∞)` (`exists_pronicNorm_inversionDefect_le_of_half_lt`), giving the exact
-   majorant threshold `Admits majorantEnergy ε ↔ ½ < ε` (`admits_majorantEnergy_iff_half_lt`) and
-   unconditional one-sided sublinear pairings `⟪A_ε, ρ_ε⟫_T ≤ ⟪A_ε⁺, ρ_ε⟫_T ≤ κ√E_T(ε)` and
-   `|⟪A_ε, D^{ζ_ε,≥2}A_ε⟫_T| ≤ κ√E_T(ε)` for `ε > ½`
-   (`exists_onesided_sublinear_pairings_of_half_lt`). At any `ε > 0` and integer scale `q ≥ 2`,
-   `Admits dampedMobiusEnergy ε`, `ε ∈ receiverDampings`, `Admits (dampedBlockEnergy q) ε`, and the
-   combined sublinear pairing bound `⟪A_ε, ρ_ε⟫_T − ⟪A_ε, D^{ζ_ε,≥2}A_ε⟫_T ≤ κ√E_T(ε) + κ'` are
-   four-way equivalent (`singleDamping_admission_tfae`), and `dampedBlockEnergy q` is unconditionally
-   controlled above `Θ − ½` (`admits_dampedBlockEnergy_of_zetaZeroAbscissa_sub_half_lt`) and on the
-   Vinogradov–Korobov band (`exists_dampedBlockEnergy_le_on_vinogradovKorobovBand`,
-   `eventually_dampedBlockEnergy_le_vk_saving`).
-5. **Which terms obstruct (Resolved: `ObstructingTermsAndRegimeClassification`).**
-   Twice the negative signed work `−2W_T(ε)` admits five exact decompositions:
-   `−2 workDeviation ε T − 2 workCore ε T` (`neg_two_mul_signedDampingWork_eq_deviation_sub_core`),
-   `dilationJumpEnergy ε T A_ε − dilationEdgeMass ε T A_ε − 2 polarDilationCorrection ε T`
-   (`neg_two_mul_signedDampingWork_eq_dilationJump_sub_edgeMass`),
-   `arithmeticDampingTotalJumpEnergy (arithmeticDampingCenteredMean ε) T + 2 dampedReadout ε Σ_n (n/(n+1)) arithmeticDampingCenteredMean ε n − arithmeticDampingBoundaryFlux (arithmeticDampingCenteredMean ε) T`
-   (`neg_two_mul_signedDampingWork_eq_markov`),
-   `−2(Σ_{j≤T} Λ(j)j^{−ε}⟪F_j A_ε, A_ε⟫_T + polarDilationCorrection ε T)`
-   (`neg_two_mul_signedDampingWork_eq_windowMean`), and the Möbius-factored tangent pairing
-   (`signedDampingWork_eq_moebiusDilation_pairing`). At the zero anchor `(0, ε]`, admission at `ε`
-   forces the integrated deviation to diverge to `−∞` across `(η, T)` to cancel the prime-harmonic
-   core (`exists_horizon_damping_integral_workDeviation_le`). On a compact positive interval
-   `[a, c]` (`0 < a ≤ c`), `0 ≤ ∫_a^c workCore ≤ log ζ(1+a) − log ζ(1+c)` uniformly in `T`
-   (`integral_workCore_bounds_on_positive_interval`), `|∫_a^c 2 workDeviation|` is uniformly bounded
-   when both endpoints are admitted (`exists_abs_integral_workDeviation_le_of_admits`), admission at
-   `a` is five-way equivalent to a horizon-uniform bound on the negative deviation, dilation
-   jump-minus-edge-mass, Markov jump-plus-forcing-minus-flux, or negative window-mean integral
-   (`obstructingTerms_positive_interval_tfae`), and all four hold unconditionally on `(Θ − ½, ∞)`
-   and on the Vinogradov–Korobov band
-   (`exists_obstructing_integrals_le_of_zetaZeroAbscissa_sub_half_lt`,
-   `exists_obstructing_integrals_le_on_vinogradovKorobovBand`).
-6. **Propagating the complementary-sector cancellation (Resolved: `ComplementarySectorPropagationAndAffineContraction`).**
-   For the Ramanujan denominator sector `R_Q(n)` and its literal complement `D_Q(n) = A_ε(n) − R_Q(n)`,
-   any scale transition `Q₁ → Q₂` satisfies `R_{Q₂} = R_{Q₁} + S_{Q₁,Q₂}` and
-   `D_{Q₂} = D_{Q₁} − S_{Q₁,Q₂}` (`ramanujanPrefix_stage_step`, `complementarySector_step_eq`), with
-   exact pronic polarisation `‖A_ε‖_R² = ‖R_Q‖_R² + 2⟪R_Q, D_Q⟫_R + ‖D_Q‖_R²` and truncation bound
-   `‖D_Q‖_R² ≤ Q^{−2β} C_{ε,β}² R` (`pronicNorm_complementarySector_sq_le`). Along the compatible
-   dyadic schedule `(Q_j, R_j) = (2^j, 2^{m(j+1)})`, the reweighted shell residual
-   `F_j = θ^j ‖R_{Q_j}‖_{R_j}² + E^{shell}_j` (`0 < θ < 1`) satisfies the contracting recurrence
-   `F_{j+1} ≤ θ F_j + r_j` (`reweightedShellResidual_step_le`) and stage-free bound
-   `F_j ≤ max(F_0, R/(1−θ))` (`exists_reweightedShellResidual_contracting_bound_of_admits`).
-   Admission `Admits dampedMobiusEnergy ε`, `ε ∈ receiverDampings`, bounded dyadic Ramanujan prefix
-   energy, and the contracting affine recurrence for `F_j` are four-way equivalent
-   (`complementarySectorPropagation_tfae`), and hold unconditionally on `(Θ − ½, ∞)` and on the
-   Vinogradov–Korobov band (`exists_dyadicRamanujanPrefixEnergy_le_of_zetaZeroAbscissa_sub_half_lt`,
-   `exists_dyadicRamanujanPrefixEnergy_le_on_vinogradovKorobovBand`).
-7. **The compensated width floor (Resolved: `CompensatedWidthFloorAndGroundEnergyRate`).**
-   For every smooth interior source `u` at aperture `a`, both `E_+(u) = ¼ Σ_q ‖û(−z_q) + û(−z̄_q)‖²`
-   (`pairedPlusEnergy`) and `E_−(u) = ¼ Σ_q ‖û(−z_q) − û(−z̄_q)‖²` (`pairedMinusEnergy`) converge
-   unconditionally (`summable_pairedPlusTerm`, `summable_pairedMinusTerm`), with
-   `Q_a(u) = E_+(u) − E_−(u)` (`sourceQuadratic_eq_pairedPlusEnergy_sub_pairedMinusEnergy`). At a
-   single aperture `a`, `∀ u, E_−(u) ≤ E_+(u) + B ‖u‖₂²` (`CompensatedSamplingBound a B`) is
-   equivalent to `−B ≤ μ(a)` (`compensatedSamplingBound_iff_groundEnergy_ge`), whereas the
-   uncompensated bound `∀ u, E_−(u) ≤ B ‖u‖₂²` is equivalent to `UnsignedDepthSamplingBound a (4B)`
-   (`forall_pairedMinusEnergy_le_iff_unsignedDepthSamplingBound`) and to `∃ W, OffLineDepthLocallyBounded W`
-   (`exists_uncompensated_pairedMinusEnergy_bound_iff`). Across apertures, `CompensatedWidthFloor σ`
-   (`E_−(u) ≤ E_+(u) + C e^{2σa} ‖u‖₂²`) is equivalent to `μ(A) ≥ −C e^{2σA}`
-   (`compensatedWidthFloor_iff_groundEnergy_ge_neg_exp`), implies `zetaZeroWidth ≤ σ`,
-   `polarGroundEnergyRate ≤ σ`, the lag floor `−C' e^{σv}`, and damping continuation on `(σ, ∞)`
-   (`zetaZeroWidth_le_of_compensatedWidthFloor`, `lag_primeWindow_ge_neg_exp_of_compensatedWidthFloor`,
-   `averagedDampingContinuation_of_compensatedWidthFloor`), and holding for all `σ > zetaZeroWidth`
-   closes `polarGroundEnergyRate = groundEnergyRate = zetaZeroWidth`
-   (`polarGroundEnergyRate_eq_zetaZeroWidth_of_forall_compensatedWidthFloor`,
-   `forall_compensatedWidthFloor_or_depthMass_clusters`).
-8. **The aperture sequence with a vanishing floor (Resolved: `VanishingApertureFloorAndGradedTransport`).**
-   Along any unbounded sequence `A_j → ∞` starting at `(A 0).1 ≤ 3/10`, fixed-margin additive step
-   transport (`not_additive_step_transport`) and half-summable relative step transport
-   (`not_relative_step_transport`) are ruled out by the Gaussian ceiling. Replacing them with
-   `c_j < 1` (`0 < 1 − c_j`) in `(1 − c_j) μ(A_j) ≤ μ(A_{j+1})` gives strict finite-stage
-   non-contact `0 < (∏_{i<J}(1 − c_i))/5000 ≤ μ(A_J)`, window positivity below `A_J`, compatibility
-   with the doubly exponential ceiling, and RH (`strict_vanishing_relative_step`). Along a monotone
-   unbounded sequence `A_j → ∞`, RH is four-way equivalent to `∃ q ≥ 0` with `q_j μ(A_j) ≤ μ(A_{j+1})`,
-   to `∀ J, ∑_{j<J} Δ_spec(A_j, A_{j+1}) ≤ μ(A_0)`, and to `HasSum Δ_spec (μ(A_0))`
-   (`vanishing_aperture_transport_tfae`), and monotonicity of the ceiling-renormalized functional
-   `ceilingScaledGroundEnergy A = e^{β_ceil(A)} μ(A)` (bounded above by `K` on `A ≥ 3`,
-   `exists_ceilingScaledGroundEnergy_le`) propagates the doubly exponential positive floor
-   (`riemannHypothesis_of_ceilingScaledGroundEnergy_mono`). For a graded negative floor at rate
-   `σ ≥ 0`, the discrete step bound `e^{−2σA_{j+1}} μ(A_{j+1}) ≥ e^{−2σA_j} μ(A_j) − e^{−2σA_{j+1}} δ_j`
-   along `A_j → ∞` with `A_{j+1} − A_j ≤ Δ` upgrades to `CompensatedWidthFloor σ`, giving
-   `zetaZeroWidth ≤ σ`, `polarGroundEnergyRate ≤ σ`, and `AveragedDampingContinuation` on `(σ, ∞)`
-   (`compensatedWidthFloor_of_discrete_aperture_sequence`, `zetaZeroWidth_le_of_graded_aperture_step`,
-   `averagedDampingContinuation_of_graded_aperture_step`).
-9. **A stability theorem for a signed observation.** Find an observation map that is both
-   origin-sensitive and sign-reading, and prove a quantitative stability estimate for it in the
-   receiver's norm — the missing half of the recovery theorems.
-
-### Research topics
-
-- Source-derived continuation below the existing admission frontier. The sharper threshold is
-  `Δ = Θ − ½`: on `[a, ½]`, `a > Δ` supplies continuation and continuation forces `a ≥ Δ`; at the
-  boundary `a = Δ` admission requires every attained extremal zero to cast a critical-line zero of at
-  least its multiplicity (§3), and the target is every positive `a`.
-- The contraction factor of a sector-compensation scheme for the actual Möbius row, with every
-  transition cross term paid, as the input to iterated compensation.
-- Selectivity certificates for any proposed continuation estimate against the shifted pair
-  `ζ(s−a)ζ(s+a)`, a Beurling system with an off-line zero, and the Liouville-twisted weight. The
-  majorant source is the unconditional certificate against size-blind estimates; what is missing is
-  one against sign-reading but non-arithmetic estimates.
-- The aperture continuation of the window certificates of `ArithmeticIncidencePositivity` past a
-  prime, with the per-prime gain required by the affine envelope, and the aperture analogue of the
-  averaged budget.
-- The aperture analogue of the exact derivative. In damping the derivative is an exact identity,
-  boundary flux minus jump energy minus density forcing. No aperture-derivative identity for the
-  ground energy `μ(A)` with that structure is known, and no monotone or Lyapunov quantity in `A`.
-  Find one with a sign-definite jump term. The ceiling fixes its shape: any such functional must
-  decay like `exp(−πe^{2(A−2)})`.
-- The arithmetic content the function-field model lacks: the number-field source has no exact
-  vanishing of degree-wise Möbius sums beyond degree one, and the whole obligation is that defect.
-  Quantify it — a bound on the deviation of the centred prefix from a constant at a fixed damping is
-  the model-faithful form of the covariance demand.
+1. **Transport below one half.** Everything in §3 is unconditional on `(Θ − ½, ∞)` and on the
+   Vinogradov–Korobov band, and these are the regions where the zero-free region is already known;
+   the eight forms of continuation are equivalent, and the threshold is exactly the zero width.
+   Open: a horizon-free bound on any one of them on a fixed interval `[a, ½]` with `a < ½`, which is
+   a zero-free strip, and then cofinally, which is RH. Every reformulation of §3 says where the
+   bound must come from; none supplies it.
+2. **The signed deviation.** On a fixed positive interval the obligation is the negative
+   deviation integral (equivalently jump-minus-edge-mass, Markov, or window-mean). It must be
+   bounded with its sign: the majorant row shows any absolute estimate proves a false statement,
+   and the parity twin shows any sign-blind one does. Find the arithmetic identity of the Möbius
+   source that pays it below one half.
+3. **Tangent anti-correlation.** The obstruction is off-diagonal anti-correlation of the damping
+   tangents. A bounded total anti-correlation would suffice, and the integrated kernel over a square
+   is already positive. Open: a source-derived bound on the anti-correlation between dampings
+   below one half, beyond the double-integral identity, that controls the accumulated cross terms
+   of a partition.
+4. **Relative-precision prime-pair cancellation.** Admission is cancellation of the
+   polar-calibrated prime-pair form at relative precision `1/T`. Leading-order prime asymptotics
+   are too weak by construction. Which prime-pair information, at which height, gives that
+   precision at a fixed damping below one half?
+5. **A contraction for sector compensation.** The iterated compensation scheme closes with any
+   contraction factor `θ < 1` and every transition cross term paid. Construct one for the actual
+   Möbius row below one half; a scheme that cancels only at leading order per stage diverges.
+6. **The aperture derivative.** In damping the derivative is an exact identity with a jump term;
+   in aperture no such identity and no Lyapunov quantity is known. Find one with a sign-definite
+   jump term; the ceiling fixes its shape, since any such functional must decay like
+   `exp(−πe^{2(A − 2)})`.
+7. **Selectivity against sign-reading models.** The majorant row certifies against size-blind
+   estimates and the parity twin against sign-blind ones (§3). Missing is a certificate against
+   estimates that read signs but not arithmetic: the shifted pair, a Beurling system with an
+   off-line zero, the Liouville-twisted weight.
+8. **The function-field defect.** Over `F_q[T]` the centred prefix is exactly constant. Quantify,
+   at a fixed damping, the deviation of the number-field centred prefix from a constant: that is the
+   model-faithful form of problem 2.
 
 ---
 

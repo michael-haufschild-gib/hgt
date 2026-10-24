@@ -15,7 +15,7 @@ open scoped BigOperators CompactlySupported
 open GaloisForLFunctions.ArithmeticPositivityTheory
 open GaloisForLFunctions.BiScaleUncertainty
 open GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolar
-open RHTower.ArchimedeanAnomaly RHTower.CHMDDoobGraph
+open RHTower.ArchimedeanAnomaly RHTower.ArchimedeanExactForm RHTower.CHMDDoobGraph
 
 namespace RHTower
 noncomputable section
@@ -61,9 +61,11 @@ theorem tendsto_suzukiCriticalLiteralFamily_firstVariation {V : ℝ} (hV : 0 < V
       (((autocorr (criticalTruncatedTest hV S b) 0-
         suzukiCriticalSourcePairing (criticalTruncatedTest hV S b) omega)/omega : ℝ) : EReal))
       (𝓝[>] 0) (𝓝 (compactFullWeilEnergy (criticalTruncatedTest hV S b) : EReal)) := by
+  have hf : MemLp (criticalTruncatedTest hV S b : ℝ → ℝ) 2 volume :=
+    (criticalTruncatedTest hV S b).continuous.memLp_of_hasCompactSupport
+      (criticalTruncatedTest hV S b).hasCompactSupport
   have h := tendsto_suzukiCriticalSourcePairing_extended_firstVariation
-    ((criticalTruncatedTest hV S b).continuous.memLp_of_hasCompactSupport
-      (criticalTruncatedTest hV S b).hasCompactSupport)
+    (f := (criticalTruncatedTest hV S b : ℝ → ℝ)) hf
     (criticalTruncatedTest hV S b).hasCompactSupport
   rw [critical_energy_eq hV S b] at h
   exact h

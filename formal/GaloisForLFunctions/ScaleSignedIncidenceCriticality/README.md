@@ -441,6 +441,126 @@ This settles the abstract convex-profile sampling question. Applying it to an ar
 exponential rate still requires identifying a profile with the needed convexity or proving a
 suitable monotonicity replacement. It does not make arbitrary sparse lag samples complete.
 
+### 3.10 The pronic Gram face, in the exponent unit
+
+On the cross-scale Gram of Bézout–Valuation Incidence the natural unit is the exponent
+`θ = 2 log P / log X ∈ [0, 2]`, with the receiver at `θ = 2`. The sign-blind Type-II Gram reading
+and the rank-two readout reading `(R, H)` have exact limit `2`, floor `0` and interval `[0, 2]`:
+the coherent prime block and the three-window readout-free barrier sit in their shadows
+(`resolutionLimit_typeIIGramReading_eq_two`, `exists_primeBlock_witness_at_resolutionLimit_two`,
+`exists_readout_free_witness_at_resolutionLimit_two`). They certify nothing. Difference smoothness
+of order `K` certifies `θ = 2K/(K + 1)` and leaves the deficit `2/(K + 1)`
+(`resolutionFloor_smoothKernelReading_eq`, `resolutionLimit_smoothKernelReading_deficit_eq`): the
+receiver is the limit of infinite smoothness. On one modulus the residue masses are faithful for
+the Bernoulli main term (`faithful_residueMass_bernoulliCrossScaleMain`), the kernel statistic
+shrinks the shadow to the fourth-order tail, and the actual centred prime row leaves the worst-case
+Type-II shadow on `7/6 < θ < 2` (`centredPrimeRow_bypasses_resolutionLimit_two`).
+
+### 3.11 The band recipe for ζ
+
+The magnitude reading of §3.6 has a `ζ` instance. For a base aperture `A₀ ≤ 21/200`, where
+`μ(A₀) ≥ 1/30`, the two-aperture ratio `R(A) = (μ(A₀) − μ(A))/μ(A₀)` has critical value `1`: RH
+holds iff `R ≤ 1` everywhere, iff `R(A) → 1`, iff the clamped ratio is identically `1`
+(`riemannHypothesis_iff_forall_zetaTwoApertureRatio_le_one`,
+`riemannHypothesis_iff_tendsto_zetaTwoApertureRatio_one`,
+`riemannHypothesis_iff_forall_zetaClampedTwoApertureRatio_eq_one`). Growth `R ≤ 1 + Ce^{2σA}` gives
+`|Re ρ − ½| ≤ σ` (`abs_re_sub_half_le_of_zetaTwoApertureRatio_le_one_add_exp`); a near-top zero
+pushes `R` above `1` beyond its visibility lag (`one_lt_zetaTwoApertureRatio_of_near_top_zero`); and
+the unconditional floors certify `R < 1` on `[0, 21/200]`, `R ≤ 1` for the prime-window ratio on
+`[0, 3/10]`, and `R ≤ 1 − windowFloor(A)/μ(A₀)` on `(0, ½ log 2)`. It is a ratio of two ground
+energies, scale-free by construction, and it reads the same width as every other rate.
+
+### 3.12 Fatality of the parity collapses
+
+A collapse is strictly fatal when exactly one member of the pair is paid, neutral when both or
+neither are (`strictlyFatalAt_iff_pairFatalAt_of_paid`). Three families are classified.
+
+- *The even flip on four-free convolutions `k ⋆ o_ε`*, `0 < ε ≤ ½`: strictly fatal iff the pole value
+  of `k` vanishes at `1 − ε` and that of its even part does not
+  (`strictlyFatalAt_evenFlip_iff_pole_and_evenPart`); paid and neutral iff both the odd part and the
+  even part vanish there; every nonzero paid two-point kernel is strictly fatal. Adjoining the first
+  pronic moment expels the flip iff `W_c(2) ≠ 0`, and the logarithmic pronic moments separate it on
+  the generalised Fermi locus.
+- *Selberg sign characters.* The shadow of the complete-period lag reading is the `2^{N−1}`-element
+  sign orbit; cubic moments pin odd-supported rows uniquely and reduce squarefree rows to the pair
+  `{c, evenFlip c}` (`cubicMomentReading_pins_odd_signOrbit`,
+  `cubicMomentReading_reduces_squarefree_signOrbit_to_evenFlip`).
+- *Residue-class flips at half damping.* Of `S` and its complement at least one is paid;
+  complementation is paid and neutral iff `φ(q) < 4|S^×| < 3φ(q)` and strictly fatal iff
+  `3φ(q) ≤ 4|S^×|` (`both_residueFlip_and_compl_paid_iff`,
+  `strictlyFatalAt_compl_residueFlip_half_iff`), so subgroup flips are neutral at index `2` and `3`
+  and fatal from index `4`.
+
+The quarter law of Trans-Horizon Incidence Mechanics is thus a fatality window `(¼, ¾)` for
+complementation.
+
+### 3.13 Rate readings for ζ, and the price of a local count
+
+Four rate currencies of `ζ` — the dyadic prime-window lag rate, the integrated Chebyshev deficit
+rate, the mean-square band rate and the Möbius receiver damping rate — equal the width
+unconditionally; the polar ground-energy rate lies in `[width, ½]` and equals the width under a
+local off-line count (`five_rate_currencies_of_zeta`). The local count is a datum of the third kind
+in the sense of §5, and it has a price in this calculus. At one aperture a ground-energy deficit
+`μ(A) ≤ −η` alone has width floor `0`; with a local count `M` the floor rises to an explicit
+`singleApertureWidthFloor M A η > 0` (`resolutionFloor_width_deficitOnly_eq_zero`,
+`le_resolutionFloor_width_deficitAndCount`). In the rate space, the width alone leaves the polar rate
+in `[width, ½]` and the polar rate alone leaves the width with floor `0`, while adjoining the local
+count collapses both to the width (`resolutionInterval_polarRate_widthOnly`,
+`resolutionLimit_polarRate_widthAndLocalCount`). On the lattice family cofinal rate sampling is
+faithful for the depth with no convexity hypothesis, and every bounded-range rate reading has limit
+`½` (`faithful_sdDepth_cofinalRateSet`, `resolutionLimit_sdDepth_boundedRateSet_eq_half`).
+
+### 3.14 The design specification of a counterexample
+
+A counterexample to RH that survives every proved reading must have a precise shape, and the
+calculus computes it on the diluted-lattice model. The `n`-th aliasing band energy is
+`bandEnergy ℓ δ n = ℓ Σ_{j<n}(cosh(δℓ(2j − n + 1)) − 1)` (`bandEnergy_eq_sum_cosh_sub_one`),
+strictly increasing in the index and in the depth, with the two-step recurrence
+`bandEnergy(n + 1) − bandEnergy(n − 1) = 2ℓ(cosh(nδℓ) − 1)`. The joint aperture–mass reading at
+`0 < a ≤ L/2` is exactly `bandEnergy ℓ δ ⌈2a/ℓ⌉ ≤ 2L` (`dilutedReading_iff_bandEnergy_le`): limit
+`½` below the sub-lattice Nyquist aperture, exact limit `min(½, depthResolution(ℓ, 2L))` across the
+second aliasing band, and explicit brackets beyond. On the lag axis the difference family reads
+`−2·bandDeficit` at the sub-lattice teeth and is positive in every gap
+(`W_dilutedLattice_lag_nat_mul`, `W_dilutedLattice_lag_eq_of_gap`). Against the prime side, the same
+configuration must respect at once the `3/10` prime-free barrier, the unboundedness of `S(T)` and
+polylogarithmic near-top prime-window negativity (`counterexample_primeSide_obstructions`).
+
+### 3.15 Policies under growing density
+
+A policy chooses its aperture `A(L)` and precision `η(L)` from the scale. If it is sub-Nyquist at
+even one scale, `A(L) ≤ L/2`, its limit is `½`; every bounded aperture schedule is such a policy
+(`resolutionLimit_sdDepth_adaptiveReading_of_exists_subNyquist`). Scale-matched policies,
+`L/2 < A(L) ≤ L`, have limit `min(½, depthResolution(L, η(L)))` and certify `β` iff
+`η(L) ≤ weilFloorThreshold(L, β)` at every scale (`certifies_sdDepth_adaptiveReading_iff`): they
+resolve the depth exactly when `η(L)/L³ → 0`. Beyond the second band the `n`-th band energy gives
+the multi-band inversion `δ ≤ depthResolution(L, η)/(n − 1)` (`depth_le_div_sub_one_of_bandEnergy_le`).
+Against `ζ`'s growing density at height scale `L(ξ) = log(1 + π|ξ|/4)`, both available schedules
+are blind: the single-height archimedean horizon `A(L) ≤ log(1 + L/4) < L/2` is sub-Nyquist, and the
+Chebyshev deficit schedule `η(L) = 10 + 68e^L` exceeds `weilFloorThreshold(L, ½)`
+(`zeta_singleHeight_archimedean_schedule_realisable`,
+`resolutionLimit_sdDepth_chebyshevSchedule_eq_half`). The present single-height methods sit on the
+wrong side of both conditions.
+
+### 3.16 The incidence ledger, in this unit
+
+On the odd incidence ledger `Ẑ(F) = −ledgerDeficit F r R` (`fullZeroForm_eq_neg_ledgerDeficit`).
+Eliminating the proper prime powers bounds the prime side by a subcritical horizon mass times
+`A(0)` plus one comb charge (`primeSideCharge_le_combSubcritical_add_combCharge`), so a graded
+allocation of twice the comb charge at rate `2σ` certifies width `≤ σ`
+(`zetaZeroWidth_le_of_combCharge_graded_bound`), and every bounded-aperture ledger reading leaves
+the rates unbounded (`ledgerRateDichotomy`). The scalar comb-energy reading `(mass, energy)` is
+blind to the charge: three explicit witnesses share it with charges `−√(ME), 0, +√(ME)`, so the
+charge has exact interval `[−√(ME), √(ME)]` and the complete comb energy
+`[(√M − √E)², (√M + √E)²]` (`resolutionInterval_combChargeVal_scalarCombEnergyReading`,
+`resolutionInterval_completeCombEnergy_scalarCombEnergyReading`). On actual smooth odd profiles
+the dilated unit odd bumps share mass `1`, normalised comb energy `1`, exponential comb energy `4`
+and cross-prime energy `4`, and realise every first-power charge ratio in `[0, 1)`
+(`exists_dilatedUnitOddBump_witness_for_every_charge_ratio`). Adjoining the signed amplitude ratio
+makes the reading faithful (`faithful_combChargeVal_completedCombReading`), and subtracting the
+horizon translate bounds the squared charge by mass times the coherent translation residual
+(`sq_combCharge_le_mass_mul_horizonResidualEnergy`): the residual, not the comb energy, is the
+admissible quantity.
+
 ---
 
 ## 4. Foundational pillar theorems
@@ -481,164 +601,33 @@ All unconditional; where RH holds only at the base datum the gate is stated as "
 9. **The rate is a cofinal invariant.** For convex growth profiles, secant rates on any unbounded
    aperture set equal those on all apertures (`theRateIsACofinalInvariant`), and bounded readings
    certify no finite rate (`theRateDichotomyIsSharp`).
-10. **The exact floor of the pronic Gram reading and its smoothness ladder.** In the cross-scale
-    exponent unit `θ = 2 log P / log X ∈ [0, 2]`, both the sign-blind Type-II Gram reading and the
-    rank-two readout reading `(R, H)` have exact resolution limit `2`, resolution floor `0`, and
-    resolution interval `[0, 2]`, witnessed by the coherent prime block and the three-window
-    readout-free barrier (`resolutionLimit_typeIIGramReading_eq_two`,
-    `exists_primeBlock_witness_at_resolutionLimit_two`,
-    `exists_readout_free_witness_at_resolutionLimit_two`). Cancelling `K` Euler–Maclaurin kernels via
-    difference smoothness certifies `θ_cert(K) = 2K/(K + 1)` and lowers the unresolved deficit limit
-    along `2/(K + 1) → 0` (`resolutionFloor_smoothKernelReading_eq`,
-    `resolutionLimit_smoothKernelReading_deficit_eq`). On a single modulus, `residueMass` is faithful
-    for the Bernoulli cross-scale main term (`faithful_residueMass_bernoulliCrossScaleMain`),
-    `kernelStatistic` collapses the shadow diameter to the fourth-order tail, and the actual centred
-    prime row bypasses the Type-II shadow across `7/6 < θ < 2`
-    (`centredPrimeRow_bypasses_resolutionLimit_two`).
-11. **The two-aperture band recipe for `ζ` and its reachable bounds.** For any reference aperture
-    `A₀ ≤ 21/200` (where `μ(A₀) ≥ 1/30 > 0` unconditionally), the two-aperture ground-energy ratio
-    `zetaTwoApertureRatio A₀ A = (μ(A₀) − μ(A))/μ(A₀)` and its explicit-formula prime-window
-    companion `primeWindowTwoApertureRatio A₀ w v` (retaining the prime sum, archimedean term, and
-    polar term) have critical value `1`: `RiemannHypothesis` holds iff `zetaTwoApertureRatio A₀ A ≤ 1`
-    for all `A`, iff `zetaTwoApertureRatio A₀ A → 1` as `A → ∞`, and iff the clamped ratio
-    `zetaClampedTwoApertureRatio A₀ A` equals `1` everywhere
-    (`riemannHypothesis_iff_forall_zetaTwoApertureRatio_le_one`,
-    `riemannHypothesis_iff_tendsto_zetaTwoApertureRatio_one`,
-    `riemannHypothesis_iff_forall_zetaClampedTwoApertureRatio_eq_one`). Exponential growth
-    `≤ 1 + C e^{2σA}` unconditionally forces `|Re ρ − ½| ≤ σ`
-    (`abs_re_sub_half_le_of_zetaTwoApertureRatio_le_one_add_exp`), near-top zeros force the ratio
-    strictly above `1` beyond their visibility lag (`one_lt_zetaTwoApertureRatio_of_near_top_zero`),
-    and the corpus's unconditional inputs certify `< 1` on `[0, 21/200]`, `≤ 1` on `[0, 3/10]` for
-    the prime-window ratio, and `≤ 1 − windowFloor(A)/μ(A₀)` on `(0, ½ log 2)`
-    (`zetaTwoApertureRatio_lt_one_of_le_twentyOne_twoHundredths`,
-    `primeWindowTwoApertureRatio_le_one_of_le_threeTenths`, `zetaTwoApertureRatio_le_windowFloor`).
-12. **The fatality classification of parity collapses and their faithful completions.** Across the
-    three parity-collapse families, strict fatality (`StrictlyFatalAt`) and neutrality (`NeutralAt`)
-    are classified in closed form (`strictlyFatalAt_iff_pairFatalAt_of_paid`,
-    `strictlyFatalAt_iff_not_neutralAt_of_paid`):
-    (i) on four-free convolutions `k ⋆ o_ε` (`0 < ε ≤ 1/2`), `evenFlip` is strictly fatal iff
-    `poleValue k J ε = 0 ∧ poleValue (evenPartWeight k) J ε ≠ 0`
-    (`strictlyFatalAt_evenFlip_iff_pole_and_evenPart`), paid and neutral iff both `oddPartKernel k`
-    and `evenPartWeight k` vanish at `1 − ε` (`evenFlip_paid_and_neutral_iff_odd_and_even_pole`),
-    strictly fatal for every non-zero paid two-point kernel (`strictlyFatalAt_evenFlip_twoPoint_iff`),
-    expelled from the shadow by `firstPronicMoment` iff `weightRamanujanCoeff c 2 ≠ 0`
-    (`not_mem_shadow_joinReading_firstPronicMoment_iff`), and separated on the generalized Fermi
-    locus by logarithmic pronic moments (`exists_logMoment_ne_of_strictlyFatalAt_evenFlip`);
-    (ii) on the `2^{N−1}` Selberg sign-character shadow of `completePeriodLagReading N`, refining by
-    `cubicMomentReading N` expels `chiFourTwinRow ε N` at every `N ≥ 3`, collapses the sign orbit to
-    a singleton on odd-supported rows (`cubicMomentReading_pins_odd_signOrbit`), and reduces the sign
-    orbit of squarefree-supported rows to at most `{c, evenFlipRow N c}`
-    (`cubicMomentReading_reduces_squarefree_signOrbit_to_evenFlip`);
-    (iii) on half-damped residue-class prime flips `residueFlipHalfWeight q S`, every complement pair
-    `{S, Sᶜ}` has at least one paid member (`receiverBounded_residueFlip_or_compl_half`),
-    complementation is paid and neutral iff `φ(q) < 4 |S^\times| < 3 φ(q)`
-    (`both_residueFlip_and_compl_paid_iff`), and strictly fatal iff `3 φ(q) ≤ 4 |S^\times|`
-    (`strictlyFatalAt_compl_residueFlip_half_iff`), so subgroup flips `subgroupFlipSet H` are
-    complement-neutral at index `2` and `3` and strictly fatal iff the index is at least `4`
-    (`strictlyFatalAt_compl_subgroupFlipSet_iff`).
-13. **The rate reading for `ζ` and the price of the local off-line count.** Four rate currencies of
-    `ζ` — the dyadic prime-window lag rate, the integrated Chebyshev deficit rate, the mean-square
-    band rate, and the Möbius receiver damping threshold — equal `zetaZeroWidth` unconditionally,
-    while the polar restricted Weil ground-energy rate `polarGroundEnergyRate` satisfies
-    `zetaZeroWidth ≤ polarGroundEnergyRate ≤ 1/2` and equals `zetaZeroWidth` whenever the off-line
-    zeros have bounded local count `OffLineCopiesLocallyBounded M` or bounded local squared-depth
-    mass `OffLineDepthLocallyBounded W` (`five_rate_currencies_of_zeta`). At a single aperture `A`,
-    a deficit `ccmRestrictedWeilGroundEnergy A ≤ −η` (`η > 0`) together with `OffLineCopiesLocallyBounded M`
-    certifies `singleApertureWidthFloor M A.1 η ≤ zetaZeroWidth`
-    (`singleApertureWidthFloor_le_zetaZeroWidth`), lifting the width resolution floor on
-    `ApertureCountDatum A` from `0` (`resolutionFloor_width_deficitOnly_eq_zero`) to
-    `max 0 (singleApertureWidthFloor d.count A d.deficit)` (`le_resolutionFloor_width_deficitAndCount`).
-    In the asymptotic rate space `ZetaRateDatum`, reading `width` alone leaves `polarRate` with
-    resolution interval `[width, 1/2]` (`resolutionInterval_polarRate_widthOnly`) and reading
-    `polarRate` alone leaves `width` with floor `0` (`resolutionFloor_width_polarRateOnly_eq_zero`),
-    while adjoining `locallyBounded` collapses both to `width`
-    (`resolutionLimit_polarRate_widthAndLocalCount`, `resolutionFloor_width_polarRateAndLocalCount`).
-    On the lattice family `ScaleDepthDatum` without convexity assumptions, cofinal rate sampling
-    (`cofinalRateSet S`) is faithful for `sdDepth` (`faithful_sdDepth_cofinalRateSet`), whereas any
-    bounded-range rate reading (`boundedRateSet M`) has exact limit `1/2` and floor `0`
-    (`resolutionLimit_sdDepth_boundedRateSet_eq_half`, `resolutionFloor_sdDepth_boundedRateSet_eq_zero`).
-14. **The design specification of a counterexample: exact diluted-reading limits and dyadic comb
-    visibility.** Symmetrising `centredSum` under `Fin.revPerm` decomposes the `n`-th aliasing band
-    energy into `bandEnergy ℓ δ n = ℓ ∑_{j=0}^{n−1} (cosh(δℓ(2j − n + 1)) − 1)`
-    (`bandEnergy_eq_sum_cosh_sub_one`), satisfying the two-step recurrence
-    `bandEnergy ℓ δ (n + 1) − bandEnergy ℓ δ (n − 1) = 2ℓ(cosh(nδℓ) − 1)` (`bandEnergy_succ_sub_pred`)
-    and strict monotonicity in both index (`bandEnergy_lt_succ`) and depth
-    (`bandEnergy_strictMono_depth`). Consequently, for every `0 < a ≤ L/2`, the joint aperture–mass
-    reading `dilutedReading hℓ hL a` on `DepthDatum` is equivalent to
-    `bandEnergy ℓ (depth d) ⌈2a/ℓ⌉₊ ≤ 2L` (`dilutedReading_iff_bandEnergy_le`), is downward-closed in
-    depth (`dilutedReading_of_depth_le`), has `resolutionFloor = 0` (`resolutionFloor_depth_dilutedReading`),
-    has exact limit `1/2` in the sub-Nyquist regime `a ≤ ℓ/2`
-    (`resolutionLimit_depth_dilutedReading_subNyquist`), has exact limit `min (1/2) (depthResolution ℓ (2L))`
-    across the second aliasing band `ℓ/2 < a ≤ min ℓ (L/2)`
-    (`resolutionLimit_depth_dilutedReading_secondBand`), and is bracketed at every `ℓ/2 < a ≤ L/2`
-    between `min (1/2) (arcosh(1 + 2L/(ℓ⌈2a/ℓ⌉₊))/(⌈2a/ℓ⌉₊ℓ))` and
-    `min (1/2) (log((2L + 2a + ℓ)/ℓ)/(2a − ℓ))` (`resolutionLimit_depth_dilutedReading_brackets`).
-    On the lag axis, a two-bump difference test `twoBump (modScaledBump w 0) v (−1)` on
-    `dilutedLatticeConfig` evaluates at the `n`-th sub-lattice tooth `v = nℓ` (`nℓ + 2w ≤ L`) to
-    `4(L − ℓ(cosh(nδℓ) − 1))‖κ_w‖²` (`W_dilutedLattice_lag_nat_mul`) — reading `-2 · bandDeficit ℓ δ L 2`
-    and `-2 · bandDeficit ℓ δ L 3` at the first two teeth (`re_W_dilutedLattice_first_two_teeth_eq_bandDeficit`)
-    — while evaluating to `4(L + ℓ)‖κ_w‖² > 0` in every gap `|v − nℓ| > 2w` (`W_dilutedLattice_lag_eq_of_gap`).
-    Against the prime-side explicit formula, any structured counterexample faces the `3/10` prime-free
-    barrier, the unbounded zero-count remainder `rvmRemainder_unbounded`, and dyadic prime-window
-    negativity at polylogarithmic lag (`counterexample_primeSide_obstructions`).
-15. **Policies for a configuration of growing density: exact limits, multi-band inversion, and
-    realisable schedules.** On `ScaleDepthDatum`, the global policy reading `adaptiveReading A η` has
-    exact resolution limit `1/2`, floor `0`, and interval `[0, 1/2]` whenever a single scale `L > 0`
-    is sub-Nyquist (`A(L) ≤ L/2`, `0 ≤ η(L)`), including every bounded aperture schedule
-    (`resolutionLimit_sdDepth_adaptiveReading_of_exists_subNyquist`,
-    `resolutionLimit_sdDepth_adaptiveReading_of_bddAbove`). Under `ScaleMatched A η` (`L/2 < A(L) ≤ L`),
-    the scale-aware completion `scaleAdaptiveReading A η = joinReading sdScale (adaptiveReading A η)`
-    has exact limit `min (1/2) (depthResolution L (η L))` and floor `0` at scale `L = sdScale p₀`
-    (`resolutionLimit_sdDepth_scaleAdaptiveReading_scaleMatched`), while `adaptiveReading A η` has
-    global limit `sSup ((fun L => min (1/2) (depthResolution L (η L))) '' Ioi 0)` and floor `0`
-    (`resolutionLimit_sdDepth_adaptiveReading_scaleMatched`), certifying `β ∈ (0, 1/2)` iff
-    `∀ L > 0, η L ≤ weilFloorThreshold L β` (`certifies_sdDepth_adaptiveReading_iff`), with
-    `depthResolution L (η L) → 0` whenever `η L / L³ → 0`
-    (`tendsto_depthResolution_zero_of_div_cube_tendsto_zero`). For arbitrary trans-Nyquist aperture
-    growth `TransNyquistPolicy A η` (`A(L) > L/2`, `aliasingIndex A L = ⌈2A(L)/L⌉₊ ≥ 2`),
-    `adaptiveReading A η p ↔ bandEnergy (sdScale p) (sdDepth p) (aliasingIndex A (sdScale p)) ≤ η (sdScale p)`
-    (`adaptiveReading_iff_bandEnergy_le`), the `n`-th band energy obeys the hyperbolic lower bound
-    `weilFloorThreshold L ((n − 1)δ) ≤ bandEnergy L δ n` (`weilFloorThreshold_mul_le_bandEnergy`) so
-    that `bandEnergy L δ n ≤ η` forces `δ ≤ depthResolution L η / (n − 1)`
-    (`depth_le_div_sub_one_of_bandEnergy_le`), `scaleAdaptiveReading A η` is bracketed between
-    `min (1/2) (arcosh(1 + η(L)/(L · n_L))/(n_L L))` and `min (1/2) (depthResolution L (η L) / (n_L − 1))`
-    (`resolutionLimit_sdDepth_scaleAdaptiveReading_brackets`), and global certification of `β ∈ (0, 1/2)`
-    is equivalent to `∀ L > 0, η L ≤ bandEnergy L β (aliasingIndex A L)`
-    (`certifies_sdDepth_adaptiveReading_transNyquist_iff`). Against `ζ`'s growing zero density at height
-    scale `L(ξ) = log(1 + π|ξ|/4)`, both the single-height symbol-positivity horizon
-    `A(L) ≤ log(1 + L/4) < L/2` (`zeta_singleHeight_archimedean_schedule_realisable`,
-    `resolutionLimit_sdDepth_of_le_sharpHorizonAperture`) and the scale-matched Chebyshev deficit
-    schedule `η(L) = 10 + 68 e^L ≥ weilFloorThreshold L (1/2)`
-    (`weilFloorThreshold_half_le_chebyshevDeficit`, `resolutionLimit_sdDepth_chebyshevSchedule_eq_half`)
-    have exact resolution limit `1/2` and floor `0`.
-16. **The numerical unit for the incidence ledger, witness pairs for scalar comb-energy information
-    loss, and faithful coherent-residual completions.** On the odd incidence ledger, `fullZeroForm F`
-    equals `-ledgerDeficit F r R` (`fullZeroForm_eq_neg_ledgerDeficit`), and eliminating proper prime
-    powers bounds `primeSideCharge F` by `combSubcriticalHorizonMass r * autoCorr F 0 + combCharge F r`
-    (`primeSideCharge_le_combSubcritical_add_combCharge`, `fullZeroForm_ge_combCharge_ledger`), so a
-    graded allocation of `2 * combCharge F r` at rate `2σ` certifies `zetaZeroWidth ≤ σ`
-    (`zetaZeroWidth_le_of_combCharge_graded_bound`) while any bounded-aperture ledger reading on
-    `GrowthProfile` leaves the shadow rates unbounded above (`ledgerRateDichotomy`). On
-    `CombPairingDatum` (`0 < mass`, `0 ≤ energy`, `charge² ≤ mass · energy`), the unsigned scalar
-    comb-energy reading `scalarCombEnergyReading` (`(mass, energy)`) is shared by the explicit witness
-    triple `antiCoherentWitness`, `orthogonalWitness`, and `coherentWitness`
-    (`exists_witness_pair_scalarCombEnergyReading`), giving `combChargeVal` exact resolution interval
-    `[−√(mass · energy), √(mass · energy)]` (`resolutionInterval_combChargeVal_scalarCombEnergyReading`)
-    and `completeCombEnergy` exact resolution interval
-    `[(√mass − √energy)², (√mass + √energy)²]`
-    (`resolutionInterval_completeCombEnergy_scalarCombEnergyReading`, collapsing to `[0, 4 * mass]` on
-    `energy = mass`, `resolutionInterval_completeCombEnergy_of_balanced`). On actual smooth odd
-    compactly supported profiles on `ℝ`, the dilated family `dilatedUnitOddBump c = rescaledTest unitOddBump c`
-    (`c > 0`) shares with `unitOddBump` the exact unit mass `1`, asymptotic normalized comb energy `1`,
-    exponential comb energy `4`, and cross-prime energy `4`, while realizing every asymptotic
-    first-power charge ratio `θ ∈ [0, 1)` (`dilatedUnitOddBump_same_scalar_comb_reading`,
-    `exists_dilatedUnitOddBump_witness_for_every_charge_ratio`). Adjoining the signed amplitude ratio
-    `amplitudeReading` makes `completedCombReading` faithful for both `combChargeVal` and
-    `completeCombEnergy` (`faithful_combChargeVal_completedCombReading`,
-    `faithful_completeCombEnergy_completedCombReading`), and subtracting the horizon translate
-    `S_r · F(· + 2r)` bounds `combCharge F r²` on `[−r, r]`-supported tests purely by the coherent
-    translation-residual energy `‖C_r F − S_r F(· + 2r)‖²`
-    (`sq_combCharge_le_mass_mul_horizonResidualEnergy`).
+10. **The pronic Gram reading has limit `2`.** In the exponent unit the sign-blind Type-II and
+    rank-two readout readings certify nothing, smoothness of order `K` certifies `2K/(K + 1)`, and the
+    centred prime row leaves the Type-II shadow on `7/6 < θ < 2` (§3.10;
+    `resolutionLimit_typeIIGramReading_eq_two`, `centredPrimeRow_bypasses_resolutionLimit_two`).
+11. **The band recipe for `ζ`.** The two-aperture ground-energy ratio has critical value `1`, reads
+    the width through its growth, and is certified below `1` at small aperture (§3.11;
+    `riemannHypothesis_iff_forall_zetaTwoApertureRatio_le_one`,
+    `abs_re_sub_half_le_of_zetaTwoApertureRatio_le_one_add_exp`).
+12. **Fatality of parity collapses.** The even flip, the Selberg sign characters and residue-class
+    complementation are classified into strictly fatal and neutral cases, with the complementation
+    window `φ(q) < 4|S^×| < 3φ(q)` (§3.12; `strictlyFatalAt_evenFlip_iff_pole_and_evenPart`,
+    `strictlyFatalAt_compl_residueFlip_half_iff`).
+13. **The rate readings of `ζ`.** Four rate currencies equal the width; the polar ground-energy rate
+    equals it under a local count, and the local count is exactly the datum that collapses the
+    resolution interval (§3.13; `five_rate_currencies_of_zeta`,
+    `le_resolutionFloor_width_deficitAndCount`).
+14. **The design specification of a counterexample.** On diluted lattices the joint aperture–mass
+    reading is one band-energy inequality with exact limits per aliasing band, and the prime side
+    adds three simultaneous constraints (§3.14; `dilutedReading_iff_bandEnergy_le`,
+    `counterexample_primeSide_obstructions`).
+15. **Policies.** A policy resolves the depth iff it is scale-matched with precision `o(L³)`; both
+    available single-height schedules for `ζ` have limit `½` (§3.15;
+    `certifies_sdDepth_adaptiveReading_iff`, `resolutionLimit_sdDepth_chebyshevSchedule_eq_half`).
+16. **The incidence ledger in this unit.** The scalar comb energy cannot certify the comb charge;
+    the coherent horizon residual can (§3.16;
+    `resolutionInterval_combChargeVal_scalarCombEnergyReading`,
+    `sq_combCharge_le_mass_mul_horizonResidualEnergy`).
 
 ---
 
@@ -714,38 +703,15 @@ Built and reusable:
   parity pairs imported from their owners.
 - *Band recipes*: two-band and three-band depth inversion, the precision budget, the reach law.
 - *Rate readings* on cofinal and bounded aperture sets.
-- *Pronic Gram readings* in the cross-scale exponent unit `θ = 2 log P / log X`, their exact limit `2`
-  under sign-blind Type-II and rank-two readout readings, the smoothness ladder `2K/(K+1)` with
-  deficit `2/(K+1)`, and the faithful single-modulus completions (`residueMass`, `kernelStatistic`).
-- *Two-aperture ratios for `ζ`* (`zetaTwoApertureRatio`, `zetaClampedTwoApertureRatio`,
-  `primeWindowTwoApertureRatio`) with critical value `1` on the line, `2σ`-abscissa inversion, and
-  unconditional bounds across `[0, 21/200]`, `[0, 3/10]`, and `(0, ½ log 2)`.
-- *Fatality–neutrality calculus for parity collapses* (`StrictlyFatalAt`, `PairFatalAt`, `NeutralAt`),
-  the odd/even pole classification of `evenFlip`, cubic-moment orbit reduction
-  (`cubicMomentReading`), and the `(1/4, 3/4)` residue-class complementation window.
-- *Rate readings for `ζ` and the local-count price* (`five_rate_currencies_of_zeta`,
-  `singleApertureWidthFloor`, `ApertureCountDatum`, `ZetaRateDatum`, `cofinalRateSet`,
-  `boundedRateSet`).
-- *Diluted-counterexample design calculus* (`bandEnergy_eq_sum_cosh_sub_one`,
-  `bandEnergy_strictMono_depth`, `dilutedReading_iff_bandEnergy_le`,
-  `resolutionLimit_depth_dilutedReading_secondBand`, `resolutionLimit_depth_dilutedReading_brackets`,
-  `W_dilutedLattice_lag_nat_mul`, `W_dilutedLattice_lag_eq_of_gap`,
-  `counterexample_primeSide_obstructions`).
-- *Adaptive policy calculus across growing density* (`scaleAdaptiveReading`, `TransNyquistPolicy`,
-  `resolutionLimit_sdDepth_adaptiveReading_of_exists_subNyquist`,
-  `resolutionLimit_sdDepth_scaleAdaptiveReading_scaleMatched`,
-  `resolutionLimit_sdDepth_adaptiveReading_scaleMatched`, `certifies_sdDepth_adaptiveReading_iff`,
-  `depth_le_div_sub_one_of_bandEnergy_le`, `resolutionLimit_sdDepth_scaleAdaptiveReading_brackets`,
-  `certifies_sdDepth_adaptiveReading_transNyquist_iff`,
-  `zeta_singleHeight_archimedean_schedule_realisable`,
-  `resolutionLimit_sdDepth_chebyshevSchedule_eq_half`).
-- *Incidence-ledger admissibility unit and comb-energy completion calculus* (`ledgerDeficit`,
-  `primeSideCharge_le_combSubcritical_add_combCharge`, `zetaZeroWidth_le_of_combCharge_graded_bound`,
-  `CombPairingDatum`, `scalarCombEnergyReading`, `exists_witness_pair_scalarCombEnergyReading`,
-  `resolutionInterval_combChargeVal_scalarCombEnergyReading`,
-  `resolutionInterval_completeCombEnergy_scalarCombEnergyReading`,
-  `exists_dilatedUnitOddBump_witness_for_every_charge_ratio`, `completedCombReading`,
-  `faithful_combChargeVal_completedCombReading`, `sq_combCharge_le_mass_mul_horizonResidualEnergy`).
+- *Pronic Gram readings* in the exponent unit `θ`, with the smoothness ladder and the faithful
+  single-modulus completions (§3.10).
+- *Two-aperture ratios for `ζ`* with critical value `1` (§3.11).
+- *Fatality–neutrality calculus* for parity collapses (§3.12).
+- *Rate readings for `ζ`* and the price of a local off-line count (§3.13).
+- *Counterexample design*: band energies of diluted lattices, their exact reading limits, and the
+  prime-side constraints (§3.14).
+- *Policies* across growing density, with scale-matching and multi-band inversion (§3.15).
+- *The incidence-ledger unit*: comb-charge shadows and the coherent horizon residual (§3.16).
 
 ---
 
@@ -753,139 +719,31 @@ Built and reusable:
 
 Open, in this programme's own unit (a class of readings and its exact limit):
 
-1. *(Resolved in `TheExactFloorOfThePronicGramReading`.)* **The exact floor of the Gram reading.**
-   In the cross-scale exponent unit `θ = 2 log P / log X ∈ [0, 2]`, the sign-blind Type-II Gram
-   reading and the rank-two readout reading `(R, H)` have exact resolution limit `2`, floor `0`, and
-   interval `[0, 2]`, witnessed by the coherent prime block (`exists_primeBlock_witness_at_resolutionLimit_two`)
-   and the three-window readout-free barrier (`exists_readout_free_witness_at_resolutionLimit_two`).
-   Difference smoothness of order `K` certifies `2K/(K + 1)` with unresolved deficit limit `2/(K + 1)`,
-   `residueMass` is faithful for `bernoulliCrossScaleMain`, `kernelStatistic` bounds the shadow
-   diameter by the fourth-order tail, and `centredPrimeRow` bypasses the worst-case Type-II shadow
-   across `7/6 < θ < 2`.
-2. *(Resolved in `TheBandRecipeForZeta`.)* **The band recipe for `ζ`.** For any base aperture
-   `A₀ ≤ 21/200` (`μ(A₀) ≥ 1/30 > 0`), the two-aperture ratio
-   `zetaTwoApertureRatio A₀ A = (μ(A₀) − μ(A))/μ(A₀)` and its explicit-formula prime-window companion
-   `primeWindowTwoApertureRatio A₀ w v` have critical value `1` on the critical line
-   (`riemannHypothesis_iff_forall_zetaTwoApertureRatio_le_one`,
-   `riemannHypothesis_iff_tendsto_zetaTwoApertureRatio_one`,
-   `riemannHypothesis_iff_forall_zetaClampedTwoApertureRatio_eq_one`), invert `2σ`-exponential growth
-   unconditionally into `|Re ρ − ½| ≤ σ` (`abs_re_sub_half_le_of_zetaTwoApertureRatio_le_one_add_exp`),
-   detect near-top zeros above `1` beyond their visibility lag (`one_lt_zetaTwoApertureRatio_of_near_top_zero`),
-   and satisfy unconditional bounds on `[0, 21/200]`, `[0, 3/10]`, and `(0, ½ log 2)`.
-3. *(Resolved in `TheFatalityClassificationOfParityCollapses`.)* **A fatality classification for the
-   parity collapses.** Across the three parity-collapse families, strict fatality (`StrictlyFatalAt`)
-   and neutrality (`NeutralAt`) are completely classified:
-   (i) on four-free convolutions `k ⋆ o_ε` (`0 < ε ≤ 1/2`), `evenFlip` is strictly fatal iff
-   `poleValue k J ε = 0 ∧ poleValue (evenPartWeight k) J ε ≠ 0`
-   (`strictlyFatalAt_evenFlip_iff_pole_and_evenPart`), paid and neutral iff both `oddPartKernel k`
-   and `evenPartWeight k` vanish at `1 − ε` (`evenFlip_paid_and_neutral_iff_odd_and_even_pole`),
-   and killed by adjoining `firstPronicMoment` whenever `weightRamanujanCoeff c 2 ≠ 0`
-   (`not_mem_shadow_joinReading_firstPronicMoment_iff`) or by the logarithmic pronic moments on the
-   generalized Fermi locus (`exists_logMoment_ne_of_strictlyFatalAt_evenFlip`);
-   (ii) on the `2^{N−1}` Selberg sign-character shadow of `completePeriodLagReading N`, refining by
-   `cubicMomentReading N` pins odd-supported rows uniquely (`cubicMomentReading_pins_odd_signOrbit`)
-   and reduces squarefree-supported rows to at most `{c, evenFlipRow N c}`
-   (`cubicMomentReading_reduces_squarefree_signOrbit_to_evenFlip`);
-   (iii) on half-damped residue-class prime flips `residueFlipHalfWeight q S`, every complement pair
-   `{S, Sᶜ}` has at least one paid member (`receiverBounded_residueFlip_or_compl_half`),
-   complementation is paid and neutral iff `φ(q) < 4 |S^\times| < 3 φ(q)`
-   (`both_residueFlip_and_compl_paid_iff`), and strictly fatal iff `3 φ(q) ≤ 4 |S^\times|`
-   (`strictlyFatalAt_compl_residueFlip_half_iff`), with subgroup flips `subgroupFlipSet H` neutral at
-   index `2, 3` and strictly fatal iff the index is at least `4`
-   (`strictlyFatalAt_compl_subgroupFlipSet_iff`).
-4. *(Resolved in `TheRateReadingForZeta`.)* **The rate reading for `ζ`.** The four rate currencies
-   (dyadic prime-window lag rate, Chebyshev deficit rate, mean-square band rate, and Möbius receiver
-   damping rate) equal `zetaZeroWidth` unconditionally, while `polarGroundEnergyRate` equals
-   `zetaZeroWidth` under `OffLineCopiesLocallyBounded M` or `OffLineDepthLocallyBounded W`
-   (`five_rate_currencies_of_zeta`). At a single aperture `A`, adjoining the local count `M` to a
-   ground-energy deficit `η > 0` lifts the width resolution floor from `0`
-   (`resolutionFloor_width_deficitOnly_eq_zero`) to `max 0 (singleApertureWidthFloor M A η)`
-   (`singleApertureWidthFloor_le_zetaZeroWidth`, `le_resolutionFloor_width_deficitAndCount`).
-   In the asymptotic rate space `ZetaRateDatum`, adjoining `locallyBounded` collapses the resolution
-   interval of `polarRate` under `width` from `[width, 1/2]` to `{width}`
-   (`resolutionInterval_polarRate_widthOnly`, `resolutionLimit_polarRate_widthAndLocalCount`) and
-   lifts the resolution floor of `width` under `polarRate` from `0` to `polarRate`
-   (`resolutionFloor_width_polarRateOnly_eq_zero`, `resolutionFloor_width_polarRateAndLocalCount`).
-   On the lattice family `ScaleDepthDatum`, `cofinalRateSet S` is faithful for `sdDepth`
-   (`faithful_sdDepth_cofinalRateSet`), whereas `boundedRateSet M` has exact limit `1/2` and floor
-   `0` (`resolutionLimit_sdDepth_boundedRateSet_eq_half`,
-   `resolutionFloor_sdDepth_boundedRateSet_eq_zero`).
-5. *(Resolved in `TheDesignSpecificationOfACounterexample`.)* **The design specification of a
-   counterexample.** Symmetrising `centredSum` under `Fin.revPerm` gives the hyperbolic decomposition
-   `bandEnergy ℓ δ n = ℓ ∑_{j=0}^{n−1} (cosh(δℓ(2j − n + 1)) − 1)` (`bandEnergy_eq_sum_cosh_sub_one`),
-   strictly increasing in `n ≥ 1` (`bandEnergy_lt_succ`) and in `δ > 0` for `n ≥ 2`
-   (`bandEnergy_strictMono_depth`). Consequently, for `0 < a ≤ L/2`, `dilutedReading hℓ hL a` is
-   equivalent to `bandEnergy ℓ (depth d) ⌈2a/ℓ⌉₊ ≤ 2L` (`dilutedReading_iff_bandEnergy_le`), has
-   exact resolution floor `0` (`resolutionFloor_depth_dilutedReading`), has exact limit `1/2` below
-   the sub-lattice Nyquist aperture `a ≤ ℓ/2` (`resolutionLimit_depth_dilutedReading_subNyquist`),
-   has exact limit `min (1/2) (depthResolution ℓ (2L))` across the second aliasing band
-   `ℓ/2 < a ≤ min ℓ (L/2)` (`resolutionLimit_depth_dilutedReading_secondBand`), and is bracketed at
-   every `ℓ/2 < a ≤ L/2` between `min (1/2) (arcosh(1 + 2L/(ℓ⌈2a/ℓ⌉₊))/(⌈2a/ℓ⌉₊ℓ))` and
-   `min (1/2) (log((2L + 2a + ℓ)/ℓ)/(2a − ℓ))` (`resolutionLimit_depth_dilutedReading_brackets`).
-   On the lag axis, a two-bump difference test `twoBump (modScaledBump w 0) v (−1)` on
-   `dilutedLatticeConfig` evaluates at the `n`-th sub-lattice tooth `v = nℓ` (`nℓ + 2w ≤ L`) to
-   `4(L − ℓ(cosh(nδℓ) − 1))‖κ_w‖²` (`W_dilutedLattice_lag_nat_mul`) — reading `-2 · bandDeficit ℓ δ L 2`
-   and `-2 · bandDeficit ℓ δ L 3` at the first two teeth (`re_W_dilutedLattice_first_two_teeth_eq_bandDeficit`)
-   — while evaluating to `4(L + ℓ)‖κ_w‖² > 0` in every gap `|v − nℓ| > 2w`
-   (`W_dilutedLattice_lag_eq_of_gap`). Against the prime-side explicit formula, any structured
-   counterexample must simultaneously respect the `3/10` prime-free barrier, the unbounded zero-count
-   remainder `rvmRemainder_unbounded`, and polylogarithmic near-top prime-window negativity
-   (`counterexample_primeSide_obstructions`).
-6. *(Resolved in `PoliciesForAConfigurationOfGrowingDensity`.)* **Policies for a configuration of
-   growing density.** On `ScaleDepthDatum`, any policy `adaptiveReading A η` with even one sub-Nyquist
-   scale `A(L) ≤ L/2` (`0 ≤ η(L)`) — in particular any bounded aperture schedule — has exact global
-   resolution limit `1/2`, floor `0`, and interval `[0, 1/2]`
-   (`resolutionLimit_sdDepth_adaptiveReading_of_exists_subNyquist`,
-   `resolutionLimit_sdDepth_adaptiveReading_of_bddAbove`). Under `ScaleMatched A η` (`L/2 < A(L) ≤ L`),
-   `scaleAdaptiveReading A η` at scale `L` has exact limit `min (1/2) (depthResolution L (η L))` and
-   floor `0` (`resolutionLimit_sdDepth_scaleAdaptiveReading_scaleMatched`), `adaptiveReading A η` has
-   global limit `sSup ((fun L => min (1/2) (depthResolution L (η L))) '' Ioi 0)` and floor `0`
-   (`resolutionLimit_sdDepth_adaptiveReading_scaleMatched`), and certifying `β ∈ (0, 1/2)` is
-   equivalent to `∀ L > 0, η L ≤ weilFloorThreshold L β` (`certifies_sdDepth_adaptiveReading_iff`),
-   with `depthResolution L (η L) → 0` whenever `η L / L³ → 0`
-   (`tendsto_depthResolution_zero_of_div_cube_tendsto_zero`). For arbitrary trans-Nyquist aperture
-   growth `TransNyquistPolicy A η` (`A(L) > L/2`, `aliasingIndex A L = ⌈2A(L)/L⌉₊ ≥ 2`),
-   `adaptiveReading A η p ↔ bandEnergy (sdScale p) (sdDepth p) (aliasingIndex A (sdScale p)) ≤ η (sdScale p)`
-   (`adaptiveReading_iff_bandEnergy_le`), `bandEnergy L δ n ≥ weilFloorThreshold L ((n − 1)δ)` yields
-   multi-band depth inversion `δ ≤ depthResolution L η / (n − 1)`
-   (`weilFloorThreshold_mul_le_bandEnergy`, `depth_le_div_sub_one_of_bandEnergy_le`),
-   `scaleAdaptiveReading A η` is bracketed between `min (1/2) (arcosh(1 + η(L)/(L · n_L))/(n_L L))`
-   and `min (1/2) (depthResolution L (η L) / (n_L − 1))`
-   (`resolutionLimit_sdDepth_scaleAdaptiveReading_brackets`), and global certification of `β ∈ (0, 1/2)`
-   is equivalent to `∀ L > 0, η L ≤ bandEnergy L β (aliasingIndex A L)`
-   (`certifies_sdDepth_adaptiveReading_transNyquist_iff`). Against `ζ`'s growing zero density at height
-   scale `L(ξ) = log(1 + π|ξ|/4)`, both the single-height symbol-positivity horizon
-   `A(L) ≤ log(1 + L/4) < L/2` (`zeta_singleHeight_archimedean_schedule_realisable`,
-   `resolutionLimit_sdDepth_of_le_sharpHorizonAperture`) and the scale-matched Chebyshev deficit
-   schedule `η(L) = 10 + 68 e^L ≥ weilFloorThreshold L (1/2)`
-   (`weilFloorThreshold_half_le_chebyshevDeficit`, `resolutionLimit_sdDepth_chebyshevSchedule_eq_half`)
-   have exact resolution limit `1/2` and floor `0`.
-7. *(Resolved in `TheNumericalUnitForTheIncidenceLedger`.)* **A numerical unit for the incidence
-   ledger.** On the odd incidence ledger, `fullZeroForm F = −ledgerDeficit F r R`
-   (`fullZeroForm_eq_neg_ledgerDeficit`), and eliminating proper prime powers bounds
-   `primeSideCharge F` by `combSubcriticalHorizonMass r * autoCorr F 0 + combCharge F r`
-   (`primeSideCharge_le_combSubcritical_add_combCharge`, `fullZeroForm_ge_combCharge_ledger`), so a
-   graded allocation of `2 * combCharge F r` at rate `2σ` certifies `zetaZeroWidth ≤ σ`
-   (`zetaZeroWidth_le_of_combCharge_graded_bound`) while any bounded-aperture ledger reading on
-   `GrowthProfile` leaves the shadow rates unbounded above (`ledgerRateDichotomy`). On
-   `CombPairingDatum`, the unsigned scalar comb-energy reading `scalarCombEnergyReading` (`(mass, energy)`)
-   admits the explicit witness triple `antiCoherentWitness`, `orthogonalWitness`, and
-   `coherentWitness` with identical `(mass, energy)` and charges `−√(M E) < 0 < +√(M E)`
-   (`exists_witness_pair_scalarCombEnergyReading`), giving `combChargeVal` exact resolution interval
-   `[−√(M E), √(M E)]` (`resolutionInterval_combChargeVal_scalarCombEnergyReading`) and
-   `completeCombEnergy` exact resolution interval `[(√M − √E)², (√M + √E)²]`
-   (`resolutionInterval_completeCombEnergy_scalarCombEnergyReading`, `[0, 4M]` when `E = M`). Across
-   actual smooth odd compactly supported profiles on `ℝ`, `dilatedUnitOddBump c = rescaledTest unitOddBump c`
-   (`c > 0`) shares with `unitOddBump` the exact unit mass `1`, asymptotic normalized comb energy `1`,
-   exponential comb energy `4`, and cross-prime energy `4`, while realizing every asymptotic
-   first-power charge ratio `θ ∈ [0, 1)` (`dilatedUnitOddBump_same_scalar_comb_reading`,
-   `exists_dilatedUnitOddBump_witness_for_every_charge_ratio`). Adjoining the signed amplitude ratio
-   `amplitudeReading` makes `completedCombReading` faithful for both `combChargeVal` and
-   `completeCombEnergy` (`faithful_combChargeVal_completedCombReading`,
-   `faithful_completeCombEnergy_completedCombReading`), and subtracting the horizon translate
-   `S_r · F(· + 2r)` bounds `combCharge F r²` on `[−r, r]`-supported tests purely by the coherent
-   translation-residual energy `‖C_r F − S_r F(· + 2r)‖²`
-   (`sq_combCharge_le_mass_mul_horizonResidualEnergy`).
+1. **A floor theorem for rate readings.** The lag rate, the deficit growth rate and the damping
+   threshold are tail invariants, hence blind to every bounded parameter range. A single floor
+   theorem for rate readings would unify the three gates into one, and would say exactly which
+   tail data a rate certificate must read.
+2. **The trichotomy as a theorem.** A blind reading is improved only by crossing the Nyquist
+   aperture, by reading a magnitude, or by adjoining data of a third kind (§5). Prove it as a
+   theorem about readings — for orientation-faithful readings, that every reading separating the
+   critical form from its companion does one of the three — with the precision cost of each branch,
+   as the square-root law gives it for the magnitude branch.
+3. **A scale-matched schedule for `ζ`.** Both single-height schedules available for `ζ` are blind
+   (§3.15). A schedule that resolves the depth must be scale-matched, `L/2 < A(L) ≤ L`, with deficit
+   precision `o(L³)` at height scale `L`. Determine what prime-side estimate such a schedule needs
+   at a single height, and compare it with the power-saving requirement of the aperture face.
+4. **The local count.** Under a local off-line count the polar ground-energy rate is the width and
+   the resolution interval collapses (§3.13). Is a datum of this kind necessary? Classify the
+   readings that determine the polar rate without it, or prove that every such reading refines a
+   local count.
+5. **The pronic Gram at the receiver scale.** The actual centred prime row leaves the Type-II
+   shadow on `7/6 < θ < 2`; the receiver sits at `θ = 2`, and below `7/6` the shadow is not left by
+   the current argument. Determine the limit of the actual-row reading at both ends.
+6. **The comb residual.** The horizon translation residual is the admissible comb quantity
+   (§3.16). Price the readings that bound it from the source, and determine whether any of them
+   avoids the archimedean subsidy.
+7. **Fatality beyond the three families.** Classify the Liouville twist, the shifted pair and the
+   Beurling deformations as collapses of the receiver, in the same strictly fatal / neutral terms.
 
 ### Research topics
 
@@ -894,20 +752,11 @@ Open, in this programme's own unit (a class of readings and its exact limit):
   bounded aperture has limit `½` by one factorisation and needs no separate audit.
 * Supply the third kind of data where a floor is a statement about missing information rather than
   missing strength: local on-line mass and dilution for the aperture face (the productive seam), the
-  measured band energies for the depth, individual membership for the node face.
+  measured band energies for the depth, individual membership for the node face, the local count
+  for the rate face.
 * Trade the resources explicitly in a plan: aperture against precision through the budget `β²L³`,
   and the number of measured bands against the number of unknown parameters of the configuration —
   one index per unknown, by §3.6.
-* Classify the readings that determine a *rate*: the deficit growth rate on the aperture face, the
-  lag rate on the lag face, the damping threshold on the receiver face. The lag rate and damping threshold equal the width; equality for the `L²` ground-energy rate
-  has the additional local-count qualification described above,
-  and all three are tail invariants, hence blind to every bounded parameter range — a floor theorem
-  for rate readings would unify the three gates into one.
-* Prove the trichotomy of §5 as a theorem about readings. A blind reading is improved only by
-  crossing the Nyquist aperture, reading a magnitude, or adding data of a third kind. Stated for
-  orientation-faithful readings (Arithmetic Orientation Theory), it would say that every reading
-  separating the critical form from its companion does one of the three. The precision cost of
-  each branch should come with it, as the square-root law does for the magnitude branch.
 
 ---
 

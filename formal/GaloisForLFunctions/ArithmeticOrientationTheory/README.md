@@ -61,6 +61,11 @@ AOT is the programme that makes orientation the primitive object. It supplies
 | [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md) | Supplies the temperedness gate, the one proved instance of the shifted-pair test of §8, and the factorial calibration families. |
 | [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Works beyond the diagonal `N ≍ T` of the Nyquist bound, where section counts would have to beat the large-values estimate. |
 
+On the RH frontier AOT is a supporting framework for the routes HF, ACS, AIP, PM and MC: it supplies
+source sections, orientation invariants and the equivalent width and forcing dictionaries. It does
+not yet supply an independent arithmetic orientation; every dictionary entry it adds is an
+equivalence, and progress is a bound in one of its units.
+
 **The shared target.** The programmes work on RH as the sign of one critical arithmetic form and
 on the critical cancellation of the actual Möbius and prime source. AOT contributes the
 orientation-side half: an exact account of which invariants carry the sign across limits, which
@@ -373,7 +378,7 @@ every tower to every other, and a sum of independent rank-one squares, one per p
 3. **The coset law.** The odd prime side of a tower is
    `log p · (2 Σ_{a'} Toeplitz_p(q|_{a'}) − (S_p(q)² − q(1)²))` (`towerOddPrimeSide_eq`): the
    difference correlations are coset-Toeplitz, the sum correlations one Hankel square on the unit
-   coset. This is the orientation-sensitive decomposition of §7.2 in its exact finite form.
+   coset. This is the orientation-sensitive decomposition of the odd prime side in its exact finite form.
 4. **Cholesky form** (`TheTowerOddSideIsACholeskyEnergyMinusTheMass`). The KMS–Cholesky identity
    `Σu_i² + 2Σ_{k≥1} r^k Σ_i u_i u_{i+k} = v_0² + (1 − r²)Σ_{j≥1} v_j²`, `v_j = Σ_{i≥j} r^{i−j}u_i`
    (`kms_cholesky`), makes the Hankel square the zeroth mode of the unit coset: the tower odd side is
@@ -393,7 +398,7 @@ every tower to every other, and a sum of independent rank-one squares, one per p
    and upper-triangular correlations (`towerInteriorMellin_sq_eq`) yields
    `2 · interiorUnitToeplitz q p K − towerInteriorMellin q p K ^ 2 = 2 · scaleSuppressedUnitToeplitz q p K − ∑_{i=1}^K p^{−i} q(p^i)²`
    (`unitCoset_toeplitz_sub_hankel_eq`, `towerOddPrimeSide_eq_scaleSuppressed_sub_diag`), with positive
-   off-diagonal weight `2(p^{−(j−i)/2} − p^{−(i+j)/2}) > 0` (`scaleSuppressedUnitToeplitz_nonneg`).
+   off-diagonal weight `2(p^{−(j−i)/2} − p^{−(i+j)/2}) > 0` (`scaleSuppressedUnitToeplitz`).
    This isolates the reflected prime-power diagonal `−log p ∑_{i=1}^K p^{−i} q(p^i)²` as the sole
    negative term on coset-coherent profiles (`IsCosetCoherent`).
 3. **Archimedean–polar dominance and unconditional Cauchy–Schwarz control.** Adding the archimedean
@@ -741,7 +746,7 @@ This is the square-root threshold of the aperture as a sampling threshold.
     either `k̂₀(ω₀) = 0` (`k₀ ⋆ c` is paid, `paidIdeal = ⊤`, `obstructionHull = ∅`, `finrank = 0`) or
     `k̂₀(ω₀) ≠ 0` (`k₀ ⋆ c` is unpaid with the identical `paidIdeal`, `obstructionHull`, and `finrank = 1`);
     on `oscillatingSmoothPower ε t` (`t ≠ 0`, `ζ(ρ) ≠ 0`), conjugate symmetry of real kernels
-    (`complexPoleValue_conj_of_real`) forces every real convolution `k₀ ⋆ c` to have codimension `0`
+    (`complexPoleValue_conj`) forces every real convolution `k₀ ⋆ c` to have codimension `0`
     or `2` (`paidIdeal_oscillating_conv_dichotomy`). For weights normalized at `1` (`c(1) ≠ 0`),
     Dirichlet cancellation (`dirichletConv_right_inj_of_apply_one_ne_zero`) forces
     `WienerMonoidOrbit (k ⋆ c) c ↔ IsWienerUnit k` (`wienerMonoidOrbit_conv_self_iff`), so iterating
@@ -867,7 +872,7 @@ Frobenius reflection defect reading resolves it on every `CurveDatum ι`
    any window gauge `M ∈ C²_c(ℝ)` (`0 ≤ M ≤ 1`, `M = 0` outside `(-R, R)`, `M = 1` on `supp F`),
    `markovEnergy_eq_gauge_window` holds at **every** aperture `R` (without `2R < log 2`), yielding
    `Ẑ(F) = J_M(F) + ∫ F(x)² (−W̃[M](x)) dx + 2 P_+(F)² − 2 P_−(F)²` with `J_M(F) ≥ 0`
-   (`fullZeroForm_eq_gauge_window_at_any_aperture`). Comparing two nested window gauges
+   (`fullZeroForm_eq_windowGauge_balance`). Comparing two nested window gauges
    `0 ≤ M₁ ≤ M₂ ≤ 1` equal to `1` on `supp F`, all archimedean and prime diagonal terms cancel
    identically on `{M₁ = M₂ = 1}` (`poleFreeWeilOperator_sub_eq_shellFlux`),
    `W̃[M₁](x) ≤ W̃[M₂](x)` (`poleFreeWeilOperator_mono_of_eq_at_point`), and the sign-definite
@@ -969,7 +974,7 @@ model of a reading that sees magnitudes of modes and no orientation.
    `orientationFaithful_rateSet`), with exact trans-Nyquist precision cost `12 / (β² L³)`
    (`branchOne_transNyquist_precision_cost`).
 3. **Branch II (Reading a magnitude):** on `DepthDatum` (`0 < ℓ`), `bandPairReading hℓ`,
-   `bandTripleDeficitReading hℓ L` (using `bandDeficit_three_sub_three_mul_two`), and the sub-Nyquist
+   `bandTripleDeficitReading hℓ L` (using `depth_determined_by_three_bands`), and the sub-Nyquist
    two-aperture doubling reading `pairDoublingReading hL a` (`0 < a`, `2a ≤ L/2`) are all
    orientation-faithful at arbitrary dilution `L`, with precision costs `½ β² L²` (two-band deficit)
    and `2 β² a²` (sub-Nyquist doubling ratio `2 + 2 β² a²`, `branchTwo_magnitude_precision_cost`).
@@ -1031,7 +1036,7 @@ model of a reading that sees magnitudes of modes and no orientation.
    (`0 < r < R`), `chebyshevSourceEnergy r R` is built from `archGaugeBudget r R F ≥ 0` minus
    `apertureH1ChebyshevCorrection r F = poleCharge F + primeNodeCorrelationObstruction r F` (the
    lag-weighted integral of `E'(s) = e^s + 1 − dψ(e^s)` on `(0, 2r]`). By the two-aperture gauge
-   identity, `chebyshevSectionCone r R` is independent of `R > r` (`chebyshevSectionCone_independence`),
+   identity, `chebyshevSectionCone r R` equals the section-effectivity cone of the odd subsurface for every `R > r`, hence is independent of `R` (`chebyshevSectionCone_eq_sectionEffectivityCone`),
    satisfies `AmpleAxiom`, `BezoutAxiom`, and `RiemannRochAxiom` unconditionally for `0 < r ≤ 181/500 < R`
    (`chebyshevSectionCone_castelnuovoSeveri_of_le`), and separates `ℤ` from `shiftedPairVonMangoldt a`
    (`a ≠ 0`, `r ≥ ½ log 2`): `shiftedPairSourceEnergy a r R x < chebyshevSourceEnergy r R x` whenever
@@ -1218,160 +1223,54 @@ Built and reusable:
 
 ## 7. Open problems and research topics
 
-1. **The frustration of the odd Weil ledger off the lattice.** Answered by §3.1⁵
-   (`DenseAndFullWeightFrustrationOfTheOddWeilLedger`): `frustrationIndex` and `frustrationMass` are
-   monotone under sub-sampling and superadditive across disjoint fibers; at full weight `α = 1, β = 1`
-   the polar barrier `−8 sinh(x/2) sinh(y/2)` quenches the midpoint-matched family `matchedPos Q` to
-   `frustrationIndex = 0`, while collar-skimming samples `collarPos` (`δ_i → 0⁺`, `log q − δ_i`)
-   survive with `frustrationIndex = 2 M |Q|`, dense triangle packings in `(0, log 5]` give
-   `frustrationIndex ≥ 2M` and `frustrationMass ≥ (2/7)M`, switching vertex `1` on `packedPrimePos`
-   reduces `misalignedCount 1 = 4` to `frustrationIndex = 2`, and on the contact window `(0, 3/10]`
-   both invariants vanish (`primeSumPairs = ∅`) alongside `μ(A) ≥ 1/5000` and `A* ≥ 3/10`.
-2. **Beyond the coset law.** Answered by §3.2‴
-   (`CosetToeplitzDominanceAndShiftedPairSelectivity`): axis-pair cancellation makes `towerOddPrimeSide`
-   and `latticeOddPrimeSide` independent of `q(1)` and reduces the unit-coset competition to the
-   scale-suppressed Toeplitz form `(p^{−(j−i)/2} − p^{−(i+j)/2}) > 0` minus the reflected prime-power
-   diagonal `−log p ∑_{i=1}^K p^{−i} q(p^i)²`; adding `archReflectedDiagWeight` turns the reflected
-   diagonal into `−totalLatticeCrossingKernel(p^i)(p^i) ≥ 0` (`p^i ≥ 4`) and gives the Cauchy–Schwarz
-   bound `log p · towerInteriorMellin² ≤ (1/2) towerArchDiagForm` and `towerTotalOddForm ≥ 0` for
-   profiles of **arbitrary sign** (`q(2) = q(3) = 0`, unconditionally for `p ≥ 5`), while for
-   `shiftedPairVonMangoldt a` (`a ≠ 0`) the product part splits into two shifted Mellin squares at
-   `1/2 ∓ a` with `shiftedTowerProductPart > 2 · towerProductPart`, diverging Cauchy–Schwarz ratio,
-   and reversed off-diagonal and reflected-diagonal signs for `|a| ≥ 1`.
-3. **Nyquist–Riemann–Roch beyond rank–nullity.** Answered by §3.3′
-   (`NyquistRiemannRochBeyondRankNullity`): splitting `A.rank` into `nyquistEffectiveRank A K + nyquistSpectralDefect A K`
-   gives the dual Nyquist bound `h1 A ≤ #nodes − frobeniusMass A / K` (`h1_le_nyquist`) and shows
-   that while `h0`, `rank`, and `h1` are invariant under support-preserving diagonal reweighting,
-   `frobeniusMass` is strictly selective against `shiftedPairVonMangoldt a` (`> 4 · frobeniusMass`);
-   for band-limited tests on an aperture annihilated by the prime-power nodes and `coshHalfMoment`,
-   the cutoff-free Landau–Markov frame bound `∫ f² ≤ (2/69) · spectralSecondMoment` forces
-   `finrank ℝ W = 0` below `T² ≤ 69/2` while Landau–Widom supplies `(2 − η) e^{2L}` near-radical
-   sections at `T = 2π e^{2ℓ}`; on `[0, s]` the Chebyshev defect `E(s) = e^s + s − 1 − ψ(e^s)` splits
-   into `boxH0Supply − boxH1Obstruction`, and on `scalingSubsurface (oddRealTestsAt r)` its
-   lag-weighted integral `apertureH1ChebyshevCorrection r F = poleCharge F + primeNodeCorrelationObstruction r F`
-   satisfies `defect x x + apertureH1ChebyshevCorrection r F = archGaugeBudget r R F`, characterizes
-   `BezoutAxiom` on `sectionEffectivityCone` at each aperture `r`, is unconditionally paid on
-   `(0, 181/500]`, and obeys the PNT `(8 + ε) e^r + C` bound at all apertures.
-4. **An orientation-faithful norm.** Answered by §3.6‴
-   (`AnOrientationFaithfulNormOverTheOddSquarefreeWeight`,
-   `AnOrientationFaithfulNormOverSmoothAndMultiplicativeWeights`): over `o = 1_{odd squarefree} d^{−ε}`
-   the coordinates are `(P(k), P(k_e))` with four-free kernel involution `flipKernelOf`; over the smooth
-   power `u = d^{−ε}`, `evenPartWeight (k ⋆ u) = smoothEvenKernel ε k ⋆ u` and
-   `evenFlip (k ⋆ u) = smoothFlipKernel ε k ⋆ u` where `smoothFlipKernel ε` is an exact involution on
-   **all** kernels `k : ℕ → ℝ` with `N(smoothFlipKernel ε k) ≤ 21 N(k)` and coordinates
-   `(P(k), P_{smooth,e}(k))` (`P_{smooth,e}(k) = ½(2^{−ε} P(k_o) + P(k_e))`) transforming by
-   `(P, P_{smooth,e}) ↦ (P + (1 − 2^ε)P_{smooth,e}, −P_{smooth,e})`; over multiplicative weights
-   `f(d) d^{−ε} = k_f ⋆ u` (`k_f = (f ⋆ μ) d^{−ε}`), multiplicativity cancels `2^{−ε} k_{f,o}` in
-   `smoothEvenTrace` so `P_{smooth,e}(k_f) = ½ f(2) 2^{−ε} P(k_{f,o})`, and when `P(k_{f,o}) ≠ 0`,
-   both `f d^{−ε}` and `evenFlip (f d^{−ε})` are paid iff `P(k_f) = 0 ∧ f(2) = 0`.
-5. **Inverses in the critical Wiener monoid and the orbit structure of the unpaid class.** Answered by
-   §3.6″ and §3.6⁗ (`WienersLemmaOnTheBohrPolydisk`, `AKernelBoundedBelowOnTheHalfPlaneIsAUnit`,
-   `NonvanishingOnTheHalfPlaneDoesNotMakeAUnit`, `TheOrbitStructureOfTheUnpaidClass`): Wiener's lemma on
-   the Bohr polydisk and its half-plane form (`inf_{Re s ≥ ½} |L| > 0` ⇔ unit; nonvanishing is not
-   enough) characterize the units, which preserve payment, `paidIdeal`, `obstructionHull`, and
-   codimension (`WienerUnitOrbit`). Under `WienerMonoidOrbit` (`c₂ = k ⋆ c₁`), `paidIdeal` ascends and
-   `obstructionHull` and codimension descend, with a sharp **stabilizer–annihilator dichotomy** on
-   principal unpaid orbits (`paidIdeal_conv_dichotomy_of_eq_ker`) and conjugate-pair `0`-or-`2`
-   dichotomy on real oscillating probes (`paidIdeal_oscillating_conv_dichotomy`). By Dirichlet
-   cancellation (`dirichletConv_right_inj_of_apply_one_ne_zero`), `WienerMonoidOrbit (k ⋆ c) c ↔ IsWienerUnit k`
-   for `c(1) ≠ 0`, so `iterThreeTermConv m (d^{−ε})` forms an infinite strictly descending monoid chain
-   within the single obstruction hull `{polePoint ε}` (`iterThreeTermConv_smoothPower_chain`), while
-   `evenFlip` on `μ d^{−ε}` is a strictly one-way monoid transition (`moebius_evenFlip_oneWay_orbit`)
-   and distinct poles/probes lie in incomparable cones.
-6. **Transport in aperture.** Answered by §3.8′
-   (`TransportInApertureAndTheCeilingLyapunovIdentity`): for nested window gauges `0 ≤ M₁ ≤ M₂ ≤ 1`
-   equal to `1` on `supp F`, all diagonal terms cancel on `{M₁ = M₂ = 1}` and the sign-definite jump
-   increment `ΔJ(M₁, M₂; F) ≥ 0` equals the boundary-shell flux `Φ_shell(M₁, M₂; F)`
-   (`gaugeStepJumpEnergy_eq_gaugeStepBoundaryFlux`); `∂_R K_R(x) = −(w_arch(R−x) + w_arch(R+x) + 3/2) < 0`
-   and `windowFloor'(R) = −(1/R + 3/2 + 12 R²) < 0` (`hasDerivAt_windowFloor`); in the `Φ`-gauge,
-   `Ẑ(Φ u) = J_Φ(u) − thetaBoundaryDefectMass u + 2 (thetaBoundaryFlux u)² − 2 oddPoleMoment(Φ u)²`
-   with both `J_Φ(u) ≥ 0` and `thetaBoundaryDefectMass u ≥ 0` sign-definite; for `μ(A)`, the spectral
-   jump `Δ_spec(a, b) = μ(a) − μ(b) = Q_b(u_a) − Q_b(u_b) ≥ 0` (`a ≤ b`) refutes fixed-margin additive
-   transport (`not_additive_step_transport`) and characterizes RH along monotone `A_j → ∞` by
-   `∀ J, ∑_{j < J} Δ_spec(A_j, A_{j+1}) ≤ μ(A₀)` and `HasSum (fun j => Δ_spec(A_j, A_{j+1})) (μ(A₀))`
-   (`riemannHypothesis_iff_hasSum_apertureSpectralJump`), while the ceiling-renormalized Lyapunov
-   functional `ceilingScaledGroundEnergy A = e^{β_ceil(A)} μ(A)` is unconditionally bounded above by
-   `K > 0` (`A ≥ 3`) and vanishing-floor relative transport (`c_j ≤ 1`, `0 ≤ q_j`) starting at
-   `(A 0).1 ≤ 3/10` is compatible with the Gaussian ceiling and equivalent to RH
-   (`riemannHypothesis_of_vanishing_relative_step`, `riemannHypothesis_iff_exists_relative_step`).
-7. **The Nyquist bound at the diagonal.** Answered by §3.3″
-   (`TheNyquistBoundAtTheDiagonal`): `integral_Icc_normSq_dirPoly_le_affine_max` with
-   `∑_{m < N} (m + 1) ‖a_m‖² ≤ N ∑_{m < N} ‖a_m‖²` replaces `T + 4N(1 + log N)` by the logarithm-free
-   diagonal constant `dirichletAffineFrameConstant T N = (5π/2) max(T, 1) + 5πe N` (balanced at
-   `T = 2e N`). At `1`-separated (and `δ`-separated) heights, `dirichletCellSampling` and
-   `sobolevDirichletSampling` (which preserves `h0`, `rank`, and `h1` of `dirichletSampling`
-   identically) both satisfy `HasFrameBound · (dirichletAffineFrameConstant T N)` with no logarithm
-   anywhere, while `harmonicDirichletSampling` drops `N` from the height factor and cancels `log N`
-   via its harmonic Frobenius mass `(R + 1) ∑_{k=1}^N 1/k`. At `squareRootAperture T = (1/2) log T`,
-   `aperturePrimeHorizon a = e^{2a} = T` and `apertureTestLength a = e^a = √T`: below `squareRootAperture T`
-   the windowed mean square is exact diagonal, `dirichletAffineFrameConstant T N ≤ (5π/2 + 5πe) T`,
-   and the periodic lattice of density `L = log T` hides both position and depth, whereas above
-   `squareRootAperture T` (`T < N`) every `1`-separated sampling matrix in `[1/2, T − 1/2]` loses
-   injectivity with `0 < N − T ≤ h0 (dirichletSampling N lam R)`.
-8. **An effectivity from sections that does not read the form.** Answered by §3.10′
-   (`AnEffectivityFromSectionsThatDoesNotReadTheForm`): on any polar surface `S`, the `1 × 1`
-   obstruction reading `sourceObstructionReading S Φ` defines `sourceSectionCone S Φ = {x : 1 ≤ sourceH0 S Φ x}`
-   whose Bézout axiom holds without reading `S.pair x x` whenever `S.defect x y ^ 2 ≤ Φ x * Φ y` via
-   hyperbolic AM-GM (`sourceSectionCone_bezout_of_defect_sq_le`). Over `𝔽_q`, `frobMassSectionCone D W`
-   (built from `frobeniusMass` on `frobEvalMatrix D W`) satisfies `BezoutAxiom` unconditionally for
-   unitary `D` (`frobMassSectionCone_bezout_and_eq_of_unitary`) while `goldenDatum.windowSurface {0, 1}`
-   refutes `RiemannRochAxiom` on `frobMassSectionCone` and both `BezoutAxiom` and `RiemannRochAxiom` on
-   `frobReflectedSectionCone` (`goldenDatum_refutes_frobMass_and_frobReflected`). Over `ℤ`,
-   `chebyshevSectionCone r R` (built from `archGaugeBudget r R F` and `apertureH1ChebyshevCorrection r F`)
-   is independent of `R > r`, satisfies `AmpleAxiom`, `BezoutAxiom`, and `RiemannRochAxiom` on
-   `(0, 181/500]` (`chebyshevSectionCone_castelnuovoSeveri_of_le`), and separates `ℤ` from
-   `shiftedPairVonMangoldt a` (`primeNodeCorrelationObstruction_lt_shiftedPair`), while
-   `l2MassSectionCone c V` obeys the sign-free `L²` Bézout bound `c ∫ f g ≤ polar x y` for all `c ≥ 0`
-   (`l2SourcePairing_le_polar_of_mem_l2MassSectionCone`) and satisfies `RiemannRochAxiom`, `AmpleAxiom`,
-   and `SurfaceRiemannRochAxiom 0 0` past the first prime `2` on `primitiveSmoothRealTestsAt r`,
-   `polarFreeSmoothRealTestsAt r`, and `oddRealTestsAt r`
-   (`l2MassSectionCone_convex_ample_and_primeTwo_riemannRoch`).
-9. **An index formula for the actual receiver.** Answered by §3.6⁗ item 15
-   (`AnIndexFormulaForTheActualReceiver`): for any weight `c`,
-   `ReceiverBounded c ↔ paidIdeal c = ⊤ ↔ obstructionHull c = ∅ ↔ Module.rank ℂ (𝒲_{1/2} ⧸ paidIdeal c) = 0`.
-   For `0 < ε < ½`, every point of `translatedOffLineZeroHull ε` lies in `obstructionHull (μ d^{−ε})`
-   and satisfies the half-plane radius-tying law `TiedAtTwoThree ω`. Above the zero width
-   (`Θ − ½ < ε < ½`), the identity kernel `δ₁` repairs `μ d^{−ε}`, giving the reverse inclusion
-   `obstructionHull (μ d^{−ε}) ⊆ translatedOffLineZeroHull ε`, the exact equality
-   `obstructionHull (μ d^{−ε}) = translatedOffLineZeroHull ε = ∅`, and the exact index formula
-   `paidIdeal (μ d^{−ε}) = ⊤`, `rank = 0`, `finrank = 0`, excluding all untied off-half-plane points
-   `¬ TiedAtTwoThree ω` (`moebius_reverse_inclusion_and_index_above_zeroWidth`,
-   `moebius_vs_towerTwisted_obstructionHull_selectivity`, `moebius_reverse_inclusion_and_index_tfae`).
-   By unit-orbit equivalence (`isWienerUnit_dampedSquare`, `wienerUnitOrbit_moebius_liouville`),
-   `λ d^{−ε}` and `μ d^{−ε}` share the identical `paidIdeal`, `obstructionHull`, `rank`, and `finrank`
-   at every `ε > 0` (`liouville_paidIdeal_obstructionHull_and_index_eq_moebius`), every multiplicative
-   weight `f` with `|f(p^k)| ≤ 1` and `f(p) = −1` has index bounded above by that of `μ d^{−ε}`, every
-   nonprincipal real Dirichlet character weight `χ d^{−ε}` has index `0`, and every finite local-factor
-   perturbation of `1` satisfies a `0`-vs.-`1` index dichotomy at `{polePoint ε}`
-   (`multiplicative_one_finiteLocalFactor_index_dichotomy`).
-10. **The trichotomy of readings.** Answered by §3.9′
-    (`TheTrichotomyOfReadings`): any reading `r : D → O` that factors (`SubNyquistSignFactored`)
-    through a reading invisible to `κ` (sub-Nyquist sign `levelReading hℓ a η` for `a ≤ ℓ/2, η ≤ 0`,
-    complete-period quadratic forms `completePeriodLagReading`, or Ramanujan amplitudes
-    `amplitudeReading`) is orientation-blind and certifies no bound `β < I(κ d)`
-    (`not_orientationFaithful_and_not_certifies_of_subNyquistSignFactored`). Every orientation-faithful
-    reading must therefore escape via one of three branches (`trichotomy_of_readings_escape`):
-    Branch I crosses the Nyquist aperture (`weilFloorThreshold`, `rateSet`) with precision cost
-    `12 / (β² L³)` (`branchOne_transNyquist_precision_cost`); Branch II reads a magnitude
-    (`bandPairReading`, `bandTripleDeficitReading`, `pairDoublingReading`) with precision costs
-    `½ β² L²` (two-band deficit) and `2 β² a²` (sub-Nyquist doubling ratio `2 + 2 β² a²`,
-    `branchTwo_magnitude_precision_cost`); Branch III adds data of a third kind (`dilutedReading` with
-    second-band resolution limit `min (1/2) (arcosh(1 + L/ℓ)/ℓ) ≤ √(2L)/ℓ` and budget `L ≤ ½ β² ℓ³`,
-    or `firstPronicMoment` with parity-flip jump `2 log 2 · |W_c(2)| > 0`,
-    `branchThree_thirdKind_precision_cost`).
-11. **The width functor.** Answered by §3.8″
-    (`TheWidthFunctor`): `ReceiverObject` (with morphisms `R₁.widthVal ≤ R₂.widthVal`) and the full,
-    faithful, isomorphism-reflecting functor `widthFunctor : ReceiverObject ⥤ WidthLine` (`[0, 1/2]`)
-    make the six canonical `ζ`-receivers (`spectralZeroReceiver`, `abscissaReceiver`,
-    `moebiusDampingReceiver`, `liouvilleDampingReceiver`, `xiHalfPlaneReceiver`,
-    `suzukiFormationReceiver`) canonically isomorphic (`zetaReceivers_widthVal_eq`,
-    `widthFunctor_obj_zetaReceivers_eq`), factor every graded admissibility predicate `R.admittedAt σ`
-    (`σ ≥ 0`) and every unit of the width dictionary through `widthFunctor` and `IsZeroWidthObject`
-    (`admittedAt_factorsThrough_widthFunctor`, `categoricalWidthDictionary_tfae`,
-    `categoricalGradedWidthDictionary_tfae`), and formalize the §8 selectivity battery (`goldenDatum`,
-    `shiftedPairVonMangoldt a`, `fermiFlipWeight ε`, `liouvilleTwin ε`, `deleteNode 2`, `deleteNode 4`,
-    and bounded-aperture `aperturePositivity a`) as non-objects
-    (`theWidthFunctor_and_selectivityBattery_synthesis`).
+1. **From frustration to the ground energy at aperture `A`.** The frustration of the odd Weil
+   ledger is located and counted: zero on the lattice and below `½ log 2`, exactly the prime-sum
+   count on sparse samples, `2M|Q|` on collar-skimming samples at full weight, and at least `2M` on
+   dense triangle packings in `(0, log 5]` (§§3.1″–3.1⁵); its mass is bounded by the prime-sum
+   charge, and the signed Cheeger inequality turns a cut constant `h` into `μ ≥ h²/(4D)` (§3.1⁗).
+   Open: the signed Cheeger constant and degree of the actual ledger at aperture `A`, with the
+   budgets the archimedean and polar parts supply — a lower bound on `μ(A)` read from the switching
+   class. Whether the frustration index at aperture `A` determines the sign of `μ(A)` is the
+   question Arithmetic Criticality Theory poses from the other side.
+2. **A shared payment of the tower masses.** Each tower is paid by its own diagonal mass: the
+   continuum reflection Cholesky identity pays `log p · (2R − H)` with `log p · M` for profiles of
+   either sign, and the archimedean diagonal controls the interior Hankel square (§§3.2″–3.2‴). The
+   identity charges the mass once per prime, and the retained coset-Toeplitz sum can be negative
+   for profiles of arbitrary sign. Open: a signed estimate for the direct coset correlations, and
+   one budget that pays all towers at once without charging `M` per prime.
+3. **A selective section count beyond the diagonal.** The Nyquist bound is exact up to the
+   diagonal, where its constant is logarithm-free, and above it sections are forced,
+   `h⁰ ≥ N − T` (§3.3″). Rank counts are invariant under diagonal reweighting and cannot separate
+   `Λ` from the shifted pair; the Frobenius mass and the box defect `E(s)` can (§3.3′). Open: a
+   section count at or beyond the diagonal, coupled to the Frobenius mass or to `E(s)`, that is
+   strictly stronger than the mean value theorem and passes the golden and shifted-pair tests. A
+   negative answer retires the field (§8).
+4. **A source energy that is not the defect.** The sign-free Bézout mechanism needs a source
+   energy `Φ` with `δ(x, y)² ≤ Φ(x)Φ(y)` (§3.10′). Over `𝔽_q` the Frobenius mass supplies it exactly
+   on unitary data; over `ℤ` the Chebyshev source energy equals the defect, so its cone is the
+   section effectivity cone, and the `L²`-mass cone has Riemann–Roch only where the coercive floor
+   is proved. Open: an arithmetic `Φ` on the scaling surface, not identically the defect, for which
+   `δ(x, y)² ≤ Φ(x)Φ(y)` and Riemann–Roch supply are proved from its definition. This is the open
+   core of Arithmetic Castelnuovo–Severi in section form.
+5. **An index formula below the width.** For `0 < ε < ½` every translated off-line zero (with
+   `ζ(ρ − ε) ≠ 0`) is an obstruction of `μ d^{−ε}`, and their number is at most the codimension of
+   the repairing ideal; above the zero width both sides vanish (§3.6⁗, items 8 and 15). Open: the
+   reverse inclusion and the count at every `ε`: is `hull(μ d^{−ε})` exactly the translated off-line
+   zero hull, and is `rank 𝒲_{1/2}/P(μ d^{−ε})` the number of those zeros counted with multiplicity?
+6. **The ideal beyond the hull.** The hull is not a complete invariant: `(log d)d^{−ε}` and `d^{−ε}`
+   have the same hull, the first ideal is strictly smaller and not radical (§3.6⁗, item 13). Which
+   ideals of `𝒲_{1/2}` occur as repairing ideals of real weights, and is `P(c)` determined by its
+   hull together with local orders, as for pole jets (§3.11)?
+7. **An estimate for the aperture jump.** The aperture step is exact and sign-definite: the jump
+   energy increment equals the boundary-shell flux, and the ground-energy jumps telescope;
+   summability of the jumps to `μ(A₀)`, or relative steps `c_j ≤ 1`, are equivalent to RH (§3.8′).
+   Open: a bound on the jump of the actual ground state by its shell flux, in relative form, from an
+   input that does not presuppose the floor.
+8. **A faithful reading that is an estimate.** Every orientation-faithful reading escapes through
+   one of three branches, each with an exact precision cost (§3.9′). Open: a reading of the actual
+   `ζ` datum, in one branch, whose precision cost is met by a proved estimate — for Branch I a
+   trans-Nyquist floor at precision `β²L³`, for Branch III a third-kind datum that reads depth and
+   not only the flip at `2`.
 
 ---
 
@@ -1413,7 +1312,7 @@ The programme succeeds when one of its invariants yields a bound in a width unit
 reformulation: a frustration-index bound on the odd ledger at unbounded aperture, a section count
 beyond the diagonal that is selective, or a faithful reading that is also an estimate.
 
-**What would retire it.** The field is retired if the section count of problem 3 cannot produce,
+**What would retire it.** The field is retired if the section count of §7.3 cannot produce,
 at the diagonal, a statement strictly stronger than the mean value theorem that passes the golden
 and shifted-pair tests: if the only sections it finds are those the large sieve already counts.
 The risk is that "section" turns out to relabel "Dirichlet polynomial on a window". Then the
@@ -1533,7 +1432,7 @@ be coupled to the Frobenius mass or to the defect `E(s) = e^s + s − 1 − ψ(e
   (`wienerMonoidOrbit_conv_self_iff`), the infinite strictly descending monoid chain
   `iterThreeTermConv m (d^{−ε})` inside `{polePoint ε}` (`iterThreeTermConv_smoothPower_chain`),
   one-way `evenFlip` transition on `μ d^{−ε}` (`moebius_evenFlip_oneWay_orbit`), and incomparable
-  unpaid cones (`orbitStructure_unpaidClass_synthesis`).
+  unpaid cones (`orbitStructure_of_unpaidClass_synthesis`).
 - `TransportInApertureAndTheCeilingLyapunovIdentity` — two-aperture gauge conservation and
   sign-definite boundary-shell jump (`gaugeStepJumpEnergy_eq_gaugeStepBoundaryFlux`,
   `gaugeStepJumpEnergy_nonneg`), exact aperture derivatives of `archWindowKilling` and `windowFloor`
@@ -1560,7 +1459,7 @@ be coupled to the Frobenius mass or to the defect `E(s) = e^s + s − 1 − ψ(e
   `sourceObstructionReading S Φ` and sign-free Bézout theorem (`sourceSectionCone_bezout_of_defect_sq_le`),
   Frobenius-mass calibration over `𝔽_q` (`frobMassSectionCone_bezout_and_eq_of_unitary`) vs. refutation
   on `goldenDatum` (`goldenDatum_refutes_frobMass_and_frobReflected`), logarithmic-box node and `E(s)`
-  section cones over `ℤ` (`chebyshevSectionCone_independence`, `chebyshevSectionCone_castelnuovoSeveri_of_le`,
+  section cones over `ℤ` (`chebyshevSectionCone_eq_sectionEffectivityCone`, `chebyshevSectionCone_castelnuovoSeveri_of_le`,
   `primeNodeCorrelationObstruction_lt_shiftedPair`, `chebyshevSectionCone_widthDictionary_tfae`), and
   the convex Hecke-stable `L²`-mass section cone (`l2SourcePairing_le_polar_of_mem_l2MassSectionCone`,
   `l2MassSectionCone_convex_ample_and_primeTwo_riemannRoch`, `sourceSectionEffectivity_synthesis`).

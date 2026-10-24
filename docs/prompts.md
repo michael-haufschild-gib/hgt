@@ -66,14 +66,14 @@ GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF TH
 
 ## research a route
 
-Read and understand proof route :
+Read and understand proof route TG:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
 
 On every turn:
 1. State in chat the proof route.
 2. State the hard open mathematical blockers to solve.
-3. Research, find and formalize a solution for one of the significant mathematical obstacles on that proof route. We are not looking for improving a number, finding more criteria, more nogos, but actual tangible progress in closing this proof route.
+3. Research, find and formalize either a theorem or discharge a premise that significantly brings us closer to solve one of the significant mathematical obstacles on that proof route. We are not looking for improving a number, finding more criteria, more nogos, but actual tangible progress in closing this proof route.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -282,6 +282,8 @@ create a significant novel contribution to the fields open research topics and p
 do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
 
 read fully the movitation and context of our recent research programmes:
+
+anything in these research programmes that can give you a new idea or lead:
 - formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
 - formal/GaloisForLFunctions/BiScaleUncertainty/README.md
 - formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md
@@ -294,6 +296,8 @@ read fully the movitation and context of our recent research programmes:
 - formal/GaloisForLFunctions/ArithmeticCompensationTheory/README.md
 - formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md
 - formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/README.md
+- formal/GaloisForLFunctions/TransThresholdPairCorrelation/README.md
+- formal/GaloisForLFunctions/ArithmeticOrientationTheory/README.md
 
 on every turn: 
 use the search tool for the lean corpus across the whole corpus, not just these programs, and combine proofs from across to corpus to either:
@@ -353,12 +357,10 @@ goal is met when 250 discharges could be made.
 ## research after review
 
 we did a review of our current research: 
+docs/reports/review-2410/hard-obstacles.md
+docs/reports/review-2410/hard-obstacles-summary.md
 
-based on your review:
-docs/reports/review-2010/hard-obstacles.md
-docs/reports/review-2010/hard-obstacles-summary.md
-
-your task: work through the research tasks from section "## 2.1 Tasks that are just work" in docs/reports/review-2010/hard-obstacles-summary.md
+your task: work through the tasks from section "## 2.1 All "just work" tasks" in docs/reports/review-2410/hard-obstacles-summary.md
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -395,6 +397,11 @@ we have then started several research programs to develop new theories and the m
 - formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
 - formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md
 - formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md
+- formal/GaloisForLFunctions/ArithmeticCompensationTheory/README.md
+- formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md
+- formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/README.md
+- formal/GaloisForLFunctions/TransThresholdPairCorrelation/README.md
+- formal/GaloisForLFunctions/ArithmeticOrientationTheory/README.md
     
 problem: despite all this work, we have not come close to overcome any of the hard obstacles and close a proof route.
 
@@ -461,9 +468,9 @@ important: the readme.md is not a ledger or status report but a foundational doc
 Read the following documents:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
-3. Unification of the routes: docs/reports/review-2310/route-unification-ledger.md
-4. Hard obstacles: docs/reports/review-2310/hard-obstacles.md
-5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2310/walls-ledger.md
+3. Unification of the routes: docs/reports/review-2410/route-unification-ledger.md
+4. Hard obstacles: docs/reports/review-2410/hard-obstacles.md
+5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2410/walls-ledger.md
 
 and read the current research programmes:
 - formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
@@ -480,6 +487,7 @@ and read the current research programmes:
 - formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/README.md
 - formal/GaloisForLFunctions/TransThresholdPairCorrelation/README.md
 - formal/GaloisForLFunctions/ArithmeticOrientationTheory/README.md
+- formal/GaloisForLFunctions/ArithmeticOrientationGeometry/README.md
 
 Only read these documents, no other markdown files.
 
@@ -490,8 +498,9 @@ Keep a log file in logs/ for your research to note down facts and findings, sinc
 The questions for you to answer:
 1. Do you see any opportunity for a new proof mechanism or route that circumvents the walls?
 2. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
+3. After you have done this, ask and answer the same questions but only for route WD.
 
-Write a report in docs docs/reports/review-2310/fable.md
+Write a report in docs docs/reports/review-2410/fable.md
 
 do not run any builds.
 
@@ -499,9 +508,9 @@ do not run any builds.
 
 Do not use the hgtl7 skill.
 
-Read fully docs/reports/review-2310/fable.md
+Read fully docs/reports/review-2410/hard-obstacles-summary.md
 
-It describes the big picture of our current research, the obstacles, and why we arrive at developing a new field/research programme called "Arithmetic Orientation Theory"
+It describes the big picture of our current research, the obstacles, and why we arrive at developing a new field/research programme called "Arithmetic Orientation Geometry"
 
 Your task: develop this new field / programme.
 
@@ -556,14 +565,23 @@ always look at the big picture, try to understand what all our research is tryin
 Goal is met when the conjecture is proven in lean.
 
 ## argon single task open question
-formal/GaloisForLFunctions/SquareRootThreshold/README.md
-formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/README.md
 
-formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md
-formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
+x formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
+x formal/GaloisForLFunctions/BiScaleUncertainty/README.md
+x formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md
+x formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
+x formal/GaloisForLFunctions/ArithmeticCriticalityTheory/README.md
+x formal/GaloisForLFunctions/SquareRootThreshold/README.md
+x formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
+x formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md
+x formal/GaloisForLFunctions/ArithmeticCompensationTheory/README.md
+x formal/GaloisForLFunctions/ArithmeticOrientationTheory/README.md
+x formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md
+x formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md
+- formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/README.md
+- formal/GaloisForLFunctions/TransThresholdPairCorrelation/README.md
 
-
-read and understand formal/GaloisForLFunctions/BiScaleUncertainty/README.md
+read and understand formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md
  
 work through every problem in the "Open Problems" section one problem at a time. 
 

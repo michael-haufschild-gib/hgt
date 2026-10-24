@@ -28,7 +28,7 @@ budget. The question it isolates is the signed correlation of close prime pairs
 
 | Programme | Interface |
 |---|---|
-| [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Proves that rank–trace inertia certifies `(2 − κ)N` zeros and no functional of the evaluation Gram alone certifies more, with the coalescence blind spot at `λ = 1`. It has two routes to `3/4`: a zero-side spectral slack, or the prime surplus at `λ = 4/3`. TTPC is the analytic engine of the second. |
+| [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Proves that rank–trace inertia certifies `(2 − κ)N` zeros and no functional of the evaluation Gram alone certifies more, with the coalescence blind spot at `λ = 1`. It has two routes to `3/4`: a zero-side spectral slack, or the prime surplus at `λ = 4/3`. TTPC is the analytic engine of the second, and ACS turns its certificate into budgets for `2/3`, `HD(1)` and `3/4` (§3.12). |
 | [Square-Root Threshold](../SquareRootThreshold/README.md) | Explains why `L²` Hilbert-inequality methods have a phase transition at `X = T`. TTPC is its open problem 1 made into a finite estimate. |
 | [Bi-Scale Uncertainty](../BiScaleUncertainty/README.md) | Its band `|ξ| ≤ √N` for a prime polynomial of length `N` is the regime `λ = 2`, beyond the range treated here; below the band Montgomery–Vaughan bounds everything, as below `λ = 1` here. |
 | [Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md) | Its replacement hypothesis is a bounded Schur constant for prime-ratio correlations at one height. The close-pair kernel here is the height-averaged form of the same correlations. |
@@ -46,6 +46,11 @@ the conditional three-quarters theorem (`RHTower.zeta_three_quarters_of_prime_su
 Jackson-weighted close and far Frobenius entries, and the exchange rate just above `λ = 1`
 (`RHTower.opt_sub_two_thirds`).
 
+On the RH frontier TTPC is a supporting framework of HF and ACS. Its unconditional output is the
+actual-`ζ` smooth-window certificate `N₀* ≥ (29/36 − ε)N − coalescentSurplus`; what remains is the
+complete near-diagonal signed prime surplus, and a bound `≤ (1/18 + o(1))N` would give `3/4` of the
+zeros on the line, not RH.
+
 **The shared target.** The other programmes work on RH as the sign of one critical arithmetic
 form. TTPC works one level below, on a proportion of zeros, but at the same wall: what blocks
 `3/4` is the signed correlation of prime pairs beyond `X = T`, the square-root threshold in its
@@ -55,7 +60,8 @@ reaches and the proportion it certifies, or the budget it pays out of `1/18`.
 Read §1 for the barrier and the target constant, §2 for the objects, §§3.1–3.5 for the four
 reductions and the form-factor bridge, §§3.6–3.8 for the three localization tools (height
 averaging, Lorentz mean values, smooth grid weights) and what each can and cannot reach, and §3.11
-for the smooth-window certificate that places the whole `1/18` budget on the coalescent band; §4
+for the smooth-window certificate that places the whole `1/18` budget on the coalescent band, §3.12
+for what each budget gives; §4
 lists the pillar theorems, §5 the traps, §§6–7 the questions and open problems.
 
 ---
@@ -323,6 +329,22 @@ Since `29/36 − 3/4 = 1/18`, three quarters of the zeros on the line follow fro
 `coalescentSurplus u η T ≤ (1/18 + o(1)) N(T, 2T)` for one profile and one `η > 0`: a statement about
 prime pairs at multiplicative distance at most `T^{−1+η}` only.
 
+### 3.12 What the certificate gives at each budget
+
+Arithmetic Castelnuovo–Severi reads the certificate as a scale of results in the normalised
+coalescent surplus `β` (`CoalescentSurplusAndTransThresholdProportionLaws`). Any bound
+`coalescentSurplus ≤ (β + ε)N(T, 2T)` gives `N₀* ≥ (29/36 − β − ε)N` dyadically and cumulatively
+(`zeta_N0star_and_offLineMoment_of_coalescentSurplus`); `β < 5/36` beats `2/3`, `β ≤ 577/4500` beats
+`HD(1)`, `β ≤ 1/18` gives `3/4` and the off-line moment `57/1000`, and the Hardy–Littlewood value
+`β = −1/144` would give `13/16`
+(`coalescent_budget_thresholds_for_two_thirds_HD_one_and_three_quarters`). In the affine models the
+budget separates the two targets: the unsigned additive sieve at its factor-two parity limit has
+surplus `1/8` and certifies `49/72 > HD(1)`, but reaches `3/4` only for `Υ ≤ 8/9 < 1`; the spectral
+sieve reaches `3/4` exactly at `Υ = 2` (`five_model_separation_of_HD_one_and_three_quarters`). The
+two-window mixture of bandwidths `1` and `4/3` has the exact optimal envelope
+`2/3 + (181 − 18B)²/(1728(91 + 9B))` under `F ≤ B`, and reaches `3/4` at weight `4/9` iff
+`B ≤ 2954/1035` (`mixOpt_values_and_three_quarters_criterion`). No bound on `β` is proved.
+
 ---
 
 ## 4. Foundational pillar theorems
@@ -443,7 +465,7 @@ Built and reusable:
 To be built:
 
 - a signed bound on the mixed mean value `∫_T^{2T}(C_gC_1 + S_gS_1)` at `X = T^{4/3}`;
-- a bound `coalescentSurplus ≤ (1/18 + o(1)) N(T, 2T)` for the coalescent band (open problem 3);
+- a bound `coalescentSurplus ≤ (β + o(1)) N(T, 2T)` for the coalescent band, at `β = 1/18` or any intermediate budget (open problem 1);
 - an unconditional asymptotic transfer from the finite height-averaged prime-pair sum at `[T, 2T]` to
   the spectral form factor `F(α)` in `λ = 1 + δ`.
 
@@ -451,50 +473,29 @@ To be built:
 
 ## 7. Open problems
 
-1. **The bandwidth-`4/3` prime surplus** (`RHTower.PrimeSurplusFourThirds`). Prove
-   `primeSurplus ≤ (1/18 + o(1))(aL)²Tℓ₁/2π`, or equivalently through §3.2 that
-   `(1/π)∫_T^{2T}(C_g(τ)C_1(τ) + S_g(τ)S_1(τ))dτ ≤ (4/9 + 1/18 + o(1))(aL)²Tℓ₁/2π`, unconditionally or
-   under the weakest arithmetic mean-value input that suffices.
-2. **A weighted trace that reaches the coalescent band (resolved in
-   `SmoothWeightedCertificateAtFourThirds`).** For every `ε, η > 0` there is a smooth window with
-   `N₀*(T, 2T) ≥ (29/36 − ε)N(T, 2T) − coalescentSurplus u η T` for all large `T`
-   (`zeta_coalescent_certificate`, §3.11). Open problem 1 is therefore equivalent, up to `o(1)`, to
-   `coalescentSurplus u η T ≤ (1/18 + o(1))N(T, 2T)`, a bound on the smooth-window prime-pair sum over
-   `0 < |log(n/m)| ≤ T^{−1+η}` alone.
-3. **Close pairs in short multiplicative intervals.** The multiplicative-to-additive linearization
-   (`coalescent_sum_linearization_bound`), Frullani cancellation of the Poisson continuum
-   (`abs_integral_dyadic_frullani_le`), and the five-model sieve threshold (`Υ ≤ 8/9 < 1` unsigned
-   additive vs. `Υ ≤ 2` spectral in `calibration_five_models_four_thirds`) are proved in
-   `CoalescentSieveAnatomyAndModelCalibration`. The remaining open step is an unconditional
-   sign-sensitive estimate for `Σ_{m,h} Λ(m)Λ(m + h) m⁻¹ K(T h/m)` on `T < m ≤ T^{4/3}`, `0 < h ≪ m/T`
-   that breaks the unsigned parity barrier `Υ < 8/9` at `λ = 4/3`; by open problem 2 this band is
-   now the whole of the `1/18` budget.
-4. **The exchange rate just above `λ = 1`.** The exact narrow-strip Cesàro energy identity, the
-   criterion `E(δ) < 2/(3δ) + 4/3` (`narrowStrip_beats_two_thirds_iff`), the `2`-adic parity collar
-   doubling the odd-odd close-pair vanishing threshold from `1/b` to `2/b`
-   (`odd_offDiag_fejer_sum_eq_zero_of_le_two_div_b`), and the quadratic `O(δ²)` sieve bound on
-   `[1/b, (1 + δ)/b]` (`sieved_closePrimePair_strip_bound`) are proved in
-   `NarrowStripClosePairEnergyAndExchangeRate`. The remaining open step is to transfer the finite-`T`
-   narrow-strip close-pair bound through the smooth-weighted grid assembly without losing the `O(δ)`
-   diagonal gain to the finite-height window tails.
-
-### Research topics
-
-1. **Signed mixed mean values.** The identity of §3.2 is exact. Find which arithmetic structure of
-   `C_g` and `C_1` (both prime Dirichlet polynomials of length `T^{4/3}`, one Fourier-weighted)
-   makes their correlation over `[T, 2T]` smaller than the product of their sizes.
-2. **The coalescent band as a sieve problem (resolved in `CoalescentSieveAnatomyAndModelCalibration`).**
-   The continuum Poisson linear term cancels identically against the dyadic cosine kernel by the
-   Frullani identity (`integral_sin_div_two_mul`, `abs_integral_dyadic_frullani_le`), while the
-   Hardy–Littlewood singular-series logarithmic deficit `−½(y − l)` has strictly favourable negative
-   sign `−(L − l)³/12 < 0` before any error term is estimated (`hl_coalescent_deficit_integral`).
-3. **Calibration (resolved in `CoalescentSieveAnatomyAndModelCalibration`).** The general-`λ`
-   prime-surplus bridge (`frobeniusFormFactor_eq_diag_add_generalPrimeSurplusRatio`) and master
-   affine calibration formula (`generalPrimeSurplusRatio_affineTransModel`,
-   `calibration_five_models_four_thirds`) evaluate the surplus across five benchmark models:
-   Hardy–Littlewood / Function-Field / GUE (`−1/144 < 0`), Uncorrelated (`0`), Naive Poisson without
-   repulsion (`+1/16 > 1/18`, failing the budget by `1/144`), Spectral Sieve (`(9Υ − 10)/144 ≤ 1/18 ⟺ Υ ≤ 2`),
-   and Unsigned Additive Sieve (`Υ/16 ≤ 1/18 ⟺ Υ ≤ 8/9 < 1`).
+1. **The coalescent surplus at bandwidth `4/3`.** By the smooth-window certificate (§3.11),
+   `RHTower.PrimeSurplusFourThirds` is equivalent, up to `o(1)`, to
+   `coalescentSurplus u η T ≤ (1/18 + o(1))N(T, 2T)` for one profile and one `η > 0`: a bound on the
+   smooth-window pair sum over `0 < |log(n/m)| ≤ T^{−1+η}` alone. After the linearization of §3.9
+   this is a sign-sensitive estimate for `Σ_{m,h} Λ(m)Λ(m + h) m⁻¹ K(Th/m)` on `T < m ≤ T^{4/3}`,
+   `0 < h ≪ m/T`. Every intermediate budget is a result (§3.12): `β < 5/36` beats `2/3`,
+   `β ≤ 577/4500` beats `HD(1)`.
+2. **What a size-only sieve can reach.** In the unsigned additive model the factor-two parity
+   limit gives `β = 1/8` and the proportion `49/72 > HD(1)`, while `3/4` needs `Υ ≤ 8/9 < 1`, below
+   parity (§3.12). Open: whether an upper-bound sieve applied to the actual coalescent band, which
+   sees the kernel only through its size, obeys the model's bound; and, for `3/4`, which signed
+   correlation of prime pairs at distance `≲ m/T` breaks the parity barrier.
+3. **The signed mixed mean value.** The identity of §3.2 is exact. Find the arithmetic structure of
+   `C_g` and `C_1` (both prime Dirichlet polynomials of length `T^{4/3}`, one Fourier-weighted) that
+   makes their correlation over `[T, 2T]` smaller than the product of their sizes, at the constant
+   `(4/9 + 1/18)(aL)²Tℓ₁/2π`.
+4. **From the finite prime-pair sum to the form factor.** The calibration of §3.9 and the
+   narrow-strip criterion of §3.10 are statements about `F(α)`. An unconditional asymptotic transfer
+   from the finite height-averaged prime-pair sum at `[T, 2T]` to `F(α)` on `(1, 1 + δ]` is not
+   available; without it no bound on `F` is a bound on the certificate.
+5. **The exchange rate just above `λ = 1`.** Transfer the finite-`T` narrow-strip close-pair bound
+   through the smooth-weighted grid assembly without losing the `O(δ)` diagonal gain to the
+   finite-height window tails.
 
 ---
 

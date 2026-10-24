@@ -1,8 +1,8 @@
 # Literal Suzuki deficit on the compact critical family
 
 - **ID:** sz-critical-family-literal-source-deficit-2026-10-24
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** compact-L² critical first variation and compact critical-family positivity.
 - **Statement:** Every sufficiently high nonzero dyadic critical source has a strict positive first-order deficit for its own literal Suzuki pairing, at every allowed compact truncation.
 
@@ -55,10 +55,9 @@ of a divergent totalized Bochner integral is used.
 ## Conjecture outcome and next question
 
 The conjecture that the actual critical source inherits the strict finite-shift
-deficit is proved on paper: the larger source-domain theorem removes the
+deficit is proved in Lean: the larger source-domain theorem removes the
 smoothing step. It does not turn family positivity into universal positivity.
-The remaining question is a signed,
-norm-controlled transfer from these concrete arithmetic sources to all receiver
+The remaining question is a signed, norm-controlled transfer from these concrete arithmetic sources to all receiver
 tests, or a direct bound on the complete prime-lag source.
 
 Verdict: **BRIDGE**. No external novelty claim.
@@ -67,5 +66,24 @@ Verdict: **BRIDGE**. No external novelty claim.
 
 - [x] Concrete source statement and complete paper proof.
 - [x] Finite energy and positivity derived from existing source theorems.
-- [ ] Compact-L² capstone compiled and audited.
-- [ ] Literal-family theorem compiled and all public transitive axioms audited.
+- [x] Compact-L² capstone compiled and audited.
+- [x] Literal-family theorem compiled and all public transitive axioms audited.
+
+## Lean certificate
+
+Module: `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalLiteralFamilyContraction.lean`.
+
+- `RHTower.tendsto_suzukiCriticalLiteralFamily_firstVariation`
+- `RHTower.exists_suzukiCriticalLiteralFamily_strict_deficit`
+
+The direct canonical check passed:
+
+```sh
+cd formal
+lake --old env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalLiteralFamilyContraction.lean
+```
+
+Both declarations and all 42 declarations of the compact-L² prerequisite chain
+were inspected with `#print axioms`. Every transitive axiom is one of `propext`,
+`Classical.choice`, and `Quot.sound`. No analytic input is left as an assumption
+interface; finite energy and positivity come from the specified concrete family.

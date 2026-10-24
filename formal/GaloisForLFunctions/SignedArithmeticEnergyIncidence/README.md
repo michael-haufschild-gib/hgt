@@ -47,6 +47,12 @@ as the continuation problem.
 | [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Shares the Dirichlet-polynomial mean value theorem at its diagonal `X ≍ T`: the half-damping bound for the chain cuts the dilation symbol there, and TTPC's Frobenius analysis starts there. Below half damping SAEI's obstruction is `1/ζ` inside the strip, not a prime-pair sum. |
 | [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Attaches an integer frustration index and a frustration mass to the switching class of a signed form. The ground energy is bounded by the mass and vanishes on connected patterns exactly at balance. The prime triangle of mechanism 14 has index exactly `2`, and its frustration mass is bounded by the positive prime-sum couplings. |
 
+On the RH frontier SAEI is a supporting framework for the routes AIP, MC, PM and CTF: it supplies
+the signed-graph and frustration calculus, the prime-tower capacities and the receiver coordinates
+of the damping chain. Local positive semidefiniteness or local payment is never the full continuum
+sign; the canonical-path and Kron certificates are methods whose premises (a supersolution,
+coercivity, horizon-uniform packing) must be proved on each route's actual coupling.
+
 **The shared target.** The programmes in the table work on RH as the sign of one critical
 arithmetic form and on the critical cancellation of the actual source. SAEI is the interface layer
 between them: it decides which transfers — payment, completion, transport, decomposition — preserve
@@ -823,7 +829,7 @@ Each question is stated with what is established and where the open part sits.
    weights added, every frustrated cycle passes through a pair of positions summing to a
    prime-power logarithm (mechanism 15); on aligned forms with nonnegative polar weights one-signed profiles are the worst
    case. The continuum profiles of the actual kernel, the pairs between lattice points of Arithmetic
-   Incidence Positivity (its open problem 1), are open.
+   Incidence Positivity (its mechanism 61 and research topic 3), are open.
 2. **Can those profiles be reduced to a controlled family without excessive norm loss?** Among
    trains that are products along the towers, the extremal profiles are the sine products, with
    explicit finite-length deficits (mechanisms 18–21). On the smooth-number simplex the joint
@@ -882,85 +888,50 @@ Each question is stated with what is established and where the open part sits.
 
 ## 9. Open research topics
 
-1. **Arithmetic holonomy.** Compute the sign pattern of the overlaps of AIP's global incidence ledger
-   on a finite resolution of the logarithmic line and locate its frustrated cycles (mechanism 11;
-   triangles on complete patterns). For the prime translations alone this is settled at the level
-   of sign patterns: even folding is aligned, odd folding is anti-aligned exactly where the kernel
-   at the sum exceeds the kernel at the difference, and the prime triangle `log 2, log 3, log 5` is
-   frustrated (mechanism 14). With the archimedean kernel and the pole charge added, every
-   frustrated cycle still passes through a prime sum, and sampling sets free of prime sums are
-   lossless (mechanism 15); at fine resolution (small relative weight of `K`) the prime triangle
-   frustrates the full odd ledger. The amount of frustration is a count: switching across a cut
-   trades anti-aligned for aligned overlaps, so when the prime-sum pairs of a sample have degree at
-   most a quarter of the sample no switching helps, and the frustration index is the number of
-   anti-aligned prime-sum overlaps; on matched samples it is `2|Q|`, so samples at aperture `A` reach
-   twice a prime count at scale `e^{2A}` (`frustrationIndex_oddWeilLedger_of_sparse`, `exists_frustrationIndex_ge`,
-   Arithmetic Orientation Theory). Open: the holonomies at a fixed mesh, where `K` and the prime
-   atoms are comparable, and the budgets they supply. The aligned
-   part is payable by mechanism 4; the frustrated part is where the even–odd balance of AIP lives.
-2. **Allocation at growing size.** Prove a local allocation (or a frustration bound) for a family of
-   strips whose number grows with the aperture, with losses uniform in that number. This is the
-   cofinal form of Pillar I and the shared-surplus problem of Arithmetic Incidence Positivity (its
-   open problem 7 and research topic 6).
-3. **Sign-changing gauges.** On an aligned form with nonnegative polar weights, the new polar
-   comparison reduces positivity to one-signed profiles; in the coercive case its exact test is
-   `Σg_i(C⁻¹g)_i≤1`. Determine where the actual discretized form leaves this class and estimate
-   the resulting global polar charge. The cost of *local* payment is exact: the ground-energy gap
-   between a form and its comparison form (mechanism 9). What remains is the cheapest *nonlocal*
-   payment of the frustrated part — a gauge with sign changes, or a global square absorbing the
-   rank-one charges — and its cost for the actual critical form; the signed-gauge certificates of
-   Arithmetic Criticality Theory (its research topic 1) are the continuum instance. On a single frustrated cycle the answer is complete: the path pays the frustrated
-   edge through the half-sine certificate, at the exact factor `cos(π/k)` (mechanism 12). For
-   several frustrated cycles the canonical-path certificate (mechanism 13) is a sufficient
-   nonlocal payment with the competition made explicit as a packing constraint. The exact nonlocal
-   payment is the Kron reduction to the frustration terminals (paragraph after mechanism 16); for
-   one frustrated overlap the price is `(t − β)² ≤ αγ`, `β` the effective conductance of the
-   aligned interior. Through an aligned interior the reduction never creates frustration and is
-   lossless once each frustrated overlap is healed by its effective conductance, uniformly in the
-   number of terminals (paragraph after mechanism 16). Open: the effective conductances of the
-   actual ledger between its prime-sum terminals, and the unhealed regime.
-4. **The centred chain on `ℓ²`.** `C_η` is Hilbert–Schmidt exactly for `½ < η < 1` and compact at
-   `η = ½`, where Hilbert–Schmidt fails (paragraphs after mechanism 28). Decide boundedness for some
-   `η < ½`: the Mellin route needs `1/ζ` on `Re = η + ½`, inside the critical strip; by mechanism 25
-   a positive answer at cofinally small `η` would be RH.
-   Its first column is exactly the receiver (mechanism 30); the computation of mechanism 30 writes
-   the `k`-th column, up to `O(k/m)`, as `(k/m)(k^{−η} P(⌊m/k⌋) − (k+1)^{−η} P(⌊m/(k+1)⌋))`, a
-   difference of dilated sources, so boundedness is a
-   uniform version over the dilations `k` of admission, with the operator norm controlling all linear combinations and their mixed Gram terms,
-   not merely the sum or supremum of individual column energies.
+1. **Arithmetic holonomy at a fixed mesh.** For the prime translations the sign pattern is known
+   (mechanisms 14–15): even folding is aligned, every frustrated cycle passes through a prime-sum
+   pair, and on sparse samples the frustration index counts the anti-aligned prime-sum overlaps
+   (`frustrationIndex_oddWeilLedger_of_sparse`, `exists_frustrationIndex_ge`, Arithmetic Orientation
+   Theory). Open: the holonomies of AIP's global incidence ledger at a fixed mesh, where the
+   archimedean–polar kernel `K` and the prime atoms are comparable, and the budgets that mesh
+   supplies to its frustrated part.
+2. **Allocation at growing size.** A local allocation, or a frustration bound, for a family of
+   strips whose number grows with the aperture, with losses uniform in that number: the cofinal
+   form of Pillar I and the shared-surplus problem of Arithmetic Incidence Positivity (its open
+   problems 1 and 7).
+3. **Nonlocal payment of the actual ledger.** Local payment costs exactly the comparison gap
+   (mechanism 9); one frustrated cycle is paid along its path at the factor `cos(π/k)`
+   (mechanism 12); the exact nonlocal price is the Kron reduction to the terminals, lossless once
+   each frustrated overlap is healed by its effective conductance (paragraphs after mechanism 16).
+   Open: the effective conductances of the actual ledger between its prime-sum terminals, the
+   unhealed regime, and a positive signed supersolution with horizon-uniform path budgets and
+   packing for an actual coupling of AIP, PM or MC — proved on the source, not posited as a
+   structure field. Where the discretized form leaves the aligned class with nonnegative polar
+   weights, estimate the resulting global polar charge.
+4. **The centred chain on `ℓ²` below half damping.** `C_η` is Hilbert–Schmidt exactly for
+   `½ < η < 1` and compact at `η = ½`. Decide boundedness for some `η < ½`; the Mellin route needs
+   `1/ζ` on `Re = η + ½`, inside the critical strip, and by mechanism 25 boundedness at cofinally
+   small `η` is RH. Boundedness is a uniform admission over the dilated sources that form the
+   columns, with the mixed Gram terms of all linear combinations, not a bound on individual columns.
 5. **Square-root cancellation against the residue Gram.** Bound `‖Σ_d μ(d) d^{−η} v_d‖_{ℓ²}` below
-   half damping on a horizon-dependent range of moduli with explicit tails; this is the receiver
-   problem of Bézout–Valuation Incidence in residue coordinates. The Gram is bounded above but not
-   below (paragraph after mechanism 28), so the coefficient norm `Σ d^{−2η}` bounds the series only
-   from above and diverges for `η ≤ ½`: the cancellation must be read against the Gram itself.
-6. **Signed sampling beyond the local model.** The transfer to general sources is reduced to the
-   local approximation error (mechanism 40, `companions_pay_up_to_error`), and for smooth sources
-   to the Taylor remainder (`companions_pay_up_to_taylor`); for trigonometric sources of aperture `A`
-   the loss `2 #s ((Aδ)^d m/d!)²` is uniform in the height (`companions_pay_aperture`), and the price
-   is explicit in the spacing and spread (`companions_pay_aperture_explicit`). What remains is the
-   companion geometry of the actual on-line zeros: `k + 1` of them spaced by `δ` within `r ≪ 1/A`
-   of every height, which is information about the zeros on the line. For Paley–Wiener sources of
-   aperture `A` and lattice companions the law is exact: density at least `A/π`, price
-   `A³h/(3π)`, uniform in the height, and it survives displacements up to `1/(2A)` with price factor
-   `(1 − 2Aδ)^{−2}` (mechanism 40). Open: companion sets far from every lattice, e.g. of given
-   Beurling density with clustering, and the combination with sufficiently strong information about
-   the **on-line** zeros of `ζ` to obtain the plain-`L²` floor at the width rate. Control the Taylor remainder and infinite zero tail as well
-   as the interpolation price; the polynomial model alone supplies none of these transfers.
+   half damping on a horizon-dependent range of moduli with explicit tails. The Gram is bounded
+   above but not below, so the cancellation must be read against the Gram itself, not through any
+   coefficient norm. This is the receiver problem of Bézout–Valuation Incidence (its §7.1) in
+   residue coordinates.
+6. **Companion geometry of the on-line zeros.** The sampling law is complete for local models,
+   for trigonometric sources with explicit Taylor loss, and for Paley–Wiener sources on lattices
+   and their perturbations (mechanism 40). Open: companion sets far from every lattice — given
+   Beurling density with clustering — and the information about the on-line zeros of `ζ` that
+   would supply `k + 1` companions spaced by `δ` within `r ≪ 1/A` of every height, together with
+   control of the infinite zero tail; that is the plain-`L²` floor at the width rate.
 7. **Compact negativity uniformly in the aperture.** At fixed aperture the restricted Weil form is
-   compactly negative (mechanism 39). Determine how the compactness — the finite-rank
-   approximation of the embedding seen by the polar and prime remainder — degrades as the aperture
-   grows; this uniformity is the input Pillar V needs to exclude escape of adverse profiles at
-   growing aperture.
-8. **Trains not aligned with the towers.** For trains that are products along the towers the
-   capacities add (mechanism 21). Profiles that are not such products are where a cross-prime
-   saving can live; determine their joint charge. On a box the additive bound holds for every amplitude, product or not
-   (`grid_joint_capacity`, `cartesian_lower_bound`), so a saving can only come from the geometry of
-   the support: trains whose positions do not fill a box of the multiplicative lattice. On the
-   simplex `j + k ≤ n` with equal weights the joint charge is exactly `cos θ + cos 2θ`,
-   `θ = π/(n+3)`, strictly below the box sum. On every support that is not a box the towers do not
-   add, for all positive weights, in particular on `j log p + k log q ≤ X` with the weights
-   `Λ(p)p^{−½}`, `Λ(q)q^{−½}`. Open: the size of that saving, its order `X^{−2}` constant and its
-   dependence on `log q/log p`.
+   compactly negative (mechanism 39). How does the finite-rank approximation of the embedding seen
+   by the polar and prime remainder degrade as the aperture grows? This uniformity is what Pillar
+   V needs to exclude escape of adverse profiles at growing aperture.
+8. **The cross-prime saving off the box.** On every non-box support the towers do not add, in
+   particular on `j log p + k log q ≤ X` with the weights `Λ(p)p^{−½}, Λ(q)q^{−½}` (paragraphs after
+   mechanism 21). Open: the size of that saving, its order-`X^{−2}` constant and its dependence on
+   `log q/log p`.
 
 ---
 
@@ -1003,3 +974,21 @@ positivity. State the resulting aperture, damping or width explicitly.
    coefficients `μ(d)`; operator statements alone cannot go backwards.
 6. **Finite before cofinal.** A finite theorem is infrastructure until its losses are shown uniform
    in the size of the family it is applied to.
+
+---
+
+## Source entry points
+
+| Section | Modules |
+|---|---|
+| Local payment, holonomy, comparison form | `SignedIncidenceForms`, `BalancedIncidenceIsLocallyPayable`, `TriangleHolonomyDecidesLocalPayment`, `FrustrationIsTheLocalGlobalGap`, `LocalPaymentIsComparisonPositivity`, `CycleHolonomyDecidesBalance`, `FrustratedCyclesSpoilLocalPayment` |
+| Nonlocal payment | `TheFrustratedCycleIsPaidAlongItsPath`, `FrustrationIsPaidAlongCanonicalPaths`, `PositivityIsDecidedOnTheFrustrationTerminals`, `KronReductionNeverCreatesFrustration`, `AlignedOverlapsOnlyRaiseTheEffectiveConductance` |
+| The prime and Weil ledgers | `OddFoldingIsTheSourceOfFrustration`, `TheOddWeilLedgerIsFrustratedOnlyByPrimes`, `ArithmeticCanonicalPathCalibration` |
+| Chains and trains | `ChainLendingAndTrainCapacity`, `SineTrainsAreExtremalForOnePrime`, `TowerGridCapacitiesAdd`, `CartesianProductsAddGroundEnergies`, `OnTheSimplexTwoTowersDoNotAdd`, `TwoTowersAddExactlyOnBoxes` |
+| Poles and completion | `PolarDefectLaw`, `SignChangesNeedAntiAlignedOverlaps` |
+| The receiver and the residue modes | `TheReceiverIsTheChainOrbitOfTheReciprocal`, `ResidueModesAndBackwardContinuation`, `TheFirstColumnOfTheChainIsTheReceiver`, `DampingIsStronglyContinuousWithUnboundedGenerator`, `TheSourceIsTheDampedMoebiusResidueSeries`, `ThePositiveTwinIsTheExtremalSignPattern` |
+| The chain in the receiver norm | `TheChainIsHilbertSchmidtAboveDampingOne`, `FloorJumpsAboveTheSquareRootAreSparse`, `TheChainIsHilbertSchmidtAboveInverseRootTwo`, `ShortIntervalSumsOfTheDampedDivisorCoefficients`, `TheChainIsHilbertSchmidtAboveTheGoldenThreshold`, `TheColumnsOfTheChainInMellinCoordinates`, `TheChainIsHilbertSchmidtAboveHalfDamping`, `TheSourceOnTheCriticalLineIsZetaOverZeta`, `TheChainIsBoundedAtHalfDamping`, `TheChainIsCompactAtHalfDamping`, `TheChainIsNormContinuousAtHalfDamping` |
+| Half damping | `TheReceiverIsContinuousAtHalfDamping`, `TheRieszResidueExpansionConvergesAtHalfDamping`, `TheResidueModesAreBesselButNotRiesz` |
+| Adverse sequences | `AdverseProfilesCannotVanish`, `TheRestrictedWeilFormIsCompactlyNegative` |
+| Signed sampling | `OnLineCompanionsPayOffLineDepth`, `OneCompanionShortPaysOnlyAtCriticalPoints`, `SmoothSourcesPayAtTheTaylorPrice`, `PaleyWienerSourcesPayAtTheNyquistDensity`, `PerturbedCompanionLatticesStillPay`, `OffLineConfigurationsArePaidByTheirKernelGram`, `AtTheNyquistDensityEveryCompanionCounts` |
+| Continuation | `TheRadialLossLaw` |

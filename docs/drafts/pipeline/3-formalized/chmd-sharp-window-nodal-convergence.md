@@ -1,8 +1,8 @@
 # Sharp-window convergence of the complete nodal defect
 
 - **ID:** chmd-sharp-window-nodal-convergence
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper and Lean)
 - **Statement:** Symmetric sharp interval restrictions converge strongly to the identity on the full maximal CHMD graph. They commute with positive part, negative part and modulus. The complete signed nodal cross-pairing, Weil energy and oneL defect therefore converge along these exact-support restrictions.
 
 ## Route and contribution
@@ -78,8 +78,8 @@ in the exact aperture completion. No sign assumption enters this proof.
 - [x] Dependency-closed paper proof.
 - [x] Lean strong convergence and exact nodal commutation.
 - [x] Lean convergence of the complete signed defect.
-- [ ] Candidate and actual repository leaf checks.
-- [ ] Standard-axiom audit, umbrella import and scratch cleanup.
+- [x] Candidate and actual repository leaf checks.
+- [x] Standard-axiom audit, umbrella import and scratch cleanup.
 
 No global sign, RH conclusion or external novelty claim is asserted.
 
@@ -98,4 +98,7 @@ Module: `GaloisForLFunctions.RHTower.CHMDSharpWindowNodalConvergence`.
 
 Candidate check passed. All eight declarations above were audited with
 `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound` occur.
-The repository leaf check and temporary-file cleanup remain pending.
+The actual repository leaf also passed
+`lake --old env lean GaloisForLFunctions/RHTower/CHMDSharpWindowNodalConvergence.lean`.
+The module is imported exactly once by `RHTower.lean`. Owned temporary proofs
+were removed. No heartbeat or recursion limits were raised.

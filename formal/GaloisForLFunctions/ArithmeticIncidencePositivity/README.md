@@ -44,6 +44,13 @@ the poles. Lag Abel summation expresses that balance through one two-pole Chebys
 | [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Reads the product (sum) pairs as the only frustrating edges of the odd ledger and proves that their contribution is one square per prime tower. |
 | [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Its close prime pairs `|log(n/m)| < 4b` are a height-averaged form of the prime-ratio correlations whose bounded Schur constant is the replacement hypothesis of mechanism 56. |
 
+On the RH frontier AIP is the live route of arithmetic incidence: actual prime incidence with the
+canonical plateau gauge, `GlobalIncidenceAllocation` at every aperture, is equivalent to complete
+odd zero-form positivity and so to RH, and the open estimate is the joint payment of all prime and
+pole costs on every odd compact test. Its window certificates feed the odd-sector and lag results of
+Arithmetic Criticality Theory, Square-Root Threshold and Arithmetic Positivity Theory; its tower and
+translate calculus feeds Arithmetic Orientation Theory's frustration count.
+
 **The shared target.** The programmes in the table work on one object: RH as the sign of the
 complete critical arithmetic form, read through pairwise incidence, lag (Square-Root Threshold) and
 aperture (Arithmetic Criticality Theory). AIP owns the incidence face — conductance by conductance,
@@ -51,7 +58,7 @@ with the pole as the only positive source on crossing pairs — and reports prog
 unit: a ledger deficit at rate `2σ` at every aperture is the strip `½ + σ`.
 
 Read §2 for pair and weight conventions, then the lattice classification, the odd fold, the shared
-surplus, the tower calculus and the Chebyshev ledger in §3; §4 lists the pillar theorems and §§6–7
+surplus, the tower calculus, the Chebyshev ledger and the continuum and bump bridges in §3; §4 lists the pillar theorems and §§6–7
 the questions and open problems. Keep three levels separate: a comparison of scalar weights,
 an integrated energy inequality, and positivity for all compact tests. Only the last is the RH
 criterion. `RHTower` supplies the archimedean, explicit-formula and divisor-cut analysis.
@@ -725,7 +732,7 @@ of the innermost strip once per atom.
       alone stops before `log 2`. With mechanisms 39 and 41, the strip surplus pays odd parts neither
       for a single atom near `log 2` nor for the thin band at large `r`. What any allocation must use
       is the cancellation of the odd parts against the even parts of the atoms, the prime–polar
-      balance of mechanism 42 (open problem 7(c)).
+      balance of mechanism 42 (open problem 1).
 
 41. **The logarithmic capacity of the shared surplus.** For the edge tent the pairs across the foot
     `a = r − ε` carry `∫_0^a ω(x − y) dy = Ω(x − a) − Ω(x) ≤ ½ log(4/ε) + ε/(2(x − a)) + 4/5`
@@ -1167,6 +1174,45 @@ side and the pole plane; the archimedean density is not part of this ledger.
     untwisted law cancels the ratio lag, `A(a)² + A(b)² ≤ 2A(0)²` (`sq_two_atom_add_sq_sub_le`).
     The incidence face reads signs through the ratio lag `log(b/a)`; period statistics never do.
 
+### Between the lattice points: the continuum bridge and the bump bridge
+
+61. **The continuum crossing-to-ratio bridge.** For a prime power `n ∉ {2, 3, 4, 5, 7}` the atom is
+    below the midpoint polar weight, so the unpaid set of the atom alone is exactly two axis
+    intervals `(0, c_n) ∪ (log n − c_n, log n)`, `P_{log n}(c_n) = Λ(n)/√n`, with inner end
+    `2Λ(n)/(n − 1)` (`unpaidSet_vonMangoldtAtom_eq`, `unpaidInnerEnd_vonMangoldtAtom_eq`). On an
+    axis interval `[0, c]` an odd `K`-Lipschitz test has `∫_0^c F² ≤ K²c³/3`, so the unpaid
+    crossing charge near the axes is cubically small in `c` (`integral_unpaidAxis_sq_le_cube`,
+    `two_mul_integral_unpaidAxis_crossing_le`). Between lattice points a continuum crossing pair
+    `(−a, log n − a)` is priced through any intermediate point `a + log m` at a same-side ratio
+    shift: the harmonic-mean step
+    `4α(a)² ≤ (1 + θ)(F(a) − F(a + log m))² + (1 + θ⁻¹)(F(a + log m) − F(log n − a))²`
+    (`reflectedOddPart_sq_le_ratio_arch_step`) bounds the crossing product by the variance, one
+    same-side ratio jump and one archimedean same-side jump
+    (`continuum_crossing_le_variance_and_ratio_arch`), and integrated over the strip it bounds the
+    odd strip cost (`oddStripCost_le_ratio_and_arch_shift`). The three-shift Gram along weighted
+    rays gives `(w₁A(a) + w₂A(b))² ≤ A(0)((w₁² + w₂²)A(0) + 2w₁w₂A(b − a))`
+    (`sq_weighted_two_atom_le`), and at every aperture the prime side is priced by the mass and the
+    ratio comb, `(primeSideCharge F)² ≤ A(0)(Σ Λ_n² A(0) + Σ_{n≠m} Λ_nΛ_m A(log m − log n))`
+    (`sq_primeSideCharge_le_mass_mul_combEnergy`). At `r = 23/40`, where the relevant shifts are
+    `{2, 3}`, the overlapping strips pay both atoms with `(1/62)∫_{S₂}F²` to spare and the ledger
+    becomes the explicit floor `Ẑ(F) ≥ (pool − 2 stripSurplus_{S₂}) + crossingPotential +
+    (1/62)∫_{S₂}F² + ∫F²·plateauPotentialFloor − poleCharge` (`fullZeroForm_ge_twentyThreeFortieths_complete`).
+    The pole charge is still subtracted: this is a ledger floor at `23/40`, not positivity there.
+62. **The bump bridge: lattice incidence inside continuum tests.** A Lipschitz bump `β` of width
+    `w` at a point `α`, in a gauge `M` with `|M(x)| ≤ Ce^{−|x|}`, has archimedean self-energy
+    `J^arch_M(b_{α,w}) ∼ M(α)²(∫β²) w log(1/w)` (`tendsto_gaugeArchJump_singleBump_div_mul_log`),
+    from `2Ω(2w) = log(1/w) + O(1)`; distinct bumps at separation `s > 4w` interact archimedeanly
+    only at `O(w²)` (`abs_gaugeArchJump_sub_sum_singleBump_le`). So at scale `w log(1/w)` a bump
+    profile on the lattice `{log a}` sees only its diagonal, and after the single-packet
+    self-energies are subtracted, at scale `w` the jump form converges to the exact prime incidence
+    form in `netAtom` (`tendsto_calibratedSignedJumpEnergy_latticeBumpProfile_netAtom`). With an
+    explicit resolution `128(N + 2)⁴(k + 1)` the full Weil energy of a lattice train is the
+    calibrated self-energy plus the incidence form within `E(c)/(k + 1)`, and is nonnegative above an
+    explicit resolution (`fullEnergy_latticeTrain_uniform`, `eventually_fullEnergy_latticeTrain_nonneg`).
+    This is the precise sense of the trap "the lattice skeleton is not the form": the skeleton is the
+    form's `O(w)` correction under a dominant `w log(1/w)` self-energy, and lattice positivity is
+    small-support positivity.
+
 ---
 
 ## 4. Foundational pillar theorems
@@ -1187,8 +1233,10 @@ Unconditional; RH appears only inside equivalences.
 4. **Odd positivity past the first prime.** Every odd `C²_c` test supported in
    `[−181/500, 181/500]` has `Ẑ(F) ≥ (1/1000)∫F²`
    (`fullZeroForm_ge_of_odd_support_le_threeHundredSixtyTwoThousandths`); the joint prime-2/3 strip
-   costs are paid through `23/40` (`two_mul_primeTwoThreeShifts_le_stripSurplus_twentyThreeFortieths`),
-   which is a strip-cost theorem, not full odd positivity.
+   costs are paid through `23/40` (`two_mul_primeTwoThreeShifts_le_stripSurplus_twentyThreeFortieths`)
+   and give a ledger floor there with the pole still subtracted
+   (`fullZeroForm_ge_twentyThreeFortieths_complete`), which is a strip-cost theorem, not full odd
+   positivity.
 5. **The global allocation condition.** The exact ledger of the odd form, with all terms and the
    plateau quantifier retained, is RH-equivalent (`riemannHypothesis_iff_globalIncidenceAllocation`),
    and its graded deficit at rate `2σ` bounds the width by `σ`.
@@ -1214,6 +1262,12 @@ Unconditional; RH appears only inside equivalences.
     `geoLagCharge_alternatingTrain_eq`): the translate calculus separates the primes from their
     parity twin, while every complete-period quadratic statistic of a divisor row is blind to sign
     flips (`completePeriod_parity_and_transHorizon_separation`).
+
+11. **The bump bridge.** On lattice bump profiles the archimedean self-energy is
+    `M(α)²(∫β²)w log(1/w)` per bump and the calibrated remainder converges to the prime incidence
+    form in `netAtom` (`tendsto_gaugeArchJump_singleBump_div_mul_log`,
+    `tendsto_calibratedSignedJumpEnergy_latticeBumpProfile_netAtom`): lattice incidence is an exact
+    correction of the continuum form.
 
 ---
 
@@ -1286,6 +1340,8 @@ Built and reusable:
 - *The Chebyshev ledger*: lag Abel summation of every order, calibrations at any pole, source
   rigidity and realisation, the ideal source, the aperture–lag ladder and quadratic gap, the Euler
   comb payment law, the spectral symbol.
+- *The continuum and bump bridges*: crossing-to-ratio pricing between lattice points, cubic axis
+  suppression, and the calibrated passage from bump profiles to the lattice incidence form.
 
 To be built:
 
@@ -1293,227 +1349,68 @@ To be built:
 - a lower bound on the signed spectral symbol in the frequency regions an aperture-`r` test can reach;
 - a bounded Schur constant for the prime-ratio correlations (the replacement hypothesis);
 - a signed estimate for the half-power cross-prime aggregate;
-- the archimedean self-energy asymptotic of lattice bump profiles, with the origin and axis packets.
+- a global choice of intermediate ratio shifts for the continuum bridge (mechanism 61).
 
 ---
 
 ## 7. Open problems
 
-1. **Pairs between lattice points (resolved in `ContinuumCrossingRatioBridgeAndMultiAtomWindowLaw`).**
-   For a continuum crossing pair `(−a, log n − a)` (`a ∈ (0, log n)` between lattice points), the
-   unconditional payment and ratio-bridge sub-inequalities decompose into four laws:
-   - *Exact continuum polar payment zone and cubic Lipschitz axis suppression:* for every prime power
-     `n ∉ atomDominatedModuli = {2, 3, 4, 5, 7}` with `Λ(n) > 0`, `0 < Λ(n)/√n < P_{log n}(½ log n)`,
-     so there exists `c_n ∈ (0, ½ log n)` with `P_{log n}(c_n) = Λ(n)/√n` such that the polar weight
-     pays the continuum crossing atom pointwise at every `a ∈ [c_n, log n − c_n]` and
-     `unpaidSet (log n) (vonMangoldtAtom n) = (0, c_n) ∪ (log n − c_n, log n)` with inner end
-     `unpaidInnerEnd (log n) (vonMangoldtAtom n) = 2Λ(n)/(n − 1)` (`unpaidSet_vonMangoldtAtom_eq`,
-     `unpaidInnerEnd_vonMangoldtAtom_eq`, `level_paid_on_middle_interval`). On any axis interval
-     `[0, c]`, every odd `K`-Lipschitz test `F` satisfies `∫₀ᶜ F(a)² da ≤ K² c³/3`
-     (`integral_unpaidAxis_sq_le_cube`) and
-     `2∫₀ᶜ F(a)F(L − a) da ≤ γ⁻¹(K² c³/3) + γ∫_{L−c}ᴸ F(a)² da`
-     (`two_mul_integral_unpaidAxis_crossing_le`), suppressing the unpaid near-axis crossing charge
-     cubically in `c`.
-   - *Pointwise and strip-level continuum crossing-to-ratio bridge:* at every continuum point `a ∈ ℝ`,
-     for every intermediate point `y' = a + log m` at a same-side ratio shift `log m` reachable from `a`
-     and every `θ > 0`, the harmonic-mean decomposition (`sq_sub_le_harmonic_step`,
-     `sq_sub_le_one_add_mul`) gives
-     `4α_{F,L}(a)² ≤ (1 + θ)(F(a) − F(a + log m))² + (1 + θ⁻¹)(F(a + log m) − F(L − a))²`
-     (`reflectedOddPart_sq_le_ratio_arch_step`). For odd `F`, combining with
-     `2F(−a)F(L − a) + (F(a)² + F(L − a)²) = 4α_{F,L}(a)²` prices the continuum crossing product at
-     `(−a, L − a)` by the **variance** `F(a)² + F(L − a)²`, the **same-side ratio jump**
-     `(F(a) − F(a + log m))²` at lag `log m`, and the **archimedean same-side jump**
-     `(F(a + log m) − F(L − a))²` (`continuum_crossing_le_variance_and_ratio_arch`), and integrating
-     over `S_n = [log n − r, r]` yields the strip-level bridge `oddStripCost_le_ratio_and_arch_shift`.
-   - *Weighted two-atom ratio-lag law and two-prime window certificate (`r = 23/40`):* for arbitrary
-     weights `w₁, w₂` and shifts `a, b`, the discriminant of `three_shift_gram` along `(θw₁, θw₂)` gives
-     `(w₁ A_F(a) + w₂ A_F(b))² ≤ A_F(0)((w₁² + w₂²)A_F(0) + 2w₁w₂ A_F(b − a))`
-     (`sq_weighted_two_atom_le`), its sign-flipped companion (`sq_weighted_two_atom_sub_le`), and the
-     ratio-free polarization ceiling
-     `(w₁ A_F(a) + w₂ A_F(b))² + (w₁ A_F(a) − w₂ A_F(b))² ≤ 2(w₁² + w₂²)A_F(0)²`
-     (`sq_weighted_two_atom_polarization`). At `r = 23/40` (`relevantShifts (23/40) = {2, 3}`), this
-     prices `primeSideCharge F` directly by `A_F(0)` and `A_F(log 3 − log 2)` with
-     `Λ₂² + Λ₃² < 643/1000` (`sq_primeSideCharge_twentyThreeFortieths_le`,
-     `vonMangoldtAtom_two_sq_add_three_sq_lt`), while combining the overlapping-strip Harnack allocation
-     with the incidence ledger yields the complete two-prime full-zero-form certificate
-     `fullZeroForm_ge_twentyThreeFortieths_complete`.
-   - *All-aperture multi-atom ratio-comb ledger bound:* at every aperture `r > 0`,
-     `(primeSideCharge F)² ≤ A_F(0)((Σ_{n ∈ relevantShifts r} Λ_n²)A_F(0) + Σ_{n ≠ m} Λ_n Λ_m A_F(log m − log n))`
-     (`sq_primeSideCharge_le_mass_mul_combEnergy`), yielding the all-aperture ratio-comb lower bound
-     `fullZeroForm_ge_incidenceBudget_sub_combEnergy`.
-2. **The atom against the pole, integrated (resolved in `TheIntegratedAtomPoleLawOfLogConcaveGauges` and `ShiftedGroundStateAndFirstJetAtomPoleLaw`).**
-   Integrating `P_L(x) − Λ(n)/√n` (`L = log n`) against `M(x) M(L − x)` yields an exact three-tier
-   classification governed by the axis decay of `M` and its midpoint concentration:
-   - *Log-concave gauges (`x ↦ log(M x)` concave on `(0, L)`):* `collar_le_collar_of_abs_le` makes `M(x) M(L − x)`
-     symmetric and unimodal, reducing universal payment to the uniform average
-     `∫₀ᴸ P_L = L cosh(L/2) − 2 sinh(L/2)` (`integral_crossingPolarWeight`, `two_mul_sqrt_mul_polarAverage_sub`),
-     so the pole pays every positive log-concave gauge iff `n ∉ {2, 3, 4, 5, 7, 11, 13}`
-     (`forall_logConcave_collarAtomMass_lt_iff`).
-   - *First-jet log-concave gauges (`x ↦ log(M x / x)` concave on `(0, L)`):* linear vanishing at `0` weights the
-     collar by `x(L − x)`, with `∫₀ᴸ x(L − x) P_L(x) = (L³/6 − 2L) cosh(L/2) + 4 sinh(L/2)`
-     (`integral_mul_sub_crossingPolarWeight`, `collarPolarMass_id_sub_collarAtomMass_id`). At `n = 13` the
-     polynomial factors as `2(3 − L)(4 − L)(12 − L²) > 0` (`collarAtomMass_id_lt_collarPolarMass_id_thirteen`),
-     while at `n = 11` it equals `18(4 − L)² − 2(L(3 − L))² − 48 < 0`
-     (`collarPolarMass_id_lt_collarAtomMass_id_eleven`), so the pole pays every first-jet log-concave gauge iff
-     `n ∉ {2, 3, 4, 5, 7, 11}` (`forall_div_id_logConcave_collarAtomMass_lt_iff`).
-   - *Shifted ground-state gauges `m_a = shiftDifference a`:* for `n ≥ 2`, `vonMangoldtAtom n < P_L(L/2)` iff
-     `n ∉ {2, 3, 4, 5, 7}` (`vonMangoldtAtom_lt_crossingPolarWeight_midpoint_iff`), and the sharp tail bounds of
-     `Φ` concentrate `m_a(x) m_a(L − x)` at `L/2` with double-exponential ratio
-     `O(exp(−2π e^{2a−L}(cosh(2δ) − cosh δ)))` (`shiftDifference_collar_le_of_abs_sub_ge`,
-     `shiftDifference_collar_ge_of_abs_sub_le`, `eventually_shiftedGroundState_collar_integral_pos`). Hence
-     `∀ᶠ a in atTop, collarAtomMass (shiftDifference a) n < collarPolarMass (shiftDifference a) n` iff
-     `∃ a > 0, collarAtomMass (shiftDifference a) n < collarPolarMass (shiftDifference a) n` iff
-     `n ∉ {2, 3, 4, 5, 7}` (`eventually_collarAtomMass_lt_collarPolarMass_iff`,
-     `exists_collarAtomMass_lt_collarPolarMass_shiftedGroundState_iff`), paying both `11` and `13`.
-   - *The five moduli `n ∈ {2, 3, 4, 5, 7}`:* every nonnegative gauge leaves a positive deficit bounded between
-     `(Λ(n)/√n − 2 sinh²(L/4)) ∫ M(x) M(L − x)` and `(Λ(n)/√n) ∫ M(x) M(L − x)`
-     (`collarAtomMass_sub_collarPolarMass_bounds`), while the unique interior lattice crossing pair on their
-     anti-diagonals is `(2, 2)` (`a * b = 4`, `interior_lattice_crossing_of_mem_atomDominatedModuli_eq_two_two`),
-     which sits at the midpoint `x = log 2 = log 4 / 2` where `reflectedDifferenceJump ω u (log 4) (log 2) = 0`
-     identically (`reflectedDifferenceJump_four_midpoint_eq_zero`).
-3. **The archimedean part of the bump bridge (resolved in `ArchimedeanBumpBridgeAndSelfEnergyAsymptotic`).**
-   For a Lipschitz bump `β` supported in `[−1, 1]` and a continuous gauge `M` with `|M(x)| ≤ Ce^{−|x|}`,
-   bounding one difference factor by Lipschitz continuity and integrating the other in `L¹(ℝ)` gives the
-   width-independent shift domination `|bumpPairShiftJump M β w p q t| ≤ (2C² L_β ∫|β|)t`
-   (`abs_bumpPairShiftJump_le_mul_t`, `abs_shift_bumpProfile_le_mul_t`), which dominates `ω(t)` near `0`
-   (`integrableOn_archLevyDensity_mul_signedShiftJump_bumpProfile`). For a single bump `b_{α,w}(x) = β((x − α)/w)`,
-   shifts `t > 2w` decouple the two copies of `β` (`integral_signedShiftJump_singleBump_of_two_mul_w_lt`) and
-   integrating against `ω(t)` via `2Ω(2w) = log(1/w) + O(1)` yields the exact logarithmic self-energy asymptotic
-   `gaugeArchJump M b_{α,w} / (w log(1/w)) → M(α)² ∫β²` (`tendsto_gaugeArchJump_singleBump_div_mul_log`).
-   For a finite centre set `P` with minimum separation `s > 0` and `0 < w < s/4`, distinct centres `p ≠ q` have
-   zero shift overlap outside `[|p − q| − 2w, |p − q| + 2w]` (`bumpPairShiftJump_eq_zero_of_not_mem_Icc`),
-   so the off-diagonal archimedean interaction is `O(w²) = o(w)` (`abs_gaugeArchJump_sub_sum_singleBump_le`,
-   `tendsto_gaugeArchJump_sub_sum_singleBump_div`). Consequently, at scale `w log(1/w)`, both `J_M^arch(u_w)`
-   and `J_M(u_w)` converge to `(∫β²) Σ_{p ∈ P} κ_p² M(p)²` and `2(∫β²) Σ_{a ∈ S} c_a² M(log a)²` on the lattice
-   (`tendsto_gaugeArchJump_bumpProfile_div_mul_log`, `tendsto_gaugeArchJump_latticeBumpProfile_div_mul_log`,
-   `tendsto_signedJumpEnergy_bumpProfile_div_mul_log`, `tendsto_signedJumpEnergy_latticeBumpProfile_div_mul_log`),
-   while subtracting the single-packet archimedean self-energies `Σ_{p ∈ P} κ_p² J_M^arch(b_{p,w})` at scale `w`
-   converges to the exact prime incidence quadratic form in `netAtom`
-   (`tendsto_calibratedSignedJumpEnergy_bumpProfile_div`,
-   `tendsto_calibratedSignedJumpEnergy_latticeBumpProfile_netAtom`), together with the ground-state source
-   potential bridges `tendsto_integral_sq_bumpProfile_mul_div` and `tendsto_integral_sq_latticeBumpProfile_mul_div`.
-4. **Lattice conductance at fixed width (resolved in `LatticeConductanceFixedWidthAndOriginAxisJets`).**
-   On same-side pairs `2 ≤ a < b`, `totalLatticeNetKernel a b > 0` (`totalLatticeNetKernel_pos`), so
-   same-side conductance strictly dominates crossing conductance even on `{2, 3}` and `{2, 4}`; on the
-   reflected diagonal `a = b`, `totalLatticeCrossingKernel a a > 0` iff `a ∈ {2, 3}`
-   (`totalLatticeCrossingKernel_diag_pos_iff`); and on the axis pairs `(0, log b)` (`b ≥ 2`), the polar
-   weight vanishes and `totalLatticeAxisKernel b = b²/((b² − 1)√b) + Λ(b)/√b > 0`
-   (`totalLatticeAxisKernel_eq`, `totalLatticeAxisKernel_pos`). In an odd gauge `M` (`M(0) = 0`,
-   `HasDerivAt M M'₀ 0`), the continuous first-jet quotient `jetQuotient M M'₀` proves that origin and
-   axis packets enter at orders `w³` and `w²`:
-   `(1/w³)∫ M(x)² β(x/w)² dx → (M'₀)²∫ y² β(y)² dy` (`tendsto_origin_bump_sq_div_cube`) and
-   `(1/w²)∫ M(x) M(x + L) β₀(x/w) β(x/w) dx → M'₀ M(L) ∫ y β₀(y) β(y) dy`
-   (`tendsto_origin_axis_bump_pair_div_sq`). Combining `fullEnergy_latticeTrain_uniform` (`j = 128(N+2)⁴(k+1)`)
-   with the explicit logarithmic self-energy bound
-   `fullEnergy (narrowBump j) / mass j ≥ log(4/r_j) + EF.gammaBracket 0 + π/2 − 2Ω(1) − 17r_j`
-   (`fullEnergy_narrowBump_div_mass_ge`) and `|incidenceForm c| ≤ (4N log(N+2)) E(c)`
-   (`abs_incidenceForm_le`) yields the uncalibrated fixed-width lower bound
-   `fullEnergy_latticeTrain_fixedWidth_ge` and uniform positivity
-   `fullEnergy (latticeTrain N (resolution N k) c) ≥ 0` above an explicit threshold in `k`
-   (`fullEnergy_latticeTrain_nonneg_of_le`, `eventually_fullEnergy_latticeTrain_nonneg`).
-5. **Windows across scales (resolved in `MultiScaleDyadicWindowCoupling`).** Between `W(X)` and `W(Y)`
-   (`0 < X ≤ Y`), a ratio coupling `b = m a` requires `m ∈ InRatioBand X Y` (`Y/(4X) < m < 4Y/X`,
-   `inRatioBand_of_inDyadicWindows_dvd`), decoupling `2` and `3` for `Y ≥ 12X` (`four_le_div_of_inDyadicWindows_dvd`),
-   with prime-power exponent gap `p^{j−i} < 16` (`pow_sub_lt_sixteen_of_inRatioBand`, unique exponent for
-   `p ≥ 17`, `exponent_eq_of_inRatioBand_of_seventeen_le`) and edge decay
-   `ratioAtom a b < 2 log(4Y/X) √(X/Y)` (`ratioAtom_lt_of_inDyadicWindows`). On prime-power crossing pairs,
-   `productAtom a b = ratioAtom a b / a` (`productAtom_eq_ratioAtom_div_of_isPrimePow`), so for `X ≥ 2` only
-   primes `p < 2X` create crossing edges (`exists_prime_pow_of_inDyadicWindows_isPrimePow_mul`), each `p ≥ 5`
-   contributes at most one edge (`unique_crossing_pair_of_five_le`), and
-   `productAtom a b < 2 log(2X)/√(XY)` (`productAtom_lt_of_inDyadicWindows_of_two_le`), with partial-matching
-   Schur bounds `two_mul_abs_interWindowRatioForm_le` and `two_mul_abs_interWindowProductForm_le`.
-6. **The shared surplus between the light cone and the thin band (resolved in `LightConeSquareRootScaleAndSignedBandObstruction`).**
-   (a) *Two-sided logarithmic capacity law:* any payable family of strips in `[r, 2(r − ε)]` has total weight at most
-   `2 log(4/ε) + 84` (`sum_le_of_isPayableOddPartFamily`), while the geometric ratio-`6` chain achieves weight at least
-   `(7/(10 log 6)) log(1/(12ε))` (`exists_payableOddPartFamily_log_lower_bound`).
-   (b) *Exact square-root width `δ ≍ e^{−r}`:* Selberg sieve on prime shifts (`card_prime_lightConeBand_le_sieve`) and
-   exponent injectivity on proper prime powers (`card_properPrimePow_lightConeBand_le`) widen the payable light cone to
-   `δ ≤ (1/60)e^{−r}` for large `r` and uniformly to `δ ≤ c₀ e^{−r}` for all `r ≥ 2`
-   (`eventually_sum_vonMangoldtAtom_lightConeBand_le_squareRoot`, `exists_squareRoot_lightCone_allocation`); conversely,
-   for every `C ≥ 64000`, `T(r − 2Ce^{−r}, r)` frequently fails to pay the odd parts at width `δ = Ce^{−r}`
-   (`frequently_lightConeBox_oddPart_sharing_fails_at_squareRoot`).
-   (c) *Signed band obstruction:* the bipolar edge-dipole `bipolarEdgeTentOdd` makes every shift product in `thinBand r`
-   pointwise nonnegative (`bipolarEdgeTentOdd_mul_shift_nonneg`) and strictlypositive on `thinBandCore r` while keeping
-   `T(0, r) ≤ r`, so `Σ_{thinBand r} 2Λ(n)/√n ∫ F F(· + log n) > T(0, r)` for all large `r`
-   (`exists_bipolarEdgeTent_signed_thinBand_sharing_fails`); the signed band charge is governed by the global identity
-   `thinBand_signedCharge_eq_tsum_sub_complement`.
+1. **Paying the ledger at every aperture.** The ledger (mechanisms 43, 59) is the target in its
+   exact shape: `Ẑ(F) = pool + crossing potential + remainder − reflectedPrimePolarCost`. Locally
+   everything is paid: each atom by its own strip (mechanisms 30, 35), the light cone by one copy
+   of the pool (mechanism 38), and the two-prime window `23/40` up to the pole (mechanism 61). What
+   is open is one budget that pays every strip mass, the pole and the signed remainder on every odd
+   compact test. The odd-part route ends before `log 2` and does not globalise (mechanisms 39–41);
+   any allocation must use the cancellation of odd parts against even parts, which is the
+   prime–polar balance.
+2. **The rate.** In the width unit the problem is a deficit bound `Ce^{2σr}∫F²` at every aperture
+   for one `σ < ½`: the strip `½ + σ`; a constant times the mass is RH. Unconditionally the ledger
+   reaches the PNT rate, with `GradedIncidenceAllocation (1/2) 75` and the de la Vallée Poussin
+   Sobolev saving `e^{r − c√r}`; every improvement must lower the exponent, not the constant.
+   Beyond lag `O(1)` the surplus contributes nothing where the mass is, so the rate is decided by
+   the Chebyshev pairing alone.
+3. **The signed Chebyshev pairing.** Bound `∫_0^{2r} E(s) w_F(s) ds` with the two sides together,
+   not by the size of `E`. In spectral coordinates: a lower bound on
+   `primeSymbol_N(ξ) − 2K_{2r}(2πξ)` on the frequencies an aperture-`r` test can reach; the polar
+   kernel pays only for `|ξ| ≤ 1/(8r)`, where odd tests carry cubically small mass, and at `ξ = 0`
+   the symbol is the Chebyshev–Mertens comparison `Σ_{n≤N}Λ(n)/√n − 4 sinh r`. State whether a
+   resulting bound is in mass norm or needs derivative or logarithmic Fourier weight.
+4. **The replacement hypothesis.** A power saving over the `ℓ¹` prime cost is equivalent to a
+   bounded Schur constant for the prime-ratio correlations (mechanism 56). For first-power Euler
+   weights the cross-prime aggregate is polynomial; for the half-power family `√p log p/(p − 1)`
+   it is open whether it is.
+5. **The discount in the tower laws.** The envelopes are attained on one and on two aligned
+   multiplicative progressions, so the content is the fold defect `A(0) − A(log p)` and the
+   ladder charge at `log p`. Turn the reduced cost side (primes below the horizon against
+   `A(log p)`) into a lower bound for the ledger at growing aperture, and determine which weights
+   on a squarefree divisor lattice make the subset form pay the first-power charges.
+6. **The coherent comb remainder.** Raw polynomial comb control is false. Identify the coherent
+   part with the translation or resolvent law of Arithmetic Compensation Theory before squaring,
+   and estimate its signed pairing with the test and the pole, in the mass normalisation.
+7. **Signed gauges.** The ground-state representation allows sign-changing gauges. Control the
+   signed remainder and propagate local Harnack bounds across growing prime shifts without
+   spending the same surplus twice.
+8. **The five moduli.** On `n ∈ {2, 3, 4, 5, 7}` every nonnegative gauge leaves a positive
+   atom-over-pole deficit, between `(Λ(n)/√n − 2sinh²(L/4))∫M(x)M(L − x)` and
+   `(Λ(n)/√n)∫M(x)M(L − x)` (`collarAtomMass_sub_collarPolarMass_bounds`); the only interior lattice
+   crossing pair on these anti-diagonals is `(2, 2)`, at the midpoint of `log 4`. These five atoms
+   must be paid by same-side atoms and the gauge, never by the pole. Classify the gauges that do it.
 
 ### Research topics
 
-1. **Beyond the first prime window (resolved at the strip and ledger levels through `23/40` in `OverlappingPrimeStripsTwentyThreeFortieths` and `ContinuumCrossingRatioBridgeAndMultiAtomWindowLaw`).**
-   The variation inequality for all even profiles is proved past `log 2/2` (`181/500`, mechanisms 27–34).
-   At `r = 23/40` (`relevantShifts (23/40) = {2, 3}`), the joint prime-`{2, 3}` strip costs are paid by
-   `2 stripSurplus_{S₂} + evenStripGain` with `(1/62)∫_{S₂} F²` to spare, giving the complete two-prime
-   incidence ledger floor `fullZeroForm_ge_twentyThreeFortieths_complete` and the exact ratio-lag pricing
-   `sq_primeSideCharge_twentyThreeFortieths_le`. A larger window is not by itself progress toward the
-   shared target: the strip payment of the atoms ends before `log 2` (mechanism 40) and does not
-   globalize (mechanisms 39, 41), and what remains at every aperture is the even–odd balance of the
-   atoms (mechanism 42) and the continuum crossing-to-ratio bridge (`continuum_crossing_le_variance_and_ratio_arch`,
-   `oddStripCost_le_ratio_and_arch_shift`). Up to `2/5` the prime atom is dominated by the strip surplus
-   (mechanism 28), so the support is limited only by the archimedean potential `U_h^{off}` (mechanism 29).
-   Past `log 2/2` the fold of mechanism 23 meets the atom on the anti-diagonal `a + b = log 2` of the
-   inside pairs, where the folded conductance is `2M(a)M(b)(ω(|a − b|) − ω(a + b) + 4 sinh(a/2) sinh(b/2))`
-   minus the atom.
-2. **The integrated atom-versus-pole law (resolved in `TheIntegratedAtomPoleLawOfLogConcaveGauges` and `ShiftedGroundStateAndFirstJetAtomPoleLaw`).**
-   Across positive log-concave gauges (`n ∉ {2, 3, 4, 5, 7, 11, 13}`), first-jet log-concave gauges
-   (`n ∉ {2, 3, 4, 5, 7, 11}`), and shifted ground-state gauges `shiftDifference a` (`n ∉ {2, 3, 4, 5, 7}` for large
-   `a`), with two-sided deficit bounds and midpoint vanishing of the unique interior lattice crossing `(2, 2)` on
-   `{2, 3, 4, 5, 7}`.
-3. **The bump bridge (resolved in `BumpBridgeOfThePrimeJumpEnergy` and `ArchimedeanBumpBridgeAndSelfEnergyAsymptotic`).**
-   `J_M + V_μ` on general and lattice bump profiles in terms of `netAtom` (at scale `w` after subtracting the
-   single-packet archimedean self-energies) and the logarithmic archimedean self-energy `2(∫β²) Σ_a c_a² M(log a)²`
-   (at scale `w log(1/w)`), together with the source potential bridge `tendsto_integral_sq_latticeBumpProfile_mul_div`.
-4. **Signed-gauge estimates.** The ground-state representation allows sign-changing
-   gauges. Control its signed remainder and propagate local Harnack bounds across growing prime
-   shifts without spending the same surplus twice.
-5. **Selectivity audit.** For each theorem of §3, what it says for `ζ(s−a)ζ(s+a)` (shifted atoms
-   and polar weight), for a Beurling system with an off-line zero, and for the Liouville twist.
-   Done for two items: the odd windows below `log 2` separate `ζ` from the shifted pair through the
-   pair's own screw kernel (`odd_window_selective`), and the tower law separates each prime tower
-   from its Liouville twin at the first power (mechanism 46). Open for the strip-surplus and Schur
-   certificates, which are nonselective in the window range (they hold for every weight with the
-   same atom at `2`), and for the Chebyshev ledger, whose defect separates every source but whose
-   estimates are so far size estimates.
-6. **Paying the ledger past the windows.** The global condition of mechanism 43 is the target in
-   its exact shape (`fullZeroForm_eq_incidenceBudget_sub_primeSideCharge`). Past `221/400` the costs of
-   several relevant shifts must be paid at once from the pool, the gains and the remainder. The light
-   cone (mechanism 38) pays the costs of the band `2r − 2δ ≤ log n < 2r` from the pool alone; mechanism
-   42 charges every other cost to its strip mass; what pays the strip masses is the remainder
-   `∫ F²(−𝒲P + prime part)` on the strips, whose pointwise floor is the plateau potential of mechanism 27,
-   together with the gains `2Λ(n)/√n ∫_{S_n} F²` (the atom pays its own strip at `t = 1`, mechanism 35).
-   In the two-atom range `½ log 3 < r < log 2`, joint strip payment at `23/40` combines with the
-   crossing potential, plateau remainder floor, and pole charge to give
-   `fullZeroForm_ge_twentyThreeFortieths_complete`, while the weighted three-shift Gram inequality
-   `(w₁ A(a) + w₂ A(b))² ≤ A(0)((w₁² + w₂²)A(0) + 2w₁w₂ A(b − a))` (`sq_weighted_two_atom_le`,
-   `sq_primeSideCharge_twentyThreeFortieths_le`) and its all-aperture comb extension
-   `sq_primeSideCharge_le_mass_mul_combEnergy` (`fullZeroForm_ge_incidenceBudget_sub_combEnergy`) price
-   the crossing prime bill by the mass `A(0)` and the same-side ratio correlations `A(log(m/n))`. The
-   scoreable form of the same problem is the **rate**: bound the ledger's deficit by `C e^{2σ r}∫F²` at
-   every aperture for one `σ < ½`, which is the strip `½ + σ`, and by a constant times the mass for RH.
-   The unconditional rate is `1`; the obstruction at that rate is the prime–polar balance, not the
-   allocation of the surplus.
-7. **The discount in the tower laws.** The envelopes of mechanisms 45, 46, 48 and 51 are attained —
-   on one multiplicative progression, and on two at once, where the two Euler envelopes add — so the
-   content is the fold defect `A(0) − A(log p)` and, for two towers, the ladder charge at the lag
-   `log p`. Turn the reduced cost side of mechanism 47 — the primes below the horizon weighted by
-   `log p/(p − 1)` and `√p log p/(p − 1)` against `A(log p)` — into a lower bound for the ledger at
-   growing aperture, and determine which choices of the free weights on a squarefree divisor
-   lattice (mechanism 49) make the subset form pay the first-power charges. The unit is the rate
-   obtained in topic 6; the test models of `BiScaleUncertainty` decide selectivity, since the
-   translate calculus itself is blind to the arithmetic of the shifts.
-8. **The coherent comb remainder.** Raw polynomial comb control is ruled out by the sharp
-   exponential family. Use the translation or resolvent law from Compensation Theory to identify
-   the coherent part before squaring, and estimate its signed pairing with the test and the pole.
-   State any remaining bound in the mass normalization, with its aperture exponent and errors.
-   A bound for an average over tests does not by itself pay each test in the positivity criterion.
-9. **Signed Chebyshev payment.** Use the exact lag Abel identity to bound the prime–polar
-   difference together. Determine which autocorrelation constraints improve the pairing beyond
-   a size estimate on `E`, and state whether the resulting bound is in the mass norm or requires
-   a derivative or logarithmic Fourier weight. In spectral coordinates the target is a lower bound
-   on `primeSymbol_N(ξ) − 2K_{2r}(2πξ)` where an aperture-`r` test can put its mass: the symbol is a
-   prime Dirichlet polynomial against a polar kernel that pays only for `|ξ| ≤ 1/(8r)`, where odd
-   tests carry cubically small mass, and at `ξ = 0` it is the Chebyshev–Mertens comparison
-   `Σ_{n≤N}Λ(n)/√n − 4 sinh r`.
+1. **Selectivity audit.** For each theorem of §3, what it says for `ζ(s − a)ζ(s + a)`, for a
+   Beurling system with an off-line zero, and for the Liouville twist. Settled: the odd windows
+   below `log 2` separate `ζ` from the shifted pair through the pair's own screw kernel, and the
+   tower law separates each prime tower from its Liouville twin at the first power. Open for the
+   strip-surplus and Schur certificates, which hold for every weight with the same atom at `2`, and
+   for the Chebyshev ledger, whose defect separates every source but whose estimates are size
+   estimates.
+2. **Windows past `23/40`.** A larger window is not progress by itself (mechanisms 39–41). What a
+   window past the two-atom range should demonstrate is a way of paying the pole and several strip
+   masses jointly, which would be the first instance of problem 1.
+3. **The continuum bridge as an allocation.** Mechanism 61 prices each crossing product through a
+   chosen intermediate ratio shift. Choose the intermediate shifts globally so that no same-side
+   jump is spent twice, and measure what remains.
 
 ---
 

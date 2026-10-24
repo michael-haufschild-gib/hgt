@@ -85,15 +85,21 @@ universal sign. No external novelty claim.
 
 - [x] Precise moving-source conjecture and complete paper proof.
 - [x] Every analytic input derived from L² convergence and a common compact window.
-- [ ] Formalize the varying-primary Fatou theorem.
+- [x] Formalize the varying-primary Fatou theorem.
 - [ ] Formalize joint signed-cusp convergence and complete arithmetic liminf.
 - [ ] Direct canonical checks and all public transitive axiom audits.
 
-Finish the fixed-source compact-L² capstone and literal-family consequence first.
-
 ## Lean checkpoint
 
-`/tmp/sz-critical-moving-primary-api.lean` contains the fixed-lag L² continuity,
-varying-primary Fatou inequality, and infinite-energy convergence proofs. This
-draft has not yet been checked. The fixed-source canonical chain remains first
-in the compilation queue.
+The primary-energy component is certified in
+`SuzukiCriticalMovingPrimaryEnergy.lean`: fixed-lag L² continuity,
+`suzukiCriticalLimitingEnergy_le_liminf_of_L2_tendsto`, and
+`tendsto_suzukiCriticalCompensatedEnergy_top_of_L2_tendsto`. Its direct canonical
+check and all three transitive axiom audits passed; see the
+[primary-energy certificate](../3-formalized/sz-critical-moving-primary-energy-2026-10-24.md).
+
+The [fixed-source compact-L² capstone](../3-formalized/sz-critical-source-extended-energy-domain-2026-10-24.md)
+and [literal-family consequence](../3-formalized/sz-critical-family-literal-source-deficit-2026-10-24.md)
+are also certified. Joint signed-cusp convergence and the complete arithmetic
+liminf above remain paper-only. Their Lean formalization is parked while the
+broader research goal is paused.

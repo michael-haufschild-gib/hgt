@@ -330,7 +330,8 @@ theorem exists_dilationStepObservation_vk_band_and_parityTwin_separation
   have hs_pos : (0 : ℝ) < (Real.sqrt (q : ℝ) - 1) ^ 2 := sq_pos_of_pos (by linarith)
   have hK0 : 0 < twinDriftConstantAt ε₀ := twinDriftConstantAt_pos hε₀
   set c_obs := ((Real.sqrt (q : ℝ) - 1) ^ 2 / (q : ℝ)) * ((twinDriftConstantAt ε₀ / 16) ^ 2 / 4)
-  refine ⟨B, c_obs, hB0, by positivity, fun T ε hε_ge hε2 hband => ?_⟩
+  refine ⟨2 * (1 + 1 / (q : ℝ)) * B, c_obs, by positivity, by positivity,
+    fun T ε hε_ge hε2 hband => ?_⟩
   rw [pronicNorm_dilationStepObservation_centeredPrefix_sq_eq]
   exact ⟨hB T ε hε_ge hε2 hband, dilationStepObservation_parityTwin_ge hq hε₀ hε_ge hε2 T⟩
 

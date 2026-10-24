@@ -52,6 +52,17 @@ play different roles for arithmetic reasons, even when their sampling densities 
 | [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Studies the same prime Dirichlet polynomial beyond the Montgomery–Vaughan threshold $X>T$. The band of §3.10, at heights up to $\sqrt N$ for length $N$, is exactly this regime; below it Montgomery–Vaughan bounds everything. Signed close-pair cancellation is that programme's tool and the critical-line zero proportion its target. |
 | [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Collects the band law as the growth-unit entry of the width dictionary. Node criticality is the node test of its selectivity battery: fatal at $\log4$, free at $\log6$, every prime power needed. Its Nyquist rank bound reads the same square-root threshold through dimensions of section spaces. |
 
+Several routes of the RH frontier consume this theory's tools directly. The Weil lag route WL
+takes the explicit cubic-spline universal probe, its finite-shift bounds and the multiplicity
+defect (§3.11); the signed prime scheduling route FU takes the prime-clock mass and edge kernels
+(§3.15); the odd pole-weight route OWU takes the odd polar hyperplane (§3.7); the Möbius–Sonin
+candidate MSC takes the unweighted squarefree Hilbert source; the Suzuki route SZ pays every
+arithmetic cusp of its literal source uniformly in translation with the Lévy energy $\mathcal J$,
+and admits compact Lipschitz sources through the finite-jump Weil formula; the Robin route RB takes
+the growing valuation core of a counterexample; and Bézout–Valuation Incidence takes the stratified
+observation theory (§3.14). The tools are reusable because they are stated for arbitrary sources
+and node sets; none of them carries a sign the route still needs.
+
 `RHTower` supplies explicit-formula, continuation, prime-counting and zero-divisor inputs.
 Beurling systems, shifted zeta pairs, unimodular twists and function-field examples are
 calibration models: state precisely which feature of a proposed mechanism distinguishes them.
@@ -339,7 +350,8 @@ translation with error $C\varepsilon^\alpha$ from fifth and sixth arrays within 
 | clique sphere factor, collar partition | `cliqueSphereDualityFactor`, `PhysicalCollarPartition` |
 | Nyquist polar constant, Taylor residual kernel | `nyquistPolarConstant`, `nyquistWeightKernel` |
 | Chebyshev stencil producers | `chebyshevAlternatingProducer`, `chebyshevBiNullProducer`, `coprimeTwoThreeChebyshevProducer` |
-| factorial lift, factorial sources | `factorialLift`, `factorialSourcePlus`, `factorialMuntzCompletion` |
+| factorial lift, factorial sources, pole-free hyperplane | `factorialLift`, `factorialSourcePlus`, `factorialMuntzCompletion`, `factorialPoleFunctional` |
+| prime-clock profile, mass and edge kernels, off-diagonal source-pair sum | `primeClockProfile`, `primeClockMassKernel`, `primeClockEdgeKernel`, `offDiagSourcePairSum` |
 | coprime shear | `mulShift`, `addShift`, `addDiff` |
 | Ramanujan lag weight, period covariance | `ramanujanLagWeight`, `periodCovariance` |
 | translated and affine moments | `translatedMoment`, `affineMoment` |
@@ -914,7 +926,7 @@ $$
 $\frac1L\int_{L-W}^L\tilde E^2\to0$ and discrete Nyquist-cell and Chebyshev mean-square convergence
 (`tendsto_centeredCellSum_div_log`, `tendsto_discreteChebyshevSum_div_log`). The mechanism combines
 Cramér's liminf law with a dyadic Chebyshev decomposition at $r=1$ (`dyadic_chebyshev_sq_div_le`):
-conjugate-paired finite sums below ordinate $2^{K_0}$ satisfy Parseval (`tendsto_mean_sq_lowZeroSum`),
+conjugate-paired finite sums below ordinate $2^{K_0}$ satisfy Parseval (`tendsto_mean_lowZeroSum_sq_div`),
 while the high-ordinate zero tail decays geometrically as $(5/6)^{K_0}$ via Montgomery–Vaughan on
 dyadic shells (`cramer_tail_summable_zero_energy`). For a compact source $F$ at finite cutoff
 $L=\log(N+2)$, the packet energy splits into three disjoint zones (`packetEnergy_eq_three_zones`):
@@ -969,22 +981,34 @@ Receivers rewrite the explicit formula; producers bound it. The theory insists o
   coercive with normalized energy tending to infinity logarithmically, the mixed ramp–tent
   coefficient decays like $\log n/\sqrt n$, and the polar loss has asymptotic coefficient $\tfrac14$
   and dominates the Gram error.
-- **Müntz completion.** The factorial ramp is the positive-logarithmic restriction of an explicit
-  arithmetic sum whose Mellin transform vanishes at every zeta zero with positive real part. The
-  omitted tail is exactly the negative-logarithmic part; after the unique polar correction it has
-  a uniform envelope $12(n+1)^{-1/2}e^{-3|x|/2}$, its prime and pole costs are $O(1/(n+1))$ times its
-  mass, but its archimedean energy grows like $\tfrac12\log(n+1)$ times its mass: the smoothed
-  correction tails have **unbounded normalized Weil energy**. The vanishing is a two-sided
-  bookkeeping identity rather than an estimate: at *every* zero $\rho$ with $\Re\rho>0$ the actual
-  compact ramp's readout equals minus the tail's readout exactly, with a source-derived
-  quantitative bound on both, and the literal reflected source used as the ramp diagonal of the
-  full Weil Gram matrix has fixed-zero readouts tending to zero as the scale grows — *regardless of
-  which side of the critical line the zero sits on*. The family therefore cannot separate on-line
-  from off-line zeros through its diagonal, which is exactly why the Gram off-diagonal and the
-  polar correction carry the whole question. The seed of the construction is explicit and
-  elementary: a zero-mean bounded-variation combination of three dilated positive ramps on the
-  collar, uniformly bounded by $9$, with the collar and dyadic coefficients cancelling its integral
-  identically — no smoothing and no limit is needed to admit it to Stieltjes pairings.
+- **Müntz completion and multi-scale redistribution.** The factorial ramp is the positive-logarithmic
+  restriction of an explicit arithmetic sum whose Mellin transform vanishes at every zeta zero with
+  positive real part. The omitted tail is the negative-logarithmic part; after the unique polar
+  correction it has a uniform envelope $12(n+1)^{-1/2}e^{-3|x|/2}$, its prime and pole costs are
+  $O(1/(n+1))$ times its mass, and its archimedean energy grows like $\tfrac12\log(n+1)$ times its
+  mass, so single-scale smoothed correction tails have **unbounded normalized Weil energy**. Yet the
+  completed source $H_{n,k}=r_{n,k}+U_{n,k}$ has rank-one zero-divisor readout
+  $F_{H_{n,k}}(\rho)=\kappa_k(\rho)c_n/\rho$ with $c_n=1/(2\sqrt{n+1})$ and zero-divisor sampling
+  mass $O(1/(n+1))$ without the logarithmic factor, transferring the $\tfrac12\log(n+1)$ archimedean
+  growth directly into a positive Weil margin
+  $\operatorname{Re}W(r_{n,k},r_{n,k})\ge\log(n+1)/(4096(n+1))\ge\delta Z(r_{n,k})$ on the compact
+  smoothed ramp (`single_scale_tail_localization_and_ramp_transfer`). Across multiple scales $n\in S$,
+  the completed readout factors through $\Lambda_{\mathrm{pole}}(S,a)=\sum_{n\in S}a_nc_n$; on the
+  codimension-one pole-free hyperplane $\Lambda_{\mathrm{pole}}(S,a)=0$ (in particular for every
+  two-scale pair $c_{n_2}H_{n_1,k}-c_{n_1}H_{n_2,k}$), the completed combination has identically zero
+  zero-divisor mass and Weil pairing (`pole_free_hyperplane_zero_cost_completion`), so the compact
+  ramp combination $R_{S,d,k}$ and the tail combination $U_{S,d,k}$ have identically equal
+  zero-divisor mass and Weil energy with zero completion loss, and for any real pole-free combination
+  supported on $n+1\ge M\ge2$,
+  $\lim_{k\to\infty}\operatorname{Re}W(R_{S,d,k},R_{S,d,k})\ge(\tfrac A2\log M-C)\sum_{n\in S}\|d_na_n\|^2$
+  (`pole_free_ramp_combination_smoothing_limit_and_weil_coercivity`). Likewise, every far polar
+  packet `farPolarTest X` ($X\ge4$) admits a finite nonnegative completion by $N^2$ coherent step
+  packets at the same aperture $X+17/50$ that cancels every integer atom $n\ge2$ identically at
+  uniformly bounded total archimedean energy while preserving a strictly positive total-energy floor
+  (`exists_bounded_archimedean_coherent_polar_completion`). The seed of the Müntz construction is an
+  explicit zero-mean bounded-variation combination of three dilated positive ramps on the collar,
+  uniformly bounded by $9$, with the collar and dyadic coefficients cancelling its integral
+  identically.
 - **Nyquist polar producers.** $\cosh(\tfrac12\log n)$ approximates $\cosh(x/2)$ on its cell with
   $L^2$ error $\le1/(16n^2)$, $\le 1/(16N)$ over a dyadic window, and the all-tail residual is an
   explicit positive bounded operator. Taylor producers of order $m$ for $\cosh(\beta x)$ have an
@@ -1135,7 +1159,17 @@ hyperbolic–modular source graph: five-term nodal-lobe jump bounds, the balance
 its three-term nonnegative prime-shift form, Beurling–Deny Markov positivity of the stationary
 resolvent, $\cosh(x/2)$-decaying ground potential bounds, the chiral Euler–Poisson drift identity
 and prime-shift rigidity under weight perturbation, and the mass and edge kernels of the prime
-clocks, which retain their centre $\log(N/q)$ and lag $\log(q/p)$. On the Fermi–Nyman side: the
+clocks, which retain their centre $t=\log(N/q)$ and lag $\log(q/p)$: they are the mass and edge
+inner products along `PrimeClock.curve k` (`primeClockMassKernel_eq_inner_curve_fst`,
+`primeClockEdgeKernel_eq_inner_curve_snd`), their difference is `sourcePair` along the curve
+(`primeClockEdgeKernel_sub_massKernel_eq_sourcePair_curve`) with exact stationary/generator/potential
+and stationary/archimedean/prime-shift operator decompositions (`primeClockKernel_operator_decompositions`),
+lag-reversal symmetry, zero-lag diagonal identities, Cauchy–Schwarz bounds, and decay to $0$ as
+$t\to\pm\infty$ (`primeClockKernel_tendsto_zero_atTop_and_atBot`), and the distinct-prime sum of
+$\frac{N}{pq}(\mathrm{primeClockEdgeKernel}-\mathrm{primeClockMassKernel})$ realizes
+`sourceEnergy q` for every $q\in\mathrm{SourceGraph}$ and rules out resolvent eigenvalues $\mu>1/2$
+when nonnegative (`offDiagSourcePairSum_eq_sum_primeClockKernel_diff`,
+`primeClockKernel_diff_sign_and_spectral_characterization`). On the Fermi–Nyman side: the
 centred Bernoulli sawtooth and its exact sign flip, the multi-octave step-brick partition and
 single-cell combinators, Vasyunin's exact global-minus-head tail Gram, witness transfer of every
 bulk cell into the origin tail, the Selberg $\Lambda^2$ tail form, the lossless signed lcm defect
@@ -1390,8 +1424,13 @@ single-integer power sets and gapped sets are instances of one definition.
    translation, with sharp exponents $1/6$ globally and $1/3$ on the top-coordinate stratum. The
    question that remains is the cost of observing less: windows, fewer moments, cutoff-free
    constants.
-5. **Can the compact factorial sources be completed at bounded cost?** The Müntz tail shows that
-   the direct completion cannot; whether some completion can is open.
+5. **Can the compact factorial sources be completed at bounded cost?** Single-scale direct
+   completion by $U_{n,k}$ has unbounded normalized archimedean energy $\asymp\tfrac12\log(n+1)$
+   while its completed source $H_{n,k}$ has $O(1/(n+1))$ zero-divisor sampling mass, transferring
+   the logarithmic Weil margin to the compact ramp; on the codimension-one pole-free hyperplane
+   $\Lambda_{\mathrm{pole}}(S,a)=0$ across scales, completion has identically zero zero-divisor
+   cost, and for far polar packets coherent step subdivision completes every integer atom at
+   uniformly bounded archimedean energy (§3.12).
 
 ### 6.2 Tools
 
@@ -1409,7 +1448,8 @@ Built and reusable:
   engine, Parseval for the critical almost periodic part, tuned probes and the explicit cubic
   spline universal probe.
 - *Producers*: Nyquist polar constants, Taylor producers, Chebyshev bi-null stencils, factorial
-  lifts, spectral designs — explicit tests with unconditional errors.
+  lifts, pole-free multi-scale ramp combinations, coherent polar step completions, and spectral
+  designs — explicit tests with unconditional errors.
 - *The triangular Gram split* for synchronized packet blocks without orthogonality.
 - *Arithmetic observation theory*: Selberg coordinates, Ramanujan lag weights, valuation classes,
   canonical translation, the stratified, global, cutoff-independent coordinate, and windowed
@@ -1430,157 +1470,106 @@ To be built:
 ### 7.1 The band
 
 In the field's coordinates the square-root barrier is $\int_0^L\tilde E^2=O(L)$, equivalently
-$O(L)$ Laplace energy of $\nu_N$, equivalently $O(L)$ energy in the band $|\xi|\le\sqrt{N+2}$.
-Everything outside the band is bounded, the band's exponential rate is the zero width, its slope
-dominates the zero energy $\sum m_\rho^2/|\rho|^2$, it is never sublinear, it cannot grow strictly
-between linear and exponential, and the linear band is RH in both directions. Inside the band,
-under RH the band mean $(1/M)\int_0^M\tilde E^2$ converges to the total zero energy
-$\sum_\rho m_\rho^2/|\rho|^2$ (`tendsto_mean_sq_normalizedLogError`), the boundary-corrected
-finite-cutoff packet energy and gauge convolution energy per unit cutoff converge to $E(F)$ while
-the raw finite-cutoff packet energy differs from $E(F)$ by the cutoff jump layer
-$\tilde E(L)^2\|F\|_2^2/L$ (`tendsto_boundaryCorrectedPacketEnergy_div_cutoff`,
-`eventually_packetEnergy_div_cutoff_bounds`, `tendsto_packetEnergy_div_cutoff_iff`), and the
-explicit spline probe $U(u)=e^uU_1^{\star4}(u)$ satisfies effective finite-shift local Chebyshev
-and spectral bounds at every shift $\tau>4$ (`abs_stationaryPacket_splineProbe_le_local_chebyshev`,
-`abs_stationaryPacket_splineProbe_le_of_riemannHypothesis`,
-`riemannHypothesis_iff_spline_prime_sum_le_of_gt_four`). Open: the unconditional linear band
-itself. A mechanism that closes it must fail for Beurling systems, survive the degenerate
-point of one character and modulus one, carry information beyond polynomial length equal to
-height at square-root precision, and separate $\log4$ from $\log6$; additive tools do the first
-and third only after averaging over a family, and multiplicative tools are Beurling-invariant.
+$O(L)$ Laplace energy of $\nu_N$, equivalently $O(L)$ energy in the band $|\xi|\le\sqrt{N+2}$, and
+the linear band is RH in both directions (§3.10). Everything outside the band is bounded; inside it
+the exponential rate is twice the zero width, the slope dominates the zero energy, and no growth
+strictly between linear and exponential is possible. What is missing is a source-derived bound on
+the band itself. A mechanism that closes it must pass four tests: it fails for a Beurling system
+with an off-line zero; it works at the degenerate point of one character and modulus one; it
+carries information beyond polynomial length equal to the height at square-root precision; and it
+separates $\log4$ from $\log6$. Additive tools pass the first and third only after averaging over
+a family; multiplicative tools are Beurling-invariant. Short of the band, every improvement of an
+exponent is an explicit strip: the cross entry of the two-exponential pole compression, i.e. the
+integrated Chebyshev deficit $D(T)$, has unconditional rate $2$ (Vinogradov–Korobov) against the
+needed $1+2\alpha$.
 
 ### 7.2 The blind cone
 
-On the powers of one integer the slack is completely known. On any node set $\mathcal N$, the
-exact blind and zero-pole symbol values `blindSymbolValue 𝒩` and `zeroPoleBlindSymbolValue 𝒩` are
-attained as the least elements of the admissible slack rays (`isLeast_blindSymbolSlackOn`,
-`isLeast_zeroPoleBlindSymbolSlackOn`), and shift by $|\Omega(0)|$ to the Lévy energy infima
-$\inf\mathcal J(c)/\mathrm{mass}(c)$ (`blindLevyInfimum_eq_abs_gammaBracket_add_blindSymbolValue`,
-`zeroPoleBlindLevyInfimum_eq_abs_gammaBracket_add_zeroPoleBlindSymbolValue`). Whenever $\mathcal N$
-has sub-square-root window density — including every $S$-smooth set and the union of two power
-towers — the pole constraint is invisible (`zeroPoleBlindSymbolValue_eq_of_density`). On the powers
-of two integers the spectral law is a probability law on the line with uniform projections on both
-circles $r\mapsto r\ell_i\bmod2\pi$; weak duality with line certificates and finite-cutoff line
-designs encloses both the blind and zero-pole values in
-$[-T(q_1,q_2),\,-m_{q_1}-\eta(q_1,q_2)]$ (`two_tower_blindSymbolValue_enclosure`,
-`blindSymbolValue_le_of_lineDesign_family`). For $L$-window-supported combinations, prime-power
-blindness reduces to the finite node set $\mathcal N\cap[2,e^L)$
-(`blindOn_primePowerNodes_iff_window_lt`), and disjointness of shifted supports imposes the
-unconditional Lévy tail floor $\mathcal J(c)\ge(\int_L^\infty w_{\mathrm{arch}})\,\mathrm{mass}(c)$
-(`windowLevyTailFloor_mul_massOf_le_combinationLevyEnergy`). Open: the exact closed-form value on
-two towers beyond the line-certificate / product-design enclosure, and the unconditional zero-pole
-positivity $\inf\mathcal J/h(0)\ge|\Omega(0)|$ on the full prime-power-blind polar class (which is
-RH, `riemannHypothesis_iff_abs_gammaBracket_le_zeroPoleBlindLevyInfimum_primePowerNodes`).
+On the powers of one integer the slack is completely known (§3.6); on two towers it is enclosed
+between line certificates and line designs; on any node set of sub-square-root window density the
+pole is invisible. Open:
+
+- the exact value on two towers $\{q_1^j\}\cup\{q_2^j\}$: a moment problem on the line with uniform
+  projections on two circles, of which only the enclosure $[-T(q_1,q_2),-m_{q_1}-\eta(q_1,q_2)]$ is
+  known;
+- the slack of the prime-power-blind cone as a function of the window, between the unconditional
+  Lévy tail floor $\int_L^\infty w_{\mathrm{arch}}$ and the full-grid value;
+- zero-pole positivity $\inf\mathcal J/h(0)\ge|\Omega(0)|$ on the full prime-power-blind polar
+  class, which is RH. The node-criticality theorem (§3.16) says exactly which nodes such a proof
+  must charge.
 
 ### 7.3 The odd sector
 
-The coherent price $\log2$ is sharp and the finite-filter gain is strict. For any odd test $f$,
-the pole term is $-2(\int f\sinh(u/2))^2=-2\int_{\mathbb R}h_{S_{1/2}f}\le0$
-(`re_weilPoleTerm_eq_neg_two_mul_integral_autocorr_sinhMultiplier`), which makes odd archimedean
-and Weil positivity antitone in the pole weight $\beta$ and unconditionally false for $\beta>1$
-(`not_weilPositiveOddAt_and_not_primeBlindPositiveOddAt_of_one_lt`). In the full Weil functional at
-$\beta=1$, this negative pole term is absorbed identically by the continuum polar part of
-$-2\,\mathrm{pairing}(N,h_f)$ (`RealOddTestFn.re_weilFullFunctional_vonMangoldt_eq_gamma_add_levy_sub_two_pairing`),
-while on the odd polar hyperplane `RealOddPolarTestFn` ($\int f\sinh(u/2)=0$) the $\sinh$-moment
-cost vanishes identically in `weilArchRe` itself, every signed coercivity bound holds at $\beta=1$
-with zero $\sinh$-moment penalty (`RealOddPolarTestFn.unconditional_vonMangoldt_all_scale_signed_weilArchRe_lower_bound`),
-symmetric three-copy enforcement preserves odd finite-grid energy infima
-(`odd_polar_log_grid_lower_bound_iff`), and nonnegativity of `weilFullFunctional Λ` on
-`RealOddPolarTestFn` (equivalently `RealWeilPositiveOddAt β Λ` for any $\beta\le1$) is equivalent
-to RH (`riemannHypothesis_iff_realOddPolarWeilPositive_vonMangoldt`,
-`riemannHypothesis_iff_realWeilPositiveOddAt_vonMangoldt`). Open: the unconditional odd Weil sign
-itself (which is RH).
+The coherent price $\log2$ is sharp, the finite-filter gain is strict off the even sources, and the
+folded sinh source's cell variance is the exact remaining slack. On the odd polar hyperplane the
+pole term vanishes identically, and nonnegativity of the full Weil functional there is RH (§3.7).
+Open: a source-derived bound on that cell variance, and through it any odd-sector positivity beyond
+the windows where no prime enters.
 
 ### 7.4 Packets and multiplicity
 
-The maximal critical multiplicity is $\sup_fE(f)/W(f)$, every zero a probe sees is felt with its
-amplitude in both directions, and the Weil energy is bounded by the recurrent maximum of the
-translated pairings of one packet, unconditionally (`TranslatedPairingEnvelopeLaw`). For a source
-vanishing outside $[-w,w]$, every translated pairing $\langle h_f(\cdot-\tau),\nu\rangle$ at
-$\tau>2w$ is an exact finite prime sum over $1\le n\le\lfloor e^{\tau+2w}\rfloor$ minus the window
-polar integral on $[\tau-2w,\tau+2w]$ and is represented unconditionally by the local Chebyshev
-gauge integral on $[\tau-2w,\tau+2w]$ (`stationaryPacket_eq_finite_prime_polar`,
-`stationaryPacket_autocorr_eq_local_gauge`). When $h_f$ is blind right of the line, reflection
-symmetry kills the off-critical zero series on both sides of the line identically, so the envelope
-bound $\lvert\langle h_f(\cdot-\tau),\nu\rangle\rvert\le W(f)+\lVert A_{h_f}(\tau)\rVert$ holds at
-every shift $\tau>2w$ without an unknown threshold (`abs_stationaryPacket_autocorr_le_of_blind`,
-`abs_translatedPairing_le_levy_of_packet_bddAbove`). The multiplicity defect
-$\Delta_{\mathrm{mult}}(f)=E(f)-W(f)$ is the $N\to\infty$ limit of the purely finite-prime
-observable `finitePrimeMultiplicityDefect g w N`
-(`tendsto_finitePrimeMultiplicityDefect_of_packet_bddAbove`), and for the explicit spline probe $U$
-the critical-line lower bound $\lVert\hat U(r)\rVert\ge(\sinh 1)^4/(1+r^2)^2$ forces the explicit
-simplicity gap $\Delta_{\mathrm{mult}}(U)\ge4(\sinh 1)^8/(1+\gamma_0^2)^4$ at any non-simple
-critical zero (`splineProbe_multiplicityDefect_gap_of_mult_ne_one`,
-`forall_critical_simple_up_to_height_of_multiplicityDefect_lt`). Open: an unconditional
-source-derived finite bound on the envelope (which is RH) and unconditional vanishing of
-$\Delta_{\mathrm{mult}}(U)$ (simplicity of all critical zeros, which RH alone does not give).
+A single universal packet decides RH and, with its mean square, simplicity (§3.11). Open:
+
+- a source-derived finite envelope for the packet of the explicit spline probe, which is RH;
+- a certified finite-prime test of $E(U)=W(U)$: the finite-prime multiplicity defect converges to
+  $\Delta_{\mathrm{mult}}(U)$ under a one-sided packet bound, but its tail beyond the cutoff has no
+  unconditional bound;
+- unconditional vanishing of $\Delta_{\mathrm{mult}}(U)$, i.e. simplicity of the critical zeros,
+  which RH alone does not give.
 
 ### 7.5 Arithmetic observation
 
-Global sixth-root and stratified cube-root recovery are proved and sharp. In Selberg coordinates
-and the normalized clock-period $L^2$ metric the recovery constants are $3$ and $9$ globally (and
-$2$ and $4$ on the top-anchor stratum), completely independent of the cutoff $N$
-(`exists_cutoff_independent_coordinate_and_reflection_error`,
-`exists_cutoff_independent_coordinate_and_reflection_holder`); on a stated support stratum $S$ the
-physical translation constant sharpens from $3\sum_{q\le N}\varphi(q)$ to $3\sum_{q\in S}\varphi(q)$
-globally and $2\sum_{q\in S}\varphi(q)$ on the top-anchor stratum (`exists_stratum_physical_translate_holder`,
-`exists_topAnchor_stratum_translate_error`, `exists_dyadicTower_physical_translate_holder`).
-Window-transfer bounds lift global sixth-root recovery to finite windows of length $K>0$ with
-explicit cutoff cost $O(1/K)$ (`exists_global_physical_translate_of_windows_l1`,
-`exists_global_physical_translate_of_windowMoments`), while $N$ two-point lags on one window
-recover all coordinate magnitudes (`abs_selbergCoord_abs_sub_sq_le_of_single_window_lags`). Both
-halves of observation theory — in-support sign orientation and missing-mode visibility — are
-governed by the Parseval relation-energy identity on $\mathrm{zeroProductTuples}\,N\,m$, which
-supplies quantitative mean-square and shift-realization bounds on the visible/active side and cubic
-moment suppression $O(t^3)$ against linear physical $L^2$ energy $4M\varphi(q)t^2$ on the invisible
-side (`quantitative_sign_relation_dichotomy`, `quantitative_visibility_relation_dichotomy`). Exact
-algebraic recovery bounds no receiver energy; the passage from period moments to finite horizons
-belongs to Bézout–Valuation Incidence.
+Recovery from fifth and sixth moments is exact and sharply stable (§3.14). Exact algebraic
+recovery bounds no receiver energy. Open: the cost of observing less (fewer moments, shorter
+windows, partial supports), and any theorem that converts finite-moment stability into stability
+of a receiver energy. Full-cell observation stability, as in the physical-model route, does not
+supply it. The passage from period moments to finite horizons belongs to Bézout–Valuation
+Incidence.
 
 ### 7.6 Producers and completion
 
-The Müntz correction tail shows that the compact factorial family cannot be completed inside the
-decay-class Weil domain at bounded normalized energy. The obstruction is localized: the
-construction's seed is an explicit zero-mean bounded-variation ramp combination, and the diagonal
-readout identities hold at every zero with $\Re\rho>0$ on both sides of the line, so neither the
-seed's regularity nor the diagonal's arithmetic is the missing ingredient — the unbounded cost
-sits entirely in the archimedean energy of the omitted negative-logarithmic tail, which grows like
-$\tfrac12\log(n+1)$ against an $O(1/(n+1))$ prime-and-pole cost. A completion at bounded cost has
-to redistribute archimedean energy; a producer family with bounded completion cost, or a proof
-that none exists, is open. For the prime clocks the arithmetic estimates for the mass and edge
-kernels and the sign of their difference are open; the kernels retain centre and cutoff, so a
-lag-only convolution model is not justified.
+The Müntz correction tail shows that a single compact factorial source cannot be completed inside
+the decay-class Weil domain at bounded normalized tail energy (§3.12). The obstruction is
+localized: the seed is an explicit zero-mean bounded-variation ramp combination, the prime and pole
+costs are $O(1/(n+1))$ times the mass, and the completed source $H_{n,k}$ has $O(1/(n+1))$
+zero-divisor sampling mass, so the tail's $\tfrac12\log(n+1)$ archimedean energy transfers directly
+to a positive Weil margin on the compact ramp (`single_scale_tail_localization_and_ramp_transfer`).
+On the codimension-one pole-free hyperplane $\Lambda_{\mathrm{pole}}(S,a)=0$ across scales, the
+completion has identically zero zero-divisor mass and Weil energy
+(`pole_free_hyperplane_zero_cost_completion`) and transfers the high-scale logarithmic Weil
+coercivity to the compact ramp combination (`pole_free_ramp_combination_smoothing_limit_and_weil_coercivity`);
+for far polar packets, coherent step subdivision cancels every integer atom at uniformly bounded
+archimedean energy (`exists_bounded_archimedean_coherent_polar_completion`). For the prime clocks,
+the mass and edge kernels are the inner products along `PrimeClock.curve k` and their difference is
+`sourcePair`, with exact stationary/generator/potential and stationary/archimedean/prime-shift
+decompositions, Cauchy–Schwarz bounds, and decay to $0$ as $t\to\pm\infty$ (§3.15). Open: a
+single-scale producer completion off the pole-free hyperplane with bounded normalized archimedean
+tail energy, and an unconditional nonnegativity proof for the distinct-prime sum of
+$\frac{N}{pq}(\mathrm{primeClockEdgeKernel}-\mathrm{primeClockMassKernel})$.
 
 ### 7.7 Research topics
 
-1. **Node criticality.** What in the multiplicative incidence of the node set $\{\log n\}$ makes
-   $\log4$ indispensable and $\log6$ redundant beyond the deletion prices and window thresholds of
-   §3.16 (the price of $4$ is a local Euler factor and appears at its own lag; $\log6$ is the lag
-   of a node that is never charged), and how a positivity argument at arbitrary support reads it.
-   This is the criterion every closing mechanism of the shared target must pass.
-2. **Prime-blind archimedean positivity.** The infimum of $\mathcal J/h(0)$ on the full blind
-   polar class against $|\Omega(0)|$, with its exact slack, as an input to sign-changing
-   ground-state gauges.
-3. **The linear band itself**, tested against the four requirements of §7.1. Equivalent
-   coordinates for the same demand, to be used interchangeably: a square-root-scale bound on the
-   integrated Chebyshev deficit $D(T)=\int_0^T(e^t-\psi(e^t))\,dt$, equivalently on the cross
-   entry of the two-exponential pole compression; the unconditional rate there is $2$
-   (Vinogradov–Korobov) against the needed $1+2\alpha$, and any improvement of the rate is an
-   explicit strip.
-4. **Packets and multiplicity.** Whether $E(U)=W(U)$ can be tested with a certified finite-prime
-   error, and whether the explicit spline packet admits a source-derived finite envelope bound.
-5. **Selectivity and calibration models.** A Beurling system with an off-line zero, the shifted
+1. **Node criticality.** What in the multiplicative incidence of $\{\log n\}$ makes $\log4$
+   indispensable and $\log6$ redundant beyond the deletion prices and window thresholds of §3.16
+   (the price of $4$ is a local Euler factor and appears at its own lag; $\log6$ is the lag of a node
+   that is never charged), and how a positivity argument at arbitrary support reads it. This is
+   the criterion every closing mechanism of the shared target must pass.
+2. **Prime-blind archimedean positivity.** The infimum of $\mathcal J/h(0)$ on the full blind polar
+   class against $|\Omega(0)|$, with its exact slack, as an input to sign-changing ground-state
+   gauges.
+3. **Phase-sensitive readings.** Window extremes are twist-invariant and cannot see the phases of
+   the prime atoms; summed, damped receivers can (§3.16). Which of the band, the packet and the
+   pole compression can be rewritten as such a summed reading with an unconditional producer?
+4. **Selectivity and calibration models.** A Beurling system with an off-line zero, the shifted
    pair $\zeta(s-a)\zeta(s+a)$, the Liouville twist and the function-field case $\mathbb F_q[T]$,
    each written in this theory's coordinates (node values, window spectra, packets, the blind
    cone), so that every positivity or cancellation theorem of the sibling programmes can be tested
    against them. The Beurling deletion and perturbation systems of `RHTower` and `HTGeometry` and
    the function-field window and purity modules are the starting objects; the unit is the list of
-   statements each model refutes. Arithmetic Orientation Theory collects the tests already proved
-   (golden datum, shifted pair, parity twins, node criticality, function field, …) into one
+   statements each model refutes. Arithmetic Orientation Theory collects the proved tests into one
    selectivity battery; what this theory adds is each model written in its own coordinates, so
-   that a test can be run on a band, a packet or a window spectrum directly. Two entries are
-   settled here: node criticality is the node test of the battery, and window spectra fail the
-   twist test by construction (they are twist invariant, §3.16).
+   that a test can be run on a band, a packet or a window spectrum directly. Node criticality is the
+   node test of the battery, and window spectra fail the twist test by construction.
 
 ---
 

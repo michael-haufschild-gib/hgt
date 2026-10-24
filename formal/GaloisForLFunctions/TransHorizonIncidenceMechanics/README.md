@@ -59,8 +59,16 @@ Read the receivers in §1.2 before the many finite identities. Sections 2 and 3.
 what the observer measures; §§3.9–3.11 explain recovery and its price; §§3.16–3.17 explain
 why signs and the analytic continuation of the actual source decide the receiver; §§3.18–3.19
 show what the receiver reads in multiplicative sign patterns and on probes of $\zeta$; §3.20 lists
-what is proved for the actual source. §4 collects the pillar theorems, §§6–7 the questions and open
+what is proved for the actual source, and §3.21 isolates the signed part of its energy and sorts the
+theory's laws by what they can see. §4 collects the pillar theorems, §§6–7 the questions and open
 problems.
+
+Three routes of the RH frontier use THIM directly. The physical-model route PM takes the cofactor
+row, its mean preservation and growing-cutoff transfer, and the Fermi trace laws; the Möbius
+cancellation route MC takes the oscillating-probe theorems as an alternate receiver (every
+oscillating smooth-power probe below half damping is unpaid iff RH) and their source-side
+anti-alignment form; and Bézout–Valuation Incidence, which feeds PM, MC and CTF, shares the sieve
+objects and owns the Vaughan pronic calibration.
 
 ---
 
@@ -1778,8 +1786,64 @@ admitted parameters, do not exclude every $0<\varepsilon<\tfrac12$
 written in source coordinates. What the reformulation contributes is the location of the
 cancellation that a Möbius bound has to control: long moduli against the trans-horizon tail.
 
-### 3.21 Bridges
+### 3.21 The signed interior energy and the selectivity of the laws
 
+**The cofactor row keeps its mean.** A truncated Möbius row has finite-horizon mean $H_\mu(N)$,
+which differs from the Haar mean by the harmonic tail $\tau_N$; in the centred prefix this is a
+linear mean-drift dipole $n\tau_N$, the obstruction of §3.17. The actual cofactor row of the PM
+route has no such dipole: $\sum_{d\le Q}K_Q(d)/d=1/\zeta(1+\varepsilon)$ holds identically, so
+$H_{c_Q}(Q)=\rho_\varepsilon$ at every $Q\ge1$, and its centred prefix differs from
+$A_\varepsilon(n)$ only by the cumulative Ramanujan truncation $\sum_{k\le n}(s_Q(k)-\tau_\varepsilon(k))$,
+of size at most $\frac{1+\varepsilon}\varepsilon n^2Q^{-\varepsilon}$
+(`sievePrefixDiscrepancy_pmCofactorRealWeight_sub_centeredPrefix_eq`). In the pronic norm,
+$$
+\Bigl\lvert\sqrt{E^{\mathrm{cof}}_{Q,T}}-\sqrt{E^{\mathrm{int}}_T(\varepsilon)}\Bigr\rvert\le\tfrac12+\tfrac{1+\varepsilon}\varepsilon\,T\sqrt T\,Q^{-\varepsilon},
+$$
+so along any growing cutoff with $T\sqrt TQ(T)^{-\varepsilon}$ bounded the two receivers are bounded
+together (`growingCutoff_cofactorPronicEnergy_bounded_iff_interiorPronicEnergy_bounded`). The PM
+receiver is the interior receiver of §1.2, with no dipole loss.
+
+**The signed interior energy.** At fixed $\varepsilon\in(0,\tfrac12)$ the interior energy is the
+diagonal of a $25$-entry signed pronic Gram matrix of the five pieces of Vaughan's identity, with
+moving endpoints retained, plus a mixed remainder:
+$E^{\mathrm{int}}_T(\varepsilon)=\sum_{i\le5}G_{ii}+R^{\mathrm{mix}}_T$ (the calibration is owned by
+Bézout–Valuation Incidence). The diagonal entries are invariant under the sign flip of each
+component, flipping component $k$ changes the energy by $4(\sum_jG_{kj}-G_{kk})$, and the squared
+pointwise logarithmic majorant of the source is nonsummable at every $\varepsilon<\tfrac12$
+(`complete_signed_interior_energy_and_vaughan_calibration`): no absolute bound on the pieces can
+pay, and the content of the receiver is in the off-diagonal signs. Two exact devices control parts
+of it. The interior gradient plus twice the local-impulse cross sum equals the active-deleted
+diagonal plus twice a predecessor-peak martingale, up to bounded boundary terms; and along a
+predecessor jump progression $n_k=d+1+(d+2)k$ at cutoff $N=(d+2)L$, delaying the conditional
+jump-orbit mean until each modulus is born bounds the compensated progression by $\tfrac52(d+2)L$
+(`abs_pmBezoutInteriorPrefix_birthDelayed_compensated_le_five_halves_mul`). All signed receiver
+formulations are admitted at the same dampings, unconditionally for $\varepsilon>\Theta-\tfrac12$,
+and uniformly on the all-damping Vinogradov–Korobov band; at a fixed $\varepsilon<\tfrac12$,
+$E^{\mathrm{int}}_T(\varepsilon)\le C_\varepsilon T^{1-2\varepsilon}e^{-\kappa\sigma(T)/270}$, a subpower
+saving against the primitive growth $T^{1-2\varepsilon}$ and never a power one
+(`complete_signed_receiver_equivalence_and_all_damping_vk_laws`).
+
+**Three selectivity classes.** The conservation and dissipation laws of the theory sort exactly by
+the structure they use.
+
+- *Class I, Beurling-universal.* Möbius inversion, transverse Gibbs log-submodularity, divided-log
+  prime-power completion, the depth-zero Gamma gauge enclosure in $[1,2]$ and the three-sector
+  large-label Buchstab decomposition hold in every abstract Beurling system
+  (`selectivity_class_I_beurling_universal_laws`). They cannot tell $\zeta$ from a system with an
+  off-line zero.
+- *Class II, sign-blind.* Every complete-period quadratic form and lag covariance, the diagonal
+  Vaughan entries and first-octave step-defect nonpositivity for every $\{-1,0,1\}$-valued sequence
+  are invariant under the $(\mathbb Z/2\mathbb Z)^N$ sign flips of Selberg coordinates
+  (`selectivity_class_II_signBlind_and_parityOrbit_laws`). They cannot see a parity pair.
+- *Class III, Bézout-selective.* Laws driven by $\gcd(n,n+1)=1$ and $pa-qb=1$: zero-diagonal pronic
+  Abel summation, $(2r-1)$-step Bézout shell midpoint annihilation, the conditional jump-orbit mean
+  classification, least successor-seed resonance, and trans-horizon separation of parity-isometric
+  rows (`selectivity_class_III_bezout_successor_selective_laws`).
+
+Classes I and II fail the Beurling and the parity tests by construction. Class III is where the
+additive successor structure of $\mathbb N$ enters; a bound on the actual receiver has to use it.
+
+### 3.22 Bridges
 
 Quarter-plane zeros in any height box are finite without hypothesis, inherit
 the Ingham–Huxley, Huxley $12/5$ and density-hypothesis exponents, are
@@ -1888,47 +1952,28 @@ inside an equivalence.
     $0<\varepsilon\le1/2$ their trans-horizon pronic receivers split into bounded and unbounded
     (`CompletePeriodQuadraticFormsAgreeOnParityRowPairs`). The parity barrier is a theorem about
     finite rows, not only about limits.
-14. **The odd-sector collar bridge and cross-lobe sandwich.** Midpoint reflection collapses any
-    symmetric-kernel collar-mixed integral to twice the one-point diagonal potential
-    (`integral_symmetric_mul_oddProfileCollarMixed_eq_two_mul_diag`), whose atom-minus-pole excess
-    is positive on all of $(0,\log d)$ iff $d\in\{2,3,4,5,7\}$, whose total excess is positive on
-    all of $(0,\log d)$ iff $d\in\{2,3,4,5,7,8,9,11,13\}$ (the nine moduli), and whose paid middle
-    interval $[L_d,\log d-L_d]\cap(0,\log d)$ is nonpositive for $d\ge23$
-    (`atomAntiDiagonal_oddProfile_diag_pos_on_Ioo_iff`,
-    `totalAntiDiagonal_oddProfile_diag_pos_on_Ioo_iff`,
-    `totalAntiDiagonal_oddProfile_nonpos_on_paid_middle_of_twenty_three_le`); the local cosh/sinh
-    defect is unconditionally bounded by $\max(R_{\mathrm{uncond}}(a,R)-\theta,0)\,\mathrm{oddSinhPotential}(a,w)$
-    (`unconditional_oddPolarDefect_le_oddSinhPotential`); and on odd eigenvectors both individual
-    lobes satisfy the shift-independent odd-polar balance while the cross-lobe pairings obey the
-    four-term excess identity and two-sided sandwich
-    (`odd_eigenvector_posGraph_and_negGraph_oddPolarVectorAt_pairing`,
-    `odd_eigenvector_four_term_excess_and_cross_lobe_sandwich`).
-15. **Buchstab band-average jumps, the quadratic crossover window, and third-order dissipation.**
-    The band-average jump $A(B+1)-A(B)=-\rho\sum_{a\mid(B+1)}c_{\mathrm{step}}(a)$ is radical-invariant,
-    certifies $A(B)<0$ for $1\le B\le9$ with first sign change $A(10)=+\frac19\rho>0$, and forces $P$
-    to fail concavity at every power of five (`bandAverageStep_succ_sub_eq_sum_divisors`,
-    `bandAverageStep_neg_of_le_nine`, `bandAverageStep_ten_pos`,
-    `cofinalMobiusQuadraticProfile_second_diff_five_pow_pos`); the damped prime-slope crossover
-    shrinks to $\Lambda(\varepsilon)\pm(96C+1)\varepsilon^2$ (`dampedPrimeSlope_quadratic_crossover`);
-    and the Euler variance correction and lag-one Bézout/dissipation rates obey the exact
-    $(1-K_\varepsilon)/\varepsilon^2\to\sum_p(\log p/(p-1))^2$ and $\varepsilon^3$ laws
-    (`tendsto_one_sub_varianceCorrection_div_sq`, `tendsto_dampedBezoutLimit_div_cube`,
-    `tendsto_dampedDissipationRate_sub_variance_third_order`).
-16. **Complete signed trans-horizon energy calibration, growing-cutoff cofactor transfer, and
-    transfer selectivity.** The cofactor row preserves the exact infinite-horizon mean
-    $H_{c_Q}(Q)=\rho_\varepsilon$ at every $Q\ge1$, eliminating the linear mean-drift dipole and
-    transferring the truncated pronic energy to $E_T^{\mathrm{int}}(\varepsilon)$ with square-root
-    loss $\le\tfrac12+\frac{1+\varepsilon}\varepsilon T\sqrt T Q^{-\varepsilon}$
-    (`sievePrefixDiscrepancy_pmCofactorRealWeight_sub_centeredPrefix_eq`,
-    `abs_sqrt_sieveTruncatedPronicEnergy_pmCofactor_sub_sqrt_interiorPronic_le`,
-    `growingCutoff_cofactorPronicEnergy_bounded_iff_interiorPronicEnergy_bounded`); at every fixed
-    $\varepsilon\in(0,1/2)$ the interior energy decomposes into the 25-entry signed Vaughan pronic
-    Gram matrix with moving endpoints retained while the squared pointwise logarithmic source bound
-    is nonsummable (`complete_signed_interior_energy_and_vaughan_calibration`); and the theory's
-    conservation and dissipation laws partition sharply into Beurling-universal multiplicative laws,
-    sign-blind $(\mathbb Z/2\mathbb Z)^N$ parity-orbit laws, and $\mathbb Z$-lattice Bézout-selective
-    laws (`selectivity_class_I_beurling_universal_laws`,
-    `selectivity_class_II_signBlind_and_parityOrbit_laws`,
+14. **The odd sector in quotient coordinates.** On odd graph vectors the source energy is the Weil
+    form plus twice one shift-independent squared pole moment, and RH is equivalent to
+    $\mathrm{weilBilin}(q^+,q^-)\le\tfrac12\langle q_1,\tanh_L\rangle^2$ on odd eigenvectors, whose
+    cross-lobe pairings obey an unconditional strict two-sided sandwich
+    (`odd_eigenvector_four_term_excess_and_cross_lobe_sandwich`,
+    `riemannHypothesis_of_odd_eigenvector_cross_lobe_weilBilin_le_tanhL_sq`); on the profile side the
+    low-prime diagonal potential is positive on all of $(0,\log d)$ exactly for the five
+    atom-dominated and the nine totally unpaid moduli
+    (`atomAntiDiagonal_oddProfile_diag_pos_on_Ioo_iff`, `totalAntiDiagonal_oddProfile_diag_pos_on_Ioo_iff`).
+15. **Buchstab band laws and the damped crossover.** The band-average jump is radical-invariant,
+    $A(B)<0$ for $B\le9$ with first sign change at $B=10$, the energy profile fails concavity at every
+    power of five (`bandAverageStep_succ_sub_eq_sum_divisors`, `bandAverageStep_ten_pos`,
+    `cofinalMobiusQuadraticProfile_not_concave`); the damped prime slope changes sign in a window
+    $\Lambda(\varepsilon)\pm O(\varepsilon^2)$ (`dampedPrimeSlope_quadratic_crossover`); and the
+    variance, dissipation and lag-one rates have exact second- and third-order laws
+    (`tendsto_dampedDissipationRate_sub_variance_third_order`).
+16. **The signed interior energy and selectivity.** The cofactor row keeps the exact Haar mean at
+    every horizon and transfers to the interior receiver along growing cutoffs; the interior energy
+    is a signed Vaughan Gram form whose diagonal is sign-blind; and every conservation or dissipation
+    law of the theory is Beurling-universal, sign-blind or Bézout-selective
+    (`growingCutoff_cofactorPronicEnergy_bounded_iff_interiorPronicEnergy_bounded`,
+    `complete_signed_interior_energy_and_vaughan_calibration`,
     `selectivity_class_III_bezout_successor_selective_laws`).
 
 ---
@@ -2077,322 +2122,99 @@ Built and reusable:
 To be built:
 
 - a signed estimate on the actual Möbius receiver at one fixed $\varepsilon<1/2$, with its exact loss;
+- a quantitative Class III law controlling off-diagonal Vaughan entries;
 - a sign bound $\mathrm{weilBilin}(q^+,q^-)\le\tfrac12\langle q_1,\tanh_L\rangle^2$ on odd eigenvectors.
 
 ---
 
 ## 7. Open problems
 
-### 7.1 The complete signed trans-horizon energy
+### 7.1 The actual Möbius receiver at one fixed damping below one half
 
-The complete signed trans-horizon energy calculus — with means, endpoints, active-pair boundaries,
-mixed Vaughan covariances, Ramanujan truncation errors, and growing cutoffs retained across
-$\varepsilon\in(0,1/2)$ — is now calibrated and classified
-([CompleteSignedTransHorizonEnergyAndTransferSelectivity](CompleteSignedTransHorizonEnergyAndTransferSelectivity.lean)).
-Because $\sum_{d\le Q}K_Q(d)/d=1/\zeta(1+\varepsilon)$ holds identically at every horizon $Q\ge1$,
-the actual cofactor row $c_Q=\mathrm{pmCofactorRealWeight}(\varepsilon,Q)$ has exact finite-horizon
-mean $H_{c_Q}(Q)=Y_Q(1)=\rho_\varepsilon$ (`finiteHarmonicSum_pmCofactorRealWeight`,
-`selbergMultiplesCoord_one_pmCofactorRealWeight`), so its centered prefix discrepancy has **zero
-linear mean-drift dipole** against $A_\varepsilon(n)$:
-$\mathrm{sievePrefixDiscrepancy}(Q,n,c_Q)-A_\varepsilon(n)=\sum_{k=1}^n(s_Q(k)-\tau_\varepsilon(k))$
-(`sievePrefixDiscrepancy_pmCofactorRealWeight_sub_centeredPrefix_eq`), bounded pointwise by
-$\frac{1+\varepsilon}\varepsilon(\sum_{k=1}^n\tau(k))Q^{-\varepsilon}\le\frac{1+\varepsilon}\varepsilon n^2Q^{-\varepsilon}$
-(`abs_sievePrefixDiscrepancy_pmCofactorRealWeight_sub_centeredPrefix_le`) and in the pronic $\ell^2$
-norm by
-$\lvert\sqrt{E^{\mathrm{cof}}_{Q,T}}-\sqrt{E_T^{\mathrm{int}}(\varepsilon)}\rvert\le\tfrac12+\frac{1+\varepsilon}\varepsilon T\sqrt T Q^{-\varepsilon}$
-(`abs_sqrt_sieveTruncatedPronicEnergy_pmCofactor_sub_sqrt_interiorPronic_le`). Along any growing
-cutoff schedule $Q(T)\ge1$ with $T\sqrt T Q(T)^{-\varepsilon}\le M$, boundedness of the cofactor
-row's truncated pronic energy is two-sided equivalent to boundedness of $E_T^{\mathrm{int}}(\varepsilon)$
-(`growingCutoff_cofactorPronicEnergy_bounded_iff_interiorPronicEnergy_bounded`). On the interior side,
-$\lvert\sqrt{E_T^{\mathrm{int}}(\varepsilon)}-\sqrt{E_T(\varepsilon)}\rvert\le\tfrac12$, the active
-boundary changes the pronic energy by an absolutely summable sequence on $(0,1/2)$
-(`pmInteriorPronicEnergy_sub_source_uniformly_bounded`), the interior gradient plus twice the
-local-impulse cross-sum cancels $E_T(\varepsilon)$ identically to equal the active-deleted diagonal
-plus twice the predecessor-peak martingale minus bounded boundary terms
-(`pmBezoutInteriorGradient_add_two_mul_localImpulse_eq_activeDeleted_add_predecessorPeak`), and the
-25-entry moving-endpoint Vaughan pronic Gram matrix decomposes
-$E_T^{\mathrm{int}}(\varepsilon)=\sum_{i=1}^5 G_{i,i}+R_T^{\mathrm{mix}}$ with diagonal entries
-invariant under component flips and off-diagonal flip gap $4(\sum_j G_{k,j}-G_{k,k})$, while the
-squared pointwise logarithmic majorant `pmPronicLogMajorant ε` is nonsummable at every
-$\varepsilon\in(0,1/2)$ (`complete_signed_interior_energy_and_vaughan_calibration`). Along any
-predecessor jump progression $n_k=d+1+(d+2)k$ at growing cutoff $N=(d+2)L$, delaying the conditional
-jump-orbit mean until modulus birth $e/(d+2)\le k$ eliminates interior-modulus growth and bounds the
-compensated progression by $\tfrac52(d+2)L$
-(`abs_pmBezoutInteriorPrefix_birthDelayed_compensated_le_five_halves_mul`). Across all $\varepsilon>0$,
-all five interior receiver formulations coincide with `receiverDampings`, hold unconditionally for
-$\varepsilon>\Theta-1/2$ with common derived-set infimum $\Theta-1/2$, are uniformly bounded on the
-all-damping Vinogradov–Korobov band $\varepsilon\ge\tfrac12-\kappa\sigma(T)/(480\log T)$ above any
-$\varepsilon_0>0$, and at every fixed $\varepsilon\in(0,1/2)$ obey
-$E_T^{\mathrm{int}}(\varepsilon)\le C_\varepsilon T^{1-2\varepsilon}\exp(-\kappa\sigma(T)/270)=o_\varepsilon(E_{\mathrm{prim}}(T))$
-(`complete_signed_receiver_equivalence_and_all_damping_vk_laws`). What remains open is proving an
-unconditional bound $\sup_T(R_T^{\mathrm{mix}}+\sum_i G_{i,i})<\infty$ at one fixed
-$\varepsilon<1/2$ without zero-free width hypotheses.
+Everything around the receiver is exact: the parity barrier says which data cannot decide it
+(§3.16), the pole and boundary-energy laws say what it reads (§3.17), the probe theorems show it is
+a faithful instrument for the zero divisor (§3.19), the damping of the Möbius receiver is the zero
+width (§3.16), and the PM receiver is the interior receiver with no dipole loss (§3.21). The open
+problem is one estimate: an unconditional bound
+$$
+\sup_T\Bigl(\sum_{i\le5}G_{ii}+R^{\mathrm{mix}}_T\Bigr)<\infty
+$$
+on the signed interior energy at one fixed $\varepsilon<\tfrac12$, with no zero-free-width
+hypothesis, and then cofinally as $\varepsilon\downarrow0$. In arithmetic terms a power saving
+$\lvert\sum_{e\le N}(\mu\star\Lambda)(e)\rvert\le CN^\beta$ at one fixed $\beta<1$ pays Möbius and
+Liouville at every $\varepsilon>\beta/2$ (§3.20); Vinogradov–Korobov gives a subpower saving only.
+Such a bound must read signs (Class II laws cannot), must fail for Beurling systems (Class I laws
+cannot), and therefore has to use the successor structure of $\mathbb N$ (Class III).
 
 ### 7.2 Small horizons
 
-The reserve-proportional Montgomery–Vaughan window laws, the variational optimal constants, the
-prime-pairing $2^{\omega(r)-2}$ radical envelope, and all-prefix nonpositivity through $N\le12$ are
-now established
-([SmallHorizonDefectSignAndMontgomeryVaughanWindowLaws](SmallHorizonDefectSignAndMontgomeryVaughanWindowLaws.lean)).
-Applying the Montgomery–Vaughan inequality on `responseRoots N` directly to the conjugate-paired step
-differences $(1-\zeta_e)y(e)$ gives the reserve-proportional window Dirichlet sandwich
-$\lvert D_W-2K\mathcal R_N(c)\rvert\le 2N(N-1)\mathcal R_N(c)\le 4N(N-1)V(c)$ and coercivity threshold
-$K>N(N-1)$ (`abs_shortWindowDirichletEnergy_sub_reserve_le_mv`, `shortWindowDirichletEnergy_bounds_mv`),
-reducing the window Poincaré constant from $10N^2-5$ to $2N(N-1)$ (`window_poincare_mv`) and the
-long-window dissipation threshold from $10N^2$ to $2N^2-2$:
-$2\widetilde{\mathcal D}_N(M;c)\le 2H_c(N)^2-s_{N,c}(1)^2-(M-(2N^2-2))V(c)$
-(`two_mul_sieveRenormalizedPrefixDefect_le_mv`), which certifies $\widetilde{\mathcal D}_N(M;\mu)\le0$
-for all $M\ge 2N^2+2N-2$ ($<0$ for $M>2N^2+2N-2$, `moebius_defect_nonpos_of_mv_window`,
-`moebius_defect_neg_of_mv_window`) and $\widetilde{\mathcal D}_N(M;c_\varepsilon)\le0$ for all
-$M\ge 2N^2-2+34N^{1+2\varepsilon}$ (`pmPowerDamped_defect_nonpos_of_mv_window`). Both the infimal
-window sandwich constant $S_{\mathrm{opt}}(N)$ and the infimal reserve Dirichlet constant
-$R_{\mathrm{opt}}(N)$ are attained at every $N\ge2$ and satisfy
-$\Phi(N)-2\le S_{\mathrm{opt}}(N)\le N(N-1)$ and $0\le R_{\mathrm{opt}}(N)\le N(N-1)$
-(`optimalWindowSandwichConstant_bounds`, `optimalReserveDirichletConstant_bounds`,
-`window_poincare_and_prefix_dissipation_optimal`). On the divisor side, prime-pairing cancellation
-gives $s_{N,\mu}(pa)=\sum_{d\mid a,\ N<pd\le pN}\mu(d)$ (`sieveSeq_moebiusReal_prime_mul_eq_window`)
-and the universal radical-support envelope $\lvert s_{N,\mu}(r)\rvert\le 2^{\omega(r)-2}$ for
-squarefree $r$ with $\omega(r)\ge2$ (`abs_sieveSeq_moebiusReal_squarefree_le_two_pow_sub_two`), so
-every prefix with $\omega(\gcd(M+1,N\#))\le3$ obeys $\lvert s_{N,\mu}(M+1)\rvert\le2$ and
-$\widetilde{\mathcal D}_N(M;\mu)\le0$ at every horizon
-(`moebius_prefix_defect_nonpos_of_card_primeFactors_radical_le_three`,
-`moebius_prefix_defect_nonpos_of_card_primeFactors_le_three`). This certifies
-$\widetilde{\mathcal D}_N(M;c_\varepsilon)\le0$ for all $N\le4$, $\varepsilon\ge0$, $M\in\mathbb N$
-(`pmPowerDamped_defect_nonpos_of_le_four`), $\widetilde{\mathcal D}_N(M;\mu)\le0$ for all $N\le10$,
-$M\in\mathbb N$ via radical states (`moebius_defect_nonpos_of_le_ten`), and for $N\le12$ the
-Montgomery–Vaughan threshold $2N^2+2N-2\le310<1154=3\cdot5\cdot7\cdot11-1$ overlaps the four-prime
-radical threshold across $[310,1153]$ to certify $\widetilde{\mathcal D}_N(M;\mu)\le0$ for every
-$N\le12$ and every $M\in\mathbb N$ (`moebius_defect_nonpos_of_le_twelve`). Open: closing the finite
-horizon interval between $N=13$ and the explicit prime-number-theorem octave threshold without finite
-inspection.
+All-prefix nonpositivity of the Möbius defect is certified for $N\le12$ by the overlap of the
+radical envelope with the Montgomery–Vaughan window threshold, and for all sufficiently large $N$
+by rough-prime boundaries; the polynomial-window regime is the only eventual one. Open: a uniform
+argument covering the remaining finite range of horizons, which amounts to making the
+prime-number-theorem octave count of §3.4 explicit, rather than inspecting horizons one at a time.
 
 ### 7.3 Buchstab calculus
 
-The band averages, smooth-core sign criteria, prime-slope crossover window, and higher-order
-dissipation terms are now resolved
-([BuchstabBandSignPatternQuadraticCrossoverAndThirdOrderDissipation](BuchstabBandSignPatternQuadraticCrossoverAndThirdOrderDissipation.lean)).
-The band-average step satisfies $A(B)=P(B-1)-B\gamma_B$ with $A(B)/B\to0$
-(`bandAverageStep_eq_profile_sub_slope`, `tendsto_bandAverageStep_div`) and the exact divisor-sum
-jump identity
-$A(B+1)-A(B)=-(B+1)(P(B+1)-2P(B)+P(B-1))=-\rho\sum_{a\mid(B+1)}c_{\mathrm{step}}(a)$, where
-$c_{\mathrm{step}}(a)=2a\,\mathrm{moebiusSigma}(a)\sum_{b\le a-1,\ (b,a)=1}\mathrm{moebiusSigma}(b)$
-vanishes off squarefree $a$ (`bandAverageStep_succ_sub_eq_sum_divisors`,
-`bandStepDivisorWeight_eq_zero_of_not_squarefree`). Consequently $A(B+1)-A(B)$ depends only on
-$\operatorname{rad}(B+1)$ (`bandAverageStep_succ_sub_eq_of_primeFactors_eq`) and equals
-$-\rho(1+c_{\mathrm{step}}(p))$ at prime powers $p^k\ge3$ (`bandAverageStep_prime_pow_sub`), yielding
-$A(B)<0$ for $1\le B\le9$, the first positive value $A(10)=+\frac19\rho>0$
-(`bandAverageStep_neg_of_le_nine`, `bandAverageStep_ten_pos`), and infinite failure of concavity of
-$P$ along powers of five: $P(5^k)-2P(5^k-1)+P(5^k-2)=\frac{11}{36\cdot5^k}\rho>0$
-(`cofinalMobiusQuadraticProfile_second_diff_five_pow_pos`,
-`cofinalMobiusQuadraticProfile_not_concave`). Within band $B$, the rough core $r=1$ has negative step
-iff $B=1$ (`bandClassValue_one_trichotomy`), a squarefree core $r=pa$ ($p\nmid a$) has negative step
-iff $2\mu(a)W_p(a,B)>-B$ (`bandClassValue_prime_mul_neg_iff`, with $v_1(r)=-1$ for all squarefree $r$
-and $v_2(r)=-2\mathbf 1_{2\mid r}$, `bandClassValue_first_band`, `bandClassValue_second_band`), and
-$\Delta(m,B)/B\to\lambda(m)$ with $\lambda(pa)=-1-2\mu(a)\sum_{a<d<pa,\ p\nmid d}\mu(d)\gcd(d,a)/d$
-(`tendsto_moebiusBandStep_div`, `buchstabSlope_prime_mul`). For the damped prime slope, the
-prime-local scale $\Lambda_p(\varepsilon)=-\log(2H_\varepsilon(p-1))/\varepsilon$ decides the sign of
-$\lambda_\varepsilon(p)$ with zero gap (`dampedPrimeSlope_local_sign_trichotomy`), and the universal
-transition window around $\Lambda(\varepsilon)$ shrinks from $\pm\varepsilon$ to
-$\Lambda(\varepsilon)\pm(96C+1)\varepsilon^2$ (`dampedPrimeSlope_quadratic_crossover`,
-`dampedPrimeSlope_sublinear_additive_crossover`). Finally, the Euler-product variance correction
-satisfies $(1-K_\varepsilon)/\varepsilon^2\to\sum_p(\log p/(p-1))^2$
-(`tendsto_one_sub_varianceCorrection_div_sq`), and the lag-one Bézout sum, autocorrelation, and
-dissipation rate obey the exact third-order ($\varepsilon^3$) laws
-$\mathrm{dampedBezoutLimit}(\varepsilon)/\varepsilon^3\to4\log2\sum_{j\ge0}\mu(2j+1)/\varphi(2j+1)^2$,
-$(A_\varepsilon(1)+\varepsilon^2)/\varepsilon^3\to2\gamma+4\log2\sum_{j\ge0}\mu(2j+1)/\varphi(2j+1)^2$,
-and $(R(\varepsilon)-V(\varepsilon)-\varepsilon^2)/\varepsilon^3\to-2\gamma-4\log2\sum_{j\ge0}\mu(2j+1)/\varphi(2j+1)^2$
-(`tendsto_dampedBezoutLimit_div_cube`, `tendsto_dampedAutocorrelation_one_third_order`,
-`tendsto_dampedDissipationRate_sub_variance_third_order`).
+The band averages $A(B)$ are exact class averages with radical-invariant jumps; they are negative
+through $B=9$, positive at $B=10$, and the profile $P$ fails concavity along every power of five.
+Open: the sign pattern of $A(B)$ beyond $B=10$, a closed form or arithmetic characterisation of the
+cofinal slope $\kappa=\lim_N\mathrm{Cov}_N(0;\mu)\ge1/288$, and whether the Möbius band calculus
+admits a damped deformation that commutes with the cofinal limit, which none of the period
+observables does.
 
 ### 7.4 The odd sector
 
-The low-prime diagonal potential, the compensated cosh/sinh correction, and the cross-lobe pairings
-are now matched and bounded unconditionally
-([OddSectorCrossLobeEstimatesAndNineModuliCollarBridge](OddSectorCrossLobeEstimatesAndNineModuliCollarBridge.lean)).
-For any continuous midpoint-symmetric kernel $K(t-x)=K(x)$, the weighted collar-mixed integral over
-$(0,t)$ collapses to twice the one-point diagonal integral against
-$m_a(x)K^{\mathrm{diag}}_{a,t}(x)w(x)^2$
-(`integral_symmetric_mul_oddProfileCollarMixed_eq_two_mul_diag`), and because
-$m_a(x)K^{\mathrm{diag}}_{a,\log d}(x)>0$ on $(0,\log d)$, its atom-minus-pole excess is positive
-on all of $(0,\log d)$ iff $d\in\{2,3,4,5,7\}$ (`atomAntiDiagonal_oddProfile_diag_pos_on_Ioo_iff`),
-its total excess is positive on all of $(0,\log d)$ iff $d\in\{2,3,4,5,7,8,9,11,13\}$ (the nine
-moduli, `totalAntiDiagonal_oddProfile_diag_pos_on_Ioo_iff`), and for $d\ge23$ the paid middle
-interval $[L_d,\log d-L_d]\cap(0,\log d)$ has nonpositive excess while the inner axis ends remain
-strictly positive (`totalAntiDiagonal_oddProfile_nonpos_on_paid_middle_of_twenty_three_le`). Using
-the explicit slope bound $M(a,R)=2\pi(e^{2(a+R)}+2)\Theta(0)$, the local cosh/sinh defect on
-compact even profiles supported in $(-R,R)$ satisfies
-$\mathrm{oddPolarDefect}(a,\theta,w)\le\max(R_{\mathrm{uncond}}(a,R)-\theta,0)\,\mathrm{oddSinhPotential}(a,w)$
-and vanishes for $R_{\mathrm{uncond}}(a,R)\le\theta$
-(`unconditional_oddPolarDefect_le_oddSinhPotential`, `unconditional_oddPolarDefect_eq_zero_of_le`).
-On the spectral side, for every odd eigenvector $q=\mathrm{rieszLift}(w)$ ($0<\mu$,
-$\mathrm{reflectMass}(w)=-w$), both individual lobes $q^+,q^-$ satisfy the shift-independent
-odd-polar balance (`odd_eigenvector_posGraph_and_negGraph_oddPolarVectorAt_pairing`), the cross-lobe
-Weil bilinear form satisfies
-$\mathrm{weilBilin}(q^+,q^-)=\mathrm{sourcePair}(q^+,q^-)+\tfrac12\langle\lvert q\rvert_1,\mathbf 1\rangle^2+\tfrac12\langle q_1,\tanh_L\rangle^2$
-(`odd_weilForm_and_weilBilin_lobe_polarization`), the four-term positive-lobe excess equals
-$((1-2\mu)/(2\mu))\|q_1\|^2$, and the cross-lobe pairings obey the unconditional two-sided sandwich
-$0\le 4\mu^2\langle\mathrm{primeShift}(q^+)_1,(q^-)_1\rangle\le -4\mu^2\mathrm{sourcePair}(q^+,q^-)\le 4\langle\mathrm{resolvent}(q^+)_1,(q^-)_1\rangle\le(1-\mu)\|q_1\|^2$
-with strict positivity for $w\ne0$
-(`odd_eigenvector_four_term_excess_and_cross_lobe_sandwich`,
-`odd_eigenvector_cross_lobe_strict_bounds_of_ne_zero`,
-`riemannHypothesis_of_odd_eigenvector_cross_lobe_weilBilin_le_tanhL_sq`). What remains open is
-proving $\mathrm{weilBilin}(q^+,q^-)\le\tfrac12\langle q_1,\tanh_L\rangle^2$ (equivalently
-$\mathrm{sourcePair}(q^+,q^-)+\tfrac12\langle\lvert q\rvert_1,\mathbf 1\rangle^2\le0$) on odd
-eigenvectors, which is the nodal counterpart of §7.1.
+RH is $\mathrm{weilBilin}(q^+,q^-)\le\tfrac12\langle q_1,\tanh_L\rangle^2$, equivalently
+$\mathrm{sourcePair}(q^+,q^-)+\tfrac12\langle\lvert q\rvert_1,\mathbf 1\rangle^2\le0$, on odd resolvent
+eigenvectors: a cross-lobe statement, which no lobe-local inequality proved so far reaches. On the
+profile side the low-prime diagonal potential leaves exactly the nine moduli and, for $d\ge23$, the
+inner axis ends of $(0,\log d)$ unpaid. Open: pay those intervals by a jump energy, or show
+that the cross-lobe term has a sign; either is the nodal counterpart of §7.1.
 
 ### 7.5 Fermi–Nyman
 
-Multi-gap dyadic schedules, non-dyadic ($p$-adic) schedules, weighted traces, and uniform
-origin–bulk tightness are now classified and proved. Under a two-gap schedule omitting levels
-$1\le g_1<g_2\le\lfloor\log_2N\rfloor$ ($g_1=h_1+1$, $g_2=h_2+1$), the kernel along each odd ray is
-spanned by the interval power profile constant on $[h_1+1,h_2]$ and zero outside
-(`fermiBoundaryJump_fermiIntervalKernelRow_eq_zero_of_ne`, `twoGap_ray_profile_of_zero_jumps`), so
-rows are uniquely recovered on the anchor-pinned subspace ($y_{h_2}(b)=0$) and on the least-squares
-block-mean-zero subspace ($\sum_{k=h_1+1}^{h_2}y_k(b)=0$) with three-chain sine coercivity
-(`twoGap_schedule_injective_on_anchored_rows`, `twoGap_schedule_injective_on_meanZero_rows`,
-`floating_block_variance_sine_bound`, `fermiRaySieveEnergy_anchored_le_twoGap`). For any prime $p$
-and $N\ge1$, a $p$-adic schedule reading `pAdicFermiBoundaryJump p N c n` at $v_p(n)\in S$ is
-injective iff it misses at most one of the $\lfloor\log_pN\rfloor+2$ slots
-(`pAdicFermiScheduleInjective_iff`), and general positive ray weight profiles $w_j>0$ satisfy the
-Cauchy–Schwarz resistance bound $y_k^2\le(\sum_{j\le k}w_j^{-1})E_w(y)$ and weighted mixed-chain
-sine coercivity (`sq_le_rayResistance_mul_weightedRayTraceEnergy`,
-`weighted_mixed_chain_sine_bound`). Finally, the exact centered-prefix wavelet identity
-$\mathrm{fermiCellResponse}_{N,c}(n)=2A_{\mathrm{row}(c,N)}(\lfloor n/2\rfloor)-A_{\mathrm{row}(c,N)}(n)-(n\bmod2)\,m_c(N)$
-(`fermiCellResponse_eq_weightCenteredPrefix_horizonRow`) transfers pronic dilation contraction and
-subpower prefix bounds to the cellular Fermi–Nyman sequence, establishing unconditional uniform bulk
-boundedness and uniform origin-tail tightness across all horizons $N$ and cutoffs $T$ for
-`dampedSignWeight s ε` ($\varepsilon>\beta/2$) and `pmPowerDampedRealWeight ε` ($\varepsilon>\Theta/2$,
-and unconditionally for $\varepsilon>1/2$) (`pronicNorm_fermiCellResponse_le`,
-`fermiBulk_and_originTail_tight_of_prefix_rpow`,
-`fermiBulk_and_originTail_tight_dampedSign_of_partialSum_rpow`,
-`fermiBulk_and_originTail_tight_moebius_of_half_zetaZeroAbscissa_lt`). Open: extending uniform
-origin-tail tightness of the Möbius sequence below $\varepsilon=\Theta/2$ without zero-free
-hypotheses, which reduces by `fermiCellResponse_eq_weightCenteredPrefix_horizonRow` to the
-fixed-damping trans-horizon prefix problem of §7.1 and §7.8.
+Schedules, conditioning and two-gap recovery are classified, and the centred-prefix wavelet
+identity reduces bulk boundedness and origin-tail tightness of the Fermi sequence to a subpower
+prefix bound. Open: origin-tail tightness of the Möbius sequence below $\varepsilon=\Theta/2$
+without zero-free hypotheses, which by the wavelet identity is the fixed-damping prefix problem of
+§7.1; and identification of the weak limit of a bounded Nyman–Beurling row family from Fermi data,
+which a tail bound alone does not supply.
 
-### 7.6 Signs below half damping
+### 7.6 The horizon-row gap
 
-Below half damping the receiver of a weight is not a function of its sign-blind data, every known
-pair is decided by a pole at $s=1-\varepsilon$, and the damping threshold of the Möbius receiver is the
-zero width, so RH is admission along a positive damping sequence tending to $0$. For $k\star d^{-\varepsilon}$
-across the entire strip $0<\varepsilon<1$, any kernel $k$ obeys the exact comparison
-$\lvert\sqrt{E_T(k\star d^{-\varepsilon})}-\lvert Z_\varepsilon\rvert\sqrt{L_{T,\varepsilon}(k)}\rvert\le B_{\mathrm{rem}}+\lvert m_{q_\varepsilon}\rvert B_{\mathrm{self}}$
-(`abs_sqrt_weightPronicEnergy_dirichletConv_unit_subHalf_sub_le_of_bounds`), each dilated remainder has
-pronic norm $O(j^{-1/2})$ (`pronicNorm_subHalfDilationRemainder_le`), and on $\mathrm{CriticalWiener}$
-payment is two-sided equivalent to summability of the partial-pole-sum energy
-$\sum_n(n^{1-\varepsilon}S_{k,\varepsilon}(n))^2/(n(n+1))$
-(`receiverBounded_dirichletConv_unit_subHalf_iff_summable_partialPoleSum`). Beyond both
-$\mathrm{CriticalWiener}$ and abscissa-summable kernels, the Möbius-inverted kernels
-$k_{s,\varepsilon}(j)=(s\star\mu)(j)j^{-\varepsilon}$ are paid whenever $s$ has bounded or power-saving
-partial sums (`receiverBounded_dirichletConv_moebiusInvertedKernel_of_partialSum_rpow`), including
-$\mu(j)j^{-\varepsilon}$ itself (`not_summable_abs_pmPowerDamped_abscissa`,
-`not_criticalWiener_pmPowerDamped`, `receiverBounded_dirichletConv_pmPowerDamped_unit`). From signed
-logarithmic data $\lvert\sum_{e\le x}s(e)\log e\rvert\le M_{\log}x$ ($x\ge D$), the hyperbola transfer
-gives $\lvert A_{s,\varepsilon}(n)\rvert\le 6D^{1-\varepsilon}+(26/(\varepsilon\log(D+1)))M_{\log}nD^{-\varepsilon}$
-with exact short-modulus loss $6D^{1-\varepsilon}$
-(`abs_weightCenteredPrefix_pmPowerDamped_le_of_logWeight_linear_pos`), a power-saving bound on
-$\sum_{e\le N}(\mu\star\Lambda)(e)$ pays both Möbius and Liouville at $\varepsilon>\beta/2$ alongside the
-vertical-line boundary energy (`receiverBounded_moebius_and_liouville_of_vonMangoldtConv_partialSum_rpow`,
-`receiverBounded_iff_exists_lineEnergy_le`), and the logarithmic pole moments obey the all-order
-binomial Leibniz and index additivity laws (`poleLogMoment_dirichletConv`,
-`poleLogMoment_dirichletConv_ne_zero`, `poleLogMoment_iteratedFermiKernel_ne_zero`). What remains open
-is an unconditional power-saving estimate on $\sum_{e\le N}(\mu\star\Lambda)(e)$ at one fixed
-$\beta<1$, which is the Type-II input of §7.1.
+Full-horizon rows of $\mu(d)d^{-\varepsilon}$ are uniformly paid for $\varepsilon>\Theta/2$, the full
+weight for $\varepsilon>\Theta-\tfrac12$, and sub-horizon rows across the whole admission range.
+Between $\Theta-\tfrac12$ and $\Theta/2$ a horizon could, in principle, cut a cancelling dipole and
+keep a drift. Open: close that gap for the Möbius rows, or exhibit the dipole; on the convolution
+class it never occurs.
 
 ### 7.7 Beyond the solved phase diagrams
 
-The constant-sign plane, every residue flip, subgroup flips, single- and multi-frequency oscillating
-prime patterns with arbitrary phase, and prime-varying amplitudes are decided at half damping
-(`receiverBounded_multiPhaseWeight_iff`, `receiverBounded_primeVaryingMultiPhase_half_iff`). For any
-completely multiplicative $f$ with $\lvert f(p)\rvert\le1$, the Euler product pinches
-$\log\lvert F(w)\rvert$ within $\sum_p p^{-2}$ of the real part of the prime Dirichlet series
-$\Re\ell_f(w)=\sum_p f(p)\Re(p^{-w})$ (`abs_log_norm_patternSeries_sub_re_primeDirichletSeries_le`):
-at half damping, separated height singularities collapse to a sum
-(`exists_prod_rpow_neg_add_one_le_sum`) and are paid whenever their exponents are $<1/2$
-(`receiverBounded_pattern_half_of_sum_bounds`), while a $(1/2)\log(1/(u+\tau))$ lower bound at any
-nonvanishing critical point forces divergence (`not_receiverBounded_pattern_half_of_primeDirichletSeries_re_ge`);
-below half damping, any height with a local logarithmic prime mean $\nu$ forces $\nu\in\mathbb Z$
-(`int_localPrimeMean_of_receiverBounded_damped`), and $\ell^1(p^{-(1/2+\varepsilon)})$ prime
-perturbations preserve both receiver and horizon-row payment (`criticalWiener_mul_patternMoebiusAF`).
-Below half damping the integer-order obstruction is a necessary condition only; sufficient conditions
-there need the size of the series inside the strip, which for Liouville is the Möbius problem itself.
+Every completely multiplicative pattern with $\lvert f(p)\rvert\le1$ is decided at half damping by the
+size of $\Re\ell_f$ beside the line, height by height; below half damping the integer-order
+obstruction is necessary only. Sufficient conditions below half damping need the size of the
+series inside the strip, which for the Liouville pattern is the Möbius problem itself. Open:
+phase diagrams for multiplicative patterns that are not completely multiplicative, where higher
+prime powers enter through local factors, and for patterns with prime-varying amplitudes of
+divergent critical-line mass.
 
-### 7.8 The dipole obstruction for the Möbius row
+### 7.8 Research topics
 
-The dipole obstruction is now classified on both sides of the horizon. On the sub-horizon range
-$T\le N$, a paid weight has uniformly bounded row energies iff its harmonic tail obeys
-$\sup_N N\tau_N^2<\infty$ (`subHorizon_horizonRowEnergy_bounded_iff`), and for $\mu(d)d^{-\varepsilon}$
-Littlewood's bound gives $\tau_N(\varepsilon)=o(N^{-1/2})$ across the entire zero-width admission
-range $\varepsilon>\Theta-1/2$ (`subHorizon_horizonRowEnergy_moebius_bounded_of_zetaZeroAbscissa_sub_half_lt`).
-Across all cutoffs $T$ and horizons $N$, prefix-stability of partial sums transfers the all-damping
-hyperbola bound to every horizon row (`abs_weightCenteredPrefix_horizonRow_dampedSign_le_of_linear_pos`),
-giving uniform full-horizon row payment for $\varepsilon>\Theta/2$ and on the Vinogradov–Korobov
-zero-free band (`horizonRows_bounded_moebius_of_half_zetaZeroAbscissa_lt`,
-`exists_horizonRow_receiver_le_on_zeroFreeBand_of_pos`), while the divisor-quotient decomposition
-closes uniform row payment under the critical Wiener monoid and equates Möbius and Liouville row
-payment at every $\varepsilon>0$ (`horizonRows_bounded_dirichletConv`,
-`horizonRows_bounded_moebius_iff_liouville`). Open: closing the trans-horizon gap between
-$\Theta-1/2$ and $\Theta/2$ without zero-free hypotheses, which is the fixed-damping trans-horizon
-sawtooth problem of §7.1.
-
-### 7.9 Research topics
-
-1. **From separation to a bound.** The parity pairs exist at every damping $\varepsilon\le1/2$ and the
-   observables that separate them are classified: first-order data at prime powers, the logarithmic
-   moment hierarchy, the pole value $K(1-\varepsilon)$ and its Taylor coefficients (§3.16). The
-   signed logarithmic hyperbola transfer turns a linear bound on $\sum_{e\le x}s(e)\log e$ into the
-   prefix bound $6D^{1-\varepsilon}+(26/(\varepsilon\log(D+1)))M_{\log}nD^{-\varepsilon}$ with exact loss
-   $6D^{1-\varepsilon}$, and turns a power-saving bound on $\sum_{e\le N}(\mu\star\Lambda)(e)$ into
-   payment of both Möbius and Liouville at $\varepsilon>\beta/2$ and of the vertical-line boundary
-   energy (`abs_weightCenteredPrefix_pmPowerDamped_le_of_logWeight_linear_pos`,
-   `receiverBounded_moebius_and_liouville_of_vonMangoldtConv_partialSum_rpow`,
-   `receiverBounded_iff_exists_lineEnergy_le`). Missing is an unconditional power-saving estimate on
-   $\sum_{e\le N}(\mu\star\Lambda)(e)$ at one fixed $\beta<1$.
-2. **The complete signed trans-horizon energy** at fixed small damping, with means, endpoints,
-   mixed covariance and growing cutoffs retained: the cofactor row preserves the exact mean
-   $H_{c_Q}(Q)=\rho_\varepsilon$ at every $Q\ge1$ and transfers its truncated pronic energy to
-   $E_T^{\mathrm{int}}(\varepsilon)$ with square-root error
-   $\le\tfrac12+\frac{1+\varepsilon}\varepsilon T\sqrt T Q^{-\varepsilon}$
-   (`abs_sqrt_sieveTruncatedPronicEnergy_pmCofactor_sub_sqrt_interiorPronic_le`,
-   `growingCutoff_cofactorPronicEnergy_bounded_iff_interiorPronicEnergy_bounded`), the 25-entry
-   moving-endpoint Vaughan pronic Gram matrix isolates the signed off-diagonal remainder
-   $R_T^{\mathrm{mix}}$ omitted by diagonal norms while the squared pointwise logarithmic source bound
-   is nonsummable (`complete_signed_interior_energy_and_vaughan_calibration`), and birth-delayed
-   jump-orbit centering bounds the compensated progression at $N=(d+2)L$ by $\tfrac52(d+2)L$
-   (`abs_pmBezoutInteriorPrefix_birthDelayed_compensated_le_five_halves_mul`). Missing is an
-   unconditional bound on $R_T^{\mathrm{mix}}+\sum_i G_{i,i}$ at one fixed $\varepsilon<1/2$.
-3. **The odd-sector low-prime diagonal potential**, matched term by term with the unpaid axis
-   intervals and the nine moduli of Arithmetic Incidence Positivity: midpoint reflection collapses
-   the collar-mixed integral of any symmetric kernel to twice the one-point diagonal potential
-   (`integral_symmetric_mul_oddProfileCollarMixed_eq_two_mul_diag`), whose atom-minus-pole excess
-   is positive on all of $(0,\log d)$ iff $d\in\{2,3,4,5,7\}$
-   (`atomAntiDiagonal_oddProfile_diag_pos_on_Ioo_iff`), whose total excess is positive on all of
-   $(0,\log d)$ iff $d\in\{2,3,4,5,7,8,9,11,13\}$
-   (`totalAntiDiagonal_oddProfile_diag_pos_on_Ioo_iff`), and whose paid middle interval
-   $[L_d,\log d-L_d]\cap(0,\log d)$ is nonpositive for $d\ge23$ while the inner axis ends remain
-   strictly positive (`totalAntiDiagonal_oddProfile_nonpos_on_paid_middle_of_twenty_three_le`).
-   One obstruction read from the sieve side and from the pair side.
-4. **Selectivity of the transfer laws.** The conservation and dissipation laws partition into three
-   exact classes (`CompleteSignedTransHorizonEnergyAndTransferSelectivity`): Class I
-   (Beurling-universal multiplicative laws — Möbius divisor inversion, transverse Gibbs
-   log-submodularity, divided-log prime-power completion, depth-zero Gamma gauge enclosure in
-   $[1,2]$, and the three-sector zero/one/higher large-label Buchstab decomposition,
-   `selectivity_class_I_beurling_universal_laws`), Class II (sign-blind $(\mathbb Z/2\mathbb Z)^N$
-   parity-orbit laws — all eleven complete-period quadratic forms and lag covariances, diagonal
-   Vaughan pronic Gram entries, and first-octave step-defect nonpositivity for $f(k)^2=\lvert f(k)\rvert$,
-   `selectivity_class_II_signBlind_and_parityOrbit_laws`), and Class III ($\mathbb Z$-lattice
-   Bézout-selective laws driven by $\gcd(n,n+1)=1$ and $pa-qb=1$ — zero-diagonal pronic Abel
-   summation, $(2r-1)$-step Bézout shell midpoint annihilation, conditional jump-orbit mean
-   classification, least Bézout successor-seed resonance, and trans-horizon separation of
-   parity-isometric rows, `selectivity_class_III_bezout_successor_selective_laws`).
-5. **"Paid" as an index class.** The paid class is a union of orbits of the critical Wiener
-   monoid, is invariant under local factors with $\lvert a\rvert<\sqrt p$ and sparse flips, and
-   reads the order of a pole through the all-order logarithmic pole moments
-   $M_m(k;1-\varepsilon)=\sum_{j\le J}k(j)(\log j)^mj^{-(1-\varepsilon)}$, which obey the binomial
-   Leibniz law and exact vanishing-order additivity under Dirichlet convolution
-   (`poleLogMoment_dirichletConv`, `poleLogMoment_dirichletConv_ne_zero`,
-   `poleLogMoment_iteratedFermiKernel_ne_zero`). Missing is a non-perturbative index formula
-   computing the class of the Möbius weight from arithmetic counts.
+1. **From separation to a bound.** The observables that separate parity pairs are classified:
+   first-order data at prime powers, the logarithmic moment hierarchy, the pole value
+   $K(1-\varepsilon)$ and its Taylor coefficients. Separation is qualitative. Which of them can be
+   given an exponent, so that separating a pair also bounds the paid member?
+2. **"Paid" as an index class.** The paid class is a union of orbits of the critical Wiener monoid,
+   invariant under local factors with $\lvert a\rvert<\sqrt p$ and sparse flips, and it reads the order
+   of a pole through the logarithmic pole moments. Missing is a non-perturbative index formula that
+   computes the class of the Möbius weight from arithmetic counts.
+3. **One obstruction from two sides.** The unpaid low-prime intervals of the odd-sector diagonal
+   potential and the nine moduli of Arithmetic Incidence Positivity are the same obstruction read
+   from the sieve side and from the pair side. A theorem that pays it on one side should transfer.
+4. **Quantitative Class III laws.** The Bézout-selective laws of §3.21 are identities and
+   classifications. Which of them, given a quantitative form, controls the off-diagonal Vaughan
+   entries $G_{ij}$, $i\ne j$?
 
 ---
 

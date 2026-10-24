@@ -21,13 +21,6 @@ open RHTower.ArchimedeanAnomaly RHTower.ArchimedeanExactForm
 namespace RHTower
 noncomputable section
 
-private theorem exp_neg_half_log {n : ℕ} (hn : 1 ≤ n) :
-    Real.exp (-Real.log n/2) = 1/Real.sqrt n := by
-  have hn0 : (0 : ℝ)<n := by exact_mod_cast hn
-  rw [Real.sqrt_eq_rpow, one_div, ← Real.rpow_neg hn0.le, Real.rpow_def_of_pos hn0]
-  congr 1
-  ring
-
 private theorem finite_prime_polar {f : ℝ → ℝ} {A : ℝ}
     (hcut : ∀ t : ℝ, A ≤ t → autocorr f t = 0) :
     4*(∫ t in Ioi 0, autocorr f t * Real.cosh (t/2)) -
@@ -57,7 +50,8 @@ private theorem finite_prime_polar {f : ℝ → ℝ} {A : ℝ}
     apply Finset.sum_congr rfl
     intro n hn
     have hn2 := (Finset.mem_Icc.mp hn).1
-    rw [primeTerm, if_pos hn2, primeWeight, exp_neg_half_log (by omega : 1 ≤ n)]
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
+    rw [primeTerm, if_pos hn2, primeWeight, RHTower.exp_neg_half_log hn0]
     ring
   have hpolar : (∫ t in Ici (0 : ℝ), polarDensity t * autocorr f t) =
       2*∫ t in Ioi 0, autocorr f t * Real.cosh (t/2) := by

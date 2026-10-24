@@ -63,9 +63,7 @@ theorem tendsto_suzukiCriticalCompensatedEnergy_top_of_L2_tendsto {q : ℕ → V
       (fun t => autocorr (q n) 0-autocorr (q n) t) (w n)) atTop (𝓝 ⊤) := by
   have h := suzukiCriticalLimitingEnergy_le_liminf_of_L2_tendsto hq hw
   rw [henergy] at h
-  apply tendsto_of_le_liminf_of_limsup_le h le_top
-  · exact ⟨⊤, Eventually.of_forall fun _ => le_top⟩
-  · exact ⟨⊥, Eventually.of_forall fun _ => bot_le⟩
+  exact tendsto_of_le_liminf_of_limsup_le h le_top
 
 end
 end RHTower
