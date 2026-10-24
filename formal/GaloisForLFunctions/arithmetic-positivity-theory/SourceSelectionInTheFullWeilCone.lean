@@ -151,10 +151,10 @@ theorem re_weilFullFunctional_pairTest_eq (w : ℕ → ℝ) {m : ℕ} (hm : 2 �
     (weilFullFunctional w (EF.weilTest (pairTest m σ) (pairTest m σ))).re =
       weilArchRe (EF.weilTest (pairTest m σ) (pairTest m σ)) -
         w m * (2 * σ * (∫ t, (narrowBump m t) ^ 2) / Real.sqrt m) := by
-  have h := re_weilFullFunctional_eq w (pairTestFn ⟨m, hm⟩ σ)
+  have h := re_weilFullFunctional_eq w (pairTestFn m σ)
   change (weilFullFunctional w (EF.weilTest (pairTest m σ) (pairTest m σ))).re =
     weilArchRe (EF.weilTest (pairTest m σ) (pairTest m σ)) -
-      linearCombination ℝ (fun j : LogIndex => w j) (logVector (pairTestFn ⟨m, hm⟩ σ)) at h
+      linearCombination ℝ (fun j : LogIndex => w j) (logVector (pairTestFn (⟨m, hm⟩ : LogIndex) σ)) at h
   rw [logVector_pairTestFn ⟨m, hm⟩ σ, linearCombination_single, smul_eq_mul] at h
   linarith
 
@@ -221,25 +221,27 @@ theorem exists_pairTest_strict_drop_of_singleIndexPerturbation (w : ℕ → ℝ)
   have habs_pos : 0 < |δ| * (2 * (∫ t, (narrowBump m t) ^ 2) / Real.sqrt m) :=
     mul_pos (abs_pos.mpr hδ) hw_pos
   rcases lt_trichotomy δ 0 with hneg | rfl | hpos
-  · refine ⟨-1, Or.inr rfl, ?_, ?_⟩
-    · have h := (re_weilFullFunctional_singleIndexPerturbation_pairTest w hm hm δ (-1)).1
-      rw [if_pos rfl] at h
+  · have h := (re_weilFullFunctional_singleIndexPerturbation_pairTest w hm hm δ (-1)).1
+    rw [if_pos rfl] at h
+    have hval :
+        (weilFullFunctional (singleIndexPerturbation w m δ)
+            (EF.weilTest (pairTest m (-1)) (pairTest m (-1)))).re -
+          (weilFullFunctional w (EF.weilTest (pairTest m (-1)) (pairTest m (-1)))).re =
+        -|δ| * (2 * (∫ t, (narrowBump m t) ^ 2) / Real.sqrt m) := by
       rw [h, abs_of_neg hneg]
       ring
-    · have h := (re_weilFullFunctional_singleIndexPerturbation_pairTest w hm hm δ (-1)).1
-      rw [if_pos rfl] at h
-      rw [abs_of_neg hneg] at habs_pos
-      linarith
+    exact ⟨-1, Or.inr rfl, hval, by linarith⟩
   · exact (hδ rfl).elim
-  · refine ⟨1, Or.inl rfl, ?_, ?_⟩
-    · have h := (re_weilFullFunctional_singleIndexPerturbation_pairTest w hm hm δ 1).1
-      rw [if_pos rfl] at h
+  · have h := (re_weilFullFunctional_singleIndexPerturbation_pairTest w hm hm δ 1).1
+    rw [if_pos rfl] at h
+    have hval :
+        (weilFullFunctional (singleIndexPerturbation w m δ)
+            (EF.weilTest (pairTest m 1) (pairTest m 1))).re -
+          (weilFullFunctional w (EF.weilTest (pairTest m 1) (pairTest m 1))).re =
+        -|δ| * (2 * (∫ t, (narrowBump m t) ^ 2) / Real.sqrt m) := by
       rw [h, abs_of_pos hpos]
       ring
-    · have h := (re_weilFullFunctional_singleIndexPerturbation_pairTest w hm hm δ 1).1
-      rw [if_pos rfl] at h
-      rw [abs_of_pos hpos] at habs_pos
-      linarith
+    exact ⟨1, Or.inl rfl, hval, by linarith⟩
 
 /-- **Complete Coordinate Identification by `pairTest m 1` (`m ≥ 2`) and Explicit Inversion.**
 Two arithmetic weights `w₁, w₂ : ℕ → ℝ` agree on all visible indices `n ≥ 2` if and only if their
@@ -349,11 +351,11 @@ theorem realPairTest_weilFullFunctional_and_gridTent_approximation {m : ℕ} (hm
   have hW_eq : compactFullWeilEnergy Fc =
       (weilFullFunctional (fun k => (ArithmeticFunction.vonMangoldt k : ℝ))
         (EF.weilTest (pairTest m σ) (pairTest m σ))).re := by
-    rw [← fullZeroForm_eq_compactFullWeilEnergy Fc,
-      fullZeroForm_eq_zeta_W_re (contDiff_realPairTest m σ) (hasCompactSupport_realPairTest m σ),
+    rw [← fullZeroForm_eq_compactFullWeilEnergy Fc]
+    change fullZeroForm F = _
+    rw [fullZeroForm_eq_zeta_W_re (contDiff_realPairTest m σ) (hasCompactSupport_realPairTest m σ),
       ofReal_realPairTest,
-      ← zeta_W_eq_weilFullFunctional (contDiff_pairTest m σ) (hasCompactSupport_pairTest m σ),
-      weilFullFunctional_vonMangoldt]
+      zeta_W_eq_weilFullFunctional (contDiff_pairTest m σ) (hasCompactSupport_pairTest m σ)]
   refine ⟨hsupp, hW_eq, fun {Mg Kg L} hMg hKg hGL n => ?_⟩
   rw [← hW_eq]
   exact abs_compactFullWeilEnergy_gridTentPattern_sub_le Fc hR0 hsupp hMg hKg hGL n
@@ -402,7 +404,8 @@ theorem atomPairing_singleIndexDelta_riemannKernelAutocorr_sign {m : ℕ} (hm : 
   refine ⟨hw_pos, ?_, ?_, ?_⟩
   · rw [heq, mul_pos_iff_of_pos_right hw_pos]
   · rw [heq, mul_eq_zero, or_iff_left hw_pos.ne']
-  · rw [heq, mul_neg_iff_of_pos_right hw_pos]
+  · rw [heq]
+    exact ⟨fun h => by nlinarith, fun h => mul_neg_of_neg_of_pos h hw_pos⟩
 
 /-- **Unconditional Refutation of Positive Single-Index Perturbations `Λ + δ · 1_{n = m}` (`δ > 0`)
 by Truncated Riemann Kernels.**
@@ -675,11 +678,11 @@ theorem weilPositiveFull_of_sourceIdentified_iff_additional_estimates {lam : ℕ
     constructor
     · intro hRH σ _
       refine ⟨0, fun r _ F hF hFc _ _ => ?_⟩
+      have hF_c : ContDiff ℝ 2 (fun x => (F x : ℂ)) := Complex.ofRealCLM.contDiff.comp hF
+      have hFc_c : HasCompactSupport (fun x => (F x : ℂ)) := hFc.comp_left Complex.ofReal_zero
       rw [zero_mul, zero_mul, neg_zero, fullZeroForm_eq_zeta_W_re hF hFc,
-        ← zeta_W_eq_weilFullFunctional hF (hFc.comp_left Complex.ofReal_zero),
-        weilFullFunctional_vonMangoldt]
-      exact (riemannHypothesis_iff_weilPositiveFull_vonMangoldt.mp hRH) _
-        (Complex.ofRealCLM.contDiff.comp hF) (hFc.comp_left Complex.ofReal_zero)
+        zeta_W_eq_weilFullFunctional hF_c hFc_c]
+      exact (riemannHypothesis_iff_weilPositiveFull_vonMangoldt.mp hRH) _ hF_c hFc_c
     · exact riemannHypothesis_of_subexponential_odd_floor
   exact ⟨h1, h2, h3, h4, h5, h6, hW_iff_RH⟩
 
@@ -690,11 +693,11 @@ For any weight `lam : ℕ → ℝ` satisfying `SourceIdentifiedWithVonMangoldt l
 2. If `ℱ` has `(α, β)`-norm-controlled receiver transfer (`α, β ≥ 0`) and `compactFullWeilEnergy`
    satisfies a rate-`2σ` floor `-(C * e^{2σ r} ∫ g²)` (`C, σ ≥ 0`) on `g ∈ ℱ r`, then
    `zetaZeroWidth ≤ σ + β`.
-3. At any fixed aperture `R ≥ e⁶` where `lam` is eventually nonnegative on the smoothed grid-tent
-   detectors `smoothGridTentDetector G n (-(R + 1)) M_n q` (as `q → ∞`, then `n → ∞`) for all seeds
+3. There exists an absolute constant `A₀ ≥ 1` such that at any fixed aperture `R ≥ e⁶` where `lam`
+   is eventually nonnegative on the smoothed grid-tent detectors
+   `smoothGridTentDetector G n (-(R + 1)) M_n q` (as `q → ∞`, then `n → ∞`) for all seeds
    `G ∈ C_c²([-R, R], ℝ)`, `ZetaWindowPositive R` holds and every zero `ρ ∈ zetaZeroConfig.carrier`
-   with `2 ≤ |(ρ : ℂ).im| ≤ zetaClusterHorizonHeight A₀ R` (`A₀ > 0` upper-bounding `zetaZeroConfig`)
-   has depth `|(ρ : ℂ).re - 1 / 2| < 1 / R`. -/
+   with `2 ≤ |(ρ : ℂ).im| ≤ zetaClusterHorizonHeight A₀ R` has depth `|(ρ : ℂ).re - 1 / 2| < 1 / R`. -/
 theorem graded_and_finite_aperture_sign_of_sourceIdentified {lam : ℕ → ℝ}
     (hid : SourceIdentifiedWithVonMangoldt lam) :
     (∀ f : ℝ → ℂ, ContDiff ℝ 2 f → HasCompactSupport f →
@@ -705,7 +708,7 @@ theorem graded_and_finite_aperture_sign_of_sourceIdentified {lam : ℕ → ℝ}
       (∀ r : ℝ, 0 < r → ∀ g ∈ ℱ r,
         -(C * Real.exp (2 * σ * r) * ∫ x, g x ^ 2) ≤ compactFullWeilEnergy g) →
       zetaZeroWidth ≤ σ + β) ∧
-    (∀ {R A₀ : ℝ}, Real.exp 6 ≤ R → 0 < A₀ → ZeroConfig.UpperBounded zetaZeroConfig A₀ →
+    (∃ A₀ : ℝ, 1 ≤ A₀ ∧ ∀ {R : ℝ}, Real.exp 6 ≤ R →
       (∀ G : ℝ → ℝ, ContDiff ℝ 2 G → HasCompactSupport G → (∀ x, R < |x| → G x = 0) →
         ∀ᶠ n : ℕ in atTop, ∀ᶠ q : ℕ in atTop,
           let M : ℕ := ⌈2 * (R + 1) / sourceFactorialWidth (n + 1)⌉₊
@@ -720,11 +723,11 @@ theorem graded_and_finite_aperture_sign_of_sourceIdentified {lam : ℕ → ℝ}
   have h1 : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → HasCompactSupport f →
       (weilFullFunctional lam (EF.weilTest f f)).re = (zetaZeroConfig.W f f).re := by
     intro f hf hfc
-    rw [weilFullFunctional_congr heq, ← weilFullFunctional_vonMangoldt,
-      ← zeta_W_eq_weilFullFunctional hf hfc]
+    rw [weilFullFunctional_congr heq, ← zeta_W_eq_weilFullFunctional hf hfc]
   refine ⟨h1, fun hα hβ hσ hC htr hfl =>
     zetaZeroWidth_le_of_normControlled_subfamily_transfer hα hβ hσ hC htr hfl, ?_⟩
-  intro R A₀ hR6 hA₀ hUB hdet
+  obtain ⟨A₀, hA₀1, hexcl⟩ := zeta_excluded_depth_below_clusterHorizon_of_gridTentPattern_nonneg
+  refine ⟨A₀, hA₀1, fun {R} hR6 hdet => ?_⟩
   have hgrid : ∀ G : ℝ → ℝ, ContDiff ℝ 2 G → HasCompactSupport G → (∀ x, R < |x| → G x = 0) →
       ∀ᶠ n : ℕ in atTop,
         0 ≤ compactFullWeilEnergy
@@ -734,13 +737,12 @@ theorem graded_and_finite_aperture_sign_of_sourceIdentified {lam : ℕ → ℝ}
     set M : ℕ := ⌈2 * (R + 1) / sourceFactorialWidth (n + 1)⌉₊
     set P : C_c(ℝ, ℝ) := gridTentPattern G n (-(R + 1)) M
     refine le_of_forall_pos_le_add fun ε hε => ?_
-    rw [zero_add]
     have hq_small : ∀ᶠ q : ℕ in atTop, 1 / ((q : ℝ) + 1) ≤ ε := by
       obtain ⟨N, hN⟩ := exists_nat_gt (1 / ε)
       filter_upwards [ eventually_ge_atTop N ] with q hq
       rw [div_le_iff₀ (by positivity)]
       have hNq : (N : ℝ) ≤ q := by exact_mod_cast hq
-      have h1 : 1 < ε * (N : ℝ) := (div_lt_iff₀ hε).mp hN
+      have h1' : 1 < ε * (N : ℝ) := (div_lt_iff₀ hε).mp hN
       nlinarith
     obtain ⟨q, hq1, hq2⟩ := (hn.and hq_small).exists
     set D : ℝ → ℂ := smoothGridTentDetector G n (-(R + 1)) M q
@@ -751,9 +753,7 @@ theorem graded_and_finite_aperture_sign_of_sourceIdentified {lam : ℕ → ℝ}
   have hR0 : 0 ≤ R := (Real.exp_pos 6).le.trans hR6
   have hwin := (zetaWindowPositive_and_hodgeIndex_of_eventually_gridTentPattern_nonneg_at_radius
     hR0 hgrid).1
-  have hexcl := zeta_excluded_depth_below_clusterHorizon_of_gridTentPattern_nonneg
-    hR6 hA₀ hUB hgrid
-  exact ⟨hwin, fun ρ hρ h2 hH => (hexcl ρ hρ h2 hH).1⟩
+  exact ⟨hwin, hexcl R hR6 hgrid⟩
 
 end GaloisForLFunctions.ArithmeticPositivityTheory
 end

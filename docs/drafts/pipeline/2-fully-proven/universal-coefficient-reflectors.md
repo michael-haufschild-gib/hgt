@@ -35,20 +35,28 @@ Conversely, if `Q=cX^a` and `c>0`, coefficients of `PQ` below `a` vanish and the
 
 The proof is constructive once `Q` is supplied: a witness of degree at most `2deg Q` defeats reflection for every nonmonomial coefficient-positive `Q`. It uses no numerical experiment and no root hypothesis.
 
+### Stronger witness: positivity on the entire nonnegative axis
+
+The same witness satisfies `R(y)>0` for every `y≥0`. Indeed `D≥1`, and `S≤(D+1)M` gives `b≤(D+2)/2<2D+1`. The exact identity
+
+`Σ_(j=0)^(2D) y^j − (2D+1)y^D = Σ_(k=0)^(D−1) y^k (y^(D−k)−1)²`
+
+is nonnegative for `y≥0`. Thus for `y>0`, `R(y)≥(2D+1−b)y^D>0`; at zero, `R(0)=1`. In particular `R(x²)>0` for every real `x`. The obstruction to universal cancellation therefore survives restriction to real-axis-positive local slice polynomials, rather than depending on an arbitrary sign-changing value polynomial.
+
 ## No-go closure
 
 - **Killed mechanism:** Universal cancellation of a nonmonomial coefficient-positive finite shell.
-- **Strongest positive survivor:** Exact classification of all universally reversible multipliers as positive monomials, with a bounded-degree counterexample for every other positive multiplier.
+- **Strongest positive survivor:** Exact classification of all universally reversible multipliers as positive monomials, with a bounded-degree, strictly positive-on-the-nonnegative-axis counterexample for every other positive multiplier.
 - **New insight:** Central zero powers and positive scalars may be removed exactly; positive remote factors require additional signed information. The head-to-tail implication cannot be inverted merely because its tail lies in the coefficient cone.
 - **Status:** Complete elementary paper proof above; Lean formalization pending. This does not retire WD or exclude source-specific cancellation laws.
 
 ## Audit
 
-Corpus queries: `coefficient nonnegative monomial multiplier`, `CoeffNonneg cancel`. No worldwide novelty claim. The classification must be checked against returned corpus results before being advertised as corpus-new.
+Corpus queries `coefficient nonnegative monomial multiplier` and `CoeffNonneg cancel` returned no declarations. A broader polynomial-multiplier query returned unrelated polynomial-clock and spectral results. This supports a local duplication check, not a worldwide novelty claim.
 
 ## Gates
 
 - [x] Complete dependency-closed paper proof.
-- [ ] Corpus duplication audit completed.
+- [x] Corpus duplication audit completed; no equivalent classification located.
 - [ ] Exact classification and constructive witness formalized.
 - [ ] Foreground module check and transitive axiom audit.

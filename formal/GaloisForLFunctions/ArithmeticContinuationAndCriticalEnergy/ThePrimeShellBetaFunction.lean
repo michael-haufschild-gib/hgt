@@ -58,8 +58,16 @@ def primeShellBlock (N : ℕ) (c : SuzukiPositiveAperture) :
 
 theorem primeShellBlock_isSelfAdjoint (N : ℕ) (c : SuzukiPositiveAperture) :
     IsSelfAdjoint (primeShellBlock N c) := by
-  rw [ContinuousLinearMap.isSelfAdjoint_iff', primeShellBlock, map_sum]
-  exact Finset.sum_congr rfl fun n _ => (ccmVisiblePrimeBlock_isSelfAdjoint c n).adjoint_eq
+  unfold primeShellBlock
+  generalize Ioc N (Nat.floor (Real.exp (2 * c.1))) = s
+  induction s using Finset.induction_on with
+  | empty =>
+    rw [Finset.sum_empty, ContinuousLinearMap.isSelfAdjoint_iff',
+      ContinuousLinearMap.adjoint.map_zero]
+  | insert n s hn ih =>
+    have h1 := ccmVisiblePrimeBlock_isSelfAdjoint c n
+    rw [ContinuousLinearMap.isSelfAdjoint_iff'] at h1 ih ⊢
+    rw [Finset.sum_insert hn, ContinuousLinearMap.adjoint.map_add, h1, ih]
 
 /-- The **prime-shell correlation** `σ_N(f) = Re⟨S_N f, f⟩` of the prime powers above `N`. -/
 def primeShellCorrelation (N : ℕ) (c : SuzukiPositiveAperture) (f : suzukiApertureHilbert c) :

@@ -36,7 +36,7 @@ theorem forcingEnergy_nonneg (ε : ℝ) (T : ℕ) : 0 ≤ forcingEnergy ε T :=
   sq_nonneg _
 
 theorem forcingFloor_pos (ε : SubcriticalDamping) : 0 < forcingFloor ε := by
-  have hm := pmPowerDampedDivisorDensity_re_pos ε.property.1
+  have hm := RHTower.pmPowerDampedDivisorDensity_re_pos ε.property.1
   unfold forcingFloor
   positivity
 

@@ -24,8 +24,10 @@ module computes its jumps exactly.
   `N(s) = N(t) + C(t)`, where the **collision mass** `C(t) = Σ 2⌊m/2⌋` runs over the finitely many
   real multiple zeros of `H_t` (`collisionMass`). A collision of multiplicity `m` lands exactly
   `2⌊m/2⌋` nonreal zeros on the real axis.
-* **Global law** (`nonrealZeroCount_eq_sum_collisionMass`). For `0 < t ≤ 1/8` the collision times in
-  `(t, 1/8]` are finitely many and `N(t)` is the total collision mass after `t`.
+* **Global law** (`nonrealZeroCount_eq_sum_collisionMass`). For every `t > 0` the collision times
+  after `t` are finitely many (`finite_collisionTimes`) and `N(t)` is the total collision mass after
+  `t` (`collisionMassAfter`). In particular RH holds iff the flow has no collision at any positive
+  time (`riemannHypothesis_iff_forall_collisionMass_eq_zero`).
 
 This is the collision-transfer law of `HTGeometry.HorizontalCharge` made global: off-line charge is
 converted into multiplicity charge at collisions, and nothing else changes the nonreal count.

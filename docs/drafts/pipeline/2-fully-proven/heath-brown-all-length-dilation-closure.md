@@ -145,7 +145,9 @@ The all-length proof is in
 Its endpoint is `RHTower.GuthMaynard.heathBrownPairSumBound_holds`.
 The full source and all seven public declarations passed the scratch leaf
 check and transitive axiom audit, using only `propext`, `Classical.choice`,
-and `Quot.sound`. Canonical final checking and umbrella wiring remain pending.
+and `Quot.sound`. The canonical leaf check passed and `RHTower.lean` imports
+the module once. Commands, source hashes and axiom output are recorded in
+`logs/just-work-2410/RHTower__Sieve__HeathBrownPairSumAllLengths.*`.
 The sharp S₂ and Proposition 12.1 draft remains unchecked.
 
 ## Gates

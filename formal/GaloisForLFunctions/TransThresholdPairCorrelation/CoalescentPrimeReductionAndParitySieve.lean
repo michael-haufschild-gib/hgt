@@ -614,7 +614,8 @@ theorem eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le
   have hθ0 : 0 < T ^ (-1 + η) := Real.rpow_pos_of_pos hT0 _
   have hg : ∀ y, |(params43.localFun T).g y| ≤ params43.L T := fun y => by
     rw [abs_of_nonneg (hF.g_nonneg y)]
-    exact hF.g_le_L y
+    have h := (hF.g_le_Aphi y).trans (hF.Aphi_le y)
+    refine h.trans (max_le (by linarith [abs_nonneg y]) (by linarith))
   set s₀ := T + ε₁ * T with hs₀
   set s₁ := 2 * T - ε₁ * T with hs₁
   have hε8 := hu.le
@@ -626,7 +627,7 @@ theorem eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le
   have hΩS : ∀ τ, τ ∉ Icc s₀ s₁ → profileΩ u T τ = 0 := fun τ hτ => by
     unfold profileΩ; rw [profileU_eq_zero hu hT0 hτ]; norm_num
   have hΩi : Integrable (profileΩ u T) := by
-    have h := integrable_window_mul hΩc hΩS (v := fun _ => (1 : ℝ)) continuous_const
+    have h := integrable_window_mul hΩc hΩS (h := fun _ => (1 : ℝ)) continuous_const
     simpa using h
   have hIΩ : ∫ τ, profileΩ u T τ ≤ T := by
     have h := integral_window_mul_le hs hΩc hΩ1 hΩS (h := fun _ => (1 : ℝ)) continuous_const
@@ -671,7 +672,9 @@ theorem eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le
           ring
   have hrpow : T * T ^ (-1 + η) * T ^ (2 / 3 : ℝ) = T ^ (2 / 3 + η) := by
     have h1 : T * T ^ (-1 + η) = T ^ η := by
-      rw [show (η : ℝ) = 1 + (-1 + η) by ring, Real.rpow_add hT0, Real.rpow_one]
+      calc T * T ^ (-1 + η) = T ^ (1 : ℝ) * T ^ (-1 + η) := by rw [Real.rpow_one]
+        _ = T ^ ((1 : ℝ) + (-1 + η)) := (Real.rpow_add hT0 1 (-1 + η)).symm
+        _ = T ^ η := by ring_nf
     rw [h1, ← Real.rpow_add hT0]
     ring_nf
   rw [hrpow] at hnum

@@ -356,7 +356,9 @@ theorem exists_pos_collision_free_below_of_finite_nonrealCopies
   have hmem : s ∈ (finite_collisionTimes hs2).toFinset.filter (fun u => u ≤ t₁) := by
     rw [Finset.mem_filter, Set.Finite.mem_toFinset]
     exact ⟨⟨by linarith, hne⟩, hst₁⟩
-  have hpos := Finset.single_le_sum (fun _ _ => Nat.zero_le _) hmem
+  have hpos : collisionMass s ≤
+      ∑ u ∈ (finite_collisionTimes hs2).toFinset.filter (fun u => u ≤ t₁), collisionMass u :=
+    Finset.single_le_sum (f := collisionMass) (fun _ _ => Nat.zero_le _) hmem
   omega
 
 /-- If `Ξ` has finitely many nonreal zero copies, then the set of all positive collision times
@@ -450,7 +452,7 @@ theorem sum_zeroMult_ball_le_of_sphere_bound {f : ℂ → ℂ} (hf : Differentia
 
 /-- At purely imaginary arguments `I * y` (`y : ℝ`), `riemannHeat t (I * y)` is the real positive
 integral `∫ x, Φ(x) e^{t x²} e^{−y x}`. -/
-theorem norm_riemannHeat_mul_I_eq_integral {t : ℝ} (ht : 0 ≤ t) (y : ℝ) :
+theorem norm_riemannHeat_mul_I_eq_integral {t : ℝ} (_ht : 0 ≤ t) (y : ℝ) :
     ‖riemannHeat t (I * (y : ℂ))‖ =
       ∫ x : ℝ, riemannKernelReal x * Real.exp (t * x ^ 2) * Real.exp (-(y * x)) := by
   have hrew : riemannHeat t (I * (y : ℂ)) =
@@ -480,13 +482,15 @@ theorem norm_riemannHeat_zero_le_norm_riemannHeat_zero {t : ℝ} (ht : 0 ≤ t) 
     intro s hs
     have h := (riemannKernel_superExp.mul_exp_sq hs).integrable_mul_exp 0
     refine h.congr (Eventually.of_forall fun x => ?_)
-    dsimp only
-    rw [zero_mul, neg_zero]
+    simp
   refine integral_mono (hint 0 le_rfl) (hint t ht) fun x => ?_
   dsimp only
-  rw [zero_mul, neg_zero, Real.exp_zero, mul_one, mul_one]
-  exact mul_le_mul_of_nonneg_left (Real.one_le_exp (by positivity))
-    (riemannKernelReal_pos x).le
+  have h1 : riemannKernelReal x * Real.exp (0 * x ^ 2) * Real.exp (-(0 * x)) =
+      riemannKernelReal x := by simp
+  have h2 : riemannKernelReal x * Real.exp (t * x ^ 2) * Real.exp (-(0 * x)) =
+      riemannKernelReal x * Real.exp (t * x ^ 2) := by simp
+  rw [h1, h2]
+  exact le_mul_of_one_le_right (riemannKernelReal_pos x).le (Real.one_le_exp (by positivity))
 
 /-- For `0 ≤ t ≤ 1/8` and every `z : ℂ`, `‖riemannHeat t z‖ ≤ ‖riemannHeat (1/8) (I * z.im)‖`. -/
 theorem norm_riemannHeat_le_eighth_im {t : ℝ} (ht0 : 0 ≤ t) (ht8 : t ≤ 1 / 8) (z : ℂ) :
@@ -506,7 +510,8 @@ theorem norm_riemannHeat_le_eighth_im {t : ℝ} (ht0 : 0 ≤ t) (ht8 : t ≤ 1 /
   refine integral_mono_of_nonneg (Eventually.of_forall fun _ => norm_nonneg _) hint8
     (Eventually.of_forall fun x => ?_)
   dsimp only
-  rw [norm_integrand, abs_of_nonneg (by positivity [riemannKernelReal_pos x])]
+  rw [norm_integrand (fun x => riemannKernelReal x * Real.exp (t * x ^ 2)) z x,
+    abs_of_nonneg (by positivity [riemannKernelReal_pos x])]
   gcongr
   positivity [riemannKernelReal_pos x]
 
@@ -572,14 +577,16 @@ theorem exists_sum_zeroMult_riemannHeat_ball_le :
       Real.log 2 by simp only [K]; ring]
   refine div_le_div_of_nonneg_right ?_ hlog2.le
   have hC_term : C * (1 + 3 * R) * Real.log (2 + 3 * R) ≤ 4 * C * R * Real.log (2 + 3 * R) := by
-    nlinarith
+    have : C * (1 + 3 * R) ≤ 4 * C * R := by nlinarith
+    exact mul_le_mul_of_nonneg_right this hlog3R_pos.le
   have h0_term : |Real.log ‖riemannHeat 0 0‖| ≤
       (|Real.log ‖riemannHeat 0 0‖| / Real.log 2) * R * Real.log (2 + 3 * R) := by
     have hmul := mul_le_mul_of_nonneg_left h1R (abs_nonneg (Real.log ‖riemannHeat 0 0‖))
     calc |Real.log ‖riemannHeat 0 0‖| = |Real.log ‖riemannHeat 0 0‖| * 1 := by ring
       _ ≤ |Real.log ‖riemannHeat 0 0‖| * (R * (Real.log (2 + 3 * R) / Real.log 2)) := hmul
       _ = _ := by ring
-  nlinarith
+  have hpos_term : 0 ≤ R * Real.log (2 + 3 * R) := mul_nonneg hR0.le hlog3R_pos.le
+  linarith
 
 /-- **Weyl spatial localization of collision points.** For every `ε > 0`, there is `X₀ ≥ 1` such
 that for every `t > 0` and every collision point `z ∈ realMultipleZeros t`, `z.im = 0` and
@@ -609,7 +616,7 @@ For every `ε > 0`, there exist `C₀ > 0` and `X₀ ≥ 1` such that for all `0
 2. `∑_{s > t} collisionMass s ≤ C₀ * R(t) * log(2 + 3 R(t))`, and
 3. `collisionMass t ≤ C₀ * R(t) * log(2 + 3 R(t))`. -/
 theorem exists_nonrealZeroCount_and_collisionMass_le_weyl {ε : ℝ} (hε : 0 < ε) :
-    ∃ C₀ X₀ : ℝ, 0 < C₀ ∧ 1 ≤ X₀ ∧ ∀ t : ℝ, 0 < t → t ≤ 1 / 8 →
+    ∃ C₀ X₀ : ℝ, 0 < C₀ ∧ 1 ≤ X₀ ∧ ∀ (t : ℝ) (ht : 0 < t), t ≤ 1 / 8 →
       let R := max X₀ (2 * Real.pi * Real.exp ((3 / 2 + ε) / t)) + 1
       ((nonrealZeroCount t : ℕ) : ℝ) ≤ C₀ * R * Real.log (2 + 3 * R) ∧
       ((∑ s ∈ (finite_collisionTimes ht).toFinset, collisionMass s : ℕ) : ℝ) ≤
@@ -764,10 +771,8 @@ theorem coeffNonneg_forwardPolyHeat_sliceTruncPoly_of_riemannHypothesis
     (coeffNonneg_forwardPolyHeat_prod hs _ fun q hq => ?_)
   exfalso
   have him_pos : 0 < (xiSpectralPoint q).im := (mem_sliceTruncUp.mp hq).2
-  have hz := xi_eq_zero_of_mem_divisor_support q.1
-  have hre : (q.1 : ℂ).re = 1 / 2 :=
-    (riemannHypothesis_iff_xi_zeros_on_critical_line.mp hRH) _ hz
-  have him0 : (xiSpectralPoint q).im = 0 := by simp [xiSpectralPoint, hre]
+  obtain ⟨γ, hγ⟩ := xiSpectralPoint_real_of_rh hRH q
+  have him0 : (xiSpectralPoint q).im = 0 := by rw [hγ, Complex.ofReal_im]
   linarith
 
 /-- **All-height finite-head heat positivity criterion for RH.** For any radius `R ≥ 0` with
@@ -802,5 +807,13 @@ theorem forall_collisionMass_eq_zero_iff_forall_pos_finiteHead_poly_nonneg {R : 
     (riemannHypothesis_iff_forall_pos_finiteHead_poly_nonneg hR hR2)
 
 end
+
+#print axioms sum_collisionMass_Ioc_eq_sub
+#print axioms isGreatest_collisionTimes_newmanConstant
+#print axioms wdHeatThreshold_le_third_sq_zetaZeroWidth
+#print axioms sum_all_collisionMass_eq_card_nonrealCopies
+#print axioms exists_nonrealZeroCount_and_collisionMass_le_weyl
+#print axioms wdHeatThreshold_le_of_zeros_on_line_below_and_finiteHead
+#print axioms forall_collisionMass_eq_zero_iff_forall_pos_finiteHead_poly_nonneg
 
 end RHTower.DeBruijn

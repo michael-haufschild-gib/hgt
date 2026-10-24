@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.CCM.CCMPrimeDeficitCoprimeBalance
 import GaloisForLFunctions.RHTower.CCM.CCMPrimeDeficitDiagonalControl
 import GaloisForLFunctions.RHTower.CCM.CCMPrimeDeficitChronologicalWork
 import GaloisForLFunctions.RHTower.CCM.CCMPrimeEntryEulerEndpointControl
-import GaloisForLFunctions.RHTower.CCM.CCMPrimeEntryBoundaryScale
+import GaloisForLFunctions.BiScaleUncertainty.PrimeWindowCeilingVinogradovKorobovRemainder
 
 /-!
 # The critical prime-deficit energy and Weil-lag flux measure one zero width
@@ -633,10 +633,10 @@ theorem zetaZeroWidth_le_iff_forall_coprimeCrossWorkLowerRate {σ : ℝ} (hσ : 
 
 /-- **RH is every subexponential lower bound on the coprime Möbius cross work.** -/
 theorem riemannHypothesis_iff_forall_coprimeCrossWorkLowerRate :
-    RiemannHypothesis ↔ ∀ β : ℝ, 0 < β → CoprimeCrossWorkLowerRate β :=
-  zetaZeroWidth_eq_zero_iff_riemannHypothesis.symm.trans
-    ((le_antisymm_iff.trans (and_iff_left zetaZeroWidth_nonneg)).symm.trans
-      (zetaZeroWidth_le_iff_forall_coprimeCrossWorkLowerRate le_rfl (by norm_num)))
+    RiemannHypothesis ↔ ∀ β : ℝ, 0 < β → CoprimeCrossWorkLowerRate β := by
+  rw [riemannHypothesis_iff_forall_criticalDeficitPointwiseRate]
+  exact forall₂_congr fun β hβ =>
+    criticalDeficitPointwiseRate_iff_coprimeCrossWorkLowerRate hβ.le
 
 /-- **Two-sided quadratic sandwich for the centered off-diagonal prime-entry energy.** For all
 `T ≥ 0`,
@@ -810,7 +810,9 @@ theorem riemannHypothesis_iff_cubic_centeredEulerCurvature :
       · have hT3 : 0 ≤ T ^ 3 := by positivity
         linarith
       · have hT1' : 1 ≤ T := le_of_not_ge hT1
-        have hT3 : T ≤ T ^ 3 := by nlinarith
+        have hT2 : T ≤ T ^ 2 := by nlinarith
+        have hT3 : T ^ 2 ≤ T ^ 3 := by
+          nlinarith [mul_nonneg (sub_nonneg.mpr hT1') (sq_nonneg T)]
         linarith
     nlinarith
   · rintro ⟨C, hC0, hC⟩
@@ -909,6 +911,7 @@ theorem exists_eventually_neg_ccmPrimeDeficitCoprimeCrossWork_le_vk
     refine h2.congr' ?_
     filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT
     rw [mul_sub, ← Real.rpow_add hT, add_sub_cancel, Real.rpow_one]
+    ring
   refine ⟨C + 49 / 4, κ, by positivity, hκ, ?_⟩
   filter_upwards [hvk, eventually_ge_atTop (0 : ℝ),
     hsub.eventually_ge_atTop (0 : ℝ)] with T hT hT0 hpos

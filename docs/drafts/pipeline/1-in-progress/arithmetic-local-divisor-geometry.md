@@ -39,6 +39,22 @@ Initial investigation: inspect exact finite-head and heat APIs, then establish w
 
 The initial long natural-language corpus search returned a semantic-runtime timeout and no lexical hits. Follow-up lexical searches use actual declaration stems. This is a search limitation, not evidence of novelty.
 
+### Developed mathematics
+
+- `local-divisor-coefficient-repair.md`: complete paper proofs of exact one-factor repair and sharp equal-factor multiplicity costs. `LocalFactors.lean` and `BinomialMultipliers.lean` contain initial formalizations; compilation has not yet certified them.
+- `../2-fully-proven/universal-coefficient-reflectors.md`: constructive classification of every universal coefficient-cone multiplier as a positive monomial. Lean formalization remains required.
+- `ArithmeticLocalDivisorGeometry/README.md` supplies the foundational account and retains all nine original research questions. Its arithmetic endpoints remain open.
+- Additional existing inputs found: `HTGeometry/OffLinePairDetectionNewtonSharp.lean` gives the sharp own-ordinate detection order against positive real factors; `HTGeometry/SliceRootHolomorphy.lean` already proves contour-moment reconstruction and holomorphic symmetric functions through multiple roots; `HTGeometry/FiniteSignedValueDefect.lean` already supplies the finite total-variation/negative-mass identity. Do not repackage those as new theorems.
+
+### Verification state and next work
+
+- `LocalFactors.lean` passed `lake --old env lean GaloisForLFunctions/ArithmeticLocalDivisorGeometry/LocalFactors.lean` with exit 0 and no diagnostics. Its transitive axiom check remains to do after producing the olean needed by dependent modules.
+- The scratch API check completed: coefficient-shift and binomial names are valid; guessed `coeff_X_mul_succ` and `eval_pos` do not exist and are not used by the new sources.
+- The `LocalFactors` check session `46938` is terminal. A further scratch API check was launched after it finished. Revalidate tool handles before waiting or replacing them. One Lean process at a time.
+- Scratch file `/tmp/aldg_mathlib_check.lean` contains further API checks to run after the current process finishes. `/tmp/aldg-lean-sample.txt` is an owned diagnostic; remove both after verification. The sample confirmed the first scratch process was importing persistent extensions, not stuck in a proof tactic.
+- Finish and audit existing formalizations, then formalize the raw geometric multiplicity law, central-factor/own-ordinate laws, and exact universal multiplier classification. Wire only finished modules into a new sibling umbrella and the existing aggregate; never compile umbrellas.
+- Other workspace actors are editing and committing independently. Initial unrelated changes were preserved; a later shared commit included the new files. Do not interpret an empty scoped `git status` as absent work or revert those commits.
+
 ## Completion audit
 
 The full original task remains open until all named research questions have substantive answers and the required tools exist. A foundations batch, generic polynomial theorem, or receiver bridge does not satisfy the endpoint. Unproved source inequalities must remain recorded here rather than becoming hypotheses of purported unconditional results.

@@ -301,7 +301,6 @@ theorem mem_receiverDampings_of_bounded_naturalDilationHeadEnergy {p : ℕ} (hp 
   have hLfix : q * K₁ = L - q * L := by
     simp only [L, q]
     field_simp
-    ring
   have hgstep : ∀ M : ℕ, g M ≤ q * g (p * M + (p - 1)) := by
     intro M
     have hfM : f M ≤ q * (K₁ + f (p * M + (p - 1))) :=
@@ -343,11 +342,9 @@ theorem mem_receiverDampings_of_bounded_naturalDilationHeadEnergy {p : ℕ} (hp 
     rw [← Real.sqrt_sq (mul_nonneg (by positivity) (pnorm_nonneg _ _) : 0 ≤ q ^ k * f Mk)]
     refine Real.sqrt_le_sqrt ?_
     have hE : f Mk ^ 2 ≤ D * (1 + (Mk : ℝ) ^ (1 - 2 * ε)) := by
-      have := hD Mk
-      rw [ArithmeticCompensationTheory.dampedMobiusEnergy_eq_pronicEnergy] at this
-      simp only [f, TransHorizonIncidenceMechanics.pronicNorm]
-      rw [Real.sq_sqrt (Finset.sum_nonneg fun n _ => by positivity)]
-      exact this
+      rw [show f Mk ^ 2 = pmPowerDampedDivisorDiscreteEnergy ε Mk from
+        (pmPowerDampedDivisorDiscreteEnergy_eq_sq_pronicNorm ε Mk).symm]
+      exact hD Mk
     have hq2 : (q ^ k) ^ 2 = (1 / (p : ℝ)) ^ k := by
       simp only [q]
       rw [← pow_mul, mul_comm k 2, pow_mul, inv_pow, Real.sq_sqrt (by positivity), one_div]
@@ -421,3 +418,13 @@ theorem re_le_of_bounded_naturalDilationDirichletForm_on_Ioo {p : ℕ} (hp : p.P
 end
 
 end GaloisForLFunctions.BezoutValuationIncidence
+
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.hasSum_signedDilationPrimitive_sq
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.signedDilationPrimitive_primeBlockProd_eq
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.eventually_signedDilationDirichletForm_ge
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.not_bddAbove_hypercubeDilationDirichletForm
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.hypercubeDilationDirichletForm_threshold
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.naturalDilationPrimitive_eq
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.bounded_naturalDilationHeadEnergy_iff_mem_receiverDampings
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.mem_receiverDampings_of_bounded_naturalDilationDirichletForm
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.re_le_of_bounded_naturalDilationDirichletForm_on_Ioo

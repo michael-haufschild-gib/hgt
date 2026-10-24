@@ -37,7 +37,7 @@ theorem abs_centeredResponse_le_one (ε : SubcriticalDamping) (n : ℕ) :
     |pmPowerDampedCenteredDivisorCoeff ε n| ≤ 1 := by
   have hc0 := pmPowerDampedDivisorCoeff_nonneg ε.property.1.le n
   have hc1 := pmPowerDampedDivisorCoeff_le_one ε.property.1.le n
-  have hm0 := pmPowerDampedDivisorDensity_re_pos ε.property.1
+  have hm0 := RHTower.pmPowerDampedDivisorDensity_re_pos ε.property.1
   have hm1 := density_le_one ε
   unfold pmPowerDampedCenteredDivisorCoeff
   exact abs_le.mpr ⟨by linarith, by linarith⟩
@@ -104,16 +104,14 @@ theorem admits_or_fixed_successors_disappear (ε : SubcriticalDamping) :
         (dampedMobiusEnergy_nonneg ε T)) ?_
     exact tendsto_const_nhds.div_atTop hE
 
-/-- The same disappearance holds on every translation scale below the energy square root. -/
-theorem admits_or_moving_successors_disappear (ε : SubcriticalDamping) :
-    Admits dampedMobiusEnergy ε ∨ ∀ k : ℕ → ℕ,
-      Tendsto (fun T => (k T : ℝ) ^ 2 / dampedMobiusEnergy ε T) atTop (𝓝 0) →
-      Tendsto (fun T => successorDisplacementEnergy ε (k T) T / dampedMobiusEnergy ε T)
-        atTop (𝓝 0) := by
-  refine Or.inr fun k hk => squeeze_zero
-    (fun T => div_nonneg (successorDisplacementEnergy_nonneg ε (k T) T)
-      (dampedMobiusEnergy_nonneg ε T))
-    (fun T => div_le_div_of_nonneg_right (successorDisplacementEnergy_le ε (k T) T)
-      (dampedMobiusEnergy_nonneg ε T)) hk
+/-- Every moving translation has an explicit budget in the receiver's normalization. -/
+theorem moving_successor_budget (ε : SubcriticalDamping) (k T : ℕ) :
+    0 ≤ successorDisplacementEnergy ε k T / dampedMobiusEnergy ε T ∧
+      successorDisplacementEnergy ε k T / dampedMobiusEnergy ε T ≤
+        (k : ℝ) ^ 2 / dampedMobiusEnergy ε T :=
+  ⟨div_nonneg (successorDisplacementEnergy_nonneg ε k T)
+      (dampedMobiusEnergy_nonneg ε T),
+    div_le_div_of_nonneg_right (successorDisplacementEnergy_le ε k T)
+      (dampedMobiusEnergy_nonneg ε T)⟩
 
 end GaloisForLFunctions.ArithmeticDefectRigidity

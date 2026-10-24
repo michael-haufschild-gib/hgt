@@ -70,6 +70,8 @@ arithmetic estimates to make a dictionary applicable.
   remains. Their declared final checks and standard-axiom audits cover the
   requested statements. Imported oleans are absent for these leaves, as
   expected when no dependent file needs them.
+  Current source hashes match those certificates; reuse evidence is in
+  `logs/just-work-2410/J4ExistingCertificates.json`.
 - `SuzukiCriticalMovingPrimaryEnergy` supplies the varying-source Fatou
   inequality. This is only the positive primary part of J4(iii); joint
   convergence of the signed compact-window correction is still required.
@@ -83,8 +85,8 @@ arithmetic estimates to make a dictionary applicable.
 - J3 paper proof: `2-fully-proven/heath-brown-all-length-dilation-closure.md`.
   `RHTower/Sieve/HeathBrownPairSumAllLengths.lean` proves the exact
   `heathBrownPairSumBound_holds` endpoint. Its full-source scratch check and
-  all seven public transitive axiom audits passed; canonical final checking
-  and wiring remain pending. The sharp all-k S₂ draft is
+  all seven public transitive axiom audits passed. The canonical leaf check
+  passed and the owning umbrella imports it once. The sharp all-k S₂ draft is
   `/tmp/hgt-just-work-sharp-s2.lean`; it still requires Lean verification.
 - J4(i) can use the existing cluster horizon followed by complete-form
   mollification. `TheRoutesMeasureOneAperture.contDiff_top_smooth` gives
