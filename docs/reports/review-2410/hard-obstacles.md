@@ -1,467 +1,336 @@
-# Hard mathematical obstacles on every RH route
+# Hard mathematical obstacles: current research frontier
 
-**Status at 2026-10-24.** 31 live routes, 17 standalone candidates, and PM's embedded PW-B candidate. No route has an unconditional, source-derived closing estimate. On most routes the remaining obstruction is localized to an exact equivalence, a finite-dimensional sector at each aperture, or a single missing arithmetic estimate; that closing input is missing on every route.
+Status: 2026-10-24. This report covers all 31 named routes, 17 standalone candidates, PW-B, and the supporting programmes that change their prospects. Companion documents: [task and research summary](hard-obstacles-summary.md), [walls](walls-ledger.md), [route unification](route-unification-ledger.md).
 
-Companions: [summary and research programme](hard-obstacles-summary.md), [walls ledger](walls-ledger.md), [route unification](route-unification-ledger.md). Route names follow the [frontier map](../rh-current-frontier-map.md).
+## Evidence and classification
 
-## 1. Scope, labels and evidence
+The six specified reports supplied the inventory. Corpus searches and inspection of Lean statements and proof text supplied the corrections. The audit record is in `logs/review-2410-current-audit/`: saved searches, source inspection manifest, and working findings. No builds, Lean compilation, or executable axiom checks were run. “Established” below means supported by inspected source, not newly kernel-verified in this review. Conditional theorems retain their hypotheses; an interface containing the desired estimate is not a construction of that estimate. Specific source defects and unfinished modules are identified below.
 
-The inventory comes from the six named reports. Mathematical status comes from corpus searches with `scripts/formal_tools.py research` and from reading the Lean statements they surfaced. No other Markdown file was opened; formalized pipeline cards and `formal/` READMEs were seen only as search-tool passages. Nothing was compiled for this review: "[L]" means an integrated declaration whose statement and hypotheses were read, not a fresh kernel audit.
+Each route distinguishes:
 
-| Label | Meaning |
-|---|---|
-| **[L]** | Integrated Lean declaration; statement and premises inspected. |
-| **[S]** | Proof present in working or unintegrated source (untracked, unwired or blocked by a name clash). |
-| **[P]** | Paper proof only. |
-| **(a) Just work** | The method and all inputs exist: integration, formalization of a known proof, explicit regularity, a supplied finite certificate, or application of a proved dictionary. No unknown sign or estimate. |
-| **(b) B-RH** | Open target proved sufficient for RH (often equivalent). RH is open, so no solution is known anywhere. |
-| **(b) B-C** | Open auxiliary question without a known method. It may be weaker, stronger, or false; worldwide novelty is not claimed. |
+- **(a) Known-method work:** finite calculations, explicit regularity and support checks, repairs of known identities, and applications of existing theorems once their independently justified premises are available.
+- **(b) Open closing input:** an estimate, positivity theorem, or construction sufficient for RH, often proved equivalent to RH. These are mathematical research problems, not formalization tasks.
+- **Auxiliary research:** a narrower question not settled by the inspected corpus. Absence here does not establish that nobody elsewhere knows a solution. Such questions are not silently promoted to worldwide open problems.
+- **Excluded mechanism:** a proposition already contradicted by a theorem or countermodel. It belongs in neither backlog.
 
-Source codes: R = `RHTower`, B = `BiScaleUncertainty`, V = `BezoutValuationIncidence`, T = `TransHorizonIncidenceMechanics`, A = `arithmetic-positivity-theory`, C = `ArithmeticContinuationAndCriticalEnergy`, I = `ArithmeticIncidencePositivity`, Q = `ScaleSignedIncidenceCriticality`, S = `SquareRootThreshold`, G = `ArithmeticCriticalityTheory`, K = `ArithmeticCastelnuovoSeveri`, M = `ArithmeticCompensationTheory`, E = `SignedArithmeticEnergyIncidence`, O = `ArithmeticOrientationTheory`, P = `TransThresholdPairCorrelation`, D = `DilutionCrystallizationPincer`, H = `HTGeometry`; all under [`formal/GaloisForLFunctions/`](../../../formal/GaloisForLFunctions/).
+Write `Δ = supρ |Re ρ − 1/2|` and `Θ = 1/2 + Δ`. A receiver reading `Δ` at rate `σ` gives a fixed strip when `σ < 1/2`; closing RH requires `Δ = 0`. This logical implication is not a claim that every intermediate strip question is globally unsolved. Reciprocal depth, heat time, negative index and multiplicity energy are different invariants.
 
-## 2. Common mathematical boundaries
+## 1. Results that determine the present frontier
 
-Write `Δ = sup_ρ |Re ρ − 1/2| = Θ − 1/2`; RH is `Δ = 0`.
+### Exact critical endpoints and the complete Weil form
 
-1. **Every graded receiver reads the same width, and its first improvement is quasi-RH.** Spectral width, zero abscissa, Möbius and Liouville damping thresholds, the ξ half-plane bound and Suzuki formation energy are isomorphic objects of one receiver category; the width functor is full, faithful and isomorphism-reflecting (O:TheWidthFunctor, `zetaReceivers_widthVal_eq`). For every route whose graded receiver reads `Δ` (lag, packet, deficit primitive, ground floor, Sobolev allocation, damping, short window, JAS level-one budget), a bound at any fixed rate `σ < 1/2` is a fixed zero-free strip `Θ < 1`, i.e. quasi-RH. LI's reciprocal depth and HF's ceiling exponent `θ*` are the exceptions: they are different currencies. Every unconditional receiver estimate in the corpus sits at rate exactly `1/2` with de la Vallée Poussin or Vinogradov–Korobov savings: `e^{r−c√r}` (I:ReflectedPrimePolarAllocation), `e^{L/2−κL^a}`, `a<3/5` (B:PrimeWindowCeilingVinogradovKorobovRemainder), `exp(v/2−v^a)` (S:ZetaLagFamilyVinogradovKorobovEnvelope).
-2. **Windows.** Full complex `C²` Weil form: margin `1/5000` through radius `3/10`, `1/1000` through `29/100` (G:ThreeTenthsSharpGaugeWeilPositivity, G:PastPlasticFoldWeilPositivity). Odd form: margin `1/1000` through `181/500`, transferred to the lag family (S:SharperOddWindowAndPhaseSelectiveSingleHeightLaw). Polar-free/primitive smooth tests: `1/1000` through `(log 2+1/50)/2`, `1/20` when both polar moments vanish (K:SourceDeterminantalSectionsAndArithmeticRiemannRoch). Joint 2/3 strip cost at `23/40` is not full positivity.
-3. **All-aperture floors are rate 1/2.** `μ₀(A) ≥ −(10+68e^A)` and `≥ −[Cε+(4+ε)e^A]`; full real tests `W ≥ −(10+72e^r)∫F²` (S:PolarGroundEnergyAndPoleFreeLagAbscissaBridge, K:SourceDeterminantalSectionsAndArithmeticRiemannRoch). Graded allocation `(σ,C) = (1/2,75)` (I:SharedDerivativeEnergyAndGlobalAllocationSynthesis). Positive floors must decay doubly exponentially: `μ(A) ≤ K exp(11A/2 − πe^{2(A−2)})`, `A ≥ 3` (M:TheApertureFloorMustDecayDoublyExponentially).
-4. **At each aperture the obstruction is finite-dimensional.** The Hodge defect of ζ is finite at every aperture, bounded by `⌊1 + 2·horizonFreq(a)(2a+2)/π⌋`, where `horizonFreq(a) = 4(e^{2E}−1)` with `E` exponential in `a` (K:TheHodgeDefectOfZetaIsFiniteAtEveryDegree, `hodgeDefectAt_zeta_lt_top`). Tests whose transforms vanish at the pole and on an explicit finite low-frequency grid have `Re W_ζ ≥ 0` (K:TheHodgeIndexOfZetaHoldsAwayFromLowFrequencies, `re_W_zeta_nonneg_of_lowGrid`), and the low-blind subsurface has RR, ampleness and Hodge index at every `a > 0` (K:SourceRiemannRochAwayFromTheLowFrequencyDivisor, `lowBlindTests_effectivity`). The dimension of the omitted sector grows doubly exponentially in `a`; no aperture-uniform payment of it is known.
-5. **Mass floors and the width are tied exactly to clustering.** The compensated floor `E_−(u) ≤ E_+(u) + B‖u‖²` is equivalent to `μ(a) ≥ −B`; the uncompensated floor is equivalent to bounded local off-line depth mass; `∀σ>Δ` compensated floors hold iff the ground-energy rate equals `Δ`; unconditionally either that holds or local depth mass is unbounded (C:CompensatedWidthFloorAndGroundEnergyRate). A tempered model with ζ-type local counts and multiplicity `⌊log γ⌋` at fixed depth defeats every exponent (R:OffLineClusterWeilUnbounded). The DCI pincer shows a rate excess requires collapsed clusters at heights `180|T| > exp(e^{εA}/(40Δ²))` (D:MasterDCIPincerTheorem).
-6. **Damping.** Every `ε > Δ` is admitted; cofinal admission at zero is RH. The centered chain is bounded on finite-support `ℓ²` uniformly for `1/2 ≤ η < 1`, Hilbert–Schmidt exactly for `η > 1/2`, and norm-continuous as `η ↓ 1/2` (E:TheChainIsBoundedAtHalfDamping, E:TheChainIsHilbertSchmidtAboveHalfDamping, E:TheChainIsNormContinuousAtHalfDamping). Admission is equivalent to an empty Bohr obstruction hull and to zero quotient rank of the repairing ideal; invertible critical-Wiener filters preserve both admitted and unadmitted classes (O:AnIndexFormulaForTheActualReceiver, O:UnitsOfTheWienerMonoidPreservePayment).
-7. **Actual rows.** Fixed-modulus Möbius cancellation; centered-prime rows on `P^{1+δ} ≤ Q ≤ P^{30/17−δ}`; balanced `P ≤ Q ≤ BP` bilinear/dual-norm bounds with arbitrarily small leading coefficient but retained cubic/quartic tails (M:TheBalancedRegimeAndTheOmittedResidueClassLaw). Guth–Maynard large values are formalized unconditionally (R:Sieve/GuthMaynardTheoremOneOne), giving zero density `30/13` and primes in `(x, x+x^α]`, `α > 17/30`. Any fixed short-window power saving is equivalent to `Θ < 1`.
-8. **Readings.** In the depth-lattice model classes, every orientation-faithful or depth-certifying reading crosses the Nyquist aperture, reads a magnitude, or adds mass/dilution/first-moment data; sub-Nyquist sign readings are invisible to every orientation flip (O:TheTrichotomyOfReadings). Finite-radius Weil readings see only `λ(n)` with `log n < 2R` and admit non-positive mimics (S:CertificateRadiusReadsAFinitePrimeWindow).
-9. **Index, depth, multiplicity.** Weil negative index counts distinct right zeros; the Weil sum counts `m`; packet mean square counts `m²`; LI reads reciprocal depth `|β−1/2|/(γ²+(β−1/2)²)`, unconditionally `≤ 1/431`. None of these is `Δ`.
+The critical incoming deficit has an absolutely convergent reciprocal-square zero expansion. Its pointwise exponential rate and its squared-energy rate attain the width endpoint; the latter has twice the exponent. RH is equivalent to bounded critical energy and to a lower bound for the corresponding coprime cross-work. The two-prime test uses mixed lags `k log p + l log q`, not two unrelated one-dimensional grids. The constant `C₄ = Σdistinct ρ mρ² / |ρ|⁴` is finite and positive unconditionally; the stated mean law tending to `C₄` assumes RH. An infimum for the linear-band slope does not by itself prove that the optimal slope is attained. [Critical endpoint and limit law](../../../formal/GaloisForLFunctions/BiScaleUncertainty/WeilLagCriticalDeficitEndpointAndLimitLaw.lean)
 
-## 3. Live routes
+For every real compact `C²` test, with no parity or vanishing-moment restriction, the full Weil form has the exact decomposition
+
+`Q(F) = (γ₀ − 2) mass(F) + Lévy(F) + 4 horizonEnergy(F) + 2∫ incoming · doubleGaugeDerivative(autocorrelation(F))`.
+
+The all-parity Vinogradov–Korobov floor and the full/odd `H¹` floor-rate classifications are present. With the source's normalization, both admissible rate sets are the closed ray `[Δ, ∞)`; a uniform `H¹` floor is RH-equivalent. Transferring this to a mass-only floor requires a fixed second-gauge-to-mass bound. There is no unrestricted `L²` equivalence hidden in the Sobolev result. [All-parity identity and endpoint Sobolev laws](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/AllParityCriticalDeficitAndEndpointSobolevLaws.lean)
+
+### Mass floors, clusters and aperture flow
+
+A **compensated** negative-energy floor is exactly a ground-energy floor. An **uncompensated** negative-energy bound is equivalent to bounded local off-line depth mass. Bounded local depth mass is sufficient for the desired ground-rate equality; failure of that equality forces unbounded local depth mass. The converse is not established: unbounded local mass need not defeat compensation. Thus “ground rate equals width iff no collapsed clusters” is too strong. [Compensated width floors](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/CompensatedWidthFloorAndGroundEnergyRate.lean)
+
+The aperture ground energy strictly decreases. RH is equivalent to strict positivity at every finite aperture; otherwise there is a unique zero crossing. Freezing the prime powers below the initial aperture separates the drop into a nonnegative geometric relaxation and an arithmetic shell jump, with opposite boundary-collar correlations bounding that jump. The missing information is the arithmetic payment of the shell flux. A nonnegative relative-flow law is RH-equivalent. [Non-stalling flow](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/TheApertureFlowNeverStalls.lean), [prime-shell beta function](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/ThePrimeShellBetaFunction.lean)
+
+For large `A`, the upper ceiling has the form `μ(A) ≤ K exp(11A/2 − π exp(2(A−2)))`. A positive exponential lower floor is impossible. The ceiling alone does not prove `μ(A) → 0`; a negative decreasing function also lies below it. Admissible programmes include finite-aperture positivity, suitably vanishing positive floors, and graded negative floors.
+
+### Fixed-aperture operator and Suzuki passages
+
+CHMD's sharp windows and generator-domain passage are present in source and imported. Sharp cuts preserve the full generator domain; the commutator is bounded and skew-adjoint, uniformly in cut location. Expanding windows recover graph norm, positive/negative parts, the signed nodal pairing and the `oneL` defect. These are no longer paper-only blockers. The remaining nodal sign is mathematical. Aperture-uniform quotient constants are a separate possible strengthening, not an extra requirement if sign is proved directly at every aperture. [Sharp generator domain](../../../formal/GaloisForLFunctions/RHTower/CHMDSharpGeneratorDomain.lean), [nodal convergence](../../../formal/GaloisForLFunctions/RHTower/CHMDSharpWindowNodalConvergence.lean)
+
+Suzuki's extended first variation covers every compact real `L²` source, including infinite Lévy energy. Common-support strong-`L²` liminf and recovery, and the literal high-dyadic deficit, are also present. Growing support and noncompact sources have explicit additional premises: real-lag autocorrelation decay faster than `e^(−t/2)`, or a weighted cutoff error such as `e^(2A_j)‖f_j−g‖₂ → 0`. An integer-dilation estimate does not supply real-lag decay. Common-shift theorems require their stated family bounds or floors. None supplies the missing Weil sign. [Extended first variation](../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalL2FirstVariation.lean), [moving-window limits](../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalMovingWindowDeficit.lean), [moving aperture](../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalMovingAperture.lean)
+
+### Orientation, index and sections
+
+For a functional-equation-symmetric tempered divisor configuration, orbit Hodge positivity, the orbit Hasse–Weil bound, and blindness to off-line pairs are equivalent. Generic real compact tests exist; one generic actual-zeta orbit decides RH. Its orientation growth reads `Δ`. Positive scale-stable families are classified by a common endpoint choice for each off-line pair. Finite-target detection has an exact index law, but a separately chosen member for every finite target is not one member seeing infinitely many targets. The Riemann–Roch theorem still requires an ample cone of nonnegative degree. [Orientation of a cycle](../../../formal/GaloisForLFunctions/ArithmeticOrientationGeometry/TheOrientationOfACycle.lean), [orientation rate](../../../formal/GaloisForLFunctions/ArithmeticOrientationGeometry/TheOrientationRateIsTheDepthOfTheDeepestSeenZero.lean), [scale-stable families](../../../formal/GaloisForLFunctions/ArithmeticOrientationGeometry/TheOrientationOfScaleStableFamilies.lean)
+
+The global index `D` counts distinct right-hand off-line zeros. Its finiteness is equivalent to eventual critical-line confinement and to the stated uniform heat/collision/window-count bounds. It implies a fixed zero-free strip but is stronger than that statement. When finite, `D` is even and RH is equivalent to `D < 2`. Small-time collision mass also includes excess multiplicity. Finite index at each aperture does not prove finite global index. [Index exit](../../../formal/GaloisForLFunctions/ArithmeticOrientationGeometry/TheIndexExit.lean)
+
+The base arithmetic theta section functional already exists: `h⁰(d) = log θ(exp(−2d))`, with positivity, monotonicity, `h⁰(d)−h⁰(−d)=d`, asymptotics, and the completed-zeta Mellin identity in its domain. The missing object is the coupling to test components on the arithmetic surface that supplies effectivity and the required sign. Recreating the base theta identity would not advance that obstruction. [Theta h⁰ of Spec Z](../../../formal/GaloisForLFunctions/ArithmeticOrientationGeometry/TheThetaH0OfSpecZ.lean)
+
+### Source qualifications that affect the backlog
+
+| Source | Present finding | Consequence |
+|---|---|---|
+| `BezoutValuationIncidence/TheDiagonalDualNormIsArchimedean` | `sum_range_moebiusWindowRow` has an unparenthesized outer finite sum; the literal statement fails at `Q=3, x=0`. | Repair the intended identity before certifying the actual-Möbius diagonal specialization or downstream every-modulus claims. The abstract balanced estimate is separate. |
+| `BezoutValuationIncidence/TheMeanValueIsTheLeadingCoefficientOfTheReceiver` | Mean-error expressions place `−L*x` inside the sum; the displayed algebra does not establish the intended statement. | Known-identity repair; dependent exact mean claims remain qualified. |
+| `BezoutValuationIncidence/TheParityPairAtTheLeadingExponent` | The squarefree mean branch has the same summation-scope problem. | Do not count its dependent exact `μ²` coefficient as verified. |
+| `ArithmeticCastelnuovoSeveri/ZeroDensityFilteredWeilPositivityAndCoercivity` | Quadrature, Plancherel and sum–integral majorants are present. Headline averaged coercivity/strict-positivity conclusions are absent. | Partial development; neither a finished theorem nor automatically routine remaining work. |
+| `BiScaleUncertainty/ZeroDensityFilteredCriticalDeficitLaw` | The audited slab exponent is `3γ₀`, exactly: `(3a/4)(θ/2)=3aθ/8`. | The previously reported factor-two deficit is not a current obstacle. This checks that calculation, not every dependency in the module. |
+| Import integration | CHMD sharp windows/generator, compact-`L²` Suzuki, moving-window limits, smooth detector, explicit kernel shape, Heath–Brown all-length and Guth–Maynard sharp `S₂` modules are imported. | Do not leave their old implementation tasks in the backlog. Theta `h⁰` and filtered coercivity require their own integration/status check. |
+
+## 2. Known-method work register
+
+These IDs are shared by the companion reports. They classify genuine work without smuggling an open estimate into a “routine” premise.
+
+| ID | Work | Completion criterion |
+|---|---|---|
+| **J1** | Repair the three summation-scope chains above and recheck their dependants. | Correct literal statements, proofs of the intended elementary identities, then a dependency audit. |
+| **J2** | Reconcile imports, declarations and documentation for current working modules. | Report only declarations actually present; integrate finished modules when authorized. Completing an absent positivity theorem is not included. |
+| **J3** | Instantiate finite identities and certificates: Gram matrices, moment blocks, divisor polynomials, trace identities, finite schedules, finite incidence allocations. | Every finite term and error accounted for. A finite computation is not an all-height theorem. |
+| **J4** | Check explicit support, smoothness, integrability, domain and norm premises for a specified source/family. | Prove exactly the hypotheses needed by an available transfer. An unknown uniform family bound belongs to research. |
+| **J5** | Transport an independently established estimate through exact dictionaries, with the correct quantifiers. | Preserve damping, aperture, degree, height and horizon dependence; state the resulting conclusion at its actual strength. |
+| **J6** | Calculate explicit constants, finite tower extrema and finite low-sector matrices within proved regimes. | Certified finite result, including mixed terms where relevant. Uniform extrapolation remains separate. |
+| **J7** | Check transitive proof dependencies and kernel acceptance after repairs/integration. | A dedicated authorized verification pass. Not performed here: user requested no builds. |
+
+## 3. The 31 routes
 
 ### WL — Weil lag function
 
-- **Receiver [L].** RH iff one explicit compact `C²` universal spline obeys `splinePrimeSum(τ) ≤ splinePolarMass(τ) + K e^τ` for every `τ > 4`; exponent `1+β` reads width `≤ β` (B:SplineProbeFiniteShiftBounds). Equivalent one-sided prime-lag, deficit-primitive, packet and linear-band criteria hold; the band slope bounds `Σ m_ρ²/|ρ|²`. The zero width is the infimum of admissible deficit and band exponents (S:TheZeroWidthIsALandauExponent).
-- **Established [L].** Unconditional deficit envelope `|D(T)| ≤ Ce^{T−κT^a}`, `a < 3/5`; compensated prime residual `K exp(S/2 − c√S)`. Euler-comb filtering diagonalizes sequential payment; raw charge `≤` mass plus an unsigned cross-charge (I:LagChebyshevAbelSummation). Multiplicity readout: universal-probe defect tends to `Σ m(m−1)|f̂|²`; RH ∧ simplicity is a defect-vanishing statement (B:EffectiveTranslatedPairingAndMultiplicityDefect). Odd Chebyshev correction equals pole charge plus prime-node correlation (O:NyquistRiemannRochBeyondRankNullity).
-- **(a) Just work.** Specialize the finite-shift spline receiver and transport identities to a given compact source with explicit constants (J7).
-- **(b) B-RH.** A one-sided upper bound for the universal spline packet at every positive exponential slack, equivalently the critical deficit bound `±D(T) ≤ B(1+T)e^{(1/2+α)T}` for all `α > 0`. **B-C:** the first fixed rate below `1/2`, which is already quasi-RH; an arithmetic sign for the Euler-comb cross-charge.
-- **Boundary.** Exact cancellation precedes estimation and leaves rate `1/2`. Littlewood oscillation excludes a pointwise `O(√x)` target, not the integrated receiver. Walls 1.1, 1.7.
+**Present result.** Universal-spline, one-sided lag, incoming-deficit, critical-energy and coprime-cross-work receivers identify the same zero-width endpoint. Endpoint attainment is now explicit; the RH mean law retains its RH premise. The reciprocal-square expansion makes cancellation exact before estimation. [Endpoint source](../../../formal/GaloisForLFunctions/BiScaleUncertainty/WeilLagCriticalDeficitEndpointAndLimitLaw.lean)
 
-### RW — Restricted Weil ground energy
+**(a)** J3–J5: specialize the probe, compute its prime/polar terms and transport a supplied estimate. **(b)** Prove bounded critical energy, the equivalent cross-work lower bound, or a sufficient one-sided arithmetic lag estimate. Available zero-free-region savings do not supply the critical endpoint. Raising a deficit to a power multiplies its rate; it does not improve the normalized width. **Walls:** 1.1, 1.7, 3.8.
 
-- **Receiver [L].** `μ(A) ≥ 0` for all `A` is RH; so is `μ₀(A) ≥ −C_σ e^{2σA}` for every `σ > 0`, an eventual constant floor, or `μ → 0` from above. Aperture spectral jumps telescope; along a cofinal nested aperture sequence RH iff their sum exhausts the initial ground energy (O:TransportInApertureAndTheCeilingLyapunovIdentity).
-- **Established [L].** Windows and all-aperture floors of §2. Fixed-aperture compactness (adverse mass cannot vanish weakly). H¹-normalized defect floors have infimal rate exactly `Δ` with no density premise (K:WhatTheFailureOfTheHodgeIndexMeasures); derivative-normalized and logarithmic Fourier floors are unconditional. Finite-aperture negative index is finite (§2.4). Relative aperture loss `R(A) = 1 − μ₀(A)/μ₀(A₀)` reads RH as `R ≤ 1` (Q:TheBandRecipeForZeta). Mass floor at rate `σ` is exactly the ground floor at rate `σ` (C:CompensatedWidthFloorAndGroundEnergyRate). Along any monotone unbounded aperture sequence starting at or below `3/10`, RH is equivalent to the spectral jumps summing to at most `μ(A₀)`; a fixed positive margin or half-summable relative loss is excluded by the ceiling, the ceiling-renormalized ground energy `e^{β_ceil(A)}μ(A)` is unconditionally `≤ K` on `A ≥ 3`, and its monotonicity along the sequence gives RH with an explicit doubly exponential floor; a discrete graded step inequality with bounded leakage and bounded aperture gaps gives the continuous compensated floor at rate `σ`, hence `Δ ≤ σ` (C:VanishingApertureFloorAndGradedTransport).
-- **(a) Just work.** Discharge Fourier-integrability premises for a concrete compact source (J6); transport a supplied step estimate along an aperture sequence (J7).
-- **(b) B-RH.** All-aperture nonnegativity, equivalently paying the finite low-frequency sector and its mixed terms uniformly in `a`. **B-C:** exclude collapsed off-line multiplicity clusters at doubly exponential heights (which is exactly what an unrestricted mass-rate equality needs); construct a source floor decaying at the compulsory doubly exponential rate.
-- **Boundary.** A fixed positive gap, harmonic floor along linear apertures, or half-summable relative loss are impossible. Count-only zero data cannot give a mass floor (R:OffLineClusterWeilUnbounded). Walls 1.3, 1.11, 3.2, 3.3.
+### RW — restricted Weil ground energy
+
+**Present result.** RH iff the ground energy is positive at every finite aperture. Full and odd `H¹` floor rates attain `Δ`. The full mass-normalized problem retains compensation and local-depth-mass distinctions. Strict aperture flow and the shell decomposition expose where arithmetic input must enter. [All-parity laws](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/AllParityCriticalDeficitAndEndpointSobolevLaws.lean), [shell law](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/ThePrimeShellBetaFunction.lean)
+
+**(a)** J3–J6: fixed-aperture forms, regularity, explicit low-sector matrices, and transport of a supplied graded step bound. **(b)** Sign the complete low-frequency sector and its mixed terms at every aperture, or control the total shell loss. **Auxiliary:** arithmetic local-depth-mass bounds and quantitative compensation. Their equivalence to every desired mass-floor statement is not proved. Fixed positive or exponential floors are excluded. **Walls:** 1.3, 1.11, 1.13, 3.2–3.3.
 
 ### FU — CCM-FU signed prime scheduling
 
-- **Receiver [L].** A bounded-above completed Möbius–divisor Abel moment gives RH; one-sided power bounds give `Θ ≤ 1/2 + max(0,c)` (R:QuasiRHDilationTailHyperbolaAndOutgoingPotentialAbscissaLaw).
-- **Established [L].** Positive helper cores, clock-cone closure, off-diagonal prime-clock synthesis of any fixed graph vector at vanishing diagonal cost; a resolvent eigenvector above `1/2` forces strictly negative off-diagonal interaction (B:PrimeGraphClockOffDiagonalSynthesisAndStationaryEnergyProducer). [S]: the off-diagonal sum is an exact weighted sum of prime-clock edge-minus-mass kernels at center `log(N/q)` and lag `log(q/p)`; it approximates the source energy of every graph vector, and its asymptotic nonnegativity is equivalent to nonnegativity of every source energy (B:ProducerCompletionAndPrimeClockKernelSynthesis). The isolated critical prime channel is uniformly negative on linear-width windows `N ≤ m+1 ≤ (1+δ)N` (A:TheLinearWindowOfTheCriticalPrimeChannel, `exists_linearWindow_criticalPrimeEnergy_le`).
-- **(a) Just work.** Assemble finite-clock identities for a specified schedule (J7).
-- **(b) B-RH.** Bound the completed Abel moment with seed energy, inherited action, inter-block covariance and moving endpoints. **B-C:** a sign for the off-diagonal prime-clock form on low-diagonal approximants (it would exclude eigenvalues above `1/2`).
-- **Boundary.** Low diagonal cost is not graph compactness; packets can escape with energy tending to zero. Walls 1.1, 1.6, 14.1.
+**Present result.** An upper bound for the completed Möbius–divisor Abel moment is RH-equivalent. Prime-clock synthesis and source-energy completion identify an off-diagonal producer; cheap diagonal approximants do not sign it. [One-sided Abel receiver](../../../formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiMobiusDivisorOneSided.lean)
+
+**(a)** J3–J5: finite schedules, clock kernels and the complete Abel identity. **(b)** Bound the completed moment including inherited action, inter-block covariance and moving endpoints, or sign the completed off-diagonal form. Vanishing diagonal cost allows escape and does not imply graph compactness. **Walls:** 1.1, 1.6, 3.2, 14.1.
 
 ### RP — Route-P / SP-E history floor
 
-- **Receiver [L].** Eventual linear lower floor of the literal matched-quantile history is RH-equivalent.
-- **Established [L].** Signed hyperbola, centroid, square-debt and low-LCM payments; Burnol first-jet shells (trace `log(c)/4` while operators tend strongly to zero).
-- **(a) Just work.** Fixed-history bookkeeping only (J7).
-- **(b) B-RH.** One complete-history floor paying high-LCM interactions, centroid and square debt, moving-core drift and singular transport.
-- **Boundary.** Strong convergence is not trace-norm convergence; compact repairs cannot sign noncompact Cayley tails. Walls 1.1, 1.8, 14.1.
+**Present result.** An eventual floor `−B(K+2)` for the literal matched-quantile history is RH-equivalent. Partial hyperbola, centroid and square-debt identities isolate rather than pay the complete history. [Linear-floor criterion](../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePLinearFloorCriterion.lean)
 
-### PA — Prime–archimedean source passivity
+**(a)** J3–J5: finite-history bookkeeping and application of a separately proved floor. **(b)** One full-history bound paying high-LCM interactions, centroid/square debt, core drift and singular transport. Strong operator convergence does not give trace-norm convergence or control the missing noncompact tails. **Walls:** 1.1, 1.8, 3.6, 14.1.
 
-- **Receiver [L].** High-frequency current positivity, thin Bernstein mismatch envelopes, or the signed compact moment completion give RH.
-- **Established [L].** Every fixed Hausdorff order, and every finite block of orders, is nonnegative beyond an order-dependent shift; quadratic saddle bands contribute half their absolute mass with positive sign uniformly for `r ≥ A(k+1)²` (R:PrimeArchQuadraticSaddleBands); an RH-or-tomography alternative recovers any finite maximal off-line packet.
-- **(a) Just work.** Evaluate a specified finite list of moment differences (J8).
-- **(b) B-RH.** An order-uniform shift threshold, or the sign of the complement of the saddle band. **B-C:** any quantitative order dependence of the threshold.
-- **Boundary.** Positive saddle bands do not sign their complement; finite passive realizations and finite atom repairs fail. Walls 1.5, 1.6, 14.1.
+### PA — prime–archimedean source passivity
+
+**Present result.** The prescribed high-positive-frequency current criterion, and even a signed compact measure reproducing all required moments, decide RH. Each fixed finite moment block can be positive beyond a block-dependent threshold. That is not positivity of all orders at a common threshold. [Frequency accretivity](../../../formal/GaloisForLFunctions/RHTower/PrimeArchEndpointFrequencyAccretivity.lean), [signed moment completion](../../../formal/GaloisForLFunctions/RHTower/PrimeArchSignedCompactCompletionCollapse.lean)
+
+**(a)** J3, J6: specified Hausdorff blocks and saddle-band calculations. **(b)** An order-uniform sign or a complete moment realization; positive saddle bands leave their complement unpaid. **Auxiliary:** quantitative order dependence useful enough to survive the receiver's limit. Finite atom repairs and fixed finite passive carriers do not provide that limit. **Walls:** 1.5–1.6, 14.1.
 
 ### MC — Möbius cancellation at half power
 
-- **Receiver [L].** `M(x) = O_ε(x^{1/2+ε})` and its Hilbert, Liouville, quotient-head and first-octave forms. Alternative exact form: RH iff for every `0 < ε < 1/2`, `t ≠ 0`, the long-sawtooth/tail quadratic anti-alignment gap satisfies `θ(ε,t) < 1` (T:OscillatingProbeSourceEstimatesEnergyGapAndCollarLimitations, `riemannHypothesis_iff_forall_ne_zero_longSawtoothTailGapTheta_lt_one`).
-- **Established [L].** The strict gap holds unconditionally on the Vinogradov–Korobov high-height collar and on every bounded-height small-`ε` collar (`longSawtoothTailGapTheta_lt_one_vk_and_box`). Complete half-damped classifications: residue flips are paid iff `φ(q) < 4|S ∩ units|`; finite-frequency prime patterns; oscillating prime patterns below half damping are admitted only at amplitude zero. Off-line zeros give Bohr obstruction points of the damped receiver (O:TheOffLineZerosObstructTheMoebiusReceiver). Rows: §2.7.
-- **(a) Just work.** Apply the row lemmas within their stated ranges (J7); formalize the all-length Heath-Brown pair-sum bound and the sharp all-`k` S₂ family behind Guth–Maynard Prop. 12.1 (J3).
-- **(b) B-RH.** The global signed bilinear bound (principal counterterm and high-product remainder jointly), or `θ(ε,t) < 1` on the interior region between the proved collars. **B-C:** balanced-scale row cancellation with the cubic/quartic tails paid; a source-derived decorrelation or amplitude mismatch for the finite Euler–Maclaurin packet.
-- **Boundary.** Generic Type-II countermodels concern coefficient classes; planted Euler factors keep every collar and still admit an interior probe; invertible Wiener filtering cannot create cancellation; any fixed power saving is quasi-RH. Walls 1.1, 1.12, 3.10.
+**Present result.** The square-root-with-slack Mertens bound remains the closing estimate. An exact alternative is `θ(ε,t)<1` for every `0<ε<1/2`, `t≠0`, in the long-sawtooth/tail gap. High-height Vinogradov–Korobov collars and bounded-height small-`ε` collars are proved. Heath–Brown all-length pair sums and the sharp all-`k` Guth–Maynard `S₂` input are already in source. [Gap and collars](../../../formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/OscillatingProbeSourceEstimatesEnergyGapAndCollarLimitations.lean)
 
-### TT — Theta-tail and heat–Cassini currents
+**(a)** J1, J3–J5: repair affected row specializations and apply independent estimates in their actual ranges. **(b)** Global cancellation or interior anti-alignment between the collars, with principal counterterms and high-product remainders jointly controlled. **Auxiliary:** balanced-scale source correlations. Planted Euler factors preserve the collars; invertible Wiener filters preserve admission classes. Neither supplies the missing interior sign. **Walls:** 1.1, 1.12, 3.10.
 
-- **Receiver [L].** Bounded directed Wold covariance at every `0 < t < 1/2`, or full odd Weil positivity, is RH.
-- **Established [L].** Seam/odd-four identities; theta inner-chamber current positive at action `≥ 710e⁴`; double-exponentially decaying even sources vanishing at all simple critical zeros vanish (K:WhatAGramFunctionalCertifiesWithoutEffectivity). Numerous theta-cusp micro-obstructions (kinetic concavity, fixed control boxes, ordinary absorbed coefficients) are proved and scoped.
-- **(a) Just work.** Fixed chamber identities and supplied certificates (J8).
-- **(b) B-RH.** Signed nonlocal covariance at all rapidities, or complete odd positivity.
-- **Boundary.** Enlarging an inner chamber does not close the region; translation averages are depth-blind. Walls 1.6, 3.2.
+### TT — theta-tail and heat–Cassini currents
 
-### LA — Line anchor
+**Present result.** The directed Wold receiver bounds **`D_t(N)+Q_t(N)/2`**, for every `0<t<1/2`. Omitting the diagonal term changes the statement. Full odd Weil positivity is another closing formulation. Inner-chamber positivity and seam identities do not cover the whole source. [Directed covariance criterion](../../../formal/GaloisForLFunctions/RHTower/PaperWoldDirectedCovarianceRH.lean)
 
-- **Receiver [L].** All-height log-derivative/Laguerre/Jensen sign at the critical heat time; truncated heat constant `Λ₊ = 0` iff RH.
-- **Established [L].** Heat zeros obey `(Im z)² ≤ max(Δ²−2t, 0)` (S:LagRateBoundsTheDeBruijnNewmanHeatTime). Normalized ξ slice tails converge to `exp(z²)` after deleting nearby zeros, with explicit tail bounds (R:XiSliceGaussianTailLimit); dense-background and global real-axis Gaussian bracketing (R:XiSliceDenseGaussianTail, R:XiSliceGaussianTailRealBounds). Fixed-degree Jensen limits.
-- **(a) Just work.** Specified finite Jensen instances (J8).
-- **(b) B-RH.** All-degree, all-height sign at one critical heat time, including near-multiple clusters. **B-C:** transfer from the Gaussian-tail approximation to coefficient signs with errors paid uniformly.
-- **Boundary.** Fixed-degree asymptotics do not commute with the all-degree quantifier. Walls 1.2, 1.6, 1.11.
+**(a)** J3, J5–J6: exact chamber identities and complete covariance bookkeeping. **(b)** The signed nonlocal covariance bound at every required parameter, or complete odd positivity. Translation averages and successively larger fixed chambers do not alone resolve depth or uniformity. **Walls:** 1.3, 1.6, 3.2, 3.4.
 
-### TG — Topological sub-unit gate
+### LA — line anchor
 
-- **Receiver [L].** Nonnegative matrix-complete residual plus integral trace strictly below one gives RH; central-gap alternative.
-- **(a) Just work.** The integral-index deduction once both estimates are supplied.
-- **(b) B-RH / B-C.** Construct the matrix-complete source decomposition, prove the residual sign and the all-disc sub-unit bound.
-- **Boundary.** Integrality gives no upper bound; finite-scale diagnostics do not orient the prime−Gamma source. Walls 1.2, 14.3.
+**Present result.** Critical-time Laguerre/Jensen/log-derivative signs and heat confinement remain closing receivers. Positive-time reality and simplicity now hold beyond an explicit horizon of scale `exp((27/40+ε)/t)` for `0<t≤1/8`. This horizon diverges as `t↓0`. Gaussian tails and fixed-degree limits do not give all-degree critical-time sign. [Interior Lindelöf horizon](../../../formal/GaloisForLFunctions/RHTower/KiKimLeeInteriorLindelofHorizon.lean)
 
-### HF — Positive Hodge form / prime-window ceiling
+**(a)** J3–J6: finite Jensen matrices and rigorous use of the positive-time horizon. **(b)** All-height, all-degree sign at the critical endpoint. **Auxiliary:** uniform error control near clusters and a passage from positive heat to zero heat. The present positive-time theorem does not furnish that passage. **Walls:** 1.2, 1.6, 1.11.
 
-- **Receiver [L].** Full-positive weights are rigidly `Λ`; prime-blind positivity on prime powers is RH; the window ceiling `c(L) ≤ e^{L/2} + B(1+L)` implies RH and, directly, AIP's reflected prime–polar allocation (O:PoleSubtractionAndTheForcingSignDictionary, `reflectedPrimePolarAllocation_of_windowCeiling_le`).
-- **Established [L].** `|c(L) − e^{L/2}| ≤ Ce^{L/2−κ√L}` and the VK version; Liouville mirror for the floor; `Δ ≤ θ* ≤ Δ/2 + 1/4`. Finite index at every aperture (§2.4). Prime-power deletion prices are exact. Prime-blind primitive tests satisfy `S/L > 45` (R:MarkovTwoCellTelescopingAndFortyFiveRatioPBAP). Unconditional smooth-window certificate: `N₀*(T,2T) ≥ (29/36 − ε)N(T,2T) − coalescentSurplus` (P:SmoothWeightedCertificateAtFourThirds, `zeta_coalescent_certificate`).
-- **(a) Just work.** Instantiate collar partitions, transports and finite Gram data (J8).
-- **(b) B-RH.** Positivity of the complete prime−polar pairing on the blind high-ratio sector, or the arithmetic `O(L)` ceiling remainder. **B-C:** a coalescent prime-pair surplus bound `≤ (1/18 + o(1))N` (it would give a `3/4` critical-line proportion, not RH); exact full-grid tower deletion extrema.
-- **Boundary.** Uniqueness of `Λ` is not existence; finite index is not zero index; sampling rank–nullity and section counts cannot distinguish `Λ` from a shifted pair. Walls 1.4, 3.3, 14.4.
+### TG — topological sub-unit gate
 
-### CHMD — Causal Hyperbolic–Modular Duality
+**Present result.** The anchored cubic trace equals winding and the corresponding zero count. An integral nonnegative residual below one must vanish, but the trace identity does not establish its sign or the bound below one. [Cubic specialization](../../../formal/GaloisForLFunctions/RHTower/FormationAnchoredCubicSpecialization.lean)
 
-- **Receiver [L].** No odd resolvent eigenstate above `1/2`; equivalently `sourceEnergy(absGraph) ≥ 4·sourcePair(posGraph, negGraph)` for each odd eigenvector; odd bound-state space finite-dimensional iff finitely many off-line zeros.
-- **Established [L].** At every fixed aperture the real smooth core completes with closed range into the signed quotient with a quotient lower bound, and the completion is exactly the maximal graph with physical support in the closed aperture (R:CHMDFixedApertureQuotientLanding, `exists_aperture_quotient_lower_bound`; R:CHMDSupportedApertureDomain, `mem_apertureGraphCompletion_iff_supported`). Positive/negative parts and modulus stay in the domain. Extensive nodal-lobe, Bessel and Riesz–resolvent identities. Sharp spatial cuts preserve the full graph uniformly in cut position (R:CHMDSharpSpatialCut). [S]: expanding windows recover the full signed cross-pairing, Weil energy and `oneL` defect (R:CHMDSharpWindowNodalConvergence). [P]: sharp-cut generator-domain admission with a bounded arithmetic commutator.
-- **(a) Just work.** Transport theorems through the fixed-aperture completion (J7); wire the sharp-window module (J1); formalize the [P] generator-domain theorem (J4).
-- **(b) B-RH.** The nodal/reflected-prime sign excluding sign-changing odd eigenstates above `1/2`, or a uniform one-sided bound for `∫ ∂_sK_y Δ`. **B-C:** aperture-uniform quotient constants.
-- **Boundary.** One-signed eigenstates are excluded, sign-changing ones are not; any fixed uncorrected `θ` fails to absorb cosh mass; no uniform coercivity relative to the graph norm. Walls 1.3, 3.3, 3.4.
+**(a)** J3, J5: trace/index bookkeeping and the final integer argument. **(b)** A source-derived matrix-complete residual sign and all-disc sub-unit estimate, or the stated central-gap substitute. Integral counts are detectors, not arithmetic orientation. **Walls:** 1.2, 14.2–14.3.
 
-### TH — Theta moment positivity
+### HF — positive Hodge form / prime-window ceiling
 
-- **Receiver [L].** All-rank heat-Hankel positivity at one heat time.
-- **Established [L].** Positivity for every rank on the nonnegative orthant at small time; each fixed rank is eventually positive and coercive in scaled coefficients (R:XiHeatFiniteUniformPositivity). Bridge from Weil margins: `μ₀(A) > 0` and `K < A²/4` give heat-Hankel positivity for degree `≤ n` at all times `≤ K/n` on the pole hyperplane (R:XiGaussianHeatWindowFromWeilMargin).
-- **(a) Just work.** Finite-rank matrices (J8).
-- **(b) B-RH.** All ranks at one fixed time for arbitrary signed vectors. **B-C:** remove the rank–time coupling `a ≍ A²/n` in the Weil-margin bridge.
-- **Boundary.** A later time per rank proves a different statement. Walls 1.6, 3.2, 3.11.
+**Present result.** Exact forcing-sign dictionaries connect the full pairing to arithmetic receivers. The ceiling `c(L)≤e^(L/2)+B(1+L)` implies the reflected prime–polar AIP allocation directly. Finite negative index and positive high-frequency complements leave the low sector. Rigidity selecting `Λ` from the full-positive cone is not existence of positivity. [Forcing-sign dictionary](../../../formal/GaloisForLFunctions/ArithmeticOrientationTheory/PoleSubtractionAndTheForcingSignDictionary.lean)
 
-### RN — Theta renewal and singular comparison
+**(a)** J3–J6: collar partitions, finite Gram data and ceiling-to-allocation transfer. **(b)** The complete pairing sign or the `O(L)` ceiling remainder. **Auxiliary:** TTPC's actual coalescent surplus estimate; a bound `≤(1/18+o(1))N` in that certificate gives a `3/4` line proportion, not RH. **Walls:** 1.3–1.4, 3.4, 14.4.
 
-- **Receiver [L].** Divisor-faithful boundary orientation; fixed Cauchy-pole quartet defect vanishes iff RH.
-- **Established [L].** Compact Hilbert–Schmidt cone-positive renewal operator with `det₂` equal to the renewal denominator and matching resonance multiplicities.
-- **(a) Just work.** Determinant/resonance specializations (J7).
-- **(b) B-RH / B-C.** The boundary-current orientation or comparison sign confining resonances.
-- **Boundary.** Cone positivity does not confine complex spectrum; the Stokes winding is not a zero-location law. Walls 1.2, 14.1.
+### CHMD — causal hyperbolic–modular duality
+
+**Present result.** The odd-resolvent obstruction is a sign-changing eigenstate above `1/2`; its nodal criterion compares `sourceEnergy(absGraph)` with `4 sourcePair(posGraph,negGraph)`. Fixed-aperture completion, sharp cuts, generator-domain preservation and signed nodal convergence are established. [Generator domain](../../../formal/GaloisForLFunctions/RHTower/CHMDSharpGeneratorDomain.lean), [nodal limits](../../../formal/GaloisForLFunctions/RHTower/CHMDSharpWindowNodalConvergence.lean)
+
+**(a)** J4–J5: move a concrete vector through those completed domains. **(b)** The nodal/reflected-prime inequality excluding every obstructing eigenstate. **Auxiliary:** aperture-uniform quotient estimates, if a chosen proof needs them. They are not necessary additional work for a direct all-aperture sign proof. **Walls:** 1.3, 3.3–3.4.
+
+### TH — theta moment positivity
+
+**Present result.** Small-time positivity on the nonnegative coefficient orthant holds at all ranks. It is weaker than positivity for arbitrary signed coefficient vectors. Fixed-rank coercivity and the Weil-margin bridge with degree/time coupling do not give all ranks at one common admissible time. [Orthant positivity](../../../formal/GaloisForLFunctions/RHTower/XiHeatHankelFormOrthantPositivity.lean)
+
+**(a)** J3, J6: finite-rank matrices and explicit rank/time constants. **(b)** Full signed heat-Hankel positivity with the receiver's common-time quantifier. **Auxiliary:** decoupling degree from the time window in the Weil-margin bridge. **Walls:** 1.6, 3.11.
+
+### RN — theta renewal and singular comparison
+
+**Present result.** A compact Hilbert–Schmidt cone-preserving renewal operator realizes the literal denominator through an exponential factor and `det₂`, with the prescribed divisor correspondence. Cone preservation is not self-adjointness or confinement of complex resonances. [Positive Fredholm realization](../../../formal/GaloisForLFunctions/RHTower/ThetaRenewalPositiveFredholm.lean)
+
+**(a)** J3–J5: determinant normalizations and resonance bookkeeping. **(b)** The boundary-current orientation or comparison sign that confines the faithful divisor. The existing realization removes a representation problem, not the zero-location problem. **Walls:** 1.2, 14.1, 14.3.
 
 ### WD — Ward orientation and horizontal collision
 
-- **Receiver [L].** The integrable nonnegative global cap vanishes a.e. iff RH (R:XiWardGlobalCapRightZeroSum).
-- **Established [L].** Compensated ξ-tail bounds with explicit `A, B, C`; sharp model heat threshold `aλ ≥ 1/4`. Heated-slice detection: a zero at offset `δ ≥ δ₀` and height `t ≥ t₁` forces a negative heated slice coefficient at every heat `κ/log t` with `κ ≤ κ₀(δ₀) = δ₀²/(100(log(2/δ₀)+1))`, independent of local clustering (R:XiSliceKKLScaleOffLineDetection); unconditionally the even-index coefficients are positive once the heat is at least `100/log t` (R:XiSliceHeatEffectiveKKL).
-- **(a) Just work.** Finite-block routing identities (J7).
-- **(b) B-RH.** Arithmetic vanishing of the cap, or a complete signed prime−Gamma contraction uniform over all blocks. **B-C:** heated-slice positivity at heat `κ₀(δ₀)/log t` for one fixed `δ₀`; this is a zero-free strip, so it sits behind the quasi-RH entry barrier.
-- **Boundary.** Building a nonnegative defect is not proving it zero. Walls 1.2, 3.4.
+**Present result.** A nonnegative global cap measures off-line defect. Saturation of the arithmetic Euler trace by the critical-line sum at one permitted positive parameter decides RH. Shifted finite-head heat cones read width exactly; the explicit pure-quadratic sufficient heat is proportional to `δ₀²/log(180|t|)`. Local divisor geometry supplies sharp model repair costs, not actual-zeta coefficient signs. The prime-Cesàro first-coefficient formula retains `XiC(t)≠0`. [Global cap and finite-head arithmetic](../../../formal/GaloisForLFunctions/RHTower/XiWardGlobalCapAndFiniteHeadArithmetic.lean)
+
+**(a)** J3–J6: finite polynomial heat transforms and the exact trace identities, checking normalization and central zeros. **(b)** Arithmetic cap vanishing/trace saturation or actual heated-slice coefficient positivity at closing scales. **Auxiliary:** source-selective cofactor repair. Positive model multipliers do not universally reflect the coefficient cone. **Walls:** 1.2, 1.14, 3.4.
 
 ### LI — Li even-cross clock
 
-- **Receiver [L].** All reciprocal depths `≤ r` iff a lower floor `−C e^{r′t}` for every `r′ > r`; RH at `r = 0`.
-- **Established [L].** Unconditionally `b_ρ ≤ 1/431`; off-line zeros force cofinal negative response.
-- **(a) Just work.** Supplied finite Li/Jensen data with certified tails (J8).
-- **(b) B-RH.** The subexponential lower floor. **B-C:** any rate below `1/431` (a height-weighted improvement, not a strip).
-- **Boundary.** Reciprocal depth is not `Δ`. Walls 1.5, 3.1.
+**Present result.** The clock reads reciprocal depth `|β−1/2|/(γ²+(β−1/2)²)`, with the corpus bound `≤1/431`. RH is equivalent to the appropriate subexponential lower floor. This rate is not `Δ`. [Actual clock growth law](../../../formal/GaloisForLFunctions/RHTower/LiEvenCrossActualClockGrowthLaw.lean)
+
+**(a)** J3–J6: finite Li/Jensen data with a justified tail. **(b)** The all-time subexponential lower floor. **Auxiliary:** a stronger positive reciprocal-depth bound; it is a height-weighted improvement, not a fixed zero-free strip. **Walls:** 1.5, 3.1, 3.8.
 
 ### SZ — Suzuki screw and shifted-kernel limits
 
-- **Receiver [L].** Screw positivity on the completed form domain is equivalent to restricted Weil positivity.
-- **Established [L].** For every real compact `C²` source, `(C(0) − sourcePairing(f,ω))/ω → Re W_Λ(f,f)` as `ω ↓ 0`, retaining the Gamma atom, both polar branches and every prime-power cusp (R:Suzuki/SuzukiCriticalFirstVariation, R:Suzuki/SuzukiCriticalPolePairing). For every compact real `L²` source the full extended first variation is `J + γ₀‖f‖² − 2 fullPairing(C_f)` with every prime and polar term; only the nonnegative Lévy energy `J` can be infinite, and then the literal pairing is strictly below the mass [S] (R:Suzuki/SuzukiCriticalL2Pole, SuzukiCriticalL2Arithmetic, SuzukiCriticalL2WeilNormalization, SuzukiCriticalL2FirstVariation). [P]: a joint common-window Gamma-liminf with constant recovery, and the literal high-dyadic-family deficit without smoothing. Unconditional `≥ 2/3` simple critical zeros give cutoff uniqueness.
-- **(a) Just work.** Wire the `L²` first-variation module (J1); formalize the two [P] results (J4).
-- **(b) B-RH.** The sign of the complete first variation, which is the Weil sign; growing-support uniformity as `ω ↓ 0`.
-- **Boundary.** SZ carries no sign obligation beyond RW's; its own remaining content is uniformity of the passage. Walls 1.3, 1.6.
+**Present result.** Compact-`L²` first variation, infinite-energy handling, common-support joint liminf/recovery and literal high-dyadic deficits are established. Noncompact and moving-support versions retain explicit quantitative hypotheses. The all-test deficit criterion is RH-equivalent. [First variation](../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalL2FirstVariation.lean), [moving-window deficit](../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalMovingWindowDeficit.lean)
 
-### PM — Physical model: FZZ-P Haar approximation (PW-B in §4)
+**(a)** J4–J5: verify a specified family's cutoff, support and correlation assumptions; then apply the limit or common-shift theorem. **(b)** The complete deficit sign for all compact tests, equivalently RW. **Auxiliary:** stronger noncompact families with controlled real-lag tails. Growing support is optional, not a prerequisite for closing the compact criterion. **Walls:** 1.3, 3.3, 3.6.
 
-- **Receiver [L].** Global Haar approximation; cofinal admission `ε ↓ 0`; horizon-uniform signed relative-loss or Bézout-corrected loss budgets from `1/2` to cofinally small `a` (M:ConstructingAnArithmeticCorrector, `riemannHypothesis_iff_cofinal_bezoutCorrected_loss`).
-- **Established [L].** Damping facts of §2.6. Corrected energy `= 1 + dual residual`, comparable within factor 3. At each fixed `0 < ε < 1/2`: relative compensation defects decay faster than every log power, dyadic motion is summable, energy `≤ D(1+T^{1−2ε})`, and either admission holds or normalized mass escapes beyond `E^{θ/(1−2ε)}` (M:TheNormalizedReceiverBlowUpProfile). Two-scale compensation rate `CTP^{−4β}`. Admission propagates multiplicities: `ord_ρ ζ ≤ ord_{ρ−ε} ζ`. Uniform VK-band budgets; actual and positive-parity twin separate there.
-- **(a) Just work.** Literal energy, block and averaged-continuation translations (J7).
-- **(b) B-RH.** A horizon-uniform signed energy or loss budget at arbitrarily small fixed `ε > 0` (constants may depend on `ε`). **B-C:** the actual tangent covariance with both linear terms, quadratic term and polar forcing; an arithmetic corrector independent of admission; exclusion of horizon escape.
-- **Boundary.** Global `W ≥ 0` is false; positive-part loss is strictly stronger; absolute majorants fail at and below half damping; the chain is not Hilbert–Schmidt at `η ≤ 1/2`; residue modes are Bessel but not Riesz. Walls 1.8–1.10, 3.7.
+### PM — pronic Möbius energy
 
-### JAS — Joint ancestry
+**Present result.** Critical admission is a uniform horizon bound at cofinally small positive damping. A canonical arithmetic corrector is already constructed; its height `H=1+dualResidual` is comparable to `1+energy` within explicit factors. The integrated signed loss is a log-height difference. Cofinal control is RH-equivalent. [Arithmetic corrector](../../../formal/GaloisForLFunctions/ArithmeticCompensationTheory/ConstructingAnArithmeticCorrector.lean)
 
-- **Receiver [L].** Level-one prime-product positivity at the power budget, or subpower square-shell Riesz bounds; quasi-RH iff level-one budget positivity with some `λ > 0` (R:JointAncestryBudgetZeroFreeLaw).
-- **Established [L].** Positivity on large-prime sets with budget `((log y)/(128·10⁸))^{3/2}/(log log y)⁴` (R:JointAncestryEndpointBudgetProducer).
-- **(a) Just work.** Finite shell identities and constants (J7).
-- **(b) B-RH.** The `y^{1/2}` power budget. **B-C:** any power budget `y^λ`, which is already quasi-RH.
-- **Boundary.** Typical-phase bounds do not control exceptional orbits. Walls 1.1, 1.6.
+**(a)** J3–J5: calculate the corrector and use the exact continuation identity. **(b)** Bound the signed loss uniformly in horizon as damping approaches zero, or directly bound pronic energy. **Auxiliary:** absolute compensation, non-unit repair and exclusion of energy escape. Requiring nonnegative work everywhere is false; bounding only positive-part loss is stronger than the exact criterion. **Walls:** 1.8–1.10, 3.6–3.7, 3.10.
 
-### CTF — Chronological tail / Báez–Duarte
+### JAS — joint ancestry budget
 
-- **Receiver [L].** Vanishing approximation distance; residual = readout defect² + centered pronic Gram; vanishing cofactor residual iff small variance at arbitrarily small `ε` and large cutoff.
-- **Established [L].** Readout of `−μ_N` tends to `1`; residual floor `κ/log N`; rows keeping μ through `N/2` have Selberg diagonal `≥ 1/2359296`; a critical zero forces residual `≥ ε/(4|ρ|²)`.
-- **(a) Just work.** Finite Gram problems (J8).
-- **(b) B-RH.** Rows with both readout defect and centered energy tending to zero.
-- **Boundary.** Readout convergence is not approximation; diagonal-only decay is impossible for literal-μ rows. Walls 1.8, 14.3.
+**Present result.** The specified level-one positive-power budget reads a fixed strip; the half-power endpoint reads RH. The endpoint is stronger than merely obtaining some positive power. [Budget zero-free law](../../../formal/GaloisForLFunctions/RHTower/JointAncestryBudgetZeroFreeLaw.lean)
 
-### HCF — Gaussian heat trace / critical feature variance
+**(a)** J3–J5: finite ancestry budgets and exponent bookkeeping. **(b)** The critical half-power budget with uniform history/horizon control. An unquantified improvement cannot be substituted for that endpoint. **Walls:** 1.1, 1.6, 3.4.
 
-- **Receiver [L].** Complete Hankel positivity on two literal prime-log source grids; RH iff `EventualFilteredCentralGapSubexponential ∧ AsymptoticAbscissaLaw`.
-- **Established [L].** Seven-way heat capstone at fixed time; the RW→heat window bridge (see TH). **[P]:** a centered-heat detector giving a negative compact Weil witness for any off-line zero at aperture `≤ Cδ^{−2}(4+|γ|)^{38}`, without near-top or separation premises.
-- **(a) Just work.** Formalize the [P] detector (J4); finite moments (J8).
-- **(b) B-RH.** Both grid signs at all degrees on their polar hyperplanes.
-- **Boundary.** One grid aliases; finite offsets sharing a step alias. Walls 1.6, 3.1.
+### CTF — cofactor test family / dual approximation
 
-### XN — Xi Newton invariant discs
+**Present result.** The dual residual is `(1−readout)² + centeredGramEnergy`. Its smallness requires **readout tending to one and centered energy tending to zero**. The Rayleigh quotient, variance criterion and primal/dual budget equivalences are present. Fixed-damping bounded energy and approximation along varying damping have different quantifiers. [Dual quotient and cusp laws](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/TheDualProblemRayleighQuotientAndCofactorCuspLaws.lean)
 
-- **Receiver [L].** Disc coverage with nonnegative interior margin; `ΔQ = 4(r² − |z−c|²)|ξ″|² ≥ 0`.
-- **(a) Just work.** Check a supplied disc (J8).
-- **(b) B-RH / B-C.** A source-derived disc family with interior margin; subharmonicity gives no minimum principle.
-- **Boundary.** Walls 1.2, 1.6.
+**(a)** J3–J6: finite coefficient optimization and use of supplied variance bounds. **(b)** Produce actual arithmetic cofactor coefficients meeting the complete small-residual criterion at closing damping scales. **Auxiliary:** bounded inverse control from residual and pole trace; algebraic injectivity does not give it. **Walls:** 1.8–1.10, 3.12.
 
-### BAG — Deterministic zeta self-return
+### HCF — heat covariance factorization
 
-- **Receiver [L].** RH iff ζ is strongly recurrent on every compact `K ⊂ {1/2 < Re s < 1}` (R:ZetaStrongRecurrenceOnCompactSets); every-point recurrence right of `1/2+σ` is the lag floor at rate `σ`.
-- **Established [L].** Voronin universality on compact sets with connected complement; recurrence near `z₀` iff `ζ(z₀) ≠ 0`; return threshold equals the distance to nonvanishing targets, scaling with vanishing order; Haar-mass criterion for twisted heads; cofactor returns modulo the local divisor.
-- **(a) Just work.** Apply local recurrence on known zero-free discs (J7).
-- **(b) B-RH.** Recurrence near every point without assuming nonvanishing, i.e. uniform Haar mass of target-ζ head twists on every doubled-strip disc.
-- **Boundary.** Locally the receiver is the nonvanishing statement itself; universality and cofactor return cannot cross a target zero. Walls 1.2, 3.2.
+**Present result.** The two-prime source-sampling criterion on the specified polar hyperplanes, for all degrees, is RH-equivalent. Finite samples and fixed degrees do not provide the complete covariance factorization. [Two-prime source sampling](../../../formal/GaloisForLFunctions/RHTower/XiGaussianHeatTwoPrimeSourceSampling.lean)
 
-### EWU — Even pole-weight uniqueness
+**(a)** J3–J6: explicit finite Gram factorizations and polar constraints. **(b)** A source-derived positive factorization for every required degree and parameter. Similarity to TH does not remove its sampling and uniformity obligations. **Walls:** 1.6, 3.4, 3.11.
 
-- **Receiver [L].** The even blind minimum is nonnegative at every aperture iff RH; below the first prime it equals the even polar ground energy.
-- **Established [L].** Admixtures `tΛ + (1−t)λ₀` are full-positive only for `λ₀ = Λ`; shifted pairs leave the cone. High-scale, polynomial-window, lacunary and dense-window factorial families are positive; graded `L²`-RR coefficients obey the doubly exponential ceiling. Grid tents approximate every odd `C²` receiver; full-energy floors transfer with mass loss `78e^r`, or `(8+ε)e^r + C` (A:FromTheCriticalFamilyToTheReceiver).
-- **(a) Just work.** Existing restricted families (J7).
-- **(b) B-RH.** The blind-minimum sign at arbitrary aperture; complete low/mixed-mode control. **B-C:** a norm-controlled transfer from positive restricted families to an RH-complete cone.
-- **Boundary.** Low/high bounds retain `−K_low E_low`; dense two-band positivity assumes high-energy dominance. Walls 1.3, 1.4, 3.3.
+### XN — xi Newton disc
 
-### GTA — Transverse Schur charge
+**Present result.** The useful Newton source margin is an **interior-disc** bound/self-map condition. Boundary control alone does not imply it. [Disc source margin](../../../formal/GaloisForLFunctions/RHTower/XiNewtonDiscSourceMargin.lean)
 
-- **Receiver [L].** Rank-uniform decay of quartic Schur charges is RH; an off-line zero forces an eventual positive charge floor.
-- **(a) Just work.** Finite Schur identities (J8).
-- **(b) B-RH.** Source-derived uniform transverse decay.
-- **Boundary.** Strong truncation convergence is not norm decay. Walls 1.6, 14.1.
+**(a)** J3–J5: finite-disc identities and application of a valid interior margin. **(b)** Obtain the required all-disc interior source control and compatibility, sufficient to exclude off-line zeros. **Walls:** 1.2, 3.2, 14.3.
 
-### OWU — Odd Weil-weight uniqueness
+### BAG — Bohr almost-periodic/strong recurrence
 
-- **Receiver [L].** Odd positivity of `Λ` iff RH; odd positivity iff `sinhPairing² ≤ 2·markovEnergy`.
-- **Established [L].** Odd window `181/500`; odd cost `≤ [(3+ε)e^r + Cε]E`; the certificate at `181/500` reads only `Λ(2)` (S:WindowCertificatesAndThePrimeWeight).
-- **(a) Just work.** Closed odd/AIP dictionaries (J7).
-- **(b) B-RH.** Arbitrary-aperture odd sign for sign-changing profiles.
-- **Boundary.** No fixed uncorrected `θ` absorbs the cosh mass; finite negative index is not zero index. Walls 1.3, 3.4.
+**Present result.** Strong recurrence on every compact set of the relevant right strip is RH-equivalent; the local criterion is tied to nonvanishing on that compact. [Compact strong recurrence](../../../formal/GaloisForLFunctions/RHTower/ZetaStrongRecurrenceOnCompactSets.lean)
 
-### PBM — Prime boundary / regularized log-ζ abscissa
+**(a)** J4–J5: check a particular compact and transport an independently available recurrence estimate. **(b)** Actual-zeta recurrence on all required compacts without presupposing the missing nonvanishing. Universality or recurrence on selected compacts is insufficient. **Walls:** 1.2, 3.2, 14.3.
 
-- **Receiver [L].** Convergence of the pole-regularized prime or log-ζ series at every real `σ > 1/2`.
-- **(a) Just work.** Match a regularization to the abscissa theorem (J7).
-- **(b) B-RH.** That convergence; equivalently an admissible prime-gap exponent `≤ 1/2` with zero-freeness.
-- **Boundary.** Regularization is not cancellation. Walls 1.1.
+### EWU — even Weil universality / variational sign
 
-### RB — Robin/Nicolas
+**Present result.** The relevant constrained minimum is attained. Attainment does not determine its sign, and quadratic constraints cannot be treated as a linear subspace without proof. [Blind variational attainment](../../../formal/GaloisForLFunctions/RHTower/EvenSectorBlindVariationalAttainment.lean)
 
-- **Receiver [L].** Eventual Robin inequality, reducible to colossally abundant integers.
-- **Established [L].** Large counterexamples must be divisible by every integer `m ≤ η log log n` (B:RobinMovingValuationDefect).
-- **(a) Just work.** Finite ranges (J8).
-- **(b) B-RH.** The inequality along the prime-saturated extremal sequence at square-root remainder scale.
-- **Boundary.** Walls 1.1.
+**(a)** J3–J6: explicit admissibility, compactness applications and finite constrained calculations. **(b)** Nonnegativity of the attained minimum throughout the required family, including polar and mixed contributions. **Walls:** 1.3, 3.3–3.4.
 
-### SRT — Prime-side one-parameter lag localization
+### GTA — Gaussian tail / Hedenmalm–Schur decay
 
-- **Receiver [L].** One generic width; a single dyadic prime-window inequality per lag decides RH; pole-free variant; lag values determine the configuration.
-- **Established [L].** Explicit visibility for near-top and attained-top zeros, twins and clusters; the horizon-escape law: positivity on `[0,V]` forces every hidden zero's deeper successor beyond the horizon. Ordinary floor `−O(exp(v/2 − v^a))`.
-- **(a) Just work.** Instantiate visibility constants (J7).
-- **(b) B-RH.** The arithmetic lag sign at every positive slack. **B-C:** horizon containment of deeper zeros; exclusion of escape to growing heights or tiny transform amplitude.
-- **Boundary.** Grid receivers need `ZerosApproachLine`; bounded zero-count remainder is impossible. Walls 1.1, 1.11, 3.2.
+**Present result.** Uniform decay of the Schur quartic spectral quantity is RH-equivalent. Pointwise or finite-rank Gaussian-tail control is weaker. [Quartic spectral decay equivalence](../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSchurQuarticSpectralDecayEquivalence.lean)
 
-### ACT — Arithmetic criticality / single-shift variation
+**(a)** J3–J5: finite Schur data and exact transform identities. **(b)** The full uniform decay with the theorem's rank and tail quantifiers. **Walls:** 1.2, 1.6, 3.2.
 
-- **Receiver [L].** For one fixed `a > 0`, `D_a ≤ 2S_a + V_a` on all even compact profiles is RH.
-- **Established [L].** Short-profile and mean-zero windows through `(log 2+1/50)/2`; all-aperture mean-zero variation with mass loss `Cε + (4+ε)e^A`; exact integrated atom–pole laws for log-concave gauges; finite jump forms are positive iff a positive supersolution exists.
-- **(a) Just work.** Specialize gauge identities and constants (J7).
-- **(b) B-RH.** Zero-loss all-profile variation. **B-C:** a signed gauge with controlled middle region and ground remainder.
-- **Boundary.** Positive gauges, two-shift superpositions and one extra jump all fail pointwise at an end. Walls 1.3, 3.3, 3.4.
+### OWU — odd Weil universality
 
-### AIP — Arithmetic incidence positivity
+**Present result.** Complete odd compact-test positivity is an RH criterion; explicit Markov-pole and hyperbolic formulas isolate a negative polar contribution. Finite positive windows do not pay that term for every test. The odd incidence theorem gives an exact alternative allocation formulation. [Global incidence allocation](../../../formal/GaloisForLFunctions/ArithmeticIncidencePositivity/GlobalIncidenceAllocationCondition.lean)
 
-- **Receiver [L].** All-aperture `GlobalIncidenceAllocation` iff RH; a constant or every-positive-rate mass deficit, or every-positive-rate pole-tilted Sobolev deficit, suffices; one rate `< 1/2` is a fixed zero-free strip (M:TheCompensatedRemainderOfTheFullLedger).
-- **Established [L].** Local joint allocation through `181/500`; continuum single-tower reflection Cholesky `log p·mass + p-tower ≥ 0` for every prime (O:ContinuumTowerReflectionCholesky); integer-log lattice ledger is balanced; the off-lattice prime triangle has frustration index 2; signed Cheeger bound; two-tower joint capacity is strictly smaller than the sum iff the support misses a box point; archimedean bump self-energy asymptotic and fine-resolution positivity of every fixed lattice train (I:ArchimedeanBumpBridgeAndSelfEnergyAsymptotic, I:LatticeConductanceFixedWidthAndOriginAxisJets).
-- **(a) Just work.** Apply local certificates and the allocation dictionary; verify supplied path certificates (J7, J8).
-- **(b) B-RH.** One all-scale budget paying every reflected-prime cost and the pole without double spending. **B-C:** a source-calibrated continuum supersolution with packed paths; a quantitative cofinal two-tower saving.
-- **Boundary.** Fixed-width signed strip-only payment is false; reserve production for unrestricted tests is unpaid; Gram positivity and finite canonical paths do not supply shared resources. Walls 1.3, 3.4.
+**(a)** J3–J6: odd-test identities, finite windows and testwise allocation dictionaries. **(b)** Complete odd positivity, or its exact shared-budget allocation. **Walls:** 1.3, 3.4.
 
-### ACS — Arithmetic Castelnuovo–Severi effectivity
+### PBM — prime-bias Mellin / regularized logarithm
 
-- **Receiver [L].** Hodge index on the scaling surface, RR+ample effectivity, every intersection Gram with one positive square, zero sector defects at every aperture, and zero H¹ defect-floor rate are all RH (O:TheWidthDictionary, `castelnuovoSeveriMetrologyAndWidthDictionary_tfae`).
-- **Established [L].** Finite defect at every aperture; low-blind RR+ample+Hodge; local RR/Bézout through `181/500` (odd) and `3/10` (full); the RR correction is pole charge plus prime-node correlation; one generic orbit or two prime generators detect the full index; one-prime towers see every outer class when right-zero real parts are well-founded. Coalescent certificate and conditional `3/4` (shared with HF). [S] (K:LambdaRingEffectivityAndHeckeLefschetzRigidity): the exact arithmetic Lefschetz–adjunction identity `L(x,a) − ((a+1)/2)(x·x) = ((√a−1)²/2)·defect(x,x) + (√a/2)·defect(ψ^a x − x)`, the scaling-surface form of Weil's point-count decomposition; the cone of nef cycles obeying the Hasse–Weil bound `|L(x,a) − ((a+1)/2)x·x| ≤ √a·x·x` for all `a > 0` is Hecke- and Adams-stable, and RH ⇔ its RR ⇔ its equality with the positive cone; on curves the Rosati source cone has RR iff the datum is unitary, and the golden datum violates it.
-- **(a) Just work.** Wire the λ-ring/Hecke–Lefschetz module (J1); compute finite Frobenius Grams and tower indices; specialize ghost, Adams and curve identities (J8).
-- **(b) B-RH.** Arithmetic RR for source-defined cones at all apertures with ampleness, i.e. payment of the finite low-frequency sector and mixed terms uniformly in aperture; equivalently the arithmetic Hasse–Weil bound for Lefschetz numbers on the scaling surface. **B-C:** an independent arithmetic section-count or intersection law that forces this; well-foundedness or top attainment for ζ's right-zero real parts.
-- **Boundary.** Product cones, nonpositive grades and fixed Hardy weights are excluded; sign-coded sections read the sign; section counts are identical for `Λ` and a shifted pair; compensated surfaces change the pairing; Hecke or Adams stability of a cone does not replace the missing inequality — RR on such a cone forces exactly the zero defect floor. Walls 14.4, 14.6.
+**Present result.** Convergence throughout `Re s>1/2` of the specified regularized coefficients `(Λ(n)−1)/log n`, and the corresponding prime formulation, is RH-equivalent. Raw positive prime series are not the receiver. [Regularized log-zeta abscissa](../../../formal/GaloisForLFunctions/RHTower/RegularizedLogZetaAbscissa.lean)
 
-## 4. Standalone route candidates and PW-B
+**(a)** J3–J5: regularization and partial-summation identities. **(b)** The cancellation required for convergence on the whole half-plane. Dropping the subtraction changes a convergent cancellation problem into a divergent positive one. **Walls:** 1.1, 1.5.
 
-Each candidate has an exact receiver or diagnostic; none has a pre-divisor producer. "Zero-indexed" means the object is built from the unknown Ξ divisor. On `XiDivisorSupport`, the HJ residual, SEC seam, CDC confluence, BSH mate gain, IRK noninvertibility and W1C Clifford energy are each equivalent to `Re ρ = 1/2`, with exact depth laws; the depth supremum is `Δ` (S:TheZeroIndexedRoutesMeasureOneSide). Their common missing input is source forcing.
+### RB — Robin bound
 
-| Candidate | Established [L] | (a) Just work | (b) Open |
+**Present result.** The eventual strict Robin inequality on colossally abundant integers is equivalent to RH. Finite verification does not establish an eventual tail. [Colossally abundant reduction](../../../formal/GaloisForLFunctions/RHTower/RobinColossallyAbundantReduction.lean)
+
+**(a)** J3, J6: specified finite divisor sums and extremal comparisons. **(b)** An arithmetic proof of the strict inequality for the complete eventual extremal sequence. **Walls:** 1.1, 1.6.
+
+### SRT — square-root threshold and smooth detection
+
+**Present result.** A smooth Weil detector for an off-line zero has a **quadratic** aperture bound `C δ^(−2)(4+|γ|)²`; the degree-38 statement is a weaker corollary. This detector is already implemented and imported. It identifies a witness, not positivity of the source. [Polynomial-aperture detector](../../../formal/GaloisForLFunctions/SquareRootThreshold/SmoothWeilDetectorPolynomialAperture.lean)
+
+**(a)** J3–J6: instantiate the witness and its explicit norms. **(b)** An arithmetic estimate controlling those detector tests at the required horizons, or the corresponding source sign. **Auxiliary:** sharper observability constants and actual source readings across the square-root threshold. **Walls:** 1.1, 3.1–3.2.
+
+### ACT — arithmetic criticality / single-shift completeness
+
+**Present result.** Any one fixed positive shift, tested against all even compact profiles, decides RH; the criterion remains complete with profiles vanishing near the origin. The shift quantifier has already been reduced. [Single-shift completeness](../../../formal/GaloisForLFunctions/ArithmeticCriticalityTheory/SingleShiftCompleteness.lean)
+
+**(a)** J3–J5: fixed-shift source identities and profile regularity. **(b)** The required sign for the entire profile class at that shift. Proving it for a finite or positive-coefficient subclass does not suffice. **Walls:** 1.3, 3.1, 3.4.
+
+### AIP — arithmetic incidence positivity
+
+**Present result.** For each odd compact `C²` test, the full allocation condition is equivalent to nonnegativity of its complete zero form. All-test allocation is equivalent to RH; one suitable plateau per test suffices in the stated formulation. The axis/self-energy extension is not the remaining gap. [Exact allocation condition](../../../formal/GaloisForLFunctions/ArithmeticIncidencePositivity/GlobalIncidenceAllocationCondition.lean)
+
+**(a)** J3–J6: finite ledgers, plateau choices and transport of an already valid global allocation. **(b)** Construct the shared signed budget for every test, retaining Gamma, pole, mixed terms and all prime incidences. Local payments that reuse surplus do not satisfy this condition. **Walls:** 1.3, 3.4.
+
+### ACS — arithmetic Castelnuovo–Severi / arithmetic Hodge geometry
+
+**Present result.** Finite-aperture negative index, positivity away from the low grid, all-parity endpoint floors, orientation classification and base theta sections are available. A generic cycle's Hasse–Weil bound already decides RH. The source-defined ample/effective cone and its positivity are not constructed by naming the cone or imposing its sign as a field. [All-parity floors](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/AllParityCriticalDeficitAndEndpointSobolevLaws.lean), [cycle orientation](../../../formal/GaloisForLFunctions/ArithmeticOrientationGeometry/TheOrientationOfACycle.lean)
+
+**(a)** J2–J6: apply existing index/Riemann–Roch identities with genuinely supplied hypotheses, and connect completed base theta data to explicit finite constructions. **(b)** An independent arithmetic effectivity or Hasse–Weil principle controlling the actual test components; equivalently the required full orientation/sign. **Auxiliary:** filtered coercivity completion and quantitative family/index bounds. The filtered module's advertised final conclusions are still absent. **Walls:** 1.3, 3.8, 3.13, 14.4, 14.6–14.7.
+
+## 4. The 17 candidates and PW-B
+
+A candidate is not a proof route merely because its final interface implies RH. The table identifies what exists before that interface and what still has to be produced.
+
+| Candidate | Present construction / exact boundary | (a) Known-method work | (b) Missing closing mathematics |
 |---|---|---|---|
-| **APF** paired Fredholm | Fredholm index; cycle-trace Fourier reconstruction; `XiC(orientation)=0` iff all trace coefficients vanish. | Finite coefficients (J8). | **B-C:** zero-independent exhaustion forcing the coefficients to vanish. |
-| **BSH** mate curvature | Framed curvature reads `n^{2Re s−1}`; Calderón–Witt Gamma–Green mate curvature vanishes iff `Re = 1/2`. | Fibre diagnostics (J7). | **B-C:** a prime−Gamma section built before the divisor and a mate identity coupling it to `Ξ(s)=0`. |
-| **CDC** constitutive dagger | Calibrated confluence iff `Re s = 1/2`; individual defects vanish while total exchange work tends to `1/8`. | Finite accounting (J7). | **B-C:** one source potential descending on all closed error fibres. |
-| **DR** dyadic Ξ roots | Zero-free cusp roots; finite marked monodromy images. | Known zero-free atlases (J7). | **B-RH:** global root compatibility on the strict-right domain. |
-| **EGC** pole-safe contour | Inner mass-subtracted cancellation; complete correction has a Gamma floor `(m+1)·corr → −ε²/2`. | Inner contour theorem (J7). | **B-C/B-RH:** exterior expanding-contour covariance sign. |
-| **EWJ** Euler/Wold jets | Finite-depth jets; compact-quotient character; transverse compression gaps. | Finite jets (J8). | **B-C:** zero-independent admission and norm exhaustion. |
-| **FEL** theta likelihood | Exact KL and adaptive reveal accounting; unconditional BSY zero sum. | Finite histories (J7). | **B-C/B-RH:** cofinal source contrast balance. |
-| **HJ** Hurwitz reflection | Prime-2 residual `2^{ρ−2} − 2^{−ρ̄−1}` vanishes iff `Re ρ = 1/2`; all-divisor vanishing equals HCF's two grid signs; a pre-divisor signed reservoir matrix exists and reverses under reflection (R:XiPreDivisorReflectionDefectStabilization). | Parity transports (J7). | **B-C:** the global stabilization (one bulk port weighted by `|ξ(s)|²`) that would force the residual; it is specified, not constructed. |
-| **IRK** rotation-algebra trace | Completed Ξ-jet relation invertible off line, not on line; trace equals boundary winding. | Finite words (J8). | **B-C:** global arithmetic Poisson/projective lift with the original source defect. |
-| **MSC** Möbius–Sonin | Unweighted critical logarithmic `L²` squarefree source; evaluation columns in `L²` on `Re s > 1/2`. | Column identities (J7). | **B-C:** source-faithful transport to nonnegative Sonin/Weil energy. |
-| **PCS** singular co-shift | Explicit singular ground; shift/co-shift incompatible with invertible dilation. | Shift-plus-defect identities (J7). | **B-C:** wall-class annihilation preserving the forward mode. |
-| **PTR** photonic source | Finite lossless stacks real-rooted; RH iff Ξ is a locally uniform limit (converse built from zeros); continuum Poisson port has unit Calkin gap. | Finite stacks (J8). | **B-C:** pre-divisor nonlocal prime-faithful port overcoming the unit gap. |
-| **RFHM** support grade | Full-support/phase admission at unbounded Mellin grade; reversible sewing inverse-covariant. | Creation theorem (J7). | **B-C:** a source law breaking inverse covariance. |
-| **SC** Stokes/Witt–Krein | Chamber-constant fibres; wall-singular polarization; rigged Krein wall-regular completion excluded. | Ghost transport (J7). | **B-C:** cross-fibre indefinite index surviving the wall. |
-| **SEC** adjacent seam | Essential norm = seam charge; time-one Fock boundedness on the divisor iff RH. | Finite jets (J8). | **B-C:** exact compactness from a pre-divisor source. |
-| **W1C** centered Lee–Yang | Centered ferromagnetic limit `Ξ/Ξ(0)` implies RH; prime-pivot walls form divisibility chains; prime-Ising subtree product law. | Finite graphs (J8). | **B-C:** arithmetic couplings with the centered critical limit. |
-| **WBF** source certificates | Abstract genealogy Gram/determinant/completion theorems; no arithmetic content. | Instantiate once a stream exists (J7). | **B-C:** an arithmetic certificate stream with faithful Ξ/Weil landing. |
+| **APF — adelic/Fourier reconstruction** | Countable Fourier data reconstruct the cycle outside one common null set. Reconstruction does not force its off-line component to vanish. [Source](../../../formal/GaloisForLFunctions/RHTower/PaperZetaCycleFourierReconstruction.lean) | J3–J5: specialize the reconstruction and justify a concrete countable family. | An arithmetic annihilation/orientation law for the reconstructed cycle. |
+| **BSH — framed-mate curvature** | The specified curvature components detect critical-line support. The curvature receiver is not a construction of a flat arithmetic mate. [Source](../../../formal/GaloisForLFunctions/RHTower/Deninger/DeningerOneSidedFramedMateCurvatureTransgression.lean) | J3–J5: curvature/transgression identities for supplied data. | Produce the relevant curvature vanishing or sign from the actual arithmetic source. |
+| **CDC — constitutive dagger confluence** | A descending, calibrated pre-divisor potential implies the desired line condition. Descent and calibration are input obligations. [Source](../../../formal/GaloisForLFunctions/RHTower/ConstitutiveDaggerConfluence.lean) | J3–J5: check finite confluence and normalization identities. | A globally descending, source-defined calibrated potential without embedding the desired orientation in its definition. |
+| **DR — dyadic roots** | Symmetric Littlewood/cusp constructions provide local root data. A compatible global root system is stronger. [Source](../../../formal/GaloisForLFunctions/RHTower/XiSymmetricLittlewoodZeroFreeCuspDyadicRoots.lean) | J3–J4: finite root compatibility and domain checks. | Global compatible roots across the required domain, with zero obstructions removed arithmetically. |
+| **EGC — Euler/gamma contour correction** | Complete correction on fixed vertical lines is available. It does not bound expanding outer contours. [Source](../../../formal/GaloisForLFunctions/RHTower/PaperEGCCompleteCorrection.lean) | J3–J5: fixed-contour correction and tail formulas in proved ranges. | Uniform outer-boundary control sufficient to pass to the closing contour limit. |
+| **EWJ — Euler–Wold compact character** | Compactness is classified by `c=0` or `−a+b+2d=0` in the model. This identifies the exact algebraic locus. [Source](../../../formal/GaloisForLFunctions/RHTower/PaperEulerWoldCompactCharacter.lean) | J3: evaluate a proposed character and its normalization. | A faithful actual-arithmetic realization on the admissible locus that supplies the needed sign. |
+| **FEL — free-energy/likelihood contrast** | The BSY identity expresses the contrast as an off-line zero sum. An exact identity does not show the contrast is zero. [Source](../../../formal/GaloisForLFunctions/RHTower/BalazardSaiasYorZeroSum.lean) | J3–J5: regularized contrast accounting. | Arithmetic vanishing of the full cofinal contrast, including its residual. |
+| **HJ — pre-divisor reflection stabilization** | Prime/Gamma reservoir and reflection data exist before zero selection. The global one-port interface contains unconstructed forward and reflected stabilization fields. [Source](../../../formal/GaloisForLFunctions/RHTower/XiPreDivisorReflectionDefectStabilization.lean) | J3–J4: finite reservoir identities and reflection checks. | Prove the global stabilization weld at every spectral point. Supplying an instance with that field is the hard theorem. |
+| **IRK — completed inverse rotation kernel** | The completed relation is invertible off the critical line. This is not an independent lift of the original arithmetic source into the required kernel. [Source](../../../formal/GaloisForLFunctions/RHTower/PrimeRotationXiCompletedResolution.lean) | J3–J5: resolvent and completion identities. | Construct the source lift/landing and extract its orientation without assuming zero confinement. |
+| **MSC — squarefree Hilbert source** | An unweighted squarefree `L²` source exists. Square summability alone is not the required Sonin/Weil positivity. [Source](../../../formal/GaloisForLFunctions/BiScaleUncertainty/SquarefreeUnweightedHilbertSource.lean) | J3–J4: source membership and explicit transforms. | The correct positive landing or arithmetic pairing sign. |
+| **PCS — chronological dilation carrier** | The unilateral-shift carrier retains a defect under the proposed dilation. Enlarging a carrier does not erase that defect automatically. [Source](../../../formal/GaloisForLFunctions/RHTower/PCSChronologicalDilationCarrierObstruction.lean) | J3–J4: finite carrier and dilation calculations. | A faithful larger realization with controlled defect, boundary transport and closing orientation. |
+| **PTR — photonic lossless ports** | Locally uniform finite-port approximation is RH-equivalent in the stated product model. A converse built from the zeros is not a pre-divisor producer. [Source](../../../formal/GaloisForLFunctions/RHTower/PhotonicLosslessProductPortRH.lean) | J3–J4: finite port products and explicit approximation errors. | A source-derived compatible approximating family with local uniformity and divisor fidelity. |
+| **RFHM — survival information** | Energy probabilities erase grade; the phase complement retains additional information. An unsigned information statistic cannot recover discarded orientation. [Source](../../../formal/GaloisForLFunctions/RHTower/PaperRFHMSurvivalInformation.lean) | J3: exact finite energy/phase decompositions. | A realizable phase-sensitive invariant and a source law controlling it strongly enough to orient the divisor. |
+| **SC — scattering completion** | Recovery of the prescribed wall is equivalent to vanishing of the wall vector. The completion theorem does not prove that vector vanishes. [Source](../../../formal/GaloisForLFunctions/RHTower/PaperKreinWallFourierCompletion.lean) | J3–J5: completion identities and domain checks. | Arithmetic wall-vector vanishing or a faithful positive source construction forcing it. |
+| **SEC — time-one gamma-jet Fock source** | Time-one Fock boundedness is a line-support criterion. Pre-divisor reservoir data do not yet prove the complete bounded source law. [Source](../../../formal/GaloisForLFunctions/RHTower/TimeOneGammaJetFockRHCriterion.lean) | J3–J4: finite jets, Fock norms and normalization. | The all-jet boundedness/landing estimate from the source, with the global weld justified. |
+| **W1C — Ising law convergence** | Centered real compact-uniform characteristic-law convergence is a sufficient criterion; the existing Lee–Yang mechanism handles the needed off-real passage. Do not add an unnecessary independent complex-convergence premise. [Source](../../../formal/GaloisForLFunctions/RHTower/IsingLawConvergenceRH.lean) | J3–J5: finite characteristic functions and application of the convergence theorem. | Construct the actual centered laws and prove the required real compact-uniform limit. |
+| **WBF — genealogy Gram completion** | The completion criterion is square summability of the genealogy coefficients. The full compact construction's cost is not automatically finite. [Source](../../../formal/GaloisForLFunctions/HTGeometry/PaperGenealogyGramCompletion.lean) | J3–J4: finite genealogy and Gram identities. | A faithful arithmetic stream with the required summable cost and positive landing. |
 
-### PW-B — Hawking–BM cusp forcing (inside PM)
+**PW-B — native two-response action (PM branch).** The action and exhaustion identities are present, but the construction is indexed by `XiZeroCopy`. This is a faithful diagnostic of a supplied divisor, not an independent pre-divisor mechanism. **(a)** J3–J5: specialize its exact action. **(b)** Build an arithmetic source that produces the same controlled action without importing its zero orientation. [Native action](../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPWNativeTwoResponseAction.lean)
 
-- **Established [L].** Weak retarded realization, two-response action identities and weighted native cusp energy admission at every positive damping; all constructions are indexed by `XiZeroCopy`. The Eisenstein value at `i` factors through `ζ(s)L(s,χ₋₄)`, so it does not isolate ζ.
-- **(a) Just work.** Fixed-damping identities (J7).
-- **(b) B-C.** A pre-divisor formulation, a complete-energy ceiling as damping vanishes, and the action-to-optical/all-divisor landing.
+## 5. Supporting programmes and their remaining research
 
-## 5. Supporting programmes: established frontier and remaining tasks
+These programmes refine the producers above. Their unsolved auxiliary questions are local research targets unless the row explicitly identifies an RH-strength endpoint. They are not all independent obstacles, nor are they all necessary for every route.
 
-Programmes are overlapping tool sets, not further RH routes. Task IDs match the review-2310 numbering; "solved" entries stay listed so that they are not reopened.
-
-### 5.1 Arithmetic Positivity Theory (APT)
-
-Established [L]: limiting critical prime kernel negative definite on every finite pattern; fixed-support finite-scale negativity; negativity on linear-width windows `N ≤ m+1 ≤ (1+δ)N` with all harmonics and prime tails; complete-form positivity on high dyadic blocks, polynomial windows `[M, LM]`, `L ≤ M^δ`, eighth-power-separated lacunary unions and dense two-band families under high-energy dominance; ring majorant `log L + O(1)`; low/high Schur bound `A_high E_high − K_low E_low`. Working source: explicit kernel shape (minimum at `1/2`, couplings `I₀/(4π²k²) + O(k⁻⁴)`) and quantitative grid-tent transfer to every odd `C²` receiver.
-
-| ID | Task | Status |
+| Programme | Established positive content | Remaining task and status |
 |---|---|---|
-| APT-1 | Low scales and densely adjacent blocks without high-energy dominance. | **B-C**, open. |
-| APT-2 | Growing-support range on which the actual prime channel stays negative. | Linear-width windows **solved** [L]; windows of growing relative width open (**B-C**). |
-| APT-3 | Sharp cost of window width and nonlacunary unions. | Partial bounds; sharp law open (**B-C**). |
-| APT-4 | Complete-family transfer with controlled norm loss. | Tents approximate every odd receiver [L], but positivity transfers only from positive sources; **B-RH** at all-test positivity. |
-| APT-5 | Quantitative depth/height detection of grids. | **B-C**, open. |
-| APT-6 | New admitted sources and source-faithful operator realization. | **B-C**, open. |
-| APT-7 | Exact kernel extrema and shape. | Proved [S]; integration blocked by a duplicate public declaration (J2). |
-| APT-8 | Single-height prime-phase saving beyond `log log T`. | **B-C**, open. |
+| **APT: full Weil cone and source selection** | Pair tests recover every coordinate, including composite non-prime-power nodes. Every nonzero single-node perturbation is excluded. One-sided cone membership is exactly RH plus the relevant coordinate order. | Identifying `Λ` and proving its positivity are different. Full-cone existence is an RH-strength input; coordinate calculations are J3. |
+| **APT: visibility and finite low sector** | Quantitative grid-tent visibility and height reduction have explicit premises. Finite-aperture defect and a positive high-frequency complement are available. | Pay the actual finite low sector and mixed terms at every aperture. A finite calculation is J6; a uniform arithmetic proof is open. Do not relabel the existing visibility theorem as missing. |
+| **APT: phase-selective heights** | Smooth interferometers and syndetic phase alignment refute even eventual all-height power-saving assertions of the proposed type. A single-height implication survives with explicit isolation and size bounds; the polar term decays as height to the power `−4`. | Obtain the phase-selective estimate at the relevant arithmetic height with all premises paid. A small bad-height measure does not show that zero ordinates avoid the bad set. The uniform all-height claim is refuted, not open. |
+| **BiScale: lag, packet and multiplicity** | Exact width endpoints and critical-energy laws; multiplicity-sensitive packet limits and square-root detector horizons. | Critical arithmetic cancellation remains open. Transferring packet `m²` information to Weil `m` information requires an explicit argument. |
+| **BiScale / ACS: zero-density filtering** | Averaged cosine and incoming-deficit estimates in the stated `A≤α log Γ`, `α<2/3`, regime; quadrature and depth-difference majorants for the filtered full form. | Complete the missing averaged coercivity/strict-positivity conclusions with their actual hypotheses. Even a successful average does not imply selected-height or all-test positivity. The previously alleged factor-two slab gap is absent. |
+| **THIM: selective incidence and collars** | Bézout-type incidence distinguishes arithmetic structures that universal conservation laws do not; MC's outer and small-damping collars are signed. | Actual interior anti-alignment/cross-covariance. Generic conservation or planted-factor-resistant collars do not replace this RH-strength input. |
+| **BVI: row cancellation** | Actual `μ` and `Λ−1` subdiagonal prime rows have saving `Q^(−δ/4)` for `Q^δ≤p≤Q^(1−δ)`, `N≥2Q`; composite-modulus ranges and smaller savings are developed. Abstract balanced estimates and independent centered-prime branches survive. | J1 repairs qualify the Möbius diagonal and combined every-modulus chain. After repair, uniform control of all terms in a closing energy estimate remains research; a row bound alone is not that estimate. |
+| **BVI: dual problem** | Exact Rayleigh quotient, variance criterion and cofactor residual. | Produce readout near one with small centered energy at closing damping. Finite optimization is J3/J6; the actual cofinal family is an RH-strength producer. |
+| **ACCE / arithmetic compensation** | Ground-floor equivalence, strict aperture flow, shell decomposition, canonical corrector and exact signed continuation criterion. | Critical signed loss, shell-flux payment and source-specific compensation. An absolute-value loss bound may be unnecessarily strong. Positive exponential aperture floors are excluded. |
+| **ADR: residual and trace reconstruction** | The residual plus pole trace determines the row exactly through the floor transform; the map is injective. Actual cofactor renormalization has the proved bounded pronic residual. | A quantitative inverse in the norms required for admission. Algebraic reconstruction does not bound raw receiver energy; generic domain invariance cannot be inferred from the actual-source theorem. |
+| **ADR: covariance limits and escape** | One common subsequence retains countably many cofactor covariances, finite-packet PSD, normalized diagonal and simultaneous dilation contraction. Fixed-word errors have an absolute horizon tail with explicit boundary cost. | Pass infinite cofactor sums through the limit, or exclude the remaining escape profile. For moving words, boundary cost must be paid against the shrinking tail. Finite-packet compactness does not do this automatically. |
+| **SAEI: shared resources** | Frustrated cycles have exact PSD and local-payment thresholds. On fixed boxes, a strictly smaller joint first-power cap is classified by missing box points, with positive unequal weights. | Quantitative cofinal/all-power improvement for actual prime towers and a continuum shared budget. Fixed-support existential gaps do not yield the needed uniform saving. |
+| **SAEI: damping and cutoff** | The chain is bounded at damping `1/2`; Hilbert–Schmidt control requires strictly greater damping. Generic below-half interchange fails. | Actual signed sub-half estimates and moving-tail control. Generic failure does not prove actual Möbius divergence. |
+| **AOT: readings, hulls and width functor** | Threshold-receiver category, reading obstructions, hull criteria and unit-filter invariance. | A realizable, quantitatively conditioned arithmetic reading or non-unit repair. Isomorphic threshold objects do not identify their finite observations or producers. |
+| **SRT / SSIC / DCI: detection and escape** | Quadratic smooth-detector aperture, explicit visibility and admission-or-escape alternatives. | Contain the actual arithmetic escape or pay detector norms uniformly. Detection of an assumed off-line zero is not a source sign proof. |
+| **AOG: orientation and global index** | Generic single-orbit criterion, common-endpoint classification of positive scale-stable families, finite-target index and global index exit. | Source-derived Hasse–Weil orientation; quantitative compatible-family/index control. A finite global index would be substantial but would not alone give RH without the final `D<2` bound. |
+| **AOG: theta sections** | Base theta `h⁰`, Poisson/Riemann–Roch identity and zeta Mellin bridge. | A source-defined surface/test-component section law producing an ample nonnegative-degree cone. Base section arithmetic is established; the coupling is open. |
+| **ALDG: local divisor and heat geometry** | One-factor repair iff `δ²≤3u²`; exact higher-multiplicity thresholds; sharp Hermite first-heat optimum and equality structure. Only positive monomials universally reflect the coefficient cone. Full-copy monic divisor polynomials handle central zeros. | Arithmetic positivity of the actual heated divisor/cofactor at the required scale. The local model optimization is solved. A universal positive multiplier is excluded; source-selective repair remains a research candidate. |
+| **SignedSuccessorArithmetic** | Complex-floor bounds bracket the leading constant between `−1/2` and `−1/3`; the lag-two agreement constant lies between `1/6` and `1/4`. Exact Kloosterman second-moment counts are available. | Sharp constants and source-selective cancellation remain local questions. Failure of exact pointwise cube-root equality does not decide asymptotic sharpness. Complete-field second moments do not imply balanced-moduli cancellation. |
+| **Natural size-cutoff Möbius energy** | The size-truncated hypercube form is an exact weighted integral of a squared Möbius Dirichlet polynomial, hence nonnegative. The stated absolute bound is proved for damping `>1/2`. | Uniform signed bounds below that range. Divergence for prime-subset cutoffs does not establish divergence for natural size cutoffs. |
+| **TTPC: coalescent prime pairs** | Proper powers are `o(N)`; prime `2`, parity and even shifts are separated. Signed trapezoidal Ramanujan transfer and close-pair-energy exchange formulas are proved. | The coherent actual prime-pair error/surplus estimate. The unsigned inner-lobe substitution is obstructed. The `1/18` surplus target in the existing certificate yields a `3/4` proportion, a partial result rather than RH. |
 
-### 5.2 BiScale Uncertainty
+Source anchors for these programme-level distinctions:
 
-Established [L]: packet/band/spline receivers; multiplicity ceiling; prime-power node criticality and deletion prices; recovery stability `3(Σφ(q))ε^{1/6}`. Working source: cutoff-independent normalized stability `9ε^{1/3}`, stratum constants `3Σ_{q∈S}φ(q)`, linear dyadic-tower constant, windowed and single-window lag recovery with explicit cutoff cost (B:StratifiedObservationRecoveryAndBoundedRelationSynthesis).
+- [Full-cone source selection](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/SourceSelectionInTheFullWeilCone.lean), [phase-selective aperture](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/SingleHeightPhaseSelectiveApertureAndPowerSaving.lean), [zero-density filtered deficit](../../../formal/GaloisForLFunctions/BiScaleUncertainty/ZeroDensityFilteredCriticalDeficitLaw.lean), [unfinished filtered Weil development](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/ZeroDensityFilteredWeilPositivityAndCoercivity.lean).
+- [Residual/trace reconstruction](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/TheResidualAndPoleTraceDetermineTheRow.lean), [common covariance limit](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/CountableCofactorCovariancesHaveACommonLimit.lean), [absolute word tail](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/BoundedWordErrorsHaveAnAbsoluteHorizonTail.lean).
+- [Two-tower box law](../../../formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/TwoTowersAddExactlyOnBoxes.lean), [width functor](../../../formal/GaloisForLFunctions/ArithmeticOrientationTheory/TheWidthFunctor.lean), [optimal local heat](../../../formal/GaloisForLFunctions/ArithmeticLocalDivisorGeometry/HermiteOptimalHeat.lean), [universal reflector classification](../../../formal/GaloisForLFunctions/ArithmeticLocalDivisorGeometry/UniversalReflectors.lean).
+- [Complex successor floor](../../../formal/GaloisForLFunctions/SignedSuccessorArithmetic/TheComplexSuccessorFloor.lean), [shift parity](../../../formal/GaloisForLFunctions/SignedSuccessorArithmetic/TheFloorReadsTheParityOfTheShift.lean), [size-truncated energy](../../../formal/GaloisForLFunctions/SignedSuccessorArithmetic/TheSizeTruncatedHypercubeForm.lean), [coalescent prime reduction](../../../formal/GaloisForLFunctions/TransThresholdPairCorrelation/CoalescentPrimeReductionAndParitySieve.lean).
 
-| ID | Task | Status |
-|---|---|---|
-| BS-1 | Critical band `C(1+L)` / universal packet bound. | **B-RH**. |
-| BS-2 | Raw band constant. | Solved under RH (B:CramerLimitLaw). |
-| BS-3 | Two-tower and prime-power blind optima. | Enclosures only; **B-C**. |
-| BS-4 | Sharper recovery constants, windowed observations. | **Solved** [L]. |
-| BS-5 | Bounded completion cost for arithmetic observation families. | [S] (B:ProducerCompletionAndPrimeClockKernelSynthesis): on the pole-free hyperplane of the factorial–Müntz family the completed source has zero divisor mass and zero Weil energy, so the ramp part inherits the archimedean coercivity `((A/2) log M − C)·Σ‖d_n a_n‖²`; every far negative polar packet has a nonnegative coherent completion at bounded archimedean energy. Both are paid by the archimedean gain; completion for sources without it **B-C**. |
-| BS-6 | Finite-prime certificate reaching the band receiver. | **B-RH**. |
-| BS-7 | Test `E(U) = W(U)` from finite data. | **B-C**; equality also encodes simplicity. |
+## 6. What must not return as an open task
 
-### 5.3 Trans-Horizon Incidence Mechanics (THIM)
+The following are completed local results or excluded shortcuts, not missing RH proofs:
 
-Established [L]: global prefix-defect sign at large horizons; response-level damping commutation; complete half-damped classifications for constant-sign, residue-flip (`φ(q) < 4|S∩units|`), subgroup, finite-frequency and phase-shifted prime patterns; sub-half oscillating patterns admitted only at zero amplitude; logarithmic moments are a complete receiver invariant while all translated periodic moments are not; double-pole repair laws; Buchstab band signs through band 10 and nonconcavity of the cofinal profile. The conservation and dissipation laws split into three exact classes: Beurling-universal multiplicative laws, sign-blind parity-orbit laws, and `ℤ`-lattice laws driven by the Bézout relations `gcd(n,n+1) = 1`, `pa − qb = 1` (T:CompleteSignedTransHorizonEnergyAndTransferSelectivity). Class I holds on every Beurling system and class II cannot tell a row from its parity twin; only class III uses the additive successor structure of `ℤ` that Beurling systems lack. The paid class is a union of critical-Wiener-monoid orbits and reads pole orders through logarithmic pole moments.
+- CHMD sharp-window convergence and generator-domain admission; compact-`L²` Suzuki first variation and common-support passage; all-length Heath–Brown and sharp all-`k` `S₂` inputs; smooth detector construction; the explicit kernel-shape identity and its formerly duplicated name.
+- Width endpoint attainment for the critical deficit and full/odd Sobolev floors; classification of positive scale-stable orientation families; construction of the base theta `h⁰`; sharp local Hermite heat optimization.
+- Obtaining a positive exponential aperture floor; obtaining the refuted eventual all-height phase saving; universally repairing the coefficient cone by a non-monomial positive multiplier; recovering orientation from a statistic proved invariant under orientation flips.
+- Replacing full signed positivity by orthant positivity, cone-preserving spectrum by self-adjoint confinement, finite rank by all ranks, local payments by one global budget, or a finite-index theorem by zero index.
+- Treating a zero-indexed representation as a pre-divisor construction, a `Prop`/structure field as its own proof, or an algebraic inverse as a bounded inverse.
 
-| ID | Task | Status |
-|---|---|---|
-| THIM-1 | Signed pronic primitive energy at cofinally small damping. | **B-RH**. |
-| THIM-2 | Signed moment hierarchy to a quantitative receiver bound. | Information side solved; quantitative bound **B-C**. |
-| THIM-3 | Cross-lobe terms for arbitrary odd sources. | **B-RH** at full odd positivity. |
-| THIM-4 | Low-horizon/Buchstab/concavity classification. | Largely solved; all-band asymptotics **B-C**. |
-| THIM-5 | Schedule and parity-transformation classification. | Largely solved (p-adic injectivity iff every slot observed); general parity **B-C**. |
-| THIM-6 | Endpoint laws for other kernels. | Extended to sub-half partial-pole and double-pole laws; general sources **B-C**. |
-| THIM-7 | Remaining multiplicative spectra. | Half-damped classification complete for the stated classes; sub-half general patterns **B-C**. |
-| THIM-8 | Index formula for the paid class. | Orbit and pole-moment structure proved; a non-perturbative formula computing the class of the Möbius weight from arithmetic counts **B-C**. |
-
-### 5.4 Bézout–Valuation Incidence (BVI)
-
-Established [L]: energy = compensated interior bracket `+ O_ε(1)`; strict contraction iff bounded energy; fixed-modulus cancellation; centered-prime `30/17` range; balanced bounds with arbitrarily small leading coefficient; VK band; no universal `O(N)` observation horizon, while `Φ(N)` samples always recover; sandwich constant of order `N²`; radical-state normal form reduces a global defect bound to finitely many tests per horizon.
-
-| ID | Task | Status |
-|---|---|---|
-| BV-1 | Compensated interior contraction at cofinal damping. | **B-RH**. |
-| BV-2 | Growing-modulus dual norm with all tails. | Balanced leading term solved; tails **B-C**. |
-| BV-3 | Dual rows with vanishing readout defect and energy. | **B-RH**. |
-| BV-4 | Chain structure to signed pronic estimate. | Solved for `η ≥ 1/2`; below half **B-RH** at cofinal damping. |
-| BV-5 | Sharp observation horizon and conditioning. | Superlinearity proved; sharp order **B-C**. |
-| BV-6 | General signed prime packet and complementary lags. | **B-C**. |
-
-### 5.5 Arithmetic Criticality Theory (ACT programme)
-
-| ID | Task | Status |
-|---|---|---|
-| AC-1 | Fixed-shift variation for every profile. | **B-RH**. |
-| AC-2 | Signed gauge with global nodal-remainder control. | Conditional endpoint signs only; **B-C**. |
-| AC-3 | Coercivity after removing the radical. | Uniform coercivity against the original graph norm is false even on compact primitive tests; a quotient-norm law remains **B-C**. |
-| AC-4 | Larger full/even windows. | Margins through `29/100` (full), mean-zero through `(log 2+1/50)/2`; larger radii **B-C**. |
-| AC-5 | Averaged versus pointwise shift law. | Averaged inequality only under RH; **B-C**. |
-| AC-6 | Ground crossing excluded by a decaying floor. | **B-RH**. |
-| AC-7 | Capacity-ratio rates and Harnack propagation. | Ratio tends to 1 on plateau truncations; **B-C**. |
-| AC-8 | From the frustration count to the ground energy at aperture `A`. | The ground energy is bounded above by the frustration mass; a lower bound from the count (samples reach twice `π(⅔e^{2A})`) **B-C**. |
-
-### 5.6 Arithmetic Incidence Positivity (AIP programme)
-
-| ID | Task | Status |
-|---|---|---|
-| AI-1 | One shared all-scale budget. | **B-RH**. |
-| AI-2 | Adverse sign-changing profiles; optimal nested allocation. | Lattice balance, prime-triangle index 2, edge-tent obstruction proved; general **B-C**. |
-| AI-3 | Integrated atom-versus-density bounds. | Log-concave gauge law solved; general weighted **B-C**. |
-| AI-4 | Axis/self-energy extension of the odd lattice calibration. | **Solved** [L]. |
-| AI-5 | Normalized cross-window interactions. | Inter-window bounds proved; summable all-scale allocation **B-C**. |
-| AI-6 | Sign of the prime-minus-two-pole Chebyshev pairing. | Spectral form exact; sign **B-RH**. |
-
-### 5.7 Arithmetic Continuation and Critical Energy (ACCE)
-
-| ID | Task | Status |
-|---|---|---|
-| CE-1 | Signed relative-loss integral at cofinal damping. | **B-RH**. |
-| CE-2 | Actual tangent covariance with all terms. | **B-C**. |
-| CE-3 | One-sided inversion-pairing estimates. | Exact single-damping equivalence proved; estimate **B-C**/**B-RH**. |
-| CE-4 | Convexity / no interior bump. | **B-C**. |
-| CE-5 | Transported floor with compulsory decay. | Transport framework solved [L] (C:VanishingApertureFloorAndGradedTransport): ceiling-compatible relative and additive steps, ceiling-renormalized monotone functional, graded negative-floor transport to `Δ ≤ σ`. The step estimate itself is **B-RH**; its graded form at a rate below `1/2` is quasi-RH. |
-| CE-6 | Compensated mass floor. | **Resolved** [L]: equivalent to the ground floor; rate equality iff no depth clustering. |
-
-### 5.8 Square Root Threshold, SSIC and the DCI pincer
-
-| ID | Task | Status |
-|---|---|---|
-| SR-1 | Actual lag sign / subexponential floor. | **B-RH**. |
-| SR-2 | Discrete grid top/visibility/tail. | Requires `ZerosApproachLine`; **B-C**. |
-| SR-3 | Unrestricted mass-floor converse. | **Resolved to a sharp dichotomy** (§2.5); remaining arithmetic input is the cluster exclusion of Wall 1.11. |
-| SR-4 | Control beyond polynomial length/height. | **B-C**. |
-| SR-5 | Prime-height/Gamma coupling gain. | Kronecker peaks force negativity or exponential height escape; **B-C**. |
-| SI-1–SI-6 | Resolution limits of readings; parity collapses; rate readings; hiding after full constraints; growing-density policies; numerical ledger unit. | The programme's seven listed problems are resolved [L]: sign-blind Type-II and rank-two readout Gram readings have resolution limit exactly `θ = 2` (they certify nothing below the balanced scale; Q:TheExactFloorOfThePronicGramReading); band recipe, fatality classification of parity collapses, rate reading, counterexample design, growing-density policies and the incidence-ledger unit (Q-modules of the same names). Reading trichotomy (O:TheTrichotomyOfReadings). Remaining: readings of the actual ζ source that add the missing arithmetic information (**B-C**). |
-| DCI | Remaining obstruction after the pincer. | Collapsed clusters at doubly exponential height (Wall 1.11); **B-C**. |
-
-### 5.9 Arithmetic Compensation Theory (ACCC)
-
-| ID | Task | Status |
-|---|---|---|
-| ACCC-1 | Relative to absolute signed control. | **B-C**/**B-RH**. |
-| ACCC-2 | Comparable arithmetic corrector. | Bézout corrector constructed (`1 + dual residual`, factor 3); its loss budget is the RH receiver (**B-RH**). |
-| ACCC-3 | Adverse moving-horizon profiles. | Sharpened to admission-or-escape; exclusion **B-C**. |
-| ACCC-4 | Transfer with doubly exponential decay. | **B-RH**. |
-| ACCC-5 | Compensated prime–polar exponent; balanced rows. | Balanced leading term solved; exponent improvement is quasi-RH (**B-C**). |
-
-### 5.10 Signed Arithmetic Energy Incidence (SAEI) and Arithmetic Orientation Theory (AOT)
-
-SAEI established [L]: holonomy criterion; frustrated-cycle threshold `2t cos(π/k) ≤ 1`; packed-path certificates for three/four-node arithmetic models; Kron reduction and aligned-overlap monotonicity; sharp Paley–Wiener companion price `A³h/(3π)` iff `Ah ≤ π`; chain bounds of §2.6. AOT established [L]: width functor; trichotomy of readings; aperture transport; Wiener algebra (units iff no Bohr-polydisk zero, local factor `δ₁ − aδ_p` a unit iff `|a| < √p`); repairing-ideal codimension counts obstruction points; frustration index (lattice ledger balanced, prime triangle `ν = 2`, dense replicas give index `≥ 2M` without a negative continuum form); continuum single-tower Cholesky.
-
-| ID | Task | Status |
-|---|---|---|
-| SAEI-1 | Continuum supersolution and packed paths with pole/Gamma terms. | **B-C**, **B-RH** at full positivity. |
-| SAEI-2 | Adverse profiles uniformly in aperture. | **B-C**. |
-| SAEI-3 | Companion interpolation for actual ζ. | Model prices sharp; actual companion supply **B-C**. |
-| SAEI-4 | Sub-half first-column estimate. | **B-RH**. |
-| SAEI-5 | Generator domain and projections. | No Riesz basis (Bessel only); remaining need **B-C**. |
-| SAEI-6 | Joint capacity of multi-tower profiles. | Exact on the smooth-number simplex with equal weights; strictly below the sum of single capacities on every non-box support; exact value with the actual unequal weights **B-C**. |
-| AOT-1 | Joint all-prime tower budget (single towers are paid). | **B-RH** at full allocation. |
-| AOT-2 | A repair leaving the Wiener unit class for actual μ below `Δ`. | **B-C**; nonempty-hull classification at or below `Δ` open. |
-
-### 5.11 ACS internals and Trans-Threshold Pair Correlation (TTPC)
-
-| ID | Task | Status |
-|---|---|---|
-| ACS-1 | RR-compatible arithmetic effectivity at all apertures. | **B-RH**; equivalently the arithmetic Hasse–Weil bound on Lefschetz numbers [S]. |
-| ACS-OP5 | Effectivity from the λ-ring. | **Resolved negatively** [S]: Hecke/Adams stability forces the zero defect floor instead of producing it. |
-| ACS-2 | Coupled data excluding the golden Beurling datum. | Purity ⇔ bounded traces ⇔ Hasse–Weil remainder in curve models; arithmetic forcing law **B-C**. |
-| ACS-3 | Source bound for the detection aperture. | Quantitative detection under isolation/margin premises; unconditional **B-C**. |
-| SCG-1 | Sign-changing gauge paying the full form. | **B-RH**. |
-| TTPC-1 | Coalescent prime-pair surplus `≤ (1/18 + o(1))N`. | **B-C** (gives a `3/4` proportion, not RH). |
-| TTPC-2 | Remaining five end-form terms and coherent weighted error. | **B-C**. |
-
-## 6. Evidence and verification limits
-
-**Coverage.** The six named reports supplied the inventory (31 live routes, 17 candidates, PW-B, 44 named failed mechanisms, 19 retired labels). The frontier map was read twice: at checkpoint `8f6c98f1a` and again after a concurrent rewrite at checkpoint `e108313a9`. The killed-routes catalogue was read in its header, mechanism and endpoint sections, and through its full change set since the previous review's checkpoint `7f877d94d`. Corpus research used 118 saved search queries, one or more per route, candidate, programme and wall face, plus exact-name lookups for every declaration cited here; the saved results, digests and the working log are in [`logs/review-2410/`](../../../logs/review-2410/). Lean files added between the two review checkpoints (269 committed, plus later additions) are listed in [`new-lean-files.txt`](../../../logs/review-2410/new-lean-files.txt); their module documentation and key statements were read, together with older capstones surfaced by the searches.
-
-**Statements read directly.** Among others: `exists_aperture_quotient_lower_bound`, `mem_apertureGraphCompletion_iff_supported`, `exists_linearWindow_criticalPrimeEnergy_le`, `eventually_fullEnergy_latticeTrain_nonneg`, `tendsto_calibratedSignedJumpEnergy_latticeBumpProfile_netAtom`, `hodgeDefectAt_zeta_lt_top`, `horizonFreq`, `re_W_zeta_nonneg_of_lowGrid`, `lowBlindTests_effectivity`, `exists_centeredOperator_l2_le_uniform`, `guthMaynardLargeValuesBound_holds`, `riemannHypothesis_iff_forall_ne_zero_longSawtoothTailGapTheta_lt_one`, `longSawtoothTailGapTheta_lt_one_vk_and_box`, `zeta_coalescent_certificate`, `continuumTower_reflection_cholesky`, `gradedIncidenceAllocation_half_seventyFive`, `riemannHypothesis_iff_cofinal_bezoutCorrected_loss`, `moebius_reverse_inclusion_and_index_tfae`, `castelnuovoSeveriMetrologyAndWidthDictionary_tfae`, `eventually_re_heatHankel_pos_of_polarGroundEnergy`, `exists_halfPlane_lt_half_iff_exists_jasBudgetProductPositive`, `lefschetzEnvelopeCone_riemannRoch_tfae`, `lefschetzEnvelopeCone`, the theorem list and documentation of `CompensatedWidthFloorAndGroundEnergyRate`, `OffLineClusterWeilUnbounded`, `XiPreDivisorReflectionDefectStabilization`, `TheTrichotomyOfReadings`, `TransportInApertureAndTheCeilingLyapunovIdentity`, `TheWidthFunctor`, and the new Suzuki `L²`, CHMD sharp-cut, Gaussian-tail and λ-ring modules. A text scan of every listed new file and of the later additions finds no `sorry`, `admit`, `axiom` declaration or `native_decide`.
-
-**Compilation.** None. No build, leaf check or axiom audit was run for this review, so integration status is reported from the source tree: "[L]" means integrated and inspected, not freshly kernel-checked. Some integrated modules (for example `ArithmeticDampingCenteredSpectrum`, `TheLinearWindowOfTheCriticalPrimeChannel`) currently have no olean in the build directory.
-
-**Concurrency.** Other agents committed and edited during the review (commits `e108313a9` and `37fa6a3db`, a frontier-map rewrite, edits to the λ-ring, Suzuki `L²`, CHMD and grid-tent modules). Wiring status is reported as of `37fa6a3db`; statements are reported as read, and later edits may change details.
-
-**Interpretation.** A receiver or equivalence does not supply its input; a model counterexample excludes only its class; a conditional theorem keeps its premise. RH's status follows the [Clay problem statement](https://www.claymath.org/millennium/riemann-hypothesis/). B-C items are open in the corpus; worldwide novelty is not claimed.
+The [walls ledger](walls-ledger.md) retains the scoped negative results and their positive survivors. The [unification ledger](route-unification-ledger.md) specifies which remaining problems are literally shared and which merely have equivalent RH endpoints.

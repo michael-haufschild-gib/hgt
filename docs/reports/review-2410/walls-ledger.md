@@ -1,227 +1,162 @@
-# The walls ledger
+# Walls ledger
 
-**Status at 2026-10-24.** Three core problem families remain: **Wall 1, arithmetic estimates at the critical rate; Wall 3, information, norm and shared-resource transfer; Wall 14, faithful arithmetic realization and orientation.** None is removed. Several local walls are solved (fixed-aperture CHMD completion, the SZ critical passage, the mass-floor converse as an exact dichotomy, finite Hodge index, half-damping chain bounds), and four new faces are precise: the quasi-RH barrier at the start of Wall 1, collapsed off-line clusters, the finite low-frequency sector, and the arithmetic Hasse–Weil bound.
+Status: 2026-10-24. Three core families remain: **Wall 1 — arithmetic estimates and sign at the critical endpoint; Wall 3 — information, norms, limits and shared budgets; Wall 14 — faithful arithmetic realization and orientation.** These organize the research; they are not a theorem that all construction problems are identical.
 
-Companions: [complete report](hard-obstacles.md), [routine work and research programme](hard-obstacles-summary.md), [route unification](route-unification-ledger.md). Inventory: 31 live routes, 17 standalone candidates and PW-B.
+Companions: [complete route report](hard-obstacles.md), [work and open-research register](hard-obstacles-summary.md), [route unification](route-unification-ledger.md). Coverage: 31 routes, 17 candidates and PW-B, with current supporting programmes. Evidence is Lean source inspected through corpus search, with qualifications recorded below. No builds or compilation were run. A countermodel excludes its stated mechanism, not every route touching that wall.
 
-## 1. How to read a wall
+## 1. Wall 1 — arithmetic estimates and critical sign
 
-An **open estimate** is a missing arithmetic theorem. A **proved obstruction** excludes only its stated class and keeps a positive survivor. A **resolved local wall** has an exact positive theorem; a stronger transfer may remain open. A **candidate construction** has no completed producer. The three families organize research; they are not proved equivalent as construction problems.
+Let `Δ = supρ |Re ρ−1/2|`. A bound at a fixed rate `σ<1/2` in a width-reading receiver implies a fixed zero-free strip. Closing RH requires the zero-width endpoint or every positive slack, according to the exact receiver. This is an implication about strength, not a claim of worldwide nonexistence of every intermediate estimate. Receiver normalization matters: squared energy has twice the pointwise exponent; LI reads reciprocal depth instead.
 
-## 2. Wall 1 — arithmetic estimates at the critical rate
-
-Write `Δ = sup_ρ |Re ρ − 1/2|`.
-
-### 2.1 The entry barrier
-
-Every unconditional receiver estimate in the corpus has rate exactly `1/2` with a subexponential saving from the classical zero-free region: `e^{r−c√r}` (allocation, prime residual), `e^{L/2−κ√L}` and `e^{L/2−κL^a}`, `a < 3/5` (window ceiling, deficit), `exp(v/2−v^a)` (lag floor), `e^{−κV(T)/270}` (damping). For every `Δ`-reading receiver a bound at a fixed rate `σ < 1/2` gives `Θ ≤ 1/2 + σ < 1`. Proved instances: short-window Möbius or prime power saving ⇔ `Θ < 1` (V:ShortWindowMoebiusSavingIsTheQuasiRiemannHypothesis, V:ShortWindowPrimeSavingIsTheQuasiRiemannHypothesis); one Sobolev allocation rate below `1/2` ⇔ a fixed zero-free strip (M:TheCompensatedRemainderOfTheFullLedger); JAS level-one budget positivity for some `λ > 0` ⇔ quasi-RH (R:JointAncestryBudgetZeroFreeLaw). Powers of the deficit multiply its rate (S:AmplificationMultipliesTheZeroWidthExponent). The first step past Wall 1 is therefore quasi-RH in every such route.
-
-### 2.2 Faces
-
-| Face | Present wall | Resolved part / strongest survivor | Required new input |
+| Face | Current obstacle | Established boundary / positive survivor | Missing input |
 |---|---|---|---|
-| **1.1 Critical signed cancellation** | Prime/Möbius lag, packet, deficit, Mertens, regularized-series and divisor-sum estimates at every positive slack. | Explicit universal spline with finite-shift threshold `τ > 4`; exact cancellation identities; fixed-modulus Möbius cancellation; balanced rows with arbitrarily small leading coefficient; Guth–Maynard large values. | Signed cancellation beyond the classical zero-free region. |
-| **1.2 Axis orientation** | Symmetry, nonnegative defects or integral counts do not force line support. | Ward cap, winding/index, Newton margin and Gaussian-tail receivers; `(Im z)² ≤ max(Δ²−2t,0)` for heat zeros. | All-height source sign or forced vanishing. |
-| **1.3 Global Weil positivity** | At each aperture the obstruction is a finite low-frequency sector of doubly exponential dimension; no aperture-uniform payment. | Full window `3/10`; odd `181/500`; primitive `(log 2+1/50)/2`; finite defect at every aperture; positivity off the low grid; low-blind RR+ample+Hodge. | Pay the low sector and mixed terms uniformly in aperture. |
-| **1.4 Arithmetic cone rigidity** | Uniqueness of the full-positive weight is not existence. | Cone `⊆ {Λ}`; admixtures and shifted pairs excluded; prime-power node criterion. | Positivity of `Λ` itself. |
-| **1.5 Contrast equality** | Correct likelihood/Jensen accounting leaves a residual. | Exact BSY zero sum; adaptive reveal accounting. | Arithmetic equality of the cofinal contrast. |
-| **1.6 Quantifiers** | Fixed rank, degree, order, history or aperture data do not meet the receiver. | All-rank orthant positivity; finite-order Hausdorff blocks; fixed-rank eventual coercivity; RW margin ⇒ heat-Hankel window at times `≤ K/n`. | Uniformity in the quantifier the receiver uses. |
-| **1.7 Amplification** | Powers multiply the rate. | Exact exponent bookkeeping. | New correlation input. |
-| **1.8 Critical pronic energy** | Bounded energy at cofinally small damping. | Admission above `Δ`; VK band; compensated diagonal and predecessor terms bounded; contraction ⇔ bounded energy. | Compensated interior estimate. |
-| **1.9 Signed continuation** | Signed loss integral uniform in horizon. | Exact continuation/corrector equivalences; scalar work paid; core debt a ζ-log ratio; Bézout corrector comparable within 3. | Cross-covariance and flux control. |
-| **1.10 Relative versus absolute compensation** | Relative errors vanish super-logarithmically while `P^{1−2ε}` remains. | Summable dyadic motion; two-scale rate `CTP^{−4β}`; admission-or-escape profile. | Absolute signed control; exclusion of horizon escape. |
-| **1.11 Off-line multiplicity clusters** *(new)* | Mass-only floors and the equality of ground rate with `Δ` fail exactly when local depth mass is unbounded. | Compensated floor ≡ ground floor; rate equality ⇔ compensated floors above `Δ`; dichotomy with clustering; a rate excess needs collapsed clusters at heights `exp(e^{εA}/(40Δ²))`; count-only data cannot give a floor. | Arithmetic anti-collapse bound on off-line multiplicity in unit windows. |
-| **1.12 Interior anti-alignment** *(new)* | MC's quadratic gap `θ(ε,t) < 1` between the proved collars. | Strict gap on the VK high-height collar and on bounded-height small-`ε` collars; planted Euler factors keep every collar. | Decorrelation or amplitude mismatch of the finite Euler–Maclaurin packet in the interior. |
+| **1.1 Critical signed cancellation** | Actual prime/Möbius lag, Abel, history, series and bilinear bounds must reach the closing exponent. | Exact cancellation identities, critical endpoint classification, restricted source row estimates, all-length Heath–Brown and sharp `S₂` input. | Source-sensitive cancellation with all counterterms and tails paid. |
+| **1.2 Axis orientation** | A nonnegative defect, winding count or faithful spectrum does not force line support. | Ward trace/cap, cubic=winding, Newton interior margins, positive-time heat confinement. | Vanishing, interior control or a forcing all-height sign. |
+| **1.3 Complete Weil positivity** | The low-frequency sector and mixed interactions remain unsigned. | All-parity identity, full/odd `H¹` endpoint floors, finite-aperture negative index and positive complements. | Complete sign at every aperture, including Gamma and pole. |
+| **1.4 Arithmetic cone membership** | Source uniqueness is not positivity of the unique source. | Pair tests recover every node; every nonzero single-node perturbation is excluded; exact one-sided cone classification. | Prove that actual `Λ` lies in the full-positive cone. |
+| **1.5 Contrast equality** | Exact Jensen/BSY/Li accounting leaves a residual. | Contrast and zero-sum identities; reciprocal-depth receiver. | Arithmetic equality or the stated subexponential lower floor. |
+| **1.6 Required uniformity** | Fixed rank/order/history/height does not imply the receiver's full quantifier. | All-rank orthant sign, fixed-rank coercivity, finite moment blocks, explicit positive-time horizons. | Signed all-rank/common-time, order-uniform or complete-tail estimate. |
+| **1.7 Amplification** | Powers of a receiver multiply its exponential rate. | Exact exponent bookkeeping. | New correlation information rather than repetition of a weaker estimate. |
+| **1.8 Critical pronic energy** | Horizon-uniform energy at cofinally small damping. | Admission in established ranges; primal/dual budget laws and exact residual decomposition. | Complete signed energy estimate, equivalently an actual cofactor approximation family. |
+| **1.9 Signed continuation** | Integrated signed loss must stay bounded uniformly in horizon. | Canonical corrector and log-height identity; explicit comparison with energy. | Cross-covariance/flux control at closing damping. Positive-part control is sufficient but stronger. |
+| **1.10 Absolute compensation** | A vanishing relative error can coexist with unbounded raw energy. | Normalized rigidity, compensated pieces and absolute fixed-word tail estimates. | Absolute source control or exclusion of escape, including moving boundary cost. |
+| **1.11 Local depth mass and clusters** | Unrestricted mass floors cannot be read directly from Sobolev endpoint laws. | Compensated floor iff ground floor; uncompensated negative-energy bound iff bounded local depth mass. Bounded mass suffices for rate equality; failure forces unbounded mass. | Arithmetic mass control or sufficient compensation. **No proved converse from unbounded mass to rate failure.** |
+| **1.12 Interior anti-alignment** | MC's gap `θ(ε,t)<1` is missing between proved collars. | High-height and bounded-height small-damping collars; exact gap criterion. | Interior source decorrelation/amplitude mismatch. Planted factors show collars alone do not suffice. |
+| **1.13 Aperture shell flux** | Strictly decreasing ground energy can cross zero. | Drop = nonnegative frozen-source relaxation + signed prime-shell jump; collar correlations bracket the jump. | A full arithmetic payment of shell loss or the equivalent nonnegative relative-flow law. |
+| **1.14 Actual divisor heat sign** | Sharp local repair costs do not sign actual xi cofactors. | Exact factor-repair cones, sharp Hermite heat optimum and finite-head width receivers, including central-zero-safe polynomials. | Source-specific coefficient/cofactor control at the closing heat scale. |
+| **1.15 Selected-height arithmetic estimates** | An average or a large good-height set need not control actual zero ordinates. | Phase-selective one-height transfers with explicit premises; eventual all-height saving is refuted. | Arithmetic selection plus the required phase, isolation and norm bounds. |
 
-Key evidence: [TheCompensatedRemainderOfTheFullLedger](../../../formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheCompensatedRemainderOfTheFullLedger.lean), [TheHodgeIndexOfZetaHoldsAwayFromLowFrequencies](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHodgeIndexOfZetaHoldsAwayFromLowFrequencies.lean), [TheHodgeDefectOfZetaIsFiniteAtEveryDegree](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHodgeDefectOfZetaIsFiniteAtEveryDegree.lean), [CompensatedWidthFloorAndGroundEnergyRate](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/CompensatedWidthFloorAndGroundEnergyRate.lean), [OffLineClusterWeilUnbounded](../../../formal/GaloisForLFunctions/RHTower/OffLineClusterWeilUnbounded.lean), [MasterDCIPincerTheorem](../../../formal/GaloisForLFunctions/DilutionCrystallizationPincer/MasterDCIPincerTheorem.lean), [OscillatingProbeSourceEstimatesEnergyGapAndCollarLimitations](../../../formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/OscillatingProbeSourceEstimatesEnergyGapAndCollarLimitations.lean).
+Key sources: [critical deficit endpoint](../../../formal/GaloisForLFunctions/BiScaleUncertainty/WeilLagCriticalDeficitEndpointAndLimitLaw.lean), [all-parity laws](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/AllParityCriticalDeficitAndEndpointSobolevLaws.lean), [compensated floors](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/CompensatedWidthFloorAndGroundEnergyRate.lean), [shell flux](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/ThePrimeShellBetaFunction.lean), [actual finite-head arithmetic](../../../formal/GaloisForLFunctions/RHTower/XiWardGlobalCapAndFiniteHeadArithmetic.lean), [phase-selective heights](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/SingleHeightPhaseSelectiveApertureAndPowerSaving.lean).
 
-### 2.3 The floor constraint
+The aperture ceiling is a constraint on the kind of estimate one may seek: `μ(A) ≤ K exp(11A/2−π exp(2(A−2)))` at large aperture. A positive exponential lower floor is impossible. Finite-aperture positivity and sufficiently fast vanishing floors survive. An upper ceiling tending to zero does not itself prove convergence to zero.
 
-For `A ≥ 3`, `μ(A) ≤ K exp(11A/2 − πe^{2(A−2)})`; a positive floor `m₀e^{−B(A)}` needs `B(A) ≥ πe^{2(A−2)} − 11A/2 + log(m₀/K)`. The same ceiling binds graded `L²`-RR coefficients and fixed positive Hardy weights. Survivors: finite-aperture nonnegativity, floors decaying at the compulsory rate, graded negative floors. The ceiling tending to zero does not prove `μ(A) → 0`.
+## 2. Wall 3 — information, norms, limits and shared budgets
 
-## 3. Wall 3 — what readings, norms and local budgets lose
+This wall often explains why an attractive estimate is insufficient or why an apparently harmless passage changes the problem. Its resolved faces can enable a route without supplying Wall 1's sign.
 
-Walls 1 and 3 meet at the square-root aperture `½ log T` at height `T`, where a test's prime horizon reaches `T` and its length reaches `√T`. Below it the Dirichlet mean value is exactly diagonal and sign readings are blind; above it `1`-separated height samples lose injectivity and admit hiding sections (O:TheNyquistBoundAtTheDiagonal). TTPC's barrier at prime cutoff `X = T` is the same threshold.
-
-| Face | Proved limitation | Positive survivor | Open transfer |
+| Face | Current limitation | Established boundary / positive survivor | Missing transfer, when needed |
 |---|---|---|---|
-| **3.1 Readings** | Sub-Nyquist sign readings are invisible to every orientation flip; magnitudes, Ramanujan amplitudes and all translated periodic moments miss admission; prime signs and real-axis means miss it too. | Trichotomy: depth certification needs Nyquist crossing, magnitudes, or mass/dilution/first-moment data (O:TheTrichotomyOfReadings). Logarithmic moments are a complete receiver invariant. | Realizable supra-Nyquist readings for actual ζ with priced error. |
-| **3.2 Aperture/height escape** | Bounded-aperture positivity is compatible with depth `1/2`; finite radii admit non-positive mimics. | Cofinal positivity decides; explicit visibility; horizon-escape law. | Arithmetic horizon containment. |
-| **3.3 Norm and cone transfer** | Derivative and Weil norms inequivalent; no uniform coercivity relative to the original graph norm. | RW/SZ sign transfer; CHMD completion = supported maximal graph with quotient lower bound at each aperture; sharp cuts in the full graph; expanding windows [S]. | Aperture-uniform constants; positive-family to complete-cone transfer. |
-| **3.4 Shared signed resources** | Local payments reuse surplus; frustrated patterns can be PSD yet locally unpayable; fixed-width signed strip payment is false. | Holonomy criterion; integer-log lattice ledger balanced; frustration only on prime-sum edges; prime triangle index 2; signed Cheeger; packed paths in finite models; single-tower continuum Cholesky. | One shared budget in the continuum with Gamma and pole. |
-| **3.5 Endpoint logarithms** | Pole cancellation alone does not pay half damping. | Partial-pole-sum logarithmic criterion; double-pole repair laws. | Endpoint control for new sources. |
-| **3.6 Horizon and origin changes** | Generic below-half interchange fails; unbounded drift fails. | Interchange at/above half; sharp fixed-shift cost. | Actual moving-tail bounds. |
-| **3.7 Damping topology** | Not Hilbert–Schmidt at `η ≤ 1/2`; no Riesz lower bound for residue modes; no bounded inverse. | Finite-support `ℓ²` bound on `[1/2,1)`; norm continuity at `1/2`; Bessel bound 48; real spectrum and coordinates; first column is the receiver. | Signed sub-half estimates. |
-| **3.8 Multiplicity and index** | Packet `m²`, Weil `m`, index distinct count; curve finite index vs scaling defect. | Multiplicity ceiling; sector index laws; cyclic and one-prime tower detection. | Paid multiplicity assumptions in any transfer. |
-| **3.9 Observation horizons** *(new)* | No universal `O(N)` arbitrary-phase observation horizon; sandwich constant of order `N²`. | `Φ(N)` samples always recover; stratified and dyadic constants; windowed recovery with explicit cost. | Sharp horizon and conditioning. |
-| **3.10 Unit orbits and hulls** *(new)* | Invertible critical-Wiener filters preserve admitted and unadmitted classes; half-plane points do not exhaust the hull; pointwise nonvanishing is not invertibility. | Admission ⇔ empty Bohr hull ⇔ rank-zero quotient; units ⇔ no Bohr-polydisk zero; local factor `δ₁ − aδ_p` a unit iff `\|a\| < √p`. | A non-unit repair for actual μ below `Δ`. |
-| **3.11 Coupled quantifiers in exact transfers** *(new)* | Proved bridges pair two parameters: Weil margin at aperture `A` controls heat degree `n` only at time `≤ K/n`, `K < A²/4`. | The bridge itself (R:XiGaussianHeatWindowFromWeilMargin). | Decoupling to one fixed time. |
+| **3.1 Readings** | Magnitudes, orientation-blind samples and some complete moment families erase the decisive signed data. | Exact reading/recovery classifications; logarithmic-moment invariants; explicit smooth detectors. | Source-realizable observations with affordable conditioning and retained orientation. |
+| **3.2 Aperture/height escape** | Finite windows, finite radii and finite prefixes admit mimics. | Cofinal criteria, quantitative visibility, positive-time horizons and admission-or-escape alternatives. | Actual horizon containment or estimates along the full required exhaustion. |
+| **3.3 Norms and completions** | A derivative, mass, quotient or graph bound cannot be substituted for another without a theorem. | Fixed-aperture CHMD completion and sharp generator/window passage; compact-`L²` Suzuki limits; exact `H¹` width floors. | Only the additional uniformity required by a chosen proof. Direct compact positivity needs no gratuitous growing-support theorem. |
+| **3.4 Shared signed resources** | Independent local payments can reuse surplus; PSD need not imply edgewise payment. | Frustration/holonomy classifications, finite nonlocal constructions, exact AIP allocation, two-tower fixed-box laws. | One continuum budget with Gamma, polar, prime and mixed terms counted once. |
+| **3.5 Endpoint logarithms** | Pole cancellation alone does not pay endpoint energy. | Partial-pole-sum logarithmic laws and source-specific endpoint statements. | The actual logarithmic remainder bound for a new source. |
+| **3.6 Moving horizons and origins** | Generic below-half interchange and unbounded drift fail. | Fixed-shift cost, endpoint passage, common-support limits and weighted moving-support criteria. | Source-specific moving-tail/real-lag bounds, not an integer-dilation substitute. |
+| **3.7 Damping topology** | Hilbert–Schmidt and inverse estimates fail at stronger endpoints than boundedness. | Chain bounded at half damping; signed endpoint continuity and finite-support operator bounds. | Actual sub-half estimates in the norm used by admission. |
+| **3.8 Multiplicity and index** | Packet `m²`, Weil `m`, distinct-zero index and reciprocal depth are different currencies. | Exact packet, collision and global-index formulas. | Paid multiplicity/height hypotheses in any proposed transfer. |
+| **3.9 Observation cost** | Arbitrary-phase recovery does not have a universal linear horizon. | Explicit recurrence recovery and finite observation bounds. | A source-specific sharp horizon/conditioning estimate. |
+| **3.10 Filters and hulls** | Invertible critical-Wiener filters preserve admission classes; half-plane nonvanishing is weaker than invertibility. | Unit-orbit, obstruction-hull and quotient-index dictionaries. | A controlled non-unit repair preserving the relevant arithmetic source. |
+| **3.11 Coupled quantifiers** | Weil margin to heat-Hankel transfer couples degree and time; source limits may couple support and error. | Exact bridges with these costs retained. | Decoupling only where the target receiver requires it. |
+| **3.12 Residual reconstruction and infinite cofactor limits** | Algebraic injectivity gives no bounded inverse; coordinatewise covariance limits do not justify infinite sums. | Exact residual-plus-trace reconstruction, common countable covariance subsequence, absolute fixed-word tails. | Quantitative inverse/coercivity and infinite-tail control, including moving-word boundary costs. |
+| **3.13 Joint orientation of families** | Individually positive orbits may choose incompatible blind endpoints. | A positive scale-stable family is classified by common-endpoint blindness; finite-target index is exact. | A source-defined compatible family and any needed global quantitative index bound. |
+| **3.14 Average-to-selected transfer** | Density or average energy estimates do not sign an arbitrarily selected height. | Frequency-filtered estimates and phase-selective conditional implications. | A selection theorem or uniformity justified by arithmetic; compare 1.15. |
 
-Evidence: [TheTrichotomyOfReadings](../../../formal/GaloisForLFunctions/ArithmeticOrientationTheory/TheTrichotomyOfReadings.lean), [CHMDSupportedApertureDomain](../../../formal/GaloisForLFunctions/RHTower/CHMDSupportedApertureDomain.lean), [TheLatticeOddLedgerIsBalanced](../../../formal/GaloisForLFunctions/ArithmeticOrientationTheory/TheLatticeOddLedgerIsBalanced.lean), [TheChainIsBoundedAtHalfDamping](../../../formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/TheChainIsBoundedAtHalfDamping.lean), [UnitsOfTheWienerMonoidPreservePayment](../../../formal/GaloisForLFunctions/ArithmeticOrientationTheory/UnitsOfTheWienerMonoidPreservePayment.lean), [SuperlinearObservabilityHorizonAtArbitraryPhase](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/SuperlinearObservabilityHorizonAtArbitraryPhase.lean).
+Sources: [CHMD generator domain](../../../formal/GaloisForLFunctions/RHTower/CHMDSharpGeneratorDomain.lean), [Suzuki moving aperture](../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalMovingAperture.lean), [residual and trace](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/TheResidualAndPoleTraceDetermineTheRow.lean), [common covariance limit](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/CountableCofactorCovariancesHaveACommonLimit.lean), [orientation families](../../../formal/GaloisForLFunctions/ArithmeticOrientationGeometry/TheOrientationOfScaleStableFamilies.lean), [global index](../../../formal/GaloisForLFunctions/ArithmeticOrientationGeometry/TheIndexExit.lean).
 
-## 4. Wall 14 — faithful arithmetic realization and orientation
+## 3. Wall 14 — faithful arithmetic realization and orientation
 
-| Face | Obstructed architecture | Positive survivor | Required construction |
+| Face | Obstructed shortcut | Established boundary / positive survivor | Missing construction |
 |---|---|---|---|
-| **14.1 Capacity, ideals and limits** | Fixed finite passive carriers, trace-class transport, fixed spectral gaps. | Growing carriers, `det₂`, gapless nonlocal ports, centered real-law limits. | Keep the source and divisor through a controlled limit. |
-| **14.2 Algebra without orientation** | Finite-rank integral lattices, Witt integrality, FE symmetry, λ-ring and Adams identities as purity. | Exact ghost, index and radial-character identities. THIM's Bézout-selective laws (`gcd(n,n+1) = 1`, `pa − qb = 1`), the only class of its conservation laws that fails on Beurling systems and separates parity twins (T:CompleteSignedTransHorizonEnergyAndTransferSelectivity). | An independent orientation law. |
-| **14.3 Diagnostic without producer** | Zero-indexed carriers and vanishing interfaces. | Exact depth laws on the divisor (S:TheZeroIndexedRoutesMeasureOneSide). | A source built first, with landing proved. |
-| **14.4 Effectivity and the Hasse–Weil bound** | Positive graph cones, product cones, nonpositive grades, fixed Hardy weights; Hecke or Adams stability (RR then forces the defect floor). | Exact Lefschetz–adjunction identity on the scaling surface; Hecke–Lefschetz envelope cone with RR ⇔ RH [S]; Rosati cone RR ⇔ unitarity on curves; golden datum violates it. | The arithmetic Hasse–Weil bound `\|L(x,a) − ((a+1)/2)x·x\| ≤ √a·x·x` on every positive-cone cycle at every scale, from an independent geometric principle. |
-| **14.5 Pre-divisor weld** *(new)* | Oriented pre-divisor data exist but no global identity forces them. | Signed prime/Gamma reservoir matrix defined at every spectral point and reversing under reflection (R:XiPreDivisorReflectionDefectStabilization). | The one-port stabilization identity at every spectral point. |
-| **14.6 Section and count selectivity** *(new)* | Sign-coded sections read the sign; finite section counts and ranks are identical for `Λ` and a shifted pair. | Source-defined sections that do not read the form; Nyquist rank bounds. | An arithmetic section law with the right count and sign. |
+| **14.1 Capacity and limits** | Fixed finite passive carriers, trace-class transport or a prescribed permanent spectral gap. | Growing carriers, Hilbert–Schmidt/`det₂` renewal, nonlocal ports and centered real-law limit criteria. | A compatible source-preserving limit with the required divisor and orientation. |
+| **14.2 Algebra without orientation** | FE symmetry, integrality, finite-rank Frobenius data, λ-ring or Adams identities alone force purity. | Exact ghost/index laws and arithmetic-selective Bézout incidence; countermodels identify what these laws omit. | An independent source-sensitive orientation principle. |
+| **14.3 Detector without producer** | A zero-indexed construction or a sign-coded interface proves its own input. | Exact depth diagnostics, source reconstruction and faithful representation identities. | Construct the source first and prove its positive landing/vanishing independently. |
+| **14.4 Effectivity and Hasse–Weil** | Naming an ample/positive cone or imposing RR as a field supplies effectivity. | Generic orbit Hasse–Weil iff RH; scale-family classification; conditional RR and finite-aperture index laws. | An arithmetic section/intersection principle proving the required degree and orientation. |
+| **14.5 Pre-divisor weld** | Existing reservoir data automatically satisfy the global one-port identity. | Prime/Gamma reservoir, reflection and finite identities exist before zero selection. | Forward and reflected stabilization at every spectral point. |
+| **14.6 Section/count selectivity** | Rank/count or sign-coded sections distinguish the actual source in the required way. | Explicit source-selection obstructions and geometric dictionaries. | A source-defined section law with a genuinely selective sign/count mechanism. |
+| **14.7 Base-to-surface theta coupling** | The base theta `h⁰` identity already supplies the test-component effectivity cone. | Positive theta `h⁰`, RR symmetry, asymptotics and completed-zeta Mellin bridge. | An arithmetic surface/test-component coupling that supplies new sign information. |
 
-Evidence: [LambdaRingEffectivityAndHeckeLefschetzRigidity](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/LambdaRingEffectivityAndHeckeLefschetzRigidity.lean), [TheEffectivityConeFromSections](../../../formal/GaloisForLFunctions/ArithmeticOrientationTheory/TheEffectivityConeFromSections.lean), [SectionCountRiemannRochAndPrimeBlindSelectivity](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/SectionCountRiemannRochAndPrimeBlindSelectivity.lean), [TheGoldenCurveIsABeurlingSystem](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheGoldenCurveIsABeurlingSystem.lean).
+Sources: [cycle orientation](../../../formal/GaloisForLFunctions/ArithmeticOrientationGeometry/TheOrientationOfACycle.lean), [theta sections](../../../formal/GaloisForLFunctions/ArithmeticOrientationGeometry/TheThetaH0OfSpecZ.lean), [pre-divisor stabilization](../../../formal/GaloisForLFunctions/RHTower/XiPreDivisorReflectionDefectStabilization.lean), [renewal realization](../../../formal/GaloisForLFunctions/RHTower/ThetaRenewalPositiveFredholm.lean).
 
-## 5. Changed, solved and new walls
+## 4. Local walls that are closed, qualified or replaced
 
-| Previous formulation | Present disposition | Wall still present |
+This is a present disposition table, not a chronology. A solved local passage must not remain a proposed research task.
+
+| Local question | Present status | Remaining wall |
 |---|---|---|
-| Positive-width improvement treated as ordinary partial progress | Any fixed rate below `1/2` is quasi-RH in every `Δ`-reading route. | 1.1 entry barrier. |
-| CHMD quotient lower bound and whole-quotient landing open | Solved at each fixed aperture; completion is the supported maximal graph. | Aperture-uniform constants, 3.3. |
-| SZ cusp-preserving passage to `ω = 0` | Solved for compact `C²` [L] and compact `L²` [S]; limit is the Weil energy. | Sign, 1.3; growing support, 1.6. |
-| Width-to-unrestricted mass floor open | Exact dichotomy with clustering; count-only data provably insufficient. | New face 1.11. |
-| Finite negative index of ζ unknown | Finite at every aperture; Hodge index holds off an explicit low grid. | Uniform payment of the low sector, 1.3. |
-| Effectivity hoped from λ-ring/Hecke structure | Stability forces the zero defect floor; envelope cone has RR ⇔ RH. | Hasse–Weil bound, 14.4. |
-| Odd window `0.362` not yet in the lag family | Transferred. | All apertures, 1.3. |
-| AIP axis/self-energy extension | Solved. | Shared budget, 3.4. |
-| Prime channel negativity only on fixed supports | Linear-width windows. | Growing relative width. |
-| Chain `ℓ²` bound only for `1/√2 < η < 1` | Uniform on `[1/2,1)`, Hilbert–Schmidt exactly above `1/2`. | Sub-half signed estimates, 1.8. |
-| Receivers equivalent only as statements | Width functor: isomorphic objects. | Producers, all walls. |
-| Readings classified case by case | Trichotomy theorem in model classes. | Actual-ζ readings, 3.1. |
-| Residue-flip quarter law for special families | General `φ(q) < 4\|S ∩ units\|` at half damping. | Sub-half spectra. |
-| Recurrence studied through universality | RH ⇔ strong recurrence on every compact set; locally ⇔ nonvanishing. | 1.2. |
-| MC target only as global bilinear bound | Alternate exact target `θ(ε,t) < 1`; collars proved. | New face 1.12. |
-| Heat positivity at fixed rank only | Bridge from Weil margins with a rank–time window. | New face 3.11. |
-| Pre-divisor candidates purely zero-indexed | Pre-divisor reservoir data exist for HJ/SEC. | New face 14.5. |
-| Effectivity through section counts | Counts nonselective; sign-coded cones read the sign. | New face 14.6. |
-| Observation cost assumed polynomial | No universal `O(N)` horizon. | New face 3.9. |
-| Filtering as a repair tool | Units preserve both classes; hull calculus exact. | New face 3.10. |
+| Critical deficit rate only known as an infimum | Endpoint attained; critical energy/cross-work criteria explicit. | Arithmetic bound, 1.1. |
+| Full form restricted by parity/moments | All-parity compact-`C²` identity and full/odd `H¹` endpoint laws. | Full sign; mass-only transfer qualifications, 1.3/1.11. |
+| CHMD sharp-window and generator passage | Source proofs and imports present, including signed nodal limit and commutator. | Nodal sign, 1.3/3.4. |
+| Suzuki compact-`L²` passage and common-window recovery | Source proofs and imports present, including infinite-energy case. | Deficit sign; optional larger-family premises, 1.3/3.6. |
+| Heath–Brown all-length / sharp all-`k` `S₂` inputs | Present in their stated ranges. | Complete actual-source cancellation, 1.1. |
+| Smooth detector formalization | Present with quadratic aperture; degree 38 is weaker. | Source estimate on detectors, 3.1/3.2. |
+| Ground-rate/cluster dichotomy | Exact compensated and uncompensated statements separated; only stated implications available. | Arithmetic compensation, 1.11. |
+| Aperture monotonicity | Strict decrease and exact shell decomposition. | Sign of total shell payment, 1.13. |
+| Positive scale-stable family structure | Common-endpoint classification and finite-target law. | Source orientation and compatible global control, 3.13/14.4. |
+| Global negative index | Exact finiteness dictionary and evenness; RH iff `D<2`. | Prove the required global bound, 1.2/3.8. |
+| Base arithmetic theta sections | `h⁰` and RR/Mellin identities present in working source. | Surface coupling, 14.7; integration audit J2. |
+| Local divisor repair and optimal heat | Sharp repair thresholds, Hermite optimum and universal-reflector classification. | Actual cofactor sign, 1.14. |
+| Residual/trace completeness | Algebraic reconstruction and injectivity proved. | Bounded inverse and tails, 3.12. |
+| TTPC prime-power/parity/model reductions | Present. | Actual coherent prime-pair error, 1.1/3.14. |
+| Filtered Weil coercivity | Partial source development; final advertised coercivity/strict-positivity declarations absent. | Finish and audit exact claim, then address average-to-selected passage. |
+| BVI diagonal/mean specializations | Three summation-scope repairs required; dependent claims qualified. | J1 first; critical energy remains open afterwards. |
+| Zero-density slab factor-two discrepancy | Inspected formula gives `3γ₀` exactly; alleged discrepancy removed. | No blanket certification of the rest of the module. |
 
-## 6. Scoped no-go register
+## 5. Scoped obstruction register and positive survivors
 
-"No-go" retires the stated mechanism, not a route. Full statements are in the [killed-routes catalogue](../rh-killed-routes.md#dead-mechanisms). Rows marked **legacy evidence** rest on catalogue identifiers rather than freshly inspected Lean.
+The following current distinctions are important enough to govern proposed mechanisms. They do not retire the named live routes.
 
-### 6.1 The 44 named mechanisms
-
-| Code | Excluded mechanism | Strongest retained statement |
-|---|---|---|
-| **WIP** | Witt integrality, positive integral Euler data and FE imply purity. | Golden Beurling counterexample; ghost reconstruction; Rosati cone RR ⇔ unitarity on curves. |
-| **ODR** | Every unbounded origin drift preserves admission. | Sharp quadratic fixed-shift cost; drift preservation ⇔ bounded drift. |
-| **LGP** | Lossless pairwise payment for every positive signed form. | Balanced holonomy; frustration index theory; packed nonlocal paths. |
-| **WHL** | Pole cancellation alone pays half damping. | Partial-pole-sum logarithmic energy law. |
-| **PAF** | Summable losses keep a fixed positive floor. | Doubly exponential compulsory decay; same ceiling for RR cones. |
-| **ADJ** | Polynomial cross-prime majorant / nonnegative resonator remainder. | Hecke Cartesian incidence; normalized resolvent; negative resonator gap. |
-| **HCT** | Below-half interchange and bounded backward transport. | Exact half threshold; bounded chain on `[1/2,1)`. |
-| **AUT** | `L²` automorphic positivity locates ζ scattering poles. | Spectral sieve estimates; separate scattering law needed. |
-| **LLM** | Mollified moments force every off-line zero away. | Near-line density and mean-square floors. |
-| **GEN** | Fixed-part localization detects free orbits. | Support = fixed + twice-left count. |
-| **UCF** | Averaged or reflection-even data pay the angular gate. | Angular quantization and Hermite detector. |
-| **TEQ** | Theta equilibrium plus an unavailable maximum principle. | Equilibrium with attained maximum is a receiver. |
-| **CAL** | Negative-time collisions or automatic backward monotonicity. | Positive-time multiple zeros refute RH. |
-| **DSA** | Integral escape indicator vanishes automatically. | Pre-divisor transgression with a sub-unit bound would pay it. **Legacy evidence.** |
-| **INT** | Finite-rank integral Frobenius lattice at nonreal zeros. | Finite-rank obstruction and torsion law. |
-| **TWN** | Twin factorization supplies its own square root. | Root-tower receiver. |
-| **NEV** | Termwise Nevanlinna sign proves the domain. | Exact source-sign receiver. |
-| **ISG** | Balanced prime trees or fixed chains give a Ξ limit. | Centered ferromagnetic convergence suffices; prime-Ising subtree product law. |
-| **SRP** | Full-positive weights at pole weight `β > 1`. | Pole weight forced to one. |
-| **FPR** | A fixed finite passive realization is exact. | Growing passive carriers. |
-| **DEF** | Deformation-stable estimates select ζ's line. | Need source-sensitive rigidity. |
-| **CRT** | Finite-aperture or finite-prefix agreement gives full positivity. | Cofinal positivity decides; finite-radius mimicry theorem. |
-| **TRC** | Trace-class transport realizes the source. | `det₂`/Hilbert–Schmidt carrier. |
-| **APW** | Approximate or admixture weights. | `Λ` rigidity; admixtures excluded. |
-| **JPR** | Automatic Jensen hyperbolicity at all degrees. | Explicit automatic regime. |
-| **TOR** | Independent phases equal the ζ orbit law. | Deterministic phase-law target. **Legacy evidence.** |
-| **REF** | Translation positivity gives reflection positivity. | Reflected sign retained. **Legacy evidence.** |
-| **CPF** | One radial Carleman pole form dominates the source. | Signed rate measures. **Legacy evidence.** |
-| **TMD** | A global formation primitive is free. | Formation receiver. **Legacy evidence.** |
-| **TK** | Changing thermal ensemble removes the PA defect. | Exact PA receiver. **Legacy evidence.** |
-| **BAG** | Finite Euler recurrence proves recurrence near zeros. | Local recurrence ⇔ nonvanishing; return threshold = distance to nonvanishing targets. |
-| **SEL** | Selberg eigenvalue gaps locate scattering poles. | Arithmetic spectral gaps. |
-| **R1** | Anchored weak chiral-loss passage gives a sub-unit defect. | Cubic = winding. |
-| **R2** | Prime-2 renewal self-similarity forces zero winding. | Odd-winding counterexamples. |
-| **R3** | Holomorphic two-prime quantum slack. | Quantization receivers. |
-| **RAW** | Raw prime series converge to the critical line. | Pole-subtracted receiver. |
-| **BD** | Even screw kernel stays Markov at cofinal apertures. | Boundary `2a ≤ log(plastic)`. |
-| **PTR** | Local Maxwell collars admit prime conormals. | Lossless finite real-zero theorem; product-limit receiver. |
-| **HFR** | Fixed-rank heat positivity decides RH. | Growing-window receiver. |
-| **HUS** | Averaged Husimi positivity forces slice sign. | Uncertainty-priced identity. |
-| **GAP** | Lossless realization with a fixed resonance-free gap. | Gapless handoff. |
-| **CCP** | Even ground parity selects RH. | Finite-top ground law; isolated top quartet forces odd grounds. |
-| **COS** | Finite local ports invert the cosine shift. | Nonlocal sech/Poisson map. |
-| **POI** | Positive Poisson transport preserves real zeros. | Sharp two-tone threshold `\|β\|cosh(2c) ≤ \|α\|cosh c`. |
-
-### 6.2 Route-class obstructions established at this checkpoint
-
-| Excluded mechanism | Survivor / remaining target |
+| Mechanism excluded or limited | Positive survivor / permitted next target |
 |---|---|
-| Unit-cutoff Sonin domination without mean zero | Domination for mean-zero small-support tests. |
-| Identification of derivative and Weil completions | Fixed-aperture sign transfer; CHMD supported domain. |
-| Uniform positive restricted-Weil gap at unbounded aperture | Aperture-dependent floors. |
-| Bounded certificate fusion as width control | Cofinal rate sampling; band reconstruction in models. |
-| Magnitude-only / all-translated-moment receiver classification | Logarithmic moments; VK-band parity separation. |
-| Complete-period quadratic data as signed control | Exact sign-orbit classification. |
-| Weighted node rank as an RR selector | Hecke ampleness criterion on the whole open-positive cone. |
-| Residue-flip repair below quarter density | General quarter law. |
-| Prime signs or real-axis mean as admission selector | Oscillating-pattern phase diagram. |
-| Independent pole/test product effectivity | Strict coupled cone, RR ⇔ AIP allocation. |
-| Nonpositive-grade RR as ample effectivity | RR+ample ⇔ `c > 0` and the matching floor. |
-| Fixed positive Hardy-weight RR | Aperture-dependent floors; Sobolev-rate dictionary. |
-| Integer-horizon uniform coercivity | Support-localized `H¹` floor. |
-| Sub-half oscillating prime patterns | Admitted only at zero amplitude. |
-| Renormalized defect as a complete budget | Joint counterterm/remainder identity. |
-| Pure-prime canonical paths; independent edge budgets | Frustration-index law; terminal reduction. |
-| Fixed-width signed prime-band payment | Square-root-scale boundary band paid. |
-| Uniformly bounded full-weight sampled frustration | Count/mass laws; balance below `0.3`. |
-| Unsigned coalescent model as a `3/4` certificate | Signed sieve model meets the target at `Υ ≤ 2`. |
-| Finite-aperture index as purity | Explicit detection under margins. |
-| Higher matrix invariants beyond `2/3` | Slack conservation; `λ ≥ 3/4` survivors. |
-| λ-ring/Adams algebra as purity selector | Hecke incidence identity; envelope cone. |
-| Finite admitted-parameter sets plus zero-free collars | Energy-gap criterion. |
-| Separate sawtooth/tail divergence as exclusion | `θ < 1` ⇔ non-admission. |
-| Arbitrary second-row cancellation on prime-shift residues | Fixed arithmetic second row. |
-| Nonvanishing-pole convolution repairing positive drift | Pole-vanishing criteria. |
-| Parity-blind receiver classification | Fatality classification of parity collapses. |
-| Invertible Wiener filtering as repair | Unit-orbit and hull invariance. |
-| Sign-blind Riesz endpoint repair | Signed residue convergence at half damping. |
-| Bare centering of `Λ − 1` at fixed modulus | Omitted-residue corrector. |
-| Universal `O(N)` observability | `Φ(N)` recurrence recovery. |
-| Bounded primitive energy below half damping | Linear growth law for literal μ. |
-| Low-ratio coercivity as prime-blind closure | `S/L > 45` barrier. |
-| Raw even polar-ground strip passage | Polar-quotient receiver; RH ⇔ full form ≥ 0 on real-rooted tests. |
-| Unconditional even-ground selection | Isolated top quartet forces odd grounds. |
-| Ordinary cyclic normal-regulator landing | Relative/negative cyclic realizations open. |
-| Faster-than-theta divisor-preserving tails | Full-divisor exponent `b = 2` sharp. |
-| Half-plane nonvanishing as Wiener invertibility; half-plane points as the whole hull | Bohr-polydisk criterion. |
-| Uniform Riesz lower bound for residue modes | Bessel bound; signed convergence. |
-| Undersampled companions as derivative payment | Sharp Nyquist price. |
-| One admitted damping as finite-curve purity | Zero-chain equivalence. |
-| Universal integrated polar domination for log-concave gauges | Exact exceptional sets `{2,3,4,5,7,11,13}`, `{2,3,4,5,7,11}`. |
-| Scalar comb energy as charge determination | Signed amplitude completes the reading. |
-| Sparse-node blindness as pole control | Line-design enclosures. |
-| Finite two-prime Euler lattice positivity below the envelope | Sharp `κ ≥ E_p + E_q`. |
-| Gaussian heat coefficient positivity as zero exclusion | Detection below threshold; moving-height tail convergence. |
+| Positive exponential aperture floor | Finite-aperture positivity; floors decaying at the compulsory scale; graded negative floors. |
+| Eventual all-height phase saving of the interferometer type | A phase-selective one-height implication with explicit premises. |
+| Non-monomial universally reversible positive cofactor | Sharp classification: positive monomials; source-specific cofactor information. |
+| One-factor repair of arbitrary off-line local pairs | Exact `δ²≤3u²` boundary and higher-multiplicity repair costs. |
+| Extreme coefficient used as the full heat-cone price | Full Hermite cone optimum, contact and rigidity laws. |
+| Individual orbit positivity used for the joint span | Common-endpoint compatibility and exact jointly seen index. |
+| Magnitude-only or parity-blind admission classification | Signed/logarithmic observations and source-specific cancellation. |
+| Fixed-codimension centering used for generic critical dispersion | Actual summatory-function bounds and complete signed Gram accounting. |
+| Generic below-half interchange or absolute residue control | Signed endpoint continuity and actual-source sub-half questions. |
+| Divergent prime-subset cutoff used to infer natural-cutoff divergence | Exact nonnegative natural size-cutoff form; separate uniform-bound problem. |
+| Pairwise payment used as a characterization of PSD | Frustration law and nonlocal shared allocations. |
+| Fixed-box joint cap improvement used as cofinal all-power saving | Exact fixed-box criterion; quantitative source-specific extension. |
+| Finite-aperture negative index used as global purity | Global-index dictionary and explicit finite-target detection. |
+| An average used to control zero ordinates | A separate arithmetic selection theorem. |
+| The zero-indexed PW-B action used as a pre-divisor construction | Exact action and exhaustion; independent source realization remains necessary. |
+| Source interfaces with stabilization/positivity fields | Conditional implication retained; construction of the fields remains the task. |
 
-### 6.3 Retired aliases
+### Catalogue identifier crosswalk
 
-| Labels | Present home |
+The 44 mechanism codes below are retained for navigation in the user-specified [killed-routes catalogue](../rh-killed-routes.md). This crosswalk is not a fresh proof certification of every old entry. Current source-audited conclusions used in this review are stated with their scope above and in the complete report. In particular, legacy codes `DSA`, `TOR`, `REF`, `CPF`, `TMD`, `TK` remain catalogue references rather than newly established claims.
+
+| Codes | Mechanism family | Positive direction retained |
+|---|---|---|
+| WIP, INT | Integrality / finite-rank purity shortcuts. | Ghost, index and arithmetic orientation laws; 14.2. |
+| ODR, HCT, WHL | Origin drift, transport and endpoint pole accounting. | Priced shifts, signed endpoint estimates and logarithmic laws; 3.5–3.7. |
+| LGP, ADJ | Local payment and unsigned cross-prime majorants. | Nonlocal incidence and signed remainder accounting; 3.4. |
+| PAF | Permanent positive aperture floors. | Compulsory vanishing floors; 1.13. |
+| AUT, SEL | Automorphic positivity/gaps used to locate scattering poles. | Separate arithmetic scattering orientation; 14.1–14.3. |
+| LLM, UCF, HUS | Averages or reflection-even data used as complete orientation. | Priced, signed or selected observations; 3.1/3.14. |
+| GEN | Fixed-part localization used for free orbits. | Exact support/index accounting; 3.8. |
+| TEQ, CAL, JPR, HFR, CCP | Equilibrium, collisions, automatic degree/rank or parity selection. | Correct critical-time, all-rank and source sign receivers; 1.2/1.6. |
+| TWN, NEV | Unconstructed roots or termwise signs. | Global compatibility and complete source estimates; 1.5/14.3. |
+| ISG, FPR, TRC, GAP, PTR | Fixed or local carriers used for a faithful infinite realization. | Centered limits, growing carriers, `det₂`, gapless/nonlocal ports; 14.1. |
+| SRP, APW, CRT, DEF | Incorrect pole weight, perturbed sources, finite mimicry or deformation-blind selection. | Exact source selection plus full positivity; 1.4/3.2/14.2. |
+| BAG, RAW | Finite Euler recurrence or unregularized prime series. | Every-compact recurrence and pole-subtracted convergence; 1.1/1.2. |
+| R1, R2, R3 | Trace/renewal/quantization used to force their own zero defect. | Exact winding and quantization receivers; 1.2/14.3. |
+| BD, COS, POI | Cofinal Markov kernels, finite local inversion or unrestricted positive Poisson transport. | Exact finite boundaries and nonlocal transfer; 3.3/14.1. |
+| DSA, TOR, REF, CPF, TMD, TK | Legacy catalogue mechanisms, not re-certified here. | Consult their stated survivor and scope; no additional theorem inferred. |
+
+Retired route labels are aliases, not extra live candidates:
+
+| Labels | Current home |
 |---|---|
 | A, C2/I, D1, N | PA and actual-source trace/moment receivers. |
 | AF | Charged boundary separation. |
 | AP, IW | Witt/scaling or cyclic clock classifications. |
 | B, F, M | Singular carrier constructions. |
-| FD2 | GTA's uniform Schur target. |
+| FD2 | GTA uniform Schur target. |
 | G2, H | WD/orientation primitives. |
-| HB | PM/PW-B retarded realization. |
+| HB | PM/PW-B realization. |
 | J | Residual jets and determinants. |
 | K | TH/RN infinite operators. |
 | R | CDC/JAS/WBF/TG wall classes. |
 | RBH | PM nonseparated sources. |
-| SNR | A source-defined aperture invariant. |
+| SNR | Source-defined aperture invariant. |
 
-## 7. What would remove a core wall
+## 6. What counts as crossing a wall
 
-- **Wall 1:** a source-derived bound inserted into an existing receiver with all tails and quantifiers. Its first instance would be a fixed zero-free strip.
-- **Wall 3:** a new exact transfer or sharp classification on a stated class and norm; it proves RH only if the source satisfies the transferred estimate.
-- **Wall 14:** an independently constructed carrier, effectivity or weld with faithful landing and the required sign; for ACS, the arithmetic Hasse–Weil bound.
+For **Wall 1**, insert a newly proved actual-source estimate into an existing receiver with every required tail and quantifier intact. A weaker estimate receives its exact weaker conclusion; it is not dismissed merely for falling short of RH.
 
-Local progress counts at its actual scale: a larger window, a sharper collar, a new row range or a new reading classification is real progress without removing a family.
+For **Wall 3**, prove a transfer, sharp boundary or quantitative reconstruction on a stated class, norm and limit. The source must still satisfy the transferred hypothesis. Exact fixed-aperture completions and sharp model classifications already count as solved local walls.
+
+For **Wall 14**, construct the arithmetic object independently, prove source/divisor fidelity and establish the forcing orientation. Existing base sections, reservoirs and Fredholm realizations are substantial ingredients; none makes its remaining sign automatic.

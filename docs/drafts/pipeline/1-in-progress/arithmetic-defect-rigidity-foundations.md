@@ -1,6 +1,6 @@
 # Arithmetic defect rigidity: quantitative foundations
 
-Status: paper proofs complete; individual Lean checks in progress.
+Status: all twenty modules accepted; final individual checks in progress.
 
 ## Objective
 
@@ -52,7 +52,7 @@ Twelve modules passed their required dependency checks:
 - `CofactorSuccessorWordsHaveABoundaryCost`
 - `FixedCofactorsHaveAHarmonicBoundaryTrace`
 
-Eight leaf modules require ordinary checks without generating dependency objects:
+Eight leaf modules passed their final ordinary checks without generating dependency objects:
 
 - `TheReceiverIsTheGramTangent`
 - `ForcingEscapesAMovingCofactorWindow`

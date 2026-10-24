@@ -334,7 +334,7 @@ theorem paperFT_cosineSource {F₀ : ℝ → ℝ} (hF₀ : Continuous F₀)
   rw [← integral_add hi1 hi2, ← integral_div]
   refine integral_congr_ae (Eventually.of_forall fun u => ?_)
   rw [Complex.ofReal_mul, Complex.ofReal_cos, Complex.cos]
-  have h1 : Complex.I * z * (u : ℂ) + -(((γ * u : ℝ) : ℂ) * Complex.I) =
+  have h1 : Complex.I * z * (u : ℂ) + (-((γ * u : ℝ) : ℂ) * Complex.I) =
       Complex.I * (z - (γ : ℂ)) * (u : ℂ) := by push_cast; ring
   have h2 : Complex.I * z * (u : ℂ) + ((γ * u : ℝ) : ℂ) * Complex.I =
       Complex.I * (z + (γ : ℂ)) * (u : ℂ) := by push_cast; ring
@@ -958,25 +958,24 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
       (zetaZeroConfig.mult ρ : ℝ) *
         ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
           paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4
-    let S_fin := (finite_xiOrdinateWindow (4 * Γ) 0).subset (fun q (hq :
-      Γ / 2 ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 4 * Γ) => by
-        rw [mem_xiOrdinateWindow_iff, sub_zero]; exact hq.2)
     (∀ γ : ℝ, Summable fun ρ => d_sub ρ γ) ∧
     (∀ γ : ℝ, Summable fun ρ => d_add ρ γ) ∧
     ContinuousOn (fun γ => ∑' ρ, d_sub ρ γ) (Icc Γ (2 * Γ)) ∧
     ContinuousOn (fun γ => ∑' ρ, d_add ρ γ) (Icc Γ (2 * Γ)) ∧
-    (∫ γ in Icc Γ (2 * Γ), ∑' ρ, d_sub ρ γ) ≤
-      (∑ q ∈ S_fin.toFinset,
-        (∫ γ in Icc Γ (2 * Γ),
-          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
-            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2) / 4) +
-        (32 * reciprocalSquareWeightTotal / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 ∧
-    (∫ γ in Icc Γ (2 * Γ), ∑' ρ, d_add ρ γ) ≤
-      (∑ q ∈ S_fin.toFinset,
-        (∫ γ in Icc Γ (2 * Γ),
-          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
-            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2) / 4) +
-        (32 * reciprocalSquareWeightTotal / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 := by
+    ∃ G_loc : Finset XiZeroCopy,
+      (∀ q ∈ G_loc, Γ / 2 ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 4 * Γ) ∧
+      (∫ γ in Icc Γ (2 * Γ), ∑' ρ, d_sub ρ γ) ≤
+        (∑ q ∈ G_loc,
+          (∫ γ in Icc Γ (2 * Γ),
+            ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
+              paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2) / 4) +
+          (32 * reciprocalSquareWeightTotal / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 ∧
+      (∫ γ in Icc Γ (2 * Γ), ∑' ρ, d_add ρ γ) ≤
+        (∑ q ∈ G_loc,
+          (∫ γ in Icc Γ (2 * Γ),
+            ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
+              paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2) / 4) +
+          (32 * reciprocalSquareWeightTotal / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 := by
   classical
   dsimp only
   set F_c : ℝ → ℂ := fun u => (F₀ u : ℂ)
@@ -988,10 +987,12 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
     (zetaZeroConfig.mult ρ : ℝ) *
       ‖paperFT F_c (gammaOf (ρ : ℂ) + (γ : ℂ)) -
         paperFT F_c (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4
-  set S_fin := (finite_xiOrdinateWindow (4 * Γ) 0).subset (fun q (hq :
-    Γ / 2 ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 4 * Γ) => by
-      rw [mem_xiOrdinateWindow_iff, sub_zero]; exact hq.2)
-  set G_loc : Finset XiZeroCopy := S_fin.toFinset
+  have hS_fin : ({q : XiZeroCopy | Γ / 2 ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 4 * Γ}).Finite :=
+    (finite_xiOrdinateWindow (4 * Γ) 0).subset fun q hq => by
+      rw [mem_xiOrdinateWindow_iff, sub_zero]; exact hq.2
+  obtain ⟨G_loc, hmem_Gloc⟩ : ∃ G_loc : Finset XiZeroCopy,
+      ∀ q : XiZeroCopy, q ∈ G_loc ↔ Γ / 2 ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 4 * Γ :=
+    ⟨hS_fin.toFinset, fun _ => hS_fin.mem_toFinset⟩
   have hΓ0 : 0 < Γ := by linarith
   -- Continuity of `z ↦ paperFT F_c z`
   have hft_cont : Continuous (fun z : ℂ => paperFT F_c z) := by
@@ -1281,7 +1282,7 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
           envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2) by positivity]
       · dsimp [v_loc]; rw [if_neg hq, zero_add]
         have hnot : |(q.1 : ℂ).im| < Γ / 2 ∨ 4 * Γ < |(q.1 : ℂ).im| := by
-          rw [S_fin.mem_toFinset, not_and_or] at hq
+          rw [hmem_Gloc, not_and_or] at hq
           rcases hq with h1 | h2
           · exact Or.inl (not_le.mp h1)
           · exact Or.inr (not_le.mp h2)
@@ -1389,7 +1390,7 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
     dsimp [d_add, g_add]
     rw [integral_div, integral_const_mul, mul_div_assoc]
   refine ⟨fun γ => hsum_ω γ, fun γ => by simpa [d_add, sub_neg_eq_add] using hsum_ω (-γ),
-    hc_sub, hc_add, ?_, ?_⟩
+    hc_sub, hc_add, G_loc, fun q hq => (hmem_Gloc q).mp hq, ?_, ?_⟩
   · rw [hswap_sub, htsum_sub_eq]
     exact hbound_xi g_sub hg_sub_xi_sum
       (fun _ => div_nonneg (integral_nonneg fun _ => sq_nonneg _) (by norm_num)) hg_sub_rem

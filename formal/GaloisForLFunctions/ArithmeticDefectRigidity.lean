@@ -16,10 +16,15 @@ import GaloisForLFunctions.ArithmeticDefectRigidity.CountableCofactorCovariances
 import GaloisForLFunctions.ArithmeticDefectRigidity.TheReceiverIsTheGramTangent
 import GaloisForLFunctions.ArithmeticDefectRigidity.ForcingEscapesAMovingCofactorWindow
 import GaloisForLFunctions.ArithmeticDefectRigidity.BoundedWordErrorsHaveAnAbsoluteHorizonTail
+import GaloisForLFunctions.ArithmeticDefectRigidity.EnergyQuantilesPreserveTheSignedCofactorPairing
+import GaloisForLFunctions.ArithmeticDefectRigidity.MovingLocalizationsRetainTheSignedDensity
 
 /-!
 # Arithmetic defect rigidity
 
 Quantitative source constraints on normalized arithmetic escape: distinct forcing and receiver
 scales, signed cofactor tails, successor boundary costs, and paid forcing renormalization.
+Absolute pole traces price linear cofactor operations; the trace and residual together
+reconstruct each row. Energy quantiles, moving localizations and common covariance limits
+retain signed receiver data.
 -/

@@ -863,7 +863,7 @@ For any `ψ ∈ C²_c(ℝ)` supported in `[0, 2A]` (`0 ≤ A`) and any `w ∈ �
 `|w.re| ≤ δ` (`0 ≤ δ`),
 `‖∫ t, ψ t * e^{w t}‖ ≤ e^{2A δ} * ((∫ |ψ|) + ∫ |ψ''|) / (1 + w.im²)`. -/
 theorem norm_integral_exp_strip_mul_le {ψ : ℝ → ℝ} (hψ : ContDiff ℝ 2 ψ)
-    (hψc : HasCompactSupport ψ) {A δ : ℝ} (hA : 0 ≤ A) (hδ : 0 ≤ δ)
+    (hψc : HasCompactSupport ψ) {A δ : ℝ} (_hA : 0 ≤ A) (hδ : 0 ≤ δ)
     (hsupp : ∀ t : ℝ, t < 0 ∨ 2 * A < t → ψ t = 0)
     {w : ℂ} (hw : |w.re| ≤ δ) :
     ‖∫ t : ℝ, (ψ t : ℂ) * Complex.exp (w * (t : ℂ))‖ ≤
@@ -912,11 +912,11 @@ theorem norm_integral_exp_strip_mul_le {ψ : ℝ → ℝ} (hψ : ContDiff ℝ 2 
     have hd1 : deriv g = fun t => ((deriv ψ t : ℝ) : ℂ) := by
       funext t
       exact (Complex.ofRealCLM.hasFDerivAt.comp_hasDerivAt t
-        (h1.1 t).hasDerivAt).hasDerivAt.deriv
+        (h1.1 t).hasDerivAt).deriv
     rw [hd1]
     funext t
     exact (Complex.ofRealCLM.hasFDerivAt.comp_hasDerivAt t
-      (h2.1 t).hasDerivAt).hasDerivAt.deriv
+      (h2.1 t).hasDerivAt).deriv
   have he2 : ‖paperFT (deriv (deriv g)) z‖ ≤ Real.exp (2 * A * δ) * ∫ t, |deriv (deriv ψ) t| := by
     unfold paperFT
     have hint : Integrable fun t : ℝ => |deriv (deriv ψ) t| :=
@@ -1090,8 +1090,7 @@ theorem frequencyAverage_abs_cosine_pairing_le {g : ℝ → ℝ} (hg : Continuou
     have hint1 : IntegrableOn (fun γ : ℝ => |Y γ|) (Icc Γ (2 * Γ)) :=
       hY_cont.abs.integrableOn_Icc
     have hint_sq : IntegrableOn (fun γ : ℝ => (Y γ) ^ 2 / (2 * c)) (Icc Γ (2 * Γ)) :=
-      (hY_cont.mul hY_cont).integrableOn_Icc.div_const (2 * c) |>.congr_fun
-        (fun γ _ => by simp [sq]) measurableSet_Icc
+      ((hY_cont.pow 2).div_const (2 * c)).integrableOn_Icc
     have hint2 : IntegrableOn (fun γ : ℝ => c / 2 + (Y γ) ^ 2 / (2 * c)) (Icc Γ (2 * Γ)) :=
       continuous_const.integrableOn_Icc.add hint_sq
     have hmono := setIntegral_mono_on hint1 hint2 measurableSet_Icc fun γ _ => hamgm γ
@@ -1108,20 +1107,28 @@ theorem frequencyAverage_abs_cosine_pairing_le {g : ℝ → ℝ} (hg : Continuou
           ≤ (2 * Real.pi * (K * M ^ 2)) / (2 * c) :=
             div_le_div_of_nonneg_right hplanch (by positivity)
         _ = Real.pi * K * M ^ 2 / c := by field_simp
-    have htot := (mul_le_mul_of_nonneg_left (hmono.trans (add_le_add_left hdiv_planch _))
-      (by positivity : 0 ≤ 1 / Γ))
+    have htot := mul_le_mul_of_nonneg_left (hmono.trans (add_le_add le_rfl hdiv_planch))
+      (by positivity : 0 ≤ 1 / Γ)
     have hsimp : (1 / Γ) * (Γ * (c / 2) + Real.pi * K * M ^ 2 / c) =
         (1 / 2 + Real.pi * K) * M * Γ ^ (-(1 / 2 : ℝ)) := by
       dsimp [c]
-      have hr : Γ * Γ ^ (-(1 / 2 : ℝ)) * Γ ^ (-(1 / 2 : ℝ)) = 1 := by
+      have hr : (Γ ^ (-(1 / 2 : ℝ)) * Γ ^ (-(1 / 2 : ℝ))) * Γ = 1 := by
         have h1 : Γ ^ (-(1 / 2 : ℝ)) * Γ ^ (-(1 / 2 : ℝ)) = Γ ^ (-1 : ℝ) := by
           rw [← Real.rpow_add hΓ0]; norm_num
-        rw [mul_assoc, h1, Real.rpow_neg_one, mul_inv_cancel₀ hΓ0.ne']
-      have hne1 : Γ ≠ 0 := hΓ0.ne'
-      have hne2 : M ≠ 0 := hM_pos.ne'
-      have hne3 : Γ ^ (-(1 / 2 : ℝ)) ≠ 0 := (Real.rpow_pos_of_pos hΓ0 _).ne'
-      field_simp
-      linear_combination Real.pi * K * M * (1 - hr)
+        rw [h1, Real.rpow_neg_one, inv_mul_cancel₀ hΓ0.ne']
+      have hinvΓ : 1 / Γ = Γ ^ (-(1 / 2 : ℝ)) * Γ ^ (-(1 / 2 : ℝ)) :=
+        (div_eq_iff hΓ0.ne').mpr hr.symm
+      have h1 : (1 / Γ) * (Γ * (M * Γ ^ (-(1 / 2 : ℝ)) / 2)) =
+          (1 / 2) * M * Γ ^ (-(1 / 2 : ℝ)) := by
+        field_simp [hΓ0.ne']
+      have h2 : (1 / Γ) * (Real.pi * K * M ^ 2 / (M * Γ ^ (-(1 / 2 : ℝ)))) =
+          Real.pi * K * M * Γ ^ (-(1 / 2 : ℝ)) := by
+        have hne2 : M ≠ 0 := hM_pos.ne'
+        have hne3 : Γ ^ (-(1 / 2 : ℝ)) ≠ 0 := (Real.rpow_pos_of_pos hΓ0 _).ne'
+        rw [hinvΓ]
+        field_simp [hne2, hne3]
+      rw [mul_add, h1, h2]
+      ring
     exact htot.trans_eq hsimp
 
 /-- **Polynomial Power-Saving Decay of Cosine-Filtered `spectralDeficitSum`
@@ -1275,15 +1282,15 @@ theorem exists_frequencyAverage_abs_cosineFiltered_spectralDeficitSum_le
         rw [Complex.ofReal_mul, Complex.ofReal_cos, Complex.cos]
         have hp : (t : ℂ) * ((q.1 : ℂ) - 1 / 2) + ((γ * t : ℝ) : ℂ) * Complex.I = wp * (t : ℂ) := by
           dsimp [wp]; push_cast; ring
-        have hm : (t : ℂ) * ((q.1 : ℂ) - 1 / 2) + -(((γ * t : ℝ) : ℂ) * Complex.I) = wm * (t : ℂ) := by
+        have hm : (t : ℂ) * ((q.1 : ℂ) - 1 / 2) + (-((γ * t : ℝ) : ℂ) * Complex.I) = wm * (t : ℂ) := by
           dsimp [wm]; push_cast; ring
         rw [← hp, ← hm, Complex.exp_add, Complex.exp_add]
         ring
       have hδq : 0 ≤ foldedRe q - 1 / 2 := sub_nonneg.mpr (half_le_foldedRe q)
       have hbp := norm_integral_exp_strip_mul_le hψ hψc hA0 hδq hsupp (w := wp)
-        (by rw [foldedRe_sub_half_eq_abs]; simp [wp]; norm_num)
+        (by rw [foldedRe_sub_half_eq_abs]; simp [wp])
       have hbm := norm_integral_exp_strip_mul_le hψ hψc hA0 hδq hsupp (w := wm)
-        (by rw [foldedRe_sub_half_eq_abs]; simp [wm]; norm_num)
+        (by rw [foldedRe_sub_half_eq_abs]; simp [wm])
       have him_p : wp.im = (q.1 : ℂ).im + γ := by simp [wp]
       have him_m : wm.im = (q.1 : ℂ).im - γ := by simp [wm]
       rw [him_p] at hbp
@@ -1312,9 +1319,9 @@ theorem exists_frequencyAverage_abs_cosineFiltered_spectralDeficitSum_le
       hψc.mul_left).abs.integrableOn_Icc
   have hbq_cont : ∀ q, Continuous (bq q) := fun q => by
     dsimp [bq]
-    refine continuous_const.mul (( ?_ ).div_const 2)
-    exact (continuous_const.div (by fun_prop) (fun _ => by positivity)).add
-      (continuous_const.div (by fun_prop) (fun _ => by positivity))
+    exact continuous_const.mul
+      (((continuous_const.div (by fun_prop) (fun _ => by positivity)).add
+        (continuous_const.div (by fun_prop) (fun _ => by positivity))).div_const 2)
   have htsum_cont : Continuous (fun γ : ℝ => ∑' q, bq q γ) :=
     continuous_tsum hbq_cont (summable_inv_norm_sq_xiZeroCopy.mul_left (Real.exp A * W₁))
       fun q γ => by rw [Real.norm_of_nonneg (hbq_nonneg q γ)]; exact hbq_dom q γ
@@ -1344,10 +1351,9 @@ theorem exists_frequencyAverage_abs_cosineFiltered_spectralDeficitSum_le
   have hS_fin : ({q : XiZeroCopy | Γ / 2 ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 4 * Γ}).Finite :=
     (finite_xiOrdinateWindow (4 * Γ) 0).subset fun q hq => by
       rw [mem_xiOrdinateWindow_iff, sub_zero]; exact hq.2
-  set G_loc : Finset XiZeroCopy := hS_fin.toFinset
-  have hmem_Gloc : ∀ q : XiZeroCopy,
-      q ∈ G_loc ↔ Γ / 2 ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 4 * Γ :=
-    fun q => hS_fin.mem_toFinset
+  obtain ⟨G_loc, hmem_Gloc⟩ : ∃ G_loc : Finset XiZeroCopy,
+      ∀ q : XiZeroCopy, q ∈ G_loc ↔ Γ / 2 ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 4 * Γ :=
+    ⟨hS_fin.toFinset, fun _ => hS_fin.mem_toFinset⟩
   set u_loc : XiZeroCopy → ℝ := fun q =>
     if q ∈ G_loc then (4 / Γ ^ 2) * Real.pi * W₁ * Real.exp (2 * A * (foldedRe q - 1 / 2)) else 0
   set u_rem : XiZeroCopy → ℝ := fun q =>
@@ -1445,8 +1451,7 @@ theorem exists_frequencyAverage_abs_cosineFiltered_spectralDeficitSum_le
   have htsum_loc_eq : (∑' q, u_loc q) =
       (4 / Γ ^ 2) * Real.pi * W₁ * ∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2)) := by
     rw [tsum_eq_sum (s := G_loc) (fun q hq => if_neg hq), Finset.mul_sum]
-    refine Finset.sum_congr rfl fun q hq => ?_
-    dsimp [u_loc]; rw [if_pos hq]
+    exact Finset.sum_congr rfl fun q hq => if_pos hq
   have htsum_rem_eq : (∑' q, u_rem q) =
       (4 / Γ) * (Γ ^ α) * W₁ * reciprocalSquareWeightTotal := by
     unfold reciprocalSquareWeightTotal

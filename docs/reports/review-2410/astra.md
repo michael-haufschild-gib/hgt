@@ -207,6 +207,12 @@ cofactor covariances, unit receiver mass, finite-packet positivity and sharp sim
 dilation contraction. It does not retain the full moving cofactor sum. Passing that sum through
 the limit still requires a tail theorem in the same normalization.
 
+[Energy quantiles](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/EnergyQuantilesPreserveTheSignedCofactorPairing.lean)
+provide a complementary transport: each prescribed energy interval retains its mass and
+signed renormalized cofactor work, with an explicit uniform error vanishing on escape.
+This accommodates diffuse mass, but does not reconstruct its original spatial geometry or
+automatically combine quantile transport with the fixed-cofactor limit.
+
 ### 5.2 A mixed successor–cofactor estimate, rather than a universal successor floor
 
 The successor laws give an arithmetic relation absent from the purely multiplicative countermodels, but universal successor constraints still admit the conductor-three twins. The next target should use the actual infinite prime prescription together with mixed scale data.

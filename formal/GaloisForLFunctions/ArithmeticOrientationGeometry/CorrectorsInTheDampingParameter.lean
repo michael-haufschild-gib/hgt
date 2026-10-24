@@ -44,6 +44,7 @@ namespace GaloisForLFunctions.ArithmeticOrientationGeometry
 
 open ArithmeticCastelnuovoSeveri
 open GaloisForLFunctions.SquareRootThreshold (TemperedConfig temperedConfig_zetaZeroConfig)
+open ScalingDatum (conv rosati rosati_single rosati_add)
 
 /-! ### Convolution on point masses -/
 
@@ -103,7 +104,7 @@ theorem damp_conv (ε : ℝ) (ξ η : Correspondence G) :
   | add ξ₁ ξ₂ h₁ h₂ => rw [conv_add_left, D.damp_add, h₁, h₂, D.damp_add, conv_add_left]
   | single g a =>
     induction η using Finsupp.induction_linear with
-    | zero => rw [conv_zero_right, D.damp_zero, D.damp_zero, conv_zero_right]
+    | zero => rw [conv_zero_right, D.damp_zero, conv_zero_right]
     | add η₁ η₂ k₁ k₂ => rw [conv_add_right, D.damp_add, k₁, k₂, D.damp_add, conv_add_right]
     | single h b =>
       rw [conv_single_single, D.damp_single, D.damp_single, D.damp_single, conv_single_single,
@@ -305,8 +306,7 @@ theorem riemannHypothesis_iff_forall_damped_bounded (x : ScalingCycle)
   have h1 : (∀ t : ℝ, zetaScalingDatum.HasseWeilAt x t) ↔
       ∀ t : ℝ, (configScalingDatum zetaZeroConfig temperedConfig_zetaZeroConfig).HasseWeilAt x t :=
     forall_congr' fun t => zeta_hasseWeilAt_iff x t
-  rw [h1, hT.out 0 2]
-  refine forall₂_congr fun ε _ => ?_
+  refine h1.trans ((hT.out 0 2).trans (forall₂_congr fun ε _ => ?_))
   rw [dampedEnergy_lt_top_iff]
   simp only [configScalingDatum_zeta_orbitCorr]
 
