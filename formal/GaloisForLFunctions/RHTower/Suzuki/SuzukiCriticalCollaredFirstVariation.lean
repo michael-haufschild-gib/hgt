@@ -1066,8 +1066,8 @@ private theorem integrable_exp_mul_of_measurable_compact {f₀ : ℝ → ℝ} {R
   have hw_cont : ContinuousOn (fun u => Real.exp (c * u)) (Icc (-R) R) := by fun_prop
   obtain ⟨Cw, hCw⟩ := isCompact_Icc.exists_bound_of_continuousOn hw_cont
   have hw_lp : MemLp w 2 volume := by
-    refine (memLp_indicator_const 2 measurableSet_Icc (max Cw 0)
-      (Or.inr measure_Icc_lt_top.ne)).mono' ?_ ?_
+    refine (memLp_indicator_const (s := Icc (-R) R) 2 measurableSet_Icc (max Cw 0)
+      (Or.inr (measure_Icc_lt_top (a := -R) (b := R)).ne)).mono' ?_ ?_
     · exact ((Real.continuous_exp.comp (continuous_const.mul continuous_id)).measurable.indicator
         measurableSet_Icc).aestronglyMeasurable
     · filter_upwards with u
@@ -1110,7 +1110,7 @@ private theorem integral_polar_autocorr_of_measurable_compact {f₀ : ℝ → �
       rw [integral_const_mul, integral_add_left_eq_self (fun y => ‖q₀ y‖) u]
     rw [hnorm_eq]
     exact hp_int.norm.mul_const _
-  have hswap := integral_integral_swap hF_int
+  have hswap := integral_integral_swap (f := fun u x => p₀ u * q₀ (u + x)) hF_int
   have hrhs : (∫ u, ∫ x, F (u, x)) = (∫ u, p₀ u) * (∫ v, q₀ v) := by
     have hinner : ∀ u, (∫ x, F (u, x)) = p₀ u * (∫ v, q₀ v) := fun u => by
       dsimp only [F]
@@ -1134,9 +1134,7 @@ private theorem integral_polar_autocorr_of_measurable_compact {f₀ : ℝ → �
   have hp : (∫ x, autocorr f₀ x * Real.exp (x / 2)) = (∫ u, p₀ u) * (∫ v, q₀ v) := by
     rw [← integral_neg_eq_self (fun x => autocorr f₀ x * Real.exp (x / 2))]
     simpa only [autocorr_neg] using hm
-  have hc_ac : Continuous (autocorr f₀) := by
-    have h := continuous_autocorr_of_memLp (hf₀.toLp f₀)
-    exact h.congr fun x => autocorr_congr_ae hf₀.coeFn_toLp x
+  have hc_ac : Continuous (autocorr f₀) := continuous_autocorr_of_memLp hf₀
   have hs_ac : HasCompactSupport (autocorr f₀) := by
     refine HasCompactSupport.intro (isCompact_Icc (a := -(2 * R)) (b := 2 * R)) fun x hx => ?_
     unfold autocorr
@@ -1197,9 +1195,9 @@ theorem integral_polar_autocorr_eq_moments_of_memLp {f : ℝ → ℝ}
   have hf₀_out : ∀ x, x ∉ Icc (-R) R → f₀ x = 0 := fun x hx => Set.indicator_of_notMem hx _
   have hac_eq : autocorr f = autocorr f₀ := funext (autocorr_congr_ae hf_ae)
   have hm1 : (∫ u, Real.exp (u / 2) * f u) = ∫ u, Real.exp (u / 2) * f₀ u :=
-    integral_congr_ae (hf_ae.mono fun u hu => by rw [hu])
+    integral_congr_ae (hf_ae.mono fun u hu => by dsimp only; rw [hu])
   have hm2 : (∫ u, Real.exp (-(u / 2)) * f u) = ∫ u, Real.exp (-(u / 2)) * f₀ u :=
-    integral_congr_ae (hf_ae.mono fun u hu => by rw [hu])
+    integral_congr_ae (hf_ae.mono fun u hu => by dsimp only; rw [hu])
   rw [hac_eq, hm1, hm2]
   exact integral_polar_autocorr_of_measurable_compact hf₀_meas hf₀_lp hR0 hf₀_out
 
@@ -1280,11 +1278,13 @@ private theorem tendsto_sharpTruncation_toLp (S : Finset ℕ) (b : ℕ → ℝ) 
       hint_sq
       (fun k => Eventually.of_forall fun x => by
         rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
-        by_cases hx : x ∈ Icc (-Real.log ((k + 1 : ℕ) : ℝ)) 0 <;>
-          simp [criticalCollaredSharpTruncation, hx, sq_nonneg])
+        by_cases hx : x ∈ Icc (-Real.log ((k + 1 : ℕ) : ℝ)) 0
+        · rw [criticalCollaredSharpTruncation, Set.indicator_of_mem hx, sub_self]
+          nlinarith [sq_nonneg (criticalCollaredSource S b x)]
+        · rw [criticalCollaredSharpTruncation, Set.indicator_of_notMem hx, zero_sub, neg_sq])
       (Eventually.of_forall fun x => by
         by_cases hx0 : x ≤ 0
-        · refine tendsto_const_nhds.congr' ?_
+        · refine (tendsto_const_nhds (x := (0 : ℝ))).congr' ?_
           obtain ⟨K₀, hK₀⟩ := exists_nat_gt (Real.exp (-x))
           filter_upwards [eventually_ge_atTop K₀] with k hk
           have hk1 : Real.exp (-x) ≤ ((k + 1 : ℕ) : ℝ) := by
@@ -1293,14 +1293,19 @@ private theorem tendsto_sharpTruncation_toLp (S : Finset ℕ) (b : ℕ → ℝ) 
           have hlog : -Real.log ((k + 1 : ℕ) : ℝ) ≤ x := by
             have := Real.log_le_log (Real.exp_pos _) hk1
             rw [Real.log_exp] at this; linarith
-          simp [criticalCollaredSharpTruncation, Set.indicator_of_mem ⟨hlog, hx0⟩]
-        · refine tendsto_const_nhds.congr' (Eventually.of_forall fun k => ?_)
-          have hx_pos : 0 < x := not_le.mp hx0
+          have hmem : x ∈ Icc (-Real.log ((k + 1 : ℕ) : ℝ)) 0 := ⟨hlog, hx0⟩
+          dsimp only
+          rw [criticalCollaredSharpTruncation, Set.indicator_of_mem hmem, sub_self]
+          norm_num
+        · refine (tendsto_const_nhds (x := (0 : ℝ))).congr' (Eventually.of_forall fun k => ?_)
           have hgc0 : criticalCollaredSource S b x = 0 := by
             rw [criticalCollaredSource_eq, Real.smoothTransition.zero_of_nonpos (by
               have := Real.exp_le_exp.mpr (show -x ≤ 0 by linarith)
               rw [Real.exp_zero] at this; linarith), zero_mul]
-          simp [criticalCollaredSharpTruncation, Set.indicator_of_notMem fun hm => hx0 hm.2, hgc0])
+          have hnot : x ∉ Icc (-Real.log ((k + 1 : ℕ) : ℝ)) 0 := fun hm => hx0 hm.2
+          dsimp only
+          rw [criticalCollaredSharpTruncation, Set.indicator_of_notMem hnot, hgc0, sub_zero]
+          norm_num)
     simpa only [integral_zero] using hlim
   have hsqrt := (Real.continuous_sqrt.tendsto 0).comp hsq_tendsto
   rw [Real.sqrt_zero] at hsqrt
@@ -1351,12 +1356,11 @@ theorem integral_polar_autocorr_criticalCollaredSource (S : Finset ℕ) (b : ℕ
     refine tendsto_integral_of_dominated_convergence
       (fun t => (2 * K) * Real.exp (-t))
       (fun k => by
-        have hc : Continuous (autocorr (criticalCollaredSharpTruncation ((k + 1 : ℕ) : ℝ) S b)) := by
-          have h := continuous_autocorr_of_memLp
-            ((memLp_criticalCollaredSharpTruncation ((k + 1 : ℕ) : ℝ) S b).toLp _)
-          exact h.congr fun x => autocorr_congr_ae
-            (memLp_criticalCollaredSharpTruncation ((k + 1 : ℕ) : ℝ) S b).coeFn_toLp x
-        exact ((by fun_prop : Continuous polarDensity).mul hc).aestronglyMeasurable)
+        have hc : Continuous (autocorr (criticalCollaredSharpTruncation ((k + 1 : ℕ) : ℝ) S b)) :=
+          continuous_autocorr_of_memLp
+            (memLp_criticalCollaredSharpTruncation ((k + 1 : ℕ) : ℝ) S b)
+        have hpol_c : Continuous polarDensity := by unfold polarDensity; fun_prop
+        exact (hpol_c.mul hc).aestronglyMeasurable)
       hmaj
       (fun k => by
         filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
@@ -1377,6 +1381,7 @@ theorem integral_polar_autocorr_criticalCollaredSource (S : Finset ℕ) (b : ℕ
     have hint : IntegrableOn (fun v => criticalCollarWeight v * F v) (Ioi 1) :=
       integrableOn_criticalCollarWeight.mul_bdd hFc.aestronglyMeasurable
         (Eventually.of_forall fun v => by
+          dsimp only [F]
           rw [Real.norm_eq_abs, factorialPhaseCombination_re_eq]
           exact abs_realPhaseCombination_le_two_mul S b v)
     have hV_top : Tendsto (fun k : ℕ => ((k + 1 : ℕ) : ℝ)) atTop atTop := by
@@ -1427,7 +1432,7 @@ theorem suzukiCriticalExtendedWeilEnergy_criticalCollaredSource (S : Finset ℕ)
     refine tsum_congr fun r => ?_
     unfold primeTerm criticalCollaredPrimeAtom primeWeight
     split_ifs
-    · rw [← autocorr_neg]; unfold autocorr; simp only [sub_eq_add_neg]; rfl
+    · rw [← autocorr_neg]; unfold autocorr; simp only [sub_eq_add_neg]
     · simp
   have hpol := integral_polar_autocorr_criticalCollaredSource S b
   unfold suzukiCriticalExtendedWeilEnergy criticalCollaredCompleteEnergy
@@ -1454,7 +1459,7 @@ theorem suzukiCriticalExtendedWeilEnergy_criticalTruncatedSource {V : ℝ} (hV :
     refine tsum_congr fun r => ?_
     unfold primeTerm criticalTruncatedPrimeAtom primeWeight
     split_ifs
-    · rw [← autocorr_neg]; unfold autocorr; simp only [sub_eq_add_neg]; rfl
+    · rw [← autocorr_neg]; unfold autocorr; simp only [sub_eq_add_neg]
     · simp
   have hpol : (∫ x in Ici (0 : ℝ), polarDensity x * autocorr (criticalTruncatedSource V S b) x) =
       criticalTruncatedPolarReadout V S b * criticalTruncatedPolarEndpoint V S b := by
@@ -1518,7 +1523,7 @@ theorem tendsto_criticalTruncatedSource_toLp {V : ℕ → ℝ} (hV : Tendsto V a
   rw [tendsto_iff_norm_sub_tendsto_zero]
   set C := criticalCollarMassUpper * ∑ n ∈ S, b n ^ 2
   have hinv : Tendsto (fun j => C * (V j)⁻¹) atTop (𝓝 0) := by
-    simpa only [mul_zero] using (tendsto_inv_atTop_zero.comp hV).const_mul C
+    simpa only [mul_zero, Function.comp_def] using (tendsto_inv_atTop_zero.comp hV).const_mul C
   have hsqrt : Tendsto (fun j => Real.sqrt (criticalCollarMassUpper / V j * ∑ n ∈ S, b n ^ 2))
       atTop (𝓝 0) := by
     have h := (Real.continuous_sqrt.tendsto 0).comp hinv
@@ -1792,21 +1797,22 @@ private theorem criticalTruncatedSource_congr_scale (V : ℝ) {S : Finset ℕ} {
 private def sphereS (S : Finset ℕ) : Set (S → ℝ) :=
   {u : S → ℝ | (∀ i : S, u i ∈ Icc (-1 : ℝ) 1) ∧ ∑ i : S, (u i) ^ 2 = 1}
 
-private def extendCoeff (S : Finset ℕ) (u : S → ℝ) (n : ℕ) : ℝ :=
+private def extendRealCoeff (S : Finset ℕ) (u : S → ℝ) (n : ℕ) : ℝ :=
   if h : n ∈ S then u ⟨n, h⟩ else 0
 
 private theorem isCompact_sphereS (S : Finset ℕ) : IsCompact (sphereS S) := by
   have heq : sphereS S =
       (Set.pi Set.univ fun _ : S => Icc (-1 : ℝ) 1) ∩ {u : S → ℝ | ∑ i : S, (u i) ^ 2 = 1} := by
-    ext u; simp [sphereS]
+    ext u
+    exact ⟨fun ⟨h1, h2⟩ => ⟨fun i _ => h1 i, h2⟩, fun ⟨h1, h2⟩ => ⟨fun i => h1 i trivial, h2⟩⟩
   rw [heq]
   exact (isCompact_univ_pi fun _ => isCompact_Icc).inter_right
-    (isClosed_eq (continuous_finset_sum _ fun i _ => (continuous_apply i).pow 2) continuous_const)
+    (isClosed_eq (continuous_finsetSum _ fun i _ => (continuous_apply i).pow 2) continuous_const)
 
-private theorem sum_extendCoeff_sq (S : Finset ℕ) (u : S → ℝ) :
-    ∑ n ∈ S, (extendCoeff S u n) ^ 2 = ∑ i : S, (u i) ^ 2 := by
-  rw [← Finset.sum_attach S (fun n => (extendCoeff S u n) ^ 2)]
-  exact Finset.sum_congr rfl fun i _ => by simp [extendCoeff, i.2]
+private theorem sum_extendRealCoeff_sq (S : Finset ℕ) (u : S → ℝ) :
+    ∑ n ∈ S, (extendRealCoeff S u n) ^ 2 = ∑ i : S, (u i) ^ 2 := by
+  rw [← Finset.sum_attach S (fun n => (extendRealCoeff S u n) ^ 2)]
+  exact Finset.sum_congr rfl fun i _ => by simp [extendRealCoeff, i.2]
 
 private theorem criticalCollaredDecayConstant_le_ones (S : Finset ℕ) {b : ℕ → ℝ}
     (hb : ∀ n ∈ S, |b n| ≤ 1) :
@@ -1857,8 +1863,8 @@ private theorem criticalCollaredDecayConstant_le_ones (S : Finset ℕ) {b : ℕ 
         (mul_nonneg (realPhaseLipschitz_nonneg S _) hmass))
 
 private def paramSource (S : Finset ℕ) (p : ℝ × (S → ℝ)) : ℝ → ℝ :=
-  if p.1 ≤ 0 then criticalCollaredSource S (extendCoeff S p.2)
-  else criticalTruncatedSource (1 / p.1) S (extendCoeff S p.2)
+  if p.1 ≤ 0 then criticalCollaredSource S (extendRealCoeff S p.2)
+  else criticalTruncatedSource (1 / p.1) S (extendRealCoeff S p.2)
 
 private theorem memLp_paramSource (S : Finset ℕ) (p : ℝ × (S → ℝ)) :
     MemLp (paramSource S p) 2 volume := by
@@ -1873,37 +1879,37 @@ private theorem paramSource_sub_coeff_norm_le (S : Finset ℕ) (q : ℝ) (u v : 
       Real.sqrt (criticalCollarMassUpper * ∑ i : S, (u i - v i) ^ 2) := by
   rw [norm_toLp_sub_eq_sqrt_integral_sq]
   refine Real.sqrt_le_sqrt ?_
-  have hdiff_phase : ∀ y, realPhaseCombination S (extendCoeff S u) y -
-      realPhaseCombination S (extendCoeff S v) y =
-      realPhaseCombination S (extendCoeff S (u - v)) y := fun y => by
+  have hdiff_phase : ∀ y, realPhaseCombination S (extendRealCoeff S u) y -
+      realPhaseCombination S (extendRealCoeff S v) y =
+      realPhaseCombination S (extendRealCoeff S (u - v)) y := fun y => by
     unfold realPhaseCombination
     rw [← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun n hn => ?_
-    simp only [extendCoeff, dif_pos hn, Pi.sub_apply, sub_mul]
+    simp only [extendRealCoeff, dif_pos hn, Pi.sub_apply, sub_mul]
   by_cases hq : q ≤ 0
   · have hpt : ∀ x, paramSource S (q, u) x - paramSource S (q, v) x =
-        criticalCollaredSource S (extendCoeff S (u - v)) x := fun x => by
+        criticalCollaredSource S (extendRealCoeff S (u - v)) x := fun x => by
       simp only [paramSource, if_pos hq, criticalCollaredSource_eq]
       rw [← hdiff_phase]; ring
     simp_rw [hpt]
-    have h0 := sourceAutocorrelation_criticalCollaredSource_zero_le S (extendCoeff S (u - v))
-    have hsq : sourceAutocorrelation (criticalCollaredSource S (extendCoeff S (u - v))) 0 =
-        ∫ x, criticalCollaredSource S (extendCoeff S (u - v)) x ^ 2 := by
+    have h0 := sourceAutocorrelation_criticalCollaredSource_zero_le S (extendRealCoeff S (u - v))
+    have hsq : sourceAutocorrelation (criticalCollaredSource S (extendRealCoeff S (u - v))) 0 =
+        ∫ x, criticalCollaredSource S (extendRealCoeff S (u - v)) x ^ 2 := by
       unfold sourceAutocorrelation; simp only [sub_zero, sq]
-    rw [hsq, sum_extendCoeff_sq] at h0
+    rw [hsq, sum_extendRealCoeff_sq] at h0
     exact h0
   · have hpt : ∀ x, paramSource S (q, u) x - paramSource S (q, v) x =
-        criticalTruncatedSource (1 / q) S (extendCoeff S (u - v)) x := fun x => by
+        criticalTruncatedSource (1 / q) S (extendRealCoeff S (u - v)) x := fun x => by
       simp only [paramSource, if_neg hq, criticalTruncatedSource, criticalCollaredSource_eq]
       rw [← hdiff_phase]; ring
     simp_rw [hpt]
     have h0 := sourceAutocorrelation_criticalTruncatedSource_zero_le (1 / q) S
-      (extendCoeff S (u - v))
+      (extendRealCoeff S (u - v))
     have hsq : sourceAutocorrelation
-        (criticalTruncatedSource (1 / q) S (extendCoeff S (u - v))) 0 =
-        ∫ x, criticalTruncatedSource (1 / q) S (extendCoeff S (u - v)) x ^ 2 := by
+        (criticalTruncatedSource (1 / q) S (extendRealCoeff S (u - v))) 0 =
+        ∫ x, criticalTruncatedSource (1 / q) S (extendRealCoeff S (u - v)) x ^ 2 := by
       unfold sourceAutocorrelation; simp only [sub_zero, sq]
-    rw [hsq, sum_extendCoeff_sq] at h0
+    rw [hsq, sum_extendRealCoeff_sq] at h0
     exact h0
 
 private theorem continuousOn_paramSource_toLp (S : Finset ℕ) :
@@ -1934,16 +1940,16 @@ private theorem continuousOn_paramSource_toLp (S : Finset ℕ) :
       · have hq_lt1 : q ≤ 1 := hq.2.trans ((div_le_one (by linarith)).mpr hV0_gt1.le)
         have h1q : 1 ≤ 1 / q := (one_le_div hq_pos).mpr hq_lt1
         rw [dist_eq_norm]
-        have hle := norm_criticalTruncatedSource_sub_collared_toLp_le h1q S (extendCoeff S u₀)
-        have hsum1 : ∑ n ∈ S, (extendCoeff S u₀ n) ^ 2 = 1 := by
-          rw [sum_extendCoeff_sq]; exact hu₀_mem.2
+        have hle := norm_criticalTruncatedSource_sub_collared_toLp_le h1q S (extendRealCoeff S u₀)
+        have hsum1 : ∑ n ∈ S, (extendRealCoeff S u₀ n) ^ 2 = 1 := by
+          rw [sum_extendRealCoeff_sq]; exact hu₀_mem.2
         rw [hsum1, mul_one, div_one_div] at hle
         have hparam_eq : (memLp_paramSource S (q, u₀)).toLp (paramSource S (q, u₀)) -
             (memLp_paramSource S (0, u₀)).toLp (paramSource S (0, u₀)) =
-            (memLp_criticalTruncatedSource (1 / q) S (extendCoeff S u₀)).toLp
-              (criticalTruncatedSource (1 / q) S (extendCoeff S u₀)) -
-            (memLp_criticalCollaredSource S (extendCoeff S u₀)).toLp
-              (criticalCollaredSource S (extendCoeff S u₀)) := by
+            (memLp_criticalTruncatedSource (1 / q) S (extendRealCoeff S u₀)).toLp
+              (criticalTruncatedSource (1 / q) S (extendRealCoeff S u₀)) -
+            (memLp_criticalCollaredSource S (extendRealCoeff S u₀)).toLp
+              (criticalCollaredSource S (extendRealCoeff S u₀)) := by
           congr 1 <;> apply MemLp.toLp_congr_ae <;>
             simp [paramSource, not_le.mpr hq_pos]
         rw [hparam_eq]
@@ -1962,20 +1968,20 @@ private theorem continuousOn_paramSource_toLp (S : Finset ℕ) :
       intro qn hqn
       rw [Function.comp_def, tendsto_iff_norm_sub_tendsto_zero]
       have hpos_ev : ∀ᶠ k in atTop, 0 < qn k := hqn.eventually (Ioi_mem_nhds hq₀_pos)
-      have hgc := memLp_criticalCollaredSource S (extendCoeff S u₀)
+      have hgc := memLp_criticalCollaredSource S (extendRealCoeff S u₀)
       have hint_sq : Integrable (fun x => (4 : ℝ) *
-          criticalCollaredSource S (extendCoeff S u₀) x ^ 2) := hgc.integrable_sq.const_mul 4
+          criticalCollaredSource S (extendRealCoeff S u₀) x ^ 2) := hgc.integrable_sq.const_mul 4
       have hsq_zero : Tendsto (fun k => ∫ x,
           (paramSource S (qn k, u₀) x - paramSource S (q₀, u₀) x) ^ 2) atTop (𝓝 0) := by
         have hdom := tendsto_integral_of_dominated_convergence
-          (fun x => (4 : ℝ) * criticalCollaredSource S (extendCoeff S u₀) x ^ 2)
+          (fun x => (4 : ℝ) * criticalCollaredSource S (extendRealCoeff S u₀) x ^ 2)
           (fun k => ((memLp_paramSource S (qn k, u₀)).sub
             (memLp_paramSource S (q₀, u₀))).integrable_sq.aestronglyMeasurable)
           hint_sq
           (fun k => Eventually.of_forall fun x => by
             rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
             have habs_le : ∀ r, |paramSource S (r, u₀) x| ≤
-                |criticalCollaredSource S (extendCoeff S u₀) x| := fun r => by
+                |criticalCollaredSource S (extendRealCoeff S u₀) x| := fun r => by
               unfold paramSource
               split_ifs
               · exact le_rfl
@@ -1983,22 +1989,23 @@ private theorem continuousOn_paramSource_toLp (S : Finset ℕ) :
                   abs_of_nonneg (criticalUpperCutoff_nonneg _)]
                 exact mul_le_of_le_one_left (abs_nonneg _) (criticalUpperCutoff_le_one _)
             have htri : |paramSource S (qn k, u₀) x - paramSource S (q₀, u₀) x| ≤
-                2 * |criticalCollaredSource S (extendCoeff S u₀) x| :=
+                2 * |criticalCollaredSource S (extendRealCoeff S u₀) x| :=
               (abs_sub _ _).trans (by linarith [habs_le (qn k), habs_le q₀])
             have hsq := pow_le_pow_left₀ (abs_nonneg _) htri 2
             simpa only [sq_abs, mul_pow, show (2 : ℝ) ^ 2 = 4 by norm_num] using hsq)
           (Eventually.of_forall fun x => by
+            set c₀ : ℝ := criticalUpperCutoff (Real.exp (-x) * q₀) *
+              criticalCollaredSource S (extendRealCoeff S u₀) x
             have hval : Tendsto (fun k =>
                 criticalUpperCutoff (Real.exp (-x) * qn k) *
-                  criticalCollaredSource S (extendCoeff S u₀) x) atTop
-                (𝓝 (criticalUpperCutoff (Real.exp (-x) * q₀) *
-                  criticalCollaredSource S (extendCoeff S u₀) x)) :=
+                  criticalCollaredSource S (extendRealCoeff S u₀) x) atTop (𝓝 c₀) :=
               ((continuous_criticalUpperCutoff.tendsto _).comp
                 (hqn.const_mul (Real.exp (-x)))).mul_const _
-            have hdiff := (hval.sub tendsto_const_nhds).pow 2
+            have hdiff := (hval.sub (tendsto_const_nhds (x := c₀))).pow 2
             rw [sub_self, zero_pow two_ne_zero] at hdiff
             refine hdiff.congr' ?_
             filter_upwards [hpos_ev] with k hk
+            dsimp only [c₀]
             simp only [paramSource, if_neg (not_le.mpr hk), if_neg (not_le.mpr hq₀_pos),
               criticalTruncatedSource, div_one_div])
         simpa only [integral_zero] using hdom
@@ -2135,8 +2142,8 @@ theorem exists_suzukiCriticalUniformShift_of_collared_family {S : Finset ℕ} {�
         |autocorr (paramSource S (p (φ k))) t| ≤
           criticalCollaredDecayConstant S (fun _ => 1) * Real.exp (-(3 / 2 : ℝ) * t) := by
       intro k t ht
-      have hu_le : ∀ n ∈ S, |extendCoeff S (p (φ k)).2 n| ≤ 1 := fun n hn => by
-        simp only [extendCoeff, dif_pos hn]
+      have hu_le : ∀ n ∈ S, |extendRealCoeff S (p (φ k)).2 n| ≤ 1 := fun n hn => by
+        simp only [extendRealCoeff, dif_pos hn]
         exact abs_le.mpr ((hp_mem (φ k)).2.1 ⟨n, hn⟩)
       have hK_le := criticalCollaredDecayConstant_le_ones S hu_le
       unfold paramSource
@@ -2148,12 +2155,12 @@ theorem exists_suzukiCriticalUniformShift_of_collared_family {S : Finset ℕ} {�
           (mul_le_mul_of_nonneg_right hK_le (Real.exp_pos _).le)
     have hweil_p₀ : ((γ : ℝ) : EReal) ≤
         suzukiCriticalExtendedWeilEnergy (paramSource S p₀) := by
-      have hsum1 : ∑ n ∈ S, (extendCoeff S p₀.2 n) ^ 2 = 1 := by
-        rw [sum_extendCoeff_sq]; exact hp₀_mem.2.2
+      have hsum1 : ∑ n ∈ S, (extendRealCoeff S p₀.2 n) ^ 2 = 1 := by
+        rw [sum_extendRealCoeff_sq]; exact hp₀_mem.2.2
       unfold paramSource
       rcases hp₀_mem.1.1.eq_or_lt with hq0 | hq_pos
       · rw [if_pos (by linarith), suzukiCriticalExtendedWeilEnergy_criticalCollaredSource]
-        have h := hcol (extendCoeff S p₀.2)
+        have h := hcol (extendRealCoeff S p₀.2)
         rwa [hsum1, mul_one] at h
       · rw [if_neg (not_le.mpr hq_pos),
           suzukiCriticalExtendedWeilEnergy_criticalTruncatedSource (one_div_pos.mpr hq_pos)]
@@ -2161,13 +2168,14 @@ theorem exists_suzukiCriticalUniformShift_of_collared_family {S : Finset ℕ} {�
           have := (le_div_iff₀ hV0_pos).mp hp₀_mem.1.2
           rw [le_div_iff₀ hq_pos, mul_comm]
           exact this
-        have h := htrunc (1 / p₀.1) hV_ge (extendCoeff S p₀.2)
+        have h := htrunc (1 / p₀.1) hV_ge (extendRealCoeff S p₀.2)
         rwa [hsum1, mul_one] at h
     have hev := eventually_suzukiCriticalDeficit_of_exp_decay_tendsto
       (f := fun k => paramSource S (p (φ k))) (g := paramSource S p₀) (w := w ∘ φ)
       (fun k => memLp_paramSource S (p (φ k))) (memLp_paramSource S p₀)
       htoLp_lim hw_nhds (by norm_num : (1 / 2 : ℝ) < 3 / 2) hdec_unif hweil_p₀ (half_pos hγ)
     obtain ⟨k, hk⟩ := hev.exists
+    dsimp only [Function.comp_apply] at hk
     have hsub : γ - γ / 2 = γ / 2 := by ring
     rw [hsub] at hk
     linarith [hle (φ k)]
@@ -2209,8 +2217,9 @@ theorem exists_suzukiCriticalUniformShift_of_collared_family {S : Finset ℕ} {�
         rw [← hu_sum]
         exact Finset.single_le_sum (fun j _ => sq_nonneg (u j)) (Finset.mem_univ i)
       exact abs_le.mp (abs_le_one_iff_mul_self_le_one.mpr (by simpa only [sq] using hsq_le1))
-    have hb_scale : ∀ n ∈ S, b n = c * extendCoeff S u n := fun n hn => by
-      simp only [extendCoeff, dif_pos hn, u]
+    have hb_scale : ∀ n ∈ S, b n = c * extendRealCoeff S u n := fun n hn => by
+      dsimp only [extendRealCoeff, u]
+      rw [dif_pos hn]
       exact (mul_div_cancel₀ (b n) hc_pos.ne').symm
     -- Collared branch (`q = 0`):
     have hcol_strict : (ω * (γ / 2)) * E <

@@ -139,18 +139,14 @@ theorem eventually_exists_not_hasseWeilAt {x : ScalingCycle} {A : ℝ}
         (ν * Real.log D.q) := by
   set N := Fintype.card ι with hNdef
   set c : ℕ := 2 * N + 2 with hc
-  set K : ℝ := 2 * (Real.exp 1 * N * (6 * (N + 1))) ^ N with hK
+  set K : ℝ := 2 * (Real.exp 1 * N * (6 * (N + 1)) ^ N) with hK
   have hZ0 : 0 < Z₀ := by linarith
   have hK0 : 0 ≤ K := by rw [hK]; positivity
   have hNK : 0 ≤ (N : ℝ) * K := mul_nonneg (Nat.cast_nonneg _) hK0
   -- `C(N, M) = K (M + c)^N`
   have hT : ∀ M : ℕ, turanConstant N M = K * (((M + c : ℕ) : ℝ)) ^ N := fun M => by
-    have e1 : turanConstant N M =
-        2 * ((Real.exp 1 * N * (6 * (N + 1))) * (((M + c : ℕ) : ℝ))) ^ N := by
-      unfold turanConstant
-      congr 2
-      rw [hc]; push_cast; ring
-    rw [e1, mul_pow, hK]
+    have e1 : ((M : ℝ) + 2 * N + 2) = (((M + c : ℕ) : ℝ)) := by rw [hc]; push_cast; ring
+    rw [turanConstant, e1, mul_pow, hK]
     ring
   -- `(M + c)^N / Z₀^{M+c} → 0`
   have hlim : Tendsto (fun M : ℕ => (((M + c : ℕ) : ℝ)) ^ N / Z₀ ^ (M + c)) atTop (𝓝 0) :=

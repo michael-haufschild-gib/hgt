@@ -11,6 +11,10 @@ import GaloisForLFunctions.ArithmeticOrientationGeometry.SectionsOnTheOrbitOfACy
 import GaloisForLFunctions.ArithmeticOrientationGeometry.EventualHasseWeilIsHasseWeil
 import GaloisForLFunctions.ArithmeticOrientationGeometry.TheOrientationIndexOfACycle
 import GaloisForLFunctions.ArithmeticOrientationGeometry.CorrectorsAndTheLefschetzTrace
+import GaloisForLFunctions.ArithmeticOrientationGeometry.TheOrientationOfScaleStableFamilies
+import GaloisForLFunctions.ArithmeticOrientationGeometry.TheThetaH0OfSpecZ
+import GaloisForLFunctions.ArithmeticOrientationGeometry.CorrectorsInTheDampingParameter
+import GaloisForLFunctions.ArithmeticOrientationGeometry.QuantitativeReadingsOnCurveOrbits
 import GaloisForLFunctions.ArithmeticOrientationGeometry.TheIndexExit
 
 /-!
@@ -19,5 +23,6 @@ import GaloisForLFunctions.ArithmeticOrientationGeometry.TheIndexExit
 Umbrella for the geometry of the scaling correspondence: scaling data, orbit correlations,
 Lefschetz numbers, Weil planes and the correspondence algebra; the orientation theorem, orientation
 rates and indices of cycles; orbit surfaces and Riemann–Roch; Euler factors, the archimedean place,
-correctors and the selectivity battery. See `ArithmeticOrientationGeometry/README.md`.
+correctors and the selectivity battery; scale-stable families, the theta `h⁰` of `Spec ℤ`, damping
+and quantitative readings on curve orbits. See `ArithmeticOrientationGeometry/README.md`.
 -/

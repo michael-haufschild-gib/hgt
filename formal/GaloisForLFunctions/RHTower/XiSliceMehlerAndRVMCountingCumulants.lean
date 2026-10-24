@@ -59,6 +59,7 @@ single-pair `1/4` threshold and the `1/3` vacuum barrier.
 open Complex Filter Topology MeasureTheory Set Polynomial
 open scoped BigOperators
 open GaloisForLFunctions.HTGeometry
+open RHTower.DeBruijn (gaussDensity gaussDensity_pos)
 
 namespace RHTower
 

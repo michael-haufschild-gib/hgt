@@ -149,7 +149,7 @@ The [conductor-three twins](../../../formal/GaloisForLFunctions/SignedSuccessorA
 
 This is the strongest general structural opportunity.
 
-Let $A_\varepsilon(n)$ be the actual centered damped Möbius divisor prefix, and
+Fix $0<\varepsilon<1/2$. Let $A_\varepsilon(n)$ be the actual centered damped Möbius divisor prefix, and
 
 \[
 E_\varepsilon(T)=\sum_{n=1}^{T}
