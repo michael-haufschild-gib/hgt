@@ -79,9 +79,12 @@ theorem thetaSum_pos {u : ℝ} (hu : 0 < u) : 0 < thetaSum u :=
 theorem thetaSum_lt_thetaSum {u v : ℝ} (hu : 0 < u) (huv : u < v) : thetaSum v < thetaSum u := by
   refine (summable_thetaSum (hu.trans huv)).tsum_lt_tsum (i := 1) (fun n => ?_) ?_
     (summable_thetaSum hu)
-  · exact Real.exp_le_exp.mpr (by nlinarith [mul_nonneg (mul_nonneg Real.pi_pos.le
-      (sq_nonneg (n : ℝ))) (sub_nonneg.mpr huv.le)])
-  · exact Real.exp_lt_exp.mpr (by simp only [Int.cast_one, one_pow, mul_one]; nlinarith [Real.pi_pos])
+  · have h0 : 0 ≤ π * (n : ℝ) ^ 2 * (v - u) :=
+      mul_nonneg (mul_nonneg Real.pi_pos.le (sq_nonneg _)) (sub_nonneg.mpr huv.le)
+    exact Real.exp_le_exp.mpr (by nlinarith)
+  · have h1 : 0 < π * (v - u) := mul_pos Real.pi_pos (sub_pos.mpr huv)
+    simp only [Int.cast_one, one_pow, mul_one]
+    exact Real.exp_lt_exp.mpr (by nlinarith)
 
 /-- **Tannery**: `θ(u) → 1` as `u → ∞`. -/
 theorem tendsto_thetaSum_atTop : Tendsto thetaSum atTop (𝓝 1) := by
@@ -108,8 +111,9 @@ theorem tendsto_thetaSum_atTop : Tendsto thetaSum atTop (𝓝 1) := by
       exact Real.tendsto_exp_atBot.comp hlin
   · filter_upwards [eventually_ge_atTop (1 : ℝ)] with u hu n
     rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
-    exact Real.exp_le_exp.mpr (by nlinarith [mul_nonneg (mul_nonneg Real.pi_pos.le
-      (sq_nonneg (n : ℝ))) (sub_nonneg.mpr hu)])
+    have h0 : 0 ≤ π * (n : ℝ) ^ 2 * (u - 1) :=
+      mul_nonneg (mul_nonneg Real.pi_pos.le (sq_nonneg _)) (sub_nonneg.mpr hu)
+    exact Real.exp_le_exp.mpr (by nlinarith)
 
 /-! ### The arithmetic `h⁰` -/
 
@@ -155,7 +159,7 @@ theorem tendsto_arithH0_atBot : Tendsto arithH0 atBot (𝓝 0) := by
     refine Real.tendsto_exp_atTop.comp ?_
     have : Tendsto (fun d : ℝ => d * (-2)) atBot atTop :=
       tendsto_id.atBot_mul_const_of_neg (by norm_num)
-    exact this.congr fun d => by simp only [id]; ring
+    exact this.congr fun d => mul_comm _ _
   have hlog : Tendsto Real.log (𝓝 1) (𝓝 0) := by
     simpa using (Real.continuousAt_log one_ne_zero).tendsto
   exact hlog.comp (tendsto_thetaSum_atTop.comp hexp)

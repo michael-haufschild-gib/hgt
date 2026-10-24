@@ -390,7 +390,7 @@ The hardest issue is likely **diffuse escape**. There need not be one compact â€
 | Successor selectivity | A quantitative statistic using actual prime data that excludes conductor-three and other surviving models | Universal multiplicativity cocycle |
 | Mixed BÃ©zout covariance | A summable signed gain after correct residue centering | A qualitative small leading coefficient with no usable rate |
 | Repairing-module dynamics | A defined successor action with proved boundary cost | Assuming ideal invariance |
-| Absolute compensation | Control of new horizon cells and cross terms | Summable relative errors alone |
+| Absolute compensation | Extend the proved absolute horizon-tail budget for bounded word errors to the unbounded receiver and its full signed cross terms | Summable relative errors alone, or treating the receiver as a bounded row |
 | Continuum shared allocation | One global certificate including frustration and pole | Reusing local Gamma surplus |
 | Arithmetic anti-collapse | A local depth-mass estimate with correct multiplicity | Total zero count $O(\log T)$ |
 | Source effectivity | An independent section/energy law implying the desired sign | Defining sections by that sign |

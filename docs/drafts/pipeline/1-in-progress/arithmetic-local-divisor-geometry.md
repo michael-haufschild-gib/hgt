@@ -81,4 +81,10 @@ Motzkin–Straus (1969), Theorems 2.1 and 2.6, already give optimal arbitrary qu
 
 ## Remaining arithmetic work
 
+The user has now requested the arithmetic source-positivity problem itself.
+Active investigation: [exact local coefficient source positivity](arithmetic-source-local-coefficient-positivity.md).
+The direct theta-kernel Gram inference is indefinite and its associated-kernel
+reformulation is classical. The complete signed arithmetic estimate remains
+unproved; the completed formalization above is not a proof of that estimate.
+
 Retain all nine original questions and full source quantifiers from the README/report. Next tools must connect the exact unnormalized head to signed arithmetic coefficient functionals, identify selective source restrictions on extremal local shapes, and prove source inequalities rather than add them as assumptions. Central multiplicities and positive tails cannot be deleted before heat. Any new no-go must retain and formalize its strongest nontrivial positive survivor. The programme is not complete while its arithmetic endpoint is open.

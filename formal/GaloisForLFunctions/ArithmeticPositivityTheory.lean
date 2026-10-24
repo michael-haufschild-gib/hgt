@@ -105,3 +105,4 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».WideWindowSelectivit
 import GaloisForLFunctions.«arithmetic-positivity-theory».SourceSelectionInTheFullWeilCone
 import GaloisForLFunctions.«arithmetic-positivity-theory».CommonShiftForTheSuzukiDeficit
 import GaloisForLFunctions.«arithmetic-positivity-theory».SpectralRealisationAndOperatorConstraints
+import GaloisForLFunctions.«arithmetic-positivity-theory».SingleHeightPhaseSelectiveApertureAndPowerSaving

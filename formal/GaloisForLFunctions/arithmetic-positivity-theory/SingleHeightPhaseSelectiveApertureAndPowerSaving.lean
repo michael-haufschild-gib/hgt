@@ -165,10 +165,11 @@ theorem exists_relDense_height_prime_phase_approx (N : ℕ) (θ : ℕ → ℝ) {
     simp only [phaseDiffSum, Complex.re_sum, re_phaseDiffSq]
   have hterm_le : ‖expChar (2 * π * Real.log p) τ - 1‖ ^ 2 ≤ (phaseDiffSum N τ).re := by
     rw [hre_sum]
-    exact Finset.single_le_sum (fun q _ => sq_nonneg _) hp
+    exact Finset.single_le_sum (f := fun q : ℕ => ‖expChar (2 * π * Real.log q) τ - 1‖ ^ 2)
+      (fun q _ => sq_nonneg _) hp
   have hsq_lt : ‖expChar (2 * π * Real.log p) τ - 1‖ ^ 2 < (δ / 2) ^ 2 := by
     have h1 : (phaseDiffSum N τ).re ≤ ‖phaseDiffSum N τ‖ := Complex.re_le_norm _
-    have h2 : (δ / 2) ^ 2 / 2 < (δ / 2) ^ 2 := by positivity
+    have h2 : (δ / 2) ^ 2 / 2 < (δ / 2) ^ 2 := half_lt_self (by positivity)
     linarith
   have hnorm_lt : ‖expChar (2 * π * Real.log p) τ - 1‖ < δ / 2 := by
     nlinarith [norm_nonneg (expChar (2 * π * Real.log p) τ - 1)]
@@ -317,7 +318,7 @@ private theorem re_pxComplex (X t : ℝ) : (pxComplex X t).re = PX X t := by
   simp only [pxComplex, pxComplexSum, pxComplexTerm, Complex.re_ofReal_mul, Complex.re_sum, PX]
   congr 1
   refine Finset.sum_congr rfl fun n _ => ?_
-  rw [Complex.re_ofReal_mul, expChar, Complex.exp_ofReal_mul_I_re, mul_comm (Real.log n) t]
+  rw [expChar, Complex.exp_ofReal_mul_I_re, mul_comm (Real.log n) t]
 
 /-- **Syndetic Return of the Prime Symbol `PX` to Its Height-Zero Extremum `PX X 0`.** For every
 cutoff `X : ℝ` and tolerance `η > 0`, there exists `L > 0` such that every interval `[T₀, T₀ + L]`
@@ -361,7 +362,7 @@ theorem not_exists_eventually_atTop_PX_ge_of_lt_two {c : ℝ} (hc : c < 2) :
     rw [show -(((c + 2) / 2) * Real.sqrt X) / π + 1 / (2 * π) =
         (-(c + 2) * Real.sqrt X + 1) / (2 * π) by field_simp,
       show -((c * Real.sqrt X + C) / π) = (-2 * c * Real.sqrt X - 2 * C) / (2 * π) by
-        field_simp,
+        field_simp; ring,
       div_lt_div_iff_of_pos_right hpi]
     nlinarith [le_abs_self C]
   linarith
@@ -635,7 +636,7 @@ private theorem hasDerivAt_deriv_unitBell (u : ℝ) :
   rw [deriv_unitBell]
   have hq : HasDerivAt (fun u : ℝ => -(5 * u)) (-5) u := by
     have h1 : (fun u : ℝ => -(5 * u)) = (fun u : ℝ => (-5 : ℝ) * id u) := by
-      funext v; simp [id]; ring
+      funext v; simp [id]
     rw [h1]
     exact ((hasDerivAt_id u).const_mul (-5 : ℝ)).congr_deriv (by ring)
   have h3 := hasDerivAt_sub_sq_rpow 1 (3 / 2) (by norm_num) u
@@ -1952,9 +1953,10 @@ theorem exists_lintegral_power_saving_violation_heights_le :
         ∫⁻ ξ, {ξ | M ≤ |(primePolynomial f ⌊Real.exp (2 * a)⌋₊ (ξ + ξ₀)).re|}.indicator
           (fun ξ => ENNReal.ofReal (‖paperFT η (-(2 * π * (ξ : ℂ)))‖ ^ 2)) ξ := by
       refine lintegral_mono fun ξ => ?_
-      by_cases h : M < |(primePolynomial f ⌊Real.exp (2 * a)⌋₊ (ξ + ξ₀)).re|
+      by_cases h : ξ ∈ {ξ | M < |(primePolynomial f ⌊Real.exp (2 * a)⌋₊ (ξ + ξ₀)).re|}
       · rw [Set.indicator_of_mem h,
-          Set.indicator_of_mem (show ξ ∈ {ξ | M ≤ |(primePolynomial f ⌊Real.exp (2 * a)⌋₊ (ξ + ξ₀)).re|} from h.le)]
+          Set.indicator_of_mem (show ξ ∈ {ξ | M ≤ |(primePolynomial f ⌊Real.exp (2 * a)⌋₊ (ξ + ξ₀)).re|} from
+            (Set.mem_setOf_eq.mp h).le)]
       · rw [Set.indicator_of_notMem h]
         exact bot_le
     refine hsub.trans ((lintegral_abs_re_primePolynomial_ge_le_of_separated ha hf hfs hη hηs hX

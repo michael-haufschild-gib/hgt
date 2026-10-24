@@ -94,11 +94,11 @@ theorem normalized_quantileCofactorWork_error_sq_le (ε : SubcriticalDamping) (T
   calc
     _ = (quantileCofactorWork ε (T + 1) r s +
         ((s : ℝ) - (r : ℝ)) * dampedMobiusEnergy ε (T + 1)) ^ 2 /
-        dampedMobiusEnergy ε (T + 1) ^ 2 := by field_simp [hE.ne'] <;> ring
+        dampedMobiusEnergy ε (T + 1) ^ 2 := by field_simp [hE.ne']
     _ ≤ (8 * forcingRemainderBudget ε ^ 2 * dampedMobiusEnergy ε (T + 1) + 2) /
         dampedMobiusEnergy ε (T + 1) ^ 2 :=
       div_le_div_of_nonneg_right hupper (sq_nonneg _)
-    _ = _ := by field_simp [hE.ne'] <;> ring
+    _ = _ := by field_simp [hE.ne']
 
 /-- Escaping receivers retain the signed antipodal pairing on every energy-quantile interval. -/
 theorem admits_or_quantiles_preserve_antipodal_work (ε : SubcriticalDamping) :

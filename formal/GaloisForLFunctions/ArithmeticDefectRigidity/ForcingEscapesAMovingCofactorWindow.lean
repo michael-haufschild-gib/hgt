@@ -47,8 +47,9 @@ theorem tendsto_movingCofactorTailError_div_forcingEnergy_zero (ε : Subcritical
   have hhead := cofactorHeadCoefficient_le ε (forcingCofactorWindow ε T)
   have hcost : (1 + cofactorHeadCoefficient ε (forcingCofactorWindow ε T)) ^ 2 ≤
       (1 + Real.log (forcingEnergy ε T / dampedMobiusEnergy ε T)) ^ 2 :=
-    pow_le_pow_left₀ (by linarith [cofactorHeadCoefficient_nonneg (ε : ℝ)
-      (forcingCofactorWindow ε T)]) (add_le_add (le_refl 1) (hhead.trans hfloor)) 2
+    pow_le_pow_left₀
+      (add_nonneg zero_le_one (cofactorHeadCoefficient_nonneg (ε : ℝ) (forcingCofactorWindow ε T)))
+      (add_le_add (le_refl 1) (hhead.trans hfloor)) 2
   calc
     _ ≤ (1 + cofactorHeadCoefficient ε (forcingCofactorWindow ε T)) ^ 2 *
         (dampedMobiusEnergy ε T / forcingEnergy ε T) := by

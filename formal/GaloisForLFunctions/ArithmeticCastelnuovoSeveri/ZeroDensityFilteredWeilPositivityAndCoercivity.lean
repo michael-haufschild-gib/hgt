@@ -105,20 +105,19 @@ theorem hasCompactSupport_complexModulatedSource {F₀ : ℝ → ℝ}
 
 theorem complexModulatedSource_re (F₀ : ℝ → ℝ) (γ u : ℝ) :
     (complexModulatedSource F₀ γ u).re = cosineSource F₀ γ u := by
-  have hz : -Complex.I * (γ : ℂ) * (u : ℂ) = -(((γ * u : ℝ) : ℂ) * Complex.I) := by
-    push_cast; ring
   unfold complexModulatedSource cosineSource
-  rw [hz, Complex.exp_neg, ← Complex.conj_of_im_eq_zero]
-  swap
-  · simp
-  -- Direct evaluation via `Complex.exp_re` and `Complex.exp_im`
-  all_goals
-    simp [Complex.mul_re, Complex.exp_re, Complex.mul_im, Real.cos_neg]
+  have hz : -Complex.I * (γ : ℂ) * (u : ℂ) = (((-(γ * u)) : ℝ) : ℂ) * Complex.I := by
+    push_cast; ring
+  rw [hz, Complex.exp_mul_I]
+  simp [Complex.mul_re, Real.cos_neg]
 
 theorem complexModulatedSource_im (F₀ : ℝ → ℝ) (γ u : ℝ) :
     (complexModulatedSource F₀ γ u).im = -sineSource F₀ γ u := by
   unfold complexModulatedSource sineSource
-  simp [Complex.mul_im, Complex.exp_im, Complex.exp_re, Complex.mul_re, Real.sin_neg]
+  have hz : -Complex.I * (γ : ℂ) * (u : ℂ) = (((-(γ * u)) : ℝ) : ℂ) * Complex.I := by
+    push_cast; ring
+  rw [hz, Complex.exp_mul_I]
+  simp [Complex.mul_im, Real.sin_neg]
 
 /-- Sign invariance of `fullZeroForm`: `fullZeroForm (-g) = fullZeroForm g`. -/
 theorem fullZeroForm_neg {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) :
@@ -345,7 +344,7 @@ theorem paperFT_cosineSource {F₀ : ℝ → ℝ} (hF₀ : Continuous F₀)
 /-- Two-integration-by-parts bound on `paperFT F₀_ℂ z` for symmetric support `[-A, A]`:
 `‖paperFT F₀_ℂ z‖ ≤ e^{A |z.im|} * envelopeWindowNorm F₀ / (1 + z.re²)`. -/
 theorem norm_paperFT_symm_le {F₀ : ℝ → ℝ} (hF₀ : ContDiff ℝ 2 F₀)
-    (hF₀c : HasCompactSupport F₀) {A : ℝ} (hA : 0 ≤ A)
+    (hF₀c : HasCompactSupport F₀) {A : ℝ} (_hA : 0 ≤ A)
     (hsupp : ∀ u : ℝ, A < |u| → F₀ u = 0) (z : ℂ) :
     ‖paperFT (fun u => (F₀ u : ℂ)) z‖ ≤
       Real.exp (A * |z.im|) * envelopeWindowNorm F₀ / (1 + z.re ^ 2) := by
@@ -388,11 +387,11 @@ theorem norm_paperFT_symm_le {F₀ : ℝ → ℝ} (hF₀ : ContDiff ℝ 2 F₀)
     have hd1 : deriv g = fun u => ((deriv F₀ u : ℝ) : ℂ) := by
       funext u
       exact (Complex.ofRealCLM.hasFDerivAt.comp_hasDerivAt u
-        (h1.2.1 u).hasDerivAt).hasDerivAt.deriv
+        (h1.1 u).hasDerivAt).deriv
     rw [hd1]
     funext u
     exact (Complex.ofRealCLM.hasFDerivAt.comp_hasDerivAt u
-      (h2.2.1 u).hasDerivAt).hasDerivAt.deriv
+      (h2.1 u).hasDerivAt).deriv
   have he2 : ‖paperFT (deriv (deriv g)) z‖ ≤ Real.exp (A * |z.im|) * ∫ u, |deriv (deriv F₀) u| := by
     unfold paperFT
     have hint : Integrable fun u : ℝ => |deriv (deriv F₀) u| :=
@@ -453,7 +452,7 @@ theorem paperFT_depthDiffProfile_eq {F₀ : ℝ → ℝ} (hF₀ : Continuous F�
   ring
 
 /-- Global and quadratic-near-line bounds on `(e^{δ u} - e^{-δ u})²` for `|u| ≤ A` (`0 ≤ A`). -/
-theorem exp_sub_exp_neg_sq_le {A δ u : ℝ} (hA : 0 ≤ A) (hu : |u| ≤ A) :
+theorem exp_sub_exp_neg_sq_le {A δ u : ℝ} (_hA : 0 ≤ A) (hu : |u| ≤ A) :
     (Real.exp (δ * u) - Real.exp (-(δ * u))) ^ 2 ≤ Real.exp (2 * A * |δ|) ∧
       (Real.exp (δ * u) - Real.exp (-(δ * u))) ^ 2 ≤
         4 * A ^ 2 * δ ^ 2 * Real.exp (2 * A * |δ|) := by
@@ -619,7 +618,7 @@ theorem integral_norm_paperFT_depthDiff_add_sq_le {F₀ : ℝ → ℝ} (hF₀ : 
         paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) + (γ : ℂ))‖ ^ 2) ≤
       8 * Real.pi * A ^ 2 * (ρ.re - 1 / 2) ^ 2 * Real.exp (2 * A * |ρ.re - 1 / 2|) *
         (∫ u, F₀ u ^ 2) := by
-  obtain ⟨hint, hb1, hb2⟩ := integral_norm_paperFT_depthDiff_sq_le hF₀ hF₀c hA hsupp ρ (-b) (-a)
+  obtain ⟨hint, _, _⟩ := integral_norm_paperFT_depthDiff_sq_le hF₀ hF₀c hA hsupp ρ (-b) (-a)
   have hwhole : (∫ γ in Icc a b,
       ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ + (γ : ℂ)) -
         paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) + (γ : ℂ))‖ ^ 2) ≤
@@ -730,7 +729,6 @@ theorem continuous_zeta_W_re_modulated {F₀ : ℝ → ℝ} (hF₀ : ContDiff �
     Continuous (fun γ : ℝ =>
       (zetaZeroConfig.W (complexModulatedSource F₀ γ) (complexModulatedSource F₀ γ)).re) ∧
     Continuous (fun γ : ℝ => fullZeroForm (cosineSource F₀ γ)) := by
-  obtain ⟨A, hA_supp⟩ := hF₀c.exists_bound_of_space_R
   -- Compact-support bound `|u| ≤ R₀`
   obtain ⟨R₀, hR₀⟩ := Metric.isBounded_iff_subset_closedBall (0 : ℝ) |>.mp hF₀c.isCompact.isBounded
   set A₀ : ℝ := max 1 R₀
@@ -828,20 +826,22 @@ theorem continuous_zeta_W_re_modulated {F₀ : ℝ → ℝ} (hF₀ : ContDiff �
       linarith
     have hb1 := hbd_pt _ him1
     rw [hre1] at hb1
-    have hb2 := (hbd_pt _ him2).trans (div_le_self (by positivity) (by positivity))
+    have hb2 := (hbd_pt _ him2).trans
+      (div_le_self (mul_nonneg (Real.exp_pos _).le (envelopeWindowNorm_nonneg F₀))
+        (by linarith [sq_nonneg (conj (gammaOf (ρ : ℂ)) - (γ : ℂ)).re]))
     refine ⟨?_, by simpa using hb2⟩
     calc ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ))‖
         ≤ Real.exp (A₀ / 2) * envelopeWindowNorm F₀ * (1 / (1 + ((ρ : ℂ).im - γ) ^ 2)) := by
           simpa [div_eq_mul_one_div] using hb1
       _ ≤ Real.exp (A₀ / 2) * envelopeWindowNorm F₀ *
             (2 * (1 + M) ^ 2 * (2 / ‖(ρ : ℂ)‖ ^ 2)) := by
-          refine mul_le_mul_of_nonneg_left ?_ (by positivity [envelopeWindowNorm_nonneg F₀])
+          refine mul_le_mul_of_nonneg_left ?_
+            (mul_nonneg (Real.exp_pos _).le (envelopeWindowNorm_nonneg F₀))
           exact hinv_peano.trans (mul_le_mul_of_nonneg_left
             (inv_one_add_im_sq_le_two_div_norm_sq hρ.2.1 hρ.2.2) (by positivity))
       _ = Real.exp (A₀ / 2) * envelopeWindowNorm F₀ * (2 * (1 + M) ^ 2) *
             (2 / ‖(ρ : ℂ)‖ ^ 2) := by ring
   set C₀_w : ℝ := Real.exp (A₀ / 2) * envelopeWindowNorm F₀
-  have hC₀_w : 0 ≤ C₀_w := mul_nonneg (Real.exp_pos _).le (envelopeWindowNorm_nonneg F₀)
   refine ⟨?_, ?_⟩
   · -- Continuity of complex quadrature Weil form
     refine hcont_tsum (fun γ ρ =>
@@ -932,25 +932,17 @@ private theorem integral_tsum_nonneg_Icc {ι : Type*} [Countable ι]
     have hsum_int : Summable fun i => ∫ γ in Icc a b, ‖f i γ‖ := by
       refine Summable.of_nonneg_of_le (fun i => integral_nonneg fun _ => norm_nonneg _)
         (fun i => ?_) (hu_sum.mul_left (max 0 (b - a)))
-      have hu_nn : 0 ≤ u i := by
-        by_cases hab : a ≤ b
-        · exact (hf_nn i a).trans (hf_dom i a ⟨le_rfl, hab⟩)
-        · exact (tsum_nonneg fun _ => by positivity) |>.trans_eq rfl |>.trans (by
-            -- Fallback if `Icc a b` is empty: `∫ = 0 ≤ max 0 (b - a) * u i` directly!
-            exact le_rfl)
-      -- Handle empty vs nonempty `Icc a b` cleanly
       by_cases hab : a ≤ b
-      · have hu0 : 0 ≤ u i := (hf_nn i a).trans (hf_dom i a ⟨le_rfl, hab⟩)
-        calc (∫ γ in Icc a b, ‖f i γ‖)
+      · calc (∫ γ in Icc a b, ‖f i γ‖)
             ≤ ∫ _γ in Icc a b, u i :=
               setIntegral_mono_on (hf_cont i).norm.integrableOn_Icc
-                (integrableOn_const (hs := measure_Icc_lt_top.ne)) measurableSet_Icc fun γ hγ => by
+                continuous_const.integrableOn_Icc measurableSet_Icc fun γ hγ => by
                   rw [Real.norm_of_nonneg (hf_nn i γ)]; exact hf_dom i γ hγ
           _ = (b - a) * u i := by
               rw [setIntegral_const, Measure.real, Real.volume_Icc,
                 ENNReal.toReal_ofReal (sub_nonneg.mpr hab), smul_eq_mul]
           _ = max 0 (b - a) * u i := by rw [max_eq_right (sub_nonneg.mpr hab)]
-      · rw [Icc_eq_empty hab, setIntegral_empty, max_eq_left (by linarith), zero_mul]
+      · rw [Set.Icc_eq_empty hab, setIntegral_empty, max_eq_left (by linarith), zero_mul]
     exact ENNReal.tsum_coe_ne_top_iff_summable.2 (NNReal.summable_coe.1 hsum_int.abs)
 
 /-- Master bound on the `Icc Γ (2 * Γ)` integral of the single-shift depth-difference series
@@ -969,7 +961,6 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
     let S_fin := (finite_xiOrdinateWindow (4 * Γ) 0).subset (fun q (hq :
       Γ / 2 ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 4 * Γ) => by
         rw [mem_xiOrdinateWindow_iff, sub_zero]; exact hq.2)
-    (Summable fun ρ => d_sub ρ γ) ∧
     (∀ γ : ℝ, Summable fun ρ => d_sub ρ γ) ∧
     (∀ γ : ℝ, Summable fun ρ => d_add ρ γ) ∧
     ContinuousOn (fun γ => ∑' ρ, d_sub ρ γ) (Icc Γ (2 * Γ)) ∧
@@ -1092,9 +1083,9 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
       have hinv1 : 1 / (1 + (z.im - ω) ^ 2) ≤ 2 * (1 + |ω|) ^ 2 * (1 / (1 + z.im ^ 2)) := by
         rw [mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]; linarith
       have hinv2 : 1 / (1 + (z.im - ω) ^ 2) ≤ 1 :=
-        div_le_one_of_le₀ (by positivity) (by positivity)
+        div_le_one_of_le₀ (by linarith [sq_nonneg (z.im - ω)]) (by positivity)
       calc 1 / (1 + (z.im - ω) ^ 2) ^ 2
-          = (1 / (1 + (z.im - ω) ^ 2)) * (1 / (1 + (z.im - ω) ^ 2)) := by ring
+          = (1 / (1 + (z.im - ω) ^ 2)) * (1 / (1 + (z.im - ω) ^ 2)) := by simp [sq]
         _ ≤ (2 * (1 + |ω|) ^ 2 * (2 / ‖z‖ ^ 2)) * 1 := by
             refine mul_le_mul ?_ hinv2 (by positivity) (by positivity)
             exact hinv1.trans (mul_le_mul_of_nonneg_left
@@ -1143,11 +1134,11 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
         2 * (1 + 2 * Γ) ^ 2 * (1 / (1 + (ρ : ℂ).im ^ 2)) := by
       rw [mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]; linarith
     have hinv2 : 1 / (1 + ((ρ : ℂ).im - ω) ^ 2) ≤ 1 :=
-      div_le_one_of_le₀ (by positivity) (by positivity)
+      div_le_one_of_le₀ (by linarith [sq_nonneg ((ρ : ℂ).im - ω)]) (by positivity)
     have hlor2 : 1 / (1 + ((ρ : ℂ).im - ω) ^ 2) ^ 2 ≤
         4 * (1 + 2 * Γ) ^ 2 * (2 / ‖(ρ : ℂ)‖ ^ 2) := by
       calc 1 / (1 + ((ρ : ℂ).im - ω) ^ 2) ^ 2
-          = (1 / (1 + ((ρ : ℂ).im - ω) ^ 2)) * (1 / (1 + ((ρ : ℂ).im - ω) ^ 2)) := by ring
+          = (1 / (1 + ((ρ : ℂ).im - ω) ^ 2)) * (1 / (1 + ((ρ : ℂ).im - ω) ^ 2)) := by simp [sq]
         _ ≤ (2 * (1 + 2 * Γ) ^ 2 * (2 / ‖(ρ : ℂ)‖ ^ 2)) * 1 := by
             refine mul_le_mul ?_ hinv2 (by positivity) (by positivity)
             exact hinv1.trans (mul_le_mul_of_nonneg_left
@@ -1194,7 +1185,6 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
       (summable_inv_norm_sq_xiZeroCopy.mul_left
         (Γ * (Real.exp A * envelopeWindowNorm F₀ ^ 2 * (16 * (1 + 2 * Γ) ^ 2))))
     set ρ_c : zetaZeroConfig.carrier := xiDivisorZetaCarrierEquiv q.1
-    have h1 := hdom_Icc
     have hpt_q : ∀ γ ∈ Icc Γ (2 * Γ),
         ‖paperFT F_c (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
           paperFT F_c (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 ≤
@@ -1207,9 +1197,6 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
       rw [hrc] at hd
       dsimp [u_dom] at hd
       rw [hrc] at hd
-      have hnn : 0 ≤ ‖paperFT F_c (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
-          paperFT F_c (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 := by positivity
-      -- Divide `hd` by `zetaZeroConfig.mult ρ_c > 0`
       have hm_pos : 0 < (zetaZeroConfig.mult ρ_c : ℝ) := by linarith
       have hd' : (zetaZeroConfig.mult ρ_c : ℝ) *
           (‖paperFT F_c (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
@@ -1232,7 +1219,7 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
           setIntegral_mono_on (by fun_prop : Continuous fun γ : ℝ =>
             ‖paperFT F_c (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
               paperFT F_c (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4).integrableOn_Icc
-            (integrableOn_const (hs := measure_Icc_lt_top.ne)) measurableSet_Icc hpt_q
+            continuous_const.integrableOn_Icc measurableSet_Icc hpt_q
       _ = Γ * (Real.exp A * envelopeWindowNorm F₀ ^ 2 * (16 * (1 + 2 * Γ) ^ 2)) *
             (1 / ‖(q.1 : ℂ)‖ ^ 2) := by
           rw [setIntegral_const, Measure.real, Real.volume_Icc,
@@ -1282,7 +1269,7 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
       (∑' q : XiZeroCopy, g_fn (q.1 : ℂ)) ≤
         (∑ q ∈ G_loc, g_fn (q.1 : ℂ)) +
           (32 * reciprocalSquareWeightTotal / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 := by
-    intro g_fn hg_sum hg_nn hg_rem
+    intro g_fn hg_sum _hg_nn hg_rem
     set v_loc : XiZeroCopy → ℝ := fun q => if q ∈ G_loc then g_fn (q.1 : ℂ) else 0
     set v_rem : XiZeroCopy → ℝ := fun q =>
       (32 / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2)
@@ -1295,17 +1282,20 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
       · dsimp [v_loc]; rw [if_neg hq, zero_add]
         have hnot : |(q.1 : ℂ).im| < Γ / 2 ∨ 4 * Γ < |(q.1 : ℂ).im| := by
           rw [S_fin.mem_toFinset, not_and_or] at hq
-          rcases hq with h1 | h2; [exact Or.inl (not_le.mp h1); exact Or.inr (not_le.mp h2)]
+          rcases hq with h1 | h2
+          · exact Or.inl (not_le.mp h1)
+          · exact Or.inr (not_le.mp h2)
         exact hg_rem q hnot
     calc (∑' q : XiZeroCopy, g_fn (q.1 : ℂ))
         ≤ (∑' q, v_loc q) + ∑' q, v_rem q :=
-          (tsum_le_tsum hle_pt hg_sum (hv_loc.add hv_rem)).trans_eq (hv_loc.tsum_add hv_rem)
+          (hg_sum.tsum_le_tsum hle_pt (hv_loc.add hv_rem)).trans_eq (hv_loc.tsum_add hv_rem)
       _ = (∑ q ∈ G_loc, g_fn (q.1 : ℂ)) +
             (32 * reciprocalSquareWeightTotal / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 := by
           congr 1
           · rw [tsum_eq_sum (s := G_loc) (fun q hq => if_neg hq)]
             exact Finset.sum_congr rfl fun q hq => if_pos hq
-          · dsimp [v_rem, reciprocalSquareWeightTotal]
+          · unfold reciprocalSquareWeightTotal
+            dsimp only [v_rem]
             rw [tsum_mul_left]; ring
   have hg_sub_rem : ∀ q : XiZeroCopy, (|(q.1 : ℂ).im| < Γ / 2 ∨ 4 * Γ < |(q.1 : ℂ).im|) →
       g_sub (q.1 : ℂ) ≤ (32 / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 *
@@ -1338,13 +1328,13 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
           setIntegral_mono_on (by fun_prop : Continuous fun γ : ℝ =>
             ‖paperFT F_c (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
               paperFT F_c (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4).integrableOn_Icc
-            (integrableOn_const (hs := measure_Icc_lt_top.ne)) measurableSet_Icc hpt
+            continuous_const.integrableOn_Icc measurableSet_Icc hpt
       _ = Γ * ((32 / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2)) := by
           rw [setIntegral_const, Measure.real, Real.volume_Icc,
             ENNReal.toReal_ofReal (by linarith : 0 ≤ 2 * Γ - Γ),
             show 2 * Γ - Γ = Γ by ring, smul_eq_mul]
       _ = (32 / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2) := by
-          field_simp
+          field_simp [hΓ0.ne']
   have hg_add_rem : ∀ q : XiZeroCopy, (|(q.1 : ℂ).im| < Γ / 2 ∨ 4 * Γ < |(q.1 : ℂ).im|) →
       g_add (q.1 : ℂ) ≤ (32 / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 *
         (1 / ‖(q.1 : ℂ)‖ ^ 2) := fun q hq => by
@@ -1381,13 +1371,13 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
           setIntegral_mono_on (by fun_prop : Continuous fun γ : ℝ =>
             ‖paperFT F_c (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
               paperFT F_c (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2 / 4).integrableOn_Icc
-            (integrableOn_const (hs := measure_Icc_lt_top.ne)) measurableSet_Icc hpt
+            continuous_const.integrableOn_Icc measurableSet_Icc hpt
       _ = Γ * ((32 / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2)) := by
           rw [setIntegral_const, Measure.real, Real.volume_Icc,
             ENNReal.toReal_ofReal (by linarith : 0 ≤ 2 * Γ - Γ),
             show 2 * Γ - Γ = Γ by ring, smul_eq_mul]
       _ = (32 / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2) := by
-          field_simp
+          field_simp [hΓ0.ne']
   have htsum_sub_eq : (∑' ρ, ∫ γ in Icc Γ (2 * Γ), d_sub ρ γ) = ∑' q : XiZeroCopy, g_sub (q.1 : ℂ) := by
     rw [tsum_xiZeroCopy_eq_zetaCarrier hg_sub_xi_sum]
     refine tsum_congr fun ρ => ?_
@@ -1406,6 +1396,3 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
   · rw [hswap_add, htsum_add_eq]
     exact hbound_xi g_add hg_add_xi_sum
       (fun _ => div_nonneg (integral_nonneg fun _ => sq_nonneg _) (by norm_num)) hg_add_rem
-
--- Wait: note the return tuple above had a duplicate `(Summable fun ρ => d_sub ρ γ)` with unbound `γ`!
--- Let's make sure the statement of `integral_Icc_tsum_depthDiff_div_four_le` has NO unbound `γ`!
