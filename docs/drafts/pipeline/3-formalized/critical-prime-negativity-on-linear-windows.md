@@ -1,8 +1,8 @@
 # Critical prime negativity on linear scale windows
 
 - **ID:** critical-prime-linear-windows-20261022
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Programme:** `srt-apt-biscale-250-contributions-2026-10-22.md`, Q3.
 - **Count:** zero until paper, novelty, Lean and significance audits pass.
 
@@ -215,35 +215,23 @@ in inspected hits. Source-only index; semantic coverage incomplete.
 User directs corpus-only research. Continue novelty checks through the research
 search tool and exact Lean sources; do not use the web.
 
-## Continuation
+## Lean
 
-`RHTower/FactorialCriticalAffineFrequencies.lean` now checks with the required
-foreground leaf command (exit 0). It proves the unequal-harmonic `N/2` gap,
-the `2N` sum-frequency gap, `card(S) ≤ δN+1`, and the resulting coefficient
-absolute-sum-square estimate. The module is wired into `RHTower.lean`; it is a
-supporting phase of this single contribution, not an independently counted result.
+`formal/GaloisForLFunctions/arithmetic-positivity-theory/TheLinearWindowOfTheCriticalPrimeChannel.lean`,
+wired into `ArithmeticPositivityTheory.lean`; axioms `[propext, Classical.choice, Quot.sound]`.
 
-Renewed corpus searches for affine frequency windows, exact resonance identities,
-and growing-dimension critical prime negativity completed without search errors.
-The relevant established results remain fixed-pattern prime negativity, uniform
-absolute window bounds, and affine resonance classification. No matching
-growing-window sign theorem appeared in inspected hits. Compiler applicability
-is still checked from source and by Lean, not inferred from search metadata.
+- `exists_linearWindow_criticalPrimeEnergy_le` — the exact target (sign theorem).
+- `abs_criticalPrimeEnergy_sub_limit_le` — the quantitative comparison
+  `|P − P∞| ≤ ((R+1)(4/π⁴)(H W² + 2(U+4)W τ_K) + (4/π⁴)(K_W√2 + 7) σ_R) E`, with head error
+  `H = linearWindowHeadError K (KR) N δ` (affine comparison plus `6D₀(δ + 1/N)`).
+- `abs_integral_criticalWindowWeight_dilate_sub_limit_le` — one dilation against its resonant limit
+  (box–tail estimate `abs_hasSum_le_box_tail` over the harmonic double series).
+- `criticalPrimeAtom_eq`, `hasSum_correlationLimit_prod`, `abs_correlationLimit_le` — clock form of
+  the actual atom, resonant double series and `r⁻²` decay of the limit.
 
-Drafts exist in `RHTower/FactorialCriticalWindowHarmonicBounds.lean` and
-`RHTower/FactorialCriticalWindowAffineEnergy.lean`. They are not audited or wired.
-The first audit stopped at a stale transitive import of
-`GaloisForLFunctions.RHTower.ThetaCuspFullReflectionSixthModularSeam`; its source
-now lives under `RHTower/ThetaCusp/`. The current
-`ThetaCusp/ThetaCuspFullReflectionEighthHankelSeam.lean` checks successfully, but
-its copied binary retains the old import. Plain `lean <file>` emits no replacement
-binary. The root `AGENTS.md` now explicitly reiterates no `-o`/`-i` and no
-permission stop for missing imports; the earlier exception request is withdrawn.
-Continue exact named-module checks with the prescribed command. Do not emit
-replacement binaries through another mechanism to bypass that restriction.
+The head estimates are the RHTower modules `FactorialCriticalWindowHarmonicBounds`,
+`FactorialCriticalWindowAffineComparison` and `FactorialCriticalWindowAffineHead`; the leaf supplies
+the harmonic and prime series assembly and the order of choices `R, K, δ, N₀`.
 
-`RHTower/FactorialCriticalWindowAffineHead.lean` contains the next draft: affine
-product-to-sum, exact slow resonant mass, inverse-scale matrix entry bounds, and
-the relative-window coefficient-square bound. This draft has not passed Lean.
-The remaining full theorem requires harmonic and prime series assembly.
-Keep helper results grouped as one contribution; they do not count individually.
+## Log
+- 2026-10-24 — formalized (series assembly on top of the RHTower head modules); moved to 3-formalized.

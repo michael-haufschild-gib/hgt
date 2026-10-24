@@ -1,5 +1,7 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.HeightUniformVisibilityAndOffLineDensity
 import GaloisForLFunctions.SquareRootThreshold.OrderOfTheExplicitVisibilityLags
+import GaloisForLFunctions.SquareRootThreshold.AttainedTopsAreVisibleWithoutSeparation
+import GaloisForLFunctions.SquareRootThreshold.TheContactApertureOfTheGroundEnergyPath
 
 /-!
 # Eliminating the `log γ₀` Turán Tail Factor Without Bounded On-Line Density
@@ -1784,6 +1786,7 @@ theorem nearTopHeightOffLine_conditions {M : ℕ} {w γ : ℝ} (hw : 0 < w)
     mul_le_mul_of_nonneg_left hE.le (by positivity)
   have hMK0 : (M : ℝ) * K₀ * Real.exp 1 ≤ ((M : ℝ) + 1) * K₀ * 3 :=
     (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (by linarith) hK0) hE0.le).trans hMK
+  have hMKpos : 0 ≤ ((M : ℝ) + 1) * K₀ := by positivity
   have hMle : (M : ℝ) * K₀ ≤ ((M : ℝ) + 1) * K₀ := by linarith
   have hMle2 : 2 * (M : ℝ) * K₀ * (2 * Real.exp 1) ≤ 12 * ((M : ℝ) + 1) * K₀ := by
     calc 2 * (M : ℝ) * K₀ * (2 * Real.exp 1) = 4 * ((M : ℝ) * K₀ * Real.exp 1) := by ring
@@ -2641,5 +2644,178 @@ theorem zeta_depth_gap_of_loglog_lag_positivity_of_offLineCopiesLocallyBounded {
   obtain ⟨v, hv, hneg⟩ :=
     zeta_near_top_visible_at_loglog_lag_of_offLineCopiesLocallyBounded hM hw hz₀ hre₀ hTw hV h
   exact absurd (hpos v hv) (not_le.mpr hneg)
+
+/-! ### 5. Corollaries for attained tops, twisted prime windows, contact aperture, and the
+unconditional doubly-logarithmic visibility / off-line clustering dichotomy -/
+
+theorem le_recordLagOffLine (M : ℕ) {w : ℝ} (hw : 0 < w) (a : ℝ) {σ : ℝ} (hσ : 0 < σ) :
+    w ≤ recordLagOffLine M w a σ := by
+  unfold recordLagOffLine
+  have hJ0 : 0 ≤ bumpMass w := integral_nonneg fun u => abs_nonneg _
+  have h1 : 0 ≤ 4 / σ * (13 * π * recordOrderOffLine M w a + 4) := by positivity
+  have h2 : 0 ≤ 8 * w * Real.exp (w / 2) * bumpMass w / recordScaleOffLine M a :=
+    div_nonneg (mul_nonneg (by positivity) hJ0) (Real.sqrt_nonneg _)
+  linarith
+
+theorem le_oneParamLagOffLine (M : ℕ) {w : ℝ} (hw : 0 < w) (η : ℝ) {δ₀ : ℝ} (hδ : 0 < δ₀) :
+    w ≤ oneParamLagOffLine M w η δ₀ :=
+  (le_recordLagOffLine M hw (2 * η ^ 2 / Real.exp 1) (half_pos hδ)).trans (le_max_left _ _)
+
+theorem le_nearTopLagOffLine (M : ℕ) {w : ℝ} (hw : 0 < w) (W_on : ℝ) {δ₀ : ℝ} (hδ : 0 < δ₀) :
+    w ≤ nearTopLagOffLine M w W_on δ₀ := by
+  unfold nearTopLagOffLine
+  have hJ0 : 0 ≤ bumpMass w := integral_nonneg fun u => abs_nonneg _
+  have h1 : 0 ≤ 8 / δ₀ * (13 * π * nearTopOrderOffLine M w W_on + 4 +
+      |Real.log (4 * M * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / centerAmplitude w ^ 2)|) := by
+    positivity
+  have h2 : 0 ≤ 8 * w * Real.exp (w / 2) * bumpMass w / nearTopScaleOffLine M w :=
+    div_nonneg (mul_nonneg (by positivity) hJ0) (Real.sqrt_nonneg _)
+  linarith
+
+theorem le_nearTopLogLogLagOffLine (M : ℕ) {w : ℝ} (hw : 0 < w) (γ₀ : ℝ) {δ₀ : ℝ} (hδ : 0 < δ₀) :
+    w ≤ nearTopLogLogLagOffLine M w γ₀ δ₀ :=
+  le_nearTopLagOffLine M hw _ hδ
+
+/-- The height-free one-parameter horizon `V_{0,off}(M, w, z₀)` of an off-line zero `½ + z₀` under
+`OffLineCopiesLocallyBounded M`, eliminating `oneParamRecordHeight` from `oneParamHorizon`. -/
+def oneParamHorizonOffLine (M : ℕ) (w : ℝ) (z₀ : ℂ) : ℝ :=
+  oneParamLagOffLine M w ‖paperFT (scaledBump w) (-(I * z₀))‖ z₀.re
+
+/-- **An attained top is seen by `P_v` at its height-free horizon under
+`OffLineCopiesLocallyBounded M`.** -/
+theorem one_param_attained_top_visible_at_horizon_of_offLineCopiesLocallyBounded {M : ℕ}
+    (hM : OffLineCopiesLocallyBounded M) {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
+    (hz₀ : (1 / 2 + z₀) ∈ zetaZeroConfig.carrier) (hre₀ : 0 < z₀.re)
+    (hh : paperFT (scaledBump w) (-(I * z₀)) ≠ 0)
+    (htop : ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re - 1 / 2 ≤ z₀.re) :
+    ∃ v ∈ Icc (0 : ℝ) (oneParamHorizonOffLine M w z₀), (zetaZeroConfig.W
+      (twoBump (modScaledBump w 0) v (-1)) (twoBump (modScaledBump w 0) v (-1))).re < 0 := by
+  have hV0 : 0 < oneParamHorizonOffLine M w z₀ :=
+    lt_of_lt_of_le hw (le_oneParamLagOffLine M hw _ hre₀)
+  refine one_param_near_top_visible_at_explicit_lag_of_offLineCopiesLocallyBounded hM hw hz₀ hre₀
+    (norm_pos_iff.mpr hh) le_rfl le_rfl fun ρ hρ => ?_
+  have := htop ρ hρ
+  have : 0 < 1 / oneParamHorizonOffLine M w z₀ := by positivity
+  linarith
+
+/-- **An attained top is seen by the modulated family at the explicit on-line-mass lag without any
+separation or fourth-power height hypothesis.** -/
+theorem zeta_attained_top_visible_at_explicit_onLineMass_lag {M : ℕ}
+    (hM : OffLineCopiesLocallyBounded M) {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
+    (hz₀ : (1 / 2 + z₀) ∈ zetaZeroConfig.carrier) (hre₀ : 0 < z₀.re)
+    (hTw : nearTopHeightOffLine M w ≤ z₀.im) {W_on : ℝ}
+    (hW_on : onLineEvenMass w z₀.im ≤ W_on)
+    (htop : ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re - 1 / 2 ≤ z₀.re) :
+    ∃ v ∈ Icc (0 : ℝ) (nearTopLagOffLine M w W_on z₀.re), (zetaZeroConfig.W
+      (twoBump (modScaledBump w z₀.im) v (-1)) (twoBump (modScaledBump w z₀.im) v (-1))).re < 0 := by
+  have hV0 : 0 < nearTopLagOffLine M w W_on z₀.re :=
+    lt_of_lt_of_le hw (le_nearTopLagOffLine M hw W_on hre₀)
+  refine zeta_near_top_visible_at_explicit_onLineMass_lag hM hw hz₀ hre₀ hTw hW_on le_rfl
+    fun ρ hρ => ?_
+  have := htop ρ hρ
+  have : 0 < 1 / nearTopLagOffLine M w W_on z₀.re := by positivity
+  linarith
+
+/-- **An attained top is seen by the modulated family at the doubly-logarithmic lag
+`nearTopLogLogLagOffLine M w z₀.im z₀.re` without any separation or fourth-power height
+hypothesis.** -/
+theorem zeta_attained_top_visible_at_loglog_lag_of_offLineCopiesLocallyBounded {M : ℕ}
+    (hM : OffLineCopiesLocallyBounded M) {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
+    (hz₀ : (1 / 2 + z₀) ∈ zetaZeroConfig.carrier) (hre₀ : 0 < z₀.re)
+    (hTw : nearTopHeightOffLine M w ≤ z₀.im)
+    (htop : ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re - 1 / 2 ≤ z₀.re) :
+    ∃ v ∈ Icc (0 : ℝ) (nearTopLogLogLagOffLine M w z₀.im z₀.re), (zetaZeroConfig.W
+      (twoBump (modScaledBump w z₀.im) v (-1)) (twoBump (modScaledBump w z₀.im) v (-1))).re < 0 :=
+  zeta_attained_top_visible_at_explicit_onLineMass_lag hM hw hz₀ hre₀ hTw
+    (onLineEvenMass_le_log hw z₀.im) htop
+
+/-- **Twisted prime windows see near-top zeros at the doubly-logarithmic lag without bounded on-line
+density.** For `2w < log 2`, under `OffLineCopiesLocallyBounded M`, any `1/V`-near-top zero `½ + z₀`
+above `nearTopHeightOffLine M w` with `V ≥ nearTopLogLogLagOffLine M w z₀.im z₀.re` makes the
+twisted prime-window functional `Re lagPrimeWindowRHS(v, w, ·)` negative at some `v ∈ [0, V]`. -/
+theorem zeta_near_top_primeWindow_neg_of_offLineCopiesLocallyBounded {M : ℕ}
+    (hM : OffLineCopiesLocallyBounded M) {w : ℝ} (hw : 0 < w) (hw2 : 2 * w < Real.log 2) {z₀ : ℂ}
+    (hz₀ : (1 / 2 + z₀) ∈ zetaZeroConfig.carrier) (hre₀ : 0 < z₀.re)
+    (hTw : nearTopHeightOffLine M w ≤ z₀.im)
+    {V : ℝ} (hV : nearTopLogLogLagOffLine M w z₀.im z₀.re ≤ V)
+    (htop : ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re - 1 / 2 ≤ z₀.re + 1 / V) :
+    ∃ v ∈ Icc (0 : ℝ) V, (lagPrimeWindowRHS v w (EF.weilTest
+      (twoBump (modScaledBump w z₀.im) v (-1)) (twoBump (modScaledBump w z₀.im) v (-1)))).re < 0 := by
+  obtain ⟨v, hv, hneg⟩ :=
+    zeta_near_top_visible_at_loglog_lag_of_offLineCopiesLocallyBounded hM hw hz₀ hre₀ hTw hV htop
+  refine ⟨v, hv, ?_⟩
+  rwa [zeta_W_eq_literatureRHS (f := twoBump (modScaledBump w z₀.im) v (-1))
+    (contDiff_bumpTest (contDiff_modScaledBump_two w z₀.im) v ![1, -1])
+    (hasCompactSupport_twoBump (hasCompactSupport_of_support_subset_abs
+      (modScaledBump_support hw z₀.im)) v (-1)),
+    literatureRHS_twoBump_eq_lagPrimeWindowRHS (modScaledBump_support hw z₀.im) hw2 hv.1] at hneg
+
+/-- **Near-top zeros force negative ground energy beyond the height-free aperture
+`V / 2 + w` under `OffLineCopiesLocallyBounded M`.** -/
+theorem ccmRestrictedWeilGroundEnergy_neg_of_near_top_zero_of_offLineCopiesLocallyBounded {M : ℕ}
+    (hM : OffLineCopiesLocallyBounded M) {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
+    (hz₀ : (1 / 2 + z₀) ∈ zetaZeroConfig.carrier) (hre₀ : 0 < z₀.re)
+    {η : ℝ} (hη : 0 < η) (hηle : η ≤ ‖paperFT (scaledBump w) (-(I * z₀))‖)
+    {V : ℝ} (hV : oneParamLagOffLine M w η z₀.re ≤ V)
+    (htop : ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re - 1 / 2 ≤ z₀.re + 1 / V)
+    (A : SuzukiPositiveAperture) (hA : V / 2 + w ≤ A.1) :
+    ccmRestrictedWeilGroundEnergy A < 0 := by
+  obtain ⟨v, hv, hneg⟩ :=
+    one_param_near_top_visible_at_explicit_lag_of_offLineCopiesLocallyBounded hM hw hz₀ hre₀ hη
+      hηle hV htop
+  have h1 := ccmRestrictedWeilGroundEnergy_neg_of_re_W_twoBump_neg hw hv.1 hneg
+  have h2 := ccmRestrictedWeilGroundEnergy_antitone (a := ⟨v / 2 + w, by have := hv.1; positivity⟩)
+    (b := A) (show v / 2 + w ≤ A.1 by linarith [hv.2])
+  exact lt_of_le_of_lt h2 h1
+
+/-- **Height-free upper bound on the contact aperture of the ground-energy path.** Under
+`OffLineCopiesLocallyBounded M`, any `1/V`-near-top zero `½ + z₀` right of the line with
+`0 < η ≤ ‖h_w(-i z₀)‖` and `V ≥ oneParamLagOffLine M w η z₀.re` bounds `zetaContactAperture` above
+by `V / 2 + w`, eliminating `oneParamRecordHeight` and `recordHeightOf` from
+`zetaContactAperture_le_of_near_top_zero`. -/
+theorem zetaContactAperture_le_of_near_top_zero_of_offLineCopiesLocallyBounded {M : ℕ}
+    (hM : OffLineCopiesLocallyBounded M) {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
+    (hz₀ : (1 / 2 + z₀) ∈ zetaZeroConfig.carrier) (hre₀ : 0 < z₀.re)
+    {η : ℝ} (hη : 0 < η) (hηle : η ≤ ‖paperFT (scaledBump w) (-(I * z₀))‖)
+    {V : ℝ} (hV : oneParamLagOffLine M w η z₀.re ≤ V)
+    (htop : ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re - 1 / 2 ≤ z₀.re + 1 / V) :
+    zetaContactAperture ≤ V / 2 + w := by
+  refine csSup_le groundEnergyNonnegApertures_nonempty fun A hA => ?_
+  obtain ⟨hA0, hμ⟩ := hA
+  by_contra hcon
+  exact absurd hμ (not_le.mpr
+    (ccmRestrictedWeilGroundEnergy_neg_of_near_top_zero_of_offLineCopiesLocallyBounded hM hw hz₀
+      hre₀ hη hηle hV htop ⟨A, hA0⟩ (not_le.mp hcon).le))
+
+/-- **Unconditional Doubly-Logarithmic Visibility / Off-Line Clustering Dichotomy for `ζ`.**
+Without any bound on on-line zero density, either:
+1. there is a uniform local off-line multiplicity bound `M` (`OffLineCopiesLocallyBounded M`) such
+   that the `log γ₀` factor in the Riemann–von Mangoldt tail of the Turán inequality is completely
+   eliminated (`39 M`), every `1/V`-near-top zero `½ + z₀` above `nearTopHeightOffLine M w` is
+   visible at the doubly-logarithmic lag `V ≥ nearTopLogLogLagOffLine M w z₀.im z₀.re`, and both the
+   Castelnuovo–Severi degree-defect rate and `polarGroundEnergyRate` equal `zetaZeroWidth`; or
+2. the off-line divisor copies of `ξ` (`Re ρ ≠ ½`) cluster without bound in unit height windows
+   (`∀ M : ℕ, ¬ OffLineCopiesLocallyBounded M`), forcing infinitely many off-line zeros. -/
+theorem near_top_visible_at_loglog_lag_or_offLine_cluster :
+    ((∃ M : ℕ, OffLineCopiesLocallyBounded M ∧
+      polarGroundEnergyRate = zetaZeroWidth ∧
+      ∀ (w : ℝ), 0 < w → ∀ (z₀ : ℂ), (1 / 2 + z₀) ∈ zetaZeroConfig.carrier → 0 < z₀.re →
+        nearTopHeightOffLine M w ≤ z₀.im →
+        ∀ (V : ℝ), nearTopLogLogLagOffLine M w z₀.im z₀.re ≤ V →
+        (∀ ρ ∈ zetaZeroConfig.carrier, ρ.re - 1 / 2 ≤ z₀.re + 1 / V) →
+        ∃ v ∈ Icc (0 : ℝ) V, (zetaZeroConfig.W (twoBump (modScaledBump w z₀.im) v (-1))
+          (twoBump (modScaledBump w z₀.im) v (-1))).re < 0) ∨
+    ((∀ M : ℕ, ¬ OffLineCopiesLocallyBounded M) ∧
+      {q : XiZeroCopy | (xiSpectralPoint q).im ≠ 0}.Infinite)) := by
+  by_cases hM : ∃ M : ℕ, OffLineCopiesLocallyBounded M
+  · obtain ⟨M, hM⟩ := hM
+    left
+    exact ⟨M, hM, polarGroundEnergyRate_eq_zetaZeroWidth_of_offLineCopiesLocallyBounded hM,
+      fun _ hw _ hz₀ hre₀ hTw _ hV htop =>
+        zeta_near_top_visible_at_loglog_lag_of_offLineCopiesLocallyBounded hM hw hz₀ hre₀ hTw hV
+          htop⟩
+  · right
+    push Not at hM
+    exact ⟨hM, fun hfin => hM _ (offLineCopiesLocallyBounded_of_finite hfin)⟩
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

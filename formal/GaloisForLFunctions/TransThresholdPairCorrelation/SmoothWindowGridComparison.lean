@@ -283,9 +283,12 @@ theorem integral_lorentz_mul_nuX_sq_le (hF : LocalHypsCoreW cϱ p F) {C₀ : ℝ
         integral_mono hIν (((hIμ.const_mul 3).add (hIPi.const_mul 3)).add (hIP.const_mul 3)) hpt
     _ = 3 * ((∫ τ, w τ * Zeta23.mu τ ^ 2) + (∫ τ, w τ * Zeta23.PiX p.X τ ^ 2)
           + ∫ τ, w τ * Zeta23.PX p.X τ ^ 2) := by
-        rw [integral_add ((hIμ.const_mul 3).add (hIPi.const_mul 3)) (hIP.const_mul 3),
-          integral_add (hIμ.const_mul 3) (hIPi.const_mul 3), integral_const_mul, integral_const_mul,
-          integral_const_mul]; ring
+        rw [integral_add (f := fun τ => 3 * (w τ * Zeta23.mu τ ^ 2) + 3 * (w τ * Zeta23.PiX p.X τ ^ 2))
+            (g := fun τ => 3 * (w τ * Zeta23.PX p.X τ ^ 2))
+            ((hIμ.const_mul 3).add (hIPi.const_mul 3)) (hIP.const_mul 3),
+          integral_add (f := fun τ => 3 * (w τ * Zeta23.mu τ ^ 2))
+            (g := fun τ => 3 * (w τ * Zeta23.PiX p.X τ ^ 2)) (hIμ.const_mul 3) (hIPi.const_mul 3),
+          integral_const_mul, integral_const_mul, integral_const_mul]; ring
     _ ≤ _ := by
         have : (∫ τ, w τ * Zeta23.PX p.X τ ^ 2)
             ≤ 4 * π * Real.sqrt (Real.exp 1) * Real.log p.X
@@ -358,7 +361,7 @@ theorem rho_le_of_dist (hF : LocalHypsCoreW cϱ p F) (hT : 0 < p.T) {D : ℝ} (h
     have hw0 : p.w ≠ 0 := by linarith [hF.one_le_w]
     have h4 : (D - 1) ^ 4 ≤ (p.tau p.d - τ) ^ 4 := pow_le_pow_left₀ hD1.le hdist 4
     have e : (cϱ / (p.w * (p.tau p.d - τ) ^ 2)) ^ 2 = (cϱ / p.w) ^ 2 * (1 / (p.tau p.d - τ) ^ 4) := by
-      field_simp [hpos.ne']; ring
+      field_simp [hpos.ne']
     rw [e]
     exact mul_le_mul_of_nonneg_left (one_div_le_one_div_of_le (by positivity) h4) (sq_nonneg _)
   calc rho p F τ ≤ _ := hmaj
@@ -366,5 +369,182 @@ theorem rho_le_of_dist (hF : LocalHypsCoreW cϱ p F) (hT : 0 < p.T) {D : ℝ} (h
         + (cϱ / p.w) ^ 2 * (1 / D ^ 4 + 1 / (3 * p.h * D ^ 3))
         + (cϱ / p.w) ^ 2 * (1 / (D - 1) ^ 4) := add_le_add (add_le_add hW1 hW2) hpsi
     _ = _ := by ring
+
+/-! ## 4. The weighted Frobenius sum against the smooth form -/
+
+/-- **The weighted Frobenius sum is `L²` times the smooth form, up to two explicit errors.**
+For a height weight `0 ≤ W ≤ 1`, `ℓ`-Lipschitz (`ℓ ≤ 1`), supported in `[s₀, s₁] ⊆ [T, 2T]`
+where the lattice deficit is at most `R₀²`, and a continuous density with
+`|ν| ≤ B + log⁺(|τ|/4T)`:
+`|Σ_{k,l} W(τ_k)W(τ_l) G_kl² − L² ∬ W(τ)² Φ(τ − τ')² ν ν'|
+  ≤ L²A²(π C_Ω + 2π√ℓ C_σ) ∫ ν² lorentz + L R₀ B (πB + c₁)(A² dπ + LA(s₁ − s₀))`,
+with `A = L + c_ϱ/w`, `C_Ω = 40π√ℓ/h + 32d/9T²`, `C_σ = 20π/h + 32d/9T²`, `c₁ = ∫ lor1 √|·|`. -/
+theorem abs_weightedFrobenius_sub_smoothForm_le (hF : LocalHypsCoreW cϱ p F) (hT : 2 * π ≤ p.T)
+    {ℓ : ℝ} (hℓ : 0 < ℓ) (hℓ1 : ℓ ≤ 1) {W : ℝ → ℝ} (hW : HeightWeight ℓ W) {s₀ s₁ : ℝ}
+    (hs : s₀ ≤ s₁) (hS₀ : p.T ≤ s₀) (hS₁ : s₁ ≤ 2 * p.T) (hWS : ∀ τ, τ ∉ Icc s₀ s₁ → W τ = 0)
+    {R₀ : ℝ} (hR₀ : 0 < R₀) (hρ : ∀ τ ∈ Icc s₀ s₁, rho p F τ ≤ R₀ ^ 2)
+    (hνc : Continuous ν) (hB : 0 ≤ B) (hν : NuBound p B ν) :
+    |∑ k : Fin p.d, ∑ l : Fin p.d, gridW p W k * gridW p W l * GentryNu ν p F k l ^ 2
+        - p.L ^ 2 * smoothForm F.Phi (fun τ => W τ ^ 2) ν ν|
+      ≤ p.L ^ 2 * (p.L + cϱ / p.w) ^ 2
+          * (π * (40 * π * Real.sqrt ℓ / p.h + 32 * p.d / (9 * p.T ^ 2))
+            + 2 * π * Real.sqrt ℓ * (20 * π / p.h + 32 * p.d / (9 * p.T ^ 2)))
+          * (∫ τ, lorentzW p.T (3 * p.T / 2) τ * ν τ ^ 2)
+        + p.L * R₀ * B * (π * B + ∫ r, lor1 r * Real.sqrt |r|)
+          * ((p.L + cϱ / p.w) ^ 2 * (p.d * π) + p.L * (p.L + cϱ / p.w) * (s₁ - s₀)) := by
+  have hT1 : 1 ≤ p.T := by linarith [Real.pi_gt_three]
+  have hT0 : 0 < p.T := by linarith
+  have hL := hF.L_pos
+  have hh := h_pos hF
+  set A := p.L + cϱ / p.w with hA
+  have hA0 : 0 ≤ A := by
+    have := hF.four_le_cϱ; have := hF.one_le_w; rw [hA]; positivity
+  set c₁ := ∫ r, lor1 r * Real.sqrt |r| with hc₁
+  have hc₁0 : 0 ≤ c₁ := integral_nonneg fun r => mul_nonneg (lor1_pos r).le (Real.sqrt_nonneg _)
+  set Iν := ∫ τ, lorentzW p.T (3 * p.T / 2) τ * ν τ ^ 2 with hIν
+  have hWc := hW.continuous
+  have hW2c : Continuous fun τ => W τ ^ 2 := hWc.pow 2
+  -- the three integrands
+  set f₀ : ℝ × ℝ → ℝ := trG2integrandW p F ν (gridW p W) with hf₀
+  set f₁ : ℝ × ℝ → ℝ := fun q => W q.1 ^ 2 * trG2integrand p F ν q with hf₁
+  set f₂ : ℝ × ℝ → ℝ := fun q => W q.1 ^ 2 * Kinf p F q.1 q.2 ^ 2 * ν q.1 * ν q.2 with hf₂
+  have hI0 : Integrable f₀ := by
+    have h : Integrable (fun q : ℝ × ℝ => ∑ k : Fin p.d, ∑ l : Fin p.d,
+        gridW p W k * gridW p W l * (gkl p F ν k l q.1 * gkl p F ν k l q.2)) :=
+      integrable_finsetSum _ fun k _ => integrable_finsetSum _ fun l _ =>
+        ((gkl_integrable hνc hF hν hT1 hB k l).mul_prod (gkl_integrable hνc hF hν hT1 hB k l)).const_mul _
+    exact h.congr (Eventually.of_forall fun q => sum_W_gkl_mul_gkl _ q)
+  have hI1 : Integrable f₁ := by
+    have h := (trG2integrand_integrable hνc hF hν hB hT).mul_bdd (c := 1)
+      ((hW2c.comp continuous_fst).aestronglyMeasurable) (Eventually.of_forall fun q => by
+        rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+        have := hW.nonneg q.1; have := hW.le_one q.1; simp only [Function.comp]; nlinarith)
+    exact h.congr (Eventually.of_forall fun q => by simp only [hf₁, Function.comp]; ring)
+  have hgrowth : ∀ τ τ', W τ ^ 2 ≠ 0 → |ν τ'| ≤ (B + 1) * (1 + |τ - τ'|) := by
+    intro τ τ' hτ
+    have hτS : τ ∈ Icc s₀ s₁ := by
+      by_contra h; exact hτ (by rw [hWS τ h]; norm_num)
+    have h := abs_le_of_nuBound hν hT1 ⟨hS₀.trans hτS.1, hτS.2.trans hS₁⟩ τ'
+    have hsq : Real.sqrt |τ' - τ| ≤ 1 + |τ - τ'| := by
+      rw [abs_sub_comm]
+      refine (Real.sqrt_le_sqrt (by nlinarith [abs_nonneg (τ - τ')] :
+        |τ - τ'| ≤ (1 + |τ - τ'|) ^ 2)).trans ?_
+      rw [Real.sqrt_sq (by positivity)]
+    nlinarith [abs_nonneg (τ - τ')]
+  have hW2ν : Integrable fun τ => W τ ^ 2 * ν τ :=
+    integrable_window_mul hW2c (s₀ := s₀) (s₁ := s₁)
+      (fun τ hτ => by rw [hWS τ hτ]; norm_num) hνc
+  have hI2 : Integrable f₂ := by
+    have h := (integrable_smoothForm_integrand (Φ := F.Phi) hF.Phi_contDiff.continuous
+      hF.Phi_sq_integrable hF.Phi_sq_mul_abs_integrable hW2c hνc hνc hW2ν hgrowth).const_mul (p.L ^ 2)
+    refine h.congr (Eventually.of_forall fun q => ?_)
+    simp only [hf₂, Kinf]; ring
+  -- the decomposition
+  have hsplit : (∫ q, f₀ q) - p.L ^ 2 * smoothForm F.Phi (fun τ => W τ ^ 2) ν ν
+      = (∫ q : ℝ × ℝ, (KfunW p F (gridW p W) q.1 q.2 ^ 2 - W q.1 ^ 2 * Kfun p F q.1 q.2 ^ 2)
+          * ν q.1 * ν q.2)
+        + ∫ q : ℝ × ℝ, W q.1 ^ 2 * (Kfun p F q.1 q.2 ^ 2 - Kinf p F q.1 q.2 ^ 2) * ν q.1 * ν q.2 := by
+    have e2 : p.L ^ 2 * smoothForm F.Phi (fun τ => W τ ^ 2) ν ν = ∫ q, f₂ q := by
+      unfold smoothForm
+      rw [← integral_const_mul]
+      exact integral_congr_ae (Eventually.of_forall fun q => by simp only [hf₂, Kinf]; ring)
+    rw [e2, ← integral_sub hI0 hI2]
+    have ea : (fun q : ℝ × ℝ => (KfunW p F (gridW p W) q.1 q.2 ^ 2 - W q.1 ^ 2 * Kfun p F q.1 q.2 ^ 2)
+        * ν q.1 * ν q.2) = fun q => f₀ q - f₁ q := by
+      funext q; simp only [hf₀, hf₁, trG2integrandW, trG2integrand]; ring
+    have eb : (fun q : ℝ × ℝ => W q.1 ^ 2 * (Kfun p F q.1 q.2 ^ 2 - Kinf p F q.1 q.2 ^ 2)
+        * ν q.1 * ν q.2) = fun q => f₁ q - f₂ q := by
+      funext q; simp only [hf₁, hf₂, trG2integrand]; ring
+    rw [ea, eb, ← integral_add (f := fun q => f₀ q - f₁ q) (g := fun q => f₁ q - f₂ q)
+      (hI0.sub hI1) (hI1.sub hI2)]
+    exact integral_congr_ae (Eventually.of_forall fun q => by ring)
+  rw [eq_trG2intW hνc hF hν hB hT, hsplit]
+  -- first comparison
+  have hνi2 := integrable_lor1_mul_sq hν hB hT0 hνc
+  have hc1 := abs_integral_KfunW_sq_sub_le hF hℓ hW hνc hνi2
+  have hcT : |3 * p.T / 2| ≤ 4 * p.T := by rw [abs_of_pos (by positivity)]; linarith
+  have hIν0 := integrable_lorentzW_mul_sq hν hB hT0 hνc hcT
+  have hcell : ∫ τ, ν τ ^ 2 * ∑ k : Fin p.d, cellW p ℓ k τ
+      ≤ (40 * π * Real.sqrt ℓ / p.h + 32 * p.d / (9 * p.T ^ 2)) * Iν := by
+    rw [hIν, ← integral_const_mul]
+    refine integral_mono ?_ (hIν0.const_mul _) fun τ => ?_
+    · refine (integrable_finsetSum (Finset.univ : Finset (Fin p.d)) fun k _ => (hνi2 (p.tau k)).mono'
+        (((hνc.pow 2).mul (continuous_cellW ℓ k)).aestronglyMeasurable)
+        (Eventually.of_forall fun τ => ?_)).congr (Eventually.of_forall fun τ => ?_)
+      · rw [Real.norm_eq_abs]
+        show |ν τ ^ 2 * cellW p ℓ k τ| ≤ lor1 (τ - p.tau k) * ν τ ^ 2
+        rw [abs_of_nonneg (mul_nonneg (sq_nonneg _) (cellW_nonneg hℓ.le k τ)), mul_comm]
+        exact mul_le_mul_of_nonneg_right (cellW_le_lor1 ℓ k τ) (sq_nonneg _)
+      · simp only [Finset.mul_sum, Pi.mul_apply, Pi.pow_apply]
+    · have h := sum_cellW_le_lorentz hF hT0 hℓ hℓ1 τ
+      have := mul_le_mul_of_nonneg_left h (sq_nonneg (ν τ))
+      linarith
+  have hlat : ∫ τ, ν τ ^ 2 * ∑ k : Fin p.d, lor1 (τ - p.tau k)
+      ≤ (20 * π / p.h + 32 * p.d / (9 * p.T ^ 2)) * Iν := by
+    rw [hIν, ← integral_const_mul]
+    refine integral_mono ?_ (hIν0.const_mul _) fun τ => ?_
+    · refine (integrable_finsetSum (Finset.univ : Finset (Fin p.d)) fun k _ => (hνi2 (p.tau k))).congr
+        (Eventually.of_forall fun τ => ?_)
+      simp only [Finset.mul_sum]; exact Finset.sum_congr rfl fun k _ => by ring
+    · have h := sum_lor1_tau_le_lorentz hF hT0 τ
+      have := mul_le_mul_of_nonneg_left h (sq_nonneg (ν τ))
+      linarith
+  have hE1 : |∫ q : ℝ × ℝ, (KfunW p F (gridW p W) q.1 q.2 ^ 2 - W q.1 ^ 2 * Kfun p F q.1 q.2 ^ 2)
+        * ν q.1 * ν q.2|
+      ≤ p.L ^ 2 * A ^ 2 * (π * (40 * π * Real.sqrt ℓ / p.h + 32 * p.d / (9 * p.T ^ 2))
+          + 2 * π * Real.sqrt ℓ * (20 * π / p.h + 32 * p.d / (9 * p.T ^ 2))) * Iν := by
+    refine hc1.trans ?_
+    have hsl := Real.sqrt_nonneg ℓ
+    have h1 := mul_le_mul_of_nonneg_left hcell (by positivity : (0:ℝ) ≤ π)
+    have h2 := mul_le_mul_of_nonneg_left hlat (by positivity : (0:ℝ) ≤ 2 * π * Real.sqrt ℓ)
+    have e : p.L ^ 2 * A ^ 2 * (π * (40 * π * Real.sqrt ℓ / p.h + 32 * p.d / (9 * p.T ^ 2))
+          + 2 * π * Real.sqrt ℓ * (20 * π / p.h + 32 * p.d / (9 * p.T ^ 2))) * Iν
+        = p.L ^ 2 * A ^ 2 * (π * ((40 * π * Real.sqrt ℓ / p.h + 32 * p.d / (9 * p.T ^ 2)) * Iν)
+          + 2 * π * Real.sqrt ℓ * ((20 * π / p.h + 32 * p.d / (9 * p.T ^ 2)) * Iν)) := by ring
+    rw [e]
+    exact mul_le_mul_of_nonneg_left (add_le_add h1 h2) (by positivity)
+  -- second comparison
+  have hνS : ∀ τ ∈ Icc s₀ s₁, ∀ τ', |ν τ'| ≤ B + Real.sqrt |τ' - τ| := fun τ hτ τ' =>
+    abs_le_of_nuBound hν hT1 ⟨hS₀.trans hτ.1, hτ.2.trans hS₁⟩ τ'
+  have hc2 := abs_integral_window_Kfun_sq_sub_le hF hW hs hWS hR₀ hρ hB hνS
+    (integrable_lor1_mul_abs hν hT1 hνc)
+  have hk : ∀ k : Fin p.d, ∫ τ, lor1 (τ - p.tau k) * |ν τ| ≤ π * B + c₁ := by
+    intro k
+    have hτk := tau_mem_Icc hF hT0.le k
+    have hmaj : Integrable fun τ => B * lor1 (τ - p.tau k) + lor1 (τ - p.tau k) * Real.sqrt |τ - p.tau k| :=
+      ((integrable_lor1.comp_sub_right _).const_mul B).add (integrable_lor1_mul_sqrt.comp_sub_right _)
+    refine (integral_mono (integrable_lor1_mul_abs hν hT1 hνc _) hmaj fun τ => ?_).trans (le_of_eq ?_)
+    · have h := abs_le_of_nuBound hν hT1 hτk τ
+      have hl := (lor1_pos (τ - p.tau k)).le
+      simp only
+      nlinarith [mul_le_mul_of_nonneg_left h hl]
+    · rw [integral_add ((integrable_lor1.comp_sub_right _).const_mul B)
+        (integrable_lor1_mul_sqrt.comp_sub_right _), integral_const_mul,
+        integral_sub_right_eq_self (fun τ => lor1 τ) (p.tau k),
+        integral_sub_right_eq_self (fun τ => lor1 τ * Real.sqrt |τ|) (p.tau k), integral_lor1, hc₁]
+      ring
+  have hsumk : ∑ k : Fin p.d, π * ∫ τ, lor1 (τ - p.tau k) * |ν τ| ≤ p.d * π * (π * B + c₁) := by
+    calc ∑ k : Fin p.d, π * ∫ τ, lor1 (τ - p.tau k) * |ν τ| ≤ ∑ _k : Fin p.d, π * (π * B + c₁) :=
+          Finset.sum_le_sum fun k _ => mul_le_mul_of_nonneg_left (hk k) Real.pi_pos.le
+      _ = p.d * π * (π * B + c₁) := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]; ring
+  have hkr : ∫ r, lor1 r * (B + Real.sqrt |r|) = π * B + c₁ := by
+    rw [show (fun r => lor1 r * (B + Real.sqrt |r|)) = fun r => B * lor1 r + lor1 r * Real.sqrt |r| by
+        funext r; ring,
+      integral_add (integrable_lor1.const_mul B) integrable_lor1_mul_sqrt, integral_const_mul,
+      integral_lor1, hc₁]
+    ring
+  have hE2 : |∫ q : ℝ × ℝ, W q.1 ^ 2 * (Kfun p F q.1 q.2 ^ 2 - Kinf p F q.1 q.2 ^ 2) * ν q.1 * ν q.2|
+      ≤ p.L * R₀ * B * (π * B + c₁) * (A ^ 2 * (p.d * π) + p.L * A * (s₁ - s₀)) := by
+    refine hc2.trans ?_
+    rw [hkr]
+    have hs0 : 0 ≤ s₁ - s₀ := by linarith
+    have h1 := mul_le_mul_of_nonneg_left hsumk (sq_nonneg A)
+    have e : p.L * R₀ * B * (π * B + c₁) * (A ^ 2 * (p.d * π) + p.L * A * (s₁ - s₀))
+        = p.L * R₀ * B * (A ^ 2 * (p.d * π * (π * B + c₁)) + p.L * A * (s₁ - s₀) * (π * B + c₁)) := by
+      ring
+    rw [e]
+    exact mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+  exact (abs_add_le _ _).trans (add_le_add hE1 hE2)
 
 end GaloisForLFunctions.TransThresholdPairCorrelation

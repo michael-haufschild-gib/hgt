@@ -10,7 +10,9 @@ residue expansions
 while the same weights on the sign-blind series `Σ_d d^{−½} v_d` give horizon energies exceeding
 every bound (`rieszTwin_energy_unbounded`).  So the receiver at half damping is approximable in the
 receiver norm by finite combinations of residue modes whose coefficients are the Möbius values, and
-this uses the signs of `μ`.
+this uses the signs of `μ`.  By a Tauberian comparison the residue series itself converges:
+`Σ_{d ≤ N} μ(d) d^{−½} v_d → u_{½}` in `ℓ²` (`residuePartialSum_l2_tendsto_half`,
+`residuePartialSum_l2_tendsto_centeredOperator`), since each term has receiver energy `≤ 2/d²`.
 
 **Proof.**  A finite residue combination `R_b = Σ_{d ≤ D} b_d d^{−½} v_d` is
 `R_b(n) = P_b(n+1)/(n+1)` for the bounded profile `P_b(x) = −Σ b_d d^{−½} {x/d}`
@@ -925,8 +927,9 @@ theorem residuePartialSum_l2_tendsto_half :
     rw [hXM, div_le_div_iff₀ hk0 hθ0]; nlinarith
   have hXNk : RHTower.perronLength N / k ≤ 4 / θ := by
     rw [hXN, div_le_div_iff₀ hk0 hθ0]; nlinarith
-  have hXM0 : 0 ≤ RHTower.perronLength (N + k) / k := by positivity
-  have hXN0 : 0 ≤ RHTower.perronLength N / k := by positivity
+  have hXM0 : 0 ≤ RHTower.perronLength (N + k) / k :=
+    div_nonneg (RHTower.perronLength_pos _).le hk0.le
+  have hXN0 : 0 ≤ RHTower.perronLength N / k := div_nonneg (RHTower.perronLength_pos _).le hk0.le
   have hkN : (k : ℝ) / ((N : ℝ) + 1) ≤ 2 * θ := by
     rw [div_le_iff₀ (by positivity)]; nlinarith
   -- pointwise bound
@@ -976,7 +979,7 @@ theorem residuePartialSum_l2_tendsto_half :
     linarith
   have e1 : 4 * (4 / θ) ^ 2 * (θ ^ 2 * ε / 192) = ε / 3 := by field_simp; ring
   have e2 : 2 * ((k : ℝ) * (k * (2 / ((N : ℝ) + 1) ^ 2))) = 4 * ((k : ℝ) / ((N : ℝ) + 1)) ^ 2 := by
-    ring
+    rw [div_pow]; ring
   have e3 : 4 * ((k : ℝ) / ((N : ℝ) + 1)) ^ 2 ≤ 16 * θ ^ 2 := by
     have := pow_le_pow_left₀ (by positivity) hkN 2
     nlinarith

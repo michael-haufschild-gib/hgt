@@ -96,11 +96,12 @@ theorem centredSum_eq_sum_neg (u : ℝ) (n : ℕ) :
 writes it as a sum of hyperbolic cosines. -/
 theorem centredSum_eq_sum_cosh (u : ℝ) (n : ℕ) :
     centredSum u n = ∑ j : Fin n, Real.cosh (u * (2 * (j : ℝ) - n + 1)) := by
+  have hdef : centredSum u n = ∑ j : Fin n, Real.exp (u * (2 * (j : ℝ) - n + 1)) := rfl
+  have hneg := centredSum_eq_sum_neg u n
   have h1 : centredSum u n + centredSum u n =
       ∑ j : Fin n, (Real.exp (u * (2 * (j : ℝ) - n + 1)) +
         Real.exp (-(u * (2 * (j : ℝ) - n + 1)))) := by
-    conv_lhs => rw [centredSum, centredSum_eq_sum_neg]
-    rw [← Finset.sum_add_distrib]
+    rw [Finset.sum_add_distrib, ← hdef, ← hneg]
   have h2 : ∑ j : Fin n, (Real.exp (u * (2 * (j : ℝ) - n + 1)) +
         Real.exp (-(u * (2 * (j : ℝ) - n + 1)))) =
       2 * ∑ j : Fin n, Real.cosh (u * (2 * (j : ℝ) - n + 1)) := by
@@ -110,7 +111,7 @@ theorem centredSum_eq_sum_cosh (u : ℝ) (n : ℕ) :
     ring
   linarith
 
-/-- **Closedcosh formula for `latticeFloor` without positivity hypotheses.** -/
+/-- **Closed cosh formula for `latticeFloor` without positivity hypotheses.** -/
 theorem latticeFloor_eq_sum_one_sub_cosh (ℓ δ : ℝ) (n : ℕ) :
     latticeFloor ℓ δ n = ∑ j : Fin n, (1 - Real.cosh ((δ * ℓ) * (2 * (j : ℝ) - n + 1))) := by
   rw [latticeFloor, sqrt_latticeSums_eq, centredSum_eq_sum_cosh, Finset.sum_sub_distrib]
@@ -120,7 +121,7 @@ theorem latticeFloor_eq_sum_one_sub_cosh (ℓ δ : ℝ) (n : ℕ) :
 `cosh − 1` modes. -/
 theorem bandEnergy_eq_sum_cosh_sub_one (ℓ δ : ℝ) (n : ℕ) :
     bandEnergy ℓ δ n = ℓ * ∑ j : Fin n, (Real.cosh ((δ * ℓ) * (2 * (j : ℝ) - n + 1)) - 1) := by
-  rw [bandEnergy, latticeFloor_eq_sum_one_sub_cosh, ← neg_mul_eq_mul_neg, ← Finset.sum_neg_distrib]
+  rw [bandEnergy, latticeFloor_eq_sum_one_sub_cosh, ← mul_neg, ← Finset.sum_neg_distrib]
   congr 1
   refine Finset.sum_congr rfl fun j _ => by ring
 
@@ -143,7 +144,7 @@ theorem bandEnergy_succ_sub_pred {ℓ δ : ℝ} (hδℓ : 0 < δ * ℓ) {n : ℕ
       2 * ℓ * (Real.cosh ((n : ℝ) * (δ * ℓ)) - 1) := by
   have hs : Real.sinh (δ * ℓ) ≠ 0 := (Real.sinh_pos_iff.mpr hδℓ).ne'
   rw [bandEnergy_eq hδℓ (n + 1), bandEnergy_eq hδℓ (n - 1)]
-  have hn1 : ((n - 1 : ℕ) : ℝ) = (n : ℝ) - 1 := Nat.cast_sub hn
+  have hn1 : ((n - 1 : ℕ) : ℝ) = (n : ℝ) - 1 := by rw [Nat.cast_sub hn, Nat.cast_one]
   have hnp : ((n + 1 : ℕ) : ℝ) = (n : ℝ) + 1 := by push_cast; ring
   rw [hn1, hnp]
   have hdiff : Real.sinh (((n : ℝ) + 1) * (δ * ℓ)) - Real.sinh (((n : ℝ) - 1) * (δ * ℓ)) =
@@ -173,7 +174,7 @@ theorem bandEnergy_mono_depth {ℓ : ℝ} (hℓ : 0 ≤ ℓ) {δ₁ δ₂ : ℝ}
   rw [bandEnergy_eq_sum_cosh_sub_one, bandEnergy_eq_sum_cosh_sub_one]
   refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun j _ => ?_) hℓ
   have hle : |(δ₁ * ℓ) * (2 * (j : ℝ) - n + 1)| ≤ |(δ₂ * ℓ) * (2 * (j : ℝ) - n + 1)| := by
-    rw [abs_mul, abs_mul, abs_of_nonneg (mul_nonneg hδ₁ hℓ),
+    rw [abs_mul (δ₁ * ℓ), abs_mul (δ₂ * ℓ), abs_of_nonneg (mul_nonneg hδ₁ hℓ),
       abs_of_nonneg (mul_nonneg (hδ₁.trans hδ) hℓ)]
     exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hδ hℓ) (abs_nonneg _)
   linarith [Real.cosh_le_cosh.mpr hle]
@@ -185,7 +186,7 @@ theorem bandEnergy_strictMono_depth {ℓ : ℝ} (hℓ : 0 < ℓ) {δ₁ δ₂ : 
   rw [bandEnergy_eq_sum_cosh_sub_one, bandEnergy_eq_sum_cosh_sub_one]
   refine mul_lt_mul_of_pos_left (Finset.sum_lt_sum (fun j _ => ?_) ?_) hℓ
   · have hle : |(δ₁ * ℓ) * (2 * (j : ℝ) - n + 1)| ≤ |(δ₂ * ℓ) * (2 * (j : ℝ) - n + 1)| := by
-      rw [abs_mul, abs_mul, abs_of_nonneg (mul_nonneg hδ₁ hℓ.le),
+      rw [abs_mul (δ₁ * ℓ), abs_mul (δ₂ * ℓ), abs_of_nonneg (mul_nonneg hδ₁ hℓ.le),
         abs_of_nonneg (mul_nonneg (hδ₁.trans hδ.le) hℓ.le)]
       exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hδ.le hℓ.le) (abs_nonneg _)
     linarith [Real.cosh_le_cosh.mpr hle]
@@ -197,7 +198,7 @@ theorem bandEnergy_strictMono_depth {ℓ : ℝ} (hℓ : 0 < ℓ) {δ₁ δ₂ : 
       linarith
     have hlt : |(δ₁ * ℓ) * (2 * (((⟨0, by omega⟩ : Fin n) : ℕ) : ℝ) - n + 1)| <
         |(δ₂ * ℓ) * (2 * (((⟨0, by omega⟩ : Fin n) : ℕ) : ℝ) - n + 1)| := by
-      rw [abs_mul, abs_mul, abs_of_nonneg (mul_nonneg hδ₁ hℓ.le),
+      rw [abs_mul (δ₁ * ℓ), abs_mul (δ₂ * ℓ), abs_of_nonneg (mul_nonneg hδ₁ hℓ.le),
         abs_of_nonneg (mul_nonneg (hδ₁.trans hδ.le) hℓ.le)]
       exact mul_lt_mul_of_pos_right (mul_lt_mul_of_pos_right hδ hℓ) hc
     linarith [Real.cosh_lt_cosh.mpr hlt]
@@ -214,12 +215,12 @@ theorem bandEnergy_le_mul_cosh {ℓ δ : ℝ} (hℓ : 0 ≤ ℓ) (hδ : 0 ≤ δ
         have hj0 : (0 : ℝ) ≤ j := Nat.cast_nonneg j
         have habs : |2 * (j : ℝ) - n + 1| ≤ n := abs_le.mpr ⟨by linarith, by linarith⟩
         have hle : |(δ * ℓ) * (2 * (j : ℝ) - n + 1)| ≤ |δ * (n * ℓ)| := by
-          rw [abs_mul, abs_of_nonneg (mul_nonneg hδ hℓ),
+          rw [abs_mul (δ * ℓ), abs_of_nonneg (mul_nonneg hδ hℓ),
             abs_of_nonneg (mul_nonneg hδ (mul_nonneg (Nat.cast_nonneg n) hℓ)),
             show δ * (n * ℓ) = (δ * ℓ) * n by ring]
           exact mul_le_mul_of_nonneg_left habs (mul_nonneg hδ hℓ)
         linarith [Real.cosh_le_cosh.mpr hle]
-    _ = n * (Real.cosh (δ * (n * ℓ)) - 1) := by simp
+    _ = n * (Real.cosh (δ * (n * ℓ)) - 1) := by simp [mul_sub]
 
 /-! ### 2. Exact resolution limit and floor of `dilutedReading` -/
 
@@ -246,8 +247,8 @@ theorem exists_dilutedReading_lt {ℓ L a ε : ℝ} (hℓ : 0 < ℓ) (hL : 0 < L
   have hn1 : 1 ≤ n := Nat.one_le_iff_ne_zero.mpr (Nat.ceil_pos.mpr (by positivity)).ne'
   have hnr : (0 : ℝ) < n := by exact_mod_cast hn1
   set δ₀ := min (min ε (1 / 2)) (Real.arcosh (1 + 2 * L / (ℓ * n)) / (n * ℓ)) with hδ₀
-  have harc : 0 < Real.arcosh (1 + 2 * L / (ℓ * n)) :=
-    Real.arcosh_pos (by have : 0 < 2 * L / (ℓ * n) := by positivity; linarith)
+  have hquot_pos : 0 < 2 * L / (ℓ * n) := by positivity
+  have harc : 0 < Real.arcosh (1 + 2 * L / (ℓ * n)) := Real.arcosh_pos (by linarith)
   have hδ₀_pos : 0 < δ₀ := lt_min (lt_min hε (by norm_num)) (div_pos harc (by positivity))
   have hδ₀_half : δ₀ ≤ 1 / 2 := (min_le_left _ _).trans (min_le_right _ _)
   refine ⟨⟨δ₀, hδ₀_pos, hδ₀_half⟩, (min_le_left _ _).trans (min_le_left _ _), ?_⟩
@@ -255,13 +256,12 @@ theorem exists_dilutedReading_lt {ℓ L a ε : ℝ} (hℓ : 0 < ℓ) (hL : 0 < L
   have hle : δ₀ * (n * ℓ) ≤ Real.arcosh (1 + 2 * L / (ℓ * n)) := by
     rw [← le_div_iff₀ (by positivity)]
     exact min_le_right _ _
-  have h1 : (1 : ℝ) ≤ 1 + 2 * L / (ℓ * n) := by
-    have : 0 ≤ 2 * L / (ℓ * n) := by positivity
-    linarith
+  have h1 : (1 : ℝ) ≤ 1 + 2 * L / (ℓ * n) := by linarith
   have hcosh : Real.cosh (δ₀ * (n * ℓ)) - 1 ≤ 2 * L / (ℓ * n) := by
-    have hc := Real.cosh_le_cosh.mpr (by
-      rw [abs_of_pos (by positivity), abs_of_pos harc]
-      exact hle)
+    have hc : Real.cosh (δ₀ * (n * ℓ)) ≤ Real.cosh (Real.arcosh (1 + 2 * L / (ℓ * n))) :=
+      Real.cosh_le_cosh.mpr (by
+        rw [abs_of_pos (by positivity), abs_of_pos harc]
+        exact hle)
     rw [Real.cosh_arcosh h1] at hc
     linarith
   calc bandEnergy ℓ δ₀ n ≤ ℓ * n * (Real.cosh (δ₀ * (n * ℓ)) - 1) :=
@@ -321,10 +321,10 @@ theorem dilutedReading_secondBand_iff {ℓ L a : ℝ} (hℓ : 0 < ℓ) (hL : 0 <
     (haℓ : a ≤ ℓ) (haL : a ≤ L / 2) (d : DepthDatum) :
     dilutedReading hℓ hL a d ↔ depth d ≤ depthResolution ℓ (2 * L) := by
   have ha0 : 0 < a := lt_trans (by positivity) ha
+  have hdpos : 0 < depth d := d.2.1
   rw [dilutedReading_iff_bandEnergy_le hℓ hL ha0 haL, ceil_two_mul_div_eq_two hℓ ha haℓ,
-    bandEnergy, groundEnergy_index_two (mul_pos d.2.1 hℓ), ← weilFloorThreshold,
-    weilFloorThreshold_le_iff hℓ d.2.1 (by positivity)]
-  rfl
+    bandEnergy, groundEnergy_index_two (mul_pos hdpos hℓ), ← weilFloorThreshold,
+    weilFloorThreshold_le_iff hℓ hdpos (by positivity)]
 
 /-- **Exact resolution limit and interval on the second aliasing band.** For `ℓ/2 < a ≤ min ℓ (L/2)`,
 the resolution limit of `depth` under `dilutedReading hℓ hL a` is
@@ -372,8 +372,8 @@ theorem resolutionLimit_depth_dilutedReading_brackets {ℓ L a : ℝ} (hℓ : 0 
   have hnr : (0 : ℝ) < n := by exact_mod_cast hn1
   constructor
   · set δ₁ := min (1 / 2) (Real.arcosh (1 + 2 * L / (ℓ * n)) / (n * ℓ)) with hδ₁
-    have harc : 0 < Real.arcosh (1 + 2 * L / (ℓ * n)) :=
-      Real.arcosh_pos (by have : 0 < 2 * L / (ℓ * n) := by positivity; linarith)
+    have hquot_pos : 0 < 2 * L / (ℓ * n) := by positivity
+    have harc : 0 < Real.arcosh (1 + 2 * L / (ℓ * n)) := Real.arcosh_pos (by linarith)
     have hδ₁_pos : 0 < δ₁ := lt_min (by norm_num) (div_pos harc (by positivity))
     have hδ₁_half : δ₁ ≤ 1 / 2 := min_le_left _ _
     set d₁ : DepthDatum := ⟨δ₁, hδ₁_pos, hδ₁_half⟩
@@ -382,13 +382,12 @@ theorem resolutionLimit_depth_dilutedReading_brackets {ℓ L a : ℝ} (hℓ : 0 
       have hle : δ₁ * (n * ℓ) ≤ Real.arcosh (1 + 2 * L / (ℓ * n)) := by
         rw [← le_div_iff₀ (by positivity)]
         exact min_le_right _ _
-      have h1 : (1 : ℝ) ≤ 1 + 2 * L / (ℓ * n) := by
-        have : 0 ≤ 2 * L / (ℓ * n) := by positivity
-        linarith
+      have h1 : (1 : ℝ) ≤ 1 + 2 * L / (ℓ * n) := by linarith
       have hcosh : Real.cosh (δ₁ * (n * ℓ)) - 1 ≤ 2 * L / (ℓ * n) := by
-        have hc := Real.cosh_le_cosh.mpr (by
-          rw [abs_of_pos (by positivity), abs_of_pos harc]
-          exact hle)
+        have hc : Real.cosh (δ₁ * (n * ℓ)) ≤ Real.cosh (Real.arcosh (1 + 2 * L / (ℓ * n))) :=
+          Real.cosh_le_cosh.mpr (by
+            rw [abs_of_pos (by positivity), abs_of_pos harc]
+            exact hle)
         rw [Real.cosh_arcosh h1] at hc
         linarith
       calc bandEnergy ℓ δ₁ n ≤ ℓ * n * (Real.cosh (δ₁ * (n * ℓ)) - 1) :=
@@ -412,12 +411,12 @@ theorem W_dilutedLattice_eq_offLineLattice_add {ℓ L δ : ℝ} (hℓ : 0 < ℓ)
     (dilutedLatticeConfig hℓ hL hδ hδ').W f f =
       (offLineLatticeConfig hℓ hδ hδ').W f f + 2 * (L : ℂ) * EF.weilTest f f 0 := by
   have hfc := hasCompactSupport_of_tsupport_subset_Icc hfs
-  rw [W_dilutedLatticeConfig hℓ hL hδ hδ' hf hfs, W_offLineLatticeConfig_lag hℓ hδ hδ' hf hfc,
-    lagSum_shiftSymbol hℓ hfc]
+  rw [W_dilutedLatticeConfig hℓ hL hδ hδ' hf hfs, offLineLattice_weil_floor_symbol hℓ hδ hδ' f hf hfc,
+    lagSum_shiftSymbol hℓ hfc, ← SquareRootThreshold.weilTest_self_zero]
   have hℓc : (ℓ : ℂ) ≠ 0 := by exact_mod_cast hℓ.ne'
   push_cast
   have hℓL : (ℓ : ℂ) * (2 * (L : ℂ) / (ℓ : ℂ)) = 2 * L := by field_simp
-  linear_combination -(EF.weilTest f f 0) * hℓL
+  linear_combination (EF.weilTest f f 0) * hℓL
 
 /-- At any lag `v > 2w`, the self-correlation of `twoBump (modScaledBump w 0) v (-1)` at `0` is
 `2 ‖κ_w‖²`. -/
@@ -428,10 +427,12 @@ theorem weilTest_twoBump_modScaledBump_zero_of_lt {w v : ℝ} (hw : 0 < w) (hv :
   have hb : ContDiff ℝ 2 (modScaledBump w 0) := contDiff_modScaledBump_two w 0
   have hbc : HasCompactSupport (modScaledBump w 0) := hasCompactSupport_of_support_subset_abs hbs
   have hv0 : 0 < v := by linarith
-  rw [weilTest_twoBump_neg_one hb.continuous hbc v 0, zero_add, zero_sub,
-    weilTest_self_eq_zero_of_lt hbs (by rw [abs_of_pos hv0]; exact hv),
-    weilTest_self_eq_zero_of_lt hbs (by rw [abs_neg, abs_of_pos hv0]; exact hv),
-    sub_zero, sub_zero, weilTest_self_zero]
+  have hKv : EF.weilTest (modScaledBump w 0) (modScaledBump w 0) v = 0 :=
+    weilTest_self_eq_zero_of_lt hbs (by rw [abs_of_pos hv0]; exact hv)
+  have hKmv : EF.weilTest (modScaledBump w 0) (modScaledBump w 0) (-v) = 0 :=
+    weilTest_self_eq_zero_of_lt hbs (by rw [abs_neg, abs_of_pos hv0]; exact hv)
+  rw [weilTest_twoBump_neg_one hb.continuous hbc v 0, zero_add, zero_sub, hKv, hKmv,
+    sub_zero, sub_zero, SquareRootThreshold.weilTest_self_zero]
 
 /-- **Teeth of the comb on a diluted counterexample.** For `4w < ℓ`, `n ≥ 1`, and `nℓ + 2w ≤ L`,
 the two-bump difference test at the `n`-th sub-lattice tooth `v = nℓ` evaluates to
@@ -449,6 +450,7 @@ theorem W_dilutedLattice_lag_nat_mul {ℓ L δ : ℝ} (hℓ : 0 < ℓ) (hL : 0 <
   have hsupp : tsupport (twoBump (modScaledBump w 0) (n * ℓ) (-1)) ⊆ Icc (-(L / 2)) (L / 2) :=
     (tsupport_twoBump_modScaledBump_subset hw hv0).trans (Icc_subset_Icc (by linarith) (by linarith))
   rw [W_dilutedLattice_eq_offLineLattice_add hℓ hL hδ hδ'
+      (f := twoBump (modScaledBump w 0) (n * ℓ) (-1))
       (contDiff_bumpTest (contDiff_modScaledBump_two w 0) (n * ℓ) ![1, -1]) hsupp,
     W_offLineLattice_lag_nat_mul hℓ hδ hδ' hw hwℓ hn,
     weilTest_twoBump_modScaledBump_zero_of_lt hw hv2w]
@@ -468,6 +470,7 @@ theorem W_dilutedLattice_lag_eq_of_gap {ℓ L δ : ℝ} (hℓ : 0 < ℓ) (hL : 0
   have hsupp : tsupport (twoBump (modScaledBump w 0) v (-1)) ⊆ Icc (-(L / 2)) (L / 2) :=
     (tsupport_twoBump_modScaledBump_subset hw hv0).trans (Icc_subset_Icc (by linarith) (by linarith))
   rw [W_dilutedLattice_eq_offLineLattice_add hℓ hL hδ hδ'
+      (f := twoBump (modScaledBump w 0) v (-1))
       (contDiff_bumpTest (contDiff_modScaledBump_two w 0) v ![1, -1]) hsupp,
     W_offLineLattice_lag_eq_of_gap hℓ hδ hδ' hw hwℓ hv hgap,
     weilTest_twoBump_modScaledBump_zero_of_lt hw hv]
@@ -507,7 +510,8 @@ theorem re_W_dilutedLattice_first_two_teeth_eq_bandDeficit {ℓ L δ : ℝ} (h�
       -2 * bandDeficit ℓ δ L 3 * (∫ t, ‖modScaledBump w 0 t‖ ^ 2) := by
   have hδℓ : 0 < δ * ℓ := mul_pos hδ hℓ
   constructor
-  · have h1 := W_dilutedLattice_lag_nat_mul hℓ hL hδ hδ' hw hwℓ (n := 1) le_rfl (by linarith)
+  · have h1 := W_dilutedLattice_lag_nat_mul hℓ hL hδ hδ' hw hwℓ (n := 1) le_rfl
+      (by push_cast; linarith)
     simp only [Nat.cast_one, one_mul] at h1
     rw [h1, Complex.ofReal_re, bandDeficit_two hδℓ]
     ring
@@ -516,7 +520,7 @@ theorem re_W_dilutedLattice_first_two_teeth_eq_bandDeficit {ℓ L δ : ℝ} (h�
     simp only [Nat.cast_ofNat] at h2
     have hcosh2 : Real.cosh (2 * δ * ℓ) - 1 = 2 * (Real.cosh (δ * ℓ) ^ 2 - 1) := by
       rw [show 2 * δ * ℓ = 2 * (δ * ℓ) by ring, Real.cosh_two_mul]
-      ring
+      linarith [Real.cosh_sq (δ * ℓ)]
     rw [h2, Complex.ofReal_re, hcosh2, bandDeficit_three hδℓ]
     ring
 
@@ -535,25 +539,25 @@ theorem counterexample_primeSide_obstructions :
     (∀ (w : ℕ → ℝ) (f : ℝ → ℂ), ContDiff ℝ 2 f → tsupport f ⊆ Icc (-(3 / 10)) (3 / 10) →
       1 / 5000 * ∫ x, ‖f x‖ ^ 2 ≤ (weilFullFunctional w (EF.weilTest f f)).re) ∧
     (∀ B T₀ : ℝ, ∃ T, T₀ ≤ T ∧ B < |rvmRemainder T|) ∧
-    (∀ {w : ℝ}, 0 < w → 2 * w < Real.log 2 → ∀ {ρ : ℂ}, ρ ∈ zetaZeroConfig.carrier →
-      ∀ {σ : ℝ}, 0 ≤ σ → σ < |ρ.re - 1 / 2| → ∀ K V : ℝ,
+    (∀ (w : ℝ), 0 < w → 2 * w < Real.log 2 → ∀ (ρ : ℂ), ρ ∈ zetaZeroConfig.carrier →
+      ∀ (σ : ℝ), 0 ≤ σ → σ < |ρ.re - 1 / 2| → ∀ K V : ℝ,
         ∃ (γ v : ℝ) (τ : ℂ), V ≤ v ∧ ‖τ‖ = 1 ∧
           (lagPrimeWindowRHS v w (EF.weilTest (twoBump (modScaledBump w γ) v τ)
             (twoBump (modScaledBump w γ) v τ))).re < -(K * Real.exp (σ * v))) ∧
-    (∀ {w : ℝ}, 0 < w → 2 * w < Real.log 2 → ∀ {z₀ : ℂ},
+    (∀ (w : ℝ), 0 < w → 2 * w < Real.log 2 → ∀ (z₀ : ℂ),
       (1 / 2 + z₀) ∈ zetaZeroConfig.carrier → 0 < z₀.re → nearTopHeight w ≤ z₀.im →
       1280 * Real.log (180 * recordHeightEnvelope w z₀.im) *
           (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 ≤
         centerAmplitude w ^ 2 / (2 * Real.exp 1) * (1 + z₀.im) ^ 4 →
-      ∀ {V : ℝ}, nearTopLag w z₀.im z₀.re ≤ V →
+      ∀ (V : ℝ), nearTopLag w z₀.im z₀.re ≤ V →
       (∀ ρ ∈ zetaZeroConfig.carrier, ρ.re - 1 / 2 ≤ z₀.re + 1 / V) →
         ∃ v ∈ Icc (0 : ℝ) V, (lagPrimeWindowRHS v w (EF.weilTest
           (twoBump (modScaledBump w z₀.im) v (-1))
           (twoBump (modScaledBump w z₀.im) v (-1)))).re < 0) :=
   ⟨fun w _ hf hfs => re_weilFullFunctional_ge_of_aperture_le_threeTenths w hf hfs,
     rvmRemainder_unbounded,
-    fun hw hw2 hρ hσ0 hσ K V => zeta_exists_primeWindow_lt hw hw2 hρ hσ0 hσ K V,
-    fun hw hw2 hz₀ hre₀ hTw hγ hV htop =>
+    fun _ hw hw2 _ hρ _ hσ0 hσ K V => zeta_exists_primeWindow_lt hw hw2 hρ hσ0 hσ K V,
+    fun _ hw hw2 _ hz₀ hre₀ hTw hγ _ hV htop =>
       zeta_near_top_primeWindow_neg hw hw2 hz₀ hre₀ hTw hγ hV htop⟩
 
 end GaloisForLFunctions.ScaleSignedIncidenceCriticality

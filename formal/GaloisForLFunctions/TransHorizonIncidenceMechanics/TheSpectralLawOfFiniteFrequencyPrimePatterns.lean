@@ -11,23 +11,24 @@ frequencies `t_k` and `|g| ≤ 1`, and let `f` be completely multiplicative with
 
   `c₀ < 1/2`  and, for every `k`,  `Re B_k < 1`  or  `ζ(1/2 + it_k) = 0`
 
-(`receiverBounded_spectralWeight_iff`). Each frequency is read on its own: the mean `c₀` by the
-quarter law at `s = 1/2`, the amplitude `Re B_k` by a singularity `|s − (1/2 + it_k)|^{−Re B_k}` of
-the pattern's Dirichlet series, which a critical zero at the same height cancels exactly. Mixing
-frequencies enlarges the admissible amplitudes: with harmonics a single frequency can carry
-`Re B_k > 1` while `|g| ≤ 1` (`(9/8) cos x − (1/8) cos 3x`), and the receiver still reads it through
-the critical zero at its height. The exponents are capped, `Re B_k ≤ 2` and `c₀ ≤ 1`
+(`receiverBounded_spectralWeight_iff`). Each frequency is read on its own: the mean `c₀` at
+`s = 1/2`, the amplitude `Re B_k` through the singularity `|s − (1/2 + it_k)|^{−Re B_k}` of the
+receiver's integrand, which a critical zero at the same height cancels. Mixing frequencies enlarges
+the admissible amplitudes: a frequency can carry `Re B_k > 1` while `|g| ≤ 1`
+(`(9/8) cos x − (1/8) cos 3x`, `receiverBounded_cubicPattern_iff`), and the receiver still reads it
+through the critical zero at its height. Amplitudes are capped, `Re B_k ≤ 2`
 (`spectralAmplitude_re_le_two`), since `|F(w)| ≤ ζ(Re w)`.
 
 **Mechanism.** The Euler comparison (`abs_log_norm_spectralSeries_sub_le`) and the two-sided pole
 bounds `m ≤ |ζ(v)| |v − 1| ≤ K` on boxes give the local factorization
-(`exists_abs_log_norm_spectralSeries_add_le`)
+(`exists_abs_log_norm_spectralSeries_sub_le`)
 
   `log|F(w)| = −c₀ log|w − 1| − Σ_k (Re B_k/2)(log|w − 1 − it_k| + log|w − 1 + it_k|) + O(1)`
 
-uniformly on `1 < Re w ≤ 2`, `|Im w| ≤ H`. Its upper half bounds the line integrand by an
-integrable majorant (at most one singular height is near any point); its lower half produces the
-singularity `κ/|s − s_k|` that a paid receiver forbids.
+on `1 < Re w ≤ 2`, `|Im w| ≤ H`. Its upper half, with at most one singular height near any point
+(`exp_sum_le_of_unique_large`), bounds the line integrand by an integrable majorant
+(`lineIntegrand_spectralWeight_le`); its lower half (`exists_le_log_norm_spectralSeries`) produces
+the singularity `κ/|s − s_k|` that a paid receiver forbids.
 -/
 
 open Filter Topology MeasureTheory Complex Set
@@ -1045,8 +1046,9 @@ theorem exists_sq_norm_spectralSeries_le {c₀ : ℝ} {t : Fin K → ℝ} {B : F
       linarith [htδ k]
     · have h := Complex.norm_le_abs_re_add_abs_im (w + t k * I - 1)
       rw [hre', him', abs_of_pos (by linarith), abs_of_pos (by linarith [ht k])] at h
+      have htk : t k ≤ St := hηSt (some k)
       rw [hD_def]
-      linarith [hηSt (some k), le_abs_self T]
+      linarith [le_abs_self T]
   refine ⟨hdD, ?_⟩
   obtain ⟨Λ, hΛ⟩ : ∃ Λ : ℝ, Λ = ∑ j, max (spectralExponent c₀ B j) 0 *
       max 0 (-Real.log ‖w - 1 - spectralHeight t j * I‖) := ⟨_, rfl⟩
@@ -1248,7 +1250,7 @@ theorem lineIntegrand_spectralWeight_le {c₀ : ℝ} {t : Fin K → ℝ} {B : Fi
           mul_le_mul_of_nonneg_left hF2 hZs
       _ = R * (‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 +
             ∑ j, ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * Y j ^ 2) := by
-          rw [Finset.mul_sum]; ring
+          rw [← Finset.mul_sum]; ring
       _ ≤ _ := mul_le_mul_of_nonneg_left (add_le_add hz2 hsumj) hR0
   have h2 : ‖riemannZeta ((σ : ℂ) + τ * I)‖ ^ 2 * P ^ 2 ≤ Z₀ ^ 2 * P ^ 2 :=
     mul_le_mul_of_nonneg_right hz2 (sq_nonneg _)
@@ -1280,6 +1282,7 @@ theorem receiverBounded_spectralWeight_of {c₀ : ℝ} {t : Fin K → ℝ} {B : 
     (hinj : Function.Injective t) (hc₀ : c₀ < 1 / 2)
     (hB : ∀ k, (B k).re < 1 ∨ riemannZeta (1 / 2 + (t k : ℂ) * I) = 0) :
     ReceiverBounded (spectralWeight c₀ t B) := by
+  classical
   obtain ⟨St, hSt⟩ : ∃ St : ℝ, St = ∑ k, t k := ⟨_, rfl⟩
   have hSt0 : 0 ≤ St := by rw [hSt]; exact Finset.sum_nonneg fun k _ => (ht k).le
   obtain ⟨T, hT_def⟩ : ∃ T : ℝ, T = 2 * St + 18 := ⟨_, rfl⟩

@@ -377,7 +377,6 @@ theorem productAtom_lt_of_inDyadicWindows_of_two_le {X Y : ℝ} (hX : 2 ≤ X) (
     rw [productAtom_pow_pow hp (by omega)]
     have hlogp : Real.log p < Real.log (2 * X) :=
       Real.log_lt_log (by exact_mod_cast hp.pos) hp_lt
-    have hlogp_nn : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hp.one_lt.le)
     have hsqrt_gt : Real.sqrt (X * Y) / 2 < Real.sqrt ((p ^ (i + j) : ℕ) : ℝ) := by
       have h1 : X / 2 < ((p ^ i : ℕ) : ℝ) := ha.1
       have h2 : Y / 2 < ((p ^ j : ℕ) : ℝ) := hb.1
@@ -390,7 +389,7 @@ theorem productAtom_lt_of_inDyadicWindows_of_two_le {X Y : ℝ} (hX : 2 ≤ X) (
       exact (Real.lt_sqrt (by positivity)).mpr h4
     calc Real.log p / Real.sqrt ((p ^ (i + j) : ℕ) : ℝ)
         < Real.log (2 * X) / (Real.sqrt (X * Y) / 2) :=
-          div_lt_div₀ hlogp hsqrt_gt.le hlogp_nn (by positivity)
+          div_lt_div₀ hlogp hsqrt_gt.le hlog_pos.le (by positivity)
       _ = 2 * Real.log (2 * X) / Real.sqrt (X * Y) := by ring
   · rw [productAtom_eq_zero_of_not_isPrimePow h]
     positivity

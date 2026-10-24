@@ -198,6 +198,24 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     of multiplicity and under horizontal depth deformations inside `(½, 1)`
     (`multiPairConfig_depth_invariance`), while the raw `L²` floor scales with the multiplicity
     (`offLineClusterConfig_hodgeDefect_vs_l2_floor`): the defect is a count, the floor a mass.
+    For `ζ` the defect is finite at every degree, unconditionally:
+    `hodgeDefectAt ζ a ≤ 1 + 2T(a)(2a + 2)/π` with `T(a) = 4(e^{2E} − 1)`, `E = 10 + 68e^a`
+    (`hodgeDefectAt_zeta_le`, `hodgeDefectAt_zeta_lt_top`). Below the pole the form is the symbol
+    integral `∫|h_F|²(μ + P_X)`; the archimedean symbol grows like `log|τ|` and the Euler product
+    bounds the prime symbol by `68√X`, so a Weil-negative test carries more than half its spectral
+    mass below the horizon `T(a)`, and Bessel's inequality against the cut-off characters bounds
+    the dimension of such tests by `2T(a)(2a + 2)/π` (`finrank_mul_le_of_concentrated`). Lag
+    lattices and curves have no archimedean place: their defect is `0` or `∞` at every degree. So
+    at each degree only finitely many right zeros of `ζ` are visible, and the degree at which `n`
+    of them become visible grows at least like `log log n`. The failure is confined to explicit low
+    frequencies: Weil's form is nonnegative on every aperture-`a` test whose transform vanishes at
+    the pole and on the grid `{j h(a) : |j| ≤ J(a)}` in `[−T(a), T(a)]`
+    (`re_W_zeta_nonneg_of_lowGrid`; the cut-off characters are Lipschitz in `L²`, so a transform
+    vanishing on a fine grid has small low-frequency mass). Over `𝔽_q` no finite set of frequencies
+    does this: beyond `log 5/2` every finite set is avoided by a negative test of the golden curve
+    (`goldenDatum_no_finite_divisor`, `exists_neg_of_hodgeDefectAt_eq_top`). With a margin
+    `Re W ≤ −ε‖f‖²` the negative spaces are carried by the off-line pairs below a height
+    `exp(O(e^a + log(1/ε)))` (`RHTower.zeta_weil_negative_index_le`).
 15. **Visibility and hiding.** Over `𝔽_q` the window `n_0 + 2n_+ ≤ 2g` sees all `n_+` outer
     eigenvalues. Over `ℚ` an isolated pair `½ ± δ + iγ₀` in an on-line lattice of density `L` is seen
     exactly from the degree where `sinh(2δa)/δ = 2L + 2a` (`hodgeDefectAt_isolatedPair`); for `n`
@@ -207,10 +225,31 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     masses under lattice, unit-window and logarithmic densities. Under a uniform unit-window count
     `N(t, t + 1] ≤ D` the visibility degree no longer depends on the heights
     (`card_le_hodgeDefectAt_of_uniform_window_count`). For `ζ`, the local off-line bound
-    `OffLineCopiesLocallyBounded M` of Square-Root Threshold makes the near-top visibility constants
-    height-uniform and gives the alternative: the degree-defect floor rate equals the zero width
-    unless off-line zeros cluster without bound
-    (`scalingSurface_defectRate_eq_zetaZeroWidth_or_offLine_cluster`). Over `𝔽_q` the window `2g`
+    `OffLineCopiesLocallyBounded M` of Square-Root Threshold (which bounds only off-line zeros in
+    unit windows and places no bound on on-line density) makes the near-top visibility constants
+    height-uniform, eliminates the `log γ₀` factor in the Riemann–von Mangoldt cubic potential tail
+    of the Turán inequality (`zeta_powCluster_le_of_offLineCopiesLocallyBounded`,
+    `zeta_full_cluster_collapse_of_offLineCopiesLocallyBounded`,
+    `zeta_partial_elimination_le_of_offLineCopiesLocallyBounded`: at the shifted evaluation point
+    `s = σ + i Im z₁` with `σ = Re z₁ − κ/V > 0`, every on-line zero has `e^{(Re z − σ)V} = e^{−σV} ≤ 1`
+    and contributes `0` to the amplified `‖D(z₁)‖ e^κ` cubic potential tail, which runs exclusively
+    over off-line right zeros and is bounded by `24 M / r³`), completely removes `recordHeightOf` and
+    `oneParamRecordHeight` from the one-parameter (`c = 0`) visibility and contact-aperture laws
+    (`one_param_record_visible_at_explicit_lag_of_offLineCopiesLocallyBounded`,
+    `one_param_near_top_visible_at_explicit_lag_of_offLineCopiesLocallyBounded`,
+    `sqrt_mul_recordScaleOffLine_inv_eq`,
+    `zetaContactAperture_le_of_near_top_zero_of_offLineCopiesLocallyBounded`), isolates the on-line
+    mass `onLineEvenMass w γ₀` (where on-line coefficients are nonnegative real numbers and never
+    cancel, `evenCoeff_modScaledBump_onLine_eq_norm`,
+    `two_re_lagStructure_zero_eq_onLineEvenMass_add_offLine`) as the sole height-dependent datum in
+    modulated visibility (`zeta_near_top_visible_at_explicit_onLineMass_lag`), reduces the modulated
+    visibility lag from `O_w((log γ₀)² log log γ₀ / δ₀)` to the doubly-logarithmic scale
+    `nearTopLogLogLagOffLine M w γ₀ δ₀ = O_{w, M}((1 + log log γ₀) / δ₀)`
+    (`zeta_near_top_visible_at_loglog_lag_of_offLineCopiesLocallyBounded`), and gives the
+    unconditional dichotomy: either every near-top zero is visible at the doubly-logarithmic lag and
+    the degree-defect floor rate equals the zero width, or off-line zeros cluster without bound
+    (`near_top_visible_at_loglog_lag_or_offLine_cluster`,
+    `scalingSurface_defectRate_eq_zetaZeroWidth_or_offLine_cluster`). Over `𝔽_q` the window `2g`
     sees everything; over `ℚ` no degree does (`exists_hidden_at_degree`). On a lag lattice
     (`W(f, f) = ℓ Σ_m k_f(mℓ) D(m)`) the degree filtration *is* the window filtration: the Toeplitz
     law of Square-Root Threshold (`weil_nonneg_iff_toeplitz_of_lagFormula`) decides positivity at
@@ -355,6 +394,12 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     radical is exactly the Frobenius ideal: a compact test is numerically trivial iff it is
     `P(T_q) g` (`radical_iff_eq_frobPolyTest`, by division one factor `T_q − b` at a time with a
     smooth cutoff), the scaling-surface form of Weil's relation `P(F) ≡ 0` on the Frobenius span.
+    Beyond the genus aperture the radical of a curve has every finite dimension (translates of one
+    radical test, `curve_radical_finrank_ge`); over `ℚ` even the near radical is finite: every space
+    of pole-free aperture-`a` tests with `Re W ≤ ε‖f‖²` has dimension at most the size of the grid
+    of the `ε`-horizon `T_ε(a) = 4(e^{2E + 4πε} − 1)` (`finrank_le_of_re_W_le`,
+    `zeta_near_radical_finrank_le`): the grid samples are injective there, because small Weil energy
+    keeps half the spectral mass below `T_ε(a)`.
 
 ### 3.7 Hecke incidence and the successor cell
 
@@ -458,7 +503,13 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
     is at least `−Ce^{2βr}(∫f² + ∫(f′)²)` for every `β > σ`, and the infimum of admissible floor
     rates is the zero width (`zetaZeroWidth_le_iff_scalingSubsurface_odd_sobolev_defect_floor`,
     `oddDefectFloorRate_eq_zetaZeroWidth`). The unconditional floor has rate `½`; any power saving
-    would be a zero-free strip. Through degree `181/500` the odd floor is `0`.
+    would be a zero-free strip. Through degree `181/500` the odd floor is `0`. Over `𝔽_q` the law
+    holds in `L²` with no Sobolev correction, since the zeros of a curve have bounded local count:
+    `Re W(f, f) ≥ −2N log q·n·e^{2δa}‖f‖²` at aperture `a` with `δ = log R/log q`, and Turán's
+    power-sum theorem gives two-bump tests at aperture `≈ νlog q/2` with
+    `Re W ≤ log q (N − R^ν/C_M)‖f‖²`, `C_M` polynomial (`re_W_curveConfig_ge_floor`,
+    `exists_lagTest_le`): the `L²` floor rate of a curve is exactly twice its zero width, the
+    unclustered case of Square-Root Threshold's width–floor alternative.
 33. **Hecke-stable ampleness, section counts, and selectivity**
     (`SectionCountRiemannRochAndPrimeBlindSelectivity`). Hecke correspondences act on the pole plane
     with weights `(a, 1)`, so a cycle keeps nonnegative ample degree under all `T_a` iff it lies in the
@@ -538,7 +589,8 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
    line — never depth or multiplicity — filtered by degree, split additively into reflection
    sectors at every degree, and carried by the Hecke orbit of any one spectrally generic test, and
    for all but finitely many primes by one prime tower when the right zeros are finite in number
-   (§3.4). The growth rate of the Sobolev-normalized defect floor in the degree is the zero width,
+   (§3.4). For `ζ` it is finite at every degree (item 14), where every curve and lag lattice has
+   `0` or `∞`. The growth rate of the Sobolev-normalized defect floor in the degree is the zero width,
    unconditionally (item 32).
 3. **Which arithmetic data force the sign?** Not span data, integrality, functional equation or
    positive Euler data: the golden datum has all of them and fails (`WhichArithmeticDataForceTheSign`).
@@ -614,12 +666,22 @@ To be built:
 2. **Near-radical count (Landau–Widom).** The two-sided law for `h⁰_ε(L)`, the dimension of
    aperture-`L` tests with `|W| ≤ ε‖f‖²`, unconditionally in its upper half, and the rate
    `−log μ(L) ≍ 2π² N(T*)/log N(T*)` for configurations on the line. Known: lower bounds
-   (`zeta_weil_near_radical_dimension_smooth`, `RHTower.zeta_weil_near_radical_sharp_count`).
+   (`zeta_weil_near_radical_dimension_smooth`, `RHTower.zeta_weil_near_radical_sharp_count`) and an
+   unconditional upper bound that is doubly exponential in `L` (`zeta_near_radical_finrank_le`);
+   open: the upper bound `(2 + η)e^{2L}`.
 3. **Aperture over `ℚ`.** The degree at which `n` right zeros become visible is explicit in terms
    of on-line mass, local density and logarithmic density, and height-uniform under a uniform
-   window count (item 15); no degree works uniformly over all configurations. Open for `ζ`:
-   eliminating the residual `log γ₀` factor in the Riemann–von Mangoldt tail of the Turán inequality
-   without a bounded on-line density.
+   window count (item 15); no degree works uniformly over all configurations. For `ζ`, under a local
+   off-line bound `OffLineCopiesLocallyBounded M` (with no bound on on-line density), on-line
+   exponential damping (`e^{(Re z − σ)V} ≤ 1` for `Re z ≤ 0`, `σ > 0`) eliminates the residual
+   `log γ₀` factor in the Riemann–von Mangoldt cubic potential tail of the Turán inequality,
+   removes `recordHeightOf` and `oneParamRecordHeight` from the unmodulated (`c = 0`) visibility and
+   contact-aperture laws, makes the modulated (`c = γ₀`) visibility lag explicit in
+   `(M, onLineEvenMass w γ₀, δ₀)` with zero `log γ₀` factor, and reduces the unconditional modulated
+   visibility lag to `O_{w, M}((1 + log log γ₀) / δ₀)` (`TuransInequalityWithoutBoundedOnLineDensity`).
+   Open for `ζ`: ruling out unbounded local clustering of off-line zeros (`OffLineCopiesLocallyBounded M`),
+   or eliminating the remaining `log log γ₀` coming from `onLineEvenMass w γ₀ = O_w(log γ₀)` inside
+   the dyadic Fejér order `⌈log₂ Y⌉₊`.
 4. **The collar between towers.** On rank-`P` boxes the towers couple through the collar and the
    pole only; bound this coupling against `Σ_p E_p` and decide positivity of the
    finite-Euler-product form on lattice tests.
@@ -687,12 +749,12 @@ Weil's argument.
 | `FrobeniusSpanCalibration`, `FrobeniusSpanHodgeIndexIsRH` | curve data, Lefschetz and adjunction, span defect = Toeplitz form, Hodge index on the span ⟺ unitarity |
 | `FakeCurvesAndTheWindowLaw`, `WittIntegralityIsNotPurity`, `TheGoldenCurveIsABeurlingSystem` | the golden datum; window visibility and hiding; integrality versus purity; the golden curve as a Beurling system |
 | `SpanContactLaw`, `TheFrobeniusSpanDefectCountsTheOuterEigenvalues` | contact window; Pontryagin law over `𝔽_q` |
-| `TheScalingSurfaceOfACurve`, `TheFrobeniusSpanIsTheTowerOfTheScalingSurface`, `TheDegreeFiltrationOfACurveIsItsWindowFiltration`, `TheFirstNegativeLagOfACurve` | the scaling surface of a curve; three Hodge index theorems; the span as period quotient; degree filtration = window filtration; lag tests read point counts, purity = lag positivity, Turán-located first negative lag |
+| `TheScalingSurfaceOfACurve`, `TheFrobeniusSpanIsTheTowerOfTheScalingSurface`, `TheDegreeFiltrationOfACurveIsItsWindowFiltration`, `TheFirstNegativeLagOfACurve`, `TheWeilFloorOfACurveIsItsZeroWidth` | the scaling surface of a curve; three Hodge index theorems; the span as period quotient; degree filtration = window filtration; lag tests read point counts, purity = lag positivity, Turán-located first negative lag; `L²` floor rate = twice the zero width |
 | `HodgeIndexFromEffectivity`, `BezoutEffectivityAndTheBeurlingObstruction`, `DistinctEffectiveCyclesMeetNonnegatively` | effectivity axioms ⟺ Hodge index; Bézout positivity through the collar |
-| `TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`, `InfiniteGenusLaw`, `TheGenusIsTheApertureOfTheRadical`, `NumericalEquivalenceOnACurveIsTheFrobeniusIdeal` | the scaling surface of `ℤ`; signature law and selection of `Λ`; no exact annihilators; over `𝔽_q` the radical is exactly `P(T_q)`(tests) and opens at aperture `d log q/2` |
+| `TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`, `InfiniteGenusLaw`, `TheGenusIsTheApertureOfTheRadical`, `NumericalEquivalenceOnACurveIsTheFrobeniusIdeal`, `TheNearRadicalOfZetaIsFiniteDimensional` | the scaling surface of `ℤ`; signature law and selection of `Λ`; no exact annihilators; over `𝔽_q` the radical is exactly `P(T_q)`(tests), opens at aperture `d log q/2` and is then infinite-dimensional; over `ℚ` the near radical is finite-dimensional |
 | `FiniteConfigurationPontryaginLaw`, `TemperedConfigurationPontryaginLaw`, `TheHodgeDefectCountsTheRightZeros` | the Pontryagin law, finite, tempered and general |
-| `TheReflectionSectorsOfTheHodgeDefect`, `TheDegreeFiltrationOfTheHodgeDefect`, `SchurLendingOddHodgeIndexPastFirstPrime`, `WhatTheFailureOfTheHodgeIndexMeasures` | sectors and degrees; `ζ` below `3/10` and the odd sector through `181/500`; multiplicity and depth invariance; Sobolev floor rate = width |
-| `TheVisibilityDegreeOfAnIsolatedPair`, `TheVisibilityDegreeOfRightZeros`, `HeightUniformVisibilityAndOffLineDensity` | visibility degrees from on-line mass and densities; height-uniform visibility; the clustering alternative |
+| `TheReflectionSectorsOfTheHodgeDefect`, `TheDegreeFiltrationOfTheHodgeDefect`, `SchurLendingOddHodgeIndexPastFirstPrime`, `WhatTheFailureOfTheHodgeIndexMeasures`, `TheHodgeDefectOfZetaIsFiniteAtEveryDegree`, `TheHodgeIndexOfZetaHoldsAwayFromLowFrequencies` | sectors and degrees; `ζ` below `3/10` and the odd sector through `181/500`; multiplicity and depth invariance; Sobolev floor rate = width; the degree defect of `ζ` is finite (archimedean horizon and Bessel count) and lives on an explicit low-frequency grid |
+| `TheVisibilityDegreeOfAnIsolatedPair`, `TheVisibilityDegreeOfRightZeros`, `HeightUniformVisibilityAndOffLineDensity`, `TuransInequalityWithoutBoundedOnLineDensity` | visibility degrees from on-line mass and densities; height-uniform visibility; eliminating the `log γ₀` Turán tail without bounded on-line density, height-free `c = 0` visibility and contact-aperture bounds, on-line non-cancellation, doubly-logarithmic modulated visibility lag, and the clustering dichotomy |
 | `TheKroneckerRankDichotomy`, `TheZerosOfAnExponentialPolynomialRecur` | recurrent configurations have defect `0` or `∞` |
 | `TheHodgeDefectIsCyclic`, `TheHeckeTowerOfAPrimeIsThePeriodQuotient`, `AlmostEveryPrimeSeesEveryRightZero`, `TheTowerDefectCountsTheFrobeniusEigenvalues`, `OnePrimeSeesEveryWellFoundedLevel` | cyclic Pontryagin law; prime towers, Frobenius eigenvalues and weights; resonant primes; top-down class extraction, the tower law without finiteness, attained tops |
 | `ResonatorKroneckerLaw`, `HeckeIncidenceCartesianLaw`, `TheResonatorRemainderIsNegative`, `TheAdjunctionConjectureMeanField` | Hecke incidence: Cartesian law, resonators, mean field |

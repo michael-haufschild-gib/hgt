@@ -94,3 +94,4 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentDepthGa
 import GaloisForLFunctions.«arithmetic-positivity-theory».CompactCriticalPolynomialWindowAndTemperednessBridge
 import GaloisForLFunctions.«arithmetic-positivity-theory».MultiScaleLowModeAndGridTentSchurBridge
 import GaloisForLFunctions.«arithmetic-positivity-theory».ExplicitBlockThresholdsOfTheCriticalFamily
+import GaloisForLFunctions.«arithmetic-positivity-theory».TheLinearWindowOfTheCriticalPrimeChannel

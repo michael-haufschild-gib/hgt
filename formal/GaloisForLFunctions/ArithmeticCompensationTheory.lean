@@ -4,18 +4,24 @@ import GaloisForLFunctions.ArithmeticCompensationTheory.TheHorizonLawHoldsAtTheD
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheTranslationLawHasAnInverseSquareDeficit
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheHorizonEnergyIsNotUniformlyCoercive
 import GaloisForLFunctions.ArithmeticCompensationTheory.ThePrimePolarResidualHasTheDeLaValleePoussinSaving
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheResolventIdentityAndSecondHorizonCorrection
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheCompensatedRemainderOfTheFullLedger
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheHorizonLawOfACurveIsGeometric
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheReceiverOfACurveIsAdmittedAboveTheZeroWidth
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheCurveReceiverIsAdmittedExactlyOnZeroChains
 import GaloisForLFunctions.ArithmeticCompensationTheory.CompensationCoordinates
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheCompensationDefectDecaysLogarithmically
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheCompensationDefectDecaysFasterThanEveryLogPower
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheCompensatingProjectionMovesSummablyAcrossScales
+import GaloisForLFunctions.ArithmeticCompensationTheory.ATwoScaleCompensationRate
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheReceiverEnergyEscapesToTheHorizon
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheNormalizedReceiverBlowUpProfile
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheSignedBudgetIsStrictlyWeakerThanThePositivePart
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheCoreDebtOnAPositiveIntervalIsAZetaLogRatio
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheFirstCellCarriesAdverseWork
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheApertureFloorMustDecayDoublyExponentially
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheAdaptedEnergyIsExactlyAdmission
+import GaloisForLFunctions.ArithmeticCompensationTheory.ConstructingAnArithmeticCorrector
 import GaloisForLFunctions.ArithmeticCompensationTheory.AChangeOfOriginCostsAQuadraticConstant
 import GaloisForLFunctions.ArithmeticCompensationTheory.ADriftingOriginIsPricedByTheTailBeyondIt
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheSeventeenThirtiethsWindowWidensTheCentredPrimeRowRange
@@ -25,8 +31,8 @@ import GaloisForLFunctions.ArithmeticCompensationTheory.TheBalancedRegimeAndTheO
 # Arithmetic Compensation Theory
 
 Arithmetic compatibility and compensated coercivity: the prime comb at the critical horizon
-(translation and resolvent laws, the sharp exponential rate, the de la Vallée Poussin rate of the horizon law, the inverse-square deficit of the translation law, the failure of uniform coercivity, the de la Vallée Poussin saving of the prime–polar residual, the geometric horizon law of a curve model and the admission of its receiver above the zero width), compensation coordinates of a
-divergent sector against its complement and their rate on the actual source, faster than every power of the logarithm, and summable motion across scales, the quantifier corrections of the continuation problem,
-the forced aperture loss rate, the adapted-energy criterion, the exact price of a finite change of origin and the tail price of a drifting one, the escape of a receiver blow-up to the horizon, and the `17/30` short-window transfer
+(translation and resolvent laws, the sharp exponential rate, the de la Vallée Poussin rate of the horizon law, the inverse-square deficit of the translation law, the resolvent differential identity, the quartic second horizon correction and fixed-aperture odd-test coercivity, the failure of uniform coercivity, the de la Vallée Poussin saving of the prime–polar residual and the compensated remainder of the full ledger with its zero-free strip equivalence, the geometric horizon law of a curve model and the admission of its receiver above the zero width), compensation coordinates of a
+divergent sector against its complement and their rate on the actual source, faster than every power of the logarithm, summable motion across scales, and the power-saving two-scale compensation rate between overlapping cutoffs, the quantifier corrections of the continuation problem,
+the forced aperture loss rate, the adapted-energy criterion and the Bézout unit-boundary arithmetic corrector, the exact price of a finite change of origin and the tail price of a drifting one, the escape of a receiver blow-up to the horizon and the normalized receiver blow-up profile, and the `17/30` short-window transfer
 into the centred prime row and the balanced regime with its omitted-residue-class law. See `ArithmeticCompensationTheory/README.md`.
 -/

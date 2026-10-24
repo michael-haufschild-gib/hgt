@@ -107,6 +107,26 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
   `integral_sq_finiteResidueProfile_eq`, `rieszTwin_energy_unbounded`; input
   `RHTower.RieszMoebiusMeansOnTheOneLine` (`tendsto_moebiusRieszPoly_one_line`,
   `exists_norm_moebiusRieszPoly_one_line_le`).
+- `TheResidueModesAreBesselButNotRiesz` — `sum_sq_finiteResidueCombination_le`, `gram_horizon_le`,
+  `not_riesz_residueModes`.
+- `TheChainIsCompactAtHalfDamping` — `exists_centeredOperator_tail_l2_le_half`,
+  `exists_centeredOperator_tail_l2_le_uniform`, `centeredOperator_half_tail_small`.
+- `OneCompanionShortPaysOnlyAtCriticalPoints` — `companions_pay_iff`,
+  `oneShort_companions_pay_iff`, `twoShort_companions_never_pay`, `exists_payable_iff`,
+  `oneShort_payable_iff_mem_roots`.
+- `PaleyWienerSourcesPayAtTheNyquistDensity` — `hasSum_sq_pwSource_lattice`, `pwCompanions_pay`,
+  `pwCompanions_price_sharp`, `pwCompanions_never_pay`, `hasDerivAt_pwSource`.
+- `PerturbedCompanionLatticesStillPay` — `sum_sq_pwSource_perturbed_sub_le`,
+  `pwPerturbedCompanions_pay`, `hasSum_sq_pwDeriv_lattice`.
+- `OffLineConfigurationsArePaidByTheirKernelGram` — `pwConfiguration_pay_iff_gram`,
+  `pwConfiguration_pay_of_gram`, `gram_of_pwConfiguration_pay`, `pwDeriv_eq_integral_kernel`.
+- `KronReductionNeverCreatesFrustration` — `HarmonicFrame.h_nonneg`,
+  `HarmonicFrame.reduced_eq_sub_conductance`, `HarmonicFrame.pos_of_reduced_pos`,
+  `nonneg_iff_payable_of_healed`.
+- `AlignedOverlapsOnlyRaiseTheEffectiveConductance` — `nonneg_of_action_nonneg`,
+  `HarmonicFrame.h_mono`, `HarmonicFrame.conductance_mono`, `healed_mono`.
+- `TheChainIsNormContinuousAtHalfDamping` — `centeredOperator_norm_tendsto_half`,
+  `column_l2_tendsto_half`, `sum_sq_dilated_profile_le`, `centeredRow_eq_dilated`.
 - `ResidueModesAndBackwardContinuation` — `centeredOperator_normalizedResidueMode`,
   `tsum_sq_normalizedResidueProfile_le/_ge`, `not_backward_stable_l2/_c0`, `summable_signBlind_iff`.
 - `DampingIsStronglyContinuousWithUnboundedGenerator` — `tendsto_dampingFlow`,

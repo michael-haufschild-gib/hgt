@@ -32,13 +32,20 @@ surplus can be read through a smooth window.
 - [ ] 1 → 2
 - [ ] 2 → 3
 
-## Approach (modules)
-1. `HeightAveragedCoalescentLocalization` — oscillatory decay, averaged kernels (done, audited).
-2. Grid-kernel comparison `Σ W_kW_l G_kl² = L²∬W(τ)²Φ²νν' + O(L⁵ log³ (1 + X/T))` via Lipschitz
-   error, Tonelli, Lorentzian domination by two Fejér kernels, Fejér-weighted mean value of `ν²`.
-3. Smooth continuous form: `μμ`, prime diagonal, far pairs, sum frequencies, cross terms.
-4. Weighted trace: prime part by Abel summation (`|e^{iyh} − 1| ≥ 4 min(y, L−y)/L`).
-5. Assembly through `seamA_weighted` at `params43`; scaled smooth profile `u₀((τ−T)/T)`.
+## Approach (modules, all in `TransThresholdPairCorrelation/`)
+1. `HeightAveragedCoalescentLocalization` — oscillatory decay (done).
+2. `FejerWeightedPrimeMeanSquare` — Fejér/Lorentz mean squares of `P_X` (done).
+3. `SmoothGridWeightKernel` — grid kernel of a Lipschitz weight, two comparisons (done).
+4. `SmoothWindowContinuousForm` — `Φ² ⋆ v` (slowly varying / decaying / prime polynomial),
+   linear-growth Fubini, exact coalescent kernel and its diagonal/close/far/sum-frequency split,
+   half-period shift, Lorentz mean square of `C_w` (done).
+5. `SmoothWindowFrobeniusChannels` — bilinear expansion along `μ + Π_X + P_X`, nine channels,
+   `smoothPair_nuX_le` (done).
+6. `SmoothWindowGridComparison` — weighted Frobenius sum `= L²·smoothForm` up to explicit errors;
+   Lorentz mean square of `ν_X`; lattice deficit `ρ` at distance `D` (done).
+7. `SmoothWindowWeightedTrace` — summation by parts, Jordan bound, prime part at `λ = 4/3`,
+   collar form of the trace (done).
+8. Profile module + assembly through `seamA_weighted` at `params43` (in progress).
 
 ## Log
 - 2026-10-23 — created; moving-cutoff obstruction; Jackson-tail obstruction; smooth-weight route.

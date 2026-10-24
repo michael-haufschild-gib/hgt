@@ -666,8 +666,9 @@ The all-ones row shows the same for every inverse $\ell^1$ constant, $\|c\|_1^2\
 needs $C\ge\Phi(N)$, and finite Ramanujan inversion gives $\|c\|_1\le\sum_q\sigma(q)\lvert Y(q)\rvert$,
 hence $\|c\|_1^2\le S_NQ_{\mathrm{Sel}}$ with $S_N=\sum_{q\le N}\sigma(q)^2/\varphi(q)\le e^{19/2}N^2$
 (from $\sigma(q)\varphi(q)\le q^2$ and $\sum_{q\le N}(q/\varphi(q))^3\le e^{19/2}N$). Quantitative
-window–period transfer starts at length $N^{2\pm o(1)}$ and no mean-square comparison reaches a
-linear horizon.
+window–period transfer starts at length $N^{2\pm o(1)}$ and no mean-square comparison uniform in
+the row reaches a linear horizon; the Möbius row itself transfers at every superlinear horizon
+(§3.10).
 
 **Window laws at quadratic order.** With $S=2N^2-1$, polarization of the lagged sums
 $s'(k)\pm s'(k+g)$ (coefficients $Y(\operatorname{ord}\zeta)(1\pm\zeta^g)$, and
@@ -1025,6 +1026,28 @@ $M\le(B+1)N$ with $B$ fixed.
   Exact evaluation of the finite formula shows the slopes are not monotone
   ($\gamma_5=\frac{73}{90}\cdot\frac6{\pi^2}>\gamma_4=\frac34\cdot\frac6{\pi^2}$, so $P$ is not concave)
   and the band averages change sign ($A(10)=\frac19\cdot\frac6{\pi^2}>0$).
+  The slope is the limiting period variance: $C(N)=\sum_{d,e\le N}\mu(d)\mu(e)/[d,e]\to\kappa$
+  ([TheCofinalMobiusSlopeIsThePeriodVariance](TheCofinalMobiusSlopeIsThePeriodVariance.lean)), so
+  the energy density on linear horizons is already the complete-period value. In gcd coordinates
+  $C(N)=\sum_g\mu(g)^2g^{-1}S'_g(\lfloor N/g\rfloor)$; on each fibre $\lfloor N/g\rfloor=j$ the
+  coprimality weights equidistribute to the coprime-squarefree densities, giving the band-slope
+  weight $\frac6{\pi^2}S(j)\log(1+\frac1j)$, and fibres $j>N^{1/16}$ are negligible since
+  $\lvert S'_g(X)\rvert\ll\Pi(g)^2\log^{-4}X$ with $\sum_{g\le N}\mu(g)^2\Pi(g)^2/g\ll\log N$,
+  $\Pi(g)=\prod_{p\mid g}(1-p^{-3/4})^{-1}$ ([CoprimeMoebiusHarmonicSumsDecay](CoprimeMoebiusHarmonicSumsDecay.lean)).
+  With the white-noise floor this gives $\kappa\ge1/288$.
+- **Superlinear transfer.** The cofinal laws hold uniformly in the band ratio: for every
+  $\varepsilon>0$ there are $B_0,N_0$ with $\bigl\lvert\frac1M\sum_{k\le M}s_{N,\mu}(k)^2-\kappa\bigr\rvert\le\varepsilon$
+  for all $N\ge N_0$ and all $M\ge B_0N$, so the prefix mean square tends to $\kappa$ along every
+  horizon with $M/N\to\infty$, the quadratic range $M\asymp N^2$ included
+  ([TheMoebiusEnergyTransfersAtEverySuperlinearHorizon](TheMoebiusEnergyTransfersAtEverySuperlinearHorizon.lean)).
+  For $B=\lfloor M/N\rfloor\le N^{1/16}$ the quotient-pair form counts squarefree integers prime
+  to $ab\le B^2$ with error $ab\sqrt X\log X$. For larger $B$,
+  $M\,C(N)-\sum_{k\le M}s_{N,\mu}(k)^2=\sum_{d,e\le N}\mu(d)\mu(e)\{M/[d,e]\}$, and in gcd coordinates
+  each inner sum is a coprime Möbius sum against the sawtooth $\{M/(gab)\}$, monotone on the pieces
+  $\lfloor t/b\rfloor=n$: Abel summation and $\sum_{b\le s,(b,f)=1}\mu(b)\ll\Pi(f)s\log^{-4}s$ give
+  $\ll\Pi(f)t\log^{-3}t+\sqrt t$
+  ([CoprimeMertensSawtoothCancellation](CoprimeMertensSawtoothCancellation.lean),
+  [TheMoebiusPrefixEnergyAtLargeBandRatio](TheMoebiusPrefixEnergyAtLargeBandRatio.lean)).
 - **Gradient coercivity.** Every odd squarefree integer in $(N,2N]$ selects an adjacent edge
   ending at a multiple of four with gradient square $1$, so eventually, uniformly on
   $2N\le M\le N^A$, $R_N(M;\mu)\le -N/(2\pi^2)$, while on a fixed linear window
@@ -1592,7 +1615,8 @@ assumptions. Every module says in its header what its bounds do not prove.
    statistics to which the cross-scale Gram reduces exactly. Fixed-modulus statistics, the Möbius
    block above its logarithmic small-prime threshold and the centred prime row on the unbalanced
    range are proved qualitatively; balanced scales $Q\approx P$ for the prime row, and quantitative
-   gains strong enough for the receiver, are open.
+   gains strong enough for the receiver, are open. In mean square the Möbius row transfers at every
+   superlinear horizon, where generic rows need $N^{2\pm o(1)}$ (§3.10).
 4. **What does the receiver cost in the damping unit?** Bounded on the zero-free bands, so
    unconditionally the band $\tfrac12-c\,\sigma(T)/\log T$; a band of fixed width would be a zero-free
    strip.
@@ -1749,9 +1773,9 @@ $2^{m+1}$ to defeat $mN$, so it says nothing against horizons such as $N\log N$:
 between superlinear and quadratic is open. The exact
 window sandwich constant in $[\Phi(N)-2,N(N-1)]$. Explicit stability constants for relation-spectrum
 recovery on windows at unknown phase, and the law for rows only approximately equal in degrees five
-and six. Rates in the cofinal Möbius laws uniform in the band ratio $B$ (the profile's slope limit
-$\kappa$ is proved, §3.10; whether $\kappa$ equals the limit of the period variance
-$\sum_{d,e\le N}\mu(d)\mu(e)/[d,e]$, numerically $0.4407$ for both, is open); mixed-level covariances of centred pronic residue cells, which
+and six. Explicit rates in the cofinal Möbius laws, which hold uniformly in the band ratio with
+limit $\kappa$ equal to the limiting period variance (§3.10), and a closed form for
+$\kappa\approx0.4407$; mixed-level covariances of centred pronic residue cells, which
 are positive when the cells share a factor and start together; the sign of a general signed prime
 packet in the energy-centred Gram.
 

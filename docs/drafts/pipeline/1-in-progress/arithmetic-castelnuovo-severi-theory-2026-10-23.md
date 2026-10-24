@@ -224,6 +224,13 @@ survivor).
 
 - `NumericalEquivalenceOnACurveIsTheFrobeniusIdeal`: `radical_iff_eq_frobPolyTest` (radical = P(T_q)·tests).
 
+- `TheHodgeDefectOfZetaIsFiniteAtEveryDegree`: `hodgeDefectAt_zeta_le` (ζ's degree defect is finite,
+  doubly exponential bound; curves and lag lattices are 0 or ∞ per degree).
+- `TheHodgeIndexOfZetaHoldsAwayFromLowFrequencies`: `re_W_zeta_nonneg_of_lowGrid` (Weil positivity at
+  every aperture on tests blind to an explicit low-frequency grid); golden curve: no finite divisor works.
+- `TheNearRadicalOfZetaIsFiniteDimensional`: `zeta_near_radical_finrank_le` (near radical finite-dim,
+  doubly exponential upper half of Landau–Widom); `curve_radical_finrank_ge` (curve radical infinite-dim).
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated

@@ -290,6 +290,50 @@ above through the mass, and says nothing yet about whether it is paid.
    is within `h²/(8D)` of its degree (`incidenceEnergy_ge_of_cheeger`); balanced forms (`h = 0`)
    need the full degree.
 
+### 3.1⁵ Dense and full-weight frustration of the odd Weil ledger (`DenseAndFullWeightFrustrationOfTheOddWeilLedger`)
+
+1. **Sub-sample monotonicity and disjoint fiber superadditivity.** Restricting a switching along an
+   injection `e : ι₀ → ι` drops only nonnegative misalignment terms
+   (`misalignedCost_comp_injective_le`), so `frustrationIndex` and `frustrationMass` are monotone
+   under sub-sampling (`frustrationIndex_comp_injective_le`, `frustrationMass_comp_injective_le`)
+   and superadditive across disjoint fibers `κ × ι₀ → ι` (`sum_frustrationIndex_fiber_le`,
+   `sum_frustrationMass_fiber_le`). At any sign vector `s`,
+   `incidenceEnergy c s = ∑ (c_ii − deg_i) + 2 misalignedMass s c`
+   (`incidenceEnergy_signVector_eq`).
+2. **The polar hyperbolic barrier and midpoint quenching at full weight (`α = 1, β = 1`).**
+   Because `cosh((x+y)/2) − cosh((x−y)/2) = 2 sinh(x/2) sinh(y/2)` (`cosh_half_add_sub_cosh_half_sub`),
+   the archimedean–polar difference obeys `weilKernel |x+y| − weilKernel |x−y| < −8 sinh(x/2) sinh(y/2)`
+   (`weilKernel_add_sub_weilKernel_sub_lt_neg_eight_sinh`). At the source-faithful full weight
+   `α = 1, β = 1`, this barrier quenches the midpoint-matched family `matchedPos Q` (`q ≥ 5`) completely:
+   every off-diagonal overlap is `< 0` (`oddFold_matchedPos_weilLedgerKernel_one_neg`), so `matchedPos Q`
+   is balanced with `frustrationIndex = 0` and `frustrationMass = 0`
+   (`frustrationIndex_matchedPos_weilLedgerKernel_one_eq_zero`,
+   `frustrationMass_matchedPos_weilLedgerKernel_one_eq_zero`).
+3. **Full-weight frustration on `primeTrianglePos`, `packedPrimePos`, and dense triangle packings.**
+   At `α = 1, β = 1`, `primeTrianglePos` (`Fin 3`) has `frustrationIndex = 2`
+   (`frustrationIndex_primeTriangle_weilLedgerKernel_one`) and `2/7 ≤ frustrationMass < 4/5`
+   (`frustrationMass_primeTriangle_weilLedgerKernel_one_bounds`). On `packedPrimePos` (`Fin 4`),
+   where two anti-aligned prime sums `(1, 2)` and `(1, 3)` share vertex `1` (violating `4D ≤ n`),
+   `misalignedCount 1 = 4` and switching vertex `1` (`s = ![1, −1, 1, 1]`) trades both prime sums
+   for the aligned edge `(0, 1)`, reducing `frustrationIndex` to `2`
+   (`frustrationIndex_packedPrime_weilLedgerKernel_one`) and `frustrationMass` below `4/5`
+   (`frustrationMass_packedPrime_weilLedgerKernel_one_lt`). Perturbing `primeTrianglePos` along
+   `q_t = ![p_0 − t, p_1 + t, p_2 − t]` preserves `q_0 + q_1 = log 2` and `q_1 + q_2 = log 3`
+   exactly and packs `M` disjoint copies into `(0, log 5]` with `frustrationIndex ≥ 2M` and
+   `frustrationMass ≥ (2/7)M` (`exists_dense_primeTriangle_packing_weilLedgerKernel_one`).
+4. **Collar-skimming survival at full weight (`α = 1, β = 1`).** Placing lower points at `δ i → 0⁺`
+   and upper points at `log(π i) − δ i` (`collarPos`) isolates all prime sums to the partner pairs
+   via `log(N+1) − log N ≥ 1/(N+1)` (`exp_log_nat_add_ne_nat`, `eq_collarPartner_of_exp_eq`). As
+   `δ i → 0⁺`, `weilKernel(log q) − weilKernel(log q − 2δ i) → 0`, so at **every** fixed `α > 0, β > 0`
+   (in particular `α = 1, β = 1`), `collarPos` on `↥Q × Fin M` achieves `frustrationIndex = 2 M |Q|`
+   in `(0, max_{q ∈ Q} log q]` (`frustrationIndex_collarPos_fullWeight`,
+   `exists_collarPos_frustrationIndex_eq_two_mul`).
+5. **The sub-prime contact window `(0, 3/10]` and synthesis.** On `(0, A]` with `A < ½ log 2`
+   (including `A ≤ 3/10`), `primeSumPairs p = ∅`, `frustrationIndex = 0`, and `frustrationMass = 0`
+   (`frustrationIndex_eq_zero_of_le_threeTenths`, `frustrationMass_eq_zero_of_le_threeTenths`),
+   united with `1/5000 ≤ ccmRestrictedWeilGroundEnergy A` and `3/10 ≤ zetaContactAperture` off RH in
+   `oddWeilLedger_offLattice_frustration_and_contact_synthesis`.
+
 ### 3.2 The frustration of a tower is rank one (`TheFrustrationOfATowerIsRankOne`)
 
 1. **Tower locality.** `P_q(p^k) = Σ_{i≤k} q(p^i) q(p^{k−i})` (`productCorr_prime_pow`).
@@ -330,6 +374,50 @@ every tower to every other, and a sum of independent rank-one squares, one per p
    `log p · (2 Σ_{a'} Toeplitz_p(q|_{a'}) − (S_p(q)² − q(1)²))` (`towerOddPrimeSide_eq`): the
    difference correlations are coset-Toeplitz, the sum correlations one Hankel square on the unit
    coset. This is the orientation-sensitive decomposition of §7.2 in its exact finite form.
+4. **Cholesky form** (`TheTowerOddSideIsACholeskyEnergyMinusTheMass`). The KMS–Cholesky identity
+   `Σu_i² + 2Σ_{k≥1} r^k Σ_i u_i u_{i+k} = v_0² + (1 − r²)Σ_{j≥1} v_j²`, `v_j = Σ_{i≥j} r^{i−j}u_i`
+   (`kms_cholesky`), makes the Hankel square the zeroth mode of the unit coset: the tower odd side is
+   `log p · [Σ_{a'≠1} v_0(a')² + (1 − 1/p)Σ_{a'}Σ_{j≥1} v_j(a')² − Σ_{2≤n≤X} q(n)²]`
+   (`towerOddPrimeSide_eq_cholesky`), hence `≥ −log p · Σ_{n≥2} q(n)²` (`towerOddPrimeSide_ge`).
+
+### 3.2‴ Coset-Toeplitz dominance and shifted-pair selectivity (`CosetToeplitzDominanceAndShiftedPairSelectivity`)
+
+1. **Axis-pair cancellation and `q(1)`-invariance.** At every `m ≥ 2`, the `a = 1` term `2 q(1) q(m)`
+   of `2 R_q(m)` cancels the boundary divisors `d = 1` and `d = m` of `P_q(m)` identically
+   (`two_mul_ratioCorr_sub_productCorr_eq_interior`, `two_mul_ratioCorr_sub_productCorr_update_one`).
+   Both `towerOddPrimeSide` and `latticeOddPrimeSide` are therefore completely independent of `q(1)`
+   (`towerOddPrimeSide_update_one`, `latticeOddPrimeSide_update_one`), and the unit-coset Hankel
+   square reduces to the interior square `towerInteriorMellin q p K ^ 2 = (∑_{1 ≤ i ≤ K} q(p^i) p^{−i/2})²`
+   (`towerOddPrimeSide_eq_interior`).
+2. **Unit-coset scale-suppression law.** Expanding `towerInteriorMellin q p K ^ 2` into its diagonal
+   and upper-triangular correlations (`towerInteriorMellin_sq_eq`) yields
+   `2 · interiorUnitToeplitz q p K − towerInteriorMellin q p K ^ 2 = 2 · scaleSuppressedUnitToeplitz q p K − ∑_{i=1}^K p^{−i} q(p^i)²`
+   (`unitCoset_toeplitz_sub_hankel_eq`, `towerOddPrimeSide_eq_scaleSuppressed_sub_diag`), with positive
+   off-diagonal weight `2(p^{−(j−i)/2} − p^{−(i+j)/2}) > 0` (`scaleSuppressedUnitToeplitz_nonneg`).
+   This isolates the reflected prime-power diagonal `−log p ∑_{i=1}^K p^{−i} q(p^i)²` as the sole
+   negative term on coset-coherent profiles (`IsCosetCoherent`).
+3. **Archimedean–polar dominance and unconditional Cauchy–Schwarz control.** Adding the archimedean
+   reflected-diagonal form `towerArchDiagForm q p K = ∑_{i=1}^K archReflectedDiagWeight(p^i) q(p^i)²`
+   (`towerTotalOddForm`) replaces the prime diagonal weight by
+   `−totalLatticeCrossingKernel(p^i)(p^i) = archReflectedDiagWeight(p^i) − log p · p^{−i}`
+   (`towerTotalOddForm_eq`), which is `≥ 0` for all `p^i ≥ 4` (`neg_totalLatticeCrossingKernel_diag_nonneg_of_four_le`).
+   Furthermore, `(n : ℝ) / 6 < archReflectedDiagWeight n` for `n ≥ 4` (`div_six_lt_archReflectedDiagWeight`)
+   gives the geometric Cauchy–Schwarz bound `∑_{i ≥ k₀} (log p · p^{−i}) / archReflectedDiagWeight(p^i) ≤ 1/2`
+   (`sum_primeDiag_div_archReflectedDiagWeight_le_half`). Consequently, for **every** profile `q` of
+   **arbitrary sign** (with `q(2) = 0` at `p = 2`, `q(3) = 0` at `p = 3`, and with no restriction for
+   `p ≥ 5`), the archimedean reflected diagonal alone dominates twice the interior Hankel square:
+   `log p · towerInteriorMellin q p K ^ 2 ≤ (1/2) towerArchDiagForm q p K` and
+   `towerTotalOddForm q p X K ≥ 2 log p · towerInteriorRatioPart q p X K + (1/2) towerArchDiagForm q p K ≥ 0`
+   (`towerTotalOddForm_ge_half_towerArchDiagForm`, `towerTotalOddForm_nonneg_of_five_le`).
+4. **Shifted-pair rank-two coset law and four-part selectivity.** For `ζ(s − a)ζ(s + a)`
+   (`shiftedPairVonMangoldt a`), the tower product part splits into **two** shifted Mellin squares at
+   `s = 1/2 − a` and `s = 1/2 + a` (`shiftedTowerProductPart_eq_add_sq`, `shiftedTowerOddPrimeSide_eq`).
+   For every `a ≠ 0`, `2 · towerProductPart q p K < shiftedTowerProductPart a q p K`
+   (`two_mul_towerProductPart_lt_shiftedTowerProductPart`) and the Cauchy–Schwarz ratio diverges linearly
+   with horizon (`2K < ∑_{i=1}^K (p^{2ia} + p^{−2ia})`, `sum_shiftedHankelRatio_gt_two_mul`). For
+   `|a| ≥ 1`, both the off-diagonal tower comparison (`shifted_productAtom_gt_ratioAtom_of_one_le`)
+   and reflected-diagonal dominance (`archReflectedDiagWeight_lt_shiftedPrimeDiag_of_one_le`) reverse
+   at every prime power `p^i` (`cosetToeplitz_dominance_and_shiftedPair_selectivity_synthesis`).
 
 ### 3.3 The Nyquist rank bound (`TheNyquistRankBound`)
 
@@ -353,6 +441,53 @@ every tower to every other, and a sum of independent rank-one squares, one per p
 
 Below the diagonal `N ≪ T` the reading is essentially injective; above it, hiding is possible.
 This is the square-root threshold of the aperture as a sampling threshold.
+
+### 3.3′ Nyquist–Riemann–Roch beyond rank–nullity (`NyquistRiemannRochBeyondRankNullity`)
+
+1. **Spectral-defect Nyquist–Riemann–Roch, the dual `h¹` bound, and Frobenius-mass selectivity.**
+   Splitting `A.rank` into the trace-normalized effective rank `nyquistEffectiveRank A K = frobeniusMass A / K`
+   and the spectral defect `nyquistSpectralDefect A K = A.rank − frobeniusMass A / K ≥ 0`
+   (`nyquistSpectralDefect_nonneg`, vanishing iff `frobeniusMass A = K · A.rank`,
+   `nyquistSpectralDefect_eq_zero_iff`) gives exact decompositions for both `h⁰` and `h¹`
+   (`h0_add_nyquistEffectiveRank_add_spectralDefect`, `h1_add_nyquistEffectiveRank_add_spectralDefect`)
+   and the **dual Nyquist bound on `h¹`** (`h1_le_nyquist`: `h1 A ≤ #nodes − frobeniusMass A / K`),
+   with both spectral terms canceling in `h⁰ − h¹ = dim − #nodes` (`h0_sub_h1_eq_nyquist_diff`).
+   While `h0`, `rank`, and `h1` are invariant under support-preserving diagonal reweighting
+   (`rank_and_h1_mul_diagonal_eq_of_iff_eq_zero`) and therefore agree for `shiftedPairVonMangoldt a`
+   and `Λ` on `weightedDirichletSampling` (`h0_rank_h1_weightedDirichletSampling_shiftedPair_eq_vonMangoldt`),
+   the Frobenius mass is strictly selective (`> 4 · frobeniusMass` for `a ≠ 0`, `2 ≤ N`,
+   `frobeniusMass_weightedDirichletSampling_shiftedPair_gt`).
+2. **Band-limited tests on an aperture, prime-power nodes, and the Landau–Markov & Landau–Widom
+   density theorems.** Every real `f ∈ C²_c(ℝ)` annihilated by the even pole (`coshHalfMoment f = 0`)
+   and by the prime-power node divisor (`logVector (realWeilTestFn f hf hfc) = 0`) obeys the
+   cutoff-free **Landau–Markov frame bound** `∫ f² ≤ (2/69) · spectralSecondMoment`
+   (`l2_le_two_sixty_ninths_spectralSecondMoment_of_primeBlind`), so any subspace `W` of prime-blind
+   sections with rms spectral height `T² ≤ 69/2` has `W = ⊥` and `finrank ℝ W = 0` at every aperture
+   (`finrank_primeBlind_subspace_eq_zero`; with frame constant `69/2` on the nonnegative log-value
+   cone and `33` on the unit-step cone). Deleting node `4` or restricting to primes falsifies
+   zero-pole-blind positivity, while at the trans-Nyquist Landau–Shannon height `T = 2π e^{2ℓ}` the
+   Landau–Widom near-radical subspace has dimension `≥ (2 − η) e^{2L}`
+   (`primePower_node_criticality_and_landauWidom_supply`).
+3. **The `h¹` term and the Chebyshev defect `E(s) = e^s + s − 1 − ψ(e^s)` as its correction.**
+   On `[0, s]`, `chebyshevTwoPoleDefect s = polarBoxDoF s − primeNodeCount s` splits orthogonally
+   into `boxH0Supply s − boxH1Obstruction s` (`boxH0Supply_sub_boxH1Obstruction`), with
+   `boxH1Obstruction = 0` on `[0, log 2]` for `ℤ` (`boxH1Obstruction_eq_zero_below_log_two`,
+   `boxH1Obstruction_eq_zero_at_log_two`) versus `generalizedBoxH1Obstruction > 0` at `s = log 2`
+   for `shiftedPairVonMangoldt a` when `2^a + 2^{−a} > 1 + 1 / log 2`
+   (`generalizedBoxH1Obstruction_shiftedPair_log_two_pos`). On `scalingSubsurface (oddRealTestsAt r)`
+   (`0 < r < R`), the lag-weighted integral `apertureH1ChebyshevCorrection r F = ∫_{(0, 2r]} E(s) lagDerivativeWeight F s`
+   equals `reflectedPrimePolarCost F r = poleCharge F + primeNodeCorrelationObstruction r F`
+   (`apertureH1ChebyshevCorrection_eq_poleCharge_add_primeNodeObstruction`), satisfies the exact
+   aperture Nyquist–Riemann–Roch identities `defect x x + apertureH1ChebyshevCorrection r F = archGaugeBudget r R F`
+   (`aperture_nyquist_riemannRoch_defect_identity`) and `pair x x = apertureNetPolarGauge r R x + apertureH1ChebyshevCorrection r F`
+   (`aperture_nyquist_riemannRoch_selfIntersection_identity`), characterizes `BezoutAxiom` on
+   `sectionEffectivityCone (scalingSubsurface (oddRealTestsAt r))` at each aperture `r`
+   (`sectionEffectivityCone_odd_bezout_iff_apertureH1ChebyshevCorrection_le`), reduces to `poleCharge F ≥ 0`
+   on horizon-prime-blind tests (`apertureH1ChebyshevCorrection_of_isHorizonPrimeBlind`), is
+   unconditionally paid on `(0, 181/500]` (`apertureH1ChebyshevCorrection_le_archGaugeBudget_of_le`),
+   obeys the PNT `(8 + ε) e^r + C` bound at all apertures (`apertureH1ChebyshevCorrection_le_archGaugeBudget_add_exp`),
+   and is equivalent across all apertures to every unit of the width dictionary
+   (`nyquistRiemannRoch_beyond_rankNullity_tfae`, `nyquistRiemannRoch_beyond_rankNullity_synthesis`).
 
 ### 3.4 The even flip is read at the prime two (`TheEvenFlipIsReadAtThePrimeTwo`)
 
@@ -428,6 +563,16 @@ This is the square-root threshold of the aperture as a sampling threshold.
 5. **Payment is a unit invariant.** For a unit `k` and a weight with summable mean, `k ⋆ c` is
    paid iff `c` is (`receiverBounded_dirichletConv_iff_of_isWienerUnit`): the units preserve the
    unpaid class too.
+6. **The half-plane form** (`AKernelBoundedBelowOnTheHalfPlaneIsAUnit`). `f` is a unit of `𝒲_σ` iff
+   `inf_{Re s ≥ σ} |L(f, s)| > 0` (`isUnit_iff_exists_le_norm_lSeries`). Kronecker steers the line
+   `Re s = σ + u` onto the tied torus `|ω(p)| = p^{−u}` (`le_norm_bohrEval_of_onTorus`); on a
+   zero-free polydisk the minimum modulus principle in one coordinate at a time unties the radii
+   (`le_norm_bohrEval_of_inPolydisk`); shrinking every coordinate by `p^{−h}` moves `f̂` uniformly
+   little, so zero-freeness descends from a small polydisk to the full one
+   (`le_norm_bohrEval_of_smooth`); smooth truncation covers infinitely many primes. The bound cannot
+   be weakened to nonvanishing: `δ₁ − ½√2 δ₂ + ½√3 δ₃` has no zero on `Re s ≥ ½` and is not a unit
+   (`NonvanishingOnTheHalfPlaneDoesNotMakeAUnit`: `lSeries_threeTermKernel_ne_zero`,
+   `not_isUnit_threeTermKernel`).
 
 ### 3.6⁗ Unpayability is located on the Bohr polydisk (`UnpayabilityIsLocatedOnTheBohrPolydisk`, `TheZerosOfZetaAreWhereTheObstructionVanishes`)
 
@@ -449,8 +594,93 @@ This is the square-root threshold of the aperture as a sampling threshold.
    `ζ(s)(K(s)/ζ(s+ε) − m)` across the strip, the residue unit clears the pole of `ζ(s+ε)`). So each
    such zero with `ζ(ρ − ε) ≠ 0` is an obstruction point `ρ − ε` of the damped Möbius weight
    (`mem_obstructionHull_moebius_of_zero`); `k = δ₁` is the known zero translation.
+5. **The flip moves the index** (`TheEvenFlipCreatesAnObstructionAtThePole`). Since
+   `1_{odd} d^{−ε} = (δ₁ − 2^{−ε}δ₂) ⋆ d^{−ε}`, every `k ⋆ o` is a critical Wiener multiple of the
+   smooth power: `k ⋆ o` is paid iff `K(1 − ε) = 0` for every critical Wiener `k`
+   (`receiverBounded_dirichletConv_oddSqf_iff_critical`), and otherwise its hull is the pole point
+   (`mem_obstructionHull_oddSqf_iff`). For a paid four-free `k₀ ⋆ o` the companion is obstructed
+   iff `K₀,ₑ(1 − ε) ≠ 0`, and then at the pole point (`obstructionHull_evenFlip_nonempty_iff`,
+   `mem_obstructionHull_evenFlip_iff`): orientation changes the index by one point.
+6. **The count** (`TheObstructionCountIsTheCodimensionOfTheRepairingIdeal`). On these families
+   `dim_ℂ 𝒲_{1/2}/P(c)` is the number of obstruction points: `1` for `d^{−ε}`
+   (`finrank_quotient_paidIdeal_smoothPower`), `2` for the probe at `t ≠ 0` off the zeros of `ζ`
+   (`finrank_quotient_paidIdeal_oscillating`; the two characters differ at `2` or `3` since
+   `3^a ≠ 2^b`), `0` at a zero (`finrank_quotient_paidIdeal_oscillating_of_zeta_eq_zero`).
+7. **The calculus** (`TheCalculusOfTheObstructionHull`). Real weights have conjugation-symmetric
+   hulls (`conj_mem_obstructionHull`); obstructions of a sum cancel only at common points,
+   `hull(c) △ hull(c') ⊆ hull(c + c') ⊆ hull(c) ∪ hull(c')` (`obstructionHull_add_subset`,
+   `mem_obstructionHull_add_of_not_mem`); `hull(tc) = hull(c)` for `t ≠ 0`. Convolution is local:
+   `P(k₀ ⋆ c) = (P(c) : k₀)` (`mem_paidIdeal_conv_iff`), so `hull(k₀ ⋆ c) ⊆ hull(c)` and a point of
+   `hull(c)` leaves only if `k̂₀` vanishes there (`obstructionHull_conv_subset`,
+   `mem_obstructionHull_conv`).
+8. **The Möbius receiver counts its off-line zeros** (`TheMoebiusReceiverCountsItsOffLineZeros`). For
+   any finite set `Z` of zeros with `½ + ε < Re ρ < 1` and `ζ(ρ − ε) ≠ 0`,
+   `|Z| ≤ rank_ℂ 𝒲_{1/2}/P(μ d^{−ε})` (`card_le_rank_quotient_paidIdeal_moebius`): distinct zeros
+   give distinct obstruction points (values at `2`, `3` determine `s`,
+   `eq_of_halfPlanePoint_two_three`), and separated characters map onto `ℂ^Z`
+   (`surjective_pi_algHom_of_separated`). The index of the receiver bounds the off-line zero count.
+9. **The flip of the Möbius receiver** (`TheEvenFlipOfTheMoebiusReceiverKeepsItsObstructions`). On
+   weights multiplicative at `2`, `((δ₁ + xδ₂) ⋆ o)♭ = ((1 + x)δ₁ − xδ₂) ⋆ o` for odd `o`
+   (`evenFlip_dirichletConv_twoPoint`): for `|x| < √2` the flip only removes obstructions, and only
+   where `(1 + x) − xω(2)/√2` vanishes (`obstructionHull_evenFlip_subset`,
+   `mem_obstructionHull_evenFlip`); if `(1 + x)δ₁ − xδ₂` is also a unit it fixes the repairing ideal
+   (`paidIdeal_evenFlip_eq`). For `μ(d)d^{−ε}` (`x = −2^{−ε}`) payment survives the flip
+   (`receiverBounded_evenFlip_moebius`), every translated off-line zero with `1 − 2^{−ε} + 2^{−ρ} ≠ 0`
+   still obstructs it (`mem_obstructionHull_evenFlip_moebius_of_zero`), yet for `ε ≤ ½` the flip kernel
+   is not a unit (`not_isWienerUnit_flipKernel_moebius`). Unlike the Fermi weight, the Möbius receiver's
+   obstructions do not depend on the orientation at `2`.
+10. **Superpositions of probes** (`SuperpositionsOfProbesCountTheNonzerosOfZeta`). For
+    `c = Σ a_i d^{−ε_i} cos(t_i log d)` (`a_i ≠ 0`, `0 < ε_i < ½`, `t_i ≥ 0`, distinct parameters):
+    no cancellation, `c` is paid iff every `ρ_i = 1 − ε_i + it_i` is a zero of `ζ`
+    (`receiverBounded_probeSum_iff`); `P(c)` is the ideal of kernels vanishing at `ρ_i, ρ̄_i` for the
+    `i` with `ζ(ρ_i) ≠ 0` (`mem_paidIdeal_probeSum_iff`); its codimension is the number of these
+    points, `2·#{ζ(ρ_i) ≠ 0} − #{ζ(ρ_i) ≠ 0, t_i = 0}` (`finrank_quotient_paidIdeal_probeSum`,
+    `card_probePoints_add`). Mechanism: a kernel vanishing at the other probes' points repairs the rest
+    of the sum (`exists_repair_rest`).
+11. **The flip pair carries the even part's obstructions** (`TheFlipPairCarriesTheObstructionsOfTheEvenPart`).
+    For every weight, `c♭ = c + (δ₁ − 2δ₂) ⋆ c_e` (`evenFlip_eq_add_dirichletConv`), so the flip moves
+    the hull only inside `hull(c_e)` (`obstructionHull_evenFlip_subset_union`,
+    `obstructionHull_subset_evenFlip_union`), and every obstruction of `c_e` off `ω(2) = 1/√2` is one
+    of `c` or of `c♭` (`mem_obstructionHull_or_evenFlip`) — on the strip `½ ≤ Re s < 1` all of them
+    (`halfPlane_mem_obstructionHull_or_evenFlip`). If both members are paid, `hull(c_e)` lies on that
+    hypersurface (`obstructionHull_evenPart_subset_of_paid`); the flip of a paid weight is obstructed
+    exactly at its even part's obstructions (`mem_obstructionHull_evenFlip_of_paid`,
+    `obstructionHull_evenFlip_subset_of_paid`): the parity barrier exposes `hull(c_e)`.
+12. **Hulls are not confined to the half-plane** (`ATowerPoleObstructsAVerticalProgression`,
+    `ObstructionHullsAreNotConfinedToTheHalfPlane`). Half-plane points have tied radii,
+    `|ω(3)| = √3 (|ω(2)|/√2)^{log₂ 3}` (`tiedAtTwoThree_halfPlanePoint`). For the tower-twisted smooth
+    power `c_a = (Σ_j a^j δ_{2^j}) ⋆ d^{−ε}` (`2^{1−ε} < a < 2`), every repairing kernel vanishes on the
+    progression `a 2^{−s} = 1` off the zeros of `ζ` (`lSeries_eq_zero_of_repairs_towerTwisted`);
+    Kronecker spreads this over the tied torus (`bohrEval_eq_zero_of_onTowerTorus`) and the identity
+    theorem, one coordinate at a time (`coordEval_eq_zero_of_sphere`), over the whole hyperplane
+    `ω(2) = √2/a` (`mem_obstructionHull_towerTwisted_of_two`). Such `a` exist (`exists_good_tower`), so
+    some hull contains the untied point `ω(2) = √2/a, ω(q) = 0` (`exists_obstruction_not_tied`).
+11. **The orbit structure of the unpaid class** (`TheOrbitStructureOfTheUnpaidClass`). Under the
+    critical Wiener monoid, `WienerUnitOrbit` (`c₂ = u ⋆ c₁` away from `0` for `IsWienerUnit u`) is an
+    equivalence relation (`equivalence_wienerUnitOrbit`) and `WienerMonoidOrbit` (`c₂ = k ⋆ c₁` for
+    `CriticalWiener k`) is a preorder (`wienerMonoidOrbit_refl`, `wienerMonoidOrbit_trans`) along which
+    `paidIdeal` ascends (`paidIdeal_le_of_wienerMonoidOrbit`), `obstructionHull` descends
+    (`obstructionHull_subset_of_wienerMonoidOrbit`), quotient codimension descends
+    (`rank_quotient_paidIdeal_le_of_wienerMonoidOrbit`), and the paid class is the forward sink
+    (`receiverBounded_of_wienerMonoidOrbit`), while all four invariants are constant on unit orbits.
+    On principal unpaid weights (`paidIdeal c = ker ω₀`, e.g., `d^{−ε}` or unpaid `k₀ ⋆ o`), every
+    `CriticalWiener k₀` satisfies the **stabilizer–annihilator dichotomy** (`paidIdeal_conv_dichotomy_of_eq_ker`):
+    either `k̂₀(ω₀) = 0` (`k₀ ⋆ c` is paid, `paidIdeal = ⊤`, `obstructionHull = ∅`, `finrank = 0`) or
+    `k̂₀(ω₀) ≠ 0` (`k₀ ⋆ c` is unpaid with the identical `paidIdeal`, `obstructionHull`, and `finrank = 1`);
+    on `oscillatingSmoothPower ε t` (`t ≠ 0`, `ζ(ρ) ≠ 0`), conjugate symmetry of real kernels
+    (`complexPoleValue_conj_of_real`) forces every real convolution `k₀ ⋆ c` to have codimension `0`
+    or `2` (`paidIdeal_oscillating_conv_dichotomy`). For weights normalized at `1` (`c(1) ≠ 0`),
+    Dirichlet cancellation (`dirichletConv_right_inj_of_apply_one_ne_zero`) forces
+    `WienerMonoidOrbit (k ⋆ c) c ↔ IsWienerUnit k` (`wienerMonoidOrbit_conv_self_iff`), so iterating
+    `realThreeTermKernel = δ₁ − ½√2 δ₂ + ½√3 δ₃` on `d^{−ε}` produces an infinite strictly descending
+    monoid chain `iterThreeTermConv m (d^{−ε})` whose members all share the identical
+    `paidIdeal = ker(polePoint ε)` and `obstructionHull = {polePoint ε}` while lying in pairwise
+    distinct unit orbits (`iterThreeTermConv_smoothPower_chain`). On the Möbius receiver `μ d^{−ε}`
+    (`0 < ε ≤ ½`), `evenFlip` is a strictly one-way monoid transition (`moebius_evenFlip_oneWay_orbit`),
+    and distinct smooth powers or oscillating probes lie in strictly incomparable monoid cones
+    (`not_wienerMonoidOrbit_smoothPower_of_ne`, `not_wienerMonoidOrbit_smoothPower_oscillating`).
 
-### 3.6‴ An orientation-faithful norm over the odd squarefree weight (`AnOrientationFaithfulNormOverTheOddSquarefreeWeight`)
+### 3.6‴ An orientation-faithful norm over the odd squarefree weight, the smooth power, and multiplicative weights (`AnOrientationFaithfulNormOverTheOddSquarefreeWeight`, `AnOrientationFaithfulNormOverSmoothAndMultiplicativeWeights`)
 
 For `0 < ε ≤ ½`, kernels with `N(k) = Σ |k(j)| j^ε < ∞` (`orientNorm`) and the weights `k ⋆ o`,
 `o = 1_{odd squarefree} d^{−ε}`:
@@ -466,6 +696,39 @@ For `0 < ε ≤ ½`, kernels with `N(k) = Σ |k(j)| j^ε < ∞` (`orientNorm`) a
    `polePairing_evenPart_flipKernelOf`); both members of a flip pair are paid iff `P = P_e = 0`
    (`receiverBounded_and_evenFlip_iff`), with both energies `≤ 36 C_ε N(k)²`
    (`weightPronicEnergy_evenFlip_le`).
+4. **Over the smooth power `u(d) = d^{−ε}`** (`AnOrientationFaithfulNormOverSmoothAndMultiplicativeWeights`).
+   The `o`-kernel flip `flipKernelOf` fails to commute with `evenFlip` over `u` (`flipKernelOf δ₁ = δ₁`
+   while `evenFlip (δ₁ ⋆ u)(1) = 1 + 2^{−ε} ≠ 1`, `evenFlip_dirichletConv_unit_unitKernel_ne`), because
+   `u(2m) = 2^{−ε} u_odd(m)` on odd `m`. For **every** kernel `k : ℕ → ℝ` (with no four-free
+   restriction), `evenPartWeight (k ⋆ u) = smoothEvenTrace ε k ⋆ u_odd = smoothEvenKernel ε k ⋆ u`
+   (`evenPartWeight_dirichletConv_unit_eq_oddAF`, `evenPartWeight_dirichletConv_unit_eq`), where
+   `smoothEvenTrace ε k = 2^{−ε} k_o + k_e` and
+   `smoothEvenKernel ε k = (δ₁ − 2^{−ε} δ₂) ⋆ smoothEvenTrace ε k`. Hence
+   `evenFlip (k ⋆ u) = smoothFlipKernel ε k ⋆ u` (`evenFlip_dirichletConv_unit`) with
+   `smoothFlipKernel ε k = k + (δ₁ − 2 δ₂) ⋆ smoothEvenKernel ε k`, an exact involution
+   `smoothFlipKernel ε (smoothFlipKernel ε k) = k` on **all** `k : ℕ → ℝ`
+   (`smoothFlipKernel_smoothFlipKernel`) satisfying `orientNorm ε (smoothFlipKernel ε k) ≤ 21 · orientNorm ε k`
+   (`orientNorm_smoothFlipKernel_le`). With
+   `smoothEvenPolePairing ε k := polePairing ε (smoothEvenKernel ε k) = ½ (2^{−ε} P(k_o) + P(k_e))`
+   (`smoothEvenPolePairing_eq`), the smooth flip acts by
+   `(P, P_{smooth,e}) ↦ (P + (1 − 2^ε) P_{smooth,e}, −P_{smooth,e})`
+   (`polePairing_smoothFlipKernel`, `smoothEvenPolePairing_smoothFlipKernel`), and both `k ⋆ u` and
+   `evenFlip (k ⋆ u)` are paid iff `P(k) = P_{smooth,e}(k) = 0`
+   (`receiverBounded_and_evenFlip_dirichletConv_unit_iff`), with energies `≤ 4 C_{smooth,ε} N(k)²` and
+   `≤ 1764 C_{smooth,ε} N(k)²` (`weightPronicEnergy_dirichletConv_unit_le`,
+   `weightPronicEnergy_evenFlip_dirichletConv_unit_le`).
+5. **Over multiplicative weights `f(d) d^{−ε}`.** Writing `f(d) d^{−ε} = k_f ⋆ u` with the Möbius
+   kernel `k_f = dampedSignWeight ⇑(f * μR) ε` (`dampedSignWeight_eq_dirichletConv_moebiusKernel_unit`),
+   multiplicativity gives `evenFlip (f d^{−ε})(1) = 1 + f(2) 2^{−ε}` (`= 1 ↔ f(2) = 0`,
+   `evenFlip_dampedSignWeight_multiplicative`) and `(f * μR)(2m) = (f(2) − 1)(f * μR)(m)` on odd `m`,
+   cancelling `2^{−ε} k_{f,o}` identically in `smoothEvenTrace`:
+   `smoothEvenTrace ε k_f = f(2) 2^{−ε} • oddPartKernel k_f`
+   (`smoothEvenTrace_moebiusKernel_multiplicative`). Thus
+   `smoothEvenPolePairing ε k_f = ½ f(2) 2^{−ε} P(k_{f,o})`
+   (`smoothEvenPolePairing_moebiusKernel_multiplicative`), and when `P(k_{f,o}) ≠ 0`, both `f d^{−ε}`
+   and `evenFlip (f d^{−ε})` are paid iff `P(k_f) = 0 ∧ f(2) = 0`
+   (`receiverBounded_and_evenFlip_multiplicative_iff`,
+   `not_receiverBounded_and_evenFlip_of_apply_two_ne_zero`).
 
 ### 3.7 The damping flow preserves orientation (`TheDampingFlowPreservesOrientation`)
 
@@ -501,6 +764,55 @@ the unsubtracted reading recording `(q, g)`, trace integrality, and `∀ k ≥ 1
 resolve `CurveDatum.Unitary` (`not_resolves_unsubtractedCurveReading_unitary`), whereas the lag-1
 Frobenius reflection defect reading resolves it on every `CurveDatum ι`
 (`resolves_frobReflectionReading_unitary`, `orientationFaithful_frobReflectionReading_of_flips`).
+
+### 3.8′ Transport in aperture and the ceiling-Lyapunov identity (`TransportInApertureAndTheCeilingLyapunovIdentity`)
+
+1. **Exact two-aperture gauge conservation and sign-definite step jump.** For any `F ∈ C²_c(ℝ)` and
+   any window gauge `M ∈ C²_c(ℝ)` (`0 ≤ M ≤ 1`, `M = 0` outside `(-R, R)`, `M = 1` on `supp F`),
+   `markovEnergy_eq_gauge_window` holds at **every** aperture `R` (without `2R < log 2`), yielding
+   `Ẑ(F) = J_M(F) + ∫ F(x)² (−W̃[M](x)) dx + 2 P_+(F)² − 2 P_−(F)²` with `J_M(F) ≥ 0`
+   (`fullZeroForm_eq_gauge_window_at_any_aperture`). Comparing two nested window gauges
+   `0 ≤ M₁ ≤ M₂ ≤ 1` equal to `1` on `supp F`, all archimedean and prime diagonal terms cancel
+   identically on `{M₁ = M₂ = 1}` (`poleFreeWeilOperator_sub_eq_shellFlux`),
+   `W̃[M₁](x) ≤ W̃[M₂](x)` (`poleFreeWeilOperator_mono_of_eq_at_point`), and the sign-definite
+   aperture-step jump increment `ΔJ(M₁, M₂; F) = J_{M₂}(F) − J_{M₁}(F) ≥ 0` equals the boundary-shell
+   flux `Φ_shell(M₁, M₂; F) = ∫ F(x)² (W̃[M₂](x) − W̃[M₁](x)) dx ≥ 0`
+   (`gaugeStepJumpEnergy_eq_gaugeStepBoundaryFlux`, `gaugeStepJumpEnergy_nonneg`).
+2. **Exact aperture derivatives of the window killing potential and Suzuki floor.** At every interior
+   point `|x| < R`, `∂_R K_R(x) = −(w_arch(R−x) + w_arch(R+x) + 3/2) < 0`
+   (`hasDerivAt_archWindowKilling`), where `archBoundaryJumpRate R x = w_arch(R−x) + w_arch(R+x) > 0`
+   is the outward boundary Lévy jump rate across `±R`. Globally,
+   `windowFloor'(R) = −windowFloorDissipationRate(R) = −(1/R + 3/2 + 12 R²) < 0`
+   (`hasDerivAt_windowFloor`), so `windowFloor` is strictly antitone on `(0, ∞)` and integrates the
+   positive dissipation rate (`windowFloor_sub_eq_integral`).
+3. **Exact `Φ`-gauge boundary-defect identity.** Because `∫ Φ(x) cosh(x/2) dx = 1/2`, every
+   `u ∈ C²_c(ℝ)` satisfies
+   `Ẑ(Φ u) = J_Φ(u) − thetaBoundaryDefectMass u + 2 (thetaBoundaryFlux u)² − 2 oddPoleMoment(Φ u)²`
+   (`fullZeroForm_phiDoob_eq_jump_sub_defect_add_flux`), with both `J_Φ(u) ≥ 0` and
+   `thetaBoundaryDefectMass u = ∫ (1 − u(x))² Φ(x) cosh(x/2) dx ≥ 0` sign-definite; along
+   `Θ_L = Φ u_L`, both boundary terms live on `|x| > L` and are bounded by `tailWeight L`
+   (`fullZeroForm_thetaPlateau_eq`).
+4. **Aperture spectral jump of `μ(A)` and total-jump characterizations of RH.** For `a.1 ≤ b.1`,
+   `apertureSpectralJump a b = μ(a) − μ(b) = Q_b(u_a) − Q_b(u_b) ≥ 0`
+   (`apertureSpectralJump_eq_groundState_relaxation`, `apertureSpectralJump_nonneg`) telescopes to
+   `∑_{j < J} Δ_spec(A_j, A_{j+1}) = μ(A₀) − μ(A_J)` (`sum_apertureSpectralJump_eq`). While any
+   fixed-margin additive step bound `∑_{j < J} r_j ≤ 1/5000 − c` (`c > 0`, including `1/10000`) is
+   refuted by the Gaussian ceiling (`not_additive_step_transport`), replacing the fixed positive
+   margin by `μ(A₀)` itself gives the exact equivalence along any monotone unbounded sequence
+   `A_j → ∞`: `RiemannHypothesis ↔ (∀ J, ∑_{j < J} Δ_spec(A_j, A_{j+1}) ≤ μ(A₀))`
+   (`riemannHypothesis_iff_sum_apertureSpectralJump_le`) and
+   `RiemannHypothesis ↔ HasSum (fun j => Δ_spec(A_j, A_{j+1})) (μ(A₀))`
+   (`riemannHypothesis_iff_hasSum_apertureSpectralJump`).
+5. **Ceiling-renormalized Lyapunov transport.** With `β_ceil(A) = −apertureCeilingExponent A = π e^{2(A−2)} − (11/2) A`
+   and `β'_ceil(A) = 2π e^{2(A−2)} − 11/2 > 0` (`A ≥ 2`), the renormalized functional
+   `ceilingScaledGroundEnergy A = e^{β_ceil(A)} μ(A)` is unconditionally bounded above by a uniform
+   constant `K > 0` for `A.1 ≥ 3` (`exists_ceilingScaledGroundEnergy_le`) and satisfies the
+   differential Lyapunov identity `d/dA [e^{β(A)} μ(A)] = e^{β(A)} (μ'(A) + β'(A) μ(A))`
+   (`hasDerivAt_exp_mul_floor`, `monotoneOn_exp_mul_of_relative_decay`). Dropping `∑ c_i ≤ 1/2` to
+   `c_j ≤ 1` (`0 ≤ q_j`) starting at `(A 0).1 ≤ 3/10` along `A_j → ∞` allows the lower floor
+   `(∏_{i < J} (1 − c_i)) / 5000` to decay to `0` at the Gaussian rate while still forcing
+   `0 ≤ μ(A_J)` at every finite stage `J` and hence RH (`riemannHypothesis_of_vanishing_relative_step`,
+   `riemannHypothesis_iff_exists_relative_step`, `riemannHypothesis_of_ceilingScaledGroundEnergy_mono`).
 
 ### 3.9 Complete-period quadratic forms are orientation-blind (`CompletePeriodQuadraticFormsAreOrientationBlind`)
 
@@ -609,7 +921,7 @@ model of a reading that sees magnitudes of modes and no orientation.
 | The first pronic moment reads the flip everywhere. | It reads it exactly through `W_c(2)`: on weights with `W_c(2) = 0` it is blind too. |
 | Payment is a function of amplitudes. | Not at any `ε ≤ ½` on four-free damped weights (`not_resolves_amplitude_receiverBounded`). |
 | The critical Wiener kernels form a group. | They form a monoid; its units are the kernels whose Bohr evaluation has no zero on the polydisk (`isUnit_iff_forall_bohrEval_ne_zero`). |
-| No zero on `Re s ≥ ½` makes a kernel a unit. | The criterion is the polydisk: the half-plane reaches only the points `ω(p) = p^{½−s}`, with radii tied by one `Re s`. |
+| No zero on `Re s ≥ ½` makes a kernel a unit. | Not enough: `δ₁ − ½√2 δ₂ + ½√3 δ₃` has none and is not a unit. A uniform lower bound on `Re s ≥ ½` is (`isUnit_iff_exists_le_norm_lSeries`): the half-plane reaches only tied radii, and Kronecker with the minimum modulus principle unties them. |
 | `δ₁` is a two-sided unit on all of `ℕ`. | Only away from `0`; convolution vanishes at `0`. |
 | The damping flow changes signs. | On residue combinations it scales coefficients by `d^{−η} > 0`; the open question is magnitude, not orientation. |
 | A new unit is progress. | The dictionary is an equivalence; progress is a bound in a unit, with its input class named. |
@@ -681,44 +993,100 @@ Built and reusable:
 - the *coset decomposition* of dilation correlations through the `p`-free part;
 - the *inverse tower* and the *uniqueness of inverses* in the Wiener monoid;
 - the *Euler characteristic* `h⁰ − h¹` of a reading at nodes;
-- the *Banach algebra* `𝒲_σ`, its *Bohr characters* and *Wiener's lemma* on the polydisk;
+- the *Banach algebra* `𝒲_σ`, its *Bohr characters* and *Wiener's lemma* on the polydisk and on
+  the half-plane;
 - the *signed Cheeger inequality* with its *co-area* lemma, and the *orientation-faithful norm* `orientNorm`;
 - the *section effectivity cone* `sectionEffectivityCone S = {x : 1 ≤ cycleH0 S x}` and its
   Bézout–Riemann–Roch–Hodge-index classification;
 - the *pole-jet* and *zeta-jet* section readings (`poleJetMatrix`, `principalPartReadingOne`,
   `principalPartReadingTwo`, `zetaJetDiagReading`) and the *node-divisor Euler characteristic*
-  `nodeDivisorEulerChar` with its reflected prime-polar ledger identity.
-
-To be built (§7): the aperture-derivative identity.
+  `nodeDivisorEulerChar` with its reflected prime-polar ledger identity;
+- the *two-aperture gauge step jump* (`gaugeStepJumpEnergy = gaugeStepBoundaryFlux ≥ 0`), the
+  *window-floor dissipation rate* `windowFloorDissipationRate`, the *`Φ`-gauge boundary-defect identity*
+  (`fullZeroForm_phiDoob_eq_jump_sub_defect_add_flux`), the *aperture spectral jump*
+  `apertureSpectralJump` with its `HasSum` RH equivalence, and the *ceiling-renormalized Lyapunov
+  functional* `ceilingScaledGroundEnergy`.
 
 ---
 
 ## 7. Open problems and research topics
 
-1. **The frustration of the odd Weil ledger off the lattice.** On the lattice the index is `0`
-   at every aperture (§3.1″), the prime triangle has index `2` (§3.1′), on sparse samples the index
-   is the anti-aligned prime-sum count and matched samples reach `2|Q|` (§3.1‴); the mass is bounded
-   by the prime-sum charge. Open: the index and mass on dense position sets in `[0, A]` as `A → ∞`,
-   where the prime sums are no longer sparse and switching can help; the index at full
-   archimedean weight rather than small weight; and the relation of the mass bound `4 ν_w / n` to
-   the ground energy `μ(A)` and the contact aperture `A* ≥ 3/10`. A count is an upper bound on the
-   ground energy; a floor needs the frustration to be paid.
-2. **Beyond the coset law.** The odd prime side of a tower is `2 Σ_{a'} Toeplitz − Hankel`
-   (§3.2″). Open: the class of profiles on which the coset Toeplitz forms dominate the unit-coset
-   square once the archimedean odd kernel is added, and the selectivity of that class against the
-   shifted pair `ζ(s−a)ζ(s+a)`.
-3. **Nyquist–Riemann–Roch beyond rank–nullity.** Replace the finite-dimensional test space by
-   band-limited tests on an aperture, the node set by the prime-power nodes, and the frame bound
-   by a Landau-type density theorem; identify the `h¹` term and the Chebyshev defect
-   `E(s) = e^s + s − 1 − ψ(e^s)` as its correction.
-4. **An orientation-faithful norm.** Built over `o` (§3.6‴): the coordinates are the pole pairing
-   and the even-part pole pairing. Open: the same over the smooth power and over multiplicative
-   weights, where the flip does not act on kernels.
-5. **Inverses in the critical Wiener monoid.** Answered by §3.6″ (Wiener's lemma on the Bohr
-   polydisk; units preserve both payment classes). Open: the half-plane form
-   (`inf_{Re s ≥ ½} |L| > 0` ⇒ unit) and the orbit structure of the unpaid class.
-6. **Transport in aperture.** An aperture-derivative identity for `μ(A)` with a sign-definite
-   jump term, compatible with the doubly exponential ceiling.
+1. **The frustration of the odd Weil ledger off the lattice.** Answered by §3.1⁵
+   (`DenseAndFullWeightFrustrationOfTheOddWeilLedger`): `frustrationIndex` and `frustrationMass` are
+   monotone under sub-sampling and superadditive across disjoint fibers; at full weight `α = 1, β = 1`
+   the polar barrier `−8 sinh(x/2) sinh(y/2)` quenches the midpoint-matched family `matchedPos Q` to
+   `frustrationIndex = 0`, while collar-skimming samples `collarPos` (`δ_i → 0⁺`, `log q − δ_i`)
+   survive with `frustrationIndex = 2 M |Q|`, dense triangle packings in `(0, log 5]` give
+   `frustrationIndex ≥ 2M` and `frustrationMass ≥ (2/7)M`, switching vertex `1` on `packedPrimePos`
+   reduces `misalignedCount 1 = 4` to `frustrationIndex = 2`, and on the contact window `(0, 3/10]`
+   both invariants vanish (`primeSumPairs = ∅`) alongside `μ(A) ≥ 1/5000` and `A* ≥ 3/10`.
+2. **Beyond the coset law.** Answered by §3.2‴
+   (`CosetToeplitzDominanceAndShiftedPairSelectivity`): axis-pair cancellation makes `towerOddPrimeSide`
+   and `latticeOddPrimeSide` independent of `q(1)` and reduces the unit-coset competition to the
+   scale-suppressed Toeplitz form `(p^{−(j−i)/2} − p^{−(i+j)/2}) > 0` minus the reflected prime-power
+   diagonal `−log p ∑_{i=1}^K p^{−i} q(p^i)²`; adding `archReflectedDiagWeight` turns the reflected
+   diagonal into `−totalLatticeCrossingKernel(p^i)(p^i) ≥ 0` (`p^i ≥ 4`) and gives the Cauchy–Schwarz
+   bound `log p · towerInteriorMellin² ≤ (1/2) towerArchDiagForm` and `towerTotalOddForm ≥ 0` for
+   profiles of **arbitrary sign** (`q(2) = q(3) = 0`, unconditionally for `p ≥ 5`), while for
+   `shiftedPairVonMangoldt a` (`a ≠ 0`) the product part splits into two shifted Mellin squares at
+   `1/2 ∓ a` with `shiftedTowerProductPart > 2 · towerProductPart`, diverging Cauchy–Schwarz ratio,
+   and reversed off-diagonal and reflected-diagonal signs for `|a| ≥ 1`.
+3. **Nyquist–Riemann–Roch beyond rank–nullity.** Answered by §3.3′
+   (`NyquistRiemannRochBeyondRankNullity`): splitting `A.rank` into `nyquistEffectiveRank A K + nyquistSpectralDefect A K`
+   gives the dual Nyquist bound `h1 A ≤ #nodes − frobeniusMass A / K` (`h1_le_nyquist`) and shows
+   that while `h0`, `rank`, and `h1` are invariant under support-preserving diagonal reweighting,
+   `frobeniusMass` is strictly selective against `shiftedPairVonMangoldt a` (`> 4 · frobeniusMass`);
+   for band-limited tests on an aperture annihilated by the prime-power nodes and `coshHalfMoment`,
+   the cutoff-free Landau–Markov frame bound `∫ f² ≤ (2/69) · spectralSecondMoment` forces
+   `finrank ℝ W = 0` below `T² ≤ 69/2` while Landau–Widom supplies `(2 − η) e^{2L}` near-radical
+   sections at `T = 2π e^{2ℓ}`; on `[0, s]` the Chebyshev defect `E(s) = e^s + s − 1 − ψ(e^s)` splits
+   into `boxH0Supply − boxH1Obstruction`, and on `scalingSubsurface (oddRealTestsAt r)` its
+   lag-weighted integral `apertureH1ChebyshevCorrection r F = poleCharge F + primeNodeCorrelationObstruction r F`
+   satisfies `defect x x + apertureH1ChebyshevCorrection r F = archGaugeBudget r R F`, characterizes
+   `BezoutAxiom` on `sectionEffectivityCone` at each aperture `r`, is unconditionally paid on
+   `(0, 181/500]`, and obeys the PNT `(8 + ε) e^r + C` bound at all apertures.
+4. **An orientation-faithful norm.** Answered by §3.6‴
+   (`AnOrientationFaithfulNormOverTheOddSquarefreeWeight`,
+   `AnOrientationFaithfulNormOverSmoothAndMultiplicativeWeights`): over `o = 1_{odd squarefree} d^{−ε}`
+   the coordinates are `(P(k), P(k_e))` with four-free kernel involution `flipKernelOf`; over the smooth
+   power `u = d^{−ε}`, `evenPartWeight (k ⋆ u) = smoothEvenKernel ε k ⋆ u` and
+   `evenFlip (k ⋆ u) = smoothFlipKernel ε k ⋆ u` where `smoothFlipKernel ε` is an exact involution on
+   **all** kernels `k : ℕ → ℝ` with `N(smoothFlipKernel ε k) ≤ 21 N(k)` and coordinates
+   `(P(k), P_{smooth,e}(k))` (`P_{smooth,e}(k) = ½(2^{−ε} P(k_o) + P(k_e))`) transforming by
+   `(P, P_{smooth,e}) ↦ (P + (1 − 2^ε)P_{smooth,e}, −P_{smooth,e})`; over multiplicative weights
+   `f(d) d^{−ε} = k_f ⋆ u` (`k_f = (f ⋆ μ) d^{−ε}`), multiplicativity cancels `2^{−ε} k_{f,o}` in
+   `smoothEvenTrace` so `P_{smooth,e}(k_f) = ½ f(2) 2^{−ε} P(k_{f,o})`, and when `P(k_{f,o}) ≠ 0`,
+   both `f d^{−ε}` and `evenFlip (f d^{−ε})` are paid iff `P(k_f) = 0 ∧ f(2) = 0`.
+5. **Inverses in the critical Wiener monoid and the orbit structure of the unpaid class.** Answered by
+   §3.6″ and §3.6⁗ (`WienersLemmaOnTheBohrPolydisk`, `AKernelBoundedBelowOnTheHalfPlaneIsAUnit`,
+   `NonvanishingOnTheHalfPlaneDoesNotMakeAUnit`, `TheOrbitStructureOfTheUnpaidClass`): Wiener's lemma on
+   the Bohr polydisk and its half-plane form (`inf_{Re s ≥ ½} |L| > 0` ⇔ unit; nonvanishing is not
+   enough) characterize the units, which preserve payment, `paidIdeal`, `obstructionHull`, and
+   codimension (`WienerUnitOrbit`). Under `WienerMonoidOrbit` (`c₂ = k ⋆ c₁`), `paidIdeal` ascends and
+   `obstructionHull` and codimension descend, with a sharp **stabilizer–annihilator dichotomy** on
+   principal unpaid orbits (`paidIdeal_conv_dichotomy_of_eq_ker`) and conjugate-pair `0`-or-`2`
+   dichotomy on real oscillating probes (`paidIdeal_oscillating_conv_dichotomy`). By Dirichlet
+   cancellation (`dirichletConv_right_inj_of_apply_one_ne_zero`), `WienerMonoidOrbit (k ⋆ c) c ↔ IsWienerUnit k`
+   for `c(1) ≠ 0`, so `iterThreeTermConv m (d^{−ε})` forms an infinite strictly descending monoid chain
+   within the single obstruction hull `{polePoint ε}` (`iterThreeTermConv_smoothPower_chain`), while
+   `evenFlip` on `μ d^{−ε}` is a strictly one-way monoid transition (`moebius_evenFlip_oneWay_orbit`)
+   and distinct poles/probes lie in incomparable cones.
+6. **Transport in aperture.** Answered by §3.8′
+   (`TransportInApertureAndTheCeilingLyapunovIdentity`): for nested window gauges `0 ≤ M₁ ≤ M₂ ≤ 1`
+   equal to `1` on `supp F`, all diagonal terms cancel on `{M₁ = M₂ = 1}` and the sign-definite jump
+   increment `ΔJ(M₁, M₂; F) ≥ 0` equals the boundary-shell flux `Φ_shell(M₁, M₂; F)`
+   (`gaugeStepJumpEnergy_eq_gaugeStepBoundaryFlux`); `∂_R K_R(x) = −(w_arch(R−x) + w_arch(R+x) + 3/2) < 0`
+   and `windowFloor'(R) = −(1/R + 3/2 + 12 R²) < 0` (`hasDerivAt_windowFloor`); in the `Φ`-gauge,
+   `Ẑ(Φ u) = J_Φ(u) − thetaBoundaryDefectMass u + 2 (thetaBoundaryFlux u)² − 2 oddPoleMoment(Φ u)²`
+   with both `J_Φ(u) ≥ 0` and `thetaBoundaryDefectMass u ≥ 0` sign-definite; for `μ(A)`, the spectral
+   jump `Δ_spec(a, b) = μ(a) − μ(b) = Q_b(u_a) − Q_b(u_b) ≥ 0` (`a ≤ b`) refutes fixed-margin additive
+   transport (`not_additive_step_transport`) and characterizes RH along monotone `A_j → ∞` by
+   `∀ J, ∑_{j < J} Δ_spec(A_j, A_{j+1}) ≤ μ(A₀)` and `HasSum (fun j => Δ_spec(A_j, A_{j+1})) (μ(A₀))`
+   (`riemannHypothesis_iff_hasSum_apertureSpectralJump`), while the ceiling-renormalized Lyapunov
+   functional `ceilingScaledGroundEnergy A = e^{β_ceil(A)} μ(A)` is unconditionally bounded above by
+   `K > 0` (`A ≥ 3`) and vanishing-floor relative transport (`c_j ≤ 1`, `0 ≤ q_j`) starting at
+   `(A 0).1 ≤ 3/10` is compatible with the Gaussian ceiling and equivalent to RH
+   (`riemannHypothesis_of_vanishing_relative_step`, `riemannHypothesis_iff_exists_relative_step`).
 7. **The Nyquist bound at the diagonal.** Sharpen the frame bound to `T + O(N)` without the
    logarithm at `1`-separated heights, and read the resulting injectivity threshold against the
    square-root threshold of the aperture.
@@ -729,8 +1097,11 @@ To be built (§7): the aperture-derivative identity.
    Frobenius mass) whose cone has the same calibration and whose Bézout axiom is proved without
    that sign.
 9. **An index formula for the actual receiver.** The hull of `μ(d)d^{−ε}` contains every translated
-   off-line zero `ρ − ε` with `ζ(ρ − ε) ≠ 0` (§3.6⁗). Open: the reverse inclusion (repairing kernels
-   off the zeros), which would make the hull exactly the translated zero set.
+   off-line zero `ρ − ε` with `ζ(ρ − ε) ≠ 0`, and the codimension of its repairing ideal is at least
+   the number of such zeros (§3.6⁗). Open: the reverse inclusion (repairing kernels off the zeros),
+   which would make the hull exactly the translated zero set and the inequality an equality. It is
+   a genuinely arithmetic statement: general weights have obstructions off the half-plane (§3.6⁗,
+   item 12), and the reverse inclusion must exclude them for `μ`.
 10. **The trichotomy of readings.** Prove that every orientation-faithful reading of the critical
     form crosses the Nyquist aperture, reads a magnitude, or adds data of a third kind (mass,
     dilution), and compute the precision cost of each branch. This is the Scale-Signed Incidence
@@ -815,6 +1186,8 @@ be coupled to the Frobenius mass or to the defect `E(s) = e^s + s − 1 − ψ(e
 - `TheFrustrationOfATowerIsRankOne` — lattice correlations, tower locality, the rank-one law,
   the odd prime side.
 - `PrimePowerSumsRegroupByTowers` — regrouping by least prime factor; the global product part.
+- `TheTowerOddSideIsACholeskyEnergyMinusTheMass` — the KMS–Cholesky identity and the Cholesky form of
+  the tower odd side.
 - `TheRatioPartDecomposesOverCosets` — the `p`-free part, coset Toeplitz forms, the coset law.
 - `TheNyquistRankBound` — sections, rank–trace law, Nyquist bound, Dirichlet sampling.
 - `TheEvenFlipIsReadAtThePrimeTwo` — the even flip as an orientation, the reading at `2`, the
@@ -824,6 +1197,24 @@ be coupled to the Frobenius mass or to the defect `E(s) = e^s + s − 1 − ψ(e
 - `TheCriticalWienerAlgebraIsABanachAlgebra` — `𝒲_σ`, its norm, completeness, point masses.
 - `WienersLemmaOnTheBohrPolydisk` — Bohr characters, Wiener's lemma, towers, Euler factors.
 - `UnitsOfTheWienerMonoidPreservePayment` — real kernels in `𝒲_{1/2}`, payment as unit invariant.
+- `AKernelBoundedBelowOnTheHalfPlaneIsAUnit` — the half-plane Wiener lemma: tied tori (Kronecker),
+  coordinatewise minimum modulus, radial descent, smooth truncation.
+- `NonvanishingOnTheHalfPlaneDoesNotMakeAUnit` — a three-term kernel with no zero on `Re s ≥ ½`
+  that is not a unit.
+- `TheCalculusOfTheObstructionHull` — conjugation, sums, scaling and convolution locality of the
+  obstruction hull.
+- `TheMoebiusReceiverCountsItsOffLineZeros` — separated characters, distinct half-plane points, the
+  zero-count lower bound for the Möbius repairing ideal.
+- `TheEvenFlipOfTheMoebiusReceiverKeepsItsObstructions` — the flip as a 2-local convolution, its action
+  on hulls and repairing ideals, the flipped Möbius weight.
+- `SuperpositionsOfProbesCountTheNonzerosOfZeta` — finite sums of weights in the repairing ideal,
+  separation of half-plane points, no cancellation and the exact count for probe superpositions.
+- `TheFlipPairCarriesTheObstructionsOfTheEvenPart` — the flip defect `(δ₁ − 2δ₂) ⋆ c_e` and the
+  conservation of the even part's obstructions by the flip pair.
+- `ATowerPoleObstructsAVerticalProgression` — the tower-twisted smooth power and the vanishing of
+  repairing kernels on its pole progression.
+- `ObstructionHullsAreNotConfinedToTheHalfPlane` — continuity of Bohr evaluation along the primes,
+  untying coordinates by the identity theorem, the obstructed hyperplane, an untied obstruction.
 - `TheDampingFlowPreservesOrientation` — transport of residue combinations.
 - `TheWidthDictionary` — the equivalences in one theorem.
 - `PoleSubtractionAndTheForcingSignDictionary` — faithfulness of the Rosati reflection reading vs.
@@ -839,3 +1230,53 @@ be coupled to the Frobenius mass or to the defect `E(s) = e^s + s − 1 − ψ(e
   zeta-jet section readings (`zetaJetDiagReading`), node-divisor Euler characteristic
   `nodeDivisorEulerChar` and its reflected prime-polar ledger identity, `receiver_index_theorem`,
   and `receiverIndexAndSectionConeDictionary_tfae`.
+- `DenseAndFullWeightFrustrationOfTheOddWeilLedger` — sub-sample monotonicity and disjoint fiber
+  superadditivity of `frustrationIndex` and `frustrationMass`, the polar hyperbolic barrier
+  `−8 sinh(x/2) sinh(y/2)` and full-weight quenching of `matchedPos Q`, exact full-weight
+  frustration index and mass on `primeTrianglePos`, `packedPrimePos`, and dense multi-triangle
+  packings, collar-skimming survival `collarPos` at full weight (`2 M |Q|`), and the sub-prime
+  contact synthesis (`oddWeilLedger_offLattice_frustration_and_contact_synthesis`).
+- `CosetToeplitzDominanceAndShiftedPairSelectivity` — axis-pair cancellation and `q(1)`-invariance of
+  `towerOddPrimeSide` and `latticeOddPrimeSide`, the unit-coset scale-suppression identity isolating
+  the reflected prime-power diagonal, archimedean–polar dominance and the `≤ 1/2` Cauchy–Schwarz
+  bound (`towerTotalOddForm_ge_half_towerArchDiagForm`) for arbitrary-sign profiles (`q(2) = q(3) = 0`),
+  and the shifted-pair rank-two coset law and four-part selectivity
+  (`cosetToeplitz_dominance_and_shiftedPair_selectivity_synthesis`).
+- `NyquistRiemannRochBeyondRankNullity` — spectral-defect Nyquist decomposition and dual `h¹` bound
+  (`h1_le_nyquist`), Frobenius-mass selectivity against `shiftedPairVonMangoldt a`, the cutoff-free
+  Landau–Markov frame bound (`l2_le_two_sixty_ninths_spectralSecondMoment_of_primeBlind`) and
+  sub-Nyquist prime-blind section vanishing (`finrank_primeBlind_subspace_eq_zero`), orthogonal
+  `boxH0Supply − boxH1Obstruction = chebyshevTwoPoleDefect` splitting, and the aperture `h¹`
+  Chebyshev-defect correction `apertureH1ChebyshevCorrection` (`aperture_nyquist_riemannRoch_defect_identity`,
+  `nyquistRiemannRoch_beyond_rankNullity_tfae`, `nyquistRiemannRoch_beyond_rankNullity_synthesis`).
+- `AnOrientationFaithfulNormOverSmoothAndMultiplicativeWeights` — quantitative pole law and hyperplane
+  payment bound over `u(d) = d^{−ε}` (`weightPronicEnergy_dirichletConv_unit_le`,
+  `receiverBounded_dirichletConv_unit_iff_admissible`), exact smooth-power flip involution
+  `smoothFlipKernel ε` on all kernels `k : ℕ → ℝ` (`evenFlip_dirichletConv_unit`,
+  `smoothFlipKernel_smoothFlipKernel`, `orientNorm_smoothFlipKernel_le`), smooth orientation
+  coordinates `(polePairing, smoothEvenPolePairing)` (`smoothEvenPolePairing_eq`,
+  `polePairing_smoothFlipKernel`), and the multiplicative 2-local coordinate
+  `smoothEvenTrace ε k_f = f(2) 2^{−ε} • k_{f,o}` (`smoothEvenTrace_moebiusKernel_multiplicative`,
+  `receiverBounded_and_evenFlip_multiplicative_iff`,
+  `orientationFaithfulNorm_smooth_and_multiplicative_synthesis`).
+- `TheOrbitStructureOfTheUnpaidClass` — unit-orbit equivalence (`WienerUnitOrbit`,
+  `equivalence_wienerUnitOrbit`) and monoid-orbit preorder (`WienerMonoidOrbit`) with ascending
+  `paidIdeal` and descending `obstructionHull` and quotient codimension
+  (`rank_quotient_paidIdeal_le_of_wienerMonoidOrbit`), the stabilizer–annihilator dichotomy on
+  principal unpaid orbits (`paidIdeal_conv_dichotomy_of_eq_ker`) and `0`-or-`2` dichotomy on real
+  oscillating probes (`paidIdeal_oscillating_conv_dichotomy`), Dirichlet cancellation at `c(1) ≠ 0`
+  (`wienerMonoidOrbit_conv_self_iff`), the infinite strictly descending monoid chain
+  `iterThreeTermConv m (d^{−ε})` inside `{polePoint ε}` (`iterThreeTermConv_smoothPower_chain`),
+  one-way `evenFlip` transition on `μ d^{−ε}` (`moebius_evenFlip_oneWay_orbit`), and incomparable
+  unpaid cones (`orbitStructure_unpaidClass_synthesis`).
+- `TransportInApertureAndTheCeilingLyapunovIdentity` — two-aperture gauge conservation and
+  sign-definite boundary-shell jump (`gaugeStepJumpEnergy_eq_gaugeStepBoundaryFlux`,
+  `gaugeStepJumpEnergy_nonneg`), exact aperture derivatives of `archWindowKilling` and `windowFloor`
+  (`hasDerivAt_archWindowKilling`, `hasDerivAt_windowFloor`, `windowFloor_sub_eq_integral`), the exact
+  `Φ`-gauge boundary-defect identity (`fullZeroForm_phiDoob_eq_jump_sub_defect_add_flux`,
+  `fullZeroForm_thetaPlateau_eq`), the aperture spectral jump `apertureSpectralJump` and its `HasSum`
+  RH equivalence (`riemannHypothesis_iff_hasSum_apertureSpectralJump`, `not_additive_step_transport`),
+  and the ceiling-renormalized Lyapunov functional `ceilingScaledGroundEnergy` and vanishing-floor
+  relative transport (`exists_ceilingScaledGroundEnergy_le`, `hasDerivAt_exp_mul_floor`,
+  `riemannHypothesis_of_vanishing_relative_step`, `riemannHypothesis_iff_exists_relative_step`,
+  `apertureTransport_and_ceilingLyapunov_synthesis`).

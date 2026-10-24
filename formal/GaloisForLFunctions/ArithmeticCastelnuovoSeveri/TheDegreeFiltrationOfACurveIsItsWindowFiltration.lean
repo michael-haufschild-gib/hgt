@@ -215,7 +215,7 @@ theorem exists_narrow_test {w : ℝ} (hw : 0 < w) :
         (show (fun t => smallBump (w / 2) hw2 t * smallBump (w / 2) hw2 t) 0 ≠ 0 by simp [h0])
 
 /-- `k_g(0) = ‖g‖²`. -/
-theorem weilTest_self_zero (g : ℝ → ℂ) : EF.weilTest g g 0 = ((∫ u, ‖g u‖ ^ 2 : ℝ) : ℂ) := by
+theorem weilTest_self_apply_zero (g : ℝ → ℂ) : EF.weilTest g g 0 = ((∫ u, ‖g u‖ ^ 2 : ℝ) : ℂ) := by
   rw [RHTower.weilTest_apply, ← integral_complex_ofReal]
   congr 1
   funext t
@@ -337,7 +337,7 @@ theorem hodgeDefectAt_eq_top_of_lagFormula (Z : ZeroConfig) (hZ : TemperedConfig
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [← Complex.mul_conj']
       ring
-    rw [hW F hFC2 hFc, hlag.tsum_eq, hval, weilTest_self_zero]
+    rw [hW F hFC2 hFc, hlag.tsum_eq, hval, weilTest_self_apply_zero]
     have hy2 : 0 < ∑ i, ‖y i‖ ^ 2 :=
       lt_of_lt_of_le (pow_pos (norm_pos_iff.mpr hi₀) 2)
         (Finset.single_le_sum (f := fun i => ‖y i‖ ^ 2) (fun _ _ => by positivity)

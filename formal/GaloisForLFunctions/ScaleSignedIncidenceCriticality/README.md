@@ -557,6 +557,88 @@ All unconditional; where RH holds only at the base datum the gate is stated as "
     (`cofinalRateSet S`) is faithful for `sdDepth` (`faithful_sdDepth_cofinalRateSet`), whereas any
     bounded-range rate reading (`boundedRateSet M`) has exact limit `1/2` and floor `0`
     (`resolutionLimit_sdDepth_boundedRateSet_eq_half`, `resolutionFloor_sdDepth_boundedRateSet_eq_zero`).
+14. **The design specification of a counterexample: exact diluted-reading limits and dyadic comb
+    visibility.** Symmetrising `centredSum` under `Fin.revPerm` decomposes the `n`-th aliasing band
+    energy into `bandEnergy ℓ δ n = ℓ ∑_{j=0}^{n−1} (cosh(δℓ(2j − n + 1)) − 1)`
+    (`bandEnergy_eq_sum_cosh_sub_one`), satisfying the two-step recurrence
+    `bandEnergy ℓ δ (n + 1) − bandEnergy ℓ δ (n − 1) = 2ℓ(cosh(nδℓ) − 1)` (`bandEnergy_succ_sub_pred`)
+    and strict monotonicity in both index (`bandEnergy_lt_succ`) and depth
+    (`bandEnergy_strictMono_depth`). Consequently, for every `0 < a ≤ L/2`, the joint aperture–mass
+    reading `dilutedReading hℓ hL a` on `DepthDatum` is equivalent to
+    `bandEnergy ℓ (depth d) ⌈2a/ℓ⌉₊ ≤ 2L` (`dilutedReading_iff_bandEnergy_le`), is downward-closed in
+    depth (`dilutedReading_of_depth_le`), has `resolutionFloor = 0` (`resolutionFloor_depth_dilutedReading`),
+    has exact limit `1/2` in the sub-Nyquist regime `a ≤ ℓ/2`
+    (`resolutionLimit_depth_dilutedReading_subNyquist`), has exact limit `min (1/2) (depthResolution ℓ (2L))`
+    across the second aliasing band `ℓ/2 < a ≤ min ℓ (L/2)`
+    (`resolutionLimit_depth_dilutedReading_secondBand`), and is bracketed at every `ℓ/2 < a ≤ L/2`
+    between `min (1/2) (arcosh(1 + 2L/(ℓ⌈2a/ℓ⌉₊))/(⌈2a/ℓ⌉₊ℓ))` and
+    `min (1/2) (log((2L + 2a + ℓ)/ℓ)/(2a − ℓ))` (`resolutionLimit_depth_dilutedReading_brackets`).
+    On the lag axis, a two-bump difference test `twoBump (modScaledBump w 0) v (−1)` on
+    `dilutedLatticeConfig` evaluates at the `n`-th sub-lattice tooth `v = nℓ` (`nℓ + 2w ≤ L`) to
+    `4(L − ℓ(cosh(nδℓ) − 1))‖κ_w‖²` (`W_dilutedLattice_lag_nat_mul`) — reading `-2 · bandDeficit ℓ δ L 2`
+    and `-2 · bandDeficit ℓ δ L 3` at the first two teeth (`re_W_dilutedLattice_first_two_teeth_eq_bandDeficit`)
+    — while evaluating to `4(L + ℓ)‖κ_w‖² > 0` in every gap `|v − nℓ| > 2w` (`W_dilutedLattice_lag_eq_of_gap`).
+    Against the prime-side explicit formula, any structured counterexample faces the `3/10` prime-free
+    barrier, the unbounded zero-count remainder `rvmRemainder_unbounded`, and dyadic prime-window
+    negativity at polylogarithmic lag (`counterexample_primeSide_obstructions`).
+15. **Policies for a configuration of growing density: exact limits, multi-band inversion, and
+    realisable schedules.** On `ScaleDepthDatum`, the global policy reading `adaptiveReading A η` has
+    exact resolution limit `1/2`, floor `0`, and interval `[0, 1/2]` whenever a single scale `L > 0`
+    is sub-Nyquist (`A(L) ≤ L/2`, `0 ≤ η(L)`), including every bounded aperture schedule
+    (`resolutionLimit_sdDepth_adaptiveReading_of_exists_subNyquist`,
+    `resolutionLimit_sdDepth_adaptiveReading_of_bddAbove`). Under `ScaleMatched A η` (`L/2 < A(L) ≤ L`),
+    the scale-aware completion `scaleAdaptiveReading A η = joinReading sdScale (adaptiveReading A η)`
+    has exact limit `min (1/2) (depthResolution L (η L))` and floor `0` at scale `L = sdScale p₀`
+    (`resolutionLimit_sdDepth_scaleAdaptiveReading_scaleMatched`), while `adaptiveReading A η` has
+    global limit `sSup ((fun L => min (1/2) (depthResolution L (η L))) '' Ioi 0)` and floor `0`
+    (`resolutionLimit_sdDepth_adaptiveReading_scaleMatched`), certifying `β ∈ (0, 1/2)` iff
+    `∀ L > 0, η L ≤ weilFloorThreshold L β` (`certifies_sdDepth_adaptiveReading_iff`), with
+    `depthResolution L (η L) → 0` whenever `η L / L³ → 0`
+    (`tendsto_depthResolution_zero_of_div_cube_tendsto_zero`). For arbitrary trans-Nyquist aperture
+    growth `TransNyquistPolicy A η` (`A(L) > L/2`, `aliasingIndex A L = ⌈2A(L)/L⌉₊ ≥ 2`),
+    `adaptiveReading A η p ↔ bandEnergy (sdScale p) (sdDepth p) (aliasingIndex A (sdScale p)) ≤ η (sdScale p)`
+    (`adaptiveReading_iff_bandEnergy_le`), the `n`-th band energy obeys the hyperbolic lower bound
+    `weilFloorThreshold L ((n − 1)δ) ≤ bandEnergy L δ n` (`weilFloorThreshold_mul_le_bandEnergy`) so
+    that `bandEnergy L δ n ≤ η` forces `δ ≤ depthResolution L η / (n − 1)`
+    (`depth_le_div_sub_one_of_bandEnergy_le`), `scaleAdaptiveReading A η` is bracketed between
+    `min (1/2) (arcosh(1 + η(L)/(L · n_L))/(n_L L))` and `min (1/2) (depthResolution L (η L) / (n_L − 1))`
+    (`resolutionLimit_sdDepth_scaleAdaptiveReading_brackets`), and global certification of `β ∈ (0, 1/2)`
+    is equivalent to `∀ L > 0, η L ≤ bandEnergy L β (aliasingIndex A L)`
+    (`certifies_sdDepth_adaptiveReading_transNyquist_iff`). Against `ζ`'s growing zero density at height
+    scale `L(ξ) = log(1 + π|ξ|/4)`, both the single-height symbol-positivity horizon
+    `A(L) ≤ log(1 + L/4) < L/2` (`zeta_singleHeight_archimedean_schedule_realisable`,
+    `resolutionLimit_sdDepth_of_le_sharpHorizonAperture`) and the scale-matched Chebyshev deficit
+    schedule `η(L) = 10 + 68 e^L ≥ weilFloorThreshold L (1/2)`
+    (`weilFloorThreshold_half_le_chebyshevDeficit`, `resolutionLimit_sdDepth_chebyshevSchedule_eq_half`)
+    have exact resolution limit `1/2` and floor `0`.
+16. **The numerical unit for the incidence ledger, witness pairs for scalar comb-energy information
+    loss, and faithful coherent-residual completions.** On the odd incidence ledger, `fullZeroForm F`
+    equals `-ledgerDeficit F r R` (`fullZeroForm_eq_neg_ledgerDeficit`), and eliminating proper prime
+    powers bounds `primeSideCharge F` by `combSubcriticalHorizonMass r * autoCorr F 0 + combCharge F r`
+    (`primeSideCharge_le_combSubcritical_add_combCharge`, `fullZeroForm_ge_combCharge_ledger`), so a
+    graded allocation of `2 * combCharge F r` at rate `2σ` certifies `zetaZeroWidth ≤ σ`
+    (`zetaZeroWidth_le_of_combCharge_graded_bound`) while any bounded-aperture ledger reading on
+    `GrowthProfile` leaves the shadow rates unbounded above (`ledgerRateDichotomy`). On
+    `CombPairingDatum` (`0 < mass`, `0 ≤ energy`, `charge² ≤ mass · energy`), the unsigned scalar
+    comb-energy reading `scalarCombEnergyReading` (`(mass, energy)`) is shared by the explicit witness
+    triple `antiCoherentWitness`, `orthogonalWitness`, and `coherentWitness`
+    (`exists_witness_pair_scalarCombEnergyReading`), giving `combChargeVal` exact resolution interval
+    `[−√(mass · energy), √(mass · energy)]` (`resolutionInterval_combChargeVal_scalarCombEnergyReading`)
+    and `completeCombEnergy` exact resolution interval
+    `[(√mass − √energy)², (√mass + √energy)²]`
+    (`resolutionInterval_completeCombEnergy_scalarCombEnergyReading`, collapsing to `[0, 4 * mass]` on
+    `energy = mass`, `resolutionInterval_completeCombEnergy_of_balanced`). On actual smooth odd
+    compactly supported profiles on `ℝ`, the dilated family `dilatedUnitOddBump c = rescaledTest unitOddBump c`
+    (`c > 0`) shares with `unitOddBump` the exact unit mass `1`, asymptotic normalized comb energy `1`,
+    exponential comb energy `4`, and cross-prime energy `4`, while realizing every asymptotic
+    first-power charge ratio `θ ∈ [0, 1)` (`dilatedUnitOddBump_same_scalar_comb_reading`,
+    `exists_dilatedUnitOddBump_witness_for_every_charge_ratio`). Adjoining the signed amplitude ratio
+    `amplitudeReading` makes `completedCombReading` faithful for both `combChargeVal` and
+    `completeCombEnergy` (`faithful_combChargeVal_completedCombReading`,
+    `faithful_completeCombEnergy_completedCombReading`), and subtracting the horizon translate
+    `S_r · F(· + 2r)` bounds `combCharge F r²` on `[−r, r]`-supported tests purely by the coherent
+    translation-residual energy `‖C_r F − S_r F(· + 2r)‖²`
+    (`sq_combCharge_le_mass_mul_horizonResidualEnergy`).
 
 ---
 
@@ -644,10 +726,26 @@ Built and reusable:
 - *Rate readings for `ζ` and the local-count price* (`five_rate_currencies_of_zeta`,
   `singleApertureWidthFloor`, `ApertureCountDatum`, `ZetaRateDatum`, `cofinalRateSet`,
   `boundedRateSet`).
-
-To be built:
-
-- the admissibility unit of the incidence ledger.
+- *Diluted-counterexample design calculus* (`bandEnergy_eq_sum_cosh_sub_one`,
+  `bandEnergy_strictMono_depth`, `dilutedReading_iff_bandEnergy_le`,
+  `resolutionLimit_depth_dilutedReading_secondBand`, `resolutionLimit_depth_dilutedReading_brackets`,
+  `W_dilutedLattice_lag_nat_mul`, `W_dilutedLattice_lag_eq_of_gap`,
+  `counterexample_primeSide_obstructions`).
+- *Adaptive policy calculus across growing density* (`scaleAdaptiveReading`, `TransNyquistPolicy`,
+  `resolutionLimit_sdDepth_adaptiveReading_of_exists_subNyquist`,
+  `resolutionLimit_sdDepth_scaleAdaptiveReading_scaleMatched`,
+  `resolutionLimit_sdDepth_adaptiveReading_scaleMatched`, `certifies_sdDepth_adaptiveReading_iff`,
+  `depth_le_div_sub_one_of_bandEnergy_le`, `resolutionLimit_sdDepth_scaleAdaptiveReading_brackets`,
+  `certifies_sdDepth_adaptiveReading_transNyquist_iff`,
+  `zeta_singleHeight_archimedean_schedule_realisable`,
+  `resolutionLimit_sdDepth_chebyshevSchedule_eq_half`).
+- *Incidence-ledger admissibility unit and comb-energy completion calculus* (`ledgerDeficit`,
+  `primeSideCharge_le_combSubcritical_add_combCharge`, `zetaZeroWidth_le_of_combCharge_graded_bound`,
+  `CombPairingDatum`, `scalarCombEnergyReading`, `exists_witness_pair_scalarCombEnergyReading`,
+  `resolutionInterval_combChargeVal_scalarCombEnergyReading`,
+  `resolutionInterval_completeCombEnergy_scalarCombEnergyReading`,
+  `exists_dilatedUnitOddBump_witness_for_every_charge_ratio`, `completedCombReading`,
+  `faithful_combChargeVal_completedCombReading`, `sq_combCharge_le_mass_mul_horizonResidualEnergy`).
 
 ---
 
@@ -712,26 +810,82 @@ Open, in this programme's own unit (a class of readings and its exact limit):
    (`faithful_sdDepth_cofinalRateSet`), whereas `boundedRateSet M` has exact limit `1/2` and floor
    `0` (`resolutionLimit_sdDepth_boundedRateSet_eq_half`,
    `resolutionFloor_sdDepth_boundedRateSet_eq_zero`).
-5. **The design specification of a counterexample.** The reach law says the free part of the hiding
-   is linear in the dilution `ℓ` and the bought part only logarithmic in the mass. What is the
-   largest reach of a configuration subject to the arithmetic constraints the explicit formula
-   imposes — the polar term, the trivial zeros, the functional equation — and is the sub-lattice
-   structure the free regime demands compatible with them at all? A negative answer would be a
-   conditional exclusion of structured counterexamples; a positive one names the configuration to
-   exclude by other means.
-6. **Policies for a configuration of growing density.** The budget law says a policy's precision must
-   shrink like the cube of the scale it addresses, and `ζ`'s zero density grows with the height. Which
-   schedules of aperture and precision are realisable from the corpus's unconditional inputs, and what
-   is the floor of the class of policies with a prescribed growth of aperture?
-7. **A numerical unit for the incidence ledger.** The node face is quantitative through the
-   membership bits and the node scale. The ledger of `ArithmeticIncidencePositivity` is graded by the
-   width on the analytic side; its admissibility unit — what class of readings of the ledger's terms
-   can certify a rate — is not computed. The raw comb second moment is a useful test case:
-   Compensation Theory proves its sharp exponential size, while its translation law makes the
-   first-power charge small on the same slowly varying family. Compute which signed pairing or
-   coherent residual must supplement this scalar reading to determine a useful bound. A proposed
-   information-loss theorem must exhibit two admissible sources with the same reading and
-   different target values; large energy alone is not that witness.
+5. *(Resolved in `TheDesignSpecificationOfACounterexample`.)* **The design specification of a
+   counterexample.** Symmetrising `centredSum` under `Fin.revPerm` gives the hyperbolic decomposition
+   `bandEnergy ℓ δ n = ℓ ∑_{j=0}^{n−1} (cosh(δℓ(2j − n + 1)) − 1)` (`bandEnergy_eq_sum_cosh_sub_one`),
+   strictly increasing in `n ≥ 1` (`bandEnergy_lt_succ`) and in `δ > 0` for `n ≥ 2`
+   (`bandEnergy_strictMono_depth`). Consequently, for `0 < a ≤ L/2`, `dilutedReading hℓ hL a` is
+   equivalent to `bandEnergy ℓ (depth d) ⌈2a/ℓ⌉₊ ≤ 2L` (`dilutedReading_iff_bandEnergy_le`), has
+   exact resolution floor `0` (`resolutionFloor_depth_dilutedReading`), has exact limit `1/2` below
+   the sub-lattice Nyquist aperture `a ≤ ℓ/2` (`resolutionLimit_depth_dilutedReading_subNyquist`),
+   has exact limit `min (1/2) (depthResolution ℓ (2L))` across the second aliasing band
+   `ℓ/2 < a ≤ min ℓ (L/2)` (`resolutionLimit_depth_dilutedReading_secondBand`), and is bracketed at
+   every `ℓ/2 < a ≤ L/2` between `min (1/2) (arcosh(1 + 2L/(ℓ⌈2a/ℓ⌉₊))/(⌈2a/ℓ⌉₊ℓ))` and
+   `min (1/2) (log((2L + 2a + ℓ)/ℓ)/(2a − ℓ))` (`resolutionLimit_depth_dilutedReading_brackets`).
+   On the lag axis, a two-bump difference test `twoBump (modScaledBump w 0) v (−1)` on
+   `dilutedLatticeConfig` evaluates at the `n`-th sub-lattice tooth `v = nℓ` (`nℓ + 2w ≤ L`) to
+   `4(L − ℓ(cosh(nδℓ) − 1))‖κ_w‖²` (`W_dilutedLattice_lag_nat_mul`) — reading `-2 · bandDeficit ℓ δ L 2`
+   and `-2 · bandDeficit ℓ δ L 3` at the first two teeth (`re_W_dilutedLattice_first_two_teeth_eq_bandDeficit`)
+   — while evaluating to `4(L + ℓ)‖κ_w‖² > 0` in every gap `|v − nℓ| > 2w`
+   (`W_dilutedLattice_lag_eq_of_gap`). Against the prime-side explicit formula, any structured
+   counterexample must simultaneously respect the `3/10` prime-free barrier, the unbounded zero-count
+   remainder `rvmRemainder_unbounded`, and polylogarithmic near-top prime-window negativity
+   (`counterexample_primeSide_obstructions`).
+6. *(Resolved in `PoliciesForAConfigurationOfGrowingDensity`.)* **Policies for a configuration of
+   growing density.** On `ScaleDepthDatum`, any policy `adaptiveReading A η` with even one sub-Nyquist
+   scale `A(L) ≤ L/2` (`0 ≤ η(L)`) — in particular any bounded aperture schedule — has exact global
+   resolution limit `1/2`, floor `0`, and interval `[0, 1/2]`
+   (`resolutionLimit_sdDepth_adaptiveReading_of_exists_subNyquist`,
+   `resolutionLimit_sdDepth_adaptiveReading_of_bddAbove`). Under `ScaleMatched A η` (`L/2 < A(L) ≤ L`),
+   `scaleAdaptiveReading A η` at scale `L` has exact limit `min (1/2) (depthResolution L (η L))` and
+   floor `0` (`resolutionLimit_sdDepth_scaleAdaptiveReading_scaleMatched`), `adaptiveReading A η` has
+   global limit `sSup ((fun L => min (1/2) (depthResolution L (η L))) '' Ioi 0)` and floor `0`
+   (`resolutionLimit_sdDepth_adaptiveReading_scaleMatched`), and certifying `β ∈ (0, 1/2)` is
+   equivalent to `∀ L > 0, η L ≤ weilFloorThreshold L β` (`certifies_sdDepth_adaptiveReading_iff`),
+   with `depthResolution L (η L) → 0` whenever `η L / L³ → 0`
+   (`tendsto_depthResolution_zero_of_div_cube_tendsto_zero`). For arbitrary trans-Nyquist aperture
+   growth `TransNyquistPolicy A η` (`A(L) > L/2`, `aliasingIndex A L = ⌈2A(L)/L⌉₊ ≥ 2`),
+   `adaptiveReading A η p ↔ bandEnergy (sdScale p) (sdDepth p) (aliasingIndex A (sdScale p)) ≤ η (sdScale p)`
+   (`adaptiveReading_iff_bandEnergy_le`), `bandEnergy L δ n ≥ weilFloorThreshold L ((n − 1)δ)` yields
+   multi-band depth inversion `δ ≤ depthResolution L η / (n − 1)`
+   (`weilFloorThreshold_mul_le_bandEnergy`, `depth_le_div_sub_one_of_bandEnergy_le`),
+   `scaleAdaptiveReading A η` is bracketed between `min (1/2) (arcosh(1 + η(L)/(L · n_L))/(n_L L))`
+   and `min (1/2) (depthResolution L (η L) / (n_L − 1))`
+   (`resolutionLimit_sdDepth_scaleAdaptiveReading_brackets`), and global certification of `β ∈ (0, 1/2)`
+   is equivalent to `∀ L > 0, η L ≤ bandEnergy L β (aliasingIndex A L)`
+   (`certifies_sdDepth_adaptiveReading_transNyquist_iff`). Against `ζ`'s growing zero density at height
+   scale `L(ξ) = log(1 + π|ξ|/4)`, both the single-height symbol-positivity horizon
+   `A(L) ≤ log(1 + L/4) < L/2` (`zeta_singleHeight_archimedean_schedule_realisable`,
+   `resolutionLimit_sdDepth_of_le_sharpHorizonAperture`) and the scale-matched Chebyshev deficit
+   schedule `η(L) = 10 + 68 e^L ≥ weilFloorThreshold L (1/2)`
+   (`weilFloorThreshold_half_le_chebyshevDeficit`, `resolutionLimit_sdDepth_chebyshevSchedule_eq_half`)
+   have exact resolution limit `1/2` and floor `0`.
+7. *(Resolved in `TheNumericalUnitForTheIncidenceLedger`.)* **A numerical unit for the incidence
+   ledger.** On the odd incidence ledger, `fullZeroForm F = −ledgerDeficit F r R`
+   (`fullZeroForm_eq_neg_ledgerDeficit`), and eliminating proper prime powers bounds
+   `primeSideCharge F` by `combSubcriticalHorizonMass r * autoCorr F 0 + combCharge F r`
+   (`primeSideCharge_le_combSubcritical_add_combCharge`, `fullZeroForm_ge_combCharge_ledger`), so a
+   graded allocation of `2 * combCharge F r` at rate `2σ` certifies `zetaZeroWidth ≤ σ`
+   (`zetaZeroWidth_le_of_combCharge_graded_bound`) while any bounded-aperture ledger reading on
+   `GrowthProfile` leaves the shadow rates unbounded above (`ledgerRateDichotomy`). On
+   `CombPairingDatum`, the unsigned scalar comb-energy reading `scalarCombEnergyReading` (`(mass, energy)`)
+   admits the explicit witness triple `antiCoherentWitness`, `orthogonalWitness`, and
+   `coherentWitness` with identical `(mass, energy)` and charges `−√(M E) < 0 < +√(M E)`
+   (`exists_witness_pair_scalarCombEnergyReading`), giving `combChargeVal` exact resolution interval
+   `[−√(M E), √(M E)]` (`resolutionInterval_combChargeVal_scalarCombEnergyReading`) and
+   `completeCombEnergy` exact resolution interval `[(√M − √E)², (√M + √E)²]`
+   (`resolutionInterval_completeCombEnergy_scalarCombEnergyReading`, `[0, 4M]` when `E = M`). Across
+   actual smooth odd compactly supported profiles on `ℝ`, `dilatedUnitOddBump c = rescaledTest unitOddBump c`
+   (`c > 0`) shares with `unitOddBump` the exact unit mass `1`, asymptotic normalized comb energy `1`,
+   exponential comb energy `4`, and cross-prime energy `4`, while realizing every asymptotic
+   first-power charge ratio `θ ∈ [0, 1)` (`dilatedUnitOddBump_same_scalar_comb_reading`,
+   `exists_dilatedUnitOddBump_witness_for_every_charge_ratio`). Adjoining the signed amplitude ratio
+   `amplitudeReading` makes `completedCombReading` faithful for both `combChargeVal` and
+   `completeCombEnergy` (`faithful_combChargeVal_completedCombReading`,
+   `faithful_completeCombEnergy_completedCombReading`), and subtracting the horizon translate
+   `S_r · F(· + 2r)` bounds `combCharge F r²` on `[−r, r]`-supported tests purely by the coherent
+   translation-residual energy `‖C_r F − S_r F(· + 2r)‖²`
+   (`sq_combCharge_le_mass_mul_horizonResidualEnergy`).
 
 ### Research topics
 

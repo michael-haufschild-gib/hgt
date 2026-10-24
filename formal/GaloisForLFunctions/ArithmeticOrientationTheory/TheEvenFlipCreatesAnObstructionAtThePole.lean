@@ -67,7 +67,7 @@ theorem oddDamped_eq_localFactor_conv (ε : ℝ) :
       RHTower.dirichletConv (localFactorKernel 2 ((2 : ℝ) ^ (-ε))) (dampedSignWeight unitSign ε) := by
   funext n
   rcases eq_or_ne n 0 with rfl | hn
-  · simp [dampedSignWeight, oddAF_apply, RHTower.dirichletConv]
+  · simp [dampedSignWeight, RHTower.dirichletConv]
   rw [dirichletConv_localFactorKernel Nat.prime_two _ _ hn]
   unfold dampedSignWeight unitSign
   rw [oddAF_apply]
@@ -157,7 +157,7 @@ theorem mem_obstructionHull_oddSqf_iff {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 1 
 /-! ### The flip and the even-part pole value -/
 
 /-- The pole sum of the flipped kernel: `K^♭ = K + (1 − 2^t)·K_e` at exponent `t`. -/
-theorem poleSum_flipKernelOf {t : ℝ} (ht : 0 < t) {k : ℕ → ℝ} (hk4 : ∀ m, 4 ∣ m → k m = 0)
+theorem poleSum_flipKernelOf {t : ℝ} {k : ℕ → ℝ} (hk4 : ∀ m, 4 ∣ m → k m = 0)
     (hk : Summable fun n : ℕ => |k n| * (n : ℝ) ^ (-t)) :
     poleSum t (flipKernelOf k) = poleSum t k + (1 - (2 : ℝ) ^ (1 - t)) * poleSum t (evenPartWeight k) := by
   set e := evenPartWeight k
@@ -240,7 +240,7 @@ theorem obstructionHull_evenFlip_nonempty_iff {ε : ℝ} (hε : 0 < ε) (hε2 : 
         (summable_abs_dirichletConv_oddSqf_div hε (criticalWiener_flipKernelOf hk₀))).Nonempty ↔
       poleSum (1 - ε) (evenPartWeight k₀) ≠ 0 := by
   rw [obstructionHull_nonempty_iff, receiverBounded_dirichletConv_oddSqf_iff_critical hε hε2
-    (criticalWiener_flipKernelOf hk₀), poleSum_flipKernelOf (by linarith) hk4
+    (criticalWiener_flipKernelOf hk₀), poleSum_flipKernelOf hk4
       (summable_rpow_of_criticalWiener hk₀ (by linarith)), hpaid, zero_add, sub_sub_cancel]
   have h2 : (1 : ℝ) - (2 : ℝ) ^ ε ≠ 0 := by
     have : (1 : ℝ) < (2 : ℝ) ^ ε := Real.one_lt_rpow (by norm_num) hε
@@ -255,7 +255,7 @@ theorem mem_obstructionHull_evenFlip_iff {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 
         (summable_abs_dirichletConv_oddSqf_div hε (criticalWiener_flipKernelOf hk₀)) ↔
       ∀ p : ℕ, p.Prime → ω.ω p = (polePoint ε hε2.le).ω p := by
   refine mem_obstructionHull_oddSqf_iff hε hε2 (criticalWiener_flipKernelOf hk₀) ?_ ω
-  rw [poleSum_flipKernelOf (by linarith) hk4 (summable_rpow_of_criticalWiener hk₀ (by linarith)),
+  rw [poleSum_flipKernelOf hk4 (summable_rpow_of_criticalWiener hk₀ (by linarith)),
     hpaid, zero_add, sub_sub_cancel]
   have h2 : (1 : ℝ) - (2 : ℝ) ^ ε ≠ 0 := by
     have : (1 : ℝ) < (2 : ℝ) ^ ε := Real.one_lt_rpow (by norm_num) hε

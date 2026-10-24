@@ -111,7 +111,7 @@ theorem re_W_curveConfig_lagTest {g : ℝ → ℂ} {w : ℝ} (hg : ContDiff ℝ 
   have hL := D.log_q_pos
   have hgc : HasCompactSupport g := RHTower.hasCompactSupport_of_tsupport_subset_Icc hgs
   rw [D.W_curveConfig_lagFormula hD (lagTest_contDiff hg _ _) (lagTest_hasCompactSupport hgc _ _),
-    (hasSum_lag_lagTest hL hg.continuous hgc hgs hwL _ s n).tsum_eq, weilTest_self_zero]
+    (hasSum_lag_lagTest hL hg.continuous hgc hgs hwL _ s n).tsum_eq, weilTest_self_apply_zero]
   simp only [Int.natAbs_zero, Int.natAbs_neg, Int.natAbs_natCast, Complex.conj_ofReal]
   rw [show ((Real.log D.q : ℝ) : ℂ) * (((∫ u, ‖g u‖ ^ 2 : ℝ) : ℂ) *
       ((1 + (s : ℂ) * s) * (D.trace 0 : ℂ) + s * (D.trace n : ℂ) + s * (D.trace n : ℂ))) =

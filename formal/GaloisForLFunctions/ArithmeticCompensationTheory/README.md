@@ -207,7 +207,8 @@ are three different statements and remain visibly different here.
    `[−1, 1]`, since the translate `f(· + 2)` lives in `[−3, −1]`
    (`tendsto_combCharge_rescaledTest_div_combMass_zero`). Enormous energy is not an enormous signed
    charge, and certainly not a negative Weil form.
-7. **The compensated prime–polar residual has the de la Vallée Poussin saving.** Before any
+7. **The compensated prime–polar residual has the de la Vallée Poussin saving, and the full
+   ledger remainder is governed by the zero-free strip dictionary.** Before any
    square, the prime atoms and the polar density cancel exactly up to the two-pole defect
    `E(s) = e^s + s − 1 − ψ(e^s)` tested against `h′` (AIP's
    `sum_vonMangoldt_sub_polar_eq_chebyshev`, `primeShift_sub_polarDensity_eq_chebyshev`). The
@@ -216,8 +217,23 @@ are three different statements and remain visibly different here.
    residual at most `Ke^S exp(−c√S)∫_0^S|h′|` (`exists_abs_sum_vonMangoldt_sub_polar_le`), and
    every translate `x` of a `C¹` test in `[−r, r]` has ledger residual at most
    `Ke^{S/2}exp(−c√S)(2‖F′‖₁ + ‖F‖₁)`, `S = 2r + |x|` (`exists_abs_primeShift_sub_polar_le`), with
-   universal constants. The trivial exponent of the ledger is `e^{S/2}`; the saving is exactly the
-   prime number theorem's, and an exponent `e^{θS}`, `θ < ½`, is classically a zero-free strip.
+   universal constants. Retaining the even parts and the archimedean gamma factor, the **full
+   compensated ledger remainder** `fullLedgerCompensatedRemainder F` equals the bilateral prime–polar
+   residual minus `archimedeanShift F` (`fullLedgerCompensatedRemainder_eq_primePolar_sub_archimedean`),
+   whose even autocorrelation kills every odd part (`fullLedgerCompensatedRemainder_odd_eq_zero`),
+   whose archimedean piece is `O(‖F‖₁ + ‖F′‖₁)` uniformly in the aperture
+   (`abs_archimedeanLedgerRemainder_le_norm`), and whose full remainder has the unconditional
+   de la Vallée Poussin bound `K e^r exp(−c√(2r)) ‖F′‖₁ + (2π + 2)(‖F‖₁ + ‖F′‖₁)` on `C¹` tests in
+   `[−r, r]` (`exists_abs_fullLedgerCompensatedRemainder_le_deLaValleePoussin`), while every single
+   prime-power atom `p^m` contributes `O(p^{−m/2} log p · ‖F‖₂²)` (`abs_primePowerShift_le_l2`).
+   An exponent `θ ∈ (0, ½)` for `primePolarLedgerRemainder` or `fullLedgerCompensatedRemainder` on
+   the smooth test class is **equivalent** to the quantitative Chebyshev bound
+   `|E(s)| ≤ C e^{(1/2+θ)s}` (`fullLedger_sub_half_exponent_iff_chebyshev_bound`), which implies the
+   zero-free strip `Re ρ ≤ ½ + θ` via the Mellin transform
+   (`zeta_zeroFree_strip_of_fullLedger_sub_half_exponent`) and follows from `Θ < ½ + θ`
+   (`fullLedger_sub_half_exponent_of_zetaZeroAbscissa_lt`), so the infimum of admissible ledger
+   exponents is `max(0, Θ − ½)` and the `θ → 0⁺` limit is RH
+   (`riemannHypothesis_iff_forall_pos_fullLedger_exponent`).
 8. **The ledger's own test class.** The profile `oddBump(x) = x e^{−1/(1−x²)}` normalized to unit
    mass gives smooth odd tests supported in `[−r, r]` on which all of the above hold at once
    (`exists_odd_smooth_family_sharp_comb_rate`).
@@ -258,7 +274,8 @@ are three different statements and remain visibly different here.
     `exists_abs_combEnergy_sub_le`); `c` and `K` are universal, independent of the test. The rate
     is the prime number theorem's: an error `O(e^{θr})`, `θ < 1`, in `S_r − 2e^r` would be a
     statement about the zeros of `ζ`.
-13. **The horizon energy is one horizon average, and the translation deficit is inverse-square.**
+13. **The horizon energy is one horizon average, the resolvent identity is exact, and the first and
+    second corrections are quadratic and quartic.**
     The double average collapses: `J(F) = ∫_{u>0} A_F(u) ½e^{−u/2} du`
     (`horizonEnergy_eq_horizonIntegral_autoCorr`), by integrating `−¼e^{−v}Φ(−v)`,
     `Φ(w) = ∫_{s>w} A_F(s)e^{−s/2} ds`, along the half-line with `A_F` even. A `Λ`-Lipschitz test
@@ -273,9 +290,23 @@ are three different statements and remain visibly different here.
     profile the first correction is exact: `(A_f(0) − A_f(s))/s² → ½‖f′‖²`
     (`tendsto_autoCorr_deficit_div_sq`), so `r²(A_f(0) − E_r(F_r)/S_r²) → 4‖f′‖²`
     (`tendsto_sq_mul_horizonEnergy_rescaledTest_deficit`,
-    `tendsto_sq_mul_combEnergy_rescaledTest_deficit`): the comb's deficit on the slowly varying
-    family is the first correction `−2∂/r` of the resolvent, `‖ΨF_r‖² = ‖F_r‖² − 4‖F_r′‖² + …`, and
-    the prime error does not reach it.
+    `tendsto_sq_mul_combEnergy_rescaledTest_deficit`). On every compactly supported `C¹` test the
+    resolvent `ΨF = ∫_{u>0} ½e^{−u/2} F(· − u) du` satisfies the exact differential equation
+    `ΨF + 2(ΨF)′ = F` (`horizonResolvent_add_two_deriv`), which squares and integrates to the
+    **exact resolvent energy identity** `J(F) + 4 J(F′) = A_F(0)`
+    (`horizonEnergy_add_four_deriv_eq`) and the `m`-step Taylor tower
+    `A_F(0) − J(F) = Σ_{k=1}^{m−1} (−1)^{k−1} 4^k A_{F^{(k)}}(0) + (−1)^{m−1} 4^m J(F^{(m)})`. At
+    `m = 2` this gives the exact second-order identity
+    `A_F(0) − J(F) − 4 A_{F′}(0) = −16 J(F″)` (`horizonEnergy_second_order_identity`), the universal
+    positivity of the second correction (`horizonEnergy_ge_first_order`), and on slowly varying `C²`
+    tests the exact **quartic second horizon and comb correction** `−16‖f″‖²/r⁴`
+    (`tendsto_pow_four_mul_horizonEnergy_rescaledTest_second_correction`,
+    `tendsto_pow_four_mul_combEnergy_rescaledTest_second_correction`). At any fixed aperture `R > 0`,
+    whereas the unrestricted coercive constant over all odd `C¹` tests in `[−R, R]` is `0`
+    (`not_exists_pos_odd_horizonEnergy_coercive`), restricting the `H¹` seminorm `‖F′‖² ≤ γ‖F‖²` gives
+    the explicit coercive constant `max(1/(1 + 4γ), 1 − 4γ)` (`odd_horizonEnergy_ge_inv_add_four`),
+    and the first Dirichlet odd mode `sin(πx/R)𝟙_{[−R,R]}` gives the upper bound `1/(1 + π²/R²)` on
+    the optimal fixed-aperture Poincaré constant (`odd_poincare_mode_horizonEnergy_lt`).
 14. **No uniform coercivity over the integers; uniform coercivity on a curve.** The concentrated
     tests `F_λ(x) = √λ φ(λx)` keep their mass and have `A_{F_λ}(u) = A_φ(λu)`, so
     `J(F_λ) ≤ (2λ)^{−1}∫_{v>0}|A_φ|` (`horizonEnergy_concentratedTest_le`): no `c > 0` has
@@ -340,8 +371,9 @@ are three different statements and remain visibly different here.
     and the complete head energy is exactly `(1 − α_P)²‖L_P‖² + ‖R_P‖²`
     (`pmCompleteHeadEnergy_eq_compensation`, from the energy split
     `pmCompleteHeadEnergy_eq_sum` and the Cauchy–Schwarz bound `pmMixedEnergy_sq_le`).
-18. **The compensation rate on the actual source.** The defect is the relative complete head
-    energy for all large `P` (`eventually_compensationDefect_eq_relative`); the sector energy is at least `cP^{1−2ε}/log²P`
+18. **The compensation rate on the actual source, and the two-scale cutoff transition rate.** The
+    defect is the relative complete head energy for all large `P`
+    (`eventually_compensationDefect_eq_relative`); the sector energy is at least `cP^{1−2ε}/log²P`
     (`sectorEnergy_eventually_lower`), the complete energy at most twice the divisor-remainder
     energy plus the Ramanujan truncation cost `2T⁴P^{1−3ε}` (`prefixEnergy_le`), and the
     remainder energy is `O(P^{(1−2ε)/2}) + O(1) + O(P^{1−2ε}/log⁸P)` (`remainderEnergy_le`).
@@ -361,18 +393,52 @@ are three different statements and remain visibly different here.
     (`exists_abs_one_sub_pmCompensationAmplitude_le`), so the amplitude has bounded variation
     over the dyadic scales (`summable_abs_pmCompensationAmplitude_dyadic_sub`), and the relative
     transverse energies are summable (`summable_pmTransverseEnergy_div_sectorEnergy_dyadic`).
+    Comparing the overlapping decompositions at cutoffs `P²` and `Q²` (`Q ≥ P`, in particular
+    `Q = 2P`) on their common head `1 ≤ N ≤ P − 1` cancels the cutoff-independent divisor remainder
+    `R_ε(N)` identically (`norm_twoScale_completePrefix_sub_le`), giving the **power-saving
+    two-scale cutoff shift** `twoScaleCompleteShiftEnergy ε P Q P ≤ C P^{1−3ε}`
+    (`exists_twoScaleCompleteShiftEnergy_le_pow_saving`), the **polynomial** relative decay
+    `O(P^{−ε} log² P)` against `‖L_P‖²` (`exists_twoScaleCompleteShiftEnergy_div_sectorEnergy_le_rpow`),
+    and absolute polynomial decay to `0` for `ε > 1/3`
+    (`tendsto_twoScaleCompleteShiftEnergy_zero_of_one_third_lt`). The moving projection between
+    scales obeys the exact connection identity
+    `R_Q − R_P = (S_Q − S_P) − (1 − α_Q)(L_Q − L_P) + (α_Q − α_P) L_P`
+    (`transverseRemainder_sub_eq_complete_sub_connection`,
+    `pmTransverseRemainderSeq_sub_eq_connection`,
+    `twoScale_transverseRemainder_diff_energy_le`), with two-scale coordinate mismatch
+    `|α_Q − α_P| ≤ K_m/log^m P` and polynomial-weight dyadic summability
+    `Σ_k k^m |α_{2^{k+1}} − α_{2^k}| < ∞` (`exists_abs_pmCompensationAmplitude_sub_le_log_pow_of_le`,
+    `summable_mul_pow_abs_pmCompensationAmplitude_dyadic_sub`).
 
 ### Where a blow-up of the receiver goes
 
-19. **A blow-up escapes to the horizon.** The damped divisor remainder read at the integers gives
+19. **A blow-up escapes to the horizon, and the normalized receiver profile retains its arithmetic
+    laws.** The damped divisor remainder read at the integers gives
     the source bound `|A_ε(n)| ≤ Cn^{1−ε}` for `0 < ε < ½` (`exists_abs_centredPrefix_le`), so each
     cell carries at most `C²n^{−2ε}` and the receiver grows at most at the trivial rate,
     `E_N(ε) ≤ D(1 + N^{1−2ε})` (`exists_dampedMobiusEnergy_le`). Hence the blow-up dichotomy
     (`admits_or_escapesToHorizon`): either the receiver is admitted at `ε`, or for every `θ < 1`
     the energy below the scale `E_T^{θ/(1−2ε)}` is a vanishing fraction of `E_T`; and at every
     damping, either admission holds or every fixed window and every cell carries a vanishing
-    fraction (`admits_or_fixedWindowEnergy_vanishes`). Profiles concentrating at
-    bounded scales, or at scales polynomially below `E_T^{1/(1−2ε)}`, are excluded.
+    fraction (`admits_or_fixedWindowEnergy_vanishes`). Normalizing by the critical norm,
+    `u_{ε,T}(n) = A_ε(n)/√E_T(ε)` (`normalizedReceiverProfile`) has exact unit pronic energy for
+    `ε > 0`, `T ≥ 1` (`pronicEnergy_normalizedReceiverProfile`), concentrates `1 − o(1)` of its
+    energy in the horizon shell `(⌊E_T^{θ/(1−2ε)}⌋, T]` under blow-up
+    (`admits_or_normalizedReceiverProfile_shell_tendsto_one`), obeys the two-sided horizon-dilation
+    sandwich `(1/j) pronicEnergy v (T/j − 1) ≤ pronicEnergy (rowDilate j v) T ≤ (1/j) pronicEnergy v (T/j)`
+    (`pronicEnergy_rowDilate_sandwich`, `pronicEnergy_rowDilate_normalizedReceiverProfile_sandwich`)
+    so deep cofactors `T/j_T ≤ ⌊E_T^{θ/(1−2ε)}⌋` carry `o(1/j_T)` energy
+    (`admits_or_deepCofactor_normalizedReceiverProfile_vanishes`), and satisfies the normalized
+    inversion law `u_{ε,T}(n) + Σ_{j=2}^n j^{−ε} u_{ε,T}(⌊n/j⌋) = ρ_ε(n)/√E_T(ε)`
+    (`normalizedReceiverProfile_add_properUnitDilation_eq`, converging to the homogeneous cofactor
+    relation on `n = o(√E_T(ε))`), the self-improving energy identity
+    (`normalizedReceiverProfile_selfImproving_identity`), and the Möbius-factored tangent law
+    (`normalizedTangentProfile_eq_moebiusDilation`). The drifted `n^{1/4}` family, the sign-blind
+    majorant source (strictly negative, violating the inversion sign law), the cofactor aliasing
+    eigenmodes `ω = 2πk/log j` (`cofactorAliasingWave_alias_eigenmode`), and the half-damped
+    oscillating probes (whose normalized energy splits into the spectral shares
+    `α_t²|ζ(½+it)|²/(2|½+it|² V(J,α))`, `tendsto_normalizedHalfProbeCombination_energy_share`) all
+    embed in the normalized defect space.
 
 ### The price of a change of origin
 
@@ -421,12 +487,32 @@ are three different statements and remain visibly different here.
     transported products lie below the ceiling (`prod_le_ceiling_of_relative_step`); and the
     harmonic transport fails along linearly growing apertures
     (`exists_groundEnergy_lt_harmonic_transport`).
-26. **An adapted energy is exactly admission.** With the right end admitted, an adapted energy on
-    `[a, c]` exists iff the receiver is admitted at `a`, for every nonnegative differentiable family
-    with integrable relative loss (`adaptedEnergy_iff_admits`); for the damped Möbius receiver on
-    `[a, ½]` all of these inputs are proved (`adaptedEnergy_dampedMobiusEnergy_iff_admits`); a pointwise
-    corrector budget produces one (`adaptedEnergy_of_pointwise`); and cofinal adapted energies on
-    `[a, ½]` for the damped Möbius receiver are RH (`riemannHypothesis_iff_cofinal_adaptedEnergy`).
+26. **An adapted energy is exactly admission, and the Bézout unit-boundary corrector discharges
+    comparability and the first-cell obstruction.** With the right end admitted, an adapted energy
+    on `[a, c]` exists iff the receiver is admitted at `a`, for every nonnegative differentiable
+    family with integrable relative loss (`adaptedEnergy_iff_admits`); for the damped Möbius
+    receiver on `[a, ½]` all of these inputs are proved (`adaptedEnergy_dampedMobiusEnergy_iff_admits`);
+    a pointwise corrector budget produces one (`adaptedEnergy_of_pointwise`); and cofinal adapted
+    energies on `[a, ½]` for the damped Möbius receiver are RH
+    (`riemannHypothesis_iff_cofinal_adaptedEnergy`). The **Bézout unit-boundary corrector**
+    `bezoutUnitCorrector ε T = Σ_{n ≤ T}(1 − 2A_ε(n))/(n(n+1))` completes the square
+    `bezoutCorrectedEnergy ε T = 1 + pmPowerDampedDualResidual ε T`
+    (`bezoutCorrectedEnergy_eq_one_add_residual`), satisfies unconditional horizon-free and
+    damping-free comparability `(1/3)(1 + E_T(ε)) ≤ bezoutCorrectedEnergy ε T ≤ 3(1 + E_T(ε))`
+    (`bezoutCorrectedEnergy_comparison`), has a uniformly bounded derivative on `[a, ∞)`
+    (`exists_abs_bezoutUnitCorrectorDeriv_le`), and replaces the adverse first-cell work
+    `W_1(ε) → −½` by `residualDampingWork ε 1 = Re(1/ζ(1+ε))m(ε)/2 > 0`
+    (`residualDampingWork_one`, `eventually_residualDampingWork_one_pos`). The normalized mixed
+    large-prime/complement cross term `pmNormalizedMixedCross ε P` is bounded by `1` at every
+    cutoff and tends to `−1` for `0 < ε < ½` (`abs_pmNormalizedMixedCross_le_one`,
+    `tendsto_pmNormalizedMixedCross_neg_one`), and any composite corrector bounded by
+    `θ · bezoutCorrectedEnergy` (`0 ≤ θ < 1`) preserves comparability `((1−θ)/3, 3(1+θ))` and
+    changes the integrated relative loss by at most `log((1+θ)/(1−θ))`
+    (`compositeCorrectedEnergy_comparison`, `integral_compositeCorrectedRelativeLoss_le`). A
+    boundary-accumulating family of Bézout-corrected relative-loss bounds on `(a₀, c]` yields the
+    zero-free strip `Θ ≤ ½ + a₀` (`zetaZeroAbscissa_le_half_add_of_bezoutCorrected_family`), and
+    cofinal bounds on `[a, ½]` as `a ↓ 0` are equivalent to RH
+    (`riemannHypothesis_iff_cofinal_bezoutCorrected_loss`).
 
 ### An internal transfer
 
@@ -483,11 +569,11 @@ Each question is narrower than RH, though the strongest endpoint of several impl
 
 | Question | Answer proved here | What remains |
 |---|---|---|
-| Can adjacent decompositions force a rate of compensation? | For one split the amplitude mismatch and the transverse remainder add up *exactly* to the relative complete energy (mechanism 16); on the actual large-prime sector the defect is `O(log^{−m}P)` for every `m` and summable over dyadic scales, and the moving projection's connection term is summable (mechanism 18). | A rate from a second, compatible decomposition that bounds the absolute remainder. |
-| Can compatible constraints exclude critical blow-up profiles? | For the receiver: profiles living below the scale `E_T^{θ/(1−2ε)}`, `θ < 1`, are excluded, so a blow-up escapes to the horizon (mechanism 19). For the raw comb the profile is classified completely: translation on slowly varying tests, exponential resolvent on fixed tests, `J(F) > 0` on every nonzero test (mechanisms 5, 11), and on Lipschitz tests the resolvent law holds at the rate `exp(−c√r)` with universal constants (mechanism 12). | The classification of the receiver's profiles at the horizon itself. |
-| Can prime–polar coherence be handled before squaring? | The comb's coherent part is identified before the square, and on the extremal family it contributes nothing to the first-power charge (mechanism 6); the exact prime–polar pairing is AIP's two-pole defect identity, and its residual has the de la Vallée Poussin saving `e^{S/2}exp(−c√S)` uniformly over the expanding test class (mechanism 7). | A remainder exponent below the trivial one, which is a zero-free strip. |
+| Can adjacent decompositions force a rate of compensation? | For one split the amplitude mismatch and the transverse remainder add up *exactly* to the relative complete energy (mechanism 16); on the actual large-prime sector the defect is `O(log^{−m}P)` for every `m` and summable over dyadic scales, the moving projection's connection term is summable against every polynomial weight `k^m`, and comparing cutoffs `P²` and `Q²` on `[1, P−1]` cancels `R_ε(N)` identically to give the power-saving cutoff shift `O(P^{1−3ε})` and polynomial relative decay `O(P^{−ε}log²P)` (mechanism 18). | Unconditional horizon-free control of the single-scale divisor remainder below `ε = ½`. |
+| Can compatible constraints exclude critical blow-up profiles? | For the receiver: profiles living below the scale `E_T^{θ/(1−2ε)}`, `θ < 1`, are excluded, so a blow-up escapes to the horizon, and the normalized profile `u_{ε,T} = A_ε/√E_T` obeys the two-sided cofactor sandwich, the homogeneous cofactor limit `u + D^{ζ_ε,≥2}u = 0` on `n = o(√E_T)`, and the Möbius-factored tangent law while embedding the drifted, majorant, aliasing and oscillating-probe defect profiles (mechanism 19). For the raw comb the profile is classified completely through the resolvent energy identity `J(F) + 4J(F′) = A_F(0)`, the quartic second correction `−16‖f″‖²/r⁴`, and fixed-aperture `H¹` coercivity (mechanisms 5, 11–13). | Excluding horizon-shell oscillating defect profiles below `ε = ½`. |
+| Can prime–polar coherence be handled before squaring? | The comb's coherent part is identified before the square, and on the extremal family it contributes nothing to the first-power charge (mechanism 6); the full compensated ledger remainder (retaining even parts and the archimedean gamma factor) has the unconditional de la Vallée Poussin bound `Ke^r exp(−c√(2r))‖F′‖₁ + O(‖F‖_{W^{1,1}})`, and an exponent `θ ∈ (0, ½)` on the smooth test class is equivalent to the Chebyshev bound `|E(s)| ≤ Ce^{(1/2+θ)s}` and to the zero-free strip `Re ρ ≤ ½ + θ` (mechanism 7). | Unconditional proof of an exponent `θ < ½`, which is a zero-free strip. |
 | Can origin information be recovered stably at the threshold? | In the anchored pronic norm a change of origin by `k` cells costs exactly `(k+1)(k+2)/2`, so admission never sees finite origin information (mechanism 20); a drifting origin is priced by the tail beyond it, and uniform drift tolerance holds exactly for bounded drifts (mechanism 21); the comb's coherent part is anchored at the horizon `2r` (mechanism 5). | A tail-decay rate for the actual receiver beyond the origin, which is what a drifting origin needs. |
-| Can arithmetic cross terms create a useful adapted energy? | An adapted energy is exactly admission, and cofinally RH (mechanism 26); a pointwise corrector budget is one producer. | The construction of `C_T` from source terms with independent constants. |
+| Can arithmetic cross terms create a useful adapted energy? | An adapted energy is exactly admission, and cofinally RH; `bezoutUnitCorrector` gives unconditional `(1/3, 3)` comparability for all `ε, T`, eliminates the adverse first-cell work (`residualDampingWork ε 1 > 0`), extends to composite correctors with relative-loss stability `log((1+θ)/(1−θ))`, is unconditionally an adapted energy on `[a, c]` for `a ≥ ½`, and yields `Θ ≤ ½ + a₀` from any boundary-accumulating family on `(a₀, c]` (mechanism 26). | A horizon-free bound on `∫_a^c bezoutCorrectedRelativeLoss` for some `a < ½`. |
 | Can positivity be replaced by the right graded floor? | Positive aperture floors cannot be transported and must lose at least `πe^{2(A−2)}` (mechanism 25); SRT's graded floor at rate `2σ` is the strip `½ + σ`. | Any fixed `σ < ½`. |
 | What is the balanced-scale structure for actual rows? | The unbalanced block-equidistribution range reaches `30/17`, and the short-window mean-square transfer at `α > 17/30` reaches the balanced regime `P ≤ Q ≤ B P` with the block mass bounded by `√2 ε / Q` while `centredPrimeBlock Q` retains the exact omitted-residue-class limit `−π²(p²−1)²/(144p²(p−1))` (cancelled by `omittedClassCorrector`); a power saving in the short-window mean square is equivalent to `receiverDampingRate < ½` (mechanism 28). | Unconditional power saving in the short-window mean square, which is a zero-free strip. |
 
@@ -528,10 +614,14 @@ that every successful route must use the same mechanism.
   lemmas and can be reused with other weights.
 - **The comb resolvent law** (`tendsto_combEnergy_div_combMass_sq_horizonEnergy`): the leading
   term of every comb Gram form.
-- **Compensated prime–polar residuals** (`exists_abs_chebyshevTwoPoleDefect_mul_exp_le`,
-  `exists_abs_sum_vonMangoldt_sub_polar_le`, `exists_abs_primeShift_sub_polar_le`): the
-  exponentially weighted two-pole defect and the residual of every lag weight and every ledger
-  translate, with universal constants.
+- **Compensated prime–polar and full-ledger residuals** (`exists_abs_chebyshevTwoPoleDefect_mul_exp_le`,
+  `exists_abs_sum_vonMangoldt_sub_polar_le`, `exists_abs_primeShift_sub_polar_le`,
+  `fullLedgerCompensatedRemainder`, `exists_abs_fullLedgerCompensatedRemainder_le_deLaValleePoussin`,
+  `fullLedger_sub_half_exponent_iff_chebyshev_bound`,
+  `zeta_zeroFree_strip_of_fullLedger_sub_half_exponent`): the
+  exponentially weighted two-pole defect, the residual of every lag weight and every ledger
+  translate, and the full compensated ledger remainder with its archimedean bound and zero-free
+  strip equivalence.
 - **Curve-model combs and receivers** (`curvePointCount`, `curveCombMass`, `curveCombTail`,
   `curveComb`, `curveCombEnergy`, `curveHorizonWeight`, `curveHorizonEnergy`,
   `curveZ`, `curveDampedZinv`, `curveCentredPrefix`, `curveReceiverEnergy`,
@@ -539,32 +629,50 @@ that every successful route must use the same mechanism.
   function-field model built from its eigenvalues, with mass, depth and admission laws for every
   eigenvalue configuration; `norm_coeff_prod_le`, `coeff_geomSeries_mul_eq_neg_tail` and
   `coeff_curveAnnihilatorFilter_mul_curveCentredSeries` are the coefficient calculus behind them.
-- **The single-average formula and the moment calculus** (`horizonEnergy_eq_horizonIntegral_autoCorr`,
-  `integral_pow_mul_horizonDensity`, `autoCorr_zero_sub_le`): `J` as an expectation of `A_F`
-  under the horizon law, with explicit moments and a quadratic deficit at the origin.
+- **The single-average formula, the resolvent differential identity, and the moment calculus**
+  (`horizonEnergy_eq_horizonIntegral_autoCorr`, `horizonResolvent_add_two_deriv`,
+  `horizonEnergy_add_four_deriv_eq`, `horizonEnergy_second_order_identity`,
+  `integral_pow_mul_horizonDensity`, `autoCorr_zero_sub_le`,
+  `odd_horizonEnergy_ge_inv_add_four`): `J` as an expectation of `A_F` under the horizon law and
+  as `‖ΨF‖²` with `J(F) + 4J(F′) = A_F(0)`, exact quadratic and quartic Taylor corrections, and
+  fixed-aperture `H¹` coercivity.
 - **Quantitative horizon law** (`exists_abs_combMass_sub_le`, `exists_abs_combTail_sub_le`,
   `exists_abs_combAverage_sub_horizonIntegral_le`, `exists_abs_combEnergy_sub_le`): the same laws
   with the explicit error `exp(−c√r)` and universal constants, for Lipschitz statistics and
   Lipschitz tests; `abs_autoCorr_sub_le` transfers a test's Lipschitz constant to its
   autocorrelation.
-- **Compensation coordinates** (abstract and scalar), with the actual PM-Ramanujan instance and its
-  explicit logarithmic rate.
+- **Compensation coordinates and two-scale transition calculus** (`compensationAmplitude`,
+  `transverseRemainder`, `twoScaleCompleteShiftEnergy`, `pmTransverseRemainderSeq`,
+  `exists_twoScaleCompleteShiftEnergy_le_pow_saving`,
+  `exists_twoScaleCompleteShiftEnergy_div_sectorEnergy_le_rpow`,
+  `twoScale_transverseRemainder_diff_energy_le`): single-scale and two-scale moving-projection
+  identities, all-logarithmic-power defect and amplitude bounds, and the power-saving cutoff shift
+  on `[1, P−1]`.
 - **Budget hierarchy**: pointwise control implies a positive-part budget, which implies a signed
   budget; with an admitted right endpoint, the signed budget is equivalent to admission.
   The lacunary countermodel proves that the positive-part requirement is strictly stronger
   (`exists_admitted_monotone_not_positivePartContinuation`); admission also need not yield a
   pointwise budget (`exists_admits_everywhere_not_linearContinuation`).
-- **Adapted-energy criterion** and its arithmetic dictionary.
+- **Adapted-energy criterion and Bézout arithmetic correctors** (`AdaptedEnergy`,
+  `bezoutUnitCorrector`, `bezoutCorrectedEnergy`, `bezoutCorrectedRelativeLoss`,
+  `compositeArithmeticCorrector`, `bezoutCorrectedEnergy_comparison`,
+  `integral_compositeCorrectedRelativeLoss_le`,
+  `zetaZeroAbscissa_le_half_add_of_bezoutCorrected_family`,
+  `riemannHypothesis_iff_cofinal_bezoutCorrected_loss`).
 - **Aperture loss-rate calculus**: the ceiling exponent, its monotonicity, forced loss rates for
   floors and products.
 - **Origin calculus** for the pronic norm: the exact shift constant and the head loss
   (`pronicEnergy_shift_le`, `pronicEnergy_le_head_add_shift`), the exact split at the origin
   (`pronicEnergy_add_eq`) and the two-sided tail price of a translate
   (`pronicTail_le_pronicEnergy_shift`, `pronicEnergy_shift_le_tail`).
-- **Source growth bounds**: `|A_ε(n)| ≤ Cn^{1−ε}` (`exists_abs_centredPrefix_le`), the trivial
-  energy rate (`exists_dampedMobiusEnergy_le`) and its drifted form
-  (`exists_dampedMobius_drift_le`); the admitted-or-unbounded dichotomy
-  (`admits_or_tendsto_atTop`) turns any of them into an escape statement for a blow-up.
+- **Source growth bounds and normalized blow-up profiles** (`exists_abs_centredPrefix_le`,
+  `exists_dampedMobiusEnergy_le`, `exists_dampedMobius_drift_le`, `admits_or_tendsto_atTop`,
+  `normalizedReceiverProfile`, `pronicEnergy_rowDilate_sandwich`,
+  `normalizedReceiverProfile_add_properUnitDilation_eq`,
+  `cofactorAliasingWave_alias_eigenmode`,
+  `tendsto_normalizedHalfProbeCombination_energy_share`): unit-energy normalization, horizon-shell
+  concentration, exact horizon-dilation cofactor bounds, surviving inversion and tangent laws, and
+  explicit escape/aliasing/spectral defect profiles.
 - **The compatibility identities of the source**, owned by ACCE and BVI and used here as the
   constraints a second decomposition must respect: the tangent law `∂_ε A_ε(n) = E_ε(n)`
   (`BezoutValuationIncidence.hasDerivAt_pmPowerDampedCenteredDivisorPrefix`), its prime-dilation
@@ -590,34 +698,57 @@ that every successful route must use the same mechanism.
 
 ## 8. Open research topics
 
-1. **A two-scale compensation rate.** Choose one actual-source pair of overlapping decompositions —
-   the large-prime sector at cutoffs `P²` and `(2P)²`, or adjacent prime/cofactor splits of the same
-   integers with their common successor boundary — and prove a bound on the mismatch of their
-   compensation coordinates stronger than the relative cancellation, with the connection term of
-   the moving projection included. State the intended gain first: a better residual rate, a stable
-   corrector, or a classified defect family.
-2. **Constructing an arithmetic corrector.** On one compact interval `[a, c]`, `a > 0`, build
-   `C_T` from the mixed large-prime/complement terms and the Bézout boundary corrections, with
-   `m(1+E_T) ≤ 1+E_T+C_T ≤ M(1+E_T)` and a signed loss bound proved independently.
-   An admitted right endpoint gives admission at the left endpoint. A strip conclusion needs
-   a family of admitted dampings accumulating at the desired boundary, not one isolated
-   admitted damping; adapted energies on `[a, ½]` cofinally as `a ↓ 0` are RH.
-3. **Receiver blow-up profiles.** Normalize an actual receiver sequence by its critical energy,
-   retain scale, cofactor, origin and frequency data, and derive the arithmetic identities that
-   survive in the limit; the escape and aliasing examples of the corpus must appear in the defect
-   space. The comb resolvent law is the model case.
-4. **Quantitative horizon asymptotics.** Strict positivity of `J` is proved; on Lipschitz tests the
-   comb converges to its resolvent at the rate `exp(−c√r)` with universal constants (mechanism
-   12); `J(F)` is the single horizon average of `A_F`, and on slowly varying `C¹` tests the
-   deficit is exactly `4‖f′‖²/r²` to first order, and `J(F) ≥ A_F(0) − Λ²(8R + 48)` uniformly over
-   Lipschitz tests in `[−R, R]` (mechanism 13); over all tests no coercive constant exists, while
-   the curve comb is uniformly coercive (mechanism 14). Open: the second correction, and the
-   optimal coercive constant of `J` on the ledger's odd test class at a fixed aperture.
-5. **The compensated remainder of the full ledger.** The prime–polar residual of every ledger
-   translate is bounded at the trivial exponent with the prime number theorem's saving
-   `exp(−c√S)` (mechanism 7). Open: an exponent below `½` for the complete ledger, with its even
-   parts and the gamma factor retained, on a test class that the arithmetic singles out — any
-   such exponent is a strip.
+1. **A two-scale compensation rate.** Comparing the overlapping large-prime decompositions at
+   cutoffs `P²` and `Q²` (`Q ≥ P`, in particular `Q = 2P`) on their common head `1 ≤ N ≤ P − 1`
+   cancels the cutoff-independent divisor remainder `R_ε(N)` identically and gives the power-saving
+   cutoff shift `twoScaleCompleteShiftEnergy ε P Q P ≤ C P^{1−3ε}`
+   (`exists_twoScaleCompleteShiftEnergy_le_pow_saving`) and the polynomial relative decay
+   `O(P^{−ε} log² P)` against `‖L_P‖²`
+   (`exists_twoScaleCompleteShiftEnergy_div_sectorEnergy_le_rpow`, with absolute decay to `0` for
+   `ε > 1/3`), while the moving projection obeys
+   `R_Q − R_P = (S_Q − S_P) − (1 − α_Q)(L_Q − L_P) + (α_Q − α_P) L_P`
+   (`pmTransverseRemainderSeq_sub_eq_connection`, `twoScale_transverseRemainder_diff_energy_le`)
+   with `|α_Q − α_P| ≤ K_m/log^m P` and `Σ_k k^m |α_{2^{k+1}} − α_{2^k}| < ∞` (mechanism 18).
+2. **Constructing an arithmetic corrector.** The Bézout unit-boundary corrector
+   `bezoutUnitCorrector ε T = Σ_{n ≤ T}(1 − 2A_ε(n))/(n(n+1))` completes the square
+   `1 + pmPowerDampedDualResidual ε T`, satisfies unconditional `(1/3, 3)` comparability for all
+   `ε, T` (`bezoutCorrectedEnergy_comparison`), has a uniformly bounded derivative on `[a, ∞)`
+   (`exists_abs_bezoutUnitCorrectorDeriv_le`), eliminates the adverse first-cell work
+   (`eventually_residualDampingWork_one_pos`), extends to composite correctors with relative-loss
+   stability `log((1+θ)/(1−θ))` (`integral_compositeCorrectedRelativeLoss_le`), is unconditionally
+   an adapted energy on `[a, c]` for `a ≥ ½` (`bezoutCorrected_adaptedEnergy_of_half_le`), yields
+   the strip `Θ ≤ ½ + a₀` from any boundary-accumulating family on `(a₀, c]`
+   (`zetaZeroAbscissa_le_half_add_of_bezoutCorrected_family`), and is cofinally equivalent to RH
+   (`riemannHypothesis_iff_cofinal_bezoutCorrected_loss`, mechanism 26).
+3. **Receiver blow-up profiles.** The critical-energy normalization
+   `u_{ε,T}(n) = A_ε(n)/√E_T(ε)` (`normalizedReceiverProfile`) has exact unit pronic energy for
+   `ε > 0`, `T ≥ 1`, concentrates `1 − o(1)` of its energy in `(⌊E_T^{θ/(1−2ε)}⌋, T]` under
+   blow-up (`admits_or_normalizedReceiverProfile_shell_tendsto_one`), obeys the two-sided
+   horizon-dilation cofactor sandwich (`pronicEnergy_rowDilate_sandwich`) so deep cofactors vanish,
+   satisfies the normalized inversion law converging to `u + D^{ζ_ε,≥2}u = 0` on `n = o(√E_T)`
+   (`admits_or_tendsto_normalizedReceiverProfile_add_properUnitDilation_zero`), the self-improving
+   identity, and the Möbius-factored tangent law, and embeds the drifted `n^{1/4}`, negative
+   majorant, cofactor aliasing (`ω = 2πk/log j`) and spectral oscillating-probe defect families
+   (mechanism 19).
+4. **Quantitative horizon asymptotics.** The resolvent `ΨF` satisfies `ΨF + 2(ΨF)′ = F`
+   (`horizonResolvent_add_two_deriv`) and the exact energy identity `J(F) + 4J(F′) = A_F(0)`
+   (`horizonEnergy_add_four_deriv_eq`), giving `A_F(0) − J(F) − 4A_{F′}(0) = −16J(F″)`
+   (`horizonEnergy_second_order_identity`) and the exact quartic second correction `−16‖f″‖²/r⁴`
+   for both `J(F_r)` and `E_r(F_r)/S_r²` on slowly varying `C²` tests
+   (`tendsto_pow_four_mul_combEnergy_rescaledTest_second_correction`); at a fixed aperture `R > 0`,
+   the unrestricted odd coercive constant is `0` (`not_exists_pos_odd_horizonEnergy_coercive`), the
+   `H¹`-restricted class `‖F′‖² ≤ γ‖F‖²` has coercive constant `max(1/(1 + 4γ), 1 − 4γ)`
+   (`odd_horizonEnergy_ge_inv_add_four`), and the optimal Poincaré constant is bounded above by
+   `1/(1 + π²/R²)` (`odd_poincare_mode_horizonEnergy_lt`, mechanism 13).
+5. **The compensated remainder of the full ledger.** Retaining the even parts and the archimedean
+   gamma factor, `fullLedgerCompensatedRemainder F` vanishes on odd tests, has archimedean part
+   `O(‖F‖₁ + ‖F′‖₁)` uniformly in the aperture, and satisfies the unconditional de la Vallée
+   Poussin bound `Ke^r exp(−c√(2r))‖F′‖₁ + (2π + 2)(‖F‖₁ + ‖F′‖₁)` on `C¹` tests in `[−r, r]`
+   (`exists_abs_fullLedgerCompensatedRemainder_le_deLaValleePoussin`); an exponent `θ ∈ (0, ½)` on
+   the smooth test class is equivalent to `|E(s)| ≤ Ce^{(1/2+θ)s}`
+   (`fullLedger_sub_half_exponent_iff_chebyshev_bound`) and to the zero-free strip `Re ρ ≤ ½ + θ`
+   (`zeta_zeroFree_strip_of_fullLedger_sub_half_exponent`,
+   `riemannHypothesis_iff_forall_pos_fullLedger_exponent`, mechanism 7).
 6. **The balanced regime.** For the actual centred prime and Möbius blocks at `Q ≍ P`, the
    short-window mean-square transfer at `α > 17/30` gives unconditional `o(1)` savings over the
    large-sieve barrier across `P ≤ Q ≤ B P` with the block-mass term bounded by `√2 ε / Q`, while
@@ -639,16 +770,21 @@ that every successful route must use the same mechanism.
    survivor, and the vanishing charge, on the ledger's test class.
 2. `tendsto_combEnergy_div_combMass_sq_horizonEnergy` and `horizonEnergy_pos` — the comb resolvent
    law and strict positivity on nonzero continuous compact tests.
-3. `norm_add_sq_eq_compensation` with `pmCompleteHeadEnergy_eq_compensation` and
-   `exists_compensationDefect_le_inv_log_pow` — the Pythagorean compensation law, its actual
-   instance, and its rate, faster than every power of the logarithm.
+3. `norm_add_sq_eq_compensation` with `pmCompleteHeadEnergy_eq_compensation`,
+   `exists_compensationDefect_le_inv_log_pow`, and
+   `exists_twoScaleCompleteShiftEnergy_div_sectorEnergy_le_rpow` — the Pythagorean compensation
+   law, its actual instance, its all-logarithmic-power single-scale rate, and its polynomial
+   two-scale cutoff shift rate.
 4. `exists_admitted_monotone_not_positivePartContinuation` — signed recovery is strictly weaker
    than paying every loss.
 5. `tendsto_integral_workCore_logZeta` — the core debt on positive intervals.
 6. `not_relative_step_transport` and `exists_le_floorLoss_of_floor` — the forced aperture loss.
-7. `adaptedEnergy_dampedMobiusEnergy_iff_admits` and `riemannHypothesis_iff_cofinal_adaptedEnergy` — the corrector
-   criterion and its arithmetic dictionary; `weil_iff_cofinal_curveReceiverEnergy` and
-   `not_exists_curveReceiverEnergy_le` — its multi-eigenvalue function-field calibration.
+7. `adaptedEnergy_dampedMobiusEnergy_iff_admits`, `bezoutCorrectedEnergy_comparison`,
+   `zetaZeroAbscissa_le_half_add_of_bezoutCorrected_family`, and
+   `riemannHypothesis_iff_cofinal_bezoutCorrected_loss` — the corrector criterion, the unconditional
+   Bézout unit-boundary corrector, its zero-free strip transport, and its RH equivalence;
+   `weil_iff_cofinal_curveReceiverEnergy` and `not_exists_curveReceiverEnergy_le` — its
+   multi-eigenvalue function-field calibration.
 8. `exists_abs_rowBilinear_centredPrimeRow_le_of_range`,
    `exists_balanced_centredPrimeBlock_rowBilinear_le`, and
    `tendsto_mul_kernelStatistic_centredPrimeBlock` — the `30/17` unbalanced range, the balanced
@@ -657,13 +793,19 @@ that every successful route must use the same mechanism.
 9. `pronicEnergy_shift_le` with `admits_dampedMobiusEnergy_iff_shift` — the exact price of a change
    of origin, and the invariance of admission under it; `forall_admitted_drift_admitted_iff` — a
    drifting origin is tolerated uniformly exactly when it is bounded.
-10. `admits_or_escapesToHorizon` — a blow-up of the receiver escapes to the horizon.
-11. `exists_abs_combEnergy_div_sub_horizonEnergy_le` with `exists_abs_combMass_sub_le` — the
-    horizon law and the resolvent law at the de la Vallée Poussin rate;
-    `tendsto_sq_mul_combEnergy_rescaledTest_deficit` — the exact first correction `4‖f′‖²/r²` of
-    the translation law.
-12. `exists_abs_primeShift_sub_polar_le` — the compensated prime–polar residual of the ledger
-    with its aperture exponent.
+10. `admits_or_escapesToHorizon`, `pronicEnergy_rowDilate_sandwich`, and
+    `admits_or_tendsto_normalizedReceiverProfile_add_properUnitDilation_zero` — horizon escape of a
+    receiver blow-up, the two-sided horizon-dilation cofactor sandwich, and the homogeneous cofactor
+    law of the normalized receiver profile.
+11. `exists_abs_combEnergy_div_sub_horizonEnergy_le` with `exists_abs_combMass_sub_le`,
+    `horizonEnergy_add_four_deriv_eq`, and
+    `tendsto_pow_four_mul_combEnergy_rescaledTest_second_correction` — the horizon and resolvent
+    laws at the de la Vallée Poussin rate, the exact resolvent energy identity, and the quadratic
+    and quartic corrections `4‖f′‖²/r² − 16‖f″‖²/r⁴` of the translation law.
+12. `exists_abs_primeShift_sub_polar_le`,
+    `exists_abs_fullLedgerCompensatedRemainder_le_deLaValleePoussin`, and
+    `zeta_zeroFree_strip_of_fullLedger_sub_half_exponent` — the compensated prime–polar and
+    full-ledger residuals at the de la Vallée Poussin rate and their zero-free strip equivalence.
 
 ---
 

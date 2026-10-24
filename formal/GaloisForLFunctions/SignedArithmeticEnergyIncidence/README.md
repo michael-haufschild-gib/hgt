@@ -330,6 +330,21 @@ conductance plus the geometric mean of the effective budgets; a canonical path r
 effective resistance by the resistance of one path. In the odd Weil ledger the terminals are
 prime-sum endpoints (`oddWeilLedger_terminal_primeSum`).
 
+**Kron reduction never creates frustration.** Through an aligned interior that is coercive on
+profiles vanishing on `T`, the harmonic extensions are nonnegative (`HarmonicFrame.h_nonneg`:
+`E(|h| − h) = E(|h|) − E(h) ≤ 0`), so every reduced charge is the charge minus a nonnegative
+effective conductance, `R_στ = c_στ − β_στ` (`HarmonicFrame.reduced_eq_sub_conductance`,
+`HarmonicFrame.conductance_nonneg`): aligned terminal pairs stay aligned and every anti-aligned
+pair of `R` is an anti-aligned overlap of `c` (`HarmonicFrame.pos_of_reduced_pos`). If every
+terminal pair is healed, `c_στ ≤ β_στ`, the reduced form is aligned and positivity is local payment
+of the interior and of the reduced form (`nonneg_iff_payable_of_healed`): a pairwise test,
+uniform in the number of terminals. Healing is monotone. Through such an interior a profile
+vanishing on `T` with nonnegative action is nonnegative (`nonneg_of_action_nonneg`, a discrete
+minimum principle), so making overlaps off `T × T` more aligned at fixed budgets raises every
+harmonic extension and every effective conductance (`HarmonicFrame.h_mono`,
+`HarmonicFrame.conductance_mono`, Rayleigh monotonicity) and keeps healed pairs healed
+(`healed_mono`); adding aligned interior points is the case of points that start decoupled.
+
 ### Chains and trains
 
 17. **Chain lending duality.** Chains are balanced, whatever the signs of their overlaps
@@ -472,6 +487,23 @@ on `ℓ²` (`exists_centeredOperator_l2_le_half`) although it is not Hilbert–S
 of `μ` enter, as the zero-free `1`-line through `1/ζ(η − s)`; below `½` the same route needs `1/ζ`
 on `Re = η + ½`, inside the critical strip.
 
+**The chain is compact at half damping.** For `b` vanishing below `K`,
+`(Σ_k |b_k|/K)² ≤ ‖b‖²/K` (`sq_sum_abs_div_succ_le_of_vanish`), which makes the floor correction
+small (`sum_sq_centeredOperator_le_integral_add`) and the symbol small pointwise,
+`|B(t)|² ≤ |z|² ‖b‖²/K` (`norm_sq_dilationSymbol_le_of_vanish`). Against `|M P|²` this costs
+`≪ K^{−7/64}` below the height `K^{½}`, and the dyadic shells cost as much above it. Hence
+`‖C_η b‖² ≤ M K^{−1/10} ‖b‖²` uniformly for `½ ≤ η < 1` (`exists_centeredOperator_tail_l2_le_uniform`,
+`exists_centeredOperator_tail_l2_le_half`): `C_{½}` is the operator-norm limit of its finite
+sections (`centeredOperator_half_tail_small`), a compact operator outside the Hilbert–Schmidt class.
+
+**The chain is norm-continuous at half damping.** The `k`-th column is a combination of two dilated
+receivers, `K^{−η} X_K − (K/(K+1))(K+1)^{−η} X_{K+1}` with `X_L(n) = (L/N) P_η(N/L)`
+(`centeredRow_eq_dilated`); a profile `a(⌊y⌋) − cy` read at `N/L` costs at most
+`L(5c² + 2‖Q(m+1)/(m+1)‖²)` (`sum_sq_dilated_profile_le`), so each column converges in `ℓ²` with
+the receiver (`column_l2_tendsto_half`). With the uniform tail bound this gives
+`‖C_η − C_{½}‖ → 0` as `η ↓ ½` (`centeredOperator_norm_tendsto_half`): the threshold operator is the
+operator-norm limit of the Hilbert–Schmidt chains above it, uniformly over the unit ball.
+
 **The receiver is continuous at half damping.** With `u_η = C_η r`, `u_η(n) = P_η(n+1)/(n+1)`
 (`centeredOperator_reciprocal_eq_orbitCoord`), `u_η → u_{½}` in `ℓ²` as `η ↓ ½`
 (`orbit_l2_tendsto_half`, `centeredOperator_reciprocal_l2_tendsto_half`). The orbit difference is at
@@ -494,8 +526,21 @@ finite combination `Σ b_d d^{−½} v_d` is the profile `−Σ b_d d^{−½} {x
 weights the Dirichlet factor is the Riesz mean `Q_N(1 − it)` of `Σ μ(n) n^{−1+it}`, which converges to
 `1/ζ(1 − it)` with a bound uniform in `N` (`RHTower.tendsto_moebiusRieszPoly_one_line`,
 `RHTower.exists_norm_moebiusRieszPoly_one_line_le`: the zero-free region makes `1/ζ` Lipschitz beside
-the `1`-line, which cancels the pole of the Perron kernel). Finite signed residue combinations
-approximate the receiver at the threshold where no sign-blind expansion is stable.
+the `1`-line, which cancels the pole of the Perron kernel). Since each term has receiver energy
+`≤ 2/d²` (`sum_sq_residueTerm_le`), a Tauberian comparison upgrades this to ordinary convergence: the
+residue series `Σ_d μ(d) d^{−½} v_d` converges to `C_{½} r` in `ℓ²`
+(`residuePartialSum_l2_tendsto_half`, `residuePartialSum_l2_tendsto_centeredOperator`). Finite signed
+residue combinations approximate the receiver at the threshold where no sign-blind expansion is
+stable.
+
+**The residue modes are Bessel but not Riesz.** For every finitely supported `c`,
+`‖Σ_d c_d v_d‖²_{ℓ²} ≤ 48 Σ_d c_d²` (`sum_sq_finiteResidueCombination_le`): the Gram is nonnegative
+with `⟨v_d, v_e⟩ ≤ 6 min(d,e)^{−1/4} max(d,e)^{−3/4}` (`gram_horizon_le`), and the Schur test with
+weights `d^{−½}` closes. No lower bound `β Σ c_d² ≤ ‖Σ c_d v_d‖²` holds on the modes `d ≥ 2`
+(`not_riesz_residueModes`): the residue series at half damping converges in `ℓ²` while its
+coefficients have `Σ μ(d)²/d = ∞`. Square-summable coefficients always give an `ℓ²` residue series,
+but the receiver's coefficients are not square-summable at the threshold, so its existence there is
+cancellation against the non-orthogonal Gram, invisible to any coefficient norm.
 
 29. **The centring is indispensable in receiver coordinates.** The uncentred transition sends the
     first state to a column converging to the positive entrance mass
@@ -579,7 +624,34 @@ rows of the envelope class, not over just the Möbius row or rows with its exact
     `w Σ_i ℓ_i'(t)² ≤ 1` (`companions_pay`, price `lagrangePrice`); with two degrees of freedom
     more than companions and `t ≠ γ_i` for all `i`, `(X − t) Π_i (X − γ_i)` defeats every positive depth mass
     (`few_companions_never_pay`). Count alone is not a payment criterion: the locations determine
-    the Lagrange price, which must satisfy `w Λ(t) ≤ 1`. This is a polynomial model, not an exact
+    the Lagrange price, which must satisfy `w Λ(t) ≤ 1`, and this price is exact
+    (`companions_pay_iff`). One companion short the location decides: on sources of degree
+    `≤ #s`, a positive depth mass at `t` is paid iff `t` is a critical point of the node polynomial
+    `N = Π_i (X − γ_i)` and `w Λ(t) ≤ 1` (`oneShort_companions_pay_iff`; `p = r + cN` and `N` moves
+    only `p'(t)`), so at most `#s − 1` heights are payable (`oneShort_payable_iff_mem_roots`,
+    `card_roots_derivative_nodal_le`); two short, every height is defeated
+    (`twoShort_companions_never_pay`). The count law is complete (`exists_payable_iff`).
+    For Paley–Wiener sources the law is exact without a local model. A source of aperture `A` is
+    `f(x) = ∫ F(ξ) e^{ixξ} dξ` with `F ∈ L²` vanishing for `|ξ| ≥ A` (`pwSource`,
+    `hasDerivAt_pwSource`). On a companion lattice `t₀ + hℤ` with `A h ≤ π` the companion values
+    are Fourier coefficients of `F e^{it₀ξ}` on `[−π/h, π/h]`, so `Σ_k |f(t₀ + kh)|² = (2π/h)∫|F|²`
+    (`hasSum_sq_pwSource_lattice`), and Cauchy–Schwarz gives `|f'(t)|² ≤ (2A³/3)∫|F|²`: a depth
+    mass `w` at any height is paid iff `w A³h/(3π) ≤ 1` (`pwCompanions_pay`,
+    `pwCompanions_price_sharp`). For `A h > π` a density `ψ − ψ(· − 2π/h)` vanishes at every
+    companion with `f'(t) ≠ 0` (`pwCompanions_never_pay`). Companions pay all sources of aperture
+    `A` uniformly in the height exactly at density at least `A/π`, the Nyquist density. The law is
+    stable under moving the companions: `f'` is the source of `iξF`, so its samples on every
+    translate of the lattice are at most `A²` times those of `f`, and companions within `δ` of the
+    lattice, `2Aδ ≤ ε < 1`, keep `(1 − ε)²` of the sample energy and pay whenever
+    `w A³h/(3π) ≤ (1 − ε)²` (`sum_sq_pwSource_perturbed_sub_le`, `pwPerturbedCompanions_pay`).
+    For a whole off-line configuration the law is a polar defect law (mechanism 22): on a Nyquist
+    lattice the companion energy is the completion norm `(2π/h)∫|F|²`, and the depth is the polar
+    charge `Σ_j w_j |⟨F, K_j⟩|²` of the derivative kernels `K_j = iξ e^{it_jξ}`
+    (`pwDeriv_eq_integral_kernel`). Hence clusters at `t_j` with masses `w_j` are paid for every
+    source of aperture `A` iff `Σ_{j,l} c̄_j c_l √(w_j w_l) S(t_j − t_l) ≤ (2π/h) Σ |c_j|²` for all
+    `c`, `S(u) = ∫_{−A}^{A} ξ² e^{iuξ} dξ` (`pwConfiguration_pay_iff_gram`): one cluster costs the
+    Nyquist price, nearby clusters pay jointly through the off-diagonal Gram entries, and the
+    companion offset plays no role. This is a polynomial model, not an exact
     truncation of a Paley–Wiener source or of the full off-line zero form. The law transfers to an
     arbitrary source `f` at half the price: for any polynomial `p` of degree `< n`, if
     `2 w Λ(t) ≤ 1` then `Σ f(γ_i)² − w f'(t)² ≥ −(2 Σ (f − p)(γ_i)² + 4 w (f'(t) − p'(t))²)`
@@ -648,7 +720,9 @@ short-interval sums of the damped divisor coefficients — above the golden thre
 sharply for that method (`centeredOperator_l2_le`, `centeredOperator_l2_le_of_inverseRootTwo`,
 `centeredOperator_l2_le_of_goldenThreshold`); in Mellin coordinates it is Hilbert–Schmidt exactly for
 `½ < η < 1` (`sum_sum_sq_centeredRow_le_halfDamping`, `not_bounded_sum_sum_sq_centeredRow_of_le_half`)
-and bounded at `η = ½` itself (`exists_centeredOperator_l2_le_half`); the orbit is `ℓ²`-continuous
+and compact, not Hilbert–Schmidt, at `η = ½` itself, where `C_η → C_{½}` in operator norm
+(`exists_centeredOperator_l2_le_half`, `exists_centeredOperator_tail_l2_le_half`,
+`centeredOperator_norm_tendsto_half`); the orbit is `ℓ²`-continuous
 at `η = ½` and the `ℓ²` limit of its Riesz-weighted finite residue expansions, while the positive
 twin's energies diverge there (`orbit_l2_tendsto_half`, `rieszResidueSum_l2_tendsto_half`,
 `positiveTwin_energy_unbounded`, `rieszTwin_energy_unbounded`).
@@ -666,9 +740,13 @@ sequence remains nonzero and adverse; without it escape can occur (`adverse_weak
 fixed aperture (`ccmRestrictedWeilForm_adverse_weakLimit`).
 
 **Pillar VI — signed sampling.** In the local model, off-line depth is paid by on-line companions
-at the Lagrange price when they are at least as many as the source's local degrees of freedom, and
-never when the source has two degrees of freedom more (`companions_pay`,
-`few_companions_never_pay`).
+at the Lagrange price when they are at least as many as the source's local degrees of freedom, at
+the critical points of their node polynomial when they are one fewer, and never when the source has
+two degrees of freedom more (`companions_pay_iff`, `oneShort_companions_pay_iff`,
+`exists_payable_iff`). For Paley–Wiener sources of aperture `A` a companion lattice pays at every
+height iff its density is at least `A/π`, at the exact price `A³h/(3π)` (`pwCompanions_pay`,
+`pwCompanions_price_sharp`, `pwCompanions_never_pay`), and pays a finite off-line configuration iff
+its derivative-kernel Gram is at most `2π/h` (`pwConfiguration_pay_iff_gram`).
 
 **Pillar VII — the radial loss law.** Signed continuation charges only the radial rate of the
 source; the tangent norm is the orientation-blind majorant (`radialLoss_add_tangential`,
@@ -708,7 +786,8 @@ same global form. The comparison ground energy then measures the cost of that sp
 whether its reciprocal orbit lies in `ℓ²`. This is equivalent to square summability of its first
 column. An operator bound would control all finite linear combinations of columns, including their
 mixed Gram terms; bounds on individual columns alone do not establish it. The residue identity
-provides exact coordinates but no unconditional subhalf `ℓ²` bound.
+provides exact coordinates but no unconditional subhalf `ℓ²` bound; at half damping the residue
+series converges in `ℓ²`.
 
 **Continuation must allow recovery.** Once the right endpoint is admitted, ACCE's signed integrated
 relative loss is equivalent to admission at the left endpoint. The radial law identifies the work
@@ -762,12 +841,13 @@ Each question is stated with what is established and where the open part sits.
    coordinates, and is open.
 5. **Does the signed floor have the width rate in unrestricted `L²` without uniform unsigned depth
    mass?** In the polynomial companion model signed sampling can replace the unsigned hypothesis
-   by a companion condition with an explicit Lagrange price (mechanism 40). The Paley–Wiener and
-   actual-ζ transfer is open (topic 6).
+   by a companion condition with an explicit Lagrange price (mechanism 40); for Paley–Wiener
+   sources on a companion lattice the condition is exactly the Nyquist density, at an exact price.
+   The transfer to irregular companions and to the actual on-line zeros of `ζ` is open (topic 6).
 6. **Which topology preserves the source normalization and the sign?** A completion keeps the sign
    exactly when it keeps the polar functional (mechanisms 22–23); for the damping chain the
    receiver topology is `ℓ²` on the chain coordinate (mechanisms 24–29), where the centred chain is
-   Hilbert–Schmidt exactly above half damping and bounded at half damping. Boundedness below half
+   Hilbert–Schmidt exactly above half damping and compact at half damping. Boundedness below half
    damping is open (topic 4).
 7. **Can a pre-profile orientation law force the local–global defect to vanish?** On complete
    incidence patterns the triangle holonomies are the complete gauge-invariant sign data, their
@@ -785,11 +865,11 @@ Each question is stated with what is established and where the open part sits.
 
 | Tool | What is developed | Input → output | Failure mode and success test |
 |---|---|---|---|
-| Arithmetic allocation duality | Pillar I; chain lending; holonomy; comparison form; overload duality; canonical-path certificates; Kron reduction to frustration terminals | finite signed incidence ledger → local allocation, or a negative profile of the comparison form (a dual adverse profile), or a frustrated triangle; the exact budget increase that restores payment | Finite duality is not cofinal. Success: an allocation for a growing arithmetic family with losses uniform in its size. |
+| Arithmetic allocation duality | Pillar I; chain lending; holonomy; comparison form; overload duality; canonical-path certificates; Kron reduction to frustration terminals, which never creates frustration and heals it by effective conductance | finite signed incidence ledger → local allocation, or a negative profile of the comparison form (a dual adverse profile), or a frustrated triangle; the exact budget increase that restores payment | Finite duality is not cofinal. Success: an allocation for a growing arithmetic family with losses uniform in its size. |
 | Covariance continuation estimate | radial loss law; orbit reformulation; backward ill-posedness | source path and its tangent → log-energy change bounded by the signed radial rate | Discarding the sign of the radial rate gives the tangent-norm majorant. Success: a horizon-uniform bound on `‖C_a r‖_{ℓ²}`. |
 | Arithmetic profile decomposition | energy splitting; compact negativity; escape; compact negativity of the restricted Weil form at every fixed aperture | adverse sequence → weak limit with energy at most the limit, or an escape channel | Compactness can fail at origin, height, aperture or modulus. Success: compact negativity of the actual form with constants uniform in a growing aperture. |
-| Graded functional calculus | chain in the receiver norm; residue modes; sign-blind threshold; first column; Hilbert–Schmidt exactly above half damping by Mellin–Plancherel of the columns; bounded at half damping through the symbol `ζ(−s)/(sζ(η−s))` and dyadic mean values of the dilation symbol; the Riesz residue expansion at half damping through Riesz means of `1/ζ` on the `1`-line | damping chain + norm → eigenmodes, sizes, strong continuity at zero damping with the unbounded generator `−log d` on residue modes, unboundedness of the transition, truncation approximation at every horizon, the first column as the receiver | Dense eigenmodes need not give a stable expansion. Success: `ℓ²` bounds for the centred chain or for the orbit of `1/k`. |
-| Signed sampling / observability | local companion law | companion heights + depth mass + local degrees of freedom → a floor at the Lagrange price, or a defeating profile | A local model is not the Paley–Wiener class. Success: the companion law for sources of aperture `A`, with the Lagrange price controlled uniformly in height. |
+| Graded functional calculus | chain in the receiver norm; residue modes; sign-blind threshold; first column; Hilbert–Schmidt exactly above half damping by Mellin–Plancherel of the columns; bounded at half damping through the symbol `ζ(−s)/(sζ(η−s))` and dyadic mean values of the dilation symbol, compact there by the decay of the symbol on vectors supported beyond `K`; the Riesz residue expansion at half damping through Riesz means of `1/ζ` on the `1`-line; the residue modes as a Bessel, non-Riesz family | damping chain + norm → eigenmodes, sizes, strong continuity at zero damping with the unbounded generator `−log d` on residue modes, unboundedness of the transition, truncation approximation at every horizon, the first column as the receiver | Dense eigenmodes need not give a stable expansion. Success: `ℓ²` bounds for the centred chain or for the orbit of `1/k`. |
+| Signed sampling / observability | local companion law; exact price and complete count law (one short: critical points of the node polynomial); the Nyquist law for Paley–Wiener sources on companion lattices, stable under displacement, and its global form as a kernel-Gram (polar defect) criterion | companion heights + depth mass + local degrees of freedom → a floor at the Lagrange price, or a defeating profile | A local model is not the Paley–Wiener class. Success: the companion law for sources of aperture `A`, with the Lagrange price controlled uniformly in height. |
 | Source-faithful completion with defect accounting | polar defect law; centring in the receiver norm | completion + polar functional → sign kept or lost | Strong convergence can lose the polar functional. Success: a completion whose polar functional is proved continuous. |
 | Boundary-sensitive rigidity | triangle holonomy; converse construction | sign pattern of the source → lossless or not | A diagnostic indexed by the zeros restates RH. Success: an arithmetic diagnostic identified with a holonomy and computed from the source. |
 
@@ -830,9 +910,11 @@ Each question is stated with what is established and where the open part sits.
    nonlocal payment with the competition made explicit as a packing constraint. The exact nonlocal
    payment is the Kron reduction to the frustration terminals (paragraph after mechanism 16); for
    one frustrated overlap the price is `(t − β)² ≤ αγ`, `β` the effective conductance of the
-   aligned interior. Open: the reduced coupling of the actual ledger on its prime-sum terminals and
-   its uniformity in the number of terminals.
-4. **The centred chain on `ℓ²`.** `C_η` is Hilbert–Schmidt exactly for `½ < η < 1` and bounded at
+   aligned interior. Through an aligned interior the reduction never creates frustration and is
+   lossless once each frustrated overlap is healed by its effective conductance, uniformly in the
+   number of terminals (paragraph after mechanism 16). Open: the effective conductances of the
+   actual ledger between its prime-sum terminals, and the unhealed regime.
+4. **The centred chain on `ℓ²`.** `C_η` is Hilbert–Schmidt exactly for `½ < η < 1` and compact at
    `η = ½`, where Hilbert–Schmidt fails (paragraphs after mechanism 28). Decide boundedness for some
    `η < ½`: the Mellin route needs `1/ζ` on `Re = η + ½`, inside the critical strip; by mechanism 25
    a positive answer at cofinally small `η` would be RH.
@@ -843,17 +925,21 @@ Each question is stated with what is established and where the open part sits.
    not merely the sum or supremum of individual column energies.
 5. **Square-root cancellation against the residue Gram.** Bound `‖Σ_d μ(d) d^{−η} v_d‖_{ℓ²}` below
    half damping on a horizon-dependent range of moduli with explicit tails; this is the receiver
-   problem of Bézout–Valuation Incidence in residue coordinates.
+   problem of Bézout–Valuation Incidence in residue coordinates. The Gram is bounded above but not
+   below (paragraph after mechanism 28), so the coefficient norm `Σ d^{−2η}` bounds the series only
+   from above and diverges for `η ≤ ½`: the cancellation must be read against the Gram itself.
 6. **Signed sampling beyond the local model.** The transfer to general sources is reduced to the
    local approximation error (mechanism 40, `companions_pay_up_to_error`), and for smooth sources
    to the Taylor remainder (`companions_pay_up_to_taylor`); for trigonometric sources of aperture `A`
    the loss `2 #s ((Aδ)^d m/d!)²` is uniform in the height (`companions_pay_aperture`), and the price
    is explicit in the spacing and spread (`companions_pay_aperture_explicit`). What remains is the
    companion geometry of the actual on-line zeros: `k + 1` of them spaced by `δ` within `r ≪ 1/A`
-   of every height, which is information about the zeros on the line. Prove the companion law of mechanism 40 for
-   Paley–Wiener sources of aperture `A`, with a Lagrange price uniform in the height, and combine it
-   with sufficiently strong information about the **on-line** zeros of `ζ` to obtain the
-   plain-`L²` floor at the width rate. Control the Taylor remainder and infinite zero tail as well
+   of every height, which is information about the zeros on the line. For Paley–Wiener sources of
+   aperture `A` and lattice companions the law is exact: density at least `A/π`, price
+   `A³h/(3π)`, uniform in the height, and it survives displacements up to `1/(2A)` with price factor
+   `(1 − 2Aδ)^{−2}` (mechanism 40). Open: companion sets far from every lattice, e.g. of given
+   Beurling density with clustering, and the combination with sufficiently strong information about
+   the **on-line** zeros of `ζ` to obtain the plain-`L²` floor at the width rate. Control the Taylor remainder and infinite zero tail as well
    as the interpolation price; the polynomial model alone supplies none of these transfers.
 7. **Compact negativity uniformly in the aperture.** At fixed aperture the restricted Weil form is
    compactly negative (mechanism 39). Determine how the compactness — the finite-rank

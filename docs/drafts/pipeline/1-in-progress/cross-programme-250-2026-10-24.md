@@ -13,18 +13,11 @@
 
 ## Active conjecture
 
-**C1 (ACompT §8 topic 7, ACCE pillar 11 over 𝔽_q).** For the curve model with eigenvalues
-`αᵢ`, `‖αᵢ‖ ≤ q`, and damping `ε > 0`, `ρ₀ = q^{−ε}`: the receiver is admitted at `ε` iff for every
-`a` with `‖a‖ ≥ √q q^ε`, `mult(a) ≤ mult(ρ₀a) + [a = q]` (zero chains). Consequences: admission at
-every small damping iff all `‖αᵢ‖ ≤ √q` (eigenvalues `≠ q`); isolated admitted dampings below the
-width occur exactly at chain resonances.
-
-Proof. `G·(1−u)²(1−qu)E = N := P·((1−ρ₀u)(1−qρ₀u) − δE)`, `E = Π(1−ρ₀αᵢu)`. Necessity: a root
-`1/β`, `β = ρ₀a`, `|β|² ≥ q`, of higher order in `A` than in `N` gives
-`G·(1−βu)^j A₁ = N₁/(1−βu)`, `N₁(1/β) ≠ 0`; the left side stays in the weighted `ℓ²` of the energy,
-the right side has coefficients `βⁿN₁(1/β)`. Sufficiency: the multiset matching
-`ρ₀·Bad ≤ S + {ρ₀q}` cancels every bad pole of `P·R`; the centring tail lemma and two prefix sums
-give coefficients `O(n^k τⁿ)`, `τ < √q`.
+(none open; C1 and C2 formalized — see log)
 
 ## Log
 - 2026-10-24 — created; C1 paper proof complete.
+- 2026-10-24 — #1 formalized: THIM spectral law of finite-frequency prime patterns.
+- 2026-10-24 — #2 formalized: ACompT curve receiver admitted exactly on zero chains.
+- 2026-10-24 — #3 formalized: AIP integrated atom-pole law for log-concave gauges.
+- 2026-10-24 — #4 formalized: APT linear window of the critical prime channel.

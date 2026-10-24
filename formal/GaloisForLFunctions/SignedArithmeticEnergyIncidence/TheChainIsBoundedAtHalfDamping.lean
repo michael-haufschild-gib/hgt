@@ -1073,14 +1073,32 @@ theorem mul_abs_floorSlope_le {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (k : ℕ) :
         exact mul_le_mul (by linarith) hp (Real.rpow_nonneg hK0.le _) (by norm_num)
     _ = 2 / K := by ring
 
-/-- **The chain against the combined profile**:
-`Σ_{n<T} (C_η b)(n)² ≤ 8 ∫_0^∞ G² x^{−2} + 32 Σ b_k²`. -/
-theorem sum_sq_centeredOperator_le_integral {η : ℝ} (h0 : 1 / 2 < η) (h1 : η < 1)
+/-- `(Σ_k |b_k|/K)² ≤ 2 Σ b_k²`, `K = k + 1`. -/
+theorem sq_sum_abs_div_succ_le (N : ℕ) (b : ℕ → ℝ) :
+    (∑ k ∈ Finset.range N, |b k| * (1 / ((k + 1 : ℕ) : ℝ))) ^ 2 ≤
+      2 * ∑ k ∈ Finset.range N, b k ^ 2 := by
+  have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Finset.range N) (fun k => |b k|)
+    (fun k => 1 / ((k + 1 : ℕ) : ℝ))
+  have hinv : ∑ k ∈ Finset.range N, (1 / ((k + 1 : ℕ) : ℝ)) ^ 2 ≤ 2 := by
+    refine le_trans (le_of_eq (Finset.sum_congr rfl fun k _ => ?_))
+      (sum_range_inv_succ_sq_le_two N)
+    rw [div_pow, one_pow]
+  have hnb0 : 0 ≤ ∑ k ∈ Finset.range N, b k ^ 2 := Finset.sum_nonneg fun k _ => sq_nonneg _
+  calc _ ≤ (∑ k ∈ Finset.range N, |b k| ^ 2) *
+        ∑ k ∈ Finset.range N, (1 / ((k + 1 : ℕ) : ℝ)) ^ 2 := hcs
+    _ ≤ (∑ k ∈ Finset.range N, b k ^ 2) * 2 := by
+        rw [Finset.sum_congr rfl fun k _ => sq_abs (b k)]
+        exact mul_le_mul_of_nonneg_left hinv hnb0
+    _ = 2 * ∑ k ∈ Finset.range N, b k ^ 2 := by ring
+
+/-- **The chain against the combined profile, with the floor correction explicit**:
+`Σ_{n<T} (C_η b)(n)² ≤ 8 ∫_0^∞ G² x^{−2} + 16 (Σ_k |b_k|/K)²`. -/
+theorem sum_sq_centeredOperator_le_integral_add {η : ℝ} (h0 : 1 / 2 < η) (h1 : η < 1)
     (b : C₀(ℕ, ℝ)) {N : ℕ} (hb : ∀ k, N ≤ k → b k = 0) (T : ℕ)
     (hint : IntegrableOn (fun x => combinedProfile η N b x ^ 2 / x ^ 2) (Ioi 0)) :
     ∑ n ∈ Finset.range T, arithmeticDampingCenteredOperator (by linarith : (0 : ℝ) < η) b n ^ 2 ≤
       8 * (∫ x in Ioi (0 : ℝ), combinedProfile η N b x ^ 2 / x ^ 2) +
-        32 * ∑ k ∈ Finset.range N, b k ^ 2 := by
+        16 * (∑ k ∈ Finset.range N, |b k| * (1 / ((k + 1 : ℕ) : ℝ))) ^ 2 := by
   have hη0 : (0 : ℝ) < η := by linarith
   set G := combinedProfile η N b with hGdef
   set ρ := (RHTower.pmPowerDampedDivisorDensity η).re with hρ
@@ -1089,11 +1107,10 @@ theorem sum_sq_centeredOperator_le_integral {η : ℝ} (h0 : 1 / 2 < η) (h1 : �
   set ε : ℕ → ℝ := fun k => ((k + 1 : ℕ) : ℝ) ^ (-η) / ((k + 1 : ℕ) : ℝ) -
     (((k + 1 : ℕ) : ℝ) + 1) ^ (-η) / (((k + 1 : ℕ) : ℝ) + 1) with hε
   set E : ℝ := ∑ k ∈ Finset.range N, ((k + 1 : ℕ) : ℝ) * b k * ε k with hE
-  set nb := ∑ k ∈ Finset.range N, b k ^ 2 with hnb
-  have hnb0 : 0 ≤ nb := Finset.sum_nonneg fun k _ => sq_nonneg _
-  -- the floor correction is small
-  have hE2 : E ^ 2 ≤ 8 * nb := by
-    have h1' : |E| ≤ 2 * ∑ k ∈ Finset.range N, |b k| * (1 / ((k + 1 : ℕ) : ℝ)) := by
+  set Sb := ∑ k ∈ Finset.range N, |b k| * (1 / ((k + 1 : ℕ) : ℝ)) with hSb
+  -- the floor correction is controlled by `Σ |b_k|/K`
+  have hE2 : E ^ 2 ≤ 4 * Sb ^ 2 := by
+    have h1' : |E| ≤ 2 * Sb := by
       refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
       rw [Finset.mul_sum]
       refine Finset.sum_le_sum fun k _ => ?_
@@ -1102,27 +1119,9 @@ theorem sum_sq_centeredOperator_le_integral {η : ℝ} (h0 : 1 / 2 < η) (h1 : �
       calc ((k + 1 : ℕ) : ℝ) * |b k| * |ε k| = |b k| * (((k + 1 : ℕ) : ℝ) * |ε k|) := by ring
         _ ≤ |b k| * (2 / ((k + 1 : ℕ) : ℝ)) := mul_le_mul_of_nonneg_left this (abs_nonneg _)
         _ = 2 * (|b k| * (1 / ((k + 1 : ℕ) : ℝ))) := by ring
-    have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Finset.range N) (fun k => |b k|)
-      (fun k => 1 / ((k + 1 : ℕ) : ℝ))
-    have hinv : ∑ k ∈ Finset.range N, (1 / ((k + 1 : ℕ) : ℝ)) ^ 2 ≤ 2 := by
-      refine le_trans (le_of_eq (Finset.sum_congr rfl fun k _ => ?_))
-        (sum_range_inv_succ_sq_le_two N)
-      rw [div_pow, one_pow]
-    have hS0 : 0 ≤ ∑ k ∈ Finset.range N, |b k| * (1 / ((k + 1 : ℕ) : ℝ)) :=
-      Finset.sum_nonneg fun k _ => by positivity
-    have hsq : (∑ k ∈ Finset.range N, |b k| * (1 / ((k + 1 : ℕ) : ℝ))) ^ 2 ≤ 2 * nb := by
-      calc _ ≤ (∑ k ∈ Finset.range N, |b k| ^ 2) *
-            ∑ k ∈ Finset.range N, (1 / ((k + 1 : ℕ) : ℝ)) ^ 2 := hcs
-        _ ≤ nb * 2 := by
-            rw [Finset.sum_congr rfl fun k _ => sq_abs (b k)]
-            exact mul_le_mul_of_nonneg_left hinv hnb0
-        _ = 2 * nb := by ring
     calc E ^ 2 = |E| ^ 2 := (sq_abs E).symm
-      _ ≤ (2 * ∑ k ∈ Finset.range N, |b k| * (1 / ((k + 1 : ℕ) : ℝ))) ^ 2 :=
-          pow_le_pow_left₀ (abs_nonneg _) h1' 2
-      _ = 4 * (∑ k ∈ Finset.range N, |b k| * (1 / ((k + 1 : ℕ) : ℝ))) ^ 2 := by ring
-      _ ≤ 4 * (2 * nb) := mul_le_mul_of_nonneg_left hsq (by norm_num)
-      _ = 8 * nb := by ring
+      _ ≤ (2 * Sb) ^ 2 := pow_le_pow_left₀ (abs_nonneg _) h1' 2
+      _ = 4 * Sb ^ 2 := by ring
   -- on `[N, N+1)` the combined profile is linear with slope `−ρ E`
   have hshift : ∀ n : ℕ, ∀ x : ℝ, ((n + 1 : ℕ) : ℝ) ≤ x → x < ((n + 1 : ℕ) : ℝ) + 1 →
       G x = G ((n + 1 : ℕ) : ℝ) - ρ * (x - ((n + 1 : ℕ) : ℝ)) * E := by
@@ -1215,7 +1214,19 @@ theorem sum_sq_centeredOperator_le_integral {η : ℝ} (h0 : 1 / 2 < η) (h1 : �
     _ ≤ 8 * (∫ x in Ioi (0 : ℝ), f x) + 2 * E ^ 2 * 2 :=
         add_le_add (mul_le_mul_of_nonneg_left htail (by norm_num))
           (mul_le_mul_of_nonneg_left hinv (by positivity))
-    _ ≤ 8 * (∫ x in Ioi (0 : ℝ), f x) + 32 * nb := by nlinarith
+    _ ≤ 8 * (∫ x in Ioi (0 : ℝ), f x) + 16 * Sb ^ 2 := by nlinarith
+
+/-- **The chain against the combined profile**:
+`Σ_{n<T} (C_η b)(n)² ≤ 8 ∫_0^∞ G² x^{−2} + 32 Σ b_k²`. -/
+theorem sum_sq_centeredOperator_le_integral {η : ℝ} (h0 : 1 / 2 < η) (h1 : η < 1)
+    (b : C₀(ℕ, ℝ)) {N : ℕ} (hb : ∀ k, N ≤ k → b k = 0) (T : ℕ)
+    (hint : IntegrableOn (fun x => combinedProfile η N b x ^ 2 / x ^ 2) (Ioi 0)) :
+    ∑ n ∈ Finset.range T, arithmeticDampingCenteredOperator (by linarith : (0 : ℝ) < η) b n ^ 2 ≤
+      8 * (∫ x in Ioi (0 : ℝ), combinedProfile η N b x ^ 2 / x ^ 2) +
+        32 * ∑ k ∈ Finset.range N, b k ^ 2 := by
+  have h := sum_sq_centeredOperator_le_integral_add h0 h1 b hb T hint
+  have hs := sq_sum_abs_div_succ_le N b
+  linarith
 
 /-- **The chain is bounded uniformly for `½ < η < 1`.** -/
 theorem exists_centeredOperator_l2_le_uniform :

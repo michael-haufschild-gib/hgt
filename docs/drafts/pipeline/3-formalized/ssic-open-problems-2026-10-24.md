@@ -1,7 +1,7 @@
 # Complete Resolution of the Seven Open Problems of Scale-Signed Incidence Criticality
 
 - **ID:** ssic-open-problems-2026-10-24
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** `formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md` §7 (Open Problems 1–7)
 - **Statement:** Resolve and formalize in Lean 4 definite, complete, unconditional solutions and positive classifications for all seven Open Problems of `ScaleSignedIncidenceCriticality` (§7), together with their consequences and cross-programme applications.
@@ -18,9 +18,9 @@ Resolve the seven open problems listed in `formal/GaloisForLFunctions/ScaleSigne
 
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
-- [ ] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorems, `lake --old env lean` green, zero axioms/sorries
-- [ ] 3 → 4  publication-ready: updated programme READMEs and umbrella wiring
+- [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 2 → 3  formalized: Lean theorems, `lake --old env lean` green, zero axioms/sorries
+- [x] 3 → 4  publication-ready: updated programme READMEs and umbrella wiring
 
 ## Approach
 Work sequentially through Open Problems 1–7, following the full `hgtl7` research loop for each problem:
@@ -34,3 +34,6 @@ Work sequentially through Open Problems 1–7, following the full `hgtl7` resear
 - 2026-10-24 — **Open Problem 2 RESOLVED & FORMALIZED** in `formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/TheBandRecipeForZeta.lean` (`lake --old env lean` PASS, wired into `ScaleSignedIncidenceCriticality.lean`, documented in `README.md`). Proceeding to Open Problem 3 (`A fatality classification for the parity collapses`).
 - 2026-10-24 — **Open Problem 3 RESOLVED & FORMALIZED** in `formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/TheFatalityClassificationOfParityCollapses.lean` (`lake --old env lean` PASS, wired into `ScaleSignedIncidenceCriticality.lean`, documented in `README.md`). Proceeding to Open Problem 4 (`The rate reading for ζ`).
 - 2026-10-24 — **Open Problem 4 RESOLVED & FORMALIZED** in `formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/TheRateReadingForZeta.lean` (`lake --old env lean` PASS, wired into `ScaleSignedIncidenceCriticality.lean`, documented in `README.md`). Proceeding to Open Problem 5 (`The design specification of a counterexample`).
+- 2026-10-24 — **Open Problem 5 RESOLVED & FORMALIZED** in `formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/TheDesignSpecificationOfACounterexample.lean` (`lake --old env lean` PASS, wired into `ScaleSignedIncidenceCriticality.lean`, documented in `README.md`). Proceeding to Open Problem 6 (`Policies for a configuration of growing density`).
+- 2026-10-24 — **Open Problem 6 RESOLVED & FORMALIZED** in `formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/PoliciesForAConfigurationOfGrowingDensity.lean` (`lake --old env lean` PASS, wired into `ScaleSignedIncidenceCriticality.lean`, documented in `README.md`). Proceeding to Open Problem 7 (`A numerical unit for the incidence ledger`).
+- 2026-10-24 — **Open Problem 7 RESOLVED & FORMALIZED** in `formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/TheNumericalUnitForTheIncidenceLedger.lean` (`lake --old env lean` PASS, wired into `ScaleSignedIncidenceCriticality.lean`, documented in `README.md`). All seven open problems resolved, formalized, audited, wired, and documented.

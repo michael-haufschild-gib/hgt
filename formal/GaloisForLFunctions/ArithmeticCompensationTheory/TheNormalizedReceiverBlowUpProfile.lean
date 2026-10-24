@@ -143,23 +143,71 @@ theorem normalizedPronicProfile_zero_of_zero {a : ℕ → ℝ} (ha0 : a 0 = 0) (
 @[simp]
 theorem normalizedReceiverProfile_zero (ε : ℝ) (T : ℕ) :
     normalizedReceiverProfile ε T 0 = 0 := by
-  simp [normalizedReceiverProfile, pmPowerDampedCenteredDivisorPrefix_zero]
+  simp [normalizedReceiverProfile, BezoutValuationIncidence.pmPowerDampedCenteredDivisorPrefix_zero]
 
 /-- At any sub-horizon `M`, the pronic energy of `normalizedPronicProfile a T` is the energy ratio
 `pronicEnergy a M / pronicEnergy a T`. -/
 theorem pronicEnergy_normalizedPronicProfile_sub_horizon (a : ℕ → ℝ) {T : ℕ}
     (hE : 0 < pronicEnergy a T) (M : ℕ) :
     pronicEnergy (normalizedPronicProfile a T) M = pronicEnergy a M / pronicEnergy a T := by
-  unfold pronicEnergy normalizedPronicProfile
+  change (∑ n ∈ Icc 1 M, (a n / Real.sqrt (pronicEnergy a T)) ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))) =
+    (∑ n ∈ Icc 1 M, a n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))) / pronicEnergy a T
   rw [sum_div]
   refine sum_congr rfl fun n _ => ?_
-  rw [div_pow, Real.sq_sqrt hE.le, div_div]
+  rw [div_pow, Real.sq_sqrt hE.le]
+  ring
 
 /-- **Unit pronic energy of a normalized profile.** Whenever `pronicEnergy a T > 0`, the normalized
 profile has exact pronic energy `1` on `[1, T]`. -/
 theorem pronicEnergy_normalizedPronicProfile (a : ℕ → ℝ) {T : ℕ} (hE : 0 < pronicEnergy a T) :
     pronicEnergy (normalizedPronicProfile a T) T = 1 := by
   rw [pronicEnergy_normalizedPronicProfile_sub_horizon a hE T, div_self hE.ne']
+
+/-- The first cell of the centered damped Möbius prefix is `1 − Re(1/ζ(1+ε)) > 0`. -/
+theorem pmPowerDampedCenteredDivisorPrefix_one_pos {ε : ℝ} (hε : 0 < ε) :
+    0 < pmPowerDampedCenteredDivisorPrefix ε 1 := by
+  have hZ : 1 < realZetaSeries (1 + ε) := by
+    have hsum := summable_realZetaTerm (s := 1 + ε) (by linarith)
+    have htwo : (∑ i ∈ range 2, ((i : ℝ) + 1) ^ (-(1 + ε))) ≤ realZetaSeries (1 + ε) := by
+      rw [realZetaSeries]
+      exact hsum.sum_le_tsum _ (fun i _ => by positivity)
+    have hval : (∑ i ∈ range 2, ((i : ℝ) + 1) ^ (-(1 + ε))) =
+        1 + (2 : ℝ) ^ (-(1 + ε)) := by
+      rw [Finset.sum_range_succ, Finset.sum_range_one]
+      norm_num
+    have hpos : (0 : ℝ) < (2 : ℝ) ^ (-(1 + ε)) := Real.rpow_pos_of_pos (by norm_num) _
+    rw [hval] at htwo
+    linarith
+  have hdensity : (pmPowerDampedDivisorDensity ε).re = 1 / realZetaSeries (1 + ε) :=
+    pmPowerDampedDivisorDensity_re_eq hε
+  have hlt : (pmPowerDampedDivisorDensity ε).re < 1 := by
+    rw [hdensity, div_lt_one (by linarith)]
+    linarith
+  have hcoeff : pmPowerDampedDivisorCoeff ε 1 = 1 := by
+    rw [pmPowerDampedDivisorCoeff]
+    simp
+  rw [pmPowerDampedCenteredDivisorPrefix_eq]
+  have hIcc : (Finset.Icc 1 1 : Finset ℕ) = {1} := by
+    ext n
+    rw [Finset.mem_Icc, Finset.mem_singleton]
+    omega
+  rw [hIcc, Finset.sum_singleton, hcoeff]
+  push_cast
+  linarith
+
+/-- For `ε > 0` and `T ≥ 1`, the critical energy `dampedMobiusEnergy ε T` is strictly positive. -/
+theorem dampedMobiusEnergy_pos {ε : ℝ} (hε : 0 < ε) {T : ℕ} (hT : 1 ≤ T) :
+    0 < dampedMobiusEnergy ε T := by
+  have hone : (1 : ℕ) ∈ Finset.Icc 1 T := Finset.mem_Icc.mpr ⟨le_rfl, hT⟩
+  have hcell : 0 < pmPowerDampedCenteredDivisorPrefix ε 1 ^ 2 /
+      ((1 : ℝ) * ((1 : ℝ) + 1)) := by
+    have h := pmPowerDampedCenteredDivisorPrefix_one_pos hε
+    positivity
+  have hnonneg : ∀ n ∈ Finset.Icc 1 T, 0 ≤ pmPowerDampedCenteredDivisorPrefix ε n ^ 2 /
+      ((n : ℝ) * ((n : ℝ) + 1)) := fun n _ => by positivity
+  unfold dampedMobiusEnergy pmPowerDampedDivisorDiscreteEnergy
+  refine lt_of_lt_of_le ?_ (Finset.single_le_sum hnonneg hone)
+  simpa using hcell
 
 /-- **Unit pronic energy of the normalized damped Möbius receiver.** For `ε > 0` and `T ≥ 1`,
 `u_{ε,T}` has exact unit pronic energy and unit pronic norm. -/
@@ -415,7 +463,7 @@ theorem properUnitDilation_normalizedReceiverProfile (ε : ℝ) (T n : ℕ) :
       offDiagonalUnitDilation ε n / Real.sqrt (dampedMobiusEnergy ε T) := by
   unfold properUnitDilation offDiagonalUnitDilation normalizedReceiverProfile
   rw [sum_div]
-  exact sum_congr rfl fun j _ => mul_div_assoc _ _ _
+  exact sum_congr rfl fun j _ => (mul_div_assoc _ _ _).symm
 
 /-- **The exact normalized dilation inversion law.** For every `ε > 0`, `T ≥ 1` and `n ≥ 1`,
 `u_{ε,T}(n) + (D^{ζ_ε,≥2} u_{ε,T})(n) = ρ_ε(n) / √E_T(ε)`. -/
@@ -483,7 +531,8 @@ theorem normalizedReceiverProfile_selfImproving_identity {ε : ℝ} (hε : 0 < �
         pronicPairing T (normalizedReceiverProfile ε T)
           (properUnitDilation ε (normalizedReceiverProfile ε T)) := by
   have hE : 0 < dampedMobiusEnergy ε T := dampedMobiusEnergy_pos hε hT
-  have hsq : Real.sqrt (dampedMobiusEnergy ε T) ^ 2 = dampedMobiusEnergy ε T := Real.sq_sqrt hE.le
+  have hsq : Real.sqrt (dampedMobiusEnergy ε T) * Real.sqrt (dampedMobiusEnergy ε T) =
+      dampedMobiusEnergy ε T := Real.mul_self_sqrt hE.le
   have hid := dampedMobiusEnergy_eq_pairing_sub ε T
   have hp1 : pronicPairing T (normalizedReceiverProfile ε T)
       (fun n => inversionDefect ε n / Real.sqrt (dampedMobiusEnergy ε T)) =
@@ -492,7 +541,8 @@ theorem normalizedReceiverProfile_selfImproving_identity {ε : ℝ} (hε : 0 < �
     unfold pronicPairing normalizedReceiverProfile
     rw [sum_div]
     refine sum_congr rfl fun n _ => ?_
-    rw [div_mul_div_comm, hsq, div_div]
+    rw [div_mul_div_comm, hsq]
+    ring
   have hp2 : pronicPairing T (normalizedReceiverProfile ε T)
       (properUnitDilation ε (normalizedReceiverProfile ε T)) =
       pronicPairing T (pmPowerDampedCenteredDivisorPrefix ε) (offDiagonalUnitDilation ε) /
@@ -501,7 +551,8 @@ theorem normalizedReceiverProfile_selfImproving_identity {ε : ℝ} (hε : 0 < �
     rw [sum_div]
     refine sum_congr rfl fun n _ => ?_
     rw [properUnitDilation_normalizedReceiverProfile, normalizedReceiverProfile,
-      div_mul_div_comm, hsq, div_div]
+      div_mul_div_comm, hsq]
+    ring
   rw [hp1, hp2, ← sub_div, ← hid, div_self hE.ne']
 
 /-- The one-sided normalized self-improving inequality: only the positive part `max u_{ε,T} 0`
@@ -533,7 +584,8 @@ theorem abs_pronicPairing_normalizedOffDiagonalHead_le {ε : ℝ} (hε : 0 < ε)
         (fun n => offDiagonalUnitDilationHead ε J n / Real.sqrt (dampedMobiusEnergy ε T))| ≤
       ∑ j ∈ Icc 2 J, (j : ℝ) ^ (-ε) * (1 / Real.sqrt (j : ℝ)) := by
   have hE : 0 < dampedMobiusEnergy ε T := dampedMobiusEnergy_pos hε hT
-  have hsq : Real.sqrt (dampedMobiusEnergy ε T) ^ 2 = dampedMobiusEnergy ε T := Real.sq_sqrt hE.le
+  have hsq : Real.sqrt (dampedMobiusEnergy ε T) * Real.sqrt (dampedMobiusEnergy ε T) =
+      dampedMobiusEnergy ε T := Real.mul_self_sqrt hE.le
   have heq : pronicPairing T (normalizedReceiverProfile ε T)
       (fun n => offDiagonalUnitDilationHead ε J n / Real.sqrt (dampedMobiusEnergy ε T)) =
       pronicPairing T (pmPowerDampedCenteredDivisorPrefix ε) (offDiagonalUnitDilationHead ε J) /
@@ -541,7 +593,8 @@ theorem abs_pronicPairing_normalizedOffDiagonalHead_le {ε : ℝ} (hε : 0 < ε)
     unfold pronicPairing normalizedReceiverProfile
     rw [sum_div]
     refine sum_congr rfl fun n _ => ?_
-    rw [div_mul_div_comm, hsq, div_div]
+    rw [div_mul_div_comm, hsq]
+    ring
   rw [heq, abs_div, abs_of_pos hE, div_le_iff₀ hE]
   exact abs_pronicPairing_offDiagonalHead_le ε J T
 
@@ -560,7 +613,7 @@ theorem normalizedTangentProfile_eq_dilation (ε : ℝ) (T n : ℕ) :
   unfold normalizedTangentProfile prefixDilation normalizedReceiverProfile
   rw [dampedChebyshevError_eq_dilation ε n, add_div, sum_div]
   congr 1
-  exact sum_congr rfl fun j _ => (mul_div_assoc _ _ _).symm
+  exact sum_congr rfl fun j _ => mul_div_assoc _ _ _
 
 /-- **Normalized Möbius-dilation tangent factorization.** Every Möbius sign of the normalized
 damping tangent sits inside one Möbius dilation `D^{μ_ε}`. -/
@@ -573,11 +626,12 @@ theorem normalizedTangentProfile_eq_moebiusDilation (ε : ℝ) (T n : ℕ) :
             Real.sqrt (dampedMobiusEnergy ε T)) n +
         ((pmPowerDampedDivisorDensity ε).re * dampedPrimeFloorSum ε n -
           dampedReadout ε * (n : ℝ)) / Real.sqrt (dampedMobiusEnergy ε T) := by
-  unfold normalizedTangentProfile prefixDilation
-  rw [dampedChebyshevError_eq_moebiusDilation ε n, add_div, sum_div]
+  unfold normalizedTangentProfile
+  rw [dampedChebyshevError_eq_moebiusDilation ε n, add_div]
   congr 1
   unfold prefixDilation
-  exact sum_congr rfl fun j _ => (mul_div_assoc _ _ _).symm
+  rw [sum_div]
+  exact sum_congr rfl fun j _ => mul_div_assoc _ _ _
 
 /-! ## §3. Origin-shift data and escape examples in the normalized defect space -/
 
@@ -597,10 +651,12 @@ theorem pronicEnergy_shiftedNormalizedProfile_sandwich (a : ℕ → ℝ) (k : �
           (1 - pronicEnergy a k / pronicEnergy a (T + k)) := by
   have heq : pronicEnergy (shiftedNormalizedProfile a k T) T =
       pronicEnergy (fun n => a (n + k)) T / pronicEnergy a (T + k) := by
-    unfold pronicEnergy shiftedNormalizedProfile normalizedPronicProfile
+    change (∑ n ∈ Icc 1 T, (a (n + k) / Real.sqrt (pronicEnergy a (T + k))) ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))) =
+      (∑ n ∈ Icc 1 T, a (n + k) ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))) / pronicEnergy a (T + k)
     rw [sum_div]
     refine sum_congr rfl fun n _ => ?_
-    rw [div_pow, Real.sq_sqrt hE.le, div_div]
+    rw [div_pow, Real.sq_sqrt hE.le]
+    ring
   have h1 := pronicTail_le_pronicEnergy_shift a k T
   have h2 := pronicEnergy_shift_le_tail a k T
   have hsub : (pronicEnergy a (T + k) - pronicEnergy a k) / pronicEnergy a (T + k) =
@@ -610,7 +666,7 @@ theorem pronicEnergy_shiftedNormalizedProfile_sandwich (a : ℕ → ℝ) (k : �
   constructor
   · rw [← hsub]
     exact div_le_div_of_nonneg_right h1 hE.le
-  · rw [← hsub, mul_div_assoc]
+  · rw [← hsub, ← mul_div_assoc (((k : ℝ) + 1) * ((k : ℝ) + 2) / 2)]
     exact div_le_div_of_nonneg_right h2 hE.le
 
 /-- **Origin-tail concentration of the normalized receiver.** At every damping `ε`, either the
@@ -623,7 +679,7 @@ theorem admits_or_tendsto_shiftedNormalizedReceiver_head_zero (ε : ℝ) :
   rcases admits_or_tendsto_atTop ε with h | hE
   · exact Or.inl h
   · refine Or.inr fun k => ?_
-    exact tendsto_const_nhds.div_atTop (hE.comp (tendsto_atTop_add_const_right atTop k tendsto_id))
+    exact tendsto_const_nhds.div_atTop (hE.comp (tendsto_add_atTop_nat k))
 
 /-- **The drifted `n^{1/4}` escape profile in the normalized defect space.** Although `quarterPower`
 is admitted at a fixed origin, normalizing its translate `quarterPower (· + k)` at any `T ≥ 1`
@@ -648,8 +704,11 @@ theorem majorantEnergy_pos {ε : ℝ} (hε : 0 < ε) {T : ℕ} (hT : 1 ≤ T) :
   have hcell := majorantEnergy_cell_le hε (le_refl 1)
   have h1 : 0 < ((2 : ℝ) ^ (-(1 + ε))) ^ 2 / 2 * ((1 : ℕ) : ℝ) ^ (-(2 * ε)) := by positivity
   have hle : majorantCenteredPrefix ε 1 ^ 2 / (((1 : ℕ) : ℝ) * (((1 : ℕ) : ℝ) + 1)) ≤
-      majorantEnergy ε T :=
-    single_le_sum (fun n _ => by positivity) (mem_Icc.mpr ⟨le_rfl, hT⟩)
+      majorantEnergy ε T := by
+    unfold majorantEnergy
+    exact single_le_sum
+      (f := fun n : ℕ => majorantCenteredPrefix ε n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)))
+      (fun n _ => by positivity) (mem_Icc.mpr ⟨le_rfl, hT⟩)
   linarith
 
 /-- **The normalized majorant profile has unit pronic energy, is strictly negative on `[1, T]`, and
@@ -813,11 +872,15 @@ theorem tendsto_normalizedHalfProbeCombination_energy_share {J : Finset ℝ}
   have hnum := (tendsto_probeEnergy_half_div_log ht0.ne').const_mul (α t ^ 2)
   have hden := tendsto_halfProbeCombination_energy_div_log hJ α
   have hquot := hnum.div hden hV.ne'
-  rw [mul_div_assoc] at hquot
+  rw [show α t ^ 2 * (‖riemannZeta (oscillationExponent (1 / 2) t)‖ ^ 2 /
+        (2 * ‖oscillationExponent (1 / 2) t‖ ^ 2)) =
+      α t ^ 2 * ‖riemannZeta (oscillationExponent (1 / 2) t)‖ ^ 2 /
+        (2 * ‖oscillationExponent (1 / 2) t‖ ^ 2) by ring] at hquot
   refine hquot.congr' ?_
   filter_upwards [eventually_ge_atTop 2] with T hT
   have hlog : Real.log (T : ℝ) ≠ 0 :=
     (Real.log_pos (by exact_mod_cast (by omega : 1 < T))).ne'
+  dsimp only [Pi.div_apply]
   rw [← mul_div_assoc, div_div_div_cancel_right₀ hlog]
 
 end GaloisForLFunctions.ArithmeticCompensationTheory
