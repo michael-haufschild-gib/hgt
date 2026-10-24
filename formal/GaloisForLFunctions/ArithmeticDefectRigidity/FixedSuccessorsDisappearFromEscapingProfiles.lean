@@ -57,7 +57,7 @@ theorem abs_receiver_shift_sub_le (ε : SubcriticalDamping) (n k : ℕ) :
           pmPowerDampedCenteredDivisorPrefix (ε : ℝ) n) +
         pmPowerDampedCenteredDivisorCoeff (ε : ℝ) (n + k + 1) := by ring
     rw [he, Nat.cast_add, Nat.cast_one]
-    exact (abs_add _ _).trans (add_le_add ih (abs_centeredResponse_le_one ε _))
+    exact (abs_add_le _ _).trans (add_le_add ih (abs_centeredResponse_le_one ε _))
 
 /-- The energy of the actual source's displacement by a successor translation. -/
 def successorDisplacementEnergy (ε : ℝ) (k T : ℕ) : ℝ :=

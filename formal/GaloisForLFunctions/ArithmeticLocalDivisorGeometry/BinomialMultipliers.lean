@@ -30,7 +30,7 @@ theorem binomialRepair_eq (α : ℝ) (n : ℕ) :
 theorem binomialRepair_coeff_zero (α : ℝ) (n : ℕ) :
     (binomialRepair α n).coeff 0 = 1 := by
   rw [binomialRepair_eq]
-  simp
+  simp [coeff_X_add_one_pow]
 
 /-- The formula includes all multiplicities and remains valid outside the degree range. -/
 theorem binomialRepair_coeff_succ (α : ℝ) (n j : ℕ) :

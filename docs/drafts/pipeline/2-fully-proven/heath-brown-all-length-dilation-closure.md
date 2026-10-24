@@ -148,12 +148,15 @@ check and transitive axiom audit, using only `propext`, `Classical.choice`,
 and `Quot.sound`. The canonical leaf check passed and `RHTower.lean` imports
 the module once. Commands, source hashes and axiom output are recorded in
 `logs/just-work-2410/RHTower__Sieve__HeathBrownPairSumAllLengths.*`.
-The sharp S₂ and Proposition 12.1 draft remains unchecked.
+`RHTower/Sieve/GuthMaynardSharpSTwo.lean` proves the sharp all-k S₂ family
+and Proposition 12.1. Its full source and all three public transitive axiom
+audits passed, again with only the three standard axioms. Its canonical
+final check and umbrella import remain pending.
 
 ## Gates
 
 - [x] Exact published theorem, all quantifiers fixed.
 - [x] Paper proof without a missing analytic input.
 - [x] Lean all-length estimate, uniform constant, and endpoint proposition.
-- [ ] Sharp all-k S₂ application and Proposition 12.1 input.
+- [x] Sharp all-k S₂ application and Proposition 12.1 input.
 - [ ] Canonical leaf checks, all public transitive axioms, umbrella imports.

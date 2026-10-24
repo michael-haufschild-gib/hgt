@@ -38,8 +38,13 @@ unconditional theorems on the research topics of fable.md §3.8.
 - [ ] 3 → 4  publication-ready
 
 ## Status
-- A, B, C, D: Lean modules compile (cocycle, one-third floor, conductor-three sharpness, F_p calibration). Umbrella wired.
-- E: next (Legendre twins mod p, exact identity C(pJ) = −J + (1+χ(−1))ε M_f(J)).
+- Compiled and wired: cocycle, one-third floor, conductor-three sharpness, F_q calibration,
+  conductor quantization, shift parity, partial Euler products diverge in the strip, spectral
+  hypercube form unbounded (L¹ weights). README v1 written.
+- In check: `TheHypercubeDirichletFormIsUnbounded` (BVI §7.5 / topic 3: unbounded for −1/2 ≤ ε < 1/2).
+- Drafted, to check in order: Kloosterman second moment, complex floor [−1/2, −1/3] + Catalan pair,
+  quantized two-scale deficit + zero-defect extremality + f(2)=1 forced values.
+- Then: README v2 (pillars 23–35, traps, questions, tools, survivor for topic 3), axiom audit.
 
 ## Log
 - 2026-10-24 — created. Corpus survey: BVI (incidence counts, least seed, hypercube form, prefix

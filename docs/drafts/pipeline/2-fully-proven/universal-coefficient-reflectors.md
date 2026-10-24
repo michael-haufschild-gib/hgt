@@ -35,6 +35,16 @@ Conversely, if `Q=cX^a` and `c>0`, coefficients of `PQ` below `a` vanish and the
 
 The proof is constructive once `Q` is supplied: a witness of degree at most `2deg Q` defeats reflection for every nonmonomial coefficient-positive `Q`. It uses no numerical experiment and no root hypothesis.
 
+### The degree bound is sharp
+
+For every `D≥1`, take `Q=1+X^D`. If `deg P<2D` and `PQ` has nonnegative coefficients, then every coefficient of `P` is nonnegative: below index `D` it is read directly from `PQ`; at index `j≥D` it is read at index `j+D`, where the coefficient of `P` itself vanishes. Thus no witness of degree below `2D` exists for this shell.
+
+At degree `2D`, the witness `P=X^(2D)−X^D+1` works exactly:
+
+`(1+X^D)P=1+X^(3D)`.
+
+It has a negative coefficient at index `D` and is strictly positive on the entire real axis because `P(y)=(y^D−1/2)²+3/4`. Therefore the degree bound `2deg Q` is optimal even with strict value positivity imposed. The factor identity is elementary; the contribution is its role as the extremal case of the universal reflection classification.
+
 ### Stronger witness: positivity on the entire nonnegative axis
 
 The same witness satisfies `R(y)>0` for every `y≥0`. Indeed `D≥1`, and `S≤(D+1)M` gives `b≤(D+2)/2<2D+1`. The exact identity
@@ -46,7 +56,7 @@ is nonnegative for `y≥0`. Thus for `y>0`, `R(y)≥(2D+1−b)y^D>0`; at zero, `
 ## No-go closure
 
 - **Killed mechanism:** Universal cancellation of a nonmonomial coefficient-positive finite shell.
-- **Strongest positive survivor:** Exact classification of all universally reversible multipliers as positive monomials, with a bounded-degree, strictly positive-on-the-nonnegative-axis counterexample for every other positive multiplier.
+- **Strongest positive survivor:** Exact classification of all universally reversible multipliers as positive monomials, with a strictly positive-on-the-nonnegative-axis counterexample for every other positive multiplier and an optimal universal degree bound `2deg Q`.
 - **New insight:** Central zero powers and positive scalars may be removed exactly; positive remote factors require additional signed information. The head-to-tail implication cannot be inverted merely because its tail lies in the coefficient cone.
 - **Status:** Complete elementary paper proof above; Lean formalization pending. This does not retire WD or exclude source-specific cancellation laws.
 

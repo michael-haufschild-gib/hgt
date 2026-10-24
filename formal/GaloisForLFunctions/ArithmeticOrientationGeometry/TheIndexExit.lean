@@ -36,6 +36,8 @@ flow `H_t`, and determines what a bound on any of the counts attached to `D` yie
   quasi-Riemann hypothesis `Θ < 1`, hence power savings for the Möbius and prime sums in short
   windows (`moebius_and_prime_powerWindowSaving_of_finite_rightZeros`). It is RH with finitely many
   exceptions, much stronger than `Θ < 1`.
+* **The two endpoints are ordered** (`encard_rightZeros_le_iSup_horizontalCollisionCharge`): the
+  Hodge defect is at most the supremum of the horizontal collision charges of the windows.
 * **Quantization** (`even_ncard_rightZeros`, `riemannHypothesis_iff_encard_rightZeros_lt_two`).
   Right zeros come in conjugate pairs, so the defect is even and RH is `D < 2`, the first quantum;
   in collision coordinates RH is the absence of collisions
@@ -349,6 +351,76 @@ theorem index_exit_first_rung_tfae :
   tfae_have 2 → 6 := exists_bound_horizontalCollisionCharge
   tfae_have 6 → 2 := fun ⟨_, hM⟩ => finiteOffLine_of_bound_horizontalCollisionCharge hM
   tfae_finish
+
+/-! ## The collision charge dominates the Hodge defect -/
+
+/-- Distinct right zeros of nonnegative height below `T` carry at least twice their number in
+collision charge: each meets its reflection `1 − ρ̄` at the same height. -/
+theorem two_mul_card_le_horizontalCollisionCharge {S : Finset ℂ}
+    (hS : ∀ ρ ∈ S, ρ ∈ rightZeros zetaZeroConfig ∧ 0 ≤ ρ.im) {T : ℝ}
+    (hT : ∀ ρ ∈ S, ρ.im < T) : 2 * S.card ≤ xiHorizontalCollisionCharge T := by
+  classical
+  have hxi : ∀ ρ ∈ S, xi ρ = 0 ∧ 0 < ρ.re ∧ ρ.re < 1 := fun ρ hρ =>
+    CrossRouteReceiverBridges.mem_zetaZeroConfig_carrier_iff_xi_eq_zero_and_strip.mp
+      (hS ρ hρ).1.1
+  have hsub : S ⊆ (stripZeros_finite T).toFinset.filter (fun ρ => 1 / 2 < ρ.re) := by
+    intro ρ hρ
+    rw [Finset.mem_filter, Set.Finite.mem_toFinset]
+    exact ⟨⟨⟨(hxi ρ hρ).2.1, (hxi ρ hρ).2.2, (hS ρ hρ).2, hT ρ hρ⟩, (hxi ρ hρ).1⟩,
+      (hS ρ hρ).1.2⟩
+  have hright : S.card ≤ xiStripWindowRightOrder T :=
+    calc S.card = ∑ ρ ∈ S, 1 := Finset.card_eq_sum_ones S
+      _ ≤ ∑ ρ ∈ S, (analyticOrderAt xi ρ).toNat := Finset.sum_le_sum fun ρ hρ =>
+          Nat.one_le_iff_ne_zero.mpr (xi_order_toNat_ne_zero (hxi ρ hρ).1)
+      _ ≤ xiStripWindowRightOrder T := Finset.sum_le_sum_of_subset hsub
+  have h1 := xiStripWindowOffLineOrder_eq_two_mul_rightOrder T
+  have h2 := xiStripWindowOffLineOrder_le_horizontalCollisionCharge T
+  omega
+
+/-- **The collision charge dominates the Hodge defect**: `D ≤ sup_T charge(T)`. The two quantized
+endpoints of the index exit are ordered, so a charge bound below `2` forces `D < 2`, i.e. RH. -/
+theorem encard_rightZeros_le_iSup_horizontalCollisionCharge :
+    (rightZeros zetaZeroConfig).encard ≤ ⨆ T : ℝ, (xiHorizontalCollisionCharge T : ℕ∞) := by
+  classical
+  refine ENat.forall_natCast_le_iff_le.mp fun n hn => ?_
+  obtain ⟨F, hFsub, hFn⟩ := Set.exists_subset_encard_eq hn
+  have hFfin := Set.finite_of_encard_eq_coe hFn
+  have hFcard : hFfin.toFinset.card = n := by
+    have := hFn
+    rw [hFfin.encard_eq_coe_toFinset_card] at this
+    exact_mod_cast this
+  set Fs := hFfin.toFinset with hFs
+  have hmem : ∀ ρ ∈ Fs, ρ ∈ rightZeros zetaZeroConfig := fun ρ hρ =>
+    hFsub ((Set.Finite.mem_toFinset hFfin).mp hρ)
+  set T := ∑ ρ ∈ Fs, |ρ.im| + 1 with hT
+  have hTlt : ∀ ρ ∈ Fs, |ρ.im| < T := fun ρ hρ => by
+    have := Finset.single_le_sum (f := fun x : ℂ => |x.im|) (fun _ _ => abs_nonneg _) hρ
+    linarith
+  -- the zeros above the axis, and the conjugates of those below
+  set Fp := Fs.filter (fun ρ => 0 ≤ ρ.im)
+  set Fm := Fs.filter (fun ρ => ¬ 0 ≤ ρ.im)
+  have hp : 2 * Fp.card ≤ xiHorizontalCollisionCharge T :=
+    two_mul_card_le_horizontalCollisionCharge (fun ρ hρ =>
+      ⟨hmem ρ (Finset.mem_filter.mp hρ).1, (Finset.mem_filter.mp hρ).2⟩)
+      fun ρ hρ => (le_abs_self _).trans_lt (hTlt ρ (Finset.mem_filter.mp hρ).1)
+  have hm : 2 * (Fm.image conj).card ≤ xiHorizontalCollisionCharge T := by
+    refine two_mul_card_le_horizontalCollisionCharge (fun ρ hρ => ?_) (fun ρ hρ => ?_)
+    · obtain ⟨μ, hμ, rfl⟩ := Finset.mem_image.mp hρ
+      obtain ⟨hμF, hμim⟩ := Finset.mem_filter.mp hμ
+      have hμR := hmem μ hμF
+      refine ⟨⟨conj_mem_zetaZeroConfig hμR.1, by simpa using hμR.2⟩, ?_⟩
+      simp only [Complex.conj_im]
+      linarith [not_le.mp hμim]
+    · obtain ⟨μ, hμ, rfl⟩ := Finset.mem_image.mp hρ
+      have := hTlt μ (Finset.mem_filter.mp hμ).1
+      simp only [Complex.conj_im]
+      linarith [neg_abs_le μ.im]
+  have hcard : (Fm.image conj).card = Fm.card :=
+    Finset.card_image_of_injective _ (starRingEnd ℂ).injective
+  have hsplit : Fp.card + Fm.card = Fs.card :=
+    Finset.card_filter_add_card_filter_not (s := Fs) (fun ρ => 0 ≤ ρ.im)
+  have hle : n ≤ xiHorizontalCollisionCharge T := by omega
+  exact (ENat.coe_le_coe.mpr hle).trans (le_iSup (fun T : ℝ => (xiHorizontalCollisionCharge T : ℕ∞)) T)
 
 /-! ## The strength of the first rung -/
 

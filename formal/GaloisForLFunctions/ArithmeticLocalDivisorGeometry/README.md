@@ -105,7 +105,7 @@ The maximum of the quadratic index weight occurs at the middle integer or intege
 
 The normalized identities and sharp cone criteria are developed in [BinomialMultipliers.lean](BinomialMultipliers.lean). They retain every order; fixed-order positivity would miss the middle obstruction. The multiplicity needed to mask a pair grows on the scale `δ²/u²` as the center approaches its ordinate. Equal-factor multipliers are a classified family, not an optimization over every possible multiplier.
 
-Positive polynomial multipliers are classical; see [Powers–Reznick's quantitative Pólya theorem](https://www.math.emory.edu/~vicki/pub/polya2.pdf). The point here is the exact local divisor interpretation, the sharp degree law for this family, and the singular limit at the adverse ordinate. No claim of worldwide novelty is attached to the general multiplier principle.
+Positive polynomial multipliers are classical. [Motzkin–Straus, Theorem 2.6](https://msp.org/pjm/1969/29-3/pjm-v29-n3-p13-p.pdf) gives the sufficient bound `α≤n/(n+2)` for this same family. It is sharp for even `n`; the exact odd threshold is `(n+1)/(n+3)`. Their Theorem 2.1 also gives the optimal degree for arbitrary quadratic multiples. The contribution here is the exact parity-sensitive formalization, its local divisor interpretation, and the singular limit at the adverse ordinate. Broader multiplier positivity is treated by [Powers–Reznick](https://www.math.emory.edu/~vicki/pub/polya2.pdf); no worldwide novelty claim is attached to the general principle.
 
 ### Central multiplicities and the adverse ordinate
 
@@ -114,6 +114,51 @@ Multiplication by `y^a` shifts coefficient indices and preserves their signs in 
 At an off-real pair's own ordinate, every nonzero polynomial multiple of `(y−δ²)²` retains a positive root. A nonzero polynomial with nonnegative coefficients is strictly positive at every positive argument. Thus adjoining other factors cannot repair that exact centered obstruction. Nearby-center repair and own-ordinate exclusion are compatible; their difference is precisely the centering cost.
 
 The corpus already gives sharper detection-order information for an own-ordinate pair against arbitrary positive real factors in `HTGeometry/OffLinePairDetectionNewtonSharp.lean`. The equal-factor law above concerns off-center repair and does not replace that theorem.
+
+### Which transitions can be reversed?
+
+There is an exact universal classification. Multiplication by a real polynomial `Q` preserves and reflects coefficient nonnegativity for every polynomial precisely when
+
+`Q=c y^a`, with `c>0` and `a` a nonnegative integer.
+
+Every other nonzero coefficient-positive `Q` conceals a negative coefficient in some polynomial `P` that is strictly positive for every `y≥0`. A constructive witness has degree at most `2deg Q`: take the flat polynomial through degree `2deg Q` and lower its middle coefficient by a quantity determined by the sum and largest coefficient of `Q`. In the central convolution band, every coefficient of the flat product equals that sum, leaving enough reserve to hide the defect.
+
+The degree bound is sharp. For `Q=1+y^D`, a defect cannot be hidden below degree `2D`, while
+
+\[
+(1+y^D)(y^{2D}-y^D+1)=1+y^{3D}
+\]
+
+attains the bound. The concealed factor is positive on the entire real axis. Thus real-axis positivity does not rescue universal cancellation. Central multiplicities and positive normalizations are exactly the reversible transitions; removing a nonmonomial shell requires additional signed information. The classification and explicit witnesses are developed in [UniversalReflectors.lean](UniversalReflectors.lean).
+
+### Central multiplicity under heat
+
+Reversibility of central factors is specific to the unheated cone. For the model
+
+\[
+P_m(X)=X^{2m}(X^2-a)^2,\qquad a>0,
+\]
+
+write the forward heat as `exp(sD²)`, and put `t=s/a`, `B=(2m+2)(2m+1)`, `C=(2m+4)(2m+3)`. Every even coefficient has the sign of one of the finite index weights
+
+\[
+F_t(k)=k(k+1)-2B(k+1)t+BCt^2,\qquad 0\le k\le m+1,
+\]
+
+apart from the positive leading coefficient. Index `k` corresponds to degree `2(m+1−k)`. Completing the square gives
+
+\[
+F_t(k)=(k-Bt+\tfrac12)^2+B(8m+10)t^2-Bt-\tfrac14.
+\]
+
+For `0<t<1/(8m+10)`, the explicit index `k=⌊Bt⌋` detects a negative coefficient. For `t≥1/(8m+5)`, every index weight is positive. Consequently the full heat-cone threshold satisfies
+
+\[
+\frac{a}{8m+10}\le\sigma_m\le\frac{a}{8m+5},
+\qquad \sigma_m\sim\frac{a}{8m}.
+\]
+
+The highest adverse coefficient alone detects only heat below `2a/C`, of order `a/m²`. Optimizing over the actual growing set of orders recovers a factor proportional to multiplicity; near threshold the detecting order lies near the middle. This is a polynomial model law. The existing masked-pair Hermite receiver still requires its signed Xi cofactor-deviation estimate. Its Gaussian parameter is `λ=2s`, so the constants must be doubled when crossing that interface.
 
 ## From source to local factor
 

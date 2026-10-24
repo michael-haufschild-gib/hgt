@@ -615,7 +615,9 @@ theorem eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le
   have hg : ∀ y, |(params43.localFun T).g y| ≤ params43.L T := fun y => by
     rw [abs_of_nonneg (hF.g_nonneg y)]
     have h := (hF.g_le_Aphi y).trans (hF.Aphi_le y)
-    refine h.trans (max_le (by linarith [abs_nonneg y]) (by linarith))
+    have hL_eq : (params43.toSetting T).L = params43.L T := rfl
+    rw [hL_eq] at h
+    exact h.trans (max_le (by linarith [abs_nonneg y]) (by linarith))
   set s₀ := T + ε₁ * T with hs₀
   set s₁ := 2 * T - ε₁ * T with hs₁
   have hε8 := hu.le

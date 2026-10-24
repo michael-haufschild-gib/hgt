@@ -43,12 +43,14 @@ This is local polynomial geometry, not an arithmetic selection theorem. It measu
 
 Primary literature inspected: Powers–Reznick, *A quantitative Pólya's theorem with corner zeros*, https://www.math.emory.edu/~vicki/pub/polya2.pdf; their general multiplier theorem is stronger in scope but does not make the local-factor sign an arithmetic theorem. The argument above is independent and elementary.
 
+Motzkin–Straus, *Divisors of polynomials and power series with positive coefficients* (1969), https://msp.org/pjm/1969/29-3/pjm-v29-n3-p13-p.pdf, Theorem 2.6 already gives `α≤n/(n+2)` as a sufficient equal-factor bound; Theorem 2.1 gives the optimal degree for arbitrary quadratic multiples. Our contribution is exact parity-sensitive necessity and sufficiency in WD coordinates. Kepka–Korbelář, https://arxiv.org/abs/1210.6868, reviews quadratic multiples and develops cubic and multiplicity bounds. General root-angle degree bounds are classical, not a new programme theorem.
+
 Corpus searches: `finiteHead`, `CoeffNonneg`, `"Polya" "coeff"`, `"negative coefficients" "root"`, `binomial multiplier coefficient`. Existing positive-shell and polynomial-heat product laws are inputs, not new results.
 
 ## Gates
 
 - [x] Dependency-closed symbolic paper argument; no numerical experiments.
-- [ ] Formalize pair geometry and exact one-factor repair.
+- [x] Formalize pair geometry and exact one-factor repair; foreground check passed.
 - [ ] Formalize the sharp arbitrary-multiplicity law.
 - [ ] Formalize central shifts and impossibility of repair at the adverse ordinate.
 - [ ] Final foreground module checks and `#print axioms` audit.

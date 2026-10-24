@@ -102,3 +102,4 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FromTheCriticalFamil
 import GaloisForLFunctions.«arithmetic-positivity-theory».QuantitativeGridTentDetection
 import GaloisForLFunctions.«arithmetic-positivity-theory».AdmissibleStencilsAndCellKernelsBeyondDyadic
 import GaloisForLFunctions.«arithmetic-positivity-theory».WideWindowSelectivityAndBeurlingInfrastructure
+import GaloisForLFunctions.«arithmetic-positivity-theory».SourceSelectionInTheFullWeilCone

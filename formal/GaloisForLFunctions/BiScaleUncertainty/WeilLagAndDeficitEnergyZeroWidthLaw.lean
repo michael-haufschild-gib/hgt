@@ -847,11 +847,11 @@ theorem riemannHypothesis_of_quadratic_chronologicalWork
 /-! ## §5. Unconditional Vinogradov–Korobov frontier bounds -/
 
 /-- **Unconditional Vinogradov–Korobov bound for the critical prime-deficit energy.** For every
-`0 < ex < 3 / 5`, there exist `C, κ > 0` such that eventually
+`0 < ex < 3 / 5`, there exist `C ≥ 0` and `κ > 0` such that eventually
 `ccmPrimeDeficitCriticalEnergy T ≤ C * Real.exp (T - κ * T ^ ex)`. -/
 theorem exists_eventually_ccmPrimeDeficitCriticalEnergy_le_vk
     {ex : ℝ} (h0 : 0 < ex) (h35 : ex < 3 / 5) :
-    ∃ C κ : ℝ, 0 < C ∧ 0 < κ ∧
+    ∃ C κ : ℝ, 0 ≤ C ∧ 0 < κ ∧
       ∀ᶠ T in atTop,
         ccmPrimeDeficitCriticalEnergy T ≤ C * Real.exp (T - κ * T ^ ex) := by
   obtain ⟨C, κ, hC, hκ, hvk⟩ := exists_eventually_abs_ccmLogChebyshevDeficitPrimitive_le_vk h0 h35
@@ -873,11 +873,11 @@ theorem exists_eventually_ccmPrimeDeficitCriticalEnergy_le_vk
         ring
 
 /-- **Unconditional Vinogradov–Korobov bound for the incoming prime-deficit amplitude.** For every
-`0 < ex < 3 / 5`, there exist `C, κ > 0` such that eventually
+`0 < ex < 3 / 5`, there exist `C ≥ 0` and `κ > 0` such that eventually
 `|ccmPrimeDeficitIncoming T| ≤ C * Real.exp (T / 2 - κ * T ^ ex)`. -/
 theorem exists_eventually_abs_ccmPrimeDeficitIncoming_le_vk
     {ex : ℝ} (h0 : 0 < ex) (h35 : ex < 3 / 5) :
-    ∃ C κ : ℝ, 0 < C ∧ 0 < κ ∧
+    ∃ C κ : ℝ, 0 ≤ C ∧ 0 < κ ∧
       ∀ᶠ T in atTop,
         |ccmPrimeDeficitIncoming T| ≤ C * Real.exp (T / 2 - κ * T ^ ex) := by
   obtain ⟨C, κ, hC, hκ, hvk⟩ := exists_eventually_abs_ccmLogChebyshevDeficitPrimitive_le_vk h0 h35
@@ -895,11 +895,11 @@ theorem exists_eventually_abs_ccmPrimeDeficitIncoming_le_vk
         ring
 
 /-- **Unconditional Vinogradov–Korobov lower bound for the coprime Möbius cross work.** For every
-`0 < ex < 3 / 5`, there exist `C, κ > 0` such that eventually
+`0 < ex < 3 / 5`, there exist `C ≥ 0` and `κ > 0` such that eventually
 `-ccmPrimeDeficitCoprimeCrossWork T ≤ C * Real.exp (T - κ * T ^ ex)`. -/
 theorem exists_eventually_neg_ccmPrimeDeficitCoprimeCrossWork_le_vk
     {ex : ℝ} (h0 : 0 < ex) (h35 : ex < 3 / 5) :
-    ∃ C κ : ℝ, 0 < C ∧ 0 < κ ∧
+    ∃ C κ : ℝ, 0 ≤ C ∧ 0 < κ ∧
       ∀ᶠ T in atTop,
         -ccmPrimeDeficitCoprimeCrossWork T ≤ C * Real.exp (T - κ * T ^ ex) := by
   obtain ⟨C, κ, hC, hκ, hvk⟩ := exists_eventually_ccmPrimeDeficitCriticalEnergy_le_vk h0 h35

@@ -29,6 +29,28 @@ theorem cofactorHeadCoefficient_nonneg (ε : ℝ) (J : ℕ) :
     0 ≤ cofactorHeadCoefficient ε J :=
   sum_nonneg fun j _ => by positivity
 
+/-- A cofactor head costs at most its number of available integer scales. -/
+theorem cofactorHeadCoefficient_le (ε : SubcriticalDamping) (J : ℕ) :
+    cofactorHeadCoefficient ε J ≤ (J : ℝ) := by
+  unfold cofactorHeadCoefficient
+  calc _ ≤ ∑ _j ∈ Icc 2 J, (1 : ℝ) := by
+      refine sum_le_sum fun j hj => ?_
+      have hj1 : (1 : ℝ) ≤ j := by exact_mod_cast (show 1 ≤ j by
+        have := (mem_Icc.mp hj).1; omega)
+      have hr : (j : ℝ) ^ (-(ε : ℝ)) ≤ 1 := by
+        calc _ ≤ (j : ℝ) ^ (0 : ℝ) := Real.rpow_le_rpow_of_exponent_le hj1
+            (neg_nonpos.mpr ε.property.1.le)
+          _ = 1 := Real.rpow_zero _
+      have hs : (1 : ℝ) ≤ Real.sqrt (j : ℝ) := by
+        rw [Real.le_sqrt (by norm_num) (Nat.cast_nonneg j)]
+        simpa only [one_pow] using hj1
+      have hi : 1 / Real.sqrt (j : ℝ) ≤ 1 :=
+        (div_le_one (lt_of_lt_of_le zero_lt_one hs)).mpr hs
+      simpa only [one_mul] using mul_le_mul hr hi (by positivity) zero_le_one
+    _ = ((Icc 2 J).card : ℝ) := by simp
+    _ ≤ (J : ℝ) := by
+      exact_mod_cast (show (Icc 2 J).card ≤ J by simp only [Nat.card_Icc]; omega)
+
 /-- The vector estimate underlying the finite-head pairing bound. -/
 theorem pronicNorm_cofactorHead_le (ε : ℝ) (J T : ℕ) :
     pronicNorm T (offDiagonalUnitDilationHead ε J) ≤
@@ -49,7 +71,8 @@ theorem pronicNorm_cofactorHead_le (ε : ℝ) (J T : ℕ) :
         have hJ := mem_Icc.mp hj
         by_contra hn
         exact hjmin (mem_Icc.mpr ⟨hJ.1, le_min hJ.2 (by omega)⟩)
-      rw [rowDilate, Nat.div_eq_of_lt hjn, pmPowerDampedCenteredDivisorPrefix_zero]
+      rw [rowDilate, Nat.div_eq_of_lt hjn,
+        ArithmeticContinuationAndCriticalEnergy.pmPowerDampedCenteredDivisorPrefix_zero]
       ring
   rw [pronicNorm_congr hext]
   refine (pronicNorm_sum_le T (Icc 2 J) _).trans ?_
@@ -59,7 +82,8 @@ theorem pronicNorm_cofactorHead_le (ε : ℝ) (J T : ℕ) :
   have hr : 0 ≤ (j : ℝ) ^ (-ε) := Real.rpow_nonneg (Nat.cast_nonneg j) _
   rw [pronicNorm_const_mul hr, ← pronicNorm_centeredPrefix ε T, mul_assoc]
   exact mul_le_mul_of_nonneg_left
-    (pronicNorm_rowDilate_le_sharp hj1 T _ (pmPowerDampedCenteredDivisorPrefix_zero ε)) hr
+    (pronicNorm_rowDilate_le_sharp hj1 T _
+      (ArithmeticContinuationAndCriticalEnergy.pmPowerDampedCenteredDivisorPrefix_zero ε)) hr
 
 /-- The signed proper cofactor sum beyond the chosen head. -/
 def cofactorTail (ε : ℝ) (J n : ℕ) : ℝ :=

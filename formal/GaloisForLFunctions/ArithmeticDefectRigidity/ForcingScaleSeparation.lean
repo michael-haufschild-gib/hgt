@@ -89,4 +89,50 @@ theorem tendsto_forcingEnergy_div_receiver_atTop (ε : SubcriticalDamping) :
     (tendsto_nhdsWithin_iff.mpr ⟨tendsto_receiver_div_forcingEnergy_zero ε, hpos⟩)
   exact h.congr' (Filter.Eventually.of_forall fun T => inv_div _ _)
 
+/-- The unsigned majorant has a fixed positive energy ratio to the same forcing. -/
+theorem majorant_div_forcingEnergy_eq (ε : SubcriticalDamping) (T : ℕ) :
+    majorantEnergy ε (T + 1) / forcingEnergy ε (T + 1) =
+      1 / (pmPowerDampedDivisorDensity (ε : ℝ)).re ^ 2 := by
+  have hF : forcingEnergy ε (T + 1) =
+      (pmPowerDampedDivisorDensity (ε : ℝ)).re ^ 2 * majorantEnergy ε (T + 1) :=
+    pronicNorm_inversionDefect_sq_eq ε.property.1 (T + 1)
+  have hm : (pmPowerDampedDivisorDensity (ε : ℝ)).re ≠ 0 :=
+    (RHTower.pmPowerDampedDivisorDensity_re_pos ε.property.1).ne'
+  have hM : majorantEnergy ε (T + 1) ≠ 0 := by
+    intro hz
+    have hp := forcingEnergy_succ_pos ε T
+    rw [hF, hz, mul_zero] at hp
+    exact (lt_irrefl 0) hp
+  rw [hF]
+  field_simp
+
+/-- No scalar normalization keeps forcing bounded and the actual receiver uniformly nonzero. -/
+theorem no_common_scalar_normalization (ε : SubcriticalDamping) :
+    ¬ ∃ (a : ℕ → ℝ) (B e : ℝ), 0 < e ∧
+      (∀ᶠ T : ℕ in atTop, a T ^ 2 * forcingEnergy ε T ≤ B) ∧
+      (∀ᶠ T : ℕ in atTop, e ≤ a T ^ 2 * dampedMobiusEnergy ε T) := by
+  rintro ⟨a, B, e, he, hB, heE⟩
+  have hlim := (tendsto_receiver_div_forcingEnergy_zero ε).const_mul (max B 1)
+  simp only [mul_zero] at hlim
+  have hsmall : ∀ᶠ T : ℕ in atTop,
+      max B 1 * (dampedMobiusEnergy ε T / forcingEnergy ε T) < e :=
+    hlim.eventually (gt_mem_nhds he)
+  have hbad : ∀ᶠ T : ℕ in atTop, False := by
+    filter_upwards [hB, heE, hsmall, eventually_ge_atTop 1] with T hBT heT hsT hT
+    have hF : forcingEnergy ε T ≠ 0 := by
+      cases T with
+      | zero => omega
+      | succ N => exact (forcingEnergy_succ_pos ε N).ne'
+    have hscale : a T ^ 2 * dampedMobiusEnergy ε T =
+        (a T ^ 2 * forcingEnergy ε T) *
+          (dampedMobiusEnergy ε T / forcingEnergy ε T) := by field_simp
+    have hle : a T ^ 2 * dampedMobiusEnergy ε T ≤
+        max B 1 * (dampedMobiusEnergy ε T / forcingEnergy ε T) := by
+      rw [hscale]
+      exact mul_le_mul_of_nonneg_right (hBT.trans (le_max_left B 1))
+        (div_nonneg (dampedMobiusEnergy_nonneg ε T) (forcingEnergy_nonneg ε T))
+    exact (not_lt_of_ge (heT.trans hle)) hsT
+  obtain ⟨T, hT⟩ := hbad.exists
+  exact hT
+
 end GaloisForLFunctions.ArithmeticDefectRigidity

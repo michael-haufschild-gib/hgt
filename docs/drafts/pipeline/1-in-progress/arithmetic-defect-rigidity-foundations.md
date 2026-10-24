@@ -37,4 +37,25 @@ Can normalized cofactor forcing be retained in a useful defect state when its po
 
 ## Proof status
 
-No new theorem claimed yet. Existing normalization and fixed-window escape are inputs. Global source exclusion remains unpaid.
+The forcing floor and actual-source VK comparison in `TheForcingDominatesTheReceiver.lean`
+passed Lean. `ForcingScaleSeparation.lean` also passed: vanishing receiver/forcing ratio,
+divergent inverse ratio, exact unsigned-majorant comparison and impossibility of one common
+scalar normalization. Five further modules have dependency-closed paper arguments and Lean
+sources; their audits are in progress:
+
+- `TheReceiverIsTheGramTangent`: exact signed Gram distance and determinant, degeneration in
+  forcing normalization, unit distance in receiver normalization.
+- `TheCofactorTailCarriesTheForcing`: a uniform cutoff budget and convergence of every fixed
+  signed cofactor tail to the complete forcing.
+- `FixedSuccessorsDisappearFromEscapingProfiles`: bounded actual increments, quadratic
+  successor cost, admission-or-fixed-successor-collapse dichotomy.
+- `CofactorSuccessorWordsHaveABoundaryCost`: the word action's denominator/boundary sandwich,
+  actual receiver energy cost, admission-or-fixed-word-collapse dichotomy.
+- `ForcingEscapesAMovingCofactorWindow`: a source-defined growing cutoff
+  `floor(log(F_T/E_T))` beyond which the signed tail still carries the complete forcing.
+
+The foundational README explains these mechanisms and the complete programme. Its theorem
+claims must be reconciled with the finished audits. Umbrella wiring and final no-output-file
+audits remain. Global source exclusion, complete joint extraction, stronger signed covariance,
+repairing-module transport, global allocation, multiplicity-sensitive anti-collapse and source
+effectivity remain open. These are substantive parts of the user's goal, not optional follow-ups.

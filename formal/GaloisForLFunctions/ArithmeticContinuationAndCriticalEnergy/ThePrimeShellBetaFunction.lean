@@ -45,7 +45,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy
 
-open _root_.RHTower _root_.RHTower.WeilDeletion GaloisForLFunctions.HTGeometry
+open _root_.Zeta23 _root_.RHTower _root_.RHTower.WeilDeletion GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.SquareRootThreshold GaloisForLFunctions.ArithmeticCriticalityTheory
 open GaloisForLFunctions.ArithmeticCompensationTheory
 
@@ -58,8 +58,9 @@ def primeShellBlock (N : ℕ) (c : SuzukiPositiveAperture) :
 
 theorem primeShellBlock_isSelfAdjoint (N : ℕ) (c : SuzukiPositiveAperture) :
     IsSelfAdjoint (primeShellBlock N c) := by
+  classical
   unfold primeShellBlock
-  generalize Ioc N (Nat.floor (Real.exp (2 * c.1))) = s
+  generalize Finset.Ioc N (Nat.floor (Real.exp (2 * c.1))) = s
   induction s using Finset.induction_on with
   | empty =>
     rw [Finset.sum_empty, ContinuousLinearMap.isSelfAdjoint_iff',
@@ -462,6 +463,35 @@ theorem zetaZeroWidth_le_of_graded_relaxation {A : ℕ → SuzukiPositiveApertur
         δ j ≤ ccmRestrictedWeilGroundEnergy (A (j + 1)) by linarith) hEpos.le
   rw [mul_sub, ← mul_assoc, hE] at hmul
   linarith
+
+/-! ## The crossing sits before the visibility aperture of a near-top zero -/
+
+/-- **An off-line zero makes the flow cross zero exactly once, before it is visible.** For a
+near-top zero `½ + z₀` read by the lag family at lag `V` with readout `η`, the flow has a unique
+zero `a*`, positive before it and negative after it, and `a* ≤ V/2 + w`. -/
+theorem groundEnergyCrossing_le_visibility {w : ℝ} (hw : 0 < w)
+    {z₀ : ℂ} (hz₀ : (1 / 2 + z₀) ∈ zetaZeroConfig.carrier) (hre₀ : 0 < z₀.re)
+    {η : ℝ} (hη : 0 < η) (hηle : η ≤ ‖paperFT (scaledBump w) (-(I * z₀))‖)
+    {V : ℝ} (hV : oneParamLag w η z₀.re ≤ V)
+    (htop : ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re - 1 / 2 ≤ z₀.re + 1 / V) :
+    ∃ astar : SuzukiPositiveAperture, ccmRestrictedWeilGroundEnergy astar = 0 ∧
+      (∀ a : SuzukiPositiveAperture, a < astar → 0 < ccmRestrictedWeilGroundEnergy a) ∧
+      (∀ a : SuzukiPositiveAperture, astar < a → ccmRestrictedWeilGroundEnergy a < 0) ∧
+      (∀ a : SuzukiPositiveAperture, ccmRestrictedWeilGroundEnergy a = 0 → a = astar) ∧
+      astar.1 ≤ V / 2 + w := by
+  have hRH : ¬ RiemannHypothesis := fun hRH => by
+    let A : SuzukiPositiveAperture := ⟨max (V / 2 + w) 0 + 1, by positivity⟩
+    have hlt := lt_of_ccmRestrictedWeilGroundEnergy_nonneg_of_near_top_zero hw hz₀ hre₀ hη hηle hV
+      htop (ccmRestrictedWeilGroundEnergy_nonneg_of_riemannHypothesis' hRH A)
+    change max (V / 2 + w) 0 + 1 < V / 2 + w at hlt
+    linarith [le_max_left (V / 2 + w) 0]
+  rcases riemannHypothesis_or_unique_groundEnergyCrossing with h | ⟨astar, h0, hpos, hneg, huniq⟩
+  · exact absurd h hRH
+  · refine ⟨astar, h0, hpos, hneg, huniq, ?_⟩
+    have hc : astar = ⟨zetaContactAperture, zetaContactAperture_pos hRH⟩ :=
+      (huniq _ (ccmRestrictedWeilGroundEnergy_contact_eq_zero hRH)).symm
+    rw [hc]
+    exact zetaContactAperture_le_of_near_top_zero hw hz₀ hre₀ hη hηle hV htop
 
 /-! ## Synthesis -/
 

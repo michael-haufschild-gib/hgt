@@ -158,7 +158,7 @@ criteria for such a principle are those of the review:
 * **Orientation index.** The number of negative squares of the defect on the orbit span of a cycle.
 * **Orientation rate.** The exponential growth rate of `c_x`; the Hasse–Weil envelope is rate `0`.
 * **Selective.** A property is selective when it fails, for a stated reason, on every model of the
-  battery (§8).
+  battery (§9).
 * **Soft structure.** Identities that hold on every scaling datum, or on every model of the battery:
   Lefschetz, adjunction, pullback, λ-ring, functional equation, Euler product, integrality.
 
@@ -444,7 +444,6 @@ Built:
   identity, Weil planes and the three forms of Hasse–Weil, orbit Toeplitz law, global equivalences.
 - *The correspondence algebra*: action, convolution, Rosati involution, traces at cycles, Rosati
   positivity, Hecke graphs with pullback, adjunction and `ππ′ = q`.
-
 - *Configuration scaling data*: every tempered zero configuration as a scaling datum, the
   translation law, the orbit correlation as an exponential sum over zeros, the explicit-formula
   identification for `ζ`.

@@ -605,8 +605,7 @@ equivalent to each of the following additional estimates:
 7. **The Riemann Hypothesis (`RiemannHypothesis`)**. -/
 theorem weilPositiveFull_of_sourceIdentified_iff_additional_estimates {lam : ℕ → ℝ}
     (hid : SourceIdentifiedWithVonMangoldt lam) :
-    have heq : ∀ n : ℕ, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n :=
-      (sourceIdentifiedWithVonMangoldt_iff_forall_two_le_eq lam).mp hid
+    (∀ n : ℕ, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧
     (WeilPositiveFull lam ↔ PositiveOnNonposCone lam) ∧
     (WeilPositiveFull lam ↔ PositiveOnNonnegCone lam) ∧
     (WeilPositiveFull lam ↔
@@ -684,7 +683,7 @@ theorem weilPositiveFull_of_sourceIdentified_iff_additional_estimates {lam : ℕ
         zeta_W_eq_weilFullFunctional hF_c hFc_c]
       exact (riemannHypothesis_iff_weilPositiveFull_vonMangoldt.mp hRH) _ hF_c hFc_c
     · exact riemannHypothesis_of_subexponential_odd_floor
-  exact ⟨h1, h2, h3, h4, h5, h6, hW_iff_RH⟩
+  exact ⟨heq, h1, h2, h3, h4, h5, h6, hW_iff_RH⟩
 
 /-- **Graded Zero-Width and Finite-Aperture Horizon Transfer for an Identified Source.**
 For any weight `lam : ℕ → ℝ` satisfying `SourceIdentifiedWithVonMangoldt lam`:
@@ -739,14 +738,15 @@ theorem graded_and_finite_aperture_sign_of_sourceIdentified {lam : ℕ → ℝ}
     refine le_of_forall_pos_le_add fun ε hε => ?_
     have hq_small : ∀ᶠ q : ℕ in atTop, 1 / ((q : ℝ) + 1) ≤ ε := by
       obtain ⟨N, hN⟩ := exists_nat_gt (1 / ε)
-      filter_upwards [ eventually_ge_atTop N ] with q hq
+      filter_upwards [eventually_ge_atTop N] with q hq
       rw [div_le_iff₀ (by positivity)]
       have hNq : (N : ℝ) ≤ q := by exact_mod_cast hq
-      have h1' : 1 < ε * (N : ℝ) := (div_lt_iff₀ hε).mp hN
+      have h1' : 1 < (N : ℝ) * ε := (div_lt_iff₀ hε).mp hN
       nlinarith
     obtain ⟨q, hq1, hq2⟩ := (hn.and hq_small).exists
     set D : ℝ → ℂ := smoothGridTentDetector G n (-(R + 1)) M q
     obtain ⟨hD_approx, -, -⟩ := smoothGridTentDetector_fullWeil_approximation G n (-(R + 1)) M q
+    dsimp only at hq1
     rw [weilFullFunctional_congr heq] at hq1
     have hlow := (abs_le.mp hD_approx).2
     linarith

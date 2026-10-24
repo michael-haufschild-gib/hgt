@@ -2,10 +2,10 @@
 
 - **ID:** centered-heat-polynomial-aperture-detection
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean open
+- **Type:** THEOREM (paper); exact Lean subsumption pending
 - **Source:** CROSS-250-2026-10-22, C002
-- **Scientific status:** `[PROVED HERE ON PAPER] [LEAN OPEN] [NOVELTY PROVISIONAL]`
-- **Contribution credit:** 0 pending formalization and final significance audit.
+- **Scientific status:** `[PROVED ON PAPER] [LEAN CHECKS PENDING] [NO NEW SCIENTIFIC KNOWLEDGE]`
+- **Contribution credit:** 0; the cluster horizon already implies the result.
 - **Statement:** A single off-line zeta zero supplies a negative smooth compact Weil test at an aperture bounded polynomially in its height and inverse-square depth, without a near-top or separation premise.
 
 ## Exact theorem
@@ -54,7 +54,7 @@ assumes near-topness. `FiniteOffLineSetsAreVisible` uses a finite off-line set a
 cone. `XiSliceHeatedOffLineDetection` uses inverse-square mass after deleting a pair and a
 nonvanishing central Xi value. None is credited again here.
 
-The new candidate mechanism is to align **all** copies in one fixed height window, whether or not
+The alternative centered-heat mechanism aligns **all** copies in one fixed height window, whether or not
 they are deeper than the selected zero. Their phases then have the same favorable sign. A
 Gaussian makes the complementary height range harmless without selecting a maximal packet or
 estimating any spectral gap. The logarithmic local count converts the recurrence bound into a
@@ -318,7 +318,7 @@ before selecting the zero. This closes the paper proof.
 - [ ] formalize centered heat bounds and recurrence
 - [ ] formalize Gaussian cutoff and exact compact Weil conclusion
 - [ ] run leaf audits, inspect axioms, wire umbrellas, refresh declaration index
-- [ ] final significance audit; no contribution credit before completion
+- [x] significance audit: subsumed by the existing cluster horizon; no contribution credit
 
 ## Failure checks
 
@@ -335,3 +335,10 @@ Dominated by `RHTower.zeta_hodge_index_cluster_horizon` (`ClusterRobustHodgeExcl
 zero of depth `δ` and height `|γ| ≥ 2` already fails the level-`a` Hodge index (pole-vanishing `C²`
 tests in `[−a, a]`) for every `a ≥ max(e⁶, 1/δ)` with `10⁵ A₀ log(|γ| + 306) log² a ≤ a`. A complete
 Lean proof of this card's theorem was written and then removed as redundant; not credited.
+
+The [smooth cluster-horizon bridge](cluster-horizon-smooth-polynomial-detector.md)
+has a dependency-closed paper proof of the stronger bound
+`a ≤ C δ^(-2)(4+|γ|)^2`, including actual C∞ compact witnesses and the
+degree-38 specialization. Its Lean checks remain pending. Once certified,
+that exact subsumption discharges this card's theorem without needing a
+second formalization of the centered-heat derivation above.

@@ -493,7 +493,7 @@ theorem norm_riemannHeat_zero_le_norm_riemannHeat_zero {t : ℝ} (ht : 0 ≤ t) 
   exact le_mul_of_one_le_right (riemannKernelReal_pos x).le (Real.one_le_exp (by positivity))
 
 /-- For `0 ≤ t ≤ 1/8` and every `z : ℂ`, `‖riemannHeat t z‖ ≤ ‖riemannHeat (1/8) (I * z.im)‖`. -/
-theorem norm_riemannHeat_le_eighth_im {t : ℝ} (ht0 : 0 ≤ t) (ht8 : t ≤ 1 / 8) (z : ℂ) :
+theorem norm_riemannHeat_le_eighth_im {t : ℝ} (_ht0 : 0 ≤ t) (ht8 : t ≤ 1 / 8) (z : ℂ) :
     ‖riemannHeat t z‖ ≤ ‖riemannHeat (1 / 8) (I * (z.im : ℂ))‖ := by
   rw [norm_riemannHeat_mul_I_eq_integral (by norm_num)]
   unfold riemannHeat cosTransform
@@ -807,13 +807,5 @@ theorem forall_collisionMass_eq_zero_iff_forall_pos_finiteHead_poly_nonneg {R : 
     (riemannHypothesis_iff_forall_pos_finiteHead_poly_nonneg hR hR2)
 
 end
-
-#print axioms sum_collisionMass_Ioc_eq_sub
-#print axioms isGreatest_collisionTimes_newmanConstant
-#print axioms wdHeatThreshold_le_third_sq_zetaZeroWidth
-#print axioms sum_all_collisionMass_eq_card_nonrealCopies
-#print axioms exists_nonrealZeroCount_and_collisionMass_le_weyl
-#print axioms wdHeatThreshold_le_of_zeros_on_line_below_and_finiteHead
-#print axioms forall_collisionMass_eq_zero_iff_forall_pos_finiteHead_poly_nonneg
 
 end RHTower.DeBruijn

@@ -43,12 +43,14 @@ set_option autoImplicit false
 theorem weightPronicEnergy_pmPowerDamped_eq_patternReceiver {ε : ℝ} (hε : 0 < ε) (T : ℕ) :
     weightPronicEnergy (pmPowerDampedRealWeight ε) (dampedDensity ε) T =
       patternReceiver ε moebiusReal T := by
-  rw [patternReceiver, ← pmPowerDampedRealWeight_eq_dampedSignWeight, ← dampedDensity_eq_tsum hε]
+  rw [patternReceiver, ← dampedDensity_eq_tsum hε]
+  rfl
 
 theorem weightCenteredPrefix_pmPowerDamped_eq_patternPrefix {ε : ℝ} (hε : 0 < ε) (n : ℕ) :
     weightCenteredPrefix (pmPowerDampedRealWeight ε) (dampedDensity ε) n =
       patternPrefix ε moebiusReal n := by
-  rw [patternPrefix, ← pmPowerDampedRealWeight_eq_dampedSignWeight, ← dampedDensity_eq_tsum hε]
+  rw [patternPrefix, ← dampedDensity_eq_tsum hε]
+  rfl
 
 /-- `exp(-√(log x)/12) → 0`. -/
 theorem tendsto_exp_neg_sqrt_log_div : Tendsto (fun x : ℕ =>
@@ -237,9 +239,11 @@ theorem exists_parityTwin_receiver_ge_rpow {ε : ℝ} (hε : 0 < ε) (hε2 : ε 
       push_cast
       ring_nf
     have hnp : 0 ≤ (n : ℝ) ^ (-(2 * ε)) := by positivity
+    have hnn : (n : ℝ) * ((n : ℝ) + 1) ≤ 2 * (n : ℝ) ^ 2 := by nlinarith
     rw [le_div_iff₀ (by positivity)]
     calc K ^ 2 / 4 * (n : ℝ) ^ (-(2 * ε)) * ((n : ℝ) * ((n : ℝ) + 1))
-        ≤ K ^ 2 / 4 * (n : ℝ) ^ (-(2 * ε)) * (2 * (n : ℝ) ^ 2) := by gcongr; nlinarith
+        ≤ K ^ 2 / 4 * (n : ℝ) ^ (-(2 * ε)) * (2 * (n : ℝ) ^ 2) :=
+          mul_le_mul_of_nonneg_left hnn (by positivity)
       _ = K ^ 2 * (n : ℝ) ^ 2 * (1 / 2 * (n : ℝ) ^ (-(2 * ε))) := by ring
       _ ≤ K ^ 2 * (n : ℝ) ^ 2 * ((2 : ℝ) ^ (-(2 * ε)) * (n : ℝ) ^ (-(2 * ε))) := by gcongr
       _ = (K * n * (2 * (n : ℝ)) ^ (-ε)) ^ 2 := by rw [mul_pow, mul_pow, hpow]
@@ -265,9 +269,10 @@ theorem exists_parityTwin_receiver_ge_rpow {ε : ℝ} (hε : 0 < ε) (hε2 : ε 
         refine sum_le_sum fun n hn => ?_
         have hn' := mem_Ioc.mp hn
         have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+        have hTn : (T : ℝ) ^ (-(2 * ε)) ≤ (n : ℝ) ^ (-(2 * ε)) :=
+          Real.rpow_le_rpow_of_nonpos hn0 (by exact_mod_cast hn'.2) (by linarith)
         refine le_trans ?_ (hcell n (by omega))
-        gcongr
-        exact Real.rpow_le_rpow_of_nonpos hn0 (by exact_mod_cast hn'.2) (by linarith)
+        exact mul_le_mul_of_nonneg_left hTn (by positivity)
     _ ≤ ∑ n ∈ Icc 1 T, weightCenteredPrefix (parityTwinWeight ε) (dampedDensity ε) n ^ 2 /
           ((n : ℝ) * ((n : ℝ) + 1)) :=
         sum_le_sum_of_subset_of_nonneg hsub fun n _ _ => by positivity

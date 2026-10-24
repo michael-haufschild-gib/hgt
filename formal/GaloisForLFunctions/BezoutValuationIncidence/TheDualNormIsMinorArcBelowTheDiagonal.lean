@@ -30,7 +30,8 @@ saving degenerates exactly at the diagonal `θ = 2`, where `p ≍ Q` and the low
 `ζⁿ` are archimedean.
 -/
 
-open Finset Filter Topology ArithmeticFunction RHTower.Sieve
+open Finset Filter Topology ArithmeticFunction RHTower RHTower.Sieve
+open GaloisForLFunctions.BiScaleUncertainty
 open scoped BigOperators
 
 namespace GaloisForLFunctions.BezoutValuationIncidence
@@ -69,6 +70,39 @@ theorem norm_sum_range_ofReal_mul_le_of_antitone {g : ℕ → ℂ} {w : ℕ → 
     _ ≤ w n * B + (w 0 - w n) * B := add_le_add hhead htail
     _ = B * w 0 := by ring
 
+/-- **Window twists.** Let `c'` live on `(Q, 2Q]` with twisted partial sums
+`‖Σ_{i<k} c'(Q+1+i) ζ^{Q+1+i}‖ ≤ B'` for `k ≤ Q`. Then for `N ≥ 2Q` and every `r`,
+`‖Σ_{n ≤ N} (c'(n)/nʳ) ζⁿ‖ ≤ B'/(Q+1)ʳ`. -/
+theorem norm_sum_window_div_pow_le_of_twisted (Q N r : ℕ) (hQN : 2 * Q ≤ N) {c' : ℕ → ℝ}
+    (hsupp : ∀ n, c' n ≠ 0 → Q < n ∧ n ≤ 2 * Q) (ζ : ℂ) {B' : ℝ}
+    (hB : ∀ k ≤ Q, ‖∑ i ∈ range k, (c' (Q + 1 + i) : ℂ) * ζ ^ (Q + 1 + i)‖ ≤ B') :
+    ‖∑ n ∈ Icc 1 N, ((c' n / (n : ℝ) ^ r : ℝ) : ℂ) * ζ ^ n‖ ≤ B' / ((Q : ℝ) + 1) ^ r := by
+  have hwin : ∑ n ∈ Icc 1 N, ((c' n / (n : ℝ) ^ r : ℝ) : ℂ) * ζ ^ n =
+      ∑ i ∈ range Q, ((1 / ((Q + 1 + i : ℕ) : ℝ) ^ r : ℝ) : ℂ) *
+        ((c' (Q + 1 + i) : ℂ) * ζ ^ (Q + 1 + i)) := by
+    have hsub : Ioc Q (2 * Q) ⊆ Icc 1 N := fun n hn => by
+      simp only [mem_Ioc, mem_Icc] at hn ⊢; omega
+    rw [← sum_subset hsub fun n _ hn => by
+      have : c' n = 0 := by
+        by_contra h
+        exact hn (mem_Ioc.mpr (hsupp n h))
+      rw [this]; simp]
+    have hIoc : Ioc Q (2 * Q) = Ico (Q + 1) (2 * Q + 1) := by
+      ext n; simp only [mem_Ioc, mem_Ico]; omega
+    rw [hIoc, sum_Ico_eq_sum_range, show 2 * Q + 1 - (Q + 1) = Q by omega]
+    refine sum_congr rfl fun i _ => ?_
+    push_cast
+    ring
+  rw [hwin]
+  have h := norm_sum_range_ofReal_mul_le_of_antitone Q hB
+    (w := fun i => 1 / ((Q + 1 + i : ℕ) : ℝ) ^ r)
+    (fun i => by positivity) (fun i => by
+      apply one_div_le_one_div_of_le (by positivity)
+      exact pow_le_pow_left₀ (by positivity) (by push_cast; linarith) r)
+  refine h.trans (le_of_eq ?_)
+  push_cast
+  ring
+
 /-- **Window twists of the Möbius row.** If `‖Σ_{n ≤ x} μ(n) ζⁿ‖ ≤ B` for all `x ≤ 2Q`, then for
 `N ≥ 2Q` and every `r`, `‖Σ_{n ≤ N} (μ𝟙_{(Q,2Q]}(n)/nʳ) ζⁿ‖ ≤ 2B/(Q+1)ʳ`. -/
 theorem norm_sum_moebiusWindowRow_div_pow_le (Q N r : ℕ) (hQN : 2 * Q ≤ N) (ζ : ℂ) {B : ℝ}
@@ -76,43 +110,25 @@ theorem norm_sum_moebiusWindowRow_div_pow_le (Q N r : ℕ) (hQN : 2 * Q ≤ N) (
     ‖∑ n ∈ Icc 1 N, ((moebiusWindowRow Q n / (n : ℝ) ^ r : ℝ) : ℂ) * ζ ^ n‖ ≤
       2 * B / ((Q : ℝ) + 1) ^ r := by
   set S : ℕ → ℂ := fun x => ∑ n ∈ Icc 1 x, (moebiusReal n : ℂ) * ζ ^ n
-  have hwin : ∑ n ∈ Icc 1 N, ((moebiusWindowRow Q n / (n : ℝ) ^ r : ℝ) : ℂ) * ζ ^ n =
-      ∑ i ∈ range Q, ((1 / ((Q + 1 + i : ℕ) : ℝ) ^ r : ℝ) : ℂ) *
-        ((moebiusReal (Q + 1 + i) : ℂ) * ζ ^ (Q + 1 + i)) := by
-    have hsub : Ioc Q (2 * Q) ⊆ Icc 1 N := fun n hn => by
-      simp only [mem_Ioc, mem_Icc] at hn ⊢; omega
-    rw [← sum_subset hsub fun n _ hn => by
-      rw [moebiusWindowRow, if_neg (by simpa only [mem_Ioc] using hn)]; simp]
-    have hIoc : Ioc Q (2 * Q) = Ico (Q + 1) (2 * Q + 1) := by
-      ext n; simp only [mem_Ioc, mem_Ico]; omega
-    rw [hIoc, sum_Ico_eq_sum_range, show 2 * Q + 1 - (Q + 1) = Q by omega]
-    refine sum_congr rfl fun i hi => ?_
-    have hi' := mem_range.mp hi
-    rw [moebiusWindowRow, if_pos (by omega)]
-    push_cast
-    ring
-  have hpart : ∀ k ≤ Q, ‖∑ j ∈ range k, (moebiusReal (Q + 1 + j) : ℂ) * ζ ^ (Q + 1 + j)‖ ≤ 2 * B := by
-    intro k hk
-    have hdiff : ∑ j ∈ range k, (moebiusReal (Q + 1 + j) : ℂ) * ζ ^ (Q + 1 + j) = S (Q + k) - S Q := by
-      induction k with
-      | zero => simp
-      | succ k ih =>
-        rw [Finset.sum_range_succ, ih (by omega), show Q + (k + 1) = (Q + k) + 1 by ring]
-        simp only [S]
-        rw [sum_Icc_succ_top (by omega : 1 ≤ Q + k + 1), show Q + 1 + k = Q + k + 1 by ring]
-        ring
-    rw [hdiff]
-    calc ‖S (Q + k) - S Q‖ ≤ ‖S (Q + k)‖ + ‖S Q‖ := norm_sub_le _ _
-      _ ≤ B + B := add_le_add (hB _ (by omega)) (hB _ (by omega))
-      _ = 2 * B := by ring
-  rw [hwin]
-  have h := norm_sum_range_ofReal_mul_le_of_antitone Q hpart (w := fun i => 1 / ((Q + 1 + i : ℕ) : ℝ) ^ r)
-    (fun i => by positivity) (fun i => by
-      apply one_div_le_one_div_of_le (by positivity)
-      exact pow_le_pow_left₀ (by positivity) (by push_cast; linarith) r)
-  refine h.trans (le_of_eq ?_)
-  push_cast
-  ring
+  refine norm_sum_window_div_pow_le_of_twisted Q N r hQN (fun n h => ?_) ζ fun k hk => ?_
+  · unfold moebiusWindowRow at h
+    split_ifs at h with hn
+    · exact hn
+    · exact absurd rfl h
+  have hdiff : ∑ i ∈ range k, ((moebiusWindowRow Q (Q + 1 + i) : ℝ) : ℂ) * ζ ^ (Q + 1 + i) =
+      S (Q + k) - S Q := by
+    induction k with
+    | zero => simp
+    | succ k ih =>
+      rw [Finset.sum_range_succ, ih (by omega), show Q + (k + 1) = (Q + k) + 1 by ring]
+      simp only [S]
+      rw [sum_Icc_succ_top (by omega : 1 ≤ Q + k + 1), show Q + 1 + k = Q + k + 1 by ring,
+        moebiusWindowRow, if_pos (by omega)]
+      ring
+  rw [hdiff]
+  calc ‖S (Q + k) - S Q‖ ≤ ‖S (Q + k)‖ + ‖S Q‖ := norm_sub_le _ _
+    _ ≤ B + B := add_le_add (hB _ (by omega)) (hB _ (by omega))
+    _ = 2 * B := by ring
 
 /-! ## §2. The kernel statistic of the Möbius row through the minor-arc law -/
 
@@ -247,19 +263,22 @@ theorem spectralFactor_le {p q : ℝ} (hp : 1 ≤ p) (hq : 0 < q) (hpq : p ≤ q
     _ ≤ Real.pi ^ 2 / 36 * (p ^ 2 / q ^ 2) + Real.pi ^ 2 / 24 * (p ^ 2 / q ^ 2) := by gcongr
     _ ≤ 0.69 * (p ^ 2 / q ^ 2) := by nlinarith
 
-/-- **The power saving of the dual-norm statistic below the diagonal.** For `Q ≥ 2`, `0 < δ < 1`,
-every prime `Q^δ ≤ p ≤ Q^{1-δ}` and `N ≥ 2Q`,
-`|Λ_p(μ𝟙_{(Q,2Q]})| ≤ 23 (1 + log 2Q)³ (p²/Q) Q^{-δ/4}`.
-The proof takes `U = ⌊Q^{δ/2}⌋` in the minor-arc law. -/
-theorem abs_kernelStatistic_moebiusWindowRow_le_rpow {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1)
-    {Q : ℕ} (hQ : 2 ≤ Q) {p : ℕ} (hp : p.Prime) (hpl : (Q : ℝ) ^ δ ≤ p)
-    (hpu : (p : ℝ) ≤ (Q : ℝ) ^ (1 - δ)) {N : ℕ} (hQN : 2 * Q ≤ N) :
-    |kernelStatistic N (moebiusWindowRow Q) p| ≤
-      23 * (1 + Real.log (2 * Q)) ^ 3 * ((p : ℝ) ^ 2 / Q) * (Q : ℝ) ^ (-(δ / 4)) := by
+/-- **The cutoff `U = ⌊Q^{δ/2}⌋`.** For `Q ≥ 2`, `0 < δ < 1` and a prime `Q^δ ≤ p ≤ Q^{1-δ}`, with
+`L = 1 + log 2Q` and `T = Q · Q^{-δ/4}`: `1 ≤ U < p`, `U ≤ T`, `log U ≤ L`, `W_p ≤ L T`,
+`U W_p ≤ L T`, `p ≤ T` and `(log₂ 2Q + 1) √(typeIIBlockBound p U 2Q) ≤ 30 L³ T`. -/
+theorem exists_minorArc_cutoff {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) {Q : ℕ} (hQ : 2 ≤ Q) {p : ℕ}
+    (hp : p.Prime) (hpl : (Q : ℝ) ^ δ ≤ p) (hpu : (p : ℝ) ≤ (Q : ℝ) ^ (1 - δ)) :
+    ∃ U : ℕ, 1 ≤ U ∧ U < p ∧ (U : ℝ) ≤ Q * (Q : ℝ) ^ (-(δ / 4)) ∧
+      Real.log U ≤ 1 + Real.log (2 * Q) ∧
+      rootHarmonicSum p ≤ (1 + Real.log (2 * Q)) * (Q * (Q : ℝ) ^ (-(δ / 4))) ∧
+      (U : ℝ) * rootHarmonicSum p ≤ (1 + Real.log (2 * Q)) * (Q * (Q : ℝ) ^ (-(δ / 4))) ∧
+      (p : ℝ) ≤ Q * (Q : ℝ) ^ (-(δ / 4)) ∧
+      ((Nat.log 2 (2 * Q) : ℝ) + 1) * Real.sqrt (typeIIBlockBound p U (2 * Q)) ≤
+        30 * (1 + Real.log (2 * Q)) ^ 3 * (Q * (Q : ℝ) ^ (-(δ / 4))) := by
   have hq2 : (2 : ℝ) ≤ Q := by exact_mod_cast hQ
   have hq0 : (0 : ℝ) < Q := by linarith
   have hq1 : (1 : ℝ) < Q := by linarith
-  set q : ℝ := Q
+  set q : ℝ := (Q : ℝ)
   set y : ℝ := q ^ (δ / 4) with hydef
   have hy1 : 1 < y := Real.one_lt_rpow hq1 (by positivity)
   have hy0 : 0 < y := by linarith
@@ -267,7 +286,8 @@ theorem abs_kernelStatistic_moebiusWindowRow_le_rpow {δ : ℝ} (hδ : 0 < δ) (
     rw [hydef, ← Real.rpow_natCast, ← Real.rpow_mul hq0.le]
   have hy4 : y ^ 4 = q ^ δ := by rw [hpowy]; congr 1; push_cast; ring
   have hq1δ : q ^ (1 - δ) = q / y ^ 4 := by rw [Real.rpow_sub hq0, Real.rpow_one, hy4]
-  have hqneg : q ^ (-(δ / 4)) = y⁻¹ := Real.rpow_neg hq0.le _
+  have hT : q * q ^ (-(δ / 4)) = q / y := by rw [Real.rpow_neg hq0.le, ← hydef, div_eq_mul_inv]
+  rw [hT]
   have hy3 : y ^ 3 ≤ q := by
     rw [hpowy]
     calc q ^ (δ / 4 * ((3 : ℕ) : ℝ)) ≤ q ^ (1 : ℝ) :=
@@ -279,8 +299,11 @@ theorem abs_kernelStatistic_moebiusWindowRow_le_rpow {δ : ℝ} (hδ : 0 < δ) (
   have hpq : (p : ℝ) ≤ q / y ^ 4 := by rw [← hq1δ]; exact hpu
   have hy4pos : 0 < y ^ 4 := by positivity
   have hpq' : (p : ℝ) ≤ q := hpq.trans (div_le_self hq0.le (one_le_pow₀ hy1.le))
-  have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast hp.one_lt.le
-  have hp0 : (0 : ℝ) < p := by linarith
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
+  have hqy4 : q / y ^ 4 ≤ q / y :=
+    div_le_div_of_nonneg_left hq0.le hy0 (le_self_pow₀ hy1.le (by norm_num))
+  have hqy : y ^ 2 ≤ q / y := by
+    rw [le_div_iff₀ hy0, show y ^ 2 * y = y ^ 3 by ring]; exact hy3
   -- the cutoff `U = ⌊Q^{δ/2}⌋`
   set U := ⌊y ^ 2⌋₊
   have hU1 : 1 ≤ U := Nat.le_floor (by exact_mod_cast hy2ge)
@@ -290,16 +313,15 @@ theorem abs_kernelStatistic_moebiusWindowRow_le_rpow {δ : ℝ} (hδ : 0 < δ) (
     have : (U : ℝ) < p := lt_of_le_of_lt hUle
       (lt_of_lt_of_le (pow_lt_pow_right₀ hy1 (by norm_num : 2 < 4)) hpR)
     exact_mod_cast this
-  have hmain := abs_kernelStatistic_moebiusWindowRow_le_minorArc hp hU1 hUp hQN
   -- logarithms
-  set L : ℝ := 1 + Real.log (2 * q)
+  set L : ℝ := 1 + Real.log (2 * q) with hLdef
   have hlog2q : 0 ≤ Real.log (2 * q) := Real.log_nonneg (by linarith)
-  have hL1 : 1 ≤ L := by linarith
+  have hL1 : 1 ≤ L := by rw [hLdef]; linarith
   have hcast : ((2 * Q : ℕ) : ℝ) = 2 * q := by push_cast; ring
   have hW : rootHarmonicSum p ≤ p * L := by
     refine (rootHarmonicSum_le p).trans (mul_le_mul_of_nonneg_left ?_ hp0.le)
     have : Real.log p ≤ Real.log (2 * q) := Real.log_le_log hp0 (by linarith)
-    linarith
+    rw [hLdef]; linarith
   have hH : invSum (2 * Q) ≤ L := by
     have h := invSum_le_one_add_log (by omega : 1 ≤ 2 * Q)
     rwa [hcast] at h
@@ -307,10 +329,9 @@ theorem abs_kernelStatistic_moebiusWindowRow_le_rpow {δ : ℝ} (hδ : 0 < δ) (
   have hlogtwo : (Nat.log 2 (2 * Q) : ℝ) + 1 ≤ 3 * L := by
     have h := natLog_two_add_one_le (2 * Q) (by omega)
     rwa [hcast] at h
-  -- the Type-II block bound
   have hWnn : 0 ≤ rootHarmonicSum p := rootHarmonicSum_nonneg p
   have hUpos : (0 : ℝ) < U := by exact_mod_cast hU1
-  have hA : (0 : ℝ) ≤ q ^ 2 / y ^ 2 := by positivity
+  -- the Type-II block bound
   have a1 : (2 * q) ^ 2 / p ≤ 4 * (q ^ 2 / y ^ 2) := by
     calc (2 * q) ^ 2 / p ≤ (2 * q) ^ 2 / y ^ 2 :=
           div_le_div_of_nonneg_left (by positivity) (by positivity) (hy24.trans hpR)
@@ -337,11 +358,12 @@ theorem abs_kernelStatistic_moebiusWindowRow_le_rpow {δ : ℝ} (hδ : 0 < δ) (
       _ ≤ 2 * L * (q ^ 2 / y ^ 2) :=
           mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_left (by positivity) (by positivity)
             hy24) (by linarith)
-  have hT : typeIIBlockBound p U (2 * Q) ≤ 88 * L ^ 4 * (q ^ 2 / y ^ 2) := by
+  have hTB : typeIIBlockBound p U (2 * Q) ≤ 88 * L ^ 4 * (q ^ 2 / y ^ 2) := by
     unfold typeIIBlockBound
     rw [hcast]
     have hsum : (2 * q) ^ 2 / p + (2 * q) ^ 2 / U + (2 * q) ^ 2 * rootHarmonicSum p / (U * p) +
-        2 * q * rootHarmonicSum p ≤ 22 * L * (q ^ 2 / y ^ 2) := by nlinarith
+        2 * q * rootHarmonicSum p ≤ 22 * L * (q ^ 2 / y ^ 2) := by
+      linarith [mul_le_mul_of_nonneg_right hL1 (by positivity : (0 : ℝ) ≤ q ^ 2 / y ^ 2)]
     have hH3 : 1 + invSum (2 * Q) ^ 3 ≤ 2 * L ^ 3 := by
       have : invSum (2 * Q) ^ 3 ≤ L ^ 3 := pow_le_pow_left₀ hH0 hH 3
       have : 1 ≤ L ^ 3 := one_le_pow₀ hL1
@@ -356,42 +378,72 @@ theorem abs_kernelStatistic_moebiusWindowRow_le_rpow {δ : ℝ} (hδ : 0 < δ) (
   have hsqrt : Real.sqrt (typeIIBlockBound p U (2 * Q)) ≤ 10 * L ^ 2 * (q / y) := by
     have h0 : 0 ≤ 10 * L ^ 2 * (q / y) := by positivity
     calc Real.sqrt (typeIIBlockBound p U (2 * Q)) ≤ Real.sqrt ((10 * L ^ 2 * (q / y)) ^ 2) := by
-          refine Real.sqrt_le_sqrt (hT.trans ?_)
+          refine Real.sqrt_le_sqrt (hTB.trans ?_)
           have : (10 * L ^ 2 * (q / y)) ^ 2 = 100 * L ^ 4 * (q ^ 2 / y ^ 2) := by ring
           rw [this]
-          nlinarith
+          have : 0 ≤ L ^ 4 * (q ^ 2 / y ^ 2) := by positivity
+          linarith
       _ = 10 * L ^ 2 * (q / y) := Real.sqrt_sq h0
-  have hqy : y ^ 2 ≤ q / y := by rw [le_div_iff₀ hy0]; nlinarith
-  have hM : minorArcBound p U (2 * Q) ≤ 33 * L ^ 3 * (q / y) := by
+  refine ⟨U, hU1, hUp, hUle.trans hqy, ?_, ?_, ?_, hpq.trans hqy4, ?_⟩
+  · have : Real.log U ≤ Real.log (2 * q) :=
+      Real.log_le_log hUpos ((hUle.trans hqy).trans ((div_le_self hq0.le hy1.le).trans (by linarith)))
+    rw [hLdef]; linarith
+  · calc rootHarmonicSum p ≤ p * L := hW
+      _ ≤ q / y * L := mul_le_mul_of_nonneg_right (hpq.trans hqy4) (by linarith)
+      _ = L * (q / y) := by ring
+  · calc (U : ℝ) * rootHarmonicSum p ≤ y ^ 2 * (p * L) :=
+          mul_le_mul hUle hW hWnn (by positivity)
+      _ ≤ y ^ 2 * (q / y ^ 4 * L) :=
+          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hpq (by linarith)) (by positivity)
+      _ = L * (q / y ^ 2) := by field_simp
+      _ ≤ L * (q / y) := mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_left hq0.le hy0
+          (le_self_pow₀ hy1.le (by norm_num))) (by linarith)
+  · calc ((Nat.log 2 (2 * Q) : ℝ) + 1) * Real.sqrt (typeIIBlockBound p U (2 * Q))
+        ≤ 3 * L * (10 * L ^ 2 * (q / y)) :=
+          mul_le_mul hlogtwo hsqrt (Real.sqrt_nonneg _) (by positivity)
+      _ = 30 * L ^ 3 * (q / y) := by ring
+
+/-- **The power saving of the dual-norm statistic below the diagonal.** For `Q ≥ 2`, `0 < δ < 1`,
+every prime `Q^δ ≤ p ≤ Q^{1-δ}` and `N ≥ 2Q`,
+`|Λ_p(μ𝟙_{(Q,2Q]})| ≤ 23 (1 + log 2Q)³ (p²/Q) Q^{-δ/4}`. -/
+theorem abs_kernelStatistic_moebiusWindowRow_le_rpow {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1)
+    {Q : ℕ} (hQ : 2 ≤ Q) {p : ℕ} (hp : p.Prime) (hpl : (Q : ℝ) ^ δ ≤ p)
+    (hpu : (p : ℝ) ≤ (Q : ℝ) ^ (1 - δ)) {N : ℕ} (hQN : 2 * Q ≤ N) :
+    |kernelStatistic N (moebiusWindowRow Q) p| ≤
+      23 * (1 + Real.log (2 * Q)) ^ 3 * ((p : ℝ) ^ 2 / Q) * (Q : ℝ) ^ (-(δ / 4)) := by
+  obtain ⟨U, hU1, hUp, hUT, -, -, hUW, hpT, hsq⟩ := exists_minorArc_cutoff hδ hδ1 hQ hp hpl hpu
+  have hq0 : (0 : ℝ) < Q := by exact_mod_cast (by omega : 0 < Q)
+  set L := 1 + Real.log (2 * (Q : ℝ)) with hLdef
+  have hL1 : 1 ≤ L := by
+    have := Real.log_nonneg (by have : (2 : ℝ) ≤ Q := (by exact_mod_cast hQ); linarith :
+      (1 : ℝ) ≤ 2 * Q)
+    rw [hLdef]; linarith
+  set T := (Q : ℝ) * (Q : ℝ) ^ (-(δ / 4))
+  have hT0 : 0 ≤ T := mul_nonneg hq0.le (Real.rpow_nonneg hq0.le _)
+  have hM : minorArcBound p U (2 * Q) ≤ 33 * L ^ 3 * T := by
     unfold minorArcBound
-    have hUW : (U : ℝ) * rootHarmonicSum p ≤ L * (q / y) := by
-      calc (U : ℝ) * rootHarmonicSum p ≤ y ^ 2 * (p * L) :=
-            mul_le_mul hUle hW hWnn (by positivity)
-        _ ≤ y ^ 2 * (q / y ^ 4 * L) :=
-            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hpq (by linarith)) (by positivity)
-        _ = L * (q / y ^ 2) := by field_simp
-        _ ≤ L * (q / y) := mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_left hq0.le hy0
-            (by nlinarith)) (by linarith)
-    have h2U : 2 * (U : ℝ) ≤ 2 * L * (q / y) := by nlinarith
-    have hL3 : L ≤ L ^ 3 := by nlinarith
-    have hqy0 : 0 ≤ q / y := by positivity
-    have hT' : ((Nat.log 2 (2 * Q) : ℝ) + 1) * Real.sqrt (typeIIBlockBound p U (2 * Q)) ≤
-        3 * L * (10 * L ^ 2 * (q / y)) :=
-      mul_le_mul hlogtwo hsqrt (Real.sqrt_nonneg _) (by positivity)
-    nlinarith
-  have hfac := spectralFactor_le hp1 hq0 hpq'
+    have hL3 : L ≤ L ^ 3 := le_self_pow₀ hL1 (by norm_num)
+    have hL31 : 1 ≤ L ^ 3 := one_le_pow₀ hL1
+    nlinarith [mul_le_mul_of_nonneg_right hL3 hT0, mul_le_mul_of_nonneg_right hL31 hT0]
+  have hfac := spectralFactor_le (by exact_mod_cast hp.one_lt.le) hq0
+    (hpT.trans (by
+      calc T ≤ (Q : ℝ) * 1 := mul_le_mul_of_nonneg_left
+            (Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast (by omega : 1 ≤ Q))
+              (by linarith)) hq0.le
+        _ = Q := mul_one _))
   calc |kernelStatistic N (moebiusWindowRow Q) p|
-      ≤ (Real.pi ^ 2 * ((p : ℝ) ^ 2 - 1) / 36 / (q + 1) ^ 2 +
-          Real.pi ^ 2 * (p : ℝ) ^ 3 / 24 / (q + 1) ^ 3) * minorArcBound p U (2 * Q) := hmain
-    _ ≤ 0.69 * ((p : ℝ) ^ 2 / q ^ 2) * (33 * L ^ 3 * (q / y)) :=
+      ≤ (Real.pi ^ 2 * ((p : ℝ) ^ 2 - 1) / 36 / ((Q : ℝ) + 1) ^ 2 +
+          Real.pi ^ 2 * (p : ℝ) ^ 3 / 24 / ((Q : ℝ) + 1) ^ 3) * minorArcBound p U (2 * Q) :=
+        abs_kernelStatistic_moebiusWindowRow_le_minorArc hp hU1 hUp hQN
+    _ ≤ 0.69 * ((p : ℝ) ^ 2 / (Q : ℝ) ^ 2) * (33 * L ^ 3 * T) :=
         mul_le_mul hfac hM (minorArcBound_nonneg _ _ _) (by positivity)
-    _ ≤ 23 * L ^ 3 * ((p : ℝ) ^ 2 / q) * y⁻¹ := by
-        have e : 0.69 * ((p : ℝ) ^ 2 / q ^ 2) * (33 * L ^ 3 * (q / y)) =
-            22.77 * L ^ 3 * ((p : ℝ) ^ 2 / q) * y⁻¹ := by field_simp; ring
+    _ ≤ 23 * L ^ 3 * ((p : ℝ) ^ 2 / Q) * (Q : ℝ) ^ (-(δ / 4)) := by
+        have e : 0.69 * ((p : ℝ) ^ 2 / (Q : ℝ) ^ 2) * (33 * L ^ 3 * T) =
+            22.77 * L ^ 3 * ((p : ℝ) ^ 2 / Q) * (Q : ℝ) ^ (-(δ / 4)) := by
+          simp only [T]; field_simp; ring
         rw [e]
-        have : 0 ≤ L ^ 3 * ((p : ℝ) ^ 2 / q) * y⁻¹ := by positivity
-        nlinarith
-    _ = 23 * L ^ 3 * ((p : ℝ) ^ 2 / q) * q ^ (-(δ / 4)) := by rw [hqneg]
+        have : 0 ≤ L ^ 3 * ((p : ℝ) ^ 2 / Q) * (Q : ℝ) ^ (-(δ / 4)) := by positivity
+        linarith
 
 /-- **Eventual form.** For `0 < δ < 1` and all large `Q`, every prime `Q^δ ≤ p ≤ Q^{1-δ}` has
 `|Λ_p(μ𝟙_{(Q,2Q]})| ≤ (p²/Q) Q^{-δ/8}`. -/
@@ -399,9 +451,9 @@ theorem eventually_abs_kernelStatistic_moebiusWindowRow_le {δ : ℝ} (hδ : 0 <
     ∀ᶠ Q : ℕ in atTop, ∀ p : ℕ, p.Prime → (Q : ℝ) ^ δ ≤ p → (p : ℝ) ≤ (Q : ℝ) ^ (1 - δ) →
       ∀ N, 2 * Q ≤ N →
         |kernelStatistic N (moebiusWindowRow Q) p| ≤ (p : ℝ) ^ 2 / Q * (Q : ℝ) ^ (-(δ / 8)) := by
-  set ε : ℝ := δ / 48
-  have hε : 0 < ε := by positivity
-  set C : ℝ := 46 * (1 + 1 / ε) ^ 3
+  set ε : ℝ := δ / 48 with hεdef
+  have hε : 0 < ε := by rw [hεdef]; positivity
+  set C : ℝ := 184 * (1 + 1 / ε) ^ 3
   have hgrow : Tendsto (fun Q : ℕ => (Q : ℝ) ^ (δ / 16)) atTop atTop :=
     (tendsto_rpow_atTop (by positivity)).comp tendsto_natCast_atTop_atTop
   filter_upwards [hgrow.eventually_ge_atTop C, eventually_ge_atTop 2] with Q hQC hQ p hp hpl hpu N hQN
@@ -432,22 +484,21 @@ theorem eventually_abs_kernelStatistic_moebiusWindowRow_le {δ : ℝ} (hδ : 0 <
           pow_le_pow_left₀ hlog0 hle 3
       _ = 8 * (1 + 1 / ε) ^ 3 * ((Q : ℝ) ^ ε) ^ (3 : ℕ) := by ring
       _ = 8 * (1 + 1 / ε) ^ 3 * (Q : ℝ) ^ (δ / 16) := by
-          rw [← Real.rpow_natCast, ← Real.rpow_mul hq0.le]
-          congr 2
-          simp only [ε]
-          push_cast
-          ring
+          have e : ((Q : ℝ) ^ ε) ^ (3 : ℕ) = (Q : ℝ) ^ (δ / 16) := by
+            rw [← Real.rpow_natCast, ← Real.rpow_mul hq0.le]
+            congr 1
+            simp only [ε]
+            push_cast
+            ring
+          rw [e]
   have hsplit : (Q : ℝ) ^ (δ / 8) = (Q : ℝ) ^ (δ / 16) * (Q : ℝ) ^ (δ / 16) := by
     rw [← Real.rpow_add hq0]; congr 1; ring
   have hkey : 23 * (1 + Real.log (2 * Q)) ^ 3 ≤ (Q : ℝ) ^ (δ / 8) := by
     have hg0 : 0 ≤ (Q : ℝ) ^ (δ / 16) := Real.rpow_nonneg hq0.le _
     rw [hsplit]
-    calc 23 * (1 + Real.log (2 * Q)) ^ 3 ≤ 23 * (8 * (1 + 1 / ε) ^ 3 * (Q : ℝ) ^ (δ / 16)) := by
-          linarith
-      _ ≤ C * (Q : ℝ) ^ (δ / 16) := by
-          simp only [C]
-          have : 0 ≤ (1 + 1 / ε) ^ 3 * (Q : ℝ) ^ (δ / 16) := by positivity
-          nlinarith
+    calc 23 * (1 + Real.log (2 * Q)) ^ 3 ≤ 23 * (8 * (1 + 1 / ε) ^ 3 * (Q : ℝ) ^ (δ / 16)) :=
+          mul_le_mul_of_nonneg_left hcube (by norm_num)
+      _ = C * (Q : ℝ) ^ (δ / 16) := by simp only [C]; ring
       _ ≤ (Q : ℝ) ^ (δ / 16) * (Q : ℝ) ^ (δ / 16) := mul_le_mul_of_nonneg_right hQC hg0
   have hexp : (Q : ℝ) ^ (δ / 8) * (Q : ℝ) ^ (-(δ / 4)) = (Q : ℝ) ^ (-(δ / 8)) := by
     rw [← Real.rpow_add hq0]; congr 1; ring
@@ -479,14 +530,15 @@ theorem dualNorm_moebiusWindowRow_le_rpow {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ <
         div_le_div_of_nonneg_right h hp0.le
     _ = _ := by field_simp
 
-theorem sum_Icc_abs_moebiusWindowRow_div_pow_four_le {Q N : ℕ} (hQ : 1 ≤ Q) :
-    ∑ n ∈ Icc 1 N, |moebiusWindowRow Q n| / (n : ℝ) ^ 4 ≤ 1 / (Q : ℝ) ^ 3 := by
+/-- `Σ_n |μ𝟙_{(Q,2Q]}(n)|/nʳ ≤ Q/Qʳ`. -/
+theorem sum_Icc_abs_moebiusWindowRow_div_pow_le {Q N : ℕ} (hQ : 1 ≤ Q) (r : ℕ) :
+    ∑ n ∈ Icc 1 N, |moebiusWindowRow Q n| / (n : ℝ) ^ r ≤ (Q : ℝ) / (Q : ℝ) ^ r := by
   have hq0 : (0 : ℝ) < Q := by exact_mod_cast hQ
-  calc ∑ n ∈ Icc 1 N, |moebiusWindowRow Q n| / (n : ℝ) ^ 4
-      ≤ ∑ n ∈ Ioc Q (2 * Q), 1 / (Q : ℝ) ^ 4 := by
+  calc ∑ n ∈ Icc 1 N, |moebiusWindowRow Q n| / (n : ℝ) ^ r
+      ≤ ∑ n ∈ Ioc Q (2 * Q), 1 / (Q : ℝ) ^ r := by
         rw [← sum_filter_add_sum_filter_not (Icc 1 N) (fun n => Q < n ∧ n ≤ 2 * Q)]
         have h0 : ∑ n ∈ (Icc 1 N).filter (fun n => ¬(Q < n ∧ n ≤ 2 * Q)),
-            |moebiusWindowRow Q n| / (n : ℝ) ^ 4 = 0 :=
+            |moebiusWindowRow Q n| / (n : ℝ) ^ r = 0 :=
           sum_eq_zero fun n hn => by
             rw [moebiusWindowRow, if_neg (mem_filter.mp hn).2, abs_zero, zero_div]
         rw [h0, add_zero]
@@ -498,13 +550,12 @@ theorem sum_Icc_abs_moebiusWindowRow_div_pow_four_le {Q N : ℕ} (hQ : 1 ≤ Q) 
         rw [moebiusWindowRow, if_pos (mem_filter.mp hn).2]
         have hmu : |moebiusReal n| ≤ 1 := by
           unfold moebiusReal; exact_mod_cast ArithmeticFunction.abs_moebius_le_one
-        calc |moebiusReal n| / (n : ℝ) ^ 4 ≤ 1 / (n : ℝ) ^ 4 :=
+        calc |moebiusReal n| / (n : ℝ) ^ r ≤ 1 / (n : ℝ) ^ r :=
               div_le_div_of_nonneg_right hmu (by positivity)
-          _ ≤ 1 / (Q : ℝ) ^ 4 := one_div_le_one_div_of_le (by positivity)
-              (pow_le_pow_left₀ hq0.le hnQ 4)
-    _ = 1 / (Q : ℝ) ^ 3 := by
+          _ ≤ 1 / (Q : ℝ) ^ r := one_div_le_one_div_of_le (by positivity)
+              (pow_le_pow_left₀ hq0.le hnQ r)
+    _ = (Q : ℝ) / (Q : ℝ) ^ r := by
         rw [sum_const, Nat.card_Ioc, show 2 * Q - Q = Q by omega, nsmul_eq_mul]
-        field_simp
         ring
 
 /-- **The cross-scale form of the Möbius row has a power saving below the diagonal.** For every row
@@ -552,11 +603,15 @@ theorem abs_rowBilinear_moebiusWindowRow_sub_main_le_rpow {δ : ℝ} (hδ : 0 < 
       have := hc p
       have : (0 : ℝ) ≤ (p : ℝ) ^ 3 := by positivity
       nlinarith [abs_nonneg (c p)]
-  have hfour := sum_Icc_abs_moebiusWindowRow_div_pow_four_le (N := N) (by omega : 1 ≤ Q)
+  have hfour : ∑ n ∈ Icc 1 N, |moebiusWindowRow Q n| / (n : ℝ) ^ 4 ≤ 1 / (Q : ℝ) ^ 3 := by
+    have h := sum_Icc_abs_moebiusWindowRow_div_pow_le (N := N) (by omega : 1 ≤ Q) 4
+    rwa [show (Q : ℝ) / (Q : ℝ) ^ 4 = 1 / (Q : ℝ) ^ 3 by field_simp] at h
   have hcube_le : 6 * (∑ p ∈ S, (p : ℝ) ^ 3) * (1 / (Q : ℝ) ^ 3) ≤
       6 * (Q : ℝ) ^ (-(2 * δ)) * ∑ p ∈ S, (p : ℝ) / Q := by
-    rw [mul_assoc 6, mul_assoc 6, sum_mul, mul_sum]
-    refine mul_le_mul_of_nonneg_left (sum_le_sum fun p hp => ?_) (by norm_num)
+    suffices hsum : (∑ p ∈ S, (p : ℝ) ^ 3) * (1 / (Q : ℝ) ^ 3) ≤
+        (Q : ℝ) ^ (-(2 * δ)) * ∑ p ∈ S, (p : ℝ) / Q by linarith
+    rw [sum_mul, mul_sum]
+    refine sum_le_sum fun p hp => ?_
     have hp0 : (0 : ℝ) ≤ p := Nat.cast_nonneg p
     have hratio : (p : ℝ) / Q ≤ (Q : ℝ) ^ (-δ) := by
       rw [div_le_iff₀ hq0]
@@ -575,11 +630,9 @@ theorem abs_rowBilinear_moebiusWindowRow_sub_main_le_rpow {δ : ℝ} (hδ : 0 < 
   have hdual := dualNorm_moebiusWindowRow_le_rpow hδ hδ1 hQ hS hQN
   have h6 : 6 * (∑ d ∈ Icc 1 N, |c d| * (d : ℝ) ^ 3) *
       ∑ n ∈ Icc 1 N, |moebiusWindowRow Q n| / (n : ℝ) ^ 4 ≤
-        6 * (∑ p ∈ S, (p : ℝ) ^ 3) * (1 / (Q : ℝ) ^ 3) := by
-    have : 0 ≤ ∑ d ∈ Icc 1 N, |c d| * (d : ℝ) ^ 3 := sum_nonneg fun _ _ => by positivity
-    have : 0 ≤ ∑ n ∈ Icc 1 N, |moebiusWindowRow Q n| / (n : ℝ) ^ 4 :=
-      sum_nonneg fun _ _ => by positivity
-    gcongr
+        6 * (∑ p ∈ S, (p : ℝ) ^ 3) * (1 / (Q : ℝ) ^ 3) :=
+    mul_le_mul (mul_le_mul_of_nonneg_left hcube (by norm_num)) hfour
+      (sum_nonneg fun _ _ => by positivity) (by positivity)
   have key := abs_sub_abs_le_abs_sub (rowBilinear N c (moebiusWindowRow Q) +
     rowMean N c * vonMangoldtReadout N (moebiusWindowRow Q) +
     rowBeta N c * finiteHarmonicSum N (moebiusWindowRow Q) -

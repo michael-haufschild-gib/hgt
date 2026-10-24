@@ -1582,6 +1582,26 @@ theory's load-bearing walls.
     (`exists_general_all_five_forms_and_actual_zeta_coercivity`,
     `generalCriticalPrimeContinuousRealKernel_pos_of_nonneg_chi`,
     `exists_nonDyadic_stencil_negative_definite_cellKernel`).
+15. **Source selection in the full Weil cone and the additional sign estimates.** Narrow pair tests
+    `pairTest m σ` ($m\ge2$, $\sigma=\pm1$) have Kronecker-delta $\ell$-vectors
+    $2\sigma(\int h_m^2)/\sqrt m\cdot e_m$, strictly lower the Weil functional of every single-index
+    perturbation $w+\delta\mathbf 1_{n=m}$ ($\delta\ne0$) under $\sigma=\operatorname{sgn}\delta$,
+    uniquely identify every coefficient $w(m)$ ($m\ge2$) from `pairTest m 1`, and transfer via
+    `realPairTest m σ` to single-scale factorial grid tent patterns within $O(1/(n+1))$; truncated
+    Riemann kernels `truncatedRiemannKernelReal L` unconditionally refute $\Lambda+\delta\mathbf 1_{n=m}$
+    for $\delta>0$, while $\Lambda+\delta\mathbf 1_{n=m}$ is unconditionally outside the full Weil cone
+    for every $\delta\ne0$; the one-sided cones satisfy
+    $\mathrm{PositiveOnNonposCone}(U)\iff\mathrm{RH}\wedge\forall n\ge2,\Lambda(n)\le U(n)$ and
+    $\mathrm{PositiveOnNonnegCone}(L)\iff\mathrm{RH}\wedge\forall n\ge2,L(n)\le\Lambda(n)$ with no
+    summability premise; and for any source-identified weight `SourceIdentifiedWithVonMangoldt lam`,
+    full-cone positivity `WeilPositiveFull lam` is unconditionally equivalent to one-sided cone
+    positivity, prime-power node-deletion symbol slack $\le\mathrm{lam}(m)/\sqrt m$, a constant or
+    subexponential odd `gridTentPattern` floor, and `RiemannHypothesis`
+    (`re_weilFullFunctional_singleIndexPerturbation_pairTest`,
+    `forall_two_le_eq_iff_forall_re_weilFullFunctional_pairTest_eq`,
+    `exists_truncatedRiemannKernelReal_weilFullFunctional_singleIndexPerturbation_neg`,
+    `positiveOnNonposCone_iff_riemannHypothesis_and_vonMangoldt_le`,
+    `weilPositiveFull_of_sourceIdentified_iff_additional_estimates`).
 
 ---
 
@@ -1891,11 +1911,65 @@ on blocks, windows, truncations and lacunary unions.
 
 ### 7.9 Source selection in the full Weil cone
 
-The cone is empty if RH fails; under RH it consists of the von Mangoldt weight on the visible
-indices $n\ge2$. Full positivity is equivalent to RH together with that source identification;
-identifying the coefficients alone does not prove membership. Which admissible sources expose
-enough data to distinguish every single-index perturbation, and which additional estimate
-proves the sign for the identified source?
+By [SourceSelectionInTheFullWeilCone](SourceSelectionInTheFullWeilCone.lean), both questions of source
+selection and sign certification in the full Weil cone are resolved unconditionally:
+1. *Admissible sources exposing every single-index perturbation and one-sided cone selection:*
+   - **Narrow pair tests `pairTest m σ` and real seeds `realPairTest m σ` ($m\ge2$):** Because
+     `narrowBump m` has radius $1/(4(m+1))<\frac12\min_{k\ne m}\lvert\log k-\log m\rvert$, the
+     pair test $h_m(u)+\sigma h_m(u-\log m)$ has $\ell$-vector supported exclusively at index $m$ with
+     weight $2\sigma(\int h_m^2)/\sqrt m>0$ (`re_weilFullFunctional_pairTest_eq`). Perturbing any weight
+     $w:\mathbb N\to\mathbb R$ to `singleIndexPerturbation w m δ` shifts the real Weil functional on
+     `pairTest k σ` by $-\delta\cdot 2\sigma(\int h_m^2)/\sqrt m$ at $k=m$ (or $-\delta\sigma/\sqrt m$
+     when normalized by `massOf` for $\sigma^2=1$) and by $0$ at all $k\ne m$
+     (`re_weilFullFunctional_singleIndexPerturbation_pairTest`). Choosing $\sigma=\operatorname{sgn}\delta$
+     strictly lowers the Weil functional by $\lvert\delta\rvert\cdot 2(\int h_m^2)/\sqrt m>0$ for every
+     $\delta\ne0$ (`exists_pairTest_strict_drop_of_singleIndexPerturbation`). Two weights $w_1,w_2$
+     agree on all $n\ge2$ iff their full Weil functionals agree on `pairTest m 1` for all $m\ge2$, with
+     explicit inversion recovering $w_1(m)$ (`forall_two_le_eq_iff_forall_re_weilFullFunctional_pairTest_eq`),
+     and `realPairTest m σ` transfers this coordinate evaluation to single-scale factorial grid tent
+     patterns `gridTentPattern` within $C_{\mathrm{grid}}(\log m+1,M_g,K_g,L)\,d_{n+1}$
+     (`realPairTest_weilFullFunctional_and_gridTent_approximation`).
+   - **Truncated Riemann kernels `truncatedRiemannKernelReal L` and unconditional refutation of
+     $\Lambda+\delta\mathbf 1_{n=m}$:** The exposing functional
+     $\ell(v)=\mathrm{atomPairing}(v,\mathrm{riemannKernelAutocorr})$ evaluates on
+     `singleIndexDelta m δ` to $(\delta/\sqrt m)(K(\log m)+K(-\log m))$, which has the exact sign of
+     $\delta$ (`atomPairing_singleIndexDelta_riemannKernelAutocorr_sign`). For every $m\ge2$ and
+     $\delta>0$, **unconditionally** (without RH), there exists $L_0$ such that for all $L\ge L_0$,
+     `truncatedRiemannKernelReal L` makes the full Weil functional of
+     $\Lambda+\delta\mathbf 1_{n=m}$ at most $-\ell/3<0$
+     (`exists_truncatedRiemannKernelReal_weilFullFunctional_singleIndexPerturbation_neg`). For every
+     $m\ge2$ and $\delta\ne0$ of either sign, $\Lambda+\delta\mathbf 1_{n=m}$ is unconditionally
+     outside the full Weil cone (`not_weilPositiveFull_vonMangoldtSingleIndexPerturbation_of_ne_zero`,
+     `weilPositiveFull_vonMangoldtSingleIndexPerturbation_iff`).
+   - **Unconditional one-sided cone selection without summability premises:** Combining M. Riesz
+     one-sided feasibility with unconditional full-cone uniqueness removes the summability hypotheses
+     from the one-sided criteria: for *every* $U,L:\mathbb N\to\mathbb R$,
+     $\mathrm{PositiveOnNonposCone}(U)\iff\mathrm{RH}\wedge\forall n\ge2,\Lambda(n)\le U(n)$ and
+     $\mathrm{PositiveOnNonnegCone}(L)\iff\mathrm{RH}\wedge\forall n\ge2,L(n)\le\Lambda(n)$, so
+     $\mathrm{WeilPositiveFull}(\mathrm{lam})\iff\mathrm{PositiveOnNonposCone}(\mathrm{lam})\wedge\mathrm{PositiveOnNonnegCone}(\mathrm{lam})$
+     (`positiveOnNonposCone_iff_riemannHypothesis_and_vonMangoldt_le`,
+     `positiveOnNonnegCone_iff_riemannHypothesis_and_le_vonMangoldt`,
+     `weilPositiveFull_iff_positiveOnNonposCone_and_positiveOnNonnegCone`).
+2. *Additional estimates proving the sign for the identified source:* Identifying a weight `lam` with
+   $\Lambda$ via `SourceIdentifiedWithVonMangoldt lam` (matching $\Lambda$ on `pairTest m 1` for all
+   $m\ge2$, equivalent to $\forall n\ge2,\mathrm{lam}(n)=\Lambda(n)$) is unconditionally satisfied by
+   $\Lambda$ and does not by itself prove `WeilPositiveFull lam`
+   (`sourceIdentifiedWithVonMangoldt_vonMangoldt_and_membership_iff`). For any source-identified `lam`,
+   full-cone positivity `WeilPositiveFull lam` is unconditionally equivalent to each of:
+   (i) `PositiveOnNonposCone lam` (where the prime sum is already nonnegative),
+   (ii) `PositiveOnNonnegCone lam`,
+   (iii) the prime-power deletion symbol slack bound
+         $\forall m\text{ prime power},\ \mathrm{ZeroPoleBlindSymbolSlackOn}(\mathrm{primePowerNodes}\setminus\{m\},\mathrm{lam}(m)/\sqrt m)$,
+   (iv) a constant-in-aperture floor $-C\int F^2$ on odd `gridTentPattern`s,
+   (v) a subexponential-in-aperture floor $-C_\sigma e^{2\sigma r}\int F^2$ ($\forall\sigma>0$) on odd
+       `gridTentPattern`s,
+   (vi) a subexponential-in-aperture floor on `fullZeroForm F` for all odd $F\in C^2_c([-r,r])$, and
+   (vii) `RiemannHypothesis` (`weilPositiveFull_of_sourceIdentified_iff_additional_estimates`). At a
+   graded level, an $(\alpha,\beta)$-norm-controlled subfamily transfer with rate-$2\sigma$ floor for
+   `lam` certifies $\mathrm{zetaZeroWidth}\le\sigma+\beta$, and eventual nonnegativity of `lam` on
+   `smoothGridTentDetector` at a single fixed aperture $R\ge e^6$ certifies `ZetaWindowPositive R` and
+   excludes all zeros of depth $\ge 1/R$ below $\mathrm{zetaClusterHorizonHeight}(A_0,R)$
+   (`graded_and_finite_aperture_sign_of_sourceIdentified`).
 
 ### 7.10 A common shift for the Suzuki deficit
 

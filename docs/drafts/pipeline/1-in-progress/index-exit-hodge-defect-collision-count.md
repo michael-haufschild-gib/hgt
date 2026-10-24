@@ -46,6 +46,8 @@ is an upper bound on the count, computed without the zeros, below the first quan
   mass ⇔ all zeros above a height on the line ⇔ bounded horizontal collision charge.
 - `zetaZeroAbscissa_lt_one_of_finite_rightZeros`,
   `moebius_and_prime_powerWindowSaving_of_finite_rightZeros`.
+- `encard_rightZeros_le_iSup_horizontalCollisionCharge`: `D ≤ sup_T charge(T)`, so the two
+  quantized endpoints are ordered (charge `< 2` ⇒ `D < 2` ⇒ RH).
 - `even_ncard_rightZeros`, `riemannHypothesis_iff_encard_rightZeros_lt_two`.
 
 ## Open core

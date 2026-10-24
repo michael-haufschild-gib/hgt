@@ -1,8 +1,8 @@
 # A separating observable with an exponent: the mean value is the leading coefficient of the receiver
 
 - **ID:** sep-obs-exponent
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** docs/reports/review-2410/fable.md §2.3 E · THIM README 7.8.1 · BVI README 7.8.4
 - **Statement:** For `0 < ε < 1/2` and every bounded sign pattern `s` with mean value `L`, the receiver of
   `s(d) d^{-ε}` satisfies `A_s(n) = L Z_ε n^{1-ε} + o(n^{1-ε})` and `E_T(s) = (Γ_ε L² + o(1)) T^{1-2ε}`,
@@ -31,8 +31,10 @@ Möbius mean, and that is proved equivalent to `Θ < 1`; it is not claimed.
 
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea
-- [ ] 1 → 2  fully-proven: complete paper proof, no open dependency
-- [ ] 2 → 3  formalized: Lean theorems, file checks green, axiom audit clean
+- [x] 1 → 2  fully-proven: complete paper proof, no open dependency
+- [x] 2 → 3  formalized: both modules check with `lake --old env lean`; `#print axioms` on every
+  headline theorem gives only `propext`, `Classical.choice`, `Quot.sound`; wired into
+  `BezoutValuationIncidence.lean`
 - [ ] 3 → 4  publication-ready
 
 ## Paper proof
@@ -111,10 +113,53 @@ while the twin pattern `c'_ε(d) d^ε ≥ (ρ_ε/U_ε) μ²(d)` has cutoff mean
 
 ## Lean
 
-Planned modules (Bézout–Valuation Incidence):
-- `BezoutValuationIncidence/TheMeanValueIsTheLeadingCoefficientOfTheReceiver.lean`: Lemmas 1–3,
-  Theorems A, B, Corollaries A1–A4.
-- `BezoutValuationIncidence/TheParityPairAtTheLeadingExponent.lean`: Theorems C, D.
+`formal/GaloisForLFunctions/BezoutValuationIncidence/TheMeanValueIsTheLeadingCoefficientOfTheReceiver.lean`
+- Lemma 1: `patternPrefix_add`, `patternPrefix_eq_mean_add`.
+- Lemma 2: `tendsto_patternReceiver_unitSign_div_rpow` (via `probeEnergyProfile_zero`),
+  `tendsto_patternPrefix_unitSign_div_rpow`.
+- Lemma 3: `eventually_abs_patternPrefix_le_of_meanZero`,
+  `tendsto_patternReceiver_div_rpow_of_meanZero`.
+- Theorem A: `tendsto_patternPrefix_div_rpow`, `tendsto_patternReceiver_div_rpow`,
+  `tendsto_patternReceiver_div_rpow_of_abs_le`.
+- A1: `exists_patternReceiver_floor_ceiling`. A2: `meanValue_eq_zero_of_receiverBounded`,
+  `not_receiverBounded_of_meanValue_ne_zero`. A3: `sq_meanValue_le_of_abs_le`,
+  `leadingCoeff_le_of_abs_le`. A4: `dirichletConv_unit_eq_dampedSignWeight`,
+  `hasMeanValue_kernelPattern`, `tendsto_receiver_dirichletConv_unit_div_rpow`.
+- Theorem B: `exists_patternReceiver_le_of_rate`, `hasMeanValue_of_rate`,
+  `exists_abs_sqrt_patternReceiver_sub_le_of_rate`.
+
+`formal/GaloisForLFunctions/BezoutValuationIncidence/TheParityPairAtTheLeadingExponent.lean`
+- Theorem C: `hasMeanValue_moebiusReal`, `tendsto_moebius_receiver_div_rpow`,
+  `tendsto_moebius_prefix_div_rpow`, `zetaZeroAbscissa_lt_one_iff_moebius_rate`,
+  `exists_moebius_receiver_le_of_zetaZeroAbscissa_lt_one`.
+- Theorem D: `hasMeanValue_moebiusSqPattern`, `tendsto_moebiusSq_receiver_div_rpow`,
+  `exists_parityTwin_receiver_ge_rpow`, `tendsto_moebius_div_parityTwin_receiver`,
+  `firstPronicMoment_carries_no_exponent`, `parityPair_cutoffMean_separation`,
+  `parityPair_at_the_leading_exponent`.
+
+Inputs used from the corpus: the all-damping rate transfer
+`abs_weightCenteredPrefix_dampedSign_le_of_linear_all_pos`, the probe energy law
+`tendsto_probeEnergy_div_sub_profile`, the smooth-power remainder `abs_subHalfRemainder_le`, the
+de la Vallée Poussin rate `exists_abs_sum_moebiusReal_le_sqrtLog`, Littlewood's bound
+`RHTower.mobiusMertens_subpower_zetaZeroAbscissa`, the absolute-moment exponent law
+`RHTower.zetaZeroAbscissa_le_of_sum_norm_mertens_rpow_le`, the squarefree count
+`RHTower.Sieve.abs_sum_moebius_sq_Icc_sub_le`, the twin drift `parityTwin_drift_ge`, and
+`firstMomentBlind_parityPair`.
+
+## Status of the opening
+
+Resolved at the leading exponent, unconditionally: the separating observable that carries an
+exponent is the mean value (equivalently the pole value of the kernel); its exponent is `1 - 2ε`
+with constant `Γ_ε`, and the ceiling of opening E holds with its matching floor on every bounded
+pattern with a mean value, the actual Möbius row and its twins included. The first pronic moment
+and the von Mangoldt readout carry no exponent. The finite statistic of BVI 7.8.4 is the cutoff
+mean.
+
+Open, and identified exactly: the subleading exponent of the actual source. A power saving below
+`T^{1-2ε}` for the Möbius receiver follows from, and the power rate of the Möbius mean value is
+equivalent to, the zero-free strip `Θ < 1`. The leading law does not reach it: for the Möbius row
+the leading coefficient is `0` by the prime number theorem, and what remains is the rate.
 
 ## Log
 - 2026-10-24 — created in 1-in-progress
+- 2026-10-24 — paper proof complete; both modules formalized and audited; moved to 3-formalized

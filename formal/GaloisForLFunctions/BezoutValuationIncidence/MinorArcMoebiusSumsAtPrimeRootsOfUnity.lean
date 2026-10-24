@@ -413,16 +413,18 @@ theorem norm_typeI_le {p : ℕ} (hp : p.Prime) {ξ : ℂ} (hξ : IsPrimitiveRoot
           simp only [mem_filter, mem_Icc] at hd ⊢; omega) fun _ _ _ => by positivity
     _ ≤ _ := sum_Icc_two_div_norm_pow_sub_one_le hp hξ hV
 
-/-- **The Type-I part of `μ`.** `‖Σ_{n ≤ N} (μ_U ∗ μ_U ∗ 1)(n) ζⁿ‖ ≤ U W_p` for `U < p`. -/
-theorem norm_sum_moebius_typeI_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsPrimitiveRoot ζ p)
-    {U : ℕ} (hUp : U < p) (N : ℕ) :
-    ‖∑ n ∈ Icc 1 N, (((truncAF (moebius : ArithmeticFunction ℝ) U *
-        truncAF (moebius : ArithmeticFunction ℝ) U * (zeta : ArithmeticFunction ℝ)) n : ℝ) : ℂ) *
-        ζ ^ n‖ ≤ U * rootHarmonicSum p := by
-  set a := truncAF (moebius : ArithmeticFunction ℝ) U
+/-- **Type-I sums of a double convolution.** For `f` supported on `[1, U]` with `|f| ≤ F`, `c`
+supported on `[1, V]` with `|c| ≤ 1`, and `U, V < p`: `‖Σ_{n ≤ N} (f ∗ c ∗ 1)(n) ζⁿ‖ ≤ U F W_p`. -/
+theorem norm_sum_conv_conv_zeta_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsPrimitiveRoot ζ p)
+    {U V : ℕ} (hUp : U < p) (hVp : V < p) (f c : ArithmeticFunction ℝ) {F : ℝ}
+    (hf : ∀ a, |f a| ≤ F) (hfs : ∀ a, U < a → f a = 0) (hc : ∀ b, |c b| ≤ 1)
+    (hcs : ∀ b, V < b → c b = 0) (N : ℕ) :
+    ‖∑ n ∈ Icc 1 N, (((f * c * (zeta : ArithmeticFunction ℝ)) n : ℝ) : ℂ) * ζ ^ n‖ ≤
+      U * F * rootHarmonicSum p := by
+  have hF0 : 0 ≤ F := (abs_nonneg _).trans (hf 0)
   set G : ℕ → ℂ := fun e => ∑ m ∈ Icc 1 (N / e), (ζ ^ e) ^ m
-  have h1 : ∑ n ∈ Icc 1 N, (((a * a * (zeta : ArithmeticFunction ℝ)) n : ℝ) : ℂ) * ζ ^ n =
-      ∑ e ∈ Icc 1 N, (((a * a) e : ℝ) : ℂ) * G e := by
+  have h1 : ∑ n ∈ Icc 1 N, (((f * c * (zeta : ArithmeticFunction ℝ)) n : ℝ) : ℂ) * ζ ^ n =
+      ∑ e ∈ Icc 1 N, (((f * c) e : ℝ) : ℂ) * G e := by
     rw [sum_Icc_mul_conv]
     refine sum_congr rfl fun e _ => ?_
     simp only [G, mul_sum]
@@ -430,8 +432,8 @@ theorem norm_sum_moebius_typeI_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsP
     rw [natCoe_apply, zeta_apply, if_neg (by have := (mem_Icc.mp hm).1; omega), pow_mul]
     push_cast
     ring
-  have h2 : ∑ e ∈ Icc 1 N, (((a * a) e : ℝ) : ℂ) * G e =
-      ∑ d ∈ Icc 1 N, (a d : ℂ) * ∑ k ∈ Icc 1 (N / d), (a k : ℂ) *
+  have h2 : ∑ e ∈ Icc 1 N, (((f * c) e : ℝ) : ℂ) * G e =
+      ∑ d ∈ Icc 1 N, (f d : ℂ) * ∑ k ∈ Icc 1 (N / d), (c k : ℂ) *
         ∑ m ∈ Icc 1 ((N / d) / k), ((ζ ^ d) ^ k) ^ m := by
     rw [sum_Icc_mul_conv]
     refine sum_congr rfl fun d _ => ?_
@@ -441,26 +443,35 @@ theorem norm_sum_moebius_typeI_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsP
     push_cast
     ring
   rw [h1, h2]
-  have hterm : ∀ d ∈ Icc 1 N, ‖(a d : ℂ) * ∑ k ∈ Icc 1 (N / d), (a k : ℂ) *
+  have hterm : ∀ d ∈ Icc 1 N, ‖(f d : ℂ) * ∑ k ∈ Icc 1 (N / d), (c k : ℂ) *
       ∑ m ∈ Icc 1 ((N / d) / k), ((ζ ^ d) ^ k) ^ m‖ ≤
-      (if d ≤ U then 1 else 0) * rootHarmonicSum p := by
+      if d ≤ U then F * rootHarmonicSum p else 0 := by
     intro d hd
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
     by_cases hdU : d ≤ U
     · have hξ : IsPrimitiveRoot (ζ ^ d) p := isPrimitiveRoot_pow_of_not_dvd hp hζ
         (Nat.not_dvd_of_pos_of_lt (mem_Icc.mp hd).1 (by omega))
-      have hI := norm_typeI_le hp hξ hUp a (fun k => (abs_truncAF_moebius_le U k).trans
-        (by split_ifs <;> norm_num)) (fun k hk => by simp only [a, truncAF_apply_of_gt hk])
-        (N / d) (N / d)
-      exact mul_le_mul (abs_truncAF_moebius_le U d) hI (norm_nonneg _)
-        (by rw [if_pos hdU]; norm_num)
-    · rw [show a d = 0 from truncAF_apply_of_gt (by omega), abs_zero, zero_mul, if_neg hdU,
-        zero_mul]
-  calc _ ≤ ∑ d ∈ Icc 1 N, (if d ≤ U then 1 else 0) * rootHarmonicSum p :=
+      rw [if_pos hdU]
+      exact mul_le_mul (hf d) (norm_typeI_le hp hξ hVp c hc hcs (N / d) (N / d)) (norm_nonneg _)
+        hF0
+    · rw [hfs d (by omega), abs_zero, zero_mul, if_neg hdU]
+  calc _ ≤ ∑ d ∈ Icc 1 N, (if d ≤ U then F * rootHarmonicSum p else 0) :=
         (norm_sum_le _ _).trans (sum_le_sum hterm)
-    _ = ∑ d ∈ Icc 1 N, (if d ≤ U then rootHarmonicSum p else 0) :=
-        sum_congr rfl fun d _ => by rw [ite_mul, one_mul, zero_mul]
-    _ ≤ U * rootHarmonicSum p := sum_Icc_ite_le_le N U (rootHarmonicSum_nonneg p)
+    _ ≤ U * (F * rootHarmonicSum p) :=
+        sum_Icc_ite_le_le N U (mul_nonneg hF0 (rootHarmonicSum_nonneg p))
+    _ = U * F * rootHarmonicSum p := by ring
+
+/-- **The Type-I part of `μ`.** `‖Σ_{n ≤ N} (μ_U ∗ μ_U ∗ 1)(n) ζⁿ‖ ≤ U W_p` for `U < p`. -/
+theorem norm_sum_moebius_typeI_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsPrimitiveRoot ζ p)
+    {U : ℕ} (hUp : U < p) (N : ℕ) :
+    ‖∑ n ∈ Icc 1 N, (((truncAF (moebius : ArithmeticFunction ℝ) U *
+        truncAF (moebius : ArithmeticFunction ℝ) U * (zeta : ArithmeticFunction ℝ)) n : ℝ) : ℂ) *
+        ζ ^ n‖ ≤ U * rootHarmonicSum p := by
+  have hb : ∀ k, |truncAF (moebius : ArithmeticFunction ℝ) U k| ≤ 1 := fun k =>
+    (abs_truncAF_moebius_le U k).trans (by split_ifs <;> norm_num)
+  have hs : ∀ k, U < k → truncAF (moebius : ArithmeticFunction ℝ) U k = 0 := fun k hk =>
+    truncAF_apply_of_gt hk
+  simpa using norm_sum_conv_conv_zeta_le hp hζ hUp hUp _ _ hb hs hb hs N
 
 /-! ## §8. The Type-II part of `μ` on dyadic blocks, and the minor-arc law -/
 
@@ -487,17 +498,17 @@ theorem typeIIBlockBound_nonneg (p U N : ℕ) : 0 ≤ typeIIBlockBound p U N := 
   have := invSum_nonneg N
   positivity
 
-/-- **One dyadic Type-II block of `μ`.** On `d ∈ (D, 2D]`, `D = 2^i U ≥ U`, the block is empty
-unless `N/D > U` (since `g = 0` on `[1, U]`), and then `D ≤ N/U`, `N/D ≤ N/U`. -/
-theorem norm_sq_moebius_typeII_block_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
-    (hζ : IsPrimitiveRoot ζ p) {U : ℕ} (hU : 1 ≤ U) (N i : ℕ) :
+/-- **One dyadic Type-II block against `g = typeIIShort U`.** On `d ∈ (D, 2D]`, `D = 2^i U ≥ U`,
+with `|α| ≤ 1`, the block is empty unless `N/D > U` (since `g = 0` on `[1, U]`), and then
+`D ≤ N/U`, `N/D ≤ N/U`. -/
+theorem norm_sq_typeIIShort_block_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
+    (hζ : IsPrimitiveRoot ζ p) {U : ℕ} (hU : 1 ≤ U) (N i : ℕ) (α : ℕ → ℝ)
+    (hα : ∀ d, |α d| ≤ 1) :
     ‖∑ d ∈ Ioc (2 ^ i * U) (2 * (2 ^ i * U)), ∑ k ∈ Icc 1 (N / d),
-        ((((moebius : ArithmeticFunction ℝ) - truncAF (moebius : ArithmeticFunction ℝ) U) d *
-          typeIIShort U k : ℝ) : ℂ) * ζ ^ (d * k)‖ ^ 2 ≤ typeIIBlockBound p U N := by
+        ((α d * typeIIShort U k : ℝ) : ℂ) * ζ ^ (d * k)‖ ^ 2 ≤ typeIIBlockBound p U N := by
   have hD1 : U ≤ 2 ^ i * U := Nat.le_mul_of_pos_left U (Nat.two_pow_pos i)
   have hD0 : 0 < 2 ^ i * U := by omega
-  refine (norm_sq_typeII_block_le hp hζ N hD0 _ (typeIIShort U)
-    (abs_moebius_sub_truncAF_le U)).trans ?_
+  refine (norm_sq_typeII_block_le hp hζ N hD0 α (typeIIShort U) hα).trans ?_
   set D := 2 ^ i * U
   set L := N / D
   set W := rootHarmonicSum p
@@ -561,28 +572,42 @@ theorem norm_sq_moebius_typeII_block_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
         mul_le_mul_of_nonneg_left hkey (by positivity)
     _ = typeIIBlockBound p U N := rfl
 
-/-- **The Type-II part of `μ`.** `‖Σ_{n ≤ N} ((μ - μ_U) ∗ g)(n) ζⁿ‖ ≤ (log₂ N + 1) √(block bound)`. -/
-theorem norm_sum_moebius_typeII_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsPrimitiveRoot ζ p)
-    {U : ℕ} (hU : 1 ≤ U) (N : ℕ) :
-    ‖∑ n ∈ Icc 1 N, (((((moebius : ArithmeticFunction ℝ) -
-        truncAF (moebius : ArithmeticFunction ℝ) U) * typeIIShort U) n : ℝ) : ℂ) * ζ ^ n‖ ≤
-      (Nat.log 2 N + 1) * Real.sqrt (typeIIBlockBound p U N) := by
-  set b := (moebius : ArithmeticFunction ℝ) - truncAF (moebius : ArithmeticFunction ℝ) U
-  set F : ℕ → ℂ := fun d => ∑ k ∈ Icc 1 (N / d), ((b d * typeIIShort U k : ℝ) : ℂ) * ζ ^ (d * k)
-  have hb0 : ∀ d, d ≤ U → b d = 0 := fun d hd => by
-    show (moebius : ArithmeticFunction ℝ) d - truncAF (moebius : ArithmeticFunction ℝ) U d = 0
-    rw [truncAF_apply, if_pos hd, sub_self]
-  have hNI : N < 2 ^ (Nat.log 2 N + 1) * U := lt_of_lt_of_le (Nat.lt_pow_succ_log_self (by norm_num) N)
-    (Nat.le_mul_of_pos_right _ hU)
-  have hconv : ∑ n ∈ Icc 1 N, (((b * typeIIShort U) n : ℝ) : ℂ) * ζ ^ n = ∑ d ∈ Icc 1 N, F d := by
-    rw [sum_Icc_mul_conv]
+/-- **Type-II sums against `g = typeIIShort U`.** For `α` vanishing on `[1, U]` with
+`|α(d)| ≤ A` for `d ≤ N`,
+`‖Σ_{d ≤ N} Σ_{k ≤ N/d} α(d) g(k) ζ^{dk}‖ ≤ (log₂ N + 1) A √(typeIIBlockBound p U N)`. -/
+theorem norm_sum_typeIIShort_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsPrimitiveRoot ζ p)
+    {U : ℕ} (hU : 1 ≤ U) (N : ℕ) (α : ℕ → ℝ) {A : ℝ} (hA : 0 < A)
+    (hα : ∀ d, d ≤ N → |α d| ≤ A) (hα0 : ∀ d, d ≤ U → α d = 0) :
+    ‖∑ d ∈ Icc 1 N, ∑ k ∈ Icc 1 (N / d), ((α d * typeIIShort U k : ℝ) : ℂ) * ζ ^ (d * k)‖ ≤
+      (Nat.log 2 N + 1) * A * Real.sqrt (typeIIBlockBound p U N) := by
+  set α' : ℕ → ℝ := fun d => if d ≤ N then α d / A else 0
+  have hα' : ∀ d, |α' d| ≤ 1 := fun d => by
+    simp only [α']
+    split_ifs with hd
+    · rw [abs_div, abs_of_pos hA, div_le_one hA]; exact hα d hd
+    · simp
+  set F : ℕ → ℂ := fun d => ∑ k ∈ Icc 1 (N / d), ((α' d * typeIIShort U k : ℝ) : ℂ) * ζ ^ (d * k)
+  have hscale : ∀ d, ∑ k ∈ Icc 1 (N / d), ((α d * typeIIShort U k : ℝ) : ℂ) * ζ ^ (d * k) =
+      (A : ℂ) * F d := fun d => by
+    simp only [F, α', mul_sum]
+    by_cases hd : d ≤ N
+    · have hA' : (A : ℂ) ≠ 0 := by exact_mod_cast hA.ne'
+      refine sum_congr rfl fun k _ => ?_
+      rw [if_pos hd]
+      push_cast
+      field_simp
+    · rw [Nat.div_eq_of_lt (by omega)]
+      simp
+  have hNI : N < 2 ^ (Nat.log 2 N + 1) * U :=
+    lt_of_lt_of_le (Nat.lt_pow_succ_log_self (by norm_num) N) (Nat.le_mul_of_pos_right _ hU)
   have hext : ∑ d ∈ Icc 1 N, F d = ∑ d ∈ Ioc U (2 ^ (Nat.log 2 N + 1) * U), F d := by
     have hFbig : ∀ d, N < d → F d = 0 := fun d hd => by
       simp only [F]
       rw [Nat.div_eq_of_lt hd]
       simp
     have hFsmall : ∀ d, d ≤ U → F d = 0 := fun d hd => by
-      simp only [F, hb0 d hd, zero_mul, Complex.ofReal_zero]
+      have : α' d = 0 := by simp only [α']; split_ifs <;> simp [hα0 d hd]
+      simp only [F, this, zero_mul, Complex.ofReal_zero]
       simp
     have hIcc : Icc 1 N = Ioc 0 N := Finset.Icc_add_one_left_eq_Ioc 0 N
     rw [hIcc, sum_subset (show Ioc 0 N ⊆ Ioc 0 (2 ^ (Nat.log 2 N + 1) * U) from
@@ -590,17 +615,33 @@ theorem norm_sum_moebius_typeII_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : Is
           simp only [mem_Ioc, not_and, not_le] at hd hdN; exact hdN hd.1)),
       ← sum_Ioc_consecutive _ (Nat.zero_le U) (Nat.le_mul_of_pos_left U (Nat.two_pow_pos _)),
       sum_eq_zero (s := Ioc 0 U) (f := F) (fun d hd => hFsmall d (mem_Ioc.mp hd).2), zero_add]
-  rw [hconv, hext, sum_Ioc_eq_sum_dyadic]
-  calc ‖∑ i ∈ range (Nat.log 2 N + 1), ∑ d ∈ Ioc (2 ^ i * U) (2 * (2 ^ i * U)), F d‖
-      ≤ ∑ i ∈ range (Nat.log 2 N + 1), Real.sqrt (typeIIBlockBound p U N) := by
-        refine (norm_sum_le _ _).trans (sum_le_sum fun i _ => ?_)
-        have h := norm_sq_moebius_typeII_block_le hp hζ hU N i
+  rw [sum_congr rfl fun d _ => hscale d, ← mul_sum, norm_mul, Complex.norm_real,
+    Real.norm_of_nonneg hA.le, hext, sum_Ioc_eq_sum_dyadic]
+  calc A * ‖∑ i ∈ range (Nat.log 2 N + 1), ∑ d ∈ Ioc (2 ^ i * U) (2 * (2 ^ i * U)), F d‖
+      ≤ A * ∑ i ∈ range (Nat.log 2 N + 1), Real.sqrt (typeIIBlockBound p U N) := by
+        refine mul_le_mul_of_nonneg_left ((norm_sum_le _ _).trans (sum_le_sum fun i _ => ?_)) hA.le
+        have h := norm_sq_typeIIShort_block_le hp hζ hU N i α' hα'
         have := Real.abs_le_sqrt h
         rwa [abs_of_nonneg (norm_nonneg _)] at this
-    _ = (Nat.log 2 N + 1) * Real.sqrt (typeIIBlockBound p U N) := by
+    _ = (Nat.log 2 N + 1) * A * Real.sqrt (typeIIBlockBound p U N) := by
         rw [sum_const, card_range, nsmul_eq_mul]
         push_cast
         ring
+
+/-- **The Type-II part of `μ`.** `‖Σ_{n ≤ N} ((μ - μ_U) ∗ g)(n) ζⁿ‖ ≤ (log₂ N + 1) √(block bound)`. -/
+theorem norm_sum_moebius_typeII_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsPrimitiveRoot ζ p)
+    {U : ℕ} (hU : 1 ≤ U) (N : ℕ) :
+    ‖∑ n ∈ Icc 1 N, (((((moebius : ArithmeticFunction ℝ) -
+        truncAF (moebius : ArithmeticFunction ℝ) U) * typeIIShort U) n : ℝ) : ℂ) * ζ ^ n‖ ≤
+      (Nat.log 2 N + 1) * Real.sqrt (typeIIBlockBound p U N) := by
+  have hb0 : ∀ d, d ≤ U →
+      ((moebius : ArithmeticFunction ℝ) - truncAF (moebius : ArithmeticFunction ℝ) U) d = 0 :=
+    fun d hd => by
+      show (moebius : ArithmeticFunction ℝ) d - truncAF (moebius : ArithmeticFunction ℝ) U d = 0
+      rw [truncAF_apply, if_pos hd, sub_self]
+  rw [sum_Icc_mul_conv]
+  simpa using norm_sum_typeIIShort_le hp hζ hU N _ one_pos
+    (fun d _ => abs_moebius_sub_truncAF_le U d) hb0
 
 /-- **The minor-arc law for Möbius at prime roots of unity.** For `p` prime, `ζ ≠ 1` a `p`-th root
 of unity and `1 ≤ U < p`,

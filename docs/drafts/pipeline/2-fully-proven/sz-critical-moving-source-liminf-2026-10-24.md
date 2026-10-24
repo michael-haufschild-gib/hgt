@@ -68,6 +68,19 @@ in the extended reals. Exact positive-tail splitting and the Gamma recurrence
 identify the result with W_ext(f). This proves the lower bound; the constant
 sequence gives recovery.
 
+## Almost-everywhere support
+
+The same statement holds when the common-window support condition is only
+almost everywhere. Replace each source f by `1_[-B,B] f`. This representative
+is pointwise supported in the window and equal to f almost everywhere, hence
+defines the same L² element and preserves strong convergence. Translation
+preserves null sets, so its autocorrelation is identical at every lag.
+Both the literal Suzuki pairing and the extended Weil energy depend only on
+that autocorrelation. Apply the pointwise-window theorem to these representatives
+and substitute the equal quantities back. Constant recovery is unchanged.
+This is a representative-invariance bridge, with no additional analytic input
+or novelty claim. The a.e. versions are included in the unchecked Lean draft.
+
 ## Positive consequence
 
 If a concrete compact source has positive full energy, every strongly convergent

@@ -69,8 +69,11 @@ arithmetic estimates to make a dictionary applicable.
   sides and quantifiers. The all-natural rpow formula is named
   `envelopePrimeMajorant_one_eq_rpow`; the restricted sqrt formula keeps its name.
 - The centered-heat paper card says its proof was removed as redundant with
-  `zeta_hodge_index_cluster_horizon`. Exact smooth-witness and aperture coverage
-  still require inspection; a novelty verdict is not a theorem audit.
+  `zeta_hodge_index_cluster_horizon`. Its exact target includes a C∞ compact
+  complex witness and the power-38 aperture bound; the new cluster-horizon
+  bridge includes both. The original card
+  `centered-heat-polynomial-aperture-detection.md` needs its exact-subsumption
+  status updated after that bridge's canonical and axiom checks pass.
 - J3 is not discharged by `guthMaynardLargeValuesBound_holds`: the requested
   pair-sum and all-k statements must each be checked independently.
 - All 22 integration leaves in `logs/just-work-2410/inventory.json` passed
@@ -110,8 +113,10 @@ arithmetic estimates to make a dictionary applicable.
   `RHTower/Sieve/HeathBrownPairSumAllLengths.lean` proves the exact
   `heathBrownPairSumBound_holds` endpoint. Its full-source scratch check and
   all seven public transitive axiom audits passed. The canonical leaf check
-  passed and the owning umbrella imports it once. The sharp all-k S₂ draft is
-  `/tmp/hgt-just-work-sharp-s2.lean`; it still requires Lean verification.
+  passed and the owning umbrella imports it once.
+  `RHTower/Sieve/GuthMaynardSharpSTwo.lean` supplies the sharp all-k S₂ family
+  and Proposition 12.1. Its full-source check and all three public axiom
+  audits passed; canonical final checking and wiring remain pending.
 - J4(i) can use the existing cluster horizon followed by complete-form
   mollification. `TheRoutesMeasureOneAperture.contDiff_top_smooth` gives
   actual infinite smoothness; its support and complete-energy convergence

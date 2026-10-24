@@ -27,7 +27,7 @@ diagonal no estimate beyond the long-window Mertens oscillation is available to 
 form. Below the diagonal the minor-arc law gives a power saving unconditionally.
 -/
 
-open Finset Filter Topology ArithmeticFunction RHTower.Sieve
+open Finset Filter Topology ArithmeticFunction RHTower RHTower.Sieve
 open scoped BigOperators
 
 namespace GaloisForLFunctions.BezoutValuationIncidence
@@ -118,7 +118,7 @@ theorem norm_sum_window_div_pow_le_archimedean {Q N r : ℕ} (hQN : 2 * Q ≤ N)
   rw [hwin]
   rcases Nat.eq_zero_or_pos Q with rfl | hQ
   · simp only [range_zero, sum_empty, norm_zero]
-    positivity
+    exact div_nonneg (mul_nonneg hA0 (by positivity)) (by positivity)
   have hq1 : (1 : ℝ) ≤ Q := by exact_mod_cast hQ
   have hvar := norm_sum_range_ofReal_mul_le_variation (b := b) Q hA
   refine hvar.trans ?_
@@ -160,7 +160,7 @@ theorem norm_sum_window_div_pow_le_archimedean {Q N r : ℕ} (hQN : 2 * Q ≤ N)
   have hlast := hfle (Q - 1)
   calc A * (f (Q - 1) + ∑ i ∈ range (Q - 1), ‖b (i + 1) - b i‖)
       ≤ A * (1 / ((Q : ℝ) + 1) ^ r + (Q * ‖w - 1‖ * (1 / ((Q : ℝ) + 1) ^ r) +
-          1 / ((Q : ℝ) + 1) ^ r)) := by gcongr
+          1 / ((Q : ℝ) + 1) ^ r)) := mul_le_mul_of_nonneg_left (add_le_add hlast hsum) hA0
     _ = A * (2 + Q * ‖w - 1‖) / ((Q : ℝ) + 1) ^ r := by ring
 
 /-! ## §3. The harmonics of both kernel layers on the diagonal -/
@@ -179,7 +179,8 @@ theorem sum_Ico_one_div_succ_sq_le {J : ℕ} (hJ : 1 ≤ J) (K : ℕ) :
       have hK0 : (0 : ℝ) < K := by exact_mod_cast (lt_of_lt_of_le hJ hJK)
       rw [sum_Ico_succ_top hJK, Nat.cast_succ]
       have h : 1 / ((K : ℝ) + 1) ^ 2 ≤ 1 / K - 1 / ((K : ℝ) + 1) := by
-        rw [div_sub_div _ _ hK0.ne' (by positivity), div_le_div_iff₀ (by positivity) (by positivity)]
+        rw [div_sub_div _ _ hK0.ne' (by positivity), div_le_div_iff₀ (by positivity)
+          (mul_pos hK0 (by linarith))]
         nlinarith
       linarith
   have hK0 : (0 : ℝ) < K := by exact_mod_cast (lt_trans (by omega : 0 < J) hKJ)
@@ -203,6 +204,7 @@ theorem abs_quadraticHarmonic_le_archimedean {d : ℕ} (hd : 0 < d) {Q N : ℕ} 
     have hη1 := norm_eq_one_of_mem_nontrivialRoots hd hη
     have hpos : 0 < ‖η - 1‖ :=
       lt_of_lt_of_le (by positivity) (four_div_le_norm_sub_one_of_mem_nontrivialRoots hd hη)
+    have hne : ‖η - 1‖ ≠ 0 := hpos.ne'
     have hw : ‖η ^ j‖ = 1 := by rw [norm_pow, hη1, one_pow]
     have htw := norm_sum_window_div_pow_le_archimedean (r := 2) hQN hsupp hA hw
     have hpow := norm_pow_sub_one_le hη1 j
@@ -258,6 +260,20 @@ theorem abs_cubicHarmonic_le_archimedean {d : ℕ} (hd : 0 < d) {Q N : ℕ} (hQN
   rw [← mul_sum, sum_add_distrib, ← mul_sum, ← mul_sum, sum_nontrivialRoots_inv_norm_sq hd]
   ring
 
+/-- `Σ_{j < J} 1/(j+1) ≤ 1 + log J`. -/
+theorem sum_range_one_div_succ_le {J : ℕ} (hJ : 1 ≤ J) :
+    ∑ j ∈ range J, 1 / ((j : ℝ) + 1) ≤ 1 + Real.log J := by
+  have h : ∀ M, ∑ j ∈ range M, 1 / ((j : ℝ) + 1) = invSum M := by
+    intro M
+    induction M with
+    | zero => simp [invSum]
+    | succ M ih =>
+      rw [Finset.sum_range_succ, ih, invSum, invSum, sum_Icc_succ_top (by omega : 1 ≤ M + 1)]
+      push_cast
+      ring
+  rw [h]
+  exact invSum_le_one_add_log hJ
+
 /-! ## §4. The archimedean law for the kernel statistic -/
 
 /-- **The diagonal dual-norm law.** For a row `c'` on `(Q, 2Q]` whose partial sums
@@ -295,10 +311,12 @@ theorem abs_kernelStatisticAll_le_archimedean {d : ℕ} (hd : 0 < d) {Q N : ℕ}
     have htriv : ∀ j, |H j| ≤ ((d : ℝ) ^ 2 - 1) / 12 * T := fun j => by
       refine (abs_sum_mul_residuePotential_sub_gcd_le hd N j c').trans
         (mul_le_mul_of_nonneg_left ?_ (by positivity))
-      exact rowTransformMax_le_of_forall hT0 fun ζ _ => by
+      exact rowTransformMax_le_of_forall hT0 fun ζ hζ => by
+        unfold rowTransform
         refine (norm_sum_le _ _).trans (le_of_eq (sum_congr rfl fun n _ => ?_))
-        rw [norm_mul, norm_pow, norm_eq_one_of_mem_nontrivialRoots hd ‹_›, one_pow, mul_one,
-          Complex.norm_real, Real.norm_eq_abs, abs_div, abs_of_nonneg (by positivity : (0 : ℝ) ≤ (n : ℝ) ^ 2)]
+        rw [norm_mul, norm_pow, norm_eq_one_of_mem_nontrivialRoots hd hζ, one_pow, mul_one,
+          Complex.norm_real, Real.norm_eq_abs, abs_div,
+          abs_of_nonneg (by positivity : (0 : ℝ) ≤ (n : ℝ) ^ 2)]
     have hbound : ∀ j, |H (j + 1) * (1 / ((j : ℝ) + 1) ^ 2)| ≤
         a * (((d : ℝ) ^ 2 - 1) / 6) * (1 / ((j : ℝ) + 1) ^ 2) +
           (if j < J then a * (Q * rootHarmonicSum d / 2) * (1 / ((j : ℝ) + 1)) else 0) +
@@ -336,15 +354,10 @@ theorem abs_kernelStatisticAll_le_archimedean {d : ℕ} (hd : 0 < d) {Q N : ℕ}
                 ≤ ∑ j ∈ range J, a * (Q * rootHarmonicSum d / 2) * (1 / ((j : ℝ) + 1)) :=
                   sum_le_sum_of_subset_of_nonneg (fun j hj => by
                     simp only [mem_filter, mem_range] at hj ⊢; exact hj.2) fun _ _ _ => by positivity
-              _ = a * (Q * rootHarmonicSum d / 2) * (harmonic J : ℝ) := by
-                  rw [← mul_sum, harmonic_eq_sum_Icc]
-                  push_cast
-                  congr 1
-                  rw [← Nat.Ico_succ_right, sum_Ico_eq_sum_range, Nat.add_sub_cancel]
-                  refine sum_congr rfl fun j _ => ?_
-                  rw [add_comm 1 j]; push_cast; ring
+              _ = a * (Q * rootHarmonicSum d / 2) * ∑ j ∈ range J, 1 / ((j : ℝ) + 1) := by
+                  rw [mul_sum]
               _ ≤ a * (Q * rootHarmonicSum d / 2) * (1 + Real.log J) :=
-                  mul_le_mul_of_nonneg_left (harmonic_le_one_add_log J) (by positivity)
+                  mul_le_mul_of_nonneg_left (sum_range_one_div_succ_le hJ) (by positivity)
           · rw [← sum_filter]
             have hfilt : (range K).filter (fun j => J ≤ j) = Ico J K := by
               ext j; simp only [mem_filter, mem_range, mem_Ico]; omega
@@ -352,6 +365,7 @@ theorem abs_kernelStatisticAll_le_archimedean {d : ℕ} (hd : 0 < d) {Q N : ℕ}
             exact mul_le_mul_of_nonneg_left (sum_Ico_one_div_succ_sq_le hJ K) (by positivity)
       _ = a * (Real.pi ^ 2 * ((d : ℝ) ^ 2 - 1) / 36 + Q * rootHarmonicSum d * (1 + Real.log J) / 2) +
           ((d : ℝ) ^ 2 - 1) / (12 * J) * T := by
+          have hJ0 : (J : ℝ) ≠ 0 := by positivity
           field_simp
           ring
   -- the cubic layer
@@ -368,22 +382,18 @@ theorem abs_kernelStatisticAll_le_archimedean {d : ℕ} (hd : 0 < d) {Q N : ℕ}
           have h := abs_cubicHarmonic_le_archimedean hd hQN hsupp hA (j + 1)
           calc _ ≤ A / ((Q : ℝ) + 1) ^ 3 * (((d : ℝ) ^ 2 - 1) * (d + 2 * ((j + 1 : ℕ) : ℝ) * Q) / 12) *
                 (1 / ((j : ℝ) + 1) ^ 3) := mul_le_mul_of_nonneg_right h (by positivity)
-            _ ≤ b * (1 / ((j : ℝ) + 1) ^ 2) := by
-                simp only [b]
-                push_cast
-                rw [div_mul_div_comm, div_mul_div_comm, mul_one, mul_one]
-                rw [div_le_div_iff₀ (by positivity) (by positivity)]
+            _ = A / ((Q : ℝ) + 1) ^ 3 * (((d : ℝ) ^ 2 - 1) / 12) *
+                (((d : ℝ) + 2 * ((j : ℝ) + 1) * Q) * (1 / ((j : ℝ) + 1) ^ 3)) := by push_cast; ring
+            _ ≤ A / ((Q : ℝ) + 1) ^ 3 * (((d : ℝ) ^ 2 - 1) / 12) *
+                (((d : ℝ) + 2 * Q) * (1 / ((j : ℝ) + 1) ^ 2)) := by
+                refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+                rw [mul_one_div, mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]
+                have hd0 : (0 : ℝ) ≤ d := by linarith
                 have hQ0 : (0 : ℝ) ≤ Q := Nat.cast_nonneg Q
-                have hX : 0 ≤ A * ((d : ℝ) ^ 2 - 1) := by positivity
-                have hdd : (d : ℝ) + 2 * ((j : ℝ) + 1) * Q ≤ ((d : ℝ) + 2 * Q) * ((j : ℝ) + 1) := by
-                  nlinarith
-                have hY : (0 : ℝ) ≤ ((Q : ℝ) + 1) ^ 3 * ((j : ℝ) + 1) ^ 2 * 12 := by positivity
-                calc A * (((d : ℝ) ^ 2 - 1) * ((d : ℝ) + 2 * ((j : ℝ) + 1) * Q)) *
-                      (((Q : ℝ) + 1) ^ 3 * 12 * ((j : ℝ) + 1) ^ 2)
-                    ≤ A * (((d : ℝ) ^ 2 - 1) * (((d : ℝ) + 2 * Q) * ((j : ℝ) + 1))) *
-                      (((Q : ℝ) + 1) ^ 3 * 12 * ((j : ℝ) + 1) ^ 2) := by gcongr
-                  _ = A * (((d : ℝ) ^ 2 - 1) * ((d : ℝ) + 2 * Q)) *
-                      (((Q : ℝ) + 1) ^ 3 * 12 * ((j : ℝ) + 1) ^ 3) := by ring
+                have h23 : ((j : ℝ) + 1) ^ 2 ≤ ((j : ℝ) + 1) ^ 3 :=
+                  pow_le_pow_right₀ hj1 (by norm_num)
+                nlinarith [mul_le_mul_of_nonneg_left h23 hd0]
+            _ = b * (1 / ((j : ℝ) + 1) ^ 2) := by simp only [b]; ring
       _ ≤ b * (Real.pi ^ 2 / 6) := by
           rw [← mul_sum]
           exact mul_le_mul_of_nonneg_left (sum_le_hasSum _ (fun j _ => by positivity) hz) hb0
@@ -392,6 +402,225 @@ theorem abs_kernelStatisticAll_le_archimedean {d : ℕ} (hd : 0 < d) {Q N : ℕ}
   calc _ ≤ |∑ n ∈ Icc 1 N, c' n / (n : ℝ) ^ 2 * (bernoulliKernel d n - kernelMean d)| +
         |∑ n ∈ Icc 1 N, c' n / (n : ℝ) ^ 3 * cubicKernel d n| := abs_add_le _ _
     _ ≤ _ := by linarith
+
+/-! ## §5. Balanced moduli: rows whose long-window partial sums carry a zero-free-region saving -/
+
+/-- `(2 + s)³ e^{-cs} ≤ (32 + 192/c³) e^{-cs/2}` for `s ≥ 0`, `c > 0`. -/
+theorem cube_mul_exp_le {c s : ℝ} (hc : 0 < c) (hs : 0 ≤ s) :
+    (2 + s) ^ 3 * Real.exp (-(c * s)) ≤ (32 + 192 / c ^ 3) * Real.exp (-(c * s / 2)) := by
+  have hfac : c ^ 3 * s ^ 3 / 48 ≤ Real.exp (c * s / 2) := by
+    calc c ^ 3 * s ^ 3 / 48 = (c * s / 2) ^ 3 / ((Nat.factorial 3 : ℕ) : ℝ) := by
+          norm_num [Nat.factorial]; ring
+      _ ≤ Real.exp (c * s / 2) := Real.pow_div_factorial_le_exp (by positivity) 3
+  have hexp1 : 1 ≤ Real.exp (c * s / 2) := Real.one_le_exp (by positivity)
+  have hc3 : 0 < c ^ 3 := by positivity
+  have hcube : s ^ 3 ≤ 48 / c ^ 3 * Real.exp (c * s / 2) := by
+    rw [div_mul_eq_mul_div, le_div_iff₀ hc3]
+    nlinarith
+  have hconv : (2 + s) ^ 3 ≤ 4 * (8 + s ^ 3) := by
+    nlinarith [mul_nonneg (sq_nonneg (s - 2)) (by linarith : 0 ≤ s + 2)]
+  have hP : (2 + s) ^ 3 ≤ (32 + 192 / c ^ 3) * Real.exp (c * s / 2) := by
+    have : 0 ≤ 192 / c ^ 3 := by positivity
+    nlinarith
+  have hsplit : Real.exp (c * s / 2) * Real.exp (-(c * s)) = Real.exp (-(c * s / 2)) := by
+    rw [← Real.exp_add]; congr 1; ring
+  calc (2 + s) ^ 3 * Real.exp (-(c * s)) ≤
+        (32 + 192 / c ^ 3) * Real.exp (c * s / 2) * Real.exp (-(c * s)) :=
+        mul_le_mul_of_nonneg_right hP (Real.exp_pos _).le
+    _ = (32 + 192 / c ^ 3) * Real.exp (-(c * s / 2)) := by rw [mul_assoc, hsplit]
+
+/-- **The balanced dual-norm law.** Let `c > 0`, `K ≥ 1`, `B₀, T₀ ≥ 0`. There is `C ≥ 0` such that
+for every `Q ≥ 1` and every row `c'` on `(Q, 2Q]` with long-window partial sums at most
+`B₀ Q e^{-c√(log Q)}` and `Σ |c'(n)|/n² ≤ T₀/Q`, every modulus `d` with `Q ≤ K d`, `d ≤ 2Q` and
+every `N ≥ 2Q`, `|Λ_d(c')| ≤ C (d²/Q) e^{-(c/2)√(log Q)}`. -/
+theorem exists_balanced_kernelStatisticAll_le {c K B₀ T₀ : ℝ} (hc : 0 < c) (hK : 1 ≤ K)
+    (hB₀ : 0 ≤ B₀) (hT₀ : 0 ≤ T₀) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ Q : ℕ, 1 ≤ Q → ∀ c' : ℕ → ℝ, (∀ n, c' n ≠ 0 → Q < n ∧ n ≤ 2 * Q) →
+      (∀ x ≤ Q, |∑ i ∈ range x, c' (Q + 1 + i)| ≤
+        B₀ * Q * Real.exp (-(c * Real.sqrt (Real.log Q)))) →
+      ∀ N, 2 * Q ≤ N → ∑ n ∈ Icc 1 N, |c' n| / (n : ℝ) ^ 2 ≤ T₀ / Q →
+      ∀ d : ℕ, 1 ≤ d → (Q : ℝ) ≤ K * d → d ≤ 2 * Q →
+        |kernelStatisticAll N c' d| ≤
+          C * ((d : ℝ) ^ 2 / Q) * Real.exp (-(c / 2 * Real.sqrt (Real.log Q))) := by
+  set P := 32 + 192 / c ^ 3 with hPdef
+  have hP0 : 0 ≤ P := by rw [hPdef]; positivity
+  refine ⟨Real.pi ^ 2 * B₀ / 12 + B₀ * K * (1 + c) * P / 2 + T₀ / 12, by positivity,
+    fun Q hQ1 c' hsupp hA N hQN hT d hd hQd hd2 => ?_⟩
+  have hq1 : (1 : ℝ) ≤ Q := by exact_mod_cast hQ1
+  have hq0 : (0 : ℝ) < Q := by linarith
+  have hdR : (1 : ℝ) ≤ d := by exact_mod_cast hd
+  have hd2R : (d : ℝ) ≤ 2 * Q := by exact_mod_cast hd2
+  set s := Real.sqrt (Real.log Q)
+  have hs0 : 0 ≤ s := Real.sqrt_nonneg _
+  have hlogQ : Real.log Q = s ^ 2 := (Real.sq_sqrt (Real.log_nonneg hq1)).symm
+  set E := Real.exp (-(c * s))
+  have hE0 : 0 < E := Real.exp_pos _
+  set F := Real.exp (-(c / 2 * s))
+  have hF0 : 0 < F := Real.exp_pos _
+  have hEF : E ≤ F := Real.exp_le_exp.mpr (by nlinarith)
+  set A := B₀ * Q * E
+  -- the harmonic cut `J = ⌈e^{cs/2}⌉`
+  set J := ⌈Real.exp (c / 2 * s)⌉₊ with hJdef
+  have hexp1 : 1 ≤ Real.exp (c / 2 * s) := Real.one_le_exp (by positivity)
+  have hJ1 : 1 ≤ J := Nat.one_le_iff_ne_zero.mpr (by
+    intro h; rw [hJdef, Nat.ceil_eq_zero] at h; linarith)
+  have hJ0 : (0 : ℝ) < J := by exact_mod_cast hJ1
+  have hJge : Real.exp (c / 2 * s) ≤ J := Nat.le_ceil _
+  have hJle : (J : ℝ) ≤ 2 * Real.exp (c / 2 * s) := by
+    have := Nat.ceil_lt_add_one (by positivity : (0 : ℝ) ≤ Real.exp (c / 2 * s))
+    rw [← hJdef] at this
+    linarith
+  have hlogJ : 1 + Real.log J ≤ (1 + c) * (2 + s) := by
+    have := Real.log_le_log hJ0 hJle
+    rw [Real.log_mul (by norm_num) (Real.exp_pos _).ne', Real.log_exp] at this
+    have := Real.log_two_lt_d9
+    nlinarith
+  have hlogJ0 : 0 ≤ 1 + Real.log J := by
+    have := Real.log_nonneg (by exact_mod_cast hJ1 : (1 : ℝ) ≤ J); linarith
+  have hlaw := abs_kernelStatisticAll_le_archimedean (by omega : 0 < d) hQN hsupp hA hJ1
+  set D := (d : ℝ) ^ 2 / Q
+  have hD0 : 0 ≤ D := div_nonneg (sq_nonneg _) hq0.le
+  have hW : rootHarmonicSum d ≤ d * (2 + s) ^ 2 := by
+    refine (rootHarmonicSum_le d).trans (mul_le_mul_of_nonneg_left ?_ (by positivity))
+    have : Real.log d ≤ Real.log (2 * Q) := Real.log_le_log (by positivity) hd2R
+    rw [Real.log_mul (by norm_num) hq0.ne', hlogQ] at this
+    have := Real.log_two_lt_d9
+    nlinarith
+  have hWnn := rootHarmonicSum_nonneg d
+  have hqd : (d : ℝ) ≤ K * D := by
+    simp only [D]
+    rw [mul_div_assoc', le_div_iff₀ hq0]
+    nlinarith
+  have hQsq : (Q : ℝ) ^ 2 ≤ ((Q : ℝ) + 1) ^ 2 := by nlinarith
+  have hQcb : (Q : ℝ) ^ 3 ≤ ((Q : ℝ) + 1) ^ 3 := by gcongr; linarith
+  have t1 : A / ((Q : ℝ) + 1) ^ 2 * (Real.pi ^ 2 * ((d : ℝ) ^ 2 - 1) / 36) ≤
+      Real.pi ^ 2 * B₀ / 36 * (D * E) := by
+    calc A / ((Q : ℝ) + 1) ^ 2 * (Real.pi ^ 2 * ((d : ℝ) ^ 2 - 1) / 36)
+        ≤ B₀ * Q * E / (Q : ℝ) ^ 2 * (Real.pi ^ 2 * (d : ℝ) ^ 2 / 36) := by
+          simp only [A]
+          gcongr
+          all_goals linarith
+      _ = Real.pi ^ 2 * B₀ / 36 * ((d : ℝ) ^ 2 / Q * E) := by field_simp; ring
+  have t2 : A / ((Q : ℝ) + 1) ^ 2 * (Q * rootHarmonicSum d * (1 + Real.log J) / 2) ≤
+      B₀ * K * (1 + c) / 2 * ((2 + s) ^ 3 * E * D) := by
+    have hWJ : rootHarmonicSum d * (1 + Real.log J) ≤ d * ((1 + c) * (2 + s) ^ 3) := by
+      calc rootHarmonicSum d * (1 + Real.log J) ≤ (d * (2 + s) ^ 2) * ((1 + c) * (2 + s)) :=
+            mul_le_mul hW hlogJ hlogJ0 (by positivity)
+        _ = d * ((1 + c) * (2 + s) ^ 3) := by ring
+    calc A / ((Q : ℝ) + 1) ^ 2 * (Q * rootHarmonicSum d * (1 + Real.log J) / 2)
+        ≤ B₀ * Q * E / (Q : ℝ) ^ 2 * (Q * (d * ((1 + c) * (2 + s) ^ 3)) / 2) := by
+          simp only [A]
+          rw [mul_assoc (Q : ℝ) (rootHarmonicSum d)]
+          gcongr
+          all_goals first | linarith | exact hWJ
+      _ = B₀ * (1 + c) / 2 * ((2 + s) ^ 3 * E) * d := by field_simp; ring
+      _ ≤ B₀ * (1 + c) / 2 * ((2 + s) ^ 3 * E) * (K * D) := by gcongr
+      _ = B₀ * K * (1 + c) / 2 * ((2 + s) ^ 3 * E * D) := by ring
+  have t3 : A / ((Q : ℝ) + 1) ^ 3 * (Real.pi ^ 2 * ((d : ℝ) ^ 2 - 1) * (d + 2 * Q) / 72) ≤
+      Real.pi ^ 2 * B₀ / 18 * (D * E) := by
+    calc A / ((Q : ℝ) + 1) ^ 3 * (Real.pi ^ 2 * ((d : ℝ) ^ 2 - 1) * (d + 2 * Q) / 72)
+        ≤ B₀ * Q * E / (Q : ℝ) ^ 3 * (Real.pi ^ 2 * (d : ℝ) ^ 2 * (4 * Q) / 72) := by
+          simp only [A]
+          gcongr
+          all_goals linarith
+      _ = Real.pi ^ 2 * B₀ / 18 * ((d : ℝ) ^ 2 / Q * E) := by field_simp; ring
+  have t4 : ((d : ℝ) ^ 2 - 1) / (12 * J) * ∑ n ∈ Icc 1 N, |c' n| / (n : ℝ) ^ 2 ≤
+      T₀ / 12 * (D * F) := by
+    have hinv : 1 / (J : ℝ) ≤ F := by
+      simp only [F]
+      rw [Real.exp_neg, ← one_div]
+      exact one_div_le_one_div_of_le (Real.exp_pos _) hJge
+    calc ((d : ℝ) ^ 2 - 1) / (12 * J) * ∑ n ∈ Icc 1 N, |c' n| / (n : ℝ) ^ 2
+        ≤ (d : ℝ) ^ 2 / (12 * J) * (T₀ / Q) := by
+          gcongr
+          all_goals linarith
+      _ = T₀ / 12 * ((d : ℝ) ^ 2 / Q * (1 / (J : ℝ))) := by field_simp
+      _ ≤ T₀ / 12 * (D * F) := by gcongr
+  have hcube : (2 + s) ^ 3 * E * D ≤ P * (D * F) := by
+    have := mul_le_mul_of_nonneg_right (cube_mul_exp_le hc hs0) hD0
+    calc (2 + s) ^ 3 * E * D ≤ P * F * D := this
+      _ = P * (D * F) := by ring
+  have hDE : D * E ≤ D * F := mul_le_mul_of_nonneg_left hEF hD0
+  have hB1 : 0 ≤ Real.pi ^ 2 * B₀ := by positivity
+  have hB2 : 0 ≤ B₀ * K * (1 + c) / 2 := by
+    have : (0 : ℝ) ≤ K := by linarith
+    positivity
+  calc |kernelStatisticAll N c' d| ≤ _ := hlaw
+    _ ≤ Real.pi ^ 2 * B₀ / 36 * (D * E) + B₀ * K * (1 + c) / 2 * ((2 + s) ^ 3 * E * D) +
+        Real.pi ^ 2 * B₀ / 18 * (D * E) + T₀ / 12 * (D * F) := by
+        rw [mul_add]
+        linarith
+    _ ≤ (Real.pi ^ 2 * B₀ / 12 + B₀ * K * (1 + c) * P / 2 + T₀ / 12) * (D * F) := by
+        linarith [mul_le_mul_of_nonneg_left hcube hB2, mul_le_mul_of_nonneg_left hDE hB1]
+    _ = _ := by ring
+
+/-! ## §6. The Möbius row on the diagonal -/
+
+theorem moebiusWindowRow_ne_zero_imp {Q n : ℕ} (h : moebiusWindowRow Q n ≠ 0) :
+    Q < n ∧ n ≤ 2 * Q := by
+  unfold moebiusWindowRow at h
+  split_ifs at h with hn
+  · exact hn
+  · exact absurd rfl h
+
+/-- The partial sums of the Möbius window are differences of Mertens' function. -/
+theorem sum_range_moebiusWindowRow (Q x : ℕ) (hx : x ≤ Q) :
+    ∑ i ∈ range x, moebiusWindowRow Q (Q + 1 + i) =
+      ∑ e ∈ Icc 1 (Q + x), moebiusReal e - ∑ e ∈ Icc 1 Q, moebiusReal e := by
+  induction x with
+  | zero => simp
+  | succ x ih =>
+    rw [Finset.sum_range_succ, ih (by omega), show Q + (x + 1) = Q + x + 1 by ring,
+      sum_Icc_succ_top (by omega : 1 ≤ Q + x + 1), moebiusWindowRow, if_pos (by omega),
+      show Q + 1 + x = Q + x + 1 by ring]
+    ring
+
+/-- **The balanced dual-norm law for the Möbius row.** For every `K ≥ 1` there are `C ≥ 0` and
+`Q₀` such that for `Q ≥ Q₀`, every modulus `d` (prime or composite) with `Q ≤ K d`, `d ≤ 2Q` and
+every `N ≥ 2Q`, `|Λ_d(μ𝟙_{(Q,2Q]})| ≤ C (d²/Q) e^{-√(log Q)/24}`: the de la Vallée Poussin saving of
+the long-window Mertens oscillation. -/
+theorem exists_balanced_kernelStatisticAll_moebiusWindowRow_le {K : ℝ} (hK : 1 ≤ K) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∃ Q₀ : ℕ, ∀ Q, Q₀ ≤ Q → ∀ d : ℕ, 1 ≤ d → (Q : ℝ) ≤ K * d →
+      d ≤ 2 * Q → ∀ N, 2 * Q ≤ N →
+        |kernelStatisticAll N (moebiusWindowRow Q) d| ≤
+          C * ((d : ℝ) ^ 2 / Q) * Real.exp (-(Real.sqrt (Real.log Q) / 24)) := by
+  obtain ⟨B, hB0, N₀, hM⟩ := exists_abs_sum_moebiusReal_le_sqrtLog
+  obtain ⟨C, hC0, hlaw⟩ := exists_balanced_kernelStatisticAll_le (c := 1 / 12) (by norm_num) hK
+    (by positivity : (0 : ℝ) ≤ 3 * B) zero_le_one
+  refine ⟨C, hC0, max N₀ 1, fun Q hQ d hd hQd hd2 N hQN => ?_⟩
+  have hQ1 : 1 ≤ Q := le_of_max_le_right hQ
+  have hQN₀ : N₀ ≤ Q := le_of_max_le_left hQ
+  have hq1 : (1 : ℝ) ≤ Q := by exact_mod_cast hQ1
+  have hq0 : (0 : ℝ) < Q := by linarith
+  have hA : ∀ x ≤ Q, |∑ i ∈ range x, moebiusWindowRow Q (Q + 1 + i)| ≤
+      3 * B * Q * Real.exp (-(1 / 12 * Real.sqrt (Real.log Q))) := by
+    intro x hx
+    rw [sum_range_moebiusWindowRow Q x hx]
+    have h1 := hM (Q + x) (by omega)
+    have h2 := hM Q hQN₀
+    have hE : Real.exp (-(Real.sqrt (Real.log Q) / 12)) =
+        Real.exp (-(1 / 12 * Real.sqrt (Real.log Q))) := by congr 1; ring
+    have hmono : Real.exp (-(Real.sqrt (Real.log ((Q + x : ℕ) : ℝ)) / 12)) ≤
+        Real.exp (-(1 / 12 * Real.sqrt (Real.log Q))) := by
+      apply Real.exp_le_exp.mpr
+      have : Real.sqrt (Real.log Q) ≤ Real.sqrt (Real.log ((Q + x : ℕ) : ℝ)) :=
+        Real.sqrt_le_sqrt (Real.log_le_log hq0 (by push_cast; linarith [(Nat.cast_nonneg x : (0 : ℝ) ≤ x)]))
+      linarith
+    have hQx : ((Q + x : ℕ) : ℝ) ≤ 2 * Q := by
+      push_cast; have : (x : ℝ) ≤ Q := by exact_mod_cast hx; linarith
+    rw [hE] at h2
+    calc |∑ e ∈ Icc 1 (Q + x), moebiusReal e - ∑ e ∈ Icc 1 Q, moebiusReal e|
+        ≤ |∑ e ∈ Icc 1 (Q + x), moebiusReal e| + |∑ e ∈ Icc 1 Q, moebiusReal e| := abs_sub _ _
+      _ ≤ B * ((Q + x : ℕ) : ℝ) * Real.exp (-(Real.sqrt (Real.log ((Q + x : ℕ) : ℝ)) / 12)) +
+          B * Q * Real.exp (-(1 / 12 * Real.sqrt (Real.log Q))) := add_le_add h1 h2
+      _ ≤ B * (2 * Q) * Real.exp (-(1 / 12 * Real.sqrt (Real.log Q))) +
+          B * Q * Real.exp (-(1 / 12 * Real.sqrt (Real.log Q))) := by gcongr
+      _ = 3 * B * Q * Real.exp (-(1 / 12 * Real.sqrt (Real.log Q))) := by ring
+  have hT : ∑ n ∈ Icc 1 N, |moebiusWindowRow Q n| / (n : ℝ) ^ 2 ≤ 1 / Q := by
+    have h := sum_Icc_abs_moebiusWindowRow_div_pow_le (N := N) hQ1 2
+    rwa [show (Q : ℝ) / (Q : ℝ) ^ 2 = 1 / Q by field_simp] at h
+  have h := hlaw Q hQ1 _ (fun n h => moebiusWindowRow_ne_zero_imp h) hA N hQN hT d hd hQd hd2
+  rwa [show -(1 / 12 / 2 * Real.sqrt (Real.log Q)) = -(Real.sqrt (Real.log Q) / 24) by ring] at h
 
 end
 
