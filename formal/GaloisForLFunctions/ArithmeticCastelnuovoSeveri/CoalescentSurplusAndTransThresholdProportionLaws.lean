@@ -1109,7 +1109,7 @@ theorem narrowStrip_HD_one_and_twoAdic_parity_collar {F : ℝ → ℝ} {δ : ℝ
         ∑ m ∈ (Zeta23.PrimeSide.primeRange X).filter Odd,
           if n = m then (0 : ℝ)
           else Zeta23.PrimeSide.acoef n * Zeta23.PrimeSide.acoef m *
-            FejerWeight.triangleFn b (Real.log n - Real.log m)) = 0) := by
+            triangleFn b (Real.log n - Real.log m)) = 0) := by
   have h1δ : 0 < 1 + δ := by linarith
   have hfrob := narrowStrip_frobeniusFormFactor_eq hδ.ne' h1δ.ne' hF_cont hF_sub
   have hden : 0 < 375 * (1 + δ) ^ 2 := by positivity

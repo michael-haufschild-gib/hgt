@@ -21,7 +21,8 @@ open RHTower.ArchimedeanAnomaly RHTower.ArchimedeanExactForm
 namespace RHTower
 noncomputable section
 
-private theorem finite_prime_polar {f : ℝ → ℝ} {A : ℝ}
+/-- A correlation cutoff makes the complete prime–polar term a finite arithmetic sum. -/
+theorem suzukiCriticalFinitePrimePolar_eq_fullPairing {f : ℝ → ℝ} {A : ℝ}
     (hcut : ∀ t : ℝ, A ≤ t → autocorr f t = 0) :
     4*(∫ t in Ioi 0, autocorr f t * Real.cosh (t/2)) -
       ∑ n ∈ Finset.Icc 2 ⌊Real.exp A⌋₊,
@@ -63,7 +64,8 @@ private theorem finite_prime_polar {f : ℝ → ℝ} {A : ℝ}
   rw [fullPairing, hts, hpolar, hprime]
   ring
 
-private theorem finite_energy_normalization {f : ℝ → ℝ} (hf : MemLp f 2 volume)
+/-- The finite signed correction converts the primary energy into the extended Weil energy. -/
+theorem suzukiCriticalFiniteEnergy_eq_extendedWeilEnergy {f : ℝ → ℝ} (hf : MemLp f 2 volume)
     (hfc : HasCompactSupport f) {A : ℝ}
     (hcut : ∀ t : ℝ, A ≤ t → autocorr f t = 0) :
     (suzukiCriticalLimitingCompensatedEnergy (fun t => autocorr f 0-autocorr f t) : EReal) +
@@ -84,7 +86,7 @@ private theorem finite_energy_normalization {f : ℝ → ℝ} (hf : MemLp f 2 vo
       ∑ n ∈ Finset.Icc 2 ⌊Real.exp A⌋₊,
         (2*ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n/2))*autocorr f (Real.log n) =
       EF.gammaBracket 0 * autocorr f 0-2*fullPairing (autocorr f) := by
-    have hp := finite_prime_polar hcut
+    have hp := suzukiCriticalFinitePrimePolar_eq_fullPairing hcut
     linarith only [hp]
   rw [hreal] at h
   exact h
@@ -98,7 +100,7 @@ theorem tendsto_suzukiCriticalSourcePairing_extended_firstVariation {f : ℝ →
         ((EF.gammaBracket 0 * autocorr f 0-2*fullPairing (autocorr f) : ℝ) : EReal))) := by
   obtain ⟨A,hA,hcut⟩ := exists_pos_autocorr_cutoff hfc
   have h := tendsto_suzukiCriticalSourcePairing_extended_firstVariation_finite hf hfc hA hcut
-  rw [finite_energy_normalization hf hfc hcut] at h
+  rw [suzukiCriticalFiniteEnergy_eq_extendedWeilEnergy hf hfc hcut] at h
   exact h
 
 /-- Infinite Lévy energy forces a strict literal source deficit at all sufficiently small shifts. -/

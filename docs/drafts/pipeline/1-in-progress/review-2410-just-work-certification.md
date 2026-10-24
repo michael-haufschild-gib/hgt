@@ -76,6 +76,19 @@ arithmetic estimates to make a dictionary applicable.
   actual infinite smoothness; its support and complete-energy convergence
   lemmas retain an arbitrarily small aperture enlargement. The certified
   `xi_ne_zero_of_im_sq_le` height floor removes the horizon's height premise.
+- Unchecked complete drafts now cover the polynomial detector aperture
+  (`/tmp/hgt-just-work-polynomial-aperture.lean`), the full moving-source
+  Suzuki theorem (`/tmp/hgt-just-work-suzuki-moving-signed.lean`), explicit
+  aperture-scaled spline inputs (`/tmp/hgt-just-work-spline-aperture-inputs.lean`),
+  finite source certificates (`/tmp/hgt-just-work-finite-source-certificates.lean`),
+  explicit ranges (`/tmp/hgt-just-work-explicit-ranges.lean`), and concrete
+  dictionary instances (`/tmp/hgt-just-work-concrete-dictionaries.lean`).
+  These are proof candidates, not certified results. Their canonical leaf
+  checks and transitive axiom audits remain required.
+- The concrete dictionary instances use the radius-`1/5` spline and its odd
+  part, the finite aperture chain `1/10, 1/5, 3/10`, and the actual
+  half-damped Möbius receiver. The finite transport is bounded; no
+  unbounded-aperture sign or sub-half damping estimate is asserted.
 
 ## Verification rules
 

@@ -2,7 +2,7 @@
 
 **Status:** RH open. **31 live routes; 17 standalone candidates; PW-B candidate sub-branch.** BVI is supporting infrastructure, not a route.
 
-**Corpus checkpoint:** `37fa6a3db18bf3ed324b938cbf02e34fc55b18b4`.
+**Corpus checkpoint:** `bb6f6b86de7be64093a282e55707e00485921bba`.
 
 **Evidence:** [L] integrated Lean source, not a fresh kernel audit; [S] unintegrated/working source, not certified closure; [P] paper only. Conditional statements retain their premises; unfinished proofs are explicit. A proved RH receiver does not establish its arithmetic input.
 
@@ -18,7 +18,7 @@
 | Theta sign / heat / moments | [TT](#tt), [LA](#la), [TH](#th), [HCF](#hcf) | [HJ](#hj) | — |
 | Zero visibility / localization | [SRT](#srt) | — | — |
 | Causal hyperbolic–modular duality | [CHMD](#chmd) | — | — |
-| Geometry / index / arithmetic rigidity | [TG](#tg), [HF](#hf), [GTA](#gta), [ACS](#acs) | [DR](#dr), [IRK](#irk) | — |
+| Geometry / index / arithmetic rigidity | [TG](#tg), [HF](#hf), [GTA](#gta), [ACS](#acs) | [DR](#dr), [IRK](#irk) | [AOG](#aog) → ACS, HF |
 | Newton dynamics | [XN](#xn) | — | — |
 | Renewal / singular comparison | [RN](#rn) | — | — |
 | Ward / collision | [WD](#wd) | — | — |
@@ -57,19 +57,19 @@ Sources: D:ThreeTenthsSharpGaugeWeilPositivity; I:SchurLendingOddWindowThreeHund
 ### RW — Restricted Weil ground energy
 
 - **Path:** Complete prime−Gamma−polar form → nonnegative constrained ground energy at every aperture → RH.
-- **Proved [L]:** Odd/primitive positivity and constrained ground-energy receivers; exact prime–Gamma–polar form; fixed-aperture completion/sign transfer. Small-aperture positive floors and derivative-controlled all-aperture negative floors; see shared frontier.
+- **Proved [L]:** Odd/primitive positivity and constrained ground-energy receivers; exact prime–Gamma–polar form; fixed-aperture completion/sign transfer. Eventual grid-tent nonnegativity for every seed at radius R implies window positivity, Hodge index and μ(R)≥0. Small-aperture positive floors and derivative-controlled all-aperture negative floors; see shared frontier.
 - **Compensation [L]:** On smooth compact sources, absolutely summable paired energies give Q=E₊−E₋; E₋≤E₊+B‖u‖² iff μ(A)≥−B, with optimal B=−μ(A). Every-positive-rate compensated floors iff RH; a rate σ floor gives width≤σ, lag floors and damping admission for ε>σ. Converse above zero width still needs locally bounded off-line depth mass.
 - **Transport [L]:** On monotone cofinal apertures, RH iff total nonnegative jumps sum to μ(A₀), equivalently no partial jump sum exceeds μ(A₀). From the positive small-aperture seed, nonnegative relative step factors suffice; positive factors exclude finite contact. Bounded-gap discrete rate-σ floors extend to continuous apertures with factor exp(2σΔ). Ceiling-renormalized energy is bounded above; its monotonicity and bounded weighted leakage are unproved inputs.
 - **Open / obstacle:** Produce source-derived relative step bounds or bounded cumulative leakage at every positive rate, paying complete prime/polar energy and low modes. Telescoping and floor-transfer receivers do not produce these bounds. Density-free L² width-to-floor converse remains open; lag-grid receivers additionally retain nonaliasing/attainment premises.
-- **Sources:** R:WeilMarkovOddPositivity; R:WeilMarkovPrimitiveHyperplane; R:PaperRestrictedWeilGroundThreshold; S:GroundEnergyAbscissaAndLagGridAttainmentBridge; C:CompensatedWidthFloorAndGroundEnergyRate; C:VanishingApertureFloorAndGradedTransport.
+- **Sources:** R:WeilMarkovOddPositivity; R:WeilMarkovPrimitiveHyperplane; R:PaperRestrictedWeilGroundThreshold; S:GroundEnergyAbscissaAndLagGridAttainmentBridge; C:CompensatedWidthFloorAndGroundEnergyRate; C:VanishingApertureFloorAndGradedTransport; A:QuantitativeGridTentDetection.
 
 <a id="fu"></a>
 ### FU — CCM-FU signed prime scheduling
 
 - **Path:** Signed Möbius/prime scheduling → completed Abel moment A(M)/M bounded above → RH.
-- **Proved [L]:** One-sided completed-Abel receiver; actual terminal primes p>√N realize graph sources with vanishing diagonal cost and full signed off-diagonal energy. Cutoff-wise decreasing prime-exhaustive histories; isolated critical prime channel is uniformly negative on growing fixed-relative-width windows. Kernel readouts retain center, lag and cutoff; they do not provide a lag-only sign law.
+- **Proved [L]:** One-sided completed-Abel receiver; actual terminal primes p>√N realize graph sources with vanishing diagonal cost and full signed off-diagonal energy. Cutoff-wise decreasing prime-exhaustive histories; isolated critical prime channel is uniformly negative on growing fixed-relative-width windows. Exact clock kernels retain center, lag and cutoff, with operator decomposition, Cauchy–Schwarz bounds and fixed-cutoff center decay at ±∞. Off-diagonal sign remains a premise, not a consequence of realization.
 - **Open / obstacle:** Control the complete history: initial seed, inter-cutoff drift, earlier action, covariance and endpoint terms. Isolated prime-channel gain and small clock diagonal cost do not bound completed Abel action.
-- **Sources:** R:CCM/CCMFUSuzukiMobiusDivisorOneSided; R:MobiusDivisorPaidPrimeExhaustion; R:MobiusDivisorPrimeGraphClockRealization; A:TheLinearWindowOfTheCriticalPrimeChannel; B:PrimeGraphClockOffDiagonalSynthesisAndStationaryEnergyProducer; B:PrimeGraphClockCorrelationKernels.
+- **Sources:** R:CCM/CCMFUSuzukiMobiusDivisorOneSided; R:MobiusDivisorPaidPrimeExhaustion; R:MobiusDivisorPrimeGraphClockRealization; A:TheLinearWindowOfTheCriticalPrimeChannel; B:PrimeGraphClockOffDiagonalSynthesisAndStationaryEnergyProducer; B:PrimeGraphClockCorrelationKernels; B:ProducerCompletionAndPrimeClockKernelSynthesis.
 
 <a id="rp"></a>
 ### RP — Route-P / SP-E history floor
@@ -107,9 +107,9 @@ Sources: D:ThreeTenthsSharpGaugeWeilPositivity; I:SchurLendingOddWindowThreeHund
 ### LA — Line anchor
 
 - **Path:** Literal theta source → all-height Laguerre/Hadamard or Jensen sign → real-rooted Ξ → RH.
-- **Proved [L]:** Exact log-derivative, heat-slice and coefficient-inertia receivers; fixed-degree Jensen–Hermite limits. Actual-ξ compensated tails converge on fixed discs and, at moving height t=exp(u⁴), cutoff R=u³, on discs of radius Mu: quadratic coefficient C→∞ and fourth-moment error BC²→0. Zero width bounds heat-real-rootedness time; corpus Newman constant is the nonnegative-time truncation/rescaling.
+- **Proved [L]:** Exact log-derivative, heat-slice and coefficient-inertia receivers; fixed-degree Jensen–Hermite limits. Actual-ξ compensated tails converge on fixed discs and, at t=exp(u⁴), R=u³, on discs of radius Mu: C→∞, BC²→0. At heat κ/C, 0<κ<1/2, tail/Gaussian-reference→1 uniformly on bounded real intervals. Finite-head factorization retains central zeros; no head sign follows. Zero width bounds heat-real-rootedness time; corpus Newman constant is the nonnegative-time truncation/rescaling.
 - **Open / obstacle:** Prove all-height/all-degree sign at one critical heat time, including retained finite heads and near-double off-line pairs. A controlled moving-height tail regime does not sign the head or supply uniform all-height heat coefficients.
-- **Sources:** R:XiLogDerivReCriterion; R:XiJensenHermiteLimit; R:XiSliceGaussianTailLimit; R:XiSliceDenseGaussianTail; R:DeBruijnNewmanConstant; S:LagRateBoundsTheDeBruijnNewmanHeatTime.
+- **Sources:** R:XiLogDerivReCriterion; R:XiJensenHermiteLimit; R:XiSliceGaussianTailLimit; R:XiSliceDenseGaussianTail; R:XiSliceGaussianTailHeat; R:XiSliceGaussianFiniteHead; R:DeBruijnNewmanConstant; S:LagRateBoundsTheDeBruijnNewmanHeatTime.
 
 <a id="tg"></a>
 ### TG — Topological sub-unit gate
@@ -124,18 +124,18 @@ Sources: D:ThreeTenthsSharpGaugeWeilPositivity; I:SchurLendingOddWindowThreeHund
 
 - **Path:** Arithmetic cohomology/full-positive weight → RH; alternate prime-window discrepancy ceiling `≤e^(L/2)+O(L)` → WL's one-sided deficit primitive → RH.
 - **Proved [L]:** Prime-blind/odd positivity receivers; actual-ζ finite negative index and positive low-grid-blind subspaces. Finite cohomological packets, trace identities and spectral interpolation. Smooth even-polar/primitive prime-blind tests have S/L>45 when the second moment is finite.
+- **Receiver synthesis [S]:** Complex, prime-power-blind zero-pole, real primitive and even pole-free prime-blind positivity are each RH-equivalent. RH iff every deleted-prime-power symbol lies in [−Λ(m)/√m,0); strict negativity alone is unconditional, the lower bound is not. No positivity producer.
 - **Open / obstacle:** Produce nonnegative complete Weil energy on unrestricted blind/odd/primitive tests, paying low modes and the signed Λ prime−polar term. High spectral ratio and auxiliary Gram lower bounds do not sign the ground minimum. A global cohomological realization must retain the actual cup/trace/Ξ pairing.
-- **Sources:** R:WeilPositivityPrimeBlindDuality; R:MarkovOddSectorFarkasAndOneSidedPBAP; R:MarkovTwoCellTelescopingAndFortyFiveRatioPBAP; G:SourceRiemannRochAwayFromTheLowFrequencyDivisor.
+- **Sources:** R:WeilPositivityPrimeBlindDuality; R:MarkovOddSectorFarkasAndOneSidedPBAP; R:MarkovTwoCellTelescopingAndFortyFiveRatioPBAP; G:SourceRiemannRochAwayFromTheLowFrequencyDivisor; B:NodeCriticalityPhaseSensitivityAndCalibrationSynthesis.
 
 <a id="chmd"></a>
 ### CHMD — Causal Hyperbolic–Modular Duality
 
 - **Path:** Exact Weil source → causal prime-wave, Chebyshev-discrepancy derivative pairing, or Möbius-rest one-sided bound, or theta-Doob odd-sector half-bound → RH.
 - **Proved [L]:** Exact source prime-wave and Möbius-wave receivers; theta-Doob graph, signed quotient, stationary resolvent and nodal identities. RH iff complete odd energy is nonnegative / no odd bound state exceeds the half-threshold. Completed real aperture core equals supported maximal graph; nodal parts preserve it. Sharp half-line/interval restrictions preserve the full graph uniformly in cut location and land in exact aperture cores.
-- **Source-only [S]:** Expanding symmetric windows converge in graph norm, commute with nodal truncation, and recover full signed energy, nodal interaction and primitive oneL defect. No sign conclusion.
-- **Paper only [P]:** Sharp-cut generator-domain admission with bounded full arithmetic commutator; not yet a Lean operator-domain theorem.
-- **Open / obstacle:** Prove the complete signed wave's one-sided bound or odd Doob/nodal inequality. Pay reflected-prime interaction and primitive oneL defect. Sharp graph localization and defect convergence do not orient either term; the generator commutator still needs formalization.
-- **Sources:** R:CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion; R:CHMDChebyshevDiscrepancyDerivativeTransportLaw; R:CHMDOddSectorCriterion; R:CHMDSupportedApertureDomain; R:CHMDSharpSpatialCut; R:CHMDSharpWindowNodalConvergence; [generator-domain paper](../drafts/pipeline/2-fully-proven/chmd-sharp-generator-boundary-domain.md).
+- **Localization [L]:** Expanding symmetric windows converge in graph norm, commute with nodal truncation, and recover full signed energy, nodal interaction and primitive oneL defect. Sharp half-line restriction preserves the arithmetic generator domain; A(P_cu)=P_cAu+K_cu, K_c skew-adjoint and uniformly bounded in c, retaining Gamma and every prime-power term.
+- **Open / obstacle:** Prove the complete signed wave's one-sided bound or odd Doob/nodal inequality. Pay reflected-prime interaction and primitive oneL defect. Exact localization, bounded commutator and defect convergence supply no sign.
+- **Sources:** R:CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion; R:CHMDChebyshevDiscrepancyDerivativeTransportLaw; R:CHMDOddSectorCriterion; R:CHMDSupportedApertureDomain; R:CHMDSharpSpatialCut; R:CHMDSharpWindowNodalConvergence; R:CHMDSharpGeneratorDomain.
 
 <a id="th"></a>
 ### TH — Theta moment positivity
@@ -157,10 +157,9 @@ Sources: D:ThreeTenthsSharpGaugeWeilPositivity; I:SchurLendingOddWindowThreeHund
 ### WD — Ward orientation and horizontal collision
 
 - **Path:** Directed source current → global negative-cross control or collision charge<2 → RH.
-- **Proved [L]:** Exact Ward/collision receivers and integrable nonnegative cap, vanishing iff RH. Actual-ξ tail has C=A−D, 0≤D≤B/2. For R≥4 and every real x, exp(Cx²−Bx⁴)≤tail(x)≤exp(Cx²), with real nonnegative tail and compensated error≤Bx⁴. Full normalized-slice error≤|head(x)|Bx⁴ requires XiC(t)≠0. Moving-height/growing-disc convergence: LA.
-- **Paper only [P]:** Actual-tail heat comparison for 1−2Cλ>0 with explicit Gaussian fourth-moment error; central-zero-preserving finite-head factorization removes XiC(t)≠0. Neither extension is integrated Lean or coefficient-sign transfer.
+- **Proved [L]:** Exact Ward/collision receivers and integrable nonnegative cap, vanishing iff RH. Actual-ξ tail has C=A−D, 0≤D≤B/2; for R≥4, exp(Cx²−Bx⁴)≤tail(x)≤exp(Cx²). Full unnormalized slice=head·tail with nonzero head scalar and exact x² factors for central zero copies; compensated error≤|head(x)|Bx⁴ needs no XiC(t)≠0. At λ>0, 2Cλ<1, actual-tail heat is integrable and lies below its Gaussian reference with explicit fourth-moment error. Dense scaled-heat limit: LA.
 - **Open / obstacle:** Force global cap to vanish or prove full signed prime−Gamma contraction uniformly over every zero block. Gaussian-model coefficient positivity and small tail error do not control retained-head sign.
-- **Sources:** R:XiWardCapGlobalIntegrability; R:XiWardGlobalCapRightZeroSum; R:XiSliceGaussianTailCompensation; R:XiSliceGaussianTailWindowBounds; R:XiSliceGaussianTailRealBounds; [heat/central-head paper](../drafts/pipeline/1-in-progress/rh/weil-dilation/wd-xi-gaussian-tail-compensation-2026-10-24.md).
+- **Sources:** R:XiWardCapGlobalIntegrability; R:XiWardGlobalCapRightZeroSum; R:XiSliceGaussianTailCompensation; R:XiSliceGaussianTailWindowBounds; R:XiSliceGaussianTailRealBounds; R:XiSliceGaussianTailHeat; R:XiSliceGaussianFiniteHead.
 
 <a id="li"></a>
 ### LI — Paired Li and prime–Gamma balances
@@ -186,7 +185,7 @@ Sources: D:ThreeTenthsSharpGaugeWeilPositivity; I:SchurLendingOddWindowThreeHund
 - **Path:** FZZ alternating Nyman–Beurling source → global dyadic Haar approximation, equivalently cofinal signed-damping admission at 0 → RH. PW-B is a [candidate sub-branch](#pw-b).
 - **Proved [L]:** FZZ-P Haar approximation and cofinal small-damping admission are RH-equivalent. Exact complete-energy, signed log-loss and drift/deviation/forcing/flux admission identities. Half-damping sharp/Riesz residue synthesis, compact tails and endpoint norm continuity; relative compensation decays without an absolute-energy bound.
 - **Reduction [L]:** Complete energy=(1−α)²·sector energy+transverse energy; α→1 and relative transverse energy→0 for 0<ε<1/2. For compatible dyadic depth mε>1, contractive actual-prefix recurrence with bounded forcing iff admission. Square-cutoff error contracts for 1/4<β<ε; the compensated-head recurrence assumes ε>1/2, and the VK-band prefix bound retains geometric shell error. No small-damping producer.
-- **Observation [S]:** O_q(v)(n)=v(n)−v(⌊n/q⌋), q≥2, is injective with the root value retained; same-root pronic distances satisfy horizon-uniform two-sided bounds. Origin shift k has sharp energy cost (k+1)(k+2)/2; reverse recovery retains the lost head. Actual-source observation boundedness iff damping admission; majorant/parity-twin observations diverge below half damping, while actual-source control remains in the horizon-dependent VK band. Full-cell stability, not finite-moment recovery or a small-damping producer.
+- **Observation [L]:** O_q(v)(n)=v(n)−v(⌊n/q⌋), q≥2, is injective with the root value retained; same-root pronic distances satisfy horizon-uniform two-sided bounds. Origin shift k has sharp energy cost (k+1)(k+2)/2; reverse recovery retains the lost head. Actual-source observation boundedness iff damping admission; majorant observations diverge for 0<ε≤1/2, parity-twin observations grow logarithmically uniformly above each ε₀>0. Actual-source control remains in the horizon-dependent VK band. Full-cell stability, not finite-moment recovery or a small-damping producer.
 - **Open / obstacle:** Prove global L² Haar approximation or horizon-uniform complete signed-energy budget at arbitrarily small ε>0. Pay covariance, dilation, active-pair drift, interior/origin means and cutoff tails jointly. Absolute majorants fail at/below half damping; separate termwise savings do not prove admission.
 - **Sources:** R:FermiNymanHaarApproximationEquivalence; C:ObstructingTermsAndRegimeClassification; C:ComplementarySectorPropagationAndAffineContraction; C:SignedObservationStabilityAndOriginSelectivity; V:ParityPairAndSelectivitySynthesis.
 
@@ -235,10 +234,11 @@ Sources: D:ThreeTenthsSharpGaugeWeilPositivity; I:SchurLendingOddWindowThreeHund
 
 - **Path:** Actual even blind minimum nonnegative at every aperture → even positivity → λ=Λ → RH.
 - **Proved [L]:** Even-polar/full-positive weight rigidity; blind minima attained, antitone in aperture, nonnegative at every aperture iff RH. Literal full Weil positivity for sufficiently high dyadic/polynomial windows and separated lacunary unions; dense two-band estimates retain high-energy dominance. Low/high bounds retain −K_low E_low.
-- **Receiver transfer [L]:** Grid-tent energy/mass approximation and exact parity split cover every odd C² receiver with norm-control (α,β)=(1,0). Constant/every-positive-rate tent floors iff RH. Full-energy floors transfer at −78e^r mass, or −((8+ε)e^r+C)mass for ε>0; width-dependent converse retains derivative control. No zero-rate floor or density of the positive high-scale family.
+- **Receiver transfer [L]:** Grid-tent energy/mass approximation covers every odd C² receiver with norm-control (α,β)=(1,0). Complex tests split into two real patterns with error≤C(R,Mg,Kg,L)/(6(n+1)); unmodulated odd lag tests need one pattern. Eventual tent nonnegativity for every seed at fixed R implies window positivity/Hodge/μ(R)≥0. Constant/every-positive-rate tent floors iff RH; current floors remain −78e^r mass or −((8+ε)e^r+C)mass. No zero-rate floor or density of the positive high-scale family.
 - **Restricted completion [L]:** Pole-free factorial combinations have exact ramp/tail Weil-energy equality and zero completed-source divisor-sampling mass. The limiting full tail span has logarithmic coercivity above a fixed scale, including arbitrary finite high-scale supports. This restricted pole-free family is not proved RH-complete.
+- **Beyond-dyadic draft [S, unfinished]:** q-adic sign-flip/drift-free and higher-order harmonic families; inverse-square envelope, tail<1 and window/mass bounds. Low-band Mellin proof contains `sorry`; advertised generalized full-Weil receiver and signed cell-kernel extensions are absent. No certified frontier closure.
 - **Open / obstacle:** Prove actual even blind minimum≥0 at every aperture. Pay low modes and mixed scales on an RH-complete cone; positivity of restricted high-scale families does not transfer through arbitrary tent approximation or polar-nonclosed limits.
-- **Sources:** R:EvenSectorPoleWeightUniqueness; R:EvenSectorBlindVariationalAttainment; A:CompactCriticalPolynomialWindowAndTemperednessBridge; A:DenseScaleWindowsAndMultiWindowPositivity; A:FromTheCriticalFamilyToTheReceiver; A:FactorialRampSmoothingAndGramMargin; A:FactorialTailSpanWeilCoercivity.
+- **Sources:** R:EvenSectorPoleWeightUniqueness; R:EvenSectorBlindVariationalAttainment; A:CompactCriticalPolynomialWindowAndTemperednessBridge; A:DenseScaleWindowsAndMultiWindowPositivity; A:FromTheCriticalFamilyToTheReceiver; A:QuantitativeGridTentDetection; A:FactorialRampSmoothingAndGramMargin; A:FactorialTailSpanWeilCoercivity; A:AdmissibleStencilsAndCellKernelsBeyondDyadic.
 
 <a id="gta"></a>
 ### GTA — Transverse Schur charge
@@ -277,8 +277,9 @@ Sources: D:ThreeTenthsSharpGaugeWeilPositivity; I:SchurLendingOddWindowThreeHund
 
 - **Path:** Fix one generic width `0<w<log 2/2`; actual prime–archimedean sign on unmodulated difference bumps `κ_w(t+v/2)−κ_w(t−v/2)` for all `v≥V` → RH.
 - **Proved [L]:** One generic fixed-width continuous late-lag receiver and exact lag-rate/zero-width law. Explicit visibility, excluded-depth and conditional doubly logarithmic horizons; restricted model/grid laws retain their density, attainment and nonaliasing premises. Ordinary arithmetic floor has rate 1/2 with subexponential saving.
+- **Tent detection [L]:** Negative lag witnesses transfer to finite-scale tents and smooth detectors at seed radius V/2+w. Eventual tent sign at R implies depth<1/R below exp(R/(10⁵A(log R)²))−306, R≥e⁶, for a corpus constant A≥1. Sharper near-top/attained-top transfers retain their amplitude, local-count, separation and horizon premises; reverse height-to-floor transfer retains polar constraints and off-line density control. No source sign or uniform witness-resolution bound follows.
 - **Open / obstacle:** Prove actual-Λ late-lag lower bounds at every positive exponential slack, or sufficient source-derived horizon containment. Near-top zeros can escape to growing heights/tiny amplitudes; visibility is not sign. Arbitrary-zero polynomial-aperture detection remains [P].
-- **Sources:** S:OneParameterLagFamilyDecidesTheCriticalLine; S:ZetaLagFamilyVinogradovKorobovEnvelope; G:DoublyLogarithmicVisibilityAndExcludedDepthLaw.
+- **Sources:** S:OneParameterLagFamilyDecidesTheCriticalLine; S:ZetaLagFamilyVinogradovKorobovEnvelope; G:DoublyLogarithmicVisibilityAndExcludedDepthLaw; A:QuantitativeGridTentDetection.
 
 <a id="act"></a>
 ### ACT — Arithmetic criticality / single-shift variation
@@ -302,9 +303,10 @@ Sources: D:ThreeTenthsSharpGaugeWeilPositivity; I:SchurLendingOddWindowThreeHund
 - **Path:** Source-defined sections → all-aperture Riemann–Roch with ampleness → scaling Hodge index → RH.
 - **Proved [L]:** Source-defined section cones and RR+ample→Hodge→RH receiver. Low-grid/pole-blind subsurfaces have RR+ampleness; local full/odd/primitive floors and finite-defect classifications. Actual-ζ smooth-window certificate leaves only the signed coalescent prime surplus; no unconditional 3/4 or RH consequence.
 - **Finite models [L]:** On finite P-smooth supports, prime incidence splits by valuation fibres and |form|≤(Σ_p E_p)Σc², E_p=2log p/(√p−1). Two-prime box positivity iff κ≥E_p+E_q; 1–3-prime resonator remainder is negative for nonzero coefficient mass. Cross-collar positivity needs a bound premise; pole compensation needs c≥0 and pole weight≥max(S)/4. No full actual-ζ form identification.
-- **Source-only [S]:** RR on an ample half-space alone is nonselective; RR plus fibre-scaling invariance at one scale>1 on a nonnegative-degree cone forces Hodge. Finite Rosati RR iff spectral unitarity; exact Lefschetz/coboundary identity and cyclic Hecke–Lefschetz defect bridge. For the Hecke-stable envelope cone: RH ⇔ Hodge ⇔ RR ⇔ surface RR(0,0) ⇔ equality with the positive cone. Ampleness/Bézout are consequences of Hodge, not standalone converses in this theorem.
+- **Hecke/RR [L]:** RR on an ample half-space alone is nonselective; RR plus fibre-scaling invariance at one scale>1 on a nonnegative-degree cone forces Hodge. Finite Rosati RR iff spectral unitarity; exact Lefschetz/coboundary identity and cyclic Hecke–Lefschetz defect bridge. For the Hecke-stable envelope cone: RH ⇔ Hodge ⇔ RR ⇔ surface RR(0,0) ⇔ equality with the positive cone. Ampleness/Bézout are consequences, not standalone converses.
+- **Proportion transfers [S]:** Distinct critical-line count N₀* obeys 2N_right+N₀*≤N without simplicity; dyadic proportions transfer to cumulative counts and off-line moments. Source gives eventual offLineMoment(V)≤0.066V without a surplus premise. Coalescent budget β yields proportion 29/36−β; β≤1/18 gives 3/4 and moment≤0.057V conditionally. Actual β bound remains open; model/mixing thresholds are not actual-ζ estimates.
 - **Open / obstacle:** Prove original-source RR with ampleness, or independent source RR on a Hecke-stable nonnegative-degree cone, at all apertures. Pay omitted low-frequency/mixed sectors or establish an arithmetic section law. Defining the envelope and proving its RH equivalence does not establish RR. A fixed positive global gap is impossible.
-- **Sources:** O:AnEffectivityFromSectionsThatDoesNotReadTheForm; G:SourceRiemannRochAwayFromTheLowFrequencyDivisor; G:AllApertureSourceRiemannRochAndCoercivityLaws; P:SmoothWeightedCertificateAtFourThirds; G:CrossTowerCollarAndFiniteEulerLatticePositivity; G:LambdaRingEffectivityAndHeckeLefschetzRigidity.
+- **Sources:** O:AnEffectivityFromSectionsThatDoesNotReadTheForm; G:SourceRiemannRochAwayFromTheLowFrequencyDivisor; G:AllApertureSourceRiemannRochAndCoercivityLaws; P:SmoothWeightedCertificateAtFourThirds; G:CrossTowerCollarAndFiniteEulerLatticePositivity; G:LambdaRingEffectivityAndHeckeLefschetzRigidity; G:CoalescentSurplusAndTransThresholdProportionLaws.
 
 ## Route candidates
 
@@ -471,14 +473,16 @@ Promotion gap = missing independent source mechanism/landing, not merely an unpr
 | SignedArithmeticEnergyIncidence (SAEI) | AIP, MC, PM, CTF | Signed graph/frustration, prime-tower and receiver coordinates; local PSD/payment is not full continuum sign. |
 | SignChangingScrewGauge (SCG) | AIP, ACT | Signed gauges, folded potentials and moment cancellation; middle-region/remainder sign remains. |
 | ArithmeticOrientationTheory | HF, ACS, AIP, PM, MC | Source sections, orientation invariants and equivalent width/forcing dictionaries; no independent arithmetic orientation. |
-| TransThresholdPairCorrelation | HF, ACS | Actual-ζ smooth certificate: N₀*≥(29/36−ε)N−coalescentSurplus. Complete near-diagonal signed prime surplus remains; bound ≤(1/18+o(1))N would give 3/4, not RH. |
+| <a id="aog"></a>ArithmeticOrientationGeometry (AOG) [S] | ACS, HF | Scaling datum, Weil-plane/Hasse–Weil equivalence, orbit Toeplitz defect, correspondence convolution and Rosati trace. Every tempered configuration has a zero-side scaling surface; actual ζ equals the prime–Gamma surface by explicit formula. Global Hodge iff RH; Rosati positivity iff orbit Hodge. No independent positive trace, arithmetic section law or new route. |
+| Node/phase calibration synthesis [S] | HF, EWU, WL, PM | Four prime-blind RH receivers and deleted-node symbol intervals; twist-invariant window extrema versus phase-sensitive damped admission. Shifted prime weights are invisible on the prime-power-blind cone with ζ's Gamma/pole part held fixed—not a shifted-product explicit formula. Node 2 separates these weights; degree-two positivity iff shift=0 and RH. No unconditional critical producer. |
+| TransThresholdPairCorrelation | HF, ACS | Actual-ζ certificate N₀*≥(29/36−ε)N−coalescentSurplus [L]. Source-only transfers/thresholds [S]: β<5/36 beats 2/3; β≤577/4500 beats HD(1); β≤1/18 reaches 3/4, not RH. Unsigned factor-two model gives 49/72; spectral factor-two model gives 3/4. Actual surplus bound remains open. |
 | ReflectiveDirichletPolynomialS2 | MC, BVI | Principal reflection, S₂ and dispersion transfers; no RH-strength balanced cancellation. |
 | ReverseTwistedArcPoleCompression | RW, OWU | Pole-receiver reformulation; no independent sign producer. |
-| Analytic large-value/zero-density tools | Shared | Unconditional Guth–Maynard large-value and 30/13 zero-density bounds. Sharp all-length Heath–Brown three-term bound and separate all-k sharp S₂ input remain open; density bounds allow off-line zeros. |
+| Analytic large-value/zero-density tools | Shared | Guth–Maynard large-value and 30/13 zero-density bounds [L]. All-length Heath–Brown three-term bound has a dilation-before-reflection paper proof [P]; uniform-constant Lean assembly remains open. Separate all-k sharp S₂ input remains open; density bounds allow off-line zeros. |
 | Gaussian / TP₂ tools [L] | TG, shared | Literal law P(n)∝n^(−σ)e^(−yn²), σ≥0,y>0: global scale log-concavity; P(ab divides n)≤P(a divides n)P(b divides n), with finite-product version. Coprime divisibility indicators have nonpositive covariance. No arbitrary signed/Euler-inverted correlation or transfer to complete Weil/pronic energy. |
-| Producer/prime-clock synthesis [S, incomplete] | EWU, HF, FU, CHMD | Aggregates existing ramp/tail and clock results; no independent route. `ProducerCompletionAndPrimeClockKernelSynthesis` references absent `PrimeGraphClockOffDiagNonneg` and helper names; its capstone uses p≤√N whereas the cited realization requires p>√N. Draft capstone excluded from proved facts. |
+| Producer/prime-clock synthesis [L] | EWU, HF, FU, CHMD | Pole-free ramp/tail completion and high-scale coercivity; exact center/lag/cutoff clock kernels, operator decomposition, Cauchy–Schwarz bounds and fixed-cutoff center decay. Actual p>√N realization has small diagonal cost; nonnegative off-diagonal sums are an explicit premise. No RH-complete positive cone or independent route. |
 
-Key sources: O:TheWidthDictionary; O:TheEffectivityConeFromSections; M:TheCompensatedRemainderOfTheFullLedger; P:SmoothWeightedCertificateAtFourThirds; R:Sieve/GuthMaynardTheoremOneOne; R:Sieve/GuthMaynardHeathBrownStatement; R:ZetaZeroDensityThirtyThirteenths; H:LogConcaveIntegralComposition; R:GaussianIntegerLogConcavity; R:GaussianDivisibilityCorrelation; B:ProducerCompletionAndPrimeClockKernelSynthesis.
+Key sources: O:TheWidthDictionary; O:TheEffectivityConeFromSections; M:TheCompensatedRemainderOfTheFullLedger; P:SmoothWeightedCertificateAtFourThirds; G:CoalescentSurplusAndTransThresholdProportionLaws; J:ScalingDataAndWeilPlanes; J:TheCorrespondenceAlgebra; J:TheScalingDatumOfAConfiguration; B:NodeCriticalityPhaseSensitivityAndCalibrationSynthesis; R:Sieve/GuthMaynardTheoremOneOne; R:Sieve/GuthMaynardHeathBrownStatement; R:ZetaZeroDensityThirtyThirteenths; H:LogConcaveIntegralComposition; R:GaussianIntegerLogConcavity; R:GaussianDivisibilityCorrelation; B:ProducerCompletionAndPrimeClockKernelSynthesis; [all-length paper](../drafts/pipeline/2-fully-proven/heath-brown-all-length-dilation-closure.md).
 
 ## Dead mechanisms / scope boundaries
 
@@ -509,7 +513,7 @@ Full statements and positive survivors: [killed-routes ledger](rh-killed-routes.
 | S | SquareRootThreshold | Q | ScaleSignedIncidenceCriticality |
 | G | ArithmeticCastelnuovoSeveri | O | ArithmeticOrientationTheory |
 | D | ArithmeticCriticalityTheory | M | ArithmeticCompensationTheory |
-| P | TransThresholdPairCorrelation | | |
+| P | TransThresholdPairCorrelation | J | ArithmeticOrientationGeometry |
 
 Paper-only arbitrary-zero detector: [centered heat polynomial-aperture detection](../drafts/pipeline/2-fully-proven/centered-heat-polynomial-aperture-detection.md).
 

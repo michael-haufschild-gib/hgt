@@ -522,21 +522,25 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
     `2/3`; the optimal profile `cos(√2 λs)` at `λ = 1` lowers `κ` to at most `3319/2500` and
     certifies more than `1681/2500 > 2/3` simple critical zeros, more than `4181/5000 > 5/6`
     distinct zeros and at most `(819/5000 + ε)N` right zeros (`two_thirds_lt_HD_one`,
-    `five_sixths_lt_GD_one`), yet stays below `3/4` (`HD_one_lt_three_quarters`): no profile supported
-    below `λ = 1` reaches `3/4`. Beyond `λ = 1`, a flat-top window under a pair-correlation bound
-    `F ≤ B` gives `2/3 + 1/(3(3B − 2))`. A two-window mixture of bandwidths `1` and `4/3` has the exact
-    optimal envelope `2/3 + (181 − 18B)²/(1728(91 + 9B))` at mixing weight `(1 + 36B)/(2(91 + 9B))`,
-    which lies in `(0, 1)` and beats `2/3` for `−1/36 < B < 181/18`; it reaches `3/4` at weight `4/9`
-    iff `B ≤ 2954/1035` (slightly past `117/41`, the threshold at weight `7/16`), and beats `HD(1)`
-    up to `B = 7` (`two_sub_mixQ_le_mixOpt_and_eq_at_weight`, `mixOpt_values_and_three_quarters_criterion`).
+    `five_sixths_lt_GD_one`), yet satisfies `HD(1) < 254/375 < 3/4`
+    (`HD_one_lt_twoHundredFiftyFour_div_threeHundredSeventyFive`, `HD_one_lt_three_quarters`): no
+    profile supported below `λ = 1` reaches `3/4`. Beyond `λ = 1`, a flat-top window under a
+    pair-correlation bound `F ≤ B` gives `2/3 + 1/(3(3B − 2))`. A two-window mixture of bandwidths
+    `1` and `4/3` has the exact optimal envelope `2/3 + (181 − 18B)²/(1728(91 + 9B))` at mixing
+    weight `(1 + 36B)/(2(91 + 9B))`, which lies in `(0, 1)` and beats `2/3` for `−1/36 < B < 181/18`;
+    it reaches `3/4` at weight `4/9` iff `B ≤ 2954/1035` (slightly past `117/41`, the threshold at
+    weight `7/16`), and beats `HD(1)` (`180433/266112 > 254/375 > HD(1)`) up to `B = 7`
+    (`two_sub_mixQ_le_mixOpt_and_eq_at_weight`, `mixOpt_values_and_three_quarters_criterion`).
 28. **Two routes past the blind spot, each with one unproved input.** The pair `(P, Q)` remembers
     what `Â` forgets. Adding the full spectral slack to the rank–trace functional cancels its
     prime-side part identically and leaves `(c²/4) rank P` minus a coupling defect
     (`rank_trace_add_totalSlack_eq`). Unconditionally the zero-side slack is at most
-    `(λ − H(λ) + ε)N`, which refutes the slack route for every `λ < 3/4`
-    (`not_three_quarters_zeroSideSlack_of_lt_three_quarters`). On `λ ∈ [3/4, 1]` a slack
+    `(λ − H(λ) + ε)N`, which refutes the slack route to `HD(1)` for every `λ < HD(1)` and to `3/4`
+    for every `λ < 3/4` (`not_HD_one_zeroSideSlack_of_lt_HD_one`,
+    `not_three_quarters_zeroSideSlack_of_lt_three_quarters`). On `λ ∈ [3/4, 1]` a slack
     `≥ (3/4 − H(λ))N` gives three-quarters of the zeros on the line (`zeta_three_quarters_of_spectralSlack`);
-    in the displaced-pair model this needs macroscopic hyperbolic displacement `(1 + 2η)² ≥ 4/3`,
+    in the displaced-pair model reaching target `q` needs `3(1 − q)(1 + 2η) ≥ 1` (`η ≥ 2/121` for
+    `q = 254/375 > HD(1)` vs. `η ≥ 1/6` for `q = 3/4`, `hyperbolic_displacedPair_general_target_iff`),
     and non-coalescence alone is not enough (`macroscopic_displacedPair_counterexample_at_four_thirds`).
     The other route is `RHTower.PrimeSurplusFourThirds`, filling the margin `1/18` above the
     diagonal constant `43/36` at bandwidth `4/3` (`zeta_three_quarters_from_prime_surplus`); its
@@ -549,17 +553,22 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
     (`zeta_N0star_and_offLineMoment_of_coalescentSurplus`,
     `coalescent_budget_thresholds_for_two_thirds_HD_one_and_three_quarters`). The affine models of
     the trans-threshold form factor calibrate `β`: an unsigned additive sieve at its factor-two
-    parity limit gives `49/72 > HD(1)` but reaches `3/4` only below `Υ = 8/9`, so `3/4` needs signed
-    cancellation in the coalescent band; the spectral sieve reaches `3/4` exactly at the parity
-    limit; the Hardy–Littlewood (GUE) model has negative surplus and gives `13/16`
+    parity limit gives `49/72 > 254/375 > HD(1)` but reaches `3/4` only below `Υ = 8/9`, so `3/4`
+    needs signed cancellation in the coalescent band; the spectral sieve beats `HD(1)` up to
+    `Υ ≤ 1186/375` (`11/16 > HD(1)` at `Υ = 3`) and reaches `3/4` exactly at the parity limit
+    `Υ = 2`; the Hardy–Littlewood (GUE) model has negative surplus and gives `13/16`
     (`five_model_separation_of_HD_one_and_three_quarters`). No bound on the coalescent surplus is
     proved. The proportions transfer without a simplicity hypothesis, through the reflection bound
     `2R(T₁, T₂) + N₀*(T₁, T₂) ≤ N(T₁, T₂)` for the right-zero multiplicity `R`
-    (`two_mul_sum_right_add_N0star_le`, `cumulative_N0star_of_dyadic_N0star`). The certified
-    proportions feed back into the corpus unconditionally: the dyadic off-line moment improves from
-    `(67/1000)T` to `(66/1000)T` (`eventually_dyadicWindowTail_le_sixtySix_thousandths`; `57/1000`
-    under the prime surplus), and the double-exponential uniqueness threshold for even functions
-    vanishing at the simple critical zeros drops from `b > 3` to `b > 5000/1681`
+    (`two_mul_sum_right_add_N0star_le`, `cumulative_N0star_of_dyadic_N0star`,
+    `eventually_dyadicWindowTail_le_selberg_upper_of_N0star`,
+    `eventually_offLineMoment_le_of_zetaGateFrom_N0star`). The certified proportions feed back into
+    the corpus unconditionally: both the dyadic window off-line moment and the cumulative
+    `offLineMoment V` improve from `67/1000` to `66/1000`
+    (`eventually_dyadicWindowTail_le_sixtySix_thousandths`,
+    `eventually_offLineMoment_le_sixtySix_thousandths`; `57/1000` under either route to `3/4`), and
+    the double-exponential uniqueness threshold for even functions vanishing at the simple critical
+    zeros drops from `b > 3` to `b > 5000/1681`
     (`ae_eq_zero_of_doubleExp_simpleCritical_montgomeryTaylor`; `b > 8/3` under the surplus).
 
 ### 3.9 The λ-ring of the scaling surface and Hecke–Lefschetz rigidity (`TheLambdaRingOfTheScalingSurface`, `LambdaRingEffectivityAndHeckeLefschetzRigidity`)
