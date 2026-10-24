@@ -1,15 +1,16 @@
 # Gaussian-background heat law
 
-- **Stage:** 1-in-progress; complete paper proof below, Lean pending.
+- **Stage:** 3-formalized; complete paper proof and Lean certificate.
+- **Type:** THEOREM (Lean).
 - **Source:** WD goal loop, row 377; user request to formalize noteworthy paper proofs.
 - **Scope:** exact Gaussian-background model. No transfer to the actual Xi source or RH claim.
-- **Leaf planned:** `RHTower/XiSliceHeatGaussianSharpThreshold.lean`.
+- **Leaf:** `RHTower/XiSliceHeatGaussianSharpThreshold.lean`.
 
 ## Scope and connection task
 
 The user explicitly requested completing this model formalization, then searching
 the broader Lean corpus for a connection giving more significant route progress.
-Formalization is active again. The model alone does not discharge the global
+Formalization is complete. The model alone does not discharge the global
 signed source inequality, a source-to-WD signed trace comparison, or a uniform
 zero-block absorption premise. Any connection to a general Xi background must
 be proved separately and its missing inputs stated explicitly.
@@ -76,11 +77,28 @@ coefficient at heat `kappa/a` whenever `kappa<1/4`. Conversely, if
 This proves the sharp limiting heat constant for each fixed positive offset,
 as well as the universal-offset statement.
 
-## Implementation obligations
+## Lean certificate
 
-- Reuse `integrable_and_integral_gaussDensity_quartic` and the existing Gaussian density.
-- Prove the completed-square kernel identity, integral, and actual convergent series.
-- Prove the coefficient square decomposition and exact universal threshold.
-- Prove the fixed-offset integer-rounding bound if its stated strict inequalities survive Lean.
-- Direct named-module check, transitive axiom audit, umbrella import, scratch cleanup.
-- No numerical experiments, web search, novelty claims, placeholders, or limit increases.
+- `gaussDensity_mul_exp_sq_mehler`: normalized completed-square kernel.
+- `integrable_and_integral_gaussianModel`: actual integrability and exact heat integral.
+- `hasSum_gaussianModelHeatTaylorCoeff`: everywhere convergent ordinary power series.
+- `forall_gaussianModelHeatTaylorCoeff_nonneg_iff`: exact universal threshold.
+- `gaussianModelHeatCoeff_floor_neg`: explicit integer detecting order at fixed offset.
+- `exists_dense_gaussianModelHeatCoeff_neg`: every sufficiently large density is detected below scaled heat `1/4`.
+- `gaussianModelHeatCoeff_pos_at_scaled_heat`: positivity at every density above that threshold.
+
+All declarations are in namespace `RHTower.DeBruijn`. Direct named leaf check
+`lake --old env lean GaloisForLFunctions/RHTower/XiSliceHeatGaussianSharpThreshold.lean`
+passed. Transitive `#print axioms` audit of integral, series, threshold, and both
+density capstones reports only `propext`, `Classical.choice`, `Quot.sound`.
+Umbrella import added; umbrella not compiled. No placeholders, numerical
+experiments, web search, novelty claims, or limit increases.
+
+## Broader connection
+
+The exact Xi pair factorization in `XiSliceHeatIsolatedPairThreshold` leaves a
+weighted signed cofactor deviation. `XiSliceHeatedOffLineDetection` supplies
+a product envelope, which does not itself bound that deviation. The next
+paper theorem retains a finite zero block and subtracts the complementary
+quadratic exponential before taking norms; see the in-progress card
+`rh/weil-dilation/wd-xi-gaussian-tail-compensation-2026-10-24.md`.

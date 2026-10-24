@@ -30,9 +30,10 @@ permitted. This is a conjecture, not an imported input to another proof.
   This is density, not a uniform synthesis or tail estimate.
 - `CHMDReducedSpectralCore` gives graph-norm spectral approximation within
   the reduced graph. Again, it does not give uniform tail control.
-- The fixed-aperture quotient-landing argument isolates compactness on each
-  fixed source aperture. Its formal verification is still pending. Nothing
-  in that argument makes its constants uniform as aperture grows.
+- The fixed-aperture quotient-landing theorem is formalized and audited in
+  `CHMDFixedApertureQuotientLanding.lean`. It isolates compactness on each
+  fixed source aperture and proves a lower quotient bound. Nothing in that
+  argument makes its constants uniform as aperture grows.
 - `CHMDNoWeylAboveThreshold` already excludes Weyl values above one half.
   Reproving that result would not resolve this stronger compactness claim.
 

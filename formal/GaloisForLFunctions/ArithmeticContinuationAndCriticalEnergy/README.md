@@ -373,6 +373,22 @@ the gap times `‖G‖_T` is at most `‖E_ε‖_T` (`SecondTangentControlGivesT
 the *ratio against the gap*, but a local angle bound on adjacent steps does not by itself control correlations with all
 earlier dampings. A partition argument must also bound those accumulated cross terms.
 
+On the actual source at horizon `T = 1`, `W_1(ε) = −(1 − Re(1/ζ(1+ε))) m(ε)/2 → −½` while
+`K_1(η, ε) = m(η)m(ε)/2 → ½ > 0`, so there is a positive damping interval `(0, δ₀)` on which the
+autocorrelation is strictly positive while the signed work is strictly negative
+(`exists_damping_tangentCorrelation_one_pos_and_signedDampingWork_one_neg`). Moreover, relative
+stability is strictly stronger than non-obtuse angle (`exists_pos_pairing_not_relative_stability`),
+monotone work is strictly stronger than single sign change (`exists_single_sign_change_not_monotoneOn`),
+and the no-interior-bump condition forces damping-uniform admission across `(0, ½]`
+(`uniformlyAdmitsOn_of_no_interior_bump`). Integrating the autocorrelation over the square
+`[a, c] × [a, c]` restores unconditional positivity and matches admission exactly:
+`∫_a^c ∫_a^c K_T(η, ε) dη dε = ‖A_c − A_a‖_T² ≥ 0`
+(`double_integral_tangentCorrelation_eq_pronicNorm_sub_sq`,
+`double_integral_tangentCorrelation_nonneg`), and with `c` admitted a horizon-uniform bound on the
+signed double integral `∫_a^c ∫_a^c K_T(η, ε) dη dε` is **equivalent** to admission at `a`
+(`admits_iff_bounded_double_integral_tangentCorrelation`) and holds unconditionally on `(Θ − ½, ∞)`
+and on the Vinogradov–Korobov band (`SourceAngleShapeHierarchyAndIntegratedAutocorrelation`).
+
 ### Convexity, and the second tangent as an iterated dilation
 
 Since both ends are paid, convexity of the energy closes the problem, and convexity is exactly
@@ -411,6 +427,19 @@ programmes use. With the increment `a_M(η) = Λ^{resp}_η(M) − m(η)`, where
   (`TheLevelCollapseOfTheMaxKernelForm`), a cross-correlation of an increment with the centred
   prefix at the *same* scale. On the diagonal the same identity is the discrete energy balance
   `d(E²) = 2E dE − (dE)²`.
+- **Unconditional diagonal and integrated positivity up to boundary at relative precision `1/T`.**
+  The polar-calibrated prime-pair form and the single-scale level-sum form are identical
+  (`polarCalibratedPrimePairForm_eq_levelSum`), dominate the nonnegative boundary term
+  `E_ε(T)²/(T+1)` unconditionally on the diagonal (`diagonal_polarCalibratedPrimePairForm_ge_boundary`,
+  `diagonal_primePairMaxKernelForm_ge`), and satisfy the exact double-integral law
+  `∫_a^c ∫_a^c L_T(η, ε) dη dε = ‖A_c − A_a‖_T² + (A_c(T) − A_a(T))²/(T+1) ≥ ∫_a^c ∫_a^c E_η(T)E_ε(T)/(T+1)`
+  on every damping square `[a, c] × [a, c]` (`double_integral_levelSum_eq`,
+  `double_integral_polarCalibratedPrimePairForm_ge_boundary`). Dividing by the linear scale `T + 1`,
+  admission at `a` is equivalent to relative-precision `C/(T+1)` cancellation against the boundary
+  term (`admits_iff_relative_precision_inv_T_primePair`), which holds unconditionally on
+  `(Θ − ½, ∞)` (`exists_relative_precision_inv_T_primePair_above_zeroWidth`,
+  `tendsto_relative_precision_primePair_zero_above_zeroWidth`) and on the Vinogradov–Korobov band
+  (`exists_relative_precision_inv_T_primePair_on_vinogradovKorobovBand`).
 
 ### The dilation picture of the work
 
@@ -812,14 +841,33 @@ To be built:
    uniformly in `(T, a, c)` (`exists_signedWorkIntegral_and_relativeLoss_le_on_vinogradovKorobovBand`)
    with sub-power saving `O_a(T^{1−2a} exp(−κ σ(T)/270))` at every fixed `0 < a < ½`
    (`eventually_signedWorkIntegral_and_relativeLoss_le_vk_saving`).
-2. **Source-specific angle or shape control.** Nonnegative damping autocorrelation, suitable
-   bounds on its accumulated negative part, relative tangent stability, convexity of the energy,
-   and a restriction on the order of work sign changes are distinct sufficient routes. They are
-   not interchangeable equivalences. Prove one from the actual source, or identify a weaker
-   signed integrated estimate that survives its failure.
-3. **The prime-pair form to relative precision `1/T`.** Prove the level-sum or prime-pair form of the
-   autocorrelation nonnegative up to the explicit boundary term, with the cancellation against the
-   polar and row-weighted terms carried out at relative precision `1/T`.
+2. **Source-specific angle or shape control (Resolved: `SourceAngleShapeHierarchyAndIntegratedAutocorrelation`).**
+   At `T = 1`, `K_1(η, ε) = m(η)m(ε)/2 > 0` while `W_1(ε) < 0` on `(0, δ₀)`
+   (`exists_damping_tangentCorrelation_one_pos_and_signedDampingWork_one_neg`); relative tangent
+   stability is strictly stronger than `0 ≤ K_T` (`exists_pos_pairing_not_relative_stability`);
+   monotone work is strictly stronger than single sign change (`exists_single_sign_change_not_monotoneOn`);
+   and no-interior-bump forces `UniformlyAdmitsOn dampedMobiusEnergy (Ioc 0 (1/2))`
+   (`uniformlyAdmitsOn_of_no_interior_bump`). The weaker signed integrated estimate that survives
+   off-diagonal negativity is the double damping integral
+   `∫_a^c ∫_a^c K_T(η, ε) dη dε = ‖A_c − A_a‖_T² ≥ 0`
+   (`double_integral_tangentCorrelation_eq_pronicNorm_sub_sq`,
+   `double_integral_tangentCorrelation_nonneg`), whose horizon-uniform boundedness is **equivalent**
+   to admission at `a` (`admits_iff_bounded_double_integral_tangentCorrelation`) and holds
+   unconditionally on `(Θ − ½, ∞)` and on the Vinogradov–Korobov band
+   (`exists_double_integral_tangentCorrelation_le_of_zetaZeroAbscissa_sub_half_lt`,
+   `exists_double_integral_tangentCorrelation_le_on_vinogradovKorobovBand`).
+3. **The prime-pair form to relative precision `1/T` (Resolved: `PrimePairLevelSumAndRelativePrecisionCancellation`).**
+   The polar-calibrated prime-pair form `P_T(η, ε) − m(ε)R_T(η) − m(η)R_T(ε) + m(η)m(ε)(2T − H_T)`
+   equals the single-scale level sum `L_T(η, ε)` (`polarCalibratedPrimePairForm_eq_levelSum`), is
+   unconditionally nonnegative up to `E_ε(T)²/(T+1)` on the diagonal
+   (`diagonal_polarCalibratedPrimePairForm_ge_boundary`), and satisfies the unconditional integrated
+   positivity law `∫_a^c ∫_a^c L_T(η, ε) dη dε = ‖A_c − A_a‖_T² + (A_c(T) − A_a(T))²/(T+1) ≥ ∫_a^c ∫_a^c boundary ≥ 0`
+   on every `[a, c] × [a, c]` (`double_integral_polarCalibratedPrimePairForm_ge_boundary`). Relative
+   to the linear scale `T + 1`, cancellation of the boundary-adjusted integral at precision
+   `C/(T+1)` is equivalent to admission (`admits_iff_relative_precision_inv_T_primePair`) and holds
+   unconditionally on `(Θ − ½, ∞)` and on the Vinogradov–Korobov band
+   (`exists_relative_precision_inv_T_primePair_above_zeroWidth`,
+   `exists_relative_precision_inv_T_primePair_on_vinogradovKorobovBand`).
 4. **The one-sided sublinear pairing at a single damping.** Bound the positive part of the centred
    source against the explicit positive inversion defect, and the anti-correlation with its own
    proper dilations, each by `κ√E_T + κ'` at one damping. This gives admission with no transport at

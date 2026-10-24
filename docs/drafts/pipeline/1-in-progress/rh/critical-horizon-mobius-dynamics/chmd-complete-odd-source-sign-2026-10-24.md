@@ -121,13 +121,17 @@ the primitive absolute-graph half-Rayleigh premise open.
 
 ## Status
 
-No dependency-closed source-sign proof was obtained. No significant CHMD
-obstacle has been solved in this batch. No Lean module, umbrella import,
-compiler audit, or new theorem is claimed. The next mathematical task is
-the joint collar payment above, retaining all prime and polar terms; merely
-reformalizing its identity would not meet the goal.
+The complete source-sign target remains open. A related documented analytic
+gap is now closed: the fixed-aperture real Weil completion embeds with closed
+range in the actual signed-radical quotient, with a lower quotient norm bound
+and exact full Weil-form preservation. The theorem, paper argument, direct
+Lean check and transitive axiom audit are recorded in
+[the formalized completion card](../../../3-formalized/chmd-fixed-aperture-quotient-landing-2026-10-24.md).
+Its constants depend on aperture; it supplies neither joint collar payment
+nor the primitive half-Rayleigh/oneL-defect bounds. Those remain the next
+source-sign tasks, retaining every prime and polar term.
 
 Corpus searches and direct source inspection supplied the evidence above;
 search hits were not treated as kernel certificates. External novelty work
-was excluded by the user, so no novelty claim is made. Existing worktree
-changes belong to other work and remain untouched. Goal remains active.
+was excluded by the user, so no novelty claim is made. Unrelated worktree
+changes remain untouched. The unconditional RH goal remains active.

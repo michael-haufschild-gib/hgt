@@ -261,3 +261,26 @@ This card is the programme card: folder, umbrella, README and the continuation c
   - Unconditional horizon-uniform continuation on the Vinogradov–Korobov band
     `exists_signedWorkIntegral_and_relativeLoss_le_on_vinogradovKorobovBand` and all-damping
     sub-power saving `eventually_signedWorkIntegral_and_relativeLoss_le_vk_saving`.
+- 2026-10-24 (cont.) — Open Problem 2 resolved (`SourceAngleShapeHierarchyAndIntegratedAutocorrelation`):
+  - First-horizon separation on the actual source: `tendsto_signedDampingWork_one`,
+    `not_forall_signedDampingWork_nonneg`, `tangentCorrelation_one`, and
+    `exists_damping_tangentCorrelation_one_pos_and_signedDampingWork_one_neg`.
+  - Strict separations `exists_pos_pairing_not_relative_stability`,
+    `exists_single_sign_change_not_monotoneOn`, and `uniformlyAdmitsOn_of_no_interior_bump`.
+  - Exact double-integral identity `double_integral_tangentCorrelation_eq_pronicNorm_sub_sq`,
+    unconditional positivity `double_integral_tangentCorrelation_nonneg`, equivalence with admission
+    `admits_iff_bounded_double_integral_tangentCorrelation`, and unconditional bounds above `Θ − ½`
+    and on the Vinogradov–Korobov band.
+- 2026-10-24 (cont. 2) — Open Problem 3 resolved (`PrimePairLevelSumAndRelativePrecisionCancellation`):
+  - Exact identity `polarCalibratedPrimePairForm_eq_levelSum`, diagonal positivity up to boundary
+    `diagonal_polarCalibratedPrimePairForm_ge_boundary`, `diagonal_primePairMaxKernelForm_ge`, and
+    level-sum forms of the energy and work (`dampedMobiusEnergy_eq_level_sum_sub_boundary`,
+    `signedDampingWork_eq_level_sum_sub_boundary`).
+  - Unconditional integrated nonnegativity up to boundary on `[a, c] × [a, c]`
+    (`double_integral_polarCalibratedPrimePairForm_ge_boundary`,
+    `double_integral_levelSum_ge_boundary`).
+  - Equivalence with relative-precision `1/(T+1)` cancellation
+    `admits_iff_relative_precision_inv_T_primePair`, and unconditional `O(1/T)` cancellation above
+    `Θ − ½` (`exists_relative_precision_inv_T_primePair_above_zeroWidth`,
+    `tendsto_relative_precision_primePair_zero_above_zeroWidth`) and on the Vinogradov–Korobov band
+    (`exists_relative_precision_inv_T_primePair_on_vinogradovKorobovBand`).

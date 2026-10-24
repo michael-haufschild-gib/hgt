@@ -83,7 +83,7 @@ private theorem hasDerivAt_deriv_expNegInvGlue_of_pos {x : ℝ} (hx : 0 < x) :
     HasDerivAt (deriv expNegInvGlue) ((x⁻¹ ^ 4 - 2 * x⁻¹ ^ 3) * expNegInvGlue x) x := by
   have h1' : HasDerivAt (fun y : ℝ => y⁻¹ ^ 2) (-2 * x⁻¹ ^ 3) x := by
     refine ((hasDerivAt_inv hx.ne').pow 2).congr_deriv ?_
-    simp only [Nat.add_sub_cancel, pow_one, inv_pow]
+    simp only [inv_pow]
     ring
   have h2 := hasDerivAt_expNegInvGlue_of_pos hx
   have h3 : deriv expNegInvGlue =ᶠ[𝓝 x]
@@ -426,8 +426,7 @@ private theorem criticalCollarWeight_mul_sq {v : ℝ} (hv : v ≠ 0) :
 private theorem deriv_criticalCollarWeight_mul_sq {v : ℝ} (hv : 0 < v) :
     deriv criticalCollarWeight v * v ^ 2 + criticalCollarWeight v * (2 * v) =
       deriv Real.smoothTransition (v - 1) := by
-  have h1 := ((hasDerivAt_criticalCollarWeight v).mul (hasDerivAt_pow 2 v)).congr_deriv
-    (by push_cast; ring)
+  have h1 := (hasDerivAt_criticalCollarWeight v).mul (hasDerivAt_pow 2 v)
   have h2 := ((hasDerivAt_smoothTransition (v - 1)).comp v
     ((hasDerivAt_id v).sub_const 1)).congr_deriv (by ring)
   have h3 : (Real.smoothTransition ∘ fun x => x - 1) =ᶠ[𝓝 v]
@@ -435,7 +434,9 @@ private theorem deriv_criticalCollarWeight_mul_sq {v : ℝ} (hv : 0 < v) :
     filter_upwards [Ioi_mem_nhds hv] with y hy
     simp only [Function.comp_apply, Pi.mul_apply]
     exact (criticalCollarWeight_mul_sq hy.ne').symm
-  exact (h1.congr_of_eventuallyEq h3).unique h2
+  have heq := (h1.congr_of_eventuallyEq h3).unique h2
+  norm_num at heq
+  linarith
 
 private theorem deriv_deriv_criticalCollarWeight_mul_sq {v : ℝ} (hv : 0 < v) :
     deriv (deriv criticalCollarWeight) v * v ^ 2 +
@@ -443,7 +444,7 @@ private theorem deriv_deriv_criticalCollarWeight_mul_sq {v : ℝ} (hv : 0 < v) :
       deriv (deriv Real.smoothTransition) (v - 1) := by
   have h1a := (hasDerivAt_deriv_criticalCollarWeight v).mul (hasDerivAt_pow 2 v)
   have h1b := (hasDerivAt_criticalCollarWeight v).mul ((hasDerivAt_id v).const_mul 2)
-  have h1 := (h1a.add h1b).congr_deriv (by simp only [id_eq]; push_cast; ring)
+  have h1 := h1a.add h1b
   have h2 := ((hasDerivAt_deriv_smoothTransition (v - 1)).comp v
     ((hasDerivAt_id v).sub_const 1)).congr_deriv (by ring)
   have h3 : (deriv Real.smoothTransition ∘ fun x => x - 1) =ᶠ[𝓝 v]
@@ -452,7 +453,10 @@ private theorem deriv_deriv_criticalCollarWeight_mul_sq {v : ℝ} (hv : 0 < v) :
     filter_upwards [Ioi_mem_nhds hv] with y hy
     simp only [Function.comp_apply, Pi.add_apply, Pi.mul_apply, id_eq]
     exact (deriv_criticalCollarWeight_mul_sq hy).symm
-  exact (h1.congr_of_eventuallyEq h3).unique h2
+  have heq := (h1.congr_of_eventuallyEq h3).unique h2
+  simp only [id_eq] at heq
+  norm_num at heq
+  linarith
 
 theorem abs_deriv_criticalCollarWeight_le {v : ℝ} (hv : 1 ≤ v) :
     |deriv criticalCollarWeight v| ≤ 4 ∧ |v * deriv criticalCollarWeight v| ≤ 4 := by
@@ -513,8 +517,7 @@ theorem abs_deriv_deriv_criticalCollarWeight_le {v : ℝ} (hv : 1 ≤ v) :
 private theorem deriv_criticalCollarEndpointWeight_mul {v : ℝ} (hv : 0 < v) :
     deriv criticalCollarEndpointWeight v * v + criticalCollarEndpointWeight v =
       deriv Real.smoothTransition (v - 1) := by
-  have h1 := ((hasDerivAt_criticalCollarEndpointWeight v).mul (hasDerivAt_id v)).congr_deriv
-    (by simp only [id_eq]; ring)
+  have h1 := (hasDerivAt_criticalCollarEndpointWeight v).mul (hasDerivAt_id v)
   have h2 := ((hasDerivAt_smoothTransition (v - 1)).comp v
     ((hasDerivAt_id v).sub_const 1)).congr_deriv (by ring)
   have h3 : (Real.smoothTransition ∘ fun x => x - 1) =ᶠ[𝓝 v]
@@ -522,7 +525,9 @@ private theorem deriv_criticalCollarEndpointWeight_mul {v : ℝ} (hv : 0 < v) :
     filter_upwards [Ioi_mem_nhds hv] with y hy
     simp only [Function.comp_apply, Pi.mul_apply, id_eq]
     exact (div_mul_cancel₀ _ hy.ne').symm
-  exact (h1.congr_of_eventuallyEq h3).unique h2
+  have heq := (h1.congr_of_eventuallyEq h3).unique h2
+  simp only [id_eq] at heq
+  linarith
 
 theorem abs_deriv_criticalCollarEndpointWeight_le {v : ℝ} (hv : 1 ≤ v) :
     |deriv criticalCollarEndpointWeight v| ≤ 4 := by
@@ -678,7 +683,7 @@ private theorem deriv_criticalCollarWeight_add_criticalEndpointWeight {v : ℝ} 
     deriv criticalCollarWeight v + deriv criticalEndpointWeight v = -2 * v ^ (-3 : ℤ) := by
   have h1 := (hasDerivAt_criticalCollarWeight v).add (hasDerivAt_criticalEndpointWeight hv)
   have h2 : HasDerivAt (fun y : ℝ => y ^ (-2 : ℤ)) (-2 * v ^ (-3 : ℤ)) v :=
-    (hasDerivAt_zpow (-2) v (Or.inl hv.ne')).congr_deriv (by ring)
+    (hasDerivAt_zpow (-2) v (Or.inl hv.ne')).congr_deriv (by norm_num)
   have h3 : (fun y : ℝ => y ^ (-2 : ℤ)) =ᶠ[𝓝 v]
       criticalCollarWeight + criticalEndpointWeight := by
     filter_upwards [Ioi_mem_nhds hv] with y hy
@@ -693,7 +698,7 @@ private theorem deriv_deriv_criticalCollarWeight_add_criticalEndpointWeight {v :
   have h1 := (hasDerivAt_deriv_criticalCollarWeight v).add
     (hasDerivAt_deriv_criticalEndpointWeight hv)
   have h2 : HasDerivAt (fun y : ℝ => -2 * y ^ (-3 : ℤ)) (6 * v ^ (-4 : ℤ)) v :=
-    ((hasDerivAt_zpow (-3) v (Or.inl hv.ne')).const_mul (-2)).congr_deriv (by ring)
+    ((hasDerivAt_zpow (-3) v (Or.inl hv.ne')).const_mul (-2)).congr_deriv (by norm_num; ring)
   have h3 : (fun y : ℝ => -2 * y ^ (-3 : ℤ)) =ᶠ[𝓝 v]
       deriv criticalCollarWeight + deriv criticalEndpointWeight := by
     filter_upwards [Ioi_mem_nhds hv] with y hy
@@ -790,9 +795,7 @@ theorem canonicalPrimeMajorantConstant_le_twelve :
     · have hr01 : r = 0 ∨ r = 1 := by omega
       rcases hr01 with rfl | rfl <;> simp
   rw [hcongr]
-  have h := RHTower.tsum_vonMangoldt_div_rpow_le_six (s := 2) (by norm_num)
-  norm_num at h
-  exact h
+  exact (RHTower.tsum_vonMangoldt_div_rpow_le_six (s := 2) (by norm_num)).trans (by norm_num)
 
 theorem tsum_one_div_nat_sq_le_two :
     (∑' k : ℕ, 1 / (k : ℝ) ^ 2) ≤ 2 := by
@@ -810,10 +813,11 @@ theorem tsum_one_div_nat_mul_sqrt_le_three :
     rcases eq_or_ne k 0 with rfl | hk
     · norm_num
     · have hk0 : (0 : ℝ) < k := by positivity
-      rw [Real.rpow_def_of_pos hk0, Real.sqrt_eq_rpow, Real.rpow_def_of_pos hk0,
-        ← Real.exp_log hk0, ← Real.exp_add]
-      have : -(Real.log k + 1 / 2 * Real.log k) = -3 / 2 * Real.log k := by ring
-      rw [one_div, ← Real.exp_neg, this]
+      rw [one_div, Real.sqrt_eq_rpow,
+        show (k : ℝ) * (k : ℝ) ^ (1 / 2 : ℝ) = (k : ℝ) ^ (1 : ℝ) * (k : ℝ) ^ (1 / 2 : ℝ) by
+          rw [Real.rpow_one],
+        ← Real.rpow_add hk0, ← Real.rpow_neg hk0.le]
+      norm_num
   have htele (j : ℕ) : f (j + 2) ≤ 2 / Real.sqrt (j + 1 : ℝ) - 2 / Real.sqrt (j + 2 : ℝ) := by
     simp only [f]
     push_cast
@@ -830,8 +834,7 @@ theorem tsum_one_div_nat_mul_sqrt_le_three :
       calc (2 * b - a * 2) * (a * b * (b + a))
           = 2 * (a * b) * ((b - a) * (b + a)) := by ring
         _ = 2 * (a * b) := by rw [hba, mul_one]
-    rw [hdiff, ← hb2]
-    refine div_le_div₀ (by positivity) (by norm_num) (by positivity) ?_
+    rw [hdiff, ← hb2, div_le_div_iff₀ (by positivity) (by positivity)]
     have h1 : a * b * (b + a) ≤ b * b * (b + b) := by gcongr
     have h2 : b * b * (b + b) = 2 * (b ^ 2 * b) := by ring
     linarith
@@ -904,19 +907,19 @@ theorem criticalEndpointDilationConstant_le :
   have hprod2 : (∑' k : ℕ, 1 / (k : ℝ) ^ 2) * (∑' l : ℕ, 1 / (l : ℝ) ^ 2) ≤ 4 := by
     nlinarith
   have hpi : (3 : ℝ) < Real.pi := Real.pi_gt_three
-  have hfrac1 : 4 * (1 + 13 / (Real.pi * (11 / 12))) ≤ 24 := by
+  have hfrac1 : 1 + 13 / (Real.pi * (11 / 12)) ≤ 6 := by
     have : 13 / (Real.pi * (11 / 12)) ≤ 5 := by
       rw [div_le_iff₀ (by positivity)]; linarith
     linarith
   have hfrac2 : 16 / Real.pi ≤ 6 := by
     rw [div_le_iff₀ (by positivity)]; linarith
   change dyadicDilationConstant criticalEndpointMass criticalEndpointCurvature +
-    (8 * (4 * (1 + 13 / (Real.pi * (11 / 12)))) *
+    (8 * (1 + 13 / (Real.pi * (11 / 12))) *
       ((∑' k : ℕ, 1 / ((k : ℝ) * Real.sqrt k)) * ∑' l : ℕ, 1 / (l : ℝ) ^ 2) +
       16 / Real.pi * ((∑' k : ℕ, 1 / (k : ℝ) ^ 2) * ∑' l : ℕ, 1 / (l : ℝ) ^ 2)) ≤ 34000
-  have hextra1 : 8 * (4 * (1 + 13 / (Real.pi * (11 / 12)))) *
+  have hextra1 : 8 * (1 + 13 / (Real.pi * (11 / 12))) *
       ((∑' k : ℕ, 1 / ((k : ℝ) * Real.sqrt k)) * ∑' l : ℕ, 1 / (l : ℝ) ^ 2) ≤
-      8 * 24 * 6 :=
+      8 * 6 * 6 :=
     mul_le_mul (by linarith) hprod1 (by positivity) (by positivity)
   have hextra2 : 16 / Real.pi * ((∑' k : ℕ, 1 / (k : ℝ) ^ 2) * ∑' l : ℕ, 1 / (l : ℝ) ^ 2) ≤
       6 * 4 :=
@@ -938,7 +941,7 @@ private theorem criticalEndpointDilationConstant_nonneg' :
   have hk1_0 : 0 ≤ ∑' k : ℕ, 1 / ((k : ℝ) * Real.sqrt k) := tsum_nonneg fun _ => by positivity
   have hk2_0 : 0 ≤ ∑' k : ℕ, 1 / (k : ℝ) ^ 2 := tsum_nonneg fun _ => by positivity
   change 0 ≤ dyadicDilationConstant criticalEndpointMass criticalEndpointCurvature +
-    (8 * (4 * (1 + 13 / (Real.pi * (11 / 12)))) *
+    (8 * (1 + 13 / (Real.pi * (11 / 12))) *
       ((∑' k : ℕ, 1 / ((k : ℝ) * Real.sqrt k)) * ∑' l : ℕ, 1 / (l : ℝ) ^ 2) +
       16 / Real.pi * ((∑' k : ℕ, 1 / (k : ℝ) ^ 2) * ∑' l : ℕ, 1 / (l : ℝ) ^ 2))
   positivity
@@ -1165,9 +1168,9 @@ private theorem half_le_exp_neg_half : (1 / 2 : ℝ) ≤ Real.exp (-(1 / 2 : ℝ
   rwa [mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one, one_mul] at h3
 
 /-- **Explicit lower bound on the archimedean logarithmic slope.**
-`1 / 10 ^ 14 ≤ criticalArchLogSlope`. -/
+`1 / 10 ^ 15 ≤ criticalArchLogSlope`. -/
 theorem criticalArchLogSlope_ge :
-    (1 / 10 ^ 14 : ℝ) ≤ criticalArchLogSlope := by
+    (1 / 10 ^ 15 : ℝ) ≤ criticalArchLogSlope := by
   unfold criticalArchLogSlope factorialWeightedPhaseLower
     factorialWindowLength factorialWindowGapConstant
   have hpi1 : (3 : ℝ) < Real.pi := Real.pi_gt_three
@@ -1184,7 +1187,7 @@ theorem criticalArchLogSlope_ge :
   have h1L : (1 + L) ^ 4 ≤ 2081 ^ 4 :=
     pow_le_pow_left₀ (by linarith) (by linarith) 4
   have hexp := half_le_exp_neg_half
-  have hphase : (4 / 10 ^ 14 : ℝ) ≤ L / (16 * Real.pi ^ 4 * (1 + L) ^ 4) := by
+  have hphase : (4 / 10 ^ 15 : ℝ) ≤ L / (16 * Real.pi ^ 4 * (1 + L) ^ 4) := by
     rw [le_div_iff₀ (by positivity)]
     have hden : 16 * Real.pi ^ 4 * (1 + L) ^ 4 ≤ 16 * 256 * 2081 ^ 4 := by
       have : 16 * Real.pi ^ 4 ≤ 16 * 256 := by linarith
@@ -1226,7 +1229,7 @@ theorem criticalCollarArchLogSlope_ge :
 
 /-- **Explicit two-sided bounds on the polynomial window exponent `δ`.** -/
 theorem criticalWindowExponent_bounds :
-    (1 / 10 ^ 20 : ℝ) ≤ criticalWindowExponent ∧ criticalWindowExponent ≤ 1 := by
+    (1 / 10 ^ 21 : ℝ) ≤ criticalWindowExponent ∧ criticalWindowExponent ≤ 1 := by
   unfold criticalWindowExponent
   have hs := criticalArchLogSlope_ge
   have hW := criticalWindowPrimeSlope_le
@@ -1236,6 +1239,7 @@ theorem criticalWindowExponent_bounds :
     positivity
   constructor
   · rw [le_div_iff₀ (by positivity)]
+    norm_num at hs ⊢
     linarith
   · rw [div_le_iff₀ (by positivity)]
     have hs_hi : criticalArchLogSlope ≤ 1 := by
@@ -1292,11 +1296,12 @@ theorem criticalBandSineMoment_eq {m : ℕ} (hm : 0 < m) :
     have hlin : HasDerivAt (fun x : ℝ => x * m) (m : ℝ) ξ :=
       ((hasDerivAt_id ξ).mul_const (m : ℝ)).congr_deriv (by ring)
     have hsin : HasDerivAt (fun x : ℝ => Real.sin (x * m)) (Real.cos (ξ * m) * m) ξ :=
-      (Real.hasDerivAt_sin (ξ * m)).comp ξ hlin
+      hlin.sin
     have hcos : HasDerivAt (fun x : ℝ => Real.cos (x * m)) (-Real.sin (ξ * m) * m) ξ :=
-      (Real.hasDerivAt_cos (ξ * m)).comp ξ hlin
+      hlin.cos
     have hp1 : HasDerivAt (fun x : ℝ => (Real.pi / 6 - x) * x) (Real.pi / 6 - 2 * ξ) ξ :=
-      (((hasDerivAt_id ξ).const_sub (Real.pi / 6)).mul (hasDerivAt_id ξ)).congr_deriv (by ring)
+      (((hasDerivAt_id ξ).const_sub (Real.pi / 6)).mul (hasDerivAt_id ξ)).congr_deriv
+        (by simp only [id_eq]; ring)
     have hp2 : HasDerivAt (fun x : ℝ => Real.pi / 6 - 2 * x) (-2) ξ :=
       (((hasDerivAt_id ξ).const_mul 2).const_sub (Real.pi / 6)).congr_deriv (by ring)
     have ht1 := ((hp1.mul hcos).neg).div_const (m : ℝ)
@@ -1321,21 +1326,32 @@ theorem criticalBandSineMoment_nonneg_of_le_twelve {m : ℕ} (hm : m ≤ 12) :
     · unfold criticalBandSineMoment
       refine intervalIntegral.integral_nonneg (by positivity) fun ξ hξ => ?_
       have hmR : (m : ℝ) ≤ 6 := by exact_mod_cast hm6
+      have hle : ξ * (m : ℝ) ≤ Real.pi := by
+        calc ξ * (m : ℝ) ≤ (Real.pi / 6) * 6 :=
+              mul_le_mul hξ.2 hmR (Nat.cast_nonneg m) (by positivity)
+          _ = Real.pi := by ring
       have hsin : 0 ≤ Real.sin (ξ * m) :=
-        Real.sin_nonneg_of_nonneg_of_le_pi (mul_nonneg hξ.1 (Nat.cast_nonneg m)) (by nlinarith [hξ.2])
+        Real.sin_nonneg_of_nonneg_of_le_pi (mul_nonneg hξ.1 (Nat.cast_nonneg m)) hle
       exact mul_nonneg (mul_nonneg (by linarith [hξ.2]) hξ.1) hsin
     · rw [criticalBandSineMoment_eq hm_pos]
       have hm7 : 7 ≤ (m : ℝ) := by exact_mod_cast hm6
       have hm12 : (m : ℝ) ≤ 12 := by exact_mod_cast hm
       have hcos : Real.cos (Real.pi / 6 * m) ≤ 1 := Real.cos_le_one _
+      have h1 : Real.pi ≤ Real.pi / 6 * (m : ℝ) := by
+        have := mul_le_mul_of_nonneg_left hm7 (by positivity : 0 ≤ Real.pi / 6)
+        linarith [Real.pi_pos]
+      have h2 : Real.pi / 6 * (m : ℝ) ≤ 2 * Real.pi := by
+        have := mul_le_mul_of_nonneg_left hm12 (by positivity : 0 ≤ Real.pi / 6)
+        linarith [Real.pi_pos]
       have hsin : Real.sin (Real.pi / 6 * m) ≤ 0 := by
         rw [show Real.pi / 6 * (m : ℝ) = (Real.pi / 6 * m - Real.pi) + Real.pi by ring,
           Real.sin_add_pi, neg_nonpos]
-        exact Real.sin_nonneg_of_nonneg_of_le_pi (by linarith [Real.pi_pos])
-          (by linarith [Real.pi_pos])
+        exact Real.sin_nonneg_of_nonneg_of_le_pi (by linarith) (by linarith)
       have hnum : 0 ≤ 2 * (1 - Real.cos (Real.pi / 6 * m)) -
           (Real.pi / 6 * m) * Real.sin (Real.pi / 6 * m) := by
-        nlinarith [Real.pi_pos]
+        have hprod : (Real.pi / 6 * (m : ℝ)) * Real.sin (Real.pi / 6 * m) ≤ 0 :=
+          mul_nonpos_of_nonneg_of_nonpos (by positivity) hsin
+        linarith
       exact div_nonneg hnum (by positivity)
 
 theorem abs_criticalBandSineMoment_le {m : ℕ} (hm : 0 < m) :
@@ -1427,9 +1443,9 @@ theorem summable_abs_criticalKernelCurvatureTerm :
     (div_nonneg (abs_nonneg _) (by positivity))
 
 /-- **Explicit upper bound on the absolute band sine moment series.**
-`criticalKernelAbsMoment ≤ 17 / 1000`. -/
+`criticalKernelAbsMoment ≤ 19 / 1000`. -/
 theorem criticalKernelAbsMoment_le :
-    criticalKernelAbsMoment ≤ 17 / 1000 := by
+    criticalKernelAbsMoment ≤ 19 / 1000 := by
   unfold criticalKernelAbsMoment
   set x : ℕ → ℝ := fun m =>
     |factorialCriticalPrimeHarmonicCharge m| / (m : ℝ) ^ 3 * criticalBandAbsSineMoment m
@@ -1478,7 +1494,7 @@ theorem criticalKernelAbsMoment_le :
     (by have := Real.exp_one_lt_d9; linarith)
   have hlsum : Summable fun j : ℕ => Real.log (4 + ((j : ℝ) + 1)) / (4 + ((j : ℝ) + 1)) ^ 2 := by
     refine ((summable_nat_add_iff 5).mpr GaloisForLFunctions.HTGeometry.summable_logLin_div_sq).congr
-      fun j => by push_cast; ring_nf
+      fun j => by push_cast; congr 2 <;> ring
   have htsum : ∑' j : ℕ, x (j + 5) ≤ (Real.pi / 6) ^ 3 / 6 * ((2 * Real.log 2 + 1) / 4) := by
     have hlog4 : Real.log 4 = 2 * Real.log 2 := by
       rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]; norm_num
@@ -1509,9 +1525,15 @@ theorem criticalKernelAbsMoment_le :
     mul_le_mul (by linarith) hP4 (by positivity) (by norm_num)
   have a3 : P ^ 3 * Real.log 2 ≤ 0.5236 ^ 3 * 0.6931471808 :=
     mul_le_mul hP3 hL2.le (by positivity) (by norm_num)
+  have hx2' : x 2 ≤ (1 / 24) * (Real.log 2 * P ^ 4) := hx2.trans_eq (by dsimp [P]; ring)
+  have hx3' : x 3 ≤ (1 / 36) * (Real.log 3 * P ^ 4) := hx3.trans_eq (by dsimp [P]; ring)
+  have htsum' : (∑' j : ℕ, x (j + 5)) ≤
+      (1 / 12) * (P ^ 3 * Real.log 2) + (1 / 24) * P ^ 3 :=
+    htsum.trans_eq (by dsimp [P]; ring)
+  norm_num at hP3 a1 a2 a3
   linarith
 
-private theorem log_le_div_four_of_seven_le {x : ℝ} (hx : 7 ≤ x) :
+private theorem log_le_div_four_of_thirteen_le {x : ℝ} (hx : 13 ≤ x) :
     Real.log x ≤ x / 4 := by
   have hx0 : 0 < x := by linarith
   have h1 := Real.log_le_sub_one_of_pos (show 0 < x / 5 by positivity)
@@ -1519,6 +1541,17 @@ private theorem log_le_div_four_of_seven_le {x : ℝ} (hx : 7 ≤ x) :
   have h5 : Real.log 5 ≤ 1.62 := by
     have h := Real.log_le_log (by norm_num : 0 < (5 : ℝ) ^ 3) (by norm_num : (5 : ℝ) ^ 3 ≤ 2 ^ 7)
     simp only [Real.log_pow] at h; push_cast at h
+    linarith [Real.log_two_lt_d9]
+  linarith
+
+private theorem log_le_three_tenths_of_nine_le {x : ℝ} (hx : 9 ≤ x) :
+    Real.log x ≤ (3 / 10) * x := by
+  have hx0 : 0 < x := by linarith
+  have h1 := Real.log_le_sub_one_of_pos (show 0 < x / 4 by positivity)
+  rw [Real.log_div hx0.ne' (by norm_num)] at h1
+  have h4 : Real.log 4 ≤ 1.387 := by
+    rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+    push_cast
     linarith [Real.log_two_lt_d9]
   linarith
 
@@ -1532,27 +1565,37 @@ private theorem tsum_inv_cube_shift_le {N : ℕ} (hN : 2 ≤ N) :
     set m := (j : ℝ) + N
     have hm2 : 2 ≤ m := by
       have : (2 : ℝ) ≤ N := by exact_mod_cast hN
-      linarith [Nat.cast_nonneg j]
+      linarith [(Nat.cast_nonneg j : (0 : ℝ) ≤ j)]
+    have hm_sub : 0 < m - 1 := by linarith
+    have hm_pos : 0 < m := by linarith
+    have hm_add : 0 < m + 1 := by linarith
     have hdiff : 1 / (2 * (m - 1) * m) - 1 / (2 * (m + 1 - 1) * (m + 1)) =
         1 / ((m - 1) * m * (m + 1)) := by
-      have hd1 : 2 * (m - 1) * m ≠ 0 := by nlinarith
-      have hd2 : 2 * (m + 1 - 1) * (m + 1) ≠ 0 := by nlinarith
-      have hd3 : (m - 1) * m * (m + 1) ≠ 0 := by nlinarith
+      have hd1 : 2 * (m - 1) * m ≠ 0 := by positivity
+      have hd2 : 2 * (m + 1 - 1) * (m + 1) ≠ 0 := by
+        rw [add_sub_cancel_right]; positivity
+      have hd3 : (m - 1) * m * (m + 1) ≠ 0 := by positivity
       rw [div_sub_div _ _ hd1 hd2, div_eq_div_iff (mul_ne_zero hd1 hd2) hd3]
       ring
     have heq : 1 / (2 * ((j : ℝ) + N - 1) * ((j : ℝ) + N)) -
         1 / (2 * ((j : ℝ) + 1 + N - 1) * ((j : ℝ) + 1 + N)) =
         1 / (2 * (m - 1) * m) - 1 / (2 * (m + 1 - 1) * (m + 1)) := by
-      dsimp [m]; ring_nf
+      dsimp [m]; congr 3 <;> ring
     rw [heq, hdiff]
-    refine div_le_div₀ zero_le_one le_rfl (by nlinarith) ?_
-    nlinarith
+    refine div_le_div₀ zero_le_one le_rfl (by positivity) ?_
+    have : m ^ 3 - (m - 1) * m * (m + 1) = m := by ring
+    linarith
   refine Real.tsum_le_of_sum_range_le (fun j => by positivity) fun M => ?_
   calc ∑ j ∈ Finset.range M, 1 / ((j + N : ℕ) : ℝ) ^ 3
       ≤ ∑ j ∈ Finset.range M, (g j - g (j + 1)) := Finset.sum_le_sum fun j _ => htele j
     _ = g 0 - g M := Finset.sum_range_sub' g M
     _ ≤ g 0 := by
-        have : 0 ≤ g M := by dsimp [g]; nlinarith [Nat.cast_nonneg M]
+        have hM : 0 ≤ (M : ℝ) := Nat.cast_nonneg M
+        have : 0 ≤ g M := by
+          dsimp [g]
+          have : 0 < (M : ℝ) + N - 1 := by linarith
+          have : 0 < (M : ℝ) + N := by linarith
+          positivity
         linarith
     _ = 1 / (2 * ((N : ℝ) - 1) * (N : ℝ)) := by dsimp [g]; ring
 
@@ -1567,14 +1610,17 @@ private theorem sqrt_three_bounds :
 private theorem log_three_five_seven_lower :
     (1.098 : ℝ) ≤ Real.log 3 ∧ (1.609 : ℝ) ≤ Real.log 5 ∧ (1.945 : ℝ) ≤ Real.log 7 := by
   have h2 := Real.log_two_gt_d9
-  have h3 : 11 * Real.log 2 ≤ 7 * Real.log 3 := by
-    have h := Real.log_le_log (by norm_num : 0 < (2 : ℝ) ^ 11) (by norm_num : (2 : ℝ) ^ 11 ≤ 3 ^ 7)
+  have h3 : 84 * Real.log 2 ≤ 53 * Real.log 3 := by
+    have h := Real.log_le_log (by norm_num : 0 < (2 : ℝ) ^ 84)
+      (by norm_num : (2 : ℝ) ^ 84 ≤ 3 ^ 53)
     simp only [Real.log_pow] at h; push_cast at h; linarith
-  have h5 : 7 * Real.log 2 ≤ 3 * Real.log 5 := by
-    have h := Real.log_le_log (by norm_num : 0 < (2 : ℝ) ^ 7) (by norm_num : (2 : ℝ) ^ 7 ≤ 5 ^ 3)
+  have h5 : 65 * Real.log 2 ≤ 28 * Real.log 5 := by
+    have h := Real.log_le_log (by norm_num : 0 < (2 : ℝ) ^ 65)
+      (by norm_num : (2 : ℝ) ^ 65 ≤ 5 ^ 28)
     simp only [Real.log_pow] at h; push_cast at h; linarith
-  have h7 : 14 * Real.log 2 ≤ 5 * Real.log 7 := by
-    have h := Real.log_le_log (by norm_num : 0 < (2 : ℝ) ^ 14) (by norm_num : (2 : ℝ) ^ 14 ≤ 7 ^ 5)
+  have h7 : 87 * Real.log 2 ≤ 31 * Real.log 7 := by
+    have h := Real.log_le_log (by norm_num : 0 < (2 : ℝ) ^ 87)
+      (by norm_num : (2 : ℝ) ^ 87 ≤ 7 ^ 31)
     simp only [Real.log_pow] at h; push_cast at h; linarith
   refine ⟨by linarith, by linarith, by linarith⟩
 
@@ -1618,7 +1664,8 @@ private theorem curvature_term_three_bounds :
   have hp2 := Real.pi_lt_d4
   have hl1 := log_three_five_seven_lower.1
   have hl2 : Real.log 3 ≤ 1.10 := by
-    have h := Real.log_le_log (by norm_num : 0 < (3 : ℝ) ^ 17) (by norm_num : (3 : ℝ) ^ 17 ≤ 2 ^ 27)
+    have h := Real.log_le_log (by norm_num : 0 < (3 : ℝ) ^ 41)
+      (by norm_num : (3 : ℝ) ^ 41 ≤ 2 ^ 65)
     simp only [Real.log_pow] at h; push_cast at h
     linarith [Real.log_two_lt_d9]
   constructor <;> nlinarith
@@ -1677,121 +1724,181 @@ private theorem curvature_term_seven_bounds :
     linarith [Real.log_two_lt_d9]
   constructor <;> nlinarith
 
+private def criticalKernelCurvatureTerm (m : ℕ) : ℝ :=
+  factorialCriticalPrimeHarmonicCharge m / (m : ℝ) ^ 3 * criticalBandSineMoment m
+
+private theorem summable_criticalKernelCurvatureTerm :
+    Summable criticalKernelCurvatureTerm :=
+  summable_abs_criticalKernelCurvatureTerm.of_abs
+
+private theorem criticalKernelCurvatureTerm_zero_of_one_or_mod_four {m : ℕ}
+    (hm : m = 1 ∨ m % 4 = 0) : criticalKernelCurvatureTerm m = 0 := by
+  simp [criticalKernelCurvatureTerm, (factorialCriticalPrimeHarmonicCharge_sign m).2.1.mpr hm]
+
+private theorem criticalKernelCurvatureTerm_nonneg {m : ℕ} (hm2 : m ≠ 2) (hm12 : m ≤ 12) :
+    0 ≤ criticalKernelCurvatureTerm m := by
+  have hA : 0 ≤ factorialCriticalPrimeHarmonicCharge m :=
+    le_of_not_gt fun h => hm2 ((factorialCriticalPrimeHarmonicCharge_sign m).1.mp h)
+  exact mul_nonneg (div_nonneg hA (by positivity))
+    (criticalBandSineMoment_nonneg_of_le_twelve hm12)
+
+private theorem abs_criticalKernelCurvatureTerm_le_of_thirteen_le {m : ℕ} (hm : 13 ≤ m) :
+    |criticalKernelCurvatureTerm m| ≤ (5 / 24) * (1 / (m : ℝ) ^ 3) := by
+  have hm0 : 0 < m := by omega
+  have hmR : (13 : ℝ) ≤ m := by exact_mod_cast hm
+  have hm_ne : (m : ℝ) ≠ 0 := by positivity
+  have hA := abs_factorialCriticalPrimeHarmonicCharge_le m
+  have hlog := log_le_div_four_of_thirteen_le hmR
+  have hμ := abs_criticalBandSineMoment_le hm0
+  have hpi : Real.pi / 6 ≤ 0.5236 := by linarith [Real.pi_lt_d4]
+  have hlin : 4 + Real.pi / 6 * (m : ℝ) ≤ (5 / 6) * m := by
+    have := mul_le_mul_of_nonneg_right hpi (by positivity : 0 ≤ (m : ℝ))
+    linarith
+  have hμ' : |criticalBandSineMoment m| ≤ (5 / 6) / (m : ℝ) ^ 2 := by
+    refine hμ.trans ?_
+    calc (4 + Real.pi / 6 * (m : ℝ)) / (m : ℝ) ^ 3
+        ≤ ((5 / 6) * (m : ℝ)) / (m : ℝ) ^ 3 := div_le_div_of_nonneg_right hlin (by positivity)
+      _ = (5 / 6) / (m : ℝ) ^ 2 := by field_simp
+  have hA' : |factorialCriticalPrimeHarmonicCharge m| / (m : ℝ) ^ 3 ≤ (1 / 4) / (m : ℝ) := by
+    have h1 : |factorialCriticalPrimeHarmonicCharge m| ≤ (m : ℝ) * ((m : ℝ) / 4) :=
+      hA.trans (mul_le_mul_of_nonneg_left hlog (by positivity))
+    calc |factorialCriticalPrimeHarmonicCharge m| / (m : ℝ) ^ 3
+        ≤ ((m : ℝ) * ((m : ℝ) / 4)) / (m : ℝ) ^ 3 := div_le_div_of_nonneg_right h1 (by positivity)
+      _ = (1 / 4) / (m : ℝ) := by field_simp
+  unfold criticalKernelCurvatureTerm
+  rw [abs_mul, abs_div, abs_pow, Nat.abs_cast]
+  calc |factorialCriticalPrimeHarmonicCharge m| / (m : ℝ) ^ 3 * |criticalBandSineMoment m|
+      ≤ (1 / 4) / (m : ℝ) * ((5 / 6) / (m : ℝ) ^ 2) :=
+        mul_le_mul hA' hμ' (abs_nonneg _) (by positivity)
+    _ = (5 / 24) * (1 / (m : ℝ) ^ 3) := by ring
+
+private theorem abs_criticalKernelCurvatureTerm_le_of_nine_le {m : ℕ} (hm : 9 ≤ m) :
+    |criticalKernelCurvatureTerm m| ≤ (3 / 10) * (1 / (m : ℝ) ^ 3) := by
+  have hm0 : 0 < m := by omega
+  have hmR : (9 : ℝ) ≤ m := by exact_mod_cast hm
+  have hm_ne : (m : ℝ) ≠ 0 := by positivity
+  have hA := abs_factorialCriticalPrimeHarmonicCharge_le m
+  have hlog := log_le_three_tenths_of_nine_le hmR
+  have hμ := abs_criticalBandSineMoment_le hm0
+  have hpi : Real.pi / 6 ≤ 0.5236 := by linarith [Real.pi_lt_d4]
+  have hlin : 4 + Real.pi / 6 * (m : ℝ) ≤ 1 * m := by
+    have := mul_le_mul_of_nonneg_right hpi (by positivity : 0 ≤ (m : ℝ))
+    linarith
+  have hμ' : |criticalBandSineMoment m| ≤ 1 / (m : ℝ) ^ 2 := by
+    refine hμ.trans ?_
+    calc (4 + Real.pi / 6 * (m : ℝ)) / (m : ℝ) ^ 3
+        ≤ (1 * (m : ℝ)) / (m : ℝ) ^ 3 := div_le_div_of_nonneg_right hlin (by positivity)
+      _ = 1 / (m : ℝ) ^ 2 := by field_simp
+  have hA' : |factorialCriticalPrimeHarmonicCharge m| / (m : ℝ) ^ 3 ≤ (3 / 10) / (m : ℝ) := by
+    have h1 : |factorialCriticalPrimeHarmonicCharge m| ≤ (m : ℝ) * ((3 / 10) * (m : ℝ)) :=
+      hA.trans (mul_le_mul_of_nonneg_left hlog (by positivity))
+    calc |factorialCriticalPrimeHarmonicCharge m| / (m : ℝ) ^ 3
+        ≤ ((m : ℝ) * ((3 / 10) * (m : ℝ))) / (m : ℝ) ^ 3 :=
+          div_le_div_of_nonneg_right h1 (by positivity)
+      _ = (3 / 10) / (m : ℝ) := by field_simp
+  unfold criticalKernelCurvatureTerm
+  rw [abs_mul, abs_div, abs_pow, Nat.abs_cast]
+  calc |factorialCriticalPrimeHarmonicCharge m| / (m : ℝ) ^ 3 * |criticalBandSineMoment m|
+      ≤ (3 / 10) / (m : ℝ) * (1 / (m : ℝ) ^ 2) :=
+        mul_le_mul hA' hμ' (abs_nonneg _) (by positivity)
+    _ = (3 / 10) * (1 / (m : ℝ) ^ 3) := by ring
+
+private theorem criticalKernelCurvatureTerm_six_le :
+    criticalKernelCurvatureTerm 6 ≤ 11 / 10000 := by
+  unfold criticalKernelCurvatureTerm
+  have hμ6 : criticalBandSineMoment 6 = 1 / 54 := by
+    rw [criticalBandSineMoment_eq (by norm_num)]
+    push_cast
+    rw [show Real.pi / 6 * 6 = Real.pi by ring, Real.cos_pi, Real.sin_pi]
+    norm_num
+  have hA6 := abs_factorialCriticalPrimeHarmonicCharge_le 6
+  have hl6 : Real.log 6 ≤ 2 := by
+    have : (6 : ℝ) ≤ Real.exp 2 := by
+      have : (2.7 : ℝ) ^ 2 ≤ Real.exp 2 := by
+        rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) * 1 by norm_num, Real.exp_nat_mul]
+        exact pow_le_pow_left₀ (by norm_num) (by linarith [Real.exp_one_gt_d9]) 2
+      linarith
+    exact (Real.log_le_iff_le_exp (by norm_num)).mpr this
+  have hle6 : factorialCriticalPrimeHarmonicCharge 6 ≤ 12 := by
+    have := (le_abs_self _).trans hA6
+    push_cast at this; linarith
+  rw [hμ6]; push_cast; linarith
+
 /-- **Explicit two-sided bounds on the spectral curvature constant `I₀`.**
 `11 / 10000 ≤ criticalKernelCurvatureConstant ≤ 52 / 10000`. -/
 theorem criticalKernelCurvatureConstant_bounds :
     11 / 10000 ≤ criticalKernelCurvatureConstant ∧
       criticalKernelCurvatureConstant ≤ 52 / 10000 := by
-  unfold criticalKernelCurvatureConstant
-  set f : ℕ → ℝ := fun m =>
-    factorialCriticalPrimeHarmonicCharge m / (m : ℝ) ^ 3 * criticalBandSineMoment m
-  have hsf : Summable f := summable_abs_criticalKernelCurvatureTerm.of_abs
-  have hf_zero {m : ℕ} (hm : m = 1 ∨ m % 4 = 0) : f m = 0 := by
-    simp [f, (factorialCriticalPrimeHarmonicCharge_sign m).2.1.mpr hm]
-  have hf0 : f 0 = 0 := by simp [f]
-  have hf1 : f 1 = 0 := hf_zero (Or.inl rfl)
-  have hf4 : f 4 = 0 := hf_zero (Or.inr (by norm_num))
-  have hf8 : f 8 = 0 := hf_zero (Or.inr (by norm_num))
-  have hf12 : f 12 = 0 := hf_zero (Or.inr (by norm_num))
-  have hf_nonneg {m : ℕ} (hm2 : m ≠ 2) (hm12 : m ≤ 12) : 0 ≤ f m := by
-    have hA : 0 ≤ factorialCriticalPrimeHarmonicCharge m :=
-      le_of_not_gt fun h => hm2 ((factorialCriticalPrimeHarmonicCharge_sign m).1.mp h)
-    exact mul_nonneg (div_nonneg hA (by positivity))
-      (criticalBandSineMoment_nonneg_of_le_twelve hm12)
-  have htail_term {m : ℕ} (hm : 8 ≤ m) :
-      |f m| ≤ (41 / 160) * (1 / (m : ℝ) ^ 3) := by
-    have hm0 : 0 < m := by omega
-    have hmR : (8 : ℝ) ≤ m := by exact_mod_cast hm
-    have hA := abs_factorialCriticalPrimeHarmonicCharge_le m
-    have hlog := log_le_div_four_of_seven_le (by linarith : (7 : ℝ) ≤ m)
-    have hμ := abs_criticalBandSineMoment_le hm0
-    have hpi : Real.pi / 6 ≤ 21 / 40 := by linarith [Real.pi_lt_d4]
-    have hμ' : |criticalBandSineMoment m| ≤ (41 / 40) / (m : ℝ) ^ 2 := by
-      refine hμ.trans ?_
-      rw [div_le_div_iff₀ (by positivity) (by positivity)]
-      nlinarith
-    have hA' : |factorialCriticalPrimeHarmonicCharge m| / (m : ℝ) ^ 3 ≤
-        (1 / 4) / (m : ℝ) := by
-      rw [div_le_div_iff₀ (by positivity) (by positivity)]
-      nlinarith
-    rw [abs_mul, abs_div, abs_pow, Nat.abs_cast]
-    calc |factorialCriticalPrimeHarmonicCharge m| / (m : ℝ) ^ 3 * |criticalBandSineMoment m|
-        ≤ (1 / 4) / (m : ℝ) * ((41 / 40) / (m : ℝ) ^ 2) :=
-          mul_le_mul hA' hμ' (abs_nonneg _) (by positivity)
-      _ = (41 / 160) * (1 / (m : ℝ) ^ 3) := by ring
+  have heq : criticalKernelCurvatureConstant = ∑' m : ℕ, criticalKernelCurvatureTerm m := rfl
+  rw [heq]
+  have hsf := summable_criticalKernelCurvatureTerm
+  have hf0 : criticalKernelCurvatureTerm 0 = 0 := by simp [criticalKernelCurvatureTerm]
+  have hf1 : criticalKernelCurvatureTerm 1 = 0 :=
+    criticalKernelCurvatureTerm_zero_of_one_or_mod_four (Or.inl rfl)
+  have hf4 : criticalKernelCurvatureTerm 4 = 0 :=
+    criticalKernelCurvatureTerm_zero_of_one_or_mod_four (Or.inr (by norm_num))
+  have hf8 : criticalKernelCurvatureTerm 8 = 0 :=
+    criticalKernelCurvatureTerm_zero_of_one_or_mod_four (Or.inr (by norm_num))
+  have hf12 : criticalKernelCurvatureTerm 12 = 0 :=
+    criticalKernelCurvatureTerm_zero_of_one_or_mod_four (Or.inr (by norm_num))
+  have h2 : (-202 / 100000 : ℝ) ≤ criticalKernelCurvatureTerm 2 ∧
+      criticalKernelCurvatureTerm 2 ≤ -201 / 100000 := curvature_term_two_bounds
+  have h3 : (193 / 100000 : ℝ) ≤ criticalKernelCurvatureTerm 3 ∧
+      criticalKernelCurvatureTerm 3 ≤ 195 / 100000 := curvature_term_three_bounds
+  have h5 : (124 / 100000 : ℝ) ≤ criticalKernelCurvatureTerm 5 ∧
+      criticalKernelCurvatureTerm 5 ≤ 126 / 100000 := curvature_term_five_bounds
+  have h7 : (64 / 100000 : ℝ) ≤ criticalKernelCurvatureTerm 7 ∧
+      criticalKernelCurvatureTerm 7 ≤ 66 / 100000 := curvature_term_seven_bounds
   constructor
   · rw [← hsf.sum_add_tsum_nat_add 13]
-    have htail13 : |∑' j : ℕ, f (j + 13)| ≤ 6 / 10000 := by
-      have hs13 : Summable fun j : ℕ => |f (j + 13)| :=
+    have htail13 : -(67 / 100000 : ℝ) ≤ ∑' j : ℕ, criticalKernelCurvatureTerm (j + 13) := by
+      have hs13 : Summable fun j : ℕ => |criticalKernelCurvatureTerm (j + 13)| :=
         (summable_nat_add_iff 13).mpr summable_abs_criticalKernelCurvatureTerm
-      have hc13 : Summable fun j : ℕ => (41 / 160) * (1 / ((j + 13 : ℕ) : ℝ) ^ 3) :=
+      have hc13 : Summable fun j : ℕ => (5 / 24) * (1 / ((j + 13 : ℕ) : ℝ) ^ 3) :=
         ((summable_nat_add_iff 13).mpr
           (Real.summable_one_div_nat_pow.mpr (by norm_num))).mul_left _
-      have h1 : |∑' j : ℕ, f (j + 13)| ≤ ∑' j : ℕ, |f (j + 13)| := by
-        simpa only [Real.norm_eq_abs] using norm_tsum_le_tsum_norm hs13
-      have h2 : (∑' j : ℕ, |f (j + 13)|) ≤
-          (41 / 160) * ∑' j : ℕ, 1 / ((j + 13 : ℕ) : ℝ) ^ 3 := by
+      have h1 : -(∑' j : ℕ, |criticalKernelCurvatureTerm (j + 13)|) ≤
+          ∑' j : ℕ, criticalKernelCurvatureTerm (j + 13) := by
+        rw [← tsum_neg]
+        exact Summable.tsum_le_tsum (fun j => neg_le_of_abs_le le_rfl)
+          hs13.neg ((summable_nat_add_iff 13).mpr hsf)
+      have h2 : (∑' j : ℕ, |criticalKernelCurvatureTerm (j + 13)|) ≤
+          (5 / 24) * ∑' j : ℕ, 1 / ((j + 13 : ℕ) : ℝ) ^ 3 := by
         rw [← tsum_mul_left]
-        exact Summable.tsum_le_tsum (fun j => htail_term (by omega)) hs13 hc13
-      have h3 := tsum_inv_cube_shift_le (N := 13) (by norm_num)
-      norm_num at h3
+        exact Summable.tsum_le_tsum
+          (fun j => abs_criticalKernelCurvatureTerm_le_of_thirteen_le (by omega)) hs13 hc13
+      have h3 : (∑' j : ℕ, 1 / ((j + 13 : ℕ) : ℝ) ^ 3) ≤ 1 / 312 :=
+        (tsum_inv_cube_shift_le (N := 13) (by norm_num)).trans (by norm_num)
       linarith
-    have htail13_lo : -(6 / 10000 : ℝ) ≤ ∑' j : ℕ, f (j + 13) := (abs_le.mp htail13).1
-    have hf6 := hf_nonneg (m := 6) (by norm_num) (by norm_num)
-    have hf9 := hf_nonneg (m := 9) (by norm_num) (by norm_num)
-    have hf10 := hf_nonneg (m := 10) (by norm_num) (by norm_num)
-    have hf11 := hf_nonneg (m := 11) (by norm_num) (by norm_num)
-    have h2 := curvature_term_two_bounds.1
-    have h3 := curvature_term_three_bounds.1
-    have h5 := curvature_term_five_bounds.1
-    have h7 := curvature_term_seven_bounds.1
+    have hf6 := criticalKernelCurvatureTerm_nonneg (m := 6) (by norm_num) (by norm_num)
+    have hf9 := criticalKernelCurvatureTerm_nonneg (m := 9) (by norm_num) (by norm_num)
+    have hf10 := criticalKernelCurvatureTerm_nonneg (m := 10) (by norm_num) (by norm_num)
+    have hf11 := criticalKernelCurvatureTerm_nonneg (m := 11) (by norm_num) (by norm_num)
     simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
       hf0, hf1, hf4, hf8, hf12]
-    dsimp [f] at h2 h3 h5 h7 hf6 hf9 hf10 hf11 ⊢
-    linarith
-  · rw [← hsf.sum_add_tsum_nat_add 8]
-    have htail8 : ∑' j : ℕ, f (j + 8) ≤ 23 / 10000 := by
-      have hs8 : Summable fun j : ℕ => |f (j + 8)| :=
-        (summable_nat_add_iff 8).mpr summable_abs_criticalKernelCurvatureTerm
-      have hc8 : Summable fun j : ℕ => (41 / 160) * (1 / ((j + 8 : ℕ) : ℝ) ^ 3) :=
-        ((summable_nat_add_iff 8).mpr
+    linarith [h2.1, h3.1, h5.1, h7.1]
+  · rw [← hsf.sum_add_tsum_nat_add 9]
+    have htail9 : ∑' j : ℕ, criticalKernelCurvatureTerm (j + 9) ≤ 21 / 10000 := by
+      have hs9 : Summable fun j : ℕ => |criticalKernelCurvatureTerm (j + 9)| :=
+        (summable_nat_add_iff 9).mpr summable_abs_criticalKernelCurvatureTerm
+      have hc9 : Summable fun j : ℕ => (3 / 10) * (1 / ((j + 9 : ℕ) : ℝ) ^ 3) :=
+        ((summable_nat_add_iff 9).mpr
           (Real.summable_one_div_nat_pow.mpr (by norm_num))).mul_left _
-      have h1 : ∑' j : ℕ, f (j + 8) ≤ ∑' j : ℕ, |f (j + 8)| :=
-        Summable.tsum_le_tsum (fun j => le_abs_self _) ((summable_nat_add_iff 8).mpr hsf) hs8
-      have h2 : (∑' j : ℕ, |f (j + 8)|) ≤
-          (41 / 160) * ∑' j : ℕ, 1 / ((j + 8 : ℕ) : ℝ) ^ 3 := by
+      have h1 : ∑' j : ℕ, criticalKernelCurvatureTerm (j + 9) ≤
+          ∑' j : ℕ, |criticalKernelCurvatureTerm (j + 9)| :=
+        Summable.tsum_le_tsum (fun j => le_abs_self _) ((summable_nat_add_iff 9).mpr hsf) hs9
+      have h2 : (∑' j : ℕ, |criticalKernelCurvatureTerm (j + 9)|) ≤
+          (3 / 10) * ∑' j : ℕ, 1 / ((j + 9 : ℕ) : ℝ) ^ 3 := by
         rw [← tsum_mul_left]
-        exact Summable.tsum_le_tsum (fun j => htail_term (by omega)) hs8 hc8
-      have h3 := tsum_inv_cube_shift_le (N := 8) (by norm_num)
-      norm_num at h3
+        exact Summable.tsum_le_tsum
+          (fun j => abs_criticalKernelCurvatureTerm_le_of_nine_le (by omega)) hs9 hc9
+      have h3 : (∑' j : ℕ, 1 / ((j + 9 : ℕ) : ℝ) ^ 3) ≤ 1 / 144 :=
+        (tsum_inv_cube_shift_le (N := 9) (by norm_num)).trans (by norm_num)
       linarith
-    have hf6 : f 6 ≤ 11 / 10000 := by
-      dsimp [f]
-      have hμ6 : criticalBandSineMoment 6 = 1 / 54 := by
-        rw [criticalBandSineMoment_eq (by norm_num)]
-        push_cast
-        rw [show Real.pi / 6 * 6 = Real.pi by ring, Real.cos_pi, Real.sin_pi]
-        norm_num
-      have hA6 := abs_factorialCriticalPrimeHarmonicCharge_le 6
-      have hl6 : Real.log 6 ≤ 2 := by
-        have : (6 : ℝ) ≤ Real.exp 2 := by
-          have : (2.7 : ℝ) ^ 2 ≤ Real.exp 2 := by
-            rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.exp_nat_mul, mul_one]
-            exact pow_le_pow_left₀ (by norm_num) (by linarith [Real.exp_one_gt_d9]) 2
-          linarith
-        exact (Real.log_le_iff_le_exp (by norm_num)).mpr this
-      have hle6 : factorialCriticalPrimeHarmonicCharge 6 ≤ 12 := by
-        have := (le_abs_self _).trans hA6
-        push_cast at this; linarith
-      rw [hμ6]; push_cast; linarith
-    have h2 := curvature_term_two_bounds.2
-    have h3 := curvature_term_three_bounds.2
-    have h5 := curvature_term_five_bounds.2
-    have h7 := curvature_term_seven_bounds.2
+    have hf6 := criticalKernelCurvatureTerm_six_le
     simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
-      hf0, hf1, hf4]
-    dsimp [f] at h2 h3 h5 h7 hf6 ⊢
-    linarith
+      hf0, hf1, hf4, hf8]
+    linarith [h2.2, h3.2, h5.2, h7.2]
 
 /-! ## Section 5: Spectral perturbation master theorem and the scale couplings `κ(k)` -/
 
@@ -1862,11 +1969,11 @@ theorem abs_tsum_charge_band_integral_sub_le (g : ℕ → ℝ → ℝ)
     exact hterm_diff m
 
 /-- **Two-sided asymptotic and error bound for the scale couplings `κ(k)` (`k ≥ 1`).**
-`|κ(k) - I₀ / (4π²k²)| ≤ (12 / 100000) / (4π²k⁴)`. -/
+`|κ(k) - I₀ / (4π²k²)| ≤ (14 / 100000) / (4π²k⁴)`. -/
 theorem abs_factorialCriticalPrimeCoupling_sub_le {k : ℕ} (hk : 1 ≤ k) :
     |factorialCriticalPrimeCoupling k -
         criticalKernelCurvatureConstant / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2)| ≤
-      (12 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 4) := by
+      (14 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 4) := by
   have hkR : (1 : ℝ) ≤ k := by exact_mod_cast hk
   have hk2 : (1 : ℝ) ≤ (k : ℝ) ^ 2 := one_le_pow₀ hkR
   have hpi := Real.pi_pos
@@ -1891,6 +1998,8 @@ theorem abs_factorialCriticalPrimeCoupling_sub_le {k : ℕ} (hk : 1 ≤ k) :
         4 * Real.pi ^ 2 * (k : ℝ) ^ 2 - ξ ^ 2 := by linarith
     have hden_pos : 0 < 4 * Real.pi ^ 2 * (k : ℝ) ^ 2 - ξ ^ 2 := hD.trans_le hden
     have hk0 : 0 < 4 * Real.pi ^ 2 * (k : ℝ) ^ 2 := by positivity
+    have hd_ne : 4 * Real.pi ^ 2 * (k : ℝ) ^ 2 - ξ ^ 2 ≠ 0 := hden_pos.ne'
+    have hk_ne : 4 * Real.pi ^ 2 * (k : ℝ) ^ 2 ≠ 0 := hk0.ne'
     have hfac : (Real.pi / 6 - ξ) * ξ * Real.sin (ξ * m) /
           (4 * Real.pi ^ 2 * (k : ℝ) ^ 2 - ξ ^ 2) -
         (1 / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2)) *
@@ -1898,7 +2007,11 @@ theorem abs_factorialCriticalPrimeCoupling_sub_le {k : ℕ} (hk : 1 ≤ k) :
         ((Real.pi / 6 - ξ) * ξ * Real.sin (ξ * m)) *
           (ξ ^ 2 / ((4 * Real.pi ^ 2 * (k : ℝ) ^ 2) *
             (4 * Real.pi ^ 2 * (k : ℝ) ^ 2 - ξ ^ 2))) := by
-      field_simp
+      set A := (Real.pi / 6 - ξ) * ξ * Real.sin (ξ * m)
+      set B := 4 * Real.pi ^ 2 * (k : ℝ) ^ 2
+      set D := 4 * Real.pi ^ 2 * (k : ℝ) ^ 2 - ξ ^ 2
+      have hBD : B - D = ξ ^ 2 := by dsimp [B, D]; ring
+      rw [one_div_mul_eq_div, div_sub_div _ _ hd_ne hk_ne, mul_comm D B, ← hBD]
       ring
     rw [hfac, abs_mul, abs_mul, abs_of_nonneg (mul_nonneg (by linarith [hξ.2]) hξ.1.le),
       abs_div, abs_of_nonneg (sq_nonneg ξ), abs_of_pos (mul_pos hk0 hden_pos),
@@ -1924,26 +2037,27 @@ theorem abs_factorialCriticalPrimeCoupling_sub_le {k : ℕ} (hk : 1 ≤ k) :
   change |(∑' m : ℕ, factorialCriticalPrimeHarmonicCharge m / (m : ℝ) ^ 3 *
       ∫ ξ in (0 : ℝ)..Real.pi / 6, g m ξ) -
     criticalKernelCurvatureConstant / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2)| ≤ _
-  rw [div_eq_one_div_mul]
+  rw [show criticalKernelCurvatureConstant / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) =
+    (1 / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2)) * criticalKernelCurvatureConstant by ring]
   refine hmaster.trans ?_
   have hM := criticalKernelAbsMoment_le
   rw [one_div_mul_eq_div, div_le_div_iff₀ (by positivity) (by positivity)]
   have : criticalKernelAbsMoment * (4 * Real.pi ^ 2 * (k : ℝ) ^ 4) ≤
-      (17 / 1000) * (4 * Real.pi ^ 2 * (k : ℝ) ^ 4) :=
+      (19 / 1000) * (4 * Real.pi ^ 2 * (k : ℝ) ^ 4) :=
     mul_le_mul_of_nonneg_right hM (by positivity)
   nlinarith
 
 /-- **Explicit two-sided bounds on the scale couplings `κ(k)` (`k ≥ 1`).**
 Every off-diagonal scale coupling is strictly positive and decays as `≍ 1 / k²`. -/
 theorem factorialCriticalPrimeCoupling_bounds {k : ℕ} (hk : 1 ≤ k) :
-    (98 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) ≤ factorialCriticalPrimeCoupling k ∧
-      factorialCriticalPrimeCoupling k ≤ (532 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) := by
+    (96 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) ≤ factorialCriticalPrimeCoupling k ∧
+      factorialCriticalPrimeCoupling k ≤ (534 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) := by
   have hkR : (1 : ℝ) ≤ k := by exact_mod_cast hk
   have hk24 : (k : ℝ) ^ 2 ≤ (k : ℝ) ^ 4 := by
     have : (1 : ℝ) ≤ (k : ℝ) ^ 2 := one_le_pow₀ hkR
     nlinarith
-  have herr : (12 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 4) ≤
-      (12 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) := by
+  have herr : (14 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 4) ≤
+      (14 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) := by
     refine div_le_div_of_nonneg_left (by norm_num) (by positivity) ?_
     exact mul_le_mul_of_nonneg_left hk24 (by positivity)
   have hsub := (abs_factorialCriticalPrimeCoupling_sub_le hk).trans herr
@@ -1956,11 +2070,11 @@ theorem factorialCriticalPrimeCoupling_bounds {k : ℕ} (hk : 1 ≤ k) :
       (520 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) :=
     div_le_div_of_nonneg_right (by linarith) (by positivity)
   have hadd1 : (110 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) -
-      (12 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) =
-      (98 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) := by ring
+      (14 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) =
+      (96 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) := by ring
   have hadd2 : (520 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) +
-      (12 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) =
-      (532 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) := by ring
+      (14 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) =
+      (534 / 100000) / (4 * Real.pi ^ 2 * (k : ℝ) ^ 2) := by ring
   constructor <;> linarith
 
 theorem factorialCriticalPrimeCoupling_pos {k : ℕ} (hk : 1 ≤ k) :
@@ -1976,11 +2090,11 @@ theorem factorialCriticalPrimeCoupling_one_bounds :
   push_cast at h1 h2
   have hp1 : (3.14 : ℝ) < Real.pi := Real.pi_gt_d2
   have hp2 : Real.pi < 3.15 := Real.pi_lt_d2
-  have hlo : (1 / 50000 : ℝ) ≤ (98 / 100000) / (4 * Real.pi ^ 2 * 1 ^ 2) := by
+  have hlo : (1 / 50000 : ℝ) ≤ (96 / 100000) / (4 * Real.pi ^ 2 * 1 ^ 2) := by
     rw [le_div_iff₀ (by positivity)]
     have : Real.pi ^ 2 ≤ 3.15 ^ 2 := pow_le_pow_left₀ Real.pi_pos.le hp2.le 2
     linarith
-  have hhi : (532 / 100000) / (4 * Real.pi ^ 2 * 1 ^ 2) ≤ 1 / 6000 := by
+  have hhi : (534 / 100000) / (4 * Real.pi ^ 2 * 1 ^ 2) ≤ 1 / 6000 := by
     rw [div_le_iff₀ (by positivity)]
     have : 3.14 ^ 2 ≤ Real.pi ^ 2 := pow_le_pow_left₀ (by norm_num) hp1.le 2
     linarith
@@ -1994,11 +2108,11 @@ theorem factorialCriticalPrimeCoupling_two_bounds :
   push_cast at h1 h2
   have hp1 : (3.14 : ℝ) < Real.pi := Real.pi_gt_d2
   have hp2 : Real.pi < 3.15 := Real.pi_lt_d2
-  have hlo : (1 / 200000 : ℝ) ≤ (98 / 100000) / (4 * Real.pi ^ 2 * 2 ^ 2) := by
+  have hlo : (1 / 200000 : ℝ) ≤ (96 / 100000) / (4 * Real.pi ^ 2 * 2 ^ 2) := by
     rw [le_div_iff₀ (by positivity)]
     have : Real.pi ^ 2 ≤ 3.15 ^ 2 := pow_le_pow_left₀ Real.pi_pos.le hp2.le 2
     linarith
-  have hhi : (532 / 100000) / (4 * Real.pi ^ 2 * 2 ^ 2) ≤ 1 / 24000 := by
+  have hhi : (534 / 100000) / (4 * Real.pi ^ 2 * 2 ^ 2) ≤ 1 / 24000 := by
     rw [div_le_iff₀ (by positivity)]
     have : 3.14 ^ 2 ≤ Real.pi ^ 2 := pow_le_pow_left₀ (by norm_num) hp1.le 2
     linarith
@@ -2029,7 +2143,7 @@ private theorem cos_sub_cos_bounds {a b : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) :
     rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hd_u3
       (by apply Continuous.intervalIntegrable; fun_prop)]
     ring
-  rw [← hi_cos, ← hi_u, ← hi_u3]
+  rw [← hi_cos, ← hi_u3, ← hi_u]
   constructor
   · refine intervalIntegral.integral_mono_on hab
       (by apply Continuous.intervalIntegrable; fun_prop)
@@ -2090,8 +2204,15 @@ private theorem abs_cos_sub_cos_div_sin_half_sub_le {ξ s₁ s₂ : ℝ}
       (1 / 50) * ((s₁ ^ 2 - s₂ ^ 2) * ξ) * S := by
     have hx4_le : (1 / 3) * x ^ 3 ≤ (1 / 50) * 2 * S := by linarith
     have hx4_mul := mul_le_mul_of_nonneg_left hx4_le (mul_nonneg hs_diff hx0.le)
-    rw [abs_le]
-    constructor <;> (rw [hξx]; linarith)
+    have hξS1 : (s₁ ^ 2 - s₂ ^ 2) * ξ * S = 2 * (s₁ ^ 2 - s₂ ^ 2) * x * S := by
+      rw [hξx]; ring
+    have hξS2 : (1 / 50) * ((s₁ ^ 2 - s₂ ^ 2) * ξ) * S =
+        (s₁ ^ 2 - s₂ ^ 2) * x * (1 / 50 * 2 * S) := by
+      rw [hξx]; ring
+    have hx4_eq : (s₁ ^ 2 - s₂ ^ 2) * x * (1 / 3 * x ^ 3) =
+        (1 / 3) * (s₁ ^ 2 - s₂ ^ 2) * x ^ 4 := by ring
+    rw [hξS1, hξS2, abs_le]
+    constructor <;> linarith
   have hrw : (Real.cos (ξ * s₂) - Real.cos (ξ * s₁)) / S - (s₁ ^ 2 - s₂ ^ 2) * ξ =
       ((Real.cos (ξ * s₂) - Real.cos (ξ * s₁)) - (s₁ ^ 2 - s₂ ^ 2) * ξ * S) / S := by
     field_simp
@@ -2132,16 +2253,18 @@ theorem factorialCriticalPrimeContinuousRealKernel_sub_bounds {t₁ t₂ : ℝ}
     have hs_sin : 0 < Real.sin (ξ / 2) := Real.sin_pos_of_pos_of_lt_pi (by positivity) (by linarith)
     have hD1 : criticalBandWindowCos m ξ t₁ =
         Real.cos (ξ * s₁) * Real.sin (ξ * m) / Real.sin (ξ / 2) := by
-      rw [eq_div_iff hs_sin.ne', mul_comm, ← sin_half_mul_bandWindowCos ξ t₁ m]
+      unfold criticalBandWindowCos
+      rw [eq_div_iff hs_sin.ne', mul_comm, sin_half_mul_bandWindowCos ξ t₁ m]
       have : Real.cos (ξ * (t₁ - 1 / 2)) = Real.cos (ξ * s₁) := by
         rw [← Real.cos_neg, show -(ξ * (t₁ - 1 / 2)) = ξ * s₁ by dsimp [s₁]; ring]
-      rw [sin_half_mul_bandWindowCos ξ t₁ m, this]; rfl
+      rw [this]
     have hD2 : criticalBandWindowCos m ξ t₂ =
         Real.cos (ξ * s₂) * Real.sin (ξ * m) / Real.sin (ξ / 2) := by
+      unfold criticalBandWindowCos
+      rw [eq_div_iff hs_sin.ne', mul_comm, sin_half_mul_bandWindowCos ξ t₂ m]
       have : Real.cos (ξ * (t₂ - 1 / 2)) = Real.cos (ξ * s₂) := by
         rw [← Real.cos_neg, show -(ξ * (t₂ - 1 / 2)) = ξ * s₂ by dsimp [s₂]; ring]
-      rw [eq_div_iff hs_sin.ne', mul_comm, ← this]
-      exact (sin_half_mul_bandWindowCos ξ t₂ m).symm
+      rw [this]
     dsimp [g]
     rw [hD1, hD2]
     have hfac : (Real.pi / 6 - ξ) *
@@ -2341,8 +2464,21 @@ theorem factorialCriticalPrimeContinuousRealKernel_oscillation_bounds :
         56 / 80000 := by
   have h := factorialCriticalPrimeContinuousRealKernel_sub_bounds
     (t₁ := 0) (t₂ := 1 / 2) le_rfl (by norm_num) le_rfl
-  norm_num at h
-  exact h
+  constructor <;> linarith
+
+private theorem intervalIntegrable_kernel_zero_half :
+    IntervalIntegrable factorialCriticalPrimeContinuousRealKernel volume 0 (1 / 2) := by
+  apply ContinuousOn.intervalIntegrable
+  rw [uIcc_of_le (by norm_num)]
+  exact continuousOn_factorialCriticalPrimeContinuousRealKernel.mono
+    (Icc_subset_Icc_right (by norm_num))
+
+private theorem intervalIntegrable_kernel_half_one :
+    IntervalIntegrable factorialCriticalPrimeContinuousRealKernel volume (1 / 2) 1 := by
+  apply ContinuousOn.intervalIntegrable
+  rw [uIcc_of_le (by norm_num)]
+  exact continuousOn_factorialCriticalPrimeContinuousRealKernel.mono
+    (Icc_subset_Icc_left (by norm_num))
 
 private theorem factorialCriticalPrimeCoupling_zero_eq_two_mul_integral_half :
     factorialCriticalPrimeCoupling 0 =
@@ -2351,20 +2487,18 @@ private theorem factorialCriticalPrimeCoupling_zero_eq_two_mul_integral_half :
   simp only [Nat.cast_zero, mul_zero, zero_mul, Real.cos_zero, mul_one]
   set R := factorialCriticalPrimeContinuousRealKernel
   have hsplit := intervalIntegral.integral_add_adjacent_intervals
-    (a := (0 : ℝ)) (b := 1 / 2) (c := 1)
-    (ContinuousOn.intervalIntegrable
-      (by rw [uIcc_of_le (by norm_num)]; exact continuousOn_factorialCriticalPrimeContinuousRealKernel.mono
-        (Icc_subset_Icc_right (by norm_num))))
-    (ContinuousOn.intervalIntegrable
-      (by rw [uIcc_of_le (by norm_num)]; exact continuousOn_factorialCriticalPrimeContinuousRealKernel.mono
-        (Icc_subset_Icc_left (by norm_num))))
+    intervalIntegrable_kernel_zero_half intervalIntegrable_kernel_half_one
   have href : ∫ t in (1 / 2 : ℝ)..1, R t = ∫ t in (0 : ℝ)..(1 / 2), R t := by
-    have h := intervalIntegral.integral_comp_sub_left R (a := (1 / 2 : ℝ)) (b := 1) 1
-    norm_num at h
-    rw [← h]
-    exact intervalIntegral.integral_congr fun t _ =>
-      (factorialCriticalPrimeContinuousRealKernel_reflect t).symm
-  linarith
+    calc ∫ t in (1 / 2 : ℝ)..1, R t
+        = ∫ t in (1 / 2 : ℝ)..1, R (1 - t) :=
+          intervalIntegral.integral_congr fun t _ =>
+            (factorialCriticalPrimeContinuousRealKernel_reflect t).symm
+      _ = ∫ t in (1 - 1 : ℝ)..(1 - 1 / 2), R t :=
+          intervalIntegral.integral_comp_sub_left R 1
+      _ = ∫ t in (0 : ℝ)..(1 / 2), R t := by
+          rw [show (1 - 1 : ℝ) = 0 by norm_num, show (1 - 1 / 2 : ℝ) = 1 / 2 by norm_num]
+  rw [← hsplit, href]
+  ring
 
 /-- **Distance of the global maximum `R(0)` from the singleton mean `κ(0)`.**
 `7 / 120000 ≤ R(0) - κ(0) ≤ 56 / 120000`. -/
@@ -2374,25 +2508,19 @@ theorem factorialCriticalPrimeContinuousRealKernel_zero_sub_coupling_zero_bounds
       factorialCriticalPrimeContinuousRealKernel 0 - factorialCriticalPrimeCoupling 0 ≤
         56 / 120000 := by
   set R := factorialCriticalPrimeContinuousRealKernel
-  have hR_int : IntervalIntegrable (fun t => R 0 - R t) volume 0 (1 / 2) := by
-    refine intervalIntegrable_const.sub ?_
-    apply ContinuousOn.intervalIntegrable
-    rw [uIcc_of_le (by norm_num)]
-    exact continuousOn_factorialCriticalPrimeContinuousRealKernel.mono
-      (Icc_subset_Icc_right (by norm_num))
+  have hR_int : IntervalIntegrable (fun t => R 0 - R t) volume 0 (1 / 2) :=
+    intervalIntegrable_const.sub intervalIntegrable_kernel_zero_half
   have hid : R 0 - factorialCriticalPrimeCoupling 0 =
       2 * ∫ t in (0 : ℝ)..(1 / 2), (R 0 - R t) := by
     rw [factorialCriticalPrimeCoupling_zero_eq_two_mul_integral_half,
-      intervalIntegral.integral_sub intervalIntegrable_const
-        (by apply ContinuousOn.intervalIntegrable; rw [uIcc_of_le (by norm_num)];
-            exact continuousOn_factorialCriticalPrimeContinuousRealKernel.mono
-              (Icc_subset_Icc_right (by norm_num)))]
+      intervalIntegral.integral_sub intervalIntegrable_const intervalIntegrable_kernel_zero_half]
     simp; ring
   have hd : ∀ t ∈ Set.uIcc (0 : ℝ) (1 / 2),
       HasDerivAt (fun t : ℝ => t / 4 - (t - 1 / 2) ^ 3 / 3) ((1 / 2) ^ 2 - (1 / 2 - t) ^ 2) t := by
     intro t _
     exact (((hasDerivAt_id t).div_const 4).sub
-      ((((hasDerivAt_id t).sub_const (1 / 2)).pow 3).div_const 3)).congr_deriv (by ring)
+      ((((hasDerivAt_id t).sub_const (1 / 2)).pow 3).div_const 3)).congr_deriv
+      (by simp only [id_eq]; ring)
   have hmom : ∫ t in (0 : ℝ)..(1 / 2), ((1 / 2 : ℝ) ^ 2 - (1 / 2 - t) ^ 2) = 1 / 12 := by
     rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hd
       (by apply Continuous.intervalIntegrable; fun_prop)]
@@ -2421,8 +2549,36 @@ theorem factorialCriticalPrimeCoupling_zero_sub_kernel_half_bounds :
       factorialCriticalPrimeCoupling 0 -
           factorialCriticalPrimeContinuousRealKernel (1 / 2) ≤
         56 / 240000 := by
-  have h1 := factorialCriticalPrimeContinuousRealKernel_oscillation_bounds
-  have h2 := factorialCriticalPrimeContinuousRealKernel_zero_sub_coupling_zero_bounds
+  set R := factorialCriticalPrimeContinuousRealKernel
+  have hR_int : IntervalIntegrable (fun t => R t - R (1 / 2)) volume 0 (1 / 2) :=
+    intervalIntegrable_kernel_zero_half.sub intervalIntegrable_const
+  have hid : factorialCriticalPrimeCoupling 0 - R (1 / 2) =
+      2 * ∫ t in (0 : ℝ)..(1 / 2), (R t - R (1 / 2)) := by
+    rw [factorialCriticalPrimeCoupling_zero_eq_two_mul_integral_half,
+      intervalIntegral.integral_sub intervalIntegrable_kernel_zero_half intervalIntegrable_const]
+    simp; ring
+  have hd : ∀ t ∈ Set.uIcc (0 : ℝ) (1 / 2),
+      HasDerivAt (fun t : ℝ => (t - 1 / 2) ^ 3 / 3) ((1 / 2 - t) ^ 2) t := by
+    intro t _
+    exact ((((hasDerivAt_id t).sub_const (1 / 2)).pow 3).div_const 3).congr_deriv
+      (by simp only [id_eq]; ring)
+  have hmom : ∫ t in (0 : ℝ)..(1 / 2), (1 / 2 - t) ^ 2 = 1 / 24 := by
+    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hd
+      (by apply Continuous.intervalIntegrable; fun_prop)]
+    norm_num
+  rw [hid]
+  have hlo : (7 / 20000) * (1 / 24) ≤ ∫ t in (0 : ℝ)..(1 / 2), (R t - R (1 / 2)) := by
+    rw [← hmom, ← intervalIntegral.integral_const_mul]
+    refine intervalIntegral.integral_mono_on (by norm_num)
+      (by apply Continuous.intervalIntegrable; fun_prop) hR_int fun t ht => ?_
+    simpa [sub_self] using
+      (factorialCriticalPrimeContinuousRealKernel_sub_bounds ht.1 ht.2 le_rfl).1
+  have hhi : ∫ t in (0 : ℝ)..(1 / 2), (R t - R (1 / 2)) ≤ (56 / 20000) * (1 / 24) := by
+    rw [← hmom, ← intervalIntegral.integral_const_mul]
+    refine intervalIntegral.integral_mono_on (by norm_num) hR_int
+      (by apply Continuous.intervalIntegrable; fun_prop) fun t ht => ?_
+    simpa [sub_self] using
+      (factorialCriticalPrimeContinuousRealKernel_sub_bounds ht.1 ht.2 le_rfl).2
   constructor <;> linarith
 
 end GaloisForLFunctions.ArithmeticPositivityTheory

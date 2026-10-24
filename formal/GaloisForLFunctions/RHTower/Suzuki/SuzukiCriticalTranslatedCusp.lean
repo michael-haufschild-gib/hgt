@@ -87,7 +87,10 @@ theorem abs_suzukiCriticalPrimaryCusp_le {f : ℝ → ℝ}
   have hi := integrableOn_suzukiCriticalPrimaryCusp_integrand hf hfc homega homega5 u
   calc
     _ ≤ ∫ t in Ioi 0, ‖autocorr f (u + t) * suzukiCriticalPrimaryDensity omega t‖ := by
-      exact norm_integral_le_integral_norm _
+      simpa only [suzukiCriticalPrimaryCusp, Real.norm_eq_abs] using
+        (norm_integral_le_integral_norm
+          (fun t => autocorr f (u + t) * suzukiCriticalPrimaryDensity omega t)
+          (μ := volume.restrict (Ioi 0)))
     _ ≤ ∫ t in Ioi 0, autocorr f 0 * suzukiCriticalPrimaryDensity omega t := by
       apply integral_mono_ae hi.norm (hB.const_mul _)
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht

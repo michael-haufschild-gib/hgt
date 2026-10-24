@@ -428,3 +428,337 @@ No noteworthy completed paper proof of a new signed-covariance estimate is
 available from this batch. The full bound, and hence RH, remains unproved.
 This is an unresolved mathematical problem, not a missing permission or an
 external-state blocker. The overall goal remains active.
+
+## 2026-10-24: Markov work and cross-programme reorientation
+
+Route remains PM: actual signed Möbius energy, cofinal small-damping
+admission, RH. No new source estimate or Lean theorem was established in
+this batch.
+
+### Failed Gram argument
+
+The exact Markov work is boundary flux minus nonnegative jump energy minus
+the centered-density forcing. Forward jump dissipation alone does not bound
+backward work. A proposed alternative was positivity of the logarithmically
+weighted residue Gram matrix
+`K_T(d,e)=(log d+log e) G_T(d,e)`.
+
+Universal finite-horizon positivity is false. At `T=1`, for `d,e>=2`, the
+residue values are `-1/d,-1/e`, so `G_1(d,e)=1/(de)`. The corresponding
+two-by-two determinant of K is exactly
+`-(log d-log e)^2/(d^2 e^2)`, negative for distinct d,e. This is an algebraic
+paper check, not a numerical experiment. It refutes the proposed universal
+inequality, not an inequality on the actual Möbius source, infinite-horizon
+Gram positivity, or RH. No no-go module was added. The actual finite residue
+identity also retains a constant boundary defect and both of its energy
+terms. No closure theorem placing the reciprocal source in the residue span
+in the required norm was established or assumed.
+
+### Leads from the fourteen programme READMEs
+
+Reviewed programme overviews, relevant mechanism sections and open-problem
+sections in all fourteen paths supplied by the user. These were targeted
+reads, not a claim to have audited every theorem in the programmes. Corpus
+search located the declarations; decisive statements below were inspected
+in their Lean source.
+
+1. **BVI gives the most concrete remaining arithmetic object.**
+   `UniformRenormalizedInteriorEnergyRemainder.exists_pmBezoutInterior_compensated_energy_bound`
+   proves `|B_epsilon(T)-E_epsilon(T)|<=C_epsilon`, where
+   `B=2*pmBezoutInteriorMartingaleSum +
+   2*pmInteriorLogCounterterm*pmCompensatedHarmonicSum`.
+   The coefficient is exactly one: this is not a contraction.
+   `SignedModulusSumOfTheInteriorMartingale` evaluates the signed conditional
+   orbit drift by Selberg coordinates, proves radical invariance, and pays
+   its double-modulus drift absolutely. The remainder, with its actual
+   signs and anchored horizon, is still unpaid. Birth-delayed centering
+   retains modulus birth and the harmonic tail; its stated envelope grows
+   with the progression length. It is not a uniform-energy estimate.
+
+2. **SAEI supplies a possible method, not its arithmetic premises.**
+   `FrustrationIsPaidAlongCanonicalPaths.PathCertificate` requires a positive
+   signed supersolution, path-resistance budgets and packing of every shared
+   aligned edge. `KronReductionNeverCreatesFrustration` gives
+   `R_st=c_st-beta_st`; nonnegative conductance requires an aligned, coercive
+   interior. These are useful mechanisms for paying correlated adverse terms
+   without spending one positive contribution repeatedly. Neither a PM
+   coupling with the needed properties nor its supersolution, coercivity or
+   horizon-uniform packing was constructed here. Those inputs must be
+   proved on the actual source, not introduced as structure fields and
+   reported as progress.
+
+3. **Compensation identifies what such a construction must control.**
+   `TheCompensatingProjectionMovesSummablyAcrossScales` proves summable
+   amplitude variation and relative transverse energy. The absolute
+   transverse and interscale connection energies remain unpaid. A new
+   contribution must bound these actual terms or the BVI compensated
+   bracket, not reprove relative anti-alignment or an abstract recurrence.
+
+4. **Prime-horizon dissipation needs a norm transfer.**
+   `DampedPrimeHorizonSlopeReversalAndCrossover.eventually_pmPowerDamped_prime_horizon_step_neg`
+   is an actual-source sign theorem at fixed positive damping, uniform in
+   trans-horizon prefixes. Its energy is the raw sieve-row square sum.
+   PM uses centered prefix energy with pronic weights; composite updates,
+   mean subtraction and that norm transfer are not paid by this theorem.
+   It was not used to assert PM energy monotonicity.
+
+5. **TTPC suggests subtracting the exact continuum contribution before
+   estimating a signed remainder.** Its coalescent surplus remains open;
+   its arithmetic mean-value premise cannot be imported into PM. AOT and
+   SSIC explain why source signs and origin-sensitive data must survive any
+   such transfer. The aperture positivity, geometric effectivity and
+   spectral visibility programmes do not supply the missing PM bound merely
+   through their receiver dictionaries.
+
+### Selected attack and significance gate
+
+Try to construct a source-specific payment of the already compensated BVI
+interior remainder, using shared-edge packing or effective conductances as
+the proof mechanism. A substantive result must establish an actual uniform
+arithmetic bound, with means, modulus birth, cross terms and tails retained.
+An abstract canonical-path criterion, an additional RH equivalence, or
+formalization of the failed Gram test does not meet that gate.
+
+This is a research lead, not a closed paper proof. The recent searches and
+source inspection have corrected the proposed mechanism but have not solved
+a hard PM blocker. No Lean compilation, new module, umbrella import, axiom
+or added mathematical premise occurred. No web search, novelty check or
+numerical computation occurred. The full RH goal remains active.
+
+## 2026-10-24: actual-source shape conjecture and failed positivity mechanisms
+
+The preceding turn changed the proposed attack but discharged no mathematical
+premise. This batch attempted proofs, rather than treating additional corpus
+matches as a result. No new PM energy estimate was obtained.
+
+### Canonical-path test
+
+On a finite squarefree support let S be the diagonal matrix of Möbius signs.
+Then S is its own inverse, and `x^t(S K S)x=(Sx)^t K(Sx)`. Consequently an
+all-vectors positivity certificate after this sign conjugation is equivalent
+to one before it. Merely moving the signs into the coupling matrix does not
+exploit the actual source. A useful certificate would also have to use the
+relations between its fixed coefficients; those were not proved to imply
+the required shared-edge budget.
+
+The exact BVI identity remains `B_epsilon(T)=E_epsilon(T)+O_epsilon(1)`
+with coefficient one. Applying the existing local quadratic-gradient
+identity and summation by parts returns this same energy, not a strict
+contraction. The source files for these identities were inspected. No
+supersolution, coercivity or packing field was introduced as an assumption.
+
+Two possible sources of the missing arithmetic relation were examined:
+
+- Divisor-comb resonance annihilation requires maximal autocorrelation at
+  every divisor ratio. That premise is not established for the actual PM
+  residue kernel. Its nonnegative Gram theorem alone gives no upper bound.
+- Fixed-lag damped autocorrelation is a complete-period statement, with a
+  bound depending on the lag. It cannot be inserted into the growing-lag,
+  origin-anchored interior sum without a uniform transfer estimate. No such
+  estimate was obtained. Exact common-divisor reindexing retains the
+  coprime Möbius product; it does not sign the remaining kernel.
+
+### Conjecture C1: contraction from the zero anchor
+
+For every epsilon>0 and every natural T, conjecture
+
+`E_epsilon(T) <= E_0(T) = T/(T+1)`.
+
+This is an explicit conjecture about the literal source, stronger than the
+admission needed for PM. It is not proved and is not encoded in Lean. The
+zero-damping identity uses the established fixed-horizon limit, including
+the continued density at zero. No interchange with an infinite horizon is
+assumed.
+
+The first attempted proof was to realize the damping energy by a Dirichlet
+expansion with nonnegative coefficients. This fails already at horizon one.
+Write `rho(epsilon)=1/zeta(1+epsilon)`. The exact first cell gives
+
+`E_epsilon(1) = (1-rho(epsilon))^2/2`.
+
+For epsilon>0 the reciprocal-zeta Dirichlet series is absolutely convergent,
+so multiplication gives
+
+`E_epsilon(1) = sum_(m>=1) a(m) m^(-epsilon)`,
+`a(m) = (1/(2m)) sum_(d e=m, d,e>=2) mu(d)mu(e)`.
+
+For distinct primes p,q and m=p^2 q, the only nonzero factorizations with
+both factors at least two are `(p,pq)` and `(pq,p)`. Each Möbius product is
+negative one. Hence `a(p^2 q)=-1/(p^2 q)<0`. This is a symbolic coefficient
+argument, not a numerical experiment. It excludes the proposed termwise
+positivity proof; it does not refute C1 or convexity. No claim about general
+Laplace representations is needed for this conclusion.
+
+### Conjecture C2: the weaker second-derivative sign
+
+Allow cancellation rather than demanding positivity of every Dirichlet
+coefficient. The exact source expression to prove is
+
+`||D_epsilon||_T^2 + <A_epsilon,F_epsilon>_T >= 0`,
+
+where D and F are the first and second damping tangents. The corpus already
+contains its derivative identity and its RH-sufficient convexity implication
+in `TheSecondDampingTangentAndConvexity`; these are not new results.
+
+The divisor derivative factors through the positive kernel
+`Lambda(d)d^(-epsilon)`. Differentiating again introduces
+`(Lambda*Lambda)(d)-(log d)Lambda(d)`, with prime-power subtraction retained.
+The nonnegative first-tangent square does not by itself dominate the signed
+source/second-tangent pairing. Taking absolute values instead needs the
+unproved tangent-norm estimate. This is the first unresolved step in the
+attempt; neither Cauchy--Schwarz nor the positive divisor coefficients
+discharges it.
+
+C1 and C2 remain open, not falsified merely because these proofs failed.
+Further work must attack their actual signed pairing or return to the weaker
+integrated loss. Another implication assuming C1/C2 would add no progress.
+
+### Verification and scope
+
+Seven completed hybrid corpus searches and one lexical definition lookup
+covered the interior kernel, divisor differences, lag densities, comb
+incidence, jump reciprocity, coprime reindexing and actual work signs.
+Hybrid outputs reported no partial results or errors. Relevant statements
+were read in source; the search returned sign criteria, not a proved global
+sign for the actual work. Three completed-paper cards were also inspected:
+their graph comparison, observation recovery and rough-shift averaging do
+not discharge the PM estimate, so they were not substituted for it.
+
+No Lean file, umbrella import or compiled artifact was added. No axiom,
+unproved premise, web search, novelty check or numerical computation was
+used. There is no completed significant paper proof to formalize from this
+batch. Mathematical frontier progress: none; failed proof steps and the
+remaining exact conjectures are recorded to avoid repeating them.
+
+
+## 2026-10-24: second-tangent payment and joint-prime test
+
+Route remains PM: actual signed damping energy, admission at cofinally small
+positive damping, then RH. This batch has no frontier advance and no closed
+significant paper proof. C1 and C2 remain conjectures, not Lean assumptions.
+
+### Exact attempted payment
+
+The source identity in `TheSecondTangentIsAnIteratedDilation` was read in full.
+Its kernel is `K = Lambda * Lambda - (log) Lambda`. For a prime p and k>=1,
+its elementary prime-power coefficient is `K(p^k)=-(log p)^2`: convolution
+has k-1 nonzero ordered factors, whereas the subtraction has coefficient k.
+For distinct primes p,q and positive a,b, `K(p^a q^b)=2 log p log q`.
+It vanishes at integers with at least three distinct prime factors. These
+symbolic observations describe the attempted pairing, not a new energy
+estimate; no numerical computation or Lean formalization was performed.
+
+The proposed argument paired negative one-prime contributions with the
+positive two-prime convolution and the first-tangent square. It did not
+close: after passage to prefixes, every dilation is paired with the signed
+centered source, and both density corrections survive. Positivity of the
+un-centered divisor coefficients does not give the sign of this pairing.
+
+A local algebra check explains why independent prime factors cannot simply
+be declared convex. For fixed vectors X,Y in a real inner-product space,
+r=p^(-epsilon), and l=log p,
+
+`(1/2) d^2/d epsilon^2 ||X-rY||^2
+  = l^2 (2 r^2 ||Y||^2 - r <X,Y>)`.
+
+This has an uncontrolled mixed term. In the actual source, X and Y also
+vary with epsilon through the other primes and the density. Thus this
+calculation neither proves nor refutes actual-source convexity. A proof
+must retain their joint derivatives rather than sum independent convexity
+claims. The attempted termwise payment is unfinished, not a counterexample
+to C1 or C2.
+
+### Joint-prime cancellation checked against source
+
+The exact theorem `hypercubeGram_eq_cancelled_diag_sub_residueGap` already
+cancels the zeroth Euler moment and bounds the remaining diagonal factor
+by one. Its complete signed residue-gap sum remains present. Gram
+nonnegativity gives a lower bound for the energy, not the upper bound
+needed here. No bound for that signed gap was constructed.
+
+`MobiusDivisorThirdEnergyInteraction` supplies a negative third selection
+energy difference at the original core and a precise late-block transport
+law. Its carrier is the divisor selection energy. No identification with
+the centered pronic second-tangent pairing was found or asserted.
+
+`PrimePairLevelSumAndRelativePrecisionCancellation` was also inspected.
+The double-damping square is exactly a squared source difference plus its
+boundary square. Its nonnegativity does not bound the mixed-damping
+negative contribution. The advertised relative-precision estimate is
+unconditional above the zero width, not on a new sub-half-damping band.
+It cannot serve as the missing input below that width.
+
+### Research state and next attack
+
+The first unresolved step remains the complete signed pairing, including
+prime-power subtraction, mixed prime contributions, and density forcing.
+A successful next attempt must construct a joint cancellation estimate
+for these literal terms. Repackaging any of them as a positivity premise,
+using the nonnegative double-integral square as an upper bound, or proving
+another conditional receiver would not move this frontier.
+
+Corpus searches covered second-tangent pairing, sieve/Markov contraction,
+Castelnuovo-Severi leads, joint-prime differences, the exact hypercube
+identity, and prime-power structure. Exact source statements were checked.
+No web or novelty search, subagent, numerical experiment, Lean build,
+umbrella edit, or compiled artifact was used. No missing analytic input
+was hidden in a theorem binder. There is no required user decision or
+external-state blocker; the mathematical proof remains unresolved.
+
+## 2026-10-24: inversion forcing after its explicit power term
+
+Previous batch classification: no frontier progress. This batch attacked
+the centered inversion equation rather than trying another primewise sign.
+
+Write m = Re(1/zeta(1+epsilon)), A for the actual centered source, and
+Phi(n) = sum_(j<=n) j^(-epsilon) floor(n/j). The inspected source proves
+
+`A(n) + O(n) = rho(n) = n - m Phi(n)`,
+
+where O is the proper-unit dilation. The candidate was to remove the
+explicit growing part of rho and pay the remaining forcing in pronic L2.
+For 0<epsilon<1, put
+
+`Z = Re(zeta(1-epsilon))/(1-epsilon)`,
+`b = -m Z`,
+`r(n) = rho(n) - b n^(1-epsilon)`.
+
+The weighted hyperbola formula suggests
+`r(n) = -m R(n)`, with `|R(n)| <= K n^((1-epsilon)/2)`.
+Squaring and dividing by n(n+1) then gives a summable
+`O(n^(-1-epsilon))` majorant. This paper argument is already in the corpus:
+`SubHalfDampingPartialPoleSumsAndLogarithmicMomentIndexLaws` defines
+`subHalfRemainder`, proves `abs_subHalfRemainder_le`, and supplies the
+stronger dilated pronic norm estimate. Its coefficient is zeta(1-epsilon),
+not zeta(epsilon). The source identification
+`inversionDefect_eq_neg_density_mul_majorantCenteredPrefix` was also read.
+Verdict: existing mathematics, not a new premise discharge.
+
+Retaining the same subtraction in the actual dilation gives the exact
+paper identity
+
+`E(T) = <A,r>_T - <A,O - b n^(1-epsilon)>_T`.
+
+The first term is bounded in absolute value by `K_epsilon sqrt(E(T))`
+using the existing remainder theorem. This does not bound the second:
+the inversion equation also says `O - b n^(1-epsilon) = r - A`.
+Substituting that equality returns E with coefficient one. Therefore the
+renormalization alone is not coercivity, and encoding the remaining lower
+bound as a premise would only create another receiver. No such theorem
+was added.
+
+A Mellin-side test asked whether a completed-zeta modulus comparison could
+control this inverse response. Corpus search found local horizontal
+monotonicity with an explicit zero-location premise and the earlier
+vertical-modulus research card with its analytic Pick continuation still
+open. Neither is an unconditional source bound. No external source was
+opened and no novelty check was performed.
+
+The next mathematical task is still constructive: estimate the literal
+signed inverse response using more than its defining inversion identity.
+The explicit power forcing is already understood; re-formalizing its
+remainder would not meet the requested significance gate. This batch
+produced no significant closed paper proof, no Lean module, no audit, and
+no RH proof. No computation, build, subagent, added axiom, or hidden premise
+was used. The goal remains active, with no user-input or external-state
+blocker.

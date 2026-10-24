@@ -87,7 +87,7 @@ private theorem pole_log_pullback (omega : ℝ) {t r : ℝ} (hr : r ∈ Ioo 0 t)
   rw [hp]
   have hxC : (Real.exp (-r) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hx.ne'
   have heC := congrArg (fun x : ℝ => (x : ℂ)) he
-  push_cast at heC
+  simp only [Complex.ofReal_mul] at heC
   have hcancel : (Real.exp (-r) : ℂ) *
       (suzukiPrimaryBetaKernel omega (Real.exp (-r)) *
         (Real.exp ((r - t) * (omega - 1)) : ℂ) / Real.exp (-r)) =
@@ -126,8 +126,7 @@ theorem ofReal_suzukiCriticalPoleDensity (omega t : ℝ) :
     suzukiCriticalPoleDensity, ← integral_complex_ofReal]
   apply setIntegral_congr_fun measurableSet_Ioo
   intro r hr
-  rw [Complex.ofReal_mul]
-  exact (pole_log_pullback omega hr).symm
+  simpa only [Complex.ofReal_mul] using (pole_log_pullback omega hr).symm
 
 /-- The complete signed source is primary density minus its exact pole convolution. -/
 theorem suzukiCriticalSourceDensity_eq (omega : ℝ) {t : ℝ} (ht : 0 < t) :

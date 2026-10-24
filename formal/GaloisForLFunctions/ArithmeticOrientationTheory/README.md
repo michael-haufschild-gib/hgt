@@ -407,8 +407,11 @@ every tower to every other, and a sum of independent rank-one squares, one per p
    **arbitrary sign** (with `q(2) = 0` at `p = 2`, `q(3) = 0` at `p = 3`, and with no restriction for
    `p ≥ 5`), the archimedean reflected diagonal alone dominates twice the interior Hankel square:
    `log p · towerInteriorMellin q p K ^ 2 ≤ (1/2) towerArchDiagForm q p K` and
-   `towerTotalOddForm q p X K ≥ 2 log p · towerInteriorRatioPart q p X K + (1/2) towerArchDiagForm q p K ≥ 0`
-   (`towerTotalOddForm_ge_half_towerArchDiagForm`, `towerTotalOddForm_nonneg_of_five_le`).
+   `towerTotalOddForm q X p K ≥ 2 log p · Σ_{a'∈pfreeLabels p X} cosetToeplitz (q[1↦0]) p X (2K) a' + (1/2) towerArchDiagForm q p K`
+   (`towerTotalOddForm_ge_half_towerArchDiagForm`). The retained Toeplitz sum can be negative for
+   arbitrary-sign profiles, so this does not assert nonnegativity of `towerTotalOddForm`. The
+   archimedean payment controls the interior Hankel square; direct coset correlations still
+   require a signed estimate.
 4. **Shifted-pair rank-two coset law and four-part selectivity.** For `ζ(s − a)ζ(s + a)`
    (`shiftedPairVonMangoldt a`), the tower product part splits into **two** shifted Mellin squares at
    `s = 1/2 − a` and `s = 1/2 + a` (`shiftedTowerProductPart_eq_add_sq`, `shiftedTowerOddPrimeSide_eq`).

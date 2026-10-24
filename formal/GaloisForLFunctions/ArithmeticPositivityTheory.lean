@@ -96,3 +96,4 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».MultiScaleLowModeAnd
 import GaloisForLFunctions.«arithmetic-positivity-theory».ExplicitBlockThresholdsOfTheCriticalFamily
 import GaloisForLFunctions.«arithmetic-positivity-theory».TheLinearWindowOfTheCriticalPrimeChannel
 import GaloisForLFunctions.«arithmetic-positivity-theory».LowScaleCoupledPositivityAndSchurComplement
+import GaloisForLFunctions.«arithmetic-positivity-theory».ExplicitCollarThresholdsAndKernelShape

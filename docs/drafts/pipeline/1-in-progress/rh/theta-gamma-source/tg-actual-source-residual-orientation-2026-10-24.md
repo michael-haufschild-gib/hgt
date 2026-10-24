@@ -250,6 +250,86 @@ endpoint-audit scratch were removed after their results were recorded.
 
 ## Log
 
+## Cross-programme conjecture loop
+
+The fourteen programmes named by the user were inspected, with direct source
+checks for the AOT tower statements, AIP continuum crossing bridge, SAEI path
+certificate, ACT theta source equations, and ACCC compensation coordinates.
+The useful combination is ACT's actual signed theta supersolution, AIP's
+crossing-to-ratio bridge, SAEI's shared-edge packing, and ACCC's instruction
+to retain prime--polar cancellation before taking norms. TTPC's averaged
+close-pair localization does not give TG's every-contour estimate.
+
+### C4 — actual continuum path payment
+
+The target is payment of the reflected difference energy of the literal
+shifted theta gauge by its complete same-side energy and source term, with
+all cutoffs admitted and no assumed allocation certificate. The signed
+two-sided supersolution is already explicit. The unpaid theorem is the
+construction and estimate of shared path weights, including the Gamma and
+polar terms. No path certificate is introduced as a hypothesis.
+
+**Attempt 1: transfer lattice tower positivity.** The source theorem
+`towerTotalOddForm_ge_half_towerArchDiagForm` retains a signed Toeplitz
+correlation. It is not full positivity for arbitrary-sign profiles.
+Moreover the continuum reflection exchanges different logarithmic fibres;
+it does not remain the single lattice Mellin square.
+
+**Attempt 2: pay continuum atoms by pointwise archimedean coefficients.**
+This does not prove a form comparison. Prime crossings are supported on
+lines in the two-variable plane; the archimedean part is a continuous
+measure. A valid comparison needs integration through intermediate points
+and a total edge-use bound. Sampling inequalities cannot be passed to the
+continuum while ignoring these measures.
+
+**Attempt 3: nearest-ratio routing.** For a crossing `x+y=log n`, the
+candidate same-side modulus is near `n exp(-2x)`. Its individual critical
+weight is larger by roughly `exp(x)`, but compressing the prime scale
+loads roughly `exp(2x)` crossings onto each output scale. The individual
+weight comparison is therefore not a packing proof. These factors are a
+heuristic diagnostic, not a proved asymptotic statement. The polar term
+must remain in the aggregate comparison.
+
+### Paper bridge: the complete continuum tower has a positive decomposition
+
+Let `F` be a real continuous compactly supported function on `(0,infinity)`,
+extended by zero, `L>0`, and `0<r<1`. Define
+
+```
+M = integral_(0,infinity) F(x)^2 dx,
+R = sum_(k>=1) r^k integral_(0,infinity) F(x) F(x+kL) dx,
+H = sum_(k>=1) r^k integral_(0,kL) F(x) F(kL-x) dx,
+U_j(theta) = sum_(i>=j) r^(i-j) F(theta+iL),  0<theta<L.
+```
+
+All sums are finite, uniformly in the integration variables, by compact
+support. With all norms below on `(0,L)`,
+
+```
+M + 2R - H = (1-r) ||U_0||^2
+  + (r/2) ||U_0 - U_0(L-.)||^2
+  + (1-r^2) sum_(j>=1) ||U_j||^2 >= 0.
+```
+
+**Dependency-closed paper proof.** Partition the half-line into cells
+`x=theta+iL`. The scalar finite KMS identity applied to
+`u_i=F(theta+iL)` gives
+`M+2R=||U_0||^2+(1-r^2)sum_(j>=1)||U_j||^2` after integration.
+In the reflected term set `k=i+j+1` and
+`kL-x=(L-theta)+jL`; finite reindexing gives
+`H=r integral_0^L U_0(theta)U_0(L-theta) dtheta`.
+Reflection preserves the integral of `U_0^2`, so expanding the reflection
+difference square gives the displayed identity. The coefficients are
+nonnegative. At `L=log p`, `r=p^(-1/2)`, multiplication by `log p` gives
+the full prime-power tower, with both correlations retained.
+
+**Status and limit.** This is a source-coordinate bridge, not a new RH
+criterion or an all-prime estimate. Its diagonal payment `M` is charged
+once per prime, so this proof alone does not give the required aggregate
+bound. The result is not yet formalized. The next construction must retain
+the reflected fibre term and pay the shared diagonal from the complete
+source; merely summing the nonnegative tower identities would not do so.
+
 - 2026-10-24 — Read attached task and TG ledger; inspected actual source
   statements and previous TG attempts. Began direct source-comparison and
   Gaussian divisor-convolution investigation.

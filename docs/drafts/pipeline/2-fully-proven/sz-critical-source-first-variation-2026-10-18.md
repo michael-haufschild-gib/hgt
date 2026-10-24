@@ -226,16 +226,23 @@ primary pairings. Weighted Cauchy–Schwarz and the existing Krein increment law
 give the paper proof displayed above. The signed pole and arithmetic assembly
 remain required before the full card can move to stage 3.
 
-Draft leaves (not yet certified):
+Leaf status:
 
-- `SuzukiCriticalTranslatedCusp.lean`: the squared uniform cusp bound, its
+- `SuzukiCriticalTranslatedCusp.lean` compiles: the squared uniform cusp bound, its
   explicit vanishing error, uniform convergence over all translations, and
-  specialization of the primary first variation to compact `C²` sources.
-- `SuzukiCriticalLogKernel.lean`: exact logarithmic transport of the literal
+  specialization of the primary first variation to compact `C²` sources. Its
+  olean was produced for the pole-pairing leaf. Final direct-source check and
+  public-declaration axiom audit remain pending.
+- `SuzukiCriticalLogKernel.lean` compiles: exact logarithmic transport of the literal
   Beta–pole convolution and the full signed source identity. The pole identity
   holds for all real logarithmic arguments: for nonpositive arguments both
   integration regions are empty. The signed source identity is asserted for
-  positive arguments, avoiding the source's separately totalized endpoint.
+  positive arguments, avoiding the source's separately totalized endpoint. Its
+  olean was produced for the pole-pairing leaf; final axiom audit remains pending.
+- `SuzukiCriticalPolePairing.lean` (draft): `L¹` compact-test Fubini, the tested
+  pole limit, translated full-source convergence, and the full archimedean
+  source first variation with the growing pole retained. Arithmetic assembly
+  and identification with the complete Weil functional still remain.
 
 For the remaining compact-test Fubini step, the primary density belongs to
 `L¹`, but need not belong to `L²` at small shifts. Use `L¹` convolution
@@ -243,6 +250,13 @@ integrability with the pole exponential cut off to the fixed aperture, then
 multiply the joint integrand by the bounded autocorrelation. This supplies
 absolute integrability directly and does not import an inapplicable `L²`
 kernel-transposition theorem.
+
+The next conjecture exposed by this proof is extension of the complete literal
+source tangent to compact finite-Lévy-energy source space, without `C²`
+regularity. The primary theorem already admits that energy domain; the remaining
+audit must retain continuity of correlation, translated Krein control, compact
+pole testing, and the full Weil-form identification. This conjecture is not an
+arithmetic sign bound and is not claimed proved by the current leaves.
 
 This is formalization of an existing paper proof, not a new source cancellation
 claim. WL's growing-aperture one-sided bound remains open.

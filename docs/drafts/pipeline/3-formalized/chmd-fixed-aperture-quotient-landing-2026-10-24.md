@@ -1,16 +1,16 @@
 # CHMD fixed-aperture quotient landing
 
 - **ID:** chmd-fixed-aperture-quotient-landing-2026-10-24
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper; formalization pending)
-- **Statement:** At every fixed positive aperture, the real Weil form completion embeds with closed range into the actual CHMD signed-radical quotient, with equivalent norms.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Statement:** At every fixed positive aperture, the real Weil form completion embeds with closed range into the actual CHMD signed-radical quotient, with equivalent norms and exact preservation of the full Weil form.
 
 ## Scope and source
 
-The CHMD frontier explicitly leaves the lower quotient bound and completion
-landing open. `CHMDGraphNormIsTheWeilFormNormOnAnAperture` proves equivalence
-before quotienting and an upper bound after quotienting. The proposed theorem
-removes this remaining completion assumption. It does not prove the signed
+The CHMD frontier had left the lower quotient bound and completion landing
+open. `CHMDGraphNormIsTheWeilFormNormOnAnAperture` proves equivalence before
+quotienting and an upper bound after quotienting. This theorem removes the
+remaining completion assumption. It does not prove the signed
 form nonnegative, make any constant uniform in aperture, or complete RH.
 
 The preceding conjecture that arbitrary positive shifts would repair the
@@ -79,13 +79,13 @@ and `J` the mass/source coordinate.
 
 All compactness and uniqueness inputs above were located by corpus search and
 their statements inspected. Their formal combination and transitive axiom
-audit remain pending. This argument does not bound the whole quotient by a
-single aperture or sign its descended Weil form.
+audit passed. This argument does not bound the whole quotient by a single
+aperture or sign its descended Weil form.
 
-## Formal implementation in progress
+## Formal implementation
 
 `formal/GaloisForLFunctions/RHTower/CHMDFixedApertureQuotientLanding.lean`
-contains the draft proof. No verification success is claimed yet.
+contains the complete, directly audited proof.
 
 The implementation strengthens step 2 to an exact bounded factorization:
 `P = 2 P J* J`, where `J*` is the graph adjoint of the source map. Thus a
@@ -94,27 +94,56 @@ directly. A single existing `localThetaInverse N`, with `a <= N+1`, transfers
 CCM physical compactness to source compactness. Normalized smooth sources then
 give the lower quotient bound, which passes to their graph closure.
 
-The draft also constructs the real form completion explicitly as the closure
+The implementation constructs the real form completion explicitly as the closure
 of the smooth core in `CCMArchimedeanFormDomain`, and extends the common-core
 linear equivalence. Its inverse followed by the actual quotient map is the
 claimed completion landing. This is not an assumed completion identification.
 
-Current checks: the full `/tmp` proof check verifies physical-source uniqueness,
-the projection factorization, and the compact subsequence argument. Its axiom
-audit for physical-source uniqueness contains only `propext`, `Classical.choice`,
-and `Quot.sound`. The remaining errors concern quotient norm rewrites and
-compatible real scalar-action instances on the complex form domain and its real
-completion. These are being resolved without changing the mathematical statement.
-The two capstone axiom outputs still contain elaboration-generated `sorryAx`, so
-neither capstone is certified yet. The final repository-leaf audit is pending.
+Main declarations in namespace `RHTower`:
+
+- `eq_zero_of_signedRadical_of_supported_physicalSource`: no nonzero graph
+  radical vector has compactly supported physical source.
+- `criticalSourceReconstruction_source`: exact factorization `P = 2 P J* J`.
+- `exists_aperture_quotient_lower_bound`: the quotient norm controls the graph
+  norm on the entire completed fixed-aperture space.
+- `exists_quotient_norm_sq_equiv_weilFormNorm`: two-sided quotient/Weil norm
+  comparison on the common real smooth core.
+- `apertureGraphWeilEquiv`: canonical continuous linear equivalence of the
+  two real core completions, constructed by extension.
+- `isClosedEmbedding_apertureWeilSignedQuotient`: actual completed Weil
+  domain embeds injectively with closed range in `SignedQuotient`.
+- `apertureWeilSignedQuotient_core`: the map is the literal quotient lift
+  on the original core.
+- `apertureWeilSignedQuotient_weil`: exact full Weil-form preservation on
+  the completed domain.
+
+Here the real Weil completion is explicitly the closure of the real Suzuki
+core in `CCMArchimedeanFormDomain`. No identification with the stronger
+derivative-norm completion is asserted.
+
+Verification:
+
+- The complete `/tmp` proof, including the completed form identity, passed
+  `lake --old env lean /tmp/chmd_aperture_proof.lean` with exit 0 and no
+  warnings or errors.
+- `#print axioms` on physical-source uniqueness, projection factorization,
+  quotient/Weil norm comparison, closed completed embedding, exact core
+  agreement, and completed Weil-form preservation returned only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+- The module is imported by `formal/GaloisForLFunctions/RHTower.lean`.
+- Final direct repository-leaf check passed with exit 0 and no diagnostics:
+  `lake --old env lean GaloisForLFunctions/RHTower/CHMDFixedApertureQuotientLanding.lean`,
+  run from `formal/`.
+- Scoped whitespace checks passed. No umbrella or full build was run, and
+  no olean was produced or replaced.
 
 ## Gates
 
 - [x] Exact documented gap and proof mechanism identified.
 - [x] Paper argument with all mathematical dependencies identified.
-- [ ] Lean proof of lower bound and closed completion landing.
-- [ ] Foreground leaf audit and transitive axiom audit.
-- [ ] Umbrella wiring and accurate frontier update.
+- [x] Lean proof of lower bound, closed completion landing, and full-form preservation.
+- [x] Foreground leaf audit and transitive axiom audit.
+- [x] Umbrella wiring and accurate frontier update.
 
 ## Next conjecture after landing
 

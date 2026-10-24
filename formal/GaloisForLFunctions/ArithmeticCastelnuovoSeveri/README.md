@@ -199,12 +199,14 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     (`multiPairConfig_depth_invariance`), while the raw `L²` floor scales with the multiplicity
     (`offLineClusterConfig_hodgeDefect_vs_l2_floor`): the defect is a count, the floor a mass.
     For `ζ` the defect is finite at every degree, unconditionally:
-    `hodgeDefectAt ζ a ≤ 1 + 2T(a)(2a + 2)/π` with `T(a) = 4(e^{2E} − 1)`, `E = 10 + 68e^a`
-    (`hodgeDefectAt_zeta_le`, `hodgeDefectAt_zeta_lt_top`). Below the pole the form is the symbol
+    `hodgeDefectAt ζ a ≤ 1 + 4aT(a)/π` with `T(a) = 4(e^{2E} − 1)`, `E = 10 + 68e^a`
+    (`hodgeDefectAt_zeta_le_shannon`, sharpening `1 + 2T(a)(2a + 2)/π` of `hodgeDefectAt_zeta_le` via
+    `δ`-transition cut-off characters and `δ → 0⁺`, `hodgeDefectAt_zeta_lt_top`). Below the pole the form is the symbol
     integral `∫|h_F|²(μ + P_X)`; the archimedean symbol grows like `log|τ|` and the Euler product
     bounds the prime symbol by `68√X`, so a Weil-negative test carries more than half its spectral
     mass below the horizon `T(a)`, and Bessel's inequality against the cut-off characters bounds
-    the dimension of such tests by `2T(a)(2a + 2)/π` (`finrank_mul_le_of_concentrated`). Lag
+    the dimension of such tests by `4aT(a)/π` (`finrank_mul_le_four_mul_of_band_concentrated`,
+    `negIndex_zeroGram_zeta_le_shannon`). Lag
     lattices and curves have no archimedean place: their defect is `0` or `∞` at every degree. So
     at each degree only finitely many right zeros of `ζ` are visible, and the degree at which `n`
     of them become visible grows at least like `log log n`. The failure is confined to explicit low
@@ -388,7 +390,7 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     together with Riemann–Roch gives the Hodge index on any polar surface
     (`exists_bezout_effectivity_iff_hodgeIndex`).
 
-### 3.6 Infinite genus (`InfiniteGenusLaw`)
+### 3.6 Infinite genus and the Landau–Widom near-radical law (`InfiniteGenusLaw`, `LandauWidomNearRadicalLaw`)
 
 22. No nonzero compact test has a transform vanishing at all but finitely many simple critical
     zeros (`eq_zero_of_paperFT_vanish`); RH iff Weil's form is positive definite
@@ -405,10 +407,28 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     smooth cutoff), the scaling-surface form of Weil's relation `P(F) ≡ 0` on the Frobenius span.
     Beyond the genus aperture the radical of a curve has every finite dimension (translates of one
     radical test, `curve_radical_finrank_ge`); over `ℚ` even the near radical is finite: every space
-    of pole-free aperture-`a` tests with `Re W ≤ ε‖f‖²` has dimension at most the size of the grid
-    of the `ε`-horizon `T_ε(a) = 4(e^{2E + 4πε} − 1)` (`finrank_le_of_re_W_le`,
-    `zeta_near_radical_finrank_le`): the grid samples are injective there, because small Weil energy
-    keeps half the spectral mass below `T_ε(a)`.
+    of pole-free aperture-`a` tests with `Re W ≤ ε‖f‖²` has dimension at most `4a T_ε(a)/π = 2·Shannon(a, T_ε(a))`
+    with `T_ε(a) = 4(e^{2E + 4πε} − 1)` (`zeta_near_radical_finrank_le_shannon`, removing the
+    `T_ε(a)^{3/2}(a + 1)^{3/2}` Lipschitz-grid overhead of `zeta_near_radical_finrank_le`).
+    * *Two-sided Landau–Widom near-radical count `(2 ∓ η)e^{2L}` and rate `2π² N(T*)/log N(T*)`
+      (`LandauWidomNearRadicalLaw`):* Dyadic summation of the Riemann–von Mangoldt formula yields
+      the unconditional two-sided cumulative zero count `|N(0, T) − (T/2π)log(T/2πe)| ≤ C log²T`
+      (`zeroCount_lower`, `zeroCount_twoSided`). Consequently, for every bandwidth `T = u · 2πe^{2L}`
+      the Shannon–zero surplus satisfies the exact variational identity
+      `2TL/π − 2 zeroCountMain T = 2e^{2L} − 2e^{2L}(u log u − u + 1) ≤ 2e^{2L}`
+      (`shannonZeroSurplus_eq_landau_deficit`, `shannonZeroSurplus_le_two_mul_exp`), attaining its
+      unique global maximum `2e^{2L}` at the Landau height `T* = 2πe^{2L}` (`u = 1`,
+      `shannonZeroSurplus_eq_two_mul_exp_iff`), turning negative above `2πe^{2L+1}`, and giving the
+      uniform unconditional upper bound `2TL/π − 2 N(0, T) ≤ (2 + η)e^{2L}` across *all* bandwidths
+      `T ≥ 0` (`eventually_shannon_sub_zetaZeroCount_le`). Together with the Bessel–projection
+      law on constraint kernels (`finrank_mul_le_sub_of_concentrated_ker`) and the lower bound
+      `(2 − η)e^{2L}`, this establishes the unconditional two-sided `(2 ∓ η)e^{2L}` dimension law
+      for the near-radical of `ζ` (`zeta_landau_widom_two_sided_dimension_law`), the two-sided
+      Landau–Widom rate `−log μ(L) ≍ 2π² N(T*)/log N(T*)` via
+      `N(0, T*)/log N(0, T*) = (1/2 + o(1))e^{2L}` (`eventually_zetaZeroCount_edgeRate_div_log_bounds`,
+      `exists_twoSided_truncKernel_log_energy_landauRate`,
+      `eventually_near_radical_subspace_landauRate`), and critical-line zero-side coercivity
+      `∑_{ρ ∈ S} m_ρ |f̂(γ_ρ)|² ≤ Re W_Z(f, f)` (`sum_norm_sq_paperFT_le_re_W_of_criticalLine`).
 
 ### 3.7 Hecke incidence and the successor cell
 
@@ -662,11 +682,14 @@ Built and reusable:
   Chebyshev ledgers, degree floors and the zero width, the universal floor law for ample cones,
   sign-free Bézout positivity from source section readings, prime-power node section counts
   `h⁰ ≥ DoF − node count`, and exact pole-charge cancellation on odd cycles.
+- *The Landau–Widom near-radical calculus*: two-sided Riemann–von Mangoldt zero counts, the exact
+  Shannon–zero variational identity `2TL/π − 2N(0, T) ≤ (2 + η)e^{2L}`, sharp Bessel–Shannon
+  concentration bounds `dim V ≤ 4LT_ε(L)/π`, the two-sided `(2 ∓ η)e^{2L}` near-radical dimension
+  law, and the Landau–Widom rate `−log μ(L) ≍ 2π² N(T*)/log N(T*)`.
 
 To be built:
 
 - an effectivity stable under the Hecke correspondences that the golden datum violates;
-- the near-radical count of Landau–Widom type;
 - a bound on the coupling of prime towers through the collar on rank-`P` boxes.
 
 ---
@@ -688,12 +711,20 @@ To be built:
    `HodgeIndex` hold unconditionally at every degree (`lowBlindTests_effectivity`). Open: closing
    the finitely many low-frequency directions read by `D_a` and the pole, or proving `0 ≤ δ(x, x)`
    across all apertures.
-2. **Near-radical count (Landau–Widom).** The two-sided law for `h⁰_ε(L)`, the dimension of
-   aperture-`L` tests with `|W| ≤ ε‖f‖²`, unconditionally in its upper half, and the rate
-   `−log μ(L) ≍ 2π² N(T*)/log N(T*)` for configurations on the line. Known: lower bounds
-   (`zeta_weil_near_radical_dimension_smooth`, `RHTower.zeta_weil_near_radical_sharp_count`) and an
-   unconditional upper bound that is doubly exponential in `L` (`zeta_near_radical_finrank_le`);
-   open: the upper bound `(2 + η)e^{2L}`.
+2. **Near-radical count (Landau–Widom).** Settled (`LandauWidomNearRadicalLaw`): dyadic summation of
+   the Riemann–von Mangoldt formula yields `|N(0, T) − (T/2π)log(T/2πe)| ≤ C log²T`
+   (`zeroCount_lower`, `zeroCount_twoSided`), and the exact variational identity
+   `shannonZeroSurplus L T = 2e^{2L} − 2e^{2L}(u log u − u + 1) ≤ 2e^{2L}` (`u = T / (2πe^{2L})`,
+   equality iff `T = 2πe^{2L}`) gives the uniform unconditional upper bound
+   `2TL/π − 2N(0, T) ≤ (2 + η)e^{2L}` across *all* bandwidths `T ≥ 0`
+   (`eventually_shannon_sub_zetaZeroCount_le`). Together with the sharp Bessel–Shannon bound
+   `dim V ≤ 4LT_ε(L)/π` (`zeta_near_radical_finrank_le_shannon`, `hodgeDefectAt_zeta_le_shannon`)
+   and the Bessel–projection law on constraint kernels (`finrank_mul_le_sub_of_concentrated_ker`),
+   this gives the unconditional two-sided `(2 ∓ η)e^{2L}` dimension law
+   (`zeta_landau_widom_two_sided_dimension_law`), the Landau–Widom rate
+   `−log μ(L) ≍ 2π² N(T*)/log N(T*)` (`exists_twoSided_truncKernel_log_energy_landauRate`,
+   `eventually_near_radical_subspace_landauRate`), and critical-line zero-side coercivity
+   (`sum_norm_sq_paperFT_le_re_W_of_criticalLine`).
 3. **Aperture over `ℚ`.** The degree at which `n` right zeros become visible is explicit in terms
    of on-line mass, local density and logarithmic density, and height-uniform under a uniform
    window count (item 15); no degree works uniformly over all configurations. For `ζ`, under a local
@@ -776,7 +807,7 @@ Weil's argument.
 | `SpanContactLaw`, `TheFrobeniusSpanDefectCountsTheOuterEigenvalues` | contact window; Pontryagin law over `𝔽_q` |
 | `TheScalingSurfaceOfACurve`, `TheFrobeniusSpanIsTheTowerOfTheScalingSurface`, `TheDegreeFiltrationOfACurveIsItsWindowFiltration`, `TheFirstNegativeLagOfACurve`, `TheWeilFloorOfACurveIsItsZeroWidth` | the scaling surface of a curve; three Hodge index theorems; the span as period quotient; degree filtration = window filtration; lag tests read point counts, purity = lag positivity, Turán-located first negative lag; `L²` floor rate = twice the zero width |
 | `HodgeIndexFromEffectivity`, `BezoutEffectivityAndTheBeurlingObstruction`, `DistinctEffectiveCyclesMeetNonnegatively` | effectivity axioms ⟺ Hodge index; Bézout positivity through the collar |
-| `TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`, `InfiniteGenusLaw`, `TheGenusIsTheApertureOfTheRadical`, `NumericalEquivalenceOnACurveIsTheFrobeniusIdeal`, `TheNearRadicalOfZetaIsFiniteDimensional` | the scaling surface of `ℤ`; signature law and selection of `Λ`; no exact annihilators; over `𝔽_q` the radical is exactly `P(T_q)`(tests), opens at aperture `d log q/2` and is then infinite-dimensional; over `ℚ` the near radical is finite-dimensional |
+| `TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`, `InfiniteGenusLaw`, `TheGenusIsTheApertureOfTheRadical`, `NumericalEquivalenceOnACurveIsTheFrobeniusIdeal`, `TheNearRadicalOfZetaIsFiniteDimensional`, `LandauWidomNearRadicalLaw` | the scaling surface of `ℤ`; signature law and selection of `Λ`; no exact annihilators; over `𝔽_q` the radical is exactly `P(T_q)`(tests), opens at aperture `d log q/2` and is then infinite-dimensional; over `ℚ` the near radical is finite-dimensional (`≤ 4LT_ε(L)/π`) and obeys the two-sided `(2 ∓ η)e^{2L}` Landau–Widom count and rate `−log μ(L) ≍ 2π² N(T*)/log N(T*)` |
 | `FiniteConfigurationPontryaginLaw`, `TemperedConfigurationPontryaginLaw`, `TheHodgeDefectCountsTheRightZeros` | the Pontryagin law, finite, tempered and general |
 | `TheReflectionSectorsOfTheHodgeDefect`, `TheDegreeFiltrationOfTheHodgeDefect`, `SchurLendingOddHodgeIndexPastFirstPrime`, `WhatTheFailureOfTheHodgeIndexMeasures`, `TheHodgeDefectOfZetaIsFiniteAtEveryDegree`, `TheHodgeIndexOfZetaHoldsAwayFromLowFrequencies` | sectors and degrees; `ζ` below `3/10` and the odd sector through `181/500`; multiplicity and depth invariance; Sobolev floor rate = width; the degree defect of `ζ` is finite (archimedean horizon and Bessel count) and lives on an explicit low-frequency grid |
 | `TheVisibilityDegreeOfAnIsolatedPair`, `TheVisibilityDegreeOfRightZeros`, `HeightUniformVisibilityAndOffLineDensity`, `TuransInequalityWithoutBoundedOnLineDensity` | visibility degrees from on-line mass and densities; height-uniform visibility; eliminating the `log γ₀` Turán tail without bounded on-line density, height-free `c = 0` visibility and contact-aperture bounds, on-line non-cancellation, doubly-logarithmic modulated visibility lag, and the clustering dichotomy |
@@ -788,7 +819,7 @@ Weil's argument.
 | `TheLambdaRingOfTheScalingSurface` | `λ`-ring, Adams operations, Hecke cycles, Lefschetz splitting |
 | `RiemannRochForZAndTheReflectedPrimePolarLedger` | tautological cones, Lorentz–polar identity, odd-sector ledgers, `75e^r` and `(3 + ε)e^r` floors, first- and second-order de la Vallée Poussin Sobolev floors, shared derivative payment bootstrap, degree floor ⟺ zero width |
 | `WhichArithmeticDataForceTheSign` | Toeplitz–Rosati reflection identity, pole masking of point counts, forcing equivalences over `𝔽_q` and on the scaling surface |
-| `SectionCountRiemannRochAndPrimeBlindSelectivity` | nef quadrant and Hecke-stable ampleness, `DoF − node count = E(s)`, prime-blind section vanishing, diagonal relabeling invariance |
+| `SectionCountRiemannRochAndPrimeBlindSelectivity`, `SectionEffectivityAndTheUniversalFloorLaw` | nef quadrant and Hecke-stable ampleness, universal floor law `RiemannRochAxiom E ↔ openPositiveCone ⊆ E ∧ ∀ x, 0 ≤ defect(x, x)` for ample cones, sign-free Bézout positivity from source section readings, prime-power node section counts `h⁰ ≥ DoF − node count`, `DoF − node count = E(s)`, exact odd pole-charge cancellation, prime-blind section vanishing, diagonal relabeling invariance vs. Frobenius selectivity |
 | `SourceDeterminantalSectionsAndArithmeticRiemannRoch` | source section cones, non-vacuous ampleness, Hecke stability, Riemann–Roch ⟺ coercive floor, Riemann–Roch past the first prime, all-aperture Chebyshev and de la Vallée Poussin floors |
 | `SourceRiemannRochAwayFromTheLowFrequencyDivisor` | source effectivity (Riemann–Roch, ampleness, Hodge index) at every degree on the tests blind to the low-frequency divisor, coercivity `E(a)(1 − 1/π)` |
 | `AllApertureSourceRiemannRochAndCoercivityLaws` | universal strict-ampleness rigidity, compensated polar surfaces and all-aperture ample source cones, no-Hardy-weight law, doubly-exponential Gaussian ceiling, closed-aperture polar ground-energy equivalence and strict-monotonicity self-upgrade, Sobolev source cones and zero-width equivalence |

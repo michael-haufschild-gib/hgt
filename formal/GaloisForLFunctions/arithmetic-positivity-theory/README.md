@@ -807,15 +807,36 @@ telescope to $\int_{-m}^m\gamma(u)\cos(2\pi ku)\,du$). Translated scales
 interact in the limiting prime channel only through this single
 $1/k^2$-decaying coupling; the singleton value is the exact isotropic part and
 $\lvert P_\infty(b)-(4/\pi^4)\kappa(0)E_b\rvert\le(4/\pi^4)\bigl(\sum_{k\ge1}2\lvert\kappa(k)\rvert\bigr)E_b$
-uniformly in the pattern. The Cesàro means of the long modulated patterns
-$b_j=\cos(2\pi jt)$, $\sin(2\pi jt)$ on $j<L$ give
-$(P_\infty(\cos_L)+P_\infty(\sin_L))/L\to(4/\pi^4)R(t)$, so the Rayleigh set
-has supremum $(4/\pi^4)\max R$ and infimum $(4/\pi^4)\min R$: the exact
-$\ell^2$ spectral range of the limiting prime form over all finite patterns is
-the range of $R$, the optimal negativity constant is $-(4/\pi^4)\max R$, and
-the extremal patterns are long frequency-modulated patterns concentrating at
-the extrema of $R$. Sign and size questions about the limiting critical prime
-channel are pointwise questions about $R$.
+uniformly in the pattern. Evaluating the band sine moments
+$\mu_m=\int_0^{\pi/6}(\pi/6-\xi)\xi\sin(m\xi)\,d\xi=(2(1-\cos\frac{m\pi}6)-\frac{m\pi}6\sin\frac{m\pi}6)/m^3$
+in closed form (`criticalBandSineMoment_eq`) shows that the spectral curvature constant
+$I_0=\sum_m(A(m)/m^3)\mu_m$ satisfies $11/10000\le I_0\le 52/10000$
+(`criticalKernelCurvatureConstant_bounds`), while the absolute sine moment series is bounded by
+$M_{\mathrm{abs}}\le 19/1000$ (`criticalKernelAbsMoment_le`). A unified spectral perturbation bound
+(`abs_tsum_charge_band_integral_sub_le`) then gives both the two-sided $1/k^2$ law for the scale
+couplings,
+$\lvert\kappa(k)-I_0/(4\pi^2k^2)\rvert\le(14/100000)/(4\pi^2k^4)$ (`abs_factorialCriticalPrimeCoupling_sub_le`,
+hence $\kappa(k)>0$ for all $k\ge1$, $1/50000\le\kappa(1)\le1/6000$, and
+$1/200000\le\kappa(2)\le1/24000$), and the quadratic difference bounds on $[0,1/2]$,
+$$
+\frac7{20000}\Bigl(\bigl(\tfrac12-t_1\bigr)^2-\bigl(\tfrac12-t_2\bigr)^2\Bigr)\ \le\ R(t_1)-R(t_2)\ \le\
+\frac{56}{20000}\Bigl(\bigl(\tfrac12-t_1\bigr)^2-\bigl(\tfrac12-t_2\bigr)^2\Bigr)
+\qquad\bigl(0\le t_1\le t_2\le\tfrac12\bigr)
+$$
+(`factorialCriticalPrimeContinuousRealKernel_sub_bounds`). In particular, $R$ is strictly decreasing
+on $[0,1/2]$ and strictly increasing on $[1/2,1]$, with unique global minimum $\min_{[0,1]}R=R(1/2)$
+attained only at $t=1/2$ and global maximum $\max_{[0,1]}R=R(0)=R(1)$ attained only at $t\in\{0,1\}$,
+and explicit distances $7/120000\le R(0)-\kappa(0)\le 56/120000$ and
+$7/240000\le\kappa(0)-R(1/2)\le 56/240000$ from the singleton mean
+([ExplicitCollarThresholdsAndKernelShape](ExplicitCollarThresholdsAndKernelShape.lean)). The Cesàro
+means of the long modulated patterns $b_j=\cos(2\pi jt)$, $\sin(2\pi jt)$ on $j<L$ give
+$(P_\infty(\cos_L)+P_\infty(\sin_L))/L\to(4/\pi^4)R(t)$, so the Rayleigh set has exact supremum
+$(4/\pi^4)R(0)$ and exact infimum $(4/\pi^4)R(1/2)$ (`isLUB_factorialCriticalPrimeRayleighSet_exact`,
+`isGLB_factorialCriticalPrimeRayleighSet_exact`): the exact $\ell^2$ spectral range of the limiting
+prime form over all finite patterns is $[(4/\pi^4)R(1/2),(4/\pi^4)R(0)]$, the optimal negativity
+constant is $-(4/\pi^4)R(0)$, and the extremal patterns are long frequency-modulated patterns
+concentrating at $t\in\{0,1\}$ and $t=1/2$. Sign and size questions about the limiting critical
+prime channel are pointwise questions about $R$.
 
 **Finite-scale negativity and the linear window.** The actual prime energy of a
 pattern translated to scale $n$ is the quadratic form of the finite-scale prime
@@ -1255,14 +1276,16 @@ theory's load-bearing walls. Lean names are the capstones of the cited modules.
 4. **High-scale span coercivity.** $\Re\mathcal W(f_b,f_b)\ge(\tfrac A2\log M-C)\sum\lvert b_N\rvert^2$
    on every finite span supported on $N\ge M$ (`factorialTailSpan_re_W_coercivity`): physical
    Riesz bounds plus nonstationary Mellin exclusion become spectral coercivity.
-5. **The critical prime kernel is negative definite.** $R(t)\le-1/7000$ on the cell, hence
-   $P_\infty(b)\le-(4/7000\pi^4)\sum b_j^2$ for every finite real pattern; the exact Rayleigh
-   range is $(4/\pi^4)[\min R,\max R]$; and the actual prime matrix is eventually negative both
-   for each fixed translated support $n+S$ and uniformly across every linear window
-   $N\le m+1\le(1+\delta)N$ of linearly growing dimension $\lfloor\delta N\rfloor+1>\delta N$,
+5. **The critical prime kernel is negative definite.** $R(t)\le-1/7000$ on the cell, strictly
+   decreasing on $[0,1/2]$ and strictly increasing on $[1/2,1]$ with unique minimum $R(1/2)$ and
+   maxima $R(0)=R(1)$, hence $P_\infty(b)\le-(4/7000\pi^4)\sum b_j^2$ for every finite real pattern;
+   the exact Rayleigh range is $[(4/\pi^4)R(1/2),(4/\pi^4)R(0)]$; and the actual prime matrix is
+   eventually negative both for each fixed translated support $n+S$ and uniformly across every linear
+   window $N\le m+1\le(1+\delta)N$ of linearly growing dimension $\lfloor\delta N\rfloor+1>\delta N$,
    turning $-2P$ into a positive subsidy in the complete critical form
    (`factorialCriticalTranslatedPrimeLimit_le_neg_energy`,
-   `isLUB_factorialCriticalPrimeRayleighSet`, `isGLB_factorialCriticalPrimeRayleighSet`,
+   `strictAntiOn_factorialCriticalPrimeContinuousRealKernel_Icc_zero_half`,
+   `isLUB_factorialCriticalPrimeRayleighSet_exact`, `isGLB_factorialCriticalPrimeRayleighSet_exact`,
    `eventually_factorialCriticalTranslatedPrimeEnergy_le`,
    `exists_linearWindow_criticalPrimeEnergy_le`,
    `exists_fullLinearWindowSupport_criticalPrimeEnergy_neg_definite`,
@@ -1413,7 +1436,9 @@ Built and reusable:
   the Montgomery–Vaughan bound for the endpoint jump kernel, the window exponent
   $\varepsilon(L)$, and the cross-block decay $\tau(m,n)$.
 - *Critical kernel calculus.* The divisor charge $A(m)$, its cumulative charge, the band-limited
-  Poisson closure of the cell, and the Toeplitz symbol.
+  Poisson closure of the cell, the Toeplitz symbol, the spectral perturbation theorem against the
+  curvature constant $I_0$, two-sided $1/k^2$ bounds on the couplings $\kappa(k)$, and quadratic
+  difference bounds establishing strict monotonicity and exact extrema of $R$.
 - *Full-form stability.* Every channel is Lipschitz in $L^1$ distance with explicit value and
   slope moments, so one accuracy index pays for tents of arbitrary support.
 - *The tent family* as a complete RH test family inside the laboratory.
@@ -1505,13 +1530,34 @@ $\lvert P(T,b)-P_\infty(T,b)\rvert\le\eta\sum_{m\in T}b_m^2$ for every $\eta>0$
 
 Every block threshold is the closed form $M_0=\max\bigl(2,\lfloor e^{c+C/s}\rfloor+1\bigr)$ in its
 slope $s$, offset $c$ and channel constant $C$, and the window exponent is $\delta=s/(4(W+1))$
-(`ExplicitBlockThresholdsOfTheCriticalFamily`). A numerical value of $M_0$ needs explicit bounds
-on the collar integrals $\int\lvert\psi'\rvert,\int\lvert\psi''\rvert$ of the smooth transition
-and on $\sum_r\Lambda(r)r^{-3/2}$, which enter $C$. The exact values of $\max R$ and $\min R$ on
-the cell, their locations, and the first couplings $\kappa(1),\kappa(2)$ decide the optimal
-negativity constant $-(4/\pi^4)\max R$ and its distance from the singleton mean $-\log2/390$.
-Whether $R$ is monotone on $[0,1/2]$ is open. The proved bound $R\le-1/7000$ suffices for every
-positivity theorem of §3; these are shape questions.
+(`ExplicitBlockThresholdsOfTheCriticalFamily`). In
+[ExplicitCollarThresholdsAndKernelShape](ExplicitCollarThresholdsAndKernelShape.lean), the
+collar integrals and kernel geometry are resolved in full:
+- **Collar and channel constants:** Explicit derivative bounds $0\le\sigma'\le4$ and
+  $\lvert\sigma''\rvert\le95$ on `Real.smoothTransition` (`deriv_smoothTransition_bounds`,
+  `abs_deriv_deriv_smoothTransition_le_ninetyFive`), exact mass conservation
+  $\mathrm{criticalCollarMass}+\int_{v>1}\lvert\varphi_e\rvert=1$ and
+  $\mathrm{criticalCollarMass}+\mathrm{criticalEndpointMass}=2$, and $\lvert\varphi_e'(1)\rvert=2$
+  give $\int_{v>1}\lvert\psi'\rvert\le17/4$, $\int_{v>1}\lvert\rho'\rvert\le9/2$,
+  $\int_{v>1}\lvert\psi''\rvert\le453/4$, $\int_1^2\lvert\varphi_e''\rvert\le119$, and
+  $\mathrm{criticalCollarCurvature},\mathrm{criticalEndpointCurvature}\le4$. Together with
+  $\sum_r\Lambda(r)r^{-3/2}\le18$ (`tsum_envelopePrimeMajorant_one_le`), this bounds all channel
+  constants (`criticalCollaredPrimeConstant ≤ 30000`, `criticalPrimeChannelConstant ≤ 61000`,
+  `criticalCompleteChannelConstant ≤ 125000`, `criticalCollaredChannelConstant ≤ 66000`), the
+  window exponent $10^{-21}\le\delta\le1$ (`criticalWindowExponent_bounds`), and all block and
+  window thresholds (`criticalBlockThreshold_bounds`, `criticalCollaredBlockThreshold_bounds`,
+  `criticalWindowThreshold_bounds`).
+- **Exact shape, extrema and couplings of $R$:** The band sine moments
+  $\mu_m=(2(1-\cos\frac{m\pi}6)-\frac{m\pi}6\sin\frac{m\pi}6)/m^3$ (`criticalBandSineMoment_eq`)
+  and the curvature constant $11/10000\le I_0\le 52/10000$ (`criticalKernelCurvatureConstant_bounds`)
+  drive a unified spectral perturbation bound (`abs_tsum_charge_band_integral_sub_le`), yielding
+  two-sided $1/k^2$ bounds on every scale coupling $\kappa(k)>0$ ($k\ge1$), explicit bounds
+  $1/50000\le\kappa(1)\le1/6000$ and $1/200000\le\kappa(2)\le1/24000$, and quadratic difference
+  bounds $(7/20000)((1/2-t_1)^2-(1/2-t_2)^2)\le R(t_1)-R(t_2)\le(56/20000)((1/2-t_1)^2-(1/2-t_2)^2)$
+  on $0\le t_1\le t_2\le 1/2$ (`factorialCriticalPrimeContinuousRealKernel_sub_bounds`). Hence $R$ is
+  strictly decreasing on $[0,1/2]$ and strictly increasing on $[1/2,1]$, with unique global minimum
+  $\min_{[0,1]}R=R(1/2)$ at $t=1/2$, global maxima $\max_{[0,1]}R=R(0)=R(1)$ at $t\in\{0,1\}$,
+  exact Rayleigh range $[(4/\pi^4)R(1/2),(4/\pi^4)R(0)]$, and explicit distances from $\kappa(0)$.
 
 ### 7.4 Dense windows
 

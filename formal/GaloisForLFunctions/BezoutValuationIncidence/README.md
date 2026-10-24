@@ -1132,7 +1132,11 @@ $M\le(B+1)N$ with $B$ fixed.
   The gcd parametrization $q=gb$, $r=ga$ turns the slope into the harmonic average
   $\frac6{\pi^2}\sum_{g\le t}S(\lfloor t/g\rfloor)/g$, and $S(X)=O(\log^{-4}X)$ because
   $\mu/\sigma$ restricted to integers prime to $\delta$ is a nonnegative convolution of $\mu/\mathrm{id}$
-  with Rankin mass $\ll\delta^{1/4}$ ([CoprimeMoebiusSigmaSumsDecay](CoprimeMoebiusSigmaSumsDecay.lean)).
+  with Rankin mass $\ll\delta^{1/4}$ ([CoprimeMoebiusSigmaSumsDecay](CoprimeMoebiusSigmaSumsDecay.lean));
+  splitting the harmonic fibres at any cutoff $J\ge 1$ with $2(J+1)\le t$ gives the explicit
+  three-term quantitative rate
+  $\lvert\gamma_t-\kappa\rvert\le C(J+1)^2/t+C(1+\log t)/(1+\log(J+1))^4+C/(1+\log(J+1))^2$
+  (`exists_abs_cofinalBandSlope_sub_cofinalMobiusSlope_le`).
   Equivalently the Buchstab band averages obey the sum rule $\sum_{b\ge1}A(b)/(b(b+1))=-\kappa$.
   Exact evaluation of the finite formula shows the slopes are not monotone
   ($\gamma_5=\frac{73}{90}\cdot\frac6{\pi^2}>\gamma_4=\frac34\cdot\frac6{\pi^2}$, so $P$ is not concave)
@@ -2010,18 +2014,44 @@ $\ell^2(\mathbb N)$ into $\ell^2_{\mathrm{pronic}}(\mathbb N)$
 
 ### 7.7 Observation constants
 
-The sharp observability horizon at arbitrary phase. $\Phi(N)$ is the shortest universal recurrence
-and an upper bound; $2N-3$ holds at common returns and for $N=3,4$ everywhere; and no linear
-horizon holds at arbitrary phase (§3.4). The alternating-grid witness needs $N$ factorial in
-$2^{m+1}$ to defeat $mN$, so it says nothing against horizons such as $N\log N$: the exact growth
-between superlinear and quadratic is open. The exact
-window sandwich constant in $[\Phi(N)-2,N(N-1)]$. Explicit stability constants for relation-spectrum
-recovery on windows at unknown phase, and the law for rows only approximately equal in degrees five
-and six. Explicit rates in the cofinal Möbius laws, which hold uniformly in the band ratio with
-limit $\kappa$ equal to the limiting period variance (§3.10), and a closed form for
-$\kappa\approx0.4407$; mixed-level covariances of centred pronic residue cells, which
-are positive when the cells share a factor and start together; the sign of a general signed prime
-packet in the energy-centred Gram.
+The exact arbitrary-phase observability horizon
+$L_{\mathrm{obs}}(N)=\inf\{L\mid\forall A,c,\ s_{N,c}=0\text{ on }[A,A+L)\implies c=0\text{ on }[1,N]\}$
+is attained at every $N$ and satisfies $L_{\mathrm{obs}}(N)\le\Phi(N)\le N(N+1)/2$
+(`arbitraryPhaseObservabilityHorizon_spec`), while $2N-3$ holds at common returns and for $N=3,4$
+everywhere. Replacing the factorial $(2^{m+1})!$ in the alternating-grid witness by
+$\operatorname{lcm}(1,\dots,2^{m+1}-1)$ proves $mN<L_{\mathrm{obs}}(N)$ whenever
+$(m+2)\operatorname{lcm}(1,\dots,2^{m+1}-1)(1+2^{m+1})\le N$ and hence $L_{\mathrm{obs}}(N)/N\to\infty$
+(`exists_zero_response_window_lcm`, `mul_lt_arbitraryPhaseObservabilityHorizon_of_lcm_le`,
+`tendsto_arbitraryPhaseObservabilityHorizon_div_atTop`); the exact growth between superlinear and
+$\Phi(N)$ remains open. The optimal window sandwich constant $S_{\mathrm{opt}}(N)$ satisfies
+$N^2/8+N-(N/2)H_N-2\le\Phi(N)-2\le S_{\mathrm{opt}}(N)\le N(N-1)$
+(`optimalWindowSandwichConstant_quadratic_brackets`), and the Montgomery–Vaughan cosecant bound
+halves the lag-covariance sandwich constant to $N(N-1)$ (`abs_windowLagCovariance_sub_le_mv`) and
+sharpens single-window Selberg energy recovery to
+$H_N^2N(N-1)V(c)/K\le(1+\log N)^2N(N-1)V(c)/K$ (`abs_lagSpectrumReadout_window_sub_le_mv`).
+For every odd mode $q\in[1,N]$, the zero-product $5$-tuple
+$(\zeta,\zeta,\zeta^{q-2},\zeta,\zeta^{-1})$ isolates $Y(q)^5$ in the degree-$5$ relation spectrum
+(`exists_zeroProductTuple_five_odd_pow`), and the identity
+$16(x^5-y^5)-(x-y)^5=5(x-y)(x+y)^2((x+y)^2+2(x-y)^2)$ gives unconditional fifth-root coordinate
+stability $\lvert Y_c(q)-Y_e(q)\rvert^5\le 16\,\|A_c-A_e\|_2$ directly from degree-$5$ relation
+spectra and polynomial windows at unknown phase (`abs_selbergMultiplesCoord_sub_pow_five_le_of_odd`,
+`abs_selbergMultiplesCoord_sub_pow_five_le_of_windows_five`), while rows with a unit top-order
+coordinate and degree-$5,6$ moments within $\delta^3$ agree within $2\delta$ in every coordinate
+and $2\Phi(N)\delta$ in every response value up to `companion N c`
+(`exists_self_or_companion_coord_and_response_error`). In the cofinal Möbius laws (§3.10),
+splitting the harmonic-fibre expansion of $\gamma_t$ at any cutoff $J\ge 1$ with $2(J+1)\le t$
+gives the explicit three-term quantitative rate
+$\lvert\gamma_t-\kappa\rvert\le C(J+1)^2/t+C(1+\log t)/(1+\log(J+1))^4+C/(1+\log(J+1))^2$
+(`exists_abs_cofinalBandSlope_sub_cofinalMobiusSlope_le`), while a closed form for
+$\kappa\approx0.4407$ remains open. Every shared-birth unit-gap cell covariance satisfies
+$0\le\mathrm{sharedBirthUnitGapCovariance}(g,l,\mathrm{offset})\le 2/(l+\mathrm{offset})$
+(`sharedBirthUnitGapCovariance_le_inv`), and because $L_N(N!,c)=0$ forces the von Mangoldt
+functional to vanish whenever $Q^{\mathrm{ec}}_N(c)=0$, the energy-centered pronic Gram
+$\mathcal G^{\mathrm{ec}}$ and the Vasyunin prime kernel $K(p,q)$ are **strictly positive definite**
+on every finite set of moduli $\ge 2$ (`sieveEnergyCenteredPronicGramForm_eq_zero_iff`,
+`sum_sum_mul_pmRamanujanEnergyCenteredGram_pos_iff`,
+`sum_sum_mul_vasyuninPrimeKernel_pos_iff`,
+`vonMangoldt_sum_sq_lt_sievePronicDiscrepancyGramForm_iff`).
 
 ### 7.8 Research topics
 
