@@ -895,13 +895,27 @@ To be built:
    controlled above `Θ − ½` (`admits_dampedBlockEnergy_of_zetaZeroAbscissa_sub_half_lt`) and on the
    Vinogradov–Korobov band (`exists_dampedBlockEnergy_le_on_vinogradovKorobovBand`,
    `eventually_dampedBlockEnergy_le_vk_saving`).
-5. **Which terms obstruct.** Express the work through the owned divisor, Vaughan and logarithmic
-   covariance identities and classify the terms whose negative part is not controlled uniformly in
-   the horizon. The Markov face says one such term is the jump energy of the arithmetic chain; the
-   window-mean form says the object is a smoothing of the source against itself. At the zero
-   anchor, the positive core grows on the prime-harmonic scale and requires compensating deviation.
-   On a positive interval the core is bounded by a zeta-log ratio, so the remaining target
-   is the deviation and its normalization. Keep these two parameter regimes distinct.
+5. **Which terms obstruct (Resolved: `ObstructingTermsAndRegimeClassification`).**
+   Twice the negative signed work `−2W_T(ε)` admits five exact decompositions:
+   `−2 workDeviation ε T − 2 workCore ε T` (`neg_two_mul_signedDampingWork_eq_deviation_sub_core`),
+   `dilationJumpEnergy ε T A_ε − dilationEdgeMass ε T A_ε − 2 polarDilationCorrection ε T`
+   (`neg_two_mul_signedDampingWork_eq_dilationJump_sub_edgeMass`),
+   `arithmeticDampingTotalJumpEnergy (arithmeticDampingCenteredMean ε) T + 2 dampedReadout ε Σ_n (n/(n+1)) arithmeticDampingCenteredMean ε n − arithmeticDampingBoundaryFlux (arithmeticDampingCenteredMean ε) T`
+   (`neg_two_mul_signedDampingWork_eq_markov`),
+   `−2(Σ_{j≤T} Λ(j)j^{−ε}⟪F_j A_ε, A_ε⟫_T + polarDilationCorrection ε T)`
+   (`neg_two_mul_signedDampingWork_eq_windowMean`), and the Möbius-factored tangent pairing
+   (`signedDampingWork_eq_moebiusDilation_pairing`). At the zero anchor `(0, ε]`, admission at `ε`
+   forces the integrated deviation to diverge to `−∞` across `(η, T)` to cancel the prime-harmonic
+   core (`exists_horizon_damping_integral_workDeviation_le`). On a compact positive interval
+   `[a, c]` (`0 < a ≤ c`), `0 ≤ ∫_a^c workCore ≤ log ζ(1+a) − log ζ(1+c)` uniformly in `T`
+   (`integral_workCore_bounds_on_positive_interval`), `|∫_a^c 2 workDeviation|` is uniformly bounded
+   when both endpoints are admitted (`exists_abs_integral_workDeviation_le_of_admits`), admission at
+   `a` is five-way equivalent to a horizon-uniform bound on the negative deviation, dilation
+   jump-minus-edge-mass, Markov jump-plus-forcing-minus-flux, or negative window-mean integral
+   (`obstructingTerms_positive_interval_tfae`), and all four hold unconditionally on `(Θ − ½, ∞)`
+   and on the Vinogradov–Korobov band
+   (`exists_obstructing_integrals_le_of_zetaZeroAbscissa_sub_half_lt`,
+   `exists_obstructing_integrals_le_on_vinogradovKorobovBand`).
 6. **Propagating the complementary-sector cancellation.** Turn the proved leading-order
    anti-alignment between a large-prime denominator sector and its literal complement into a
    quantitative residual surviving a second compatible scale transition, in the shape

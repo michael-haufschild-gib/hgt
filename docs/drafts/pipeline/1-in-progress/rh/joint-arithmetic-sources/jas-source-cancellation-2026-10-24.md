@@ -163,3 +163,65 @@ weaker theorem was substituted for the requested contribution. No closed paper
 proof exists to formalize. The current batch therefore establishes **no
 qualifying mathematical advance**. No Lean source was added, and no compilation
 or axiom audit is claimed. The full goal stays active.
+
+## Continuation after the complete Suzuki first variation
+
+The complete compact-source Suzuki first variation and its application to the
+APT critical family are certified separately in
+`../../../3-formalized/sz-complete-source-first-variation-assembly-2026-10-24.md`.
+They are established inputs, not new progress credited to this continuation.
+
+### Attempt: use APT positivity on the JAS Euler tests
+
+Read `CompactCriticalSourceWeilPositivity` and `JointAncestryWeilEulerBridge`
+at their literal definitions. The compact APT sources are collared combinations
+of factorial frequency differences in `v = exp(-x)`. The JAS source is the
+infinite Euler vector `m ↦ e_w(m) m^(-σ)` on the positive `P`-smooth integers,
+where `e_w(m) = ∏_{p∈P} w_p^(v_p(m))`. At the required level, `σ = 1`.
+
+Block positivity for the former does not identify the latter as a source in
+that block. Nor does it control the mixed terms of a proposed decomposition
+across blocks. APT's own receiver analysis identifies the growing `log M`
+archimedean gain as the reason its positive family does not yet pay the
+critical prime–polar estimate. No containment, complete-form approximation
+with a uniform lower bound, or mixed-term estimate was established here.
+Verdict: **existing positive family, unpaid transfer**.
+
+### Attempt: close the source recurrence by Selberg cancellation
+
+The search also found and the source inspection verified
+`criticalSecondGradeSignedRieszMass_eq_selbergPrefixDiscrepancy` and
+`tendsto_normalized_criticalSecondGradeSignedRieszMass` in
+`CCMFUSuzukiCriticalChordMeasure`. These already pair the second-grade
+`Λ * Λ` prefix with its exact polar counterterm
+`X (log X - 1 - 2γ)`, then transport the signed discrepancy by the square-root
+Riesz mesh. The normalized cancellation theorem is already available.
+
+This is not the shell functional `D(m,k)`: its arithmetic coefficient is
+`Λ * Λ`, whereas the JAS expression samples `lagPrimeSideExt` at products of
+shell primes after an order-`2k` integral. No identity or estimate transferring
+the existing normalized discrepancy to the required finite power window was
+found. In particular, fixed-grade relative cancellation does not establish
+the required estimate for powers growing with `m`.
+Verdict: **existing signed cancellation, unpaid uniform power window**.
+
+### Attempt: use positive finite prime covariance
+
+`RHTower.RoutePWindow.covariance_insert` in `RoutePFinitePrimeCovariance`
+gives an exact insertion rule for a sum of cofactor squares, with nonnegative
+occupation weights. Its finite-horizon comparison retains a product of causal
+recovery costs. Read the definition and insertion proof: they concern that
+square covariance, not the actual JAS Weil aggregate. Identifying the latter
+with this positive covariance would itself require the missing signed
+prime–Gamma–polar identity; no such identity was proved. This does not replace
+the conditional Toeplitz input recorded above.
+
+### Assessment
+
+This continuation produced no qualifying new mathematical theorem. It did
+not improve the JAS power budget or discharge its source sign. No Lean file,
+compilation, or axiom audit is claimed for this batch. No route is retired.
+Research stays directed at the literal signed arithmetic estimate, retaining
+the boundary terms, the linear term, and the mixed shifted terms of any
+attempted iteration. External novelty checks and numerical experiments were
+not run, as requested.

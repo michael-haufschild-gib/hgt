@@ -19,13 +19,6 @@ open RHTower.ArchimedeanAnomaly RHTower.ArchimedeanExactForm
 namespace RHTower
 noncomputable section
 
-private theorem exp_neg_half_log {n : ℕ} (hn : 1 ≤ n) :
-    Real.exp (-Real.log n / 2) = 1 / Real.sqrt n := by
-  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
-  rw [Real.sqrt_eq_rpow, one_div, ← Real.rpow_neg hn0.le, Real.rpow_def_of_pos hn0]
-  congr 1
-  ring
-
 private theorem completeWeil_eq_finite (f : C_c(ℝ, ℝ)) (hf : ContDiff ℝ 2 (f : ℝ → ℝ))
     {A : ℝ} (hcut : ∀ t : ℝ, A ≤ t → autocorr f t = 0) :
     (weilFullFunctional (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
@@ -60,7 +53,8 @@ private theorem completeWeil_eq_finite (f : C_c(ℝ, ℝ)) (hf : ContDiff ℝ 2 
     apply Finset.sum_congr rfl
     intro n hn
     have hn2 := (Finset.mem_Icc.mp hn).1
-    rw [primeTerm, if_pos hn2, primeWeight, exp_neg_half_log (by omega : 1 ≤ n)]
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
+    rw [primeTerm, if_pos hn2, primeWeight, exp_neg_half_log hn0]
     ring
   have hpolar : (∫ t in Ici (0 : ℝ), polarDensity t * autocorr f t) =
       2 * ∫ t in Ioi 0, autocorr f t * Real.cosh (t / 2) := by
@@ -99,3 +93,61 @@ theorem tendsto_suzukiCriticalSourcePairing_firstVariation_of_contDiff {f : ℝ 
 
 end
 end RHTower
+
+#print axioms RHTower.suzukiCriticalPrimaryDensity
+#print axioms RHTower.suzukiCriticalPrimaryMass
+#print axioms RHTower.suzukiCriticalPrimaryScale
+#print axioms RHTower.measurable_suzukiCriticalPrimaryDensity
+#print axioms RHTower.suzukiCriticalPrimaryDensity_eq
+#print axioms RHTower.suzukiCriticalPrimaryDensity_pos
+#print axioms RHTower.suzukiCriticalPrimaryDensity_div_eq
+#print axioms RHTower.suzukiCriticalPrimaryDensity_div_le
+#print axioms RHTower.integrableOn_suzukiCriticalPrimaryDensity
+#print axioms RHTower.integral_suzukiCriticalPrimaryDensity
+#print axioms RHTower.continuousAt_suzukiCriticalPrimaryScale
+#print axioms RHTower.tendsto_suzukiCriticalPrimaryScale
+#print axioms RHTower.continuousAt_suzukiCriticalPrimaryMass
+#print axioms RHTower.tendsto_suzukiCriticalPrimaryMass
+#print axioms RHTower.hasDerivAt_suzukiCriticalPrimaryMass
+#print axioms RHTower.tendsto_suzukiCriticalPrimaryMass_secant
+#print axioms RHTower.tendsto_suzukiCriticalPrimaryDensity_div
+#print axioms RHTower.tendsto_integral_compensated_suzukiCriticalPrimaryDensity
+#print axioms RHTower.tendsto_suzukiCriticalPrimaryPairing_firstVariation
+#print axioms RHTower.suzukiCriticalPrimaryCusp
+#print axioms RHTower.measurable_suzukiCriticalPrimaryCusp
+#print axioms RHTower.suzukiCriticalPrimaryDensity_le_levy
+#print axioms RHTower.integrableOn_suzukiCriticalPrimaryCusp_integrand
+#print axioms RHTower.abs_suzukiCriticalPrimaryCusp_le
+#print axioms RHTower.suzukiCriticalPrimaryCusp_sub_mass_sq_le
+#print axioms RHTower.suzukiCriticalPrimaryCuspError
+#print axioms RHTower.abs_suzukiCriticalPrimaryCusp_sub_le
+#print axioms RHTower.tendsto_suzukiCriticalPrimaryCuspError
+#print axioms RHTower.tendstoUniformly_suzukiCriticalPrimaryCusp
+#print axioms RHTower.tendsto_suzukiCriticalPrimaryCusp_firstVariation
+#print axioms RHTower.suzukiCriticalPoleDensity
+#print axioms RHTower.suzukiCriticalSourceDensity
+#print axioms RHTower.ofReal_suzukiCriticalPrimaryDensity
+#print axioms RHTower.ofReal_suzukiCriticalPoleDensity
+#print axioms RHTower.suzukiCriticalSourceDensity_eq
+#print axioms RHTower.suzukiCriticalPoleCusp
+#print axioms RHTower.suzukiCriticalSourceCusp
+#print axioms RHTower.integrableOn_suzukiCriticalPoleCusp_integrand
+#print axioms RHTower.suzukiCriticalPoleCusp_eq_integral_primaryCusp
+#print axioms RHTower.suzukiCriticalSourceCusp_eq
+#print axioms RHTower.tendsto_suzukiCriticalPoleCusp
+#print axioms RHTower.exists_pos_autocorr_cutoff
+#print axioms RHTower.integrableOn_suzukiCriticalSourceCusp_integrand
+#print axioms RHTower.tendsto_suzukiCriticalSourceCusp
+#print axioms RHTower.tendsto_suzukiCriticalSourceCusp_firstVariation
+#print axioms RHTower.suzukiCriticalWeil_normalization
+#print axioms RHTower.suzukiCriticalSourcePairing
+#print axioms RHTower.exists_suzukiCriticalCorrelation_cutoff
+#print axioms RHTower.integrableOn_suzukiCriticalSourcePairing
+#print axioms RHTower.suzukiCriticalSourcePairing_eq_finite
+#print axioms RHTower.tendsto_suzukiCriticalSourcePairing_firstVariation_finite
+#print axioms RHTower.suzukiCriticalCuspRadius
+#print axioms RHTower.abs_suzukiCriticalPoleCusp_le
+#print axioms RHTower.abs_suzukiCriticalSourceCusp_sub_mass_le
+#print axioms RHTower.abs_suzukiCriticalSourcePairing_sub_mass_le
+#print axioms RHTower.tendsto_suzukiCriticalSourcePairing_firstVariation
+#print axioms RHTower.tendsto_suzukiCriticalSourcePairing_firstVariation_of_contDiff

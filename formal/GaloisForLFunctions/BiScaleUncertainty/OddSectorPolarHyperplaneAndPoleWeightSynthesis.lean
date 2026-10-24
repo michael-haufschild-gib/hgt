@@ -251,9 +251,10 @@ theorem integral_sinhMultiplier_half_eq_zero (f : RealOddPolarTestFn) :
 has zero total autocorrelation mass. -/
 theorem integral_autocorr_sinhMultiplier_half_eq_zero (f : RealOddPolarTestFn) :
     (∫ x : ℝ, autocorr (sinhMultiplier (1 / 2) f.source) x) = 0 := by
+  unfold source
   rw [integral_autocorr_sinhMultiplier_half_eq_sq
     f.1.contDiff_source.continuous f.1.hasCompactSupport_source,
-    f.integral_source_mul_sinh_eq_zero, sq, zero_mul]
+    f.2, sq, zero_mul]
 
 /-- **Vanishing Pole Term on `RealOddPolarTestFn`:**
 For every `f : RealOddPolarTestFn`, `(weilPoleTerm (weilTest f f)).re = 0`. -/
@@ -321,7 +322,6 @@ theorem unconditional_dyadic_signed_weilArchRe_lower_bound
   have h0 := f.1.unconditional_dyadic_signed_poleWeightArchRe_zero_lower_bound M
   have hp0 := f.1.poleWeightArchRe_zero_eq_gamma_add_biScaleLevyEnergy
   have hp1 := f.weilArchRe_eq_gamma_add_biScaleLevyEnergy
-  change biScaleLevyEnergy f.1.source = _ at *
   unfold source at hp1
   linarith only [h0, hp0, hp1]
 
@@ -516,7 +516,7 @@ then its $\sinh(u/2)$ moment vanishes. -/
 theorem integral_sinh_half_eq_zero_of_odd_of_paperFT_I_div_two_eq_zero
     {f : ℝ → ℝ} (hf : Continuous f) (hfc : HasCompactSupport f)
     (hodd : ∀ u : ℝ, f (-u) = -f u)
-    (hp : EF.paperFT (fun u => (f u : ℂ)) (I / 2) = 0) :
+    (hp : Zeta23.paperFT (fun u => (f u : ℂ)) (I / 2) = 0) :
     (∫ u : ℝ, f u * Real.sinh (u / 2)) = 0 := by
   have hexp : (∫ u : ℝ, f u * Real.exp (-u / 2)) = 0 := by
     have h1 := _root_.RHTower.paperFT_ofRealFun_I_div_two f
@@ -591,7 +591,7 @@ theorem not_realOddPolarWeilPositive_vonMangoldt_of_not_riemannHypothesis
   change (weilFullFunctional (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
       (EF.weilTest F.1.1.1.1 F.1.1.1.1)).re +
     (1 - 1) * (weilPoleTerm (EF.weilTest F.1.1.1.1 F.1.1.1.1)).re =
-    ( _root_.RHTower.zetaZeroConfig.W (fun x => (f x : ℂ)) (fun x => (f x : ℂ))).re at hval
+    (Zeta23.zetaZeroConfig.W (fun x => (f x : ℂ)) (fun x => (f x : ℂ))).re at hval
   linarith only [hF, hval, hneg]
 
 /-- **Exact Odd-Polar RH Equivalence (Zero Sinh-Moment Cost):**

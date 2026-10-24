@@ -12,7 +12,8 @@ WL still requires an arithmetic one-sided critical bound at every positive expon
 This paper theorem concerns the analytic source domain, not that missing sign. It makes the
 literal critical source available on the closed energy domain without a smoothness premise,
 and would identify exactly what happens to sequences whose energy escapes to infinity.
-The compact C² parent theorem must first be completed in Lean, including its arithmetic terms.
+The compact C² parent theorem is now certified, including its literal arithmetic terms:
+`../3-formalized/sz-critical-source-first-variation-2026-10-18.md`.
 
 ## Exact statement
 
@@ -30,6 +31,8 @@ The limit as `w -> 0+` is
 
 Only `J` may be infinite. All other terms are finite; no subtraction of infinities occurs.
 This is not an assertion that the finite limit is nonnegative.
+The extended complete Weil energy here means this physical prime–Gamma–polar
+expression. At infinite energy it is not a totalized real or complex Bochner integral.
 
 ## Attack and proof — [PROVED HERE]
 
@@ -113,11 +116,97 @@ application is `D(t)=C(0)-C(t)`, bounded between zero and `2C(0)` by the L² cor
 - Keep the ordinary finite-energy and infinite-energy branches separate in Lean so that the
   totalized real Bochner integral cannot silently turn an infinite energy into zero.
 
-The paper proof is complete. Lean formalization remains pending. The compact C² parent
-provides the currently compiled archimedean leaves; its arithmetic assembly is shared work.
+The paper proof is complete. `SuzukiCriticalExtendedEnergy.lean` passes its direct source
+check. Its theorem `tendsto_suzukiCriticalCompensatedEnergy` proves the bounded-profile
+limit in `ENNReal`, including the infinite-energy branch, without a finite-energy premise.
+`SuzukiCriticalL2Energy.lean` also compiles. Its capstone
+`tendsto_suzukiCriticalCompensatedEnergy_autocorr` discharges all profile conditions
+for every real L² source, without compact support, smoothness, or finite energy.
+Public-declaration axiom audits are in progress. The complete compact C² parent is
+certified in stage 3; the full compact-L² extension remains unfinished in Lean.
+
+`SuzukiCriticalL2Cusp.lean` now also compiles. Its theorem
+`tendstoUniformly_suzukiCriticalPrimaryCusp_of_memLp` proves the weak primary limit
+uniformly over every real translation for every real L² source. Its stability
+estimate `abs_suzukiCriticalPrimaryCusp_sub_le_L2_norms` pays all translations by
+one Hilbert-space approximation error. These three new leaves are wired into the
+umbrella; no umbrella compilation was run. The signed pole, extended-real
+quotient, and complete arithmetic assembly remain the active Lean obligations.
+
+For the L² specialization, let `q` be the source's Hilbert-space class and `T_t` the
+measure-preserving translation isometry. Almost-everywhere representative invariance gives
+`C_f(t)=<q,T_t q>`. Strong continuity of `T_t` proves continuity of `C_f`; Cauchy–Schwarz
+and `||T_t q||=||q||` give `|C_f(t)|<=||q||²=C_f(0)`. Thus `D=C_f(0)-C_f` satisfies all
+three profile conditions above for every real L² source, without compact support.
+The same calculation gives the uniform stability estimate
+`|C_q(t)-C_r(t)| <= (||q||+||r||)||q-r||`, by splitting the difference as
+`<q-r,T_t q>+<r,T_t(q-r)>`. This supplies an alternative smooth-density proof of the
+primary weak limit, with no limiting-energy assumption.
+
+For completeness, that density passage is quantitative. Write
+`E(q,r)=(||q||+||r||)||q-r||`. Positive primary mass gives, for every cusp location,
+`|primaryCusp(q,w,u)-primaryCusp(r,w,u)| <= M_w E(q,r)`.
+Given `epsilon>0`, smooth compact L² density supplies a class `r` with
+`||q-r|| < min(1,epsilon/(6(2||q||+1)))`. The triangle inequality gives
+`||r||<=||q||+||q-r||`, hence `E(q,r)<epsilon/6`. A smooth compact representative of
+`r` has uniform primary cusp error less than `epsilon/3` for all sufficiently small
+positive shifts, by the parent theorem. Also `M_w<2` eventually. Adding the two
+correlation errors and the cusp error bounds the total uniformly by
+`2E(q,r)+epsilon/3+E(q,r)<epsilon`. This proves the primary cusp convergence for
+every real L² source, even without compact support or finite limiting energy.
+
+## Pointwise pole limit without a second compact Fubini proof
+
+The corpus also supplies `CHMDDoobGraph.integrable_archLevy_firstMoment` and
+`archLevy_firstMoment_le`. Its density is half of `w_arch`; hence
+`integral_0^infinity t*w_arch(t)` is finite. Apply the primary compensated limit
+with `D(t)=t` on the positive ray. Multiplying its finite limit by `w` proves
+`L_w=integral_0^infinity t*B_w(t) -> 0`. The bound
+`B_w(t)<=w*a_w*w_arch(t)` also proves ordinary absolute integrability of this
+first moment for every sufficiently small positive shift.
+
+Fix `t>0` and `0<w<=1/2`, and set `a=1/2-w`. On `r>0`, define
+`v_(w,t)(r)=exp(-a*r)` for `r<t`, and zero otherwise. Then
+`0<=v<=1` and `0<=1-v<=(1+1/t)r`: on `r<t`, use
+`exp(-ar)>=1-ar` and `a<=1`; on `r>=t`, use `1<=r/t`.
+The literal pole satisfies
+`Q_w(t)=exp(a*t)*integral_0^infinity B_w(r)*v_(w,t)(r) dr`.
+Consequently
+
+`0 <= M_w-exp(-a*t)Q_w(t) <= (1+1/t)L_w`,
+`0 <= Q_w(t) <= M_w exp(t/2)`.
+
+Since `M_w->1` and `L_w->0`, this proves `Q_w(t)->exp(t/2)` for every `t>0`.
+Measurability follows by writing its defining triangle integral as a measurable
+indicator on `(t,r)`. For a compact L² autocorrelation, the bound `|C|<=R`,
+its support cutoff, and eventually `M_w<=2` give the integrable majorant
+`2R exp(A/2)` on `(0,A)`. Dominated convergence therefore proves the full pole
+pairing limit on this source domain. The same bound supplies its absolute
+integrability at every small shift. This alternative preserves the growing
+pole and avoids extending the earlier private convolution lemmas.
 
 ## Gates
 
 - [x] Precise source-domain conjecture and attack mechanism.
 - [x] Dependency-closed paper proof with the L² and extended-limit dependencies checked.
 - [ ] Canonical Lean check and public-declaration axiom audit.
+
+## Lean checkpoint
+
+- Compiled canonical leaves: `SuzukiCriticalExtendedEnergy` (3 public declarations),
+  `SuzukiCriticalL2Energy` (8), `SuzukiCriticalL2Cusp` (5). Their dependency oleans
+  were created for actual downstream imports. Do not rebuild existing oleans.
+- The first 11 declarations' `#print axioms` outputs contain only `propext`,
+  `Classical.choice`, and `Quot.sound`; the combined final clean audit remains pending.
+- `/tmp/sz-critical-ereal-api.lean` proves the actual L² primary quotient in `EReal`
+  and audits the five cusp declarations. Its first check is active.
+- `/tmp/sz-critical-pole-moment-api.lean` contains the full first-moment, pole
+  measurability, pointwise bound, and pole-limit proof draft; not checked yet.
+- `/tmp/sz-critical-l2-pole-api.lean` contains compact L² pole testing, signed cusp
+  convergence, and extended signed cusp variation; its planned imports are
+  `SuzukiCriticalPolePointwise` and `SuzukiCriticalL2PrimaryVariation`, not yet created.
+- Remaining: check and canonicalize these drafts, extend the exact finite arithmetic
+  assembly to L² sources, identify the compensated energy with the existing
+  `ArithmeticPositivityTheory.sourceLevyEnergy` plus its finite exponential correction,
+  and finish one dependency-closed canonical audit. The parent compact-C² card is
+  already certified in stage 3 by shared work; preserve its completed leaves.

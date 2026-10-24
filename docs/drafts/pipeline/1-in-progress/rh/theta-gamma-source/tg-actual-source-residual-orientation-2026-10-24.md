@@ -343,6 +343,104 @@ lemma, or a per-prime constant improvement as the next significant TG step.
 The next loop must use the complete signed source to prove joint payment or
 construct the actual residual transgression. C1 and C4 remain the open cores.
 
+## Further conjectures: Gaussian correlation and finite Euler deletion
+
+### C5 — Gaussian divisibility correlation
+
+For `sigma>0` and `y>0`, put
+`Z_sigma(y)=sum_(n>=1) n^(-sigma) exp(-y n^2)`. The candidate
+
+```
+Z_sigma(y) Z_sigma(a^2 b^2 y)
+  <= Z_sigma(a^2 y) Z_sigma(b^2 y),  a,b>=1,
+```
+
+would give nonpositive covariance of the two divisibility indicators for
+coprime natural `a,b` under the literal normalized Gaussian integer measure.
+Indeed the masses of the divisibility events are
+`a^(-sigma) Z_sigma(a^2 y)/Z_sigma(y)` and the corresponding expressions
+for `b` and `ab`. No independence assumption is used in this calculation.
+
+A sufficient assertion is concavity of `t -> log Z_sigma(exp t)`.
+Differentiating the absolutely convergent Gaussian series shows that its
+second derivative is
+
+```
+y^2 Var_y(n^2) - y E_y(n^2).
+```
+
+The different theta kernel cannot be substituted directly. A positive
+integral representation now supplies the missing mathematical connection:
+with `alpha=sigma/2`,
+
+```
+Z_sigma(pi exp(2t)) = pi^alpha/Gamma(alpha+1) exp((sigma-1/2)t)
+  * integral_0^infinity K_sigma(w) Theta(t+w) dw,
+K_sigma(w) = exp(w/2) integral_0^w (exp(2r)-1)^alpha exp(-r) dr.
+```
+
+The causal kernel is a convolution of two functions satisfying the
+multiplicative four-point inequality. The exponential-increment factor
+has four-point difference
+`exp(2x)(exp(2a)-1)(exp(2b)-1)>=0`. Integral composition preserves the
+inequality by the two-by-two determinant identity. The actual theta
+log-concavity therefore proves C5 for every `sigma>=0`.
+
+The dependency-closed paper proof is in
+`2-fully-proven/gaussian-integer-divisibility-negative-correlation.md`;
+formalization is in progress. No Lean certificate for C5 is claimed yet.
+
+**[OPEN CORE]:** transfer from this proved real Gaussian covariance sign
+to the complete prime--Gamma--polar residual. Nonpositive coprime
+covariances do not by themselves dominate an arbitrary signed matrix,
+or preserve the sign under all Euler deletions. C1--C4 remain open.
+No C5 or TG sign assumption has been added to Lean.
+
+### C6 — the exact positive measures left by finite Euler deletion
+
+Let `Q` be squarefree, with selected prime set `S`. The same finite Euler
+inverse used in C3 has the exact representation
+
+```
+R_Q(y) = sum_(n>=1) b_Q(n) f_y(n)
+           - integral_1^infinity H_Q(x) f_y(x) dx,
+H_Q(x) = sum_(m<=x, gcd(m,Q)=1) 1/m,
+b_Q(n) = sum_(d|gcd(n,Q)) mu(d) log(n/d).
+```
+
+Both measures in this difference are nonnegative. More precisely, if
+`J={p in S : p divides n}`, then
+
+```
+b_Q(n) = log n,    if J is empty;
+b_Q(n) = log p,    if J={p};
+b_Q(n) = 0,        if card J>=2.
+```
+
+**Paper proof.** For the continuum, change variables in each of the
+finitely many dilation integrals. Its density becomes
+`sum_(d|Q,d<=x) mu(d) H_floor(x/d)/d`. Writing `m=dk` gives
+`sum_(m<=x) (1/m) sum_(d|gcd(m,Q)) mu(d)`, which is `H_Q(x)`.
+For the atoms the same reindexing gives the displayed definition of
+`b_Q`. Expand `log(n/d)=log n-sum_(p|d) log p`. The coefficient of
+`log n` is `(1-1)^(card J)`; the coefficient attached to each fixed
+`p in J` is `(1-1)^(card J-1)`. This gives all three cases, including
+the empty set separately. Fixed positive `y` supplies the Gaussian
+absolute convergence already justified above.
+
+This isolates actual joint divisibility incidence, rather than replacing
+the source by independent prime variables. It does **not** compare the
+atomic and continuous measures. A pointwise comparison of their cumulative
+masses cannot be assumed: when `Q` contains every prime at most `x`, that
+comparison is exactly the sign of `psi(x)-x+1`.
+
+**Next exact conjecture:** compare the displayed atomic and continuous
+measures on the Gaussian tests themselves, uniformly over the selected
+prime set. A proof must use their common integer source and keep the
+one-selected-prime atoms; discarding them changes `R_Q`. C6 is a proved
+paper identity, not a qualifying TG sign discharge. It is not promoted to
+a formalized card or a new positivity criterion.
+
 ## Log
 
 - 2026-10-24 — Read attached task and TG ledger; inspected actual source

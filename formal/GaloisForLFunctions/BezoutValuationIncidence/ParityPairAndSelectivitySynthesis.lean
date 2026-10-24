@@ -126,8 +126,8 @@ theorem parityPair_finiteRamanujanRow_completePeriod_and_diagGram_eq
       sieveVarianceAboveParity N c₂ = sieveVarianceAboveParity N c₁ ∧
       (∀ h : ℕ, TwoLagSieve.periodCovariance N c₂ h = TwoLagSieve.periodCovariance N c₁ h) ∧
       (∀ H : Finset ℕ, tupleVariance N c₂ H = tupleVariance N c₁ H) ∧
-      (∑ e ∈ Icc 2 N, (selbergMultiplesCoord N c₂ e) ^ 2 * pmRamanujanGram e e =
-        ∑ e ∈ Icc 2 N, (selbergMultiplesCoord N c₁ e) ^ 2 * pmRamanujanGram e e) ∧
+      (∑ e ∈ Icc 2 N, (selbergMultiplesCoord N c₂ e) ^ 2 * pmRamanujanPrimitiveGram e e =
+        ∑ e ∈ Icc 2 N, (selbergMultiplesCoord N c₁ e) ^ 2 * pmRamanujanPrimitiveGram e e) ∧
       (∑ e ∈ Icc 2 N, (selbergMultiplesCoord N c₂ e) ^ 2 * pmRamanujanEnergyCenteredGram e e =
         ∑ e ∈ Icc 2 N, (selbergMultiplesCoord N c₁ e) ^ 2 * pmRamanujanEnergyCenteredGram e e) ∧
       (∑ e ∈ Icc 2 N, (selbergMultiplesCoord N c₂ e) ^ 2 * pmRamanujanMeanCenteredGram e e =
@@ -496,20 +496,6 @@ theorem shiftedPair_and_vkBand_selectivity :
     weilPositiveDegree_two_shiftedPairVonMangoldt_iff,
     fun _ _ hε => not_ramanujan_shiftedPairCoeff hε,
     tendsto_vkScale_div_sqrt_log_atTop⟩
-
-#print axioms parityPair_finiteRamanujanRow_completePeriod_and_diagGram_eq
-#print axioms vonMangoldt_mul_weightRamanujanCoeff_parityTwin
-#print axioms vonMangoldtReadout_parityPair_finiteRamanujanRow_eq_neg
-#print axioms vonMangoldtReadout_parityPair_finiteRamanujanRow_opposite_signs
-#print axioms criticalMass_le_of_pos
-#print axioms exists_receiver_le_on_vinogradovKorobovBand_of_primes_neg_one_of_pos
-#print axioms prime_sign_dichotomy_on_vinogradovKorobovBand_of_pos
-#print axioms shiftedPairVonMangoldt_sub_two_mul_eq_sq
-#print axioms two_mul_vonMangoldt_lt_shiftedPairVonMangoldt_of_isPrimePow
-#print axioms shiftedPairReadout_sub_two_mul_vonMangoldtReadout
-#print axioms shiftedPairReadout_eq_two_mul_iff_eq_zero
-#print axioms tendsto_vkScale_div_sqrt_log_atTop
-#print axioms shiftedPair_and_vkBand_selectivity
 
 end
 

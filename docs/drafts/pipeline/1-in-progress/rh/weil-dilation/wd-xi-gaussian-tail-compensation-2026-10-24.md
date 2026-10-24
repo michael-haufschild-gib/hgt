@@ -62,7 +62,7 @@ capstones passed `#print axioms`: only `propext`, `Classical.choice`,
 `Quot.sound`. A final named check without output files remains before
 advancing the card.
 
-### C2. A rescaled far tail is an actual Gaussian limit — paper argument
+### C2. A rescaled far tail is an actual Gaussian limit — Lean verified
 
 Take `H` to contain the zeros within distance `R` of the ordinate. Seek
 `B_H/A_H^2 -> 0` and `C_H/A_H -> 1`, using actual zero counting and the
@@ -96,6 +96,12 @@ The corpus theorem `eventually_card_xiCopiesBand_mul_two_lower` supplies the
 dyadic multiplicity count directly. The Lean construction uses the exact
 distance head and the symmetric band `(2R,4R]`, keeping the fourth-moment
 bound `25/R` after normalization.
+
+**Lean.** `RHTower/XiSliceGaussianTailLimit.lean` builds successfully. Its
+capstone `tendstoUniformlyOn_xiSliceGaussianNormalizedTail t M` has no
+analytic or zero-location premises: it applies to every real center and
+every fixed complex closed ball. Axiom audit and final named no-output
+check remain in the verification batch.
 
 ### C3. Multiplicative compensation removes the total-mass exponential — paper proof
 
@@ -193,6 +199,85 @@ and moving-height fourth moments, rather than repackage that cone criterion.
 
 ## Verification obligations
 
+### C5. Source mass at the scale needed for moving coefficient orders — paper proof
+
+The crude upper bound in C4 gives `A <= D log t`; this does not control the
+coefficient order `k` proportional to the Gaussian mass. Refine the source
+bound by summing actual zero-window counts from the cutoff onward.
+
+For an integer `N>=2`, the corpus window bound is
+`# {q : k<=|t-Im rho_q|<k+1} <= 80 log(180(t+k+1))+K0`.
+The logarithm is at most `6 log t+log(k+2)`. Telescoping gives
+
+```
+sum_{k>=N} k^-2 <= 1/(N-1),
+sum_{k>=N} (k sqrt k)^-1 <= 2/sqrt(N-1),
+log(k+2) <= 2 sqrt k+3.
+```
+
+Thus the actual reciprocal-square mass over those windows is at most
+`(480 log t+240+K0)/(N-1)+320/sqrt(N-1)`. If the spectral distance exceeds
+`R>=2N`, its ordinate distance exceeds `N`: otherwise the strip bound
+would give squared spectral distance at most `N^2+1/4 < 4N^2`. Consequently
+this bounds the full distance tail. Taking `N=floor(R/2)` yields
+`A_R(t)=O(log(t)/R+R^(-1/2))` for `R>=8`.
+
+At `t=exp(u^4)`, `R=u^3`, C4 and this upper bound give `A` bounded above
+and below by positive multiples of `u`; also `B<=A/R^2=O(u^-5)`.
+In particular `B*A^(3/2)->0`. That rate is relevant to coefficient sign:
+at the Gaussian saddle a Cauchy error pays `sqrt(A)`, while the negative
+quartic model coefficient has relative size `1/A`. The source rate can
+pay their product. A complete heat-integral and finite-block transfer is
+still open; this observation is not yet such a transfer theorem.
+
+**Status:** dependency-closed paper proof of the moment estimate above;
+Lean implementation pending. The coefficient-transfer discussion identifies
+the next conjecture, not an established sign.
+
+### C6. Expanding-disc Gaussian approximation — paper proof
+
+With the same moving height and cutoff, write `a_u=Re C_R(t)` and
+`T_u(z)=product_tail(1+z^2 b_q)`. C3 and C5 prove, for each fixed `M`,
+
+```
+sup_{|z|<=M} |exp(-a_u (u z)^2) T_u(u z)-1|
+ <= exp(M^4 D/u)-1 -> 0,
+a_u -> infinity.
+```
+
+Indeed `|uz|<=u^3` eventually, `B<=D/u^5`, and the quadratic coefficient
+is exactly real by reflection. Its positive growth follows from
+`a_u=A_u-transverse_u`, `A_u>=u/(100 pi)`, and
+`0<=transverse_u<=B_u/2`. This upgrades fixed-disc convergence to physical
+discs with unbounded radius; no sign of the finite complementary block is
+asserted. Lean draft added to `/tmp/wd_gaussian_dense_limit.lean`.
+
+### C7. Global real-axis Gaussian bracketing — next exact statement
+
+The fixed-disc error is insufficient by itself for a Gaussian heat integral
+over the whole real axis. A stronger, one-sided factor estimate survives:
+for a distance cutoff `R>=4`, real `x`, and `a=Re C_R(t)`,
+
+```
+exp(a*x^2-B_R*x^4) <= |T_R(x)| <= exp(a*x^2).
+```
+
+**Paper proof.** The strip and distance cutoff put each reciprocal `b` in
+the cone `Re b >= 3|b|/4`. For `v=x^2 b`, write `r=Re v>=0`.
+Then `|v|^2 <= 2r^2`, so
+`|1+v|^2=1+2r+|v|^2 <= 1+2r+2r^2 <= exp(2r)`.
+For the reverse bound,
+`log|1+v| >= log(1+r) >= r-r^2 >= r-|v|^2`.
+Exponentiate, multiply over finite tail sets, and pass to the absolutely
+convergent product and sums. This proves both bounds, even without invoking
+the reflection reality of the product. The required scalar exponential and
+logarithm inequalities already exist in the corpus.
+
+This is a global real-axis domination by the exact oriented coefficient,
+not the absolute mass. It can pay heat-integrability and real-axis error
+terms. A full coefficient-sign transfer and finite-block absorption remain
+separate open work. Lean implementation not started.
+
 Direct leaf checks only; no umbrella build. Audit transitive axioms, wire the
 completed modules, remove owned scratch files. No web, novelty audit, numerical
 experiment, unproved analytic premise, or raised Lean limit.
@@ -202,12 +287,22 @@ experiment, unproved analytic premise, or raised Lean limit.
 - Gaussian model completed separately in
   `docs/drafts/pipeline/3-formalized/wd-gaussian-background-heat-law.md`.
 - C1 production module and umbrella import exist; olean built for the next module.
-- C2 full proof draft: `/tmp/wd_gaussian_tail_limit.lean`; first check found
-  elaboration/coercion issues, now corrected for the next check. Intended
-  production name: `RHTower/XiSliceGaussianTailLimit.lean`.
-- C3 genus-one compensation proof draft:
-  `/tmp/wd_gaussian_multiplicative_compensation.lean`; explicit finite-product
-  and finite-sum `Tendsto` types replace ambiguous `HasProd`/`HasSum` methods.
-- C4 actual logarithmic moment-bound draft: `/tmp/wd_gaussian_tail_height.lean`.
-  Not checked yet. Exact real orientation and growing-height lower mass are
-  paper-proved above and still require Lean implementation.
+- C2 production module `RHTower/XiSliceGaussianTailLimit.lean` is built and
+  wired. Its unused terminal `ring` was removed afterward; no declaration
+  or executed proof step changed. Do not rebuild its existing olean.
+- C3 production module `RHTower/XiSliceGaussianTailCompensation.lean`
+  passed its named no-output check and its olean build for the growing-height
+  assembly. Both compensation capstones passed their axiom checks; the exact
+  real-orientation capstone remains in the final audit batch.
+- C2 capstone axiom audits passed: standard three axioms only.
+- C4 production module `RHTower/XiSliceGaussianTailHeightBounds.lean`
+  passed its named no-output check and its olean build for the growing-height
+  assembly. Umbrella import added. Capstone axiom audit remains.
+- The growing Gaussian assembly is implemented in
+  `/tmp/wd_gaussian_dense_limit.lean`, not checked yet. It imports C3 and C4,
+  so their oleans may be built once when ready. Its capstones assert a real
+  coefficient tending to infinity and uniform relative Gaussian convergence
+  on every fixed physical disc.
+- C5 window summation and continuous-cutoff estimate are undergoing their
+  first check in `/tmp/wd_gaussian_tail_windows.lean`. Intended production
+  name: `RHTower/XiSliceGaussianTailWindowBounds.lean`.

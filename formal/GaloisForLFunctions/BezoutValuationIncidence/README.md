@@ -1245,7 +1245,11 @@ rising-factorial pronic weights $u_i(A)=(i+1)!/(A(A+1)\cdots(A+i+1))$, which sat
 $u_i-u_i(\cdot+1)=u_{i+1}$, with error $2^L(L+1)!\sum\lvert c\rvert d^{L+1}\sum\lvert c'\rvert/n^{L+2}$. The
 cosine form of $\Phi_d$ makes the kernel finite,
 $\mathfrak B(d,n)=\frac{\pi^2}4\sum_{k=1}^{d-1}B_2(k/d)/\sin^2(\pi k\bar n/d)$ for $n\bar n\equiv1\ (d)$
-(`bernoulliKernel_eq_reciprocity`): beyond rank two, $\sum a_pb_q\mathcal G^{\mathrm{ec}}(p,q)$ is a bilinear
+(`bernoulliKernel_eq_reciprocity`), and witness-free through the explicit Euler–Fermat modular
+inverses $\bar n=n^{\varphi(d)-1}\bmod d$ and $n^{p-2}\bmod p$
+(`bernoulliKernel_eq_reciprocity_totient`, `bernoulliKernel_eq_reciprocity_fermat`,
+`abs_pmRamanujanEnergyCenteredGram_sub_reciprocity_fermat_le`): beyond rank two,
+$\sum a_pb_q\mathcal G^{\mathrm{ec}}(p,q)$ is a bilinear
 form in the Kloosterman fractions $k\bar q/p$ with cosecant–Bernoulli weights, the reciprocity
 $\{N/pq\}\leftrightarrow\bar p/q+\bar q/p$ at second order. The second-order coupling oscillates in sign
 with $q\bmod p$ at amplitude $\asymp p^2/q$, positive near residue $0$ and negative near $p/2$; its sharp
@@ -1323,7 +1327,17 @@ $$
 (`tendsto_mul_kernelStatistic_primeWindowRow`): the statistic of the prime row is not small, it is
 the sieve term of the residue class the primes omit, of relative size $\asymp1/p$ against the
 trivial bound, while a row equidistributed in every class, such as the Möbius row by the prime
-number theorem in progressions, has statistic $o(1/Q)$. This is a law for fixed moduli; the dual
+number theorem in progressions, has statistic $o(1/Q)$. Because the flat indicator $\mathbf 1_{(Q,2Q]}$
+is equidistributed across all $p$ residue classes with statistic $o(1/Q)$
+(`tendsto_mul_kernelStatistic_windowIndicatorRow`), ordinary flat centering $(\Lambda-1)\mathbf 1_{(Q,2Q]}$
+still carries the full omitted-class main term
+$Q\,\Lambda_p((\Lambda-1)\mathbf 1_{(Q,2Q]})\to-\pi^2(p^2-1)^2/(144p^2(p-1))$
+(`tendsto_mul_kernelStatistic_centredPrimeWindowRow`); cancelling the $1/Q$ statistic to $0$ requires
+subtracting the omitted-class main term itself, restoring mass $p/(p-1)$ on multiples of $p$, or
+centering against the coprime indicator $\frac p{p-1}\mathbf 1_{\gcd(\cdot,p)=1}$
+(`tendsto_mul_kernelStatistic_primeWindowRow_sub_omittedClassMainTerm`,
+`tendsto_mul_kernelStatistic_restoredPrimeWindowRow`,
+`tendsto_mul_kernelStatistic_coprimeCentredPrimeWindowRow`). This is a law for fixed moduli; the dual
 norm at moduli $p\sim P$ growing with $Q$ is the open question of §5.
 
 **The actual rows improve the generic bound at growing moduli.** Average the weighted
@@ -1475,11 +1489,21 @@ pronic energy are bounded (`parityPair_separated_on_vinogradovKorobovBand_of_pos
 The parity barrier of the trans-horizon theory therefore has its visibility witness on the band:
 the bound is paid by the zero-free region of $1/\zeta$, that is by the signs of $\mu$. In the same
 way the receiver of a multiplicative weight with $\lvert f\rvert\le1$ is decided at the primes on
-the band: $f(p)=-1$ at every prime gives a bounded receiver uniformly on the band (through the
-critical Wiener factorization $f=(f\star1)\star\mu$ and the finite convolution law of the
-trans-horizon theory), $f(p)=+1$ with $f\ge0$ gives $E_T\ge(\log(T+1)-\log100)/1024$ at every
-$0<\varepsilon\le\tfrac12$ (`exists_receiver_le_on_vinogradovKorobovBand_of_primes_neg_one`,
-`receiver_ge_log_of_primes_one`).
+the band: $f(p)=-1$ at every prime gives a bounded receiver uniformly on the band across
+$[\varepsilon_0,\tfrac12]$ for any $\varepsilon_0>0$ (through the critical Wiener factorization
+$f=(f\star1)\star\mu$ and the finite convolution law of the trans-horizon theory), while $f(p)=+1$
+with $f\ge0$ gives $E_T\ge(\log(T+1)-\log100)/1024$ at every $0<\varepsilon\le\tfrac12$
+(`exists_receiver_le_on_vinogradovKorobovBand_of_primes_neg_one_of_pos`,
+`prime_sign_dichotomy_on_vinogradovKorobovBand_of_pos`,
+`exists_receiver_le_on_vinogradovKorobovBand_of_primes_neg_one`,
+`receiver_ge_log_of_primes_one`). At any finite cutoff $N\ge 2$, the Ramanujan reconstructions of
+$c_\varepsilon$ and $c'_\varepsilon$ have identical complete-period mean, identical centered and
+uncentered complete-period quadratic forms, and identical diagonal pronic Gram energies in
+$\mathcal G,\mathcal G^{\mathrm{ec}},\mathcal G^{\mathrm{mc}}$, yet because $\Lambda(e)$ and
+$W_{c_\varepsilon}(e)$ intersect purely at primes $e=p$ where $\mu(p)=-1$, their von Mangoldt
+readouts are exact negatives (`parityPair_finiteRamanujanRow_completePeriod_and_diagGram_eq`,
+`vonMangoldtReadout_parityPair_finiteRamanujanRow_eq_neg`,
+`vonMangoldtReadout_parityPair_finiteRamanujanRow_opposite_signs`).
 
 **The pronic weighting carries exactly the Vinogradov–Korobov factor.** At every fixed
 $\varepsilon\in(0,\tfrac12)$ the period energy of the damped row grows like $N^{1-2\varepsilon}$
@@ -1497,9 +1521,17 @@ exponent below $1-2\varepsilon$ at one fixed $\varepsilon<\tfrac12$ would be a z
 
 **Selectivity.** The de la Vallée Poussin width $(\log T)^{-1/2}$ is the most a Beurling system
 can guarantee (Diamond–Montgomery–Vorhauer); the Vinogradov–Korobov band is wider by the factor
-$(\log T)^{1/10}(\log\log T)^{-5/3}$, and the extra width is paid by Vinogradov's mean value
-theorem, that is by the additive structure of $\mathbb N$. The band is the first receiver
-statement of this programme that is selective against Beurling systems.
+$\sigma(T)/\sqrt{\log T}=(\log T)^{1/10}(\log\log T)^{-5/3}\to\infty$
+(`tendsto_vkScale_div_sqrt_log_atTop`), and the extra width is paid by Vinogradov's mean value
+theorem, that is by the additive structure of $\mathbb N$. Against the shifted-pair countermodel
+$F_a(s)=\zeta(s-a)\zeta(s+a)$ with weight $\Lambda_a(n)=\Lambda(n)(n^a+n^{-a})$, the exact square
+identity $\Lambda_a(n)-2\Lambda(n)=\Lambda(n)(n^{a/2}-n^{-a/2})^2$ forces $\Lambda_a(q)>2\Lambda(q)$
+at every prime power $q$ for $a\ne 0$ and separates the shifted-pair pronic readout from
+$2\mathcal R_N(c)$ iff $a\ne 0$, while $\Lambda_a$ leaves `WeilPositiveFull` for all $a$, lies in
+`WeilPositiveDegree 2` iff $\mathrm{RH}\wedge a=0$, and violates the Ramanujan bound for
+$\varepsilon<\lvert a\rvert$ (`shiftedPairVonMangoldt_sub_two_mul_eq_sq`,
+`shiftedPairReadout_eq_two_mul_iff_eq_zero`, `shiftedPair_and_vkBand_selectivity`). The band is the
+first receiver statement of this programme that is selective against Beurling systems.
 
 ### 3.16 The damping chain: compactness, the entrance tail, and the residual cusp
 
@@ -2059,29 +2091,80 @@ on every finite set of moduli $\ge 2$ (`sieveEnergyCenteredPronicGramForm_eq_zer
    $\sum_{p\sim P}\sum_{q\sim Q}a_pb_q\mathcal G^{ec}(p,q)$ (§3.13) is reduced exactly to the dual norm
    $\sum_p\lvert\Lambda_p(c')\rvert/p$ of the large-scale row; bound it for the Möbius and prime rows at
    moduli growing with the window, through the reciprocity and without an external character or
-   modulus average, after subtracting the omitted-class term of the prime row. The unit is the
+   modulus average, after subtracting the omitted-class term of the prime row. Through the explicit
+   Euler–Fermat modular inverses $\bar n=n^{\varphi(d)-1}\bmod d$ and $n^{p-2}\bmod p$, both the
+   Bernoulli kernel and the second-order Gram approximation have witness-free Kloosterman reciprocity
+   (`bernoulliKernel_eq_reciprocity_totient`, `bernoulliKernel_eq_reciprocity_fermat`,
+   `abs_pmRamanujanEnergyCenteredGram_sub_reciprocity_fermat_le`,
+   `sum_bernoulliKernel_eq_divisible_add_kloosterman`). Because the flat indicator $\mathbf 1_{(Q,2Q]}$
+   has $o(1/Q)$ statistic (`tendsto_mul_kernelStatistic_windowIndicatorRow`), the flat-centred prime
+   row $(\Lambda-1)\mathbf 1_{(Q,2Q]}$ still has $1/Q$ statistic
+   $-\pi^2(p^2-1)^2/(144p^2(p-1))$ (`tendsto_mul_kernelStatistic_centredPrimeWindowRow`), whereas
+   subtracting the omitted-class main term, restoring mass $p/(p-1)$ on multiples of $p$, or centering
+   against $\frac p{p-1}\mathbf 1_{\gcd(\cdot,p)=1}$ cancels the $1/Q$ statistic to $0$
+   (`tendsto_mul_kernelStatistic_primeWindowRow_sub_omittedClassMainTerm`,
+   `tendsto_mul_kernelStatistic_restoredPrimeWindowRow`,
+   `tendsto_mul_kernelStatistic_coprimeCentredPrimeWindowRow`). The unit is the
    cross-scale exponent $\theta=2\log P/\log Q$: Type II stands at $6/5$, sharp cutoffs at $4/3$, rows
-   smooth to order $K-1$ at $2K/(K+1)$, the receiver at $\theta=2$. On the damping side the unit is
+   smooth to order $K-1$ at $2K/(K+1)$, the receiver at $\theta=2$; short-window mean squares with
+   block-mass absorption and tail summation reach the balanced range $Q\asymp P$ qualitatively
+   (`exists_balanced_centredPrimeBlock_dualNorm_tail_summed_le`). On the damping side the unit is
    the band: the receiver is bounded through $\varepsilon=\tfrac12-\kappa\sigma(T)/(480\log T)$, and every
-   wider band is a zero-free region. One selective input class is in reach at balanced scales.
-   The Bernoulli kernel is a cosecant–Bernoulli sum in the Kloosterman fraction $k\bar n/p$
-   (`bernoulliKernel_eq_reciprocity`). Expanding it in Kloosterman sums over primes would bring
-   trace-function bounds for $\sum_{q\le x}\Lambda(q)K(q)$, which save a power for
-   $x\ge p^{3/4+\varepsilon}$ (Fouvry–Kowalski–Michel), to the balanced range $Q\asymp P$. Their input
-   is Deligne's theorem, unavailable to Beurling systems. The expected outcome is a qualitative
-   balanced-scale gain. A power saving in the window form would be a zero-free strip
-   (`moebiusPowerWindowSaving_iff`), so this attacks the quasi-Riemann hypothesis, not RH.
-2. **The signed sum over moduli** of the interior martingale, equivalently the coercive contraction.
-3. **Additive window structure for the incidence face.** Bézout incidence inside a dyadic window
-   $(X/2,2X)$: which consecutive integers, residue classes and jump spacings of $\{N/p\}$ couple the
-   divisor edges that Arithmetic Incidence Positivity classifies multiplicatively.
-4. **The parity pair** with Trans-Horizon Incidence Mechanics: what the pronic Gram and the
-   divisor-sum data cannot see (§3.5 and the THIM parity law).
-5. **Selectivity.** Identify the additive input in each estimate. Multiplicative identities alone
-   survive generalized number systems; ask which additional structure distinguishes $\zeta$ from
-   $\zeta(s-a)\zeta(s+a)$.
-6. **The chain in receiver coordinates** (§7.6), through the $h$-transform that makes the centred
-   semigroup a pronic-$\ell^2$ contraction at fixed sub-half damping.
+   wider band is a zero-free region. Expanding the Kloosterman fraction $k\bar n/p$ in Kloosterman
+   sums over primes would bring trace-function bounds for $\sum_{q\le x}\Lambda(q)K(q)$, which save a
+   power for $x\ge p^{3/4+\varepsilon}$ (Fouvry–Kowalski–Michel), to the balanced range $Q\asymp P$; a
+   power saving in the window form is equivalent to a zero-free strip
+   (`primePowerWindowSaving_iff_all_receiver_forms`, `moebiusPowerWindowSaving_iff_all_receiver_forms`),
+   so this attacks the quasi-Riemann hypothesis, not RH.
+2. **The signed sum over moduli** of the interior martingale, equivalently the coercive contraction
+   (§7.2): retaining the signed sum over $e$ collapses the conditional jump drift to the finite
+   Selberg divisor sum (`sum_Icc_mul_interiorJumpOrbitMean_eq_selbergMultiplesCoord`) and the
+   squarefree Ramanujan sum $\mathcal M_\varepsilon(d)$ (`pmSignedInteriorJumpOrbitMean_eq_sum_divisors`),
+   removes the external modulus cutoff along $n\equiv -1\pmod d$, and identifies strict interior
+   contraction with `receiverDampings` (`mem_receiverDampings_iff_all_interior_forms`).
+3. **Additive window structure for the incidence face.** Inside a dyadic window $(X/2,2X)$
+   (`InDyadicWindow X`), every pair $N,p$ satisfies $\lfloor N/p\rfloor\in\{0,1,2,3\}$ and
+   $\{N/p\}=N/p-\lfloor N/p\rfloor$ (`div_mem_zero_one_two_three_of_inDyadicWindow`,
+   `fract_div_eq_sub_of_inDyadicWindow`), every ordered pair $p<q$ has
+   $\lfloor q/p\rfloor\in\{1,2,3\}$ (`div_mem_one_two_three_of_lt_inDyadicWindow`), and every proper
+   divisor $b\mid N$ with $b\le\sqrt{2X}$ has $2\le b\le 3$ (`proper_divisor_eq_two_or_three_of_inDyadicWindow`),
+   so consecutive proper divisor edges $N_1=a_1b_1$, $N_2=N_1+1=a_2b_2$ with $b_2=b_1+1$ reduce to the
+   single Bézout pair $(b_1,b_2)=(2,3)$, parametrized by $(a_1,a_2)=(3t+1,2t+1)$ when $N_2=2N_1+1$
+   and $(2t+1,3t+2)$ when $N_2=N_1+1$, where $\gcd(a_1,a_2)=1$ and the fractional parts at the
+   tripling endpoint lock at $(\lfloor N/a_1\rfloor,N\bmod a_1,\lfloor(N+1)/a_2\rfloor,(N+1)\bmod a_2)=(2,0,3,0)$
+   (`divisor_edges_consecutive_iff`, `bezout_two_three_iff_param`, `bezout_three_two_iff_param`,
+   `coprime_of_bezout_two_three`, `sawtooth_phases_at_bezout_tripling_endpoint_left`,
+   `sawtooth_phases_at_bezout_tripling_endpoint_right`).
+4. **The parity pair** with Trans-Horizon Incidence Mechanics: at every cutoff $N\ge 1$ and damping
+   $\varepsilon>0$, the finite Ramanujan reconstructions of $c_\varepsilon$ and $c'_\varepsilon$ have
+   identical complete-period mean, identical centered and uncentered complete-period quadratic forms,
+   and identical diagonal pronic Gram energies in $\mathcal G,\mathcal G^{\mathrm{ec}},\mathcal G^{\mathrm{mc}}$
+   (`parityPair_finiteRamanujanRow_completePeriod_and_diagGram_eq`), while $\Lambda(e)$ and
+   $W_{c_\varepsilon}(e)$ intersect purely on the primes $e=p$ where $\mu(p)=-1$, making their von
+   Mangoldt readouts exact negatives with strictly opposite signs for $N\ge 2$
+   (`vonMangoldt_mul_weightRamanujanCoeff_parityTwin`,
+   `vonMangoldtReadout_parityPair_finiteRamanujanRow_eq_neg`,
+   `vonMangoldtReadout_parityPair_finiteRamanujanRow_opposite_signs`), and the Vinogradov–Korobov band
+   separates the pair and all multiplicative weights with $f(p)=\pm 1$ across $[\varepsilon_0,1/2]$ for
+   every $\varepsilon_0>0$ (`parityPair_separated_on_vinogradovKorobovBand_of_pos`,
+   `prime_sign_dichotomy_on_vinogradovKorobovBand_of_pos`).
+5. **Selectivity.** Multiplicative identities alone survive generalized number systems; against
+   $F_a(s)=\zeta(s-a)\zeta(s+a)$, the identity $\Lambda_a(n)-2\Lambda(n)=\Lambda(n)(n^{a/2}-n^{-a/2})^2$
+   forces strict pointwise excess at every prime power for $a\ne 0$ and separates the shifted-pair
+   pronic readout from $2\mathcal R_N(c)$ iff $a\ne 0$, while $\Lambda_a$ leaves `WeilPositiveFull`
+   for all $a$, lies in `WeilPositiveDegree 2` iff $\mathrm{RH}\wedge a=0$, violates the Ramanujan
+   bound for $\varepsilon<\lvert a\rvert$, and the Vinogradov–Korobov scale exceeds the Beurling
+   de la Vallée Poussin scale by $\sigma(x)/\sqrt{\log x}=(\log x)^{1/10}(\log\log x)^{-5/3}\to\infty$
+   (`shiftedPairVonMangoldt_sub_two_mul_eq_sq`, `shiftedPairReadout_eq_two_mul_iff_eq_zero`,
+   `tendsto_vkScale_div_sqrt_log_atTop`, `shiftedPair_and_vkBand_selectivity`).
+6. **The chain in receiver coordinates** (§7.6), through the size-bias $h$-transform
+   $h(k)=1/(k+1)$ (`sizeBiasHTransform`), which maps the unit-pronic-norm constant ground state
+   $\mathbf 1$ to the reciprocal observable $r(k)=1/(k+1)$, gives a bounded $h$-transformed entrance
+   functional on $\ell^2_{\mathrm{pronic}}(\mathbb N)$ at every $\eta>0$, and identifies admission
+   $\eta\in\mathrm{receiverDampings}$ with the ground-state pronic Poincaré bound on
+   $C_\eta^{(h)}\mathbf 1$ and with uniform Hilbert–Schmidt boundedness of $K_\eta^{(h)}$ from
+   $\ell^2(\mathbb N)$ into $\ell^2_{\mathrm{pronic}}(\mathbb N)$
+   (`mem_receiverDampings_iff_hTransformed_hilbertSchmidt`).
 
 ---
 

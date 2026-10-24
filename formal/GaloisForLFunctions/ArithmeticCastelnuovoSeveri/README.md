@@ -251,7 +251,24 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     unconditional dichotomy: either every near-top zero is visible at the doubly-logarithmic lag and
     the degree-defect floor rate equals the zero width, or off-line zeros cluster without bound
     (`near_top_visible_at_loglog_lag_or_offLine_cluster`,
-    `scalingSurface_defectRate_eq_zetaZeroWidth_or_offLine_cluster`). Over `𝔽_q` the window `2g`
+    `scalingSurface_defectRate_eq_zetaZeroWidth_or_offLine_cluster`). Moreover
+    (`DoublyLogarithmicVisibilityAndExcludedDepthLaw`), under `OffLineCopiesLocallyBounded M` the
+    Riemann–von Mangoldt bounded-window lower bound `exists_xiZeroCount_window_ge_log` forces at
+    least `log c − (2⌈h⌉₊ + 1)M` on-line zero copies in `(c − h, c + h]`, so `onLineEvenMass w c` and
+    `2 Re S(0)` obey the unconditional two-sided logarithmic law `c_w log c ≤ onLineEvenMass w c ≤ C_w (C_ξ + log(|c| + 4))`
+    (`exists_onLineEvenMass_two_sided_log_of_offLineCopiesLocallyBounded`); the off-line visibility
+    lags obey two-sided bounds (`recordLagOffLine_two_sided`, `nearTopLagOffLine_two_sided`,
+    `nearTopLogLogLagOffLine_two_sided`) with `nearTopLogLogLagOffLine M w γ₀ δ₀ = Θ_{M,w}((1 + log log(|γ₀| + 4))/δ₀)`;
+    the doubly-logarithmic aperture is intrinsic both for `θ`-decoherent difference tests
+    (`re_W_twoBump_modScaledBump_nonneg_of_lag_le_log_ratio`) and across all `C²_c([−a, a])` tests on
+    `isolatedPairConfig` at the Riemann–von Mangoldt density `L = (1/2π)log(γ₀/2π)`
+    (`hodgeDefectAt_isolatedPair_rvmDensity_eq_zero`, `hodgeDefectAt_isolatedPair_rvmDensity_eq_one`);
+    and exact affine inversion in `1/δ₀` gives the doubly-logarithmic contact-aperture and
+    excluded-depth laws `zetaContactAperture ≤ V/2 + w` and
+    `z₀.re < nearTopLogLogExcludedDepthOffLine M w z₀.im V = O_{M,w}((1 + log log(|z₀.im| + 4))/(V − Drift))`
+    (`zetaContactAperture_le_of_near_top_loglog_of_offLineCopiesLocallyBounded`,
+    `re_lt_nearTopLogLogExcludedDepthOffLine_of_pos_on_Icc`,
+    `re_lt_nearTopLogLogExcludedDepthOffLine_of_lt_contactAperture`). Over `𝔽_q` the window `2g`
     sees everything; over `ℚ` no degree does (`exists_hidden_at_degree`). On a lag lattice
     (`W(f, f) = ℓ Σ_m k_f(mℓ) D(m)`) the degree filtration *is* the window filtration: the Toeplitz
     law of Square-Root Threshold (`weil_nonneg_iff_toeplitz_of_lagFormula`) decides positivity at
@@ -725,19 +742,32 @@ To be built:
    `−log μ(L) ≍ 2π² N(T*)/log N(T*)` (`exists_twoSided_truncKernel_log_energy_landauRate`,
    `eventually_near_radical_subspace_landauRate`), and critical-line zero-side coercivity
    (`sum_norm_sq_paperFT_le_re_W_of_criticalLine`).
-3. **Aperture over `ℚ`.** The degree at which `n` right zeros become visible is explicit in terms
-   of on-line mass, local density and logarithmic density, and height-uniform under a uniform
-   window count (item 15); no degree works uniformly over all configurations. For `ζ`, under a local
-   off-line bound `OffLineCopiesLocallyBounded M` (with no bound on on-line density), on-line
-   exponential damping (`e^{(Re z − σ)V} ≤ 1` for `Re z ≤ 0`, `σ > 0`) eliminates the residual
-   `log γ₀` factor in the Riemann–von Mangoldt cubic potential tail of the Turán inequality,
-   removes `recordHeightOf` and `oneParamRecordHeight` from the unmodulated (`c = 0`) visibility and
-   contact-aperture laws, makes the modulated (`c = γ₀`) visibility lag explicit in
-   `(M, onLineEvenMass w γ₀, δ₀)` with zero `log γ₀` factor, and reduces the unconditional modulated
-   visibility lag to `O_{w, M}((1 + log log γ₀) / δ₀)` (`TuransInequalityWithoutBoundedOnLineDensity`).
-   Open for `ζ`: ruling out unbounded local clustering of off-line zeros (`OffLineCopiesLocallyBounded M`),
-   or eliminating the remaining `log log γ₀` coming from `onLineEvenMass w γ₀ = O_w(log γ₀)` inside
-   the dyadic Fejér order `⌈log₂ Y⌉₊`.
+3. **Aperture over `ℚ`.** Settled (`TuransInequalityWithoutBoundedOnLineDensity`,
+   `DoublyLogarithmicVisibilityAndExcludedDepthLaw`): the degree at which `n` right zeros become
+   visible is explicit in terms of on-line mass, local density and logarithmic density, and
+   height-uniform under a uniform window count (item 15); no degree works uniformly over all
+   configurations. For `ζ`, under a local off-line bound `OffLineCopiesLocallyBounded M` (with no
+   bound on on-line density), on-line exponential damping (`e^{(Re z − σ)V} ≤ 1` for `Re z ≤ 0`,
+   `σ > 0`) eliminates the `log γ₀` factor in the Riemann–von Mangoldt cubic potential tail of the
+   Turán inequality, removes `recordHeightOf` and `oneParamRecordHeight` from the unmodulated
+   (`c = 0`) visibility and contact-aperture laws, makes the modulated (`c = γ₀`) visibility lag
+   explicit in `(M, onLineEvenMass w γ₀, δ₀)` with zero `log γ₀` factor, and reduces the
+   unconditional modulated visibility lag to `nearTopLogLogLagOffLine M w γ₀ δ₀ = Θ_{w, M}((1 + log log(|γ₀| + 4)) / δ₀)`
+   (`nearTopLogLogLagOffLine_two_sided`). The remaining `log log γ₀` is intrinsic when on-line
+   density is unconstrained: the Riemann–von Mangoldt window lower bound forces
+   `c_w log γ₀ ≤ onLineEvenMass w γ₀ ≤ C_w(C_ξ + log(|γ₀| + 4))`
+   (`exists_onLineEvenMass_two_sided_log_of_offLineCopiesLocallyBounded`), any `θ`-decoherent lag has
+   nonnegative difference test up to `(1/δ₀)log(θ·onLineEvenMass/offLineEvenMass − 1) = Ω_{w,M}((log log γ₀)/δ₀)`
+   (`re_W_twoBump_modScaledBump_nonneg_of_lag_le_log_ratio`), and across *all* `C²_c([−a, a])` tests
+   on `isolatedPairConfig` at the Riemann–von Mangoldt density `L = (1/2π)log(γ₀/2π)` the Hodge
+   defect vanishes for `a ≤ (1/(2δ₀))log(4δ₀ L)` and equals `1` above `(1/(2δ₀))log(6δ₀ L + 1)`
+   (`hodgeDefectAt_isolatedPair_rvmDensity_eq_zero`, `hodgeDefectAt_isolatedPair_rvmDensity_eq_one`).
+   Inverting `nearTopLogLogLagOffLine` gives the doubly-logarithmic excluded depth
+   `nearTopLogLogExcludedDepthOffLine M w γ₀ V = O_{M,w}((1 + log log(|γ₀| + 4))/(V − Drift))` and
+   the modulated contact-aperture bound `zetaContactAperture ≤ V/2 + w`
+   (`zetaContactAperture_le_of_near_top_loglog_of_offLineCopiesLocallyBounded`,
+   `re_lt_nearTopLogLogExcludedDepthOffLine_of_pos_on_Icc`,
+   `re_lt_nearTopLogLogExcludedDepthOffLine_of_lt_contactAperture`).
 4. **The collar between towers.** On rank-`P` boxes the towers couple through the collar and the
    pole only; bound this coupling against `Σ_p E_p` and decide positivity of the
    finite-Euler-product form on lattice tests.
@@ -810,7 +840,7 @@ Weil's argument.
 | `TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`, `InfiniteGenusLaw`, `TheGenusIsTheApertureOfTheRadical`, `NumericalEquivalenceOnACurveIsTheFrobeniusIdeal`, `TheNearRadicalOfZetaIsFiniteDimensional`, `LandauWidomNearRadicalLaw` | the scaling surface of `ℤ`; signature law and selection of `Λ`; no exact annihilators; over `𝔽_q` the radical is exactly `P(T_q)`(tests), opens at aperture `d log q/2` and is then infinite-dimensional; over `ℚ` the near radical is finite-dimensional (`≤ 4LT_ε(L)/π`) and obeys the two-sided `(2 ∓ η)e^{2L}` Landau–Widom count and rate `−log μ(L) ≍ 2π² N(T*)/log N(T*)` |
 | `FiniteConfigurationPontryaginLaw`, `TemperedConfigurationPontryaginLaw`, `TheHodgeDefectCountsTheRightZeros` | the Pontryagin law, finite, tempered and general |
 | `TheReflectionSectorsOfTheHodgeDefect`, `TheDegreeFiltrationOfTheHodgeDefect`, `SchurLendingOddHodgeIndexPastFirstPrime`, `WhatTheFailureOfTheHodgeIndexMeasures`, `TheHodgeDefectOfZetaIsFiniteAtEveryDegree`, `TheHodgeIndexOfZetaHoldsAwayFromLowFrequencies` | sectors and degrees; `ζ` below `3/10` and the odd sector through `181/500`; multiplicity and depth invariance; Sobolev floor rate = width; the degree defect of `ζ` is finite (archimedean horizon and Bessel count) and lives on an explicit low-frequency grid |
-| `TheVisibilityDegreeOfAnIsolatedPair`, `TheVisibilityDegreeOfRightZeros`, `HeightUniformVisibilityAndOffLineDensity`, `TuransInequalityWithoutBoundedOnLineDensity` | visibility degrees from on-line mass and densities; height-uniform visibility; eliminating the `log γ₀` Turán tail without bounded on-line density, height-free `c = 0` visibility and contact-aperture bounds, on-line non-cancellation, doubly-logarithmic modulated visibility lag, and the clustering dichotomy |
+| `TheVisibilityDegreeOfAnIsolatedPair`, `TheVisibilityDegreeOfRightZeros`, `HeightUniformVisibilityAndOffLineDensity`, `TuransInequalityWithoutBoundedOnLineDensity`, `DoublyLogarithmicVisibilityAndExcludedDepthLaw` | visibility degrees from on-line mass and densities; height-uniform visibility; eliminating the `log γ₀` Turán tail without bounded on-line density, two-sided `Θ_w(log γ₀)` law for `onLineEvenMass`, two-sided `Θ_{M,w}((1 + log log γ₀)/δ₀)` visibility lag, intrinsic on-line mass and Hodge-defect barriers, doubly-logarithmic contact-aperture and excluded-depth laws, and the clustering dichotomy |
 | `TheKroneckerRankDichotomy`, `TheZerosOfAnExponentialPolynomialRecur` | recurrent configurations have defect `0` or `∞` |
 | `TheHodgeDefectIsCyclic`, `TheHeckeTowerOfAPrimeIsThePeriodQuotient`, `AlmostEveryPrimeSeesEveryRightZero`, `TheTowerDefectCountsTheFrobeniusEigenvalues`, `OnePrimeSeesEveryWellFoundedLevel` | cyclic Pontryagin law; prime towers, Frobenius eigenvalues and weights; resonant primes; top-down class extraction, the tower law without finiteness, attained tops |
 | `ResonatorKroneckerLaw`, `HeckeIncidenceCartesianLaw`, `TheResonatorRemainderIsNegative`, `TheAdjunctionConjectureMeanField` | Hecke incidence: Cartesian law, resonators, mean field |

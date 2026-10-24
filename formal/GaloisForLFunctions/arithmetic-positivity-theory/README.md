@@ -1084,12 +1084,32 @@ $\bigl\lvert\sum_r(\Lambda(r)/r)\int\varphi_rB_b(v)B_c(rv)\bigr\rvert\le K\,\tau
 $\tau(m,n)=(1+\log n)\sqrt{1/n+m\sqrt{m/n}}$ (`abs_sum_integral_crossBlock_down_le`):
 distinct blocks decouple once $n\gg m^3$. On lacunary families $M_{i+1}\ge M_i^8$
 the decay sums, and the compact Weil form is positive on every pattern spread over
-any number of such blocks (`exists_compactFullWeilEnergy_pos_of_lacunary`). Low
+any number of such blocks (`exists_compactFullWeilEnergy_pos_of_lacunary`). Moreover,
+interchanging the scale sum over $n'\in S'$ and the resonance sum over $r\in R$ in the Schur
+row test exploits the $(11rl/12)$-spacing of $n'\mapsto rl\theta_j(n')$ on $rlM'<6kM$ and
+the cancellation $(M'+1)/(lM')^2\le 2/M'$ on $rlM'\ge 6kM$, bounding the row sum by
+$12(A+16B)(1+\log(1+6kM/M'))^2$ (`sum_row_dilationKernel_spaced_le`) and eliminating the linear
+factor $M'+1$ of the coarse row bound. This yields the scale-free logarithmic cross-block bound
+$5K(A,B)(1+\log(1+6M/M'))^2\lVert b_S\rVert_2\lVert c_{S'}\rVert_2$
+(`abs_sum_integral_crossBlock_logRatio_le`, `abs_truncatedBlockCoupling_le_logRatio`), which
+depends only on the ratio $M/M'$, removes the $M^{3/4}$ growth of $\tau(M,2M)$ on adjacent blocks,
+and gives a uniform $O(1)$ bound $245K_{CB}\lVert b_S\rVert_2\lVert c_{S'}\rVert_2$ whenever
+$1\le M\le M'$ (`abs_truncatedBlockCoupling_up_uniform_le`). Direct dyadic slicing of the
+dilation-ring majorant $\mathcal{M}_{\mathrm{win}}(L)=\sum_{r\ge2}(\Lambda(r)/r)\min(1,\sqrt{L/r})$
+without any $r^{-\varepsilon}$ perturbation proves $\log L-(\log 4+4)\le\mathcal{M}_{\mathrm{win}}(L)\le\log L+O(1)$
+and $\mathcal{M}_{\mathrm{win}}(L)/\log L\to 1$ (`windowRingMajorant_bounds`,
+`tendsto_windowRingMajorant_div_log`), removing a factor $6e>16$ from the window prime slope and
+widening the polynomial window exponent $\delta$ accordingly across all five form realizations
+(`exists_direct_polynomial_window_all_five_forms_pos`), while extending lacunary block positivity
+to arbitrary lacunary families of polynomial scale windows $[M_i,L_iM_i]$ with $(L_iM_i)^8\le M_{i+1}$
+(`exists_lacunaryPolynomialWindows_all_five_forms_pos`;
+[DenseScaleWindowsAndMultiWindowPositivity](DenseScaleWindowsAndMultiWindowPositivity.lean)). Low
 modes enter through a two-band split of the archimedean energy and scale-free
 bounds on the polar and Gamma readouts, at a cost $O(\log)$ of the low window and no
-exponential loss. The divisibility structure of the resonances $k(n+1)\equiv j\pmod{lr}$,
-which would control dense windows uniformly, survives only for scale ratios up to
-about the square root of the scale.
+exponential loss. Within a single window $[M,LM]$, resonant pairs at dilation $r\le L$ fall into
+congruence progressions $k(n+1)\equiv j\pmod{lr}$ spaced by $\ge lr/\gcd(k,lr)$ with dilated
+collar drift bounded by $L^2/(140M)\le 1/140$ up to the square-root boundary $L\le\sqrt M$
+(`resonant_scale_mod_eq_and_spacing`, `dilated_factorialAffineDefect_window_bounds`).
 
 **What these theorems are.** Each positivity statement on the critical family is
 paid by an archimedean gain of size $\log M$ against an $\ell^2$-bounded prime cost,
@@ -1302,11 +1322,16 @@ theory's load-bearing walls. Lean names are the capstones of the cited modules.
 8. **Positivity on compact tests of every length.** The complete critical form is positive
    definite on every high dyadic block, on polynomial windows $[M,M^{1+\delta}]$, on compact
    doubly collared truncations uniformly in the truncation, jointly on windows and truncations,
-   and on lacunary unions; the margin reaches the actual zeta divisor as
-   $\mathcal R(F)+\tfrac{s_T}8\log M\sum b_j^2\le\mathcal Z(F)$
+   on lacunary unions of blocks, and on arbitrary lacunary unions of polynomial scale windows
+   $[M_i,L_iM_i]$ with $(L_iM_i)^8\le M_{i+1}$; the dilation-ring majorant satisfies the exact
+   $\varepsilon$-free law $\log L-(\log 4+4)\le\mathcal{M}_{\mathrm{win}}(L)\le\log L+O(1)$,
+   removing a factor $6e>16$ from the window prime slope; and the margin reaches the actual zeta
+   divisor as $\mathcal R(F)+\tfrac{s_T}8\log M\sum b_j^2\le\mathcal Z(F)$
    (`exists_criticalCompleteEnergy_pos`, `exists_polynomial_window_compact_weil_and_fullZeroForm_pos`,
+   `exists_direct_polynomial_window_all_five_forms_pos`,
    `exists_smooth_actual_zeta_reflection_coercivity_of_compact_window`,
-   `exists_compactFullWeilEnergy_pos_of_lacunary`).
+   `exists_compactFullWeilEnergy_pos_of_lacunary`,
+   `exists_lacunaryPolynomialWindows_all_five_forms_pos`).
 9. **The tent family is a complete RH test family that sees every off-line zero.**
    RH iff every finite tent pattern has nonnegative complete energy, iff grid patterns are
    eventually nonnegative; every off-line zero, finite residual set, depth-gap zero and cluster is
@@ -1434,7 +1459,9 @@ Built and reusable:
   law*: a mass floor plus a low-band exclusion gives logarithmic Lévy growth in the band edge.
 - *Dilation calculus.* The dyadic dilation inequality (a Schur test on the cross-scale kernel),
   the Montgomery–Vaughan bound for the endpoint jump kernel, the window exponent
-  $\varepsilon(L)$, and the cross-block decay $\tau(m,n)$.
+  $\varepsilon(L)$, the direct $\varepsilon$-free $\Theta(\log L)$ dilation-ring majorant
+  $\mathcal{M}_{\mathrm{win}}(L)/\log L\to 1$, the spaced-row scale-free cross-block coupling
+  $5K(A,B)(1+\log(1+6M/M'))^2$, and the downward cross-block decay $\tau(m,n)$.
 - *Critical kernel calculus.* The divisor charge $A(m)$, its cumulative charge, the band-limited
   Poisson closure of the cell, the Toeplitz symbol, the spectral perturbation theorem against the
   curvature constant $I_0$, two-sided $1/k^2$ bounds on the couplings $\kappa(k)$, and quadratic
@@ -1452,7 +1479,6 @@ To be built:
 - a norm-controlled transfer from positive subfamilies to the complete receiver;
 - an intrinsic low-mode positivity certificate on the isolated low window $[1,L_{\mathrm{low}}]$
   without high-scale coupling;
-- a dense-window prime bound beating the width cost $3+\log L$, or a proof that it is sharp;
 - the quantitative detection law for grid tents;
 - admissible sources beyond the dyadic stencil, with sign-definite cell kernels.
 
@@ -1561,16 +1587,46 @@ collar integrals and kernel geometry are resolved in full:
 
 ### 7.4 Dense windows
 
-Across blocks the prime coupling decays like $\tau(m,n)$ and lacunary families are covered;
-windows wider than $M^\delta$ that are not lacunary, where $\log L\asymp\log M$ and the constants
-$s$ and $C_W$ decide, are open. The exponent $\delta$ is the single quantity separating the proved
-regime from the full scale range at every support length: the window and truncation constants are
-independent of each other and of $V$, so $\delta=s/(4(W+1))$ is fixed by the archimedean slope
-against the width cost alone. A window with $\log L\ge\delta^{-1}$ times the archimedean gain is
-beyond this argument. Whether the width cost $3+\log L$ is sharp is open: the correlation of two
-dilation rings is $O(\min(1,\sqrt{L/r}))$, and only the $\varepsilon$-trick converts it. The
-resonance structure $k(n+1)\equiv j\pmod{lr}$ that would make dense windows uniform survives only
-for scale ratios up to about the square root of the scale.
+In [DenseScaleWindowsAndMultiWindowPositivity](DenseScaleWindowsAndMultiWindowPositivity.lean), the
+sharpness of the $\Theta(\log L)$ dilation-ring majorant, the $6e$-improved $\varepsilon$-free window
+slope, the scale-free spaced-row cross-block coupling, the modular progression resonance structure,
+and multi-window positivity are resolved:
+- **Sharp $\Theta(\log L)$ law and $\varepsilon$-free window slope:** Direct dyadic slicing of the
+  dilation-ring majorant $\mathcal{M}_{\mathrm{win}}(L)=\sum_{r\ge2}(\Lambda(r)/r)\min(1,\sqrt{L/r})$
+  without any $r^{-\varepsilon}$ perturbation proves summability (`summable_windowRingMajorantTerm`),
+  the two-sided sandwich $\log L-(\log 4+4)\le\mathcal{M}_{\mathrm{win}}(L)\le\log L+(4\log 2+9(\log 4+4))$
+  for every $L\ge1$ (`windowRingMajorant_bounds`), and the exact asymptotic $\mathcal{M}_{\mathrm{win}}(L)/\log L\to1$
+  (`tendsto_windowRingMajorant_div_log`). This proves that the $\Theta(\log L)$ width cost of the
+  dilation-ring majorant is sharp up to $O(1)$, removes the factor $6e>16$ from the window prime
+  slope (`criticalTruncatedWindowPrimeSlope_eq_six_exp_mul_direct`), and widens the polynomial
+  window exponent $\delta$ by $6e$ across all five form realizations and their grid-tent and
+  smooth-detector transfers (`exists_direct_polynomial_window_all_five_forms_pos`).
+- **Spaced-row cross-block coupling:** Swapping $\sum_{n'\in S'}$ and $\sum_{r\in R}$ in the Schur
+  row sum uses the $(11rl/12)$-spacing of $n'\mapsto rl\theta_j(n')$ on $rlM'<6kM$ and the
+  cancellation $(M'+1)/(lM')^2\le 2/M'$ on $rlM'\ge 6kM$ to bound the row sum by
+  $12(A+16B)(1+\log(1+6kM/M'))^2$ (`sum_row_dilationKernel_spaced_le`), eliminating the linear
+  factor $M'+1$. Consequently, the prime coupling between any two dyadic blocks $S$ at $M$ and $S'$
+  at $M'$ is bounded by $5K(A,B)(1+\log(1+6M/M'))^2\lVert b_S\rVert_2\lVert c_{S'}\rVert_2$
+  (`abs_sum_integral_crossBlock_logRatio_le`, `abs_truncatedBlockCoupling_le_logRatio`), eliminating
+  the $M^{3/4}$ growth of $\tau(M,2M)$ on adjacent blocks $M'=2M$ and giving a uniform $O(1)$ bound
+  $245K_{CB}\lVert b_S\rVert_2\lVert c_{S'}\rVert_2$ whenever $1\le M\le M'$
+  (`abs_truncatedBlockCoupling_up_uniform_le`).
+- **Modular congruence progressions and the $\sqrt M$ drift boundary:** At dilation $r\le L$ on a
+  window $[M,LM]$, shifted-frequency differences split into the integer clock difference
+  $k(n+1)-lr(n'+1)$, the constant shift $(k-lr)/12$, and the dilated affine collar defect
+  (`harmonic_factorialShiftedFreq_affine_gap`). Scales in the same residue class $k(n+1)\equiv j\pmod{lr}$
+  are spaced by at least $lr/\gcd(k,lr)$ (`resonant_scale_mod_eq_and_spacing`), while the dilated
+  collar defect satisfies $r/(225LM)\le r\cdot e_{n'+1}\le r/(140M)\le L^2/(140M)$, bounded by
+  $1/140$ up to the square-root window boundary $L\le\sqrt M$
+  (`dilated_factorialAffineDefect_window_bounds`).
+- **Lacunary families of polynomial scale windows and two-band dense windows:** Combining dyadic
+  window slicing with the downward cross-block decay bounds all cross-window prime couplings across
+  any lacunary family of scale windows $W_i\subset[M_i,L_iM_i]$ with $(L_iM_i)^8\le M_{i+1}$ by
+  $650K_{CB}\sum_i E_i$ independently of $L_i,J,V$ (`abs_criticalTruncatedPrimeEnergy_le_of_lacunaryWindows`),
+  giving unconditional strict positivity across all five form realizations on arbitrary unions of
+  polynomial scale windows (`exists_lacunaryPolynomialWindows_all_five_forms_pos`), as well as on a
+  single dense window $[1,LM]$ split at an intermediate breakpoint $M_0$ without any lacunary gap
+  (`dense_window_two_band_all_five_forms_pos`).
 
 ### 7.5 From the family to the receiver
 

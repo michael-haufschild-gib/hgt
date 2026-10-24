@@ -131,6 +131,13 @@ Its constants depend on aperture; it supplies neither joint collar payment
 nor the primitive half-Rayleigh/oneL-defect bounds. Those remain the next
 source-sign tasks, retaining every prime and polar term.
 
+The real-domain identification is also formalized: the real smooth-core
+completion equals all CCM form vectors with real physical representatives.
+Every complex CCM vector has two actual real CHMD lifts reconstructing its
+physical source and adding to its complete Weil energy. This removes a
+closure-membership premise; it supplies no arithmetic sign. See
+[the real-domain card](../../../3-formalized/chmd-real-aperture-domain.md).
+
 Corpus searches and direct source inspection supplied the evidence above;
 search hits were not treated as kernel certificates. External novelty work
 was excluded by the user, so no novelty claim is made. Unrelated worktree

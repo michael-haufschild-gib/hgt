@@ -1,8 +1,8 @@
 # The supported maximal CHMD domain equals the aperture completion
 
 - **ID:** chmd-supported-maximal-aperture-domain
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** For every positive aperture, a maximal CHMD graph vector belongs to the completed real smooth aperture core if and only if its physical source is supported in that closed aperture. The completion is preserved by positive part, negative part and modulus.
 
 ## Route and contribution
@@ -70,6 +70,10 @@ No uniform-in-aperture estimate or arithmetic sign is used. No convergence
 of the mollified edge coordinates is assumed; weak admission only needs
 their bounded norms and strong convergence of the source coordinates.
 
+The existing positive lower quotient bound now applies to every supported
+maximal graph vector. Its constant still depends on aperture; the advance
+is removal of the core-closure premise.
+
 ## Corpus inputs checked
 
 - `CHMDWeakCoreAdmission`: weak Hilbert subsequences and source injectivity.
@@ -77,16 +81,40 @@ their bounded norms and strong convergence of the source coordinates.
   contraction, full graph bound, almost-everywhere source convergence.
 - `CHMDJumpGraphContractions`: literal clipping and full graph convergence.
 - `CHMDFixedApertureQuotientLanding`: completed graph/Weil equivalence.
-- `CHMDRealApertureDomain`: intrinsic real domain and physical preservation
-  (candidate verification in progress).
+- `CHMDRealApertureDomain`: intrinsic real domain and physical preservation,
+  directly checked and audited.
 - `CCMArchimedeanHilbertFormDomain`: aperture domains as support kernels.
 
 ## Gates
 
 - [x] Complete paper argument.
-- [ ] Exact Lean declarations and dependency audit.
-- [ ] Candidate direct check.
-- [ ] Final repository leaf direct check.
-- [ ] Umbrella import.
+- [x] Exact Lean declarations and dependency audit.
+- [x] Candidate direct check.
+- [x] Final repository leaf direct check.
+- [x] Umbrella import.
+
+## Lean declarations
+
+- `mem_closed_graph_submodule_of_bounded_source_approx`
+- `graphPhysicalSource_supported_iff`
+- `mem_apertureGraphCompletion_iff_supported`
+- `exists_supported_aperture_quotient_lower_bound`
+- `posGraph_mem_apertureGraphCompletion`
+- `negGraph_mem_apertureGraphCompletion`
+- `absGraph_mem_apertureGraphCompletion`
+
+Candidate direct check passed. Both principal axiom audits contain exactly
+`propext`, `Classical.choice`, `Quot.sound`.
+
+Repository leaf: `formal/GaloisForLFunctions/RHTower/CHMDSupportedApertureDomain.lean`.
+Final direct check passed with exit 0 and no diagnostics:
+
+```
+cd formal
+lake --old env lean GaloisForLFunctions/RHTower/CHMDSupportedApertureDomain.lean
+```
+
+The umbrella imports the leaf and was not compiled. No proof placeholders,
+new axioms, trusted-computation shortcuts or raised limits were introduced.
 
 No external novelty claim or numerical experiment is part of this result.

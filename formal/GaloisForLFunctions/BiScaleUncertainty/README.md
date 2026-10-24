@@ -331,11 +331,11 @@ translation with error $C\varepsilon^\alpha$ from fifth and sixth arrays within 
 | signed packet, packet energy | `signedSource`, `packetEnergy` |
 | stationary packet, zero series, critical packet and Weil energies | `stationaryPacket`, `zeroSeries`, `criticalPacketEnergy`, `criticalWeilEnergy` |
 | stationary gauge convolution, tuned probe, universal probe | `stationaryGaugeConvolution`, `tunedProbe`, `SeesAllZeros` |
-| simplicity criterion of a universal probe | `riemannHypothesis_and_simple_iff_of_universal` |
+| simplicity criterion of a universal probe, multiplicity defect, finite-prime defect | `riemannHypothesis_and_simple_iff_of_universal`, `multiplicityDefect`, `finitePrimeMultiplicityDefect` |
 | normalized Chebyshev error, gauge derivative | `normalizedLogError`, `gaugeDerivative` |
 | causal response, Laplace energy, Fourier pairing, spectral density of $\nu_N$ | `causalResponse`, `laplaceEnergy`, `fourierPairing`, `spectralDensity` |
 | zero width | `XiZeroHalfPlaneBound` |
-| hyperbolic multipliers | `coshMultiplier`, `sinhMultiplier` |
+| hyperbolic multipliers, odd polar hyperplane, real odd pole-weight positivity | `coshMultiplier`, `sinhMultiplier`, `RealOddPolarTestFn`, `RealWeilPositiveOddAt`, `RealOddPolarWeilPositive` |
 | clique sphere factor, collar partition | `cliqueSphereDualityFactor`, `PhysicalCollarPartition` |
 | Nyquist polar constant, Taylor residual kernel | `nyquistPolarConstant`, `nyquistWeightKernel` |
 | Chebyshev stencil producers | `chebyshevAlternatingProducer`, `chebyshevBiNullProducer`, `coprimeTwoThreeChebyshevProducer` |
@@ -607,6 +607,32 @@ also the generic way to make a probe see every zero: for each zero the map
 $t\mapsto\hat\varphi(\gamma_\rho-it)$ is a nonzero entire function of $t$, so all but countably
 many boosts of a nonzero source are universal probes.
 
+**The odd pole term as lifted multiplier mass and the odd polar hyperplane.** For every continuous
+compact source $f$, the $\cosh(u/2)$ and $\sinh(u/2)$ moments are the means of $C_{1/2}f$ and
+$S_{1/2}f$, so their squares equal the total autocorrelation masses $\int_{\mathbb R}h_{C_{1/2}f}$
+and $\int_{\mathbb R}h_{S_{1/2}f}$ (`integral_autocorr_coshMultiplier_half_eq_sq`,
+`integral_autocorr_sinhMultiplier_half_eq_sq`). When $f$ is odd, $C_{1/2}f$ is odd with
+$\int_{\mathbb R}h_{C_{1/2}f}=0$, while $S_{1/2}f$ is lifted into the even sector and the odd pole
+term is minus twice its total autocorrelation mass:
+$\operatorname{weilPoleTerm}(h_f)=2\int_0^\infty\operatorname{polarDensity}(x)h_f(x)\,dx=-2\int_{\mathbb R}h_{S_{1/2}f}=-2(\int f\sinh(u/2))^2\le0$
+(`re_weilPoleTerm_eq_neg_two_mul_integral_autocorr_sinhMultiplier`,
+`two_mul_integral_Ioi_polarDensity_autocorr_eq_neg_two_mul_sinh_sq`). On the **odd polar
+hyperplane** `RealOddPolarTestFn` ($\int f\sinh(u/2)=0$, equivalently $\int_{\mathbb R}h_{S_{1/2}f}=0$),
+the $\sinh$-moment cost vanishes identically for every pole weight $\beta\in\mathbb R$, so at
+$\beta=1$, $\operatorname{weilArchRe}(h_f)=\Omega(0)h_f(0)+\mathcal J(f)$ and the dyadic and
+all-scale von Mangoldt signed coercivity bounds hold with zero $\sinh$-moment penalty
+(`RealOddPolarTestFn.weilArchRe_eq_gamma_add_biScaleLevyEnergy`,
+`RealOddPolarTestFn.unconditional_vonMangoldt_all_scale_signed_weilArchRe_lower_bound`). The
+symmetric three-copy operator `evenPolarCopy f T` preserves odd parity, annihilates the
+$\sinh(u/2)$ moment, and changes `normalizedArchEnergy` by $O(e^{-T})$, so the odd polar and
+general odd finite-grid classes have identical energy infima (`odd_polar_log_grid_lower_bound_iff`).
+Restricting to `RealOddPolarTestFn` also loses no zero-side information: nonnegativity of
+`weilFullFunctional Λ` on `RealOddPolarTestFn`, on `RealOddTestFn`, and of
+`weilPoleWeightFunctional β Λ` on `RealOddTestFn` for any $\beta\le1$ are all equivalent to RH
+(`riemannHypothesis_iff_realOddPolarWeilPositive_vonMangoldt`,
+`riemannHypothesis_iff_realWeilPositiveOddAt_vonMangoldt`), whereas for $\beta>1$ odd positivity
+fails unconditionally (`not_weilPositiveOddAt_and_not_primeBlindPositiveOddAt_of_one_lt`).
+
 ### 3.8 Collar allocation as convex optimisation
 
 The collar coefficient of §3.2 is a concave functional of a physical partition, and the theory
@@ -834,29 +860,48 @@ prime–polar discrepancy changes sign in every multiplicative interval $[X,e^\e
 (`packet_sign_changes_in_every_window_of_riemannHypothesis`).
 
 **The Weil energy is the recurrent maximum of the translated pairings.** The packet of the
-autocorrelation at shift $\tau$ is the translated pairing $\langle h_f(\cdot-\tau),\nu\rangle$; beyond
-the support its negative is a series with nonnegative coefficients $m_\rho\lvert\hat f(\gamma_\rho)\rvert^2$,
-bounded by its value at $0$ and returning to it by simultaneous recurrence of finitely many
-characters. Hence $W(h_f)\le\limsup_\tau-\langle h_f(\cdot-\tau),\nu\rangle$ unconditionally
-(`weil_le_translated_pairing_frequently`), with equality when the packet is bounded above
-(`pairing_recurrence_law`): the Lévy energy of a source is fixed by prime–polar pairings alone, its
-pairing at the origin and the recurrent maximum of its translates.
+autocorrelation at shift $\tau$ is the translated pairing $\langle h_f(\cdot-\tau),\nu\rangle$; for a
+source vanishing outside $[-w,w]$, $h_f$ vanishes outside $[-2w,2w]$
+(`autocorr_eq_zero_of_two_mul_lt_abs`), so for every $\tau>2w$ the translated pairing is an exact
+finite prime sum over $1\le n\le\lfloor e^{\tau+2w}\rfloor$ minus the window polar integral on
+$[\tau-2w,\tau+2w]$ and agrees with the finite-cutoff pairing once $\mathrm{cutoff}\,N>\tau+2w$
+(`stationaryPacket_eq_finite_prime_polar`, `stationaryPacket_eq_pairing_of_cutoff_gt`). Unconditionally,
+$W(h_f)\le\limsup_\tau-\langle h_f(\cdot-\tau),\nu\rangle$ (`weil_le_translated_pairing_frequently`)
+and $\langle h_f(\cdot-\tau),\nu\rangle$ is given by the local Chebyshev gauge integral on
+$[\tau-2w,\tau+2w]$ (`stationaryPacket_autocorr_eq_local_gauge`). Whenever $h_f$ is blind right of the
+line (in particular under a one-sided packet bound or RH), reflection symmetry
+$\widehat{h_f}(\gamma_\rho)=\overline{\widehat{h_f}(\gamma_{1-\bar\rho})}$ kills every off-critical
+zero coefficient on *both* sides of the line, so the off-critical zero series of $h_f$ vanishes
+identically on all of $\mathbb R$ (`zeroSeries_autocorr_eq_criticalSeries_of_blind`) and the envelope
+bound holds at **every** shift $\tau>2w$ with no unknown threshold $T$:
+$\lvert\langle h_f(\cdot-\tau),\nu\rangle\rvert\le W(f)+\lVert A_{h_f}(\tau)\rVert\le W(f)+\frac1{2\pi}\int\lvert\hat f(r)\rvert^2\lvert\Omega(r)\rvert\,dr$
+(`abs_stationaryPacket_autocorr_le_of_blind`, `abs_translatedPairing_le_levy_of_packet_bddAbove`,
+`abs_stationaryPacket_autocorr_splineProbe_le_of_riemannHypothesis`).
 
 **Multiplicities, bands and an explicit probe.** $E\le KW$ for every compact source iff every
 critical zero has multiplicity at most $K$ (`multiplicity_ceiling_law`): $\sup_fE(f)/W(f)$ is the
-maximal critical multiplicity, read by one family of tuned splines. The band of a single packet obeys
-the band law of §3.10: $\int_T^LP_f^2=O((1+L)e^{2\sigma L})$ iff $f$ is blind beyond depth $\sigma$
-(`packet_band_iff`), so for a universal probe RH is linearity of the band of one packet
+maximal critical multiplicity, read by one family of tuned splines. The **multiplicity defect**
+$\Delta_{\mathrm{mult}}(f)=E(f)-W(f)=\sum_{\Re\rho=1/2}m_\rho(m_\rho-1)\lvert\hat f(\gamma_\rho)\rvert^2\ge0$
+(`multiplicityDefect_eq_tsum`) satisfies the conjugate-pair lower bound
+$2m_{\rho_0}(m_{\rho_0}-1)\lvert\hat f(\gamma_{\rho_0})\rvert^2\le\Delta_{\mathrm{mult}}(f)$ at every
+critical zero (`two_mul_le_multiplicityDefect`), hence $4\lvert\hat f(\gamma_{\rho_0})\rvert^2\le\Delta_{\mathrm{mult}}(f)$
+at any non-simple critical zero (`four_mul_norm_sq_le_multiplicityDefect_of_mult_ne_one`). The band of a
+single packet obeys the band law of §3.10: $\int_T^LP_f^2=O((1+L)e^{2\sigma L})$ iff $f$ is blind beyond
+depth $\sigma$ (`packet_band_iff`), so for a universal probe RH is linearity of the band of one packet
 (`riemannHypothesis_iff_packet_band_of_universal`) and the zero width is half its exponential rate. A
 universal probe is explicit: for a source whose transform is real-rooted every boost $e^{tu}\varphi$
 with $\lvert t\rvert\ge1/2$ is universal (`seesAllZeros_tiltedSource_of_im_ne_zero`), and the cubic
-spline $B=U_1^{\star4}$, transform $(\sin z/z)^4$, gives
-$\text{RH}\iff\sum_n\Lambda(n)\sqrt n\,B(\log n-\tau)\le\int_0^\infty2\cosh(x/2)e^xB(x-\tau)\,dx+Ke^\tau$ for
-all $\tau>4$ (`riemannHypothesis_iff_spline_prime_sum_le_of_gt_four`,
-`xiZeroHalfPlaneBound_iff_spline_prime_sum_le_of_gt_four`): one fixed spline-weighted prime sum against
-its polar prediction, with effective finite-shift local Chebyshev error bounds and explicit spectral tail
-constants (`abs_stationaryPacket_splineProbe_le_local_chebyshev`,
-`abs_stationaryPacket_splineProbe_le_of_riemannHypothesis`).
+spline $B=U_1^{\star4}$, transform $(\sin z/z)^4$, has the explicit critical-line Fourier sandwich
+$(\sinh 1)^4/(1+r^2)^2\le\lVert\hat U(r)\rVert\le(\cosh 1)^4/(1+r^2)^2$
+(`le_norm_paperFT_splineProbe_ofReal`, `norm_paperFT_splineProbe_ofReal_le`). This gives
+$\text{RH}\iff\sum_{n\le\lfloor e^{\tau+4}\rfloor}\Lambda(n)\sqrt n\,B(\log n-\tau)\le\int_{\tau-4}^{\tau+4}2\cosh(x/2)e^xB(x-\tau)\,dx+Ke^\tau$
+for all $\tau>4$ (`riemannHypothesis_iff_spline_prime_sum_le_of_gt_four`, `splinePrimeSum_eq_sum_Icc`,
+`splinePolarMass_eq_setIntegral_Icc`), the height-bounded simplicity gap
+$\Delta_{\mathrm{mult}}(U)<4(\sinh 1)^8/(1+\Gamma^2)^4\implies\forall\lvert\gamma_\rho\rvert\le\Gamma,\,m_\rho=1$
+(`forall_critical_simple_up_to_height_of_multiplicityDefect_lt`), and convergence of the purely
+finite-prime observable `finitePrimeMultiplicityDefect g w N` to $\Delta_{\mathrm{mult}}(g)$
+(`tendsto_finitePrimeMultiplicityDefect_of_packet_bddAbove`,
+`riemannHypothesis_and_simple_iff_finitePrimeMultiplicityDefect_of_universal`).
 
 **Cramér's limiting constant and finite-cutoff packet energy.** Under RH, the mean square of the
 normalized Chebyshev error converges to the total zero energy,
@@ -1378,19 +1423,46 @@ RH, `riemannHypothesis_iff_abs_gammaBracket_le_zeroPoleBlindLevyInfimum_primePow
 
 ### 7.3 The odd sector
 
-The coherent price $\log2$ is sharp and the finite-filter gain is strict, but the full odd Weil
-sign is not proved; at pole weight one the odd bound retains a positive $\sinh$-moment cost.
+The coherent price $\log2$ is sharp and the finite-filter gain is strict. For any odd test $f$,
+the pole term is $-2(\int f\sinh(u/2))^2=-2\int_{\mathbb R}h_{S_{1/2}f}\le0$
+(`re_weilPoleTerm_eq_neg_two_mul_integral_autocorr_sinhMultiplier`), which makes odd archimedean
+and Weil positivity antitone in the pole weight $\beta$ and unconditionally false for $\beta>1$
+(`not_weilPositiveOddAt_and_not_primeBlindPositiveOddAt_of_one_lt`). In the full Weil functional at
+$\beta=1$, this negative pole term is absorbed identically by the continuum polar part of
+$-2\,\mathrm{pairing}(N,h_f)$ (`RealOddTestFn.re_weilFullFunctional_vonMangoldt_eq_gamma_add_levy_sub_two_pairing`),
+while on the odd polar hyperplane `RealOddPolarTestFn` ($\int f\sinh(u/2)=0$) the $\sinh$-moment
+cost vanishes identically in `weilArchRe` itself, every signed coercivity bound holds at $\beta=1$
+with zero $\sinh$-moment penalty (`RealOddPolarTestFn.unconditional_vonMangoldt_all_scale_signed_weilArchRe_lower_bound`),
+symmetric three-copy enforcement preserves odd finite-grid energy infima
+(`odd_polar_log_grid_lower_bound_iff`), and nonnegativity of `weilFullFunctional Λ` on
+`RealOddPolarTestFn` (equivalently `RealWeilPositiveOddAt β Λ` for any $\beta\le1$) is equivalent
+to RH (`riemannHypothesis_iff_realOddPolarWeilPositive_vonMangoldt`,
+`riemannHypothesis_iff_realWeilPositiveOddAt_vonMangoldt`). Open: the unconditional odd Weil sign
+itself (which is RH).
 
 ### 7.4 Packets and multiplicity
 
 The maximal critical multiplicity is $\sup_fE(f)/W(f)$, every zero a probe sees is felt with its
 amplitude in both directions, and the Weil energy is bounded by the recurrent maximum of the
-translated pairings of one packet, unconditionally
-(`TranslatedPairingEnvelopeLaw`). One-sided boundedness is required for the finite envelope
-equality, not for that upper bound. Open: effective finite-prime control of the envelope and of
-the identity $E(U)=W(U)$. An upper bound by a possibly infinite limsup supplies no positivity
-certificate; a source-derived finite bound must pay the cancellation itself. Equating packet and
-Weil energies imports simplicity of the critical zeros, which RH alone does not give.
+translated pairings of one packet, unconditionally (`TranslatedPairingEnvelopeLaw`). For a source
+vanishing outside $[-w,w]$, every translated pairing $\langle h_f(\cdot-\tau),\nu\rangle$ at
+$\tau>2w$ is an exact finite prime sum over $1\le n\le\lfloor e^{\tau+2w}\rfloor$ minus the window
+polar integral on $[\tau-2w,\tau+2w]$ and is represented unconditionally by the local Chebyshev
+gauge integral on $[\tau-2w,\tau+2w]$ (`stationaryPacket_eq_finite_prime_polar`,
+`stationaryPacket_autocorr_eq_local_gauge`). When $h_f$ is blind right of the line, reflection
+symmetry kills the off-critical zero series on both sides of the line identically, so the envelope
+bound $\lvert\langle h_f(\cdot-\tau),\nu\rangle\rvert\le W(f)+\lVert A_{h_f}(\tau)\rVert$ holds at
+every shift $\tau>2w$ without an unknown threshold (`abs_stationaryPacket_autocorr_le_of_blind`,
+`abs_translatedPairing_le_levy_of_packet_bddAbove`). The multiplicity defect
+$\Delta_{\mathrm{mult}}(f)=E(f)-W(f)$ is the $N\to\infty$ limit of the purely finite-prime
+observable `finitePrimeMultiplicityDefect g w N`
+(`tendsto_finitePrimeMultiplicityDefect_of_packet_bddAbove`), and for the explicit spline probe $U$
+the critical-line lower bound $\lVert\hat U(r)\rVert\ge(\sinh 1)^4/(1+r^2)^2$ forces the explicit
+simplicity gap $\Delta_{\mathrm{mult}}(U)\ge4(\sinh 1)^8/(1+\gamma_0^2)^4$ at any non-simple
+critical zero (`splineProbe_multiplicityDefect_gap_of_mult_ne_one`,
+`forall_critical_simple_up_to_height_of_multiplicityDefect_lt`). Open: an unconditional
+source-derived finite bound on the envelope (which is RH) and unconditional vanishing of
+$\Delta_{\mathrm{mult}}(U)$ (simplicity of all critical zeros, which RH alone does not give).
 
 ### 7.5 Arithmetic observation
 

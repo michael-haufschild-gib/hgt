@@ -10,8 +10,8 @@ In `TuransInequalityWithoutBoundedOnLineDensity`, the local off-line hypothesis
 places no bound on on-line zeros) eliminated the `log γ₀` factor from the Turán / Fejér cubic
 potential tail (`offLineTwinPotential M r = 6 M (1/r³ + 3)`), made the unmodulated (`c = 0`)
 visibility lags `recordLagOffLine` and `oneParamLagOffLine` completely height-free, and reduced the
-modulated (`c = γ₀`) near-top visibility lag to `nearTopLagOffLine M w (onLineEvenMass w γ₀) (Re z₀)`
-and `nearTopLogLogLagOffLine M w γ₀ (Re z₀)`.
+modulated (`c = γ₀`) near-top visibility lag to `nearTopLagOffLine M w W_on (Re z₀)` and
+`nearTopLogLogLagOffLine M w γ₀ (Re z₀)`.
 
 This module completes the resolution of the visibility-aperture problem over `ℚ`:
 
@@ -28,20 +28,21 @@ This module completes the resolution of the visibility-aperture problem over `�
    `log c - (2 ⌈h⌉₊ + 1) M` are on-line (`Re ρ = ½`). Because every on-line zero in `[c - h, c + h]`
    has `‖h_w(γ - c)‖ ≥ 2 w ∫ weilBump` for `w h ≤ 1/8` and on-line coefficients never cancel,
    `onLineEvenMass w c` obeys the unconditional two-sided logarithmic law
-   `c_w log c ≤ onLineEvenMass w c ≤ C_w log(|c| + 2)`, and `2 Re S(0)` lies within
+   `c_w log c ≤ onLineEvenMass w c ≤ C_w (C_ξ + log(|c| + 4))`, and `2 Re S(0)` lies within
    `± 24 M² (e^{w/2} B_w)²` of `onLineEvenMass w c`.
 
 2. **Exact two-sided order of the off-line visibility lags (§2)**
-   (`recordOrderOffLine_le`, `le_recordOrderOffLine`, `recordLagOffLine_le`, `le_recordLagOffLine`,
-   `sqrt_mul_recordLagOffLine_le`, `nearTopOrderOffLine_le`, `le_nearTopOrderOffLine`,
-   `nearTopLagOffLine_le`, `le_nearTopLagOffLine`,
-   `nearTopLogLogLagOffLine_le`, `le_nearTopLogLogLagOffLine`):
-   Using `explicitOrder_le` and `le_explicitOrder`, we establish explicit two-sided bounds for the
-   entire off-line visibility hierarchy. In particular:
-   - `√a · recordLagOffLine M w a σ` is bounded as `a → 0⁺`, eliminating the super-polynomial
-     coherence divergence `√a · recordLag w a σ → ∞` of `tendsto_sqrt_mul_recordLag`;
-   - `nearTopLagOffLine M w W_on δ₀ = Θ_{M,w}((1 + log⁺ W_on) / δ₀)` from both sides;
-   - `nearTopLogLogLagOffLine M w γ₀ δ₀ = Θ_{M,w}((1 + log log γ₀) / δ₀)` from both sides.
+   (`log_noise_le_explicitOrder`, `recordOrderOffLine_two_sided`, `recordLagOffLine_two_sided`,
+   `nearTopOrderOffLine_two_sided`, `nearTopLagOffLine_two_sided`,
+   `nearTopLogLogLagOffLine_two_sided`):
+   Using `explicitOrder_le`, `le_explicitOrder`, and the noise-logarithm lower bound
+   `log M_noise / log 2 ≤ explicitOrder M_noise c P`, we establish explicit two-sided bounds for the
+   entire off-line visibility hierarchy. Without `OffLineCopiesLocallyBounded M`, the companion count
+   `P = ⌈80 log(180 Γ)⌉ ≍ log γ₀` made `2 P² log(P + 1) / log 2 ≍ (log γ₀)² log log γ₀` the
+   dominant term in `explicitOrder`. Under `OffLineCopiesLocallyBounded M`, `P = M` is constant, so
+   the height dependence shifts entirely to `log(nearTopNoiseOffLine M w W_on) / log 2`, giving
+   `nearTopLagOffLine M w W_on δ₀ = Θ_{M,w}((1 + log⁺ W_on) / δ₀)` and
+   `nearTopLogLogLagOffLine M w γ₀ δ₀ = Θ_{M,w}((1 + log log(|γ₀| + 4)) / δ₀)` from both sides.
 
 3. **Intrinsic optimality of the doubly-logarithmic aperture: the on-line mass barrier and the
    all-test Hodge-defect threshold (§3)**
@@ -63,21 +64,26 @@ This module completes the resolution of the visibility-aperture problem over `�
      `(1/(2δ₀)) log(8 δ₀ L) ≤ a ≤ L/2`. Thus `a = Θ((log log γ₀) / δ₀)` is the exact visibility
      threshold across all compactly supported `C²` test functions.
 
-4. **Excluded-depth and contact-aperture laws under `OffLineCopiesLocallyBounded M` (§4)**
-   (`recordExcludedDepthOffLine`, `oneParamExcludedDepthOffLine`,
-   `nearTopExcludedDepthOffLine`, `nearTopLogLogExcludedDepthOffLine`,
+4. **Modulated contact-aperture bridge and excluded-depth laws under `OffLineCopiesLocallyBounded M` (§4)**
+   (`tsupport_twoBump_modScaledBump_subset_any`,
+   `ccmRestrictedWeilGroundEnergy_neg_of_re_W_twoBump_modScaledBump_neg`,
+   `zetaContactAperture_le_of_near_top_loglog_of_offLineCopiesLocallyBounded`,
+   `recordExcludedDepthOffLine`, `nearTopExcludedDepthOffLine`, `nearTopLogLogExcludedDepthOffLine`,
    `recordLagOffLine_le_iff_le_recordExcludedDepthOffLine`,
-   `oneParamLagOffLine_le_iff_le_oneParamExcludedDepthOffLine`,
    `nearTopLagOffLine_le_iff_le_nearTopExcludedDepthOffLine`,
    `nearTopLogLogLagOffLine_le_iff_le_nearTopLogLogExcludedDepthOffLine`,
    `re_lt_nearTopExcludedDepthOffLine_of_pos_on_Icc`,
    `re_lt_nearTopLogLogExcludedDepthOffLine_of_pos_on_Icc`,
    `re_lt_nearTopLogLogExcludedDepthOffLine_of_lt_contactAperture`):
-   Inverting the four off-line visibility lags at any lag budget `V` above the height-free
-   phase-coherence drift gives exact excluded-depth equivalences `Lag ≤ V ↔ ExcludedDepth ≤ δ₀` and
-   certifies that positivity on `[0, V]` (or `V/2 + w < zetaContactAperture`) excludes every
-   `1/V`-near-top zero of depth `≥ nearTopLogLogExcludedDepthOffLine M w γ₀ V = O_{w,M}((1 + log log γ₀) / V)`,
-   improving `nearTopExcludedDepth` by `(log γ₀)²`.
+   Extending the Rayleigh ground-energy bridge to arbitrary modulation centers `c ∈ ℝ` bounds
+   `zetaContactAperture ≤ V / 2 + w` at the doubly-logarithmic lag
+   `V ≥ nearTopLogLogLagOffLine M w z₀.im z₀.re`. Because `recordOrderOffLine M w a` and
+   `nearTopOrderOffLine M w W_on` are independent of the depth parameter `σ` / `δ₀`,
+   `recordLagOffLine` and `nearTopLagOffLine` are exact affine functions of `1 / δ₀`, yielding closed-form
+   excluded-depth equivalences `Lag ≤ V ↔ ExcludedDepth ≤ δ₀` and certifying that positivity on
+   `[0, V]` (or `V/2 + w < zetaContactAperture`) excludes every `1/V`-near-top zero of depth
+   `≥ nearTopLogLogExcludedDepthOffLine M w γ₀ V = O_{w,M}((1 + log log γ₀) / V)`, improving
+   `nearTopExcludedDepth` by `(log γ₀)²`.
 -/
 
 open Complex MeasureTheory Real Set Filter Topology Finset Matrix
@@ -214,10 +220,10 @@ theorem sum_mult_mul_le_onLineEvenMass {w c R : ℝ} (hw : 0 < w) (hwR : w * R �
 
 /-- **Off-line multiplicity bound in a radius-`R` height window.** Under
 `OffLineCopiesLocallyBounded M`, any finite set `S` of off-line zeros of `ζ` (`Re ρ ≠ ½`) in
-`[c - R, c + R]` (`R ≥ 0`) has total multiplicity `∑_{ρ ∈ S} mult(ρ) ≤ (2 ⌈R⌉₊ + 1) M`,
+`[c - R, c + R]` has total multiplicity `∑_{ρ ∈ S} mult(ρ) ≤ (2 ⌈R⌉₊ + 1) M`,
 completely independent of the window center `c`. -/
 theorem sum_mult_offLine_radius_le_of_offLineCopiesLocallyBounded {M : ℕ}
-    (hM : OffLineCopiesLocallyBounded M) (c : ℝ) {R : ℝ} (hR : 0 ≤ R) (S : Finset ℂ)
+    (hM : OffLineCopiesLocallyBounded M) (c R : ℝ) (S : Finset ℂ)
     (hS : ∀ ρ ∈ S, ρ ∈ zetaZeroConfig.carrier ∧ ρ.re ≠ 1 / 2 ∧ |ρ.im - c| ≤ R) :
     ∑ ρ ∈ S, zetaZeroConfig.mult ρ ≤ (2 * ⌈R⌉₊ + 1) * M := by
   classical
@@ -299,7 +305,7 @@ theorem onLineEvenMass_ge_xiZeroCount_window_sub_of_offLineCopiesLocallyBounded 
       (∑ ρ ∈ W_on, (zetaZeroConfig.mult ρ : ℝ)) + (∑ ρ ∈ W_off, (zetaZeroConfig.mult ρ : ℝ)) := by
     rw [hW_on, hW_off, Finset.sum_filter_add_sum_filter_not]
   have hoff_nat : ∑ ρ ∈ W_off, zetaZeroConfig.mult ρ ≤ (2 * ⌈R⌉₊ + 1) * M :=
-    sum_mult_offLine_radius_le_of_offLineCopiesLocallyBounded hM c hR.le W_off fun ρ hρ => by
+    sum_mult_offLine_radius_le_of_offLineCopiesLocallyBounded hM c R W_off fun ρ hρ => by
       rw [hW_off, Finset.mem_filter] at hρ
       exact ⟨(hW_mem ρ hρ.1).1, hρ.2, (hW_mem ρ hρ.1).2⟩
   have hoff : ∑ ρ ∈ W_off, (zetaZeroConfig.mult ρ : ℝ) ≤ ((2 * ⌈R⌉₊ + 1 : ℕ) : ℝ) * M := by
@@ -318,9 +324,9 @@ theorem onLineEvenMass_ge_xiZeroCount_window_sub_of_offLineCopiesLocallyBounded 
 `OffLineCopiesLocallyBounded M`.**
 There exist an absolute window width `h > 0` and height threshold `T₁ ≥ 4` (from the Riemann–von
 Mangoldt formula `exists_xiZeroCount_window_ge_log`) such that for every `M : ℕ` with
-`OffLineCopiesLocallyBounded M`, every `0 < w ≤ 1 / (8 h)`, and every
+`OffLineCopiesLocallyBounded M`, every `0 < w` with `w h ≤ 1/8`, and every
 `c ≥ max T₁ (exp (2 (2 ⌈h⌉₊ + 1) M))`:
-1. `((2 w ∫ weilBump)² / 2) log c ≤ onLineEvenMass w c ≤ 1440 log(180(|c| + 2)) (e^{w/2} B_w)²`;
+1. `((2 w ∫ weilBump)² / 2) log c ≤ onLineEvenMass w c ≤ 16 (e^{w/2} B_w)² (C_ξ + log(|c| + 4))`;
 2. `|2 Re S(0) - onLineEvenMass w c| ≤ 24 M² (e^{w/2} B_w)²`.
 
 This proves that `onLineEvenMass w c` and `2 Re S(0)` grow as `Θ_w(log c)` unconditionally under
@@ -333,7 +339,8 @@ theorem exists_onLineEvenMass_two_sided_log_of_offLineCopiesLocallyBounded :
           max T₁ (Real.exp (2 * ((2 * ⌈h⌉₊ + 1 : ℕ) : ℝ) * M)) ≤ c →
           (2 * w * (∫ u, weilBump u)) ^ 2 / 2 * Real.log c ≤ onLineEvenMass w c ∧
             onLineEvenMass w c ≤
-              1440 * Real.log (180 * (|c| + 2)) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 ∧
+              16 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 *
+                (xiLineTwoLogDerivConstant + Real.log (|c| + 4)) ∧
             |2 * (lagStructure zetaZeroConfig (modScaledBump w c) 0).re - onLineEvenMass w c| ≤
               24 * (M : ℝ) ^ 2 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 := by
   obtain ⟨h, hh, T₁, hT₁4, hwin⟩ := RHTower.exists_xiZeroCount_window_ge_log
@@ -343,7 +350,6 @@ theorem exists_onLineEvenMass_two_sided_log_of_offLineCopiesLocallyBounded :
   have hcT₁ : T₁ ≤ c := (le_max_left _ _).trans hc_max1
   have hch : h ≤ c := (le_max_right _ _).trans hc_max1
   have hcexp : Real.exp (2 * ((2 * ⌈h⌉₊ + 1 : ℕ) : ℝ) * M) ≤ c := (le_max_right _ _).trans hc
-  have hc0 : 0 < c := lt_of_lt_of_le (by linarith) hcT₁
   have hlog_ge : 2 * ((2 * ⌈h⌉₊ + 1 : ℕ) : ℝ) * M ≤ Real.log c := by
     have := Real.log_le_log (Real.exp_pos _) hcexp
     rwa [Real.log_exp] at this
@@ -354,7 +360,7 @@ theorem exists_onLineEvenMass_two_sided_log_of_offLineCopiesLocallyBounded :
     linarith
   have hlow := onLineEvenMass_ge_xiZeroCount_window_sub_of_offLineCopiesLocallyBounded
     hM hw hh hch hwh
-  refine ⟨?_, onLineEvenMass_le hw c, ?_⟩
+  refine ⟨?_, onLineEvenMass_le_log hw c, ?_⟩
   · calc (2 * w * (∫ u, weilBump u)) ^ 2 / 2 * Real.log c
         = (2 * w * (∫ u, weilBump u)) ^ 2 * (Real.log c / 2) := by ring
       _ ≤ (2 * w * (∫ u, weilBump u)) ^ 2 *
@@ -369,7 +375,7 @@ theorem exists_onLineEvenMass_two_sided_log_of_offLineCopiesLocallyBounded :
     have hs_off_re : Summable (fun z : ℂ => if z.re = 0 then 0 else (D z).re) :=
       hsD.of_norm_bounded (fun z => by
         split_ifs
-        · rw [Real.norm_zero]; exact norm_nonneg _
+        · rw [norm_zero]; exact norm_nonneg _
         · rw [Real.norm_eq_abs]; exact Complex.abs_re_le_norm _)
     have hs_off : Summable (fun z : ℂ => if z.re = 0 then 0 else ‖D z‖) :=
       hsD.of_nonneg_of_le (fun z => by split_ifs <;> positivity)
@@ -390,241 +396,201 @@ theorem exists_onLineEvenMass_two_sided_log_of_offLineCopiesLocallyBounded :
       _ ≤ 24 * (M : ℝ) ^ 2 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 :=
           offLineEvenMass_le_of_offLineCopiesLocallyBounded hM hw c
 
-/-! ### 2. Exact two-sided order of `recordLagOffLine`, `nearTopOrderOffLine`, `nearTopLagOffLine`,
-and `nearTopLogLogLagOffLine` -/
+/-! ### 2. Exact two-sided order of `recordOrderOffLine`, `recordLagOffLine`, `nearTopOrderOffLine`,
+`nearTopLagOffLine`, and `nearTopLogLogLagOffLine` -/
 
-/-- **Upper bound on `recordOrderOffLine`.** By `explicitOrder_le`, the off-line Fejér order
-`recordOrderOffLine M w a σ` is bounded above by an explicit linear combination of
-`log(1/a)` and `log(1/σ)`, with zero dependence on the height of any zero. -/
-theorem recordOrderOffLine_le (M : ℕ) {w a σ : ℝ} (hw : 0 < w) (ha : 0 < a) (hσ : 0 < σ) :
-    (recordOrderOffLine M w a σ : ℝ) ≤
-      1 + ((M : ℝ) + 4) * Real.log (2 * ((M : ℝ) + 1) * (42 : ℝ) ^ ((M : ℝ) + 1)) / Real.log 2 +
-        Real.log (recordScaleOffLine M w a σ) / Real.log 2 := by
+/-- **Noise-logarithm lower bound for `explicitOrder`.** For any noise scale `M_noise > 0` and
+coherence parameter `0 < c ≤ 1`,
+`log M_noise / log 2 ≤ explicitOrder M_noise c P`.
+When `P = M` is held constant (as under `OffLineCopiesLocallyBounded M`), this noise logarithm is
+the dominant term of `explicitOrder M_noise c M`. -/
+theorem log_noise_le_explicitOrder {M_noise c : ℝ} (hM : 0 < M_noise) (hc0 : 0 < c) (hc1 : c ≤ 1)
+    (P : ℕ) :
+    Real.log M_noise / Real.log 2 ≤ (explicitOrder M_noise c P : ℝ) := by
+  have hl2 : 0 < Real.log 2 := Real.log_pos one_lt_two
+  have hG : 1 ≤ explicitGap c P := by
+    unfold explicitGap
+    rw [one_le_div hc0]
+    have : (1 : ℝ) ≤ ((P : ℝ) + 1) ^ 2 :=
+      one_le_pow₀ (by linarith [Nat.cast_nonneg (α := ℝ) P])
+    linarith
+  have hG0 : 0 < explicitGap c P := lt_of_lt_of_le zero_lt_one hG
+  have hq0 : 0 < explicitRatio c P := by unfold explicitRatio; positivity
+  have hq1 : explicitRatio c P ≤ 1 := by
+    unfold explicitRatio
+    rw [div_le_one (by positivity)]
+    have h1 : (1 : ℝ) ≤ 2 * ((P : ℝ) + 1) := by linarith [Nat.cast_nonneg (α := ℝ) P]
+    have h2 : (1 : ℝ) ≤ explicitGap c P ^ P := one_le_pow₀ hG
+    nlinarith
+  have hqp0 : 0 < explicitRatio c P ^ P := pow_pos hq0 P
+  have hqp1 : explicitRatio c P ^ P ≤ 1 := pow_le_one₀ hq0.le hq1
+  have hA1 : 1 ≤ (160 * π ^ 2 / 3) ^ P :=
+    one_le_pow₀ (by nlinarith [Real.pi_gt_three])
+  have hF1 : (1 : ℝ) ≤ ((2 * P).factorial : ℝ) := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Nat.factorial_ne_zero _)
+  have hnum : M_noise ≤ 4 * (160 * π ^ 2 / 3) ^ P * ((2 * P).factorial : ℝ) * M_noise := by
+    have : (1 : ℝ) ≤ 4 * (160 * π ^ 2 / 3) ^ P * ((2 * P).factorial : ℝ) := by nlinarith
+    nlinarith
+  have harg : M_noise ≤ 4 * (160 * π ^ 2 / 3) ^ P * ((2 * P).factorial : ℝ) * M_noise /
+      explicitRatio c P ^ P :=
+    hnum.trans (le_div_self (by positivity) hqp0 hqp1)
+  have hlog : Real.log M_noise / Real.log 2 ≤ Real.logb 2
+      (4 * (160 * π ^ 2 / 3) ^ P * ((2 * P).factorial : ℝ) * M_noise / explicitRatio c P ^ P) := by
+    rw [Real.logb]
+    exact div_le_div_of_nonneg_right (Real.log_le_log hM harg) hl2.le
+  unfold explicitOrder
+  push_cast
+  have hceil := Nat.le_ceil (Real.logb 2
+    (4 * (160 * π ^ 2 / 3) ^ P * ((2 * P).factorial : ℝ) * M_noise / explicitRatio c P ^ P))
+  have hP0 : (0 : ℝ) ≤ P := Nat.cast_nonneg _
+  linarith
+
+/-- For `a > 0`, `1 ≤ recordNoiseOffLine M w a`. -/
+theorem one_le_recordNoiseOffLine (M : ℕ) (w : ℝ) {a : ℝ} (ha : 0 < a) :
+    1 ≤ recordNoiseOffLine M w a := by
+  unfold recordNoiseOffLine
+  have hC := xiLineTwoLogDerivConstant_nonneg
+  have hl4 : 0 ≤ Real.log 4 := Real.log_nonneg (by norm_num)
+  have he : 0 < Real.exp 1 - 1 := by linarith [Real.add_one_lt_exp (one_ne_zero : (1 : ℝ) ≠ 0)]
+  have h1 : 0 ≤ 4 * (32 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 *
+      (xiLineTwoLogDerivConstant + Real.log 4)) / ((Real.exp 1 - 1) * a) := by positivity
+  linarith [Nat.cast_nonneg (α := ℝ) M]
+
+/-- Positivity and unit bound `0 < recordCoherenceOffLine M ≤ 1`. -/
+theorem recordCoherenceOffLine_pos_le_one (M : ℕ) :
+    0 < recordCoherenceOffLine M ∧ recordCoherenceOffLine M ≤ 1 := by
+  unfold recordCoherenceOffLine explicitCoherence
+  refine ⟨by positivity, (div_le_one (by positivity)).mpr ?_⟩
+  have : (0 : ℝ) ≤ 10 * ((M : ℝ) + 1) * (25 / 16 * M) := by positivity
+  linarith
+
+/-- **Two-sided bounds on `recordOrderOffLine M w a`.** For `a > 0`, the unmodulated off-line Fejér
+order `recordOrderOffLine M w a` satisfies both `2 M² log(M + 1) / log 2 ≤ recordOrderOffLine M w a`
+and `log(recordNoiseOffLine M w a) / log 2 ≤ recordOrderOffLine M w a`, and is bounded above by
+`M + 2 + explicitOrderLog (recordNoiseOffLine M w a) (recordCoherenceOffLine M) M / log 2`. -/
+theorem recordOrderOffLine_two_sided (M : ℕ) (w : ℝ) {a : ℝ} (ha : 0 < a) :
+    2 * (M : ℝ) ^ 2 * Real.log (M + 1) / Real.log 2 ≤ (recordOrderOffLine M w a : ℝ) ∧
+      Real.log (recordNoiseOffLine M w a) / Real.log 2 ≤ (recordOrderOffLine M w a : ℝ) ∧
+      (recordOrderOffLine M w a : ℝ) ≤ M + 2 +
+        explicitOrderLog (recordNoiseOffLine M w a) (recordCoherenceOffLine M) M / Real.log 2 := by
+  obtain ⟨hc0, hc1⟩ := recordCoherenceOffLine_pos_le_one M
+  have hN := one_le_recordNoiseOffLine M w ha
   unfold recordOrderOffLine
-  exact explicitOrder_le (Nat.cast_nonneg M) (recordScaleOffLine_pos M hw ha hσ)
+  exact ⟨le_explicitOrder hN hc0 hc1 M,
+    log_noise_le_explicitOrder (lt_of_lt_of_le zero_lt_one hN) hc0 hc1 M,
+    explicitOrder_le hN hc0 hc1 M⟩
 
-/-- **Lower bound on `recordOrderOffLine`.** By `le_explicitOrder`,
-`log(recordScaleOffLine M w a σ) / log 2 ≤ recordOrderOffLine M w a σ`. -/
-theorem le_recordOrderOffLine (M : ℕ) (w a σ : ℝ) :
-    Real.log (recordScaleOffLine M w a σ) / Real.log 2 ≤ (recordOrderOffLine M w a σ : ℝ) := by
-  unfold recordOrderOffLine
-  exact le_explicitOrder M (recordScaleOffLine M w a σ)
-
-/-- **Two-sided explicit bounds on `recordLagOffLine`.** Under `OffLineCopiesLocallyBounded M`,
-`recordLagOffLine M w a σ` is sandwiched between explicit multiples of
-`recordOrderOffLine M w a σ / σ + 1 / √a`, with no height factor anywhere. -/
-theorem recordLagOffLine_le (M : ℕ) {w a σ : ℝ} (hw : 0 < w) (ha : 0 < a) (hσ : 0 < σ) :
+/-- **Two-sided law for `recordLagOffLine M w a σ`.** Under `OffLineCopiesLocallyBounded M`, for
+`a > 0` and `σ > 0`, `recordLagOffLine M w a σ` is sandwiched between explicit multiples of
+`log(recordNoiseOffLine M w a) / σ + 1 / √a` and
+`explicitOrderLog(recordNoiseOffLine M w a, recordCoherenceOffLine M, M) / σ + 1 / √a`, with zero
+dependence on the height of any zero. -/
+theorem recordLagOffLine_two_sided (M : ℕ) (w : ℝ) {a σ : ℝ} (ha : 0 < a) (hσ : 0 < σ) :
+    4 / σ * (13 * π * (Real.log (recordNoiseOffLine M w a) / Real.log 2) + 4) +
+        w + 8 * w * Real.exp (w / 2) * bumpMass w / recordScaleOffLine M a ≤
+      recordLagOffLine M w a σ ∧
     recordLagOffLine M w a σ ≤
-      2 * Real.log (160 * ((M : ℝ) + 1) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / a) / σ +
-        (18304 * ((M : ℝ) + 1) ^ 2 + 128 * w * ((M : ℝ) + 1)) / σ +
-        4096 * ((M : ℝ) + 1) *
-          (1 + ((M : ℝ) + 4) * Real.log (2 * ((M : ℝ) + 1) * (42 : ℝ) ^ ((M : ℝ) + 1)) /
-            Real.log 2 + Real.log (recordScaleOffLine M w a σ) / Real.log 2) / σ +
-        8 * w * Real.exp (w / 2) * bumpMass w * Real.sqrt (2 * ((M : ℝ) + 1) / a) := by
+      4 / σ * (13 * π * (M + 2 +
+        explicitOrderLog (recordNoiseOffLine M w a) (recordCoherenceOffLine M) M / Real.log 2) + 4) +
+        w + 8 * w * Real.exp (w / 2) * bumpMass w / recordScaleOffLine M a := by
+  obtain ⟨_, hlo, hhi⟩ := recordOrderOffLine_two_sided M w ha
   unfold recordLagOffLine
-  have hord := recordOrderOffLine_le M hw ha hσ
-  have hmul : 4096 * ((M : ℝ) + 1) * (recordOrderOffLine M w a σ : ℝ) / σ ≤
-      4096 * ((M : ℝ) + 1) *
-        (1 + ((M : ℝ) + 4) * Real.log (2 * ((M : ℝ) + 1) * (42 : ℝ) ^ ((M : ℝ) + 1)) /
-          Real.log 2 + Real.log (recordScaleOffLine M w a σ) / Real.log 2) / σ := by
-    gcongr
-  linarith
+  constructor <;> gcongr
 
-/-- **Lower bound on `recordLagOffLine`.** For `w > 0`, `a > 0`, `σ > 0`,
-`recordLagOffLine M w a σ` is at least the sum of its depth-inversion term
-`4096 (M + 1) log(recordScaleOffLine M w a σ) / (σ log 2)` and its phase-coherence drift
-`8 w e^{w/2} J_w √(2(M + 1)/a)`. -/
-theorem le_recordLagOffLine (M : ℕ) {w a σ : ℝ} (hw : 0 < w) (ha : 0 < a) (hσ : 0 < σ)
-    (ha_le : a ≤ 160 * ((M : ℝ) + 1) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2) :
-    4096 * ((M : ℝ) + 1) * (Real.log (recordScaleOffLine M w a σ) / Real.log 2) / σ +
-        8 * w * Real.exp (w / 2) * bumpMass w * Real.sqrt (2 * ((M : ℝ) + 1) / a) ≤
-      recordLagOffLine M w a σ := by
-  unfold recordLagOffLine
-  have hord := le_recordOrderOffLine M w a σ
-  have hmul : 4096 * ((M : ℝ) + 1) * (Real.log (recordScaleOffLine M w a σ) / Real.log 2) / σ ≤
-      4096 * ((M : ℝ) + 1) * (recordOrderOffLine M w a σ : ℝ) / σ := by
-    gcongr
-  have hlog : 0 ≤ 2 * Real.log (160 * ((M : ℝ) + 1) *
-      (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / a) / σ := by
-    have : 1 ≤ 160 * ((M : ℝ) + 1) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / a :=
-      (one_le_div ha).mpr ha_le
-    have h1 : 0 ≤ Real.log (160 * ((M : ℝ) + 1) *
-        (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / a) := Real.log_nonneg this
-    positivity
-  have hpos : 0 ≤ (18304 * ((M : ℝ) + 1) ^ 2 + 128 * w * ((M : ℝ) + 1)) / σ := by positivity
-  linarith
+/-- For `w > 0` and `W_on ≥ 0`, `1 ≤ nearTopNoiseOffLine M w W_on`. -/
+theorem one_le_nearTopNoiseOffLine (M : ℕ) {w W_on : ℝ} (hw : 0 < w) (hW : 0 ≤ W_on) :
+    1 ≤ nearTopNoiseOffLine M w W_on := by
+  unfold nearTopNoiseOffLine
+  have ha0 : 0 < centerAmplitude w ^ 2 / (2 * Real.exp 1) := by
+    have := centerAmplitude_pos hw; positivity
+  have he : 0 < Real.exp 1 - 1 := by linarith [Real.add_one_lt_exp (one_ne_zero : (1 : ℝ) ≠ 0)]
+  have h1 : 0 ≤ 4 * (2 * W_on + 48 * (M : ℝ) ^ 2 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2) /
+      ((Real.exp 1 - 1) * (centerAmplitude w ^ 2 / (2 * Real.exp 1))) := by positivity
+  linarith [Nat.cast_nonneg (α := ℝ) M]
 
-/-- **Elimination of the `√a · recordLag → ∞` coherence divergence.** In
-`OrderOfTheExplicitVisibilityLags`, `tendsto_sqrt_mul_recordLag` showed that
-`√a · recordLag w a σ → ∞` as `a → 0⁺` because the coherence threshold `H₀` was divided by
-`√(40 log(180 Γ)) ≍ √(log(1/a))`. Under `OffLineCopiesLocallyBounded M`, the coherence drift is
-exactly `8 w e^{w/2} J_w √(2(M + 1)/a)`, whose product with `√a` is the constant
-`8 w e^{w/2} J_w √(2(M + 1))`, independent of `a`. -/
-theorem sqrt_mul_coherence_drift_offLine_eq (M : ℕ) (w : ℝ) {a : ℝ} (ha : 0 < a) :
-    Real.sqrt a * (8 * w * Real.exp (w / 2) * bumpMass w * Real.sqrt (2 * ((M : ℝ) + 1) / a)) =
-      8 * w * Real.exp (w / 2) * bumpMass w * Real.sqrt (2 * ((M : ℝ) + 1)) := by
-  have h1 : Real.sqrt a * Real.sqrt (2 * ((M : ℝ) + 1) / a) = Real.sqrt (2 * ((M : ℝ) + 1)) := by
-    rw [← Real.sqrt_mul ha.le, mul_div_cancel₀ _ ha.ne']
-  calc Real.sqrt a * (8 * w * Real.exp (w / 2) * bumpMass w * Real.sqrt (2 * ((M : ℝ) + 1) / a))
-      = 8 * w * Real.exp (w / 2) * bumpMass w *
-          (Real.sqrt a * Real.sqrt (2 * ((M : ℝ) + 1) / a)) := by ring
-    _ = 8 * w * Real.exp (w / 2) * bumpMass w * Real.sqrt (2 * ((M : ℝ) + 1)) := by rw [h1]
-
-/-- **Upper bound on `nearTopOrderOffLine`.** For any `W_on ≥ 0` and `w > 0`,
-`nearTopOrderOffLine M w W_on` is bounded above by a constant in `(M, w)` plus
-`log(W_on + 24 M² K₀ + 24 M² K₀ + 1) / log 2 = O_{M,w}(1 + log⁺ W_on)`. -/
-theorem nearTopOrderOffLine_le (M : ℕ) {w W_on : ℝ} (hw : 0 < w) (hW : 0 ≤ W_on) :
-    (nearTopOrderOffLine M w W_on : ℝ) ≤
-      1 + ((M : ℝ) + 4) * Real.log (2 * ((M : ℝ) + 1) * (42 : ℝ) ^ ((M : ℝ) + 1)) / Real.log 2 +
-        Real.log (nearTopScaleOffLine M w W_on) / Real.log 2 := by
-  unfold nearTopOrderOffLine
-  exact explicitOrder_le (Nat.cast_nonneg M) (nearTopScaleOffLine_pos M hw hW)
-
-/-- **Lower bound on `nearTopOrderOffLine`.** For any `M`, `w`, `W_on`,
-`log(nearTopScaleOffLine M w W_on) / log 2 ≤ nearTopOrderOffLine M w W_on`. -/
-theorem le_nearTopOrderOffLine (M : ℕ) (w W_on : ℝ) :
-    Real.log (nearTopScaleOffLine M w W_on) / Real.log 2 ≤ (nearTopOrderOffLine M w W_on : ℝ) := by
-  unfold nearTopOrderOffLine
-  exact le_explicitOrder M (nearTopScaleOffLine M w W_on)
-
-/-- **Lower bound on `nearTopScaleOffLine` in terms of `W_on`.** Since `3 e > 2`, for `W_on ≥ 0` and
-`w > 0`, `nearTopScaleOffLine M w W_on ≥ W_on / centerAmplitude w ^ 2`. -/
-theorem div_centerAmplitude_sq_le_nearTopScaleOffLine (M : ℕ) {w W_on : ℝ} (hw : 0 < w)
-    (hW : 0 ≤ W_on) :
-    (W_on + 1) / centerAmplitude w ^ 2 ≤ nearTopScaleOffLine M w W_on := by
-  unfold nearTopScaleOffLine
+/-- For `w > 0`, `nearTopNoiseOffLine M w W_on` dominates
+`16 e · W_on / ((e - 1) a_w²) + 1`. -/
+theorem div_centerAmplitude_sq_le_nearTopNoiseOffLine (M : ℕ) {w : ℝ} (hw : 0 < w)
+    (W_on : ℝ) :
+    16 * Real.exp 1 * W_on / ((Real.exp 1 - 1) * centerAmplitude w ^ 2) + 1 ≤
+      nearTopNoiseOffLine M w W_on := by
+  unfold nearTopNoiseOffLine
   have ha0 : 0 < centerAmplitude w ^ 2 := sq_pos_of_pos (centerAmplitude_pos hw)
-  have he : (2 : ℝ) ≤ 3 * Real.exp 1 := by linarith [Real.one_le_exp (by norm_num : (0 : ℝ) ≤ 1)]
-  have hK : 0 ≤ 24 * (M : ℝ) ^ 2 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 := by positivity
-  have hnum : 2 * (W_on + 1) ≤ 3 * Real.exp 1 *
-      (W_on + 24 * (M : ℝ) ^ 2 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 +
-        24 * (M : ℝ) ^ 2 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 + 1) := by
-    nlinarith
-  have hdiv : (W_on + 1) / centerAmplitude w ^ 2 ≤
-      3 * Real.exp 1 *
-        (W_on + 24 * (M : ℝ) ^ 2 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 +
-          24 * (M : ℝ) ^ 2 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 + 1) /
-        (2 * centerAmplitude w ^ 2) := by
-    rw [div_le_div_iff₀ ha0 (by positivity)]
-    nlinarith
-  exact le_trans hdiv (by linarith)
+  have he : 0 < Real.exp 1 - 1 := by linarith [Real.add_one_lt_exp (one_ne_zero : (1 : ℝ) ≠ 0)]
+  have hK : 0 ≤ 48 * (M : ℝ) ^ 2 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 := by positivity
+  have h1 : 16 * Real.exp 1 * W_on / ((Real.exp 1 - 1) * centerAmplitude w ^ 2) =
+      4 * (2 * W_on) / ((Real.exp 1 - 1) * (centerAmplitude w ^ 2 / (2 * Real.exp 1))) := by
+    field_simp; ring
+  have h2 : 4 * (2 * W_on) / ((Real.exp 1 - 1) * (centerAmplitude w ^ 2 / (2 * Real.exp 1))) ≤
+      4 * (2 * W_on + 48 * (M : ℝ) ^ 2 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2) /
+        ((Real.exp 1 - 1) * (centerAmplitude w ^ 2 / (2 * Real.exp 1))) := by
+    gcongr; linarith
+  linarith [Nat.cast_nonneg (α := ℝ) M]
 
-/-- **Two-sided explicit bounds on `nearTopLagOffLine`.** For `w > 0`, `W_on ≥ 0`, and `δ₀ > 0`,
-`nearTopLagOffLine M w W_on δ₀` is bounded above and below by explicit multiples of
-`(1 + log(nearTopScaleOffLine M w W_on)) / δ₀` plus the height-free coherence drift. -/
-theorem nearTopLagOffLine_le (M : ℕ) {w W_on δ₀ : ℝ} (hw : 0 < w) (hW : 0 ≤ W_on) (hδ₀ : 0 < δ₀) :
+/-- Positivity and unit bound `0 < nearTopCoherenceOffLine M w ≤ 1` for `w > 0`. -/
+theorem nearTopCoherenceOffLine_pos_le_one (M : ℕ) {w : ℝ} (hw : 0 < w) :
+    0 < nearTopCoherenceOffLine M w ∧ nearTopCoherenceOffLine M w ≤ 1 := by
+  have ha0 : 0 < centerAmplitude w ^ 2 / (2 * Real.exp 1) := by
+    have := centerAmplitude_pos hw; positivity
+  unfold nearTopCoherenceOffLine explicitCoherence
+  refine ⟨by positivity, (div_le_one (by positivity)).mpr ?_⟩
+  have : 0 ≤ 10 * ((M : ℝ) + 1) * (2 * M * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2) := by
+    positivity
+  linarith
+
+/-- **Two-sided bounds on `nearTopOrderOffLine M w W_on`: `Θ_{M,w}(1 + log⁺ W_on)`.** -/
+theorem nearTopOrderOffLine_two_sided (M : ℕ) {w W_on : ℝ} (hw : 0 < w) (hW : 0 ≤ W_on) :
+    Real.log (nearTopNoiseOffLine M w W_on) / Real.log 2 ≤ (nearTopOrderOffLine M w W_on : ℝ) ∧
+      (nearTopOrderOffLine M w W_on : ℝ) ≤ M + 2 +
+        explicitOrderLog (nearTopNoiseOffLine M w W_on) (nearTopCoherenceOffLine M w) M /
+          Real.log 2 := by
+  obtain ⟨hc0, hc1⟩ := nearTopCoherenceOffLine_pos_le_one M hw
+  have hN := one_le_nearTopNoiseOffLine M hw hW
+  unfold nearTopOrderOffLine
+  exact ⟨log_noise_le_explicitOrder (lt_of_lt_of_le zero_lt_one hN) hc0 hc1 M,
+    explicitOrder_le hN hc0 hc1 M⟩
+
+/-- **Two-sided law for `nearTopLagOffLine M w W_on δ₀`: `Θ_{M,w}((1 + log⁺ W_on) / δ₀)`.**
+For `w > 0`, `W_on ≥ 0`, and `δ₀ > 0`, `nearTopLagOffLine M w W_on δ₀` is bounded both below and
+above by explicit affine functions of `log(nearTopNoiseOffLine M w W_on) / δ₀` (note that
+`explicitOrderLog` depends on `W_on` exclusively through `Real.log (nearTopNoiseOffLine M w W_on)`). -/
+theorem nearTopLagOffLine_two_sided (M : ℕ) {w W_on δ₀ : ℝ} (hw : 0 < w) (hW : 0 ≤ W_on)
+    (hδ₀ : 0 < δ₀) :
+    8 / δ₀ * (13 * π * (Real.log (nearTopNoiseOffLine M w W_on) / Real.log 2) + 4 +
+        |Real.log (4 * M * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / centerAmplitude w ^ 2)|) +
+        w + 8 * w * Real.exp (w / 2) * bumpMass w / nearTopScaleOffLine M w ≤
+      nearTopLagOffLine M w W_on δ₀ ∧
     nearTopLagOffLine M w W_on δ₀ ≤
-      2 * Real.log (160 * ((M : ℝ) + 1) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 /
-          centerAmplitude w ^ 2) / δ₀ +
-        (18304 * ((M : ℝ) + 1) ^ 2 + 128 * w * ((M : ℝ) + 1)) / δ₀ +
-        4096 * ((M : ℝ) + 1) *
-          (1 + ((M : ℝ) + 4) * Real.log (2 * ((M : ℝ) + 1) * (42 : ℝ) ^ ((M : ℝ) + 1)) /
-            Real.log 2 + Real.log (nearTopScaleOffLine M w W_on) / Real.log 2) / δ₀ +
-        8 * w * Real.exp (w / 2) * bumpMass w *
-          Real.sqrt (2 * ((M : ℝ) + 1) * (2 * Real.exp 1) / centerAmplitude w ^ 2) := by
+      8 / δ₀ * (13 * π * (M + 2 +
+        explicitOrderLog (nearTopNoiseOffLine M w W_on) (nearTopCoherenceOffLine M w) M /
+          Real.log 2) + 4 +
+        |Real.log (4 * M * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / centerAmplitude w ^ 2)|) +
+        w + 8 * w * Real.exp (w / 2) * bumpMass w / nearTopScaleOffLine M w := by
+  obtain ⟨hlo, hhi⟩ := nearTopOrderOffLine_two_sided M hw hW
   unfold nearTopLagOffLine
-  have hord := nearTopOrderOffLine_le M hw hW
-  have hmul : 4096 * ((M : ℝ) + 1) * (nearTopOrderOffLine M w W_on : ℝ) / δ₀ ≤
-      4096 * ((M : ℝ) + 1) *
-        (1 + ((M : ℝ) + 4) * Real.log (2 * ((M : ℝ) + 1) * (42 : ℝ) ^ ((M : ℝ) + 1)) /
-          Real.log 2 + Real.log (nearTopScaleOffLine M w W_on) / Real.log 2) / δ₀ := by
-    gcongr
-  linarith
+  constructor <;> gcongr
 
-/-- **Lower bound on `nearTopLagOffLine` in terms of `log((W_on + 1) / a_w²) / δ₀`.** -/
-theorem le_nearTopLagOffLine (M : ℕ) {w W_on δ₀ : ℝ} (hw : 0 < w) (hW : 0 ≤ W_on) (hδ₀ : 0 < δ₀) :
-    4096 * ((M : ℝ) + 1) * (Real.log ((W_on + 1) / centerAmplitude w ^ 2) / Real.log 2) / δ₀ +
-        8 * w * Real.exp (w / 2) * bumpMass w *
-          Real.sqrt (2 * ((M : ℝ) + 1) * (2 * Real.exp 1) / centerAmplitude w ^ 2) ≤
-      nearTopLagOffLine M w W_on δ₀ := by
-  unfold nearTopLagOffLine
-  have ha0 : 0 < centerAmplitude w ^ 2 := sq_pos_of_pos (centerAmplitude_pos hw)
-  have hlog_sc : Real.log ((W_on + 1) / centerAmplitude w ^ 2) ≤
-      Real.log (nearTopScaleOffLine M w W_on) :=
-    Real.log_le_log (by positivity) (div_centerAmplitude_sq_le_nearTopScaleOffLine M hw hW)
-  have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
-  have hord : Real.log ((W_on + 1) / centerAmplitude w ^ 2) / Real.log 2 ≤
-      (nearTopOrderOffLine M w W_on : ℝ) :=
-    (div_le_div_of_nonneg_right hlog_sc hlog2.le).trans (le_nearTopOrderOffLine M w W_on)
-  have hmul : 4096 * ((M : ℝ) + 1) *
-        (Real.log ((W_on + 1) / centerAmplitude w ^ 2) / Real.log 2) / δ₀ ≤
-      4096 * ((M : ℝ) + 1) * (nearTopOrderOffLine M w W_on : ℝ) / δ₀ := by
-    gcongr
-  have hratio : 1 ≤ 160 * ((M : ℝ) + 1) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 /
-      centerAmplitude w ^ 2 := by
-    rw [one_le_div ha0]
-    have h1 := centerAmplitude_le_exp_mul_scaledBumpDecay hw
-    have h2 : centerAmplitude w ^ 2 ≤ (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 :=
-      pow_le_pow_left₀ (centerAmplitude_pos hw).le h1 2
-    have hM1 : (1 : ℝ) ≤ 160 * ((M : ℝ) + 1) := by linarith [Nat.cast_nonneg (α := ℝ) M]
-    nlinarith
-  have hlog_pos : 0 ≤ 2 * Real.log (160 * ((M : ℝ) + 1) *
-      (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / centerAmplitude w ^ 2) / δ₀ := by
-    have := Real.log_nonneg hratio
-    positivity
-  have hconst_pos : 0 ≤ (18304 * ((M : ℝ) + 1) ^ 2 + 128 * w * ((M : ℝ) + 1)) / δ₀ := by positivity
-  linarith
-
-/-- **Upper bound on `nearTopLogLogLagOffLine`: `O_{M,w}((1 + log log γ₀) / δ₀)`.** -/
-theorem nearTopLogLogLagOffLine_le (M : ℕ) {w γ₀ δ₀ : ℝ} (hw : 0 < w) (hγ₀ : 0 ≤ γ₀)
-    (hδ₀ : 0 < δ₀) :
+/-- **Two-sided doubly-logarithmic law for `nearTopLogLogLagOffLine M w γ₀ δ₀`:
+`Θ_{M,w}((1 + log log(|γ₀| + 4)) / δ₀)`.** -/
+theorem nearTopLogLogLagOffLine_two_sided (M : ℕ) {w γ₀ δ₀ : ℝ} (hw : 0 < w) (hδ₀ : 0 < δ₀) :
+    let W_log := 16 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 *
+      (xiLineTwoLogDerivConstant + Real.log (|γ₀| + 4))
+    8 / δ₀ * (13 * π * (Real.log (nearTopNoiseOffLine M w W_log) / Real.log 2) + 4 +
+        |Real.log (4 * M * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / centerAmplitude w ^ 2)|) +
+        w + 8 * w * Real.exp (w / 2) * bumpMass w / nearTopScaleOffLine M w ≤
+      nearTopLogLogLagOffLine M w γ₀ δ₀ ∧
     nearTopLogLogLagOffLine M w γ₀ δ₀ ≤
-      2 * Real.log (160 * ((M : ℝ) + 1) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 /
-          centerAmplitude w ^ 2) / δ₀ +
-        (18304 * ((M : ℝ) + 1) ^ 2 + 128 * w * ((M : ℝ) + 1)) / δ₀ +
-        4096 * ((M : ℝ) + 1) *
-          (1 + ((M : ℝ) + 4) * Real.log (2 * ((M : ℝ) + 1) * (42 : ℝ) ^ ((M : ℝ) + 1)) /
-            Real.log 2 +
-            Real.log (nearTopScaleOffLine M w
-              (1440 * Real.log (180 * (|γ₀| + 2)) *
-                (Real.exp (w / 2) * scaledBumpDecay w) ^ 2)) / Real.log 2) / δ₀ +
-        8 * w * Real.exp (w / 2) * bumpMass w *
-          Real.sqrt (2 * ((M : ℝ) + 1) * (2 * Real.exp 1) / centerAmplitude w ^ 2) := by
+      8 / δ₀ * (13 * π * (M + 2 +
+        explicitOrderLog (nearTopNoiseOffLine M w W_log) (nearTopCoherenceOffLine M w) M /
+          Real.log 2) + 4 +
+        |Real.log (4 * M * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / centerAmplitude w ^ 2)|) +
+        w + 8 * w * Real.exp (w / 2) * bumpMass w / nearTopScaleOffLine M w := by
+  have hC := xiLineTwoLogDerivConstant_nonneg
+  have hlog : 0 ≤ Real.log (|γ₀| + 4) := Real.log_nonneg (by linarith [abs_nonneg γ₀])
+  have hW : 0 ≤ 16 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 *
+      (xiLineTwoLogDerivConstant + Real.log (|γ₀| + 4)) := by positivity
   unfold nearTopLogLogLagOffLine
-  have hL : 0 ≤ 1440 * Real.log (180 * (|γ₀| + 2)) *
-      (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 := by
-    have : 0 ≤ Real.log (180 * (|γ₀| + 2)) := Real.log_nonneg (by linarith [abs_nonneg γ₀])
-    positivity
-  exact nearTopLagOffLine_le M hw hL hδ₀
-
-/-- **Lower bound on `nearTopLogLogLagOffLine`: `Ω_{M,w}((log log γ₀) / δ₀)`.** For `γ₀ ≥ 1`,
-`nearTopLogLogLagOffLine M w γ₀ δ₀` is at least
-`4096 (M + 1) (log(1440 log(180(|γ₀| + 2))) / log 2) / δ₀` plus the coherence drift. Together with
-`nearTopLogLogLagOffLine_le`, this proves `nearTopLogLogLagOffLine M w γ₀ δ₀ = Θ_{M,w}((1 + log log γ₀) / δ₀)`. -/
-theorem le_nearTopLogLogLagOffLine (M : ℕ) {w γ₀ δ₀ : ℝ} (hw : 0 < w) (hγ₀ : 0 ≤ γ₀)
-    (hδ₀ : 0 < δ₀) :
-    4096 * ((M : ℝ) + 1) *
-        (Real.log (1440 * Real.log (180 * (|γ₀| + 2))) / Real.log 2) / δ₀ +
-      8 * w * Real.exp (w / 2) * bumpMass w *
-        Real.sqrt (2 * ((M : ℝ) + 1) * (2 * Real.exp 1) / centerAmplitude w ^ 2) ≤
-      nearTopLogLogLagOffLine M w γ₀ δ₀ := by
-  unfold nearTopLogLogLagOffLine
-  set W_log := 1440 * Real.log (180 * (|γ₀| + 2)) *
-    (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 with hW_log
-  have hlog0 : 1 ≤ Real.log (180 * (|γ₀| + 2)) := by
-    have h1 : Real.exp 1 ≤ 180 * (|γ₀| + 2) := by
-      linarith [Real.exp_one_lt_d9.le, abs_nonneg γ₀]
-    have h2 := Real.log_le_log (Real.exp_pos 1) h1
-    rwa [Real.log_exp] at h2
-  have hW0 : 0 ≤ W_log := by rw [hW_log]; positivity
-  have hlow := le_nearTopLagOffLine M hw hW0 hδ₀
-  have h1 := centerAmplitude_le_exp_mul_scaledBumpDecay hw
-  have h2 : centerAmplitude w ^ 2 ≤ (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 :=
-    pow_le_pow_left₀ (centerAmplitude_pos hw).le h1 2
-  have ha0 : 0 < centerAmplitude w ^ 2 := sq_pos_of_pos (centerAmplitude_pos hw)
-  have hratio : 1440 * Real.log (180 * (|γ₀| + 2)) ≤ (W_log + 1) / centerAmplitude w ^ 2 := by
-    rw [le_div_iff₀ ha0, hW_log]
-    nlinarith
-  have hlog_le : Real.log (1440 * Real.log (180 * (|γ₀| + 2))) ≤
-      Real.log ((W_log + 1) / centerAmplitude w ^ 2) :=
-    Real.log_le_log (by positivity) hratio
-  have hmul : 4096 * ((M : ℝ) + 1) *
-        (Real.log (1440 * Real.log (180 * (|γ₀| + 2))) / Real.log 2) / δ₀ ≤
-      4096 * ((M : ℝ) + 1) *
-        (Real.log ((W_log + 1) / centerAmplitude w ^ 2) / Real.log 2) / δ₀ := by
-    have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
-    gcongr
-  linarith
+  exact nearTopLagOffLine_two_sided M hw hW hδ₀
 
 /-! ### 3. Intrinsic optimality of the doubly-logarithmic aperture: the on-line mass barrier
 and the all-test Hodge-defect threshold -/
@@ -660,27 +626,38 @@ theorem two_re_lagStructure_eq_onLine_add_offLine {w : ℝ} (hw : 0 < w) (c v : 
       split_ifs
       · rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (norm_nonneg _)]
         exact mul_le_of_le_one_right (norm_nonneg _) (Real.abs_cos_le_one _)
-      · rw [Real.norm_zero]; exact norm_nonneg _)
+      · rw [norm_zero]; exact norm_nonneg _)
   have hs_off : Summable (fun z : ℂ => if z.re = 0 then 0 else
       (D z * Complex.exp (z * (v : ℂ))).re) :=
-    hs_re.of_norm_bounded (fun z => by
+    hs_re.norm.of_norm_bounded (fun z => by
       split_ifs
-      · rw [Real.norm_zero]; exact norm_nonneg _
+      · rw [norm_zero]; exact norm_nonneg _
       · exact le_rfl)
   have hterm : ∀ z : ℂ, (D z * Complex.exp (z * (v : ℂ))).re =
       (if z.re = 0 then ‖D z‖ * Real.cos (z.im * v) else 0) +
         (if z.re = 0 then 0 else (D z * Complex.exp (z * (v : ℂ))).re) := by
     intro z
     by_cases hz : z.re = 0
-    · rw [if_pos hz, if_pos hz, add_zero, evenCoeff_modScaledBump_onLine_eq_norm zetaZeroConfig hw c hz]
+    · rw [if_pos hz, if_pos hz, add_zero]
+      have hd_eq : D z = ((‖D z‖ : ℝ) : ℂ) := by
+        rw [hD, hb]
+        exact evenCoeff_modScaledBump_onLine_eq_norm zetaZeroConfig hw c hz
       have hexp : z * (v : ℂ) = ((z.im * v : ℝ) : ℂ) * I := by
         apply Complex.ext <;> simp [hz]
-      rw [hexp, Complex.re_ofReal_mul, Complex.exp_mul_I, Complex.add_re, Complex.cos_ofReal_re,
-        Complex.mul_I_re, Complex.sin_ofReal_im, sub_zero]
+      calc (D z * Complex.exp (z * (v : ℂ))).re
+          = (((‖D z‖ : ℝ) : ℂ) * Complex.exp (((z.im * v : ℝ) : ℂ) * I)).re := by
+            congr 1; rw [hexp]; exact congrArg (· * _) hd_eq
+        _ = ‖D z‖ * Real.cos (z.im * v) := by
+            rw [Complex.re_ofReal_mul, Complex.exp_mul_I, Complex.add_re,
+              Complex.cos_ofReal_re, Complex.mul_I_re, Complex.sin_ofReal_im, neg_zero, add_zero]
     · rw [if_neg hz, if_neg hz, zero_add]
+  have hre_eq : 2 * (lagStructure zetaZeroConfig b v).re =
+      ∑' z : ℂ, (D z * Complex.exp (z * (v : ℂ))).re := by
+    have h1 := congrArg Complex.re hv.2
+    rw [Complex.ofReal_re, Complex.re_tsum hv.1] at h1
+    exact h1
   calc 2 * (lagStructure zetaZeroConfig b v).re
-      = ∑' z : ℂ, (D z * Complex.exp (z * (v : ℂ))).re := by
-        rw [hv.2, ← Complex.re_tsum hv.1]
+      = ∑' z : ℂ, (D z * Complex.exp (z * (v : ℂ))).re := hre_eq
     _ = ∑' z : ℂ, ((if z.re = 0 then ‖D z‖ * Real.cos (z.im * v) else 0) +
           (if z.re = 0 then 0 else (D z * Complex.exp (z * (v : ℂ))).re)) :=
         tsum_congr hterm
@@ -691,7 +668,7 @@ theorem two_re_lagStructure_eq_onLine_add_offLine {w : ℝ} (hw : 0 < w) (c v : 
 of `ζ` has depth `|Re ρ - ½| ≤ δ₀`, then for every `v ≥ 0`,
 `|offLineLagStructure w c v| ≤ offLineEvenMass w c · e^{δ₀ v}`. -/
 theorem abs_offLineLagStructure_le_of_depth_le {w c v δ₀ : ℝ} (hw : 0 < w) (hv : 0 ≤ v)
-    (hδ₀ : 0 ≤ δ₀) (hdepth : ∀ ρ ∈ zetaZeroConfig.carrier, |ρ.re - 1 / 2| ≤ δ₀) :
+    (hdepth : ∀ ρ ∈ zetaZeroConfig.carrier, |ρ.re - 1 / 2| ≤ δ₀) :
     |offLineLagStructure w c v| ≤ offLineEvenMass w c * Real.exp (δ₀ * v) := by
   classical
   set b := modScaledBump w c with hb
@@ -702,9 +679,9 @@ theorem abs_offLineLagStructure_le_of_depth_le {w c v δ₀ : ℝ} (hw : 0 < w) 
     (Complex.hasSum_re hv_eq.1.hasSum).summable
   have hs_off : Summable (fun z : ℂ => if z.re = 0 then 0 else
       (D z * Complex.exp (z * (v : ℂ))).re) :=
-    hs_re.of_norm_bounded (fun z => by
+    hs_re.norm.of_norm_bounded (fun z => by
       split_ifs
-      · rw [Real.norm_zero]; exact norm_nonneg _
+      · rw [norm_zero]; exact norm_nonneg _
       · exact le_rfl)
   have hsD := summable_norm_evenCoeff zetaZeroConfig temperedConfig_zetaZeroConfig
     (contDiff_modScaledBump_two w c) (modScaledBump_support hw c)
@@ -740,20 +717,32 @@ theorem abs_offLineLagStructure_le_of_depth_le {w c v δ₀ : ℝ} (hw : 0 < w) 
         Summable.tsum_le_tsum hle hs_off.norm (hs_mass.mul_right _)
     _ = offLineEvenMass w c * Real.exp (δ₀ * v) := tsum_mul_right
 
+/-- Exact identity `Re W(twoBump b v (-1)) = 2 Re S(0) - 2 Re S(v)` for a tempered configuration. -/
+theorem re_W_twoBump_neg_one_eq (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ → ℂ}
+    (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) (v : ℝ) :
+    (Z.W (twoBump b v (-1)) (twoBump b v (-1))).re =
+      2 * (lagStructure Z b 0).re - 2 * (lagStructure Z b v).re := by
+  have hX : lagStructure Z b v + conj (lagStructure Z b (-v)) = 2 * lagStructure Z b v := by
+    rw [conj_lagStructure_neg Z hZ hb hbs v]; ring
+  rw [re_W_unit_twoBump Z hZ hb hbs v (by simp), hX]
+  simp only [neg_mul, one_mul, Complex.neg_re, Complex.mul_re, Complex.re_ofNat,
+    Complex.im_ofNat, zero_mul, sub_zero]
+  ring
+
 /-- **On-line mass lower bound for the Weil difference test `twoBump (modScaledBump w c) v (-1)`.**
 If all zeros of `ζ` have depth `|Re ρ - ½| ≤ δ₀`, then for every lag `v ≥ 0`,
 `Re W(twoBump (modScaledBump w c) v (-1)) ≥ (onLineEvenMass w c - onLineLagStructure w c v) - offLineEvenMass w c · (e^{δ₀ v} + 1)`.
 In particular, the positive on-line contribution `onLineEvenMass w c - onLineLagStructure w c v`
 must be overcome by the exponentially growing off-line term `offLineEvenMass w c · (e^{δ₀ v} + 1)`
 before the difference test can become negative. -/
-theorem re_W_twoBump_modScaledBump_ge_onLineEvenMass_sub {w c v δ₀ : ℝ} (hw : 0 < w)
-    (hv : 0 ≤ v) (hδ₀ : 0 ≤ δ₀)
+theorem re_W_twoBump_modScaledBump_ge_onLineEvenMass_sub (c : ℝ) {w v δ₀ : ℝ} (hw : 0 < w)
+    (hv : 0 ≤ v)
     (hdepth : ∀ ρ ∈ zetaZeroConfig.carrier, |ρ.re - 1 / 2| ≤ δ₀) :
     (onLineEvenMass w c - onLineLagStructure w c v) -
         offLineEvenMass w c * (Real.exp (δ₀ * v) + 1) ≤
       (zetaZeroConfig.W (twoBump (modScaledBump w c) v (-1))
         (twoBump (modScaledBump w c) v (-1))).re := by
-  have hW := re_W_twoBump_neg_one zetaZeroConfig temperedConfig_zetaZeroConfig
+  have hW := re_W_twoBump_neg_one_eq zetaZeroConfig temperedConfig_zetaZeroConfig
     (contDiff_modScaledBump_two w c) (modScaledBump_support hw c) v
   have h0 := two_re_lagStructure_eq_onLine_add_offLine hw c 0
   have hv_eq := two_re_lagStructure_eq_onLine_add_offLine hw c v
@@ -762,9 +751,9 @@ theorem re_W_twoBump_modScaledBump_ge_onLineEvenMass_sub {w c v δ₀ : ℝ} (hw
     refine tsum_congr fun z => ?_
     split_ifs <;> simp
   rw [hon0] at h0
-  have hoff0 := abs_offLineLagStructure_le_of_depth_le hw (le_refl 0) hδ₀ hdepth
+  have hoff0 := abs_offLineLagStructure_le_of_depth_le (c := c) hw (le_refl 0) hdepth
   simp only [mul_zero, Real.exp_zero, mul_one] at hoff0
-  have hoffv := abs_offLineLagStructure_le_of_depth_le hw hv hδ₀ hdepth
+  have hoffv := abs_offLineLagStructure_le_of_depth_le (c := c) hw hv hdepth
   linarith [hW, h0, hv_eq, (abs_le.mp hoff0).1, (abs_le.mp hoffv).2]
 
 /-- **Phase-incoherence lag barrier (`Ω((log log c) / δ₀)` lower bound for difference tests).**
@@ -785,7 +774,7 @@ theorem re_W_twoBump_modScaledBump_nonneg_of_lag_le_log_ratio {w c v δ₀ θ : 
     (hv_le : v ≤ (1 / δ₀) * Real.log (θ * onLineEvenMass w c / offLineEvenMass w c - 1)) :
     0 ≤ (zetaZeroConfig.W (twoBump (modScaledBump w c) v (-1))
       (twoBump (modScaledBump w c) v (-1))).re := by
-  have hlow := re_W_twoBump_modScaledBump_ge_onLineEvenMass_sub hw hv hδ₀.le hdepth
+  have hlow := re_W_twoBump_modScaledBump_ge_onLineEvenMass_sub c hw hv hdepth
   have h1 : θ * onLineEvenMass w c ≤ onLineEvenMass w c - onLineLagStructure w c v := by linarith
   have h2 : δ₀ * v ≤ Real.log (θ * onLineEvenMass w c / offLineEvenMass w c - 1) := by
     have := mul_le_mul_of_nonneg_left hv_le hδ₀.le
@@ -811,118 +800,181 @@ theorem rvmLocalDensity_pos {γ₀ : ℝ} (hγ₀ : 2 * π < γ₀) : 0 < rvmLoc
   positivity
 
 /-- **All-test Hodge-defect invisibility below the doubly-logarithmic aperture.** In
-`isolatedPairConfig (rvmLocalDensity γ₀) δ₀ γ₀` (an isolated off-line pair at depth `δ₀` and height
-`γ₀` in an on-line background of Riemann–von Mangoldt local density `L = (1/2π) log(γ₀/2π)`), every
-`C²` test supported in `[-a, a]` has nonnegative Weil form (`hodgeDefectAt = 0`) for all
-`0 < a ≤ (1 / (2 δ₀)) log(4 δ₀ · rvmLocalDensity γ₀) = Θ((log log γ₀) / δ₀)`. -/
+`isolatedPairConfig (rvmLocalDensity_pos hγ₀) hδ₀ hδ₀1 γ₀` (an isolated off-line pair at depth `δ₀`
+and height `γ₀` in an on-line background of Riemann–von Mangoldt local density
+`L = (1/2π) log(γ₀/2π)`), every `C²` test supported in `[-a, a]` has nonnegative Weil form
+(`hodgeDefectAt = 0`) for all `0 < a ≤ rvmLocalDensity γ₀ / 2` with
+`a ≤ (1 / (2 δ₀)) log(4 δ₀ · rvmLocalDensity γ₀) = Θ((log log γ₀) / δ₀)`. -/
 theorem hodgeDefectAt_isolatedPair_rvmDensity_eq_zero {γ₀ δ₀ a : ℝ} (hγ₀ : 2 * π < γ₀)
-    (hδ₀ : 0 < δ₀) (hδ₀1 : δ₀ < 1 / 2) (ha : 0 < a)
+    (hδ₀ : 0 < δ₀) (hδ₀1 : δ₀ ≤ 1 / 2) (ha : 0 < a) (haL : a ≤ rvmLocalDensity γ₀ / 2)
     (ha_le : a ≤ (1 / (2 * δ₀)) * Real.log (4 * δ₀ * rvmLocalDensity γ₀)) :
-    hodgeDefectAt (isolatedPairConfig (rvmLocalDensity γ₀) δ₀ γ₀) a = 0 :=
-  hodgeDefectAt_isolatedPairConfig_eq_zero (rvmLocalDensity_pos hγ₀) hδ₀ hδ₀1 ha ha_le
+    hodgeDefectAt (isolatedPairConfig (rvmLocalDensity_pos hγ₀) hδ₀ hδ₀1 γ₀) a = 0 := by
+  rw [hodgeDefectAt_isolatedPair (rvmLocalDensity_pos hγ₀) hδ₀ hδ₀1 γ₀ ha haL, if_pos]
+  have hL0 := rvmLocalDensity_pos hγ₀
+  have h1 : 2 * δ₀ * a ≤ Real.log (4 * δ₀ * rvmLocalDensity γ₀) := by
+    have := mul_le_mul_of_nonneg_left ha_le (by positivity : 0 ≤ 2 * δ₀)
+    rwa [← mul_assoc, mul_one_div_cancel (by positivity : 2 * δ₀ ≠ 0), one_mul] at this
+  have h2 : Real.exp (2 * δ₀ * a) ≤ 4 * δ₀ * rvmLocalDensity γ₀ := by
+    rw [← Real.exp_log (by positivity : 0 < 4 * δ₀ * rvmLocalDensity γ₀)]
+    exact Real.exp_le_exp.mpr h1
+  have hsinh : Real.sinh (2 * δ₀ * a) ≤ 2 * δ₀ * rvmLocalDensity γ₀ := by
+    rw [Real.sinh_eq]
+    have := Real.exp_pos (-(2 * δ₀ * a))
+    linarith
+  have hdiv : Real.sinh (2 * δ₀ * a) / δ₀ ≤ 2 * rvmLocalDensity γ₀ := by
+    rw [div_le_iff₀ hδ₀]
+    linarith
+  linarith
 
 /-- **All-test Hodge-defect visibility above the doubly-logarithmic aperture.** In
-`isolatedPairConfig (rvmLocalDensity γ₀) δ₀ γ₀`, the Hodge defect equals `1` at every degree `a` in
-the range `(1 / (2 δ₀)) log(8 δ₀ · rvmLocalDensity γ₀) ≤ a ≤ rvmLocalDensity γ₀ / 2`. Together with
-`hodgeDefectAt_isolatedPair_rvmDensity_eq_zero`, this proves that the doubly-logarithmic scale
-`Θ((log log γ₀) / δ₀)` is the exact visibility threshold across all compactly supported `C²` test
-functions when the local on-line density is `Θ(log γ₀)`. -/
+`isolatedPairConfig (rvmLocalDensity_pos hγ₀) hδ₀ hδ₀1 γ₀`, the Hodge defect equals `1` at every
+degree `a` in the range
+`(1 / (2 δ₀)) log(6 δ₀ · rvmLocalDensity γ₀ + 1) < a ≤ rvmLocalDensity γ₀ / 2`.
+Together with `hodgeDefectAt_isolatedPair_rvmDensity_eq_zero`, this proves that the
+doubly-logarithmic scale `Θ((log log γ₀) / δ₀)` is the exact visibility threshold across all
+compactly supported `C²` test functions when the local on-line density is `Θ(log γ₀)`. -/
 theorem hodgeDefectAt_isolatedPair_rvmDensity_eq_one {γ₀ δ₀ a : ℝ} (hγ₀ : 2 * π < γ₀)
-    (hδ₀ : 0 < δ₀) (hδ₀1 : δ₀ < 1 / 2)
-    (hL : 1 / (8 * δ₀) < rvmLocalDensity γ₀)
-    (ha_lo : (1 / (2 * δ₀)) * Real.log (8 * δ₀ * rvmLocalDensity γ₀) ≤ a)
+    (hδ₀ : 0 < δ₀) (hδ₀1 : δ₀ ≤ 1 / 2)
+    (ha_lo : (1 / (2 * δ₀)) * Real.log (6 * δ₀ * rvmLocalDensity γ₀ + 1) < a)
     (ha_hi : a ≤ rvmLocalDensity γ₀ / 2) :
-    hodgeDefectAt (isolatedPairConfig (rvmLocalDensity γ₀) δ₀ γ₀) a = 1 :=
-  hodgeDefectAt_isolatedPairConfig_eq_one (rvmLocalDensity_pos hγ₀) hδ₀ hδ₀1 hL ha_lo ha_hi
+    hodgeDefectAt (isolatedPairConfig (rvmLocalDensity_pos hγ₀) hδ₀ hδ₀1 γ₀) a = 1 := by
+  have hL0 := rvmLocalDensity_pos hγ₀
+  have hlog0 : 0 < Real.log (6 * δ₀ * rvmLocalDensity γ₀ + 1) :=
+    Real.log_pos (by linarith [mul_pos hδ₀ hL0])
+  have ha : 0 < a := lt_trans (by positivity) ha_lo
+  rw [hodgeDefectAt_isolatedPair (rvmLocalDensity_pos hγ₀) hδ₀ hδ₀1 γ₀ ha ha_hi, if_neg]
+  intro hle
+  have h1 : Real.log (6 * δ₀ * rvmLocalDensity γ₀ + 1) < 2 * δ₀ * a := by
+    have := mul_lt_mul_of_pos_left ha_lo (by positivity : 0 < 2 * δ₀)
+    rwa [← mul_assoc, mul_one_div_cancel (by positivity : 2 * δ₀ ≠ 0), one_mul] at this
+  have h2 : 6 * δ₀ * rvmLocalDensity γ₀ + 1 < Real.exp (2 * δ₀ * a) := by
+    rw [← Real.exp_log (by positivity : 0 < 6 * δ₀ * rvmLocalDensity γ₀ + 1)]
+    exact Real.exp_lt_exp.mpr h1
+  have hexp_neg : Real.exp (-(2 * δ₀ * a)) ≤ 1 :=
+    Real.exp_le_one_iff.mpr (by nlinarith)
+  have hsinh : 3 * δ₀ * rvmLocalDensity γ₀ < Real.sinh (2 * δ₀ * a) := by
+    rw [Real.sinh_eq]
+    linarith
+  have hdiv : 3 * rvmLocalDensity γ₀ < Real.sinh (2 * δ₀ * a) / δ₀ := by
+    rw [lt_div_iff₀ hδ₀]
+    linarith
+  linarith
 
-/-! ### 4. Excluded-depth and contact-aperture laws under `OffLineCopiesLocallyBounded M` -/
+/-! ### 4. Modulated contact-aperture bridge and excluded-depth laws under `OffLineCopiesLocallyBounded M` -/
 
-/-- The height-free depth numerator of `recordLagOffLine M w a σ` when `σ` is fixed in the Fejér
-order and inverted in the denominator `/ δ₀`:
-`recordLagOffLine M w a σ = recordLagNumeratorOffLine M w a σ / σ + recordCoherenceDriftOffLine M w a`. -/
-def recordLagNumeratorOffLine (M : ℕ) (w a σ : ℝ) : ℝ :=
-  2 * Real.log (160 * ((M : ℝ) + 1) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / a) +
-    (18304 * ((M : ℝ) + 1) ^ 2 + 128 * w * ((M : ℝ) + 1)) +
-    4096 * ((M : ℝ) + 1) * (recordOrderOffLine M w a σ : ℝ)
+/-- Support inclusion for the difference test `twoBump (modScaledBump w c) v (-1)` at an arbitrary
+modulation center `c ∈ ℝ`: `tsupport ⊆ [-(v/2 + w), v/2 + w]`. -/
+theorem tsupport_twoBump_modScaledBump_subset_any (c : ℝ) {w v : ℝ} (hw : 0 < w) (hv0 : 0 ≤ v) :
+    tsupport (twoBump (modScaledBump w c) v (-1)) ⊆ Icc (-(v / 2 + w)) (v / 2 + w) := by
+  have hbs := modScaledBump_support hw c
+  refine closure_minimal (fun t ht => ?_) isClosed_Icc
+  have ht' : twoBump (modScaledBump w c) v (-1) t ≠ 0 := ht
+  rw [twoBump_apply] at ht'
+  by_cases h1 : modScaledBump w c (t + v / 2) = 0
+  · have h2 : modScaledBump w c (t - v / 2) ≠ 0 := fun h => ht' (by rw [h1, h]; ring)
+    obtain ⟨h3, h4⟩ := abs_le.mp (hbs _ h2)
+    exact ⟨by linarith, by linarith⟩
+  · obtain ⟨h3, h4⟩ := abs_le.mp (hbs _ h1)
+    exact ⟨by linarith, by linarith⟩
 
-/-- The height-free phase-coherence drift `8 w e^{w/2} J_w √(2(M + 1)/a)` of `recordLagOffLine`. -/
+/-- **Rayleigh ground-energy bridge for modulated difference tests.** At any modulation center
+`c ∈ ℝ`, a negative Weil value `Re W_ζ(twoBump (modScaledBump w c) v (-1)) < 0` (`w > 0`, `v ≥ 0`)
+forces `ccmRestrictedWeilGroundEnergy ⟨v / 2 + w, _⟩ < 0`. -/
+theorem ccmRestrictedWeilGroundEnergy_neg_of_re_W_twoBump_modScaledBump_neg (c : ℝ) {w v : ℝ}
+    (hw : 0 < w) (hv : 0 ≤ v)
+    (hneg : (zetaZeroConfig.W (twoBump (modScaledBump w c) v (-1))
+      (twoBump (modScaledBump w c) v (-1))).re < 0) :
+    ccmRestrictedWeilGroundEnergy ⟨v / 2 + w, by positivity⟩ < 0 := by
+  have h := ccmRestrictedWeilGroundEnergy_mul_integral_norm_sq_le_re_W
+    (A := ⟨v / 2 + w, by positivity⟩)
+    (contDiff_top_bumpTest (contDiff_top_modScaledBump w c) v ![1, -1])
+    (tsupport_twoBump_modScaledBump_subset_any c hw hv)
+  refine lt_of_not_ge fun hcon => ?_
+  have hI : 0 ≤ ∫ t, ‖twoBump (modScaledBump w c) v (-1) t‖ ^ 2 :=
+    integral_nonneg fun _ => by positivity
+  exact absurd (lt_of_le_of_lt h hneg) (not_lt.mpr (mul_nonneg hcon hI))
+
+/-- **Doubly-logarithmic contact-aperture upper bound under `OffLineCopiesLocallyBounded M`.**
+Any `1/V`-near-top zero `½ + z₀` right of the line above `nearTopHeightOffLine M w` with
+`V ≥ nearTopLogLogLagOffLine M w z₀.im z₀.re` forces `ccmRestrictedWeilGroundEnergy A < 0` for all
+`A ≥ V / 2 + w`, and hence `zetaContactAperture ≤ V / 2 + w`. -/
+theorem zetaContactAperture_le_of_near_top_loglog_of_offLineCopiesLocallyBounded {M : ℕ}
+    (hM : OffLineCopiesLocallyBounded M) {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
+    (hz₀ : (1 / 2 + z₀) ∈ zetaZeroConfig.carrier) (hre₀ : 0 < z₀.re)
+    (hTw : nearTopHeightOffLine M w ≤ z₀.im)
+    {V : ℝ} (hV : nearTopLogLogLagOffLine M w z₀.im z₀.re ≤ V)
+    (htop : ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re - 1 / 2 ≤ z₀.re + 1 / V) :
+    zetaContactAperture ≤ V / 2 + w := by
+  refine csSup_le groundEnergyNonnegApertures_nonempty fun A hA => ?_
+  obtain ⟨hA0, hμ⟩ := hA
+  by_contra hcon
+  push Not at hcon
+  obtain ⟨v, hv, hneg⟩ :=
+    zeta_near_top_visible_at_loglog_lag_of_offLineCopiesLocallyBounded hM hw hz₀ hre₀ hTw hV htop
+  have h1 := ccmRestrictedWeilGroundEnergy_neg_of_re_W_twoBump_modScaledBump_neg z₀.im hw hv.1 hneg
+  have h2 := ccmRestrictedWeilGroundEnergy_antitone (a := ⟨v / 2 + w, by have := hv.1; positivity⟩)
+    (b := ⟨A, hA0⟩) (show v / 2 + w ≤ A by linarith [hv.2])
+  exact absurd hμ (not_le.mpr (lt_of_le_of_lt h2 h1))
+
+/-- The height-free depth numerator `4 (13 π k_off(M, w, a) + 4)` of `recordLagOffLine M w a σ`.
+Because `recordOrderOffLine M w a` is independent of `σ`, `recordLagOffLine` is an exact affine
+function of `1 / σ`. -/
+def recordLagNumeratorOffLine (M : ℕ) (w a : ℝ) : ℝ :=
+  4 * (13 * π * recordOrderOffLine M w a + 4)
+
+/-- The height-free phase-coherence drift `w + 8 w e^{w/2} J_w / recordScaleOffLine M a` of
+`recordLagOffLine`. -/
 def recordCoherenceDriftOffLine (M : ℕ) (w a : ℝ) : ℝ :=
-  8 * w * Real.exp (w / 2) * bumpMass w * Real.sqrt (2 * ((M : ℝ) + 1) / a)
+  w + 8 * w * Real.exp (w / 2) * bumpMass w / recordScaleOffLine M a
 
 /-- Exact affine-in-`1/σ` decomposition of `recordLagOffLine`. -/
 theorem recordLagOffLine_eq_div_add_drift (M : ℕ) (w a σ : ℝ) :
     recordLagOffLine M w a σ =
-      recordLagNumeratorOffLine M w a σ / σ + recordCoherenceDriftOffLine M w a := by
+      recordLagNumeratorOffLine M w a / σ + recordCoherenceDriftOffLine M w a := by
   unfold recordLagOffLine recordLagNumeratorOffLine recordCoherenceDriftOffLine
   ring
 
-/-- The height-free excluded depth `recordExcludedDepthOffLine M w a σ₀ V` at lag budget `V` for
-the unmodulated record-coefficient family (`σ₀` is a lower floor on `Re z*` inside the Fejér order). -/
-def recordExcludedDepthOffLine (M : ℕ) (w a σ₀ V : ℝ) : ℝ :=
-  recordLagNumeratorOffLine M w a σ₀ / (V - recordCoherenceDriftOffLine M w a)
+/-- The height-free excluded depth `recordExcludedDepthOffLine M w a V` at lag budget
+`V > recordCoherenceDriftOffLine M w a`. -/
+def recordExcludedDepthOffLine (M : ℕ) (w a V : ℝ) : ℝ :=
+  recordLagNumeratorOffLine M w a / (V - recordCoherenceDriftOffLine M w a)
 
-/-- Exact inversion `recordLagOffLine M w a δ₀ ≤ V ↔ recordExcludedDepthOffLine M w a δ₀ V ≤ δ₀`
-whenever `recordCoherenceDriftOffLine M w a < V` and `0 < δ₀`. -/
-theorem recordLagOffLine_le_iff_le_recordExcludedDepthOffLine (M : ℕ) (w a : ℝ) {δ₀ V : ℝ}
-    (hδ₀ : 0 < δ₀) (hV : recordCoherenceDriftOffLine M w a < V) :
-    recordLagOffLine M w a δ₀ ≤ V ↔ recordExcludedDepthOffLine M w a δ₀ V ≤ δ₀ := by
+/-- Exact inversion `recordLagOffLine M w a σ ≤ V ↔ recordExcludedDepthOffLine M w a V ≤ σ`
+whenever `recordCoherenceDriftOffLine M w a < V` and `0 < σ`. -/
+theorem recordLagOffLine_le_iff_le_recordExcludedDepthOffLine (M : ℕ) (w a : ℝ) {σ V : ℝ}
+    (hσ : 0 < σ) (hV : recordCoherenceDriftOffLine M w a < V) :
+    recordLagOffLine M w a σ ≤ V ↔ recordExcludedDepthOffLine M w a V ≤ σ := by
   rw [recordLagOffLine_eq_div_add_drift, recordExcludedDepthOffLine, ← le_sub_iff_add_le,
-    div_le_iff₀ hδ₀, div_le_iff₀ (sub_pos.mpr hV), mul_comm]
-
-/-- The height-free excluded depth `oneParamExcludedDepthOffLine M w η σ₀ V` for the unmodulated
-one-parameter lag family under `OffLineCopiesLocallyBounded M`. -/
-def oneParamExcludedDepthOffLine (M : ℕ) (w η σ₀ V : ℝ) : ℝ :=
-  recordExcludedDepthOffLine M w (oneParamRecordCoeff w (zetaZeroWidth - η)) σ₀ V
-
-/-- Exact inversion for `oneParamLagOffLine`. -/
-theorem oneParamLagOffLine_le_iff_le_oneParamExcludedDepthOffLine (M : ℕ) (w η : ℝ) {δ₀ V : ℝ}
-    (hδ₀ : 0 < δ₀)
-    (hV : recordCoherenceDriftOffLine M w (oneParamRecordCoeff w (zetaZeroWidth - η)) < V) :
-    oneParamLagOffLine M w η δ₀ ≤ V ↔ oneParamExcludedDepthOffLine M w η δ₀ V ≤ δ₀ :=
-  recordLagOffLine_le_iff_le_recordExcludedDepthOffLine M w
-    (oneParamRecordCoeff w (zetaZeroWidth - η)) hδ₀ hV
+    div_le_iff₀ hσ, div_le_iff₀ (sub_pos.mpr hV), mul_comm]
 
 /-- The depth numerator of `nearTopLagOffLine M w W_on δ₀`:
-`nearTopLagOffLine M w W_on δ₀ = nearTopLagNumeratorOffLine M w W_on / δ₀ + nearTopCoherenceDriftOffLine M w`.
-Notice that `nearTopLagNumeratorOffLine M w W_on` is completely independent of `δ₀`! -/
+`8 (13 π nearTopOrderOffLine M w W_on + 4 + |log(4 M (e^{w/2} B_w)² / a_w²)|)`.
+Because `nearTopOrderOffLine M w W_on` does not depend on `δ₀`, `nearTopLagOffLine` is an exact
+affine function of `1 / δ₀`. -/
 def nearTopLagNumeratorOffLine (M : ℕ) (w W_on : ℝ) : ℝ :=
-  2 * Real.log (160 * ((M : ℝ) + 1) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 /
-      centerAmplitude w ^ 2) +
-    (18304 * ((M : ℝ) + 1) ^ 2 + 128 * w * ((M : ℝ) + 1)) +
-    4096 * ((M : ℝ) + 1) * (nearTopOrderOffLine M w W_on : ℝ)
+  8 * (13 * π * nearTopOrderOffLine M w W_on + 4 +
+    |Real.log (4 * M * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / centerAmplitude w ^ 2)|)
 
-/-- The height-free phase-coherence drift `8 w e^{w/2} J_w √(4 e (M + 1) / a_w²)` of
+/-- The height-free phase-coherence drift `w + 8 w e^{w/2} J_w / nearTopScaleOffLine M w` of
 `nearTopLagOffLine` and `nearTopLogLogLagOffLine`. -/
 def nearTopCoherenceDriftOffLine (M : ℕ) (w : ℝ) : ℝ :=
-  8 * w * Real.exp (w / 2) * bumpMass w *
-    Real.sqrt (2 * ((M : ℝ) + 1) * (2 * Real.exp 1) / centerAmplitude w ^ 2)
+  w + 8 * w * Real.exp (w / 2) * bumpMass w / nearTopScaleOffLine M w
 
-/-- Exact affine-in-`1/δ₀` decomposition of `nearTopLagOffLine`: because `nearTopOrderOffLine M w W_on`
-does not depend on `δ₀`, `nearTopLagOffLine` is an exact affine function of `1 / δ₀`. -/
+/-- Exact affine-in-`1/δ₀` decomposition of `nearTopLagOffLine`. -/
 theorem nearTopLagOffLine_eq_div_add_drift (M : ℕ) (w W_on δ₀ : ℝ) :
     nearTopLagOffLine M w W_on δ₀ =
       nearTopLagNumeratorOffLine M w W_on / δ₀ + nearTopCoherenceDriftOffLine M w := by
   unfold nearTopLagOffLine nearTopLagNumeratorOffLine nearTopCoherenceDriftOffLine
   ring
 
-/-- Positivity of `nearTopLagNumeratorOffLine M w W_on` for `w > 0`. -/
-theorem nearTopLagNumeratorOffLine_pos (M : ℕ) {w : ℝ} (hw : 0 < w) (W_on : ℝ) :
+/-- Positivity of `nearTopLagNumeratorOffLine M w W_on`. -/
+theorem nearTopLagNumeratorOffLine_pos (M : ℕ) (w W_on : ℝ) :
     0 < nearTopLagNumeratorOffLine M w W_on := by
   unfold nearTopLagNumeratorOffLine
-  have ha0 : 0 < centerAmplitude w ^ 2 := sq_pos_of_pos (centerAmplitude_pos hw)
-  have h1 := centerAmplitude_le_exp_mul_scaledBumpDecay hw
-  have h2 : centerAmplitude w ^ 2 ≤ (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 :=
-    pow_le_pow_left₀ (centerAmplitude_pos hw).le h1 2
-  have hratio : 1 ≤ 160 * ((M : ℝ) + 1) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 /
-      centerAmplitude w ^ 2 := by
-    rw [one_le_div ha0]
-    have hM1 : (1 : ℝ) ≤ 160 * ((M : ℝ) + 1) := by linarith [Nat.cast_nonneg (α := ℝ) M]
-    nlinarith
-  have hlog : 0 ≤ Real.log (160 * ((M : ℝ) + 1) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 /
-      centerAmplitude w ^ 2) := Real.log_nonneg hratio
-  have hord : (0 : ℝ) ≤ (nearTopOrderOffLine M w W_on : ℝ) := Nat.cast_nonneg _
-  have hpos : (0 : ℝ) < 18304 * ((M : ℝ) + 1) ^ 2 + 128 * w * ((M : ℝ) + 1) := by positivity
-  linarith [mul_nonneg (by positivity : (0 : ℝ) ≤ 4096 * ((M : ℝ) + 1)) hord]
+  have h1 : (0 : ℝ) ≤ 13 * π * nearTopOrderOffLine M w W_on := by positivity
+  have h2 : (0 : ℝ) ≤ |Real.log (4 * M * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 /
+      centerAmplitude w ^ 2)| := abs_nonneg _
+  linarith
 
 /-- **The off-line near-top excluded depth `nearTopExcludedDepthOffLine M w W_on V`** at lag budget
 `V > nearTopCoherenceDriftOffLine M w`. Because `nearTopLagNumeratorOffLine M w W_on` is independent
@@ -932,19 +984,20 @@ def nearTopExcludedDepthOffLine (M : ℕ) (w W_on V : ℝ) : ℝ :=
 
 /-- **The doubly-logarithmic near-top excluded depth `nearTopLogLogExcludedDepthOffLine M w γ₀ V`**
 at height `γ₀` and lag budget `V > nearTopCoherenceDriftOffLine M w`. Under
-`OffLineCopiesLocallyBounded M`, this is `O_{M,w}((1 + log log γ₀) / (V - Drift))`, improving the
-unconditional `nearTopExcludedDepth` of `OrderOfTheExplicitVisibilityLags` by a factor of `(log γ₀)²`
-and replacing the `√(log γ₀)` coherence threshold by the height-free constant
+`OffLineCopiesLocallyBounded M`, this is `O_{M,w}((1 + log log(|γ₀| + 4)) / (V - Drift))`, improving
+the unconditional `nearTopExcludedDepth` of `OrderOfTheExplicitVisibilityLags` by a factor of
+`(log γ₀)²` and replacing the `√(log γ₀)` coherence threshold by the height-free constant
 `nearTopCoherenceDriftOffLine M w`. -/
 def nearTopLogLogExcludedDepthOffLine (M : ℕ) (w γ₀ V : ℝ) : ℝ :=
   nearTopExcludedDepthOffLine M w
-    (1440 * Real.log (180 * (|γ₀| + 2)) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2) V
+    (16 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 *
+      (xiLineTwoLogDerivConstant + Real.log (|γ₀| + 4))) V
 
 /-- Positivity of `nearTopExcludedDepthOffLine M w W_on V` when `nearTopCoherenceDriftOffLine M w < V`. -/
-theorem nearTopExcludedDepthOffLine_pos (M : ℕ) {w : ℝ} (hw : 0 < w) (W_on : ℝ) {V : ℝ}
+theorem nearTopExcludedDepthOffLine_pos (M : ℕ) (w W_on : ℝ) {V : ℝ}
     (hV : nearTopCoherenceDriftOffLine M w < V) :
     0 < nearTopExcludedDepthOffLine M w W_on V :=
-  div_pos (nearTopLagNumeratorOffLine_pos M hw W_on) (sub_pos.mpr hV)
+  div_pos (nearTopLagNumeratorOffLine_pos M w W_on) (sub_pos.mpr hV)
 
 /-- **Exact inversion law `nearTopLagOffLine M w W_on δ₀ ≤ V ↔ nearTopExcludedDepthOffLine M w W_on V ≤ δ₀`.** -/
 theorem nearTopLagOffLine_le_iff_le_nearTopExcludedDepthOffLine (M : ℕ) (w W_on : ℝ) {δ₀ V : ℝ}
@@ -956,8 +1009,9 @@ theorem nearTopLagOffLine_le_iff_le_nearTopExcludedDepthOffLine (M : ℕ) (w W_o
 /-- **Exact inversion law `nearTopLogLogLagOffLine M w γ₀ δ₀ ≤ V ↔ nearTopLogLogExcludedDepthOffLine M w γ₀ V ≤ δ₀`.** -/
 theorem nearTopLogLogLagOffLine_le_iff_le_nearTopLogLogExcludedDepthOffLine (M : ℕ) (w γ₀ : ℝ)
     {δ₀ V : ℝ} (hδ₀ : 0 < δ₀) (hV : nearTopCoherenceDriftOffLine M w < V) :
-    nearTopLogLogLagOffLine M w γ₀ δ₀ ≤ V ↔ nearTopLogLogExcludedDepthOffLine M w γ₀ V ≤ δ₀ :=
-  nearTopLagOffLine_le_iff_le_nearTopExcludedDepthOffLine M w _ hδ₀ hV
+    nearTopLogLogLagOffLine M w γ₀ δ₀ ≤ V ↔ nearTopLogLogExcludedDepthOffLine M w γ₀ V ≤ δ₀ := by
+  unfold nearTopLogLogLagOffLine nearTopLogLogExcludedDepthOffLine
+  exact nearTopLagOffLine_le_iff_le_nearTopExcludedDepthOffLine M w _ hδ₀ hV
 
 /-- **Excluded depth for `1/V`-near-top zeros in terms of `onLineEvenMass` under
 `OffLineCopiesLocallyBounded M`.** If the modulated difference test at `z₀.im` is nonnegative on
@@ -975,27 +1029,19 @@ theorem re_lt_nearTopExcludedDepthOffLine_of_pos_on_Icc {M : ℕ}
   by_contra hle
   push Not at hle
   have hre₀ : 0 < z₀.re :=
-    lt_of_lt_of_le (nearTopExcludedDepthOffLine_pos M hw (onLineEvenMass w z₀.im) hV) hle
+    lt_of_lt_of_le (nearTopExcludedDepthOffLine_pos M w (onLineEvenMass w z₀.im) hV) hle
   have hlag_le : nearTopLagOffLine M w (onLineEvenMass w z₀.im) z₀.re ≤ V :=
     (nearTopLagOffLine_le_iff_le_nearTopExcludedDepthOffLine M w (onLineEvenMass w z₀.im)
       hre₀ hV).mpr hle
-  have htop_lag : ∀ ρ ∈ zetaZeroConfig.carrier,
-      ρ.re - 1 / 2 ≤ z₀.re + 1 / nearTopLagOffLine M w (onLineEvenMass w z₀.im) z₀.re := by
-    intro ρ hρ
-    have hV_pos : 0 < nearTopLagOffLine M w (onLineEvenMass w z₀.im) z₀.re :=
-      nearTopLagOffLine_pos M hw (onLineEvenMass_nonneg w z₀.im) hre₀
-    have hinv : 1 / V ≤ 1 / nearTopLagOffLine M w (onLineEvenMass w z₀.im) z₀.re :=
-      one_div_le_one_div_of_le hV_pos hlag_le
-    linarith [htop ρ hρ]
   obtain ⟨v, hv, hneg⟩ :=
-    zeta_near_top_visible_at_explicit_onLineMass_lag hM hw hz₀ hre₀ hTw htop_lag
-  exact absurd (hpos v ⟨hv.1, hv.2.trans hlag_le⟩) (not_le.mpr hneg)
+    zeta_near_top_visible_at_explicit_onLineMass_lag hM hw hz₀ hre₀ hTw le_rfl hlag_le htop
+  exact absurd (hpos v hv) (not_le.mpr hneg)
 
 /-- **Doubly-logarithmic excluded depth for `1/V`-near-top zeros under
 `OffLineCopiesLocallyBounded M`.** If the modulated difference test at `z₀.im` is nonnegative on
 `[0, V]` for `V > nearTopCoherenceDriftOffLine M w`, then every `1/V`-near-top zero `½ + z₀` with
 `nearTopHeightOffLine M w ≤ z₀.im` has depth strictly below
-`nearTopLogLogExcludedDepthOffLine M w z₀.im V = O_{M,w}((1 + log log z₀.im) / (V - Drift))`. -/
+`nearTopLogLogExcludedDepthOffLine M w z₀.im V = O_{M,w}((1 + log log(|z₀.im| + 4)) / (V - Drift))`. -/
 theorem re_lt_nearTopLogLogExcludedDepthOffLine_of_pos_on_Icc {M : ℕ}
     (hM : OffLineCopiesLocallyBounded M) {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
     (hz₀ : (1 / 2 + z₀) ∈ zetaZeroConfig.carrier) (hTw : nearTopHeightOffLine M w ≤ z₀.im)
@@ -1007,22 +1053,14 @@ theorem re_lt_nearTopLogLogExcludedDepthOffLine_of_pos_on_Icc {M : ℕ}
   by_contra hle
   push Not at hle
   have hre₀ : 0 < z₀.re :=
-    lt_of_lt_of_le (nearTopExcludedDepthOffLine_pos M hw _ hV) hle
+    lt_of_lt_of_le (nearTopExcludedDepthOffLine_pos M w _ hV) hle
   have hlag_le : nearTopLogLogLagOffLine M w z₀.im z₀.re ≤ V :=
     (nearTopLogLogLagOffLine_le_iff_le_nearTopLogLogExcludedDepthOffLine M w z₀.im
       hre₀ hV).mpr hle
-  have htop_lag : ∀ ρ ∈ zetaZeroConfig.carrier,
-      ρ.re - 1 / 2 ≤ z₀.re + 1 / nearTopLogLogLagOffLine M w z₀.im z₀.re := by
-    intro ρ hρ
-    have hpos₀ : 0 < z₀.im := lt_of_lt_of_le (nearTopHeightOffLine_pos M hw) hTw
-    have hV_pos : 0 < nearTopLogLogLagOffLine M w z₀.im z₀.re :=
-      nearTopLogLogLagOffLine_pos M hw hpos₀.le hre₀
-    have hinv : 1 / V ≤ 1 / nearTopLogLogLagOffLine M w z₀.im z₀.re :=
-      one_div_le_one_div_of_le hV_pos hlag_le
-    linarith [htop ρ hρ]
   obtain ⟨v, hv, hneg⟩ :=
-    zeta_near_top_visible_at_loglog_lag_of_offLineCopiesLocallyBounded hM hw hz₀ hre₀ hTw htop_lag
-  exact absurd (hpos v ⟨hv.1, hv.2.trans hlag_le⟩) (not_le.mpr hneg)
+    zeta_near_top_visible_at_loglog_lag_of_offLineCopiesLocallyBounded hM hw hz₀ hre₀ hTw
+      hlag_le htop
+  exact absurd (hpos v hv) (not_le.mpr hneg)
 
 /-- **Contact-aperture doubly-logarithmic excluded depth under `OffLineCopiesLocallyBounded M`.**
 For any lag budget `V > nearTopCoherenceDriftOffLine M w` satisfying `V / 2 + w < zetaContactAperture`,
@@ -1038,20 +1076,12 @@ theorem re_lt_nearTopLogLogExcludedDepthOffLine_of_lt_contactAperture {M : ℕ}
   by_contra hle
   push Not at hle
   have hre₀ : 0 < z₀.re :=
-    lt_of_lt_of_le (nearTopExcludedDepthOffLine_pos M hw _ hV) hle
+    lt_of_lt_of_le (nearTopExcludedDepthOffLine_pos M w _ hV) hle
   have hlag_le : nearTopLogLogLagOffLine M w z₀.im z₀.re ≤ V :=
     (nearTopLogLogLagOffLine_le_iff_le_nearTopLogLogExcludedDepthOffLine M w z₀.im
       hre₀ hV).mpr hle
-  have htop_lag : ∀ ρ ∈ zetaZeroConfig.carrier,
-      ρ.re - 1 / 2 ≤ z₀.re + 1 / nearTopLogLogLagOffLine M w z₀.im z₀.re := by
-    intro ρ hρ
-    have hpos₀ : 0 < z₀.im := lt_of_lt_of_le (nearTopHeightOffLine_pos M hw) hTw
-    have hV_pos : 0 < nearTopLogLogLagOffLine M w z₀.im z₀.re :=
-      nearTopLogLogLagOffLine_pos M hw hpos₀.le hre₀
-    have hinv : 1 / V ≤ 1 / nearTopLogLogLagOffLine M w z₀.im z₀.re :=
-      one_div_le_one_div_of_le hV_pos hlag_le
-    linarith [htop ρ hρ]
-  have hle_A := zetaContactAperture_le_nearTopLogLogLagOffLine hM hw hz₀ hre₀ hTw htop_lag
+  have hle_A := zetaContactAperture_le_of_near_top_loglog_of_offLineCopiesLocallyBounded hM hw
+    hz₀ hre₀ hTw hlag_le htop
   linarith
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

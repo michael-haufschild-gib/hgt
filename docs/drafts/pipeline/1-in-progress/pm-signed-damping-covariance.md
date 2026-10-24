@@ -829,3 +829,275 @@ conditional replacement for the missing estimate was introduced. Goal
 remains active; there is no user-input or external-state blocker. The
 next attempt must control the actual signed energy in the growing physical
 shell, not just the changing cutoff or the coherent sector's direction.
+
+
+## 2026-10-24: short-window transfer to growing physical shells
+
+Previous turn classification: no frontier progress. This attempt tried to
+use actual short-window cancellation as a contracting input for shell
+energy, retaining the signed rows and both rank-two terms.
+
+The inspected theorem `eventually_abs_rowBilinear_moebiusWindowRow_le`
+controls
+
+`B(c,mu_Q) + m(c) R(mu_Q) + beta(c) H(mu_Q)`
+
+for c supported on primes satisfying its lower support threshold. Its
+leading norm is
+
+`sqrt(sum_p c(p)^2 p^2) sqrt(Q+2Q0^2) Q^(-3/2)`.
+
+It is not the complete receiver energy. The actual PM sieve coefficients
+are `mu(d)d^(-epsilon)`, as checked in
+`PowerDampedPronicMultiplicativityAndRoutePMBridge`; they cannot be replaced
+by Ramanujan coefficients `O(d^(-1-epsilon))` in this norm. Such a
+replacement would create an erroneous extra inverse power of d. The
+existing qualitative small factor therefore was not shown to be a
+contraction against the energy being estimated. Both rank-two readouts
+also remain present in the theorem.
+
+### Composite-modulus attempt
+
+The proposed extension was to regroup nonprimitive roots by conductor
+and use Möbius cancellation to remove repeated composite contributions.
+The prime proof uses that powering by k permutes nontrivial p-th roots
+when p does not divide k. For composite modulus d, gcd(d,k) creates
+proper-conductor fibres; there is no such permutation on all nontrivial
+roots. Those fibres must be accounted for explicitly.
+
+The stronger hoped-for automatic cancellation is not available. The exact
+source formula already proved in `PMPowerDampedMobiusRamanujanWeights` is
+
+`w_epsilon(q) = rho_epsilon mu(q) /
+                 product_(p|q) (p^(1+epsilon)-1)`.
+
+Its definition is the complete sum over multiples of q. For positive
+epsilon and squarefree composite q this coefficient is nonzero. Regrouping
+by divisibility produces a real weighted composite source, not a row
+supported only on primes. This does not rule out a useful general-modulus
+transfer theorem; it invalidates the attempted immediate reduction to the
+existing prime theorem. No general-modulus bound or full shell estimate
+was proved.
+
+`ShortWindowMoebiusSavingIsTheQuasiRiemannHypothesis` was read directly:
+its power saving is equivalent to `zetaZeroAbscissa < 1`, not supplied
+unconditionally. The established Matomaki--Radziwill input is qualitative
+short-window cancellation. Neither the zero-free strip nor a power saving
+was inserted as an assumption. Extending a qualitative coefficient-norm
+bound alone would still leave the source-relative absorption step open.
+
+### State
+
+Four completed corpus searches covered shell/window cancellation, exact
+bilinear normalization, composite-modulus transfer, and coprime Euler
+weights. Relevant source declarations and definitions were inspected.
+No significant closed paper proof or premise discharge emerged; no Lean
+file or umbrella was edited, and no compilation was run. No numerical
+experiment, web search, novelty check, subagent, added axiom, or conditional
+stand-in for the missing estimate was used. Goal remains active. The
+unresolved mathematical step is cancellation of the full composite signed
+row at the receiver-energy scale, not cancellation relative to an unsigned
+coefficient norm.
+
+## 2026-10-24: Newton remainder, divisor correlations, and paired Markov work
+
+Previous batch made no frontier advance. This batch tested the full signed
+row rather than another coefficient-norm estimate.
+
+### Newton form of the actual two-cutoff identity
+
+The checked declaration `moebius_vaughan_identity` in
+`VaughanTypeIIShortAndAllHorizonMobiusL2Energy` gives, with Dirichlet
+convolution, `a=trunc_U(mu)` and `b=mu-a`,
+
+`mu = 2a - a*a*zeta + b*b*zeta`.
+
+The conjectured mechanism was to treat the last term as positive quadratic
+control. This fails: convolution squaring is not pointwise or Hilbert
+squaring. At cutoff U=2, `a=delta_1-delta_2`. For distinct odd primes p,q,
+the exact identity gives `(b*b*zeta)(pq)=2` and
+`(b*b*zeta)(2pq)=-2`. Indeed, at 2pq the short-row term
+`(a*a*zeta)(2pq)=1-2=-1`, while `mu(2pq)=-1` and `a(2pq)=0`.
+These are symbolic arithmetic identities, not a numerical experiment.
+They reject only this positivity mechanism; no conclusion about the
+sign of the complete energy or about RH follows. A bound for the signed
+residual pairing was not obtained.
+
+### Positive divisor source and arithmetic damping flow
+
+Corpus searches and direct source reads checked
+`PMAdjacentDivisorCorrelation.tendsto_pm_adjacent_divisor_mean` and the
+period-correlation/dissipation laws in TransHorizonIncidenceMechanics.
+The adjacent theorem uses positivity and two dominated limits. Its
+translation average supplies neither a horizon-uniform anchored-prefix
+bound nor a summable estimate for the full growing set of covariance lags.
+No interchange with that growing set was justified.
+
+The next attempt retained the literal damping flow. Directly checked
+`DampingWorkAsArithmeticMarkovBoundaryFlux` and
+`TheDampingChainInReceiverCoordinatesAndHTransform`. The normalized
+centered source v=A/n satisfies `v'=Gv-rho'`, and its exact energy law is
+
+`E' = Flux(v) - Jump(v) - 2 rho' sum_(n<=T) n/(n+1) v(n)`.
+
+The nonnegative jump term alone does not bound backward work; forward
+control still requires its cancellation with counting-measure flux and
+the density forcing. Integrating the paired expression reproduces the
+endpoint energy difference. The existing infinite-horizon theorem
+explicitly assumes admission at both endpoints, so it was not used to
+produce admission. The size-bias column estimate likewise retains
+`E_T(eta)+rho_eta^2` as its factor despite its summable column weights.
+No independent estimate for the actual paired work was proved.
+
+### Status
+
+No significant closed paper proof, Lean theorem, or premise discharge
+resulted. No Lean source, umbrella, or compiled artifact was changed; no
+build was run. No web search, numerical experiment, novelty check,
+subagent, added axiom, or assumed analytic input was used. Goal remains
+active, with no user-input or external-state blocker. The hard open step
+remains an absolute, horizon-uniform bound for the full signed source at
+cofinally small positive damping. Neither a convolution-square identity,
+translation-averaged correlation, nor the exact Markov accounting closes
+that step.
+
+## 2026-10-24: collective deletion, new critical-family positivity, and prime-sieve averaging
+
+Previous turn: no frontier advance. The objective and current PM map were
+reread. No significant PM estimate was obtained in this batch either.
+
+### Collective Ramaré attempt
+
+Direct source checks covered `EulerDeletionRamarePhysical`,
+`EulerDeletionRamarePhysicalEnergy`, and
+`RouteERamareIncidenceConditionalNegative`. The complete physical packet
+includes its affine harmonic correction. Its squared norm retains the
+rough--packet and packet--packet cross terms. Conditional negative
+incidence requires the active scalar sum to vanish; the unconditional
+identity instead contains the square of that sum minus the prime-load
+energies. Centering by adding an auxiliary coordinate therefore does not
+remove the original source energy for free. No cancellation estimate for
+the actual complete packet field was proved.
+
+### Reorientation to the updated positivity result
+
+The current frontier map now cites
+`exists_suzukiCriticalFamily_strict_deficit`. Its source and the sources
+of `CompactCriticalSourceWeilPositivity` and
+`DoublyCollaredCriticalSourcePositivity` were inspected. The theorem gives
+positive complete Weil energy for arbitrary real coefficient patterns
+in a sufficiently high dyadic critical family, uniformly over its allowed
+compact truncations. The finite positive-shift neighbourhood depends on
+the source and smooth approximant.
+
+The literal family uses
+
+`Phi_N(v) = P(lambda_N v) - P(N v)`,
+`4 lambda_N^3 = N^2 (4N+1)`,
+`1/15 <= lambda_N-N <= 1/12`,
+
+with both collars and the `exp(x/2)` envelope. In particular the collar
+displacement does not tend to zero. The tested transfer to PM reciprocal
+floor packets has neither an established approximation nor a bound in
+the required energy norm. Multiplying reciprocal frequencies by a common
+multiple gives integer frequencies, but does not supply the shifted
+branch, the collars, or control of the original physical head. No density
+or source-identification claim was made. Existing low/high and lacunary
+Schur bounds also concern this same critical family; their existence is
+not a transfer theorem for PM.
+
+### Exact finite prime-sieve averaging test
+
+The checked PM Euler-product formula suggested averaging sieves with
+independent prime selection. This was tested algebraically on a finite
+prime set P; no infinite probabilistic limit is used here. Put
+`r_p=p^(-epsilon)` and let `xi_p` have values 0,1 with mean r_p. Define
+
+`Z_P(N) = sum_(n<=N) product_(p in P,p|n)(1-xi_p)
+          - N product_(p in P)(1-xi_p/p)`.
+
+For Q contained in P, let A_Q(x) be the finite damped sieve prefix
+through floor(x), centered by `x product_(p in Q)(1-r_p/p)`.
+Independence gives `E Z_P(N)=A_P(N)`. Expanding
+`xi_p=r_p+sqrt(r_p(1-r_p)) eta_p`, where the products of the eta_p
+are orthonormal for the finite product weights, gives exactly
+
+`E[Z_P(N)^2] = sum_(S subset P)
+    (product_(p in S) r_p(1-r_p)) A_(P\S)(N/product_(p in S)p)^2`.
+
+Indeed, the S coefficient is the product of the negative square-root
+factors times the displayed shorter sieve discrepancy: divisibility by
+the squarefree product of S reindexes the count, and its primes are
+coprime to every prime of P\S. The empty product supplies A_P(N).
+Orthogonality then proves the finite identity without exchanging limits.
+
+This exposes the failure of the proposed variance-only proof: the empty
+subset contributes the full squared mean discrepancy. Controlling the
+nonempty fluctuation terms cannot upper-bound that term. A bound for
+the entire averaged square remains unproved; Jensen's inequality alone
+does not provide one. This finite accounting was not formalized or
+counted as the significant PM progress requested.
+
+### Remaining state
+
+Corpus searches also checked the existing convex-energy receiver and
+second-tangent declarations. Their convexity input remains unproved;
+neither reciprocal-zeta concavity nor a scalar density estimate was
+silently substituted for the full mixed second-tangent pairing.
+No Lean theorem, source edit, umbrella edit, build, numerical experiment,
+web search, novelty check, or subagent was introduced. Owned search
+scratch files were cleaned after their processes terminated. The goal
+remains active, with no user-input or external-state blocker. The missing
+mathematics remains horizon-uniform cancellation for the actual signed
+source at cofinally small positive damping.
+
+## 2026-10-24: direct second-tangent pairing and stationary-point test
+
+Previous turn classification: no frontier advance. This batch stayed on
+the actual second-tangent sign rather than another source representation.
+Read the current objective and PM map, and checked the statements and
+proofs in `TheSecondDampingTangentAndConvexity`,
+`TheSecondTangentIsAnIteratedDilation`, and
+`TheSignedWorkChangesSignOnce`. Two completed corpus searches covered
+the full second kernel and stationary curvature. No source-derived sign
+estimate was obtained.
+
+For positive epsilon the actual positive divisor product gives an exact
+way to inspect the mixed term. With
+
+`L_n = sum_(p|n) log(p)/(p^epsilon-1)`,
+`J_n = sum_(p|n) log(p)^2 p^epsilon/(p^epsilon-1)^2`,
+
+finite differentiation gives `c_n' = c_n L_n` and
+`c_n'' = c_n (L_n^2-J_n)`. The density has the corresponding formulas
+with `p^epsilon` replaced by `p^(1+epsilon)` and all primes included;
+these sums converge at positive epsilon. Thus positivity of c_n does not
+itself supply the sign of its second derivative or the sign of the
+centered source pairing. The terms `L_n^2-J_n`, the density derivative,
+and all prefix cross terms must remain present. No scalar density sign
+was used as a substitute for this full pairing.
+
+The precise unresolved quantity remains
+
+`Q_T(epsilon) = ||D_epsilon||_T^2 + <A_epsilon,F_epsilon>_T`.
+
+The checked dilation identity expresses F using `Lambda*Lambda-log*Lambda`
+and the exact density correction. The convolution square is not a norm
+square. In particular, its prime-power and two-prime terms cannot be
+assigned a common positive sign after pairing with the actual source.
+The attempted use of stationarity `<A,D>_T=0` supplies only one scalar
+orthogonality relation and did not eliminate the remaining second-kernel
+pairing or its correction.
+
+A logical issue was caught before adding any receiver: proving only
+`Q_T>=0` at stationary points would not by itself exclude a flat interior
+maximum. A strict curvature conclusion at an excessive stationary value,
+or a proved control preventing a downward crossing of the work, would
+be needed. Neither was proved here. No new criterion or generic
+counterexample was formalized as a replacement for that missing result.
+
+No significant closed proof or premise discharge emerged; no Lean file,
+umbrella, or compiled artifact was changed, and no build was run.
+No numerical experiment, web search, novelty check, subagent, or added
+analytic assumption was used. Goal remains active; the obstacle is the
+unproved arithmetic pairing, not a user-input or external-state block.

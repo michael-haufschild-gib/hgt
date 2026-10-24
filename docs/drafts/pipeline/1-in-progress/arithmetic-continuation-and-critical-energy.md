@@ -297,3 +297,19 @@ This card is the programme card: folder, umbrella, README and the continuation c
     the Vinogradov–Korobov band (`admits_dampedBlockEnergy_of_zetaZeroAbscissa_sub_half_lt`,
     `exists_dampedBlockEnergy_le_on_vinogradovKorobovBand`,
     `eventually_dampedBlockEnergy_le_vk_saving`).
+- 2026-10-24 (cont. 4) — Open Problem 5 resolved (`ObstructingTermsAndRegimeClassification`):
+  - Five exact faces of `-(2 * signedDampingWork ε T)`: core + deviation
+    (`neg_two_mul_signedDampingWork_eq_deviation_sub_core`), dilation Dirichlet jump minus edge mass
+    (`neg_two_mul_signedDampingWork_eq_dilationJump_sub_edgeMass`,
+    `neg_two_mul_signedDampingWork_eq_dilationJump_sub_potentials`), Markov jump plus forcing minus
+    boundary flux (`neg_two_mul_signedDampingWork_eq_markov`), window-mean correlation
+    (`neg_two_mul_signedDampingWork_eq_windowMean`), and Möbius-factored tangent pairing
+    (`signedDampingWork_eq_moebiusDilation_pairing`).
+  - Sharp parameter-regime dichotomy: at the zero anchor `(0, ε]`, admission forces the integrated
+    deviation to diverge to `−∞` across `(η, T)` (`exists_horizon_damping_integral_workDeviation_le`);
+    on `[a, c]` (`0 < a ≤ c`), `0 ≤ ∫_a^c workCore ≤ log ζ(1+a) − log ζ(1+c)` uniformly in `T`
+    (`integral_workCore_bounds_on_positive_interval`), and `|∫_a^c 2 workDeviation|` is bounded
+    when both endpoints are admitted (`exists_abs_integral_workDeviation_le_of_admits`).
+  - Five-way equivalence `obstructingTerms_positive_interval_tfae` on `[a, c]` and unconditional
+    bounds above `Θ − ½` (`exists_obstructing_integrals_le_of_zetaZeroAbscissa_sub_half_lt`) and on
+    the Vinogradov–Korobov band (`exists_obstructing_integrals_le_on_vinogradovKorobovBand`).

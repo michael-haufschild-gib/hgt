@@ -1,8 +1,8 @@
 # SZ: critical first variation of the literal arithmetic source
 
 - **ID:** sz-critical-source-first-variation-2026-10-18
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean; complete paper proof below)
 - **Source:** corpus-only source inspection; Suzuki route SZ and BiScale uncertainty.
 - **Statement:** Recover the complete Weil quadratic form from the positive-shift first variation of `suzukiSourceHFinite`, retaining the Gamma atom, both pole terms, and every arithmetic cusp.
 
@@ -21,7 +21,7 @@ Weil form, moving-aperture control without a rate, or RH.
 
 - [x] 0 → 1: literal source, positive shifts, precise proposed limit, source attack.
 - [x] 1 → 2: complete paper proof, checked normalization, all analytic dependencies closed.
-- [ ] 2 → 3: canonical leaf compilation and complete public-declaration axiom audit.
+- [x] 2 → 3: canonical leaf compilation and complete public-declaration axiom audit.
 - [ ] 3 → 4: publication preparation (not requested).
 
 ## Plan and proof obligations
@@ -189,8 +189,8 @@ the limit interchanges with their sum. Combining with the `n=1` first variation,
 This is the real complete Weil functional: the corpus's archimedean-pole identity
 supplies the first three terms, and the definition of `weilFullFunctional` supplies
 the two equal arithmetic evaluations at `log n` and `-log n`, since `C` is even.
-The complete-source theorem is dependency-closed on paper. Its full Lean
-formalization remains pending; the certified primary component is detailed below.
+The complete-source theorem is dependency-closed on paper and formalized in
+Lean. The certificate and full declaration audit are recorded below.
 
 ### Stronger primary statement on the finite-energy domain — [PROVED HERE]
 
@@ -211,81 +211,69 @@ The other retrieved Beta asymptotics in `SuzukiRealKernelForm` take a spatial
 endpoint limit at a fixed positive shift, and do not give this shift-zero theorem.
 No external novelty claim is made.
 
-## Formalization checkpoint
+## Formalization certificate
 
-### Complete-source formalization resumed
+The complete real compact-C² theorem is certified in
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalFirstVariation.lean`:
 
-The current target is the exact paper theorem above, starting with the
-translation-uniform primary cusp estimate. Its source domain is every real
-compactly supported `C²` function; boundedness, measurability, and finite Lévy
-energy are discharged from that domain, not assumed as analytic inputs.
-The first leaf will prove
-`(integral B_w(t) C(u+t) dt - M_w C(u))² <= 2 R M_w a_w w J`
-for every real `u` and `0 < w <= 2`, then uniform convergence of the translated
-primary pairings. Weighted Cauchy–Schwarz and the existing Krein increment law
-give the paper proof displayed above. The signed pole and arithmetic assembly
-remain required before the full card can move to stage 3.
+- `RHTower.tendsto_suzukiCriticalSourcePairing_firstVariation` takes a bundled
+  compact continuous source and its C² regularity.
+- `RHTower.tendsto_suzukiCriticalSourcePairing_firstVariation_of_contDiff`
+  takes an ordinary real function with C² regularity and compact support.
 
-Leaf status:
+Both identify the positive-shift quotient of the literal source pairing with
+`Re(weilFullFunctional Λ (EF.weilTest f f))`. No RH, innerness, sign,
+integrability, or source-variation hypothesis is added. The source's literal
+value at shift zero is not substituted for its forming atom: this is the
+stated positive-shift renormalized limit.
 
-- `SuzukiCriticalTranslatedCusp.lean` compiles: the squared uniform cusp bound, its
-  explicit vanishing error, uniform convergence over all translations, and
-  specialization of the primary first variation to compact `C²` sources. Its
-  olean was produced for the pole-pairing leaf. Its 11 public declarations passed
-  the transitive axiom audit; only `propext`, `Classical.choice`, and `Quot.sound`
-  occur. Final direct-source check remains pending.
-- `SuzukiCriticalLogKernel.lean` compiles: exact logarithmic transport of the literal
-  Beta–pole convolution and the full signed source identity. The pole identity
-  holds for all real logarithmic arguments: for nonpositive arguments both
-  integration regions are empty. The signed source identity is asserted for
-  positive arguments, avoiding the source's separately totalized endpoint. Its
-  olean was produced for the pole-pairing leaf. All 5 public declarations passed
-  the same axiom audit; final direct-source check remains pending.
-- `SuzukiCriticalPolePairing.lean` compiles: `L¹` compact-test Fubini, the tested
-  pole limit, translated full-source convergence, and the full archimedean
-  source first variation with the growing pole retained. Arithmetic assembly
-  and identification with the complete Weil functional still remain. Its 10
-  public declarations passed the same axiom audit. The cutoff and source
-  integrability are derived from compact support. Final direct-source check
-  remains pending. The three finished leaves are wired into `RHTower.lean`;
-  the umbrella has not been compiled.
-- Concurrently available drafts `SuzukiCriticalWeilNormalization.lean` and
-  `SuzukiCriticalArithmeticVariation.lean` cover the remaining finite arithmetic
-  assembly and Gamma normalization. Their files are preserved and reused; they
-  do not yet supply a verified complete-source capstone in this checkpoint.
+| Mathematical step | Canonical leaf | Public declarations audited |
+|---|---|---:|
+| Beta mass, compensated finite-energy limit | `SuzukiCriticalBetaKernel` | 19 |
+| Uniform translated primary cusps | `SuzukiCriticalTranslatedCusp` | 11 |
+| Exact logarithmic signed kernel | `SuzukiCriticalLogKernel` | 5 |
+| Compact L¹ pole Fubini and source limit | `SuzukiCriticalPolePairing` | 10 |
+| Gamma/Lévy/two-pole normalization | `SuzukiCriticalWeilNormalization` | 1 |
+| Common finite cutoff and all arithmetic tangents | `SuzukiCriticalArithmeticVariation` | 5 |
+| Signed cusp and full arithmetic error bounds | `SuzukiCriticalCuspEstimate` | 4 |
+| Complete Weil first variation | `SuzukiCriticalFirstVariation` | 2 |
 
-For the remaining compact-test Fubini step, the primary density belongs to
-`L¹`, but need not belong to `L²` at small shifts. Use `L¹` convolution
-integrability with the pole exponential cut off to the fixed aperture, then
-multiply the joint integrand by the bounded autocorrelation. This supplies
-absolute integrability directly and does not import an inapplicable `L²`
-kernel-transposition theorem.
+Canonical dependency compilation passed. The full capstone audit checked all
+57 public declarations; each reports only `propext`, `Classical.choice`, and
+`Quot.sound`. No proof placeholders, added axioms, trusted-computation
+shortcuts, or raised limits occur in these leaves. Dependency oleans were
+created only for actual downstream imports; existing oleans were not rebuilt.
+The finished leaves are wired into `RHTower.lean`; no umbrella was compiled.
 
-The next conjecture exposed by this proof is extension of the complete literal
-source tangent to compact finite-Lévy-energy source space, without `C²`
-regularity. The primary theorem already admits that energy domain; the remaining
-audit must retain continuity of correlation, translated Krein control, compact
-pole testing, and the full Weil-form identification. This conjecture is not an
-arithmetic sign bound and is not claimed proved by the current leaves.
+The exact quantitative declarations are
+`abs_suzukiCriticalSourceCusp_sub_mass_le` and
+`abs_suzukiCriticalSourcePairing_sub_mass_le`. They retain the complete growing
+pole and use the same Lévy energy at every nonnegative translation. The pole
+proof uses L¹ convolution on a compact triangle; it does not assume the
+primary density is square integrable at small shifts.
 
-This is formalization of an existing paper proof, not a new source cancellation
-claim. WL's growing-aperture one-sided bound remains open.
+## Corpus application and remaining frontier
 
-The primary finite-energy first variation is now formalized in
-`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalBetaKernel.lean`.
-Canonical compilation and the audit of all 19 public declarations passed; only
-`propext`, `Classical.choice`, and `Quot.sound` occur. The exact child result is
-tracked in `../3-formalized/sz-critical-beta-finite-energy-2026-10-18.md`.
+Arithmetic Positivity Theory supplies strictly positive complete Weil energies
+for high dyadic critical sources at unbounded compact truncation lengths.
+Finite-jump smoothing makes these sources C² while preserving their energies
+in the limit. The resulting literal Suzuki strict-deficit application is
+tracked in `sz-critical-positive-family-transfer-2026-10-24.md`.
+The fourteen-programme review and verification record are in
+`sz-complete-source-first-variation-assembly-2026-10-24.md`.
+The application is also certified: `exists_suzukiCriticalFamily_strict_deficit`
+passed its canonical check and the same transitive axiom audit.
 
-The primary capstone assumes `|C(t)| <= C(0)`. A translated autocorrelation need
-not satisfy that hypothesis with `C(u)` at its origin. The arithmetic-cusp passage
-uses the separately proved Krein estimate and weak approximate-identity argument.
+Extension of the complete source tangent to every compact continuous source
+of finite Lévy energy remains unproved here. The primary theorem admits that
+domain; the remaining work must retain translated correlation continuity,
+Krein control, compact pole testing, and the full Weil identification.
 
-The translated-cusp estimate, compactly tested pole convolution, arithmetic sum,
-and their combined complete-source limit remain paper-proved but not formalized
-here. The BiScale import closure still lacks three shared artifacts at the audit
-checkpoint; see `/tmp/hgt-sz-pending-imports.txt`. No duplicate shared build was
-launched. No positivity or RH conclusion follows from the certified primary limit.
+The general Weil sign, coverage of arbitrary compact sources, and joint
+control when aperture grows and shift tends to zero remain open. The
+first-variation theorem closes the limiting input, not those arithmetic
+estimates. This is formalization of the existing paper proof, not a new
+source-cancellation or RH claim.
 
 ## Rotation
 
@@ -295,3 +283,4 @@ its shared import closure is rebuilding. No framework README or frontier-map edi
 ## Log
 
 - 2026-10-18 — opened before further hard proof work. RH remains open.
+- 2026-10-24 — complete source first variation and quantitative cusp estimate compiled; all 57 public declarations passed the transitive axiom audit.

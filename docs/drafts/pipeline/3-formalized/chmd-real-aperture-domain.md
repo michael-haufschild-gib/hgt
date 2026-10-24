@@ -1,8 +1,8 @@
 # The full real Weil aperture domain has an actual CHMD lift
 
 - **ID:** chmd-real-aperture-domain
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** At every positive aperture, the completed real smooth CCM core equals the complete form-domain vectors with real physical representatives. Every such vector has a unique completed CHMD graph lift preserving the full quotient Weil energy. Every complex form vector decomposes into two such real lifts, with additive full Weil energy.
 
 ## Route and exact contribution
@@ -67,7 +67,7 @@ literal arithmetic-form theorems. Reality specifies a domain; it is not
 an assumed arithmetic inequality. The final complex statement has no
 reality restriction on its input.
 
-## Lean declarations being checked
+## Checked Lean declarations
 
 Module: `GaloisForLFunctions/RHTower/CHMDRealApertureDomain.lean`.
 
@@ -84,9 +84,14 @@ Module: `GaloisForLFunctions/RHTower/CHMDRealApertureDomain.lean`.
 ## Gates
 
 - [x] Dependency-closed paper proof.
-- [ ] Complete candidate passes direct Lean check.
-- [ ] Transitive axioms contain only standard Lean logical axioms.
-- [ ] Actual repository leaf passes final direct check.
-- [ ] Finished module imported by RHTower umbrella.
+- [x] Complete candidate passes direct Lean check.
+- [x] Transitive axioms contain only `propext`, `Classical.choice`, `Quot.sound`.
+- [x] Actual repository leaf passes final direct check, exit 0 without diagnostics.
+- [x] Finished module imported by RHTower umbrella; umbrella not compiled.
+
+Validation: `lake --old env lean GaloisForLFunctions/RHTower/CHMDRealApertureDomain.lean`
+from `formal/`. Audited the core inner-product theorem, physical projection,
+intrinsic real-domain equality, unique lift and complex two-lift theorem
+with `#print axioms`. Placeholder and proof-budget scans are clean.
 
 No external novelty claim or numerical experiment is part of this result.
