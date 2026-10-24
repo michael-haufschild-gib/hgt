@@ -536,20 +536,58 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
     vanishing at the simple critical zeros drops from `b > 3` to `b > 5000/1681`
     (`ae_eq_zero_of_doubleExp_simpleCritical_montgomeryTaylor`; `b > 8/3` under the surplus).
 
-### 3.9 The λ-ring of the scaling surface (`TheLambdaRingOfTheScalingSurface`)
+### 3.9 The λ-ring of the scaling surface and Hecke–Lefschetz rigidity (`TheLambdaRingOfTheScalingSurface`, `LambdaRingEffectivityAndHeckeLefschetzRigidity`)
 
-29. **Adams operations, Hecke cycles and the pole-plane splitting.** `polarPart` and `prim` are
-    orthogonal idempotents splitting any polar surface into the pole plane and the primitive
-    complement with pairing `−defect`. The Newton–Witt exponential splits any trace
-    `(1 + q^j) + g_prim(j)` into the pole factors times the primitive part (`sigmaSeries_pole_split`);
-    over `𝔽_q` this is `zeta = poleZeta · P₁`. Over `ℚ` the normalized Adams operators are exact
-    intersection, polar and defect isometries commuting with the splitting (`pair_adamsOp`,
-    `defect_adamsOp`). The Hecke correspondences `T_a = √a · adamsOp a` satisfy `T_a H = aH`,
-    `T_a V = V`, the Hecke cycles obey `Γ_a(g)·Γ_b(g) = b · L(Δ_g, a/b)` (`pair_heckeCycle`), and the
-    arithmetic Lefschetz number splits as `(a + 1)(x·H)(x·V) − √a · defect(adamsOp a x, x)`
-    (`arithLefschetz_split`). Frobenius, graphs and Lefschetz numbers exist on the scaling surface;
-    Riemann–Roch does not follow from them, and the golden datum obeys the same identities
-    (`goldenDatum_lambdaRing_and_not_unitary`).
+29. **Adams operations, Hecke cycles, the pole-plane splitting, and Hecke–Riemann–Roch rigidity.**
+    `polarPart` and `prim` are orthogonal idempotents splitting any polar surface into the pole
+    plane and the primitive complement with pairing `−defect`. The Newton–Witt exponential splits
+    any trace `(1 + q^j) + g_prim(j)` into the pole factors times the primitive part
+    (`sigmaSeries_pole_split`); over `𝔽_q` this is `zeta = poleZeta · P₁`. Over `ℚ` the normalized
+    Adams operators are exact intersection, polar and defect isometries commuting with the splitting
+    (`pair_adamsOp`, `defect_adamsOp`). The Hecke correspondences `T_a = √a · adamsOp a` satisfy
+    `T_a H = aH`, `T_a V = V`, the Hecke cycles obey `Γ_a(g)·Γ_b(g) = b · L(Δ_g, a/b)`
+    (`pair_heckeCycle`), and the arithmetic Lefschetz number splits as
+    `(a + 1)(x·H)(x·V) − √a · defect(adamsOp a x, x)` (`arithLefschetz_split`). Frobenius, graphs
+    and Lefschetz numbers exist on the scaling surface; Riemann–Roch does not follow from them, and
+    the golden datum obeys the same identities (`goldenDatum_lambdaRing_and_not_unitary`).
+    * *Why Hecke stability eliminates `AmpleAxiom` and forces the coercive floor:* Without `λ`-ring
+      invariance, the ample half-space `ampleHalfSpace = {x | 0 ≤ x·(H + V)}` satisfies
+      `RiemannRochAxiom` unconditionally on every polar surface (`ampleHalfSpace_riemannRoch`),
+      failing only `AmpleAxiom`. Once `S` carries even a single correspondence `T` scaling
+      `(x·H, x·V)` by `(1, a)` or `(a, 1)` (`a > 1`), `T`-invariance substitutes for `AmpleAxiom`
+      completely: for *every* `T`-invariant subset `E ⊆ ampleHalfSpace` — **without assuming
+      `AmpleAxiom E`** — `RiemannRochAxiom E ↔ openPositiveCone ⊆ E ∧ ∀ x, 0 ≤ defect(x, x)`
+      (`hodgeIndex_iff_tilted_openPositiveCone`,
+      `riemannRoch_iff_openPositiveCone_subset_and_defect_nonneg_of_hecke`,
+      `scalingSurface_hecke_riemannRoch_iff`, `scalingSurface_adams_riemannRoch_iff`).
+    * *Calibration over `𝔽_q` and the Rosati–Frobenius source cone violated by `goldenDatum`:* On any
+      `CurveDatum D`, `D.spanHecke m` scales `x·H` by `q^m`, preserves `x·V`, and scales pairings and
+      defects by `q^m` (`windowSurface_hodgeIndex_iff_spanHecke_ample`); on `goldenDatum` at
+      `{0, 1}`, `goldenHeckeEscape = 3H − V + 2 goldenCounterexample` lies in `openPositiveCone`
+      (`x² = 2, x·(H + V) = 2`) yet `spanHecke 1` maps it outside `ampleHalfSpace`
+      (`(spanHecke 1 x)·(H + V) = −2`, `goldenHeckeEscape_violates_spanHecke_ample`). The Rosati
+      square-sampling energy `D.rosatiSourceEnergy S x = D.frobSquareMass S (fun k => x.2.2 k * q^{k/2})`
+      defines `D.rosatiSourceCone S`, which satisfies `defect ≤ rosatiSourceEnergy` and
+      `rosatiSourceCone S ⊆ positiveCone` unconditionally on every `CurveDatum D`, is invariant
+      under `spanAdams m` and `spanHecke m` and satisfies `RiemannRochAxiom` and `BezoutAxiom` on
+      every unitary curve (`spanAdams_and_spanHecke_mem_rosatiSourceCone_of_unitary`), and **is
+      violated by `goldenDatum` at `S = {1}`** (`rosatiSourceCone_riemannRoch_iff_unitary`,
+      `goldenDatum_not_rosatiSourceCone_riemannRoch`).
+    * *The universal arithmetic Lefschetz–adjunction identity and the Hecke–Lefschetz envelope cone:*
+      The Adams coboundary `adamsVar a x = ψ^a x − x` reverses the sign of `polar` on the nef
+      quadrant (`polar_adamsVar_self`: `polar(ψ^a x − x, ψ^a x − x) = −((√a − 1)²/√a) polar(x, x) ≤ 0`),
+      giving the pole-cancelled Lefschetz–adjunction identity
+      `arithLefschetz x a − ((a + 1)/2)(x·x) = ((√a − 1)²/2) defect(x, x) + (√a/2) defect(ψ^a x − x, ψ^a x − x)`
+      (`arithLefschetz_eq_selfPair_add_defect_add_adamsVar`,
+      `hodgeIndex_iff_abs_arithLefschetz_sub_polar_le`). The cone `lefschetzEnvelopeCone` of cycles
+      in `nefQuadrant` obeying `|arithLefschetz x a − ((a + 1)/2) polar(x, x)| ≤ √a polar(x, x)` across
+      all `a > 0` contains `0, H, V, H + V`, is unconditionally Adams- and Hecke-stable
+      (`adamsOp_and_heckeCorrespondence_mem_lefschetzEnvelopeCone`), is self-isotropic on `x·(H + V) ≤ 0`
+      (`lefschetzEnvelopeCone_selfPair_eq_zero_of_pair_ample_nonpos`), and satisfies
+      `RiemannRochAxiom` (without assuming `AmpleAxiom`) iff `RiemannHypothesis` holds
+      (`lefschetzEnvelopeCone_riemannRoch_tfae`); on any `heckeSpanCycle cH cV S d g`, the Hodge
+      defect is the negative quadratic form in `b · arithLefschetz (prim (diagCycle g)) (a/b)`
+      (`defect_heckeSpanCycle_eq_sum_arithLefschetz_prim`).
 
 ### 3.10 The odd-sector ledger, the degree floor, and section counts
 
@@ -728,7 +766,10 @@ Built and reusable:
   resonator remainders, intra- and cross-tower collar bounds against `Σ_p E_p` and the pole pairing,
   positivity decision for the finite-Euler-product form on lattice tests, and the successor cell.
 - *Rank–trace inertia* with spectral slack.
-- *The `λ`-ring*: Adams operations, Hecke correspondences and cycles, arithmetic Lefschetz numbers.
+- *The `λ`-ring and Hecke–Lefschetz rigidity*: Adams operations, Hecke correspondences and cycles,
+  arithmetic Lefschetz numbers, the pole-cancelled Lefschetz–adjunction identity, Hecke–Riemann–Roch
+  rigidity without `AmpleAxiom`, the Rosati–Frobenius source cone over `𝔽_q` violated by
+  `goldenDatum`, and the Hecke–Lefschetz envelope cone.
 - *The odd-sector ledger and section counts*: Lorentz–polar identity, reflected-prime/polar and
   Chebyshev ledgers, degree floors and the zero width, the universal floor law for ample cones,
   sign-free Bézout positivity from source section readings, prime-power node section counts
@@ -737,10 +778,6 @@ Built and reusable:
   Shannon–zero variational identity `2TL/π − 2N(0, T) ≤ (2 + η)e^{2L}`, sharp Bessel–Shannon
   concentration bounds `dim V ≤ 4LT_ε(L)/π`, the two-sided `(2 ∓ η)e^{2L}` near-radical dimension
   law, and the Landau–Widom rate `−log μ(L) ≍ 2π² N(T*)/log N(T*)`.
-
-To be built:
-
-- an effectivity stable under the Hecke correspondences that the golden datum violates.
 
 ---
 
@@ -823,12 +860,30 @@ To be built:
    iff `κ ≥ E_p + E_q` (`box_finiteEulerForm_nonneg_forall_iff`), with matching coercivity and
    pole-compensated positivity laws for `collarCoupledEulerLatticeForm`
    (`collarCoupledEulerLatticeForm_nonneg`, `poleCompensatedCollarLatticeForm_nonneg`).
-5. **Effectivity from the `λ`-ring.** The Adams operations, Hecke correspondences and the pole-plane
-   splitting exist (§3.9), and the source cones are stable under them (item 20). Open: a
-   Hecke-stable cone with nonnegative ample degree and Riemann–Roch supply whose supply is proved
-   from the `λ`-ring structure rather than from a coercive floor. Whether the Lefschetz identity
-   constrains the defect beyond the signature law is answered by the cyclic law: the defect is
-   generated by the Hecke orbit of any spectrally generic cycle (item 17).
+5. **Effectivity from the `λ`-ring.** Settled (`LambdaRingEffectivityAndHeckeLefschetzRigidity`):
+   without `λ`-ring invariance, `ampleHalfSpace = {x | 0 ≤ x·(H + V)}` satisfies `RiemannRochAxiom`
+   unconditionally (`ampleHalfSpace_riemannRoch`), failing only `AmpleAxiom`. Once `S` carries even
+   a single correspondence `T` scaling `(x·H, x·V)` by `(1, a)` or `(a, 1)` (`a > 1`), `T`-invariance
+   substitutes for `AmpleAxiom` completely: for *every* `T`-invariant `E ⊆ ampleHalfSpace` — **without
+   assuming `AmpleAxiom E`** — `RiemannRochAxiom E ↔ openPositiveCone ⊆ E ∧ ∀ x, 0 ≤ defect(x, x)`
+   (`riemannRoch_iff_openPositiveCone_subset_and_defect_nonneg_of_hecke`,
+   `scalingSurface_hecke_riemannRoch_iff`, `scalingSurface_adams_riemannRoch_iff`). Thus no
+   Hecke-stable cone of nonnegative ample degree can satisfy `RiemannRochAxiom` without forcing the
+   coercive defect floor `∀ x, 0 ≤ δ(x, x)`. Over `𝔽_q`, the Rosati square-sampling energy defines
+   `D.rosatiSourceCone S`, which satisfies `defect ≤ rosatiSourceEnergy` and
+   `rosatiSourceCone S ⊆ positiveCone` unconditionally on every `CurveDatum D`, is invariant under
+   `spanAdams m` and `spanHecke m` and satisfies `RiemannRochAxiom` and `BezoutAxiom` on every
+   unitary curve, and **is violated by `goldenDatum` at `S = {1}`**
+   (`rosatiSourceCone_riemannRoch_iff_unitary`, `goldenDatum_not_rosatiSourceCone_riemannRoch`,
+   `goldenHeckeEscape_violates_spanHecke_ample`). On `scalingSurface`, the Adams coboundary
+   `adamsVar a x = ψ^a x − x` reverses the sign of `polar` on `nefQuadrant` (`polar_adamsVar_self`)
+   and gives the pole-cancelled Lefschetz–adjunction identity
+   `arithLefschetz x a − ((a + 1)/2)(x·x) = ((√a − 1)²/2) defect(x, x) + (√a/2) defect(ψ^a x − x, ψ^a x − x)`
+   (`arithLefschetz_eq_selfPair_add_defect_add_adamsVar`); the Adams- and Hecke-stable cone
+   `lefschetzEnvelopeCone` satisfies `RiemannRochAxiom` (without `AmpleAxiom`) iff `RiemannHypothesis`
+   (`lefschetzEnvelopeCone_riemannRoch_tfae`), and on any `heckeSpanCycle` the defect is the
+   negative quadratic form in `b · arithLefschetz (prim (diagCycle g)) (a/b)`
+   (`defect_heckeSpanCycle_eq_sum_arithLefschetz_prim`).
 6. **Beyond `2/3` and `HD(1)`.** The flat-top cap `2/3` and the variational sub-threshold profile
    are explained, and no sub-threshold profile reaches `3/4` (§3.8). Open: either input that gives
    `3/4` — a zero-side spectral slack `S(T) ≥ N(T, 2T)/12` near `λ = 1` (requiring macroscopic

@@ -218,8 +218,10 @@ pole and avoids extending the earlier private convolution lemmas.
   the existing extended `sourceLevyEnergy` by the finite exponential correction
   and Gamma recurrence. The normalization scratch check verified the required
   integral and EReal APIs; two elaboration issues were fixed by an explicit
-  `IntegrableOn` type and exposing positive-ray membership. Its canonical check
-  is active. The arithmetic leaf still awaits its first check.
+  `IntegrableOn` type and exposing positive-ray membership. Its canonical source
+  and dependency olean now pass. The arithmetic leaf also passed its canonical
+  check and dependency olean creation. The capstone scratch check, including
+  the complete 42-declaration axiom inspection, is active.
 - `SuzukiCriticalL2FirstVariation.lean` contains the complete cutoff-free capstone
   and eventual strict deficit for infinite-energy compact L² sources. It awaits
   the arithmetic and normalization dependency checks.
@@ -231,3 +233,17 @@ pole and avoids extending the earlier private convolution lemmas.
   `ArithmeticPositivityTheory.sourceLevyEnergy` plus its finite exponential correction,
   and finish one dependency-closed canonical audit. The parent compact-C² card is
   already certified in stage 3 by shared work; preserve its completed leaves.
+
+## Finalization scope
+
+The user paused the broader RH goal and requested completion of the current
+Lean work. Finish the compact-L² capstone, the direct literal compact-family
+consequence, and the already written varying-primary Fatou draft. Complete
+canonical checks, all public axiom inspections, umbrella imports, and cleanup.
+Do not begin the untruncated-source formalization or the remaining full
+moving-source Gamma-limit assembly in this finalization batch.
+
+The capstone scratch check writes `/tmp/sz-critical-l2-source-check.log`.
+Remaining drafts are `/tmp/sz-critical-family-literal-api.lean` and
+`/tmp/sz-critical-moving-primary-api.lean`. Planned canonical leaves are
+`SuzukiCriticalLiteralFamilyContraction` and `SuzukiCriticalMovingPrimaryEnergy`.

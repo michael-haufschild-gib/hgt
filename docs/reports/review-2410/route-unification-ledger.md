@@ -125,7 +125,7 @@ The scaling surface pairing is the pole-plane form minus the Weil form; Hodge in
 
 ### 4.4 Ground rate, mass and clustering
 
-The compensated sampling floor at aperture `a` equals the ground floor; compensated floors at every `σ > Δ` are equivalent to equality of the ground rate with `Δ`; failure forces unbounded local off-line depth mass (C:CompensatedWidthFloorAndGroundEnergyRate [S]). Count-only data cannot give a mass floor (R:OffLineClusterWeilUnbounded); a rate excess needs collapsed clusters at doubly exponential height (D:MasterDCIPincerTheorem). This currency is shared by RW, SRT, ACS, EWU and AIP.
+The compensated sampling floor at aperture `a` equals the ground floor; compensated floors at every `σ > Δ` are equivalent to equality of the ground rate with `Δ`; failure forces unbounded local off-line depth mass (C:CompensatedWidthFloorAndGroundEnergyRate). Count-only data cannot give a mass floor (R:OffLineClusterWeilUnbounded); a rate excess needs collapsed clusters at doubly exponential height (D:MasterDCIPincerTheorem). This currency is shared by RW, SRT, ACS, EWU and AIP.
 
 ### 4.5 Depth on the divisor (U3)
 
@@ -159,7 +159,7 @@ First-prime seam charge `√2 log 2 sinh(δ log 2)`, mate gain `2δ log n`, and 
 | HJ ↔ HCF ↔ SEC | Residual vanishing = two-grid signs = seam vanishing on the divisor. | Pre-divisor forcing. |
 | BAG ↔ SRT/WL | Recurrence right of `1/2+σ` ⇔ lag floor at `σ`. | Returns near zeros. |
 | SRT ↔ RW ↔ ACS | Visibility, ground and Hodge-defect rates; cluster dichotomy. | Cluster exclusion; horizon containment. |
-| APT → RW/EWU/ACT/AIP | Positive restricted families; grid tents approximate every odd receiver [S]. | Positivity transfer to an RH-complete cone. |
+| APT → RW/EWU/ACT/AIP | Positive restricted families; grid tents approximate every odd receiver. | Positivity transfer to an RH-complete cone. |
 | AOT → all | Width functor; reading trichotomy; Wiener hull calculus; frustration index. | Producers. |
 | PTR ↔ W1C | Real-rooted finite producers; faithful-limit receivers. | Arithmetic producers. |
 

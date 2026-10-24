@@ -565,8 +565,6 @@ theorem spanAdams_and_spanHecke_mem_rosatiSourceCone_of_unitary (hU : ∀ i : ι
     have hqm : 0 ≤ D.q ^ m := by linarith [pow_pos (by linarith [D.one_lt_q] : 0 < D.q) m]
     have hE_hecke : D.rosatiSourceEnergy (windowShift m S) (D.spanHecke m x) =
         D.q ^ m * D.rosatiSourceEnergy S x := by
-      have hsq : D.sqrtq ^ m * D.sqrtq ^ m = D.q ^ m := by
-        rw [← mul_pow, ← sq, D.sqrtq_sq]
       rw [← D.rosatiSourceEnergy_spanAdams_of_unitary hU m S x]
       unfold rosatiSourceEnergy frobSquareMass
       rw [Finset.mul_sum]
@@ -580,7 +578,7 @@ theorem spanAdams_and_spanHecke_mem_rosatiSourceCone_of_unitary (hU : ∀ i : ι
         push_cast
         ring
       rw [hpoly, norm_mul, mul_pow, norm_pow, Complex.norm_real,
-        Real.norm_of_nonneg D.sqrtq_pos.le, ← pow_mul, mul_comm m 2, pow_mul, sq, hsq]
+        Real.norm_of_nonneg D.sqrtq_pos.le, ← pow_mul, mul_comm m 2, pow_mul, D.sqrtq_sq]
     rw [hE_hecke]
     exact ⟨mul_nonneg hqm hH, hV, mul_le_mul_of_nonneg_left hE hqm⟩
 
@@ -815,8 +813,8 @@ theorem arithLefschetz_eq_selfPair_add_defect_add_adamsVar (x : ScalingCycle) {a
         2 * scalingSurface.pair x scalingSurface.H * scalingSurface.pair x scalingSurface.V -
           scalingSurface.pair x x := scalingSurface.defect_self x
     linarith
-  rw [arithLefschetz_eq x ha, hpol, defect_adamsVar_self, ← hsq]
-  ring
+  rw [arithLefschetz_eq x ha, hpol, defect_adamsVar_self]
+  linear_combination -(scalingSurface.defect x x / 2) * hsq
 
 /-- **Companion Polar–Coboundary Lefschetz Identity (`arithLefschetz_sub_sqrt_selfPair_eq`):**
 For every scale `a > 0` and every cycle `x : ScalingCycle`,
@@ -828,7 +826,7 @@ theorem arithLefschetz_sub_sqrt_selfPair_eq (x : ScalingCycle) {a : ℝ} (ha : 0
   have hid := arithLefschetz_eq_selfPair_add_defect_add_adamsVar x ha
   have hsq : Real.sqrt a ^ 2 = a := Real.sq_sqrt ha.le
   have hdef : scalingSurface.defect x x = scalingSurface.polar x x - scalingSurface.pair x x := rfl
-  linear_combination hid + (scalingSurface.pair x x / 2) * hsq +
+  linear_combination hid - (scalingSurface.pair x x / 2) * hsq +
     ((Real.sqrt a - 1) ^ 2 / 2) * hdef
 
 /-- **Two-Sided Arithmetic Hasse–Weil Lefschetz Envelope Equivalence:**

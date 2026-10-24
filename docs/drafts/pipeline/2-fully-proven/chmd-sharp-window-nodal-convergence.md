@@ -63,8 +63,7 @@ in the exact aperture completion. No sign assumption enters this proof.
 
 ## Corpus inputs
 
-- `CHMDSharpSpatialCut`: literal full-graph cuts and their uniform bound
-  (paper proved; formalization in progress).
+- `CHMDSharpSpatialCut`: literal full-graph cuts and their uniform bound.
 - `CHMDFullJumpCoreDensity.dense_compactTests`: dense actual compact C2 tests.
 - `HTGeometry.StrongConvergenceDense.tendsto_of_dense_of_uniform_bound`:
   the existing epsilon argument for uniformly bounded operators.
@@ -77,9 +76,26 @@ in the exact aperture completion. No sign assumption enters this proof.
 ## Gates
 
 - [x] Dependency-closed paper proof.
-- [ ] Lean strong convergence and exact nodal commutation.
-- [ ] Lean convergence of the complete signed defect.
+- [x] Lean strong convergence and exact nodal commutation.
+- [x] Lean convergence of the complete signed defect.
 - [ ] Candidate and actual repository leaf checks.
 - [ ] Standard-axiom audit, umbrella import and scratch cleanup.
 
 No global sign, RH conclusion or external novelty claim is asserted.
+
+## Lean declarations and verification
+
+Module: `GaloisForLFunctions.RHTower.CHMDSharpWindowNodalConvergence`.
+
+- `tendsto_sharpIntervalGraph`: complete graph-norm convergence.
+- `sharpIntervalGraph_fst_mem_oddSector`: exact preservation of odd parity.
+- `sharpIntervalGraph_posGraph`, `sharpIntervalGraph_negGraph`,
+  `sharpIntervalGraph_absGraph`: exact nodal commutation.
+- `tendsto_weilForm_sharpIntervalGraph`: complete signed Weil-form limit.
+- `tendsto_sourcePair_nodal_sharpIntervalGraph`: complete nodal-pairing limit.
+- `tendsto_oneL_defect_sharpIntervalGraph`: convergence of the entire signed
+  defect, including its squared ground-state moment.
+
+Candidate check passed. All eight declarations above were audited with
+`#print axioms`: only `propext`, `Classical.choice`, `Quot.sound` occur.
+The repository leaf check and temporary-file cleanup remain pending.

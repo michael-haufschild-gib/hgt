@@ -122,7 +122,7 @@ This avoids C1's exponential in total mass `A_H`. The parent inequalities
 are existing canonical-product results; the connection identifies their
 literal centered Xi tail and retains the finite head. Multiplication by
 that head gives the corresponding normalized full-slice comparison.
-The finite-head sign remains open.
+The finite head's contribution to the signed heat coefficients remains open.
 
 ### C4. A dense Gaussian tail at growing height — paper route
 
@@ -349,8 +349,8 @@ For complex `x` with `|x|<=R`, C3 gives the corresponding bound with
 
 **Audit:** BRIDGE. The finite factorization is already present inside a
 corpus proof; the new connection removes the central nonvanishing premise
-from the Gaussian comparison. It does not establish the missing finite-head
-sign or claim new knowledge relative to external literature. Paper proof
+from the Gaussian comparison. It does not establish coefficient-sign transfer through the finite head
+or claim new knowledge relative to external literature. Paper proof
 complete; complete Lean draft saved in `/tmp/wd_gaussian_finite_head.lean`.
 Frontier ledger must not be edited.
 
@@ -386,9 +386,11 @@ ledger. No broader RH result is claimed.
   production modules and umbrella imports exist. Their named final checks
   remain pending. C6, C7, and the Gaussian model olean builds passed;
   the C8 scratch proof is now undergoing its kernel and axiom checks.
-- C8: complete paper proof and full draft in `/tmp/wd_gaussian_tail_heat.lean`;
-  kernel verification pending. The public relative-error theorem exposes
-  the explicit Gaussian fourth moment.
+- C8: complete paper proof and full draft in `/tmp/wd_gaussian_tail_heat.lean`.
+  Integrability, the one-sided heat bound, and the explicit relative-error
+  theorem passed their kernel and standard-three-axiom audits. The uniform
+  convergence proof had one redundant terminal `rfl`; it was removed and
+  the complete draft is being checked again.
 - C9: complete paper proof and full draft in `/tmp/wd_gaussian_finite_head.lean`;
   kernel verification pending.
 - The C1–C6 combined audit reported only `propext`, `Classical.choice`, and

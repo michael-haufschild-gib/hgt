@@ -67,10 +67,11 @@
 ### KR-PAF — Uniform positive aperture floor transport
 
 - **Path:** Positive initial CCM ground floor + summably small relative step losses → fixed positive floor at unbounded apertures → RH.
-- **Obstruction [L]:** For `A≥3`, `μ(A)≤K exp((11/2)A−πe^{2(A−2)})`; the positive ceiling tends to zero. No fixed positive floor survives along an unbounded aperture sequence. This does not prove that μ tends to zero: that limit is RH-equivalent. Half-summable relative-step producers are impossible for this source.
+- **Obstruction [L]:** For `A≥3`, `μ(A)≤K exp((11/2)A−πe^{2(A−2)})`; the positive ceiling tends to zero. No fixed positive floor survives along an unbounded aperture sequence. This does not prove μ→0: that limit is RH-equivalent. Half-summable relative losses and additive losses leaving any fixed positive seed margin are impossible.
 - **Survivor [L]:** Every positive floor `m₀e^{−B(A)}` needs `B(A)≥πe^{2(A−2)}−(11/2)A+log(m₀/K)`. Even the abstract harmonic-loss floor `m₀/(J+1)` is impossible along linearly growing actual apertures. Finite-aperture nonnegativity, positive floors with sufficiently rapid decay if independently proved, and graded negative floors remain viable. Full/even L² source-cone RR obeys the same Gaussian ceiling. On smooth polar-free tests, graded RR iff c≤μ₀(r); all-aperture μ₀≥0 forces μ₀(r)>0 at each finite r by strict antitonicity. E: formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/AllApertureSourceRiemannRochAndCoercivityLaws.lean.
-- **Needs:** Source-derived nonnegative `μ(A)` at cofinal apertures or every-positive-rate negative floor, without a forbidden uniform positive margin; RW/ACT.
-- **E:** formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheApertureFloorMustDecayDoublyExponentially.lean.
+- **Transport survivor [L]:** From a positive seed, relative factors q_j≥0 with q_jμ(A_j)≤μ(A_(j+1)) on a cofinal sequence suffice for RH; q_j>0 excludes finite contact while allowing the product floor to vanish. On monotone cofinal apertures, RH iff ΣΔμ=μ(A₀). Bounded-gap rate-σ discrete negative floors extend to continuous apertures with factor exp(2σΔ). No actual relative-step or weighted-leakage bound is produced.
+- **Needs:** Prove source-derived step/leakage bounds giving cofinal nonnegativity or every-positive-rate negative floors, without a fixed positive margin; RW/ACT.
+- **E:** formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheApertureFloorMustDecayDoublyExponentially.lean; C:VanishingApertureFloorAndGradedTransport.
 
 <a id="kr-adj"></a>
 ### KR-ADJ — Cross-prime adjunction shortcuts
