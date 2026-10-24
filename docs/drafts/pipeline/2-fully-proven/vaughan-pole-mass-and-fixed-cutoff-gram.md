@@ -15,7 +15,7 @@ This is a structural result within Q-I, not a fixed zero-free strip.
 
 - [x] Dependency-closed paper proof.
 - [x] Pole calibration and uniform negative-entry witness checked in Lean.
-- [ ] Fixed-cutoff classification and reciprocal-rate equivalence checked in Lean.
+- [x] Fixed-cutoff classification and reciprocal-rate equivalence checked in Lean.
 - [ ] Transitive-axiom audit and final leaf checks.
 - [ ] Umbrella imports and corpus integration complete.
 
@@ -75,8 +75,11 @@ of the nonnegative pronic partial sums. This equivalence does not prove either s
 
 `TheVaughanDiagonalContainsLinearPoleMass.lean` passed the direct leaf check; its extension
 with the uniform negative-entry witness passed the olean-producing check, needed solely by
-`TheFixedVaughanGramHasRankOneLeadingTerm.lean`. The latter is written but not checked yet.
-The first module's transitive-axiom audit is running. No full or umbrella build was used.
+`TheFixedVaughanGramHasRankOneLeadingTerm.lean`. The latter passed its olean-producing check,
+needed by the atomic-budget module. Both final direct no-olean leaf checks remain after the
+completed extensions. Both modules' principal declarations passed the transitive-axiom audit with only
+`propext`, `Classical.choice`, and `Quot.sound`; both umbrella imports are present. No full or
+umbrella build was used.
 
 ## Log
 

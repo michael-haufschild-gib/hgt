@@ -529,27 +529,17 @@ theorem exp_sub_exp_neg_sq_le {A δ u : ℝ} (_hA : 0 ≤ A) (hu : |u| ≤ A) :
       _ = 4 * A ^ 2 * δ ^ 2 * Real.exp (2 * A * |δ|) := by rw [sq_abs, hexp2]
   exact ⟨hb1, hb2⟩
 
-/-- Plancherel `L²(ℝ)` bound for the depth-difference transform across BOTH sign orientations `±γ`:
-no `H¹` derivative loss enters, and the bound vanishes on `Re ρ = 1/2`. -/
-theorem integral_norm_paperFT_depthDiff_sq_le {F₀ : ℝ → ℝ} (hF₀ : Continuous F₀)
-    (hF₀c : HasCompactSupport F₀) {A : ℝ} (hA : 0 ≤ A)
-    (hsupp : ∀ u : ℝ, A < |u| → F₀ u = 0) (ρ : ℂ) (a b : ℝ) :
+private theorem integral_univ_norm_paperFT_depthDiff_sq_eq {F₀ : ℝ → ℝ} (hF₀ : Continuous F₀)
+    (hF₀c : HasCompactSupport F₀) (ρ : ℂ) :
     Integrable (fun γ : ℝ =>
       ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (γ : ℂ)) -
         paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (γ : ℂ))‖ ^ 2) ∧
-    (∫ γ in Icc a b,
+    (∫ γ : ℝ,
       ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (γ : ℂ)) -
-        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (γ : ℂ))‖ ^ 2) ≤
-      2 * Real.pi * Real.exp (2 * A * |ρ.re - 1 / 2|) * (∫ u, F₀ u ^ 2) ∧
-    (∫ γ in Icc a b,
-      ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (γ : ℂ)) -
-        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (γ : ℂ))‖ ^ 2) ≤
-      8 * Real.pi * A ^ 2 * (ρ.re - 1 / 2) ^ 2 * Real.exp (2 * A * |ρ.re - 1 / 2|) *
-        (∫ u, F₀ u ^ 2) := by
+        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (γ : ℂ))‖ ^ 2) =
+      2 * Real.pi * ∫ u : ℝ, ‖depthDiffProfile F₀ ρ u‖ ^ 2 := by
   let h := depthDiffProfile F₀ ρ
-  have hh_cont : Continuous h := by
-    unfold h depthDiffProfile
-    fun_prop
+  have hh_cont : Continuous h := by unfold h depthDiffProfile; fun_prop
   have hh_comp : HasCompactSupport h := by
     unfold h depthDiffProfile
     exact ((hF₀c.mul_right).comp_left Complex.ofReal_zero).mul_right
@@ -572,66 +562,83 @@ theorem integral_norm_paperFT_depthDiff_sq_le {F₀ : ℝ → ℝ} (hF₀ : Cont
       fun γ : ℝ => ‖paperFT h ((-γ : ℝ) : ℂ)‖ ^ 2 := by
     funext γ
     rw [Complex.ofReal_neg, paperFT_depthDiffProfile_eq hF₀ hF₀c ρ γ]
-  have hint_neg : Integrable fun γ : ℝ => ‖paperFT h ((-γ : ℝ) : ℂ)‖ ^ 2 := hint_pos.comp_neg
-  have hint_lhs : Integrable fun γ : ℝ =>
-      ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (γ : ℂ)) -
-        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (γ : ℂ))‖ ^ 2 := by
-    rwa [heq_fn]
-  have hwhole : (∫ γ : ℝ, ‖paperFT h ((-γ : ℝ) : ℂ)‖ ^ 2) = 2 * Real.pi * ∫ u : ℝ, ‖h u‖ ^ 2 := by
-    rw [integral_neg_eq_self (fun x : ℝ => ‖paperFT h (x : ℂ)‖ ^ 2)]
-    exact RHTower.KernelStrip.integral_norm_sq_paperFT_of_memLp hh1 hh2
-  have hset_le : (∫ γ in Icc a b,
-      ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (γ : ℂ)) -
-        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (γ : ℂ))‖ ^ 2) ≤
-      2 * Real.pi * ∫ u : ℝ, ‖h u‖ ^ 2 := by
-    rw [heq_fn]
-    exact (setIntegral_le_integral hint_neg (Eventually.of_forall fun _ => sq_nonneg _)).trans_eq hwhole
+  refine ⟨by rw [heq_fn]; exact hint_pos.comp_neg, ?_⟩
+  rw [heq_fn, integral_neg_eq_self (fun x : ℝ => ‖paperFT h (x : ℂ)‖ ^ 2)]
+  exact RHTower.KernelStrip.integral_norm_sq_paperFT_of_memLp hh1 hh2
+
+private theorem integral_norm_depthDiffProfile_sq_bounds {F₀ : ℝ → ℝ} (hF₀ : Continuous F₀)
+    (hF₀c : HasCompactSupport F₀) {A : ℝ} (hA : 0 ≤ A)
+    (hsupp : ∀ u : ℝ, A < |u| → F₀ u = 0) (ρ : ℂ) :
+    (∫ u : ℝ, ‖depthDiffProfile F₀ ρ u‖ ^ 2) ≤
+      Real.exp (2 * A * |ρ.re - 1 / 2|) * (∫ u, F₀ u ^ 2) ∧
+    (∫ u : ℝ, ‖depthDiffProfile F₀ ρ u‖ ^ 2) ≤
+      4 * A ^ 2 * (ρ.re - 1 / 2) ^ 2 * Real.exp (2 * A * |ρ.re - 1 / 2|) * (∫ u, F₀ u ^ 2) := by
+  have hh_cont : Continuous (depthDiffProfile F₀ ρ) := by unfold depthDiffProfile; fun_prop
+  have hh_comp : HasCompactSupport (depthDiffProfile F₀ ρ) := by
+    unfold depthDiffProfile
+    exact ((hF₀c.mul_right).comp_left Complex.ofReal_zero).mul_right
+  have hint_h2 : Integrable fun u : ℝ => ‖depthDiffProfile F₀ ρ u‖ ^ 2 :=
+    (hh_cont.norm.pow 2).integrable_of_hasCompactSupport
+      ((hh_comp.norm).comp_left (zero_pow two_ne_zero))
   have hint_F₀2 : Integrable fun u : ℝ => F₀ u ^ 2 :=
     (hF₀.pow 2).integrable_of_hasCompactSupport (hF₀c.comp_left (zero_pow two_ne_zero))
-  have hnorm_h : ∀ u : ℝ, ‖h u‖ ^ 2 =
+  have hnorm_h : ∀ u : ℝ, ‖depthDiffProfile F₀ ρ u‖ ^ 2 =
       F₀ u ^ 2 * (Real.exp ((ρ.re - 1 / 2) * u) - Real.exp (-((ρ.re - 1 / 2) * u))) ^ 2 := fun u => by
-    dsimp [h, depthDiffProfile]
+    dsimp [depthDiffProfile]
     have hexp_norm : ‖Complex.exp (Complex.I * (ρ.im : ℂ) * (u : ℂ))‖ = 1 := by
       have : Complex.I * (ρ.im : ℂ) * (u : ℂ) = ((ρ.im * u : ℝ) : ℂ) * Complex.I := by
         push_cast; ring
       rw [this, Complex.norm_exp_ofReal_mul_I]
     rw [norm_mul, hexp_norm, mul_one, Complex.norm_real, Real.norm_eq_abs, sq_abs, mul_pow]
-  have hu_b1 : (∫ u : ℝ, ‖h u‖ ^ 2) ≤ Real.exp (2 * A * |ρ.re - 1 / 2|) * ∫ u, F₀ u ^ 2 := by
-    rw [← integral_const_mul]
-    refine integral_mono hint_h2 (hint_F₀2.const_mul _) fun u => ?_
+  clear hh_cont hh_comp
+  refine ⟨?_, ?_⟩
+  · rw [← integral_const_mul]
+    refine integral_mono hint_h2
+      (hint_F₀2.const_mul (Real.exp (2 * A * |ρ.re - 1 / 2|))) fun u => ?_
     rw [hnorm_h u]
     by_cases hu : |u| ≤ A
     · have hb := (exp_sub_exp_neg_sq_le hA hu (δ := ρ.re - 1 / 2)).1
-      have := mul_le_mul_of_nonneg_left hb (sq_nonneg (F₀ u))
-      linarith
-    · simp [hsupp u (not_le.mp hu)]
-  have hu_b2 : (∫ u : ℝ, ‖h u‖ ^ 2) ≤
-      4 * A ^ 2 * (ρ.re - 1 / 2) ^ 2 * Real.exp (2 * A * |ρ.re - 1 / 2|) * ∫ u, F₀ u ^ 2 := by
-    rw [← integral_const_mul]
-    refine integral_mono hint_h2 (hint_F₀2.const_mul _) fun u => ?_
+      exact (mul_le_mul_of_nonneg_left hb (sq_nonneg (F₀ u))).trans_eq (mul_comm _ _)
+    · rw [hsupp u (not_le.mp hu)]
+      simp only [sq, zero_mul, mul_zero, le_refl]
+  · rw [← integral_const_mul]
+    refine integral_mono hint_h2
+      (hint_F₀2.const_mul (4 * A ^ 2 * (ρ.re - 1 / 2) ^ 2 * Real.exp (2 * A * |ρ.re - 1 / 2|)))
+      fun u => ?_
     rw [hnorm_h u]
     by_cases hu : |u| ≤ A
     · have hb := (exp_sub_exp_neg_sq_le hA hu (δ := ρ.re - 1 / 2)).2
-      have := mul_le_mul_of_nonneg_left hb (sq_nonneg (F₀ u))
-      linarith
-    · simp [hsupp u (not_le.mp hu)]
-  refine ⟨hint_lhs, ?_, ?_⟩
-  · calc (∫ γ in Icc a b,
-          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (γ : ℂ)) -
-            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (γ : ℂ))‖ ^ 2)
-        ≤ 2 * Real.pi * ∫ u : ℝ, ‖h u‖ ^ 2 := hset_le
-      _ ≤ 2 * Real.pi * (Real.exp (2 * A * |ρ.re - 1 / 2|) * ∫ u, F₀ u ^ 2) :=
-          mul_le_mul_of_nonneg_left hu_b1 (by positivity)
-      _ = 2 * Real.pi * Real.exp (2 * A * |ρ.re - 1 / 2|) * ∫ u, F₀ u ^ 2 := by ring
-  · calc (∫ γ in Icc a b,
-          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (γ : ℂ)) -
-            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (γ : ℂ))‖ ^ 2)
-        ≤ 2 * Real.pi * ∫ u : ℝ, ‖h u‖ ^ 2 := hset_le
-      _ ≤ 2 * Real.pi * (4 * A ^ 2 * (ρ.re - 1 / 2) ^ 2 *
-            Real.exp (2 * A * |ρ.re - 1 / 2|) * ∫ u, F₀ u ^ 2) :=
-          mul_le_mul_of_nonneg_left hu_b2 (by positivity)
-      _ = 8 * Real.pi * A ^ 2 * (ρ.re - 1 / 2) ^ 2 * Real.exp (2 * A * |ρ.re - 1 / 2|) *
-            ∫ u, F₀ u ^ 2 := by ring
+      exact (mul_le_mul_of_nonneg_left hb (sq_nonneg (F₀ u))).trans_eq (mul_comm _ _)
+    · rw [hsupp u (not_le.mp hu)]
+      simp only [sq, zero_mul, mul_zero, le_refl]
+
+/-- Plancherel `L²(ℝ)` bound for the depth-difference transform across BOTH sign orientations `±γ`:
+no `H¹` derivative loss enters, and the bound vanishes on `Re ρ = 1/2`. -/
+theorem integral_norm_paperFT_depthDiff_sq_le {F₀ : ℝ → ℝ} (hF₀ : Continuous F₀)
+    (hF₀c : HasCompactSupport F₀) {A : ℝ} (hA : 0 ≤ A)
+    (hsupp : ∀ u : ℝ, A < |u| → F₀ u = 0) (ρ : ℂ) (a b : ℝ) :
+    Integrable (fun γ : ℝ =>
+      ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (γ : ℂ)) -
+        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (γ : ℂ))‖ ^ 2) ∧
+    (∫ γ in Icc a b,
+      ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (γ : ℂ)) -
+        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (γ : ℂ))‖ ^ 2) ≤
+      2 * Real.pi * Real.exp (2 * A * |ρ.re - 1 / 2|) * (∫ u, F₀ u ^ 2) ∧
+    (∫ γ in Icc a b,
+      ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (γ : ℂ)) -
+        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (γ : ℂ))‖ ^ 2) ≤
+      8 * Real.pi * A ^ 2 * (ρ.re - 1 / 2) ^ 2 * Real.exp (2 * A * |ρ.re - 1 / 2|) *
+        (∫ u, F₀ u ^ 2) := by
+  obtain ⟨hint_lhs, hwhole⟩ := integral_univ_norm_paperFT_depthDiff_sq_eq hF₀ hF₀c ρ
+  obtain ⟨hu_b1, hu_b2⟩ := integral_norm_depthDiffProfile_sq_bounds hF₀ hF₀c hA hsupp ρ
+  have hset_le : (∫ γ in Icc a b,
+      ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (γ : ℂ)) -
+        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (γ : ℂ))‖ ^ 2) ≤
+      2 * Real.pi * ∫ u : ℝ, ‖depthDiffProfile F₀ ρ u‖ ^ 2 :=
+    (setIntegral_le_integral hint_lhs (Eventually.of_forall fun _ => sq_nonneg _)).trans_eq hwhole
+  exact ⟨hint_lhs,
+    hset_le.trans ((mul_le_mul_of_nonneg_left hu_b1 (by positivity)).trans_eq (by ring)),
+    hset_le.trans ((mul_le_mul_of_nonneg_left hu_b2 (by positivity)).trans_eq (by ring))⟩
 
 /-- Symmetric `+γ` orientation of `integral_norm_paperFT_depthDiff_sq_le` via `γ ↦ -γ`. -/
 theorem integral_norm_paperFT_depthDiff_add_sq_le {F₀ : ℝ → ℝ} (hF₀ : Continuous F₀)
@@ -646,13 +653,12 @@ theorem integral_norm_paperFT_depthDiff_add_sq_le {F₀ : ℝ → ℝ} (hF₀ : 
         paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) + (γ : ℂ))‖ ^ 2) ≤
       8 * Real.pi * A ^ 2 * (ρ.re - 1 / 2) ^ 2 * Real.exp (2 * A * |ρ.re - 1 / 2|) *
         (∫ u, F₀ u ^ 2) := by
-  obtain ⟨hint, _, _⟩ := integral_norm_paperFT_depthDiff_sq_le hF₀ hF₀c hA hsupp ρ (-b) (-a)
-  have hwhole : (∫ γ in Icc a b,
+  obtain ⟨hint, hwhole_eq⟩ := integral_univ_norm_paperFT_depthDiff_sq_eq hF₀ hF₀c ρ
+  obtain ⟨hu_b1, hu_b2⟩ := integral_norm_depthDiffProfile_sq_bounds hF₀ hF₀c hA hsupp ρ
+  have hset_le : (∫ γ in Icc a b,
       ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ + (γ : ℂ)) -
         paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) + (γ : ℂ))‖ ^ 2) ≤
-      ∫ x : ℝ,
-        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (x : ℂ)) -
-          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (x : ℂ))‖ ^ 2 := by
+      2 * Real.pi * ∫ u : ℝ, ‖depthDiffProfile F₀ ρ u‖ ^ 2 := by
     have heq : (fun γ : ℝ =>
         ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ + (γ : ℂ)) -
           paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) + (γ : ℂ))‖ ^ 2) =
@@ -661,58 +667,14 @@ theorem integral_norm_paperFT_depthDiff_add_sq_le {F₀ : ℝ → ℝ} (hF₀ : 
             paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - ((-γ : ℝ) : ℂ))‖ ^ 2 := by
       funext γ; simp [sub_neg_eq_add]
     rw [heq]
-    have hle := setIntegral_le_integral (s := Icc a b) hint.comp_neg
-      (Eventually.of_forall fun _ => sq_nonneg _)
-    rw [integral_neg_eq_self] at hle
-    exact hle
-  -- Reuse the whole-line evaluation from `depthDiffProfile`
-  let h := depthDiffProfile F₀ ρ
-  have hh_cont : Continuous h := by unfold h depthDiffProfile; fun_prop
-  have hh_comp : HasCompactSupport h :=
-    ((hF₀c.mul_right).comp_left Complex.ofReal_zero).mul_right
-  have hh1 : Integrable h := hh_cont.integrable_of_hasCompactSupport hh_comp
-  have hint_h2 : Integrable fun u : ℝ => ‖h u‖ ^ 2 :=
-    (hh_cont.norm.pow 2).integrable_of_hasCompactSupport
-      ((hh_comp.norm).comp_left (zero_pow two_ne_zero))
-  have hh2 : MemLp h 2 :=
-    (memLp_two_iff_integrable_sq_norm hh_cont.aestronglyMeasurable).mpr hint_h2
-  have heq_fn : (fun x : ℝ =>
-      ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (x : ℂ)) -
-        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (x : ℂ))‖ ^ 2) =
-      fun x : ℝ => ‖paperFT h ((-x : ℝ) : ℂ)‖ ^ 2 := by
-    funext x
-    rw [Complex.ofReal_neg, paperFT_depthDiffProfile_eq hF₀ hF₀c ρ x]
-  rw [heq_fn, integral_neg_eq_self (fun x : ℝ => ‖paperFT h (x : ℂ)‖ ^ 2),
-    RHTower.KernelStrip.integral_norm_sq_paperFT_of_memLp hh1 hh2] at hwhole
-  have hint_F₀2 : Integrable fun u : ℝ => F₀ u ^ 2 :=
-    (hF₀.pow 2).integrable_of_hasCompactSupport (hF₀c.comp_left (zero_pow two_ne_zero))
-  have hnorm_h : ∀ u : ℝ, ‖h u‖ ^ 2 =
-      F₀ u ^ 2 * (Real.exp ((ρ.re - 1 / 2) * u) - Real.exp (-((ρ.re - 1 / 2) * u))) ^ 2 := fun u => by
-    dsimp [h, depthDiffProfile]
-    have hexp_norm : ‖Complex.exp (Complex.I * (ρ.im : ℂ) * (u : ℂ))‖ = 1 := by
-      have : Complex.I * (ρ.im : ℂ) * (u : ℂ) = ((ρ.im * u : ℝ) : ℂ) * Complex.I := by
-        push_cast; ring
-      rw [this, Complex.norm_exp_ofReal_mul_I]
-    rw [norm_mul, hexp_norm, mul_one, Complex.norm_real, Real.norm_eq_abs, sq_abs, mul_pow]
-  have hu_b1 : (∫ u : ℝ, ‖h u‖ ^ 2) ≤ Real.exp (2 * A * |ρ.re - 1 / 2|) * ∫ u, F₀ u ^ 2 := by
-    rw [← integral_const_mul]
-    refine integral_mono hint_h2 (hint_F₀2.const_mul _) fun u => ?_
-    rw [hnorm_h u]
-    by_cases hu : |u| ≤ A
-    · have hb := (exp_sub_exp_neg_sq_le hA hu (δ := ρ.re - 1 / 2)).1
-      linarith [mul_le_mul_of_nonneg_left hb (sq_nonneg (F₀ u))]
-    · simp [hsupp u (not_le.mp hu)]
-  have hu_b2 : (∫ u : ℝ, ‖h u‖ ^ 2) ≤
-      4 * A ^ 2 * (ρ.re - 1 / 2) ^ 2 * Real.exp (2 * A * |ρ.re - 1 / 2|) * ∫ u, F₀ u ^ 2 := by
-    rw [← integral_const_mul]
-    refine integral_mono hint_h2 (hint_F₀2.const_mul _) fun u => ?_
-    rw [hnorm_h u]
-    by_cases hu : |u| ≤ A
-    · have hb := (exp_sub_exp_neg_sq_le hA hu (δ := ρ.re - 1 / 2)).2
-      linarith [mul_le_mul_of_nonneg_left hb (sq_nonneg (F₀ u))]
-    · simp [hsupp u (not_le.mp hu)]
-  exact ⟨hwhole.trans ((mul_le_mul_of_nonneg_left hu_b1 (by positivity)).trans_eq (by ring)),
-    hwhole.trans ((mul_le_mul_of_nonneg_left hu_b2 (by positivity)).trans_eq (by ring))⟩
+    exact ((setIntegral_le_integral (s := Icc a b) hint.comp_neg
+      (Eventually.of_forall fun _ => sq_nonneg _)).trans_eq
+      (integral_neg_eq_self (fun x : ℝ =>
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (x : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (x : ℂ))‖ ^ 2) volume)).trans_eq
+      hwhole_eq
+  exact ⟨hset_le.trans ((mul_le_mul_of_nonneg_left hu_b1 (by positivity)).trans_eq (by ring)),
+    hset_le.trans ((mul_le_mul_of_nonneg_left hu_b2 (by positivity)).trans_eq (by ring))⟩
 
 /-- Exact multiplicity-preserving `tsum` bridge between `XiZeroCopy` and `zetaZeroConfig.carrier`. -/
 theorem summable_zetaCarrier_of_xiZeroCopy {g : ℂ → ℝ} (hg0 : ∀ z, 0 ≤ g z)
@@ -725,9 +687,11 @@ theorem summable_zetaCarrier_of_xiZeroCopy {g : ℂ → ℝ} (hg0 : ∀ z, 0 ≤
   have hsigR : Summable fun ρ : XiDivisorSupport => ((∑' i, f ⟨ρ, i⟩ : ℝ≥0) : ℝ) :=
     NNReal.summable_coe.mpr hsig
   refine hsigR.congr fun ρ => ?_
-  rw [tsum_fintype, NNReal.coe_sum]
-  simp only [Function.comp_apply, f, NNReal.coe_mk, Finset.sum_const, Finset.card_univ,
-    Fintype.card_fin, nsmul_eq_mul, xiDivisorZetaCarrierEquiv_multiplicity]
+  have hconst : ∀ i, ((f ⟨ρ, i⟩ : ℝ≥0) : ℝ) = g (ρ : ℂ) := fun _ => rfl
+  rw [Function.comp_apply, tsum_fintype, NNReal.coe_sum,
+    Finset.sum_congr rfl (fun i _ => hconst i)]
+  simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+    xiDivisorZetaCarrierEquiv_multiplicity]
   rfl
 
 theorem tsum_xiZeroCopy_eq_zetaCarrier {g : ℂ → ℝ}
@@ -823,8 +787,7 @@ theorem continuous_zeta_W_re_modulated {F₀ : ℝ → ℝ} (hF₀ : ContDiff �
     have hcont_on : ContinuousOn (fun γ : ℝ => ∑' ρ, Φ γ ρ) (Metric.closedBall 0 M) :=
       continuousOn_tsum (fun ρ => (hΦ_cont ρ).continuousOn) hsum_base fun ρ γ hγ =>
         hdom γ (by simpa [Metric.mem_closedBall, Real.dist_eq] using hγ) ρ
-    exact hcont_on.continuousAt (Metric.closedBall_mem_nhds_of_mem
-      (by simp [Metric.mem_closedBall, Real.dist_eq, M]))
+    exact hcont_on.continuousAt (Metric.closedBall_mem_nhds_of_mem (by simp [M]))
   have hdom_shift : ∀ M : ℝ, 0 ≤ M → ∀ γ : ℝ, |γ| ≤ M → ∀ ρ : zetaZeroConfig.carrier,
       ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ))‖ ≤
         Real.exp (A₀ / 2) * envelopeWindowNorm F₀ * (2 * (1 + M) ^ 2) *
@@ -861,7 +824,7 @@ theorem continuous_zeta_W_re_modulated {F₀ : ℝ → ℝ} (hF₀ : ContDiff �
     refine ⟨?_, by simpa using hb2⟩
     calc ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ))‖
         ≤ Real.exp (A₀ / 2) * envelopeWindowNorm F₀ * (1 / (1 + ((ρ : ℂ).im - γ) ^ 2)) := by
-          simpa [div_eq_mul_one_div] using hb1
+          rw [mul_one_div]; exact hb1
       _ ≤ Real.exp (A₀ / 2) * envelopeWindowNorm F₀ *
             (2 * (1 + M) ^ 2 * (2 / ‖(ρ : ℂ)‖ ^ 2)) := by
           refine mul_le_mul_of_nonneg_left ?_
@@ -871,6 +834,7 @@ theorem continuous_zeta_W_re_modulated {F₀ : ℝ → ℝ} (hF₀ : ContDiff �
       _ = Real.exp (A₀ / 2) * envelopeWindowNorm F₀ * (2 * (1 + M) ^ 2) *
             (2 / ‖(ρ : ℂ)‖ ^ 2) := by ring
   set C₀_w : ℝ := Real.exp (A₀ / 2) * envelopeWindowNorm F₀
+  have hC₀_w_nn : 0 ≤ C₀_w := mul_nonneg (Real.exp_pos _).le (envelopeWindowNorm_nonneg F₀)
   refine ⟨?_, ?_⟩
   · -- Continuity of complex quadrature Weil form
     refine hcont_tsum (fun γ ρ =>
@@ -883,11 +847,15 @@ theorem continuous_zeta_W_re_modulated {F₀ : ℝ → ℝ} (hF₀ : ContDiff �
       simp only [ZeroConfig.Wsummand, paperFT_complexModulatedSource, norm_mul,
         Complex.norm_natCast, Complex.norm_conj]
       have hm : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
-      have hprod := mul_le_mul hs1 hs2 (norm_nonneg _) (by positivity)
+      have hprod := mul_le_mul hs1 hs2 (norm_nonneg _)
+        (mul_nonneg (mul_nonneg hC₀_w_nn (by positivity)) (by positivity))
       calc (zetaZeroConfig.mult ρ : ℝ) *
-            (‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ))‖ *
-              ‖paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖)
-          ≤ (zetaZeroConfig.mult ρ : ℝ) *
+            ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ))‖ *
+              ‖paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖
+          = (zetaZeroConfig.mult ρ : ℝ) *
+              (‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ))‖ *
+                ‖paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖) := by ring
+        _ ≤ (zetaZeroConfig.mult ρ : ℝ) *
               ((C₀_w * (2 * (1 + M) ^ 2) * (2 / ‖(ρ : ℂ)‖ ^ 2)) * (C₀_w * 1)) :=
             mul_le_mul_of_nonneg_left hprod hm
         _ = 4 * C₀_w ^ 2 * (1 + M) ^ 2 * ((zetaZeroConfig.mult ρ : ℝ) * (1 / ‖(ρ : ℂ)‖ ^ 2)) := by
@@ -925,13 +893,19 @@ theorem continuous_zeta_W_re_modulated {F₀ : ℝ → ℝ} (hF₀ : ContDiff �
           (paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ)))
           (paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ)))]
       have hm : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
-      have hprod := mul_le_mul ha hb (norm_nonneg _) (by positivity)
+      have hprod := mul_le_mul ha hb (norm_nonneg _)
+        (mul_nonneg (mul_nonneg hC₀_w_nn (by positivity)) (by positivity))
       calc (zetaZeroConfig.mult ρ : ℝ) *
-            (‖(paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) +
+            ‖(paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) +
                 paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ))) / 2‖ *
               ‖(paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ)) +
-                paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))) / 2‖)
-          ≤ (zetaZeroConfig.mult ρ : ℝ) *
+                paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))) / 2‖
+          = (zetaZeroConfig.mult ρ : ℝ) *
+              (‖(paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) +
+                  paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ))) / 2‖ *
+                ‖(paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ)) +
+                  paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))) / 2‖) := by ring
+        _ ≤ (zetaZeroConfig.mult ρ : ℝ) *
               ((C₀_w * (2 * (1 + M) ^ 2) * (2 / ‖(ρ : ℂ)‖ ^ 2)) * C₀_w) :=
             mul_le_mul_of_nonneg_left hprod hm
         _ = 4 * C₀_w ^ 2 * (1 + M) ^ 2 * ((zetaZeroConfig.mult ρ : ℝ) * (1 / ‖(ρ : ℂ)‖ ^ 2)) := by
@@ -973,6 +947,263 @@ private theorem integral_tsum_nonneg_Icc {ι : Type*} [Countable ι]
           _ = max 0 (b - a) * u i := by rw [max_eq_right (sub_nonneg.mpr hab)]
       · rw [Set.Icc_eq_empty hab, setIntegral_empty, max_eq_left (by linarith), zero_mul]
     exact ENNReal.tsum_coe_ne_top_iff_summable.2 (NNReal.summable_coe.1 hsum_int.abs)
+
+private theorem continuous_paperFT_ofReal {F₀ : ℝ → ℝ} (hF₀ : Continuous F₀)
+    (hF₀c : HasCompactSupport F₀) {A : ℝ} (_hA : 0 ≤ A) (hsupp : ∀ u : ℝ, A < |u| → F₀ u = 0) :
+    Continuous (fun z : ℂ => paperFT (fun u => (F₀ u : ℂ)) z) := by
+  have hint_F₀ : Integrable fun u : ℝ => |F₀ u| :=
+    hF₀.abs.integrable_of_hasCompactSupport hF₀c.abs
+  rw [continuous_iff_continuousAt]
+  intro z₀
+  refine continuousAt_of_dominated
+    (bound := fun u : ℝ => |F₀ u| * Real.exp (A * (|z₀.im| + 1)))
+    (Eventually.of_forall fun z =>
+      (((Complex.continuous_ofReal.comp hF₀).mul (by fun_prop)).aestronglyMeasurable))
+    ?_ (hint_F₀.mul_const _) (Eventually.of_forall fun u => by fun_prop)
+  filter_upwards [Metric.ball_mem_nhds z₀ zero_lt_one] with z hz
+  refine Eventually.of_forall fun u => ?_
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
+  by_cases hu : |u| ≤ A
+  · refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
+    rw [Complex.norm_exp]; apply Real.exp_le_exp.mpr
+    have hz_im : |z.im| ≤ |z₀.im| + 1 := by
+      have hd : ‖z - z₀‖ < 1 := by simpa [dist_eq_norm] using hz
+      have him := (Complex.abs_im_le_norm (z - z₀)).trans hd.le
+      simp only [Complex.sub_im] at him
+      linarith [abs_sub_abs_le_abs_sub z.im z₀.im]
+    have hre : (Complex.I * z * (u : ℂ)).re = -z.im * u := by simp [Complex.mul_re]
+    rw [hre]
+    calc -z.im * u ≤ |-z.im * u| := le_abs_self _
+      _ = |z.im| * |u| := by rw [abs_mul, abs_neg]
+      _ ≤ (|z₀.im| + 1) * A := mul_le_mul hz_im hu (abs_nonneg _) (by positivity)
+      _ = A * (|z₀.im| + 1) := by ring
+  · rw [hsupp u (not_le.mp hu)]
+    simp only [abs_zero, zero_mul, le_refl]
+
+private theorem norm_paperFT_depthDiff_div_four_le_lorentz {F₀ : ℝ → ℝ}
+    (hF₀ : ContDiff ℝ 2 F₀) (hF₀c : HasCompactSupport F₀)
+    {A : ℝ} (hA : 0 ≤ A) (hsupp : ∀ u : ℝ, A < |u| → F₀ u = 0)
+    (z : ℂ) (ω : ℝ) (hz0 : 0 < z.re) (hz1 : z.re < 1) :
+    ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf z - (ω : ℂ)) -
+      paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf z) - (ω : ℂ))‖ ^ 2 / 4 ≤
+      Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / (1 + (z.im - ω) ^ 2) ^ 2) := by
+  have him1 : |(gammaOf z - (ω : ℂ)).im| ≤ 1 / 2 := by
+    rw [gammaOf_sub_real]; simp only [Complex.sub_im, Complex.ofReal_im, Complex.mul_im,
+      Complex.ofReal_re, Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_sub, abs_neg]
+    exact abs_le.mpr ⟨by linarith, by linarith⟩
+  have him2 : |(conj (gammaOf z) - (ω : ℂ)).im| ≤ 1 / 2 := by
+    rw [conj_gammaOf_sub_real]; simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im,
+      Complex.ofReal_re, Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_add]
+    exact abs_le.mpr ⟨by linarith, by linarith⟩
+  have hre1 : (gammaOf z - (ω : ℂ)).re = z.im - ω := by rw [gammaOf_sub_real]; simp
+  have hre2 : (conj (gammaOf z) - (ω : ℂ)).re = z.im - ω := by rw [conj_gammaOf_sub_real]; simp
+  have hb1 := norm_paperFT_symm_le hF₀ hF₀c hA hsupp (gammaOf z - (ω : ℂ))
+  have hb2 := norm_paperFT_symm_le hF₀ hF₀c hA hsupp (conj (gammaOf z) - (ω : ℂ))
+  rw [hre1] at hb1; rw [hre2] at hb2
+  have hexp1 : Real.exp (A * |(gammaOf z - (ω : ℂ)).im|) ≤ Real.exp (A / 2) :=
+    Real.exp_le_exp.mpr (by nlinarith)
+  have hexp2 : Real.exp (A * |(conj (gammaOf z) - (ω : ℂ)).im|) ≤ Real.exp (A / 2) :=
+    Real.exp_le_exp.mpr (by nlinarith)
+  have htri : ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf z - (ω : ℂ)) -
+        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf z) - (ω : ℂ))‖ ≤
+      2 * Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + (z.im - ω) ^ 2) := by
+    calc ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf z - (ω : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf z) - (ω : ℂ))‖
+        ≤ ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf z - (ω : ℂ))‖ +
+            ‖paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf z) - (ω : ℂ))‖ := norm_sub_le _ _
+      _ ≤ Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + (z.im - ω) ^ 2) +
+            Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + (z.im - ω) ^ 2) := by
+          refine add_le_add ?_ ?_
+          · exact hb1.trans (div_le_div_of_nonneg_right
+              (mul_le_mul_of_nonneg_right hexp1 (envelopeWindowNorm_nonneg F₀)) (by positivity))
+          · exact hb2.trans (div_le_div_of_nonneg_right
+              (mul_le_mul_of_nonneg_right hexp2 (envelopeWindowNorm_nonneg F₀)) (by positivity))
+      _ = 2 * Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + (z.im - ω) ^ 2) := by ring
+  have hsq := pow_le_pow_left₀ (norm_nonneg _) htri 2
+  have hexpA : Real.exp (A / 2) ^ 2 = Real.exp A := by
+    rw [sq, ← Real.exp_add]; congr 1; ring
+  have hden_ne : 1 + (z.im - ω) ^ 2 ≠ 0 := by positivity
+  calc ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf z - (ω : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf z) - (ω : ℂ))‖ ^ 2 / 4
+      ≤ (2 * Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + (z.im - ω) ^ 2)) ^ 2 / 4 :=
+        div_le_div_of_nonneg_right hsq (by norm_num)
+    _ = Real.exp (A / 2) ^ 2 * envelopeWindowNorm F₀ ^ 2 * (1 / (1 + (z.im - ω) ^ 2) ^ 2) := by
+        field_simp [hden_ne]; ring
+    _ = Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / (1 + (z.im - ω) ^ 2) ^ 2) := by
+        rw [hexpA]
+
+private theorem conj_paperFT_ofReal_eq {F₀ : ℝ → ℝ} (hF₀ : Continuous F₀)
+    (hF₀c : HasCompactSupport F₀) (w : ℂ) :
+    conj (paperFT (fun u => (F₀ u : ℂ)) w) = paperFT (fun u => (F₀ u : ℂ)) (-conj w) := by
+  unfold paperFT
+  dsimp only
+  have hint : Integrable fun u : ℝ => (F₀ u : ℂ) * Complex.exp (Complex.I * w * (u : ℂ)) :=
+    ((Complex.continuous_ofReal.comp hF₀).mul
+      (by fun_prop)).integrable_of_hasCompactSupport
+      ((hF₀c.comp_left Complex.ofReal_zero).mul_right)
+  rw [← Complex.conjCLE_apply]
+  refine (Complex.conjCLE.integral_comp_comm hint).symm.trans
+    (integral_congr_ae (Eventually.of_forall fun u => ?_))
+  simp only [Complex.conjCLE_apply, map_mul, Complex.conj_ofReal, ← Complex.exp_conj]
+  congr 2
+  simp
+
+private theorem summable_and_swap_depthDiff_Icc {F₀ : ℝ → ℝ}
+    (hF₀ : ContDiff ℝ 2 F₀) (hF₀c : HasCompactSupport F₀)
+    {Γ A : ℝ} (_hΓ : 1 ≤ Γ) (hA : 0 ≤ A) (hsupp : ∀ u : ℝ, A < |u| → F₀ u = 0) :
+    (∀ ω : ℝ, Summable fun ρ : zetaZeroConfig.carrier =>
+      (zetaZeroConfig.mult ρ : ℝ) *
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (ω : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (ω : ℂ))‖ ^ 2 / 4) ∧
+    (∀ ω : ℝ, |ω| ≤ 2 * Γ → ∀ ρ : zetaZeroConfig.carrier,
+      (zetaZeroConfig.mult ρ : ℝ) *
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (ω : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (ω : ℂ))‖ ^ 2 / 4 ≤
+        Real.exp A * envelopeWindowNorm F₀ ^ 2 * (16 * (1 + 2 * Γ) ^ 2) *
+          ((zetaZeroConfig.mult ρ : ℝ) * (1 / ‖(ρ : ℂ)‖ ^ 2))) ∧
+    ContinuousOn (fun γ : ℝ => ∑' ρ : zetaZeroConfig.carrier,
+      (zetaZeroConfig.mult ρ : ℝ) *
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4)
+      (Icc Γ (2 * Γ)) ∧
+    (∫ γ in Icc Γ (2 * Γ), ∑' ρ : zetaZeroConfig.carrier,
+        (zetaZeroConfig.mult ρ : ℝ) *
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) =
+      (∑' ρ : zetaZeroConfig.carrier, ∫ γ in Icc Γ (2 * Γ),
+        (zetaZeroConfig.mult ρ : ℝ) *
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) ∧
+    ContinuousOn (fun γ : ℝ => ∑' ρ : zetaZeroConfig.carrier,
+      (zetaZeroConfig.mult ρ : ℝ) *
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4)
+      (Icc Γ (2 * Γ)) ∧
+    (∫ γ in Icc Γ (2 * Γ), ∑' ρ : zetaZeroConfig.carrier,
+        (zetaZeroConfig.mult ρ : ℝ) *
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4) =
+      (∑' ρ : zetaZeroConfig.carrier, ∫ γ in Icc Γ (2 * Γ),
+        (zetaZeroConfig.mult ρ : ℝ) *
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4) := by
+  have hft_cont := continuous_paperFT_ofReal hF₀.continuous hF₀c hA hsupp
+  have hsum_ω : ∀ ω : ℝ, Summable fun ρ : zetaZeroConfig.carrier =>
+      (zetaZeroConfig.mult ρ : ℝ) *
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (ω : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (ω : ℂ))‖ ^ 2 / 4 := by
+    intro ω
+    have hpeano_ω : ∀ z : ℂ, 0 < z.re → z.re < 1 →
+        1 / (1 + (z.im - ω) ^ 2) ^ 2 ≤ 4 * (1 + |ω|) ^ 2 * (1 / ‖z‖ ^ 2) := fun z hz0 hz1 => by
+      have ht : 1 + z.im ^ 2 ≤ 2 * (1 + |ω|) ^ 2 * (1 + (z.im - ω) ^ 2) := by
+        have h1 : z.im ^ 2 ≤ 2 * (z.im - ω) ^ 2 + 2 * ω ^ 2 := by
+          nlinarith [sq_nonneg ((z.im - ω) - ω)]
+        have h2 : ω ^ 2 = |ω| ^ 2 := (sq_abs ω).symm
+        nlinarith [sq_nonneg (z.im - ω), abs_nonneg ω]
+      have hinv1 : 1 / (1 + (z.im - ω) ^ 2) ≤ 2 * (1 + |ω|) ^ 2 * (1 / (1 + z.im ^ 2)) := by
+        rw [mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]; linarith
+      have hinv2 : 1 / (1 + (z.im - ω) ^ 2) ≤ 1 :=
+        div_le_one_of_le₀ (by linarith [sq_nonneg (z.im - ω)]) (by positivity)
+      calc 1 / (1 + (z.im - ω) ^ 2) ^ 2
+          = (1 / (1 + (z.im - ω) ^ 2)) * (1 / (1 + (z.im - ω) ^ 2)) := by simp [sq]
+        _ ≤ (2 * (1 + |ω|) ^ 2 * (2 / ‖z‖ ^ 2)) * 1 := by
+            refine mul_le_mul ?_ hinv2 (by positivity) (by positivity)
+            exact hinv1.trans (mul_le_mul_of_nonneg_left
+              (inv_one_add_im_sq_le_two_div_norm_sq hz0 hz1) (by positivity))
+        _ = 4 * (1 + |ω|) ^ 2 * (1 / ‖z‖ ^ 2) := by ring
+    let K_ω : ℝ := Real.exp A * envelopeWindowNorm F₀ ^ 2 * (4 * (1 + |ω|) ^ 2)
+    refine Summable.of_nonneg_of_le (fun _ => by positivity) (fun ρ => ?_)
+      ((summable_zetaCarrier_of_xiZeroCopy (g := fun z : ℂ => 1 / ‖z‖ ^ 2)
+        (fun _ => by positivity) summable_inv_norm_sq_xiZeroCopy).mul_left K_ω)
+    have hρ := ρ.2
+    have h1 := (norm_paperFT_depthDiff_div_four_le_lorentz hF₀ hF₀c hA hsupp (ρ : ℂ) ω hρ.2.1 hρ.2.2).trans
+      (mul_le_mul_of_nonneg_left (hpeano_ω (ρ : ℂ) hρ.2.1 hρ.2.2) (by positivity))
+    have hm : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
+    calc (zetaZeroConfig.mult ρ : ℝ) *
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (ω : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (ω : ℂ))‖ ^ 2 / 4
+        = (zetaZeroConfig.mult ρ : ℝ) *
+            (‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (ω : ℂ)) -
+              paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (ω : ℂ))‖ ^ 2 / 4) := by ring
+      _ ≤ (zetaZeroConfig.mult ρ : ℝ) *
+            (Real.exp A * envelopeWindowNorm F₀ ^ 2 *
+              (4 * (1 + |ω|) ^ 2 * (1 / ‖(ρ : ℂ)‖ ^ 2))) :=
+          mul_le_mul_of_nonneg_left h1 hm
+      _ = K_ω * ((zetaZeroConfig.mult ρ : ℝ) * (1 / ‖(ρ : ℂ)‖ ^ 2)) := by dsimp [K_ω]; ring
+  let u_dom : zetaZeroConfig.carrier → ℝ := fun ρ =>
+    Real.exp A * envelopeWindowNorm F₀ ^ 2 * (16 * (1 + 2 * Γ) ^ 2) *
+      ((zetaZeroConfig.mult ρ : ℝ) * (1 / ‖(ρ : ℂ)‖ ^ 2))
+  have hu_dom_sum : Summable u_dom :=
+    (summable_zetaCarrier_of_xiZeroCopy (g := fun z : ℂ => 1 / ‖z‖ ^ 2) (fun _ => by positivity)
+      summable_inv_norm_sq_xiZeroCopy).mul_left _
+  have hdom_Icc : ∀ ω : ℝ, |ω| ≤ 2 * Γ → ∀ ρ : zetaZeroConfig.carrier,
+      (zetaZeroConfig.mult ρ : ℝ) *
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (ω : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (ω : ℂ))‖ ^ 2 / 4 ≤ u_dom ρ := by
+    intro ω hω ρ
+    have hρ := ρ.2
+    have ht : 1 + (ρ : ℂ).im ^ 2 ≤ 2 * (1 + 2 * Γ) ^ 2 * (1 + ((ρ : ℂ).im - ω) ^ 2) := by
+      have h1 : (ρ : ℂ).im ^ 2 ≤ 2 * ((ρ : ℂ).im - ω) ^ 2 + 2 * ω ^ 2 := by
+        nlinarith [sq_nonneg (((ρ : ℂ).im - ω) - ω)]
+      have h2 : ω ^ 2 ≤ (2 * Γ) ^ 2 := by
+        have := pow_le_pow_left₀ (abs_nonneg ω) hω 2; rwa [sq_abs] at this
+      nlinarith [sq_nonneg ((ρ : ℂ).im - ω)]
+    have hinv1 : 1 / (1 + ((ρ : ℂ).im - ω) ^ 2) ≤
+        2 * (1 + 2 * Γ) ^ 2 * (1 / (1 + (ρ : ℂ).im ^ 2)) := by
+      rw [mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]; linarith
+    have hinv2 : 1 / (1 + ((ρ : ℂ).im - ω) ^ 2) ≤ 1 :=
+      div_le_one_of_le₀ (by linarith [sq_nonneg ((ρ : ℂ).im - ω)]) (by positivity)
+    have hlor2 : 1 / (1 + ((ρ : ℂ).im - ω) ^ 2) ^ 2 ≤
+        4 * (1 + 2 * Γ) ^ 2 * (1 / ‖(ρ : ℂ)‖ ^ 2) := by
+      calc 1 / (1 + ((ρ : ℂ).im - ω) ^ 2) ^ 2
+          = (1 / (1 + ((ρ : ℂ).im - ω) ^ 2)) * (1 / (1 + ((ρ : ℂ).im - ω) ^ 2)) := by simp [sq]
+        _ ≤ (2 * (1 + 2 * Γ) ^ 2 * (2 / ‖(ρ : ℂ)‖ ^ 2)) * 1 := by
+            refine mul_le_mul ?_ hinv2 (by positivity) (by positivity)
+            exact hinv1.trans (mul_le_mul_of_nonneg_left
+              (inv_one_add_im_sq_le_two_div_norm_sq hρ.2.1 hρ.2.2) (by positivity))
+        _ = 4 * (1 + 2 * Γ) ^ 2 * (1 / ‖(ρ : ℂ)‖ ^ 2) := by ring
+    have h1 := (norm_paperFT_depthDiff_div_four_le_lorentz hF₀ hF₀c hA hsupp (ρ : ℂ) ω hρ.2.1 hρ.2.2).trans
+      (mul_le_mul_of_nonneg_left hlor2 (by positivity))
+    have hm : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
+    calc (zetaZeroConfig.mult ρ : ℝ) *
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (ω : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (ω : ℂ))‖ ^ 2 / 4
+        = (zetaZeroConfig.mult ρ : ℝ) *
+            (‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (ω : ℂ)) -
+              paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (ω : ℂ))‖ ^ 2 / 4) := by ring
+      _ ≤ (zetaZeroConfig.mult ρ : ℝ) *
+            (Real.exp A * envelopeWindowNorm F₀ ^ 2 *
+              (4 * (1 + 2 * Γ) ^ 2 * (1 / ‖(ρ : ℂ)‖ ^ 2))) :=
+          mul_le_mul_of_nonneg_left h1 hm
+      _ = 4 * (Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 + 2 * Γ) ^ 2 *
+            ((zetaZeroConfig.mult ρ : ℝ) * (1 / ‖(ρ : ℂ)‖ ^ 2))) := by ring
+      _ ≤ u_dom ρ := by
+          have hu_eq : u_dom ρ = 16 * (Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 + 2 * Γ) ^ 2 *
+              ((zetaZeroConfig.mult ρ : ℝ) * (1 / ‖(ρ : ℂ)‖ ^ 2))) := by dsimp [u_dom]; ring
+          have hnn : 0 ≤ Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 + 2 * Γ) ^ 2 *
+              ((zetaZeroConfig.mult ρ : ℝ) * (1 / ‖(ρ : ℂ)‖ ^ 2)) := by positivity
+          linarith
+  haveI : Countable zetaZeroConfig.carrier :=
+    Countable.of_equiv XiDivisorSupport xiDivisorZetaCarrierEquiv
+  have hd_sub_cont : ∀ ρ : zetaZeroConfig.carrier, Continuous fun γ : ℝ =>
+      (zetaZeroConfig.mult ρ : ℝ) *
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 :=
+    fun _ => by fun_prop
+  have hd_add_cont : ∀ ρ : zetaZeroConfig.carrier, Continuous fun γ : ℝ =>
+      (zetaZeroConfig.mult ρ : ℝ) *
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4 :=
+    fun _ => by fun_prop
+  obtain ⟨hc_sub, hswap_sub⟩ := integral_tsum_nonneg_Icc (a := Γ) (b := 2 * Γ) hd_sub_cont
+    (fun _ _ => by positivity) hu_dom_sum
+    (fun ρ γ hγ => hdom_Icc γ (abs_le.mpr ⟨by linarith [hγ.1], hγ.2⟩) ρ)
+  obtain ⟨hc_add, hswap_add⟩ := integral_tsum_nonneg_Icc (a := Γ) (b := 2 * Γ) hd_add_cont
+    (fun _ _ => by positivity) hu_dom_sum
+    (fun ρ γ hγ => by
+      simpa [sub_neg_eq_add] using
+        hdom_Icc (-γ) (by rw [abs_neg]; exact abs_le.mpr ⟨by linarith [hγ.1], hγ.2⟩) ρ)
+  exact ⟨hsum_ω, hdom_Icc, hc_sub, hswap_sub, hc_add, hswap_add⟩
 
 /-- Master bound on the `Icc Γ (2 * Γ)` integral of the single-shift depth-difference series
 `Σ_ρ m_ρ ‖paperFT F₀_ℂ (γ_ρ ∓ γ) - paperFT F₀_ℂ (conj γ_ρ ∓ γ)‖² / 4`, shared by §2, §3, and §4. -/
@@ -1018,15 +1249,9 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
               paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2) / 4) +
           (32 * reciprocalSquareWeightTotal / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 := by
   classical
-  let F_c : ℝ → ℂ := fun u => (F₀ u : ℂ)
-  let d_sub : zetaZeroConfig.carrier → ℝ → ℝ := fun ρ γ =>
-    (zetaZeroConfig.mult ρ : ℝ) *
-      ‖paperFT F_c (gammaOf (ρ : ℂ) - (γ : ℂ)) -
-        paperFT F_c (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4
-  let d_add : zetaZeroConfig.carrier → ℝ → ℝ := fun ρ γ =>
-    (zetaZeroConfig.mult ρ : ℝ) *
-      ‖paperFT F_c (gammaOf (ρ : ℂ) + (γ : ℂ)) -
-        paperFT F_c (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4
+  obtain ⟨hsum_ω, hdom_Icc, hc_sub, hswap_sub, hc_add, hswap_add⟩ :=
+    summable_and_swap_depthDiff_Icc hF₀ hF₀c hΓ hA hsupp
+  have hft_cont := continuous_paperFT_ofReal hF₀.continuous hF₀c hA hsupp
   have hS_fin : ({q : XiZeroCopy | Γ / 2 ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 4 * Γ}).Finite :=
     (finite_xiOrdinateWindow (4 * Γ) 0).subset fun q hq => by
       rw [mem_xiOrdinateWindow_iff, sub_zero]; exact hq.2
@@ -1034,202 +1259,32 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
       ∀ q : XiZeroCopy, q ∈ G_loc ↔ Γ / 2 ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 4 * Γ :=
     ⟨hS_fin.toFinset, fun _ => hS_fin.mem_toFinset⟩
   have hΓ0 : 0 < Γ := by linarith
-  -- Continuity of `z ↦ paperFT F_c z`
-  have hft_cont : Continuous (fun z : ℂ => paperFT F_c z) := by
-    have hint_F₀ : Integrable fun u : ℝ => |F₀ u| :=
-      hF₀.continuous.abs.integrable_of_hasCompactSupport hF₀c.abs
-    rw [continuous_iff_continuousAt]
-    intro z₀
-    refine continuousAt_of_dominated
-      (bound := fun u : ℝ => |F₀ u| * Real.exp (A * (|z₀.im| + 1)))
-      (Eventually.of_forall fun z =>
-        (((Complex.continuous_ofReal.comp hF₀.continuous).mul (by fun_prop)).aestronglyMeasurable))
-      ?_ (hint_F₀.mul_const _) (Eventually.of_forall fun u => by fun_prop)
-    filter_upwards [Metric.ball_mem_nhds z₀ zero_lt_one] with z hz
-    refine Eventually.of_forall fun u => ?_
-    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
-    by_cases hu : |u| ≤ A
-    · refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
-      rw [Complex.norm_exp]; apply Real.exp_le_exp.mpr
-      have hz_im : |z.im| ≤ |z₀.im| + 1 := by
-        have hd : ‖z - z₀‖ < 1 := by simpa [dist_eq_norm] using hz
-        have him := (Complex.abs_im_le_norm (z - z₀)).trans hd.le
-        simp only [Complex.sub_im] at him
-        linarith [abs_sub_abs_le_abs_sub z.im z₀.im]
-      have hre : (Complex.I * z * (u : ℂ)).re = -z.im * u := by simp [Complex.mul_re]
-      rw [hre]
-      calc -z.im * u ≤ |-z.im * u| := le_abs_self _
-        _ = |z.im| * |u| := by rw [abs_mul, abs_neg]
-        _ ≤ (|z₀.im| + 1) * A := mul_le_mul hz_im hu (abs_nonneg _) (by positivity)
-        _ = A * (|z₀.im| + 1) := by ring
-    · simp [hsupp u (not_le.mp hu)]
-  -- Pointwise Lorentzian bound on `‖paperFT F_c (gammaOf ρ - ω) - paperFT F_c (conj (gammaOf ρ) - ω)‖² / 4`
-  have hdiff_lor : ∀ (z : ℂ) (ω : ℝ), 0 < z.re → z.re < 1 →
-      ‖paperFT F_c (gammaOf z - (ω : ℂ)) - paperFT F_c (conj (gammaOf z) - (ω : ℂ))‖ ^ 2 / 4 ≤
-        Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / (1 + (z.im - ω) ^ 2) ^ 2) := by
-    intro z ω hz0 hz1
-    have him1 : |(gammaOf z - (ω : ℂ)).im| ≤ 1 / 2 := by
-      rw [gammaOf_sub_real]; simp only [Complex.sub_im, Complex.ofReal_im, Complex.mul_im,
-        Complex.ofReal_re, Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_sub, abs_neg]
-      exact abs_le.mpr ⟨by linarith, by linarith⟩
-    have him2 : |(conj (gammaOf z) - (ω : ℂ)).im| ≤ 1 / 2 := by
-      rw [conj_gammaOf_sub_real]; simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im,
-        Complex.ofReal_re, Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_add]
-      exact abs_le.mpr ⟨by linarith, by linarith⟩
-    have hre1 : (gammaOf z - (ω : ℂ)).re = z.im - ω := by rw [gammaOf_sub_real]; simp
-    have hre2 : (conj (gammaOf z) - (ω : ℂ)).re = z.im - ω := by rw [conj_gammaOf_sub_real]; simp
-    have hb1 := norm_paperFT_symm_le hF₀ hF₀c hA hsupp (gammaOf z - (ω : ℂ))
-    have hb2 := norm_paperFT_symm_le hF₀ hF₀c hA hsupp (conj (gammaOf z) - (ω : ℂ))
-    rw [hre1] at hb1; rw [hre2] at hb2
-    have hexp1 : Real.exp (A * |(gammaOf z - (ω : ℂ)).im|) ≤ Real.exp (A / 2) :=
-      Real.exp_le_exp.mpr (by nlinarith)
-    have hexp2 : Real.exp (A * |(conj (gammaOf z) - (ω : ℂ)).im|) ≤ Real.exp (A / 2) :=
-      Real.exp_le_exp.mpr (by nlinarith)
-    have htri : ‖paperFT F_c (gammaOf z - (ω : ℂ)) - paperFT F_c (conj (gammaOf z) - (ω : ℂ))‖ ≤
-        2 * Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + (z.im - ω) ^ 2) := by
-      calc ‖paperFT F_c (gammaOf z - (ω : ℂ)) - paperFT F_c (conj (gammaOf z) - (ω : ℂ))‖
-          ≤ ‖paperFT F_c (gammaOf z - (ω : ℂ))‖ + ‖paperFT F_c (conj (gammaOf z) - (ω : ℂ))‖ :=
-            norm_sub_le _ _
-        _ ≤ Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + (z.im - ω) ^ 2) +
-              Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + (z.im - ω) ^ 2) := by
-            refine add_le_add ?_ ?_
-            · exact hb1.trans (div_le_div_of_nonneg_right
-                (mul_le_mul_of_nonneg_right hexp1 (envelopeWindowNorm_nonneg F₀)) (by positivity))
-            · exact hb2.trans (div_le_div_of_nonneg_right
-                (mul_le_mul_of_nonneg_right hexp2 (envelopeWindowNorm_nonneg F₀)) (by positivity))
-        _ = 2 * Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + (z.im - ω) ^ 2) := by ring
-    have hsq := pow_le_pow_left₀ (norm_nonneg _) htri 2
-    have hexpA : Real.exp (A / 2) ^ 2 = Real.exp A := by
-      rw [sq, ← Real.exp_add]; congr 1; ring
-    have hden_ne : 1 + (z.im - ω) ^ 2 ≠ 0 := by positivity
-    calc ‖paperFT F_c (gammaOf z - (ω : ℂ)) - paperFT F_c (conj (gammaOf z) - (ω : ℂ))‖ ^ 2 / 4
-        ≤ (2 * Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + (z.im - ω) ^ 2)) ^ 2 / 4 :=
-          div_le_div_of_nonneg_right hsq (by norm_num)
-      _ = Real.exp (A / 2) ^ 2 * envelopeWindowNorm F₀ ^ 2 * (1 / (1 + (z.im - ω) ^ 2) ^ 2) := by
-          field_simp [hden_ne]
-      _ = Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / (1 + (z.im - ω) ^ 2) ^ 2) := by
-          rw [hexpA]
-  -- Summability at any fixed `ω : ℝ`
-  have hsum_ω : ∀ ω : ℝ, Summable fun ρ : zetaZeroConfig.carrier =>
-      (zetaZeroConfig.mult ρ : ℝ) *
-        ‖paperFT F_c (gammaOf (ρ : ℂ) - (ω : ℂ)) -
-          paperFT F_c (conj (gammaOf (ρ : ℂ)) - (ω : ℂ))‖ ^ 2 / 4 := by
-    intro ω
-    have hpeano_ω : ∀ z : ℂ, 0 < z.re → z.re < 1 →
-        1 / (1 + (z.im - ω) ^ 2) ^ 2 ≤ 4 * (1 + |ω|) ^ 2 * (1 / ‖z‖ ^ 2) := fun z hz0 hz1 => by
-      have ht : 1 + z.im ^ 2 ≤ 2 * (1 + |ω|) ^ 2 * (1 + (z.im - ω) ^ 2) := by
-        have h1 : z.im ^ 2 ≤ 2 * (z.im - ω) ^ 2 + 2 * ω ^ 2 := by
-          nlinarith [sq_nonneg ((z.im - ω) - ω)]
-        have h2 : ω ^ 2 = |ω| ^ 2 := (sq_abs ω).symm
-        nlinarith [sq_nonneg (z.im - ω), abs_nonneg ω]
-      have hinv1 : 1 / (1 + (z.im - ω) ^ 2) ≤ 2 * (1 + |ω|) ^ 2 * (1 / (1 + z.im ^ 2)) := by
-        rw [mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]; linarith
-      have hinv2 : 1 / (1 + (z.im - ω) ^ 2) ≤ 1 :=
-        div_le_one_of_le₀ (by linarith [sq_nonneg (z.im - ω)]) (by positivity)
-      calc 1 / (1 + (z.im - ω) ^ 2) ^ 2
-          = (1 / (1 + (z.im - ω) ^ 2)) * (1 / (1 + (z.im - ω) ^ 2)) := by simp [sq]
-        _ ≤ (2 * (1 + |ω|) ^ 2 * (2 / ‖z‖ ^ 2)) * 1 := by
-            refine mul_le_mul ?_ hinv2 (by positivity) (by positivity)
-            exact hinv1.trans (mul_le_mul_of_nonneg_left
-              (inv_one_add_im_sq_le_two_div_norm_sq hz0 hz1) (by positivity))
-        _ = 4 * (1 + |ω|) ^ 2 * (1 / ‖z‖ ^ 2) := by ring
-    let K_ω : ℝ := Real.exp A * envelopeWindowNorm F₀ ^ 2 * (4 * (1 + |ω|) ^ 2)
-    refine Summable.of_nonneg_of_le (fun _ => by positivity) (fun ρ => ?_)
-      ((summable_zetaCarrier_of_xiZeroCopy (g := fun z : ℂ => 1 / ‖z‖ ^ 2)
-        (fun _ => by positivity) summable_inv_norm_sq_xiZeroCopy).mul_left K_ω)
-    have hρ := ρ.2
-    have h1 := (hdiff_lor (ρ : ℂ) ω hρ.2.1 hρ.2.2).trans
-      (mul_le_mul_of_nonneg_left (hpeano_ω (ρ : ℂ) hρ.2.1 hρ.2.2)
-        (by positivity))
-    have hm : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
-    calc (zetaZeroConfig.mult ρ : ℝ) *
-          ‖paperFT F_c (gammaOf (ρ : ℂ) - (ω : ℂ)) -
-            paperFT F_c (conj (gammaOf (ρ : ℂ)) - (ω : ℂ))‖ ^ 2 / 4
-        = (zetaZeroConfig.mult ρ : ℝ) *
-            (‖paperFT F_c (gammaOf (ρ : ℂ) - (ω : ℂ)) -
-              paperFT F_c (conj (gammaOf (ρ : ℂ)) - (ω : ℂ))‖ ^ 2 / 4) := by ring
-      _ ≤ (zetaZeroConfig.mult ρ : ℝ) *
-            (Real.exp A * envelopeWindowNorm F₀ ^ 2 *
-              (4 * (1 + |ω|) ^ 2 * (1 / ‖(ρ : ℂ)‖ ^ 2))) :=
-          mul_le_mul_of_nonneg_left h1 hm
-      _ = K_ω * ((zetaZeroConfig.mult ρ : ℝ) * (1 / ‖(ρ : ℂ)‖ ^ 2)) := by dsimp [K_ω]; ring
-  -- Uniform majorant on `γ ∈ Icc Γ (2 * Γ)` for both `d_sub` and `d_add`
-  let u_dom : zetaZeroConfig.carrier → ℝ := fun ρ =>
-    Real.exp A * envelopeWindowNorm F₀ ^ 2 * (16 * (1 + 2 * Γ) ^ 2) *
-      ((zetaZeroConfig.mult ρ : ℝ) * (1 / ‖(ρ : ℂ)‖ ^ 2))
-  have hu_dom_sum : Summable u_dom :=
-    (summable_zetaCarrier_of_xiZeroCopy (g := fun z : ℂ => 1 / ‖z‖ ^ 2) (fun _ => by positivity)
-      summable_inv_norm_sq_xiZeroCopy).mul_left _
-  have hdom_Icc : ∀ ω : ℝ, |ω| ≤ 2 * Γ → ∀ ρ : zetaZeroConfig.carrier,
-      (zetaZeroConfig.mult ρ : ℝ) *
-        ‖paperFT F_c (gammaOf (ρ : ℂ) - (ω : ℂ)) -
-          paperFT F_c (conj (gammaOf (ρ : ℂ)) - (ω : ℂ))‖ ^ 2 / 4 ≤ u_dom ρ := by
-    intro ω hω ρ
-    have hρ := ρ.2
-    have ht : 1 + (ρ : ℂ).im ^ 2 ≤ 2 * (1 + 2 * Γ) ^ 2 * (1 + ((ρ : ℂ).im - ω) ^ 2) := by
-      have h1 : (ρ : ℂ).im ^ 2 ≤ 2 * ((ρ : ℂ).im - ω) ^ 2 + 2 * ω ^ 2 := by
-        nlinarith [sq_nonneg (((ρ : ℂ).im - ω) - ω)]
-      have h2 : ω ^ 2 ≤ (2 * Γ) ^ 2 := by
-        have := pow_le_pow_left₀ (abs_nonneg ω) hω 2; rwa [sq_abs] at this
-      nlinarith [sq_nonneg ((ρ : ℂ).im - ω)]
-    have hinv1 : 1 / (1 + ((ρ : ℂ).im - ω) ^ 2) ≤
-        2 * (1 + 2 * Γ) ^ 2 * (1 / (1 + (ρ : ℂ).im ^ 2)) := by
-      rw [mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]; linarith
-    have hinv2 : 1 / (1 + ((ρ : ℂ).im - ω) ^ 2) ≤ 1 :=
-      div_le_one_of_le₀ (by linarith [sq_nonneg ((ρ : ℂ).im - ω)]) (by positivity)
-    have hlor2 : 1 / (1 + ((ρ : ℂ).im - ω) ^ 2) ^ 2 ≤
-        4 * (1 + 2 * Γ) ^ 2 * (2 / ‖(ρ : ℂ)‖ ^ 2) := by
-      calc 1 / (1 + ((ρ : ℂ).im - ω) ^ 2) ^ 2
-          = (1 / (1 + ((ρ : ℂ).im - ω) ^ 2)) * (1 / (1 + ((ρ : ℂ).im - ω) ^ 2)) := by simp [sq]
-        _ ≤ (2 * (1 + 2 * Γ) ^ 2 * (2 / ‖(ρ : ℂ)‖ ^ 2)) * 1 := by
-            refine mul_le_mul ?_ hinv2 (by positivity) (by positivity)
-            exact hinv1.trans (mul_le_mul_of_nonneg_left
-              (inv_one_add_im_sq_le_two_div_norm_sq hρ.2.1 hρ.2.2) (by positivity))
-        _ = 4 * (1 + 2 * Γ) ^ 2 * (2 / ‖(ρ : ℂ)‖ ^ 2) := by ring
-    have h1 := (hdiff_lor (ρ : ℂ) ω hρ.2.1 hρ.2.2).trans
-      (mul_le_mul_of_nonneg_left hlor2 (by positivity))
-    have hm : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
-    calc (zetaZeroConfig.mult ρ : ℝ) *
-          ‖paperFT F_c (gammaOf (ρ : ℂ) - (ω : ℂ)) -
-            paperFT F_c (conj (gammaOf (ρ : ℂ)) - (ω : ℂ))‖ ^ 2 / 4
-        = (zetaZeroConfig.mult ρ : ℝ) *
-            (‖paperFT F_c (gammaOf (ρ : ℂ) - (ω : ℂ)) -
-              paperFT F_c (conj (gammaOf (ρ : ℂ)) - (ω : ℂ))‖ ^ 2 / 4) := by ring
-      _ ≤ (zetaZeroConfig.mult ρ : ℝ) *
-            (Real.exp A * envelopeWindowNorm F₀ ^ 2 *
-              (4 * (1 + 2 * Γ) ^ 2 * (2 / ‖(ρ : ℂ)‖ ^ 2))) :=
-          mul_le_mul_of_nonneg_left h1 hm
-      _ ≤ u_dom ρ := by
-          dsimp [u_dom]
-          have : 0 ≤ Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 + 2 * Γ) ^ 2 *
-              ((zetaZeroConfig.mult ρ : ℝ) * (1 / ‖(ρ : ℂ)‖ ^ 2)) := by positivity
-          linarith
-  have hd_sub_cont : ∀ ρ, Continuous (d_sub ρ) := fun ρ => by dsimp [d_sub]; fun_prop
-  have hd_add_cont : ∀ ρ, Continuous (d_add ρ) := fun ρ => by dsimp [d_add]; fun_prop
-  obtain ⟨hc_sub, hswap_sub⟩ := integral_tsum_nonneg_Icc hd_sub_cont
-    (fun _ _ => by dsimp [d_sub]; positivity) hu_dom_sum
-    (fun ρ γ hγ => hdom_Icc γ (abs_le.mpr ⟨by linarith [hγ.1], hγ.2⟩) ρ)
-  obtain ⟨hc_add, hswap_add⟩ := integral_tsum_nonneg_Icc hd_add_cont
-    (fun _ _ => by dsimp [d_add]; positivity) hu_dom_sum
-    (fun ρ γ hγ => by
-      simpa [d_add, sub_neg_eq_add] using
-        hdom_Icc (-γ) (by rw [abs_neg]; exact abs_le.mpr ⟨by linarith [hγ.1], hγ.2⟩) ρ)
-  -- Convert `∑' ρ : zetaZeroConfig.carrier` to `∑' q : XiZeroCopy` via `tsum_xiZeroCopy_eq_zetaCarrier`
+  have hcont_q_sub : ∀ z : ℂ, Continuous fun γ : ℝ =>
+      ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf z - (γ : ℂ)) -
+        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf z) - (γ : ℂ))‖ ^ 2 / 4 :=
+    fun _ => by fun_prop
+  have hcont_q_add : ∀ z : ℂ, Continuous fun γ : ℝ =>
+      ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf z + (γ : ℂ)) -
+        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf z) + (γ : ℂ))‖ ^ 2 / 4 :=
+    fun _ => by fun_prop
   set g_sub : ℂ → ℝ := fun z =>
     (∫ γ in Icc Γ (2 * Γ),
-      ‖paperFT F_c (gammaOf z - (γ : ℂ)) - paperFT F_c (conj (gammaOf z) - (γ : ℂ))‖ ^ 2) / 4
+      ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf z - (γ : ℂ)) -
+        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf z) - (γ : ℂ))‖ ^ 2) / 4
   set g_add : ℂ → ℝ := fun z =>
     (∫ γ in Icc Γ (2 * Γ),
-      ‖paperFT F_c (gammaOf z + (γ : ℂ)) - paperFT F_c (conj (gammaOf z) + (γ : ℂ))‖ ^ 2) / 4
+      ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf z + (γ : ℂ)) -
+        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf z) + (γ : ℂ))‖ ^ 2) / 4
   have hg_sub_xi_sum : Summable fun q : XiZeroCopy => g_sub (q.1 : ℂ) := by
-    refine Summable.of_nonneg_of_le (fun q => div_nonneg (integral_nonneg fun _ => sq_nonneg _) (by norm_num))
+    refine Summable.of_nonneg_of_le
+      (fun _ => div_nonneg (integral_nonneg fun _ => sq_nonneg _) (by norm_num))
       (fun q => ?_)
       (summable_inv_norm_sq_xiZeroCopy.mul_left
         (Γ * (Real.exp A * envelopeWindowNorm F₀ ^ 2 * (16 * (1 + 2 * Γ) ^ 2))))
     set ρ_c : zetaZeroConfig.carrier := xiDivisorZetaCarrierEquiv q.1
     have hpt_q : ∀ γ ∈ Icc Γ (2 * Γ),
-        ‖paperFT F_c (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
-          paperFT F_c (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 ≤
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 ≤
           Real.exp A * envelopeWindowNorm F₀ ^ 2 * (16 * (1 + 2 * Γ) ^ 2) *
             (1 / ‖(q.1 : ℂ)‖ ^ 2) := fun γ hγ => by
       have hm1 : 1 ≤ (zetaZeroConfig.mult ρ_c : ℝ) := by
@@ -1237,36 +1292,43 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
       have hd := hdom_Icc γ (abs_le.mpr ⟨by linarith [hγ.1], hγ.2⟩) ρ_c
       have hrc : (ρ_c : ℂ) = (q.1 : ℂ) := rfl
       rw [hrc] at hd
-      dsimp [u_dom] at hd
-      rw [hrc] at hd
       have hm_pos : 0 < (zetaZeroConfig.mult ρ_c : ℝ) := by linarith
       have hd' : (zetaZeroConfig.mult ρ_c : ℝ) *
-          (‖paperFT F_c (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
-            paperFT F_c (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) ≤
+          (‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) ≤
           (zetaZeroConfig.mult ρ_c : ℝ) *
             (Real.exp A * envelopeWindowNorm F₀ ^ 2 * (16 * (1 + 2 * Γ) ^ 2) *
-              (1 / ‖(q.1 : ℂ)‖ ^ 2)) := by linarith
+              (1 / ‖(q.1 : ℂ)‖ ^ 2)) := by
+        calc (zetaZeroConfig.mult ρ_c : ℝ) *
+              (‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
+                paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4)
+            = (zetaZeroConfig.mult ρ_c : ℝ) *
+                ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
+                  paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 := by ring
+          _ ≤ Real.exp A * envelopeWindowNorm F₀ ^ 2 * (16 * (1 + 2 * Γ) ^ 2) *
+                ((zetaZeroConfig.mult ρ_c : ℝ) * (1 / ‖(q.1 : ℂ)‖ ^ 2)) := hd
+          _ = (zetaZeroConfig.mult ρ_c : ℝ) *
+                (Real.exp A * envelopeWindowNorm F₀ ^ 2 * (16 * (1 + 2 * Γ) ^ 2) *
+                  (1 / ‖(q.1 : ℂ)‖ ^ 2)) := by ring
       exact le_of_mul_le_mul_left hd' hm_pos
     have hdiv_int : g_sub (q.1 : ℂ) = ∫ γ in Icc Γ (2 * Γ),
-        ‖paperFT F_c (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
-          paperFT F_c (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 :=
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 :=
       (integral_div 4 _).symm
     rw [hdiv_int]
     calc (∫ γ in Icc Γ (2 * Γ),
-          ‖paperFT F_c (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
-            paperFT F_c (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4)
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4)
         ≤ ∫ _γ in Icc Γ (2 * Γ),
             Real.exp A * envelopeWindowNorm F₀ ^ 2 * (16 * (1 + 2 * Γ) ^ 2) *
               (1 / ‖(q.1 : ℂ)‖ ^ 2) :=
-          setIntegral_mono_on (by fun_prop : Continuous fun γ : ℝ =>
-            ‖paperFT F_c (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
-              paperFT F_c (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4).integrableOn_Icc
+          setIntegral_mono_on (hcont_q_sub _).integrableOn_Icc
             continuous_const.integrableOn_Icc measurableSet_Icc hpt_q
       _ = Γ * (Real.exp A * envelopeWindowNorm F₀ ^ 2 * (16 * (1 + 2 * Γ) ^ 2)) *
             (1 / ‖(q.1 : ℂ)‖ ^ 2) := by
           rw [setIntegral_const, Measure.real, Real.volume_Icc,
             ENNReal.toReal_ofReal (by linarith : 0 ≤ 2 * Γ - Γ),
-            show 2 * Γ - Γ = Γ by ring, smul_eq_mul, mul_assoc]
+            show 2 * Γ - Γ = Γ by ring, smul_eq_mul]; ring
   have hg_add_xi_sum : Summable fun q : XiZeroCopy => g_add (q.1 : ℂ) := by
     have hrefl : (fun q : XiZeroCopy => g_add (q.1 : ℂ)) =
         fun q : XiZeroCopy => g_sub ((xiZeroCopyConjEquiv q).1 : ℂ) := by
@@ -1276,32 +1338,22 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
       congr 1
       refine setIntegral_congr_fun measurableSet_Icc fun γ _ => ?_
       rw [hcq]
-      -- `‖A - B‖²` is invariant under complex conjugation `conj (paperFT F_c z) = paperFT F_c (-conj z)`
-      have hreal_ft : ∀ w : ℂ, conj (paperFT F_c w) = paperFT F_c (-conj w) := fun w => by
-        unfold paperFT
-        have hint : Integrable fun u : ℝ => F_c u * Complex.exp (Complex.I * w * (u : ℂ)) :=
-          ((Complex.continuous_ofReal.comp hF₀.continuous).mul
-            (by fun_prop)).integrable_of_hasCompactSupport ((hF₀c.comp_left Complex.ofReal_zero).mul_right)
-        rw [← Complex.conjCLE.integral_comp_comm hint]
-        refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-        simp only [Complex.conjCLE_apply, map_mul, F_c, Complex.conj_ofReal, ← Complex.exp_conj]
-        congr 2
-        simp
-      have hz1 : -conj (gammaOf (conj (q.1 : ℂ)) - (γ : ℂ)) = conj (gammaOf (q.1 : ℂ)) + (γ : ℂ) := by
-        rw [gammaOf_sub_real, conj_gammaOf_sub_real]; apply Complex.ext <;> simp
-      have hz2 : -conj (conj (gammaOf (conj (q.1 : ℂ))) - (γ : ℂ)) = gammaOf (q.1 : ℂ) + (γ : ℂ) := by
-        rw [gammaOf_sub_real, conj_gammaOf_sub_real]; apply Complex.ext <;> simp
-      have hnorm_eq : ‖paperFT F_c (gammaOf (conj (q.1 : ℂ)) - (γ : ℂ)) -
-            paperFT F_c (conj (gammaOf (conj (q.1 : ℂ))) - (γ : ℂ))‖ =
-          ‖paperFT F_c (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
-            paperFT F_c (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ := by
-        rw [← Complex.norm_conj (paperFT F_c (gammaOf (conj (q.1 : ℂ)) - (γ : ℂ)) -
-          paperFT F_c (conj (gammaOf (conj (q.1 : ℂ))) - (γ : ℂ))),
-          map_sub, hreal_ft, hreal_ft, hz1, hz2, norm_sub_rev]
+      have hz1 : -conj (gammaOf (conj (q.1 : ℂ)) - (γ : ℂ)) = gammaOf (q.1 : ℂ) + (γ : ℂ) := by
+        simp only [gammaOf, Complex.div_I]; apply Complex.ext <;> simp <;> ring
+      have hz2 : -conj (conj (gammaOf (conj (q.1 : ℂ))) - (γ : ℂ)) = conj (gammaOf (q.1 : ℂ)) + (γ : ℂ) := by
+        simp only [gammaOf, Complex.div_I]; apply Complex.ext <;> simp <;> ring
+      have hnorm_eq : ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (conj (q.1 : ℂ)) - (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (conj (q.1 : ℂ))) - (γ : ℂ))‖ =
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ := by
+        rw [← Complex.norm_conj
+          (paperFT (fun u => (F₀ u : ℂ)) (gammaOf (conj (q.1 : ℂ)) - (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (conj (q.1 : ℂ))) - (γ : ℂ))),
+          map_sub, conj_paperFT_ofReal_eq hF₀.continuous hF₀c,
+          conj_paperFT_ofReal_eq hF₀.continuous hF₀c, hz1, hz2]
       rw [hnorm_eq]
     rw [hrefl]
     exact xiZeroCopyConjEquiv.summable_iff.mpr hg_sub_xi_sum
-  -- Split `∑' q : XiZeroCopy, g_sub (q.1 : ℂ)` and `g_add` into `G_loc` + remote
   have hbound_xi : ∀ (g_fn : ℂ → ℝ),
       Summable (fun q : XiZeroCopy => g_fn (q.1 : ℂ)) →
       (∀ q : XiZeroCopy, 0 ≤ g_fn (q.1 : ℂ)) →
@@ -1339,23 +1391,27 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
           · unfold reciprocalSquareWeightTotal
             dsimp only [v_rem]
             rw [tsum_mul_left]; ring
+  have hG : Γ * (32 / Γ ^ 2) = 32 / Γ := by
+    rw [mul_div_assoc', div_eq_div_iff (pow_ne_zero 2 hΓ0.ne') hΓ0.ne']; ring
   have hg_sub_rem : ∀ q : XiZeroCopy, (|(q.1 : ℂ).im| < Γ / 2 ∨ 4 * Γ < |(q.1 : ℂ).im|) →
       g_sub (q.1 : ℂ) ≤ (32 / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 *
         (1 / ‖(q.1 : ℂ)‖ ^ 2) := fun q hq => by
     have hdiv_int : g_sub (q.1 : ℂ) = ∫ γ in Icc Γ (2 * Γ),
-        ‖paperFT F_c (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
-          paperFT F_c (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 := (integral_div 4 _).symm
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 :=
+      (integral_div 4 _).symm
     rw [hdiv_int]
     have hpt : ∀ γ ∈ Icc Γ (2 * Γ),
-        ‖paperFT F_c (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
-          paperFT F_c (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 ≤
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 ≤
           (32 / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2) :=
       fun γ hγ => by
-        have h1 := hdiff_lor (q.1 : ℂ) γ (xiZeroCopy_re_pos q) (xiZeroCopy_re_lt_one q)
+        have h1 := norm_paperFT_depthDiff_div_four_le_lorentz hF₀ hF₀c hA hsupp
+          (q.1 : ℂ) γ (xiZeroCopy_re_pos q) (xiZeroCopy_re_lt_one q)
         have h2 := (inv_one_add_sq_remote_le hΓ hγ.1 hγ.2 hq).2
         have h3 := inv_one_add_im_sq_le_two_div_norm_sq (xiZeroCopy_re_pos q) (xiZeroCopy_re_lt_one q)
-        calc ‖paperFT F_c (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
-              paperFT F_c (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4
+        calc ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
+              paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4
             ≤ Real.exp A * envelopeWindowNorm F₀ ^ 2 *
                 ((16 / Γ ^ 2) * (2 / ‖(q.1 : ℂ)‖ ^ 2)) :=
               h1.trans (mul_le_mul_of_nonneg_left
@@ -1363,42 +1419,42 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
           _ = (32 / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2) := by
               ring
     calc (∫ γ in Icc Γ (2 * Γ),
-          ‖paperFT F_c (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
-            paperFT F_c (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4)
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4)
         ≤ ∫ _γ in Icc Γ (2 * Γ),
             (32 / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2) :=
-          setIntegral_mono_on (by fun_prop : Continuous fun γ : ℝ =>
-            ‖paperFT F_c (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
-              paperFT F_c (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2 / 4).integrableOn_Icc
+          setIntegral_mono_on (hcont_q_sub _).integrableOn_Icc
             continuous_const.integrableOn_Icc measurableSet_Icc hpt
-      _ = Γ * ((32 / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2)) := by
+      _ = (Γ * (32 / Γ ^ 2)) *
+            (Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2)) := by
           rw [setIntegral_const, Measure.real, Real.volume_Icc,
             ENNReal.toReal_ofReal (by linarith : 0 ≤ 2 * Γ - Γ),
-            show 2 * Γ - Γ = Γ by ring, smul_eq_mul]
+            show 2 * Γ - Γ = Γ by ring, smul_eq_mul]; ring
       _ = (32 / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2) := by
-          field_simp [hΓ0.ne']
+          rw [hG]; ring
   have hg_add_rem : ∀ q : XiZeroCopy, (|(q.1 : ℂ).im| < Γ / 2 ∨ 4 * Γ < |(q.1 : ℂ).im|) →
       g_add (q.1 : ℂ) ≤ (32 / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 *
         (1 / ‖(q.1 : ℂ)‖ ^ 2) := fun q hq => by
     have hdiv_int : g_add (q.1 : ℂ) = ∫ γ in Icc Γ (2 * Γ),
-        ‖paperFT F_c (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
-          paperFT F_c (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2 / 4 := (integral_div 4 _).symm
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2 / 4 :=
+      (integral_div 4 _).symm
     rw [hdiv_int]
     have hpt : ∀ γ ∈ Icc Γ (2 * Γ),
-        ‖paperFT F_c (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
-          paperFT F_c (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2 / 4 ≤
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2 / 4 ≤
           (32 / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2) :=
       fun γ hγ => by
-        have h1 : ‖paperFT F_c (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
-            paperFT F_c (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2 / 4 ≤
+        have h1 : ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2 / 4 ≤
             Real.exp A * envelopeWindowNorm F₀ ^ 2 *
               (1 / (1 + ((q.1 : ℂ).im + γ) ^ 2) ^ 2) := by
-          simpa [sub_neg_eq_add] using
-            hdiff_lor (q.1 : ℂ) (-γ) (xiZeroCopy_re_pos q) (xiZeroCopy_re_lt_one q)
+          simpa [sub_neg_eq_add] using norm_paperFT_depthDiff_div_four_le_lorentz hF₀ hF₀c hA hsupp
+            (q.1 : ℂ) (-γ) (xiZeroCopy_re_pos q) (xiZeroCopy_re_lt_one q)
         have h2 := (inv_one_add_sq_remote_add_le hΓ hγ.1 hγ.2 hq).2
         have h3 := inv_one_add_im_sq_le_two_div_norm_sq (xiZeroCopy_re_pos q) (xiZeroCopy_re_lt_one q)
-        calc ‖paperFT F_c (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
-              paperFT F_c (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2 / 4
+        calc ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
+              paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2 / 4
             ≤ Real.exp A * envelopeWindowNorm F₀ ^ 2 *
                 ((16 / Γ ^ 2) * (2 / ‖(q.1 : ℂ)‖ ^ 2)) :=
               h1.trans (mul_le_mul_of_nonneg_left
@@ -1406,31 +1462,38 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
           _ = (32 / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2) := by
               ring
     calc (∫ γ in Icc Γ (2 * Γ),
-          ‖paperFT F_c (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
-            paperFT F_c (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2 / 4)
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2 / 4)
         ≤ ∫ _γ in Icc Γ (2 * Γ),
             (32 / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2) :=
-          setIntegral_mono_on (by fun_prop : Continuous fun γ : ℝ =>
-            ‖paperFT F_c (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
-              paperFT F_c (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2 / 4).integrableOn_Icc
+          setIntegral_mono_on (hcont_q_add _).integrableOn_Icc
             continuous_const.integrableOn_Icc measurableSet_Icc hpt
-      _ = Γ * ((32 / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2)) := by
+      _ = (Γ * (32 / Γ ^ 2)) *
+            (Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2)) := by
           rw [setIntegral_const, Measure.real, Real.volume_Icc,
             ENNReal.toReal_ofReal (by linarith : 0 ≤ 2 * Γ - Γ),
-            show 2 * Γ - Γ = Γ by ring, smul_eq_mul]
+            show 2 * Γ - Γ = Γ by ring, smul_eq_mul]; ring
       _ = (32 / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / ‖(q.1 : ℂ)‖ ^ 2) := by
-          field_simp [hΓ0.ne']
-  have htsum_sub_eq : (∑' ρ, ∫ γ in Icc Γ (2 * Γ), d_sub ρ γ) = ∑' q : XiZeroCopy, g_sub (q.1 : ℂ) := by
+          rw [hG]; ring
+  have htsum_sub_eq : (∑' ρ : zetaZeroConfig.carrier, ∫ γ in Icc Γ (2 * Γ),
+        (zetaZeroConfig.mult ρ : ℝ) *
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) =
+      ∑' q : XiZeroCopy, g_sub (q.1 : ℂ) := by
     rw [tsum_xiZeroCopy_eq_zetaCarrier (g := g_sub) hg_sub_xi_sum]
     refine tsum_congr fun ρ => ?_
-    dsimp [d_sub, g_sub]
+    dsimp [g_sub]
     rw [integral_div, integral_const_mul, mul_div_assoc]
-  have htsum_add_eq : (∑' ρ, ∫ γ in Icc Γ (2 * Γ), d_add ρ γ) = ∑' q : XiZeroCopy, g_add (q.1 : ℂ) := by
+  have htsum_add_eq : (∑' ρ : zetaZeroConfig.carrier, ∫ γ in Icc Γ (2 * Γ),
+        (zetaZeroConfig.mult ρ : ℝ) *
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4) =
+      ∑' q : XiZeroCopy, g_add (q.1 : ℂ) := by
     rw [tsum_xiZeroCopy_eq_zetaCarrier (g := g_add) hg_add_xi_sum]
     refine tsum_congr fun ρ => ?_
-    dsimp [d_add, g_add]
+    dsimp [g_add]
     rw [integral_div, integral_const_mul, mul_div_assoc]
-  refine ⟨fun γ => hsum_ω γ, fun γ => by simpa [d_add, sub_neg_eq_add] using hsum_ω (-γ),
+  refine ⟨fun γ => hsum_ω γ, fun γ => by simpa [sub_neg_eq_add] using hsum_ω (-γ),
     hc_sub, hc_add, G_loc, fun q hq => (hmem_Gloc q).mp hq, ?_, ?_⟩
   · rw [hswap_sub, htsum_sub_eq]
     exact hbound_xi g_sub hg_sub_xi_sum
@@ -2141,6 +2204,114 @@ theorem one_le_cosh_sq (x : ℝ) : 1 ≤ ((Real.exp x + Real.exp (-x)) / 2) ^ 2 
   have hsq : 0 ≤ ((Real.exp x - Real.exp (-x)) / 2) ^ 2 := sq_nonneg _
   nlinarith
 
+private theorem depthSumProfile_plancherel_and_cont {F₀ : ℝ → ℝ}
+    (hF₀ : Continuous F₀) (hF₀c : HasCompactSupport F₀) (ρ : ℂ) :
+    Continuous (fun γ : ℝ => ‖paperFT (depthSumProfile F₀ ρ) (-(γ : ℂ))‖ ^ 2) ∧
+    Continuous (fun γ : ℝ => ‖paperFT (depthSumProfile F₀ ρ) (γ : ℂ)‖ ^ 2) ∧
+    Integrable (fun γ : ℝ => ‖paperFT (depthSumProfile F₀ ρ) (-(γ : ℂ))‖ ^ 2) ∧
+    2 * Real.pi * (∫ u, F₀ u ^ 2) ≤
+      ∫ γ : ℝ, ‖paperFT (depthSumProfile F₀ ρ) (-(γ : ℂ))‖ ^ 2 := by
+  let h := depthSumProfile F₀ ρ
+  have hh_cont : Continuous h := by unfold h depthSumProfile; fun_prop
+  have hh_comp : HasCompactSupport h := by
+    unfold h depthSumProfile
+    exact ((hF₀c.mul_right).comp_left Complex.ofReal_zero).mul_right
+  have hh1 : Integrable h := hh_cont.integrable_of_hasCompactSupport hh_comp
+  have hint_h2 : Integrable fun u : ℝ => ‖h u‖ ^ 2 :=
+    (hh_cont.norm.pow 2).integrable_of_hasCompactSupport
+      ((hh_comp.norm).comp_left (zero_pow two_ne_zero))
+  have hh2 : MemLp h 2 :=
+    (memLp_two_iff_integrable_sq_norm hh_cont.aestronglyMeasurable).mpr hint_h2
+  have hft_cont : Continuous fun x : ℝ => paperFT h (x : ℂ) := by
+    have hint_h : Integrable fun u : ℝ => ‖h u‖ := hh1.norm
+    rw [continuous_iff_continuousAt]
+    intro x₀
+    refine continuousAt_of_dominated (bound := fun u : ℝ => ‖h u‖)
+      (Eventually.of_forall fun x => (hh_cont.mul (by fun_prop)).aestronglyMeasurable)
+      (Eventually.of_forall fun x => Eventually.of_forall fun u => ?_)
+      hint_h (Eventually.of_forall fun u => by fun_prop)
+    have hexp1 : ‖Complex.exp (Complex.I * (x : ℂ) * (u : ℂ))‖ = 1 := by
+      have : Complex.I * (x : ℂ) * (u : ℂ) = ((x * u : ℝ) : ℂ) * Complex.I := by push_cast; ring
+      rw [this, Complex.norm_exp_ofReal_mul_I]
+    rw [norm_mul, hexp1, mul_one]
+  have heq_m : (fun γ : ℝ => ‖paperFT h (-(γ : ℂ))‖ ^ 2) =
+      fun γ : ℝ => ‖paperFT h ((-γ : ℝ) : ℂ)‖ ^ 2 := by funext γ; simp
+  have hc_minus : Continuous fun γ : ℝ => ‖paperFT h (-(γ : ℂ))‖ ^ 2 := by
+    rw [heq_m]; exact ((hft_cont.comp continuous_neg).norm).pow 2
+  have hc_plus : Continuous fun γ : ℝ => ‖paperFT h (γ : ℂ)‖ ^ 2 := (hft_cont.norm).pow 2
+  have hint_pos : Integrable fun x : ℝ => ‖paperFT h (x : ℂ)‖ ^ 2 := by
+    have hfun : (fun x : ℝ => ‖paperFT h (x : ℂ)‖ ^ 2) =
+        fun x => (fun ξ : ℝ => ‖FourierTransform.fourier h ξ‖ ^ 2) (x / (-(2 * Real.pi))) := by
+      funext x; rw [paperFT_ofReal_eq_fourier, neg_div, ← div_neg]
+    rw [hfun]
+    exact (GaloisForLFunctions.RHTower.integrable_norm_sq_fourier hh1 hh2).comp_div
+      (by linarith [Real.pi_pos])
+  have hint_minus : Integrable fun γ : ℝ => ‖paperFT h (-(γ : ℂ))‖ ^ 2 := by
+    rw [heq_m]; exact hint_pos.comp_neg
+  have hwhole : (∫ γ : ℝ, ‖paperFT h (-(γ : ℂ))‖ ^ 2) = 2 * Real.pi * ∫ u : ℝ, ‖h u‖ ^ 2 := by
+    rw [heq_m, integral_neg_eq_self (fun x : ℝ => ‖paperFT h (x : ℂ)‖ ^ 2)]
+    exact RHTower.KernelStrip.integral_norm_sq_paperFT_of_memLp hh1 hh2
+  have hint_F₀2 : Integrable fun u : ℝ => F₀ u ^ 2 :=
+    (hF₀.pow 2).integrable_of_hasCompactSupport (hF₀c.comp_left (zero_pow two_ne_zero))
+  have hL2_ge : (∫ u : ℝ, F₀ u ^ 2) ≤ ∫ u : ℝ, ‖h u‖ ^ 2 := by
+    refine integral_mono hint_F₀2 hint_h2 fun u => ?_
+    dsimp [h, depthSumProfile]
+    have hexp_norm : ‖Complex.exp (Complex.I * (ρ.im : ℂ) * (u : ℂ))‖ = 1 := by
+      have : Complex.I * (ρ.im : ℂ) * (u : ℂ) = ((ρ.im * u : ℝ) : ℂ) * Complex.I := by
+        push_cast; ring
+      rw [this, Complex.norm_exp_ofReal_mul_I]
+    rw [norm_mul, hexp_norm, mul_one, Complex.norm_real, Real.norm_eq_abs, sq_abs, mul_pow]
+    exact le_mul_of_one_le_right (sq_nonneg _) (one_le_cosh_sq ((ρ.re - 1 / 2) * u))
+  refine ⟨hc_minus, hc_plus, hint_minus, ?_⟩
+  rw [hwhole]
+  exact mul_le_mul_of_nonneg_left hL2_ge (by positivity)
+
+private theorem norm_paperFT_depthSumProfile_sq_le_lorentz {F₀ : ℝ → ℝ}
+    (hF₀ : ContDiff ℝ 2 F₀) (hF₀c : HasCompactSupport F₀)
+    {A : ℝ} (hA : 0 ≤ A) (hsupp : ∀ u : ℝ, A < |u| → F₀ u = 0)
+    {ρ : ℂ} (hρ0 : 0 < ρ.re) (hρ1 : ρ.re < 1) (ω : ℝ) :
+    ‖paperFT (depthSumProfile F₀ ρ) (-(ω : ℂ))‖ ^ 2 ≤
+      Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / (1 + (ρ.im - ω) ^ 2) ^ 2) := by
+  rw [paperFT_depthSumProfile_eq hF₀.continuous hF₀c ρ ω]
+  have him1 : |(gammaOf ρ - (ω : ℂ)).im| ≤ 1 / 2 := by
+    rw [gammaOf_sub_real]; simp only [Complex.sub_im, Complex.ofReal_im, Complex.mul_im,
+      Complex.ofReal_re, Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_sub, abs_neg]
+    exact abs_le.mpr ⟨by linarith, by linarith⟩
+  have him2 : |(conj (gammaOf ρ) - (ω : ℂ)).im| ≤ 1 / 2 := by
+    rw [conj_gammaOf_sub_real]; simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im,
+      Complex.ofReal_re, Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_add]
+    exact abs_le.mpr ⟨by linarith, by linarith⟩
+  have hre1 : (gammaOf ρ - (ω : ℂ)).re = ρ.im - ω := by rw [gammaOf_sub_real]; simp
+  have hre2 : (conj (gammaOf ρ) - (ω : ℂ)).re = ρ.im - ω := by rw [conj_gammaOf_sub_real]; simp
+  have hb1 := norm_paperFT_symm_le hF₀ hF₀c hA hsupp (gammaOf ρ - (ω : ℂ))
+  have hb2 := norm_paperFT_symm_le hF₀ hF₀c hA hsupp (conj (gammaOf ρ) - (ω : ℂ))
+  rw [hre1] at hb1; rw [hre2] at hb2
+  have hexp1 : Real.exp (A * |(gammaOf ρ - (ω : ℂ)).im|) ≤ Real.exp (A / 2) :=
+    Real.exp_le_exp.mpr (by nlinarith)
+  have hexp2 : Real.exp (A * |(conj (gammaOf ρ) - (ω : ℂ)).im|) ≤ Real.exp (A / 2) :=
+    Real.exp_le_exp.mpr (by nlinarith)
+  have htri : ‖(paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (ω : ℂ)) +
+        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (ω : ℂ))) / 2‖ ≤
+      Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + (ρ.im - ω) ^ 2) := by
+    rw [norm_div, Complex.norm_ofNat]
+    have h1 := hb1.trans (div_le_div_of_nonneg_right
+      (mul_le_mul_of_nonneg_right hexp1 (envelopeWindowNorm_nonneg F₀)) (by positivity))
+    have h2 := hb2.trans (div_le_div_of_nonneg_right
+      (mul_le_mul_of_nonneg_right hexp2 (envelopeWindowNorm_nonneg F₀)) (by positivity))
+    have hadd := (norm_add_le
+      (paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (ω : ℂ)))
+      (paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (ω : ℂ)))).trans (add_le_add h1 h2)
+    linarith
+  have hsq := pow_le_pow_left₀ (norm_nonneg _) htri 2
+  have hexpA : Real.exp (A / 2) ^ 2 = Real.exp A := by
+    rw [sq, ← Real.exp_add]; congr 1; ring
+  calc ‖(paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (ω : ℂ)) +
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (ω : ℂ))) / 2‖ ^ 2
+      ≤ (Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + (ρ.im - ω) ^ 2)) ^ 2 := hsq
+    _ = Real.exp (A / 2) ^ 2 * envelopeWindowNorm F₀ ^ 2 * (1 / (1 + (ρ.im - ω) ^ 2) ^ 2) := by
+        rw [div_pow, mul_pow, mul_one_div]
+    _ = Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / (1 + (ρ.im - ω) ^ 2) ^ 2) := by rw [hexpA]
+
 /-- Per-zero core lower bound on `∫_{Icc Γ (2Γ)} ‖paperFT (depthSumProfile F₀ ρ) (-γ)‖²` and upper
 bound on `∫_{Icc Γ (2Γ)} ‖paperFT (depthSumProfile F₀ ρ) γ‖²` for every zero `ρ` in the open strip
 with interior ordinate `5Γ/4 ≤ Im ρ ≤ 3Γ/2` (`Γ ≥ 1`), uniformly in `Re ρ ∈ (0, 1)`. -/
@@ -2156,109 +2327,9 @@ theorem integral_Icc_norm_paperFT_depthSum_sq_bounds {F₀ : ℝ → ℝ}
       (∫ γ in Icc Γ (2 * Γ), ‖paperFT (depthSumProfile F₀ ρ) (-(γ : ℂ))‖ ^ 2) ∧
     (∫ γ in Icc Γ (2 * Γ), ‖paperFT (depthSumProfile F₀ ρ) (γ : ℂ)‖ ^ 2) ≤
       (Real.pi / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2 := by
-  let h := depthSumProfile F₀ ρ
-  have hh_cont : Continuous h := by unfold h depthSumProfile; fun_prop
-  have hh_comp : HasCompactSupport h := by
-    unfold h depthSumProfile
-    exact ((hF₀c.mul_right).comp_left Complex.ofReal_zero).mul_right
-  have hh1 : Integrable h := hh_cont.integrable_of_hasCompactSupport hh_comp
-  have hint_h2 : Integrable fun u : ℝ => ‖h u‖ ^ 2 :=
-    (hh_cont.norm.pow 2).integrable_of_hasCompactSupport
-      ((hh_comp.norm).comp_left (zero_pow two_ne_zero))
-  have hh2 : MemLp h 2 :=
-    (memLp_two_iff_integrable_sq_norm hh_cont.aestronglyMeasurable).mpr hint_h2
-  -- Continuity of `x ↦ paperFT h x` on `ℝ`
-  have hft_cont : Continuous fun x : ℝ => paperFT h (x : ℂ) := by
-    have hint_h : Integrable fun u : ℝ => ‖h u‖ := hh1.norm
-    rw [continuous_iff_continuousAt]
-    intro x₀
-    refine continuousAt_of_dominated (bound := fun u : ℝ => ‖h u‖)
-      (Eventually.of_forall fun x => (hh_cont.mul (by fun_prop)).aestronglyMeasurable)
-      (Eventually.of_forall fun x => Eventually.of_forall fun u => ?_)
-      hint_h (Eventually.of_forall fun u => by fun_prop)
-    have hexp1 : ‖Complex.exp (Complex.I * (x : ℂ) * (u : ℂ))‖ = 1 := by
-      have : Complex.I * (x : ℂ) * (u : ℂ) = ((x * u : ℝ) : ℂ) * Complex.I := by push_cast; ring
-      rw [this, Complex.norm_exp_ofReal_mul_I]
-    rw [norm_mul, hexp1, mul_one]
-  have hc_minus : Continuous fun γ : ℝ => ‖paperFT h (-(γ : ℂ))‖ ^ 2 := by
-    have heq : (fun γ : ℝ => ‖paperFT h (-(γ : ℂ))‖ ^ 2) =
-        fun γ : ℝ => ‖paperFT h ((-γ : ℝ) : ℂ)‖ ^ 2 := by funext γ; simp
-    rw [heq]
-    exact ((hft_cont.comp continuous_neg).norm).pow 2
-  have hc_plus : Continuous fun γ : ℝ => ‖paperFT h (γ : ℂ)‖ ^ 2 := (hft_cont.norm).pow 2
-  -- Integrability and Plancherel identity on `ℝ`
-  have hint_pos : Integrable fun x : ℝ => ‖paperFT h (x : ℂ)‖ ^ 2 := by
-    have hfun : (fun x : ℝ => ‖paperFT h (x : ℂ)‖ ^ 2) =
-        fun x => (fun ξ : ℝ => ‖FourierTransform.fourier h ξ‖ ^ 2) (x / (-(2 * Real.pi))) := by
-      funext x; rw [paperFT_ofReal_eq_fourier, neg_div, ← div_neg]
-    rw [hfun]
-    exact (GaloisForLFunctions.RHTower.integrable_norm_sq_fourier hh1 hh2).comp_div
-      (by linarith [Real.pi_pos])
-  have hint_minus : Integrable fun γ : ℝ => ‖paperFT h (-(γ : ℂ))‖ ^ 2 := by
-    have heq : (fun γ : ℝ => ‖paperFT h (-(γ : ℂ))‖ ^ 2) =
-        fun γ : ℝ => ‖paperFT h ((-γ : ℝ) : ℂ)‖ ^ 2 := by funext γ; simp
-    rw [heq]
-    exact hint_pos.comp_neg
-  have hwhole : (∫ γ : ℝ, ‖paperFT h (-(γ : ℂ))‖ ^ 2) = 2 * Real.pi * ∫ u : ℝ, ‖h u‖ ^ 2 := by
-    have heq : (fun γ : ℝ => ‖paperFT h (-(γ : ℂ))‖ ^ 2) =
-        fun γ : ℝ => ‖paperFT h ((-γ : ℝ) : ℂ)‖ ^ 2 := by funext γ; simp
-    rw [heq, integral_neg_eq_self (fun x : ℝ => ‖paperFT h (x : ℂ)‖ ^ 2)]
-    exact RHTower.KernelStrip.integral_norm_sq_paperFT_of_memLp hh1 hh2
-  have hint_F₀2 : Integrable fun u : ℝ => F₀ u ^ 2 :=
-    (hF₀.continuous.pow 2).integrable_of_hasCompactSupport
-      (hF₀c.comp_left (zero_pow two_ne_zero))
-  have hL2_ge : (∫ u : ℝ, F₀ u ^ 2) ≤ ∫ u : ℝ, ‖h u‖ ^ 2 := by
-    refine integral_mono hint_F₀2 hint_h2 fun u => ?_
-    dsimp [h, depthSumProfile]
-    have hexp_norm : ‖Complex.exp (Complex.I * (ρ.im : ℂ) * (u : ℂ))‖ = 1 := by
-      have : Complex.I * (ρ.im : ℂ) * (u : ℂ) = ((ρ.im * u : ℝ) : ℂ) * Complex.I := by
-        push_cast; ring
-      rw [this, Complex.norm_exp_ofReal_mul_I]
-    rw [norm_mul, hexp_norm, mul_one, Complex.norm_real, Real.norm_eq_abs, sq_abs, mul_pow]
-    exact le_mul_of_one_le_right (sq_nonneg _) (one_le_cosh_sq ((ρ.re - 1 / 2) * u))
-  -- Pointwise Lorentzian bound on `‖paperFT h (-ω)‖²` for any `ω : ℝ`
-  have hsum_lor : ∀ ω : ℝ, ‖paperFT h (-(ω : ℂ))‖ ^ 2 ≤
-      Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / (1 + (ρ.im - ω) ^ 2) ^ 2) := fun ω => by
-    rw [paperFT_depthSumProfile_eq hF₀.continuous hF₀c ρ ω]
-    have him1 : |(gammaOf ρ - (ω : ℂ)).im| ≤ 1 / 2 := by
-      rw [gammaOf_sub_real]; simp only [Complex.sub_im, Complex.ofReal_im, Complex.mul_im,
-        Complex.ofReal_re, Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_sub, abs_neg]
-      exact abs_le.mpr ⟨by linarith, by linarith⟩
-    have him2 : |(conj (gammaOf ρ) - (ω : ℂ)).im| ≤ 1 / 2 := by
-      rw [conj_gammaOf_sub_real]; simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im,
-        Complex.ofReal_re, Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_add]
-      exact abs_le.mpr ⟨by linarith, by linarith⟩
-    have hre1 : (gammaOf ρ - (ω : ℂ)).re = ρ.im - ω := by rw [gammaOf_sub_real]; simp
-    have hre2 : (conj (gammaOf ρ) - (ω : ℂ)).re = ρ.im - ω := by rw [conj_gammaOf_sub_real]; simp
-    have hb1 := norm_paperFT_symm_le hF₀ hF₀c hA hsupp (gammaOf ρ - (ω : ℂ))
-    have hb2 := norm_paperFT_symm_le hF₀ hF₀c hA hsupp (conj (gammaOf ρ) - (ω : ℂ))
-    rw [hre1] at hb1; rw [hre2] at hb2
-    have hexp1 : Real.exp (A * |(gammaOf ρ - (ω : ℂ)).im|) ≤ Real.exp (A / 2) :=
-      Real.exp_le_exp.mpr (by nlinarith)
-    have hexp2 : Real.exp (A * |(conj (gammaOf ρ) - (ω : ℂ)).im|) ≤ Real.exp (A / 2) :=
-      Real.exp_le_exp.mpr (by nlinarith)
-    have htri : ‖(paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (ω : ℂ)) +
-          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (ω : ℂ))) / 2‖ ≤
-        Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + (ρ.im - ω) ^ 2) := by
-      rw [norm_div, Complex.norm_ofNat]
-      have h1 := hb1.trans (div_le_div_of_nonneg_right
-        (mul_le_mul_of_nonneg_right hexp1 (envelopeWindowNorm_nonneg F₀)) (by positivity))
-      have h2 := hb2.trans (div_le_div_of_nonneg_right
-        (mul_le_mul_of_nonneg_right hexp2 (envelopeWindowNorm_nonneg F₀)) (by positivity))
-      have hadd := (norm_add_le
-        (paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (ω : ℂ)))
-        (paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (ω : ℂ)))).trans (add_le_add h1 h2)
-      linarith
-    have hsq := pow_le_pow_left₀ (norm_nonneg _) htri 2
-    have hexpA : Real.exp (A / 2) ^ 2 = Real.exp A := by
-      rw [sq, ← Real.exp_add]; congr 1; ring
-    have hden_ne : 1 + (ρ.im - ω) ^ 2 ≠ 0 := by positivity
-    calc ‖(paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (ω : ℂ)) +
-            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (ω : ℂ))) / 2‖ ^ 2
-        ≤ (Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + (ρ.im - ω) ^ 2)) ^ 2 := hsq
-      _ = Real.exp (A / 2) ^ 2 * envelopeWindowNorm F₀ ^ 2 * (1 / (1 + (ρ.im - ω) ^ 2) ^ 2) := by
-          field_simp [hden_ne]
-      _ = Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / (1 + (ρ.im - ω) ^ 2) ^ 2) := by rw [hexpA]
+  obtain ⟨hc_minus, hc_plus, hint_minus, hpl_ge⟩ :=
+    depthSumProfile_plancherel_and_cont hF₀.continuous hF₀c ρ
+  have hsum_lor := norm_paperFT_depthSumProfile_sq_le_lorentz hF₀ hF₀c hA hsupp hρ0 hρ1
   -- Exterior integral on `(Icc Γ (2 * Γ))ᶜ`
   have hint_lor_sub : Integrable fun γ : ℝ => 1 / (1 + (ρ.im - γ) ^ 2) := by
     have heq : (fun γ : ℝ => 1 / (1 + (ρ.im - γ) ^ 2)) = fun γ : ℝ => (1 + (γ - ρ.im) ^ 2)⁻¹ := by
@@ -2270,10 +2341,10 @@ theorem integral_Icc_norm_paperFT_depthSum_sq_bounds {F₀ : ℝ → ℝ}
       funext γ; simp only [one_div]; congr 2; ring
     rw [heq, integral_sub_right_eq_self (fun u : ℝ => (1 + u ^ 2)⁻¹) ρ.im]
     exact integral_univ_inv_one_add_sq
-  have hext_le : (∫ γ in (Icc Γ (2 * Γ))ᶜ, ‖paperFT h (-(γ : ℂ))‖ ^ 2) ≤
+  have hext_le : (∫ γ in (Icc Γ (2 * Γ))ᶜ, ‖paperFT (depthSumProfile F₀ ρ) (-(γ : ℂ))‖ ^ 2) ≤
       (16 * Real.pi / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2 := by
     have hpt_ext : ∀ γ ∈ (Icc Γ (2 * Γ))ᶜ,
-        ‖paperFT h (-(γ : ℂ))‖ ^ 2 ≤
+        ‖paperFT (depthSumProfile F₀ ρ) (-(γ : ℂ))‖ ^ 2 ≤
           Real.exp A * envelopeWindowNorm F₀ ^ 2 * (16 / Γ ^ 2) *
             (1 / (1 + (ρ.im - γ) ^ 2)) := fun γ hγ => by
       have hsq_gap : Γ ^ 2 / 16 ≤ (ρ.im - γ) ^ 2 := by
@@ -2288,7 +2359,7 @@ theorem integral_Icc_norm_paperFT_depthSum_sq_bounds {F₀ : ℝ → ℝ}
       have hinv16 : 1 / (1 + (ρ.im - γ) ^ 2) ≤ 16 / Γ ^ 2 := by
         rw [div_le_div_iff₀ (by positivity) (by positivity)]
         linarith
-      calc ‖paperFT h (-(γ : ℂ))‖ ^ 2
+      calc ‖paperFT (depthSumProfile F₀ ρ) (-(γ : ℂ))‖ ^ 2
           ≤ Real.exp A * envelopeWindowNorm F₀ ^ 2 *
               ((1 / (1 + (ρ.im - γ) ^ 2)) * (1 / (1 + (ρ.im - γ) ^ 2))) := by
             simpa [sq] using hsum_lor γ
@@ -2300,7 +2371,7 @@ theorem integral_Icc_norm_paperFT_depthSum_sq_bounds {F₀ : ℝ → ℝ}
               (1 / (1 + (ρ.im - γ) ^ 2)) := by ring
     have hint_maj := hint_lor_sub.const_mul
       (Real.exp A * envelopeWindowNorm F₀ ^ 2 * (16 / Γ ^ 2))
-    calc (∫ γ in (Icc Γ (2 * Γ))ᶜ, ‖paperFT h (-(γ : ℂ))‖ ^ 2)
+    calc (∫ γ in (Icc Γ (2 * Γ))ᶜ, ‖paperFT (depthSumProfile F₀ ρ) (-(γ : ℂ))‖ ^ 2)
         ≤ ∫ γ in (Icc Γ (2 * Γ))ᶜ,
             Real.exp A * envelopeWindowNorm F₀ ^ 2 * (16 / Γ ^ 2) *
               (1 / (1 + (ρ.im - γ) ^ 2)) :=
@@ -2313,14 +2384,13 @@ theorem integral_Icc_norm_paperFT_depthSum_sq_bounds {F₀ : ℝ → ℝ}
           rw [integral_const_mul, hint_lor_sub_val]
       _ = (16 * Real.pi / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2 := by ring
   have hsplit := integral_add_compl (s := Icc Γ (2 * Γ)) measurableSet_Icc hint_minus
-  -- Opposite-shift integral on `Icc Γ (2 * Γ)`
-  have hplus_le : (∫ γ in Icc Γ (2 * Γ), ‖paperFT h (γ : ℂ)‖ ^ 2) ≤
+  have hplus_le : (∫ γ in Icc Γ (2 * Γ), ‖paperFT (depthSumProfile F₀ ρ) (γ : ℂ)‖ ^ 2) ≤
       (Real.pi / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2 := by
     have hpt_plus : ∀ γ ∈ Icc Γ (2 * Γ),
-        ‖paperFT h (γ : ℂ)‖ ^ 2 ≤
+        ‖paperFT (depthSumProfile F₀ ρ) (γ : ℂ)‖ ^ 2 ≤
           Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / Γ ^ 2) *
             (1 / (1 + (ρ.im + γ) ^ 2)) := fun γ hγ => by
-      have h1 : ‖paperFT h (γ : ℂ)‖ ^ 2 ≤
+      have h1 : ‖paperFT (depthSumProfile F₀ ρ) (γ : ℂ)‖ ^ 2 ≤
           Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / (1 + (ρ.im + γ) ^ 2) ^ 2) := by
         simpa [sub_neg_eq_add] using hsum_lor (-γ)
       have hsq_gap : Γ ^ 2 ≤ (ρ.im + γ) ^ 2 := by
@@ -2329,7 +2399,7 @@ theorem integral_Icc_norm_paperFT_depthSum_sq_bounds {F₀ : ℝ → ℝ}
       have hinv1 : 1 / (1 + (ρ.im + γ) ^ 2) ≤ 1 / Γ ^ 2 := by
         rw [div_le_div_iff₀ (by positivity) (by positivity)]
         linarith
-      calc ‖paperFT h (γ : ℂ)‖ ^ 2
+      calc ‖paperFT (depthSumProfile F₀ ρ) (γ : ℂ)‖ ^ 2
           ≤ Real.exp A * envelopeWindowNorm F₀ ^ 2 *
               ((1 / (1 + (ρ.im + γ) ^ 2)) * (1 / (1 + (ρ.im + γ) ^ 2))) := by
             simpa [sq] using h1
@@ -2341,7 +2411,7 @@ theorem integral_Icc_norm_paperFT_depthSum_sq_bounds {F₀ : ℝ → ℝ}
               (1 / (1 + (ρ.im + γ) ^ 2)) := by ring
     have hint_lor_add : IntegrableOn (fun γ : ℝ => 1 / (1 + (ρ.im + γ) ^ 2)) (Icc Γ (2 * Γ)) :=
       (continuous_const.div (by fun_prop) (fun _ => by positivity)).integrableOn_Icc
-    calc (∫ γ in Icc Γ (2 * Γ), ‖paperFT h (γ : ℂ)‖ ^ 2)
+    calc (∫ γ in Icc Γ (2 * Γ), ‖paperFT (depthSumProfile F₀ ρ) (γ : ℂ)‖ ^ 2)
         ≤ ∫ γ in Icc Γ (2 * Γ),
             Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / Γ ^ 2) *
               (1 / (1 + (ρ.im + γ) ^ 2)) :=
@@ -2355,9 +2425,6 @@ theorem integral_Icc_norm_paperFT_depthSum_sq_bounds {F₀ : ℝ → ℝ}
             (integral_Icc_inv_one_add_sq_add_le_pi Γ (2 * Γ) ρ.im) (by positivity)
       _ = (Real.pi / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2 := by ring
   refine ⟨hc_minus, hc_plus, ?_, hplus_le⟩
-  have hpl_ge : 2 * Real.pi * (∫ u, F₀ u ^ 2) ≤ ∫ γ : ℝ, ‖paperFT h (-(γ : ℂ))‖ ^ 2 := by
-    rw [hwhole]
-    exact mul_le_mul_of_nonneg_left hL2_ge (by positivity)
   linarith [hsplit, hext_le, hpl_ge]
 
 /-- Riemann–von Mangoldt multiplicity lower and upper bounds on the interior core window
@@ -2431,7 +2498,7 @@ theorem exists_sum_mult_xiSupportsWindow_core_bounds :
       have hsub_eq : (93 / (128 * Real.pi)) * Γ * Real.log (5 * Γ / 4) -
           (33 / (64 * Real.pi)) * ((5 * Γ / 4) * Real.log (5 * Γ / 4)) =
           (21 / (256 * Real.pi)) * Γ * Real.log (5 * Γ / 4) := by
-        field_simp [hπ.ne']
+        field_simp [hπ.ne']; ring
       linarith [hN2_lower', hN1_upper, hsub_eq]
     calc (1 / (16 * Real.pi)) * Γ * Real.log Γ
         ≤ (21 / (256 * Real.pi)) * Γ * Real.log Γ := by
@@ -2498,7 +2565,7 @@ theorem sum_foldedRe_le_four_mul_windowZeros {g : ℝ → ℝ} (hg : ∀ y, 0 �
       exact (Finset.mem_filter.mp hq).2
     calc (∑ q ∈ G_w.filter (fun q => e q ∈ U_ur), g (foldedRe q))
         = ∑ q ∈ G_w.filter (fun q => e q ∈ U_ur), g (foldedRe (e.toEmbedding q)) :=
-          Finset.sum_congr rfl fun q _ => (hinv q).symm
+          Finset.sum_congr rfl fun q _ => congrArg g (hinv q).symm
       _ = ∑ x ∈ (G_w.filter (fun q => e q ∈ U_ur)).map e.toEmbedding, g (foldedRe x) :=
           (Finset.sum_map (G_w.filter (fun q => e q ∈ U_ur)) e.toEmbedding
             (fun x => g (foldedRe x))).symm
@@ -2580,11 +2647,12 @@ theorem sum_foldedRe_le_four_mul_windowZeros {g : ℝ → ℝ} (hg : ∀ y, 0 �
     have hρ_pos := (mem_xiSupportsPos.mp hρ_filt.1)
     rw [abs_of_pos hρ_pos.2] at hρ_pos
     have hstrip := (xiDivisorZetaCarrierEquiv ρ).2
+    have hmem_strip : 0 < (ρ : ℂ).re ∧ (ρ : ℂ).re < 1 := (xiDivisorZetaCarrierEquiv ρ).2.2
     rw [Finset.mem_filter, mem_windowZeros_iff hT₁ hT12]
-    dsimp only [embC]
+    dsimp [embC]
     refine ⟨⟨?_, hstrip.1⟩, hρ_filt.2.1⟩
     rw [Complex.mem_reProdIm, uIcc_of_le (by norm_num : (1 / 2 : ℝ) ≤ 15 / 2), uIcc_of_le hT12]
-    exact ⟨⟨by linarith [hρ_filt.2.1], by linarith [hstrip.2.2]⟩, ⟨hρ_filt.2.2, hρ_pos.1⟩⟩
+    exact ⟨⟨by linarith [hρ_filt.2.1], by linarith [hmem_strip.2]⟩, ⟨hρ_filt.2.2, hρ_pos.1⟩⟩
   have hW_le : (∑ ρ ∈ W_ur, (xiSupportMultiplicity ρ : ℝ) * g (ρ : ℂ).re) ≤
       ∑ w ∈ (windowZeros T₁ T₂).filter (fun w => 1 / 2 + v₀ < w.re),
         RHTower.zeroMult w * g w.re := by
@@ -2620,6 +2688,134 @@ def localZeroWeight (A : ℝ) (q : XiZeroCopy) : ℝ :=
 
 theorem localZeroWeight_nonneg (A : ℝ) (q : XiZeroCopy) : 0 ≤ localZeroWeight A q :=
   le_min (by positivity) (by positivity)
+
+private theorem sum_shallow_localZeroWeight_le {ε_target C₂ κ₀ Cg Γ A v₀ : ℝ}
+    (_hε : 0 < ε_target) (hC₂_pos : 0 < C₂) (hκ₀_pos : 0 < κ₀) (hCg : 0 ≤ Cg)
+    (hglob : ∀ {T : ℝ}, 4 ≤ T → ∀ {σ : ℝ}, 1 / 2 ≤ σ →
+      ((zeroHeightBox σ T).ncard : ℝ) ≤ Cg * (1 + Real.log T) * T)
+    (hκ₀_2 : κ₀ ≤ 1 / (2 * C₂))
+    (hκ₀_sq : κ₀ ^ 2 ≤ ε_target / (4000 * Real.pi * (Cg + 1) * C₂ ^ 2))
+    (hΓ64 : 64 ≤ Γ) (hlogΓ_pos : 0 < Real.log Γ) (hlogΓ_ge1 : 1 ≤ Real.log Γ)
+    (hA0 : 0 ≤ A) (hA : A ≤ κ₀ * Real.log Γ) (hv₀_def : v₀ = C₂ / Real.log Γ)
+    (G : Finset XiZeroCopy)
+    (hG : ∀ q ∈ G, Γ / 2 ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 4 * Γ) :
+    (1 / Γ) * (∑ q ∈ G.filter (fun q => foldedRe q ≤ 1 / 2 + v₀), localZeroWeight A q) ≤
+      (ε_target / 2) * Real.log Γ := by
+  classical
+  have hΓ0 : 0 < Γ := by linarith
+  let G_sh := G.filter (fun q => foldedRe q ≤ 1 / 2 + v₀)
+  have hsh_pt : ∀ q ∈ G_sh, localZeroWeight A q ≤ 6 * Real.pi * C₂ ^ 2 * κ₀ ^ 2 := fun q hq => by
+    have hq_le : foldedRe q - 1 / 2 ≤ v₀ := by linarith [(Finset.mem_filter.mp hq).2]
+    have hq_nn : 0 ≤ foldedRe q - 1 / 2 := sub_nonneg.mpr (half_le_foldedRe q)
+    have hprod_le : A * (foldedRe q - 1 / 2) ≤ κ₀ * C₂ := by
+      calc A * (foldedRe q - 1 / 2) ≤ (κ₀ * Real.log Γ) * v₀ :=
+            mul_le_mul hA hq_le hq_nn (by positivity)
+        _ = κ₀ * C₂ := by rw [hv₀_def]; field_simp [hlogΓ_pos.ne']
+    have hκC₂_le : κ₀ * C₂ ≤ 1 / 2 := by
+      have hm := mul_le_mul_of_nonneg_right hκ₀_2 hC₂_pos.le
+      have heq : 1 / (2 * C₂) * C₂ = 1 / 2 := by field_simp [hC₂_pos.ne']
+      linarith
+    have hexp_le3 : Real.exp (2 * A * (foldedRe q - 1 / 2)) ≤ 3 := by
+      have h1 : Real.exp (2 * A * (foldedRe q - 1 / 2)) ≤ Real.exp 1 :=
+        Real.exp_le_exp.mpr (by linarith)
+      exact h1.trans (Real.exp_one_lt_d9.le.trans (by norm_num))
+    have hsq_le : A ^ 2 * (foldedRe q - 1 / 2) ^ 2 ≤ C₂ ^ 2 * κ₀ ^ 2 := by
+      have h1 := pow_le_pow_left₀ (by positivity) hprod_le 2
+      linarith
+    refine (min_le_right _ _).trans ?_
+    calc 2 * Real.pi * A ^ 2 * (foldedRe q - 1 / 2) ^ 2 * Real.exp (2 * A * (foldedRe q - 1 / 2))
+        = 2 * Real.pi * (A ^ 2 * (foldedRe q - 1 / 2) ^ 2) *
+            Real.exp (2 * A * (foldedRe q - 1 / 2)) := by ring
+      _ ≤ 2 * Real.pi * (C₂ ^ 2 * κ₀ ^ 2) * 3 :=
+          mul_le_mul (mul_le_mul_of_nonneg_left hsq_le (by positivity))
+            hexp_le3 (Real.exp_pos _).le (by positivity)
+      _ = 6 * Real.pi * C₂ ^ 2 * κ₀ ^ 2 := by ring
+  have hsh_card : (G_sh.card : ℝ) ≤ 36 * (Cg + 1) * Γ * Real.log Γ := by
+    let B₁ := G_sh.filter (fun q => |(q.1 : ℂ).im| ≤ Γ)
+    let B₂ := G_sh.filter (fun q => Γ < |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 2 * Γ)
+    let B₃ := G_sh.filter (fun q => 2 * Γ < |(q.1 : ℂ).im|)
+    have hcard_cov : (G_sh.card : ℝ) ≤ (B₁.card : ℝ) + (B₂.card : ℝ) + (B₃.card : ℝ) := by
+      have hpt_c : ∀ q ∈ G_sh, (1 : ℝ) ≤
+          (if |(q.1 : ℂ).im| ≤ Γ then 1 else 0) +
+          (if Γ < |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 2 * Γ then 1 else 0) +
+          (if 2 * Γ < |(q.1 : ℂ).im| then 1 else 0) := fun q _ => by
+        by_cases h1 : |(q.1 : ℂ).im| ≤ Γ
+        · rw [if_pos h1, if_neg (fun h => not_lt_of_ge h1 h.1),
+            if_neg (by linarith : ¬(2 * Γ < |(q.1 : ℂ).im|))]; norm_num
+        · push Not at h1
+          by_cases h2 : |(q.1 : ℂ).im| ≤ 2 * Γ
+          · rw [if_neg (not_le.mpr h1), if_pos ⟨h1, h2⟩, if_neg (not_lt.mpr h2)]; norm_num
+          · push Not at h2
+            rw [if_neg (not_le.mpr h1), if_neg (fun h => not_le.mpr h2 h.2), if_pos h2]; norm_num
+      have hs := Finset.sum_le_sum hpt_c
+      simp only [Finset.sum_const, nsmul_eq_mul, mul_one, Finset.sum_add_distrib,
+        ← Finset.sum_filter] at hs
+      exact hs
+    have hbox_card : ∀ (T : ℝ), 4 ≤ T → ∀ (H : Finset XiZeroCopy),
+        (∀ q ∈ H, T ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 2 * T) →
+        (H.card : ℝ) ≤ 4 * Cg * (1 + Real.log T) * T := fun T hT4 H hH => by
+      have hsub : (H : Set XiZeroCopy) ⊆ foldedHeightBox (1 / 2) T := fun q hq =>
+        ⟨half_le_foldedRe q, hH q hq⟩
+      have h1 := Set.ncard_le_ncard hsub (foldedHeightBox_finite _ _)
+      rw [Set.ncard_coe_finset] at h1
+      have h2 : (H.card : ℝ) ≤ 4 * ((zeroHeightBox (1 / 2) T).ncard : ℝ) := by
+        exact_mod_cast h1.trans (ncard_foldedHeightBox_le (1 / 2) T)
+      have h3 := hglob hT4 (le_rfl : (1 / 2 : ℝ) ≤ 1 / 2)
+      nlinarith
+    have hb1 := hbox_card (Γ / 2) (by linarith) B₁ fun q hq => by
+      have hq' := Finset.mem_filter.mp hq
+      exact ⟨(hG q (Finset.mem_filter.mp hq'.1).1).1, by linarith [hq'.2]⟩
+    have hb2 := hbox_card Γ (by linarith) B₂ fun q hq => by
+      have hq' := Finset.mem_filter.mp hq
+      exact ⟨hq'.2.1.le, hq'.2.2⟩
+    have hb3 := hbox_card (2 * Γ) (by linarith) B₃ fun q hq => by
+      have hq' := Finset.mem_filter.mp hq
+      exact ⟨hq'.2.le, by linarith [(hG q (Finset.mem_filter.mp hq'.1).1).2]⟩
+    have hl1 : 1 + Real.log (Γ / 2) ≤ 2 * Real.log Γ := by
+      have : Real.log (Γ / 2) ≤ Real.log Γ := Real.log_le_log (by positivity) (by linarith)
+      linarith
+    have hl2 : 1 + Real.log Γ ≤ 2 * Real.log Γ := by linarith
+    have hl3 : 1 + Real.log (2 * Γ) ≤ 3 * Real.log Γ := by
+      have : Real.log (2 * Γ) ≤ Real.log (Γ ^ 2) := Real.log_le_log (by positivity) (by nlinarith)
+      rw [Real.log_pow] at this; norm_num at this
+      linarith
+    have hb1' : (B₁.card : ℝ) ≤ 4 * Cg * (2 * Real.log Γ) * (Γ / 2) :=
+      hb1.trans (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hl1 (by positivity)) (by positivity))
+    have hb2' : (B₂.card : ℝ) ≤ 4 * Cg * (2 * Real.log Γ) * Γ :=
+      hb2.trans (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hl2 (by positivity)) hΓ0.le)
+    have hb3' : (B₃.card : ℝ) ≤ 4 * Cg * (3 * Real.log Γ) * (2 * Γ) :=
+      hb3.trans (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hl3 (by positivity)) (by positivity))
+    have hsum3 : 4 * Cg * (2 * Real.log Γ) * (Γ / 2) +
+        4 * Cg * (2 * Real.log Γ) * Γ +
+        4 * Cg * (3 * Real.log Γ) * (2 * Γ) = 36 * Cg * Γ * Real.log Γ := by ring
+    have hle36 : 36 * Cg * Γ * Real.log Γ ≤ 36 * (Cg + 1) * Γ * Real.log Γ := by
+      have : 0 ≤ 36 * Γ * Real.log Γ := by positivity
+      linarith
+    linarith [hcard_cov, hb1', hb2', hb3', hsum3, hle36]
+  have hs1 : (∑ q ∈ G_sh, localZeroWeight A q) ≤
+      (G_sh.card : ℝ) * (6 * Real.pi * C₂ ^ 2 * κ₀ ^ 2) := by
+    refine (Finset.sum_le_sum hsh_pt).trans ?_
+    rw [Finset.sum_const, nsmul_eq_mul]
+  calc (1 / Γ) * (∑ q ∈ G_sh, localZeroWeight A q)
+      ≤ (1 / Γ) * ((36 * (Cg + 1) * Γ * Real.log Γ) * (6 * Real.pi * C₂ ^ 2 * κ₀ ^ 2)) :=
+        mul_le_mul_of_nonneg_left
+          (hs1.trans (mul_le_mul_of_nonneg_right hsh_card (by positivity))) (by positivity)
+    _ = 216 * Real.pi * (Cg + 1) * C₂ ^ 2 * κ₀ ^ 2 * Real.log Γ := by
+        field_simp [hΓ0.ne']; norm_num
+    _ ≤ 216 * Real.pi * (Cg + 1) * C₂ ^ 2 *
+          (ε_target / (4000 * Real.pi * (Cg + 1) * C₂ ^ 2)) * Real.log Γ :=
+        mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_left hκ₀_sq (by positivity)) hlogΓ_pos.le
+    _ = (216 / 4000) * ε_target * Real.log Γ := by
+        have hπ_ne : Real.pi ≠ 0 := Real.pi_ne_zero
+        have hCg_ne : Cg + 1 ≠ 0 := by positivity
+        have hC₂_ne : C₂ ≠ 0 := hC₂_pos.ne'
+        field_simp [hπ_ne, hCg_ne, hC₂_ne]
+    _ ≤ (ε_target / 2) * Real.log Γ :=
+        mul_le_mul_of_nonneg_right (by linarith) hlogΓ_pos.le
 
 /-- **Logarithmic-Aperture Local Shell Absorption via Selberg Near-Line Density
 (`exists_local_shell_depthDiff_weighted_le`):**
@@ -2695,110 +2891,9 @@ theorem exists_local_shell_depthDiff_weighted_le {ε_target : ℝ} (hε : 0 < ε
     dsimp [G_sh, G_dp]
     rw [← Finset.sum_filter_add_sum_filter_not G (fun q => foldedRe q ≤ 1 / 2 + v₀)]
     congr 2; ext q; simp [not_le]
-  -- 1. Shallow zeros `G_sh`
-  have hsh_pt : ∀ q ∈ G_sh, localZeroWeight A q ≤ 6 * Real.pi * C₂ ^ 2 * κ₀ ^ 2 := fun q hq => by
-    have hq_le : foldedRe q - 1 / 2 ≤ v₀ := by linarith [(Finset.mem_filter.mp hq).2]
-    have hq_nn : 0 ≤ foldedRe q - 1 / 2 := sub_nonneg.mpr (half_le_foldedRe q)
-    have hprod_le : A * (foldedRe q - 1 / 2) ≤ κ₀ * C₂ := by
-      calc A * (foldedRe q - 1 / 2) ≤ (κ₀ * Real.log Γ) * v₀ :=
-            mul_le_mul hA hq_le hq_nn (by positivity)
-        _ = κ₀ * C₂ := by rw [hv₀_def]; field_simp [hlogΓ_pos.ne']
-    have hκC₂_le : κ₀ * C₂ ≤ 1 / 2 := by
-      have hm := mul_le_mul_of_nonneg_right hκ₀_2 hC₂_pos.le
-      have heq : 1 / (2 * C₂) * C₂ = 1 / 2 := by field_simp [hC₂_pos.ne']
-      linarith
-    have hexp_le3 : Real.exp (2 * A * (foldedRe q - 1 / 2)) ≤ 3 := by
-      have h1 : Real.exp (2 * A * (foldedRe q - 1 / 2)) ≤ Real.exp 1 :=
-        Real.exp_le_exp.mpr (by linarith)
-      exact h1.trans (Real.exp_one_lt_d9.le.trans (by norm_num))
-    have hsq_le : A ^ 2 * (foldedRe q - 1 / 2) ^ 2 ≤ C₂ ^ 2 * κ₀ ^ 2 := by
-      have h1 := pow_le_pow_left₀ (by positivity) hprod_le 2
-      linarith
-    refine (min_le_right _ _).trans ?_
-    calc 2 * Real.pi * A ^ 2 * (foldedRe q - 1 / 2) ^ 2 * Real.exp (2 * A * (foldedRe q - 1 / 2))
-        = 2 * Real.pi * (A ^ 2 * (foldedRe q - 1 / 2) ^ 2) *
-            Real.exp (2 * A * (foldedRe q - 1 / 2)) := by ring
-      _ ≤ 2 * Real.pi * (C₂ ^ 2 * κ₀ ^ 2) * 3 :=
-          mul_le_mul (mul_le_mul_of_nonneg_left hsq_le (by positivity))
-            hexp_le3 (Real.exp_pos _).le (by positivity)
-      _ = 6 * Real.pi * C₂ ^ 2 * κ₀ ^ 2 := by ring
-  -- Bound `(G_sh.card : ℝ) ≤ 36 * (Cg + 1) * Γ * log Γ` via 3 dyadic shells
-  have hsh_card : (G_sh.card : ℝ) ≤ 36 * (Cg + 1) * Γ * Real.log Γ := by
-    let B₁ := G_sh.filter (fun q => |(q.1 : ℂ).im| ≤ Γ)
-    let B₂ := G_sh.filter (fun q => Γ < |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 2 * Γ)
-    let B₃ := G_sh.filter (fun q => 2 * Γ < |(q.1 : ℂ).im|)
-    have hcard_cov : (G_sh.card : ℝ) ≤ (B₁.card : ℝ) + (B₂.card : ℝ) + (B₃.card : ℝ) := by
-      have hpt_c : ∀ q ∈ G_sh, (1 : ℝ) ≤
-          (if |(q.1 : ℂ).im| ≤ Γ then 1 else 0) +
-          (if Γ < |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 2 * Γ then 1 else 0) +
-          (if 2 * Γ < |(q.1 : ℂ).im| then 1 else 0) := fun q _ => by
-        by_cases h1 : |(q.1 : ℂ).im| ≤ Γ
-        · rw [if_pos h1, if_neg (fun h => not_lt_of_ge h1 h.1),
-            if_neg (by linarith : ¬(2 * Γ < |(q.1 : ℂ).im|))]; norm_num
-        · push Not at h1
-          by_cases h2 : |(q.1 : ℂ).im| ≤ 2 * Γ
-          · rw [if_neg (not_le.mpr h1), if_pos ⟨h1, h2⟩, if_neg (not_lt.mpr h2)]; norm_num
-          · push Not at h2
-            rw [if_neg (not_le.mpr h1), if_neg (fun h => not_le.mpr h2 h.2), if_pos h2]; norm_num
-      have hs := Finset.sum_le_sum hpt_c
-      simp only [Finset.sum_const, nsmul_eq_mul, mul_one, Finset.sum_add_distrib,
-        ← Finset.sum_filter] at hs
-      exact hs
-    have hbox_card : ∀ (T : ℝ), 4 ≤ T → ∀ (H : Finset XiZeroCopy),
-        (∀ q ∈ H, T ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 2 * T) →
-        (H.card : ℝ) ≤ 4 * Cg * (1 + Real.log T) * T := fun T hT4 H hH => by
-      have hsub : (H : Set XiZeroCopy) ⊆ foldedHeightBox (1 / 2) T := fun q hq =>
-        ⟨half_le_foldedRe q, hH q hq⟩
-      have h1 := Set.ncard_le_ncard hsub (foldedHeightBox_finite _ _)
-      rw [Set.ncard_coe_finset] at h1
-      have h2 : (H.card : ℝ) ≤ 4 * ((zeroHeightBox (1 / 2) T).ncard : ℝ) := by
-        exact_mod_cast h1.trans (ncard_foldedHeightBox_le (1 / 2) T)
-      have h3 := hglob hT4 (le_rfl : (1 / 2 : ℝ) ≤ 1 / 2)
-      nlinarith
-    have hb1 := hbox_card (Γ / 2) (by linarith) B₁ fun q hq => by
-      have hq' := Finset.mem_filter.mp hq
-      exact ⟨(hG q (Finset.mem_filter.mp hq'.1).1).1, by linarith [hq'.2]⟩
-    have hb2 := hbox_card Γ (by linarith) B₂ fun q hq => by
-      have hq' := Finset.mem_filter.mp hq
-      exact ⟨hq'.2.1.le, hq'.2.2⟩
-    have hb3 := hbox_card (2 * Γ) (by linarith) B₃ fun q hq => by
-      have hq' := Finset.mem_filter.mp hq
-      exact ⟨hq'.2.le, by linarith [(hG q (Finset.mem_filter.mp hq'.1).1).2]⟩
-    have hl1 : 1 + Real.log (Γ / 2) ≤ 2 * Real.log Γ := by
-      have : Real.log (Γ / 2) ≤ Real.log Γ := Real.log_le_log (by positivity) (by linarith)
-      linarith
-    have hl2 : 1 + Real.log Γ ≤ 2 * Real.log Γ := by linarith
-    have hl3 : 1 + Real.log (2 * Γ) ≤ 3 * Real.log Γ := by
-      have : Real.log (2 * Γ) ≤ Real.log (Γ ^ 2) := Real.log_le_log (by positivity) (by nlinarith)
-      rw [Real.log_pow] at this; norm_num at this
-      linarith
-    nlinarith [mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hl1 (by positivity : 0 ≤ 4 * Cg))
-      (by positivity : 0 ≤ Γ / 2),
-      mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hl2 (by positivity : 0 ≤ 4 * Cg)) hΓ0.le,
-      mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hl3 (by positivity : 0 ≤ 4 * Cg))
-        (by positivity : 0 ≤ 2 * Γ)]
-  have hsh_tot : (1 / Γ) * (∑ q ∈ G_sh, localZeroWeight A q) ≤ (ε_target / 2) * Real.log Γ := by
-    have hs1 : (∑ q ∈ G_sh, localZeroWeight A q) ≤
-        (G_sh.card : ℝ) * (6 * Real.pi * C₂ ^ 2 * κ₀ ^ 2) := by
-      refine (Finset.sum_le_sum hsh_pt).trans ?_
-      rw [Finset.sum_const, nsmul_eq_mul]
-    calc (1 / Γ) * (∑ q ∈ G_sh, localZeroWeight A q)
-        ≤ (1 / Γ) * ((36 * (Cg + 1) * Γ * Real.log Γ) * (6 * Real.pi * C₂ ^ 2 * κ₀ ^ 2)) :=
-          mul_le_mul_of_nonneg_left
-            (hs1.trans (mul_le_mul_of_nonneg_right hsh_card (by positivity))) (by positivity)
-      _ = 216 * Real.pi * (Cg + 1) * C₂ ^ 2 * κ₀ ^ 2 * Real.log Γ := by
-          field_simp [hΓ0.ne']; norm_num
-      _ ≤ 216 * Real.pi * (Cg + 1) * C₂ ^ 2 *
-            (ε_target / (4000 * Real.pi * (Cg + 1) * C₂ ^ 2)) * Real.log Γ :=
-          mul_le_mul_of_nonneg_right
-            (mul_le_mul_of_nonneg_left hκ₀_sq (by positivity)) hlogΓ_pos.le
-      _ = (216 / 4000) * ε_target * Real.log Γ := by
-          have hπ_ne : Real.pi ≠ 0 := Real.pi_ne_zero
-          have hCg_ne : Cg + 1 ≠ 0 := by positivity
-          have hC₂_ne : C₂ ≠ 0 := hC₂_pos.ne'
-          field_simp [hπ_ne, hCg_ne, hC₂_ne]
-      _ ≤ (ε_target / 2) * Real.log Γ :=
-          mul_le_mul_of_nonneg_right (by linarith) hlogΓ_pos.le
+  have hsh_tot : (1 / Γ) * (∑ q ∈ G_sh, localZeroWeight A q) ≤ (ε_target / 2) * Real.log Γ :=
+    sum_shallow_localZeroWeight_le hε hC₂_pos hκ₀_pos hCg hglob hκ₀_2 hκ₀_sq hΓ64 hlogΓ_pos
+      hlogΓ_ge1 hA0 hA hv₀_def G hG
   -- 2. Deep zeros `G_dp` via 5 overlapping Selberg windows `U_k = (16/9) * (3/2)^k * Γ`
   let U_fn : ℕ → ℝ := fun k => (16 / 9 : ℝ) * (3 / 2 : ℝ) ^ k * Γ
   have hU_ge : ∀ k : ℕ, Γ ≤ U_fn k ∧ U_sel ≤ U_fn k ∧ 64 ≤ U_fn k := fun k => by
@@ -3120,7 +3215,7 @@ theorem exists_logarithmic_aperture_frequencyAverage_fullZeroForm_cosineSource_p
   have hint_ge := setIntegral_mono_on hlhs_int hf_cos_cont.integrableOn_Icc measurableSet_Icc
     fun γ _ => fullZeroForm_cosineSource_ge_finset hF₀ hF₀c γ C_core (hd_sub_sum γ) (hd_add_sum γ)
   rw [integral_sub hcore_sum_int hdiff_int,
-    integral_finset_sum C_core (fun ρ hρ => (hcore_cont ρ hρ).integrableOn_Icc)] at hint_ge
+    integral_finsetSum C_core (fun ρ hρ => (hcore_cont ρ hρ).integrableOn_Icc)] at hint_ge
   -- Lower bound each `ρ ∈ C_core` integral
   have hcore_each : ∀ ρ ∈ C_core,
       (zetaZeroConfig.mult ρ : ℝ) *
@@ -3134,7 +3229,15 @@ theorem exists_logarithmic_aperture_frequencyAverage_fullZeroForm_cosineSource_p
     rw [integral_const_mul, integral_sub (hcm.div_const 8).integrableOn_Icc
         (hcp.div_const 4).integrableOn_Icc, integral_div, integral_div]
     refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg _)
-    linarith
+    have hcomb : ((2 * Real.pi * ∫ u, F₀ u ^ 2) -
+          (16 * Real.pi / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2) / 8 -
+        ((Real.pi / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2) / 4 =
+        (Real.pi / 4) * (∫ u, F₀ u ^ 2) -
+          (9 * Real.pi / (4 * Γ ^ 2)) * Real.exp A * envelopeWindowNorm F₀ ^ 2 := by
+      field_simp [hΓ0.ne']; ring
+    exact hcomb.symm.trans_le (sub_le_sub
+      (div_le_div_of_nonneg_right hbm (by norm_num))
+      (div_le_div_of_nonneg_right hbp (by norm_num)))
   have hmult_sum_eq : (∑ ρ ∈ C_core, (zetaZeroConfig.mult ρ : ℝ)) =
       ∑ ξ₀ ∈ W_core, (xiSupportMultiplicity ξ₀ : ℝ) := by
     dsimp [C_core]
@@ -3153,7 +3256,7 @@ theorem exists_logarithmic_aperture_frequencyAverage_fullZeroForm_cosineSource_p
           ((Real.pi / 4) * (∫ u, F₀ u ^ 2)) := by
       calc (1 / 64) * Γ * Real.log Γ * (∫ u, F₀ u ^ 2)
           = ((1 / (16 * Real.pi)) * Γ * Real.log Γ) * ((Real.pi / 4) * (∫ u, F₀ u ^ 2)) := by
-            field_simp [Real.pi_ne_zero]
+            field_simp [Real.pi_ne_zero]; ring
         _ ≤ (∑ ξ₀ ∈ W_core, (xiSupportMultiplicity ξ₀ : ℝ)) *
               ((Real.pi / 4) * (∫ u, F₀ u ^ 2)) :=
             mul_le_mul_of_nonneg_right hrvm_low (by positivity)
@@ -3166,7 +3269,7 @@ theorem exists_logarithmic_aperture_frequencyAverage_fullZeroForm_cosineSource_p
               ((9 * Real.pi / (4 * Γ ^ 2)) * Real.exp A * envelopeWindowNorm F₀ ^ 2) :=
             mul_le_mul_of_nonneg_right hrvm_high (by positivity)
         _ = (9 / 2) * (Real.log Γ / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 := by
-            field_simp [Real.pi_ne_zero, hΓ0.ne']
+            field_simp [Real.pi_ne_zero, hΓ0.ne']; ring
     linarith
   -- Upper bound `(1 / Γ) * ∫ diffAvg` via `localZeroWeight` + `hloc_sel`
   have hGloc_sub : (∑ q ∈ G_loc,
@@ -3379,7 +3482,7 @@ theorem exists_logarithmic_aperture_frequencyAverage_quadrature_pos :
       rw [fullZeroForm_cosine_add_sine_eq_zeta_W_re hF₀ hF₀c γ]
       exact re_zeta_W_complexModulatedSource_ge_finset hF₀ hF₀c γ C_core (hd_sub_sum γ)
   rw [integral_sub hcore_sum_int hsub_int_on,
-    integral_finset_sum C_core (fun ρ hρ => (hcore_cont ρ hρ).integrableOn_Icc)] at hint_ge
+    integral_finsetSum C_core (fun ρ hρ => (hcore_cont ρ hρ).integrableOn_Icc)] at hint_ge
   have hcore_each : ∀ ρ ∈ C_core,
       (zetaZeroConfig.mult ρ : ℝ) *
           (2 * Real.pi * (∫ u, F₀ u ^ 2) -
@@ -3407,7 +3510,7 @@ theorem exists_logarithmic_aperture_frequencyAverage_quadrature_pos :
         (∑ ξ₀ ∈ W_core, (xiSupportMultiplicity ξ₀ : ℝ)) * (2 * Real.pi * (∫ u, F₀ u ^ 2)) := by
       calc (1 / 8) * Γ * Real.log Γ * (∫ u, F₀ u ^ 2)
           = ((1 / (16 * Real.pi)) * Γ * Real.log Γ) * (2 * Real.pi * (∫ u, F₀ u ^ 2)) := by
-            field_simp [Real.pi_ne_zero]
+            field_simp [Real.pi_ne_zero]; ring
         _ ≤ (∑ ξ₀ ∈ W_core, (xiSupportMultiplicity ξ₀ : ℝ)) *
               (2 * Real.pi * (∫ u, F₀ u ^ 2)) :=
             mul_le_mul_of_nonneg_right hrvm_low (by positivity)
@@ -3420,7 +3523,7 @@ theorem exists_logarithmic_aperture_frequencyAverage_quadrature_pos :
               ((16 * Real.pi / Γ ^ 2) * Real.exp A * envelopeWindowNorm F₀ ^ 2) :=
             mul_le_mul_of_nonneg_right hrvm_high (by positivity)
         _ = 32 * (Real.log Γ / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 := by
-            field_simp [Real.pi_ne_zero, hΓ0.ne']
+            field_simp [Real.pi_ne_zero, hΓ0.ne']; ring
     linarith
   have hGloc_sub : (∑ q ∈ G_loc,
       (∫ γ in Icc Γ (2 * Γ),
@@ -3566,3 +3669,20 @@ theorem exists_positive_measure_frequencies_fullZeroForm_cosineSource_pos :
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
 end
+
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.igmDensityExponent_le_one_sub_four_thirds
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.exists_zeroHeightBox_ncard_le_one_sub_four_thirds_uniform
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.exists_sum_exp_foldedRe_deep_decay_up_to_two_thirds_log
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.exists_sum_exp_foldedRe_threeShells_le_subpower
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.exists_frequencyAverage_abs_cosineFiltered_spectralDeficitSum_le
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.exists_frequencyAverage_abs_cosineFiltered_ccmPrimeDeficitIncoming_le
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.fullZeroForm_cosine_add_sine_eq_gammaBracket_add_criticalDeficit
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.scalingSubsurface_defect_cosine_add_sine_eq
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_frequencyAverage_quadrature_fullZeroForm_ge_subpower
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_frequencyAverage_fullZeroForm_cosineSource_ge_subpower
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_frequencyAverage_fullZeroForm_ge_neg_exp_every_pos_rate
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_volume_bad_frequencies_fullZeroForm_cosineSource_le
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_local_shell_depthDiff_weighted_le
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_logarithmic_aperture_frequencyAverage_fullZeroForm_cosineSource_pos
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_logarithmic_aperture_frequencyAverage_quadrature_pos
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_positive_measure_frequencies_fullZeroForm_cosineSource_pos

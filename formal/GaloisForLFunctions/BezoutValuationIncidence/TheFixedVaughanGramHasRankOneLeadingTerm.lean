@@ -1,4 +1,5 @@
 import GaloisForLFunctions.BezoutValuationIncidence.TheVaughanDiagonalContainsLinearPoleMass
+import GaloisForLFunctions.RHTower.EvenSectorAbelRigidity
 
 /-!
 # The leading matrix of the fixed-cutoff Vaughan Gram
@@ -54,11 +55,11 @@ private theorem tendsto_finite_moebius_floor_mean (ε : ℝ) (U : ℕ) :
       atTop (𝓝 ((moebius d : ℝ) * ((d : ℝ) ^ (-ε) / d))) := by
     have h := (tendsto_nat_floor_ratio d).const_mul
       ((moebius d : ℝ) * (d : ℝ) ^ (-ε))
-    simpa only [pmPronicFloorWeight, mul_div_assoc, mul_one_div] using h
-  have h := tendsto_finset_sum (Icc 1 U) (fun d _ => hd d)
+    simpa only [pmPronicFloorWeight, mul_div_assoc, mul_one_div, mul_assoc] using h
+  have h := tendsto_finsetSum (Icc 1 U) (fun d _ => hd d)
   apply h.congr'
   filter_upwards [eventually_ge_atTop U] with n hn
-  simp only [min_eq_left hn, sum_div, pmPronicVaughanSmallDensity]
+  simp only [min_eq_left hn, sum_div]
 
 private theorem summable_pronic_power_density {ε : ℝ} (hε : 0 < ε) :
     Summable (fun n : ℕ => (n : ℝ) ^ (-ε) / n) := by
@@ -70,6 +71,31 @@ private theorem summable_pronic_power_density {ε : ℝ} (hε : 0 < ε) :
       Real.zero_rpow (by linarith : -ε - 1 ≠ 0)]
   · exact Real.rpow_sub_one (by exact_mod_cast hn) (-ε)
 
+/-- The unsigned divisor density is the zeta value on the absolutely convergent ray. -/
+theorem pmPronicPowerDensity_eq_re_zeta {ε : ℝ} (hε : 0 < ε) :
+    pmPronicPowerDensity ε = (riemannZeta (1 + (ε : ℂ))).re := by
+  unfold pmPronicPowerDensity
+  calc
+    _ = ∑' n : ℕ, 1 / (n : ℝ) ^ (1 + ε) := by
+      apply tsum_congr
+      intro n
+      rcases Nat.eq_zero_or_pos n with rfl | hn
+      · simp only [Nat.cast_zero, div_zero,
+          Real.zero_rpow (by linarith : 1 + ε ≠ 0)]
+      · have hnR : (0 : ℝ) < n := by exact_mod_cast hn
+        rw [Real.rpow_neg hnR.le, Real.rpow_add hnR, Real.rpow_one]
+        simp only [div_eq_mul_inv, mul_inv_rev, one_mul]
+    _ = _ := EvenSector.tsum_one_div_rpow_eq_re_riemannZeta hε
+
+/-- The unsigned divisor mean and the Möbius divisor mean are reciprocal. -/
+theorem pmPronicPowerDensity_eq_inv_density {ε : ℝ} (hε : 0 < ε) :
+    pmPronicPowerDensity ε = (pmPowerDampedDivisorDensity ε).re⁻¹ := by
+  have h := congrArg (fun z : ℂ => z⁻¹) (pmPowerDampedDivisorDensity_eq_ofReal_re hε)
+  have hre := congrArg Complex.re h
+  rw [pmPronicPowerDensity_eq_re_zeta hε]
+  simpa only [pmPowerDampedDivisorDensity, one_div, inv_inv,
+    ← Complex.ofReal_inv, Complex.ofReal_re] using hre
+
 private theorem tendsto_damped_floor_mean {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun n : ℕ =>
       (∑ d ∈ Icc 1 n, (d : ℝ) ^ (-ε) * (n / d : ℕ)) / n)
@@ -78,12 +104,24 @@ private theorem tendsto_damped_floor_mean {ε : ℝ} (hε : 0 < ε) :
       (∑ d ∈ Icc 1 n, (d : ℝ) ^ (-ε) * (n / d : ℕ)) =
         ∑ k ∈ Icc 1 n, ∑ d ∈ k.divisors, (d : ℝ) ^ (-ε) := by
     have h := congrArg Complex.re
-      (pm_divisor_floor_sum_nat (fun d => ((d : ℝ) ^ (-ε) : ℂ)) n)
+      (pm_divisor_floor_sum_nat (fun d => (((d : ℝ) ^ (-ε) : ℝ) : ℂ)) n)
     simpa only [Complex.re_sum, Complex.mul_re, Complex.ofReal_re,
       Complex.ofReal_im, Complex.natCast_re, Complex.natCast_im, mul_zero, sub_zero] using h
   have h := (pm_tendsto_divisor_average (summable_pronic_power_density hε)).comp
     (tendsto_natCast_atTop_atTop (R := ℝ))
   simpa only [Function.comp_def, Nat.floor_natCast, heq, pmPronicPowerDensity] using h
+
+/-- A fixed product factors out of the damped floor kernel, with its quotient retained. -/
+theorem sum_pmPronicFloorWeight_multiples (ε : ℝ) (m n : ℕ) :
+    (∑ k ∈ Icc 1 (n / m), pmPronicFloorWeight ε n (m * k)) =
+      (m : ℝ) ^ (-ε) *
+        ∑ k ∈ Icc 1 (n / m), (k : ℝ) ^ (-ε) * ((n / m / k : ℕ) : ℝ) := by
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro k _
+  simp only [pmPronicFloorWeight, Nat.cast_mul,
+    Real.mul_rpow (Nat.cast_nonneg m) (Nat.cast_nonneg k),
+    Nat.div_div_eq_div_mul, mul_assoc]
 
 private theorem tendsto_multiple_floor_mean {ε : ℝ} (hε : 0 < ε)
     {m : ℕ} (hm : 0 < m) :
@@ -102,22 +140,16 @@ private theorem tendsto_multiple_floor_mean {ε : ℝ} (hε : 0 < ε)
     filter_upwards [hN.eventually (eventually_ge_atTop 1)] with n hn
     have hn0 : ((n / m : ℕ) : ℝ) ≠ 0 := by exact_mod_cast (by omega : n / m ≠ 0)
     simp only [Function.comp_def]
-    field_simp [hn0]
+    exact div_mul_div_cancel₀ hn0
   have heq (n : ℕ) :
       (∑ k ∈ Icc 1 (n / m), pmPronicFloorWeight ε n (m * k)) =
-        (m : ℝ) ^ (-ε) * F (n / m) := by
-    rw [Finset.mul_sum]
-    apply Finset.sum_congr rfl
-    intro k _
-    simp only [pmPronicFloorWeight, Nat.cast_mul,
-      Real.mul_rpow (Nat.cast_nonneg m) (Nat.cast_nonneg k),
-      Nat.div_div_eq_div_mul, mul_assoc]
+        (m : ℝ) ^ (-ε) * F (n / m) := sum_pmPronicFloorWeight_multiples ε m n
   have hscaled := h'.const_mul ((m : ℝ) ^ (-ε))
   have hvalue : (m : ℝ) ^ (-ε) * (pmPronicPowerDensity ε / m) =
       (m : ℝ) ^ (-ε) / m * pmPronicPowerDensity ε := by ring
   rw [hvalue] at hscaled
   apply hscaled.congr'
-  exact Filter.Eventually.of_forall fun n => by rw [heq]; ring
+  exact Filter.Eventually.of_forall fun n => by simp only [heq, mul_div_assoc]
 
 private theorem small_small_mean_factorization (ε : ℝ) (U V : ℕ) :
     (∑ a ∈ Icc 1 U, (moebius a : ℝ) *
@@ -126,25 +158,26 @@ private theorem small_small_mean_factorization (ε : ℝ) (U V : ℕ) :
       pmPronicPowerDensity ε * pmPronicVaughanSmallDensity ε U *
         pmPronicVaughanSmallDensity ε V := by
   simp only [pmPronicVaughanSmallDensity, mul_sum, sum_mul]
+  rw [sum_comm]
   apply sum_congr rfl
   intro a _
   apply sum_congr rfl
   intro b _
-  rw [Nat.cast_mul, Real.mul_rpow (Nat.cast_nonneg a) (Nat.cast_nonneg b)]
+  rw [Nat.cast_mul, Real.mul_rpow (Nat.cast_nonneg b) (Nat.cast_nonneg a)]
   ring
 
 private theorem tendsto_small_small_mean {ε : ℝ} (hε : 0 < ε) (U V : ℕ) :
     Tendsto (fun n : ℕ => pmPronicVaughanPiece ε U V n 2 / n)
       atTop (𝓝 (-pmPronicPowerDensity ε * pmPronicVaughanSmallDensity ε U *
         pmPronicVaughanSmallDensity ε V)) := by
-  have h := tendsto_finset_sum (Icc 1 U) fun a ha =>
-    (tendsto_finset_sum (Icc 1 V) fun b hb =>
+  have h := tendsto_finsetSum (Icc 1 U) fun a ha =>
+    (tendsto_finsetSum (Icc 1 V) fun b hb =>
       (tendsto_multiple_floor_mean hε
         (Nat.mul_pos (mem_Icc.mp ha).1 (mem_Icc.mp hb).1)).const_mul
           (moebius b : ℝ)).const_mul (moebius a : ℝ)
   have hneg := h.neg
   rw [small_small_mean_factorization] at hneg
-  simp only [neg_mul] at hneg
+  simp only [← neg_mul] at hneg
   apply hneg.congr'
   filter_upwards [eventually_ge_atTop U, eventually_ge_atTop V] with n hnU hnV
   change -(∑ a ∈ Icc 1 U, (moebius a : ℝ) *
@@ -172,7 +205,9 @@ theorem tendsto_pmPronicVaughanPiece_div_nat {ε : ℝ} (hε : 0 < ε)
   · exact h0
   · exact h1
   · exact h2
-  · have h := ((((tendsto_pmBezoutInteriorPrefix_div_nat hε).sub h0).sub h1).sub h2).sub h4
+  · change Tendsto (fun n : ℕ => pmPronicVaughanPiece ε U V n 3 / n)
+      atTop (𝓝 (pmPronicVaughanMean ε U V 3))
+    have h := ((((tendsto_pmBezoutInteriorPrefix_div_nat hε).sub h0).sub h1).sub h2).sub h4
     have hvalue :
         0 - pmPronicVaughanSmallDensity ε U - pmPronicVaughanSmallDensity ε V -
           (-pmPronicPowerDensity ε * pmPronicVaughanSmallDensity ε U *
@@ -203,13 +238,13 @@ theorem tendsto_pmPronicVaughanGram_div_nat {ε : ℝ} (hε : 0 < ε)
 theorem sum_pmPronicVaughanMean (ε : ℝ) (U V : ℕ) :
     (∑ i : Fin 5, pmPronicVaughanMean ε U V i) = 0 := by
   simp [pmPronicVaughanMean, Fin.sum_univ_succ]
-  <;> ring
+  ring
 
 /-- At fixed cutoffs the diagonal has an explicit, strictly positive linear density. -/
 theorem tendsto_pmPronicVaughanDiagonal_div_nat {ε : ℝ} (hε : 0 < ε) (U V : ℕ) :
     Tendsto (fun T : ℕ => pmPronicVaughanDiagonal ε U V T / T)
       atTop (𝓝 (∑ i : Fin 5, pmPronicVaughanMean ε U V i ^ 2)) := by
-  have h := tendsto_finset_sum univ (fun i _ => tendsto_pmPronicVaughanGram_div_nat hε U V i i)
+  have h := tendsto_finsetSum univ (fun i _ => tendsto_pmPronicVaughanGram_div_nat hε U V i i)
   simpa only [pmPronicVaughanDiagonal, sum_div, ← sq] using h
 
 theorem pmPronicVaughanMean_sq_sum_pos {ε : ℝ} (hε : 0 < ε) (U V : ℕ) :
@@ -232,7 +267,7 @@ theorem tendsto_pmPronicVaughan_combinationEnergy_div_nat {ε : ℝ} (hε : 0 < 
   have h : Tendsto (fun n : ℕ =>
       (∑ i : Fin 5, w i * pmPronicVaughanPiece ε U V n i) / n)
       atTop (𝓝 (∑ i : Fin 5, w i * pmPronicVaughanMean ε U V i)) := by
-    have h := tendsto_finset_sum univ fun i _ =>
+    have h := tendsto_finsetSum univ fun i _ =>
       (tendsto_pmPronicVaughanPiece_div_nat hε U V i).const_mul (w i)
     simpa only [sum_div, mul_div_assoc] using h
   simpa only [← sq] using tendsto_pronic_pair_mean h h
@@ -296,5 +331,44 @@ theorem bounded_pmInteriorPronicEnergy_iff_reciprocal_vaughan_relative_error
     unfold pmBezoutInteriorPronicEnergy
     exact sum_le_sum_of_subset_of_nonneg (Icc_subset_Icc_right (le_max_left _ _))
       (fun n _ _ => div_nonneg (sq_nonneg _) (Nat.cast_nonneg _))
+
+/-- A covering rectangle makes the both-large component empty. -/
+theorem pmPronicVaughanPiece_large_eq_zero_of_cover (ε : ℝ) {U V n : ℕ}
+    (hcover : n < (U + 1) * (V + 1)) : pmPronicVaughanPiece ε U V n 3 = 0 := by
+  change (∑ a ∈ Ioc (min U n) n, (moebius a : ℝ) *
+    ∑ b ∈ Ioc (min V n) n, (moebius b : ℝ) *
+      ∑ k ∈ Icc 1 (n / (a * b)), pmPronicFloorWeight ε n (a * b * k)) = 0
+  by_cases hU : U ≤ n
+  · rw [min_eq_left hU]
+    by_cases hV : V ≤ n
+    · rw [min_eq_left hV]
+      apply sum_eq_zero
+      intro a ha
+      have hbzero : (∑ b ∈ Ioc V n, (moebius b : ℝ) *
+          ∑ k ∈ Icc 1 (n / (a * b)), pmPronicFloorWeight ε n (a * b * k)) = 0 := by
+        apply sum_eq_zero
+        intro b hb
+        have hab : (U + 1) * (V + 1) ≤ a * b :=
+          Nat.mul_le_mul (mem_Ioc.mp ha).1 (mem_Ioc.mp hb).1
+        simp [Nat.div_eq_of_lt (hcover.trans_le hab)]
+      rw [hbzero, mul_zero]
+    · simp [min_eq_right (le_of_lt (lt_of_not_ge hV))]
+  · simp [min_eq_right (le_of_lt (lt_of_not_ge hU))]
+
+/-- The both-large Gram row and column vanish throughout a covering horizon. -/
+theorem pmPronicVaughanGram_large_eq_zero_of_cover (ε : ℝ) {U V T : ℕ}
+    (hcover : T < (U + 1) * (V + 1)) (j : Fin 5) :
+    pmPronicVaughanGram ε U V T 3 j = 0 ∧ pmPronicVaughanGram ε U V T j 3 = 0 := by
+  constructor <;> unfold pmPronicVaughanGram <;> apply sum_eq_zero <;> intro n hn
+  · rw [pmPronicVaughanPiece_large_eq_zero_of_cover ε ((mem_Icc.mp hn).2.trans_lt hcover)]
+    simp
+  · rw [pmPronicVaughanPiece_large_eq_zero_of_cover ε ((mem_Icc.mp hn).2.trans_lt hcover)]
+    simp
+
+/-- At square horizons the square-root cutoffs already remove the both-large piece. -/
+theorem pmPronicVaughanGram_square_large_zero (ε : ℝ) (N : ℕ) (j : Fin 5) :
+    pmPronicVaughanGram ε N N (N ^ 2) 3 j = 0 ∧
+      pmPronicVaughanGram ε N N (N ^ 2) j 3 = 0 :=
+  pmPronicVaughanGram_large_eq_zero_of_cover ε (by nlinarith) j
 
 end GaloisForLFunctions.BezoutValuationIncidence

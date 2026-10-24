@@ -103,7 +103,8 @@ theorem dilation_one (ε : SubcriticalDamping) : dilation ε 1 = 1 := by
   apply KernelHilbert.ext_on_vectors (complexKernel ε)
   intro j
   change dilation ε 1 (vector ε j) = (1 : Hilbert ε →L[ℂ] Hilbert ε) (vector ε j)
-  rw [dilation_vector, one_mul, ContinuousLinearMap.one_apply]
+  rw [dilation_vector, one_mul]
+  rfl
 
 /-- Integer multiplication is represented exactly, including after completion. -/
 theorem dilation_mul (ε : SubcriticalDamping) (p q : ℕ+) :
@@ -117,14 +118,17 @@ theorem dilation_mul (ε : SubcriticalDamping) (p q : ℕ+) :
 theorem receiver_cyclic (ε : SubcriticalDamping) :
     Dense ((Submodule.span ℂ (Set.range (fun p => dilation ε p (vector ε 1))) :
       Submodule ℂ (Hilbert ε)) : Set (Hilbert ε)) := by
-  simpa only [dilation_vector, mul_one] using
+  simpa only [dilation_vector, mul_one, vector] using
     KernelHilbert.dense_span_vectors (complexKernel ε)
 
 /-- Real packet norms are precisely the limiting real covariance energies. -/
 theorem norm_real_packet_sq (ε : SubcriticalDamping) (S : Finset ℕ+) (c : ℕ+ → ℝ) :
     ‖∑ j ∈ S, (c j : ℂ) • vector ε j‖ ^ 2 =
       ∑ j ∈ S, ∑ k ∈ S, c j * c k * kernel ε j k := by
-  rw [norm_sq_eq_re_inner (𝕜 := ℂ), sum_inner]
+  rw [norm_sq_eq_re_inner (𝕜 := ℂ)]
+  change (⟪∑ j ∈ S, (c j : ℂ) • vector ε j,
+    ∑ j ∈ S, (c j : ℂ) • vector ε j⟫_ℂ).re = _
+  rw [sum_inner]
   simp only [inner_sum, inner_smul_left, inner_smul_right, inner_vector,
     Complex.conj_ofReal, Complex.re_sum, Complex.mul_re, Complex.ofReal_re,
     Complex.ofReal_im, mul_zero, zero_mul, sub_zero]

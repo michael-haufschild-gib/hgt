@@ -115,6 +115,17 @@ translation invariance would erase the observable itself.
 Source: `HorizonBoundaryCalculus.lean`, `horizonPairing_affine_add_boundary`,
 `horizonPairing_affine_self_le`, `horizon_successor_invariant_iff`.
 
+### Classification of scalar normalization freedom
+
+Every multiplicative real character `w` gives another exact action,
+`T^w_(a,b)=w(a)T_(a,b)`. Its origin coefficient is exactly `w(a)`, so two such dilation
+operators agree precisely when their character values agree. The identity and inverse-linear
+characters already give distinct operators at every horizon, with the same ring relation.
+Covariance alone therefore cannot select the analytic normalization.
+
+Source: `AffineNormalizationFreedom.lean`, `twistedHorizonAffine_comp`,
+`twisted_dilation_eq_iff`, `twisted_dilation_two_distinct`.
+
 ### The box defect is not an ordinary cohomological index
 
 At the node-free aperture `s=log(3/2)`,
@@ -170,6 +181,28 @@ truncations. This is the source estimate needed for annihilation in an escape mo
 and identifying the completed module and its Bohr spectrum are additional steps.
 
 Source: `PaidKernelsVanishOnEscape.lean`, `admitted_or_paidKernelAction_vanishes`.
+
+### Exact visibility within a covariance fibre
+
+Let `Y_q` be a finite row's Selberg coordinate and `R_q(M)` the real Ramanujan primitive at
+prefix `M`. Its precise visibility radius is
+
+`V_N(M,c) = Σ_(q=2)^N |R_q(M) Y_q|`.
+
+Every row with the same complete-period covariance has centered prefix bounded in absolute
+value by `V_N(M,c)`. Independent coordinate signs attain both endpoints, preserve every
+complete-period covariance, and preserve the mean. The fibre's exact prefix diameter is
+therefore `2 V_N(M,c)`.
+
+Covariance determines this centered prefix precisely when every product `R_q(M)Y_q` vanishes;
+the determined value is then zero. This gives a mode-by-mode information criterion at every
+horizon. A ratio of horizon to period alone discards the mode dependence retained here.
+The result classifies observation loss for arbitrary signed rows; it supplies no bound for
+the visibility of the Möbius row itself.
+
+Source: `ExactPrefixVisibility.lean`, `prefix_visibility_diameter`,
+`abs_prefix_readout_le_of_covariance_eq`, `prefix_covariance_determines_iff`,
+`prefixVisibility_eq_zero_iff`.
 
 ## Mechanisms and traps
 
@@ -232,6 +265,12 @@ Euler weights. The arithmetic Euler formula uses the actual integer prime-power 
 is claimed to pass the battery as an orientation theorem. Complete-period blindness remains the
 existing BVI obstruction. Finite-field cohomology and analytic escape models require their own
 comparison maps; a shared notation is insufficient.
+
+The affine identities belong to the structural ring-selective class III; their freedom under
+changing scalar characters prevents a source-selective conclusion. The shared-budget theorem is
+a universal capacity calibration. The paid-kernel argument supplies the full-kernel estimate
+needed for the module–ideal bridge; it supplies no new source-selective cancellation estimate.
+These distinctions prevent a useful foundational tool from being counted as a closing estimate.
 
 ## Success and contribution criteria
 

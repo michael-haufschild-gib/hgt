@@ -1381,4 +1381,563 @@ theorem not_criticalPrimeEnergy_nonpos_all_scales :
   exact (le_max_left _ _).trans (dyadicPairSupport_dyadicScaleBlock
     (by have := (le_max_right N₁ M₀); omega) m hm).1
 
+/-! ## Section 2: Spaced-Hilbert Schur Cross-Block Decay for the Uncollared Prime Channel -/
+
+private theorem integrableOn_criticalWindowWeight_phase_mul
+    (S₁ S₂ : Finset ℕ) (b c : ℕ → ℝ) (r : ℕ) :
+    IntegrableOn (fun v : ℝ => criticalWindowWeight v *
+      (realPhaseCombination S₁ b v * realPhaseCombination S₂ c ((r : ℝ) * v))) (Ioi 1) := by
+  set C : ℝ := (2 * ∑ n ∈ S₁, |b n|) * (2 * ∑ n ∈ S₂, |c n|)
+  have hc : Continuous (fun v : ℝ =>
+      realPhaseCombination S₁ b v * realPhaseCombination S₂ c ((r : ℝ) * v)) :=
+    (continuous_realPhaseCombination _ _).mul
+      ((continuous_realPhaseCombination _ _).comp (continuous_const.mul continuous_id))
+  refine (integrableOn_criticalWindowWeight.norm.const_mul C).mono'
+    (integrableOn_criticalWindowWeight.aestronglyMeasurable.mul hc.aestronglyMeasurable)
+    (Eventually.of_forall fun v => ?_)
+  rw [Real.norm_eq_abs, abs_mul, Real.norm_eq_abs, mul_comm C, abs_mul]
+  refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
+  exact mul_le_mul (abs_realPhaseCombination_le_two_mul S₁ b v)
+    (abs_realPhaseCombination_le_two_mul S₂ c ((r : ℝ) * v)) (abs_nonneg _)
+    (by have := Finset.sum_nonneg fun n (_ : n ∈ S₁) => abs_nonneg (b n); positivity)
+
+/-- Symmetric cross-block prime atom between supports `S` and `S'` at dilation `r`. -/
+def criticalPrimeSymCrossAtom (S S' : Finset ℕ) (b : ℕ → ℝ) (r : ℕ) : ℝ :=
+  if 2 ≤ r then
+    (ArithmeticFunction.vonMangoldt r : ℝ) / (r : ℝ) *
+      ((∫ v in Ioi (1 : ℝ), criticalWindowWeight v *
+          (realPhaseCombination S b v * realPhaseCombination S' b ((r : ℝ) * v))) +
+        ∫ v in Ioi (1 : ℝ), criticalWindowWeight v *
+          (realPhaseCombination S' b v * realPhaseCombination S b ((r : ℝ) * v)))
+  else 0
+
+/-- Symmetric uncollared cross-block prime coupling `∑'_{r ≥ 2} criticalPrimeSymCrossAtom S S' b r`. -/
+def criticalPrimeSymCrossCoupling (S S' : Finset ℕ) (b : ℕ → ℝ) : ℝ :=
+  ∑' r : ℕ, criticalPrimeSymCrossAtom S S' b r
+
+theorem criticalPrimeSymCrossAtom_comm (S S' : Finset ℕ) (b : ℕ → ℝ) (r : ℕ) :
+    criticalPrimeSymCrossAtom S S' b r = criticalPrimeSymCrossAtom S' S b r := by
+  unfold criticalPrimeSymCrossAtom
+  split_ifs <;> ring
+
+theorem criticalPrimeSymCrossCoupling_comm (S S' : Finset ℕ) (b : ℕ → ℝ) :
+    criticalPrimeSymCrossCoupling S S' b = criticalPrimeSymCrossCoupling S' S b :=
+  tsum_congr (criticalPrimeSymCrossAtom_comm S S' b)
+
+private theorem realPhaseCombination_empty (b : ℕ → ℝ) (w : ℝ) :
+    realPhaseCombination ∅ b w = 0 := by
+  unfold realPhaseCombination
+  simp
+
+private theorem criticalPrimeEnergy_empty (b : ℕ → ℝ) :
+    criticalPrimeEnergy ∅ b = 0 := by
+  unfold criticalPrimeEnergy
+  have hz : ∀ r : ℕ, criticalPrimeAtom ∅ b r = 0 := fun r => by
+    by_cases hr : 2 ≤ r
+    · rw [criticalPrimeAtom_eq ∅ b hr]
+      simp [realPhaseCombination_empty]
+    · unfold criticalPrimeAtom
+      rw [if_neg hr, zero_mul]
+  simp [hz]
+
+private theorem criticalPrimeSymCrossCoupling_empty_left (S' : Finset ℕ) (b : ℕ → ℝ) :
+    criticalPrimeSymCrossCoupling ∅ S' b = 0 := by
+  unfold criticalPrimeSymCrossCoupling criticalPrimeSymCrossAtom
+  simp [realPhaseCombination_empty]
+
+theorem criticalPrimeAtom_union_of_disjoint {S S' : Finset ℕ} (hd : Disjoint S S')
+    (b : ℕ → ℝ) (r : ℕ) :
+    criticalPrimeAtom (S ∪ S') b r =
+      criticalPrimeAtom S b r + criticalPrimeAtom S' b r +
+        criticalPrimeSymCrossAtom S S' b r := by
+  by_cases hr : 2 ≤ r
+  · rw [criticalPrimeAtom_eq (S ∪ S') b hr, criticalPrimeAtom_eq S b hr,
+      criticalPrimeAtom_eq S' b hr]
+    unfold criticalPrimeSymCrossAtom
+    rw [if_pos hr]
+    have hunion (w : ℝ) : realPhaseCombination (S ∪ S') b w =
+        realPhaseCombination S b w + realPhaseCombination S' b w := by
+      unfold realPhaseCombination
+      exact Finset.sum_union hd
+    have hi11 := integrableOn_criticalWindowWeight_phase_mul S S b b r
+    have hi22 := integrableOn_criticalWindowWeight_phase_mul S' S' b b r
+    have hi12 := integrableOn_criticalWindowWeight_phase_mul S S' b b r
+    have hi21 := integrableOn_criticalWindowWeight_phase_mul S' S b b r
+    have ha1 := integral_add hi11 hi22
+    have ha2 := integral_add (hi11.add hi22) hi12
+    have ha3 := integral_add ((hi11.add hi22).add hi12) hi21
+    simp only [Pi.add_apply] at ha1 ha2 ha3
+    have hsplit : (∫ v in Ioi (1 : ℝ), criticalWindowWeight v *
+        (realPhaseCombination (S ∪ S') b v * realPhaseCombination (S ∪ S') b ((r : ℝ) * v))) =
+        ((∫ v in Ioi (1 : ℝ), criticalWindowWeight v *
+            (realPhaseCombination S b v * realPhaseCombination S b ((r : ℝ) * v))) +
+          ∫ v in Ioi (1 : ℝ), criticalWindowWeight v *
+            (realPhaseCombination S' b v * realPhaseCombination S' b ((r : ℝ) * v))) +
+        ∫ v in Ioi (1 : ℝ), criticalWindowWeight v *
+            (realPhaseCombination S b v * realPhaseCombination S' b ((r : ℝ) * v)) +
+        ∫ v in Ioi (1 : ℝ), criticalWindowWeight v *
+            (realPhaseCombination S' b v * realPhaseCombination S b ((r : ℝ) * v)) := by
+      rw [← ha1, ← ha2, ← ha3]
+      refine setIntegral_congr_fun measurableSet_Ioi fun v _ => ?_
+      rw [hunion v, hunion ((r : ℝ) * v)]
+      ring
+    rw [hsplit]
+    ring
+  · unfold criticalPrimeAtom criticalPrimeSymCrossAtom
+    simp [hr]
+
+theorem summable_criticalPrimeSymCrossAtom {S S' : Finset ℕ} (hd : Disjoint S S') (b : ℕ → ℝ) :
+    Summable (criticalPrimeSymCrossAtom S S' b) := by
+  have h1 : Summable (criticalPrimeAtom (S ∪ S') b) :=
+    summable_abs_iff.mp (summable_criticalFactorialSource_prime (S ∪ S') b)
+  have h2 : Summable (criticalPrimeAtom S b) :=
+    summable_abs_iff.mp (summable_criticalFactorialSource_prime S b)
+  have h3 : Summable (criticalPrimeAtom S' b) :=
+    summable_abs_iff.mp (summable_criticalFactorialSource_prime S' b)
+  refine ((h1.sub h2).sub h3).congr fun r => ?_
+  rw [criticalPrimeAtom_union_of_disjoint hd b r]
+  ring
+
+theorem criticalPrimeEnergy_union_of_disjoint {S S' : Finset ℕ} (hd : Disjoint S S') (b : ℕ → ℝ) :
+    criticalPrimeEnergy (S ∪ S') b =
+      criticalPrimeEnergy S b + criticalPrimeEnergy S' b +
+        criticalPrimeSymCrossCoupling S S' b := by
+  unfold criticalPrimeEnergy criticalPrimeSymCrossCoupling
+  have h2 : Summable (criticalPrimeAtom S b) :=
+    summable_abs_iff.mp (summable_criticalFactorialSource_prime S b)
+  have h3 : Summable (criticalPrimeAtom S' b) :=
+    summable_abs_iff.mp (summable_criticalFactorialSource_prime S' b)
+  have hc := summable_criticalPrimeSymCrossAtom hd b
+  rw [tsum_congr (fun r => criticalPrimeAtom_union_of_disjoint hd b r),
+    (h2.add h3).tsum_add hc, h2.tsum_add h3]
+
+private theorem criticalPrimeSymCrossAtom_union_left {S₁ S₂ : Finset ℕ} (hd : Disjoint S₁ S₂)
+    (S' : Finset ℕ) (b : ℕ → ℝ) (r : ℕ) :
+    criticalPrimeSymCrossAtom (S₁ ∪ S₂) S' b r =
+      criticalPrimeSymCrossAtom S₁ S' b r + criticalPrimeSymCrossAtom S₂ S' b r := by
+  unfold criticalPrimeSymCrossAtom
+  by_cases hr : 2 ≤ r
+  · rw [if_pos hr, if_pos hr, if_pos hr]
+    have hunion (w : ℝ) : realPhaseCombination (S₁ ∪ S₂) b w =
+        realPhaseCombination S₁ b w + realPhaseCombination S₂ b w := by
+      unfold realPhaseCombination
+      exact Finset.sum_union hd
+    have ha := integral_add
+      (integrableOn_criticalWindowWeight_phase_mul S₁ S' b b r)
+      (integrableOn_criticalWindowWeight_phase_mul S₂ S' b b r)
+    have hb := integral_add
+      (integrableOn_criticalWindowWeight_phase_mul S' S₁ b b r)
+      (integrableOn_criticalWindowWeight_phase_mul S' S₂ b b r)
+    simp only [Pi.add_apply] at ha hb
+    have eq1 : (∫ v in Ioi (1 : ℝ), criticalWindowWeight v *
+        (realPhaseCombination (S₁ ∪ S₂) b v * realPhaseCombination S' b ((r : ℝ) * v))) =
+        (∫ v in Ioi (1 : ℝ), criticalWindowWeight v *
+          (realPhaseCombination S₁ b v * realPhaseCombination S' b ((r : ℝ) * v))) +
+        ∫ v in Ioi (1 : ℝ), criticalWindowWeight v *
+          (realPhaseCombination S₂ b v * realPhaseCombination S' b ((r : ℝ) * v)) := by
+      rw [← ha]
+      refine setIntegral_congr_fun measurableSet_Ioi fun v _ => ?_
+      rw [hunion v]; ring
+    have eq2 : (∫ v in Ioi (1 : ℝ), criticalWindowWeight v *
+        (realPhaseCombination S' b v * realPhaseCombination (S₁ ∪ S₂) b ((r : ℝ) * v))) =
+        (∫ v in Ioi (1 : ℝ), criticalWindowWeight v *
+          (realPhaseCombination S' b v * realPhaseCombination S₁ b ((r : ℝ) * v))) +
+        ∫ v in Ioi (1 : ℝ), criticalWindowWeight v *
+          (realPhaseCombination S' b v * realPhaseCombination S₂ b ((r : ℝ) * v)) := by
+      rw [← hb]
+      refine setIntegral_congr_fun measurableSet_Ioi fun v _ => ?_
+      rw [hunion ((r : ℝ) * v)]; ring
+    rw [eq1, eq2]
+    ring
+  · simp [hr]
+
+private theorem criticalPrimeSymCrossCoupling_union_left {S₁ S₂ S' : Finset ℕ}
+    (h12 : Disjoint S₁ S₂) (h1 : Disjoint S₁ S') (h2 : Disjoint S₂ S') (b : ℕ → ℝ) :
+    criticalPrimeSymCrossCoupling (S₁ ∪ S₂) S' b =
+      criticalPrimeSymCrossCoupling S₁ S' b + criticalPrimeSymCrossCoupling S₂ S' b := by
+  unfold criticalPrimeSymCrossCoupling
+  rw [tsum_congr (fun r => criticalPrimeSymCrossAtom_union_left h12 S' b r),
+    (summable_criticalPrimeSymCrossAtom h1 b).tsum_add (summable_criticalPrimeSymCrossAtom h2 b)]
+
+private theorem criticalPrimeSymCrossCoupling_biUnion_range {K : ℕ} {S : ℕ → Finset ℕ}
+    {S' : Finset ℕ} (hd : ((Finset.range K : Finset ℕ) : Set ℕ).PairwiseDisjoint S)
+    (hd' : ∀ i < K, Disjoint (S i) S') (b : ℕ → ℝ) :
+    criticalPrimeSymCrossCoupling ((Finset.range K).biUnion S) S' b =
+      ∑ i ∈ Finset.range K, criticalPrimeSymCrossCoupling (S i) S' b := by
+  induction K with
+  | zero =>
+    simp [criticalPrimeSymCrossCoupling_empty_left]
+  | succ K ih =>
+    have hd_sub : ((Finset.range K : Finset ℕ) : Set ℕ).PairwiseDisjoint S :=
+      hd.subset (by intro x hx; simp only [Finset.coe_range, Set.mem_Iio] at hx ⊢; omega)
+    have hd'_sub : ∀ i < K, Disjoint (S i) S' := fun i hi => hd' i (by omega)
+    have hdisj_K : Disjoint ((Finset.range K).biUnion S) (S K) := by
+      rw [Finset.disjoint_biUnion_left]
+      intro i hi
+      exact hd (Finset.mem_coe.mpr (Finset.mem_range.mpr (by have := Finset.mem_range.mp hi; omega)))
+        (Finset.mem_coe.mpr (Finset.mem_range.mpr (Nat.lt_succ_self K)))
+        (by have := Finset.mem_range.mp hi; omega)
+    have hdisj_left : Disjoint ((Finset.range K).biUnion S) S' := by
+      rw [Finset.disjoint_biUnion_left]
+      intro i hi
+      exact hd'_sub i (Finset.mem_range.mp hi)
+    have hbi : (Finset.range (K + 1)).biUnion S = (Finset.range K).biUnion S ∪ S K := by
+      rw [Finset.range_add_one, Finset.biUnion_insert, Finset.union_comm]
+    rw [hbi, criticalPrimeSymCrossCoupling_union_left hdisj_K hdisj_left
+      (hd' K (Nat.lt_succ_self K)) b, ih hd_sub hd'_sub, Finset.sum_range_succ]
+
+/-- **Pairwise-Disjoint Multi-Block Expansion of `criticalPrimeEnergy`.**
+Over a pairwise disjoint family `S_0, …, S_{J-1}`, the uncollared critical prime channel equals the
+sum of block-diagonal prime energies plus the sum over ordered pairs `i' < i < J` of symmetric
+cross-block couplings. -/
+theorem criticalPrimeEnergy_biUnion_range {J : ℕ} {S : ℕ → Finset ℕ}
+    (hd : ((Finset.range J : Finset ℕ) : Set ℕ).PairwiseDisjoint S) (b : ℕ → ℝ) :
+    criticalPrimeEnergy ((Finset.range J).biUnion S) b =
+      ∑ i ∈ Finset.range J, criticalPrimeEnergy (S i) b +
+        ∑ i ∈ Finset.range J, ∑ i' ∈ Finset.range i,
+          criticalPrimeSymCrossCoupling (S i') (S i) b := by
+  induction J with
+  | zero =>
+    simp [criticalPrimeEnergy_empty]
+  | succ J ih =>
+    have hd_sub : ((Finset.range J : Finset ℕ) : Set ℕ).PairwiseDisjoint S :=
+      hd.subset (by intro x hx; simp only [Finset.coe_range, Set.mem_Iio] at hx ⊢; omega)
+    have hdisj_J : Disjoint ((Finset.range J).biUnion S) (S J) := by
+      rw [Finset.disjoint_biUnion_left]
+      intro i hi
+      exact hd (Finset.mem_coe.mpr (Finset.mem_range.mpr (by have := Finset.mem_range.mp hi; omega)))
+        (Finset.mem_coe.mpr (Finset.mem_range.mpr (Nat.lt_succ_self J)))
+        (by have := Finset.mem_range.mp hi; omega)
+    have hd'_J : ∀ i < J, Disjoint (S i) (S J) := fun i hi =>
+      hd (Finset.mem_coe.mpr (Finset.mem_range.mpr (by omega)))
+        (Finset.mem_coe.mpr (Finset.mem_range.mpr (Nat.lt_succ_self J))) (by omega)
+    have hbi : (Finset.range (J + 1)).biUnion S = (Finset.range J).biUnion S ∪ S J := by
+      rw [Finset.range_add_one, Finset.biUnion_insert, Finset.union_comm]
+    rw [hbi, criticalPrimeEnergy_union_of_disjoint hdisj_J b, ih hd_sub,
+      criticalPrimeSymCrossCoupling_biUnion_range hd_sub hd'_J b,
+      Finset.sum_range_succ, Finset.sum_range_succ]
+    ring
+
+/-! ### First-Order Cosine Decay, `L²` Harmonic Bilinear Bound, and Spaced/Tail Helpers -/
+
+/-- Global first-order cosine-transform decay constant `1 + criticalWindowCosineDecay` for
+`criticalWindowWeight`. -/
+def criticalWindowFirstOrderDecay : ℝ := 1 + criticalWindowCosineDecay
+
+theorem criticalWindowFirstOrderDecay_pos : 0 < criticalWindowFirstOrderDecay := by
+  unfold criticalWindowFirstOrderDecay
+  linarith [criticalWindowCosineDecay_nonneg]
+
+theorem abs_weightCosineTransform_criticalWindowWeight_le_one (f : ℝ) :
+    |weightCosineTransform criticalWindowWeight f| ≤ 1 := by
+  unfold weightCosineTransform criticalWindowWeight
+  have hw : IntegrableOn (fun v : ℝ => v ^ (-2 : ℝ)) (Ioi 1) :=
+    integrableOn_Ioi_rpow_of_lt (by norm_num) zero_lt_one
+  have hint : IntegrableOn (fun v : ℝ => v ^ (-2 : ℝ) *
+      Real.cos (2 * Real.pi * f * v)) (Ioi 1) :=
+    hw.mul_bdd (by fun_prop) (Eventually.of_forall fun v => by
+      simpa only [Real.norm_eq_abs] using Real.abs_cos_le_one _)
+  calc |∫ v in Ioi (1 : ℝ), v ^ (-2 : ℝ) * Real.cos (2 * Real.pi * f * v)|
+      ≤ ∫ v in Ioi (1 : ℝ), ‖v ^ (-2 : ℝ) * Real.cos (2 * Real.pi * f * v)‖ :=
+        Real.norm_eq_abs _ ▸ norm_integral_le_integral_norm _
+    _ ≤ ∫ v in Ioi (1 : ℝ), v ^ (-2 : ℝ) := by
+        refine setIntegral_mono_on hint.norm hw measurableSet_Ioi fun v hv => ?_
+        have hv0 : 0 ≤ v ^ (-2 : ℝ) := Real.rpow_nonneg (zero_le_one.trans hv.le) _
+        rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg hv0]
+        exact mul_le_of_le_one_right hv0 (Real.abs_cos_le_one _)
+    _ = 1 := by
+        rw [integral_Ioi_rpow_of_lt (by norm_num : (-2 : ℝ) < -1) zero_lt_one]
+        norm_num
+
+theorem abs_weightCosineTransform_criticalWindowWeight_le_div_abs {f : ℝ} (hf : f ≠ 0) :
+    |weightCosineTransform criticalWindowWeight f| ≤ criticalWindowFirstOrderDecay / |f| := by
+  have hf0 : 0 < |f| := abs_pos.mpr hf
+  have hD0 := criticalWindowCosineDecay_nonneg
+  by_cases hf1 : 1 ≤ |f|
+  · refine (abs_criticalWindowWeight_cosine_le_inv hf1).trans ?_
+    unfold criticalWindowFirstOrderDecay
+    exact div_le_div_of_nonneg_right (by linarith) hf0.le
+  · push_neg at hf1
+    calc |weightCosineTransform criticalWindowWeight f| ≤ 1 :=
+          abs_weightCosineTransform_criticalWindowWeight_le_one f
+      _ ≤ 1 / |f| := by rw [le_div_iff₀ hf0]; linarith
+      _ ≤ criticalWindowFirstOrderDecay / |f| := by
+          unfold criticalWindowFirstOrderDecay
+          exact div_le_div_of_nonneg_right (by linarith) hf0.le
+
+/-- **Support-Independent Two-Pattern `L²` Harmonic Bilinear Bound.**
+For arbitrary finite supports `S, S'`, coefficient vectors `b, c`, and positive integers
+`k, l, r ≥ 1`, the bilinear harmonic cross-kernel of `criticalWindowWeight` is bounded by
+`criticalWindowHarmonicBound * √(∑_{n ∈ S} b_n²) * √(∑_{n' ∈ S'} c_{n'}²)`. -/
+theorem abs_bilinear_criticalWindowKernel_two_le (S S' : Finset ℕ) (b c : ℕ → ℝ)
+    {k l r : ℕ} (hk : 1 ≤ k) (hl : 1 ≤ l) (hr : 1 ≤ r) :
+    |∑ n ∈ S, ∑ n' ∈ S', b n * c n' *
+      dyadicCrossKernel (weightCosineTransform criticalWindowWeight) k ((l * r : ℕ) : ℝ) n n'| ≤
+      criticalWindowHarmonicBound *
+        Real.sqrt (∑ n ∈ S, b n ^ 2) * Real.sqrt (∑ n' ∈ S', c n' ^ 2) := by
+  rw [← integral_mul_realHarmonicLayer_mul_dilate_bilinear integrableOn_criticalWindowWeight]
+  simp_rw [realHarmonicLayer_dilate_nat]
+  rw [← integral_criticalWindowMeasure_eq_weight]
+  have hfm : AEStronglyMeasurable (realHarmonicLayer S b k) criticalWindowMeasure :=
+    (by unfold realHarmonicLayer; fun_prop : Continuous (realHarmonicLayer S b k)).aestronglyMeasurable
+  have hgm : AEStronglyMeasurable (realHarmonicLayer S' c (l * r)) criticalWindowMeasure :=
+    (by unfold realHarmonicLayer; fun_prop :
+      Continuous (realHarmonicLayer S' c (l * r))).aestronglyMeasurable
+  have hcs := HTGeometry.sq_integral_mul_le hfm hgm
+    (integrable_criticalWindow_harmonic_sq S b k)
+    (integrable_criticalWindow_harmonic_sq S' c (l * r))
+  have hb1 : (∫ v, realHarmonicLayer S b k v ^ 2 ∂criticalWindowMeasure) ≤
+      criticalWindowHarmonicBound * ∑ n ∈ S, b n ^ 2 := by
+    rw [integral_criticalWindowMeasure_eq_weight]
+    exact integral_criticalWindowWeight_harmonic_sq_le S b hk
+  have hb2 : (∫ v, realHarmonicLayer S' c (l * r) v ^ 2 ∂criticalWindowMeasure) ≤
+      criticalWindowHarmonicBound * ∑ n' ∈ S', c n' ^ 2 := by
+    rw [integral_criticalWindowMeasure_eq_weight]
+    exact integral_criticalWindowWeight_harmonic_sq_le S' c (Nat.mul_pos hl hr)
+  have hnn1 : 0 ≤ ∫ v, realHarmonicLayer S b k v ^ 2 ∂criticalWindowMeasure :=
+    integral_nonneg fun _ => sq_nonneg _
+  have hnn2 : 0 ≤ criticalWindowHarmonicBound * ∑ n' ∈ S', c n' ^ 2 :=
+    mul_nonneg criticalWindowHarmonicBound_nonneg (Finset.sum_nonneg fun _ _ => sq_nonneg _)
+  have hE1 : 0 ≤ ∑ n ∈ S, b n ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
+  have hE2 : 0 ≤ ∑ n' ∈ S', c n' ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
+  set R : ℝ := criticalWindowHarmonicBound *
+    Real.sqrt (∑ n ∈ S, b n ^ 2) * Real.sqrt (∑ n' ∈ S', c n' ^ 2)
+  have hR0 : 0 ≤ R := by
+    dsimp only [R]; have := criticalWindowHarmonicBound_nonneg; positivity
+  have hsq : (∫ v, realHarmonicLayer S b k v * realHarmonicLayer S' c (l * r) v
+      ∂criticalWindowMeasure) ^ 2 ≤ R ^ 2 := by
+    refine hcs.trans ((mul_le_mul hb1 hb2 (integral_nonneg fun _ => sq_nonneg _)
+      (mul_nonneg criticalWindowHarmonicBound_nonneg hE1)).trans_eq ?_)
+    dsimp only [R]
+    rw [mul_pow, mul_pow, Real.sq_sqrt hE1, Real.sq_sqrt hE2]
+    ring
+  exact (Real.abs_le_sqrt hsq).trans_eq (Real.sqrt_sq hR0)
+
+private theorem sum_Icc_one_div_le_one_add_log {N : ℕ} (hN : 1 ≤ N) :
+    ∑ d ∈ Finset.Icc 1 N, 1 / (d : ℝ) ≤ 1 + Real.log N := by
+  have h := harmonic_le_one_add_log N
+  rw [harmonic_eq_sum_Icc] at h
+  push_cast at h
+  simp_rw [one_div]
+  exact h
+
+private theorem sum_erase_inv_abs_le {T : Finset ℕ} {a N : ℕ} (hN : 1 ≤ N)
+    (hsub : ∀ m ∈ T, a ≤ m ∧ m ≤ a + N) {m₀ : ℕ} (hm₀ : m₀ ∈ T) :
+    ∑ m ∈ T.erase m₀, 1 / |(m : ℝ) - m₀| ≤ 2 * (1 + Real.log N) := by
+  obtain ⟨hm0_lo, hm0_hi⟩ := hsub m₀ hm₀
+  rw [← Finset.filter_ne' T m₀, ← Finset.sum_filter_add_sum_filter_not _ (fun m => m₀ < m)]
+  have h1 : (T.filter (fun m => m ≠ m₀)).filter (fun m => m₀ < m) =
+      T.filter (fun m => m₀ < m) := by
+    ext m; simp only [Finset.mem_filter]; constructor
+    · rintro ⟨⟨h1, _⟩, h3⟩; exact ⟨h1, h3⟩
+    · rintro ⟨h1, h3⟩; exact ⟨⟨h1, by omega⟩, h3⟩
+  have h2 : (T.filter (fun m => m ≠ m₀)).filter (fun m => ¬ m₀ < m) =
+      T.filter (fun m => m < m₀) := by
+    ext m; simp only [Finset.mem_filter]; constructor
+    · rintro ⟨⟨h1, h2⟩, h3⟩; exact ⟨h1, by omega⟩
+    · rintro ⟨h1, h3⟩; exact ⟨⟨h1, by omega⟩, by omega⟩
+  rw [h1, h2]
+  have hgt : ∑ m ∈ T.filter (fun m => m₀ < m), 1 / |(m : ℝ) - m₀| ≤ 1 + Real.log N := by
+    have hinj : Set.InjOn (fun m : ℕ => m - m₀) ↑(T.filter (fun m => m₀ < m)) := by
+      intro x hx y hy h
+      simp only [Finset.coe_filter, Set.mem_setOf_eq] at hx hy
+      dsimp only at h; omega
+    have himg : (T.filter (fun m => m₀ < m)).image (fun m => m - m₀) ⊆ Finset.Icc 1 N := by
+      intro d hd
+      obtain ⟨m, hm, rfl⟩ := Finset.mem_image.mp hd
+      obtain ⟨hmT, hlt⟩ := Finset.mem_filter.mp hm
+      obtain ⟨hmlo, hmhi⟩ := hsub m hmT
+      rw [Finset.mem_Icc]; omega
+    calc ∑ m ∈ T.filter (fun m => m₀ < m), 1 / |(m : ℝ) - m₀|
+        = ∑ d ∈ (T.filter (fun m => m₀ < m)).image (fun m => m - m₀), 1 / (d : ℝ) := by
+          rw [Finset.sum_image hinj]
+          refine Finset.sum_congr rfl fun m hm => ?_
+          obtain ⟨_, hlt⟩ := Finset.mem_filter.mp hm
+          have hltR : (m₀ : ℝ) < m := by exact_mod_cast hlt
+          rw [abs_of_pos (sub_pos.mpr hltR), Nat.cast_sub hlt.le]
+      _ ≤ ∑ d ∈ Finset.Icc 1 N, 1 / (d : ℝ) :=
+          Finset.sum_le_sum_of_subset_of_nonneg himg fun _ _ _ => by positivity
+      _ ≤ 1 + Real.log N := sum_Icc_one_div_le_one_add_log hN
+  have hlt : ∑ m ∈ T.filter (fun m => m < m₀), 1 / |(m : ℝ) - m₀| ≤ 1 + Real.log N := by
+    have hinj : Set.InjOn (fun m : ℕ => m₀ - m) ↑(T.filter (fun m => m < m₀)) := by
+      intro x hx y hy h
+      simp only [Finset.coe_filter, Set.mem_setOf_eq] at hx hy
+      dsimp only at h; omega
+    have himg : (T.filter (fun m => m < m₀)).image (fun m => m₀ - m) ⊆ Finset.Icc 1 N := by
+      intro d hd
+      obtain ⟨m, hm, rfl⟩ := Finset.mem_image.mp hd
+      obtain ⟨hmT, hlt⟩ := Finset.mem_filter.mp hm
+      obtain ⟨hmlo, hmhi⟩ := hsub m hmT
+      rw [Finset.mem_Icc]; omega
+    calc ∑ m ∈ T.filter (fun m => m < m₀), 1 / |(m : ℝ) - m₀|
+        = ∑ d ∈ (T.filter (fun m => m < m₀)).image (fun m => m₀ - m), 1 / (d : ℝ) := by
+          rw [Finset.sum_image hinj]
+          refine Finset.sum_congr rfl fun m hm => ?_
+          obtain ⟨_, hlt⟩ := Finset.mem_filter.mp hm
+          have hltR : (m : ℝ) < m₀ := by exact_mod_cast hlt
+          rw [abs_sub_comm, abs_of_pos (sub_pos.mpr hltR), Nat.cast_sub hlt.le]
+      _ ≤ ∑ d ∈ Finset.Icc 1 N, 1 / (d : ℝ) :=
+          Finset.sum_le_sum_of_subset_of_nonneg himg fun _ _ _ => by positivity
+      _ ≤ 1 + Real.log N := sum_Icc_one_div_le_one_add_log hN
+  linarith
+
+/-- **First-Order (`1 / |f|`) Spaced Summation Inequality.**
+If `|F f| ≤ A` everywhere and `|F f| ≤ B / |f|` for `f ≠ 0`, then over any `s`-spaced family
+indexed by `T ⊆ [a, a + N]` (`N ≥ 1`), `∑_{m ∈ T} |F(x₀ - y m)| ≤ A + (4 B / s)(1 + log N)`. -/
+theorem sum_abs_le_of_spaced_inv {F : ℝ → ℝ} {A B : ℝ} (hA : ∀ f, |F f| ≤ A)
+    (hB : ∀ f, f ≠ 0 → |F f| ≤ B / |f|) (hB0 : 0 ≤ B) {T : Finset ℕ} {a N : ℕ}
+    (hN : 1 ≤ N) (hsub : ∀ m ∈ T, a ≤ m ∧ m ≤ a + N) (y : ℕ → ℝ) (x₀ : ℝ)
+    {s : ℝ} (hs : 0 < s) (hsp : ∀ m ∈ T, ∀ m' ∈ T, s * |(m : ℝ) - m'| ≤ |y m - y m'|) :
+    ∑ m ∈ T, |F (x₀ - y m)| ≤ A + 4 * B / s * (1 + Real.log N) := by
+  have hA0 : 0 ≤ A := (abs_nonneg _).trans (hA 0)
+  have hlogN : 0 ≤ Real.log N := Real.log_nonneg (by exact_mod_cast hN)
+  rcases T.eq_empty_or_nonempty with rfl | hT
+  · simp only [Finset.sum_empty]; positivity
+  obtain ⟨m₀, hm₀, hmin⟩ := T.exists_min_image (fun m => |x₀ - y m|) hT
+  rw [← Finset.add_sum_erase T _ hm₀]
+  refine add_le_add (hA _) ?_
+  have hterm : ∀ m ∈ T.erase m₀, |F (x₀ - y m)| ≤ 2 * B / s * (1 / |(m : ℝ) - m₀|) := by
+    intro m hm
+    have hm' := Finset.mem_of_mem_erase hm
+    have hne : (m : ℝ) ≠ m₀ := by exact_mod_cast Finset.ne_of_mem_erase hm
+    have hd : 0 < |(m : ℝ) - m₀| := abs_pos.mpr (sub_ne_zero.mpr hne)
+    have hsp' := hsp m hm' m₀ hm₀
+    have htri : |y m - y m₀| ≤ 2 * |x₀ - y m| := by
+      have h1 := abs_sub_le (y m) x₀ (y m₀)
+      rw [abs_sub_comm (y m) x₀] at h1
+      have h2 := hmin m hm'
+      linarith
+    have hlow : s / 2 * |(m : ℝ) - m₀| ≤ |x₀ - y m| := by linarith
+    have hpos : 0 < |x₀ - y m| := lt_of_lt_of_le (by positivity) hlow
+    refine (hB _ (abs_pos.mp hpos)).trans ?_
+    calc B / |x₀ - y m| ≤ B / (s / 2 * |(m : ℝ) - m₀|) :=
+          div_le_div_of_nonneg_left hB0 (by positivity) hlow
+      _ = 2 * B / s * (1 / |(m : ℝ) - m₀|) := by field_simp
+  calc ∑ m ∈ T.erase m₀, |F (x₀ - y m)|
+      ≤ ∑ m ∈ T.erase m₀, 2 * B / s * (1 / |(m : ℝ) - m₀|) := Finset.sum_le_sum hterm
+    _ = 2 * B / s * ∑ m ∈ T.erase m₀, 1 / |(m : ℝ) - m₀| := by rw [Finset.mul_sum]
+    _ ≤ 2 * B / s * (2 * (1 + Real.log N)) :=
+        mul_le_mul_of_nonneg_left (sum_erase_inv_abs_le hN hsub hm₀) (by positivity)
+    _ = 4 * B / s * (1 + Real.log N) := by ring
+
+/-- **Polynomial Tail of `∑ Λ(r) / r²`.**
+For every `X ≥ 1` and every finite dilation set `R'` with `2 ≤ r` and `X ≤ r` for all `r ∈ R'`,
+`∑_{r ∈ R'} Λ(r) / r² ≤ 20 X^{-7/8}`. -/
+theorem sum_vonMangoldt_div_sq_tail_le (R' : Finset ℕ) {X : ℝ} (hX : 1 ≤ X)
+    (hR' : ∀ r ∈ R', 2 ≤ r ∧ X ≤ (r : ℝ)) :
+    ∑ r ∈ R', (ArithmeticFunction.vonMangoldt r : ℝ) / (r : ℝ) ^ 2 ≤
+      20 * X ^ (-7 / 8 : ℝ) := by
+  set N : ℕ := max 1 (⌈X⌉₊ - 1)
+  have hN1 : 1 ≤ N := le_max_left _ _
+  have hNr : ∀ r ∈ R', N + 1 ≤ r := fun r hr => by
+    obtain ⟨hr2, hXr⟩ := hR' r hr
+    have hc : ⌈X⌉₊ ≤ r := Nat.ceil_le.mpr hXr
+    dsimp only [N]; omega
+  have hterm : ∀ r ∈ R', (ArithmeticFunction.vonMangoldt r : ℝ) / (r : ℝ) ^ 2 ≤
+      8 * (r : ℝ) ^ ((-7 / 8 : ℝ) - 1) := by
+    intro r hr
+    have hr2 : (2 : ℝ) ≤ r := by exact_mod_cast (hR' r hr).1
+    have hr0 : (0 : ℝ) < r := by linarith
+    have hlog : Real.log (r : ℝ) ≤ 8 * (r : ℝ) ^ (1 / 8 : ℝ) := by
+      have h := Real.log_le_rpow_div hr0.le (by norm_num : (0 : ℝ) < 1 / 8)
+      linarith
+    have hpow : (r : ℝ) ^ (1 / 8 : ℝ) / (r : ℝ) ^ 2 = (r : ℝ) ^ ((-7 / 8 : ℝ) - 1) := by
+      rw [← Real.rpow_natCast (r : ℝ) 2, ← Real.rpow_sub hr0]
+      norm_num
+    calc (ArithmeticFunction.vonMangoldt r : ℝ) / (r : ℝ) ^ 2
+        ≤ Real.log (r : ℝ) / (r : ℝ) ^ 2 :=
+          div_le_div_of_nonneg_right ArithmeticFunction.vonMangoldt_le_log (sq_nonneg _)
+      _ ≤ (8 * (r : ℝ) ^ (1 / 8 : ℝ)) / (r : ℝ) ^ 2 :=
+          div_le_div_of_nonneg_right hlog (sq_nonneg _)
+      _ = 8 * ((r : ℝ) ^ (1 / 8 : ℝ) / (r : ℝ) ^ 2) := by ring
+      _ = 8 * (r : ℝ) ^ ((-7 / 8 : ℝ) - 1) := by rw [hpow]
+  have hinj : Set.InjOn (fun r : ℕ => r - (N + 1)) ↑R' := by
+    intro a ha b hb h
+    have ha' := hNr a ha
+    have hb' := hNr b hb
+    dsimp only at h; omega
+  have hsum_tail : ∑ r ∈ R', (r : ℝ) ^ ((-7 / 8 : ℝ) - 1) ≤
+      (N : ℝ) ^ (-7 / 8 : ℝ) / (7 / 8) := by
+    have himg : ∑ r ∈ R', (r : ℝ) ^ ((-7 / 8 : ℝ) - 1) =
+        ∑ k ∈ R'.image (fun r => r - (N + 1)),
+          ((N : ℝ) + 1 + (k : ℝ)) ^ ((-7 / 8 : ℝ) - 1) := by
+      rw [Finset.sum_image hinj]
+      refine Finset.sum_congr rfl fun r hr => ?_
+      have hrN := hNr r hr
+      have heq : (r : ℝ) = (N : ℝ) + 1 + ((r - (N + 1) : ℕ) : ℝ) := by
+        exact_mod_cast (show r = N + 1 + (r - (N + 1)) by omega)
+      rw [heq]
+    rw [himg]
+    refine ((HTGeometry.summable_shift_rpow (q := -7 / 8) (by norm_num) N).sum_le_tsum _
+      fun k _ => by positivity).trans ?_
+    simpa only [neg_neg] using
+      HTGeometry.tsum_shift_rpow_le (q := -7 / 8) (by norm_num) hN1
+  have hXN : X / 2 ≤ (N : ℝ) := by
+    by_cases hX2 : X ≤ 2
+    · have : (1 : ℝ) ≤ N := by exact_mod_cast hN1
+      linarith
+    · push_neg at hX2
+      have hc3 : 3 ≤ ⌈X⌉₊ := by
+        have hlt : (2 : ℝ) < (⌈X⌉₊ : ℝ) := hX2.trans_le (Nat.le_ceil X)
+        exact_mod_cast hlt
+      have hNeq : N = ⌈X⌉₊ - 1 := max_eq_right (by omega)
+      have hNcast : (N : ℝ) = (⌈X⌉₊ : ℝ) - 1 := by
+        rw [hNeq, Nat.cast_sub (by omega), Nat.cast_one]
+      have hceil := Nat.le_ceil X
+      linarith
+  have hNrpow : (N : ℝ) ^ (-7 / 8 : ℝ) ≤ 2 * X ^ (-7 / 8 : ℝ) := by
+    have h1 := Real.rpow_le_rpow_of_nonpos (by positivity : 0 < X / 2) hXN (by norm_num)
+    have h2 : (X / 2) ^ (-7 / 8 : ℝ) = (2 : ℝ) ^ (7 / 8 : ℝ) * X ^ (-7 / 8 : ℝ) := by
+      rw [Real.div_rpow (by linarith) zero_le_two, div_eq_mul_inv,
+        ← Real.rpow_neg zero_le_two]
+      norm_num; ring
+    have h3 : (2 : ℝ) ^ (7 / 8 : ℝ) ≤ 2 := by
+      calc (2 : ℝ) ^ (7 / 8 : ℝ) ≤ (2 : ℝ) ^ (1 : ℝ) :=
+            Real.rpow_le_rpow_of_exponent_le one_le_two (by norm_num)
+        _ = 2 := Real.rpow_one 2
+    rw [h2] at h1
+    exact h1.trans (mul_le_mul_of_nonneg_right h3 (by positivity))
+  calc ∑ r ∈ R', (ArithmeticFunction.vonMangoldt r : ℝ) / (r : ℝ) ^ 2
+      ≤ ∑ r ∈ R', 8 * (r : ℝ) ^ ((-7 / 8 : ℝ) - 1) := Finset.sum_le_sum hterm
+    _ = 8 * ∑ r ∈ R', (r : ℝ) ^ ((-7 / 8 : ℝ) - 1) := by rw [Finset.mul_sum]
+    _ ≤ 8 * ((N : ℝ) ^ (-7 / 8 : ℝ) / (7 / 8)) :=
+        mul_le_mul_of_nonneg_left hsum_tail (by norm_num)
+    _ ≤ 8 * ((2 * X ^ (-7 / 8 : ℝ)) / (7 / 8)) := by gcongr
+    _ = (128 / 7 : ℝ) * X ^ (-7 / 8 : ℝ) := by ring
+    _ ≤ 20 * X ^ (-7 / 8 : ℝ) :=
+        mul_le_mul_of_nonneg_right (by norm_num) (by positivity)
+
+private def fourthRoot (t : ℝ) : ℝ := Real.sqrt (Real.sqrt t)
+private def sixteenthRoot (t : ℝ) : ℝ := fourthRoot (fourthRoot t)
+
+private theorem fourthRoot_nonneg (t : ℝ) : 0 ≤ fourthRoot t := Real.sqrt_nonneg _
+private theorem sixteenthRoot_nonneg (t : ℝ) : 0 ≤ sixteenthRoot t := fourthRoot_nonneg _
+
+private theorem fourthRoot_pow_four {t : ℝ} (ht : 0 ≤ t) : (fourthRoot t) ^ 4 = t := by
+  unfold fourthRoot
+  rw [show (Real.sqrt (Real.sqrt t)) ^ 4 = ((Real.sqrt (Real.sqrt t)) ^ 2) ^ 2 by ring,
+    Real.sq_sqrt (Real.sqrt_nonneg t), Real.sq_sqrt ht]
+
+private theorem sixteenthRoot_pow_sixteen {t : ℝ} (ht : 0 ≤ t) : (sixteenthRoot t) ^ 16 = t := by
+  unfold sixteenthRoot
+  rw [show (fourthRoot (fourthRoot t)) ^ 16 = ((fourthRoot (fourthRoot t)) ^ 4) ^ 4 by ring,
+    fourthRoot_pow_four (fourthRoot_nonneg t), fourthRoot_pow_four ht]
+
+private theorem one_add_log_le_four_mul_fourthRoot {t : ℝ} (ht : 1 ≤ t) :
+    1 + Real.log t ≤ 4 * fourthRoot t := by
+  have hu0 : 0 < fourthRoot t := by
+    unfold fourthRoot; exact Real.sqrt_pos.mpr (Real.sqrt_pos.mpr (by linarith))
+  rw [← fourthRoot_pow_four (by linarith : 0 ≤ t), Real.log_pow]
+  push_cast
+  linarith [Real.log_le_sub_one_of_pos hu0]
+
+private theorem one_add_log_le_sixteen_mul_sixteenthRoot {t : ℝ} (ht : 1 ≤ t) :
+    1 + Real.log t ≤ 16 * sixteenthRoot t := by
+  have hv0 : 0 < sixteenthRoot t := by
+    unfold sixteenthRoot fourthRoot
+    exact Real.sqrt_pos.mpr (Real.sqrt_pos.mpr (Real.sqrt_pos.mpr (Real.sqrt_pos.mpr (by linarith))))
+  rw [← sixteenthRoot_pow_sixteen (by linarith : 0 ≤ t), Real.log_pow]
+  push_cast
+  linarith [Real.log_le_sub_one_of_pos hv0]
+
 end GaloisForLFunctions.ArithmeticPositivityTheory

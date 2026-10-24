@@ -88,6 +88,17 @@ lower logarithmic orders, requiring a filtration of escape scales to recover
 multiplicity. This is presently a conjecture, not a proved counterexample for
 the actual Möbius receiver.
 
+An additional index distinction needs formal audit. AOT uses algebraic
+`Module.rank` for general quotients, while the escape space also has a Hilbert
+dimension. For a closed operator kernel, the Wiener quotient is Banach. It
+cannot have countably infinite Hamel dimension: a countable algebraic basis
+would express it as the union of proper finite-dimensional closed subspaces,
+each with empty interior, contradicting Baire. Thus a literal cardinal equality
+between its algebraic codimension and a countably infinite zero set would be
+the wrong infinite-dimensional index convention. This does not prove that the
+actual infinite branch occurs. The Baire argument and its application remain
+to be formalized; finite-dimensional multiplicity issues remain separate.
+
 ## Cross-programme applications to pursue
 
 The source-side bridge consumes THIM's exact convolution identity and sharp
@@ -147,10 +158,49 @@ Commutativity and cyclicity give `pi(a)=0`. Hence
 
 This establishes the paper argument for A1–A2, but neither equality of the
 ideals nor identification with the translated zero hull follows. Lean status:
-only the source-side bounded-dilation and vanishing lemmas are currently
-drafted; Hilbert operators, Wiener series, and ideal inclusion remain pending.
+the source-side bounded-dilation and vanishing lemmas passed Lean; Hilbert
+operators and cyclicity are drafted; Wiener series and ideal inclusion remain
+pending.
 
-## Scaling audit: next conjecture
+Implementation route for infinite repair annihilation: for finite Wiener
+truncations `a_N`, the normalized source maps are uniformly bounded in the
+Wiener norm. The triangle inequality gives a uniform tail error bounded by
+`||a-a_N||_W`. Finite Gram convergence identifies the limiting norm of `a_N`;
+source payment makes the normalized norm of `a` vanish. Hence
+`||pi(a_N)v_1|| <= ||a-a_N||_W` (or a harmless fixed multiple when treating
+real and imaginary parts separately). Passing to `N -> infinity` proves
+`pi(a)v_1=0`. Finite truncations need not themselves be paid; no density of
+finite repairing kernels is being assumed.
+
+For the operator series, `WienerAlgebraAt.hasSum_pointMass` is already proved.
+First define the bounded linear series map `a -> sum a_n V_n`. Its value on
+each point mass is `V_n`. Extend the multiplicativity of point masses twice
+using this convergent series and continuity of multiplication. This avoids
+re-proving an infinite Dirichlet-convolution rearrangement.
+
+## Moving-translation refinement to test
+
+The proposed `k = O(sqrt(E))` translation scale may itself be invisible. The
+actual prefix has increments bounded by one. If its elementary sublinearity
+`A(n)/n -> 0` is established, dominated convergence against the summable
+pronic weights gives
+
+`sum_{n >= 1} (A(n+k)-A(n))^2 / (n(n+1) k^2) -> 0`.
+
+For each fixed `n`, the numerator divided by `k^2` tends to zero; the unit
+increment bound dominates it by one. Splitting bounded and large `k` then
+shows that every moving translation with bounded `k^2/E` disappears on
+escape, even without `k -> infinity`. Thus a nonzero successor displacement
+would require an unbounded ratio to `sqrt(E)`. The sublinearity input follows from the existing all-damping hyperbola bound
+with `D=n`. A complete paper proof is recorded in
+`../2-fully-proven/square-root-energy-translations-still-disappear.md`; Lean
+verification remains pending.
+
+A quantitative candidate is `|A(n)| <= C_epsilon n^(1-epsilon)`. Splitting the
+pronic sum at `n=k` would give displacement energy `O(k^(2-2epsilon))`.
+Its source bound and the uniform estimate both require proof before use.
+
+## Dilation scaling audit
 
 The exact pronic fibre identity proves, at a complete block horizon,
 `<D_p v,D_p w>_(p*M+p-1) = (1/p) <v,w>_M` for zero-origin rows.
@@ -161,6 +211,15 @@ rescaling. Regular variation of receiver energy would determine the diagonal
 `K(p,p)`, but does not alone identify the mixed Gram limits at `T` and `T/p`.
 The stronger all-packet homogeneity asserted in A3 therefore needs its own
 invariance proof. No assumption of that invariance will be added.
+
+Potential positive replacement: logarithmically average the horizon states.
+If the scalar energy ratios are regularly varying, transport gives
+`K_T(pj,pk) = p^(-1-alpha) K_(T/p)(j,k) + o(1)`. Averaging in `dT/T`
+makes the fixed translation `log T -> log T - log p` negligible at the ends,
+so every averaged limit is homogeneous. This would classify an averaged state,
+not every individual subsequential state from the original theorem. No actual
+regular-variation premise has been proved, and this replacement is not yet a
+Lean theorem or a completed no-go.
 
 ## Alternative intrinsic annihilator construction
 
@@ -205,30 +264,20 @@ checked; no additional independent signed Gram coordinates survive.
 
 ## Verification state
 
-- Missing dependency `CountableCofactorCovariancesHaveACommonLimit.olean` was
-  generated successfully with the permitted single-module command.
-- The `/tmp/qiii_bridge_check.lean` declaration check completed. Required finite
-  sums, support, limit, complex conjugation, and inner-product names were
-  confirmed; deliberately queried unused alternatives were absent.
-- Draft new files: `ArithmeticDefectRigidity/RepairingKernelsVanishOnEscape.lean`,
-  `HTGeometry/AntipodalKernelExtension.lean`, and
-  `ArithmeticDefectRigidity/WhiteNoiseAndAntipodalEscapeData.lean`.
-- `RepairingKernelsVanishOnEscape.lean` passed its first check; warning cleanup
-  is complete. Final verification and transitive axiom audit remain pending.
-- Added draft `HTGeometry/RealPositiveKernelComplexification.lean`, splitting
-  complex energies into their real and imaginary parts. White-noise positivity
-  now uses this generic bridge.
-- Generic bounded coefficient pushforward and completion are being checked in
-  `/tmp/qiii_kernel_check.lean` before transfer to the corpus. The declaration
-  check confirmed the required completion and finite-coefficient APIs; an
-  unused speculative norm theorem was absent. The constructions are drafted
-  in `HTGeometry/BoundedKernelReindexing.lean`, not yet verified.
-- Drafted `ArithmeticDefectRigidity/TheCofactorLimitCarriesACyclicDilationAction.lean`:
-  a concrete selected actual limit, complex positivity, sharp bounded dilation,
-  multiplicativity, cyclicity, and finite repairing-packet annihilation.
-- `HTGeometry/AntipodalKernelExtension.lean` is being checked while generating
-  its previously absent olean, required by the white-noise application.
-- Umbrella imports and axiom audits remain pending successful final checks.
+| Module | Kernel check | Axiom audit | Final source check/import |
+|---|---|---|---|
+| `RepairingKernelsVanishOnEscape` | Passed, olean exists | Standard axioms only | Pending |
+| `AntipodalKernelExtension` | Passed, olean exists | Standard axioms only | Pending |
+| `RealPositiveKernelComplexification` | Passed, olean exists | Standard axioms only | Pending |
+| `BoundedKernelReindexing` | Passed, olean exists | Standard axioms only | Pending |
+| `TheCofactorLimitCarriesACyclicDilationAction` | Two representation errors fixed; retry pending | Pending | Pending |
+| `WhiteNoiseAndAntipodalEscapeData` | Source audit running, session `70238` | Running | Pending |
+| `BoundedMultiplicativeSequencesActOnWienerAlgebras` | Draft | Pending | Pending |
+| `TheCofactorLimitIsAWienerModule` | Initial definition only | Pending | Pending |
+
+The standard axioms reported are `propext`, `Classical.choice`, and `Quot.sound`.
+The translation proof remains in `/tmp/qiii_translation_check.lean`, pending its
+first check before transfer into the corpus. No new umbrella imports yet.
 
 ## Gates
 
@@ -236,6 +285,78 @@ checked; no additional independent signed Gram coordinates survive.
 - [ ] 1 → 2: complete classification with no open mathematical dependency.
 - [ ] 2 → 3: Lean proofs and axiom audits for every required result.
 
+## Current verification handoff
+
+- `BoundedKernelReindexing` and `RepairingKernelsVanishOnEscape` both passed
+  their corrected olean checks. Their oleans now exist; preserve them.
+- The targeted source/kernel axiom audit completed: every printed theorem
+  depends only on `propext`, `Classical.choice`, and `Quot.sound`. Its nonzero
+  exit came solely from speculative API names that do not exist.
+- Active compiler: `/tmp/qiii_white_noise_audit.lean`, session `70238`.
+  This checks white-noise source, prints axioms, and probes further APIs.
+- The actual Hilbert action check found an unexpanded `vector` definition in
+  cyclicity and `RCLike.re` blocking complex-energy simplification. Both were
+  corrected. Its olean was not generated; the corrected retry remains pending.
+  `TheCofactorLimitIsAWienerModule.lean` now imports it.
+- Existing new oleans also include `AntipodalKernelExtension`,
+  `RealPositiveKernelComplexification`, and dependency
+  `CountableCofactorCovariancesHaveACommonLimit`.
+- `TheCofactorLimitCarriesACyclicDilationAction` and
+  `WhiteNoiseAndAntipodalEscapeData` remain unverified. The latter has a
+  source-plus-axioms scratch copy at `/tmp/qiii_white_noise_audit.lean`.
+- New draft `ArithmeticOrientationTheory/BoundedMultiplicativeSequencesActOnWienerAlgebras.lean`
+  integrates arbitrary weighted multiplicative sequences by norm-convergent
+  point-mass series. It has not been checked.
+- Complete translation proof scratch: `/tmp/qiii_translation_check.lean`;
+  not yet checked. No translation Lean module has been added yet.
+- Pending scratch bodies: `/tmp/qiii_wiener_action_body.lean` (actual Wiener
+  representation, closed/proper annihilator, nonempty hull) and
+  `/tmp/qiii_banach_countable_check.lean` (Baire countable algebraic span).
+  Neither has been checked or transferred.
+- No new umbrella imports yet. Final source-only checks and axiom audits remain
+  required. Use targeted audits, not `scripts/check_axioms.sh` (full umbrella,
+  missing `--old`).
+- Own temporary files are prefixed `/tmp/qiii`; remove after their information
+  is consumed. Preserve other agents' work and compiler processes.
+
+## Infinite-repair bridge: scalar covariance route
+
+An alternative to a two-parameter energy approximation is now identified.
+For each fixed cofactor `j`, pair the full kernel action against `D_j A`.
+Its coefficient series is uniformly dominated by the Wiener summands through
+`|K_T(n,j)| <= n^(-1/2) j^(-1/2)`. Dominated convergence therefore passes every
+Wiener kernel through the common Gram limit. A paid kernel has pairing tending
+to zero by its bounded source norm and Cauchy--Schwarz. Hence its limiting
+vector is orthogonal to every Gram vector and is zero by density; commutativity
+and cyclicity then make the entire operator zero. This bypasses any assumption
+that finite paid kernels are dense. The proof is not yet formalized.
+
+A relevant reusable corpus result is
+`HTGeometry.tendsto_of_dense_of_uniform_bound` in `StrongConvergenceDense.lean`.
+A concurrently present module `BiarithmeticGeometry/PaidKernelsVanishOnEscape.lean`
+also proves source-side payment annihilation. The current ADR module additionally
+proves the generic boundedness equivalence and finite common-limit consequences;
+no changes to the concurrent module have been made.
+
 ## Log
 
 - 2026-10-25 — Read attachment and full report; began source audit and corpus searches.
+
+## Source-documentation correction
+
+The comments in `ArithmeticOrientationTheory/AnIndexFormulaForTheActualReceiver.lean`
+claimed a complete resolution despite stating only the above-width zero-index
+formula. Those comments now state the proved range and the remaining below-width
+question. The all-damping TFAE explicitly includes hull emptiness; it does not
+identify hull equality alone with RH. No theorem in that module was changed.
+
+## Further distinctions to preserve
+
+The current chosen-kernel Hilbert construction realizes one actual common limit.
+A full answer must cover every actual limit; a choice construction is not itself
+a classification. The source-side finite repair theorem already quantifies over
+all common limits.
+
+For A3, the missing mixed-horizon invariance is presently a proof gap, not a
+counterexample to regular-variation homogeneity. A no-go requires a proved
+counterexample and a positive survivor.

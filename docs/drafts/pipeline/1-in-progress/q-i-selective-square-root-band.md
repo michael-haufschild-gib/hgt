@@ -102,9 +102,10 @@ Main names: `pmPronicVaughanDiagonal_linear_lower`,
 `eventually_pmPronicVaughan_relative_cancellation`, and
 `tendsto_pmPronicVaughan_mixed_div_diagonal`.
 The complete leaf check passed. A subsequent extension gives a cutoff-uniform finite witness:
-eventually at every horizon some `j ≠ 4` satisfies `G_4j ≤ -ρ²T/8`. Its check and the
-transitive-axiom audit remain pending. The module's olean is being generated only because the
-new fixed-cutoff Gram module imports it.
+eventually at every horizon some `j ≠ 4` satisfies `G_4j ≤ -ρ²T/8`. Its olean-producing check
+also passed, needed only because the new fixed-cutoff Gram module imports it. The transitive
+axiom audit passed for the principal declarations, with only `propext`, `Classical.choice`,
+and `Quot.sound`. The pole module is wired into the BVI umbrella; no umbrella was compiled.
 
 ### Next conjecture after pole calibration
 
@@ -116,7 +117,7 @@ residual estimate has yet been established. This is an attack direction, not a c
 
 ### Full fixed-cutoff Gram classification
 
-[PROVED HERE on paper; Lean pending] For fixed cutoffs `U,V`, set
+[PROVED HERE; Lean check and transitive-axiom audit passed] For fixed cutoffs `U,V`, set
 `A_U = Σ_(d≤U) μ(d)d^(-1-ε)`, `Z = Σ_(k≥1) k^(-1-ε) = 1/ρ`, and
 
 `c = (A_U, A_V, -Z A_U A_V, ρ-A_U-A_V+Z A_U A_V, -ρ)`.
@@ -138,24 +139,101 @@ to an `O(1/T)` bound on `1+R_mix/D`. Merely obtaining a positive decay exponent 
 ratio is insufficient to establish the requested estimate. The known VK receiver bound
 would give exponent `2ε` in these coordinates; the missing power is `1-2ε`.
 
-This classification should be formalized next, using `pm_tendsto_divisor_average` and the
-new pronic Cesàro lemma. It is a positive structural result, not a proof of the missing
-residual bound.
+This classification is formalized using `pm_tendsto_divisor_average` and the new pronic
+Cesàro lemma. It is a positive structural result, not a proof of the missing residual bound.
 
-Draft: `TheFixedVaughanGramHasRankOneLeadingTerm.lean`; not yet checked. Its proof uses finite
+`TheFixedVaughanGramHasRankOneLeadingTerm.lean` passed its olean-producing leaf check, needed
+because the atomic-budget module imports it. Its principal declarations passed the
+transitive-axiom audit with only `propext`, `Classical.choice`, and `Quot.sound`; the final
+direct no-olean check remains. Its umbrella import is present. Its proof uses finite
 floor means, the unsigned divisor average, and the exact five-piece identity. No computation
 or analytic estimate beyond absolute convergence enters this first-order classification.
 
-### Next conjecture: remove the secondary unsigned divisor term
+### Secondary unsigned divisor term: existing result found
 
-For `0<ε<1`, the unsigned floor sum should admit the exact two-term expansion
+For `0<ε<1`, the unsigned floor sum admits the exact two-term expansion
 `Σ_(d≤n) d^(-ε) floor(n/d) = ζ(1+ε)n + ζ(1-ε)n^(1-ε)/(1-ε) + O_ε(n^((1-ε)/2))`.
-A weighted hyperbola split at `sqrt(n)` and the power-sum remainder should prove this.
-After the first two terms are removed, the squared pronic error is summable for every
-positive `ε`. Applied to fixed small-small Vaughan cutoffs, this would pay that centered
-piece and leave the genuinely unresolved error in the both-large piece. This is a conjectured
-next reduction, not an established estimate for the actual Möbius receiver; corpus and
-paper-proof audits are still required.
+Corpus search found the exact theorem `norm_cpowFloorSum_sub_le` in
+`TheOscillatingSmoothPowerIsPaidExactlyAtTheZerosOfZeta.lean`; its real specialization is
+`abs_subHalfRemainder_le` in `SubHalfDampingPartialPoleSumsAndLogarithmicMomentIndexLaws.lean`.
+The same module proves the stronger uniform atomic estimate
+`pronicNorm_subHalfDilationRemainder_le`: the dilated remainder supported on `n≥j` has norm
+at most `C_ε j^(-1/2)`. The new task is the exact Vaughan specialization and moving-cutoff
+budget, not reproving this unsigned asymptotic.
+
+For the small-small kernel the absolute atomic norm budget has weights
+`|μ(a)μ(b)|(ab)^(-ε-1/2)`. Summing these over a rectangle factors into the product of two
+critical Wiener partial sums. At square-root cutoffs its trivial norm exponent is again
+`1/2-ε`, hence energy exponent `1-2ε`. A selective gain must improve this signed assembly,
+rather than the already-paid individual smooth-power remainder. This is the next conjecture
+audit; no improved signed assembly estimate has been proved.
+
+### Next exact assembly and sharp budget audit
+
+Let `p=ε+1/2`, `q=1/2-ε>0`, and
+`W_ε(U)=Σ_(1≤a≤U)|μ(a)|a^(-p)`. Define the literal signed atomic remainder
+
+`R_(ε,U,V)(n)=Σ_(a≤U,b≤V) μ(a)μ(b)(ab)^(-ε) 1_(ab≤n) R_(ε,ab)(n)`,
+
+where `R_(ε,j)` is the existing `subHalfDilationRemainder`. Finite norm subadditivity
+and `pronicNorm_subHalfDilationRemainder_le` give
+`‖R_(ε,U,V)‖_T ≤ C_ε W_ε(U)W_ε(V)`, uniformly in `T`.
+
+The exact small-small identity to formalize is
+
+`p_2(n) = -Z L_(ε,U,V)(n) - c_ε n^(1-ε) P_(U,V)(n) - R_(ε,U,V)(n)`,
+
+where `L=Σ μ(a)μ(b)(ab)^(-ε) floor(n/(ab))`,
+`P=Σ_(a≤U,b≤V,ab≤n) μ(a)μ(b)/(ab)`, `Z=ζ(1+ε)`, and
+`c_ε=Re ζ(1-ε)/(1-ε)`. This retains the floor and partial-pole terms; an estimate on
+the atomic remainder alone must not be advertised as controlling the entire source.
+
+For a sharp budget obstruction, the existing squarefree quarter-density bound gives
+`W_ε(N)≥N^q/4` for every `N≥1`, whereas the elementary power-sum estimate gives
+`W_ε(N)≤C'_ε N^q` for `N≥1`. At the square-root rectangle the squared absolute budget
+is `W_ε(N)^4`, of order `N^(2-4ε)=T^(1-2ε)` for `T=N²`. Thus this numerical upper
+budget itself admits no fixed power saving. This is an obstruction to that bound, not
+a lower bound on the actual signed remainder. Useful corpus inputs:
+`tendsto_window_squarefree_density`, `squarefreeDensity_eq`,
+`sum_rpow_neg_subcritical_le`, `pronicNorm_sum_le`, and `pronicNorm_smul`.
+
+Draft `TheAbsoluteVaughanRemainderBudgetHasTheTrivialExponent.lean` currently contains the
+exact small-small extraction, signed-remainder norm bound, upper/lower bounds for the absolute
+mass, squared-budget power bounds, and the explicit no-power-saving corollary. Its first direct
+leaf check left two proof-script errors (addition order and an unreduced composition), both
+corrected. The source audit passed with only `propext`, `Classical.choice`, and `Quot.sound`
+for all ten public theorems. Its umbrella import is present; final direct leaf check remains.
+Its fixed-Gram dependency is compiled. The paper proof is tracked in
+`../2-fully-proven/vaughan-smooth-remainder-and-absolute-budget.md`.
+
+**Moving-cutoff caution.** The existing `sum_moebius_weight_eq_rectangular` already proves
+that the both-large remainder vanishes when `T<(U+1)(V+1)`. In particular, at `T=N²`
+and `U=V=N` it is identically zero throughout the energy sum. The fixed-cutoff centering
+idea therefore cannot be applied at the square-root horizon without uniform estimates
+for the growing small-small piece and its signed cross terms. The new fixed-Gram module
+also records this exact vanishing, keeping the two limiting regimes distinct.
+
+The dependency-closed structural result and exact restricted no-go are tracked separately in
+`../2-fully-proven/vaughan-pole-mass-and-fixed-cutoff-gram.md`. This Q-I card remains in progress.
+
+### Stronger conjecture: uniform leading Gram law
+
+[PROVED HERE on paper; Lean not started] Absolute convergence gives a uniform extension of
+the leading matrix approximation: `G_ij(T;U,V)/T-c_i(U,V)c_j(U,V)→0` uniformly over both
+cutoffs. For a coefficient family dominated by `b(d)` with `Σ b(d)/d<∞`, the floor-mean
+error is uniformly bounded by
+`Σ b(d)/d - (1/n)Σ_(d≤n)b(d)floor(n/d)`, which tends to zero. For the small-small piece,
+the majorant is `b(d)=d^(-ε)(1*1*1)(d)`; its Dirichlet mass is `ζ(1+ε)^3`.
+Uniform boundedness of the five means then converts this error into a uniform Cesàro
+bound for all Gram entries.
+
+At square-root cutoffs a simpler proof may suffice: the both-large piece vanishes exactly,
+the two small legs differ from the full Möbius floor prefix by at most
+`n Σ_(d>N)d^(-1-ε)`, and the five-piece identity determines the small-small leg.
+This predicts `G(N²;N,N)/N²→ρ² vvᵀ`, `v=(1,1,-1,0,-1)`, and diagonal density `4ρ²`.
+It is a further leading-order classification, not a residual saving. The dependency-closed proof
+and internal novelty audit are in `../2-fully-proven/uniform-vaughan-gram-leading-term.md`.
+No external novelty is claimed for this specialization of uniform dominated convergence.
 
 ## External calibration
 

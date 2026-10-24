@@ -28,14 +28,14 @@ The `hgtl7` skill is expressly excluded. No numerical experiments or computation
 
 | Source requirement | Required evidence | Status |
 |---|---|---|
-| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Open |
+| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; seven verified leaves and clean main-declaration audits |
 | Horizon-complete objects; sign visibility | Exact signed finite-horizon laws and quantitative period/prefix comparison | Open |
 | Truncated affine representation theory | Source-defined action, boundary calculus, classification/calibration | Open |
 | A1–A2: paid ideal annihilates escape; hull inclusion | Actual receiver theorem, not an assumed ideal inclusion | Open |
 | A3: regular-variation dilation law | Precise subsequence hypotheses proved for source or exact unconditional classification | Open |
 | A4: moving translations and covariance | Construction at critical scale with controlled boundaries | Open |
 | Golden module and white-noise battery | Actual signed-data checks, not just positivity/dilation checks | Open |
-| B1: payment cohomology and Euler characteristic | Well-posed definition and exact relation to corpus box defect | Literal dimension identity under audit |
+| B1: payment cohomology and Euler characteristic | Well-posed definition and exact relation to corpus box defect | Literal dimension identity refuted; all-aperture degree/torsion survivor formalized |
 | B2: Mayer–Vietoris and prime-power jumps | Exact sequence with source-defined restriction maps | Open |
 | B3–B4: duality and certified-window vanishing | Independent duality and source comparison | Open |
 | C1–C2: Stepanov calibration and replacement identity | Finite-field calibration and signed integer source test | Open |
@@ -56,12 +56,21 @@ The `hgtl7` skill is expressly excluded. No numerical experiments or computation
 | Leaf | Current proof check | Axiom audit |
 |---|---|---|
 | `HorizonAffineActions` | Direct leaf passed; dependency olean created | Main declarations clean |
-| `HorizonBoundaryCalculus` | Direct leaf passed | Pending |
-| `AffineNormalizationFreedom` | Direct leaf passed | Pending |
-| `ArithmeticEulerCharacteristic` | Earlier body checked; revised node-free and cell proofs pending | Pending |
-| `SharedBudgetDescent` | Direct check running after scope correction | Pending |
-| `PaidKernelsVanishOnEscape` | Scratch passed; direct leaf with reduced imports pending | Pending |
-| Exact sign visibility | Paper proof and `/tmp/BiarithmeticVisibility.lean` draft | Pending |
+| `HorizonBoundaryCalculus` | Direct leaf passed | Main declarations clean |
+| `AffineNormalizationFreedom` | Direct leaf passed | Main declarations clean |
+| `ArithmeticEulerCharacteristic` | Direct leaf passed, including all-aperture formula | Main declarations clean |
+| `SharedBudgetDescent` | Direct leaf passed | Main declarations clean |
+| `PaidKernelsVanishOnEscape` | Direct leaf passed with reduced imports | Main declarations clean |
+| `ExactPrefixVisibility` | Direct leaf passed, including full covariance-fibre criterion | Main declarations clean |
+| Contractive Wiener synthesis | Reuse concurrently developed AOT `BoundedMultiplicativeSequencesActOnWienerAlgebras`; own duplicate draft removed | Dependency audit pending |
+| Actual Wiener representation and nonempty hull | Reuse new ADR `TheCofactorLimitIsAWienerModule`; duplicate scratch removed | Dependency audit pending |
+| Cyclic diagonal-scaling countermodel | Complete paper proof; `/tmp/BiarithmeticCyclicModel.lean` under verification | Pending |
+
+Main-declaration axiom audits for all seven checked leaves report only `propext`,
+`Classical.choice`, and `Quot.sound`. The six later leaves were audited together in an
+isolated source-copy driver; each leaf also passed its direct source check. The literal-B1
+no-go is closed in `5-failed/biarithmetic-literal-dimension-euler-characteristic.md`; its
+positive survivor and exact prefix visibility now have separate stage-3 cards.
 
 ### Construction principles
 
@@ -75,7 +84,7 @@ actual divisor rows before asserting consequences for RH.
 The proposed literal identity `dim H⁰ - dim H¹ = E(s)` cannot hold for ordinary finite-dimensional
 vector spaces. Below the first prime, the existing corpus gives `E(s) = exp(s) + s - 1`.
 At `s = log(3/2)`, this is `1/2 + log(3/2)`, strictly between `1/2` and `1` because
-`0 < log(3/2) < 1/2`. It is not an integer. This is a paper proof awaiting Lean certification.
+`0 < log(3/2) < 1/2`. It is not an integer. The obstruction and its all-aperture positive replacement are Lean-certified with clean transitive axiom audits.
 
 Positive replacement to develop: a real weighted Euler characteristic / arithmetic degree together
 with a separate integer obstruction index. Prove exact finite additivity and node-jump laws for
@@ -84,7 +93,7 @@ alone does not provide a payment sheaf, duality, or a vanishing theorem.
 
 ### Stronger positive replacement: horizon torsion
 
-[PROVED HERE, paper; Lean pending] Let `L_N = lcm(1,...,N)` and `Q_N=L_N/N` for `N≥1`.
+[PROVED HERE, paper and Lean] Let `L_N = lcm(1,...,N)` and `Q_N=L_N/N` for `N≥1`.
 Since `N | L_N`, `Q_N` is a positive integer. The classical identity `ψ(N)=log L_N` gives
 
 `E(log N) = (N-1) - log Q_N`.
@@ -97,7 +106,7 @@ complete period. The identity `log L_N=ψ(N)` is classical (Mathlib
 `Chebyshev.psi_eq_log_lcmUpto`); the programme contribution is the exact type-correct replacement
 for B1 and its subsequent obstruction calculus, not a novelty claim for that identity.
 
-[PROVED HERE, paper; Lean pending] The full positive replacement extends across each cell:
+[PROVED HERE, paper and Lean] The full positive replacement extends across each cell:
 for `log N ≤ s < log(N+1)` with `N≥1`,
 
 `E(s) = (N-1) - log Q_N + (exp(s)-N) + (s-log N)`.
@@ -105,8 +114,7 @@ for `log N ≤ s < log(N+1)` with `N≥1`,
 The prime-power count is constant within this half-open cell, so subtract its value at `log N`.
 The two remaining terms are exactly the archimedean evolution. Every nonnegative aperture lies
 in exactly one such cell (`N=floor(exp s)`). This separates the quantized torsion datum from
-continuous evolution on all apertures, not merely at the integer lattice. Add this theorem before
-closing the literal-B1 no-go; an integer-horizon formula alone is not the strongest survivor.
+continuous evolution on all apertures, not merely at the integer lattice. This theorem closes the literal-B1 no-go together with its strongest positive survivor; the general payment-cohomology programme remains open.
 
 ### Finite-horizon joint rigidity
 
@@ -148,7 +156,7 @@ packet action using the proved `j^(-1/2)` contraction and its Wiener tail, then 
 convolution law. This supplies a valid route to the full annihilator statement; density of finite
 supports in the entire algebra alone is insufficient.
 
-[PROVED HERE, paper; Lean pending] `PaidKernelsVanishOnEscape.lean` proves the full-kernel
+[PROVED HERE, paper and Lean] `PaidKernelsVanishOnEscape.lean` proves the full-kernel
 normalization statement directly, before a Hilbert completion. For every subcritical damping,
 either the actual receiver is admitted, or **every** critical Wiener kernel whose convolution
 with the actual source is paid has normalized cofactor-action energy tending to zero.
@@ -156,6 +164,32 @@ The finite-horizon action is `Σ_(j≤n) k(j) A_ε(floor(n/j))`. The convolution
 uniform critical-kernel prefix bound give a constant independent of `T`; division by escaping
 receiver energy proves convergence. No truncation is asserted paid. The GNS and Bohr-hull
 comparison remain separate obligations.
+
+### Full Wiener representation and annihilation: dependency-closed paper argument
+
+[PROVED HERE, paper; Lean pending] The actual common cofactor Gram limit has a Hilbert
+realization with total vectors `δ_j`, `||δ_1||=1`, and bounded maps
+`V_p δ_j=δ_(pj)`, `||V_p||≤p^(-1/2)`. These follow from the actual packet contraction,
+complexification, and completion. The developing corpus leaf
+`ArithmeticDefectRigidity/TheCofactorLimitCarriesACyclicDilationAction.lean` now states this
+source construction; its checked dependency artifacts must be obtained before reuse.
+
+For `a∈W_(1/2)`, `π(a)=Σ a(n)V_n` converges absolutely in operator norm and satisfies
+`||π(a)||≤||a||_W`. Point masses multiply by `V_m V_n=V_(mn)`, and their norm-convergent
+expansion in AOT extends this to a unital algebra representation. The source vector is cyclic.
+This uses the actual packet bound, not a newly postulated representation.
+
+For the full-kernel bridge, expand the squared norm as the absolutely convergent double Gram
+series. Both finite-horizon and limiting kernels have bound `1/sqrt(jk)`. The summable product
+majorant `|a(j)|/sqrt(j) * |a(k)|/sqrt(k)` therefore permits dominated convergence along the
+common Gram subsequence. The limit of the full normalized action energy is exactly
+`||π(a)δ_1||²`. The already proved full-kernel payment bound makes this limit zero on escape.
+The real and imaginary parts are both paid by the definition of AOT's complex paid ideal.
+Hence `π(a)δ_1=0`. Commutativity kills every `δ_j`, and continuity plus totality gives `π(a)=0`.
+Thus the paid ideal is contained in the operator kernel, with no assertion that paid
+truncations exist. Hull inclusion reverses ideal inclusion. The representation kernel is
+proper because the unit fixes the nonzero cyclic vector; the commutative Banach-algebra
+character theorem makes its Bohr hull nonempty.
 
 ### Distinct meanings of first cohomology
 
@@ -167,7 +201,7 @@ obstruction complex is needed. No comparison of such complexes has yet been prov
 
 ### Shared-capacity descent
 
-[PROVED HERE, paper; Lean pending] On a finite discrete set of `k` atoms, let an admissible
+[PROVED HERE, paper and Lean; transitive axiom audit clean] On a finite discrete set of `k` atoms, let an admissible
 allocation have nonnegative values and total mass at most a common budget `B≥0`. Restrictions
 are admissible. Every singleton-admissible allocation glues to an admissible global allocation
 iff `k≤1` or `B=0`. Necessity: the constant allocation `B` would require `kB≤B`. Sufficiency:
@@ -180,7 +214,7 @@ resource locations and compatible quotas in the site.
 
 ### Absorbing boundary calculus
 
-[PROVED HERE, paper and direct Lean check; axiom audit pending] With the cell pairing
+[PROVED HERE, paper and Lean; transitive axiom audit clean] With the cell pairing
 `<v,w>_N = Σ_(j=0)^N v_j w_j`, every positive affine map has the exact signed identity
 
 `<T_(a,b)v,T_(a,b)w>_N + Σ_(aj+b>N) v_j w_j = <v,w>_N`.
@@ -198,7 +232,7 @@ are invariant under positive affine maps. No irreducibility assertion is used.
 
 ### Exact visibility inside a complete-period observation fibre
 
-[PROVED HERE, paper; Lean pending] Fix the actual finite row `c` and let
+[PROVED HERE, paper and Lean] Fix the actual finite row `c` and let
 `Y_q=selbergMultiplesCoord N c q`, `R_q(M)=Re(pmRamanujanPrimitive q M)`.
 Define `V_N(M,c)=Σ_(q=2)^N |R_q(M)Y_q|`. Among all independent Selberg sign changes fixing
 the mean, the maximum absolute centered-prefix readout is exactly `V_N(M,c)`, and the diameter
@@ -213,6 +247,14 @@ minimum. Set `ε_1=1` separately, so the mean is preserved. The extrema are `V` 
 The existing orbit classification identifies these independent sign choices with the complete
 period observation fibre. The primitive `R_q(M)` retains the precise horizon dependence;
 replacing it by a coarse horizon/period ratio would discard this mode information.
+
+The bound holds throughout the full covariance fibre, without a separate mean condition:
+equality of all complete-period covariances gives equality of the squared nonconstant Selberg
+coordinates, hence equality of their absolute values. Apply the signed expansion and triangle
+inequality. Consequently covariance determines the centered prefix if and only if `V=0`,
+equivalently every product `R_q(M)Y_q` vanishes. Necessity follows from the two opposite extrema;
+sufficiency follows from the universal bound. This is an exact information criterion for every
+prefix and every finite row, not merely an example of blindness.
 
 ### Dilation of tangent kernels: quantifiers to retain
 
@@ -255,6 +297,95 @@ constraints to the full A3 identity. Its positive survivor is a complete explici
 representation with a uniform distortion bound and exact orbit norms. Formalize the exact
 countermodel and its positive representation before retiring that implication.
 
+There is also an exact stationary repair of this model. Average the three forms
+`B(P^r x,P^r y)`, `r=0,1,2`. The resulting Gram matrix has diagonal 1 and every off-diagonal
+entry `1/9`; it is positive definite and `P`-invariant. Its kernel has the full scaling law
+`Kbar(pj,pk)=p⁻² Kbar(j,k)`. This shows precisely what averaging adds, while preserving all
+diagonals and the underlying cyclic representation. Averaging a family of actual tangents
+would still need a separate realization theorem; a convex mixture need not be one source
+subsequence limit.
+
+### Scalar regular variation with a moving covariance phase
+
+[NEW CANDIDATE; paper and novelty audits required before any theorem claim] A stronger test
+than the finite cyclic model is the continuous scalar row `v(x)=x^β q(log x)`, where
+`1/2<β<1` and `q` is the square wave with `q(t+log 2)=-q(t)`. Its quadratic energy against
+`dx/x²` is exactly `(T^(2β-1)-1)/(2β-1)`. Writing `α=2β-1`, the candidate tangent at logarithmic
+phase `θ` is
+
+`K_θ(j,k)=(jk)^(-β) α ∫₀^∞ exp(-αu) q(θ-u-log j) q(θ-u-log k) du`.
+
+It obeys `K_θ(pj,pk)=p^(-2β) K_(θ-log p)(j,k)`. The phase has period `log 2`. The entry `(1,3)`
+is a nonconstant continuous exponential smoothing of a square wave product. If one full kernel
+were homogeneous under dilation 3, the identities at all further cofactor indices would make
+that entry constant along the irrational rotation by `log 3`, hence everywhere, a contradiction.
+Thus scalar regular variation alone need not supply a homogeneous individual tangent.
+
+The positive candidate is a compact phase family with exact dilation transport and a stationary
+phase average. That average is `(jk)^(-β)` times the square-wave autocorrelation at `log(j/k)`.
+It need not be an individual horizon limit. This continuum calculation is not yet a theorem
+about integer pronic energies, bounded source increments, or the Möbius receiver. The discrete
+floor errors and any smoothing of the jumps must be proved separately. Do not use it as a
+counterexample to an assertion restricted to the actual arithmetic source.
+
+### Moving translations: further quantifier audit
+
+[PAPER ARGUMENT; Lean pending] The affine covariance relation does not by itself exclude any
+positive escape exponent. On a one-dimensional space take `U_t=1` and `V_p=p^(-(1+α)/2)`.
+For every `α≥0` this has unit cyclic vector, homogeneous Gram kernel
+`K(j,k)=(jk)^(-(1+α)/2)`, critical packet contraction, and exact affine covariance. Thus A4
+requires information about the actual translation action beyond its existence and covariance.
+The moving-translation lower scale from C9 is necessary for survival, not a sufficient
+nontriviality theorem.
+
+There is a sharp finite-dimensional constraint: a continuous unitary real-translation group
+covariant with an invertible dilation of factor `p>1` is trivial. Conjugacy gives
+`tr(U_t)=tr(U_(t/p))`; iteration and continuity give `tr(U_t)=dim H`. In an orthonormal basis,
+`Σ ||U_t e_i-e_i||²=2 dim H-2 Re tr(U_t)=0`, so `U_t=1`. This proves that a nontrivial unitary
+translation limit with invertible dilation must be infinite-dimensional. It does not establish
+that actual escape translations are nontrivial, unitary, or invertibly dilatable.
+
+For a regularly varying scalar power row, translations of order `sqrt(E_T)` can still vanish
+in normalized energy: this scale is `o(T)`, whereas the dominant row mass lies near `T`.
+Any proposed A4 construction must retain this calibration rather than identifying the
+necessary threshold with guaranteed survival.
+
+### Infinite positive jump weights: a domain test
+
+[PAPER PROOF; novelty and Lean audits pending] For translations on `L²(R)` by shifts
+`λ_j→+∞`, consider the unrenormalized positive form
+`Q(f)=Σ_j w_j ||τ_(λ_j)f-f||²`, with `w_j≥0`. Its finite-energy domain is all of `L²(R)`
+when `Σ w_j<∞`, since each summand norm squared is at most `4||f||²`. When `Σ w_j=∞`,
+its finite-energy domain is exactly `{0}`. Indeed
+`<τ_(λ_j)f,f>→0`, hence the jump norm squared tends to `2||f||²`; for `f≠0` its tail
+is bounded below by `||f||²`, and the weighted sum diverges.
+
+The vanishing of translation correlations follows without a number-theoretic estimate:
+approximate `f` in `L²` by a compactly supported function. Its distant translates have
+disjoint support, and Cauchy–Schwarz bounds the two approximation errors uniformly in the
+translation. Thus non-summable weights on the distinct prime logarithms cannot create a
+nontrivial densely defined positive jump form on the ordinary Lebesgue scaling line.
+
+For summable weights, the Fourier symbol `Σ w_j |exp(itλ_j)-1|²` is continuous and has
+arbitrarily small values at arbitrarily large frequencies: choose a finite head with small
+tail, use simultaneous recurrence on that head, and bound the tail by `4Σ_tail w_j`.
+Its exact zero set is the annihilator of the subgroup generated by the positive-weight shifts.
+If that subgroup is dense, this zero set is `{0}`, so every compact frequency annulus has a
+positive minimum, although no uniform high-frequency gap exists.
+
+These are calibration statements for positive jump sums, not a solution of topic 6 for the
+actual Weil form or for an arbitrary singular spectral representation. In particular a Bohr
+space with pure point spectrum need not have vanishing translation correlations. Any proposed
+unbounded-weight transfer must state its representation and nontrivial form domain. This is
+the classical Lévy-form issue in the programme's coordinates; no novelty claim is made yet.
+
+External calibration: Schilling, *An Introduction to Lévy and Feller Processes*,
+[Chapter 7](https://arxiv.org/pdf/1603.00251), uses the classical Lévy condition
+`∫ min(|y|²,1) dν(y)<∞`, which forces finite mass away from zero. Our elementary regular-
+representation domain argument is consistent with this condition. The corpus's
+`PrimeBurnolPrimeLevyMeasure` has infinite mass at jumps `1/p→0`, so it is not contradicted
+by a theorem about jumps `log p→∞`.
+
 ## External calibration
 
 - Joachim Cuntz, *C*-algebras associated with the ax+b-semigroup over N*,
@@ -265,8 +396,10 @@ countermodel and its positive representation before retiring that implication.
 
 ## No-go closure
 
-No route retired yet. Every negative result must carry its strongest dependency-closed positive
-survivor and a separate paper and Lean audit.
+The literal ordinary-dimension B1 identity is retired, with its exact all-aperture
+degree/torsion survivor paper-proved and Lean-audited. Its separate failed-route card records
+the precise scope. Every further negative result must likewise carry its strongest
+dependency-closed positive survivor and a separate paper and Lean audit.
 
 ## Worktree preservation
 

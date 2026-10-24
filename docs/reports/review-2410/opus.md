@@ -366,9 +366,22 @@ entries $G_{ij}$, $i\ne j$, of the 25-entry Vaughan Gram of the signed interior 
 
 **Precise form.** Construct $E\subset$ scaling cycles, defined from arithmetic sources and not
 from the sign of $W$, such that $x^2>0\Rightarrow x\in E\lor -x\in E$ at every aperture. By
-`exists_bezout_effectivity_iff_hodgeIndex`, Bézout on $E$ then is RH, and on the positive cone it
-is already the BVI receiver. The vanishing-theorem version is Mechanism B: find $h^1$ of the
+`exists_bezout_effectivity_iff_hodgeIndex`, Bézout on such an $E$ implies RH. The converse for
+a chosen $E$ needs a separate proof: the theorem concerns existence of some cone, not every RR
+cone. Indeed, the negative-Chebyshev graded source cone has unconditional all-aperture RR and
+unconditionally fails Bézout (`gradedChebyshevSourceCone_riemannRoch_and_not_bezout`). On the
+positive cone, Bézout is already the BVI receiver. The vanishing-theorem version is Mechanism B: find $h^1$ of the
 payment sheaf, prove duality, and reduce vanishing to degree.
+
+**Source-boundary audit.** For nonnegative even fibre-invariant reserves, RR and Bézout together
+force exact equality between the reserve and the Weil defect. Bézout on the graded cone itself
+forces reserve nonnegativity; allowing a signed reserve does not remove that obligation
+(`sourceCone_riemannRoch_and_bezout_iff`, `gradedSourceCone_riemannRoch_and_bezout_iff`).
+Every finite scalar L² reserve and every postprocessing of finitely many linear source
+readings fails Bézout at every positive aperture. The positive theorem behind this obstruction
+is unbounded Weil energy in every such reading kernel
+(`exists_realTestAt_in_ker_weilPair_gt_mul_integral_sq`). These results separate unconditional
+RR supply from the still missing independent degree or section mechanism.
 
 **Why this one.**
 - It is the only formulation in which positivity could be *forced* rather than estimated, which

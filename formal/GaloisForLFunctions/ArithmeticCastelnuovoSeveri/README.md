@@ -24,6 +24,17 @@ is the number of distinct zeros right of the critical line (`zeta_hodgeDefect_if
 defect already lives on the Hecke orbit of a single test (`cyclic_pontryagin_law`), as over `𝔽_q`
 it lives on the Frobenius orbit of the diagonal.
 
+**Source-boundary rigidity.** For a nonnegative even reserve `Φ` invariant under fibre
+translations, source-cone Bézout is exactly the mixed bound
+`defect(x,y)² ≤ Φ(x)Φ(y)`. RR and Bézout together force `Φ(x)=defect(x,x)`; the strict cone
+has the same requirement. Graded Bézout itself forces `Φ≥0`, so signed reserves cannot evade
+this equality (`SourceConeBoundaryRigidity`, `GradedSourceConeBoundaryRigidity`). A coercive
+lower floor supplies RR but does not supply Bézout. At every positive aperture the Weil
+Rayleigh quotient is unbounded above in the kernel of every finite-dimensional linear reading.
+Hence every finite scalar L² reserve, and every reserve obtained by arbitrary postprocessing
+of finitely many linear source readings, fails Bézout on the full aperture source space
+(`WeilEnergyIsUnboundedAtEveryAperture`).
+
 ---
 
 ## Place in the research

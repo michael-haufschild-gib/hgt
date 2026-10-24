@@ -18,6 +18,12 @@ namespace KernelPre
 
 variable {X : Type*} (K : X → X → ℂ)
 
+/-- Finite coefficients viewed in the kernel coefficient space. -/
+def ofCoefficients : (X →₀ ℂ) →ₗ[ℂ] KernelPre K where
+  toFun c := c
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+
 /-- Push finite coefficients along an index map. -/
 def pushforward (φ : X → X) : KernelPre K →ₗ[ℂ] KernelPre K :=
   Finsupp.lmapDomain ℂ ℂ φ
@@ -58,9 +64,13 @@ def coeLinearMap : KernelPre K →ₗ[ℂ] KernelHilbert K where
   map_add' := UniformSpace.Completion.coe_add
   map_smul' := UniformSpace.Completion.coe_smul
 
-theorem coe_single (x : X) (a : ℂ) :
-    ((Finsupp.single x a : KernelPre K) : KernelHilbert K) = a • vector K x := by
-  change coeLinearMap K (Finsupp.single x a) = a • coeLinearMap K (Finsupp.single x 1)
+/-- Finite coefficient synthesis, with its algebraic domain explicit. -/
+def synthesis : (X →₀ ℂ) →ₗ[ℂ] KernelHilbert K :=
+  (coeLinearMap K).comp (KernelPre.ofCoefficients K)
+
+theorem synthesis_single (x : X) (a : ℂ) :
+    synthesis K (Finsupp.single x a) = a • vector K x := by
+  change synthesis K (Finsupp.single x a) = a • synthesis K (Finsupp.single x 1)
   rw [← map_smul]
   congr 1
   simp
@@ -68,14 +78,13 @@ theorem coe_single (x : X) (a : ℂ) :
 /-- Every finite coefficient vector is in the span of the Gram vectors. -/
 theorem coe_mem_span_vectors (c : KernelPre K) :
     (c : KernelHilbert K) ∈ Submodule.span ℂ (Set.range (vector K)) := by
-  change coeLinearMap K c ∈ Submodule.span ℂ (Set.range (vector K))
+  change synthesis K c ∈ Submodule.span ℂ (Set.range (vector K))
   induction c using Finsupp.induction with
   | zero => simp
   | single_add x a c hx ha ih =>
     rw [map_add]
     refine Submodule.add_mem _ ?_ ih
-    change ((Finsupp.single x a : KernelPre K) : KernelHilbert K) ∈ _
-    rw [coe_single]
+    rw [synthesis_single]
     exact Submodule.smul_mem _ a (Submodule.subset_span ⟨x, rfl⟩)
 
 /-- The Gram vectors have dense linear span in their Hilbert realization. -/
@@ -94,15 +103,11 @@ theorem ext_on_vectors {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F]
   induction v using UniformSpace.Completion.induction_on with
   | hp => exact isClosed_eq L.continuous M.continuous
   | ih c =>
-    change L (coeLinearMap K c) = M (coeLinearMap K c)
+    change L (synthesis K c) = M (synthesis K c)
     induction c using Finsupp.induction with
     | zero => simp
     | single_add x a c hx ha ih =>
-      simp only [map_add, ih]
-      congr 1
-      change L ((Finsupp.single x a : KernelPre K) : KernelHilbert K) =
-        M ((Finsupp.single x a : KernelPre K) : KernelHilbert K)
-      simp only [coe_single, map_smul, h]
+      simp only [map_add, synthesis_single, map_smul, h, ih]
 
 /-- The bounded reindexing operator on the Gram Hilbert space. -/
 def pushforward (φ : X → X) {C : ℝ} (hC : 0 ≤ C)

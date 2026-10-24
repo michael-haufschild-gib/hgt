@@ -22,7 +22,7 @@ Answer Q-II in full; formalize the answer and its corollaries without extra anal
 
 Existing `AllApertureSourceRiemannRochAndCoercivityLaws` proves all-aperture RR for graded cones with negative reserves, and RR on compensated surfaces. Neither provides the requested cone with an independent Bézout law on the original surface. The existing nonnegative source-cone theorem identifies RR with the lower bound `Φ ≤ defect`.
 
-The actual theorem `sourceCone_bezout_of_defect_le` uses the opposite bound `defect ≤ Φ`, together with Hodge index. The overview of `SourceDeterminantalSectionsAndArithmeticRiemannRoch` incorrectly describes this direction in its first numbered item. Audit the consequences before correcting prose.
+The actual theorem `sourceCone_bezout_of_defect_le` uses the opposite bound `defect ≤ Φ`, together with Hodge index. Corrected the overview's reversed inequality and its unsupported Bézout claims for coercive mass cones; the Lean statements were unchanged.
 
 ## Conjecture loop
 
@@ -33,14 +33,12 @@ The actual theorem `sourceCone_bezout_of_defect_le` uses the opposite bound `def
    `Bezout(EΦ) ↔ ∀x y, δ(x,y)²≤Φ(x)Φ(y)`. Necessity uses balanced fibre lifts with
    degrees `sqrt(Φ(x)/2)` and the two source signs; sufficiency is hyperbolic AM–GM.
    This would identify the exact source contraction obligation without assuming Hodge index.
-5. **No finite L² reserve at any aperture.** Strengthen the half-coercivity counterexample:
-   the Weil Rayleigh quotient is unbounded above on `realTestsAt r` for every `r>0`.
-   For arbitrarily large auxiliary aperture `A≥r`, impose the finite low grid of `A`
-   and pole conditions on tests supported in `[-r,r]`. Finite-dimensional linear
-   constraints leave a nonzero test by the translated-bump construction already used
-   in `exists_ne_zero_mem_lowBlindTests`. The existing coercive estimate then gives
-   `W(f,f)/∫f²≥lowBlindCoercivity(A)`, which grows without bound. This proves failure
-   of Bézout for every finite constant `c`, not just for a strict known lower floor.
+5. **No finite L² reserve at any aperture.** The Weil Rayleigh quotient is unbounded above
+   on `realTestsAt r` for every `r>0`, even in every finite-dimensional reading kernel.
+   Use an energy-dependent low grid within the fixed support aperture, together with
+   the pole condition. The concentration and grid bounds force the contradiction `π≤1`
+   if a mass-normalized energy ceiling holds. This proves failure of Bézout for every
+   finite constant `c`, not just for a strict known lower floor.
 6. **Signed reserves do not evade rigidity.** Prove that Bézout on a graded source cone
    itself forces `Φ≥0`, without assuming `Φ(0)=0`. Then RR and Bézout on the graded cone
    are equivalent to exact representation of the nonnegative defect.
@@ -53,7 +51,7 @@ The actual theorem `sourceCone_bezout_of_defect_le` uses the opposite bound `def
 
 ## Boundary-rigidity paper proof
 
-[PROVED HERE, paper; core and low-blind application modules compile; axiom audit pending.]
+[PROVED HERE, paper and Lean; core and low-blind modules compile; transitive axiom audit clean.]
 Write `δ(x,y)=polar(x,y)-pair(x,y)`.
 Let `Φ` be nonnegative, even, and unchanged by adding either fibre. The source cone is
 `EΦ={x: deg_H(x)≥0, deg_V(x)≥0, Φ(x)≤2 deg_H(x)deg_V(x)}`.
@@ -89,7 +87,7 @@ unconditional example on the original, uncompensated subsurface.
 
 ### Unbounded-energy strengthening
 
-[PROVED HERE, paper; Lean draft written.] At each `r>0`, prescribe zeros at the pole and
+[PROVED HERE, paper and Lean; module compiles; transitive axiom audit clean.] At each `r>0`, prescribe zeros at the pole and
 the finite grid `lowGridOf (horizonFreqEps r (max M 0)) r`. A nonzero real test with this
 support and these zeros exists: take `2k+1` independent translates of a bump against
 `k` complex conditions. If its Weil energy were at most `max(M,0)∫f²`, the proved
@@ -114,7 +112,7 @@ many prescribed transform zeros, not merely failure of one proposed cone.
 
 ### Signed-source rigidity
 
-[PROVED HERE, paper; Lean draft written.] Suppose `Φ(x)<0`. Set
+[PROVED HERE, paper and Lean; module compiles; transitive axiom audit clean.] Suppose `Φ(x)<0`. Set
 `p=√(-Φ(x)/2)>0` and lift `x` to fibre degrees `(p,-p)`. Its ample degree is zero
 and its polar capacity equals `Φ(x)`, so it belongs to the graded source cone.
 Let `c=2+max(Φ(0),0)`. The pure-fibre lift of zero with degrees `(c,1)` also belongs
@@ -160,11 +158,12 @@ real space, not only finite Fourier sampling. The translated-bump kernel constru
 jointly to the given map, the pole, and the energy-dependent grid. This excludes arbitrary
 postprocessing of finitely many linear observations (values, moments, nodes, or transform
 samples) as a Bézout source reserve. The exact survivor is unbounded Rayleigh quotient in every
-such kernel. The extension is not yet Lean-certified.
+such kernel. The full generalized module compiles; its transitive axiom audit reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
 
 ### Numerical-equivalence conjecture and paper proof
 
-[PROVED HERE, paper; Lean implementation pending.] The literal real scaling pairing is
+[PROVED HERE, paper; Lean draft written.] The literal real scaling pairing is
 nondegenerate, without RH. Its proof uses the existing compact-polar density theorem:
 
 1. A compact complex `C²` source has a square-summable Xi evaluation vector. Critical-line
@@ -191,6 +190,160 @@ scope restriction for a principal-divisor construction, not a proof that richer 
 presentations cannot exist. The positive survivor is unconditional separation of every
 scaling class by the intersection pairing, plus separation by compact polar tests on the
 source side. The bridge and dependency audit must be formalized before this route is closed.
+
+The mixed defect radical is consequently exactly the fibre plane: a cycle annihilates every
+source defect pairing precisely when its compact source is zero. Combining this with the
+primitive-faithfulness criterion gives an exact AOT application on the full scaling surface:
+for any fibre-invariant reserve, section-cone ampleness is equivalent to strict positivity
+of the reserve on every nonzero compact source. The bridge and this corollary are drafted.
+
+### Primitive faithfulness and ampleness
+
+[PROVED HERE, paper; Lean implementation pending.] For any fibre-invariant reserve `Φ`,
+ampleness of the nonnegative-fibre source cone is equivalent to the exact condition
+`Φ(x)≤0 ⇒ δ(x,y)=0 for every y`. Necessity follows by translating `x` and `y` to zero
+fibre degrees: the first lift is effective with ample degree zero, and their intersection
+is `-δ(x,y)`. Conversely, an effective class of ample degree zero has both fibre degrees
+zero. Its reserve is nonpositive, so the stated condition kills its defect and hence every
+intersection. No evenness or nonnegativity premise is needed for this classification.
+
+Consequently, a normalized reserve `F(Lf)-F(0)` from any finite-dimensional linear reading
+fails ampleness at every positive aperture. The unbounded-energy theorem supplies a source
+in `ker L` with positive Weil energy; its zero-degree lift is effective and not numerically
+trivial. Together with the preceding Bézout obstruction, this excludes both required
+intersection axioms for every such normalized finite reading. An arbitrary positive offset
+may remove the ampleness obstruction, so the normalization is essential to this conclusion.
+Strict source cones have positive ample degree and satisfy the stated ampleness axiom
+vacuously; they remain subject to the independently proved Bézout obstruction.
+
+### Exact arithmetic source cone at every aperture
+
+[PROVED HERE, paper; Lean implementation pending.] The existing literal box-node identity
+identifies `chebyshevSourceEnergy r R` with the diagonal defect on the odd source surface for
+every `0<r<R`. Use this exact arithmetic reserve in the **graded** source cone. Its defining
+formula refers only to fibre degrees, the archimedean gauge, and the Chebyshev/node-correlation
+source. The cone equals the closed positive cone as a proved theorem, so it has RR at every
+aperture without an aperture-dependent loss. Unlike the negative finite-mass reserve, its
+Bézout condition is exactly the corresponding Hodge-index condition. Its ampleness condition
+has the same equivalence. Over every positive aperture, either condition is equivalent to RH
+by the existing odd-source exhaustion theorem.
+
+This supplies an exact arithmetic presentation of the RR cone, but no independent positivity
+mechanism: the required nonnegativity is the unresolved source-payment inequality itself.
+The original nonnegative-fibre `chebyshevSectionCone` requires that inequality even for RR;
+the graded cone moves it into Bézout/ampleness. This distinction corrects the review's
+existential-cone inference without claiming that a renamed exact identity forces its sign.
+
+The all-parity critical-deficit identity gives the same construction on **every**
+`realTestsAt r`, not only the odd sector. Its reserve is
+`(gammaBracket(0)-2)∫f² + biScaleLevyEnergy(f) + 4 horizonEnergy(f)` plus
+`2∫_[0,2r] ccmPrimeDeficitIncoming(t) doubleGaugeDerivative(autocorr(f))(t) dt`.
+Every term is an explicit arithmetic or archimedean source reading; the existing exact
+identity proves equality to the defect without a sign premise. The graded cone therefore
+has unconditional RR, while Bézout and ampleness are exactly source nonnegativity. This is
+an exact all-parity presentation of the desired RR supply, not an independent proof of
+positivity or the missing sheaf duality.
+
+The exact arithmetic reserve cannot factor through any finite-dimensional linear reading,
+even with arbitrary nonlinear postprocessing: such a factorization would make its value
+constant on that reading's kernel, contradicting the proved unbounded Weil energy there.
+The Lean draft includes this irreducibility statement and the all-aperture RH dictionaries.
+
+### Arbitrary finite degree descriptions
+
+[PROVED HERE, paper; Lean implementation pending.] Strengthen the source-reserve obstruction:
+at every positive aperture, **every fibre of every finite-dimensional linear reading of
+the entire scaling cycle space has self-intersection unbounded below**. Consequently no
+nonempty effective set whose membership is determined by finitely many linear degrees
+can satisfy Bézout, even with arbitrary nonlinear postprocessing of those degrees.
+
+For a reading `L` of scaling cycles, impose jointly on a compact source `f` the conditions
+`L(0,0,f)=0`, `pair((0,0,f),H)=0`, and `pair((0,0,f),V)=0`. The finite-kernel energy theorem
+supplies such an `f` with positive Weil energy. Its source cycle `p` lies in `ker L` and
+has `p²=-W(f,f)<0`. Given any `x` and target `M`, put
+`t²=(max(x²-M,0)+1)/(-p²)`. The average of `(x+tp)²` and `(x-tp)²` is
+`x²+t²p²<M`; at least one is below `M`, and both retain `L(x)`. Any nonempty union of
+reading fibres therefore contains negative-square classes and fails Bézout on self-pairs.
+
+This conclusion does not exclude infinitely many degree inequalities or a degree law on a
+richer divisor presentation. Its positive survivor is the exact affine-fibre unboundedness
+law, stronger than failure of any one finite-rank reserve or finite polyhedral cone.
+
+## Next source questions
+
+- [PROVED HERE, paper; Lean draft written.] Glue the exact all-parity source cones over aperture into a source-defined subset of the
+  original `ScalingCycle` space, using compact-support exhaustion. Its equality to the global
+  positive cone follows from the exact arithmetic formula. Audit the precise remaining
+  Hecke/Adams stability obligation using `scalingSurface_adams_riemannRoch_iff`: stability
+  at one scale greater than one, together with RR and nonnegative ample degree, already
+  forces Hodge index. Thus the new RR supply must not be described as an independently
+  proved motion-compatible effective theory.
+- After the numerical bridge compiles, test the proposed Hecke principal differences.
+  `scalingAction t` translates the compact source and rescales the two raw pole coordinates.
+  For `t≠0`, compact translation rigidity should force every fixed scaling cycle to be zero.
+  Combined with numerical nondegeneracy, no nonzero such difference is a principal numerical
+  relation within the compact cycle space. A richer representative carrier remains necessary.
+
+### Scaling and Hecke fixed classes
+
+[PROVED HERE, paper; Lean draft written.] The corpus already proves that a compact
+source satisfying `f(u)=c f(u+t)` at any nonzero lag is zero. Hence every eigenvector of
+`scalingAction t`, for `t≠0`, lies in the fibre plane. Its coordinates obey exactly
+`(exp(t/2)-c)a=0` and `(exp(-t/2)-c)b=0`. In particular its fixed space is zero.
+For positive `q≠1`, the normalized Adams fixed space is therefore zero. The unnormalized
+Hecke operator fixes exactly the vertical fibre line: its source must vanish, its horizontal
+raw coordinate scales by `q`, and `heckeCorrespondence_V` supplies the converse.
+
+With numerical nondegeneracy, these are also the exact numerically fixed spaces. Thus
+nontrivial compact Hecke or Adams motion cannot be mistaken for principal numerical
+equivalence. This distinguishes an isometry acting simultaneously on both intersection
+arguments from a principal move preserving every reading with the other argument fixed.
+
+## Verification queue
+
+### Removing source symmetry
+
+[PROVED HERE, paper; Lean implementation pending.] Evenness of the reserve is unnecessary
+for the RR classification. For every fibre-invariant real reserve, graded RR is equivalent
+to `Φ(x)≤δ(x,x)` for every source. For necessity, if `δ(x,x)<Φ(x)`, choose a polar
+capacity `c` strictly between them and fibre degrees `b=|c|+1`, `a=c/(2b)`.
+Then `2ab=c` and `a+b>0`. The resulting lift has positive square but is not effective;
+its negative has negative ample degree and is also not effective. For sufficiency, apply
+the source bound to whichever of `x` and `-x` has nonnegative ample degree. No comparison
+between the two reserve values is used.
+
+Nonnegative-fibre closed and strict cones only see `Φ₊=max(Φ,0)`, since their polar
+capacity is nonnegative (strictly positive in the strict cone). Their RR condition is
+therefore exactly `Φ₊≤δ`. Both RR and Bézout hold exactly when `Φ₊=δ`; for graded cones,
+both hold exactly when `0≤Φ=δ`. These statements impose neither source evenness nor an
+initial sign premise. Negative reserves on zero-defect sources are invisible to the
+nonnegative-fibre construction, but graded Bézout excludes them.
+
+For Bézout alone the corresponding asymmetric mixed law is
+`max(δ(x,y),0)²≤Φ₊(x)Φ₊(y)` for all sources. Balanced boundary lifts give necessity;
+hyperbolic AM–GM gives sufficiency. Only when the reserve is even can this law be replaced
+by the symmetric square bound `δ(x,y)²≤Φ(x)Φ(y)`. This identifies exactly where symmetry
+was used in the earlier classification. Formalization must retain this distinction.
+
+| Module | Status |
+|---|---|
+| ACS `SourceConeBoundaryRigidity` | Compiled; main transitive axiom endpoints clean. |
+| ACS `SourceConeBoundaryApplications` | Compiled; main transitive axiom endpoint clean. |
+| ACS `WeilEnergyIsUnboundedAtEveryAperture` | Compiled; generalized finite-kernel and no-go endpoints axiom-clean. |
+| ACS `GradedSourceConeBoundaryRigidity` | Compiled; RR/Bézout endpoint axiom-clean; umbrella wired. |
+| ACS `SourceConePrimitiveFaithfulness` | Olean compilation passed; transitive axiom audit pending. |
+| ACS `NumericalEquivalenceOnTheScalingSurface` | First compile exposed implicit-function elaboration timeouts and integral/name errors. Proof split into smaller lemmas with explicit functions and a real integral type. Revised olean compilation running; no concurrent Lean process permitted. |
+| ACS `HeckeClassesDoNotMoveNumerically` | Draft; needs numerical-equivalence olean, then compile and audit. |
+| ACS `FiniteDegreeConesCannotSatisfyBezout` | Draft; compile and transitive audit pending. |
+| ACS `ExactArithmeticSourceEffectivity` | Draft; compile and transitive audit pending. |
+| AOT `SourceSectionBoundaryRigidity` | Draft; needs numerical-equivalence olean, then compile and audit. |
+| AOT `AllApertureChebyshevSourceEffectivity` | Draft; needs preceding AOT olean, then compile and audit. |
+
+The `/tmp/QIIBoundaryAudit.lean` run printed clean axiom lists but exited nonzero because a
+scratch `#check` incorrectly qualified the global name `integral_complex_ofReal`. That scratch
+name is corrected; no theorem failed. `/tmp/QIINumericalNames.lean` passed with the global
+integral lemma and the exp/log names. Final plain Lean audits, remaining
+umbrella imports, and the finite-degree failed-route closure are still pending.
 
 ## Related ongoing work
 

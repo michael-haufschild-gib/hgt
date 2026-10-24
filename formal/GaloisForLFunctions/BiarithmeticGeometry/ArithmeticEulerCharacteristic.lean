@@ -124,7 +124,8 @@ theorem boxDefect_cell_interpolation (N : ℕ) {s : ℝ}
         Real.exp_le_exp.mpr hs0
     · have h := Real.exp_lt_exp.mpr hs1
       rw [Real.exp_log (by positivity)] at h
-      simpa only [Nat.cast_add, Nat.cast_one, Nat.cast_ofNat] using h
+      push_cast at h ⊢
+      linarith only [h]
   have hanchor := boxDefect_eq_degree_sub_log_torsion N
   simp only [chebyshevTwoPoleDefect, twoPoleWeight, lagChebyshev,
     Real.exp_log (by positivity : (0 : ℝ) < (N + 1 : ℕ)), Nat.floor_natCast] at hanchor

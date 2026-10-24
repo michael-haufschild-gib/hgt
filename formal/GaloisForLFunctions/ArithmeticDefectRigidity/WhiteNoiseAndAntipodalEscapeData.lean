@@ -37,8 +37,8 @@ theorem abs_whiteNoiseKernel_le (j k : ℕ+) :
   by_cases h : j = k
   · subst k
     have hj : (0 : ℝ) < j := by exact_mod_cast j.property
-    simp only [whiteNoiseKernel, if_pos rfl, abs_of_pos (one_div_pos.mpr hj),
-      cofactorGramRadius]
+    rw [show whiteNoiseKernel j j = 1 / (j : ℝ) by simp [whiteNoiseKernel],
+      abs_of_pos (one_div_pos.mpr hj), cofactorGramRadius]
     rw [← sq, div_pow, one_pow, Real.sq_sqrt hj.le]
   · simp only [whiteNoiseKernel, if_neg h, abs_zero, cofactorGramRadius]
     positivity
@@ -63,7 +63,7 @@ theorem whiteNoiseKernel_dilation (p j k : ℕ+) :
     whiteNoiseKernel (p * j) (p * k) = (1 / (p : ℝ)) * whiteNoiseKernel j k := by
   by_cases h : j = k
   · subst k
-    simp only [whiteNoiseKernel, if_pos rfl, PNat.mul_coe, Nat.cast_mul]
+    simp only [whiteNoiseKernel, PNat.mul_coe, Nat.cast_mul]
     simp [one_div, mul_inv_rev, mul_comm]
   · have hmul : p * j ≠ p * k := fun he => h (mul_left_cancel he)
     simp only [whiteNoiseKernel, if_neg hmul, if_neg h, mul_zero]

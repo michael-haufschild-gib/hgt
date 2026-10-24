@@ -1,6 +1,10 @@
 import GaloisForLFunctions.BiarithmeticGeometry.HorizonAffineActions
 import GaloisForLFunctions.BiarithmeticGeometry.HorizonBoundaryCalculus
 import GaloisForLFunctions.BiarithmeticGeometry.AffineNormalizationFreedom
+import GaloisForLFunctions.BiarithmeticGeometry.ArithmeticEulerCharacteristic
+import GaloisForLFunctions.BiarithmeticGeometry.SharedBudgetDescent
+import GaloisForLFunctions.BiarithmeticGeometry.PaidKernelsVanishOnEscape
+import GaloisForLFunctions.BiarithmeticGeometry.ExactPrefixVisibility
 
 /-!
 # Biarithmetic Geometry

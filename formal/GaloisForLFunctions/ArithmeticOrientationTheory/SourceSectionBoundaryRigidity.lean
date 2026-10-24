@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticOrientationTheory.AnEffectivityFromSectionsThatDoesNotReadTheForm
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.GradedSourceConeBoundaryRigidity
-import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.WeilEnergyIsUnboundedAtEveryAperture
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SourceConePrimitiveFaithfulness
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.NumericalEquivalenceOnTheScalingSurface
 
 /-!
 # Boundary rigidity for section readings
@@ -37,6 +38,24 @@ theorem sourceSectionCone_riemannRoch_and_bezout_iff (S : PolarSurface C) {Φ : 
       S.BezoutAxiom (sourceSectionCone S Φ)) ↔ ∀ x : C, Φ x = S.defect x x := by
   rw [sourceSectionCone_eq_sourceCone]
   exact S.sourceCone_riemannRoch_and_bezout_iff hnn heven hfib
+
+/-- On the full compact scaling surface, ampleness requires a strictly positive reading of every nonzero source. -/
+theorem scalingSourceSectionCone_ample_iff_source_pos {Φ : ScalingCycle → ℝ}
+    (hfib : ∀ (x : ScalingCycle) (a b : ℝ),
+      Φ (x + a • scalingSurface.H + b • scalingSurface.V) = Φ x) :
+    scalingSurface.AmpleAxiom (sourceSectionCone scalingSurface Φ) ↔
+      ∀ x : ScalingCycle, x.2.2 ≠ 0 → 0 < Φ x := by
+  rw [sourceSectionCone_eq_sourceCone,
+    scalingSurface.sourceCone_ample_iff_defect_radical hfib]
+  constructor
+  · intro h x hx
+    by_contra hpos
+    exact hx ((scalingSurface_defect_radical_iff_source_eq_zero x).mp
+      (h x (le_of_not_gt hpos)))
+  · intro h x hx
+    apply (scalingSurface_defect_radical_iff_source_eq_zero x).mpr
+    by_contra hf
+    exact (not_lt_of_ge hx) (h x hf)
 
 /-- The rank of the Boolean obstruction matrix counts membership and is at most one. -/
 theorem sourceH0_le_one (S : PolarSurface C) (Φ : C → ℝ) (x : C) :
@@ -80,7 +99,7 @@ theorem realTestsAt_l2MassSectionCone_not_bezout {r : ℝ} (hr : 0 < r) (c : ℝ
   rw [l2MassSectionCone_eq_l2SourceCone]
   exact (realTestsAt_l2SourceCones_not_bezout hr c).1
 
-/-- Turning finite transform data into a section rank does not restore Bézout. -/
+/-- Turning finitely many linear readings into a section rank does not restore Bézout. -/
 theorem finiteLinearReadingSourceSectionCone_not_bezout {r : ℝ} (hr : 0 < r)
     {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
     (L : realTestsAt r →ₗ[ℝ] V) (F : V → ℝ) :
@@ -88,6 +107,15 @@ theorem finiteLinearReadingSourceSectionCone_not_bezout {r : ℝ} (hr : 0 < r)
       (sourceSectionCone (scalingSubsurface (realTestsAt r)) (fun x => F (L x.2.2))) := by
   rw [sourceSectionCone_eq_sourceCone]
   exact finiteLinearReadingSourceCone_not_bezout hr L F
+
+/-- Normalized finite linear section readings also miss the ampleness condition. -/
+theorem normalizedFiniteLinearReadingSourceSectionCone_not_ample {r : ℝ} (hr : 0 < r)
+    {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+    (L : realTestsAt r →ₗ[ℝ] V) (F : V → ℝ) :
+    ¬ (scalingSubsurface (realTestsAt r)).AmpleAxiom
+      (sourceSectionCone (scalingSubsurface (realTestsAt r)) (fun x => F (L x.2.2) - F 0)) := by
+  rw [sourceSectionCone_eq_sourceCone]
+  exact normalizedFiniteLinearReadingSourceCone_not_ample hr L F
 
 /-- Finite Fourier postprocessing is a special case of the linear-reading obstruction. -/
 theorem finiteFourierReadingSourceSectionCone_not_bezout {r : ℝ} (hr : 0 < r)

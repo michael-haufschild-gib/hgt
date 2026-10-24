@@ -23,7 +23,9 @@ Open Problem 9 asks for:
    pretentious trichotomy (Möbius `μ`, Liouville `λ`, real character `χ`, and `1`-pretentious
    multiplicative weights `f(p) = 1`).
 
-This module establishes the complete resolution of Open Problem 9:
+This module proves the zero-index formula above the zero width and the following
+unit-orbit and multiplicative-source formulas. The reverse inclusion and nonzero
+index below the zero width remain open.
 
 1. **Reverse inclusion, untied-obstruction exclusion, and exact index formula for `μ d^{−ε}` right of
    the zero width (§1):**
@@ -50,8 +52,10 @@ This module establishes the complete resolution of Open Problem 9:
        `towerTwistedPower ε a`);
      - `Module.rank ℂ (𝒲_{1/2} ⧸ paidIdeal (pmPowerDampedRealWeight ε)) = 0` and
        `Module.finrank ℂ (𝒲_{1/2} ⧸ paidIdeal (pmPowerDampedRealWeight ε)) = 0`.
-   - Across the entire sub-half damping strip `0 < ε < 1/2`, the global reverse inclusion and index
-     formula form an exact equivalence with `RiemannHypothesis` (`moebius_reverse_inclusion_and_index_tfae`).
+   - Across the entire sub-half damping strip `0 < ε < 1/2`, hull equality **together with
+     emptiness**, and the zero-index formula, are equivalent to `RiemannHypothesis`
+     (`moebius_reverse_inclusion_and_index_tfae`). The equivalence does not assert
+     that hull equality alone implies the Riemann hypothesis.
 
 2. **Exact Wiener-unit orbit and identical index invariants of the Möbius and Liouville receivers (§2):**
    - For every `ε > 0`, the damped square-indicator kernel `dampedSignWeight RHTower.squareIndicatorR ε`
@@ -592,8 +596,7 @@ theorem multiplicative_one_finiteLocalFactor_index_dichotomy {f : ArithmeticFunc
     (obstructionHull_eq_empty_iff_receiverBounded hsf).2 hpaid,
     finrank_quotient_paidIdeal_eq_zero_of_receiverBounded hsf hpaid⟩
 
-/-- **Master Synthesis for Open Problem 9 (`actualReceiver_indexFormula_synthesis`):**
-Packages the complete resolution of Open Problem 9:
+/-- Exact zero-index and unit-orbit formulas for the listed multiplicative receivers:
 1. Reverse inclusion, untied-obstruction exclusion, and zero-codimension index formula for the
    actual Möbius receiver `μ d^{−ε}` right of the zero width `zetaZeroAbscissa − 1/2 < ε < 1/2`;
 2. Exact `WienerUnitOrbit` equivalence and identical `paidIdeal`, `obstructionHull`, `rank`, and

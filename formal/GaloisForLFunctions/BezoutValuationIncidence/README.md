@@ -1082,6 +1082,42 @@ of this linear diagonal is already unconditional; its unnormalized error is exac
 $D_T+R_T^{\mathrm{mix}}=E_T^{\mathrm{int}}$. This calibration does not bound that error and does
 not supply the long-sawtooth/tail anti-alignment gap at scale $T^{1-2\varepsilon}$.
 
+**The complete leading matrix at fixed cutoffs.** Write
+$A_U=\sum_{d\le U}\mu(d)d^{-1-\varepsilon}$ and $Z=\zeta(1+\varepsilon)=1/\rho$.
+For fixed $U,V$, every normalized entry satisfies
+$G_{ij}(T)/T\to c_i c_j$, where
+$$
+c=(A_U,A_V,-ZA_UA_V,\rho-A_U-A_V+ZA_UA_V,-\rho)
+$$
+(`tendsto_pmPronicVaughanGram_div_nat`). Thus $\sum_i c_i=0$ and
+$D_T/T\to\sum_i c_i^2>0$. A fixed linear superposition with coefficients $w_i$ has
+energy divided by $T$ tending to $(\sum_i w_i c_i)^2$
+(`tendsto_pmPronicVaughan_combinationEnergy_div_nat`). Bounded interior energy is exactly
+the reciprocal relative-error requirement
+$|1+R_T^{\mathrm{mix}}/D_T|=O(1/T)$
+(`bounded_pmInteriorPronicEnergy_iff_reciprocal_vaughan_relative_error`). The full matrix
+limit stated here fixes both cutoffs. At the distinct square-root regime $U=V=N$, $T=N^2$,
+the both-large piece and its entire Gram row and column vanish exactly
+(`pmPronicVaughanGram_square_large_zero`); controlling the remaining signed terms is still
+required.
+
+**The smooth remainder's absolute budget.** The unsigned divisor expansion specializes exactly
+to the small-small piece:
+$p_2(n)=-ZL_{U,V}(n)-c_\varepsilon n^{1-\varepsilon}P_{U,V}(n)-R_{U,V}(n)$, with
+$c_\varepsilon=\operatorname{Re}\zeta(1-\varepsilon)/(1-\varepsilon)$
+(`pmPronicVaughanPiece_smallSmall_expansion`). Here $L$ is the literal floor prefix of the two
+truncated Möbius factors, $P=\sum_{a\le U,b\le V,ab\le n}\mu(a)\mu(b)/(ab)$, and $R$ is the
+signed sum of the existing dilated smooth-power remainders. Their individual norm bounds give
+$\|R_{U,V}\|_T\le C_\varepsilon W_\varepsilon(U)W_\varepsilon(V)$, where
+$W_\varepsilon(N)=\sum_{a\le N}|\mu(a)|a^{-\varepsilon-1/2}$
+(`pronicNorm_pmVaughanSmoothRemainder_le`). For $0<\varepsilon<1/2$ and every $N\ge1$,
+$N^{1/2-\varepsilon}/4\le W_\varepsilon(N)\le N^{1/2-\varepsilon}/(1/2-\varepsilon)+1$.
+Consequently the squared rectangular absolute budget has exact power $N^{2-4\varepsilon}$,
+or $T^{1-2\varepsilon}$ at $T=N^2$, and admits no eventual fixed power saving
+(`not_pmVaughan_absolute_square_budget_power_saving`). This lower bound is on the absolute
+budget. The signed remainder and its cross terms with the retained floor and pole terms still
+require an estimate.
+
 ### 3.9 Dilation profiles and the Bézout seed
 
 The continuous profile $\Phi_r(p/q)$ equals the reciprocal pairing of the integer jump streams

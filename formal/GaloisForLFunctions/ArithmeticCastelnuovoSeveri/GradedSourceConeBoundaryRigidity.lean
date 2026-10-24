@@ -22,7 +22,7 @@ theorem exists_gradedSourceCone_negative_pair {Φ : C → ℝ}
     ∃ y ∈ S.gradedSourceCone Φ, ∃ z ∈ S.gradedSourceCone Φ, S.pair y z < 0 := by
   let p := Real.sqrt (-Φ x / 2)
   have hp : 0 ≤ p := Real.sqrt_nonneg _
-  have hp2 : p ^ 2 = -Φ x / 2 := Real.sq_sqrt (by positivity)
+  have hp2 : p ^ 2 = -Φ x / 2 := Real.sq_sqrt (by linarith only [hneg])
   have hp0 : 0 < p := by nlinarith only [hp, hp2, hneg]
   let c := 2 + max (Φ 0) 0
   have hc : 2 ≤ c := by dsimp [c]; linarith only [le_max_right (Φ 0) 0]
@@ -40,7 +40,7 @@ theorem exists_gradedSourceCone_negative_pair {Φ : C → ℝ}
     constructor <;> linarith only [hc, hΦc]
   · rw [S.pair_withFibreDegrees]
     have hzero : S.defect x 0 = 0 := by
-      simp only [defect, polar, map_zero, LinearMap.zero_apply, mul_zero, zero_mul,
+      simp only [defect, polar, map_zero, LinearMap.zero_apply, mul_zero,
         add_zero, sub_zero]
     rw [hzero]
     have hprod : 0 < p * (c - 1) := mul_pos hp0 (by linarith only [hc])

@@ -34,7 +34,10 @@ theorem singletonPaymentsGlue_iff (k : ℕ) (B : ℝ≥0) :
       have hBpos : (0 : ℝ) < B := by exact_mod_cast (pos_iff_ne_zero.mpr hB)
       have hsum := h (fun _ => (B : ℝ)) (fun _ => ⟨B.property, le_rfl⟩)
       simp only [sum_const, card_univ, Fintype.card_fin, nsmul_eq_mul] at hsum
-      have hk : (k : ℝ) ≤ 1 := (mul_le_mul_right hBpos).mp (by simpa using hsum)
+      have hk : (k : ℝ) ≤ 1 := by
+        by_contra h
+        have hproduct := mul_pos (sub_pos.mpr (lt_of_not_ge h)) hBpos
+        nlinarith only [hsum, hproduct]
       exact_mod_cast hk
   · rintro (hk | rfl) f hf
     · have hsum : (∑ i, f i) ≤ (k : ℝ) * B := by

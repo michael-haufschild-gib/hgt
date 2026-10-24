@@ -1733,6 +1733,21 @@ $-\rho^2T+o(T)$, independently of the cutoffs, so they cannot all be sublinear
 pole contribution. The long-sawtooth/tail anti-alignment gap at order $T^{1-2\varepsilon}$
 remains a separate quantitative obligation; the uncancelled Vaughan energy is exactly
 $D_T+R_T^{\mathrm{mix}}=E_T^{\mathrm{int}}$.
+At fixed cutoffs the full leading matrix is an explicit rank-one outer product with positive
+diagonal density. Consequently bounded interior energy is equivalent to
+$|1+R_T^{\mathrm{mix}}/D_T|=O(1/T)$
+(`bounded_pmInteriorPronicEnergy_iff_reciprocal_vaughan_relative_error`), which makes the
+remaining rate requirement precise. At square-root cutoffs the both-large row vanishes
+exactly (`pmPronicVaughanGram_square_large_zero`); the other signed terms remain.
+The small-small Vaughan specialization of the smooth-power expansion retains its floor
+prefix, partial pole sum, and signed dilated remainder exactly
+(`pmPronicVaughanPiece_smallSmall_expansion`). Summing the individual remainder norms costs
+$W_\varepsilon(U)W_\varepsilon(V)$ with
+$W_\varepsilon(N)=\sum_{a\le N}|\mu(a)|a^{-\varepsilon-1/2}$.
+At $U=V=N$, the squared absolute budget has exact order $N^{2-4\varepsilon}$ below half
+damping (`not_pmVaughan_absolute_square_budget_power_saving`). Individual remainder admission
+therefore leaves a signed assembly problem; this budget lower bound is not a lower bound on
+the signed remainder.
 
 **Three selectivity classes.** The conservation and dissipation laws of the theory sort exactly by
 the structure they use.
