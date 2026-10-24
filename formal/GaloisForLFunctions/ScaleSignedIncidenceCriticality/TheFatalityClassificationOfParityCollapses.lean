@@ -24,51 +24,57 @@ This module gives the complete fatality and neutrality classification across the
 parity collapses in the corpus, together with the exact faithful completions that kill the fatal
 collapses:
 
-1. **General SSIC Fatality–Neutrality Calculus for Involutive Collapses (§1).**
-   For an involution `κ` and a paid datum `d` (`P d`), strict fatality (`P d ∧ ¬ P (κ d)`),
-   pair-fatality (`¬ (P d ∧ P (κ d))`), and failure of neutrality (`¬ (P (κ d) ↔ P d)`) are
-   equivalent (`strictlyFatalAt_iff_pairFatalAt_of_paid`, `strictlyFatalAt_iff_not_neutralAt_of_paid`).
+1. **General SSIC Fatality–Neutrality Calculus for Collapses (§1).**
+   At any paid datum `d` (`P d`), strict fatality (`P d ∧ ¬ P (κ d)`), pair-fatality
+   (`¬ (P d ∧ P (κ d))`), and failure of neutrality (`¬ (P (κ d) ↔ P d)`) are equivalent
+   (`strictlyFatalAt_iff_pairFatalAt_of_paid`, `strictlyFatalAt_iff_not_neutralAt_of_paid`).
    Whenever `r` is blind to `κ`, any strictly fatal datum destroys resolution of `P` and forces the
-   resolution limit of any non-negative energy invariant to reach at least `max (I d) (I (κ d))`.
+   resolution limit of any real invariant `I` to reach at least `max (I d) (I (κ d))`.
 
 2. **Family I: The Even-Multiplier Flip (`evenFlip`) on Four-Free Convolutions (§2).**
-   For a paid four-free convolution weight `c = k ⋆ o_ε` (`0 < ε ≤ 1/2`, `k` on `[1, J]` vanishing
-   on multiples of `4`, `poleValue k J ε = 0`), the even flip `c^♭ = k^♭ ⋆ o_ε` is strictly fatal
-   for `ReceiverBounded` **if and only if** the even part of the kernel fails to vanish at the pole:
-   `poleValue (evenPartWeight k) J ε ≠ 0` (`strictlyFatalAt_evenFlip_iff_evenPart_poleValue_ne_zero`).
-   It is neutral on the paid pair `{c, c^♭}` **if and only if** both the odd and even parts of `k`
-   vanish independently at `1 - ε` (`neutralAt_evenFlip_paid_iff_odd_and_even_pole`).
-   In the two-point family `k = α δ_1 + β δ_2`, the even flip is strictly fatal for every non-zero
-   paid kernel (`strictlyFatalAt_evenFlip_twoPoint_iff`). In the infinite-support `OrientAdmissible ε k`
-   class, neutrality on the pair holds iff `polePairing ε k = 0 ∧ polePairing ε (evenPartWeight k) = 0`.
-   Adjoining the first pronic moment (`firstPronicMoment`) kills the even-flip collapse whenever
-   the prime-`2` Ramanujan coefficient is non-zero (`not_mem_shadow_joinReading_firstPronicMoment_iff`),
-   and adjoining the logarithmic pronic moments separates every paid Fermi-flipped weight.
+   For a four-free convolution weight `c = k ⋆ o_ε` (`0 < ε ≤ 1/2`, `k` supported on `[1, J]` and
+   vanishing on multiples of `4`), `evenFlip c = k^♭ ⋆ o_ε` is strictly fatal for `ReceiverBounded`
+   at `c` **if and only if** `poleValue k J ε = 0 ∧ poleValue (evenPartWeight k) J ε ≠ 0`
+   (`strictlyFatalAt_evenFlip_iff_pole_and_evenPart`). It is paid and neutral (`P c ∧ P (evenFlip c)`)
+   **if and only if** both `oddPartKernel k` and `evenPartWeight k` vanish independently at `1 - ε`
+   (`evenFlip_paid_and_neutral_iff_odd_and_even_pole`).
+   In the two-point family `k = α δ_1 + β δ_2`, the even flip is strictly fatal iff
+   `α + β 2^{ε - 1} = 0 ∧ β ≠ 0`, and neutral only at the zero kernel (`α = β = 0`).
+   In the infinite-support `OrientAdmissible ε k` class, strict fatality holds iff
+   `polePairing ε k = 0 ∧ polePairing ε (evenPartWeight k) ≠ 0`.
+   Adjoining the first pronic moment (`firstPronicMoment`) expels `evenFlip c` from the shadow of any
+   blind reading iff `weightRamanujanCoeff c 2 ≠ 0` (`not_mem_shadow_joinReading_firstPronicMoment_iff`),
+   and adjoining the logarithmic pronic moments `logPowWeight c m` separates every generalized Fermi
+   even-flip pair (`exists_logMoment_ne_of_strictlyFatalAt_evenFlip`).
 
 3. **Family II: Selberg Sign-Character Orbits and Cubic-Moment Reduction (§3).**
    Under the complete-period lag reading `completePeriodLagReading N`, the shadow of `c` is the
    entire `2^{N-1}` sign-character orbit `scaledSelbergRow N c σ`, within which `chiFourSign`,
    every real character `completedValue χ`, and `evenSign` are cofinally fatal for bounded pronic
-   horizon energy. Refining by the complete-period cubic moments (`translatedMoment N · v` for
-   `v : Fin 3 → ℕ`) collapses the entire `2^{N-1}` sign orbit to a singleton on odd-supported rows
-   (`shadow_cubicMomentReading_odd_singleton`) and to at most the two-element even-flip pair
-   `{c, evenFlipRow N c}` on squarefree-supported rows (`shadow_cubicMomentReading_squarefree_pair`),
-   reducing all surviving sign-character fatality to the prime-`2` even flip of Family I.
+   horizon energy. Refining by the complete-period cubic moments (`cubicMomentReading N`) expels
+   `chiFourTwinRow ε N` from the shadow at every `N ≥ 3` while leaving `evenFlipRow N (fermiRow ε N)`
+   inside the shadow at every `N`; in general, cubic moments collapse the entire `2^{N-1}` sign
+   orbit to a singleton on odd-supported rows (`cubicMomentReading_pins_odd_signOrbit`) and to at
+   most the two-element even-flip pair `{c, evenFlipRow N c}` on squarefree-supported rows
+   (`cubicMomentReading_reduces_squarefree_signOrbit_to_evenFlip`), reducing all surviving
+   sign-character fatality to the prime-`2` even flip of Family I.
 
 4. **Family III: Residue-Class Prime Flips and the `(1/4, 3/4)` Complementation Law (§4).**
    At half damping `ε = 1/2`, the residue-class flip `residueFlip q S` is paid iff
    `q.totient < 4 * (S.filter IsUnit).card`, and its complement `Sᶜ` is paid iff
    `4 * (S.filter IsUnit).card < 3 * q.totient` (`receiverBounded_residueFlip_compl_half_iff`).
    Every complement pair `{S, Sᶜ}` has at least one paid member (`receiverBounded_residueFlip_or_compl_half`),
-   complementation is neutral (both paid) iff the flipped unit density lies strictly in `(1/4, 3/4)`
-   (`both_residueFlip_and_compl_paid_iff`), and complementation is strictly fatal at `S` iff
-   `3 * q.totient ≤ 4 * (S.filter IsUnit).card` (`strictlyFatalAt_compl_residueFlip_half_iff`).
+   complementation is paid and neutral (both paid) iff the flipped unit density lies strictly in
+   `(1/4, 3/4)` (`both_residueFlip_and_compl_paid_iff`), and complementation is strictly fatal at `S`
+   iff `3 * q.totient ≤ 4 * (S.filter IsUnit).card` (`strictlyFatalAt_compl_residueFlip_half_iff`).
    For a subgroup flip `subgroupFlipSet H` (`H ≤ (ZMod q)ˣ`), complementation is neutral at index
    `2` and `3` and strictly fatal iff the index is at least `4`
    (`strictlyFatalAt_compl_subgroupFlipSet_iff`).
 -/
 
-open Set Filter Topology BigOperators
+open Finset Set Filter Topology BigOperators
+open GaloisForLFunctions.BezoutValuationIncidence
+open GaloisForLFunctions.BiScaleUncertainty
 open GaloisForLFunctions.ArithmeticOrientationTheory
 open GaloisForLFunctions.TransHorizonIncidenceMechanics
 open GaloisForLFunctions.SmoothBernoulliPoleCalibration
@@ -122,11 +128,11 @@ theorem collapse_trichotomy (P : D → Prop) (κ : D → D) (d : D) :
 
 /-- **Strict fatality destroys resolution of any blind reading.** -/
 theorem not_resolves_of_invisible_of_strictlyFatalAt {r : D → O} {P : D → Prop} {κ : D → D}
-     (hinv : Invisible r κ) {d : D} (hfat : StrictlyFatalAt P κ d) :
+    (hinv : Invisible r κ) {d : D} (hfat : StrictlyFatalAt P κ d) :
     ¬ Resolves r P :=
   not_resolves_of_separating_collapse hinv hfat.1 hfat.2
 
-/-- **Resolution of a paid datum under an invisible collapse forces neutrality.** -/
+/-- **Resolution under an invisible collapse forces neutrality everywhere.** -/
 theorem neutralAt_of_resolves_of_invisible {r : D → O} {P : D → Prop} {κ : D → D}
     (hres : Resolves r P) (hinv : Invisible r κ) (d : D) :
     NeutralAt P κ d :=
@@ -142,181 +148,187 @@ theorem max_le_resolutionLimit_of_invisible {I : D → ℝ} {r : D → O} {κ : 
 
 /-! ### 2. Family I: The Even-Multiplier Flip on Four-Free Convolutions -/
 
-/-- **Exact fatality criterion for the even flip on a paid four-free convolution.**
-Let `k` be a kernel supported on `[1, J]` and vanishing on multiples of `4`, let `0 < ε ≤ 1/2`,
-and assume `c = k ⋆ o_ε` is paid (`poleValue k J ε = 0`). Then the even flip `c^♭ = k^♭ ⋆ o_ε` is
-strictly fatal for `ReceiverBounded` if and only if the even part of the kernel has a non-zero
-pole value at `1 - ε`: `poleValue (evenPartWeight k) J ε ≠ 0`. -/
-theorem strictlyFatalAt_evenFlip_iff_evenPart_poleValue_ne_zero
-    {k : ℕ → ℝ} {J : ℕ} (hJ : 1 ≤ J) (hk : SupportedOn k J)
-    (h4 : ∀ j, 4 ∣ j → k j = 0) {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2)
-    (hpole : poleValue k J ε = 0) :
-    (ReceiverBounded (convWeight k (oddSquarefreeDamped ε)) ∧
-      ¬ ReceiverBounded (convWeight (flipKernelOf k) (oddSquarefreeDamped ε))) ↔
-      poleValue (evenPartWeight k) J ε ≠ 0 := by
-  have hpaid : ReceiverBounded (convWeight k (oddSquarefreeDamped ε)) :=
-    (receiverBounded_fourFree_iff hJ hk h4 hε hε2).mpr hpole
-  have hshift := poleValue_flipKernelOf_eq_sub_two_evenPart k J ε
-  have hk' : SupportedOn (flipKernelOf k) J := supportedOn_flipKernelOf hk
-  have h4' : ∀ j, 4 ∣ j → flipKernelOf k j = 0 := flipKernelOf_eq_zero_of_four_dvd h4
-  have hflip_iff := receiverBounded_fourFree_iff hJ hk' h4' hε hε2
-  rw [hshift, hpole, zero_sub, neg_eq_zero, mul_eq_zero, OfNat.ofNat_ne_zero, false_or] at hflip_iff
-  simp [hpaid, hflip_iff]
+/-- **Exact fatality criterion for the even flip on a four-free convolution.**
+Let `k` be a kernel supported on `[1, J]` and vanishing on multiples of `4`, and let `0 < ε ≤ 1/2`.
+Then `evenFlip` is strictly fatal for `ReceiverBounded` at `c = k ⋆ o_ε` if and only if `k` vanishes
+at the pole `1 - ε` (`poleValue k J ε = 0`) while its even part does not
+(`poleValue (evenPartWeight k) J ε ≠ 0`). -/
+theorem strictlyFatalAt_evenFlip_iff_pole_and_evenPart
+    {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {k : ℕ → ℝ}
+    (hk4 : ∀ m, 4 ∣ m → k m = 0) {J : ℕ} (hkJ : ∀ j, J < j → k j = 0) :
+    StrictlyFatalAt ReceiverBounded evenFlip (RHTower.dirichletConv k (oddSqfWeight ε)) ↔
+      (poleValue k J ε = 0 ∧ poleValue (evenPartWeight k) J ε ≠ 0) := by
+  simp only [StrictlyFatalAt, evenFlip_dirichletConv_oddSqf hk4]
+  obtain ⟨_, _, _, hiff, _, hpres, hnot⟩ := evenFlip_exactLoss hε hε2 hk4 hkJ
+  constructor
+  · rintro ⟨hc, hnotflip⟩
+    refine ⟨hiff.mp hc, fun he0 => hnotflip ((hpres he0).mp hc)⟩
+  · rintro ⟨hk0, he_ne⟩
+    have hc : ReceiverBounded (RHTower.dirichletConv k (oddSqfWeight ε)) := hiff.mpr hk0
+    exact ⟨hc, fun hflip => hnot he_ne ⟨hc, hflip⟩⟩
 
-/-- **Exact neutrality criterion for the even flip on a four-free convolution pair.**
-Both members `{k ⋆ o_ε, k^♭ ⋆ o_ε}` of the even-flip pair are paid (so the even flip is paid and
-neutral) if and only if both `oddPartKernel k` and `evenPartWeight k` vanish independently at the
-pole `1 - ε`. -/
-theorem evenFlip_pair_paid_and_neutral_iff_odd_and_even_pole
-    {k : ℕ → ℝ} {J : ℕ} (hJ : 1 ≤ J) (hk : SupportedOn k J)
-    (h4 : ∀ j, 4 ∣ j → k j = 0) {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) :
-    (ReceiverBounded (convWeight k (oddSquarefreeDamped ε)) ∧
-      NeutralAt ReceiverBounded
-        (fun w => if w = convWeight k (oddSquarefreeDamped ε)
-          then convWeight (flipKernelOf k) (oddSquarefreeDamped ε) else w)
-        (convWeight k (oddSquarefreeDamped ε))) ↔
+/-- **Exact neutrality criterion for a paid four-free convolution pair.**
+Both `c = k ⋆ o_ε` and `evenFlip c` are paid (so `evenFlip` is paid and neutral at `c`) if and only
+if both `oddPartKernel k` and `evenPartWeight k` vanish independently at the pole `1 - ε`. -/
+theorem evenFlip_paid_and_neutral_iff_odd_and_even_pole
+    {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {k : ℕ → ℝ}
+    (hk4 : ∀ m, 4 ∣ m → k m = 0) {J : ℕ} (hkJ : ∀ j, J < j → k j = 0) :
+    (ReceiverBounded (RHTower.dirichletConv k (oddSqfWeight ε)) ∧
+      NeutralAt ReceiverBounded evenFlip (RHTower.dirichletConv k (oddSqfWeight ε))) ↔
       (poleValue (oddPartKernel k) J ε = 0 ∧ poleValue (evenPartWeight k) J ε = 0) := by
-  rw [neutralAt_and_paid_iff_both_paid]
-  simp only [ ↓reduceIte]
-  exact both_evenFlip_pair_receiverBounded_iff_odd_and_even_pole hJ hk h4 hε hε2
+  rw [neutralAt_and_paid_iff_both_paid, evenFlip_dirichletConv_oddSqf hk4]
+  exact both_evenFlip_pair_receiverBounded_iff_odd_and_even_pole hε hε2 hk4 hkJ
 
 /-- **Complete fatality law in the two-point family `k = α δ_1 + β δ_2`.**
-Every non-zero paid two-point kernel over the odd squarefree weight has `β ≠ 0`, and its even flip
-is strictly fatal (`¬ ReceiverBounded (twoPointKernel α (-β) ⋆ o_ε)`). Neutrality holds in the
-paid two-point family only at the trivial kernel `α = β = 0`. -/
+In the two-point family over the odd squarefree weight (`0 < ε ≤ 1/2`), `evenFlip` is strictly
+fatal at `(α δ_1 + β δ_2) ⋆ o_ε` if and only if `α + β 2^{ε - 1} = 0` and `β ≠ 0`, and is paid and
+neutral only at the zero kernel `α = 0 ∧ β = 0`. -/
 theorem strictlyFatalAt_evenFlip_twoPoint_iff
-    {α β ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2)
-    (hpaid : α + β * (2 : ℝ) ^ (ε - 1) = 0) :
-    (ReceiverBounded (convWeight (twoPointKernel α β) (oddSquarefreeDamped ε)) ∧
-      ¬ ReceiverBounded (convWeight (twoPointKernel α (-β)) (oddSquarefreeDamped ε))) ↔
-      β ≠ 0 := by
-  have h1 := twoPoint_evenFlip_classification hε hε2
+    {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) (α β : ℝ) :
+    StrictlyFatalAt ReceiverBounded evenFlip
+      (RHTower.dirichletConv (twoPointKernel α β) (oddSqfWeight ε)) ↔
+      (α + β * (2 : ℝ) ^ (ε - 1) = 0 ∧ β ≠ 0) := by
+  obtain ⟨hflip, _, hiff, hiff', hboth0⟩ := twoPoint_evenFlip_classification hε hε2 α β
+  have hev : evenFlip (RHTower.dirichletConv (twoPointKernel α β) (oddSqfWeight ε)) =
+      RHTower.dirichletConv (twoPointKernel (α + β) (-β)) (oddSqfWeight ε) := hflip.symm
+  simp only [StrictlyFatalAt, hev]
   constructor
-  · rintro ⟨_, hnot⟩ hβ0
-    subst hβ0
-    simp only [zero_mul, add_zero] at hpaid
-    subst hpaid
-    simp only [neg_zero] at hnot
-    exact hnot (h1.mpr (by ring)).1
-  · intro hβ
-    exact (h1.mpr ⟨hpaid, hβ⟩)
+  · rintro ⟨h1, h2⟩
+    refine ⟨hiff.mp h1, fun hβ => h2 ?_⟩
+    have hα : α = 0 := by have := hiff.mp h1; rw [hβ] at this; linarith
+    exact hiff'.mpr (by rw [hα, hβ]; ring)
+  · rintro ⟨hpole, hβ⟩
+    have h1 : ReceiverBounded (RHTower.dirichletConv (twoPointKernel α β) (oddSqfWeight ε)) :=
+      hiff.mpr hpole
+    exact ⟨h1, fun h2 => hβ (hboth0 h1 h2).2⟩
 
 /-- **Infinite-support orientation-admissible classification.**
-For an `OrientAdmissible ε k` kernel (`0 < ε ≤ 1/2`), the even flip `evenFlip (k ⋆ o_ε)` is paid
-and neutral on `{k ⋆ o_ε, evenFlip (k ⋆ o_ε)}` iff both `polePairing ε k = 0` and
-`polePairing ε (evenPartWeight k) = 0`, and is strictly fatal at a paid `k ⋆ o_ε` iff
-`polePairing ε (evenPartWeight k) ≠ 0`. -/
+For an `OrientAdmissible ε k` kernel vanishing on multiples of `4` (`0 < ε ≤ 1/2`), `evenFlip` is
+strictly fatal at `k ⋆ o_ε` if and only if `polePairing ε k = 0` and
+`polePairing ε (evenPartWeight k) ≠ 0`, and is paid and neutral if and only if both pole pairings
+vanish. -/
 theorem strictlyFatalAt_evenFlip_orientAdmissible_iff
-    {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {k : ℕ → ℝ} (hk : OrientAdmissible ε k)
-    (hpole : polePairing ε k = 0) :
-    StrictlyFatalAt ReceiverBounded evenFlip (convWeight k (oddSquarefreeDamped ε)) ↔
-      polePairing ε (evenPartWeight k) ≠ 0 := by
-  have hpaid : ReceiverBounded (convWeight k (oddSquarefreeDamped ε)) :=
-    (receiverBounded_conv_oddSquarefree_iff hε hε2 hk).mpr hpole
-  have hboth := receiverBounded_and_evenFlip_iff hε hε2 hk
-  simp only [StrictlyFatalAt, hpaid, true_and, hpole, ne_eq] at hboth ⊢
-  exact not_iff_not.mpr ⟨fun h => (hboth.mp ⟨hpaid, h⟩).2, fun h => (hboth.mpr ⟨hpole, h⟩).2⟩
+    {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {k : ℕ → ℝ}
+    (hk4 : ∀ m, 4 ∣ m → k m = 0) (hk : OrientAdmissible ε k) :
+    StrictlyFatalAt ReceiverBounded evenFlip (RHTower.dirichletConv k (oddSqfWeight ε)) ↔
+      (polePairing ε k = 0 ∧ polePairing ε (evenPartWeight k) ≠ 0) := by
+  have hpaid_iff := receiverBounded_dirichletConv_oddSqf_iff_admissible hε hε2 hk
+  have hboth_iff := receiverBounded_and_evenFlip_iff hε hε2 hk4 hk
+  simp only [StrictlyFatalAt]
+  constructor
+  · rintro ⟨hc, hnot⟩
+    have hp0 : polePairing ε k = 0 := hpaid_iff.mp hc
+    exact ⟨hp0, fun he0 => hnot (hboth_iff.mpr ⟨hp0, he0⟩).2⟩
+  · rintro ⟨hp0, he_ne⟩
+    have hc : ReceiverBounded (RHTower.dirichletConv k (oddSqfWeight ε)) := hpaid_iff.mpr hp0
+    exact ⟨hc, fun hflip => he_ne (hboth_iff.mp ⟨hc, hflip⟩).2⟩
 
 /-- **Exact faithful completion of the even-flip shadow by the first pronic moment.**
-For any complete-period reading `r` invisible to `evenFlip` (such as `completePeriodLagReading N`),
-adjoining `firstPronicMoment` expels `evenFlip c` from the shadow of `c` if and only if the
-prime-`2` Ramanujan coefficient `weightRamanujanCoeff c 2 = c 2 - c 1` is non-zero. -/
+For any four-free damped weight `c` (`DampedClass K ε c`, `0 < ε`) and any reading `r` invisible to
+`evenFlip` (such as `amplitudeReading`), adjoining `firstPronicMoment` expels `evenFlip c` from the
+shadow of `c` if and only if the prime-`2` Ramanujan coefficient `weightRamanujanCoeff c 2` is
+non-zero. -/
 theorem not_mem_shadow_joinReading_firstPronicMoment_iff
-    {r : (ℕ → ℝ) → O} (hinv : Invisible r evenFlip) (c : ℕ → ℝ) :
+    {K ε : ℝ} (hε : 0 < ε) {c : ℕ → ℝ} (hc : DampedClass K ε c)
+    (h4 : ∀ m, 4 ∣ m → c m = 0) {r : (ℕ → ℝ) → O} (hinv : Invisible r evenFlip) :
     evenFlip c ∉ shadow (joinReading r firstPronicMoment) c ↔
       weightRamanujanCoeff c 2 ≠ 0 := by
-  rw [shadow_joinReading, Set.mem_inter_iff, mem_shadow_iff, hinv c, true_and, mem_shadow_iff,
-    ne_eq, firstPronicMoment_evenFlip_eq_iff, weightRamanujanCoeff_two, sub_eq_zero, eq_comm]
+  simp only [shadow_joinReading, Set.mem_inter_iff, mem_shadow_iff, hinv c, true_and]
+  exact firstPronicMoment_separates_evenFlip_iff hε hc h4
 
-/-- **Logarithmic-moment completion kills the Fermi even-flip fatality.**
-At every damping `0 < ε ≤ 1/2`, the Fermi weight `fermiDamped ε` and its even flip share the entire
-complete-period lag reading (`completePeriodLagReading N`), `evenFlip` is strictly fatal at
-`fermiDamped ε`, and there exists a logarithmic pronic moment `logPowWeight m` (`m = 1` or `m = 2`)
-that separates them. -/
-theorem fermi_evenFlip_fatality_resolved_by_logMoments
-    {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) :
-    StrictlyFatalAt ReceiverBounded evenFlip (fermiDamped ε) ∧
-      (∀ N : ℕ, Invisible (completePeriodLagReading N) evenFlip) ∧
-      ∃ m ∈ ({1, 2} : Finset ℕ),
-        firstPronicMoment (logPowWeight m (evenFlip (fermiDamped ε))) ≠
-          firstPronicMoment (logPowWeight m (fermiDamped ε)) := by
-  refine ⟨⟨fermiDamped_receiverBounded hε, evenFlip_fermiDamped_not_receiverBounded hε hε2⟩,
-    fun N => invisible_completePeriodLagReading_evenFlip N, ?_⟩
-  obtain ⟨m, hm, hne⟩ := exists_logMoment_ne_of_fermi_evenFlip ε
-  exact ⟨m, hm, hne.symm⟩
+/-- **Logarithmic-moment completion kills every strictly fatal even-flip pair.**
+Whenever `evenFlip` is strictly fatal at `c = k ⋆ o_ε` (`0 < ε ≤ 1/2`, `k` on `[1, J]` vanishing
+on multiples of `4`), `c` and `evenFlip c` share all Ramanujan amplitude moduli, yet there exists a
+logarithmic moment order `m : ℕ` such that `firstPronicMoment (logPowWeight · m)` strictly
+separates them. -/
+theorem exists_logMoment_ne_of_strictlyFatalAt_evenFlip
+    {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {k : ℕ → ℝ}
+    (hk4 : ∀ m, 4 ∣ m → k m = 0) {J : ℕ} (hkJ : ∀ j, J < j → k j = 0)
+    (hfat : StrictlyFatalAt ReceiverBounded evenFlip (RHTower.dirichletConv k (oddSqfWeight ε))) :
+    (∀ e, |weightRamanujanCoeff (evenFlip (RHTower.dirichletConv k (oddSqfWeight ε))) e| =
+      |weightRamanujanCoeff (RHTower.dirichletConv k (oddSqfWeight ε)) e|) ∧
+      ∃ m : ℕ,
+        firstPronicMoment (logPowWeight (RHTower.dirichletConv k (oddSqfWeight ε)) m) ≠
+          firstPronicMoment (logPowWeight (evenFlip (RHTower.dirichletConv k (oddSqfWeight ε))) m) := by
+  obtain ⟨hk0, he_ne⟩ := (strictlyFatalAt_evenFlip_iff_pole_and_evenPart hε hε2 hk4 hkJ).mp hfat
+  obtain ⟨hram, _, _, hlog⟩ := exists_logMoment_ne_of_fermi_evenFlip hε hε2 hk4 hkJ hk0 he_ne
+  rw [evenFlip_dirichletConv_oddSqf hk4]
+  exact ⟨hram, hlog⟩
 
 /-! ### 3. Family II: Selberg Sign-Character Orbits and Cubic-Moment Reduction -/
 
 /-- The complete-period **cubic-moment reading** at horizon `N`: the family of all translated
-cubic moments `SieveMoments.translatedMoment N c (v 0) (v 1) (v 2)` together with the scale value
-`c 1`. -/
-def cubicMomentReading (N : ℕ) (c : ℕ → ℝ) : ((Fin 3 → ℕ) → ℝ) × ℝ :=
-  (fun v => SieveMoments.translatedMoment N c (v 0) (v 1) (v 2), c 1)
+cubic moments `SieveMoments.translatedMoment N c v` (`v : Fin 3 → ℕ`). -/
+def cubicMomentReading (N : ℕ) (c : ℕ → ℝ) : (Fin 3 → ℕ) → ℝ :=
+  fun v => SieveMoments.translatedMoment N c v
 
-/-- **Cofinal fatality of sign-character collapses inside the quadratic lag shadow.**
-At every damping `0 < ε ≤ 1/2`, the quadratic complete-period lag reading `completePeriodLagReading N`
-is blind to `scaledSelbergRow N · (chiFourSign ·)`, `scaledSelbergRow N · (completedValue χ ·)`,
-and `scaledSelbergRow N · (evenSign ·)`, while each of these collapses sends the paid Fermi row to a
-sequence of rows with unbounded pronic horizon energy (`horizonPronicEnergy`). -/
-theorem signCharacter_collapses_cofinally_fatal_in_lag_shadow
+/-- **Cofinal fatality of sign-character collapses vs. cubic-moment separation.**
+At every damping `0 < ε ≤ 1/2`:
+1. Both `chiFourTwinRow ε N` and `evenFlipRow N (fermiRow ε N)` lie in the complete-period
+   quadratic lag shadow `shadow (completePeriodLagReading N)` of their paid base rows at every
+   `N ≥ 1`, while their pronic horizon energies grow unboundedly as `N → ∞`.
+2. Refining by `cubicMomentReading N` expels `chiFourTwinRow ε N` from the shadow of
+   `chiFourRow ε N` at every `N ≥ 3`, whereas `evenFlipRow N (fermiRow ε N)` remains inside the
+   shadow of `fermiRow ε N` under `cubicMomentReading N` at every horizon `N`. -/
+theorem signCharacter_fatality_and_cubic_moment_split
     {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) :
-    (∃ B : ℝ, ∀ N : ℕ, horizonPronicEnergy N (fermiDamped ε) ≤ B) ∧
-      (∀ N : ℕ, scaledSelbergRow N (fermiDamped ε) (fun d => (chiFourSign d : ℝ)) ∈
-        shadow (completePeriodLagReading N) (fermiDamped ε)) ∧
-      (∀ M : ℝ, ∃ N : ℕ,
-        M < horizonPronicEnergy N (scaledSelbergRow N (fermiDamped ε) (fun d => (chiFourSign d : ℝ)))) ∧
-      (∀ N : ℕ, scaledSelbergRow N (fermiDamped ε) (fun d => (evenSign d : ℝ)) ∈
-        shadow (completePeriodLagReading N) (fermiDamped ε)) ∧
-      (∀ M : ℝ, ∃ N : ℕ,
-        M < horizonPronicEnergy N (scaledSelbergRow N (fermiDamped ε) (fun d => (evenSign d : ℝ)))) := by
-  obtain ⟨hchi_eq, hfermi_bdd, hchi_unbdd⟩ := chiFour_parityRows_completePeriod_and_receiver_split hε hε2
-  obtain ⟨heven_eq, _, heven_unbdd⟩ := fermi_parityRows_completePeriod_and_receiver_split hε hε2
-  refine ⟨hfermi_bdd,
-    fun N => funext fun h => (hchi_eq N h).symm,
-    hchi_unbdd,
-    fun N => funext fun h => (heven_eq N h).symm,
-    heven_unbdd⟩
+    (∀ N : ℕ, 1 ≤ N →
+      chiFourTwinRow ε N ∈ shadow (completePeriodLagReading N) (chiFourRow ε N)) ∧
+    (∀ N : ℕ, 3 ≤ N →
+      chiFourTwinRow ε N ∉ shadow (cubicMomentReading N) (chiFourRow ε N)) ∧
+    (∃ C : ℝ, ∀ N T : ℕ, horizonPronicEnergy N (chiFourRow ε N) T ≤ C) ∧
+    (∀ C : ℝ, ∀ᶠ N in atTop, ∃ T : ℕ, C < horizonPronicEnergy N (chiFourTwinRow ε N) T) ∧
+    (∀ N : ℕ, 1 ≤ N →
+      evenFlipRow N (fermiRow ε N) ∈ shadow (completePeriodLagReading N) (fermiRow ε N)) ∧
+    (∀ N : ℕ,
+      evenFlipRow N (fermiRow ε N) ∈ shadow (cubicMomentReading N) (fermiRow ε N)) ∧
+    (∃ E : ℝ, ∀ T : ℕ, ∀ᶠ N in atTop, horizonPronicEnergy N (fermiRow ε N) T ≤ E) ∧
+    (∀ C : ℝ, ∀ᶠ N in atTop, ∃ T : ℕ,
+      C < horizonPronicEnergy N (evenFlipRow N (fermiRow ε N)) T) := by
+  obtain ⟨_, _, hchi_cub, hchi_bdd, hchi_unbdd⟩ :=
+    chiFour_parityRows_completePeriod_and_receiver_split hε hε2
+  obtain ⟨_, hfermi_mom, hfermi_bdd, hfermi_unbdd⟩ :=
+    fermi_parityRows_completePeriod_and_receiver_split hε hε2
+  refine ⟨fun N hN => ?_, fun N hN hmem => ?_, hchi_bdd, hchi_unbdd,
+    fun N hN => invisible_completePeriodLagReading_evenFlipRow hN (fermiRow ε N),
+    fun N => funext fun v => hfermi_mom N 3 v,
+    hfermi_bdd, hfermi_unbdd⟩
+  ·exact invisible_completePeriodLagReading_scaledSelbergRow hN chiFourSign_one chiFourSign_sq
+      (chiFourRow ε N)
+  · obtain ⟨v, hv⟩ := hchi_cub N hN
+    exact hv (congr_fun hmem v)
 
 /-- **Cubic moments eliminate all sign-character collapses on odd-supported rows.**
-Within the `2^{N-1}` sign-character orbit `scaledSelbergRow N c σ` of an odd-supported row `c`
-with `c 1 ≠ 0` and non-vanishing prime values on `[1, N]`, the cubic-moment reading pins `c`
-uniquely on `[1, N]`: no non-trivial sign flip survives. -/
+If `c` is supported on the odd Selberg moduli at horizon `N` (`Y_N(q) = 0` on even `q`,
+`Y_N(q) ≠ 0` on odd `q`) and `scaledSelbergRow N c σ` lies in the cubic-moment shadow of `c`,
+then `scaledSelbergRow N c σ` coincides with `c` on `[1, N]`: no non-trivial sign twist survives. -/
 theorem cubicMomentReading_pins_odd_signOrbit
-    {N : ℕ} {c : ℕ → ℝ} (hc1 : c 1 ≠ 0)
-    (hodd : ∀ d, 1 ≤ d → d ≤ N → Even d → c d = 0)
-    (hprime : ∀ p, Nat.Prime p → Odd p → p ≤ N → c p ≠ 0)
-    {σ : ℕ → ℝ} (hσ1 : σ 1 = 1) (hσm : ∀ m n, σ (m * n) = σ m * σ n)
-    (hσs : ∀ d, 1 ≤ d → d ≤ N → σ d ^ 2 = 1)
-    (hread : cubicMomentReading N (scaledSelbergRow N c σ) = cubicMomentReading N c) :
-    ∀ d, d ≤ N → scaledSelbergRow N c σ d = c d := by
-  have hcub : ∀ v : Fin 3 → ℕ,
-      SieveMoments.translatedMoment N (scaledSelbergRow N c σ) (v 0) (v 1) (v 2) =
-        SieveMoments.translatedMoment N c (v 0) (v 1) (v 2) :=
-    fun v => (congr_arg Prod.fst hread).symm ▸ rfl
-  exact fun d hd => scaledSelbergRow_eq_of_translatedMoment_three hc1 hodd hprime hσ1 hσm hσs
-    (fun v => (congr_fun (congr_arg Prod.fst hread) v).symm) d hd
+    {N : ℕ} (c : ℕ → ℝ) (σ : ℕ → ℝ) (hσ : ∀ q, σ q * σ q = 1)
+    (heven : ∀ q ∈ Finset.Icc 1 N, Even q → selbergMultiplesCoord N c q = 0)
+    (hodd : ∀ q ∈ Finset.Icc 1 N, Odd q → selbergMultiplesCoord N c q ≠ 0)
+    (hmem : scaledSelbergRow N c σ ∈ shadow (cubicMomentReading N) c) :
+    ∀ d ∈ Finset.Icc 1 N, scaledSelbergRow N c σ d = c d :=
+  scaledSelbergRow_eq_of_translatedMoment_three c σ hσ heven hodd (congr_fun hmem)
 
 /-- **Cubic moments reduce the squarefree sign-character orbit to the two-element even-flip pair.**
-Within the `2^{N-1}` sign-character orbit `scaledSelbergRow N c σ` of a squarefree-supported row `c`
-with `c 1 ≠ 0` and non-vanishing prime values on `[1, N]`, the cubic-moment reading pins the row on
-`[1, N]` up to at most the prime-`2` even flip `evenFlipRow N c`. -/
+If the Selberg coordinates of `c` vanish off the squarefree moduli and are non-zero at every
+squarefree modulus `≤ N` (as holds for every PM cofactor row `pmCofactorDivisorWeight ε Q`), then
+any sign twist `scaledSelbergRow N c σ` in the cubic-moment shadow of `c` coincides on `[1, N]`
+with either `c` or its prime-`2` even flip `evenFlipRow N c`. -/
 theorem cubicMomentReading_reduces_squarefree_signOrbit_to_evenFlip
-    {N : ℕ} {c : ℕ → ℝ} (hc1 : c 1 ≠ 0)
-    (hsq : ∀ d, 1 ≤ d → d ≤ N → ¬ Squarefree d → c d = 0)
-    (hprime : ∀ p, Nat.Prime p → Odd p → p ≤ N → c p ≠ 0)
-    {σ : ℕ → ℝ} (hσ1 : σ 1 = 1) (hσm : ∀ m n, σ (m * n) = σ m * σ n)
-    (hσs : ∀ d, 1 ≤ d → d ≤ N → σ d ^ 2 = 1)
-    (hread : cubicMomentReading N (scaledSelbergRow N c σ) = cubicMomentReading N c) :
-    (∀ d, d ≤ N → scaledSelbergRow N c σ d = c d) ∨
-      (∀ d, d ≤ N → scaledSelbergRow N c σ d = evenFlipRow N c d) :=
-  scaledSelbergRow_eq_or_evenFlip_of_translatedMoment_three hc1 hsq hprime hσ1 hσm hσs
-    (fun v => (congr_fun (congr_arg Prod.fst hread) v).symm)
+    {N : ℕ} (c : ℕ → ℝ) (σ : ℕ → ℝ) (hσ : ∀ q, σ q * σ q = 1)
+    (hns : ∀ q ∈ Finset.Icc 1 N, ¬ Squarefree q → selbergMultiplesCoord N c q = 0)
+    (hsq : ∀ q ∈ Finset.Icc 1 N, Squarefree q → selbergMultiplesCoord N c q ≠ 0)
+    (hmem : scaledSelbergRow N c σ ∈ shadow (cubicMomentReading N) c) :
+    (∀ d ∈ Finset.Icc 1 N, scaledSelbergRow N c σ d = c d) ∨
+      (∀ d ∈ Finset.Icc 1 N, scaledSelbergRow N c σ d = evenFlipRow N c d) :=
+  scaledSelbergRow_eq_or_evenFlip_of_translatedMoment_three c σ hσ hns hsq (congr_fun hmem)
 
 /-! ### 4. Family III: Residue-Class Prime Flips and the `(1/4, 3/4)` Complementation Law -/
 
 /-- The half-damped weight `f_{q,S}(d) d^{-1/2}` associated to a residue-class prime flip `S ⊆ ZMod q`. -/
-def residueFlipHalfWeight (q : ℕ) (S : Finset (ZMod q)) (d : ℕ) : ℝ :=
-  residueFlip q S d * (d : ℝ) ^ (-(1 / 2 : ℝ))
+def residueFlipHalfWeight (q : ℕ) (S : Finset (ZMod q)) : ℕ → ℝ :=
+  fun d => residueFlip q S d * (d : ℝ) ^ (-(1 / 2 : ℝ))
 
 /-- The number of units in `ZMod q` is `φ(q) = q.totient`. -/
 theorem card_univ_filter_isUnit (q : ℕ) [NeZero q] :
@@ -356,7 +368,8 @@ less than three quarters of the unit residue classes (`4 * #(S ∩ (ZMod q)ˣ) <
 theorem receiverBounded_residueFlip_compl_half_iff {q : ℕ} [NeZero q] (S : Finset (ZMod q)) :
     ReceiverBounded (residueFlipHalfWeight q Sᶜ) ↔
       4 * (S.filter IsUnit).card < 3 * q.totient := by
-  rw [residueFlipHalfWeight, receiverBounded_residueFlip_half_iff_general, card_compl_filter_isUnit]
+  unfold residueFlipHalfWeight
+  rw [receiverBounded_residueFlip_half_iff_general, card_compl_filter_isUnit]
   have hle := card_filter_isUnit_le_totient S
   omega
 
@@ -365,8 +378,9 @@ Because `(0, 1/4]` and `[3/4, 1]` are disjoint, `S` and `Sᶜ` can never both fa
 theorem receiverBounded_residueFlip_or_compl_half {q : ℕ} [NeZero q] (S : Finset (ZMod q)) :
     ReceiverBounded (residueFlipHalfWeight q S) ∨
       ReceiverBounded (residueFlipHalfWeight q Sᶜ) := by
-  rw [residueFlipHalfWeight, receiverBounded_residueFlip_half_iff_general,
-    receiverBounded_residueFlip_compl_half_iff]
+  rw [receiverBounded_residueFlip_compl_half_iff]
+  unfold residueFlipHalfWeight
+  rw [receiverBounded_residueFlip_half_iff_general]
   have hφ : 0 < q.totient := Nat.totient_pos.mpr (NeZero.pos q)
   omega
 
@@ -377,8 +391,9 @@ theorem both_residueFlip_and_compl_paid_iff {q : ℕ} [NeZero q] (S : Finset (ZM
     (ReceiverBounded (residueFlipHalfWeight q S) ∧
       ReceiverBounded (residueFlipHalfWeight q Sᶜ)) ↔
       (q.totient < 4 * (S.filter IsUnit).card ∧ 4 * (S.filter IsUnit).card < 3 * q.totient) := by
-  rw [residueFlipHalfWeight, receiverBounded_residueFlip_half_iff_general,
-    receiverBounded_residueFlip_compl_half_iff]
+  rw [receiverBounded_residueFlip_compl_half_iff]
+  unfold residueFlipHalfWeight
+  rw [receiverBounded_residueFlip_half_iff_general]
 
 /-- **Exact fatality classification of residue-class complementation.**
 The complement involution `S ↦ Sᶜ` is strictly fatal at `S` for `ReceiverBounded ∘ residueFlipHalfWeight q`
@@ -387,11 +402,10 @@ if and only if `S` flips at least three quarters of the unit residue classes
 theorem strictlyFatalAt_compl_residueFlip_half_iff {q : ℕ} [NeZero q] (S : Finset (ZMod q)) :
     StrictlyFatalAt (fun T => ReceiverBounded (residueFlipHalfWeight q T)) compl S ↔
       3 * q.totient ≤ 4 * (S.filter IsUnit).card := by
-  simp only [StrictlyFatalAt, compl_eq_univ_sdiff]
-  change (ReceiverBounded (residueFlipHalfWeight q S) ∧
-    ¬ ReceiverBounded (residueFlipHalfWeight q Sᶜ)) ↔ _
-  rw [residueFlipHalfWeight, receiverBounded_residueFlip_half_iff_general,
-    receiverBounded_residueFlip_compl_half_iff]
+  simp only [StrictlyFatalAt]
+  rw [receiverBounded_residueFlip_compl_half_iff]
+  unfold residueFlipHalfWeight
+  rw [receiverBounded_residueFlip_half_iff_general]
   have hφ : 0 < q.totient := Nat.totient_pos.mpr (NeZero.pos q)
   omega
 

@@ -564,12 +564,14 @@ theorem tendsto_riesz_sum_of_summable {g : ℕ → ℝ} (hg0 : g 0 = 0)
   have hrw : ∀ N : ℕ, ∑ d ∈ Finset.Icc 1 N, (1 - (d : ℝ) / RHTower.perronLength N) * g d =
       ∑' d, (if d ≤ N then (1 - (d : ℝ) / RHTower.perronLength N) * g d else 0) := by
     intro N
-    rw [tsum_eq_sum (s := Finset.range (N + 1)) fun d hd => by
-      simp only [Finset.mem_range, not_lt] at hd; simp [show ¬ d ≤ N by omega]]
-    rw [Finset.range_eq_Ico, ← Finset.sum_Ico_consecutive _ (Nat.zero_le 1) (by omega : 1 ≤ N + 1)]
-    simp only [Finset.Ico_self, Nat.Ico_succ_singleton, Finset.sum_singleton, Nat.zero_le,
-      if_true, hg0, mul_zero, zero_add]
-    rw [← Nat.Icc_pred_right _ (by omega : 0 < N + 1)]
+    have hz : ∀ d ∉ Finset.Icc 1 N,
+        (if d ≤ N then (1 - (d : ℝ) / RHTower.perronLength N) * g d else 0) = 0 := by
+      intro d hd
+      rcases Nat.eq_zero_or_pos d with rfl | hd0
+      · simp [hg0]
+      · have : ¬ d ≤ N := fun h => hd (Finset.mem_Icc.mpr ⟨hd0, h⟩)
+        simp [this]
+    rw [tsum_eq_sum hz]
     exact Finset.sum_congr rfl fun d hd => by simp [(Finset.mem_Icc.mp hd).2]
   simp only [hrw]
   refine tendsto_tsum_of_dominated_convergence (bound := fun d : ℕ => (d : ℝ) ^ (-(3 / 2 : ℝ)))
@@ -626,7 +628,7 @@ theorem tendsto_rieszSlope :
       exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n := d)
     have he : (d : ℝ) ^ (-(1 / 2 : ℝ)) / d = (d : ℝ) ^ (-(3 / 2 : ℝ)) := by
       rw [div_eq_mul_inv, ← Real.rpow_neg_one, ← Real.rpow_add hd0]; norm_num
-    rw [mul_div_assoc, abs_mul, he, abs_of_pos (by positivity)]
+    rw [mul_div_assoc, abs_mul, he, abs_of_pos (by positivity : (0 : ℝ) < (d : ℝ) ^ (-(3 / 2 : ℝ)))]
     exact (mul_le_mul_of_nonneg_right hμ (by positivity)).trans_eq (one_mul _)
   have h := tendsto_riesz_sum_of_summable (by simp) hb
   refine h.congr fun N => ?_
@@ -648,9 +650,9 @@ theorem rieszResidueSum_l2_tendsto_half :
   set J : ℝ → ℂ := fun t => RHTower.invZetaCont (1 + ((-t : ℝ) : ℂ) * I) with hJ
   set Φ : ℕ → ℝ := fun N => ∫ t : ℝ, ‖Q N t - J t‖ ^ 2 * zetaHalfWeight t with hΦ
   set τ : ℕ → ℝ := fun N => finiteResidueSlope N (rieszCoeff N) with hτ
-  set τ∞ := ∑' d, ((ArithmeticFunction.moebius d : ℤ) : ℝ) * (d : ℝ) ^ (-(1 / 2 : ℝ)) / d
+  set τinf := ∑' d, ((ArithmeticFunction.moebius d : ℤ) : ℝ) * (d : ℝ) ^ (-(1 / 2 : ℝ)) / d
   have hΦ0 : Tendsto Φ atTop (𝓝 0) := tendsto_integral_rieszSymbol
-  have hτc : Tendsto τ atTop (𝓝 τ∞) := tendsto_rieszSlope
+  have hτc : Tendsto τ atTop (𝓝 τinf) := tendsto_rieszSlope
   have hw0 : ∀ t, 0 ≤ zetaHalfWeight t := fun t => by unfold zetaHalfWeight; positivity
   have hmajI : Integrable fun t : ℝ => G * (1 + t ^ 2) ^ (-(9 / 16 : ℝ)) :=
     integrable_critical_majorant.const_mul G
@@ -702,8 +704,8 @@ theorem rieszResidueSum_l2_tendsto_half :
       _ ≤ _ := by gcongr
   set δ : ℝ := ε / (16 / Real.pi + 8) with hδ
   have hδ0 : 0 < δ := by positivity
-  have hτδ : ∀ᶠ N in atTop, (τ N - τ∞) ^ 2 < δ := by
-    have h := (hτc.sub (tendsto_const_nhds (x := τ∞))).pow 2
+  have hτδ : ∀ᶠ N in atTop, (τ N - τinf) ^ 2 < δ := by
+    have h := (hτc.sub (tendsto_const_nhds (x := τinf))).pow 2
     rw [sub_self, zero_pow two_ne_zero] at h
     exact h.eventually (gt_mem_nhds hδ0)
   filter_upwards [hΦ0.eventually (gt_mem_nhds hδ0), hτδ] with N hΦN hτN
@@ -712,13 +714,13 @@ theorem rieszResidueSum_l2_tendsto_half :
       atTop (𝓝 (∑ n ∈ Finset.range T, (rieszResidueSum N n - orbitCoord (1 / 2) n) ^ 2)) :=
     tendsto_finsetSum _ fun n _ => (tendsto_const_nhds.sub (tendsto_rieszResidueSum n)).pow 2
   have hlimR : Tendsto (fun M => 8 * (1 / (2 * Real.pi) * (2 * Φ N + 2 * Φ M)) + 4 * (τ N - τ M) ^ 2)
-      atTop (𝓝 (8 * (1 / (2 * Real.pi) * (2 * Φ N + 2 * 0)) + 4 * (τ N - τ∞) ^ 2)) :=
+      atTop (𝓝 (8 * (1 / (2 * Real.pi) * (2 * Φ N + 2 * 0)) + 4 * (τ N - τinf) ^ 2)) :=
     (((tendsto_const_nhds.add (hΦ0.const_mul 2)).const_mul _).const_mul 8).add
       (((tendsto_const_nhds.sub hτc).pow 2).const_mul 4)
   have hle := le_of_tendsto_of_tendsto hlimL hlimR (Eventually.of_forall fun M => hcauchy N M T)
   have hπ : 0 < Real.pi := Real.pi_pos
-  have hsplit : 8 * (1 / (2 * Real.pi) * (2 * Φ N + 2 * 0)) + 4 * (τ N - τ∞) ^ 2 =
-      (8 / Real.pi) * Φ N + 4 * (τ N - τ∞) ^ 2 := by field_simp; ring
+  have hsplit : 8 * (1 / (2 * Real.pi) * (2 * Φ N + 2 * 0)) + 4 * (τ N - τinf) ^ 2 =
+      (8 / Real.pi) * Φ N + 4 * (τ N - τinf) ^ 2 := by field_simp; ring
   have hfin : (8 / Real.pi) * δ + 4 * δ ≤ ε := by
     rw [hδ]
     have e : (8 / Real.pi) * (ε / (16 / Real.pi + 8)) + 4 * (ε / (16 / Real.pi + 8)) = ε / 2 := by

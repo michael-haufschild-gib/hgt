@@ -65,8 +65,9 @@ theorem smoothPair_sum_sum (hΦc : Continuous Φ) (hΦ2 : Integrable fun x => Φ
     intro τ
     by_cases hτ : Ω τ = 0
     · simp [hτ]
-    · rw [hconv τ hτ]
-      simp only [Finset.mul_sum, Finset.sum_mul]
+    · rw [hconv τ hτ, Finset.sum_comm, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [Finset.mul_sum, Finset.sum_mul]
   unfold smoothPair
   rw [integral_congr_ae (Eventually.of_forall hpt),
     integral_finsetSum _ fun i _ => integrable_finsetSum _ fun j _ => hI i j]
@@ -81,9 +82,9 @@ variable {Ω : ℝ → ℝ} {s₀ s₁ : ℝ}
 theorem integrable_window_mul (hΩc : Continuous Ω) (hΩS : ∀ τ, τ ∉ Icc s₀ s₁ → Ω τ = 0)
     {h : ℝ → ℝ} (hhc : Continuous h) : Integrable fun τ => Ω τ * h τ :=
   ((hΩc.mul hhc).integrableOn_Icc (a := s₀) (b := s₁)).integrable_of_forall_notMem_eq_zero
-    fun τ hτ => by simp only [hΩS τ hτ, zero_mul]
+    fun τ hτ => by show Ω τ * h τ = 0; rw [hΩS τ hτ, zero_mul]
 
-theorem integral_window_mul_le (hs : s₀ ≤ s₁) (hΩc : Continuous Ω) (hΩ0 : ∀ τ, 0 ≤ Ω τ)
+theorem integral_window_mul_le (hs : s₀ ≤ s₁) (hΩc : Continuous Ω)
     (hΩ1 : ∀ τ, Ω τ ≤ 1) (hΩS : ∀ τ, τ ∉ Icc s₀ s₁ → Ω τ = 0) {h : ℝ → ℝ} (hhc : Continuous h)
     (h0 : ∀ τ ∈ Icc s₀ s₁, 0 ≤ h τ) {C : ℝ} (hC : ∀ τ ∈ Icc s₀ s₁, h τ ≤ C) :
     ∫ τ, Ω τ * h τ ≤ C * (s₁ - s₀) := by
@@ -96,7 +97,7 @@ theorem integral_window_mul_le (hs : s₀ ≤ s₁) (hΩc : Continuous Ω) (hΩ0
     _ = C * (s₁ - s₀) := by
         rw [setIntegral_const, Real.volume_real_Icc_of_le hs, smul_eq_mul, mul_comm]
 
-theorem integral_window_mul_le_interval (hs : s₀ ≤ s₁) (hΩc : Continuous Ω) (hΩ0 : ∀ τ, 0 ≤ Ω τ)
+theorem integral_window_mul_le_interval (hs : s₀ ≤ s₁) (hΩc : Continuous Ω)
     (hΩ1 : ∀ τ, Ω τ ≤ 1) (hΩS : ∀ τ, τ ∉ Icc s₀ s₁ → Ω τ = 0) {h : ℝ → ℝ} (hhc : Continuous h)
     (h0 : ∀ τ, 0 ≤ h τ) :
     ∫ τ, Ω τ * h τ ≤ ∫ τ in s₀..s₁, h τ := by
@@ -121,8 +122,10 @@ theorem integral_window_abs_le_sqrt (hΩ0 : ∀ τ, 0 ≤ Ω τ) {f : ℝ → �
       have hfun : (fun τ => Ω τ * (|f τ| - t) ^ 2)
           = fun τ => Ω τ * f τ ^ 2 - 2 * t * (Ω τ * |f τ|) + t ^ 2 * Ω τ := by
         funext τ; rw [sub_sq, sq_abs]; ring
-      rw [hfun, integral_add (hI2.sub (hI1.const_mul _)) (hI0.const_mul _),
-        integral_sub hI2 (hI1.const_mul _), integral_const_mul, integral_const_mul]
+      rw [hfun, integral_add (f := fun τ => Ω τ * f τ ^ 2 - 2 * t * (Ω τ * |f τ|))
+        (g := fun τ => t ^ 2 * Ω τ) (hI2.sub (hI1.const_mul _)) (hI0.const_mul _),
+        integral_sub (f := fun τ => Ω τ * f τ ^ 2) (g := fun τ => 2 * t * (Ω τ * |f τ|)) hI2
+          (hI1.const_mul _), integral_const_mul, integral_const_mul]
     nlinarith [e, h0]
   have hd := discrim_le_zero hquad
   unfold discrim at hd
@@ -158,11 +161,13 @@ theorem abs_smoothPair_le {u v : ℝ → ℝ} {e : ℝ}
     (he : ∀ τ, Ω τ ≠ 0 → |convSq Φ v τ| ≤ e) :
     |smoothPair Φ Ω u v| ≤ e * ∫ τ, Ω τ * |u τ| := by
   unfold smoothPair
+  rw [← integral_const_mul]
   refine (abs_integral_le_integral_abs).trans (integral_mono_of_nonneg
     (Eventually.of_forall fun τ => abs_nonneg _) (hI3.const_mul e) (Eventually.of_forall fun τ => ?_))
   by_cases hτ : Ω τ = 0
   · simp [hτ]
-  · rw [abs_mul, abs_mul, abs_of_nonneg (hΩ0 τ)]
+  · show |Ω τ * u τ * convSq Φ v τ| ≤ e * (Ω τ * |u τ|)
+    rw [abs_mul, abs_mul, abs_of_nonneg (hΩ0 τ)]
     calc Ω τ * |u τ| * |convSq Φ v τ| ≤ Ω τ * |u τ| * e :=
           mul_le_mul_of_nonneg_left (he τ hτ) (mul_nonneg (hΩ0 τ) (abs_nonneg _))
       _ = e * (Ω τ * |u τ|) := by ring
@@ -384,21 +389,21 @@ theorem smoothPair_nuX_le (hF : LocalHypsCoreW cϱ p F) {Ω : ℝ → ℝ} {s₀
       Integrable fun τ => Ω τ * w τ * convSq Φ v τ := fun hw hv hb =>
     integrable_window_mul_convSq hΦc hΦ2 hΦ2a hΩc hw hv (integrable_window_mul hΩc hΩS hw) hb
   have hvμ := hvb 0
-  have hvΠ := hvb 1
+  have hvPi := hvb 1
   have hvP := hvb 2
   simp only [hu, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
-    Matrix.head_cons, Matrix.tail_cons] at hvμ hvΠ hvP
+    Matrix.head_cons, Matrix.tail_cons] at hvμ hvPi hvP
   have hI3 : ∀ {w : ℝ → ℝ}, Continuous w → Integrable fun τ => Ω τ * |w τ| := fun hw =>
     integrable_window_mul hΩc hΩS hw.abs
   have hIabsμ : ∫ τ, Ω τ * |Zeta23.mu τ| ≤ M * S :=
-    integral_window_mul_le hs hΩc hΩ0 hΩ1 hΩS hμc.abs (fun _ _ => abs_nonneg _) hμS
-  have hIabsΠ : ∫ τ, Ω τ * |Zeta23.PiX X τ| ≤ 3 * Real.sqrt X / s₀ * S :=
-    integral_window_mul_le hs hΩc hΩ0 hΩ1 hΩS hPic.abs (fun _ _ => abs_nonneg _) hPiS
+    integral_window_mul_le hs hΩc hΩ1 hΩS hμc.abs (fun _ _ => abs_nonneg _) hμS
+  have hIabsPi : ∫ τ, Ω τ * |Zeta23.PiX X τ| ≤ 3 * Real.sqrt X / s₀ * S :=
+    integral_window_mul_le hs hΩc hΩ1 hΩS hPic.abs (fun _ _ => abs_nonneg _) hPiS
   have hIabsP : ∫ τ, Ω τ * |Zeta23.PX X τ| ≤ (1 / π) * A * S :=
-    integral_window_mul_le hs hΩc hΩ0 hΩ1 hΩS hPc.abs (fun _ _ => abs_nonneg _)
+    integral_window_mul_le hs hΩc hΩ1 hΩS hPc.abs (fun _ _ => abs_nonneg _)
       (fun τ _ => hPb τ)
   have hIΩ : ∫ τ, Ω τ ≤ S := by
-    have h := integral_window_mul_le hs hΩc hΩ0 hΩ1 hΩS (h := fun _ => (1:ℝ)) continuous_const
+    have h := integral_window_mul_le hs hΩc hΩ1 hΩS (h := fun _ => (1:ℝ)) continuous_const
       (fun _ _ => zero_le_one) (C := 1) (fun _ _ => le_rfl)
     simpa using h
   have hΩi : Integrable Ω := by
@@ -413,7 +418,7 @@ theorem smoothPair_nuX_le (hF : LocalHypsCoreW cϱ p F) {Ω : ℝ → ℝ} {s₀
     have h := abs_smoothPair_sub_le (hIc hμc hμc hvμ) hI2 (hI3 hμc) hΩ0
       (fun τ hτ => by rw [mul_comm IΦ]; exact hcμ τ hτ)
     have hsq : ∫ τ, Ω τ * Zeta23.mu τ * Zeta23.mu τ ≤ ∫ τ in s₀..s₁, Zeta23.mu τ ^ 2 := by
-      have := integral_window_mul_le_interval hs hΩc hΩ0 hΩ1 hΩS (hμc.pow 2) (fun τ => sq_nonneg _)
+      have := integral_window_mul_le_interval hs hΩc hΩ1 hΩS (hμc.pow 2) (fun τ => sq_nonneg _)
       refine le_of_eq_of_le (integral_congr_ae (Eventually.of_forall fun τ => ?_)) this
       simp only; ring
     have h1 := (abs_le.mp h).2
@@ -447,19 +452,19 @@ theorem smoothPair_nuX_le (hF : LocalHypsCoreW cϱ p F) {Ω : ℝ → ℝ} {s₀
       simp only
       rw [hcP τ]
       unfold primeDirichletCos
-      rw [Finset.mul_sum, Finset.mul_sum]
-      exact congrArg _ (Finset.sum_congr rfl fun n _ => by ring)
+      simp only [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun n _ => by ring
     rw [e]
     refine (le_abs_self _).trans ((hcosμ (B := 2 * p.L) fun n => ?_).trans (le_of_eq (by ring)))
-    rw [abs_mul, abs_mul, abs_mul, abs_of_nonneg (acoef_nonneg n), abs_of_nonneg (hg0 _)]
-    norm_num
+    rw [abs_mul, abs_mul, abs_of_nonneg (acoef_nonneg n), abs_of_nonneg (hg0 _),
+      show |(-2:ℝ)| = 2 by norm_num]
     nlinarith [hgL (Real.log n), acoef_nonneg n, hg0 (Real.log n)]
   -- (Π, μ)
   have c10 : smoothPair Φ Ω (Zeta23.PiX X) Zeta23.mu ≤ S * (3 * Real.sqrt X / s₀) * (M * IΦ + E / s₀) := by
     have h := (le_abs_self _).trans (abs_smoothPair_le (hI3 hPic) hΩ0 hcμb)
     calc _ ≤ (M * IΦ + E / s₀) * ∫ τ, Ω τ * |Zeta23.PiX X τ| := h
       _ ≤ (M * IΦ + E / s₀) * (3 * Real.sqrt X / s₀ * S) :=
-          mul_le_mul_of_nonneg_left hIabsΠ (by positivity)
+          mul_le_mul_of_nonneg_left hIabsPi (by positivity)
       _ = S * (3 * Real.sqrt X / s₀) * (M * IΦ + E / s₀) := by ring
   -- (Π, Π)
   have c11 : smoothPair Φ Ω (Zeta23.PiX X) (Zeta23.PiX X)
@@ -467,7 +472,7 @@ theorem smoothPair_nuX_le (hF : LocalHypsCoreW cϱ p F) {Ω : ℝ → ℝ} {s₀
     have h := (le_abs_self _).trans (abs_smoothPair_le (hI3 hPic) hΩ0 hcPi)
     calc _ ≤ 3 * Real.sqrt X * CΦ / s₀ * ∫ τ, Ω τ * |Zeta23.PiX X τ| := h
       _ ≤ 3 * Real.sqrt X * CΦ / s₀ * (3 * Real.sqrt X / s₀ * S) :=
-          mul_le_mul_of_nonneg_left hIabsΠ (by positivity)
+          mul_le_mul_of_nonneg_left hIabsPi (by positivity)
       _ = S * (3 * Real.sqrt X / s₀) * (3 * Real.sqrt X * CΦ / s₀) := by ring
   -- Cauchy–Schwarz pieces
   have hCc := continuous_primeDirichletCos F.g X
@@ -489,7 +494,9 @@ theorem smoothPair_nuX_le (hF : LocalHypsCoreW cϱ p F) {Ω : ℝ → ℝ} {s₀
             ((hI3 hCc).const_mul _) (Eventually.of_forall fun τ => ?_)
           by_cases hτ : Ω τ = 0
           · simp [hτ]
-          · rw [abs_mul, abs_mul, abs_mul, abs_of_nonneg (hΩ0 τ)]
+          · show |Ω τ * Zeta23.PiX X τ * (-2 * primeDirichletCos F.g X τ)|
+              ≤ 2 * (3 * Real.sqrt X / s₀) * (Ω τ * |primeDirichletCos F.g X τ|)
+            rw [abs_mul, abs_mul, abs_mul, abs_of_nonneg (hΩ0 τ)]
             have hb := hPiS τ (hsupp τ hτ)
             have : |(-2 : ℝ)| = 2 := by norm_num
             rw [this]

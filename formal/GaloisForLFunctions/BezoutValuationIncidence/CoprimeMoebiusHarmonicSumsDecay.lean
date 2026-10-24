@@ -41,16 +41,17 @@ theorem isMultiplicative_smoothHarmonicKernel (f : ℕ) :
     (smoothHarmonicKernel f).IsMultiplicative := by
   refine ⟨by simp [smoothHarmonicKernel_apply], fun {m n} h => ?_⟩
   simp only [smoothHarmonicKernel_apply]
-  rw [Nat.Coprime.primeFactors_mul h, union_subset_iff]
+  rw [Nat.Coprime.primeFactors_mul h]
   by_cases hm : m.primeFactors ⊆ f.primeFactors <;> by_cases hn : n.primeFactors ⊆ f.primeFactors
-  · rw [if_pos ⟨hm, hn⟩, if_pos hm, if_pos hn]; push_cast; rw [mul_inv]
-  · rw [if_neg (fun h' => hn h'.2), if_neg hn, mul_zero]
-  · rw [if_neg (fun h' => hm h'.1), if_neg hm, zero_mul]
-  · rw [if_neg (fun h' => hm h'.1), if_neg hm, zero_mul]
+  · rw [if_pos (union_subset hm hn), if_pos hm, if_pos hn]; push_cast; rw [mul_inv]
+  · rw [if_neg (fun h' => hn (subset_union_right.trans h')), if_neg hn, mul_zero]
+  · rw [if_neg (fun h' => hm (subset_union_left.trans h')), if_neg hm, zero_mul]
+  · rw [if_neg (fun h' => hm (subset_union_left.trans h')), if_neg hm, zero_mul]
 
 theorem smoothHarmonicKernel_prime_pow (f : ℕ) {p : ℕ} (hp : p.Prime) {k : ℕ} (hk : k ≠ 0) :
     smoothHarmonicKernel f (p ^ k) = if p ∈ f.primeFactors then ((p : ℝ) ^ k)⁻¹ else 0 := by
-  rw [smoothHarmonicKernel_apply, Nat.primeFactors_prime_pow hk hp, singleton_subset_iff]
+  rw [smoothHarmonicKernel_apply, Nat.primeFactors_prime_pow hk hp]
+  simp only [singleton_subset_iff]
   push_cast
   rfl
 
@@ -140,11 +141,13 @@ def rankinProduct (f : ℕ) : ℝ := ∏ p ∈ f.primeFactors, (1 - rankinRatio 
 
 theorem one_le_rankinProduct (f : ℕ) : 1 ≤ rankinProduct f := by
   unfold rankinProduct
-  refine one_le_prod₀ fun p hp => ?_
-  have hp' := Nat.prime_of_mem_primeFactors hp
-  have h1r : 0 < 1 - rankinRatio p := by linarith [rankinRatio_le hp']
-  rw [le_inv_comm₀ zero_lt_one h1r, inv_one]
-  linarith [rankinRatio_nonneg p]
+  have h := prod_le_prod (s := f.primeFactors) (f := fun _ => (1 : ℝ)) (fun _ _ => zero_le_one)
+    (fun p hp => by
+      have hp' := Nat.prime_of_mem_primeFactors hp
+      have h1r : 0 < 1 - rankinRatio p := by linarith [rankinRatio_le hp']
+      rw [le_inv_comm₀ zero_lt_one h1r, inv_one]
+      linarith [rankinRatio_nonneg p])
+  simpa using h
 
 theorem rankinProduct_mul {m n : ℕ} (h : Nat.Coprime m n) :
     rankinProduct (m * n) = rankinProduct m * rankinProduct n := by
