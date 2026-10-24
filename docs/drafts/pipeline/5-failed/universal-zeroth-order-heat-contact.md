@@ -1,8 +1,8 @@
 # Universal zeroth-order heat contact
 
 - **ID:** universal-zeroth-order-heat-contact
-- **Stage:** 1-in-progress
-- **Type:** NO-GO WITH EXACT POSITIVE SURVIVOR (paper; Lean audit pending)
+- **Stage:** 5-failed
+- **Type:** NO-GO WITH FORMALIZED EXACT POSITIVE SURVIVOR
 - **Source:** Arithmetic Local Divisor Geometry; model calibration of Ward threshold rigidity
 - **Claim under audit:** Evenness, monicity, real-axis nonnegativity, exact paired roots and arbitrary central multiplicity force first coefficient-cone contact at order zero under forward heat.
 
@@ -22,13 +22,20 @@ For every real `a,s`,
 
 if and only if `s≥max(a,0)τ_m`. The dimensionless thresholds decrease strictly with `m`, satisfy `1/(8m+10)≤τ_m≤1/(8m+5)`, and obey `(8m)τ_m→1`. For `a>0`, the contact degree above is exact and unique among even coefficients up to the degree, and the constant coefficient stays positive. The Gaussian moment normalization is `λ=2s`, with the positive per-order factor `λ^j(2j)!`.
 
-Paper proofs: `../2-fully-proven/central-multiplicity-full-heat-cone.md` and `../2-fully-proven/masked-pair-middle-order-contact.md`. Lean sources: `MaskedHeatIndex`, `MaskedHeatContactIndex`, `MaskedPairHeatCone`, `MaskedPairHeatThreshold` and `MaskedPairHermite`, all in the programme folder. The support modules have passed required olean checks; final threshold/Hermite and plain-file audits remain pending.
+Paper proofs: `../3-formalized/central-multiplicity-full-heat-cone.md` and
+`../3-formalized/masked-pair-middle-order-contact.md`. Lean sources: `MaskedHeatIndex`,
+`MaskedHeatContactIndex`, `MaskedPairHeatCone`, `MaskedPairHeatThreshold` and
+`MaskedPairHermite`, all in the programme folder. Final plain module checks passed.
+The complete classification, radical, contact and Hermite-conversion audits use only
+`propext`, `Classical.choice` and `Quot.sound`.
 
 ## Closure gates
 
 - [x] Negative claim tested against the entire growing-multiplicity family.
 - [x] Strongest identified positive survivor given a dependency-closed paper proof.
-- [ ] Exact survivor formalized and transitive dependencies audited.
-- [ ] Final plain module checks and umbrella wiring.
+- [x] Exact survivor formalized and transitive dependencies audited.
+- [x] Final plain module checks and umbrella wiring.
 
-Retire only the universal polynomial forcing principle after these gates pass. The arithmetic source rigidity endpoint remains open.
+The universal polynomial forcing principle is retired. Its strongest identified positive
+survivor is the exact all-real classification and unique middle-order contact law above.
+The arithmetic source rigidity endpoint remains open.

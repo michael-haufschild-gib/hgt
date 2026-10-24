@@ -9,8 +9,8 @@ the successor. Its basic object is a completely multiplicative sign `f` read thr
 **successor sign** `σ_f(n) = f(n) f(n+1)`. Its basic identity is the **dilation cocycle**
 `∏_{j<m} σ_f(mn + j) = σ_f(n)`, which carries the multiplicative structure onto the successor. Its
 basic theorem is the **one-third floor**: every completely multiplicative sign keeps its sign
-across at least one third of the steps in logarithmic density, the constant is exact, and the
-extremal signs are the conductor-three twins of the quadratic character modulo `3`.
+across at least one third of the steps in logarithmic density, the constant is exact and is attained by the conductor-three twins of the quadratic
+character modulo `3`. Classification of all extremal signs is a separate question.
 
 **The open core.** Over a finite field the successor correlation of characters is a count:
 `Σ_x χ(x) χ̄(x+1) = −1`, and `|Σ_x χ(x) ψ(x+1)|² = q` when `χ, ψ, χψ` are nontrivial. Signed
@@ -19,8 +19,8 @@ the density scale (floors, exact identities, quantized biases and deficits) and 
 square-root scale. The square-root scale is what the walls of the RH frontier ask for; the density
 scale is the first rung that is proved.
 
-**A correction to the frontier.** The hypercube Dirichlet form of Bézout–Valuation Incidence, whose
-uniform bound for `0 < ε ≤ 1/2` was listed as an open entry point of the successor input, is
+**A boundary that guides the objects.** The prime-supported hypercube Dirichlet form of
+Bézout–Valuation Incidence is
 unbounded for every `−1/2 ≤ ε < 1/2`, unconditionally (§3.7). Its threshold is the abscissa of
 absolute convergence of the Euler product, set by the pole of `ζ` and not by its zeros.
 
@@ -30,12 +30,13 @@ Everything in the programme is unconditional. No theorem rests on a hypothesis a
 
 ## Place in the research
 
-The review `docs/reports/review-2410/fable.md` (§§1–3) reads the corpus's three wall families as
-three projections of one missing input: a **signed, single-scale, successor-selective** estimate on
-the actual Möbius or prime source at the square-root scale. Every exit the corpus has built (a
-rate, a quantized index, a transport in aperture) reduces to this input. The review proposes SSA as
-the field that would supply it: not a new reformulation, but a new source of positivity in which
-cancellation is a count and the successor is visible in the proof.
+SSA studies a possible source of signed estimates beyond the existing
+receiver dictionaries: exact multiplicativity coupled to consecutive integers.
+Its counting identities produce quantitative restrictions that coefficient
+magnitudes alone do not see. The central challenge is to turn these density
+laws into estimates in a critical arithmetic norm, with an explicit transfer
+to a zero-width or prime-pair receiver. No theorem says that every successful
+RH argument must pass through this mechanism.
 
 | Programme | Interface |
 |---|---|
@@ -43,9 +44,10 @@ cancellation is a count and the successor is visible in the proof.
 | [Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md) | Owns the successor incidence count with its sawtooth defect, the least successor seed, the pronic Gram and the hypercube Dirichlet form. SSA settles the hypercube form below half damping (§3.7) and calibrates the balanced cross-scale Gram over `𝔽_q` (§3.8). |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Calibrates over `𝔽_q` and counts the Hodge defect as the number of right zeros. SSA calibrates over `𝔽_q` too, but on the successor side: Jacobi and Kloosterman sums are successor correlations. |
 | [Arithmetic Orientation Geometry](../ArithmeticOrientationGeometry/README.md), [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Orient correspondences and sources by integer-valued invariants. SSA supplies a different integer: the doubled-agreement count, which pays the signed two-scale identity and quantizes its deficit (§3.10). |
-| [Square-Root Threshold](../SquareRootThreshold/README.md), [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Locate every route at the square-root threshold and prove bounded readings blind. They say which scale SSA has to reach. |
+| [Square-Root Threshold](../SquareRootThreshold/README.md), [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Locate the square-root threshold for the specified receiver methods and prove blindness of bounded reading classes. They identify the scale needed for transfer from SSA. |
 | [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Owns the coalescent prime surplus, the cleanest additive test bed for a signed correlation tool. |
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Keeps the Möbius signs through quadratic forms and locates frustration on prime-sum edges. |
+| [Arithmetic Defect Rigidity](../ArithmeticDefectRigidity/README.md) | Shows fixed successor observations can vanish on normalized receiver escape while signed moving cofactor work survives; an eventual transfer must retain that information. |
 | [Bi-Scale Uncertainty](../BiScaleUncertainty/README.md) | Supplies the adversarial models (fake curves, shifted pairs, window hiding) that every SSA statement is tested against. |
 
 `RHTower` supplies the prime number theorem with error term (`RHTower.Sieve.chebyshevTheta_sub_id_isBigO`,
@@ -55,8 +57,8 @@ the Ramanujan step vectors. `HTGeometry` supplies the half-line Mellin unitary
 
 **Where SSA sits.** The corpus programmes are the receiver side of the frontier: each one reads the
 zero width in its own coordinates and proves that its readings are exact. SSA is the source side.
-It studies the arithmetic of the signs themselves, with the successor as the structure that a
-receiver statement must eventually use. Its proved theorems live at the density scale and at
+It studies the arithmetic of the signs themselves, using the successor as its chosen
+source of compatibility between additive and multiplicative structure. Its proved theorems live at the density scale and at
 finite-field scale; it also tests proposed entry points of the successor input against the
 structure of the primes, and the hypercube form fails that test for a reason unrelated to zeros.
 
@@ -83,16 +85,18 @@ Read as questions for which tools are missing, the three wall families of the fr
 
 *Signed*: the content that sign-blind laws cannot see — the Möbius and Liouville signs, parity, the
 orientation of a zero. *Successor*: the structure every Bézout-selective law uses —
-`gcd(n, n+1) = 1`, `pa − qb = 1`, `|log(A/B)| ≥ 1/max(A, B)`. *Arithmetic*: positivity inherited
-from integers, because the corpus proves that analysis alone is Beurling-universal or sign-blind.
+`gcd(n, n+1) = 1`, `pa − qb = 1`, `|log(A/B)| ≥ 1/max(A, B)`. *Arithmetic*: the
+positivity of a specified integer count, coupled to exact source identities.
+The known blind analytic estimates delimit particular methods, not all analysis.
 
 ### 1.3 Point of view
 
 1. The integers are the interaction of `×` (divisors, Euler products, characters) and `+1` (the
    successor). RH is a statement about this interaction at the square-root scale.
-2. Positivity comes from counting. Analytic positivity (the archimedean place, a zero-free
-   region) is a remainder, not a mechanism.
-3. One scale and one height. Averaging over heights, characters or moduli loses selectivity.
+2. Use counts to expose a sign or a quantized deficit; retain analytic weights and the
+   archimedean contribution when transferring that identity to a receiver.
+3. Seek control at the required scale and height. Averaged estimates are useful when a
+   proved transfer preserves the source and the receiver’s quantifiers.
 4. Cofinality. Every statement is a law in a scale parameter.
 5. Quantization. Where a deficit is integer-valued, prove rigidity rather than decay.
 
@@ -411,14 +415,15 @@ To build:
 
 ---
 
-## 7. Open research topics
+## 7. Research boundaries and open questions
 
 1. **Break the conductor-three floor for `λ`.** The extremal twin agrees with `λ` below `7`. Target:
    `Σ_{n ≤ M, λ(n) = λ(n+1)} 1/n ≥ (1/3 + c) log M − C` for some `c > 0`, with a proof that names the
    successor input and uses `λ(p) = −1` at infinitely many primes `p ≡ 1 (mod 3)`.
 2. **The square-root scale over `ℤ` (W1).** A signed successor estimate for `λ` or `μ` with a power
-   saving at one scale. Its first output in receiver coordinates must be a zero-free strip, and the
-   statement must say which one.
+   saving at one scale, together with an explicit theorem transferring it to a critical
+   receiver. A gain in successor correlation by itself is not a proved zero-free strip;
+   identify the weights, centering and norm needed for that consequence.
 3. **Size-truncated hypercube forms.** The prime-supported form is settled (§3.7). Its borderline
    `ε = 1/2` (where the Euler product sits on the line of absolute convergence) is open. The
    size-truncated form `R_ε(D)` is a spectral mean square of the truncated Möbius polynomial
@@ -433,12 +438,15 @@ To build:
 6. **The complex floor.** Determine the constant in `[−1/2, −1/3]`.
 7. **From `λ` to `μ`.** `μ = λ · μ²`, and the squarefree restriction breaks the cocycle
    (`μ(2n) = 0` for even `n`). Find the successor calculus of squarefree-supported signs.
-8. **The index exit (fable §2.3 C).** The doubled-agreement count is a count that pays a signed
-   identity, quantizes its deficit, and vanishes exactly at the extremals. An arithmetic count that
-   pays the Hodge defect of the scaling surface in the same way would force the defect to zero.
-9. **Kloosterman reciprocity (fable topic 2).** Carry the exact second moment to the balanced
+8. **A count with an upper budget.** The doubled-agreement count quantizes the exact
+   two-scale deficit, and zero defect forces extremal density. AOG already gives a second
+   count for the Hodge defect: future heat collision mass is `2(D+E)`, where `E` is
+   multiplicity excess. This identity alone supplies no upper bound. The useful new input
+   would be a source-derived budget below the first nonzero quantum, or a count identity
+   with an independently bounded opposing term.
+9. **Kloosterman reciprocity.** Carry the exact second moment to the balanced
    cross-scale Gram, where the Kloosterman fractions `k q̄/p` appear with cosecant weights.
-10. **Witt structure (fable topic 10).** Decide whether Frobenius and Verschiebung on ghost
+10. **Witt structure.** Decide whether Frobenius and Verschiebung on ghost
     coordinates supply a successor law, or whether they are Beurling-universal.
 
 ---
@@ -471,8 +479,8 @@ strongest positive survivor recorded.
 1. **Selectivity.** A statement that holds verbatim for a Beurling system, a parity twin or the
    alternating sign cannot close the frontier. Test before proving.
 2. **Successor.** The additive input must be visible in the proof.
-3. **Integrality.** Positivity is inherited from a count; analytic positivity is a remainder.
-4. **Single scale.** No averaging over heights, characters or moduli in the statement.
+3. **Integrality.** Identify the count, its exact signed identity and the upper budget needed.
+4. **Single scale.** State the final scale and justify any passage from averaged data to it.
 5. **Cofinality.** Every result is a law in a scale parameter.
 6. **Quantization.** Where a deficit is integer-valued, prove rigidity rather than decay.
 7. **Exactness.** Identity before asymptotics; keep boundary terms and signed defects.

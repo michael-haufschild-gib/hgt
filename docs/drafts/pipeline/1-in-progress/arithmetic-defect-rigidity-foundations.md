@@ -1,6 +1,6 @@
 # Arithmetic defect rigidity: source constraints on escaping critical energy
 
-Status: research in progress.
+Status: completion of existing proofs and individual audits in progress.
 
 ## Objective
 
@@ -48,8 +48,21 @@ of every fixed signed cofactor tail to the complete forcing.
 the explicit power subtraction and the global remainder budget are accepted.
 `TheForcingHasFinitePronicMass.lean` also passed: its exact prime-power mass, least-upper-bound
 property and logarithmic derivative identity are accepted.
-Ten further modules have paper arguments and Lean sources; their audits are in progress:
+`TheActualReceiverHasAnAbsolutePoleTrace.lean` passed its dependency build: absolute endpoint
+trace, dominated boundary passage and exact forcing coefficient are accepted.
+`TheRenormalizedCofactorIsAntipodalOnEscape.lean` passed: signed antipodality and total-variation
+control of the localized signed density error are accepted.
+Twelve further modules have paper arguments and Lean sources; their audits remain unfinished:
 
+- `MovingLocalizationsRetainTheSignedDensity`: arbitrary bounded horizon-dependent cell
+  multipliers retain the signed density with one uniform remainder budget.
+- `TheResidualAndPoleTraceDetermineTheRow`: exact inverse reconstruction, injectivity of
+  the residual/trace pair and containment of any residual kernel in one explicit row line.
+- `CofactorRenormalizationHasABoundedDilationCommutator`: exact rank-one commutator and
+  uniform source trace budget, including moving integer dilations.
+- `CountableCofactorCovariancesHaveACommonLimit`: one common subsequence retaining every fixed
+  signed cofactor covariance, unit receiver mass, finite packet positivity and simultaneous
+  dilation contraction.
 - `TheReceiverIsTheGramTangent`: exact signed Gram distance and determinant, degeneration in
   forcing normalization, unit distance in receiver normalization.
 - `CofactorSuccessorWordsHaveABoundaryCost`: the word action's denominator/boundary sandwich,
@@ -58,11 +71,6 @@ Ten further modules have paper arguments and Lean sources; their audits are in p
   `floor(log(F_T/E_T))` beyond which the signed tail still carries the complete forcing.
 - `BoundedWordErrorsHaveAnAbsoluteHorizonTail`: absolute new-cell forcing and word-work
   budgets decaying with cutoff, uniformly in every final horizon.
-- `TheRenormalizedCofactorIsAntipodalOnEscape`: the exact signed residual identity and
-  normalized cofactor pairing approaching `-1` on the escaping branch, and total-variation
-  control of its signed density error under arbitrary bounded localization.
-- `TheActualReceiverHasAnAbsolutePoleTrace`: absolute Mellin trace at `1-epsilon`, its
-  extension from the convergent side, and exact equality with the forcing power coefficient.
 - `ThePoleTraceDefinesALinearCofactorRenormalization`: a proved trace submodule, linear
   boundary functional and cofactor subtraction, with actual-source membership and paid residual.
 - `FixedCofactorsHaveAHarmonicBoundaryTrace`: proved fixed-dilation domain stability and
@@ -72,9 +80,14 @@ Ten further modules have paper arguments and Lean sources; their audits are in p
 - `EnergyQuantilesPreserveTheSignedCofactorPairing`: uniform transport of actual signed
   renormalized cofactor work to energy coordinates, with explicit error tending to zero on escape.
 
+`EnergyQuantilesRetainDiffuseEscape` is being rechecked after repairs to finite-sum expansion,
+a successor/cast simplification loop and a subtype-coercion mismatch. The prior failed check
+generated no dependency object. Diagnostics are saved in
+`logs/arithmetic-defect-rigidity-quantile-audit.txt`.
+
 The foundational README explains these mechanisms and the complete programme. Its theorem
 claims must be reconciled with the finished audits. The own umbrella and MainTheorems import
-are wired for the six accepted modules; remaining imports and final no-output-file audits remain. Global source exclusion, complete
+are wired for the eight accepted modules; remaining imports and final no-output-file audits remain. Global source exclusion, complete
 joint extraction, stronger signed covariance,
 repairing-module transport, global allocation, multiplicity-sensitive anti-collapse and source
 effectivity remain open. These are substantive parts of the user's goal, not optional follow-ups.
@@ -87,6 +100,6 @@ subtraction defines an affine residual of the actual source. A linear operator o
 trace domain is written but awaits audit; its boundedness and domain invariance are not proved.
 
 The energy-quantile carrier and its signed renormalized cofactor pairing now have quantitative
-paper proofs and Lean sources. A complete joint state must retain additional cofactor and
-successor covariances, rates and moving support. The quantile transport does not provide
+paper proofs and Lean sources. Countable fixed-cofactor covariance extraction has a paper proof and a Lean source awaiting
+audit. A complete joint state must additionally retain successor data, rates and moving support. The quantile transport does not provide
 the missing arithmetic exclusion estimate.

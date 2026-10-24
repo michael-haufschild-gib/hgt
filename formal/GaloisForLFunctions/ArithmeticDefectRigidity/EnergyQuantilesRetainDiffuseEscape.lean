@@ -44,19 +44,21 @@ theorem receiverEnergy_succ_le (ε : SubcriticalDamping) (n : ℕ) :
     apply (div_le_one (by positivity)).mpr
     push_cast at hsq
     nlinarith
-  simp only [dampedMobiusEnergy, pmPowerDampedDivisorDiscreteEnergy_eq_range,
-    sum_range_succ]
+  simp only [dampedMobiusEnergy, pmPowerDampedDivisorDiscreteEnergy_eq_range]
+  rw [Finset.sum_range_succ]
   exact add_le_add (le_refl _) hcell
 
 /-- A block of `k` newly entering cells costs at most `k` units of energy. -/
 theorem receiverEnergy_shift_le (ε : SubcriticalDamping) (n k : ℕ) :
     dampedMobiusEnergy ε (n + k) ≤ dampedMobiusEnergy ε n + (k : ℝ) := by
   induction k with
-  | zero => simp only [Nat.add_zero, Nat.cast_zero, add_zero, le_refl]
+  | zero => simp only [Nat.cast_zero, add_zero, le_refl]
   | succ k ih =>
     have h := receiverEnergy_succ_le ε (n + k)
     have hbound := h.trans (add_le_add ih (le_refl (1 : ℝ)))
-    simpa only [Nat.add_succ, Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, add_assoc] using hbound
+    change dampedMobiusEnergy ε ((n + k) + 1) ≤ dampedMobiusEnergy ε n + ((k + 1 : ℕ) : ℝ)
+    rw [Nat.cast_add, Nat.cast_one, ← add_assoc]
+    exact hbound
 
 private theorem exists_receiverEnergy_crossing (ε : SubcriticalDamping) (T : ℕ)
     (r : EnergyFraction) : ∃ n, (r : ℝ) * dampedMobiusEnergy ε T ≤ dampedMobiusEnergy ε n := by
@@ -99,7 +101,8 @@ theorem monotone_receiverEnergyQuantile (ε : SubcriticalDamping) (T : ℕ) :
     Monotone (receiverEnergyQuantile ε T) := by
   intro r s hrs
   apply Nat.find_min'
-  exact (mul_le_mul_of_nonneg_right hrs (dampedMobiusEnergy_nonneg ε T)).trans
+  have hrs' : (r : ℝ) ≤ (s : ℝ) := hrs
+  exact (mul_le_mul_of_nonneg_right hrs' (dampedMobiusEnergy_nonneg ε T)).trans
     (receiverEnergyQuantile_bounds ε T s).1
 
 /-- The signed energy of any quantile interval differs from its target by at most one. -/
@@ -126,7 +129,7 @@ theorem abs_normalized_receiverEnergyQuantile_error_le (ε : SubcriticalDamping)
       ((dampedMobiusEnergy ε (receiverEnergyQuantile ε (T + 1) s) -
         dampedMobiusEnergy ε (receiverEnergyQuantile ε (T + 1) r)) -
         ((s : ℝ) - (r : ℝ)) * dampedMobiusEnergy ε (T + 1)) /
-        dampedMobiusEnergy ε (T + 1) := by field_simp [hE.ne'] <;> ring
+        dampedMobiusEnergy ε (T + 1) := by field_simp [hE.ne']
   rw [heq, abs_div, abs_of_pos hE]
   exact div_le_div_of_nonneg_right (abs_receiverEnergyQuantile_interval_error_le ε (T + 1) r s) hE.le
 

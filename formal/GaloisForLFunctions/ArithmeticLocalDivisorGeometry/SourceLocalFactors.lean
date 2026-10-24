@@ -27,15 +27,11 @@ theorem pairFactor_eval₂ (u δ : ℝ) (y : ℂ) :
     (pairFactor u δ).eval₂ (algebraMap ℝ ℂ) y =
       (y + ((u : ℂ) + (δ : ℂ) * I) ^ 2) *
         (y + ((u : ℂ) - (δ : ℂ) * I) ^ 2) := by
-  simp only [pairFactor, eval₂_add, eval₂_mul, eval₂_pow, eval₂_C, eval₂_X]
+  simp only [pairFactor, eval₂_add, eval₂_mul, eval₂_pow, eval₂_C, eval₂_X,
+    Complex.coe_algebraMap]
   push_cast
-  have hI4 : (I : ℂ) ^ 4 = 1 := by
-    calc
-      _ = (I ^ 2) ^ 2 := by ring
-      _ = 1 := by rw [I_sq]; norm_num
-  ring_nf
-  simp only [hI4, I_sq]
-  ring
+  linear_combination (δ : ℂ) ^ 2 *
+    (2 * (u : ℂ) ^ 2 - 2 * y + (δ : ℂ) ^ 2 * (1 - I ^ 2)) * I_sq
 
 /-- Exact evaluation at a complex squared displacement, including central zero factors. -/
 theorem localDivisorPolynomial_eval₂ (t : ℝ) (S : Finset XiZeroCopy) (y : ℂ) :
@@ -195,7 +191,7 @@ theorem localDivisorPolynomial_split (t : ℝ) (S T : Finset XiZeroCopy) :
 /-- Every transition coefficient retains the full convolution, including signed mixed terms. -/
 theorem localDivisorPolynomial_split_coeff (t : ℝ) (S T : Finset XiZeroCopy) (n : ℕ) :
     (localDivisorPolynomial t S).coeff n =
-      ∑ ij ∈ Finset.antidiagonal n,
+      ∑ ij ∈ Finset.HasAntidiagonal.antidiagonal n,
         (localDivisorPolynomial t (S ∩ T)).coeff ij.1 *
           (localDivisorPolynomial t (S \ T)).coeff ij.2 := by
   rw [localDivisorPolynomial_split t S T, coeff_mul]
@@ -204,6 +200,9 @@ end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
 
 #print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.exists_pos_xiFiniteHead_normalization
+
 #print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.xiFiniteHead_even_taylor
+
 #print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.xiFiniteHead_odd_taylor
+
 #print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.localDivisorPolynomial_split_coeff

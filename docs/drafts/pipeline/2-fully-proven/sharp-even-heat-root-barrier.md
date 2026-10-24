@@ -1,10 +1,10 @@
-# Sharp even nonnegative heat-root barrier
+# Sharp heat-root barrier and even Hermite extremizers
 
 - **ID:** sharp-even-heat-root-barrier
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper; Lean formalization pending)
 - **Source:** Arithmetic Local Divisor Geometry; universal finite-degree root obstruction
-- **Statement:** The sharp positive-root barrier for an even nonnegative polynomial of degree `2d` whose forward heat has nonnegative coefficients is the largest zero of the probabilists' Hermite polynomial `He_(2d−1)`, in Gaussian units. Equality forces a shifted `He_(2d)` extremizer.
+- **Statement:** The sharp positive-root barrier for a nonnegative real polynomial of degree `2d` whose forward heat has nonnegative coefficients is the largest zero of the probabilists' Hermite polynomial `He_(2d−1)`, in Gaussian units. Evenness is not required; equality forces an even shifted `He_(2d)` extremizer.
 
 ## Existing input and scope
 
@@ -12,7 +12,7 @@
 
 ## Precise result
 
-Let `d≥2`, `λ>0`, and let `h_d` be the largest real zero of `He_(2d−1)`. If `P` is a nonzero even real polynomial of degree `2d`, `P(x)≥0` for all real `x`, and every coefficient of `E_(λ/2)P` is nonnegative, then every positive root `δ` of `P` obeys
+Let `d≥2`, `λ>0`, and let `h_d` be the largest real zero of `He_(2d−1)`. If `P` is a nonzero real polynomial of degree `2d`, `P(x)≥0` for all real `x`, and every coefficient of `E_(λ/2)P` is nonnegative, then every positive root `δ` of `P` obeys
 
 `δ≤sqrt(λ) h_d`.
 
@@ -28,15 +28,17 @@ Use the probabilists' normalization `H_n=He_n`, so `H'_n=nH_(n−1)` and `H''_n�
 
 The largest zero increases strictly with `n≥1`. Indeed `g_n(x)=(-1)^n H_n(x) exp(-x²/2)` vanishes at the largest zero of `H_n` and tends to zero at positive infinity. Rolle's theorem on that half-line gives a zero of `g'_n=g_(n+1)` strictly farther right. Thus every lower-degree `H_j` is strictly positive at the largest zero of `H_n`, and all `H_j`, `j≤n`, are strictly positive beyond it. For `n≥2` the largest zero is positive: `H_1` has largest zero zero, and the same argument applies.
 
-Write `Q=E_(λ/2)P=Σ_(j=0)^d q_(2j)X^(2j)`. Heat preserves degree, leading coefficient and parity. Therefore all `q_(2j)≥0`, with `q_(2d)=c>0`. Polynomial heat inversion gives
+Write `Q=E_(λ/2)P=Σ_(j=0)^(2d) q_j X^j` and `σ=sqrt(λ)`. Heat preserves degree and leading coefficient. Therefore all `q_j≥0`, with `q_(2d)=c>0`. Polynomial heat inversion gives
 
-`P(x)=Σ_(j=0)^d q_(2j) λ^j H_(2j)(x/sqrt λ)`.
+`P(x)=Σ_(j=0)^(2d) q_j σ^j H_j(x/σ)`.
 
 At a positive zero `δ` of the globally nonnegative `P`, its derivative vanishes. With `x=δ/sqrt λ`,
 
-`0=P'(δ)=Σ_(j=1)^d 2j q_(2j) λ^(j−1/2) H_(2j−1)(x)`.
+`0=P'(δ)=Σ_(j=1)^(2d) j q_j σ^(j−1) H_(j−1)(x)`.
 
-For `x>h_d` every term is nonnegative and the leading term is positive, a contradiction. At `x=h_d`, every lower nonconstant summand has a strictly positive Hermite weight. Thus all `q_(2j)=0`, `1≤j<d`. The root equation then gives `q_0=−c λ^d H_(2d)(h_d)` and the claimed unique polynomial up to `c>0`.
+For `x>h_d` every term is nonnegative and the leading term is positive, a contradiction. At `x=h_d`, every lower nonconstant summand has a strictly positive Hermite weight. Thus all `q_j=0`, `1≤j<2d`, including every odd coefficient. The root equation then gives `q_0=−c λ^d H_(2d)(h_d)` and the claimed unique polynomial up to `c>0`. Evenness is forced at equality, rather than assumed.
+
+The same argument gives a stronger algebraic engine. For any degree `N≥2`, if `E_(λ/2)P` has nonnegative coefficients, then every real stationary point of `P` lies at or below `sqrt(λ)` times the largest zero of `He_(N−1)`. A stationary point at that boundary forces the heated polynomial to have only constant and leading terms. Requiring that point also to be a root fixes the constant exactly as above. Global nonnegativity is used only to make a positive root stationary and to specify the class in which the even extremizer must attain the bound. A further targeted literature search for the stationary-root formulation did not locate this exact statement; no worldwide novelty claim is made. Non-even polynomials are not claimed to enter the heat cone eventually: their highest odd coefficient may remain negative at every heat.
 
 It remains to prove attainment rather than assume the extremizer is nonnegative. Put `H=H_(2d)`, `n=2d`, and `h=h_d`. At `h`, `H'(h)=0` and `H''(h)=n(n−1)H_(n−2)(h)>0`; the ODE gives `H(h)<0`. The Sonin quantity
 
@@ -102,7 +104,7 @@ The barrier proves the lower bound, and the scaled Hermite extremizer attains it
 
 ## Lean implementation route
 
-- `HermiteHeatNormalization.lean` is a complete unchecked draft of the unit identities `E_(-1/2)X^n=He_n` and `E_(1/2)He_n=X^n`. It uses the existing three-term/derivative recurrence and the checked local heat semigroup. These are classical support identities, not a novelty claim.
+- `HermiteHeatNormalization.lean` is a corrected, still unchecked draft of the unit identities `E_(-1/2)X^n=He_n` and `E_(1/2)He_n=X^n`. It uses the existing three-term/derivative recurrence and the checked local heat semigroup. These are classical support identities, not a novelty claim.
 - Define `hermiteEdge n` as the largest root of `He_(n+1)`, using `gaussianDerivZeros` and `card_roots_toFinset_hermite` from `HermiteRealRoots`. The existing half-line Rolle theorem gives strict increase; `hermiteEdge 0=0`. The polynomial sign theorem beyond all roots gives all lower Hermite weights positive at an edge. API checks are prepared in `/tmp/aldg_edge_api.lean` and must pass before using new mathlib names in the implementation.
 - Reuse `hermiteReal`, `derivative_hermiteReal_succ`, parity and the recurrence from `HermitePerturbationRealRoots`. The ODE is already in `SpurHermite`; the power lower bound is in `HermiteGaussianMomentBounds`. Do not claim these classical ingredients as new.
 - For asymptotics, avoid matrix formalization. With `N=n+k+2`, sum the quotient recurrence at the largest zero of `He_N` over the last `k+1` rows. The result is `(k+1)·hermiteEdge(n+k+1)≥2k sqrt(n+2)`. This parametrization avoids subtraction in the finite sums; use `sum_range_succ` and `sum_range_succ'` to expose the two boundary terms.
@@ -117,3 +119,13 @@ The barrier proves the lower bound, and the scaled Hermite extremizer attains it
 - [ ] Lean formalization in the programme folder and transitive axiom audit.
 
 No numerical experiments or source-sign hypotheses are used. Formalization must prove the finite-degree boundary, attainment and equality law, rather than inserting Hermite positivity or the global minimum as a new premise.
+
+## Interrupted formalization state
+
+The user cleared the goal before this theorem's Lean gates closed. Complete unchecked drafts
+`HermiteRootEdge.lean`, `HermiteSonin.lean`, `PolynomialHeatDilation.lean` and
+`HermiteHeatRootBarrier.lean` are preserved in the programme folder and are not wired into
+the umbrella. The barrier draft includes the stationary bound, all intermediate coefficient
+vanishing at equality, root rigidity and arbitrary Gaussian scale. `HermiteExtremizers` and
+`HermiteEdgeAsymptotics` are not yet written. The programme card records exact verification
+state and the resumption sequence. No full sharp-barrier result is claimed formalized.

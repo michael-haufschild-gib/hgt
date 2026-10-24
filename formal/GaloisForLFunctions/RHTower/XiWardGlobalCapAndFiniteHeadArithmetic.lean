@@ -397,24 +397,45 @@ private theorem natDegree_one_add_C_mul_X_add_C_mul_X_sq_le (b c : ℝ) :
     if_neg (by omega), if_neg (by omega), if_neg (by omega), mul_zero, mul_zero, add_zero,
     add_zero]
 
+private theorem natDegree_prod_le_card_mul (A : Finset XiZeroCopy) (f : XiZeroCopy → ℝ[X]) (d : ℕ)
+    (hf : ∀ q ∈ A, (f q).natDegree ≤ d) :
+    (∏ q ∈ A, f q).natDegree ≤ d * A.card := by
+  classical
+  induction A using Finset.induction_on with
+  | empty => simp
+  | insert a A ha ih =>
+    have hcard : (insert a A).card = A.card + 1 := by simp [ha]
+    rw [Finset.prod_insert ha, hcard, Nat.mul_add, Nat.mul_one]
+    have ha_le : (f a).natDegree ≤ d := hf a (Finset.mem_insert_self a A)
+    have hA_le : (∏ q ∈ A, f q).natDegree ≤ d * A.card :=
+      ih fun q hq => hf q (Finset.mem_insert_of_mem hq)
+    have hmul : (f a * ∏ q ∈ A, f q).natDegree ≤ (f a).natDegree + (∏ q ∈ A, f q).natDegree :=
+      @Polynomial.natDegree_mul_le ℝ _ (f a) (∏ q ∈ A, f q)
+    omega
+
 /-- Degree bound for `sliceTruncPoly t S`: `(sliceTruncPoly t S).natDegree ≤ (sliceTrunc S).card`. -/
 theorem natDegree_sliceTruncPoly_le (t : ℝ) (S : Finset XiZeroCopy) :
     (sliceTruncPoly t S).natDegree ≤ (sliceTrunc S).card := by
   rw [card_sliceTrunc]
   unfold sliceTruncPoly
-  refine le_trans natDegree_mul_le (add_le_add ?_ ?_)
-  · refine le_trans (natDegree_prod_le _ _) ?_
-    calc ∑ q ∈ sliceTruncCrit S, (1 + C (sliceAtom t q) * X).natDegree
-        ≤ ∑ _q ∈ sliceTruncCrit S, 1 :=
-          Finset.sum_le_sum fun q _ => natDegree_one_add_C_mul_X_le _
-      _ = (sliceTruncCrit S).card := by simp
-  · refine le_trans (natDegree_prod_le _ _) ?_
-    calc ∑ q ∈ sliceTruncUp S,
-          ((1 + C (sliceAtom t q) * X) ^ 2 - C (4 * sliceDefect t q) * X).natDegree
-        ≤ ∑ _q ∈ sliceTruncUp S, 2 := Finset.sum_le_sum fun q _ => by
-          rw [DeBruijn.slicePairFactor_eq]
-          exact natDegree_one_add_C_mul_X_add_C_mul_X_sq_le _ _
-      _ = 2 * (sliceTruncUp S).card := by simp [mul_comm]
+  have h1 : (∏ q ∈ sliceTruncCrit S, (1 + C (sliceAtom t q) * X)).natDegree ≤
+      1 * (sliceTruncCrit S).card :=
+    natDegree_prod_le_card_mul (sliceTruncCrit S) _ 1 fun q _ =>
+      natDegree_one_add_C_mul_X_le (sliceAtom t q)
+  have h2 : (∏ q ∈ sliceTruncUp S,
+      ((1 + C (sliceAtom t q) * X) ^ 2 - C (4 * sliceDefect t q) * X)).natDegree ≤
+      2 * (sliceTruncUp S).card :=
+    natDegree_prod_le_card_mul (sliceTruncUp S) _ 2 fun q _ => by
+      rw [DeBruijn.slicePairFactor_eq]
+      exact natDegree_one_add_C_mul_X_add_C_mul_X_sq_le _ _
+  have hmul : ((∏ q ∈ sliceTruncCrit S, (1 + C (sliceAtom t q) * X)) *
+      ∏ q ∈ sliceTruncUp S,
+        ((1 + C (sliceAtom t q) * X) ^ 2 - C (4 * sliceDefect t q) * X)).natDegree ≤
+      (∏ q ∈ sliceTruncCrit S, (1 + C (sliceAtom t q) * X)).natDegree +
+        (∏ q ∈ sliceTruncUp S,
+          ((1 + C (sliceAtom t q) * X) ^ 2 - C (4 * sliceDefect t q) * X)).natDegree :=
+    @Polynomial.natDegree_mul_le ℝ _ _ _
+  omega
 
 /-- For the radius head `H = xiSliceGaussianRadiusHead t R`, `expand ℝ 2 (sliceTruncPoly t H)` has
 degree at most `2 * H.card`. -/
@@ -807,7 +828,6 @@ theorem coeff_one_sliceTruncPoly_eq_sum_re (t : ℝ) (S : Finset XiZeroCopy) :
       rw [DeBruijn.slicePairFactor_eq, coeff_add, coeff_add, ← C_1, coeff_C, coeff_C_mul,
         coeff_X_one, coeff_C_mul, coeff_X_pow]
       norm_num
-      ring
     rw [Finset.sum_congr rfl hc1, Finset.sum_congr rfl hu1, add_comm]
   have hd1 : Disjoint (sliceTruncCrit S) (sliceTruncUp S) := by
     rw [Finset.disjoint_left]
@@ -1455,7 +1475,7 @@ theorem zetaZeroWidth_le_iff_forall_xiZeroCopy_re_le {σ : ℝ} (hσ : 0 ≤ σ)
 theorem riemannHypothesis_iff_forall_xiZeroCopy_re_eq_half :
     RiemannHypothesis ↔ ∀ q : XiZeroCopy, (q.1 : ℂ).re = 1 / 2 := by
   have hz0 : zetaZeroWidth = 0 ↔ zetaZeroWidth ≤ 0 :=
-    le_antisymm_iff.trans (and_iff_left zetaZeroWidth_nonneg) |>.symm
+    le_antisymm_iff.trans (and_iff_left zetaZeroWidth_nonneg)
   rw [riemannHypothesis_iff_zetaZeroWidth_eq_zero, hz0,
     zetaZeroWidth_le_iff_forall_xiZeroCopy_re_le le_rfl]
   constructor
@@ -1628,15 +1648,4 @@ theorem routeWD_and_corpus_zeroWidth_dictionary {σ R tau : ℝ} (hσ0 : 0 ≤ �
 end
 
 end RHTower
-
-#print axioms RHTower.polyHeat_forwardPolyHeat
-#print axioms RHTower.not_coeffNonneg_taylor_forwardPolyHeat_of_eval_zero
-#print axioms RHTower.zetaZeroWidth_le_of_finiteHead_pure_quadratic_heat
-#print axioms RHTower.zetaZeroWidth_le_iff_forall_pos_taylor_forwardPolyHeat_finiteHead_nonneg
-#print axioms RHTower.coeff_one_sliceTruncPoly_radius_eq_cesaro_compensated
-#print axioms RHTower.tsum_xiWardZeroStieltjes_eq_arithmetic
-#print axioms RHTower.two_mul_xiWardRightStieltjesSum_le_euler_sub_critical
-#print axioms RHTower.riemannHypothesis_iff_xiWardCriticalStieltjesSum_eq_euler
-#print axioms RHTower.routeWD_and_corpus_zeroWidth_dictionary
-
 

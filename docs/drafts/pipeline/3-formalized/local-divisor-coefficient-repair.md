@@ -1,8 +1,8 @@
 # Exact coefficient repair by real local factors
 
 - **ID:** local-divisor-coefficient-repair
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** arithmetic-local-divisor-geometry; Astra §§8.1, 9.4
 - **Statement:** Classify exactly how adjoining real divisor factors can conceal an off-real pair in the coefficient cone, and price the necessary multiplicity.
 
@@ -51,9 +51,15 @@ Corpus searches: `finiteHead`, `CoeffNonneg`, `"Polya" "coeff"`, `"negative coef
 
 - [x] Dependency-closed symbolic paper argument; no numerical experiments.
 - [x] Formalize pair geometry and exact one-factor repair; foreground check passed.
-- [ ] Formalize the sharp arbitrary-multiplicity law.
-- [ ] Formalize central shifts and impossibility of repair at the adverse ordinate.
-- [ ] Final foreground module checks and `#print axioms` audit.
+- [x] Formalize the sharp arbitrary-multiplicity law.
+- [x] Formalize central shifts and impossibility of repair at the adverse ordinate.
+- [x] Final foreground module checks, umbrella wiring and `#print axioms` audit.
+
+Lean declarations: `coeffNonneg_pairFactor_iff`, `exists_linear_repair_iff`,
+`pairFactor_boundary_repair`, `coeffNonneg_geometricRepair_even_iff` and
+`coeffNonneg_geometricRepair_odd_iff`. Modules `LocalFactors`, `DivisorTransitions`,
+`BinomialMultipliers` and `GeometricMultipliers` passed plain `lake --old env lean` checks.
+Transitive audits use only `propext`, `Classical.choice` and `Quot.sound`.
 
 ## Limits
 

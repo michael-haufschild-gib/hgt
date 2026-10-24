@@ -92,8 +92,9 @@ theorem admits_or_renormalizedCofactorWork_is_antipodal (ε : SubcriticalDamping
         atTop (𝓝 0) := by
   rcases admits_or_tendsto_atTop (ε : ℝ) with h | hE
   · exact Or.inl h
-  · refine Or.inr (squeeze_zero' (Filter.Eventually.of_forall fun T => sq_nonneg _) ?_
-      (tendsto_const_nhds.div_atTop hE))
+  · have hB : Tendsto (fun T => forcingRemainderBudget ε ^ 2 / dampedMobiusEnergy ε T)
+        atTop (𝓝 0) := tendsto_const_nhds.div_atTop hE
+    refine Or.inr (squeeze_zero' (Filter.Eventually.of_forall fun T => sq_nonneg _) ?_ hB)
     filter_upwards [eventually_ge_atTop 1] with T hT
     cases T with
     | zero => omega
@@ -157,8 +158,10 @@ theorem admits_or_renormalizedCofactorVariation_vanishes (ε : SubcriticalDampin
         dampedMobiusEnergy ε (T + 1)) ^ 2) atTop (𝓝 0) := by
   rcases admits_or_tendsto_atTop (ε : ℝ) with h | hE
   · exact Or.inl h
-  · refine Or.inr (squeeze_zero (fun T => sq_nonneg _) (fun T => ?_)
-      (tendsto_const_nhds.div_atTop (hE.comp (tendsto_add_atTop_nat 1))))
+  · have hB : Tendsto (fun T => forcingRemainderBudget ε ^ 2 /
+        dampedMobiusEnergy ε (T + 1)) atTop (𝓝 0) :=
+      tendsto_const_nhds.div_atTop (hE.comp (tendsto_add_atTop_nat 1))
+    refine Or.inr (squeeze_zero (fun T => sq_nonneg _) (fun T => ?_) hB)
     have hpos := receiverEnergy_succ_pos ε T
     rw [div_pow]
     calc

@@ -1,8 +1,8 @@
 # Central multiplicity and the full heated coefficient cone
 
 - **ID:** central-multiplicity-full-heat-cone
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; formalization pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** Arithmetic Local Divisor Geometry; growing degree and all-order detection
 - **Statement:** For `P_m(X)=X^(2m)(X²−a)²`, `a>0`, its forward-heat coefficient cone has an exact finite quadratic-index criterion. Its heat threshold lies between `a/(8m+10)` and `a/(8m+5)`. Consequently the threshold is asymptotic to `a/(8m)`, rather than the order `a/m²` seen by the highest adverse coefficient alone.
 
@@ -10,7 +10,10 @@
 
 `RHTower/XiSliceHeatMaskedPairThreshold.lean` already constructs every Hermite moment of the masked pair, its actual-source cofactor-error receiver, the top-order threshold, and a double-multiplicity example where a lower order detects later heat. Those are inputs, not new claims. This statement optimizes the whole growing family and supplies a uniform multiplicity law. It does not bound the actual Xi cofactor error.
 
-Corpus searches: `central multiplicity forward heat coefficient threshold`, `maskedPairPoly`. Complete the declaration-level duplication audit before promotion. No numerical experiments are involved.
+Corpus searches: `central multiplicity forward heat coefficient threshold`, `maskedPairPoly`.
+Declaration-level audit found the prior all-order moment formulas, top-order threshold and
+small-multiplicity examples, but not this complete growing-multiplicity classification.
+No worldwide novelty claim or numerical experiment is involved.
 
 ## Complete symbolic paper proof
 
@@ -77,7 +80,15 @@ Central factors are exactly removable from the unheated coefficient cone but not
 ## Gates
 
 - [x] Dependency-closed symbolic paper proof.
-- [ ] Complete source/corpus novelty audit.
-- [ ] Formalize exact coefficient criterion and rational threshold bracket.
-- [ ] Formalize asymptotic threshold law and audit transitive axioms.
-- [ ] Connect normalization to the existing Hermite-moment receiver.
+- [x] Complete source/corpus novelty audit.
+- [x] Formalize exact coefficient criterion and rational threshold bracket.
+- [x] Formalize asymptotic threshold law and audit transitive axioms.
+- [x] Connect normalization to the existing Hermite-moment receiver.
+
+Lean declarations: `coeffNonneg_centralMaskedPair_heat_iff`,
+`maskedPairHeatThreshold_lower`, `maskedPairHeatThreshold_upper`,
+`maskedPairHeatThreshold_strictAnti`, `tendsto_maskedPairHeatThreshold`,
+`centralMaskedPair_heat_cone_classification` and `maskedPairMoment_eq_heat_coeff`.
+All supporting leaves and the threshold/Hermite leaves passed plain
+`lake --old env lean` checks and are wired into the programme umbrella. Key transitive
+audits use only `propext`, `Classical.choice` and `Quot.sound`.

@@ -28146,3 +28146,4 @@ import GaloisForLFunctions.RHTower.AbelLineConstantDischarges
 import GaloisForLFunctions.RHTower.UniformConstantDischargesE
 import GaloisForLFunctions.RHTower.GaussianIntegerLogConcavity
 import GaloisForLFunctions.RHTower.GaussianDivisibilityCorrelation
+import GaloisForLFunctions.RHTower.XiWardGlobalCapAndFiniteHeadArithmetic

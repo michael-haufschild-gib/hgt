@@ -25,7 +25,8 @@ private theorem sum_mellin_dilation_blocks (σ : ℝ) (f : ℕ → ℝ) (hf0 : f
   induction T with
   | zero => simp
   | succ T ih =>
-    rw [Nat.succ_eq_add_one, add_mul, one_mul, sum_range_add, ih, sum_range_succ, mul_add]
+    rw [Nat.succ_eq_add_one, add_mul, one_mul, Finset.sum_range_add, ih,
+      Finset.sum_range_succ, mul_add]
     congr 1
     have hdiv : ∀ r ∈ range (j : ℕ),
         f ((T * j + r) / j) * mellinCell σ (T * j + r) =

@@ -19,10 +19,10 @@ noncomputable section
 theorem forwardPolyHeat_neg_half_X_pow (n : ℕ) :
     forwardPolyHeat (-1 / 2) (X ^ n) = hermiteReal n := by
   induction n with
-  | zero => norm_num [hermiteReal, forwardPolyHeat_one]
+  | zero => simpa [hermiteReal, hermite_zero] using forwardPolyHeat_C (-1 / 2) 1
   | succ n ih =>
     rw [pow_succ', forwardPolyHeat_X_mul, ih, hermiteReal_succ]
-    norm_num [gaussShift]
+    norm_num [gaussShift, sub_eq_add_neg]
 
 /-- Forward Gaussian heat removes the Hermite correction exactly. -/
 theorem forwardPolyHeat_half_hermite (n : ℕ) :

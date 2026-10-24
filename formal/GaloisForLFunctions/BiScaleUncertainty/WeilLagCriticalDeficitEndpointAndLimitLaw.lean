@@ -949,15 +949,24 @@ theorem summable_xiDivisorSupport_fourthPowerZeroEnergy :
     Summable fun ρ : XiDivisorSupport =>
       (xiSupportMultiplicity ρ : ℝ) ^ 2 / ‖(ρ : ℂ)‖ ^ 4 := by
   have hs := summable_xiDivisorSupport_mult_div_norm_sq
-  have hsq := hs.mul_of_nonneg hs (fun _ => by positivity) (fun _ => by positivity)
-  exact Summable.congr hsq fun ρ => by dsimp only [Pi.mul_apply]; ring
+  refine Summable.of_nonneg_of_le (fun _ => by positivity) (fun ρ => ?_)
+    (hs.mul_left (∑' σ : XiDivisorSupport, (xiSupportMultiplicity σ : ℝ) / ‖(σ : ℂ)‖ ^ 2))
+  have hle : (xiSupportMultiplicity ρ : ℝ) / ‖(ρ : ℂ)‖ ^ 2 ≤
+      ∑' σ : XiDivisorSupport, (xiSupportMultiplicity σ : ℝ) / ‖(σ : ℂ)‖ ^ 2 :=
+    hs.le_tsum ρ fun _ _ => by positivity
+  calc (xiSupportMultiplicity ρ : ℝ) ^ 2 / ‖(ρ : ℂ)‖ ^ 4
+      = ((xiSupportMultiplicity ρ : ℝ) / ‖(ρ : ℂ)‖ ^ 2) *
+          ((xiSupportMultiplicity ρ : ℝ) / ‖(ρ : ℂ)‖ ^ 2) := by ring
+    _ ≤ (∑' σ : XiDivisorSupport, (xiSupportMultiplicity σ : ℝ) / ‖(σ : ℂ)‖ ^ 2) *
+          ((xiSupportMultiplicity ρ : ℝ) / ‖(ρ : ℂ)‖ ^ 2) :=
+        mul_le_mul_of_nonneg_right hle (by positivity)
 
 theorem summable_zetaFourthPowerZeroEnergy :
     Summable fun ρ : 𝒵 => (Zeta23.zetaZeroConfig.mult (ρ : ℂ) : ℝ) ^ 2 / ‖(ρ : ℂ)‖ ^ 4 := by
-  rw [← xiDivisorSupportEquivCarrier.symm.summable_iff]
-  refine summable_xiDivisorSupport_fourthPowerZeroEnergy.congr fun ρ => ?_
-  simp only [Function.comp_apply, xiDivisorSupportEquivCarrier_symm_coe,
-    xiSupportMultiplicity_eq_zetaZeroMult]
+  refine xiDivisorSupportEquivCarrier.summable_iff.mp ?_
+  exact Summable.congr summable_xiDivisorSupport_fourthPowerZeroEnergy fun ρ => by
+    simp only [Function.comp_apply, xiDivisorSupportEquivCarrier_coe,
+      xiSupportMultiplicity_eq_zetaZeroMult]
 
 theorem tsum_xiDivisorSupport_fourthPowerZeroEnergy_eq :
     (∑' ρ : XiDivisorSupport, (xiSupportMultiplicity ρ : ℝ) ^ 2 / ‖(ρ : ℂ)‖ ^ 4) =

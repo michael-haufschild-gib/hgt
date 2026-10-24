@@ -1,8 +1,8 @@
 # Exact middle-order contact for centrally masked pairs
 
 - **ID:** masked-pair-middle-order-contact
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; formalization pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** Arithmetic Local Divisor Geometry; central-multiplicity full heat cone
 - **Statement:** For `P_m=X^(2m)(X²−a)²`, `a>0`, the first nonnegative coefficient cone under `exp(sD²)` is reached through the single even coefficient indexed by `j=m+1−⌊m/2⌋`. Its exact threshold is the larger root of the corresponding quadratic index weight. Thus the contact order grows with multiplicity; zeroth-order contact is absent.
 
@@ -11,8 +11,8 @@
 - [x] Candidate extracted from the dependency-closed quadratic-index and rational-bracket proof.
 - [x] Audit against existing masked-pair threshold and contact declarations; the existing all-order moment formula and top/double-order examples do not identify this exact minimizing order.
 - [x] Complete paper audit, including uniqueness and all small multiplicities.
-- [ ] Formalize the exact minimizing index, threshold and contact classification.
-- [ ] Transitive axiom audit.
+- [x] Formalize the exact minimizing index, threshold and contact classification.
+- [x] Transitive axiom audit, final plain module checks and umbrella wiring.
 
 ## Symbolic mechanism
 
@@ -42,4 +42,11 @@ The existing `maskedPairMoment b λ m j` equals
 
 `λ^j (2j)! [X^(2j)] exp((λ/2)D²)[X^(2m)(X²−b²)²]`.
 
-Thus the Gaussian moment threshold is `λ=2b² r_m`, and the sign is unchanged for positive `λ`. This identity follows termwise from the Gaussian even moment and falling-factorial cancellation. It must be formalized before transferring the constants to the existing actual-Xi cofactor-error receiver. The cofactor bound itself remains unproved.
+Thus the Gaussian moment threshold is `λ=2b² r_m`, and the sign is unchanged for positive `λ`.
+`maskedPairMoment_eq_heat_coeff` proves this identity termwise by factorial cancellation;
+`maskedPairMoments_nonneg_iff_threshold` and `exists_negative_maskedPairMoment_iff` give
+the complete moment-cone classification. `maskedPairHeatThreshold_eq` proves the radical
+formula. The exact contact and asymptotic theorems are in `MaskedPairHeatThreshold`.
+Plain `lake --old env lean` checks passed for every supporting leaf. The main transitive
+audits use only `propext`, `Classical.choice` and `Quot.sound`.
+The actual-Xi cofactor bound remains unproved.

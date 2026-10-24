@@ -1,7 +1,6 @@
 import GaloisForLFunctions.BiScaleUncertainty.SplineProbeFiniteShiftBounds
 import GaloisForLFunctions.RHTower.WeilPositivityTwistObstruction
 import GaloisForLFunctions.RHTower.WeilPositivityRegularPerturbationRigidity
-import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.DistinctEffectiveCyclesMeetNonnegatively
 
 /-!
 # Explicit compact spline inputs at every aperture
@@ -185,9 +184,39 @@ theorem integrable_weighted_fourier_apertureSpline {a : ℝ} (ha : 0 < a) :
 
 /-- The complete Gamma term is integrable for this explicit aperture family. -/
 theorem integrable_gamma_fourier_apertureSpline {a : ℝ} (ha : 0 < a) :
-    Integrable (fun r : ℝ => ‖paperFT (fun x => (apertureSpline a x : ℂ)) r‖^2*EF.gammaBracket r) :=
-  ArithmeticCastelnuovoSeveri.integrable_normSq_paperFT_mul_gammaBracket
-    (contDiff_apertureSpline a) (hasCompactSupport_apertureSpline ha)
+    Integrable (fun r : ℝ => ‖paperFT (fun x => (apertureSpline a x : ℂ)) r‖^2*EF.gammaBracket r) := by
+  let f : ℝ → ℂ := fun x => (apertureSpline a x : ℂ)
+  have hf : ContDiff ℝ 2 f := Complex.ofRealCLM.contDiff.comp (contDiff_apertureSpline a)
+  have hfc : HasCompactSupport f :=
+    (hasCompactSupport_apertureSpline ha).comp_left Complex.ofReal_zero
+  have hk (r : ℝ) : paperFT (EF.weilTest f f) r * (EF.gammaBracket r : ℂ) =
+      ((‖paperFT f r‖^2*EF.gammaBracket r : ℝ) : ℂ) := by
+    rw [EF.paperFT_weilTest hf.continuous hf.continuous hfc hfc,
+      Complex.conj_ofReal, Complex.mul_conj, Complex.normSq_eq_norm_sq]
+    push_cast
+    ring
+  refine (RHTower.LebesgueAtomWeil.integrable_paperFT_weilTest_mul_gammaBracket
+    hf hfc hf hfc).re.congr (Eventually.of_forall fun r => ?_)
+  change (paperFT (EF.weilTest f f) r * (EF.gammaBracket r : ℂ)).re = _
+  rw [hk r, Complex.ofReal_re]
 
 end
 end GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
+
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.apertureSpline
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.contDiff_apertureSpline
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.apertureSpline_eq_zero
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.tsupport_apertureSpline_subset
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.hasCompactSupport_apertureSpline
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.apertureSpline_ne_zero
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.apertureSpline_collar_support
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.abs_apertureSpline_le
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.abs_deriv_apertureSpline_le
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.integrable_apertureSpline
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.integrable_deriv_apertureSpline
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.integral_abs_deriv_apertureSpline_le
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.integral_sq_apertureSpline_le
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.paperFT_apertureSpline
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.norm_paperFT_apertureSpline_le
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.integrable_weighted_fourier_apertureSpline
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.integrable_gamma_fourier_apertureSpline

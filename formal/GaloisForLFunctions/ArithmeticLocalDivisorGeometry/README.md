@@ -103,7 +103,7 @@ The maximum of the quadratic index weight occurs at the middle integer or intege
 \end{array}
 \]
 
-The normalized identities and sharp cone criteria are developed in [BinomialMultipliers.lean](BinomialMultipliers.lean). They retain every order; fixed-order positivity would miss the middle obstruction. The multiplicity needed to mask a pair grows on the scale `δ²/u²` as the center approaches its ordinate. Equal-factor multipliers are a classified family, not an optimization over every possible multiplier.
+The normalized identities and sharp cone criteria are developed in [BinomialMultipliers.lean](BinomialMultipliers.lean); [GeometricMultipliers.lean](GeometricMultipliers.lean) proves the displayed geometric criteria, including the degenerate central case. They retain every order; fixed-order positivity would miss the middle obstruction. The multiplicity needed to mask a pair grows on the scale `δ²/u²` as the center approaches its ordinate. Equal-factor multipliers are a classified family, not an optimization over every possible multiplier.
 
 Positive polynomial multipliers are classical. [Motzkin–Straus, Theorem 2.6](https://msp.org/pjm/1969/29-3/pjm-v29-n3-p13-p.pdf) gives the sufficient bound `α≤n/(n+2)` for this same family. It is sharp for even `n`; the exact odd threshold is `(n+1)/(n+3)`. Their Theorem 2.1 also gives the optimal degree for arbitrary quadratic multiples. The contribution here is the exact parity-sensitive formalization, its local divisor interpretation, and the singular limit at the adverse ordinate. Broader multiplier positivity is treated by [Powers–Reznick](https://www.math.emory.edu/~vicki/pub/polya2.pdf); no worldwide novelty claim is attached to the general principle.
 
@@ -175,7 +175,38 @@ so `F_t(h)` is the unique smallest integer-index weight. Consequently
 =\frac{B(h+1)+\sqrt{B(h+1)\bigl(B-(C-B)h\bigr)}}{BC}.
 \]
 
-At this first contact, exactly one even coefficient through the polynomial's degree vanishes: its degree is `m+2+(m mod 2)`. Every other even coefficient is strictly positive, including the constant coefficient. Odd coefficients vanish identically by symmetry. Thus higher-order first contact persists in a growing, explicitly classified family of norm-square models. An arithmetic theorem forcing zeroth-order contact must use information beyond these polynomial properties. The [middle-order contact proof](../../../docs/drafts/pipeline/2-fully-proven/masked-pair-middle-order-contact.md) gives the parity argument and the exact Gaussian normalization.
+At this first contact, exactly one even coefficient through the polynomial's degree vanishes: its degree is `m+2+(m mod 2)`. Every other even coefficient is strictly positive, including the constant coefficient. Odd coefficients vanish identically by symmetry. Thus higher-order first contact persists in a growing, explicitly classified family of norm-square models. An arithmetic theorem forcing zeroth-order contact must use information beyond these polynomial properties. [MaskedHeatContactIndex.lean](MaskedHeatContactIndex.lean) and [MaskedPairHeatThreshold.lean](MaskedPairHeatThreshold.lean) prove the contact classification; [MaskedPairHermite.lean](MaskedPairHermite.lean) supplies the exact Gaussian normalization.
+
+### The universal degree boundary and its extremizer
+
+The centrally masked family is not extremal among all nonnegative polynomials
+of the same degree. A dependency-closed
+[paper theorem](../../../docs/drafts/pipeline/2-fully-proven/sharp-even-heat-root-barrier.md)
+identifies the sharp boundary: if `P≥0` on the real axis has degree `2d`,
+`d≥2`, `λ>0`, and `exp((λ/2)D²)P` has nonnegative coefficients, every positive root
+`δ` satisfies
+
+`δ ≤ √λ · h_d`,
+
+where `h_d` is the largest root of the probabilists' Hermite polynomial
+`He_(2d−1)`. Equality forces
+
+`P(X)=c λ^d [He_(2d)(X/√λ)−He_(2d)(h_d)]`, `c>0`.
+
+Evenness is forced at equality rather than assumed. The proof uses the double
+root forced by `P≥0`, heat inversion, positivity of the lower Hermite weights
+at the largest derivative root, and a Sonin identity proving attainment.
+The heated extremizer has only its constant and leading coefficients nonzero.
+Thus generic heat-cone contact need not occur at order zero, even in the sharp
+root-obstruction class.
+
+The sharp theorem and its equality classification still require Lean
+formalization; the existing universal degree detector and heat inversion are
+already available. Its source implication also remains conditional on an
+independently proved heat-cone estimate for the actual head. For large degree,
+central masking costs asymptotically twice the optimal heat in this polynomial
+class, so a general argument must retain the cofactor rather than replace it
+by a central power.
 
 ## From source to local factor
 
@@ -186,7 +217,7 @@ D_{t,S}(y)=\prod_{q\in S_{\mathrm{crit}}}\bigl(y+(\gamma_q-t)^2\bigr)
 \prod_{q\in S_{\mathrm{up}}}Q_{\gamma_q-t,\delta_q}(y).
 \]
 
-At a radius head `S=S(t,R)`, `R≥0`, the exact canonical head is `H_{t,R}(z)=c_{t,R}D_{t,S}(z²)` with `c_{t,R}>0`. Its even Taylor coefficient is therefore `c_{t,R}[y^k]D_{t,S}`, and every odd coefficient vanishes. This description divides by neither `Ξ(t)` nor a vanishing constant coefficient. A split of the copy set gives an exact polynomial product and hence a full coefficient convolution; central factors and signed mixed terms survive the transition.
+At a radius head `S=S(t,R)`, `R≥0`, the exact canonical head is `H_{t,R}(z)=c_{t,R}D_{t,S}(z²)` with `c_{t,R}>0`. Its even Taylor coefficient is therefore `c_{t,R}[y^k]D_{t,S}`, and every odd coefficient vanishes. This description divides by neither `Ξ(t)` nor a vanishing constant coefficient. A split of the copy set gives an exact polynomial product and hence a full coefficient convolution; central factors and signed mixed terms survive the transition. These are the actual-source identities `xiFiniteHead_even_taylor`, `localDivisorPolynomial_split` and `localDivisorPolynomial_split_coeff` in [SourceLocalFactors.lean](SourceLocalFactors.lean), not only a model factorization.
 
 On an admissible contour the logarithmic derivative gives multiplicity-exact power sums:
 
@@ -225,14 +256,14 @@ The horizontal charge counts distinct same-height pairs with multiplicity. The h
 ## Research questions and tools still required
 
 1. **Signed source coefficients.** Construct and prove a source-only sign certificate for the Newton combinations. Contour reconstruction is an input, not the answer.
-2. **Multiple-root transitions.** Carry certificates across changing contours by exact factor laws, including central powers. A generic-boundary proof must not assume simple zeros.
+2. **Sign control across multiple-root transitions.** Exact unnormalized source splitting and coefficient convolution are established. Prove which source certificates survive the addition or removal of a nonmonomial shell. Universal cone reflection fails there; central powers and positive scalars are the classified reversible cases.
 3. **Arithmetic selection.** Identify a law of the actual source that excludes impure configurations accepted by symmetry and norm-square positivity. The repair models show why a cone condition on isolated factors is stronger than one on the total block.
 4. **Ordered curvature.** Preserve the prime/Gamma channel labels through a singularity-sensitive source-to-divisor map. Reflection scalarization can cancel the detector before it is estimated.
 5. **Horizontal collision budgets.** Derive a source expression dominating gross charge and prove a cofinal bound below two, including all mixed and boundary terms.
-6. **Detector-scale production.** Improve the low-order source integral or prove a finite-head certificate at `κ₀(δ)/log t`, with all required orders and the finite remainder controlled.
+6. **Detector-scale production.** Prove the retained-head coefficient certificate at the sharper quadratic-depth scale `δ₀²/(320 log(180|t|))`, with every order and the finite-height range required by its global-width receiver. The older `κ₀(δ)/log t` detector remains a valid weaker interface; neither has an independent producer at the needed scale.
 7. **Degree and clustering.** Replace model multiplicity prices by estimates on actual local divisors. The exact equal-factor cost supplies a calibration any proposed uniform argument must survive.
 8. **Heat collision budgets.** Derive the heat-transformed source current and bound its cumulative collision mass uniformly towards heat zero. Positive-heat finiteness and the known jump law leave this unpaid.
-9. **Contact rigidity.** Explain why actual arithmetic rules out a positive Ward threshold whose contacts all occur at higher orders. Generic polynomial positivity does not provide this rigidity.
+9. **Contact rigidity.** Explain why actual arithmetic rules out a positive Ward threshold whose contacts all occur at higher orders. The masked middle-order family and the Hermite extremizers show why real-axis positivity, symmetry and sharp root bounds alone do not provide this rigidity.
 
 ## Traps
 

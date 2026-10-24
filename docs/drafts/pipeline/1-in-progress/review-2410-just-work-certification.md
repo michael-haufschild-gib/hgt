@@ -141,9 +141,11 @@ arithmetic estimates to make a dictionary applicable.
   The additional
   compact-family uniformity theorem retains a supplied common Weil floor and
   does not produce a global sign.
-- `BiScaleUncertainty/ExplicitApertureSplineInputs.lean` passed its full-source
-  check, all 17 public axiom audits, and its canonical final check. The owning
-  umbrella imports it once.
+- `BiScaleUncertainty/ExplicitApertureSplineInputs.lean` supplies 17 public
+  declarations and is imported once by its umbrella. Its Gamma proof uses
+  the Fourier autocorrelation identity directly, avoiding the incompatible
+  `localPair` exports from two intersection-theory modules. The revised source
+  requires a canonical check and its included 17 axiom reports.
 - Concrete dictionary instances are in
   `ArithmeticOrientationTheory/ConcreteSourceDictionaries.lean`, with explicit
   `#print axioms` checks. Direct canonical checking remains required.
@@ -173,7 +175,7 @@ trusted computation, or resource-limit increases. Preserve concurrent work.
 - [x] J2 joint import compatibility checked after the name repair.
 - [x] J3 exact published bounds formalized and audited.
 - [x] J4 exact four paper results formalized or subsumed with checked bridges.
-- [x] J5 concrete source inputs certified.
+- [ ] J5 revised concrete source inputs checked after removing the conflicting import.
 - [x] J6 concrete constants and ranges certified.
 - [ ] J7 applicable dictionaries certified; global HF premise classified separately.
 - [x] J8 existing finite certificates certified.
