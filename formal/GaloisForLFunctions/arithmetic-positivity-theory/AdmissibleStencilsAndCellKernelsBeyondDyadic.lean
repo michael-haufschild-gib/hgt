@@ -3567,7 +3567,7 @@ theorem admissibleHarmonicWeight_perturbedMultiScaleChi {d : ℕ} (hd : 3 ≤ d)
       rw [abs_div, abs_pow, Nat.abs_cast, abs_mul, abs_of_pos hε_pos]
       by_cases hdvd : d ∣ k + 2
       · simp [hdvd, div_eq_mul_inv]
-      · simp only [hdvd, if_false, mul_zero, zero_div]
+      · simp [hdvd]
         positivity
     have hs_dyad : Summable fun k : ℕ => |dyadicHarmonicWeight (k + 2)| :=
       (summable_nat_add_iff 2).mpr summable_abs_dyadicHarmonicWeight

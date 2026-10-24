@@ -1154,6 +1154,57 @@ $\mu_{\mathrm{low}}>0$ extends to strict positivity on the whole product space
 (`compactFullWeilEnergy_pos_of_lowMode_certificate_and_schur_complement`). The low window
 itself is not proved positive: that is §7.1.
 
+**Admissible stencils, non-Bernoulli filters, and cell kernels beyond the dyadic stencil.** The
+mechanisms of §§3.7–3.13 do not depend on the specific dyadic stencil $\{1,2,4\}$: they hold for
+every harmonic weight sequence $w:\mathbb N\to\mathbb R$ in the general class
+`AdmissibleHarmonicWeight w C_w τ` satisfying $w_0=0$, $w_1=1$, $\lvert w_k\rvert\le C_w/k^2$, and
+higher-harmonic tail $\sum_{k\ge2}\lvert w_k\rvert\le\tau<1$
+([AdmissibleStencilsAndCellKernelsBeyondDyadic](AdmissibleStencilsAndCellKernelsBeyondDyadic.lean)).
+Four explicit infinite families belong to this class:
+1. the canonical dyadic stencil `dyadicHarmonicWeight` ($C_w=1$, $\tau=3/4<1$);
+2. all $q$-adic $3$-scale sign-flip stencils on $\{1,q,q^2\}$ for every $q\ge2$
+   (`qAdicSignFlipWeight q`, $C_w=1$, $\tau=3/4<1$,
+   `admissibleHarmonicWeight_qAdicSignFlip`);
+3. all $q$-adic $3$-scale **drift-free** stencils on $\{1,q,q^2\}$ for every $q\ge2$
+   (`qAdicDriftFreeWeight q`, which simultaneously cancel both the linear secular ramp
+   $\sum d\alpha(d)=0$ and the quadratic Bernoulli drift $\sum d^2\alpha(d)=0$, with
+   $C_w=(q^2+q+1)/q^2\le7/4$ and $\tau=3/4<1$, `qAdicDriftFreeStencil_drifts_zero`,
+   `admissibleHarmonicWeight_qAdicDriftFree`);
+4. all **non-Bernoulli higher-order harmonic filters** $w_k=c_k/k^p$ ($p\ge3$, $c_1=1$,
+   $\lvert c_k\rvert\le1$, built from higher periodic Bernoulli polynomials $B_{2m}(\{u\})$ with
+   $2m\ge4$ or smooth periodic remainders, `higherOrderHarmonicWeight`, with $C_w=1$,
+   $\tau=3/4<1$ and global $C^1$ regularity $\sum k\lvert w_k\rvert<\infty$,
+   `admissibleHarmonicWeight_higherOrder`).
+
+Every `AdmissibleHarmonicWeight w C_w τ` enjoys Bohr coercivity with margin $(1-\tau)^2/(2\pi^4)>0$,
+window Riesz bounds on length $L(\tau)=4K/(1-\tau)^2$, collared and doubly-collared mass bounds,
+nonstationary Mellin low-frequency exclusion, logarithmic Lévy coercivity, an $\ell^2$-uniform
+dyadic dilation inequality with constant $C_w^2K(A,B)$, $\ell^2$-uniform collared and truncated
+prime and polar channels, and uniform high-scale block positivity in all five forms of §2.2
+(including the actual zeta reflection inequality $\mathcal R(F_k)+(s_T/8)\log M\sum b_j^2\le\mathcal Z(F_k)$
+and $(\alpha,\beta)$-norm-controlled receiver landing via `generalCriticalEvenOddLanding`;
+`exists_general_all_five_forms_and_actual_zeta_coercivity`,
+`exists_qAdicSignFlip_and_DriftFree_and_higherOrder_all_five_forms_pos`). On the cell-kernel side,
+for any bounded harmonic multiplier $\chi:\mathbb N\to\mathbb R$ with divisor charge
+$A_\chi(m)=\chi(m)\sum_{d\mid m}d\Lambda(d)\chi(m/d)$, Poisson window closure yields the exact
+identity $R_\chi(t)=\sum_m A_\chi(m)J_m/m^4-\tfrac12\sum_m(A_\chi(m)/m^3)(W_m(t)-2\int_0^m\gamma)$
+on $[0,1]$ (`generalCriticalPrimeContinuousRealKernel_eq`), and exhibits a sharp sign trichotomy:
+- **Positive-definite non-negative multipliers ($\chi\ge0$, $\chi(1)=1$, e.g. $q$-adic sign-flip
+  for odd $q\ge3$ or positive higher-order filters):** $A_\chi(m)\ge0$ for all $m\ge1$ with
+  $A_\chi(2)=(2\log2)\chi(2)$ and $A_\chi(3)=(3\log3)\chi(3)$, and every harmonic window satisfies
+  $W_m(t)\le\pi^2/6$ so $T_m(t)+T_m(1-t)\ge0$ pointwise on $[0,1]$; whenever $\chi(2)>0$ or
+  $\chi(3)>0$, $R_\chi(t)>0$ across all $t\in[0,1]$
+  (`generalCriticalPrimeContinuousRealKernel_pos_of_nonneg_chi`,
+  `qAdicSignFlip_odd_cellKernel_pos_on_Icc`).
+- **Negative-definite dyadic and multi-scale sign-flip multipliers:** the canonical dyadic
+  multiplier has $A(2)=-2\log2<0$ and $A(4)=0$, giving $R_{\mathrm{dyad}}(t)\le-1/7000<0$ on
+  $[0,1]$, and by Lipschitz stability in the charge sequence every multi-scale perturbation
+  $\chi_{d,\varepsilon}=\chi_{\mathrm{dyad}}+\varepsilon\mathbf 1_{d\mid k}$ ($d\ge3$) has an
+  admissible weight sequence together with a strictly negative-definite cell kernel
+  $R_{\chi_{d,\varepsilon}}(t)\le-1/14000<0$ across $[0,1]$
+  (`generalCriticalPrimeContinuousRealKernel_neg_of_charge_perturbation`,
+  `exists_nonDyadic_stencil_negative_definite_cellKernel`).
+
 **What these theorems are.** Each positivity statement on the critical family is
 paid by an archimedean gain of size $\log M$ against an $\ell^2$-bounded prime cost,
 so by the no-subsidy criterion of the shared target it is nonselective by
@@ -1460,6 +1511,18 @@ theory's load-bearing walls.
     pair on every wide window (`summable_vonMangoldt_windowDilationExponent`,
     `not_summable_shiftedPairVonMangoldt_windowDilationExponent`): the one proved separation of a
     proof of this theory from a positive twin.
+14. **Admissible harmonic weights and cell-kernel sign trichotomy beyond the dyadic stencil.**
+    Every weight sequence in `AdmissibleHarmonicWeight w C_w τ` (including all $q$-adic sign-flip
+    stencils, all $q$-adic drift-free stencils with vanishing linear and quadratic drifts, and all
+    higher-order non-Bernoulli filters $w_k=c_k/k^p$, $p\ge3$) satisfies Bohr and window Riesz
+    coercivity, $\ell^2$-uniform prime and polar bounds, and high-scale block positivity in all
+    five forms; on the unit cell $[0,1]$, non-negative multipliers $\chi\ge0$ with $\chi(2)>0$ or
+    $\chi(3)>0$ have strictly positive cell kernels $R_\chi(t)>0$, while dyadic and perturbed
+    multi-scale sign-flip multipliers $\chi_{d,\varepsilon}$ ($d\ge3$) have strictly
+    negative-definite cell kernels $R_\chi(t)\le-1/14000<0$
+    (`exists_general_all_five_forms_and_actual_zeta_coercivity`,
+    `generalCriticalPrimeContinuousRealKernel_pos_of_nonneg_chi`,
+    `exists_nonDyadic_stencil_negative_definite_cellKernel`).
 
 ---
 
@@ -1536,10 +1599,12 @@ conclusion of an implication or inside an equivalence.
 ### 6.1 Questions
 
 1. **Which independently checkable features of an exact source pay the sign of the complete
-   form?** On the factorial family: physical square mass, translation energy at the arithmetic
-   scale, low-band Mellin exclusion, the Poisson-closed critical cell kernel, and an
-   $\ell^2$-uniform prime channel on dyadic blocks. Beyond that family the question is open
-   (§7.5).
+   form?** Across the full class `AdmissibleHarmonicWeight w C_w τ` (including all $q$-adic
+   sign-flip and drift-free divisor stencils and all higher-order non-Bernoulli filters): a
+   dominant first harmonic ($\sum_{k\ge2}\lvert w_k\rvert\le\tau<1$) and inverse-square harmonic
+   envelope ($\lvert w_k\rvert\le C_w/k^2$), which yield physical window Riesz bounds, low-band
+   Mellin exclusion, and an $\ell^2$-uniform prime channel on dyadic blocks, while the sign of the
+   Poisson-closed cell kernel $R_\chi(t)$ is governed by whether $\chi(2)$ flips sign.
 2. **Which sign does the arithmetic itself carry?** At the critical envelope the limiting prime
    channel is negative definite with an exactly known spectral range, and the actual channel
    keeps that sign on windows of linearly growing dimension: the primes help. What they do not
@@ -1600,11 +1665,14 @@ Built and reusable:
   and the fixed-aperture excluded-depth and horizon-height laws.
 - *Scale-free Schur complement.* Shift-adapted Young weights give a bilinear Schur-complement
   inequality across all four channels with a cross constant independent of the high scales.
+- *General admissible-weight and stencil calculus.* The `AdmissibleHarmonicWeight w C_w τ`
+  interface unifying $q$-adic sign-flip stencils, $q$-adic drift-free stencils, and higher-order
+  non-Bernoulli filters through Bohr/window Riesz coercivity, general dyadic dilation bounds,
+  all-five-forms block positivity, receiver landing, and Poisson-closed cell-kernel sign laws.
 
 To be built:
 
 - a standalone positivity certificate on the isolated low window;
-- admissible sources beyond the dyadic stencil, with sign-definite cell kernels;
 - a norm-controlled transfer from a positive subfamily to the receiver that does not consume
   the archimedean gain.
 
@@ -1665,11 +1733,24 @@ doubly-exponential log-log horizon $\exp(\exp(\Omega(R)))$ unconditionally (curr
 
 ### 7.5 Beyond the factorial family
 
-The admissible-source law needs only a mass floor and a low-band exclusion. Which other
-arithmetic sources, built from divisor stencils other than the dyadic one or from non-Bernoulli
-remainders, satisfy both at the critical envelope with an $\ell^2$-bounded prime channel, and are
-their cell kernels sign-definite? A new source must keep the actual prime and polar terms and
-state where it lands in a receiver.
+By §3.13 (`AdmissibleStencilsAndCellKernelsBeyondDyadic`), every harmonic weight sequence in
+`AdmissibleHarmonicWeight w C_w τ` ($w_0=0$, $w_1=1$, $\lvert w_k\rvert\le C_w/k^2$,
+$\sum_{k\ge2}\lvert w_k\rvert\le\tau<1$) — including all $q$-adic $3$-scale sign-flip stencils on
+$\{1,q,q^2\}$, all $q$-adic $3$-scale drift-free stencils with vanishing linear and quadratic
+drifts, and all higher-order non-Bernoulli filters $w_k=c_k/k^p$ ($p\ge3$) — satisfies the mass
+floor, low-band Mellin exclusion, $\ell^2$-uniform prime and polar bounds, high-scale block
+positivity in all five forms of §2.2, and explicit $(\alpha,\beta)$-norm-controlled receiver
+landing (`exists_general_all_five_forms_and_actual_zeta_coercivity`, `generalCriticalEvenOddLanding`).
+Moreover, the Poisson-closed cell kernel $R_\chi(t)$ exhibits a sharp sign dichotomy: non-negative
+multipliers $\chi\ge0$ with $\chi(1)=1$ and $\chi(2)>0$ or $\chi(3)>0$ (such as odd-$q$ sign-flip
+stencils and positive higher-order filters) have strictly positive cell kernels $R_\chi(t)>0$ on
+$[0,1]$ (`generalCriticalPrimeContinuousRealKernel_pos_of_nonneg_chi`), whereas dyadic and
+multi-scale sign-flip perturbations $\chi_{d,\varepsilon}$ ($d\ge3$) have strictly
+negative-definite cell kernels $R_\chi(t)\le-1/14000<0$ across $[0,1]$
+(`exists_nonDyadic_stencil_negative_definite_cellKernel`). What remains open beyond the admissible
+harmonic class is whether a multi-scale stencil with $\chi(2)<0$ can simultaneously make the cell
+kernel $R_\chi(t)$ negative definite *and* cancel the polar pair at low scales without archimedean
+subsidy.
 
 ### 7.6 The prime channel beyond linear windows
 

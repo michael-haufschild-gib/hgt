@@ -25,6 +25,7 @@ import GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 import GaloisForLFunctions.ArithmeticOrientationTheory
 import GaloisForLFunctions.ArithmeticOrientationGeometry
 import GaloisForLFunctions.TransThresholdPairCorrelation
+import GaloisForLFunctions.SignedSuccessorArithmetic
 import GaloisForLFunctions.QuantumAlg
 import GaloisForLFunctions.PNTPlus
 import GaloisForLFunctions.QECLean

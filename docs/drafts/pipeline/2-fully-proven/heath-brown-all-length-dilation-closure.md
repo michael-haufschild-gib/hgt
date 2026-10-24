@@ -85,6 +85,59 @@ All ingredients are unconditional corpus theorems. This repairs the apparent
 balanced-length gap by dilating *before* using the reflected estimate. The
 auxiliary length depends on R, while its constants are bounded using R≤2T.
 
+## Sharp all-k S₂ consequence
+
+Fix a smooth bump w, an integer k≥1, and 0<ε≤1. For T≥2, 1≤N≤T, and
+a nonempty T^ε-separated W⊆[0,T], the single-block reduction gives
+
+`|S₂| ≤ C₆₁ T^(6ε) (N²/M₀) X`,
+
+where M₀=2^j≤(2T)^(1+ε)/N+1 and X is the unit-coefficient pair sum on
+the selected dyadic segment. The block j=0 is contained in {1}, so its
+contribution is at most `C₆₁ T^(6ε) N²R²`.
+
+For j≥1 put A=M₀-1, B=2M₀-1, P=A^k, and m=2k. Then A≥1,
+B≤3A, and B^k≤2^mP. The existing power lift gives
+
+`X^k ≤ R^(2k-2) D^(2k) Y`,
+
+where Y is the unit pair sum on (A^k,B^k] and D bounds the divisor
+function there. Positive-kernel support domination and the dyadic cover
+bound Y by `8^m` times the new three-term Heath–Brown majorant at P.
+In this section H denotes its uniform constant Cε, independent of T and
+the block length. Since P≤M₀^k and P²≤M₀^(2k), this yields
+
+`D^(2k)Y ≤ D^(2k)8^m H T^ε
+  [R²M₀^k+R M₀^(2k)+R^(5/4)T'^(1/2)M₀^k]`,
+
+with `T'=2(2T)^(1+ε)`, so M₀≤T'/N and T'≤8T·T^ε. The exact
+three-term assembly `prop61_abstract` therefore gives the bracket
+
+`N²R² + T'N R^(2-1/k) + N²R^(2-3/(4k)) T'^(1/(2k))`.
+
+The middle exponent follows directly from the diagonal term R M₀^(2k);
+the fourth term responsible for the older exponent is absent.
+
+The auxiliary bound M₀≤8T² gives
+`B^k≤32^(4k)T^(4k)`. Choose δ by `exists_blockConst_divisor_le` for
+these fixed exponents. For one constant Cδ≥0, enlarged to dominate H,
+`D²≤CδT^ε`. Since k≥1 and T^ε≥1,
+
+`[D^(2k)8^(2k)H T^ε]^(1/k)
+ ≤ 64 Cδ max(1,2Cδ) T^(2ε)`.
+
+The bracket at T' is at most 8T^ε times its value at T. Combining this
+with the first T^(6ε) gives a uniform C such that
+
+`|S₂| ≤ C T^(9ε)
+ [N²R² + TN R^(2-1/k) + N²R^(2-3/(4k))T^(1/(2k))]`.
+
+For an arbitrary target ε>0, use e=min(ε/9,1). Separation at T^ε
+implies separation at T^e, and T^(9e)≤T^ε. The empty set contributes
+zero. This proves the exact `PropSixOneBound w k k` family. Applying
+the existing unconditional S₃ bound through `propTwelveOne_of_S_bounds`
+then proves the published Proposition 12.1 at every k≥1.
+
 ## Gates
 
 - [x] Exact published theorem, all quantifiers fixed.

@@ -36,7 +36,13 @@ the seven questions and building the six tools of the summary §2.3.
 - [ ] 3 → 4  publication-ready: README
 
 ## Status
-- Topic A: started.
+- Built and compiled (`lake --old env lean`, no errors): `ScalingDataAndWeilPlanes`,
+  `TheCorrespondenceAlgebra`, `TheScalingDatumOfAConfiguration`, `TheOrientationOfACycle`,
+  `EulerFactorsAndPayment`; wired into `ArithmeticOrientationGeometry.lean`, umbrella imported by
+  `MainTheorems.lean`. README first version written.
+- Also built: `TheArchimedeanPlaceOrientsOrbitSegments`.
+- Next: orientation rate = depth of the deepest seen zero (σ-version of the orientation theorem);
+  multiplicity-blindness (Q3); battery (golden curve, cluster configuration); answers synthesis.
 
 ## Log
 - 2026-10-24 — created; corpus survey of ACS (λ-ring, Lefschetz identity, envelope cone), AOT

@@ -38,7 +38,8 @@ unconditional theorems on the research topics of fable.md §3.8.
 - [ ] 3 → 4  publication-ready
 
 ## Status
-- A: started.
+- A, B, C, D: Lean modules compile (cocycle, one-third floor, conductor-three sharpness, F_p calibration). Umbrella wired.
+- E: next (Legendre twins mod p, exact identity C(pJ) = −J + (1+χ(−1))ε M_f(J)).
 
 ## Log
 - 2026-10-24 — created. Corpus survey: BVI (incidence counts, least seed, hypercube form, prefix

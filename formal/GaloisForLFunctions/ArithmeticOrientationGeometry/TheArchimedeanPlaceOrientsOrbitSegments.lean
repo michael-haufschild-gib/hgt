@@ -57,7 +57,6 @@ theorem recentredOrbit_support {a T : ℝ} {f : ℝ → ℝ} (hfs : tsupport f �
   simp only [cx, recentredOrbit, scaleShift_apply, Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
     Complex.ofReal_eq_zero]
   refine Finset.sum_eq_zero fun s hs => ?_
-  rw [scaleShift_apply]
   have hs' := hS s hs
   rw [eq_zero_of_not_mem_Icc hfs, mul_zero]
   intro hmem

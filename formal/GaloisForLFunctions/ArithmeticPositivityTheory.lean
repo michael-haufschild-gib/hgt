@@ -100,3 +100,4 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».ExplicitCollarThresh
 import GaloisForLFunctions.«arithmetic-positivity-theory».DenseScaleWindowsAndMultiWindowPositivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».FromTheCriticalFamilyToTheReceiver
 import GaloisForLFunctions.«arithmetic-positivity-theory».QuantitativeGridTentDetection
+import GaloisForLFunctions.«arithmetic-positivity-theory».AdmissibleStencilsAndCellKernelsBeyondDyadic

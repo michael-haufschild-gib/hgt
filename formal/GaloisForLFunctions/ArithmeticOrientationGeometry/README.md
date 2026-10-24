@@ -205,7 +205,62 @@ criteria for such a principle are those of the review:
    `Γ_g² = e^{s(g)} x²` (`pair_heckeGraph_self`), Lefschetz `Γ_g · x = L(x, g)`
    (`pair_heckeGraph_diag`), and Weil's relation `T_g T_g′ = e^{s(g)}` (`heckeGraph_rosati`).
 
-### 3.3 Inherited pillars
+### 3.3 The scaling datum of a configuration (`TheScalingDatumOfAConfiguration`)
+
+10. **Every tempered zero configuration is a scaling datum** (`configSurface`,
+    `configScalingDatum`): the pairing of the scaling surface with Weil's pairing replaced by the
+    zero-side form `Re W_Z`, the scales acting by logarithmic translation. The zeros of `ζ`, of a
+    curve, of the golden datum and of cluster models are instances of one theory. Its defect is the
+    zero-side form (`configSurface_defect`); configurations on the line have the Hodge index
+    (`configSurface_hodgeIndex_of_onLine`).
+11. **Translation law and orbit correlation.** Translating the two tests by `s, t` multiplies the
+    summand at `ρ` by `e^{(s − t)(ρ − ½)}` (`Wsummand_scaleShift`); the orbit correlation is the
+    exponential sum `c_f(t) = Re Σ_ρ e^{t(ρ − ½)} m_ρ h_f(γ_ρ) conj h_f(γ̄_ρ)`
+    (`configScalingDatum_orbitCorr_eq`).
+12. **For `ζ` the explicit formula identifies the zero-side datum with the scaling datum of `ℤ`**
+    (`configWeil_zeta_eq_weilPair`, `configSurface_zeta_eq`).
+
+### 3.4 The orientation of a cycle (`TheOrientationOfACycle`)
+
+13. **The orientation theorem** (`orientation_tfae`). On a tempered configuration symmetric under
+    the functional equation, for every cycle: Hasse–Weil at every scale ⟺ orbit Hodge index ⟺ the
+    transform of the cycle vanishes at one point of every off-line reflection pair
+    (`BlindOffLine`). Blindness orients on every tempered configuration
+    (`orbitHodgeIndex_of_blindOffLine`): every orbit combination has transform `P(z) h_f(z)`
+    (`paperFT_orbitTest`), so only on-line terms `m |h(γ)|² ≥ 0` survive. The converse is the
+    **self-upgrade** (`blindOffLine_of_hasseWeil`): Hasse–Weil at every scale bounds an exponential
+    sum, which then has no top pole (Square-Root Threshold); the orbit correlation of a real test
+    is real on symmetric configurations (`W_real_of_fes`).
+14. **The oriented locus** (`blindOffLine_orbitTest`) is stable under correspondences: it is a
+    union of correspondence-stable subspaces, one for each choice of a point in every off-line pair.
+15. **One generic orbit decides** (`onLine_iff_hasseWeil_of_generic`). Real tests whose transform
+    vanishes at no zero exist on every configuration (`exists_realSpectrallyGeneric`, by dilating
+    a bump off a countable set). For `ζ` (`zeta_orientation_iff`,
+    `riemannHypothesis_iff_hasseWeil_of_generic`, `exists_orbit_deciding_riemannHypothesis`): a
+    cycle of `ℤ` is oriented iff it is blind to the off-line zeros of `ζ`, and RH holds iff one
+    real test satisfies `|W(f, f(· − t))| ≤ W(f, f)` for every `t`.
+
+### 3.5 Euler factors and payment (`EulerFactorsAndPayment`)
+
+16. **Tail law** (`receiverBounded_roughMoebius_iff`, `paidIdeal_roughMoebius_eq`,
+    `obstructionHull_roughMoebius_eq`). For every finite set `P` of primes, deleting the Euler
+    factors at `P` from the damped Möbius receiver changes neither payment, nor the repairing ideal,
+    nor the obstruction hull: one factor is removed by the convolution identity
+    `μ_ε^{(P)} = (δ₁ − p^{−ε}δ_p) ⋆ μ_ε^{(P ∪ {p})}` (`roughMoebius_eq_localFactor_conv`) and local
+    factors are units.
+17. **Absolute convergence decides, and only there** (`isWienerUnit_moebius_of_half_lt`,
+    `not_criticalWiener_moebius`). For `ε > ½`, `μ_ε` is a unit of `𝒲_{1/2}` with inverse `d^{−ε}`;
+    for `ε ≤ ½` it is not even in the algebra (`Σ |μ(d)| d^{−ε−½} ≥ Σ_p 1/p`).
+
+### 3.6 The archimedean place orients orbit segments (`TheArchimedeanPlaceOrientsOrbitSegments`)
+
+18. **Unconditional orientation of orbit segments** (`orbitSegment_defect_nonneg_of_lowBlind`,
+    `hasseWeilAt_of_lowBlind`). If `f` is supported in `[−a, a]` and its transform vanishes at the
+    pole and on the low-frequency grid of aperture `a + T/2`, the defect of `ζ` is nonnegative on
+    every combination of the translates `f(· − s)`, `0 ≤ s ≤ T`, and `f` is Hasse–Weil at every
+    scale `|t| ≤ T`. The number of linear conditions grows doubly exponentially in `T`.
+
+### 3.7 Inherited pillars
 
 The following corpus theorems are the foundations of AOG in other languages; AOG states and uses
 them in the language of orbits.
@@ -253,6 +308,8 @@ AOG reads every candidate orientation mechanism as a way to prove the orbit Hodg
 | Positivity of the prime atoms orients | Positive prime counts hold on the golden datum and bound only `tr F^m ≤ q^{m/2} + q^{−m/2}`. |
 | A sieve upper bound is half an orientation | It bounds counts by a constant multiple of the main term, never deviations at the square-root scale; impure Beurling data satisfy it. |
 | One generic cycle suffices, so orientation is easy to test | One spectrally generic cycle carries the whole defect, but proving its orientation is RH. |
+| Euler-product structure decides repair | It decides only where the product converges absolutely (`ε > ½`); every finite set of Euler factors is invisible to payment below. |
+| The archimedean place orients a cycle | It orients every finite orbit segment of a sufficiently blind cycle, at a cost growing doubly exponentially with the length, never a whole orbit. |
 
 ---
 
@@ -270,12 +327,22 @@ AOG reads every candidate orientation mechanism as a way to prove the orbit Hodg
    energy at every fixed small damping?
 5. **Euler products and repair.** When is the repairing ideal of the damped Möbius source the whole
    critical Wiener algebra, and can Euler-product structure on the Bohr polydisk decide it?
+   Answered (§3.5): the ideal is the whole algebra iff the receiver is paid (Arithmetic Orientation
+   Theory), which holds above the zero width. Euler-product structure decides it exactly where the
+   product converges absolutely, `ε > ½`, where `μ_ε` is a unit; for `0 < ε ≤ ½` every finite set of
+   Euler factors is invisible to payment, to the ideal and to the hull, and the full product is not
+   in the algebra. Repair below half damping must use cancellation across infinitely many primes.
 6. **The Frobenius graph.** Is there an arithmetic correspondence on the scaling surface playing the
    role of the Frobenius graph? Answered for the identities (§3.1–3.2): the Hecke graphs `T_g x`
    have Lefschetz, pullback, adjunction and `ππ′ = q`, and Hasse–Weil for `(x, g)` is exactly
-   Castelnuovo–Severi on their Weil plane. Open: the positivity.
+   Castelnuovo–Severi on their Weil plane. The positivity is decided per orbit (§3.4): a cycle is
+   oriented iff it is blind to the off-line zeros, and one generic orbit decides RH. Open: a
+   geometric proof of the positivity.
 7. **Orientation-faithful readings.** Which readings are orientation-faithful for the actual `ζ`
-   source, and what does each cost?
+   source, and what does each cost? Partial (§3.4, §3.6): the orbit correlation of one spectrally
+   generic real test is faithful for the actual `ζ` — it is bounded by its value at `0` iff RH. The
+   archimedean place certifies it on every finite segment `[0, T]` for cycles blind to the grid
+   `D_{a + T/2}`, at a doubly exponential number of linear conditions, and on no infinite one.
 
 ## 7. Tools the programme builds
 
@@ -286,13 +353,19 @@ Built:
 - *The correspondence algebra*: action, convolution, Rosati involution, traces at cycles, Rosati
   positivity, Hecke graphs with pullback, adjunction and `ππ′ = q`.
 
+- *Configuration scaling data*: every tempered zero configuration as a scaling datum, the
+  translation law, the orbit correlation as an exponential sum over zeros, the explicit-formula
+  identification for `ζ`.
+- *The orientation theorem*: blindness, self-upgrade, the oriented locus, real generic tests, the
+  one-orbit criterion for RH.
+- *Euler factors on the Bohr polydisk*: rough Möbius weights, the one-factor convolution identity,
+  the tail law of payment, the absolute-convergence dichotomy at `ε = ½`.
+- *Archimedean orientation*: recentred orbit combinations and the orientation of orbit segments
+  of low-blind cycles.
+
 To be built:
 
-- scaling data of every tempered zero configuration, so that ζ, curves, the golden datum, shifted
-  pairs and cluster models are instances of one theory;
-- orbit spectral theory: orbit correlation as an exponential sum over zeros, self-upgrade,
-  orientation index and rate, and the orientation of the battery models;
-- Euler factors on the Bohr polydisk and the tail law of payment;
+- orientation index and rate of a cycle, and the orientation of the battery models;
 - the selectivity battery for orientation mechanisms;
 - an Arakelov-type intersection theory with arithmetic `h⁰`; signed spectral graph theory in the
   continuum; corrector theory across scales; arithmetic anti-concentration; quantitative
@@ -305,10 +378,11 @@ To be built:
 2. **Orbit Pontryagin law for arbitrary cycles.** The orientation index of a cycle should be the
    number of right zeros it sees; Arithmetic Castelnuovo–Severi proves this for spectrally generic
    cycles.
-3. **Euler-product localization of payment.** Payment of the damped Möbius receiver should be
-   invariant under every finite set of Euler factors in the unit range.
-4. **Archimedean orientation.** Which Weil planes does the archimedean collar orient
-   unconditionally, uniformly in aperture?
+3. **Infinite Euler data.** Which properties of the infinitely many local factors of `μ_ε`
+   (equidistribution of `p^{it}`, sign patterns, densities) can repair it below half damping, now that
+   every finite set of factors is invisible?
+4. **Cheaper archimedean orientation.** Lower the doubly exponential cost of orienting an orbit
+   segment of length `T`, or prove it necessary.
 5. **Bézout-selective orientation.** Which laws driven by `gcd(n, n + 1) = 1` and `pa − qb = 1`
    carry a signed estimate on orbits, and which of them fail on Beurling systems?
 6. **Mechanism equivalence.** Are the three mechanism classes of §4 equivalent on scaling data, and
@@ -354,3 +428,7 @@ counts; planted Euler factors; finite-window mimics.
 |---|---|
 | `ScalingDataAndWeilPlanes` | scaling data, orbit correlation, Lefschetz trace formula, Lefschetz–adjunction identity, Weil planes, orbit Toeplitz law, orbit Hodge index, global equivalences, the scaling datum of `ℤ` |
 | `TheCorrespondenceAlgebra` | correspondences, convolution, Rosati involution, traces at cycles, Rosati positivity, Hecke graphs, pullback, adjunction, `ππ′ = q` |
+| `TheScalingDatumOfAConfiguration` | configuration surfaces and scaling data, translation law, orbit correlation as an exponential sum, explicit-formula identification for `ζ` |
+| `TheOrientationOfACycle` | blindness, the orientation theorem, self-upgrade, oriented locus, real generic tests, one-orbit RH criterion |
+| `EulerFactorsAndPayment` | rough Möbius weights, tail law of payment, ideal and hull, absolute-convergence dichotomy |
+| `TheArchimedeanPlaceOrientsOrbitSegments` | recentred orbit combinations, orientation of orbit segments of low-blind cycles |

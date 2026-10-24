@@ -50,6 +50,7 @@ over `xiSliceHeatTransfer_nonneg_of_absMono`, and reduces zero-free strips at th
 open Complex Filter Topology Metric Polynomial MeasureTheory Set
 open scoped ComplexOrder
 open GaloisForLFunctions.HTGeometry
+open RHTower.XiAtlasFinitePart
 
 namespace RHTower.DeBruijn
 
@@ -170,11 +171,11 @@ theorem xiSliceHeatTransfer_nonneg_of_finiteHead_poly {lam r t R : ℝ} (hlam : 
 /-! ## Dominated joint continuity and removal of `Ξ(t) ≠ 0` -/
 
 /-- **Dominated continuity of `xiSliceHeatTransfer` along continuous heat and height paths.**
-If `lam : ℝ → ℝ` and `t : ℝ → ℝ` are continuous on `s` with `0 ≤ lam x ≤ L` on `s`, then
+If `lam : ℝ → ℝ` and `t : ℝ → ℝ` are continuous on `s` with `lam x ≤ L` on `s`, then
 `x ↦ xiSliceHeatTransfer (lam x) x₀ (t x) n` is continuous on `s`. -/
 theorem continuousOn_xiSliceHeatTransfer_comp {L : ℝ} (hL : 0 ≤ L) {lam t : ℝ → ℝ} {s : Set ℝ}
     (hlam_cont : ContinuousOn lam s) (ht_cont : ContinuousOn t s)
-    (hlam0 : ∀ x ∈ s, 0 ≤ lam x) (hlamL : ∀ x ∈ s, lam x ≤ L) (x₀ : ℝ) (n : ℕ) :
+    (hlamL : ∀ x ∈ s, lam x ≤ L) (x₀ : ℝ) (n : ℕ) :
     ContinuousOn (fun x => xiSliceHeatTransfer (lam x) x₀ (t x) n) s := by
   set Φ := riemannKernelReal with hΦ
   have hΦ0 : ∀ u, 0 ≤ Φ u := riemannKernel_superExp.nonneg
@@ -196,8 +197,8 @@ theorem continuousOn_xiSliceHeatTransfer_comp {L : ℝ} (hL : 0 ≤ L) {lam t : 
   have hbound : ∀ x ∈ s, ∀ᵐ p : ℝ × ℝ ∂volume, ‖G x p‖ ≤ D p := by
     intro x hx
     refine Eventually.of_forall fun p => ?_
-    simp only [hG, norm_mul, Complex.norm_real, Real.norm_eq_abs,
-      norm_cexp_I_mul_ofReal_add, mul_one]
+    dsimp only [G]
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_cexp_I_mul_ofReal_add, mul_one]
     have hexpsq : Real.exp (lam x * (p.1 - p.2) ^ 2 / 2) ≤
         Real.exp (L * p.1 ^ 2) * Real.exp (L * p.2 ^ 2) := by
       rw [← Real.exp_add]
@@ -250,7 +251,6 @@ theorem xiSliceHeatTransfer_nonneg_of_heatedHyperbola_all {lam r t : ℝ} (hlam 
   · set lamPath : ℝ → ℝ := fun t' => lam + min |t' - t| 1 with hlamPath
     have hcontOn : ContinuousOn (fun t' => xiSliceHeatTransfer (lamPath t') r t' n) univ := by
       refine continuousOn_xiSliceHeatTransfer_comp (L := lam + 1) (by linarith) ?_ continuousOn_id
-        (fun t' _ => by simp only [hlamPath]; positivity)
         (fun t' _ => by simp only [hlamPath]; linarith [min_le_right |t' - t| 1]) r n
       simp only [hlamPath]
       exact continuousOn_const.add ((continuous_abs.comp (continuous_id.sub continuous_const)).min
@@ -272,11 +272,12 @@ theorem xiSliceHeatTransfer_nonneg_of_heatedHyperbola_all {lam r t : ℝ} (hlam 
     have hmin : min |t' - t| 1 = |t' - t| := min_eq_left (by linarith)
     have hlam' : 0 ≤ lamPath t' := by simp only [hlamPath]; positivity
     refine xiSliceHeatTransfer_nonneg_of_heatedHyperbola hlam' hr h.2 (fun q => ?_) n
-    rw [hlamPath, hmin]
+    simp only [hlamPath, hmin]
     have h4 := xiSpectralPoint_im_sq_lt_quarter q
     by_cases hfar : 1 / 2 ≤ |(xiSpectralPoint q).re - t'|
     · have hsq : (1 / 2 : ℝ) ^ 2 ≤ ((xiSpectralPoint q).re - t') ^ 2 := by
-        rw [← sq_abs]; exact pow_le_pow_left₀ (by norm_num) hfar 2
+        rw [← sq_abs ((xiSpectralPoint q).re - t')]
+        exact pow_le_pow_left₀ (by norm_num) hfar 2
       have : 0 ≤ r ^ 2 + 3 * (lam + |t' - t|) := by positivity
       linarith
     · push Not at hfar
@@ -528,7 +529,6 @@ theorem re_lt_of_finiteHead_heat_rate_nonneg {δ₀ : ℝ} (hδ₀ : 0 < δ₀) 
           (Ici 2) := by
         refine continuousOn_xiSliceHeatTransfer_comp (L := κ / Real.log 2) (by positivity) ?_
           continuousOn_id
-          (fun t' ht' => div_nonneg hκ.le (Real.log_nonneg (by linarith [mem_Ici.mp ht'])))
           (fun t' ht' => div_le_div_of_nonneg_left hκ.le hl2
             (Real.log_le_log (by norm_num) (mem_Ici.mp ht'))) 0 n
         exact continuousOn_const.div (Real.continuousOn_log.mono fun x hx =>
@@ -539,7 +539,7 @@ theorem re_lt_of_finiteHead_heat_rate_nonneg {δ₀ : ℝ} (hδ₀ : 0 < δ₀) 
         ((hcontOn.continuousAt (Ici_mem_nhds (by linarith))).tendsto).mono_left nhdsWithin_le_nhds
       have hX_ev : ∀ᶠ t' : ℝ in 𝓝[>] ρ.im, XiC (t' : ℂ) ≠ 0 :=
         (eventually_XiC_ofReal_ne_zero ρ.im).filter_mono
-          (nhdsWithin_mono ρ.im Ioi_subset_compl_singleton)
+          (nhdsWithin_mono ρ.im fun _ hx => ne_of_gt hx)
       have hgt_ev : ∀ᶠ t' : ℝ in 𝓝[>] ρ.im, ρ.im < t' := self_mem_nhdsWithin
       exact ge_of_tendsto htend ((hgt_ev.and hX_ev).mono fun t' h =>
         hgood t' (him_max.trans h.1.le) h.2)
