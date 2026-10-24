@@ -24,40 +24,40 @@ prime-varying amplitudes:
      forces `ν ∈ ℤ` (and `ν = 0` whenever `|ν| < 1`).
 
 2. **Multi-singularity line-energy criterion and separated product collapse**
-   (`exists_lineEnergy_le_of_majorant_finset`, `receiverBounded_pattern_half_of_finset_bounds`,
-   `exists_prod_rpow_neg_add_one_le_sum`):
-   Dominating `‖F(w)‖` on `1 < Re w ≤ 2` by `A (1 + ∑_{k ∈ I} |Im w − t_k|^{-b_k})` with `2 b_k < 1`
+   (`exists_lineEnergy_le_of_majorant_finset`, `receiverBounded_pattern_half_of_sum_bounds`,
+   `exists_prod_rpow_neg_add_one_le_sum`, `norm_patternSeries_le_prod_of_prime_sum`):
+   Dominating `‖F(w)‖` on `1 < Re w ≤ 2` by `A (1 + ∑_{k ∈ K} |Im w − t_k|^{-b_k})` with `2 b_k < 1`
    on `(0, T]` and by `B₁ (Im w)^{1/4}` above `T` pays the half-damped receiver. For pairwise
-   distinct frequencies `t_k`, the product `∏_{k ∈ I} (|y − t_k|^{-b_k} + 1)` collapses to a linear
-   combination `C (1 + ∑_{k ∈ I} |y − t_k|^{-b_k})` because `|t_j − t_k| ≤ |y − t_j| + |y − t_k|`
+   distinct frequencies `t_k`, the product `∏_{k ∈ K} (|y − t_k|^{-b_k} + 1)` collapses to a linear
+   combination `C (1 + ∑_{k ∈ K} |y − t_k|^{-b_k})` because `|t_j − t_k| ≤ |y − t_j| + |y − t_k|`
    prevents simultaneous proximity to two distinct heights.
 
 3. **The complete phase diagram of multi-frequency prime patterns**
    (`receiverBounded_multiPhaseWeight_of_forall_lt_one`,
-   `not_receiverBounded_multiPhaseWeight_of_ge_one`, `receiverBounded_multiPhaseWeight_iff`,
+   `not_receiverBounded_multiPhaseWeight_of_eq_one`, `receiverBounded_multiPhaseWeight_iff`,
    `receiverBounded_multiPhaseWeight_of_two_active`,
    `cos_coeff_eq_zero_of_receiverBounded_multiPhase_damped`):
-   For `f(p) = ∑_{k ∈ I} a_k cos(t_k log p + φ_k)` with pairwise distinct positive frequencies
+   For `f(p) = ∑_{k ∈ K} a_k cos(t_k log p + φ_k)` with pairwise distinct positive frequencies
    `t_k > 0`:
-   - if `|f(p)| ≤ 1`, `|a_k| ≤ 1`, and `a_k cos φ_k < 1` for all `k ∈ I`, the half-damped weight is
+   - if `|f(p)| ≤ 1`, `|a_k| ≤ 1`, and `a_k cos φ_k < 1` for all `k ∈ K`, the half-damped weight is
      paid;
-   - if `a_{k₀} cos φ_{k₀} ≥ 1` for some `k₀ ∈ I` and `ζ(1/2 + i t_{k₀}) ≠ 0`, the half-damped
+   - if `a_{k₀} cos φ_{k₀} = 1` for some `k₀ ∈ K` and `ζ(1/2 + i t_{k₀}) ≠ 0`, the half-damped
      weight is unpaid;
-   - under the amplitude budget `∑_{k ∈ I} |a_k| ≤ 1`, `multiPhaseWeight I a t φ` is paid if and
-     only if `∀ k ∈ I, a_k cos φ_k < 1 ∨ ζ(1/2 + i t_k) = 0`; in particular, sharing the budget
+   - under the amplitude budget `∑_{k ∈ K} |a_k| ≤ 1`, `multiPhaseWeight K a t φ` is paid if and
+     only if `∀ k ∈ K, a_k cos φ_k < 1 ∨ ζ(1/2 + i t_k) = 0`; in particular, sharing the budget
      across two or more active frequencies (`a_{k₁} ≠ 0, a_{k₂} ≠ 0`) always pays the half-damped
      receiver unconditionally;
-   - below half damping (`0 < ε < 1/2`), payment forces `a_k cos φ_k = 0` at every frequency `k ∈ I`.
+   - below half damping (`0 < ε < 1/2`), payment forces `a_k cos φ_k = 0` at every frequency `k ∈ K`.
 
 4. **Prime-varying amplitudes and critical Wiener prime-perturbation invariance**
-   (`criticalWiener_primePerturbationKernel`, `receiverBounded_pattern_iff_of_summable_prime_diff`,
-   `horizonRows_bounded_pattern_iff_of_summable_prime_diff`,
-   `receiverBounded_primeVaryingMultiPhaseWeight_iff`):
-   For any two completely multiplicative patterns `f, f' : ℕ →*₀ ℝ` with `|f(p)| ≤ 1` and
-   `|f'(p)| ≤ 1`, the perturbation kernel `g = f' ⋆ μf` satisfies
-   `g(p^{m+1}) = f'(p)^m (f'(p) − f(p))` with no unimodularity assumption. Whenever
+   (`criticalWiener_mul_patternMoebiusAF`, `receiverBounded_of_summable_prime_diff`,
+   `receiverBounded_iff_of_summable_prime_diff`, `horizonRows_bounded_of_summable_prime_diff`,
+   `receiverBounded_primeVaryingPhase_half_iff`, `receiverBounded_primeVaryingMultiPhase_half_iff`):
+   For any multiplicative `f' : ArithmeticFunction ℝ` with `|f'(n)| ≤ 1` and any completely
+   multiplicative `f : ℕ →*₀ ℝ` with `|f(p)| ≤ 1`, the defect kernel `g = f' ⋆ μf` satisfies
+   `g(p^{m+1}) = f'(p^{m+1}) − f(p) f'(p^m)` with no unimodularity assumption. Whenever
    `∑_p |f'(p) − f(p)| p^{-(1/2 + ε)} < ∞` (`ε > 0`), `g d^{-ε}` lies in `CriticalWiener`, so both
-   full-receiver payment and uniform horizon-row payment are invariant between `f` and `f'`.
+   full-receiver payment and uniform horizon-row payment transfer between `f` and `f'`.
 -/
 
 open Finset Filter Topology MeasureTheory Complex Set
@@ -232,7 +232,6 @@ theorem not_receiverBounded_pattern_half_of_primeDirichletSeries_re_ge {f : ℕ 
     refine le_trans (le_of_eq ?_) hbound
     simp only [κ, C', A₀]
     field_simp
-    ring
   -- Contradict the uniform line-energy bound `4πE` as `u ↓ 0`
   have hE0 : 0 ≤ E := by simpa [weightPronicEnergy] using hE 0
   have hup : ∀ u : ℝ, 0 < u → u ≤ r → ∫ t, lineIntegrand c m (1 / 2 + u) t ≤ 4 * Real.pi * E := by
@@ -431,6 +430,7 @@ theorem localPrimeMean_eq_zero_of_receiverBounded_damped {f : ℕ →*₀ ℝ}
     ν = 0 := by
   obtain ⟨k, rfl⟩ := int_localPrimeMean_of_receiverBounded_damped hf ht₀ hε hε2 hu₀ hmean hR
   have hk : |k| < 1 := by exact_mod_cast hν
+  have hk' := abs_lt.mp hk
   have hk0 : k = 0 := by omega
   simp [hk0]
 
@@ -550,14 +550,14 @@ theorem exists_sq_one_add_sum_le {ι : Type*} (I : Finset ι) :
     nlinarith [sq_nonneg (x a)]
 
 /-- **Multi-singularity strip bounds pay a half-damped pattern.** Let `|f| ≤ 1` be completely
-multiplicative. If on `1 < Re w ≤ 2`, `0 < Im w ≤ T` (`T ≥ 2`), off the heights `{t_k : k ∈ I}`,
-`|F(w)| ≤ A(1 + ∑_{k ∈ I} |Im w − t_k|^{-b_k})` with `0 ≤ b_k` and `2b_k < 1`, and
+multiplicative. If on `1 < Re w ≤ 2`, `0 < Im w ≤ T` (`T ≥ 2`), off the heights `{t_k : k ∈ K}`,
+`|F(w)| ≤ A(1 + ∑_{k ∈ K} |Im w − t_k|^{-b_k})` with `0 ≤ b_k` and `2b_k < 1`, and
 `|F(w)| ≤ B₁(Im w)^{1/4}` for `Im w > T`, then `f(d) d^{-1/2}` has bounded receiver. -/
-theorem receiverBounded_pattern_half_of_sum_bounds {ι : Type*} (I : Finset ι) {f : ℕ →*₀ ℝ}
+theorem receiverBounded_pattern_half_of_sum_bounds {ι : Type*} (K : Finset ι) {f : ℕ →*₀ ℝ}
     (hf : ∀ n, |f n| ≤ 1) {t b : ι → ℝ} {T A B₁ : ℝ} (hT : 2 ≤ T) (hA : 0 ≤ A)
-    (hb1 : ∀ k ∈ I, 2 * b k < 1)
-    (hsmall : ∀ w : ℂ, 1 < w.re → w.re ≤ 2 → 0 < w.im → w.im ≤ T → (∀ k ∈ I, w.im ≠ t k) →
-      ‖∑' n : ℕ, (f n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤ A * (1 + ∑ k ∈ I, |w.im - t k| ^ (-b k)))
+    (hb1 : ∀ k ∈ K, 2 * b k < 1)
+    (hsmall : ∀ w : ℂ, 1 < w.re → w.re ≤ 2 → 0 < w.im → w.im ≤ T → (∀ k ∈ K, w.im ≠ t k) →
+      ‖∑' n : ℕ, (f n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤ A * (1 + ∑ k ∈ K, |w.im - t k| ^ (-b k)))
     (hlarge : ∀ w : ℂ, 1 < w.re → w.re ≤ 2 → T < w.im →
       ‖∑' n : ℕ, (f n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤ B₁ * w.im ^ (1 / 4 : ℝ)) :
     ReceiverBounded (fun d => f d * (d : ℝ) ^ (-(1 / 2 : ℝ))) := by
@@ -569,40 +569,41 @@ theorem receiverBounded_pattern_half_of_sum_bounds {ι : Type*} (I : Finset ι) 
     exact mul_le_of_le_one_left (Real.rpow_nonneg (Nat.cast_nonneg d) _) (hf d)
   set P : ℝ := ∑' d : ℕ, c d / d
   obtain ⟨Z₀, hZ₀, hZ⟩ := exists_norm_zeta_le_on_tall_box T
-  obtain ⟨Csq, hCsq0, hCsq⟩ := exists_sq_one_add_sum_le I
+  obtain ⟨Csq, hCsq0, hCsq⟩ := exists_sq_one_add_sum_le K
   have hAint : 0 ≤ 4 * Z₀ ^ 2 * (2 * A ^ 2 * Csq + 2 * P ^ 2) := by positivity
   set Aint : ℝ := 4 * Z₀ ^ 2 * (2 * A ^ 2 * Csq + 2 * P ^ 2)
   have hwre : ∀ σ y : ℝ, ((σ : ℂ) + y * I + 1 / 2).re = σ + 1 / 2 := fun σ y => by simp
   have hwim : ∀ σ y : ℝ, ((σ : ℂ) + y * I + 1 / 2).im = y := fun σ y => by simp
-  set g : ℝ → ℝ := fun y => Aint * (1 + ∑ k ∈ I, |y - t k| ^ (-(2 * b k)))
+  set g : ℝ → ℝ := fun y => Aint * (1 + ∑ k ∈ K, |y - t k| ^ (-(2 * b k)))
   have hg : IntegrableOn g (Ioc 0 T) := by
     refine (intervalIntegrable_iff_integrableOn_Ioc_of_le (by linarith)).mp ?_
     refine (intervalIntegrable_const.add ?_).const_mul Aint
-    exact IntervalIntegrable.sum I fun k hk =>
-      intervalIntegrable_abs_sub_rpow (by linarith [hb1 k hk]) (t k) 0 T
-  set S : Finset ℝ := I.image t
+    exact (IntervalIntegrable.sum K fun k hk =>
+      intervalIntegrable_abs_sub_rpow (by linarith [hb1 k hk]) (t k) 0 T).congr
+      (fun x _ => Finset.sum_apply x K _)
+  set S : Finset ℝ := K.image t
   have hsmall' : ∀ σ y : ℝ, 1 / 2 < σ → σ < 3 / 4 → 0 < y → y ≤ T → y ∉ S →
       lineIntegrand c P σ y ≤ g y := by
     intro σ y hσ hσ' hy hyT hyS
-    have hyk : ∀ k ∈ I, y ≠ t k := fun k hk h => hyS (Finset.mem_image_of_mem t hk ▸ h ▸ rfl)
+    have hyk : ∀ k ∈ K, y ≠ t k := fun k hk h => hyS (h ▸ Finset.mem_image_of_mem t hk)
     have hF := hsmall ((σ : ℂ) + y * I + 1 / 2) (by rw [hwre]; linarith) (by rw [hwre]; linarith)
       (by rw [hwim]; exact hy) (by rw [hwim]; exact hyT) (by rw [hwim]; exact hyk)
     rw [hwim] at hF
     have hC : ‖weightDirichletSeries c ((σ : ℂ) + y * I) - (P : ℂ)‖ ≤
-        A * (1 + ∑ k ∈ I, |y - t k| ^ (-b k)) + |P| := by
+        A * (1 + ∑ k ∈ K, |y - t k| ^ (-b k)) + |P| := by
       rw [weightDirichletSeries_pattern]
       refine (norm_sub_le _ _).trans (add_le_add hF (by rw [Complex.norm_real, Real.norm_eq_abs]))
-    have hsq_sum : (1 + ∑ k ∈ I, |y - t k| ^ (-b k)) ^ 2 ≤
-        Csq * (1 + ∑ k ∈ I, |y - t k| ^ (-(2 * b k))) := by
+    have hsq_sum : (1 + ∑ k ∈ K, |y - t k| ^ (-b k)) ^ 2 ≤
+        Csq * (1 + ∑ k ∈ K, |y - t k| ^ (-(2 * b k))) := by
       refine (hCsq fun k => |y - t k| ^ (-b k)).trans (le_of_eq ?_)
       congr 2
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [← Real.rpow_natCast, ← Real.rpow_mul (abs_nonneg _)]
       congr 1; push_cast; ring
-    have hsum_nonneg : 0 ≤ ∑ k ∈ I, |y - t k| ^ (-(2 * b k)) :=
+    have hsum_nonneg : 0 ≤ ∑ k ∈ K, |y - t k| ^ (-(2 * b k)) :=
       Finset.sum_nonneg fun k _ => Real.rpow_nonneg (abs_nonneg _) _
     have hsq : ‖weightDirichletSeries c ((σ : ℂ) + y * I) - (P : ℂ)‖ ^ 2 ≤
-        (2 * A ^ 2 * Csq + 2 * P ^ 2) * (1 + ∑ k ∈ I, |y - t k| ^ (-(2 * b k))) := by
+        (2 * A ^ 2 * Csq + 2 * P ^ 2) * (1 + ∑ k ∈ K, |y - t k| ^ (-(2 * b k))) := by
       have h := pow_le_pow_left₀ (norm_nonneg _) hC 2
       have hab : ∀ u v : ℝ, (u + v) ^ 2 ≤ 2 * u ^ 2 + 2 * v ^ 2 := fun u v => by
         nlinarith [sq_nonneg (u - v)]
@@ -624,11 +625,11 @@ theorem receiverBounded_pattern_half_of_sum_bounds {ι : Type*} (I : Finset ι) 
     rw [div_le_iff₀ hden]
     calc ‖riemannZeta ((σ : ℂ) + y * I)‖ ^ 2 *
           ‖weightDirichletSeries c ((σ : ℂ) + y * I) - (P : ℂ)‖ ^ 2
-        ≤ Z₀ ^ 2 * ((2 * A ^ 2 * Csq + 2 * P ^ 2) * (1 + ∑ k ∈ I, |y - t k| ^ (-(2 * b k)))) :=
+        ≤ Z₀ ^ 2 * ((2 * A ^ 2 * Csq + 2 * P ^ 2) * (1 + ∑ k ∈ K, |y - t k| ^ (-(2 * b k)))) :=
           mul_le_mul hzsq hsq (sq_nonneg _) (sq_nonneg _)
-      _ = Aint * (1 + ∑ k ∈ I, |y - t k| ^ (-(2 * b k))) * (1 / 2) ^ 2 := by
+      _ = Aint * (1 + ∑ k ∈ K, |y - t k| ^ (-(2 * b k))) * (1 / 2) ^ 2 := by
           simp only [Aint]; ring
-      _ ≤ Aint * (1 + ∑ k ∈ I, |y - t k| ^ (-(2 * b k))) * ‖(σ : ℂ) + y * I‖ ^ 2 :=
+      _ ≤ Aint * (1 + ∑ k ∈ K, |y - t k| ^ (-(2 * b k))) * ‖(σ : ℂ) + y * I‖ ^ 2 :=
           mul_le_mul_of_nonneg_left hs2 (mul_nonneg hAint (by linarith))
   have hlarge' : ∀ σ y : ℝ, 1 / 2 < σ → σ < 3 / 4 → T < y →
       ‖weightDirichletSeries c ((σ : ℂ) + y * I) - (P : ℂ)‖ ≤ (|B₁| + |P|) * y ^ (1 / 4 : ℝ) := by
@@ -729,48 +730,48 @@ theorem exists_prod_rpow_neg_add_one_le_sum {ι : Type*} (I : Finset ι)
         ≤ (xa + 1) * (Cs * (1 + ∑ k ∈ s, xs k)) :=
           mul_le_mul_of_nonneg_left hih (by linarith)
       _ = Cs * (Stot + ∑ k ∈ s, xa * xs k) := by
-          simp only [Stot]; rw [Finset.mul_sum]; ring
+          simp only [Stot, ← Finset.mul_sum]; ring
       _ ≤ Cs * (Stot + (∑ k ∈ s, Dk k) * Stot) :=
-          mul_le_mul_of_nonneg_left (add_le_add_left hsum_le Stot) hCs0
+          mul_le_mul_of_nonneg_left (add_le_add le_rfl hsum_le) hCs0
       _ = Cs * D * Stot := by simp only [D]; ring
 
-/-- **Prime-additive decomposition of `primeDirichletSeries`.** If `f(p) = ∑_{k ∈ I} g_k(p)` at all
-primes `p`, then `ℓ_f(w) = ∑_{k ∈ I} ℓ_{g_k}(w)` on `Re w > 1`. -/
-theorem primeDirichletSeries_eq_sum {ι : Type*} (I : Finset ι) {f : ℕ →*₀ ℝ}
-    {g : ι → ℕ →*₀ ℝ} (hg : ∀ k ∈ I, ∀ p : ℕ, p.Prime → |g k p| ≤ 1)
-    (hsum : ∀ p : ℕ, p.Prime → f p = ∑ k ∈ I, g k p) {w : ℂ} (hw : 1 < w.re) :
-    primeDirichletSeries f w = ∑ k ∈ I, primeDirichletSeries (g k) w := by
+/-- **Prime-additive decomposition of `primeDirichletSeries`.** If `f(p) = ∑_{k ∈ K} g_k(p)` at all
+primes `p`, then `ℓ_f(w) = ∑_{k ∈ K} ℓ_{g_k}(w)` on `Re w > 1`. -/
+theorem primeDirichletSeries_eq_sum {ι : Type*} (K : Finset ι) {f : ℕ →*₀ ℝ}
+    {g : ι → ℕ →*₀ ℝ} (hg : ∀ k ∈ K, ∀ p : ℕ, p.Prime → |g k p| ≤ 1)
+    (hsum : ∀ p : ℕ, p.Prime → f p = ∑ k ∈ K, g k p) {w : ℂ} (hw : 1 < w.re) :
+    primeDirichletSeries f w = ∑ k ∈ K, primeDirichletSeries (g k) w := by
   simp only [primeDirichletSeries]
-  rw [← Summable.tsum_finsetSum (fun k hk => summable_primeDirichletTerm (g k) (hg k hk) hw)]
+  rw [← Summable.tsum_finsetSum (fun k hk => summable_primeDirichletSeries (hg k hk) hw)]
   refine tsum_congr fun p => ?_
-  simp only [primeDirichletTerm, hsum p.1 p.2, Complex.ofReal_sum, Finset.sum_mul]
+  simp only [hsum p.1 p.2, Complex.ofReal_sum, Finset.sum_mul]
 
-/-- **Prime-additive Euler product upper factorization.** If `f(p) = ∑_{k ∈ I} g_k(p)` at all
+/-- **Prime-additive Euler product upper factorization.** If `f(p) = ∑_{k ∈ K} g_k(p)` at all
 primes `p`, with `|f(p)| ≤ 1` and `|g_k(p)| ≤ 1`, then on `Re w > 1`,
-`‖F_f(w)‖ ≤ e^S ∏_{k ∈ I} (e^S ‖F_{g_k}(w)‖)`. -/
-theorem norm_patternSeries_le_prod_of_prime_sum {ι : Type*} (I : Finset ι) {f : ℕ →*₀ ℝ}
+`‖F_f(w)‖ ≤ e^S ∏_{k ∈ K} (e^S ‖F_{g_k}(w)‖)`. -/
+theorem norm_patternSeries_le_prod_of_prime_sum {ι : Type*} (K : Finset ι) {f : ℕ →*₀ ℝ}
     {g : ι → ℕ →*₀ ℝ} (hf : ∀ p : ℕ, p.Prime → |f p| ≤ 1)
-    (hg : ∀ k ∈ I, ∀ p : ℕ, p.Prime → |g k p| ≤ 1)
-    (hsum : ∀ p : ℕ, p.Prime → f p = ∑ k ∈ I, g k p) {w : ℂ} (hw : 1 < w.re) :
+    (hg : ∀ k ∈ K, ∀ p : ℕ, p.Prime → |g k p| ≤ 1)
+    (hsum : ∀ p : ℕ, p.Prime → f p = ∑ k ∈ K, g k p) {w : ℂ} (hw : 1 < w.re) :
     ‖∑' n : ℕ, (f n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤
       Real.exp primeSquareMass *
-        ∏ k ∈ I, (Real.exp primeSquareMass * ‖∑' n : ℕ, (g k n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖) := by
+        ∏ k ∈ K, (Real.exp primeSquareMass * ‖∑' n : ℕ, (g k n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖) := by
   have hF := (norm_patternSeries_bounds_of_primeDirichletSeries hf hw).2
-  have hre : (primeDirichletSeries f w).re = ∑ k ∈ I, (primeDirichletSeries (g k) w).re := by
-    rw [primeDirichletSeries_eq_sum I hg hsum hw, Complex.re_sum]
+  have hre : (primeDirichletSeries f w).re = ∑ k ∈ K, (primeDirichletSeries (g k) w).re := by
+    rw [primeDirichletSeries_eq_sum K hg hsum hw, Complex.re_sum]
   calc ‖∑' n : ℕ, (f n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖
-      ≤ Real.exp ((primeDirichletSeries f w).re + primeSquareMass) := hF
-    _ = Real.exp primeSquareMass * ∏ k ∈ I, Real.exp ((primeDirichletSeries (g k) w).re) := by
-        rw [add_comm, Real.exp_add, hre, Real.exp_sum]
+      ≤ Real.exp (primeSquareMass + (primeDirichletSeries f w).re) := hF
+    _ = Real.exp primeSquareMass * ∏ k ∈ K, Real.exp ((primeDirichletSeries (g k) w).re) := by
+        rw [Real.exp_add, hre, Real.exp_sum]
     _ ≤ Real.exp primeSquareMass *
-          ∏ k ∈ I, (Real.exp primeSquareMass *
+          ∏ k ∈ K, (Real.exp primeSquareMass *
             ‖∑' n : ℕ, (g k n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖) := by
         refine mul_le_mul_of_nonneg_left (Finset.prod_le_prod (fun k _ => (Real.exp_pos _).le)
           fun k hk => ?_) (Real.exp_pos _).le
         have hgk := (norm_patternSeries_bounds_of_primeDirichletSeries (hg k hk) hw).1
         calc Real.exp ((primeDirichletSeries (g k) w).re)
             = Real.exp primeSquareMass *
-                Real.exp ((primeDirichletSeries (g k) w).re - primeSquareMass) := by
+                Real.exp (-primeSquareMass + (primeDirichletSeries (g k) w).re) := by
               rw [← Real.exp_add]; ring_nf
           _ ≤ Real.exp primeSquareMass * ‖∑' n : ℕ, (g k n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ :=
               mul_le_mul_of_nonneg_left hgk (Real.exp_pos _).le
@@ -778,37 +779,37 @@ theorem norm_patternSeries_le_prod_of_prime_sum {ι : Type*} (I : Finset ι) {f 
 /-! ### §3. Complete phase diagram of multi-frequency prime patterns -/
 
 /-- The multi-frequency oscillating prime pattern
-`f(p) = ∑_{k ∈ I} a_k cos(t_k log p + φ_k)`. -/
-def multiPhasePattern {ι : Type*} (I : Finset ι) (a t φ : ι → ℝ) : ℕ →*₀ ℝ :=
-  primeValueHom fun p => ∑ k ∈ I, a k * Real.cos (t k * Real.log p + φ k)
+`f(p) = ∑_{k ∈ K} a_k cos(t_k log p + φ_k)`. -/
+def multiPhasePattern {ι : Type*} (K : Finset ι) (a t φ : ι → ℝ) : ℕ →*₀ ℝ :=
+  primeValueHom fun p => ∑ k ∈ K, a k * Real.cos (t k * Real.log p + φ k)
 
-theorem multiPhasePattern_prime {ι : Type*} (I : Finset ι) (a t φ : ι → ℝ) {p : ℕ}
+theorem multiPhasePattern_prime {ι : Type*} (K : Finset ι) (a t φ : ι → ℝ) {p : ℕ}
     (hp : p.Prime) :
-    multiPhasePattern I a t φ p = ∑ k ∈ I, a k * Real.cos (t k * Real.log p + φ k) :=
+    multiPhasePattern K a t φ p = ∑ k ∈ K, a k * Real.cos (t k * Real.log p + φ k) :=
   primeValueHom_prime _ hp
 
-theorem multiPhasePattern_prime_eq_sum_phasePattern {ι : Type*} (I : Finset ι) (a t φ : ι → ℝ)
+theorem multiPhasePattern_prime_eq_sum_phasePattern {ι : Type*} (K : Finset ι) (a t φ : ι → ℝ)
     {p : ℕ} (hp : p.Prime) :
-    multiPhasePattern I a t φ p = ∑ k ∈ I, phasePattern (a k) (t k) (φ k) p := by
-  rw [multiPhasePattern_prime I a t φ hp]
+    multiPhasePattern K a t φ p = ∑ k ∈ K, phasePattern (a k) (t k) (φ k) p := by
+  rw [multiPhasePattern_prime K a t φ hp]
   exact Finset.sum_congr rfl fun k _ => (phasePattern_prime (a k) (t k) (φ k) hp).symm
 
-/-- If `∑_{k ∈ I} |a_k| ≤ 1`, then `|multiPhasePattern I a t φ n| ≤ 1` for all `n`. -/
-theorem abs_multiPhasePattern_le_of_sum_abs_le_one {ι : Type*} {I : Finset ι} {a : ι → ℝ}
-    (ha : ∑ k ∈ I, |a k| ≤ 1) (t φ : ι → ℝ) (n : ℕ) :
-    |multiPhasePattern I a t φ n| ≤ 1 :=
+/-- If `∑_{k ∈ K} |a_k| ≤ 1`, then `|multiPhasePattern K a t φ n| ≤ 1` for all `n`. -/
+theorem abs_multiPhasePattern_le_of_sum_abs_le_one {ι : Type*} {K : Finset ι} {a : ι → ℝ}
+    (ha : ∑ k ∈ K, |a k| ≤ 1) (t φ : ι → ℝ) (n : ℕ) :
+    |multiPhasePattern K a t φ n| ≤ 1 :=
   abs_patternHom_le_one _ (fun p hp => by
-    rw [multiPhasePattern_prime I a t φ hp]
-    calc |∑ k ∈ I, a k * Real.cos (t k * Real.log p + φ k)|
-        ≤ ∑ k ∈ I, |a k * Real.cos (t k * Real.log p + φ k)| := abs_sum_le_sum_abs _ _
-      _ ≤ ∑ k ∈ I, |a k| := Finset.sum_le_sum fun k _ => by
+    rw [multiPhasePattern_prime K a t φ hp]
+    calc |∑ k ∈ K, a k * Real.cos (t k * Real.log p + φ k)|
+        ≤ ∑ k ∈ K, |a k * Real.cos (t k * Real.log p + φ k)| := abs_sum_le_sum_abs _ _
+      _ ≤ ∑ k ∈ K, |a k| := Finset.sum_le_sum fun k _ => by
           rw [abs_mul]
           exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _)
       _ ≤ 1 := ha) n
 
 /-- The half-damped multi-frequency prime weight `f(d) d^{-1/2}`. -/
-def multiPhaseWeight {ι : Type*} (I : Finset ι) (a t φ : ι → ℝ) (d : ℕ) : ℝ :=
-  multiPhasePattern I a t φ d * (d : ℝ) ^ (-(1 / 2 : ℝ))
+def multiPhaseWeight {ι : Type*} (K : Finset ι) (a t φ : ι → ℝ) (d : ℕ) : ℝ :=
+  multiPhasePattern K a t φ d * (d : ℝ) ^ (-(1 / 2 : ℝ))
 
 /-- Opposite amplitude negates `phasePattern` at every prime. -/
 theorem phasePattern_neg_amp_prime (a t₀ φ : ℝ) {p : ℕ} (hp : p.Prime) :
@@ -821,8 +822,7 @@ theorem primeDirichletSeries_phasePattern_neg_amp (a t₀ φ : ℝ) (w : ℂ) :
       -primeDirichletSeries (phasePattern a t₀ φ) w := by
   simp only [primeDirichletSeries, ← tsum_neg]
   refine tsum_congr fun p => ?_
-  simp only [primeDirichletTerm, phasePattern_neg_amp_prime a t₀ φ p.2, Complex.ofReal_neg,
-    neg_mul]
+  simp only [phasePattern_neg_amp_prime a t₀ φ p.2, Complex.ofReal_neg, neg_mul]
 
 /-- **Single-mode small-height bound on an arbitrary interval `(0, T]`** (`T ≥ 2`, `t₀ > 0`). -/
 theorem exists_norm_phaseSeries_le_on_Ioc {a t₀ : ℝ} (ha : |a| ≤ 1) (ht₀ : 0 < t₀) (φ : ℝ)
@@ -888,102 +888,101 @@ theorem exists_norm_phaseSeries_le_log_pow_nine {a t₀ : ℝ} (ha : |a| ≤ 1) 
     _ = Real.exp (2 * primeSquareMass + CL) * 2 ^ 9 * Real.log y ^ 9 := by
         rw [Real.exp_add, hexp9]; ring
 
-/-- Selecting constants across a finite index set: if `∀ k ∈ I, ∃ A ≥ 0, P k A`, there is a
-function `A : ι → ℝ` with `∀ k ∈ I, 0 ≤ A k ∧ P k (A k)`. -/
-theorem exists_fun_of_forall_mem {ι : Type*} (I : Finset ι) {P : ι → ℝ → Prop}
-    (h : ∀ k ∈ I, ∃ A : ℝ, 0 ≤ A ∧ P k A) :
-    ∃ A : ι → ℝ, ∀ k ∈ I, 0 ≤ A k ∧ P k (A k) := by
+/-- Selecting constants across a finite index set: if `∀ k ∈ K, ∃ A ≥ 0, P k A`, there is a
+function `A : ι → ℝ` with `∀ k ∈ K, 0 ≤ A k ∧ P k (A k)`. -/
+theorem exists_fun_of_forall_mem {ι : Type*} (K : Finset ι) {P : ι → ℝ → Prop}
+    (h : ∀ k ∈ K, ∃ A : ℝ, 0 ≤ A ∧ P k A) :
+    ∃ A : ι → ℝ, ∀ k ∈ K, 0 ≤ A k ∧ P k (A k) := by
   classical
-  refine ⟨fun k => if hk : k ∈ I then Classical.choose (h k hk) else 0, fun k hk => ?_⟩
+  refine ⟨fun k => if hk : k ∈ K then Classical.choose (h k hk) else 0, fun k hk => ?_⟩
+  dsimp only
   rw [dif_pos hk]
   exact Classical.choose_spec (h k hk)
 
 /-- **Multi-frequency small-height bound.** For pairwise distinct positive frequencies `t_k > 0`
-(`k ∈ I`), `|a_k| ≤ 1`, and `|f(p)| ≤ 1`, on `1 < Re w ≤ 2`, `0 < Im w ≤ T` (`T ≥ 2`), off
-`{t_k : k ∈ I}`, `‖F(w)‖ ≤ A(1 + ∑_{k ∈ I} |Im w − t_k|^{-(a_k cos φ_k)⁺/2})`. -/
-theorem exists_norm_multiPhaseSeries_le_small {ι : Type*} (I : Finset ι) {a t φ : ι → ℝ}
-    (hf : ∀ p : ℕ, p.Prime → |multiPhasePattern I a t φ p| ≤ 1)
-    (ha : ∀ k ∈ I, |a k| ≤ 1) (ht : ∀ k ∈ I, 0 < t k) (hinj : Set.InjOn t (I : Set ι))
+(`k ∈ K`), `|a_k| ≤ 1`, and `|f(p)| ≤ 1`, on `1 < Re w ≤ 2`, `0 < Im w ≤ T` (`T ≥ 2`), off
+`{t_k : k ∈ K}`, `‖F(w)‖ ≤ A(1 + ∑_{k ∈ K} |Im w − t_k|^{-(a_k cos φ_k)⁺/2})`. -/
+theorem exists_norm_multiPhaseSeries_le_small {ι : Type*} (K : Finset ι) {a t φ : ι → ℝ}
+    (hf : ∀ p : ℕ, p.Prime → |multiPhasePattern K a t φ p| ≤ 1)
+    (ha : ∀ k ∈ K, |a k| ≤ 1) (ht : ∀ k ∈ K, 0 < t k) (hinj : Set.InjOn t (K : Set ι))
     {T : ℝ} (hT : 2 ≤ T) :
     ∃ A : ℝ, 0 ≤ A ∧ ∀ w : ℂ, 1 < w.re → w.re ≤ 2 → 0 < w.im → w.im ≤ T →
-      (∀ k ∈ I, w.im ≠ t k) →
-        ‖∑' n : ℕ, (multiPhasePattern I a t φ n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤
-          A * (1 + ∑ k ∈ I, |w.im - t k| ^ (-(max (a k * Real.cos (φ k)) 0 / 2))) := by
+      (∀ k ∈ K, w.im ≠ t k) →
+        ‖∑' n : ℕ, (multiPhasePattern K a t φ n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤
+          A * (1 + ∑ k ∈ K, |w.im - t k| ^ (-(max (a k * Real.cos (φ k)) 0 / 2))) := by
   set b : ι → ℝ := fun k => max (a k * Real.cos (φ k)) 0 / 2
-  have hb0 : ∀ k ∈ I, 0 ≤ b k := fun k _ => by simp only [b]; positivity
-  obtain ⟨Ak, hAk⟩ := exists_fun_of_forall_mem I fun k hk =>
+  have hb0 : ∀ k ∈ K, 0 ≤ b k := fun k _ => by simp only [b]; positivity
+  obtain ⟨Ak, hAk⟩ := exists_fun_of_forall_mem K fun k hk =>
     exists_norm_phaseSeries_le_on_Ioc (ha k hk) (ht k hk) (φ k) hT
-  obtain ⟨Cprod, hCprod0, hprod⟩ := exists_prod_rpow_neg_add_one_le_sum I t b hinj hb0
-  set K : ℝ := Real.exp primeSquareMass * ∏ k ∈ I, (Real.exp primeSquareMass * Ak k)
-  have hK0 : 0 ≤ K := mul_nonneg (Real.exp_pos _).le
+  obtain ⟨Cprod, hCprod0, hprod⟩ := exists_prod_rpow_neg_add_one_le_sum K t b hinj hb0
+  set C₀ : ℝ := Real.exp primeSquareMass * ∏ k ∈ K, (Real.exp primeSquareMass * Ak k)
+  have hC₀0 : 0 ≤ C₀ := mul_nonneg (Real.exp_pos _).le
     (Finset.prod_nonneg fun k hk => mul_nonneg (Real.exp_pos _).le (hAk k hk).1)
-  refine ⟨K * Cprod, mul_nonneg hK0 hCprod0, fun w hw hw2 hy hyT hne => ?_⟩
-  have hfact := norm_patternSeries_le_prod_of_prime_sum I hf
+  refine ⟨C₀ * Cprod, mul_nonneg hC₀0 hCprod0, fun w hw hw2 hy hyT hne => ?_⟩
+  have hfact := norm_patternSeries_le_prod_of_prime_sum K hf
     (fun k hk p _ => abs_phasePattern_le (ha k hk) (t k) (φ k) p)
-    (fun p hp => multiPhasePattern_prime_eq_sum_phasePattern I a t φ hp) hw
-  calc ‖∑' n : ℕ, (multiPhasePattern I a t φ n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖
-      ≤ Real.exp primeSquareMass * ∏ k ∈ I,
+    (fun p hp => multiPhasePattern_prime_eq_sum_phasePattern K a t φ hp) hw
+  calc ‖∑' n : ℕ, (multiPhasePattern K a t φ n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖
+      ≤ Real.exp primeSquareMass * ∏ k ∈ K,
           (Real.exp primeSquareMass *
             ‖∑' n : ℕ, (phasePattern (a k) (t k) (φ k) n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖) := hfact
-    _ ≤ Real.exp primeSquareMass * ∏ k ∈ I,
+    _ ≤ Real.exp primeSquareMass * ∏ k ∈ K,
           (Real.exp primeSquareMass * (Ak k * (|w.im - t k| ^ (-b k) + 1))) := by
         refine mul_le_mul_of_nonneg_left (Finset.prod_le_prod (fun k _ => by positivity)
           fun k hk => mul_le_mul_of_nonneg_left
             ((hAk k hk).2 w hw hw2 hy hyT (hne k hk)) (Real.exp_pos _).le) (Real.exp_pos _).le
-    _ = K * ∏ k ∈ I, (|w.im - t k| ^ (-b k) + 1) := by
-        simp only [K]
-        rw [← Finset.prod_mul_distrib]
-        ring_nf
-    _ ≤ K * (Cprod * (1 + ∑ k ∈ I, |w.im - t k| ^ (-b k))) :=
-        mul_le_mul_of_nonneg_left (hprod w.im hne) hK0
-    _ = K * Cprod * (1 + ∑ k ∈ I, |w.im - t k| ^ (-b k)) := by ring
+    _ = C₀ * ∏ k ∈ K, (|w.im - t k| ^ (-b k) + 1) := by
+        simp only [C₀, ← mul_assoc]
+        rw [Finset.prod_mul_distrib, ← mul_assoc]
+    _ ≤ C₀ * (Cprod * (1 + ∑ k ∈ K, |w.im - t k| ^ (-b k))) :=
+        mul_le_mul_of_nonneg_left (hprod w.im hne) hC₀0
+    _ = C₀ * Cprod * (1 + ∑ k ∈ K, |w.im - t k| ^ (-b k)) := by ring
 
-/-- **Multi-frequency large-height bound.** For `Im w > 2 + ∑_{k ∈ I} (2t_k + 18)`,
+/-- **Multi-frequency large-height bound.** For `Im w > 2 + ∑_{k ∈ K} (2t_k + 18)`,
 `‖F(w)‖ ≤ B₁ (Im w)^{1/4}`. -/
-theorem exists_norm_multiPhaseSeries_le_large {ι : Type*} (I : Finset ι) {a t φ : ι → ℝ}
-    (hf : ∀ p : ℕ, p.Prime → |multiPhasePattern I a t φ p| ≤ 1)
-    (ha : ∀ k ∈ I, |a k| ≤ 1) (ht : ∀ k ∈ I, 0 < t k) :
+theorem exists_norm_multiPhaseSeries_le_large {ι : Type*} (K : Finset ι) {a t φ : ι → ℝ}
+    (hf : ∀ p : ℕ, p.Prime → |multiPhasePattern K a t φ p| ≤ 1)
+    (ha : ∀ k ∈ K, |a k| ≤ 1) (ht : ∀ k ∈ K, 0 < t k) :
     ∃ B₁ : ℝ, ∀ w : ℂ, 1 < w.re → w.re ≤ 2 →
-      2 + ∑ k ∈ I, (2 * t k + 18) < w.im →
-        ‖∑' n : ℕ, (multiPhasePattern I a t φ n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤
+      2 + ∑ k ∈ K, (2 * t k + 18) < w.im →
+        ‖∑' n : ℕ, (multiPhasePattern K a t φ n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤
           B₁ * w.im ^ (1 / 4 : ℝ) := by
-  obtain ⟨Ck, hCk⟩ := exists_fun_of_forall_mem I fun k hk =>
+  obtain ⟨Ck, hCk⟩ := exists_fun_of_forall_mem K fun k hk =>
     exists_norm_phaseSeries_le_log_pow_nine (ha k hk) (ht k hk) (φ k)
-  set K : ℝ := Real.exp primeSquareMass * ∏ k ∈ I, (Real.exp primeSquareMass * Ck k)
-  have hK0 : 0 ≤ K := mul_nonneg (Real.exp_pos _).le
+  set C₀ : ℝ := Real.exp primeSquareMass * ∏ k ∈ K, (Real.exp primeSquareMass * Ck k)
+  have hC₀0 : 0 ≤ C₀ := mul_nonneg (Real.exp_pos _).le
     (Finset.prod_nonneg fun k hk => mul_nonneg (Real.exp_pos _).le (hCk k hk).1)
-  set N : ℕ := I.card * 9
-  refine ⟨K * (4 * ((N : ℝ) + 1)) ^ N, fun w hw hw2 hy => ?_⟩
-  have hsum_pos : ∀ k ∈ I, 0 ≤ 2 * t k + 18 := fun k hk => by linarith [ht k hk]
+  set N : ℕ := K.card * 9
+  refine ⟨C₀ * (4 * ((N : ℝ) + 1)) ^ N, fun w hw hw2 hy => ?_⟩
+  have hsum_pos : ∀ k ∈ K, 0 ≤ 2 * t k + 18 := fun k hk => by linarith [ht k hk]
   have hy1 : 1 ≤ w.im := by
-    have : 0 ≤ ∑ k ∈ I, (2 * t k + 18) := Finset.sum_nonneg hsum_pos
+    have : 0 ≤ ∑ k ∈ K, (2 * t k + 18) := Finset.sum_nonneg hsum_pos
     linarith
   have hlogy0 : 0 ≤ Real.log w.im := Real.log_nonneg hy1
-  have hyk : ∀ k ∈ I, 2 * t k + 18 < w.im := fun k hk => by
+  have hyk : ∀ k ∈ K, 2 * t k + 18 < w.im := fun k hk => by
     have hle := Finset.single_le_sum hsum_pos hk
     linarith
-  have hfact := norm_patternSeries_le_prod_of_prime_sum I hf
+  have hfact := norm_patternSeries_le_prod_of_prime_sum K hf
     (fun k hk p _ => abs_phasePattern_le (ha k hk) (t k) (φ k) p)
-    (fun p hp => multiPhasePattern_prime_eq_sum_phasePattern I a t φ hp) hw
-  have hprod_pow : ∏ _k ∈ I, Real.log w.im ^ 9 = Real.log w.im ^ N := by
+    (fun p hp => multiPhasePattern_prime_eq_sum_phasePattern K a t φ hp) hw
+  have hprod_pow : ∏ _k ∈ K, Real.log w.im ^ 9 = Real.log w.im ^ N := by
     rw [Finset.prod_const, ← pow_mul, mul_comm]
-  calc ‖∑' n : ℕ, (multiPhasePattern I a t φ n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖
-      ≤ Real.exp primeSquareMass * ∏ k ∈ I,
+  calc ‖∑' n : ℕ, (multiPhasePattern K a t φ n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖
+      ≤ Real.exp primeSquareMass * ∏ k ∈ K,
           (Real.exp primeSquareMass *
             ‖∑' n : ℕ, (phasePattern (a k) (t k) (φ k) n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖) := hfact
-    _ ≤ Real.exp primeSquareMass * ∏ k ∈ I,
+    _ ≤ Real.exp primeSquareMass * ∏ k ∈ K,
           (Real.exp primeSquareMass * (Ck k * Real.log w.im ^ 9)) := by
         refine mul_le_mul_of_nonneg_left (Finset.prod_le_prod (fun k _ => by positivity)
           fun k hk => mul_le_mul_of_nonneg_left
             ((hCk k hk).2 w hw hw2 (hyk k hk)) (Real.exp_pos _).le) (Real.exp_pos _).le
-    _ = K * ∏ _k ∈ I, Real.log w.im ^ 9 := by
-        simp only [K]
-        rw [← Finset.prod_mul_distrib]
-        ring_nf
-    _ = K * Real.log w.im ^ N := by rw [hprod_pow]
-    _ ≤ K * ((4 * ((N : ℝ) + 1)) ^ N * w.im ^ (1 / 4 : ℝ)) :=
-        mul_le_mul_of_nonneg_left (log_pow_le_rpow_quarter hy1 N) hK0
-    _ = K * (4 * ((N : ℝ) + 1)) ^ N * w.im ^ (1 / 4 : ℝ) := by ring
+    _ = C₀ * ∏ _k ∈ K, Real.log w.im ^ 9 := by
+        simp only [C₀, ← mul_assoc]
+        rw [Finset.prod_mul_distrib, ← mul_assoc]
+    _ = C₀ * Real.log w.im ^ N := by rw [hprod_pow]
+    _ ≤ C₀ * ((4 * ((N : ℝ) + 1)) ^ N * w.im ^ (1 / 4 : ℝ)) :=
+        mul_le_mul_of_nonneg_left (log_pow_le_rpow_quarter hy1 N) hC₀0
+    _ = C₀ * (4 * ((N : ℝ) + 1)) ^ N * w.im ^ (1 / 4 : ℝ) := by ring
 
 /-- **Multi-frequency payment below full real amplitude.** For pairwise distinct positive
 frequencies `t_k > 0` (`k ∈ I`) with `|a_k| ≤ 1`, `|f(p)| ≤ 1`, and `a_k cos φ_k < 1` for every
@@ -1044,13 +1043,13 @@ theorem exists_primeDirichletSeries_phasePattern_re_ge_of_ne {a t₀ φ t₁ : �
   have hwne : w.im ≠ t₀ := fun h => by rw [h, sub_self, abs_zero] at hdist; linarith
   have hF := hsmall w hw1 hw2 hwy0 hwyT hwne
   have hpow : |w.im - t₀| ^ (-b) ≤ δ ^ (-b) :=
-    Real.rpow_le_rpow_of_nonpos hδ hdist (by simp only [b]; positivity)
+    Real.rpow_le_rpow_of_nonpos hδ hdist (neg_nonpos.mpr (by simp only [b]; positivity))
   have hFM : ‖∑' n : ℕ, (phasePattern (-a) t₀ φ n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤ M := by
-    have := hF.trans (mul_le_mul_of_nonneg_left (add_le_add_right hpow 1) hA0)
+    have := hF.trans (mul_le_mul_of_nonneg_left (add_le_add hpow le_rfl) hA0)
     simp only [M]; linarith
   have hP := (norm_patternSeries_bounds_of_primeDirichletSeries
     (fun p _ => abs_phasePattern_le hna t₀ φ p) hw1).1
-  have hlog : Real.exp ((primeDirichletSeries (phasePattern (-a) t₀ φ) w).re - primeSquareMass) ≤
+  have hlog : Real.exp (-primeSquareMass + (primeDirichletSeries (phasePattern (-a) t₀ φ) w).re) ≤
       Real.exp (Real.log M) := by
     rw [Real.exp_log hM0]
     exact hP.trans hFM
@@ -1113,15 +1112,15 @@ theorem exists_primeDirichletSeries_phasePattern_re_ge_log_of_eq_one {a t₀ φ 
   have hZp := hζp (w + (t₀ : ℂ) * I) (by rw [hwp]; linarith)
   have hprod : cq / 2 * (u + τ)⁻¹ ≤
       ‖riemannZeta (w - (t₀ : ℂ) * I)‖ * ‖riemannZeta (w + (t₀ : ℂ) * I)‖ := by
-    calc cq / 2 * (u + τ)⁻¹ = 1 / (2 * (u + τ)) * cq := by ring
+    calc cq / 2 * (u + τ)⁻¹ = 1 / (2 * (u + τ)) * cq := by field_simp
       _ ≤ _ := mul_le_mul hZm hZp.le (by positivity) (norm_nonneg _)
   have hosc := (norm_oscSeries_le_ge (a := 1) (by norm_num) t₀ hwre).2
   have hP := (norm_patternSeries_bounds_of_primeDirichletSeries
-    (fun p _ => abs_oscPattern_le (by norm_num) t₀ p) hwre).2
+    (fun p _ => abs_oscPattern_le (a := 1) (by norm_num) t₀ p) hwre).2
   have hpos_lhs : 0 < cq / 2 * (u + τ)⁻¹ := by positivity
   have hexp_le : Real.exp (-(2 * primeSquareMass) + 1 / 2 * Real.log (cq / 2) +
       1 / 2 * Real.log ((u + τ)⁻¹)) ≤
-        Real.exp ((primeDirichletSeries (oscPattern 1 t₀) w).re + primeSquareMass) := by
+        Real.exp (primeSquareMass + (primeDirichletSeries (oscPattern 1 t₀) w).re) := by
     have h1 : Real.exp (-(2 * primeSquareMass) + 1 / 2 * Real.log (cq / 2) +
         1 / 2 * Real.log ((u + τ)⁻¹)) =
           Real.exp (-(2 * primeSquareMass)) * (cq / 2 * (u + τ)⁻¹) ^ (1 / 2 : ℝ) := by
@@ -1135,26 +1134,26 @@ theorem exists_primeDirichletSeries_phasePattern_re_ge_log_of_eq_one {a t₀ φ 
   linarith
 
 /-- **A resonant mode at a nonzero critical value leaves the multi-frequency weight unpaid.** -/
-theorem not_receiverBounded_multiPhaseWeight_of_eq_one {ι : Type*} (I : Finset ι)
-    {a t φ : ι → ℝ} (hf : ∀ p : ℕ, p.Prime → |multiPhasePattern I a t φ p| ≤ 1)
-    (ha : ∀ k ∈ I, |a k| ≤ 1) (ht : ∀ k ∈ I, 0 < t k) (hinj : Set.InjOn t (I : Set ι))
-    {k₀ : ι} (hk₀ : k₀ ∈ I) (h1 : a k₀ * Real.cos (φ k₀) = 1)
+theorem not_receiverBounded_multiPhaseWeight_of_eq_one {ι : Type*} (K : Finset ι)
+    {a t φ : ι → ℝ} (hf : ∀ p : ℕ, p.Prime → |multiPhasePattern K a t φ p| ≤ 1)
+    (ha : ∀ k ∈ K, |a k| ≤ 1) (ht : ∀ k ∈ K, 0 < t k) (hinj : Set.InjOn t (K : Set ι))
+    {k₀ : ι} (hk₀ : k₀ ∈ K) (h1 : a k₀ * Real.cos (φ k₀) = 1)
     (hz : riemannZeta (1 / 2 + (t k₀ : ℂ) * I) ≠ 0) :
-    ¬ ReceiverBounded (multiPhaseWeight I a t φ) := by
+    ¬ ReceiverBounded (multiPhaseWeight K a t φ) := by
   classical
   obtain ⟨r₀, B₀, hr₀, h0⟩ :=
     exists_primeDirichletSeries_phasePattern_re_ge_log_of_eq_one (ha k₀ hk₀) h1 (ht k₀ hk₀)
-  set J : Finset ι := I.erase k₀
+  set J : Finset ι := K.erase k₀
   have hJ : ∀ k ∈ J, ∃ r B : ℝ, 0 < r ∧ ∀ u τ : ℝ, 0 < u → u ≤ r → 0 ≤ τ → τ ≤ r →
       -B ≤ (primeDirichletSeries (phasePattern (a k) (t k) (φ k))
         (((1 + u : ℝ) : ℂ) + ((t k₀ + τ : ℝ) : ℂ) * I)).re := by
     intro k hk
-    have hkI : k ∈ I := Finset.mem_of_mem_erase hk
+    have hkK : k ∈ K := Finset.mem_of_mem_erase hk
     have hkne : k ≠ k₀ := Finset.ne_of_mem_erase hk
     have htne : t k ≠ t k₀ := fun h =>
-      hkne (hinj (Finset.mem_coe.mpr hkI) (Finset.mem_coe.mpr hk₀) h)
+      hkne (hinj (Finset.mem_coe.mpr hkK) (Finset.mem_coe.mpr hk₀) h)
     obtain ⟨r, B, hr, hB⟩ := exists_primeDirichletSeries_phasePattern_re_ge_of_ne
-      (ha k hkI) (ht k hkI) (ht k₀ hk₀) htne
+      (ha k hkK) (ht k hkK) (ht k₀ hk₀) htne
     exact ⟨r, |B|, hr, fun u τ hu hur hτ hτr =>
       (neg_le_neg (le_abs_self B)).trans (hB u τ hu hur hτ hτr)⟩
   -- combine `r` and `B` across `J` by finite induction
@@ -1176,62 +1175,62 @@ theorem not_receiverBounded_multiPhaseWeight_of_eq_one {ι : Type*} (I : Finset 
       linarith
   obtain ⟨rJ, BJ, hrJ, hBJ⟩ := hJ_sum
   refine not_receiverBounded_pattern_half_of_primeDirichletSeries_re_ge hf hz
-    (r := min r₀ rJ) (B := B₀ + BJ) (lt_min hr₀ hrJ) fun u τ hu hur hτ hτr => ?_
+    (r₁ := min r₀ rJ) (B := B₀ + BJ) (lt_min hr₀ hrJ) fun u τ hu hur hτ hτr => ?_
   set w : ℂ := ((1 + u : ℝ) : ℂ) + ((t k₀ + τ : ℝ) : ℂ) * I
   have hwre : 1 < w.re := by simp [w]; linarith
-  have hsum := primeDirichletSeries_eq_sum I
+  have hsum := primeDirichletSeries_eq_sum K
     (fun k hk p _ => abs_phasePattern_le (ha k hk) (t k) (φ k) p)
-    (fun p hp => multiPhasePattern_prime_eq_sum_phasePattern I a t φ hp) hwre
+    (fun p hp => multiPhasePattern_prime_eq_sum_phasePattern K a t φ hp) hwre
   rw [hsum, Complex.re_sum, ← Finset.insert_erase hk₀,
-    Finset.sum_insert (Finset.notMem_erase k₀ I)]
+    Finset.sum_insert (Finset.notMem_erase k₀ K)]
   have h_main := h0 u τ hu (hur.trans (min_le_left _ _)) hτ (hτr.trans (min_le_left _ _))
   have h_rest := hBJ u τ hu (hur.trans (min_le_right _ _)) hτ (hτr.trans (min_le_right _ _))
   linarith
 
-/-- Under the amplitude budget `∑_{k ∈ I} |a_k| ≤ 1`, if `a_{k₀} cos φ_{k₀} ≥ 1` at some `k₀ ∈ I`,
+/-- Under the amplitude budget `∑_{k ∈ K} |a_k| ≤ 1`, if `a_{k₀} cos φ_{k₀} ≥ 1` at some `k₀ ∈ K`,
 then `a_{k₀} cos φ_{k₀} = 1`, `|a_{k₀}| = 1`, and `a_k = 0` for all `k ≠ k₀`, so the multi-frequency
 weight reduces to `oscWeight 1 (t k₀)`. -/
-theorem multiPhaseWeight_eq_oscWeight_one_of_sum_abs_le_one {ι : Type*} {I : Finset ι}
-    {a : ι → ℝ} (ha : ∑ k ∈ I, |a k| ≤ 1) (t φ : ι → ℝ) {k₀ : ι} (hk₀ : k₀ ∈ I)
+theorem multiPhaseWeight_eq_oscWeight_one_of_sum_abs_le_one {ι : Type*} {K : Finset ι}
+    {a : ι → ℝ} (ha : ∑ k ∈ K, |a k| ≤ 1) (t φ : ι → ℝ) {k₀ : ι} (hk₀ : k₀ ∈ K)
     (hge : 1 ≤ a k₀ * Real.cos (φ k₀)) :
-    a k₀ * Real.cos (φ k₀) = 1 ∧ multiPhaseWeight I a t φ = oscWeight 1 (t k₀) := by
+    a k₀ * Real.cos (φ k₀) = 1 ∧ multiPhaseWeight K a t φ = oscWeight 1 (t k₀) := by
   classical
   have hcos : a k₀ * Real.cos (φ k₀) ≤ |a k₀| :=
     (le_abs_self _).trans (by
       rw [abs_mul]; exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _))
-  have hsplit : |a k₀| + ∑ k ∈ I.erase k₀, |a k| = ∑ k ∈ I, |a k| := by
-    rw [← Finset.sum_insert (Finset.notMem_erase k₀ I), Finset.insert_erase hk₀]
-  have hrest_nonneg : 0 ≤ ∑ k ∈ I.erase k₀, |a k| := Finset.sum_nonneg fun k _ => abs_nonneg _
+  have hsplit : |a k₀| + ∑ k ∈ K.erase k₀, |a k| = ∑ k ∈ K, |a k| :=
+    Finset.add_sum_erase _ (fun k => |a k|) hk₀
+  have hrest_nonneg : 0 ≤ ∑ k ∈ K.erase k₀, |a k| := Finset.sum_nonneg fun k _ => abs_nonneg _
   have h1 : a k₀ * Real.cos (φ k₀) = 1 := by linarith
   have hak₀ : |a k₀| ≤ 1 := by linarith
-  have hrest0 : ∑ k ∈ I.erase k₀, |a k| = 0 := by linarith
-  have hak_zero : ∀ k ∈ I.erase k₀, a k = 0 := fun k hk => by
+  have hrest0 : ∑ k ∈ K.erase k₀, |a k| = 0 := by linarith
+  have hak_zero : ∀ k ∈ K.erase k₀, a k = 0 := fun k hk => by
     have hle := Finset.single_le_sum (fun j _ => abs_nonneg (a j)) hk
     exact abs_eq_zero.mp (le_antisymm (hrest0 ▸ hle) (abs_nonneg _))
   refine ⟨h1, ?_⟩
-  have hpat : multiPhasePattern I a t φ = phasePattern (a k₀) (t k₀) (φ k₀) := by
+  have hpat : multiPhasePattern K a t φ = phasePattern (a k₀) (t k₀) (φ k₀) := by
     unfold multiPhasePattern phasePattern
     congr 1; funext p
-    rw [← Finset.insert_erase hk₀, Finset.sum_insert (Finset.notMem_erase k₀ I),
+    rw [← Finset.insert_erase hk₀, Finset.sum_insert (Finset.notMem_erase k₀ K),
       Finset.sum_eq_zero (fun k hk => by rw [hak_zero k hk, zero_mul]), add_zero]
   funext d
   simp only [multiPhaseWeight, oscWeight, hpat, phasePattern_eq_oscPattern_one hak₀ h1 (t k₀)]
 
 /-- **The multi-frequency phase law.** For pairwise distinct positive frequencies `t_k > 0`
-(`k ∈ I`) and amplitudes satisfying `∑_{k ∈ I} |a_k| ≤ 1`, the half-damped weight
-`multiPhaseWeight I a t φ` is paid if and only if for every `k ∈ I`,
+(`k ∈ K`) and amplitudes satisfying `∑_{k ∈ K} |a_k| ≤ 1`, the half-damped weight
+`multiPhaseWeight K a t φ` is paid if and only if for every `k ∈ K`,
 `a_k cos φ_k < 1` or `ζ(1/2 + i t_k) = 0`. -/
-theorem receiverBounded_multiPhaseWeight_iff {ι : Type*} (I : Finset ι) {a t φ : ι → ℝ}
-    (ha : ∑ k ∈ I, |a k| ≤ 1) (ht : ∀ k ∈ I, 0 < t k) (hinj : Set.InjOn t (I : Set ι)) :
-    ReceiverBounded (multiPhaseWeight I a t φ) ↔
-      ∀ k ∈ I, a k * Real.cos (φ k) < 1 ∨ riemannZeta (1 / 2 + (t k : ℂ) * I) = 0 := by
-  have hf : ∀ p : ℕ, p.Prime → |multiPhasePattern I a t φ p| ≤ 1 :=
+theorem receiverBounded_multiPhaseWeight_iff {ι : Type*} (K : Finset ι) {a t φ : ι → ℝ}
+    (ha : ∑ k ∈ K, |a k| ≤ 1) (ht : ∀ k ∈ K, 0 < t k) (hinj : Set.InjOn t (K : Set ι)) :
+    ReceiverBounded (multiPhaseWeight K a t φ) ↔
+      ∀ k ∈ K, a k * Real.cos (φ k) < 1 ∨ riemannZeta (1 / 2 + (t k : ℂ) * I) = 0 := by
+  have hf : ∀ p : ℕ, p.Prime → |multiPhasePattern K a t φ p| ≤ 1 :=
     fun p _ => abs_multiPhasePattern_le_of_sum_abs_le_one ha t φ p
-  have hak : ∀ k ∈ I, |a k| ≤ 1 := fun k hk =>
+  have hak : ∀ k ∈ K, |a k| ≤ 1 := fun k hk =>
     (Finset.single_le_sum (fun j _ => abs_nonneg (a j)) hk).trans ha
-  by_cases h_all : ∀ k ∈ I, a k * Real.cos (φ k) < 1
+  by_cases h_all : ∀ k ∈ K, a k * Real.cos (φ k) < 1
   · exact ⟨fun _ k hk => Or.inl (h_all k hk),
-      fun _ => receiverBounded_multiPhaseWeight_of_forall_lt_one I hf hak ht hinj h_all⟩
+      fun _ => receiverBounded_multiPhaseWeight_of_forall_lt_one K hf hak ht hinj h_all⟩
   push Not at h_all
   obtain ⟨k₀, hk₀, hge⟩ := h_all
   obtain ⟨h1, hw⟩ := multiPhaseWeight_eq_oscWeight_one_of_sum_abs_le_one ha t φ hk₀ hge
@@ -1250,9 +1249,9 @@ theorem receiverBounded_multiPhaseWeight_iff {ι : Type*} (I : Finset ι) {a t �
         have hcos : a k * Real.cos (φ k) ≤ |a k| :=
           (le_abs_self _).trans (by
             rw [abs_mul]; exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _))
-        have hpair : |a k₀| + |a k| ≤ ∑ j ∈ I, |a j| := by
+        have hpair : |a k₀| + |a k| ≤ ∑ j ∈ K, |a j| := by
           classical
-          have hsub : ({k₀, k} : Finset ι) ⊆ I := by
+          have hsub : ({k₀, k} : Finset ι) ⊆ K := by
             intro x hx
             rcases Finset.mem_insert.mp hx with rfl | hx
             · exact hk₀
@@ -1385,8 +1384,9 @@ theorem exists_abs_primeDirichletSeries_phasePattern_re_sub_log_le {a t₀ φ : 
       by linarith [le_abs_self (Real.log K), le_max_right (|Real.log m|) (|Real.log K|)]⟩
   have hdp_low : 2 * t₀ ≤ ‖w + t₀ * I - 1‖ := by
     have := Complex.abs_im_le_norm (w + t₀ * I - 1)
-    rw [hwp] at this
-    simpa [abs_of_pos (by linarith : 0 < 2 * t₀)] using this
+    have him : (w + t₀ * I - 1).im = 2 * t₀ := by simp [w]; ring
+    rw [him, abs_of_pos (by linarith : 0 < 2 * t₀)] at this
+    exact this
   have hdp_up : ‖w + t₀ * I - 1‖ ≤ 1 + H := by
     calc ‖w + t₀ * I - 1‖ ≤ |(w + t₀ * I - 1).re| + |(w + t₀ * I - 1).im| :=
           Complex.norm_le_abs_re_add_abs_im _
@@ -1471,27 +1471,27 @@ theorem exists_abs_primeDirichletSeries_phasePattern_re_le_of_ne {a t₀ φ t₁
     by linarith [le_abs_self B₂, le_max_right (|B₁|) (|B₂|)]⟩
 
 /-- **Below half damping, a paid multi-frequency pattern has `a_k cos φ_k = 0` at every mode.** -/
-theorem cos_coeff_eq_zero_of_receiverBounded_multiPhase_damped {ι : Type*} (I : Finset ι)
-    {a t φ : ι → ℝ} (hf : ∀ p : ℕ, p.Prime → |multiPhasePattern I a t φ p| ≤ 1)
-    (ha : ∀ k ∈ I, |a k| ≤ 1) (ht : ∀ k ∈ I, 0 < t k) (hinj : Set.InjOn t (I : Set ι))
+theorem cos_coeff_eq_zero_of_receiverBounded_multiPhase_damped {ι : Type*} (K : Finset ι)
+    {a t φ : ι → ℝ} (hf : ∀ p : ℕ, p.Prime → |multiPhasePattern K a t φ p| ≤ 1)
+    (ha : ∀ k ∈ K, |a k| ≤ 1) (ht : ∀ k ∈ K, 0 < t k) (hinj : Set.InjOn t (K : Set ι))
     {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 1 / 2)
-    (hR : ReceiverBounded (dampedSignWeight (multiPhasePattern I a t φ) ε)) :
-    ∀ k ∈ I, a k * Real.cos (φ k) = 0 := by
+    (hR : ReceiverBounded (dampedSignWeight (multiPhasePattern K a t φ) ε)) :
+    ∀ k ∈ K, a k * Real.cos (φ k) = 0 := by
   classical
   intro k₀ hk₀
   obtain ⟨B₀, hB₀⟩ :=
     exists_abs_primeDirichletSeries_phasePattern_re_sub_log_le (φ := φ k₀) (ha k₀ hk₀) (ht k₀ hk₀)
-  set J : Finset ι := I.erase k₀
+  set J : Finset ι := K.erase k₀
   have hJ : ∀ k ∈ J, ∃ r B : ℝ, 0 < r ∧ ∀ u : ℝ, 0 < u → u ≤ r →
       |(primeDirichletSeries (phasePattern (a k) (t k) (φ k))
         (((1 + u : ℝ) : ℂ) + (t k₀ : ℂ) * I)).re| ≤ B := by
     intro k hk
-    have hkI : k ∈ I := Finset.mem_of_mem_erase hk
+    have hkK : k ∈ K := Finset.mem_of_mem_erase hk
     have hkne : k ≠ k₀ := Finset.ne_of_mem_erase hk
     have htne : t k ≠ t k₀ := fun h =>
-      hkne (hinj (Finset.mem_coe.mpr hkI) (Finset.mem_coe.mpr hk₀) h)
+      hkne (hinj (Finset.mem_coe.mpr hkK) (Finset.mem_coe.mpr hk₀) h)
     exact exists_abs_primeDirichletSeries_phasePattern_re_le_of_ne
-      (ha k hkI) (ht k hkI) (ht k₀ hk₀) htne
+      (ha k hkK) (ht k hkK) (ht k₀ hk₀) htne
   have hJ_sum : ∃ rJ BJ : ℝ, 0 < rJ ∧ ∀ u : ℝ, 0 < u → u ≤ rJ →
       |∑ k ∈ J, (primeDirichletSeries (phasePattern (a k) (t k) (φ k))
         (((1 + u : ℝ) : ℂ) + (t k₀ : ℂ) * I)).re| ≤ BJ := by
@@ -1516,11 +1516,11 @@ theorem cos_coeff_eq_zero_of_receiverBounded_multiPhase_damped {ι : Type*} (I :
     (fun u hu hur => by
       set w : ℂ := ((1 + u : ℝ) : ℂ) + (t k₀ : ℂ) * I
       have hwre : 1 < w.re := by simp [w]; linarith
-      have hsum := primeDirichletSeries_eq_sum I
+      have hsum := primeDirichletSeries_eq_sum K
         (fun k hk p _ => abs_phasePattern_le (ha k hk) (t k) (φ k) p)
-        (fun p hp => multiPhasePattern_prime_eq_sum_phasePattern I a t φ hp) hwre
+        (fun p hp => multiPhasePattern_prime_eq_sum_phasePattern K a t φ hp) hwre
       rw [hsum, Complex.re_sum, ← Finset.insert_erase hk₀,
-        Finset.sum_insert (Finset.notMem_erase k₀ I)]
+        Finset.sum_insert (Finset.notMem_erase k₀ K)]
       have h_main := hB₀ u hu (hur.trans (min_le_right _ _)).le
       have h_rest := hBJ u hu (hur.trans (min_le_left _ _)).le
       calc |(primeDirichletSeries (phasePattern (a k₀) (t k₀) (φ k₀)) w).re +
@@ -1660,11 +1660,12 @@ theorem criticalWiener_mul_patternMoebiusAF {f' : ArithmeticFunction ℝ} (hf' :
         _ ≤ 1 / 2 := by gcongr
     have hx34 : x ≤ 3 / 4 := by nlinarith
     have hxlt : x < 1 := by linarith
-    have hM1 : M (p ^ 1) = |f' p - f p| * x := by
-      simp only [M, ArithmeticFunction.coe_mk]
+    have hM1 : M p = |f' p - f p| * x := by
       have := mul_patternMoebiusAF_apply_prime_pow f' f hp 0
-      rw [zero_add, pow_zero, hf'.map_one, mul_one] at this
-      rw [this, hx 1, pow_one]
+      rw [zero_add, pow_one, pow_zero, hf'.map_one, mul_one] at this
+      have hx1 := hx 1
+      rw [pow_one, pow_one] at hx1
+      simp only [M, ArithmeticFunction.coe_mk, g, this, hx1]
     have hMk : ∀ m : ℕ, 1 ≤ m → M (p ^ (m + 1)) ≤ 2 * x ^ (m + 1) := fun m _ => by
       simp only [M, ArithmeticFunction.coe_mk]
       rw [mul_patternMoebiusAF_apply_prime_pow f' f hp m, hx (m + 1)]
@@ -1683,7 +1684,7 @@ theorem criticalWiener_mul_patternMoebiusAF {f' : ArithmeticFunction ℝ} (hf' :
     have hbound : ∀ k : ℕ, M (p ^ k) ≤ μk k := fun k => by
       rcases k with _ | _ | m
       · simp [M, μk, hg.map_one]
-      · simp [μk, hM1]
+      · simp only [pow_one, hM1, μk, if_neg (by omega : 1 ≠ 0), if_pos rfl]; linarith
       · have hm := hMk (m + 1) (by omega)
         simp only [μk, if_neg (by omega : m + 2 ≠ 0), if_neg (by omega : m + 2 ≠ 1)]
         linarith
@@ -1717,7 +1718,8 @@ theorem criticalWiener_mul_patternMoebiusAF {f' : ArithmeticFunction ℝ} (hf' :
   refine hsum.congr fun n => ?_
   simp only [M, ArithmeticFunction.coe_mk, dampedSignWeight]
   rcases Nat.eq_zero_or_pos n with rfl | hn
-  · simp [Real.zero_rpow (show -σ ≠ 0 by linarith), Real.zero_rpow (show -ε ≠ 0 by linarith)]
+  · simp [Real.zero_rpow (show -σ ≠ 0 by simp only [σ]; linarith),
+      Real.zero_rpow (show -ε ≠ 0 by linarith)]
   · have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
     rw [abs_mul, abs_of_nonneg (Real.rpow_nonneg hn0.le _), mul_assoc, ← Real.rpow_add hn0]
     congr 2; simp only [σ]; ring
@@ -1756,17 +1758,19 @@ theorem receiverBounded_iff_of_summable_prime_diff {f f' : ℕ →*₀ ℝ}
 /-- **Prime-perturbation transfer of uniform horizon-row boundedness.** Under the same prime
 perturbation hypothesis, a uniform horizon-row bound transfers from `f(d) d^{-ε}` to
 `f'(d) d^{-ε}`. -/
-theorem exists_norm_horizonRow_le_of_summable_prime_diff {f' : ArithmeticFunction ℝ}
+theorem horizonRows_bounded_of_summable_prime_diff {f' : ArithmeticFunction ℝ}
     (hf' : f'.IsMultiplicative) (hbd : ∀ n, |f' n| ≤ 1) {f : ℕ →*₀ ℝ}
     (hf : ∀ p : ℕ, p.Prime → |f p| ≤ 1) {ε : ℝ} (hε : 0 < ε)
     (hdiff : Summable (fun p : ℕ => if p.Prime then |f' p - f p| * (p : ℝ) ^ (-(1 / 2 + ε)) else 0))
-    {C : ℝ} (hrow : ∀ x : ℕ, ‖horizonRow (dampedSignWeight f ε) x‖ ≤ C) :
-    ∃ C' : ℝ, ∀ x : ℕ, ‖horizonRow (dampedSignWeight ⇑f' ε) x‖ ≤ C' := by
+    (hrow : ∃ E : ℝ, ∀ N T : ℕ,
+      weightPronicEnergy (horizonRow (dampedSignWeight f ε) N)
+        (horizonRowMean (dampedSignWeight f ε) N) T ≤ E) :
+    ∃ E' : ℝ, ∀ N T : ℕ,
+      weightPronicEnergy (horizonRow (dampedSignWeight ⇑f' ε) N)
+        (horizonRowMean (dampedSignWeight ⇑f' ε) N) T ≤ E' := by
   rw [dampedSignWeight_eq_dirichletConv_patternMoebiusAF f' f ε]
-  have hW := criticalWiener_mul_patternMoebiusAF hf' hbd hf hε hdiff
-  have hg0 : dampedSignWeight ⇑(f' * patternMoebiusAF f) ε 0 = 0 := by
-    simp [dampedSignWeight]
-  exact exists_norm_horizonRow_le_of_criticalWiener_conv hg0 hW hrow
+  exact horizonRows_bounded_dirichletConv (criticalWiener_mul_patternMoebiusAF hf' hbd hf hε hdiff)
+    (summable_abs_dampedSign_div_of_abs_le (abs_patternHom_le_one f hf) hε) hrow
 
 /-- **Prime-varying amplitude phase law at half damping.** Let `a(p)` be a prime-varying amplitude
 with `|a(p)| ≤ 1`, `|a₀| ≤ 1`, `t₀ ≠ 0`, and `∑_p |a(p) − a₀| p^{-1} < ∞`. Then the half-damped
@@ -1796,6 +1800,91 @@ theorem receiverBounded_primeVaryingPhase_half_iff {a : ℕ → ℝ} {a₀ t₀ 
   rw [receiverBounded_iff_of_summable_prime_diff hf hf' (by norm_num) hdiff_pat,
     show dampedSignWeight (phasePattern a₀ t₀ φ) (1 / 2) = phaseWeight a₀ t₀ φ from rfl,
     receiverBounded_phaseWeight_iff ha₀ ht₀]
+
+/-- **Multi-frequency prime-varying amplitude phase law at half damping.** Let `a_k(p)` (`k ∈ K`) be
+prime-varying amplitudes with `∑_{k ∈ K} |a_k(p)| ≤ 1` at all primes `p`, `∑_{k ∈ K} |a₀_k| ≤ 1`,
+pairwise distinct positive frequencies `t_k > 0`, and `∑_p |a_k(p) − a₀_k| p^{-1} < ∞` for each
+`k ∈ K`. Then the half-damped weight of `f'(p) = ∑_{k ∈ K} a_k(p) cos(t_k log p + φ_k)` is paid iff
+`∀ k ∈ K, a₀_k cos φ_k < 1 ∨ ζ(1/2 + i t_k) = 0`. -/
+theorem receiverBounded_primeVaryingMultiPhase_half_iff {ι : Type*} (K : Finset ι)
+    {a : ι → ℕ → ℝ} {a₀ t φ : ι → ℝ}
+    (ha : ∀ p : ℕ, p.Prime → ∑ k ∈ K, |a k p| ≤ 1)
+    (ha₀ : ∑ k ∈ K, |a₀ k| ≤ 1) (ht : ∀ k ∈ K, 0 < t k) (hinj : Set.InjOn t (K : Set ι))
+    (hdiff : ∀ k ∈ K,
+      Summable (fun p : ℕ => if p.Prime then |a k p - a₀ k| * (p : ℝ) ^ (-1 : ℝ) else 0)) :
+    ReceiverBounded (dampedSignWeight
+      (primeValueHom fun p => ∑ k ∈ K, a k p * Real.cos (t k * Real.log p + φ k)) (1 / 2)) ↔
+        ∀ k ∈ K, a₀ k * Real.cos (φ k) < 1 ∨ riemannZeta (1 / 2 + (t k : ℂ) * I) = 0 := by
+  set f' : ℕ →*₀ ℝ := primeValueHom fun p => ∑ k ∈ K, a k p * Real.cos (t k * Real.log p + φ k)
+  have hf' : ∀ p : ℕ, p.Prime → |f' p| ≤ 1 := fun p hp => by
+    rw [primeValueHom_prime _ hp]
+    calc |∑ k ∈ K, a k p * Real.cos (t k * Real.log p + φ k)|
+        ≤ ∑ k ∈ K, |a k p * Real.cos (t k * Real.log p + φ k)| := abs_sum_le_sum_abs _ _
+      _ ≤ ∑ k ∈ K, |a k p| := Finset.sum_le_sum fun k _ => by
+          rw [abs_mul]; exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _)
+      _ ≤ 1 := ha p hp
+  have hf : ∀ p : ℕ, p.Prime → |multiPhasePattern K a₀ t φ p| ≤ 1 :=
+    fun p _ => abs_multiPhasePattern_le_of_sum_abs_le_one ha₀ t φ p
+  have hsum_diff : Summable (fun p : ℕ => ∑ k ∈ K,
+      (if p.Prime then |a k p - a₀ k| * (p : ℝ) ^ (-1 : ℝ) else 0)) :=
+    summable_sum fun k hk => hdiff k hk
+  have hdiff_pat : Summable (fun p : ℕ =>
+      if p.Prime then |f' p - multiPhasePattern K a₀ t φ p| * (p : ℝ) ^ (-(1 / 2 + (1 / 2 : ℝ)))
+      else 0) := by
+    refine hsum_diff.of_nonneg_of_le (fun p => by split_ifs <;> positivity) fun p => ?_
+    split_ifs with hp
+    · rw [show -(1 / 2 + (1 / 2 : ℝ)) = (-1 : ℝ) by norm_num, primeValueHom_prime _ hp,
+        multiPhasePattern_prime K a₀ t φ hp, ← Finset.sum_sub_distrib, ← Finset.sum_mul]
+      refine mul_le_mul_of_nonneg_right ?_ (Real.rpow_nonneg (Nat.cast_nonneg p) _)
+      refine (abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k _ => ?_)
+      rw [← sub_mul, abs_mul]
+      exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _)
+    · simp
+  rw [receiverBounded_iff_of_summable_prime_diff hf hf' (by norm_num) hdiff_pat,
+    show dampedSignWeight (multiPhasePattern K a₀ t φ) (1 / 2) = multiPhaseWeight K a₀ t φ from rfl,
+    receiverBounded_multiPhaseWeight_iff K ha₀ ht hinj]
+
+/-- **Below half damping, a paid prime-varying multi-frequency pattern has `a₀_k cos φ_k = 0` at
+every mode.** -/
+theorem cos_coeff_eq_zero_of_receiverBounded_primeVaryingMultiPhase_damped {ι : Type*}
+    (K : Finset ι) {a : ι → ℕ → ℝ} {a₀ t φ : ι → ℝ}
+    (ha : ∀ p : ℕ, p.Prime → ∑ k ∈ K, |a k p| ≤ 1)
+    (ha₀ : ∑ k ∈ K, |a₀ k| ≤ 1) (ht : ∀ k ∈ K, 0 < t k) (hinj : Set.InjOn t (K : Set ι))
+    {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 1 / 2)
+    (hdiff : ∀ k ∈ K,
+      Summable (fun p : ℕ => if p.Prime then |a k p - a₀ k| * (p : ℝ) ^ (-(1 / 2 + ε)) else 0))
+    (hR : ReceiverBounded (dampedSignWeight
+      (primeValueHom fun p => ∑ k ∈ K, a k p * Real.cos (t k * Real.log p + φ k)) ε)) :
+    ∀ k ∈ K, a₀ k * Real.cos (φ k) = 0 := by
+  set f' : ℕ →*₀ ℝ := primeValueHom fun p => ∑ k ∈ K, a k p * Real.cos (t k * Real.log p + φ k)
+  have hf' : ∀ p : ℕ, p.Prime → |f' p| ≤ 1 := fun p hp => by
+    rw [primeValueHom_prime _ hp]
+    calc |∑ k ∈ K, a k p * Real.cos (t k * Real.log p + φ k)|
+        ≤ ∑ k ∈ K, |a k p * Real.cos (t k * Real.log p + φ k)| := abs_sum_le_sum_abs _ _
+      _ ≤ ∑ k ∈ K, |a k p| := Finset.sum_le_sum fun k _ => by
+          rw [abs_mul]; exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _)
+      _ ≤ 1 := ha p hp
+  have hf : ∀ p : ℕ, p.Prime → |multiPhasePattern K a₀ t φ p| ≤ 1 :=
+    fun p _ => abs_multiPhasePattern_le_of_sum_abs_le_one ha₀ t φ p
+  have hak₀ : ∀ k ∈ K, |a₀ k| ≤ 1 := fun k hk =>
+    (Finset.single_le_sum (fun j _ => abs_nonneg (a₀ j)) hk).trans ha₀
+  have hsum_diff : Summable (fun p : ℕ => ∑ k ∈ K,
+      (if p.Prime then |a k p - a₀ k| * (p : ℝ) ^ (-(1 / 2 + ε)) else 0)) :=
+    summable_sum fun k hk => hdiff k hk
+  have hdiff_pat : Summable (fun p : ℕ =>
+      if p.Prime then |f' p - multiPhasePattern K a₀ t φ p| * (p : ℝ) ^ (-(1 / 2 + ε))
+      else 0) := by
+    refine hsum_diff.of_nonneg_of_le (fun p => by split_ifs <;> positivity) fun p => ?_
+    split_ifs with hp
+    · rw [primeValueHom_prime _ hp, multiPhasePattern_prime K a₀ t φ hp,
+        ← Finset.sum_sub_distrib, ← Finset.sum_mul]
+      refine mul_le_mul_of_nonneg_right ?_ (Real.rpow_nonneg (Nat.cast_nonneg p) _)
+      refine (abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k _ => ?_)
+      rw [← sub_mul, abs_mul]
+      exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _)
+    · simp
+  have hR₀ := (receiverBounded_iff_of_summable_prime_diff hf hf' hε hdiff_pat).mp hR
+  exact cos_coeff_eq_zero_of_receiverBounded_multiPhase_damped K hf hak₀ ht hinj hε hε2 hR₀
 
 end
 

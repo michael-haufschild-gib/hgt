@@ -219,6 +219,11 @@ survivor).
 - `TheFirstNegativeLagOfACurve`: lag tests read point counts; purity ⟺ lag positivity; Turán-located
   first negative lag (calibration of SRT `zeta_attained_top_first_negative_lag`).
 
+- `TheGenusIsTheApertureOfTheRadical`: `exists_radical_test_iff` (curve radical = P(T_q)(tests), opens at
+  aperture d log q/2; calibration of `InfiniteGenusLaw`).
+
+- `NumericalEquivalenceOnACurveIsTheFrobeniusIdeal`: `radical_iff_eq_frobPolyTest` (radical = P(T_q)·tests).
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated

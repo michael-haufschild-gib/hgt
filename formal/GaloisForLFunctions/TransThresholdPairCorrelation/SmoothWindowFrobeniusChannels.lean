@@ -413,14 +413,15 @@ theorem smoothPair_nuX_le (hF : LocalHypsCoreW cϱ p F) {Ω : ℝ → ℝ} {s₀
   have c00 : smoothPair Φ Ω Zeta23.mu Zeta23.mu
       ≤ IΦ * (∫ τ in s₀..s₁, Zeta23.mu τ ^ 2) + S * M * E / s₀ := by
     have hI2 : Integrable fun τ => Ω τ * Zeta23.mu τ * Zeta23.mu τ :=
-      (integrable_window_mul hΩc hΩS (hμc.mul hμc)).congr (Eventually.of_forall fun τ => by
-        simp only; ring)
+      (integrable_window_mul hΩc hΩS (h := fun τ => Zeta23.mu τ * Zeta23.mu τ)
+        (by fun_prop)).congr (Eventually.of_forall fun τ => by ring)
     have h := abs_smoothPair_sub_le (hIc hμc hμc hvμ) hI2 (hI3 hμc) hΩ0
       (fun τ hτ => by rw [mul_comm IΦ]; exact hcμ τ hτ)
     have hsq : ∫ τ, Ω τ * Zeta23.mu τ * Zeta23.mu τ ≤ ∫ τ in s₀..s₁, Zeta23.mu τ ^ 2 := by
-      have := integral_window_mul_le_interval hs hΩc hΩ1 hΩS (hμc.pow 2) (fun τ => sq_nonneg _)
+      have := integral_window_mul_le_interval hs hΩc hΩ1 hΩS (h := fun τ => Zeta23.mu τ ^ 2)
+        (by fun_prop) (fun τ => sq_nonneg _)
       refine le_of_eq_of_le (integral_congr_ae (Eventually.of_forall fun τ => ?_)) this
-      simp only; ring
+      ring
     have h1 := (abs_le.mp h).2
     have h2 : E / s₀ * ∫ τ, Ω τ * |Zeta23.mu τ| ≤ E / s₀ * (M * S) :=
       mul_le_mul_of_nonneg_left hIabsμ (by positivity)
@@ -458,7 +459,8 @@ theorem smoothPair_nuX_le (hF : LocalHypsCoreW cϱ p F) {Ω : ℝ → ℝ} {s₀
     refine (le_abs_self _).trans ((hcosμ (B := 2 * p.L) fun n => ?_).trans (le_of_eq (by ring)))
     rw [abs_mul, abs_mul, abs_of_nonneg (acoef_nonneg n), abs_of_nonneg (hg0 _),
       show |(-2:ℝ)| = 2 by norm_num]
-    nlinarith [hgL (Real.log n), acoef_nonneg n, hg0 (Real.log n)]
+    have := mul_le_mul_of_nonneg_left (hgL (Real.log n)) (acoef_nonneg n)
+    linarith
   -- (Π, μ)
   have c10 : smoothPair Φ Ω (Zeta23.PiX X) Zeta23.mu ≤ S * (3 * Real.sqrt X / s₀) * (M * IΦ + E / s₀) := by
     have h := (le_abs_self _).trans (abs_smoothPair_le (hI3 hPic) hΩ0 hcμb)
@@ -501,16 +503,22 @@ theorem smoothPair_nuX_le (hF : LocalHypsCoreW cϱ p F) {Ω : ℝ → ℝ} {s₀
             have : |(-2 : ℝ)| = 2 := by norm_num
             rw [this]
             have hC0 := abs_nonneg (primeDirichletCos F.g X τ)
-            nlinarith [mul_le_mul_of_nonneg_left hb (mul_nonneg (hΩ0 τ) hC0)]
-      _ = 2 * (3 * Real.sqrt X / s₀) * ∫ τ, Ω τ * |primeDirichletCos F.g X τ| := integral_const_mul _ _
+            calc Ω τ * |Zeta23.PiX X τ| * (2 * |primeDirichletCos F.g X τ|)
+                = 2 * (Ω τ * |primeDirichletCos F.g X τ|) * |Zeta23.PiX X τ| := by ring
+              _ ≤ 2 * (Ω τ * |primeDirichletCos F.g X τ|) * (3 * Real.sqrt X / s₀) :=
+                  mul_le_mul_of_nonneg_left hb (mul_nonneg zero_le_two (mul_nonneg (hΩ0 τ) hC0))
+              _ = 2 * (3 * Real.sqrt X / s₀) * (Ω τ * |primeDirichletCos F.g X τ|) := by ring
+      _ = 2 * (3 * Real.sqrt X / s₀) * ∫ τ, Ω τ * |primeDirichletCos F.g X τ| :=
+          integral_const_mul (2 * (3 * Real.sqrt X / s₀))
+            (fun τ => Ω τ * |primeDirichletCos F.g X τ|)
       _ ≤ 2 * (3 * Real.sqrt X / s₀) * (Real.sqrt S * Real.sqrt IC) :=
           mul_le_mul_of_nonneg_left hCS_C (by positivity)
   -- (P, μ)
   have c20 : smoothPair Φ Ω (Zeta23.PX X) Zeta23.mu
       ≤ IΦ * ((1 / π) * A * Sh) + (1 / π) * A * S * E / s₀ := by
     have hI2 : Integrable fun τ => Ω τ * Zeta23.PX X τ * Zeta23.mu τ :=
-      (integrable_window_mul hΩc hΩS (hPc.mul hμc)).congr (Eventually.of_forall fun τ => by
-        simp only; ring)
+      (integrable_window_mul hΩc hΩS (h := fun τ => Zeta23.PX X τ * Zeta23.mu τ)
+        (by fun_prop)).congr (Eventually.of_forall fun τ => by ring)
     have h := abs_smoothPair_sub_le (hIc hPc hμc hvμ) hI2 (hI3 hPc) hΩ0
       (fun τ hτ => by rw [mul_comm IΦ]; exact hcμ τ hτ)
     have hPμ : ∫ τ, Ω τ * Zeta23.PX X τ * Zeta23.mu τ
@@ -518,9 +526,11 @@ theorem smoothPair_nuX_le (hF : LocalHypsCoreW cϱ p F) {Ω : ℝ → ℝ} {s₀
             * ∫ τ, Ω τ * Zeta23.mu τ * Real.cos (τ * Real.log n) := by
       rw [← integral_window_mul_cosSum_eq (integrable_window_mul hΩc hΩS hμc)]
       refine integral_congr_ae (Eventually.of_forall fun τ => ?_)
-      simp only
-      rw [PX_eq, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
-      exact Finset.sum_congr rfl fun n _ => by unfold ycoef; ring
+      beta_reduce
+      rw [PX_eq]
+      unfold ycoef
+      simp only [Finset.mul_sum, Finset.sum_mul]
+      exact Finset.sum_congr rfl fun n _ => by ring
     have hb : |∫ τ, Ω τ * Zeta23.PX X τ * Zeta23.mu τ| ≤ (1 / π) * A * Sh := by
       rw [hPμ]
       refine (hcosμ (B := 1 / π) fun n => ?_).trans (le_of_eq (by ring))
@@ -542,6 +552,6 @@ theorem smoothPair_nuX_le (hF : LocalHypsCoreW cϱ p F) {Ω : ℝ → ℝ} {s₀
   have c22 := smoothPair_PX_PX_le hΦe hΦ2 hFT hΩi hs hΩk hΩS hg0 hgL hθ₀ X
   -- assemble
   unfold channelError
-  linarith [c00, c01, c02, c10, c11, c12, c20, c21, c22]
+  linarith only [c00, c01, c02, c10, c11, c12, c20, c21, c22]
 
 end GaloisForLFunctions.TransThresholdPairCorrelation

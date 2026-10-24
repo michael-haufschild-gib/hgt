@@ -345,7 +345,16 @@ them. ACS isolates which of these mechanisms the scaling surface has.
 22. No nonzero compact test has a transform vanishing at all but finitely many simple critical
     zeros (`eq_zero_of_paperFT_vanish`); RH iff Weil's form is positive definite
     (`riemannHypothesis_iff_weil_positive_definite`). The finite-field radical has no exact
-    counterpart among compact tests; near-radicals remain.
+    counterpart among compact tests; near-radicals remain. Over `𝔽_q` the counterpart exists and
+    its aperture is the genus: on the scaling surface of a curve with `d` distinct eigenvalues the
+    Frobenius polynomial acting on the `q`-tower, `P(T_q) g`, has transform `P(e^{iz log q}) ĝ(z)`
+    and lies in the radical (Cayley–Hamilton, `W_frobPolyTest_left`), and a nonzero compact test
+    of aperture `a` with transform vanishing at every zero exists iff `a > d log q/2`
+    (`exists_radical_test_iff`; Poisson along each eigenvalue's period and a Vandermonde count of
+    the samples). Finite genus is a finite radical aperture; `ℚ` has radical aperture `∞`. The
+    radical is exactly the Frobenius ideal: a compact test is numerically trivial iff it is
+    `P(T_q) g` (`radical_iff_eq_frobPolyTest`, by division one factor `T_q − b` at a time with a
+    smooth cutoff), the scaling-surface form of Weil's relation `P(F) ≡ 0` on the Frobenius span.
 
 ### 3.7 Hecke incidence and the successor cell
 
@@ -680,7 +689,7 @@ Weil's argument.
 | `SpanContactLaw`, `TheFrobeniusSpanDefectCountsTheOuterEigenvalues` | contact window; Pontryagin law over `𝔽_q` |
 | `TheScalingSurfaceOfACurve`, `TheFrobeniusSpanIsTheTowerOfTheScalingSurface`, `TheDegreeFiltrationOfACurveIsItsWindowFiltration`, `TheFirstNegativeLagOfACurve` | the scaling surface of a curve; three Hodge index theorems; the span as period quotient; degree filtration = window filtration; lag tests read point counts, purity = lag positivity, Turán-located first negative lag |
 | `HodgeIndexFromEffectivity`, `BezoutEffectivityAndTheBeurlingObstruction`, `DistinctEffectiveCyclesMeetNonnegatively` | effectivity axioms ⟺ Hodge index; Bézout positivity through the collar |
-| `TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`, `InfiniteGenusLaw` | the scaling surface of `ℤ`; signature law and selection of `Λ`; no exact annihilators |
+| `TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`, `InfiniteGenusLaw`, `TheGenusIsTheApertureOfTheRadical`, `NumericalEquivalenceOnACurveIsTheFrobeniusIdeal` | the scaling surface of `ℤ`; signature law and selection of `Λ`; no exact annihilators; over `𝔽_q` the radical is exactly `P(T_q)`(tests) and opens at aperture `d log q/2` |
 | `FiniteConfigurationPontryaginLaw`, `TemperedConfigurationPontryaginLaw`, `TheHodgeDefectCountsTheRightZeros` | the Pontryagin law, finite, tempered and general |
 | `TheReflectionSectorsOfTheHodgeDefect`, `TheDegreeFiltrationOfTheHodgeDefect`, `SchurLendingOddHodgeIndexPastFirstPrime`, `WhatTheFailureOfTheHodgeIndexMeasures` | sectors and degrees; `ζ` below `3/10` and the odd sector through `181/500`; multiplicity and depth invariance; Sobolev floor rate = width |
 | `TheVisibilityDegreeOfAnIsolatedPair`, `TheVisibilityDegreeOfRightZeros`, `HeightUniformVisibilityAndOffLineDensity` | visibility degrees from on-line mass and densities; height-uniform visibility; the clustering alternative |

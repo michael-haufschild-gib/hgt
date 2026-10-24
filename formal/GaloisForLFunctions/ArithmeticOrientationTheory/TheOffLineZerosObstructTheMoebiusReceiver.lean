@@ -29,6 +29,7 @@ one obstruction point per zero.
 -/
 
 open Finset ArithmeticFunction LSeries Complex Filter Topology
+open scoped LSeries.notation ArithmeticFunction.Moebius
 
 namespace GaloisForLFunctions.ArithmeticOrientationTheory
 
@@ -46,45 +47,41 @@ theorem norm_term_cplx (f : ℕ → ℝ) (θ : ℝ) (n : ℕ) :
     ‖term (cplx f) θ n‖ = if n = 0 then 0 else |f n| / (n : ℝ) ^ θ := by
   rw [norm_term_eq, cplx, Complex.norm_real, Real.norm_eq_abs, Complex.ofReal_re]
 
-theorem lSeriesSummable_cplx_iff {f : ℕ → ℝ} {θ : ℝ} :
+theorem lSeriesSummable_cplx_iff {f : ℕ → ℝ} {θ : ℝ} (hθ : 0 < θ) :
     LSeriesSummable (cplx f) θ ↔ Summable fun n : ℕ => |f n| * (n : ℝ) ^ (-θ) := by
   rw [← summable_norm_term_iff]
   refine summable_congr fun n => ?_
   rw [norm_term_cplx]
   rcases eq_or_ne n 0 with rfl | hn
-  · rcases eq_or_ne θ 0 with rfl | hθ
-    · simp
-    · simp [Real.zero_rpow (neg_ne_zero.2 hθ)]
+  · simp [Real.zero_rpow (neg_ne_zero.2 hθ.ne')]
   · rw [if_neg hn, Real.rpow_neg (Nat.cast_nonneg n), div_eq_mul_inv]
 
 theorem cplx_dirichletConv (a b : ℕ → ℝ) :
     cplx (RHTower.dirichletConv a b) = cplx a ⍟ cplx b := by
   funext n
-  rcases eq_or_ne n 0 with rfl | hn
-  · simp [cplx, RHTower.dirichletConv]
-  rw [LSeries.convolution_def, Nat.sum_divisorsAntidiagonal (fun i j => cplx a i * cplx b j)]
-  unfold cplx RHTower.dirichletConv
-  push_cast
-  rfl
+  rw [LSeries.convolution_def]
+  show ((RHTower.dirichletConv a b n : ℝ) : ℂ) =
+    ∑ p ∈ n.divisorsAntidiagonal, (a p.1 : ℂ) * (b p.2 : ℂ)
+  rw [Nat.sum_divisorsAntidiagonal (fun i j => (a i : ℂ) * (b j : ℂ)), RHTower.dirichletConv,
+    Complex.ofReal_sum]
+  exact sum_congr rfl fun i _ => Complex.ofReal_mul _ _
 
 /-- The weighted absolute summability of a convolution. -/
-theorem summable_abs_dirichletConv_rpow {a b : ℕ → ℝ} {θ : ℝ}
+theorem summable_abs_dirichletConv_rpow {a b : ℕ → ℝ} {θ : ℝ} (hθ : 0 < θ)
     (ha : Summable fun n : ℕ => |a n| * (n : ℝ) ^ (-θ))
     (hb : Summable fun n : ℕ => |b n| * (n : ℝ) ^ (-θ)) :
     Summable fun n : ℕ => |RHTower.dirichletConv a b n| * (n : ℝ) ^ (-θ) := by
-  rw [← lSeriesSummable_cplx_iff, cplx_dirichletConv]
-  exact (lSeriesSummable_cplx_iff.2 ha).convolution (lSeriesSummable_cplx_iff.2 hb)
+  rw [← lSeriesSummable_cplx_iff hθ, cplx_dirichletConv]
+  exact ((lSeriesSummable_cplx_iff hθ).2 ha).convolution ((lSeriesSummable_cplx_iff hθ).2 hb)
 
 /-- A real Dirichlet series at a real point, as a complex L-series. -/
-theorem ofReal_tsum_rpow (f : ℕ → ℝ) (σ : ℝ) :
+theorem ofReal_tsum_rpow (f : ℕ → ℝ) {σ : ℝ} (hσ : 0 < σ) :
     ((∑' d : ℕ, f d * (d : ℝ) ^ (-σ) : ℝ) : ℂ) = LSeries (cplx f) σ := by
   unfold LSeries
   rw [Complex.ofReal_tsum]
   refine tsum_congr fun d => ?_
   rcases eq_or_ne d 0 with rfl | hd
-  · rcases eq_or_ne σ 0 with rfl | hσ
-    · simp [cplx]
-    · simp [Real.zero_rpow (neg_ne_zero.2 hσ)]
+  · simp [Real.zero_rpow (neg_ne_zero.2 hσ.ne')]
   · rw [term_of_ne_zero hd, cplx, Real.rpow_neg (Nat.cast_nonneg d), ← div_eq_mul_inv,
       Complex.ofReal_div, Complex.ofReal_cpow (Nat.cast_nonneg d), Complex.ofReal_natCast]
 
@@ -99,9 +96,13 @@ theorem lSeries_moebius_damped {ε : ℝ} {s : ℂ} (hs : 1 < s.re + ε) :
     · simp
     · rw [term_of_ne_zero hd, term_of_ne_zero hd, cplx, pmPowerDampedRealWeight, moebiusReal]
       have hd' : (d : ℂ) ≠ 0 := by exact_mod_cast hd
-      rw [Complex.cpow_add _ _ hd', Complex.ofReal_mul, Complex.ofReal_rpow (Nat.cast_nonneg d)]
+      rw [Complex.ofReal_mul, Complex.ofReal_cpow (Nat.cast_nonneg d), Complex.ofReal_natCast,
+        Complex.cpow_add _ _ hd', Complex.ofReal_neg, Complex.cpow_neg]
+      have h1 : (d : ℂ) ^ (s : ℂ) ≠ 0 := by
+        rw [Ne, Complex.cpow_eq_zero_iff]; exact fun h => hd' h.1
+      have h2 : (d : ℂ) ^ ((ε : ℝ) : ℂ) ≠ 0 := by
+        rw [Ne, Complex.cpow_eq_zero_iff]; exact fun h => hd' h.1
       push_cast
-      rw [Complex.cpow_neg, Complex.ofReal_natCast]
       field_simp
   rw [h1, ← LSeries_zeta_eq_riemannZeta hre]
   exact eq_inv_of_mul_eq_one_right (LSeries_zeta_mul_Lseries_moebius hre)
@@ -124,12 +125,15 @@ theorem summable_kernel_rpow {θ : ℝ} (hθ : 1 / 2 ≤ θ) :
       · exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le
           (by exact_mod_cast hn) (by linarith)) (abs_nonneg _)
 
+omit hε hε2 hk in
 theorem summable_moebius_rpow {θ : ℝ} (hθ : 1 - ε < θ) :
     Summable fun n : ℕ => |pmPowerDampedRealWeight ε n| * (n : ℝ) ^ (-θ) := by
   refine (Real.summable_nat_rpow.mpr (by linarith : -(θ + ε) < -1)).of_nonneg_of_le
     (fun n => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg n) _)) fun n => ?_
   rcases Nat.eq_zero_or_pos n with rfl | hn
-  · simp [pmPowerDampedRealWeight, moebiusReal]
+  · rw [pmPowerDampedRealWeight, moebiusReal, ArithmeticFunction.map_zero]
+    simp only [Int.cast_zero, zero_mul, abs_zero]
+    exact Real.rpow_nonneg (Nat.cast_nonneg 0) _
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
   rw [pmPowerDampedRealWeight, abs_mul, abs_of_nonneg (Real.rpow_nonneg hn0.le _), mul_assoc,
     ← Real.rpow_add hn0, show -ε + -θ = -(θ + ε) by ring]
@@ -141,24 +145,25 @@ theorem summable_moebius_rpow {θ : ℝ} (hθ : 1 - ε < θ) :
 theorem summable_repaired_rpow {θ : ℝ} (hθ : 1 - ε < θ) :
     Summable fun n : ℕ =>
       |RHTower.dirichletConv k (pmPowerDampedRealWeight ε) n| * (n : ℝ) ^ (-θ) :=
-  summable_abs_dirichletConv_rpow (summable_kernel_rpow hε hε2 hk (by linarith))
-    (summable_moebius_rpow hε hε2 hk hθ)
+  summable_abs_dirichletConv_rpow (by linarith) (summable_kernel_rpow hε hε2 hk (by linarith))
+    (summable_moebius_rpow hθ)
 
 /-- Beyond the abscissa the repaired series is `K(s)/ζ(s + ε)`. -/
 theorem lSeries_repaired {σ : ℝ} (hσ : 1 - ε < σ) :
     LSeries (cplx (RHTower.dirichletConv k (pmPowerDampedRealWeight ε))) σ =
       LSeries (cplx k) σ * (riemannZeta ((σ : ℂ) + ε))⁻¹ := by
   rw [cplx_dirichletConv, LSeries_convolution'
-    (lSeriesSummable_cplx_iff.2 (summable_kernel_rpow hε hε2 hk (by linarith)))
-    (lSeriesSummable_cplx_iff.2 (summable_moebius_rpow hε hε2 hk hσ)),
+    ((lSeriesSummable_cplx_iff (by linarith)).2 (summable_kernel_rpow hε hε2 hk (by linarith)))
+    ((lSeriesSummable_cplx_iff (by linarith)).2 (summable_moebius_rpow hσ)),
     lSeries_moebius_damped (by simp; linarith)]
 
+omit hε hε2 in
 /-- The kernel series is holomorphic on `Re s > ½`. -/
 theorem analyticOnNhd_lSeries_kernel :
     AnalyticOnNhd ℂ (LSeries (cplx k)) {s : ℂ | 1 / 2 < s.re} := by
   refine (LSeries_analyticOnNhd (cplx k)).mono fun s hs => ?_
   have hsum : LSeriesSummable (cplx k) ((1 / 2 : ℝ) : ℂ) := by
-    rw [lSeriesSummable_cplx_iff]; exact hk
+    rw [lSeriesSummable_cplx_iff (by norm_num)]; exact hk
   have := LSeriesSummable.abscissaOfAbsConv_le hsum
   simp only [Set.mem_setOf_eq] at hs ⊢
   calc abscissaOfAbsConv (cplx k) ≤ ((1 / 2 : ℝ) : ℂ).re := by simpa using this
@@ -180,7 +185,8 @@ theorem riemannZeta_mul_lSeries_eq_zero_of_repairs
   have hUopen : IsOpen {s : ℂ | 1 / 2 < s.re} := isOpen_lt continuous_const Complex.continuous_re
   have hΦa : AnalyticOnNhd ℂ Φ {s : ℂ | 1 / 2 < s.re} := hΦ.analyticOnNhd hUopen
   have hZ : ∀ s : ℂ, AnalyticAt ℂ (fun z : ℂ => RHTower.zetaResidueUnit (z + ε)) s := fun s =>
-    (RHTower.analyticAt_zetaResidueUnit (s + ε)).comp (analyticAt_id.add analyticAt_const)
+    (RHTower.analyticAt_zetaResidueUnit (s + ε)).comp (f := fun w : ℂ => w + (ε : ℂ))
+      (analyticAt_id.add analyticAt_const)
   have hζ : ∀ s ∈ U, AnalyticAt ℂ riemannZeta s := fun s hs =>
     RHTower.Sieve.analyticAt_riemannZeta_of_ne_one fun h => by
       have := congrArg Complex.re h; simp at this; linarith [hs.2]
@@ -189,7 +195,7 @@ theorem riemannZeta_mul_lSeries_eq_zero_of_repairs
   have hR : AnalyticOnNhd ℂ (fun s => (s + ε - 1) * riemannZeta s * LSeries (cplx k) s -
       m * riemannZeta s * RHTower.zetaResidueUnit (s + ε)) U := fun s hs =>
     ((((analyticAt_id.add analyticAt_const).sub analyticAt_const).mul (hζ s hs)).mul
-      (analyticOnNhd_lSeries_kernel hε hε2 hk s hs.1)).sub
+      (analyticOnNhd_lSeries_kernel hk s hs.1)).sub
       ((analyticAt_const.mul (hζ s hs)).mul (hZ s))
   -- they agree on the real segment `(1 − ε, 1)`
   have hreal : ∀ σ : ℝ, 1 - ε < σ → σ < 1 →
@@ -202,7 +208,7 @@ theorem riemannZeta_mul_lSeries_eq_zero_of_repairs
     have hζε : riemannZeta ((σ : ℂ) + ε) ≠ 0 :=
       riemannZeta_ne_zero_of_one_lt_re (by simp; linarith)
     rw [RHTower.zetaResidueUnit, Function.update_of_ne hne, hΦσ σ hσ hσ1, Complex.ofReal_sub,
-      ofReal_tsum_rpow, lSeries_repaired hε hε2 hk hσ]
+      ofReal_tsum_rpow _ (by linarith), lSeries_repaired hε hε2 hk hσ]
     field_simp
     ring
   -- propagate across the strip from the real point `1 − ε/2`
@@ -213,8 +219,8 @@ theorem riemannZeta_mul_lSeries_eq_zero_of_repairs
         m * riemannZeta z * RHTower.zetaResidueUnit (z + ε) := by
     rw [Filter.frequently_iff]
     intro V hV
-    obtain ⟨δ, hδ, hball⟩ := Metric.mem_nhdsWithin_iff.1 hV
-    set η := min (δ / 2) (ε / 4)
+    obtain ⟨r0, hr0, hball⟩ := Metric.mem_nhdsWithin_iff.1 hV
+    set η := min (r0 / 2) (ε / 4)
     have hη : 0 < η := lt_min (by linarith) (by linarith)
     refine ⟨((1 - ε / 2 + η : ℝ) : ℂ), hball ⟨?_, ?_⟩, ?_⟩
     · rw [Metric.mem_ball, dist_eq_norm, ← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs,
@@ -224,7 +230,7 @@ theorem riemannZeta_mul_lSeries_eq_zero_of_repairs
       intro h
       have := Complex.ofReal_injective h
       linarith
-    · exact hreal _ (by linarith) (by linarith [min_le_right (δ / 2) (ε / 4)])
+    · exact hreal _ (by linarith) (by linarith [min_le_right (r0 / 2) (ε / 4)])
   have heq := hL.eqOn_of_preconnected_of_frequently_eq hR
     ((convex_halfSpace_re_gt (1 / 2)).inter (convex_halfSpace_re_lt 1)).isPreconnected hrU hfreq
   -- evaluate at the translated zero
@@ -249,7 +255,8 @@ theorem summable_abs_moebius_div {ε : ℝ} (hε : 0 < ε) :
   refine (Real.summable_nat_rpow.mpr (by linarith : -(1 + ε) < -1)).of_nonneg_of_le
     (fun _ => abs_nonneg _) fun d => ?_
   rcases Nat.eq_zero_or_pos d with rfl | hd
-  · simp [pmPowerDampedRealWeight]
+  · simp only [Nat.cast_zero, div_zero, abs_zero]
+    exact Real.rpow_nonneg le_rfl _
   have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
   rw [pmPowerDampedRealWeight, abs_div, abs_mul, abs_of_nonneg (Real.rpow_nonneg hd0.le _),
     Nat.abs_cast, mul_div_assoc, show (d : ℝ) ^ (-ε) / d = (d : ℝ) ^ (-(1 + ε)) by
@@ -263,9 +270,11 @@ theorem summable_abs_moebius_div {ε : ℝ} (hε : 0 < ε) :
 theorem lSeries_toFn_eq (k : WienerAlgebraAt (1 / 2)) {s : ℂ} (hs : 1 / 2 ≤ s.re) :
     LSeries (⇑k.toFn) s = LSeries (cplx (rePart k)) s + I * LSeries (cplx (imPart k)) s := by
   have hr : LSeriesSummable (cplx (rePart k)) s :=
-    (lSeriesSummable_cplx_iff.2 (criticalWiener_rePart k)).of_re_le_re (by simpa using hs)
+    ((lSeriesSummable_cplx_iff (by norm_num)).2 (criticalWiener_rePart k)).of_re_le_re
+      (by simpa using hs)
   have hi : LSeriesSummable (cplx (imPart k)) s :=
-    (lSeriesSummable_cplx_iff.2 (criticalWiener_imPart k)).of_re_le_re (by simpa using hs)
+    ((lSeriesSummable_cplx_iff (by norm_num)).2 (criticalWiener_imPart k)).of_re_le_re
+      (by simpa using hs)
   rw [← LSeries_smul, ← LSeries_add hr (hi.smul I)]
   congr 1
   funext n

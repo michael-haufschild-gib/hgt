@@ -199,6 +199,7 @@ band-ratio unit, where the depth is an explicit elementary function of what was 
 | node incidence | node sets `𝒩 ⊆ ℕ` | zero–pole blind positivity | `AsymptoticReading`; `membershipReading m` |
 | prime window | prime weights `lam : ℕ → ℝ` | full Weil cone | `radiusReading R`, `weightAperturePositivity a` |
 | pronic Gram | prime-block packets (`PronicBlockGramDatum`) and large-scale rows (`ReadoutGramDatum`, `SmoothGramDatum`) | cross-scale exponent `θ ∈ [0, 2]` and Bernoulli functional (`bernoulliCrossScaleMain`) | `typeIIGramReading`, `rankTwoReadoutReading`, `smoothKernelReading`, `residueMass`, `completedKernelStatisticReading` |
+| parity collapses | four-free damped convolutions (`k ⋆ o_ε`), Selberg sign orbits (`scaledSelbergRow`), and residue-class prime flips (`residueFlip q S`) | `ReceiverBounded` and `horizonPronicEnergy` | `amplitudeReading`, `completePeriodLagReading N`, `cubicMomentReading N`, `firstPronicMoment`, `logPowWeight` |
 
 The faces owned elsewhere — temperedness (the shifted pair), parity (damped weights) — are priced by
 the same calculus, with their countermodels in `RHTower` and `TransHorizonIncidenceMechanics`.
@@ -511,6 +512,51 @@ All unconditional; where RH holds only at the base datum the gate is stated as "
     the prime-window ratio, and `≤ 1 − windowFloor(A)/μ(A₀)` on `(0, ½ log 2)`
     (`zetaTwoApertureRatio_lt_one_of_le_twentyOne_twoHundredths`,
     `primeWindowTwoApertureRatio_le_one_of_le_threeTenths`, `zetaTwoApertureRatio_le_windowFloor`).
+12. **The fatality classification of parity collapses and their faithful completions.** Across the
+    three parity-collapse families, strict fatality (`StrictlyFatalAt`) and neutrality (`NeutralAt`)
+    are classified in closed form (`strictlyFatalAt_iff_pairFatalAt_of_paid`,
+    `strictlyFatalAt_iff_not_neutralAt_of_paid`):
+    (i) on four-free convolutions `k ⋆ o_ε` (`0 < ε ≤ 1/2`), `evenFlip` is strictly fatal iff
+    `poleValue k J ε = 0 ∧ poleValue (evenPartWeight k) J ε ≠ 0`
+    (`strictlyFatalAt_evenFlip_iff_pole_and_evenPart`), paid and neutral iff both `oddPartKernel k`
+    and `evenPartWeight k` vanish at `1 − ε` (`evenFlip_paid_and_neutral_iff_odd_and_even_pole`),
+    strictly fatal for every non-zero paid two-point kernel (`strictlyFatalAt_evenFlip_twoPoint_iff`),
+    expelled from the shadow by `firstPronicMoment` iff `weightRamanujanCoeff c 2 ≠ 0`
+    (`not_mem_shadow_joinReading_firstPronicMoment_iff`), and separated on the generalized Fermi
+    locus by logarithmic pronic moments (`exists_logMoment_ne_of_strictlyFatalAt_evenFlip`);
+    (ii) on the `2^{N−1}` Selberg sign-character shadow of `completePeriodLagReading N`, refining by
+    `cubicMomentReading N` expels `chiFourTwinRow ε N` at every `N ≥ 3`, collapses the sign orbit to
+    a singleton on odd-supported rows (`cubicMomentReading_pins_odd_signOrbit`), and reduces the sign
+    orbit of squarefree-supported rows to at most `{c, evenFlipRow N c}`
+    (`cubicMomentReading_reduces_squarefree_signOrbit_to_evenFlip`);
+    (iii) on half-damped residue-class prime flips `residueFlipHalfWeight q S`, every complement pair
+    `{S, Sᶜ}` has at least one paid member (`receiverBounded_residueFlip_or_compl_half`),
+    complementation is paid and neutral iff `φ(q) < 4 |S^\times| < 3 φ(q)`
+    (`both_residueFlip_and_compl_paid_iff`), and strictly fatal iff `3 φ(q) ≤ 4 |S^\times|`
+    (`strictlyFatalAt_compl_residueFlip_half_iff`), so subgroup flips `subgroupFlipSet H` are
+    complement-neutral at index `2` and `3` and strictly fatal iff the index is at least `4`
+    (`strictlyFatalAt_compl_subgroupFlipSet_iff`).
+13. **The rate reading for `ζ` and the price of the local off-line count.** Four rate currencies of
+    `ζ` — the dyadic prime-window lag rate, the integrated Chebyshev deficit rate, the mean-square
+    band rate, and the Möbius receiver damping threshold — equal `zetaZeroWidth` unconditionally,
+    while the polar restricted Weil ground-energy rate `polarGroundEnergyRate` satisfies
+    `zetaZeroWidth ≤ polarGroundEnergyRate ≤ 1/2` and equals `zetaZeroWidth` whenever the off-line
+    zeros have bounded local count `OffLineCopiesLocallyBounded M` or bounded local squared-depth
+    mass `OffLineDepthLocallyBounded W` (`five_rate_currencies_of_zeta`). At a single aperture `A`,
+    a deficit `ccmRestrictedWeilGroundEnergy A ≤ −η` (`η > 0`) together with `OffLineCopiesLocallyBounded M`
+    certifies `singleApertureWidthFloor M A.1 η ≤ zetaZeroWidth`
+    (`singleApertureWidthFloor_le_zetaZeroWidth`), lifting the width resolution floor on
+    `ApertureCountDatum A` from `0` (`resolutionFloor_width_deficitOnly_eq_zero`) to
+    `max 0 (singleApertureWidthFloor d.count A d.deficit)` (`le_resolutionFloor_width_deficitAndCount`).
+    In the asymptotic rate space `ZetaRateDatum`, reading `width` alone leaves `polarRate` with
+    resolution interval `[width, 1/2]` (`resolutionInterval_polarRate_widthOnly`) and reading
+    `polarRate` alone leaves `width` with floor `0` (`resolutionFloor_width_polarRateOnly_eq_zero`),
+    while adjoining `locallyBounded` collapses both to `width`
+    (`resolutionLimit_polarRate_widthAndLocalCount`, `resolutionFloor_width_polarRateAndLocalCount`).
+    On the lattice family `ScaleDepthDatum` without convexity assumptions, cofinal rate sampling
+    (`cofinalRateSet S`) is faithful for `sdDepth` (`faithful_sdDepth_cofinalRateSet`), whereas any
+    bounded-range rate reading (`boundedRateSet M`) has exact limit `1/2` and floor `0`
+    (`resolutionLimit_sdDepth_boundedRateSet_eq_half`, `resolutionFloor_sdDepth_boundedRateSet_eq_zero`).
 
 ---
 
@@ -592,10 +638,15 @@ Built and reusable:
 - *Two-aperture ratios for `ζ`* (`zetaTwoApertureRatio`, `zetaClampedTwoApertureRatio`,
   `primeWindowTwoApertureRatio`) with critical value `1` on the line, `2σ`-abscissa inversion, and
   unconditional bounds across `[0, 21/200]`, `[0, 3/10]`, and `(0, ½ log 2)`.
+- *Fatality–neutrality calculus for parity collapses* (`StrictlyFatalAt`, `PairFatalAt`, `NeutralAt`),
+  the odd/even pole classification of `evenFlip`, cubic-moment orbit reduction
+  (`cubicMomentReading`), and the `(1/4, 3/4)` residue-class complementation window.
+- *Rate readings for `ζ` and the local-count price* (`five_rate_currencies_of_zeta`,
+  `singleApertureWidthFloor`, `ApertureCountDatum`, `ZetaRateDatum`, `cofinalRateSet`,
+  `boundedRateSet`).
 
 To be built:
 
-- a fatality classification of the parity collapses;
 - the admissibility unit of the incidence ledger.
 
 ---
@@ -623,34 +674,44 @@ Open, in this programme's own unit (a class of readings and its exact limit):
    unconditionally into `|Re ρ − ½| ≤ σ` (`abs_re_sub_half_le_of_zetaTwoApertureRatio_le_one_add_exp`),
    detect near-top zeros above `1` beyond their visibility lag (`one_lt_zetaTwoApertureRatio_of_near_top_zero`),
    and satisfy unconditional bounds on `[0, 21/200]`, `[0, 3/10]`, and `(0, ½ log 2)`.
-3. **A fatality classification for the parity collapses.** The node collapses are classified exactly
-   — under RH, exactly the prime powers (`fatal_deleteNode_iff_isPrimePow`) — giving the
-   principal-up-set description in that case. The analogous question for the parity face owned by
-   `TransHorizonIncidenceMechanics`, which involutions of a damped weight are fatal for the
-   receiver, is open, and would turn its barrier into a sharp law. One instance is known. On
-   four-free convolution weights `k ⋆ q` the even flip shifts the pole value by the even part of
-   the kernel, `K♭(1 − ε) = K(1 − ε) + (1 − 2^ε)K_e(1 − ε)`, so it is fatal for at least one member
-   of the pair whenever `K_e(1 − ε) ≠ 0` (`evenFlip_exactLoss`). The first pronic moment reads the
-   same flip exactly through `W_c(2)` (Arithmetic Orientation Theory). The complete-period quadratic
-   reading has the sign-character orbit as its exact shadow (§2.7), so the question is precisely
-   which sign characters of the Selberg coordinates are fatal for the receiver. For a different
-   family of involutions, flips of the prime values of a completely multiplicative weight along
-   residue classes, the answer at half damping is complete: the flipped weight is paid iff more
-   than a quarter of the unit classes are flipped (`receiverBounded_residueFlip_half_iff_general`,
-   Trans-Horizon Incidence Mechanics).
-4. **The rate reading for `ζ`.** The faithful reading of the depth is the exponential rate of the
-   deficit in the aperture. For the configuration of `ζ` that rate is the zero width, so an estimate
-   of it is the target of the whole corpus; what belongs here is the admissibility question: which
-   classes of readings determine the *rate* rather than any single value, and which arithmetic rate profiles satisfy the structure needed for sparse sampling. The convex
-   secant-rate case is settled by §3.9: cofinal sampling preserves the full reading, while bounded
-   sampling leaves arbitrarily large rates possible. One half of
-   this is settled in `SquareRootThreshold` with a hypothesis that is itself a reading: the
-   ground-energy rate equals the zero width whenever the off-line copies are bounded in number on
-   unit height windows, and the alternative is unbounded clustering. Thus a uniform local count of off-line
-   copies is a sufficient additional datum for the exponent identity — the
-   aperture-face analogue of the local on-line mass in the productive seam. Price that datum: what
-   is the floor of the class of readings that see the certificate and the local count, against the
-   class that sees the certificate alone?
+3. *(Resolved in `TheFatalityClassificationOfParityCollapses`.)* **A fatality classification for the
+   parity collapses.** Across the three parity-collapse families, strict fatality (`StrictlyFatalAt`)
+   and neutrality (`NeutralAt`) are completely classified:
+   (i) on four-free convolutions `k ⋆ o_ε` (`0 < ε ≤ 1/2`), `evenFlip` is strictly fatal iff
+   `poleValue k J ε = 0 ∧ poleValue (evenPartWeight k) J ε ≠ 0`
+   (`strictlyFatalAt_evenFlip_iff_pole_and_evenPart`), paid and neutral iff both `oddPartKernel k`
+   and `evenPartWeight k` vanish at `1 − ε` (`evenFlip_paid_and_neutral_iff_odd_and_even_pole`),
+   and killed by adjoining `firstPronicMoment` whenever `weightRamanujanCoeff c 2 ≠ 0`
+   (`not_mem_shadow_joinReading_firstPronicMoment_iff`) or by the logarithmic pronic moments on the
+   generalized Fermi locus (`exists_logMoment_ne_of_strictlyFatalAt_evenFlip`);
+   (ii) on the `2^{N−1}` Selberg sign-character shadow of `completePeriodLagReading N`, refining by
+   `cubicMomentReading N` pins odd-supported rows uniquely (`cubicMomentReading_pins_odd_signOrbit`)
+   and reduces squarefree-supported rows to at most `{c, evenFlipRow N c}`
+   (`cubicMomentReading_reduces_squarefree_signOrbit_to_evenFlip`);
+   (iii) on half-damped residue-class prime flips `residueFlipHalfWeight q S`, every complement pair
+   `{S, Sᶜ}` has at least one paid member (`receiverBounded_residueFlip_or_compl_half`),
+   complementation is paid and neutral iff `φ(q) < 4 |S^\times| < 3 φ(q)`
+   (`both_residueFlip_and_compl_paid_iff`), and strictly fatal iff `3 φ(q) ≤ 4 |S^\times|`
+   (`strictlyFatalAt_compl_residueFlip_half_iff`), with subgroup flips `subgroupFlipSet H` neutral at
+   index `2, 3` and strictly fatal iff the index is at least `4`
+   (`strictlyFatalAt_compl_subgroupFlipSet_iff`).
+4. *(Resolved in `TheRateReadingForZeta`.)* **The rate reading for `ζ`.** The four rate currencies
+   (dyadic prime-window lag rate, Chebyshev deficit rate, mean-square band rate, and Möbius receiver
+   damping rate) equal `zetaZeroWidth` unconditionally, while `polarGroundEnergyRate` equals
+   `zetaZeroWidth` under `OffLineCopiesLocallyBounded M` or `OffLineDepthLocallyBounded W`
+   (`five_rate_currencies_of_zeta`). At a single aperture `A`, adjoining the local count `M` to a
+   ground-energy deficit `η > 0` lifts the width resolution floor from `0`
+   (`resolutionFloor_width_deficitOnly_eq_zero`) to `max 0 (singleApertureWidthFloor M A η)`
+   (`singleApertureWidthFloor_le_zetaZeroWidth`, `le_resolutionFloor_width_deficitAndCount`).
+   In the asymptotic rate space `ZetaRateDatum`, adjoining `locallyBounded` collapses the resolution
+   interval of `polarRate` under `width` from `[width, 1/2]` to `{width}`
+   (`resolutionInterval_polarRate_widthOnly`, `resolutionLimit_polarRate_widthAndLocalCount`) and
+   lifts the resolution floor of `width` under `polarRate` from `0` to `polarRate`
+   (`resolutionFloor_width_polarRateOnly_eq_zero`, `resolutionFloor_width_polarRateAndLocalCount`).
+   On the lattice family `ScaleDepthDatum`, `cofinalRateSet S` is faithful for `sdDepth`
+   (`faithful_sdDepth_cofinalRateSet`), whereas `boundedRateSet M` has exact limit `1/2` and floor
+   `0` (`resolutionLimit_sdDepth_boundedRateSet_eq_half`,
+   `resolutionFloor_sdDepth_boundedRateSet_eq_zero`).
 5. **The design specification of a counterexample.** The reach law says the free part of the hiding
    is linear in the dilution `ℓ` and the bought part only logarithmic in the mass. What is the
    largest reach of a configuration subject to the arithmetic constraints the explicit formula

@@ -237,10 +237,10 @@ theorem exists_fullZeroForm_ge_deLaValleePoussin_of_subEnvelopeDirichletCone :
       _ = (27 / 5 * Real.exp (c ^ 2 / 4)) * Real.exp r * Real.exp (-c * Real.sqrt r) *
             ∫ x, F x ^ 2 := by ring
   have hc_upper := (le_abs_self _).trans hc1
-  have hsum_K : K * Real.exp r * Real.exp (-c * Real.sqrt r) * ∫ x, F x ^ 2 =
-      K₀ * Real.exp r * Real.exp (-c * Real.sqrt r) * ∫ x, F x ^ 2 +
+  have hsum_K : K * Real.exp r * Real.exp (-c * Real.sqrt r) * (∫ x, F x ^ 2) =
+      K₀ * Real.exp r * Real.exp (-c * Real.sqrt r) * (∫ x, F x ^ 2) +
       (27 / 5 * Real.exp (c ^ 2 / 4)) * Real.exp r * Real.exp (-c * Real.sqrt r) *
-        ∫ x, F x ^ 2 := by
+        (∫ x, F x ^ 2) := by
     simp only [K]; ring
   linarith
 
@@ -365,9 +365,11 @@ theorem exists_exp_neg_half_mul_abs_chebyshevTwoPoleDefect_le_of_zetaZeroWidth_l
       xiZeroHalfPlaneBound_zetaZeroWidth
   refine ⟨2 * (C₀ + 2), by positivity, fun s hs => ?_⟩
   have hnorm := hE s hs
-  rw [normalizedLogError, logError, abs_mul, abs_of_pos (Real.exp_pos _), abs_sub_comm] at hnorm
+  rw [normalizedLogError, SignedPrimePolar.logError, abs_mul, abs_of_pos (Real.exp_pos _),
+    abs_sub_comm] at hnorm
   have hdef : chebyshevTwoPoleDefect s = (Real.exp s - Chebyshev.psi (Real.exp s)) + (s - 1) := by
-    rw [chebyshevTwoPoleDefect_eq_error_add, chebyshevError, lagChebyshev_eq_chebyshevPsi]
+    rw [chebyshevTwoPoleDefect_eq_error_add, ArithmeticIncidencePositivity.chebyshevError,
+      lagChebyshev_eq_chebyshevPsi]
   have hlin : Real.exp (-s / 2) * |s - 1| ≤ 2 * Real.exp (σ * s) := by
     have h1 : |s - 1| ≤ s + 2 := by rw [abs_le]; constructor <;> linarith
     have h2 : s / 2 + 1 ≤ Real.exp (s / 2) := Real.add_one_le_exp (s / 2)
@@ -590,7 +592,7 @@ For every `σ > zetaZeroWidth` and every `Λ ≥ 0`, there exists `C > 0` such t
 and all real odd `F ∈ C²_c[−r, r]` with `BoundedDirichletCone Λ F`, the complete ledger satisfies
 the pure-`L²` floor `−(C e^{2σ r} ∫ F²) ≤ fullZeroForm F`. -/
 theorem exists_boundedDirichletCone_fullZeroForm_floor_of_zetaZeroWidth_lt {σ Λ : ℝ}
-    (hσ : zetaZeroWidth < σ) (hΛ : 0 ≤ Λ) :
+    (hσ : zetaZeroWidth < σ) (_ : 0 ≤ Λ) :
     ∃ C : ℝ, 0 < C ∧ ∀ (r : ℝ) (F : ℝ → ℝ), 0 < r → ContDiff ℝ 2 F → HasCompactSupport F →
       (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) → BoundedDirichletCone Λ F →
       -(C * Real.exp (2 * σ * r) * ∫ x, F x ^ 2) ≤ fullZeroForm F := by
@@ -693,7 +695,7 @@ theorem zetaZeroWidth_le_of_poleTiltedSobolev_fullZeroForm_floor {σ C : ℝ} (h
       -(C * Real.exp (2 * σ * r) * ((1 / 4) * (∫ x, F x ^ 2) + ∫ x, deriv F x ^ 2)) ≤
         fullZeroForm F) :
     zetaZeroWidth ≤ σ := by
-  refine zetaZeroWidth_le_of_boundedDirichletCone_fullZeroForm_floor hσ fun Λ hΛ => ?_
+  refine zetaZeroWidth_le_of_boundedDirichletCone_fullZeroForm_floor hσ fun Λ _ => ?_
   refine ⟨max C 0 * (1 / 4 + Λ ^ 2), fun r F hr hF hFc hodd hsupp hcone => ?_⟩
   have h1 := hfloor r F hr hF hFc hodd hsupp
   unfold BoundedDirichletCone at hcone
@@ -715,7 +717,7 @@ theorem zetaZeroWidth_le_of_poleTiltedSobolev_fullZeroForm_floor {σ C : ℝ} (h
 If `0 ≤ σ` and `SobolevGradedIncidenceAllocation σ C` holds, then `zetaZeroWidth ≤ σ`. -/
 theorem zetaZeroWidth_le_of_sobolevGradedIncidenceAllocation {σ C : ℝ} (hσ : 0 ≤ σ)
     (h : SobolevGradedIncidenceAllocation σ C) : zetaZeroWidth ≤ σ := by
-  refine zetaZeroWidth_le_of_poleTiltedSobolev_fullZeroForm_floor hσ
+  refine zetaZeroWidth_le_of_poleTiltedSobolev_fullZeroForm_floor (C := C) hσ
     fun r F hr hF hFc hodd hsupp => ?_
   rw [fullZeroForm_eq_incidenceLedger hF hFc hodd hr hsupp (lt_add_one r)]
   have hal := h r (r + 1) F hr (lt_add_one r) hF hFc hodd hsupp
@@ -866,8 +868,9 @@ theorem exists_lt_half_boundedDirichletCone_fullZeroForm_floor_iff_zetaZeroAbsci
 theorem riemannHypothesis_iff_forall_pos_sobolevGradedIncidenceAllocation :
     RiemannHypothesis ↔
       ∀ σ : ℝ, 0 < σ → ∃ C : ℝ, 0 < C ∧ SobolevGradedIncidenceAllocation σ C := by
-  rw [riemannHypothesis_iff_zetaZeroWidth_eq_zero,
-    ← le_iff_eq_of_ge zetaZeroWidth_nonneg,
+  have h0 : zetaZeroWidth = 0 ↔ zetaZeroWidth ≤ 0 :=
+    ⟨le_of_eq, fun h => le_antisymm h zetaZeroWidth_nonneg⟩
+  rw [riemannHypothesis_iff_zetaZeroWidth_eq_zero, h0,
     zetaZeroWidth_le_iff_forall_gt_sobolevGradedIncidenceAllocation le_rfl]
 
 /-- **Endpoint equivalence: `RiemannHypothesis` holds if and only if every positive exponent
@@ -878,8 +881,9 @@ theorem riemannHypothesis_iff_forall_pos_reflectedPrimePolarCost_le_poleTiltedSo
         ContDiff ℝ 2 F → HasCompactSupport F → (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
         |reflectedPrimePolarCost F r| ≤
           C * Real.exp (2 * σ * r) * ((1 / 4) * (∫ x, F x ^ 2) + ∫ x, deriv F x ^ 2) := by
-  rw [riemannHypothesis_iff_zetaZeroWidth_eq_zero,
-    ← le_iff_eq_of_ge zetaZeroWidth_nonneg,
+  have h0 : zetaZeroWidth = 0 ↔ zetaZeroWidth ≤ 0 :=
+    ⟨le_of_eq, fun h => le_antisymm h zetaZeroWidth_nonneg⟩
+  rw [riemannHypothesis_iff_zetaZeroWidth_eq_zero, h0,
     zetaZeroWidth_le_iff_forall_gt_reflectedPrimePolarCost_le_poleTiltedSobolev le_rfl]
 
 end GaloisForLFunctions.ArithmeticCompensationTheory

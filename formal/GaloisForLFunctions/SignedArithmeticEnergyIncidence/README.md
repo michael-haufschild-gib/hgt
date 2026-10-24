@@ -484,6 +484,19 @@ energies exceed every bound as `ε ↓ ½` (`positiveTwin_energy_unbounded`). Da
 residue expansion converges in the receiver norm at the threshold where its size-only reading
 diverges.
 
+**The Riesz residue expansion converges at half damping.** The receiver `u_{½}` is the `ℓ²` limit
+of its Riesz-weighted finite residue expansions `S_N = Σ_{d ≤ N} μ(d)(1 − d/X) d^{−½} v_d`,
+`X = N + ½` (`rieszResidueSum_l2_tendsto_half`, `rieszResidueSum_l2_tendsto_centeredOperator`); the
+same weights on the twin `Σ_d d^{−½} v_d` give unbounded energies (`rieszTwin_energy_unbounded`). A
+finite combination `Σ b_d d^{−½} v_d` is the profile `−Σ b_d d^{−½} {x/d}` read at the integers
+(`finiteResidueSum_eq_profile`), whose Mellin transform on `Re s = −½` is
+`−(Σ b_d d^{−1+it}) ζ(½ − it)/(−½ + it)` (`integral_sq_finiteResidueProfile_eq`). For the Riesz
+weights the Dirichlet factor is the Riesz mean `Q_N(1 − it)` of `Σ μ(n) n^{−1+it}`, which converges to
+`1/ζ(1 − it)` with a bound uniform in `N` (`RHTower.tendsto_moebiusRieszPoly_one_line`,
+`RHTower.exists_norm_moebiusRieszPoly_one_line_le`: the zero-free region makes `1/ζ` Lipschitz beside
+the `1`-line, which cancels the pole of the Perron kernel). Finite signed residue combinations
+approximate the receiver at the threshold where no sign-blind expansion is stable.
+
 29. **The centring is indispensable in receiver coordinates.** The uncentred transition sends the
     first state to a column converging to the positive entrance mass
     (`arithmeticDampingEntrance_one_pos`), so it is `ℓ²`-unbounded at every damping
@@ -636,8 +649,9 @@ sharply for that method (`centeredOperator_l2_le`, `centeredOperator_l2_le_of_in
 `centeredOperator_l2_le_of_goldenThreshold`); in Mellin coordinates it is Hilbert–Schmidt exactly for
 `½ < η < 1` (`sum_sum_sq_centeredRow_le_halfDamping`, `not_bounded_sum_sum_sq_centeredRow_of_le_half`)
 and bounded at `η = ½` itself (`exists_centeredOperator_l2_le_half`); the orbit is `ℓ²`-continuous
-at `η = ½` while the positive twin's energy diverges there (`orbit_l2_tendsto_half`,
-`positiveTwin_energy_unbounded`).
+at `η = ½` and the `ℓ²` limit of its Riesz-weighted finite residue expansions, while the positive
+twin's energies diverge there (`orbit_l2_tendsto_half`, `rieszResidueSum_l2_tendsto_half`,
+`positiveTwin_energy_unbounded`, `rieszTwin_energy_unbounded`).
 
 **Pillar IV — train capacities.** A single prime's first-lag charge on a train of length `M + 1` is
 at most `cos(π/(M+2))` of the mass, attained by sine amplitudes; on aligned trains the
@@ -674,7 +688,7 @@ source; the tangent norm is the orientation-blind majorant (`radialLoss_add_tang
 | Expecting cross-prime cancellation on aligned trains. | On box supports the single-prime capacities add exactly, for any finite family of towers (mechanism 21); a saving comes only from the support, and every non-box support produces one (`joint_capacity_lt_iff_not_box`). |
 | Taking the pronic weight on the chain coordinate as the receiver. | The receiver is `ℓ²` on the chain coordinate (mechanism 24). In the pronic weight on the chain coordinate the centring functional is unbounded below half damping (BVI); in the receiver norm the transition is unbounded and the centring is what makes the receiver possible (mechanism 29). |
 | "Compactness of the chain on `c₀` gives continuation." | Compactness makes the backward problem ill-posed: no backward stability estimate exists in `c₀` or `ℓ²` (mechanism 32). |
-| "Dense residue modes give a stable expansion of the source." | The modes diagonalize the chain and span `c₀` densely, but the source is a signed series in them whose sign-blind majorant converges only above half damping (mechanism 35); at half damping the damping-summed signed series is still `ℓ²`-continuous and its twin is not. |
+| "Dense residue modes give a stable expansion of the source." | The modes diagonalize the chain and span `c₀` densely, but the source is a signed series in them whose sign-blind majorant converges only above half damping (mechanism 35); at half damping the damping-summed signed series is still `ℓ²`-continuous, its Riesz-weighted finite expansions converge, and its twin's do not. |
 | Bounding the relative loss by the tangent norm and calling it the criterion. | The tangent norm is the orientation-blind majorant; tangential motion is free and only the signed radial rate enters (mechanism 41). |
 | "An adverse sequence has an adverse limit." | Compact negativity preserves adversity in an existing weak limit; a noncompact negative part can allow a zero limit (mechanisms 37–38). |
 | Treating a frustrated pattern as a failure for every realization. | Frustration permits an unpayable positive form; sufficiently large diagonal budgets can still pay a particular frustrated form. |
@@ -741,7 +755,8 @@ Each question is stated with what is established and where the open part sits.
 4. **Which residue observable gives uniform actual-row cancellation?** The full residue series in
    `ℓ²` (mechanism 34). The size-only reading is extremized by the positive twin and has resolution
    exactly half damping (mechanism 35 and the envelope paragraph after it); at that resolution the
-   signed orbit is `ℓ²`-continuous while the twin's energy diverges (paragraphs after mechanism 28).
+   signed orbit is `ℓ²`-continuous and the limit of its Riesz-weighted finite residue expansions,
+   while the twin's energies diverge (paragraphs after mechanism 28).
    The sub-half
    cancellation is the receiver problem of Bézout–Valuation Incidence (its §7.1) in residue
    coordinates, and is open.
@@ -773,7 +788,7 @@ Each question is stated with what is established and where the open part sits.
 | Arithmetic allocation duality | Pillar I; chain lending; holonomy; comparison form; overload duality; canonical-path certificates; Kron reduction to frustration terminals | finite signed incidence ledger → local allocation, or a negative profile of the comparison form (a dual adverse profile), or a frustrated triangle; the exact budget increase that restores payment | Finite duality is not cofinal. Success: an allocation for a growing arithmetic family with losses uniform in its size. |
 | Covariance continuation estimate | radial loss law; orbit reformulation; backward ill-posedness | source path and its tangent → log-energy change bounded by the signed radial rate | Discarding the sign of the radial rate gives the tangent-norm majorant. Success: a horizon-uniform bound on `‖C_a r‖_{ℓ²}`. |
 | Arithmetic profile decomposition | energy splitting; compact negativity; escape; compact negativity of the restricted Weil form at every fixed aperture | adverse sequence → weak limit with energy at most the limit, or an escape channel | Compactness can fail at origin, height, aperture or modulus. Success: compact negativity of the actual form with constants uniform in a growing aperture. |
-| Graded functional calculus | chain in the receiver norm; residue modes; sign-blind threshold; first column; Hilbert–Schmidt exactly above half damping by Mellin–Plancherel of the columns; bounded at half damping through the symbol `ζ(−s)/(sζ(η−s))` and dyadic mean values of the dilation symbol | damping chain + norm → eigenmodes, sizes, strong continuity at zero damping with the unbounded generator `−log d` on residue modes, unboundedness of the transition, truncation approximation at every horizon, the first column as the receiver | Dense eigenmodes need not give a stable expansion. Success: `ℓ²` bounds for the centred chain or for the orbit of `1/k`. |
+| Graded functional calculus | chain in the receiver norm; residue modes; sign-blind threshold; first column; Hilbert–Schmidt exactly above half damping by Mellin–Plancherel of the columns; bounded at half damping through the symbol `ζ(−s)/(sζ(η−s))` and dyadic mean values of the dilation symbol; the Riesz residue expansion at half damping through Riesz means of `1/ζ` on the `1`-line | damping chain + norm → eigenmodes, sizes, strong continuity at zero damping with the unbounded generator `−log d` on residue modes, unboundedness of the transition, truncation approximation at every horizon, the first column as the receiver | Dense eigenmodes need not give a stable expansion. Success: `ℓ²` bounds for the centred chain or for the orbit of `1/k`. |
 | Signed sampling / observability | local companion law | companion heights + depth mass + local degrees of freedom → a floor at the Lagrange price, or a defeating profile | A local model is not the Paley–Wiener class. Success: the companion law for sources of aperture `A`, with the Lagrange price controlled uniformly in height. |
 | Source-faithful completion with defect accounting | polar defect law; centring in the receiver norm | completion + polar functional → sign kept or lost | Strong convergence can lose the polar functional. Success: a completion whose polar functional is proved continuous. |
 | Boundary-sensitive rigidity | triangle holonomy; converse construction | sign pattern of the source → lossless or not | A diagnostic indexed by the zeros restates RH. Success: an arithmetic diagnostic identified with a holonomy and computed from the source. |

@@ -103,6 +103,10 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
 - `TheReceiverIsContinuousAtHalfDamping` — `orbit_l2_tendsto_half`,
   `centeredOperator_reciprocal_l2_tendsto_half`, `tendsto_integral_sq_criticalSymbol_sub`,
   `positiveTwin_energy_unbounded`.
+- `TheRieszResidueExpansionConvergesAtHalfDamping` — `rieszResidueSum_l2_tendsto_half`,
+  `integral_sq_finiteResidueProfile_eq`, `rieszTwin_energy_unbounded`; input
+  `RHTower.RieszMoebiusMeansOnTheOneLine` (`tendsto_moebiusRieszPoly_one_line`,
+  `exists_norm_moebiusRieszPoly_one_line_le`).
 - `ResidueModesAndBackwardContinuation` — `centeredOperator_normalizedResidueMode`,
   `tsum_sq_normalizedResidueProfile_le/_ge`, `not_backward_stable_l2/_c0`, `summable_signBlind_iff`.
 - `DampingIsStronglyContinuousWithUnboundedGenerator` — `tendsto_dampingFlow`,

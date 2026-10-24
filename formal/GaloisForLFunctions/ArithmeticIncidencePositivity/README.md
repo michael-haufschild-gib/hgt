@@ -593,17 +593,24 @@ of the innermost strip once per atom.
     `25` left as the potential `16/25` (`primeStripCharge_twentyThree_twentyFive_le`, `C¹` form
     `…_of_contDiff`).
 
-38. **The light cone, at every scale.** The band `2r − 2δ ≤ log n < 2r` (`lightConeBand`) has at most
-    `2δe^{2r} + 1` integers (`card_lightConeBand_le`), each atom at most `2r/(e^r(1 − δ))`
-    (`vonMangoldtAtom_le_of_mem_lightConeBand`). For `r ≥ 2` and `δ ≤ e^{−r}/(16r)` its mass is below
-    `1.6` (`sum_vonMangoldtAtom_lightConeBand_le`), under the strip constant `1.89`, so every atom of
-    the band is paid by one copy of the surplus of `[r − 2δ, r]`:
+38. **The light cone, at every scale, and its exact square-root width.** The band `2r − 2δ ≤ log n < 2r`
+    (`lightConeBand`) has at most `2δe^{2r} + 1` integers (`card_lightConeBand_le`), each atom at most
+    `2r/(e^r(1 − δ))` (`vonMangoldtAtom_le_of_mem_lightConeBand`). For `r ≥ 2` and `δ ≤ e^{−r}/(16r)`
+    its mass is below `1.6` (`sum_vonMangoldtAtom_lightConeBand_le`), under the strip constant `1.89`,
+    so every atom of the band is paid by one copy of the surplus of `[r − 2δ, r]`:
     `Σ_{band} 2Λ(n)/√n ∫ F F(· + log n) ≤ T(r − 2δ, r)` (`sum_primeShift_le_lightCone`, `C¹` form
-    `…_of_contDiff`). The band holds `≍ e^r/r` integers, `n > N − √N/(8 log N)` for `N = e^{2r}`.
+    `…_of_contDiff`). By Selberg sieve (`card_prime_lightConeBand_le_sieve`) and exponent injectivity on
+    proper prime powers (`card_properPrimePow_lightConeBand_le`, `pow_add_two_mul_pow_pred_le_pow`), the
+    `1/r` factor is removed: the light cone widens to the exact square-root scale `δ ≤ (1/60)e^{−r}`
+    for large `r` and uniformly to `δ ≤ c₀ e^{−r}` for all `r ≥ 2` (`eventually_sum_vonMangoldtAtom_lightConeBand_le_squareRoot`,
+    `exists_squareRoot_lightCone_allocation`), corresponding to `N − c√N < n < N` for `N = e^{2r}`.
+    Conversely, for every `C ≥ 64000`, tiling the macroscopic band into square-root sub-bands shows that
+    `T(r − 2Ce^{−r}, r)` frequently fails to pay the odd parts at width `δ = Ce^{−r}`
+    (`frequently_lightConeBox_oddPart_sharing_fails_at_squareRoot`).
 
-39. **Outside the light cone the odd parts cannot share.** The odd edge tent of width `ε`
-    (`edgeTent`, `edgeTentOdd`) lies in every strip at once. For `r ≤ L ≤ 2(r − ε)` its shift product
-    vanishes identically, so the atom of `e^L` is zero and `2∫_{L−r}^r α_L² = ∫_{L−r}^r F² ≥ ε³/32`
+39. **Outside the light cone neither the odd parts nor the signed band can share.** The odd edge tent of
+    width `ε` (`edgeTent`, `edgeTentOdd`) lies in every strip at once. For `r ≤ L ≤ 2(r − ε)` its shift
+    product vanishes identically, so the atom of `e^L` is zero and `2∫_{L−r}^r α_L² = ∫_{L−r}^r F² ≥ ε³/32`
     (`edgeTent_oddPart_eq`, `edgeTent_sq_integral_ge`), while all pairs of the support carry
     `T(0, r) ≤ 3ε²r` (`stripBoxEnergy_edgeTent_le`). The thin band `2r − 1/6 ≤ log n ≤ 2r − 1/24`
     (`thinBand`) carries `Σ Λ(n)/√n ≥ (ψ(X) − ψ(e^{−1/8}X))/√X`, `X = e^{2r − 1/24}`
@@ -611,8 +618,14 @@ of the innermost strip once per atom.
     linear budget (`eventually_lt_sum_thinBand`). Hence for all large `r` there is an odd test on
     which every atom of the thin band vanishes and every odd part is paid by its own strip, yet the
     odd parts together exceed the surplus of all pairs of `[0, r]²`
-    (`exists_edgeTent_oddPart_sharing_fails`). Mechanisms 30 and 36–38 do not globalize through the
-    odd parts.
+    (`exists_edgeTent_oddPart_sharing_fails`). Keeping the even parts does not restore unconditional
+    band sharing: the bipolar edge-dipole `F = edgeTentOdd r (1/48) − edgeTentOdd (r − 1/12) (1/12)`
+    (`bipolarEdgeTentOdd`) has `F(x)F(x + L) ≥ 0` pointwise for every `L ∈ [2r − 1/6, 2r − 1/24]`
+    (`bipolarEdgeTentOdd_mul_shift_nonneg`), integral `≥ 1/884736` on `2r − 7/48 ≤ log n ≤ 2r − 1/8`
+    (`integral_bipolarEdgeTentOdd_mul_shift_ge`), and `T(0, r) ≤ r`
+    (`stripBoxEnergy_bipolarEdgeTentOdd_le`), so the signed thin-band charge strictly exceeds `T(0, r)`
+    for all large `r` (`exists_bipolarEdgeTent_signed_thinBand_sharing_fails`, exact global identity
+    `thinBand_signedCharge_eq_tsum_sub_complement`).
 
 40. **The overlapping strips of `2` and `3`, and the end of the odd-part payment.** For
     `½ log 3 < r < log 2` the strip `S₃ = [log 3 − r, r]` lies inside `S₂ = [log 2 − r, r]`, and since
@@ -663,10 +676,14 @@ of the innermost strip once per atom.
     (`stripBoxEnergy_edgeTent_le_log`), while every strip `[L − r, r]`, `r ≤ L ≤ 2(r − ε)`, charges
     `½ ∫_0^r F²` to its odd part (`edgeTent_oddPart_eq_half_mass`). One copy of the surplus of all
     pairs of the support therefore pays the odd parts of a family of strips wider than `ε` only if
-    their weights sum to at most `2 log(4/ε) + 84` (`stripBoxEnergy_edgeTent_lt_sum_oddPart`). The
-    telescoping chain of mechanism 37 attains this order with one strip per geometric width layer.
+    their weights sum to at most `2 log(4/ε) + 84` (`stripBoxEnergy_edgeTent_lt_sum_oddPart`,
+    `sum_le_of_isPayableOddPartFamily`). Conversely, the geometric ratio-`6` telescoping chain
+    `L_j = 2(r − η₀/6^j)` (`geometricChainShift`) has scale-invariant corner ratio `1/2` and shell
+    constant `≥ 7/10` at every layer (`sharpMicroFold_ratioSix_shell_ge`,
+    `sum_geometricChain_oddPart_le_stripBoxEnergy`), establishing the matching lower bound
+    `(7/(10 log 6)) log(1/(12ε))` (`exists_payableOddPartFamily_log_lower_bound`).
     The atom mass of the width layer `[η, 2η]` is `≍ ηe^r`, so only the light cone `η ≲ e^{−r}` fits.
-    A global allocation must keep the even parts, which cancel the odd parts exactly on the edge
+    A global allocation must keep the even parts, which cancel the odd parts on the single edge
     tent.
 
 42. **The global shared-surplus allocation.** The prime side `Σ_n 2Λ(n)/√n ∫ F F(· + log n)` of an
@@ -1260,21 +1277,21 @@ To be built:
    gauge reaches only through first jets, and the explicit self-energy asymptotic.
 5. **Windows across scales.** The ratio atoms at `m ≥ 4` and the product atoms couple different
    dyadic windows; describe the coupling graph between windows and the size of its edges.
-6. **The shared surplus between the light cone and the thin band.** Mechanism 38 pays the odd parts
-   of all atoms of strip width `≤ e^{−r}/(16r)`; mechanism 39 refutes it for the band of width
-   `[1/48, 1/12]` at large `r`; mechanism 41 bounds the capacity by `2 log(4/ε) + 84`. (a) The
-   capacity constant: the largest total weight of nested strips wider than `ε` payable by one copy,
-   between the chain construction and `2 log(4/ε) + 84`. (b) The exact width:
-   with a Brun–Titchmarsh count the light cone widens to `δ ≍ e^{−r}`; a refutation at width
-   `C e^{−r}` needs prime powers in `(N − C√N, N)`, a lower bound in square-root intervals. (c) The
-   strip masses of mechanism 42 with the even parts kept: whether
-   `Σ_{band} 2Λ(n)/√n ∫ F F(· + log n) ≤ T` holds signed. Paying all strip masses and the pole for
-   every odd test is the positivity of the odd zero form, that is, the Riemann Hypothesis.
-   The band's charge is a Hankel form whose symbol is the Dirichlet polynomial
-   `Σ_{band} Λ(n) n^{−1/2−iξ}`; the mean part is a gain. Heuristically the fluctuation is of the
-   order of the surplus symbol `log ξ` when the zeros near height `ξ` lie on the line, and larger by
-   `e^{(2β − 1)r}` for a zero `β + iγ` off it, so the signed allocation is not expected to be
-   unconditional beyond the light cone.
+6. **The shared surplus between the light cone and the thin band (resolved in `LightConeSquareRootScaleAndSignedBandObstruction`).**
+   (a) *Two-sided logarithmic capacity law:* any payable family of strips in `[r, 2(r − ε)]` has total weight at most
+   `2 log(4/ε) + 84` (`sum_le_of_isPayableOddPartFamily`), while the geometric ratio-`6` chain achieves weight at least
+   `(7/(10 log 6)) log(1/(12ε))` (`exists_payableOddPartFamily_log_lower_bound`).
+   (b) *Exact square-root width `δ ≍ e^{−r}`:* Selberg sieve on prime shifts (`card_prime_lightConeBand_le_sieve`) and
+   exponent injectivity on proper prime powers (`card_properPrimePow_lightConeBand_le`) widen the payable light cone to
+   `δ ≤ (1/60)e^{−r}` for large `r` and uniformly to `δ ≤ c₀ e^{−r}` for all `r ≥ 2`
+   (`eventually_sum_vonMangoldtAtom_lightConeBand_le_squareRoot`, `exists_squareRoot_lightCone_allocation`); conversely,
+   for every `C ≥ 64000`, `T(r − 2Ce^{−r}, r)` frequently fails to pay the odd parts at width `δ = Ce^{−r}`
+   (`frequently_lightConeBox_oddPart_sharing_fails_at_squareRoot`).
+   (c) *Signed band obstruction:* the bipolar edge-dipole `bipolarEdgeTentOdd` makes every shift product in `thinBand r`
+   pointwise nonnegative (`bipolarEdgeTentOdd_mul_shift_nonneg`) and strictlypositive on `thinBandCore r` while keeping
+   `T(0, r) ≤ r`, so `Σ_{thinBand r} 2Λ(n)/√n ∫ F F(· + log n) > T(0, r)` for all large `r`
+   (`exists_bipolarEdgeTent_signed_thinBand_sharing_fails`); the signed band charge is governed by the global identity
+   `thinBand_signedCharge_eq_tsum_sub_complement`.
 
 ### Research topics
 

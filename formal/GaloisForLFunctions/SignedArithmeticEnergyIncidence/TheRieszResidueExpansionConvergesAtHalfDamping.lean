@@ -672,8 +672,8 @@ theorem rieszResidueSum_l2_tendsto_half :
       rw [finiteResidueSum_sub, finiteResidueSum_rieszCoeff_of_le (by omega),
         finiteResidueSum_rieszCoeff_of_le (by omega)]
     have hsl : finiteResidueSlope D b = τ N - τ M := by
-      rw [finiteResidueSlope_sub, finiteResidueSlope_rieszCoeff_of_le (by omega),
-        finiteResidueSlope_rieszCoeff_of_le (by omega)]
+      rw [finiteResidueSlope_sub, finiteResidueSlope_rieszCoeff_of_le (N := N) (D := D) (by omega),
+        finiteResidueSlope_rieszCoeff_of_le (N := M) (D := D) (by omega)]
     have hsym : ∀ t, finiteResidueSymbol D b t = Q N t - Q M t := fun t => by
       rw [finiteResidueSymbol_sub, finiteResidueSymbol_rieszCoeff_of_le (by omega),
         finiteResidueSymbol_rieszCoeff_of_le (by omega)]
@@ -770,6 +770,207 @@ theorem rieszTwin_energy_unbounded (B : ℝ) :
     tendsto_finsetSum _ fun n _ => (tendsto_rieszTwin n).pow 2
   filter_upwards [hlim.eventually (eventually_gt_nhds (show B < _ by linarith))] with N hN
   exact ⟨T, hN⟩
+
+/-! ### The residue series itself converges -/
+
+/-- The partial sums `A_N = Σ_{d ≤ N} μ(d) d^{−½} v_d` of the residue series at half damping. -/
+def residuePartialSum (N n : ℕ) : ℝ := ∑ d ∈ Finset.Icc 1 N, residueTerm (1 / 2) d n
+
+theorem rieszResidueSum_eq (N n : ℕ) :
+    rieszResidueSum N n =
+      ∑ d ∈ Finset.Icc 1 N, (1 - (d : ℝ) / RHTower.perronLength N) * residueTerm (1 / 2) d n := by
+  unfold rieszResidueSum finiteResidueSum
+  refine Finset.sum_congr rfl fun d hd => ?_
+  simp only [rieszCoeff, (Finset.mem_Icc.mp hd).2, if_true, residueTerm]
+  ring
+
+/-- Each term of the residue series has receiver energy at most `2/d²`. -/
+theorem sum_sq_residueTerm_le {d : ℕ} (hd : 1 ≤ d) (T : ℕ) :
+    ∑ n ∈ Finset.range T, residueTerm (1 / 2) d n ^ 2 ≤ 2 / (d : ℝ) ^ 2 := by
+  have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
+  have hμ : ((ArithmeticFunction.moebius d : ℤ) : ℝ) ^ 2 ≤ 1 := by
+    have h' : |((ArithmeticFunction.moebius d : ℤ) : ℝ)| ≤ 1 := by
+      exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n := d)
+    rw [← sq_abs]
+    nlinarith [abs_nonneg ((ArithmeticFunction.moebius d : ℤ) : ℝ)]
+  have hrp : ((d : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 = 1 / d := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul hd0.le]
+    norm_num
+    rw [Real.rpow_neg_one]
+  have hsum := (summable_sq_normalizedResidueProfile d).sum_le_tsum (Finset.range T)
+    (fun n _ => sq_nonneg _)
+  have hv := tsum_sq_normalizedResidueProfile_le (show 0 < d by omega)
+  have e : ∑ n ∈ Finset.range T, residueTerm (1 / 2) d n ^ 2 =
+      ((ArithmeticFunction.moebius d : ℤ) : ℝ) ^ 2 * ((d : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 *
+        ∑ n ∈ Finset.range T, normalizedResidueProfile d n ^ 2 := by
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun n _ => by unfold residueTerm; ring
+  rw [e, hrp]
+  calc ((ArithmeticFunction.moebius d : ℤ) : ℝ) ^ 2 * (1 / d) *
+        ∑ n ∈ Finset.range T, normalizedResidueProfile d n ^ 2
+      ≤ 1 * (1 / d) * (2 / d) :=
+        mul_le_mul (mul_le_mul_of_nonneg_right hμ (by positivity)) (hsum.trans hv)
+          (Finset.sum_nonneg fun n _ => sq_nonneg _) (by positivity)
+    _ = 2 / (d : ℝ) ^ 2 := by ring
+
+/-- **The residue series converges in the receiver norm at half damping**: `A_N → u_{½}` in
+`ℓ²`.  The Riesz means converge (`rieszResidueSum_l2_tendsto_half`) and the terms have receiver
+norm `≤ √2/d`, so the Tauberian comparison `k A_N = X_M R_M − X_N R_N − Σ_{N<d≤M} (X_M − d) t_d`,
+`M = N + ⌈θN⌉`, closes the gap. -/
+theorem residuePartialSum_l2_tendsto_half :
+    ∀ ε : ℝ, 0 < ε → ∀ᶠ N in atTop, ∀ T : ℕ,
+      ∑ n ∈ Finset.range T, (residuePartialSum N n - orbitCoord (1 / 2) n) ^ 2 ≤ ε := by
+  intro ε hε
+  set θ : ℝ := min 1 (ε / 48) with hθ
+  have hθ0 : 0 < θ := lt_min one_pos (by positivity)
+  have hθ1 : θ ≤ 1 := min_le_left _ _
+  have hθε : θ ≤ ε / 48 := min_le_right _ _
+  set ε' : ℝ := θ ^ 2 * ε / 192 with hε'
+  have hε'0 : 0 < ε' := by positivity
+  obtain ⟨K₀, hK₀⟩ := eventually_atTop.mp (rieszResidueSum_l2_tendsto_half ε' hε'0)
+  obtain ⟨N₁, hN₁⟩ : ∃ N₁ : ℕ, 1 / θ ≤ N₁ := exists_nat_ge _
+  refine eventually_atTop.mpr ⟨max K₀ (max N₁ 1), fun N hN T => ?_⟩
+  have hNK : K₀ ≤ N := le_of_max_le_left hN
+  have hN1 : 1 ≤ N := le_trans (le_max_right _ _) (le_of_max_le_right hN)
+  have hNθ : 1 / θ ≤ N := hN₁.trans (by exact_mod_cast le_trans (le_max_left _ _) (le_of_max_le_right hN))
+  have hNr : (1 : ℝ) ≤ N := by exact_mod_cast hN1
+  set k : ℕ := ⌈θ * N⌉₊ with hk
+  have hkge : θ * N ≤ k := Nat.le_ceil _
+  have hkle : (k : ℝ) ≤ θ * N + 1 := (Nat.ceil_lt_add_one (by positivity)).le
+  have hk0 : (0 : ℝ) < k := lt_of_lt_of_le (by positivity) hkge
+  set M := N + k with hM
+  set X := RHTower.perronLength with hX
+  set u := orbitCoord (1 / 2) with hu
+  set t := fun d n => residueTerm (1 / 2) d n with ht
+  have hXN : X N = N + 1 / 2 := rfl
+  have hXM : X M = N + k + 1 / 2 := by rw [hX]; unfold RHTower.perronLength; rw [hM]; push_cast; ring
+  -- the Tauberian identity at every coordinate
+  have hiden : ∀ n, (k : ℝ) * residuePartialSum N n =
+      X M * rieszResidueSum M n - X N * rieszResidueSum N n -
+        ∑ d ∈ Finset.Ioc N M, (X M - d) * t d n := by
+    intro n
+    have hRK : ∀ K, X K * rieszResidueSum K n = ∑ d ∈ Finset.Icc 1 K, (X K - d) * t d n := by
+      intro K
+      have hX0 : X K ≠ 0 := (RHTower.perronLength_pos K).ne'
+      rw [rieszResidueSum_eq, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun d _ => ?_
+      simp only [ht]
+      field_simp
+    have hsplit : ∑ d ∈ Finset.Icc 1 M, (X M - d) * t d n =
+        ∑ d ∈ Finset.Icc 1 N, (X M - d) * t d n + ∑ d ∈ Finset.Ioc N M, (X M - d) * t d n := by
+      rw [← Nat.Icc_succ_left, ← Nat.Icc_succ_left, ← Nat.Icc_succ_left]
+      rw [← Finset.sum_Ioc_consecutive _ (Nat.zero_le N) (show N ≤ M by omega)]
+      · simp only [Nat.Icc_succ_left]
+    rw [hRK M, hRK N, hsplit]
+    unfold residuePartialSum
+    rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+    have : ∀ d ∈ Finset.Icc 1 N, (X M - d) * t d n - (X N - d) * t d n = (k : ℝ) * t d n :=
+      fun d _ => by rw [hXM, hXN]; ring
+    rw [Finset.sum_congr rfl this]
+    ring
+  -- pointwise square bound
+  have hpt : ∀ n, (residuePartialSum N n - u n) ^ 2 ≤
+      4 * (X M / k) ^ 2 * (rieszResidueSum M n - u n) ^ 2 +
+        4 * (X N / k) ^ 2 * (rieszResidueSum N n - u n) ^ 2 +
+          2 * (k * ∑ d ∈ Finset.Ioc N M, t d n ^ 2) := by
+    intro n
+    have hA : residuePartialSum N n - u n =
+        (X M / k * (rieszResidueSum M n - u n) - X N / k * (rieszResidueSum N n - u n)) -
+          ∑ d ∈ Finset.Ioc N M, (X M - d) / k * t d n := by
+      have h := hiden n
+      rw [← Finset.sum_div] at *
+      field_simp
+      rw [hXM, hXN] at h ⊢
+      have hs : ∑ d ∈ Finset.Ioc N M, (X M - d) / k * t d n =
+          (∑ d ∈ Finset.Ioc N M, (X M - d) * t d n) / k := by
+        rw [Finset.sum_div]; exact Finset.sum_congr rfl fun d _ => by ring
+      linear_combination h
+    have hw : ∀ d ∈ Finset.Ioc N M, 0 ≤ (X M - d) / k ∧ (X M - d) / k ≤ 1 := by
+      intro d hd
+      have hd' := Finset.mem_Ioc.mp hd
+      have h1 : (N : ℝ) + 1 ≤ d := by exact_mod_cast hd'.1
+      have h2 : (d : ℝ) ≤ N + k := by exact_mod_cast hd'.2
+      rw [hXM]
+      constructor
+      · exact div_nonneg (by linarith) hk0.le
+      · rw [div_le_one hk0]; linarith
+    have hb : (∑ d ∈ Finset.Ioc N M, (X M - d) / k * t d n) ^ 2 ≤
+        k * ∑ d ∈ Finset.Ioc N M, t d n ^ 2 := by
+      have hcs := sq_sum_le_card_mul_sum_sq (s := Finset.Ioc N M)
+        (f := fun d => (X M - d) / k * t d n)
+      have hcard : ((Finset.Ioc N M).card : ℝ) = k := by
+        rw [Nat.card_Ioc]; push_cast; rw [hM]; push_cast; ring
+      rw [hcard] at hcs
+      refine hcs.trans (mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun d hd => ?_) hk0.le)
+      obtain ⟨h0, h1⟩ := hw d hd
+      calc ((X M - d) / k * t d n) ^ 2 = ((X M - d) / k) ^ 2 * t d n ^ 2 := by ring
+        _ ≤ 1 * t d n ^ 2 := by
+            gcongr
+            nlinarith
+        _ = t d n ^ 2 := one_mul _
+    rw [hA]
+    set a := X M / k * (rieszResidueSum M n - u n)
+    set c := X N / k * (rieszResidueSum N n - u n)
+    set b := ∑ d ∈ Finset.Ioc N M, (X M - d) / k * t d n
+    have h1 : (a - c - b) ^ 2 ≤ 2 * (a - c) ^ 2 + 2 * b ^ 2 := by nlinarith [sq_nonneg (a - c + b)]
+    have h2 : (a - c) ^ 2 ≤ 2 * a ^ 2 + 2 * c ^ 2 := by nlinarith [sq_nonneg (a + c)]
+    have ha2 : a ^ 2 = (X M / k) ^ 2 * (rieszResidueSum M n - u n) ^ 2 := by ring
+    have hc2 : c ^ 2 = (X N / k) ^ 2 * (rieszResidueSum N n - u n) ^ 2 := by ring
+    nlinarith
+  -- sum over the horizon
+  have hRM := hK₀ M (by omega) T
+  have hRN := hK₀ N hNK T
+  have htail : ∑ n ∈ Finset.range T, ∑ d ∈ Finset.Ioc N M, t d n ^ 2 ≤
+      k * (2 / ((N : ℝ) + 1) ^ 2) := by
+    rw [Finset.sum_comm]
+    calc ∑ d ∈ Finset.Ioc N M, ∑ n ∈ Finset.range T, t d n ^ 2
+        ≤ ∑ d ∈ Finset.Ioc N M, 2 / ((N : ℝ) + 1) ^ 2 := by
+          refine Finset.sum_le_sum fun d hd => (sum_sq_residueTerm_le (by
+            have := (Finset.mem_Ioc.mp hd).1; omega) T).trans ?_
+          have h1 : (N : ℝ) + 1 ≤ d := by exact_mod_cast (Finset.mem_Ioc.mp hd).1
+          gcongr
+      _ = k * (2 / ((N : ℝ) + 1) ^ 2) := by
+          rw [Finset.sum_const, Nat.card_Ioc, nsmul_eq_mul]; push_cast; rw [hM]; push_cast; ring
+  have hXMk : X M / k ≤ 4 / θ := by
+    rw [hXM, div_le_div_iff₀ hk0 hθ0]
+    nlinarith
+  have hXNk : X N / k ≤ 4 / θ := by
+    rw [hXN, div_le_div_iff₀ hk0 hθ0]
+    nlinarith
+  have hkN : (k : ℝ) / ((N : ℝ) + 1) ≤ 2 * θ := by
+    rw [div_le_iff₀ (by positivity)]
+    have : 1 ≤ θ * N := by rwa [div_le_iff₀ hθ0, mul_comm] at hNθ
+    nlinarith
+  calc ∑ n ∈ Finset.range T, (residuePartialSum N n - u n) ^ 2
+      ≤ ∑ n ∈ Finset.range T, (4 * (X M / k) ^ 2 * (rieszResidueSum M n - u n) ^ 2 +
+          4 * (X N / k) ^ 2 * (rieszResidueSum N n - u n) ^ 2 +
+            2 * (k * ∑ d ∈ Finset.Ioc N M, t d n ^ 2)) := Finset.sum_le_sum fun n _ => hpt n
+    _ = 4 * (X M / k) ^ 2 * ∑ n ∈ Finset.range T, (rieszResidueSum M n - u n) ^ 2 +
+          4 * (X N / k) ^ 2 * ∑ n ∈ Finset.range T, (rieszResidueSum N n - u n) ^ 2 +
+            2 * (k * ∑ n ∈ Finset.range T, ∑ d ∈ Finset.Ioc N M, t d n ^ 2) := by
+        rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum,
+          ← Finset.mul_sum, ← Finset.mul_sum]
+    _ ≤ 4 * (4 / θ) ^ 2 * ε' + 4 * (4 / θ) ^ 2 * ε' + 2 * (k * (k * (2 / ((N : ℝ) + 1) ^ 2))) := by
+        gcongr
+    _ = 128 / θ ^ 2 * ε' + 4 * ((k : ℝ) / ((N : ℝ) + 1)) ^ 2 := by field_simp; ring
+    _ ≤ 128 / θ ^ 2 * ε' + 4 * (2 * θ) ^ 2 := by
+        gcongr
+    _ ≤ ε := by
+        rw [hε']
+        have e1 : 128 / θ ^ 2 * (θ ^ 2 * ε / 192) = 2 * ε / 3 := by field_simp; ring
+        rw [e1]
+        nlinarith
+
+/-- The residue series converges to the orbit of the reciprocal: `A_N → C_{½} r` in `ℓ²`. -/
+theorem residuePartialSum_l2_tendsto_centeredOperator :
+    ∀ ε : ℝ, 0 < ε → ∀ᶠ N in atTop, ∀ T : ℕ,
+      ∑ n ∈ Finset.range T, (residuePartialSum N n -
+        arithmeticDampingCenteredOperator (by norm_num : (0 : ℝ) < 1 / 2)
+          reciprocalObservable n) ^ 2 ≤ ε := by
+  intro ε hε
+  filter_upwards [residuePartialSum_l2_tendsto_half ε hε] with N h T
+  simp only [centeredOperator_reciprocal_eq_orbitCoord]
+  exact h T
 
 end
 

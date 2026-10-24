@@ -438,7 +438,7 @@ theorem card_properPrimePow_lightConeBand_le {r δ : ℝ} (hr : 2 ≤ r) (hδ0 :
         Nat.pow_le_pow_left hprime.two_le _
       omega
     exact ⟨hrecon, hprime.two_le, he2, hlg⟩
-  have hmaps : Set.MapsTo (fun n => n.factorization n.minFac) S T := fun n hn =>
+  have hmaps : Set.MapsTo (fun n : ℕ => n.factorization n.minFac) S T := fun n hn =>
     Finset.mem_coe.mpr (Finset.mem_Icc.mpr ⟨(key n hn).2.2.1, (key n hn).2.2.2⟩)
   have hgap_contra : ∀ x ∈ S, ∀ y ∈ S,
       x.factorization x.minFac = y.factorization y.minFac → x.minFac < y.minFac → False := by
@@ -489,13 +489,14 @@ theorem card_properPrimePow_lightConeBand_le {r δ : ℝ} (hr : 2 ≤ r) (hδ0 :
       rw [e]
       exact mul_le_mul_of_nonneg_left (by linarith [Real.add_one_le_exp (-δ)]) (Real.exp_pos r).le
     nlinarith [Real.exp_pos r]
-  have hinj : Set.InjOn (fun n => n.factorization n.minFac) S := by
+  have hinj : Set.InjOn (fun n : ℕ => n.factorization n.minFac) S := by
     intro x hx y hy hkeq
+    dsimp at hkeq
     rcases lt_trichotomy x.minFac y.minFac with hlt | heq | hgt
     · exact False.elim (hgap_contra x hx y hy hkeq hlt)
     · rw [← (key x hx).1, ← (key y hy).1, hkeq, heq]
     · exact False.elim (hgap_contra y hy x hx hkeq.symm hgt)
-  have hcard := Finset.card_le_card_of_injOn (fun n => n.factorization n.minFac) hmaps hinj
+  have hcard := Finset.card_le_card_of_injOn (fun n : ℕ => n.factorization n.minFac) hmaps hinj
   rw [Nat.card_Icc] at hcard
   omega
 
@@ -654,15 +655,15 @@ theorem eventually_sum_vonMangoldtAtom_lightConeBand_le_squareRoot :
   have hlin : Tendsto (fun r : ℝ => r / 3) atTop atTop :=
     tendsto_id.atTop_div_const (by norm_num)
   have hexp5 := ((Real.tendsto_exp_div_pow_atTop 5).comp hlin).eventually
-    (eventually_ge_atTop (243 * (32 * C_m + 32)))
+    (eventually_ge_atTop (243 * (32 * C_m + 640)))
   filter_upwards [hexp5, eventually_ge_atTop (12 : ℝ)] with r hexp hr δ hδ0 hδ
   simp only [Function.comp_apply] at hexp
   have hr3_pos : 0 < (r / 3) ^ 5 := by positivity
   rw [le_div_iff₀ hr3_pos] at hexp
-  have hexp_r3 : (32 * C_m + 32) * r ^ 5 ≤ Real.exp (r / 3) := by
-    have : 243 * (32 * C_m + 32) * (r / 3) ^ 5 = (32 * C_m + 32) * r ^ 5 := by ring
+  have hexp_r3 : (32 * C_m + 640) * r ^ 5 ≤ Real.exp (r / 3) := by
+    have : 243 * (32 * C_m + 640) * (r / 3) ^ 5 = (32 * C_m + 640) * r ^ 5 := by ring
     linarith
-  have hE_ge : (32 * C_m + 32) * r ^ 5 ≤ Real.exp r :=
+  have hE_ge : (32 * C_m + 640) * r ^ 5 ≤ Real.exp r :=
     hexp_r3.trans (Real.exp_le_exp.mpr (by linarith))
   have hr1_le_r5 : r ≤ r ^ 5 := by
     have : r ^ 1 ≤ r ^ 5 := pow_le_pow_right₀ (by linarith) (by omega)
@@ -714,24 +715,31 @@ theorem eventually_sum_vonMangoldtAtom_lightConeBand_le_squareRoot :
       ring
     have h64E : 64 / E ≤ 6 / 60 := by
       rw [div_le_iff₀ hE0]
-      nlinarith
+      have h3b : 0 ≤ C_m * r ^ 5 := mul_nonneg hC_pos (by positivity)
+      have h3c : (32 * C_m + 640) * r ^ 5 = 32 * (C_m * r ^ 5) + 640 * r ^ 5 := by ring
+      linarith
     rw [heq]; linarith
   have hT2 : ((C_m * r ^ 4 + 1) * Real.exp (2 * r / 3) + (4 * r + 2)) * (4 * r / E) ≤ 15 / 60 := by
     rw [mul_div_assoc', div_le_iff₀ hE0]
-    have h1 : (C_m * r ^ 4 + 1) * (4 * r) ≤ 4 * (C_m + 1) * r ^ 5 := by
-      have hr45 : r ^ 4 * r = r ^ 5 := by ring
-      nlinarith
+    have h3b : 0 ≤ C_m * r ^ 5 := mul_nonneg hC_pos (by positivity)
+    have h3c : (32 * C_m + 640) * r ^ 5 = 32 * (C_m * r ^ 5) + 640 * r ^ 5 := by ring
+    have h1 : (C_m * r ^ 4 + 1) * (4 * r) ≤ 4 * (C_m * r ^ 5) + 4 * r ^ 5 := by
+      have hr45 : (C_m * r ^ 4 + 1) * (4 * r) = 4 * (C_m * (r ^ 4 * r)) + 4 * r := by ring
+      have hr45' : r ^ 4 * r = r ^ 5 := by ring
+      rw [hr45, hr45']
+      linarith
     have h2 : (C_m * r ^ 4 + 1) * Real.exp (2 * r / 3) * (4 * r) ≤ (1 / 8) * E := by
       calc (C_m * r ^ 4 + 1) * Real.exp (2 * r / 3) * (4 * r)
           = Real.exp (2 * r / 3) * ((C_m * r ^ 4 + 1) * (4 * r)) := by ring
-        _ ≤ Real.exp (2 * r / 3) * (4 * (C_m + 1) * r ^ 5) :=
+        _ ≤ Real.exp (2 * r / 3) * (4 * (C_m * r ^ 5) + 4 * r ^ 5) :=
             mul_le_mul_of_nonneg_left h1 (Real.exp_pos _).le
         _ ≤ Real.exp (2 * r / 3) * ((1 / 8) * Real.exp (r / 3)) := by
             refine mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le
             linarith
         _ = (1 / 8) * E := by rw [← mul_assoc, mul_comm (Real.exp (2 * r / 3)), mul_assoc, hE23]
     have h3 : (4 * r + 2) * (4 * r) ≤ (1 / 8) * E := by
-      nlinarith
+      have h3a : (4 * r + 2) * (4 * r) = 16 * r ^ 2 + 8 * r := by ring
+      linarith
     linarith
   set U := 8 * (2 * δ * Real.exp (2 * r) + 2) / r
   set V := (C_m * r ^ 4 + 1) * Real.exp (2 * r / 3) + (4 * r + 2)
@@ -1336,8 +1344,9 @@ theorem integral_bipolarEdgeTentOdd_mul_shift_ge {r L : ℝ} (hr : 1 ≤ r)
         edgeTent r (1 / 48) (-x) * edgeTent (r - 1 / 12) (1 / 12) (x + L) :=
       mul_le_mul (by linarith) (by linarith) (by norm_num) (edgeTent_nonneg _ _ _)
     linarith
-  have hlow := intervalIntegral.integral_mono_on hab intervalIntegrable_const
-    (hg_cont.intervalIntegrable a b) hpt
+  have hlow : ∫ x in a..b, (1 / 9216 : ℝ) ≤ ∫ x in a..b, g x :=
+    intervalIntegral.integral_mono_on hab intervalIntegrable_const
+      (hg_cont.intervalIntegrable a b) hpt
   rw [intervalIntegral.integral_const, smul_eq_mul] at hlow
   have hlen : (b - a) * (1 / 9216 : ℝ) = 1 / 884736 := by dsimp [a, b]; ring
   linarith
