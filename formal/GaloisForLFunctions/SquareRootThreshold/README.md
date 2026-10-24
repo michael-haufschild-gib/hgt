@@ -121,9 +121,9 @@ them.
 | Tempered configuration | `Σ_ρ m_ρ/(1 + \|γ_ρ\|²) < ∞` | `TemperedConfig` |
 | Pair energy | `S(a) = ∫_{-a}^{a} sinh²(δu) du = sinh(2δa)/(2δ) − a` | `pairEnergy` |
 | Exponential sum | `Q(ξ) = Σ_j c_j e^{2πiξν_j}` | `expSum` |
-| Prime polynomial | `Π_f(ξ) = Σ_{2≤n≤X} Λ(n) n^{−1/2}(k_f(log n) n^{2πiξ} + k_f(−log n) n^{−2πiξ})`, with odd/even parity sectors `Π_f^odd`, `Π_f^even` | `primePolynomial`, `oddPrimePolynomial`, `evenPrimePolynomial` |
+| Prime polynomial | `Π_f(ξ) = Σ_{2≤n≤X} Λ(n) n^{−1/2}(k_f(log n) n^{2πiξ} + k_f(−log n) n^{−2πiξ})`, with odd/even parity sectors `Π_f^odd`, `Π_f^even` and `y`-smooth/`y`-rough split | `primePolynomial`, `oddPrimePolynomial`, `evenPrimePolynomial`, `smoothPrimePolynomial`, `roughPrimePolynomial`, `roughPosPrimePoly` |
 | Archimedean–pole part | `A_f(ξ) = h_k(i/2) + h_k(−i/2) + ∫ h_k μ` with `k = S_ξ f ⋆ (S_ξ f)~` | `archPart` |
-| Diagonal energy | `V_f = Σ_{2≤n≤X} Λ(n)²/n (\|k_f(log n)\|² + \|k_f(−log n)\|²)`, split as `V_f^odd + V_f^even` | `primeVariance`, `oddPrimeVariance`, `evenPrimeVariance` |
+| Diagonal energy | `V_f = Σ_{2≤n≤X} Λ(n)²/n (\|k_f(log n)\|² + \|k_f(−log n)\|²)`, split as `V_f^odd + V_f^even` and `smoothPrimeVariance + roughPrimeVariance` | `primeVariance`, `oddPrimeVariance`, `evenPrimeVariance`, `smoothPrimeVariance`, `roughPrimeVariance`, `roughPosPrimeVariance` |
 | Prime-only polynomial and envelope | the prime terms of `Π_f`; the `ℓ¹` envelope `M_f` of its coefficients | `primeOnlyPolynomial`, `primeEnvelope` |
 | Prime window functional | `P_v(k) = Σ_n Λ(n)/√n (k(log n) + k(−log n))` read on `\|log n − v\| ≤ 2w`, supported on `lagPrimePowWindow`, with doubling and tripling energies | `lagPrimeWindow`, `lagPrimePowWindow`, `lagPrimeWindowRHS`, `lagDoublingEnergy`, `lagTriplingEnergy` |
 
@@ -647,7 +647,16 @@ argument becomes quantitative.
     near-top visibility law of mechanism 23 uniform in the height, and the dichotomy holds verbatim
     for the degree-defect rate of the scaling surface
     (`scalingSurface_defectRate_eq_zetaZeroWidth_or_offLine_cluster`, Arithmetic Castelnuovo–Severi):
-    one hypothesis, one alternative, in every chart.
+    one hypothesis, one alternative, in every chart. In fact (`NormalisationBridgeAndLocalClusterExclusionLaw`),
+    boundedness of unsigned conjugate-difference sampling at even *one* positive aperture `a₀` is
+    equivalent to boundedness at *every* aperture and forces `polarGroundEnergyRate = zetaZeroWidth`
+    (`exists_unsignedDepthSamplingBound_iff_forall_aperture`,
+    `polarGroundEnergyRate_eq_zetaZeroWidth_of_unsignedDepthSamplingBound`), and any sub-exponential
+    aperture-dependent depth-floor factor `W(A) = o(e^{εA})` suffices for the exponent identity
+    (`polarGroundEnergyRate_eq_zetaZeroWidth_of_subexponential_depthFloor`), while `zetaZeroWidth < polarGroundEnergyRate`
+    forces unit windows `[T − 1, T + 1]` of squared depth mass `> W`, multiplicity `> W / zetaZeroWidth²`,
+    and exponential height `180|T| > exp(W / (40 · zetaZeroWidth²))`
+    (`polarGroundEnergyRate_eq_zetaZeroWidth_or_high_depthMass_window_escape`).
 37. **The coupling of finitely many primes to the prime tail.** At aperture `a` the localized Weil
     form splits as `W_ζ(S_ξf, S_ξf) = A_f(ξ) − Π_f(ξ)`, with `Π_f` a polynomial over the *finitely
     many* prime powers `n ≤ e^{2a}` and `A_f` the pole term plus the archimedean term. The pole of
@@ -665,8 +674,14 @@ argument becomes quantitative.
     criterion is the rank-two `2 × 2` prime–Gamma inequality on the two pole directions `e^{±u/2}`
     (`primePolynomial_le_archPart_iff_poleCompression`), so the depth-`½` pair sector at height zero
     already carries the whole statement; Bagchi's strong recurrence implies it
-    (`primePolynomial_le_archPart_of_zetaStronglyRecurrent`); and both criteria have unconditional
-    density-zero shadows, the heights with `Re W_ζ < 0` having proportion `O((log X/log T)²)`.
+    (`primePolynomial_le_archPart_of_zetaStronglyRecurrent`), and pointwise strong disc recurrence
+    at every point of `1/2 < Re z < 1` is equivalent to both
+    (`forall_strip_exists_zetaDiscStronglyRecurrentOn_iff_primePolynomial_le_archPart`,
+    `forall_strip_exists_zetaDiscStronglyRecurrentOn_iff_poleCompression` in
+    `EveryHeightOrbitAndConditionedTailBridge`); and both criteria have unconditional
+    density-zero shadows, the heights with `Re W_ζ < 0` having proportion `O((log X/log T)²)` while
+    every vertical line `Re z = σ ∈ (1/2, 1)` has full-measure disc recurrence
+    (`every_vertical_line_full_measure_recurrence_and_bad_height_bound`).
 38. **Companions for the one-parameter family, from the zero count alone.** Mechanism 23 gives the
     twin radius for the *modulated* family. For the unmodulated lag function
     `φ(v) = Σ_z D(z)e^{zv}`, `P_v = φ(0) − φ(v)`, the same conclusion holds with the attainment
@@ -1073,40 +1088,67 @@ To be built:
    (`n ≥ 1`) of the pure difference family (`τ = −1`) is strictly negative starting at the threshold
    `v = log 5` (`goldenDatum_twoBump_comb_at_threshold`).
 7. **Every height.** Conditioned-tail estimates for the orbit `τ ↦ ζ(· + iτ)` on a prescribed disc
-   (the Bagchi lane of `RHTower`): recurrence holds on every zero-free disc, RH is local disc
-   recurrence at every point of the strip, and the object to control is the tail conditioned on the
-   return set of the finite Euler head. The conditioning itself costs nothing: head-conditioned
-   decoupling (`RHTower/HeadConditionedRoughDecoupling`) proves a mean value theorem at arbitrary
-   *distinct* integer frequencies and, from it, that weighting the heights by any probe built on
-   the primes below `y` — in particular by one concentrated on the return set — leaves a `y`-rough
-   Dirichlet polynomial's mean square unchanged, with the effective error coming from integrality
-   of the frequencies (`|log(A/B)| ≥ 1/max(A, B)`) and therefore native to `ℕ`: a Beurling system
-   keeps the exact diagonal and loses the effective form. The residual is that the rough mean
-   square is *unchanged*, not small, while the lane needs the tail to return: the uncontrolled
-   object is `log ζ(s) − Σ_{p ≤ y} p^{−s}` at a single fixed `s`, and with it the control of
-   near-top zeros beyond a finite horizon (mechanism 25).
+   (the Bagchi lane of `RHTower`, connected to the localized explicit formula in
+   `EveryHeightOrbitAndConditionedTailBridge`): recurrence holds on every zero-free disc, RH is
+   local disc recurrence at every point of the strip, equivalent to the coupled criterion
+   `Re Π_f(ξ) ≤ Re A_f(ξ)` and to rank-two pole compression
+   (`forall_strip_exists_zetaDiscStronglyRecurrentOn_iff_riemannHypothesis`,
+   `forall_strip_exists_zetaDiscStronglyRecurrentOn_iff_primePolynomial_le_archPart`,
+   `forall_strip_exists_zetaDiscStronglyRecurrentOn_iff_poleCompression`, and at width `σ ≥ 0` to
+   `Re P_{w,v} ≥ −Ce^{σv}`, `forall_right_exists_zetaDiscStronglyRecurrentOn_iff_lag_primeWindow_ge_neg_exp`),
+   and the object to control is the tail conditioned on the return set of the finite Euler head.
+   The conditioning itself costs nothing: head-conditioned decoupling (`RHTower/HeadConditionedRoughDecoupling`)
+   proves a mean value theorem at arbitrary *distinct* integer frequencies and, from it, that
+   splitting `primePolynomial f N` at a head cutoff `y` into `smoothPrimePolynomial f y N` and
+   `roughPrimePolynomial f y N` (`primePolynomial_eq_smooth_add_rough`, `primeVariance_eq_smooth_add_rough`)
+   leaves the `y`-rough positive-frequency polynomial's mean square `roughPosPrimeVariance f y N`
+   unchanged under weighting by `primeReturnKernel P τ` for any `P ⊆ Nat.primesBelow y`
+   (`tendsto_primeReturnKernel_weighted_roughPosPrime_meanSquare`,
+   `norm_integral_primeReturnKernel_mul_roughPosPrime_sub_diag_le`,
+   `le_setIntegral_primeReturnKernel_goodHeights_roughPosPrime`), with the effective error coming
+   from integrality of the frequencies (`|log(A/B)| ≥ 1/max(A, B)`) and therefore native to `ℕ`: a
+   Beurling system keeps the exact diagonal and loses the effective form. The residual is that the
+   rough mean square is *unchanged*, not small, while the lane needs the tail to return: the
+   uncontrolled object is `log ζ(s) − Σ_{p ≤ y} p^{−s}` at a single fixed `s`, and with it the
+   control of near-top zeros beyond a finite horizon (mechanism 25).
    The orbit lane has Voronin universality and recurrence modulo the local zero divisor at
    every point (`RHTower/ZetaVoroninUniversalityOnSmallDiscs`,
-   `RHTower/ZetaRecurrenceAtEveryPointModuloItsZeros`); the cofactor-return heights fix the phases
-   of the primes `≤ y` only through the disc values `Σ Λ(n) ω(n) n^{−z} ≈ −g′/g`, weights `n^{−Re z}`
-   with `Re z > 1/2`, which leave `Σ_{p ≤ N} Λ(p) p^{−1/2} k_f(log p) ω_p` free once `N` exceeds the
-   base cutoff: the orbit reads the prime phases at bandwidth zero, the localized criterion needs
-   them at `√X ≳ log T`. The two lanes meet only at the square-root threshold (open problem 1).
+   `RHTower/ZetaRecurrenceAtEveryPointModuloItsZeros`, `every_strip_point_recurrence_and_dichotomy`);
+   the cofactor-return heights fix the phases of the primes `≤ y` only through the disc values
+   `Σ Λ(n) ω(n) n^{−z} ≈ −g′/g`, weights `n^{−Re z}` with `Re z = 1/2 + δ > 1/2`, which damp the
+   `y`-rough variance by at least `y^{−2δ}` (`rough_strip_variance_le_rpow_neg_mul_roughPosPrimeVariance`)
+   and leave `roughPrimePolynomial f y N` free on the critical line (`δ = 0`) once `N ≥ y` exceeds the
+   base cutoff (`roughPrimePolynomial_eq_zero_of_lt`, `mem_roughPrimeIndexSet_of_prime`): the orbit
+   reads the prime phases at bandwidth zero, the localized criterion needs them at `√X ≳ log T`.
+   The two lanes meet only at the square-root threshold (open problem 1).
 8. **The `L²`-normalised width arrow, and the clustering alternative.** Mechanism 31 proves
-   `width < β ⟹` floor at rate `2β` with an `H¹` datum in the normalisation. The `L²` form, which is
-   what the ground-energy path and the graded ledger consume, is proved under one explicit
-   single-window hypothesis: at most `M` off-line copies per unit height window gives
-   `μ(A) ≥ −M(2A + 2π)e^{2π}e^{2σA}` and the exponent identity, and the alternative is sharp — either
-   the ground-energy exponent equals the width, or the off-line zeros cluster without bound on unit
-   windows (mechanism 36). The open problem is to rule out the clustering branch, or to prove the
-   exponent identity without a local count. Note what the clustering branch would cost:
-   unboundedly many off-line copies per unit window, which is far stronger than anything a
-   zero-density theorem permits on average — and yet no unconditional theorem excludes it, because
-   the log-mean route cannot be pushed further (Littlewood's lemma on a unit window has horizontal
-   edges of size `S(T)`, which mechanism 28 proves unbounded). The unconditional archimedean-
-   normalised floor (mechanism 35) shows the difficulty is purely one of normalisation: the form is
-   bounded below in the weight that the zero count naturally supplies, and the question is whether
-   `L²` is reachable from it.
+   `width < β ⟹` floor at rate `2β` with an `H¹` datum in the normalisation
+   (`exists_fullZeroForm_ge_neg_of_zetaZeroWidth_lt`, and in plain `L²` on any test class with
+   `|gaugeDerivative (autocorr F) t| ≤ K ∫ F²`, `exists_fullZeroForm_ge_neg_mass_of_zetaZeroWidth_lt`).
+   The `L²` form, which is what the ground-energy path and the graded ledger consume, is proved
+   under one explicit single-window hypothesis: at most `M` off-line copies per unit height window
+   (or bounded squared depth mass `OffLineDepthLocallyBounded W`, equivalent to
+   `UnsignedDepthSamplingBound a₀ B` at any single positive aperture `a₀`,
+   `exists_unsignedDepthSamplingBound_iff_forall_aperture` in
+   `NormalisationBridgeAndLocalClusterExclusionLaw`) gives
+   `μ(A) ≥ −M(2A + 2π)e^{2π}e^{2σA}` (respectively `−depthFloorConst W A.1`) and the exponent
+   identity, and more generally any sub-exponential depth-floor factor `W(A) = o(e^{εA})` forces
+   `polarGroundEnergyRate = zetaZeroWidth`
+   (`polarGroundEnergyRate_eq_zetaZeroWidth_of_subexponential_depthFloor`). The alternative is
+   sharp (`polarGroundEnergyRate_eq_zetaZeroWidth_or_high_depthMass_window_escape`, mechanism 36):
+   either the ground-energy exponent equals the width, or unsigned depth sampling is unbounded at
+   every aperture, the depth floor fails super-exponentially, and unit windows `[T − 1, T + 1]`
+   carry arbitrarily large squared depth mass `> W`, multiplicity `> W / zetaZeroWidth²`, and
+   exponential height `180|T| > exp(W / (40 · zetaZeroWidth²))` (`|T| ≥ 4`). The open problem is to
+   rule out the clustering branch, or to prove the exponent identity without a local count. Note
+   what the clustering branch would cost: unboundedly many off-line copies per unit window, which
+   is far stronger than anything a zero-density theorem permits on average — and yet no
+   unconditional theorem excludes it, because the log-mean route cannot be pushed further
+   (Littlewood's lemma on a unit window has horizontal edges of size `S(T)`, which mechanism 28
+   proves unbounded). The unconditional archimedean-normalised floor (mechanism 35, unified with the
+   `H¹` and `L²` floors in `three_normalisation_weil_floor_bridge`) shows the difficulty is purely
+   one of normalisation: the form is bounded below in the weight that the zero count naturally
+   supplies, and the question is whether `L²` is reachable from it.
 
 ---
 

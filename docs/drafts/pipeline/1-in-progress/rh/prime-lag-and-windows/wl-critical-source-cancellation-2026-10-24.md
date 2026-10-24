@@ -139,3 +139,155 @@ Final direct source audit:
 `lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitMobiusTailLocalization.lean`
 exited 0 with empty output. The five inspected source files and both route
 reports remain unchanged. The owned temporary audit file was removed.
+
+## Continuing conjecture loop: short arithmetic action
+
+The current worktree contains a newer unconditional input:
+`BezoutValuationIncidence/TheMoebiusPrimitiveEnergyGrowsLinearly.lean`,
+`tendsto_twelve_mul_sievePrimitiveEnergy_moebius_div`. Its full-period canonical
+primitive energy is asymptotic to a constant times N. This is a different
+observable from WL's deficit; its name alone supplies no transfer.
+
+The corpus also already proves
+`abs_ccmLogChebyshevDeficitPrimitive_sub_shortQuadraticWork_le`: the complete
+deficit differs from a quadratic expression in μ(1), …, μ(floor(exp(T/2))) by
+at most `7 exp(T/2)`. The source matrix is the literal divisor source, including
+all pole terms. This makes the following source-specific conjecture concrete:
+
+**C1 — critical control of the short arithmetic action.** There are C > 0 and
+an integer k ≥ 0 such that, at every T ≥ 0,
+
+```
+ccmPrimeDeficitShortQuadraticWork(T)
+  ≤ C (1+T)^k (1 + sievePrimitiveEnergy(floor(exp(T/2)), μ)).
+```
+
+The bound would discharge the existing WL positive-slack target using the new
+linear energy theorem. It is an unproved conjecture about the actual μ row,
+not a new conditional Lean result. Neither an identity nor the energy limit
+proves this inequality.
+
+**First attack.** `CompletePeriodQuadraticFormsAreOrientationBlind.lean`
+shows that complete-period readings preserve squared Selberg coordinates and
+lose their signs. This does not refute C1 for actual μ. It does prevent treating
+the period energy as a reconstruction of the signed WL action. Likewise
+`PronicEnergyTailAtTheQuadraticHorizon.lean` controls the weighted far tail of
+the canonical primitive, not the reciprocal reflection at the moving cutoff.
+No norm transfer has been assumed.
+
+**C2 — retain the signed reflection rather than its separate norms.**
+`CCMPrimeDeficitShortReflection.lean` gives the complete action as
+`shortReflectedMainWork + shortReciprocalPairing + shortReciprocalErrorWork`.
+The pairing is an integral of two actual Möbius-weighted sawtooth profiles at
+s and T−s, one with the logarithmic coefficient `(T/2−1−log n)`. A direct
+candidate proof of C1 must bound this complete combination; estimating the
+three terms independently has not justified critical-scale control.
+
+**C3 — complete the pole before estimating the reflection.**
+`CCMPrimeDeficitCompletePole.lean` already isolates the full rank-two pole:
+
+```
+exp(T) ((c T+d) m0² − 2 c m0 m1),   c = γ+1,
+m0 = Σ v_i exp(−u_i),   m1 = Σ v_i u_i exp(−u_i).
+```
+
+Its remaining matrix bound costs `(1+T)² (Σ|v_i|)²`, which is still of
+exponential order 1 for an actual square-root-length μ row. Removing the pole
+again is therefore rediscovery. The live question is whether the literal
+signed row and its short linear main term permit an upper bound by primitive
+energy; arbitrary-row phase erasure cannot be substituted for that proof.
+
+Status: C1 remains open. C2 and C3 specify attempted proof mechanisms and their
+first missing steps, not additional claimed results. No premise was inserted
+into Lean, and no route has been retired.
+
+## Further source checks and attempted transfers
+
+The following checks used the corpus search and then the actual Lean statements.
+They do not constitute new proofs or a closure of WL.
+
+- `CCMPrimeDeficitNeutralWork.lean` already supplies a diffuse harmonic-neutral
+  extension of the literal short Möbius row. Its full action is exactly D;
+  its linear work and absolute diagonal have critical polynomial budgets.
+  The remaining signed quadratic work includes all mixed and negative-time
+  terms. Reconstructing this extension would repeat existing work.
+- `CCMPrimeDeficitShortSourceMatrix.lean` proves that the actual two-index
+  source matrix at `T = 2 log 2` has determinant -1. A generic positive
+  semidefinite source-matrix argument cannot be substituted for an estimate
+  on the literal arithmetic row. This does not disprove C1.
+- `MobiusDivisorMonotoneSignLaw.lean` proves a nonpositive Möbius divisor-pair
+  section against nonnegative decreasing weights of `m+n`. The reciprocal
+  WL action has a product cutoff and also contains non-comparable pairs.
+  No sign-preserving transfer covering those terms was obtained.
+- `CCMFUSuzukiCriticalChordMeasure.lean` proves positivity of
+  `suzukiCriticalRenormalizedMobiusRieszProducer` by identifying it with the
+  positive atomic chord. The polar chord is a separate positive quantity;
+  neither positivity statement bounds their signed difference.
+- `TheMoebiusEnergyTransfersAtEverySuperlinearHorizon.lean` controls
+  `sieveL2PrefixEnergy`, the mean square of the divisor-sieve sequence.
+  It is not a theorem about its primitive's pronic energy or WL's reciprocal
+  pairing. No integration estimate with the required constants has been
+  proved here.
+- `AnIndexFormulaForTheActualReceiver.lean` obtains index zero and reverse
+  hull inclusion above `zetaZeroAbscissa - 1/2`. Its all-positive-damping
+  assertion is an RH equivalence. The title does not discharge the width.
+
+### Attempt to iterate known compensation
+
+`ArithmeticCompensationTheory/ATwoScaleCompensationRate.lean` proves, on the
+common head, a power bound for changing the Ramanujan coefficient cutoff:
+
+```
+twoScaleCompleteShiftEnergy ε P Q P ≤ Cε P^(1-3ε),   Q ≥ P ≥ 1.
+```
+
+The proof cancels the same cutoff-independent divisor remainder from both
+approximants. It therefore estimates an approximation difference, not that
+remainder. The summable projection changes in
+`TheCompensatingProjectionMovesSummablyAcrossScales.lean` likewise concern
+relative compensation coordinates. Multiplication by the growing sector
+energy is still present in the absolute work. No contraction for the newly
+added horizon shell, or for the complete WL action, follows from these
+statements alone. The attempted direct iteration has not closed its first
+missing estimate; no stronger conclusion is being attributed to these files.
+
+## C4 — complete dyadic increment, including the new prime shell
+
+Put `G(x) = D(log x)` for `x ≥ 1`. A concrete next conjecture is that some
+`C > 0` and integer `k ≥ 0` satisfy
+
+```
+G(4x) - 2 G(x) ≤ C sqrt(x) (1+log x)^k,   x ≥ 1.
+```
+
+This is an unproved source estimate to attack, not a conditional Lean
+criterion to add. The existing prime-tent identity gives its complete
+arithmetic expression:
+
+```
+G(4x) - 2 G(x)
+  = 2x + 1
+    - Σ(n ≤ x) Λ(n) log(4n/x)
+    - Σ(x < n ≤ 4x) Λ(n) log(4x/n).
+```
+
+Both sums include every prime power. The first kernel changes sign at x/4,
+so a theorem about the new shell alone would not estimate the increment.
+The identity is obtained by subtracting the two existing finite prime-tent
+formulas; no limit, analytic continuation, or zero-free assumption is used.
+
+Why this particular estimate matters: write `x = 4^j u`, `1 ≤ u < 4`, and
+divide the increment by `2 sqrt(x)`. Summing along that orbit would bound
+`G(x)/sqrt(x)` by a bounded initial value plus
+`(C/2) Σ(i<j) (1+log u+i log 4)^k`, hence by a polynomial of degree k+1 in
+`log x`. This explains the target; it does not prove its arithmetic bound.
+
+**First unpaid step:** control the old signed prime-prefix work together
+with the newly added shell at square-root scale. The inspected compensation
+theorem keeps the evaluation horizon fixed and cancels its common remainder;
+C4 changes the evaluation horizon, so that cancellation cannot be invoked.
+The corpus's subexponential PNT error still has leading exponent 1 in x.
+
+No new Lean theorem, significant obstacle closure, or unconditional RH
+conclusion was obtained in this batch. C1 and C4 remain live conjectures;
+their failed proof mechanisms are recorded to prevent repetition.

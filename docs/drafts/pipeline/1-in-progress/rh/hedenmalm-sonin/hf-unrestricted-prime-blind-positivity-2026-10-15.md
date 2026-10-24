@@ -6,6 +6,8 @@ Status: IN PROGRESS, resumed by user. Original goal: unconditional Lean proof of
 
 User rejected the isolated-prime reflection branch below as busywork. Do not formalize it or continue sharpening obstructions. Latest user instruction now permits Lean code for significant milestone discoveries. Formalize the complete quadratic prime-energy divisor decomposition, with convergence and all mixed terms, while keeping unrestricted HF positivity as the main objective. This does not authorize reviving the rejected isolated-prime branch. The owned scratch API check from that historical branch exited with errors before cancellation; its file was removed.
 
+The active goal is the attachment `/Users/michael/.codex/attachments/4946f287-6508-4d1a-a888-72d3a3066aa6/pasted-text-1.txt`. It explicitly requires reading `docs/reports/rh-current-frontier-map.md` and `docs/reports/rh-killed-routes.md`, stating route and hard blockers in chat, and solving significant mathematical obstacles rather than adding criteria, estimates, or no-go results. HF is **Positive Hodge form on arithmetic cohomology**; unrestricted prime-blind positivity is the current realization. The HF section and relevant killed-route entries have been read. The subsequent user correction requires a continuing corpus-grounded conjecture/proof/revision loop. No web, novelty checks, or mathematical numerical experiments.
+
 ## Constraints
 
 - Stay on HF; attack its missing positivity producer, including after failed conjectures.
@@ -571,6 +573,85 @@ Equivalently, `lim_(n->infinity) n^2*K'_0(n,n) = c'_0`; the complete HF form is 
 This is now an actual cosine/source matrix with the full pole coefficient, rather than a Gamma-only positive candidate. The remaining task is to prove `R'_0(1,1)+<A,B> >= 0` from the native source construction and integer blindness. Entrywise decay and trace-class membership are not that sign proof. Nor may the coefficient `ell2` metric be substituted for the physical source Gram metric. The full within-source mixed Gram matrices must remain in any Schur or operator-order argument. No conditional positivity interface or auxiliary Lean formalization is queued.
 
 Current source checks read `PrimeBlindPoleCuspIdentity` and `DilationAutocorrelationPeriodization` directly; their cusp and reciprocity identities remain the normalization references. All owned search commands finished, including the weighted-cosine, blind logarithmic uncertainty, Sonin generator, capacity derivative, cusp transfer, and fractional-cosine product-matrix searches. No web search, novelty check, numerical experiment, live owned job, build, or unrelated edit.
+
+### Physical source completion of the full conductor pairing
+
+**Conjecture tested:** the complete cosine-matrix derivative descends continuously to the actual closed arithmetic source spaces, without a lower bound on their coefficient Gram matrices. **Paper outcome: proved below.** This removes the coefficient/source-metric gap in the preceding construction; it does not prove the HF anchor sign. No Lean formalization is queued merely for another positivity receiver.
+
+Let `Iu(x)=u(1/x)/x` be unitary inversion on `L2((0,infinity),R^d)`, and put `Fvee=IF`. The finite dimension `d` retains the realification of an arbitrary finite complex mixture. Assume only the native regularity: `F` is compact C2, supported in `[alpha,beta]`, `alpha>0`. Set
+
+    V(F) = closure span { F(n*x) : n>=1 },
+    V_N(F) = closure span { F(n*x) : n>=N }.
+
+Define the pairing first on finite arithmetic sums:
+
+    q(u,v) = <u,H_Gamma I v>,
+    Q(u,v) = q(u,v) + 2*<integral u,integral v>,
+    u in V(F), v in V(Fvee), H_Gamma=M+C*M*C.
+
+Each finite sum belongs to the conductor domain: its cosine transform is bounded at zero and `O(x^(-2))` at infinity, so multiplication of that transform by `log x` is square integrable. Thus these displayed pairings are actual Hilbert pairings on the algebraic sources.
+
+**Exact separated-source kernel.** Suppose `u` and `v` are supported in `(0,b]` and `(0,c]`, with `bc<1`. For the initial smooth compact sources,
+
+    q(u,v) = - integral_0^b integral_0^c
+                 <u(x),v(y)>/(1-x^2*y^2) dy dx.
+
+Indeed `Iv` is supported above `1/c>b`, so the multiplication term `M Iv` vanishes on the support of `u`. Differentiating the previously established off-support cosine identity at zero gives
+
+    (C*M*C)(Iv)(x) = - integral t*(Iv)(t)/(t^2-x^2) dt
+                   = - integral_0^c v(y)/(1-x^2*y^2) dy,
+
+where the last substitution is `t=1/y`. The factor is exactly one: `chi'(1)=-1/2` multiplies the sum of the two reciprocal kernels. No source Gram inverse enters.
+
+The kernel expansion is an absolutely convergent nuclear expansion between the two physical L2 spaces:
+
+    q(u,v) = - sum_(j>=0) <integral x^(2j)*u(x) dx,
+                             integral y^(2j)*v(y) dy>.
+
+For each scalar component the rank-one term has trace norm
+
+    ||x^(2j)||_(L2(0,b))*||y^(2j)||_(L2(0,c))
+      = (bc)^(2j+1/2)/(4j+1).
+
+Their sum is finite because `bc<1`. This proves the identity and continuous trace-class extension for every L2 pair in the separated spaces, including limits of arithmetic sums. Compression to closed subspaces preserves the conclusion. In particular take
+
+    b=beta/N, c=1/(alpha*N), N^2>beta/alpha.
+
+Every vector in `V_N(F)` and `V_N(Fvee)` has the indicated support. The **entire infinite arithmetic tail**, measured in its physical source norm, is therefore already covered.
+
+**Completion including the finite part.** Write `H_N(F)=span {F(n*x):1<=n<N}`. The sum
+
+    V(F)=H_N(F)+V_N(F)
+
+is closed: a closed subspace plus a finite-dimensional subspace is closed, and the sum contains every generating dilation. Its orthogonal complement to `V_N(F)` inside `V(F)` is finite dimensional. The corresponding statements hold for `Fvee`.
+
+The mixed pairings with a fixed head vector are bounded in the physical L2 norm. For example
+
+    q(h,v)=<I H_Gamma h,v>,
+    q(u,k)=<u,H_Gamma I k>,
+
+and both displayed representing vectors lie in L2. These formulas agree with the separated kernel whenever a head vector also lies in its tail space: such a vector has the tail support, and the off-support formula extends by L2 continuity in the other argument. Consequently the form is independent of the decomposition into head plus tail. Choose representatives for a basis of the finite-dimensional quotient; their linear lift is bounded. This gives a bounded extension of `q` to `V(F) x V(Fvee)`.
+
+In the orthogonal head/tail decompositions its tail-to-tail block is trace class by the nuclear expansion above; every other block has finite-dimensional range or domain and is bounded, hence finite rank. Thus the **full physical-source pairing has a unique trace-class operator extension**. The polar pairing also extends: all left source vectors are supported in `(0,beta]`, all right source vectors in `(0,1/alpha]`, so their vector integrals are bounded L2 functionals. Its rank is at most `d`. Therefore the same conclusion holds for `Q`. This argument supplies actual continuity on the closed sources, rather than inferring it from trace-class coefficient matrices.
+
+**Blind anchor, with its correct physical normalization.** If `m=||F||^2>0` and the mixture is blind at every integer `n>=2`, then for all closed-source vectors
+
+    <u,Iv> = <u,F>*<Fvee,v>/m.
+
+First check finite sums: their cross entries are `A_F(mn)`, zero except at `m=n=1`; their first coefficients are recovered by inner product with `F` and `Fvee`. Then pass to the closures. Thus the compressed inversion is a rank-one partial isometry, with unit singular value, not the coefficient-space scalar `m`. At its normalized anchor `e=F/sqrt(m)`, `eve=Fvee/sqrt(m)`,
+
+    Q(e,eve) = W(F)/m.
+
+**Exact signed tail in the even sector.** When `IF=F`, choose `N>beta`, so both tails are supported in `(0,b]`, `b<1`. On the same physical tail space,
+
+    Q(u,u) = ||integral u||^2
+             - sum_(j>=1) ||integral x^(2j)*u(x) dx||^2.
+
+It is strictly negative for every nonzero vector with zero vector integral: if all even moments vanish, polynomials in `x^2` are dense in `L2(0,b)`, componentwise, forcing `u=0`. The pole term has been retained; for vector mixtures its finite-rank contribution has rank at most `d`, not necessarily one.
+
+**What remains unpaid.** Neither this trace-class realization nor its signed tail proves `Q(e,eve)>=0`. The head-to-tail blocks remain present, and no positive order for their Schur complement has been established. The unrestricted source sign is still the main HF obstacle. The next conjecture must use the arithmetic/blind rank-one inversion relation together with this actual conductor operator to pay that coupling; another coefficient-norm estimate or an assumption of Schur positivity would not do so.
+
+Relevant additional corpus source inspected: `BlindCoreWanderingNymanBeurling` gives actual Nyman–Beurling Mellin and wandering identities; `PrimeBlindPoleCriticalZetaDefect` already identifies the pole with the critical-line zeta first-moment defect; `SoninBurnolLogShellChannel` supplies a bounded shell approximation, not the full logarithmic source pairing above. None of those statements supplies the missing sign. The current batch contains paper work only, with no new Lean source, compilation, web search, or novelty audit.
 
 ## Cycle 1: reflected-prime positivity
 

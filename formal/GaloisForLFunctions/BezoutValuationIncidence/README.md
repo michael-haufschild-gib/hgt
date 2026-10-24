@@ -629,9 +629,16 @@ horizon $\Phi(N)\le N(N+1)/2$ is quadratic with no logarithm; the common-return 
 shows it is not sharp for the discrepancy at special phases.
 
 **No linear horizon at arbitrary phase.** The special phases are special. For every $m$ and
-every $N\ge(m+2)(2^{m+1})!(1+2^{m+1})$ some nonzero row has zero response on $mN$ consecutive
-integers (`exists_zero_response_window`, `not_exists_linear_observability_horizon`). The witness
-is an **alternating grid**: with weights $b_j=M2^j$, $j<m$, and $M$ a factorial, each subset
+every $N\ge(m+2)(2^{m+1})!(1+2^{m+1})$ — and more sharply whenever
+$N\ge(m+2)\operatorname{lcm}(1,\dots,2^{m+1}-1)(1+2^{m+1})$ — some nonzero row has zero response on
+$mN$ consecutive integers (`exists_zero_response_window`, `exists_zero_response_window_lcm`,
+`not_exists_linear_observability_horizon`), so the exact arbitrary-phase observability horizon
+$L_{\mathrm{obs}}(N)=\inf\{L\mid\forall A,c,\ s_{N,c}=0\text{ on }[A,A+L)\implies c=0\text{ on }[1,N]\}\le\Phi(N)$
+(`arbitraryPhaseObservabilityHorizon_spec`) satisfies $mN<L_{\mathrm{obs}}(N)$ and
+$L_{\mathrm{obs}}(N)/N\to\infty$ (`mul_lt_arbitraryPhaseObservabilityHorizon_of_lcm_le`,
+`tendsto_arbitraryPhaseObservabilityHorizon_div_atTop`). The witness
+is an **alternating grid**: with weights $b_j=M2^j$, $j<m$, and $M=\operatorname{lcm}(1,\dots,2^{m+1}-1)$
+(or $(2^{m+1})!$), each subset
 $S\subseteq[0,m)$ gets the modulus $d_S=D-\sum_{j\in S}b_j$ just below a cutoff $D$, the offset
 $\sum_{j\in S}jb_j$ and the sign $(-1)^{\lvert S\rvert}$. Inside the window every modulus hits
 exactly one position in each block $J<m$. In block $J$ the weight $b_J$ enters with coefficient
@@ -659,7 +666,9 @@ The constant is sharp in order: at a common return every modulus divides $k$, so
 Selberg row** ($Y(q)=1$ for $2\le q\le N$, $Y(1)=0$) has mean zero, variance $\Phi(N)-1$ and the
 spike $s(N!)=\Phi(N)-1$; it attains the pointwise bound $(s(k)-H)^2\le(\Phi(N)-1)V$ with
 equality, and its one-point window forces every sandwich constant to be at least $\Phi(N)-2$.
-The optimal sandwich constant lies in $[\Phi(N)-2,\ N(N-1)]$, the upper end from the two-sided
+The optimal sandwich constant $S_{\mathrm{opt}}(N)$ lies in
+$[N^2/8+N-(N/2)H_N-2,\ \Phi(N)-2]\subseteq[\Phi(N)-2,\ N(N-1)]$
+(`optimalWindowSandwichConstant_quadratic_brackets`), the upper end from the two-sided
 Montgomery–Vaughan window bound over the $1/(N(N-1))$-separated response frequencies
 (`WindowSandwichWithTheMontgomeryVaughanConstant`): exact order $N^2$, ratio at most $\pi^2/3+o(1)$.
 The all-ones row shows the same for every inverse $\ell^1$ constant, $\|c\|_1^2\le C\,Q_{\mathrm{Sel}}$
@@ -670,7 +679,8 @@ window–period transfer starts at length $N^{2\pm o(1)}$ and no mean-square com
 the row reaches a linear horizon; the Möbius row itself transfers at every superlinear horizon
 (§3.10).
 
-**Window laws at quadratic order.** With $S=2N^2-1$, polarization of the lagged sums
+**Window laws at quadratic order.** With $S=2N^2-1$ (and $S=N(N-1)$ via the Montgomery–Vaughan
+cosecant bound, `abs_windowLagCovariance_sub_le_mv`), polarization of the lagged sums
 $s'(k)\pm s'(k+g)$ (coefficients $Y(\operatorname{ord}\zeta)(1\pm\zeta^g)$, and
 $\sum_{\zeta\text{ prim. }q}\zeta^g=c_q(g)$) gives the window covariance at every lag,
 $\bigl\lvert\sum_W(s(k)-H)(s(k+g)-H)-K\,\mathrm{Cov}(g)\bigr\rvert\le SV$, uniformly in $g$. Hence
@@ -702,7 +712,8 @@ observation theory need windows of length $N^{6-o(1)}$. Within that horizon the 
 transfers whole: Möbius inversion in the lag variable, $\sum_{ab=f}\mu(a)c_e(b)=f\mu(e/f)\mathbf 1_{f\mid e}$,
 recovers every Selberg energy from the lags $1,\dots,N$,
 $Y(q)^2=\sum_{u\le N/q}(qu)^{-1}\sum_{ab=qu}\mu(a)\mathrm{Cov}(b)$, with stability constant $H_N^2$;
-one window at arbitrary phase therefore gives all Selberg energies within $H_N^2SV/K$, and the
+one window at arbitrary phase therefore gives all Selberg energies within
+$H_N^2 N(N-1)V/K\le(1+\log N)^2N(N-1)V/K$ (`abs_lagSpectrumReadout_window_sub_le_mv`), and the
 up-to-translation recovery theorems lift to windows at unrelated unknown phases. The moment
 arrays are isometric to the relation spectrum: the multi-characters of distinct zero-product
 tuples are orthogonal over $[0,N!)^m$, so
@@ -760,14 +771,23 @@ full array of translated moments in all degrees — determines the row up to a s
 **companion**: the reflection by the canonical half period, which flips the signs on the top
 dyadic layer and fixes everything else. Two rows have the same relation spectra in degrees five
 and six if and only if they have them in every degree, if and only if they agree on $[1,N]$ or one
-is the companion of the other. So degrees five and six are not a convenient truncation but the
-exact closure point of the hierarchy: nothing above degree six is informative, and nothing below
-degree five is sufficient. The theory's observation problem therefore has a complete answer —
-*additive moment data of a divisor row determine it up to one half-period involution* — and the
-invisibility of the top dyadic layer is not a residual gap but the whole of the kernel. Any
-mechanism that must separate a row from its companion has to leave the additive-moment coordinates
-altogether; labelled moments, which break the half-period symmetry by construction, are the
-corpus's instance of that.
+is the companion of the other. Quantitatively, for every odd mode $q\in[1,N]$ the zero-product
+$5$-tuple $(\zeta,\zeta,\zeta^{q-2},\zeta,\zeta^{-1})$ isolates $Y(q)^5$ directly in the degree-$5$
+relation spectrum (`exists_zeroProductTuple_five_odd_pow`), and the exact identity
+$16(x^5-y^5)-(x-y)^5=5(x-y)(x+y)^2((x+y)^2+2(x-y)^2)$ gives the unconditional fifth-root bound
+$\lvert Y_c(q)-Y_e(q)\rvert^5\le 16\,\|A_c-A_e\|_2$ (`abs_selbergMultiplesCoord_sub_pow_five_le_of_odd`,
+`abs_selbergMultiplesCoord_sub_pow_five_le_of_windows_five`) with no anchor hypothesis; when $c$
+and $e$ carry a unit top-order coordinate and have degree-$5$ and degree-$6$ translated moments
+within $\delta^3$ ($0\le\delta\le 1$), either $e$ is within $2\delta$ in every Selberg coordinate
+and $2\Phi(N)\delta$ in every response value of $c$, or of `companion N c`
+(`exists_self_or_companion_coord_and_response_error`). So degrees five and six are not a convenient
+truncation but the exact closure point of the hierarchy: nothing above degree six is informative,
+and nothing below degree five is sufficient. The theory's observation problem therefore has a
+complete answer — *additive moment data of a divisor row determine it up to one half-period
+involution* — and the invisibility of the top dyadic layer is not a residual gap but the whole of
+the kernel. Any mechanism that must separate a row from its companion has to leave the
+additive-moment coordinates altogether; labelled moments, which break the half-period symmetry by
+construction, are the corpus's instance of that.
 
 ### 3.6 Pronic duality and the Gram calculus
 
@@ -801,10 +821,18 @@ m_1m_2\,\mathrm{bdGram}(1/m_1,1/m_2)=\frac{(m_1-1)\log m_2+(m_2-1)\log m_1}2-\fr
 $$
 Vasyunin's formula, with the cross tail $\int_1^\infty\{v/m\}\{v\}v^{-2}dv$ explicit as well.
 
-**Positivity reads cotangent sums.** $\mathcal G^{\mathrm{ec}}$ is a pronic inner product, so the
-Vasyunin prime kernel $K(p,q)=\mathcal G^{\mathrm{ec}}(p,q)$ is positive semidefinite on every
-finite set of primes, and the pronic covariance $S(m_1,m_2)-\log m_1\log m_2$ of residues is
-positive semidefinite for all moduli. A head/tail split at $M=m$ bounds the diagonal, and
+**Positivity reads cotangent sums.** $\mathcal G^{\mathrm{ec}}$ is a pronic inner product:
+because $L_N(N!,c)=0$, vanishing of $\sum_{M\ge 1}L^{\mathrm{ec}}_N(M,c)^2/(M(M+1))$ forces the
+von Mangoldt readout $\sum_{e=2}^N\Lambda(e)Y(e)$ to vanish at $M=N!$ and hence forces
+$L_N(M,c)=0$ for all $M\ge 1$, so $Y(q)=0$ for all $q\in[2,N]$
+(`sieveEnergyCenteredPronicGramForm_eq_zero_iff`). Consequently $\mathcal G^{\mathrm{ec}}$ is
+**strictly positive definite** on every finite set of moduli $\ge 2$, the Vasyunin prime kernel
+$K(p,q)=\mathcal G^{\mathrm{ec}}(p,q)$ is strictly positive definite on every finite set of primes
+(`sum_sum_mul_pmRamanujanEnergyCenteredGram_pos_iff`, `sum_sum_mul_vasyuninPrimeKernel_pos_iff`),
+the von Mangoldt lower bound $(\sum_{e=2}^N\Lambda(e)Y(e))^2<\sum_M L_N(M,c)^2/(M(M+1))$ is a
+strict inequality for every row of positive variance
+(`vonMangoldt_sum_sq_lt_sievePronicDiscrepancyGramForm_iff`), and the pronic covariance
+$S(m_1,m_2)-\log m_1\log m_2$ of residues is positive semidefinite for all moduli. A head/tail split at $M=m$ bounds the diagonal, and
 nonnegativity bounds it below:
 $$
 \log^2p\ \le\ \pi V(1,p)+(p-1)\log p\ \le\ 2\log^2p+p+\frac{(p-1)^2}p ,\qquad

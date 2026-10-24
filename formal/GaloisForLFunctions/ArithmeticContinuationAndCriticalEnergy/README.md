@@ -279,12 +279,24 @@ is lost by passing to the signed form, and the norm route only ever used
 ### The endpoint, how short the interval is, and the partial deliverable
 
 Any admitted damping serves as the endpoint (`riemannHypothesis_of_dampingContinuation_endpoint`).
-Half damping is unconditional, and Littlewood's bound on the Mertens function admits every damping
-above `Θ/2`, so the interval to cross is `(0, Θ/2]` rather than `(0, ½]`. A budget available only on
-`[a, c]` for `a ∈ (a₀, c]` makes every damping of `(a₀, c)` admitted, so the admitted dampings
-accumulate at `a₀` and `Θ ≤ ½ + a₀`
-(`zetaZeroAbscissa_le_half_add_of_partial_dampingContinuation`): the programme's non-RH deliverable,
-a genuine zero-free strip in the shared units.
+Half damping is unconditional, and the cleared Mellin / Dirichlet receiver law admits every damping
+strictly above the zero width `Δ = Θ − ½` (`admits_dampedMobiusEnergy_of_zetaZeroAbscissa_sub_half_lt`),
+improving the `Θ/2` Littlewood threshold by `½(1 − Θ)` so the interval to cross is `(0, Θ − ½]`
+(`riemannHypothesis_of_averagedDampingContinuation_above_zeroWidth`). Across `[a, c]` with `c`
+admitted, admission at `a`, membership in `receiverDampings`, relative-loss averaged continuation,
+dyadic relative-loss continuation, additive signed work continuation, dyadic additive work
+continuation, Cesàro additive work continuation, and residual averaged continuation are eight-way
+equivalent (`signedAveragedContinuation_tfae`), and all eight hold unconditionally on every compact
+interval inside `(Θ − ½, ∞)` (`averagedDampingContinuation_of_zetaZeroAbscissa_sub_half_lt`,
+`exists_neg_signedDampingWork_integral_le_of_zetaZeroAbscissa_sub_half_lt`). Conversely, a budget
+available on `(a₀, c]` forces `Θ ≤ ½ + a₀`, so the infimum of valid continuation thresholds is
+exactly `Δ = Θ − ½` (`sInf_averagedContinuationThresholds_eq_zetaZeroAbscissa_sub_half`,
+`exists_not_averagedDampingContinuation_below_zeroWidth`). Along the Vinogradov–Korobov band
+`a ≥ ½ − κ σ(T)/(480 log T)` above any floor `ε₀ > 0`, the signed work integral, relative-loss
+integral, and residual work integral are bounded uniformly in `(T, a, c)` while the parity twin
+diverges logarithmically (`exists_signedWorkIntegral_and_relativeLoss_le_on_vinogradovKorobovBand`),
+and at every fixed `0 < a < ½` they obey the sub-power saving
+`O_a(T^{1−2a} exp(−κ σ(T)/270))` (`eventually_signedWorkIntegral_and_relativeLoss_le_vk_saving`).
 
 ### What one admitted damping says about the zeros
 
@@ -786,11 +798,20 @@ To be built:
 
 ## 7. Open problems
 
-1. **Signed averaged continuation.** For each `0 < a < c` with admitted `c`, bound
-   `∫_a^c −2W_T/(1 + E_T)` uniformly in `T`; equivalently use the additive signed integral
-   `∫_a^c −2W_T`. Each is equivalent to admission at `a`. A bound on
-   `∫_a^c [−2W_T]⁺/(1 + E_T)` is sufficient but stronger: taking the positive part destroys the
-   cancellation that makes the equivalence exact. Dyadic horizons suffice by energy monotonicity.
+1. **Signed averaged continuation (Resolved: `SignedAveragedContinuationAndTheZeroWidthBand`).**
+   For `0 < a ≤ c` with admitted `c`, admission at `a`, `a ∈ receiverDampings`, relative-loss
+   averaged continuation `∫_a^c r_T ≤ C`, dyadic relative-loss continuation `∫_a^c r_{2^k} ≤ C`,
+   additive signed work continuation `∫_a^c −2W_T ≤ C`, dyadic additive work continuation, Cesàro
+   additive work continuation, and residual averaged continuation `AveragedResidualContinuation a c`
+   are eight-way equivalent (`signedAveragedContinuation_tfae`). All eight hold unconditionally on
+   every compact interval `[a, c] ⊂ (Θ − ½, ∞)`, the infimum threshold for continuation is
+   `Δ = Θ − ½` (`sInf_averagedContinuationThresholds_eq_zetaZeroAbscissa_sub_half`), boundary
+   continuation at `Δ` forces a critical-line shadow zero of at least the extremal multiplicity
+   (`analyticOrderAt_le_of_averagedDampingContinuation_at_zeroWidth`), and on the Vinogradov–Korobov
+   band `a ≥ ½ − κ σ(T)/(480 log T)` the signed work and relative-loss integrals are bounded
+   uniformly in `(T, a, c)` (`exists_signedWorkIntegral_and_relativeLoss_le_on_vinogradovKorobovBand`)
+   with sub-power saving `O_a(T^{1−2a} exp(−κ σ(T)/270))` at every fixed `0 < a < ½`
+   (`eventually_signedWorkIntegral_and_relativeLoss_le_vk_saving`).
 2. **Source-specific angle or shape control.** Nonnegative damping autocorrelation, suitable
    bounds on its accumulated negative part, relative tangent stability, convexity of the energy,
    and a restriction on the order of work sign changes are distinct sufficient routes. They are

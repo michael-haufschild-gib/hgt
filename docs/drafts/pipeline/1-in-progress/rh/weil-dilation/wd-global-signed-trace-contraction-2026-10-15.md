@@ -143,3 +143,143 @@ positive completion, a local residue landing, or a conditional source criterion.
 
 [OPEN CORE] The global signed arithmetic pairing and its residue trace must be related
 with the required orientation, retaining the polar/Gamma/prime coupling.
+
+## Resumed source audit, 2026-10-24
+
+The requested endpoint remains an unconditional Lean proof of RH through WD. Neither
+another receiver nor an improved finite constant meets that endpoint. Current worktree
+source was read; the following conclusions are source audits, not fresh kernel audits.
+
+### Actual parabolic source, before an infinite-packet interchange
+
+Write `L = logDeriv xi`, `z_h = z + i h²`, and let `W` be the actual homogeneous
+cubic mask. `xiWardParabolicSourceAverage_eq_incrementIntegral` gives exactly
+
+```
+A_h(z) = integral_(0<=u<=1)
+  i h² (L(z_h) - L(z_h-hu)) W(z_h,hu) du.
+```
+
+`tendsto_xiWardCubicParabolicDirectionalSource` proves its pointwise limit is
+`ord_z(xi)` on the strict right half-strip and zero on the left and critical line.
+Its finite-packet version uses only a finite sum of these pointwise limits. In the
+proof, continuity is obtained from `completedFluxGermAt_analyticAt_zero z` at each
+fixed center. It provides no common radius or majorant as the center ranges over
+all zeros. Other zeros may approach either `z_h` or the moving segment `z_h-hu`.
+Consequently an infinite-packet dominated-convergence step still requires an actual
+source bound; summability of the *limiting* Stieltjes weights does not provide it.
+No uniform zero separation is being asserted or assumed.
+
+This does not disprove a suitably weighted infinite-packet landing. Such a landing,
+even if established, would still need a signed source estimate to prove cap vanishing.
+Replacing this average with a different circular or area average would require a new
+comparison with the literal WD current; it cannot be silently substituted.
+
+### Joint theta form already retains the continuous source
+
+The resummation proposal above must start from, rather than recreate,
+`ThetaFullArithmeticGroundForm.thetaFullArithmeticQuadratic_eq_energy_difference`:
+
+```
+thetaFullArithmeticQuadratic chi
+  = thetaPrimeScalingEnergy ... chi
+    - thetaGammaPolarScalingEnergy ... chi.
+```
+
+Its left side retains the compensated Gamma quadratic, both polar translations,
+the archimedean constant and prime cross pairing. Both continuous integrals are
+proved integrable. `WeilPhiDoobDivisorEnergy.primeEnergy_eq_tsum_divisorEnergy`
+separately retains every theta index and prime power, with absolute convergence.
+Its positivity theorem concerns the prime term alone, not this energy difference.
+Thus merely changing the order of those already justified sums is not a new sign
+mechanism. The missing comparison must pay the continuous energy with the full
+prime energy on the relevant source class.
+
+The later `CCMThetaGroundRHCriterion` already proves the exact comparison with
+the full restricted Weil form, despite the earlier ground-form module's comment
+leaving that comparison open. In particular,
+`ccmRestrictedWeilSourceQuadratic_eq_thetaEnergyDifference` and
+`riemannHypothesis_iff_thetaGroundEnergyComparison` must be reused rather than
+recreated. `ThetaPositiveScalingEnergies` further gives
+
+```
+E_continuous = E_polar - E_Gamma,
+Q_full = E_prime + E_Gamma - E_polar.
+```
+
+All three displayed energies are convergent and individually nonnegative.
+The exact unsolved inequality is `E_polar <= E_prime + E_Gamma` for every
+`ccmThetaGroundProfile u`, at every positive aperture. Thus the continuous term
+must not be described as itself a positive energy. Its kernel
+`2 cosh(t/2) - exp(-t/2)/(1-exp(-2t))` changes sign.
+`CCMThetaThreeEnergyComparison` already states this exact three-energy identity
+and its RH equivalence; it also proves a uniform strict gap on a nonempty
+small-aperture range. These are existing results, not a new contribution here.
+
+### Finite cubic cancellation: exact scope of the available source law
+
+`PrimeBurnolThetaCubicTraceCancellation` gives finite density-weighted commutator
+identities. The stronger existing `PrimeBurnolThetaQuarterTurn` even allows an
+arbitrary prime-mixing reporter that is scalar in the two theta coordinates:
+the full cubic anticommutes with the common quarter turn, so each theta block is
+traceless. This finite cancellation is real, but no source-to-WD trace comparison
+follows from it. The separate `PrimeBurnolFourierJetThetaClosure` classification
+shows why assuming an ordinary closed common theta action is not permissible.
+The complete mixed-prime cubic, rather than its separate factors, must be analyzed
+on its actual source domain if this candidate is pursued.
+
+### Current conjecture and proof obligation
+
+Attack the literal inequality `E_polar(chi) <= E_prime(chi) + E_Gamma(chi)` for
+every compact smooth theta ground profile `chi`, with no aperture restriction.
+The proposed mechanism is a *joint* prime--Gamma cancellation identity which
+retains all mixed-prime terms before applying the directed Ward readout.
+An adequate identity must prove the inequality with its native coefficients;
+neither a positive completion nor a scalar theta trace is sufficient. The
+inequality is the existing endpoint, not an input to any proposed theorem.
+
+[OPEN CORE] No such identity or source estimate has been derived. No new Lean
+theorem is claimed, no route is retired, and no progress in the closing sign is
+claimed from these audits. Next work must attack that joint arithmetic difference
+directly, rather than reprove cap convergence or finite multiplicity extraction.
+
+Verification: direct foreground `lake --old env lean
+GaloisForLFunctions/RHTower/CCM/CCMThetaGroundRHCriterion.lean` passed. A separate
+import audit checked the types and transitive axioms of the energy-difference
+identity, the ground-energy RH equivalence, and the polar-minus-Gamma identity;
+only `propext`, `Classical.choice`, and `Quot.sound` occurred. These checks verify
+existing results, not the missing source inequality.
+
+## Follow-up after the route-progress clarification
+
+The Gaussian-background paper theorem is deferred: it supplies model coefficient
+signs, not a premise of the actual global contraction. No new criterion, numerical
+improvement, or no-go theorem is being substituted for the requested source bound.
+
+Further corpus searches and source inspection checked three possible inputs:
+
+1. `PrimeBurnolThetaQuarterTurn` cancels every theta-neutral prime-mixing trace,
+   including off-diagonal prime entries. Its exact general-reporter formula retains
+   the theta diagonal difference and off-diagonal sum. Thus the missing comparison
+   is not repaired by allowing a larger neutral reporter class. No identification
+   of the WD signed reporter with that neutral class has been proved.
+2. `PrimeBurnolCompactCalculus.primeBurnolCompactWordSpan_closure_eq` already
+   generates every compact correction from the literal prime operator. This is
+   source generation, not a norm bound for a correction to the completed cubic or
+   a proof that the actual signed WD readout is trace-class. Reusing compact
+   generation alone would leave the same mathematical estimate unpaid.
+3. `ThetaPrimeGammaCutEnergy.thetaPrimeGammaCutEnergy_eq_tail` and
+   `thetaPrimeGammaCutEnergy_pos` already prove the literal single-cut difference
+   is the positive tail `integral_(x,infinity) 2*t*Phi(t)^2 dt`. This is stronger
+   than positivity of the individual prime links. It still gives only diagonal
+   cut data; the mixed-cut pairings needed for arbitrary smooth profiles have
+   not acquired a source-derived quadratic bound. The existing continuous-kernel
+   orientation theorem also prevents treating the whole coupling as pointwise
+   nonpositive. No inference from these cut signs to full form positivity is made.
+
+These are exact source audits, not new formal results. The target remains the
+literal all-aperture inequality `E_polar <= E_prime + E_Gamma` on the existing
+CCM theta profiles, with all mixed terms retained. No closing input has been
+proved in this batch, no mathematical frontier movement is claimed, and the
+RH goal remains open. No Lean source or umbrella was changed in this batch;
+unchanged existing modules were not compiled again.

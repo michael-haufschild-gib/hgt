@@ -1,0 +1,255 @@
+# TG — actual source residual orientation
+
+- **ID:** tg-actual-source-residual-orientation-2026-10-24
+- **Stage:** 1-in-progress
+- **Type:** CONJECTURE
+- **Source:** `docs/reports/rh-current-frontier-map.md`, route TG;
+  `docs/reports/rh-killed-routes.md`; current Lean sources.
+- **Goal:** unconditional Lean proof of RH through the actual Euler/Gaussian
+  source, positive-residual cubic transgression, and integer trace below one.
+
+## Completion requirements
+
+1. Construct the residual from the original arithmetic source, retaining
+   normalization, both reflection directions, proper prime powers, Gamma and
+   polar terms, and every mixed matrix term.
+2. Prove the actual chain/area identity
+   `E_base = E_residual + Tr T_D`, with `E_residual ≥ 0`, on every admissible
+   strict-right contour. An assumed chain or assumed sign does not discharge it.
+3. Apply the existing sub-unit base cap and integer multiplicity identity to
+   exclude every strict-right zero, then obtain `RiemannHypothesis`.
+4. Direct Lean checks, transitive `#print axioms` audit, umbrella wiring, no
+   placeholders, added analytic assumptions, computations, or limit overrides.
+
+The alternative TG producer is an exponent-zero upper bound for the literal
+central Gaussian prime-minus-continuum gap. Existing equivalences are receivers,
+not candidate new results. No stronger constant, new receiver, regularity-only
+classification, or abstract obstruction counts as closing the requested gap.
+
+## Current source audit
+
+- `FormationAnchoredCubicSpecialization`: anchored trace is actual enclosed
+  Xi multiplicity; positive-anchor continuity and exact cubic channels exist.
+- `BurnolBaseGraphCapArea`: actual graph-cap area lies strictly below the
+  actual all-prime cubic source budget, which lies below one.
+- `BurnolBaseCapPrincipalLift`: no-bubbling theorem has two unproved-for-TG
+  inputs: the residual chain relation and nonnegative residual area.
+- `SoninPrimePolarJetLcmCovariance`: exact finite signed covariance keeps
+  complete high-LCM fibres, both prime/polar cross terms and terminal square.
+  It supplies no infinite arithmetic energy bound.
+- Earlier native first-jet/ordinate regularity classification explicitly
+  distinguishes bounded ordinate modulation from actual Gaussian amplitude
+  damping. It does not identify the needed residual filling.
+
+## Conjecture loop
+
+### C1 — arithmetic residual filling
+
+Construct the actual completed Euler/Gaussian family as a filling of the same
+determinant-line boundary as the Burnol cap, with nonnegative signed residual
+area and integer defect equal to the literal contour multiplicity.
+
+**[OPEN CORE]:** source-preserving filling construction and its signed area.
+Boundary holonomy equality alone determines area only modulo integers. The
+normalization by the complete source in its logarithmic derivative cannot be
+dropped or replaced by the square-summable column covariance.
+
+### C2 — direct central Gaussian source cancellation
+
+For the literal functions in `GaussianCentralGapExplicitCriterion`, prove
+`P(y) - C(y) ≤ -1/10 + 32 sqrt(y)` for every `0 < y ≤ 1` directly from arithmetic.
+This is the existing TG target, not a new criterion. Investigate the exact
+von Mangoldt divisor convolution before estimating its inverse; retain the
+polar continuum and endpoint terms throughout.
+
+**[OPEN CORE]:** one-sided bound uniform as `y → 0`. Positive-damping
+summability, compact-away-from-zero estimates and a zero-side expansion do
+not prove it.
+
+### Exact paper calculation for C2: keep the continuum through inversion
+
+For `y>0`, put `f_y(x)=x^(-1/2) exp(-y x²)` on `x≥1`,
+`D(y)=P(y)-C(y)`, and `H_N=Σ_(1≤k≤N) 1/k`. The literal divisor identity
+`Σ_(d|n) Λ(d)=log n` gives
+
+```
+Σ_(m≥1) m^(-1/2) D(m²y)
+  = Σ_(n≥1) log(n) f_y(n) - ∫_1^∞ H_floor(x) f_y(x) dx
+  =: R(y).
+```
+
+The continuum term is essential: changing variables gives
+`m^(-1/2) C(m²y)=(1/m)∫_m^∞ f_y(x) dx`, so its sum is the
+harmonic-number integral, not the logarithmic integral. All rearrangements
+are absolutely convergent for fixed positive `y`: regrouping the prime
+double sum gives `Σ log(n)f_y(n)`, and `H_floor(x)≤1+log x` controls the
+continuum. These bounds justify the subtraction only after both sums have
+been evaluated.
+
+The cumulative forcing has the elementary exact form
+
+```
+A(x) = log(floor(x)!) - x H_floor(x) + floor(x),   x≥1.
+R(y) = -∫_1^∞ A(x) f_y'(x) dx < 0.
+```
+
+Proof of the sign: `A(1)=0`, and at every integer `N≥2`,
+`A(N)-A(N-1)=log N-H_(N-1)<0`, by integrating `1/t` over
+the unit intervals from `1` to `N`. On `[N,N+1)`,
+`A(x)=A(N)-(x-N)H_N`. Thus `A(x)<0` for every `x>1`.
+Integration by parts is justified by `A(x)=O(x log x)` and Gaussian
+decay; its lower boundary vanishes. Since `f_y'<0`, the sign follows.
+
+This is a sign of the **dilation average**, not a sign of `D`. Exact
+Möbius inversion is
+
+```
+D(y) = Σ_(m≥1) μ(m)m^(-1/2) R(m²y).
+```
+
+For fixed `y`, the double absolute sum is bounded by a Gaussian series
+with divisor multiplicities, so the divisor regrouping is legitimate.
+At the cumulative-measure level the same inversion is precisely
+
+```
+Σ_(m≤x) μ(m) A(x/m) = ψ(x) - x + 1.
+```
+
+Indeed the atomic term is `Λ=μ*log`; the continuous density is
+`Σ_(m≤x) μ(m)H_floor(x/m)/m = Σ_(k≤x)(Σ_(m|k) μ(m))/k = 1`.
+Consequently the forcing sign alone has not paid the original arithmetic
+error. No bound for its signed inverse is claimed.
+
+This paper calculation is an intermediate identity, not a qualifying
+solution, new RH criterion, or no-go. It is not recorded as a formalized
+theorem or as frontier movement.
+
+### C3 — preserve the source sign under literal finite Euler inversion
+
+Let `Q` be the product of a finite set of distinct primes and define
+`R_Q(y)=Σ_(d|Q) μ(d)d^(-1/2) R(d²y)`. Investigate a source-derived
+upper bound uniform jointly in `Q` and small positive `y`, before passing
+to the cofinal inverse. The exact insertion is
+
+```
+R_(Qp)(y)=R_Q(y)-p^(-1/2)R_Q(p²y),  p∤Q.
+```
+
+The concrete sign-preservation candidate is `R_Q(y)≤0` for every finite
+prime set and `y>0`. This is an unproved, potentially stronger source
+conjecture, not an accepted substitute for C2. Its base `Q=1` is the paper
+calculation above; its insertion step requires an actual two-scale
+comparison. A negative summand does not establish that comparison.
+
+The complete coefficient calculation also gives
+`R_Q(y)=Σ_((m,Q)=1) m^(-1/2)D(m²y)`. For fixed `y>0`, these sums tend to
+`D(y)` along prime exhaustion. To justify all fixed-`y` rearrangements,
+the elementary bounds `P(t)≤Σ_n n exp(-tn)` and
+`C(t)≤exp(-t)/t` give `|D(t)|≤K_y exp(-t)` for `t≥y`.
+The double dilation sum is then bounded by
+`K_y Σ_k d(k)k^(-1/2)exp(-yk²)`, which converges since `d(k)≤k`.
+No uniform domination as `y→0` follows from this argument.
+Thus assuming every finite-stage sign would already supply the desired
+all-`y` sign after the limit; it is the missing estimate, not a new known
+input. No such assumption is added to Lean.
+
+Corpus audit: `MonotoneMobiusPositivity` concerns the different operator
+`Σ μ(k)k^(-2)g(u/k)` with a nonnegative monotone density. It does not
+apply to `Σ μ(k)k^(-1/2)R(k²y)`. The exact prime-density inversion module
+retains those different weights and hypotheses. Likewise, positivity of
+prime-deleted theta atoms does not identify the present completed
+prime-minus-continuum source. No transfer between them has been proved.
+`ThetaMovingCuspTotientReconstruction` makes the reflected issue explicit:
+its actual reflected coefficients are
+`A_S(m)=∏_(p∈S,p|m)(1-p)`, not positive prime-deletion coefficients.
+Its positive totient reconstruction does not sign the original reflected
+source. These are source-inspected existing facts, not new results here.
+
+**Next proof obligation:** prove or disprove the actual two-scale
+comparison for `R_Q`, retaining its harmonic continuum and moving prime
+set. If it does not hold, return to signed inverse cancellation; do not
+weaken the ultimate TG target or add the comparison as an assumption.
+
+## Status
+
+RH unproved. Neither C1 nor C2 has a complete paper proof. No new Lean result
+claimed. External searches and novelty checks excluded by user instruction.
+Existing unrelated worktree changes preserved.
+
+## Formalization requested
+
+User subsequently requested formalization of noteworthy paper proofs.
+The initial candidate was the unconditional strict negative sign of the
+literal dilation average, its exact von Mangoldt/continuum identity, and
+the proved inversion identities. The user's subsequent clarification
+requires a theorem or premise discharge that significantly advances a
+hard TG obstacle. The averaged-sign calculation alone does not meet
+that requirement. No repository Lean module has been added for it.
+It remains a proved-on-paper intermediate calculation; the missing
+signed inverse comparison remains the target. No unproved C2/C3 sign
+will be introduced as an input.
+
+For the sign, a shorter dependency-closed proof avoids Stieltjes calculus:
+on every cell `[n,n+1]`, `∫ f_y ≥ f_y(n+1)`, while
+`H_n ≥ log(n+1)`. Summing gives the desired comparison between the
+harmonic continuum and the logarithmic lattice. The first cell is strict
+since `log 2 < H_1 = 1` and `f_y(2)>0`. Gaussian/geometric majorants
+prove every series summable before passage to the limit.
+
+An API-only scratch probe was run while considering this formalization;
+some exploratory names were absent. It proved no mathematical statement
+and is not a certificate. Do not count it as progress on TG.
+
+## Verification
+
+`lake --old env lean /tmp/hgt_tg_actual_source_audit_20261024.lean`
+passed. The four existing endpoints
+`burnolBaseCapArea_lt_one`, `cubicArithmeticRectangleSource_winding`,
+`exists_faithful_arithmetic_rectangle_cubic`, and
+`riemannHypothesis_iff_gaussianCentralGap_le_explicit` depend only on
+`propext`, `Classical.choice`, and `Quot.sound`. This audits existing
+compiled endpoints; it is not verification of a new closing theorem.
+
+## Further source inspection after the significance clarification
+
+The cubic aperture-gauged continuum construction is already certified in
+`HTGeometry.CubicApertureGaugedSynthesis` and `CubicApertureGradedCarrier`.
+Its card explicitly leaves the coefficient-native cyclic boundary map and
+the trace comparison open. Separate nuclearity of both source legs is not
+a proof of the sign of their difference. Re-formalizing this construction
+would not discharge C1.
+
+`XiGaussianAnnihilatorPrimeCancellation` identifies the complete signed
+prime--Gamma--polar residual with the polynomial Gaussian zero trace.
+Its absolute bound uses `xiGaussianNativeEnergy`, and its annihilating
+polynomials are indexed by finite sets of `XiZeroCopy`. Neither statement
+proves nonnegative residual area or the central Gaussian bound C2.
+
+`XiWardCubicPositiveShiftArithmeticCovariance` identifies the literal
+pole--Gamma--von-Mangoldt difference quotient in the absolute-Euler
+chamber and continues its multiplicity residues. This establishes source
+provenance, but supplies no sub-unit trace estimate.
+`XiWardCubicReflectionAbsorptionCompletePositivity` proves positivity
+with denominator `(w_i-1/2)+conj(w_j-1/2)`; its unshifted kernel has a
+different denominator. The shifted theorem cannot discharge the required
+unshifted comparison.
+
+The older prospective identity `SoninSemilocalFluxNormalization` is already
+refuted by `SoninSemilocalTraceObstruction.not_soninSemilocalFluxNormalization`.
+It is not a live premise to discharge. No new obstruction is claimed here.
+
+The completed-source Suzuki first-variation paper was also inspected.
+It concerns recovery of the complete Weil form from a critical source
+limit, and explicitly does not prove its positivity. No connection from
+that limit to C1's residual filling has been proved here.
+
+**Outcome:** no qualifying new theorem or premise discharge. C1, C2, and
+C3 remain open. No new Lean module, conditional substitute, or frontier
+advancement is recorded. The exploratory API scratch and the completed
+endpoint-audit scratch were removed after their results were recorded.
+
+## Log
+
+- 2026-10-24 — Read attached task and TG ledger; inspected actual source
+  statements and previous TG attempts. Began direct source-comparison and
+  Gaussian divisor-convolution investigation.

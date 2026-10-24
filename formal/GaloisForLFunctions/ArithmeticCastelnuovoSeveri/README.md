@@ -519,24 +519,43 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
     `Re W ≤ log q (N − R^ν/C_M)‖f‖²`, `C_M` polynomial (`re_W_curveConfig_ge_floor`,
     `exists_lagTest_le`): the `L²` floor rate of a curve is exactly twice its zero width, the
     unclustered case of Square-Root Threshold's width–floor alternative.
-33. **Hecke-stable ampleness, section counts, and selectivity**
-    (`SectionCountRiemannRochAndPrimeBlindSelectivity`). Hecke correspondences act on the pole plane
-    with weights `(a, 1)`, so a cycle keeps nonnegative ample degree under all `T_a` iff it lies in the
-    double-null nef quadrant `{x·H ≥ 0, x·V ≥ 0}`; on every polar surface Hodge index holds iff the
-    open positive cone lies in that quadrant, and over `ℚ` a single scale decides: RH iff `T_2` maps
-    the open positive cone into the ample half-space
-    (`scalingSurface_hodgeIndex_iff_heckeCorrespondence_openPositiveCone_ample`). On the section-count
-    side, the two-pole degrees of freedom of the logarithmic box `[0, s]`, `∫_0^s(e^u + 1)du`, minus
-    the prime-power node count `ψ(e^s)`, is exactly `E(s)`
-    (`polarBoxDoF_sub_primeNodeCount_eq_chebyshevTwoPoleDefect`), and the shifted pair inflates the
-    node count (`generalizedTwoPoleDefect_shiftedPair_lt`). A prime-blind test (autocorrelation zero
-    at every relevant `log n`) pays only its pole charge, and a prime-blind subspace with vanishing
-    even pole moment and spectral second moment `≤ (69/2)∫f²` is zero
-    (`finrank_primeBlind_subspace_eq_zero`). Rank counts alone do not select: multiplying a Dirichlet
-    sampling operator by a nowhere-vanishing diagonal weight — the shifted pair's `(n^a + n^{−a})/2`
-    against `Λ` — leaves its kernel and `h⁰` unchanged
-    (`h0_weightedDirichletSampling_shiftedPair_eq_vonMangoldt`). A section count is selective only
-    when coupled to a norm such as `Σ w(n)²` or to `E(s)`.
+33. **Hecke-stable ampleness, section counts, and the universal floor law**
+    (`SectionCountRiemannRochAndPrimeBlindSelectivity`, `SectionEffectivityAndTheUniversalFloorLaw`).
+    * *Universal floor law for ample cones:* On any polar surface, every cone `E` of nonnegative
+      ample degree (`0 ≤ x·(H + V)` on `E`) that satisfies `AmpleAxiom` obeys
+      `RiemannRochAxiom E ↔ openPositiveCone ⊆ E ∧ ∀ x, 0 ≤ defect(x, x)`
+      (`riemannRoch_iff_openPositiveCone_subset_and_defect_nonneg`,
+      `ampleHalfSpace_ample_riemannRoch_dichotomy`). No cone of nonnegative ample degree with
+      `AmpleAxiom` — however constructed from sections, node counts or additive structure — can have
+      a `RiemannRochAxiom` that escapes equivalence to the defect floor `∀ x, 0 ≤ δ(x, x)`.
+    * *Sign-free Bézout positivity from source section readings:* By hyperbolic AM–GM
+      (`polar_sq_sub_polar_mul_polar`) and Cauchy–Schwarz, `sourceCone Φ` (and `sourceSectionCone Φ`)
+      satisfies `BezoutAxiom` without reading `x²` whenever `0 ≤ Φ` and `δ(x, y)² ≤ Φ(x)Φ(y)`
+      (`sourceCone_bezout_of_defect_sq_le`, `sourceCone_bezout_of_source_nonneg`), and supplies
+      positive section readings `sourceSectionH0 ≥ 1` on `polar(x, x) > Φ(x)`.
+    * *Hecke-stable ampleness:* Hecke correspondences act on the pole plane with weights `(a, 1)`, so
+      a cycle keeps nonnegative ample degree under all `T_a` iff it lies in the double-null nef
+      quadrant `{x·H ≥ 0, x·V ≥ 0}`; on every polar surface Hodge index holds iff the open positive
+      cone lies in that quadrant, and over `ℚ` a single scale decides: RH iff `T_2` maps the open
+      positive cone into the ample half-space
+      (`scalingSurface_hodgeIndex_iff_heckeCorrespondence_openPositiveCone_ample`).
+    * *Prime-power node section counts, Chebyshev bridge, and odd pole-charge cancellation:* On the
+      odd degree-`r` subsurface, the pole charge `2A(F)²` cancels identically between `polar(x, x)`
+      and `defect(x, x)`, leaving the pole-free self-intersection
+      `x² = 2ab + 2(b − a)A(F) + primeNodeCorrelationObstruction r F − archGaugeBudget r R F`
+      (`scalingSubsurface_odd_pair_self_eq_poleFreeLedger`,
+      `localPair_self_eq_primeNodeObstruction_sub_archGaugeBudget_of_odd`). The prime-node
+      obstruction is supported purely on `primePowerNodes r = (relevantShifts r).filter IsPrimePow`
+      (`primeNodeCorrelationObstruction_eq_sum_primePowerNodes`), the prime-node section count obeys
+      `primeNodeH0 r W − primeNodeH1 r W = dim W − #(primePowerNodes r)` and
+      `dim W − ψ(e^{2r})/log 2 ≤ dim W − #(primePowerNodes r) ≤ primeNodeH0 r W`
+      (`finrank_sub_card_le_primeNodeH0`, `finrank_sub_primeNodeCount_div_log_two_le_primeNodeH0`),
+      and `∫_0^s(e^u + 1)du − ψ(e^s) = E(s)`
+      (`polarBoxDoF_sub_primeNodeCount_eq_chebyshevTwoPoleDefect`). Prime-blind tests pay only their
+      pole charge (`finrank_primeBlind_subspace_eq_zero`), and while bare rank counts are invariant
+      under nowhere-vanishing diagonal reweighting (`h0_weightedDirichletSampling_shiftedPair_eq_vonMangoldt`),
+      the Frobenius norm strictly separates `Λ` from the shifted pair by a factor `> 4`
+      (`frobeniusMass_weightedDirichletSampling_shiftedPair_gt`).
 
 ---
 
@@ -639,14 +658,13 @@ Built and reusable:
 - *Hecke incidence*: the Cartesian law, resonators, the successor cell.
 - *Rank–trace inertia* with spectral slack.
 - *The `λ`-ring*: Adams operations, Hecke correspondences and cycles, arithmetic Lefschetz numbers.
-- *The odd-sector ledger*: Lorentz–polar identity, reflected-prime/polar and Chebyshev ledgers,
-  degree floors and the zero width.
+- *The odd-sector ledger and section counts*: Lorentz–polar identity, reflected-prime/polar and
+  Chebyshev ledgers, degree floors and the zero width, the universal floor law for ample cones,
+  sign-free Bézout positivity from source section readings, prime-power node section counts
+  `h⁰ ≥ DoF − node count`, and exact pole-charge cancellation on odd cycles.
 
 To be built:
 
-- a notion of section on the scaling surface with Riemann–Roch supply and an ampleness proof that does
-  not use the sign of the form, whose Riemann–Roch axiom is *not* equivalent to the floor it should
-  prove;
 - an effectivity stable under the Hecke correspondences that the golden datum violates;
 - the near-radical count of Landau–Widom type;
 - a bound on the coupling of prime towers through the collar on rank-`P` boxes.
@@ -655,23 +673,21 @@ To be built:
 
 ## 7. Open problems
 
-1. **Riemann–Roch for `ℤ` — the open core.** A notion of section on the scaling surface whose
-   effective classes have nonnegative ample degree by definition and which supplies effective
-   cycles in every class of positive square. Bézout is available (21); the supply is RH-equivalent
-   (18) and cannot come from positive tests (19), from cones read off the form (20), or from exact
-   annihilators among compact tests (22); source-defined cones exist but their supply is a
-   coercive floor (20). Of the routes to Wall 14 this is the only one whose removal criterion is a
-   construction, not an estimate. The constraints on a construction are known: the cone must
-   contain the open positive cone, be Bézout-closed and Hecke-stable, and use a constraint the
-   golden datum violates, which means the additive structure of `ℤ`. One candidate is a count. Take
-   for `h⁰` the dimension of aperture-`A`, height-`T` tests vanishing on the prime-power nodes of the
-   box, and seek `h⁰ ≥ (degrees of freedom) − (node count)` with the error identified as the
-   Chebyshev defect `E(s)` — the identity `DoF − node count = E(s)` of item 33 is its exact skeleton.
-   The corpus already proves Landau-density statements of this kind (prime-blind tests have large
-   spectral second moment). The classical shadow of such a count is the `T + N` term of the mean
-   value theorem, with diagonal at the square-root threshold. A section count no stronger than the
-   large sieve at the diagonal would only relabel Dirichlet polynomials (item 33); a useful one must
-   be selective against the golden datum and the shifted pair.
+1. **Riemann–Roch for `ℤ` — the open core.** The structural questions are settled
+   (`SectionEffectivityAndTheUniversalFloorLaw`): on any polar surface, every cone `E` of
+   nonnegative ample degree with `AmpleAxiom` obeys
+   `RiemannRochAxiom E ↔ openPositiveCone ⊆ E ∧ ∀ x, 0 ≤ defect(x, x)`
+   (`riemannRoch_iff_openPositiveCone_subset_and_defect_nonneg`), so no ample cone of nonnegative
+   degree can have a `RiemannRochAxiom` that escapes equivalence to the defect floor; source section
+   readings satisfy `BezoutAxiom` without reading `x²` (`sourceCone_bezout_of_defect_sq_le`);
+   prime-power node vanishing gives `dim W − ψ(e^{2r})/log 2 ≤ dim W − #(primePowerNodes r) ≤ h⁰`
+   (`finrank_sub_card_le_primeNodeH0`, `finrank_sub_primeNodeCount_div_log_two_le_primeNodeH0`) with
+   `∫_0^s(e^u + 1)du − ψ(e^s) = E(s)`; on the odd subsurface the pole charge `2A(F)²` cancels
+   identically between `polar` and `defect` (`scalingSubsurface_odd_pair_self_eq_poleFreeLedger`);
+   and away from the low-frequency divisor `D_a` uncompensated `RiemannRochAxiom`, `AmpleAxiom` and
+   `HodgeIndex` hold unconditionally at every degree (`lowBlindTests_effectivity`). Open: closing
+   the finitely many low-frequency directions read by `D_a` and the pole, or proving `0 ≤ δ(x, x)`
+   across all apertures.
 2. **Near-radical count (Landau–Widom).** The two-sided law for `h⁰_ε(L)`, the dimension of
    aperture-`L` tests with `|W| ≤ ε‖f‖²`, unconditionally in its upper half, and the rate
    `−log μ(L) ≍ 2π² N(T*)/log N(T*)` for configurations on the line. Known: lower bounds

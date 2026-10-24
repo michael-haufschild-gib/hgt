@@ -249,3 +249,15 @@ This card is the programme card: folder, umbrella, README and the continuation c
     Consequence: the explicit positive core is a **debt** of size `Σ_{p ≤ T/2} 1/p`, and under any
     energy budget the integrated deviation must carry it. The continuation obstruction is the
     divergence of the prime harmonic series.
+- 2026-10-24 — Open Problem 1 resolved (`SignedAveragedContinuationAndTheZeroWidthBand`):
+  - Eight-way equivalence `signedAveragedContinuation_tfae` connecting `Admits dampedMobiusEnergy a`,
+    `a ∈ receiverDampings`, `AveragedDampingContinuation a c`, dyadic relative-loss continuation,
+    additive signed work continuation, dyadic additive work continuation, Cesàro additive work
+    continuation, and `AveragedResidualContinuation a c`.
+  - Unconditional signed continuation across `(Θ − ½, ∞)` (`averagedDampingContinuation_of_zetaZeroAbscissa_sub_half_lt`,
+    `exists_neg_signedDampingWork_integral_le_of_zetaZeroAbscissa_sub_half_lt`), exact threshold
+    `sInf_averagedContinuationThresholds_eq_zetaZeroAbscissa_sub_half`, and boundary shadow law
+    `analyticOrderAt_le_of_averagedDampingContinuation_at_zeroWidth`.
+  - Unconditional horizon-uniform continuation on the Vinogradov–Korobov band
+    `exists_signedWorkIntegral_and_relativeLoss_le_on_vinogradovKorobovBand` and all-damping
+    sub-power saving `eventually_signedWorkIntegral_and_relativeLoss_le_vk_saving`.

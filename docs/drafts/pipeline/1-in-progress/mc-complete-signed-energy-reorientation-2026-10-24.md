@@ -123,3 +123,52 @@ The signed orbit means have already been evaluated; the full fluctuation has not
 - No new unconditional source bound, Lean theorem, or RH proof obtained. No Lean files edited or compiled.
 - Corpus semantic searches for birth-delayed signed residuals, reciprocal sawtooth pairing, joint interior estimates and LCM grouping completed with `partial=false` and no reported errors. Search hits were checked against their Lean statements/proofs where used.
 - All owned search processes reached exit 0. Temporary search output removed after recording this state. Goal remains active.
+
+## Complete-source curvature attempt
+
+The preceding turn did not improve the source estimate. This batch inspected the natural-cutoff cofactor decomposition, the all-lag window covariance bound, the actual adjacent-correlation power-rate proof, and the damping generator/second-tangent proofs. None of the retrieved closure statements discharges the small-damping source input: the retrieved RH statements retain admission, convexity or budget premises. This is a statement about inspected hits, not an exhaustive absence claim.
+
+The all-lag estimate `abs_window_lag_covariance_sub_le` is uniform in the lag, but retains `(2*N^2−1)*sieveVariance N c`. Its covariance is the complete-period covariance. Substituting it for the moving-prefix signed pairing would still require paying that error and preserving the source's initial phase. No such transfer was proved. The adjacent theorem's positive power rate proves the already-paid predecessor-peak remainder; it does not estimate the interior history.
+
+### Conjecture being attacked
+
+For the actual arithmetic source, prove the sign of the complete second-damping work
+
+```
+Σ_{1≤n≤T} (B_ε(n)^2 + A_ε(n)*F_ε(n))/(n*(n+1)) ≥ 0,
+```
+
+where B and F are the first and second damping tangents already defined in Lean. The existing `riemannHypothesis_of_second_tangent_pairing_ge` closes RH if this arithmetic inequality is proved for every T and `0<ε≤1/2`. The conjecture is the sign, not another criterion theorem. No assumption of the sign is permitted in an RH proof.
+
+### Exact generator calculation and remaining mathematical work
+
+Let L be the existing `arithmeticDampingGenerator`, let `v_ε(n)=A_ε(n)/n` on positive states, let `m(ε)=dampedReadout ε`, and put `w(n)=n/(n+1)`. The source evolution in `DampingWorkAsArithmeticMarkovBoundaryFlux` is
+
+```
+v' = L v − m,       L(constant)=0.
+```
+
+Consequently the full sign to prove is
+
+```
+Σ_{1≤n≤T} w(n)*((L v(n)−m)^2 + v(n)*(L(L v)(n)−m')) ≥ 0.
+```
+
+This keeps the density's second derivative. It is the same source sign as the existing second-tangent formula, not an established estimate.
+
+The attempted mechanism is a positive-square expansion of the iterated arithmetic jump form. For the bilinear jump form Γ and its iterate Γ₂, the algebraic identity for the homogeneous contribution is
+
+```
+(L v)^2 + v*L^2 v = (1/2)*L^2(v^2) − 2*L Γ(v) + 2*Γ₂(v).
+```
+
+After centering, the additional terms are `−2*m*L v + m^2 − m'*v`. Thus a curvature sign by itself would leave both weighted fluxes and the density terms. The pronic weight is not asserted stationary in the Lean source. A prime-coordinate or divisor-state square identity cannot be silently transferred through prefix averaging to this norm.
+
+The next proof obligation within this attempt is to control these flux and density terms jointly with the actual-source iterated jump form. No sign for that combination has been established. Do not formalize a generic curvature lemma as if it closed this obligation; do not strengthen the target to a separate sign for each cell or each flux.
+
+### Verification and progress assessment
+
+- New explicit proof attempt: complete second-damping source sign via arithmetic generator curvature, with both fluxes and both density contributions retained.
+- No significant obstacle closed and no new unconditional estimate proved. No Lean edits, build, or axiom-audit claim.
+- The listed corpus searches completed normally; no web search, novelty check, subagent or mathematical numerical experiment was used.
+- Goal remains the full unconditional Lean proof of RH. The generator attempt remains open; it has not been retired or replaced by an auxiliary theorem.

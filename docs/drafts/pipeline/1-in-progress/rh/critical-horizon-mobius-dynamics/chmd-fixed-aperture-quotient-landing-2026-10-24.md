@@ -68,10 +68,45 @@ and `J` the mass/source coordinate.
    image with continuous inverse. Density of the original core identifies it
    with the closure of its quotient image.
 
+6. **Preservation of the actual Weil form.** The completed map agrees on the
+   common smooth core with the literal inverse-Doob quotient coordinate.
+   `suzukiCoreSignedQuotient_weil` identifies its full quotient Weil energy
+   with the restricted CCM Weil form, including both polar terms. Both
+   quadratic forms are continuous in the norms just compared. Their equality
+   therefore extends from the dense real core to every vector of the real
+   Weil form completion. Thus the landing preserves the actual signed form,
+   rather than merely identifying abstract normed spaces.
+
 All compactness and uniqueness inputs above were located by corpus search and
 their statements inspected. Their formal combination and transitive axiom
 audit remain pending. This argument does not bound the whole quotient by a
 single aperture or sign its descended Weil form.
+
+## Formal implementation in progress
+
+`formal/GaloisForLFunctions/RHTower/CHMDFixedApertureQuotientLanding.lean`
+contains the draft proof. No verification success is claimed yet.
+
+The implementation strengthens step 2 to an exact bounded factorization:
+`P = 2 P J* J`, where `J*` is the graph adjoint of the source map. Thus a
+convergent source subsequence gives a convergent critical-projection subsequence
+directly. A single existing `localThetaInverse N`, with `a <= N+1`, transfers
+CCM physical compactness to source compactness. Normalized smooth sources then
+give the lower quotient bound, which passes to their graph closure.
+
+The draft also constructs the real form completion explicitly as the closure
+of the smooth core in `CCMArchimedeanFormDomain`, and extends the common-core
+linear equivalence. Its inverse followed by the actual quotient map is the
+claimed completion landing. This is not an assumed completion identification.
+
+Current checks: the full `/tmp` proof check verifies physical-source uniqueness,
+the projection factorization, and the compact subsequence argument. Its axiom
+audit for physical-source uniqueness contains only `propext`, `Classical.choice`,
+and `Quot.sound`. The remaining errors concern quotient norm rewrites and
+compatible real scalar-action instances on the complex form domain and its real
+completion. These are being resolved without changing the mathematical statement.
+The two capstone axiom outputs still contain elaboration-generated `sorryAx`, so
+neither capstone is certified yet. The final repository-leaf audit is pending.
 
 ## Gates
 

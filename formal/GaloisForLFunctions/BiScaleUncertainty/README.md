@@ -821,12 +821,34 @@ universal probe is explicit: for a source whose transform is real-rooted every b
 with $\lvert t\rvert\ge1/2$ is universal (`seesAllZeros_tiltedSource_of_im_ne_zero`), and the cubic
 spline $B=U_1^{\star4}$, transform $(\sin z/z)^4$, gives
 $\text{RH}\iff\sum_n\Lambda(n)\sqrt n\,B(\log n-\tau)\le\int_0^\infty2\cosh(x/2)e^xB(x-\tau)\,dx+Ke^\tau$ for
-all large $\tau$: one fixed spline-weighted prime sum against its polar prediction.
+all $\tau>4$ (`riemannHypothesis_iff_spline_prime_sum_le_of_gt_four`,
+`xiZeroHalfPlaneBound_iff_spline_prime_sum_le_of_gt_four`): one fixed spline-weighted prime sum against
+its polar prediction, with effective finite-shift local Chebyshev error bounds and explicit spectral tail
+constants (`abs_stationaryPacket_splineProbe_le_local_chebyshev`,
+`abs_stationaryPacket_splineProbe_le_of_riemannHypothesis`).
 
-**The band is eventually above the zero energy.** Under RH, for every finite set $S$ of zeros and
-every $\varepsilon>0$, $(1/M)\int_0^M\tilde E^2\ge\sum_{\rho\in S}m_\rho^2/\lvert\rho\rvert^2-\varepsilon$ for
-all large $M$ (`cramer_liminf_law`), not only infinitely often: Cramér's lower bound in liminf form,
-through the gauge bridge from the packet to the Chebyshev gauge convolution.
+**Cramér's limiting constant and finite-cutoff packet energy.** Under RH, the mean square of the
+normalized Chebyshev error converges to the total zero energy,
+$$
+\frac1M\int_0^M\tilde E(t)^2\,dt\ \longrightarrow\ \sum_\rho\frac{m_\rho^2}{|\rho|^2}
+$$
+(`tendsto_mean_sq_normalizedLogError`, `tendsto_mean_sq_chebyshevError_log`,
+`isGLB_asymptoticBandSlope_zeroEnergy`), with sliding-window sublinearity
+$\frac1L\int_{L-W}^L\tilde E^2\to0$ and discrete Nyquist-cell and Chebyshev mean-square convergence
+(`tendsto_centeredCellSum_div_log`, `tendsto_discreteChebyshevSum_div_log`). The mechanism combines
+Cramér's liminf law with a dyadic Chebyshev decomposition at $r=1$ (`dyadic_chebyshev_sq_div_le`):
+conjugate-paired finite sums below ordinate $2^{K_0}$ satisfy Parseval (`tendsto_mean_sq_lowZeroSum`),
+while the high-ordinate zero tail decays geometrically as $(5/6)^{K_0}$ via Montgomery–Vaughan on
+dyadic shells (`cramer_tail_summable_zero_energy`). For a compact source $F$ at finite cutoff
+$L=\log(N+2)$, the packet energy splits into three disjoint zones (`packetEnergy_eq_three_zones`):
+the stationary bulk $\int_w^{L-w}P_F^2$, an $O(1)$ origin zone, and the cutoff boundary layer
+$[-L-w,-L+w]$ where the sharp truncation creates the jump $\tilde E(L)F(\cdot+L)$. Removing the cutoff
+jump gives $\mathrm{boundaryCorrectedPacketEnergy}(F,N)/L\to E(F)$ and $\int(D_NF)^2/L\to E(F)$ under
+RH (`tendsto_boundaryCorrectedPacketEnergy_div_cutoff`,
+`tendsto_chebyshevGaugeConvolution_energy_div_cutoff`), while the raw finite-cutoff packet energy obeys
+an exact asymptotic sandwich by $\tilde E(L)^2\|F\|_2^2/L$ and converges to $E(F)$ iff
+$\tilde E(L)^2\|F\|_2^2/L\to0$ (`eventually_packetEnergy_div_cutoff_bounds`,
+`tendsto_packetEnergy_div_cutoff_iff`).
 
 **Synchronized packets without orthogonality: the triangular Gram split.** Packet families are
 never orthogonal, and the natural device — a Gram matrix with controlled off-diagonal — is not
@@ -1123,10 +1145,12 @@ from one explicit energy bound.
    (`exists_lt_blindSymbolSlackOn_insert_of_not_mem`, `blindSymbolSlackOn_insert_iff_of_mem`), and
    two towers are enclosed by line certificates and product designs
    (`blindSymbolSlack_two_towers_enclosure`).
-4. **The band law.** $\int_0^L\tilde E^2=O(L)$ iff RH, equivalently linear Laplace energy of
-   $\nu_N$ or linear band energy; no growth strictly between linear and exponential is possible;
-   the exponential rate is twice the zero width (`riemannHypothesis_iff_meanSquare_band`,
-   `riemannHypothesis_iff_forall_meanSquareBandRate`, `riemannHypothesis_iff_forall_laplaceEnergyRate`).
+4. **The band law and Cramér's limiting constant.** $\int_0^L\tilde E^2=O(L)$ iff RH, equivalently
+   linear Laplace energy of $\nu_N$ or linear band energy; no growth strictly between linear and
+   exponential is possible; the exponential rate is twice the zero width, and under RH the band
+   mean converges to the total zero energy $\sum_\rho m_\rho^2/|\rho|^2$ (`riemannHypothesis_iff_meanSquare_band`,
+   `riemannHypothesis_iff_forall_meanSquareBandRate`, `riemannHypothesis_iff_forall_laplaceEnergyRate`,
+   `tendsto_mean_sq_normalizedLogError`, `tendsto_boundaryCorrectedPacketEnergy_div_cutoff`).
 5. **Packets are filters with a growth exponent.** A compact packet grows exactly at the largest
    depth among the zeros its source sees, one side suffices, and every nonzero packet oscillates
    (`packet_lower_iff`, `riemannHypothesis_iff_forall_packet_bddAbove`, `packet_oscillates`); the
@@ -1137,8 +1161,10 @@ from one explicit energy bound.
    (`packet_weil_law`, `forall_mult_eq_one_iff_forall_packet_energy_eq_weil`); $\sup E/W$ is the
    maximal critical multiplicity (`multiplicity_ceiling_law`).
 7. **One explicit universal probe.** The cubic spline boost sees every zero; RH is one
-   spline-weighted prime sum against its polar prediction, and RH with simplicity is one packet
-   identity (`riemannHypothesis_iff_spline_prime_sum_le`, `riemannHypothesis_iff_splineProbe_band`,
+   spline-weighted prime sum against its polar prediction for all shifts $\tau>4$, with explicit
+   finite-shift local Chebyshev and spectral bounds, and RH with simplicity is one packet
+   identity (`riemannHypothesis_iff_spline_prime_sum_le_of_gt_four`,
+   `abs_stationaryPacket_splineProbe_le_local_chebyshev`, `riemannHypothesis_iff_splineProbe_band`,
    `riemannHypothesis_and_simple_iff_splineProbe`).
 8. **Node criticality.** For every node set, zero-pole positivity holds iff RH holds and the set
    contains every prime power (`zeroPoleBlindPositiveOn_iff`): deleting $4$ is fatal, deleting $6$
@@ -1279,17 +1305,21 @@ In the field's coordinates the square-root barrier is $\int_0^L\tilde E^2=O(L)$,
 $O(L)$ Laplace energy of $\nu_N$, equivalently $O(L)$ energy in the band $|\xi|\le\sqrt{N+2}$.
 Everything outside the band is bounded, the band's exponential rate is the zero width, its slope
 dominates the zero energy $\sum m_\rho^2/|\rho|^2$, it is never sublinear, it cannot grow strictly
-between linear and exponential, and the linear band is RH in both directions. Open: the linear
-band itself. A mechanism that closes it must fail for Beurling systems, survive the degenerate
+between linear and exponential, and the linear band is RH in both directions. Inside the band,
+under RH the band mean $(1/M)\int_0^M\tilde E^2$ converges to the total zero energy
+$\sum_\rho m_\rho^2/|\rho|^2$ (`tendsto_mean_sq_normalizedLogError`), the boundary-corrected
+finite-cutoff packet energy and gauge convolution energy per unit cutoff converge to $E(F)$ while
+the raw finite-cutoff packet energy differs from $E(F)$ by the cutoff jump layer
+$\tilde E(L)^2\|F\|_2^2/L$ (`tendsto_boundaryCorrectedPacketEnergy_div_cutoff`,
+`eventually_packetEnergy_div_cutoff_bounds`, `tendsto_packetEnergy_div_cutoff_iff`), and the
+explicit spline probe $U(u)=e^uU_1^{\star4}(u)$ satisfies effective finite-shift local Chebyshev
+and spectral bounds at every shift $\tau>4$ (`abs_stationaryPacket_splineProbe_le_local_chebyshev`,
+`abs_stationaryPacket_splineProbe_le_of_riemannHypothesis`,
+`riemannHypothesis_iff_spline_prime_sum_le_of_gt_four`). Open: the unconditional linear band
+itself. A mechanism that closes it must fail for Beurling systems, survive the degenerate
 point of one character and modulus one, carry information beyond polynomial length equal to
 height at square-root precision, and separate $\log4$ from $\log6$; additive tools do the first
 and third only after averaging over a family, and multiplicative tools are Beurling-invariant.
-Sharper questions inside the band: whether the band constant of the raw normalized Chebyshev error
-under RH equals the zero energy (Cramér's limiting constant; the liminf of the band mean is at
-least the zero energy and a linear upper bound is proved), the asymptotics of the finite-cutoff
-packet energy including the endpoint term $\tilde E(L)^2$, and effective finite-shift error bounds
-for the explicit spline probe $U(u)=e^uU_1^{\star4}(u)$, whose universality and RH/width criteria
-are proved; the missing estimate is on its arithmetic packet, not on the choice of boost.
 
 ### 7.2 The blind cone
 
