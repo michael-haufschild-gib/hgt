@@ -112,8 +112,12 @@ theorem sum_sqrt_le (f : CMUnit) (N : ℕ) :
       harmonic_eq_sum, logUnitCorr, ← sum_add_distrib, mul_sum]
     exact sum_congr rfl fun n _ => by ring
   rw [sum_congr rfl hterm]
-  refine (sum_mul_le_sqrt_mul_sqrt _ _ _).trans_eq ?_
+  refine (Real.sum_mul_le_sqrt_mul_sqrt _ _ _).trans_eq ?_
   rw [h1, h2, ← Real.sqrt_mul hH0]
+
+theorem logUnitCorr_succ (f : ℕ → ℂ) (n : ℕ) :
+    logUnitCorr f (n + 1) = logUnitCorr f n + (unitSuccPhase f (n + 1)).re / ((n + 1 : ℕ) : ℝ) := by
+  rw [logUnitCorr, sum_Icc_succ_top (by omega), ← logUnitCorr]
 
 /-- Adding `k` terms past `N` lowers `X` by at most `k/(N+1)`. -/
 theorem logUnitCorr_add_ge (f : CMUnit) (N k : ℕ) :
@@ -121,7 +125,7 @@ theorem logUnitCorr_add_ge (f : CMUnit) (N k : ℕ) :
   induction k with
   | zero => simp
   | succ k ih =>
-    rw [← add_assoc, logUnitCorr, sum_Icc_succ_top (by omega), ← logUnitCorr]
+    rw [← add_assoc, logUnitCorr_succ]
     have hb := abs_le.mp (abs_re_unitSuccPhase_le f (n := N + k + 1) (by omega))
     have hpos : (0 : ℝ) < ((N + k + 1 : ℕ) : ℝ) := by positivity
     have h1 : -(1 / ((N : ℝ) + 1)) ≤ (unitSuccPhase f (N + k + 1)).re / ((N + k + 1 : ℕ) : ℝ) := by
@@ -129,9 +133,10 @@ theorem logUnitCorr_add_ge (f : CMUnit) (N k : ℕ) :
         div_le_div_of_nonneg_right hb.1 hpos.le
       have h2 : -(1 / ((N : ℝ) + 1)) ≤ -1 / ((N + k + 1 : ℕ) : ℝ) := by
         rw [neg_div, neg_le_neg_iff]
-        exact div_le_div_of_nonneg_left zero_le_one (by positivity) (by push_cast; linarith)
+        exact div_le_div_of_nonneg_left zero_le_one (by positivity)
+          (by push_cast; linarith [Nat.cast_nonneg (α := ℝ) k])
       linarith
-    push_cast at ih ⊢
+    push_cast at ih h1 ⊢
     have : ((k : ℝ) + 1) / ((N : ℝ) + 1) = k / (N + 1) + 1 / (N + 1) := by ring
     linarith
 
@@ -186,8 +191,8 @@ theorem logUnitCorr_two_mul_add_one_ge (f : CMUnit) (N : ℕ) :
       Real.sqrt (h * (2 * (h + Y + 1))) :=
     Real.sqrt_le_sqrt (by nlinarith)
   have hY : -(3 / 2) - Real.sqrt (h * (2 * (h + Y + 1))) / 2 ≤ Y := by
-    rw [hsplit]
-    simp only [x, div_one] at hsum hx1 ⊢
+    have e := hsplit
+    simp only [x, div_one] at e hsum hx1
     linarith
   by_contra hcon
   push Not at hcon

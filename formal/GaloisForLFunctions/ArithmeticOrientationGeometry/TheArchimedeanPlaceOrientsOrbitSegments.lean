@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticOrientationGeometry.TheOrientationOfACycle
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheHodgeIndexOfZetaHoldsAwayFromLowFrequencies
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheTowerDefectCountsTheFrobeniusEigenvalues
 
 /-!
 # The archimedean place orients orbit segments
@@ -167,7 +168,7 @@ theorem eq_zero_of_lowBlind_forall {f : ℝ → ℝ} (hf : f ∈ realTests) {a�
     (h : ∀ b, a₀ ≤ b → ∀ j ∈ lowGrid b, paperFT (cx f) (((j : ℝ) * gridStep b : ℝ) : ℂ) = 0) :
     ∀ u, f u = 0 := by
   have hcont : Continuous fun r : ℝ => paperFT (cx f) r :=
-    RHTower.continuous_paperFT_real_arg
+    RHTower.WeilOneSided.continuous_paperFT_real_arg
       ((cx_contDiff hf.1).continuous.integrable_of_hasCompactSupport (cx_hasCompactSupport hf.2))
   have hzero : ∀ x : ℝ, paperFT (cx f) x = 0 := by
     intro x
@@ -205,8 +206,10 @@ theorem eq_zero_of_lowBlind_forall {f : ℝ → ℝ} (hf : f ∈ realTests) {a�
       have hxu : x / hs ≤ T / hs := div_le_div_of_nonneg_right (by linarith [le_abs_self x]) hs0.le
       have h2 : 1 ≤ T / (2 * hs) := by
         rw [le_div_iff₀ (by positivity)]
-        have hb1 : 1 / (b + 1) ≤ 1 := by rw [div_le_one (by linarith)]; linarith
-        nlinarith [hs1, hb1]
+        have hb1 : 1 ≤ b := by
+          rw [hb]; linarith [le_max_right a₀ 0, le_max_left (max a₀ 0) (max (2 * |x|) (1 / δ))]
+        have hb2 : 1 / (b + 1) ≤ 1 / 2 := one_div_le_one_div_of_le (by norm_num) (by linarith)
+        linarith
       simp only [lowGrid, lowGridOf, Finset.mem_Icc]
       constructor
       · have hlow : -(T / hs) ≤ (j : ℝ) := by

@@ -1,4 +1,6 @@
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.LocalFactors
+import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.DivisorTransitions
+import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.BinomialMultipliers
 
 /-!
 # Arithmetic local divisor geometry

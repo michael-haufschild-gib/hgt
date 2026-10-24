@@ -30,6 +30,7 @@ def kloosterman (ψ : AddChar F ℂ) (a b : F) : ℂ :=
 theorem card_units_filter : (univ.filter (· ≠ (0 : F))).card = Fintype.card F - 1 := by
   rw [filter_ne', card_erase_of_mem (mem_univ _), card_univ]
 
+omit [DecidableEq F] in
 /-- Complex conjugation inverts an additive character of a finite field. -/
 theorem conj_addChar (ψ : AddChar F ℂ) (t : F) : (starRingEnd ℂ) (ψ t) = ψ (-t) := by
   have hR : 0 < ringChar F := Nat.pos_of_ne_zero (CharP.ringChar_ne_zero_of_finite F)
@@ -47,7 +48,7 @@ theorem sum_normSq_kloosterman {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (b : 
     simp_rw [hsplit, ← sum_mul, sum_mulShift _ hψ, sub_eq_zero]
     split_ifs with h
     · rw [h, sub_self, map_zero_eq_one, mul_one]
-    · rw [zero_mul]
+    · simp
   have hcomplex : ∑ a : F, kloosterman ψ a b * (starRingEnd ℂ) (kloosterman ψ a b) =
       (Fintype.card F : ℂ) * (univ.filter (· ≠ (0 : F))).card := by
     simp only [kloosterman, map_sum, conj_addChar, sum_mul_sum]
@@ -92,7 +93,7 @@ theorem sum_normSq_kloosterman_ne_zero {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitiv
   rw [← sum_filter_add_sum_filter_not univ (· ≠ (0 : F))] at h
   have hz : univ.filter (fun a : F => ¬ a ≠ 0) = {0} := by ext; simp
   rw [hz, sum_singleton, kloosterman_zero_left hψ hb] at h
-  simp only [map_neg, map_one, Complex.normSq_neg, Complex.normSq_one] at h
+  simp only [map_one, Complex.normSq_neg] at h
   nlinarith [h]
 
 end GaloisForLFunctions.SignedSuccessorArithmetic

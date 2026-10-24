@@ -62,7 +62,7 @@ This works also for `m=0`; no generic-multiplicity or positive-central-order ass
 
 So coefficient positivity fails below `a/(8m+10)`. At zero heat it fails directly because the coefficient at degree `2m+2` is `−2a`.
 
-The coefficient cone is closed, nonempty at the upper bound, and upward closed by the forward-heat semigroup and coefficient-positivity preservation. Its threshold `σ_m` therefore exists and satisfies
+The coefficient cone is closed and nonempty at the upper bound. It is upward closed: on polynomials the derivative series terminates, and regrouping the finite composition by total derivative order gives `E_s E_v=E_(s+v)` by the binomial identity. For `v≥0`, each coefficient of `E_v P` is a sum of nonnegative multiples of coefficients of `P`, so `E_v` preserves the cone. Its threshold `σ_m` therefore exists and satisfies
 
 `a/(8m+10) ≤ σ_m ≤ a/(8m+5)`.
 

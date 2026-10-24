@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.DivisorTransitions
+import Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 /-!
 # Universal coefficient-cone cancellation
@@ -284,3 +285,9 @@ theorem sparseReflectionWitness_natDegree {D : ℕ} (hD : 0 < D) :
 
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
+
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.universal_coefficient_reflector_iff
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.exists_positive_reflection_counterexample
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.sparseReflectionWitness_natDegree
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.coeffNonneg_pairFactor_at_center_mul_iff
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.coeffNonneg_positive_rescale_iff

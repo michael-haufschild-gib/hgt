@@ -460,7 +460,11 @@ go one by one through the following research programmes and update their README.
 - formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/README.md
 - formal/GaloisForLFunctions/TransThresholdPairCorrelation/README.md
 - formal/GaloisForLFunctions/ArithmeticOrientationTheory/README.md
-
+- formal/GaloisForLFunctions/ArithmeticOrientationGeometry/README.md
+- formal/GaloisForLFunctions/ArithmeticLocalDivisorGeometry/README.md
+- formal/GaloisForLFunctions/SignedSuccessorArithmetic/README.md
+- formal/GaloisForLFunctions/ArithmeticDefectRigidity/README.md
+  
 important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics, the questions it aims to answer, the tools it aims to create, its foundational pillar theorems, where it sits in the context of our whole research, how it relates to other research programmes.
 
 
@@ -488,6 +492,9 @@ and read the current research programmes:
 - formal/GaloisForLFunctions/TransThresholdPairCorrelation/README.md
 - formal/GaloisForLFunctions/ArithmeticOrientationTheory/README.md
 - formal/GaloisForLFunctions/ArithmeticOrientationGeometry/README.md
+- formal/GaloisForLFunctions/ArithmeticLocalDivisorGeometry/README.md
+- formal/GaloisForLFunctions/SignedSuccessorArithmetic/README.md
+- formal/GaloisForLFunctions/ArithmeticDefectRigidity/README.md
 
 Only read these documents, no other markdown files.
 
@@ -498,9 +505,8 @@ Keep a log file in logs/ for your research to note down facts and findings, sinc
 The questions for you to answer:
 1. Do you see any opportunity for a new proof mechanism or route that circumvents the walls?
 2. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
-3. After you have done this, ask and answer the same questions but only for route WD.
 
-Write a report in docs docs/reports/review-2410/fable.md
+Write a report in docs docs/reports/review-2410/opus.md
 
 do not run any builds.
 
@@ -508,13 +514,14 @@ do not run any builds.
 
 Do not use the hgtl7 skill.
 
-Read fully docs/reports/review-2410/hard-obstacles-summary.md
+Read fully the report docs/reports/review-2410/astra.md 
+especially study the information related to route WD starting at ## 7. Route WD: what is actually left
 
-It describes the big picture of our current research, the obstacles, and why we arrive at developing a new field/research programme called "Arithmetic Orientation Geometry"
+In section "## 9. WD-specific field: arithmetic local divisor geometry" the document describes a new field/research programme "arithmetic local divisor geometry"
 
 Your task: develop this new field / programme.
 
-Follow the example of other research programmes: formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri
+Follow the example of other research programmes: formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri or formal/GaloisForLFunctions/ArithmeticOrientationGeometry
 
 1. All lean code goes into its own subfolder and has its own umbrella.
 2. When enough information is established write a foundational README.md:
@@ -536,6 +543,30 @@ Make good use of the search tool for our lean corpus to find existing work and g
 
 The goal is done when the field is fully developed, the questions are answered, the tools are developed as described in the original document.
 
+## openings
+Do not use the hgtl7 skill.
+
+Read fully docs/reports/review-2410/fable.md
+
+In section "C. The index exit: an independent count for the collision charge or the Hodge defect (AOG, ACS)." it describes 6 approaches to finally make a break-through in our research.
+
+Your task: take on the formalization of "F. The coalescent prime surplus (TTPC).". Solve its open questions, deliver what it asks to deliver, formalize this openening fully.
+
+We are not looking for estimates, improving on numbers, nogos, busy-work, more infrastructure, but an actual solution and formalization of this opening. 
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
+
+Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
+
+Goal is achieved when the opening/input is fully developed.
 
 ## research something
 
@@ -563,6 +594,30 @@ always look at the big picture, try to understand what all our research is tryin
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
 Goal is met when the conjecture is proven in lean.
+
+## argon do task
+read and understand route WL:
+1. Route ledger: docs/reports/rh-current-frontier-map.md
+2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
+
+find and formalize a solution for the open mathematical problem: the route reaches complete Weil energy. But universal positivity and prime-lag cancellation remain open - close these gaps.
+
+formalize every consequence and collary of this solution and see where it can be applied to the rest of our corpus to advance the research.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
+
+Do not edit the two md documents.
+
+Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
+
 
 ## argon single task open question
 
