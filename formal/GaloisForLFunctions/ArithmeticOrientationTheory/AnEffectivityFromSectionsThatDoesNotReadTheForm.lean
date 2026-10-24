@@ -5,7 +5,7 @@ import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SourceDeterminantalSectio
 /-!
 # An Effectivity from Sections That Does Not Read the Form
 
-This module resolves **Open Problem 8** of Arithmetic Orientation Theory (`README.md`, §7):
+This module constructs source obstruction readings for the section-effectivity problem:
 
 > **8. An effectivity from sections that does not read the form.** The section cone of §3.10 has
 > the right shape — its axioms are exactly the Hodge index, it reproduces Weil over `𝔽_q` and
@@ -13,6 +13,11 @@ This module resolves **Open Problem 8** of Arithmetic Orientation Theory (`READM
 > reading built from source data (node counts on the logarithmic box, the defect `E(s)`, the
 > Frobenius mass) whose cone has the same calibration and whose Bézout axiom is proved without
 > that sign.
+
+The construction identifies a source cone with a Boolean section reading. Its Bézout theorem
+still requires a mixed source-defect bound or an exact nonnegative representation of the defect.
+The scalar `L²` source-pairing bound below concerns that auxiliary pairing; it is not Bézout for
+the original Weil intersection pairing. An independent all-aperture payment theorem remains open.
 
 ## Mathematical Architecture
 
@@ -102,7 +107,7 @@ This module resolves **Open Problem 8** of Arithmetic Orientation Theory (`READM
    - **3C. The Convex, Hecke-Stable `L²`-Mass Section Reading (`l2MassObstructionReading`):**
      On `scalingSubsurface V` (`V ≤ realTests`), the source energy `l2SourceEnergy c V (a, b, f) = c ∫ f(u)² du`
      defines `l2MassObstructionReading c V x`, `l2MassH0 c V x`, and `l2MassSectionCone c V = l2SourceCone c V`.
-     For every `c ≥ 0`, `L²` Cauchy–Schwarz + hyperbolic AM-GM proves the sign-free source Bézout
+     For every `c ≥ 0`, `L²` Cauchy–Schwarz + hyperbolic AM-GM proves the source-pairing
      bound `c * ∫ f(u) g(u) du ≤ (scalingSubsurface V).polar x y` for all `x, y ∈ l2MassSectionCone c V`
      (`l2SourcePairing_le_polar_of_mem_l2MassSectionCone`), while `l2MassSectionCone c V` satisfies
      `AmpleAxiom`, `RiemannRochAxiom`, and `SurfaceRiemannRochAxiom 0 0` unconditionally on

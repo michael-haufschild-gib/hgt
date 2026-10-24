@@ -1068,6 +1068,20 @@ bound does not close. The diagonal entries are invariant under the sign flip of 
 $4(\sum_jG_{kj}-G_{kk})$ (`pmPronicVaughan_flip_energy_gap`): the diagonal is sign-blind, and the
 signed information a receiver bound needs is the mixed observation the diagonal omits.
 
+**Linear pole mass fixes the normalization.** For every $\varepsilon>0$, put
+$\rho=\operatorname{Re}(1/\zeta(1+\varepsilon))>0$. The pole component gives
+$D_T\ge G_{44}(T)\ge\rho^2T/4-1/4$, uniformly in $U,V$
+(`pmPronicVaughanDiagonal_linear_lower`). The absolutely convergent divisor mean theorem gives
+$E_T^{\mathrm{int}}/T\to0$, while $G_{44}(T)/T\to\rho^2$. Consequently
+$R_T^{\mathrm{mix}}/D_T\to-1$ uniformly over all cutoffs, including moving cutoffs
+(`eventually_pmPronicVaughan_relative_cancellation`). Moreover,
+$(G_{40}+G_{41}+G_{42}+G_{43})/T\to-\rho^2$; this row sum is exactly independent of the cutoffs
+(`pmPronicVaughanPoleMixed_eq_zero_cutoffs`, `tendsto_pmPronicVaughanPoleMixed_div_nat`).
+Thus making every uncentered pole cross entry sublinear is impossible. Relative cancellation
+of this linear diagonal is already unconditional; its unnormalized error is exactly
+$D_T+R_T^{\mathrm{mix}}=E_T^{\mathrm{int}}$. This calibration does not bound that error and does
+not supply the long-sawtooth/tail anti-alignment gap at scale $T^{1-2\varepsilon}$.
+
 ### 3.9 Dilation profiles and the Bézout seed
 
 The continuous profile $\Phi_r(p/q)$ equals the reciprocal pairing of the integer jump streams

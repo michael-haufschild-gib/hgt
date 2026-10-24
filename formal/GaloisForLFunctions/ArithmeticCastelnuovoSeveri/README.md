@@ -12,11 +12,14 @@ and the Hodge index theorem is RH (`scalingSurface_hodgeIndex_iff`). The surface
 with a pairing, not a constructed scheme. The programme measures its gap to `C × C` ingredient by
 ingredient, calibrated over `𝔽_q`, every statement unconditional.
 
-**The open core.** Of the two inputs of Castelnuovo–Severi, the scaling surface has **Bézout
-positivity** — distinct effective cycles meet nonnegatively (`localPair_nonneg`) — but not the
-**Riemann–Roch** supply of effective cycles in every class of positive square. Such a supply with
-ample degrees is equivalent to RH (`riemannHypothesis_iff_exists_effectivity`); no independent
-arithmetic source of it is known. The failure of the Hodge index is measured exactly: its defect
+**The open core.** Disjoint nonnegative tests have nonnegative local intersection
+(`localPair_nonneg`). This does not establish `BezoutAxiom`, which includes self-intersections,
+for a cone carrying Riemann–Roch. Graded source cones already have unconditional all-aperture
+RR; what remains is an independent source construction carrying RR together with the full
+Bézout or ample axiom. Existence of such a cone is equivalent to RH
+(`exists_bezout_effectivity_iff_hodgeIndex`, `riemannHypothesis_iff_exists_effectivity`). This
+existential criterion does not assert Bézout for every selected RR cone. The failure of the
+Hodge index is measured exactly: its defect
 is the number of distinct zeros right of the critical line (`zeta_hodgeDefect_iff`), and the whole
 defect already lives on the Hecke orbit of a single test (`cyclic_pontryagin_law`), as over `𝔽_q`
 it lives on the Frobenius orbit of the diagonal.

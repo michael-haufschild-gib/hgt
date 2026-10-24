@@ -68,8 +68,10 @@ divide the square of that bound by receiver energy. Every paid kernel has
 zero normalized dilation energy. For finite kernels, pass the finite Gram
 sum to any common subsequential limit to obtain a null vector.
 
-**Status:** Dependency-closed paper proof. Lean implementation started in
-`ArithmeticDefectRigidity/RepairingKernelsVanishOnEscape.lean`; not yet checked.
+**Status:** Dependency-closed paper proof. The full source-side Lean module
+`ArithmeticDefectRigidity/RepairingKernelsVanishOnEscape.lean` passed its first
+check. Two deprecated finite-sum spellings and one unused simp argument were
+then cleaned up. Final check and transitive axiom audit remain pending.
 
 ## Index audit
 
@@ -85,6 +87,21 @@ ideal codimension. Next conjecture to test: leading escape normalization loses
 lower logarithmic orders, requiring a filtration of escape scales to recover
 multiplicity. This is presently a conjecture, not a proved counterexample for
 the actual Möbius receiver.
+
+## Cross-programme applications to pursue
+
+The source-side bridge consumes THIM's exact convolution identity and sharp
+pronic dilation estimate, and adds annihilator information to ADR's existing
+compactness theorem. The complex two-component version directly consumes AOT's
+actual `paidIdeal`, without changing its definition.
+
+After the Wiener representation is formalized, its unit action should transport
+escape modules across the actual Möbius–Liouville unit orbit. If `u` is a Wiener
+unit, then `pi(u)v_1` is nonzero and cyclic. Convolution changes the receiver by
+the dilation `D_u` plus a bounded correction, so its limiting Gram kernel is
+the Gram of this new cyclic vector, normalized by `||pi(u)v_1||²`. This predicts
+isomorphic modules, not just the already known equality of paid ideals and
+hulls. This application remains unformalized and is part of the original goal.
 
 ## Antipodality audit and positive survivor
 
@@ -145,17 +162,65 @@ rescaling. Regular variation of receiver energy would determine the diagonal
 The stronger all-packet homogeneity asserted in A3 therefore needs its own
 invariance proof. No assumption of that invariance will be added.
 
+## Alternative intrinsic annihilator construction
+
+For a fixed cofinal horizon sequence, define the vanishing kernels to be the
+complex Wiener kernels whose real and imaginary dilation energies, divided by
+receiver energy, tend to zero. The uniform dilation bound and exact composition
+identity make this a closed ideal. The identity kernel has normalized energy
+one, so the ideal is proper. On escape it contains every paid kernel. This
+constructs a nonempty hull contained in the obstruction hull directly from
+the actual receiver, even before identifying it with the kernel of the Gram
+Hilbert representation. The identification still requires uniform finite
+approximation. This route is a paper-level alternative, not yet formalized.
+
+For the Hilbert route, the existing `KernelPre` is a seminormed coefficient
+space. A bounded pushforward of finite coefficients therefore extends through
+`ContinuousLinearMap.completion`; this avoids choosing representatives in the
+nullspace quotient. The kernel pullback identity is already proved as
+`kernelForm_mapDomain`. The remaining generic construction and its norm bound
+are being prepared as reusable kernel geometry.
+
+## Golden calibration audit
+
+The exact golden datum in `FakeCurvesAndTheWindowLaw.lean` is a curve datum at
+`q = 5` with normalized eigenvalues `phi` and `phi^-1`.
+`TheGoldenCurveIsABeurlingSystem.lean` realizes its point counts by nonnegative
+integer prime multiplicities at generalized norms `5^d`. This does not yet
+specify an integer-prefix receiver of the type used by `cofactorGram`.
+Constructing its escape module therefore needs an explicit source and horizon
+measure, followed by a proved comparison with the golden zeta datum. Merely
+substituting its two eigenvalues into a rank-two kernel would not discharge
+that realization step.
+
+## Full signed covariance consequence to formalize
+
+The already proved bound on `A + renormalizedCofactor` gives more than its
+pairing with `A`: Cauchy--Schwarz and sharp dilation show that its normalized
+pairing with each fixed `D_j A` vanishes. The residual mass tends to one and
+all mixed residual covariances are therefore forced by the original kernel.
+The generic uniqueness theorem for the antipodal extension records exactly
+this rigidity. Its actual-source realization remains to be packaged and
+checked; no additional independent signed Gram coordinates survive.
+
 ## Verification state
 
 - Missing dependency `CountableCofactorCovariancesHaveACommonLimit.olean` was
   generated successfully with the permitted single-module command.
-- A `/tmp/qiii_bridge_check.lean` declaration check is running under exec
-  session `35500` (re-poll that handle before starting another Lean process).
+- The `/tmp/qiii_bridge_check.lean` declaration check completed. Required finite
+  sums, support, limit, complex conjugation, and inner-product names were
+  confirmed; deliberately queried unused alternatives were absent.
 - Draft new files: `ArithmeticDefectRigidity/RepairingKernelsVanishOnEscape.lean`,
   `HTGeometry/AntipodalKernelExtension.lean`, and
   `ArithmeticDefectRigidity/WhiteNoiseAndAntipodalEscapeData.lean`.
-- No new module has yet passed its final audit. Umbrella imports and axiom
-  audits are intentionally pending successful checks.
+- `RepairingKernelsVanishOnEscape.lean` passed its first check; warning cleanup
+  is complete. Final verification and transitive axiom audit remain pending.
+- Added draft `HTGeometry/RealPositiveKernelComplexification.lean`, splitting
+  complex energies into their real and imaginary parts. White-noise positivity
+  now uses this generic bridge.
+- Generic bounded coefficient pushforward and completion are being checked in
+  `/tmp/qiii_kernel_check.lean` before transfer to the corpus.
+- Umbrella imports and axiom audits remain pending successful final checks.
 
 ## Gates
 

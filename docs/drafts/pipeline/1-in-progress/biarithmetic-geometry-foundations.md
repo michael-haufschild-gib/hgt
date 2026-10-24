@@ -111,7 +111,9 @@ the relation cannot select an analytic dilation normalization by itself.
 Lean: `HorizonAffineActions.lean` passed the direct leaf check
 `lake --old env lean GaloisForLFunctions/BiarithmeticGeometry/HorizonAffineActions.lean`.
 Main declarations: `horizonAffine_comp`, `horizon_ring_relation`,
-`horizon_double_fixed_iff`, `horizon_joint_commutant`. Separate axiom audit remains due.
+`horizon_double_fixed_iff`, `horizon_joint_commutant`. Axiom audit of composition, fixed space
+and common commutant reports only `propext`, `Classical.choice`, `Quot.sound`.
+The module's olean was created for the normalization and boundary leaves that import it.
 
 ### Repairing kernels and escape: proof plan with exact corpus dependencies
 
@@ -161,6 +163,83 @@ allocation. This is a complete calibration of the shared-resource failure, not a
 the actual arithmetic allocation functor is this model. It proves that local payment plus
 restriction alone does not justify naming a payment sheaf. Positive repair requires tracking
 resource locations and compatible quotas in the site.
+
+### Absorbing boundary calculus
+
+[PROVED HERE, paper; Lean pending] With the cell pairing
+`<v,w>_N = Σ_(j=0)^N v_j w_j`, every positive affine map has the exact signed identity
+
+`<T_(a,b)v,T_(a,b)w>_N + Σ_(aj+b>N) v_j w_j = <v,w>_N`.
+
+The map `j -> aj+b` is injective. Each surviving cell therefore contributes its original
+bilinear coefficient once, and each escaped cell contributes only to the boundary term.
+For `v=w`, this gives contraction with the exact nonnegative loss, rather than a false
+isometry claim. This is a source-independent boundary law, not an arithmetic cancellation bound.
+
+More generally, every observable invariant under the absorbing successor is constant: iterate
+the successor `N+1` times to send every vector to zero. This classifies the failure of exact
+translation invariance at finite horizon. The signed boundary identity above is its positive
+replacement. Also, scalar common commutant does not imply irreducibility; all tail subspaces
+are invariant under positive affine maps. No irreducibility assertion is used.
+
+### Exact visibility inside a complete-period observation fibre
+
+[PROVED HERE, paper; Lean pending] Fix the actual finite row `c` and let
+`Y_q=selbergMultiplesCoord N c q`, `R_q(M)=Re(pmRamanujanPrimitive q M)`.
+Define `V_N(M,c)=Σ_(q=2)^N |R_q(M)Y_q|`. Among all independent Selberg sign changes fixing
+the mean, the maximum absolute centered-prefix readout is exactly `V_N(M,c)`, and the diameter
+of the readouts is exactly `2 V_N(M,c)`. All these rows have identical complete-period lag
+covariances. This is a quantitative classification inside an observation fibre, not a bound
+for the Möbius source itself.
+
+Proof: the corpus's exact signed expansion is
+`L_N(M,c^ε)=Σ_(q=2)^N ε_q R_q(M)Y_q`. The triangle inequality gives the upper bound.
+Choose `ε_q=sign(R_q(M)Y_q)`, with either sign at zero, and choose the opposite signs for the
+minimum. Set `ε_1=1` separately, so the mean is preserved. The extrema are `V` and `-V`.
+The existing orbit classification identifies these independent sign choices with the complete
+period observation fibre. The primitive `R_q(M)` retains the precise horizon dependence;
+replacing it by a coarse horizon/period ratio would discard this mode information.
+
+### Dilation of tangent kernels: quantifiers to retain
+
+[PAPER DERIVATION; Lean pending] For `m=floor(T/p)`, rows `v,w` vanishing at zero satisfy
+
+`<D_p v,D_p w>_T = (1/p)<v,w>_m
+  - v(m)w(m) [1/(T+1)-1/(p(m+1))]`.
+
+Every complete dilation fibre has exactly `1/p` of its original pronic mass; only the last
+incomplete fibre contributes the displayed boundary term. For actual damped receiver rows,
+the existing `O(n^(1-ε))` source bound makes this correction `O(T^(-2ε))` for fixed cofactors.
+Thus regular variation of the base energy transfers a tangent kernel at horizons `T_n` to a
+kernel at `floor(T_n/p)`, with scalar factor `p^(-1-α)`. It does **not** by itself identify
+these two tangent kernels. The off-diagonal assertion A3 needs a dilation-stationary extraction
+or a proved uniqueness of the tangent; regular variation of the scalar energy proves only the
+diagonal law without that additional argument. This is an open quantifier audit, not a claimed
+counterexample for the actual Möbius source. Preserve the entire family of tangents before
+asserting an isometry law inside one member.
+
+### A finite countermodel to inferring off-diagonal scaling from diagonal scaling
+
+[PROVED HERE, paper; Lean pending] Let `B(x,x)=x₀²+x₁²+x₂²+(2/3)x₀x₁` on `R³`, and let
+`P` cyclically permute the three coordinate vectors. Then
+`(2/3)|x|² ≤ B(x,x) ≤ (4/3)|x|²`, so every power of `P` distorts `B` by at most a factor 2.
+Put `u_j=P^(v₂(j))e₀`, `V_p=p⁻¹P^(v₂(p))` and `K(j,k)=B(u_j,u_k)/(jk)`.
+Unique factorization gives the multiplicative action and `V_p(u_j/j)=u_(pj)/(pj)`.
+The three vectors at indices 1, 2 and 4 span the whole space, so this is a cyclic rank-three
+module, not a merely formal kernel.
+
+It satisfies every coarse cofactor Gram constraint: `K(1,1)=1`, PSD, the radius bound,
+and packet dilation contraction `1/p`. For `p≥2`, the last follows from `2/p²≤1/p`; for `p=1`
+it is equality. Every diagonal is exactly `K(j,j)=j⁻²`, so all diagonals have the exponent-one
+scaling law. Nevertheless `K(1,2)=1/6` whereas `K(2,4)=0`, contradicting homogeneous
+off-diagonal scaling by `2⁻²`. On `x=e₀+e₂`, `B(V₂x,V₂x)/B(x,x)=1/3>1/4`, so the stronger
+operator contraction also fails.
+
+This model does not claim realization by the actual receiver or a regularly varying scalar
+row. It isolates exactly the invalid implication from diagonal scaling plus the existing Gram
+constraints to the full A3 identity. Its positive survivor is a complete explicit cyclic
+representation with a uniform distortion bound and exact orbit norms. Formalize the exact
+countermodel and its positive representation before retiring that implication.
 
 ## External calibration
 

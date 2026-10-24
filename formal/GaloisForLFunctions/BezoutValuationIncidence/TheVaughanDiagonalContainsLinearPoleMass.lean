@@ -29,7 +29,7 @@ theorem pmPronicVaughanPiece_pole (ε : ℝ) (U V n : ℕ) :
     pmPronicVaughanPiece ε U V n 4 =
       -(pmPowerDampedDivisorDensity ε).re * n -
         addDiff (pmActiveSawtoothComponent ε) n := by
-  simp only [pmPronicVaughanPiece, Matrix.cons_val_succ, Matrix.cons_val_zero]
+  rfl
 
 theorem pmPronicVaughanGram_diag_nonneg (ε : ℝ) (U V T : ℕ) (i : Fin 5) :
     0 ≤ pmPronicVaughanGram ε U V T i i := by
@@ -72,6 +72,7 @@ theorem pmPronicVaughanGram_pole_linear_lower {ε : ℝ} (hε : 0 ≤ ε) (U V T
     nsmul_eq_mul, div_eq_mul_inv, ← mul_sum] at hsum hrecip
   change ρ ^ 2 / 4 * T - 1 / 4 ≤ _
   unfold pmPronicVaughanGram
+  simp only [div_eq_mul_inv]
   nlinarith only [hsum, hrecip]
 
 /-- The full diagonal retains the pole's linear lower bound. -/
@@ -85,7 +86,8 @@ private theorem tendsto_activePair_div_nat {ε : ℝ} (hε : 0 ≤ ε) :
     Tendsto (fun n : ℕ => addDiff (pmActiveSawtoothComponent ε) n / n)
       atTop (𝓝 0) := by
   apply tendsto_iff_norm_sub_tendsto_zero.mpr
-  simp only [sub_zero, Real.norm_eq_abs, abs_div, abs_of_nonneg (Nat.cast_nonneg _)]
+  have hn (n : ℕ) : |(n : ℝ)| = n := abs_of_nonneg (Nat.cast_nonneg n)
+  simp only [sub_zero, Real.norm_eq_abs, abs_div, hn]
   exact squeeze_zero
     (fun n => div_nonneg (abs_nonneg _) (Nat.cast_nonneg n))
     (fun n => div_le_div_of_nonneg_right
@@ -113,7 +115,8 @@ theorem tendsto_pmBezoutInteriorPrefix_div_nat {ε : ℝ} (hε : 0 < ε) :
   rw [pmPowerDampedCenteredDivisorPrefix_eq_bezout_active_pair_add_interior]
   ring
 
-private theorem tendsto_pronic_pair_mean {f g : ℕ → ℝ} {a b : ℝ}
+/-- Linear means determine the Cesàro mean of a pronic pairing. -/
+theorem tendsto_pronic_pair_mean {f g : ℕ → ℝ} {a b : ℝ}
     (hf : Tendsto (fun n : ℕ => f n / n) atTop (𝓝 a))
     (hg : Tendsto (fun n : ℕ => g n / n) atTop (𝓝 b)) :
     Tendsto (fun T : ℕ => (∑ n ∈ Icc 1 T, f n * g n / (pronicSeq n : ℝ)) / T)
@@ -129,17 +132,18 @@ private theorem tendsto_pronic_pair_mean {f g : ℕ → ℝ} {a b : ℝ}
     have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
     simp only [pronicSeq, Nat.cast_mul, Nat.cast_add, Nat.cast_one]
     field_simp [hn0]
-    <;> ring
   have h := (hp.comp (tendsto_add_atTop_nat 1)).cesaro
+  simp only [Function.comp_def] at h
   convert h using 1
   ext T
-  rw [Finset.range_eq_Ico, Finset.sum_Ico_add' _ 0 T (c := 1)]
+  rw [Finset.range_eq_Ico,
+    Finset.sum_Ico_add' (fun n => f n * g n / (pronicSeq n : ℝ)) 0 T 1]
   simp only [zero_add, Finset.Ico_add_one_right_eq_Icc, div_eq_mul_inv, mul_comm]
 
 /-- The interior energy is sublinear for every positive damping, without a zero-free input. -/
 theorem tendsto_pmBezoutInteriorPronicEnergy_div_nat {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun T : ℕ => pmBezoutInteriorPronicEnergy ε T / T) atTop (𝓝 0) := by
-  simpa only [pmBezoutInteriorPronicEnergy, ← sq, mul_zero] using
+  simpa only [pmBezoutInteriorPronicEnergy, ← sq, zero_pow two_ne_zero] using
     tendsto_pronic_pair_mean (tendsto_pmBezoutInteriorPrefix_div_nat hε)
       (tendsto_pmBezoutInteriorPrefix_div_nat hε)
 
@@ -164,7 +168,7 @@ theorem tendsto_pmPronicVaughanGram_pole_div_nat {ε : ℝ} (hε : 0 ≤ ε)
   have h := tendsto_pronic_pair_mean
     (tendsto_pmPronicVaughanPiece_pole_div_nat hε 0 0)
     (tendsto_pmPronicVaughanPiece_pole_div_nat hε 0 0)
-  simpa only [pmPronicVaughanGram, pmPronicVaughanPiece_pole, neg_mul_neg, ← sq] using h
+  simpa only [pmPronicVaughanGram, pmPronicVaughanPiece_pole, ← sq, neg_sq] using h
 
 /-- The off-diagonal portion of the pole row, with one orientation retained. -/
 def pmPronicVaughanPoleMixed (ε : ℝ) (U V T : ℕ) : ℝ :=
@@ -185,15 +189,16 @@ theorem sum_pmPronicVaughanGram_pole_row (ε : ℝ) (U V T : ℕ) :
 /-- The complete mixed pole row is independent of both cutoffs. -/
 theorem pmPronicVaughanPoleMixed_eq_zero_cutoffs (ε : ℝ) (U V T : ℕ) :
     pmPronicVaughanPoleMixed ε U V T = pmPronicVaughanPoleMixed ε 0 0 T := by
-  simp only [pmPronicVaughanPoleMixed, sum_pmPronicVaughanGram_pole_row,
-    pmPronicVaughanGram, pmPronicVaughanPiece_pole]
+  unfold pmPronicVaughanPoleMixed
+  rw [sum_pmPronicVaughanGram_pole_row, sum_pmPronicVaughanGram_pole_row]
+  simp only [pmPronicVaughanGram, pmPronicVaughanPiece_pole]
 
 /-- Exactly four off-diagonal entries comprise the pole row. -/
 theorem pmPronicVaughanPoleMixed_eq_four (ε : ℝ) (U V T : ℕ) :
     pmPronicVaughanPoleMixed ε U V T =
       pmPronicVaughanGram ε U V T 4 0 + pmPronicVaughanGram ε U V T 4 1 +
       pmPronicVaughanGram ε U V T 4 2 + pmPronicVaughanGram ε U V T 4 3 := by
-  simp only [pmPronicVaughanPoleMixed, Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero]
+  simp [pmPronicVaughanPoleMixed, Fin.sum_univ_succ]
   ring
 
 /-- The mixed pole row has exact negative linear density. -/
@@ -224,6 +229,34 @@ theorem not_all_pmPronicVaughan_pole_cross_entries_sublinear {ε : ℝ} (hε : 0
   have heq := tendsto_nhds_unique (tendsto_pmPronicVaughanPoleMixed_div_nat hε U V) hzero'
   have hρ := pmPowerDampedDivisorDensity_re_pos hε
   nlinarith only [heq, sq_pos_of_pos hρ]
+
+/-- Every sufficiently long horizon has a negative pole cross entry of linear size,
+uniformly over both cutoffs. -/
+theorem eventually_exists_pmPronicVaughan_pole_cross_linear_negative
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ T : ℕ in atTop, ∀ U V : ℕ, ∃ j : Fin 5, j ≠ 4 ∧
+      pmPronicVaughanGram ε U V T 4 j ≤
+        -((pmPowerDampedDivisorDensity ε).re ^ 2 * T / 8) := by
+  let ρ := (pmPowerDampedDivisorDensity ε).re
+  have hρ : 0 < ρ := pmPowerDampedDivisorDensity_re_pos hε
+  have hlim := tendsto_pmPronicVaughanPoleMixed_div_nat hε (fun _ => 0) (fun _ => 0)
+  have he := hlim.eventually
+    (eventually_le_nhds (show -ρ ^ 2 < -ρ ^ 2 / 2 by nlinarith [sq_pos_of_pos hρ]))
+  filter_upwards [he, eventually_ge_atTop 1] with T hT hT1
+  intro U V
+  have hTpos : (0 : ℝ) < T := by exact_mod_cast hT1
+  have hsum : pmPronicVaughanPoleMixed ε U V T ≤ -ρ ^ 2 * T / 2 := by
+    rw [pmPronicVaughanPoleMixed_eq_zero_cutoffs]
+    have h := (div_le_iff₀ hTpos).mp hT
+    nlinarith only [h]
+  rw [pmPronicVaughanPoleMixed_eq_four] at hsum
+  by_contra! h
+  have h0 := h 0 (by omega)
+  have h1 := h 1 (by omega)
+  have h2 := h 2 (by omega)
+  have h3 := h 3 (by omega)
+  change -(ρ ^ 2 * T / 8) < _ at h0 h1 h2 h3
+  linarith only [hsum, h0, h1, h2, h3]
 
 /-- Relative mixed cancellation approaches one uniformly over all Vaughan cutoffs. -/
 theorem eventually_pmPronicVaughan_relative_cancellation {ε : ℝ} (hε : 0 < ε)

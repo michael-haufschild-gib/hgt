@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticIncidencePositivity.LagChebyshevAbelSummation
 
-/-!+# Arithmetic degree and horizon torsion
+/-!
+# Arithmetic degree and horizon torsion
 
 The two-pole box defect cannot be the difference of ordinary cohomology dimensions: it is
 strictly between zero and one at `log(3/2)`. At an integer horizon it instead has the exact
@@ -11,6 +12,7 @@ integer. Thus its real charge and its integral data have distinct, explicit role
 noncomputable section
 
 open Finset
+open scoped NNReal
 open GaloisForLFunctions.ArithmeticIncidencePositivity
 
 namespace GaloisForLFunctions.BiarithmeticGeometry
@@ -22,8 +24,6 @@ theorem boxDefect_between_zero_and_one :
   have hlog : 0 < Real.log (3 / 2 : ℝ) := Real.log_pos (by norm_num)
   have hlog' : Real.log (3 / 2 : ℝ) < (3 / 2 : ℝ) - 1 :=
     Real.log_lt_sub_one_of_pos (by norm_num) (by norm_num)
-  have hlt : Real.log (3 / 2 : ℝ) < Real.log 2 :=
-    Real.strictMonoOn_log (by norm_num) (by norm_num) (by norm_num)
   have hnodes : lagChebyshev (Real.log (3 / 2 : ℝ)) = 0 := by
     have hfloor : ⌊Real.exp (Real.log (3 / 2 : ℝ))⌋₊ < 2 := by
       rw [Real.exp_log (by norm_num)]

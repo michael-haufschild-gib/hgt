@@ -54,7 +54,7 @@ answer to Q-I.
 
 ## Paper proof: pole mass and normalized mixed cancellation
 
-[PROVED HERE; Lean pending] Write `ρ = Re(1/ζ(1+ε)) > 0`, `a_n` for the active
+[PROVED HERE; first Lean leaf check passed] Write `ρ = Re(1/ζ(1+ε)) > 0`, `a_n` for the active
 correction, and `I_n` for the interior prefix. For every `ε > 0`, the source mean theorem
 gives `I_n/n → 0`, since the centered divisor prefix is `o(n)` and `|a_n| ≤ 1/2`.
 Cesàro averaging then gives `E_T^int/T → 0`. This uses absolute convergence at `1+ε`,
@@ -78,7 +78,7 @@ the requested zero-free information. This is not a negative answer to Q-I.
 
 ### Exact obstruction for individual cross entries
 
-[PROVED HERE; Lean pending] The sum of the pole row is the pronic pairing of `p_4`
+[PROVED HERE; first Lean leaf check passed] The sum of the pole row is the pronic pairing of `p_4`
 with `I`. Divided by `T`, that pairing tends to zero by the same Cesàro argument.
 Subtracting `G_44` therefore gives
 
@@ -101,7 +101,10 @@ Main names: `pmPronicVaughanDiagonal_linear_lower`,
 `not_all_pmPronicVaughan_pole_cross_entries_sublinear`,
 `eventually_pmPronicVaughan_relative_cancellation`, and
 `tendsto_pmPronicVaughan_mixed_div_diagonal`.
-First complete leaf check is running; no successful kernel audit is claimed yet.
+The complete leaf check passed. A subsequent extension gives a cutoff-uniform finite witness:
+eventually at every horizon some `j ≠ 4` satisfies `G_4j ≤ -ρ²T/8`. Its check and the
+transitive-axiom audit remain pending. The module's olean is being generated only because the
+new fixed-cutoff Gram module imports it.
 
 ### Next conjecture after pole calibration
 
@@ -110,6 +113,49 @@ remaining floor errors are bounded and therefore have finite pronic energy. Dete
 remaining large-leg cancellation without dropping its signed cross terms. Search already found
 the Type-II short coefficient identity and finite-row receiver calculus; no new selective
 residual estimate has yet been established. This is an attack direction, not a claimed theorem.
+
+### Full fixed-cutoff Gram classification
+
+[PROVED HERE on paper; Lean pending] For fixed cutoffs `U,V`, set
+`A_U = Σ_(d≤U) μ(d)d^(-1-ε)`, `Z = Σ_(k≥1) k^(-1-ε) = 1/ρ`, and
+
+`c = (A_U, A_V, -Z A_U A_V, ρ-A_U-A_V+Z A_U A_V, -ρ)`.
+
+Then `p_i(n)/n → c_i` for all five pieces, and `G_ij(T)/T → c_i c_j`.
+For the first two pieces, apply the finite sum of `floor(n/d)/n → 1/d`.
+For the third, fix `a,b`, write `N=floor(n/(ab))`, and use
+
+`Σ_(k≤N) (abk)^(-ε) floor(n/(abk)) = (ab)^(-ε) Σ_(k≤N) k^(-ε) floor(N/k)`.
+
+The inner divisor average divided by `N` tends to `Z`, by absolute convergence of
+`Σ k^(-1-ε)`; also `N/n → 1/(ab)`. Summing finitely over `a,b` gives the third
+coefficient. The exact five-piece identity and the already proved source mean limit give
+the fourth coefficient. The fifth is the pole component. Cesàro averaging products gives
+the Gram limit. No assertion of uniformity in `U,V` is made for this full matrix limit.
+
+Consequently, for fixed cutoffs, `D/T → Σ c_i² > 0`; bounded residual energy is equivalent
+to an `O(1/T)` bound on `1+R_mix/D`. Merely obtaining a positive decay exponent for this
+ratio is insufficient to establish the requested estimate. The known VK receiver bound
+would give exponent `2ε` in these coordinates; the missing power is `1-2ε`.
+
+This classification should be formalized next, using `pm_tendsto_divisor_average` and the
+new pronic Cesàro lemma. It is a positive structural result, not a proof of the missing
+residual bound.
+
+Draft: `TheFixedVaughanGramHasRankOneLeadingTerm.lean`; not yet checked. Its proof uses finite
+floor means, the unsigned divisor average, and the exact five-piece identity. No computation
+or analytic estimate beyond absolute convergence enters this first-order classification.
+
+### Next conjecture: remove the secondary unsigned divisor term
+
+For `0<ε<1`, the unsigned floor sum should admit the exact two-term expansion
+`Σ_(d≤n) d^(-ε) floor(n/d) = ζ(1+ε)n + ζ(1-ε)n^(1-ε)/(1-ε) + O_ε(n^((1-ε)/2))`.
+A weighted hyperbola split at `sqrt(n)` and the power-sum remainder should prove this.
+After the first two terms are removed, the squared pronic error is summable for every
+positive `ε`. Applied to fixed small-small Vaughan cutoffs, this would pay that centered
+piece and leave the genuinely unresolved error in the both-large piece. This is a conjectured
+next reduction, not an established estimate for the actual Möbius receiver; corpus and
+paper-proof audits are still required.
 
 ## External calibration
 

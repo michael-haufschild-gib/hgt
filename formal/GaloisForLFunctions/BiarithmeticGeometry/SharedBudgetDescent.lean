@@ -3,7 +3,8 @@ import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Linarith
 
-/-!+# Shared capacity and descent from singleton windows
+/-!
+# Shared capacity and descent from singleton windows
 
 Restriction of a nonnegative allocation preserves a shared upper budget. Gluing locally
 admissible allocations does not: every local window may have spent the same resource. On `k`
@@ -14,6 +15,7 @@ The sharp excess for `k+1` windows is `k` times the shared budget.
 noncomputable section
 
 open Finset
+open scoped NNReal
 
 namespace GaloisForLFunctions.BiarithmeticGeometry
 

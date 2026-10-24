@@ -194,7 +194,7 @@ theorem prefixDilation_finiteCofactorKernel (S : Finset ℕ+) (c : ℕ+ → ℝ)
   rw [sum_comm]
   refine sum_congr rfl fun j _ => ?_
   by_cases hj : (j : ℕ) ≤ n
-  · simp [j.property, hj]
+  · simp [hj]
   · have hd : n / (j : ℕ) = 0 := Nat.div_eq_of_lt (lt_of_not_ge hj)
     simp [hj, hd, hv0]
 
@@ -209,5 +209,58 @@ theorem normalizedDilationEnergy_finiteCofactorKernel (ε : SubcriticalDamping)
     funext fun n => prefixDilation_finiteCofactorKernel S c _
       (ArithmeticContinuationAndCriticalEnergy.pmPowerDampedCenteredDivisorPrefix_zero ε) n
   rw [normalizedDilationEnergy, hrow, cofactorGram_quadratic_eq]
+
+/-- On escape, every finite repairing packet is null in every subsequential
+Gram limit. No choice of subsequence can retain a paid direction. -/
+theorem admits_or_all_gram_limits_annihilate_repairs (ε : SubcriticalDamping) :
+    Admits dampedMobiusEnergy ε ∨
+      ∀ (ns : ℕ → ℕ) (K : ℕ+ → ℕ+ → ℝ), StrictMono ns →
+        (∀ j k, Tendsto (fun m => cofactorGram ε (ns m) j k) atTop (𝓝 (K j k))) →
+        ∀ (S : Finset ℕ+) (c : ℕ+ → ℝ),
+          TransHorizonIncidenceMechanics.ReceiverBounded
+            (dirichletConv (finiteCofactorKernel S c) (pmPowerDampedRealWeight ε)) →
+          (∑ j ∈ S, ∑ k ∈ S, c j * c k * K j k) = 0 := by
+  rcases admits_or_all_repairs_vanish ε with h | h
+  · exact Or.inl h
+  · refine Or.inr fun ns K hns hK S c hpaid => ?_
+    have hz := (h _ (criticalWiener_finiteCofactorKernel S c) hpaid).comp hns.tendsto_atTop
+    have hzero : Tendsto
+        (fun m => ∑ j ∈ S, ∑ k ∈ S, c j * c k * cofactorGram ε (ns m) j k)
+        atTop (𝓝 0) :=
+      hz.congr fun m => normalizedDilationEnergy_finiteCofactorKernel ε S c (ns m)
+    have hlim : Tendsto
+        (fun m => ∑ j ∈ S, ∑ k ∈ S, c j * c k * cofactorGram ε (ns m) j k)
+        atTop (𝓝 (∑ j ∈ S, ∑ k ∈ S, c j * c k * K j k)) := by
+      apply tendsto_finsetSum S
+      intro j _
+      apply tendsto_finsetSum S
+      intro k _
+      exact tendsto_const_nhds.mul (hK j k)
+    exact tendsto_nhds_unique hlim hzero
+
+/-- An unadmitted receiver has a nonzero positive cofactor limit satisfying
+sharp dilation contraction and annihilating every finite repairing packet. -/
+theorem admits_or_exists_cofactorGram_limit_annihilating_repairs (ε : SubcriticalDamping) :
+    Admits dampedMobiusEnergy ε ∨
+      ∃ ns : ℕ → ℕ, StrictMono ns ∧ ∃ K : ℕ+ → ℕ+ → ℝ,
+        (∀ j k, Tendsto (fun m => cofactorGram ε (ns m) j k) atTop (𝓝 (K j k))) ∧
+        K 1 1 = 1 ∧
+        (∀ j k, K j k = K k j) ∧
+        (∀ j k, |K j k| ≤ cofactorGramRadius j k) ∧
+        (∀ (S : Finset ℕ+) (c : ℕ+ → ℝ),
+          0 ≤ ∑ j ∈ S, ∑ k ∈ S, c j * c k * K j k) ∧
+        (∀ (p : ℕ+) (S : Finset ℕ+) (c : ℕ+ → ℝ),
+          (∑ j ∈ S, ∑ k ∈ S, c j * c k * K (p * j) (p * k)) ≤
+            (1 / (p : ℝ)) * (∑ j ∈ S, ∑ k ∈ S, c j * c k * K j k)) ∧
+        ∀ (S : Finset ℕ+) (c : ℕ+ → ℝ),
+          TransHorizonIncidenceMechanics.ReceiverBounded
+            (dirichletConv (finiteCofactorKernel S c) (pmPowerDampedRealWeight ε)) →
+          (∑ j ∈ S, ∑ k ∈ S, c j * c k * K j k) = 0 := by
+  rcases admits_or_all_gram_limits_annihilate_repairs ε with h | h
+  · exact Or.inl h
+  · obtain ⟨ns, hns, K, hlim, hunit, hsymm, hradius, hpos, hdilation⟩ :=
+      exists_cofactorGram_limit ε
+    exact Or.inr ⟨ns, hns, K, hlim, hunit, hsymm, hradius, hpos, hdilation,
+      h ns K hns hlim⟩
 
 end GaloisForLFunctions.ArithmeticDefectRigidity

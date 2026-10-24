@@ -320,7 +320,7 @@ theorem abs_window_le_of_band {ε η C e : ℝ} (he : 0 < e) (heε : e ≤ ε) (
 /-- The window majorant in power form: `C (d²/Q) Q^{-η} = C d² Q^{-(1+η)}` and
 `11 (1 + log 2Q)³ (d²/Q)/z ≤ 22 (1 + 1/θ)³ (d²/z) Q^{-(1-3θ)}` for `0 < θ ≤ 1/3`. -/
 theorem window_majorant_le {C η θ : ℝ} (hθ : 0 < θ) (hθ3 : θ ≤ 1 / 3) {Q : ℝ} (hQ : 1 ≤ Q)
-    {D z : ℝ} (hD : 0 ≤ D) (hz : 0 < z) (hC : 0 ≤ C) :
+    {D z : ℝ} (hD : 0 ≤ D) (hz : 0 < z) :
     C * (D / Q) * Q ^ (-η) + 11 * (1 + Real.log (2 * Q)) ^ 3 * (D / Q / z) ≤
       C * D * Q ^ (-(1 + η)) + 22 * (1 + 1 / θ) ^ 3 * (D / z) * Q ^ (-(1 - 3 * θ)) := by
   have hq0 : 0 < Q := by linarith
@@ -352,6 +352,185 @@ theorem window_majorant_le {C η θ : ℝ} (hθ : 0 < θ) (hθ3 : θ ≤ 1 / 3) 
         gcongr
     _ = C * D * Q ^ (-(1 + η)) + 22 * (1 + 1 / θ) ^ 3 * (D / Q / z * (Q : ℝ) ^ (3 * θ)) := by ring
     _ = _ := by rw [e2]; ring
+
+/-- **The band forces the tail of `μ(n)/n²`.** Under the band hypothesis with
+`e = min(ε, 1/2)`, `θ = e/200`, `κ = min(η, 13e/800)`, every `X ≥ 2` has
+`|S₂(X) - 6/π²| ≤ K X^{-1-κ}` with `K` explicit. The modulus is `d = ⌊X^{1+e}⌋`. -/
+theorem abs_moebiusSqSum_sub_le_of_band {ε η C : ℝ} (hε : 0 < ε) (hη : 0 < η) (hC : 0 ≤ C)
+    (hband : ∀ Q d : ℕ, 2 ≤ Q → (Q : ℝ) ^ (1 - ε) ≤ d → (d : ℝ) ≤ (Q : ℝ) ^ (1 + ε) →
+      |kernelStatisticAll (2 * Q) (moebiusWindowRow Q) d| ≤ C * ((d : ℝ) ^ 2 / Q) * (Q : ℝ) ^ (-η))
+    {X : ℕ} (hX : 2 ≤ X) :
+    |moebiusSqSum X - 6 / Real.pi ^ 2| ≤
+      (8 / 3 * (4 * C) + 8 / 3 * 88 * (1 + 1 / (min ε (1 / 2) / 200)) ^ 3 * 2 +
+        160 / 3 * (1 + 4 / min ε (1 / 2)) ^ 2 + 32 / 3) *
+        (X : ℝ) ^ (-1 - min η (13 * min ε (1 / 2) / 800)) := by
+  set e := min ε (1 / 2) with hedef
+  have he : 0 < e := lt_min hε (by norm_num)
+  have heε : e ≤ ε := min_le_left _ _
+  have he1 : e ≤ 1 / 2 := min_le_right _ _
+  set θ := e / 200 with hθdef
+  have hθ : 0 < θ := by positivity
+  set κ := min η (13 * e / 800) with hκdef
+  have hκη : κ ≤ η := min_le_left _ _
+  have hκe : κ ≤ 13 * e / 800 := min_le_right _ _
+  have hXR : (2 : ℝ) ≤ X := by exact_mod_cast hX
+  have hX1 : (1 : ℝ) ≤ X := by linarith
+  have hX0 : (0 : ℝ) < X := by linarith
+  -- the modulus `d = ⌊X^{1+e}⌋`
+  have hXe : (X : ℝ) ≤ (X : ℝ) ^ (1 + e) := by
+    calc (X : ℝ) = (X : ℝ) ^ (1 : ℝ) := (Real.rpow_one _).symm
+      _ ≤ (X : ℝ) ^ (1 + e) := Real.rpow_le_rpow_of_exponent_le hX1 (by linarith)
+  set d := ⌊(X : ℝ) ^ (1 + e)⌋₊ with hddef
+  have hd1 : 1 ≤ d := Nat.le_floor (by push_cast; linarith)
+  have hdR : (1 : ℝ) ≤ d := by exact_mod_cast hd1
+  have hd0 : (0 : ℝ) < d := by linarith
+  have hdX : (d : ℝ) ≤ (X : ℝ) ^ (1 + e) := Nat.floor_le (by positivity)
+  have hdge : (X : ℝ) ^ (1 + e) / 2 ≤ d := half_le_natFloor (by linarith)
+  set z := (d : ℝ) ^ (e / 32) with hzdef
+  have hz0 : 0 < z := by positivity
+  -- each window and the sum of the windows
+  set B := C * (d : ℝ) ^ 2 * (4 * (X : ℝ) ^ (-(1 + η))) +
+    22 * (1 + 1 / θ) ^ 3 * ((d : ℝ) ^ 2 / z) * (4 * (X : ℝ) ^ (-(1 - 3 * θ)))
+  have hwin : ∀ i : ℕ, |kernelStatisticAll (2 * (2 ^ i * X)) (moebiusWindowRow (2 ^ i * X)) d| ≤
+      C * (d : ℝ) ^ 2 * ((2 ^ i * X : ℕ) : ℝ) ^ (-(1 + η)) +
+        22 * (1 + 1 / θ) ^ 3 * ((d : ℝ) ^ 2 / z) * ((2 ^ i * X : ℕ) : ℝ) ^ (-(1 - 3 * θ)) := by
+    intro i
+    have hXQ : X ≤ 2 ^ i * X := Nat.le_mul_of_pos_left _ (by positivity)
+    have hQ1 : (1 : ℝ) ≤ ((2 ^ i * X : ℕ) : ℝ) := by
+      have : (X : ℝ) ≤ ((2 ^ i * X : ℕ) : ℝ) := by exact_mod_cast hXQ
+      linarith
+    exact (abs_window_le_of_band he heε he1 hC hband hX hd1 hdX hXQ).trans
+      (window_majorant_le hθ (by rw [hθdef]; linarith) hQ1 (by positivity) hz0)
+  have hsumB : ∀ k, ∑ i ∈ range k, (C * (d : ℝ) ^ 2 * ((2 ^ i * X : ℕ) : ℝ) ^ (-(1 + η)) +
+      22 * (1 + 1 / θ) ^ 3 * ((d : ℝ) ^ 2 / z) * ((2 ^ i * X : ℕ) : ℝ) ^ (-(1 - 3 * θ))) ≤ B := by
+    intro k
+    rw [sum_add_distrib, ← mul_sum, ← mul_sum]
+    have h1 := sum_range_two_pow_mul_rpow_neg_le (a := 1 + η) (by linarith) (by omega : 1 ≤ X) k
+    have h2 := sum_range_two_pow_mul_rpow_neg_le (a := 1 - 3 * θ) (by rw [hθdef]; linarith)
+      (by omega : 1 ≤ X) k
+    have c1 : 0 ≤ C * (d : ℝ) ^ 2 := by positivity
+    have c2 : 0 ≤ 22 * (1 + 1 / θ) ^ 3 * ((d : ℝ) ^ 2 / z) := by positivity
+    exact add_le_add (mul_le_mul_of_nonneg_left h1 c1) (mul_le_mul_of_nonneg_left h2 c2)
+  have htail := abs_kernelValue_sub_sum_le_of_windows (by omega : 0 < d) (by omega : 1 ≤ X)
+    hwin hsumB
+  refine (abs_moebiusSqSum_sub_le (by omega) (by omega) htail).trans ?_
+  -- the four terms
+  have hpowκ : ∀ a : ℝ, κ ≤ a → (X : ℝ) ^ (-1 - a) ≤ (X : ℝ) ^ (-1 - κ) := fun a ha =>
+    Real.rpow_le_rpow_of_exponent_le hX1 (by linarith)
+  have hinvd : 1 / (d : ℝ) ≤ 2 * (X : ℝ) ^ (-1 - e) := by
+    calc 1 / (d : ℝ) ≤ 1 / ((X : ℝ) ^ (1 + e) / 2) := one_div_le_one_div_of_le (by positivity) hdge
+      _ = 2 * (X : ℝ) ^ (-1 - e) := by
+          rw [show (-1 - e : ℝ) = -(1 + e) by ring, Real.rpow_neg hX0.le]; field_simp
+  have hzinv : 1 / z ≤ 2 * (X : ℝ) ^ (-(e / 32)) := by
+    have hXd : (X : ℝ) / 2 ≤ d := le_trans (by linarith) hdge
+    have h1 : ((X : ℝ) / 2) ^ (e / 32) ≤ z := Real.rpow_le_rpow (by positivity) hXd (by positivity)
+    have h2 : (1 / 2 : ℝ) ≤ (1 / 2 : ℝ) ^ (e / 32) := by
+      calc (1 / 2 : ℝ) = (1 / 2 : ℝ) ^ (1 : ℝ) := (Real.rpow_one _).symm
+        _ ≤ (1 / 2 : ℝ) ^ (e / 32) :=
+            Real.rpow_le_rpow_of_exponent_ge (by norm_num) (by norm_num) (by linarith)
+    have h3 : ((X : ℝ) / 2) ^ (e / 32) = (X : ℝ) ^ (e / 32) * (1 / 2 : ℝ) ^ (e / 32) := by
+      rw [div_eq_mul_one_div, Real.mul_rpow hX0.le (by norm_num)]
+    have h4 : (X : ℝ) ^ (e / 32) / 2 ≤ z := by
+      have : (X : ℝ) ^ (e / 32) * (1 / 2) ≤ (X : ℝ) ^ (e / 32) * (1 / 2 : ℝ) ^ (e / 32) :=
+        mul_le_mul_of_nonneg_left h2 (by positivity)
+      linarith
+    calc 1 / z ≤ 1 / ((X : ℝ) ^ (e / 32) / 2) := one_div_le_one_div_of_le (by positivity) h4
+      _ = 2 * (X : ℝ) ^ (-(e / 32)) := by rw [Real.rpow_neg hX0.le]; field_simp
+  have hlogd : 1 + Real.log d ≤ 2 * (1 + Real.log X) := by
+    have h := Real.log_le_log hd0 hdX
+    rw [Real.log_rpow hX0] at h
+    have := Real.log_nonneg hX1
+    nlinarith
+  have hlogX : (1 + Real.log X) ^ 2 ≤ (1 + 4 / e) ^ 2 * (X : ℝ) ^ (e / 2) := by
+    have h := one_add_log_le_rpow hX1 (by positivity : 0 < e / 4)
+    rw [show 1 / (e / 4) = 4 / e by field_simp] at h
+    have h0 : 0 ≤ 1 + Real.log X := by have := Real.log_nonneg hX1; linarith
+    calc (1 + Real.log X) ^ 2 ≤ ((1 + 4 / e) * (X : ℝ) ^ (e / 4)) ^ 2 := pow_le_pow_left₀ h0 h 2
+      _ = (1 + 4 / e) ^ 2 * (X : ℝ) ^ (e / 2) := by
+          rw [mul_pow, ← Real.rpow_natCast ((X : ℝ) ^ (e / 4)) 2, ← Real.rpow_mul hX0.le]
+          congr 2; push_cast; ring
+  -- assembling the four terms
+  set P := (X : ℝ) ^ (-1 - κ)
+  set A := (1 + Real.log d) * (1 + Real.log X)
+  have t1 : (X : ℝ) ^ (-(1 + η)) ≤ P := by
+    rw [show (-(1 + η) : ℝ) = -1 - η by ring]; exact hpowκ η hκη
+  have t2 : (X : ℝ) ^ (-(1 - 3 * θ)) * (1 / z) ≤ 2 * P := by
+    calc (X : ℝ) ^ (-(1 - 3 * θ)) * (1 / z) ≤ (X : ℝ) ^ (-(1 - 3 * θ)) * (2 * (X : ℝ) ^ (-(e / 32))) :=
+          mul_le_mul_of_nonneg_left hzinv (by positivity)
+      _ = 2 * (X : ℝ) ^ (-1 - 13 * e / 800) := by
+          rw [mul_left_comm, ← Real.rpow_add hX0]; congr 2; rw [hθdef]; ring
+      _ ≤ 2 * P := by linarith [hpowκ (13 * e / 800) hκe]
+  have hlogX0 : 0 ≤ 1 + Real.log X := by have := Real.log_nonneg hX1; linarith
+  have hlogd0 : 0 ≤ 1 + Real.log d := by have := Real.log_nonneg hdR; linarith
+  have t3 : A * (1 / (d : ℝ)) ≤ 4 * (1 + 4 / e) ^ 2 * P := by
+    calc A * (1 / (d : ℝ)) ≤ (2 * (1 + Real.log X) * (1 + Real.log X)) * (2 * (X : ℝ) ^ (-1 - e)) :=
+          mul_le_mul (mul_le_mul_of_nonneg_right hlogd hlogX0) hinvd (by positivity)
+            (by positivity)
+      _ = 4 * (1 + Real.log X) ^ 2 * (X : ℝ) ^ (-1 - e) := by ring
+      _ ≤ 4 * ((1 + 4 / e) ^ 2 * (X : ℝ) ^ (e / 2)) * (X : ℝ) ^ (-1 - e) := by gcongr
+      _ = 4 * (1 + 4 / e) ^ 2 * (X : ℝ) ^ (-1 - e / 2) := by
+          rw [mul_assoc, mul_assoc, ← Real.rpow_add hX0]; ring_nf
+      _ ≤ 4 * (1 + 4 / e) ^ 2 * P := by
+          gcongr; exact hpowκ (e / 2) (by linarith)
+  have t4 : 1 / (d : ℝ) ≤ 2 * P := hinvd.trans (by linarith [hpowκ e (by linarith)])
+  have hid : (B + 5 * (d : ℝ) * (1 + Real.log d) * (1 + Real.log X) + 2 * (d : ℝ)) / (d : ℝ) ^ 2 =
+      4 * C * (X : ℝ) ^ (-(1 + η)) + 88 * (1 + 1 / θ) ^ 3 * ((X : ℝ) ^ (-(1 - 3 * θ)) * (1 / z)) +
+        5 * (A * (1 / (d : ℝ))) + 2 * (1 / (d : ℝ)) := by
+    simp only [B, A]
+    field_simp
+    ring
+  rw [hid]
+  have c1 : 0 ≤ 4 * C := by positivity
+  have c2 : 0 ≤ 88 * (1 + 1 / θ) ^ 3 := by positivity
+  have := mul_le_mul_of_nonneg_left t1 c1
+  have := mul_le_mul_of_nonneg_left t2 c2
+  nlinarith
+
+/-- **A power saving for the balanced statistic forces a zero-free strip.** If the Möbius windows
+have `|Λ_d(μ𝟙_{(Q,2Q]})| ≤ C (d²/Q) Q^{-η}` for `Q^{1-ε} ≤ d ≤ Q^{1+ε}`, then
+`Θ ≤ 1 - min(η, 13 min(ε, 1/2)/800) < 1`. -/
+theorem zetaZeroAbscissa_lt_one_of_balancedStatisticPowerSaving (h : BalancedStatisticPowerSaving) :
+    zetaZeroAbscissa < 1 := by
+  obtain ⟨ε, η, C, hε, hη, hband⟩ := h
+  have hC : 0 ≤ C := by
+    have h2 := hband 2 2 le_rfl
+      (by calc ((2 : ℕ) : ℝ) ^ (1 - ε) ≤ ((2 : ℕ) : ℝ) ^ (1 : ℝ) :=
+              Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
+            _ = ((2 : ℕ) : ℝ) := Real.rpow_one _)
+      (by calc ((2 : ℕ) : ℝ) = ((2 : ℕ) : ℝ) ^ (1 : ℝ) := (Real.rpow_one _).symm
+            _ ≤ ((2 : ℕ) : ℝ) ^ (1 + ε) :=
+              Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith))
+    have hp : (0 : ℝ) < (((2 : ℕ) : ℝ) ^ 2 / ((2 : ℕ) : ℝ)) * ((2 : ℕ) : ℝ) ^ (-η) := by positivity
+    have key := (abs_nonneg _).trans h2
+    rw [mul_assoc] at key
+    exact (mul_nonneg_iff_of_pos_right hp).mp key
+  set e := min ε (1 / 2) with hedef
+  have he : 0 < e := lt_min hε (by norm_num)
+  have he1 : e ≤ 1 / 2 := min_le_right _ _
+  set κ := min η (13 * e / 800) with hκdef
+  have hκ0 : 0 < κ := lt_min hη (by positivity)
+  have hκ1 : κ < 1 := lt_of_le_of_lt (min_le_right _ _) (by linarith)
+  set K := 8 / 3 * (4 * C) + 8 / 3 * 88 * (1 + 1 / (e / 200)) ^ 3 * 2 +
+    160 / 3 * (1 + 4 / e) ^ 2 + 32 / 3 with hKdef
+  have hK : 0 ≤ K := by positivity
+  have hD : ∀ n : ℕ, 1 ≤ n → |moebiusSqSum n - 6 / Real.pi ^ 2| ≤ (K + 1) * (n : ℝ) ^ (-1 - κ) := by
+    intro n hn
+    have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn
+    have hpow0 : 0 ≤ (n : ℝ) ^ (-1 - κ) := Real.rpow_nonneg (by linarith) _
+    rcases Nat.lt_or_ge n 2 with h1 | h2
+    · obtain rfl : n = 1 := by omega
+      have hS : moebiusSqSum 1 = 1 := by simp [moebiusSqSum]
+      rw [hS, Nat.cast_one, Real.one_rpow]
+      have hpi : 6 / Real.pi ^ 2 ≤ 1 := by
+        rw [div_le_one (by positivity)]; nlinarith [Real.pi_gt_three]
+      have hpi0 : 0 ≤ 6 / Real.pi ^ 2 := by positivity
+      rw [abs_le]; constructor <;> linarith
+    · have hb := abs_moebiusSqSum_sub_le_of_band hε hη hC hband h2
+      rw [← hedef, ← hκdef, ← hKdef] at hb
+      refine hb.trans ?_
+      nlinarith
+  have := zetaZeroAbscissa_le_of_moebiusSqSum hκ0 hκ1 (by linarith) hD
+  linarith
 
 end
 

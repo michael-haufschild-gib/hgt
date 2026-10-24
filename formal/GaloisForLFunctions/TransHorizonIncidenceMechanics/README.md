@@ -1723,6 +1723,17 @@ jump-orbit mean until each modulus is born bounds the compensated progression by
 formulations share the admission set, Vinogradov–Korobov band and subpower saving of §3.20
 (`complete_signed_receiver_equivalence_and_all_damping_vk_laws`).
 
+The uncentered Vaughan diagonal has order at least $T$: if
+$\rho=\operatorname{Re}(1/\zeta(1+\varepsilon))$, then $G_{44}/T\to\rho^2$ and
+$D_T\ge\rho^2T/4-1/4$. Hence $R_T^{\mathrm{mix}}/D_T\to-1$ already follows from the
+absolutely convergent divisor mean, uniformly in both cutoffs
+(`eventually_pmPronicVaughan_relative_cancellation`). The four pole cross entries sum to
+$-\rho^2T+o(T)$, independently of the cutoffs, so they cannot all be sublinear
+(`not_all_pmPronicVaughan_pole_cross_entries_sublinear`). These results concern the linear
+pole contribution. The long-sawtooth/tail anti-alignment gap at order $T^{1-2\varepsilon}$
+remains a separate quantitative obligation; the uncancelled Vaughan energy is exactly
+$D_T+R_T^{\mathrm{mix}}=E_T^{\mathrm{int}}$.
+
 **Three selectivity classes.** The conservation and dissipation laws of the theory sort exactly by
 the structure they use.
 

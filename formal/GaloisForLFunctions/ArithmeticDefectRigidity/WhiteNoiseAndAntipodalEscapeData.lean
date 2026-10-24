@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticDefectRigidity.CountableCofactorCovariancesHaveACommonLimit
 import GaloisForLFunctions.HTGeometry.AntipodalKernelExtension
+import GaloisForLFunctions.HTGeometry.RealPositiveKernelComplexification
 
 /-!
 # White noise survives the cofactor Gram and antipodal constraints
@@ -77,22 +78,9 @@ theorem whiteNoiseKernel_packet_dilation (p : ℕ+) (S : Finset ℕ+) (c : ℕ+ 
 
 /-- The complexification of white noise is a positive kernel. -/
 theorem isPSDKernel_whiteNoise :
-    HTGeometry.IsPSDKernel (fun j k => (whiteNoiseKernel j k : ℂ)) := by
-  classical
-  refine ⟨fun j k => ?_, fun c => ?_⟩
-  · simpa only [Complex.conj_ofReal] using
-      congrArg (fun r : ℝ => (r : ℂ)) (whiteNoiseKernel_symm j k)
-  · change 0 ≤ (∑ j ∈ c.support, ∑ k ∈ c.support,
-        starRingEnd ℂ (c j) * c k * (whiteNoiseKernel k j : ℂ)).re
-    simp only [Complex.re_sum, Complex.mul_re, Complex.conj_re, Complex.conj_im,
-      Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero]
-    apply sum_nonneg
-    intro j hj
-    simp only [whiteNoiseKernel, mul_ite, mul_zero]
-    simp only [sum_ite_eq', if_pos hj]
-    apply mul_nonneg
-    · nlinarith only [sq_nonneg (c j).re, sq_nonneg (c j).im]
-    · positivity
+    HTGeometry.IsPSDKernel (fun j k => (whiteNoiseKernel j k : ℂ)) :=
+  HTGeometry.isPSDKernel_of_real_packet_nonneg whiteNoiseKernel
+    whiteNoiseKernel_symm whiteNoiseKernel_quadratic_nonneg
 
 /-- White noise has a unique positive antipodal residual with unit mass. Hence
 antipodality by itself cannot exclude the diagonal cofactor state. -/

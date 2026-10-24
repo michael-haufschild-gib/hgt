@@ -35,10 +35,7 @@ proofs must be unconditional without hypotheses or otherwise unproven premises.
 /goal
 
 formalize UNCONDITIONALLY in lean all proven theorem for every single card in: 
-- docs/drafts/pipeline/2-fully-proven/thim-dyadic-antichain-prime-capacity.md
-
-
-the lean code for these goes into formal/GaloisForLFunctions/TransHorizonIncidenceMechanics
+- docs/drafts/pipeline/2-fully-proven/sharp-even-heat-root-barrier.md
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -378,56 +375,18 @@ Do not clutter any document with useless ledgers or diary entries or otherwise a
 
 Always make good use the search tool for our lean corpus to find existing work, building blocks, and leads for new ideas and solutions.
 
-
-## research review
-/l7
-take a fresh look at the our whole research program.
-
-status quo:
-- our route ledger: docs/reports/rh-current-frontier-map.md
-- analysis of hard mathematical obstales: docs/reports/review-2010/hard-obstacles.md
-
-we have then started several research programs to develop new theories and the mathematical tools that will allow us to overcome these obstacles:
-- formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
-- formal/GaloisForLFunctions/BiScaleUncertainty/README.md
-- formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md
-- formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
-- formal/GaloisForLFunctions/ArithmeticCriticalityTheory/README.md
-- formal/GaloisForLFunctions/SquareRootThreshold/README.md
-- formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
-- formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md
-- formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md
-- formal/GaloisForLFunctions/ArithmeticCompensationTheory/README.md
-- formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md
-- formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/README.md
-- formal/GaloisForLFunctions/TransThresholdPairCorrelation/README.md
-- formal/GaloisForLFunctions/ArithmeticOrientationTheory/README.md
-    
-problem: despite all this work, we have not come close to overcome any of the hard obstacles and close a proof route.
-
-questions:
-1. what mathematical tools are we or mathematics as a whole missing?
-2. what to research next in each of the research programs
-3. do we need another research program to develop new mathematics that nobody has developed yet? if so, what would it be about and what would it try to answer and do?
-
-work rules:
-1. use the search tool for our lean corpus.
-2. do only read the documents i mentioned and lean code. do not waste time and token on reading other markdown files. 
-
-write your whole report in docs/reports/review-2210/astra.md
-
 ## update obstacles
 previously we had created these documentss:
-- docs/reports/review-2310/walls-ledger.md
-- docs/reports/review-2310/hard-obstacles.md
-- docs/reports/review-2310/hard-obstacles-summary.md
-- docs/reports/review-2310/route-unification-ledger.md
+- docs/reports/review-2410/walls-ledger.md
+- docs/reports/review-2410/hard-obstacles.md
+- docs/reports/review-2410/hard-obstacles-summary.md
+- docs/reports/review-2410/route-unification-ledger.md
 
 also we have:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
 
-create new versions of the reviews to reflect the current status quo and frontier of our research:
+create updated versions of the reviews to reflect the current status quo and frontier of our research:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
 2. then create a summary document that combines all the information and:
    2.1 lists all tasks / obstacles that we can solve and are "just work"
@@ -441,7 +400,7 @@ do not rely only on these markdown files which are partly outdated. use the sear
 
 the reports are not diaries or history log, but status quo reports.
 
-write the new reports in folder docs/reports/review-2410/
+rewrite the existing reports in folder docs/reports/review-2410/
 
 ## update programme README.mds
 go one by one through the following research programmes and update their README.md - we have done a lot of research in these programmes which may or may not change the content of the README.md:
@@ -467,6 +426,7 @@ go one by one through the following research programmes and update their README.
   
 important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics, the questions it aims to answer, the tools it aims to create, its foundational pillar theorems, where it sits in the context of our whole research, how it relates to other research programmes.
 
+where needed use the search tool for the lean corpus to confirm whether questions are really still open and tools really still missing.
 
 ## review
 Read the following documents:
@@ -504,20 +464,20 @@ Keep a log file in logs/ for your research to note down facts and findings, sinc
 
 The questions for you to answer:
 1. Do you see any opportunity for a new proof mechanism or route that circumvents the walls?
-2. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
+2. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
+3. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
 Write a report in docs docs/reports/review-2410/opus.md
 
-do not run any builds.
+do not run any builds. do not search the web.
 
 ## Init new field programme
 
 Do not use the hgtl7 skill.
 
-Read fully the report docs/reports/review-2410/astra.md 
-especially study the information related to route WD starting at ## 7. Route WD: what is actually left
+Read fully the report docs/reports/review-2410/opus.md
 
-In section "## 9. WD-specific field: arithmetic local divisor geometry" the document describes a new field/research programme "arithmetic local divisor geometry"
+In section "## 4. Q3 — A field that would supply the tools: *Biarithmetic Geometry*" the document describes a new field/research programme "Biarithmetic Geometry"
 
 Your task: develop this new field / programme.
 
@@ -570,9 +530,9 @@ Goal is achieved when the opening/input is fully developed.
 
 ## research something
 
-Task: Research, derive and formalize an unconditional proof of the Twin Prime conjecture.
+Research, derive and formalize a complete solution of the open mathematical obstacles of route WA and LA in docs/reports/rh-current-frontier-map.md
 
-All directly related lean code goes into formal/GaloisForLFunctions/twin-prime with its own umbrella
+We are not looking for more criteria, improving some numbers, more nogos, we are looking for actual progress on solving the stated problems: Force cap/collision mass to vanish, prove Euler–Stieltjes saturation independently of the zero divisor, or supply all-height finite-head coefficient positivity at arbitrarily small heat. Exact arithmetic formulas, root detection and tail transfer do not orient the signed coefficients.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -593,16 +553,18 @@ always look at the big picture, try to understand what all our research is tryin
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-Goal is met when the conjecture is proven in lean.
+Do not do websearch. Do not do novelty checks against external literature.
+
+Goal is met when the proof is formalized and all mathematical obstacles and blockers in route WD have been solved and the solutions are formalized.
 
 ## argon do task
-read and understand route WL:
+read and understand route SZ:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
 
-find and formalize a solution for the open mathematical problem: the route reaches complete Weil energy. But universal positivity and prime-lag cancellation remain open - close these gaps.
+Prove sign of complete first variation on an RH-complete family and control general moving apertures. Formalize joint compact-window limits and the untruncated collared extension, including real-lag integration by parts, divided-coefficient domination and regularized polar normalization. The pointwise envelope alone has only critical half-decay; absolute Fubini for the untruncated polar moment is unavailable.
 
-formalize every consequence and collary of this solution and see where it can be applied to the rest of our corpus to advance the research.
+We are not interested in more criteria, estimates, improving some number, more nogos, but the actual proofs and solution of the arithmetic obstacles named above. 
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...

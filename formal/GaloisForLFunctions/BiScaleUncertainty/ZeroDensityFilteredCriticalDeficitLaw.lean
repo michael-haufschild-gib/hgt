@@ -1066,7 +1066,7 @@ theorem integral_Icc_sq_cosine_pairing_le {g : ℝ → ℝ} (hg : Continuous g)
 /-- `O(Γ^{-1/2})` frequency-average decay of the cosine transform of a continuous compactly
 supported profile `g` whose `L²` norm is bounded by `K * M²`. -/
 theorem frequencyAverage_abs_cosine_pairing_le {g : ℝ → ℝ} (hg : Continuous g)
-    (hgc : HasCompactSupport g) {Γ M K : ℝ} (hΓ : 1 ≤ Γ) (hM : 0 ≤ M) (hK : 0 ≤ K)
+    (hgc : HasCompactSupport g) {Γ M K : ℝ} (hΓ : 1 ≤ Γ) (hM : 0 ≤ M) (_hK : 0 ≤ K)
     (hg0 : M = 0 → ∀ t : ℝ, g t = 0)
     (hL2 : (∫ t : ℝ, g t ^ 2) ≤ K * M ^ 2) :
     (1 / Γ) * (∫ γ in Icc Γ (2 * Γ), |∫ t : ℝ, g t * Real.cos (γ * t)|) ≤

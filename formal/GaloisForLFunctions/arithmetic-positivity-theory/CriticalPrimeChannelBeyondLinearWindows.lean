@@ -1,7 +1,7 @@
 import GaloisForLFunctions.«arithmetic-positivity-theory».TheLinearWindowOfTheCriticalPrimeChannel
 import GaloisForLFunctions.«arithmetic-positivity-theory».LacunaryCriticalBlockPositivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeSingletonNegative
-import Mathlib.Analysis.Calculus.MeanValue
+import GaloisForLFunctions.HTGeometry.RpowHarmonicTailAsymptotic
 import Mathlib.NumberTheory.ZetaValues
 
 /-!
@@ -240,9 +240,9 @@ private theorem tendsto_factorialAffineDefect_mul_scale {a : ℕ} (ha : 1 ≤ a)
     have hb := (factorialAffineDefect_bounds (a * (n + 1) - 1)).2
     have hcast : ((a * (n + 1) - 1 : ℕ) : ℝ) + 1 = ((a * (n + 1) : ℕ) : ℝ) := by
       exact_mod_cast Nat.sub_add_cancel hpos
-    rw [hcast] at hb
-    have hn1_pos : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_pos n
-    refine hb.trans (div_le_div_of_nonneg_left zero_le_one (by positivity) ?_)
+    rw [Nat.sub_add_cancel hpos, hcast] at hb
+    have hn1_pos : (0 : ℝ) < 140 * ((n + 1 : ℕ) : ℝ) := by positivity
+    refine hb.trans (div_le_div_of_nonneg_left zero_le_one hn1_pos ?_)
     have hle : n + 1 ≤ a * (n + 1) := Nat.le_mul_of_pos_left (n + 1) ha
     have hleR : ((n + 1 : ℕ) : ℝ) ≤ ((a * (n + 1) : ℕ) : ℝ) := by exact_mod_cast hle
     linarith
@@ -263,12 +263,13 @@ private theorem scaledLayerCrossCorr_tendsto {a c k l r : ℕ}
     exact_mod_cast this
   have hs : Tendsto (fun n : ℕ => (k : ℝ) * (1 / 12 - factorialAffineDefect (a * (n + 1))))
       atTop (𝓝 ((k : ℝ) / 12)) := by
-    have h := (tendsto_const_nhds.sub (tendsto_factorialAffineDefect_mul_scale ha)).const_mul (k : ℝ)
+    have h := ((tendsto_const_nhds (x := (1 / 12 : ℝ))).sub
+      (tendsto_factorialAffineDefect_mul_scale ha)).const_mul (k : ℝ)
     simpa [sub_zero, div_eq_mul_inv] using h
   have ht : Tendsto (fun n : ℕ => ((r * l : ℕ) : ℝ) *
       (1 / 12 - factorialAffineDefect (c * (n + 1)))) atTop (𝓝 (((r * l : ℕ) : ℝ) / 12)) := by
-    have h := (tendsto_const_nhds.sub (tendsto_factorialAffineDefect_mul_scale hc)).const_mul
-      (((r * l : ℕ) : ℝ))
+    have h := ((tendsto_const_nhds (x := (1 / 12 : ℝ))).sub
+      (tendsto_factorialAffineDefect_mul_scale hc)).const_mul (((r * l : ℕ) : ℝ))
     simpa [sub_zero, div_eq_mul_inv] using h
   have h11 := factorialCriticalCosineProduct_tendsto hα hβ hs ht
   have h10 := factorialCriticalCosineProduct_tendsto hα hβ hs (tendsto_const_nhds (x := (0 : ℝ)))
@@ -338,8 +339,7 @@ private theorem scaledLayerCrossCorr_tendsto {a c k l r : ℕ}
   have hsub1 := integral_sub (hint x1 y1) (hint x1 y0)
   have hsub2 := integral_sub (hint x1 y1 |>.sub (hint x1 y0)) (hint x0 y1)
   have hadd3 := integral_add ((hint x1 y1 |>.sub (hint x1 y0)).sub (hint x0 y1)) (hint x0 y0)
-  simp only [Pi.sub_apply] at hsub1 hsub2
-  simp only [Pi.add_apply] at hadd3
+  simp only [Pi.sub_apply] at hsub1 hsub2 hadd3
   rw [← hsub1, ← hsub2, ← hadd3]
   refine setIntegral_congr_fun measurableSet_Ioi fun v _ => ?_
   unfold scaledHarmonicLayer
@@ -524,8 +524,7 @@ private theorem dyadicPairCorrelation_tendsto {r : ℕ} (hr : 1 ≤ r) :
   rw [hlim_eq] at hsum
   refine hsum.congr fun n => ?_
   have hpair : dyadicPairSupport (n + 2) = {n + 1, 2 * n + 3} := by
-    unfold dyadicPairSupport
-    congr 1 <;> omega
+    ext m; simp only [dyadicPairSupport, Finset.mem_insert, Finset.mem_singleton]; omega
   have hne : n + 1 ≠ 2 * n + 3 := by omega
   have hcomb (w : ℝ) : realPhaseCombination (dyadicPairSupport (n + 2)) (fun _ => 1) w =
       factorialPhaseProfile (n + 2) w + factorialPhaseProfile (2 * (n + 2)) w := by
@@ -588,7 +587,7 @@ theorem tendsto_criticalPrimeEnergy_dyadicPair :
       (fun _ => 1) (M := n + 2) (by omega) hdyad
     have hcard : (∑ m ∈ dyadicPairSupport (n + 2), |(1 : ℝ)|) ≤ 2 := by
       have hp : dyadicPairSupport (n + 2) = {n + 1, 2 * n + 3} := by
-        unfold dyadicPairSupport; congr 1 <;> omega
+        ext m; simp only [dyadicPairSupport, Finset.mem_insert, Finset.mem_singleton]; omega
       rw [hp, Finset.sum_pair (by omega)]
       norm_num
     have hK1536 : criticalFactorialPrimeConstant (dyadicPairSupport (n + 2)) (fun _ => 1) ≤ 1536 := by
@@ -648,39 +647,26 @@ private theorem summable_cross21_term (r : ℕ) :
     nlinarith
   · simp; positivity
 
-private theorem summable_cross12_term (r : ℕ) :
-    Summable (fun p : ℕ × ℕ =>
-      if p.1 * 1 = r * p.2 * 2 then
-        dyadicHarmonicWeight p.1 * dyadicHarmonicWeight p.2 *
-          slowPhasePolarization p.1 (r * p.2)
-      else 0) := by
-  refine summable_harmonicPairMajorant.of_norm_bounded fun p => ?_
-  unfold harmonicPairMajorant
-  split_ifs
-  · rw [norm_mul, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, Real.norm_eq_abs]
-    have hb := abs_slowPhasePolarization_le p.1 (r * p.2)
-    have hw : 0 ≤ |dyadicHarmonicWeight p.1| * |dyadicHarmonicWeight p.2| := by positivity
-    nlinarith
-  · simp; positivity
-
 private theorem scaleRatioCorrelationLimit_12_eq (r : ℕ) :
     scaleRatioCorrelationLimit 1 2 r = (4 / Real.pi ^ 4) * ∑' l : ℕ,
       dyadicHarmonicWeight (2 * r * l) * dyadicHarmonicWeight l *
         (factorialCriticalHarmonicDefect (2 * r * l) / 2) := by
   unfold scaleRatioCorrelationLimit
   congr 1
-  have hs := summable_cross12_term r
-  rw [← (Equiv.prodComm ℕ ℕ).tsum_eq]
-  dsimp only [Equiv.prodComm_apply]
-  rw [hs.prod_symm.tsum_prod]
-  refine tsum_congr fun l => ?_
-  dsimp only [Prod.swap]
-  rw [tsum_eq_single (2 * r * l)]
-  · have hres : 2 * r * l * 1 = r * l * 2 := by ring
+  set e : ℕ → ℕ × ℕ := fun l => (2 * r * l, l)
+  have he : Function.Injective e := fun x y h => (Prod.ext_iff.mp h).2
+  rw [← he.tsum_eq]
+  · refine tsum_congr fun l => ?_
+    dsimp only [e]
+    have hres : 2 * r * l * 1 = r * l * 2 := by ring
     rw [if_pos hres, show 2 * r * l = 2 * (r * l) by ring, slowPhasePolarization_double_left]
-  · intro k hk
+  · intro p hp
+    rw [Function.mem_support] at hp
+    by_contra hnr
+    apply hp
     rw [if_neg]
-    omega
+    intro hres
+    exact hnr ⟨p.2, Prod.ext (by dsimp only [e]; linarith) rfl⟩
 
 /-- At `r = 2`, the upward dyadic cross-correlation `scaleRatioCorrelationLimit 2 1 2` is at least
 `(2 / π⁴) J_2`: all diagonal resonances `2 k = 2 l` (`k = l`) are nonnegative, and `k = l = 1`
@@ -719,22 +705,25 @@ private theorem scaleRatioCorrelationLimit_12_even_eq_zero {r : ℕ} (hr : 2 ∣
 private theorem abs_scaleRatioCorrelationLimit_21_four_le :
     |scaleRatioCorrelationLimit 2 1 4| ≤ (11 / 10) / Real.pi ^ 4 := by
   unfold scaleRatioCorrelationLimit
-  have hs := summable_cross21_term 4
   have hprod : (∑' p : ℕ × ℕ, if p.1 * 2 = 4 * p.2 * 1 then
       dyadicHarmonicWeight p.1 * dyadicHarmonicWeight p.2 *
         slowPhasePolarization p.1 (4 * p.2) else 0) =
       ∑' l : ℕ, dyadicHarmonicWeight (2 * l) * dyadicHarmonicWeight l *
         (factorialCriticalHarmonicDefect (4 * l) / 2) := by
-    rw [← (Equiv.prodComm ℕ ℕ).tsum_eq]
-    dsimp only [Equiv.prodComm_apply]
-    rw [hs.prod_symm.tsum_prod]
-    refine tsum_congr fun l => ?_
-    dsimp only [Prod.swap]
-    rw [tsum_eq_single (2 * l)]
-    · have hres : 2 * l * 2 = 4 * l * 1 := by ring
+    set e : ℕ → ℕ × ℕ := fun l => (2 * l, l)
+    have he : Function.Injective e := fun x y h => (Prod.ext_iff.mp h).2
+    rw [← he.tsum_eq]
+    · refine tsum_congr fun l => ?_
+      dsimp only [e]
+      have hres : 2 * l * 2 = 4 * l * 1 := by ring
       rw [if_pos hres, show 4 * l = 2 * (2 * l) by ring, slowPhasePolarization_double_right]
-    · intro k hk
-      rw [if_neg]; omega
+    · intro p hp
+      rw [Function.mem_support] at hp
+      by_contra hnr
+      apply hp
+      rw [if_neg]
+      intro hres
+      exact hnr ⟨p.2, Prod.ext (by dsimp only [e]; omega) rfl⟩
   rw [hprod, abs_mul, abs_of_pos (by positivity : 0 < 4 / Real.pi ^ 4)]
   have hterm (l : ℕ) : ‖dyadicHarmonicWeight (2 * l) * dyadicHarmonicWeight l *
       (factorialCriticalHarmonicDefect (4 * l) / 2)‖ ≤ (1 / 4 : ℝ) * ((1 : ℝ) / (l : ℝ) ^ 4) := by
@@ -825,57 +814,33 @@ private theorem abs_scaleRatioCorrelationLimit_odd_le {r : ℕ} (hodd : ¬ 2 ∣
   -- Bound 2:1 cross-correlation: when `¬ 2 ∣ r`, `k * 2 = r * l` forces `l = 2 * m` and `k = r * m`.
   have h21 : |scaleRatioCorrelationLimit 2 1 r| ≤ (11 / (10 * (r : ℝ) ^ 2)) / Real.pi ^ 4 := by
     unfold scaleRatioCorrelationLimit
-    have hs := summable_cross21_term r
-    have hprod : (∑' p : ℕ × ℕ, if p.1 * 2 = r * p.2 * 1 then
+    have hsub : (∑' p : ℕ × ℕ, if p.1 * 2 = r * p.2 * 1 then
         dyadicHarmonicWeight p.1 * dyadicHarmonicWeight p.2 *
           slowPhasePolarization p.1 (r * p.2) else 0) =
-        ∑' l : ℕ, if 2 ∣ l then
-          dyadicHarmonicWeight (r * (l / 2)) * dyadicHarmonicWeight l *
-            (factorialCriticalHarmonicDefect (r * l) / 2) else 0 := by
-      rw [← (Equiv.prodComm ℕ ℕ).tsum_eq]
-      dsimp only [Equiv.prodComm_apply]
-      rw [hs.prod_symm.tsum_prod]
-      refine tsum_congr fun l => ?_
-      dsimp only [Prod.swap]
-      by_cases hl2 : 2 ∣ l
-      · obtain ⟨m, rfl⟩ := hl2
-        simp only [dvd_mul_right, ite_true, Nat.mul_div_cancel_left m two_pos]
-        rw [tsum_eq_single (r * m)]
-        · have hres : r * m * 2 = r * (2 * m) * 1 := by ring
-          rw [if_pos hres, show r * (2 * m) = 2 * (r * m) by ring,
-            slowPhasePolarization_double_right]
-        · intro k hk
-          rw [if_neg]; omega
-      · rw [if_neg hl2]
-        have hz : ∀ k : ℕ, (if k * 2 = r * l * 1 then
-            dyadicHarmonicWeight k * dyadicHarmonicWeight l *
-              slowPhasePolarization k (r * l) else 0) = 0 := fun k => by
-          rw [if_neg]
-          intro hres
-          have h2rl : 2 ∣ r * l := ⟨k, by omega⟩
-          rcases (Nat.Prime.dvd_mul Nat.prime_two).mp h2rl with h2r | h2l
-          · exact hodd h2r
-          · exact hl2 h2l
-        simp [hz]
-    have hinj : Function.Injective (fun m : ℕ => 2 * m) := fun a b h => by
-      dsimp only at h; omega
-    have hsub : (∑' l : ℕ, if 2 ∣ l then
-        dyadicHarmonicWeight (r * (l / 2)) * dyadicHarmonicWeight l *
-          (factorialCriticalHarmonicDefect (r * l) / 2) else 0) =
         ∑' m : ℕ, dyadicHarmonicWeight (r * m) * dyadicHarmonicWeight (2 * m) *
           (factorialCriticalHarmonicDefect (2 * r * m) / 2) := by
-      rw [← hinj.tsum_eq]
+      set e : ℕ → ℕ × ℕ := fun m => (r * m, 2 * m)
+      have he : Function.Injective e := fun x y h => by
+        have h2 := (Prod.ext_iff.mp h).2
+        dsimp only [e] at h2
+        omega
+      rw [← he.tsum_eq]
       · refine tsum_congr fun m => ?_
-        simp only [dvd_mul_right, ite_true, Nat.mul_div_cancel_left m two_pos]
-        rw [show r * (2 * m) = 2 * r * m by ring]
-      · intro l hl
-        rw [Function.mem_support] at hl
+        dsimp only [e]
+        have hres : r * m * 2 = r * (2 * m) * 1 := by ring
+        rw [if_pos hres, show r * (2 * m) = 2 * (r * m) by ring,
+          slowPhasePolarization_double_right, show 2 * (r * m) = 2 * r * m by ring]
+      · intro p hp
+        rw [Function.mem_support] at hp
         by_contra hnr
-        apply hl
+        apply hp
         rw [if_neg]
-        rintro ⟨m, rfl⟩
-        exact hnr ⟨m, rfl⟩
-    rw [hprod, hsub, abs_mul, abs_of_pos hpi4]
+        intro hres
+        have h2rl : 2 ∣ r * p.2 := ⟨p.1, by linarith⟩
+        rcases (Nat.Prime.dvd_mul Nat.prime_two).mp h2rl with h2r | ⟨m, hm⟩
+        · exact hodd h2r
+        · exact hnr ⟨m, Prod.ext (by dsimp only [e]; rw [hm] at hres; linarith) hm.symm⟩
+    rw [hsub, abs_mul, abs_of_pos hpi4]
     have hterm (m : ℕ) : ‖dyadicHarmonicWeight (r * m) * dyadicHarmonicWeight (2 * m) *
         (factorialCriticalHarmonicDefect (2 * r * m) / 2)‖ ≤
         (1 / (4 * (r : ℝ) ^ 2)) * ((1 : ℝ) / (m : ℝ) ^ 4) := by
@@ -1020,7 +985,7 @@ private theorem summable_and_tsum_cross_tail_seven_le :
         rw [div_le_iff₀ (by positivity)]
         have h_alg : (18 / 49 + 3 / 32) * Real.log 2 * (1 / (r : ℝ) ^ 2) * (r : ℝ) ^ 3 =
             ((18 / 49) * (r : ℝ) + (3 / 32) * (r : ℝ)) * Real.log 2 := by
-          field_simp; ring
+          field_simp
         rw [h_alg]
         have hr_ge : (18 / 7 : ℝ) ≤ (18 / 49) * (r : ℝ) := by linarith
         nlinarith
@@ -1104,7 +1069,7 @@ theorem dyadicPairPrimeLimit_ge :
         (fun _ => 1) (M := n + 2) (by omega) hdyad
       have hcard : (∑ m ∈ dyadicPairSupport (n + 2), |(1 : ℝ)|) ≤ 2 := by
         have hp : dyadicPairSupport (n + 2) = {n + 1, 2 * n + 3} := by
-          unfold dyadicPairSupport; congr 1 <;> omega
+          ext m; simp only [dyadicPairSupport, Finset.mem_insert, Finset.mem_singleton]; omega
         rw [hp, Finset.sum_pair (by omega)]
         norm_num
       have hsq : (∑ m ∈ dyadicPairSupport (n + 2), |(1 : ℝ)|) ^ 2 ≤ 4 := by
@@ -1197,10 +1162,6 @@ theorem dyadicPairPrimeLimit_ge :
         ((11 / 189) * (13 / 10) + (16 / 875) * (6 / 5)) * Real.log 2 := by
       linarith
     have hmul := mul_le_mul_of_nonneg_left hsum6 (show 0 ≤ 2 * (4 / Real.pi ^ 4) by positivity)
-    have h_alg_lhs : -(Real.log 2 / Real.pi ^ 4) * factorialCriticalHarmonicDefect 2 +
-        (88 / 189 * (13 / 10) + 128 / 875 * (6 / 5)) * (Real.log 2 / Real.pi ^ 4) =
-        2 * (4 / Real.pi ^ 4) * (-(1 / 8) * Real.log 2 * factorialCriticalHarmonicDefect 2 +
-          ((11 / 189) * (13 / 10) + (16 / 875) * (6 / 5)) * Real.log 2) := by ring
     have h_alg_rhs : 2 * ((4 / Real.pi ^ 4) *
         (-2 * Real.log 2 * factorialCriticalHarmonicDefect 2 / 16 +
           3 * Real.log 3 * factorialCriticalHarmonicDefect 3 / 81 +
@@ -1214,8 +1175,9 @@ theorem dyadicPairPrimeLimit_ge :
           ∑' m : ℕ, factorialCriticalPrimeHarmonicCharge (m + 6) *
             factorialCriticalHarmonicDefect (m + 6) / ((m + 6 : ℕ) : ℝ) ^ 4) := by ring
     change _ ≤ _
-    rw [h_alg_lhs, h_alg_rhs]
-    exact hmul
+    rw [h_alg_rhs]
+    refine le_trans ?_ hmul
+    exact le_of_eq (by ring)
   -- 3. Lower bound `∑' r, crossAtom r` splitting at `r = 7`
   have hcross_ge : ∑' r : ℕ, crossAtom r ≥
       (Real.log 2 / Real.pi ^ 4) * factorialCriticalHarmonicDefect 2 -

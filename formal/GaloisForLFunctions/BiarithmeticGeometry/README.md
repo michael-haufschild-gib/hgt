@@ -95,7 +95,8 @@ that line. Since `e_j=U^j e_0`, every cell has the same scalar.
 
 This is a joint additive/multiplicative classification. It does not imply a norm bound for a
 signed arithmetic source. The origin and the exact boundary convention are essential parts of
-its statement.
+its statement. Scalar common commutant does not imply irreducibility here: every tail
+`span(e_k,...,e_N)` is invariant under all positive affine maps.
 
 Source: `horizon_double_fixed_iff`, `horizon_joint_commutant`.
 
@@ -124,6 +125,11 @@ complex nor its vanishing theorem. The underlying least-common-multiple identity
 the role here is to correct the proposed cohomological foundation.
 
 Source: `boxDefect_eq_degree_sub_log_torsion`, `boxDefect_eq_degree_sub_log_card`.
+
+Within the cell `log N ≤ s < log(N+1)`, the exact extension adds
+`(exp(s)-N)+(s-log N)`. Thus every nonnegative aperture separates into its integer degree,
+logarithmic torsion charge and continuous polar evolution, with no loss at noninteger horizons.
+Source: `boxDefect_cell_interpolation`, `boxDefect_all_apertures`.
 
 ### Exact cost of shared-budget descent
 

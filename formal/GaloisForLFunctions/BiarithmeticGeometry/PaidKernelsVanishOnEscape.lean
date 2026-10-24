@@ -1,6 +1,9 @@
-import GaloisForLFunctions.ArithmeticDefectRigidity.TheForcingSplitsIntoAPowerAndAnAdmittedRemainder
+import GaloisForLFunctions.ArithmeticDefectRigidity.TheForcingDominatesTheReceiver
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheReceiverEnergyEscapesToTheHorizon
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.CriticalWienerConvolutionsPreserveTheReceiver
 
-/-!+# Repairing kernels vanish in actual escape normalization
+/-!
+# Repairing kernels vanish in actual escape normalization
 
 The exact convolution law differs from the cofactor action by a uniformly paid kernel prefix.
 Consequently every critical Wiener kernel repairing the actual damped Möbius source has bounded

@@ -3,7 +3,8 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Data.PNat.Basic
 import Mathlib.Tactic.Ring
 
-/-!+# The affine action with an absorbing horizon
+/-!
+# The affine action with an absorbing horizon
 
 An affine map `j ↦ a*j+b`, with positive multiplier, sends a basis cell to its image or to zero
 when it leaves the horizon. No cell can re-enter. Hence truncation retains the affine semigroup

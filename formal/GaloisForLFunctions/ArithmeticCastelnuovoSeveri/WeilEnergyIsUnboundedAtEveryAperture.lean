@@ -3,11 +3,13 @@ import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SourceConeBoundaryApplica
 /-!
 # The Weil form is unbounded above at every positive aperture
 
-Finitely many Fourier conditions leave a nonzero real test in every positive support interval.
-Apply this to the low-frequency grid at an arbitrary energy threshold and the pole. The
+Every finite-dimensional linear reading leaves a nonzero real test in every positive support
+interval. Apply this jointly to any prescribed reading, the low-frequency grid at an arbitrary
+energy threshold, and the pole. The
 near-radical concentration estimate and the grid estimate contradict any upper bound at that
 threshold. Consequently no finite scalar `L²` source reserve has Bézout, even at an aperture
-where Riemann–Roch and ampleness have already been established.
+where Riemann–Roch and ampleness have already been established. Arbitrary postprocessing of a
+finite-dimensional linear reading also fails Bézout: its kernel retains unbounded Weil energy.
 -/
 
 open Complex MeasureTheory Set Filter Zeta23 GaloisForLFunctions.HTGeometry
@@ -17,12 +19,13 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
-/-- Finitely many transform samples cannot annihilate every test in a positive interval. -/
-theorem exists_nonzero_realTestAt_vanishing_samples {r : ℝ} (hr : 0 < r)
-    {ι : Type*} [Fintype ι] (z : ι → ℂ) :
-    ∃ f : realTestsAt r, (f : realTests) ≠ 0 ∧ ∀ i, paperFT (cx f.1.1) (z i) = 0 := by
+/-- Every finite-dimensional linear reading has a nonzero kernel at positive aperture. -/
+theorem exists_nonzero_realTestAt_in_ker {r : ℝ} (hr : 0 < r)
+    {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+    (L : realTestsAt r →ₗ[ℝ] V) :
+    ∃ f : realTestsAt r, (f : realTests) ≠ 0 ∧ L f = 0 := by
   classical
-  let N := 2 * Fintype.card ι + 1
+  let N := Module.finrank ℝ V + 1
   have hnhd : Ioo (-(r / 2)) (r / 2) ∈ nhds (0 : ℝ) :=
     Ioo_mem_nhds (by linarith only [hr]) (by linarith only [hr])
   obtain ⟨g, hgs, hgc, hgd, -, hg0⟩ := exists_contDiff_tsupport_subset (n := 2) hnhd
@@ -55,56 +58,56 @@ theorem exists_nonzero_realTestAt_vanishing_samples {r : ℝ} (hr : 0 < r)
   have hvc : ∀ i, HasCompactSupport (v i) := fun i =>
     IsCompact.of_isClosed_subset isCompact_Icc (isClosed_tsupport _) (hvs i)
   have hli : LinearIndependent ℝ v := linearIndependent_real_translate hsinj hgc hgne
-  let L : (Fin N → ℝ) →ₗ[ℝ] (ι → ℂ) :=
-    { toFun := fun c k => ∑ i, (c i : ℂ) * paperFT (cx (v i)) (z k)
+  let vTest : Fin N → realTestsAt r := fun i => ⟨⟨v i, hvd i, hvc i⟩, hvs i⟩
+  let B : (Fin N → ℝ) →ₗ[ℝ] realTestsAt r :=
+    { toFun := fun c => ∑ i, c i • vTest i
       map_add' := fun c d => by
-        funext k
-        simp only [Pi.add_apply, Complex.ofReal_add, add_mul, Finset.sum_add_distrib]
+        simp only [Pi.add_apply, add_smul, Finset.sum_add_distrib]
       map_smul' := fun t c => by
-        funext k
-        simp only [Pi.smul_apply, smul_eq_mul, Complex.ofReal_mul, RingHom.id_apply,
-          Complex.real_smul, Finset.mul_sum, mul_assoc] }
-  have hdim : Module.finrank ℝ (ι → ℂ) < Module.finrank ℝ (Fin N → ℝ) := by
-    rw [Module.finrank_pi_fintype, Complex.finrank_real_complex, Finset.sum_const,
-      Finset.card_univ, smul_eq_mul, Module.finrank_fintype_fun_eq_card, Fintype.card_fin]
+        simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, mul_smul, Finset.smul_sum] }
+  have hdim : Module.finrank ℝ V < Module.finrank ℝ (Fin N → ℝ) := by
+    rw [Module.finrank_fintype_fun_eq_card, Fintype.card_fin]
     dsimp [N]
     omega
   obtain ⟨c, hcker, hc0⟩ :=
-    Submodule.exists_mem_ne_zero_of_ne_bot (LinearMap.ker_ne_bot_of_finrank_lt (f := L) hdim)
-  let f : ℝ → ℝ := ∑ i, c i • v i
-  have hfs : tsupport f ⊆ Icc (-r) r := by
-    refine closure_minimal (fun u hu => ?_) isClosed_Icc
-    by_contra hu'
-    apply hu
-    simp only [f, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
-    refine Finset.sum_eq_zero fun i _ => ?_
-    rw [image_eq_zero_of_notMem_tsupport fun h => hu' (hvs i h), mul_zero]
-  have hfmem : f ∈ realTests := by
-    refine ⟨?_, IsCompact.of_isClosed_subset isCompact_Icc (isClosed_tsupport _) hfs⟩
-    have he : f = fun u => ∑ i, c i * v i u := by
-      funext u
-      simp only [f, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
-    rw [he]
-    exact ContDiff.sum fun i _ => (hvd i).const_smul (c i)
-  have hcxf : cx f = ∑ i, (c i : ℂ) • cx (v i) := by
-    funext u
-    simp [f, cx]
-  refine ⟨⟨⟨f, hfmem⟩, hfs⟩, ?_, ?_⟩
-  · intro h0
-    have hf0 : f = 0 := congrArg Subtype.val h0
-    exact hc0 (funext ((Fintype.linearIndependent_iff.mp hli) c hf0))
-  · intro k
-    change paperFT (cx f) (z k) = 0
-    rw [hcxf, paperFT_sum_smul (fun i => cx (v i))
-      (fun i => (cx_contDiff (hvd i)).continuous) (fun i => cx_hasCompactSupport (hvc i))]
-    exact congrFun hcker k
+    Submodule.exists_mem_ne_zero_of_ne_bot
+      (LinearMap.ker_ne_bot_of_finrank_lt (f := L.comp B) hdim)
+  refine ⟨B c, ?_, hcker⟩
+  intro h0
+  have hf0 : ∑ i, c i • v i = 0 := by
+    simpa [B, vTest] using congrArg Subtype.val h0
+  exact hc0 (funext ((Fintype.linearIndependent_iff.mp hli) c hf0))
 
-/-- Arbitrarily large Weil energy survives any fixed finite set of transform zeros. -/
-theorem exists_realTestAt_weilPair_gt_mul_integral_sq_vanishing_samples
-    {r : ℝ} (hr : 0 < r) (M : ℝ) {ι : Type*} [Fintype ι] (z₀ : ι → ℂ) :
+/-- A finite family of Fourier evaluations as a real linear source reading. -/
+def realTestAtFourierSamples (r : ℝ) {ι : Type*} (z : ι → ℂ) :
+    realTestsAt r →ₗ[ℝ] (ι → ℂ) where
+  toFun f i := paperFT (cx f.1.1) (z i)
+  map_add' f g := by
+    funext i
+    change paperFT (cx (f.1.1 + g.1.1)) (z i) =
+      paperFT (cx f.1.1) (z i) + paperFT (cx g.1.1) (z i)
+    rw [cx_add]
+    exact paperFT_add (cx_contDiff f.1.2.1).continuous (cx_hasCompactSupport f.1.2.2)
+      (cx_contDiff g.1.2.1).continuous (cx_hasCompactSupport g.1.2.2) (z i)
+  map_smul' t f := by
+    funext i
+    change paperFT (cx (t • f.1.1)) (z i) = t • paperFT (cx f.1.1) (z i)
+    rw [cx_smul, paperFT_smul, Complex.real_smul]
+
+/-- Finitely many transform samples cannot annihilate every test in a positive interval. -/
+theorem exists_nonzero_realTestAt_vanishing_samples {r : ℝ} (hr : 0 < r)
+    {ι : Type*} [Fintype ι] (z : ι → ℂ) :
+    ∃ f : realTestsAt r, (f : realTests) ≠ 0 ∧ ∀ i, paperFT (cx f.1.1) (z i) = 0 := by
+  obtain ⟨f, hf, hz⟩ := exists_nonzero_realTestAt_in_ker hr (realTestAtFourierSamples r z)
+  exact ⟨f, hf, fun i => congrFun hz i⟩
+
+/-- The Weil Rayleigh quotient is unbounded in every finite-dimensional reading kernel. -/
+theorem exists_realTestAt_in_ker_weilPair_gt_mul_integral_sq
+    {r : ℝ} (hr : 0 < r) (M : ℝ)
+    {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+    (L : realTestsAt r →ₗ[ℝ] V) :
     ∃ f : realTestsAt r, 0 < ∫ u : ℝ, (f.1.1 u) ^ 2 ∧
-      M * ∫ u : ℝ, (f.1.1 u) ^ 2 < weilPair f.1.1 f.1.1 ∧
-      ∀ i, paperFT (cx f.1.1) (z₀ i) = 0 := by
+      M * ∫ u : ℝ, (f.1.1 u) ^ 2 < weilPair f.1.1 f.1.1 ∧ L f = 0 := by
   classical
   let ε := max M 0
   have hε : 0 ≤ ε := le_max_right _ _
@@ -113,19 +116,21 @@ theorem exists_realTestAt_weilPair_gt_mul_integral_sq_vanishing_samples
   let grid : Option G → ℂ := fun k => match k with
     | none => I / 2
     | some j => (((j : ℤ) : ℝ) * gridStepOf T r : ℝ)
-  let z : ι ⊕ Option G → ℂ := Sum.elim z₀ grid
-  obtain ⟨f, hf0, hvan⟩ := exists_nonzero_realTestAt_vanishing_samples hr z
+  obtain ⟨f, hf0, hker⟩ :=
+    exists_nonzero_realTestAt_in_ker hr (L.prod (realTestAtFourierSamples r grid))
+  have hvan : ∀ i, paperFT (cx f.1.1) (grid i) = 0 :=
+    fun i => congrFun (congrArg Prod.snd hker) i
   have hmass := integral_sq_pos_of_realTest_ne_zero f.1 hf0
-  refine ⟨f, hmass, ?_, fun i => hvan (Sum.inl i)⟩
+  refine ⟨f, hmass, ?_, congrArg Prod.fst hker⟩
   have hFd := cx_contDiff f.1.2.1
   have hFc := cx_hasCompactSupport f.1.2.2
   have hFs : tsupport (cx f.1.1) ⊆ Icc (-r) r := by
     rw [tsupport_cx]
     exact f.2
-  have hp : paperFT (cx f.1.1) (I / 2) = 0 := hvan (Sum.inr none)
+  have hp : paperFT (cx f.1.1) (I / 2) = 0 := hvan none
   have hgrid : ∀ j ∈ G,
       paperFT (cx f.1.1) (((j : ℝ) * gridStepOf T r : ℝ) : ℂ) = 0 :=
-    fun j hj => hvan (Sum.inr (some ⟨j, hj⟩))
+    fun j hj => hvan (some ⟨j, hj⟩)
   have hW : (zetaZeroConfig.W (cx f.1.1) (cx f.1.1)).re = weilPair f.1.1 f.1.1 := by
     rw [weilPair, RHTower.zeta_W_eq_weilFullFunctional_mixed hFd hFc hFd hFc]
   have hnorm : (∫ u, ‖cx f.1.1 u‖ ^ 2) = ∫ u : ℝ, (f.1.1 u) ^ 2 := by
@@ -146,13 +151,50 @@ theorem exists_realTestAt_weilPair_gt_mul_integral_sq_vanishing_samples
     linarith only [hlo, hhi, hstrict]
   exact lt_of_le_of_lt (mul_le_mul_of_nonneg_right (le_max_left M 0) hmass.le) hεW
 
+/-- Arbitrarily large Weil energy survives any fixed finite set of transform zeros. -/
+theorem exists_realTestAt_weilPair_gt_mul_integral_sq_vanishing_samples
+    {r : ℝ} (hr : 0 < r) (M : ℝ) {ι : Type*} [Fintype ι] (z : ι → ℂ) :
+    ∃ f : realTestsAt r, 0 < ∫ u : ℝ, (f.1.1 u) ^ 2 ∧
+      M * ∫ u : ℝ, (f.1.1 u) ^ 2 < weilPair f.1.1 f.1.1 ∧
+      ∀ i, paperFT (cx f.1.1) (z i) = 0 := by
+  obtain ⟨f, hmass, hW, hker⟩ :=
+    exists_realTestAt_in_ker_weilPair_gt_mul_integral_sq hr M (realTestAtFourierSamples r z)
+  exact ⟨f, hmass, hW, fun i => congrFun hker i⟩
+
 /-- The Weil Rayleigh quotient exceeds every real threshold at every positive aperture. -/
 theorem exists_realTestAt_weilPair_gt_mul_integral_sq {r : ℝ} (hr : 0 < r) (M : ℝ) :
     ∃ f : realTestsAt r, 0 < ∫ u : ℝ, (f.1.1 u) ^ 2 ∧
       M * ∫ u : ℝ, (f.1.1 u) ^ 2 < weilPair f.1.1 f.1.1 := by
   obtain ⟨f, hf, hW, -⟩ := exists_realTestAt_weilPair_gt_mul_integral_sq_vanishing_samples
-    hr M (fun i : Fin 0 => nomatch i)
+    hr M (fun i : Fin 0 => Fin.elim0 i)
   exact ⟨f, hf, hW⟩
+
+/-- The absolute Weil energy is unbounded in every finite-dimensional reading kernel. -/
+theorem exists_realTestAt_in_ker_weilPair_gt {r : ℝ} (hr : 0 < r) (A : ℝ)
+    {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+    (L : realTestsAt r →ₗ[ℝ] V) :
+    ∃ f : realTestsAt r, A < weilPair f.1.1 f.1.1 ∧ L f = 0 := by
+  obtain ⟨f, -, hf, hker⟩ := exists_realTestAt_in_ker_weilPair_gt_mul_integral_sq hr 0 L
+  have hw : 0 < weilPair f.1.1 f.1.1 := by simpa only [zero_mul] using hf
+  let t := Real.sqrt ((max A 0 + 1) / weilPair f.1.1 f.1.1)
+  have ht2 : t ^ 2 = (max A 0 + 1) / weilPair f.1.1 f.1.1 :=
+    Real.sq_sqrt (div_nonneg (by positivity) hw.le)
+  have hprod : t ^ 2 * weilPair f.1.1 f.1.1 = max A 0 + 1 := by
+    rw [ht2]
+    field_simp [hw.ne']
+  refine ⟨t • f, ?_, ?_⟩
+  · change A < weilPair (t • f.1.1) (t • f.1.1)
+    rw [weilPair_smul_left, weilPair_comm f.1.1 (t • f.1.1), weilPair_smul_left]
+    nlinarith only [hprod, le_max_left A 0]
+  · rw [map_smul, hker, smul_zero]
+
+/-- On a finite-blind source fibre, the absolute Weil energy has no finite upper bound. -/
+theorem exists_realTestAt_weilPair_gt_vanishing_samples {r : ℝ} (hr : 0 < r) (A : ℝ)
+    {ι : Type*} [Fintype ι] (z : ι → ℂ) :
+    ∃ f : realTestsAt r, A < weilPair f.1.1 f.1.1 ∧
+      ∀ i, paperFT (cx f.1.1) (z i) = 0 := by
+  obtain ⟨f, hW, hker⟩ := exists_realTestAt_in_ker_weilPair_gt hr A (realTestAtFourierSamples r z)
+  exact ⟨f, hW, fun i => congrFun hker i⟩
 
 /-- Every finite scalar source reserve admits a negative-square cycle, even in its strict cone. -/
 theorem exists_strictL2SourceCone_realTestsAt_negative_square {r : ℝ} (hr : 0 < r) (c : ℝ) :
@@ -189,29 +231,61 @@ theorem gradedChebyshevSourceCone_riemannRoch_and_not_bezout {r : ℝ} (hr : 0 <
   ⟨(gradedL2SourceCone_realTestsAt_all_apertures_riemannRoch hr).1.1,
     (realTestsAt_l2SourceCones_not_bezout hr _).2.2⟩
 
-/-- A finite collection of transform samples cannot supply a Bézout source cone. -/
-theorem finiteFourierSourceCone_not_bezout {r : ℝ} (hr : 0 < r)
-    {ι : Type*} [Fintype ι] (z : ι → ℂ) :
+/-- No postprocessing of a finite-dimensional linear reading supplies a Bézout source cone. -/
+theorem finiteLinearReadingSourceCone_not_bezout {r : ℝ} (hr : 0 < r)
+    {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+    (L : realTestsAt r →ₗ[ℝ] V) (F : V → ℝ) :
     ¬ (scalingSubsurface (realTestsAt r)).BezoutAxiom
       ((scalingSubsurface (realTestsAt r)).sourceCone
-        (fun x => ∑ i, ‖paperFT (cx x.2.2.1.1) (z i)‖ ^ 2)) := by
+        (fun x => F (L x.2.2))) := by
   classical
   intro hB
   let Φ : (ℝ × ℝ × realTestsAt r) → ℝ :=
-    fun x => ∑ i, ‖paperFT (cx x.2.2.1.1) (z i)‖ ^ 2
-  have hnn : ∀ x, 0 ≤ Φ x := fun _ => Finset.sum_nonneg fun _ _ => sq_nonneg _
+    fun x => F (L x.2.2)
   have hfib : ∀ (x : ℝ × ℝ × realTestsAt r) (a b : ℝ),
       Φ (x + a • (scalingSubsurface (realTestsAt r)).H +
         b • (scalingSubsurface (realTestsAt r)).V) = Φ x := by
     intro x a b
     simp [Φ, scalingSubsurface, scalingSurface]
-  obtain ⟨f, -, hW, hvan⟩ :=
-    exists_realTestAt_weilPair_gt_mul_integral_sq_vanishing_samples hr 0 z
-  have hbound := (scalingSubsurface (realTestsAt r)).defect_le_source_of_sourceCone_bezout
-    hnn hfib hB (0, 0, f)
-  rw [scalingSubsurface_defect_self] at hbound
-  have hzero : Φ (0, 0, f) = 0 := by simp [Φ, hvan]
-  rw [hzero] at hbound
-  simpa only [zero_mul] using (not_lt_of_ge hbound) hW
+  obtain ⟨f, hW, hker⟩ := exists_realTestAt_in_ker_weilPair_gt hr (max (F 0) 0) L
+  have hzero : Φ (0, 0, f) = F 0 := congrArg F hker
+  let S := scalingSubsurface (realTestsAt r)
+  let x := S.withFibreDegrees (0, 0, f) (max (F 0) 0) (1 / 2)
+  have hx : x ∈ S.sourceCone Φ := by
+    rw [S.mem_sourceCone_iff]
+    dsimp only [x]
+    rw [S.withFibreDegrees_pair_H, S.withFibreDegrees_pair_V,
+      S.source_withFibreDegrees hfib, hzero, S.polar_self,
+      S.withFibreDegrees_pair_H, S.withFibreDegrees_pair_V]
+    exact ⟨le_max_right _ _, by positivity, by linarith only [le_max_left (F 0) 0]⟩
+  have hbound := hB _ hx _ hx
+  change 0 ≤ S.pair x x at hbound
+  dsimp only [x] at hbound
+  rw [S.pair_withFibreDegrees, scalingSubsurface_defect_self] at hbound
+  linarith only [hbound, hW]
+
+/-- In particular, arbitrary finite Fourier postprocessing fails Bézout at every aperture. -/
+theorem finiteFourierPostprocessingSourceCone_not_bezout {r : ℝ} (hr : 0 < r)
+    {ι : Type*} [Fintype ι] (z : ι → ℂ) (F : (ι → ℂ) → ℝ) :
+    ¬ (scalingSubsurface (realTestsAt r)).BezoutAxiom
+      ((scalingSubsurface (realTestsAt r)).sourceCone
+        (fun x => F (fun i => paperFT (cx x.2.2.1.1) (z i)))) :=
+  finiteLinearReadingSourceCone_not_bezout hr (realTestAtFourierSamples r z) F
+
+/-- Subtracting the value at zero does not remove the finite-reading obstruction. -/
+theorem finiteFourierReadingSourceCone_not_bezout {r : ℝ} (hr : 0 < r)
+    {ι : Type*} [Fintype ι] (z : ι → ℂ) (F : (ι → ℂ) → ℝ) :
+    ¬ (scalingSubsurface (realTestsAt r)).BezoutAxiom
+      ((scalingSubsurface (realTestsAt r)).sourceCone
+        (fun x => F (fun i => paperFT (cx x.2.2.1.1) (z i)) - F 0)) :=
+  finiteFourierPostprocessingSourceCone_not_bezout hr z (fun w => F w - F 0)
+
+/-- In particular, a finite sum of squared transform samples cannot supply Bézout. -/
+theorem finiteFourierSourceCone_not_bezout {r : ℝ} (hr : 0 < r)
+    {ι : Type*} [Fintype ι] (z : ι → ℂ) :
+    ¬ (scalingSubsurface (realTestsAt r)).BezoutAxiom
+      ((scalingSubsurface (realTestsAt r)).sourceCone
+        (fun x => ∑ i, ‖paperFT (cx x.2.2.1.1) (z i)‖ ^ 2)) := by
+  exact finiteFourierPostprocessingSourceCone_not_bezout hr z (fun w => ∑ i, ‖w i‖ ^ 2)
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

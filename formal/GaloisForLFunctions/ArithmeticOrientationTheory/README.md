@@ -1052,13 +1052,17 @@ quantity on the arithmetic source at the stated precision is a separate task.
    (`a ≠ 0`, `r ≥ ½ log 2`): `shiftedPairSourceEnergy a r R x < chebyshevSourceEnergy r R x` whenever
    `autoCorrelation F (log 2) > 0` (`primeNodeCorrelationObstruction_lt_shiftedPair`).
 4. **The convex, Hecke-stable `L²`-mass section cone over `ℤ`.** On `scalingSubsurface V` (`V ≤ realTests`),
-   `l2MassSectionCone c V` (`l2SourceEnergy c V x = c ∫ f(u)² du`) obeys the sign-free `L²` Bézout
+   `l2MassSectionCone c V` (`l2SourceEnergy c V x = c ∫ f(u)² du`) obeys the auxiliary `L²` pairing
    bound `c ∫ f g ≤ polar x y` for all `c ≥ 0` by `L²` Cauchy–Schwarz and hyperbolic AM-GM
    (`l2SourcePairing_le_polar_of_mem_l2MassSectionCone`), is convex and `AmpleAxiom` for all `c > 0`,
    and satisfies `RiemannRochAxiom`, `AmpleAxiom`, and `SurfaceRiemannRochAxiom 0 0` past the first
    prime `2` on `primitiveSmoothRealTestsAt r` (`r ≤ ½(log 2 + 1/50)`, `0 < c ≤ 1/1000`),
    `polarFreeSmoothRealTestsAt r` (`0 < c ≤ 1/20`), and `oddRealTestsAt r` (`r ≤ 181/500`,
    `0 < c ≤ 1/1000`, `l2MassSectionCone_convex_ample_and_primeTwo_riemannRoch`).
+
+The auxiliary bound controls `c∫fg`; Bézout for the original scaling surface requires control
+of `weilPair f g`. The `1 × 1` reading is an exact membership encoding with section count at
+most one. It does not construct an all-aperture cohomology theory or prove its dimension growth.
 
 ### 3.11 The index theorem of the receiver (`TheIndexTheoremOfTheReceiver`)
 
