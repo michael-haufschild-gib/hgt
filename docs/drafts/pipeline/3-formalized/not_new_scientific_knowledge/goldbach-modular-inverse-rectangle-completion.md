@@ -1,10 +1,10 @@
 # Finite modular-inverse rectangles with all frequency gcds retained
 
 - **ID:** goldbach-modular-inverse-rectangle-completion
-- **Stage:** 2-fully-proven
-- **Type:** Classical bridge; no novelty claim
-- **Sources:** [composite Kloosterman budget](../3-formalized/not_new_scientific_knowledge/goldbach-composite-kloosterman-budget.md), [flat prime-dilation dispersion](goldbach-flat-prime-dilation-dispersion.md)
-- **Lean status:** Formalization in progress in `goldbach/ModularInverseRectangleCompletion.lean`; the full inequality is written but its leaf check and closure audit remain pending.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean); classical bridge; no novelty claim
+- **Sources:** [composite Kloosterman budget](goldbach-composite-kloosterman-budget.md), [flat prime-dilation dispersion](../../2-fully-proven/goldbach-flat-prime-dilation-dispersion.md)
+- **Lean status:** Complete in `goldbach/ModularInverseRectangleCompletion.lean`. Direct leaf verification and all 42 theorem-closure audits pass without warnings; only `propext`, `Classical.choice`, and `Quot.sound` occur.
 
 ## Exact statement
 
@@ -24,8 +24,8 @@ The exponents in (R) are real powers of positive integers.
 
 - [x] Exact actual-source statement, with every endpoint retained.
 - [x] Dependency-closed paper proof below, using the separate proved composite budget.
-- [ ] Direct Lean leaf check and proof-closure audit of (R).
-- [ ] No publication or scientific-novelty claim.
+- [x] Direct Lean leaf check and proof-closure audit of (R).
+- [x] No publication or scientific-novelty claim.
 
 ## Paper proof [PROVED HERE]
 
@@ -132,7 +132,7 @@ S(a,0;M)=c_M(a) gives an a≠0,b=0 contribution at most τλH/M. Combining
 (6), (7), and this second axis proves (R). If M=1 both nonzero frequency
 sets are empty and (5) already equals its main term.
 
-## Corpus audit and exact Lean obligation
+## Corpus audit and Lean implementation
 
 `RHTower/Sieve/KloostermanSameModulusIntervalCompletion.lean` proves exact
 column-correlation completion with a remainder bounded by Mφ(M).
@@ -162,13 +162,55 @@ also appears in BiScaleUncertainty's `realHarmonic_le_one_add_log`.
 The modulus-one case and each positive-index side condition are
 discharged from the actual interval data.
 
-Formalize the finite interval transform, (2)–(4), exact graph expansion
-(5), and the two frequency axes before claiming (R). The eventual
-theorem takes actual modulus, residue, starts, and lengths only. The
-flat dispersion theorem, Möbius progression input, signed amplifier,
-and marked Type II sum remain separate proof obligations.
+The finite interval transform, (2)–(4), exact graph expansion (5), both
+frequency axes, and their complete combination (R) are formalized. The
+public theorem takes the actual positive modulus, residue, starts, and
+lengths only. The flat dispersion theorem, Möbius progression input,
+signed amplifier, and marked Type II sum remain separate proof obligations.
+
+## Lean certificate
+
+Module: `formal/GaloisForLFunctions/goldbach/ModularInverseRectangleCompletion.lean`.
+Namespace: `GaloisForLFunctions.Goldbach`.
+
+- `modularInverseRectanglePairs_error_le` proves (R) for the cardinality
+  of the literal interval-index pair set.
+- `modularInverseRectangleCount_eq_card_pairs` identifies that set with
+  the unit-fibre multiplicity count, using a disjoint union of fibres.
+- `modularInverseRectangleCount_fourier` proves the exact finite graph
+  expansion before any estimates are applied.
+- `intervalDivisorFourierMass_eq` gives exact descent to the quotient
+  modulus; `intervalDivisorFourierMass_le` supplies (4).
+- `intervalPairGcdFourierMass_le` retains the common frequency gcd and
+  proves the summable divisor budget `3 M² (1+log M)²`.
+- `norm_rectangleRowAxis_le`, `norm_rectangleColumnAxis_le`, and
+  `norm_rectangleInterior_le` separately certify the three error terms.
+
+The direct final audit was:
+
+```text
+cd formal
+lake --old env lean GaloisForLFunctions/goldbach/ModularInverseRectangleCompletion.lean
+```
+
+Exit 0, no errors or warnings. Temporary `#print axioms` directives
+covered every one of the 42 theorem declarations. Every transitive
+closure contains only `propext`, `Classical.choice`, and `Quot.sound`;
+no added analytic axiom or premise occurs. Audit log:
+`/tmp/hgt-goldbach-rectangle-completion-audit.log`.
+The directives were removed after verification, and the completed leaf
+is imported by `goldbach/Main.lean`. No umbrella build was run.
+Exact corpus lookup finds `modularInverseRectanglePairs_error_le`.
+Targeted whitespace and forbidden-marker checks pass, and all 69 local
+links in the six updated documents resolve. Completed scratch files were
+removed; the proof-audit log is retained.
 
 ## Log
+
+- 2026-10-24 — Completed the actual finite pair-cardinality estimate.
+  Direct leaf check and all 42 closures pass without warnings, holes,
+  added axioms, or analytic premises. Moved this exact theorem to stage 3.
+  Flat dispersion and Goldbach remain unproved in Lean.
 
 - 2026-10-24 — Separated rectangle completion from the reusable conductor
   module under the updated olean compilation rules. The full error

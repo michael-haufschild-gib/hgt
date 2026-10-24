@@ -1,14 +1,12 @@
 \documentclass[10pt]{article}
-
-\usepackage[a4paper,margin=0.82in]{geometry}
-\usepackage{amsmath,amssymb,amsthm,mathtools,bm,mathrsfs}
-\usepackage{booktabs,tabularx,microtype,enumitem,float}
+\usepackage[a4paper,margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs}
+\usepackage{booktabs,tabularx,microtype,enumitem}
 \usepackage{xcolor}
 \usepackage[colorlinks=true,linkcolor=blue!45!black,
-  citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+ citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
 \setlength{\emergencystretch}{2em}
 \setlist{nosep,leftmargin=*}
-
 \newtheorem{theorem}{Theorem}
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{proposition}[theorem]{Proposition}
@@ -16,85 +14,69 @@
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{remark}[theorem]{Remark}
-
 \newcommand{\R}{\mathbb R}
 \newcommand{\C}{\mathbb C}
 \newcommand{\N}{\mathbb N}
 \newcommand{\Z}{\mathbb Z}
 \newcommand{\Q}{\mathbb Q}
 \newcommand{\T}{\mathbb T}
-\newcommand{\ee}{\mathrm e}
 \newcommand{\ii}{\mathrm i}
-\newcommand{\rank}{\operatorname{rank}}
-\newcommand{\Rel}{\mathcal L}
-\newcommand{\dist}{\operatorname{dist}}
-\newcommand{\dens}{\operatorname{dens}}
-\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\ee}{\mathrm e}
 \newcommand{\HS}{\mathrm{HS}}
-\newcommand{\Hwater}{\mathcal H}
-\newcommand{\proj}{\mathrm{proj}}
-
-\title{\textbf{Persistent phase geometry of quantum recurrence}\\
-\large\itshape Four structural laws for loss, spectral constraints, observability, and finite-horizon inference}
-\author{GPT 5.6 Sol \and Opus 5 \and Fable 5 \and Michael Haufschild}
-\date{24 August 2026}
-
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\pp}{\mathrm{pp}}
+\newcommand{\Law}{\mathcal R}
+\newcommand{\cH}{\mathcal H}
+\newcommand{\cL}{\mathcal L}
+\newcommand{\pos}[1]{[#1]_+}
+\title{\textbf{Exact observable recurrence on connected quantum networks}}
+\author{Michael Haufschild}
+\date{24 October 2026}
 \begin{document}
 \maketitle
-
 \begin{abstract}
-Quantum recurrence is often described by one statement---finite isolated
-systems eventually return---although loss, exact spectral resonances,
-unequal state weights, restricted observables, and finite records answer
-different questions.  We prove that these questions factor through one
-persistent phase geometry.  First, for every finite-dimensional contraction,
-peripheral spectral mass is the exact late-return ceiling: every lower
-threshold recurs after every delay and every higher threshold eventually
-fails.  Second, on the surviving phase carrier, balanced relation rank plus
-independent projective phase rank is exactly $D-1$; the same lattice
-determines the orbit hull, sharp generic first-hit exponents, and all excess
-replica collisions.  Third, spectral weights pull a metric onto that hull.
-A reverse-water functional controls both exact return-target information and
-the least spectrum-uniform deadline within explicit constants, while any
-finite probe family induces a coherence graph whose rank $D-c$ is the exact
-observable phase capacity and the optimal universal recurrence exponent.
-Fourth, completed rational rank is not identifiable from uniformly finite-
-precision, finite-horizon data: arbitrarily close static l-bit Hamiltonians
-can have maximal rank while their observed dynamics remain uniformly close
-through the prescribed horizon.  The relation-hull and metric laws extend to
-arbitrary countable pure-point packets with summable weights.
+Which features of a local quantum system determine how rapidly an observed
+configuration returns as the required accuracy increases?
+For every finite connected interaction graph, with arbitrary site dimensions
+at least two, we prove an exact law for almost every Hamiltonian in the full
+Hermitian onsite-plus-edge coefficient space. One exceptional null set works
+simultaneously for every finite matrix-observer family, including observers
+chosen after the Hamiltonian. If its energy-basis coherence graph has $D$
+vertices and $c$ connected components, the first return after any fixed
+positive cutoff, measured by squared Hilbert--Schmidt displacement, has
+logarithmic exponent $\max(D-c-1,0)/2$. Pure states and mixed-state trace
+returns follow as specializations. The result also holds for connected
+support-contained interaction hypergraphs. Its essential local input is
+real affine spectral nondegeneracy, proved by Hermitian leaf extensions;
+generic rational nonresonance alone is insufficient.
 
-We then prove a physical saturation theorem absent from these abstract laws.
-For every $n,q\geq2$, almost every static Hermitian onsite-plus-nearest-
-neighbour Hamiltonian on every open simple-spectrum chart of a $q$-level
-path has the maximum $q^n-1$ projective phase rank.  The same Hamiltonian has
-sharp stroboscopic and first-gap-clock exponents $q^n-1$ and $q^n-2$, all-
-order permutation-floor moments, and no nonzero exact projective return.
-Its completed return density at chord tolerance $\varepsilon$ is exactly
-$[2\arcsin(\varepsilon/2)/\pi]^{q^n-1}$ and therefore vanishes doubly
-exponentially in chain length.  An exact commuting l-bit classification
-identifies the contrasting boundary: finite interaction range can compress
-phase rank, whereas spatial locality by itself cannot.
+A complementary law describes survival statistics for every probability
+energy measure, including mixed and singular continuous spectra. Uniform-time
+survival-fidelity distributions converge to the normalized pure-point law
+scaled by the square of total point-spectrum mass, with collapse to zero
+when that mass vanishes. Their support is one
+closed interval with precisely that upper endpoint. Together these results
+separate persistent spectral weight, observable phase connectivity, and
+continuous-time recurrence, without assuming chaos or mixing.
 \end{abstract}
 
-\noindent\textbf{Significance statement.}
-Recurrence is governed neither by Hilbert-space dimension alone nor by a
-single ``recurrence time.''  Loss first selects what survives; spectral
-relations determine how many phases can move independently; state weights
-set the accuracy demanded from each phase; probes decide which phase
-differences are visible.  We give exact laws for all four reductions and
-then show that ordinary static one-dimensional nearest-neighbour systems
-generically saturate the largest possible phase carrier.  This turns a
-qualitative inevitability into a structural and quantitative theory that
-also explains when commuting locality, incomplete observation, or finite
-precision makes the apparent recurrence problem smaller.
+\noindent\textbf{Significance.}
+Spatial locality does not, by itself, reduce the accuracy exponent of
+recurrence in the full connected-network coefficient family. The relevant
+finite-system invariant is connectivity of energy-basis coherences visible
+to the chosen matrices. In arbitrary spectral systems, the complete
+stationary survival distribution instead identifies exactly how much
+point spectrum persists. These are asymptotic classifications; neither
+supplies a uniform finite-time recurrence forecast.
 
 \input{body}
-
-\section*{Author contributions}
-All authors contributed to conception, mathematical development, analysis,
-verification, and writing.
+\section*{AI assistance disclosure}
+AI systems assisted with research, mathematical development, formal
+verification, and manuscript drafting. This disclosure does not assign
+authorship or independent peer-review status to those systems.
 
 \input{references}
-
 \end{document}

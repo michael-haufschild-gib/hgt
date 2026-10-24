@@ -1,74 +1,75 @@
-# Proof audit
+# Proof audit — 24 October 2026
 
-Date: 2026-08-24
-
-Scope: internal verification ledger. Not part of submitted manuscript.
+Scope: canonical main.tex/body.tex. Historical variants have separate ledgers. This is an internal verification record, not an independent referee report.
 
 ## Admission rule
 
-Every mathematical result stated in `main.tex` and `body.tex` must be an exact specialization or direct composition of closed declarations in `claim-trace-localization.md`. Definitions, interpretations, literature summaries, and explicit nonclaims are not theorem claims.
+Every mathematical statement in the replacement is an exact specialization or direct composition of closed Lean declarations listed in claim-trace.md. The main physical capstones discharge all spectral and Diophantine inputs. Structural model restrictions are stated explicitly.
 
-## Headline closure
+## New load-bearing mathematics
 
-Local load-bearing result is `exists_quditPath_everyChart_sameDraw_recurrenceCollisionLaw` in `formal/GaloisForLFunctions/HTGeometry/QuditPathRecurrenceCollisionCapstone.lean`. For every `n,q >= 2`, it provides exact Hermitian onsite-plus-nearest-neighbour path coordinates, proves a nonempty simple chart exists, and quantifies over every nonempty preconnected open simple-spectrum chart. One conull set in that chart simultaneously has:
+1. ConnectedGraphSpectralAffineEscape.lean proves real affine spectral escape on the actual named site-product local Hermitian submodule for every finite connected graph, with arbitrary site dimensions at least two. One/two-site cases use full matrix space. Larger graphs use a connected vertex deletion, existing all-site physical witnesses, and exact leaf transport.
+2. Its hypergraph theorem uses the two-section inclusion in the support-contained local space.
+3. ConnectedNetworkAllObserverRecurrenceLaw.lean constructs canonical coordinates of the entire submodule, joins generic maximality with generic all-observer extremality, and proves graph and hypergraph capstones.
+4. The same module proves the exact normalized pure-state fidelity-return specialization, including proper support, the phase-sign bridge, and the constant-threshold conversion. This avoids reliance on an incidental broad import with an unrelated missing vendor IR artifact.
+5. PhysicalTwoQubitGraphSeed.lean was refactored: a pre-existing one-million-heartbeat override was removed. Six separate Pauli identities now prove the same theorem under default limits. This is proof organization, not numerical experimentation or a trusted computation shortcut.
 
-- maximal balanced projective rank `D - 1`, `D = q^n`;
-- stroboscopic anchored-gap first-hit exponent `D - 1`;
-- first-gap-clock winding exponent `D - 2`;
-- every positive-weight collision floor, every order;
-- every corresponding long-time symmetric survival-moment floor;
-- no nonzero exact anchored projective return.
+## Closed proof chain
 
-No qubit-only restriction remains.
+- Physical seed → all-site connected/nonbipartite probe witnesses → Hermitian leaf constant-action rigidity → finite permutation avoidance → graph-local affine escape.
+- Real escape → no local affine relation for every observer gap-ratio map → analytic extremality → finite labelled-graph intersection and countable chart cover.
+- Observer displacement identity → positive forest/root comparison → continuous-clock exponent → exact graph law.
+- Projector identity and finite-dimensional nuclear/Hilbert–Schmidt norm comparison → pure/mixed state corollaries.
+- All collision moments → unique stationary law → point-spectrum scaling → connected compact pure-point hull → interval support and exact upper edge.
+- C*-algebra Duhamel inequality → uniform finite-time observer stability.
 
-Four-law factorization is closed independently at each exact reduction:
+No unproved premise was moved into a typeclass, stored witness, interface or imported axiom. Existing structures describing physical witnesses are inhabited by closed construction theorems used by the capstone.
 
-1. `finiteContraction_returnThreshold_dichotomy` selects the persistent carrier and exact late-return ceiling.
-2. `projectiveTemporalRank_add_relationRank`, `spectralRelationLattice_eq_iff_phaseEnsemble_eq`, first-hit laws, and replica-collision equivalence close relation-hull geometry.
-3. Reverse-water target/deadline declarations and `finite_quantum_observer_coherence_law` close weighted and observable geometry.
-4. `exists_lbitEnergy_maximal_uniformly_close` plus `selfAdjoint_heisenbergEvolution_norm_sub_le` close finite-horizon arithmetic ambiguity; the countable relation-metric theorem closes the pure-point extension.
+## Direct source checks
 
-Commuting-local boundary is closed by l-bit temporal-rank, geometric-locality, and uniform-state declarations listed in `claim-trace-localization.md`.
+All commands ran from formal/, in the foreground, one Lean process at a time:
 
-## Local proof closure
+    lake --old env lean GaloisForLFunctions/HTGeometry/ConnectedGraphSpectralAffineEscape.lean
+    lake --old env lean GaloisForLFunctions/HTGeometry/ConnectedNetworkAllObserverRecurrenceLaw.lean
+    lake --old env lean GaloisForLFunctions/HTGeometry/PhysicalTwoQubitGraphSeed.lean
+    lake --old env lean GaloisForLFunctions/RHTower/UniversalStationaryRecurrenceLaw.lean
 
-Manuscript local proof now follows actual checked route:
+All four passed. The observer capstone emits one cosmetic simplifier suggestion. The seed emits cosmetic linter suggestions in its unchanged downstream finite-case proof; no elaboration error or timeout remains. These are not suppressed by added options.
 
-1. `exists_quditPathChain_spectrumEscapes` identifies exact open-path locality and affine spectral escape.
-2. `hermitianLocalExtensionSlice_spectrumEscapesAffineRelations` is one-leaf engine.
-3. `crossLayer_eq_of_selectedLayerAnalyticBranchConstantAction` derives cross-layer coefficient equality from exact second-order response and simple-pole rigidity.
-4. `hermitianLocalExtension_constantAction_coefficients_constant` propagates equality across connected lift.
-5. `crossLayerLiftGraph_preconnected_of_two_le_card` proves lift connectivity from connected nonbipartite endpoint transition support for every local dimension at least two.
-6. `exists_codedIntegerLayerShift_injective` supplies simple product spectrum.
-7. Physical leaf conjugation preserves exact old-local plus new-onsite plus single-new-edge support.
+One olean/ilean pair was created for ConnectedGraphSpectralAffineEscape, because the new observer capstone imports it. Existing oleans were not rebuilt. No capstone olean was created merely for the audit. Both new modules are wired into HTGeometry.lean; no umbrella was compiled.
 
-Old informal Pauli endpoint argument was removed.
+## Transitive axiom audit
 
-## Universal and thermodynamic closure
+All 31 declaration roots in audit/declarations.txt passed the final source-based audit with Lean 4.32.2. Every reported transitive axiom set is exactly propext, Classical.choice, and Quot.sound. No custom axiom or sorryAx occurs. The complete output is preserved in audit/axioms.log; the command exited successfully.
 
-Closed sources cover persistent-carrier selection; rank conservation and exact relation hull; reverse-water target and deadline bounds; observer graph capacity; finite-horizon ambiguity; countable pure-point recurrence; l-bit classification; Dirichlet bound; non-VWA first-hit exponent; exact replica expansion; long-time collision identity; all-order floor equivalence; exact chord-return density; no exact nonzero return; and thermodynamic extinction/rates. Exact mappings are in `claim-trace-localization.md`.
+The reproducible audit checks a temporary copy of the current observer capstone source, adds imports for the stationary and C*-algebra results, and executes #print axioms for each name in audit/declarations.txt. It does not treat a wrapper's explicit assumptions as discharged: final graph/hypergraph signatures and their actual applications were inspected separately.
 
-## Quantifier and limit-order audit
+The earlier reduced audit also checked the generic observer theorem, path capstone, nuclear-norm transfer, stationary scaling and occupation conservation; only standard logical axioms occurred.
 
-- Loss law is only for finite-dimensional contractions; manuscript does not universalize Hilbert--Schmidt contractivity to every channel.
-- Full Hermitian path-local subspace is used. Scalar identity direction is retained.
-- One coefficient draw satisfies all headline clauses.
-- Collision statements require strictly positive spectral weights; manuscript normalizes them to sum one for survival fidelity.
-- `D - 1` exponent is discrete/stroboscopic.
-- `D - 2` exponent is first-gap-clock normalized.
-- Completed-time density and moments are taken at fixed finite size before `n -> infinity`.
-- Countable extension assumes normalized summable pure-point weights and states a covering-number deadline, not finite temporal rank.
-- No finite-time convergence rate for completed density or infinite-volume global recurrence is asserted.
+A source scan of the two new modules and the changed seed found no sorry, admit, sorryAx, custom axiom, opaque, unsafe, native_decide or raised proof-limit setting.
 
-## Kernel checks
+## Quantifiers and boundaries
 
-- Unified targeted audit of 42 load-bearing declarations: passed; each depends only on `propext`, `Classical.choice`, and `Quot.sound`.
-- Direct capstone file elaboration: passed.
-- Named capstone target build: passed. No umbrella target built.
-- `#print axioms` for both new declarations: only `propext`, `Classical.choice`, `Quot.sound`.
-- New capstone module: no `sorry`, `admit`, custom `axiom`, `opaque`, or `unsafe` declaration.
-- Project-wide lint retains unrelated pre-existing reachability errors; paper does not treat global lint as clean.
+- Simple spectrum and arithmetic regularity are conclusions on a conull coefficient set.
+- Every finite matrix observer and nonnegative weighting is chosen after H. Constants are not uniform in that choice.
+- Time cutoff is fixed and strictly positive; this is not an exit-time theorem.
+- Natural subtraction is truncated, covering capacity zero/one and pure support one/two.
+- Graph connectedness is a physical model condition. Hypergraph support includes lower-body terms.
+- No genericity in the full space is transferred without proof to a smaller constrained family.
+- The stationary result is stated for arbitrary probability energy measures. Its operator-language interpretation does not replace the actual measure-level theorem.
+- Stationary support is distributional, not an eventual pointwise ceiling.
+- No chaos, nonintegrability, circuit complexity, Anderson localization, uniform onset or fixed-error thermodynamic lower bound is inferred.
 
-## Manuscript independence
+## Artifact verification
 
-Publication files must contain no mention of formal tooling, internal corpus, HGT, Riemann-hypothesis work, black holes, or circuit complexity. Loss, contractive channels, and finite-horizon inference are included only through the exact standalone four-law factorization.
+The replacement main.pdf has nine A4 pages. Tectonic completed without warnings, missing references, overfull boxes or underfull boxes. Every final rendered page was inspected at readable resolution: equations, theorem statements, page breaks and references are legible, with no clipping or overlap. The inspected PDF was copied to the canonical manuscript directory. The final TeX log is preserved as audit/pdf-build.log; source and artifact hashes are recorded in audit/manifest.sha256.
+
+Direct observer, seed and stationary source-check outputs are preserved in audit/source-connected-observer.log, audit/source-two-qubit-seed.log and audit/source-stationary.log. The graph escape source check and its required dependency artifact creation both completed without output or warnings. No numerical experiment was used.
+
+Unrelated worktree changes were preserved, including other agents' additions to HTGeometry.lean. Existing historical PDFs, auxiliary files and output directories were not deleted.
+
+## Completion revalidation
+
+The original request was reread against the current worktree. All 24 recorded artifact/source fingerprints matched the delivered state before this recheck. The twelve numbered manuscript items (eleven mathematical results and one definition) are covered by the claim trace. Current graph/hypergraph capstone signatures and the arbitrary-probability stationary signature were inspected again; their spectral and arithmetic inputs remain discharged. The 31 axiom records, both umbrella imports, nine-page PDF, bibliography and scope ledgers remain consistent with those signatures.
+
+Revalidation corrected two stale status sentences in the research card and made the observer module's exponent comment explicit as max(r - 1, 0) / 2. No Lean theorem or proof term changed. The final direct observer source check after that comment correction passed; its output is preserved in audit/source-connected-observer.log. The canonical TeX and inspected PDF were unchanged. Own temporary proof and rendering files remain absent. The preceding goal turn made progress by completing the manuscript, proofs, verification and cleanup; no pending mathematical or delivery gate remains.

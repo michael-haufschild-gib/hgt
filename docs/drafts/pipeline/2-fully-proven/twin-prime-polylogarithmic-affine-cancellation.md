@@ -179,36 +179,37 @@ For positive `n`, the exact identity is
 
 `mu(n)=lambda(n) sum_(d^2|n) mu(d)`.
 
-Use asymmetric truncations `R=floor((log T)^(kappa0/10))` and
-`R^2`. In a primitive affine progression `at+b`, a square divisor
-`d^2` either shares a prime with `a` and never occurs, or selects
-one residue of `t mod d^2`. Summing the omitted square divisors
-therefore costs at most
+Use equal truncations `R=floor((log T)^(kappa0/10))` on both
+rows. The now-certified
+[determinant-controlled transfer](../3-formalized/twin-prime-determinant-squarefree-transfer.md)
+retains joint square-divisor incidence. A common divisor of both
+square moduli divides the determinant four. Thus the exact finite
+projection error is at most
 
-`O(T/R + sqrt(aT+a))`.
+`9T/R + sqrtNat(aT+b) + R sqrtNat(c1T+d)`.
 
-After truncating the first row, its divisor sum has modulus at most
-`R`. Truncating the second at `R^2` consequently costs at most
-
-`O(T/R + R sqrt(c1T+c1))`.
+The first tail uses the primitive affine residue count. The weighted
+second tail uses joint density at most `4/(d1^2 d2^2)`, rather
+than paying the pointwise truncation bound `R`. All finite steps
+in this transfer are proved in Lean without a cancellation premise.
 
 For the retained pair `(d1,d2)`, CRT gives either no samples or
-one residue modulo `q=lcm(d1^2,d2^2)<=R^6`. Multiplicativity
+one residue modulo `q=lcm(d1^2,d2^2)<=R^4`. Multiplicativity
 turns the Liouville product into the physical fixed-shift product
 at `u=ac1 t+min(c1b,ad)`, with a constant sign `lambda(ac1)`.
 The retained restriction is one progression modulo `ac1 q`.
 If `ac1<=(log T)^(kappa0/100)`, then
 
-`ac1 q <= (log T)^(61 kappa0/100) <= (log u_max)^kappa0`.
+`ac1 q <= (log T)^(41 kappa0/100) <= (log u_max)^kappa0`.
 
-There are at most `R^3` retained square-divisor pairs. Even the
+There are at most `R^2` retained square-divisor pairs. Even the
 crude termwise use of the ambient Liouville estimate costs only
 
-`O(T (log T)^(kappa0/100+3kappa0/10-c0))`.
+`O(T (log T)^(kappa0/100+2kappa0/10-c0))`.
 
 The lower endpoint lies below `ac1`, so each retained progression
 loses at most one initial term; the total endpoint cost is at most
-`R^3`. The square-divisor errors above are
+`R^2`. The square-divisor errors above are
 `O(T/(log T)^(kappa0/10))` plus negligible square-root errors.
 Thus constants `kappa=kappa0/200`, `c=kappa0/20` suffice
 for the exact result. The square-root terms tend to zero faster
@@ -264,8 +265,9 @@ and long-cofactor terms needed for positive prime-pair mass.
 - The original fixed-form theorem alone does not justify any growing
   coefficient range; its modulus-dependent constants must be replaced
   by the explicit bounds above throughout its proof.
-- The two truncations are unequal deliberately: bounding both at `R`
-  and then using the pointwise bound `R` leaves an unpaid error.
+- Equal truncations require the joint determinant bound now certified
+  above. Using only the pointwise bound `R` would leave an unpaid error;
+  the unrestricted affine transfer instead uses asymmetric cutoffs.
 - Keeping `l` polynomial in `L` avoids the matching regime where
   the slopes dominate all available rough shifts. This does not
   settle the larger polynomial-in-`T` conjecture.
@@ -308,6 +310,7 @@ remain unproved.
 - [x] Complete modulus-uniformity audit of Part I, §§2--9.
 - [x] Exact cited-parent comparison and BRIDGE verdict.
 - [x] Complete paper deduction, including squarefree projection and cofactor aggregation.
+- [x] Lean squarefree projection, including the stronger determinant-sensitive equal-cutoff estimate.
 - [ ] Unconditional Lean certificate of every analytic input.
 
 ## Log
@@ -321,3 +324,9 @@ remain unproved.
   endpoints, and derived logarithmic-cutoff cancellation for
   the actual nonunit cofactor row. Paper stage only; analytic
   inputs are not yet Lean-certified. No new-science claim.
+- 2026-10-24 — Replaced the finite asymmetric transfer by the
+  Lean-certified determinant-sensitive estimate. The retained
+  modulus is now at most `R^4`, with `R^2` pairs and endpoint
+  cost `R^2`. The stated analytic range and constants still
+  follow with the original conservative choices. The analytic
+  inputs and the full parent theorem remain unformalized.

@@ -5,7 +5,7 @@
 - **Type:** Classical analytic bridge; paper proof, no external novelty claim
 - **Parent:** [prime-dilation candidate](../1-in-progress/goldbach-prime-dilation-dispersion.md)
 - **Dependency:** [composite Kloosterman budget](../3-formalized/not_new_scientific_knowledge/goldbach-composite-kloosterman-budget.md), formalized from prime Weil and finite arithmetic
-- **Lean status:** Not formalized. No dispersion premise, placeholder or conditional Lean capstone added.
+- **Lean status:** Full dispersion theorem not formalized. Finite rectangle completion and the exact Ramanujan correction are certified separately below. No dispersion premise, placeholder or conditional Lean capstone added.
 
 ## Statement
 
@@ -103,6 +103,20 @@ vanish: the two product arguments cannot lie in [X²,4X²] for the same
 positive t. Otherwise all boundary slopes below are bounded absolutely.
 
 ### Exact congruence
+
+The parameter elimination is an exact integer equivalence before any
+CRT or approximation. For p>0 and arbitrary integers q,h,T,R,u,v,
+
+    ∃r∈ℤ: 0<r≤R, h|r, u+pr=T, v+qr=T
+      ↔ qu−pv=T(q−p), ph|(T−u), 0<T−u≤Rp.
+
+Indeed the forward equations give T−u=pr and the determinant identity.
+If r=hs, then T−u=phs. Conversely, write T−u=phs and set r=hs.
+Positivity of p converts the two bounds exactly into 0<r≤R; the
+determinant gives p(v+qr−T)=0, hence the second equation. The first
+equation also proves uniqueness of r. This applies to the actual
+products u=mn and v=m'n', without a discarded endpoint or a separate
+existence premise. The finite quadruple sets on both sides are equal.
 
 Fix y=m'. The equations give
 
@@ -377,10 +391,73 @@ the absolute threshold and constant. This proves (1) on paper.
 
 ## Lean continuation
 
+The exact parameter elimination, uniqueness, and equality of the actual
+finite quadruple sets from §2 pass direct leaf verification and all three
+closure audits in `goldbach/ReflectedProductDeterminant.lean`; see the
+[determinant certificate](../3-formalized/not_new_scientific_knowledge/goldbach-reflected-product-determinant.md).
+The interval coordinates reuse `balancedIntervalValue` and its existing
+certified bounds. The full noncoprime row conductor, compatibility divisor,
+unique pair (r,n'), and both strip endpoints now pass all five closure
+audits in `goldbach/ReflectedProductConductor.lean`; see the
+[row conductor certificate](../3-formalized/not_new_scientific_knowledge/goldbach-reflected-row-conductor.md).
+The universal residue-gcd identity also passes all three closure audits
+in `goldbach/ReflectedProductConductorGcd.lean`; see the
+[residue-gcd certificate](../3-formalized/not_new_scientific_knowledge/goldbach-reflected-row-gcd.md).
+It removes the Bézout inverse and retains both common factors.
+The actual prime-pool specialization and curved-region estimate
+remain separate obligations.
+
+The full nonunit rectangle decomposition and its explicit floor-rounding
+budget now pass direct leaf verification and all seven closure audits
+in `goldbach/ModularProductRectangleDecomposition.lean`; see its
+[finite decomposition certificate](../3-formalized/not_new_scientific_knowledge/goldbach-nonunit-rectangle-decomposition.md).
+The inspected `RHTower/Sieve/IntervalMultiples.lean` supplies the exact
+floor-difference error used there.
+
+For the continuous product density, the inspected
+`RHTower/LogarithmicLinearEntryConvolution.lean` proves the exact
+convolution of two causal unit entries as `logarithmicLinearRamp`.
+Taking the difference of entries at log X and log(2X) in both factors
+gives the triangular density
+`(t−2log X)₊−2(t−log X−log(2X))₊+(t−2log(2X))₊`.
+This supplies an existing RH-language representation of ρ_X(exp t).
+The finite-difference specialization and the product-measure change
+of variables still need Lean proofs; the source convolution alone
+does not certify the curved-region estimate.
+
+The exact finite correction (11) can be obtained directly from the already
+formalized product gcd spectrum. The corpus theorem
+`RHTower.sum_stdAddChar_mul_reducedModulus` groups the actual additive
+characters by `d=L/gcd(a,L)`. On that fibre the multiplier is `L/d`,
+so Fourier inversion gives
+`ν_L(v)/L=Σ_(d|L)estermannRamanujanSum d v/d`; the existing evenness
+theorem removes the minus sign from inversion. Pairing this identity
+with any function on the actual residue ring yields the complete
+periodic mean used in both mixed terms. This is a finite identity,
+not an equidistribution premise. Its implementation in
+`goldbach/ProductResidueRamanujan.lean` now passes its direct leaf check
+and all five closure audits without warnings or analytic premises; see
+the [finite correction certificate](../3-formalized/not_new_scientific_knowledge/goldbach-product-residue-ramanujan.md).
+The integer-exponential and CGL character conventions are also identified
+exactly, so both readings refer to the same complete-residue coefficient.
+
+For the conductor support in (9), the inspected
+`RHTower/Sieve/KloostermanProductFrequencySliceBound.lean` proves that
+`kloostermanProductCrossPhaseFrequency q r x y` cannot vanish for
+unequal positive moduli and unit frequencies. Together with finite
+character orthogonality this supplies the unequal-conductor part of
+the unmasked kernel. The inspected BVI
+`ramanujan_complete_additive_correlation` supplies the equal-modulus
+lag correlation. The exceptional p,q masks and their local matrices
+still have to be instantiated and checked in the Goldbach leaf; these
+source identities alone are not a certificate for (9) or (1).
+
 The full composite estimate now passes direct leaf verification and
 all 18 closure audits in `goldbach/KloostermanConductorReduction.lean`.
-Next formalize the [explicit finite rectangle estimate](goldbach-modular-inverse-rectangle-completion.md),
-then the actual row count and both mixed estimates. Its constant 24 and
-two frequency axes give the quantitative form of (2).
+The [explicit finite rectangle estimate](../3-formalized/not_new_scientific_knowledge/goldbach-modular-inverse-rectangle-completion.md)
+now passes its direct leaf check and all 42 closure audits. Its constant
+24 and two frequency axes give the quantitative form of (2). Continue
+with the actual row count and both mixed estimates.
 The complete theorem (1) has no Lean certificate yet. Keep that status
-distinct from the compiled composite bound and collision classification.
+distinct from the compiled rectangle bound, composite bound, and collision
+classification.

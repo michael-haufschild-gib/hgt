@@ -218,27 +218,6 @@ theorem exists_ne_zero_mem_lowBlindTests {a : ℝ} (ha : 0 < a) :
   have hker := LinearMap.ker_ne_bot_of_finrank_lt (f := L) hdim
   obtain ⟨c, hcker, hc0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hker
   set f : ℝ → ℝ := ∑ i, c i • v i with hfdef
-  have hfmem : f ∈ realTests := by
-    refine ⟨?_, ?_⟩
-    · have he : f = fun u => ∑ i, c i * v i u := by
-        funext u
-        simp [hfdef]
-      rw [he]
-      exact ContDiff.sum fun i _ => (hvd i).const_smul (c i)
-    · refine IsCompact.of_isClosed_subset isCompact_Icc (isClosed_tsupport _) ?_
-      refine closure_minimal (fun u hu => ?_) isClosed_Icc
-      by_contra hu'
-      apply hu
-      simp only [hfdef, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
-      refine Finset.sum_eq_zero fun i _ => ?_
-      rw [image_eq_zero_of_notMem_tsupport fun h => hu' (hvs i h), mul_zero]
-  have hcxf : cx f = ∑ i, (c i : ℂ) • cx (v i) := by
-    funext u
-    simp [hfdef, cx]
-  have hFT : ∀ z, paperFT (cx f) z = ∑ i, (c i : ℂ) * paperFT (cx (v i)) z := fun z => by
-    rw [hcxf, paperFT_sum_smul (fun i => cx (v i)) (fun i => (cx_contDiff (hvd i)).continuous)
-      (fun i => cx_hasCompactSupport (hvc i))]
-  have hLc : ∀ k, ∑ i, (c i : ℂ) * paperFT (cx (v i)) (pt k) = 0 := fun k => congrFun hcker k
   have hfs : tsupport f ⊆ Icc (-a) a := by
     refine closure_minimal (fun u hu => ?_) isClosed_Icc
     by_contra hu'
@@ -246,6 +225,20 @@ theorem exists_ne_zero_mem_lowBlindTests {a : ℝ} (ha : 0 < a) :
     simp only [hfdef, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
     refine Finset.sum_eq_zero fun i _ => ?_
     rw [image_eq_zero_of_notMem_tsupport fun h => hu' (hvs i h), mul_zero]
+  have hfmem : f ∈ realTests := by
+    refine ⟨?_, IsCompact.of_isClosed_subset isCompact_Icc (isClosed_tsupport _) hfs⟩
+    have he : f = fun u => ∑ i, c i * v i u := by
+      funext u
+      simp [hfdef]
+    rw [he]
+    exact ContDiff.sum fun i _ => (hvd i).const_smul (c i)
+  have hcxf : cx f = ∑ i, (c i : ℂ) • cx (v i) := by
+    funext u
+    simp [hfdef, cx]
+  have hFT : ∀ z, paperFT (cx f) z = ∑ i, (c i : ℂ) * paperFT (cx (v i)) z := fun z => by
+    rw [hcxf, paperFT_sum_smul (fun i => cx (v i)) (fun i => (cx_contDiff (hvd i)).continuous)
+      (fun i => cx_hasCompactSupport (hvc i))]
+  have hLc : ∀ k, ∑ i, (c i : ℂ) * paperFT (cx (v i)) (pt k) = 0 := fun k => congrFun hcker k
   refine ⟨⟨⟨f, hfmem⟩, hfs, ?_, fun j hj => ?_⟩, ?_⟩
   · rw [hFT]; exact hLc none
   · rw [hFT]; exact hLc (some ⟨j, hj⟩)

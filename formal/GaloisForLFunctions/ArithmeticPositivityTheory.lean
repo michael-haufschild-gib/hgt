@@ -95,3 +95,4 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».CompactCriticalPolyn
 import GaloisForLFunctions.«arithmetic-positivity-theory».MultiScaleLowModeAndGridTentSchurBridge
 import GaloisForLFunctions.«arithmetic-positivity-theory».ExplicitBlockThresholdsOfTheCriticalFamily
 import GaloisForLFunctions.«arithmetic-positivity-theory».TheLinearWindowOfTheCriticalPrimeChannel
+import GaloisForLFunctions.«arithmetic-positivity-theory».LowScaleCoupledPositivityAndSchurComplement

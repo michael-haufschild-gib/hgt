@@ -1,9 +1,9 @@
 # The complete affine squarefree-projection error
 
 - **ID:** twin-prime-affine-squarefree-transfer
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean formalization in progress
-- **Source:** [growing affine cancellation](twin-prime-polylogarithmic-affine-cancellation.md).
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / BRIDGE
+- **Source:** [growing affine cancellation](../2-fully-proven/twin-prime-polylogarithmic-affine-cancellation.md).
 - **Statement:** The actual two-Möbius correlation differs from its finite square-divisor Liouville expansion by an explicit uniform error, with no cancellation premise.
 
 ## Exact objects and theorem
@@ -93,18 +93,18 @@ and positivity of `R` prove (2). This includes `T=0`.
 This is the elementary squarefree-projection step used in the
 source's quantitative transfer. Verdict **BRIDGE**; no new
 number-theoretic cancellation or scientific novelty is claimed.
-The paper proof is complete. Formalize the exact finite bound,
-then continue with the short Fourier, finite-law and graph inputs
-listed on the parent card. No analytic hypothesis may be added
+The exact finite bound is now formalized. Continue with the
+short Fourier, finite-law and graph inputs listed on the parent
+card, together with the determinant-sensitive refinement. No analytic hypothesis may be added
 to this theorem or its eventual application.
 
 ## Gates
 
 - [x] Exact unconditional finite statement and closed paper proof.
-- [ ] Reuse audited corpus/mathlib arithmetic identities.
-- [ ] Lean finite squarefree identity, progression count and tail bound.
-- [ ] Lean two-row error estimate and asymmetric-cutoff specialization.
-- [ ] Foreground leaf audit, transitive axiom audit and umbrella wiring.
+- [x] Reuse audited corpus/mathlib arithmetic identities.
+- [x] Lean finite squarefree identity, progression count and tail bound.
+- [x] Lean two-row error estimate and asymmetric-cutoff specialization.
+- [x] Foreground leaf audit, transitive axiom audit and umbrella wiring.
 
 ## Log
 
@@ -112,3 +112,26 @@ to this theorem or its eventual application.
   the user's explicit instruction to discharge every input in Lean.
   The parent analytic estimate and twin-prime infinitude remain open
   as Lean proofs.
+
+## Lean certificate
+
+Module: `formal/GaloisForLFunctions/twin-prime/AffineSquarefreeTransfer.lean`.
+Namespace: `TwinPrime.AffineSquarefree`.
+
+- `moebius_sub_approx`: exact signed square-divisor tail.
+- `Row.card_dvd_le`: primitive affine residue count.
+- `sum_abs_moebius_sub_approx_le`: full one-row error.
+- `sum_approx_mul_eq`: identification with the explicit Liouville sum.
+- `abs_correlation_sub_le`: inequality (1).
+- `abs_correlation_sub_square_cutoff_le`: inequality (2).
+
+Foreground audit:
+`lake --old env lean GaloisForLFunctions/twin-prime/AffineSquarefreeTransfer.lean`
+exited 0 without warnings. All six transitive axiom audits returned
+only `propext`, `Classical.choice`, and `Quot.sound`. Audit directives
+were removed. The module is imported by `twin-prime/Main.lean`;
+no umbrella build was run.
+
+- 2026-10-24 — Completed the finite transfer and its dependency
+  audit. The larger cancellation statement and twin-prime
+  infinitude remain unproved in Lean.

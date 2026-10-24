@@ -822,16 +822,6 @@ theorem eventually_interiorPronic_le_mul_periodEnergy_of_pos
         mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (by linarith) hC0) he
     _ = _ := by ring
 
-#print axioms abs_weightCenteredPrefix_dampedSign_le_of_linear_all_pos
-#print axioms exists_abs_weightCenteredPrefix_pmPowerDamped_le_vk_all_pos
-#print axioms exists_receiver_le_on_vinogradovKorobovBand_of_pos
-#print axioms exists_interiorPronic_le_on_vinogradovKorobovBand_of_pos
-#print axioms parityPair_separated_on_vinogradovKorobovBand_of_pos
-#print axioms eventually_receiver_le_growth_of_pos
-#print axioms eventually_interiorPronic_le_growth_of_pos
-#print axioms eventually_receiver_le_mul_periodEnergy_of_pos
-#print axioms eventually_interiorPronic_le_mul_periodEnergy_of_pos
-
 end
 
 end GaloisForLFunctions.BezoutValuationIncidence

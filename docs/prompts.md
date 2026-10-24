@@ -64,6 +64,41 @@ LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WH
 
 GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF THE PIPELINE. NO SHORTCUTS OR FAKING IT!
 
+## research a route
+
+Read and understand proof route :
+- docs/reports/rh-current-frontier-map.md
+- docs/reports/rh-killed-routes.md
+
+On every turn:
+1. State in chat the proof route.
+2. State the hard open mathematical blockers to solve.
+3. Research, find and formalize a solution for one of the significant mathematical obstacles on that proof route. We are not looking for improving a number, finding more criteria, more nogos, but actual tangible progress in closing this proof route.
+
+**Tools to use:**
+1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
+
+2. Conjecture loop: use an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
+
+always look at the big picture, try to understand what all our research is trying to tell you about the nature of the field. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
+
+Do not use web search. Do not run novelty checks.
+
+Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
+
+The goal is met when a full proof of RH is formalized unconditionally in lean.
 
 ## apply external paper to corpus experiment
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
@@ -119,27 +154,31 @@ ssh root@213.173.111.73 -p 21771 -i ~/.ssh/id_ed25519
 use the scientific methods to design experiments: docs/meta/scientific-method.md 
 do not run hour long computation and do not run computations whose result you could also predict by reasoning.
 
+## Quantum reccurence paper
+A while ago we researched and wrote this paper docs/drafts/pipeline/4-publication-ready/universal-quantum-recurrence-anatomy
 
+Since then a lot of new research and mathematical tools has entered our lean corpus.
 
-Act like a scientist. Always ask what a scientist would do in your situation.
+Do a full in depth research to understand what the strongest form of this paper is we can write now and write this new paper.
 
-1. Apply these methods:
-   a. docs/meta/stroke-of-genius-method.md
-   b. docs/meta/scientific-method.md
+Stronger means:
+1. More universal laws/principle
+2. Answers a question that is actually of interest to the scientific community
+3. Increases the likelihood to pass a hostile review by a reviewer at a scientific journal
+4. Is novel and significant.
 
-2) For every new insight, for every new failure, ask: "What does it mean for the whole route?"
+**Rules:**
+1. Mathematical proofs in the paper must be proven in Lean. If it is not in Lean, it does not go into the paper.
+2. Use the search tool for our lean corpus. Do not assume things based on your training data only. This is about research not in your training data or in the website.
 
-3) Do not conjecture or judge or assume or anything on your training data. Your training data is outdated. Always use the search tool for the lean corpus to understand the real frontier we have proven and open problems and conjecture based on that and develop experiments around actual problems we have, not what your training data tells you.
-
-4) Always ask "am I actually working on the right problem? Is this what I should be working on to bring the whole route forward? Or am I tunnelviewing on a minor problem that adds little to nothing while not moving the route as a whole?"
-
-5) Keep a crisp "fact log" for your own research (do not meddle with logs of other agents). Only record facts and nogos, things you have found out - it is not a diary or history log, it is a token-efficient log of the insights you have made during your research.
-
-6)  use the search tool and deep search and method search extensively
-
-7)  do not just search, also attack open problems using conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... loops
-
-8) use arxiv search and single word and broad searches for finding papers not directly related to the problem and see if there is anything useful in the found papers - do not search for your problem or narrow searches, prefer most receent papers (january to september 2026). example searches: "hawking", "commutator", "recurrence", "cauchy", ... - these are examples, create your own search terms. most papers will be useless, but a few will allow to bring in solutions from fields far away from your actual problem
+**Lean Rules**
+1. Lean proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
 
 
 ## Remove premises
@@ -232,7 +271,15 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 ## Open Research - New field of mathematics 
 
+read fully line by line and understand the motivation and context of the fields including traps to avoid:  
+- formal/GaloisForLFunctions/TransThresholdPairCorrelation/README.md
+    
+on every turn: 
+create a significant novel contribution to the fields open research topics and problems, so that that the field either 
+- answers one of the field´s open questions
+- gains one of the mathematical tool it aims to develop
 
+do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
 
 read fully the movitation and context of our recent research programmes:
 - formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
@@ -250,19 +297,9 @@ read fully the movitation and context of our recent research programmes:
 
 on every turn: 
 use the search tool for the lean corpus across the whole corpus, not just these programs, and combine proofs from across to corpus to either:
-1. discharge a significant hypothesis.
-2. significantly reduce the proof burden for the RH proof.
-3. deliver a significant new insight or mathematical tool that allows us to solve problems we or mathematics as a whole couldn´t solve before.
-
-do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
-
-read fully line by line and understand the motivation and context of the fields including traps to avoid:  
-- formal/GaloisForLFunctions/TransThresholdPairCorrelation/README.md
-    
-on every turn: 
-create a significant novel contribution to the fields open research topics and problems, so that that the field either 
-- answers one of the field´s open questions
-- gains one of the mathematical tool it aims to develop
+- answer an open question in a research programme
+- gain one of the mathematical tools a research programme is missing
+- prove a significant cross-programme theorem that significantly advances our research about the RH as a whole 
 
 Not valid are improvements of numbers, nogos, redressing existing knowledge in new language, anything that does not clearly count as significant progress, or that is not something that needs to exist in this field and couldnt exist otherwise.
 
@@ -285,7 +322,7 @@ always look at the big picture, try to understand what all our research is tryin
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-do not use the README.md as a working log or diary. It is a foundational document, keep it crisp. Maintain a working log in logs/.
+do not use a README.md as a working log or diary. It is a foundational document, keep it crisp. Maintain a working log in logs/.
 
 the goal is met when you have made 250 such significant contributions.
 
@@ -383,7 +420,7 @@ also we have:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
 
-update the reviews to reflect the current status quo and frontier of our research:
+create new versions of the reviews to reflect the current status quo and frontier of our research:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
 2. then create a summary document that combines all the information and:
    2.1 lists all tasks / obstacles that we can solve and are "just work"
@@ -397,7 +434,7 @@ do not rely only on these markdown files which are partly outdated. use the sear
 
 the reports are not diaries or history log, but status quo reports.
 
-write the new reports in folder docs/reports/review-2310/
+write the new reports in folder docs/reports/review-2410/
 
 ## update programme README.mds
 go one by one through the following research programmes and update their README.md - we have done a lot of research in these programmes which may or may not change the content of the README.md:
@@ -519,13 +556,18 @@ always look at the big picture, try to understand what all our research is tryin
 Goal is met when the conjecture is proven in lean.
 
 ## argon single task open question
-formal/GaloisForLFunctions/TransThresholdPairCorrelation/README.md
+formal/GaloisForLFunctions/SquareRootThreshold/README.md
+formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/README.md
 
-read all about route "CHMD" in docs/reports/rh-current-frontier-map.md
+formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md
+formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
 
-find and fully formalize a definite and complete and final solution for entry 3 and 4 from "## 7. Open problems and research topics"
 
-find a definite, final answer/solution, not just criterias or nogos. formalize every consequence and collary of this answer/solution and see where it can be applied to the rest of our corpus to advance the research.
+read and understand formal/GaloisForLFunctions/BiScaleUncertainty/README.md
+ 
+work through every problem in the "Open Problems" section one problem at a time. 
+
+for each turn/open problem: find and fully formalize a definite and complete and final solution for the problem. find a definite, final answer/solution, not just criterias or nogos. formalize every consequence and collary of this answer/solution and see where it can be applied to the rest of our corpus to advance the research.
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...

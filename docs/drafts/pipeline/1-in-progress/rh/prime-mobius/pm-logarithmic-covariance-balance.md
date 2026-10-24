@@ -762,3 +762,13 @@ complete mean-bearing second moment by arithmetic information independent
 of E_epsilon(N). Current masks and their norms supply no such information.
 No RH or negated-RH theorem was obtained. All new leading-compensation
 exports remain fully audited; no repeated build or numerical job is needed.
+
+## Corpus reorientation (2026-10-24)
+
+New continuation, corrected-energy, half-damping operator and normalized-escape
+results supersede the preceding attack selection. Current working card:
+[PM signed damping covariance](pm-signed-damping-covariance.md). The missing
+producer is a horizon-uniform signed damping-integral bound for actual Möbius
+covariance, retaining boundary flux/forcing and residue-tail defects. Scalar
+relative compensation and exact continuation identities are already available;
+this reorientation supplies no new absolute bound.

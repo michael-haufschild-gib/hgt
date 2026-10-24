@@ -574,16 +574,6 @@ theorem riemannHypothesis_iff_cofinal_first_column_summable :
     obtain ⟨_, B, hB⟩ := (mem_receiverDampings_iff_summable_first_column hη).mpr hs
     exact ⟨η, hη, hηδ, B, hB⟩
 
-#print axioms arithmeticDampingCenteredRow_eq_dilatedState_diff
-#print axioms sum_range_dilated_div_sq_le
-#print axioms sum_range_arithmeticDampingCenteredRow_sq_le
-#print axioms pmPowerDampedDivisorDiscreteEnergy_le_first_column_sum
-#print axioms mem_receiverDampings_iff_summable_first_column
-#print axioms mem_receiverDampings_iff_forall_column_summable
-#print axioms mem_receiverDampings_iff_finitelySupported_image_summable
-#print axioms summable_arithmeticDampingCenteredRow_sq_of_zetaZeroAbscissa_lt
-#print axioms riemannHypothesis_iff_forall_pos_first_column_summable
-
 end
 
 end GaloisForLFunctions.BezoutValuationIncidence

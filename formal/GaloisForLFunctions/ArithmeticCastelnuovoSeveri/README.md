@@ -354,6 +354,15 @@ them. ACS isolates which of these mechanisms the scaling surface has.
       `SurfaceRiemannRochAxiom 0 0`, `BezoutAxiom`, and `HodgeIndex` unconditionally at all
       apertures `r > 0` (`l2CompensatedScalingSubsurface_realTestsAt_all_apertures`,
       `compensatedSurface_hodgeIndex_iff`).
+    * *Riemann–Roch for `ℤ` away from the low-frequency divisor, uncompensated, at every degree:*
+      on the subsurface of real aperture-`a` tests whose transforms vanish at the pole `i/2` and on
+      the grid `D_a` of item 14 (`lowBlindTests`), Weil's form is coercive with
+      `c_a = E(a)(1 − 1/π)`, `E(a) = 10 + 68e^a` (`re_W_zeta_ge_of_lowGrid`: the band inequality
+      `Re W ≥ E‖f‖² − (E/π)∫_{−T}^{T}|h_f|²` plus the grid bound), so `l2SourceCone c_a` satisfies
+      `RiemannRochAxiom` and `AmpleAxiom`, the subsurface has the Hodge index, and it is not trivial
+      (`lowBlindTests_effectivity`, `exists_ne_zero_mem_lowBlindTests`). The coercivity constant
+      grows like `e^a`; the Gaussian ceiling on all tests comes from the finitely many directions
+      read by `D_a` and the pole.
     * *Aperture-dependent coercivity laws, no-Hardy-weight law, doubly-exponential ceiling, and
       strict-monotonicity self-upgrade:* On the uncompensated surface, no aperture-independent
       weighted `L²` cone `∫ W(u)f(u)² du ≤ 2(x·H)(x·V)` (`W ≥ 0` positive on a set of positive
@@ -765,4 +774,5 @@ Weil's argument.
 | `WhichArithmeticDataForceTheSign` | Toeplitz–Rosati reflection identity, pole masking of point counts, forcing equivalences over `𝔽_q` and on the scaling surface |
 | `SectionCountRiemannRochAndPrimeBlindSelectivity` | nef quadrant and Hecke-stable ampleness, `DoF − node count = E(s)`, prime-blind section vanishing, diagonal relabeling invariance |
 | `SourceDeterminantalSectionsAndArithmeticRiemannRoch` | source section cones, non-vacuous ampleness, Hecke stability, Riemann–Roch ⟺ coercive floor, Riemann–Roch past the first prime, all-aperture Chebyshev and de la Vallée Poussin floors |
+| `SourceRiemannRochAwayFromTheLowFrequencyDivisor` | source effectivity (Riemann–Roch, ampleness, Hodge index) at every degree on the tests blind to the low-frequency divisor, coercivity `E(a)(1 − 1/π)` |
 | `AllApertureSourceRiemannRochAndCoercivityLaws` | universal strict-ampleness rigidity, compensated polar surfaces and all-aperture ample source cones, no-Hardy-weight law, doubly-exponential Gaussian ceiling, closed-aperture polar ground-energy equivalence and strict-monotonicity self-upgrade, Sobolev source cones and zero-width equivalence |

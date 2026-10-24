@@ -1,7 +1,7 @@
 # The Möbius primitive energy grows linearly
 
 - **ID:** BVI-MOBIUS-PRIMITIVE-LINEAR-2026-10-24
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) → Lean
 - **Source:** THIM README §3.8 ("for the Möbius row the top octave forces linear growth, capped at
   `N log N`"); corpus bounds `⌊N/2⌋ ≤ 3456 E_prim(N; μ)` and `12 E_prim(N; μ) ≤ 64 N (1 + log N)`.
@@ -26,8 +26,17 @@ Numerics (exploratory): `12E/N = 0.32973, 0.33138, 0.33111, 0.33112, 0.33112` fo
 
 ## Gates
 - [x] 0 → 1  well-posed, attack
-- [ ] 1 → 2  paper proof closed
-- [ ] 2 → 3  Lean, audit
+- [x] 1 → 2  paper proof closed
+- [x] 2 → 3  Lean, audit (`propext`, `Classical.choice`, `Quot.sound` only)
+
+## Lean
+- `BezoutValuationIncidence/MoebiusPrimitiveFibreMasses.lean`: `jordanTotient2_div_sq`,
+  `jordanCoprimeDensity`, `jordanFibreMass_eq`, `abs_jordanFibreMass_sub_le`.
+- `BezoutValuationIncidence/TheMoebiusPrimitiveEnergyGrowsLinearly.lean`:
+  `twelve_mul_sievePrimitiveEnergy_moebius_eq`, `sum_fibre_jordan_eq`,
+  `abs_sum_fibre_jordan_sub_le`, `sum_jordan_tail_le`, `moebiusPrimitiveSlope`,
+  `tendsto_twelve_mul_sievePrimitiveEnergy_moebius_div`.
 
 ## Log
 - 2026-10-24 — created in 1-in-progress
+- 2026-10-24 — formalized, wired into the BVI umbrella

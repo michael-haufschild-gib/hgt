@@ -628,17 +628,17 @@ theorem norm_kloostermanSum_le_completionScale
     rw [← Real.rpow_mul_natCast (by positivity : (0 : ℝ) ≤ (M : ℝ))]
     norm_num
   have hgpow : ((g : ℝ) ^ (1 / 3 : ℝ)) ^ 3 = (g : ℝ) := by
-    simpa only [one_div] using
-      Real.rpow_inv_natCast_pow (n := 3) (Nat.cast_nonneg (α := ℝ) g) (by norm_num)
+    rw [← Real.rpow_mul_natCast (Nat.cast_nonneg g)]
+    norm_num
   have hhpow : ((h : ℝ) ^ (1 / 3 : ℝ)) ^ 3 = (h : ℝ) := by
-    simpa only [one_div] using
-      Real.rpow_inv_natCast_pow (n := 3) (Nat.cast_nonneg (α := ℝ) h) (by norm_num)
+    rw [← Real.rpow_mul_natCast (Nat.cast_nonneg h)]
+    norm_num
   have hcube : (kloostermanCompletionScale M c * (h : ℝ) ^ (1 / 3 : ℝ)) ^ 3 =
       512 * ((M : ℕ).divisors.card : ℝ) ^ 3 * (M : ℝ) ^ 2 * ((g : ℝ) * (h : ℝ)) := by
     change (8 * ((M : ℕ).divisors.card : ℝ) * (M : ℝ) ^ (2 / 3 : ℝ) *
       (g : ℝ) ^ (1 / 3 : ℝ) * (h : ℝ) ^ (1 / 3 : ℝ)) ^ 3 = _
     simp only [mul_pow, hMpow, hgpow, hhpow]
-    norm_num <;> ring
+    norm_num; ring
   have hfreq : (Nat.gcd (M : ℕ) (Nat.gcd a.val (b * c).val) : ℝ) ≤
       (g : ℝ) * (h : ℝ) := by
     exact_mod_cast residueFrequencyGcd_le M a b c
@@ -680,9 +680,9 @@ theorem divisorFrequencyScale_eq (M : ℕ+)
   have hq : (modulusDivisorQuotient M d : ℝ) = (M : ℝ) / (d.val : ℝ) := by
     apply (eq_div_iff hd.ne').mpr
     exact_mod_cast Nat.div_mul_cancel (Nat.dvd_of_mem_divisors d.property)
-  rw [hq, div_pow,
-    show -(5 / 3 : ℝ) = (1 / 3 : ℝ) - (2 : ℝ) by norm_num,
-    Real.rpow_sub_natCast hd.ne' (1 / 3 : ℝ) 2]
+  have hdexp := Real.rpow_sub_natCast hd.ne' (1 / 3 : ℝ) 2
+  norm_num only [Nat.cast_ofNat] at hdexp
+  rw [hq, div_pow, hdexp]
   ring
 
 
@@ -698,7 +698,7 @@ theorem intervalPairGcdFourierMass_le (M : ℕ+) (A : ℤ) (L : ℕ) (B : ℤ) (
     intervalPairGcdFourierMass M A L B H ≤
       3 * (M : ℝ) ^ 2 * (1 + Real.log (M : ℝ)) ^ 2 := by
   classical
-  have hλ : 0 ≤ 1 + Real.log (M : ℝ) := by
+  have hlog_nonneg : 0 ≤ 1 + Real.log (M : ℝ) := by
     have hM : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast Nat.succ_le_of_lt M.pos
     have := Real.log_nonneg hM
     linarith
@@ -736,11 +736,11 @@ theorem intervalPairGcdFourierMass_le (M : ℕ+) (A : ℤ) (L : ℕ) (B : ℤ) (
       by_cases ha : a = 0
       · simp [ha]
       by_cases hda : d.val ∣ a.val
-      · simp only [ha, not_false_eq_true, hda, true_and, and_true, if_true]
+      · simp only [if_pos ha, hda, true_and, and_true, mul_sum]
         apply sum_congr rfl
         intro b _
         by_cases hb : b = 0 <;> by_cases hdb : d.val ∣ b.val <;>
-          simp [hb, hdb, mul_assoc, mul_comm, mul_left_comm]
+          simp [hb, hdb, mul_comm]
       · simp [ha, hda]
     _ ≤ ∑ d : {d : ℕ // d ∈ (M : ℕ).divisors},
         (M : ℝ) ^ 2 * (1 + Real.log (M : ℝ)) ^ 2 *
@@ -751,7 +751,7 @@ theorem intervalPairGcdFourierMass_le (M : ℕ+) (A : ℤ) (L : ℕ) (B : ℤ) (
         (intervalDivisorFourierMass_le M d A L)
         (intervalDivisorFourierMass_le M d B H)
         (intervalDivisorFourierMass_nonneg M d B H)
-        (mul_nonneg (by positivity : (0 : ℝ) ≤ (modulusDivisorQuotient M d : ℝ)) hλ)
+        (mul_nonneg (by positivity : (0 : ℝ) ≤ (modulusDivisorQuotient M d : ℝ)) hlog_nonneg)
       calc
         _ = (d.val : ℝ) ^ (1 / 3 : ℝ) *
             (intervalDivisorFourierMass M d A L * intervalDivisorFourierMass M d B H) := by ring
@@ -968,13 +968,13 @@ theorem modularInverseRectangleCount_error_le
           (Nat.totient (M : ℕ) : ℝ) * (L : ℝ) * (H : ℝ) / (M : ℝ) ^ 2) =
         (M : ℝ) ^ 2 * (modularInverseRectangleCount M A L B H c : ℝ) -
           (Nat.totient (M : ℕ) : ℝ) * (L : ℝ) * (H : ℝ) := by
-    field_simp [hM.ne'] <;> ring
+    field_simp [hM.ne']
   have hcast :
       (M : ℂ) ^ 2 * (modularInverseRectangleCount M A L B H c : ℂ) -
           (Nat.totient (M : ℕ) : ℂ) * (L : ℂ) * (H : ℂ) =
         (((M : ℝ) ^ 2 * (modularInverseRectangleCount M A L B H c : ℝ) -
           (Nat.totient (M : ℕ) : ℝ) * (L : ℝ) * (H : ℝ) : ℝ) : ℂ) := by
-    push_cast <;> rfl
+    push_cast; rfl
   rw [hcast, Complex.norm_real, Real.norm_eq_abs, ← he, abs_mul,
     abs_of_nonneg (sq_nonneg (M : ℝ))] at hscaled
   have hdivide := (le_div_iff₀ (sq_pos_of_pos hM)).mpr
@@ -983,14 +983,14 @@ theorem modularInverseRectangleCount_error_le
       simpa only [mul_comm] using hscaled)
   refine hdivide.trans_eq ?_
   unfold kloostermanCompletionScale
-  field_simp [hM.ne'] <;> ring
+  field_simp [hM.ne']; ring
 
 /-! ## The literal set of interval pairs -/
 
 /-- Interval-index pairs whose first residue is a unit and whose product is `c`. -/
 def modularInverseRectanglePairs
     (M : ℕ+) (A : ℤ) (L : ℕ) (B : ℤ) (H : ℕ) (c : ZMod (M : ℕ)) : Finset (ℕ × ℕ) :=
-  ((range L).product (range H)).filter (fun t : ℕ × ℕ =>
+  (range L ×ˢ range H).filter (fun t : ℕ × ℕ =>
     IsUnit ((A : ZMod (M : ℕ)) + (t.1 : ZMod (M : ℕ))) ∧
       ((A : ZMod (M : ℕ)) + (t.1 : ZMod (M : ℕ))) *
         ((B : ZMod (M : ℕ)) + (t.2 : ZMod (M : ℕ))) = c)
@@ -1000,7 +1000,7 @@ def modularInverseRectangleFiber
     (M : ℕ+) (A : ℤ) (L : ℕ) (B : ℤ) (H : ℕ) (c : ZMod (M : ℕ))
     (u : (ZMod (M : ℕ))ˣ) : Finset (ℕ × ℕ) :=
   ((range L).filter (fun j : ℕ =>
-    (A : ZMod (M : ℕ)) + (j : ZMod (M : ℕ)) = (u : ZMod (M : ℕ)))).product
+    (A : ZMod (M : ℕ)) + (j : ZMod (M : ℕ)) = (u : ZMod (M : ℕ)))) ×ˢ
     ((range H).filter (fun k : ℕ =>
       (B : ZMod (M : ℕ)) + (k : ZMod (M : ℕ)) = c * (↑u⁻¹ : ZMod (M : ℕ))))
 
@@ -1064,46 +1064,3 @@ theorem modularInverseRectanglePairs_error_le
 
 end
 end GaloisForLFunctions.Goldbach
-
-#print axioms GaloisForLFunctions.Goldbach.residueEdge_pos_iff
-#print axioms GaloisForLFunctions.Goldbach.intervalAdditiveFourier_zero
-#print axioms GaloisForLFunctions.Goldbach.intervalAdditiveFourier_eq_phase_mul_geometric
-#print axioms GaloisForLFunctions.Goldbach.norm_stdAddChar_chord_eq
-#print axioms GaloisForLFunctions.Goldbach.residueEdge_le_stdAddChar_chord
-#print axioms GaloisForLFunctions.Goldbach.norm_stdAddChar_neg_chord_eq
-#print axioms GaloisForLFunctions.Goldbach.norm_intervalAdditiveFourier_le
-#print axioms GaloisForLFunctions.Goldbach.norm_intervalAdditiveFourier_eq_prefix
-#print axioms GaloisForLFunctions.Goldbach.intervalNonzeroFourierMass_le
-#print axioms GaloisForLFunctions.Goldbach.finEquiv_symm_val
-#print axioms GaloisForLFunctions.Goldbach.divisorFrequencyEquiv_apply
-#print axioms GaloisForLFunctions.Goldbach.intervalAdditiveFourier_divisorFrequency
-#print axioms GaloisForLFunctions.Goldbach.intervalDivisorFourierMass_eq
-#print axioms GaloisForLFunctions.Goldbach.intervalDivisorFourierMass_le
-#print axioms GaloisForLFunctions.Goldbach.kloostermanSum_axis_eq_ramanujan
-#print axioms GaloisForLFunctions.Goldbach.kloostermanSum_unit_zero_eq_moebius
-#print axioms GaloisForLFunctions.Goldbach.norm_kloostermanSum_unit_zero_le
-#print axioms GaloisForLFunctions.Goldbach.norm_kloostermanSum_axis_le_gcd
-#print axioms GaloisForLFunctions.Goldbach.gcd_product_dvd_gcd_product
-#print axioms GaloisForLFunctions.Goldbach.frequencyGcd_dvd
-#print axioms GaloisForLFunctions.Goldbach.residueFrequencyGcd_le
-#print axioms GaloisForLFunctions.Goldbach.intervalResidueMultiplicity_fourier
-#print axioms GaloisForLFunctions.Goldbach.modularInverseRectangleCount_fourier
-#print axioms GaloisForLFunctions.Goldbach.intervalDivisorFourierMass_nonneg
-#print axioms GaloisForLFunctions.Goldbach.residueGcd_le_divisor_sum
-#print axioms GaloisForLFunctions.Goldbach.intervalGcdFourierMass_le
-#print axioms GaloisForLFunctions.Goldbach.sum_divisors_rpow_neg_five_thirds_le
-#print axioms GaloisForLFunctions.Goldbach.kloostermanCompletionScale_nonneg
-#print axioms GaloisForLFunctions.Goldbach.norm_kloostermanSum_le_completionScale
-#print axioms GaloisForLFunctions.Goldbach.residuePairGcd_rpow_le_divisor_sum
-#print axioms GaloisForLFunctions.Goldbach.divisorFrequencyScale_eq
-#print axioms GaloisForLFunctions.Goldbach.intervalPairGcdFourierMass_le
-#print axioms GaloisForLFunctions.Goldbach.sum_zmod_eq_zero_add_nonzero
-#print axioms GaloisForLFunctions.Goldbach.sum_zmod_split_axes
-#print axioms GaloisForLFunctions.Goldbach.modularInverseRectangleCount_deviation
-#print axioms GaloisForLFunctions.Goldbach.norm_rectangleRowAxis_le
-#print axioms GaloisForLFunctions.Goldbach.norm_rectangleColumnAxis_le
-#print axioms GaloisForLFunctions.Goldbach.norm_rectangleInterior_le
-#print axioms GaloisForLFunctions.Goldbach.modularInverseRectangleCount_error_le
-#print axioms GaloisForLFunctions.Goldbach.modularInverseRectanglePairs_eq_biUnion
-#print axioms GaloisForLFunctions.Goldbach.modularInverseRectangleCount_eq_card_pairs
-#print axioms GaloisForLFunctions.Goldbach.modularInverseRectanglePairs_error_le

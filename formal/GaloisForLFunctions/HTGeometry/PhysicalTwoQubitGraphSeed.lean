@@ -124,7 +124,102 @@ def twoQubitEndpointFlip
   else
     (a.1, !a.2)
 
-set_option maxHeartbeats 1000000 in
+/-- The six endpoint Paulis act by nonzero signed translations. Keeping each
+Pauli identity separate avoids repeatedly unfolding the full family. -/
+private theorem twoQubitEndpointTransition_leftX
+    (a b : Bool × Bool) :
+    twoQubitEndpointTransition false 0 a b ≠ 0 ↔ b = (a.1, !a.2) := by
+  have hstarTwo : (starRingEnd ℂ) (2 : ℂ) = 2 := by
+    change star (2 : ℂ) = 2
+    norm_num
+  rcases a with ⟨a₁, a₂⟩
+  rcases b with ⟨b₁, b₂⟩
+  fin_cases a₁ <;> fin_cases a₂ <;> fin_cases b₁ <;> fin_cases b₂ <;>
+    norm_num [twoQubitEndpointTransition, twoQubitEndpointProbe,
+      twoQubitGraphBasis, boolPauli, Matrix.mul_apply, Matrix.conjTranspose_apply,
+      Fintype.sum_prod_type, Fintype.sum_bool, hstarTwo]
+
+private theorem twoQubitEndpointTransition_leftY
+    (a b : Bool × Bool) :
+    twoQubitEndpointTransition false 1 a b ≠ 0 ↔ b = (!a.1, !a.2) := by
+  have hstarTwo : (starRingEnd ℂ) (2 : ℂ) = 2 := by
+    change star (2 : ℂ) = 2
+    norm_num
+  rcases a with ⟨a₁, a₂⟩
+  rcases b with ⟨b₁, b₂⟩
+  fin_cases a₁ <;> fin_cases a₂ <;> fin_cases b₁ <;> fin_cases b₂ <;>
+    norm_num [twoQubitEndpointTransition, twoQubitEndpointProbe,
+      twoQubitGraphBasis, boolPauli, Matrix.mul_apply, Matrix.conjTranspose_apply,
+      Fintype.sum_prod_type, Fintype.sum_bool, hstarTwo]
+
+private theorem twoQubitEndpointTransition_leftZ
+    (a b : Bool × Bool) :
+    twoQubitEndpointTransition false 2 a b ≠ 0 ↔ b = (!a.1, a.2) := by
+  have hstarTwo : (starRingEnd ℂ) (2 : ℂ) = 2 := by
+    change star (2 : ℂ) = 2
+    norm_num
+  have h20 : (2 : Fin 3) ≠ 0 := by
+    intro h
+    have hv := congrArg Fin.val h
+    norm_num at hv
+  have h21 : (2 : Fin 3) ≠ 1 := by
+    intro h
+    have hv := congrArg Fin.val h
+    norm_num at hv
+  rcases a with ⟨a₁, a₂⟩
+  rcases b with ⟨b₁, b₂⟩
+  fin_cases a₁ <;> fin_cases a₂ <;> fin_cases b₁ <;> fin_cases b₂ <;>
+    norm_num [twoQubitEndpointTransition, twoQubitEndpointProbe,
+      twoQubitGraphBasis, boolPauli, Matrix.mul_apply, Matrix.conjTranspose_apply,
+      Fintype.sum_prod_type, Fintype.sum_bool, hstarTwo, h20, h21]
+
+private theorem twoQubitEndpointTransition_rightX
+    (a b : Bool × Bool) :
+    twoQubitEndpointTransition true 0 a b ≠ 0 ↔ b = (!a.1, a.2) := by
+  have hstarTwo : (starRingEnd ℂ) (2 : ℂ) = 2 := by
+    change star (2 : ℂ) = 2
+    norm_num
+  rcases a with ⟨a₁, a₂⟩
+  rcases b with ⟨b₁, b₂⟩
+  fin_cases a₁ <;> fin_cases a₂ <;> fin_cases b₁ <;> fin_cases b₂ <;>
+    norm_num [twoQubitEndpointTransition, twoQubitEndpointProbe,
+      twoQubitGraphBasis, boolPauli, Matrix.mul_apply, Matrix.conjTranspose_apply,
+      Fintype.sum_prod_type, Fintype.sum_bool, hstarTwo]
+
+private theorem twoQubitEndpointTransition_rightY
+    (a b : Bool × Bool) :
+    twoQubitEndpointTransition true 1 a b ≠ 0 ↔ b = (!a.1, !a.2) := by
+  have hstarTwo : (starRingEnd ℂ) (2 : ℂ) = 2 := by
+    change star (2 : ℂ) = 2
+    norm_num
+  rcases a with ⟨a₁, a₂⟩
+  rcases b with ⟨b₁, b₂⟩
+  fin_cases a₁ <;> fin_cases a₂ <;> fin_cases b₁ <;> fin_cases b₂ <;>
+    norm_num [twoQubitEndpointTransition, twoQubitEndpointProbe,
+      twoQubitGraphBasis, boolPauli, Matrix.mul_apply, Matrix.conjTranspose_apply,
+      Fintype.sum_prod_type, Fintype.sum_bool, hstarTwo]
+
+private theorem twoQubitEndpointTransition_rightZ
+    (a b : Bool × Bool) :
+    twoQubitEndpointTransition true 2 a b ≠ 0 ↔ b = (a.1, !a.2) := by
+  have hstarTwo : (starRingEnd ℂ) (2 : ℂ) = 2 := by
+    change star (2 : ℂ) = 2
+    norm_num
+  have h20 : (2 : Fin 3) ≠ 0 := by
+    intro h
+    have hv := congrArg Fin.val h
+    norm_num at hv
+  have h21 : (2 : Fin 3) ≠ 1 := by
+    intro h
+    have hv := congrArg Fin.val h
+    norm_num at hv
+  rcases a with ⟨a₁, a₂⟩
+  rcases b with ⟨b₁, b₂⟩
+  fin_cases a₁ <;> fin_cases a₂ <;> fin_cases b₁ <;> fin_cases b₂ <;>
+    norm_num [twoQubitEndpointTransition, twoQubitEndpointProbe,
+      twoQubitGraphBasis, boolPauli, Matrix.mul_apply, Matrix.conjTranspose_apply,
+      Fintype.sum_prod_type, Fintype.sum_bool, hstarTwo, h20, h21]
+
 /-- Each endpoint Pauli has exactly one nonzero translated entry in every
 spectral row. -/
 theorem twoQubitEndpointTransition_ne_zero_iff
@@ -132,21 +227,13 @@ theorem twoQubitEndpointTransition_ne_zero_iff
     (a b : Bool × Bool) :
     twoQubitEndpointTransition s q a b ≠ 0 ↔
       b = twoQubitEndpointFlip s q a := by
-  have hstarTwo :
-      (starRingEnd ℂ) (2 : ℂ) = 2 := by
-    change star (2 : ℂ) = 2
-    norm_num
-  rcases a with ⟨a₁, a₂⟩
-  rcases b with ⟨b₁, b₂⟩
-  fin_cases s <;> fin_cases q <;>
-    fin_cases a₁ <;> fin_cases a₂ <;>
-    fin_cases b₁ <;> fin_cases b₂ <;>
-    norm_num [twoQubitEndpointTransition,
-      twoQubitEndpointProbe, twoQubitEndpointFlip,
-      twoQubitGraphBasis, boolPauli,
-      Matrix.mul_apply, Matrix.conjTranspose_apply,
-      Fintype.sum_prod_type, Fintype.sum_bool,
-      hstarTwo]
+  cases s <;> fin_cases q
+  · simpa [twoQubitEndpointFlip] using twoQubitEndpointTransition_leftX a b
+  · simpa [twoQubitEndpointFlip] using twoQubitEndpointTransition_leftY a b
+  · simpa [twoQubitEndpointFlip] using twoQubitEndpointTransition_leftZ a b
+  · simpa [twoQubitEndpointFlip] using twoQubitEndpointTransition_rightX a b
+  · simpa [twoQubitEndpointFlip] using twoQubitEndpointTransition_rightY a b
+  · simpa [twoQubitEndpointFlip] using twoQubitEndpointTransition_rightZ a b
 
 theorem twoQubitEndpointTransition_isHermitian
     (s : Bool) (q : Fin 3) :

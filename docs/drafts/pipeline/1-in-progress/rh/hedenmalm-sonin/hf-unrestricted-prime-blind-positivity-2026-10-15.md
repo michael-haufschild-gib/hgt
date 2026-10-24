@@ -11,7 +11,7 @@ User rejected the isolated-prime reflection branch below as busywork. Do not for
 - Stay on HF; attack its missing positivity producer, including after failed conjectures.
 - Mathematical evidence: current local Lean corpus and installed Lean dependencies. No web, external novelty audit, numerical experiments, or assumed RH.
 - No added axioms, admissions, heartbeat increases, full builds, commits, or pushes.
-- Final audit: foreground `lake env lean` on each changed leaf; wire new leaves into umbrella; lint; inspect axioms in `/tmp`.
+- Current compile rule: foreground `lake --old env lean` from `formal/` on each changed leaf; write an olean/ilean only for a required import, never rebuild an existing dependency olean, and never compile an umbrella. Inspect axioms in `/tmp` when a significant milestone is ready.
 
 ## Plan and evidence
 
@@ -291,6 +291,286 @@ Next main obligation is an exact coupling of this correlated Gamma-shape derivat
 Source checks: `GammaConductorSchurCapacity` concerns independent diagonal prime channels and has an unbounded scalar cost; `GammaConductorSchurResidual` and `GammaConductorSchurStrictDefiniteness` retain the actual correlated Gamma kernel. Their strict residual positivity is already in the corpus. `ThetaCuspGaussianScaleOperator` does not identify its first-pair scale operator with the full native source operator. `WeilPositivityFiniteLevelExistence` is a compactness reduction with finite-level existence still required. `RelaxedHerglotzProducerFloor` retains the producer premise at the critical boundary. None was used as an unconditional HF producer.
 
 Finished searches: `/tmp/hf-divisor-gamma-variance-20261015.json`, `/tmp/hf-quadratic-green-producer-20261015.json`, `/tmp/hf-finite-weil-full-limit-20261015.json`, `/tmp/hf-gamma-prediction-monotonicity-20261015.json`. Search coverage warnings remain; actual source statements were checked. No owned live jobs, numerical mathematical experiment, web search, build, or commit.
+
+## Resume audit and exact Gamma predictor remainder, 2026-10-24
+
+Goal remains the unconditional HF proof of RH. The interrupted continuation made no new mathematical advance. This resumed batch revalidated the current sources and made the proposed Gamma transfer more explicit, but did not prove the main sign. No Lean source or build was added. The working card moved to its present `rh/hedenmalm-sonin` directory; use this path on resumption.
+
+### Current source changes that matter
+
+`CHMDPrimeChainSourceFactorization` now gives the complete crossing-prime factorization into nonnegative bipartite prime-chain variances, including absolute convergence, both theta indices, and every prime-power weight (`complete_chain_hasSum`, `complete_chain_norm_summable`). Its product fibers are restricted to the central interval where they are positive. This already accomplishes the positive crossing-sector rearrangement proposed in the earlier continuation; do not rederive or formalize it again. `QuotientSpectralGapAndOddChainCoercivity.riemannHypothesis_iff_odd_primeChain_poincare` still requires the complete archimedean + same-side prime + chain energy to dominate the cosh mass. Neither this criterion nor the quotient/radical reduction supplies that domination.
+
+`CHMDOddProfileArchAbsorptionAndPrimeChainBridge` already absorbs the continuous reflected collar using the decreasing Gamma jump density. The reflected prime collar retains its exact mixed pairing. `OddSupersolutionCriterion` retains both the supersolution inequality and its admissibility data. `GlobalIncidenceAllocationCondition` retains the full allocation inequality. Do not treat those inputs as proved.
+
+### What the positive Gamma remainder actually is
+
+Fix finite distinct prediction nodes `S`, finite anchor nodes, and `alpha>0`. Write `K=K_alpha`, `psi(t)=log(cosh t)`, and let `c_x(s)` be the unique regression coefficients satisfying
+
+    K(x,t) = sum_(s in S) c_x(s)*K(s,t),       t in S.
+
+For the residual Gram `E_alpha` defined above, differentiation and these normal equations give the exact formula
+
+    E_alpha'(x,y) + psi(x-y)*E_alpha(x,y)
+      = sum_(s,t in S) c_x(s)*c_y(t)*K(s,t)
+          *[psi(s-y)+psi(x-t)-psi(s-t)-psi(x-y)].
+
+This is a genuine positive Gram form, with all mixed prediction coefficients retained. To see its structure, the positive kernels `exp(-delta*psi(x-y))`, `delta>0`, imply that
+
+    B(x,y) = psi(x)+psi(y)-psi(x-y)
+
+is positive semidefinite. Proof: append the base point `0`, give it the negative sum of the other coefficients, differentiate the resulting nonnegative quadratic form at `delta=0+`, and use that its value at zero is zero. Realize `B(x,y)=<b_x,b_y>`. The bracket in the displayed remainder is exactly `<b_x-b_s,b_y-b_t>`. Therefore the remainder is the Gram matrix of
+
+    sum_(s in S) c_x(s)*h_(alpha,s) tensor (b_x-b_s).
+
+The normal equations are essential. Replacing `c_x(s)` by Möbius coefficients does not preserve this formula or its sign. This clarifies the actual operator that would have to be matched to HF; it is not a proof that the full Weil form has this representation. The argument is a consequence of finite Schur-complement geometry, not a new main positivity theorem, and is not queued for standalone Lean work.
+
+### Cutoff-coherent Möbius/Gamma connection and sign audit
+
+For `alpha>0`, define on `x>0`
+
+    k_alpha(x) = -2*pi*x^(alpha-1/2)*exp(-pi*x^2),
+    R_(alpha,N)(x) = sum_(1<=n<=N) mu(n)*k_alpha(n*x),
+    Pcut_(alpha,N)(x)
+      = sum_(2<=d<=N) Lambda(d)*R_(alpha,floor(N/d))(d*x).
+
+The exact finite identity is
+
+    d/dalpha R_(alpha,N)(x) = log(x)*R_(alpha,N)(x) - Pcut_(alpha,N)(x).
+
+It follows from `d_alpha k_alpha(nx)=log(nx)*k_alpha(nx)` and `mu*Lambda=-mu*log`; the product cutoff `dn<=N` is retained exactly. It is invalid to replace `floor(N/d)` by `N`. For the complete pointwise Gaussian series at fixed `x>0`, locally uniform Gaussian decay justifies the corresponding infinite identity. This pointwise fact does not establish convergence in the critical Hilbert/form topology or any limit of quadratic energies.
+
+The underlying arithmetic connection is already formalized in `Deninger/DeningerMobiusConnection` and `HTGeometry/DirichletMaurerCartanMellinOrbitLaw`. Do not present it as a new discovery. At `alpha=5/2`, write `R_N=R_(5/2,N)`, `G_N(x)=sum_(n<=N)mu(n)*exp(-pi*n^2*x^2)`, `M_N=sum_(n<=N)mu(n)`, and `S_N=sum_(n<=N)mu(n)/n`. The earlier finite-Gaussian calculation gives exactly
+
+    W_Lambda(R_N)
+      = (d/dalpha ||R_(alpha,N)||_2^2)|_(alpha=5/2)
+        - ||G_N||_2^2 + M_N*S_N
+        - 2*sum_(d>=2)Lambda(d)*integral R_N(x)*R_N(d*x) dx.
+
+Using the cutoff connection inside the shape derivative produces
+
+    W_Lambda(R_N)
+      = 2*integral log(x)*R_N(x)^2 dx
+        - 2*integral R_N(x)*Pcut_(5/2,N)(x) dx
+        - ||G_N||_2^2 + M_N*S_N
+        - 2*sum_(d>=2)Lambda(d)*integral R_N(x)*R_N(d*x) dx.
+
+Thus the correct one-sided prime sign does not by itself cancel the prime term of the full conductor form. All displayed integrals are finite for fixed `N`; the full prime pairing converges absolutely by the `x^2` zero of `R_N` at the origin. No positivity or uniform-in-`N` bound is asserted. In particular, do not use an infinite Möbius preimage as a Hilbert vector without proving its membership. This is an audit of a proposed HF coupling, not a switch to Möbius summatory estimates.
+
+The outstanding constructive obligation is a source-compatible positive representation of the full form, including the cosine adjoint and the rank-two pole pairing. The positive Gamma predictor remainder above is an explicit candidate component; a match to the cutoff-coherent arithmetic operator must be proved, not assumed. The forward theta source, its exact boundary correction, and the complete positive prime-chain decomposition remain available. No new conditional Lean interface or auxiliary formalization is authorized by this batch's mathematical result.
+
+All owned searches finished; no live build or search handle remains. Current output files: `/tmp/hf-gamma-full-compensation-20261024.json`, `/tmp/hf-primeblind-current-20261024.json`, `/tmp/hf-main-compensation-frontier-20261024.json`, `/tmp/hf-doob-resolvent-order-20261024.json`, `/tmp/hf-prime-chain-variance-20261024.json`, `/tmp/hf-gamma-arithmetic-closed-span-20261024.json`, `/tmp/hf-divisor-log-conjugation-20261024.json`, `/tmp/hf-shared-surplus-20261024.json`, `/tmp/hf-gaussian-dilation-density-20261024.json`, `/tmp/hf-mobius-gamma-shape-20261024.json`, and `/tmp/hf-mobius-shape-positive-20261024.json`. The resolvent-order, chain-variance, and closed-span searches returned partial results; use their actual hits, not an absence claim. No web, external novelty audit, numerical mathematical experiment, commit, or unrelated edit.
+
+## Actual blind source spaces and their weighted duality, 2026-10-24
+
+This continuation stays on the HF form. No main positivity theorem, new Lean source, or build. The new paper calculation below connects prediction to the actual unrestricted blindness constraints; it is not a claim that the Gamma predictor already proves HF. Do not formalize it as an isolated helper while the conductor/pole comparison remains unproved.
+
+### Every finite complex mixture gives an actual wandering vector
+
+Realify the physical transforms of the finite complex test mixture, including the square roots of its nonnegative coefficients, into one vector
+
+    F in H = L2((0,infinity), R^k),    D_n F(x) = sqrt(n)*F(n*x).
+
+The mixture's blindness is exactly `<F,D_n F> = 0` for every integer `n>=2`. No individual component is assumed blind. Put
+
+    S_+(F) = closed span {D_n F : n>=2},
+    S_-(F) = closed span {D_(1/n) F : n>=2}.
+
+Then `R*F`, `S_+(F)`, and `S_-(F)` are pairwise orthogonal. Besides the defining blindness, the full forward/backward cross calculation is
+
+    <D_m F,D_(1/n) F> = <F,D_(1/(mn)) F> = 0,    m,n>=2.
+
+This retains the mixed rational correlations *inside* each source space: `<D_m F,D_n F>` need not vanish when neither integer divides the other. Those correlations cannot be replaced by independent prime coordinates. The span of the displayed three spaces is not assumed to exhaust `H`.
+
+The componentwise unitary cosine transform satisfies
+
+    C D_n = D_(1/n) C,    C S_+(F) = S_-(C F).
+
+Consequently `C F` is also blind in the Hilbert sense. This does not assert that its Mellin pole moments lie in the original compact-test domain.
+
+### Genuine regression residuals satisfy all integer blindness constraints
+
+For finitely many Hilbert anchors `a_j`, define `V` as the closed span of all `D_n a_j`, `n>=1`, and `S` using `n>=2`. Both are invariant under integer dilation, and `D_d V` is contained in `S` for `d>=2`. Therefore
+
+    e_j = (I-P_S)*a_j
+
+satisfies `<e_j,D_d e_k>=0` for every pair of anchors and every integer `d>=2`. Proof: `e_k` lies in `V`, hence `D_d e_k` lies in `S`, while `e_j` is orthogonal to `S`.
+
+The finite cutoff has an exact boundary term. If `S_N` is spanned by `D_m a_l`, `2<=m<=N`, and
+
+    e_(N,k) = a_k - sum_(l,2<=m<=N) c_(k,l,m)*D_m a_l,
+
+then for `2<=d<=N`,
+
+    <e_(N,j),D_d e_(N,k)>
+      = -sum_(l,N/d<m<=N) c_(k,l,m)*<e_(N,j),D_(dm) a_l>.
+
+All other terms vanish by the finite normal equations. Increasing projections converge strongly, so each fixed-dilation pairing tends to zero without a coefficient estimate. This is only Hilbert convergence: it supplies neither convergence of the unbounded Gamma form nor the two Mellin pole moments. It also does not prove that Gaussian-anchor residuals approximate every native blind mixture.
+
+### A positive capacity identity with all source correlations retained
+
+Take a nonzero native realified blind vector `F`, write `m=||F||^2`, and let `S_+,N` and `S_-,N` use only `2<=n<=N`. Let `M` be multiplication by `log x`, and set
+
+    E_+,N(s) = min_(u in S_+,N) ||exp(s*M)*(F+u)||^2,
+    E_-,N(s) = min_(v in S_-,N) ||exp(s*M)*(F+v)||^2.
+
+These are genuine finite-dimensional minima. Every native `F` and its finitely many dilates has support in a compact subinterval of `(0,infinity)`, so the weighted Gram matrices are smooth in `s` and remain positive on each actual source space.
+
+Orthogonality gives `<F+u,F+v>=m` for every pair of source corrections. Weighted Cauchy--Schwarz therefore proves the exact finite-depth inequality
+
+    E_+,N(s)*E_-,N(-s) >= m^2.
+
+At `s=0`, both minima equal `m` and their corrections vanish. Differentiating the finite Schur complements gives
+
+    E_+,N'(0) = E_-,N'(0) = 2*<F,M F>,
+    E_+,N''(0) = 4*||M F||^2 - 8*||P_+,N M F||^2,
+    E_-,N''(0) = 4*||M F||^2 - 8*||P_-,N M F||^2.
+
+In particular,
+
+    (log(E_+,N(s)*E_-,N(-s)))'' at s=0
+      = (8/m)*||P_(R*F + S_+,N + S_-,N)^perp (M F)||^2 >= 0.
+
+The factor 8 follows from differentiating the weight `exp(2*s*M)` and the inverse source Gram matrix. The sum of the three subspaces is orthogonal, which gives the final square. No diagonality inside either arithmetic source was used.
+
+### The remaining HF comparison is explicit
+
+The positive dual capacity uses `exp(-s*M)` on the backward source. The actual cosine capacity, transported back by `C`, uses `exp(s*C*M*C)` on that same source. Their first-order difference is the entire conductor `H_Gamma=M+C*M*C`, rather than the one-sided Möbius connection.
+
+For the original native `F`, put `A=integral F(x) dx` and `B=integral F(x) dx/x`, componentwise. The required sign remains
+
+    <F,H_Gamma F> + 2*<A,B> >= 0.
+
+At finite depth the cosine capacity has derivative `2*<C F,M C F>` at zero. Thus the derivative at zero of
+
+    log(E_+,N^F(s)*E_+,N^(C F)(s)/m^2) + 4*s*<A,B>/m
+
+is exactly `(2/m)` times the required HF form. The positive forward/backward capacity inequality above does not compare these two different weights. Proving the conductor/pole comparison on the actual arithmetic sources is the next core obligation. Neither arbitrary Gamma regression coefficients nor ordinary Hilbert convergence discharge it. No new conditional Lean interface is queued.
+
+Source inspection in this batch rechecked the literal co-Poisson source and bilateral quotient projection laws, the full theta arithmetic ground identity, and the covariance-dual attainment theorem. They retain their respective full-form comparison or positivity obligations. Additional corpus searches finished in `/tmp/hf-odd-positive-groundstate-20261024.json`, `/tmp/hf-source-positive-quotient-20261024.json`, `/tmp/hf-gamma-source-orthogonality-20261024.json`, `/tmp/hf-hedenmalm-main-source-20261024.json`, `/tmp/hf-integer-dilate-regression-20261024.json`, `/tmp/hf-moving-schur-generator-20261024.json`, `/tmp/hf-blind-bilateral-source-split-20261024.json`, and `/tmp/hf-blind-hardy-conductor-trace-20261024.json`. Search results are leads, not an exhaustiveness or novelty claim. No owned job remains live. No web, external novelty audit, mathematical numerical experiment, or unrelated edit.
+
+## Closed-source first variation and the complete cosine product matrix, 2026-10-24
+
+Previous goal turn: progress, by the proved bilateral source/capacity calculation. This continuation resolves its first-variation limit and identifies the pole coefficient in the actual deformed cosine pairing. The full HF sign is still unproved. No Lean source or build was added. User reiterated: no web searches and no novelty checks.
+
+### First variation survives the closed arithmetic source
+
+Let `F != 0`, `m=||F||^2`, and let `S` be any closed subspace orthogonal to `F`. Assume `x^s F` and `x^(-s) F` have finite squared norms for `s` in a neighborhood of zero. Define
+
+    E_S(s) = inf { ||x^s*(F+u)||^2 : u in S, x^s*u in L2 }.
+
+For every admissible `u`, the pairing of `x^s*(F+u)` with `x^(-s)*F` is exactly `m`. Cauchy--Schwarz and the competitor `u=0` give
+
+    m^2 / ||x^(-s)*F||^2 <= E_S(s) <= ||x^s*F||^2.
+
+If the weighted norms have two derivatives at zero, both bounds have first derivative `2*<F,M F>`. Consequently
+
+    E_S(s) = m + 2*s*<F,M F> + O(s^2),
+
+uniformly over all such source spaces `S`. This applies simultaneously to every finite arithmetic depth and to the closed span. It uses only the two scalar weighted norms of the original vector, not a derivative of an infinite Gram inverse.
+
+There is also a vector statement. Let `T_s` be the closure of `{x^s*u : u in S, x^s*u in L2}`. The squared norm of the projection of `x^s F` onto `T_s` is
+
+    ||x^s F||^2 - E_S(s) = O(s^2).
+
+Thus that projected correction is `O(|s|)` in `L2`. A first-order pole term cannot be attributed to a loss of differentiability of these native-anchor capacities.
+
+For every native compact C2 vector `F`, its cosine transform `G=C F` is bounded at zero and `O(x^(-2))` at infinity. Both vectors therefore satisfy the weighted-norm condition in a fixed neighborhood of zero. The full HF derivative identity at the end of the preceding section consequently holds for the two *closed* arithmetic source spaces as well as for their finite stages. This closes that limit issue without giving the missing sign.
+
+### The pole is an exact logarithmic cosine boundary pairing
+
+Write
+
+    chi(z) = 2*(2*pi)^(-z)*Gamma(z)*cos(pi*z/2).
+
+For native compact C2 `F`, Mellin cosine duality gives `Mellin(C F)(z)=chi(z)*Mellin F(1-z)` initially on `0<Re z<1` and then through `z=1`. The continuation and its derivative are justified by boundedness of `C F` at zero and its quadratic decay at infinity. Since `chi(1)=0` and `chi'(1)=-1/2`,
+
+    G(0) = 2*A,      integral log(x)*G(x) dx = -B/2,
+    A = integral F(x) dx,      B = integral F(x) dx/x.
+
+All formulas are componentwise for the realification of a complex mixture. In particular the complete blind form is
+
+    W(F) = integral log(x)*||F(x)||^2 dx
+           + integral log(x)*(||G(x)||^2 - 2*<G(0),G(x)>) dx.
+
+The second integrand is kept as a difference; separating it into a square and a constant would create divergent integrals at infinity. This is an exact boundary representation of the existing pole, not a positivity assertion.
+
+### One family retains the cosine orientation, every integer product, and the pole
+
+For real `s` sufficiently close to zero, set
+
+    a_s(x) = x^s*F(x),       b_s = C(x^s*G),
+    U_m(s)(x) = x^s*F(m*x),
+    V_n(s) = C(x^s*G(n*x)),                 m,n>=1.
+
+Their actual Hilbert pairing is a multiplicative Hankel matrix:
+
+    K_s(m,n) = <U_m(s),V_n(s)>
+      = (mn)^(-s-1) * integral x^s*<F(x),b_s(x/(mn))> dx.
+
+The powers of `m,n` here follow from the normalized-dilation identity; the displayed source vectors themselves are unnormalized. At `s=0`,
+
+    K_0(m,n) = integral <F(x),F(mn*x)> dx.
+
+Hence actual mixture blindness gives exactly `K_0 = m*e_1*e_1^T`, with `m=||F||^2`. This uses products `mn`, not an assumption that the within-source Gram matrices are diagonal.
+
+There is also a scalar operator identity for the continuous product variable. Put `A_F(r)=integral <F(x),F(r*x)> dx`, and let `X_s` multiply by `x^s`. Then
+
+    K_s(r) = (C*X_s*C*X_s)(A_F)(r).
+
+Indeed, taking Mellin transforms of the displayed pairing and substituting `u=x/r` gives
+
+    Mellin K_s(z) = chi(z)*chi(1+s-z) *
+      sum_j (Mellin F_j(z))*(Mellin F_j(1-z)).
+
+The same formula is the Mellin transform of `C*X_s*C*X_s A_F`. For `s` near zero these identities hold on a common vertical strip containing the critical line, where the cosine transforms and the weighted integrals are defined. Mellin uniqueness identifies the continuous functions. Differentiation at zero gives the actual Gamma conductor, since `chi(z)*chi(1-z)=1` and `chi'/chi` is symmetric under `z -> 1-z`.
+
+The boundary value is explicitly
+
+    b_s(0) = 2*chi(1+s)*B_s,
+    A_s = integral x^s*F(x) dx,
+    B_s = integral x^(-s-1)*F(x) dx,
+    c_s = 2*chi(1+s)*<A_s,B_s>.
+
+Therefore the complete matrix has the exact decomposition
+
+    K_s = c_s*v_s*v_s^T + R_s,       v_s(n)=n^(-s-1),
+    R_s(m,n) = (mn)^(-s-1) *
+      integral x^s*<F(x),b_s(x/(mn))-b_s(0)> dx.
+
+The coefficient satisfies `c_0=0` and `c'_0=-<A,B>`. In particular the native pole pairing is exactly `-2*c'_0`.
+
+The remainder has adequate regularity for the whole integer matrix, already for the native C2 class. If `supp F` lies in `[alpha,beta]`, with `alpha>0`, then for `0<=y<alpha`, Abel regularization of the cosine integral gives
+
+    b_s(y) = chi(1+s) * integral F(t)*
+      ((t-y)^(-1-s)+(t+y)^(-1-s)) dt.
+
+To justify this, insert `exp(-epsilon*x)` in the defining cosine integral, use the product-to-sum formula, evaluate the elementary Gamma integral, and then let `epsilon` decrease to zero. On `|y|<=alpha/2` the two kernels and their `s` derivatives are uniformly smooth. The original integral also converges absolutely for `s` near zero, since `G(x)=O(x^(-2))`.
+
+The two terms cancel the linear Taylor coefficient in `y`. Thus, uniformly on a sufficiently small closed `s` interval,
+
+    |R_s(m,n)| <= C*(mn)^(-s-3),
+    |d_s R_s(m,n)| <= C*(1+log(mn))*(mn)^(-s-3)
+
+outside finitely many products. The finitely many remaining entries are continuously differentiable by dominated convergence. It follows that `R_s` is continuously differentiable in entrywise absolute-sum norm, hence in trace norm on coefficient `ell2`. Since `v_s` is continuously differentiable in `ell2` for `s>-1/2`, the same trace-norm conclusion holds for `K_s`.
+
+At the anchor, differentiation of the actual Hilbert pairing gives
+
+    K'_0(1,1) = <F,(M+C*M*C) F>.
+
+For the whole matrix it gives
+
+    K'_0(m,n) = (mn)^(-1/2)*<F,D_(1/(mn))*(M+C*M*C) F>.
+
+The logarithms from differentiating the dilation factors cancel because `M+C*M*C` commutes with normalized dilation. Combining the anchor derivative and the exact tail coefficient gives the full native identity
+
+    W(F) = K'_0(1,1) - 2*c'_0
+         = R'_0(1,1) + <A,B>.
+
+Equivalently, `lim_(n->infinity) n^2*K'_0(n,n) = c'_0`; the complete HF form is the anchor derivative minus twice that boundary coefficient.
+
+This is now an actual cosine/source matrix with the full pole coefficient, rather than a Gamma-only positive candidate. The remaining task is to prove `R'_0(1,1)+<A,B> >= 0` from the native source construction and integer blindness. Entrywise decay and trace-class membership are not that sign proof. Nor may the coefficient `ell2` metric be substituted for the physical source Gram metric. The full within-source mixed Gram matrices must remain in any Schur or operator-order argument. No conditional positivity interface or auxiliary Lean formalization is queued.
+
+Current source checks read `PrimeBlindPoleCuspIdentity` and `DilationAutocorrelationPeriodization` directly; their cusp and reciprocity identities remain the normalization references. All owned search commands finished, including the weighted-cosine, blind logarithmic uncertainty, Sonin generator, capacity derivative, cusp transfer, and fractional-cosine product-matrix searches. No web search, novelty check, numerical experiment, live owned job, build, or unrelated edit.
 
 ## Cycle 1: reflected-prime positivity
 

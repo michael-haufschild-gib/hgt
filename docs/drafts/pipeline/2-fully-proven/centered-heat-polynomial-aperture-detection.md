@@ -328,3 +328,10 @@ The far tail is suppressed by **height distance**, not by a missing depth gap. T
 step asserts existence of one derivative sign and does not claim monotonicity. The Gaussian is
 only an intermediate zero-sum test; the delivered test is compact and smooth. The proof does not
 exhibit an off-line zero or prove either RH or its negation.
+
+## Novelty audit (2026-10-24)
+
+Dominated by `RHTower.zeta_hodge_index_cluster_horizon` (`ClusterRobustHodgeExclusion.lean`): every
+zero of depth `δ` and height `|γ| ≥ 2` already fails the level-`a` Hodge index (pole-vanishing `C²`
+tests in `[−a, a]`) for every `a ≥ max(e⁶, 1/δ)` with `10⁵ A₀ log(|γ| + 306) log² a ≤ a`. A complete
+Lean proof of this card's theorem was written and then removed as redundant; not credited.

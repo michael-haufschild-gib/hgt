@@ -730,20 +730,16 @@ strictly positive autocorrelation at the first prime `2` (`0 < autoCorrelation F
    (or symmetrically for the dual obstruction reading), the two readings separate `ℤ` from the
    shifted pair. -/
 theorem primeNodeCorrelationObstruction_lt_shiftedPair {a r : ℝ} (ha : a ≠ 0)
-    (hr : Real.log 2 / 2 ≤ r) {F : ℝ → ℝ}
+    (hr : Real.log 2 / 2 < r) {F : ℝ → ℝ}
     (hnn : ∀ n ∈ relevantShifts r, 0 ≤ autoCorrelation F (Real.log n))
     (hpos2 : 0 < autoCorrelation F (Real.log 2)) :
     primeNodeCorrelationObstruction r F < shiftedPairNodeCorrelationObstruction a r F := by
   have hmem2 : (2 : ℕ) ∈ relevantShifts r := by
     rw [mem_relevantShifts]
-    have hfl : 2 ≤ ⌊Real.exp (2 * r)⌋₊ := by
-      rw [Nat.le_floor_iff (by positivity)]
-      have hexp := Real.exp_le_exp.mpr (by linarith : Real.log 2 ≤ 2 * r)
-      rwa [Real.exp_log (by norm_num : (0 : ℝ) < 2)] at hexp
-    exact ⟨⟨by omega, hfl⟩, Nat.prime_two.isPrimePow⟩
+    exact ⟨by omega, by push_cast; linarith⟩
   have hatom2 : 0 < vonMangoldtAtom 2 := by
     unfold vonMangoldtAtom
-    rw [ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+    rw [if_pos (by omega), ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
     exact div_pos (Real.log_pos (by norm_num)) (by positivity)
   have hlt2 : 2 * vonMangoldtAtom 2 * autoCorrelation F (Real.log 2) <
       ((2 : ℝ) ^ a + (2 : ℝ) ^ (-a)) * vonMangoldtAtom 2 * autoCorrelation F (Real.log 2) := by
@@ -752,12 +748,14 @@ theorem primeNodeCorrelationObstruction_lt_shiftedPair {a r : ℝ} (ha : a ≠ 0
   unfold primeNodeCorrelationObstruction shiftedPairNodeCorrelationObstruction
   refine Finset.sum_lt_sum (fun n hn => ?_) ⟨2, hmem2, by simpa using hlt2⟩
   have hn1 : 1 ≤ n := by
-    have h := (mem_relevantShifts.mp hn).1.1
+    have h := (mem_relevantShifts.mp hn).1
     omega
   have h2le := two_le_rpow_add_rpow_neg hn1 a
   have hatom_nn : 0 ≤ vonMangoldtAtom n := by
     unfold vonMangoldtAtom
-    exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (by positivity)
+    split_ifs
+    · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
+    · exact le_rfl
   have hprod_nn : 0 ≤ vonMangoldtAtom n * autoCorrelation F (Real.log n) :=
     mul_nonneg hatom_nn (hnn n hn)
   nlinarith
@@ -901,7 +899,8 @@ theorem chebyshevSectionCone_widthDictionary_tfae : List.TFAE [
     exact (sectionEffectivityCone_riemannRoch_iff_hodgeIndex (scalingSubsurface (oddRealTestsAt r))).symm
   tfae_have 4 ↔ 6 := by
     refine forall₂_congr fun r hr => ?_
-    rw [heq r hr, sectionEffectivityCone_odd_bezout_iff_apertureH1ChebyshevCorrection_le hr (by linarith)]
+    rw [heq r hr,
+      sectionEffectivityCone_odd_bezout_iff_apertureH1ChebyshevCorrection_le (R := r + 1) hr (by linarith)]
     refine forall_congr' fun f => ?_
     unfold chebyshevSourceEnergy
     constructor <;> intro h <;> linarith

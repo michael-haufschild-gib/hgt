@@ -619,4 +619,254 @@ theorem exists_linearWindow_criticalPrimeEnergy_le :
   have := le_abs_self (criticalPrimeEnergy T b - factorialCriticalTranslatedPrimeLimit T b)
   nlinarith
 
+/-! ### Uniform Linear-Window Approximation, Full-Dimension Subspaces, and Prime-Subsidized Complete Energy -/
+
+/-- **Arbitrary-Accuracy Uniform Comparison of the Actual Prime Channel to `P∞` on Linear Windows.**
+For every accuracy `η > 0`, there exist a linear window width `δ ∈ (0, 1]` and a scale threshold
+`N₀ ≥ 2` such that for every `N ≥ N₀`, every support `T` in `N ≤ m + 1 ≤ (1 + δ)N`, and every
+coefficient vector `b : ℕ → ℝ`,
+`|criticalPrimeEnergy T b - factorialCriticalTranslatedPrimeLimit T b| ≤ η * ∑ m ∈ T, b m ^ 2`. -/
+theorem exists_linearWindow_criticalPrimeEnergy_sub_limit_le {η : ℝ} (hη : 0 < η) :
+    ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 ∧ ∃ N₀ : ℕ, 2 ≤ N₀ ∧ ∀ N : ℕ, N₀ ≤ N → ∀ T : Finset ℕ,
+      (∀ m ∈ T, N ≤ m + 1 ∧ ((m : ℝ) + 1) ≤ (1 + δ) * N) → ∀ b : ℕ → ℝ,
+        |criticalPrimeEnergy T b - factorialCriticalTranslatedPrimeLimit T b| ≤
+          η * ∑ m ∈ T, b m ^ 2 := by
+  have hc4 : 0 < 4 / Real.pi ^ 4 := by positivity
+  have hU := criticalWindowHarmonicBound_nonneg
+  have hD := criticalWindowCosineDecay_nonneg
+  have hKW := criticalWindowConstant_nonneg
+  obtain ⟨W, hW_def⟩ : ∃ W : ℝ, W = ∑' k, |dyadicHarmonicWeight k| := ⟨_, rfl⟩
+  have hW : 0 ≤ W := hW_def ▸ tsum_nonneg fun _ => abs_nonneg _
+  obtain ⟨Ct, hCt_def⟩ : ∃ Ct : ℝ,
+      Ct = 4 / Real.pi ^ 4 * (criticalWindowConstant * Real.sqrt 2 + 7) := ⟨_, rfl⟩
+  have hτR : Tendsto (fun R => Ct * seriesTailMass (envelopePrimeMajorant 1) R) atTop (𝓝 0) := by
+    have := (tendsto_seriesTailMass
+      (summable_envelopePrimeMajorant_of_half_lt (by norm_num : (1 : ℝ) / 2 < 1))).const_mul Ct
+    rwa [mul_zero] at this
+  obtain ⟨R0, hR0⟩ := eventually_atTop.mp (hτR.eventually_lt_const (by positivity : 0 < η / 2))
+  obtain ⟨R, hR1, hRb⟩ : ∃ R : ℕ, 1 ≤ R ∧ Ct * seriesTailMass (envelopePrimeMajorant 1) R < η / 2 :=
+    ⟨max R0 1, le_max_right _ _, hR0 _ (le_max_left _ _)⟩
+  have hτK : Tendsto (fun K => ((R : ℝ) + 1) *
+      (4 / Real.pi ^ 4 * (2 * (criticalWindowHarmonicBound + 4) * W)) *
+        seriesTailMass (fun k => |dyadicHarmonicWeight k|) K) atTop (𝓝 0) := by
+    have := (tendsto_seriesTailMass summable_abs_dyadicHarmonicWeight).const_mul
+      (((R : ℝ) + 1) * (4 / Real.pi ^ 4 * (2 * (criticalWindowHarmonicBound + 4) * W)))
+    rwa [mul_zero] at this
+  obtain ⟨K0, hK0⟩ := eventually_atTop.mp (hτK.eventually_lt_const (by positivity : 0 < η / 8))
+  obtain ⟨K, hK1, hKb⟩ : ∃ K : ℕ, 1 ≤ K ∧
+      ((R : ℝ) + 1) * (4 / Real.pi ^ 4 * (2 * (criticalWindowHarmonicBound + 4) * W)) *
+        seriesTailMass (fun k => |dyadicHarmonicWeight k|) K < η / 8 :=
+    ⟨max K0 1, le_max_right _ _, hK0 _ (le_max_left _ _)⟩
+  obtain ⟨G, hG_def⟩ : ∃ G : ℝ, G = ((R : ℝ) + 1) * (4 / Real.pi ^ 4) * W ^ 2 := ⟨_, rfl⟩
+  have hG : 0 ≤ G := by rw [hG_def]; positivity
+  have hKR : (1 : ℝ) ≤ (K : ℝ) + ((K * R : ℕ) : ℝ) := by
+    have : (1 : ℝ) ≤ K := by exact_mod_cast hK1
+    have : (0 : ℝ) ≤ ((K * R : ℕ) : ℝ) := Nat.cast_nonneg _
+    linarith
+  obtain ⟨δ, hδ, hδ1, hδKR, hδb⟩ : ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 ∧
+      ((K : ℝ) + ((K * R : ℕ) : ℝ)) * δ ≤ 1 / 4 ∧
+        G * (6 * criticalWindowCosineDecay) * δ ≤ η / 16 := by
+    set KM := (K : ℝ) + ((K * R : ℕ) : ℝ)
+    have h1 : 0 < G * criticalWindowCosineDecay + 1 := by positivity
+    refine ⟨min 1 (min (1 / (4 * KM)) (η / (96 * (G * criticalWindowCosineDecay + 1)))),
+      lt_min one_pos (lt_min (by positivity) (by positivity)), min_le_left _ _, ?_, ?_⟩
+    · have h : min 1 (min (1 / (4 * KM)) (η / (96 * (G * criticalWindowCosineDecay + 1)))) ≤
+          1 / (4 * KM) := (min_le_right _ _).trans (min_le_left _ _)
+      calc KM * _ ≤ KM * (1 / (4 * KM)) := mul_le_mul_of_nonneg_left h (by linarith)
+        _ = 1 / 4 := by field_simp
+    · have h : min 1 (min (1 / (4 * KM)) (η / (96 * (G * criticalWindowCosineDecay + 1)))) ≤
+          η / (96 * (G * criticalWindowCosineDecay + 1)) :=
+        (min_le_right _ _).trans (min_le_right _ _)
+      calc G * (6 * criticalWindowCosineDecay) * _ ≤
+            G * (6 * criticalWindowCosineDecay) * (η / (96 * (G * criticalWindowCosineDecay + 1))) :=
+            mul_le_mul_of_nonneg_left h (by positivity)
+        _ = η / 16 * (G * criticalWindowCosineDecay / (G * criticalWindowCosineDecay + 1)) := by
+          field_simp; ring
+        _ ≤ η / 16 := mul_le_of_le_one_right (by positivity) ((div_le_one h1).mpr (by linarith))
+  have hev := ((tendsto_linearWindowHeadError_scale K (K * R) G).eventually_lt_const
+    (by positivity : 0 < η / 4)).and (eventually_ge_atTop (K + K * R + 2))
+  obtain ⟨N₀, hN₀⟩ := eventually_atTop.mp hev
+  have hN0_ge : 2 ≤ max N₀ 2 := le_max_right _ _
+  refine ⟨δ, hδ, hδ1, max N₀ 2, hN0_ge, fun N hN T hT b => ?_⟩
+  obtain ⟨hNb, hNK⟩ := hN₀ N ((le_max_left _ _).trans hN)
+  have hN2 : 2 ≤ N := hN0_ge.trans hN
+  have hlarge : (K : ℝ) + ((K * R : ℕ) : ℝ) ≤ N := by exact_mod_cast (by omega : K + K * R ≤ N)
+  have hT' : ∀ n ∈ T, (N : ℝ) ≤ ((n + 1 : ℕ) : ℝ) ∧ ((n + 1 : ℕ) : ℝ) ≤ (1 + δ) * N :=
+    fun n hn => ⟨by exact_mod_cast (hT n hn).1, by push_cast; exact (hT n hn).2⟩
+  have hcmp := abs_criticalPrimeEnergy_sub_limit_le T b hN2 hδ.le hδ1 hT' hδKR hlarge
+  rw [← hW_def, ← hCt_def] at hcmp
+  have herr : ((R : ℝ) + 1) * (4 / Real.pi ^ 4 *
+        (linearWindowHeadError K (K * R) N δ * W ^ 2 + 2 * (criticalWindowHarmonicBound + 4) * W *
+          seriesTailMass (fun k => |dyadicHarmonicWeight k|) K)) +
+      Ct * seriesTailMass (envelopePrimeMajorant 1) R ≤ η := by
+    have e : ((R : ℝ) + 1) * (4 / Real.pi ^ 4 *
+          (linearWindowHeadError K (K * R) N δ * W ^ 2 + 2 * (criticalWindowHarmonicBound + 4) * W *
+            seriesTailMass (fun k => |dyadicHarmonicWeight k|) K)) +
+        Ct * seriesTailMass (envelopePrimeMajorant 1) R =
+        Ct * seriesTailMass (envelopePrimeMajorant 1) R +
+          ((R : ℝ) + 1) * (4 / Real.pi ^ 4 * (2 * (criticalWindowHarmonicBound + 4) * W)) *
+            seriesTailMass (fun k => |dyadicHarmonicWeight k|) K +
+          G * (criticalWindowAffineCorrelationError K (K * R) N +
+            6 * criticalWindowCosineDecay * (1 / (N : ℝ))) +
+          G * (6 * criticalWindowCosineDecay) * δ := by
+      rw [hG_def]
+      unfold linearWindowHeadError
+      ring
+    rw [e]
+    linarith
+  have hE : 0 ≤ ∑ m ∈ T, b m ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
+  exact hcmp.trans (mul_le_mul_of_nonneg_right herr hE)
+
+/-- **Full-Interval Linear Window Support (`[N - 1, N - 1 + ⌊δ N⌋₊]`).**
+The maximal integer support inside the linear window `N ≤ m + 1 ≤ (1 + δ)N`. -/
+def fullLinearWindowSupport (N : ℕ) (δ : ℝ) : Finset ℕ :=
+  Finset.Icc (N - 1) (N - 1 + ⌊δ * (N : ℝ)⌋₊)
+
+/-- Every index in `fullLinearWindowSupport N δ` (`1 ≤ N`, `0 ≤ δ`) lies in the linear window
+`N ≤ m + 1 ≤ (1 + δ)N` and has cardinality `⌊δ N⌋₊ + 1 > δ N`. -/
+theorem fullLinearWindowSupport_spec {N : ℕ} (hN : 1 ≤ N) {δ : ℝ} (hδ : 0 ≤ δ) :
+    (∀ m ∈ fullLinearWindowSupport N δ,
+      N ≤ m + 1 ∧ ((m : ℝ) + 1) ≤ (1 + δ) * N) ∧
+    (fullLinearWindowSupport N δ).card = ⌊δ * (N : ℝ)⌋₊ + 1 ∧
+    δ * (N : ℝ) < ((fullLinearWindowSupport N δ).card : ℝ) := by
+  have hδN : 0 ≤ δ * (N : ℝ) := by positivity
+  refine ⟨fun m hm => ?_, ?_, ?_⟩
+  · rw [fullLinearWindowSupport, Finset.mem_Icc] at hm
+    refine ⟨by omega, ?_⟩
+    have hm_le : ((m + 1 : ℕ) : ℝ) ≤ (N : ℝ) + (⌊δ * (N : ℝ)⌋₊ : ℝ) := by
+      have : m + 1 ≤ N + ⌊δ * (N : ℝ)⌋₊ := by omega
+      exact_mod_cast this
+    have hfl : (⌊δ * (N : ℝ)⌋₊ : ℝ) ≤ δ * (N : ℝ) := Nat.floor_le hδN
+    push_cast at hm_le
+    linarith
+  · unfold fullLinearWindowSupport
+    rw [Nat.card_Icc]
+    omega
+  · unfold fullLinearWindowSupport
+    rw [Nat.card_Icc, show N - 1 + ⌊δ * (N : ℝ)⌋₊ + 1 - (N - 1) = ⌊δ * (N : ℝ)⌋₊ + 1 by omega]
+    push_cast
+    exact Nat.lt_floor_add_one (δ * (N : ℝ))
+
+/-- **Strict Negative Definiteness of the Critical Prime Channel on Full Linearly Growing Subspaces.**
+There exist `δ ∈ (0, 1]` and `N₀ ≥ 2` such that for all `N ≥ N₀`, the full linear-window support
+`fullLinearWindowSupport N δ` has dimension `> δ N` growing linearly in `N`, and on this space the
+actual critical prime channel is strictly negative definite:
+`criticalPrimeEnergy (fullLinearWindowSupport N δ) b ≤ -(2 / (7000 * π⁴)) * ∑ b_m² < 0`
+for every nonzero coefficient vector `b`. -/
+theorem exists_fullLinearWindowSupport_criticalPrimeEnergy_neg_definite :
+    ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 ∧ ∃ N₀ : ℕ, 2 ≤ N₀ ∧ ∀ N : ℕ, N₀ ≤ N →
+      let T : Finset ℕ := fullLinearWindowSupport N δ
+      δ * (N : ℝ) < (T.card : ℝ) ∧
+      ∀ b : ℕ → ℝ,
+        criticalPrimeEnergy T b ≤ -(2 / (7000 * Real.pi ^ 4)) * ∑ m ∈ T, b m ^ 2 ∧
+        ((∃ m ∈ T, b m ≠ 0) → criticalPrimeEnergy T b < 0) := by
+  set η : ℝ := 2 / (7000 * Real.pi ^ 4)
+  have hη : 0 < η := by positivity
+  obtain ⟨δ, hδ, hδ1, N₀, hN₀, happrox⟩ := exists_linearWindow_criticalPrimeEnergy_sub_limit_le hη
+  refine ⟨δ, hδ, hδ1, N₀, hN₀, fun N hN => ?_⟩
+  dsimp only
+  set T := fullLinearWindowSupport N δ
+  obtain ⟨hwin, _, hcard⟩ := fullLinearWindowSupport_spec (by omega : 1 ≤ N) hδ.le
+  refine ⟨hcard, fun b => ?_⟩
+  have hcmp := (abs_le.mp (happrox N hN T hwin b)).2
+  have hlim := factorialCriticalTranslatedPrimeLimit_le_neg_energy T b
+  have h2η : 4 / (7000 * Real.pi ^ 4) = 2 * η := by dsimp only [η]; ring
+  rw [h2η] at hlim
+  have hle : criticalPrimeEnergy T b ≤ -(2 / (7000 * Real.pi ^ 4)) * ∑ m ∈ T, b m ^ 2 := by
+    change criticalPrimeEnergy T b ≤ -η * ∑ m ∈ T, b m ^ 2
+    linarith
+  refine ⟨hle, fun ⟨m, hm, hbm⟩ => ?_⟩
+  have hpos : 0 < ∑ k ∈ T, b k ^ 2 :=
+    lt_of_lt_of_le (sq_pos_of_ne_zero hbm)
+      (Finset.single_le_sum (fun k _ => sq_nonneg (b k)) hm)
+  exact lt_of_le_of_lt hle (by nlinarith)
+
+/-- **Prime-Subsidized Complete Critical Energy on Linear Windows.**
+On the linear window `N ≤ m + 1 ≤ (1 + δ)N` (`N ≥ N₀`), the negative definiteness of the actual
+prime channel `P(T, b) ≤ -(2 / (7000 π⁴)) ∑ b_m²` turns `-2 P(T, b)` in the complete critical
+energy from a channel cost into a strictly positive subsidy `+(4 / (7000 π⁴)) ∑ b_m²`, while the
+polar channel decays as `O(1/N) ∑ b_m²`:
+`criticalArithmeticChannels T b ≥ (4 / (7000 π⁴) - |Ω(0)| U - 2304 / N) ∑ b_m²` and
+`criticalCompleteEnergy T b ≥ (s_crit (log N - c₀) + 4 / (7000 π⁴) - |Ω(0)| U - 2304 / N) ∑ b_m²`. -/
+theorem exists_linearWindow_criticalCompleteEnergy_prime_subsidized :
+    ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 ∧ ∃ N₀ : ℕ, 2 ≤ N₀ ∧ ∀ N : ℕ, N₀ ≤ N → ∀ T : Finset ℕ,
+      (∀ m ∈ T, N ≤ m + 1 ∧ ((m : ℝ) + 1) ≤ (1 + δ) * N) → ∀ b : ℕ → ℝ,
+        (4 / (7000 * Real.pi ^ 4) - |_root_.Zeta23.EF.gammaBracket 0| * criticalCollarMassUpper -
+          2304 / (N : ℝ)) * (∑ m ∈ T, b m ^ 2) ≤
+          criticalArithmeticChannels T b ∧
+        (((criticalArchLogSlope * (Real.log N - criticalArchLogOffset) +
+            4 / (7000 * Real.pi ^ 4) - |_root_.Zeta23.EF.gammaBracket 0| * criticalCollarMassUpper -
+            2304 / (N : ℝ)) * ∑ m ∈ T, b m ^ 2 : ℝ) : EReal) ≤
+          criticalCompleteEnergy T b := by
+  set η : ℝ := 2 / (7000 * Real.pi ^ 4)
+  have hη : 0 < η := by positivity
+  obtain ⟨δ, hδ, hδ1, N₀, hN₀, happrox⟩ := exists_linearWindow_criticalPrimeEnergy_sub_limit_le hη
+  refine ⟨δ, hδ, hδ1, N₀, hN₀, fun N hN T hT b => ?_⟩
+  have hN2 : 2 ≤ N := hN₀.trans hN
+  have hN_pos : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+  set E := ∑ m ∈ T, b m ^ 2
+  have hE : 0 ≤ E := Finset.sum_nonneg fun _ _ => sq_nonneg _
+  -- 1. Prime subsidy `-2 P(T, b) ≥ (4 / (7000 π⁴)) E`:
+  have hcmp : criticalPrimeEnergy T b - factorialCriticalTranslatedPrimeLimit T b ≤
+      (2 / (7000 * Real.pi ^ 4)) * E := (abs_le.mp (happrox N hN T hT b)).2
+  have hlim : factorialCriticalTranslatedPrimeLimit T b ≤ -(4 / (7000 * Real.pi ^ 4)) * E :=
+    factorialCriticalTranslatedPrimeLimit_le_neg_energy T b
+  have hP : criticalPrimeEnergy T b ≤ -(2 / (7000 * Real.pi ^ 4)) * E := by
+    have h_alg : (2 / (7000 * Real.pi ^ 4)) * E + -(4 / (7000 * Real.pi ^ 4)) * E =
+        -(2 / (7000 * Real.pi ^ 4)) * E := by ring
+    linarith
+  -- 2. Gamma bound `Ω(0) ac(0) ≥ -|Ω(0)| U E`:
+  have hac0 : 0 ≤ criticalAutocorrelation T b 0 := by
+    unfold criticalAutocorrelation
+    simp only [sub_zero]
+    exact integral_nonneg fun y => mul_self_nonneg _
+  have hac : criticalAutocorrelation T b 0 ≤ criticalCollarMassUpper * E :=
+    criticalAutocorrelation_zero_le_sq T b
+  have hΩ : -(|_root_.Zeta23.EF.gammaBracket 0| * criticalCollarMassUpper * E) ≤
+      _root_.Zeta23.EF.gammaBracket 0 * criticalAutocorrelation T b 0 := by
+    have h1 := neg_abs_le (_root_.Zeta23.EF.gammaBracket 0 * criticalAutocorrelation T b 0)
+    rw [abs_mul, abs_of_nonneg hac0] at h1
+    have h2 := mul_le_mul_of_nonneg_left hac (abs_nonneg (_root_.Zeta23.EF.gammaBracket 0))
+    have h3 : |_root_.Zeta23.EF.gammaBracket 0| * (criticalCollarMassUpper * E) =
+        |_root_.Zeta23.EF.gammaBracket 0| * criticalCollarMassUpper * E := by ring
+    linarith
+  -- 3. Polar bound `2 R E ≥ -(2304 / N) E`:
+  set S_pol := ∑ m ∈ T, |b m| / ((m + 1 : ℕ) : ℝ)
+  have hS_pol2 := sq_sum_abs_div_succ_le T b hN2 fun m hm => (hT m hm).1
+  have hpol_abs : |criticalFactorialPolarReadout T b * criticalFactorialPolarEndpoint T b| ≤
+      576 * (2 / (N : ℝ) * E) := by
+    rw [abs_mul]
+    calc |criticalFactorialPolarReadout T b| * |criticalFactorialPolarEndpoint T b|
+        ≤ (24 * S_pol) * (24 * S_pol) :=
+          mul_le_mul (abs_criticalFactorialPolarReadout_le T b)
+            (criticalFactorialPolarEndpoint_bound T b) (abs_nonneg _) (by positivity)
+      _ = 576 * S_pol ^ 2 := by ring
+      _ ≤ 576 * (2 / (N : ℝ) * E) := mul_le_mul_of_nonneg_left hS_pol2 (by norm_num)
+  have hpol := (abs_le.mp hpol_abs).1
+  have harith : (4 / (7000 * Real.pi ^ 4) - |_root_.Zeta23.EF.gammaBracket 0| * criticalCollarMassUpper -
+      2304 / (N : ℝ)) * E ≤ criticalArithmeticChannels T b := by
+    unfold criticalArithmeticChannels
+    have h_alg : (4 / (7000 * Real.pi ^ 4) - |_root_.Zeta23.EF.gammaBracket 0| * criticalCollarMassUpper -
+        2304 / (N : ℝ)) * E =
+      -(|_root_.Zeta23.EF.gammaBracket 0| * criticalCollarMassUpper * E) +
+        2 * -(576 * (2 / (N : ℝ) * E)) - 2 * (-(2 / (7000 * Real.pi ^ 4)) * E) := by ring
+    linarith
+  refine ⟨harith, ?_⟩
+  -- 4. Combine with Archimedean Lévy energy:
+  set X := criticalArchLogSlope * (Real.log N - criticalArchLogOffset) * E
+  have hlev : (X : EReal) ≤ (criticalLevyEnergy T b : EReal) := by
+    have h1 := ofReal_le_criticalLevyEnergy T b hN2 fun m hm => (hT m hm).1
+    have h2 := EReal.coe_ennreal_le_coe_ennreal_iff.mpr h1
+    rw [EReal.coe_ennreal_ofReal] at h2
+    exact le_trans (EReal.coe_le_coe_iff.mpr (le_max_left _ _)) h2
+  set Y := (4 / (7000 * Real.pi ^ 4) - |_root_.Zeta23.EF.gammaBracket 0| * criticalCollarMassUpper -
+    2304 / (N : ℝ)) * E
+  have hXY : X + Y = (criticalArchLogSlope * (Real.log N - criticalArchLogOffset) +
+      4 / (7000 * Real.pi ^ 4) - |_root_.Zeta23.EF.gammaBracket 0| * criticalCollarMassUpper -
+      2304 / (N : ℝ)) * E := by
+    dsimp only [X, Y]; ring
+  rw [← hXY, EReal.coe_add]
+  unfold criticalCompleteEnergy
+  exact add_le_add hlev (EReal.coe_le_coe_iff.mpr harith)
+
 end GaloisForLFunctions.ArithmeticPositivityTheory

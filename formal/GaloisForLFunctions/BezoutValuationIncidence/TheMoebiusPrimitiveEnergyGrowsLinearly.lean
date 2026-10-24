@@ -563,8 +563,11 @@ theorem tendsto_twelve_mul_sievePrimitiveEnergy_moebius_div :
     filter_upwards [eventually_ge_atTop 2] with N hN
     obtain ⟨hJ1, hJN, hlog⟩ := fibreCutoff_facts hN
     have hpart := abs_twelve_mul_div_sub_partial_le hJ1 hJN (fibreCutoff_pow_le N) hlog
-    rw [Real.norm_eq_abs, Function.comp_apply]
-    exact (abs_sub_le _ _ _).trans (by linarith)
+    rw [Real.norm_eq_abs]
+    refine (abs_sub_le _ (∑ j ∈ Icc 1 (fibreCutoff N), primitiveFibreWeight j /
+      ((j : ℝ) * (j + 1))) _).trans ?_
+    simp only [Function.comp_apply]
+    exact add_le_add_left hpart _
   have h := hd.add_const moebiusPrimitiveSlope
   rw [zero_add] at h
   exact h.congr fun N => by ring
@@ -572,6 +575,3 @@ theorem tendsto_twelve_mul_sievePrimitiveEnergy_moebius_div :
 end
 
 end GaloisForLFunctions.BezoutValuationIncidence
-
-#print axioms GaloisForLFunctions.BezoutValuationIncidence.tendsto_twelve_mul_sievePrimitiveEnergy_moebius_div
-#print axioms GaloisForLFunctions.BezoutValuationIncidence.abs_jordanFibreMass_sub_le

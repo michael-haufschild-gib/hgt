@@ -8,3 +8,6 @@ import GaloisForLFunctions.«twin-prime».DeterminantParityBridge
 import GaloisForLFunctions.«twin-prime».FullHeightCRTBoundary
 import GaloisForLFunctions.«twin-prime».RamareSmoothCofactorTransfer
 import GaloisForLFunctions.«twin-prime».IntegerStartMoebiusWindow
+import GaloisForLFunctions.«twin-prime».AffineSquarefreeTransfer
+import GaloisForLFunctions.«twin-prime».ShortFourierEndpoint
+import GaloisForLFunctions.«twin-prime».CharacterPrimeDistance

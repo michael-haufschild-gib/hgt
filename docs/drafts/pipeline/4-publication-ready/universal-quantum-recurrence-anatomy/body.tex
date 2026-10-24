@@ -1,1154 +1,742 @@
-\section{One recurrence problem, four structural laws}
+\section{Question, scope, and relation to earlier work}
 
-Quantum recurrence begins with a qualitative fact: a finite isolated system
-returns arbitrarily close to its initial state \cite{BocchieriLoinger1957}.
-Selected many-body recurrences have been observed directly, and coupled-
-multiqubit experiments now target their size dependence
-\cite{RauerEtAl2018,KarimiEtAl2026}.
-That sentence suppresses four independent questions.  Does any part of the
-initial condition survive indefinitely?  How many relative spectral phases
-are genuinely independent?  How accurately must phases of unequal spectral
-weight align?  Which of those alignments can a chosen experiment see?
+A recurrence theorem guarantees returns but does not identify their
+accuracy dependence, the information retained by an observer, or the part
+of an infinite-system spectrum visible in long-time statistics. These
+questions involve different limits. We address two of them: exact
+small-tolerance first returns in finite local networks, and complete
+stationary survival statistics for arbitrary probability energy spectra.
 
-Treating these questions as one ``recurrence time'' obscures their different
-mathematics.  We instead factor recurrence through four objects:
-\begin{equation}
- \boxed{
- \text{persistent carrier}
- \longrightarrow \text{relation hull}
- \longrightarrow \text{weighted metric}
- \longrightarrow \text{observer quotient}.}
- \label{eq:factorization}
-\end{equation}
-The carrier removes transient directions.  The balanced relation lattice
-cuts the ambient phase torus down to the actual orbit closure.  State weights
-pull a return metric onto that hull.  An observer graph finally quotients out
-relative phases that no selected probe detects.  The first three laws
-identify this factorization exactly, with the output of one reduction serving
-as input to the next.  The fourth law identifies its finite-data boundary:
-fixed-resolution metric statements are stable, but the completed arithmetic
-relation lattice is not inferable from uniformly finite-precision,
-finite-horizon records without an arithmetic promise.
+Our main result concerns deterministic, unmonitored unitary evolution.
+An observer here is a matrix whose entire displacement is measured, or a
+finite family of such matrices. This includes density-matrix return.
+It does not mean repeated quantum detection, nor merely return of a scalar
+expectation value. Interference between terms in a scalar expectation
+requires a different analysis.
 
-\begin{table}[H]
-\centering
-\small
-\begin{tabularx}{\textwidth}{@{}p{0.18\textwidth}p{0.24\textwidth}X@{}}
-\toprule
-Reduction & Exact object & What it controls \\
-\midrule
-Survival & unit-modulus spectral subspace & attainable late return amplitude \\
-Constraints & balanced relation lattice & orbit hull, phase rank, exact resonances \\
-Resolution & weighted projective metric & target volume and universal deadline \\
-Observation & coherence-graph quotient & visible rank and probe-dependent return \\
-\bottomrule
-\end{tabularx}
-\caption{Persistent phase geometry separates mechanisms that a single
-dimension-only recurrence bound conflates.}
-\label{tab:four-reductions}
-\end{table}
+Quantitative quantum recurrence has substantial antecedents. Bocchieri
+and Loinger established the quantum recurrence theorem
+\cite{BocchieriLoinger1957}. Gimeno and Sotoca obtained mixed-state upper
+bounds \cite{GimenoSotoca2017}. Kotowski and Oszmaniec prove quantitative
+bounds involving exit times and random-Hamiltonian saturation
+\cite{KotowskiOszmaniec2026}. Gupta and Short bound simultaneous recurrence
+of all states \cite{GuptaShort2026}. Our return time starts after a
+\emph{fixed positive cutoff}; it is not their exit-based definition.
+Our conclusion is an exact logarithmic small-tolerance exponent in physical
+local coefficient space, with the observer quantifier inside one conull
+Hamiltonian event.
 
-The resulting four laws are followed by a physical saturation theorem.  A
-generic $D\times D$ Hermitian matrix can have $D-1$ rationally independent
-relative energies.  A one-dimensional nearest-neighbour Hamiltonian uses
-only one-site and adjacent two-site terms.  It was therefore not known
-whether this restricted coefficient space must carry hidden all-order energy
-relations.  Nondegenerate gaps hold almost everywhere in broad local families
-\cite{Huang2021}, but that excludes only pairwise gap coincidences.  Maximal
-recurrence dimension excludes every balanced rational relation, at every
-order.  The possible existence of hidden energy resonances in all two-body
-Hamiltonians has been posed explicitly in autonomous state reachability
-\cite{Szymanski2024}.
+Lee, Pilatowsky-Cameo, and Choi prove generic all-order spectral
+nonresonance for local qubit lattice Hamiltonians and obtain bounds on
+average recurrence intervals for typical high-temperature product states
+\cite{LeePilatowskyChoi2026}. Thus generic local nonresonance is not a
+priority claim of this paper. The extra input needed here is real affine
+spectral nondegeneracy, strong enough for metric Diophantine extremality.
+We establish this input on every finite connected graph with heterogeneous
+local dimensions, and use it to classify all matrix observers
+simultaneously.
 
-We prove that the full static open-path family has no such locality discount:
-for every finite local dimension, almost every Hamiltonian on every simple
-chart saturates the complete projective phase capacity.  The same draw then
-obeys sharp first-hit laws, all-order collision extremality, and an exact
-thermodynamic return-density law.  A complementary commuting l-bit theorem
-shows where compression really enters: not through spatial locality alone,
-but through exact algebraic restrictions on available interaction
-coefficients \cite{SerbynPapicAbanin2013,HuseNandkishoreOganesyan2014,
-VasseurParameswaranMoore2015}.
+The abstract mechanisms have classical parents. Diophantine approximation
+controls torus returns; the nondegenerate-manifold theorem of Kleinbock
+and Margulis supplies the metric lower bound \cite{KleinbockMargulis1998}.
+Observation recurrence in general dynamical systems has been studied by
+Rousseau and Saussol \cite{RousseauSaussol2010,Rousseau2012}; their
+mixing-based hypotheses do not apply to our quasiperiodic flows.
+Exact Floquet recurrences have a different arithmetic classification
+\cite{AnandEtAl2026}. The stationary law below belongs to the
+Wiener--almost-periodic tradition \cite{Wiener1930}; its role here is an
+exact spectral interpretation, not a claim to have discovered pure-point
+selection.
 
-\subsection{Position relative to current results}
+\section{A simultaneous law for every matrix observer}
 
-General recurrence bounds follow from simultaneous Diophantine approximation;
-recent work obtains tight estimates and generic saturation for broad or
-random finite systems \cite{KotowskiOszmaniec2026,GuptaShort2026}.  Weight-
-sensitive concentration estimates and effective-support refinements address
-related state-return problems \cite{RiddellPagliaroliAlhambra2023}.  Exact
-Floquet recurrence has an arithmetic cyclotomic classification
-\cite{AnandEtAl2026}.  Local free-fermion constructions can make their
-single-particle energies rationally independent, while their many-body
-spectra retain additive structure \cite{RiddellBertini2024}.  Spectral-form-
-factor moments under independence conditions provide a complementary
-collision viewpoint \cite{CamposVenutiOdavicHamma2026}.
-
-Peripheral and attractor spaces are established tools for asymptotic open
-dynamics \cite{WolfPerezGarcia2010,Albert2019,AmatoEtAl2023}; reverse water
-filling is classical in rate--distortion theory
-\cite{CoverThomas2006,GrayNeuhoff1998}; and Kronecker--Weyl, Dirichlet, and
-metric extremality are established analytic ingredients
-\cite{Weyl1916,KleinbockMargulis1998}.  Contributions here are the exact
-joined factorization, weight- and observer-sensitive return laws, and the
-local spectral saturation theorem that realizes their maximal regime in a
-static bounded-degree one-dimensional many-body family.
-
-\section{Law 1: loss selects the persistent carrier}
-\label{sec:persistent-carrier}
-
-Let $T$ be a linear contraction on a finite-dimensional complex Hilbert
-space, $\|T\|\leq1$, and let $x$ be an initial vector.  Write
-$\mathcal K_\partial$ for the span of the eigenspaces whose eigenvalues have
-unit modulus, $\Pi_\partial$ for its orthogonal projection, and
-\begin{equation}
- p_T(x)=\|\Pi_\partial x\|^2,
- \qquad A_n(x,T)=\langle x,T^nx\rangle .
- \label{eq:persistent-mass}
-\end{equation}
-
-\begin{theorem}[Law 1: exact returnability transition]
-\label{thm:persistent-transition}
-For every finite-dimensional contraction and every initial vector,
-$0\leq p_T(x)\leq\|x\|^2$, and
-\begin{align}
- a<p_T(x)&\Longrightarrow
-   \forall M\ \exists n>M:\quad a\leq|A_n(x,T)|,          \label{eq:below-ceiling}\\
- p_T(x)<a&\Longrightarrow
-   \exists B\ \forall n\geq B:\quad |A_n(x,T)|<a.         \label{eq:above-ceiling}
-\end{align}
-Thus $p_T(x)$ is the exact late-return-amplitude ceiling and $p_T(x)^2$ is
-the exact fidelity ceiling.  If $p_T(x)>0$, the normalized weights
-\begin{equation}
- w_\lambda=\frac{\|\Pi_\lambda x\|^2}{p_T(x)}
- \label{eq:peripheral-weights}
-\end{equation}
-form the finite phase packet governing every attainable threshold below the
-ceiling.
-\end{theorem}
-
-This statement distinguishes decay from dephasing.  Components outside
-$\mathcal K_\partial$ disappear; components inside it retain norm and differ
-only by phase.  A unitary is the special case in which the full carrier
-survives.  If the spectral radius is strictly below one, the persistent mass
-is zero and every positive late-return threshold eventually becomes
-impossible.  Nothing about later sections assumes weak loss: they apply to
-the exact surviving packet selected by Theorem~\ref{thm:persistent-transition}.
-
-\section{Law 2: spectral constraints determine the phase hull}
-\label{sec:constraint-law}
-
-Let $H$ be a finite-dimensional Hamiltonian with real energy packet
-$E=(E_1,\ldots,E_D)$.  Global phase is physically irrelevant to recurrence,
-so the natural characters are balanced.
-
-\begin{definition}[Balanced relation lattice]
-The projective spectral relation lattice is
-\begin{equation}
- \Rel_E:=\left\{k\in\Z^D:
-  \sum_{j=1}^D k_j=0,\quad \sum_{j=1}^D k_jE_j=0\right\}.
- \label{eq:lattice}
-\end{equation}
-Its rational rank is
-$r(E):=\dim_\Q\operatorname{span}_\Q\Rel_E$.
-For a reference level $E_1$, define the temporal rank
-\begin{equation}
- \tau(E):=\dim_\Q\operatorname{span}_\Q
- \{E_j-E_1:2\leq j\leq D\}.
- \label{eq:temporal-rank}
-\end{equation}
-
-The spectrum is \emph{maximally projective} when $\Rel_E=\{0\}$,
-equivalently when $\tau(E)=D-1$.
-\end{definition}
-
-The definition is independent of the chosen reference.  It includes all
-finite-order no-resonance conditions at once: an equality between two sums
-of the same number of energies is exactly an element of \eqref{eq:lattice}.
-
-\begin{theorem}[Law 2: projective rank conservation]
-For every nonempty finite spectrum,
-\begin{equation}
- \boxed{\tau(E)+r(E)=D-1.}
- \label{eq:rank-conservation}
-\end{equation}
-More precisely, let
-\begin{equation}
- \Phi_E:\{c\in\Q^D:\textstyle\sum_jc_j=0\}\longrightarrow\R,
- \qquad \Phi_E(c)=\sum_jc_jE_j.
- \label{eq:detuning-map}
-\end{equation}
-
-Then $\ker\Phi_E$ is the rational span of $\Rel_E$, and
-$\operatorname{im}\Phi_E$ is the rational span of the anchored gaps.
-\end{theorem}
-
-\begin{proof}
-The domain of $\Phi_E$ has rational dimension $D-1$.  Clearing
-denominators shows that a rational balanced vector lies in the kernel exactly
-when it lies in $\operatorname{span}_\Q\Rel_E$.  Every image element can be
-written as
+Let $\Gamma=(V,\mathcal E)$ be a finite connected simple graph with
+$V\ne\varnothing$. At site $v$ choose a complex Hilbert space of dimension
+$q_v\geq2$, and put
 \[
- \sum_jc_jE_j=\sum_{j=2}^D c_j(E_j-E_1)
+ \cH=\bigotimes_{v\in V}\C^{q_v},\qquad D=\prod_{v\in V}q_v.
 \]
-because $\sum_jc_j=0$.  Conversely each anchored gap is the image of the
-balanced vector $e_j-e_1$.  Rank--nullity gives
-\eqref{eq:rank-conservation}.
-\end{proof}
+An operator supported on $S\subseteq V$ acts as the identity outside $S$.
+Write $\cL_\Gamma$ for the real span of all Hermitian operators supported
+on one site or on an edge of $\Gamma$. All Hermitian directions on these
+supports are allowed. Fix real basis coordinates on this finite-dimensional
+space; almost every refers to Lebesgue measure in these coordinates.
+No random-matrix ensemble is assumed.
 
-Equation \eqref{eq:rank-conservation} is the universal principle of the
-paper.  An exact relation does not merely correlate two energies: it removes
-one rational direction from the completed projective phase motion.  Maximal
-projective rank means that the relative phase orbit is dense in the full
-$(D-1)$-torus.  When $D\geq3$, it also rules out every nonzero \emph{exact}
-simultaneous projective return; recurrence remains approximate rather than
-periodic.
-
-The lattice determines more than dimension.  Define its anchored form
-\begin{equation}
- \Rel_E^{\rm anch}=
- \left\{\ell\in\Z^{D-1}:
- \left(-\sum_{j=1}^{D-1}\ell_j,\ell_1,\ldots,\ell_{D-1}\right)
- \in\Rel_E\right\}
- \label{eq:anchored-lattice}
-\end{equation}
-and the corresponding annihilator
-\begin{equation}
- K_E=\left\{z\in\T^{D-1}:
- \prod_{j=1}^{D-1}z_j^{\ell_j}=1
- \text{ for every }\ell\in\Rel_E^{\rm anch}\right\}.
- \label{eq:relation-hull}
-\end{equation}
-
-\begin{theorem}[Exact relation-hull law]
-The closure of the anchored phase line
-\begin{equation}
- t\longmapsto
- \left(\ee^{-\ii t(E_2-E_1)},\ldots,
-       \ee^{-\ii t(E_D-E_1)}\right)
- \label{eq:anchored-phase-line}
-\end{equation}
-is exactly $K_E$.  Consequently two finite spectra have the same completed
-projective phase ensemble exactly when they have the same balanced relation
-lattice.
-\end{theorem}
-
-Thus relation rank is the numerical shadow of a stronger object: the entire
-compact group on which completed recurrence occurs.  Later metrics and
-observers restrict this same $K_E$; they do not replace it.
-
-\section{Sharp first-hit laws}
-
-For $x\in\R$, write
-$\lVert x\rVert_\Z:=\min_{p\in\Z}|x-p|$.  Given
-$\beta=(\beta_1,\ldots,\beta_d)\in\R^d$ and $r>0$, define
-\begin{equation}
- T_\beta(r):=\min\left\{q\in\N:q\geq1,
-  \max_{1\leq j\leq d}\lVert q\beta_j\rVert_\Z<r\right\}.
- \label{eq:first-hit}
-\end{equation}
-Dirichlet's theorem gives $T_\beta(r)\leq\lceil1/r\rceil^d$.
-The matching lower exponent holds outside the exceptional set of vectors
-that are too well approximable.
-
-\begin{definition}
-A vector $\beta\in\R^d$ is very well approximable if some $\delta>0$
-admits infinitely many $q\geq1$ for which
-\[
- \max_j\lVert q\beta_j\rVert_\Z
- \leq q^{-1/d-\delta}.
-\]
-\end{definition}
-
-\begin{theorem}[Metric first-hit exponent]
-If $d\geq1$ and $\beta$ is not very well approximable, then
-\begin{equation}
- \lim_{r\downarrow0}
- \frac{\log T_\beta(r)}{\log(1/r)}=d.
- \label{eq:first-hit-exponent}
-\end{equation}
-Consequently $T_\beta(r)=r^{-d+o(1)}$.
-\end{theorem}
-
-The metric theorem of Kleinbock and Margulis implies that almost every point
-on a real-analytic nondegenerate manifold is not very well approximable
-\cite{KleinbockMargulis1998}.  In the present setting, nondegeneracy is not
-assumed.  Section~\ref{sec:local-proof} proves it from exact spectral escape
-of the local Hamiltonian family.
-
-For a simple spectrum, order energies as
-$\lambda_1<\cdots<\lambda_D$ and introduce two canonical vectors:
+For $H\in\cL_\Gamma$, set $U_H(t)=\exp(-\ii tH)$, with $\hbar=1$.
+Given a finite matrix family $\mathcal B=(B_a)_a$ and weights
+$\lambda_a\geq0$, define
 \begin{align}
- \beta^{\rm disc}_j&=\frac{\lambda_{j+1}-\lambda_1}{2\pi},
-   &&1\leq j\leq D-1,                                      \label{eq:disc-beta}\\
- \beta^{\rm wind}_j&=\frac{\lambda_{j+2}-\lambda_1}
-                           {\lambda_2-\lambda_1},
-   &&1\leq j\leq D-2.                                      \label{eq:wind-beta}
+ \Delta_{\mathcal B,H}(t)
+   &=\sum_a\lambda_a\|U_H(t)B_aU_H(t)^*-B_a\|_{\HS}^2,
+       \label{eq:defect}\\
+ T_{\mathcal B,H}(\delta;t_0)
+   &=\inf\{t\geq t_0:\Delta_{\mathcal B,H}(t)<\delta\},
+       \qquad t_0>0,\quad \delta>0.                 \label{eq:return}
 \end{align}
-The first counts simultaneous anchored-gap returns at integer observation
-times.  The second spends the first positive gap as a clock and counts the
-winding needed to align every remaining gap.  It is a clock-normalized
-winding statement, not a claim about the unrestricted continuous-time
-first-return distribution.
+The matrices need not be Hermitian. Finite-dimensional recurrence makes
+the set in \eqref{eq:return} nonempty.
 
-\section{Replica collisions and return moments}
+For a simple $H$, use any orthonormal energy basis, labelled by
+$1,\ldots,D$. Its \emph{observer coherence graph} $G_{\mathcal B,H}$ has
+an edge $\{i,j\}$, $i\ne j$, exactly when
+\begin{equation}
+ a_{ij}:=\sum_a\lambda_a
+       \bigl(|(B_a)_{ij}|^2+|(B_a)_{ji}|^2\bigr)>0.
+ \label{eq:weights}
+\end{equation}
+Let $c(G)$ count all connected components, including isolated vertices,
+and write $r(G)=D-c(G)$. Rephasing or relabelling the energy basis does not
+change this integer. We use $[x]_+=\max(x,0)$.
 
-Let $w_j>0$ with $\sum_jw_j=1$.  These are spectral weights of a state with
-nonzero overlap on every energy eigenvector.  Define survival amplitude and
-fidelity
+\begin{theorem}[Connected-network observer law]\label{thm:network}
+For every $\Gamma$ and every $(q_v)_{v\in V}$ as above there is a
+Lebesgue-conull subset $\mathcal U_\Gamma\subseteq\cL_\Gamma$ such that
+every $H\in\mathcal U_\Gamma$ has simple spectrum and, simultaneously for
+every finite $\mathcal B$, every nonnegative weight family, and every
+$t_0>0$,
 \begin{equation}
- A(t)=\sum_{j=1}^D w_j\ee^{-\ii E_jt},\qquad F(t)=|A(t)|^2.
- \label{eq:survival}
+ \lim_{\delta\downarrow0}
+ \frac{\log T_{\mathcal B,H}(\delta;t_0)}{\log(1/\delta)}
+       =\frac{[r(G_{\mathcal B,H})-1]_+}{2}.
+ \label{eq:main}
 \end{equation}
-For a multiplicity vector $p\in\N^D$, put
-$|p|=\sum_jp_j$ and
-$\binom{m}{p}=m!/\prod_jp_j!$.  The unavoidable order-$m$ permutation floor
-is
-\begin{equation}
- \Pi_m(w):=
- \sum_{\substack{p\in\N^D\\|p|=m}}
- \binom{m}{p}^{\!2}\prod_{j=1}^D w_j^{2p_j}.
- \label{eq:floor}
-\end{equation}
-
-\begin{theorem}[All-order collision equivalence]
-For a finite spectrum and strictly positive weights, the symmetric long-time
-moments satisfy
-\begin{equation}
- \lim_{T\to\infty}\frac1{2T}\int_{-T}^{T}F(t)^m\,dt
- =\sum_{\substack{|p|=|q|=m\\p\cdot E=q\cdot E}}
- \binom{m}{p}\binom{m}{q}
- \prod_jw_j^{p_j+q_j}.                                    \label{eq:moment-collision}
-\end{equation}
-The right side is at least $\Pi_m(w)$.  Moreover, the following are
-equivalent:
-\begin{enumerate}[label=(\roman*)]
-\item $\Rel_E=\{0\}$;
-\item the collision sum on the right of \eqref{eq:moment-collision} equals
-  $\Pi_m(w)$ for every $m\geq0$;
-\item every long-time moment in \eqref{eq:moment-collision} equals
-  $\Pi_m(w)$.
-\end{enumerate}
-The equivalence holds for every choice of strictly positive weights.
+The same event can be chosen so that the energies satisfy no nonzero
+balanced rational relation.
 \end{theorem}
 
-\begin{proof}
-The multinomial expansion of $F(t)^m$ is a finite sum indexed by pairs
-$(p,q)$ with $|p|=|q|=m$.  Its phase is
-$\exp[-\ii t(p-q)\cdot E]$ and its coefficient is strictly positive.
-Symmetric time averaging sends a nonzero detuning to zero and a zero
-detuning to one, giving \eqref{eq:moment-collision}.  Terms with $p=q$ give
-\eqref{eq:floor}.  If $\Rel_E=\{0\}$, every balanced equality
-$(p-q)\cdot E=0$ forces $p=q$.  Conversely, any nonzero
-$k\in\Rel_E$ has positive and negative parts $k^+,k^-$ with equal mass;
-the unequal pair $(k^+,k^-)$ contributes a strictly positive excess at that
-replica order.  This proves all equivalences.
-\end{proof}
+The order of quantifiers matters. The Hamiltonian is selected before the
+observers. This is stronger than an almost-everywhere statement for each
+fixed observer separately. It does not make the comparison constants or
+the onset of the limit uniform over observers. Zero weights are allowed;
+an empty family gives exponent zero.
 
-The theorem gives an operational reading of the full relation lattice.
-Second-order gap nondegeneracy detects only a shallow part of it.  All
-replica orders together are complete: every nontrivial balanced relation
-appears at the order equal to its positive mass, and positivity prevents
-cancellation from hiding it.
+The interaction graph $\Gamma$ lives on physical sites.
+The coherence graph $G_{\mathcal B,H}$ lives on energy eigenstates.
+They are not interchangeable. Connectedness of $\Gamma$ makes the
+spectral arithmetic sufficiently rich; connectivity of
+$G_{\mathcal B,H}$ determines how many relative phases this observer
+requires to return.
 
-\section{Law 3: weights and observers set the visible return geometry}
-\label{sec:weighted-observer}
-
-The relation hull says which phase configurations are possible.  It does not
-yet say how large a return target is.  Spectral weights supply that metric.
-Let $w=(w_1,\ldots,w_r)$ have positive entries summing to one.  For a phase
-packet $z\in\T^r$, define
-\begin{equation}
- C_w(z)=\left|\sum_{j=1}^r w_jz_j\right|.
- \label{eq:weighted-coherence}
-\end{equation}
-The exact weighted variance identity
-\begin{equation}
- 1-C_w(z)^2=\frac12\sum_{i,j}w_iw_j|z_i-z_j|^2
- \label{eq:weighted-variance}
-\end{equation}
-shows that fidelity return is a projective phase-synchronization problem.
-
-For a pivot $k$ and amplitude defect $0<\eta\leq1$, allocate distortions to
-the non-pivot coordinates and set
-\begin{align}
- \Hwater_k(w,\eta)
- &=\min\left\{\frac12\sum_{j\ne k}\log\frac{w_j}{D_j}:
- 0<D_j\leq w_j,\ \sum_{j\ne k}D_j\leq\eta\right\},
- \label{eq:water-pivot}\\
- \Hwater_{\proj}(w,\eta)&=\min_k\Hwater_k(w,\eta).
- \label{eq:water-projective}
-\end{align}
-If $\eta<1-w_k$, its optimizer is
-\begin{equation}
- D_j^*=\min\{w_j,\lambda_k^{-1}\},\qquad
- \sum_{j\ne k}\min\{w_j,\lambda_k^{-1}\}=\eta,
- \label{eq:reverse-water}
-\end{equation}
-and
-\begin{equation}
- \Hwater_k(w,\eta)=\frac12\sum_{j\ne k}\log_+(\lambda_kw_j).
- \label{eq:water-value}
-\end{equation}
-This is numerically the classical parallel-Gaussian reverse-water program
-\cite{CoverThomas2006,GrayNeuhoff1998}; here it describes deterministic phase
-resolution, not a communication channel.
-
-Let
-\begin{align}
- \mu_w(\eta)&=m_{\T^r}\{z:C_w(z)\geq1-\eta\},             \label{eq:target-volume}\\
- I_w(\eta)&=-\log\mu_w(\eta),                              \label{eq:target-information}
-\end{align}
-and let $T_w(\eta)$ be the least $N$ such that every real phase packet
-$\omega$ has some $1\leq n\leq N$ with
-\begin{equation}
- \left|\sum_jw_j\ee^{\ii n\omega_j}\right|\geq1-\eta.
- \label{eq:universal-deadline}
-\end{equation}
-
-\begin{theorem}[Law 3a: weight--target--deadline law]
-\label{thm:water-law}
-For $r\geq2$ and $0<\eta\leq1$, the target has positive Haar volume and
-\begin{align}
- \Hwater_{\proj}-\frac\pi4(r-1)-\log r
- &\leq I_w
- \leq\Hwater_{\proj}-(r-1)\log\frac{\sqrt2}{\pi},          \label{eq:target-sandwich}\\
- \Hwater_{\proj}-\frac\pi4(r-1)-\log(2r)
- &<\log T_w
- \leq\Hwater_{\proj}+(r-1)\log(2\pi\sqrt2).               \label{eq:deadline-sandwich}
-\end{align}
-For every phase packet and every delay $M\geq0$, a later return occurs at
-some
-\begin{equation}
- M<n\leq(M+1)T_w(\eta).                                    \label{eq:post-delay-return}
-\end{equation}
-Moreover, through the first $N$ ticks the Haar fraction of phase packets that
-have returned is at most
-\begin{equation}
- Nr\exp\left\{\frac\pi4(r-1)-\Hwater_{\proj}(w,\eta)\right\}.
- \label{eq:finite-horizon-haar}
-\end{equation}
-\end{theorem}
-
-Hard support is therefore not the complete finite-resolution variable.
-Small weights can fall below the water line and cease to contribute to the
-leading synchronization cost.  The same functional controls the intrinsic
-volume of the true target and the least deadline uniform over all compatible
-spectra, but only within the displayed finite constants; no asymptotic
-equality is being hidden.
-
-Observation supplies a second quotient.  Let $E_1,\ldots,E_d$ be distinct
-energy sectors and $B^{(a)}$ a finite family of states or observables with
-weights $\lambda_a\geq0$.  Write $B^{(a)}_{ij}$ for energy-block matrix
-elements and set
-\begin{align}
- W_{ij}&=\sum_a\lambda_a\|B^{(a)}_{ij}\|_{\HS}^2,          \label{eq:observer-weight}\\
- \mathcal E_B(z)&=\sum_{i,j}W_{ij}|z_i-z_j|^2.             \label{eq:observer-energy}
-\end{align}
-The coherence graph $G_B$ has an edge $ij$ when $W_{ij}>0$.
-
-\begin{theorem}[Law 3b: exact observer-coherence law]
-\label{thm:observer-law}
-For $U_t=\sum_i\ee^{-\ii tE_i}P_i$,
-\begin{equation}
- \sum_a\lambda_a\|U_tB^{(a)}U_t^\dagger-B^{(a)}\|_{\HS}^2
- =\mathcal E_B(z(t)).                                      \label{eq:observer-identity}
-\end{equation}
-This vanishes exactly when phases agree on every edge, equivalently on every
-connected component.  If $c(G_B)$ is the number of components, the exact
-observable projective phase capacity is
-\begin{equation}
- \boxed{d-c(G_B).}                                         \label{eq:observer-rank}
-\end{equation}
-For every integer $Q\geq1$, some
-$1\leq n\leq(Q+1)^{d-c(G_B)}$ simultaneously places all visible phase
-differences within the corresponding graph-error tolerance.  There are hard
-spectra for which no smaller universal exponent is possible.
-\end{theorem}
-
-The graph theorem explains why global recurrence and observed recurrence can
-have different effective dimensions without contradiction.  One common
-phase per component is invisible.  Adding probes can connect components and
-increase visible rank; changing the Hamiltonian is unnecessary.
-
-\section{Law 4: finite horizons reveal geometry, not completed arithmetic}
-\label{sec:finite-horizon}
-
-Exact rational rank is an infinite-precision invariant.  Finite-time unitary
-dynamics is norm-continuous, while the relation lattice is arithmetically
-discontinuous.  This produces a sharp division between what finite records
-can certify and what completed recurrence knows.
-
-\begin{theorem}[Law 4: finite-horizon arithmetic ambiguity]
-\label{thm:finite-horizon-ambiguity}
-For every finite binary l-bit Hamiltonian $H_J$, every $\varepsilon>0$, and
-every finite observation horizon $T>0$, there is a Hamiltonian
-$H_{\widetilde J}$ diagonal in the same product basis such that
-\begin{align}
- \sum_S|\widetilde J_S-J_S|&<\varepsilon,                  \label{eq:lbit-close}\\
- \tau(E_{\widetilde J})&=2^N-1,                            \label{eq:lbit-maximal-close}
-\end{align}
-while all off-diagonal configuration transitions remain zero.  For every
-normalized observable $O$ and $|t|\leq T$,
-\begin{equation}
- \|\ee^{-\ii tH_{\widetilde J}}O\ee^{\ii tH_{\widetilde J}}
-   -\ee^{-\ii tH_J}O\ee^{\ii tH_J}\|
- \leq2T\varepsilon\|O\|.                                 \label{eq:finite-window-close}
-\end{equation}
-Thus no uniformly finite-precision, finite-horizon record can determine the
-completed exact relation rank without an additional arithmetic promise.
-\end{theorem}
-
-This no-go does not make finite-time recurrence uninformative.  Equations
-\eqref{eq:deadline-sandwich} and \eqref{eq:finite-horizon-haar} quantify
-metric statements that are stable at fixed resolution.  The distinction is
-between completed arithmetic equality and finite-resolution target geometry.
-
-The carrier law is not confined to a finite spectrum.  Let $(E_j)_{j\geq0}$
-be a countable pure-point packet with weights $p_j\geq0$, $\sum_jp_j=1$.
-Anchor $\omega_j=E_j-E_0$, let $\Rel_E^{\rm fin}$ be the lattice of finitely
-supported balanced integer relations, and let $K_E$ be its annihilator in the
-countable torus.  The weighted phase embedding
-\begin{equation}
- \Psi_p(z)=(\sqrt{p_j}z_j)_{j\geq0}\in\ell^2
- \label{eq:weighted-embedding}
-\end{equation}
-pulls the Hilbert metric onto the exact projective hull.
-
-\begin{theorem}[Countable relation--metric extension]
-\label{thm:countable-extension}
-The closure of the anchored countable phase line is exactly $K_E$, and
-anchoring identifies its finite-character relation lattice with
-$\Rel_E^{\rm fin}$.  For every $r>0$, a positive survival return with squared
-defect at most $2r^2$ occurs no later than the covering number
-\begin{equation}
- N_r\bigl(\Psi_p(K_E)\bigr).                               \label{eq:countable-cover}
-\end{equation}
-In particular, every normalized summable pure-point packet recurs at every
-positive weighted phase resolution, after every finite checkpoint.
-\end{theorem}
-
-Finite rank is therefore not the universal primitive.  The complete
-relation hull is; finite rank is its finite-dimensional shadow, and covering
-entropy replaces dimension for countably infinite pure-point carriers.
-
-\section{Static nearest-neighbour paths attain the maximum}
-\label{sec:local-main}
-
-Let
-\(
- \mathscr H_{n,q}=(\C^q)^{\otimes n}
-\)
-and let $\mathscr V_{n,q}$ be the real vector space of all Hermitian operators
-that are sums of terms supported on one site or one edge of the open path:
-\begin{equation}
- \mathscr V_{n,q}=
- \left\{\sum_{j=1}^{n}A_j^{(j)}+
-              \sum_{j=1}^{n-1}B_j^{(j,j+1)}:
- A_j=A_j^\dagger,\ B_j=B_j^\dagger\right\}.
- \label{eq:qudit-path-space}
-\end{equation}
-Superscripts denote tensor embedding.  Fix once and for all a real basis
-$P_1,\ldots,P_N$ of this space and write
-\begin{equation}
- H_{n,q}(\theta)=\sum_{a=1}^{N}\theta_aP_a,
- \qquad \theta\in\R^N.
- \label{eq:qudit-path-family}
-\end{equation}
-The identity direction is included; it shifts every energy equally and hence
-drops out of all balanced relations.  The interaction graph is the open path,
-so its maximum degree is two, and no longer-range term is present.
-
-\begin{theorem}[Same-Hamiltonian local saturation]
-\label{thm:local-capstone}
-Let $n,q\geq2$, $D=q^n$, and let $U\subset\R^N$ be any nonempty,
-connected, open set on which $H_{n,q}(\theta)$ has simple spectrum.  For
-Lebesgue-almost every $\theta\in U$, one and the same Hamiltonian satisfies:
-\begin{enumerate}[label=(\alph*)]
-\item $\Rel_{E(\theta)}=\{0\}$ and $\tau(E(\theta))=D-1$;
-\item for the ordered spectrum, the stroboscopic vector
-  \eqref{eq:disc-beta} obeys
-  \[
-   \lim_{r\downarrow0}
-   \frac{\log T_{\beta^{\rm disc}}(r)}{\log(1/r)}=D-1;
-  \]
-\item the clock-normalized vector \eqref{eq:wind-beta} obeys
-  \[
-   \lim_{r\downarrow0}
-   \frac{\log T_{\beta^{\rm wind}}(r)}{\log(1/r)}=D-2;
-  \]
-\item for every strictly positive spectral weight and every $m\geq0$, the
-  replica collision mass and the long-time survival-fidelity moment equal
-  the permutation floor \eqref{eq:floor}.
-\end{enumerate}
-
-In addition, there is no nonzero exact simultaneous projective return.
-\end{theorem}
-
-The key point is quantifier order.  A single full-measure set of coefficients
-works simultaneously for maximal rank, both exponent laws, every positive
-weight, and every replica order.  The Hamiltonian is not changed between
-clauses.  A nonempty open simple-spectrum chart exists for every $n,q\geq2$.
-
-\begin{corollary}[No locality discount]
-For almost every Hamiltonian in each chart of Theorem~\ref{thm:local-capstone},
-the stroboscopic return exponent is $q^n-1$.  Thus spatial dimension one,
-bounded interaction degree, and only nearest-neighbour terms do not reduce
-the exponent below the full projective Hilbert-space dimension.
+\begin{corollary}[Support-contained hypergraph interactions]
+\label{cor:hyper}
+Let $\mathfrak H$ be a finite family of site subsets. Suppose its
+two-section graph, joining distinct sites contained in a common
+hyperedge, is connected. Replace $\cL_\Gamma$ by the real span of all
+Hermitian onsite operators and all Hermitian operators supported
+\emph{inside} a hyperedge. Then Theorem~\ref{thm:network} holds in this
+full coefficient space.
 \end{corollary}
 
-\section{The exact commuting-local boundary}
-\label{sec:lbit-boundary}
+The support-contained convention includes lower-body terms on a
+hyperedge. The corollary does not assert the same result for a restricted
+space containing only traceless genuinely $k$-body interactions.
 
-The local saturation theorem does not say that every local family is
-maximal.  It says that geometric locality alone cannot force a deficit.  A
-commuting l-bit family makes the missing algebraic restriction explicit.
-For $N$ binary modes and $x\in\{0,1\}^N$, let
+\begin{corollary}[Pure states and trace-radius returns]\label{cor:states}
+Fix $H\in\mathcal U_\Gamma$.
+For every normalized pure state $\psi$, let $s$ be the number of its
+nonzero energy-basis coefficients and define
+\[
+ T_{\psi,H}^{\rm fid}(\delta;t_0)=
+ \inf\{t\geq t_0:1-|\langle\psi,U_H(t)\psi\rangle|^2<\delta\}.
+\]
+Then
 \begin{equation}
- E_J(x)=\sum_{S\subseteq\{1,\ldots,N\}}J_S
-       \prod_{i\in S}(-1)^{x_i}.                           \label{eq:lbit-energy}
+ \lim_{\delta\downarrow0}
+ \frac{\log T_{\psi,H}^{\rm fid}(\delta;t_0)}{\log(1/\delta)}
+     =\frac{[s-2]_+}{2}.                       \label{eq:pure}
 \end{equation}
-All terms commute and the configuration basis is fixed.
-
-\begin{theorem}[Exact l-bit phase-rank classification]
-\label{thm:lbit-classification}
-For every coefficient family,
+For every density matrix $\rho$, let $G_{\rho,H}$ be its coherence graph
+and define
+\[
+ T_{\rho,H}^{\rm tr}(\varepsilon;t_0)=
+ \inf\{t\geq t_0:\|U_H(t)\rho U_H(t)^*-\rho\|_1<\varepsilon\}.
+\]
+Then
 \begin{equation}
- \boxed{
- \tau(E_J)=\dim_\Q\operatorname{span}_\Q
- \{J_S:S\neq\varnothing\}.}                              \label{eq:lbit-rank}
+ \lim_{\varepsilon\downarrow0}
+ \frac{\log T_{\rho,H}^{\rm tr}(\varepsilon;t_0)}
+      {\log(1/\varepsilon)}
+       =[D-c(G_{\rho,H})-1]_+.                 \label{eq:trace}
 \end{equation}
-Consequently
-\begin{equation}
- \tau(E_J)+r(E_J)=2^N-1.                                  \label{eq:lbit-conservation}
-\end{equation}
-If only one-body coefficients are present, $\tau(E_J)\leq N$.  If nonzero
-supports have diameter at most $R$, then
-\begin{equation}
- \tau(E_J)\leq N,2^{R+1}.                                \label{eq:lbit-range}
-\end{equation}
-Both support ceilings are attained by rationally independent allowed
-coefficients, while rational independence of all nonconstant $J_S$ gives
-$\tau(E_J)=2^N-1$.
-\end{theorem}
-
-Walsh orthogonality recovers every $J_S$ from the complete energy packet, so
-coefficient span and gap span coincide.  The contrast with
-Theorem~\ref{thm:local-capstone} is exact.  Fixed-range commuting support
-permits only linearly many coefficient directions at fixed $R$; the full
-noncommuting nearest-neighbour path, despite also using linearly many local
-parameters, generically maps those parameters into $q^n-1$ rationally
-independent eigenvalue directions.  Parameter-count dimension and rational
-spectral rank are different invariants.
-
-One concrete state sees the entire l-bit law.  The uniform product state
-$|+\rangle^{\otimes N}$ has positive weight on every configuration, so its
-visible gap space equals the complete gap space.  Its all-order long-time
-survival moments attain the permutation floors exactly when
-$\tau(E_J)=2^N-1$.  The rank is therefore not merely hidden in an
-unobservable enumeration of eigenvalues.
-
-\section{Exact completed density and the thermodynamic law}
-
-Fix a reference energy $E_1$ and define the projective chord defect
-\begin{equation}
- \Delta_E(t)=\max_{2\leq j\leq D}
- \left|\ee^{-\ii t(E_j-E_1)}-1\right|.
- \label{eq:chord-defect}
-\end{equation}
-\par\smallskip\noindent
-For a measurable time set $S$, use centered completed density
-\begin{equation}
- \dens(S)=\lim_{T\to\infty}
- \frac{\bigl|S\cap[-T,T]\bigr|}{2T},
- \label{eq:density}
-\end{equation}
-\par\smallskip\noindent
-whenever the limit exists.
-
-\begin{theorem}[Exact projective-return density]
-If $E$ is maximally projective and $0<\varepsilon<2$, then
-\begin{equation}
- \boxed{
- \dens\{t:\Delta_E(t)<\varepsilon\}
- =\left(\frac{2\arcsin(\varepsilon/2)}{\pi}\right)^{D-1}.}
- \label{eq:exact-density}
-\end{equation}
-The same value is obtained with a non-strict inequality.
-\end{theorem}
+Using the conventional trace distance $\frac12\|\cdot\|_1$
+gives the same exponent.
+\end{corollary}
 
 \begin{proof}
-Maximal projective rank makes the anchored phase flow equidistributed on
-$\T^{D-1}$.  In one circle, chord distance below $\varepsilon$ from the
-identity is an arc of normalized Haar measure
-$2\arcsin(\varepsilon/2)/\pi$.  The target is the Cartesian product of
-$D-1$ such arcs.  Its boundary has Haar measure zero, so equidistribution
-gives \eqref{eq:exact-density} for strict and closed targets.
+For $P_\psi=|\psi\rangle\langle\psi|$, the coherence graph is complete on
+the exact support and isolated elsewhere, so $r=s-1$. Direct expansion
+gives
+\[
+ \|U_H(t)P_\psi U_H(t)^*-P_\psi\|_{\HS}^2
+       =2\bigl(1-|\langle\psi,U_H(t)\psi\rangle|^2\bigr).
+\]
+A positive constant multiplying a tolerance does not change a logarithmic
+exponent. For the second assertion, finite-dimensional singular-value
+norms satisfy $\|M\|_{\HS}\leq\|M\|_1\leq\sqrt D\,\|M\|_{\HS}$.
+The associated return sets sandwich the trace-radius time between
+squared-Hilbert--Schmidt times at thresholds differing by constant
+multiples of $\varepsilon^2$. Apply \eqref{eq:main}.
 \end{proof}
 
-\subsection{Thermodynamic limit}
+A stationary energy-diagonal matrix has $r=0$. A graph with $r=1$ sees
+one nonzero frequency and has exact periodic returns. Both boundary
+exponents are zero. A full-support pure state has exponent $(D-2)/2$.
+The theorem also classifies states chosen to have any smaller exact
+support, after $H$ is fixed. It makes no assertion that an arbitrary
+fixed physical local probe has a connected energy-basis graph.
 
-For an $n$-site $q$-level path, set
-\begin{align}
- b_\varepsilon=\frac{2\arcsin(\varepsilon/2)}{\pi},\qquad
- I_\varepsilon&=-\log b_\varepsilon>0,                       \label{eq:rate}\\
- \rho_{n,q}(\varepsilon)&=b_\varepsilon^{q^n-1}.             \label{eq:rho-definition}
-\end{align}
+\section{The observer metric and the continuous clock}
 
-\begin{theorem}[Thermodynamic projective-recurrence extinction]
-For every $q\geq2$ and $0<\varepsilon<2$, the exact finite-size identity and
-its three limits are
-\begin{align}
- -\log\rho_{n,q}(\varepsilon)&=(q^n-1)I_\varepsilon,          \label{eq:finite-rate}\\
- \rho_{n,q}(\varepsilon)&\longrightarrow0,                  \label{eq:rho-zero}\\
- \frac{-\log\rho_{n,q}(\varepsilon)}{q^n}
-   &\longrightarrow I_\varepsilon,                          \label{eq:hilbert-rate}\\
- \frac{\log[-\log\rho_{n,q}(\varepsilon)]}{n}
-   &\longrightarrow\log q.                                  \label{eq:double-log}
-\end{align}
-\end{theorem}
-
-\paragraph{Order of limits.}
-Equation \eqref{eq:double-log} is the precise double-exponential statement.
-The order of limits matters: completed-time density is taken at each fixed
-finite $n$, and only then is $n\to\infty$ taken.  This theorem does not
-construct or assert recurrence of an infinite-volume global orbit.
-
-\section{Comparison with the literature}
-
-Existing results illuminate individual layers of
-\eqref{eq:factorization}.  Bocchieri and Loinger prove qualitative finite
-quantum recurrence \cite{BocchieriLoinger1957}.  General and random-model
-work gives recurrence bounds, escape-time dependence, concentration, and
-generic saturation without the exact local-family relation theorem
-\cite{RiddellPagliaroliAlhambra2023,KotowskiOszmaniec2026,GuptaShort2026}.
-Peripheral spectra and attractor algebras classify asymptotic channel
-structure \cite{WolfPerezGarcia2010,Albert2019,AmatoEtAl2023}; our contraction
-law isolates the state-dependent persistent mass as a sharp scalar threshold
-and attaches a finite weighted deadline below it.  Reverse water filling is
-classical \cite{CoverThomas2006,GrayNeuhoff1998}; the recurrence result is that
-the same finite optimization controls both the exact projective target volume
-and the least spectrum-uniform return deadline, with explicit two-sided
-remainders.  The coherence-graph law supplies the observer quotient that a
-state-only entropy does not encode.
-
-For locality, Huang proves nondegenerate gaps for almost every geometrically
-local Hamiltonian, but pairwise gap nondegeneracy is weaker than excluding
-every balanced relation \cite{Huang2021}.  Riddell and Bertini construct local
-free-fermion models with rationally independent single-particle spectra, while
-their many-body spectra retain additive structure \cite{RiddellBertini2024}.
-Exact spectral-form-factor moments under independence hypotheses are prior
-art \cite{CamposVenutiOdavicHamma2026}; our local theorem supplies the missing
-all-order independence inside the full interacting path family.  Exact
-Floquet recurrence has a complementary cyclotomic arithmetic classification
-\cite{AnandEtAl2026}.
-
-To our knowledge, none of the cited results proves the joint statement of
-Theorem~\ref{thm:local-capstone}: almost-everywhere maximal projective rank,
-the $D-1$ and $D-2$ sharp first-hit exponents, and all-order moment floors for
-one Hamiltonian drawn from the full static nearest-neighbour qudit path
-family.  In particular, the theorem gives a negative answer, for this
-canonical family and modulo global energy shift, to the proposed obstruction
-that every two-body Hamiltonian might carry a hidden energy resonance
-\cite{Szymanski2024}.
-
-\section{Interpretation and scope}
-
-The factorization changes what ``recurrence complexity'' means.  Loss can
-remove amplitude without changing the relation geometry of what survives.
-Relations can shrink the completed orbit without changing hard spectral
-support.  Small weights can remove directions from finite-resolution cost
-without changing exact rank.  Restricted probes can identify only a quotient
-of the same phase hull.  These are distinct operations and should not be
-compressed into one effective dimension.
-
-The local result then isolates a common misconception.  Locality restricts
-the support and number of Hamiltonian coefficients, but projective recurrence
-rank is the rational rank of the resulting eigenvalue gaps.  A low-dimensional
-analytic coefficient family can be arithmetically nondegenerate in a much
-larger spectral space.  Conversely, fixed-range commuting l-bit structure
-really does bound rank because Walsh duality identifies spectral directions
-one-for-one with allowed interaction coefficients.
-
-The scope is exact and deliberately bounded.
-\begin{itemize}
-\item Loss law concerns finite-dimensional contractions.  It does not claim
-  that every quantum channel is Hilbert--Schmidt contractive.
-\item Hamiltonian laws concern finite, closed, time-independent systems;
-  countable extension concerns normalized summable pure-point phase packets.
-\item Generic means Lebesgue-almost every coefficient in the stated local
-  family or chart, not every local Hamiltonian.  Commuting and integrable
-  subfamilies can have many exact relations.
-\item Exponent $D-1$ is for integer-time anchored-gap hits.  Exponent $D-2$
-  is for first-gap-clock-normalized winding.  Neither is presented as an
-  unrestricted continuous-time first-return distribution.
-\item Exact density is a completed-time statement.  It gives no finite-time
-  convergence rate without additional quantitative Diophantine information.
-\item Thermodynamic limit is ordered: time completion precedes growth of
-  system size.  No infinite-volume global recurrence is claimed.
-\item Finite-horizon ambiguity concerns exact arithmetic inference.  It does
-  not preclude stable estimation of metric, finite-resolution quantities.
-\end{itemize}
-
-Within those boundaries, the conclusion is end-to-end: persistence selects
-the phase carrier; relations determine its exact hull; weights and probes set
-its operational geometry; and a static one-dimensional bounded-degree family
-generically realizes the largest finite projective carrier allowed by its
-Hilbert space.
-
-\appendix
-
-\section{Proof of the persistent-carrier law}
-\label{app:persistent}
-
-Unit-modulus eigenspaces of a finite contraction are mutually orthogonal and
-reduce both $T$ and $T^\dagger$.  Decompose
+In an energy basis, \eqref{eq:defect} is exactly
 \begin{equation}
- x=\sum_{\lambda\in\Lambda_\partial}\Pi_\lambda x+x_{\rm tr}.
- \label{eq:peripheral-decomposition}
+ \Delta_{\mathcal B,H}(t)
+   =\sum_{i<j}a_{ij}
+      |\ee^{-\ii tE_i}-\ee^{-\ii tE_j}|^2.
+ \label{eq:graph-energy}
 \end{equation}
-The restriction of $T$ to the orthogonal complement of
-$\mathcal K_\partial$ has spectral radius strictly below one, hence its
-powers converge to zero in operator norm.  Therefore
-\begin{equation}
- A_n(x,T)=\sum_{\lambda\in\Lambda_\partial}
- \lambda^n\|\Pi_\lambda x\|^2+o(1).                       \label{eq:peripheral-sum}
-\end{equation}
-The nonnegative coefficients in the phase sum total $p_T(x)$.  Simultaneous
-phase recurrence makes the sum arbitrarily close to this total after every
-delay, while the triangle inequality bounds its modulus by the same total.
-The vanishing transient gives \eqref{eq:below-ceiling} and
-\eqref{eq:above-ceiling}.  Normalization gives
-\eqref{eq:peripheral-weights}.
+Consequently only the positive-edge graph matters for its exponent;
+positive edge weights affect constants. Here
+$\T=\{z\in\C:|z|=1\}$ is the unit circle.
 
-\section{Proof of the relation-hull and weighted laws}
-\label{app:hull-water}
-
-For the anchored phase line, a character $\ell\in\Z^{D-1}$ is constant one
-exactly when
-\begin{equation}
- \sum_{j=1}^{D-1}\ell_j(E_{j+1}-E_1)=0,
- \label{eq:anchored-character-zero}
-\end{equation}
-which is equivalent to the balanced $D$-coordinate relation in
-\eqref{eq:anchored-lattice}.  The character-annihilator form of
-Kronecker--Weyl therefore identifies the orbit closure with
-\eqref{eq:relation-hull}.  Since a compact subgroup is determined by its
-annihilating characters, equality of relation lattices and equality of
-completed phase ensembles are equivalent.
-
-For the water optimizer, put $x_j=w_j/D_j$.  Feasibility becomes
-$x_j\geq1$ and $\sum_{j\ne k}w_j/x_j\leq\eta$, while the objective is
-$\frac12\sum_{j\ne k}\log x_j$.  The candidate
-$x_j^*=\max\{1,\lambda_kw_j\}$ satisfies the constraint.  Summing the
-one-coordinate supporting inequality
-\begin{equation}
- \log\max\{1,\lambda a\}
- +\lambda\left(\min\{a,\lambda^{-1}\}-\frac ax\right)
- \leq\log x,qquad x\geq1,                                \label{eq:water-support}
-\end{equation}
-proves global optimality and \eqref{eq:water-value}.
-
-For the target lower bound, use a minimizing pivot and require the projective
-coordinates to lie in arcs with
-\begin{equation}
- \|y_j\|_\T\leq\frac{\sqrt{2/x_j}}{2\pi}.
- \label{eq:water-box}
-\end{equation}
-The weighted variance identity places this product box inside the target.
-Its exact normalized Haar volume is
-\begin{equation}
- \left(\frac{\sqrt2}{\pi}\right)^{r-1}
- \exp\{-\Hwater_{\proj}\}.                                \label{eq:water-box-volume}
-\end{equation}
-For the upper bound, resolve a returned packet by a pivot of maximal weighted
-alignment, apply an exponential envelope to each phase coordinate, and use
-the optimized water level.  This gives
-\begin{equation}
- \mu_w(\eta)\leq
- r\exp\left\{\frac\pi4(r-1)-\Hwater_{\proj}\right\},       \label{eq:water-upper-volume}
-\end{equation}
-which together with \eqref{eq:water-box-volume} proves
-\eqref{eq:target-sandwich}.
-
-For the constructive deadline, partition each non-pivot circle into
-\begin{equation}
- Q_j=\left\lceil\pi\sqrt{2x_j}\right\rceil
- \label{eq:water-grid}
-\end{equation}
-arcs.  Two among the first $\prod_{j\ne k}Q_j+1$ orbit points lie in the
-same product box; their time difference returns.  Bounding the rounded
-product yields the upper half of \eqref{eq:deadline-sandwich}.  Conversely,
-every power map preserves Haar measure.  The union of the first $N$ return
-targets has measure at most $N$ times
-\eqref{eq:water-upper-volume}; choosing $N$ below its reciprocal yields a
-phase packet with no earlier return and proves the lower half.  Applying the
-deadline to $(M+1)\omega$ proves \eqref{eq:post-delay-return}.  The same union
-bound proves \eqref{eq:finite-horizon-haar}.
-
-\section{Proof of the observer, finite-horizon, and countable laws}
-\label{app:observer-countable}
-
-In the energy basis,
-\begin{equation}
- (U_tB^{(a)}U_t^\dagger-B^{(a)})_{ij}
- =(z_i\overline z_j-1)B^{(a)}_{ij}.
- \label{eq:block-phase}
-\end{equation}
-Summing squared Hilbert--Schmidt block norms proves
-\eqref{eq:observer-identity}.  Every summand is nonnegative, so the sum
-vanishes exactly when phases agree across every positive edge.  The kernel
-of the graph coboundary consists of functions constant on connected
-components; rank--nullity gives $d-c(G_B)$.  Synchronizing one root-relative
-phase per coboundary direction by Dirichlet approximation gives the stated
-$(Q+1)^{d-c(G_B)}$ ceiling.  Choosing rationally independent hard frequencies
-on a graph basis gives the matching minimax exponent.
-
-For Theorem~\ref{thm:finite-horizon-ambiguity}, the nonconstant coefficient
-packet lies in $\R^{2^N-1}$.  Rationally dependent packets form the countable
-union of rational hyperplanes, so every open $\ell^1$ ball contains a
-rationally independent packet $\widetilde J$.  Walsh inversion then gives
-\eqref{eq:lbit-maximal-close}.  Both Hamiltonians remain diagonal in the same
-configuration basis.  The Duhamel identity and
-$\|H_{\widetilde J}-H_J\|\leq\sum_S|\widetilde J_S-J_S|$ give
-\eqref{eq:finite-window-close}.
-
-For the countable extension, finitely supported characters separate points
-of the countable torus.  Balancing a character by moving its total charge to
-the anchor preserves detuning, so the anchored and balanced relation
-lattices coincide.  The character-annihilator theorem identifies the orbit
-closure with $K_E$.  Moreover,
-\begin{equation}
- \|\Psi_p(z)-\Psi_p(w)\|_{\ell^2}^2
- =\sum_jp_j|z_j-w_j|^2,                                   \label{eq:pullback-metric}
-\end{equation}
-so an $r$-cover of $\Psi_p(K_E)$ pulls back to a finite cover of the exact
-phase hull.  Two orbit points in one cover element have squared separation at
-most $4r^2$, hence weighted coherence defect at most $2r^2$, which gives
-\eqref{eq:countable-cover}.  Translating the finite cover along the orbit
-gives a hit after every checkpoint.  Compactness follows from the summable
-tail and finite-head approximation.
-
-\section{Proof of the l-bit classification}
-\label{app:lbit}
-
-The Walsh characters form an orthogonal basis on the Boolean cube.  Every
-energy gap in \eqref{eq:lbit-energy} is a rational linear combination of the
-nonconstant $J_S$, while Walsh inversion expresses each $J_S$ as a rational
-linear combination of energy values and hence of an anchored energy and
-gaps.  The coefficient span and projective gap span are equal, proving
-\eqref{eq:lbit-rank}; Law~2 gives \eqref{eq:lbit-conservation}.
-
-If only one-body supports occur, at most $N$ coefficients generate the span.
-For diameter at most $R$, assign each nonempty support to its leftmost site.
-It then lies in a window of at most $R+1$ sites, giving at most $2^{R+1}$
-choices per left endpoint and hence \eqref{eq:lbit-range}.  Rationally
-independent allowed coefficients attain the corresponding support count.
-Finally, the uniform product state has equal positive weight on every Boolean
-configuration, so its visible gap span is the complete one; the collision
-equivalence proved in the main text gives the moment statement.
-
-\section{Proof of the first-hit exponent}
-\label{app:first-hit}
-
-We record the short argument behind Law~2.  Dirichlet approximation gives
-\begin{equation}
- T_\beta(r)\leq\lceil1/r\rceil^d,
- \label{eq:dirichlet-upper}
-\end{equation}
-and therefore
+\begin{lemma}[Forest comparison]\label{lem:forest}
+Let $G$ be a finite graph with positive edge weights, and let
 \[
- \limsup_{r\downarrow0}
- \frac{\log T_\beta(r)}{\log(1/r)}\leq d.
+ \Phi(z)=\sum_{\{i,j\}\in E(G)}a_{ij}|z_i-z_j|^2,
+ \qquad z\in\T^D.
 \]
-Suppose $\beta$ is not very well approximable.  For each $c>1/d$, only
-finitely many $q$ satisfy
-$\max_j\lVert q\beta_j\rVert_\Z\leq q^{-c}$.  Hence, below a sufficiently
-small radius, a first hit $q=T_\beta(r)$ must satisfy $q^{-c}<r$, or
-$q>r^{-1/c}$.  Thus
-\[
- \liminf_{r\downarrow0}
- \frac{\log T_\beta(r)}{\log(1/r)}\geq\frac1c.
-\]
-Letting $c\downarrow1/d$ gives the lower bound $d$, matching
-\eqref{eq:dirichlet-upper}.
-
-\section{Local spectral escape and genericity}
-\label{sec:local-proof}
-
-We give the algebraic mechanism behind Theorem~\ref{thm:local-capstone}.
-For an unlabeled spectrum, escape must hold for every relabeling.
-
-\begin{definition}[Affine spectral escape]
-A real Hermitian family $\mathscr V$ has affine spectral escape if, for every
-nonzero $c\in\R^D$ with $\sum_i c_i=0$ and every $a\in\R$, there are
-$H\in\mathscr V$ and distinct real roots $E_1,\ldots,E_D$ of its
-characteristic polynomial such that
+Choose one root $o(C)$ in each component. There are constants $A,B>0$
+such that
 \begin{equation}
- \sum_i c_iE_{\sigma(i)}\neq a
- \qquad\text{for every }\sigma\in S_D.                     \label{eq:aff-escape}
+ A\sum_C\sum_{i\in C\setminus\{o(C)\}}|z_i-z_{o(C)}|^2
+ \ \leq\ \Phi(z)\ \leq\
+ B\sum_C\sum_{i\in C\setminus\{o(C)\}}|z_i-z_{o(C)}|^2.
+ \label{eq:forest}
+\end{equation}
+There are exactly $r=D-c(G)$ root-relative coordinates.
+\end{lemma}
+
+\begin{proof}
+If $G$ has no edges, both energies vanish and take $A=B=1$. Otherwise
+choose a spanning tree in each component. Every root chord is a sum of
+edge chords along its tree path; Cauchy--Schwarz and the least positive
+tree-edge weight give the first inequality. Every edge chord is the
+difference of two root chords; the triangle inequality squared and
+summation against the weights give the second. Isolated vertices
+contribute neither an edge nor a coordinate.
+\end{proof}
+
+This comparison is global on the phase torus. Near the origin, each
+circle chord is comparable to angular distance modulo $2\pi$.
+For $r\geq2$, let $g_1,\ldots,g_r$ be the corresponding root-relative
+energy gaps. Reverse their common sign if necessary to choose $g_1>0$,
+and put
+$\alpha=(g_2/g_1,\ldots,g_r/g_1)\in\R^{r-1}$.
+The relevant metric Diophantine property is that $\alpha$ is not
+very well approximable: for every $\eta>0$, only finitely many positive
+integers $q$ satisfy
+\[
+ \max_j\|q\alpha_j\|_{\R/\Z}<q^{-1/(r-1)-\eta}.
+\]
+This property is obtained from the Hamiltonian model in the next section;
+it is not an assumption in Theorem~\ref{thm:network}.
+
+\begin{lemma}[Clock reduction]\label{lem:clock}
+If the visible gap-ratio vector above is not very well approximable,
+the first time after $t_0>0$ at which $\Phi(\ee^{-\ii tE})<\delta$
+has logarithmic exponent $(r-1)/2$.
+For $r=0$ or $r=1$ the exponent is zero.
+\end{lemma}
+
+\begin{proof}
+Use phase radius $\varepsilon$ first. At times
+$t=2\pi q/g_1$, the first relative phase is exactly zero.
+Dirichlet approximation in $r-1$ coordinates gives returns with
+$\log t/\log(1/\varepsilon)$ at most $r-1$ in the limit.
+Non-very-well-approximability excludes exact simultaneous returns and
+forces the integer return denominators to tend to infinity, so any
+fixed cutoff is eventually exceeded.
+
+Conversely, at a phase return of radius $\varepsilon$, round
+$tg_1/(2\pi)$ to its nearest integer $q$. Then
+$\|q\alpha_j\|_{\R/\Z}\leq C\varepsilon$ for all $j$, with $C$ depending
+only on the gaps. The non-very-well-approximable estimate gives the
+matching lower logarithmic exponent. A fixed compact interval
+$[t_0,M]$ contains no exact return, hence its continuous defect has a
+positive minimum; this excludes bounded early returns as
+$\varepsilon\downarrow0$. The forest comparison changes only constants.
+Finally $\varepsilon$ is proportional to $\sqrt\delta$, giving the
+factor $1/2$.
+
+If $r=0$ the defect vanishes identically. If $r=1$ there is one relative
+frequency, hence a positive period (or an identically zero defect);
+an exact return exists after every cutoff. In either case the return
+times stay between $t_0$ and a fixed finite time.
+\end{proof}
+
+The subtraction of one is a continuous-clock effect, not a loss of one
+observer. Nor does a torus target's volume determine a first-return
+time without arithmetic information. In particular, an occupation
+estimate or an average inter-return interval cannot replace the lower
+bound in Lemma~\ref{lem:clock}.
+
+\section{Real spectral nondegeneracy from physical locality}
+
+Call a finite energy packet $E=(E_i)$ \emph{maximally projective} when
+\[
+ \sum_i k_i=0,\quad \sum_i k_iE_i=0,\quad k_i\in\Z
+       \quad\Longrightarrow\quad k_i=0\text{ for all }i.
+\]
+This is equivalent to rational independence of any anchored gap packet.
+For the metric theorem we require a stronger property of a
+\emph{family}, involving real rather than rational coefficients.
+
+\begin{definition}[Real affine spectral escape]
+A Hermitian family $\mathcal S$ escapes real affine spectral relations
+if, for every $c\in\R^D\setminus\{0\}$ with $\sum_i c_i=0$ and every
+$a\in\R$, it contains a matrix with a simple real energy packet $E$ such
+that
+\begin{equation}
+ \sum_i c_i E_{\sigma(i)}\ne a
+          \quad\hbox{for every permutation }\sigma.
+ \label{eq:escape}
 \end{equation}
 \end{definition}
 
-The load-bearing step is a one-leaf rigidity statement.  Let $E_\alpha$ be
-a maximally projective old spectrum, let $r$ label a new $q$-level factor,
-and let $A$ be a Hermitian endpoint transition matrix in the old energy
-basis.  Write $G_A$ for the graph whose edge $\alpha\beta$ is present when
-$A_{\alpha\beta}A_{\beta\alpha}\neq0$.  Its cross-layer lift has vertices
-$(\alpha,r)$ and edges
-\begin{equation}
- (\alpha,r)\sim(\beta,s)
- \quad\Longleftrightarrow\quad
- \alpha\sim_{G_A}\beta\ \text{ and }\ r\neq s.             \label{eq:lift}
-\end{equation}
+\begin{theorem}[Connected-network affine escape]\label{thm:escape}
+The full local Hermitian space $\cL_\Gamma$ of every connected finite
+interaction graph with $q_v\geq2$ escapes real affine spectral
+relations. The same is true for every hypergraph space in
+Corollary~\ref{cor:hyper}.
+\end{theorem}
 
-\begin{lemma}[Leaf-extension affine escape]
-\label{lem:leaf-escape}
-Suppose the graph in \eqref{eq:lift} is connected.  Choose real shifts
-$s_r$ for which all $E_\alpha+s_r$ are distinct.  Then the real Hermitian
-slice
+We give the local analytic argument and the physical induction
+separately. Their distinction prevents a spectral witness from being
+mistaken for a physically local Hamiltonian.
+
+\subsection{The rigidity of a leaf extension}
+
+Let $E_i$ be a maximally projective old energy packet, and let $A$ be a
+Hermitian matrix in this energy basis. Its transition graph joins
+$i\ne j$ when $A_{ij}\ne0$. Suppose this graph is connected and
+nonbipartite. Attach a factor with $q\geq2$ levels. The allowed spectral
+slice has the form
 \begin{equation}
- M(u,B)=\operatorname{diag}(E_\alpha+u_r)+A\otimes B,
- \qquad u\in\R^q,\quad B=B^{\mathsf T}\in M_q(\R),          \label{eq:leaf-slice}
+ M(u,B)=\operatorname{diag}(E)\otimes I+
+          I\otimes\operatorname{diag}(u)+A\otimes B,
+ \qquad u\in\R^q,\quad B=B^{\mathsf T}\in M_q(\R).
+ \label{eq:leaf}
 \end{equation}
-has affine spectral escape.
+Select $u^0$ so that all $E_i+u^0_r$ are distinct. This is possible by
+avoiding finitely many affine hyperplanes.
+
+\begin{lemma}[Constant-action rigidity]\label{lem:rigidity}
+On a simple analytic eigenvalue chart of \eqref{eq:leaf} around
+$(u^0,0)$, a linear spectral action
+$\sum_{i,r}c_{ir}\lambda_{ir}(u,B)$ can be constant only if all
+$c_{ir}$ are equal.
 \end{lemma}
 
 \begin{proof}
-Near $(u,B)=(s,0)$, simplicity gives analytic eigenvalue branches indexed by
-$(\alpha,r)$.  Assume a coefficient packet $c_{\alpha r}$ has constant
-spectral action on an open neighborhood.  Fix distinct layers $r,s$, vary
-their relative onsite shift through infinitely many collision-free values,
-and restrict $B$ to the $rs$ exchange direction.  The second derivative in
-the exchange strength gives a finite simple-pole identity.  Maximal
-projectivity of $E$ makes the oriented old-energy gaps distinct.  Clearing
-denominators and evaluating at each pole therefore gives
+Fix distinct layers $r,s$ and vary the real symmetric coupling supported
+on their two off-diagonal entries. The second eigenvalue derivative at
+zero coupling is the simple-root perturbation expression.
+Collecting the terms of the constant action gives the rational identity
 \begin{equation}
- c_{\alpha r}=c_{\beta s}
- \quad\text{whenever}\quad
- (\alpha,r)\sim(\beta,s).                                  \label{eq:edge-equality}
+ \sum_{i,j}
+ \frac{(c_{ir}-c_{js})|A_{ij}|^2}{E_i-E_j+u_r-u_s}=0
+ \label{eq:residue}
 \end{equation}
-Connectivity of the lifted graph makes every coefficient equal.  If $c$ is
-balanced, that common value is zero.  Thus no nonzero balanced spectral
-action can be constant, regardless of its proposed target $a$.
+for layer shifts in an open collision-free interval. Multiplication
+by the product of denominators makes this a polynomial identity.
+Maximal projectivity makes every nonzero oriented old gap
+$E_i-E_j$ distinct from every other such gap unless the ordered
+pairs coincide. The residue at the corresponding pole of
+\eqref{eq:residue} is therefore
+$(c_{ir}-c_{js})|A_{ij}|^2$. Hence
+$c_{ir}=c_{js}$ on every old transition edge and every pair of
+different layers.
 
-Apply this argument to each of the finitely many permuted coefficient
-packets.  Each corresponding analytic action is nonconstant on the connected
-chart, so its prescribed level set is nowhere dense.  Their finite union
-cannot fill the chart.  A point outside that union gives
-\eqref{eq:aff-escape}, with simple real eigenvalues by construction.
+The graph on pairs $(i,r)$ with these edges is connected.
+Indeed it is the direct product of the old transition graph and the
+complete graph on the layer labels. A connected graph with an odd
+cycle allows walks of both parities between any two vertices after
+inserting closed walks; combining these with layer walks proves
+connectedness also when there are only two layers. Thus equality of
+coefficients propagates to every product label.
 \end{proof}
 
-The connectedness hypothesis is available uniformly in local dimension.
+For a nonzero balanced coefficient vector the constant case is
+impossible. Each permuted action minus its prescribed target is
+therefore a nonzero real analytic function on one connected chart.
+A finite union of their zero sets cannot cover that chart.
+One parameter choice avoids all of them. This proves real affine
+escape for the slice \eqref{eq:leaf}.
 
-\begin{lemma}[Interaction-lift connectivity]
-If $G$ is connected and nonbipartite and $q\geq2$, then the graph on
-$V(G)\times\{1,\ldots,q\}$ defined by \eqref{eq:lift} is connected.
+If $A$ is the energy-basis image of an operator on the physical parent
+site, conjugating \eqref{eq:leaf} back by the old energy basis gives
+exactly
+\begin{equation}
+ H_{\rm old}\otimes I+
+ I\otimes\operatorname{diag}(u)+A_{\rm parent}\otimes B.
+ \label{eq:physical-leaf}
+\end{equation}
+Every term is allowed on the old architecture, the new site, or the
+new parent--leaf edge. No spectral-basis locality assumption is made.
+
+\subsection{Physical witnesses on branching networks}
+
+We need old witnesses with a good parent probe at whichever site the
+next leaf is attached. A finite Hermitian probe family is called good
+if the union of its nonzero off-diagonal transition entries is a
+connected nonbipartite graph.
+
+\begin{lemma}[Physical witness induction]\label{lem:witness}
+On a connected site graph with at least two sites and dimensions at
+least two, there is a maximally projective local Hermitian Hamiltonian
+with a good family of physically one-site probes at every site.
+The same assertion holds on one site of dimension at least three.
 \end{lemma}
 
 \begin{proof}
-For $q=2$, walking along an edge flips the layer label.  Connectedness moves
-between old vertices, while an odd closed walk, which exists because $G$ is
-nonbipartite, changes parity and joins the two labels above one vertex.  For
-$q\geq3$, a third label routes around any unwanted equality of endpoint
-labels; ordinary connected paths in $G$ then lift between arbitrary pairs.
+On a single factor of dimension at least three, choose rationally
+independent real energies and the full family of Hermitian matrix
+units. The transition graph is complete and contains a triangle.
+
+When all factors are qubits, start with an edge. Use the two-qubit
+graph basis
+\[
+ U=\mathrm{CZ}(H_2\otimes H_2),\qquad
+ H_2=2^{-1/2}\begin{pmatrix}1&1\\1&-1\end{pmatrix},
+\]
+and let the physical Hamiltonian be $U\operatorname{diag}(E)U^*$
+with a maximally projective four-level packet. This is a legitimate
+two-site operator. Conjugating the three Pauli probes at either
+endpoint translates the two-bit spectral labels by the three
+nonzero bit vectors, with nonzero phases. Their union graph is
+$K_4$. This seed avoids requiring a nonbipartite transition graph
+on a single qubit.
+
+For the induction, assume a good witness on the old network and attach
+a new factor at any old site. A generic real combination of that
+site's finite probes has every edge of their union graph nonzero:
+each forbidden cancellation is a proper real linear subspace.
+Choose such a Hermitian parent attachment $A$.
+
+Use layer shifts $u_r=n\ell_r$, with distinct integer codes $\ell_r$,
+one anchor code zero, and a star coupling between the anchor and the
+other layers. All old-site graph edges persist within each layer for
+small coupling. To connect these layer copies for an old probe $O$,
+its cross-layer first-order response contains the rational packet
+\begin{equation}
+ R_{ab}^{A,O}(x)=
+ \sum_k\frac{A_{ak}O_{kb}}{x+E_a-E_k}
+ +\sum_k\frac{O_{ak}A_{kb}}{-x+E_b-E_k}.
+ \label{eq:old-response}
+\end{equation}
+For each old site choose $a\ne g$ and $g\ne b$ with
+$A_{ag}O_{gb}\ne0$. Such a two-step channel exists because the attachment graph and the
+old site's union graph are connected; the probe $O$ is chosen from that
+site's family for the selected edge.
+Maximal projectivity isolates the pole contributed by this product;
+a pole in the opposite sum could coincide only through the trivial
+balanced relation, which would force an excluded adjacent equality.
+Thus the cleared numerator of \eqref{eq:old-response} is not zero.
+
+There are only finitely many required channels and layer differences.
+The product of their scaled numerator polynomials, together with all
+product-energy collision factors, is nonzero. Choose one integer
+$n$ outside its finite root set. This supplies a single simultaneous
+layer-shift choice. Every selected cross-layer response is then
+nonzero, so its analytic matrix entry is nonzero on a sufficiently
+small punctured real coupling interval. Each old-site probe graph
+contains its connected nonbipartite graph in every layer, joined to
+the anchor layer.
+
+For the new site, use a directed matrix unit $|s\rangle\langle r|$
+with an incident star edge $r\!\sim\!s$. Its same-layer transition
+between old labels $a\ne b$ has first derivative proportional to
+$A_{ab}/(E_a+u_r-E_b-u_s)$, which is nonzero on every parent
+transition edge. The directed unit is a complex linear combination
+of its Hermitian cosine and sine parts. At least one of these two
+physical probes therefore has nonzero derivative. This gives
+within-layer copies of the parent transition graph.
+Off-diagonal anchor--layer matrix units already have nonzero entries
+at zero coupling, and supply bridges between the copies.
+Consequently the new site's graph is also connected and nonbipartite.
+All these are finitely many open nonvanishing conditions.
+
+The leaf slice escapes real affine relations by
+Lemma~\ref{lem:rigidity}. For each nonzero balanced integer relation,
+the product over spectral permutations is a nonzero polynomial in
+the characteristic coefficients. Its pullback to the local
+coefficient space is a nonzero polynomial, whose zero set has
+Lebesgue measure zero. The countable union over integer relations
+is null. Therefore the open set of simultaneous good probes contains
+a maximally projective Hamiltonian. This closes the induction.
+
+Grow a spanning tree from the higher-dimensional seed if one exists;
+otherwise grow from a qubit edge. At each stage
+\eqref{eq:physical-leaf} preserves the named site tensor factors and
+uses one genuine graph edge. Extra edges enlarge the admissible
+space and do not obstruct the construction.
 \end{proof}
 
-\begin{proposition}[Path affine spectral escape]
-\label{prop:path-escape}
-For every $n,q\geq2$, the exact path-local space $\mathscr V_{n,q}$ in
-\eqref{eq:qudit-path-space} has affine spectral escape.
+\begin{proof}[Proof of Theorem~\ref{thm:escape}]
+For one site all Hermitian matrices are allowed. For two sites,
+connectedness supplies their full two-site matrix space. Diagonal
+energies avoid the finitely many hyperplanes in \eqref{eq:escape},
+as well as the collision hyperplanes.
+
+For at least three sites choose a vertex whose deletion leaves a
+connected graph, for example a leaf of a spanning tree.
+The remaining network has at least two sites.
+Lemma~\ref{lem:witness} gives a maximally projective witness and good
+one-site probes there. Select a surviving neighbour of the removed
+vertex and apply the leaf slice at that site. Its transported
+operators have the form \eqref{eq:physical-leaf}, hence belong to
+$\cL_\Gamma$. The slice's affine escape proves escape of the larger
+space. This argument uses a spanning tree, not a spanning path.
+
+For a support-contained hypergraph, every onsite or two-section
+edge operator is supported inside some permitted hyperedge.
+Its full local space therefore contains the graph-local escaping
+space. Escape persists under this inclusion.
+\end{proof}
+
+\subsection{From escape to a common conull event}
+
+\begin{lemma}[Simultaneous observer extremality]\label{lem:extremality}
+In a finite real linear Hermitian family with affine spectral escape
+and a maximally projective member, almost every coefficient vector
+has simple spectrum and satisfies the clock property of
+Lemma~\ref{lem:clock} for every labelled coherence graph of capacity
+at least two.
+\end{lemma}
+
+\begin{proof}
+A single maximally projective member makes every nontrivial balanced
+integer spectral obstruction a nonzero polynomial in the
+coefficients. Removing their countable union gives maximal
+projectivity and, in particular, simple spectrum almost everywhere.
+
+Cover the simple-spectrum locus by countably many connected analytic
+eigenvalue charts. Fix a labelled graph $G$ and one root per component.
+The incidence vectors $e_i-e_{o(C)}$ are linearly independent over
+$\R$. Indeed their nonroot coordinates recover their coefficients
+individually. Let $g_1,\ldots,g_r$ be the corresponding energy gaps.
+They are nonzero on a simple chart. The ratio map
+\[
+ \theta\longmapsto
+ (g_2(\theta)/g_1(\theta),\ldots,g_r(\theta)/g_1(\theta))
+\]
+has no affine relation on any nonempty open part of that chart.
+Otherwise clearing $g_1$ produces a nonzero balanced real linear
+spectral action that vanishes there.
+
+To justify propagation beyond this particular chart, form the product
+of that action over all spectral permutations. It is a symmetric
+polynomial in the eigenvalues, hence a polynomial in characteristic
+coefficients and in the original real parameters. Vanishing on an
+open set makes it identically zero. Affine spectral escape supplies
+a matrix where every factor is nonzero, a contradiction.
+
+An analytic map with no local affine relation is nondegenerate
+almost everywhere. Kleinbock--Margulis extremality then excludes
+very well approximable ratio vectors on a null set in this chart.
+There are finitely many labelled graphs on $D$ vertices and
+countably many charts. Intersecting these conull events gives one
+event for all graphs. There is no uncountable intersection over
+observer matrices or real spectral coefficients.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:network} and
+Corollary~\ref{cor:hyper}]
+Theorem~\ref{thm:escape} supplies affine escape of the full physical
+coefficient space. Lemma~\ref{lem:witness} supplies a maximally
+projective member; the one-site case follows directly from diagonal
+matrices. Apply Lemma~\ref{lem:extremality}. For each subsequently
+chosen observer family use \eqref{eq:graph-energy},
+Lemma~\ref{lem:forest}, and Lemma~\ref{lem:clock}, including the two
+zero-exponent boundaries. The same construction applies inside the
+hypergraph coefficient space.
+\end{proof}
+
+\section{A universal stationary law for arbitrary energy spectra}
+
+The finite-system first-return law does not extend unchanged to
+continuous spectra. There is, however, an exact statistical statement
+with no spectral regularity assumption.
+
+Let $\mu$ be any Borel probability measure on $\R$. Define its
+survival amplitude and fidelity by
+\[
+ A_\mu(t)=\int_\R\ee^{\ii tE}\,d\mu(E),\qquad
+ F_\mu(t)=|A_\mu(t)|^2.
+\]
+For a normalized vector and a self-adjoint Hamiltonian, $\mu$ is its
+spectral energy measure. No energy moment or bounded-support assumption
+is needed for the theorem. Let
+\[
+ \Law_{\mu,T}=(F_\mu)_*
+       \left(\frac{\mathbf1_{[-T,T]}(t)}{2T}\,dt\right),\qquad T>0,
+\]
+a probability measure on $[0,1]$. Write
+\[
+ \mu_\pp=\sum_{E:\,\mu\{E\}>0}\mu\{E\}\,\delta_E,\qquad
+ p=\mu_\pp(\R).
+\]
+When $p>0$, set $\nu=\mu_\pp/p$.
+
+\begin{theorem}[Stationary persistence and interval support]
+\label{thm:stationary}
+For every probability energy measure $\mu$, the measures
+$\Law_{\mu,T}$ converge weakly as $T\to\infty$ to one probability
+measure $\Law_\mu$ on $[0,1]$. If $p>0$ then
+\begin{equation}
+ \Law_\mu=(x\mapsto p^2x)_*\Law_\nu;
+ \label{eq:scaling}
+\end{equation}
+if $p=0$ then $\Law_\mu=\delta_0$.
+There is $\ell_\mu\in[0,p^2]$ such that
+\begin{equation}
+ \supp\Law_\mu=[\ell_\mu,p^2],
+ \qquad
+ p=\sqrt{\max\supp\Law_\mu}.
+ \label{eq:edge}
+\end{equation}
+The interval may degenerate to one point. All exact energy relations
+and all atomic weights are allowed.
+\end{theorem}
+
+Thus the \emph{whole} stationary survival law ignores the continuous
+part except through its removal from the total mass. Its upper
+support edge recovers total point-spectrum weight. The mean alone,
+given by the sum of squared atomic weights, measures a different
+quantity.
+
+\begin{proof}[Existence and pure-point scaling]
+Let $\widetilde\mu$ be the reflected measure, and let
+$\eta=\mu*\widetilde\mu$. The identity
+$F_\mu=\widehat\eta$ gives, for every integer $n\geq1$,
+\begin{equation}
+ \lim_{T\to\infty}\frac1{2T}\int_{-T}^T F_\mu(t)^n\,dt
+       =\eta^{*n}\{0\}.
+ \label{eq:moments}
+\end{equation}
+Indeed the centered average of $\ee^{\ii tx}$ is
+$\sin(Tx)/(Tx)$, interpreted as one at $x=0$. It is bounded by one
+and tends to zero away from zero, so dominated convergence proves
+\eqref{eq:moments}. The zeroth moment is one.
+Probability measures on $[0,1]$ form a weakly compact space, and
+polynomials are dense in continuous functions there. Hence every
+subsequential limit has these same moments, and these moments
+determine a unique measure. The full family converges.
+
+A convolution singleton mass depends only on the singleton masses
+of its factors: any term containing an atomless factor has zero
+mass at a singleton. Apply this observation repeatedly to
+\eqref{eq:moments}. For $p>0$, the positive moments are precisely
+$p^{2n}$ times those of $\Law_\nu$. Equality of all moments on
+$[0,1]$ proves \eqref{eq:scaling}. For $p=0$ all positive moments
+vanish, giving $\delta_0$. In particular,
+\[
+ \int_0^1 x\,d\Law_\mu(x)=\sum_E\mu\{E\}^2,
+\]
+the Wiener mean-square identity.
+\end{proof}
+
+\begin{proof}[Connected support and its upper edge]
+It remains to treat a countable pure-point probability packet
+$\nu=\sum_i w_i\delta_{E_i}$, with $w_i>0$ and $\sum_iw_i=1$.
+In the product of circles on ordered pairs, let $K$ be the closure
+of the one-parameter group
+\[
+ t\longmapsto(\ee^{\ii t(E_i-E_j)})_{i,j}.
+\]
+It is a compact connected abelian group: the real line is connected
+and the closure of its continuous image is connected.
+The series
+\[
+ f(z)=\sum_{i,j}w_iw_j\operatorname{Re}z_{ij}
+\]
+converges uniformly, because $\sum_{i,j}w_iw_j=1$.
+On the dense time orbit it equals $F_\nu(t)$; hence
+$f(K)\subseteq[0,1]$ and $f(1)=1$.
+
+Time averages of continuous functions on $K$ converge to Haar
+averages. This follows first for characters, whose nonconstant
+time averages vanish, and then for all continuous functions by
+character approximation. Consequently
+$\Law_\nu=f_*m_K$, where $m_K$ is normalized Haar measure.
+Haar measure has full support on $K$. A continuous map from a
+compact space sends this support exactly onto the support of its
+pushforward. Therefore
+$\supp\Law_\nu=f(K)$. Connectedness, compactness, and $f(1)=1$
+give $f(K)=[\ell_\nu,1]$. Scaling proves
+\eqref{eq:edge}; the case $p=0$ was already settled.
+\end{proof}
+
+The support is that of a completed \emph{distribution}.
+Equation~\eqref{eq:edge} is not a pointwise upper bound on
+$F_\mu(t)$ for every sufficiently late time. In particular, the
+proof uses averaged cancellation of continuous spectral
+contributions; it does not assume their Fourier transform
+converges pointwise to zero. It therefore includes singular
+continuous measures without asserting pointwise decay.
+
+Nor does knowing this support determine a first-return exponent.
+Support says which fidelity values retain mass in every open
+neighbourhood under completed time sampling. Theorem~\ref{thm:network}
+additionally controls arithmetic of finite phase clocks, which is
+the information used in the first-hit lower bound.
+
+\section{Finite-horizon stability and the limits of the laws}
+
+\begin{proposition}[Uniform observable stability]\label{prop:stability}
+For bounded self-adjoint $H,K$ in a unital complex $C^*$-algebra,
+every bounded $O$, and every real $t$,
+\begin{equation}
+ \|\ee^{-\ii tH}O\ee^{\ii tH}
+          -\ee^{-\ii tK}O\ee^{\ii tK}\|
+       \leq2|t|\,\|H-K\|\,\|O\|.
+ \label{eq:stability}
+\end{equation}
 \end{proposition}
 
 \begin{proof}
-For $n=2$, the single edge supports both sites, so
-$\mathscr V_{2,q}$ is the full Hermitian matrix space.  A real diagonal
-matrix with distinct entries can avoid the finitely many affine hyperplanes
-in \eqref{eq:aff-escape}.
-
-For a longer path, use its first $n-1$ sites as the old system and attach the
-last site as one leaf.  The required old-system witness is obtained by a
-finite leaf schedule.  If $q\geq3$, begin with a one-site simple maximally
-projective spectrum and a complete one-site Hermitian probe family.  If
-$q=2$, begin with a two-site simple maximally projective seed whose endpoint
-probe family has connected nonbipartite transition support.  At each later
-attachment, the leaf-extension construction preserves maximal projectivity
-and supplies a connected nonbipartite one-site probe family at every retained
-site.  Thus the endpoint of the $(n-1)$-site path has a Hermitian linear
-combination $A$ with connected nonbipartite support.
-
-Choose integer-coded layer shifts so that the product energies
-$E_\alpha+s_r$ are all distinct.  The interaction-lift lemma and
-Lemma~\ref{lem:leaf-escape} show that the new-onsite-plus-last-edge slice has
-affine spectral escape.  Conjugating from the old energy basis back to the
-physical tensor basis turns \eqref{eq:leaf-slice} into
-\begin{equation}
- K\otimes I+I\otimes\operatorname{diag}(u)+A_{\rm end}\otimes B.
-\end{equation}
-Here $K$ is local on the first $n-1$ sites, $A_{\rm end}$ is supported only
-on their endpoint, and the last term is supported only on the new edge.
-Hence the entire slice lies in $\mathscr V_{n,q}$, proving the proposition.
+The unitary Duhamel estimate gives
+$\|\ee^{-\ii tH}-\ee^{-\ii tK}\|\leq|t|\|H-K\|$.
+Writing the difference of the two conjugations as
+$(U-V)OU^*+VO(U^*-V^*)$ and using unitary norms gives
+\eqref{eq:stability}.
 \end{proof}
 
-\begin{lemma}[Genericity on every simple chart]
-\label{lem:chart-genericity}
-For the family \eqref{eq:qudit-path-family}:
-\begin{enumerate}[label=(\roman*)]
-\item Hamiltonians with a nontrivial balanced integer spectral relation form
-  a Lebesgue-null set;
-\item on every connected open simple-spectrum chart, both maps
-  $\theta\mapsto\beta^{\rm disc}(\theta)$ and
-  $\theta\mapsto\beta^{\rm wind}(\theta)$ are real analytic and
-  nondegenerate in the metric-Diophantine sense.
-\end{enumerate}
-\end{lemma}
+This dimension-independent estimate concerns the entire finite-time
+matrix history. Our asymptotic results supply no lower separation of
+nearby histories and no uniform time at which their completed
+arithmetic behaviour becomes visible.
 
-\begin{proof}
-For a fixed nonzero balanced $k\in\Z^D$, form the orbit product
-\begin{equation}
- \mathcal O_k(E)=\prod_{\sigma\in S_D}
-                 \left(\sum_i k_iE_{\sigma(i)}\right).      \label{eq:orbit-product}
-\end{equation}
-It is symmetric in the energies, hence a polynomial in the characteristic
-coefficients, which are polynomial in $\theta$.  Proposition
-\ref{prop:path-escape} supplies a point where $\mathcal O_k\neq0$; thus its
-pullback is a nonzero real polynomial.  Its zero set is null.  The countable
-union over balanced $k\neq0$ proves (i).
+Several distinctions are essential for applying the results.
+First, the graph theorem uses the full local Hermitian coefficient
+space. It does not automatically descend to a symmetry-constrained,
+translation-invariant, fixed-coupling, or commuting subfamily; a null
+set in the full space can contain such a subfamily. Second, exact
+spectral support and exact nonzero coherence entries determine the
+exponents. Small positive weights can postpone the asymptotic regime
+without changing its exponent. Third, all limits in
+Theorem~\ref{thm:network} hold at fixed finite system size. Replacing
+$D$ by a many-body dimension in \eqref{eq:main} does not yield a
+fixed-error thermodynamic lower bound. Fourth, neither graph
+connectivity nor spectral nonresonance is used as a definition or
+proof of chaos, thermalization, or nonintegrability.
 
-On a simple chart, ordered eigenvalues are real analytic.  A real affine
-relation among the coordinates of either gap map, constant on a nonempty
-open subset, extends throughout the connected chart.  For the discrete gap
-map it is directly a balanced affine spectral action.  For the ratio map,
-multiplication by the nonzero first gap produces the same kind of action.
-Symmetrizing over labelings would contradict Proposition
-\ref{prop:path-escape}.  Hence $1$ and the coordinate functions of either map
-are linearly independent on every open subset, which is analytic
-nondegeneracy.
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm:local-capstone}]
-Lemma~\ref{lem:chart-genericity}(i) gives maximal projective rank almost
-everywhere.  Metric extremality of nondegenerate analytic maps
-\cite{KleinbockMargulis1998}, followed by Law~2, gives exponents $D-1$ and
-$D-2$ for the two gap maps.  Intersecting these three conull events leaves a
-single conull event.  On it, Law~3 gives every collision and moment conclusion
-for all positive weights and all orders.  Finally $D=q^n\geq4$; maximal
-projectivity makes the anchored frequencies rationally independent, so a
-common exact phase return implies $t=0$.
-\end{proof}
-
-\section{Thermodynamic identities}
-
-For completeness, $0<b_\varepsilon<1$ follows from
-$0<\arcsin(\varepsilon/2)<\pi/2$.  Equation
-\eqref{eq:finite-rate} is the logarithm of
-$\rho_{n,q}=b_\varepsilon^{q^n-1}$.  Dividing by $q^n$ gives
-$(1-q^{-n})I_\varepsilon\to I_\varepsilon$, proving
-\eqref{eq:hilbert-rate}.  Since $q^n-1\to\infty$ and
-$b_\varepsilon<1$, \eqref{eq:rho-zero} follows.  Finally,
-\[
- \frac{\log[-\log\rho_{n,q}]}n
- =\frac{\log(q^n-1)+\log I_\varepsilon}{n}
- \longrightarrow\log q,
-\]
-which proves \eqref{eq:double-log}.
+The results identify two distinct forms of universality.
+Across finite connected physical networks, one generic Hamiltonian
+event accommodates every finite matrix observer, with an exponent
+determined by visible coherence connectivity. Across arbitrary
+probability energy spectra, the complete survival distribution is
+selected by the pure-point carrier and has an exact support edge.
+A quantitative onset estimate for specified Hamiltonian families,
+and a comparable classification for scalar expectation histories,
+remain separate questions.

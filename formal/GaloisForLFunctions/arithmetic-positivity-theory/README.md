@@ -817,15 +817,30 @@ the extremal patterns are long frequency-modulated patterns concentrating at
 the extrema of $R$. Sign and size questions about the limiting critical prime
 channel are pointwise questions about $R$.
 
-**Finite-scale negativity.** The actual prime energy of a pattern translated to
-scale $n$ is the quadratic form of the finite-scale prime matrix $M_n(i,j)$,
-obtained by expanding the translated autocorrelation bilinearly in the
-single-scale sources; polarisation of the translated prime limit gives
-$M_n(i,j)\to(4/\pi^4)\kappa(\lvert i-j\rvert)$ entrywise. Hence for every finite
-support $S$, eventually in $n$ and for all coefficient vectors at once, the von
-Mangoldt channel on the span of the critical sources at scales $n+S$ is at most
-$-(2/(7000\pi^4))\sum b_j^2$: the favourable sign is a finite-scale fact, not
-only a limit.
+**Finite-scale negativity and the linear window.** The actual prime energy of a
+pattern translated to scale $n$ is the quadratic form of the finite-scale prime
+matrix $M_n(i,j)$, obtained by expanding the translated autocorrelation
+bilinearly in the single-scale sources; polarisation of the translated prime
+limit gives $M_n(i,j)\to(4/\pi^4)\kappa(\lvert i-j\rvert)$ entrywise. Hence for
+every finite support $S$, eventually in $n$ and for all coefficient vectors at
+once, the von Mangoldt channel on the span of the critical sources at scales
+$n+S$ is at most $-(2/(7000\pi^4))\sum b_j^2$. Moreover, this negativity persists on
+supports whose dimension grows linearly with the scale: comparing the actual form
+$P(T,b)$ with its limit $P_\infty(T,b)$ uniformly via theprime-tail bound beyond
+$R$, the support-uniform harmonic-tail bound beyond $K$, the cardinality-free
+disjoint-interval affine clock comparison $O(R\sum b_m^2/N)$, and the affine
+resonance-head bound $O((\delta+1/N)\sum b_m^2)$ yields, for every $\eta>0$,
+explicit constants $\delta\in(0,1]$ and $N_0\ge2$ such that
+$\lvert P(T,b)-P_\infty(T,b)\rvert\le\eta\sum_{m\in T}b_m^2$ on every linear window
+$N\le m+1\le(1+\delta)N$ (`exists_linearWindow_criticalPrimeEnergy_sub_limit_le`).
+At $\eta=2/(7000\pi^4)$ this gives strict negative definiteness
+$P(T,b)\le-(2/(7000\pi^4))\sum b_m^2$ across the full linear window of dimension
+$\lfloor\delta N\rfloor+1>\delta N$ (`exists_linearWindow_criticalPrimeEnergy_le`,
+`exists_fullLinearWindowSupport_criticalPrimeEnergy_neg_definite`), turning the prime
+contribution $-2P(T,b)$ in `criticalCompleteEnergy` from a channel cost into a strictly
+positive subsidy $+(4/(7000\pi^4))\sum b_m^2$ while the polar cost decays as $2304/N$
+(`exists_linearWindow_criticalCompleteEnergy_prime_subsidized`;
+[TheLinearWindowOfTheCriticalPrimeChannel](TheLinearWindowOfTheCriticalPrimeChannel.lean)).
 
 ### 3.12 The complete critical form
 
@@ -1072,13 +1087,43 @@ of a window $[M,LM]$ against arbitrary low modes by
 $2C_{TW}(3+\log LM)^2E_{\mathrm{low}}+C_{TW}(4+\log L)E_{\mathrm{high}}$. When the high blocks
 are lacunary and $L_{\mathrm{low}}^8\le M_0$, dyadic slicing improves the low-window prime cost
 to $O(1+\log L_{\mathrm{low}})E_{\mathrm{low}}$, uniformly in the number of high blocks and the
-truncation (`compactFullWeilEnergy_criticalTruncatedTest_ge_of_lowWindow_lacunary`). This is a
-complete lower bound with an explicit low-mode penalty, not positivity for arbitrary low
-coefficients: the archimedean penalty itself contains $\log M_0\cdot E_{\mathrm{low}}$, so raising
-the high scale makes the penalty worse. The same mechanisms are translation invariant and carry
-positive polynomial-window and lacunary sources directly into grid tents and their smooth
-detectors ([MultiScaleLowModeAndGridTentSchurBridge](MultiScaleLowModeAndGridTentSchurBridge.lean)).
-What remains is to pay the low-mode term without assuming the receiver.
+truncation (`compactFullWeilEnergy_criticalTruncatedTest_ge_of_lowWindow_lacunary`).
+
+In the raw high-band Plancherel split above, restricting to $\lvert t\rvert>R=\eta M_0$ before
+separating the low and high bands multiplies the low-band mass by $\log M_0$. Writing
+$g^V(y)=e^{y/2}F_V(e^{-y})$ in the clock variable $v=e^{-y}$ removes that growth completely:
+$F_V$ is globally bounded and globally Lipschitz uniformly in $V\ge1$, and interpolating the
+clock-Lipschitz bound $\lvert\Delta g^V(u,x)\rvert\le K e^{-u/2}x$ against the amplitude bound
+$\lvert\Delta g^V(u,x)\rvert\le K e^{u/2}$ gives the global integrable square-increment envelope
+$(g^V(u)-g^V(u+x))^2\le K^2\sqrt x\,e^{u/2}$ on $u\le0$, $x\in[0,1]$. Hence
+$\mathrm{ac}_{g^V}(0)-\mathrm{ac}_{g^V}(x)\le K^2\sqrt x$ (`sourceAutocorrelation_criticalTruncatedSource_jump_le_sqrt`),
+and the low-window Lévy energy has the scale-free ceiling
+$\mathrm{Lévy}(g^V_{\mathrm{low}})\le C_{\mathrm{levy}}(L_{\mathrm{low}})E_{\mathrm{low}}$
+uniformly in $V\ge1$ (`biScaleLevyEnergy_criticalTruncatedTest_le`). Splitting the autocorrelation
+jump before applying the high-band floor then gives the scale-free two-band law
+$$
+Q(g^V_{\mathrm{low}}+g^V_{\mathrm{high}})\ge
+\Bigl(\frac{s_T}2(\log M_0-c_T)-C_{\Gamma,\mathrm{pol}}-2(C_{\mathrm{lac}}+100K_{CB})\Bigr)E_{\mathrm{high}}
+-C_{\mathrm{tot}}(L_{\mathrm{low}})E_{\mathrm{low}}
+$$
+(`compactFullWeilEnergy_criticalTruncatedTest_ge_of_lowWindow_lacunary_scaleFree`), where
+$C_{\mathrm{tot}}(L_{\mathrm{low}})$ is completely independent of $M_0$, $J$, and $V$, and choosing
+the shift-adapted Young weight $\beta(x)=\gamma x^{1/4}$ on $(0,1]$, $\beta(x)=\gamma$ on $(1,\infty)$
+retains $100\%$ of both diagonal complete energies up to the scale-free bilinear cross-defect
+$2\sqrt{C_{\mathrm{Schur,low}}(L_{\mathrm{low}})C_{\mathrm{Schur,high}}}\sqrt{E_{\mathrm{low}}E_{\mathrm{high}}}$
+(`compactFullWeilEnergy_criticalTruncatedTest_schur_gamma`,
+`compactFullWeilEnergy_criticalTruncatedTest_schur_sqrt`). Consequently, for every dominance cone
+$E_{\mathrm{low}}\le\Lambda E_{\mathrm{high}}$ and every coupled low–high family
+$\sum_{n\in S_{\mathrm{low}}}b_{\mathrm{low}}(n)(g^V_n+\gamma_n g^V_{\phi(n)})$ with
+$\lvert\gamma_n\rvert\ge\gamma_0>0$, raising $M_0\ge M_0^{\mathrm{coupled}}(L_{\mathrm{low}},\gamma_0^{-2})$
+gives unconditional strict positivity for **every unrestricted nonzero low-mode vector**
+$b_{\mathrm{low}}$ across all five form realizations and their grid-tent and smooth-detector
+transfers (`coupled_low_high_pos_for_unrestricted_low_modes`), while any low-mode certificate
+$Q(g^V_{\mathrm{low}})\ge\mu_{\mathrm{low}}E_{\mathrm{low}}$ ($\mu_{\mathrm{low}}>0$) has an
+explicitly controlled Schur complement against every high lacunary block family
+(`compactFullWeilEnergy_pos_of_lowMode_certificate_and_schur_complement`;
+[MultiScaleLowModeAndGridTentSchurBridge](MultiScaleLowModeAndGridTentSchurBridge.lean),
+[LowScaleCoupledPositivityAndSchurComplement](LowScaleCoupledPositivityAndSchurComplement.lean)).
 
 ### 3.14 Full-form stability and the tent family as a receiver
 
@@ -1212,10 +1257,16 @@ theory's load-bearing walls. Lean names are the capstones of the cited modules.
    Riesz bounds plus nonstationary Mellin exclusion become spectral coercivity.
 5. **The critical prime kernel is negative definite.** $R(t)\le-1/7000$ on the cell, hence
    $P_\infty(b)\le-(4/7000\pi^4)\sum b_j^2$ for every finite real pattern; the exact Rayleigh
-   range is $(4/\pi^4)[\min R,\max R]$; and the actual prime matrix at scales $n+S$ is eventually
-   negative for each fixed support (`factorialCriticalTranslatedPrimeLimit_le_neg_energy`,
+   range is $(4/\pi^4)[\min R,\max R]$; and the actual prime matrix is eventually negative both
+   for each fixed translated support $n+S$ and uniformly across every linear window
+   $N\le m+1\le(1+\delta)N$ of linearly growing dimension $\lfloor\delta N\rfloor+1>\delta N$,
+   turning $-2P$ into a positive subsidy in the complete critical form
+   (`factorialCriticalTranslatedPrimeLimit_le_neg_energy`,
    `isLUB_factorialCriticalPrimeRayleighSet`, `isGLB_factorialCriticalPrimeRayleighSet`,
-   `eventually_factorialCriticalTranslatedPrimeEnergy_le`).
+   `eventually_factorialCriticalTranslatedPrimeEnergy_le`,
+   `exists_linearWindow_criticalPrimeEnergy_le`,
+   `exists_fullLinearWindowSupport_criticalPrimeEnergy_neg_definite`,
+   `exists_linearWindow_criticalCompleteEnergy_prime_subsidized`).
 6. **Archimedean domination of the critical form.** The critical limit has rational spectrum, the
    source decorrelates at almost every shift, and the complete critical energy of every nonzero
    pattern tends to $+\infty$, uniformly in the coefficient vector on a fixed support
@@ -1366,11 +1417,16 @@ Built and reusable:
 - *Full-form stability.* Every channel is Lipschitz in $L^1$ distance with explicit value and
   slope moments, so one accuracy index pays for tents of arbitrary support.
 - *The tent family* as a complete RH test family inside the laboratory.
+- *Scale-free low-window Lévy calculus and shift-adapted Schur complement.* Global clock-Lipschitz
+  interpolation $(g^V(u)-g^V(u+x))^2\le K^2\sqrt x\,e^{u/2}$ bounds the low-window Lévy energy
+  independently of $V$ and of high scales, and shift-adapted Young weights give an exact bilinear
+  Schur-complement inequality across all four channels of the complete Weil form.
 
 To be built:
 
 - a norm-controlled transfer from positive subfamilies to the complete receiver;
-- a low-mode certificate with a controlled Schur complement against the high blocks;
+- an intrinsic low-mode positivity certificate on the isolated low window $[1,L_{\mathrm{low}}]$
+  without high-scale coupling;
 - a dense-window prime bound beating the width cost $3+\log L$, or a proof that it is sharp;
 - the quantitative detection law for grid tents;
 - admissible sources beyond the dyadic stencil, with sign-definite cell kernels.
@@ -1384,39 +1440,66 @@ To be built:
 The complete critical form, collared or not, is positive definite on every dyadic block beyond an
 absolute $M_0$, on polynomial windows, on compact truncations uniformly in the truncation, on
 windows and truncations jointly — hence on compact tests of arbitrary support length, in all five
-names of the form — and on lacunary unions of blocks. Low modes have all-scale Gamma–polar bounds
-and explicit low/high energy inequalities (§3.13), including logarithmic prime penalties against
-separated lacunary blocks. Open: positivity of the coupled form for unrestricted low-mode
-coefficients. Raising the high scale cannot settle this through the existing lower bound, since
-its low-mode archimedean penalty grows with it. The target is a stronger coupling or an
-independent low-mode certificate with a controlled Schur complement, not a repetition of the
-admission and cross-window estimates.
+names of the form — and on lacunary unions of blocks. In
+[LowScaleCoupledPositivityAndSchurComplement](LowScaleCoupledPositivityAndSchurComplement.lean),
+global clock-Lipschitz interpolation bounds the low-window autocorrelation jump by $K_{\mathrm{low}}^2\sqrt x$
+and the low-window Lévy energy by $C_{\mathrm{levy}}(L_{\mathrm{low}})E_{\mathrm{low}}$ uniformly in
+$V\ge1$, eliminating the $\log M_0$ growth of the low-mode archimedean penalty
+(`biScaleLevyEnergy_criticalTruncatedTest_le`,
+`compactFullWeilEnergy_criticalTruncatedTest_ge_of_lowWindow_lacunary_scaleFree`). Moreover,
+shift-adapted Young weights $\beta(x)=\gamma x^{1/4}$ on $(0,1]$ and $\beta(x)=\gamma$ on $(1,\infty)$
+yield the exact bilinear Schur-complement decomposition
+$$
+Q(g^V_{\mathrm{low}}+g^V_{\mathrm{high}})\ge Q(g^V_{\mathrm{low}})+Q(g^V_{\mathrm{high}})
+-2\sqrt{C_{\mathrm{Schur,low}}(L_{\mathrm{low}})C_{\mathrm{Schur,high}}}\sqrt{E_{\mathrm{low}}E_{\mathrm{high}}}
+$$
+(`compactFullWeilEnergy_criticalTruncatedTest_schur_gamma`,
+`compactFullWeilEnergy_criticalTruncatedTest_schur_sqrt`). Consequently:
+- Every coupled low–high family $\sum_{n\in S_{\mathrm{low}}}b_{\mathrm{low}}(n)(g^V_n+\gamma_n g^V_{\phi(n)})$
+  ($\lvert\gamma_n\rvert\ge\gamma_0>0$) and every dominance cone $E_{\mathrm{low}}\le\Lambda E_{\mathrm{high}}$
+  is unconditionally strictly positive definite for **all unrestricted nonzero low-mode coefficient
+  vectors** $b_{\mathrm{low}}$ once $M_0\ge\mathrm{coupledLowHighLacunaryThreshold}(L_{\mathrm{low}},\gamma_0^{-2})$,
+  across all five form realizations and their grid-tent and smooth-detector transfers
+  (`coupled_low_high_pos_for_unrestricted_low_modes`,
+  `all_five_forms_pos_of_lowWindow_lacunary_dominance`).
+- Any low-mode certificate $Q(g^V_{\mathrm{low}})\ge\mu_{\mathrm{low}}E_{\mathrm{low}}$ ($\mu_{\mathrm{low}}>0$)
+  automatically has a controlled Schur complement against every high lacunary block family, giving
+  strict positivity on the full unrestricted product space $(b_{\mathrm{low}},b_{\mathrm{high}})\ne0$
+  (`compactFullWeilEnergy_pos_of_lowMode_certificate_and_schur_complement`).
+The remaining isolated low-scale question is whether the uncoupled low window $S_{\mathrm{low}}\subset[0,M_0-1]$
+admits a standalone certificate $\mu_{\mathrm{low}}>0$ when $b_{\mathrm{high}}=0$.
 
 ### 7.2 The prime channel on growing supports
 
-Fixed-support eventual negativity of the actual prime matrix is proved; its scale threshold
-depends on the support. Open: an explicit growing-support range in which the actual prime channel
-itself stays negative. Full-form positivity carried by a growing archimedean energy is a
-different statement and does not answer this. A slowly growing diagonal sequence of supports
-follows formally from fixed-support convergence and is not the target either.
+Fixed-support eventual negativity of the actual prime matrix has a scale threshold depending on the
+support, whereas the natural growing-support regime is the **linear window**
+$N\le m+1\le(1+\delta)N$, whose dimension $\lfloor\delta N\rfloor+1>\delta N$ grows linearly in $N$.
+In [TheLinearWindowOfTheCriticalPrimeChannel](TheLinearWindowOfTheCriticalPrimeChannel.lean), the
+actual critical prime form $P(T,b)$ is compared uniformly with its limit $P_\infty(T,b)$ using $T$
+itself as the offset pattern:
+1. Prime tails beyond $R$ cost $\sum_{r>R}\Lambda(r)r^{-3/2}$ through the window correlation bound
+   $\lvert C_T(r)\rvert\le Dr^{-1/2}E$, for both the actual form and its limit.
+2. Harmonic tails beyond $K$ cost the tail of $\sum\lvert w_kw_l\rvert$, uniformly in the support,
+   through the collar and endpoint bounds of §3.12.
+3. In the finite harmonic head ($k,l\le K$, $r\le R$), replacing the actual clock $\lambda_m$ by the
+   affine clock $m+\tfrac1{12}$ costs $O(R\sum_{m\in T}b_m^2/N)$ with no cardinality loss via the
+   disjoint-interval energy $\pi^2k\sum e_{m+1}b_m^2$ of §3.10 and $H_l(rv)=H_{lr}(v)$.
+4. The affine head is resonance-exact: for $k\ne rl$ every difference frequency is at least $N/2$
+   once $\delta\le1/(4K(R+1))$; for $k=rl$ the slow part is $J_k(T,b)$, and the remaining $O(1/N)$
+   entries cost $(\sum\lvert b_m\rvert)^2/N\le(\delta+1/N)E$ because $\lvert T\rvert\le\delta N+1$.
 
-The natural target is the **linear window**: constants $\delta>0$, $N_0$ such that every
-support with $N\le m+1\le(1+\delta)N$, $N\ge N_0$, and every real vector have actual critical
-prime energy at most $-(2/(7000\pi^4))\sum b_m^2$, with dimension growing linearly in $N$. The
-proposed mechanism compares the actual form with its limit $P_\infty$ uniformly, using $S$ itself
-as the offset pattern. Prime tails beyond $R$ cost $\sum_{r>R}\Lambda(r)r^{-3/2}$ through the
-window correlation bound $\lvert C_S(r)\rvert\le Dr^{-1/2}E$, for the actual form and its limit
-alike. Harmonic tails beyond $K$ cost the tail of $\sum\lvert w_kw_l\rvert$, uniformly in the
-support, through the collar/endpoint bounds of §3.12. In the finite harmonic head, the actual
-clock $\lambda_m$ is replaced by the affine clock $m+\tfrac1{12}$. The error is controlled in
-operator norm by the disjoint-interval energy $\pi^2k\sum e_{m+1}b_m^2$ of §3.10 and the identity
-$H_l(rv)=H_{lr}(v)$, with no cardinality loss. The affine head is then resonance-exact: for
-$k\ne rl$ every difference frequency is at least $N/2$ once $\delta\le1/(4K(R+1))$; for $k=rl$
-the slow part is exactly $J_k(S,b)$. Only the $O(1/N)$ entries remain, and they cost
-$(\sum\lvert b_m\rvert)^2/N\le(\delta+1/N)E$ because $\lvert S\rvert\le\delta N+1$. Choosing
-$R$, then $K$, then $\delta$, then $N_0$ gives the comparison $\lvert P-P_\infty\rvert\le\eta E$
-for every $\eta>0$, and with it the linear window. The order of the choices is the whole
-difficulty: every tail must be uniform in the support before $\delta$ is fixed.
+Choosing $R$, then $K$, then $\delta$, then $N_0$ in that order yields the uniform limit comparison
+$\lvert P(T,b)-P_\infty(T,b)\rvert\le\eta\sum_{m\in T}b_m^2$ for every $\eta>0$
+(`exists_linearWindow_criticalPrimeEnergy_sub_limit_le`), and at $\eta=2/(7000\pi^4)$ establishes:
+- **Linear-window negative definiteness:** $P(T,b)\le-(2/(7000\pi^4))\sum_{m\in T}b_m^2$ for every
+  support $T$ in $N\le m+1\le(1+\delta)N$ ($N\ge N_0$), and in particular on the full integer window
+  `fullLinearWindowSupport δ N` of cardinality $\lfloor\delta N\rfloor+1>\delta N$
+  (`exists_linearWindow_criticalPrimeEnergy_le`,
+  `exists_fullLinearWindowSupport_criticalPrimeEnergy_neg_definite`).
+- **Prime-subsidized complete critical energy:** On the linear window, the prime contribution
+  $-2P(T,b)$ in `criticalArithmeticChannels` and `criticalCompleteEnergy` switches from a channel
+  cost $-2C_P E$ to a strictly positive subsidy $+(4/(7000\pi^4))E$ while the polar cost decays as
+  $2304/N$ (`exists_linearWindow_criticalCompleteEnergy_prime_subsidized`).
 
 ### 7.3 Explicit thresholds and the shape of $R$
 

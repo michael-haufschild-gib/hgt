@@ -30,7 +30,8 @@ not satisfy the goal.
   or raised elaboration limits.
 - One foreground Lean command at a time; never build umbrellas or aggregate targets.
 - Preserve unrelated existing worktree edits.
-- Paper proof precedes Lean. A failed route requires positive-survivor analysis.
+- Paper proof precedes Lean; every completed paper proof must also be formalized.
+  A failed route requires positive-survivor analysis.
 
 ## Internal evidence
 
@@ -701,8 +702,9 @@ The CRT and prime/prime-power Kloosterman sources pass closure audits.
 A [composite bound](../3-formalized/not_new_scientific_knowledge/goldbach-composite-kloosterman-budget.md)
 now passes direct compilation and all 18 closure audits without analytic
 premises, including the dyadic case and actual common frequency gcd.
-The [finite modular-inverse rectangle estimate](../2-fully-proven/goldbach-modular-inverse-rectangle-completion.md)
-has a complete paper proof with explicit constant 24; its Lean proof remains open.
+The [finite modular-inverse rectangle estimate](../3-formalized/not_new_scientific_knowledge/goldbach-modular-inverse-rectangle-completion.md)
+now has a complete Lean proof with explicit constant 24; its direct leaf check
+and all 42 theorem closures pass without warnings or analytic premises.
 The [flat dispersion paper](../2-fully-proven/goldbach-flat-prime-dilation-dispersion.md)
 now closes the finite-interval transfer and both mixed terms, with an
 exponential saving in sqrt(log X). Its Lean formalization remains open,
@@ -739,8 +741,9 @@ The flat balanced source is only the first signed test: restoring Cycle
   periodic repair is retired with its positive classification formalized.
 - The full composite Kloosterman bound passes compilation and all 18
   closure audits, including exact conductor descent, stationary fibres,
-  the dyadic bound and coprime CRT. The finite rectangle estimate and
-  flat dispersion have complete paper proofs; their Lean proofs remain open.
+  the dyadic bound and coprime CRT. The finite rectangle estimate now
+  passes its separate direct leaf check and all 42 closure audits, including
+  the literal interval-pair cardinality. Flat dispersion remains paper-only.
 - Research next: attack the actual missing signed estimate, not another
   detector identity. C2 requires the polynomially sifted one-point bias;
   C3 isolates the corresponding coefficient at a vanishing weight parameter.
@@ -793,7 +796,8 @@ The flat balanced source is only the first signed test: restoring Cycle
   whole-repository lint run is claimed for the damping-parity extension.
   Earlier cycle checks terminated and their scratch files were removed.
   The prime-dilation card records the certified composite estimate and
-  its 18-root audit. Rectangle completion and flat dispersion remain paper-only.
+  its 18-root audit. Rectangle completion is formalized with a 42-root
+  audit; the full flat dispersion theorem remains paper-only.
   Cycles 6–9 changed research cards only; no Lean proof was added or
   recompiled, and no new repository-wide verification is claimed.
 
@@ -867,3 +871,39 @@ The flat balanced source is only the first signed test: restoring Cycle
   and dispersion Lean proofs, signed amplifier and marked Type II remain
   open. Goldbach remains unproved and the original goal remains active;
   no scientific novelty is claimed.
+
+- 2026-10-24 — Formalized finite modular-inverse rectangle completion with
+  constant 24, exact divisor-frequency descent, both Ramanujan axes, and
+  identification with the actual finite interval-pair cardinality. Direct
+  leaf verification and all 42 theorem closures pass without warnings,
+  added axioms, or analytic premises. The leaf is wired into the Goldbach
+  umbrella without an umbrella build. The exact finite Ramanujan product
+  correction subsequently passed its direct leaf check and all five closure
+  audits, including both character conventions and arbitrary finite pairing.
+  Full dispersion, signed amplification, marked Type II cancellation, and
+  Goldbach remain open.
+- 2026-10-24 — Formalized exact determinant/progression elimination of
+  the reflected parameter, its uniqueness, and equality of the actual
+  finite balanced-product quadruple sets. All three theorem closures pass
+  without warnings or analytic premises. The full modulus and both range
+  endpoints are retained. Combined row conductors and curved-region bounds
+  are the next finite obligations; Goldbach remains active and unproved.
+- 2026-10-24 — Formalized the complete reflected-row compatibility divisor,
+  quotient conductor, uniqueness, and exact bounded classification.
+  All five roots pass direct leaf verification and transitive closure
+  audits with standard foundations only. The source includes zero q,
+  negative targets, and noncoprime rows. Residue-gcd reduction and curved
+  counts remain outstanding; Goldbach remains active and unproved.
+- 2026-10-24 — Formalized the universal reflected-residue gcd formula,
+  removing the Bézout inverse while retaining both actual common factors.
+  All three roots pass direct leaf verification and transitive closure
+  audits with standard foundations only. Nonunit rectangle fibres and
+  curved counts remain outstanding. No signed cancellation or Goldbach
+  proof follows from these finite arithmetic identities.
+- 2026-10-24 — Formalized the exact disjoint nonunit decomposition of
+  arbitrary natural product rectangles, the cardinality identity,
+  the summed completion bound, and the full endpoint-rounding budget
+  against area. All seven roots pass direct leaf verification and
+  transitive closure audits with standard foundations only. Curved
+  geometry, arithmetic averaging, masked kernels, mixed terms, and
+  signed cancellation remain outstanding; Goldbach remains unproved.

@@ -374,8 +374,70 @@ retains the actual frequency gcd, and coprime CRT pays the exceptional
 factor at 2 once. All 18 roots pass direct compilation and closure audits
 with only standard Lean foundations, without warnings or analytic premises;
 see the [composite certificate](../../../docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/goldbach-composite-kloosterman-budget.md).
-The [finite rectangle bound](../../../docs/drafts/pipeline/2-fully-proven/goldbach-modular-inverse-rectangle-completion.md)
-has a complete paper proof with explicit constant 24. Its Lean proof,
-[flat dispersion](../../../docs/drafts/pipeline/2-fully-proven/goldbach-flat-prime-dilation-dispersion.md),
-signed amplification and the marked Type II extension remain open.
+[`ModularInverseRectangleCompletion.lean`](ModularInverseRectangleCompletion.lean)
+now proves the finite rectangle bound. For intervals of lengths L,H,
+let C count their pairs with unit first coordinate and product c modulo M.
+With g=gcd(M,c), τ=τ(M), and λ=1+log M, it proves
+
+    |C − φ(M)LH/M²| ≤ 24 τ M^(2/3) g^(1/3) λ² + τ λ (Lg+H)/M.
+
+Negative starts, empty or long intervals, composite moduli and nonunit
+targets are included. Exact divisor-frequency descent controls the
+interior; separate Ramanujan bounds retain both axes. All 42 theorem
+closures pass without warnings or analytic premises; see the
+[rectangle certificate](../../../docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/goldbach-modular-inverse-rectangle-completion.md).
+The full [flat dispersion theorem](../../../docs/drafts/pipeline/2-fully-proven/goldbach-flat-prime-dilation-dispersion.md),
+signed amplification and the marked Type II extension still await Lean proofs.
 These are classical arithmetic bridges; Goldbach remains unproved.
+
+[`ProductResidueRamanujan.lean`](ProductResidueRamanujan.lean) proves the
+exact correction for the complete multiplication fibres:
+
+    ν_q(r)/q = Σ_(d|q) c_d(r)/d.
+
+It also proves the corresponding pairing with every finite observation
+and identifies the integer-exponential and CGL character conventions.
+All five closures pass without warnings or analytic premises; see the
+[correction certificate](../../../docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/goldbach-product-residue-ramanujan.md).
+This preserves the full arithmetic product profile, including nonunit
+fibres and residue zero. The finite curved-region estimates in the full
+dispersion theorem still require their own proofs.
+
+[`ReflectedProductDeterminant.lean`](ReflectedProductDeterminant.lean)
+proves exact elimination of the common dilation parameter:
+
+    ∃r: 0<r≤R, h|r, u+pr=T, v+qr=T
+      ↔ qu−pv=T(q−p), u≡T (mod ph), 0<T−u≤Rp.
+
+It proves uniqueness of r and equality of the corresponding finite sets
+of balanced product quadruples. All three closures pass without warnings
+or analytic premises; see the [determinant certificate](../../../docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/goldbach-reflected-product-determinant.md).
+[`ReflectedProductConductor.lean`](ReflectedProductConductor.lean) gives
+the combined row conductor, including all noncoprime rows. With
+g=gcd(qh,y), b=y/g, and the actual Bézout solution s₀=α(T/g),
+
+    ∃r,z: h|r, u+pr=T, yz+qr=T
+      ↔ g|T and u≡T−phs₀ (mod phb).
+
+The pair (r,z) is unique; the exact bounds on both variables become
+two integer strip inequalities without dividing endpoints. All five
+closures pass without warnings or analytic premises; see the
+[row conductor certificate](../../../docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/goldbach-reflected-row-conductor.md).
+[`ReflectedProductConductorGcd.lean`](ReflectedProductConductorGcd.lean)
+identifies the exact residue gcd without an inverse coefficient.
+For c=ph, a=qh, g=gcd(a,y), b=y/g, and d=gcd(T,c), put
+
+    B=(a/g)(T/d)−(c/d)(T/g).
+
+Then `gcd(A,cb)=d gcd(B,b)` for the actual residue A above, even when
+the row is incompatible. All three closures pass without warnings
+or analytic premises; see the
+[residue-gcd certificate](../../../docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/goldbach-reflected-row-gcd.md).
+[`ModularProductRectangleDecomposition.lean`](ModularProductRectangleDecomposition.lean)
+keeps every nonunit fibre. The unrestricted product rectangle is a
+disjoint union of unit rectangles modulo M/g, indexed by g|gcd(M,c).
+It proves the exact cardinality sum, its summed completion error,
+and the full rounding cost for replacing floor lengths by real lengths.
+All seven closures pass without warnings or analytic premises; see the
+[nonunit rectangle certificate](../../../docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/goldbach-nonunit-rectangle-decomposition.md).
+Curved-region estimates and arithmetic row averaging remain to be formalized.

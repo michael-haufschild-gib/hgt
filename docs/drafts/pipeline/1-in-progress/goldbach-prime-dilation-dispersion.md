@@ -307,7 +307,7 @@ Its [Lean certificate](../3-formalized/not_new_scientific_knowledge/goldbach-com
 now includes prime Weil, odd and dyadic stationary phase, actual unit fibres,
 shared-prime induction and CRT. The direct leaf check and all 18 closure
 audits pass without warnings or analytic premises. The
-[finite rectangle paper proof](../2-fully-proven/goldbach-modular-inverse-rectangle-completion.md)
+[finite rectangle certificate](../3-formalized/not_new_scientific_knowledge/goldbach-modular-inverse-rectangle-completion.md)
 completes interval indicators with explicit constant 24, giving the
 nonzero-frequency budget
 
@@ -319,8 +319,10 @@ After m=gu and M=phy/g, the paper proof sums rows at X^(5/3+ε)
 times explicit subpower factors. A partition into X^(1/6) strips
 pays the hyperbolic boundaries with a power saving. The full proof
 also completes both mixed terms and the finite correction separately.
-These are paper results awaiting formalization; the complete-residue
-kernel alone must not be substituted for those endpoint estimates.
+Rectangle completion now passes its direct leaf check and all 42
+closure audits. The hyperbolic row aggregation and both mixed estimates
+remain paper results awaiting formalization; the complete-residue kernel
+alone must not be substituted for those endpoint estimates.
 
 Even a proof of (C) would initially yield only the flat-source signed
 test. The elementary prime-divisor variance loses H_P^(-1/2), with
@@ -337,3 +339,28 @@ row-mass bookkeeping, but it does not estimate the signed μ(T−mn)
 correlation required here. No signed covariance premise is discharged
 by that source inspection. Two accompanying semantic searches returned
 runtime errors, so their empty results are not evidence of absence.
+
+`RHTower/Sieve/KloostermanIntegerKernelOperator.lean` was also inspected.
+Its unconditional bilinear estimate preserves the signed modulus kernel,
+but ends with the Hilbert–Schmidt factor
+`#A #B (Σ_q |w_q| φ(q+1))²`; it does not supply the missing spectral
+saving for the marked Type II coefficients. The inspected
+`KloostermanGlobalCollisionParseval.lean` gives an exact common-period
+Parseval identity for the off-diagonal source. That identity retains the
+collision energy rather than bounding it. Neither theorem discharges
+the signed reflected-product estimate.
+
+The inspected `RHTower/RetainedPrimeMobiusEulerIdentity.lean` gives
+an exact source-minus-dilation identity for
+`μ(n)y(primeFactors(n)∩P)`, including the changed functional coordinate
+when a retained prime is inserted. The prime-free term remains explicit;
+the identity supplies no bound for its pairing with the reflected
+product source. The predecessor mark is not automatically a function
+of a fixed small retained-prime label.
+
+The inspected ACE `TheTangentFactorsThroughTheMoebiusDilation.lean`
+factors the actual damped prime dilation through the Möbius dilation.
+This identifies where the sign lies in the damping tangent, but its
+exact factorization does not bound the signed reflected-product
+covariance. Neither source permits deleting that remaining term or
+replacing it by an assumed cancellation estimate.

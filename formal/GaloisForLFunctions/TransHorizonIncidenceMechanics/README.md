@@ -924,8 +924,9 @@ whose sum diverges, so it tends to infinity, with the exact order
 $\mathcal E_{\mathrm{prim}}(N;c_\varepsilon)\asymp N^{1-2\varepsilon}$ for $0<\varepsilon<1/2$
 (every mode at most $\zeta(1+\varepsilon)^2q^{-2\varepsilon}$; the odd squarefree top
 octave carries at least $N^{1-2\varepsilon}/3456$): the discrepancy grows like a walk
-of $N^{1-2\varepsilon}$ independent unit steps. For the Möbius row the top octave
-forces linear growth, capped at $N\log N$ by $\lvert\mathfrak m_f\rvert\le f/\varphi(f)$.
+of $N^{1-2\varepsilon}$ independent unit steps. For the Möbius row the growth is exactly
+linear, $12\,\mathcal E_{\mathrm{prim}}(N;\mu)/N\to c\approx0.3311$ with an explicit Euler-product
+series for $c$ (Bézout–Valuation Incidence §3.10).
 This is the barrier $\varepsilon=1/2$ of the PM receiver
 seen on the period torus: below one half no horizon-uniform bound on the
 discrepancy can come from complete-period averages, and a receiver estimate must

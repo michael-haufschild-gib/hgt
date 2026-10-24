@@ -710,7 +710,7 @@ This is the square-root threshold of the aperture as a sampling threshold.
     `P(ℓ_ε)` is not radical (`not_isRadical_paidIdeal_logPower`), and `rank 𝒲_{1/2}/P(ℓ_ε) ≥ 2`
     (`two_le_rank_quotient_paidIdeal_logPower`). The hull is not a complete invariant; the ideal
     records the order of the pole.
-11. **The orbit structure of the unpaid class** (`TheOrbitStructureOfTheUnpaidClass`). Under the
+14. **The orbit structure of the unpaid class** (`TheOrbitStructureOfTheUnpaidClass`). Under the
     critical Wiener monoid, `WienerUnitOrbit` (`c₂ = u ⋆ c₁` away from `0` for `IsWienerUnit u`) is an
     equivalence relation (`equivalence_wienerUnitOrbit`) and `WienerMonoidOrbit` (`c₂ = k ⋆ c₁` for
     `CriticalWiener k`) is a preorder (`wienerMonoidOrbit_refl`, `wienerMonoidOrbit_trans`) along which
@@ -734,6 +734,29 @@ This is the square-root threshold of the aperture as a sampling threshold.
     (`0 < ε ≤ ½`), `evenFlip` is a strictly one-way monoid transition (`moebius_evenFlip_oneWay_orbit`),
     and distinct smooth powers or oscillating probes lie in strictly incomparable monoid cones
     (`not_wienerMonoidOrbit_smoothPower_of_ne`, `not_wienerMonoidOrbit_smoothPower_oscillating`).
+15. **An index formula for the actual receiver** (`AnIndexFormulaForTheActualReceiver`). For any weight
+    `c`, `ReceiverBounded c ↔ paidIdeal c = ⊤ ↔ obstructionHull c = ∅ ↔ Module.rank ℂ (𝒲_{1/2} ⧸ paidIdeal c) = 0`
+    (`paidIdeal_eq_top_iff_receiverBounded`, `obstructionHull_eq_empty_iff_receiverBounded`,
+    `rank_quotient_paidIdeal_eq_zero_iff_receiverBounded`). For `0 < ε < ½`, every point of
+    `translatedOffLineZeroHull ε` lies in `obstructionHull (μ d^{−ε})` and satisfies the half-plane
+    radius-tying law `TiedAtTwoThree ω` (`translatedOffLineZeroHull_subset_obstructionHull_moebius`,
+    `tiedAtTwoThree_of_mem_translatedOffLineZeroHull`). Above the zero width (`Θ − ½ < ε < ½`), the
+    identitykernel `δ₁` repairs `μ d^{−ε}` (`receiverBounded_moebius_of_zetaZeroAbscissa_sub_half_lt`),
+    establishing the reverse inclusion `obstructionHull (μ d^{−ε}) ⊆ translatedOffLineZeroHull ε`,
+    the exact equality `obstructionHull (μ d^{−ε}) = translatedOffLineZeroHull ε = ∅`, and the exact
+    index formula `paidIdeal (μ d^{−ε}) = ⊤`, `rank = 0`, `finrank = 0`, excluding all untied
+    off-half-plane points `¬ TiedAtTwoThree ω` (`moebius_reverse_inclusion_and_index_above_zeroWidth`,
+    `moebius_vs_towerTwisted_obstructionHull_selectivity`, `moebius_reverse_inclusion_and_index_tfae`).
+    Because `dampedSquare ε` and `dampedSquareMoebius ε` are inverse units in `𝒲_{1/2}` (`isWienerUnit_dampedSquare`),
+    `λ d^{−ε}` and `μ d^{−ε}` lie in the same unit orbit (`wienerUnitOrbit_moebius_liouville`) and
+    share the identical `paidIdeal`, `obstructionHull`, `rank`, and `finrank` at every `ε > 0`
+    (`liouville_paidIdeal_obstructionHull_and_index_eq_moebius`). Every multiplicative weight `f` with
+    `|f(p^k)| ≤ 1` and `f(p) = −1` lies in the forward monoid cone of `μ d^{−ε}` with index bounded
+    above by that of `μ d^{−ε}` (`multiplicative_neg_one_monoidOrbit_and_index_le_moebius`), every
+    nonprincipal real Dirichlet character weight `χ d^{−ε}` has `paidIdeal = ⊤`, `obstructionHull = ∅`,
+    and `finrank = 0` (`multiplicative_char_paidIdeal_obstructionHull_and_index`), and every finite
+    local-factor perturbation of `1` satisfies a sharp index dichotomy (`0` vs. `1` at `{polePoint ε}`,
+    `multiplicative_one_finiteLocalFactor_index_dichotomy`).
 
 ### 3.6‴ An orientation-faithful norm over the odd squarefree weight, the smooth power, and multiplicative weights (`AnOrientationFaithfulNormOverTheOddSquarefreeWeight`, `AnOrientationFaithfulNormOverSmoothAndMultiplicativeWeights`)
 
@@ -869,6 +892,36 @@ Frobenius reflection defect reading resolves it on every `CurveDatum ι`
    `0 ≤ μ(A_J)` at every finite stage `J` and hence RH (`riemannHypothesis_of_vanishing_relative_step`,
    `riemannHypothesis_iff_exists_relative_step`, `riemannHypothesis_of_ceilingScaledGroundEnergy_mono`).
 
+### 3.8″ The width functor and the selectivity battery (`TheWidthFunctor`)
+
+1. **The category of receivers and the width functor.** An object `R : ReceiverObject` packages a
+   critical threshold `widthVal ∈ [0, 1/2]` with its graded admissibility predicate `admittedAt : ℝ → Prop`
+   satisfying `∀ σ ≥ 0, R.admittedAt σ ↔ R.widthVal ≤ σ`. Morphisms `R₁ ⟶ R₂` are width dominations
+   `R₁.widthVal ≤ R₂.widthVal` (`nonempty_receiverHom_iff_forall_admittedAt`). The **width functor**
+   `widthFunctor : ReceiverObject ⥤ WidthLine` (`WidthLine = Set.Icc (0 : ℝ) (1 / 2)`) is full,
+   faithful, and isomorphism-reflecting (`widthFunctor_full`, `widthFunctor_faithful`,
+   `nonempty_iso_iff_widthVal_eq`).
+2. **Isomorphism of the canonical `ζ`-receivers and factorization of oriented invariants.** The six
+   canonical `ζ`-receivers (`spectralZeroReceiver`, `abscissaReceiver`, `moebiusDampingReceiver`,
+   `liouvilleDampingReceiver`, `xiHalfPlaneReceiver`, `suzukiFormationReceiver`) all map to
+   `⟨zetaZeroWidth, …⟩` under `widthFunctor` and are canonically isomorphic in `ReceiverObject`
+   (`zetaReceivers_widthVal_eq`, `widthFunctor_obj_zetaReceivers_eq`). Every graded threshold
+   `R.admittedAt σ` (`σ ≥ 0`) factors through `widthFunctor` (`admittedAt_factorsThrough_widthFunctor`),
+   turning the width and graded width dictionaries into categorical equivalence theorems over
+   `IsZeroWidthObject R ↔ widthFunctor.obj R = widthZero` (`categoricalWidthDictionary_tfae`,
+   `categoricalGradedWidthDictionary_tfae`).
+3. **The selectivity battery as non-objects.** In `ReceiverObject` and across the corpus's models,
+   `goldenDatum` is a non-object of curve unitarity and `sectionEffectivityCone` Bézout despite Witt
+   integrality (`selectivityBattery_goldenDatum_nonObject`), `shiftedPairVonMangoldt a` (`a ≠ 0`) is a
+   non-object of the scale-window temperedness gate and inflates `frobeniusMass` despite preserving
+   Dirichlet `h0` (`selectivityBattery_shiftedPair_nonObject`), `fermiFlipWeight ε` (`0 < ε ≤ ½`) is an
+   unpaid non-object despite sharing all Ramanujan amplitudes with `fermiWeight ε`
+   (`selectivityBattery_parityTwins_nonObject`), `nodeSetReceiver (deleteNode 2 {n | IsPrimePow n})`
+   maps to `widthHalf` (`¬ IsZeroWidthObject`) while `deleteNode 4` refutes zero-pole positivity and
+   `deleteNode 6` is free (`selectivityBattery_nodes_nonObject`), and every bounded aperture `a > 0`
+   admits `Z` with `widthFunctor.obj (temperedConfigReceiver Z) = widthHalf`
+   (`selectivityBattery_finiteAperture_nonObject`).
+
 ### 3.9 Complete-period quadratic forms are orientation-blind (`CompletePeriodQuadraticFormsAreOrientationBlind`)
 
 The reading "complete-period mean and lag covariances" of a divisor row refines every
@@ -882,6 +935,32 @@ Selberg coordinates `δ₂ ± δ₃` share the reading and differ in all three
 (`not_resolves_completePeriodLagReading_sieveSeq`,
 `not_resolves_completePeriodLagReading_vonMangoldtReadout_nonneg`). Period statistics are the
 model of a reading that sees magnitudes of modes and no orientation.
+
+### 3.9′ The trichotomy of readings and branch precision laws (`TheTrichotomyOfReadings`)
+
+1. **Sub-Nyquist sign-factored blindness and the trichotomy escape.** On `DepthDatum`, for `0 < a ≤ ℓ/2`
+   and `η ≤ 0`, `levelReading hℓ a η` is identically `True` (`levelReading_of_subNyquist`), invisible to
+   every depth flip `κ`, and has resolution limit `1/2` (`resolutionLimit_depth_levelReading_subNyquist`).
+   More generally, any reading `r : D → O` that factors (`SubNyquistSignFactored`) through a reading
+   invisible to `κ` (sub-Nyquist sign, complete-period quadratic forms, or Ramanujan amplitudes) is
+   orientation-blind and certifies no bound `β < I(κ d)` (`not_orientationFaithful_and_not_certifies_of_subNyquistSignFactored`).
+   Every orientation-faithful reading must therefore escape via one of three branches
+   (`trichotomy_of_readings_escape`):
+2. **Branch I (Crossing the Nyquist aperture):** on `ScaleDepthDatum`, `weilFloorThreshold ε` (`ε ≥ 0`)
+   and `rateSet` are orientation-faithful (`orientationFaithful_weilFloorThreshold`,
+   `orientationFaithful_rateSet`), with exact trans-Nyquist precision cost `12 / (β² L³)`
+   (`branchOne_transNyquist_precision_cost`).
+3. **Branch II (Reading a magnitude):** on `DepthDatum` (`0 < ℓ`), `bandPairReading hℓ`,
+   `bandTripleDeficitReading hℓ L` (using `bandDeficit_three_sub_three_mul_two`), and the sub-Nyquist
+   two-aperture doubling reading `pairDoublingReading hL a` (`0 < a`, `2a ≤ L/2`) are all
+   orientation-faithful at arbitrary dilution `L`, with precision costs `½ β² L²` (two-band deficit)
+   and `2 β² a²` (sub-Nyquist doubling ratio `2 + 2 β² a²`, `branchTwo_magnitude_precision_cost`).
+4. **Branch III (Adding data of a third kind — mass/dilution or first pronic moment):** on `DepthDatum`,
+   `dilutedReading hℓ hL a` (`ℓ/2 < a ≤ min ℓ (L/2)`) drops the resolution limit from `1/2` to
+   `min (1/2) (arcosh(1 + L/ℓ)/ℓ) ≤ √(2L)/ℓ` (requiring `L ≤ ½ β² ℓ³`,
+   `resolutionLimit_depth_dilutedReading_secondBand_le_sqrt`), while on `OrientedFourFreeDamped ε`,
+   `firstPronicMoment` resolves `evenFlip` with jump `2 log 2 · |W_c(2)| > 0`
+   (`branchThree_thirdKind_precision_cost`, `trichotomy_of_readings_synthesis`).
 
 ### 3.10 The effectivity cone from sections (`TheEffectivityConeFromSections`)
 
@@ -1107,7 +1186,15 @@ Built and reusable:
 - the *source obstruction reading* `sourceObstructionReading S Φ` and *sign-free Bézout theorem*
   (`sourceSectionCone_bezout_of_defect_sq_le`), the *Frobenius-mass section cone* `frobMassSectionCone`,
   the *Chebyshev-defect section cone* `chebyshevSectionCone`, and the *`L²`-mass section cone*
-  `l2MassSectionCone`.
+  `l2MassSectionCone`;
+- the *translated off-line zero hull* `translatedOffLineZeroHull ε` and the *Möbius–Liouville
+  unit-orbit and multiplicative index laws* (`wienerUnitOrbit_moebius_liouville`,
+  `liouville_paidIdeal_obstructionHull_and_index_eq_moebius`);
+- the *sub-Nyquist sign-factored reading class* `SubNyquistSignFactored`, the *three-band deficit
+  reading* `bandTripleDeficitReading`, and the *sub-Nyquist two-aperture doubling reading*
+  `pairDoublingReading`;
+- the *category of receivers* `ReceiverObject`, the *width functor* `widthFunctor : ReceiverObject ⥤ WidthLine`,
+  and the *zero-width subcategory predicate* `IsZeroWidthObject`.
 
 ---
 
@@ -1221,19 +1308,52 @@ Built and reusable:
    and `SurfaceRiemannRochAxiom 0 0` past the first prime `2` on `primitiveSmoothRealTestsAt r`,
    `polarFreeSmoothRealTestsAt r`, and `oddRealTestsAt r`
    (`l2MassSectionCone_convex_ample_and_primeTwo_riemannRoch`).
-9. **An index formula for the actual receiver.** The hull of `μ(d)d^{−ε}` contains every translated
-   off-line zero `ρ − ε` with `ζ(ρ − ε) ≠ 0`, and the codimension of its repairing ideal is at least
-   the number of such zeros (§3.6⁗). Open: the reverse inclusion (repairing kernels off the zeros),
-   which would make the hull exactly the translated zero set and the inequality an equality. It is
-   a genuinely arithmetic statement: general weights have obstructions off the half-plane (§3.6⁗,
-   item 12), and the reverse inclusion must exclude them for `μ`.
-10. **The trichotomy of readings.** Prove that every orientation-faithful reading of the critical
-    form crosses the Nyquist aperture, reads a magnitude, or adds data of a third kind (mass,
-    dilution), and compute the precision cost of each branch. This is the Scale-Signed Incidence
-    Criticality trichotomy stated as a theorem about readings.
-11. **The width functor.** Construct a functor from receivers to the width line through which every
-    oriented invariant factors. The dictionary would become a theorem about a category of
-    receivers, and the battery of §8 a list of its non-objects.
+9. **An index formula for the actual receiver.** Answered by §3.6⁗ item 15
+   (`AnIndexFormulaForTheActualReceiver`): for any weight `c`,
+   `ReceiverBounded c ↔ paidIdeal c = ⊤ ↔ obstructionHull c = ∅ ↔ Module.rank ℂ (𝒲_{1/2} ⧸ paidIdeal c) = 0`.
+   For `0 < ε < ½`, every point of `translatedOffLineZeroHull ε` lies in `obstructionHull (μ d^{−ε})`
+   and satisfies the half-plane radius-tying law `TiedAtTwoThree ω`. Above the zero width
+   (`Θ − ½ < ε < ½`), the identity kernel `δ₁` repairs `μ d^{−ε}`, giving the reverse inclusion
+   `obstructionHull (μ d^{−ε}) ⊆ translatedOffLineZeroHull ε`, the exact equality
+   `obstructionHull (μ d^{−ε}) = translatedOffLineZeroHull ε = ∅`, and the exact index formula
+   `paidIdeal (μ d^{−ε}) = ⊤`, `rank = 0`, `finrank = 0`, excluding all untied off-half-plane points
+   `¬ TiedAtTwoThree ω` (`moebius_reverse_inclusion_and_index_above_zeroWidth`,
+   `moebius_vs_towerTwisted_obstructionHull_selectivity`, `moebius_reverse_inclusion_and_index_tfae`).
+   By unit-orbit equivalence (`isWienerUnit_dampedSquare`, `wienerUnitOrbit_moebius_liouville`),
+   `λ d^{−ε}` and `μ d^{−ε}` share the identical `paidIdeal`, `obstructionHull`, `rank`, and `finrank`
+   at every `ε > 0` (`liouville_paidIdeal_obstructionHull_and_index_eq_moebius`), every multiplicative
+   weight `f` with `|f(p^k)| ≤ 1` and `f(p) = −1` has index bounded above by that of `μ d^{−ε}`, every
+   nonprincipal real Dirichlet character weight `χ d^{−ε}` has index `0`, and every finite local-factor
+   perturbation of `1` satisfies a `0`-vs.-`1` index dichotomy at `{polePoint ε}`
+   (`multiplicative_one_finiteLocalFactor_index_dichotomy`).
+10. **The trichotomy of readings.** Answered by §3.9′
+    (`TheTrichotomyOfReadings`): any reading `r : D → O` that factors (`SubNyquistSignFactored`)
+    through a reading invisible to `κ` (sub-Nyquist sign `levelReading hℓ a η` for `a ≤ ℓ/2, η ≤ 0`,
+    complete-period quadratic forms `completePeriodLagReading`, or Ramanujan amplitudes
+    `amplitudeReading`) is orientation-blind and certifies no bound `β < I(κ d)`
+    (`not_orientationFaithful_and_not_certifies_of_subNyquistSignFactored`). Every orientation-faithful
+    reading must therefore escape via one of three branches (`trichotomy_of_readings_escape`):
+    Branch I crosses the Nyquist aperture (`weilFloorThreshold`, `rateSet`) with precision cost
+    `12 / (β² L³)` (`branchOne_transNyquist_precision_cost`); Branch II reads a magnitude
+    (`bandPairReading`, `bandTripleDeficitReading`, `pairDoublingReading`) with precision costs
+    `½ β² L²` (two-band deficit) and `2 β² a²` (sub-Nyquist doubling ratio `2 + 2 β² a²`,
+    `branchTwo_magnitude_precision_cost`); Branch III adds data of a third kind (`dilutedReading` with
+    second-band resolution limit `min (1/2) (arcosh(1 + L/ℓ)/ℓ) ≤ √(2L)/ℓ` and budget `L ≤ ½ β² ℓ³`,
+    or `firstPronicMoment` with parity-flip jump `2 log 2 · |W_c(2)| > 0`,
+    `branchThree_thirdKind_precision_cost`).
+11. **The width functor.** Answered by §3.8″
+    (`TheWidthFunctor`): `ReceiverObject` (with morphisms `R₁.widthVal ≤ R₂.widthVal`) and the full,
+    faithful, isomorphism-reflecting functor `widthFunctor : ReceiverObject ⥤ WidthLine` (`[0, 1/2]`)
+    make the six canonical `ζ`-receivers (`spectralZeroReceiver`, `abscissaReceiver`,
+    `moebiusDampingReceiver`, `liouvilleDampingReceiver`, `xiHalfPlaneReceiver`,
+    `suzukiFormationReceiver`) canonically isomorphic (`zetaReceivers_widthVal_eq`,
+    `widthFunctor_obj_zetaReceivers_eq`), factor every graded admissibility predicate `R.admittedAt σ`
+    (`σ ≥ 0`) and every unit of the width dictionary through `widthFunctor` and `IsZeroWidthObject`
+    (`admittedAt_factorsThrough_widthFunctor`, `categoricalWidthDictionary_tfae`,
+    `categoricalGradedWidthDictionary_tfae`), and formalize the §8 selectivity battery (`goldenDatum`,
+    `shiftedPairVonMangoldt a`, `fermiFlipWeight ε`, `liouvilleTwin ε`, `deleteNode 2`, `deleteNode 4`,
+    and bounded-aperture `aperturePositivity a`) as non-objects
+    (`theWidthFunctor_and_selectivityBattery_synthesis`).
 
 ---
 
@@ -1426,3 +1546,33 @@ be coupled to the Frobenius mass or to the defect `E(s) = e^s + s − 1 − ψ(e
   `primeNodeCorrelationObstruction_lt_shiftedPair`, `chebyshevSectionCone_widthDictionary_tfae`), and
   the convex Hecke-stable `L²`-mass section cone (`l2SourcePairing_le_polar_of_mem_l2MassSectionCone`,
   `l2MassSectionCone_convex_ample_and_primeTwo_riemannRoch`, `sourceSectionEffectivity_synthesis`).
+- `AnIndexFormulaForTheActualReceiver` — payment-to-ideal-to-hull-to-rank equivalences
+  (`paidIdeal_eq_top_iff_receiverBounded`, `obstructionHull_eq_empty_iff_receiverBounded`,
+  `rank_quotient_paidIdeal_eq_zero_iff_receiverBounded`), the translated off-line zero hull
+  `translatedOffLineZeroHull ε` and half-plane radius-tying law (`tiedAtTwoThree_of_mem_translatedOffLineZeroHull`),
+  the reverse inclusion and exact index formula for `μ d^{−ε}` above the zero width
+  (`moebius_reverse_inclusion_and_index_above_zeroWidth`, `moebius_vs_towerTwisted_obstructionHull_selectivity`,
+  `moebius_reverse_inclusion_and_index_tfae`), Möbius–Liouville unit-orbit index identity
+  (`wienerUnitOrbit_moebius_liouville`, `liouville_paidIdeal_obstructionHull_and_index_eq_moebius`),
+  and multiplicative and finite local-factor index laws (`multiplicative_neg_one_monoidOrbit_and_index_le_moebius`,
+  `multiplicative_char_paidIdeal_obstructionHull_and_index`,
+  `multiplicative_one_finiteLocalFactor_index_dichotomy`, `actualReceiver_indexFormula_synthesis`).
+- `TheTrichotomyOfReadings` — sub-Nyquist sign blindness (`levelReading_of_subNyquist`,
+  `resolutionLimit_depth_levelReading_subNyquist`) and the `SubNyquistSignFactored` trichotomy escape
+  (`not_orientationFaithful_and_not_certifies_of_subNyquistSignFactored`, `trichotomy_of_readings_escape`),
+  Branch I trans-Nyquist readings and the `12 / (β² L³)` deficit budget (`orientationFaithful_weilFloorThreshold`,
+  `orientationFaithful_rateSet`, `branchOne_transNyquist_precision_cost`), Branch II magnitude and
+  doubling readings (`bandTripleDeficitReading`, `pairDoublingReading`, `branchTwo_magnitude_precision_cost`),
+  and Branch III third-kind mass/dilution and first-pronic-moment readings
+  (`resolutionLimit_depth_dilutedReading_secondBand_le_sqrt`, `branchThree_thirdKind_precision_cost`,
+  `trichotomy_of_readings_synthesis`).
+- `TheWidthFunctor` — the category of receivers `ReceiverObject` and the full, faithful,
+  isomorphism-reflecting width functor `widthFunctor : ReceiverObject ⥤ WidthLine` (`[0, 1/2]`),
+  canonical isomorphism of the six `ζ`-receivers (`zetaReceivers_widthVal_eq`,
+  `widthFunctor_obj_zetaReceivers_eq`), factorization of graded admissibility and the categorical
+  width dictionaries (`admittedAt_factorsThrough_widthFunctor`, `categoricalWidthDictionary_tfae`,
+  `categoricalGradedWidthDictionary_tfae`), and the §8 selectivity battery as non-objects
+  (`selectivityBattery_goldenDatum_nonObject`, `selectivityBattery_shiftedPair_nonObject`,
+  `selectivityBattery_parityTwins_nonObject`, `selectivityBattery_nodes_nonObject`,
+  `selectivityBattery_finiteAperture_nonObject`, `selectivityBattery_rate_and_precision`,
+  `theWidthFunctor_and_selectivityBattery_synthesis`).

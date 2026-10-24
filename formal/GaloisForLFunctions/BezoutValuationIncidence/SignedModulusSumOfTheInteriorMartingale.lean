@@ -191,7 +191,7 @@ theorem interiorJumpOrbitMean_eq_sum_divisors {d e : ℕ} (hd : 1 ≤ d) (he : 1
   have hd0 : d ≠ 0 := by omega
   constructor
   · rintro ⟨⟨hug, _⟩, hu1⟩
-    exact ⟨⟨hug.trans (Nat.gcd_dvd_left d e), hd0⟩, hu1, hug.trans (Nat.gcd_dvd_right d e)⟩
+    exact ⟨⟨⟨hug.trans (Nat.gcd_dvd_left d e), hd0⟩, hu1⟩, hug.trans (Nat.gcd_dvd_right d e)⟩
   · rintro ⟨⟨⟨hud, _⟩, hu1⟩, hue⟩
     exact ⟨⟨Nat.dvd_gcd hud hue, hg0⟩, hu1⟩
 
@@ -312,17 +312,6 @@ theorem abs_bezoutInteriorSawtoothSum_centered_jump_compensated_selberg_le
 def pmSignedInteriorJumpOrbitMean (ε : ℝ) (d : ℕ) : ℝ :=
   ∑' e : ℕ, pmPowerDampedRealWeight ε e * interiorJumpOrbitMean d e
 
-/-- Dividing `pmPowerDampedRealWeight ε e` by `(e : ℝ)` shifts the damping exponent from `ε` to
-`1 + ε` for every `e : ℕ`. -/
-theorem pmPowerDampedRealWeight_div_eq_add_one (ε : ℝ) (e : ℕ) :
-    pmPowerDampedRealWeight ε e / (e : ℝ) = pmPowerDampedRealWeight (1 + ε) e := by
-  rcases Nat.eq_zero_or_pos e with rfl | he
-  · unfold pmPowerDampedRealWeight moebiusReal
-    simp
-  · have he0 : (0 : ℝ) < e := by exact_mod_cast he
-    unfold pmPowerDampedRealWeight
-    rw [mul_div_assoc, ← Real.rpow_sub_one he0.ne', show -ε - 1 = -(1 + ε) by ring]
-
 /-- Pointwise bound: for every `ε : ℝ`, `d ≥ 1`, and `e : ℕ`,
 `|pmPowerDampedRealWeight ε e * interiorJumpOrbitMean d e| ≤ (1 / 2) * (e : ℝ) ^ (-1 - ε)`. -/
 theorem abs_pmPowerDampedRealWeight_mul_interiorJumpOrbitMean_le
@@ -335,8 +324,10 @@ theorem abs_pmPowerDampedRealWeight_mul_interiorJumpOrbitMean_le
     rw [hz, zero_mul, abs_zero]
     positivity
   · have he0 : (0 : ℝ) < e := by exact_mod_cast he
-    have hmean0 := interiorJumpOrbitMean_nonneg ⟨d, hd⟩ ⟨e, he⟩
-    have hmean := interiorJumpOrbitMean_le ⟨d, hd⟩ ⟨e, he⟩
+    have hmean0 : 0 ≤ interiorJumpOrbitMean d e :=
+      interiorJumpOrbitMean_nonneg ⟨d, hd⟩ ⟨e, he⟩
+    have hmean : interiorJumpOrbitMean d e ≤ 1 / (2 * (e : ℝ)) :=
+      interiorJumpOrbitMean_le ⟨d, hd⟩ ⟨e, he⟩
     have hc : |pmPowerDampedRealWeight ε e| ≤ (e : ℝ) ^ (-ε) := by
       unfold pmPowerDampedRealWeight
       rw [abs_mul, abs_of_nonneg (Real.rpow_nonneg he0.le _)]
@@ -415,7 +406,7 @@ theorem pmSignedInteriorJumpOrbitMean_eq_sum_divisors
             ∑ u ∈ d.divisors.filter (fun u => 1 < u),
               (moebiusReal u * pmRealRamanujanWeight ε u +
                 ((Nat.totient u : ℝ) - moebiusReal u) * pmRealRamanujanWeight (1 + ε) u))) := by
-    refine Tendsto.const_mul (-(1 / 2 : ℝ)) (tendsto_finset_sum _ fun u hu => ?_)
+    refine Tendsto.const_mul (-(1 / 2 : ℝ)) (tendsto_finsetSum _ fun u hu => ?_)
     have hu_pos : 0 < u := by
       have := (mem_filter.mp hu).2
       omega
@@ -494,8 +485,9 @@ theorem pmSignedInteriorJumpOrbitMean_prime
 
 /-- `pmRealRamanujanWeight ε u` vanishes whenever `¬ Squarefree u`. -/
 theorem pmRealRamanujanWeight_eq_zero_of_not_squarefree (ε : ℝ) {u : ℕ} (hu : ¬ Squarefree u) :
-    pmRealRamanujanWeight ε u = 0 :=
-  re_pmPowerDampedRamanujanWeight_eq_zero_of_not_squarefree ε hu
+    pmRealRamanujanWeight ε u = 0 := by
+  unfold pmRealRamanujanWeight
+  rw [pmPowerDampedRamanujanWeight_eq_zero_of_not_squarefree ε hu, Complex.zero_re]
 
 /-- **Squarefree Divisor Restriction (`pmSignedInteriorJumpOrbitMean_eq_sum_squarefree_divisors`):**
 Because both `pmRealRamanujanWeight ε u` and `pmRealRamanujanWeight (1 + ε) u` vanish outside
@@ -516,7 +508,7 @@ theorem pmSignedInteriorJumpOrbitMean_eq_sum_squarefree_divisors
     ext u; simp only [mem_filter]; tauto
   rw [hsub]
   refine (sum_filter_of_ne fun u _ hnot => ?_).symm
-  intro hsq
+  by_contra hsq
   exact hnot (by
     rw [pmRealRamanujanWeight_eq_zero_of_not_squarefree ε hsq,
       pmRealRamanujanWeight_eq_zero_of_not_squarefree (1 + ε) hsq]
@@ -539,7 +531,7 @@ private theorem squarefree_mem_divisors_iff_of_primeFactors_eq
         ⟨hp_prime, (Finset.dvd_prod_of_mem _ hp).trans hdvd, by omega⟩
     · intro hsub
       calc (∏ p ∈ u.primeFactors, p)
-          ∣ ∏ p ∈ d₁.primeFactors, p := Finset.prod_dvd_prod_of_subset _ _ hsub
+          ∣ ∏ p ∈ d₁.primeFactors, p := Finset.prod_dvd_prod_of_subset _ _ _ hsub
         _ ∣ d₁ := Nat.prod_primeFactors_dvd d₁
   have h2 : (∏ p ∈ u.primeFactors, p) ∣ d₂ ↔ u.primeFactors ⊆ d₂.primeFactors := by
     constructor
@@ -549,7 +541,7 @@ private theorem squarefree_mem_divisors_iff_of_primeFactors_eq
         ⟨hp_prime, (Finset.dvd_prod_of_mem _ hp).trans hdvd, by omega⟩
     · intro hsub
       calc (∏ p ∈ u.primeFactors, p)
-          ∣ ∏ p ∈ d₂.primeFactors, p := Finset.prod_dvd_prod_of_subset _ _ hsub
+          ∣ ∏ p ∈ d₂.primeFactors, p := Finset.prod_dvd_prod_of_subset _ _ _ hsub
         _ ∣ d₂ := Nat.prod_primeFactors_dvd d₂
   rw [h1, h2, hpf]
 
@@ -626,6 +618,57 @@ theorem summable_pmPowerDampedRealWeight_div_mul_pmSignedInteriorJumpOrbitMean
 
 /-! ## §3. Cutoff-Free Signed Progression Bounds and Sub-Half-Damping Laws for the Interior Martingale -/
 
+/-- Exact identification of `weightCenteredPrefix (pmPowerDampedRealWeight ε) (dampedDensity ε) n`
+with `pmPowerDampedCenteredDivisorPrefix ε n`. -/
+theorem weightCenteredPrefix_pmPowerDamped_eq (ε : ℝ) (n : ℕ) :
+    weightCenteredPrefix (pmPowerDampedRealWeight ε) (dampedDensity ε) n =
+      pmPowerDampedCenteredDivisorPrefix ε n := by
+  rw [weightCenteredPrefix, RHTower.pmPowerDampedCenteredDivisorPrefix_eq]
+  rfl
+
+/-- **All-Damping Vinogradov–Korobov Bound on `pmBezoutInteriorPrefix`
+(`exists_abs_pmBezoutInteriorPrefix_le_vk_all_pos`):**
+There exist `K ≥ 0` and `N₁ : ℕ` such that for **every** `0 < ε ≤ 1/2` and every `n ≥ N₁`,
+`|pmBezoutInteriorPrefix ε n| ≤ (K / ε + 1 / 2) n^{1−ε} exp(−κ σ(n)/240)`. -/
+theorem exists_abs_pmBezoutInteriorPrefix_le_vk_all_pos :
+    ∃ K : ℝ, 0 ≤ K ∧ ∃ N₁ : ℕ, ∀ ε : ℝ, 0 < ε → ε ≤ 1 / 2 → ∀ n : ℕ, N₁ ≤ n →
+      |pmBezoutInteriorPrefix ε n| ≤
+        (K / ε + 1 / 2) * (n : ℝ) ^ (1 - ε) * Real.exp (-(vkKappa * vkScale n / 240)) := by
+  obtain ⟨K, hK0, N₀, hpre⟩ := exists_abs_weightCenteredPrefix_pmPowerDamped_le_vk_all_pos
+  have hlog : Tendsto (fun n : ℕ => Real.log n) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  obtain ⟨N₂, hN₂⟩ := Filter.eventually_atTop.mp
+    ((tendsto_natCast_atTop_atTop.eventually (eventually_vk_conditions one_pos 0)).and
+      (hlog.eventually_ge_atTop 3))
+  refine ⟨K, hK0, max N₀ N₂, fun ε hε hε2 n hn => ?_⟩
+  have hn0' : N₀ ≤ n := le_trans (le_max_left _ _) hn
+  have hn2 : N₂ ≤ n := le_trans (le_max_right _ _) hn
+  obtain ⟨hvk, hℓ3⟩ := hN₂ n hn2
+  obtain ⟨-, -, -, -, -, hle, -⟩ := hvk
+  rw [log_vkHeight] at hle
+  have hn0 : (0 : ℝ) < n := by
+    by_contra h
+    have : (n : ℝ) = 0 := le_antisymm (not_lt.mp h) (Nat.cast_nonneg n)
+    rw [this, Real.log_zero] at hℓ3; linarith
+  have hA := hpre ε hε hε2 n hn0'
+  rw [weightCenteredPrefix_pmPowerDamped_eq] at hA
+  have hsplit := pmPowerDampedCenteredDivisorPrefix_eq_bezout_active_pair_add_interior ε n
+  have hI : pmBezoutInteriorPrefix ε n =
+      pmPowerDampedCenteredDivisorPrefix ε n - addDiff (pmActiveSawtoothComponent ε) n := by
+    linarith [hsplit]
+  have hact := abs_addDiff_pmActiveSawtoothComponent_le_half hε.le n
+  have h1le : 1 ≤ (n : ℝ) ^ (1 - ε) * Real.exp (-(vkKappa * vkScale n / 240)) := by
+    rw [Real.rpow_def_of_pos hn0, ← Real.exp_add]
+    exact Real.one_le_exp (by nlinarith)
+  rw [hI]
+  calc |pmPowerDampedCenteredDivisorPrefix ε n - addDiff (pmActiveSawtoothComponent ε) n|
+      ≤ |pmPowerDampedCenteredDivisorPrefix ε n| + |addDiff (pmActiveSawtoothComponent ε) n| :=
+        abs_sub _ _
+    _ ≤ K / ε * (n : ℝ) ^ (1 - ε) * Real.exp (-(vkKappa * vkScale n / 240)) +
+          (1 / 2) * ((n : ℝ) ^ (1 - ε) * Real.exp (-(vkKappa * vkScale n / 240))) :=
+        add_le_add hA (by linarith)
+    _ = (K / ε + 1 / 2) * (n : ℝ) ^ (1 - ε) * Real.exp (-(vkKappa * vkScale n / 240)) := by ring
+
 /-- **Cutoff-Free Vinogradov–Korobov Bound Along Every Predecessor Jump Progression
 (`exists_abs_pmBezoutInteriorPrefix_jump_compensated_le_vk_all_pos`):**
 Retaining the signed sum over interior moduli `e` in `pmBezoutInteriorPrefix ε n` removes the
@@ -662,6 +705,7 @@ theorem exists_abs_pmBezoutInteriorPrefix_jump_compensated_le_vk_all_pos :
     max_le (sub_le_self _ (by positivity)) (by positivity)
   have hpre := hvk ε hε hε2 n hn_ge
   have hn_le : (n : ℝ) ≤ (d : ℝ) * ((k : ℝ) + 1) := by
+    have hd_pos : 0 < (d : ℕ) := d.pos
     have hnat : n + 1 = (d : ℕ) * (k + 1) := by
       dsimp [n]; rw [Nat.mul_add, Nat.mul_one]; omega
     have hR : (n : ℝ) + 1 = (d : ℝ) * ((k : ℝ) + 1) := by exact_mod_cast hnat
@@ -678,7 +722,7 @@ theorem exists_abs_pmBezoutInteriorPrefix_jump_compensated_le_vk_all_pos :
           rw [← Real.rpow_sub_one (by positivity : (d : ℝ) * ((k : ℝ) + 1) ≠ 0),
             show 1 - ε - 1 = -ε by ring]
       _ = (d : ℝ) ^ (-ε) * ((k : ℝ) + 1) ^ (-ε) :=
-          Real.mul_rpow hd0.le hk1_pos.le (-ε)
+          Real.mul_rpow hd0.le hk1_pos.le
   rw [abs_mul, abs_of_nonneg hw0]
   calc interiorJumpCompensatedWeight d T k * |pmBezoutInteriorPrefix ε n|
       ≤ (1 / ((d : ℝ) * ((k : ℝ) + 1))) *
@@ -801,7 +845,7 @@ theorem eventually_abs_pmBezoutInteriorMartingaleSum_le_growth_of_pos
     have := Real.add_one_le_exp (Real.log T)
     rw [Real.exp_log hT0] at this; linarith) (by positivity)) hGsq
   have hlog_le : Real.log T ≤ (2 / a) * G := by
-    have hexp := Real.add_one_le_exp (a / 2 * Real.log T)
+    have hexp := Real.add_one_le_exp (Real.log T * (a / 2))
     rw [← Real.rpow_def_of_pos hT0 (a / 2)] at hexp
     have h1 : a / 2 * Real.log T ≤ G := by linarith
     have h2 : Real.log T = (2 / a) * (a / 2 * Real.log T) := by field_simp
@@ -867,17 +911,6 @@ theorem eventually_abs_compensated_interiorMartingale_le_mul_periodEnergy_of_pos
           Real.exp (-(vkKappa * vkScale N / 270)) :=
         mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (by linarith) hC0) he
     _ = _ := by ring
-
-#print axioms sum_Icc_mul_interiorJumpOrbitMean_eq_selbergMultiplesCoord
-#print axioms sum_Icc_mul_interiorJumpOrbitMean_prime
-#print axioms pmSignedInteriorJumpOrbitMean_eq_sum_divisors
-#print axioms pmSignedInteriorJumpOrbitMean_prime
-#print axioms pmSignedInteriorJumpOrbitMean_eq_of_primeFactors_eq
-#print axioms summable_pmPowerDampedRealWeight_div_mul_pmSignedInteriorJumpOrbitMean
-#print axioms exists_abs_pmBezoutInteriorPrefix_jump_compensated_le_vk_all_pos
-#print axioms eventually_abs_compensated_interiorMartingale_le_growth_of_pos
-#print axioms eventually_abs_pmBezoutInteriorMartingaleSum_le_growth_of_pos
-#print axioms eventually_abs_compensated_interiorMartingale_le_mul_periodEnergy_of_pos
 
 end
 

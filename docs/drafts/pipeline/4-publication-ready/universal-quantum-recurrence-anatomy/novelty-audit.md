@@ -1,66 +1,45 @@
-# Novelty audit
+# Novelty and significance audit — 24 October 2026
 
-Date: 2026-08-24
+**Verdict: SURVIVES PRELIMINARY ATTACK.** The exact connected-network, simultaneous all-observer first-return classification is the candidate contribution. This is an internal literature audit, not proof of priority. No claim is made that formalization alone creates scientific novelty.
 
-Status: submission-facing scope fixed. No absolute priority claim authorized.
+## Exact claim under review
 
-## Central result
+For every finite connected interaction graph with arbitrary local dimensions ≥2, almost every Hamiltonian in the full real local Hermitian coefficient space has, simultaneously for every finite weighted matrix family, exact fixed-cutoff continuous-time squared-displacement exponent max(D-c-1,0)/2. Connected support-contained hypergraphs inherit the law. The new model input is escape of every real balanced affine spectral relation, including every spectral labelling.
 
-Paper now has one end-to-end recurrence factorization:
+## Closest primary results
 
-`persistent carrier -> exact relation hull -> weighted projective metric -> observer quotient`.
+| Work | Already established | Difference relevant here |
+|---|---|---|
+| [Lee–Pilatowsky-Cameo–Choi, 2609.26885v2](https://arxiv.org/html/2609.26885v2), Proposition S2 and Corollary S4 | Generic local qubit-lattice all-order nonresonance; average recurrence bounds for typical high-temperature product states | Does not state the exact shrinking-tolerance first return for every matrix observer on arbitrary heterogeneous connected graphs. Its chain witness is embedded into lattices by a spanning line; that does not cover arbitrary branching graphs. |
+| [Kotowski–Oszmaniec, 2601.10409v3](https://arxiv.org/html/2601.10409v3) | Quantitative exit-based upper bounds and random-Hamiltonian saturation | Different return definition and Hamiltonian ensemble. Their mixed-state/observable/local-system questions motivate part of the present scope, not a claim to solve all of them. |
+| [Gupta–Short, 2604.14995v2](https://arxiv.org/abs/2604.14995v2) | Simultaneous finite-system state recurrence bounds | Merely adding mixed states is not novel. Current claim is exact observer-dependent generic exponent in physical coefficient space. |
+| [Gimeno–Sotoca](https://arxiv.org/abs/1607.00881) | Mixed-state recurrence bounds, including discrete infinite spectra | Also rules out a mixed-state-first priority claim. |
+| [Rousseau–Saussol](https://arxiv.org/abs/0807.0970) and [Rousseau](https://doi.org/10.1017/S014338571100037X) | Observation recurrence and dimension laws under dynamical hypotheses | Quasiperiodic flow is not mixing. Our lower bound uses Diophantine extremality. |
+| [Kleinbock–Margulis](https://annals.math.princeton.edu/articles/12997) | Extremality of nondegenerate manifolds | Classical analytic engine. The local physical nondegeneracy and simultaneous observer discharge are the work here. |
+| [Anand–Valluri–Davis–Ghose](https://doi.org/10.22331/q-2026-04-20-2074) | Exact state-independent Floquet recurrence via cyclotomic arithmetic | Distinct exact/discrete problem; no priority asserted over that classification. |
+| [Wiener](https://doi.org/10.1007/BF02546511) and almost-periodic spectral theory | Mean-square atomic selection and compact spectral dynamics | The arbitrary-measure scaling/support theorem is a structural companion. Its proof is close to classical theory; it is not the headline novelty claim. |
 
-Each reduction is an exact unconditional law. Persistent mass is sharp late-return ceiling for finite contractions. Balanced relation lattice fixes projective hull and satisfies rank conservation. Reverse-water entropy controls exact target information and least universal deadline within explicit constants. Coherence-graph rank is exact observer capacity and sharp minimax exponent. Countable pure-point packets inherit relation-hull covering law.
+## What changed from the old paper
 
-Physical saturation theorem is strongest new many-body component. For every `n,q >= 2`, full static Hermitian onsite-plus-nearest-neighbour coefficient space on open `q`-level path has this every-chart property: almost every single Hamiltonian simultaneously has maximal projective spectral rank `D - 1`, sharp stroboscopic exponent `D - 1`, sharp first-gap-clock winding exponent `D - 2`, every positive-weight collision floor, every corresponding long-time moment floor, and no nonzero exact anchored return.
+The August assertion that generic local all-order nonresonance was absent from literature is no longer defensible. September's result above must be credited. The replacement removes that priority claim and the broad implication that rank saturation establishes chaos, nonintegrability, or circuit complexity.
 
-Exact completed return density and thermodynamic extinction follow from same maximal-projectivity invariant. Exact l-bit theorem supplies commuting-local boundary and finite-horizon ambiguity.
+Relative to this corpus, local paths already had simultaneous matrix-observer clocks. Arbitrary graphs already had rational maximality and physical spanning-tree witnesses. The missing implication was real affine spectral escape on the named full graph-local space. Rational maximality does not supply this implication. New modules close it by transporting the existing Hermitian leaf rigidity theorem through actual site-factor charts.
 
-## Closest literature
+## Attacks and surviving content
 
-- Bocchieri--Loinger: qualitative finite-dimensional recurrence.
-- Weyl and Kleinbock--Margulis: equidistribution and metric extremality once rational independence/nondegeneracy is supplied.
-- Riddell--Pagliaroli--Alhambra, Kotowski--Oszmaniec, Gupta--Short: general or random-Hamiltonian recurrence estimates, not full deterministic local-family spectral independence.
-- Huang: nondegenerate energy gaps almost everywhere for geometrically local Hamiltonians. This excludes selected four-term relations, not all balanced rational relations.
-- Riddell--Bertini: rationally independent single-particle energies in specially constructed local free-fermion models; many-body energies retain additive free structure.
-- Campos Venuti--Odavić--Hamma: exact spectral-form-factor moments under spectral hypotheses.
-- Anand--Valluri--Davis--Ghose: exact Floquet recurrence arithmetic.
-- Szymański's 2024 autonomous-reachability presentation explicitly asks whether eigenenergies of generic two-body Hamiltonians are rationally independent and whether hidden resonances occur in every two-body Hamiltonian.
-- Wolf--Pérez-García, Albert, and Amato--Facchi--Konderak develop peripheral/attractor structure for channels. They do not state joined persistent-mass threshold plus weighted recurrence deadline used here.
-- Cover--Thomas and Gray--Neuhoff provide classical reverse-water framework. Equality of finite optimization programs is not claimed as quantum novelty; target-volume/deadline theorem is recurrence contribution.
-- Serbyn--Papić--Abanin, Huse--Nandkishore--Oganesyan, and Vasseur--Parameswaran--Moore establish l-bit phenomenology, dephasing, and revival suppression. Exact rational phase-rank classification and its comparison to generic noncommuting path saturation are distinct.
+1. **Known parent theory?** Forest comparison plus Dirichlet/Kleinbock–Margulis is a classical bridge. Do not sell its exponent conversion alone as discovery. The physical network theorem is stronger because all its arithmetic inputs are discharged.
+2. **A rational genericity wrapper?** No. A family can avoid rational hyperplanes while lying in a real hyperplane. Real escape is proved separately, with affine target and permutation quantifiers.
+3. **A relabelled path?** No. The proof removes a non-cut vertex, builds physical probes at every remaining site, and attaches along a genuine edge. Stars and branching trees are included.
+4. **A generic set depending on the observer?** No. A finite intersection over labelled graphs is taken first. Observer amplitudes enter only positive comparison constants.
+5. **Vacuous locality?** No. The coordinate family is the basis of the named onsite-plus-edge submodule; exact tensor-factor transport is part of the theorem.
+6. **Arbitrary restricted models?** No claim. Symmetry, translation invariance, fixed coupling choices and genuine-k-body-only spaces can lie entirely in exceptional subsets.
+7. **Useful physics or only an exponent?** It classifies which visible coherences determine accuracy dependence, and proves connected spatial geometry imposes no further generic reduction in the full coefficient family. It does not estimate accessible onset times.
+8. **A stationary ceiling mistaken for a late-time ceiling?** Explicitly excluded. The interval endpoint belongs to the limiting distribution's support; no pointwise Fourier decay is used.
 
-Searches through 2026-08-24 found no cited result proving all balanced rational spectral relations absent almost everywhere in full interacting static bounded-degree 1D qudit path family, much less coupling that fact to both sharp exponent laws and all-order moment floors for same draw. Independent specialist priority review remains required.
+## Search and priority limits
 
-## Defensible novelty residue
+Corpus-first searches covered observer extremality, arbitrary graph/hypergraph locality, real affine escape, physical leaf witnesses, support-size laws, stationary atomic scaling/support, occupation exponents, finite-horizon stability, scalar observation bounds, localization interfaces and no-go routes. Exact declaration statements and relevant proof bodies were read.
 
-Novel core is local affine spectral-escape theorem, not recurrence machinery after independence is assumed. It closes, for canonical full path family, proposed hidden-resonance obstruction for autonomous two-body Hamiltonians. Only linearly many local coefficient blocks generate maximum `q^n - 1` rational projective phase rank.
+Primary external searches used the exact clock/coherence/connected-network formulation, Diophantine terminology, recurrence observations, stationary survival support and ancestry of recent recurrence papers. No exact equivalent of the full claim was identified. Search absence cannot establish absolute novelty; a referee may know an equivalent result under different terminology.
 
-Consequences form two connected chains, sharing exact phase carrier:
-
-`finite contraction -> persistent carrier -> relation hull -> weighted metric -> observer quotient`;
-
-`local affine escape -> generic maximal projectivity -> first-hit exponents / collision floors / exact density -> thermodynamic extinction`.
-
-L-bit classification is sharp boundary theorem explaining when algebraic locality compresses same invariant.
-
-## Significance
-
-- Answers structural locality question at arbitrary finite local dimension.
-- Strengthens generic local nondegenerate-gap results from one collision order to all balanced rational relations.
-- Supplies deterministic interacting local family rather than random matrix or free-particle construction.
-- Restores weight-sensitive target geometry, observer dependence, loss threshold, and finite-time limitation without invoking project-specific context.
-- Explains double-exponential suppression in site count as exact exponential law in Hilbert dimension.
-
-## Excluded claims
-
-- absolute first-in-literature priority;
-- unrestricted continuous-time first-return distribution;
-- finite-time convergence rate;
-- infinite-volume global orbit recurrence;
-- maximality for every local Hamiltonian;
-- translation-invariant, commuting, integrable, symmetry-restricted, or fixed-coupling subfamilies;
-- random-matrix behavior or quantum chaos;
-- every quantum channel being Hilbert--Schmidt contractive;
-- gain dynamics or continuous spectral mass;
-- circuit complexity or black holes.
+The strongest defensible submission claim is a new model-level classification, with its classical analytic ingredients explicitly credited. The stationary theorem broadens the paper's spectral scope but should not carry an absolute-first claim.

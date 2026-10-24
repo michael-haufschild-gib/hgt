@@ -143,9 +143,10 @@ gcds. Tracking divisibility by 2 pays 512 once only.
 
 ## Remaining frontier
 
-The [modular-inverse rectangle estimate](../../2-fully-proven/goldbach-modular-inverse-rectangle-completion.md)
-now has a complete paper proof with explicit constant 24, including both
-frequency axes and all finite endpoints. It is not yet formalized.
+The [modular-inverse rectangle estimate](goldbach-modular-inverse-rectangle-completion.md)
+now has a complete Lean proof with explicit constant 24, including both
+frequency axes and the literal finite pair count. Its separate leaf and
+all 42 theorem closures pass without warnings or analytic premises.
 The flat dispersion theorem, actual Möbius progression estimate, signed
 amplifier and marked Type II sum remain separate obligations. Goldbach
 remains unproved. This is a classical arithmetic bridge; no scientific

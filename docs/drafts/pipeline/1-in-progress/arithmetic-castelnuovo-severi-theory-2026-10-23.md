@@ -230,6 +230,8 @@ survivor).
   every aperture on tests blind to an explicit low-frequency grid); golden curve: no finite divisor works.
 - `TheNearRadicalOfZetaIsFiniteDimensional`: `zeta_near_radical_finrank_le` (near radical finite-dim,
   doubly exponential upper half of Landau–Widom); `curve_radical_finrank_ge` (curve radical infinite-dim).
+- `SourceRiemannRochAwayFromTheLowFrequencyDivisor`: `lowBlindTests_effectivity` (L² source cone is an
+  effectivity with RR, ampleness, Hodge index on the low-frequency-blind subsurface at every degree).
 
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density

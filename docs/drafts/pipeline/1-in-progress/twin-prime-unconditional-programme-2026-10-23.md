@@ -86,13 +86,59 @@ Do not count an equivalent reformulation as a solution or new knowledge.
 
 ## Current audit and continuation
 
+- The [character quarter-distance assembly](../3-formalized/twin-prime-character-quarter-distance.md)
+  is fully formalized. For every character modulo `q>=1`,
+  `N>=3`, and `|t|>=9`, the actual Liouville distance satisfies
+  `D >= (log log N-log log|t|-log q)/4-C`, with absolute `C`.
+  On `q<=(log N)^(1/125)` and `log|t|<=(log N)^(4/5)`,
+  this gives `D >= (6/125)log log N-C` and the actual
+  exponential penalty has exponent `3/1250`.
+  All nine capstones passed the warning-free foreground leaf
+  and standard-foundation axiom audits; the own umbrella is wired.
+  This is a classical bridge, not new prime-pair cancellation.
+  Bounded and high frequencies remain open. The
+  [character Route-T receiver](twin-prime-character-route-t-receiver.md)
+  records the next exact transport; the existing `9/10` strip
+  alone cannot reach the proposed `1/4` full-frequency target.
+- The [short-window endpoint payment](../3-formalized/twin-prime-short-fourier-endpoint.md)
+  is now fully formalized. It bounds the actual finite Liouville
+  Fourier first moment by support length, proves parameter
+  measurability and integrability, and pays the weighted small-window
+  contribution by `|s| H/(2 W^3)` for `d,q<=W`.
+  The actual short-sum identity and both split-range comparisons
+  are included. All fifteen capstone axiom audits use only standard
+  foundations; the foreground leaf passed without warnings and
+  the own umbrella is wired. This is a classical analytic bridge,
+  not new arithmetic cancellation or twin-prime infinitude.
+  The next precise input is
+  [character-uniform nonpretentiousness](twin-prime-character-uniform-nonpretentiousness.md).
+  Actual character logarithmic-strip and Siegel estimates have
+  now been located in the RH corpus; all six selected input
+  capstones passed standard-foundation axiom audits. Their
+  growing-modulus and high-frequency assembly remains open; no analytic premise
+  replaces that proof.
 - User requirement: complete paper results must proceed to full
   Lean formalization, including all analytic inputs. The preceding
   goal turn made progress by completing the modulus audit and
   cofactor deduction, but did not discharge those Lean obligations.
-  Active implementation starts with the exact
-  [affine squarefree-projection estimate](../2-fully-proven/twin-prime-affine-squarefree-transfer.md),
-  then continues through the short Fourier estimate, finite-law
+  The exact
+  [affine squarefree-projection estimate](../3-formalized/twin-prime-affine-squarefree-transfer.md)
+  is now Lean-certified, including the one-row progression count,
+  signed tails, actual retained two-Liouville sum and asymmetric
+  cutoff estimate. All six capstones passed the foreground leaf
+  and transitive axiom audits with standard foundations only.
+  The
+  [determinant-controlled transfer](../3-formalized/twin-prime-determinant-squarefree-transfer.md)
+  is also Lean-certified. Retaining joint incidence permits equal
+  cutoffs and reduces retained divisor pairs
+  from `R^3` to `R^2`. The exact general error is
+  `(1+2D)T/R + sqrtNat(F(T)) + R sqrtNat(G(T))`, and `D=4`
+  gives coefficient nine. All eight new capstones passed the
+  foreground leaf and standard-foundation axiom audits. This
+  goal turn is **progress**, not completion: two paper results
+  are now formalized, while the main prime-pair estimate is open.
+  Work continues through the
+  [actual short Fourier estimate](twin-prime-short-fourier-formalization.md), finite-law
   comparison and nonbacktracking graph argument. The coupled
   centering and balanced CRT paper results also remain unfinished
   until their own analytic inputs and deductions are certified.
@@ -101,7 +147,7 @@ Do not count an equivalent reformulation as a solution or new knowledge.
   [slowly growing affine cancellation](../2-fully-proven/twin-prime-polylogarithmic-affine-cancellation.md).
   A full modulus-dependence audit of the ordinary two-point
   argument, §§2--9, retains explicit `l` and `l^4` losses.
-  Small logarithmic powers absorb them. Asymmetric square-divisor
+  Small logarithmic powers absorb them. Equal square-divisor
   truncations then give actual Möbius cancellation at every
   cutoff, uniformly for slopes at a small power of `log T`.
   The paid finite aggregation controls the actual odd `U_Z U_Z`
