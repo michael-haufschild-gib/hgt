@@ -147,9 +147,9 @@ theorem xiCanonicalProductOff_sq_nonneg_of_closed {K : Finset XiZeroCopy}
       apply xiSpectralPoint_ne_zero q.1
       rw [hz, h0, Complex.ofReal_zero]
     have h0 := weierstrassE1_slice_pair (t := t) hγ 0
-    simp only [mul_zero, sub_zero, add_zero, ← sq] at h0
+    simp only [mul_zero, sub_zero, add_zero, zero_pow (by decide : 2 ≠ 0), ← sq] at h0
     refine nonnegTaylorAtZero_const ?_
-    rw [hf, hz, h0]
+    rw [hz, h0]
     exact Complex.zero_le_real.mpr (by positivity)
   have hpair : ∀ q, σ q ≠ q → NonnegTaylorAtZero (f q * f (σ q)) := by
     intro q _
@@ -161,9 +161,9 @@ theorem xiCanonicalProductOff_sq_nonneg_of_closed {K : Finset XiZeroCopy}
       change xiSpectralPoint (lagPartner q.1) = _
       rw [xiSpectralPoint_lagPartner, hz]
     have h0 := weierstrassE1_slice_reflectionPair (t := t) hz0 0
-    simp only [mul_zero, sub_zero, add_zero, zero_pow (by decide : 4 ≠ 0),
+    simp only [mul_zero, sub_zero, add_zero, zero_add, zero_pow (by decide : 4 ≠ 0),
       zero_pow (by decide : 2 ≠ 0), ← sq] at h0
-    refine nonnegTaylorAtZero_const ?_
+    refine nonnegTaylorAtZero_const (c := f q 0 * f (σ q) 0) ?_
     change 0 ≤ weierstrassE1 ((t : ℂ) / xiSpectralPoint q.1) ^ 2 *
       weierstrassE1 ((t : ℂ) / xiSpectralPoint (σ q).1) ^ 2
     rw [hz, hzσ, h0, ← Complex.ofReal_mul]
@@ -171,7 +171,8 @@ theorem xiCanonicalProductOff_sq_nonneg_of_closed {K : Finset XiZeroCopy}
   refine ge_of_tendsto' hlim fun S => ?_
   have hNT := nonnegTaylorAtZero_prod_of_involution σ hσ f hfix hpair (c S) (hclosed S)
   have h0 := hNT.2 0
-  simp only [iteratedDeriv_zero, hf, ← Finset.prod_pow] at h0
+  simp only [iteratedDeriv_zero, hf] at h0
+  rw [Finset.prod_pow] at h0
   exact h0
 
 /-- For every `t, R ∈ ℝ`, `xiCanonicalProductOff (xiSliceGaussianRadiusHead t R) t ^ 2 ≥ 0`. -/
@@ -200,7 +201,7 @@ theorem xiSliceGaussianFiniteHeadScalar_nonneg (t R : ℝ) :
     have hz : xiSpectralPoint q = (((q.1 : ℂ).im : ℝ) : ℂ) := by
       rw [xiSpectralPoint_eq_re_im, hre]; simp
     refine nonnegTaylorAtZero_const ?_
-    rw [hf, hz]
+    rw [hz]
     have e : Complex.exp (2 * (t : ℂ) / (((q.1 : ℂ).im : ℝ) : ℂ)) /
         (((q.1 : ℂ).im : ℝ) : ℂ) ^ 2 =
         ((Real.exp (2 * t / (q.1 : ℂ).im) / (q.1 : ℂ).im ^ 2 : ℝ) : ℂ) := by
@@ -217,6 +218,14 @@ theorem xiSliceGaussianFiniteHeadScalar_nonneg (t R : ℝ) :
       simp [map_add, map_mul, Complex.conj_ofReal, Complex.conj_I]; ring
     have hzσ : xiSpectralPoint (lagPartner q) = (a : ℂ) - cc * I := by
       rw [xiSpectralPoint_lagPartner, hz, hconj]
+    have hz0' : (a : ℂ) - cc * I ≠ 0 := by rw [← hconj]; exact (map_ne_zero _).mpr hz0
+    have hnorm : (a : ℝ) ^ 2 + cc ^ 2 ≠ 0 := by
+      intro h0
+      apply hz0
+      have ha0 : a = 0 := by nlinarith [sq_nonneg a, sq_nonneg cc]
+      have hcc0 : cc = 0 := by nlinarith [sq_nonneg a, sq_nonneg cc]
+      simp [ha0, hcc0]
+    have hnormc : ((a : ℂ) ^ 2 + (cc : ℂ) ^ 2) ≠ 0 := by exact_mod_cast hnorm
     have hprod : ((a : ℂ) + cc * I) * ((a : ℂ) - cc * I) = (a : ℂ) ^ 2 + (cc : ℂ) ^ 2 := by
       linear_combination (-(cc : ℂ) ^ 2) * Complex.I_sq
     have hexp : cexp (2 * t / ((a : ℂ) + cc * I)) * cexp (2 * t / ((a : ℂ) - cc * I)) =
@@ -224,17 +233,12 @@ theorem xiSliceGaussianFiniteHeadScalar_nonneg (t R : ℝ) :
       rw [← Complex.exp_add, Complex.ofReal_exp]
       congr 1
       push_cast
-      field_simp [hz0, (show (a : ℂ) - cc * I ≠ 0 by rw [← hconj]; exact (map_ne_zero _).mpr hz0)]
+      field_simp [hz0, hz0', hnormc]
       linear_combination (4 * (t : ℂ) * a) * hprod +
         (8 * (t : ℂ) * a * (cc : ℂ) ^ 2) * Complex.I_sq
-    refine nonnegTaylorAtZero_const ?_
-    change 0 ≤ f q 0 * f (lagPartner q) 0
+    refine nonnegTaylorAtZero_const (c := f q 0 * f (lagPartner q) 0) ?_
     simp only [hf, hz, hzσ]
-    have e : cexp (2 * (t : ℂ) / ((a : ℂ) + cc * I)) / ((a : ℂ) + cc * I) ^ 2 *
-        (cexp (2 * (t : ℂ) / ((a : ℂ) - cc * I)) / ((a : ℂ) - cc * I) ^ 2) =
-        (cexp (2 * (t : ℂ) / ((a : ℂ) + cc * I)) * cexp (2 * (t : ℂ) / ((a : ℂ) - cc * I))) /
-          (((a : ℂ) + cc * I) * ((a : ℂ) - cc * I)) ^ 2 := by ring
-    rw [e, hexp, hprod]
+    rw [div_mul_div_comm, ← mul_pow, hexp, hprod]
     have e2 : ((Real.exp (4 * t * a / (a ^ 2 + cc ^ 2)) : ℝ) : ℂ) /
         ((a : ℂ) ^ 2 + (cc : ℂ) ^ 2) ^ 2 =
         ((Real.exp (4 * t * a / (a ^ 2 + cc ^ 2)) / (a ^ 2 + cc ^ 2) ^ 2 : ℝ) : ℂ) := by
@@ -251,11 +255,11 @@ theorem xiSliceGaussianFiniteHeadScalar_re_pos (t : ℝ) {R : ℝ} (hR : 0 ≤ R
     0 < (xiSliceGaussianFiniteHeadScalar t R).re := by
   obtain ⟨hre, him⟩ := Complex.nonneg_iff.mp (xiSliceGaussianFiniteHeadScalar_nonneg t R)
   refine lt_of_le_of_ne hre fun h0 => xiSliceGaussianFiniteHeadScalar_ne_zero t hR ?_
-  exact Complex.ext h0.symm him
+  exact Complex.ext h0.symm him.symm
 
 theorem xiSliceGaussianFiniteHeadScalar_im_eq_zero (t R : ℝ) :
     (xiSliceGaussianFiniteHeadScalar t R).im = 0 :=
-  (Complex.nonneg_iff.mp (xiSliceGaussianFiniteHeadScalar_nonneg t R)).2
+  (Complex.nonneg_iff.mp (xiSliceGaussianFiniteHeadScalar_nonneg t R)).2.symm
 
 /-- On the real axis `z = x ∈ ℝ`, the finite head `xiSliceGaussianFiniteHead t R x` is real and
 nonnegative for all `t, R, x ∈ ℝ`. -/
@@ -275,15 +279,14 @@ theorem xiSliceGaussianFiniteHead_ofReal_nonneg (t R x : ℝ) :
     have hz : xiSpectralPoint q = (((q.1 : ℂ).im : ℝ) : ℂ) := by
       rw [xiSpectralPoint_eq_re_im, hre]; simp
     refine nonnegTaylorAtZero_const ?_
-    rw [hf, hz]
+    rw [hz]
     have e : (x : ℂ) ^ 2 + ((((q.1 : ℂ).im : ℝ) : ℂ) - (t : ℂ)) ^ 2 =
         ((x ^ 2 + ((q.1 : ℂ).im - t) ^ 2 : ℝ) : ℂ) := by push_cast; ring
     rw [e]
     exact Complex.zero_le_real.mpr (by positivity)
   have hpair : ∀ q, lagPartner q ≠ q → NonnegTaylorAtZero (f q * f (lagPartner q)) := by
     intro q _
-    refine nonnegTaylorAtZero_const ?_
-    change 0 ≤ f q 0 * f (lagPartner q) 0
+    refine nonnegTaylorAtZero_const (c := f q 0 * f (lagPartner q) 0) ?_
     simp only [hf]
     have hconj : (x : ℂ) ^ 2 + (xiSpectralPoint (lagPartner q) - (t : ℂ)) ^ 2 =
         starRingEnd ℂ ((x : ℂ) ^ 2 + (xiSpectralPoint q - (t : ℂ)) ^ 2) := by
@@ -297,7 +300,7 @@ theorem xiSliceGaussianFiniteHead_ofReal_nonneg (t R x : ℝ) :
 
 theorem xiSliceGaussianFiniteHead_ofReal_im_eq_zero (t R x : ℝ) :
     (xiSliceGaussianFiniteHead t R (x : ℂ)).im = 0 :=
-  (Complex.nonneg_iff.mp (xiSliceGaussianFiniteHead_ofReal_nonneg t R x)).2
+  (Complex.nonneg_iff.mp (xiSliceGaussianFiniteHead_ofReal_nonneg t R x)).2.symm
 
 theorem xiSliceGaussianFiniteHead_ofReal_re_nonneg (t R x : ℝ) :
     0 ≤ (xiSliceGaussianFiniteHead t R (x : ℂ)).re :=
@@ -309,7 +312,8 @@ theorem xiSliceGaussianFiniteHead_ofReal_eq_re (t R x : ℝ) :
 
 theorem norm_xiSliceGaussianFiniteHead_ofReal (t R x : ℝ) :
     ‖xiSliceGaussianFiniteHead t R (x : ℂ)‖ = (xiSliceGaussianFiniteHead t R (x : ℂ)).re := by
-  rw [xiSliceGaussianFiniteHead_ofReal_eq_re, Complex.norm_real, Real.norm_eq_abs,
+  conv_lhs => rw [xiSliceGaussianFiniteHead_ofReal_eq_re]
+  rw [Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (xiSliceGaussianFiniteHead_ofReal_re_nonneg t R x)]
 
 /-- **Unconditional two-sided Gaussian bracket for the full Xi slice on the real axis.**
@@ -335,8 +339,10 @@ theorem xiSliceProduct_real_gaussian_bracket (t : ℝ) {R : ℝ} (hR : 4 ≤ R) 
     ‖xiSliceGaussianTail t H (x : ℂ)‖ ≤ Real.exp (x ^ 2 * a) at hb
   rw [mul_comm (x ^ 2) a, mul_comm (x ^ 4) B] at hb
   have hprod : (xiSliceProduct t (x : ℂ)).re = Q * ‖xiSliceGaussianTail t H (x : ℂ)‖ := by
-    rw [xiSliceProduct_eq_gaussianFiniteHead_mul_tail t (by linarith : 0 ≤ R) (x : ℂ),
-      xiSliceGaussianFiniteHead_ofReal_eq_re, hT, ← Complex.ofReal_mul, Complex.ofReal_re]
+    have hmul := congrArg Complex.re
+      (xiSliceProduct_eq_gaussianFiniteHead_mul_tail t (by linarith : 0 ≤ R) (x : ℂ))
+    rw [xiSliceGaussianFiniteHead_ofReal_eq_re, hT, ← Complex.ofReal_mul, Complex.ofReal_re] at hmul
+    exact hmul
   rw [hprod]
   refine ⟨?_, ?_⟩
   · have := mul_le_mul_of_nonneg_left hb.2 hQ0
@@ -443,7 +449,7 @@ theorem nonnegTaylorAtZero_xiCanonicalProductOff_radius (t : ℝ) {R : ℝ} (hR 
     rw [e]
     exact nonnegTaylorAtZero_prod_of_involution σ hσ f hfix hpair (c S) (hclosed S)
   exact NonnegTaylorAtZero.of_tendstoLocallyUniformlyOn hfin
-    ((hPdiff.comp (by rw [hφm]; fun_prop)).mul (hPdiff.comp (by rw [hφp]; fun_prop))) hmul'
+    ((hPdiff.comp (by fun_prop)).mul (hPdiff.comp (by fun_prop))) hmul'
 
 /-- **Unconditional Taylor-coefficient positivity of the exact infinite tail.**
 For every height `t ∈ ℝ` and cutoff radius `R ≥ 0` with `1/2 ≤ R²` (in particular `R ≥ 1/√2`,
@@ -457,15 +463,11 @@ theorem nonnegTaylorAtZero_xiSliceGaussianTail_radius (t : ℝ) {R : ℝ} (hR : 
     intro q hq
     rw [mem_xiSliceGaussianRadiusHead, hq, sub_self, norm_zero]
     exact hR
-  have hPne : xiCanonicalProductOff H t ^ 2 ≠ 0 :=
-    pow_ne_zero 2 (xiCanonicalProductOff_ne_zero hcen)
   have hP0 : 0 ≤ xiCanonicalProductOff H t ^ 2 := xiCanonicalProductOff_radius_sq_nonneg t R
   have hPinv : 0 ≤ (xiCanonicalProductOff H t ^ 2)⁻¹ := by
     obtain ⟨hre, him⟩ := Complex.nonneg_iff.mp hP0
-    have hre_pos : 0 < (xiCanonicalProductOff H t ^ 2).re :=
-      lt_of_le_of_ne hre fun h0 => hPne (Complex.ext h0.symm him)
     rw [Complex.nonneg_iff, Complex.inv_re, Complex.inv_im, ← him, neg_zero, zero_div]
-    exact ⟨div_nonneg hre.le (Complex.normSq_nonneg _), rfl⟩
+    exact ⟨div_nonneg hre (Complex.normSq_nonneg _), rfl⟩
   have heq : xiSliceGaussianTail t H =
       (fun _ => (xiCanonicalProductOff H t ^ 2)⁻¹) *
         fun z => xiCanonicalProductOff H ((t : ℂ) - I * z) *

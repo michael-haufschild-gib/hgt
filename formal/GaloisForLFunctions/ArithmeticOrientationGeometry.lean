@@ -2,6 +2,7 @@ import GaloisForLFunctions.ArithmeticOrientationGeometry.ScalingDataAndWeilPlane
 import GaloisForLFunctions.ArithmeticOrientationGeometry.TheCorrespondenceAlgebra
 import GaloisForLFunctions.ArithmeticOrientationGeometry.TheScalingDatumOfAConfiguration
 import GaloisForLFunctions.ArithmeticOrientationGeometry.TheOrientationOfACycle
+import GaloisForLFunctions.ArithmeticOrientationGeometry.EulerFactorsAndPayment
 
 /-!
 # Arithmetic Orientation Geometry

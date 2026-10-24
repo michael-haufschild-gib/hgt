@@ -184,8 +184,8 @@ theorem criticalWiener_dampedPower {ε : ℝ} (hε : 1 / 2 < ε) :
   unfold CriticalWiener
   refine (Real.summable_nat_rpow.mpr (by linarith : -ε + -(1 / 2) < -1)).congr fun d => ?_
   rcases Nat.eq_zero_or_pos d with rfl | hd
-  · simp only [Nat.cast_zero]
-    rw [Real.zero_rpow (by linarith), abs_zero, zero_mul, Real.zero_rpow (by linarith)]
+  · norm_num [Real.zero_rpow (show -ε ≠ 0 by linarith),
+      Real.zero_rpow (show -ε + -(1 / 2 : ℝ) ≠ 0 by linarith)]
   · rw [abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg _) _), ← Real.rpow_add (by exact_mod_cast hd)]
 
 theorem criticalWiener_moebius_of_half_lt {ε : ℝ} (hε : 1 / 2 < ε) :
@@ -199,8 +199,7 @@ theorem criticalWiener_moebius_of_half_lt {ε : ℝ} (hε : 1 / 2 < ε) :
   calc |moebiusReal d| * (d : ℝ) ^ (-ε) * (d : ℝ) ^ (-(1 / 2 : ℝ))
       ≤ 1 * (d : ℝ) ^ (-ε) * (d : ℝ) ^ (-(1 / 2 : ℝ)) := by
         rw [mul_assoc, mul_assoc]; exact mul_le_mul_of_nonneg_right hμ h0
-    _ = |(d : ℝ) ^ (-ε)| * (d : ℝ) ^ (-(1 / 2 : ℝ)) := by
-        rw [one_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg _) _)]
+    _ = (d : ℝ) ^ (-ε) * (d : ℝ) ^ (-(1 / 2 : ℝ)) := by rw [one_mul]
 
 /-- **Above half damping the Euler product converges in the algebra**: `μ_ε` is a unit of the
 critical Wiener monoid with inverse `d^{−ε}`. -/
@@ -219,10 +218,8 @@ theorem isWienerUnit_moebius_of_half_lt {ε : ℝ} (hε : 1 / 2 < ε) :
     have h := congrArg (fun f : ArithmeticFunction ℤ => (f n : ℝ))
       ArithmeticFunction.moebius_mul_coe_zeta
     simp only [ArithmeticFunction.coe_mul_zeta_apply, ArithmeticFunction.one_apply] at h
-    simp only [moebiusReal]
-    rw [← h]
-    push_cast
-    split_ifs <;> simp
+    push_cast at h
+    simpa [moebiusReal] using h
   rw [hsum]
   split_ifs with h1
   · subst h1; simp

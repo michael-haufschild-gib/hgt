@@ -75,10 +75,10 @@ arithmetic estimates to make a dictionary applicable.
 ## Pending proof sources
 
 - J3 paper proof: `2-fully-proven/heath-brown-all-length-dilation-closure.md`.
-  Unchecked Lean drafts are `/tmp/hgt-just-work-heath-brown-all-lengths.lean`,
-  `/tmp/hgt-just-work-heath-brown-cover-body.lean`,
-  `/tmp/hgt-just-work-sharp-s2-body.lean`, and
-  `/tmp/hgt-just-work-sharp-s2-endpoints.lean`.
+  Assembled unchecked Lean drafts are
+  `/tmp/hgt-just-work-heath-brown-closure.lean` and
+  `/tmp/hgt-just-work-sharp-s2.lean`. These are the sources to check and repair;
+  their separate preparation fragments are not independent certificates.
 - J4(i) can use the existing cluster horizon followed by complete-form
   mollification. `TheRoutesMeasureOneAperture.contDiff_top_smooth` gives
   actual infinite smoothness; its support and complete-energy convergence
@@ -92,6 +92,8 @@ arithmetic estimates to make a dictionary applicable.
   most one, paid by `a+1≤2u²`. This is a direct coarse consequence of the
   existing horizon, with no novelty claim. The required power-38 result
   follows since `4+|γ|≥1`. Both still require Lean verification.
+  Exact paper proof and novelty audit:
+  `2-fully-proven/cluster-horizon-smooth-polynomial-detector.md`.
 - Unchecked complete drafts now cover the polynomial detector aperture
   (`/tmp/hgt-just-work-polynomial-aperture.lean`), the full moving-source
   Suzuki theorem (`/tmp/hgt-just-work-suzuki-moving-signed.lean`), explicit

@@ -442,7 +442,7 @@ theorem abs_generalPhaseCombination_sub_le_of_summable_mul {w : ℕ → ℝ}
         mul_le_mul_of_nonneg_left htsum (by positivity)
     _ = ((4 / Real.pi) * (∑' k : ℕ, (k : ℝ) * |w k|) * L1) * |v - v'| := by
         have hpi : Real.pi ≠ 0 := Real.pi_ne_zero
-        field_simp
+        field_simp; ring
 
 /-- **Admissible Harmonic Weight Class (`AdmissibleHarmonicWeight w C_w τ`).**
 A harmonic weight sequence `w : ℕ → ℝ` is admissible with inverse-square envelope `C_w > 0` and
@@ -894,7 +894,7 @@ theorem admissibleHarmonicWeight_higherOrder {p : ℕ} (hp : 2 ≤ p) {c : ℕ �
         1 / ((k + 2 : ℕ) : ℝ) ^ 2 := by
       unfold higherOrderHarmonicWeight
       rw [if_neg (by omega), abs_div, abs_pow, Nat.abs_cast]
-      have hk1 : (1 : ℝ) ≤ ((k + 2 : ℕ) : ℝ) := by positivity
+      have hk1 : (1 : ℝ) ≤ ((k + 2 : ℕ) : ℝ) := by exact_mod_cast (show 1 ≤ k + 2 by omega)
       have hpow : ((k + 2 : ℕ) : ℝ) ^ 2 ≤ ((k + 2 : ℕ) : ℝ) ^ p := pow_le_pow_right₀ hk1 hp
       exact (div_le_div_of_nonneg_right (hcb (k + 2)) (by positivity)).trans
         (one_div_le_one_div_of_le (by positivity) hpow)
@@ -1252,16 +1252,15 @@ theorem generalCollaredSource_mass_bounds {w : ℕ → ℝ} {C_w τ : ℝ}
       exact (Real.smoothTransition.continuous.comp (he.sub continuous_const)).mul
         ((Real.continuous_exp.comp (continuous_id.div_const 2)).mul
           ((hw.continuous_generalPhaseCombination S b).comp he))
-    have hL1 : Integrable fun x => (generalCollaredSource w S b x : ℂ) := by
-      have hexp : IntegrableOn (fun y : ℝ => C0 * Real.exp (y / 2)) (Iic 0) := by
-        have h1 : IntegrableOn (fun y : ℝ => Real.exp (-(1 / 2 : ℝ) * y)) (Ici 0) :=
-          integrableOn_Ici_iff_integrableOn_Ioi.mpr (integrableOn_exp_mul_Ioi (by norm_num) 0)
-        have h2 : IntegrableOn (fun y : ℝ => C0 * Real.exp (-(1 / 2 : ℝ) * -y)) (Iic 0) := by
-          simpa using (h1.comp_neg).const_mul C0
-        exact h2.congr_fun (fun y _ => by congr 1; congr 1; ring) measurableSet_Iic
-      rw [← integrable_indicator_iff measurableSet_Iic] at hexp
-      refine hexp.mono' (Complex.continuous_ofReal.comp hcont).aestronglyMeasurable
-        (Eventually.of_forall fun x => ?_)
+    have h_env (C : ℝ) : Integrable ((Iic (0 : ℝ)).indicator fun x => C * Real.exp (x / 2)) := by
+      rw [integrable_indicator_iff measurableSet_Iic]
+      have h : IntegrableOn (fun x => C * Real.exp (1 / 2 * x)) (Iic 0) :=
+        (integrableOn_exp_mul_Iic (by norm_num) 0).const_mul C
+      exact h.congr_fun (fun x _ => by ring_nf) measurableSet_Iic
+    have hm : AEStronglyMeasurable (fun x => (generalCollaredSource w S b x : ℂ)) volume :=
+      (Complex.continuous_ofReal.comp hcont).aestronglyMeasurable
+    have hb (x : ℝ) : ‖(generalCollaredSource w S b x : ℂ)‖ ≤
+        (Iic (0 : ℝ)).indicator (fun x => C0 * Real.exp (x / 2)) x := by
       by_cases hx : x ≤ 0
       · rw [indicator_of_mem (show x ∈ Iic 0 from hx), generalCollaredSource,
           indicator_of_mem (show x ∈ Iic 0 from hx), Complex.norm_real, Real.norm_eq_abs,
@@ -1275,36 +1274,24 @@ theorem generalCollaredSource_mass_bounds {w : ℕ → ℝ} {C_w τ : ℝ}
           _ = C0 * Real.exp (x / 2) := by ring
       · rw [indicator_of_notMem (show x ∉ Iic 0 from hx), generalCollaredSource,
           indicator_of_notMem (show x ∉ Iic 0 from hx), Complex.ofReal_zero, norm_zero]
+    have hL1 : Integrable fun x => (generalCollaredSource w S b x : ℂ) :=
+      (h_env C0).mono' hm (Eventually.of_forall hb)
     have hL2 : MemLp (fun x => (generalCollaredSource w S b x : ℂ)) 2 := by
-      refine (memLp_two_iff_integrable_sq_norm
-        (Complex.continuous_ofReal.comp hcont).aestronglyMeasurable).mpr ?_
-      have hexp2 : IntegrableOn (fun y : ℝ => C0 ^ 2 * Real.exp y) (Iic 0) := by
-        have h1 : IntegrableOn (fun y : ℝ => Real.exp ((-1 : ℝ) * y)) (Ici 0) :=
-          integrableOn_Ici_iff_integrableOn_Ioi.mpr (integrableOn_exp_mul_Ioi (by norm_num) 0)
-        have h2 : IntegrableOn (fun y : ℝ => C0 ^ 2 * Real.exp ((-1 : ℝ) * -y)) (Iic 0) := by
-          simpa using (h1.comp_neg).const_mul (C0 ^ 2)
-        exact h2.congr_fun (fun y _ => by congr 1; congr 1; ring) measurableSet_Iic
-      rw [← integrable_indicator_iff measurableSet_Iic] at hexp2
-      refine hexp2.mono' ((Complex.continuous_ofReal.comp hcont).norm.pow 2).aestronglyMeasurable
-        (Eventually.of_forall fun x => ?_)
-      by_cases hx : x ≤ 0
-      · rw [indicator_of_mem (show x ∈ Iic 0 from hx), generalCollaredSource,
-          indicator_of_mem (show x ∈ Iic 0 from hx), Complex.norm_real, Real.norm_eq_abs, sq_abs,
-          Real.norm_of_nonneg (sq_nonneg _), mul_pow, mul_pow]
-        have hσ : Real.smoothTransition (Real.exp (-x) - 1) ^ 2 ≤ 1 :=
-          pow_le_one₀ (Real.smoothTransition.nonneg _) (Real.smoothTransition.le_one _)
-        have hB : B (Real.exp (-x)) ^ 2 ≤ C0 ^ 2 := by
-          rw [← sq_abs (B _)]
-          exact pow_le_pow_left₀ (abs_nonneg _) (hw.abs_generalPhaseCombination_le S b _) 2
-        have hex : Real.exp (x / 2) ^ 2 = Real.exp x := by rw [← Real.exp_nat_mul]; ring_nf
-        rw [hex]
-        calc Real.smoothTransition (Real.exp (-x) - 1) ^ 2 * (Real.exp x * B (Real.exp (-x)) ^ 2)
-            ≤ 1 * (Real.exp x * C0 ^ 2) :=
-              mul_le_mul hσ (mul_le_mul_of_nonneg_left hB (Real.exp_pos _).le) (by positivity) zero_le_one
-          _ = C0 ^ 2 * Real.exp x := by ring
-      · rw [indicator_of_notMem (show x ∉ Iic 0 from hx), generalCollaredSource,
-          indicator_of_notMem (show x ∉ Iic 0 from hx), Complex.ofReal_zero, norm_zero, sq, mul_zero,
-          norm_zero]
+      refine (memLp_two_iff_integrable_sq_norm hm).mpr ?_
+      refine (h_env (C0 * C0)).mono' (hm.norm.pow 2) (Eventually.of_forall fun x => ?_)
+      rw [Real.norm_of_nonneg (sq_nonneg _)]
+      have h := hb x
+      by_cases hx : x ∈ Iic (0 : ℝ)
+      · rw [indicator_of_mem hx] at h ⊢
+        have he : Real.exp (x / 2) ≤ 1 := Real.exp_le_one_iff.mpr (by simp at hx; linarith)
+        have h0 := norm_nonneg (generalCollaredSource w S b x : ℂ)
+        have hp := Real.exp_pos (x / 2)
+        calc ‖(generalCollaredSource w S b x : ℂ)‖ ^ 2 ≤ (C0 * Real.exp (x / 2)) ^ 2 :=
+              pow_le_pow_left₀ h0 h 2
+          _ ≤ C0 * C0 * Real.exp (x / 2) := by nlinarith
+      · rw [indicator_of_notMem hx] at h ⊢
+        have : ‖(generalCollaredSource w S b x : ℂ)‖ = 0 := le_antisymm h (norm_nonneg _)
+        rw [this]; norm_num
     exact ⟨hL1, hL2⟩
   -- Upper bound
   have hup : (∫ x, generalCollaredSource w S b x ^ 2) ≤
@@ -1374,7 +1361,8 @@ theorem norm_paperFT_generalCollaredSource_le {w : ℕ → ℝ} {C_w τ : ℝ}
       rw [← integral_indicator measurableSet_Iic]
       congr 1; funext y
       by_cases hy : y ≤ 0
-      · dsimp only [B, bc]
+      · rw [indicator_of_mem (show y ∈ Iic 0 from hy)]
+        dsimp only [B, bc]
         rw [generalComplexPhaseCombination_ofReal]
         simp only [generalCollaredSource, indicator_of_mem (show y ∈ Iic 0 from hy)]
         push_cast; ring
@@ -1437,6 +1425,7 @@ theorem norm_paperFT_generalCollaredSource_le {w : ℕ → ℝ} {C_w τ : ℝ}
     have hv0 : 0 < v := lt_trans zero_lt_one hv
     simp only [fk, Real.norm_eq_abs, norm_mul, norm_neg, Complex.norm_real,
       abs_of_pos (by positivity : 0 < 2 / Real.pi ^ 2)]
+    rw [mul_assoc (2 / Real.pi ^ 2) |w k|]
     refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ (abs_nonneg _))
       (by positivity : (0 : ℝ) ≤ 2 / Real.pi ^ 2)
     exact mul_le_mul (norm_factorialHarmonicLayer_le S bc k v)
@@ -1989,7 +1978,7 @@ theorem hasDerivAt_realHarmonicLayerPrimitive (S : Finset ℕ) (b : ℕ → ℝ)
     funext u; simp [realHarmonicLayerPrimitive, hk0]
   rw [heq]
   unfold realHarmonicLayer
-  refine HasDerivAt.sum fun n _ => ?_
+  refine HasDerivAt.fun_sum fun n _ => ?_
   set ω1 := 2 * Real.pi * (k : ℝ) * factorialShiftedFreq (n + 1)
   set ω2 := 2 * Real.pi * (k : ℝ) * ((n + 1 : ℕ) : ℝ)
   have hlam : ((n + 1 : ℕ) : ℝ) ≤ factorialShiftedFreq (n + 1) := by
@@ -2029,24 +2018,39 @@ theorem abs_realHarmonicLayerPrimitive_le (S : Finset ℕ) (b : ℕ → ℝ) (k 
       linarith
     have hN : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
     have hpi : 0 < Real.pi := Real.pi_pos
+    have hlam0 : 0 < factorialShiftedFreq (n + 1) := lt_of_lt_of_le hN hlam
+    have hω1 : 0 < 2 * Real.pi * (k : ℝ) * factorialShiftedFreq (n + 1) := by positivity
+    have hω2 : 0 < 2 * Real.pi * (k : ℝ) * ((n + 1 : ℕ) : ℝ) := by positivity
+    have hω1_ge : 2 * Real.pi * ((n + 1 : ℕ) : ℝ) ≤
+        2 * Real.pi * (k : ℝ) * factorialShiftedFreq (n + 1) := by
+      calc 2 * Real.pi * ((n + 1 : ℕ) : ℝ)
+          = 2 * Real.pi * 1 * ((n + 1 : ℕ) : ℝ) := by ring
+        _ ≤ 2 * Real.pi * (k : ℝ) * factorialShiftedFreq (n + 1) :=
+          mul_le_mul (mul_le_mul_of_nonneg_left hk1 (by positivity)) hlam hN.le (by positivity)
+    have hω2_ge : 2 * Real.pi * ((n + 1 : ℕ) : ℝ) ≤
+        2 * Real.pi * (k : ℝ) * ((n + 1 : ℕ) : ℝ) := by
+      calc 2 * Real.pi * ((n + 1 : ℕ) : ℝ)
+          = 2 * Real.pi * 1 * ((n + 1 : ℕ) : ℝ) := by ring
+        _ ≤ 2 * Real.pi * (k : ℝ) * ((n + 1 : ℕ) : ℝ) :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hk1 (by positivity)) hN.le
     have h1 : |Real.sin (2 * Real.pi * (k : ℝ) * (factorialShiftedFreq (n + 1) * v)) /
         (2 * Real.pi * (k : ℝ) * factorialShiftedFreq (n + 1))| ≤
         1 / (2 * Real.pi * ((n + 1 : ℕ) : ℝ)) := by
-      rw [abs_div, abs_of_pos (by nlinarith)]
+      rw [abs_div, abs_of_pos hω1]
       calc |Real.sin _| / (2 * Real.pi * (k : ℝ) * factorialShiftedFreq (n + 1))
           ≤ 1 / (2 * Real.pi * (k : ℝ) * factorialShiftedFreq (n + 1)) :=
-            div_le_div_of_nonneg_right (Real.abs_sin_le_one _) (by nlinarith)
+            div_le_div_of_nonneg_right (Real.abs_sin_le_one _) hω1.le
         _ ≤ 1 / (2 * Real.pi * ((n + 1 : ℕ) : ℝ)) :=
-            one_div_le_one_div_of_le (by positivity) (by nlinarith)
+            one_div_le_one_div_of_le (by positivity) hω1_ge
     have h2 : |Real.sin (2 * Real.pi * (k : ℝ) * (((n + 1 : ℕ) : ℝ) * v)) /
         (2 * Real.pi * (k : ℝ) * ((n + 1 : ℕ) : ℝ))| ≤
         1 / (2 * Real.pi * ((n + 1 : ℕ) : ℝ)) := by
-      rw [abs_div, abs_of_pos (by positivity)]
+      rw [abs_div, abs_of_pos hω2]
       calc |Real.sin _| / (2 * Real.pi * (k : ℝ) * ((n + 1 : ℕ) : ℝ))
           ≤ 1 / (2 * Real.pi * (k : ℝ) * ((n + 1 : ℕ) : ℝ)) :=
-            div_le_div_of_nonneg_right (Real.abs_sin_le_one _) (by positivity)
+            div_le_div_of_nonneg_right (Real.abs_sin_le_one _) hω2.le
         _ ≤ 1 / (2 * Real.pi * ((n + 1 : ℕ) : ℝ)) :=
-            one_div_le_one_div_of_le (by positivity) (by nlinarith)
+            one_div_le_one_div_of_le (by positivity) hω2_ge
     have hsub : |Real.sin (2 * Real.pi * (k : ℝ) * (factorialShiftedFreq (n + 1) * v)) /
         (2 * Real.pi * (k : ℝ) * factorialShiftedFreq (n + 1)) -
         Real.sin (2 * Real.pi * (k : ℝ) * (((n + 1 : ℕ) : ℝ) * v)) /
@@ -2095,7 +2099,9 @@ theorem abs_integral_weight_mul_generalPhaseCombination_le
     refine setIntegral_mono_on (hfk_int k).norm ((hφi.abs.const_mul B1).const_mul _)
       measurableSet_Ioi fun v _ => ?_
     simp only [fk, Real.norm_eq_abs, abs_mul, abs_neg, abs_of_pos (by positivity : 0 < 2 / Real.pi ^ 2)]
-    refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)) (by positivity)
+    rw [mul_assoc (2 / Real.pi ^ 2) |w k|]
+    refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ (abs_nonneg _))
+      (by positivity : (0 : ℝ) ≤ 2 / Real.pi ^ 2)
     rw [mul_comm B1]
     exact mul_le_mul_of_nonneg_left (abs_realHarmonicLayer_le S b k v) (abs_nonneg _)
   have hfk_sum : Summable fun k => ∫ v in Ioi 1, ‖fk k v‖ :=
@@ -2133,19 +2139,19 @@ theorem abs_integral_weight_mul_generalPhaseCombination_le
         rwa [h0] at h
       have hlim2 : Tendsto (φ * Gk) atTop (𝓝 0) := by
         rw [tendsto_zero_iff_norm_tendsto_zero]
-        refine squeeze_zero (fun _ => norm_nonneg _) (fun v => ?_)
-          (by simpa using hφt.norm.mul_const (1 / Real.pi * T))
+        have h0 : Tendsto (fun x => ‖φ x‖ * (1 / Real.pi * T)) atTop (𝓝 0) := by
+          simpa using hφt.norm.mul_const (1 / Real.pi * T)
+        refine squeeze_zero (fun _ => norm_nonneg _) (fun v => ?_) h0
         rw [Pi.mul_apply, norm_mul, Real.norm_eq_abs (Gk v)]
         exact mul_le_mul_of_nonneg_left (abs_realHarmonicLayerPrimitive_le S b k v) (norm_nonneg _)
       have hibp := integral_Ioi_mul_deriv_eq_deriv_mul (u := φ) (v := Gk) (u' := φ') (v' := Hk)
         (a' := 0) (b' := 0) (fun x hx => hd x (Ioi_subset_Ici_self hx))
         (fun x _ => hGk_deriv x) hint1 hint2 hlim1 hlim2
       have hibp_bound : |∫ v in Ioi 1, φ v * Hk v| ≤ W1 * (1 / Real.pi * T) := by
-        change |∫ v in Ioi 1, (φ * Hk) v| ≤ _
         rw [hibp, sub_self, zero_sub, abs_neg, ← integral_mul_const]
         refine (abs_integral_le_integral_abs).trans (setIntegral_mono_on hint2.abs
           (hφi'.abs.mul_const _) measurableSet_Ioi fun v _ => ?_)
-        rw [Pi.mul_apply, abs_mul]
+        rw [abs_mul]
         exact mul_le_mul_of_nonneg_left (abs_realHarmonicLayerPrimitive_le S b k v) (abs_nonneg _)
       calc 2 / Real.pi ^ 2 * (|w k| * |∫ v in Ioi 1, φ v * Hk v|)
           ≤ 2 / Real.pi ^ 2 * (|w k| * (W1 * (1 / Real.pi * T))) :=
@@ -2330,9 +2336,12 @@ theorem abs_generalTruncatedPolarEndpoint_le {w : ℕ → ℝ} {C_w τ : ℝ}
       ((Real.smoothTransition.contDiff (n := (⊤ : ℕ∞))).differentiable (by simp) _).hasDerivAt
     have hin : HasDerivAt (fun u => 1 / V * u - 1) (1 / V) v := by
       simpa using ((hasDerivAt_id v).const_mul (1 / V)).sub_const 1
+    have hcut0 := (hσ.comp v hin).const_sub 1
+    have hcut1 : HasDerivAt (fun u => criticalUpperCutoff (1 / V * u))
+        (-(deriv Real.smoothTransition (1 / V * v - 1) * (1 / V))) v := hcut0
     have hcut : HasDerivAt (fun u => criticalUpperCutoff (1 / V * u))
         (-(1 / V * deriv Real.smoothTransition (1 / V * v - 1))) v :=
-      ((hσ.comp v hin).const_sub 1).congr_deriv (by ring)
+      hcut1.congr_deriv (by ring)
     exact ((hasDerivAt_criticalCollarEndpointWeight v).mul hcut).congr_deriv
       (by unfold criticalTruncatedEndpointWeightDeriv; ring)
   have h1 : criticalTruncatedEndpointWeight V 1 = 0 := by
@@ -2474,10 +2483,13 @@ theorem generalTruncatedSource_mass_and_tail_bounds {w : ℕ → ℝ} {C_w τ : 
         (by linarith [criticalUpperCutoff_nonneg (Real.exp (-x) / V)])
     exact ⟨hAdm_c.1.norm.mono' hm (by simpa using hle), hAdm_c.2.of_le hm hle⟩
   set B := generalPhaseCombination w S b
-  set Bc := generalComplexPhaseCombination w S (fun n => (b n : ℂ))
-  have hB_eq (v : ℝ) : ‖Bc v‖ ^ 2 = B v ^ 2 := by
+  have hB_eq (v : ℝ) :
+      ‖generalComplexPhaseCombination w S (fun n => (b n : ℂ)) v‖ ^ 2 = B v ^ 2 := by
+    dsimp only [B]
     rw [generalComplexPhaseCombination_ofReal, Complex.norm_real, Real.norm_eq_abs, sq_abs]
-  have hDom : IntegrableOn (fun v => v ^ (-2 : ℝ) * ‖Bc v‖ ^ 2) (Ioi 1) := by
+  have hDom : IntegrableOn
+      (fun v => v ^ (-2 : ℝ) * ‖generalComplexPhaseCombination w S (fun n => (b n : ℂ)) v‖ ^ 2)
+      (Ioi 1) := by
     simpa using integrableOn_rpow_neg_two_mul_norm_sq_generalComplexPhaseCombination_dilate hw
       S (fun n => (b n : ℂ)) 1
   -- Truncated mass ceiling
@@ -3143,10 +3155,10 @@ theorem generalCriticalPrimeHarmonicCharge_one (χ : ℕ → ℝ) :
 /-- At every prime `p`, the harmonic divisor charge is `A_χ(p) = p (log p) χ(1) χ(p)`. -/
 theorem generalCriticalPrimeHarmonicCharge_prime (χ : ℕ → ℝ) {p : ℕ} (hp : p.Prime) :
     generalCriticalPrimeHarmonicCharge χ p = (p : ℝ) * Real.log p * (χ 1 * χ p) := by
-  unfold generalCriticalPrimeHarmonicCharge
-  rw [hp.divisors, Finset.sum_insert (by simp [hp.ne_one.symm]), Finset.sum_singleton,
-    ArithmeticFunction.vonMangoldt_one, mul_zero, zero_mul, zero_add,
-    Nat.div_self hp.pos, ArithmeticFunction.vonMangoldt_apply_prime hp]
+  have h1p : 1 ≠ p := Ne.symm hp.ne_one
+  have hpp : p / p = 1 := Nat.div_self hp.pos
+  simp [generalCriticalPrimeHarmonicCharge, hp.divisors, h1p, hpp,
+    ArithmeticFunction.vonMangoldt_apply_prime hp]
   ring
 
 theorem generalCriticalPrimeHarmonicCharge_two (χ : ℕ → ℝ) :
@@ -3320,15 +3332,18 @@ theorem one_div_eighteen_le_factorialCriticalPrimeHarmonicTail_two {t : ℝ}
   have hs : Summable fun j : ℕ => factorialCriticalPrimeKernelWeight (((j + 2 : ℕ) : ℝ) + t) := by
     have h1 : ∀ j : ℕ, factorialCriticalPrimeKernelWeight (((j + 2 : ℕ) : ℝ) + t) =
         criticalBandWeight (t + ((j + 2 : ℕ) : ℝ)) := fun j => by
-      have : (0 : ℝ) < ((j + 2 : ℕ) : ℝ) + t := by positivity
+      have hjpos : (0 : ℝ) < ((j + 2 : ℕ) : ℝ) := by positivity
+      have : (0 : ℝ) < ((j + 2 : ℕ) : ℝ) + t := by linarith [ht.1]
       rw [factorialCriticalPrimeKernelWeight_eq_band this, add_comm]
     refine ((summable_nat_add_iff 2).mpr (summable_criticalBandWeight_nat t)).congr fun j => ?_
     rw [h1]
   have hle_tsum : factorialCriticalPrimeKernelWeight u ≤
       factorialCriticalPrimeHarmonicTail 2 t := by
     unfold factorialCriticalPrimeHarmonicTail
-    have := hs.le_tsum 0 fun j _ =>
-      mul_nonneg (Real.rpow_nonneg (by positivity) _) (sub_nonneg.mpr (Real.cos_le_one _))
+    have := hs.le_tsum 0 fun j _ => by
+      have hj0 : (0 : ℝ) ≤ ((j + 2 : ℕ) : ℝ) := by positivity
+      have hjt : 0 ≤ ((j + 2 : ℕ) : ℝ) + t := by linarith [ht.1]
+      exact mul_nonneg (Real.rpow_nonneg hjt _) (sub_nonneg.mpr (Real.cos_le_one _))
     simpa [u] using this
   exact hker.trans hle_tsum
 
@@ -3357,9 +3372,12 @@ theorem generalCriticalPrimeContinuousRealKernel_pos_of_nonneg_charge
       have ht2 := factorialCriticalPrimeHarmonicTail_nonneg m ht'.1
       have hub1 := factorialCriticalPrimeHarmonicTail_le hm ht
       have hub2 := factorialCriticalPrimeHarmonicTail_le hm ht'
-      rw [Real.norm_eq_abs, abs_mul, abs_div, abs_pow, Nat.abs_cast,
-        abs_of_nonneg (by linarith)]
-      exact mul_le_mul_of_nonneg_left (by linarith) (div_nonneg (abs_nonneg _) (by positivity))
+      have hM0 : 0 ≤ (factorialCriticalPrimeHarmonicTail m t +
+          factorialCriticalPrimeHarmonicTail m (1 - t)) / 2 := by linarith
+      have hM_ub : (factorialCriticalPrimeHarmonicTail m t +
+          factorialCriticalPrimeHarmonicTail m (1 - t)) / 2 ≤ Real.pi ^ 2 / 6 := by linarith
+      rw [Real.norm_eq_abs, abs_mul, abs_div, abs_pow, Nat.abs_cast, abs_of_nonneg hM0]
+      exact mul_le_mul_of_nonneg_left hM_ub (div_nonneg (abs_nonneg _) (by positivity))
   have hterm_nonneg (m : ℕ) : 0 ≤ (generalCriticalPrimeHarmonicCharge χ m / (m : ℝ) ^ 3) *
       ((factorialCriticalPrimeHarmonicTail m t + factorialCriticalPrimeHarmonicTail m (1 - t)) / 2) := by
     refine mul_nonneg (div_nonneg (hnonneg m) (by positivity)) ?_
@@ -3514,6 +3532,61 @@ harmonic family). -/
 def perturbedMultiScaleChi (d : ℕ) (ε : ℝ) (k : ℕ) : ℝ :=
   dyadicHarmonicChi k + ε * (if d ∣ k then 1 else 0)
 
+theorem admissibleHarmonicWeight_perturbedMultiScaleChi {d : ℕ} (hd : 3 ≤ d)
+    {ε : ℝ} (hε_pos : 0 < ε) (hε_le : ε ≤ 1 / 40) :
+    AdmissibleHarmonicWeight
+      (fun k => if k = 0 then 0 else perturbedMultiScaleChi d ε k / (k : ℝ) ^ 2)
+      (1 + ε) (4 / 5) where
+  w_zero := by simp
+  w_one := by
+    have hd1 : ¬ (d ∣ 1) := fun h => by have := Nat.le_of_dvd one_pos h; omega
+    simp [perturbedMultiScaleChi, hd1, dyadicHarmonicChi_one]
+  C_pos := by linarith
+  abs_w_le := fun k => by
+    split_ifs with hk
+    · simp [hk]
+    · rw [abs_div, abs_pow, Nat.abs_cast]
+      refine div_le_div_of_nonneg_right ?_ (sq_nonneg _)
+      unfold perturbedMultiScaleChi
+      refine (abs_add_le _ _).trans (add_le_add (abs_dyadicHarmonicChi_le_one k) ?_)
+      rw [abs_mul, abs_of_pos hε_pos]
+      by_cases hdvd : d ∣ k
+      · simp [hdvd]
+      · simp [hdvd, hε_pos.le]
+  τ_nonneg := by norm_num
+  τ_lt_one := by norm_num
+  tsum_tail_le := by
+    set w_pert : ℕ → ℝ := fun k =>
+      if k = 0 then 0 else perturbedMultiScaleChi d ε k / (k : ℝ) ^ 2
+    have hbd (k : ℕ) : |w_pert (k + 2)| ≤
+        |dyadicHarmonicWeight (k + 2)| + ε * (1 / ((k + 2 : ℕ) : ℝ) ^ 2) := by
+      simp only [w_pert, dyadicHarmonicWeight, show k + 2 ≠ 0 by omega, if_false,
+        perturbedMultiScaleChi]
+      rw [add_div]
+      refine (abs_add_le _ _).trans (add_le_add le_rfl ?_)
+      rw [abs_div, abs_pow, Nat.abs_cast, abs_mul, abs_of_pos hε_pos]
+      by_cases hdvd : d ∣ k + 2
+      · simp [hdvd, div_eq_mul_inv]
+      · simp only [hdvd, if_false, mul_zero, zero_div]
+        positivity
+    have hs_dyad : Summable fun k : ℕ => |dyadicHarmonicWeight (k + 2)| :=
+      (summable_nat_add_iff 2).mpr summable_abs_dyadicHarmonicWeight
+    have hs_z2 : Summable fun k : ℕ => 1 / ((k + 2 : ℕ) : ℝ) ^ 2 :=
+      (summable_nat_add_iff 2).mpr (Real.summable_one_div_nat_pow.mpr one_lt_two)
+    have hs_pert : Summable fun k : ℕ => |w_pert (k + 2)| :=
+      Summable.of_nonneg_of_le (fun _ => abs_nonneg _) hbd
+        (hs_dyad.add (hs_z2.mul_left ε))
+    have h1 : (∑' k : ℕ, |w_pert (k + 2)|) ≤
+        (∑' k : ℕ, |dyadicHarmonicWeight (k + 2)|) +
+          ε * ∑' k : ℕ, 1 / ((k + 2 : ℕ) : ℝ) ^ 2 := by
+      calc (∑' k : ℕ, |w_pert (k + 2)|)
+          ≤ ∑' k : ℕ, (|dyadicHarmonicWeight (k + 2)| + ε * (1 / ((k + 2 : ℕ) : ℝ) ^ 2)) :=
+            hs_pert.tsum_le_tsum hbd (hs_dyad.add (hs_z2.mul_left ε))
+        _ = _ := by rw [hs_dyad.tsum_add (hs_z2.mul_left ε), tsum_mul_left]
+    have hdyad_tail := tsum_abs_dyadicHarmonicWeight_tail_le
+    have hz2_le := tsum_inv_sq_add_two_le
+    nlinarith
+
 /-- **Infinite Family of Non-Dyadic Multi-Scale Multipliers with Strictly Negative-Definite Cell Kernels.**
 For every scale `d ≥ 3`, there exists `ε > 0` such that `χ = perturbedMultiScaleChi d ε`
 differs from `dyadicHarmonicChi` at `k = d`, generates an `AdmissibleHarmonicWeight` sequence
@@ -3526,7 +3599,7 @@ theorem exists_nonDyadic_stencil_negative_definite_cellKernel (d : ℕ) (hd : 3 
         (fun k => if k = 0 then 0 else perturbedMultiScaleChi d ε k / (k : ℝ) ^ 2)
         (1 + ε) (4 / 5) ∧
       ∀ t ∈ Icc (0 : ℝ) 1,
-        generalCriticalPrimeContinuousRealKernel (perturbedMultiScaleChi d ε) t ≤ -1 / 14000 := by
+        generalCriticalPrimeContinuousRealKernel (perturbedMultiScaleChi d ε) t ≤ -(1 / 14000) := by
   set S_log := ∑' m : ℕ, envelopeLogMajorant (3 / 2) m
   have hS_summ := summable_envelopeLogMajorant_of_half_lt (by norm_num : (1 : ℝ) / 2 < 3 / 2)
   have hS_nonneg : 0 ≤ S_log := tsum_nonneg fun m => by
@@ -3543,73 +3616,23 @@ theorem exists_nonDyadic_stencil_negative_definite_cellKernel (d : ℕ) (hd : 3 
   have hε_le2 : ε * K_pert ≤ 1 / 14000 := by
     have := min_le_right (1 / 40) ((1 / 14000) / K_pert)
     exact (le_div_iff₀ hK_pos).mp this
-  refine ⟨ε, hε_pos, ?_, ?_, ?_⟩
+  refine ⟨ε, hε_pos, ?_, admissibleHarmonicWeight_perturbedMultiScaleChi hd hε_pos hε_le1, ?_⟩
   · unfold perturbedMultiScaleChi
-    simp [dvd_refl d, hε_pos.ne']
-  · refine
-      { w_zero := by simp
-        w_one := by
-          have hd1 : ¬ (d ∣ 1) := fun h => by have := Nat.le_of_dvd one_pos h; omega
-          have hchi1 : dyadicHarmonicChi 1 = 1 := by decide
-          simp [perturbedMultiScaleChi, hd1, hchi1]
-        C_pos := by linarith
-        abs_w_le := fun k => by
-          split_ifs with hk
-          · simp; positivity
-          · rw [abs_div, abs_of_nonneg (sq_nonneg _)]
-            refine div_le_div_of_nonneg_right ?_ (sq_nonneg _)
-            unfold perturbedMultiScaleChi
-            refine (abs_add_le _ _).trans (add_le_add (abs_dyadicHarmonicChi_le_one k) ?_)
-            rw [abs_mul, abs_of_pos hε_pos]
-            split_ifs <;> simp [hε_pos.le]
-        τ_nonneg := by norm_num
-        τ_lt_one := by norm_num
-        tsum_tail_le := by
-          set w_pert : ℕ → ℝ := fun k =>
-            if k = 0 then 0 else perturbedMultiScaleChi d ε k / (k : ℝ) ^ 2
-          have hbd (k : ℕ) : |w_pert (k + 2)| ≤
-              |dyadicHarmonicWeight (k + 2)| + ε * (1 / ((k + 2 : ℕ) : ℝ) ^ 2) := by
-            simp only [w_pert, dyadicHarmonicWeight, show k + 2 ≠ 0 by omega, if_false,
-              perturbedMultiScaleChi]
-            rw [add_div]
-            refine (abs_add_le _ _).trans (add_le_add le_rfl ?_)
-            rw [abs_div, abs_mul, abs_of_pos hε_pos, abs_of_nonneg (sq_nonneg _)]
-            split_ifs <;> simp [div_eq_mul_inv]
-          have hs_dyad : Summable fun k : ℕ => |dyadicHarmonicWeight (k + 2)| :=
-            (summable_nat_add_iff 2).mpr summable_abs_dyadicHarmonicWeight
-          have hs_z2 : Summable fun k : ℕ => 1 / ((k + 2 : ℕ) : ℝ) ^ 2 :=
-            (summable_nat_add_iff 2).mpr (Real.summable_one_div_nat_pow.mpr one_lt_two)
-          have hs_pert : Summable fun k : ℕ => |w_pert (k + 2)| :=
-            Summable.of_nonneg_of_le (fun _ => abs_nonneg _) hbd
-              (hs_dyad.add (hs_z2.mul_left ε))
-          have h1 : (∑' k : ℕ, |w_pert (k + 2)|) ≤
-              (∑' k : ℕ, |dyadicHarmonicWeight (k + 2)|) +
-                ε * ∑' k : ℕ, 1 / ((k + 2 : ℕ) : ℝ) ^ 2 := by
-            calc (∑' k : ℕ, |w_pert (k + 2)|)
-                ≤ ∑' k : ℕ, (|dyadicHarmonicWeight (k + 2)| + ε * (1 / ((k + 2 : ℕ) : ℝ) ^ 2)) :=
-                  hs_pert.tsum_le_tsum hbd (hs_dyad.add (hs_z2.mul_left ε))
-              _ = _ := by rw [hs_dyad.tsum_add (hs_z2.mul_left ε), tsum_mul_left]
-          have hdyad_tail := tsum_abs_dyadicHarmonicWeight_tail_le
-          have hz2_le : (∑' k : ℕ, 1 / ((k + 2 : ℕ) : ℝ) ^ 2) ≤ 2 := by
-            have hz : Summable fun k : ℕ => 1 / (k : ℝ) ^ 2 :=
-              Real.summable_one_div_nat_pow.mpr one_lt_two
-            have hle : (∑' k : ℕ, 1 / ((k + 2 : ℕ) : ℝ) ^ 2) ≤ ∑' k : ℕ, 1 / (k : ℝ) ^ 2 := by
-              rw [← hz.sum_add_tsum_nat_add 2]
-              have : 0 ≤ ∑ i ∈ Finset.range 2, 1 / (i : ℝ) ^ 2 :=
-                Finset.sum_nonneg fun _ _ => by positivity
-              linarith
-            exact hle.trans tsum_one_div_nat_sq_le_two
-          nlinarith }
+    simp [hε_pos.ne']
   · set χ := perturbedMultiScaleChi d ε
     have hχ_bd (k : ℕ) : |χ k| ≤ 1 + ε := by
       unfold χ perturbedMultiScaleChi
       refine (abs_add_le _ _).trans (add_le_add (abs_dyadicHarmonicChi_le_one k) ?_)
       rw [abs_mul, abs_of_pos hε_pos]
-      split_ifs <;> simp [hε_pos.le]
+      by_cases hdvd : d ∣ k
+      · simp [hdvd]
+      · simp [hdvd, hε_pos.le]
     have hdiff_chi (k : ℕ) : |χ k - dyadicHarmonicChi k| ≤ ε := by
       unfold χ perturbedMultiScaleChi
       rw [add_sub_cancel_left, abs_mul, abs_of_pos hε_pos]
-      split_ifs <;> simp [hε_pos.le]
+      by_cases hdvd : d ∣ k
+      · simp [hdvd]
+      · simp [hdvd, hε_pos.le]
     have hcharge_diff (m : ℕ) :
         |generalCriticalPrimeHarmonicCharge χ m - factorialCriticalPrimeHarmonicCharge m| /
           (m : ℝ) ^ 3 ≤
@@ -3623,13 +3646,14 @@ theorem exists_nonDyadic_stencil_negative_definite_cellKernel (d : ℕ) (hd : 3 
               (∑ r ∈ m.divisors, (r : ℝ) * (ArithmeticFunction.vonMangoldt r : ℝ) *
                 (χ (m / r) - dyadicHarmonicChi (m / r))) := by
           unfold generalCriticalPrimeHarmonicCharge factorialCriticalPrimeHarmonicCharge
-          rw [← Finset.sum_sub_distrib]
-          have : (∑ x ∈ m.divisors, ((x : ℝ) * (ArithmeticFunction.vonMangoldt x : ℝ) * χ (m / x) -
-              (x : ℝ) * (ArithmeticFunction.vonMangoldt x : ℝ) * dyadicHarmonicChi (m / x))) =
-              ∑ x ∈ m.divisors, (x : ℝ) * (ArithmeticFunction.vonMangoldt x : ℝ) *
-                (χ (m / x) - dyadicHarmonicChi (m / x)) :=
-            Finset.sum_congr rfl fun x _ => by ring
-          rw [this]; ring
+          have hsub : (∑ r ∈ m.divisors, (r : ℝ) * (ArithmeticFunction.vonMangoldt r : ℝ) *
+                (χ (m / r) - dyadicHarmonicChi (m / r))) =
+              (∑ r ∈ m.divisors, (r : ℝ) * (ArithmeticFunction.vonMangoldt r : ℝ) * χ (m / r)) -
+                ∑ r ∈ m.divisors, (r : ℝ) * (ArithmeticFunction.vonMangoldt r : ℝ) *
+                  dyadicHarmonicChi (m / r) := by
+            rw [← Finset.sum_sub_distrib]
+            exact Finset.sum_congr rfl fun r _ => by ring
+          rw [hsub]; ring
         have hsum1 : |∑ r ∈ m.divisors, (r : ℝ) * (ArithmeticFunction.vonMangoldt r : ℝ) * χ (m / r)| ≤
             (1 + ε) * ((m : ℝ) * Real.log m) := by
           calc |∑ r ∈ m.divisors, (r : ℝ) * (ArithmeticFunction.vonMangoldt r : ℝ) * χ (m / r)|
@@ -3679,7 +3703,7 @@ theorem exists_nonDyadic_stencil_negative_definite_cellKernel (d : ℕ) (hd : 3 
           have hb := mul_le_mul (abs_dyadicHarmonicChi_le_one m) hsum2 (abs_nonneg _) zero_le_one
           have hlog0 : 0 ≤ (m : ℝ) * Real.log m :=
             mul_nonneg (Nat.cast_nonneg m) (Real.log_nonneg (by exact_mod_cast (show 1 ≤ m by omega)))
-          nlinarith
+          nlinarith [mul_nonneg hε_pos.le hlog0]
         calc |generalCriticalPrimeHarmonicCharge χ m - factorialCriticalPrimeHarmonicCharge m| / (m : ℝ) ^ 3
             ≤ ((3 * ε) * ((m : ℝ) * Real.log m)) / (m : ℝ) ^ 3 :=
               div_le_div_of_nonneg_right htot (by positivity)
