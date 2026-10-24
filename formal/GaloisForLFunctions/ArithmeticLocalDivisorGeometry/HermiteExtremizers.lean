@@ -240,5 +240,3 @@ theorem nonnegative_boundary_eq_scaledHermiteExtremizer {p : ℝ[X]} {r : ℝ}
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
 
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.coeffNonneg_heat_scaledHermiteExtremizer_iff
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.nonnegative_boundary_eq_scaledHermiteExtremizer

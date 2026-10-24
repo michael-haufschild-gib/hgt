@@ -238,5 +238,3 @@ theorem scaled_nonnegative_edge_root_rigidity {p : ℝ[X]} {n : ℕ} {r : ℝ}
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
 
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.nonnegative_root_le_sqrt_mul_hermiteEdge
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.scaled_nonnegative_edge_root_rigidity

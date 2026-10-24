@@ -194,4 +194,3 @@ theorem exists_first_heat_time_of_even_nonnegative_root {p : ℝ[X]} {d : ℕ}
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
 
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.exists_first_heat_time_of_even_nonnegative_root

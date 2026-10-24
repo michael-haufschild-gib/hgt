@@ -110,4 +110,3 @@ theorem hermite_edge_strict_min_nonneg (n : ℕ) {x : ℝ} (hx : 0 ≤ x)
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
 
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.hermite_edge_strict_min_nonneg

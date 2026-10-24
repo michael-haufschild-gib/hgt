@@ -123,6 +123,20 @@ private theorem pairing_sum_right (T : ℕ) (S : Finset ℕ+) (c : ℕ+ → ℝ)
   rw [pairing_symm, pairing_sum_left]
   exact sum_congr rfl fun j _ => congrArg (fun x => c j * x) (pairing_symm T (w j) v)
 
+private theorem pronicNorm_sq_eq_pairing (T : ℕ) (v : ℕ → ℝ) :
+    pronicNorm T v ^ 2 = pronicPairing T v v := by
+  rw [pronicNorm_sq]
+  simp only [pronicPairing, pow_two]
+
+private theorem packet_gram_eq (T : ℕ) (E : ℝ) (S : Finset ℕ+) (c : ℕ+ → ℝ)
+    (v : ℕ+ → ℕ → ℝ) :
+    (∑ j ∈ S, ∑ k ∈ S, c j * c k * (pronicPairing T (v j) (v k) / E)) =
+      pronicNorm T (fun n => ∑ j ∈ S, c j * v j n) ^ 2 / E := by
+  rw [pronicNorm_sq_eq_pairing, pairing_sum_left]
+  simp_rw [pairing_sum_right]
+  simp only [sum_div, mul_sum]
+  exact sum_congr rfl fun j _ => sum_congr rfl fun k _ => by ring
+
 /-- A finite cofactor packet retains its complete quadratic energy in the Gram table. -/
 theorem cofactorGram_quadratic_eq (ε : SubcriticalDamping) (T : ℕ)
     (S : Finset ℕ+) (c : ℕ+ → ℝ) :
@@ -130,13 +144,8 @@ theorem cofactorGram_quadratic_eq (ε : SubcriticalDamping) (T : ℕ)
       pronicNorm (T + 1) (fun n => ∑ j ∈ S, c j *
         pmPowerDampedCenteredDivisorPrefix ε (n / j)) ^ 2 /
           dampedMobiusEnergy ε (T + 1) := by
-  have hs : ∀ v : ℕ → ℝ, pronicNorm (T + 1) v ^ 2 = pronicPairing (T + 1) v v := by
-    intro v
-    simp only [pronicNorm_sq, pronicPairing, pow_two]
-  rw [hs, pairing_sum_left]
-  simp_rw [pairing_sum_right]
-  simp only [cofactorGram, rowDilate, sum_div, mul_sum]
-  exact sum_congr rfl fun j _ => sum_congr rfl fun k _ => by ring
+  exact packet_gram_eq (T + 1) (dampedMobiusEnergy ε (T + 1)) S c
+    (fun j n => pmPowerDampedCenteredDivisorPrefix ε (n / (j : ℕ)))
 
 /-- Every finite signed packet has nonnegative normalized energy. -/
 theorem cofactorGram_quadratic_nonneg (ε : SubcriticalDamping) (T : ℕ)
@@ -164,22 +173,24 @@ theorem cofactorGram_packet_dilation_le (ε : SubcriticalDamping) (T : ℕ)
       refine sum_congr rfl fun j _ => ?_
       congr 2
       exact Nat.div_div_eq_div_mul n p j
-    have hs : ∀ w : ℕ → ℝ, pronicNorm (T + 1) w ^ 2 = pronicPairing (T + 1) w w := by
-      intro w
-      simp only [pronicNorm_sq, pronicPairing, pow_two]
-    rw [hrow, hs, pairing_sum_left]
-    simp_rw [pairing_sum_right]
-    simp only [cofactorGram, rowDilate, sum_div, mul_sum]
-    exact sum_congr rfl fun j _ => sum_congr rfl fun k _ => by ring
+    rw [hrow]
+    exact packet_gram_eq (T + 1) (dampedMobiusEnergy ε (T + 1)) S c
+      (fun j n => pmPowerDampedCenteredDivisorPrefix ε (n / (p * j : ℕ+)))
   have hnorm := pronicNorm_rowDilate_le_sharp p.property (T + 1) v hv0
   have hsq := pow_le_pow_left₀ (pronicNorm_nonneg _ _) hnorm 2
   have hp : (0 : ℝ) ≤ p := by positivity
-  rw [mul_pow, div_pow, one_pow, Real.sq_sqrt hp] at hsq
+  have hscale (x : ℝ) (hx : 0 ≤ x) : (1 / Real.sqrt x) ^ 2 = 1 / x := by
+    rw [div_pow, one_pow, Real.sq_sqrt hx]
+  have hfactor : ((1 / Real.sqrt (p : ℝ)) * pronicNorm (T + 1) v) ^ 2 =
+      (1 / (p : ℝ)) * pronicNorm (T + 1) v ^ 2 :=
+    (mul_pow _ _ 2).trans
+      (congrArg (fun x : ℝ => x * pronicNorm (T + 1) v ^ 2) (hscale (p : ℝ) hp))
+  have hsq' := hsq.trans_eq hfactor
   rw [heq, cofactorGram_quadratic_eq]
   calc
     _ ≤ ((1 / (p : ℝ)) * pronicNorm (T + 1) v ^ 2) /
         dampedMobiusEnergy ε (T + 1) :=
-      div_le_div_of_nonneg_right hsq (receiverEnergy_succ_pos ε T).le
+      div_le_div_of_nonneg_right hsq' (receiverEnergy_succ_pos ε T).le
     _ = _ := by dsimp only [v]; ring
 
 private theorem finite_sum_tendsto {ι : Type*} (S : Finset ι)
