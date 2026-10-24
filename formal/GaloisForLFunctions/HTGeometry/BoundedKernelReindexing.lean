@@ -98,11 +98,11 @@ theorem ext_on_vectors {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F]
     induction c using Finsupp.induction with
     | zero => simp
     | single_add x a c hx ha ih =>
-      rw [map_add, map_add, map_add, ih]
+      simp only [map_add, ih]
       congr 1
       change L ((Finsupp.single x a : KernelPre K) : KernelHilbert K) =
         M ((Finsupp.single x a : KernelPre K) : KernelHilbert K)
-      rw [coe_single, map_smul, map_smul, h]
+      simp only [coe_single, map_smul, h]
 
 /-- The bounded reindexing operator on the Gram Hilbert space. -/
 def pushforward (φ : X → X) {C : ℝ} (hC : 0 ≤ C)

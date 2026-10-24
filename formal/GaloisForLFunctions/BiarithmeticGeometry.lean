@@ -1,4 +1,6 @@
 import GaloisForLFunctions.BiarithmeticGeometry.HorizonAffineActions
+import GaloisForLFunctions.BiarithmeticGeometry.HorizonBoundaryCalculus
+import GaloisForLFunctions.BiarithmeticGeometry.AffineNormalizationFreedom
 
 /-!
 # Biarithmetic Geometry

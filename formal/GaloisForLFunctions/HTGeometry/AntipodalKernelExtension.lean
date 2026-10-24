@@ -68,13 +68,13 @@ theorem antipodalKernelExtension_unique {K : X → X → ℂ} (o : X)
     | none => exact hmass
     | some y =>
       change J none (some y) = -K o y
-      rw [← KernelHilbert.inner_vector, hvec, inner_neg_right,
+      rw [← KernelHilbert.inner_vector (K := J) none (some y), hvec, inner_neg_right,
         KernelHilbert.inner_vector, hbase]
   | some x =>
     cases y with
     | none =>
       change J (some x) none = -K x o
-      rw [← KernelHilbert.inner_vector, hvec, inner_neg_left,
+      rw [← KernelHilbert.inner_vector (K := J) (some x) none, hvec, inner_neg_left,
         KernelHilbert.inner_vector, hbase]
     | some y => exact hbase x y
 

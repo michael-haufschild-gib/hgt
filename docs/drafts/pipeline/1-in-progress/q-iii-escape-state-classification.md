@@ -219,7 +219,15 @@ checked; no additional independent signed Gram coordinates survive.
   complex energies into their real and imaginary parts. White-noise positivity
   now uses this generic bridge.
 - Generic bounded coefficient pushforward and completion are being checked in
-  `/tmp/qiii_kernel_check.lean` before transfer to the corpus.
+  `/tmp/qiii_kernel_check.lean` before transfer to the corpus. The declaration
+  check confirmed the required completion and finite-coefficient APIs; an
+  unused speculative norm theorem was absent. The constructions are drafted
+  in `HTGeometry/BoundedKernelReindexing.lean`, not yet verified.
+- Drafted `ArithmeticDefectRigidity/TheCofactorLimitCarriesACyclicDilationAction.lean`:
+  a concrete selected actual limit, complex positivity, sharp bounded dilation,
+  multiplicativity, cyclicity, and finite repairing-packet annihilation.
+- `HTGeometry/AntipodalKernelExtension.lean` is being checked while generating
+  its previously absent olean, required by the white-noise application.
 - Umbrella imports and axiom audits remain pending successful final checks.
 
 ## Gates

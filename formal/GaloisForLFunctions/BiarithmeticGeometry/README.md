@@ -100,6 +100,21 @@ its statement. Scalar common commutant does not imply irreducibility here: every
 
 Source: `horizon_double_fixed_iff`, `horizon_joint_commutant`.
 
+### Exact signed boundary loss
+
+For the cell pairing `B_N(v,w)=Σ_j v_j w_j`, every positive affine map satisfies
+
+`B_N(T_(a,b)v,T_(a,b)w) + Σ_(aj+b>N) v_j w_j = B_N(v,w)`.
+
+Injectivity preserves every surviving coefficient once; the omitted tail gives the entire
+defect. The diagonal case is an energy contraction with its exact loss. Moreover an observable
+invariant under the absorbing successor must be constant, because `N+1` successors send every
+vector to zero. Finite-horizon covariance therefore needs this boundary calculus. Exact
+translation invariance would erase the observable itself.
+
+Source: `HorizonBoundaryCalculus.lean`, `horizonPairing_affine_add_boundary`,
+`horizonPairing_affine_self_le`, `horizon_successor_invariant_iff`.
+
 ### The box defect is not an ordinary cohomological index
 
 At the node-free aperture `s=log(3/2)`,

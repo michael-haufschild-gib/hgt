@@ -51,6 +51,20 @@ The `hgtl7` skill is expressly excluded. No numerical experiments or computation
 
 ## Approach
 
+### Verification state
+
+| Leaf | Current proof check | Axiom audit |
+|---|---|---|
+| `HorizonAffineActions` | Direct leaf passed; dependency olean created | Main declarations clean |
+| `HorizonBoundaryCalculus` | Direct leaf passed | Pending |
+| `AffineNormalizationFreedom` | Direct leaf passed | Pending |
+| `ArithmeticEulerCharacteristic` | Earlier body checked; revised node-free and cell proofs pending | Pending |
+| `SharedBudgetDescent` | Direct check running after scope correction | Pending |
+| `PaidKernelsVanishOnEscape` | Scratch passed; direct leaf with reduced imports pending | Pending |
+| Exact sign visibility | Paper proof and `/tmp/BiarithmeticVisibility.lean` draft | Pending |
+
+### Construction principles
+
 Audit proposed foundations before importing their conclusions. Preserve two distinct invariants:
 integer cohomological indices and real weighted arithmetic masses. Construct finite-horizon affine
 actions directly, retaining cutoff defects and signed coefficients. Compare all abstractions to
@@ -166,7 +180,7 @@ resource locations and compatible quotas in the site.
 
 ### Absorbing boundary calculus
 
-[PROVED HERE, paper; Lean pending] With the cell pairing
+[PROVED HERE, paper and direct Lean check; axiom audit pending] With the cell pairing
 `<v,w>_N = Σ_(j=0)^N v_j w_j`, every positive affine map has the exact signed identity
 
 `<T_(a,b)v,T_(a,b)w>_N + Σ_(aj+b>N) v_j w_j = <v,w>_N`.

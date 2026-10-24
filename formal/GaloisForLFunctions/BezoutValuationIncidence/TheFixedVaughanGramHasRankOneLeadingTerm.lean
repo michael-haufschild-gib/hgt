@@ -112,11 +112,12 @@ private theorem tendsto_multiple_floor_mean {ε : ℝ} (hε : 0 < ε)
     simp only [pmPronicFloorWeight, Nat.cast_mul,
       Real.mul_rpow (Nat.cast_nonneg m) (Nat.cast_nonneg k),
       Nat.div_div_eq_div_mul, mul_assoc]
-  convert h'.const_mul ((m : ℝ) ^ (-ε)) using 1
-  · ext n
-    rw [heq]
-    ring
-  · ring
+  have hscaled := h'.const_mul ((m : ℝ) ^ (-ε))
+  have hvalue : (m : ℝ) ^ (-ε) * (pmPronicPowerDensity ε / m) =
+      (m : ℝ) ^ (-ε) / m * pmPronicPowerDensity ε := by ring
+  rw [hvalue] at hscaled
+  apply hscaled.congr'
+  exact Filter.Eventually.of_forall fun n => by rw [heq]; ring
 
 private theorem small_small_mean_factorization (ε : ℝ) (U V : ℕ) :
     (∑ a ∈ Icc 1 U, (moebius a : ℝ) *
@@ -172,16 +173,22 @@ theorem tendsto_pmPronicVaughanPiece_div_nat {ε : ℝ} (hε : 0 < ε)
   · exact h1
   · exact h2
   · have h := ((((tendsto_pmBezoutInteriorPrefix_div_nat hε).sub h0).sub h1).sub h2).sub h4
-    convert h using 1
-    · ext n
-      have hs := sum_pmPronicVaughanPiece ε U V n
-      simp [Fin.sum_univ_succ] at hs
-      linear_combination (norm := ring_nf) -hs / (n : ℝ)
-    · change (pmPowerDampedDivisorDensity ε).re - pmPronicVaughanSmallDensity ε U -
-        pmPronicVaughanSmallDensity ε V +
-          pmPronicPowerDensity ε * pmPronicVaughanSmallDensity ε U *
-            pmPronicVaughanSmallDensity ε V = _
+    have hvalue :
+        0 - pmPronicVaughanSmallDensity ε U - pmPronicVaughanSmallDensity ε V -
+          (-pmPronicPowerDensity ε * pmPronicVaughanSmallDensity ε U *
+            pmPronicVaughanSmallDensity ε V) - (-(pmPowerDampedDivisorDensity ε).re) =
+          pmPronicVaughanMean ε U V 3 := by
+      change _ = (pmPowerDampedDivisorDensity ε).re - pmPronicVaughanSmallDensity ε U -
+          pmPronicVaughanSmallDensity ε V +
+            pmPronicPowerDensity ε * pmPronicVaughanSmallDensity ε U *
+              pmPronicVaughanSmallDensity ε V
       ring
+    rw [hvalue] at h
+    apply h.congr'
+    filter_upwards [] with n
+    have hs := sum_pmPronicVaughanPiece ε U V n
+    simp [Fin.sum_univ_succ] at hs
+    linear_combination (norm := ring_nf) -hs / (n : ℝ)
   · exact h4
 
 /-- The leading Gram matrix is the outer product of the component means. -/

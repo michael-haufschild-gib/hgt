@@ -53,7 +53,8 @@ The actual theorem `sourceCone_bezout_of_defect_le` uses the opposite bound `def
 
 ## Boundary-rigidity paper proof
 
-[PROVED HERE, paper; Lean audit running.] Write `δ(x,y)=polar(x,y)-pair(x,y)`.
+[PROVED HERE, paper; core and low-blind application modules compile; axiom audit pending.]
+Write `δ(x,y)=polar(x,y)-pair(x,y)`.
 Let `Φ` be nonnegative, even, and unchanged by adding either fibre. The source cone is
 `EΦ={x: deg_H(x)≥0, deg_V(x)≥0, Φ(x)≤2 deg_H(x)deg_V(x)}`.
 
@@ -160,6 +161,36 @@ jointly to the given map, the pole, and the energy-dependent grid. This excludes
 postprocessing of finitely many linear observations (values, moments, nodes, or transform
 samples) as a Bézout source reserve. The exact survivor is unbounded Rayleigh quotient in every
 such kernel. The extension is not yet Lean-certified.
+
+### Numerical-equivalence conjecture and paper proof
+
+[PROVED HERE, paper; Lean implementation pending.] The literal real scaling pairing is
+nondegenerate, without RH. Its proof uses the existing compact-polar density theorem:
+
+1. A compact complex `C²` source has a square-summable Xi evaluation vector. Critical-line
+   reflection is an isometry, and its reflected vector belongs to the folded divisor Hilbert
+   space. Compact polar tests are dense in that space.
+2. If its Weil pairing against every compact polar test vanishes, the reflected vector is
+   orthogonal to a dense subspace containing itself. Its norm is zero. Injectivity of compact
+   Xi evaluation then makes the source zero. The tested source need not itself satisfy the
+   pole constraints; only the testing family does.
+3. The Xi-copy polarization equals the zeta-carrier Weil pairing by the explicit
+   `xiDivisorZetaCarrierEquiv` and its multiplicity identity. Absolute summability follows from
+   the two square-summable evaluation vectors. This bridge retains the full complex mixed form.
+4. For real compact sources the full mixed Weil pairing is real: the convolution is real and
+   `WeilWorkPBAP.weilFullFunctional_ofReal_im` applies. A real source annihilating every real
+   compact test therefore annihilates the real and imaginary parts of every complex compact
+   test. Step 2 makes it zero.
+5. A scaling cycle annihilating every cycle has both fibre degrees zero. Pairing it with pure
+   test cycles then annihilates its real source, so step 4 makes that source zero. Its two
+   remaining pole coefficients are zero as well.
+
+Thus equality of all intersection readings is equality of the existing scaling cycles.
+Any intersection-preserving translation in this cycle space is trivial. This is a necessary
+scope restriction for a principal-divisor construction, not a proof that richer divisor
+presentations cannot exist. The positive survivor is unconditional separation of every
+scaling class by the intersection pairing, plus separation by compact polar tests on the
+source side. The bridge and dependency audit must be formalized before this route is closed.
 
 ## Related ongoing work
 

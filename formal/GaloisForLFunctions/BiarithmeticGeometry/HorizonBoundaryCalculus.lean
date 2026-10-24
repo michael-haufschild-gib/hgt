@@ -56,7 +56,8 @@ theorem horizonPairing_affine (N : ℕ) (a : ℕ+) (b : ℕ) (v w : HorizonSpace
       intro j _
       by_cases hj : (a : ℕ) * j.val + b ≤ N
       · rw [if_pos hj, sum_eq_single ⟨a * j.val + b, by omega⟩]
-        · simp only [if_true, mul_one, horizonAffine_apply_image]
+        · simp only [if_true, mul_one]
+          rw [horizonAffine_apply_image N a b w j hj]
         · intro i _ hi
           rw [if_neg, mul_zero, zero_mul]
           exact fun h => hi (Fin.ext h)
@@ -88,7 +89,10 @@ theorem horizonPairing_affine_self_le (N : ℕ) (a : ℕ+) (b : ℕ)
   have h := horizonPairing_affine_add_boundary N a b v v
   have hboundary : 0 ≤ ∑ j : Fin (N + 1),
       if N < (a : ℕ) * j.val + b then v j * v j else 0 :=
-    sum_nonneg fun j _ => by split_ifs <;> positivity
+    sum_nonneg fun j _ => by
+      split_ifs
+      · exact mul_self_nonneg _
+      · exact le_rfl
   linarith only [h, hboundary]
 
 theorem horizonAffine_eq_zero_of_large_translation (N : ℕ) (a : ℕ+) (b : ℕ)

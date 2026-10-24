@@ -1,4 +1,5 @@
 import GaloisForLFunctions.BiarithmeticGeometry.HorizonAffineActions
+import Mathlib.Tactic.NormNum
 
 /-!
 # The affine relation does not choose a dilation normalization
