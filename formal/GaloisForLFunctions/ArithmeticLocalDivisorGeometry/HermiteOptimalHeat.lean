@@ -96,7 +96,7 @@ theorem tendsto_central_to_optimal_heat_ratio :
     have hm0 : (m : ℝ) ≠ 0 := by exact_mod_cast (show m ≠ 0 by omega)
     have hm2 : (m : ℝ) + 2 ≠ 0 := by positivity
     field_simp
-    <;> ring
+    ring
   have hlim := (((tendsto_even_hermiteEdge_sq_div_degree.const_mul 2).mul
     tendsto_maskedPairHeatThreshold).mul hr)
   norm_num only at hlim
@@ -105,7 +105,6 @@ theorem tendsto_central_to_optimal_heat_ratio :
   have hm0 : (m : ℝ) ≠ 0 := by exact_mod_cast (show m ≠ 0 by omega)
   have hd : (2 * m + 4 : ℝ) ≠ 0 := by positivity
   field_simp
-  <;> ring
 
 /-- Positive root depth cancels from the comparison of the two exact heat thresholds. -/
 theorem central_to_optimal_heat_ratio (m : ℕ) {a : ℝ} (ha : 0 < a) :
@@ -113,7 +112,6 @@ theorem central_to_optimal_heat_ratio (m : ℕ) {a : ℝ} (ha : 0 < a) :
       2 * hermiteEdge (2 * m + 2) ^ 2 * maskedPairHeatThreshold m := by
   have he : 0 < hermiteEdge (2 * m + 2) := hermiteEdge_pos (by omega)
   field_simp
-  <;> ring
 
 /-- The same factor-two limit holds for every fixed positive squared depth. -/
 theorem tendsto_central_to_optimal_heat_times {a : ℝ} (ha : 0 < a) :

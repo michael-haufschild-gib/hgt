@@ -104,3 +104,4 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».AdmissibleStencilsAn
 import GaloisForLFunctions.«arithmetic-positivity-theory».WideWindowSelectivityAndBeurlingInfrastructure
 import GaloisForLFunctions.«arithmetic-positivity-theory».SourceSelectionInTheFullWeilCone
 import GaloisForLFunctions.«arithmetic-positivity-theory».CommonShiftForTheSuzukiDeficit
+import GaloisForLFunctions.«arithmetic-positivity-theory».SpectralRealisationAndOperatorConstraints

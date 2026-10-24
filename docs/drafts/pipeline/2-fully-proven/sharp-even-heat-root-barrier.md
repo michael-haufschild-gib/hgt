@@ -60,7 +60,7 @@ The positive canonical scalar leaves this inequality unchanged. In contrast, del
 
 ## Literature and sharpness accounting
 
-The monotonicity of Hermite critical-value magnitudes is classical: [DLMF §18.14(iii)](https://dlmf.nist.gov/18.14.iii) attributes it to Szegő, Theorem 7.6.3. The proof above includes the elementary ODE argument rather than treating that fact as an extra premise. [DLMF §18.16(v)](https://dlmf.nist.gov/18.16.v) gives the largest-zero asymptotic in the physicists' normalization. Rescaling `He_n(x)=2^(−n/2)H_n(x/sqrt 2)` yields `h_d²/(2d)→4`. Thus the existing constant `4` is asymptotically optimal even for even nonnegative polynomials. This asymptotic corollary is not yet Lean-formalized here; the elementary proof below avoids importing Airy asymptotics as an unproved input.
+The monotonicity of Hermite critical-value magnitudes is classical: [DLMF §18.14(iii)](https://dlmf.nist.gov/18.14.iii) attributes it to Szegő, Theorem 7.6.3. The proof above includes the elementary ODE argument rather than treating that fact as an extra premise. [DLMF §18.16(v)](https://dlmf.nist.gov/18.16.v) gives the largest-zero asymptotic in the physicists' normalization. Rescaling `He_n(x)=2^(−n/2)H_n(x/sqrt 2)` yields `h_d²/(2d)→4`. Thus the existing constant `4` is asymptotically optimal even for even nonnegative polynomials. `tendsto_hermiteDerivativeEdge_sq_div_even_degree` now formalizes this limit by the elementary recurrence proof below, without importing Airy asymptotics as an unproved input.
 
 ### Elementary asymptotic proof
 
@@ -104,8 +104,8 @@ The barrier proves the lower bound, and the scaled Hermite extremizer attains it
 
 ## Lean implementation route
 
-- `HermiteHeatNormalization.lean` is a corrected, still unchecked draft of the unit identities `E_(-1/2)X^n=He_n` and `E_(1/2)He_n=X^n`. It uses the existing three-term/derivative recurrence and the checked local heat semigroup. These are classical support identities, not a novelty claim.
-- Define `hermiteEdge n` as the largest root of `He_(n+1)`, using `gaussianDerivZeros` and `card_roots_toFinset_hermite` from `HermiteRealRoots`. The existing half-line Rolle theorem gives strict increase; `hermiteEdge 0=0`. The polynomial sign theorem beyond all roots gives all lower Hermite weights positive at an edge. API checks are prepared in `/tmp/aldg_edge_api.lean` and must pass before using new mathlib names in the implementation.
+- `HermiteHeatNormalization.lean` proves the unit identities `E_(-1/2)X^n=He_n` and `E_(1/2)He_n=X^n`. It uses the three-term/derivative recurrence and the local heat semigroup. Its final plain check passed. These are classical support identities, not a novelty claim.
+- `HermiteRootEdge.lean` defines `hermiteEdge n` as the largest root of `He_(n+1)`, using `gaussianDerivZeros` and `card_roots_toFinset_hermite` from `HermiteRealRoots`. The half-line Rolle theorem gives strict increase; `hermiteEdge 0=0`. The polynomial sign theorem beyond all roots gives all lower Hermite weights positive at an edge. Its final plain check passed.
 - Reuse `hermiteReal`, `derivative_hermiteReal_succ`, parity and the recurrence from `HermitePerturbationRealRoots`. The ODE is already in `SpurHermite`; the power lower bound is in `HermiteGaussianMomentBounds`. Do not claim these classical ingredients as new.
 - For asymptotics, avoid matrix formalization. With `N=n+k+2`, sum the quotient recurrence at the largest zero of `He_N` over the last `k+1` rows. The result is `(k+1)·hermiteEdge(n+k+1)≥2k sqrt(n+2)`. This parametrization avoids subtraction in the finite sums; use `sum_range_succ` and `sum_range_succ'` to expose the two boundary terms.
 - For the limit, the weaker squared bound with `n` instead of `n+2` suffices. Put `c_k=4(k/(k+1))²`. For the full edge sequence `f_j=hermiteEdge(j)²/(j+1)`, eventually in `j`, `c_k[(k+2)j/(j+1)−(k+1)]≤f_j<4`. For fixed `k` the lower function tends to `c_k`, and `c_k→4`. Both limits use the already verified `tendsto_natCast_div_add_atTop 1`. Apply the order characterization of convergence. This gives the classical largest-root asymptotic without an imported unproved analytic premise.
@@ -120,7 +120,7 @@ The barrier proves the lower bound, and the scaled Hermite extremizer attains it
 
 No numerical experiments or source-sign hypotheses are used. Formalization must prove the finite-degree boundary, attainment and equality law, rather than inserting Hermite positivity or the global minimum as a new premise.
 
-## Interrupted formalization state
+## Formalization verification state
 
 Current resumption targets extremizer attainment, exact double roots and positive cofactor,
 the complete scaled heat-time ray, the elementary Hermite edge limit, sharpness of four,
@@ -128,19 +128,23 @@ and the central-masking comparison. Existing `/tmp/aldg_extremizers_draft.lean` 
 `/tmp/aldg_edge_asymptotic_draft.lean` have been restored as programme leaves for checking.
 Concurrent work is consolidated into `HermiteExtremizers`, `HermiteExtremizerFactorization`,
 `HermiteEdgeAsymptotics`, and `HermiteOptimalHeat`; duplicate alternative leaves were removed.
-An independent foreground check of `HermiteEdgeAsymptotics` is active (session `8173`),
-building its missing olean because `HermiteOptimalHeat` imports it. The other task's dependency
-batch (shell PID `65216`) owns the support checks. Dilation passed; Sonin and barrier failures
-have been corrected but still need successful retries and final audits.
+`HermiteEdgeAsymptotics` passed its required missing-olean build (session `8173`, exit 0).
+Its axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`; the audit print
+was removed. Never rebuild this existing olean. Sonin's corrected build also passed with a
+standard-only audit. The other task's batch `2369` continues barrier/extremizer/even-heat
+dependency checks; final plain audits remain before promotion.
 The first asymptotic check completed: the recurrence and block inequalities passed; four
 elaboration failures in the rational lower bound and composition of limits were corrected.
 The direct paper indexing `hermiteEdge (2*d-2)^2 / (2*d) → 4` is also included.
 No new mathematical premise or numerical computation is permitted.
 
-The user cleared the goal before this theorem's Lean gates closed. Complete unchecked drafts
-`HermiteRootEdge.lean`, `HermiteSonin.lean`, `PolynomialHeatDilation.lean` and
-`HermiteHeatRootBarrier.lean` are preserved in the programme folder and are not wired into
-the umbrella. The barrier draft includes the stationary bound, all intermediate coefficient
-vanishing at equality, root rigidity and arbitrary Gaussian scale. `HermiteExtremizers` and
-`HermiteEdgeAsymptotics` are not yet written. The programme card records exact verification
-state and the resumption sequence. No full sharp-barrier result is claimed formalized.
+The support, sharp barrier, scaled rigidity, extremizer attainment, exact heat-time ray,
+and elementary edge limit now have successful Lean checks and standard-only transitive
+axiom audits. The edge-limit and three support modules have also passed their final plain
+checks and are wired into the umbrella. The direct `2d` limit and Gaussian normalization
+were separately audited in `/tmp/hgt_hermite_axioms.log` (exit 0).
+
+Remaining gates are the double-root/cofactor and optimality endpoint checks, the remaining
+final plain checks, and completion of the umbrella wiring. The actual-source bridge is
+being checked separately. The programme card tracks these gates; this card stays in stage
+2 until its required checks close. No arithmetic source-sign estimate is asserted.

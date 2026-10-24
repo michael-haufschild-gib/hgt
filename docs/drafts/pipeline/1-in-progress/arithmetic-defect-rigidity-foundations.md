@@ -37,7 +37,7 @@ critical-energy admission.
 
 ## Lean status
 
-Eleven modules passed their required dependency checks:
+Twelve modules passed their required dependency checks:
 
 - `TheForcingDominatesTheReceiver`
 - `ForcingScaleSeparation`
@@ -50,9 +50,9 @@ Eleven modules passed their required dependency checks:
 - `EnergyQuantilesRetainDiffuseEscape`
 - `ThePoleTraceDefinesALinearCofactorRenormalization`
 - `CofactorSuccessorWordsHaveABoundaryCost`
+- `FixedCofactorsHaveAHarmonicBoundaryTrace`
 
-`FixedCofactorsHaveAHarmonicBoundaryTrace` is undergoing its required dependency check.
-Eight leaf modules await their ordinary checks:
+Eight leaf modules require ordinary checks without generating dependency objects:
 
 - `TheReceiverIsTheGramTangent`
 - `ForcingEscapesAMovingCofactorWindow`
@@ -63,8 +63,9 @@ Eight leaf modules await their ordinary checks:
 - `TheResidualAndPoleTraceDetermineTheRow`
 - `MovingLocalizationsRetainTheSignedDensity`
 
-All twenty final checks that write no object files remain pending. Exact per-module status is
-maintained in `logs/arithmetic-defect-rigidity-final-audits.txt`. Accepted modules are wired
+Final checks that write no object files are tracked separately for all twenty modules in
+`logs/arithmetic-defect-rigidity-final-audits.txt`; a dependency check alone is not a final PASS.
+Accepted modules are wired
 into `formal/GaloisForLFunctions/ArithmeticDefectRigidity.lean`, which is imported by
 `MainTheorems.lean`; neither umbrella is compiled.
 

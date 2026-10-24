@@ -32,8 +32,8 @@ private theorem totalCofactor_eq (ε : SubcriticalDamping) (v : poleTraceDomain 
   change (∑ j ∈ Icc 1 n, (j : ℝ) ^ (-(ε : ℝ)) * v (n / j)) =
     v n + ∑ j ∈ Icc 2 n, (j : ℝ) ^ (-(ε : ℝ)) * v (n / j)
   rcases Nat.eq_zero_or_pos n with rfl | hn
-  · simp only [Icc_eq_empty (by omega : (0 : ℕ) < 1),
-      Icc_eq_empty (by omega : (0 : ℕ) < 2), sum_empty, v.property.1, zero_add]
+  · simp only [Icc_eq_empty (by omega : ¬(1 : ℕ) ≤ 0),
+      Icc_eq_empty (by omega : ¬(2 : ℕ) ≤ 0), sum_empty, v.property.1, zero_add]
   · have hIcc : Icc 1 n = insert 1 (Icc 2 n) := by
       ext j
       simp only [mem_Icc, mem_insert]
@@ -47,7 +47,7 @@ theorem poleTrace_reconstruction (ε : SubcriticalDamping) (v : poleTraceDomain 
       poleTrace ε v * inversePolePower ε n := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp only [v.property.1, floorTransform, inversePolePower,
-      Icc_eq_empty (by omega : (0 : ℕ) < 1), sum_empty, mul_zero, add_zero]
+      Icc_eq_empty (by omega : ¬(1 : ℕ) ≤ 0), sum_empty, mul_zero, add_zero]
   · have htotal : floorTransform (powerWeight ε) v = fun m =>
         renormalizedResidualOperator ε v m + poleTrace ε v * (m : ℝ) ^ (1 - (ε : ℝ)) := by
       funext m
@@ -95,8 +95,9 @@ theorem residual_and_trace_injective (ε : SubcriticalDamping) :
     Function.Injective (fun v : poleTraceDomain ε =>
       (renormalizedResidualOperator ε v, poleTrace ε v)) := by
   intro v w h
-  have hr := congrArg Prod.fst h
-  have ht := congrArg Prod.snd h
+  have hr : renormalizedResidualOperator ε v = renormalizedResidualOperator ε w :=
+    congrArg Prod.fst h
+  have ht : poleTrace ε v = poleTrace ε w := congrArg Prod.snd h
   apply Subtype.ext
   funext n
   rw [poleTrace_reconstruction ε v n, poleTrace_reconstruction ε w n, hr, ht]

@@ -179,10 +179,8 @@ At this first contact, exactly one even coefficient through the polynomial's deg
 
 ### The universal degree boundary and its extremizer
 
-The centrally masked family is not extremal among all nonnegative polynomials
-of the same degree. A dependency-closed
-[paper theorem](../../../docs/drafts/pipeline/2-fully-proven/sharp-even-heat-root-barrier.md)
-identifies the sharp boundary: if `P≥0` on the real axis has degree `2d`,
+[HermiteHeatRootBarrier.lean](HermiteHeatRootBarrier.lean) proves the sharp
+finite-degree boundary: if `P≥0` on the real axis has degree `2d`,
 `d≥2`, `λ>0`, and `exp((λ/2)D²)P` has nonnegative coefficients, every positive root
 `δ` satisfies
 
@@ -200,13 +198,25 @@ The heated extremizer has only its constant and leading coefficients nonzero.
 Thus generic heat-cone contact need not occur at order zero, even in the sharp
 root-obstruction class.
 
-The sharp theorem and its equality classification still require Lean
-formalization; the existing universal degree detector and heat inversion are
-already available. Its source implication also remains conditional on an
-independently proved heat-cone estimate for the actual head. For large degree,
-central masking costs asymptotically twice the optimal heat in this polynomial
-class, so a general argument must retain the cofactor rather than replace it
-by a central power.
+[HermiteExtremizers.lean](HermiteExtremizers.lean) proves global nonnegativity,
+the exact root pair `±√λ h_d`, and the full admissible heat-time ray `[λ/2,∞)`.
+Each root has multiplicity exactly two. In the monic normalization, removing
+the squared quadratic pair leaves a monic, even cofactor strictly positive everywhere,
+as proved in [HermiteExtremizerFactorization.lean](HermiteExtremizerFactorization.lean).
+
+[HermiteEdgeAsymptotics.lean](HermiteEdgeAsymptotics.lean) proves
+`h_d²/(2d) → 4` by summing the positive Hermite quotient recurrence. Thus four
+is optimal in a uniform squared-root/degree bound even within the even
+nonnegative class. For degree `2m+4` and positive squared depth `a`, the least
+heat time is exactly `a/(2h_(m+2)²)`, attained by the scaled extremizer.
+[HermiteOptimalHeat.lean](HermiteOptimalHeat.lean) proves this minimum and
+`2h_(m+2)²τ_m → 2`: central masking costs asymptotically twice the optimum.
+Every even nonnegative polynomial with a positive root has an attained first
+heat time, by [EvenPolynomialHeatCone.lean](EvenPolynomialHeatCone.lean).
+
+Applying the boundary to the actual Xi head still requires an independently
+proved arithmetic heat-cone estimate. The generic polynomial laws leave that
+source-sign problem open.
 
 ## From source to local factor
 

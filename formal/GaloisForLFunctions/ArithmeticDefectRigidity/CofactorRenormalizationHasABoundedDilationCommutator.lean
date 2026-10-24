@@ -62,10 +62,10 @@ private theorem power_rounding_error_le (ε : SubcriticalDamping) (p : ℕ+) (n 
   have hrem : ((n % p : ℕ) : ℝ) < (p : ℝ) := by exact_mod_cast Nat.mod_lt n p.property
   have hlo : ((n / p : ℕ) : ℝ) ≤ (n : ℝ) / (p : ℝ) := by
     apply (le_div_iff₀ hp).mpr
-    nlinarith [Nat.cast_nonneg (n % p)]
+    nlinarith only [hid, (Nat.cast_nonneg (n % p) : (0 : ℝ) ≤ ((n % p : ℕ) : ℝ))]
   have hhi : (n : ℝ) / (p : ℝ) ≤ ((n / p : ℕ) : ℝ) + 1 := by
     apply (div_le_iff₀ hp).mpr
-    nlinarith
+    nlinarith only [hid, hrem]
   have hpowerlo := Real.rpow_le_rpow (Nat.cast_nonneg (n / p)) hlo hα
   have hpowerhi := (Real.rpow_le_rpow (div_nonneg (Nat.cast_nonneg n) hp.le) hhi hα).trans
     (Real.rpow_add_le_add_rpow (Nat.cast_nonneg (n / p)) zero_le_one hα hα1)

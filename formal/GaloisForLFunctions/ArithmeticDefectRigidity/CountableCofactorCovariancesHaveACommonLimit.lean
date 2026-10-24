@@ -79,7 +79,8 @@ theorem abs_cofactorGram_le (ε : SubcriticalDamping) (T : ℕ) (j k : ℕ+) :
 private theorem cofactorGramRadius_le_one (j k : ℕ+) : cofactorGramRadius j k ≤ 1 := by
   have hbound (p : ℕ+) : 1 / Real.sqrt (p : ℝ) ≤ 1 := by
     have hp : (1 : ℝ) ≤ p := by exact_mod_cast p.property
-    exact (div_le_one (Real.sqrt_pos.mpr (by linarith))).mpr (Real.one_le_sqrt.mpr hp)
+    have hp0 : (0 : ℝ) < p := by linarith only [hp]
+    exact (div_le_one (Real.sqrt_pos.mpr hp0)).mpr (Real.one_le_sqrt.mpr hp)
   exact (mul_le_mul (hbound j) (hbound k) (by positivity) zero_le_one).trans_eq (one_mul 1)
 
 private theorem pairing_symm (T : ℕ) (v w : ℕ → ℝ) :

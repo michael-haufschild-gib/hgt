@@ -47,7 +47,7 @@ theorem hermiteExtremizer_derivative_eval_neg_edge (m : ℕ) :
 
 theorem hermiteExtremizer_second_derivative_neg_edge_pos (m : ℕ) :
     0 < (derivative (derivative (hermiteExtremizer m))).eval (-hermiteEdge (2 * m + 2)) := by
-  have he : (-1 : ℝ) ^ (2 * m + 2) = 1 := by simp [pow_add, pow_mul]
+  have he : (-1 : ℝ) ^ (2 * m + 2) = 1 := by norm_num [pow_add, pow_mul]
   have heval : (derivative (derivative (hermiteExtremizer m))).eval (-hermiteEdge (2 * m + 2)) =
       (derivative (derivative (hermiteExtremizer m))).eval (hermiteEdge (2 * m + 2)) := by
     simp only [derivative_hermiteExtremizer,
@@ -89,9 +89,11 @@ private theorem second_derivative_squared_pair_eval (h : ℝ) (q : ℝ[X]) :
       8 * h ^ 2 * q.eval h := by
   simp [derivative_mul, derivative_pow, derivative_sub, derivative_C,
     derivative_X, eval_mul, eval_add, eval_pow, eval_sub]
-  ring
+  ring_nf
+  simp
 
-/-- The extremizer's remaining cofactor is monic, even, and strictly positive on the real line. -/
+/-- The remaining cofactor is monic, even, and strictly positive. Double-root divisibility
+gives the factorization; positive second derivatives exclude further cofactor zeros. -/
 theorem hermiteExtremizer_positive_cofactor (m : ℕ) :
     ∃ q : ℝ[X], q.Monic ∧ q.natDegree = 2 * m ∧
       (∀ x : ℝ, q.eval (-x) = q.eval x) ∧ (∀ x : ℝ, 0 < q.eval x) ∧
@@ -130,16 +132,17 @@ theorem hermiteExtremizer_positive_cofactor (m : ℕ) :
     have hfac : hermiteExtremizer m = (X ^ 2 - C ((-h) ^ 2)) ^ 2 * q := by
       simpa only [neg_sq] using hq
     rw [hfac, second_derivative_squared_pair_eval] at hv
-    exact (mul_pos_iff_of_pos_left (by positivity : 0 < 8 * (-h) ^ 2)).mp hv
+    exact (mul_pos_iff_of_pos_left (by rw [neg_sq]; positivity : 0 < 8 * (-h) ^ 2)).mp hv
   have hpos : ∀ x : ℝ, 0 < q.eval x := by
     intro x
     apply zero_lt_eval_of_roots_lt_of_leadingCoeff_nonneg
     · intro y hy
+      change q.eval y = 0 at hy
       have hz : (hermiteExtremizer m).eval y = 0 := by
         rw [hq, eval_mul, hy, mul_zero]
       rcases (hermiteExtremizer_eval_eq_zero_iff m y).mp hz with he | he
-      · exact ((hrootval.ne') (by simpa only [he] using hy)).elim
-      · exact ((hnegrootval.ne') (by simpa only [he] using hy)).elim
+      · exact ((hrootval.ne') (by simpa only [he, h] using hy)).elim
+      · exact ((hnegrootval.ne') (by simpa only [he, h] using hy)).elim
     · rw [hmonic.leadingCoeff]; norm_num
   have heven : ∀ x : ℝ, q.eval (-x) = q.eval x := by
     have he : (hermiteExtremizer m).comp (C (-1) * X) = hermiteExtremizer m := by
@@ -167,7 +170,8 @@ theorem scaledHermiteExtremizer_positive_cofactor {r : ℝ} (hr : 0 < r) (m : �
   obtain ⟨q, hmonic, hdeg, heven, hpos, hq⟩ := hermiteExtremizer_positive_cofactor m
   let Q : ℝ[X] := C (r ^ (2 * m)) * q.comp (C r⁻¹ * X)
   have hdegree : Q.natDegree = 2 * m := by
-    rw [Q, natDegree_C_mul (pow_ne_zero _ hr.ne'), natDegree_comp,
+    dsimp only [Q]
+    rw [natDegree_C_mul (pow_ne_zero _ hr.ne'), natDegree_comp,
       natDegree_C_mul (inv_ne_zero hr.ne'), natDegree_X, mul_one, hdeg]
   have hQmonic : Q.Monic := by
     change Q.leadingCoeff = 1
@@ -187,7 +191,6 @@ theorem scaledHermiteExtremizer_positive_cofactor {r : ℝ} (hr : 0 < r) (m : �
       eval_X, eval_pow, eval_sub]
     rw [pow_add]
     field_simp [hr.ne']
-    <;> ring
 
 /-- At any positive scale, both real roots of the extremizer have multiplicity exactly two. -/
 theorem scaledHermiteExtremizer_rootMultiplicity {r : ℝ} (hr : 0 < r) (m : ℕ) :
@@ -219,5 +222,3 @@ theorem scaledHermiteExtremizer_rootMultiplicity {r : ℝ} (hr : 0 < r) (m : ℕ
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
 
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.scaledHermiteExtremizer_positive_cofactor
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.scaledHermiteExtremizer_rootMultiplicity

@@ -47,6 +47,24 @@ the seven questions and building the six tools of the summary §2.3.
 - Open: ℤ shifted pair as a zero-side datum (its zeros leave the strip unless the zero width is
   below `½ − a`); planted Euler factors; parity twins; mechanism equivalence.
 
+## Plan: the four remaining tools
+- **H. Families beyond single orbits** (`OrientationOfScaleStableSubspaces`): joint blindness of a
+  subspace of tests; Hodge index of a scale-stable subspace ⇔ joint blindness (FES configs; union of
+  two subspaces argument); maximal oriented subspaces indexed by choice functions; index of a
+  scale-stable subspace = number of jointly seen right zeros (generic element + seen configuration);
+  Riemann–Roch on multi-orbit surfaces.
+- **I. Arithmetic `h⁰` of `Spec ℤ`** (`TheThetaSectionsOfSpecZ`): `h⁰(d) = log Σ_n e^{−πn²e^{−2d}}`;
+  Riemann–Roch `h⁰(d) − h⁰(−d) = d` by Poisson (Jacobi); positivity, monotonicity, limits; product
+  `h⁰` on the pole plane with `h⁰(D) − h⁰(−D) = D·(H + V)`; Mellin link to `Λ(s)` if available.
+- **J. Correctors in the damping parameter** (`CorrectorsInTheDampingParameter`): damping as the
+  character automorphisms `ξ ↦ e^{−εs}ξ` of the correspondence algebra; damped Lefschetz trace and
+  damped correctors; damped orbit energy `E_x(ε) = sup_t e^{−εt}|c_x(t)|`, finite iff blind above `ε`;
+  finiteness at every `ε > 0` (any constants) ⇒ `E_x(0) = c_x(0)` (orientation).
+- **K. Quantitative readings** (`QuantitativeReadingsOnCurveOrbits`): on a curve configuration the orbit
+  correlation at lags `ν log q` is a weighted power sum over the `2g` eigenvalues; Turán
+  (`HTGeometry.exists_norm_weightedPowerSum_ge_scaled`) gives a violating scale in every window
+  `[M + 1, M + 2g]` with explicit precision; contrast: finite windows over `ℤ` admit mimics.
+
 ## Log
 - 2026-10-24 — created; corpus survey of ACS (λ-ring, Lefschetz identity, envelope cone), AOT
   (Wiener algebra, trichotomy, width functor), SRT (bounded exponential sums, critical-line

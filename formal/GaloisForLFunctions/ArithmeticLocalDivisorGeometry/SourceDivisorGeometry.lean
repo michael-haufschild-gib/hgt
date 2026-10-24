@@ -41,7 +41,7 @@ theorem localDivisorPolynomial_degree (t : ℝ) (S : Finset XiZeroCopy) :
     (localDivisorPolynomial t S).natDegree = (sliceTrunc S).card := by
   rw [← (localDivisorPolynomial_monic t S).natDegree_map (algebraMap ℝ ℂ),
     localDivisorPolynomial_map, natDegree_prod_of_monic _ _ (fun q _ => monic_X_add_C _)]
-  simp only [natDegree_X_add_C, Finset.sum_const, nsmul_eq_mul, mul_one]
+  simp [natDegree_X_add_C]
 
 /-- The unnormalized head in horizontal displacement, retaining every central multiplicity. -/
 def horizontalDivisorPolynomial (t : ℝ) (S : Finset XiZeroCopy) : ℝ[X] :=
@@ -79,6 +79,7 @@ theorem localDivisorPolynomial_own_ordinate_root {S : Finset XiZeroCopy} {q : Xi
       ((xiSpectralPoint q).im : ℂ) * I := by
     apply Complex.ext <;> simp
   rw [hz, mul_pow, I_sq]
+  simp only [Complex.coe_algebraMap]
   push_cast
   ring
 

@@ -1,6 +1,14 @@
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.HermiteSonin
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.HermiteHeatRootBarrier
 
+/-!
+# Attainment of the sharp heat-root barrier
+
+Shifting an even Hermite polynomial by its outermost critical value gives a nonnegative
+extremizer with exactly two real roots. Its full heat cone starts at one half; positive
+dilation gives every Gaussian scale and the boundary equality classification.
+-/
+
 open Polynomial
 open GaloisForLFunctions.HTGeometry
 namespace GaloisForLFunctions.ArithmeticLocalDivisorGeometry
@@ -36,7 +44,7 @@ theorem hermiteExtremizer_monic (m : ℕ) : (hermiteExtremizer m).Monic := by
 
 theorem hermiteExtremizer_eval_neg (m : ℕ) (x : ℝ) :
     (hermiteExtremizer m).eval (-x) = (hermiteExtremizer m).eval x := by
-  have he : (-1 : ℝ) ^ (2 * m + 4) = 1 := by simp [pow_add, pow_mul]
+  have he : (-1 : ℝ) ^ (2 * m + 4) = 1 := by norm_num [pow_add, pow_mul]
   simp only [hermiteExtremizer, eval_sub, eval_C, eval_neg_hermiteReal, he, one_mul]
 
 /-- On the nonnegative axis the only zero is the outermost Hermite critical point. -/
@@ -186,7 +194,8 @@ theorem hermiteExtremizer_heat_middle_coeff (m : ℕ) {j : ℕ}
     (hj0 : 0 < j) (hj : j < 2 * m + 4) :
     (forwardPolyHeat (1 / 2) (hermiteExtremizer m)).coeff j = 0 := by
   rw [forwardPolyHeat_hermiteExtremizer]
-  simp [coeff_X_pow, show 2 * m + 4 ≠ j by omega, show j ≠ 0 by omega]
+  simp only [coeff_sub, coeff_X_pow, coeff_C,
+    if_neg (show j ≠ 2 * m + 4 by omega), if_neg (show j ≠ 0 by omega), sub_self]
 
 /-- The constant coefficient is positive at first contact, so contact has positive order. -/
 theorem hermiteExtremizer_heat_constant_pos (m : ℕ) :
@@ -194,7 +203,7 @@ theorem hermiteExtremizer_heat_constant_pos (m : ℕ) :
   have he : (forwardPolyHeat (1 / 2) (hermiteExtremizer m)).coeff 0 =
       -(hermiteReal (2 * m + 4)).eval (hermiteEdge (2 * m + 2)) := by
     rw [forwardPolyHeat_hermiteExtremizer]
-    simp [coeff_X_pow, show 2 * m + 4 ≠ 0 by omega]
+    simp [coeff_X_pow, coeff_C]
   rw [he]
   exact neg_pos.mpr (hermite_eval_succ_edge_neg (2 * m + 2))
 

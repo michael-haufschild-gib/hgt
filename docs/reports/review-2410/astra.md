@@ -877,6 +877,17 @@ For WD, the hard-obstacles report gives $\delta^2/[100(\log(2/\delta)+1)]$, whil
 
 ### 10.5 Status of the proposed fields
 
-“Signed Successor Arithmetic” already names corpus work, and arithmetic orientation theory and geometry are established programmes here. A worthwhile new field must therefore contribute a quantitative producer theorem, not merely rename their objects.
+“Signed Successor Arithmetic” already names corpus work, and arithmetic orientation theory
+and geometry are established programmes here. A worthwhile addition must supply proved
+estimates, decompositions or transport laws leading toward a quantitative producer theorem.
+Renaming existing objects does not suffice.
 
-The searches support the proposed targets, not a claim of worldwide novelty. This report supplies no unconditional arithmetic estimate closing a wall. Its two blueprints identify what such an estimate must preserve and what would count as progress: quantitative source rigidity on escaping defects in general; source certificates for exact local coefficients or uniform heat-collision budgets for WD.
+Arithmetic Defect Rigidity supplies foundations of that kind: forcing/receiver scale
+separation, paid power subtraction, absolute source trace and quantitative boundary costs.
+These constrain admissible escape constructions without excluding every escaping state.
+No unconditional estimate closing a wall is claimed here.
+
+The searches support the proposed targets, not worldwide novelty. The remaining general
+objective is quantitative source rigidity on escaping defects. For WD, the targets remain
+source certificates for exact local coefficients or uniform heat-collision budgets. The
+required sign, domain and transfer costs must be proved in either setting.

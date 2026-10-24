@@ -29,17 +29,17 @@ theorem heatCoefficientPolynomial_coeff (p : ℝ[X]) (j i : ℕ) :
   · rw [Finset.sum_eq_single i]
     · simp only [coeff_C_mul, coeff_X_pow, ite_true, mul_one]
     · intro k hk hki
-      simp only [coeff_C_mul, coeff_X_pow, if_neg hki, mul_zero]
+      simp only [coeff_C_mul, coeff_X_pow, if_neg hki.symm, mul_zero]
     · exact fun h => (h hi).elim
   · have hd : derivative^[2 * i] p = 0 := by
       apply iterate_derivative_eq_zero
-      have := Finset.not_mem_range.mp hi
+      have : ¬i < p.natDegree + 1 := by simpa only [Finset.mem_range] using hi
       omega
     rw [hd, coeff_zero, zero_div]
     apply Finset.sum_eq_zero
     intro k hk
     have hki : k ≠ i := by intro h; subst k; exact hi hk
-    simp only [coeff_C_mul, coeff_X_pow, if_neg hki, mul_zero]
+    simp only [coeff_C_mul, coeff_X_pow, if_neg hki.symm, mul_zero]
 
 /-- Evaluation in the heat variable is the exact finite derivative series coefficient. -/
 theorem heatCoefficientPolynomial_eval (p : ℝ[X]) (j : ℕ) (s : ℝ) :

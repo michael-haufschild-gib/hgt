@@ -1,6 +1,13 @@
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.HermiteRootEdge
 import Mathlib.Analysis.SpecificLimits.Basic
 
+/-!
+# The asymptotic Hermite edge
+
+A terminal block of the positive Hermite quotient recurrence gives a lower bound matching
+the power upper bound. The squared largest zero divided by degree tends to four.
+-/
+
 open Polynomial Filter Topology
 open GaloisForLFunctions.HTGeometry
 namespace GaloisForLFunctions.ArithmeticLocalDivisorGeometry
@@ -202,4 +209,3 @@ theorem tendsto_hermiteDerivativeEdge_sq_div_even_degree :
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
 
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.tendsto_even_hermiteEdge_sq_div_degree

@@ -1,11 +1,12 @@
 import GaloisForLFunctions.BezoutValuationIncidence.MinorArcSumsAtCompositeRootsOfUnity
 
 /-!
-# The dual norm at composite moduli below the diagonal
+# The dual norm at every modulus
 
 The receiver's small-scale rows live on squarefree moduli, so the cross-scale dual norm is needed
 at every modulus `d`, not only at primes. At a composite `d` the spectral law contains roots of
-unity of every order `k ∣ d`, and roots of small order are major arcs. They carry little weight.
+unity of every order `k ∣ d`; the roots of small order are the major arcs, and they carry little
+weight.
 
 * **Coprime reduction.** With `g = gcd(j, d)`, `Φ_d(jn) - (g² - 1)/12 = g² Φ_{d/g}((j/g) n)`
   (`residuePotential_mul_mul`), and `j/g` is coprime to `d/g`; so the `j`-th harmonic is
@@ -17,12 +18,17 @@ unity of every order `k ∣ d`, and roots of small order are major arcs. They ca
 * **Summing the harmonics** with `Σ_j gcd(j, d)²/j² ≤ 2d` gives the all-moduli law
   `|Λ_d(c')| ≤ R⁴ T d/8 + π² d² M/72 + π² d³ T₃/144` (`abs_kernelStatisticAll_le_of_orderSplit`).
 
-With `R = ⌊Q^{3δ/16}⌋`, `U = ⌊Q^{δ/16}⌋` and the composite minor-arc laws, both actual rows have a
-power saving at every modulus `Q^δ ≤ d ≤ Q^{1-δ}`
-(`abs_kernelStatisticAll_moebiusWindowRow_le_rpow`,
-`exists_abs_kernelStatisticAll_centredPrimeBlock_le_rpow`): the cross-scale form of the actual rows
-has a power saving below the diagonal for arbitrary bounded small-scale rows on all moduli
-(`abs_rowBilinear_moebiusWindowRow_sub_kernelMeanMain_le_rpow`).
+At the cutoff `R = ⌊z⁶⌋`, `U = ⌊z²⌋` with `z³² ≤ d`, `d z³² ≤ Q`, the composite minor-arc laws give
+`|Λ_d(c')| ≤ 11 (1 + log 2Q)⁴ (d²/Q)/z` for both actual rows `c' = μ𝟙_{(Q,2Q]}`, `(Λ - 1)𝟙_{(Q,2Q]}`.
+
+* **Below the diagonal** (`z = Q^{δ/32}`): a power saving at every modulus `Q^δ ≤ d ≤ Q^{1-δ}`
+  (`abs_kernelStatisticAll_moebius_and_centredPrime_le_rpow`), hence for the dual norm and for the
+  cross-scale form with arbitrary bounded small-scale rows on all moduli
+  (`crossScale_allModuli_moebius_and_centredPrime_le_rpow`).
+* **Every modulus** `Q^δ ≤ d ≤ 2Q`: with `K = e^{64c√(log Q)}` the archimedean law (linear in `K`)
+  covers `Q ≤ K d` and the minor-arc law at `z = K^{1/32}` covers `K d < Q`, so both rows have the
+  zero-free-region saving `C (d²/Q) e^{-c√(log Q)}` uniformly
+  (`exists_kernelStatisticAll_moebius_and_centredPrime_le_everyModulus`).
 -/
 
 open Finset Filter Topology ArithmeticFunction RHTower RHTower.Sieve
@@ -1042,14 +1048,111 @@ theorem pow_eight_le_exp {b s : ℝ} (hb : 0 < b) (hs : 0 ≤ s) :
     Real.exp (2 * b) * Real.exp (b * s) * 40320 / b ^ 8 by ring, le_div_iff₀ (by positivity)]
   linarith
 
+/-- `e^{64bs} e^{-c's} ≤ e^{-bs}` for `0 ≤ b`, `128 b ≤ c'`, `s ≥ 0`. -/
+theorem exp_mul_exp_neg_le {b c' s : ℝ} (hb : 0 ≤ b) (hc : 128 * b ≤ c') (hs : 0 ≤ s) :
+    Real.exp (64 * b * s) * Real.exp (-(c' * s)) ≤ Real.exp (-(b * s)) := by
+  rw [← Real.exp_add, Real.exp_le_exp]
+  have h1 := mul_le_mul_of_nonneg_right hc hs
+  have h2 := mul_nonneg hb hs
+  linarith
+
+/-- `e^{64b√(log Q)} ≤ Q^δ` once `Q ≥ e^{(64b/δ)²}`. -/
+theorem exp_cutoff_le_rpow {b δ : ℝ} (hδ : 0 < δ) {Q : ℝ} (hQ : 1 ≤ Q)
+    (hQe : Real.exp ((64 * b / δ) ^ 2) ≤ Q) :
+    Real.exp (64 * b * Real.sqrt (Real.log Q)) ≤ Q ^ δ := by
+  have hq0 : 0 < Q := by linarith
+  have h1 : (64 * b / δ) ^ 2 ≤ Real.log Q := by
+    rw [← Real.log_exp ((64 * b / δ) ^ 2)]; exact Real.log_le_log (Real.exp_pos _) hQe
+  have h2 : 64 * b / δ ≤ Real.sqrt (Real.log Q) := (le_abs_self _).trans (Real.abs_le_sqrt h1)
+  set s := Real.sqrt (Real.log Q) with hsdef
+  have hs0 : 0 ≤ s := Real.sqrt_nonneg _
+  have hlogQ : Real.log Q = s ^ 2 := (Real.sq_sqrt (Real.log_nonneg hQ)).symm
+  rw [div_le_iff₀ hδ] at h2
+  rw [Real.rpow_def_of_pos hq0, Real.exp_le_exp, hlogQ]
+  have := mul_le_mul_of_nonneg_right h2 hs0
+  nlinarith
+
+/-- `(1 + log 2Q)⁴ e^{-2bs} ≤ (8!/b⁸) e^{2b} e^{-bs}` with `s = √(log Q)`, `Q ≥ 1`. -/
+theorem logPow_mul_exp_neg_le {b : ℝ} (hb : 0 < b) {Q : ℝ} (hQ : 1 ≤ Q) :
+    (1 + Real.log (2 * Q)) ^ 4 * Real.exp (-(2 * b * Real.sqrt (Real.log Q))) ≤
+      40320 / b ^ 8 * Real.exp (2 * b) * Real.exp (-(b * Real.sqrt (Real.log Q))) := by
+  have hq0 : 0 < Q := by linarith
+  have hL0 : 0 ≤ 1 + Real.log (2 * Q) := by
+    have := Real.log_nonneg (by linarith : (1 : ℝ) ≤ 2 * Q); linarith
+  set s := Real.sqrt (Real.log Q) with hsdef
+  have hs0 : 0 ≤ s := Real.sqrt_nonneg _
+  have hlogQ : Real.log Q = s ^ 2 := (Real.sq_sqrt (Real.log_nonneg hQ)).symm
+  have hL : 1 + Real.log (2 * Q) ≤ (2 + s) ^ 2 := by
+    rw [Real.log_mul (by norm_num) hq0.ne', hlogQ]
+    have := Real.log_two_lt_d9
+    nlinarith
+  have hL4 : (1 + Real.log (2 * Q)) ^ 4 ≤ 40320 / b ^ 8 * Real.exp (2 * b) * Real.exp (b * s) :=
+    calc (1 + Real.log (2 * Q)) ^ 4 ≤ ((2 + s) ^ 2) ^ 4 := pow_le_pow_left₀ hL0 hL 4
+      _ = (2 + s) ^ 8 := by ring
+      _ ≤ _ := pow_eight_le_exp hb hs0
+  have he : Real.exp (b * s) * Real.exp (-(2 * b * s)) = Real.exp (-(b * s)) := by
+    rw [← Real.exp_add]; congr 1; ring
+  calc (1 + Real.log (2 * Q)) ^ 4 * Real.exp (-(2 * b * s))
+      ≤ 40320 / b ^ 8 * Real.exp (2 * b) * Real.exp (b * s) * Real.exp (-(2 * b * s)) :=
+        mul_le_mul_of_nonneg_right hL4 (Real.exp_pos _).le
+    _ = 40320 / b ^ 8 * Real.exp (2 * b) * Real.exp (-(b * s)) := by rw [mul_assoc, he]
+
+/-- **The minor-arc branch.** For `Q ≥ 2`, `b > 0` and a modulus with `K ≤ d`, `K d ≤ Q`,
+`K = e^{64b√(log Q)}`, both actual rows have `|Λ_d(c')| ≤ 11 (8!/b⁸) e^{2b} (d²/Q) e^{-b√(log Q)}`:
+the minor-arc law at the cutoff `z = K^{1/32}`. -/
+theorem abs_kernelStatisticAll_le_exp_cutoff {Q d N : ℕ} (hQ : 2 ≤ Q) {b : ℝ} (hb : 0 < b)
+    (hKd : Real.exp (64 * b * Real.sqrt (Real.log Q)) ≤ d)
+    (hdK : (d : ℝ) * Real.exp (64 * b * Real.sqrt (Real.log Q)) ≤ Q) (hQN : 2 * Q ≤ N) :
+    |kernelStatisticAll N (moebiusWindowRow Q) d| ≤
+        11 * (40320 / b ^ 8 * Real.exp (2 * b)) * ((d : ℝ) ^ 2 / Q) *
+          Real.exp (-(b * Real.sqrt (Real.log Q))) ∧
+      |kernelStatisticAll N (centredPrimeBlock Q) d| ≤
+        11 * (40320 / b ^ 8 * Real.exp (2 * b)) * ((d : ℝ) ^ 2 / Q) *
+          Real.exp (-(b * Real.sqrt (Real.log Q))) := by
+  have hq1 : (1 : ℝ) ≤ Q := by exact_mod_cast (by omega : 1 ≤ Q)
+  have hB := logPow_mul_exp_neg_le hb hq1
+  have hL1 : 1 ≤ 1 + Real.log (2 * (Q : ℝ)) := by
+    have := Real.log_nonneg (by linarith : (1 : ℝ) ≤ 2 * Q); linarith
+  have hs0 : 0 ≤ Real.sqrt (Real.log Q) := Real.sqrt_nonneg _
+  have hz1 : 1 ≤ Real.exp (2 * b * Real.sqrt (Real.log Q)) := Real.one_le_exp (by positivity)
+  have hz0 : 0 < Real.exp (2 * b * Real.sqrt (Real.log Q)) := Real.exp_pos _
+  have hz32 : Real.exp (2 * b * Real.sqrt (Real.log Q)) ^ 32 =
+      Real.exp (64 * b * Real.sqrt (Real.log Q)) := by
+    rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
+  have hzd : Real.exp (2 * b * Real.sqrt (Real.log Q)) ^ 32 ≤ d := by rw [hz32]; exact hKd
+  have hdz : (d : ℝ) * Real.exp (2 * b * Real.sqrt (Real.log Q)) ^ 32 ≤ Q := by
+    rw [hz32]; exact hdK
+  have hD : 0 ≤ (d : ℝ) ^ 2 / Q := by positivity
+  have hfin : 11 * (1 + Real.log (2 * (Q : ℝ))) ^ 4 *
+      ((d : ℝ) ^ 2 / Q / Real.exp (2 * b * Real.sqrt (Real.log Q))) ≤
+      11 * (40320 / b ^ 8 * Real.exp (2 * b)) * ((d : ℝ) ^ 2 / Q) *
+        Real.exp (-(b * Real.sqrt (Real.log Q))) := by
+    calc 11 * (1 + Real.log (2 * (Q : ℝ))) ^ 4 *
+          ((d : ℝ) ^ 2 / Q / Real.exp (2 * b * Real.sqrt (Real.log Q)))
+        = 11 * ((d : ℝ) ^ 2 / Q) * ((1 + Real.log (2 * (Q : ℝ))) ^ 4 *
+            Real.exp (-(2 * b * Real.sqrt (Real.log Q)))) := by
+          rw [Real.exp_neg]; ring
+      _ ≤ 11 * ((d : ℝ) ^ 2 / Q) * (40320 / b ^ 8 * Real.exp (2 * b) *
+            Real.exp (-(b * Real.sqrt (Real.log Q)))) :=
+          mul_le_mul_of_nonneg_left hB (by positivity)
+      _ = _ := by ring
+  have hL34 : (1 + Real.log (2 * (Q : ℝ))) ^ 3 ≤ (1 + Real.log (2 * (Q : ℝ))) ^ 4 :=
+    pow_le_pow_right₀ hL1 (by norm_num)
+  constructor
+  · refine (abs_kernelStatisticAll_moebiusWindowRow_le_cutoff hQ hz1 hzd hdz hQN).trans
+      (le_trans ?_ hfin)
+    exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hL34 (by norm_num))
+      (div_nonneg hD hz0.le)
+  · exact (abs_kernelStatisticAll_centredPrimeBlock_le_cutoff hQ hz1 hzd hdz hQN).trans hfin
+
 /-- **The zero-free-region saving at every modulus.** For every `δ > 0` there are `c > 0`, `C ≥ 0`
 and `Q₀` such that for `Q ≥ Q₀`, every modulus `Q^δ ≤ d ≤ 2Q` (prime or composite) and every
 `N ≥ 2Q`, both actual rows `μ𝟙_{(Q,2Q]}` and `(Λ - 1)𝟙_{(Q,2Q]}` have
 `|Λ_d(c')| ≤ C (d²/Q) e^{-c√(log Q)}`.
 
-With `K = e^{a√(log Q)/2}`: where `Q ≤ K d` the archimedean law (linear in `K`) applies; where
-`K d < Q` the minor-arc law applies at the cutoff `z = K^{1/32}`, which is admissible because
-`K ≤ Q^δ` for large `Q`. The two regimes overlap, so no modulus is left between them. -/
+With `K = e^{64c√(log Q)}`: where `Q ≤ K d` the archimedean law, linear in `K`, applies; where
+`K d < Q` the minor-arc law applies at the cutoff `z = K^{1/32}`, admissible since `K ≤ Q^δ` for
+large `Q`. The two regimes cover every modulus. -/
 theorem exists_kernelStatisticAll_moebius_and_centredPrime_le_everyModulus {δ : ℝ} (hδ : 0 < δ) :
     ∃ c : ℝ, 0 < c ∧ ∃ C : ℝ, 0 ≤ C ∧ ∃ Q₀ : ℕ, ∀ Q, Q₀ ≤ Q → ∀ d : ℕ, (Q : ℝ) ^ δ ≤ d →
       d ≤ 2 * Q → ∀ N, 2 * Q ≤ N →
@@ -1059,109 +1162,57 @@ theorem exists_kernelStatisticAll_moebius_and_centredPrime_le_everyModulus {δ :
             C * ((d : ℝ) ^ 2 / Q) * Real.exp (-(c * Real.sqrt (Real.log Q))) := by
   obtain ⟨C₁, hC₁, Q₁, h₁⟩ := exists_balanced_kernelStatisticAll_moebiusWindowRow_le
   obtain ⟨c₂, hc₂, C₂, hC₂, Q₂, h₂⟩ := exists_balanced_kernelStatisticAll_centredPrimeBlock_le
-  obtain ⟨a, hadef⟩ : ∃ a : ℝ, a = min (1 / 24) (c₂ / 2) := ⟨_, rfl⟩
-  have ha : 0 < a := by rw [hadef]; exact lt_min (by norm_num) (by positivity)
-  have ha1 : a ≤ 1 / 24 := by rw [hadef]; exact min_le_left _ _
-  have ha2 : a ≤ c₂ / 2 := by rw [hadef]; exact min_le_right _ _
-  obtain ⟨b, hbdef⟩ : ∃ b : ℝ, b = a / 128 := ⟨_, rfl⟩
-  have hb : 0 < b := by rw [hbdef]; positivity
+  obtain ⟨b, hbdef⟩ : ∃ b : ℝ, b = min (1 / 24) (c₂ / 2) / 128 := ⟨_, rfl⟩
+  have hb : 0 < b := by rw [hbdef]; exact div_pos (lt_min (by norm_num) (by positivity)) (by norm_num)
+  have hb1 : 128 * b ≤ 1 / 24 := by rw [hbdef]; linarith [min_le_left (1 / 24 : ℝ) (c₂ / 2)]
+  have hb2 : 128 * b ≤ c₂ / 2 := by rw [hbdef]; linarith [min_le_right (1 / 24 : ℝ) (c₂ / 2)]
   obtain ⟨CM, hCMdef⟩ : ∃ CM : ℝ, CM = 11 * (40320 / b ^ 8 * Real.exp (2 * b)) := ⟨_, rfl⟩
   have hCM : 0 ≤ CM := by rw [hCMdef]; positivity
-  have hC₁' : 0 ≤ max C₁ C₂ := le_max_of_le_left hC₁
-  refine ⟨b, hb, max (max C₁ C₂) CM, le_max_of_le_right hCM,
-    max (max Q₁ Q₂) (max 2 ⌈Real.exp ((a / (2 * δ)) ^ 2)⌉₊), fun Q hQ d hdl hd2 N hQN => ?_⟩
+  have hCM' : CM ≤ max (max C₁ C₂) CM := le_max_right _ _
+  refine ⟨b, hb, max (max C₁ C₂) CM, hCM.trans hCM',
+    max (max Q₁ Q₂) (max 2 ⌈Real.exp ((64 * b / δ) ^ 2)⌉₊), fun Q hQ d hdl hd2 N hQN => ?_⟩
   have hQ12 : max Q₁ Q₂ ≤ Q := le_of_max_le_left hQ
-  have hQ3 : max 2 ⌈Real.exp ((a / (2 * δ)) ^ 2)⌉₊ ≤ Q := le_of_max_le_right hQ
+  have hQ3 : max 2 ⌈Real.exp ((64 * b / δ) ^ 2)⌉₊ ≤ Q := le_of_max_le_right hQ
   have hQ2' : 2 ≤ Q := le_of_max_le_left hQ3
-  have hQe : Real.exp ((a / (2 * δ)) ^ 2) ≤ Q :=
+  have hq1 : (1 : ℝ) ≤ Q := by exact_mod_cast (by omega : 1 ≤ Q)
+  have hQe : Real.exp ((64 * b / δ) ^ 2) ≤ Q :=
     (Nat.le_ceil _).trans (by exact_mod_cast le_of_max_le_right hQ3)
-  have hq2 : (2 : ℝ) ≤ Q := by exact_mod_cast hQ2'
-  have hq0 : (0 : ℝ) < Q := by linarith
-  have hq1 : (1 : ℝ) ≤ Q := by linarith
-  set s := Real.sqrt (Real.log Q) with hsdef
-  have hs0 : 0 ≤ s := Real.sqrt_nonneg _
-  have hlogQ : Real.log Q = s ^ 2 := (Real.sq_sqrt (Real.log_nonneg hq1)).symm
-  -- for large `Q`, `δ s ≥ a/2`
-  have hsδ : a / 2 ≤ δ * s := by
-    have h1 : (a / (2 * δ)) ^ 2 ≤ Real.log Q := by
-      rw [← Real.log_exp ((a / (2 * δ)) ^ 2)]; exact Real.log_le_log (Real.exp_pos _) hQe
-    have h2 : a / (2 * δ) ≤ s := (le_abs_self _).trans (Real.abs_le_sqrt h1)
-    rw [div_le_iff₀ (by positivity)] at h2
-    linarith
+  have hKQ := exp_cutoff_le_rpow hδ hq1 hQe
+  have hs0 : 0 ≤ Real.sqrt (Real.log Q) := Real.sqrt_nonneg _
+  have hK1 : 1 ≤ Real.exp (64 * b * Real.sqrt (Real.log Q)) := Real.one_le_exp (by positivity)
   have hD : 0 ≤ (d : ℝ) ^ 2 / Q := by positivity
-  have hdR1 : (1 : ℝ) ≤ d := (Real.one_le_rpow hq1 hδ.le).trans hdl
-  have hd1 : 1 ≤ d := by exact_mod_cast hdR1
-  have hd2R : (d : ℝ) ≤ 2 * Q := by exact_mod_cast hd2
-  have hE0 : 0 ≤ Real.exp (-(b * s)) := (Real.exp_pos _).le
-  have hCmax : ∀ x, x ≤ max (max C₁ C₂) CM * ((d : ℝ) ^ 2 / Q) * Real.exp (-(b * s)) →
-      x ≤ max (max C₁ C₂) CM * ((d : ℝ) ^ 2 / Q) * Real.exp (-(b * s)) := fun _ h => h
-  set K := Real.exp (a / 2 * s) with hKdef
-  have hK1 : 1 ≤ K := Real.one_le_exp (by positivity)
-  by_cases hQd : (Q : ℝ) ≤ K * d
-  · -- near the diagonal: the archimedean law with `K = e^{as/2}`
-    have hab : a / 2 * s + a / 128 * s ≤ a * s := by nlinarith
-    have hKe1 : K * Real.exp (-(s / 24)) ≤ Real.exp (-(b * s)) := by
-      rw [hKdef, ← Real.exp_add, Real.exp_le_exp, hbdef]
-      nlinarith [mul_le_mul_of_nonneg_right ha1 hs0]
-    have hKe2 : K * Real.exp (-(c₂ / 2 * s)) ≤ Real.exp (-(b * s)) := by
-      rw [hKdef, ← Real.exp_add, Real.exp_le_exp, hbdef]
-      nlinarith [mul_le_mul_of_nonneg_right ha2 hs0]
+  have hd1 : 1 ≤ d := by
+    have : (1 : ℝ) ≤ d := (Real.one_le_rpow hq1 hδ.le).trans hdl
+    exact_mod_cast this
+  have hE : 0 ≤ Real.exp (-(b * Real.sqrt (Real.log Q))) := (Real.exp_pos _).le
+  by_cases hQd : (Q : ℝ) ≤ Real.exp (64 * b * Real.sqrt (Real.log Q)) * d
+  · -- near the diagonal: the archimedean law with `K = e^{64bs}`
     have hfin : ∀ C' e : ℝ, 0 ≤ C' → C' ≤ max (max C₁ C₂) CM → 0 ≤ e →
-        K * e ≤ Real.exp (-(b * s)) →
-        C' * K * ((d : ℝ) ^ 2 / Q) * e ≤
-          max (max C₁ C₂) CM * ((d : ℝ) ^ 2 / Q) * Real.exp (-(b * s)) := by
+        Real.exp (64 * b * Real.sqrt (Real.log Q)) * e ≤ Real.exp (-(b * Real.sqrt (Real.log Q))) →
+        C' * Real.exp (64 * b * Real.sqrt (Real.log Q)) * ((d : ℝ) ^ 2 / Q) * e ≤
+          max (max C₁ C₂) CM * ((d : ℝ) ^ 2 / Q) * Real.exp (-(b * Real.sqrt (Real.log Q))) := by
       intro C' e hC' hCle he hKe
-      calc C' * K * ((d : ℝ) ^ 2 / Q) * e = C' * ((d : ℝ) ^ 2 / Q) * (K * e) := by ring
-        _ ≤ max (max C₁ C₂) CM * ((d : ℝ) ^ 2 / Q) * Real.exp (-(b * s)) :=
-          mul_le_mul (mul_le_mul_of_nonneg_right hCle hD) hKe
-            (mul_nonneg (by linarith) he) (mul_nonneg (le_max_of_le_right hCM) hD)
+      calc C' * Real.exp (64 * b * Real.sqrt (Real.log Q)) * ((d : ℝ) ^ 2 / Q) * e =
+            C' * ((d : ℝ) ^ 2 / Q) * (Real.exp (64 * b * Real.sqrt (Real.log Q)) * e) := by ring
+        _ ≤ _ := mul_le_mul (mul_le_mul_of_nonneg_right hCle hD) hKe
+            (mul_nonneg (by linarith) he) (mul_nonneg (hCM.trans hCM') hD)
+    have hKe1 : Real.exp (64 * b * Real.sqrt (Real.log Q)) *
+        Real.exp (-(Real.sqrt (Real.log Q) / 24)) ≤ Real.exp (-(b * Real.sqrt (Real.log Q))) := by
+      have h := exp_mul_exp_neg_le hb.le hb1 hs0
+      rwa [show -(1 / 24 * Real.sqrt (Real.log Q)) = -(Real.sqrt (Real.log Q) / 24) by ring] at h
     constructor
-    · exact (h₁ K hK1 Q (le_of_max_le_left hQ12) d hd1 hQd hd2 N hQN).trans
+    · exact (h₁ _ hK1 Q (le_of_max_le_left hQ12) d hd1 hQd hd2 N hQN).trans
         (hfin C₁ _ hC₁ ((le_max_left _ _).trans (le_max_left _ _)) (Real.exp_pos _).le hKe1)
-    · exact (h₂ K hK1 Q (le_of_max_le_right hQ12) d hd1 hQd hd2 N hQN).trans
-        (hfin C₂ _ hC₂ ((le_max_right _ _).trans (le_max_left _ _)) (Real.exp_pos _).le hKe2)
-  · -- below the diagonal: the minor-arc law at the cutoff `z = K^{1/32} = e^{as/64}`
+    · exact (h₂ _ hK1 Q (le_of_max_le_right hQ12) d hd1 hQd hd2 N hQN).trans
+        (hfin C₂ _ hC₂ ((le_max_right _ _).trans (le_max_left _ _)) (Real.exp_pos _).le
+          (exp_mul_exp_neg_le hb.le hb2 hs0))
+  · -- below the diagonal: the minor-arc law at the cutoff `z = K^{1/32}`
     push Not at hQd
-    set z := Real.exp (a / 64 * s) with hzdef
-    have hz1 : 1 ≤ z := Real.one_le_exp (by positivity)
-    have hz32 : z ^ 32 = K := by
-      rw [hzdef, hKdef, ← Real.exp_nat_mul]; congr 1; push_cast; ring
-    have hKQ : K ≤ (Q : ℝ) ^ δ := by
-      rw [Real.rpow_def_of_pos hq0, hlogQ, hKdef, Real.exp_le_exp]
-      nlinarith [mul_le_mul_of_nonneg_right hsδ hs0]
-    have hzd : z ^ 32 ≤ d := by rw [hz32]; exact hKQ.trans hdl
-    have hdz : (d : ℝ) * z ^ 32 ≤ Q := by rw [hz32]; linarith
-    -- `11 L⁴/z ≤ CM e^{-bs}`
-    set L := 1 + Real.log (2 * (Q : ℝ)) with hLdef
-    have hL1 : 1 ≤ L := by
-      have := Real.log_nonneg (by linarith : (1 : ℝ) ≤ 2 * Q); rw [hLdef]; linarith
-    have hL : L ≤ (2 + s) ^ 2 := by
-      rw [hLdef, Real.log_mul (by norm_num) hq0.ne', hlogQ]
-      have := Real.log_two_lt_d9
-      nlinarith
-    have hL4 : L ^ 4 ≤ 40320 / b ^ 8 * Real.exp (2 * b) * Real.exp (b * s) := by
-      calc L ^ 4 ≤ ((2 + s) ^ 2) ^ 4 := pow_le_pow_left₀ (by linarith) hL 4
-        _ = (2 + s) ^ 8 := by ring
-        _ ≤ _ := pow_eight_le_exp hb hs0
-    have hzE : Real.exp (b * s) / z = Real.exp (-(b * s)) := by
-      rw [hzdef, div_eq_mul_inv, ← Real.exp_neg, ← Real.exp_add, hbdef]; congr 1; ring
-    have hz0 : 0 < z := by linarith
-    have hfin : 11 * L ^ 4 * ((d : ℝ) ^ 2 / Q / z) ≤
-        max (max C₁ C₂) CM * ((d : ℝ) ^ 2 / Q) * Real.exp (-(b * s)) := by
-      calc 11 * L ^ 4 * ((d : ℝ) ^ 2 / Q / z)
-          ≤ 11 * (40320 / b ^ 8 * Real.exp (2 * b) * Real.exp (b * s)) * ((d : ℝ) ^ 2 / Q / z) :=
-            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hL4 (by norm_num))
-              (div_nonneg hD hz0.le)
-        _ = CM * ((d : ℝ) ^ 2 / Q) * (Real.exp (b * s) / z) := by rw [hCMdef]; ring
-        _ = CM * ((d : ℝ) ^ 2 / Q) * Real.exp (-(b * s)) := by rw [hzE]
-        _ ≤ _ := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_max_right _ _) hD) hE0
-    have hL34 : L ^ 3 ≤ L ^ 4 := pow_le_pow_right₀ hL1 (by norm_num)
-    constructor
-    · refine (abs_kernelStatisticAll_moebiusWindowRow_le_cutoff hQ2' hz1 hzd hdz hQN).trans
-        (le_trans ?_ hfin)
-      exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hL34 (by norm_num))
-        (div_nonneg hD hz0.le)
-    · exact (abs_kernelStatisticAll_centredPrimeBlock_le_cutoff hQ2' hz1 hzd hdz hQN).trans hfin
+    obtain ⟨h1, h2⟩ := abs_kernelStatisticAll_le_exp_cutoff hQ2' hb (hKQ.trans hdl)
+      (by linarith) hQN
+    rw [← hCMdef] at h1 h2
+    exact ⟨h1.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hCM' hD) hE),
+      h2.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hCM' hD) hE)⟩
 
 end
 
