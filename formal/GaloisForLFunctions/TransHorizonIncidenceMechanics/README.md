@@ -1,33 +1,22 @@
 # Trans-Horizon Incidence Mechanics
 
-A divisor sieve of horizon $N$ reads an integer $k$ only through the divisors
-$d\le N$ that are incident to it. Trans-Horizon Incidence Mechanics asks what
-such a finite observer can see, say, and pay when it is read far beyond its own
-horizon, $k\gg N$, and how those finite arithmetic observations transfer to the
-continuous energies that the Riemann Hypothesis is equivalent to: the signed
-sieve energies of the Bézout–valuation theory, the reciprocal-cell traces of the
-Fermi–Nyman approximation, and the odd-sector prime-chain energies of the
-arithmetic Markov operator. "Incidence" is the relation $d\mid k$ at $d\le N$;
-"mechanics" means exact conservation and dissipation laws for quadratic energies
-under the step $k\mapsto k+1$, the horizon step $N\mapsto N+1$, and the prime
-dilation $k\mapsto pk$; "trans-horizon" means that the omitted divisors, composite
-as well as prime, are the whole story.
+A divisor sieve of horizon $N$ reads $k$ through divisors $d\le N$. Trans-Horizon Incidence
+Mechanics asks what this finite observer can recover and bound far beyond its horizon, $k\gg N$,
+and how its observations transfer to RH-equivalent energies: signed Bézout–valuation sieve
+energies, Fermi–Nyman reciprocal-cell traces and odd-sector arithmetic Markov prime chains.
+“Incidence” is $d\mid k$; “mechanics” means conservation and dissipation under succession
+$k\mapsto k+1$, horizon growth $N\mapsto N+1$ and prime dilation $k\mapsto pk$.
+“Trans-horizon” concerns omitted divisors, composite as well as prime.
 
 ---
 
 ## Place in the research
 
-THIM is the **finite-observer theory of signed arithmetic receivers**. A divisor row can be
-recovered exactly from its observations while its energy remains uncontrolled. Conversely, a
-row can satisfy every complete-period variance estimate and still fail the pronic receiver.
-The programme separates identifiability, conditioning, dissipation and actual payment of that
-receiver; these are different mathematical demands.
-
-Its organizing object is the centred prefix
-`A_c(n) = Σ_{j≤n}((c*1)(j) − Σ_d c(d)/d)` and its energy
-`Σ_{n≤T} A_c(n)²/(n(n+1))`. The pronic weight remembers small arguments even while the
-coefficient horizon grows. This is why full-period diagonalization cannot replace a bound
-uniform in `T`, and why the order of the horizon and damping limits matters.
+THIM is the **finite-observer theory of signed arithmetic receivers**. Exact recovery, good
+conditioning and period variance bounds do not imply payment of the centred-prefix energy
+`Σ_{n≤T} A_c(n)²/(n(n+1))`, where `A_c(n) = Σ_{j≤n}((c*1)(j) − Σ_d c(d)/d)`.
+Pronic weights retain small arguments as the coefficient horizon grows; full-period
+diagonalization cannot replace uniformity in `T` or justify exchanging horizon and damping limits.
 
 | Neighbour | Interface |
 |---|---|
@@ -45,32 +34,19 @@ uniform in `T`, and why the order of the horizon and damping limits matters.
 | [Arithmetic Defect Rigidity](../ArithmeticDefectRigidity/README.md) | Reads the same pronic receiver through cofactor energy and its signed forcing pairing, and studies what an unbounded normalized receiver can escape from. |
 | [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Meets the sieve parity barrier at close prime pairs beyond the Montgomery–Vaughan threshold, where upper-bound sieves lose the signed correlation by a factor two. |
 
-The basic mechanisms are complementary-divisor normal forms, Dirichlet polarization with its
-boundary squares retained, Ramanujan diagonalization, exact Fermi trace inversion, and Mellin
-continuation. Their sharp boundaries are foundational: sign-blind payment stops above half
-damping; signed horizon-limit commutation starts at half damping; below it, cancellation can
-pay an infinite source while its truncated rows remain unbounded.
+Complementary-divisor normal forms, boundary-retaining polarization, Ramanujan diagonalization,
+Fermi inversion and Mellin continuation expose two distinct thresholds: sign-blind payment
+requires damping above $1/2$; signed horizon-limit commutation includes $1/2$.
+Below it, an infinite source can be paid while its truncated rows remain unbounded.
 
-**The shared target.** The programmes in the table work on RH as the sign of one critical
-arithmetic form and on the critical cancellation of the actual Möbius and prime source that the
-sign needs. THIM contributes the receiver-side half of that problem: an exact account of what a
-bound on the actual Möbius receiver below half damping must read, and of every cheaper reading that
-provably cannot supply it.
+Start with the receivers (§1.2), then objects (§2), finite laws (§§3.1–3.8), recovery (§§3.9–3.11),
+signs and continuation (§§3.16–3.17), phase diagrams and probes (§§3.18–3.19), and the actual signed
+source (§§3.20–3.21). Pillars (§4) guide the research questions (§§6–7).
 
-Read the receivers in §1.2 before the many finite identities. Sections 2 and 3.1–3.8 explain
-what the observer measures; §§3.9–3.11 explain recovery and its price; §§3.16–3.17 explain
-why signs and the analytic continuation of the actual source decide the receiver; §§3.18–3.19
-show what the receiver reads in multiplicative sign patterns and on probes of $\zeta$; §3.20 lists
-what is proved for the actual source, and §3.21 isolates the signed part of its energy and sorts the
-theory's laws by what they can see. §4 collects the pillar theorems, §§6–7 the questions and open
-problems.
-
-Three routes of the RH frontier use THIM directly. The physical-model route PM takes the cofactor
-row, its mean preservation and growing-cutoff transfer, and the Fermi trace laws; the Möbius
-cancellation route MC takes the oscillating-probe theorems as an alternate receiver (every
-oscillating smooth-power probe below half damping is unpaid iff RH) and their source-side
-anti-alignment form; and Bézout–Valuation Incidence, which feeds PM, MC and CTF, shares the sieve
-objects and owns the Vaughan pronic calibration.
+The PM route uses cofactor mean preservation, growing-cutoff transfer and Fermi traces; MC uses
+oscillating probes and their anti-alignment criterion (all oscillating smooth-power probes below half damping
+are unpaid iff RH). BVI shares the sieve objects, owns the Vaughan pronic calibration and feeds
+PM, MC and CTF.
 
 ---
 
@@ -78,18 +54,12 @@ objects and owns the Vaughan pronic calibration.
 
 ### 1.1 The horizon barrier
 
-The Bézout–valuation theory controls the renormalized prefix defect of a sieve
-weight below its horizon: for $M+1\le N$ the defect is nonpositive, because
-below the horizon the truncated divisor sum is the complete divisor sum. Every
-receiver that would deliver RH lives above the horizon. There the truncated sum
-omits divisors, and a highly composite endpoint $M+1$ can carry a response
-$\lvert s_{N,c}(M+1)\rvert$ larger than the initial response
-$\lvert s_{N,c}(1)\rvert$, so the boundary term of the Dirichlet polarization
-changes sign. Exact transfer identities between the finite and continuous
-pictures exist in abundance; none of them pays the bound. The theory was built
-to find out exactly where the finite observer loses control, to prove the laws
-that still hold above the horizon, and to classify the failures sharply enough
-that their positive survivors become the next tools.
+Bézout–valuation controls the renormalized defect below the horizon: for $M+1\le N$ it is
+nonpositive because the truncated divisor sum is complete. RH receivers also require control
+above the horizon. Omitted divisors at a highly composite endpoint can make
+$\lvert s_{N,c}(M+1)\rvert>\lvert s_{N,c}(1)\rvert$, reversing the boundary term's sign in
+Dirichlet polarization. Transfer identities alone do not pay that term. The programme locates
+these failures and extracts the conservation laws, sharp boundaries and classifications that survive.
 
 ### 1.2 The three receivers
 
@@ -125,22 +95,15 @@ bounded norms plus local convergence on compact intervals give weak convergence
 and hence RH, but a tail bound alone identifies neither the weak limit nor the
 bulk.
 
-Each receiver demands a horizon-uniform estimate on a literal arithmetic
-source. The theory supplies the finite identities, the exact classifications,
-and the sharp obstructions on the way; it does not supply any of the three
-estimates.
+Each receiver needs a horizon-uniform estimate on a literal arithmetic source.
+The finite identities, classifications and obstructions below do not supply these estimates.
 
 ### 1.3 Why finite observers
 
-Three finite observation layers read the same sieve weight: the truncated
-divisor sum itself, the reciprocal-cell jumps of the Fermi trace, and the
-valuation clocks of translation. Each has an exact inversion theorem and an
-exact conditioning constant, and each loses control in a different, sharply
-located way. The theory treats these losses as theorems, not accidents: a unit
-envelope that holds exactly up to ratio five, a trace conditioning that grows
-exactly like $(4/\pi^2)(\log_2N)^2$, a successor dynamics that is deterministic
-exactly up to horizon two. Those boundaries are the arithmetic content of the
-horizon barrier.
+Divisor sums, Fermi reciprocal-cell jumps and translation clocks observe the same weight with
+different inversion and conditioning laws. Their sharp limits explain the horizon barrier:
+the unit envelope ends at ratio five, trace conditioning grows as $(4/\pi^2)(\log_2N)^2$,
+and deterministic successor dynamics ends at horizon two.
 
 ---
 
@@ -153,25 +116,19 @@ $$
 s_{N,c}(k)=\sum_{\substack{d\mid k\\1\le d\le N}}c(d),\qquad
 Y_{N,c}(e)=\sum_{\substack{1\le d\le N\\e\mid d}}\frac{c(d)}d .
 $$
-The **observation state** $\sigma_N(k)=\operatorname{lcm}\{d\le N:d\mid k\}=\gcd(k,L_N)$
-with $L_N=\operatorname{lcm}(1,\dots,N)$ is a complete invariant: two integers
-have the same response for every weight iff they have the same state. For
-squarefree-supported weights the **radical state** $\gcd(k,N\#)$ with the
-primorial $N\#$ suffices, and the **radical ratio** of $k$ is its radical state
-divided by $N+1$. The **observation phase** is $k\bmod L_N$. An integer $r$ is
-**$N$-rough** when its only divisor $\le N$ is $1$; every prime $p>N$ is
-$N$-rough, and $N$-rough integers form a multiplicative monoid. A prime
-$p\in(N,2N)$ together with its neighbour divisible by four is a **rough-prime
-boundary**.
+The **observation state** $\sigma_N(k)=\operatorname{lcm}\{d\le N:d\mid k\}=\gcd(k,L_N)$,
+$L_N=\operatorname{lcm}(1,\dots,N)$, determines the response for every weight, and conversely.
+Squarefree-supported weights need only the **radical state** $\gcd(k,N\#)$, with primorial $N\#$;
+dividing it by $N+1$ gives the **radical ratio**. The **observation phase** is $k\bmod L_N$.
+An **$N$-rough** integer has no divisor $\le N$ except $1$; these form a monoid containing every
+prime $p>N$. A prime $p\in(N,2N)$ and its four-divisible neighbour form a **rough-prime boundary**.
 
-The weights in use are the literal Möbius weight $\mu$, the damped weights
-$c_\varepsilon(d)=\mu(d)d^{-\varepsilon}$ with complete divisor sum the **damped
-divisor function**
+Weights include $\mu$ and $c_\varepsilon(d)=\mu(d)d^{-\varepsilon}$, whose complete divisor sum is
+the **damped divisor function**
 $\tau_\varepsilon(n)=\sum_{d\mid n}c_\varepsilon(d)=\prod_{p\mid n}(1-p^{-\varepsilon})\in[0,1]$,
-and the actual power-damped Ramanujan cofactor row of the PM route,
+and the PM route's power-damped Ramanujan cofactor row
 $c_Q(d)=\operatorname{Re}\bigl(d\sum_{m\le Q/d}\mu(m)w_\varepsilon(dm)\bigr)$,
-supported on $[1,Q]$, squarefree-supported and vanishing on multiples of four.
-The damped weight has **Ramanujan coefficients**
+supported on squarefree integers in $[1,Q]$ (hence zero on multiples of four). The weight $c_\varepsilon$ has **Ramanujan coefficients**
 $w_\varepsilon(e)=\sum_{e\mid d}\mu(d)d^{-1-\varepsilon}=\mathbb E[\tau_\varepsilon]\,\mu(e)/D_\varepsilon(e)$
 with $D_\varepsilon(e)=\prod_{p\mid e}(p^{1+\varepsilon}-1)\ge\varphi(e)$, mean
 $\mathbb E[\tau_\varepsilon]=\rho_\varepsilon=1/\zeta(1+\varepsilon)$, second
@@ -232,47 +189,34 @@ $\lambda_\varepsilon(p)=p^{-\varepsilon}-2\sum_{d<p}\mu(d)d^{-1-\varepsilon}$ an
 
 ### 2.4 Fermi traces, schedules and pronic energies
 
-The Fermi cell matrix $2\lfloor n/2d\rfloor-\lfloor n/d\rfloor$ gives the cell
-response $F_{N,c}(n)=\sum_{d\le N}c(d)\bigl(2\lfloor n/2d\rfloor-\lfloor n/d\rfloor\bigr)$
-on the reciprocal cell $(1/(n+1),1/n]$, and the **boundary jump**
-$J(n)=F(n)-F(n-1)$. An odd boundary reads $J(2m+1)=-s_{N,c}(2m+1)$; an even one
-reads $J(2m+2)=2s_{N,c}(m+1)-s_{N,c}(2m+2)$. The physical weight of the cell
-$n$ is the **pronic** weight $1/(n(n+1))$. The complete **sieve pronic energy**
-$P(N,c)=\sum_{n\ge1}s_{N,c}(n)^2/(n(n+1))$ and the complete **selected trace**
-energy $Q(N,c)$ of the odd and four-divisible boundary readings are both
-summable for every finite horizon. Their homogeneous versions use the weight
-$1/n^2$ in odd-ray coordinates $n=2^k(2j+1)$.
+On reciprocal cell $(1/(n+1),1/n]$, the Fermi response is
+$F_{N,c}(n)=\sum_{d\le N}c(d)(2\lfloor n/2d\rfloor-\lfloor n/d\rfloor)$ with **boundary jump**
+$J(n)=F(n)-F(n-1)$: $J(2m+1)=-s_{N,c}(2m+1)$ and
+$J(2m+2)=2s_{N,c}(m+1)-s_{N,c}(2m+2)$. The cell's **pronic** weight is $1/(n(n+1))$.
+The complete **sieve pronic energy** $P(N,c)=\sum_{n\ge1}s_{N,c}(n)^2/(n(n+1))$ and **selected
+trace energy** $Q(N,c)$, reading odd and four-divisible boundaries, are summable at finite horizon.
+Their homogeneous versions use $1/n^2$ in odd-ray coordinates $n=2^k(2j+1)$.
 
-A **dyadic schedule** $S\subseteq\mathbb N$ reads the jump $J(n)$ at the
-boundaries whose dyadic level $v_2(n)$ lies in $S$. Along the **dyadic ray**
-$n=2^kb$, $b$ odd, with $z_k=s_{N,c}(2^kb)$, the level-$0$ boundary reads
-$-z_0$, the level-$k$ boundary reads $2z_{k-1}-z_k$, and the ray **saturates** at
-$L=\lfloor\log_2N\rfloor$: $z_k=z_L$ for $k\ge L$. A schedule therefore sees
-$L+2$ **slots**, the levels $0,\dots,L$ and the saturated slot $L+1$. The
-**selected trace** is the schedule missing slot $1$; the **all-boundary trace**
-reads every boundary; the **one-gap trace** at level $g$ reads every boundary
-except those of level $g$. The optimal physical inverse constants
-$K_N=\sup P/Q$ (selected), $K_N^+$ (nonnegative coefficients), $K^{\mathrm{all}}_N$
-and $K_g(N)$ measure the conditioning of each observation. Ray profiles
-$y_0,\dots,y_L$ are synthesized by the coefficients $c(1)=y_0$,
-$c(2^{k+1})=2^{k+1}y_{k+1}-2^ky_k$; the **Dirichlet chain**, **mixed chain**,
-**soft prefix** and **Robin ramp** are the boundary structures of a ray under a
-schedule.
+A **dyadic schedule** $S\subseteq\mathbb N$ reads boundaries with $v_2(n)\in S$. On a **dyadic ray**
+$n=2^kb$, $b$ odd, put $z_k=s_{N,c}(2^kb)$: readings are $-z_0$ and $2z_{k-1}-z_k$.
+The ray **saturates** at $L=\lfloor\log_2N\rfloor$, with $z_k=z_L$ for $k\ge L$; there are $L+2$
+**slots**, $0,\dots,L$ and the saturated slot $L+1$. The **selected trace** omits slot $1$,
+the **all-boundary trace** omits none, and the **one-gap trace** omits level $g$.
+Their optimal physical inverse constants are $K_N=\sup P/Q$, $K^{\mathrm{all}}_N$ and $K_g(N)$;
+$K_N^+$ restricts selected-trace coefficients to be nonnegative. A ray profile $y_0,\dots,y_L$
+is synthesized by $c(1)=y_0$, $c(2^{k+1})=2^{k+1}y_{k+1}-2^ky_k$.
+**Dirichlet chain**, **mixed chain**, **soft prefix** and **Robin ramp** name its boundary structures.
 
 ### 2.5 Valuation clocks
 
-For $q\ge1$ the **visibility clock** is $\tau(q)=q/\operatorname{rad}(q)$. The
-Ramanujan lag coefficient $c_q(h)=\sum_{d\mid q}\mu(q/d)\,d\,\mathbf 1_{d\mid h}$
-and the normalized multiplier $c_q(h)/\varphi(q)$ describe which Selberg mode
-$q$ a translation by $h$ can see: the mode is visible iff $\tau(q)\mid h$. The
-von Mangoldt function is reconstructed from the clock with a prime guard,
+The **visibility clock** $\tau(q)=q/\operatorname{rad}(q)$ ($q\ge1$) controls the Ramanujan
+coefficient $c_q(h)=\sum_{d\mid q}\mu(q/d)d\mathbf 1_{d\mid h}$: its normalized multiplier
+$c_q(h)/\varphi(q)$ sees mode $q$ iff $\tau(q)\mid h$. It reconstructs von Mangoldt with a prime guard:
 $$
 \Lambda(d)=\begin{cases}\log\bigl(d/\tau(d)\bigr)&\text{if }d/\tau(d)\text{ is prime},\\0&\text{otherwise};\end{cases}
 $$
-the guard is essential, since $\tau(6)=1$ while $\Lambda(6)=0$. Clock wavelets
-are differences of lag multipliers at consecutive clock scales $p^a$, $p^{a-1}$.
-For squarefree-supported weights the clock of the lag is invisible: the period
-covariance at lag $h$ depends only on the set of primes dividing $h$.
+The guard matters: $\tau(6)=1$ but $\Lambda(6)=0$. Clock wavelets subtract multipliers at
+$p^a$ and $p^{a-1}$. For squarefree-supported weights, period covariance sees only $\operatorname{rad}(h)$.
 
 ### 2.6 Prime chains and the odd sector
 
@@ -599,18 +543,11 @@ $$
 \lvert s_Q(n)-\tau_\varepsilon(n)\rvert\ \le\ \frac{1+\varepsilon}\varepsilon\,\tau(n)\,Q^{-\varepsilon}
 \qquad(n\ge1),
 $$
-uniformly small on every polynomial range $n\le Q^r$. Because $\sum_{d\le Q}K_Q(d)/d=1/\zeta(1+\varepsilon)$
-holds identically for every $Q\ge1$, the cofactor row has exact finite-horizon mean
+uniformly small on every polynomial range $n\le Q^r$. Its exact Haar mean
 $H_{c_Q}(Q)=Y_Q(1)=\rho_\varepsilon$ (`finiteHarmonicSum_pmCofactorRealWeight`,
-`selbergMultiplesCoord_one_pmCofactorRealWeight`), so its centered prefix discrepancy has **zero
-linear mean-drift dipole** against $A_\varepsilon(n)=\sum_{k\le n}(\tau_\varepsilon(k)-\rho_\varepsilon)$:
-$\mathrm{sievePrefixDiscrepancy}(Q,n,c_Q)-A_\varepsilon(n)=\sum_{k=1}^n(s_Q(k)-\tau_\varepsilon(k))$,
-bounded by $\frac{1+\varepsilon}\varepsilon(\sum_{k=1}^n\tau(k))Q^{-\varepsilon}\le\frac{1+\varepsilon}\varepsilon n^2Q^{-\varepsilon}$
-(`sievePrefixDiscrepancy_pmCofactorRealWeight_sub_centeredPrefix_eq`,
-`abs_sievePrefixDiscrepancy_pmCofactorRealWeight_sub_centeredPrefix_le`) and in pronic $\ell^2$ norm by
-$\lvert\sqrt{E^{\mathrm{cof}}_{Q,T}}-\sqrt{E_T^{\mathrm{int}}(\varepsilon)}\rvert\le\tfrac12+\frac{1+\varepsilon}\varepsilon T\sqrt T Q^{-\varepsilon}$
-(`abs_sqrt_sieveTruncatedPronicEnergy_pmCofactor_sub_sqrt_interiorPronic_le`). Far beyond its horizon the
-receiver row observes the complete damped divisor function, which obeys the
+`selbergMultiplesCoord_one_pmCofactorRealWeight`) removes the linear mean-drift dipole.
+The resulting prefix and pronic error bounds are developed in §3.21. For the defect sign,
+the complete damped divisor function obeys the
 global unit envelope $0\le\tau_\varepsilon\le1=\tau_\varepsilon(1)$ and has first
 jump $\tau_\varepsilon(1)-\tau_\varepsilon(2)=2^{-\varepsilon}$; polarization with the
 truncation error $\eta=4^{-\varepsilon}/64$ gives
@@ -780,16 +717,12 @@ prime horizons.
 
 ### 3.8 The damped observer
 
-Every fixed damping changes the trans-horizon mechanics qualitatively, and the
-cofinal limit does not commute with $\varepsilon\to0$.
-
 **Freezing into $\tau_\varepsilon$.** On the linear window $k\le(B+1)N$ an integer
 has at most $B$ divisors above the horizon, each damped by at least
 $(N+1)^{-\varepsilon}$, so $\lvert\tau_\varepsilon(k)-s_N(k;c_\varepsilon)\rvert\le B(N+1)^{-\varepsilon}$
-uniformly, and $\mathcal E_N((B+1)N;c_\varepsilon)/N\to(B+1)\mathbb E[\tau_\varepsilon^2]$:
-the damped energy profile is linear in the band index with slope
-$\mathbb E[\tau_\varepsilon^2]\sim\varepsilon/2$, and the whole Möbius band
-structure is invisible to it. Over complete periods the trans-horizon tail
+uniformly, and $\mathcal E_N((B+1)N;c_\varepsilon)/N\to(B+1)\mathbb E[\tau_\varepsilon^2]$.
+The damped profile is linear with slope $\mathbb E[\tau_\varepsilon^2]\sim\varepsilon/2$,
+erasing Möbius band structure. Over complete periods the trans-horizon tail
 $\tau_\varepsilon-s_N$ has mean square at most the tail beyond $N$ of the convergent
 gcd series $G(d,e)=(de)^{-\varepsilon}/\operatorname{lcm}(d,e)$ (its boxes are
 Selberg forms of $d^{-\varepsilon}$, bounded by $\zeta(1+\varepsilon)^2\zeta(1+2\varepsilon)$),
@@ -797,8 +730,7 @@ so $Q_{\mathrm{Sel}}(N;c_\varepsilon)\to\mathbb E[\tau_\varepsilon^2]$ and
 $\mathrm{Cov}_N(0;c_\varepsilon)\to V(\varepsilon)\sim\varepsilon/2$. Against the Möbius
 floor $1/288$ this is the first non-commuting limit:
 $\lim_{\varepsilon\to0}\lim_N\mathrm{Cov}_N(0;c_\varepsilon)=0<1/288\le\kappa=\lim_N\mathrm{Cov}_N(0;\mu)$.
-The Möbius variance lives in the trans-horizon divisors, which every fixed
-damping suppresses.
+Fixed damping suppresses the trans-horizon divisors carrying Möbius variance.
 
 **Parseval and the receiver's spectrum.** The Selberg coordinates converge to
 the Ramanujan coefficients, $Y_N(e;c_\varepsilon)\to w_\varepsilon(e)$, dominated by
@@ -809,12 +741,9 @@ $$
 V(\varepsilon)=\sum_{e\ge2}\varphi(e)w_\varepsilon(e)^2,\qquad
 Q_{\mathrm{Bez}}(N;c_\varepsilon)\to\sum_e\mu(e)w_\varepsilon(e)^2 .
 $$
-The receiver row at horizon $Q+1$ has Selberg coordinates exactly $w_\varepsilon(e)$
-for $e\le Q+1$, so its period variance is the partial Parseval sum, increasing
-in the cutoff, converging to $V(\varepsilon)$ and never exceeding it, and its
-dissipation rate is at most $2V(\varepsilon)$: the receiver's period statistics
-are bounded uniformly in the horizon at each fixed damping, and at small damping
-they sit strictly below the Möbius floors at every cutoff. The lag covariances
+The receiver row's Selberg coordinates are $w_\varepsilon(e)$ for $e\le Q+1$; its period variance
+increases to $V(\varepsilon)$ and its dissipation is at most $2V(\varepsilon)$. These bounds are
+horizon-uniform and, at small damping, below the Möbius floors. Lag covariances
 converge to the damped autocorrelation
 $A_\varepsilon(h)=\sum_{e\ge2}c_e(h)w_\varepsilon(e)^2$ with
 $\lvert A_\varepsilon(h)\rvert\le16\sigma(h)\mathbb E[\tau_\varepsilon]^2$, and since
@@ -833,16 +762,13 @@ linear window the gradient energy is therefore $2(B+1)NR(\varepsilon)+o(N)$ and
 $$
 \frac{\widetilde{\mathcal D}_N((B+1)N;c_\varepsilon)}N\ \longrightarrow\ -(B+1)R(\varepsilon):
 $$
-the damped defect dissipates linearly in the window at the Haar dissipation rate
-of $\tau_\varepsilon$; the prime-boundary mechanism of §3.4 is the visible part of
-a positive-density dissipation. The rate is half the damping: the dissipation
-splits as variance minus lag-one autocorrelation, $R(\varepsilon)=V(\varepsilon)-A_\varepsilon(1)$,
-with $\lvert A_\varepsilon(1)\rvert\le16\,\mathbb E[\tau_\varepsilon]^2=O(\varepsilon^2)$
-against $V(\varepsilon)\sim\varepsilon/2$, so $R(\varepsilon)/\varepsilon\to\tfrac12$,
-$R(\varepsilon)/V(\varepsilon)\to1$, and the window defect has small-damping slope
-$\lim_{\varepsilon\to0}\varepsilon^{-1}\lim_N\widetilde{\mathcal D}_N((B+1)N;c_\varepsilon)/N=-(B+1)/2$:
-every unit of window dissipates half the damping parameter. At second order
-the two rates separate,
+the prime-boundary mechanism of §3.4 belongs to positive-density Haar dissipation.
+Since $R(\varepsilon)=V(\varepsilon)-A_\varepsilon(1)$,
+$\lvert A_\varepsilon(1)\rvert\le16\,\mathbb E[\tau_\varepsilon]^2=O(\varepsilon^2)$
+and $V(\varepsilon)\sim\varepsilon/2$, we have $R(\varepsilon)/\varepsilon\to\tfrac12$,
+$R(\varepsilon)/V(\varepsilon)\to1$ and small-damping window slope
+$\lim_{\varepsilon\to0}\varepsilon^{-1}\lim_N\widetilde{\mathcal D}_N((B+1)N;c_\varepsilon)/N=-(B+1)/2$.
+At second order the rates separate:
 $$
 V(\varepsilon)=\tfrac\varepsilon2-\varepsilon^2+o(\varepsilon^2),\qquad
 R(\varepsilon)=\tfrac\varepsilon2+o(\varepsilon^2),\qquad
@@ -918,15 +844,10 @@ $\Lambda(\varepsilon)\pm(96C+1)\varepsilon^2$ (`dampedPrimeSlope_quadratic_cross
 universal transition window from $\pm\varepsilon$ to $O(\varepsilon^2)$ (and hence to $\pm\delta\varepsilon$
 for every $\delta>0$, `dampedPrimeSlope_sublinear_additive_crossover`), resolving the sign of
 $\lambda_\varepsilon(p)$ inside the additive window $\lvert\log p-\Lambda(\varepsilon)\rvert<\varepsilon$.
-The damped observer is
-Möbius-like, injecting at prime horizons, up to horizons
-$e^{\gamma-\delta}(2\varepsilon)^{-1/\varepsilon}$ and dissipative beyond
-$e^{\gamma+\delta}(2\varepsilon)^{-1/\varepsilon}$; the receivers at fixed small damping
-live beyond this scale.
+The receivers at fixed small damping live beyond this injection-to-dissipation crossover.
 
-**The threshold at one half.** The primitive energy has the Jordan spectrum
-$12\,\mathcal E_{\mathrm{prim}}(N;c)=\sum_{2\le q\le N}J_2(q)Y_N(q)^2$ with
-$J_2(q)\le q^2$. For the damped row the mode masses are of size $q^{-2\varepsilon}$:
+**The threshold at one half.** In the Jordan spectrum (§2.2), $J_2(q)\le q^2$ and damped mode
+masses have size $q^{-2\varepsilon}$:
 for $\varepsilon>1/2$ the primitive energy is bounded uniformly in the horizon and
 converges to $\tfrac1{12}\sum_{q\ge2}J_2(q)w_\varepsilon(q)^2$; for $0<\varepsilon\le1/2$
 the prime modes alone carry $J_2(p)w_\varepsilon(p)^2\ge\tfrac34\mathbb E[\tau_\varepsilon]^2/p$,
@@ -937,10 +858,7 @@ octave carries at least $N^{1-2\varepsilon}/3456$): the discrepancy grows like a
 of $N^{1-2\varepsilon}$ independent unit steps. For the Möbius row the growth is exactly
 linear, $12\,\mathcal E_{\mathrm{prim}}(N;\mu)/N\to c\approx0.3311$ with an explicit Euler-product
 series for $c$ (Bézout–Valuation Incidence §3.10).
-This is the barrier $\varepsilon=1/2$ of the PM receiver
-seen on the period torus: below one half no horizon-uniform bound on the
-discrepancy can come from complete-period averages, and a receiver estimate must
-use the pronic weighting of small arguments.
+Below half damping, receiver estimates must use pronic weights rather than complete-period averages.
 
 ### 3.9 Observation states, phases, and recovery
 
@@ -1383,32 +1301,20 @@ $r!(-\log 2)^r\ne0$ (`poleLogMoment_iteratedFermiKernel`,
 pole, and the separating observables on the kernel side are the Taylor coefficients of $K$ at
 $s=1-\varepsilon$, the counterpart of the logarithmic hierarchy.
 
-**The damping unit, and the closure of the blind class.** The barrier has a number and a scope.
-The dampings at which the sign-blind data decide the class are exactly $(\tfrac12,\infty)$, and the
-derived set of that range is $[\tfrac12,\infty)$: the threshold is attained from one side only, so
-no limiting argument along admissible dampings reaches it. Blindness is closed under
-post-processing, pairing and families of arbitrary cardinality — a method may read as many
-amplitude-derived observables as it likes, in any combination, and gains nothing — so the barrier
-is a floor on a class of methods and not a list of inadequate statistics, and its value in the
-damping unit is $\tfrac12$.
+**The damping unit and closure of the blind class.** Sign-blind payment holds exactly on
+$(\tfrac12,\infty)$; its derived set $[\tfrac12,\infty)$ includes the endpoint where sign-blindness fails.
+Post-processing, pairing and arbitrarily large families of amplitude-derived readings preserve
+blindness: $\tfrac12$ is a floor for this whole class of methods.
 
-For the literal damped Möbius receiver the threshold is the zero width itself. The set of
-admissible dampings has infimum of its derived set exactly $\Theta-\tfrac12$
-(`receiverDampingRate_eq_zetaZeroAbscissa_sub_half`), so RH is the accumulation of admissible
-dampings at $0$, equivalently the cofinal budget criterion
-(`riemannHypothesis_iff_cofinal_budget`, the damping entry of `widthDictionary_tfae`); and conversely a bound at any single damping is worth
-nothing in the width unit, because one admissible damping only translates zeros along the chains
-$\rho,\rho-\varepsilon,\rho-2\varepsilon,\dots$. The receiver's damping is therefore a genuine
-width coordinate, with the same endpoint behaviour as the aperture: all the content sits at the
-accumulation, none at any interior point.
+For Möbius, the infimum of the derived admission set is $\Theta-\tfrac12$
+(`receiverDampingRate_eq_zetaZeroAbscissa_sub_half`); RH is accumulation at $0$
+(`riemannHypothesis_iff_cofinal_budget`, `widthDictionary_tfae`). A single admitted damping only
+translates zeros along $\rho,\rho-\varepsilon,\rho-2\varepsilon,\dots$; width information comes from
+accumulation, as in the aperture coordinate.
 
-**Reading.** In every case proved, a pole of the weight's Dirichlet series on or to the right of
-$\operatorname{Re}s=1/2$ leaves the receiver unpaid and zeros never do; in the pole-law cases the
-pole sits at $s=1-\varepsilon$. A parity pair is a pair in which the twist creates such a pole: the
-positive twins acquire the pole of $\zeta$, moved to $s=1-\varepsilon$, by flipping a positive density
-of primes. For the Möbius weight the series is $1/\zeta(s+\varepsilon)$, whose poles to the right of
-$\operatorname{Re}s=1/2$ are the zeros of $\zeta$ with $\operatorname{Re}\rho>1/2+\varepsilon$; these are
-what a bound on the Möbius receiver must exclude, and no sign-blind datum can see them.
+The pole law explains positive twins: prime flips introduce the pole at $1-\varepsilon$.
+For Möbius, poles of $1/\zeta(s+\varepsilon)$ right of $\Re s=1/2$ are precisely zeros with
+$\Re\rho>1/2+\varepsilon$. A receiver bound must exclude them using signed information.
 
 ### 3.17 Mellin continuation and the horizon-limit boundary
 
@@ -1679,14 +1585,11 @@ probes the receiver is asymptotically the diagonal form with weight
 $\lvert\zeta(\tfrac12+it)\rvert^2/(2\lvert\tfrac12+it\rvert^2)$
 (`tendsto_halfProbeCombination_energy_div_log`): distinct frequencies are orthogonal for the receiver.
 
-**Reading.** These theorems are spectroscopy, not estimates. They evaluate probes whose Dirichlet
-series are known in terms of $\zeta$, and they show the receiver is a faithful instrument for the
-zero divisor. Bounding the actual Möbius receiver is a different problem: its series is
-$1/\zeta(s+\varepsilon)$, the unknown itself.
+Probe evaluation does not bound the actual Möbius receiver with series $1/\zeta(s+\varepsilon)$.
 
 ### 3.20 The actual source at small damping
 
-**Möbius and Liouville.** Removing the $\varepsilon\ge1/4$ restriction from the hyperbola split gives
+**Möbius and Liouville.** The all-damping hyperbola split gives
 $\lvert A_\varepsilon(n)\rvert\le3D^{1-\varepsilon}+(13/\varepsilon)LnD^{-\varepsilon}$, and with
 Vinogradov–Korobov the all-damping prefix bound
 $\lvert A_\varepsilon(n)\rvert\le(K/\varepsilon)n^{1-\varepsilon}e^{-\sqrt{\log n}/40}$. From signed
@@ -1699,16 +1602,13 @@ with exact short-modulus loss $6D^{1-\varepsilon}$
 $-\mu(n)\log n=(\mu\star\Lambda)(n)$ (`neg_logWeight_moebiusReal_eq_dirichletConv`), a single-exponent
 power saving $\lvert\sum_{e\le N}(\mu\star\Lambda)(e)\rvert\le C(N+1)^\beta$ ($\beta<1$) pays both the
 Möbius and Liouville receivers at every fixed $\varepsilon>\beta/2$
-(`receiverBounded_moebius_and_liouville_of_vonMangoldtConv_partialSum_rpow`). Uniform receiver
-bounds hold on the horizon-dependent zero-free band above every positive damping floor; Möbius and
-Liouville have the same positive admission set and the same width accumulation threshold
+(`receiverBounded_moebius_and_liouville_of_vonMangoldtConv_partialSum_rpow`). Möbius and
+Liouville have the same positive admission set and width accumulation threshold
 $\Theta-\tfrac12$; and RH is admission at every positive damping, for either weight
 (`riemannHypothesis_iff_forall_pos_receiverBounded_moebius`,
 `riemannHypothesis_iff_forall_pos_receiverBounded_liouville`,
-`sInf_derivedSet_liouville_dampings_eq_zetaZeroAbscissa_sub_half`). Eliminating the $1/4$ barrier
-across all $0<\varepsilon\le1/2$ via the all-damping hyperbola bound
-$\lvert A_\varepsilon(n)\rvert\le 3D^{1-\varepsilon}+(13/\varepsilon)LnD^{-\varepsilon}$ bounds
-$E_T(\varepsilon)$, $E_T^{\mathrm{int}}(\varepsilon)$, and the compensated interior martingale
+`sInf_derivedSet_liouville_dampings_eq_zetaZeroAbscissa_sub_half`). Across $0<\varepsilon\le1/2$
+the hyperbola bound controls $E_T(\varepsilon)$, $E_T^{\mathrm{int}}(\varepsilon)$ and the compensated interior martingale
 bracket uniformly on the Vinogradov–Korobov band $\varepsilon\ge\tfrac12-\kappa\sigma(T)/(480\log T)$
 above any $\varepsilon_0>0$ while the parity twin grows at least as $c_{\varepsilon_0}(\log(T+1)-\log100)$,
 and at every fixed $\varepsilon\in(0,1/2)$ bounds $E_T^{\mathrm{int}}(\varepsilon)\le C_\varepsilon T^{1-2\varepsilon}\exp(-\kappa\sigma(T)/270)=o_\varepsilon(E_{\mathrm{prim}}(T))$
@@ -1784,9 +1684,8 @@ $o(T^{1-2\varepsilon})$ are each equivalent to admission. Explicit lower bounds
 $E\ge\lambda T^{1-2\varepsilon}$ hold on every zero-free box and on the Vinogradov–Korobov collar. A
 three-term planted Euler kernel shows that such collars near $\varepsilon=0$, and finite sets of
 admitted parameters, do not exclude every $0<\varepsilon<\tfrac12$
-(`plantedEulerKernel_collar_and_finiteness_obstruction`). The gap at a probe is $\zeta(\rho)\ne0$
-written in source coordinates. What the reformulation contributes is the location of the
-cancellation that a Möbius bound has to control: long moduli against the trans-horizon tail.
+(`plantedEulerKernel_collar_and_finiteness_obstruction`). The gap rewrites $\zeta(\rho)\ne0$ in source
+coordinates, locating the needed cancellation: long moduli against the trans-horizon tail.
 
 ### 3.21 The signed interior energy and the selectivity of the laws
 
@@ -1796,13 +1695,15 @@ linear mean-drift dipole $n\tau_N$, the obstruction of §3.17. The actual cofact
 route has no such dipole: $\sum_{d\le Q}K_Q(d)/d=1/\zeta(1+\varepsilon)$ holds identically, so
 $H_{c_Q}(Q)=\rho_\varepsilon$ at every $Q\ge1$, and its centred prefix differs from
 $A_\varepsilon(n)$ only by the cumulative Ramanujan truncation $\sum_{k\le n}(s_Q(k)-\tau_\varepsilon(k))$,
-of size at most $\frac{1+\varepsilon}\varepsilon n^2Q^{-\varepsilon}$
-(`sievePrefixDiscrepancy_pmCofactorRealWeight_sub_centeredPrefix_eq`). In the pronic norm,
+of size at most $\frac{1+\varepsilon}\varepsilon(\sum_{k\le n}\tau(k))Q^{-\varepsilon}\le\frac{1+\varepsilon}\varepsilon n^2Q^{-\varepsilon}$
+(`sievePrefixDiscrepancy_pmCofactorRealWeight_sub_centeredPrefix_eq`,
+`abs_sievePrefixDiscrepancy_pmCofactorRealWeight_sub_centeredPrefix_le`). In the pronic norm,
 $$
 \Bigl\lvert\sqrt{E^{\mathrm{cof}}_{Q,T}}-\sqrt{E^{\mathrm{int}}_T(\varepsilon)}\Bigr\rvert\le\tfrac12+\tfrac{1+\varepsilon}\varepsilon\,T\sqrt T\,Q^{-\varepsilon},
 $$
-so along any growing cutoff with $T\sqrt TQ(T)^{-\varepsilon}$ bounded the two receivers are bounded
-together (`growingCutoff_cofactorPronicEnergy_bounded_iff_interiorPronicEnergy_bounded`). The PM
+(`abs_sqrt_sieveTruncatedPronicEnergy_pmCofactor_sub_sqrt_interiorPronic_le`). Along a growing
+cutoff with $T\sqrt TQ(T)^{-\varepsilon}$ bounded, the two receivers are bounded together
+(`growingCutoff_cofactorPronicEnergy_bounded_iff_interiorPronicEnergy_bounded`). The PM
 receiver is the interior receiver of §1.2, with no dipole loss.
 
 **The signed interior energy.** At fixed $\varepsilon\in(0,\tfrac12)$ the interior energy is the
@@ -1818,11 +1719,8 @@ of it. The interior gradient plus twice the local-impulse cross sum equals the a
 diagonal plus twice a predecessor-peak martingale, up to bounded boundary terms; and along a
 predecessor jump progression $n_k=d+1+(d+2)k$ at cutoff $N=(d+2)L$, delaying the conditional
 jump-orbit mean until each modulus is born bounds the compensated progression by $\tfrac52(d+2)L$
-(`abs_pmBezoutInteriorPrefix_birthDelayed_compensated_le_five_halves_mul`). All signed receiver
-formulations are admitted at the same dampings, unconditionally for $\varepsilon>\Theta-\tfrac12$,
-and uniformly on the all-damping Vinogradov–Korobov band; at a fixed $\varepsilon<\tfrac12$,
-$E^{\mathrm{int}}_T(\varepsilon)\le C_\varepsilon T^{1-2\varepsilon}e^{-\kappa\sigma(T)/270}$, a subpower
-saving against the primitive growth $T^{1-2\varepsilon}$ and never a power one
+(`abs_pmBezoutInteriorPrefix_birthDelayed_compensated_le_five_halves_mul`). These signed
+formulations share the admission set, Vinogradov–Korobov band and subpower saving of §3.20
 (`complete_signed_receiver_equivalence_and_all_damping_vk_laws`).
 
 **Three selectivity classes.** The conservation and dissipation laws of the theory sort exactly by
@@ -1842,143 +1740,50 @@ the structure they use.
   classification, least successor-seed resonance, and trans-horizon separation of parity-isometric
   rows (`selectivity_class_III_bezout_successor_selective_laws`).
 
-Classes I and II fail the Beurling and parity tests by construction. Class III is
-where these mechanisms retain the additive successor structure of $\mathbb N$.
-This identifies a candidate source of new information, not a theorem that every
-possible proof must use this particular classification.
+Classes I and II fail the Beurling and parity tests. Class III retains successor structure,
+a candidate source of new information; this classification is not necessary for every possible proof.
 
 ### 3.22 Bridges
 
-Quarter-plane zeros in any height box are finite without hypothesis, inherit
-the Ingham–Huxley, Huxley $12/5$ and density-hypothesis exponents, are
-annihilated above the Route-T zero-free width, and the Chebyshev discrepancy on
-dyadic prime shells inherits the Vinogradov–Korobov rate. A fourth-root
-Brun–Titchmarsh level cancels one $\log q$ on prime-supported von Mangoldt
-weights; Gallagher transfers multiplicative to linear windows; the
-Matomäki–Teräväinen coefficients obey Rankin–Euler tail bounds. The Nyquist
-log-cell integral of the Chebyshev gauge decomposes with exact pronic
-coefficient,
-$\int_{\log n}^{\log(n+1)}e^{-t}(c+1-t-e^t)^2dt=c^2/(n(n+1))-2c(\cdots)+\text{const}$,
-linking the bi-scale gauge to the pronic Abel summation of the interior
-prefix; the interior gradient plus local impulse cross sum tracks its
-logarithmic counterterm within a horizon-independent constant, and a cofinal
-strict interior contraction would give RH. The shifted ground state has a
-two-sided collar duality $R_a(u)+D_a(u)=4\int_{x>0}u^2m_aC_a$ and a variation
-inequality equivalent to nonnegativity of its Markov energy, while every
-nonnegative combination of two shifted ground states is a strict subsolution
-near the origin and at infinity. The period forms of §3.6 and §3.8 meet the
-Haar moments of $\tau_\varepsilon$ in the RH tower's PM lane (second density,
-variance, Ramanujan weights), the band averages of §3.7 reproduce the
-Bézout–valuation energy profile, and the long-window law of §3.4 is the window
-Poincaré law of that theory with its variance bounded below.
+Quarter-plane zeros are finite in height boxes, inherit the Ingham–Huxley, Huxley $12/5$ and
+density-hypothesis exponents, and vanish above the Route-T zero-free width. Dyadic prime-shell
+Chebyshev discrepancy inherits Vinogradov–Korobov. A fourth-root Brun–Titchmarsh level saves one
+$\log q$ on prime-supported von Mangoldt weights; Gallagher converts multiplicative to linear
+windows; Matomäki–Teräväinen coefficients have Rankin–Euler tails. The Nyquist log-cell identity
+$\int_{\log n}^{\log(n+1)}e^{-t}(c+1-t-e^t)^2dt=c^2/(n(n+1))-2c(\cdots)+\text{const}$
+links the Bi-Scale gauge to interior pronic Abel summation. The interior gradient plus impulse
+cross sum tracks its logarithmic counterterm within a horizon-independent constant; a cofinal
+strict contraction gives RH. Shifted ground states obey collar duality
+$R_a(u)+D_a(u)=4\int_{x>0}u^2m_aC_a$ and a variation criterion for Markov-energy nonnegativity.
+Every nonnegative combination of two shifts is a strict subsolution near zero and infinity.
+The period laws (§§3.6, 3.8) match PM Haar moments; band averages (§3.7) match BVI's energy profile,
+and the long-window law (§3.4) is BVI's window Poincaré law with a variance floor.
 
 ---
 
 ## 4. Foundational pillar theorems
 
-All unconditional; capstones take data only, and RH appears as the conclusion of an implication or
-inside an equivalence.
+All are unconditional; RH appears only as a conclusion or in an equivalence. The referenced
+sections give the full statements, mechanisms and supporting declarations.
 
-1. **The global sign of the defect.** At every sufficiently large horizon the renormalized prefix
-   defect is nonpositive at every prefix, uniformly for $\varepsilon\in[0,1]$ with one threshold, by
-   rough-prime boundaries in polynomial windows and the window Poincaré law beyond $2N^2-2$
-   (`eventually_pmPowerDamped_renormalizedDefect_nonpos_uniform`,
-   `two_mul_sieveRenormalizedPrefixDefect_le_mv`, `moebius_defect_nonpos_of_mv_window`); the
-   prime-pairing $2^{\omega(r)-2}$ radical envelope and the Montgomery–Vaughan threshold
-   $2N^2+2N-2$ overlap across $[310,1153]$ to certify $\widetilde{\mathcal D}_N(M;\mu)\le0$ at every
-   prefix for all $N\le12$ (`moebius_defect_nonpos_of_le_twelve`, `pmPowerDamped_defect_nonpos_of_le_four`);
-   and the actual cofactor row has the
-   same sign through one jump of the damped divisor function
-   (`eventually_pmCofactor_renormalizedDefect_nonpos_all`).
-2. **The envelope boundary at ratio five.** The unit envelope holds exactly up to ratio five and
-   fails at $5N+5$ for arbitrarily large horizons, with exact further rungs and a $Q/\log Q$ ladder
-   (`sieveRenormalizedPrefixDefect_moebiusReal_five_succ_nonpos`,
-   `sieveSeq_moebiusReal_rung_two_family`, `sieveSeq_moebiusReal_rung_three_family`).
-3. **Period laws cannot pay the pronic receiver.** The Möbius response is asymptotically white noise
-   on its period (`tendsto_periodCorrelation_moebius`), the damped period variance is bounded
-   uniformly in the horizon, and the primitive energy diverges for $\varepsilon\le1/2$
-   (`tendsto_sievePrimitiveEnergy_pmPowerDamped_atTop`); the response-level pronic energy commutes
-   with the damping limit (`tendsto_sieveTotalPronicEnergy_moebius`), which is not primitive
-   admission.
-4. **Positive weights are decided by their dyadic masses.** A nonnegative weight is paid iff
-   $\sum_kM_k^2/2^k<\infty$ (`bounded_weightPronicEnergy_iff_summable_dyadicMass`).
-5. **The parity barrier.** On the damped class boundedness of the receiver is a function of the
-   Ramanujan amplitudes iff $\varepsilon>1/2$ (`receiverBounded_amplitudeInvariant_iff`,
-   `parity_barrier`); every real character gives an unconditional parity pair at every
-   $\varepsilon\le1/2$ (`char_parityPair`), and sign-blind dampings accumulate only from above at
-   $1/2$ (`derivedSet_signBlindDampings`, `signs_read_below_half_damping`).
-6. **The damping of the Möbius receiver is the zero width.** The infimum of the derived set of
-   admissible dampings is $\Theta-\tfrac12$ (`receiverDampingRate_eq_zetaZeroAbscissa_sub_half`), RH is
-   cofinal admission (`riemannHypothesis_iff_cofinal_budget`), and Möbius and Liouville are admitted
-   at the same dampings (`receiverBounded_moebius_iff_liouville`).
-7. **The Wiener algebra and the pole law.** Critical Wiener kernels preserve paid receivers
-   (`receiverBounded_dirichletConv`); against a positive drift a convolution is paid only if the
-   kernel vanishes at the pole (`not_receiverBounded_dirichletConv_of_drift_critical`); on the smooth
-   power the partial-pole-sum energy criterion holds across $(0,1)$, the hyperplane law is exact
-   below half damping and has the sharp $\sqrt{\log}$ weight at half damping, and pole-vanishing
-   order is strictly additive under convolution (`receiverBounded_dirichletConv_unit_iff_critical`,
-   `receiverBounded_dirichletConv_unit_subHalf_iff_summable_partialPoleSum`,
-   `receiverBounded_dirichletConv_unit_half_iff_summable_partialPoleSum`,
-   `poleLogMoment_dirichletConv_ne_zero`).
-8. **The receiver is a boundary energy.** At half damping the receiver is two-sided equivalent to the
-   vertical-line energy of $\zeta(s)(C(s)-m)/s$ across $1/2<\sigma<3/4$, and a paid weight has
-   $\lvert C(\sigma)-m\rvert\le2\sqrt E(2\sigma-1)^{-1/2}$ (`receiverBounded_iff_exists_lineEnergy_le`,
-   `abs_dirichletSeries_sub_mean_le_of_energy`).
-9. **Horizon-limit commutation starts at half damping.** Uniformly paid rows pay the limit, and the
-   converse holds on the damped class exactly from $\varepsilon=1/2$ (`horizonLimit_commutes_with_receiver_iff`).
-10. **Multiplicative phase diagrams.** The constant-sign plane, the quarter law on every residue
-    flip, subgroup flips, single- and multi-frequency oscillating prime patterns, phase shifts, and
-    prime-varying amplitudes are decided exactly (`receiverBounded_constantSign_damped_iff`,
-    `receiverBounded_residueFlip_half_iff_general`, `receiverBounded_subgroupFlip_iff`,
-    `receiverBounded_oscWeight_phase_diagram_iff`, `receiverBounded_phaseWeight_iff`,
-    `receiverBounded_multiPhaseWeight_iff`, `receiverBounded_primeVaryingMultiPhase_half_iff`); prime
-    signs and prime means do not decide the receiver
-    (`exists_paid_unpaid_with_same_prime_signs_and_mean`).
-11. **The receiver reads the zero divisor.** Oscillating log-power probes are paid exactly at zeros
-    of $\zeta$ of the matching order, and the half-damped probe energy measures $\lvert\zeta\rvert^2$ on
-    the critical line (`receiverBounded_logPowerCosine_iff_all`, `tendsto_probeEnergy_half_div_log`).
-12. **Fermi observability.** Dyadic and $p$-adic schedules are injective exactly when at most one
-    slot is missing (`fermiScheduleInjective_iff`, `pAdicFermiScheduleInjective_iff`), the optimal
-    physical inverse constant grows like $(4/\pi^2)(\log_2N)^2$
-    (`fermiPhysicalInverseConstant_logb_limit`), two-gap schedules recover anchored and
-    block-mean-zero rows via the three-chain sine inequality
-    (`twoGap_ray_profile_of_zero_jumps`, `floating_block_variance_sine_bound`,
-    `fermiRaySieveEnergy_anchored_le_twoGap`), and the centered-prefix wavelet decomposition yields
-    uniform bulk boundedness and uniform origin-tail tightness across all horizons $N$ and cutoffs
-    $T$ (`fermiCellResponse_eq_weightCenteredPrefix_horizonRow`,
-    `fermiBulk_and_originTail_tight_moebius_of_half_zetaZeroAbscissa_lt`).
-13. **Complete-period data cannot see a parity pair.** For every horizon $N\ge1$ the torus
-    Poincaré excess and every complete-period quadratic form of the sieve (mean, Selberg and Bézout
-    forms, variance, successor covariance and reserve, primitive energy, Franel gcd form, lag
-    covariances, tuple variances) take the same value
-    on the two rows of each parity pair — a row and its even flip, the $\chi_4$ row and its twin, a
-    real character row and its twin, the Fermi row and its even flip — while for
-    $0<\varepsilon\le1/2$ their trans-horizon pronic receivers split into bounded and unbounded
-    (`CompletePeriodQuadraticFormsAgreeOnParityRowPairs`). The parity barrier is a theorem about
-    finite rows, not only about limits.
-14. **The odd sector in quotient coordinates.** On odd graph vectors the source energy is the Weil
-    form plus twice one shift-independent squared pole moment, and RH is equivalent to
-    $\mathrm{weilBilin}(q^+,q^-)\le\tfrac12\langle q_1,\tanh_L\rangle^2$ on odd eigenvectors, whose
-    cross-lobe pairings obey an unconditional strict two-sided sandwich
-    (`odd_eigenvector_four_term_excess_and_cross_lobe_sandwich`,
-    `riemannHypothesis_of_odd_eigenvector_cross_lobe_weilBilin_le_tanhL_sq`); on the profile side the
-    low-prime diagonal potential is positive on all of $(0,\log d)$ exactly for the five
-    atom-dominated and the nine totally unpaid moduli
-    (`atomAntiDiagonal_oddProfile_diag_pos_on_Ioo_iff`, `totalAntiDiagonal_oddProfile_diag_pos_on_Ioo_iff`).
-15. **Buchstab band laws and the damped crossover.** The band-average jump is radical-invariant,
-    $A(B)<0$ for $B\le9$ with first sign change at $B=10$, the energy profile fails concavity at every
-    power of five (`bandAverageStep_succ_sub_eq_sum_divisors`, `bandAverageStep_ten_pos`,
-    `cofinalMobiusQuadraticProfile_not_concave`); the damped prime slope changes sign in a window
-    $\Lambda(\varepsilon)\pm O(\varepsilon^2)$ (`dampedPrimeSlope_quadratic_crossover`); and the
-    variance, dissipation and lag-one rates have exact second- and third-order laws
-    (`tendsto_dampedDissipationRate_sub_variance_third_order`).
-16. **The signed interior energy and selectivity.** The cofactor row keeps the exact Haar mean at
-    every horizon and transfers to the interior receiver along growing cutoffs; the interior energy
-    is a signed Vaughan Gram form whose diagonal is sign-blind; and every conservation or dissipation
-    law of the theory is Beurling-universal, sign-blind or Bézout-selective
-    (`growingCutoff_cofactorPronicEnergy_bounded_iff_interiorPronicEnergy_bounded`,
-    `complete_signed_interior_energy_and_vaughan_calibration`,
-    `selectivity_class_III_bezout_successor_selective_laws`).
+| Pillar | Statement and entry point |
+|---|---|
+| Global defect sign (§3.4) | Every prefix has nonpositive defect at all sufficiently large horizons, uniformly for $\varepsilon\in[0,1]$; Möbius horizons $N\le12$ are also certified. See `eventually_pmPowerDamped_renormalizedDefect_nonpos_uniform`; the cofactor analogue is `eventually_pmCofactor_renormalizedDefect_nonpos_all`. |
+| Envelope boundary (§3.3) | The unit envelope ends at ratio five; failure occurs at $5N+5$, followed by rungs $2$ at ratio $11$, $3$ at $13$, and a $Q/\log Q$ ladder. Entries: `sieveRenormalizedPrefixDefect_moebiusReal_five_succ_nonpos`, `sieveSeq_moebiusReal_rung_two_family`, `sieveSeq_moebiusReal_rung_three_family`. |
+| Period versus pronic laws (§§3.6, 3.8) | Period white noise and bounded damped variance coexist with divergent primitive energy for $\varepsilon\le1/2$: `tendsto_periodCorrelation_moebius`, `tendsto_sievePrimitiveEnergy_pmPowerDamped_atTop`. Response-level damping commutation (`tendsto_sieveTotalPronicEnergy_moebius`) is not primitive admission. |
+| Positive-weight criterion (§3.16) | Payment is equivalent to $\sum_kM_k^2/2^k<\infty$: `bounded_weightPronicEnergy_iff_summable_dyadicMass`. |
+| Parity barrier (§3.16) | Amplitudes decide payment iff $\varepsilon>1/2$; real non-principal characters give parity pairs for $0<\varepsilon\le1/2$. Sign-blind dampings accumulate there only from above: `derivedSet_signBlindDampings`, `signs_read_below_half_damping`. |
+| Damping equals zero width (§3.16) | The infimum of the derived admission set is $\Theta-1/2$; RH is cofinal admission, and Möbius and Liouville have identical admission sets. See `receiverDampingRate_eq_zetaZeroAbscissa_sub_half`. |
+| Wiener and pole laws (§§3.16–3.17) | Critical Wiener convolution preserves payment; a positive drift requires pole cancellation. The smooth-power criterion is exact below half damping (`receiverBounded_dirichletConv_unit_iff_critical`); partial-pole-sum laws cover $(0,1)$, with a sharp $\sqrt{\log}$ endpoint weight and additive vanishing order. |
+| Boundary energy (§3.17) | At half damping, payment is equivalent to bounded vertical-line energy of $\zeta(s)(C(s)-m)/s$ for $1/2<\sigma<3/4$; it gives $\lvert C(\sigma)-m\rvert\le2\sqrt E(2\sigma-1)^{-1/2}$. |
+| Horizon-limit commutation (§3.17) | Uniformly paid rows pay the limit; on the damped class the converse holds exactly for $\varepsilon\ge1/2$: `horizonLimit_commutes_with_receiver_iff`. |
+| Multiplicative phase diagrams (§3.18) | Constant, residue-flip, subgroup, oscillating and prime-varying patterns have sharp criteria. Prime signs and prime means alone do not determine payment. |
+| Zero-divisor spectroscopy (§3.19) | Log-power probes detect zeros with matching multiplicity; half-damped probe energy measures $\lvert\zeta\rvert^2$ on the critical line. |
+| Fermi observability (§3.11) | Dyadic and $p$-adic schedules are injective iff at most one slot is missing (`fermiScheduleInjective_iff`); conditioning grows as $(4/\pi^2)(\log_2N)^2$ (`fermiPhysicalInverseConstant_logb_limit`). Anchored/block-mean-zero two-gap recovery and the wavelet bulk/tail bridge extend this calculus. |
+| Finite-row parity (§3.16) | At every horizon, paired rows agree in mean, Selberg/Bézout forms, variance, successor covariance/reserve, primitive energy, Franel gcd form, lag covariances, tuple variances and torus Poincaré excess. Their pronic receivers split for $0<\varepsilon\le1/2$: `CompletePeriodQuadraticFormsAgreeOnParityRowPairs`. |
+| Odd quotient (§§3.13–3.14) | Source energy equals the Weil form plus twice a squared pole moment; RH is the cross-lobe bound of §7.4. The strict sandwich and five/nine-modulus classifications locate what lobe-local estimates leave unpaid. |
+| Buchstab laws (§§3.7–3.8) | Radical-invariant band jumps give $A(B)<0$ through $9$, first positivity at $10$ and nonconcavity at every power of five. The damped crossover is $\Lambda(\varepsilon)\pm O(\varepsilon^2)$, with second/third-order dissipation laws. |
+| Signed interior and selectivity (§3.21) | Cofactor rows preserve the Haar mean and transfer along growing cutoffs. The Vaughan Gram diagonal is sign-blind; Bézout-selective laws retain successor information that the Beurling-universal and sign-blind classes lose. |
 
 ---
 
@@ -2027,7 +1832,7 @@ inside an equivalence.
 | Vanishing primitive energy settles the sign | The $O((n+1)^{-2})$ family only excludes a uniform gap relative to the graph norm. |
 | Compensated positivity is odd Weil positivity | The local correction is not shown to be paid by jump energy on arbitrary profiles. |
 | The PM receiver needs a bound uniform in damping | It needs a bound uniform in the horizon at each arbitrarily small fixed damping; the constant may depend on $\varepsilon$. |
-| Ramanujan amplitudes, translation statistics or pronic mode masses decide the receiver | Only above half damping. For every $\varepsilon\le1/2$ every real character gives an unconditional parity pair; amplitude invariance of boundedness holds iff $\varepsilon>1/2$. |
+| Ramanujan amplitudes, translation statistics or pronic mode masses decide the receiver | Only above half damping. For every $0<\varepsilon\le1/2$ every real non-principal character gives an unconditional parity pair; amplitude invariance of boundedness holds iff $\varepsilon>1/2$. |
 | The barrier is "no bound $E_T\le F(\lvert W_c\rvert)$" | That follows from a single divergent weight. The parity content is that the predicate "paid" is not a function of the amplitudes, which needs a pair. |
 | Adding more sign-blind observables narrows the gap | Blindness is closed under post-processing, pairing and families of arbitrary cardinality; the floor in the damping unit stays $\tfrac12$ for every amplitude-derived reading. |
 | One admissible damping bounds the width | It does not: a single admissible damping only translates zeros along $\rho,\rho-\varepsilon,\rho-2\varepsilon,\dots$. The width is the infimum of the derived set of the admissible dampings, exactly $\Theta-\tfrac12$. |
@@ -2042,23 +1847,14 @@ inside an equivalence.
 | Payment of a probe is an estimate for Möbius | Probe theorems evaluate weights whose series are known in terms of $\zeta$; the Möbius series $1/\zeta(s+\varepsilon)$ is the unknown. |
 | Real-axis abscissa blowup or Lipschitz tests detect unpaid oscillating probes $d^{-\varepsilon}\cos(t\log d)$ ($t\ne0$) | For $t\ne0$, $\sum_d c_{\varepsilon,t}(d)d^{-\sigma}=\operatorname{Re}\zeta((\sigma+\varepsilon)-it)$ converges to $\operatorname{Re}\zeta(1-it)$ and is Lipschitz at $\sigma=1-\varepsilon$ whether $c_{\varepsilon,t}$ is paid or unpaid; the pole sits at $1-\varepsilon\pm it$. |
 
-**Lean conventions.** Everything lives in
-`GaloisForLFunctions.TransHorizonIncidenceMechanics`. Sieve objects are imported
-from the Bézout–valuation and bi-scale theories, the Markov operator, prime
-chains, theta kernel and the Haar moments of $\tau_\varepsilon$ from the RH tower.
-Capstones take data only: a weight `c : ℕ → ℝ`, a horizon `N`, a prefix `M`, a
-damping `ε`, a schedule `S`, with ranges encoded by natural offsets such as
-`n + 1` or by the predicate `IsTransHorizonRough`. No positivity, cancellation
-or zero-location hypothesis appears; RH occurs only as the conclusion of an
-implication or inside an equivalence. Universal statements over all weights are
-stated as `∀ c`, and "for all squarefree-supported weights" as an explicit
-support premise on `c`. Cofinal statements are nested eventual quantifiers,
-never hidden thresholds. Every `tsum` is preceded by a summability theorem.
-Counterexamples are symbolic families indexed by a prime `p`, never evaluated
-instances. Prime-number-theorem inputs enter only through the proved corpus
-forms ($\mathfrak m(x)\to0$, $M(x)=o(x)$, prime counts in octaves). Classical
-constituents are marked `[Known]` or `[Corollary]` in docstrings, new
-formulations `[New formulation]`; no heartbeat settings are raised.
+**Lean conventions.** Namespace: `GaloisForLFunctions.TransHorizonIncidenceMechanics`; sieve
+objects come from BVI and Bi-Scale, Markov/chain/theta/Haar objects from `RHTower`.
+Capstones take data (`c`, `N`, `M`, `ε`, `S`), with offsets `n + 1` or `IsTransHorizonRough`
+encoding ranges. State weight/support quantifiers and nested eventual quantifiers explicitly;
+do not assume positivity, cancellation or zero location. Prove summability before `tsum`.
+Use symbolic prime-indexed counterexamples and proved PNT inputs: $\mathfrak m(x)\to0$,
+$M(x)=o(x)$ and octave prime counts. Docstrings distinguish `[Known]`, `[Corollary]` and
+`[New formulation]`; no heartbeat settings are raised.
 
 ---
 
@@ -2066,68 +1862,23 @@ formulations `[New formulation]`; no heartbeat settings are raised.
 
 ### 6.1 Questions
 
-1. **What can a divisor sieve of horizon $N$ see far beyond its horizon, and where does it lose
-   control?** Exactly located: the unit envelope to ratio five, the global defect sign at large
-   horizons, deterministic successor dynamics to horizon two, schedule conditioning
-   $(4/\pi^2)(\log_2N)^2$.
-2. **Which observations retain the signs the receiver needs?** Above half damping none are needed;
-   at and below half damping no sign-blind datum suffices, cubic moments read odd-modulus signs
-   but not the even flip, first pronic moments read prime powers, the logarithmic hierarchy
-   separates every pair — and separation bounds nothing.
-3. **What does the receiver read in a weight?** The analytic continuation and the size of the
-   weight's own Dirichlet series beside the line $\Re s=1-\varepsilon$: poles on or right of
-   $\Re s=1/2$ are fatal, zeros never are; at half damping a boundary energy; on probes the zero
-   divisor of $\zeta$ with multiplicities.
-4. **Which arithmetic class pays the receiver below half damping?** Critical Wiener perturbations
-   at their pole hyperplane, $\chi$-pretentious and $\mu$-pretentious weights; nonnegative
-   $1$-pretentious weights never; multiplicative sign patterns only at the integer prime means
-   $0$ and $-1$.
-5. **The question it exists for:** one unconditional bound on the actual Möbius receiver at one fixed
-   $\varepsilon<1/2$, read from signed data, and cofinally as $\varepsilon\downarrow0$.
+1. **Where does a finite observer lose control?** Envelope, successor and conditioning boundaries: §§3.3, 3.9–3.11.
+2. **Which observations retain the needed signs?** Parity pairs and separating moments: §3.16; separation alone gives no bound.
+3. **What does the receiver read?** The source's Dirichlet series, its poles and boundary energy: §§3.17–3.19.
+4. **Which arithmetic classes pay below half damping?** Wiener and pretentious classes, and multiplicative phase diagrams: §§3.16–3.18.
+5. **What remains for Möbius?** A signed bound at one fixed $\varepsilon<1/2$, then cofinally as $\varepsilon\downarrow0$ (§7.1).
 
 ### 6.2 Tools
 
-Built and reusable:
+The reusable calculus is developed with its scope in §3: complementary divisors and polarization
+(§§3.1–3.5), Ramanujan and Buchstab laws (§§3.6–3.8), state and Fermi inversion (§§3.9–3.11),
+odd-sector collars and cross-lobe pairings (§§3.12–3.15), parity/receiver/pole calculus
+(§§3.16–3.17), phase diagrams and probe spectroscopy (§§3.18–3.19), and signed hyperbola,
+cofactor, Vaughan and selectivity tools (§§3.20–3.21).
 
-- *Complementary-divisor normal forms* and the four-channel tail formula above the horizon.
-- *Dirichlet polarization with boundary squares retained*, radical-state transport, integer
-  jump energy, the prime-pairing $2^{\omega(r)-2}$ radical envelope, and the reserve-proportional
-  Montgomery–Vaughan window Dirichlet and Poincaré inequalities with $2N^2-2$ dissipation threshold.
-- *Ramanujan diagonalization* of period laws, white-noise and singular-series correlations.
-- *Buchstab horizon calculus*: band steps, prime-factor window criteria and slopes, radical-invariant
-  divisor-sum band-average jumps, the quadratic $O(\varepsilon^2)$ prime-slope crossover window, and
-  second/third-order Euler-product and Bézout dissipation asymptotics.
-- *Fermi trace inversion* with exact dyadic and $p$-adic schedule classifications, multi-gap
-  least-squares and three-chain conditioning, weighted ray resistance and sine bounds, and the
-  centered-prefix wavelet bridge giving uniform bulk and origin-tail tightness.
-- *The receiver calculus*: dyadic masses for positive weights, the critical Wiener algebra, the
-  pole law, the two-sided boundary-energy equivalence, the general pole law, the all-strip
-  partial-pole-sum energy criterion ($0<\varepsilon<1$), Möbius-inverted individual kernels beyond
-  $\mathrm{CriticalWiener}$, the all-order logarithmic pole moment Leibniz and index additivity laws,
-  and the sub-horizon harmonic-tail and divisor-quotient horizon-row convolution laws.
-- *Parity pairs* as the sharp test of sign-blindness, the logarithmic moment hierarchy as the
-  complete separating invariant, and the signed logarithmic hyperbola transfer with
-  $(\log(D+1))^{-1}$ gain.
-- *Euler-product phase diagrams* for multiplicative weights, through $\zeta$ and Dirichlet
-  $L$-functions beside the line, with no zero-free region for $L$ required.
-- *Probe spectroscopy*: oscillating log-power probes as a calibrated instrument for the zero
-  divisor.
-- *The odd-sector collar bridge and cross-lobe calculus*: midpoint-symmetric collar-to-diagonal
-  collapse matched term by term with the five atom-dominated moduli, the nine totally unpaid
-  moduli, and the $d\ge23$ unpaid axis intervals; unconditional $\Theta$-drop bounds on the local
-  cosh/sinh defect; and individual-lobe odd-polar balance, cross-lobe `weilBilin` polarization,
-  and the two-sided cross-lobe sandwich on odd eigenvectors.
-- *Signed interior energy calibration and transfer selectivity*: dipole-free cofactor pronic energy
-  transfer along growing cutoffs, the 25-entry moving-endpoint Vaughan pronic Gram decomposition and
-  component-flip cross-pairing formula, birth-delayed conditional jump-orbit bounds, all-damping
-  Vinogradov–Korobov interior energy and period-ratio bounds across $(0,1/2)$, and the three-class
-  Beurling / $(\mathbb Z/2\mathbb Z)^N$ / Bézout selectivity partition.
-
-To be built:
-
-- a signed estimate on the actual Möbius receiver at one fixed $\varepsilon<1/2$, with its exact loss;
-- a quantitative Class III law controlling off-diagonal Vaughan entries;
-- a sign bound $\mathrm{weilBilin}(q^+,q^-)\le\tfrac12\langle q_1,\tanh_L\rangle^2$ on odd eigenvectors.
+The missing tools are quantitative: a signed actual-Möbius bound below half damping (§7.1),
+a Class III estimate for off-diagonal Vaughan entries (§7.8), and the odd-eigenvector bound
+$\mathrm{weilBilin}(q^+,q^-)\le\tfrac12\langle q_1,\tanh_L\rangle^2$ (§7.4).
 
 ---
 
@@ -2235,23 +1986,13 @@ divergent critical-line mass.
 
 ## 8. Working in the theory
 
-Fix the weight class first: arbitrary real weights, squarefree-supported
-weights, nonnegative weights, the literal Möbius weight, the damped family, or
-the cofactor row. Many laws are universal in the weight; the sharp ones are not,
-and the obstruction examples are usually nonnegative squarefree weights with
-$c(1)=1$. Say which limit is taken and in which order: the cofinal limit in the
-horizon and the limit $\varepsilon\to0$ do not commute, and a statement at fixed
-damping is not a statement about Möbius. State every bound with its range of
-$k$, $M$ and $N$ and say which band, which ratio and which regime (polynomial
-window or long window) it lives in. Pass every sign claim through the Dirichlet
-polarization and name the boundary squares. Pass every period statement through
-the Selberg coordinates and the Ramanujan lag weights. Transport certificates
-along radical fibres and positive powers rather than reproving them at large
-scale. When a universal law fails, locate the first failure exactly and prove
-the classification; the positive survivor is the theorem. Search the corpus,
-including the other programmes' folders, before building: Buchstab steps,
-Ramanujan lag coefficients, the chain renormalization law, the window Poincaré
-law, the Haar moments of $\tau_\varepsilon$, Montgomery–Vaughan interval bounds,
-the Gutzmer and Hardy path inequalities, GCD Gram kernels, the theta drop bounds
-and the Lévy density are all present. Comments in Lean are mathematics; status,
-dates and logs belong on the pipeline cards.
+Fix weight class, ranges of $k,M,N$, band/ratio and polynomial or long-window regime.
+Keep horizon and damping limits ordered (§5); many counterexamples already have nonnegative,
+squarefree support and $c(1)=1$. Audit signs through polarization with boundary squares, and
+period laws through Selberg/Ramanujan coordinates. Transport certificates along radical fibres
+and positive powers. A failed law should yield its first failure and strongest surviving classification.
+
+Search neighbouring programmes before building. Beyond §6.2, the corpus supplies chain
+renormalization, Haar moments, Montgomery–Vaughan bounds, Gutzmer/Hardy path inequalities,
+GCD Gram kernels, theta-drop bounds and Lévy density. Lean comments explain mathematics;
+status, dates and logs belong on pipeline cards.

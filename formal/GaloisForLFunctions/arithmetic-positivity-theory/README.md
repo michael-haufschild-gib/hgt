@@ -1,30 +1,20 @@
 # Arithmetic Positivity Theory
 
-Arithmetic Positivity Theory asks which independently checkable features of an
-exact arithmetic source control the sign, the mixed couplings, and the stability
-of its complete spectral energy. The spectral energy is the Weil form of the
-Riemann zeta function; the sources are literal functions built from prime-power
-weights, divisor identities, and Bernoulli sawtooth remainders, with every
-endpoint jump, collar shift, Gamma factor and pole kept. The theory is built
-*below* the Riemann Hypothesis: every theorem is unconditional, every positivity
-statement is proved on a stated family at a stated scale, and the two universal
-receivers that would deliver RH are treated as destinations and circularity
-checks, never as premises.
+Arithmetic Positivity Theory asks which independently checkable features of an exact arithmetic
+source control the sign, mixed couplings and stability of the complete Weil form of the Riemann
+zeta function. Sources use prime-power weights, divisor identities and Bernoulli sawtooth
+remainders, retaining endpoint jumps, collar shifts, Gamma factors and poles. Every theorem is
+unconditional; positivity is proved on a stated family and scale. The two universal RH receivers
+are destinations and circularity checks, never premises.
 
 ---
 
 ## Place in the research
 
-APT is the **source theory of the complete Weil form**. Its central distinction is between
-constructing a rich family of positive sources and controlling every compact test. The former
-is available on high arithmetic scales; the latter is an RH-equivalent destination. A long
-support, a dense approximation scheme, and a favourable prime-channel sign do not by themselves
-bridge that distinction.
-
-The shared research has three coordinates: pairwise incidence, lag, and aperture. They describe
-the same critical arithmetic form, but expose different missing estimates. APT supplies literal
-sources and complete-form approximation; it does not supply a theorem that their positive
-subfamilies exhaust the receiver.
+APT is the **source theory of the complete Weil form**, whose other coordinates are pairwise
+incidence, lag and aperture. It supplies literal sources and complete-form approximation.
+Positive families at high arithmetic scales do not yet control every compact test: long support,
+density and a favourable prime-channel sign alone do not bridge that RH-equivalent gap.
 
 | Programme | Mathematical interface with APT |
 |---|---|
@@ -41,52 +31,30 @@ subfamilies exhaust the receiver.
 | [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Signed close-pair cancellation of prime Dirichlet polynomials beyond the Montgomery–Vaughan threshold, averaged over height: the mean-square counterpart of the single-height prime saving that the aperture face needs (§7.3). |
 | [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | The width dictionary and the selectivity battery. The temperedness gate of §3.13 is the battery's one proved shifted-pair test, and the factorial family is one of its calibration libraries. |
 
-`RHTower` supplies the explicit formula, zero divisor, zero-counting inputs and operator
-realisations. APT's spectral-realisation question is which source space carries a positive
-realisation of the complete arithmetic form. An existing self-adjoint or indefinite
-realisation is not already such a construction.
+`RHTower` supplies the explicit formula, zero divisor, zero counts and operator realisations;
+a positive source-space realisation remains the question (§7.8). The FU, EWU and SZ route
+interfaces are explained in §3.15.
 
-Three proof routes of the RH frontier consume APT directly (§3.15): the signed prime scheduling
-route FU uses the negativity of the isolated critical prime channel on linear windows; the even
-pole-weight route EWU uses high-scale window positivity and the grid-tent receiver transfer;
-and the Suzuki route SZ obtains a strict source-level deficit on the compact critical family.
-In each case APT supplies the family and its estimate, and the route supplies the receiver.
+Three criteria govern transfer to the complete receiver:
 
-**The shared target and its criteria.** The programmes listed above work on one object: RH as
-the nonnegativity of the complete critical arithmetic form, the same form in every face. Three
-criteria recur throughout this document.
+- *Selectivity:* distinguish shifted pairs $\zeta(s-a)\zeta(s+a)$, Beurling off-line zeros and
+  Liouville-twisted weights; a law shared by these countermodels supplies infrastructure only.
+- *No archimedean subsidy:* the $\log M$ or $\log(1/w)$ gain against bounded prime cost is
+  nonselective. A frequency-growing subsidy admits the all-ones weight; constant or linear
+  aperture losses are harmless.
+- *Grading:* a floor losing $C_\sigma e^{2\sigma r}$ gives width $\le\sigma$; an aperture-uniform
+  loss gives RH. Conversely, for $\beta>\Delta=\sup_\rho\lvert\Re\rho-\tfrac12\rvert$,
+  $\hat Z(F)\ge-C_\beta(1+A)e^{2\beta A}(\int F^2+D)$ on $C^2_c$ tests supported in $[-A,A]$,
+  where $D$ bounds the autocorrelation's gauge derivative
+  (`exists_fullZeroForm_ge_neg_of_zetaZeroWidth_lt`, Square-Root Threshold). The floor exponent
+  and width agree in this normalisation; `widthDictionary_tfae` translates other receiver units.
 
-- *Selectivity.* A statement that holds verbatim for the shifted pair $\zeta(s-a)\zeta(s+a)$,
-  for a Beurling system with an off-line zero, or for the Liouville-twisted weight is
-  infrastructure, not information about RH.
-- *No archimedean subsidy.* A gain of size $\log M$ (or $\log(1/w)$) at the archimedean place
-  against a bounded prime cost is nonselective by construction. What matters is growth: a subsidy
-  growing with the frequency of the test is satisfied by the all-ones weight and removes the
-  criterion, while a loss constant or linear in the aperture is harmless.
-- *Grading.* The destination has partial values. A floor losing $C_\sigma e^{2\sigma r}$ at
-  aperture $r$ gives the zero-free strip $\Re s\le\tfrac12+\sigma$; a loss bounded uniformly in
-  the aperture gives RH. A partial result states which member of this family it reaches. The
-  grading is two-sided: for every $\beta$ above the zero width $\Delta=\sup_\rho\lvert\Re\rho-\tfrac12\rvert$
-  the complete form obeys $\hat Z(F)\ge-C_\beta(1+A)e^{2\beta A}(\int F^2+D)$ on $C^2_c$ tests
-  supported in $[-A,A]$, where $D$ bounds the gauge derivative of the autocorrelation
-  (`exists_fullZeroForm_ge_neg_of_zetaZeroWidth_lt`, Square-Root Threshold). In this energy
-  normalisation the floor exponent and the width are one number. Every receiver of the corpus
-  reads that number in its own unit (`widthDictionary_tfae`), so a result that changes only the
-  unit is not progress.
+State source, scale, support and uniformity quantifiers, and the resulting floor or zero-free
+strip. Restricted positivity must survive transfer without its source-specific archimedean gain.
 
-A useful contribution must state its quantifiers: which sources, how many scales, which
-support lengths, and which constants are uniform. Restricted positivity paid for by
-archimedean growth is useful infrastructure. To reach the shared target, a bound must survive
-on the complete receiver without that source-specific gain. Partial results should report a
-quantitative floor or a zero-free strip, rather than describe every positive identity as
-progress towards RH.
-
-**Reading route.** Start with the two receivers in §1.2, the one-form dictionary in §2.2,
-and the source/clock definitions in §2.3. Then read logarithmic sampling and relative
-stability (§§3.4–3.6), the critical kernel (§3.11), the many-scale and compact mechanisms
-(§§3.12–3.13), and the receiver transfer with its ledger of rate-$1/2$ floors (§3.14). §4
-collects the pillar theorems. The distinction between a positive subspace and a complete test
-family governs the questions of §6 and the open problems of §7.
+**Reading route.** Receivers (§1.2), the form dictionary (§2.2) and source clocks (§2.3) lead to
+sampling and stability (§§3.4–3.6), the critical kernel (§3.11), many-scale mechanisms (§§3.12–3.13)
+and receiver transfer (§3.14). Pillars, questions and open problems follow in §§4, 6 and 7.
 
 ---
 
@@ -1758,22 +1726,14 @@ theory's load-bearing walls.
 | Rename an RH-equivalent cone, metric or contraction as a hypothesis | The arithmetic work is unchanged; only universal statements proved from source data count. |
 | Functional-equation symmetry alone | Without Euler product and completion data it permits off-line zeros and negative compact directions at large aperture. |
 
-**Lean conventions.** Everything lives in
-`GaloisForLFunctions.ArithmeticPositivityTheory`; sources are imported from the
-`SignedPrimePolar` namespace of the bi-scale theory and the zero divisor from
-`zetaZeroConfig.carrier` with multiplicities `zetaZeroConfig.mult`. The literal
-zeros are never assumed to lie on the line; only the strip is used. Readouts are
-`paperFT f (gammaOf s)`. Every `tsum` is preceded by a summability theorem, and
-"eventually in $n$, then in $k$" is stated with nested eventual quantifiers,
-not with a hidden threshold premise. Energies that may diverge are valued in
-`EReal`, so that an infinite Lévy integral is $+\infty$ and finiteness of the
-arithmetic channels is a separate theorem. Positive-integer ranges are encoded
-by natural offsets such as `n+1`; dyadic blocks are the predicate
-`DyadicScaleBlock S M`, scale windows `ScaleWindow S M L`; public capstones carry data
-parameters only and no analytic, positivity or zero-location hypotheses. Constants are named
-definitions (`factorialTailTranslationConstant`, `criticalArchLogSlope`,
-`criticalCollaredPrimeConstant`, …) rather than inline numerals. RH appears only as the
-conclusion of an implication or inside an equivalence.
+**Lean conventions.** Namespace: `GaloisForLFunctions.ArithmeticPositivityTheory`; sources:
+`SignedPrimePolar`; zero divisor and multiplicities: `zetaZeroConfig.carrier`, `zetaZeroConfig.mult`.
+Readouts are `paperFT f (gammaOf s)`; only the zero strip is used. Prove summability before `tsum`
+and state nested eventual quantifiers explicitly. Divergent energies take values in `EReal`;
+arithmetic-channel finiteness is separate. Use offsets `n+1`, `DyadicScaleBlock S M` and
+`ScaleWindow S M L` for ranges. Capstones take data, with no analytic, positivity or zero-location
+hypotheses; RH appears only in conclusions or equivalences. Name constants
+(`factorialTailTranslationConstant`, `criticalArchLogSlope`, `criticalCollaredPrimeConstant`, …).
 
 ---
 
@@ -1788,19 +1748,14 @@ conclusion of an implication or inside an equivalence.
    envelope ($\lvert w_k\rvert\le C_w/k^2$), which yield physical window Riesz bounds, low-band
    Mellin exclusion, and an $\ell^2$-uniform prime channel on dyadic blocks, while the sign of the
    Poisson-closed cell kernel $R_\chi(t)$ is governed by whether $\chi(2)$ flips sign.
-2. **Which sign does the arithmetic itself carry?** At the critical envelope the limiting prime
-   channel is negative definite with an exactly known spectral range, and the actual channel
-   keeps that sign on windows of linearly growing dimension: the primes help. What they do not
-   do is pay the polar pair, which is where the rate-$1/2$ floor comes from.
-3. **When is positivity of a large explicit family information about RH?** Only through a
-   transfer to the complete receiver whose norm cost survives the loss of the archimedean gain
-   $\log M$. The tent family shows that the laboratory contains a complete RH test family with a
-   $(1,0)$-norm-controlled transfer; the critical family shows that it contains large positive
-   subfamilies; no theorem connects the two with a controlled norm.
-4. **At what rate may a floor lose in the aperture?** The receiver is graded: a subexponential
-   loss on all odd compact tests suffices, and a loss $C_\sigma e^{2\sigma r}$ gives the strip
-   $\tfrac12+\sigma$. Known prime inputs give rate $1/2$; the question is which source estimate
-   beats it.
+2. **Which sign does the arithmetic carry?** The negative definite critical prime channel has
+   an exact spectral range and retains its sign on linear windows (§3.11). The polar pair
+   remains unpaid and sets the rate-$1/2$ floor.
+3. **When does family positivity inform RH?** When a norm-controlled transfer survives removal
+   of the $\log M$ archimedean gain. Tents have the complete $(1,0)$-controlled transfer;
+   connecting the positive critical subfamilies to them remains open (§3.14).
+4. **Which aperture loss suffices?** Subexponential loss on all odd compact tests gives RH;
+   $C_\sigma e^{2\sigma r}$ gives width $\le\sigma$. The question is how to beat rate $1/2$.
 5. **Is the statement selective, or only the proof?** Wide-window positivity on shift pairs
    $g+g(\cdot-L)$ ($L>\max(L_0,\log2)$) is unconditionally selective against the non-tempered shifted
    pair $\zeta(s-a)\zeta(s+a)$ for every $a\ne0$, driven purely by prime powers in
@@ -2027,24 +1982,15 @@ to move; exchanging their limits without a common bound is precisely the trap.
 
 ## 8. Working in the theory
 
-Start from the source dictionary of §2.3 and keep the clock substitution
-$v=e^{-x}$ explicit: every estimate is proved on $v\ge1$ with the physical
-weight $v^{-(2\beta+1)}$ and transported back. Prove integrability and
-summability before integrating or summing, and prove limits in every channel
-rather than in a convenient one. Make $\ell^2$-uniform statements on dyadic
-blocks or linear windows and fixed-support statements with nested eventual quantifiers; never
-hide a threshold. Reuse the corpus: Montgomery–Vaughan interval mean squares,
-the scalar $\int(1-\cos tv)/v^2=\pi\lvert t\rvert$ kernel, scalar
-integer-cosine orthogonality, the real $L^1$ periodisation and its zero Fourier
-mode, the band-limited sinc-square identities and their Poisson sum, the
-Gamma–Lévy identity and the logarithmic weight comparison, the Lévy symbol
-bound, the nonstationary Mellin bounds with and without boundary term, the
-dyadic dilation inequality, the admissible-source law, the receiver ledger, and the unit-height
-packet count. Before proving anything about the complete form, check whether
-the statement is already a theorem in one of its other four names. Search the
-corpus before proving anything new, and verify each name in a scratch file in
-this toolchain. State every new result at its exact scope: family, scale range,
-smoothing quantifiers, block structure, and which channels are included. Report a partial
-result as a rate or a strip, not as progress towards a sign. When a mechanism fails, extract
-its strongest positive survivor as a sharp boundary or classification before retiring it.
-Comments in Lean are mathematics; status, dates and logs belong on the pipeline cards.
+Keep the clock $v=e^{-x}$ and physical weight $v^{-(2\beta+1)}$ explicit (§2.3).
+Prove integrability, summability and limits in every channel. Use dyadic blocks or linear
+windows for $\ell^2$-uniform bounds and nested eventual quantifiers for fixed supports;
+state family, scale, smoothing, block structure and included channels.
+
+Search all five names of the complete form before proving a new identity. Besides the tools
+of §6.2, the corpus contains $\int(1-\cos tv)/v^2=\pi\lvert t\rvert$, integer-cosine orthogonality,
+$L^1$ periodisation and its zero mode, sinc-square Poisson sums, Gamma–Lévy identities,
+logarithmic weight comparison, the Lévy symbol bound and unit-height packet counts.
+Verify names in a scratch file. Report partial results as rates or strips; extract a sharp
+boundary or classification from failed mechanisms. Lean comments explain mathematics;
+status, dates and logs belong on pipeline cards.

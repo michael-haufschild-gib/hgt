@@ -122,6 +122,14 @@ No numerical experiments or source-sign hypotheses are used. Formalization must 
 
 ## Interrupted formalization state
 
+Current resumption targets extremizer attainment, exact double roots and positive cofactor,
+the complete scaled heat-time ray, the elementary Hermite edge limit, sharpness of four,
+and the central-masking comparison. Existing `/tmp/aldg_extremizers_draft.lean` and
+`/tmp/aldg_edge_asymptotic_draft.lean` have been restored as programme leaves for checking.
+The inherited foreground dependency batch (shell PID `65216`) is still running; its
+completion and logs must be inspected before starting another owned Lean process.
+No new mathematical premise or numerical computation is permitted.
+
 The user cleared the goal before this theorem's Lean gates closed. Complete unchecked drafts
 `HermiteRootEdge.lean`, `HermiteSonin.lean`, `PolynomialHeatDilation.lean` and
 `HermiteHeatRootBarrier.lean` are preserved in the programme folder and are not wired into

@@ -18,9 +18,9 @@ harmonic series cut at `J`,
 at every modulus `d ≥ 1`, prime or composite. The diagonal statistic is a functional of the
 long-window partial sums of the large-scale row and of nothing else; no Kloosterman sum enters.
 For `c' = μ𝟙_{(Q,2Q]}` the partial sums are differences of Mertens' function, and the
-de la Vallée Poussin rate gives, at every balanced modulus `Q/K ≤ d ≤ 2Q`,
+de la Vallée Poussin rate gives, at every balanced modulus `Q/K ≤ d ≤ 2Q`, with `C` independent of `K`,
 
-`|Λ_d(μ𝟙_{(Q,2Q]})| ≤ C (d²/Q) e^{-√(log Q)/24}`  (`exists_balanced_kernelStatisticAll_moebiusWindowRow_le`).
+`|Λ_d(μ𝟙_{(Q,2Q]})| ≤ C K (d²/Q) e^{-√(log Q)/24}`  (`exists_balanced_kernelStatisticAll_moebiusWindowRow_le`).
 
 A bound `M(x) ≪ x^{1-η}` would turn this into a power saving; conversely the law shows that on the
 diagonal no estimate beyond the long-window Mertens oscillation is available to the cross-scale
@@ -508,23 +508,24 @@ theorem balanced_tail_le {d J T T₀ q F : ℝ} (hd1 : 1 ≤ d) (hJ : 0 < J) (hT
         field_simp
     _ ≤ T₀ / 12 * (d ^ 2 / q * F) := by gcongr
 
-/-- **The balanced dual-norm law.** Let `c > 0`, `K ≥ 1`, `B₀, T₀ ≥ 0`. There is `C ≥ 0` such that
-for every `Q ≥ 1` and every row `c'` on `(Q, 2Q]` with long-window partial sums at most
+/-- **The balanced dual-norm law.** Let `c > 0`, `B₀, T₀ ≥ 0`. There is `C ≥ 0` such that for every
+`K ≥ 1`, every `Q ≥ 1` and every row `c'` on `(Q, 2Q]` with long-window partial sums at most
 `B₀ Q e^{-c√(log Q)}` and `Σ |c'(n)|/n² ≤ T₀/Q`, every modulus `d` with `Q ≤ K d`, `d ≤ 2Q` and
-every `N ≥ 2Q`, `|Λ_d(c')| ≤ C (d²/Q) e^{-(c/2)√(log Q)}`. -/
-theorem exists_balanced_kernelStatisticAll_le {c K B₀ T₀ : ℝ} (hc : 0 < c) (hK : 1 ≤ K)
+every `N ≥ 2Q`, `|Λ_d(c')| ≤ C K (d²/Q) e^{-(c/2)√(log Q)}`. -/
+theorem exists_balanced_kernelStatisticAll_le {c B₀ T₀ : ℝ} (hc : 0 < c)
     (hB₀ : 0 ≤ B₀) (hT₀ : 0 ≤ T₀) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ Q : ℕ, 1 ≤ Q → ∀ c' : ℕ → ℝ, (∀ n, c' n ≠ 0 → Q < n ∧ n ≤ 2 * Q) →
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ K : ℝ, 1 ≤ K → ∀ Q : ℕ, 1 ≤ Q → ∀ c' : ℕ → ℝ,
+      (∀ n, c' n ≠ 0 → Q < n ∧ n ≤ 2 * Q) →
       (∀ x ≤ Q, |∑ i ∈ range x, c' (Q + 1 + i)| ≤
         B₀ * Q * Real.exp (-(c * Real.sqrt (Real.log Q)))) →
       ∀ N, 2 * Q ≤ N → ∑ n ∈ Icc 1 N, |c' n| / (n : ℝ) ^ 2 ≤ T₀ / Q →
       ∀ d : ℕ, 1 ≤ d → (Q : ℝ) ≤ K * d → d ≤ 2 * Q →
         |kernelStatisticAll N c' d| ≤
-          C * ((d : ℝ) ^ 2 / Q) * Real.exp (-(c / 2 * Real.sqrt (Real.log Q))) := by
+          C * K * ((d : ℝ) ^ 2 / Q) * Real.exp (-(c / 2 * Real.sqrt (Real.log Q))) := by
   have hP0 : (0 : ℝ) ≤ 32 + 192 / c ^ 3 := by positivity
+  refine ⟨Real.pi ^ 2 * B₀ / 12 + B₀ * (1 + c) * (32 + 192 / c ^ 3) / 2 + T₀ / 12,
+    by positivity, fun K hK Q hQ1 c' hsupp hA N hQN hT d hd hQd hd2 => ?_⟩
   have hK0 : (0 : ℝ) ≤ K := by linarith
-  refine ⟨Real.pi ^ 2 * B₀ / 12 + B₀ * K * (1 + c) * (32 + 192 / c ^ 3) / 2 + T₀ / 12,
-    by positivity, fun Q hQ1 c' hsupp hA N hQN hT d hd hQd hd2 => ?_⟩
   have hq1 : (1 : ℝ) ≤ Q := by exact_mod_cast hQ1
   have hq0 : (0 : ℝ) < Q := by linarith
   have hdR : (1 : ℝ) ≤ d := by exact_mod_cast hd
@@ -579,6 +580,13 @@ theorem exists_balanced_kernelStatisticAll_le {c K B₀ T₀ : ℝ} (hc : 0 < c)
     _ ≤ (Real.pi ^ 2 * B₀ / 12 + B₀ * K * (1 + c) * (32 + 192 / c ^ 3) / 2 + T₀ / 12) *
           (D * Real.exp (-(c / 2 * s))) := by
         linarith [mul_le_mul_of_nonneg_left hcubeD hB2, mul_le_mul_of_nonneg_left hDE hB1]
+    _ ≤ (Real.pi ^ 2 * B₀ / 12 + B₀ * (1 + c) * (32 + 192 / c ^ 3) / 2 + T₀ / 12) * K *
+          (D * Real.exp (-(c / 2 * s))) := by
+        refine mul_le_mul_of_nonneg_right ?_ (mul_nonneg hD0 (Real.exp_pos _).le)
+        have h1 : Real.pi ^ 2 * B₀ / 12 ≤ Real.pi ^ 2 * B₀ / 12 * K :=
+          le_mul_of_one_le_right (by positivity) hK
+        have h2 : T₀ / 12 ≤ T₀ / 12 * K := le_mul_of_one_le_right (by positivity) hK
+        linarith
     _ = _ := by ring
 
 /-! ## §6. The Möbius row on the diagonal -/
@@ -602,19 +610,19 @@ theorem sum_range_moebiusWindowRow (Q x : ℕ) (hx : x ≤ Q) :
       show Q + 1 + x = Q + x + 1 by ring]
     ring
 
-/-- **The balanced dual-norm law for the Möbius row.** For every `K ≥ 1` there are `C ≥ 0` and
-`Q₀` such that for `Q ≥ Q₀`, every modulus `d` (prime or composite) with `Q ≤ K d`, `d ≤ 2Q` and
-every `N ≥ 2Q`, `|Λ_d(μ𝟙_{(Q,2Q]})| ≤ C (d²/Q) e^{-√(log Q)/24}`: the de la Vallée Poussin saving of
+/-- **The balanced dual-norm law for the Möbius row.** There are `C ≥ 0` and `Q₀` such that for every
+`K ≥ 1`, `Q ≥ Q₀`, every modulus `d` (prime or composite) with `Q ≤ K d`, `d ≤ 2Q` and every
+`N ≥ 2Q`, `|Λ_d(μ𝟙_{(Q,2Q]})| ≤ C K (d²/Q) e^{-√(log Q)/24}`: the de la Vallée Poussin saving of
 the long-window Mertens oscillation. -/
-theorem exists_balanced_kernelStatisticAll_moebiusWindowRow_le {K : ℝ} (hK : 1 ≤ K) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∃ Q₀ : ℕ, ∀ Q, Q₀ ≤ Q → ∀ d : ℕ, 1 ≤ d → (Q : ℝ) ≤ K * d →
-      d ≤ 2 * Q → ∀ N, 2 * Q ≤ N →
+theorem exists_balanced_kernelStatisticAll_moebiusWindowRow_le :
+    ∃ C : ℝ, 0 ≤ C ∧ ∃ Q₀ : ℕ, ∀ K : ℝ, 1 ≤ K → ∀ Q, Q₀ ≤ Q → ∀ d : ℕ, 1 ≤ d →
+      (Q : ℝ) ≤ K * d → d ≤ 2 * Q → ∀ N, 2 * Q ≤ N →
         |kernelStatisticAll N (moebiusWindowRow Q) d| ≤
-          C * ((d : ℝ) ^ 2 / Q) * Real.exp (-(Real.sqrt (Real.log Q) / 24)) := by
+          C * K * ((d : ℝ) ^ 2 / Q) * Real.exp (-(Real.sqrt (Real.log Q) / 24)) := by
   obtain ⟨B, hB0, N₀, hM⟩ := exists_abs_sum_moebiusReal_le_sqrtLog
-  obtain ⟨C, hC0, hlaw⟩ := exists_balanced_kernelStatisticAll_le (c := 1 / 12) (by norm_num) hK
+  obtain ⟨C, hC0, hlaw⟩ := exists_balanced_kernelStatisticAll_le (c := 1 / 12) (by norm_num)
     (by positivity : (0 : ℝ) ≤ 3 * B) zero_le_one
-  refine ⟨C, hC0, max N₀ 1, fun Q hQ d hd hQd hd2 N hQN => ?_⟩
+  refine ⟨C, hC0, max N₀ 1, fun K hK Q hQ d hd hQd hd2 N hQN => ?_⟩
   have hQ1 : 1 ≤ Q := le_of_max_le_right hQ
   have hQN₀ : N₀ ≤ Q := le_of_max_le_left hQ
   have hq1 : (1 : ℝ) ≤ Q := by exact_mod_cast hQ1
@@ -646,7 +654,7 @@ theorem exists_balanced_kernelStatisticAll_moebiusWindowRow_le {K : ℝ} (hK : 1
   have hT : ∑ n ∈ Icc 1 N, |moebiusWindowRow Q n| / (n : ℝ) ^ 2 ≤ 1 / Q := by
     have h := sum_Icc_abs_moebiusWindowRow_div_pow_le (N := N) hQ1 2
     rwa [show (Q : ℝ) / (Q : ℝ) ^ 2 = 1 / Q by field_simp] at h
-  have h := hlaw Q hQ1 _ (fun n h => moebiusWindowRow_ne_zero_imp h) hA N hQN hT d hd hQd hd2
+  have h := hlaw K hK Q hQ1 _ (fun n h => moebiusWindowRow_ne_zero_imp h) hA N hQN hT d hd hQd hd2
   rwa [show -(1 / 12 / 2 * Real.sqrt (Real.log Q)) = -(Real.sqrt (Real.log Q) / 24) by ring] at h
 
 end

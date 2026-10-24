@@ -9,6 +9,7 @@ import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.HeatConeEvolution
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.MaskedPairHeatCone
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.MaskedPairHeatThreshold
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.MaskedPairHermite
+import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.SourceLocalFactors
 
 /-!
 # Arithmetic local divisor geometry

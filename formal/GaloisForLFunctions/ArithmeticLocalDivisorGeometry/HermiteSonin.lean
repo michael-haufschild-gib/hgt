@@ -18,8 +18,7 @@ theorem hermiteReal_ode (n : ℕ) :
       C (n : ℝ) * hermiteReal n = 0 := by
   have h := congrArg derivative (hermiteReal_succ n)
   rw [derivative_hermiteReal_succ] at h
-  simp only [gaussShift, derivative_sub, derivative_mul, derivative_X, one_mul,
-    derivative_C, zero_mul, zero_add, map_one] at h
+  simp only [gaussShift, derivative_sub, derivative_mul, derivative_X, one_mul, map_one] at h
   rw [map_add, map_one] at h
   linear_combination h
 
@@ -31,7 +30,7 @@ def hermiteSonin (n : ℕ) : ℝ[X] :=
 theorem derivative_hermiteSonin (n : ℕ) :
     derivative (hermiteSonin n) = C 2 * X * derivative (hermiteReal n) ^ 2 := by
   simp only [hermiteSonin, derivative_add, derivative_C_mul, derivative_pow,
-    Nat.reduceSub, pow_one, Nat.cast_ofNat]
+    Nat.reduceSub, pow_one, Nat.cast_ofNat, map_ofNat]
   linear_combination 2 * derivative (hermiteReal n) * hermiteReal_ode n
 
 theorem hermiteSonin_monotoneOn (n : ℕ) :
@@ -68,7 +67,7 @@ theorem hermiteSonin_strictMonoOn (n : ℕ) :
   intro hz
   have hx : 0 < hermiteEdge n + 1 := by linarith only [hermiteEdge_nonneg n]
   have hH : 0 < (hermiteReal n).eval (hermiteEdge n + 1) :=
-    hermite_eval_pos_of_edge_lt (by omega) (by linarith)
+    hermite_eval_pos_of_edge_lt (n := n) (by omega) (by linarith)
   have hd : 0 < (derivative (hermiteSonin (n + 1))).eval (hermiteEdge n + 1) := by
     rw [derivative_hermiteSonin, derivative_hermiteReal_succ]
     simp only [eval_mul, eval_C, eval_X, eval_pow]
@@ -105,7 +104,10 @@ theorem hermite_edge_strict_min_nonneg (n : ℕ) {x : ℝ} (hx : 0 ≤ x)
         ((derivative (hermiteReal (n + 2))).eval x))).trans_lt hs
       exact (mul_lt_mul_iff_of_pos_left (by exact_mod_cast hN)).mp hmul
     nlinarith only [hsquare, hermite_eval_succ_edge_neg n]
-  · exact hermite_strictMonoOn_right_edge n (le_refl _) hgt.le hgt
+  · exact hermite_strictMonoOn_right_edge n (Set.mem_Ici.mpr le_rfl)
+      (Set.mem_Ici.mpr hgt.le) hgt
 
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
+
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.hermite_edge_strict_min_nonneg

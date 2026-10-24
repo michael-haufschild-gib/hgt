@@ -1,42 +1,27 @@
 # Bézout–Valuation Incidence
 
-**Bézout–Valuation Incidence** (BVI) is the finite-horizon theory of truncated divisor sums.
-Its objects are rows of divisor weights $c(1),\dots,c(N)$, the arithmetic signals
-$s_{N,c}(k)=\sum_{d\le N,\;d\mid k}c(d)$ they generate, and the prefix discrepancies of those
-signals on windows whose length is polynomial in the cutoff $N$. Its method is exact arithmetic:
-the coprimality of consecutive integers (Bézout), the prime-power structure of moduli
-(valuation), and the divisibility pattern between moduli and positions (incidence). Its purpose
-is to determine, without averaging over the exponentially long period
-$\operatorname{lcm}(1,\dots,N)$, which signed cancellations of Möbius-type sources are forced by
-arithmetic alone, and to isolate exactly the one inequality that is not.
-
-Everything in the theory is unconditional. The Riemann Hypothesis appears only as the
-conclusion of criteria whose premise is one explicit finite inequality, or inside exact
-equivalences; the theory never asserts such a premise.
+**Bézout–Valuation Incidence** (BVI) studies divisor rows $c(1),\dots,c(N)$, their signals
+$s_{N,c}(k)=\sum_{d\le N,\;d\mid k}c(d)$ and prefix discrepancies on polynomial-length windows.
+Consecutive-integer coprimality (Bézout), prime-power moduli (valuation) and divisibility
+(incidence) force signed cancellations without averaging over the exponentially long period
+$\operatorname{lcm}(1,\dots,N)$. The theory isolates the finite inequality still needed for RH.
+All results are unconditional; RH occurs only as a criterion's conclusion or in an equivalence.
 
 ---
 
 ## Place in the research
 
 BVI supplies the **finite arithmetic and pronic Gram calculus** of the shared RH research.
-Its defining question is what divisibility and succession force before a full period is
-available. Exact recovery, period orthogonality and an explicit Gram formula are tools for that
-question; none replaces the signed estimate for a growing arithmetic row.
+Recovery and period orthogonality do not replace a signed estimate for a growing row.
+Three bridges locate that estimate:
 
-The three principal bridges are:
+- Divisor rows → Selberg/Ramanujan coordinates: diagonal period forms and sharp polynomial observation horizons.
+- Prefix discrepancy → pronic energy: the reciprocal-cell Nyman–Beurling norm, retaining its von Mangoldt readout.
+- Off-diagonal Gram → one-modulus residue statistics: cancellation of the actual Möbius or centred prime row.
 
-- From a divisor row to Selberg/Ramanujan coordinates: diagonal period forms and sharp
-  polynomial observation horizons.
-- From a prefix discrepancy to pronic energy: the same norm as reciprocal-cell
-  Nyman–Beurling approximation, with its von Mangoldt readout retained.
-- From the off-diagonal Gram to one-modulus residue statistics: an exact place where
-  cancellation of the actual Möbius or centred prime row can improve generic bounds.
-
-The last bridge has two distinct scales of success. Short-window cancellation already gives
-qualitative improvements for those actual rows, including estimates with growing moduli.
-A power saving in the short-window mean square at some fixed power length is equivalent to
-`Θ < 1`, a fixed zero-free strip. The frontier is therefore the quantitative gain and its
-assembly into the complete receiver, not the existence of any arithmetic improvement.
+Short-window cancellation already improves generic bounds, including with growing moduli.
+A mean-square power saving at some fixed power length is equivalent to `Θ < 1`, a fixed
+zero-free strip. Quantifying the gain and assembling the complete receiver remain the frontier.
 
 | Neighbour | Interface |
 |---|---|
@@ -54,24 +39,14 @@ assembly into the complete receiver, not the existence of any arithmetic improve
 | [Arithmetic Defect Rigidity](../ArithmeticDefectRigidity/README.md) | Uses the pronic norm and cofactor identities to test whether normalized receiver energy can escape every finite observation. |
 | [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | The other place where signed prime-row statistics beyond the large sieve are required: close prime pairs beyond the Montgomery–Vaughan threshold, against BVI's balanced-scale single-modulus statistics. |
 
-In the RH frontier BVI is a supporting framework, not a route: it supplies incidence, reciprocity,
-successor and pronic-energy estimates to the physical-model route PM (the cofactor row and its
-damping chain), to Möbius cancellation MC (fixed-modulus and window cancellation, prime-negative
-bounds on the band) and to the chronological Báez–Duarte route CTF (the von Mangoldt readout and the
-centred pronic residual). It owns the arithmetic those routes share and none of their receivers.
+BVI supplies PM with cofactor-row damping laws, MC with fixed-modulus/window cancellation and
+prime-negative band bounds, and CTF with the von Mangoldt readout and centred pronic residual.
+Their receivers still need cancellation in the signed interior term or dual norm of the actual row.
 
-**The shared target.** The programmes in the table work on RH as the sign of one critical
-arithmetic form and on the critical cancellation of the actual Möbius and prime source it needs. BVI
-supplies the additive, single-modulus structure of the integers that the continuous faces cannot see
-on their own, and the exact place — one signed interior term, one dual norm of the actual row —
-where that cancellation has to be proved.
-
-Read the receiver in §1.3, the three Gram normalizations in §2.7, and the complete energy
-split in §3.8 before selecting an estimate; §4 lists the pillar theorems and §§6–7 the questions
-and open problems. Sections 3.13 and 3.15 distinguish generic
-barriers, source-specific qualitative gains, and a power improvement that would be a new
-zero-free result. Names such as “Type II” are meaningful only together with the coefficient
-class and scale range on which the bound is uniform.
+Start with the receiver (§1.3), Gram normalizations (§2.7) and complete energy split (§3.8).
+Sections 3.13 and 3.15 separate generic barriers, qualitative gains and zero-free power savings;
+§4 gives pillars and §§6–7 research questions. Specify coefficient class and uniform scale range
+before calling an estimate “Type II”.
 
 ---
 
@@ -2004,19 +1979,13 @@ quadratic, the exact constant $S_{\mathrm{opt}}(N)/N^2$, and a closed form for $
 
 ## 8. Working in the theory
 
-- **Name the coordinates and the regime first.** Raw, response, Selberg, or spectral; period,
-  prefix, octave, linear band, or window at arbitrary phase, and at which horizon
-  ($\Phi(N)$, $N^2$, $N^m$). Most false claims in this area are category errors between these.
-- **Pass to the spectral form for window questions.** A response is an exponential sum over
-  $1/N^2$-separated frequencies with Galois-invariant coefficients; separation, Parseval over
-  the period and multi-character orthogonality are what the window, moment and visibility laws
-  use.
-- **Search before building.** The corpus already holds the exact identities for most finite
-  objects of §2, and the neighbouring programmes consume this theory's window laws; a new
-  estimate is a new rearrangement of an existing identity more often than a new object.
-- **Identity before asymptotics.** Every logarithmic drift in §3.8 and every density in §3.10
-  is a limit of an exact finite formula that retains boundary terms and signed defects. Prove
-  the finite formula, then pass to the limit.
+- **Name coordinates and regime:** raw, response, Selberg or spectral; period, prefix, octave,
+  band or arbitrary-phase window; horizon $\Phi(N)$, $N^2$ or $N^m$.
+- **Use spectral coordinates for windows:** $1/N^2$-separated frequencies, Galois-invariant
+  coefficients, period Parseval and multi-character orthogonality drive the observation laws.
+- **Search before building:** exact identities for most objects of §2 already exist.
+- **Identity before asymptotics:** derive the finite formulas behind the drifts (§3.8) and
+  densities (§3.10), retaining boundary terms and signed defects before taking limits.
 - **Keep cancellation with the main term.** Never bound a signed defect in absolute value
   before the diagonal main term has been subtracted (§3.3); never sum compensated atoms with
   absolute coefficients (§3.8).

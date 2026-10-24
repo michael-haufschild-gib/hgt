@@ -215,9 +215,11 @@ theorem fesSymmetric_clusterConfig (hS : ∀ k, k ∈ S → -k ∈ S) (hdS : ∀
     · refine Or.inl (Or.inl ⟨⟨-k.1, fun h => k.2 (by simpa using hS _ h)⟩, ?_⟩)
       rw [one_sub_verticalLatticePoint, neg_zero]
     · refine Or.inr ⟨⟨-k.1, hS _ k.2⟩, ?_⟩
-      rw [one_sub_verticalLatticePoint, hdS _ k.2]
+      rw [one_sub_verticalLatticePoint]
+      exact congrArg (fun δ => _root_.RHTower.verticalLatticePoint L (-δ) (-k.1)) (hdS _ k.2)
     · refine Or.inl (Or.inr ⟨⟨-k.1, hS _ k.2⟩, ?_⟩)
-      rw [one_sub_verticalLatticePoint, neg_neg, hdS _ k.2]
+      rw [one_sub_verticalLatticePoint, neg_neg]
+      exact congrArg (fun δ => _root_.RHTower.verticalLatticePoint L δ (-k.1)) (hdS _ k.2)
   · show (if (1 - ρ).re = 1 / 2 then 2 else 1) = (if ρ.re = 1 / 2 then 2 else 1)
     have hre : (1 - ρ).re = 1 - ρ.re := by simp
     by_cases h : ρ.re = 1 / 2

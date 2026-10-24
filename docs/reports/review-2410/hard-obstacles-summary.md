@@ -34,6 +34,9 @@ choosing a compact source does not discharge it. The unconditional local odd-win
 allocation and graded `(1/2,75)` allocation can be instantiated. The global ceiling
 application belongs to A3 until its missing input is proved.
 
+Certification: [routine-input certificate](../../drafts/pipeline/3-formalized/review-2410-just-work-certification.md)
+records the completed leaf checks, axiom audits, concrete instances, and exact J7 scope.
+
 Completed (not to be repeated): the real centered damping spectrum is in the tree; the odd `181/500` window has been transferred to the lag family (S:SharperOddWindowAndPhaseSelectiveSingleHeightLaw); the AIP odd-lattice calibration has its axis jets and self-energy asymptotic; the BiScale recovery constants are sharpened.
 
 ## 2.2 Open mathematics

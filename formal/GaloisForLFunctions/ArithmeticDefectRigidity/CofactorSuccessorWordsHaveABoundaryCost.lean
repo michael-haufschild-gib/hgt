@@ -63,9 +63,18 @@ private theorem div_add_le (n b : ℕ) (j : ℕ+) :
   have hid := Nat.div_add_mod n (j : ℕ)
   have hj : 1 ≤ (j : ℕ) := j.property
   have hb : b ≤ (j : ℕ) * b := by nlinarith
-  have hlt : n + b < (n / j + b + 1) * j := by nlinarith
-  have hd := (Nat.div_lt_iff_lt_mul j.property).mpr hlt
-  omega
+  have hlt : n + b < (n / j + b + 1) * j := by
+    calc
+      n + b = (j : ℕ) * (n / j) + n % j + b :=
+        congrArg (fun t : ℕ => t + b) hid.symm
+      _ ≤ (j : ℕ) * (n / j) + n % j + (j : ℕ) * b :=
+        Nat.add_le_add_left hb _
+      _ < (j : ℕ) * (n / j) + j + (j : ℕ) * b :=
+        Nat.add_lt_add_right (Nat.add_lt_add_left hr _) _
+      _ = (n / j + b + 1) * j := by ring
+  have hd : (n + b) / j < n / j + b + 1 :=
+    (Nat.div_lt_iff_lt_mul j.property).mpr hlt
+  exact Nat.le_of_lt_succ hd
 
 /-- The word acts within its boundary budget of the pure multiplicative dilation. -/
 theorem apply_bounds (w : CellWord) (n : ℕ) :

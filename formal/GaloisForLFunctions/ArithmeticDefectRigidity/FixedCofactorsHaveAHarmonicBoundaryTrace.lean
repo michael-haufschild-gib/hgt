@@ -25,7 +25,7 @@ private theorem sum_mellin_dilation_blocks (σ : ℝ) (f : ℕ → ℝ) (hf0 : f
   induction T with
   | zero => simp
   | succ T ih =>
-    rw [Nat.succ_eq_add_one, add_mul, one_mul, Finset.sum_range_add, ih,
+    rw [add_mul, one_mul, Finset.sum_range_add, ih,
       Finset.sum_range_succ, mul_add]
     congr 1
     have hdiv : ∀ r ∈ range (j : ℕ),
@@ -37,7 +37,7 @@ private theorem sum_mellin_dilation_blocks (σ : ℝ) (f : ℕ → ℝ) (hf0 : f
           Nat.div_eq_of_lt (mem_range.mp hr), zero_add]]
     rw [sum_congr rfl hdiv, ← mul_sum, sum_range_mellinCell]
     rcases Nat.eq_zero_or_pos T with rfl | hT
-    · simp only [hf0, zero_mul]
+    · simp only [hf0, zero_mul, mul_zero]
     · rw [mellinCell]
       push_cast
       rw [show (T : ℝ) * j + j = ((T : ℝ) + 1) * j by ring,

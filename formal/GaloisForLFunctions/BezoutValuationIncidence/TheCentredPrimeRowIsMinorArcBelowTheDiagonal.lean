@@ -18,8 +18,8 @@ The dichotomy of the Möbius row holds for `c' = (Λ - 1)·𝟙_{(Q,2Q]}`.
   (`abs_kernelStatistic_centredPrimeBlock_le_rpow`). The omitted residue class `0 mod p` of the
   primes has relative size `1/p ≤ Q^{-δ}` and lies inside this saving.
 * **The diagonal.** The long-window partial sums of `c'` are `ψ(Q + x) - ψ(Q) - x`; the prime number
-  theorem with error term gives `|Λ_d(c')| ≤ C (d²/Q) e^{-(c/2)√(log Q)}` at every balanced modulus
-  `Q/K ≤ d ≤ 2Q` (`exists_balanced_kernelStatisticAll_centredPrimeBlock_le`).
+  theorem with error term gives `|Λ_d(c')| ≤ C K (d²/Q) e^{-(c/2)√(log Q)}` at every balanced modulus
+  `Q/K ≤ d ≤ 2Q`, `C` independent of `K` (`exists_balanced_kernelStatisticAll_centredPrimeBlock_le`).
 -/
 
 open Finset Filter Topology ArithmeticFunction RHTower RHTower.Sieve
@@ -471,21 +471,20 @@ theorem sum_Icc_abs_centredPrimeBlock_div_sq_le {Q N : ℕ} (hQ1 : 1 ≤ Q) {B :
     _ ≤ (B * Q + Q) / (Q : ℝ) ^ 2 := by gcongr
     _ = (B + 1) / Q := by field_simp
 
-/-- **The balanced dual-norm law for the centred prime row.** There is `c > 0` such that for every
-`K ≥ 1` there are `C ≥ 0` and `Q₀` with `|Λ_d((Λ - 1)𝟙_{(Q,2Q]})| ≤ C (d²/Q) e^{-(c/2)√(log Q)}` for
-`Q ≥ Q₀`, every modulus `d` with `Q ≤ K d`, `d ≤ 2Q`, and every `N ≥ 2Q`: the long-window saving of
-the prime number theorem with error term. -/
+/-- **The balanced dual-norm law for the centred prime row.** There are `c > 0`, `C ≥ 0` and `Q₀`
+such that `|Λ_d((Λ - 1)𝟙_{(Q,2Q]})| ≤ C K (d²/Q) e^{-(c/2)√(log Q)}` for every `K ≥ 1`, `Q ≥ Q₀`,
+every modulus `d` with `Q ≤ K d`, `d ≤ 2Q`, and every `N ≥ 2Q`: the long-window saving of the prime
+number theorem with error term. -/
 theorem exists_balanced_kernelStatisticAll_centredPrimeBlock_le :
-    ∃ c : ℝ, 0 < c ∧ ∀ K : ℝ, 1 ≤ K → ∃ C : ℝ, 0 ≤ C ∧ ∃ Q₀ : ℕ, ∀ Q, Q₀ ≤ Q →
+    ∃ c : ℝ, 0 < c ∧ ∃ C : ℝ, 0 ≤ C ∧ ∃ Q₀ : ℕ, ∀ K : ℝ, 1 ≤ K → ∀ Q, Q₀ ≤ Q →
       ∀ d : ℕ, 1 ≤ d → (Q : ℝ) ≤ K * d → d ≤ 2 * Q → ∀ N, 2 * Q ≤ N →
         |kernelStatisticAll N (centredPrimeBlock Q) d| ≤
-          C * ((d : ℝ) ^ 2 / Q) * Real.exp (-(c / 2 * Real.sqrt (Real.log Q))) := by
+          C * K * ((d : ℝ) ^ 2 / Q) * Real.exp (-(c / 2 * Real.sqrt (Real.log Q))) := by
   obtain ⟨Cψ, c, hc, hCψ, hev⟩ := exists_psi_error_eventually
   obtain ⟨X, hX⟩ := eventually_atTop.mp hev
-  refine ⟨c, hc, fun K hK => ?_⟩
-  obtain ⟨C, hC0, hlaw⟩ := exists_balanced_kernelStatisticAll_le hc hK
+  obtain ⟨C, hC0, hlaw⟩ := exists_balanced_kernelStatisticAll_le hc
     (by positivity : (0 : ℝ) ≤ 3 * Cψ) (by positivity : (0 : ℝ) ≤ 3 + 2 * Cψ)
-  refine ⟨C, hC0, max ⌈X⌉₊ 1, fun Q hQ d hd hQd hd2 N hQN => ?_⟩
+  refine ⟨c, hc, C, hC0, max ⌈X⌉₊ 1, fun K hK Q hQ d hd hQd hd2 N hQN => ?_⟩
   have hQ1 : 1 ≤ Q := le_of_max_le_right hQ
   have hQX : X ≤ Q := (Nat.le_ceil X).trans (by exact_mod_cast le_of_max_le_left hQ)
   have hq1 : (1 : ℝ) ≤ Q := by exact_mod_cast hQ1
@@ -536,7 +535,7 @@ theorem exists_balanced_kernelStatisticAll_centredPrimeBlock_le :
     linarith
   have hT := sum_Icc_abs_centredPrimeBlock_div_sq_le (N := N) hQ1 hψ2
   rw [show (2 + 2 * Cψ + 1) = (3 + 2 * Cψ) by ring] at hT
-  exact hlaw Q hQ1 _ (fun n h => centredPrimeBlock_ne_zero_imp h) hA N hQN hT d hd hQd hd2
+  exact hlaw K hK Q hQ1 _ (fun n h => centredPrimeBlock_ne_zero_imp h) hA N hQN hT d hd hQd hd2
 
 /-! ## §4. The dichotomy for the actual rows -/
 
@@ -574,26 +573,28 @@ theorem crossScale_dichotomy_moebius_and_centredPrime {δ : ℝ} (hδ : 0 < δ) 
       _ ≤ 24 * (1 + Real.log (2 * Q)) ^ 4 * ((p : ℝ) ^ 2 / Q) * (Q : ℝ) ^ (-(δ / 4)) := by
           have h3 : 0 ≤ (1 + Real.log (2 * (Q : ℝ))) ^ 3 := by positivity
           linarith [mul_le_mul_of_nonneg_right hL34 hpos, mul_nonneg h3 hpos]
-  · obtain ⟨C₁, hC₁, Q₁, h₁⟩ := exists_balanced_kernelStatisticAll_moebiusWindowRow_le hK
-    obtain ⟨c₂, hc₂, h₂⟩ := exists_balanced_kernelStatisticAll_centredPrimeBlock_le
-    obtain ⟨C₂, hC₂, Q₂, h₂⟩ := h₂ K hK
-    refine ⟨min (1 / 24) (c₂ / 2), lt_min (by norm_num) (by positivity), max C₁ C₂,
-      le_max_of_le_left hC₁, max Q₁ Q₂, fun Q hQ d hd hQd hd2 N hQN => ?_⟩
+  · obtain ⟨C₁, hC₁, Q₁, h₁⟩ := exists_balanced_kernelStatisticAll_moebiusWindowRow_le
+    obtain ⟨c₂, hc₂, C₂, hC₂, Q₂, h₂⟩ := exists_balanced_kernelStatisticAll_centredPrimeBlock_le
+    have hK0 : (0 : ℝ) ≤ K := by linarith
+    refine ⟨min (1 / 24) (c₂ / 2), lt_min (by norm_num) (by positivity), max C₁ C₂ * K,
+      mul_nonneg (le_max_of_le_left hC₁) hK0, max Q₁ Q₂, fun Q hQ d hd hQd hd2 N hQN => ?_⟩
     have hD : 0 ≤ (d : ℝ) ^ 2 / Q := by positivity
     have hs : 0 ≤ Real.sqrt (Real.log Q) := Real.sqrt_nonneg _
     have hexp : ∀ a : ℝ, min (1 / 24) (c₂ / 2) ≤ a →
         Real.exp (-(a * Real.sqrt (Real.log Q))) ≤
           Real.exp (-(min (1 / 24) (c₂ / 2) * Real.sqrt (Real.log Q))) := fun a ha =>
       Real.exp_le_exp.mpr (by nlinarith)
+    have hCK : 0 ≤ max C₁ C₂ * K * ((d : ℝ) ^ 2 / Q) :=
+      mul_nonneg (mul_nonneg (le_max_of_le_left hC₁) hK0) hD
     constructor
-    · refine (h₁ Q (le_of_max_le_left hQ) d hd hQd hd2 N hQN).trans ?_
+    · refine (h₁ K hK Q (le_of_max_le_left hQ) d hd hQd hd2 N hQN).trans ?_
       have e : -(Real.sqrt (Real.log Q) / 24) = -(1 / 24 * Real.sqrt (Real.log Q)) := by ring
       rw [e]
-      exact mul_le_mul (mul_le_mul_of_nonneg_right (le_max_left _ _) hD) (hexp _ (min_le_left _ _))
-        (Real.exp_pos _).le (mul_nonneg (le_max_of_le_left hC₁) hD)
-    · refine (h₂ Q (le_of_max_le_right hQ) d hd hQd hd2 N hQN).trans ?_
-      exact mul_le_mul (mul_le_mul_of_nonneg_right (le_max_right _ _) hD) (hexp _ (min_le_right _ _))
-        (Real.exp_pos _).le (mul_nonneg (le_max_of_le_left hC₁) hD)
+      exact mul_le_mul (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_max_left _ _)
+        hK0) hD) (hexp _ (min_le_left _ _)) (Real.exp_pos _).le hCK
+    · refine (h₂ K hK Q (le_of_max_le_right hQ) d hd hQd hd2 N hQN).trans ?_
+      exact mul_le_mul (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_max_right _ _)
+        hK0) hD) (hexp _ (min_le_right _ _)) (Real.exp_pos _).le hCK
 
 end
 

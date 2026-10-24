@@ -61,7 +61,7 @@ theorem inverseHeat_derivative_pos_of_edge_lt {q : ℝ[X]} {n : ℕ}
   apply add_pos_of_nonneg_of_pos
   · exact Finset.sum_nonneg fun j hj => mul_nonneg
       (mul_nonneg (hq _) (by positivity))
-      (hermite_eval_pos_of_edge_lt (by have := Finset.mem_range.mp hj; omega) hx).le
+      (hermite_eval_pos_of_edge_lt (n := n) (by have := Finset.mem_range.mp hj; omega) hx).le
   · exact mul_pos (mul_pos (top_coeff_pos hdeg hq) (by positivity))
       (hermite_eval_pos_of_edge_lt (le_refl _) hx)
 
@@ -86,7 +86,7 @@ theorem inverseHeat_edge_stationary_coeff {q : ℝ[X]} {n : ℕ}
       0 ≤ q.coeff (j + 1) * ((j : ℝ) + 1) * (hermiteReal j).eval (hermiteEdge n) := by
     intro j hj
     exact mul_nonneg (mul_nonneg (hq _) (by positivity))
-      (hermite_eval_pos_at_edge (by have := Finset.mem_range.mp hj; omega)).le
+      (hermite_eval_pos_at_edge (n := n) (by have := Finset.mem_range.mp hj; omega)).le
   have hz := (Finset.sum_eq_zero_iff_of_nonneg hnon).mp he.symm
   intro j hj
   have hterm := hz j (Finset.mem_range.mpr (by omega))
@@ -228,3 +228,6 @@ theorem scaled_nonnegative_edge_root_rigidity {p : ℝ[X]} {n : ℕ} {r : ℝ}
 
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
+
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.nonnegative_root_le_sqrt_mul_hermiteEdge
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.scaled_nonnegative_edge_root_rigidity

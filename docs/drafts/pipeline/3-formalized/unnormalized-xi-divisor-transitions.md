@@ -1,8 +1,8 @@
 # Unnormalized Xi divisor coefficients and transitions
 
 - **ID:** unnormalized-xi-divisor-transitions
-- **Stage:** 2-fully-proven
-- **Type:** INTERFACE THEOREM (paper; Lean check pending)
+- **Stage:** 3-formalized
+- **Type:** INTERFACE THEOREM
 - **Source:** Arithmetic Local Divisor Geometry; exact finite canonical-product head
 - **Statement:** The real local divisor polynomial, formed from critical copies and conjugate pairs without dividing by the central Xi value, represents every radius head exactly. Its coefficients are the canonically normalized even Taylor coefficients. Disjoint copy transitions obey exact polynomial multiplication and signed coefficient convolution, including central zeros and arbitrary multiplicity.
 
@@ -56,7 +56,12 @@ The finite canonical head, its positive scalar, real-axis nonnegativity and radi
 
 - [x] Exact multiplicity and normalization audited on paper.
 - [x] Existing canonical-head and transition inputs inspected.
-- [ ] `SourceLocalFactors.lean` plain module check.
-- [ ] Transitive axiom audit of source identity, even/odd coefficients and signed split.
+- [x] `SourceLocalFactors.lean` plain module check and umbrella wiring.
+- [x] Transitive axiom audit of source identity, even/odd coefficients and signed split.
+
+`lake --old env lean GaloisForLFunctions/ArithmeticLocalDivisorGeometry/SourceLocalFactors.lean`
+passed. Audits of `exists_pos_xiFiniteHead_normalization`, `xiFiniteHead_even_taylor`,
+`xiFiniteHead_odd_taylor` and `localDivisorPolynomial_split_coeff` use only
+`propext`, `Classical.choice` and `Quot.sound`. Temporary print commands were removed.
 
 The arithmetic coefficient certificate remains open.

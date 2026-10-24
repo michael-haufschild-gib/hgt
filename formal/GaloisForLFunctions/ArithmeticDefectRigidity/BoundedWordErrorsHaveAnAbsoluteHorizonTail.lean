@@ -54,8 +54,9 @@ private theorem forcing_cell_le_power (ε : SubcriticalDamping) (n : ℕ) (hn : 
         (n : ℝ) ^ (1 - (ε : ℝ))) / ((n : ℝ) * (n : ℝ)) :=
       div_le_div_of_nonneg_left
         (mul_nonneg (mul_nonneg hm hM) (Real.rpow_nonneg hn0.le _))
-        (mul_pos hn0 hn0) (by nlinarith)
-    _ = _ := by rw [hpow]; field_simp
+        (mul_pos hn0 hn0)
+        (mul_le_mul_of_nonneg_left (le_add_of_nonneg_right zero_le_one) hn0.le)
+    _ = _ := by rw [hpow]; field_simp [hn0.ne']
 
 /-- The absolute new-cell forcing cost decays as a negative power of the cutoff. -/
 theorem forcingHorizonTailMass_le (ε : SubcriticalDamping) (H T : ℕ) :

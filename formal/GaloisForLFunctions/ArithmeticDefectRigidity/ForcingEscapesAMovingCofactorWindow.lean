@@ -49,7 +49,8 @@ theorem tendsto_movingCofactorTailError_div_forcingEnergy_zero (ε : Subcritical
       (1 + Real.log (forcingEnergy ε T / dampedMobiusEnergy ε T)) ^ 2 :=
     pow_le_pow_left₀ (by linarith [cofactorHeadCoefficient_nonneg (ε : ℝ)
       (forcingCofactorWindow ε T)]) (add_le_add (le_refl 1) (hhead.trans hfloor)) 2
-  calc _ ≤ (1 + cofactorHeadCoefficient ε (forcingCofactorWindow ε T)) ^ 2 *
+  calc
+    _ ≤ (1 + cofactorHeadCoefficient ε (forcingCofactorWindow ε T)) ^ 2 *
         (dampedMobiusEnergy ε T / forcingEnergy ε T) := by
       simpa only [mul_div_assoc] using div_le_div_of_nonneg_right
         (cofactorTailErrorEnergy_le (ε : ℝ) (forcingCofactorWindow ε T) T)

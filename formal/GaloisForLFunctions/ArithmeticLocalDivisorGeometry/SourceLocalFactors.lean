@@ -198,11 +198,3 @@ theorem localDivisorPolynomial_split_coeff (t : ℝ) (S T : Finset XiZeroCopy) (
 
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
-
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.exists_pos_xiFiniteHead_normalization
-
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.xiFiniteHead_even_taylor
-
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.xiFiniteHead_odd_taylor
-
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.localDivisorPolynomial_split_coeff

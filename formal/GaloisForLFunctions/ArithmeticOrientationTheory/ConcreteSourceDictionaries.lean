@@ -4,6 +4,8 @@ import GaloisForLFunctions.ArithmeticOrientationTheory.AnIndexFormulaForTheActua
 import GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.VanishingApertureFloorAndGradedTransport
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.RiemannRochForZAndTheReflectedPrimePolarLedger
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LambdaRingEffectivityAndHeckeLefschetzRigidity
+import GaloisForLFunctions.ArithmeticIncidencePositivity.SharedDerivativeEnergyAndGlobalAllocationSynthesis
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentActualZetaDetectionAndFullZeroFormBridge
 import GaloisForLFunctions.RHTower.Suzuki.SuzukiCriticalFirstVariation
 import GaloisForLFunctions.RHTower.XiGaussianHeatWindowPrimeTwoMargin
 
@@ -32,6 +34,7 @@ open GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 open GaloisForLFunctions.ArithmeticIncidencePositivity
 open GaloisForLFunctions.TransHorizonIncidenceMechanics
 open GaloisForLFunctions.BezoutValuationIncidence
+open GaloisForLFunctions.HTGeometry (hermNegIndex)
 
 namespace GaloisForLFunctions.ArithmeticOrientationTheory
 noncomputable section
@@ -131,7 +134,8 @@ theorem fifthSpline_suzuki_firstVariation :
     Tendsto (fun omega : ℝ =>
       (autocorr fifthSpline 0-suzukiCriticalSourcePairing fifthSpline omega)/omega)
       (𝓝[>] 0) (𝓝 (fullZeroForm fifthSpline)) := by
-  rw [fullZeroForm_eq_re_weilFullFunctional fifthSpline_contDiff.continuous fifthSpline_compact]
+  rw [ArithmeticPositivityTheory.fullZeroForm_eq_re_weilFullFunctional
+    fifthSpline_contDiff.continuous fifthSpline_compact]
   exact tendsto_suzukiCriticalSourcePairing_firstVariation_of_contDiff
     fifthSpline_contDiff fifthSpline_compact
 

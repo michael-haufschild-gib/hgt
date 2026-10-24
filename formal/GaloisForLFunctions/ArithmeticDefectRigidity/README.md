@@ -554,23 +554,9 @@ boundary cost for finite packets. It does not authorize exchanging the complete 
 with the trace: its harmonic coefficients are not summable. Fixed-dilation domain stability
 and stability under the full variable-horizon cofactor operator are different obligations.
 
-The subtraction also has a paid dilation commutator. With
-$D_pv(n)=v(\lfloor n/p\rfloor)$ and $\alpha=1-\varepsilon$,
-
-\[
-(\widetilde{\mathcal D}_\varepsilon D_p-D_p\widetilde{\mathcal D}_\varepsilon)v(n)
-=\mathcal L_\varepsilon(v)
- \left(\lfloor n/p\rfloor^\alpha-p^{-\alpha}n^\alpha\right).
-\]
-
-The rounding defect has absolute value at most one. Therefore the commutator's
-pronic norm is at most $|\mathcal L_\varepsilon(v)|$, uniformly in horizon and
-integer dilation. For the actual source its squared norm is at most
-$c_\varepsilon^2$, even for a dilation $p=p(T)$ moving with the horizon; divided
-by escaping receiver energy it tends to zero. This follows from
-[CofactorRenormalizationHasABoundedDilationCommutator](CofactorRenormalizationHasABoundedDilationCommutator.lean).
-It pays this specific operator error without making the full cofactor sum
-bounded or proving general invariance of the trace domain.
+The same trace pays the dilation commutator in pillar 11, including when the dilation moves
+with the horizon. This compatibility law does not establish boundedness of the full cofactor
+operator or general invariance of its trace domain.
 
 ### 9. Energy quantiles retain diffuse mass and signed cofactor work
 

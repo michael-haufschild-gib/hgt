@@ -115,8 +115,8 @@ private theorem soninL2_norm_sq_eq_integral (w : SoninL2) :
       ((∫ t : ℝ, ‖w t‖ ^ 2 : ℝ) : ℂ) := by
     rw [← integral_complex_ofReal]
     refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
-    rw [RCLike.inner_apply, mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq]
-    norm_cast
+    dsimp only
+    rw [RCLike.inner_apply, Complex.mul_conj, Complex.normSq_eq_norm_sq]
   rw [h2, Complex.ofReal_re]
 
 /-- Truncating an `L²(ℝ)` vector to `[-R, R]` converges strongly in `SoninL2` as `R → +∞`. -/
@@ -176,7 +176,7 @@ private theorem inner_indicatorCutoff_additiveTranslationUnitary_eq_zero {R a : 
   change ⟪P φ t, MellinL2.additiveTranslationUnitary a (P ψ) t⟫_ℂ = 0
   rw [hφ, htr]
   have hψ' : P ψ (t + a) = (Icc (-R) R).indicator (fun s => ψ s) (t + a) := by
-    simpa only [P, Function.comp_apply, MellinL2.realTranslationEquiv] using hψ
+    simpa [P, Function.comp_apply, MellinL2.realTranslationEquiv] using hψ
   rw [hψ']
   by_cases ht : t ∈ Icc (-R) R
   · have hta : t + a ∉ Icc (-R) R := by
@@ -218,8 +218,9 @@ theorem tendsto_inner_additiveTranslationUnitary_of_abs_atTop {α : Type*} {l : 
     have hφ_eq : φ = (φ - P R φ) + P R φ := (sub_add_cancel φ (P R φ)).symm
     have hψ_eq : U ψ = U (ψ - P R ψ) + U (P R ψ) := by
       rw [← map_add, sub_add_cancel]
-    conv_lhs => rw [hφ_eq]
-    rw [inner_add_left, hψ_eq, inner_add_right, add_assoc]
+    conv_lhs => rw [hφ_eq, inner_add_left]
+    conv_lhs => rhs; rw [hψ_eq, inner_add_right]
+    rw [← add_assoc]
   rw [hsplit, horth, add_zero]
   have hPφ : ‖P R φ‖ ≤ ‖φ‖ + ‖φ - P R φ‖ := by
     calc ‖P R φ‖ = ‖φ - (φ - P R φ)‖ := by rw [sub_sub_cancel]
@@ -541,8 +542,8 @@ theorem forall_toeplitz_re_nonneg_iff_eq_zero {τ : ℝ → ℂ} (hτ : Continuo
       intro p
       rw [hκ_eq (p.2 - p.1)]
       change ((conj (fσ p.1) * fσ p.2 * (κ (p.2 - p.1) : ℂ))).re = _
-      simp only [fσ, map_add, map_mul, Complex.conj_ofReal, ← Complex.ofReal_mul,
-        ← Complex.ofReal_add, ← Complex.ofReal_pow, Complex.ofReal_re]
+      simp only [fσ, Complex.conj_ofReal, ← Complex.ofReal_mul, ← Complex.ofReal_add,
+        Complex.ofReal_re]
       ring
     simp_rw [hre_pt, hσ2, one_mul] at hnonneg
     have hsum_int : (∫ p : ℝ × ℝ,
@@ -553,9 +554,15 @@ theorem forall_toeplitz_re_nonneg_iff_eq_zero {τ : ℝ → ℂ} (hτ : Continuo
           ∫ p, h (p.1 - u₀) * h (p.2 - u₀) * κ (p.2 - p.1) ∂(volume.prod volume)) +
         (σ * (∫ p, h p.1 * h (p.2 - u₀) * κ (p.2 - p.1) ∂(volume.prod volume)) +
           σ * (∫ p, h (p.1 - u₀) * h p.2 * κ (p.2 - p.1) ∂(volume.prod volume))) := by
-      rw [← integral_const_mul, ← integral_const_mul, ← integral_add hp00 hp11,
-        ← integral_add hp01 hp10, ← integral_add (hp00.add hp11) (hp01.add hp10)]
-      rfl
+      have hp_left : Integrable (fun p : ℝ × ℝ =>
+          h p.1 * h p.2 * κ (p.2 - p.1) + h (p.1 - u₀) * h (p.2 - u₀) * κ (p.2 - p.1))
+          (volume.prod volume) := hp00.add hp11
+      have hp_right : Integrable (fun p : ℝ × ℝ =>
+          σ * (h p.1 * h (p.2 - u₀) * κ (p.2 - p.1)) +
+            σ * (h (p.1 - u₀) * h p.2 * κ (p.2 - p.1)))
+          (volume.prod volume) := hp01.add hp10
+      rw [integral_add hp_left hp_right, integral_add hp00 hp11, integral_add hp01 hp10,
+        integral_const_mul, integral_const_mul]
     rw [hsum_int] at hnonneg
     -- Shift `(p.1 - u₀, p.2 - u₀)` and the two cross integrals back to `(p.1, p.2)`:
     have hi11 : (∫ p : ℝ × ℝ, h (p.1 - u₀) * h (p.2 - u₀) * κ (p.2 - p.1) ∂(volume.prod volume)) =
@@ -593,8 +600,8 @@ theorem forall_toeplitz_re_nonneg_iff_eq_zero {τ : ℝ → ℂ} (hτ : Continuo
         ((hh_int.comp_sub_right u₀).mul_prod hh_int).mul_bdd
           (hκ_cont.comp (continuous_snd.sub continuous_fst)).aestronglyMeasurable
           (Filter.Eventually.of_forall fun p => by rw [Real.norm_eq_abs]; exact hκ_bound _)
-      rw [integral_prod _ hp10', integral_prod _ (hprod_hh u₀),
-        integral_integral_swap (hprod_hh u₀)]
+      rw [integral_prod _ hp10']
+      conv_rhs => rw [integral_prod _ (hprod_hh u₀), integral_integral_swap (hprod_hh u₀)]
       rw [← integral_add_right_eq_self
         (fun s => ∫ t, h (s - u₀) * h t * κ (t - s)) u₀]
       refine integral_congr_ae (Filter.Eventually.of_forall fun s => ?_)
@@ -810,7 +817,7 @@ theorem norm_toeplitz_ccmMultiPacket_sub_le {ι : Type*} [Fintype ι]
       intro s
       have hpt1 : ∀ t : ℝ, conj (gL s) * gL t * τ (t - s) =
           ∑ j : ι, c j * (conj (gL s) * g₀ (t - α j * L) * τ (t - s)) := fun t => by
-        simp only [gL, ccmMultiPacket_apply, Finset.mul_sum]
+        simp only [gL, ccmMultiPacket_apply, Finset.mul_sum, Finset.sum_mul]
         exact Finset.sum_congr rfl fun j _ => by ring
       simp_rw [hpt1]
       rw [integral_finsetSum Finset.univ fun (j : ι) _ => hint_inner s j]
@@ -834,10 +841,13 @@ theorem norm_toeplitz_ccmMultiPacket_sub_le {ι : Type*} [Fintype ι]
             simp only [gL, ccmMultiPacket_apply, map_sum, map_mul, Finset.sum_mul]
             exact Finset.sum_congr rfl fun i _ => by ring
         simp_rw [hpt_t]
-        rw [integral_finsetSum Finset.univ fun (i : ι) _ =>
-          (((hshift_int j).const_mul _).mul_bdd
+        have hint_i : ∀ i : ι, Integrable
+            (fun t => conj (c i) * (conj (g₀ (s - α i * L)) * g₀ (t - α j * L) * τ (t - s)))
+            volume := fun i =>
+          (((hshift_int j).const_mul (conj (g₀ (s - α i * L)))).mul_bdd
             (hτ.comp (continuous_id.sub continuous_const)).aestronglyMeasurable
-            (Filter.Eventually.of_forall fun t => hC (t - s))).const_mul _]
+            (Filter.Eventually.of_forall fun t => hC (t - s))).const_mul (conj (c i))
+        rw [integral_finsetSum Finset.univ fun (i : ι) _ => hint_i i]
         exact Finset.sum_congr rfl fun i _ => integral_const_mul _ _
       simp_rw [hpt2]
       rw [integral_finsetSum Finset.univ fun (i : ι) _ =>
@@ -899,7 +909,7 @@ theorem norm_toeplitz_ccmMultiPacket_sub_le {ι : Type*} [Fintype ι]
       unfold L₀ at hL
       linarith
     have hsep : U + 2 * g₀.radius ≤ |(α j - α i) * L| := by
-      rw [abs_mul, abs_of_pos hL_pos, mul_comm]
+      rw [abs_mul, abs_of_pos hL_pos, mul_comm |α j - α i| L]
       exact (div_le_iff₀ hα_pos).mp hle_L
     have hshift_eq : Ipair i j =
         ∫ p : ℝ × ℝ, conj (g₀ p.1) * g₀ p.2 * τ (p.2 - p.1 + (α j - α i) * L)
@@ -1012,7 +1022,7 @@ theorem integral_norm_sq_ccmMultiPacket_eq {ι : Type*} [Fintype ι]
       simp only [hij, ↓reduceIte] at hsingle
       unfold L₁ at hL; linarith
     have hsep : 2 * g₀.radius ≤ |(α j - α i) * L| := by
-      rw [abs_mul, abs_of_pos hL_pos, mul_comm]
+      rw [abs_mul, abs_of_pos hL_pos, mul_comm |α j - α i| L]
       exact (div_le_iff₀ hα_pos).mp hle_L
     have hsum_abs : |(α j - α i) * L| ≤ |x - α i * L| + |x - α j * L| := by
       calc |(α j - α i) * L| = |(x - α i * L) - (x - α j * L)| := by ring_nf
@@ -1241,7 +1251,7 @@ private theorem ccmPoleFreeFourCoeffs_exp_cancel {L σ : ℝ} (hσ : σ = 1 / 2 
   have hcast : (((Real.exp u - Real.exp (-u) -
       ccmPoleFreeWeight L * (Real.exp (2 * u) - Real.exp (-(2 * u))) : ℝ) : ℂ)) = 0 := by
     rw [hreal, Complex.ofReal_zero]
-  push_cast at hcast
+  simp only [Complex.ofReal_sub, Complex.ofReal_mul] at hcast
   linear_combination hcast
 
 theorem ccmPoleFreeFourPacketOf_integral_exp_half_eq_zero
@@ -1262,8 +1272,10 @@ theorem ccmPoleFreeFourPacketOf_integral_exp_half_eq_zero
       (φ.radius + |ccmBasePoleNode i * L|)
       (fun x hx => φ.eq_zero_of_radius_le_abs _ (by
         have := abs_sub_abs_le_abs_sub x (ccmBasePoleNode i * L); linarith))
-    simpa only [mul_assoc] using
-      (integrable_compactSchwartz_mul_continuous g_i hcont).const_mul (ccmPoleFreeFourCoeffs L i)
+    have h_int := (integrable_compactSchwartz_mul_continuous g_i hcont).const_mul
+      (ccmPoleFreeFourCoeffs L i)
+    simp only [g_i, mkCCMCompactSchwartzLogTest_apply, ← mul_assoc] at h_int
+    exact h_int
   rw [integral_finsetSum Finset.univ fun (i : Fin 4) _ => hint i]
   have hterm : ∀ i : Fin 4,
       (∫ x : ℝ, ccmPoleFreeFourCoeffs L i * φ (x - ccmBasePoleNode i * L) *
@@ -1295,8 +1307,10 @@ theorem ccmPoleFreeFourPacketOf_integral_exp_neg_half_eq_zero
       (φ.radius + |ccmBasePoleNode i * L|)
       (fun x hx => φ.eq_zero_of_radius_le_abs _ (by
         have := abs_sub_abs_le_abs_sub x (ccmBasePoleNode i * L); linarith))
-    simpa only [mul_assoc] using
-      (integrable_compactSchwartz_mul_continuous g_i hcont).const_mul (ccmPoleFreeFourCoeffs L i)
+    have h_int := (integrable_compactSchwartz_mul_continuous g_i hcont).const_mul
+      (ccmPoleFreeFourCoeffs L i)
+    simp only [g_i, mkCCMCompactSchwartzLogTest_apply, ← mul_assoc] at h_int
+    exact h_int
   rw [integral_finsetSum Finset.univ fun (i : Fin 4) _ => hint i]
   have hterm : ∀ i : Fin 4,
       (∫ x : ℝ, ccmPoleFreeFourCoeffs L i * φ (x - ccmBasePoleNode i * L) *
@@ -1364,7 +1378,9 @@ theorem injective_ccmDyadicPoleIntNodes (d : ℕ) :
     dsimp [ccmBasePoleIntNode] at heq
   · rw [mul_one, mul_one] at heq
     have hk := h2inj heq
-    exact Prod.ext (Fin.ext (by omega)) (Fin.ext rfl)
+    have hk_eq : k₁ = k₂ := Fin.ext (by omega)
+    subst hk_eq
+    exact Prod.ext rfl (Fin.ext rfl)
   · linarith
   · rw [mul_one, ← pow_succ] at heq
     have hk := h2inj heq
@@ -1373,7 +1389,9 @@ theorem injective_ccmDyadicPoleIntNodes (d : ℕ) :
   · linarith
   · have hneg : (2 : ℤ) ^ (2 * (k₁ : ℕ)) = (2 : ℤ) ^ (2 * (k₂ : ℕ)) := by linarith
     have hk := h2inj hneg
-    exact Prod.ext (Fin.ext (by omega)) (Fin.ext rfl)
+    have hk_eq : k₁ = k₂ := Fin.ext (by omega)
+    subst hk_eq
+    exact Prod.ext rfl (Fin.ext rfl)
   · linarith
   · have hneg : (2 : ℤ) ^ (2 * (k₁ : ℕ)) = (2 : ℤ) ^ (2 * (k₂ : ℕ)) * 2 := by linarith
     rw [← pow_succ] at hneg
@@ -1385,7 +1403,9 @@ theorem injective_ccmDyadicPoleIntNodes (d : ℕ) :
   · linarith
   · rw [← pow_succ, ← pow_succ] at heq
     have hk := h2inj heq
-    exact Prod.ext (Fin.ext (by omega)) (Fin.ext rfl)
+    have hk_eq : k₁ = k₂ := Fin.ext (by omega)
+    subst hk_eq
+    exact Prod.ext rfl (Fin.ext rfl)
   · linarith
   · linarith
   · have hneg : (2 : ℤ) ^ (2 * (k₁ : ℕ)) * 2 = (2 : ℤ) ^ (2 * (k₂ : ℕ)) := by linarith
@@ -1396,7 +1416,9 @@ theorem injective_ccmDyadicPoleIntNodes (d : ℕ) :
   · have hneg : (2 : ℤ) ^ (2 * (k₁ : ℕ)) * 2 = (2 : ℤ) ^ (2 * (k₂ : ℕ)) * 2 := by linarith
     rw [← pow_succ, ← pow_succ] at hneg
     have hk := h2inj hneg
-    exact Prod.ext (Fin.ext (by omega)) (Fin.ext rfl)
+    have hk_eq : k₁ = k₂ := Fin.ext (by omega)
+    subst hk_eq
+    exact Prod.ext rfl (Fin.ext rfl)
 
 theorem injective_ccmDyadicPoleNodes (d : ℕ) :
     Function.Injective (ccmDyadicPoleNodes d) := by
@@ -1747,6 +1769,109 @@ theorem exists_multiPacket_ccmSoninTraceDomination_cutoffAt {ι : Type*} [Fintyp
       mul_nonneg hS_nn (by linarith)
     linarith
 
+private theorem exists_small_bump_neg_toeplitz_one {ε : ℝ} (hε_pos : 0 < ε)
+    (hε_le_one : ε ≤ ccmSoninSmallSupportRadius) :
+    ∃ φ : CCMCompactSchwartzLogTest,
+      (∀ x : ℝ, ε ≤ |x| → φ x = 0) ∧
+      φ 0 = 1 ∧
+      (∫ s, ∫ t, conj (φ s) * φ t * ccmSoninToeplitzKernel 1 (t - s)).re < 0 := by
+  obtain ⟨j₀, hj₀⟩ := exists_nat_gt (1 / (4 * ε))
+  have hr_lt : 1 / (4 * ((j₀ : ℝ) + 1)) < ε := by
+    have h1 : 1 / (4 * ε) < (j₀ : ℝ) + 1 := by linarith
+    have h2 := (div_lt_iff₀ (by positivity : 0 < 4 * ε)).mp h1
+    rw [div_lt_iff₀ (by positivity)]
+    nlinarith
+  let φ : CCMCompactSchwartzLogTest :=
+    mkCCMCompactSchwartzLogTest
+      (narrowBumpC j₀)
+      (contDiff_narrowBumpC j₀)
+      ε
+      (fun x hx => narrowBumpC_eq_zero j₀ (lt_of_lt_of_le hr_lt hx))
+  have hφ_supp : ∀ x : ℝ, ε ≤ |x| → φ x = 0 :=
+    fun x hx => narrowBumpC_eq_zero j₀ (lt_of_lt_of_le hr_lt hx)
+  have hφ0 : φ 0 = 1 := by
+    change ((narrowBump j₀ 0 : ℝ) : ℂ) = 1
+    rw [(narrowBump j₀).one_of_mem_closedBall
+      (Metric.mem_closedBall_self (narrowBump j₀).rIn_pos.le)]
+    norm_cast
+  have hφ_neg : (∫ s, ∫ t, conj (φ s) * φ t * ccmSoninToeplitzKernel 1 (t - s)).re < 0 := by
+    have hfail := not_ccmSoninTraceDomination_of_nonneg φ hε_pos hε_le_one hφ_supp
+      (fun x => by simp [φ, narrowBumpC])
+      (fun x => by simpa [φ, narrowBumpC] using (narrowBump j₀).nonneg' x)
+      (x₀ := 0) (by rw [hφ0]; exact one_ne_zero)
+    have hnot : ¬ (opTrace (ccmIntegratedScaling (ccmSchwartzLogKernel
+        (ccmSoninGramTest φ).toSchwartzMap) * evenCentralSoninProjection 1)).re ≤
+        (-ccmArchimedeanWeilDistribution (ccmSoninGramTest φ)).re :=
+      not_le.mpr hfail
+    rwa [ccmSoninTraceDomination_iff_toeplitz, not_le] at hnot
+  exact ⟨φ, hφ_supp, hφ0, hφ_neg⟩
+
+private theorem exists_nonzero_ker_vec {d m : ℕ} (hd : m < d) (M : Fin d → Fin m → ℂ) :
+    ∃ w : Fin d → ℂ, (∃ k : Fin d, w k ≠ 0) ∧ ∀ j : Fin m, ∑ k : Fin d, w k * M k j = 0 := by
+  have hnot_li : ¬ LinearIndependent ℂ M := by
+    intro hli
+    have hcard := hli.fintype_card_le_finrank
+    simp only [Fintype.card_fin, Module.finrank_pi] at hcard
+    omega
+  rw [Fintype.not_linearIndependent_iff] at hnot_li
+  obtain ⟨w, hw_sum, k₀, hwk₀⟩ := hnot_li
+  refine ⟨w, ⟨k₀, hwk₀⟩, fun j => ?_⟩
+  have hj := congrFun hw_sum j
+  simpa only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply] using hj
+
+private theorem exists_combo_dichotomy_of_profile {Λ : ℝ}
+    (φ : CCMCompactSchwartzLogTest) (hφ0 : φ 0 = 1)
+    (hφ_neg : (∫ s, ∫ t, conj (φ s) * φ t * ccmSoninToeplitzKernel 1 (t - s)).re < 0)
+    {m : ℕ} {Φ : Fin m → ℝ → ℂ} (hΦ : ∀ j : Fin m, Continuous (Φ j))
+    {L₂ : ℝ} (hdom_Λ : ∀ L : ℝ, L₂ ≤ L → ∀ c : Fin (m + 1) × Fin 4 → ℂ,
+      (opTrace (ϑ[(ccmMultiPacket φ (ccmDyadicPoleNodes (m + 1)) c L).toSchwartzMap] ∘L
+          evenCentralSoninProjection Λ ∘L
+          ϑ†[(ccmMultiPacket φ (ccmDyadicPoleNodes (m + 1)) c L).toSchwartzMap])).re ≤
+        (-ccmArchimedeanWeilDistribution
+          (ccmSoninGramTest (ccmMultiPacket φ (ccmDyadicPoleNodes (m + 1)) c L))).re) :
+    ∃ g : CCMCompactSchwartzLogTest,
+      (∃ x : ℝ, g x ≠ 0) ∧
+      (∫ x : ℝ, g x = 0) ∧
+      (∫ x : ℝ, g x * ((Real.exp (x / 2) : ℝ) : ℂ) = 0) ∧
+      (∫ x : ℝ, g x * ((Real.exp (-(x / 2)) : ℝ) : ℂ) = 0) ∧
+      (∀ j : Fin m, ∫ x : ℝ, g x * Φ j x = 0) ∧
+      (-ccmArchimedeanWeilDistribution (ccmSoninGramTest g)).re <
+        (opTrace (ccmIntegratedScaling (ccmSchwartzLogKernel (ccmSoninGramTest g).toSchwartzMap) *
+          evenCentralSoninProjection 1)).re ∧
+      (opTrace (ϑ[g.toSchwartzMap] ∘L evenCentralSoninProjection Λ ∘L
+          ϑ†[g.toSchwartzMap])).re ≤
+        (-ccmArchimedeanWeilDistribution (ccmSoninGramTest g)).re := by
+  obtain ⟨L₁, _, hle_one⟩ := exists_ccmPoleFreeComboOf_toeplitz_one_le hφ_neg (m + 1)
+  have hexL : ∃ L : ℝ, L₁ ≤ L ∧ L₂ ≤ L ∧ φ.radius ≤ L :=
+    ⟨max (max L₁ L₂) φ.radius,
+      (le_max_left L₁ L₂).trans (le_max_left _ _),
+      (le_max_right L₁ L₂).trans (le_max_left _ _),
+      le_max_right _ _⟩
+  obtain ⟨L, hL₁_le, hL₂_le, hrad_le⟩ := hexL
+  obtain ⟨w, ⟨k₀, hwk₀⟩, hw_ker⟩ := exists_nonzero_ker_vec (Nat.lt_succ_self m)
+    (fun (k : Fin (m + 1)) (j : Fin m) =>
+      ∫ x : ℝ, ccmPoleFreeFourPacketOf φ ((4 : ℝ) ^ (k : ℕ) * L) x * Φ j x)
+  refine ⟨ccmPoleFreeComboOf φ w L,
+    ⟨(4 : ℝ) ^ (k₀ : ℕ) * L, ?_⟩,
+    ccmPoleFreeComboOf_integral_eq_zero φ w L,
+    ccmPoleFreeComboOf_integral_exp_half_eq_zero φ w L,
+    ccmPoleFreeComboOf_integral_exp_neg_half_eq_zero φ w L,
+    fun j => ?_, ?_, hdom_Λ L hL₂_le (ccmDyadicPoleCoeffs w L)⟩
+  · rw [ccmPoleFreeComboOf_eval_node hφ0 w hrad_le k₀]
+    exact hwk₀
+  · simp_rw [ccmPoleFreeComboOf_apply, Finset.sum_mul, mul_assoc]
+    rw [integral_finsetSum Finset.univ fun (k : Fin (m + 1)) _ =>
+      (integrable_compactSchwartz_mul_continuous
+        (ccmPoleFreeFourPacketOf φ ((4 : ℝ) ^ (k : ℕ) * L)) (hΦ j)).const_mul (w k)]
+    simp_rw [integral_const_mul]
+    exact hw_ker j
+  · rw [← not_le, ccmSoninTraceDomination_iff_toeplitz,
+      ← opTrace_ccmSoninGenericPartAt_eq_toeplitz (ccmPoleFreeComboOf φ w L) one_pos, not_le]
+    have hsum_pos : 0 < ∑ k : Fin (m + 1), ‖w k‖ ^ 2 :=
+      lt_of_lt_of_le (sq_pos_of_pos (norm_pos_iff.mpr hwk₀))
+        (Finset.single_le_sum (fun k _ => sq_nonneg ‖w k‖) (Finset.mem_univ k₀))
+    exact (hle_one L hL₁_le w).trans_lt (mul_neg_of_pos_of_neg hsum_pos hφ_neg)
+
 /-- **Simultaneous Cutoff-`1` vs. Cutoff-`Λ > 1` Sonin-Trace Dichotomy.**
 For **every** cutoff `Λ > 1`, every `m : ℕ`, and every `m` continuous moment weights
 `Φ : Fin m → ℝ → ℂ`, there exists a single nonzero compact Schwartz test
@@ -1769,87 +1894,24 @@ theorem ccmSonin_cutoff_one_vs_gt_one_dichotomy {Λ : ℝ} (hΛ : 1 < Λ)
       (opTrace (ϑ[g.toSchwartzMap] ∘L evenCentralSoninProjection Λ ∘L
           ϑ†[g.toSchwartzMap])).re ≤
         (-ccmArchimedeanWeilDistribution (ccmSoninGramTest g)).re := by
-  have hlog_pos : 0 < Real.log Λ := Real.log_pos hΛ
-  have hτ_nn : 0 ≤ traceNorm evenSubspace (ccmSoninGenericPartAt Λ) := traceNorm_nonneg _
-  have hquot_pos : 0 < Real.log Λ / (traceNorm evenSubspace (ccmSoninGenericPartAt Λ) + 1) :=
-    div_pos hlog_pos (by linarith)
-  set r_Λ := min ccmSoninSmallSupportRadius
-    (Real.log Λ / (traceNorm evenSubspace (ccmSoninGenericPartAt Λ) + 1))
-  have hr_Λ_pos : 0 < r_Λ := lt_min ccmSoninSmallSupportRadius_pos hquot_pos
-  set ε_Λ := r_Λ / 2
-  have hε_pos : 0 < ε_Λ := half_pos hr_Λ_pos
-  have hε_lt_r : ε_Λ < r_Λ := half_lt_self hr_Λ_pos
-  have hε_le_one : ε_Λ ≤ ccmSoninSmallSupportRadius := hε_lt_r.le.trans (min_le_left _ _)
-  have hε_lt_Λ : ε_Λ < Real.log Λ / (traceNorm evenSubspace (ccmSoninGenericPartAt Λ) + 1) :=
-    hε_lt_r.trans_le (min_le_right _ _)
-  obtain ⟨j₀, hj₀⟩ := exists_nat_gt (1 / (4 * ε_Λ))
-  have hr_lt : 1 / (4 * ((j₀ : ℝ) + 1)) < ε_Λ := by
-    have h1 : 1 / (4 * ε_Λ) < (j₀ : ℝ) + 1 := by linarith
-    have h2 := (div_lt_iff₀ (by positivity : 0 < 4 * ε_Λ)).mp h1
-    rw [div_lt_iff₀ (by positivity)]
-    nlinarith
-  let φ_Λ : CCMCompactSchwartzLogTest :=
-    mkCCMCompactSchwartzLogTest
-      (narrowBumpC j₀)
-      (contDiff_narrowBumpC j₀)
-      ε_Λ
-      (fun x hx => narrowBumpC_eq_zero j₀ (lt_of_lt_of_le hr_lt hx))
-  have hφ_supp : ∀ x : ℝ, ε_Λ ≤ |x| → φ_Λ x = 0 :=
-    fun x hx => narrowBumpC_eq_zero j₀ (lt_of_lt_of_le hr_lt hx)
-  have hφ0 : φ_Λ 0 = 1 := by
-    change ((narrowBump j₀ 0 : ℝ) : ℂ) = 1
-    rw [(narrowBump j₀).one_of_mem_closedBall
-      (Metric.mem_closedBall_self (narrowBump j₀).rIn_pos.le)]
-    norm_cast
-  have hφ_neg : (∫ s, ∫ t, conj (φ_Λ s) * φ_Λ t * ccmSoninToeplitzKernel 1 (t - s)).re < 0 := by
-    have hfail := not_ccmSoninTraceDomination_of_nonneg φ_Λ hε_pos hε_le_one hφ_supp
-      (fun x => by simp [φ_Λ, narrowBumpC])
-      (fun x => by simpa [φ_Λ, narrowBumpC] using (narrowBump j₀).nonneg' x)
-      (x₀ := 0) (by rw [hφ0]; exact one_ne_zero)
-    have hnot : ¬ (opTrace (ccmIntegratedScaling (ccmSchwartzLogKernel
-        (ccmSoninGramTest φ_Λ).toSchwartzMap) * evenCentralSoninProjection 1)).re ≤
-        (-ccmArchimedeanWeilDistribution (ccmSoninGramTest φ_Λ)).re :=
-      not_le.mpr hfail
-    rwa [ccmSoninTraceDomination_iff_toeplitz, not_le] at hnot
-  obtain ⟨L₁, hL₁_pos, hle_one⟩ := exists_ccmPoleFreeComboOf_toeplitz_one_le hφ_neg (m + 1)
+  have hexε : ∃ ε : ℝ, 0 < ε ∧ ε ≤ ccmSoninSmallSupportRadius ∧
+      ε < Real.log Λ / (traceNorm evenSubspace (ccmSoninGenericPartAt Λ) + 1) := by
+    have hquot_pos : 0 < Real.log Λ / (traceNorm evenSubspace (ccmSoninGenericPartAt Λ) + 1) :=
+      div_pos (Real.log_pos hΛ)
+        (add_pos_of_nonneg_of_pos (traceNorm_nonneg _) zero_lt_one)
+    have hr_pos : 0 < min ccmSoninSmallSupportRadius
+        (Real.log Λ / (traceNorm evenSubspace (ccmSoninGenericPartAt Λ) + 1)) :=
+      lt_min ccmSoninSmallSupportRadius_pos hquot_pos
+    exact ⟨min ccmSoninSmallSupportRadius
+        (Real.log Λ / (traceNorm evenSubspace (ccmSoninGenericPartAt Λ) + 1)) / 2,
+      half_pos hr_pos,
+      (half_lt_self hr_pos).le.trans (min_le_left _ _),
+      (half_lt_self hr_pos).trans_le (min_le_right _ _)⟩
+  obtain ⟨ε, hε_pos, hε_le_one, hε_lt_Λ⟩ := hexε
+  obtain ⟨φ_Λ, hφ_supp, hφ0, hφ_neg⟩ := exists_small_bump_neg_toeplitz_one hε_pos hε_le_one
   obtain ⟨L₂, _, hdom_Λ⟩ := exists_multiPacket_ccmSoninTraceDomination_cutoffAt hΛ
     (injective_ccmDyadicPoleNodes (m + 1)) φ_Λ hε_pos hε_lt_Λ hφ_supp
-  set L := max (max L₁ L₂) φ_Λ.radius
-  set ψ : Fin (m + 1) → CCMCompactSchwartzLogTest :=
-    fun k => ccmPoleFreeFourPacketOf φ_Λ ((4 : ℝ) ^ (k : ℕ) * L)
-  let col : Fin (m + 1) → Fin m → ℂ := fun k j => ∫ x : ℝ, ψ k x * Φ j x
-  have hnot_li : ¬ LinearIndependent ℂ col := by
-    intro hcol_li
-    have hcard := hcol_li.fintype_card_le_finrank
-    simp only [Fintype.card_fin, Module.finrank_pi] at hcard
-    omega
-  rw [Fintype.not_linearIndependent_iff] at hnot_li
-  obtain ⟨w, hw_sum, k₀, hwk₀⟩ := hnot_li
-  set g := ccmPoleFreeComboOf φ_Λ w L
-  refine ⟨g, ?_,
-    ccmPoleFreeComboOf_integral_eq_zero φ_Λ w L,
-    ccmPoleFreeComboOf_integral_exp_half_eq_zero φ_Λ w L,
-    ccmPoleFreeComboOf_integral_exp_neg_half_eq_zero φ_Λ w L,
-    fun j => ?_, ?_, ?_⟩
-  · refine ⟨(4 : ℝ) ^ (k₀ : ℕ) * L, ?_⟩
-    rw [ccmPoleFreeComboOf_eval_node hφ0 w (le_max_right _ _) k₀]
-    exact hwk₀
-  · have hj := congrFun hw_sum j
-    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply, col] at hj
-    simp_rw [g, ccmPoleFreeComboOf_apply, Finset.sum_mul, mul_assoc]
-    rw [integral_finsetSum Finset.univ fun (k : Fin (m + 1)) _ =>
-      (integrable_compactSchwartz_mul_continuous (ψ k) (hΦ j)).const_mul (w k)]
-    simp_rw [integral_const_mul]
-    exact hj
-  · rw [← not_le, ccmSoninTraceDomination_iff_toeplitz,
-      ← opTrace_ccmSoninGenericPartAt_eq_toeplitz g one_pos, not_le]
-    have hsum_pos : 0 < ∑ k : Fin (m + 1), ‖w k‖ ^ 2 :=
-      lt_of_lt_of_le (sq_pos_of_pos (norm_pos_iff.mpr hwk₀))
-        (Finset.single_le_sum (fun k _ => sq_nonneg ‖w k‖) (Finset.mem_univ k₀))
-    have hL₁_le : L₁ ≤ L := (le_max_left L₁ L₂).trans (le_max_left _ _)
-    exact (hle_one L hL₁_le w).trans_lt (mul_neg_of_pos_of_neg hsum_pos hφ_neg)
-  · have hL₂_le : L₂ ≤ L := (le_max_right L₁ L₂).trans (le_max_left _ _)
-    exact hdom_Λ L hL₂_le (ccmDyadicPoleCoeffs w L)
+  exact exists_combo_dichotomy_of_profile φ_Λ hφ0 hφ_neg hΦ hdom_Λ
 
 /-! ## Section 5: Operator-Ideal, Determinant, Calkin, and Scattering Constraints on Spectral Realisations -/
 

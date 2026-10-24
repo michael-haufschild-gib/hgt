@@ -33,7 +33,8 @@ theorem forwardPolyHeat_comp_dilation (s r : ℝ) (p : ℝ[X]) :
     conv_lhs => rw [he, hcomp]
     conv_rhs => rw [he, forwardPolyHeat_X_mul]
     rw [forwardPolyHeat_C_mul, forwardPolyHeat_X_mul, ih, hd]
-    simp only [add_comp, mul_comp, X_comp, C_comp, map_mul, map_pow, map_ofNat]
+    simp only [add_comp, mul_comp, X_comp, C_comp]
+    simp only [map_mul, map_pow, map_ofNat]
     ring
 
 /-- Positive dilation changes the heat parameter but preserves every coefficient sign. -/

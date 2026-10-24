@@ -1,7 +1,7 @@
 # Certification of the review's routine mathematical inputs
 
 - **ID:** review-2410-just-work-certification
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** formalization and integration programme
 - **Source:** `docs/reports/review-2410/hard-obstacles-summary.md`, §2.1 J1–J8.
 - **Statement:** Certify the exact existing analytic inputs, paper results, concrete-source specializations, and finite certificates listed in J1–J8, without adding an arithmetic sign or an unproved premise.
@@ -145,10 +145,14 @@ arithmetic estimates to make a dictionary applicable.
   declarations and is imported once by its umbrella. Its Gamma proof uses
   the Fourier autocorrelation identity directly, avoiding the incompatible
   `localPair` exports from two intersection-theory modules. The revised source
-  requires a canonical check and its included 17 axiom reports.
+  passed its canonical check and all 17 included axiom reports; only the three
+  standard axioms occur.
 - Concrete dictionary instances are in
   `ArithmeticOrientationTheory/ConcreteSourceDictionaries.lean`, with explicit
-  `#print axioms` checks. Direct canonical checking remains required.
+  `#print axioms` checks. The direct canonical check and all 23 public axiom
+  reports passed. Only the three standard axioms occur; the owning umbrella
+  imports the leaf once. The global HF ceiling premise remains outside this
+  unconditional certificate.
 - `ArithmeticOrientationTheory/ConcreteReceiverScales.lean` passed the full-source
   check and all seven public axiom audits. It proves the stated threshold,
   visibility and centered-prime scales. Its canonical final check passed;
@@ -161,7 +165,18 @@ arithmetic estimates to make a dictionary applicable.
   half-damped Möbius receiver. The finite transport is bounded; no
   unbounded-aperture sign or sub-half damping estimate is asserted.
 
-## Verification rules
+## Verification certificate
+
+All 30 canonical leaf checks passed. The transitive audits cover 530 public
+declarations: 507 in the existing per-leaf axiom receipts and 23 printed by
+`ConcreteSourceDictionaries.lean`. Only `propext`, `Classical.choice`, and
+`Quot.sound` occur. Every checked source matches its recorded SHA-256.
+The separate CHMD generator-domain and literal-family certificates, and the
+moving-primary prerequisite certificate, also match their recorded sources.
+
+All eight added or completed leaves are imported once by their owning
+umbrellas. The required J1 imports and the repaired APT joint import are
+verified. Owned scratch files and audit wrappers are removed.
 
 Use only foreground, sequential `lake --old env lean` leaf checks from `formal/`.
 Build only a missing imported olean or a new module needed by another file.
@@ -175,10 +190,10 @@ trusted computation, or resource-limit increases. Preserve concurrent work.
 - [x] J2 joint import compatibility checked after the name repair.
 - [x] J3 exact published bounds formalized and audited.
 - [x] J4 exact four paper results formalized or subsumed with checked bridges.
-- [ ] J5 revised concrete source inputs checked after removing the conflicting import.
+- [x] J5 concrete source inputs certified without the conflicting import.
 - [x] J6 concrete constants and ranges certified.
-- [ ] J7 applicable dictionaries certified; global HF premise classified separately.
+- [x] J7 applicable dictionaries certified; global HF premise classified separately.
 - [x] J8 existing finite certificates certified.
-- [ ] Final current-state requirement audit; owned scratch cleaned.
+- [x] Final current-state requirement audit; owned scratch cleaned.
 
 Knowledge facts and failure modes: `logs/just-work-2410-knowledge.md`.

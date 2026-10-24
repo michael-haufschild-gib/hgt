@@ -155,9 +155,28 @@ u_{\varepsilon,T}(\lfloor n/j\rfloor)
 \qquad 0\le \rho_\varepsilon(n)\le n.
 \]
 
-**A crucial limitation:** the forcing is known to vanish on fixed cells, or uniformly where $n=o(\sqrt E)$. It has not thereby vanished where the normalized energy actually lives.
+**The global forcing requires its own scale.** The
+[forcing comparison](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/ForcingScaleSeparation.lean)
+proves $F_\varepsilon(T)=\|\rho_\varepsilon\|_T^2\to\infty$ and
+$E_\varepsilon(T)/F_\varepsilon(T)\to0$ for the actual source, independently of energy
+admission. No common scalar normalization keeps forcing bounded while retaining nonzero
+receiver energy. Fixed-cell disappearance therefore cannot justify discarding the forcing.
 
-The proposed new mechanism would classify **joint limits of mass, cofactor phase, successor data and forcing on that escaping region**, then exclude the adverse limits for the actual source. A scalar weak limit is inadequate: it can be zero while total normalized energy remains one.
+There is a paid subtraction. The
+[power decomposition](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/TheForcingSplitsIntoAPowerAndAnAdmittedRemainder.lean)
+gives $\rho_\varepsilon(n)=c_\varepsilon n^{1-\varepsilon}+R_\varepsilon(n)$ with
+$c_\varepsilon>0$ and $\|R_\varepsilon\|_T\le B_\varepsilon$ uniformly in $T$.
+The [absolute pole trace](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/TheActualReceiverHasAnAbsolutePoleTrace.lean)
+recovers $c_\varepsilon$ from the actual receiver, independently of admission. Subtracting
+this power from the full cofactor sum leaves a residual whose sum with $A_\varepsilon$ has
+the proved global budget $B_\varepsilon$. On escape, the resulting cofactor row is antipodal
+to the receiver in normalized energy. This supplies a valid renormalized relation, not an
+exclusion of its nonzero solutions.
+
+The proposed mechanism must classify **joint limits of mass, cofactor phase, successor data
+and the renormalized relation on that escaping region**, while retaining the separate power
+and boundary trace. It must then exclude adverse limits for the actual source. A scalar weak
+limit is inadequate: it can be zero while total normalized energy remains one.
 
 What would count as progress:
 
@@ -278,7 +297,12 @@ This suggests an **enumerative subprogramme** within arithmetic defect rigidity:
 
 The field would study compatibility *with quantitative consequences*. It would treat a receiver equivalence as a description of an obstruction, then seek a source theorem restricting that obstruction.
 
-This is an extension of existing ACCC/AOT/AOG work, not a claim that their objects or questions are new. The proposed addition is a calculus capable of controlling signed defects on their moving support.
+This extends existing ACCC/AOT/AOG work. The
+[Arithmetic Defect Rigidity programme](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/README.md)
+develops quantitative foundations for signed defects on moving support: distinct forcing and
+receiver scales, a paid power subtraction, the actual source's absolute boundary trace and
+explicit costs of arithmetic operations. The remaining central objective is a source estimate
+excluding the escaping states that these tools preserve.
 
 ### 6.2 Objects and language
 

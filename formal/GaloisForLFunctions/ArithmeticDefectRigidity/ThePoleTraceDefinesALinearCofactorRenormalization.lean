@@ -38,14 +38,19 @@ def poleTraceDomain (ε : SubcriticalDamping) : Submodule ℝ (ℕ → ℝ) wher
       rw [hv.1, mul_zero]
     · simpa only [Pi.smul_apply, smul_eq_mul, mul_assoc] using hv.2.mul_left c
 
+instance (ε : SubcriticalDamping) : CoeFun (poleTraceDomain ε) (fun _ => ℕ → ℝ) :=
+  ⟨fun v => v.val⟩
+
 /-- The linear boundary coefficient at the cofactor pole. -/
 def poleTrace (ε : SubcriticalDamping) : poleTraceDomain ε →ₗ[ℝ] ℝ where
   toFun v := (∑' n, v n * mellinCell (1 - (ε : ℝ)) n) / (1 - (ε : ℝ))
   map_add' := by
     intro v w
-    change (∑' n, (v n + w n) * mellinCell (1 - (ε : ℝ)) n) / (1 - (ε : ℝ)) = _
+    change (∑' n, (v n + w n) * mellinCell (1 - (ε : ℝ)) n) / (1 - (ε : ℝ)) =
+      (∑' n, v n * mellinCell (1 - (ε : ℝ)) n) / (1 - (ε : ℝ)) +
+        (∑' n, w n * mellinCell (1 - (ε : ℝ)) n) / (1 - (ε : ℝ))
     simp_rw [add_mul]
-    rw [v.property.2.tsum_add w.property.2, add_div] <;> rfl
+    rw [v.property.2.tsum_add w.property.2, add_div]
   map_smul' := by
     intro c v
     change (∑' n, (c * v n) * mellinCell (1 - (ε : ℝ)) n) / (1 - (ε : ℝ)) =
@@ -64,7 +69,7 @@ def finiteCofactorOperator (ε : ℝ) : (ℕ → ℝ) →ₗ[ℝ] (ℕ → ℝ) 
   map_smul' := by
     intro c v
     funext n
-    simp only [Pi.smul_apply, smul_eq_mul, mul_sum]
+    simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, mul_sum]
     apply sum_congr rfl
     intro j _
     ring
@@ -75,8 +80,10 @@ def polePowerOperator (ε : SubcriticalDamping) : poleTraceDomain ε →ₗ[ℝ]
   map_add' := by
     intro v w
     funext n
-    change poleTrace ε (v + w) * (n : ℝ) ^ (1 - (ε : ℝ)) = _
-    rw [map_add, add_mul] <;> rfl
+    change poleTrace ε (v + w) * (n : ℝ) ^ (1 - (ε : ℝ)) =
+      poleTrace ε v * (n : ℝ) ^ (1 - (ε : ℝ)) +
+        poleTrace ε w * (n : ℝ) ^ (1 - (ε : ℝ))
+    rw [map_add, add_mul]
   map_smul' := by
     intro c v
     funext n
@@ -109,7 +116,8 @@ theorem renormalizedCofactorOperator_actualTraceVector (ε : SubcriticalDamping)
   change (∑ j ∈ Icc 2 n, (j : ℝ) ^ (-(ε : ℝ)) *
     pmPowerDampedCenteredDivisorPrefix ε (n / j)) -
     poleTrace ε (actualTraceVector ε) * (n : ℝ) ^ (1 - (ε : ℝ)) = _
-  rw [poleTrace_actualTraceVector] <;> rfl
+  simp only [poleTrace_actualTraceVector, renormalizedCofactor, offDiagonalUnitDilation,
+    forcingPower]
 
 /-- The actual linear residual has a uniform global pronic budget. -/
 theorem pronicNorm_actual_linearResidual_le (ε : SubcriticalDamping) (T : ℕ) :

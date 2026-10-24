@@ -111,7 +111,8 @@ theorem tendsto_forcingGramDefect_div_forcingEnergy_sq_zero (ε : SubcriticalDam
     cases T with
     | zero => omega
     | succ N => exact (forcingEnergy_succ_pos ε N).ne'
-  calc _ ≤ dampedMobiusEnergy ε T * forcingEnergy ε T / forcingEnergy ε T ^ 2 :=
+  calc
+    _ ≤ dampedMobiusEnergy ε T * forcingEnergy ε T / forcingEnergy ε T ^ 2 :=
       div_le_div_of_nonneg_right (forcingGramDefect_bounds ε T).2 (sq_nonneg _)
     _ = _ := by field_simp
 
