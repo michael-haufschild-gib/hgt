@@ -1346,6 +1346,18 @@ $k\star d^{-\varepsilon}$ is paid iff $K(1-\varepsilon)=0$
 into finitely many rows of pole-free dilations, each of energy $O(1/j)$, and one row of the smooth
 power, all tied to the pole by the single number $K(1-\varepsilon)$.
 
+For a general paid weight $c$ with harmonic tail $\tau_N=\sum_{d>N}c(d)/d$, on $1\le n\le N$ the
+row prefix is $A_{\mathrm{row}(c,N)}(n)=A_c(n)+\tau_N n$, and because the pronic mass of $n$ on
+$[1,N]$ is pinched between $N/2$ and $N$, the sub-horizon row energies ($T\le N$) are uniformly
+bounded iff $\sup_N N\tau_N^2<\infty$ (`subHorizon_horizonRowEnergy_bounded_iff`). Across all
+cutoffs, uniformly paid horizon rows are closed under the critical Wiener monoid: because
+$qm\le N\iff m\le\lfloor N/q\rfloor$, $\mathrm{row}(g\star c,N)=\sum_{q\le N}g(q)(\delta_q\star\mathrm{row}(c,\lfloor N/q\rfloor))$,
+giving the exact prefix decomposition
+$A_{\mathrm{row}(g\star c,N)}(n)=\sum_{q\le N}g(q)A_{\mathrm{row}(c,\lfloor N/q\rfloor)}(\lfloor n/q\rfloor)+\sum_{q\le N}g(q)m_c(\lfloor N/q\rfloor)(\lfloor n/q\rfloor-n/q)$
+and the norm bound $\lVert A_{\mathrm{row}(g\star c,N)}\rVert_T\le G(B+\sqrt 2\sum_d\lvert c(d)/d\rvert)$
+(`weightCenteredPrefix_horizonRow_dirichletConv`, `horizonRows_bounded_dirichletConv`).
+([PrefixStabilityAndCriticalWienerClosureOfMoebiusRows](PrefixStabilityAndCriticalWienerClosureOfMoebiusRows.lean)).
+
 ### 3.18 Multiplicative phase diagrams: what the receiver reads in a sign pattern
 
 Completely multiplicative weights $f(d)d^{-\varepsilon}$ with $\lvert f\rvert\le1$ test which
@@ -1475,6 +1487,25 @@ $\Theta-\tfrac12$; and RH is admission at every positive damping, for either wei
 `riemannHypothesis_iff_forall_pos_receiverBounded_liouville`,
 `sInf_derivedSet_liouville_dampings_eq_zetaZeroAbscissa_sub_half`). The shrinking band admits no
 fixed $\varepsilon<1/2$ at all horizons.
+
+**Horizon rows of Möbius and Liouville.** The dipole obstruction of §3.17 is excluded on the
+sub-horizon range $T\le N$ across the entire zero-width admission interval $\varepsilon>\Theta-1/2$:
+the harmonic tail $\tau_N(\varepsilon)=\sum_{d>N}\mu(d)d^{-1-\varepsilon}$ is evaluated at
+$1+\varepsilon>1$, so Littlewood's bound $\lvert M(x)\rvert\ll_\delta x^{\Theta+\delta}$ and Abel
+summation give $\tau_N(\varepsilon)=O(N^{\Theta-1-\varepsilon+\delta})=o(N^{-1/2})$ and uniform
+sub-horizon row payment (`subHorizon_horizonRowEnergy_moebius_bounded_of_zetaZeroAbscissa_sub_half_lt`).
+Across all cutoffs $T$ and horizons $N$, truncating a sign pattern at $N$ freezes its partial sum at
+$S(\min(x,N))$, which is prefix-stable under linear and subpower bounds; hence every horizon row of
+$s(d)d^{-\varepsilon}$ satisfies the exact same all-damping hyperbola bound
+$3D^{1-\varepsilon}+(13/\varepsilon)LnD^{-\varepsilon}$ as the full weight
+(`abs_weightCenteredPrefix_horizonRow_dampedSign_le_of_linear_pos`). This gives uniform full-horizon
+row payment for $\mu(d)d^{-\varepsilon}$ and $\lambda(d)d^{-\varepsilon}$ for every
+$\varepsilon>\Theta/2$ (`horizonRows_bounded_moebius_of_half_zetaZeroAbscissa_lt`,
+`horizonRows_bounded_liouville_of_half_zetaZeroAbscissa_lt`), uniform row payment on the
+Vinogradov–Korobov zero-free band above any $\varepsilon_0>0$
+(`exists_horizonRow_receiver_le_on_zeroFreeBand_of_pos`,
+`exists_liouville_horizonRow_receiver_le_on_zeroFreeBand_of_pos`), and equivalence of uniform row
+payment for Möbius and Liouville at every $\varepsilon>0$ (`horizonRows_bounded_moebius_iff_liouville`).
 
 **The bilinear counterterm.** Grouping the triple sum by the cofactor $m=bk$ cancels half of the
 principal counterterm $2\sum_{n\le N}\mu(n)w(n)$ against the sub-horizon slice and reduces
@@ -1740,7 +1771,8 @@ Built and reusable:
 - *Buchstab horizon calculus*: band steps, class averages and the energy profile.
 - *Fermi trace inversion* with exact schedule conditioning.
 - *The receiver calculus*: dyadic masses for positive weights, the critical Wiener algebra, the
-  pole law, the boundary-energy identity, the general pole law, the partial-pole-sum criterion.
+  pole law, the boundary-energy identity, the general pole law, the partial-pole-sum criterion,
+  and the sub-horizon harmonic-tail and divisor-quotient horizon-row convolution laws.
 - *Parity pairs* as the sharp test of sign-blindness, and the logarithmic moment hierarchy as the
   complete separating invariant.
 - *Euler-product phase diagrams* for multiplicative weights, through $\zeta$ and Dirichlet
@@ -1752,8 +1784,7 @@ To be built:
 
 - a signed estimate on the actual Möbius receiver at one fixed $\varepsilon<1/2$, with its exact loss;
 - a cross-lobe estimate for the odd sector;
-- least-squares conditioning of multi-gap and non-dyadic Fermi schedules;
-- the structure of the Möbius row that excludes the dipole obstruction below half damping.
+- least-squares conditioning of multi-gap and non-dyadic Fermi schedules.
 
 ---
 
@@ -1784,8 +1815,11 @@ exact), are open.
 
 The band averages $A(1),\dots,A(4)$ are negative, the profile values $P(1),\dots,P(4)$ are known,
 and the cofinal profile $P(B)$ is monotone (`monotone_cofinalMobiusQuadraticProfile`, in
-Bézout–Valuation Incidence). Open: the sign of $A(B)$ for every band, concavity of the profile, and
-the classification of the squarefree cores with negative slope in each band. The damped crossover
+Bézout–Valuation Incidence). It is asymptotically linear, $P(B)/B\to\kappa$, and the band averages
+obey the sum rule $\sum_{b\ge1}A(b)/(b(b+1))=-\kappa$ (`tendsto_sum_bandAverageStep`); they are not of
+one sign ($A(10)=\frac19\cdot\frac6{\pi^2}$) and $P$ is not concave. Open: the sign pattern of $A(B)$,
+the value of $\kappa$ against the period variance, and the classification of the squarefree cores
+with negative slope in each band. The damped crossover
 is located to second order with an additive window $\pm\varepsilon$; the sign of the slope for prime
 horizons inside that window, $\lvert\log p-\Lambda(\varepsilon)\rvert<\varepsilon$, is open, as is every
 term of $V(\varepsilon)$ and $R(\varepsilon)$ beyond the second order.
@@ -1841,10 +1875,21 @@ flipped density or the real-axis prime mean.
 
 ### 7.8 The dipole obstruction for the Möbius row
 
-The signed horizon-limit question is settled for the damped classes: bounded rows pay the limit, a
-paid limit need not have uniformly paid rows below one half, and on the convolution class the
-obstruction never occurs. Open: which additional structure of the Möbius row excludes the dipole
-obstruction.
+The dipole obstruction is now classified on both sides of the horizon. On the sub-horizon range
+$T\le N$, a paid weight has uniformly bounded row energies iff its harmonic tail obeys
+$\sup_N N\tau_N^2<\infty$ (`subHorizon_horizonRowEnergy_bounded_iff`), and for $\mu(d)d^{-\varepsilon}$
+Littlewood's bound gives $\tau_N(\varepsilon)=o(N^{-1/2})$ across the entire zero-width admission
+range $\varepsilon>\Theta-1/2$ (`subHorizon_horizonRowEnergy_moebius_bounded_of_zetaZeroAbscissa_sub_half_lt`).
+Across all cutoffs $T$ and horizons $N$, prefix-stability of partial sums transfers the all-damping
+hyperbola bound to every horizon row (`abs_weightCenteredPrefix_horizonRow_dampedSign_le_of_linear_pos`),
+giving uniform full-horizon row payment for $\varepsilon>\Theta/2$ and on the Vinogradov–Korobov
+zero-free band (`horizonRows_bounded_moebius_of_half_zetaZeroAbscissa_lt`,
+`exists_horizonRow_receiver_le_on_zeroFreeBand_of_pos`), while the divisor-quotient decomposition
+closes uniform row payment under the critical Wiener monoid and equates Möbius and Liouville row
+payment at every $\varepsilon>0$ (`horizonRows_bounded_dirichletConv`,
+`horizonRows_bounded_moebius_iff_liouville`). Open: closing the trans-horizon gap between
+$\Theta-1/2$ and $\Theta/2$ without zero-free hypotheses, which is the fixed-damping trans-horizon
+sawtooth problem of §7.1.
 
 ### 7.9 Research topics
 

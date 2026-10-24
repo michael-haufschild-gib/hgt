@@ -220,7 +220,13 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     has Hodge index up to degree `log q/2`, its defect is `0` or `∞` by purity from the window `2g`
     on, and the golden datum jumps at `log 5/2` (`hodgeDefectAt_curveConfig`,
     `goldenDatum_hodgeDefectAt`); the off-line lattice jumps at its Nyquist degree `L/2`
-    (`hodgeDefectAt_offLineLattice`).
+    (`hodgeDefectAt_offLineLattice`). Over `𝔽_q` the lag family of Square-Root Threshold decides
+    purity on its own: the test `g + s·g(· − n log q)` reads only the `n`-th point count,
+    `Re W = log q ‖g‖² ((1 + s²)·2g + 2s tₙ)`, so it is never negative on a pure curve and is negative
+    at some lag in every window `[M + 1, M + 2g]` past a threshold set by the depth, by Turán's
+    power-sum theorem (`re_W_curveConfig_lagTest`, `exists_negative_lagTest_of_window`,
+    `exists_negative_lagTest`; golden datum at lag `log 5`). Windows see an impure curve by degree
+    `(2g − 1) log q/2` whatever the depth; lags are located only depth-dependently.
 16. **Kronecker-rank dichotomy.** Vertically recurrent configurations have defect `0` or `∞`
     (`recurrent_pontryagin_dichotomy`); periodic configurations and zero sets of exponential
     polynomials of any finite rank recur (`expPoly_pontryagin_dichotomy`). A finite nonzero number
@@ -672,7 +678,7 @@ Weil's argument.
 | `FrobeniusSpanCalibration`, `FrobeniusSpanHodgeIndexIsRH` | curve data, Lefschetz and adjunction, span defect = Toeplitz form, Hodge index on the span ⟺ unitarity |
 | `FakeCurvesAndTheWindowLaw`, `WittIntegralityIsNotPurity`, `TheGoldenCurveIsABeurlingSystem` | the golden datum; window visibility and hiding; integrality versus purity; the golden curve as a Beurling system |
 | `SpanContactLaw`, `TheFrobeniusSpanDefectCountsTheOuterEigenvalues` | contact window; Pontryagin law over `𝔽_q` |
-| `TheScalingSurfaceOfACurve`, `TheFrobeniusSpanIsTheTowerOfTheScalingSurface`, `TheDegreeFiltrationOfACurveIsItsWindowFiltration` | the scaling surface of a curve; three Hodge index theorems; the span as period quotient; degree filtration = window filtration |
+| `TheScalingSurfaceOfACurve`, `TheFrobeniusSpanIsTheTowerOfTheScalingSurface`, `TheDegreeFiltrationOfACurveIsItsWindowFiltration`, `TheFirstNegativeLagOfACurve` | the scaling surface of a curve; three Hodge index theorems; the span as period quotient; degree filtration = window filtration; lag tests read point counts, purity = lag positivity, Turán-located first negative lag |
 | `HodgeIndexFromEffectivity`, `BezoutEffectivityAndTheBeurlingObstruction`, `DistinctEffectiveCyclesMeetNonnegatively` | effectivity axioms ⟺ Hodge index; Bézout positivity through the collar |
 | `TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`, `InfiniteGenusLaw` | the scaling surface of `ℤ`; signature law and selection of `Λ`; no exact annihilators |
 | `FiniteConfigurationPontryaginLaw`, `TemperedConfigurationPontryaginLaw`, `TheHodgeDefectCountsTheRightZeros` | the Pontryagin law, finite, tempered and general |

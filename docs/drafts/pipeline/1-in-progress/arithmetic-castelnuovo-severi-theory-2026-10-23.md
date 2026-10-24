@@ -216,6 +216,9 @@ survivor).
   all visible eigenvalues when real parts have no increasing sequence), `almost_every_prime_sees_the_top`.
   Open: real parts increasing to their sup (two-sided Wolff annihilators?).
 
+- `TheFirstNegativeLagOfACurve`: lag tests read point counts; purity ⟺ lag positivity; Turán-located
+  first negative lag (calibration of SRT `zeta_attained_top_first_negative_lag`).
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated

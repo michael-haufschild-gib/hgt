@@ -945,12 +945,27 @@ $$
 \mathrm{Grad}_T+2\,\mathrm{Local}_T
 =D^{\mathrm{act}}_T+2P^{\mathrm{pred}}_T-\mathrm{ActivePair}_T-O(1),
 $$
-whose left side divided by $\log T$ tends to an explicit positive constant for every
-$\varepsilon>0$ with no admission hypothesis. The pure interior energy and the complete energy
-control each other: $E_T\le 2E^{\mathrm{int}}_T+\frac12$ and $E^{\mathrm{int}}_T\le 2E_T+\frac12$.
-A strict contraction $2M^{\mathrm{int}}_T+2\,\mathrm{Counterterm}\cdot H^{\mathrm{comp}}_T\le(1-\delta)E_T+C$
-is equivalent to $\sup_TE_T<\infty$ at that damping
-(`pmInterior_strict_contraction_iff_bounded_energy`).
+whose left side minus $2c^{\mathrm{int}}(\varepsilon)H_T^{\mathrm{comp}}$ is $O_\varepsilon(1)$
+uniformly in $T\ge 1$ (`exists_pmBezoutInteriorGradient_add_localImpulse_compensated_bound`),
+so its ratio to $\log T$ tends to an explicit positive constant for every
+$\varepsilon>0$ with no admission hypothesis. Because the active-pair pronic energy satisfies
+$0\le E_T^{\mathrm{act}}(\varepsilon)\le 1/4$, Minkowski's inequality gives the sharp square-root
+comparison $\bigl\lvert\sqrt{E_T^{\mathrm{int}}(\varepsilon)}-\sqrt{E_T(\varepsilon)}\bigr\rvert\le 1/2$
+and $\bigl\lvert E_T^{\mathrm{int}}(\varepsilon)-E_T(\varepsilon)\bigr\rvert\le\sqrt{E_T(\varepsilon)}+1/4$
+(`abs_sqrt_pmBezoutInteriorPronicEnergy_sub_sqrt_le_half`,
+`abs_pmBezoutInteriorPronicEnergy_sub_discreteEnergy_le`), in addition to
+$E_T\le 2E^{\mathrm{int}}_T+\frac12$ and $E^{\mathrm{int}}_T\le 2E_T+\frac12$.
+At every fixed $\varepsilon>0$, bounded $E_T(\varepsilon)$, bounded $E_T^{\mathrm{int}}(\varepsilon)$,
+bounded compensated martingale bracket $2M^{\mathrm{int}}_T+2c^{\mathrm{int}}(\varepsilon)H^{\mathrm{comp}}_T$,
+and strict interior contraction against either $E_T(\varepsilon)$ or $E_T^{\mathrm{int}}(\varepsilon)$
+define the **same** set of admitted dampings `receiverDampings`
+(`mem_receiverDampings_iff_all_interior_forms`), which contains the entire zero-width half-line
+$(\Theta-\tfrac12,\infty)$ (`exists_pmBezoutInteriorPronicEnergy_budget_of_zetaZeroAbscissa_lt`,
+`exists_pmInterior_strict_contraction_of_zetaZeroAbscissa_lt`), has derived-set infimum
+$\Theta-\tfrac12$ (`sInf_derivedSet_interiorReceiverDampings_eq_zetaZeroAbscissa_sub_half`), and
+propagates zero multiplicity by iterated shifts $\operatorname{ord}_\rho\zeta\le\operatorname{ord}_{\rho-k\varepsilon}\zeta$
+for $\tfrac12+k\varepsilon\le\Re\rho<1$
+(`analyticOrderAt_le_analyticOrderAt_sub_nat_mul_of_mem_receiverDampings`).
 
 **Conditional centering.** Along the progression $n\equiv -1\ (d)$ the interior atom of
 modulus $e$ with both endpoint residues deleted has conditional mean $0$ if $\gcd(d,e)=1$ and
@@ -997,6 +1012,19 @@ $M\le(B+1)N$ with $B$ fixed.
   attained cofinally, and the value frequencies converge to a symmetric law whose support is
   exactly that alphabet. Both signs have positive frequency, at least
   $\frac{\text{profile}}{4C^2}N$ at horizon $(C+1)N$.
+- **Large-band law.** The profile is asymptotically linear: its band slopes
+  $\gamma_t=P(t)-P(t-1)=\sum_{q,r\le t}D(q,r)/[q,r]$ converge to
+  $\kappa=\frac6{\pi^2}\sum_{j\ge1}S(j)\log(1+\tfrac1j)$, so $P(B)/B\to\kappa$, where
+  $S(X)=\sum_{a,b\le X,(a,b)=1}\mu(a)\mu(b)/(\sigma(a)\sigma(b))$
+  ([TheCofinalMobiusProfileIsAsymptoticallyLinear](TheCofinalMobiusProfileIsAsymptoticallyLinear.lean)).
+  The gcd parametrization $q=gb$, $r=ga$ turns the slope into the harmonic average
+  $\frac6{\pi^2}\sum_{g\le t}S(\lfloor t/g\rfloor)/g$, and $S(X)=O(\log^{-4}X)$ because
+  $\mu/\sigma$ restricted to integers prime to $\delta$ is a nonnegative convolution of $\mu/\mathrm{id}$
+  with Rankin mass $\ll\delta^{1/4}$ ([CoprimeMoebiusSigmaSumsDecay](CoprimeMoebiusSigmaSumsDecay.lean)).
+  Equivalently the Buchstab band averages obey the sum rule $\sum_{b\ge1}A(b)/(b(b+1))=-\kappa$.
+  Exact evaluation of the finite formula shows the slopes are not monotone
+  ($\gamma_5=\frac{73}{90}\cdot\frac6{\pi^2}>\gamma_4=\frac34\cdot\frac6{\pi^2}$, so $P$ is not concave)
+  and the band averages change sign ($A(10)=\frac19\cdot\frac6{\pi^2}>0$).
 - **Gradient coercivity.** Every odd squarefree integer in $(N,2N]$ selects an adjacent edge
   ending at a multiple of four with gradient square $1$, so eventually, uniformly on
   $2N\le M\le N^A$, $R_N(M;\mu)\le -N/(2\pi^2)$, while on a fixed linear window
@@ -1232,23 +1260,27 @@ following rate transfer.
 **Rate transfer.** If a sign pattern $s$ with $\lvert s\rvert\le1$ has partial sums
 $\lvert S(x)\rvert\le Lx$ from $D$ on, summation by parts against the antitone weights $d^{-\varepsilon}$
 and $d^{-1-\varepsilon}$ in the hyperbola split of the centred prefix at $D$ gives, for
-$\tfrac14\le\varepsilon\le\tfrac12$,
+every $0<\varepsilon\le\tfrac12$,
 $$
-\lvert A(n)\rvert\ \le\ 3D^{1-\varepsilon}+31\,L\,n\,D^{-\varepsilon}
+\lvert A(n)\rvert\ \le\ 3D^{1-\varepsilon}+\frac{13}{\varepsilon}\,L\,n\,D^{-\varepsilon}
 $$
-(`abs_weightCenteredPrefix_dampedSign_le_of_linear`): any Mertens rate becomes a prefix bound.
+(`abs_weightCenteredPrefix_dampedSign_le_of_linear_all_pos`, and with coefficient $31L$ when
+$\tfrac14\le\varepsilon\le\tfrac12$, `abs_weightCenteredPrefix_dampedSign_le_of_linear`): any Mertens
+rate becomes a prefix bound across the full positive sub-half damping range.
 Fed with the de la Vallée Poussin rate $\lvert M(x)\rvert\le Bxe^{-\sqrt{\log x}/12}$ at
 $D=ne^{-\sqrt{\log n}/20}$ this is $\lvert A_\varepsilon(n)\rvert\le Kn^{1-\varepsilon}e^{-\sqrt{\log n}/40}$,
 and the factor $n^{1-2\varepsilon}$ is absorbed for all $n\le T$ once
 $\varepsilon\ge\tfrac12-1/(80\sqrt{\log T})$; fed with the Vinogradov–Korobov rate
 $\lvert M(x)\rvert\le Bxe^{-\kappa\sigma(x)/24}$, $\sigma(x)=(\log x)^{3/5}(\log\log x)^{-5/3}$, at
-$D=ne^{-\kappa\sigma(n)/120}$ it is $\lvert A_\varepsilon(n)\rvert\le Kn^{1-\varepsilon}e^{-\kappa\sigma(n)/240}$.
-Hence **the receiver and the Bézout interior energy are bounded uniformly in $T$ and in
-$\varepsilon$ on the band**
+$D=ne^{-\kappa\sigma(n)/120}$ it is $\lvert A_\varepsilon(n)\rvert\le (K/\varepsilon)n^{1-\varepsilon}e^{-\kappa\sigma(n)/240}$.
+Hence **both the receiver and the Bézout interior energy are bounded uniformly in $T$ and in
+$\varepsilon\in[\varepsilon_0,\tfrac12]$ (for any $\varepsilon_0>0$) on the band**
 $$
 \tfrac12-\frac{\kappa\,\sigma(T)}{480\log T}\ \le\ \varepsilon\ \le\ \tfrac12
 $$
-(`exists_receiver_le_on_vinogradovKorobovBand`, `exists_receiver_le_on_zeroFreeBand`): the damping
+(`exists_receiver_le_on_vinogradovKorobovBand_of_pos`,
+`exists_interiorPronic_le_on_vinogradovKorobovBand_of_pos`,
+`exists_receiver_le_on_vinogradovKorobovBand`, `exists_receiver_le_on_zeroFreeBand`): the damping
 unit moves from $\tfrac12$ to $\tfrac12-c/\sqrt{\log T}$ and then to
 $\tfrac12-c(\log T)^{-2/5}(\log\log T)^{-5/3}$ at horizon $T$. The band is exactly the zero-free
 region, in both directions: a band of fixed width would be a zero-free strip, and the accumulation-point converse turns admission on an interval of dampings into a
@@ -1261,7 +1293,10 @@ $\beta=\Theta+\delta$, and admits every damping $\Theta/2<\varepsilon\le\tfrac12
 $[\Theta-\tfrac12,\Theta/2]$, and the family crosses below half damping iff $\Theta<1$
 (`receiverDampingRate_sandwich`, `receiverDampingRate_lt_half_iff`). The sharp value
 $\Theta-\tfrac12$ is a mean-square statement, proved by Mellin–Plancherel on the Fermi source
-(`receiverDampingRate_eq_zetaZeroAbscissa_sub_half`, RH tower). The pointwise route stops at
+(`receiverDampingRate_eq_zetaZeroAbscissa_sub_half`, RH tower), and transfers identically to the
+pure-interior pronic energy and strict interior contraction sets
+(`sInf_derivedSet_interiorReceiverDampings_eq_zetaZeroAbscissa_sub_half`,
+`sInf_derivedSet_strictContractionDampings_eq_zetaZeroAbscissa_sub_half`). The pointwise route stops at
 $\tfrac14$ under RH because it bounds the sawtooth head $\sum_{d\le n}\mu(d)d^{-\varepsilon}\{n/d\}$
 term by term; the receiver is an $\ell^2$ object and must be estimated as one.
 
@@ -1269,8 +1304,10 @@ term by term; the receiver is an $\ell^2$ object and must be estimated as one.
 squarefree-supported, with Ramanujan coefficients of equal absolute value) have identical
 sign-blind data at every damping; on the band the twin's receiver is at least
 $c(\log(T+1)-\log100)$ with one $c>0$ (the drift of the squarefree moduli beyond the prefix, made
-uniform in $\varepsilon\in[\tfrac14,\tfrac12]$ by monotonicity of $\rho_\varepsilon$ and of the twin's
-local factors), while the Möbius receiver is bounded (`parityPair_separated_on_vinogradovKorobovBand`).
+uniform in $\varepsilon\in[\varepsilon_0,\tfrac12]$ for any $\varepsilon_0>0$ by monotonicity of
+$\rho_\varepsilon$ and of the twin's local factors), while both the Möbius receiver and the pure-interior
+pronic energy are bounded (`parityPair_separated_on_vinogradovKorobovBand_of_pos`,
+`parityPair_separated_on_vinogradovKorobovBand`).
 The parity barrier of the trans-horizon theory therefore has its visibility witness on the band:
 the bound is paid by the zero-free region of $1/\zeta$, that is by the signs of $\mu$. In the same
 way the receiver of a multiplicative weight with $\lvert f\rvert\le1$ is decided at the primes on
@@ -1280,17 +1317,17 @@ trans-horizon theory), $f(p)=+1$ with $f\ge0$ gives $E_T\ge(\log(T+1)-\log100)/1
 $0<\varepsilon\le\tfrac12$ (`exists_receiver_le_on_vinogradovKorobovBand_of_primes_neg_one`,
 `receiver_ge_log_of_primes_one`).
 
-**The pronic weighting carries exactly the Vinogradov–Korobov factor.** At fixed
-$\varepsilon\in[\tfrac14,\tfrac12)$ the period energy of the damped row grows like $N^{1-2\varepsilon}$
+**The pronic weighting carries exactly the Vinogradov–Korobov factor.** At every fixed
+$\varepsilon\in(0,\tfrac12)$ the period energy of the damped row grows like $N^{1-2\varepsilon}$
 (the top octave of moduli acts as $N^{1-2\varepsilon}$ independent unit steps, §3.4 and the
-trans-horizon growth law), while the receiver, the pronic energy of the prefix below the first
-period, satisfies
+trans-horizon growth law), while both the receiver and the pure-interior pronic energy satisfy
 $$
-E_T(\varepsilon)\ \le\ C_\varepsilon\,T^{1-2\varepsilon}e^{-\kappa\sigma(T)/270},\qquad
-\frac{E_N(\varepsilon)}{\mathcal E_{\mathrm{prim}}(N)}\ \le\ Ce^{-\kappa\sigma(N)/270}\to0
+E_T(\varepsilon),\,E_T^{\mathrm{int}}(\varepsilon)\ \le\ C_\varepsilon\,T^{1-2\varepsilon}e^{-\kappa\sigma(T)/270},\qquad
+\frac{E_N(\varepsilon)}{\mathcal E_{\mathrm{prim}}(N)},\,\frac{E_N^{\mathrm{int}}(\varepsilon)}{\mathcal E_{\mathrm{prim}}(N)}\ \le\ Ce^{-\kappa\sigma(N)/270}\to0
 $$
-(`eventually_receiver_le_growth`, `eventually_receiver_le_mul_periodEnergy`; split at $\sqrt T$,
-where above it $\sigma(n)\ge\tfrac49\sigma(T)$). The prefix below the period carries a cancellation
+(`eventually_receiver_le_growth_of_pos`, `eventually_interiorPronic_le_growth_of_pos`,
+`eventually_receiver_le_mul_periodEnergy_of_pos`, `eventually_interiorPronic_le_mul_periodEnergy_of_pos`;
+split at $\sqrt T$, where above it $\sigma(n)\ge\tfrac49\sigma(T)$). The prefix below the period carries a cancellation
 the period torus does not have, and its unconditional size is the zero-free region. A growth
 exponent below $1-2\varepsilon$ at one fixed $\varepsilon<\tfrac12$ would be a zero-free strip.
 
@@ -1348,8 +1385,25 @@ which is equivalent to **ordinary $\ell^2$ on the normalized chain coordinate**.
 exactly: with $r(n)=1/(n+1)$ and centred prefix $A_\eta$,
 $(C_\eta r)(n)=A_\eta(n+1)/(n+1)$ and
 $E_\eta(T)=\sum_{n<T}(n+1)/(n+2)\,(C_\eta r)(n)^2$.
-Thus admission is square summability of this orbit (`admits_iff_summable_orbit`), already
-equivalent to square summability of the first column (`admits_iff_summable_firstColumn`).
+In fact, defining the dilated state $X_\eta(d,n)=d^{-\eta}\bigl(A_\eta(\lfloor(n+1)/d\rfloor)/(n+1)+\rho_\eta v_d(n)\bigr)$,
+every column of the centred chain is the exact discrete difference
+$C_\eta(n,k)=(k+1)\bigl(X_\eta(k+1,n)-X_\eta(k+2,n)\bigr)$
+(`arithmeticDampingCenteredRow_eq_dilatedState_diff`), and dilated prefix sums contract by $1/r$
+at every horizon (`sum_range_dilated_div_sq_le`). This yields two-sided finite-horizon control
+between $E_T(\eta)$ and the columns of $C_\eta$ (`sum_range_arithmeticDampingCenteredRow_sq_le`,
+`pmPowerDampedDivisorDiscreteEnergy_le_first_column_sum`):
+$$
+\sum_{n<T}C_\eta(n,k)^2\ \le\ 16\bigl(E_T(\eta)+\rho_\eta^2\bigr)(k+1)^{1-2\eta},\qquad
+E_T(\eta)\ \le\ 24\sum_{n<T}C_\eta(n,0)^2+24\rho_\eta^2.
+$$
+Thus admission is square summability of the orbit (`admits_iff_summable_orbit`), equivalent to
+square summability of the first column (`mem_receiverDampings_iff_summable_first_column`,
+`admits_iff_summable_firstColumn`), equivalent to square summability of **every** column $k\in\mathbb N$
+(`mem_receiverDampings_iff_forall_column_summable`), and equivalent to $C_\eta b\in\ell^2(\mathbb N)$
+for every finitely supported $b\in c_0(\mathbb N,\mathbb R)$
+(`mem_receiverDampings_iff_finitelySupported_image_summable`); all four therefore hold
+unconditionally for every $\eta>\Theta-\tfrac12$
+(`summable_arithmeticDampingCenteredRow_sq_of_zetaZeroAbscissa_lt`).
 The residue modes $v_d(n)=\lfloor(n+1)/d\rfloor/(n+1)-1/d$ satisfy
 $C_\eta v_d=d^{-\eta}v_d$ and $(d-1)/d^2\le\|v_d\|_2^2\le2/d$.
 The source is the coordinatewise absolutely convergent series
@@ -1577,15 +1631,34 @@ To be built:
 ### 7.1 The receiver
 
 For every $\delta>0$ exhibit $\varepsilon\in(0,\delta)$ with $\sup_TE_T(\varepsilon)<\infty$.
-Equivalently, exhibit such $\varepsilon$ with $\sup_TE^{\mathrm{int}}_T(\varepsilon)<\infty$, or with the
-strict interior contraction of §3.8. Known for every $\varepsilon\ge\frac12$ and on the zero-free bands
-$\varepsilon\ge\tfrac12-\kappa\sigma(T)/(480\log T)$ below it (§3.15), open at every fixed
-$\varepsilon<\frac12$; a band of fixed positive width supplies an accumulation of admitted dampings and
-therefore a zero-free strip. An isolated damping must not be assigned that stronger conclusion
-without an additional argument. On the period torus the primitive energy of the damped row grows like
-$N^{1-2\varepsilon}$ for $\varepsilon<1/2$, and the receiver is smaller than it by exactly the
-Vinogradov–Korobov factor, so the bound, if it exists, is carried by the pronic weighting of small
-arguments below the first period, and its unconditional size is the zero-free region.
+At every fixed $\varepsilon>0$, this is proved equivalent to $\sup_TE^{\mathrm{int}}_T(\varepsilon)<\infty$,
+to boundedness of the compensated interior martingale bracket
+$2M^{\mathrm{int}}_T(\varepsilon)+2c^{\mathrm{int}}(\varepsilon)H^{\mathrm{comp}}_T$, to the strict
+interior contraction of §3.8 against either $E_T(\varepsilon)$ or $E_T^{\mathrm{int}}(\varepsilon)$
+(`mem_receiverDampings_iff_all_interior_forms`), to square summability of the first column or of all
+columns of the centred damping chain $C_\varepsilon$, and to $C_\varepsilon b\in\ell^2(\mathbb N)$
+for all finitely supported $b\in c_0(\mathbb N,\mathbb R)$
+(`mem_receiverDampings_iff_summable_first_column`,
+`mem_receiverDampings_iff_forall_column_summable`,
+`mem_receiverDampings_iff_finitelySupported_image_summable`). All of these equivalent forms hold
+unconditionally on the exact zero-width half-line $\varepsilon>\Theta-\tfrac12$ with common
+derived-set infimum $\Theta-\tfrac12$ (`exists_pmBezoutInteriorPronicEnergy_budget_of_zetaZeroAbscissa_lt`,
+`sInf_derivedSet_interiorReceiverDampings_eq_zetaZeroAbscissa_sub_half`), propagate zero
+multiplicity by iterated shifts $\operatorname{ord}_\rho\zeta\le\operatorname{ord}_{\rho-k\varepsilon}\zeta$
+up to $\Re\rho\ge\tfrac12+k\varepsilon$
+(`analyticOrderAt_le_analyticOrderAt_sub_nat_mul_of_mem_receiverDampings`), and hold uniformly on
+the Vinogradov–Korobov zero-free band $\tfrac12-\kappa\sigma(T)/(480\log T)\le\varepsilon\le\tfrac12$
+across the entire range $\varepsilon\in[\varepsilon_0,\tfrac12]$ for any $\varepsilon_0>0$
+(`exists_receiver_le_on_vinogradovKorobovBand_of_pos`,
+`exists_interiorPronic_le_on_vinogradovKorobovBand_of_pos`). Establishing admission at cofinally
+small $\varepsilon>0$ (or on a band of fixed positive width below $\tfrac12$) is equivalent to the
+Riemann Hypothesis (respectively a zero-free strip). On the period torus the primitive energy of the
+damped row grows like $N^{1-2\varepsilon}$ for every $0<\varepsilon<1/2$, and both $E_N(\varepsilon)$
+and $E_N^{\mathrm{int}}(\varepsilon)$ are smaller than it by the Vinogradov–Korobov factor
+$e^{-\kappa\sigma(N)/270}$ (`eventually_receiver_le_mul_periodEnergy_of_pos`,
+`eventually_interiorPronic_le_mul_periodEnergy_of_pos`), so the cancellation is carried by the
+pronic weighting of small arguments below the first period, and its unconditional size is the
+zero-free region.
 
 ### 7.2 The interior martingale
 
@@ -1676,8 +1749,9 @@ $2^{m+1}$ to defeat $mN$, so it says nothing against horizons such as $N\log N$:
 between superlinear and quadratic is open. The exact
 window sandwich constant in $[\Phi(N)-2,N(N-1)]$. Explicit stability constants for relation-spectrum
 recovery on windows at unknown phase, and the law for rows only approximately equal in degrees five
-and six. Rates in the cofinal Möbius laws uniform in the band ratio $B$; concavity of the cofinal
-profile (its monotonicity is proved); mixed-level covariances of centred pronic residue cells, which
+and six. Rates in the cofinal Möbius laws uniform in the band ratio $B$ (the profile's slope limit
+$\kappa$ is proved, §3.10; whether $\kappa$ equals the limit of the period variance
+$\sum_{d,e\le N}\mu(d)\mu(e)/[d,e]$, numerically $0.4407$ for both, is open); mixed-level covariances of centred pronic residue cells, which
 are positive when the cells share a factor and start together; the sign of a general signed prime
 packet in the energy-centred Gram.
 

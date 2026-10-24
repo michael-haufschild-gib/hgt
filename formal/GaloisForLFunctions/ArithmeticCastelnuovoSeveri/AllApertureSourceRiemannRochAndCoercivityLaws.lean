@@ -223,16 +223,16 @@ theorem strictAmple_gradedSourceCone_iff_pos_on_primitive {Φ : C → ℝ}
     have hsq_nonpos : -2 * S.pair x S.H ^ 2 ≤ 0 := by nlinarith [sq_nonneg (S.pair x S.H)]
     have hprim_eq_zero : S.prim x = 0 := by
       by_contra hne
-      have hgt := hpos (S.prim x) (S.prim_H x) (S.prim_V x) hne
+      have hgt := hpos (S.prim x) (S.pair_prim_H x) (S.pair_prim_V x) hne
       linarith
     have hΦ_prim_zero : Φ (S.prim x) = 0 := by rw [hprim_eq_zero, hΦ0]
     have hH0 : S.pair x S.H = 0 := by
       have h0 : S.pair x S.H ^ 2 ≤ 0 := by linarith
       nlinarith [sq_nonneg (S.pair x S.H)]
     have hV0 : S.pair x S.V = 0 := by linarith
-    have hx_decomp := S.polarPart_add_prim x
-    rw [S.polarPart, hH0, hV0, zero_smul, zero_smul, add_zero, hprim_eq_zero, add_zero] at hx_decomp
-    exact hx_decomp.symm
+    have hx_prim : x - S.pair x S.V • S.H - S.pair x S.H • S.V = 0 := hprim_eq_zero
+    rw [hH0, hV0, zero_smul, zero_smul, sub_zero, sub_zero] at hx_prim
+    exact hx_prim
 
 theorem gradedSourceCone_eq_sourceCone_of_strictAmple {Φ : C → ℝ}
     (hΦ0 : Φ 0 = 0) (hprim : ∀ x : C, Φ (S.prim x) = Φ x)
@@ -244,7 +244,7 @@ theorem gradedSourceCone_eq_sourceCone_of_strictAmple {Φ : C → ℝ}
     rw [← hprim x]
     by_cases h0 : S.prim x = 0
     · rw [h0, hΦ0]
-    · exact (hpos (S.prim x) (S.prim_H x) (S.prim_V x) h0).le
+    · exact (hpos (S.prim x) (S.pair_prim_H x) (S.pair_prim_V x) h0).le
   exact ⟨hnn, (S.sourceCone_eq_gradedSourceCone_of_nonneg hnn).symm⟩
 
 /-- **Universal Fibre-Invariant `RiemannRochAxiom` Equivalence for `S.gradedSourceCone Φ`:**
@@ -265,26 +265,23 @@ theorem gradedSourceCone_riemannRoch_iff_le_defect {Φ : C → ℝ}
     set b₀ : ℝ := M - S.pair x S.H
     let y : C := x + a₀ • S.H + b₀ • S.V
     have hyH : S.pair y S.H = M := by
-      simp only [y, map_add, LinearMap.map_smul, smul_eq_mul, S.H_self, S.V_H, mul_zero,
-        mul_one, add_zero]
+      simp only [y, map_add, map_smul, LinearMap.add_apply, LinearMap.smul_apply, smul_eq_mul,
+        S.pair_H_H, S.pair_V_H]
       dsimp [b₀]
       ring
     have hyV : S.pair y S.V = 1 / 2 := by
-      simp only [y, map_add, LinearMap.map_smul, smul_eq_mul, S.H_V, S.V_self, mul_one,
-        mul_zero, add_zero]
+      simp only [y, map_add, map_smul, LinearMap.add_apply, LinearMap.smul_apply, smul_eq_mul,
+        S.pair_H_V, S.pair_V_V]
       dsimp [a₀]
       ring
     have hpol : S.polar y y = M := by
       rw [S.polar_self, hyH, hyV]
       ring
     have hprim_y : S.prim y = S.prim x := by
-      calc S.prim y = S.prim (x + a₀ • S.H) + b₀ • S.prim S.V := by
-            rw [map_add, LinearMap.map_smul]
-        _ = S.prim x + a₀ • S.prim S.H + b₀ • S.prim S.V := by
-            rw [map_add, LinearMap.map_smul]
-        _ = S.prim x := by rw [S.prim_H_eq_zero, S.prim_V_eq_zero, smul_zero, smul_zero, add_zero, add_zero]
+      simp only [PolarSurface.prim, hyH, hyV, y, a₀, b₀]
+      module
     have hdef_y : S.defect y y = S.defect x x := by
-      rw [← S.pair_prim, ← S.pair_prim x x, hprim_y]
+      rw [← S.defect_prim y y, ← S.defect_prim x x, hprim_y]
     have hpair_y : 0 < S.pair y y := by
       have hd : S.defect y y = S.polar y y - S.pair y y := rfl
       linarith
@@ -449,12 +446,12 @@ def compensatedSurface (B : C →ₗ[ℝ] C →ₗ[ℝ] ℝ)
     (hsymm : ∀ x y : C, B x y = B y x)
     (hH : ∀ x : C, B x S.H = 0) (hV : ∀ x : C, B x S.V = 0) : PolarSurface C where
   pair := S.pair - B
-  symm x y := by simp [LinearMap.sub_apply, S.symm x y, hsymm x y]
+  pair_comm x y := by simp [LinearMap.sub_apply, S.pair_comm x y, hsymm x y]
   H := S.H
   V := S.V
-  H_self := by simp [LinearMap.sub_apply, S.H_self, hH S.H]
-  V_self := by simp [LinearMap.sub_apply, S.V_self, hV S.V]
-  H_V := by simp [LinearMap.sub_apply, S.H_V, hV S.H]
+  pair_H_H := by simp [LinearMap.sub_apply, S.pair_H_H, hH S.H]
+  pair_V_V := by simp [LinearMap.sub_apply, S.pair_V_V, hV S.V]
+  pair_H_V := by simp [LinearMap.sub_apply, S.pair_H_V, hV S.H]
 
 variable {B : C →ₗ[ℝ] C →ₗ[ℝ] ℝ} {hsymm : ∀ x y : C, B x y = B y x}
   {hH : ∀ x : C, B x S.H = 0} {hV : ∀ x : C, B x S.V = 0}
@@ -481,9 +478,8 @@ theorem compensatedSurface_pair_V (x : C) :
 @[simp]
 theorem compensatedSurface_pair_ample (x : C) :
     (S.compensatedSurface B hsymm hH hV).pair x S.ample = S.pair x S.ample := by
-  rw [← S.compensatedSurface_ample (hsymm := hsymm) (hH := hH) (hV := hV),
-    (S.compensatedSurface B hsymm hH hV).pair_ample, S.pair_ample,
-    S.compensatedSurface_pair_H, S.compensatedSurface_pair_V]
+  change ((S.compensatedSurface B hsymm hH hV).pair x) (S.H + S.V) = S.pair x (S.H + S.V)
+  rw [map_add, map_add, S.compensatedSurface_pair_H, S.compensatedSurface_pair_V]
 
 @[simp]
 theorem compensatedSurface_polar (x y : C) :
@@ -493,8 +489,7 @@ theorem compensatedSurface_polar (x y : C) :
 @[simp]
 theorem compensatedSurface_prim (x : C) :
     (S.compensatedSurface B hsymm hH hV).prim x = S.prim x := by
-  simp [PolarSurface.prim, PolarSurface.polarPart, S.compensatedSurface_pair_H,
-    S.compensatedSurface_pair_V]
+  simp [PolarSurface.prim, S.compensatedSurface_pair_H, S.compensatedSurface_pair_V]
 
 /-- The source section spaces, closed source cone, strict source cone, and graded source cone on
 `S.compensatedSurface B` are **identical as sets** to those on `S`. -/
@@ -565,7 +560,7 @@ def l2ReserveBilinear (κ : ℝ) (V : Submodule ℝ realTests) :
         rw [hsmul, integral_const_mul]
         ring }
   map_add' x₁ x₂ := by
-    ext y
+    refine LinearMap.ext fun y => ?_
     have h1 : Integrable (fun u : ℝ => x₁.2.2.1.1 u * y.2.2.1.1 u) :=
       integrable_mul_of_mem_realTests x₁.2.2.1.2 y.2.2.1.2
     have h2 : Integrable (fun u : ℝ => x₂.2.2.1.1 u * y.2.2.1.1 u) :=
@@ -577,7 +572,7 @@ def l2ReserveBilinear (κ : ℝ) (V : Submodule ℝ realTests) :
       ext u; ring
     rw [hadd, integral_add h1 h2, mul_add]
   map_smul' c x := by
-    ext y
+    refine LinearMap.ext fun y => ?_
     change κ * ∫ u : ℝ, (c * x.2.2.1.1 u) * y.2.2.1.1 u =
       c * (κ * ∫ u : ℝ, x.2.2.1.1 u * y.2.2.1.1 u)
     have hsmul : (fun u : ℝ => (c * x.2.2.1.1 u) * y.2.2.1.1 u) =
@@ -637,9 +632,8 @@ theorem l2CompensatedScalingSubsurface_ample (κ : ℝ) {c : ℝ} (hc : 0 < c)
   simp
 
 /-- If `-(κ - c) ∫ f² ≤ weilPair f f` on `V` with `0 < c`, then `l2SourceCone c V` and
-`strictL2SourceCone c V` on `l2CompensatedScalingSubsurface κ V` satisfy **all five**
-Castelnuovo–Severi laws (`RiemannRochAxiom`, non-vacuous `AmpleAxiom`, `SurfaceRiemannRochAxiom 0 0`,
-`BezoutAxiom`, and `HodgeIndex`). -/
+`strictL2SourceCone c V` on `l2CompensatedScalingSubsurface κ V` satisfy `RiemannRochAxiom`,
+non-vacuous `AmpleAxiom`, `SurfaceRiemannRochAxiom 0 0`, and `HodgeIndex`. -/
 theorem l2CompensatedScalingSubsurface_effectivity_of_floor {κ c : ℝ} (hc : 0 < c)
     (V : Submodule ℝ realTests)
     (hfloor : ∀ x : ℝ × ℝ × V,
@@ -650,23 +644,24 @@ theorem l2CompensatedScalingSubsurface_effectivity_of_floor {κ c : ℝ} (hc : 0
       S'.SurfaceRiemannRochAxiom 0 0 (l2SourceCone c V) ∧
       S'.RiemannRochAxiom (strictL2SourceCone c V) ∧
       S'.AmpleAxiom (strictL2SourceCone c V) ∧
-      S'.BezoutAxiom (strictL2SourceCone c V) ∧
       S'.HodgeIndex := by
   intro S'
   have hle : ∀ x : ℝ × ℝ × V, l2SourceEnergy c V x ≤ S'.defect x x := by
     intro x
     have hd : S'.defect x x = (scalingSubsurface V).defect x x + l2SourceEnergy κ V x := by
-      rw [l2CompensatedScalingSubsurface, PolarSurface.compensatedSurface_defect,
-        l2ReserveBilinear_self]
+      dsimp only [S', l2CompensatedScalingSubsurface]
+      rw [PolarSurface.compensatedSurface_defect, l2ReserveBilinear_self]
     rw [hd]
     have hf := hfloor x
     unfold l2SourceEnergy
     linarith
   have hsrc : l2SourceCone c V = S'.sourceCone (l2SourceEnergy c V) := by
-    rw [l2CompensatedScalingSubsurface, PolarSurface.compensatedSurface_sourceCone]
+    dsimp only [S', l2CompensatedScalingSubsurface]
+    rw [PolarSurface.compensatedSurface_sourceCone]
     rfl
   have hstrict : strictL2SourceCone c V = S'.strictSourceCone (l2SourceEnergy c V) := by
-    rw [l2CompensatedScalingSubsurface, PolarSurface.compensatedSurface_strictSourceCone]
+    dsimp only [S', l2CompensatedScalingSubsurface]
+    rw [PolarSurface.compensatedSurface_strictSourceCone]
     rfl
   have hRR : S'.RiemannRochAxiom (l2SourceCone c V) := by
     rw [hsrc]
@@ -685,18 +680,15 @@ theorem l2CompensatedScalingSubsurface_effectivity_of_floor {κ c : ℝ} (hc : 0
   have hA_s : S'.AmpleAxiom (strictL2SourceCone c V) := by
     rw [hstrict]
     exact S'.strictSourceCone_ample (l2SourceEnergy c V)
-  have hBez_s : S'.BezoutAxiom (strictL2SourceCone c V) := by
-    rw [hstrict]
-    exact S'.strictSourceCone_bezout_of_le_defect (l2SourceEnergy_nonneg hc.le V) hle
-  exact ⟨hRR, hA, hSRR, hRR_s, hA_s, hBez_s, S'.hodgeIndex_of_effectivity hRR hA⟩
+  exact ⟨hRR, hA, hSRR, hRR_s, hA_s, S'.exists_effectivity_iff_hodgeIndex.mpr ⟨_, hRR, hA⟩⟩
 
-/-- **Unconditional All-Aperture Ample + Riemann–Roch + Bézout + HodgeIndex Theorem on the Entire
+/-- **Unconditional All-Aperture Ample + Riemann–Roch + HodgeIndex Theorem on the Entire
 Unrestricted `realTestsAt r` (`r > 0`, `c > 0`):**
 With the explicit Chebyshev reserve `κ(r, c) = 10 + 72 e^r + c`, the unmodified convex,
 Hecke-stable source cone `l2SourceCone c (realTestsAt r)` and its strict interior
 `strictL2SourceCone c (realTestsAt r)` satisfy `RiemannRochAxiom`, **non-vacuous `AmpleAxiom`**
 (`x ∈ l2SourceCone c (realTestsAt r) ∧ x · (H + V) = 0 ⟹ x = 0`), `SurfaceRiemannRochAxiom 0 0`,
-`BezoutAxiom`, and `HodgeIndex` unconditionally at **every** aperture `r > 0`. -/
+and `HodgeIndex` unconditionally at **every** aperture `r > 0`. -/
 theorem l2CompensatedScalingSubsurface_realTestsAt_all_apertures {r c : ℝ}
     (hr : 0 < r) (hc : 0 < c) :
     let S' := l2CompensatedScalingSubsurface (10 + 72 * Real.exp r + c) (realTestsAt r)
@@ -705,42 +697,42 @@ theorem l2CompensatedScalingSubsurface_realTestsAt_all_apertures {r c : ℝ}
       S'.SurfaceRiemannRochAxiom 0 0 (l2SourceCone c (realTestsAt r)) ∧
       S'.RiemannRochAxiom (strictL2SourceCone c (realTestsAt r)) ∧
       S'.AmpleAxiom (strictL2SourceCone c (realTestsAt r)) ∧
-      S'.BezoutAxiom (strictL2SourceCone c (realTestsAt r)) ∧
       S'.HodgeIndex := by
   refine l2CompensatedScalingSubsurface_effectivity_of_floor hc (realTestsAt r) fun x => ?_
   have h := realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp hr x
   linarith [show -(10 + 72 * Real.exp r + c - c) = -(10 + 72 * Real.exp r) by ring]
 
-/-- **Unconditional All-Aperture Ample + Riemann–Roch + Bézout + HodgeIndex on `evenRealTestsAt r`
+/-- **Unconditional All-Aperture Ample + Riemann–Roch + HodgeIndex on `evenRealTestsAt r`
 and `polarFreeSmoothRealTestsAt r` (`r > 0`, `c > 0`, Reserve `10 + 68 e^r + c`):** -/
 theorem l2CompensatedScalingSubsurface_even_and_polarFree_all_apertures {r c : ℝ}
     (hr : 0 < r) (hc : 0 < c) :
-    (let S' := l2CompensatedScalingSubsurface (10 + 68 * Real.exp r + c) (evenRealTestsAt r)
-      S'.RiemannRochAxiom (l2SourceCone c (evenRealTestsAt r)) ∧
-        S'.AmpleAxiom (l2SourceCone c (evenRealTestsAt r)) ∧
-        S'.SurfaceRiemannRochAxiom 0 0 (l2SourceCone c (evenRealTestsAt r)) ∧
-        S'.BezoutAxiom (strictL2SourceCone c (evenRealTestsAt r)) ∧
-        S'.HodgeIndex) ∧
-    (let S' := l2CompensatedScalingSubsurface (10 + 68 * Real.exp r + c)
-        (polarFreeSmoothRealTestsAt r)
-      S'.RiemannRochAxiom (l2SourceCone c (polarFreeSmoothRealTestsAt r)) ∧
-        S'.AmpleAxiom (l2SourceCone c (polarFreeSmoothRealTestsAt r)) ∧
-        S'.SurfaceRiemannRochAxiom 0 0 (l2SourceCone c (polarFreeSmoothRealTestsAt r)) ∧
-        S'.BezoutAxiom (strictL2SourceCone c (polarFreeSmoothRealTestsAt r)) ∧
-        S'.HodgeIndex) := by
+    ((l2CompensatedScalingSubsurface (10 + 68 * Real.exp r + c) (evenRealTestsAt r)).RiemannRochAxiom
+        (l2SourceCone c (evenRealTestsAt r)) ∧
+      (l2CompensatedScalingSubsurface (10 + 68 * Real.exp r + c) (evenRealTestsAt r)).AmpleAxiom
+        (l2SourceCone c (evenRealTestsAt r)) ∧
+      (l2CompensatedScalingSubsurface (10 + 68 * Real.exp r + c) (evenRealTestsAt r)).SurfaceRiemannRochAxiom 0 0
+        (l2SourceCone c (evenRealTestsAt r)) ∧
+      (l2CompensatedScalingSubsurface (10 + 68 * Real.exp r + c) (evenRealTestsAt r)).HodgeIndex) ∧
+    ((l2CompensatedScalingSubsurface (10 + 68 * Real.exp r + c) (polarFreeSmoothRealTestsAt r)).RiemannRochAxiom
+        (l2SourceCone c (polarFreeSmoothRealTestsAt r)) ∧
+      (l2CompensatedScalingSubsurface (10 + 68 * Real.exp r + c) (polarFreeSmoothRealTestsAt r)).AmpleAxiom
+        (l2SourceCone c (polarFreeSmoothRealTestsAt r)) ∧
+      (l2CompensatedScalingSubsurface (10 + 68 * Real.exp r + c) (polarFreeSmoothRealTestsAt r)).SurfaceRiemannRochAxiom 0 0
+        (l2SourceCone c (polarFreeSmoothRealTestsAt r)) ∧
+      (l2CompensatedScalingSubsurface (10 + 68 * Real.exp r + c) (polarFreeSmoothRealTestsAt r)).HodgeIndex) := by
   constructor
-  · obtain ⟨hRR, hA, hSRR, -, -, hBez, hH⟩ :=
+  · obtain ⟨hRR, hA, hSRR, -, -, hH⟩ :=
       l2CompensatedScalingSubsurface_effectivity_of_floor (κ := 10 + 68 * Real.exp r + c) hc
         (evenRealTestsAt r) fun x => by
           have h := even_scalingSubsurface_defect_ge_neg_ten_add_sixty_eight_exp r x
           linarith [show -(10 + 68 * Real.exp r + c - c) = -(10 + 68 * Real.exp r) by ring]
-    exact ⟨hRR, hA, hSRR, hBez, hH⟩
-  · obtain ⟨hRR, hA, hSRR, -, -, hBez, hH⟩ :=
+    exact ⟨hRR, hA, hSRR, hH⟩
+  · obtain ⟨hRR, hA, hSRR, -, -, hH⟩ :=
       l2CompensatedScalingSubsurface_effectivity_of_floor (κ := 10 + 68 * Real.exp r + c) hc
         (polarFreeSmoothRealTestsAt r) fun x => by
           have h := polarFreeSmooth_scalingSubsurface_defect_ge_neg_ten_add_sixty_eight_exp hr x
           linarith [show -(10 + 68 * Real.exp r + c - c) = -(10 + 68 * Real.exp r) by ring]
-    exact ⟨hRR, hA, hSRR, hBez, hH⟩
+    exact ⟨hRR, hA, hSRR, hH⟩
 
 /-! ### 4. Aperture-Dependent Coercivity Laws, Unconditional No-Hardy-Weight Law, Doubly-Exponential Ceiling, and Strict-Monotonicity Self-Upgrade -/
 
@@ -751,6 +743,9 @@ def weightedL2SourceEnergy (W : ℝ → ℝ) (V : Submodule ℝ realTests) (x : 
 /-- Weighted `L²` source cone `{x | 0 ≤ x · H ∧ 0 ≤ x · V ∧ ∫ W(u) f(u)² du ≤ S.polar x x}`. -/
 def weightedL2SourceCone (W : ℝ → ℝ) (V : Submodule ℝ realTests) : Set (ℝ × ℝ × V) :=
   (scalingSubsurface V).sourceCone (weightedL2SourceEnergy W V)
+
+theorem riemannKernelReal_neg_eq (x : ℝ) : riemannKernelReal (-x) = riemannKernelReal x := by
+  rw [← riemannKernelReal_abs' (-x), abs_neg, riemannKernelReal_abs' x]
 
 /-- **Unconditional No-Hardy-Weight Law for Source-Defined Cones (`oddRealTestsAt r` and `realTestsAt r`):**
 For **every** locally integrable weight `W : ℝ → ℝ` with `W ≥ 0` and `0 < volume {x | 0 < W x}`,
@@ -771,7 +766,7 @@ theorem not_forall_aperture_weightedL2SourceCone_riemannRoch {W : ℝ → ℝ}
   have hFc : HasCompactSupport F := hasCompactSupport_phiDoobTest hvc
   have hF_odd : ∀ x : ℝ, F (-x) = -F x := fun x => by
     unfold F phiDoobTest
-    rw [riemannKernelReal_neg, hodd_v x]
+    rw [riemannKernelReal_neg_eq, hodd_v x]
     ring
   obtain ⟨R, -, hR_supp⟩ := exists_support_radius hFc
   set r : ℝ := max R 1
@@ -821,7 +816,7 @@ if `(scalingSubsurface (realTestsAt r)).RiemannRochAxiom (gradedL2SourceCone c (
 or for `c > 0`, `RiemannRochAxiom (l2SourceCone c (realTestsAt r))`) holds, then
 `c ≤ K exp((11/2) r - π e^{2(r - 2)})`. -/
 theorem exists_l2SourceCone_realTestsAt_coercivity_le_doubleExp :
-    ∃ K : ℝ, 0 < K ∧ ∀ {r : ℝ} (hr : 3 ≤ r) (c : ℝ),
+    ∃ K : ℝ, 0 < K ∧ ∀ {r : ℝ}, 3 ≤ r → ∀ (c : ℝ),
       ((scalingSubsurface (realTestsAt r)).RiemannRochAxiom
           (gradedL2SourceCone c (realTestsAt r)) ∨
         (scalingSubsurface (evenRealTestsAt r)).RiemannRochAxiom
@@ -852,7 +847,7 @@ theorem exists_l2SourceCone_realTestsAt_coercivity_le_doubleExp :
     (tsupport_thetaPlateau_subset L).trans fun x hx => ⟨by linarith [hx.1], by linarith [hx.2]⟩
   have heven : ∀ u : ℝ, F (-u) = F u := fun u => by
     unfold F thetaPlateau
-    rw [riemannKernelReal_neg, smoothPlateau_neg]
+    rw [riemannKernelReal_neg_eq, smoothPlateau_neg]
   have hle_F : c * ∫ u : ℝ, F u ^ 2 ≤ fullZeroForm F := by
     rw [← weilPair_self_eq_fullZeroForm hF2 hFc]
     rcases hRR with hRR_all | hRR_ev
@@ -884,7 +879,7 @@ theorem exists_l2SourceCone_realTestsAt_coercivity_le_doubleExp :
     rw [div_le_iff₀ hmass_pos]
     set R₀ := (K₁ + 2 * W) * ((1 + primeShiftConstant) * E) * (Real.exp r * riemannKernelReal L)
     have hR₀ : 0 ≤ R₀ := by positivity
-    have hq : 1 ≤ (∫ u : ℝ, F u ^ 2) / m₀ := by rw [le_div_iff₀ hm₀]; exact hmass
+    have hq : 1 ≤ (∫ u : ℝ, F u ^ 2) / m₀ := by rw [le_div_iff₀ hm₀, one_mul]; exact hmass
     have heq : ((K₁ + 2 * W) * ((1 + primeShiftConstant) * E) / m₀) *
         (Real.exp r * riemannKernelReal L) * ∫ u : ℝ, F u ^ 2 =
         R₀ * ((∫ u : ℝ, F u ^ 2) / m₀) := by dsimp [R₀]; ring
@@ -951,7 +946,7 @@ If an aperture-dependent `L²` source cone `l2SourceCone (m₀ e^{-B(r)}) (realT
 satisfies `RiemannRochAxiom` at `r ≥ 3`, then its decay exponent `B(r)` must satisfy
 `B(r) ≥ π e^{2(r - 2)} - (11/2) r + log(m₀ / K)`. -/
 theorem exists_le_floorLoss_of_l2SourceCone_riemannRoch :
-    ∃ K : ℝ, 0 < K ∧ ∀ {r m₀ : ℝ} (B : ℝ) (hr : 3 ≤ r) (hm₀ : 0 < m₀),
+    ∃ K : ℝ, 0 < K ∧ ∀ {r m₀ : ℝ} (B : ℝ), 3 ≤ r → 0 < m₀ →
       (scalingSubsurface (realTestsAt r)).RiemannRochAxiom
         (l2SourceCone (m₀ * Real.exp (-B)) (realTestsAt r)) →
       Real.pi * Real.exp (2 * (r - 2)) - 11 / 2 * r + Real.log (m₀ / K) ≤ B := by
@@ -1074,9 +1069,7 @@ theorem polarFreeSmooth_gradedL2SourceCone_riemannRoch_iff {r : ℝ} (hr : 0 < r
     have hquad : c * ‖ccmArchimedeanFormToAperture A u.toCCMFormVector‖ ^ (2 : ℕ) ≤
         ccmRestrictedWeilSourceQuadratic A u.toCCMFormVector := by
       rw [norm_sq_ccmArchimedeanFormToAperture_toCCMFormVector,
-        ccmRestrictedWeilSource_complexSmooth_eq_zetaWeil]
-      change c * ∫ x, ‖u x‖ ^ 2 ≤ (zetaZeroConfig.W (u : ℝ → ℂ) (u : ℝ → ℂ)).re
-      rw [hsplit, hnorm, mul_add]
+        ccmRestrictedWeilSource_complexSmooth_eq_zetaWeil, hsplit, hnorm, mul_add]
       linarith
     exact lt_of_le_of_lt ((le_div_iff₀ hpos).mpr hquad) hlt
   · intro hle f
@@ -1118,8 +1111,8 @@ Non-Vacuous Ampleness, and `RiemannHypothesis`:**
 Because `r ↦ ccmRestrictedWeilPolarGroundEnergy ⟨r, hr⟩` is strictly decreasing
 (`strictAnti_ccmRestrictedWeilPolarGroundEnergy`), nonnegativity `0 ≤ μ₀(r)` across all apertures
 automatically forces strict positivity `0 < μ₀(r + 1) ≤ μ₀(r)` at every finite aperture `r > 0`,
-supplying simultaneous `RiemannRochAxiom`, non-vacuous `AmpleAxiom`, `SurfaceRiemannRochAxiom 0 0`,
-and `BezoutAxiom` for `l2SourceCone (ccmRestrictedWeilPolarGroundEnergy ⟨r, hr⟩) (polarFreeSmoothRealTestsAt r)`. -/
+supplying simultaneous `RiemannRochAxiom`, non-vacuous `AmpleAxiom`, and `SurfaceRiemannRochAxiom 0 0`
+for `l2SourceCone (ccmRestrictedWeilPolarGroundEnergy ⟨r, hr⟩) (polarFreeSmoothRealTestsAt r)`. -/
 theorem all_aperture_polarFreeSmooth_hodgeIndex_iff_ample_l2SourceCone :
     RiemannHypothesis ↔
       (∀ r : ℝ, 0 < r → (scalingSubsurface (polarFreeSmoothRealTestsAt r)).HodgeIndex) ∧
@@ -1133,9 +1126,6 @@ theorem all_aperture_polarFreeSmooth_hodgeIndex_iff_ample_l2SourceCone :
             (polarFreeSmoothRealTestsAt r)) ∧
         (scalingSubsurface (polarFreeSmoothRealTestsAt r)).SurfaceRiemannRochAxiom 0 0
           (l2SourceCone (ccmRestrictedWeilPolarGroundEnergy ⟨r, hr⟩)
-            (polarFreeSmoothRealTestsAt r)) ∧
-        (scalingSubsurface (polarFreeSmoothRealTestsAt r)).BezoutAxiom
-          (strictL2SourceCone (ccmRestrictedWeilPolarGroundEnergy ⟨r, hr⟩)
             (polarFreeSmoothRealTestsAt r))) := by
   rw [riemannHypothesis_iff_ccmRestrictedWeilPolarGroundEnergy_nonneg]
   constructor
@@ -1164,11 +1154,7 @@ theorem all_aperture_polarFreeSmooth_hodgeIndex_iff_ample_l2SourceCone :
         (l2SourceCone (ccmRestrictedWeilPolarGroundEnergy A) (polarFreeSmoothRealTestsAt r)) :=
       (scalingSubsurface (polarFreeSmoothRealTestsAt r)).sourceCone_surfaceRiemannRoch_of_le_defect
         (l2SourceEnergy_neg _ _) (l2SourceEnergy_nonneg hpos.le _) hle_def
-    have hBez : (scalingSubsurface (polarFreeSmoothRealTestsAt r)).BezoutAxiom
-        (strictL2SourceCone (ccmRestrictedWeilPolarGroundEnergy A) (polarFreeSmoothRealTestsAt r)) :=
-      (scalingSubsurface (polarFreeSmoothRealTestsAt r)).strictSourceCone_bezout_of_le_defect
-        (l2SourceEnergy_nonneg hpos.le _) hle_def
-    exact ⟨hpos, hRR, hA, hSRR, hBez⟩
+    exact ⟨hpos, hRR, hA, hSRR⟩
   · rintro ⟨hH, -⟩ A
     exact (polarFreeSmooth_scalingSubsurface_hodgeIndex_iff A.2).mp (hH A.1 A.2)
 
@@ -1190,9 +1176,9 @@ def gradedSobolevSourceCone (c : ℝ) (V : Submodule ℝ realTests) : Set (ℝ �
 
 theorem sobolevSourceEnergy_neg (c : ℝ) (V : Submodule ℝ realTests) (x : ℝ × ℝ × V) :
     sobolevSourceEnergy c V (-x) = sobolevSourceEnergy c V x := by
-  change c * ((∫ u : ℝ, (-x.2.2.1.1 u) ^ 2) + ∫ u : ℝ, deriv (fun t => -x.2.2.1.1 t) u ^ 2) =
+  change c * ((∫ u : ℝ, (-x.2.2.1.1 u) ^ 2) + ∫ u : ℝ, deriv (-x.2.2.1.1) u ^ 2) =
     c * ((∫ u : ℝ, (x.2.2.1.1 u) ^ 2) + ∫ u : ℝ, deriv x.2.2.1.1 u ^ 2)
-  have hd : ∀ u : ℝ, deriv (fun t => -x.2.2.1.1 t) u ^ 2 = deriv x.2.2.1.1 u ^ 2 := fun u => by
+  have hd : ∀ u : ℝ, deriv (-x.2.2.1.1) u ^ 2 = deriv x.2.2.1.1 u ^ 2 := fun u => by
     rw [deriv.neg, neg_sq]
   simp_rw [neg_sq, hd]
 
@@ -1245,16 +1231,16 @@ theorem gradedSobolevSourceCone_riemannRoch_iff_weilPair_ge (c : ℝ) (V : Submo
 /-- **Unconditional Exact Equivalence Between `zetaZeroWidth ≤ σ` and All-Aperture Graded Sobolev
 Source Riemann–Roch (`realTestsAt r` and `oddRealTestsAt r`, All `σ ≥ 0`):**
 For every strip width `σ ≥ 0`, `zetaZeroWidth ≤ σ` (every nontrivial zero `ρ` of `ζ` satisfies
-`|Re ρ - 1/2| ≤ σ`) if and only if for every rate `β > σ` there exists `C > 0` such that
+`|Re ρ - 1/2| ≤ σ`) if and only if for every rate `β > σ` there exists `C ≥ 0` such that
 `gradedSobolevSourceCone (-C e^{2β r})` satisfies `RiemannRochAxiom` across all apertures `r > 0`
 on `realTestsAt r` (and equivalently on `oddRealTestsAt r`). -/
 theorem zetaZeroWidth_le_iff_gradedSobolevSourceCone_riemannRoch {σ : ℝ} (hσ : 0 ≤ σ) :
     (zetaZeroWidth ≤ σ ↔
-      ∀ β : ℝ, σ < β → ∃ C : ℝ, 0 < C ∧ ∀ r : ℝ, 0 < r →
+      ∀ β : ℝ, σ < β → ∃ C : ℝ, 0 ≤ C ∧ ∀ r : ℝ, 0 < r →
         (scalingSubsurface (realTestsAt r)).RiemannRochAxiom
           (gradedSobolevSourceCone (-C * Real.exp (2 * β * r)) (realTestsAt r))) ∧
     (zetaZeroWidth ≤ σ ↔
-      ∀ β : ℝ, σ < β → ∃ C : ℝ, 0 < C ∧ ∀ r : ℝ, 0 < r →
+      ∀ β : ℝ, σ < β → ∃ C : ℝ, 0 ≤ C ∧ ∀ r : ℝ, 0 < r →
         (scalingSubsurface (oddRealTestsAt r)).RiemannRochAxiom
           (gradedSobolevSourceCone (-C * Real.exp (2 * β * r)) (oddRealTestsAt r))) := by
   constructor
@@ -1265,10 +1251,12 @@ theorem zetaZeroWidth_le_iff_gradedSobolevSourceCone_riemannRoch {σ : ℝ} (hσ
     constructor
     · intro h f
       have hx := h (0, 0, f)
-      rwa [scalingSubsurface_defect_self] at hx
+      rw [scalingSubsurface_defect_self] at hx
+      linarith
     · intro h x
       rw [scalingSubsurface_defect_self]
-      exact h x.2.2
+      have hf := h x.2.2
+      linarith
   · rw [zetaZeroWidth_le_iff_scalingSubsurface_odd_sobolev_defect_floor hσ]
     refine forall_congr' fun β => imp_congr_right fun _ => exists_congr fun C =>
       and_congr_right fun _ => forall_congr' fun r => imp_congr_right fun _ => ?_
@@ -1276,40 +1264,33 @@ theorem zetaZeroWidth_le_iff_gradedSobolevSourceCone_riemannRoch {σ : ℝ} (hσ
     constructor
     · intro h f
       have hx := h (0, 0, f)
-      rwa [scalingSubsurface_defect_self] at hx
+      rw [scalingSubsurface_defect_self] at hx
+      linarith
     · intro h x
       rw [scalingSubsurface_defect_self]
-      exact h x.2.2
+      have hf := h x.2.2
+      linarith
 
 /-- **Zero-Width Bound from Graded `L²` Source Riemann–Roch on `polarFreeSmoothRealTestsAt r`:**
 For every `σ ≥ 0`, if `gradedL2SourceCone (-C e^{2σ r}) (polarFreeSmoothRealTestsAt r)` satisfies
 `RiemannRochAxiom` for all `r ≥ r₀`, then every nontrivial zero `ρ ∈ zetaZeroConfig.carrier`
 satisfies `|ρ.re - 1/2| ≤ σ` (`zetaZeroWidth ≤ σ`). -/
 theorem zetaZeroWidth_le_of_polarFreeSmooth_gradedL2SourceCone_riemannRoch {σ C r₀ : ℝ}
-    (hσ : 0 ≤ σ) (hr₀ : 0 < r₀)
-    (hRR : ∀ (r : ℝ) (hr : 0 < r), r₀ ≤ r →
+    (hσ : 0 ≤ σ)
+    (hRR : ∀ (r : ℝ), 0 < r → r₀ ≤ r →
       (scalingSubsurface (polarFreeSmoothRealTestsAt r)).RiemannRochAxiom
         (gradedL2SourceCone (-C * Real.exp (2 * σ * r)) (polarFreeSmoothRealTestsAt r))) :
     zetaZeroWidth ≤ σ ∧ ∀ ρ ∈ zetaZeroConfig.carrier, |ρ.re - 1 / 2| ≤ σ := by
   have hge : ∀ A : SuzukiPositiveAperture, r₀ ≤ A.1 →
-      -C * Real.exp (2 * σ * A.1) ≤ ccmRestrictedWeilPolarGroundEnergy A := by
+      -(C * Real.exp (2 * σ * A.1)) ≤ ccmRestrictedWeilPolarGroundEnergy A := by
     intro A hA
-    exact (polarFreeSmooth_gradedL2SourceCone_riemannRoch_iff A.2 _).mp (hRR A.1 A.2 hA)
-  have hstrip : ∀ ρ ∈ zetaZeroConfig.carrier, |ρ.re - 1 / 2| ≤ σ := by
-    intro ρ hρ
-    have hre1 : ρ.re - 1 / 2 ≤ σ :=
-      re_le_of_ccmRestrictedWeilPolarGroundEnergy_ge_neg_exp (C := C) ⟨r₀, hr₀⟩ hσ hge ρ hρ
-    have hsymm := zetaZeroConfig.symm hρ
-    have hre2 := re_le_of_ccmRestrictedWeilPolarGroundEnergy_ge_neg_exp (C := C) ⟨r₀, hr₀⟩ hσ hge
-      (1 - starRingEnd ℂ ρ) hsymm
-    simp only [Complex.sub_re, Complex.one_re, Complex.conj_re] at hre2
-    exact abs_le.mpr ⟨by linarith, hre1⟩
+    have h := (polarFreeSmooth_gradedL2SourceCone_riemannRoch_iff A.2 _).mp (hRR A.1 A.2 hA)
+    linarith
+  have hstrip : ∀ ρ ∈ zetaZeroConfig.carrier, |ρ.re - 1 / 2| ≤ σ :=
+    fun ρ hρ => abs_re_sub_half_le_of_ccmRestrictedWeilPolarGroundEnergy_ge_neg_exp hσ hge hρ
   refine ⟨?_, hstrip⟩
-  unfold zetaZeroWidth zeroWidth
-  refine csSup_le ⟨0, ⟨0, rfl⟩⟩ ?_
-  rintro x ⟨⟨ρ, hρ, hgt⟩ | rfl⟩
-  · exact (le_abs_self _).trans (hstrip ρ hρ)
-  · exact hσ
+  rw [zetaZeroWidth_le_iff_zetaZeroAbscissa_le hσ, zetaZeroAbscissa_le_iff_zetaZeroConfig_re_le hσ]
+  exact fun ρ hρ => by linarith [(abs_le.mp (hstrip ρ hρ)).2]
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 

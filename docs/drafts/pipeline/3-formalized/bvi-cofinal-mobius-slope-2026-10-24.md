@@ -1,8 +1,8 @@
 # The cofinal Möbius profile is asymptotically linear
 
 - **ID:** BVI-COFINAL-SLOPE-2026-10-24
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper) → Lean
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** BVI README §7.7 (concavity of the cofinal profile, uniformity in the band ratio);
   THIM README §7.3 (sign of the band averages A(B), concavity)
 - **Statement:** `P(B)/B → κ = ρ Σ_{j≥1} S(j) log(1+1/j)`, where `ρ = 6/π²`,
@@ -34,9 +34,13 @@ positive band average; about 57% of `B ≤ 2000` have `A(B) ≥ 0`.
 
 ## Gates
 - [x] 0 → 1  well-posed, source-pure, attack idea
-- [ ] 1 → 2  paper proof closed (step 4 constants)
-- [ ] 2 → 3  Lean theorem, audit
+- [x] 1 → 2  paper proof closed (constants: Rankin mass `K = (25/4) exp(3 Σ n^{-7/4})`)
+- [x] 2 → 3  Lean: `tendsto_cofinalBandSlope`, `tendsto_cofinalMobiusQuadraticProfile_div`,
+  `tendsto_sum_bandAverageStep` (`TheCofinalMobiusProfileIsAsymptoticallyLinear.lean`);
+  decay input `exists_abs_coprimePairMoebiusSigmaSum_le` (`CoprimeMoebiusSigmaSumsDecay.lean`).
+  Standard axioms only; wired into the BVI umbrella.
 - [ ] next: identify `κ` with `lim_N Var_N(μ)` (cofinal slope = period variance)
 
 ## Log
 - 2026-10-24 — created in 1-in-progress
+- 2026-10-24 — formalized; moved to 3-formalized

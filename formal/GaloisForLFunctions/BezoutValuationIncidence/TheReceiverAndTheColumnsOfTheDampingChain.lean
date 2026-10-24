@@ -49,9 +49,9 @@ centered damping chain:
    arbitrarily small `η > 0` is equivalent to `RiemannHypothesis`.
 -/
 
-open Finset Filter Topology Real
+open Finset Filter Topology Real RHTower
 open scoped BigOperators ZeroAtInfty
-open GaloisForLFunctions.RHTower
+open GaloisForLFunctions.BiScaleUncertainty
 open GaloisForLFunctions.SignedArithmeticEnergyIncidence
 open GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy
 
@@ -61,10 +61,6 @@ noncomputable section
 set_option autoImplicit false
 
 /-! ## §1. Exact Dilated-State Decomposition of Every Centered Damping Column -/
-
-@[simp] theorem pmPowerDampedCenteredDivisorPrefix_zero (η : ℝ) :
-    pmPowerDampedCenteredDivisorPrefix η 0 = 0 := by
-  simp [pmPowerDampedCenteredDivisorPrefix]
 
 /-- The raw divisor prefix equals the centered divisor prefix plus the linear density term. -/
 theorem arithmeticDampingPrefix_eq_centered_add (η : ℝ) (q : ℕ) :
@@ -88,8 +84,8 @@ def arithmeticDampingDilatedState (η : ℝ) (d n : ℕ) : ℝ :=
     arithmeticDampingDilatedState η 1 n =
       pmPowerDampedCenteredDivisorPrefix η (n + 1) / ((n : ℝ) + 1) := by
   have hv1 : normalizedResidueProfile 1 n = 0 := by
-    unfold normalizedResidueProfile
-    simp
+    have hn1 : (n : ℝ) + 1 ≠ 0 := by positivity
+    simp [normalizedResidueProfile, div_self hn1]
   simp [arithmeticDampingDilatedState, hv1]
 
 /-- Key relation connecting the raw transition term and the entrance term at divisor `d ≥ 1` to
@@ -115,12 +111,11 @@ theorem arithmeticDampingCenteredRow_eq_dilatedState_diff (η : ℝ) (n k : ℕ)
     arithmeticDampingCenteredRow η n k =
       ((k : ℝ) + 1) *
         (arithmeticDampingDilatedState η (k + 1) n - arithmeticDampingDilatedState η (k + 2) n) := by
-  rw [arithmeticDampingDilatedState_eq_prefix_sub_density η (Nat.succ_pos k) n,
-    arithmeticDampingDilatedState_eq_prefix_sub_density η (Nat.succ_pos (k + 1)) n]
+  rw [arithmeticDampingDilatedState_eq_prefix_sub_density η (show 0 < k + 1 by omega) n,
+    arithmeticDampingDilatedState_eq_prefix_sub_density η (show 0 < k + 2 by omega) n]
   unfold arithmeticDampingCenteredRow arithmeticDampingTransition arithmeticDampingEntrance
   have hn1 : ((n + 1 : ℕ) : ℝ) = (n : ℝ) + 1 := by push_cast; ring
   have hk1 : ((k + 1 : ℕ) : ℝ) = (k : ℝ) + 1 := by push_cast; ring
-  have hk2 : ((k + 1 + 1 : ℕ) : ℝ) = (k : ℝ) + 2 := by push_cast; ring
   have hk2' : ((k + 2 : ℕ) : ℝ) = (k : ℝ) + 2 := by push_cast; ring
   rw [show k + 1 + 1 = k + 2 by omega]
   rw [hn1, hk1, hk2']
@@ -143,7 +138,8 @@ private theorem sum_range_dilated_div_sq_le_block {a : ℕ → ℝ} (ha0 : a 0 =
     have hlen : (K + 1) * r + (r - 1) = (K * r + (r - 1)) + r := by
       calc (K + 1) * r + (r - 1) = K * r + r + (r - 1) := by ring
         _ = (K * r + (r - 1)) + r := by omega
-    rw [hlen, sum_range_add, sum_range_succ, mul_add]
+    rw [hlen, Finset.sum_range_add,
+      Finset.sum_range_succ (f := fun m => a (m + 1) / ((m : ℝ) + 1) ^ 2) K, mul_add]
     refine add_le_add ih ?_
     have hstep : ∀ j ∈ range r,
         a ((K * r + (r - 1) + j + 1) / r) / (((K * r + (r - 1) + j : ℕ) : ℝ) + 1) ^ 2 ≤
@@ -200,7 +196,7 @@ theorem pmPowerDampedDivisorDiscreteEnergy_le_sum_range_div_sq (η : ℝ) (T : �
     pmPowerDampedDivisorDiscreteEnergy η T ≤
       ∑ m ∈ range T, (pmPowerDampedCenteredDivisorPrefix η (m + 1) / ((m : ℝ) + 1)) ^ 2 := by
   unfold pmPowerDampedDivisorDiscreteEnergy
-  rw [← RHTower.sum_Icc_eq_sum_range_shift]
+  rw [RHTower.sum_Icc_eq_sum_range_shift]
   refine sum_le_sum fun m _ => ?_
   rw [div_pow]
   have hm1 : (0 : ℝ) < (m : ℝ) + 1 := by positivity
@@ -212,7 +208,7 @@ theorem sum_range_div_sq_le_two_mul_pmPowerDampedDivisorDiscreteEnergy (η : ℝ
     ∑ m ∈ range T, (pmPowerDampedCenteredDivisorPrefix η (m + 1) / ((m : ℝ) + 1)) ^ 2 ≤
       2 * pmPowerDampedDivisorDiscreteEnergy η T := by
   unfold pmPowerDampedDivisorDiscreteEnergy
-  rw [← RHTower.sum_Icc_eq_sum_range_shift, mul_sum]
+  rw [RHTower.sum_Icc_eq_sum_range_shift, mul_sum]
   refine sum_le_sum fun m _ => ?_
   rw [div_pow]
   have hm : (0 : ℝ) ≤ m := Nat.cast_nonneg m
@@ -222,7 +218,8 @@ theorem sum_range_div_sq_le_two_mul_pmPowerDampedDivisorDiscreteEnergy (η : ℝ
   have hcast : ((m + 1 : ℕ) : ℝ) = (m : ℝ) + 1 := by push_cast; ring
   rw [hcast]
   have hsq : 0 ≤ pmPowerDampedCenteredDivisorPrefix η (m + 1) ^ 2 := sq_nonneg _
-  nlinarith
+  have hle : ((m : ℝ) + 1) * ((m : ℝ) + 1 + 1) ≤ 2 * ((m : ℝ) + 1) ^ 2 := by nlinarith
+  exact (mul_le_mul_of_nonneg_left hle hsq).trans (le_of_eq (by ring))
 
 /-! ## §3. Universal Upper Bound on Every Column and Coercive First-Column Lower Bound -/
 
@@ -270,11 +267,12 @@ theorem sum_range_arithmeticDampingDilatedState_sq_le (η : ℝ) {d : ℕ} (hd :
       _ = 2 / (d : ℝ) * pmPowerDampedDivisorDiscreteEnergy η T := by ring
   have hres := sum_range_sq_normalizedResidueProfile_le hd T
   have hpow : 2 * ((d : ℝ) ^ (-η)) ^ 2 * (2 / (d : ℝ)) = 4 * (d : ℝ) ^ (-1 - 2 * η) := by
-    rw [← Real.rpow_natCast ((d : ℝ) ^ (-η)) 2, ← Real.rpow_mul hd0.le]
-    rw [show 2 * (d : ℝ) ^ (-η * (2 : ℕ)) * (2 / (d : ℝ)) =
-      4 * ((d : ℝ) ^ (-2 * η) / (d : ℝ)) by push_cast; ring]
-    rw [← Real.rpow_one (d : ℝ), ← Real.rpow_sub hd0]
-    congr 1; push_cast; ring
+    have h1 : ((d : ℝ) ^ (-η)) ^ 2 = (d : ℝ) ^ (-2 * η) := by
+      rw [← Real.rpow_natCast ((d : ℝ) ^ (-η)) 2, ← Real.rpow_mul hd0.le]
+      congr 1; push_cast; ring
+    have h2 : (d : ℝ) ^ (-1 - 2 * η) = (d : ℝ) ^ (-2 * η) / (d : ℝ) := by
+      rw [show -1 - 2 * η = -2 * η - 1 by ring, Real.rpow_sub hd0, Real.rpow_one]
+    rw [h1, h2]; ring
   calc ∑ n ∈ range T, arithmeticDampingDilatedState η d n ^ 2
       ≤ ∑ n ∈ range T, 2 * ((d : ℝ) ^ (-η)) ^ 2 *
           ((pmPowerDampedCenteredDivisorPrefix η ((n + 1) / d) / ((n : ℝ) + 1)) ^ 2 +
@@ -319,8 +317,8 @@ theorem sum_range_arithmeticDampingCenteredRow_sq_le {η : ℝ} (hη : 0 ≤ η)
         (arithmeticDampingDilatedState η (k + 2) n))
       (sq_nonneg ((k : ℝ) + 1))
     linarith
-  have hd1 := sum_range_arithmeticDampingDilatedState_sq_le η (Nat.succ_pos k) T
-  have hd2 := sum_range_arithmeticDampingDilatedState_sq_le η (Nat.succ_pos (k + 1)) T
+  have hd1 := sum_range_arithmeticDampingDilatedState_sq_le η (show 0 < k + 1 by omega) T
+  have hd2 := sum_range_arithmeticDampingDilatedState_sq_le η (show 0 < k + 2 by omega) T
   have hmono : ((k + 2 : ℕ) : ℝ) ^ (-1 - 2 * η) ≤ ((k + 1 : ℕ) : ℝ) ^ (-1 - 2 * η) :=
     Real.rpow_le_rpow_of_nonpos (by positivity) (by exact_mod_cast (show k + 1 ≤ k + 2 by omega))
       (by linarith)
@@ -436,7 +434,7 @@ For `η > 0`, `η` belongs to `receiverDampings` if and only if the single first
 `n ↦ C_η(n, 0)` of the centered damping chain is square-summable. -/
 theorem mem_receiverDampings_iff_summable_first_column {η : ℝ} (hη : 0 < η) :
     η ∈ receiverDampings ↔ Summable (fun n : ℕ => arithmeticDampingCenteredRow η n 0 ^ 2) := by
-  rw [mem_receiverDampings_iff_exists_budget hη]
+  simp only [receiverDampings, Set.mem_setOf_eq, hη, true_and]
   constructor
   · rintro ⟨B, hB⟩
     refine summable_of_sum_range_le
@@ -444,13 +442,13 @@ theorem mem_receiverDampings_iff_summable_first_column {η : ℝ} (hη : 0 < η)
       (fun n => sq_nonneg _) fun T => ?_
     have h := sum_range_arithmeticDampingCenteredRow_sq_le hη.le 0 T
     simp only [Nat.cast_zero, zero_add, Real.one_rpow, mul_one] at h
-    exact h.trans (mul_le_mul_of_nonneg_left (add_le_add_right (hB T) _) (by norm_num))
+    exact h.trans (by linarith [hB T])
   · intro hs
     refine ⟨24 * (∑' n : ℕ, arithmeticDampingCenteredRow η n 0 ^ 2) +
       24 * (pmPowerDampedDivisorDensity η).re ^ 2, fun T => ?_⟩
-    exact (pmPowerDampedDivisorDiscreteEnergy_le_first_column_sum hη.le T).trans
-      (add_le_add_right (mul_le_mul_of_nonneg_left
-        (hs.sum_le_tsum (range T) fun _ _ => sq_nonneg _) (by norm_num)) _)
+    have h1 := pmPowerDampedDivisorDiscreteEnergy_le_first_column_sum hη.le T
+    have h2 := hs.sum_le_tsum (range T) fun _ _ => sq_nonneg _
+    linarith
 
 /-- **All-Columns Characterization of the Receiver:**
 For `η > 0`, `η` belongs to `receiverDampings` if and only if **every** column `n ↦ C_η(n, k)`
@@ -458,19 +456,15 @@ For `η > 0`, `η` belongs to `receiverDampings` if and only if **every** column
 theorem mem_receiverDampings_iff_forall_column_summable {η : ℝ} (hη : 0 < η) :
     η ∈ receiverDampings ↔
       ∀ k : ℕ, Summable (fun n : ℕ => arithmeticDampingCenteredRow η n k ^ 2) := by
-  rw [mem_receiverDampings_iff_exists_budget hη]
   constructor
-  · rintro ⟨B, hB⟩ k
+  · rintro ⟨_, B, hB⟩ k
     refine summable_of_sum_range_le
       (c := 16 * (B + (pmPowerDampedDivisorDensity η).re ^ 2) * ((k : ℝ) + 1) ^ (1 - 2 * η))
       (fun n => sq_nonneg _) fun T => ?_
     exact (sum_range_arithmeticDampingCenteredRow_sq_le hη.le k T).trans
-      (mul_le_mul_of_nonneg_right
-        (mul_le_mul_of_nonneg_left (add_le_add_right (hB T) _) (by norm_num))
-        (Real.rpow_nonneg (by positivity) _))
+      (mul_le_mul_of_nonneg_right (by linarith [hB T]) (Real.rpow_nonneg (by positivity) _))
   · intro hk
-    exact (mem_receiverDampings_iff_exists_budget hη).mp
-      ((mem_receiverDampings_iff_summable_first_column hη).mpr (hk 0))
+    exact (mem_receiverDampings_iff_summable_first_column hη).mpr (hk 0)
 
 /-- For any `c₀` vector `b` supported on `range N`, `(C_η b)(n)` is a finite linear combination
 of the first `N` columns of `C_η`, with `((C_η b)(n))² ≤ N ∑_{k < N} (C_η(n, k) b(k))²`. -/
@@ -497,7 +491,7 @@ theorem mem_receiverDampings_iff_finitelySupported_image_summable {η : ℝ} (h�
       intro n
       rw [arithmeticDampingCenteredOperator_apply_of_support hη b N hb n]
       have hcs := sum_mul_sq_le_sq_mul_sq (range N)
-        (fun k => arithmeticDampingCenteredRow η n k * b k) 1
+        (fun k => arithmeticDampingCenteredRow η n k * b k) (fun _ => (1 : ℝ))
       simp only [mul_one, one_pow, sum_const, card_range, nsmul_eq_mul] at hcs
       refine hcs.trans (le_of_eq ?_)
       rw [mul_comm (N : ℝ)]
@@ -529,29 +523,24 @@ While the uncentered first column `n ↦ P_η(n+1, 1)` is never square-summable
 damping chain `C_η` is square-summable for all `η > Θ − 1/2`, with total `ℓ²` mass at most
 `O_η((k + 1)^{1 − 2η})`. -/
 theorem summable_arithmeticDampingCenteredRow_sq_of_zetaZeroAbscissa_lt {η : ℝ}
-    (hη : zetaZeroAbscissa - 1 / 2 < η) (k : ℕ) :
+    (hΘ : zetaZeroAbscissa < 1 / 2 + η) (k : ℕ) :
     Summable (fun n : ℕ => arithmeticDampingCenteredRow η n k ^ 2) := by
-  have hη0 : 0 < η := lt_of_le_of_lt
-    (sub_nonneg.mpr zetaZeroAbscissa_ge_half) hη
-  exact (mem_receiverDampings_iff_forall_column_summable hη0).mp
-    (mem_receiverDampings_of_zetaZeroAbscissa_lt hη) k
+  have hmem := mem_receiverDampings_of_zetaZeroAbscissa_lt hΘ
+  exact (mem_receiverDampings_iff_forall_column_summable hmem.1).mp hmem k
 
 theorem exists_tsum_arithmeticDampingCenteredRow_sq_bound_of_zetaZeroAbscissa_lt {η : ℝ}
-    (hη : zetaZeroAbscissa - 1 / 2 < η) :
+    (hΘ : zetaZeroAbscissa < 1 / 2 + η) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ k : ℕ,
       (∑' n : ℕ, arithmeticDampingCenteredRow η n k ^ 2) ≤
         K * ((k : ℝ) + 1) ^ (1 - 2 * η) := by
-  have hη0 : 0 < η := lt_of_le_of_lt
-    (sub_nonneg.mpr zetaZeroAbscissa_ge_half) hη
-  obtain ⟨B, hB⟩ := (mem_receiverDampings_iff_exists_budget hη0).mp
-    (mem_receiverDampings_of_zetaZeroAbscissa_lt hη)
+  have hmem := mem_receiverDampings_of_zetaZeroAbscissa_lt hΘ
+  have hη0 : 0 < η := hmem.1
+  obtain ⟨B, hB⟩ := hmem.2
   have hB0 : 0 ≤ B := le_trans (pmPowerDampedDivisorDiscreteEnergy_nonneg η 0) (hB 0)
   refine ⟨16 * (B + (pmPowerDampedDivisorDensity η).re ^ 2), by positivity, fun k => ?_⟩
   refine Real.tsum_le_of_sum_range_le (fun _ => sq_nonneg _) fun T => ?_
   exact (sum_range_arithmeticDampingCenteredRow_sq_le hη0.le k T).trans
-    (mul_le_mul_of_nonneg_right
-      (mul_le_mul_of_nonneg_left (add_le_add_right (hB T) _) (by norm_num))
-      (Real.rpow_nonneg (by positivity) _))
+    (mul_le_mul_of_nonneg_right (by linarith [hB T]) (Real.rpow_nonneg (by positivity) _))
 
 /-- **Riemann Hypothesis Equivalence with First-Column Square-Summability:**
 `RiemannHypothesis` holds if and only if the first column `n ↦ C_η(n, 0)` of the centered
@@ -559,25 +548,31 @@ arithmetic damping chain lies in `ℓ²(ℕ)` for every `η > 0` (or cofinally a
 theorem riemannHypothesis_iff_forall_pos_first_column_summable :
     RiemannHypothesis ↔
       ∀ η : ℝ, 0 < η → Summable (fun n : ℕ => arithmeticDampingCenteredRow η n 0 ^ 2) := by
-  rw [riemannHypothesis_iff_forall_pos_mem_receiverDampings]
-  exact ⟨fun h η hη => (mem_receiverDampings_iff_summable_first_column hη).mp (h η hη),
-    fun h η hη => (mem_receiverDampings_iff_summable_first_column hη).mpr (h η hη)⟩
+  constructor
+  · intro hRH η hη
+    have hΘ : zetaZeroAbscissa = 1 / 2 := zetaZeroAbscissa_eq_half_iff_riemannHypothesis.mpr hRH
+    exact summable_arithmeticDampingCenteredRow_sq_of_zetaZeroAbscissa_lt (by linarith) 0
+  · intro h
+    rw [riemannHypothesis_iff_cofinal_budget]
+    intro δ hδ
+    have hmem := (mem_receiverDampings_iff_summable_first_column (by linarith : 0 < δ / 2)).mpr
+      (h (δ / 2) (by linarith))
+    obtain ⟨B, hB⟩ := hmem.2
+    exact ⟨δ / 2, by linarith, by linarith, B, hB⟩
 
 theorem riemannHypothesis_iff_cofinal_first_column_summable :
     RiemannHypothesis ↔
       ∀ δ : ℝ, 0 < δ → ∃ η : ℝ, 0 < η ∧ η < δ ∧
         Summable (fun n : ℕ => arithmeticDampingCenteredRow η n 0 ^ 2) := by
-  rw [riemannHypothesis_iff_cofinallyAdmits]
+  rw [riemannHypothesis_iff_cofinal_budget]
   constructor
   · intro h δ hδ
-    obtain ⟨η, hη, hηδ, ha⟩ := h δ hδ
-    exact ⟨η, hη, hηδ, (mem_receiverDampings_iff_summable_first_column hη).mp
-      ⟨hη, (admits_dampedMobiusEnergy_iff_exists_budget η).mp ha⟩⟩
+    obtain ⟨η, hη, hηδ, B, hB⟩ := h δ hδ
+    exact ⟨η, hη, hηδ, (mem_receiverDampings_iff_summable_first_column hη).mp ⟨hη, B, hB⟩⟩
   · intro h δ hδ
     obtain ⟨η, hη, hηδ, hs⟩ := h δ hδ
-    have hmem := (mem_receiverDampings_iff_summable_first_column hη).mpr hs
-    exact ⟨η, hη, hηδ, (admits_dampedMobiusEnergy_iff_exists_budget η).mpr
-      ((mem_receiverDampings_iff_exists_budget hη).mp hmem)⟩
+    obtain ⟨_, B, hB⟩ := (mem_receiverDampings_iff_summable_first_column hη).mpr hs
+    exact ⟨η, hη, hηδ, B, hB⟩
 
 #print axioms arithmeticDampingCenteredRow_eq_dilatedState_diff
 #print axioms sum_range_dilated_div_sq_le

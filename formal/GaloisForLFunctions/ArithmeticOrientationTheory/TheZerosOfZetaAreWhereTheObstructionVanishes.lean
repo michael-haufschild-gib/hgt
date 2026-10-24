@@ -106,17 +106,16 @@ theorem mem_paidIdeal_oscillating_iff {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 1 /
     k ∈ paidIdeal (oscillatingSmoothPower ε t) (summable_abs_oscillatingSmoothPower_div hε t) ↔
       bohrEval (1 / 2) k.toFn (oscPoint ε t hε2) = 0 ∧
         bohrEval (1 / 2) k.toFn (oscPointConj ε t hε2) = 0 := by
-  set ρ := oscillationExponent ε t
-  rw [mem_paidIdeal, receiverBounded_dirichletConv_oscillatingSmoothPower_iff hε hε2 t
+  rw [mem_paidIdeal _ _, receiverBounded_dirichletConv_oscillatingSmoothPower_iff hε hε2 t
       (criticalWiener_rePart k),
     receiverBounded_dirichletConv_oscillatingSmoothPower_iff hε hε2 t (criticalWiener_imPart k),
     oscPoint, oscPointConj, bohrEval_halfPlanePoint, bohrEval_halfPlanePoint,
     lSeries_eq_complexPoleValue k (half_le_re_oscillationExponent hε2 t),
     lSeries_eq_complexPoleValue k (half_le_re_conj_oscillationExponent hε2 t),
     complexPoleValue_conj, complexPoleValue_conj]
-  simp only [hz, or_false]
-  set A := complexPoleValue (rePart k) ρ
-  set B := complexPoleValue (imPart k) ρ
+  rw [or_iff_left hz, or_iff_left hz]
+  set A := complexPoleValue (rePart k) (oscillationExponent ε t)
+  set B := complexPoleValue (imPart k) (oscillationExponent ε t)
   constructor
   · rintro ⟨hA, hB⟩
     simp [hA, hB]

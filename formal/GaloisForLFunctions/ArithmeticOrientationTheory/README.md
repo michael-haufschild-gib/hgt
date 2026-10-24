@@ -277,6 +277,19 @@ switching once the prime sums are sparse. What the same-side atoms and the varia
 therefore grows with the prime count at scale `e^{2A}`; the count bounds the ground energy from
 above through the mass, and says nothing yet about whether it is paid.
 
+### 3.1⁗ Frustration bounds the ground energy from below (`FrustrationBoundsTheGroundEnergyFromBelow`)
+
+1. **Signed Cheeger inequality.** If every switching `s` and set `S` see frustration
+   `signedCutMass s c S ≥ h |S|` (mass leaving `S` plus misaligned mass inside it) and every degree
+   is `≤ D`, then `h² Σ x² ≤ 4D · D_c(x)` (`sq_mul_le_signedDirichletForm`), so
+   `μ ≥ h²/(4D)` (`le_groundEnergy_of_cheeger`): the lower half of §3.1.
+2. **Mechanism.** Co-area over the level sets of `x²` (`coarea_le`), the edge term in modulus
+   coordinates of the profile's own switching (`edgeTerm_eq_edgeLength`), Cauchy–Schwarz.
+3. **Frustration as a budget discount.** `E(f) = Σ (c_ii − deg_i) f_i² + D_c(f)/2`
+   (`incidenceEnergy_eq_signedDirichletForm`), so a signed form is nonnegative once every budget
+   is within `h²/(8D)` of its degree (`incidenceEnergy_ge_of_cheeger`); balanced forms (`h = 0`)
+   need the full degree.
+
 ### 3.2 The frustration of a tower is rank one (`TheFrustrationOfATowerIsRankOne`)
 
 1. **Tower locality.** `P_q(p^k) = Σ_{i≤k} q(p^i) q(p^{k−i})` (`productCorr_prime_pow`).
@@ -415,6 +428,38 @@ This is the square-root threshold of the aperture as a sampling threshold.
 5. **Payment is a unit invariant.** For a unit `k` and a weight with summable mean, `k ⋆ c` is
    paid iff `c` is (`receiverBounded_dirichletConv_iff_of_isWienerUnit`): the units preserve the
    unpaid class too.
+
+### 3.6⁗ Unpayability is located on the Bohr polydisk (`UnpayabilityIsLocatedOnTheBohrPolydisk`, `TheZerosOfZetaAreWhereTheObstructionVanishes`)
+
+1. **The repairing ideal.** For a weight `c` with summable mean the kernels `k ∈ 𝒲_{1/2}` whose
+   real and imaginary parts pay `c` form an ideal `P(c)` (`paidIdeal`), containing `δ₁` iff `c` is
+   paid (`one_mem_paidIdeal_iff`), and `P(u ⋆ c) = P(c)` for units `u` (`paidIdeal_unit`).
+2. **Spectral localization.** `c` is unpaid iff some Bohr point annihilates every repairing
+   kernel (`not_receiverBounded_iff_exists_obstruction`): `P(c)` lies in a maximal ideal, which is
+   a Bohr evaluation. The **obstruction hull** of `c` (`obstructionHull`) is nonempty iff `c` is
+   unpaid and is constant on unit orbits (`obstructionHull_unit`).
+3. **Computations.** For `0 < ε < ½` the hull of `d^{−ε}` is the pole point `s = 1 − ε`
+   (`mem_obstructionHull_smoothPower_iff`); the hull of `d^{−ε}cos(t log d)` is the conjugate pair
+   `{ρ, ρ̄}`, `ρ = 1 − ε + it`, when `ζ(ρ) ≠ 0` (`mem_obstructionHull_oscillating_iff`), and is empty
+   iff `ζ(ρ) = 0` (`obstructionHull_oscillating_nonempty_iff`): the zeros of `ζ` in the strip are the
+   points where the receiver's obstruction vanishes.
+
+### 3.6‴ An orientation-faithful norm over the odd squarefree weight (`AnOrientationFaithfulNormOverTheOddSquarefreeWeight`)
+
+For `0 < ε ≤ ½`, kernels with `N(k) = Σ |k(j)| j^ε < ∞` (`orientNorm`) and the weights `k ⋆ o`,
+`o = 1_{odd squarefree} d^{−ε}`:
+
+1. **Receiver bounded on the paid hyperplane.** `P(k) = Σ k(j) j^{−(1−ε)} = 0` implies
+   `E_T(k ⋆ o) ≤ 4 C_ε N(k)²` at every cutoff, `C_ε` explicit
+   (`weightPronicEnergy_dirichletConv_oddSqf_le`); payment is exactly `P = 0` for every admissible
+   kernel (`receiverBounded_dirichletConv_oddSqf_iff_admissible`).
+2. **Companion class continuous.** The flip is an involution with `N(k^♭) ≤ 3N(k)`
+   (`flipKernelOf_flipKernelOf`, `orientNorm_flipKernelOf_le`).
+3. **Orientation coordinates.** The flip acts on `(P, P_e)`, `P_e` the even-part pole pairing, by
+   `(P, P_e) ↦ (P + (1 − 2^ε)P_e, −P_e)` (`polePairing_flipKernelOf`,
+   `polePairing_evenPart_flipKernelOf`); both members of a flip pair are paid iff `P = P_e = 0`
+   (`receiverBounded_and_evenFlip_iff`), with both energies `≤ 36 C_ε N(k)²`
+   (`weightPronicEnergy_evenFlip_le`).
 
 ### 3.7 The damping flow preserves orientation (`TheDampingFlowPreservesOrientation`)
 
@@ -589,6 +634,9 @@ first pronic moment identity, the parity pair of the Fermi weight) are proved co
    class is a union of orbits; its units are the kernels with no zero on the Bohr polydisk, they
    preserve the unpaid class as well, and among local factors of any degree they are exactly
    those with all Satake parameters `|α| < √p`.
+   **Where does payment fail?** At a point of the polydisk: the obstruction hull, empty exactly on
+   the paid class and constant on unit orbits; the pole point for `d^{−ε}`, the pair `{ρ, ρ̄}` for
+   the oscillating probe off the zeros of `ζ`.
 6. **Where is the odd Weil ledger frustrated, and how much?** Nowhere on the lattice at any
    aperture, and exactly on the prime sums between lattice points: frustration is a continuum
    phenomenon, bounded in mass by the prime-sum charge, equal in index to the prime-sum count on
@@ -628,13 +676,14 @@ Built and reusable:
 - the *inverse tower* and the *uniqueness of inverses* in the Wiener monoid;
 - the *Euler characteristic* `h⁰ − h¹` of a reading at nodes;
 - the *Banach algebra* `𝒲_σ`, its *Bohr characters* and *Wiener's lemma* on the polydisk;
+- the *signed Cheeger inequality* with its *co-area* lemma, and the *orientation-faithful norm* `orientNorm`;
 - the *section effectivity cone* `sectionEffectivityCone S = {x : 1 ≤ cycleH0 S x}` and its
   Bézout–Riemann–Roch–Hodge-index classification;
 - the *pole-jet* and *zeta-jet* section readings (`poleJetMatrix`, `principalPartReadingOne`,
   `principalPartReadingTwo`, `zetaJetDiagReading`) and the *node-divisor Euler characteristic*
   `nodeDivisorEulerChar` with its reflected prime-polar ledger identity.
 
-To be built (§7): an orientation-faithful norm on damped weights; the aperture-derivative identity.
+To be built (§7): the aperture-derivative identity.
 
 ---
 
@@ -656,9 +705,9 @@ To be built (§7): an orientation-faithful norm on damped weights; the aperture-
    band-limited tests on an aperture, the node set by the prime-power nodes, and the frame bound
    by a Landau-type density theorem; identify the `h¹` term and the Chebyshev defect
    `E(s) = e^s + s − 1 − ψ(e^s)` as its correction.
-4. **An orientation-faithful norm.** A Banach norm on four-free damped weights in which the
-   companion class is continuous and the receiver is bounded; the first pronic moment and the
-   logarithmic moments are the candidates for its coordinates.
+4. **An orientation-faithful norm.** Built over `o` (§3.6‴): the coordinates are the pole pairing
+   and the even-part pole pairing. Open: the same over the smooth power and over multiplicative
+   weights, where the flip does not act on kernels.
 5. **Inverses in the critical Wiener monoid.** Answered by §3.6″ (Wiener's lemma on the Bohr
    polydisk; units preserve both payment classes). Open: the half-plane form
    (`inf_{Re s ≥ ½} |L| > 0` ⇒ unit) and the orbit structure of the unpaid class.

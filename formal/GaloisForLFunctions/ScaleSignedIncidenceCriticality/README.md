@@ -26,8 +26,8 @@ Passing a blindness test is necessary for a proposed method; it is not an estima
 | [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md) | Supplies complete source families; the reading must preserve the information their receiver needs. |
 | [Bi-Scale Uncertainty](../BiScaleUncertainty/README.md) | Supplies node-critical blind cones, packet rates and countermodels. |
 | [Trans-Horizon Incidence Mechanics](../TransHorizonIncidenceMechanics/README.md) | Supplies parity collisions and the distinction between a finite observer and uniform receiver payment. |
-| [Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md) | Its Gram and dispersion estimates are candidates for precise reading-and-shadow analysis. |
-| [Arithmetic Criticality Theory](../ArithmeticCriticalityTheory/README.md) | Supplies bounded-aperture certificates and the ground-energy path whose sign and magnitude read different information. |
+| [Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md) | Its cross-scale Gram and dispersion readings are priced in the exponent unit `θ = 2 log P / log X`: the sign-blind Type-II and rank-two readout readings have exact limit `2` and floor `0`, `K`-kernel smoothness reduces the unresolved deficit limit to `2/(K+1)` (`θ_cert = 2K/(K+1)`), `residueMass` and `kernelStatistic` complete the single-modulus face faithfully, and the centred prime row bypasses the Type-II shadow on `(7/6, 2)`. |
+| [Arithmetic Criticality Theory](../ArithmeticCriticalityTheory/README.md) | Supplies bounded-aperture certificates, the ground-energy path `μ(A)` whose sign and magnitude read different information, and the two-aperture ratio `zetaTwoApertureRatio A₀ A = (μ(A₀) - μ(A))/μ(A₀)` whose critical value `1` is attained on the line. |
 | [Square-Root Threshold](../SquareRootThreshold/README.md) | Supplies the lattice models, Nyquist laws, visibility witnesses and zero-width dictionary. |
 | [Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md) | Supplies allocation and cross-prime aggregate readings; their signs and sizes must be distinguished. |
 | [Arithmetic Continuation and Critical Energy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Distinguishes pointwise, averaged and horizon-uniform budgets; a transport must supply its arithmetic estimate. |
@@ -180,7 +180,8 @@ the trivial limit `½` for the depth. The **vertical** coordinate is what every 
 | deficit rate | `inf {β ≥ 0 : the deficit is O(e^{2βa})}` (`rateSet`, `sInf_rateSet`) | the configuration is on-line |
 | depth resolution | `arcosh(1 + η/(2L))/L` at level `η` and scale `L` (`depthResolution`) | at `η = 0`; otherwise it is a positive resolution allowance |
 | node scale | `sup {1/m : m a prime power, m ∉ 𝒩}` (`nodeScale`) | `𝒩` contains every prime power |
-| band ratio | `t₃/(2t₂) − 1` on a lattice, `(t₄−t₃)/(t₃−t₂)` with mass (`ratio_eq_cosh`, `difference_ratio_eq`) | at the critical value `1`, resp. `2` |
+| band ratio | `t₃/(2t₂) − 1` on a lattice, `(t₄−t₃)/(t₃−t₂)` with mass, `M(2a)/(2M(a))` on a pair, and `(μ(A₀)−μ(A))/μ(A₀)` for `ζ` (`ratio_eq_cosh`, `difference_ratio_eq`, `normalizedPairDoublingRatio_eq_cosh`, `zetaTwoApertureRatio`) | at the critical value `1` (resp. `2` for the three-band difference ratio) |
+| cross-scale exponent | `θ = 2 log P / log X` (`crossScaleExponent`), certified floor `2K/(K+1)` (`smoothCertifiedExponent`) and deficit `2/(K+1)` (`smoothUnresolvedLimit`) | deficit vanishes at the receiver scale `X = P` (`θ = 2`, `K → ∞`) |
 
 The width and the depth **vanish together** on the lattice family and are the two ends of the same
 scale; depth, width on this family, and the deficit rate are all constant on dilation orbits. A result in one
@@ -197,6 +198,7 @@ band-ratio unit, where the depth is an explicit elementary function of what was 
 | mixed | lattice plus on-line mass and dilution | depth | `dilutedReading`, the three band deficits |
 | node incidence | node sets `𝒩 ⊆ ℕ` | zero–pole blind positivity | `AsymptoticReading`; `membershipReading m` |
 | prime window | prime weights `lam : ℕ → ℝ` | full Weil cone | `radiusReading R`, `weightAperturePositivity a` |
+| pronic Gram | prime-block packets (`PronicBlockGramDatum`) and large-scale rows (`ReadoutGramDatum`, `SmoothGramDatum`) | cross-scale exponent `θ ∈ [0, 2]` and Bernoulli functional (`bernoulliCrossScaleMain`) | `typeIIGramReading`, `rankTwoReadoutReading`, `smoothKernelReading`, `residueMass`, `completedKernelStatisticReading` |
 
 The faces owned elsewhere — temperedness (the shifted pair), parity (damped weights) — are priced by
 the same calculus, with their countermodels in `RHTower` and `TransHorizonIncidenceMechanics`.
@@ -478,6 +480,37 @@ All unconditional; where RH holds only at the base datum the gate is stated as "
 9. **The rate is a cofinal invariant.** For convex growth profiles, secant rates on any unbounded
    aperture set equal those on all apertures (`theRateIsACofinalInvariant`), and bounded readings
    certify no finite rate (`theRateDichotomyIsSharp`).
+10. **The exact floor of the pronic Gram reading and its smoothness ladder.** In the cross-scale
+    exponent unit `θ = 2 log P / log X ∈ [0, 2]`, both the sign-blind Type-II Gram reading and the
+    rank-two readout reading `(R, H)` have exact resolution limit `2`, resolution floor `0`, and
+    resolution interval `[0, 2]`, witnessed by the coherent prime block and the three-window
+    readout-free barrier (`resolutionLimit_typeIIGramReading_eq_two`,
+    `exists_primeBlock_witness_at_resolutionLimit_two`,
+    `exists_readout_free_witness_at_resolutionLimit_two`). Cancelling `K` Euler–Maclaurin kernels via
+    difference smoothness certifies `θ_cert(K) = 2K/(K + 1)` and lowers the unresolved deficit limit
+    along `2/(K + 1) → 0` (`resolutionFloor_smoothKernelReading_eq`,
+    `resolutionLimit_smoothKernelReading_deficit_eq`). On a single modulus, `residueMass` is faithful
+    for the Bernoulli cross-scale main term (`faithful_residueMass_bernoulliCrossScaleMain`),
+    `kernelStatistic` collapses the shadow diameter to the fourth-order tail, and the actual centred
+    prime row bypasses the Type-II shadow across `7/6 < θ < 2`
+    (`centredPrimeRow_bypasses_resolutionLimit_two`).
+11. **The two-aperture band recipe for `ζ` and its reachable bounds.** For any reference aperture
+    `A₀ ≤ 21/200` (where `μ(A₀) ≥ 1/30 > 0` unconditionally), the two-aperture ground-energy ratio
+    `zetaTwoApertureRatio A₀ A = (μ(A₀) − μ(A))/μ(A₀)` and its explicit-formula prime-window
+    companion `primeWindowTwoApertureRatio A₀ w v` (retaining the prime sum, archimedean term, and
+    polar term) have critical value `1`: `RiemannHypothesis` holds iff `zetaTwoApertureRatio A₀ A ≤ 1`
+    for all `A`, iff `zetaTwoApertureRatio A₀ A → 1` as `A → ∞`, and iff the clamped ratio
+    `zetaClampedTwoApertureRatio A₀ A` equals `1` everywhere
+    (`riemannHypothesis_iff_forall_zetaTwoApertureRatio_le_one`,
+    `riemannHypothesis_iff_tendsto_zetaTwoApertureRatio_one`,
+    `riemannHypothesis_iff_forall_zetaClampedTwoApertureRatio_eq_one`). Exponential growth
+    `≤ 1 + C e^{2σA}` unconditionally forces `|Re ρ − ½| ≤ σ`
+    (`abs_re_sub_half_le_of_zetaTwoApertureRatio_le_one_add_exp`), near-top zeros force the ratio
+    strictly above `1` beyond their visibility lag (`one_lt_zetaTwoApertureRatio_of_near_top_zero`),
+    and the corpus's unconditional inputs certify `< 1` on `[0, 21/200]`, `≤ 1` on `[0, 3/10]` for
+    the prime-window ratio, and `≤ 1 − windowFloor(A)/μ(A₀)` on `(0, ½ log 2)`
+    (`zetaTwoApertureRatio_lt_one_of_le_twentyOne_twoHundredths`,
+    `primeWindowTwoApertureRatio_le_one_of_le_threeTenths`, `zetaTwoApertureRatio_le_windowFloor`).
 
 ---
 
@@ -553,11 +586,15 @@ Built and reusable:
   parity pairs imported from their owners.
 - *Band recipes*: two-band and three-band depth inversion, the precision budget, the reach law.
 - *Rate readings* on cofinal and bounded aperture sets.
+- *Pronic Gram readings* in the cross-scale exponent unit `θ = 2 log P / log X`, their exact limit `2`
+  under sign-blind Type-II and rank-two readout readings, the smoothness ladder `2K/(K+1)` with
+  deficit `2/(K+1)`, and the faithful single-modulus completions (`residueMass`, `kernelStatistic`).
+- *Two-aperture ratios for `ζ`* (`zetaTwoApertureRatio`, `zetaClampedTwoApertureRatio`,
+  `primeWindowTwoApertureRatio`) with critical value `1` on the line, `2σ`-abscissa inversion, and
+  unconditional bounds across `[0, 21/200]`, `[0, 3/10]`, and `(0, ½ log 2)`.
 
 To be built:
 
-- the exact floor of the pronic Gram reading in the exponent unit;
-- a two-aperture ratio of the `ζ` Weil functional faithful to the line, with a reachable bound;
 - a fatality classification of the parity collapses;
 - the admissibility unit of the incidence ledger.
 
@@ -567,16 +604,25 @@ To be built:
 
 Open, in this programme's own unit (a class of readings and its exact limit):
 
-1. **The exact floor of the Gram reading.** For the cross-scale dispersion of
-   `BezoutValuationIncidence` the relevant reading is the pronic Gram at one modulus. Its limit in the
-   exponent unit `θ` should be exactly `2`; the witness would be the coherent prime block of the
-   Type-II no-go. This is the one consumer face with no number yet.
-2. **The band recipe for `ζ`.** The recipes of §3.6 read the depth of a lattice or of a pair from
-   finitely many ground energies. For `ζ` the corresponding magnitudes are values of the Weil
-   functional at two apertures, i.e. prime sums with the archimedean and polar terms retained. Is
-   there a two-aperture ratio of the `ζ` functional whose critical value is attained exactly on the
-   line, and is a bound on it reachable from the corpus's unconditional inputs? This is the one
-   question that would carry the positive half of the field from the model families to the object.
+1. *(Resolved in `TheExactFloorOfThePronicGramReading`.)* **The exact floor of the Gram reading.**
+   In the cross-scale exponent unit `θ = 2 log P / log X ∈ [0, 2]`, the sign-blind Type-II Gram
+   reading and the rank-two readout reading `(R, H)` have exact resolution limit `2`, floor `0`, and
+   interval `[0, 2]`, witnessed by the coherent prime block (`exists_primeBlock_witness_at_resolutionLimit_two`)
+   and the three-window readout-free barrier (`exists_readout_free_witness_at_resolutionLimit_two`).
+   Difference smoothness of order `K` certifies `2K/(K + 1)` with unresolved deficit limit `2/(K + 1)`,
+   `residueMass` is faithful for `bernoulliCrossScaleMain`, `kernelStatistic` bounds the shadow
+   diameter by the fourth-order tail, and `centredPrimeRow` bypasses the worst-case Type-II shadow
+   across `7/6 < θ < 2`.
+2. *(Resolved in `TheBandRecipeForZeta`.)* **The band recipe for `ζ`.** For any base aperture
+   `A₀ ≤ 21/200` (`μ(A₀) ≥ 1/30 > 0`), the two-aperture ratio
+   `zetaTwoApertureRatio A₀ A = (μ(A₀) − μ(A))/μ(A₀)` and its explicit-formula prime-window companion
+   `primeWindowTwoApertureRatio A₀ w v` have critical value `1` on the critical line
+   (`riemannHypothesis_iff_forall_zetaTwoApertureRatio_le_one`,
+   `riemannHypothesis_iff_tendsto_zetaTwoApertureRatio_one`,
+   `riemannHypothesis_iff_forall_zetaClampedTwoApertureRatio_eq_one`), invert `2σ`-exponential growth
+   unconditionally into `|Re ρ − ½| ≤ σ` (`abs_re_sub_half_le_of_zetaTwoApertureRatio_le_one_add_exp`),
+   detect near-top zeros above `1` beyond their visibility lag (`one_lt_zetaTwoApertureRatio_of_near_top_zero`),
+   and satisfy unconditional bounds on `[0, 21/200]`, `[0, 3/10]`, and `(0, ½ log 2)`.
 3. **A fatality classification for the parity collapses.** The node collapses are classified exactly
    — under RH, exactly the prime powers (`fatal_deleteNode_iff_isPrimePow`) — giving the
    principal-up-set description in that case. The analogous question for the parity face owned by

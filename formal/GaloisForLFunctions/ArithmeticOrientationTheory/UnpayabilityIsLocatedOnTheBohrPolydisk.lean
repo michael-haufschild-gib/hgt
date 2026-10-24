@@ -55,10 +55,10 @@ theorem criticalWiener_of_norm_le {f : ℕ → ℝ} (k : WienerAlgebraAt (1 / 2)
     exact div_le_div_of_nonneg_right (hf n) (by positivity)
 
 theorem criticalWiener_rePart (k : WienerAlgebraAt (1 / 2)) : CriticalWiener (rePart k) :=
-  criticalWiener_of_norm_le k fun n => Complex.abs_re_le_norm _
+  criticalWiener_of_norm_le k fun _ => Complex.abs_re_le_norm _
 
 theorem criticalWiener_imPart (k : WienerAlgebraAt (1 / 2)) : CriticalWiener (imPart k) :=
-  criticalWiener_of_norm_le k fun n => Complex.abs_im_le_norm _
+  criticalWiener_of_norm_le k fun _ => Complex.abs_im_le_norm _
 
 theorem rePart_mul (g k : WienerAlgebraAt (1 / 2)) (n : ℕ) :
     rePart (g * k) n = RHTower.dirichletConv (rePart g) (rePart k) n -
@@ -88,8 +88,11 @@ theorem dirichletConv_sub_left' (a b c : ℕ → ℝ) :
 
 theorem dirichletConv_add_left' (a b c : ℕ → ℝ) :
     RHTower.dirichletConv (fun n => a n + b n) c =
-      fun n => RHTower.dirichletConv a c n + RHTower.dirichletConv b c n :=
-  funext fun n => dirichletConv_add_left a b c n
+      fun n => RHTower.dirichletConv a c n + RHTower.dirichletConv b c n := by
+  funext n
+  unfold RHTower.dirichletConv
+  rw [← sum_add_distrib]
+  exact sum_congr rfl fun j _ => by ring
 
 theorem receiverBounded_zero : ReceiverBounded fun _ : ℕ => (0 : ℝ) :=
   ⟨0, fun T => by simp [weightPronicEnergy, weightCenteredPrefix]⟩
@@ -102,74 +105,88 @@ theorem dirichletConv_zero_left (c : ℕ → ℝ) :
 
 section Ideal
 
-variable (c : ℕ → ℝ) (hc : Summable fun d : ℕ => |c d / d|)
+variable (c : ℕ → ℝ)
 
-/-- Convolution by a critical Wiener kernel keeps a paid weight paid, with summable mean. -/
-theorem paid_conv {g : ℕ → ℝ} (hg : CriticalWiener g) {k : ℕ → ℝ} (hk : CriticalWiener k)
-    (hpk : ReceiverBounded (RHTower.dirichletConv k c)) :
+/-- Convolution by a critical Wiener kernel keeps a paid weight paid. -/
+theorem paid_conv (hc : Summable fun d : ℕ => |c d / d|) {g : ℕ → ℝ} (hg : CriticalWiener g)
+    {k : ℕ → ℝ} (hk : CriticalWiener k) (hpk : ReceiverBounded (RHTower.dirichletConv k c)) :
     ReceiverBounded (RHTower.dirichletConv g (RHTower.dirichletConv k c)) :=
   receiverBounded_dirichletConv hg (summable_abs_dirichletConv_div hk hc) hpk
 
-theorem summable_conv_div {g k : ℕ → ℝ} (hg : CriticalWiener g) (hk : CriticalWiener k) :
+theorem summable_conv_div (hc : Summable fun d : ℕ => |c d / d|) {g k : ℕ → ℝ}
+    (hg : CriticalWiener g) (hk : CriticalWiener k) :
     Summable fun d : ℕ => RHTower.dirichletConv g (RHTower.dirichletConv k c) d / d :=
   (summable_abs_dirichletConv_div hg (summable_abs_dirichletConv_div hk hc)).of_abs
 
+/-- The two parts of a sum of repairing kernels repair. -/
+theorem paid_add (hc : Summable fun d : ℕ => |c d / d|) {k l : WienerAlgebraAt (1 / 2)}
+    (hk : ReceiverBounded (RHTower.dirichletConv (rePart k) c) ∧
+      ReceiverBounded (RHTower.dirichletConv (imPart k) c))
+    (hl : ReceiverBounded (RHTower.dirichletConv (rePart l) c) ∧
+      ReceiverBounded (RHTower.dirichletConv (imPart l) c)) :
+    ReceiverBounded (RHTower.dirichletConv (rePart (k + l)) c) ∧
+      ReceiverBounded (RHTower.dirichletConv (imPart (k + l)) c) := by
+  have h0 : rePart (k + l) = fun n => rePart k n + rePart l n :=
+    funext fun n => by simp [rePart, toFn_add]
+  have h1 : imPart (k + l) = fun n => imPart k n + imPart l n :=
+    funext fun n => by simp [imPart, toFn_add]
+  rw [h0, h1, dirichletConv_add_left', dirichletConv_add_left']
+  exact ⟨receiverBounded_add (summable_abs_dirichletConv_div (criticalWiener_rePart k) hc).of_abs
+      (summable_abs_dirichletConv_div (criticalWiener_rePart l) hc).of_abs hk.1 hl.1,
+    receiverBounded_add (summable_abs_dirichletConv_div (criticalWiener_imPart k) hc).of_abs
+      (summable_abs_dirichletConv_div (criticalWiener_imPart l) hc).of_abs hk.2 hl.2⟩
+
+/-- A multiple of a repairing kernel repairs. -/
+theorem paid_mul (hc : Summable fun d : ℕ => |c d / d|) (g : WienerAlgebraAt (1 / 2))
+    {k : WienerAlgebraAt (1 / 2)}
+    (hk : ReceiverBounded (RHTower.dirichletConv (rePart k) c) ∧
+      ReceiverBounded (RHTower.dirichletConv (imPart k) c)) :
+    ReceiverBounded (RHTower.dirichletConv (rePart (g * k)) c) ∧
+      ReceiverBounded (RHTower.dirichletConv (imPart (g * k)) c) := by
+  have hgr := criticalWiener_rePart g
+  have hgi := criticalWiener_imPart g
+  have hkr := criticalWiener_rePart k
+  have hki := criticalWiener_imPart k
+  have e0 : rePart (g * k) = fun n => RHTower.dirichletConv (rePart g) (rePart k) n -
+      RHTower.dirichletConv (imPart g) (imPart k) n := funext (rePart_mul g k)
+  have e1 : imPart (g * k) = fun n => RHTower.dirichletConv (rePart g) (imPart k) n +
+      RHTower.dirichletConv (imPart g) (rePart k) n := funext (imPart_mul g k)
+  rw [e0, e1, dirichletConv_sub_left', dirichletConv_add_left', dirichletConv_assoc,
+    dirichletConv_assoc, dirichletConv_assoc, dirichletConv_assoc]
+  exact ⟨receiverBounded_sub (summable_conv_div c hc hgr hkr) (summable_conv_div c hc hgi hki)
+      (paid_conv c hc hgr hkr hk.1) (paid_conv c hc hgi hki hk.2),
+    receiverBounded_add (summable_conv_div c hc hgr hki) (summable_conv_div c hc hgi hkr)
+      (paid_conv c hc hgr hki hk.2) (paid_conv c hc hgi hkr hk.1)⟩
+
+theorem paid_zero :
+    ReceiverBounded (RHTower.dirichletConv (rePart 0) c) ∧
+      ReceiverBounded (RHTower.dirichletConv (imPart 0) c) := by
+  have h0 : rePart 0 = fun _ => 0 := funext fun n => by simp [rePart, toFn_zero]
+  have h1 : imPart 0 = fun _ => 0 := funext fun n => by simp [imPart, toFn_zero]
+  rw [h0, h1, dirichletConv_zero_left]
+  exact ⟨receiverBounded_zero, receiverBounded_zero⟩
+
 /-- **The repairing kernels of `c`**: both parts of `k` pay `c`. -/
-def paidIdeal : Ideal (WienerAlgebraAt (1 / 2)) where
+def paidIdeal (hc : Summable fun d : ℕ => |c d / d|) : Ideal (WienerAlgebraAt (1 / 2)) where
   carrier := {k | ReceiverBounded (RHTower.dirichletConv (rePart k) c) ∧
     ReceiverBounded (RHTower.dirichletConv (imPart k) c)}
-  zero_mem' := by
-    have h0 : rePart 0 = fun _ => 0 := funext fun n => by simp [rePart, toFn_zero]
-    have h1 : imPart 0 = fun _ => 0 := funext fun n => by simp [imPart, toFn_zero]
-    simp only [Set.mem_setOf_eq, h0, h1, dirichletConv_zero_left]
-    exact ⟨receiverBounded_zero, receiverBounded_zero⟩
-  add_mem' {k l} hk hl := by
-    have h0 : rePart (k + l) = fun n => rePart k n + rePart l n :=
-      funext fun n => by simp [rePart, toFn_add]
-    have h1 : imPart (k + l) = fun n => imPart k n + imPart l n :=
-      funext fun n => by simp [imPart, toFn_add]
-    simp only [Set.mem_setOf_eq, h0, h1, dirichletConv_add_left'] at hk hl ⊢
-    exact ⟨receiverBounded_add (summable_abs_dirichletConv_div (criticalWiener_rePart k) hc).of_abs
-        (summable_abs_dirichletConv_div (criticalWiener_rePart l) hc).of_abs hk.1 hl.1,
-      receiverBounded_add (summable_abs_dirichletConv_div (criticalWiener_imPart k) hc).of_abs
-        (summable_abs_dirichletConv_div (criticalWiener_imPart l) hc).of_abs hk.2 hl.2⟩
-  smul_mem' g k hk := by
-    simp only [Set.mem_setOf_eq, smul_eq_mul] at hk ⊢
-    have hgr := criticalWiener_rePart g
-    have hgi := criticalWiener_imPart g
-    have hkr := criticalWiener_rePart k
-    have hki := criticalWiener_imPart k
-    have h0 : RHTower.dirichletConv (rePart (g * k)) c = fun n =>
-        RHTower.dirichletConv (rePart g) (RHTower.dirichletConv (rePart k) c) n -
-          RHTower.dirichletConv (imPart g) (RHTower.dirichletConv (imPart k) c) n := by
-      rw [show rePart (g * k) = fun n => RHTower.dirichletConv (rePart g) (rePart k) n -
-        RHTower.dirichletConv (imPart g) (imPart k) n from funext (rePart_mul g k),
-        dirichletConv_sub_left', dirichletConv_assoc, dirichletConv_assoc]
-    have h1 : RHTower.dirichletConv (imPart (g * k)) c = fun n =>
-        RHTower.dirichletConv (rePart g) (RHTower.dirichletConv (imPart k) c) n +
-          RHTower.dirichletConv (imPart g) (RHTower.dirichletConv (rePart k) c) n := by
-      rw [show imPart (g * k) = fun n => RHTower.dirichletConv (rePart g) (imPart k) n +
-        RHTower.dirichletConv (imPart g) (rePart k) n from funext (imPart_mul g k),
-        dirichletConv_add_left', dirichletConv_assoc, dirichletConv_assoc]
-    rw [h0, h1]
-    exact ⟨receiverBounded_sub (summable_conv_div c hc hgr hkr) (summable_conv_div c hc hgi hki)
-        (paid_conv c hc hgr hkr hk.1) (paid_conv c hc hgi hki hk.2),
-      receiverBounded_add (summable_conv_div c hc hgr hki) (summable_conv_div c hc hgi hkr)
-        (paid_conv c hc hgr hki hk.2) (paid_conv c hc hgi hkr hk.1)⟩
+  zero_mem' := paid_zero c
+  add_mem' hk hl := paid_add c hc hk hl
+  smul_mem' g _ hk := paid_mul c hc g hk
 
-theorem mem_paidIdeal {k : WienerAlgebraAt (1 / 2)} :
+theorem mem_paidIdeal (hc : Summable fun d : ℕ => |c d / d|) {k : WienerAlgebraAt (1 / 2)} :
     k ∈ paidIdeal c hc ↔ ReceiverBounded (RHTower.dirichletConv (rePart k) c) ∧
       ReceiverBounded (RHTower.dirichletConv (imPart k) c) := Iff.rfl
 
 /-- `δ₁` repairs `c` iff `c` is paid. -/
-theorem one_mem_paidIdeal_iff : (1 : WienerAlgebraAt (1 / 2)) ∈ paidIdeal c hc ↔ ReceiverBounded c := by
+theorem one_mem_paidIdeal_iff (hc : Summable fun d : ℕ => |c d / d|) : (1 : WienerAlgebraAt (1 / 2)) ∈ paidIdeal c hc ↔ ReceiverBounded c := by
   have h0 : rePart 1 = unitKernel := funext fun n => by
     simp only [rePart, toFn_one, one_apply, unitKernel]
     split_ifs <;> simp
   have h1 : imPart 1 = fun _ => 0 := funext fun n => by
     simp only [imPart, toFn_one, one_apply]
     split_ifs <;> simp
-  rw [mem_paidIdeal, h0, h1, dirichletConv_zero_left]
+  rw [mem_paidIdeal c hc, h0, h1, dirichletConv_zero_left]
   have h2 : ReceiverBounded (RHTower.dirichletConv unitKernel c) ↔ ReceiverBounded c :=
     receiverBounded_congr fun n hn => dirichletConv_unitKernel c hn.ne'
   rw [h2]
@@ -178,12 +195,12 @@ theorem one_mem_paidIdeal_iff : (1 : WienerAlgebraAt (1 / 2)) ∈ paidIdeal c hc
 /-! ### Spectral localization -/
 
 /-- The obstruction hull of `c`: the Bohr points at which every repairing kernel vanishes. -/
-def obstructionHull : Set BohrPoint :=
+def obstructionHull (hc : Summable fun d : ℕ => |c d / d|) : Set BohrPoint :=
   {ω | ∀ k ∈ paidIdeal c hc, bohrEval (1 / 2) k.toFn ω = 0}
 
 /-- **Unpayability is located on the Bohr polydisk**: `c` is unpaid iff some Bohr point annihilates
 every kernel that repairs it. -/
-theorem not_receiverBounded_iff_exists_obstruction :
+theorem not_receiverBounded_iff_exists_obstruction (hc : Summable fun d : ℕ => |c d / d|) :
     ¬ ReceiverBounded c ↔ ∃ ω : BohrPoint, ∀ k ∈ paidIdeal c hc, bohrEval (1 / 2) k.toFn ω = 0 := by
   constructor
   · intro hnot
@@ -200,15 +217,16 @@ theorem not_receiverBounded_iff_exists_obstruction :
     exact one_ne_zero h
 
 /-- **The hull is empty exactly on the paid class.** -/
-theorem obstructionHull_nonempty_iff : (obstructionHull c hc).Nonempty ↔ ¬ ReceiverBounded c :=
+theorem obstructionHull_nonempty_iff (hc : Summable fun d : ℕ => |c d / d|) :
+    (obstructionHull c hc).Nonempty ↔ ¬ ReceiverBounded c :=
   (not_receiverBounded_iff_exists_obstruction c hc).symm
 
 /-- **The repairing ideal is an invariant of the unit orbit.** -/
-theorem paidIdeal_unit {u : ℕ → ℝ} (hu : IsWienerUnit u) :
+theorem paidIdeal_unit (hc : Summable fun d : ℕ => |c d / d|) {u : ℕ → ℝ} (hu : IsWienerUnit u) :
     paidIdeal (RHTower.dirichletConv u c) (summable_abs_dirichletConv_div hu.1 hc) =
       paidIdeal c hc := by
   ext k
-  rw [mem_paidIdeal, mem_paidIdeal]
+  rw [mem_paidIdeal _ _, mem_paidIdeal c hc]
   have key : ∀ f : ℕ → ℝ, CriticalWiener f →
       (ReceiverBounded (RHTower.dirichletConv f (RHTower.dirichletConv u c)) ↔
         ReceiverBounded (RHTower.dirichletConv f c)) := fun f hf => by
@@ -216,7 +234,7 @@ theorem paidIdeal_unit {u : ℕ → ℝ} (hu : IsWienerUnit u) :
     exact receiverBounded_dirichletConv_iff_of_isWienerUnit hu (summable_abs_dirichletConv_div hf hc)
   rw [key _ (criticalWiener_rePart k), key _ (criticalWiener_imPart k)]
 
-theorem obstructionHull_unit {u : ℕ → ℝ} (hu : IsWienerUnit u) :
+theorem obstructionHull_unit (hc : Summable fun d : ℕ => |c d / d|) {u : ℕ → ℝ} (hu : IsWienerUnit u) :
     obstructionHull (RHTower.dirichletConv u c) (summable_abs_dirichletConv_div hu.1 hc) =
       obstructionHull c hc := by
   unfold obstructionHull
@@ -259,15 +277,15 @@ theorem summable_abs_smoothPower_div {ε : ℝ} (hε : 0 < ε) :
   (summable_unit_weight hε).abs
 
 /-- The pole point `s = 1 − ε` of the smooth power, as a Bohr point. -/
-def polePoint (ε : ℝ) (hε : 0 < ε) : BohrPoint :=
+def polePoint (ε : ℝ) (hε2 : ε ≤ 1 / 2) : BohrPoint :=
   halfPlanePoint (1 / 2) ((1 - ε : ℝ) : ℂ) (by simp; linarith)
 
 /-- **The repairing ideal of the smooth power is the maximal ideal of its pole point.** -/
 theorem mem_paidIdeal_smoothPower_iff {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 1 / 2)
     (k : WienerAlgebraAt (1 / 2)) :
     k ∈ paidIdeal (dampedSignWeight unitSign ε) (summable_abs_smoothPower_div hε) ↔
-      bohrEval (1 / 2) k.toFn (polePoint ε hε) = 0 := by
-  rw [mem_paidIdeal, receiverBounded_dirichletConv_unit_iff_critical hε hε2 (criticalWiener_rePart k),
+      bohrEval (1 / 2) k.toFn (polePoint ε hε2.le) = 0 := by
+  rw [mem_paidIdeal _ _, receiverBounded_dirichletConv_unit_iff_critical hε hε2 (criticalWiener_rePart k),
     receiverBounded_dirichletConv_unit_iff_critical hε hε2 (criticalWiener_imPart k), polePoint,
     bohrEval_halfPlanePoint, Complex.ext_iff, re_lSeries_real k (by linarith),
     im_lSeries_real k (by linarith)]
@@ -299,11 +317,11 @@ the hull of `d^{−ε}` iff `ω(p) = p^{ε − 1/2}` at every prime, i.e. iff it
 `s = 1 − ε`. -/
 theorem mem_obstructionHull_smoothPower_iff {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 1 / 2) (ω : BohrPoint) :
     ω ∈ obstructionHull (dampedSignWeight unitSign ε) (summable_abs_smoothPower_div hε) ↔
-      ∀ p : ℕ, p.Prime → ω.ω p = (polePoint ε hε).ω p := by
+      ∀ p : ℕ, p.Prime → ω.ω p = (polePoint ε hε2.le).ω p := by
   constructor
   · intro hω p hp
     -- the kernel `δ_p − p^{ε−1} δ₁` repairs the smooth power
-    set a : ℂ := (polePoint ε hε).ω p / (p : ℂ) ^ ((1 / 2 : ℝ) : ℂ)
+    set a : ℂ := (polePoint ε hε2.le).ω p / (p : ℂ) ^ ((1 / 2 : ℝ) : ℂ)
     have hk : (pointMass p - a • 1 : WienerAlgebraAt (1 / 2)) ∈
         paidIdeal (dampedSignWeight unitSign ε) (summable_abs_smoothPower_div hε) := by
       rw [mem_paidIdeal_smoothPower_iff hε hε2, ← bohrCharacter_apply, map_sub, map_smul, map_one,

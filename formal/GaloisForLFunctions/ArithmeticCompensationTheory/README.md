@@ -310,11 +310,22 @@ are three different statements and remain visibly different here.
     (`coeff_geomSeries_mul_eq_neg_tail`) — so only the zeros remain, and **the receiver is admitted
     at every damping above the zero width**: eigenvalues of modulus at most `λ√q` and `λ < q^ε`
     give a horizon-free energy bound (`exists_curveReceiverEnergy_le`), on the Weil circle at every
-    `ε > 0` (`exists_curveReceiverEnergy_le_of_weil`); conversely, one eigenvalue `a = λ√q` with
-    `q^ε < λ < q^{1/2+ε}`, `a ≠ q`, makes the energy unbounded
-    (`not_exists_curveReceiverEnergy_le_single`). Unlike `F_q[T]`, the centred source moves: the
-    budget is not zero, and admission at `ε` is decided by the zero width — the function-field
-    form of `riemannHypothesis_iff_cofinal_adaptedEnergy`.
+    `ε > 0` (`exists_curveReceiverEnergy_le_of_weil`). Conversely, for any number `m` of complex
+    eigenvalues, multiplying the centred prefix series by the polynomial filter
+    `Q_i(u) = (1 − u)²(1 − qu)Π_{j≠i}(1 − α_j q^{−ε}u)` of degree `m + 2` annihilates all other
+    Frobenius modes, the poles at `1` and `1/q`, and the polynomial density term above degree
+    `2m + 1`, isolating the pure geometric mode `curveEigenvalueResidue q α ε i · (α_i q^{−ε})ᴺ` at
+    every degree `N ≥ 2m + 2` (`coeff_curveAnnihilatorFilter_mul_curveCentredSeries`), whose
+    amplitude vanishes iff `α_i` is shadowed by some `α_j = α_i q^{−ε}` or `α_i ∈ {1, q}`
+    (`curveEigenvalueResidue_eq_zero_iff`, `coeff_curveAnnihilatorFilter_mul_eq_zero_of_shadow`).
+    Oscillating modes therefore cannot cancel across a block of length `m + 3`: any unshadowed
+    eigenvalue with `√q q^ε < ‖α_i‖` (`α_i ≠ 1, q`) forces exponential growth
+    `curveReceiverEnergy q α ε D ≥ c(‖α_i‖q^{−ε}/√q)^{2D}` (`exists_pos_mul_pow_le_curveReceiverEnergy`,
+    `not_exists_curveReceiverEnergy_le`), so equimodular families `‖α_j‖ = λ√q` are admitted at `ε`
+    iff `λ < q^ε` (`curveReceiverEnergy_admitted_iff_of_equimodular`), and for any tuple `α_i ≠ q`
+    **cofinal admission as `ε ↓ 0` is equivalent to the Weil bound `∀ i, ‖α_i‖ ≤ √q`**
+    (`weil_iff_cofinal_curveReceiverEnergy`) — the function-field form of
+    `riemannHypothesis_iff_cofinal_adaptedEnergy`.
 
 ### Compensation coordinates
 
@@ -424,10 +435,26 @@ are three different statements and remain visibly different here.
     (`eventually_abs_psi_window_sub_le_seventeenThirtieths`): tile `[x, x + h]` by windows
     `[y, y + y^β]`, `17/30 < β < α` (`tileSeq`); the errors add, and the last partial window costs
     `(1 + ε/2)y^β = o(x^α)` by monotonicity of `ψ`.
-28. **The centred prime row on the wider range.** The BVI actual-row estimate holds at every block
-    exponent `α > 17/30` (`exists_abs_rowBilinear_centredPrimeRow_le_seventeenThirtieths`), hence
-    on `P^{1+δ} ≤ Q ≤ P^{30/17−δ}` for horizons `N ≤ Q^C` at `α = 17/30 + δ/4`
-    (`exists_abs_rowBilinear_centredPrimeRow_le_of_range`).
+28. **The centred prime row on the wider range and in the balanced regime.** The BVI actual-row
+    estimate holds at every block exponent `α > 17/30`
+    (`exists_abs_rowBilinear_centredPrimeRow_le_seventeenThirtieths`), hence on
+    `P^{1+δ} ≤ Q ≤ P^{30/17−δ}` for horizons `N ≤ Q^C` at `α = 17/30 + δ/4`
+    (`exists_abs_rowBilinear_centredPrimeRow_le_of_range`). Feeding the uniform `17/30` window into
+    the short-window mean-square transfer widens `CentredPrimeBlockBeatsTheLargeSieve` and
+    `DualNormOfTheActualRowsBeatsTheLargeSieve` to `17/30 < α < 1`, bounds the block-mass terms of
+    both the centred prime and Möbius blocks by `√2 ε / Q` via Cauchy–Schwarz on the sum-preserving
+    window average (`abs_sum_Icc_div_sq_le_of_shortWindowAverage`), and discharges the small-prime
+    threshold throughout the balanced regime `P ≤ Q ≤ B P`
+    (`exists_balanced_centredPrimeBlock_rowBilinear_le`,
+    `exists_balanced_centredPrimeBlock_dualNorm_le`). Centring `Λ` by `1` kills the rank-one
+    block mass while preserving 100% of the single-modulus omitted-residue-class main term,
+    `Q · Λ_p((Λ − 1)𝟙_{(Q,2Q]}) → −π²(p² − 1)²/(144 p²(p − 1))`
+    (`tendsto_mul_kernelStatistic_centredPrimeBlock`), which is cancelled to `o(1/Q)` by adding the
+    zero-mean periodic sieve corrector `omittedClassCorrector p Q`
+    (`tendsto_mul_kernelStatistic_centredPrimeBlock_add_corrector`). Upgrading the qualitative
+    short-window mean-square saving to a power saving is equivalent to crossing below half damping
+    for the complete coupled receiver (`primePowerWindowSaving_iff_receiverDampingRate_lt_half`,
+    `moebiusPowerWindowSaving_iff_receiverDampingRate_lt_half`).
 
 ---
 
@@ -445,7 +472,7 @@ are three different statements and remain visibly different here.
 | Transporting a fixed positive aperture floor | Impossible along unbounded apertures; any positive floor loses at least `πe^{2(A−2)}`. A graded negative floor is the target. |
 | Choosing a corrector from the desired bound | The adapted-energy criterion is exactly admission; without comparability the constant family has zero loss for every receiver. Its content is the construction. |
 | Citing a short-window theorem at a fixed length as a uniform one | The length-uniform version needs the tiling argument and the monotonicity of `ψ`; the side conditions of the block estimate stay. |
-| Taking the `30/17` range for a balanced-scale result | The transfer covers `Q ≥ P^{1+δ}` only; the regime `Q ≍ P` is untouched. |
+| Taking the `30/17` block-equidistribution range for a balanced-scale result | The block-equidistribution transfer covers `Q ≥ P^{1+δ}` only; reaching `Q ≍ P` requires the short-window mean-square transfer (`exists_balanced_centredPrimeBlock_rowBilinear_le`), where the cubic/quartic Taylor tails remain `O(|S|(P/Q)²)`. |
 | Subtracting a smooth prime main term and calling the remainder estimated | The remainder after the polar/PNT main term is the zero-width problem relocated; a power saving there is a zero-free strip. |
 
 ---
@@ -462,7 +489,7 @@ Each question is narrower than RH, though the strongest endpoint of several impl
 | Can origin information be recovered stably at the threshold? | In the anchored pronic norm a change of origin by `k` cells costs exactly `(k+1)(k+2)/2`, so admission never sees finite origin information (mechanism 20); a drifting origin is priced by the tail beyond it, and uniform drift tolerance holds exactly for bounded drifts (mechanism 21); the comb's coherent part is anchored at the horizon `2r` (mechanism 5). | A tail-decay rate for the actual receiver beyond the origin, which is what a drifting origin needs. |
 | Can arithmetic cross terms create a useful adapted energy? | An adapted energy is exactly admission, and cofinally RH (mechanism 26); a pointwise corrector budget is one producer. | The construction of `C_T` from source terms with independent constants. |
 | Can positivity be replaced by the right graded floor? | Positive aperture floors cannot be transported and must lose at least `πe^{2(A−2)}` (mechanism 25); SRT's graded floor at rate `2σ` is the strip `½ + σ`. | Any fixed `σ < ½`. |
-| What is the balanced-scale obstruction for actual rows? | The unbalanced range of the centred prime row reaches `30/17` (mechanism 28); the method stops at `Q ≍ P`, where `3P ≤ 2εQ` fails. | A saving at `Q ≍ P` keeping the omitted-residue-class main term. |
+| What is the balanced-scale structure for actual rows? | The unbalanced block-equidistribution range reaches `30/17`, and the short-window mean-square transfer at `α > 17/30` reaches the balanced regime `P ≤ Q ≤ B P` with the block mass bounded by `√2 ε / Q` while `centredPrimeBlock Q` retains the exact omitted-residue-class limit `−π²(p²−1)²/(144p²(p−1))` (cancelled by `omittedClassCorrector`); a power saving in the short-window mean square is equivalent to `receiverDampingRate < ½` (mechanism 28). | Unconditional power saving in the short-window mean square, which is a zero-free strip. |
 
 ---
 
@@ -507,10 +534,11 @@ that every successful route must use the same mechanism.
   translate, with universal constants.
 - **Curve-model combs and receivers** (`curvePointCount`, `curveCombMass`, `curveCombTail`,
   `curveComb`, `curveCombEnergy`, `curveHorizonWeight`, `curveHorizonEnergy`,
-  `curveZ`, `curveDampedZinv`, `curveCentredPrefix`, `curveReceiverEnergy`): the comb and the
-  receiver of a function-field model built from its eigenvalues, with mass, depth and admission
-  laws for every eigenvalue configuration; `norm_coeff_prod_le` and
-  `coeff_geomSeries_mul_eq_neg_tail` are the coefficient calculus behind them.
+  `curveZ`, `curveDampedZinv`, `curveCentredPrefix`, `curveReceiverEnergy`,
+  `curveAnnihilatorFilter`, `curveEigenvalueResidue`): the comb and the receiver of a
+  function-field model built from its eigenvalues, with mass, depth and admission laws for every
+  eigenvalue configuration; `norm_coeff_prod_le`, `coeff_geomSeries_mul_eq_neg_tail` and
+  `coeff_curveAnnihilatorFilter_mul_curveCentredSeries` are the coefficient calculus behind them.
 - **The single-average formula and the moment calculus** (`horizonEnergy_eq_horizonIntegral_autoCorr`,
   `integral_pow_mul_horizonDensity`, `autoCorr_zero_sub_le`): `J` as an expectation of `A_F`
   under the horizon law, with explicit moments and a quadratic deficit at the origin.
@@ -553,8 +581,10 @@ that every successful route must use the same mechanism.
   work the only unpaid term is quadratic in the deviation `A_ε − 1`, bounded by
   `Σ_{j≤T}Λ(j)j^{−(ε+1/2)}` times the Báez–Duarte residual
   (`ArithmeticContinuationAndCriticalEnergy.abs_workQuadratic_le_energy`).
-- **Length-uniform short windows** from fixed-length ones (`tileSeq`), reusable for any exponent
-  at which the corpus owns a fixed-length theorem.
+- **Length-uniform short windows and balanced-regime transfer** (`tileSeq`,
+  `abs_sum_Icc_div_sq_le_of_shortWindowAverage`, `omittedClassCorrector`): length-uniform short
+  windows from fixed-length ones, Cauchy–Schwarz block-mass elimination from the short-window
+  average, and the zero-mean periodic sieve corrector for the omitted residue class.
 
 ---
 
@@ -588,20 +618,18 @@ that every successful route must use the same mechanism.
    `exp(−c√S)` (mechanism 7). Open: an exponent below `½` for the complete ledger, with its even
    parts and the gamma factor retained, on a test class that the arithmetic singles out — any
    such exponent is a strip.
-6. **The balanced regime.** Classify or save for the actual centred prime/Möbius incidence at
-   `Q ≍ P`, keeping the omitted-residue-class main term. BVI's block mean-square estimates
-   give qualitative control of the Möbius block at all scales above its logarithmic small-prime
-   threshold, and of the centred prime block on the stated unbalanced range; distinguish those
-   results from a uniform bound for the complete coupled receiver. The one selective external input
-   in reach at `Q ≍ P` is ℓ-adic: the Bernoulli kernel is a cosecant–Bernoulli sum in Kloosterman
-   fractions, and trace-function bounds for primes, built on Deligne's theorem, save a power at
-   balanced length (BVI research topic 1). A power saving there would be a zero-free strip, so the
-   expected gain is qualitative.
+6. **The balanced regime.** For the actual centred prime and Möbius blocks at `Q ≍ P`, the
+   short-window mean-square transfer at `α > 17/30` gives unconditional `o(1)` savings over the
+   large-sieve barrier across `P ≤ Q ≤ B P` with the block-mass term bounded by `√2 ε / Q`, while
+   `centredPrimeBlock Q` retains the exact omitted-residue-class limit
+   `−π²(p² − 1)²/(144 p²(p − 1))` (cancelled by `omittedClassCorrector p Q`), and upgrading the
+   short-window mean square to a power saving is equivalent to `receiverDampingRate < ½` for the
+   complete coupled receiver (mechanism 28).
 7. **Function-field calibration.** In the curve model the horizon law is geometric with
-   square-root error, and the receiver is admitted at every damping above the zero width
-   (mechanism 15), and fails below it for a single eigenvalue. Open: the failure below the zero
-   width for several eigenvalues, which needs non-cancellation of their oscillating terms. The
-   curve comb obeys the discrete resolvent law and is uniformly coercive (mechanism 14).
+   square-root error, the curve comb obeys the discrete resolvent law and is uniformly coercive
+   (mechanism 14), and the receiver is admitted above the zero width and fails below it for any
+   number of eigenvalues via the polynomial annihilator filter, so cofinal admission is equivalent
+   to the Weil bound (`weil_iff_cofinal_curveReceiverEnergy`, mechanism 15).
 
 ---
 
@@ -619,8 +647,13 @@ that every successful route must use the same mechanism.
 5. `tendsto_integral_workCore_logZeta` — the core debt on positive intervals.
 6. `not_relative_step_transport` and `exists_le_floorLoss_of_floor` — the forced aperture loss.
 7. `adaptedEnergy_dampedMobiusEnergy_iff_admits` and `riemannHypothesis_iff_cofinal_adaptedEnergy` — the corrector
-   criterion and its arithmetic dictionary.
-8. `exists_abs_rowBilinear_centredPrimeRow_le_of_range` — the `30/17` range.
+   criterion and its arithmetic dictionary; `weil_iff_cofinal_curveReceiverEnergy` and
+   `not_exists_curveReceiverEnergy_le` — its multi-eigenvalue function-field calibration.
+8. `exists_abs_rowBilinear_centredPrimeRow_le_of_range`,
+   `exists_balanced_centredPrimeBlock_rowBilinear_le`, and
+   `tendsto_mul_kernelStatistic_centredPrimeBlock` — the `30/17` unbalanced range, the balanced
+   regime `P ≤ Q ≤ B P` with block-mass elimination, the omitted-residue-class law of the centred
+   prime block, and `primePowerWindowSaving_iff_receiverDampingRate_lt_half`.
 9. `pronicEnergy_shift_le` with `admits_dampedMobiusEnergy_iff_shift` — the exact price of a change
    of origin, and the invariance of admission under it; `forall_admitted_drift_admitted_iff` — a
    drifting origin is tolerated uniformly exactly when it is bounded.

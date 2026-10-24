@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticOrientationTheory.FrustrationIndexControlsTheGroundEnergy
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
+import Mathlib.Algebra.Order.Chebyshev
 
 /-!
 # Frustration bounds the ground energy from below
@@ -213,7 +214,7 @@ theorem edgeTerm_eq_edgeLength (c : ι → ι → ℝ) (x : ι → ℝ) (i j : �
     · rw [if_pos (by rw [h, one_mul]; exact hc), h]; ring
     · rw [if_neg (by rw [h]; linarith), h, sq_abs]; ring
 
-omit [Fintype ι] [DecidableEq ι] in
+omit [Fintype ι] in
 /-- The co-area integrand is dominated by the edge length times `|x_i| + |x_j|`. -/
 theorem coareaTerm_le (c : ι → ι → ℝ) (x : ι → ℝ) (i j : ι) :
     max (x i ^ 2 - x j ^ 2) 0 +
@@ -225,23 +226,47 @@ theorem coareaTerm_le (c : ι → ι → ℝ) (x : ι → ℝ) (i j : ι) :
   have hi2 : x i ^ 2 = |x i| ^ 2 := (sq_abs _).symm
   have hj2 : x j ^ 2 = |x j| ^ 2 := (sq_abs _).symm
   rw [hi2, hj2]
+  have key1 : max (|x i| ^ 2 - |x j| ^ 2) 0 ≤ |(|x i| - |x j|)| * (|x i| + |x j|) := by
+    rw [show |x i| ^ 2 - |x j| ^ 2 = (|x i| - |x j|) * (|x i| + |x j|) by ring]
+    refine max_le ((le_abs_self _).trans (le_of_eq ?_)) (by positivity)
+    rw [abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ |x i| + |x j|)]
+  have key2 : max (|x i| ^ 2 - |x j| ^ 2) 0 + min (|x i| ^ 2) (|x j| ^ 2) ≤
+      (|x i| + |x j|) * (|x i| + |x j|) := by
+    rcases le_total (|x i| ^ 2) (|x j| ^ 2) with h | h
+    · rw [max_eq_right (by linarith), min_eq_left h]; nlinarith
+    · rw [max_eq_left (by linarith), min_eq_right h]; nlinarith
+  have key3 : |(|x i| - |x j|)| ≤ |x i| + |x j| :=
+    (abs_sub _ _).trans (by rw [abs_abs, abs_abs])
   unfold edgeLength
   split_ifs with h1 h2 h2
-  · -- misaligned: `max(a_i − a_j, 0) + min(a_i, a_j) = max(a_i, a_j) ≤ (y_i + y_j)²`
-    rcases le_total (|x i|) (|x j|) with h | h
-    · have : |x i| ^ 2 ≤ |x j| ^ 2 := pow_le_pow_left₀ hy h 2
-      rw [max_eq_right (by linarith), min_eq_left this]; nlinarith
-    · have : |x j| ^ 2 ≤ |x i| ^ 2 := pow_le_pow_left₀ hz h 2
-      rw [max_eq_left (by linarith), min_eq_right this]; nlinarith
+  · exact key2
   · exact absurd h1.2 h2
   · rw [add_zero]
-    rcases le_total (|x i|) (|x j|) with h | h
-    · rw [max_eq_right (by nlinarith)]; positivity
-    · rw [max_eq_left (by nlinarith), abs_of_nonneg (by linarith)]; nlinarith
+    exact key1.trans (mul_le_mul_of_nonneg_right key3 (by positivity))
   · rw [add_zero]
-    rcases le_total (|x i|) (|x j|) with h | h
-    · rw [max_eq_right (by nlinarith)]; positivity
-    · rw [max_eq_left (by nlinarith), abs_of_nonneg (by linarith)]; nlinarith
+    exact key1
+
+omit [DecidableEq ι] in
+/-- Cauchy–Schwarz for nonnegatively weighted double sums. -/
+theorem sq_sum_sum_le (w u v : ι → ι → ℝ) (hw : ∀ i j, 0 ≤ w i j) :
+    (∑ i, ∑ j, w i j * (u i j * v i j)) ^ 2 ≤
+      (∑ i, ∑ j, w i j * u i j ^ 2) * ∑ i, ∑ j, w i j * v i j ^ 2 := by
+  have h := Finset.sum_mul_sq_le_sq_mul_sq (univ : Finset (ι × ι))
+    (fun p => Real.sqrt (w p.1 p.2) * u p.1 p.2) (fun p => Real.sqrt (w p.1 p.2) * v p.1 p.2)
+  have e1 : ∀ p : ι × ι, Real.sqrt (w p.1 p.2) * u p.1 p.2 * (Real.sqrt (w p.1 p.2) * v p.1 p.2) =
+      w p.1 p.2 * (u p.1 p.2 * v p.1 p.2) := fun p => by
+    rw [show Real.sqrt (w p.1 p.2) * u p.1 p.2 * (Real.sqrt (w p.1 p.2) * v p.1 p.2) =
+      (Real.sqrt (w p.1 p.2) * Real.sqrt (w p.1 p.2)) * (u p.1 p.2 * v p.1 p.2) by ring,
+      Real.mul_self_sqrt (hw _ _)]
+  have e2 : ∀ p : ι × ι, (Real.sqrt (w p.1 p.2) * u p.1 p.2) ^ 2 = w p.1 p.2 * u p.1 p.2 ^ 2 :=
+    fun p => by rw [mul_pow, Real.sq_sqrt (hw _ _)]
+  have e3 : ∀ p : ι × ι, (Real.sqrt (w p.1 p.2) * v p.1 p.2) ^ 2 = w p.1 p.2 * v p.1 p.2 ^ 2 :=
+    fun p => by rw [mul_pow, Real.sq_sqrt (hw _ _)]
+  simp only [e1, e2, e3] at h
+  rw [← Fintype.sum_prod_type' (f := fun i j => w i j * (u i j * v i j)),
+    ← Fintype.sum_prod_type' (f := fun i j => w i j * u i j ^ 2),
+    ← Fintype.sum_prod_type' (f := fun i j => w i j * v i j ^ 2)]
+  exact h
 
 /-- **The signed Cheeger inequality.**  If every set `S` and every switching `s` see frustration at
 least `h |S|`, and every point has degree at most `D`, then for every profile
@@ -259,7 +284,8 @@ theorem sq_mul_le_signedDirichletForm {c : ι → ι → ℝ} (hc : IsSymmetricC
     have h1 := hh s (fun i => orientSign_sq _) S
     have h2 : ∑ i ∈ S, ∑ j ∈ Sᶜ, w i j = ∑ i ∈ S, ∑ j ∈ Sᶜ, |c i j| :=
       sum_congr rfl fun i hi => sum_congr rfl fun j hj => by
-        simp only [w]; rw [if_neg (fun e => (mem_compl.1 hj) (e ▸ hi))]
+        simp only [w]
+        rw [if_neg fun e => (mem_compl.1 hj) (by rw [← e]; exact hi)]
     rw [h2]
     exact h1
   -- each term is at most `|c| ℓ_ij (|x_i| + |x_j|)`
@@ -273,7 +299,7 @@ theorem sq_mul_le_signedDirichletForm {c : ι → ι → ℝ} (hc : IsSymmetricC
       have hc0 := abs_nonneg (c i j)
       split_ifs at this ⊢ with h3
       · nlinarith [mul_le_mul_of_nonneg_left this hc0]
-      · simp only [mul_zero, add_zero] at this ⊢
+      · simp only [add_zero] at this ⊢
         nlinarith [mul_le_mul_of_nonneg_left this hc0]
   set A := ∑ i, ∑ j, (if i = j then 0 else |c i j|) * (edgeLength c x i j * (|x i| + |x j|))
   have hA : h * ∑ i, x i ^ 2 ≤ A :=
@@ -283,30 +309,7 @@ theorem sq_mul_le_signedDirichletForm {c : ι → ι → ℝ} (hc : IsSymmetricC
   set B := ∑ i, ∑ j, (if i = j then 0 else |c i j|) * (|x i| + |x j|) ^ 2
   have hW : ∀ i j, 0 ≤ (if i = j then (0 : ℝ) else |c i j|) := fun i j => by
     split_ifs <;> simp
-  have hCS : A ^ 2 ≤ E * B := by
-    have h := Finset.sum_mul_sq_le_sq_mul_sq univ
-      (fun p : ι × ι => Real.sqrt (if p.1 = p.2 then 0 else |c p.1 p.2|) * edgeLength c x p.1 p.2)
-      (fun p : ι × ι => Real.sqrt (if p.1 = p.2 then 0 else |c p.1 p.2|) * (|x p.1| + |x p.2|))
-    have e1 : ∀ p : ι × ι, Real.sqrt (if p.1 = p.2 then 0 else |c p.1 p.2|) * edgeLength c x p.1 p.2 *
-        (Real.sqrt (if p.1 = p.2 then 0 else |c p.1 p.2|) * (|x p.1| + |x p.2|)) =
-        (if p.1 = p.2 then 0 else |c p.1 p.2|) * (edgeLength c x p.1 p.2 * (|x p.1| + |x p.2|)) :=
-      fun p => by
-        rw [show Real.sqrt (if p.1 = p.2 then 0 else |c p.1 p.2|) * edgeLength c x p.1 p.2 *
-          (Real.sqrt (if p.1 = p.2 then 0 else |c p.1 p.2|) * (|x p.1| + |x p.2|)) =
-          (Real.sqrt (if p.1 = p.2 then 0 else |c p.1 p.2|) *
-            Real.sqrt (if p.1 = p.2 then 0 else |c p.1 p.2|)) *
-            (edgeLength c x p.1 p.2 * (|x p.1| + |x p.2|)) by ring,
-          Real.mul_self_sqrt (hW _ _)]
-    have e2 : ∀ p : ι × ι, (Real.sqrt (if p.1 = p.2 then 0 else |c p.1 p.2|) *
-        edgeLength c x p.1 p.2) ^ 2 =
-        (if p.1 = p.2 then 0 else |c p.1 p.2|) * edgeLength c x p.1 p.2 ^ 2 := fun p => by
-      rw [mul_pow, Real.sq_sqrt (hW _ _)]
-    have e3 : ∀ p : ι × ι, (Real.sqrt (if p.1 = p.2 then 0 else |c p.1 p.2|) *
-        (|x p.1| + |x p.2|)) ^ 2 =
-        (if p.1 = p.2 then 0 else |c p.1 p.2|) * (|x p.1| + |x p.2|) ^ 2 := fun p => by
-      rw [mul_pow, Real.sq_sqrt (hW _ _)]
-    simp only [e1, e2, e3] at h
-    simpa only [A, E, B, Fintype.sum_prod_type'] using h
+  have hCS : A ^ 2 ≤ E * B := sq_sum_sum_le _ _ _ hW
   -- the edge energy is the Dirichlet form
   have hE : E = signedDirichletForm c x := by
     unfold signedDirichletForm
@@ -347,12 +350,13 @@ theorem sq_mul_le_signedDirichletForm {c : ι → ι → ℝ} (hc : IsSymmetricC
         _ ≤ E * B := hCS
         _ ≤ E * (4 * D * M) := mul_le_mul_of_nonneg_left hB (by
             rw [hE]; exact signedDirichletForm_nonneg c x)
-    nlinarith
+    have h2 : (h ^ 2 * M) * M ≤ (4 * D * signedDirichletForm c x) * M := by nlinarith [h1]
+    exact le_of_mul_le_mul_right h2 hM
   · have hx : ∀ i, x i = 0 := fun i => by
       have := (sum_eq_zero_iff_of_nonneg fun j _ => sq_nonneg (x j)).1 hM.symm i (mem_univ i)
       exact pow_eq_zero_iff (two_ne_zero) |>.1 this
     have : signedDirichletForm c x = 0 := by simp [signedDirichletForm, hx]
-    rw [← hM, this]; ring
+    rw [← hM, this]; simp
 
 /-- **The ground energy is bounded below by the signed Cheeger constant**: `μ ≥ h²/(4D)`. -/
 theorem le_groundEnergy_of_cheeger [Nonempty ι] {c : ι → ι → ℝ} (hc : IsSymmetricCoupling c)

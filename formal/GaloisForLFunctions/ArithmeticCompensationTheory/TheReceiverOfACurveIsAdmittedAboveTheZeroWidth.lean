@@ -24,7 +24,22 @@ the `≍ qⁿ` divisors of that degree (`curveReceiverEnergy`).
 * `exists_curveReceiverEnergy_le_of_weil`: on the Weil circle, `λ = 1`, at every `ε > 0`;
 * `not_exists_curveReceiverEnergy_le_single`: conversely, for one eigenvalue `a = λ√q` with
   `q^ε < λ < q^{1/2+ε}`, `a ≠ q`, the receiver energy is unbounded — the source grows like
-  `(a q^{−ε})ⁿ`, faster than the norm weight allows. Admission at `ε` is decided by the zero width.
+  `(a q^{−ε})ⁿ`, faster than the norm weight allows;
+* `coeff_curveAnnihilatorFilter_mul_curveCentredSeries`: for any number `m` of complex eigenvalues,
+  multiplying the centred prefix series by the finite polynomial filter
+  `Q_i(u) = (1 − u)²(1 − qu) Π_{j ≠ i}(1 − α_j q^{−ε}u)` of degree `m + 2` annihilates all other
+  Frobenius modes, the poles at `1` and `1/q`, and the density term above degree `2m + 1`, leaving
+  the exact pure geometric mode `curveEigenvalueResidue q α ε i · (α_i q^{−ε})ᴺ` at every degree
+  `N ≥ 2m + 2`;
+* `exists_pos_mul_pow_le_curveReceiverEnergy`, `not_exists_curveReceiverEnergy_le`: hence if any
+  eigenvalue `α_i` lies below the damping threshold (`√q q^ε < ‖α_i‖`), is not a pole (`α_i ≠ 1, q`)
+  and is not shadowed by another zero (`∀ j, α_j ≠ α_i q^{−ε}`), the cumulative receiver energy
+  grows exponentially at rate `(‖α_i‖ q^{−ε}/√q)^{2D}` for all `D ≥ 2m + 2` and admission fails —
+  oscillating multi-eigenvalue terms cannot cancel across a block of length `m + 3`;
+* `curveReceiverEnergy_admitted_iff_of_equimodular`, `weil_iff_cofinal_curveReceiverEnergy`: on an
+  equimodular family `‖α_j‖ = λ√q` admission at `ε > 0` holds iff `λ < q^ε` (for `λ ≠ q^ε`), and
+  for an arbitrary tuple `α : Fin m → ℂ` with `α_i ≠ q` **cofinal admission as `ε ↓ 0` holds if
+  and only if the Weil bound `∀ i, ‖α_i‖ ≤ √q` holds**.
 
 The mechanism is the one the number-field programme names. The centring removes the pole of `Z` at
 `u = 1/q` exactly: `(1 − qu)^{−1}(R − δ)` has coefficients `−qⁿ Σ_{j>n} b_j q^{−j}`
@@ -768,4 +783,631 @@ theorem not_exists_curveReceiverEnergy_le_single {q : ℕ} (hq : 2 ≤ q) {a ε 
     linarith
   linarith [hn.1]
 
+/-! ## Multi-eigenvalue non-cancellation and the annihilator filter law
+
+For several complex eigenvalues `α₀, …, α_{m−1}` the coefficients of `1/P(q^{−ε}u)` are sums of
+oscillating modes `Σᵢ cᵢ (αᵢ q^{−ε})ⁿ` that can cancel at isolated degrees. Across a window of
+length `m + 3`, however, no cancellation can occur: multiplying the centred prefix generating series
+by the finite polynomial filter
+
+`Qᵢ(u) = (1 − u)²(1 − qu) Π_{j ≠ i} (1 − αⱼ q^{−ε} u)`
+
+of degree `m + 2` annihilates all other Frobenius modes, the poles at `1` and `1/q`, and the
+density polynomial above degree `2m + 1`, isolating the single geometric mode `(αᵢ q^{−ε})ᴺ` at
+every degree `N ≥ 2m + 2`. -/
+
+/-- The generating series of the centred damped prefixes `curveCentredPrefix q α ε n`. -/
+def curveCentredSeries (q : ℕ) (α : Fin m → ℂ) (ε : ℝ) : PowerSeries ℂ :=
+  geomSeries 1 * (geomSeries 1 * (curveP α *
+    (geomSeries q * (curveDampedZinv q α ε - C (curveDensity q α ε)))))
+
+theorem coeff_curveCentredSeries (q : ℕ) (α : Fin m → ℂ) (ε : ℝ) (n : ℕ) :
+    coeff n (curveCentredSeries q α ε) = curveCentredPrefix q α ε n :=
+  (curveCentredPrefix_eq q α ε n).symm
+
+/-- The polynomial filter of degree `m + 2` that annihilates the poles at `1` and `1/q` and all
+damped Frobenius eigenvalues except `α i`. -/
+def curveAnnihilatorFilter (q : ℕ) (α : Fin m → ℂ) (ε : ℝ) (i : Fin m) : PowerSeries ℂ :=
+  (∏ j ∈ univ.erase i, (1 - C ((((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α j) * X)) *
+    (1 - C 1 * X) * (1 - C 1 * X) * (1 - C (q : ℂ) * X)
+
+/-- The filtered series including the polynomial density term of degree `< 2m`. -/
+def curveFilteredSeries (q : ℕ) (α : Fin m → ℂ) (ε : ℝ) (i : Fin m) : PowerSeries ℂ :=
+  curveAnnihilatorFilter q α ε i * curveCentredSeries q α ε +
+    C (curveDensity q α ε) *
+      (∏ j ∈ univ.erase i, (1 - C ((((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α j) * X)) * curveP α
+
+/-- The characteristic numerator `P(u)(1 − q^{−ε}u)(1 − q^{1−ε}u)` of degree `m + 2`. -/
+def curveCharacteristicNumerator (q : ℕ) (α : Fin m → ℂ) (ε : ℝ) : PowerSeries ℂ :=
+  curveP α * (1 - C (((q : ℝ) ^ (-ε) : ℝ) : ℂ) * X) *
+    (1 - C ((((q : ℝ) ^ (-ε) : ℝ) : ℂ) * q) * X)
+
+/-- The amplitude of the isolated geometric mode `(q^{−ε} αᵢ)ᴺ` after annihilator filtering:
+`(Πⱼ (1 − αⱼ / (q^{−ε} αᵢ))) (1 − 1/αᵢ) (1 − q/αᵢ)`. -/
+def curveEigenvalueResidue (q : ℕ) (α : Fin m → ℂ) (ε : ℝ) (i : Fin m) : ℂ :=
+  (∏ j : Fin m, (1 - α j * ((((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α i)⁻¹)) *
+    (1 - (((q : ℝ) ^ (-ε) : ℝ) : ℂ) * ((((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α i)⁻¹) *
+    (1 - ((((q : ℝ) ^ (-ε) : ℝ) : ℂ) * q) * ((((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α i)⁻¹)
+
+theorem rescale_one_sub_C_mul_X (a c : ℂ) :
+    rescale a (1 - C c * X) = 1 - C (a * c) * X := by
+  ext n
+  rw [coeff_rescale, map_sub, map_sub, coeff_one, coeff_C_mul, coeff_C_mul, coeff_X]
+  rcases n with _ | _ | n <;> simp [mul_comm a c]
+
+theorem rescale_curveP (a : ℂ) (α : Fin m → ℂ) :
+    rescale a (curveP α) = curveP (fun i => a * α i) := by
+  simp only [curveP, map_prod, rescale_one_sub_C_mul_X]
+
+theorem curveP_mul_curveZinv (q : ℕ) (α : Fin m → ℂ) :
+    curveP α * curveZinv q α = (1 - C 1 * X) * (1 - C (q : ℂ) * X) := by
+  have hP : curveP α * curvePinv α = 1 := by
+    rw [curveP, curvePinv, ← prod_mul_distrib]
+    exact prod_eq_one fun i _ => one_sub_mul_geomSeries (α i)
+  calc curveP α * curveZinv q α
+      = (1 - C 1 * X) * (1 - C (q : ℂ) * X) * (curveP α * curvePinv α) := by
+        rw [curveZinv]; ring
+    _ = (1 - C 1 * X) * (1 - C (q : ℂ) * X) := by rw [hP, mul_one]
+
+theorem curveP_rescale_mul_curveDampedZinv (q : ℕ) (α : Fin m → ℂ) (ε : ℝ) :
+    curveP (fun i => (((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α i) * curveDampedZinv q α ε =
+      (1 - C (((q : ℝ) ^ (-ε) : ℝ) : ℂ) * X) *
+        (1 - C ((((q : ℝ) ^ (-ε) : ℝ) : ℂ) * q) * X) := by
+  set ρ₀ : ℂ := (((q : ℝ) ^ (-ε) : ℝ) : ℂ)
+  have h := congr_arg (rescale ρ₀) (curveP_mul_curveZinv q α)
+  rw [map_mul, map_mul, rescale_curveP, rescale_one_sub_C_mul_X, rescale_one_sub_C_mul_X,
+    mul_one] at h
+  exact h
+
+/-- **The exact polynomial annihilator identity.** Multiplying the filtered series by
+`1 − q^{−ε} αᵢ u` leaves the polynomial `P(u)(1 − q^{−ε}u)(1 − q^{1−ε}u)`. -/
+theorem one_sub_mul_curveFilteredSeries (q : ℕ) (α : Fin m → ℂ) (ε : ℝ) (i : Fin m) :
+    (1 - C ((((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α i) * X) * curveFilteredSeries q α ε i =
+      curveCharacteristicNumerator q α ε := by
+  set ρ₀ : ℂ := (((q : ℝ) ^ (-ε) : ℝ) : ℂ)
+  have h1 := one_sub_mul_geomSeries 1
+  have hq := one_sub_mul_geomSeries (q : ℂ)
+  have hclear : (1 - C 1 * X) * (1 - C 1 * X) * (1 - C (q : ℂ) * X) * curveCentredSeries q α ε +
+      C (curveDensity q α ε) * curveP α = curveP α * curveDampedZinv q α ε := by
+    calc (1 - C 1 * X) * (1 - C 1 * X) * (1 - C (q : ℂ) * X) * curveCentredSeries q α ε +
+          C (curveDensity q α ε) * curveP α
+        = ((1 - C 1 * X) * geomSeries 1) * ((1 - C 1 * X) * geomSeries 1) *
+            ((1 - C (q : ℂ) * X) * geomSeries q) *
+            (curveP α * (curveDampedZinv q α ε - C (curveDensity q α ε))) +
+          C (curveDensity q α ε) * curveP α := by
+          rw [curveCentredSeries]; ring
+      _ = curveP α * curveDampedZinv q α ε := by
+          rw [h1, hq]; ring
+  have hsplit : (1 - C (ρ₀ * α i) * X) *
+      (∏ j ∈ univ.erase i, (1 - C (ρ₀ * α j) * X)) = curveP (fun j => ρ₀ * α j) :=
+    mul_prod_erase univ (fun j => 1 - C (ρ₀ * α j) * X) (mem_univ i)
+  calc (1 - C (ρ₀ * α i) * X) * curveFilteredSeries q α ε i
+      = ((1 - C (ρ₀ * α i) * X) * ∏ j ∈ univ.erase i, (1 - C (ρ₀ * α j) * X)) *
+          ((1 - C 1 * X) * (1 - C 1 * X) * (1 - C (q : ℂ) * X) * curveCentredSeries q α ε +
+            C (curveDensity q α ε) * curveP α) := by
+        rw [curveFilteredSeries, curveAnnihilatorFilter]; ring
+    _ = curveP α * (curveP (fun j => ρ₀ * α j) * curveDampedZinv q α ε) := by
+        rw [hsplit, hclear]; ring
+    _ = curveCharacteristicNumerator q α ε := by
+        rw [curveP_rescale_mul_curveDampedZinv, curveCharacteristicNumerator]; ring
+
+/-- **Telescoping evaluation of `(1 − βX) G(X)`.** When `β z = 1`, the partial sums of
+`((1 − βX) G)(z)` telescope to `g_N z^N`. -/
+theorem sum_range_coeff_one_sub_mul (G : PowerSeries ℂ) {β z : ℂ} (hβz : β * z = 1) (N : ℕ) :
+    (∑ n ∈ range (N + 1), coeff n ((1 - C β * X) * G) * z ^ n) = coeff N G * z ^ N := by
+  have he : (1 - C β * X) * G = G - C β * (X * G) := by ring
+  induction N with
+  | zero =>
+      rw [range_one, sum_singleton, he, map_sub, coeff_C_mul, coeff_zero_X_mul]
+      simp
+  | succ N ih =>
+      rw [sum_range_succ, ih, he, map_sub, coeff_C_mul, coeff_succ_X_mul]
+      calc coeff N G * z ^ N + (coeff (N + 1) G - β * coeff N G) * z ^ (N + 1)
+          = coeff (N + 1) G * z ^ (N + 1) + coeff N G * z ^ N * (1 - β * z) := by
+            rw [pow_succ]; ring
+        _ = coeff (N + 1) G * z ^ (N + 1) := by rw [hβz, sub_self, mul_zero, add_zero]
+
+theorem coeff_one_sub_mul_eq_zero {F : PowerSeries ℂ} {d : ℕ}
+    (hF : ∀ n, d < n → coeff n F = 0) (c : ℂ) {n : ℕ} (hn : d + 1 < n) :
+    coeff n ((1 - C c * X) * F) = 0 := by
+  have he : (1 - C c * X) * F = F - C c * (X * F) := by ring
+  rw [he, map_sub, coeff_C_mul]
+  rcases n with _ | n
+  · omega
+  · rw [coeff_succ_X_mul, hF (n + 1) (by omega), hF n (by omega), mul_zero, sub_zero]
+
+theorem sum_range_coeff_one_sub_mul_of_eq_zero {F : PowerSeries ℂ} {d : ℕ}
+    (hF : ∀ n, d < n → coeff n F = 0) (c z : ℂ) :
+    (∑ n ∈ range (d + 2), coeff n ((1 - C c * X) * F) * z ^ n) =
+      (1 - c * z) * ∑ n ∈ range (d + 1), coeff n F * z ^ n := by
+  have he : (1 - C c * X) * F = F - C c * (X * F) := by ring
+  simp only [he, map_sub, coeff_C_mul, sub_mul, sum_sub_distrib]
+  have h1 : (∑ n ∈ range (d + 2), coeff n F * z ^ n) =
+      ∑ n ∈ range (d + 1), coeff n F * z ^ n := by
+    rw [sum_range_succ, hF (d + 1) (by omega), zero_mul, add_zero]
+  have h2 : (∑ n ∈ range (d + 2), c * coeff n (X * F) * z ^ n) =
+      c * z * ∑ n ∈ range (d + 1), coeff n F * z ^ n := by
+    rw [sum_range_succ' _ (d + 1), coeff_zero_X_mul, mul_zero, zero_mul, add_zero, mul_sum]
+    refine sum_congr rfl fun n _ => ?_
+    rw [coeff_succ_X_mul, pow_succ]
+    ring
+  rw [h1, h2]
+  ring
+
+theorem coeff_prod_one_sub_eq_zero {ι : Type*} (s : Finset ι) (f : ι → ℂ) {n : ℕ}
+    (hn : s.card < n) : coeff n (∏ j ∈ s, (1 - C (f j) * X)) = 0 := by
+  classical
+  induction s using Finset.induction_on generalizing n with
+  | empty =>
+      rw [prod_empty, coeff_one, if_neg (by simp at hn; omega)]
+  | insert a s ha ih =>
+      rw [card_insert_of_notMem ha] at hn
+      rw [prod_insert ha]
+      exact coeff_one_sub_mul_eq_zero (fun k hk => ih hk) (f a) hn
+
+theorem sum_range_coeff_prod_one_sub {ι : Type*} (s : Finset ι) (f : ι → ℂ) (z : ℂ) :
+    (∑ n ∈ range (s.card + 1), coeff n (∏ j ∈ s, (1 - C (f j) * X)) * z ^ n) =
+      ∏ j ∈ s, (1 - f j * z) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+      rw [card_insert_of_notMem ha, prod_insert ha, prod_insert ha]
+      rw [sum_range_coeff_one_sub_mul_of_eq_zero (fun k hk => coeff_prod_one_sub_eq_zero s f hk)
+        (f a) z, ih]
+
+theorem coeff_curveCharacteristicNumerator_eq_zero (q : ℕ) (α : Fin m → ℂ) (ε : ℝ) {n : ℕ}
+    (hn : m + 2 < n) : coeff n (curveCharacteristicNumerator q α ε) = 0 := by
+  set ρ₀ : ℂ := (((q : ℝ) ^ (-ε) : ℝ) : ℂ)
+  have he : curveCharacteristicNumerator q α ε =
+      (1 - C (ρ₀ * q) * X) * ((1 - C ρ₀ * X) * curveP α) := by
+    rw [curveCharacteristicNumerator]; ring
+  have h1 : ∀ k, m + 1 < k → coeff k ((1 - C ρ₀ * X) * curveP α) = 0 :=
+    fun k hk => coeff_one_sub_mul_eq_zero (fun j hj => coeff_curveP_eq_zero α hj) ρ₀ hk
+  rw [he]
+  exact coeff_one_sub_mul_eq_zero h1 (ρ₀ * q) hn
+
+theorem sum_range_coeff_curveCharacteristicNumerator (q : ℕ) (α : Fin m → ℂ) (ε : ℝ) (z : ℂ)
+    {N : ℕ} (hN : m + 2 ≤ N) :
+    (∑ n ∈ range (N + 1), coeff n (curveCharacteristicNumerator q α ε) * z ^ n) =
+      (∏ j : Fin m, (1 - α j * z)) * (1 - (((q : ℝ) ^ (-ε) : ℝ) : ℂ) * z) *
+        (1 - ((((q : ℝ) ^ (-ε) : ℝ) : ℂ) * q) * z) := by
+  set ρ₀ : ℂ := (((q : ℝ) ^ (-ε) : ℝ) : ℂ)
+  have hsub : (∑ n ∈ range (N + 1), coeff n (curveCharacteristicNumerator q α ε) * z ^ n) =
+      ∑ n ∈ range (m + 3), coeff n (curveCharacteristicNumerator q α ε) * z ^ n := by
+    refine (sum_subset (range_mono (by omega)) fun n _ hn => ?_).symm
+    rw [coeff_curveCharacteristicNumerator_eq_zero q α ε (by simp at hn; omega), zero_mul]
+  have he : curveCharacteristicNumerator q α ε =
+      (1 - C (ρ₀ * q) * X) * ((1 - C ρ₀ * X) * curveP α) := by
+    rw [curveCharacteristicNumerator]; ring
+  have h1 : ∀ k, m + 1 < k → coeff k ((1 - C ρ₀ * X) * curveP α) = 0 :=
+    fun k hk => coeff_one_sub_mul_eq_zero (fun j hj => coeff_curveP_eq_zero α hj) ρ₀ hk
+  have h0 : ∀ k, m < k → coeff k (curveP α) = 0 := fun k hk => coeff_curveP_eq_zero α hk
+  have hP : (∑ n ∈ range (m + 1), coeff n (curveP α) * z ^ n) = ∏ j : Fin m, (1 - α j * z) := by
+    simpa [curveP, card_univ, Fintype.card_fin] using
+      sum_range_coeff_prod_one_sub (univ : Finset (Fin m)) α z
+  rw [hsub, he, show m + 3 = (m + 1) + 2 by omega,
+    sum_range_coeff_one_sub_mul_of_eq_zero h1 (ρ₀ * q) z,
+    show m + 1 + 1 = m + 2 by omega,
+    sum_range_coeff_one_sub_mul_of_eq_zero h0 ρ₀ z, hP]
+  ring
+
+theorem coeff_mul_eq_zero_of_gt {F G : PowerSeries ℂ} {d₁ d₂ n : ℕ}
+    (hF : ∀ k, d₁ < k → coeff k F = 0) (hG : ∀ k, d₂ < k → coeff k G = 0)
+    (hn : d₁ + d₂ < n) : coeff n (F * G) = 0 := by
+  rw [coeff_mul]
+  refine sum_eq_zero fun p hp => ?_
+  have hpn := mem_antidiagonal.mp hp
+  by_cases h1 : d₁ < p.1
+  · rw [hF p.1 h1, zero_mul]
+  · rw [hG p.2 (by omega), mul_zero]
+
+/-- Above degree `2m − 1` the polynomial density term of `curveFilteredSeries` vanishes. -/
+theorem coeff_curveFilteredSeries_eq_annihilator (q : ℕ) (α : Fin m → ℂ) (ε : ℝ) (i : Fin m)
+    {N : ℕ} (hN : 2 * m ≤ N) :
+    coeff N (curveFilteredSeries q α ε i) =
+      coeff N (curveAnnihilatorFilter q α ε i * curveCentredSeries q α ε) := by
+  have hm : 1 ≤ m := Fin.pos i
+  set ρ₀ : ℂ := (((q : ℝ) ^ (-ε) : ℝ) : ℂ)
+  set P₁ := ∏ j ∈ univ.erase i, (1 - C (ρ₀ * α j) * X)
+  have hcard : (univ.erase i).card = m - 1 := by
+    rw [card_erase_of_mem (mem_univ i), card_univ, Fintype.card_fin]
+  have hP₁ : ∀ k, m - 1 < k → coeff k P₁ = 0 := by
+    intro k hk
+    exact coeff_prod_one_sub_eq_zero (univ.erase i) (fun j => ρ₀ * α j) (by omega)
+  have hP₂ : ∀ k, m < k → coeff k (curveP α) = 0 := fun k hk => coeff_curveP_eq_zero α hk
+  have hprod : coeff N (P₁ * curveP α) = 0 :=
+    coeff_mul_eq_zero_of_gt hP₁ hP₂ (by omega)
+  rw [curveFilteredSeries, map_add, mul_assoc (C (curveDensity q α ε)), coeff_C_mul, hprod,
+    mul_zero, add_zero]
+
+/-- **The Annihilator Filter Law.** For every eigenvalue `αᵢ ≠ 0` and every degree `N ≥ 2m + 2`,
+the `N`-th coefficient of the annihilator-filtered centred source is the exact pure geometric
+mode `curveEigenvalueResidue q α ε i · (q^{−ε} αᵢ)ᴺ`. -/
+theorem coeff_curveAnnihilatorFilter_mul_curveCentredSeries {q : ℕ} (hq : 1 ≤ q)
+    (α : Fin m → ℂ) (ε : ℝ) {i : Fin m} (hαi : α i ≠ 0) {N : ℕ} (hN : 2 * m + 2 ≤ N) :
+    coeff N (curveAnnihilatorFilter q α ε i * curveCentredSeries q α ε) =
+      curveEigenvalueResidue q α ε i * ((((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α i) ^ N := by
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast hq
+  set ρ₀ : ℂ := (((q : ℝ) ^ (-ε) : ℝ) : ℂ)
+  have hρ₀ : ρ₀ ≠ 0 := Complex.ofReal_ne_zero.mpr (Real.rpow_pos_of_pos hq0 (-ε)).ne'
+  set β : ℂ := ρ₀ * α i
+  have hβ : β ≠ 0 := mul_ne_zero hρ₀ hαi
+  set z : ℂ := β⁻¹
+  have hβz : β * z = 1 := mul_inv_cancel₀ hβ
+  rw [← coeff_curveFilteredSeries_eq_annihilator q α ε i (by omega)]
+  have htel := sum_range_coeff_one_sub_mul (curveFilteredSeries q α ε i) hβz N
+  rw [one_sub_mul_curveFilteredSeries,
+    sum_range_coeff_curveCharacteristicNumerator q α ε z (by omega)] at htel
+  have hres : (∏ j : Fin m, (1 - α j * z)) * (1 - ρ₀ * z) * (1 - (ρ₀ * q) * z) =
+      curveEigenvalueResidue q α ε i := rfl
+  rw [hres] at htel
+  calc coeff N (curveFilteredSeries q α ε i)
+      = (coeff N (curveFilteredSeries q α ε i) * z ^ N) * β ^ N := by
+        rw [mul_assoc, ← mul_pow, inv_mul_cancel₀ hβ, one_pow, mul_one]
+    _ = curveEigenvalueResidue q α ε i * β ^ N := by rw [← htel]
+
+/-- **Exact characterization of mode vanishing.** For `q ≥ 1` and `αᵢ ≠ 0`, the isolated mode
+amplitude `curveEigenvalueResidue q α ε i` vanishes if and only if `αᵢ` is shadowed by some
+eigenvalue `αⱼ = q^{−ε} αᵢ` or `αᵢ ∈ {1, q}`. -/
+theorem curveEigenvalueResidue_eq_zero_iff {q : ℕ} (hq : 1 ≤ q) (α : Fin m → ℂ) (ε : ℝ)
+    {i : Fin m} (hαi : α i ≠ 0) :
+    curveEigenvalueResidue q α ε i = 0 ↔
+      (∃ j : Fin m, α j = (((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α i) ∨ α i = 1 ∨ α i = q := by
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast hq
+  set ρ₀ : ℂ := (((q : ℝ) ^ (-ε) : ℝ) : ℂ)
+  have hρ₀ : ρ₀ ≠ 0 := Complex.ofReal_ne_zero.mpr (Real.rpow_pos_of_pos hq0 (-ε)).ne'
+  set β : ℂ := ρ₀ * α i
+  have hβ : β ≠ 0 := mul_ne_zero hρ₀ hαi
+  rw [curveEigenvalueResidue, mul_eq_zero, mul_eq_zero, prod_eq_zero_iff]
+  have h1 : (∃ a ∈ (univ : Finset (Fin m)), 1 - α a * β⁻¹ = 0) ↔ ∃ j : Fin m, α j = β := by
+    constructor
+    · rintro ⟨j, _, hj⟩
+      refine ⟨j, ?_⟩
+      have := sub_eq_zero.mp hj
+      calc α j = (α j * β⁻¹) * β := by rw [mul_assoc, inv_mul_cancel₀ hβ, mul_one]
+        _ = 1 * β := by rw [← this]
+        _ = β := one_mul β
+    · rintro ⟨j, hj⟩
+      refine ⟨j, mem_univ j, ?_⟩
+      rw [hj, mul_inv_cancel₀ hβ, sub_self]
+  have h2 : 1 - ρ₀ * β⁻¹ = 0 ↔ α i = 1 := by
+    have he : ρ₀ * β⁻¹ = (α i)⁻¹ := by
+      simp only [β, mul_inv_rev]
+      rw [← mul_assoc, mul_comm ρ₀, mul_assoc, mul_inv_cancel₀ hρ₀, mul_one]
+    rw [he, sub_eq_zero, eq_comm, inv_eq_one]
+  have h3 : 1 - (ρ₀ * (q : ℂ)) * β⁻¹ = 0 ↔ α i = q := by
+    have he : (ρ₀ * (q : ℂ)) * β⁻¹ = (q : ℂ) * (α i)⁻¹ := by
+      simp only [β, mul_inv_rev]
+      calc (ρ₀ * (q : ℂ)) * ((α i)⁻¹ * ρ₀⁻¹) = (q : ℂ) * (α i)⁻¹ * (ρ₀ * ρ₀⁻¹) := by ring
+        _ = (q : ℂ) * (α i)⁻¹ := by rw [mul_inv_cancel₀ hρ₀, mul_one]
+    rw [he, sub_eq_zero, eq_comm, mul_inv_eq_one₀ hαi, eq_comm]
+  rw [h1, h2, h3, or_assoc]
+
+theorem curveEigenvalueResidue_ne_zero {q : ℕ} (hq : 1 ≤ q) {α : Fin m → ℂ} {ε : ℝ} {i : Fin m}
+    (hαi : α i ≠ 0) (h1 : α i ≠ 1) (hq' : α i ≠ q)
+    (hsh : ∀ j, α j ≠ (((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α i) :
+    curveEigenvalueResidue q α ε i ≠ 0 := by
+  rw [Ne, curveEigenvalueResidue_eq_zero_iff hq α ε hαi]
+  push Not
+  exact ⟨hsh, h1, hq'⟩
+
+/-- **Shadowing annihilates the isolated mode.** When some eigenvalue `αⱼ` equals the damped
+eigenvalue `q^{−ε} αᵢ` (`αᵢ ≠ 0`), the `i`-th annihilator-filtered centred source vanishes at
+every degree `N ≥ 2m + 2`. -/
+theorem coeff_curveAnnihilatorFilter_mul_eq_zero_of_shadow {q : ℕ} (hq : 1 ≤ q)
+    (α : Fin m → ℂ) (ε : ℝ) {i j : Fin m} (hαi : α i ≠ 0)
+    (hsh : α j = (((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α i) {N : ℕ} (hN : 2 * m + 2 ≤ N) :
+    coeff N (curveAnnihilatorFilter q α ε i * curveCentredSeries q α ε) = 0 := by
+  rw [coeff_curveAnnihilatorFilter_mul_curveCentredSeries hq α ε hαi hN,
+    (curveEigenvalueResidue_eq_zero_iff hq α ε hαi).mpr (Or.inl ⟨j, hsh⟩), zero_mul]
+
+/-! ## Filter norm bounds and exponential blow-up below the zero width -/
+
+/-- The norm amplification factor of `curveAnnihilatorFilter`. -/
+def curveFilterConstant (q : ℕ) (α : Fin m → ℂ) (ε : ℝ) (i : Fin m) : ℝ :=
+  (∏ j ∈ univ.erase i, (1 + ‖(((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α j‖)) * 4 * (1 + q)
+
+theorem curveFilterConstant_pos (q : ℕ) (α : Fin m → ℂ) (ε : ℝ) (i : Fin m) :
+    0 < curveFilterConstant q α ε i := by
+  rw [curveFilterConstant]
+  refine mul_pos (mul_pos (prod_pos fun j _ => ?_) (by norm_num)) (by positivity)
+  linarith [norm_nonneg ((((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α j)]
+
+theorem norm_coeff_one_sub_mul_le_of_le {G : PowerSeries ℂ} {K s : ℝ} (hK : 0 ≤ K) (hs : 1 ≤ s)
+    {N : ℕ} (hG : ∀ n ≤ N, ‖coeff n G‖ ≤ K * s ^ n) (c : ℂ) {n : ℕ} (hn : n ≤ N) :
+    ‖coeff n ((1 - C c * X) * G)‖ ≤ (1 + ‖c‖) * K * s ^ n := by
+  have he : (1 - C c * X) * G = G - C c * (X * G) := by ring
+  rw [he, map_sub, coeff_C_mul]
+  rcases n with _ | n
+  · rw [coeff_zero_X_mul, mul_zero, sub_zero, pow_zero, mul_one]
+    have h0 := hG 0 hn
+    rw [pow_zero, mul_one] at h0
+    nlinarith [norm_nonneg c]
+  · rw [coeff_succ_X_mul]
+    have h1 := hG (n + 1) hn
+    have h2 := hG n (by omega)
+    have hsn : s ^ n ≤ s ^ (n + 1) := pow_le_pow_right₀ hs (by omega)
+    calc ‖coeff (n + 1) G - c * coeff n G‖
+        ≤ ‖coeff (n + 1) G‖ + ‖c‖ * ‖coeff n G‖ := by
+          rw [← norm_mul]; exact norm_sub_le _ _
+      _ ≤ K * s ^ (n + 1) + ‖c‖ * (K * s ^ n) :=
+          add_le_add h1 (mul_le_mul_of_nonneg_left h2 (norm_nonneg c))
+      _ ≤ K * s ^ (n + 1) + ‖c‖ * (K * s ^ (n + 1)) := by gcongr
+      _ = (1 + ‖c‖) * K * s ^ (n + 1) := by ring
+
+theorem norm_coeff_prod_one_sub_mul_le_of_le {ι : Type*} (S : Finset ι) (f : ι → ℂ)
+    {G : PowerSeries ℂ} {K s : ℝ} (hK : 0 ≤ K) (hs : 1 ≤ s) {N : ℕ}
+    (hG : ∀ n ≤ N, ‖coeff n G‖ ≤ K * s ^ n) {n : ℕ} (hn : n ≤ N) :
+    ‖coeff n ((∏ j ∈ S, (1 - C (f j) * X)) * G)‖ ≤
+      (∏ j ∈ S, (1 + ‖f j‖)) * K * s ^ n := by
+  classical
+  induction S using Finset.induction_on generalizing G K n with
+  | empty =>
+      rw [prod_empty, prod_empty, one_mul, one_mul]
+      exact hG n hn
+  | insert a S ha ih =>
+      rw [prod_insert ha, prod_insert ha, mul_assoc]
+      have hS : ∀ k ≤ N, ‖coeff k ((∏ j ∈ S, (1 - C (f j) * X)) * G)‖ ≤
+          (∏ j ∈ S, (1 + ‖f j‖)) * K * s ^ k :=
+        fun k hk => ih hK hG hk
+      have hK' : 0 ≤ (∏ j ∈ S, (1 + ‖f j‖)) * K :=
+        mul_nonneg (prod_nonneg fun j _ => by linarith [norm_nonneg (f j)]) hK
+      have hstep := norm_coeff_one_sub_mul_le_of_le hK' hs hS (f a) hn
+      linarith
+
+theorem norm_curveCentredPrefix_le_sqrt_energy {q : ℕ} (hq : 1 ≤ q) (α : Fin m → ℂ) (ε : ℝ)
+    {N n : ℕ} (hn : n ≤ N) :
+    ‖curveCentredPrefix q α ε n‖ ≤
+      Real.sqrt (curveReceiverEnergy q α ε N) * Real.sqrt q ^ n := by
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast hq
+  set s := Real.sqrt q
+  have hss : s * s = q := Real.mul_self_sqrt hq0.le
+  have hE0 : 0 ≤ curveReceiverEnergy q α ε N :=
+    sum_nonneg fun k _ => by positivity
+  have hterm : ‖curveCentredPrefix q α ε n‖ ^ 2 / (q : ℝ) ^ n ≤ curveReceiverEnergy q α ε N :=
+    single_le_sum (f := fun k => ‖curveCentredPrefix q α ε k‖ ^ 2 / (q : ℝ) ^ k)
+      (fun k _ => by positivity) (mem_range.mpr (by omega))
+  rw [div_le_iff₀ (by positivity)] at hterm
+  have hsn : s ^ n * s ^ n = (q : ℝ) ^ n := by rw [← mul_pow, hss]
+  have hsq : ‖curveCentredPrefix q α ε n‖ ^ 2 ≤
+      (Real.sqrt (curveReceiverEnergy q α ε N) * s ^ n) ^ 2 := by
+    rw [mul_pow, Real.sq_sqrt hE0, sq (s ^ n), hsn]; exact hterm
+  exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).mp hsq
+
+theorem norm_coeff_curveAnnihilatorFilter_mul_le {q : ℕ} (hq : 1 ≤ q) (α : Fin m → ℂ) (ε : ℝ)
+    (i : Fin m) (N : ℕ) :
+    ‖coeff N (curveAnnihilatorFilter q α ε i * curveCentredSeries q α ε)‖ ≤
+      curveFilterConstant q α ε i * Real.sqrt (curveReceiverEnergy q α ε N) *
+        Real.sqrt q ^ N := by
+  set s := Real.sqrt q
+  have hs : 1 ≤ s := Real.le_sqrt_of_sq_le (by norm_num; exact_mod_cast hq)
+  set K := Real.sqrt (curveReceiverEnergy q α ε N)
+  have hK : 0 ≤ K := Real.sqrt_nonneg _
+  have hA : ∀ n ≤ N, ‖coeff n (curveCentredSeries q α ε)‖ ≤ K * s ^ n := fun n hn => by
+    rw [coeff_curveCentredSeries]
+    exact norm_curveCentredPrefix_le_sqrt_energy hq α ε hn
+  have h1 : ∀ n ≤ N, ‖coeff n ((1 - C (q : ℂ) * X) * curveCentredSeries q α ε)‖ ≤
+      (1 + (q : ℝ)) * K * s ^ n := fun n hn => by
+    simpa [Complex.norm_natCast] using norm_coeff_one_sub_mul_le_of_le hK hs hA (q : ℂ) hn
+  have h2 : ∀ n ≤ N, ‖coeff n ((1 - C 1 * X) * ((1 - C (q : ℂ) * X) * curveCentredSeries q α ε))‖ ≤
+      2 * ((1 + (q : ℝ)) * K) * s ^ n := fun n hn => by
+    simpa [one_add_one_eq_two] using
+      norm_coeff_one_sub_mul_le_of_le (by positivity) hs h1 1 hn
+  have h3 : ∀ n ≤ N, ‖coeff n ((1 - C 1 * X) *
+      ((1 - C 1 * X) * ((1 - C (q : ℂ) * X) * curveCentredSeries q α ε)))‖ ≤
+      2 * (2 * ((1 + (q : ℝ)) * K)) * s ^ n := fun n hn => by
+    simpa [one_add_one_eq_two] using
+      norm_coeff_one_sub_mul_le_of_le (by positivity) hs h2 1 hn
+  have h4 := norm_coeff_prod_one_sub_mul_le_of_le (univ.erase i)
+    (fun j => (((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α j) (by positivity) hs h3 le_rfl
+  have he : ((∏ j ∈ univ.erase i, (1 - C ((((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α j) * X)) *
+      ((1 - C 1 * X) * ((1 - C 1 * X) * ((1 - C (q : ℂ) * X) * curveCentredSeries q α ε)))) =
+      curveAnnihilatorFilter q α ε i * curveCentredSeries q α ε := by
+    rw [curveAnnihilatorFilter]; ring
+  rw [he] at h4
+  refine h4.trans (le_of_eq ?_)
+  rw [curveFilterConstant]
+  ring
+
+/-- **Quantitative lower bound on the curve receiver energy.** At every degree horizon
+`D ≥ 2m + 2`, the cumulative receiver energy dominates the `i`-th geometric mode. -/
+theorem curveEigenvalueResidue_sq_le_curveReceiverEnergy {q : ℕ} (hq : 1 ≤ q)
+    (α : Fin m → ℂ) (ε : ℝ) {i : Fin m} (hαi : α i ≠ 0) {D : ℕ} (hD : 2 * m + 2 ≤ D) :
+    (‖curveEigenvalueResidue q α ε i‖ / curveFilterConstant q α ε i) ^ 2 *
+        ((‖α i‖ * (q : ℝ) ^ (-ε)) ^ 2 / q) ^ D ≤
+      curveReceiverEnergy q α ε D := by
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast hq
+  have hρ0 : 0 ≤ (q : ℝ) ^ (-ε) := Real.rpow_nonneg hq0.le _
+  have hC : 0 < curveFilterConstant q α ε i := curveFilterConstant_pos q α ε i
+  have hE0 : 0 ≤ curveReceiverEnergy q α ε D := sum_nonneg fun k _ => by positivity
+  have hbd := norm_coeff_curveAnnihilatorFilter_mul_le hq α ε i D
+  rw [coeff_curveAnnihilatorFilter_mul_curveCentredSeries hq α ε hαi hD, norm_mul, norm_pow,
+    norm_mul, Complex.norm_real, Real.norm_of_nonneg hρ0] at hbd
+  have hsq0 := pow_le_pow_left₀ (by positivity) hbd 2
+  have hsD : (Real.sqrt q ^ D) ^ 2 = (q : ℝ) ^ D := by
+    rw [← pow_mul, mul_comm, pow_mul, Real.sq_sqrt hq0.le]
+  have hsq : ‖curveEigenvalueResidue q α ε i‖ ^ 2 * ((‖α i‖ * (q : ℝ) ^ (-ε)) ^ 2) ^ D ≤
+      curveFilterConstant q α ε i ^ 2 * curveReceiverEnergy q α ε D * (q : ℝ) ^ D := by
+    calc ‖curveEigenvalueResidue q α ε i‖ ^ 2 * ((‖α i‖ * (q : ℝ) ^ (-ε)) ^ 2) ^ D
+        = (‖curveEigenvalueResidue q α ε i‖ * ((q : ℝ) ^ (-ε) * ‖α i‖) ^ D) ^ 2 := by
+          rw [mul_comm ‖α i‖, ← pow_mul, mul_comm 2 D, pow_mul]; ring
+      _ ≤ (curveFilterConstant q α ε i * Real.sqrt (curveReceiverEnergy q α ε D) *
+            Real.sqrt q ^ D) ^ 2 := hsq0
+      _ = curveFilterConstant q α ε i ^ 2 * curveReceiverEnergy q α ε D * (q : ℝ) ^ D := by
+          rw [mul_pow, mul_pow, Real.sq_sqrt hE0, hsD]
+  rw [div_pow, div_pow, div_mul_div_comm, div_le_iff₀ (by positivity)]
+  calc ‖curveEigenvalueResidue q α ε i‖ ^ 2 * ((‖α i‖ * (q : ℝ) ^ (-ε)) ^ 2) ^ D
+      ≤ curveFilterConstant q α ε i ^ 2 * curveReceiverEnergy q α ε D * (q : ℝ) ^ D := hsq
+    _ = curveReceiverEnergy q α ε D * (curveFilterConstant q α ε i ^ 2 * (q : ℝ) ^ D) := by ring
+
+/-- **Exponential growth of the curve receiver below the zero width.** For any `m` and any complex
+eigenvalues `α : Fin m → ℂ`, if some `αᵢ` has `αᵢ ≠ 0, 1, q` and is not shadowed
+(`∀ j, αⱼ ≠ q^{−ε} αᵢ`), there is `c > 0` with
+`curveReceiverEnergy q α ε D ≥ c ((‖αᵢ‖ q^{−ε})² / q)^D` for all `D ≥ 2m + 2`. -/
+theorem exists_pos_mul_pow_le_curveReceiverEnergy {q : ℕ} (hq : 1 ≤ q) {α : Fin m → ℂ} {ε : ℝ}
+    {i : Fin m} (hαi : α i ≠ 0) (h1 : α i ≠ 1) (hq' : α i ≠ q)
+    (hsh : ∀ j, α j ≠ (((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α i) :
+    ∃ c > 0, ∀ D, 2 * m + 2 ≤ D →
+      c * ((‖α i‖ * (q : ℝ) ^ (-ε)) ^ 2 / q) ^ D ≤ curveReceiverEnergy q α ε D := by
+  have hres := curveEigenvalueResidue_ne_zero hq hαi h1 hq' hsh
+  have hC := curveFilterConstant_pos q α ε i
+  refine ⟨(‖curveEigenvalueResidue q α ε i‖ / curveFilterConstant q α ε i) ^ 2,
+    pow_pos (div_pos (norm_pos_iff.mpr hres) hC) 2, fun D hD => ?_⟩
+  exact curveEigenvalueResidue_sq_le_curveReceiverEnergy hq α ε hαi hD
+
+/-- **Below the zero width the curve receiver is not admitted (multi-eigenvalue theorem).**
+For any number `m` of complex eigenvalues `α : Fin m → ℂ`, if some eigenvalue `αᵢ` satisfies
+`√q q^ε < ‖αᵢ‖`, `αᵢ ≠ 1`, `αᵢ ≠ q`, and `∀ j, αⱼ ≠ q^{−ε} αᵢ`, the receiver energy is
+unbounded. -/
+theorem not_exists_curveReceiverEnergy_le {q : ℕ} (hq : 2 ≤ q) {α : Fin m → ℂ} {ε : ℝ}
+    {i : Fin m} (hαi : Real.sqrt q * (q : ℝ) ^ ε < ‖α i‖) (h1 : α i ≠ 1) (hq' : α i ≠ q)
+    (hsh : ∀ j, α j ≠ (((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α i) :
+    ¬ ∃ B : ℝ, ∀ D, curveReceiverEnergy q α ε D ≤ B := by
+  rintro ⟨B, hB⟩
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast (show 0 < q by omega)
+  have hs0 : 0 < Real.sqrt q := Real.sqrt_pos.mpr hq0
+  have hρ0 : 0 < (q : ℝ) ^ (-ε) := Real.rpow_pos_of_pos hq0 (-ε)
+  have hα0 : α i ≠ 0 := by
+    intro h0
+    rw [h0, norm_zero] at hαi
+    linarith [mul_pos hs0 (Real.rpow_pos_of_pos hq0 ε)]
+  obtain ⟨c, hc, hlow⟩ := exists_pos_mul_pow_le_curveReceiverEnergy (by omega) hα0 h1 hq' hsh
+  have hgt : Real.sqrt q < ‖α i‖ * (q : ℝ) ^ (-ε) := by
+    have h := mul_lt_mul_of_pos_right hαi hρ0
+    rwa [mul_assoc, ← Real.rpow_add hq0, add_neg_cancel, Real.rpow_zero, mul_one] at h
+  set r := (‖α i‖ * (q : ℝ) ^ (-ε)) ^ 2 / q
+  have hr1 : 1 < r := by
+    rw [one_lt_div hq0]
+    calc (q : ℝ) = Real.sqrt q ^ 2 := (Real.sq_sqrt hq0.le).symm
+      _ < (‖α i‖ * (q : ℝ) ^ (-ε)) ^ 2 := pow_lt_pow_left₀ hgt hs0.le two_ne_zero
+  have hdiv : Tendsto (fun D : ℕ => c * r ^ D) atTop atTop :=
+    (tendsto_pow_atTop_atTop_of_one_lt hr1).const_mul_atTop hc
+  obtain ⟨D, hDB, hDm⟩ := ((hdiv.eventually (eventually_gt_atTop B)).and
+    (eventually_ge_atTop (2 * m + 2))).exists
+  linarith [hlow D hDm, hB D]
+
+/-- **Equimodular failure below the zero width.** When all eigenvalues have modulus `λ√q` and
+`q^ε < λ` (`ε > 0`), no eigenvalue can shadow another, so admission fails as soon as `m ≥ 1` and
+some `αᵢ ≠ q`. -/
+theorem not_exists_curveReceiverEnergy_le_of_equimodular {q : ℕ} (hq : 2 ≤ q) {α : Fin m → ℂ}
+    {lam ε : ℝ} (hε : 0 < ε) (hlam : (q : ℝ) ^ ε < lam)
+    (hα : ∀ j, ‖α j‖ = lam * Real.sqrt q) {i : Fin m} (hq' : α i ≠ q) :
+    ¬ ∃ B : ℝ, ∀ D, curveReceiverEnergy q α ε D ≤ B := by
+  have hq1 : (1 : ℝ) < q := by exact_mod_cast (show 1 < q by omega)
+  have hs1 : 1 < Real.sqrt q := Real.lt_sqrt_of_sq_lt (by norm_num; linarith)
+  have hs0 : 0 < Real.sqrt q := by linarith
+  have hqε1 : 1 < (q : ℝ) ^ ε := Real.one_lt_rpow hq1 hε
+  have hρ1 : (q : ℝ) ^ (-ε) < 1 := Real.rpow_lt_one_of_one_lt_of_neg hq1 (by linarith)
+  have hρ0 : 0 < (q : ℝ) ^ (-ε) := Real.rpow_pos_of_pos (by linarith) (-ε)
+  have hαi_gt : Real.sqrt q * (q : ℝ) ^ ε < ‖α i‖ := by
+    rw [hα i, mul_comm (Real.sqrt q)]
+    exact mul_lt_mul_of_pos_right hlam hs0
+  have h1 : α i ≠ 1 := by
+    intro h
+    have : ‖α i‖ = 1 := by rw [h, norm_one]
+    nlinarith
+  have hsh : ∀ j, α j ≠ (((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α i := by
+    intro j hj
+    have hn := congr_arg norm hj
+    rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hρ0.le, hα j, hα i] at hn
+    have hpos : 0 < lam * Real.sqrt q := by nlinarith
+    nlinarith
+  exact not_exists_curveReceiverEnergy_le hq hαi_gt h1 hq' hsh
+
+/-- **Exact zero-width threshold for equimodular curve models.** For `m ≥ 1` eigenvalues of
+modulus `λ√q` (`λ ≥ 1`, `αⱼ ≠ q`) and any `ε > 0` with `λ ≠ q^ε`, the curve receiver is admitted
+at `ε` if and only if `λ < q^ε`. -/
+theorem curveReceiverEnergy_admitted_iff_of_equimodular {q : ℕ} (hq : 2 ≤ q) {α : Fin m → ℂ}
+    {lam ε : ℝ} (hlam : 1 ≤ lam) (hε : 0 < ε) (hne : lam ≠ (q : ℝ) ^ ε)
+    (hα : ∀ j, ‖α j‖ = lam * Real.sqrt q) (i : Fin m) (hq' : α i ≠ q) :
+    (∃ B : ℝ, ∀ D, curveReceiverEnergy q α ε D ≤ B) ↔ lam < (q : ℝ) ^ ε := by
+  constructor
+  · intro hB
+    rcases lt_or_gt_of_ne hne with hlt | hgt
+    · exact hlt
+    · exact False.elim (not_exists_curveReceiverEnergy_le_of_equimodular hq hε hgt hα hq' hB)
+  · intro hlt
+    exact exists_curveReceiverEnergy_le hq hlam (fun j => (hα j).le) hlt
+
+/-- **No eigenvalue in the shadow strip `(√q, √q q^ε]` implies blow-up below the zero width.**
+If some eigenvalue exceeds `√q q^ε` (`ε > 0`), no eigenvalue lies in `(√q, √q q^ε]`, and
+`∀ j, αⱼ ≠ q`, the curve receiver is not admitted at `ε`: the minimal supercritical eigenvalue
+cannot be shadowed. -/
+theorem not_exists_curveReceiverEnergy_le_of_no_strip {q : ℕ} (hq : 2 ≤ q) {α : Fin m → ℂ}
+    {ε : ℝ} (hε : 0 < ε) (hex : ∃ i, Real.sqrt q * (q : ℝ) ^ ε < ‖α i‖)
+    (hstrip : ∀ j, Real.sqrt q < ‖α j‖ → Real.sqrt q * (q : ℝ) ^ ε < ‖α j‖)
+    (hq' : ∀ j, α j ≠ q) :
+    ¬ ∃ B : ℝ, ∀ D, curveReceiverEnergy q α ε D ≤ B := by
+  classical
+  obtain ⟨i₁, hi₁⟩ := hex
+  set U := univ.filter (fun j : Fin m => Real.sqrt q * (q : ℝ) ^ ε < ‖α j‖)
+  have hne : U.Nonempty := ⟨i₁, mem_filter.mpr ⟨mem_univ i₁, hi₁⟩⟩
+  obtain ⟨i₀, hi₀U, hmin⟩ := exists_min_image U (fun j => ‖α j‖) hne
+  have hi₀ : Real.sqrt q * (q : ℝ) ^ ε < ‖α i₀‖ := (mem_filter.mp hi₀U).2
+  have hq1 : (1 : ℝ) < q := by exact_mod_cast (show 1 < q by omega)
+  have hs1 : 1 < Real.sqrt q := Real.lt_sqrt_of_sq_lt (by norm_num; linarith)
+  have hqε1 : 1 < (q : ℝ) ^ ε := Real.one_lt_rpow hq1 hε
+  have hρ0 : 0 < (q : ℝ) ^ (-ε) := Real.rpow_pos_of_pos (by linarith) (-ε)
+  have hρ1 : (q : ℝ) ^ (-ε) < 1 := Real.rpow_lt_one_of_one_lt_of_neg hq1 (by linarith)
+  have h1 : α i₀ ≠ 1 := by
+    intro h
+    have : ‖α i₀‖ = 1 := by rw [h, norm_one]
+    nlinarith
+  have hsh : ∀ j, α j ≠ (((q : ℝ) ^ (-ε) : ℝ) : ℂ) * α i₀ := by
+    intro j hj
+    have hn := congr_arg norm hj
+    rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hρ0.le] at hn
+    have hj_gt : Real.sqrt q < ‖α j‖ := by
+      have hmul := mul_lt_mul_of_pos_right hi₀ hρ0
+      rw [mul_assoc, ← Real.rpow_add (by linarith), add_neg_cancel, Real.rpow_zero, mul_one,
+        mul_comm] at hmul
+      linarith
+    have hjU : j ∈ U := mem_filter.mpr ⟨mem_univ j, hstrip j hj_gt⟩
+    have hle := hmin j hjU
+    nlinarith
+  exact not_exists_curveReceiverEnergy_le hq hi₀ h1 (hq' i₀) hsh
+
+/-- **The Weil bound is equivalent to cofinal admission of the curve receiver.**
+For any `q ≥ 2` and any tuple of complex eigenvalues `α : Fin m → ℂ` with `∀ i, α i ≠ q`,
+every eigenvalue satisfies the Weil bound `‖α i‖ ≤ √q` if and only if `curveReceiverEnergy q α ε`
+is admitted at arbitrarily small positive dampings `ε ↓ 0`. -/
+theorem weil_iff_cofinal_curveReceiverEnergy {q : ℕ} (hq : 2 ≤ q) {α : Fin m → ℂ}
+    (hq' : ∀ i, α i ≠ q) :
+    (∀ i, ‖α i‖ ≤ Real.sqrt q) ↔
+      ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ε < δ ∧
+        ∃ B : ℝ, ∀ D, curveReceiverEnergy q α ε D ≤ B := by
+  constructor
+  · intro hweil δ hδ
+    refine ⟨δ / 2, by linarith, by linarith, ?_⟩
+    exact exists_curveReceiverEnergy_le_of_weil hq hweil (by linarith)
+  · intro hcof
+    classical
+    by_contra hnot
+    push Not at hnot
+    obtain ⟨i₁, hi₁⟩ := hnot
+    set U := univ.filter (fun j : Fin m => Real.sqrt q < ‖α j‖)
+    have hne : U.Nonempty := ⟨i₁, mem_filter.mpr ⟨mem_univ i₁, hi₁⟩⟩
+    obtain ⟨i₀, hi₀U, hmin⟩ := exists_min_image U (fun j => ‖α j‖) hne
+    have hi₀ : Real.sqrt q < ‖α i₀‖ := (mem_filter.mp hi₀U).2
+    have hq0 : (0 : ℝ) < q := by exact_mod_cast (show 0 < q by omega)
+    have hcont : Continuous (fun ε : ℝ => Real.sqrt q * Real.exp (Real.log q * ε)) :=
+      continuous_const.mul (Real.continuous_exp.comp (continuous_const.mul continuous_id))
+    have hlim : Tendsto (fun ε : ℝ => Real.sqrt q * (q : ℝ) ^ ε) (𝓝 0) (𝓝 (Real.sqrt q)) := by
+      have h0 : (fun ε : ℝ => Real.sqrt q * (q : ℝ) ^ ε) =
+          fun ε : ℝ => Real.sqrt q * Real.exp (Real.log q * ε) := by
+        ext ε; rw [Real.rpow_def_of_pos hq0]
+      rw [h0]
+      simpa using hcont.tendsto 0
+    obtain ⟨δ, hδ0, hδ⟩ := Metric.eventually_nhds_iff.mp
+      (hlim.eventually (eventually_lt_nhds hi₀))
+    obtain ⟨ε, hε0, hεδ, hB⟩ := hcof δ hδ0
+    have hε_lt : Real.sqrt q * (q : ℝ) ^ ε < ‖α i₀‖ :=
+      hδ (by rw [Real.dist_eq, sub_zero, abs_of_pos hε0]; exact hεδ)
+    have hstrip : ∀ j, Real.sqrt q < ‖α j‖ → Real.sqrt q * (q : ℝ) ^ ε < ‖α j‖ :=
+      fun j hj => hε_lt.trans_le (hmin j (mem_filter.mpr ⟨mem_univ j, hj⟩))
+    exact not_exists_curveReceiverEnergy_le_of_no_strip hq hε0 ⟨i₀, hε_lt⟩ hstrip hq' hB
+
 end GaloisForLFunctions.ArithmeticCompensationTheory
+
+
