@@ -83,9 +83,20 @@ complete period. The identity `log L_N=ψ(N)` is classical (Mathlib
 `Chebyshev.psi_eq_log_lcmUpto`); the programme contribution is the exact type-correct replacement
 for B1 and its subsequent obstruction calculus, not a novelty claim for that identity.
 
+[PROVED HERE, paper; Lean pending] The full positive replacement extends across each cell:
+for `log N ≤ s < log(N+1)` with `N≥1`,
+
+`E(s) = (N-1) - log Q_N + (exp(s)-N) + (s-log N)`.
+
+The prime-power count is constant within this half-open cell, so subtract its value at `log N`.
+The two remaining terms are exactly the archimedean evolution. Every nonnegative aperture lies
+in exactly one such cell (`N=floor(exp s)`). This separates the quantized torsion datum from
+continuous evolution on all apertures, not merely at the integer lattice. Add this theorem before
+closing the literal-B1 no-go; an integer-horizon formula alone is not the strongest survivor.
+
 ### Finite-horizon joint rigidity
 
-[PROVED HERE, paper; Lean pending] On `V_N = span(e_0,...,e_N)`, define truncated pushforwards
+[PROVED HERE, paper and Lean] On `V_N = span(e_0,...,e_N)`, define truncated pushforwards
 `Ue_j=e_(j+1)` and `D_p e_j=e_(pj)`, with out-of-range vectors zero. They satisfy
 `D_p U = U^p D_p` exactly. For `p≥2`, the common commutant of `U` and `D_p` consists precisely of
 scalar operators. Indeed `D_p A e_0=Ae_0`; a `D_p`-fixed vector has all positive coordinates zero,
@@ -96,6 +107,60 @@ The origin is essential: it is the multiplicatively fixed vector that generates 
 horizon under addition. This is a joint additive/multiplicative rigidity theorem, not an energy
 estimate or an orientation theorem. Scalar twists `D_p -> a(p)D_p` preserve the affine relation;
 the relation cannot select an analytic dilation normalization by itself.
+
+Lean: `HorizonAffineActions.lean` passed the direct leaf check
+`lake --old env lean GaloisForLFunctions/BiarithmeticGeometry/HorizonAffineActions.lean`.
+Main declarations: `horizonAffine_comp`, `horizon_ring_relation`,
+`horizon_double_fixed_iff`, `horizon_joint_commutant`. Separate axiom audit remains due.
+
+### Repairing kernels and escape: proof plan with exact corpus dependencies
+
+For a coefficient source `c` with absolutely convergent mean `m_c`, write `A_c` for its centered
+divisor prefix. THIM `weightCenteredPrefix_dirichletConv` gives exactly
+
+`A_(k*c)(n) = Σ_(j≤n) k(j) A_c(floor(n/j)) + m_c A_k(n)`.
+
+THIM `pronicNorm_weightCenteredPrefix_le_critical` uniformly bounds `A_k` for every critical
+Wiener kernel. If `k*c` is paid, its prefix is uniformly bounded as well. Therefore the cofactor
+packet on the right has uniformly bounded pronic norm. On actual escape its squared norm divided
+by `dampedMobiusEnergy ε T` tends to zero. For finite `k`, ADR
+`cofactorGram_quadratic_eq` and convergence of the common Gram table imply its limiting quadratic
+form is zero. This proves the finite-kernel part of A1 once the source and norm bridges are checked.
+
+For infinite kernels, do NOT assume that finite truncations of a paid kernel are paid. Extend the
+packet action using the proved `j^(-1/2)` contraction and its Wiener tail, then use the exact full
+convolution law. This supplies a valid route to the full annihilator statement; density of finite
+supports in the entire algebra alone is insufficient.
+
+[PROVED HERE, paper; Lean pending] `PaidKernelsVanishOnEscape.lean` proves the full-kernel
+normalization statement directly, before a Hilbert completion. For every subcritical damping,
+either the actual receiver is admitted, or **every** critical Wiener kernel whose convolution
+with the actual source is paid has normalized cofactor-action energy tending to zero.
+The finite-horizon action is `Σ_(j≤n) k(j) A_ε(floor(n/j))`. The convolution identity and the
+uniform critical-kernel prefix bound give a constant independent of `T`; division by escaping
+receiver energy proves convergence. No truncation is asserted paid. The GNS and Bohr-hull
+comparison remain separate obligations.
+
+### Distinct meanings of first cohomology
+
+The finite-field calibration also requires separating ambient geometric `H¹` from unpaid
+obstruction. A genus-`g` curve has ambient `dim H¹=2g` even when its Weil bound holds. Thus the
+same unmodified group cannot simultaneously have dimension `2g` and vanish precisely when the
+Weil bound holds for every positive-genus curve. An adverse subspace, relative group, or a separate
+obstruction complex is needed. No comparison of such complexes has yet been proved.
+
+### Shared-capacity descent
+
+[PROVED HERE, paper; Lean pending] On a finite discrete set of `k` atoms, let an admissible
+allocation have nonnegative values and total mass at most a common budget `B≥0`. Restrictions
+are admissible. Every singleton-admissible allocation glues to an admissible global allocation
+iff `k≤1` or `B=0`. Necessity: the constant allocation `B` would require `kB≤B`. Sufficiency:
+sum the pointwise bounds when `k≤1`, and all entries vanish when `B=0`.
+For `k+1` singleton windows the sharp possible excess is exactly `kB`, attained by the constant
+allocation. This is a complete calibration of the shared-resource failure, not a theorem that
+the actual arithmetic allocation functor is this model. It proves that local payment plus
+restriction alone does not justify naming a payment sheaf. Positive repair requires tracking
+resource locations and compatible quotas in the site.
 
 ## External calibration
 

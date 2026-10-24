@@ -197,7 +197,7 @@ private theorem abs_scaledLayerCrossCorr_le (a c n k l r : ℕ) :
       scaledHarmonicLayer (a * (n + 1)) k v *
       scaledHarmonicLayer (c * (n + 1)) l ((r : ℝ) * v)) (Ioi 1) := by
     refine (hw.const_mul 4).mono' (hw.aestronglyMeasurable.mul hc.aestronglyMeasurable |>.congr
-      (Eventually.of_forall fun v => by ring)) ?_
+      (Eventually.of_forall fun v => by dsimp only [Pi.mul_apply]; ring)) ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with v hv
     have hv0 : 0 ≤ v ^ (-2 : ℝ) := Real.rpow_nonneg (zero_le_one.trans hv.le) _
     rw [show v ^ (-2 : ℝ) * scaledHarmonicLayer (a * (n + 1)) k v *
@@ -212,7 +212,7 @@ private theorem abs_scaledLayerCrossCorr_le (a c n k l r : ℕ) :
       ≤ ∫ v in Ioi (1 : ℝ), ‖v ^ (-2 : ℝ) *
           scaledHarmonicLayer (a * (n + 1)) k v *
           scaledHarmonicLayer (c * (n + 1)) l ((r : ℝ) * v)‖ :=
-        by simpa only [Real.norm_eq_abs] using norm_integral_le_integral_norm _
+        Real.norm_eq_abs _ ▸ norm_integral_le_integral_norm _
     _ ≤ ∫ v in Ioi (1 : ℝ), 4 * v ^ (-2 : ℝ) := by
         refine setIntegral_mono_on hint.norm (hw.const_mul 4) measurableSet_Ioi fun v hv => ?_
         have hv0 : 0 ≤ v ^ (-2 : ℝ) := Real.rpow_nonneg (zero_le_one.trans hv.le) _
@@ -241,6 +241,7 @@ private theorem tendsto_factorialAffineDefect_mul_scale {a : ℕ} (ha : 1 ≤ a)
     have hcast : ((a * (n + 1) - 1 : ℕ) : ℝ) + 1 = ((a * (n + 1) : ℕ) : ℝ) := by
       exact_mod_cast Nat.sub_add_cancel hpos
     rw [hcast] at hb
+    have hn1_pos : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_pos n
     refine hb.trans (div_le_div_of_nonneg_left zero_le_one (by positivity) ?_)
     have hle : n + 1 ≤ a * (n + 1) := Nat.le_mul_of_pos_left (n + 1) ha
     have hleR : ((n + 1 : ℕ) : ℝ) ≤ ((a * (n + 1) : ℕ) : ℝ) := by exact_mod_cast hle
@@ -254,9 +255,11 @@ private theorem scaledLayerCrossCorr_tendsto {a c k l r : ℕ}
   set β : ℝ := ((r * l * c : ℕ) : ℝ)
   have hα : 0 < α := by
     have : 0 < k * a := Nat.mul_pos hk ha
+    dsimp only [α]
     exact_mod_cast this
   have hβ : 0 < β := by
     have : 0 < r * l * c := Nat.mul_pos (Nat.mul_pos hr hl) hc
+    dsimp only [β]
     exact_mod_cast this
   have hs : Tendsto (fun n : ℕ => (k : ℝ) * (1 / 12 - factorialAffineDefect (a * (n + 1))))
       atTop (𝓝 ((k : ℝ) / 12)) := by
@@ -299,7 +302,7 @@ private theorem scaledLayerCrossCorr_tendsto {a c k l r : ℕ}
     refine hw.mono' (hw.aestronglyMeasurable.mul
       ((by fun_prop : Continuous fun v => Real.cos (2 * Real.pi * x * v) *
         Real.cos (2 * Real.pi * y * v)).aestronglyMeasurable) |>.congr
-      (Eventually.of_forall fun v => by ring)) ?_
+      (Eventually.of_forall fun v => by dsimp only [Pi.mul_apply]; ring)) ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with v hv
     have hv0 : 0 ≤ v ^ (-2 : ℝ) := Real.rpow_nonneg (zero_le_one.trans hv.le) _
     rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_nonneg hv0]
@@ -335,7 +338,8 @@ private theorem scaledLayerCrossCorr_tendsto {a c k l r : ℕ}
   have hsub1 := integral_sub (hint x1 y1) (hint x1 y0)
   have hsub2 := integral_sub (hint x1 y1 |>.sub (hint x1 y0)) (hint x0 y1)
   have hadd3 := integral_add ((hint x1 y1 |>.sub (hint x1 y0)).sub (hint x0 y1)) (hint x0 y0)
-  simp only [Pi.sub_apply, Pi.add_apply] at hsub1 hsub2 hadd3
+  simp only [Pi.sub_apply] at hsub1 hsub2
+  simp only [Pi.add_apply] at hadd3
   rw [← hsub1, ← hsub2, ← hadd3]
   refine setIntegral_congr_fun measurableSet_Ioi fun v _ => ?_
   unfold scaledHarmonicLayer
@@ -539,7 +543,7 @@ private theorem dyadicPairCorrelation_tendsto {r : ℕ} (hr : 1 ≤ r) :
       (continuous_factorialPhaseProfile N1).mul
         ((continuous_factorialPhaseProfile N2).comp (continuous_const.mul continuous_id))
     refine (hw.const_mul 4).mono' (hw.aestronglyMeasurable.mul hc.aestronglyMeasurable |>.congr
-      (Eventually.of_forall fun v => by ring)) ?_
+      (Eventually.of_forall fun v => by dsimp only [Pi.mul_apply]; ring)) ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with v hv
     have hv0 : 0 ≤ v ^ (-2 : ℝ) := Real.rpow_nonneg (zero_le_one.trans hv.le) _
     rw [show v ^ (-2 : ℝ) * factorialPhaseProfile N1 v * factorialPhaseProfile N2 ((r : ℝ) * v) =
@@ -583,10 +587,10 @@ theorem tendsto_criticalPrimeEnergy_dyadicPair :
     have hK := criticalFactorialPrimeConstant_le_of_dyadic (dyadicPairSupport (n + 2))
       (fun _ => 1) (M := n + 2) (by omega) hdyad
     have hcard : (∑ m ∈ dyadicPairSupport (n + 2), |(1 : ℝ)|) ≤ 2 := by
-      unfold dyadicPairSupport
-      refine (Finset.sum_insert_le _ _ _).trans ?_
-      · intro _ _; positivity
-      · simp; norm_num
+      have hp : dyadicPairSupport (n + 2) = {n + 1, 2 * n + 3} := by
+        unfold dyadicPairSupport; congr 1 <;> omega
+      rw [hp, Finset.sum_pair (by omega)]
+      norm_num
     have hK1536 : criticalFactorialPrimeConstant (dyadicPairSupport (n + 2)) (fun _ => 1) ≤ 1536 := by
       have hsq : (∑ m ∈ dyadicPairSupport (n + 2), |(1 : ℝ)|) ^ 2 ≤ 4 := by
         have h0 : 0 ≤ ∑ m ∈ dyadicPairSupport (n + 2), |(1 : ℝ)| :=
@@ -667,10 +671,10 @@ private theorem scaleRatioCorrelationLimit_12_eq (r : ℕ) :
   congr 1
   have hs := summable_cross12_term r
   rw [← (Equiv.prodComm ℕ ℕ).tsum_eq]
-  change (∑' p : ℕ × ℕ, _) = _
+  dsimp only [Equiv.prodComm_apply]
   rw [hs.prod_symm.tsum_prod]
   refine tsum_congr fun l => ?_
-  dsimp only [Equiv.prodComm_apply, Prod.swap]
+  dsimp only [Prod.swap]
   rw [tsum_eq_single (2 * r * l)]
   · have hres : 2 * r * l * 1 = r * l * 2 := by ring
     rw [if_pos hres, show 2 * r * l = 2 * (r * l) by ring, slowPhasePolarization_double_left]
@@ -722,10 +726,10 @@ private theorem abs_scaleRatioCorrelationLimit_21_four_le :
       ∑' l : ℕ, dyadicHarmonicWeight (2 * l) * dyadicHarmonicWeight l *
         (factorialCriticalHarmonicDefect (4 * l) / 2) := by
     rw [← (Equiv.prodComm ℕ ℕ).tsum_eq]
-    change (∑' p : ℕ × ℕ, _) = _
+    dsimp only [Equiv.prodComm_apply]
     rw [hs.prod_symm.tsum_prod]
     refine tsum_congr fun l => ?_
-    dsimp only [Equiv.prodComm_apply, Prod.swap]
+    dsimp only [Prod.swap]
     rw [tsum_eq_single (2 * l)]
     · have hres : 2 * l * 2 = 4 * l * 1 := by ring
       rw [if_pos hres, show 4 * l = 2 * (2 * l) by ring, slowPhasePolarization_double_right]
@@ -775,10 +779,10 @@ private theorem scaleRatioCorrelationLimit_21_eight_dvd_eq_zero {r : ℕ} (hr : 
       dyadicHarmonicWeight p.1 * dyadicHarmonicWeight p.2 *
         slowPhasePolarization p.1 (8 * q * p.2) else 0) = 0 := fun p => by
     split_ifs with h
-    · have h4 : 4 ∣ p.1 := ⟨q * p.2, by omega⟩
+    · have h4 : 4 ∣ p.1 := ⟨q * p.2, by linarith⟩
       rw [dyadicHarmonicWeight_of_four_dvd h4, zero_mul, zero_mul]
     · rfl
-  simp [hz]
+  rw [tsum_congr hz, tsum_zero, mul_zero]
 
 private theorem abs_scaleRatioCorrelationLimit_odd_le {r : ℕ} (hodd : ¬ 2 ∣ r) :
     |scaleRatioCorrelationLimit 2 1 r| + |scaleRatioCorrelationLimit 1 2 r| ≤
@@ -829,10 +833,10 @@ private theorem abs_scaleRatioCorrelationLimit_odd_le {r : ℕ} (hodd : ¬ 2 ∣
           dyadicHarmonicWeight (r * (l / 2)) * dyadicHarmonicWeight l *
             (factorialCriticalHarmonicDefect (r * l) / 2) else 0 := by
       rw [← (Equiv.prodComm ℕ ℕ).tsum_eq]
-      change (∑' p : ℕ × ℕ, _) = _
+      dsimp only [Equiv.prodComm_apply]
       rw [hs.prod_symm.tsum_prod]
       refine tsum_congr fun l => ?_
-      dsimp only [Equiv.prodComm_apply, Prod.swap]
+      dsimp only [Prod.swap]
       by_cases hl2 : 2 ∣ l
       · obtain ⟨m, rfl⟩ := hl2
         simp only [dvd_mul_right, ite_true, Nat.mul_div_cancel_left m two_pos]
@@ -853,7 +857,8 @@ private theorem abs_scaleRatioCorrelationLimit_odd_le {r : ℕ} (hodd : ¬ 2 ∣
           · exact hodd h2r
           · exact hl2 h2l
         simp [hz]
-    have hinj : Function.Injective (fun m : ℕ => 2 * m) := fun a b h => by omega
+    have hinj : Function.Injective (fun m : ℕ => 2 * m) := fun a b h => by
+      dsimp only at h; omega
     have hsub : (∑' l : ℕ, if 2 ∣ l then
         dyadicHarmonicWeight (r * (l / 2)) * dyadicHarmonicWeight l *
           (factorialCriticalHarmonicDefect (r * l) / 2) else 0) =
@@ -864,9 +869,12 @@ private theorem abs_scaleRatioCorrelationLimit_odd_le {r : ℕ} (hodd : ¬ 2 ∣
         simp only [dvd_mul_right, ite_true, Nat.mul_div_cancel_left m two_pos]
         rw [show r * (2 * m) = 2 * r * m by ring]
       · intro l hl
+        rw [Function.mem_support] at hl
+        by_contra hnr
+        apply hl
         rw [if_neg]
         rintro ⟨m, rfl⟩
-        exact hl ⟨m, rfl⟩
+        exact hnr ⟨m, rfl⟩
     rw [hprod, hsub, abs_mul, abs_of_pos hpi4]
     have hterm (m : ℕ) : ‖dyadicHarmonicWeight (r * m) * dyadicHarmonicWeight (2 * m) *
         (factorialCriticalHarmonicDefect (2 * r * m) / 2)‖ ≤
@@ -922,12 +930,10 @@ private theorem harmonicDefect_three_five_ge :
       Real.pi ^ 2 / 8 + Real.pi ^ 4 / 1152 - Real.pi ^ 6 / 230400 := by ring
   have h5_alg : Real.pi ^ 2 * 5 / 12 - (Real.pi * 5 / 6) ^ 2 / 2 +
       (Real.pi * 5 / 6) ^ 4 / 72 - (Real.pi * 5 / 6) ^ 6 / 3600 =
-      17 * Real.pi ^ 2 / 72 + 625 * Real.pi ^ 4 / 93312 -
+      5 * Real.pi ^ 2 / 72 + 625 * Real.pi ^ 4 / 93312 -
         15625 * Real.pi ^ 6 / 167961600 := by ring
   rw [h3_alg] at ht3
   rw [h5_alg] at ht5
-  -- Notice `Real.pi ^ 2` has positive net coefficient (`1/8` and `17/72`), `Real.pi ^ 4` positive,
-  -- `Real.pi ^ 6` negative!
   constructor <;> linarith
 
 private theorem even_ge_six_cross_vanish {r : ℕ} (hr6 : 6 ≤ r) (h2 : 2 ∣ r) :
@@ -939,7 +945,7 @@ private theorem even_ge_six_cross_vanish {r : ℕ} (hr6 : 6 ≤ r) (h2 : 2 ∣ r
     have hp2 : p = 2 := by
       have hdvd : 2 ∣ p ^ k := h2
       have h2p : 2 ∣ p := Nat.Prime.dvd_of_dvd_pow Nat.prime_two hdvd
-      exact (hp_nat.eq_one_or_self_of_dvd 2 h2p).resolve_left (by norm_num)
+      exact ((hp_nat.eq_one_or_self_of_dvd 2 h2p).resolve_left (by norm_num)).symm
     subst hp2
     have hk3 : 3 ≤ k := by
       by_contra hlt
@@ -980,16 +986,16 @@ private theorem summable_and_tsum_cross_tail_seven_le :
     have hm7 : ((m + 7 : ℕ) : ℝ) = ((m + 6 : ℕ) : ℝ) + 1 := by push_cast; ring
     have htele : 1 / (r : ℝ) ^ 2 ≤ 1 / ((m + 6 : ℕ) : ℝ) - 1 / ((m + 7 : ℕ) : ℝ) := by
       have hr_eq : (r : ℝ) = ((m + 6 : ℕ) : ℝ) + 1 := hm7
-      rw [hr_eq, one_div_sub_one_div hm6.ne' (by linarith)]
-      have hsub : ((m + 6 : ℕ) : ℝ) + 1 - ((m + 6 : ℕ) : ℝ) = 1 := by ring
-      rw [hsub]
+      have hdiff : 1 / ((m + 6 : ℕ) : ℝ) - 1 / (((m + 6 : ℕ) : ℝ) + 1) =
+          1 / (((m + 6 : ℕ) : ℝ) * (((m + 6 : ℕ) : ℝ) + 1)) := by field_simp; ring
+      rw [hr_eq, hdiff]
       refine div_le_div_of_nonneg_left zero_le_one (by positivity) ?_
       nlinarith
     have htele_up : 1 / ((m + 6 : ℕ) : ℝ) - 1 / ((m + 7 : ℕ) : ℝ) ≤
         1 / ((m + 6 : ℕ) : ℝ) ^ 2 := by
-      rw [hm7, one_div_sub_one_div hm6.ne' (by linarith)]
-      have hsub : ((m + 6 : ℕ) : ℝ) + 1 - ((m + 6 : ℕ) : ℝ) = 1 := by ring
-      rw [hsub]
+      have hdiff : 1 / ((m + 6 : ℕ) : ℝ) - 1 / (((m + 6 : ℕ) : ℝ) + 1) =
+          1 / (((m + 6 : ℕ) : ℝ) * (((m + 6 : ℕ) : ℝ) + 1)) := by field_simp; ring
+      rw [hm7, hdiff]
       refine div_le_div_of_nonneg_left zero_le_one (by positivity) ?_
       nlinarith
     refine ⟨?_, mul_le_mul_of_nonneg_left htele_up hC⟩
@@ -1013,11 +1019,10 @@ private theorem summable_and_tsum_cross_tail_seven_le :
           (18 / 49 + 3 / 32) * Real.log 2 * (1 / (r : ℝ) ^ 2) := by
         rw [div_le_iff₀ (by positivity)]
         have h_alg : (18 / 49 + 3 / 32) * Real.log 2 * (1 / (r : ℝ) ^ 2) * (r : ℝ) ^ 3 =
-            ((18 / 49) * (r : ℝ) + (3 / 32) * (r : ℝ) ^ 2) * Real.log 2 := by
+            ((18 / 49) * (r : ℝ) + (3 / 32) * (r : ℝ)) * Real.log 2 := by
           field_simp; ring
         rw [h_alg]
         have hr_ge : (18 / 7 : ℝ) ≤ (18 / 49) * (r : ℝ) := by linarith
-        have hr2 : (r : ℝ) ≤ (r : ℝ) ^ 2 := by nlinarith
         nlinarith
       calc (ArithmeticFunction.vonMangoldt r : ℝ) / (r : ℝ) *
             |scaleRatioCorrelationLimit 2 1 r + scaleRatioCorrelationLimit 1 2 r|
@@ -1098,10 +1103,10 @@ theorem dyadicPairPrimeLimit_ge :
       have hK := criticalFactorialPrimeConstant_le_of_dyadic (dyadicPairSupport (n + 2))
         (fun _ => 1) (M := n + 2) (by omega) hdyad
       have hcard : (∑ m ∈ dyadicPairSupport (n + 2), |(1 : ℝ)|) ≤ 2 := by
-        unfold dyadicPairSupport
-        refine (Finset.sum_insert_le _ _ _).trans ?_
-        · intro _ _; positivity
-        · simp; norm_num
+        have hp : dyadicPairSupport (n + 2) = {n + 1, 2 * n + 3} := by
+          unfold dyadicPairSupport; congr 1 <;> omega
+        rw [hp, Finset.sum_pair (by omega)]
+        norm_num
       have hsq : (∑ m ∈ dyadicPairSupport (n + 2), |(1 : ℝ)|) ^ 2 ≤ 4 := by
         have h0 : 0 ≤ ∑ m ∈ dyadicPairSupport (n + 2), |(1 : ℝ)| :=
           Finset.sum_nonneg fun _ _ => abs_nonneg _
@@ -1192,11 +1197,25 @@ theorem dyadicPairPrimeLimit_ge :
         ((11 / 189) * (13 / 10) + (16 / 875) * (6 / 5)) * Real.log 2 := by
       linarith
     have hmul := mul_le_mul_of_nonneg_left hsum6 (show 0 ≤ 2 * (4 / Real.pi ^ 4) by positivity)
-    calc -(Real.log 2 / Real.pi ^ 4) * factorialCriticalHarmonicDefect 2 +
-          (88 / 189 * (13 / 10) + 128 / 875 * (6 / 5)) * (Real.log 2 / Real.pi ^ 4)
-        = 2 * ((4 / Real.pi ^ 4) * (-(1 / 8) * Real.log 2 * factorialCriticalHarmonicDefect 2 +
-            ((11 / 189) * (13 / 10) + (16 / 875) * (6 / 5)) * Real.log 2)) := by ring
-      _ ≤ _ := by linarith
+    have h_alg_lhs : -(Real.log 2 / Real.pi ^ 4) * factorialCriticalHarmonicDefect 2 +
+        (88 / 189 * (13 / 10) + 128 / 875 * (6 / 5)) * (Real.log 2 / Real.pi ^ 4) =
+        2 * (4 / Real.pi ^ 4) * (-(1 / 8) * Real.log 2 * factorialCriticalHarmonicDefect 2 +
+          ((11 / 189) * (13 / 10) + (16 / 875) * (6 / 5)) * Real.log 2) := by ring
+    have h_alg_rhs : 2 * ((4 / Real.pi ^ 4) *
+        (-2 * Real.log 2 * factorialCriticalHarmonicDefect 2 / 16 +
+          3 * Real.log 3 * factorialCriticalHarmonicDefect 3 / 81 +
+          5 * Real.log 5 * factorialCriticalHarmonicDefect 5 / 625 +
+          ∑' m : ℕ, factorialCriticalPrimeHarmonicCharge (m + 6) *
+            factorialCriticalHarmonicDefect (m + 6) / ((m + 6 : ℕ) : ℝ) ^ 4)) =
+        2 * (4 / Real.pi ^ 4) *
+        (-2 * Real.log 2 * factorialCriticalHarmonicDefect 2 / 16 +
+          3 * Real.log 3 * factorialCriticalHarmonicDefect 3 / 81 +
+          5 * Real.log 5 * factorialCriticalHarmonicDefect 5 / 625 +
+          ∑' m : ℕ, factorialCriticalPrimeHarmonicCharge (m + 6) *
+            factorialCriticalHarmonicDefect (m + 6) / ((m + 6 : ℕ) : ℝ) ^ 4) := by ring
+    change _ ≤ _
+    rw [h_alg_lhs, h_alg_rhs]
+    exact hmul
   -- 3. Lower bound `∑' r, crossAtom r` splitting at `r = 7`
   have hcross_ge : ∑' r : ℕ, crossAtom r ≥
       (Real.log 2 / Real.pi ^ 4) * factorialCriticalHarmonicDefect 2 -
@@ -1227,10 +1246,12 @@ theorem dyadicPairPrimeLimit_ge :
           ArithmeticFunction.vonMangoldt_apply_prime (by norm_num : Nat.Prime 3), Nat.cast_ofNat]
         rw [abs_mul, abs_of_nonneg (by positivity)]
         have hodd := (abs_add_le _ _).trans (abs_scaleRatioCorrelationLimit_odd_le (r := 3) (by omega))
-        norm_num only [Nat.cast_ofNat] at hodd
+        push_cast at hodd
+        have hdiv3 : Real.log 3 / 3 ≤ (8 / 5 * Real.log 2) / 3 :=
+          div_le_div_of_nonneg_right hlog3 (by norm_num)
         calc (Real.log 3 / 3) * |scaleRatioCorrelationLimit 2 1 3 + scaleRatioCorrelationLimit 1 2 3|
             ≤ ((8 / 5 * Real.log 2) / 3) * ((11 / (5 * 3 ^ 2)) / Real.pi ^ 4) :=
-              mul_le_mul (by linarith) hodd (abs_nonneg _) (by positivity)
+              mul_le_mul hdiv3 hodd (abs_nonneg _) (by positivity)
           _ = (88 / 675) * (Real.log 2 / Real.pi ^ 4) := by ring
       linarith [neg_abs_le (crossAtom 3)]
     have hc4 : crossAtom 4 ≥ -(11 / 40) * (Real.log 2 / Real.pi ^ 4) := by
@@ -1258,10 +1279,12 @@ theorem dyadicPairPrimeLimit_ge :
           ArithmeticFunction.vonMangoldt_apply_prime (by norm_num : Nat.Prime 5), Nat.cast_ofNat]
         rw [abs_mul, abs_of_nonneg (by positivity)]
         have hodd := (abs_add_le _ _).trans (abs_scaleRatioCorrelationLimit_odd_le (r := 5) (by omega))
-        norm_num only [Nat.cast_ofNat] at hodd
+        push_cast at hodd
+        have hdiv5 : Real.log 5 / 5 ≤ (7 / 3 * Real.log 2) / 5 :=
+          div_le_div_of_nonneg_right hlog5 (by norm_num)
         calc (Real.log 5 / 5) * |scaleRatioCorrelationLimit 2 1 5 + scaleRatioCorrelationLimit 1 2 5|
             ≤ ((7 / 3 * Real.log 2) / 5) * ((11 / (5 * 5 ^ 2)) / Real.pi ^ 4) :=
-              mul_le_mul (by linarith) hodd (abs_nonneg _) (by positivity)
+              mul_le_mul hdiv5 hodd (abs_nonneg _) (by positivity)
           _ = (77 / 1875) * (Real.log 2 / Real.pi ^ 4) := by ring
       linarith [neg_abs_le (crossAtom 5)]
     obtain ⟨hs7_abs, hts7⟩ := summable_and_tsum_cross_tail_seven_le
@@ -1307,7 +1330,7 @@ theorem exists_dyadicPair_criticalPrimeEnergy_pos :
     have hpos : 0 < Real.log 2 / Real.pi ^ 4 := by positivity
     linarith
   obtain ⟨N₀, hN₀⟩ := eventually_atTop.mp
-    (tendsto_criticalPrimeEnergy_dyadicPair.eventually_gt_const hlt)
+    (tendsto_criticalPrimeEnergy_dyadicPair.eventually (lt_mem_nhds hlt))
   refine ⟨max N₀ 2, le_max_right _ _, fun M hM => ?_⟩
   have hgt := hN₀ M ((le_max_left _ _).trans hM)
   exact ⟨hgt.le, lt_trans (by positivity) hgt⟩

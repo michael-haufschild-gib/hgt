@@ -76,6 +76,49 @@ The positive survivor is an explicit scale calibration: the diagonal contains li
 mass and only the residual cancellation rate, rather than a fixed relative gap, can carry
 the requested zero-free information. This is not a negative answer to Q-I.
 
+### Exact obstruction for individual cross entries
+
+[PROVED HERE; Lean pending] The sum of the pole row is the pronic pairing of `p_4`
+with `I`. Divided by `T`, that pairing tends to zero by the same Cesàro argument.
+Subtracting `G_44` therefore gives
+
+`(G_40 + G_41 + G_42 + G_43)/T → -ρ²`.
+
+This sum is exactly independent of both cutoffs. Hence no cutoff schedule can make every
+one of these four entries `o(T)`. This refutes a specific proposed absolute-entry estimate;
+it does not refute Q-I or prove that all Class III identities are insufficient. The strongest
+positive survivor is the exact negative linear density together with uniform relative
+cancellation and the exact residual identity.
+
+The ratio here is `R_mix/D` for the uncentered Vaughan diagonal, whose pole contribution
+has order `T`. It is not THIM's long-sawtooth/tail Cauchy–Schwarz ratio at order
+`T^(1-2ε)`. The latter's strict gap remains open in the report's interior region.
+
+Draft module: `formal/GaloisForLFunctions/BezoutValuationIncidence/TheVaughanDiagonalContainsLinearPoleMass.lean`.
+Main names: `pmPronicVaughanDiagonal_linear_lower`,
+`tendsto_pmPronicVaughanGram_pole_div_nat`,
+`tendsto_pmPronicVaughanPoleMixed_div_nat`,
+`not_all_pmPronicVaughan_pole_cross_entries_sublinear`,
+`eventually_pmPronicVaughan_relative_cancellation`, and
+`tendsto_pmPronicVaughan_mixed_div_diagonal`.
+First complete leaf check is running; no successful kernel audit is claimed yet.
+
+### Next conjecture after pole calibration
+
+Center the individual finite-cutoff small Vaughan legs at their own linear densities. Their
+remaining floor errors are bounded and therefore have finite pronic energy. Determine the
+remaining large-leg cancellation without dropping its signed cross terms. Search already found
+the Type-II short coefficient identity and finite-row receiver calculus; no new selective
+residual estimate has yet been established. This is an attack direction, not a claimed theorem.
+
+## External calibration
+
+Guth–Maynard, [*New large value estimates for Dirichlet polynomials*](https://arxiv.org/abs/2405.20552),
+states the `30/13` zero-density estimate and `17/30` short-interval consequence. Its stated
+density exponent is positive for a fixed `σ<1`; that bound alone does not make the zero count
+vanish. The existing corpus already incorporates these results. No external theorem is assumed
+in the new pole-calibration proofs.
+
 ## Log
 
 - 2026-10-25 — Created after reading the attachment and report, checking the worktree, and

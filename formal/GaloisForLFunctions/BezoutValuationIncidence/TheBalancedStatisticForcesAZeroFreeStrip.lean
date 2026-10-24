@@ -265,6 +265,94 @@ theorem zetaZeroAbscissa_le_of_moebiusSqSum {C κ : ℝ} (hκ0 : 0 < κ) (hκ1 :
   have := zetaZeroAbscissa_le_of_sum_norm_mertens_le (by linarith : (1 : ℝ) ≤ 2 - κ) hsum
   linarith
 
+/-! ## §4. The band forces the tail -/
+
+/-- `(d^{e/32})^{32} = d^e`. -/
+theorem rpow_div_thirtyTwo_pow (d e : ℝ) (hd : 0 ≤ d) : (d ^ (e / 32)) ^ (32 : ℕ) = d ^ e := by
+  rw [← Real.rpow_natCast, ← Real.rpow_mul hd]; congr 1; push_cast; ring
+
+/-- **One window.** Under the band hypothesis with `e ≤ min(ε, 1/2)`, `d ≤ X^{1+e}` and `Q ≥ X`,
+the window `(Q, 2Q]` has statistic at most `C (d²/Q) Q^{-η} + 11 (1 + log 2Q)³ (d²/Q)/d^{e/32}`:
+the band hypothesis applies when `Q < d^{1+e}`, the minor-arc law at `z = d^{e/32}` otherwise. -/
+theorem abs_window_le_of_band {ε η C e : ℝ} (he : 0 < e) (heε : e ≤ ε) (he1 : e ≤ 1 / 2)
+    (hC : 0 ≤ C)
+    (hband : ∀ Q d : ℕ, 2 ≤ Q → (Q : ℝ) ^ (1 - ε) ≤ d → (d : ℝ) ≤ (Q : ℝ) ^ (1 + ε) →
+      |kernelStatisticAll (2 * Q) (moebiusWindowRow Q) d| ≤ C * ((d : ℝ) ^ 2 / Q) * (Q : ℝ) ^ (-η))
+    {X d Q : ℕ} (hX : 2 ≤ X) (hd1 : 1 ≤ d) (hdX : (d : ℝ) ≤ (X : ℝ) ^ (1 + e)) (hXQ : X ≤ Q) :
+    |kernelStatisticAll (2 * Q) (moebiusWindowRow Q) d| ≤
+      C * ((d : ℝ) ^ 2 / Q) * (Q : ℝ) ^ (-η) +
+        11 * (1 + Real.log (2 * Q)) ^ 3 * ((d : ℝ) ^ 2 / Q / (d : ℝ) ^ (e / 32)) := by
+  have hQ2 : 2 ≤ Q := hX.trans hXQ
+  have hQ1 : (1 : ℝ) ≤ Q := by exact_mod_cast (by omega : 1 ≤ Q)
+  have hdR : (1 : ℝ) ≤ d := by exact_mod_cast hd1
+  have hq0 : (0 : ℝ) < Q := by linarith
+  have hT1 : 0 ≤ C * ((d : ℝ) ^ 2 / Q) * (Q : ℝ) ^ (-η) := by positivity
+  have hT2 : 0 ≤ 11 * (1 + Real.log (2 * Q)) ^ 3 * ((d : ℝ) ^ 2 / Q / (d : ℝ) ^ (e / 32)) := by
+    have := Real.log_nonneg (by linarith : (1 : ℝ) ≤ 2 * Q)
+    positivity
+  have hz32 := rpow_div_thirtyTwo_pow (d : ℝ) e (by linarith)
+  by_cases hQd : (d : ℝ) * ((d : ℝ) ^ (e / 32)) ^ 32 ≤ Q
+  · have hz1 : 1 ≤ (d : ℝ) ^ (e / 32) := Real.one_le_rpow hdR (by positivity)
+    have hzd : ((d : ℝ) ^ (e / 32)) ^ 32 ≤ d := by
+      rw [hz32]
+      calc (d : ℝ) ^ e ≤ (d : ℝ) ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hdR (by linarith)
+        _ = d := Real.rpow_one _
+    have h := abs_kernelStatisticAll_moebiusWindowRow_le_cutoff hQ2 hz1 hzd hQd le_rfl
+    linarith
+  · push Not at hQd
+    rw [hz32, ← Real.rpow_one_add' (by linarith) (by linarith)] at hQd
+    have hlo : (Q : ℝ) ^ (1 - ε) ≤ d := by
+      calc (Q : ℝ) ^ (1 - ε) ≤ (Q : ℝ) ^ (1 - e) :=
+            Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith)
+        _ ≤ ((d : ℝ) ^ (1 + e)) ^ (1 - e) :=
+            Real.rpow_le_rpow hq0.le hQd.le (by linarith)
+        _ = (d : ℝ) ^ ((1 + e) * (1 - e)) := by rw [← Real.rpow_mul (by linarith)]
+        _ ≤ (d : ℝ) ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hdR (by nlinarith)
+        _ = d := Real.rpow_one _
+    have hhi : (d : ℝ) ≤ (Q : ℝ) ^ (1 + ε) := by
+      have hXQR : (X : ℝ) ≤ Q := by exact_mod_cast hXQ
+      calc (d : ℝ) ≤ (X : ℝ) ^ (1 + e) := hdX
+        _ ≤ (Q : ℝ) ^ (1 + e) := Real.rpow_le_rpow (by positivity) hXQR (by linarith)
+        _ ≤ (Q : ℝ) ^ (1 + ε) := Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith)
+    have h := hband Q d hQ2 hlo hhi
+    linarith
+
+/-- The window majorant in power form: `C (d²/Q) Q^{-η} = C d² Q^{-(1+η)}` and
+`11 (1 + log 2Q)³ (d²/Q)/z ≤ 22 (1 + 1/θ)³ (d²/z) Q^{-(1-3θ)}` for `0 < θ ≤ 1/3`. -/
+theorem window_majorant_le {C η θ : ℝ} (hθ : 0 < θ) (hθ3 : θ ≤ 1 / 3) {Q : ℝ} (hQ : 1 ≤ Q)
+    {D z : ℝ} (hD : 0 ≤ D) (hz : 0 < z) (hC : 0 ≤ C) :
+    C * (D / Q) * Q ^ (-η) + 11 * (1 + Real.log (2 * Q)) ^ 3 * (D / Q / z) ≤
+      C * D * Q ^ (-(1 + η)) + 22 * (1 + 1 / θ) ^ 3 * (D / z) * Q ^ (-(1 - 3 * θ)) := by
+  have hq0 : 0 < Q := by linarith
+  have e1 : C * (D / Q) * Q ^ (-η) = C * D * Q ^ (-(1 + η)) := by
+    rw [show (-(1 + η)) = -1 + -η by ring, Real.rpow_add hq0, Real.rpow_neg_one]
+    field_simp
+  rw [e1]
+  have hL : 1 + Real.log (2 * Q) ≤ (1 + 1 / θ) * (2 * Q) ^ θ := one_add_log_le_rpow (by linarith) hθ
+  have hL0 : 0 ≤ 1 + Real.log (2 * Q) := by
+    have := Real.log_nonneg (by linarith : (1 : ℝ) ≤ 2 * Q); linarith
+  have hL3 : (1 + Real.log (2 * Q)) ^ 3 ≤ (1 + 1 / θ) ^ 3 * (2 * (Q : ℝ) ^ (3 * θ)) := by
+    calc (1 + Real.log (2 * Q)) ^ 3 ≤ ((1 + 1 / θ) * (2 * Q) ^ θ) ^ 3 := pow_le_pow_left₀ hL0 hL 3
+      _ = (1 + 1 / θ) ^ 3 * (2 * Q) ^ (3 * θ) := by
+          rw [mul_pow, ← Real.rpow_natCast ((2 * Q) ^ θ) 3, ← Real.rpow_mul (by positivity)]
+          congr 2; push_cast; ring
+      _ ≤ (1 + 1 / θ) ^ 3 * (2 * (Q : ℝ) ^ (3 * θ)) := by
+          refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+          rw [Real.mul_rpow (by norm_num) hq0.le]
+          refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+          calc (2 : ℝ) ^ (3 * θ) ≤ (2 : ℝ) ^ (1 : ℝ) :=
+                Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
+            _ = 2 := Real.rpow_one 2
+  have e2 : D / Q / z * (Q : ℝ) ^ (3 * θ) = D / z * Q ^ (-(1 - 3 * θ)) := by
+    rw [show (-(1 - 3 * θ)) = -1 + 3 * θ by ring, Real.rpow_add hq0, Real.rpow_neg_one]
+    field_simp
+  have h0 : 0 ≤ D / Q / z := by positivity
+  calc C * D * Q ^ (-(1 + η)) + 11 * (1 + Real.log (2 * Q)) ^ 3 * (D / Q / z)
+      ≤ C * D * Q ^ (-(1 + η)) + 11 * ((1 + 1 / θ) ^ 3 * (2 * (Q : ℝ) ^ (3 * θ))) * (D / Q / z) := by
+        gcongr
+    _ = C * D * Q ^ (-(1 + η)) + 22 * (1 + 1 / θ) ^ 3 * (D / Q / z * (Q : ℝ) ^ (3 * θ)) := by ring
+    _ = _ := by rw [e2]; ring
+
 end
 
 end GaloisForLFunctions.BezoutValuationIncidence

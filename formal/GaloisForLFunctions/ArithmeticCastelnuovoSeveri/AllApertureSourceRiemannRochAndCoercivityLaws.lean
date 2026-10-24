@@ -52,7 +52,7 @@ effectivity cones across all apertures `r > 0` on polar and scaling surfaces:
    `primitiveSmoothRealTestsAt r`, and `78 e^r + c` on `oddRealTestsAt r`):
    * For **every** aperture `r > 0` and **every** `c > 0`, the **unmodified convex, Hecke-stable cone
      `l2SourceCone c V`** satisfies `RiemannRochAxiom`, **non-vacuous `AmpleAxiom`**,
-     `SurfaceRiemannRochAxiom 0 0`, `BezoutAxiom` (on `strictL2SourceCone c V`), and `HodgeIndex`
+     `SurfaceRiemannRochAxiom 0 0`, and `HodgeIndex`
      **unconditionally at all apertures `r > 0`** (`l2CompensatedScalingSubsurface_realTestsAt_all_apertures`).
    * At `c = 0`, `(S.compensatedSurface B).HodgeIndex` is unconditionally equivalent (`↔`) to the
      source-derived Weil floor `-B x x ≤ S.defect x x` on the uncompensated surface `S`
@@ -80,7 +80,7 @@ effectivity cones across all apertures `r > 0` on polar and scaling surfaces:
      `HodgeIndex` (`0 ≤ μ₀(r)`) **unconditionally self-upgrades** to strict positivity `0 < μ₀(r)` at
      every finite aperture `r > 0`, making `RiemannHypothesis`, all-aperture `HodgeIndex` on
      `polarFreeSmoothRealTestsAt r`, and all-aperture simultaneous `RiemannRochAxiom` + non-vacuous
-     `AmpleAxiom` + `SurfaceRiemannRochAxiom 0 0` + `BezoutAxiom` for the canonical aperture-dependent
+     `AmpleAxiom` + `SurfaceRiemannRochAxiom 0 0` for the canonical aperture-dependent
      cone `l2SourceCone (ccmRestrictedWeilPolarGroundEnergy ⟨r, hr⟩) (polarFreeSmoothRealTestsAt r)`
      **unconditionally equivalent**!
 

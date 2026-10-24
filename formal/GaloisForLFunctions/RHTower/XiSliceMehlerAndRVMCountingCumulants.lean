@@ -361,7 +361,7 @@ theorem polySecondCumulant_mul_of_coeff_zero_one {P Q : ℝ[X]} (hP : P.coeff 0 
   have hc2 : (P * Q).coeff 2 = P.coeff 2 + P.coeff 1 * Q.coeff 1 + Q.coeff 2 := by
     rw [coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk, Finset.sum_range_succ,
       Finset.sum_range_succ, Finset.sum_range_one]
-    simp only [Nat.sub_zero, Nat.sub_self, Nat.add_sub_cancel, hP, hQ, one_mul, mul_one]
+    simp only [Nat.sub_zero, Nat.sub_self, hP, hQ, one_mul, mul_one]
     ring
   unfold polySecondCumulant
   rw [coeff_one_mul_of_coeff_zero_one hP hQ, hc2]
@@ -2015,6 +2015,20 @@ private theorem pairedIco_inv_pow_sums {R : ℝ} {N K : ℕ} (hR8 : 8 ≤ R) (hN
           (pow_le_pow_left₀ (by positivity) hNm1_R 4)
       _ = 16 / R ^ 4 := by ring
 
+private theorem abs_two_add_sub_le {a b c b₁ b₂ b₃ B : ℝ}
+    (h1 : |a| ≤ b₁) (h2 : |b| ≤ b₂) (hc0 : 0 ≤ c) (h3 : c ≤ b₃) (hB : b₁ + b₂ + b₃ ≤ B) :
+    |a + b - c| ≤ B := by
+  have hc_abs : |c| = c := abs_of_nonneg hc0
+  linarith [abs_sub (a + b) c, abs_add_le a b]
+
+private theorem abs_four_step_triangle {x₁ x₂ x₃ x₄ x₅ b₁ b₂ b₃ b₄ B : ℝ}
+    (h1 : |x₁ - x₂| ≤ b₁) (h2 : |x₂ - x₃| ≤ b₂) (h3 : |x₃ - x₄| ≤ b₃) (h4 : |x₄ - x₅| ≤ b₄)
+    (hB : b₁ + b₂ + b₃ + b₄ ≤ B) : |x₁ - x₅| ≤ B := by
+  have heq : x₁ - x₅ = (x₁ - x₂) + (x₂ - x₃) + (x₃ - x₄) + (x₄ - x₅) := by ring
+  rw [heq]
+  linarith [abs_add_le ((x₁ - x₂) + (x₂ - x₃) + (x₃ - x₄)) (x₄ - x₅),
+    abs_add_le ((x₁ - x₂) + (x₂ - x₃)) (x₃ - x₄), abs_add_le (x₁ - x₂) (x₂ - x₃)]
+
 private theorem pairedOrdWindow_mass_asymptotic {C T₀ t R : ℝ} {N K : ℕ} (hC : 0 < C)
     (hT₀ : 4 ≤ T₀) (hbase : routeKRVMBase + 2 ≤ T₀)
     (hclose : ∀ U : ℝ, T₀ ≤ U → |(xiZeroCount U : ℝ) - routeKSmoothRVMCount U| ≤ C * Real.log U)
@@ -2229,18 +2243,15 @@ private theorem pairedOrdWindow_mass_asymptotic {C T₀ t R : ℝ} {N K : ℕ} (
           (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - (1 / (N : ℝ) - 1 / (K : ℝ))) +
             (1 / (N : ℝ) - 1 / R) - 1 / (K : ℝ) := by ring
       rw [hsplit]
-      refine (abs_sub _ _).trans ?_
       have hKpos : 0 < (K : ℝ) := lt_of_lt_of_le (by positivity) ht3K
-      rw [abs_of_pos (by positivity)]
-      linarith [abs_add_le
-        (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - (1 / (N : ℝ) - 1 / (K : ℝ)))
-        (1 / (N : ℝ) - 1 / R)]
+      exact abs_two_add_sub_le h1 h2 (by positivity) h3
+        (by ring : 4 / R ^ 2 + 1 / R ^ 2 + 3 / t = 5 / R ^ 2 + 3 / t).le
     have hrew : (Real.log (t / (2 * Real.pi)) / Real.pi) *
           (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2) -
         Real.log (t / (2 * Real.pi)) / (Real.pi * R) =
         (Real.log (t / (2 * Real.pi)) / Real.pi) *
           (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - 1 / R) := by
-      field_simp [Real.pi_ne_zero, hR0.ne']; ring
+      rw [mul_sub, div_mul_div_comm, mul_one]
     rw [hrew, abs_mul, abs_of_nonneg hlog_main_pos]
     calc (Real.log (t / (2 * Real.pi)) / Real.pi) *
           |∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - 1 / R|
@@ -2248,18 +2259,7 @@ private theorem pairedOrdWindow_mass_asymptotic {C T₀ t R : ℝ} {N K : ℕ} (
           mul_le_mul hlog_main_le hsub (abs_nonneg _) hlog0
       _ = 5 * Real.log t / R ^ 2 + 3 * Real.log t / t := by ring
   -- Triangle inequality for Part 1.
-  set A1 := ∑ k ∈ Finset.Ico N K,
-    (∑ q ∈ upperOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ +
-      ∑ q ∈ lowerOrdBin t k, ‖xiSliceGaussianReciprocal t q‖)
-  set A2 := ∑ k ∈ Finset.Ico N K, pairedBinCount t k * (1 / (k : ℝ) ^ 2)
-  set A3 := ∑ k ∈ Finset.Ico N K, pairedSmoothInc t k * (1 / (k : ℝ) ^ 2)
-  set A4 := (Real.log (t / (2 * Real.pi)) / Real.pi) * ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2
-  set A5 := Real.log (t / (2 * Real.pi)) / (Real.pi * R)
-  have htri : |A1 - A5| ≤ |A1 - A2| + |A2 - A3| + |A3 - A4| + |A4 - A5| := by
-    have : A1 - A5 = (A1 - A2) + (A2 - A3) + (A3 - A4) + (A4 - A5) := by ring
-    rw [this]
-    linarith [abs_add_le ((A1 - A2) + (A2 - A3) + (A3 - A4)) (A4 - A5),
-      abs_add_le ((A1 - A2) + (A2 - A3)) (A3 - A4), abs_add_le (A1 - A2) (A2 - A3)]
+  refine abs_four_step_triangle hdisc1 habel1 hsmooth1 htel1 ?_
   have hp1 : 0 ≤ Real.log t / R ^ 2 := by positivity
   have hp2 : 0 ≤ Real.log t / t := by positivity
   have hpC1 : 0 ≤ C * (Real.log t / R ^ 2) := by positivity
@@ -2271,7 +2271,7 @@ private theorem pairedOrdWindow_mass_asymptotic {C T₀ t R : ℝ} {N K : ℕ} (
   have htarget : 400 * (1 + C) * (Real.log t / R ^ 2 + Real.log t / t) =
       400 * (Real.log t / R ^ 2) + 400 * (C * (Real.log t / R ^ 2)) +
         400 * (Real.log t / t) + 400 * (C * (Real.log t / t)) := by ring
-  linarith
+  linarith only [hp1, hp2, hpC1, hpC2, hsum_err, htarget]
 
 private theorem pairedOrdWindow_fourth_asymptotic {C T₀ t R : ℝ} {N K : ℕ} (hC : 0 < C)
     (hT₀ : 4 ≤ T₀) (hbase : routeKRVMBase + 2 ≤ T₀)
@@ -2533,19 +2533,16 @@ private theorem pairedOrdWindow_fourth_asymptotic {C T₀ t R : ℝ} {N K : ℕ}
             (1 / 3) * (1 / (N : ℝ) ^ 3 - 1 / (K : ℝ) ^ 3)) +
             (1 / 3) * (1 / (N : ℝ) ^ 3 - 1 / R ^ 3) - (1 / 3) * (1 / (K : ℝ) ^ 3) := by ring
       rw [hsplit]
-      refine (abs_sub _ _).trans ?_
       have hKpos : 0 < (K : ℝ) := lt_of_lt_of_le (by positivity) ht3K
-      rw [abs_of_pos (by positivity)]
-      linarith [abs_add_le
-        (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 4 -
-          (1 / 3) * (1 / (N : ℝ) ^ 3 - 1 / (K : ℝ) ^ 3))
-        ((1 / 3) * (1 / (N : ℝ) ^ 3 - 1 / R ^ 3))]
+      exact abs_two_add_sub_le h1 h2 (by positivity) h3
+        (by ring : 96 / R ^ 4 + 2 / R ^ 4 + 9 / (t ^ 2 * R) = 98 / R ^ 4 + 9 / (t ^ 2 * R)).le
     have hrew : (Real.log (t / (2 * Real.pi)) / Real.pi) *
           (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 4) -
         Real.log (t / (2 * Real.pi)) / (3 * Real.pi * R ^ 3) =
         (Real.log (t / (2 * Real.pi)) / Real.pi) *
           (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 4 - 1 / (3 * R ^ 3)) := by
-      field_simp [Real.pi_ne_zero, hR0.ne']; ring
+      rw [mul_sub, div_mul_div_comm, mul_one,
+        show Real.pi * (3 * R ^ 3) = 3 * Real.pi * R ^ 3 by ring]
     rw [hrew, abs_mul, abs_of_nonneg hlog_main_pos]
     calc (Real.log (t / (2 * Real.pi)) / Real.pi) *
           |∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 4 - 1 / (3 * R ^ 3)|
@@ -2553,18 +2550,7 @@ private theorem pairedOrdWindow_fourth_asymptotic {C T₀ t R : ℝ} {N K : ℕ}
           mul_le_mul hlog_main_le hsub (abs_nonneg _) hlog0
       _ = 98 * Real.log t / R ^ 4 + 9 * Real.log t / (t ^ 2 * R) := by ring
   -- Triangle inequality for Part 2.
-  set B1 := ∑ k ∈ Finset.Ico N K,
-    (∑ q ∈ upperOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ ^ 2 +
-      ∑ q ∈ lowerOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ ^ 2)
-  set B2 := ∑ k ∈ Finset.Ico N K, pairedBinCount t k * (1 / (k : ℝ) ^ 4)
-  set B3 := ∑ k ∈ Finset.Ico N K, pairedSmoothInc t k * (1 / (k : ℝ) ^ 4)
-  set B4 := (Real.log (t / (2 * Real.pi)) / Real.pi) * ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 4
-  set B5 := Real.log (t / (2 * Real.pi)) / (3 * Real.pi * R ^ 3)
-  have htri2 : |B1 - B5| ≤ |B1 - B2| + |B2 - B3| + |B3 - B4| + |B4 - B5| := by
-    have : B1 - B5 = (B1 - B2) + (B2 - B3) + (B3 - B4) + (B4 - B5) := by ring
-    rw [this]
-    linarith [abs_add_le ((B1 - B2) + (B2 - B3) + (B3 - B4)) (B4 - B5),
-      abs_add_le ((B1 - B2) + (B2 - B3)) (B3 - B4), abs_add_le (B1 - B2) (B2 - B3)]
+  refine abs_four_step_triangle hdisc2 habel2 hsmooth2 htel2 ?_
   have hp1 : 0 ≤ Real.log t / R ^ 4 := by positivity
   have hp2 : 0 ≤ Real.log t / (t ^ 2 * R) := by positivity
   have hpC1 : 0 ≤ C * (Real.log t / R ^ 4) := by positivity
@@ -2577,7 +2563,7 @@ private theorem pairedOrdWindow_fourth_asymptotic {C T₀ t R : ℝ} {N K : ℕ}
   have htarget2 : 4500 * (1 + C) * (Real.log t / R ^ 4 + Real.log t / (t ^ 2 * R)) =
       4500 * (Real.log t / R ^ 4) + 4500 * (C * (Real.log t / R ^ 4)) +
         4500 * (Real.log t / (t ^ 2 * R)) + 4500 * (C * (Real.log t / (t ^ 2 * R))) := by ring
-  linarith
+  linarith only [hp1, hp2, hpC1, hpC2, hsum_err2, htarget2]
 
 private theorem pairedOrdWindow_asymptotics {C T₀ t R : ℝ} (hC : 0 < C) (hT₀ : 4 ≤ T₀)
     (hbase : routeKRVMBase + 2 ≤ T₀)
@@ -2885,8 +2871,9 @@ theorem deriv_deriv_mehlerPolyTransform_zero {a lam : ℝ} (hconv : 2 * a * lam 
       (ha.mul hb).congr_of_eventuallyEq
         (Eventually.of_forall fun y => by simp only [Pi.mul_apply])
     exact hab.congr_deriv (by
-      simp only [zero_div, mul_zero, zero_mul, add_zero, zero_add, sq, Real.exp_zero,
-        one_mul, mul_one])
+      simp only [zero_div, mul_zero, zero_mul, zero_add, sq, Real.exp_zero,
+        one_mul, mul_one]
+      ring)
   have hf2 : HasDerivAt
       (fun x : ℝ => Real.exp (a / σ * x ^ 2) * ((derivative Q).eval (x / σ) * (1 / σ)))
       ((1 / σ ^ 2) * (derivative (derivative Q)).eval 0) 0 := by
@@ -2896,8 +2883,8 @@ theorem deriv_deriv_mehlerPolyTransform_zero {a lam : ℝ} (hconv : 2 * a * lam 
       ((hexp 0).mul hc).congr_of_eventuallyEq
         (Eventually.of_forall fun y => by simp only [Pi.mul_apply])
     exact h2.congr_deriv (by
-      simp only [zero_div, mul_zero, zero_mul, add_zero, zero_add, sq, Real.exp_zero,
-        one_mul, mul_one]; ring)
+      simp only [zero_div, mul_zero, zero_mul, zero_add, sq, Real.exp_zero, one_mul]
+      ring)
   have hd2_at : HasDerivAt
       (fun x : ℝ => σ ^ (-(1 / 2 : ℝ)) *
         ((Real.exp (a / σ * x ^ 2) * Q.eval (x / σ)) * (2 * (a / σ) * x) +
@@ -3024,7 +3011,7 @@ theorem deriv_deriv_gaussianMultiPairHeat_at_scaled_offset (m : ℕ) {c₀ a lam
       have h2 : C (lam / σ) * C c₀ = C (δ ^ 2) := by
         rw [← C_mul, hδ2, mul_comm]
       rw [mul_pow, mul_sub, ← mul_assoc, h1, one_mul, h2]
-    rw [pow_comp, sub_comp, pow_comp, X_comp, C_comp, C_pow, ← mul_pow, hinner]
+    rw [pow_comp, sub_comp, pow_comp, X_comp, C_comp, ← hinner, mul_pow, ← C_pow]
   have hd_lin : ∀ Q : ℝ[X], derivative (Q.comp (C r⁻¹ * X)) =
       C r⁻¹ * (derivative Q).comp (C r⁻¹ * X) := by
     intro Q
@@ -3498,13 +3485,3 @@ theorem exists_dense_multiPair_gaussianMultiPairHeat_deriv2_neg {κ : ℝ}
 end
 
 end RHTower
-
-#print axioms RHTower.integrable_and_integral_gaussDensity_mul_exp_sq_poly
-#print axioms RHTower.integrable_and_mehler_bracket_xiSliceProduct
-#print axioms RHTower.coeff_one_sliceTruncPoly_eq_head_add_sdiff
-#print axioms RHTower.polySecondCumulant_sliceTruncPoly_eq_head_add_sdiff
-#print axioms RHTower.exists_xiSliceGaussianTail_cumulant_asymptotics
-#print axioms RHTower.deriv_deriv_gaussianMultiPairHeat_two_neg
-#print axioms RHTower.exists_dense_gaussianMultiPairHeat_two_deriv2_neg
-#print axioms RHTower.exists_multiplicity_deriv_deriv_gaussianMultiPairHeat_neg
-#print axioms RHTower.exists_dense_multiPair_gaussianMultiPairHeat_deriv2_neg

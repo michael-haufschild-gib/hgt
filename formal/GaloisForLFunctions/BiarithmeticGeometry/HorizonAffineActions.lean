@@ -1,7 +1,7 @@
 import Mathlib.LinearAlgebra.Pi
-import Mathlib.Data.Nat.Cast.Order.Field
+import Mathlib.Data.Real.Basic
 import Mathlib.Data.PNat.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!+# The affine action with an absorbing horizon
 
@@ -75,7 +75,7 @@ theorem horizonAffine_comp (N : ℕ) (a c : ℕ+) (b d : ℕ) :
   simp only [map_smul, horizonAffine_cell_nat]
   change (∑ j : Fin (N + 1), v j • horizonCell N (a * (c * j.val + d) + b)) i =
     (∑ j : Fin (N + 1), v j • horizonCell N ((a * c : ℕ+) * j.val + (a * d + b))) i
-  congr 1
+  apply congrArg (fun w : HorizonSpace N => w i)
   apply sum_congr rfl
   intro j _
   congr 2
@@ -96,5 +96,114 @@ theorem horizon_ring_relation (N : ℕ) (a : ℕ+) :
     (horizonAffine N a 0).comp (horizonAffine N 1 1) =
       (horizonAffine N 1 a).comp (horizonAffine N a 0) := by
   simp only [horizonAffine_comp, mul_one, one_mul, mul_zero, add_zero, zero_add]
+
+theorem horizonAffine_apply (N : ℕ) (a : ℕ+) (b : ℕ)
+    (v : HorizonSpace N) (i : Fin (N + 1)) :
+    horizonAffine N a b v i =
+      ∑ j : Fin (N + 1), v j * (if i.val = (a : ℕ) * j.val + b then 1 else 0) := by
+  simp only [horizonAffine, LinearMap.coe_mk, AddHom.coe_mk, Finset.sum_apply,
+    Pi.smul_apply, smul_eq_mul, horizonCell]
+
+/-- Dyadic dilation keeps precisely the even cells, without any periodic wraparound. -/
+theorem horizon_double_apply (N : ℕ) (v : HorizonSpace N) (i : Fin (N + 1)) :
+    horizonAffine N 2 0 v i =
+      if 2 ∣ i.val then v ⟨i.val / 2, by omega⟩ else 0 := by
+  classical
+  rw [horizonAffine_apply]
+  change (∑ j : Fin (N + 1), v j * (if i.val = 2 * j.val then 1 else 0)) = _
+  by_cases hi : 2 ∣ i.val
+  · rw [if_pos hi]
+    have he : i.val = 2 * (i.val / 2) := by omega
+    rw [Finset.sum_eq_single ⟨i.val / 2, by omega⟩]
+    · rw [if_pos he, mul_one]
+    · intro j _ hj
+      rw [if_neg, mul_zero]
+      intro heq
+      apply hj
+      apply Fin.ext
+      dsimp
+      omega
+    · exact fun h => False.elim (h (mem_univ _))
+  · rw [if_neg hi]
+    apply sum_eq_zero
+    intro j _
+    rw [if_neg, mul_zero]
+    exact fun heq => hi ⟨j.val, heq⟩
+
+/-- The origin is the entire fixed space of dyadic dilation at a finite horizon. -/
+theorem horizon_double_fixed_iff (N : ℕ) (v : HorizonSpace N) :
+    horizonAffine N 2 0 v = v ↔ v = v 0 • horizonCell N 0 := by
+  constructor
+  · intro hv
+    have hz : ∀ n : ℕ, ∀ hn : n < N + 1, 0 < n → v ⟨n, hn⟩ = 0 := by
+      intro n
+      induction n using Nat.strong_induction_on with
+      | h n ih =>
+        intro hn hn0
+        have he := congrFun hv ⟨n, hn⟩
+        rw [horizon_double_apply] at he
+        by_cases hd : 2 ∣ n
+        · rw [if_pos hd] at he
+          have hk0 : 0 < n / 2 := by omega
+          have hkn : n / 2 < n := by omega
+          exact he.symm.trans (ih (n / 2) hkn (by omega) hk0)
+        · rw [if_neg hd] at he
+          exact he.symm
+    funext i
+    by_cases hi : i.val = 0
+    · have hi' : i = 0 := Fin.ext hi
+      subst i
+      simp only [Pi.smul_apply, smul_eq_mul, horizonCell, Fin.val_zero, if_true, mul_one]
+    · simp only [Pi.smul_apply, smul_eq_mul, horizonCell, if_neg hi, mul_zero]
+      exact hz i.val i.isLt (by omega)
+  · intro hv
+    rw [hv, map_smul, horizonAffine_cell_nat]
+    rfl
+
+/-- Successor and dyadic dilation have scalar common commutant on every finite horizon. -/
+theorem horizon_joint_commutant (N : ℕ) (A : HorizonSpace N →ₗ[ℝ] HorizonSpace N) :
+    (A.comp (horizonAffine N 1 1) = (horizonAffine N 1 1).comp A ∧
+      A.comp (horizonAffine N 2 0) = (horizonAffine N 2 0).comp A) ↔
+        ∃ c : ℝ, A = c • LinearMap.id := by
+  constructor
+  · rintro ⟨hu, hd⟩
+    let c : ℝ := A (horizonCell N 0) 0
+    have hfix : horizonAffine N 2 0 (A (horizonCell N 0)) = A (horizonCell N 0) := by
+      have h := congrArg (fun L : HorizonSpace N →ₗ[ℝ] HorizonSpace N =>
+        L (horizonCell N 0)) hd
+      simpa only [LinearMap.comp_apply, horizonAffine_cell_nat,
+        mul_zero, add_zero] using h.symm
+    have hbase : A (horizonCell N 0) = c • horizonCell N 0 :=
+      (horizon_double_fixed_iff N _).mp hfix
+    have hcell : ∀ j : ℕ, A (horizonCell N j) = c • horizonCell N j := by
+      intro j
+      induction j with
+      | zero => exact hbase
+      | succ j ih =>
+        have h := congrArg (fun L : HorizonSpace N →ₗ[ℝ] HorizonSpace N =>
+          L (horizonCell N j)) hu
+        have hshift : horizonAffine N 1 1 (horizonCell N j) = horizonCell N (j + 1) := by
+          simpa only [PNat.val_ofNat, one_mul] using horizonAffine_cell_nat N 1 1 j
+        simpa only [LinearMap.comp_apply, hshift, ih, map_smul] using h
+    refine ⟨c, ?_⟩
+    apply LinearMap.ext
+    intro v
+    change A v = c • v
+    calc
+      A v = A (∑ j : Fin (N + 1), v j • horizonCell N j.val) :=
+        congrArg A (sum_horizonCell N v).symm
+      _ = ∑ j : Fin (N + 1), v j • A (horizonCell N j.val) := by
+        rw [map_sum]
+        simp only [map_smul]
+      _ = c • (∑ j : Fin (N + 1), v j • horizonCell N j.val) := by
+        rw [Finset.smul_sum]
+        apply sum_congr rfl
+        intro j _
+        rw [hcell]
+        exact smul_comm _ _ _
+      _ = c • v := congrArg (fun w => c • w) (sum_horizonCell N v)
+  · rintro ⟨c, rfl⟩
+    constructor <;> apply LinearMap.ext <;> intro v <;>
+      simp only [LinearMap.comp_apply, LinearMap.smul_apply, LinearMap.id_apply, map_smul]
 
 end GaloisForLFunctions.BiarithmeticGeometry

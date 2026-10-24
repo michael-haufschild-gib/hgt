@@ -37,8 +37,9 @@ all-aperture graded arithmetic Riemann–Roch and two-prime strip allocation at 
    `Φ` is faithful on the primitive subspace (`sourceCone_ample_of_faithful`). Whenever
    `0 ≤ Φ(x) ≤ S.defect x x`, both `S.sourceCone Φ` and its strict interior
    `S.strictSourceCone Φ` satisfy `RiemannRochAxiom`, `AmpleAxiom`, and
-   `SurfaceRiemannRochAxiom 0 0`, while `S.strictSourceCone Φ` also satisfies `BezoutAxiom`
-   (`sourceCone_riemannRoch_of_le_defect`, `strictSourceCone_bezout_of_le_defect`).
+   `SurfaceRiemannRochAxiom 0 0`, with ampleness requiring the stated primitive faithfulness.
+   Bézout requires the opposite bound `S.defect x x ≤ Φ(x)` together with Hodge index
+   (`sourceCone_riemannRoch_of_le_defect`, `strictSourceCone_bezout_of_defect_le`).
 
 2. **The Convex, Hecke-Stable `L²` Source Cone on `scalingSubsurface V` (§2):**
    On `scalingSubsurface V` (`V ≤ realTests`), the source energy
@@ -90,16 +91,17 @@ all-aperture graded arithmetic Riemann–Roch and two-prime strip allocation at 
      (`fullZeroForm_ge_of_odd_support_le_threeHundredSixtyTwoThousandths`) to prove
      `weilPair f f ≥ (1/1000) ∫ f²`. Consequently, on `scalingSubsurface (primitiveSmoothRealTestsAt r)`
      (and on `polarFreeSmoothRealTestsAt r` with margin `1/20`), `HodgeIndex`, `RiemannRochAxiom`,
-     `AmpleAxiom`, `BezoutAxiom`, and `SurfaceRiemannRochAxiom 0 0` hold **unconditionally** for
-     both `strictCoupledArithmeticCone` and the source-defined cones `l2SourceCone` and
-     `strictL2SourceCone`.
+     `AmpleAxiom`, and `SurfaceRiemannRochAxiom 0 0` hold **unconditionally** for the source-defined
+     cones `l2SourceCone` and `strictL2SourceCone`. Bézout is proved for
+     `strictCoupledArithmeticCone`; the source coercive floor alone does not prove Bézout for
+     the larger `L²` source cones.
 
 5. **All-Aperture Graded Source Riemann–Roch and the Overlapping Two-Prime Window `r = 23/40` (§5):**
    Across **all** apertures `r > 0`, the Chebyshev spectral floor `-(10 + 68 e^r) ∫ f² ≤ weilPair f f`
    on `polarFreeSmoothRealTestsAt r` and the graded incidence floor `-78 e^r ∫ f² ≤ weilPair f f`
    on `oddRealTestsAt r` supply unconditional `RiemannRochAxiom` and `SurfaceRiemannRochAxiom 0 0`
-   for `l2SourceCone (-(10 + 68 e^r)) (polarFreeSmoothRealTestsAt r)` and
-   `l2SourceCone (-78 e^r) (oddRealTestsAt r)` at every scale `r > 0`. At the overlapping two-prime
+   for `gradedL2SourceCone (-(10 + 68 e^r)) (polarFreeSmoothRealTestsAt r)` and
+   `gradedL2SourceCone (-78 e^r) (oddRealTestsAt r)` at every scale `r > 0`. At the overlapping two-prime
    window `r = 23/40 = 0.575` (`relevantShifts (23/40) = {2, 3}`), the Castelnuovo–Severi defect on
    `scalingSubsurface (oddRealTestsAt (23/40))` absorbs both prime shifts `2` and `3` into the
    archimedean strip surplus `2 stripSurplus f (log 2 - 23/40) (23/40)` with `(1/62) ∫_{S₂} f²` to

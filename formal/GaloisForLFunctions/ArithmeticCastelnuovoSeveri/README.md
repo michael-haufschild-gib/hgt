@@ -383,7 +383,7 @@ them. ACS isolates which of these mechanisms the scaling surface has.
       `RiemannRochAxiom` on `gradedL2SourceCone c V` for all `c ∈ ℝ` iff `c∫f² ≤ W(f, f)`
       (`gradedL2SourceCone_riemannRoch_iff_weilPair_ge`, `l2SourceCone_effectivity_iff`).
     * *Unconditional positive Riemann–Roch past the first prime and graded/compensated Riemann–Roch
-      at all apertures:* Uncompensated positive `l2SourceCone` Riemann–Roch holds with `c = 1/200` on
+      at all apertures:* Uncompensated positive `l2SourceCone` Riemann–Roch holds with `c = 1/1000` on
       the ample-orthogonal hyperplane `∫f cosh(u/2) = 0` (mixed parity) through aperture
       `½(log 2 + 1/50)`, past the first prime (`l2SourceCone_primitiveSmooth_riemannRoch_primeTwo`).
       At **all** apertures `r > 0`, because the spectral symbol identity
@@ -404,7 +404,7 @@ them. ACS isolates which of these mechanisms the scaling surface has.
       and `strictL2SourceCone c V` as identical sets of cycles while shifting the pairing by the
       reserve `κ∫fg`, the unmodified cone `l2SourceCone c (realTestsAt r)` (`c > 0`,
       `κ = 10 + 72 e^r + c`) satisfies `RiemannRochAxiom`, non-vacuous `AmpleAxiom`,
-      `SurfaceRiemannRochAxiom 0 0`, `BezoutAxiom`, and `HodgeIndex` unconditionally at all
+      `SurfaceRiemannRochAxiom 0 0`, and `HodgeIndex` unconditionally at all
       apertures `r > 0` (`l2CompensatedScalingSubsurface_realTestsAt_all_apertures`,
       `compensatedSurface_hodgeIndex_iff`).
     * *Riemann–Roch for `ℤ` away from the low-frequency divisor, uncompensated, at every degree:*
@@ -428,8 +428,8 @@ them. ACS isolates which of these mechanisms the scaling surface has.
       (`polarFreeSmooth_l2SourceCone_riemannRoch_iff`), and because `r ↦ μ₀(r)` is strictly
       decreasing (`strictAnti_ccmRestrictedWeilPolarGroundEnergy`), all-aperture `HodgeIndex`
       (`0 ≤ μ₀(r)`) **unconditionally self-upgrades** to strict positivity `0 < μ₀(r)` and
-      simultaneous `RiemannRochAxiom` + non-vacuous `AmpleAxiom` + `SurfaceRiemannRochAxiom 0 0` +
-      `BezoutAxiom` for `l2SourceCone (μ₀(r)) (polarFreeSmoothRealTestsAt r)` at every aperture
+      simultaneous `RiemannRochAxiom` + non-vacuous `AmpleAxiom` + `SurfaceRiemannRochAxiom 0 0`
+      for `l2SourceCone (μ₀(r)) (polarFreeSmoothRealTestsAt r)` at every aperture
       (`all_aperture_polarFreeSmooth_hodgeIndex_iff_ample_l2SourceCone`). For the `H¹` Sobolev
       source cones (`sobolevSourceCone`, `gradedSobolevSourceCone`), `zetaZeroWidth ≤ σ` (`σ ≥ 0`)
       holds iff `gradedSobolevSourceCone (-Ce^{2βr})` satisfies `RiemannRochAxiom` at all apertures

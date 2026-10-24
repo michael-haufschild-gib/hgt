@@ -30,4 +30,4 @@ Lower the unconditional asymptotic spatial reality and simplicity horizon of `H_
    - `exists_nonrealZeroCount_and_collisionMass_le_interiorLindelof`: unconditional bound `C₀ R(t) log(2 + 3 R(t))` with `R(t) = max X₀ (2π exp((27/40 + ε)/t)) + 1` on `nonrealZeroCount t`, `∑_{s > t} collisionMass s`, and `collisionMass t`.
 
 ## Log
-- 2026-10-25 — Formalized unconditionally in `formal/GaloisForLFunctions/RHTower/KiKimLeeInteriorLindelofHorizon.lean`; verified exit code 0 and standard axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-10-25 — Formalized unconditionally in `formal/GaloisForLFunctions/RHTower/KiKimLeeInteriorLindelofHorizon.lean` and wired into `RHTower.lean`; verified exit code 0 and standard axioms `[propext, Classical.choice, Quot.sound]`.
