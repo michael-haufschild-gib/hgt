@@ -192,13 +192,20 @@ limit is inadequate: it can be zero while total normalized energy remains one.
 
 What would count as progress:
 
-1. A compactness/extraction result preserving the *signed bilinear pairings* and forcing needed by the exact energy identity.
+1. A compactness/extraction result reconciling the *signed bilinear pairings*, moving mass and
+   renormalized forcing needed by the exact energy identity.
 2. A source-specific relation satisfied by every extracted state, beyond universal cocycle or multiplicativity identities.
 3. A rigidity theorem excluding nonzero adverse states, or forcing a uniformly priced corrective flux.
 
 This changes the object being controlled. It avoids repeatedly estimating an arbitrary row by absolute values. It does **not** make the missing rigidity automatic.
 
 The existing majorant, drifting-origin and oscillating-probe examples must survive the extraction theorem and fail a precisely identified arithmetic condition. If a proposed compactification simply loses those examples, it has probably discarded the obstruction.
+
+A [fixed-cofactor extraction theorem](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/CountableCofactorCovariancesHaveACommonLimit.lean)
+provides part of this carrier: at each fixed damping, one subsequence retains all signed
+cofactor covariances, unit receiver mass, finite-packet positivity and sharp simultaneous
+dilation contraction. It does not retain the full moving cofactor sum. Passing that sum through
+the limit still requires a tail theorem in the same normalization.
 
 ### 5.2 A mixed successor–cofactor estimate, rather than a universal successor floor
 
@@ -379,7 +386,7 @@ The hardest issue is likely **diffuse escape**. There need not be one compact �
 
 | Topic | First worthwhile output | Inadequate substitute |
 |---|---|---|
-| Joint defect extraction | A limit preserving the exact signed energy pairing and forcing | Weak convergence to zero |
+| Joint defect extraction | Extend the proved common limit of fixed-cofactor covariances to a carrier retaining moving mass and the complete renormalized forcing relation | Weak convergence to zero, or an uncontrolled infinite sum of fixed-label limits |
 | Successor selectivity | A quantitative statistic using actual prime data that excludes conductor-three and other surviving models | Universal multiplicativity cocycle |
 | Mixed Bézout covariance | A summable signed gain after correct residue centering | A qualitative small leading coefficient with no usable rate |
 | Repairing-module dynamics | A defined successor action with proved boundary cost | Assuming ideal invariance |

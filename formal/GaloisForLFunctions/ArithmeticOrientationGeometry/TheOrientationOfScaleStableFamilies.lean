@@ -300,7 +300,7 @@ theorem exists_mem_sees (hV : V ≤ realTests) (T : Finset ℂ) (hT : ∀ ρ ∈
     obtain ⟨F, hFV, hF⟩ := ih fun ρ hρ => hT ρ (Finset.mem_insert_of_mem hρ)
     obtain ⟨w, hwV, hw⟩ := (jointlySees_iff hV).mp (hT ρ₀ (Finset.mem_insert_self _ _))
     -- the parameters `t` for which `F + t w` misses a point
-    have hB : (⋃ ρ ∈ (insert ρ₀ T : Set ℂ),
+    have hB : (⋃ ρ ∈ ((insert ρ₀ T : Finset ℂ) : Set ℂ),
         ({t : ℝ | paperFT (cx F) (gammaOf ρ) + (t : ℂ) * paperFT (cx w) (gammaOf ρ) = 0} ∪
           {t : ℝ | paperFT (cx F) (conj (gammaOf ρ)) +
             (t : ℂ) * paperFT (cx w) (conj (gammaOf ρ)) = 0})).Finite := by
@@ -315,19 +315,17 @@ theorem exists_mem_sees (hV : V ≤ realTests) (T : Finset ℂ) (hT : ∀ ρ ∈
         · exact Or.inr hw.2
         · exact Or.inl (hF ρ hρT).2
     obtain ⟨t, ht⟩ := hB.exists_notMem
-    simp only [Set.mem_iUnion, Set.mem_union, Set.mem_setOf_eq, Finset.coe_insert,
-      Set.mem_insert_iff, Finset.mem_coe, not_exists, not_or] at ht
-    refine ⟨F + t • w, V.add_mem hFV (V.smul_mem t hwV), fun ρ hρ => ?_⟩
-    have hρ' : ρ = ρ₀ ∨ ρ ∈ T := Finset.mem_insert.mp hρ
-    obtain ⟨h1, h2⟩ := ht ρ hρ'
-    exact ⟨by rw [paperFT_cx_add_smul (hV hFV) (hV hwV)]; exact h1,
-      by rw [paperFT_cx_add_smul (hV hFV) (hV hwV)]; exact h2⟩
+    refine ⟨F + t • w, V.add_mem hFV (V.smul_mem t hwV), fun ρ hρ => ⟨?_, ?_⟩⟩
+    · rw [paperFT_cx_add_smul (hV hFV) (hV hwV)]
+      exact fun h => ht (Set.mem_biUnion (Finset.mem_coe.mpr hρ) (Or.inl h))
+    · rw [paperFT_cx_add_smul (hV hFV) (hV hwV)]
+      exact fun h => ht (Set.mem_biUnion (Finset.mem_coe.mpr hρ) (Or.inr h))
 
 theorem denseShifts_univ : DenseShifts Set.univ := fun v _ ε hε =>
   ⟨v, Set.mem_univ _, by rw [sub_self, abs_zero]; exact hε⟩
 
 /-- **The index of a scale-stable family is attained on the orbit of one member.** -/
-theorem exists_orbit_negIndex_ge (hV : V ≤ realTests) (hVs : ScaleStable V) {Z : ZeroConfig}
+theorem exists_orbit_negIndex_ge (hV : V ≤ realTests) {Z : ZeroConfig}
     (hZ : TemperedConfig Z) {n : ℕ} (hn : (n : ℕ∞) ≤ (jointlySeenRightZeros Z V).encard) :
     ∃ F ∈ V, ∃ S : Finset ℝ, n ≤ hermNegIndex (zeroGram Z fun s : S =>
       ArithmeticCastelnuovoSeveri.translate s (cx F)) := by
@@ -349,7 +347,7 @@ theorem scaleStable_index_law (hV : V ≤ realTests) (hVs : ScaleStable V) {Z : 
     (∃ F ∈ V, ∃ S : Finset ℝ, n ≤ hermNegIndex (zeroGram Z fun s : S =>
       ArithmeticCastelnuovoSeveri.translate s (cx F))) ↔
       (n : ℕ∞) ≤ (jointlySeenRightZeros Z V).encard := by
-  refine ⟨fun ⟨F, hFV, S, hS⟩ => ?_, exists_orbit_negIndex_ge hV hVs hZ⟩
+  refine ⟨fun ⟨F, hFV, S, hS⟩ => ?_, exists_orbit_negIndex_ge hV hZ⟩
   have h := negIndex_family_le hZ hV (fun s : S => scaleShift s F) fun s => hVs s F hFV
   exact (ENat.coe_le_coe.mpr hS).trans h
 
@@ -398,13 +396,13 @@ def orbitFamily (fs : Set (ℝ → ℝ)) : Submodule ℝ (ℝ → ℝ) :=
   Submodule.span ℝ {g | ∃ f ∈ fs, ∃ t : ℝ, g = scaleShift t f}
 
 theorem orbitFamily_le {fs : Set (ℝ → ℝ)} (hfs : fs ⊆ realTests) : orbitFamily fs ≤ realTests :=
-  Submodule.span_le.mpr fun _ ⟨f, hf, t, hg⟩ => hg ▸ scaleShift_mem t (hfs hf)
+  Submodule.span_le.mpr fun _ ⟨_, hf, t, hg⟩ => hg ▸ scaleShift_mem t (hfs hf)
 
 theorem subset_orbitFamily (fs : Set (ℝ → ℝ)) : fs ⊆ orbitFamily fs := fun f hf =>
   Submodule.subset_span ⟨f, hf, 0, (scaleShift_zero f).symm⟩
 
 theorem scaleStable_orbitFamily (fs : Set (ℝ → ℝ)) : ScaleStable (orbitFamily fs) := by
-  intro t f hf
+  intro t _ hf
   induction hf using Submodule.span_induction with
   | mem g hg =>
     obtain ⟨f', hf', s, rfl⟩ := hg

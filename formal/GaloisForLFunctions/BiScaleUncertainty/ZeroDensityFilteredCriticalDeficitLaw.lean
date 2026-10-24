@@ -42,7 +42,7 @@ cancellation of `ccmPrimeDeficitIncoming` up to logarithmic aperture `A ≤ α l
    Using the 4-fold reflection/conjugation symmetry of `XiZeroCopy` (`ncard_foldedHeightBox_le`) and
    slab slicing `slabAbscissa M m = 1/2 + m/(2M)`, for every `α ∈ [0, 2/3)`:
    * Deep off-line zeros (`foldedRe q ≥ 1/2 + θ`) satisfy strict polynomial per-unit-height decay
-     `(1 / T) Σ e^{2A(foldedRe q - 1/2)} ≤ C T^{-(4/3 - 2α)θ / 4}` for all `0 ≤ A ≤ α log T`.
+     `(1 / T) Σ e^{2A(foldedRe q - 1/2)} ≤ C T^{-(4/3 - 2α)θ / 8}` for all `0 ≤ A ≤ α log T`.
    * Full dyadic shells (`T/2 ≤ |Im ρ_q| ≤ 4T`) satisfy the sub-power bound
      `(1 / T) Σ e^{2A(foldedRe q - 1/2)} ≤ C_{α,η} T^η` for every `η > 0` and all `0 ≤ A ≤ α log T`.
 
@@ -89,7 +89,7 @@ theorem igmDensityExponent_nonneg {σ : ℝ} (hσ1 : σ ≤ 1) :
   · linarith
 
 /-- Across `[1/2, 1]`, the hybrid exponent never exceeds Guth–Maynard's `(30/13)(1 - σ)`. -/
-theorem igmDensityExponent_le_thirty_thirteenths {σ : ℝ} (hσ0 : 1 / 2 ≤ σ) (hσ1 : σ ≤ 1) :
+theorem igmDensityExponent_le_thirty_thirteenths {σ : ℝ} (_hσ0 : 1 / 2 ≤ σ) (hσ1 : σ ≤ 1) :
     igmDensityExponent σ ≤ (30 / 13) * (1 - σ) := by
   unfold igmDensityExponent
   split_ifs with h1 h2
@@ -112,7 +112,7 @@ theorem ingham_div_le_one_sub_four_thirds {σ : ℝ} (hσ0 : 1 / 2 ≤ σ) (hσ1
 /-- **Global `4/3` Linear Deficit Law (`igmDensityExponent_le_one_sub_four_thirds`):**
 Across the entire half-strip `σ ∈ [1/2, 1]`, the combined Ingham–Guth–Maynard–DH exponent satisfies
 `igmDensityExponent σ ≤ 1 - (4 / 3) * (σ - 1 / 2)`, with equality at `σ = 1/2`. -/
-theorem igmDensityExponent_le_one_sub_four_thirds {σ : ℝ} (hσ0 : 1 / 2 ≤ σ) (hσ1 : σ ≤ 1) :
+theorem igmDensityExponent_le_one_sub_four_thirds {σ : ℝ} (hσ0 : 1 / 2 ≤ σ) (_hσ1 : σ ≤ 1) :
     igmDensityExponent σ ≤ 1 - (4 / 3) * (σ - 1 / 2) := by
   unfold igmDensityExponent
   split_ifs with h1 h2
@@ -166,7 +166,7 @@ theorem exists_zeroHeightBox_ncard_le_one_sub_four_thirds_uniform
       nlinarith
     exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hT1 hexp)
       (mul_nonneg hD_gm (pow_nonneg (by linarith [Real.log_nonneg hT1]) _))
-  · push_neg at hhigh
+  · push Not at hhigh
     -- Finite grid on `[1/2 + θ, 7/10]` with step `h` and slack `ε₂`
     set ε₂ : ℝ := min 1 (δ * θ / 2)
     have hε₂0 : 0 < ε₂ := lt_min zero_lt_one (by positivity)
@@ -181,10 +181,10 @@ theorem exists_zeroHeightBox_ncard_le_one_sub_four_thirds_uniform
     choose Dk hDk Bk Tk hTk1 hTk using fun k : ℕ =>
       exists_zeroHeightBox_ncard_le_ingham_linear (hgrid k).1 (hgrid k).2 hε₂0 hε₂1
     set K : ℕ := ⌈(7 / 10 - (1 / 2 + θ)) / h⌉₊
-    set D_tot : ℝ := D_gm + ∑ k ∈ range (K + 1), Dk k
-    set B_tot : ℕ := B_gm + ∑ k ∈ range (K + 1), Bk k
-    set T_tot : ℝ := max T_gm (1 + ∑ k ∈ range (K + 1), |Tk k|)
-    have hD_tot : 0 ≤ D_tot := add_nonneg hD_gm (sum_nonneg fun k _ => hDk k)
+    set D_tot : ℝ := D_gm + ∑ k ∈ Finset.range (K + 1), Dk k
+    set B_tot : ℕ := B_gm + ∑ k ∈ Finset.range (K + 1), Bk k
+    set T_tot : ℝ := max T_gm (1 + ∑ k ∈ Finset.range (K + 1), |Tk k|)
+    have hD_tot : 0 ≤ D_tot := add_nonneg hD_gm (Finset.sum_nonneg fun k _ => hDk k)
     have hT_tot : 1 ≤ T_tot := hT_gm.trans (le_max_left _ _)
     refine ⟨D_tot, hD_tot, B_tot, T_tot, hT_tot, fun T hT σ hσ0 hσ1 => ?_⟩
     have hT1 : 1 ≤ T := hT_tot.trans hT
@@ -197,26 +197,26 @@ theorem exists_zeroHeightBox_ncard_le_one_sub_four_thirds_uniform
         have : (8 / 195 : ℝ) * (1 - σ) ≤ 8 / 195 := by nlinarith
         have : 0 ≤ δ * (σ - 1 / 2) := mul_nonneg hδ0.le (by linarith)
         nlinarith
-      have hD_le : D_gm ≤ D_tot := le_add_of_nonneg_right (sum_nonneg fun k _ => hDk k)
+      have hD_le : D_gm ≤ D_tot := le_add_of_nonneg_right (Finset.sum_nonneg fun k _ => hDk k)
       have hB_le : (1 + Real.log T) ^ B_gm ≤ (1 + Real.log T) ^ B_tot :=
         pow_le_pow_right₀ hl1 (Nat.le_add_right _ _)
       have hT_le := Real.rpow_le_rpow_of_exponent_le hT1 hexp
       exact h1.trans (mul_le_mul (mul_le_mul hD_le hB_le (pow_nonneg hl0 _) hD_tot)
         hT_le (Real.rpow_nonneg (by linarith) _) (mul_nonneg hD_tot (pow_nonneg hl0 _)))
-    · push_neg at hσ7
+    · push Not at hσ7
       set k : ℕ := ⌊(σ - (1 / 2 + θ)) / h⌋₊
       have hq0 : 0 ≤ (σ - (1 / 2 + θ)) / h := div_nonneg (by linarith) hh0.le
       have hkle : (k : ℝ) * h ≤ σ - (1 / 2 + θ) := (le_div_iff₀ hh0).mp (Nat.floor_le hq0)
       have hkgt : σ - (1 / 2 + θ) < ((k : ℝ) + 1) * h := (div_lt_iff₀ hh0).mp (Nat.lt_floor_add_one _)
-      have hkK : k ∈ range (K + 1) := by
-        rw [mem_range, Nat.lt_succ_iff]
+      have hkK : k ∈ Finset.range (K + 1) := by
+        rw [Finset.mem_range, Nat.lt_succ_iff]
         exact (Nat.floor_le_floor (div_le_div_of_nonneg_right (by linarith) hh0.le)).trans
           (Nat.floor_le_ceil _)
       have hgk : σ_grid k = 1 / 2 + θ + (k : ℝ) * h := min_eq_left (by linarith)
       have hTk_le : Tk k ≤ T := by
-        have hsum_le : |Tk k| ≤ ∑ j ∈ range (K + 1), |Tk j| :=
-          single_le_sum (fun j _ => abs_nonneg _) hkK
-        have hmax := (le_max_right T_gm (1 + ∑ j ∈ range (K + 1), |Tk j|)).trans hT
+        have hsum_le : |Tk k| ≤ ∑ j ∈ Finset.range (K + 1), |Tk j| :=
+          Finset.single_le_sum (f := fun j => |Tk j|) (fun _ _ => abs_nonneg _) hkK
+        have hmax := (le_max_right T_gm (1 + ∑ j ∈ Finset.range (K + 1), |Tk j|)).trans hT
         linarith [le_abs_self (Tk k)]
       have hanti : ((zeroHeightBox σ T).ncard : ℝ) ≤ ((zeroHeightBox (σ_grid k) T).ncard : ℝ) :=
         zeroHeightBox_ncard_antitone (by rw [hgk]; linarith)
@@ -228,11 +228,11 @@ theorem exists_zeroHeightBox_ncard_le_one_sub_four_thirds_uniform
         have hθ_le : δ * θ ≤ δ * (σ - 1 / 2) := mul_le_mul_of_nonneg_left (by linarith) hδ0.le
         linarith
       have hD_le : Dk k ≤ D_tot := by
-        have := single_le_sum (fun j _ => hDk j) hkK
+        have := Finset.single_le_sum (f := Dk) (fun j _ => hDk j) hkK
         linarith [hD_gm]
       have hB_le : (1 + Real.log T) ^ Bk k ≤ (1 + Real.log T) ^ B_tot := by
         refine pow_le_pow_right₀ hl1 ?_
-        have := single_le_sum (fun j _ => Nat.zero_le (Bk j)) hkK
+        have := Finset.single_le_sum (f := Bk) (fun j _ => Nat.zero_le (Bk j)) hkK
         omega
       have hT_le := Real.rpow_le_rpow_of_exponent_le hT1 hexp
       exact hanti.trans (hk_bound.trans (mul_le_mul
@@ -270,9 +270,9 @@ theorem exp_foldedRe_le_sum_slabs {A : ℝ} (hA : 0 ≤ A) {M : ℕ} (hM : 0 < M
   set f : ℕ → ℝ := fun m =>
     if slabAbscissa M m ≤ y then Real.exp (2 * A * (slabAbscissa M (m + 1) - 1 / 2)) else 0
   have hfj : f j = Real.exp (2 * A * (slabAbscissa M (j + 1) - 1 / 2)) := if_pos hlow
-  have hf0 : ∀ m ∈ range M, 0 ≤ f m := fun m _ => by
+  have hf0 : ∀ m ∈ Finset.range M, 0 ≤ f m := fun m _ => by
     dsimp [f]; split_ifs; exacts [(Real.exp_pos _).le, le_rfl]
-  exact (hterm.trans_eq hfj.symm).trans (single_le_sum hf0 (mem_range.mpr hjM))
+  exact (hterm.trans_eq hfj.symm).trans (Finset.single_le_sum hf0 (Finset.mem_range.mpr hjM))
 
 /-- **Folded Layer-Cake Bound for `exp(2A(foldedRe q - 1/2))` (`sum_exp_foldedRe_le_zeroHeightBox`):**
 Any finite set `G` of zero copies in the folded dyadic shell `T ≤ |Im ρ_q| ≤ 2T` is bounded by
@@ -322,7 +322,7 @@ theorem exists_zeroHeightBox_half_le_mul_log :
       have h2 : Real.log 4 = 2 * Real.log 2 := by
         rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]; norm_num
       linarith [Real.log_two_lt_d9]
-    linarith
+    linarith [Real.log_nonneg hT1]
   calc ((zeroHeightBox σ T).ncard : ℝ) ≤ C * (2 * T + 4) * Real.log (2 * T + 5) := hglob hσ hT1
     _ ≤ C * (3 * T) * (3 * (1 + Real.log T)) :=
         mul_le_mul (mul_le_mul_of_nonneg_left (by linarith) hC.le) hlog25
@@ -339,20 +339,24 @@ theorem exists_one_add_log_pow_le_rpow (B : ℕ) {ε : ℝ} (hε : 0 < ε) :
   · have hB0 : (0 : ℝ) < B := by exact_mod_cast hB
     set η : ℝ := ε / B
     have hη : 0 < η := div_pos hε hB0
+    have hη_inv : 0 < 1 / η := div_pos zero_lt_one hη
     set c : ℝ := 1 + 1 / η
-    have hc : 1 ≤ c := by dsimp [c]; positivity
+    have hc : 1 ≤ c := by dsimp [c]; linarith
     refine ⟨c ^ B, one_le_pow₀ hc, fun T hT => ?_⟩
     have hT0 : 0 < T := by linarith
     have h1 : 1 + Real.log T ≤ c * T ^ η := by
       have hexp := Real.add_one_le_exp (η * Real.log T)
-      rw [Real.exp_mul, Real.exp_log hT0] at hexp
-      have hpos : 0 ≤ T ^ η := Real.rpow_nonneg hT0.le _
-      have hlog0 : 0 ≤ Real.log T := Real.log_nonneg hT
-      dsimp [c]
-      have hmul := mul_le_mul_of_nonneg_left hexp (by positivity : 0 ≤ 1 / η)
-      have hsimp : 1 / η * (η * Real.log T + 1) = Real.log T + 1 / η := by field_simp
+      have hrew : Real.exp (η * Real.log T) = T ^ η := by
+        rw [Real.rpow_def_of_pos hT0, mul_comm]
+      rw [hrew] at hexp
+      have h1_le : 1 ≤ T ^ η := Real.one_le_rpow hT hη.le
+      have hmul := mul_le_mul_of_nonneg_left hexp hη_inv.le
+      have hsimp : 1 / η * (η * Real.log T + 1) = Real.log T + 1 / η := by
+        have hne : η ≠ 0 := hη.ne'
+        field_simp
       rw [hsimp] at hmul
-      nlinarith
+      dsimp [c]
+      linarith
     calc (1 + Real.log T) ^ B ≤ (c * T ^ η) ^ B :=
           pow_le_pow_left₀ (by linarith [Real.log_nonneg hT]) h1 B
       _ = c ^ B * (T ^ η) ^ B := mul_pow c (T ^ η) B
@@ -367,7 +371,7 @@ theorem exists_one_add_log_pow_le_rpow (B : ℕ) {ε : ℝ} (hε : 0 < ε) :
 For every `0 ≤ α < 2/3` and every depth threshold `0 < θ < 1/2`, there exist `C ≥ 0` and `T₀ ≥ 4`
 such that for all `T ≥ T₀`, all `0 ≤ A ≤ α log T`, and every finite set `G` of zero copies in
 `T ≤ |Im ρ_q| ≤ 2T` with `foldedRe q ≥ 1/2 + θ`,
-`(1 / T) * Σ_{q ∈ G} e^{2A(foldedRe q - 1/2)} ≤ C * T^{-(4/3 - 2α)θ / 4}`. -/
+`(1 / T) * Σ_{q ∈ G} e^{2A(foldedRe q - 1/2)} ≤ C * T^{-(4/3 - 2α)θ / 8}`. -/
 theorem exists_sum_exp_foldedRe_deep_decay_up_to_two_thirds_log
     {α θ : ℝ} (hα0 : 0 ≤ α) (hα : α < 2 / 3) (hθ0 : 0 < θ) (hθ1 : θ < 1 / 2) :
     ∃ C : ℝ, 0 ≤ C ∧ ∃ T₀ : ℝ, 4 ≤ T₀ ∧
@@ -375,8 +379,8 @@ theorem exists_sum_exp_foldedRe_deep_decay_up_to_two_thirds_log
         ∀ G : Finset XiZeroCopy,
           (∀ q ∈ G, 1 / 2 + θ ≤ foldedRe q ∧ T ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 2 * T) →
           (1 / T) * (∑ q ∈ G, Real.exp (2 * A * (foldedRe q - 1 / 2))) ≤
-            C * T ^ (-((4 / 3 - 2 * α) * θ / 4)) := by
-  set γ₀ : ℝ := (4 / 3 - 2 * α) * θ / 4
+            C * T ^ (-((4 / 3 - 2 * α) * θ / 8)) := by
+  set γ₀ : ℝ := (4 / 3 - 2 * α) * θ / 8
   have hγ₀ : 0 < γ₀ := by dsimp [γ₀]; nlinarith
   set δ : ℝ := (4 / 3 - 2 * α) / 4
   have hδ0 : 0 < δ := by dsimp [δ]; linarith
@@ -411,7 +415,7 @@ theorem exists_sum_exp_foldedRe_deep_decay_up_to_two_thirds_log
   -- Every `q ∈ G` falls into its floor slab `j < M` with `slabAbscissa M j ≥ 1/2 + θ/2`
   classical
   have hpt : ∀ q ∈ G, Real.exp (2 * A * (foldedRe q - 1 / 2)) ≤
-      ∑ m ∈ range M,
+      ∑ m ∈ Finset.range M,
         if slabAbscissa M m ≤ foldedRe q ∧ 1 / 2 + θ / 2 ≤ slabAbscissa M m then
           Real.exp (2 * A * (slabAbscissa M (m + 1) - 1 / 2)) else 0 := by
     intro q hq
@@ -443,11 +447,11 @@ theorem exists_sum_exp_foldedRe_deep_decay_up_to_two_thirds_log
       if slabAbscissa M m ≤ y ∧ 1 / 2 + θ / 2 ≤ slabAbscissa M m then
         Real.exp (2 * A * (slabAbscissa M (m + 1) - 1 / 2)) else 0
     have hfj : f j = Real.exp (2 * A * (slabAbscissa M (j + 1) - 1 / 2)) := if_pos ⟨hlow, hjθ⟩
-    have hf0 : ∀ m ∈ range M, 0 ≤ f m := fun m _ => by
+    have hf0 : ∀ m ∈ Finset.range M, 0 ≤ f m := fun m _ => by
       dsimp [f]; split_ifs; exacts [(Real.exp_pos _).le, le_rfl]
-    exact (hterm.trans_eq hfj.symm).trans (single_le_sum hf0 (mem_range.mpr hjM))
+    exact (hterm.trans_eq hfj.symm).trans (Finset.single_le_sum hf0 (Finset.mem_range.mpr hjM))
   have hsum1 : ∑ q ∈ G, Real.exp (2 * A * (foldedRe q - 1 / 2)) ≤
-      4 * ∑ m ∈ range M,
+      4 * ∑ m ∈ Finset.range M,
         if 1 / 2 + θ / 2 ≤ slabAbscissa M m then
           Real.exp (2 * A * (slabAbscissa M (m + 1) - 1 / 2)) *
             ((zeroHeightBox (slabAbscissa M m) T).ncard : ℝ)
@@ -461,7 +465,10 @@ theorem exists_sum_exp_foldedRe_deep_decay_up_to_two_thirds_log
           Real.exp (2 * A * (slabAbscissa M (m + 1) - 1 / 2)) else 0) =
           ∑ x ∈ G, if slabAbscissa M m ≤ foldedRe x then
             Real.exp (2 * A * (slabAbscissa M (m + 1) - 1 / 2)) else 0 :=
-        Finset.sum_congr rfl fun x _ => by simp [hmθ]
+        Finset.sum_congr rfl fun x _ => by
+          by_cases hx : slabAbscissa M m ≤ foldedRe x
+          · rw [if_pos ⟨hx, hmθ⟩, if_pos hx]
+          · rw [if_neg (fun h => hx h.1), if_neg hx]
       rw [hsimp, ← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
       have hsub : ((G.filter fun q => slabAbscissa M m ≤ foldedRe q : Finset XiZeroCopy) :
           Set XiZeroCopy) ⊆ foldedHeightBox (slabAbscissa M m) T := by
@@ -476,16 +483,15 @@ theorem exists_sum_exp_foldedRe_deep_decay_up_to_two_thirds_log
       have hxp : 0 ≤ Real.exp (2 * A * (slabAbscissa M (m + 1) - 1 / 2)) := (Real.exp_pos _).le
       nlinarith
     · rw [if_neg hmθ, mul_zero]
-      refine le_of_eq (Finset.sum_eq_zero fun x _ => ?_)
-      simp [hmθ]
-  have hslab_bound : ∀ m ∈ range M,
+      exact le_of_eq (Finset.sum_eq_zero fun x _ => if_neg (fun h => hmθ h.2))
+  have hslab_bound : ∀ m ∈ Finset.range M,
       (if 1 / 2 + θ / 2 ≤ slabAbscissa M m then
         Real.exp (2 * A * (slabAbscissa M (m + 1) - 1 / 2)) *
           ((zeroHeightBox (slabAbscissa M m) T).ncard : ℝ)
       else 0) ≤ D * K_log * T ^ (1 - γ₀) := by
     intro m hm
     split_ifs with hmθ
-    · have hm_lt : m < M := mem_range.mp hm
+    · have hm_lt : m < M := Finset.mem_range.mp hm
       have hm1 : slabAbscissa M m ≤ 1 := by
         unfold slabAbscissa
         have : (m : ℝ) ≤ M := by exact_mod_cast hm_lt.le
@@ -516,7 +522,8 @@ theorem exists_sum_exp_foldedRe_deep_decay_up_to_two_thirds_log
         have hslope : (4 / 3 - δ - 2 * α) * (slabAbscissa M m - 1 / 2) ≥ 3 * γ₀ := by
           have hcoef : 4 / 3 - δ - 2 * α = 3 * (4 / 3 - 2 * α) / 4 := by dsimp [δ]; ring
           rw [hcoef]
-          have := mul_le_mul_of_nonneg_left hs (by positivity : 0 ≤ 3 * (4 / 3 - 2 * α) / 4)
+          have hnn_c : 0 ≤ 3 * (4 / 3 - 2 * α) / 4 := by linarith
+          have hmul_s := mul_le_mul_of_nonneg_left hs hnn_c
           dsimp [γ₀]
           linarith
         have hstep_a : 2 * α * (1 / (2 * (M : ℝ))) ≤ γ₀ := by
@@ -649,7 +656,7 @@ theorem exists_sum_exp_foldedRe_le_subpower_up_to_two_thirds_log
       exact ⟨hq.2, hG q hq.1⟩
     refine hd.trans (mul_le_mul_of_nonneg_left ?_ hC_deep)
     refine Real.rpow_le_rpow_of_exponent_le hT1 ?_
-    have : 0 < (4 / 3 - 2 * α) * θ / 4 := by positivity
+    have : 0 < (4 / 3 - 2 * α) * θ / 8 := div_pos (mul_pos (by linarith) hθ0) (by norm_num)
     linarith
   rw [hsplit, mul_add, add_mul]
   exact add_le_add hnear_sum hdeep_sum
@@ -686,7 +693,8 @@ theorem exists_sum_exp_foldedRe_threeShells_le_subpower
     have hmul := (div_le_iff₀ hdiff_pos).mp hlog_ge
     have hlog_div : Real.log (Γ / 2) = Real.log Γ - Real.log 2 :=
       Real.log_div hΓ0.ne' (by norm_num)
-    linarith
+    rw [hlog_div]
+    nlinarith
   have hA_one : A ≤ α' * Real.log Γ := by
     have hlog0 : 0 ≤ Real.log Γ := Real.log_nonneg (by linarith)
     nlinarith
@@ -708,17 +716,17 @@ theorem exists_sum_exp_foldedRe_threeShells_le_subpower
         (if 2 * Γ < |(q.1 : ℂ).im| then Real.exp (2 * A * (foldedRe q - 1 / 2)) else 0) := by
       intro q _
       by_cases h1 : |(q.1 : ℂ).im| ≤ Γ
-      · rw [if_pos h1, if_neg (by linarith [h1] : ¬(Γ < |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 2 * Γ)),
+      · rw [if_pos h1, if_neg (fun h => not_lt_of_ge h1 h.1),
           if_neg (by linarith : ¬(2 * Γ < |(q.1 : ℂ).im|))]; ring_nf; exact le_rfl
-      · push_neg at h1
+      · push Not at h1
         by_cases h2 : |(q.1 : ℂ).im| ≤ 2 * Γ
         · rw [if_neg (not_le.mpr h1), if_pos ⟨h1, h2⟩, if_neg (not_lt.mpr h2)]; ring_nf; exact le_rfl
-        · push_neg at h2
+        · push Not at h2
           rw [if_neg (not_le.mpr h1), if_neg (fun h => not_le.mpr h2 h.2), if_pos h2]
           ring_nf; exact le_rfl
     refine (Finset.sum_le_sum hpt).trans ?_
     simp only [Finset.sum_add_distrib, Finset.sum_filter]
-    exact le_rfl
+    linarith
   have hb1 : (1 / Γ) * ∑ q ∈ G₁, Real.exp (2 * A * (foldedRe q - 1 / 2)) ≤ C₁ * Γ ^ η := by
     have h := hshell (Γ / 2) (by linarith) A hA0 hA_half G₁ fun q hq => by
       rw [Finset.mem_filter] at hq
@@ -741,7 +749,8 @@ theorem exists_sum_exp_foldedRe_threeShells_le_subpower
       exact ⟨hq.2.le, by linarith [(hG q hq.1).2]⟩
     have hmul : (1 / Γ) * ∑ q ∈ G₃, Real.exp (2 * A * (foldedRe q - 1 / 2)) =
         2 * ((1 / (2 * Γ)) * ∑ q ∈ G₃, Real.exp (2 * A * (foldedRe q - 1 / 2))) := by ring
-    rw [hmul, Real.mul_rpow (by norm_num) hΓ0.le] at h ⊢
+    rw [Real.mul_rpow (by norm_num) hΓ0.le] at h
+    rw [hmul]
     nlinarith
   have h2pow : 1 ≤ (2 : ℝ) ^ η := Real.one_le_rpow (by norm_num) hη.le
   have h1le : C₁ * Γ ^ η ≤ C₁ * (2 : ℝ) ^ η * Γ ^ η := by
@@ -774,10 +783,10 @@ theorem inv_one_add_sq_remote_le {Γ γ t : ℝ} (hΓ : 1 ≤ Γ)
         have := pow_le_pow_left₀ (abs_nonneg t) hlow.le 2
         rw [sq_abs] at this
         linarith
-      linarith
+      linarith [sq_nonneg (t - γ)]
     refine ⟨h1, ?_⟩
     calc 1 / (1 + (t - γ) ^ 2) ^ 2
-        = (1 / (1 + (t - γ) ^ 2)) * (1 / (1 + (t - γ) ^ 2)) := by ring
+        = (1 / (1 + (t - γ) ^ 2)) * (1 / (1 + (t - γ) ^ 2)) := by simp [sq, div_mul_div_comm]
       _ ≤ (4 / Γ ^ 2) * (4 / (1 + t ^ 2)) := by
           refine mul_le_mul h1 ?_ (by positivity) (by positivity)
           rw [div_le_div_iff₀ (by positivity) (by positivity)]
@@ -805,7 +814,7 @@ theorem inv_one_add_sq_remote_le {Γ γ t : ℝ} (hΓ : 1 ≤ Γ)
       linarith
     refine ⟨h1, ?_⟩
     calc 1 / (1 + (t - γ) ^ 2) ^ 2
-        = (1 / (1 + (t - γ) ^ 2)) * (1 / (1 + (t - γ) ^ 2)) := by ring
+        = (1 / (1 + (t - γ) ^ 2)) * (1 / (1 + (t - γ) ^ 2)) := by simp [sq, div_mul_div_comm]
       _ ≤ (4 / Γ ^ 2) * (4 / (1 + t ^ 2)) :=
           mul_le_mul h1 h2 (by positivity) (by positivity)
       _ = (16 / Γ ^ 2) * (1 / (1 + t ^ 2)) := by ring
@@ -824,14 +833,16 @@ theorem inv_one_add_sq_remote_add_le {Γ γ t : ℝ} (hΓ : 1 ≤ Γ)
 /-- Integral of `1 / (1 + (t ∓ γ)²)` over any interval `[a, b]` is at most `π`. -/
 theorem integral_Icc_inv_one_add_sq_sub_le_pi (a b t : ℝ) :
     (∫ γ in Icc a b, 1 / (1 + (t - γ) ^ 2)) ≤ Real.pi := by
-  have hint : Integrable fun γ : ℝ => 1 / (1 + (t - γ) ^ 2) := by
-    have h := integrable_inv_one_add_sq.comp_sub_left t
-    simpa only [one_div] using h
-  calc (∫ γ in Icc a b, 1 / (1 + (t - γ) ^ 2))
-      ≤ ∫ γ : ℝ, 1 / (1 + (t - γ) ^ 2) :=
+  have heq : (fun γ : ℝ => 1 / (1 + (t - γ) ^ 2)) = fun γ : ℝ => (1 + (γ - t) ^ 2)⁻¹ := by
+    funext γ; simp only [one_div]; congr 2; ring
+  have hint : Integrable fun γ : ℝ => (1 + (γ - t) ^ 2)⁻¹ :=
+    integrable_inv_one_add_sq.comp_sub_right t
+  rw [heq]
+  calc (∫ γ in Icc a b, (1 + (γ - t) ^ 2)⁻¹)
+      ≤ ∫ γ : ℝ, (1 + (γ - t) ^ 2)⁻¹ :=
         setIntegral_le_integral hint (Eventually.of_forall fun _ => by positivity)
-    _ = ∫ u : ℝ, (1 + u ^ 2)⁻¹ := by
-        simpa only [one_div] using integral_sub_left_eq_self (fun u : ℝ => (1 + u ^ 2)⁻¹) t
+    _ = ∫ u : ℝ, (1 + u ^ 2)⁻¹ :=
+        integral_sub_right_eq_self (fun u : ℝ => (1 + u ^ 2)⁻¹) t
     _ = Real.pi := integral_univ_inv_one_add_sq
 
 theorem integral_Icc_inv_one_add_sq_add_le_pi (a b t : ℝ) :
@@ -840,6 +851,12 @@ theorem integral_Icc_inv_one_add_sq_add_le_pi (a b t : ℝ) :
     funext γ; congr 2; ring
   rw [heq]
   exact integral_Icc_inv_one_add_sq_sub_le_pi a b (-t)
+
+private theorem lt_zero_or_gt_of_not_mem_Icc {t b : ℝ} (ht : ¬(0 ≤ t ∧ t ≤ b)) :
+    t < 0 ∨ b < t := by
+  rcases lt_or_ge t 0 with h | h
+  · exact Or.inl h
+  · exact Or.inr (lt_of_not_ge fun hb => ht ⟨h, hb⟩)
 
 /-- **Two-Integration-by-Parts Strip Bound (`norm_integral_exp_strip_mul_le`):**
 For any `ψ ∈ C²_c(ℝ)` supported in `[0, 2A]` (`0 ≤ A`) and any `w ∈ ℂ` with `0 ≤ w.re ≤ δ` or
@@ -859,7 +876,7 @@ theorem norm_integral_exp_strip_mul_le {ψ : ℝ → ℝ} (hψ : ContDiff ℝ 2 
     dsimp [z]; ring_nf; rw [Complex.I_sq]; ring
   have hft : (∫ t : ℝ, g t * Complex.exp (w * (t : ℂ))) = paperFT g z := by
     unfold paperFT
-    exact integral_congr_ae (Eventually.of_forall fun t => by rw [hiz t])
+    exact integral_congr_ae (Eventually.of_forall fun t => by dsimp only; rw [hiz t])
   -- Bound `‖paperFT g z‖` on `[0, 2A]` directly so `e^{2A δ}` is sharp (rather than `e^{2A |t|}`)
   have h1 := contDiff_succ_iff_deriv.mp (show ContDiff ℝ (1 + 1) ψ from hψ)
   have h2 := contDiff_succ_iff_deriv.mp (show ContDiff ℝ (0 + 1) (deriv ψ) from h1.2.2)
@@ -889,8 +906,8 @@ theorem norm_integral_exp_strip_mul_le {ψ : ℝ → ℝ} (hψ : ContDiff ℝ 2 
     by_cases ht : 0 ≤ t ∧ t ≤ 2 * A
     · have := mul_le_mul_of_nonneg_left (hexp_on_supp t ht.1 ht.2) (abs_nonneg (ψ t))
       linarith
-    · have h0 : ψ t = 0 := hsupp t (by push_neg at ht; by_cases h : 0 ≤ t; [exact Or.inr (ht h); exact Or.inl (not_le.mp h)])
-      simp [h0]
+    · have h0 : ψ t = 0 := hsupp t (lt_zero_or_gt_of_not_mem_Icc ht)
+      rw [h0]; simp
   have hg''_eq : deriv (deriv g) = fun t => ((deriv (deriv ψ) t : ℝ) : ℂ) := by
     have hd1 : deriv g = fun t => ((deriv ψ t : ℝ) : ℂ) := by
       funext t
@@ -910,9 +927,8 @@ theorem norm_integral_exp_strip_mul_le {ψ : ℝ → ℝ} (hψ : ContDiff ℝ 2 
     by_cases ht : 0 ≤ t ∧ t ≤ 2 * A
     · have := mul_le_mul_of_nonneg_left (hexp_on_supp t ht.1 ht.2) (abs_nonneg (deriv (deriv ψ) t))
       linarith
-    · have h0 : deriv (deriv ψ) t = 0 :=
-        hsupp'' t (by push_neg at ht; by_cases h : 0 ≤ t; [exact Or.inr (ht h); exact Or.inl (not_le.mp h)])
-      simp [h0]
+    · have h0 : deriv (deriv ψ) t = 0 := hsupp'' t (lt_zero_or_gt_of_not_mem_Icc ht)
+      rw [h0]; simp
   rw [EvenSector.paperFT_deriv_deriv_of_compact hg hgc z, norm_mul, norm_neg, norm_pow] at he2
   have hzim : z.re = w.im := by simp [z, Complex.mul_re]
   have hz_sq : w.im ^ 2 ≤ ‖z‖ ^ 2 := by
@@ -937,7 +953,7 @@ theorem deficitWindowNorm_nonneg {ψ : ℝ → ℝ} (hψ : ContDiff ℝ 2 ψ) (h
     0 ≤ deficitWindowNorm ψ := by
   unfold deficitWindowNorm
   have hb : BddAbove (Set.range fun t : ℝ => |ψ t|) :=
-    (hψ.continuous.abs.hasCompactSupport_iff.mpr hψc).bddAbove_range
+    hψ.continuous.abs.bddAbove_range_of_hasCompactSupport hψc.abs
   have h0 : 0 ≤ ⨆ t : ℝ, |ψ t| := le_ciSup_of_le hb 0 (abs_nonneg _)
   have h1 : 0 ≤ ∫ t, |ψ t| := integral_nonneg fun _ => abs_nonneg _
   have h2 : 0 ≤ ∫ t, |deriv (deriv ψ) t| := integral_nonneg fun _ => abs_nonneg _
@@ -983,12 +999,15 @@ theorem continuous_cosine_pairing {g : ℝ → ℝ} (hg : Continuous g) (hgc : H
     unfold paperFT
     have hint_c : Integrable fun t : ℝ => h t * Complex.exp (Complex.I * (γ : ℂ) * (t : ℂ)) :=
       (hh_cont.mul (by fun_prop)).integrable_of_hasCompactSupport hh_comp.mul_right
-    rw [← Complex.reCLM.integral_comp_comm hint_c]
+    have hre := Complex.reCLM.integral_comp_comm hint_c
+    simp only [Complex.reCLM_apply] at hre
+    rw [← hre]
     refine integral_congr_ae (Eventually.of_forall fun t => ?_)
-    simp [h, Complex.reCLM_apply, Complex.mul_re, Complex.exp_re, Complex.mul_im]
+    dsimp only [Function.comp_apply, h]
+    simp [Complex.mul_re, Complex.exp_re, Complex.mul_im]
   rw [hre_eq]
-  have hfun : (fun γ : ℝ => paperFT h γ) =
-      fun γ => FourierTransform.fourier h (γ / (-(2 * Real.pi))) := by
+  have hfun : (fun γ : ℝ => (paperFT h γ).re) =
+      fun γ => (FourierTransform.fourier h (γ / (-(2 * Real.pi)))).re := by
     funext γ; rw [paperFT_ofReal_eq_fourier, neg_div, ← div_neg]
   rw [hfun]
   exact Complex.continuous_re.comp
@@ -1020,9 +1039,12 @@ theorem integral_Icc_sq_cosine_pairing_le {g : ℝ → ℝ} (hg : Continuous g)
     unfold paperFT
     have hint_c : Integrable fun t : ℝ => h t * Complex.exp (Complex.I * (γ : ℂ) * (t : ℂ)) :=
       (hh_cont.mul (by fun_prop)).integrable_of_hasCompactSupport hh_comp.mul_right
-    rw [← Complex.reCLM.integral_comp_comm hint_c]
+    have hre := Complex.reCLM.integral_comp_comm hint_c
+    simp only [Complex.reCLM_apply] at hre
+    rw [← hre]
     refine integral_congr_ae (Eventually.of_forall fun t => ?_)
-    simp [h, Complex.reCLM_apply, Complex.mul_re, Complex.exp_re, Complex.mul_im]
+    dsimp only [Function.comp_apply, h]
+    simp [Complex.mul_re, Complex.exp_re, Complex.mul_im]
   have hpt : ∀ γ : ℝ, (∫ t : ℝ, g t * Real.cos (γ * t)) ^ 2 ≤ ‖paperFT h γ‖ ^ 2 := fun γ => by
     rw [hre_eq γ]
     have habs := Complex.abs_re_le_norm (paperFT h γ)
@@ -1059,17 +1081,19 @@ theorem frequencyAverage_abs_cosine_pairing_le {g : ℝ → ℝ} (hg : Continuou
     set c : ℝ := M * Γ ^ (-(1 / 2 : ℝ))
     have hc : 0 < c := mul_pos hM_pos (Real.rpow_pos_of_pos hΓ0 _)
     have hamgm : ∀ γ : ℝ, |Y γ| ≤ c / 2 + (Y γ) ^ 2 / (2 * c) := fun γ => by
-      rw [ ← add_div_eq_mul_add_div _ _ (by positivity : (2 * c) ≠ 0) ]
-      -- Prove directly via `2 * c * |Y γ| ≤ c ^ 2 + (Y γ) ^ 2`
-      exact (le_div_iff₀ (by positivity : 0 < 2 * c)).mpr
-        (by nlinarith [sq_nonneg (|Y γ| - c), sq_abs (Y γ)])
+      have h1 : 2 * c * |Y γ| ≤ c ^ 2 + (Y γ) ^ 2 := by
+        nlinarith [sq_nonneg (|Y γ| - c), sq_abs (Y γ)]
+      calc |Y γ| = (2 * c * |Y γ|) / (2 * c) := by field_simp [hc.ne']
+        _ ≤ (c ^ 2 + (Y γ) ^ 2) / (2 * c) :=
+            div_le_div_of_nonneg_right h1 (by positivity)
+        _ = c / 2 + (Y γ) ^ 2 / (2 * c) := by field_simp [hc.ne']
     have hint1 : IntegrableOn (fun γ : ℝ => |Y γ|) (Icc Γ (2 * Γ)) :=
       hY_cont.abs.integrableOn_Icc
     have hint2 : IntegrableOn (fun γ : ℝ => c / 2 + (Y γ) ^ 2 / (2 * c)) (Icc Γ (2 * Γ)) :=
-      (integrableOn_const (hs := measure_Icc_lt_top.ne)).add
+      continuous_const.integrableOn_Icc.add
         ((hY_cont.pow 2).integrableOn_Icc.div_const (2 * c))
     have hmono := setIntegral_mono_on hint1 hint2 measurableSet_Icc fun γ _ => hamgm γ
-    rw [integral_add (integrableOn_const (hs := measure_Icc_lt_top.ne))
+    rw [integral_add continuous_const.integrableOn_Icc
       ((hY_cont.pow 2).integrableOn_Icc.div_const (2 * c)),
       setIntegral_const, Measure.real, Real.volume_Icc,
       ENNReal.toReal_ofReal (by linarith : 0 ≤ 2 * Γ - Γ),
@@ -1128,7 +1152,7 @@ theorem exists_frequencyAverage_abs_cosineFiltered_spectralDeficitSum_le
   have hW₁_le : W₁ ≤ deficitWindowNorm ψ := by
     unfold deficitWindowNorm W₁
     have hb : BddAbove (Set.range fun t : ℝ => |ψ t|) :=
-      (hψ.continuous.abs.hasCompactSupport_iff.mpr hψc).bddAbove_range
+      hψ.continuous.abs.bddAbove_range_of_hasCompactSupport hψc.abs
     have h0 : 0 ≤ ⨆ t : ℝ, |ψ t| := le_ciSup_of_le hb 0 (abs_nonneg _)
     linarith
   -- Majorant per zero copy `q` and frequency `γ`
@@ -1172,10 +1196,12 @@ theorem exists_frequencyAverage_abs_cosineFiltered_spectralDeficitSum_le
           ((hw_comp.comp_left Complex.ofReal_zero).mul_left)
     have hre_pull : (∫ t : ℝ, (spectralDeficitSum t).re * ψ t * Real.cos (γ * t)) =
         (∫ t : ℝ, spectralDeficitSum t * (w t : ℂ)).re := by
-      rw [← Complex.reCLM.integral_comp_comm hint_prod]
+      have hre := Complex.reCLM.integral_comp_comm hint_prod
+      simp only [Complex.reCLM_apply] at hre
+      rw [← hre]
       refine integral_congr_ae (Eventually.of_forall fun t => ?_)
-      dsimp [w]
-      simp [Complex.reCLM_apply, Complex.mul_re]
+      dsimp only [Function.comp_apply, w]
+      simp [Complex.mul_re]
       ring
     rw [hre_pull]
     refine (Complex.abs_re_le_norm _).trans ?_
@@ -1210,10 +1236,8 @@ theorem exists_frequencyAverage_abs_cosineFiltered_spectralDeficitSum_le
               refine mul_le_mul (mul_le_mul_of_nonneg_left hexp (by positivity))
                 (mul_le_mul_of_nonneg_left hcos (abs_nonneg _)) (by positivity) (by positivity)
           _ = (1 / ‖(q.1 : ℂ)‖ ^ 2) * Real.exp A * |ψ t| := by ring
-      · have h0 : ψ t = 0 := hsupp t (by
-          push_neg at ht
-          by_cases h : 0 ≤ t; [exact Or.inr (ht h); exact Or.inl (not_le.mp h)])
-        simp [h0]
+      · have h0 : ψ t = 0 := hsupp t (lt_zero_or_gt_of_not_mem_Icc ht)
+        rw [h0]; simp
     have hint_absψ : Integrable fun t : ℝ => |ψ t| :=
       hψ.continuous.abs.integrable_of_hasCompactSupport hψc.abs
     have hfq_sum_norm : Summable fun q => ∫ t : ℝ, ‖fq q t‖ := by
@@ -1297,7 +1321,7 @@ theorem exists_frequencyAverage_abs_cosineFiltered_spectralDeficitSum_le
     calc (∫ γ in Icc Γ (2 * Γ), ‖bq q γ‖)
         ≤ ∫ _γ in Icc Γ (2 * Γ), (Real.exp A * W₁) * (1 / ‖(q.1 : ℂ)‖ ^ 2) := by
           refine setIntegral_mono_on (hbq_cont q).norm.integrableOn_Icc
-            (integrableOn_const (hs := measure_Icc_lt_top.ne)) measurableSet_Icc fun γ _ => ?_
+            continuous_const.integrableOn_Icc measurableSet_Icc fun γ _ => ?_
           rw [Real.norm_of_nonneg (hbq_nonneg q γ)]
           exact hbq_dom q γ
       _ = Γ * (Real.exp A * W₁) * (1 / ‖(q.1 : ℂ)‖ ^ 2) := by
@@ -1391,7 +1415,7 @@ theorem exists_frequencyAverage_abs_cosineFiltered_spectralDeficitSum_le
         calc (∫ γ in Icc Γ (2 * Γ), bq q γ)
             ≤ ∫ _γ in Icc Γ (2 * Γ), (4 / Γ ^ 2) * (Γ ^ α) * W₁ * (1 / ‖(q.1 : ℂ)‖ ^ 2) :=
               setIntegral_mono_on (hbq_cont q).integrableOn_Icc
-                (integrableOn_const (hs := measure_Icc_lt_top.ne)) measurableSet_Icc hrem_pt
+                continuous_const.integrableOn_Icc measurableSet_Icc hrem_pt
           _ = Γ * ((4 / Γ ^ 2) * (Γ ^ α) * W₁ * (1 / ‖(q.1 : ℂ)‖ ^ 2)) := by
               rw [setIntegral_const, Measure.real, Real.volume_Icc,
                 ENNReal.toReal_ofReal (by linarith : 0 ≤ 2 * Γ - Γ),
@@ -1518,7 +1542,7 @@ theorem exists_frequencyAverage_abs_cosineFiltered_ccmPrimeDeficitIncoming_le
   -- Bound `∫ t, g_err t ^ 2 ≤ 32 * C₀ ^ 2 * M ^ 2` where `M = ⨆ t, |ψ t|`
   set M : ℝ := ⨆ t : ℝ, |ψ t|
   have hb : BddAbove (Set.range fun t : ℝ => |ψ t|) :=
-    (hψ.continuous.abs.hasCompactSupport_iff.mpr hψc).bddAbove_range
+    hψ.continuous.abs.bddAbove_range_of_hasCompactSupport hψc.abs
   have hM0 : 0 ≤ M := le_ciSup_of_le hb 0 (abs_nonneg _)
   have hψ_le_M : ∀ t : ℝ, |ψ t| ≤ M := fun t => le_ciSup hb t
   have hM_le_norm : M ≤ deficitWindowNorm ψ := by
@@ -1531,10 +1555,8 @@ theorem exists_frequencyAverage_abs_cosineFiltered_ccmPrimeDeficitIncoming_le
     simp [g_err, hψ0]
   have hg_err_L2 : (∫ t : ℝ, g_err t ^ 2) ≤ (32 * C₀ ^ 2) * M ^ 2 := by
     have hvan : ∀ t : ℝ, t ∉ Icc 0 (2 * A) → g_err t ^ 2 = 0 := fun t ht => by
-      have h0 : ψ t = 0 := hsupp t (by
-        rw [mem_Icc, not_and_or] at ht
-        rcases ht with h1 | h2; [exact Or.inl (not_le.mp h1); exact Or.inr (not_le.mp h2)])
-      simp [g_err, h0]
+      have h0 : ψ t = 0 := hsupp t (lt_zero_or_gt_of_not_mem_Icc (by rwa [Set.mem_Icc] at ht))
+      dsimp only [g_err]; rw [h0]; ring
     rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hvan]
     have hpt_sq : ∀ t ∈ Icc (0 : ℝ) (2 * A),
         g_err t ^ 2 ≤ 16 * C₀ ^ 2 * M ^ 2 * Real.exp (-t / 2) := fun t ht => by

@@ -64,4 +64,13 @@ passed. Audits of `exists_pos_xiFiniteHead_normalization`, `xiFiniteHead_even_ta
 `xiFiniteHead_odd_taylor` and `localDivisorPolynomial_split_coeff` use only
 `propext`, `Classical.choice` and `Quot.sound`. Temporary print commands were removed.
 
+`SourceDivisorGeometry.lean` also proves that the divisor is monic of degree
+`card(sliceTrunc S)`, and its horizontal substitution is monic, even and nonnegative
+of twice that degree. A retained off-real copy supplies its own-ordinate root and
+a distinct reflected copy. The resulting exact radius-head Hermite obstruction
+is proved by `radiusHead_depth_sq_le_hermite_edge`; see the
+[sharp boundary card](sharp-even-heat-root-barrier.md). Its final plain check and
+transitive audits passed with the same standard axioms. Central copies remain
+throughout; the heat-cone premise is explicit.
+
 The arithmetic coefficient certificate remains open.

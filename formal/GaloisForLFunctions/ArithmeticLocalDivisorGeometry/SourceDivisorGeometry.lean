@@ -41,7 +41,8 @@ theorem localDivisorPolynomial_degree (t : ℝ) (S : Finset XiZeroCopy) :
     (localDivisorPolynomial t S).natDegree = (sliceTrunc S).card := by
   rw [← (localDivisorPolynomial_monic t S).natDegree_map (algebraMap ℝ ℂ),
     localDivisorPolynomial_map, natDegree_prod_of_monic _ _ (fun q _ => monic_X_add_C _)]
-  simp [natDegree_X_add_C]
+  simp only [natDegree_X_add_C, Finset.sum_const, nsmul_eq_mul, mul_one]
+  simp
 
 /-- The unnormalized head in horizontal displacement, retaining every central multiplicity. -/
 def horizontalDivisorPolynomial (t : ℝ) (S : Finset XiZeroCopy) : ℝ[X] :=
@@ -134,6 +135,3 @@ theorem radiusHead_depth_sq_le_hermite_edge {q : XiZeroCopy}
 
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
-
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.localDivisorPolynomial_degree
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.radiusHead_depth_sq_le_hermite_edge

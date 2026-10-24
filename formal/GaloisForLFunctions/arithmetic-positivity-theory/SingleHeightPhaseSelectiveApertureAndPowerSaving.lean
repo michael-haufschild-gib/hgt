@@ -105,6 +105,44 @@ private theorem cexp_two_pi_I_add_mul (ξ₀ τ μ : ℝ) :
   push_cast
   ring
 
+private def phaseDiffSq (p : ℕ) (t : ℝ) : ℂ :=
+  (expChar (2 * π * Real.log p) t - 1) * conj (expChar (2 * π * Real.log p) t - 1)
+
+private theorem continuous_phaseDiffSq (p : ℕ) : Continuous (phaseDiffSq p) := by
+  unfold phaseDiffSq
+  have hc : Continuous (fun t => expChar (2 * π * Real.log p) t - 1) :=
+    (continuous_expChar _).sub continuous_const
+  exact hc.mul (Complex.continuous_conj.comp hc)
+
+private theorem isBohrAlmostPeriodic_phaseDiffSq (p : ℕ) :
+    _root_.HTGeometry.IsBohrAlmostPeriodic (phaseDiffSq p) := by
+  unfold phaseDiffSq
+  have hc : Continuous (fun t => expChar (2 * π * Real.log p) t - 1) :=
+    (continuous_expChar _).sub continuous_const
+  have ha : _root_.HTGeometry.IsBohrAlmostPeriodic
+      (fun t => expChar (2 * π * Real.log p) t - 1) :=
+    isBohrAlmostPeriodic_sub (continuous_expChar _) (isBohrAlmostPeriodic_expChar _)
+      continuous_const (isBohrAlmostPeriodic_const 1)
+  exact isBohrAlmostPeriodic_mul hc ha (Complex.continuous_conj.comp hc)
+    (isBohrAlmostPeriodic_conj ha)
+
+private def phaseDiffSum (N : ℕ) (t : ℝ) : ℂ :=
+  ∑ p ∈ primeIndices N, phaseDiffSq p t
+
+private theorem isBohrAlmostPeriodic_phaseDiffSum (N : ℕ) :
+    _root_.HTGeometry.IsBohrAlmostPeriodic (phaseDiffSum N) :=
+  isBohrAlmostPeriodic_sum (primeIndices N) (F := phaseDiffSq)
+    (fun p _ => continuous_phaseDiffSq p)
+    (fun p _ => isBohrAlmostPeriodic_phaseDiffSq p)
+
+private theorem phaseDiffSum_zero (N : ℕ) : phaseDiffSum N 0 = 0 := by
+  simp only [phaseDiffSum, phaseDiffSq, expChar_zero_right, sub_self, map_zero, mul_zero,
+    Finset.sum_const_zero]
+
+private theorem re_phaseDiffSq (q : ℕ) (τ : ℝ) :
+    (phaseDiffSq q τ).re = ‖expChar (2 * π * Real.log q) τ - 1‖ ^ 2 := by
+  simp only [phaseDiffSq, Complex.mul_conj, Complex.normSq_eq_norm_sq, Complex.ofReal_re]
+
 /-- **Syndetic Bohr–Kronecker Prime-Phase Realization.** For every prime cutoff `N`, target phase
 pattern `θ : ℕ → ℝ`, and tolerance `δ > 0`, there exists a bounded gap `L > 0` such that *every*
 closed height interval `[T₀, T₀ + L]` contains a height `ξ` simultaneously aligning all prime
@@ -114,43 +152,22 @@ theorem exists_relDense_height_prime_phase_approx (N : ℕ) (θ : ℕ → ℝ) {
       ∀ p ∈ primeIndices N,
         ‖cexp (2 * π * I * ξ * Real.log p) - cexp ((θ p : ℝ) * I)‖ < δ := by
   obtain ⟨ξ₀, hξ₀⟩ := exists_height_prime_phase_approx N θ (half_pos hδ)
-  let F : ℕ → ℝ → ℂ := fun p t =>
-    (expChar (2 * π * Real.log p) t - 1) * conj (expChar (2 * π * Real.log p) t - 1)
-  have hFc : ∀ p ∈ primeIndices N, Continuous (F p) := fun p _ => by
-    have hc : Continuous (fun t => expChar (2 * π * Real.log p) t - 1) :=
-      (continuous_expChar _).sub continuous_const
-    exact hc.mul (Complex.continuous_conj.comp hc)
-  have hFa : ∀ p ∈ primeIndices N, HTGeometry.IsBohrAlmostPeriodic (F p) := fun p _ => by
-    have hc : Continuous (fun t => expChar (2 * π * Real.log p) t - 1) :=
-      (continuous_expChar _).sub continuous_const
-    have ha : HTGeometry.IsBohrAlmostPeriodic (fun t => expChar (2 * π * Real.log p) t - 1) :=
-      isBohrAlmostPeriodic_sub (continuous_expChar _) (isBohrAlmostPeriodic_expChar _)
-        continuous_const (isBohrAlmostPeriodic_const 1)
-    exact isBohrAlmostPeriodic_mul hc ha (Complex.continuous_conj.comp hc)
-      (isBohrAlmostPeriodic_conj ha)
-  let H : ℝ → ℂ := fun t => ∑ p ∈ primeIndices N, F p t
-  have hHa : HTGeometry.IsBohrAlmostPeriodic H :=
-    isBohrAlmostPeriodic_sum (primeIndices N) hFc hFa
-  have hH0 : H 0 = 0 := by
-    simp only [H, F, expChar_zero_right, sub_self, map_zero, mul_zero, Finset.sum_const_zero]
   have hε : 0 < (δ / 2) ^ 2 / 2 := by positivity
-  obtain ⟨L, hL, hdense⟩ := hHa ((δ / 2) ^ 2 / 2) hε
+  obtain ⟨L, hL, hdense⟩ := isBohrAlmostPeriodic_phaseDiffSum N ((δ / 2) ^ 2 / 2) hε
   refine ⟨L, hL, fun T₀ => ?_⟩
   obtain ⟨τ, hτmem, hτ⟩ := hdense (T₀ - ξ₀)
   refine ⟨ξ₀ + τ, ⟨by linarith [hτmem.1], by linarith [hτmem.2]⟩, fun p hp => ?_⟩
-  have hHτ : ‖H τ‖ ≤ (δ / 2) ^ 2 / 2 := by
+  have hHτ : ‖phaseDiffSum N τ‖ ≤ (δ / 2) ^ 2 / 2 := by
     have h0 := hτ 0
-    rwa [zero_add, hH0, sub_zero] at h0
-  have hre_eq : ∀ q : ℕ, (F q τ).re = ‖expChar (2 * π * Real.log q) τ - 1‖ ^ 2 := fun q => by
-    simp only [F, Complex.mul_conj, Complex.normSq_eq_norm_sq, Complex.ofReal_re]
-  have hre_sum : (H τ).re =
+    rwa [zero_add, phaseDiffSum_zero N, sub_zero] at h0
+  have hre_sum : (phaseDiffSum N τ).re =
       ∑ q ∈ primeIndices N, ‖expChar (2 * π * Real.log q) τ - 1‖ ^ 2 := by
-    simp only [H, Complex.re_sum, hre_eq]
-  have hterm_le : ‖expChar (2 * π * Real.log p) τ - 1‖ ^ 2 ≤ (H τ).re := by
+    simp only [phaseDiffSum, Complex.re_sum, re_phaseDiffSq]
+  have hterm_le : ‖expChar (2 * π * Real.log p) τ - 1‖ ^ 2 ≤ (phaseDiffSum N τ).re := by
     rw [hre_sum]
     exact Finset.single_le_sum (fun q _ => sq_nonneg _) hp
   have hsq_lt : ‖expChar (2 * π * Real.log p) τ - 1‖ ^ 2 < (δ / 2) ^ 2 := by
-    have h1 : (H τ).re ≤ ‖H τ‖ := Complex.re_le_norm _
+    have h1 : (phaseDiffSum N τ).re ≤ ‖phaseDiffSum N τ‖ := Complex.re_le_norm _
     have h2 : (δ / 2) ^ 2 / 2 < (δ / 2) ^ 2 := by positivity
     linarith
   have hnorm_lt : ‖expChar (2 * π * Real.log p) τ - 1‖ < δ / 2 := by
@@ -234,14 +251,14 @@ theorem exists_relDense_re_primeOnlyPolynomial_approx_phase (f : ℝ → ℂ) (N
 
 /-- **Syndetic Coherent Peaks and Troughs of `primePolynomial`.** For every
 `B < primeOnlyEnvelope f N - primePowerTailEnvelope f N`, there exists a single bounded gap `L > 0`
-such that *every* closed interval `[T₀, T₀ + L]` contains both a coherent peak `ξ₊` with
-`(primePolynomial f N ξ₊).re > B` and a coherent trough `ξ₋` with
-`(primePolynomial f N ξ₋).re < -B`. -/
+such that *every* closed interval `[T₀, T₀ + L]` contains both a coherent peak `ξ₁` with
+`(primePolynomial f N ξ₁).re > B` and a coherent trough `ξ₂` with
+`(primePolynomial f N ξ₂).re < -B`. -/
 theorem exists_relDense_re_primePolynomial_gt_and_lt (f : ℝ → ℂ) (N : ℕ) {B : ℝ}
     (hB : B < primeOnlyEnvelope f N - primePowerTailEnvelope f N) :
     ∃ L : ℝ, 0 < L ∧ ∀ T₀ : ℝ,
-      (∃ ξ₊ ∈ Icc T₀ (T₀ + L), B < (primePolynomial f N ξ₊).re) ∧
-      (∃ ξ₋ ∈ Icc T₀ (T₀ + L), (primePolynomial f N ξ₋).re < -B) := by
+      (∃ ξ₁ ∈ Icc T₀ (T₀ + L), B < (primePolynomial f N ξ₁).re) ∧
+      (∃ ξ₂ ∈ Icc T₀ (T₀ + L), (primePolynomial f N ξ₂).re < -B) := by
   set B' := B + primePowerTailEnvelope f N
   have hε : 0 < primeOnlyEnvelope f N - B' := by simp only [B']; linarith
   obtain ⟨L₁, hL₁, hd₁⟩ := exists_relDense_re_primeOnlyPolynomial_approx_phase f N
@@ -249,21 +266,21 @@ theorem exists_relDense_re_primePolynomial_gt_and_lt (f : ℝ → ℂ) (N : ℕ)
   obtain ⟨L₂, hL₂, hd₂⟩ := exists_relDense_re_primeOnlyPolynomial_approx_phase f N
     (fun p => π - (primeCoeff f (p, true)).arg) hε
   refine ⟨max L₁ L₂, lt_max_of_lt_left hL₁, fun T₀ => ⟨?_, ?_⟩⟩
-  · obtain ⟨ξ₊, hmem, hξ₊⟩ := hd₁ T₀
+  · obtain ⟨ξ₁, hmem, hξ₁⟩ := hd₁ T₀
     have hsum : ∑ p ∈ primeIndices N,
         2 * (primeCoeff f (p, true) * cexp (((-(primeCoeff f (p, true)).arg : ℝ) : ℂ) * I)).re =
         primeOnlyEnvelope f N := by
       rw [primeOnlyEnvelope_eq_sum_two_mul_norm_true]
       refine Finset.sum_congr rfl fun p _ => ?_
       rw [re_mul_cexp_neg_arg]
-    rw [hsum] at hξ₊
-    have h1 : B' < (primeOnlyPolynomial f N ξ₊).re := by linarith [(abs_lt.mp hξ₊).1]
-    have htail := (abs_le.mp (abs_re_primePowerTailPolynomial_le f N ξ₊)).1
-    refine ⟨ξ₊, ⟨hmem.1, hmem.2.trans (by linarith [le_max_left L₁ L₂])⟩, ?_⟩
+    rw [hsum] at hξ₁
+    have h1 : B' < (primeOnlyPolynomial f N ξ₁).re := by linarith [(abs_lt.mp hξ₁).1]
+    have htail := (abs_le.mp (abs_re_primePowerTailPolynomial_le f N ξ₁)).1
+    refine ⟨ξ₁, ⟨hmem.1, hmem.2.trans (by linarith [le_max_left L₁ L₂])⟩, ?_⟩
     rw [primePolynomial_eq_primeOnly_add_tail, Complex.add_re]
     simp only [B'] at h1
     linarith
-  · obtain ⟨ξ₋, hmem, hξ₋⟩ := hd₂ T₀
+  · obtain ⟨ξ₂, hmem, hξ₂⟩ := hd₂ T₀
     have hsum : ∑ p ∈ primeIndices N,
         2 * (primeCoeff f (p, true) * cexp (((π - (primeCoeff f (p, true)).arg : ℝ) : ℂ) * I)).re =
         -primeOnlyEnvelope f N := by
@@ -271,37 +288,47 @@ theorem exists_relDense_re_primePolynomial_gt_and_lt (f : ℝ → ℂ) (N : ℕ)
       refine Finset.sum_congr rfl fun p _ => ?_
       rw [re_mul_cexp_pi_sub_arg]
       ring
-    rw [hsum] at hξ₋
-    have h1 : (primeOnlyPolynomial f N ξ₋).re < -B' := by linarith [(abs_lt.mp hξ₋).2]
-    have htail := (abs_le.mp (abs_re_primePowerTailPolynomial_le f N ξ₋)).2
-    refine ⟨ξ₋, ⟨hmem.1, hmem.2.trans (by linarith [le_max_right L₁ L₂])⟩, ?_⟩
+    rw [hsum] at hξ₂
+    have h1 : (primeOnlyPolynomial f N ξ₂).re < -B' := by linarith [(abs_lt.mp hξ₂).2]
+    have htail := (abs_le.mp (abs_re_primePowerTailPolynomial_le f N ξ₂)).2
+    refine ⟨ξ₂, ⟨hmem.1, hmem.2.trans (by linarith [le_max_right L₁ L₂])⟩, ?_⟩
     rw [primePolynomial_eq_primeOnly_add_tail, Complex.add_re]
     simp only [B'] at h1
     linarith
+
+private def pxComplexTerm (n : ℕ) (t : ℝ) : ℂ :=
+  (((Λ n : ℝ) / Real.sqrt n : ℝ) : ℂ) * expChar (Real.log n) t
+
+private def pxComplexSum (X : ℝ) (t : ℝ) : ℂ :=
+  ∑ n ∈ Finset.Ioc 0 ⌊X⌋₊, pxComplexTerm n t
+
+private def pxComplex (X : ℝ) (t : ℝ) : ℂ :=
+  ((-(1 / π) : ℝ) : ℂ) * pxComplexSum X t
+
+private theorem isBohrAlmostPeriodic_pxComplex (X : ℝ) :
+    _root_.HTGeometry.IsBohrAlmostPeriodic (pxComplex X) := by
+  have hS : _root_.HTGeometry.IsBohrAlmostPeriodic (pxComplexSum X) :=
+    isBohrAlmostPeriodic_sum (Finset.Ioc 0 ⌊X⌋₊) (F := pxComplexTerm)
+      (fun n _ => continuous_const.mul (continuous_expChar _))
+      (fun n _ => isBohrAlmostPeriodic_const_mul _ (isBohrAlmostPeriodic_expChar _))
+  exact isBohrAlmostPeriodic_const_mul _ hS
+
+private theorem re_pxComplex (X t : ℝ) : (pxComplex X t).re = PX X t := by
+  simp only [pxComplex, pxComplexSum, pxComplexTerm, Complex.re_ofReal_mul, Complex.re_sum, PX]
+  congr 1
+  refine Finset.sum_congr rfl fun n _ => ?_
+  rw [Complex.re_ofReal_mul, expChar, Complex.exp_ofReal_mul_I_re, mul_comm (Real.log n) t]
 
 /-- **Syndetic Return of the Prime Symbol `PX` to Its Height-Zero Extremum `PX X 0`.** For every
 cutoff `X : ℝ` and tolerance `η > 0`, there exists `L > 0` such that every interval `[T₀, T₀ + L]`
 contains `τ` with `|PX X τ - PX X 0| ≤ η`. -/
 theorem exists_relDense_abs_PX_sub_PX_zero_le (X : ℝ) {η : ℝ} (hη : 0 < η) :
     ∃ L : ℝ, 0 < L ∧ ∀ T₀ : ℝ, ∃ τ ∈ Icc T₀ (T₀ + L), |PX X τ - PX X 0| ≤ η := by
-  let S : ℝ → ℂ := fun t =>
-    ∑ n ∈ Finset.Ioc 0 ⌊X⌋₊, (((Λ n : ℝ) / Real.sqrt n : ℝ) : ℂ) * expChar (Real.log n) t
-  have hSa : HTGeometry.IsBohrAlmostPeriodic S := by
-    refine isBohrAlmostPeriodic_sum (Finset.Ioc 0 ⌊X⌋₊) (fun n _ => ?_) (fun n _ => ?_)
-    · exact continuous_const.mul (continuous_expChar _)
-    · exact isBohrAlmostPeriodic_const_mul _ (isBohrAlmostPeriodic_expChar _)
-  let G : ℝ → ℂ := fun t => ((-(1 / π) : ℝ) : ℂ) * S t
-  have hGa : HTGeometry.IsBohrAlmostPeriodic G := isBohrAlmostPeriodic_const_mul _ hSa
-  have hGre : ∀ t : ℝ, (G t).re = PX X t := fun t => by
-    simp only [G, S, Complex.re_ofReal_mul, Complex.re_sum, PX]
-    congr 1
-    refine Finset.sum_congr rfl fun n _ => ?_
-    rw [Complex.re_ofReal_mul, expChar, Complex.exp_ofReal_mul_I_re, mul_comm (Real.log n) t]
-  obtain ⟨L, hL, hdense⟩ := hGa η hη
+  obtain ⟨L, hL, hdense⟩ := isBohrAlmostPeriodic_pxComplex X η hη
   refine ⟨L, hL, fun T₀ => ?_⟩
   obtain ⟨τ, hτmem, hτ⟩ := hdense T₀
   refine ⟨τ, hτmem, ?_⟩
-  rw [← hGre τ, ← hGre 0, ← Complex.sub_re]
+  rw [← re_pxComplex X τ, ← re_pxComplex X 0, ← Complex.sub_re]
   refine (Complex.abs_re_le_norm _).trans ?_
   simpa only [zero_add] using hτ 0
 
@@ -332,9 +359,9 @@ theorem not_exists_eventually_atTop_PX_ge_of_lt_two {c : ℝ} (hc : c < 2) :
       -((c * Real.sqrt X + C) / π) := by
     have hpi : (0 : ℝ) < 2 * π := Real.two_pi_pos
     rw [show -(((c + 2) / 2) * Real.sqrt X) / π + 1 / (2 * π) =
-        (-(c + 2) * Real.sqrt X + 1) / (2 * π) by field_simp; ring,
+        (-(c + 2) * Real.sqrt X + 1) / (2 * π) by field_simp,
       show -((c * Real.sqrt X + C) / π) = (-2 * c * Real.sqrt X - 2 * C) / (2 * π) by
-        field_simp; ring,
+        field_simp,
       div_lt_div_iff_of_pos_right hpi]
     nlinarith [le_abs_self C]
   linarith
@@ -377,16 +404,19 @@ theorem not_exists_eventually_atTop_PX_power_saving {θ : ℝ} (hθ : θ < 1) :
         rw [hsqrt_split, mul_comm (X ^ (θ / 2)) (X ^ ((1 - θ) / 2))]
         exact mul_lt_mul_of_pos_right hX2 hXr_pos
       nlinarith
-    · nlinarith [Real.pi_pos, abs_nonneg C]
+    · have hm : π * |C| * X ^ (θ / 2) ≤ π * |C| :=
+        mul_le_of_le_one_right (by positivity) hlt1.le
+      linarith
   have hgap : -Real.sqrt X / π + 1 / (2 * π) < -C * X ^ (θ / 2) := by
     have hpi2 : (0 : ℝ) < 2 * π := Real.two_pi_pos
     rw [show -Real.sqrt X / π + 1 / (2 * π) = (-2 * Real.sqrt X + 1) / (2 * π) by
-        field_simp; ring,
+        field_simp,
       div_lt_iff₀ hpi2]
-    have hCle : -|C| ≤ C := neg_abs_le C
-    have hCX : -|C| * X ^ (θ / 2) ≤ C * X ^ (θ / 2) :=
-      mul_le_mul_of_nonneg_right hCle hXr_pos.le
-    nlinarith [Real.pi_pos]
+    have hCle : -|C| ≤ -C := neg_le_neg (le_abs_self C)
+    have hCX : (-|C| * X ^ (θ / 2)) * (2 * π) ≤ -C * X ^ (θ / 2) * (2 * π) :=
+      mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hCle hXr_pos.le) hpi2.le
+    have hrew : (-|C| * X ^ (θ / 2)) * (2 * π) = -2 * (π * |C| * X ^ (θ / 2)) := by ring
+    linarith
   linarith
 
 /-! ### Explicit Polynomial Composite Prime-Power Tail Bound and Smooth `C²` Saturation -/
@@ -423,7 +453,8 @@ theorem sum_compIndices_vonMangoldt_div_sqrt_le {x : ℝ} (hx : 1 ≤ x) :
       rw [Real.sqrt_eq_rpow, ← Real.rpow_neg (Nat.cast_nonneg k)]
     by_cases hk : Nat.Prime k
     · simp [Λc, hk]
-    · simp [Λc, hk, hrpow, div_eq_mul_inv, mul_comm]
+    · simp only [Λc, hk, not_false_eq_true, ↓reduceIte]
+      rw [hrpow, div_eq_mul_inv, mul_comm]
   have hf_diff : ∀ t ∈ Icc (1 : ℝ) x,
       DifferentiableAt ℝ (fun t : ℝ => t ^ (-(1 / 2 : ℝ))) t := fun t ht =>
     Real.differentiableAt_rpow_const_of_ne _ (by linarith [ht.1] : t ≠ 0)
@@ -471,7 +502,7 @@ theorem sum_compIndices_vonMangoldt_div_sqrt_le {x : ℝ} (hx : 1 ≤ x) :
       (fun t : ℝ => t ^ (-(1 / 2 : ℝ) - 1) * (Chebyshev.psi t - Chebyshev.theta t))
       (Ioc 1 x) := by
     refine Integrable.mono' (g := fun _ => Chebyshev.psi x) (integrableOn_const (by simp))
-      ((hcont_rpow.aestronglyMeasurable measurableSet_Icc).mono_set Ioc_subset_Icc_self |>.mul
+      ((hcont_rpow.aestronglyMeasurable measurableSet_Icc).mono_set Set.Ioc_subset_Icc_self |>.mul
         ((Chebyshev.psi_mono.measurable.sub Chebyshev.theta_mono.measurable).aestronglyMeasurable.restrict))
       ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
@@ -487,9 +518,9 @@ theorem sum_compIndices_vonMangoldt_div_sqrt_le {x : ℝ} (hx : 1 ≤ x) :
           mul_le_mul_of_nonneg_right h1 (hdiff_nn t)
       _ ≤ Chebyshev.psi x := by linarith
   have hcont_inv : ContinuousOn (fun t : ℝ => t⁻¹) (Icc 1 x) :=
-    continuousOn_id.inv₀ fun t ht => by linarith [ht.1]
+    continuousOn_id.inv₀ fun t ht => by simp only [id]; linarith [ht.1]
   have hint_rhs : IntegrableOn (fun t : ℝ => (2 * Real.log x) * t⁻¹) (Ioc 1 x) :=
-    ((continuousOn_const.mul hcont_inv).integrableOn_Icc).mono_set Ioc_subset_Icc_self
+    ((continuousOn_const.mul hcont_inv).integrableOn_Icc).mono_set Set.Ioc_subset_Icc_self
   have hint_le : ∫ t in Ioc 1 x,
         t ^ (-(1 / 2 : ℝ) - 1) * (Chebyshev.psi t - Chebyshev.theta t) ≤
       ∫ t in Ioc 1 x, (2 * Real.log x) * t⁻¹ := by
@@ -498,9 +529,8 @@ theorem sum_compIndices_vonMangoldt_div_sqrt_le {x : ℝ} (hx : 1 ≤ x) :
     have hrnn : 0 ≤ t ^ (-(1 / 2 : ℝ) - 1) := Real.rpow_nonneg ht0.le _
     have hlog_le : Real.log t ≤ Real.log x := Real.log_le_log ht0 ht.2
     have hmul : t ^ (-(1 / 2 : ℝ) - 1) * Real.sqrt t = t⁻¹ := by
-      rw [Real.sqrt_eq_rpow, ← Real.rpow_add ht0]
-      norm_num
-      exact Real.rpow_neg_one t
+      rw [Real.sqrt_eq_rpow, ← Real.rpow_add ht0,
+        show -(1 / 2 : ℝ) - 1 + 1 / 2 = -1 by ring, Real.rpow_neg_one]
     calc t ^ (-(1 / 2 : ℝ) - 1) * (Chebyshev.psi t - Chebyshev.theta t)
         ≤ t ^ (-(1 / 2 : ℝ) - 1) * (2 * Real.sqrt t * Real.log t) :=
           mul_le_mul_of_nonneg_left (Chebyshev.psi_sub_theta_le ht.1.le) hrnn
@@ -516,7 +546,7 @@ theorem sum_compIndices_vonMangoldt_div_sqrt_le {x : ℝ} (hx : 1 ≤ x) :
       exact Real.hasDerivAt_log (by linarith [ht.1])
     have hint_iv : IntervalIntegrable (fun t : ℝ => t⁻¹) volume 1 x :=
       (intervalIntegrable_iff_integrableOn_Ioc_of_le hx).mpr
-        (hcont_inv.integrableOn_Icc.mono_set Ioc_subset_Icc_self)
+        (hcont_inv.integrableOn_Icc.mono_set Set.Ioc_subset_Icc_self)
     rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hd hint_iv, Real.log_one, sub_zero]
     ring
   linarith
@@ -585,7 +615,8 @@ private theorem unitBell_ge_of_abs_le_half {u : ℝ} (hu : |u| ≤ 1 / 2) :
   have h2 : ((1 / 4 : ℝ) ^ (5 / 2 : ℝ)) ≤ (1 ^ 2 - u ^ 2) ^ (5 / 2 : ℝ) :=
     Real.rpow_le_rpow (by norm_num) h1 (by norm_num)
   have hval : ((1 / 4 : ℝ) ^ (5 / 2 : ℝ)) = 1 / 32 := by
-    rw [show (1 / 4 : ℝ) = (1 / 2 : ℝ) ^ (2 : ℕ) by norm_num, Real.rpow_natCast_mul (by norm_num)]
+    rw [show (1 / 4 : ℝ) = (1 / 2 : ℝ) ^ (2 : ℝ) by norm_num,
+      ← Real.rpow_mul (by norm_num : (0 : ℝ) ≤ 1 / 2)]
     norm_num
   simpa only [unitBell, sinhTestWeight, hval] using h2
 
@@ -603,7 +634,10 @@ private theorem hasDerivAt_deriv_unitBell (u : ℝ) :
     HasDerivAt (deriv unitBell) (unitBellDeriv2 u) u := by
   rw [deriv_unitBell]
   have hq : HasDerivAt (fun u : ℝ => -(5 * u)) (-5) u := by
-    simpa using ((hasDerivAt_id u).const_mul 5).neg
+    have h1 : (fun u : ℝ => -(5 * u)) = (fun u : ℝ => (-5 : ℝ) * id u) := by
+      funext v; simp [id]; ring
+    rw [h1]
+    exact ((hasDerivAt_id u).const_mul (-5 : ℝ)).congr_deriv (by ring)
   have h3 := hasDerivAt_sub_sq_rpow 1 (3 / 2) (by norm_num) u
   rw [show (3 / 2 : ℝ) - 1 = 1 / 2 by norm_num] at h3
   refine (hq.mul h3).congr_deriv ?_
@@ -617,7 +651,7 @@ private theorem abs_unitBellDeriv2_le {u : ℝ} (hu : |u| ≤ 1) : |unitBellDeri
   have hu2 : u ^ 2 ≤ 1 := by nlinarith [abs_nonneg u, sq_abs u]
   unfold unitBellDeriv2
   rw [abs_le]
-  constructor <;> nlinarith [mul_le_mul hu2 p1b p1a (sq_nonneg u)]
+  constructor <;> nlinarith [mul_le_mul hu2 p1b p1a zero_le_one]
 
 private theorem unitBellDeriv2_eq_zero {u : ℝ} (hu : 1 < |u|) : unitBellDeriv2 u = 0 := by
   have hopen : IsOpen {v : ℝ | 1 < |v|} := isOpen_lt continuous_const continuous_abs
@@ -634,9 +668,11 @@ private theorem integral_unitBell_le : ∫ u, unitBell u ≤ 2 := by
 
 private theorem integrable_unitBell : Integrable unitBell := by
   refine unitBell_contDiff.continuous.integrable_of_hasCompactSupport ?_
-  refine hasCompactSupport_of_support_subset_abs fun u hu => ?_
-  by_contra h
-  exact hu (unitBell_eq_zero (lt_of_not_ge h))
+  refine HasCompactSupport.intro (isCompact_Icc (a := -1) (b := 1)) fun u hu => ?_
+  have habs : 1 < |u| := by
+    by_contra h
+    exact hu (abs_le.mp (not_lt.mp h))
+  exact unitBell_eq_zero habs
 
 private theorem continuous_unitBellDeriv2 : Continuous unitBellDeriv2 := by
   unfold unitBellDeriv2
@@ -651,9 +687,11 @@ private theorem continuous_unitBellDeriv2 : Continuous unitBellDeriv2 := by
 
 private theorem integrable_abs_unitBellDeriv2 : Integrable (fun u => |unitBellDeriv2 u|) := by
   refine continuous_unitBellDeriv2.abs.integrable_of_hasCompactSupport ?_
-  refine hasCompactSupport_of_support_subset_abs fun u hu => ?_
-  by_contra h
-  exact hu (by rw [unitBellDeriv2_eq_zero (lt_of_not_ge h), abs_zero])
+  refine HasCompactSupport.intro (isCompact_Icc (a := -1) (b := 1)) fun u hu => ?_
+  have habs : 1 < |u| := by
+    by_contra h
+    exact hu (abs_le.mp (not_lt.mp h))
+  rw [unitBellDeriv2_eq_zero habs, abs_zero]
 
 private theorem integral_abs_unitBellDeriv2_le : ∫ u, |unitBellDeriv2 u| ≤ 40 := by
   have h := integral_le_of_bound_on_Icc (a := 1) (M := 20) zero_le_one (fun _ => abs_nonneg _)
@@ -698,12 +736,12 @@ private theorem deriv_deriv_endpointPairProfile (a : ℝ) :
       fun u => (((unitBellDeriv2 (u + (a - 1)) + unitBellDeriv2 (u - (a - 1))) : ℝ) : ℂ) := by
   have hd1 : ∀ u : ℝ, HasDerivAt (endpointPairReal a)
       (deriv unitBell (u + (a - 1)) + deriv unitBell (u - (a - 1))) u := fun u => by
+    unfold endpointPairReal
+    rw [deriv_unitBell]
     have hL := ((hasDerivAt_unitBell (u + (a - 1))).comp u
-      ((hasDerivAt_id u).add_const (a - 1))).congr_deriv
-      (by rw [(hasDerivAt_unitBell _).deriv, mul_one])
+      ((hasDerivAt_id u).add_const (a - 1))).congr_deriv (mul_one _)
     have hR := ((hasDerivAt_unitBell (u - (a - 1))).comp u
-      ((hasDerivAt_id u).sub_const (a - 1))).congr_deriv
-      (by rw [(hasDerivAt_unitBell _).deriv, mul_one])
+      ((hasDerivAt_id u).sub_const (a - 1))).congr_deriv (mul_one _)
     exact hL.add hR
   have hd1_eq : deriv (endpointPairReal a) =
       fun u => deriv unitBell (u + (a - 1)) + deriv unitBell (u - (a - 1)) :=
@@ -760,6 +798,7 @@ theorem endpointPairProfile_norm_bounds {a : ℝ} (ha : 2 ≤ a) :
       have v1 := unitBell_le_one (t - (a - 1))
       nlinarith
     have hmono := integral_mono hsq_int ((hiL.const_mul 2).add (hiR.const_mul 2)) hpt
+    simp only [Pi.add_apply] at hmono
     rw [integral_add (hiL.const_mul 2) (hiR.const_mul 2), integral_const_mul, integral_const_mul,
       integral_add_right_eq_self unitBell (a - 1),
       integral_sub_right_eq_self unitBell (a - 1)] at hmono
@@ -775,7 +814,8 @@ theorem endpointPairProfile_norm_bounds {a : ℝ} (ha : 2 ≤ a) :
         linarith [unitBell_nonneg (t + (a - 1)), unitBell_ge_of_abs_le_half habs]
       rw [endpointPairProfile, Complex.norm_real, Real.norm_eq_abs, sq_abs]
       nlinarith
-    have hle := setIntegral_le_integral hsq_int (Eventually.of_forall fun _ => sq_nonneg _)
+    have hle := setIntegral_le_integral (s := Icc (a - 5 / 4) (a - 3 / 4)) hsq_int
+      (Eventually.of_forall fun _ => sq_nonneg _)
     rw [setIntegral_const, Real.volume_real_Icc, smul_eq_mul,
       max_eq_left (by linarith)] at hset
     linarith
@@ -801,6 +841,7 @@ theorem endpointPairProfile_norm_bounds {a : ℝ} (ha : 2 ≤ a) :
       rw [Complex.norm_real, Real.norm_eq_abs]
     rw [heq]
     have hmono := integral_mono hd_int (hdL.add hdR) fun u => abs_add_le _ _
+    simp only [Pi.add_apply] at hmono
     rw [integral_add hdL hdR,
       integral_add_right_eq_self (fun u => |unitBellDeriv2 u|) (a - 1),
       integral_sub_right_eq_self (fun u => |unitBellDeriv2 u|) (a - 1)] at hmono
@@ -836,7 +877,7 @@ theorem norm_weilTest_endpointPairProfile_ge {a v : ℝ} (ha : 2 ≤ a)
       unfold endpointPairReal
       linarith [unitBell_ge_of_abs_le_half habs2, unitBell_nonneg ((t - v) - (a - 1))]
     nlinarith
-  have hle := setIntegral_le_integral hprod_int
+  have hle := setIntegral_le_integral (s := Icc (a - 5 / 4) (a - 3 / 4)) hprod_int
     (Eventually.of_forall fun t => mul_nonneg (endpointPairReal_nonneg a t)
       (endpointPairReal_nonneg a (t - v)))
   rw [setIntegral_const, Real.volume_real_Icc, smul_eq_mul, max_eq_left (by linarith)] at hset
@@ -988,15 +1029,16 @@ theorem exists_endpointPairProfile_saturation :
   have hexp_cube : a ^ 3 / 6 ≤ Real.exp a := by
     have hsum := Real.sum_le_exp_of_nonneg (by linarith : (0 : ℝ) ≤ a) 4
     simp only [Finset.sum_range_succ, Finset.range_zero, Finset.sum_empty,
-      Nat.factorial, Nat.cast_one, Nat.cast_ofNat] at hsum
+      Nat.factorial, Nat.cast_one] at hsum
     linarith [sq_nonneg a]
   have hpoly_lt : 17 * (4 * a + 4 * a ^ 2) < (δ₀ / 2048) * Real.exp a := by
     have hquad : 17 * (4 * a + 4 * a ^ 2) ≤ 136 * a ^ 2 := by nlinarith
     have ha_gt : 6 * 136 / (δ₀ / 2048) < a := by linarith
-    have hmul : 6 * 136 < (δ₀ / 2048) * a := (div_lt_iff₀ (by positivity)).mp ha_gt
+    have hmul : 6 * 136 < a * (δ₀ / 2048) := (div_lt_iff₀ (by positivity)).mp ha_gt
     have hcube_gt : 136 * a ^ 2 < (δ₀ / 2048) * (a ^ 3 / 6) := by
       have ha2_pos : 0 < a ^ 2 := by positivity
-      have := mul_lt_mul_of_pos_right hmul ha2_pos
+      have hm := mul_lt_mul_of_pos_right hmul ha2_pos
+      have heq : a * (δ₀ / 2048) * a ^ 2 = 6 * ((δ₀ / 2048) * (a ^ 3 / 6)) := by ring
       linarith
     have hcube_exp : (δ₀ / 2048) * (a ^ 3 / 6) ≤ (δ₀ / 2048) * Real.exp a :=
       mul_le_mul_of_nonneg_left hexp_cube (by positivity)
@@ -1008,6 +1050,12 @@ theorem exists_endpointPairProfile_saturation :
     rw [hκ₀_def]
     have hexp_pos : 0 < Real.exp a := Real.exp_pos a
     nlinarith
+  have h4a_nn : 0 ≤ 4 * a + 4 * a ^ 2 := by positivity
+  have hshell_scaled : 2 * ((δ₀ / 2048) * Real.exp a) <
+      (1 / 1024 : ℝ) * (FreeLagTrace.primeMass (a - 7 / 8) - FreeLagTrace.primeMass (a - 9 / 8)) := by
+    have hm := mul_lt_mul_of_pos_left hshell_gt (by norm_num : (0 : ℝ) < 1 / 1024)
+    have heq : (1 / 1024 : ℝ) * (δ₀ * Real.exp a) = 2 * ((δ₀ / 2048) * Real.exp a) := by ring
+    linarith
   linarith
 
 /-- **Eventual-in-Height Power-Saving Impossibility for Smooth `C²` Profiles.** Even for the smooth
@@ -1106,10 +1154,9 @@ theorem abs_re_pole_terms_heightShift_le_decay {a : ℝ} (ha : 0 ≤ a) {f : ℝ
       2 * Real.exp a * B ^ 2 / (1 + 2 * π * |ξ|) ^ 4 := by
     have hexp : Real.exp (a / 2) * Real.exp (a / 2) = Real.exp a := by
       rw [← Real.exp_add, show a / 2 + a / 2 = a by ring]
-    calc 2 * ((Real.exp (a / 2) * B / (1 + 2 * π * |ξ|) ^ 2) *
-          (Real.exp (a / 2) * B / (1 + 2 * π * |ξ|) ^ 2))
-        = 2 * (Real.exp (a / 2) * Real.exp (a / 2)) * B ^ 2 / (1 + 2 * π * |ξ|) ^ 4 := by ring
-      _ = 2 * Real.exp a * B ^ 2 / (1 + 2 * π * |ξ|) ^ 4 := by rw [hexp]
+    rw [div_mul_div_comm, ← pow_add, show (2 : ℕ) + 2 = 4 by norm_num, ← mul_div_assoc,
+      show 2 * (Real.exp (a / 2) * B * (Real.exp (a / 2) * B)) =
+        2 * (Real.exp (a / 2) * Real.exp (a / 2)) * B ^ 2 by ring, hexp]
   linarith
 
 /-- Pure shifted-symbol integral lower bound (free of pole terms): if
@@ -1509,21 +1556,27 @@ theorem exists_endpointPair_sharp_escape_and_recurrence_lower_bound (hRH : Riema
     pow_le_pow_left₀ hBf0 hBf_ub 2
   have hK_le : 1 + (4 * ((∫ u, ‖endpointPairProfile a u‖) +
       ∫ u, ‖deriv (deriv (endpointPairProfile a)) u‖)) ^ 2 * (1 / 2 + π * C) ≤ K := by
+    simp only [K]
     have hpos : 0 ≤ 1 / 2 + π * C := by positivity
-    nlinarith [mul_le_mul_of_nonneg_right hBf_sq hpos]
+    linarith [mul_le_mul_of_nonneg_right hBf_sq hpos]
   have hK_small : K < c₀ * Real.exp a * (∫ t, ‖endpointPairProfile a t‖ ^ 2) := by
     have hexp_mono : Real.exp a₁ ≤ Real.exp a := Real.exp_le_exp.mpr ha
     have h1 : 2048 * K < c₀ * Real.exp a := by
-      have := (div_lt_iff₀ hc₀).mp ha₁_exp
-      nlinarith
-    nlinarith
+      have hd := (div_lt_iff₀ hc₀).mp ha₁_exp
+      have hm := mul_le_mul_of_nonneg_left hexp_mono hc₀.le
+      have hc : Real.exp a₁ * c₀ = c₀ * Real.exp a₁ := mul_comm _ _
+      linarith
+    have h2 := mul_le_mul_of_nonneg_left hN_lb (by positivity : 0 ≤ c₀ * Real.exp a)
+    linarith
   set B := 2 * c₀ * Real.exp a * (∫ t, ‖endpointPairProfile a t‖ ^ 2)
   have hB_lt : B < primeOnlyEnvelope (endpointPairProfile a) ⌊Real.exp (2 * a)⌋₊ -
       primePowerTailEnvelope (endpointPairProfile a) ⌊Real.exp (2 * a)⌋₊ := by
     have h1 : B < κ₀ * Real.exp a * (∫ t, ‖endpointPairProfile a t‖ ^ 2) := by
       simp only [B, c₀]
-      have hexp_pos : 0 < Real.exp a := Real.exp_pos a
-      nlinarith
+      have hpos : 0 < κ₀ * Real.exp a * (∫ t, ‖endpointPairProfile a t‖ ^ 2) := by positivity
+      have heq : 2 * (κ₀ / 4) * Real.exp a * (∫ t, ‖endpointPairProfile a t‖ ^ 2) =
+          (1 / 2 : ℝ) * (κ₀ * Real.exp a * (∫ t, ‖endpointPairProfile a t‖ ^ 2)) := by ring
+      linarith
     exact lt_trans h1 (hsat a ha_ge_a0)
   constructor
   · intro T_min
@@ -1653,7 +1706,6 @@ theorem modulatedTest_eq_heightShift (γ₀ : ℝ) (s : ℝ → ℝ) :
   have h2pi : (2 * π : ℂ) ≠ 0 := by exact_mod_cast Real.two_pi_pos.ne'
   push_cast
   field_simp [h2pi]
-  ring
 
 /-- **Single-Height Nonnegativity on `sinhTest a δ` Forces Off-Line Companions.**
 Strengthens `exists_offLine_companion_of_weil_positive` from global level-`a` Weil positivity to
@@ -1840,7 +1892,9 @@ theorem lintegral_abs_re_primePolynomial_ge_le_of_separated {a r M : ℝ} (ha : 
     refine (hPi.mul_const (C ^ 2 / M ^ 2)).mono'
       ((hPc.mul (hQc.norm.pow 2)).div_const _).aestronglyMeasurable
       (Eventually.of_forall fun ξ => ?_)
-    rw [Real.norm_of_nonneg (hG0 ξ), mul_div_assoc]
+    rw [Real.norm_of_nonneg (hG0 ξ)]
+    simp only [hG]
+    rw [mul_div_assoc]
     have hP0 : 0 ≤ P ξ := sq_nonneg _
     have hQ2 : ‖Q ξ‖ ^ 2 ≤ C ^ 2 := pow_le_pow_left₀ (norm_nonneg _) (hQb ξ) 2
     gcongr
@@ -1888,7 +1942,7 @@ theorem exists_lintegral_power_saving_violation_heights_le :
   obtain ⟨C, hC0, hV⟩ := exists_primeVariance_le
   refine ⟨C, hC0, fun {a r c θ} ha hc {f η} hf hfs hη hηs hX ξ₀ => ?_⟩
   have hfc := hasCompactSupport_of_tsupport_subset_Icc hfs
-  set Nf := ∫ t, ‖f t‖ ^ 2
+  set Nf := ∫ t, ‖f t‖ ^ 2 with hNf_def
   have hNf0 : 0 ≤ Nf := integral_nonneg fun _ => sq_nonneg _
   rcases hNf0.lt_or_eq with hNf_pos | hNf_zero
   · set M := c * Real.exp (θ * a) * Nf
@@ -1896,9 +1950,13 @@ theorem exists_lintegral_power_saving_violation_heights_le :
     have hsub : ∫⁻ ξ, {ξ | M < |(primePolynomial f ⌊Real.exp (2 * a)⌋₊ (ξ + ξ₀)).re|}.indicator
           (fun ξ => ENNReal.ofReal (‖paperFT η (-(2 * π * (ξ : ℂ)))‖ ^ 2)) ξ ≤
         ∫⁻ ξ, {ξ | M ≤ |(primePolynomial f ⌊Real.exp (2 * a)⌋₊ (ξ + ξ₀)).re|}.indicator
-          (fun ξ => ENNReal.ofReal (‖paperFT η (-(2 * π * (ξ : ℂ)))‖ ^ 2)) ξ :=
-      lintegral_mono fun ξ =>
-        Set.indicator_le_indicator_of_subset (fun _ h => h.le) (fun _ => zero_le _) ξ
+          (fun ξ => ENNReal.ofReal (‖paperFT η (-(2 * π * (ξ : ℂ)))‖ ^ 2)) ξ := by
+      refine lintegral_mono fun ξ => ?_
+      by_cases h : M < |(primePolynomial f ⌊Real.exp (2 * a)⌋₊ (ξ + ξ₀)).re|
+      · rw [Set.indicator_of_mem h,
+          Set.indicator_of_mem (show ξ ∈ {ξ | M ≤ |(primePolynomial f ⌊Real.exp (2 * a)⌋₊ (ξ + ξ₀)).re|} from h.le)]
+      · rw [Set.indicator_of_notMem h]
+        exact bot_le
     refine hsub.trans ((lintegral_abs_re_primePolynomial_ge_le_of_separated ha hf hfs hη hηs hX
       ξ₀ hM).trans (ENNReal.ofReal_le_ofReal ?_))
     have hNη0 : 0 ≤ ∫ t, ‖η t‖ ^ 2 := integral_nonneg fun _ => sq_nonneg _
@@ -1928,10 +1986,10 @@ theorem exists_lintegral_power_saving_violation_heights_le :
           (c ^ 2 * Real.exp (2 * θ * a)) := mul_div_mul_right _ _ hNf2_ne
   · have hwt0 : ∀ v : ℝ, EF.weilTest f f v = 0 := fun v => by
       have hb := norm_weilTest_self_le hf.continuous hfc v
-      rw [← hNf_zero] at hb
+      rw [← hNf_def, ← hNf_zero] at hb
       exact norm_le_zero_iff.mp hb
     have hP0 : ∀ ξ : ℝ, primePolynomial f ⌊Real.exp (2 * a)⌋₊ (ξ + ξ₀) = 0 := fun ξ => by
-      unfold primePolynomial expSum
+      simp only [primePolynomial, SquareRootThreshold.expSum]
       refine Finset.sum_eq_zero fun j _ => ?_
       simp [primeCoeff, hwt0]
     have hempty : {ξ : ℝ | c * Real.exp (θ * a) * Nf <

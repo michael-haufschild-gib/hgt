@@ -745,7 +745,7 @@ private theorem norm_halfGaussTransform_le_three_parts {t X v w₁ W B₁ B₂ B
       (∫ w in Ioc w₁ W, (gaussDensity t (w - v) : ℂ) * xiLine X w) +
       (∫ w in Ioi W, (gaussDensity t (w - v) : ℂ) * xiLine X w) := by
     unfold halfGaussTransform
-    exact setIntegral_Ioi_split hw₁ hw₁W hGF.integrableOn
+    exact setIntegral_Ioi_split hw₁.le hw₁W hGF.integrableOn
   rw [hsplit]
   have hn1 : ‖∫ w in Ioc 0 w₁, (gaussDensity t (w - v) : ℂ) * xiLine X w‖ ≤ B₁ :=
     ((norm_integral_le_integral_norm _).trans
@@ -1164,7 +1164,7 @@ theorem eventually_interior_errors_small {η' δ₀ γ m K b : ℝ} (hη' : 0 < 
     have h0 := (tendsto_exp_neg_const_mul (c := 2 * δ₀) (by positivity)).const_mul (Real.exp η₁)
     rw [mul_zero] at h0
     refine h0.congr fun α => ?_
-    rw [← Real.exp_add, sub_eq_add_neg, neg_mul]
+    rw [← Real.exp_add, sub_eq_add_neg]
   have e1 := t1.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 25))
   have e2 := t2.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 25))
   have e3 := t3.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 25))
@@ -1195,7 +1195,7 @@ theorem eventually_interior_errors_small {η' δ₀ γ m K b : ℝ} (hη' : 0 < 
 theorem re_slope_zero_and_ne_zero_interiorLindelof {c₀ η δ₀ m K α₀ t X : ℝ}
     (hη : 0 < η) (hη40 : η ≤ 1 / 40) (hδ₀ : 0 < δ₀) (hδ₀40 : δ₀ ≤ 1 / 40) (hm : 0 < m)
     (hc₀ : 27 / 40 < c₀)
-    (hsep : 1 / 2 + 2 * η + 1 / 10 ≤ -δ₀ + c₀)
+    (_ : 1 / 2 + 2 * η + 1 / 10 ≤ -δ₀ + c₀)
     (hmc : ∀ c : ℝ, c₀ ≤ c → ∀ w ∈ Icc (0 : ℝ) (1 / 2 + 2 * η),
       m ≤ (c - w) ^ 2 - 4 * c * interiorStripExp η w - 2 * δ₀ * c)
     (hK : ∀ X w u : ℝ, 16 ≤ X → 0 ≤ w → w ≤ 1 / 2 + 2 * η → 1 / 2 + 2 * η ≤ u → u ≤ X →

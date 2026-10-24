@@ -229,6 +229,8 @@ D_{t,S}(y)=\prod_{q\in S_{\mathrm{crit}}}\bigl(y+(\gamma_q-t)^2\bigr)
 
 At a radius head `S=S(t,R)`, `R≥0`, the exact canonical head is `H_{t,R}(z)=c_{t,R}D_{t,S}(z²)` with `c_{t,R}>0`. Its even Taylor coefficient is therefore `c_{t,R}[y^k]D_{t,S}`, and every odd coefficient vanishes. This description divides by neither `Ξ(t)` nor a vanishing constant coefficient. A split of the copy set gives an exact polynomial product and hence a full coefficient convolution; central factors and signed mixed terms survive the transition. These are the actual-source identities `xiFiniteHead_even_taylor`, `localDivisorPolynomial_split` and `localDivisorPolynomial_split_coeff` in [SourceLocalFactors.lean](SourceLocalFactors.lean), not only a model factorization.
 
+For arbitrary `S`, `D_{t,S}` is monic of degree `card(sliceTrunc S)`; a radius head is already pairing-stable. Its horizontal polynomial `D_{t,S}(X²)` is therefore monic, even and nonnegative, of degree `2N` for a radius head containing `N` copies. At an off-real copy's own ordinate, a radius retaining that copy gives a positive root at its depth `δ` and retains its distinct reflection, so `N≥2`. Coefficient positivity after heat `λ/2`, `λ>0`, then forces `δ²≤λh_N²`, where `h_N` is the largest zero of `He_(2N−1)`. [SourceDivisorGeometry.lean](SourceDivisorGeometry.lean) proves the exact degree and `radiusHead_depth_sq_le_hermite_edge`, with every central copy retained. This is a sharp obstruction under the stated heat-cone premise; the arithmetic sign certificate remains open.
+
 On an admissible contour the logarithmic derivative gives multiplicity-exact power sums:
 
 \[

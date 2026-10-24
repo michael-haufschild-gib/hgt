@@ -29,6 +29,25 @@ Paper proofs: `../3-formalized/central-multiplicity-full-heat-cone.md` and
 The complete classification, radical, contact and Hermite-conversion audits use only
 `propext`, `Classical.choice` and `Quot.sound`.
 
+## Sharp optimization exposed by the obstruction
+
+The [sharp Hermite boundary](../3-formalized/sharp-even-heat-root-barrier.md) gives
+the exact optimum beyond the centrally masked family. Among even nonnegative
+polynomials of degree `2m+4` with root `sqrt(a)`, `a>0`, the least first heat is
+`a/(2h_(m+2)²)`, attained by a scaled shifted Hermite polynomial. At first heat
+only its leading and constant coefficients are positive; every intermediate
+coefficient vanishes. Its only real roots are an exactly double opposite pair;
+in monic normalization the residual cofactor is monic, even and strictly positive.
+Central masking takes asymptotically twice this optimal heat time. Thus degree
+and depth alone do not make the centrally masked family extremal.
+
+The dependency-closed paper proof and Lean verification are complete:
+`HermiteExtremizers`, `HermiteExtremizerFactorization` and `HermiteOptimalHeat`
+prove attainment, the exact cofactor and the optimal heat comparison. Their final
+plain checks passed, and key transitive axiom audits report only `propext`,
+`Classical.choice` and `Quot.sound`. This adds an exact sharp boundary and
+classification to the obstruction without asserting arithmetic source rigidity.
+
 ## Closure gates
 
 - [x] Negative claim tested against the entire growing-multiplicity family.
@@ -37,5 +56,6 @@ The complete classification, radical, contact and Hermite-conversion audits use 
 - [x] Final plain module checks and umbrella wiring.
 
 The universal polynomial forcing principle is retired. Its strongest identified positive
-survivor is the exact all-real classification and unique middle-order contact law above.
+survivors are the exact all-real classification, unique middle-order contact law and
+attained sharp Hermite optimization above.
 The arithmetic source rigidity endpoint remains open.
