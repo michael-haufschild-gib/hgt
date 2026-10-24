@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.WhatAGramFunctionalCertifiesWithoutEffectivity
 import GaloisForLFunctions.TransThresholdPairCorrelation.NarrowStripClosePairEnergyAndExchangeRate
+import GaloisForLFunctions.TransThresholdPairCorrelation.SmoothWeightedCertificateAtFourThirds
 
 /-!
 # Coalescent-Band Localization, Universal `N₀*` Moment Transfer, and the Separation of `HD(1)` from `3/4`
@@ -84,7 +85,8 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
-open RHTower GaloisForLFunctions.HTGeometry GaloisForLFunctions.TransThresholdPairCorrelation
+open _root_.RHTower GaloisForLFunctions.RHTower GaloisForLFunctions.HTGeometry
+  GaloisForLFunctions.TransThresholdPairCorrelation
 
 /-! ## 1. Universal `N₀*` Reflection Bound and Off-Line Moment Transfer Without Simplicity -/
 
@@ -170,6 +172,7 @@ theorem two_mul_sum_right_add_N0star_le {T₁ T₂ : ℝ} (hT₁ : 0 ≤ T₁) :
     have hzero : RHTower.xi z = 0 :=
       (RHTower.mem_stripFinsetPos.mp (Finset.mem_sdiff.mp hz).1).2.2.2.2
     have h1m : (1 : ℝ) ≤ m z := by
+      dsimp only [m]
       exact_mod_cast Nat.one_le_iff_ne_zero.mpr (RHTower.xi_order_toNat_ne_zero hzero)
     linarith
   · have h1 : ¬ (1 / 2 < 1 - z.re) := by linarith
@@ -983,10 +986,24 @@ For every `B` with `91 + 9B ≠ 0` and every mixing weight `ε : ℝ`,
 theorem mixOpt_sub_two_sub_mixQ {B : ℝ} (hB : 91 + 9 * B ≠ 0) (ε : ℝ) :
     mixOpt B - (2 - RHTower.mixQ B ε) =
       (91 + 9 * B) / 432 * (ε - mixOptWeight B) ^ 2 := by
+  apply mul_right_cancel₀ hB
   unfold mixOpt mixOptWeight RHTower.mixQ
-  have h2 : 2 * (91 + 9 * B) ≠ 0 := mul_ne_zero (by norm_num) hB
-  have h1728 : 1728 * (91 + 9 * B) ≠ 0 := mul_ne_zero (by norm_num) hB
-  field_simp [hB, h2, h1728]
+  have h1 : (181 - 18 * B) ^ 2 / (1728 * (91 + 9 * B)) * (91 + 9 * B) =
+      (181 - 18 * B) ^ 2 / 1728 := by
+    rw [div_mul_eq_mul_div, mul_div_mul_right _ _ hB]
+  have h2 : (1 + 36 * B) / (2 * (91 + 9 * B)) * (91 + 9 * B) = (1 + 36 * B) / 2 := by
+    rw [div_mul_eq_mul_div, mul_div_mul_right _ _ hB]
+  have h3 : (91 + 9 * B) / 432 * (ε - (1 + 36 * B) / (2 * (91 + 9 * B))) ^ 2 * (91 + 9 * B) =
+      1 / 432 * (ε * (91 + 9 * B) - (1 + 36 * B) / (2 * (91 + 9 * B)) * (91 + 9 * B)) ^ 2 := by
+    ring
+  have h4 : (2 / 3 + (181 - 18 * B) ^ 2 / (1728 * (91 + 9 * B)) -
+      (2 - ((1 - ε) ^ 2 * (9 / 8 + B / 16) + 2 * ε * (1 - ε) * (971 / 864 + B / 48) +
+        ε ^ 2 * (4 / 3)))) * (91 + 9 * B) =
+      (2 / 3 - (2 - ((1 - ε) ^ 2 * (9 / 8 + B / 16) + 2 * ε * (1 - ε) * (971 / 864 + B / 48) +
+        ε ^ 2 * (4 / 3)))) * (91 + 9 * B) +
+        (181 - 18 * B) ^ 2 / (1728 * (91 + 9 * B)) * (91 + 9 * B) := by
+    ring
+  rw [h4, h1, h3, h2]
   ring
 
 /-- **Global Optimality of `mixOpt B` and Strict Convexity of `mixOptWeight B`.**
@@ -1025,7 +1042,7 @@ theorem two_sub_mixQ_le_mixOpt_and_eq_at_weight {B : ℝ} (hB : -91 / 9 < B) :
    strictly extending the `ε = 7/16` threshold `B ≤ 117/41`);
 3. At `B = 1` (`ε* = 37/200`), `mixOpt 1 = 141769 / 172800 > 13 / 16`;
    at `B = 2` (`ε* = 73/218`), `mixOpt 2 = 146593 / 188352 > 1513 / 1944 > 3 / 4`;
-4. At `B = 7` (`ε* = 253/308`), `mixOpt 7 = 180247 / 266112 > 254 / 375 > HD(1)`, so the
+4. At `B = 7` (`ε* = 253/308`), `mixOpt 7 = 180433 / 266112 > 254 / 375 > HD(1)`, so the
    two-window mixture strictly beats `HD(1)` all the way up to `B = 7`. -/
 theorem mixOpt_values_and_three_quarters_criterion :
     (∀ B : ℝ, -91 / 9 < B →
@@ -1035,8 +1052,8 @@ theorem mixOpt_values_and_three_quarters_criterion :
     ((117 / 41 : ℝ) < 2954 / 1035) ∧
     (mixOpt 1 = 141769 / 172800 ∧ (13 / 16 : ℝ) < 141769 / 172800) ∧
     (mixOpt 2 = 146593 / 188352 ∧ (1513 / 1944 : ℝ) < 146593 / 188352) ∧
-    (mixOpt 7 = 180247 / 266112 ∧ Zeta23.ThmD.HD 1 < 254 / 375 ∧
-      (254 / 375 : ℝ) < 180247 / 266112) := by
+    (mixOpt 7 = 180433 / 266112 ∧ Zeta23.ThmD.HD 1 < 254 / 375 ∧
+      (254 / 375 : ℝ) < 180433 / 266112) := by
   refine ⟨fun B hB => ?_, fun B => ?_, by norm_num, ?_, ?_, ?_⟩
   · obtain ⟨hle, heq, -⟩ := two_sub_mixQ_le_mixOpt_and_eq_at_weight hB
     have hiff1 : (∃ ε : ℝ, 3 / 4 ≤ 2 - RHTower.mixQ B ε) ↔ 3 / 4 ≤ mixOpt B :=
@@ -1047,7 +1064,13 @@ theorem mixOpt_values_and_three_quarters_criterion :
     have hden_ne : 1728 * (91 + 9 * B) ≠ 0 := hden.ne'
     have hid : 2 / 3 + (181 - 18 * B) ^ 2 / (1728 * (91 + 9 * B)) - 3 / 4 =
         ((18 * B - 217) ^ 2 - 27432) / (1728 * (91 + 9 * B)) := by
-      field_simp [hden_ne]; ring
+      apply mul_right_cancel₀ hden_ne
+      have h1 : (2 / 3 + (181 - 18 * B) ^ 2 / (1728 * (91 + 9 * B)) - 3 / 4) *
+          (1728 * (91 + 9 * B)) =
+          (2 / 3 - 3 / 4) * (1728 * (91 + 9 * B)) +
+            (181 - 18 * B) ^ 2 / (1728 * (91 + 9 * B)) * (1728 * (91 + 9 * B)) := by ring
+      rw [h1, div_mul_cancel₀ _ hden_ne, div_mul_cancel₀ _ hden_ne]
+      ring
     constructor
     · intro h
       have hnn : 0 ≤ ((18 * B - 217) ^ 2 - 27432) / (1728 * (91 + 9 * B)) := by linarith
@@ -1086,7 +1109,7 @@ theorem narrowStrip_HD_one_and_twoAdic_parity_collar {F : ℝ → ℝ} {δ : ℝ
         ∑ m ∈ (Zeta23.PrimeSide.primeRange X).filter Odd,
           if n = m then (0 : ℝ)
           else Zeta23.PrimeSide.acoef n * Zeta23.PrimeSide.acoef m *
-            RHTower.FejerWeight.triangleFn b (Real.log n - Real.log m)) = 0) := by
+            FejerWeight.triangleFn b (Real.log n - Real.log m)) = 0) := by
   have h1δ : 0 < 1 + δ := by linarith
   have hfrob := narrowStrip_frobeniusFormFactor_eq hδ.ne' h1δ.ne' hF_cont hF_sub
   have hden : 0 < 375 * (1 + δ) ^ 2 := by positivity

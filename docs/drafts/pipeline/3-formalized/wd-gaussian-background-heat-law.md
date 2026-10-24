@@ -3,7 +3,7 @@
 - **Stage:** 3-formalized; complete paper proof and Lean certificate.
 - **Type:** THEOREM (Lean).
 - **Source:** WD goal loop, row 377; user request to formalize noteworthy paper proofs.
-- **Scope:** exact Gaussian-background model. No transfer to the actual Xi source or RH claim.
+- **Scope:** exact Gaussian-background model; actual-tail comparisons formalized separately. No coefficient-sign transfer or RH claim.
 - **Leaf:** `RHTower/XiSliceHeatGaussianSharpThreshold.lean`.
 
 ## Scope and connection task
@@ -12,8 +12,9 @@ The user explicitly requested completing this model formalization, then searchin
 the broader Lean corpus for a connection giving more significant route progress.
 Formalization is complete. The model alone does not discharge the global
 signed source inequality, a source-to-WD signed trace comparison, or a uniform
-zero-block absorption premise. Any connection to a general Xi background must
-be proved separately and its missing inputs stated explicitly.
+zero-block absorption premise. The separate actual-tail certificate below
+proves Gaussian approximation and heat comparison while retaining the finite
+zero block; its coefficient-sign contribution remains open.
 
 ## Exact theorem and paper proof
 
@@ -61,8 +62,9 @@ it follows by expanding the three convolution terms with falling factorials.
 This is stronger and more precise than the heuristic discriminant sentence
 in row 377. The Mehler normalization `mu^(-1/2)` was omitted from that row's
 displayed coefficient; it does not affect signs but belongs in the exact identity.
-The row's transfer from a Gaussian model to a general counting-controlled
-background remains unproved and is excluded from this formalization.
+The row's coefficient-sign transfer from a Gaussian model to a general
+counting-controlled background remains unproved and is excluded from this
+formalization.
 
 ### Fixed-offset dense-background consequence
 
@@ -98,7 +100,12 @@ experiments, web search, novelty claims, or limit increases.
 
 The exact Xi pair factorization in `XiSliceHeatIsolatedPairThreshold` leaves a
 weighted signed cofactor deviation. `XiSliceHeatedOffLineDetection` supplies
-a product envelope, which does not itself bound that deviation. The next
-paper theorem retains a finite zero block and subtracts the complementary
-quadratic exponential before taking norms; see the in-progress card
-`rh/weil-dilation/wd-xi-gaussian-tail-compensation-2026-10-24.md`.
+a product envelope, which does not itself bound that deviation. The completed
+[Xi finite-head and Gaussian-tail certificate](wd-xi-gaussian-tail-compensation-2026-10-24.md)
+retains the finite zero block and subtracts the complementary quadratic
+exponential before taking norms. Its nine Lean modules prove actual-tail
+Gaussian limits, global real-axis bracketing, heat integrability and locally
+uniform normalized heat convergence. The exact finite-head factorization
+also applies when the center is a zero, retaining its full multiplicity.
+Transferring the model's coefficient sign through that finite head remains
+open.

@@ -32,6 +32,12 @@ arithmetic estimates to make a dictionary applicable.
 
 ## Current evidence and gaps
 
+- J7's global HF ceiling application has no proved input. Its exact premise
+  `∀ᶠ L in atTop, windowCeiling L ≤ exp(L/2)+B(1+L)` implies RH, as proved in
+  `PrimeWindowCeilingRHCriterion`. The already proved dictionary can be
+  audited, but claiming an unconditional application would cross the stated
+  scope. Local and graded allocation instances remain available.
+
 - The report predates existing imports of `CHMDSharpWindowNodalConvergence`,
   `LambdaRingEffectivityAndHeckeLefschetzRigidity`, and
   `SuzukiCriticalL2Arithmetic`; preserve these imports.

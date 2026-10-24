@@ -45,11 +45,14 @@ variable (D : ScalingDatum G E)
 def corr (ξ : Correspondence G) (x : E) : E := ξ.sum fun g a => a • D.act g x
 
 theorem corr_single (g : G) (a : ℝ) (x : E) : D.corr (Finsupp.single g a) x = a • D.act g x := by
-  rw [corr, Finsupp.sum_single_index (zero_smul ℝ _)]
+  rw [corr, Finsupp.sum_single_index (by simp)]
 
 theorem corr_add (ξ η : Correspondence G) (x : E) :
     D.corr (ξ + η) x = D.corr ξ x + D.corr η x := by
-  rw [corr, corr, corr, Finsupp.sum_add_index' (fun _ => zero_smul ℝ _) (fun _ _ _ => add_smul _ _ _)]
+  simp only [corr]
+  rw [Finsupp.sum_add_index']
+  · intro; simp
+  · intros; simp [add_smul]
 
 theorem corr_zero (x : E) : D.corr 0 x = 0 := by simp [corr]
 
@@ -73,21 +76,19 @@ def conv (ξ η : Correspondence G) : Correspondence G :=
 /-- **Convolution is composition.** -/
 theorem corr_conv (ξ η : Correspondence G) (x : E) :
     D.corr (conv ξ η) x = D.corr ξ (D.corr η x) := by
-  have hξ : ∀ y : E, D.corr ξ y = ξ.sum fun g a => a • D.act g y := fun _ => rfl
   induction ξ using Finsupp.induction_linear with
   | zero => simp [conv, corr]
   | add ξ₁ ξ₂ h₁ h₂ =>
     rw [conv, Finsupp.sum_add_index' (fun _ => by simp) (fun g a b => by
       simp only [add_mul, Finsupp.single_add, Finsupp.sum_add]), ← conv, ← conv, D.corr_add,
-      h₁ (fun _ => rfl), h₂ (fun _ => rfl), D.corr_add]
+      h₁, h₂, D.corr_add]
   | single g a =>
     rw [conv, Finsupp.sum_single_index (by simp), D.corr_single]
     induction η using Finsupp.induction_linear with
     | zero => simp [corr]
     | add η₁ η₂ k₁ k₂ =>
       rw [Finsupp.sum_add_index' (fun _ => by simp) (fun h b c => by
-        rw [mul_add, Finsupp.single_add]), D.corr_add, k₁ (fun _ => rfl), k₂ (fun _ => rfl),
-        D.corr_add, map_add, smul_add]
+        rw [mul_add, Finsupp.single_add]), D.corr_add, k₁, k₂, D.corr_add, map_add, smul_add]
     | single h b =>
       rw [Finsupp.sum_single_index (by simp), D.corr_single, D.corr_single, map_smul,
         D.act_add, smul_smul]
@@ -131,8 +132,7 @@ theorem defect_corr_corr (x : E) (ξ η : Correspondence G) :
     D.defect (D.corr ξ x) (D.corr η x) = D.traceAt x (conv ξ (rosati η)) := by
   induction η using Finsupp.induction_linear with
   | zero =>
-    simp [corr_zero, rosati, conv, traceAt, D.defect_comm _ (0 : E), PolarSurface.defect,
-      PolarSurface.polar]
+    simp [corr_zero, rosati, conv, traceAt, PolarSurface.defect, PolarSurface.polar]
   | add η₁ η₂ h₁ h₂ =>
     have hconv : conv ξ (rosati (η₁ + η₂)) = conv ξ (rosati η₁) + conv ξ (rosati η₂) := by
       rw [rosati_add, conv, conv, conv, ← Finsupp.sum_add]
@@ -202,12 +202,8 @@ theorem pair_heckeGraph (x : E) (g h : G) :
     D.pair (D.heckeGraph x g) (D.heckeGraph x h) = Real.exp (D.scale h) * D.lefschetz x (g - h) := by
   simp only [heckeGraph, map_smul, LinearMap.smul_apply, smul_eq_mul, D.pair_act_act, lefschetz,
     map_sub]
-  have h1 : Real.exp (D.scale g / 2) * Real.exp (D.scale h / 2) =
-      Real.exp (D.scale h) * Real.exp ((D.scale g - D.scale h) / 2) := by
-    rw [← Real.exp_add, ← Real.exp_add]; ring_nf
-  rw [show Real.exp (D.scale g / 2) * (Real.exp (D.scale h / 2) * D.pair (D.act (g - h) x) x) =
-    (Real.exp (D.scale g / 2) * Real.exp (D.scale h / 2)) * D.pair (D.act (g - h) x) x by ring, h1]
-  ring
+  rw [← mul_assoc, ← mul_assoc, ← Real.exp_add, ← Real.exp_add]
+  ring_nf
 
 /-- **Adjunction.** `Γ_g² = e^{s(g)} x²`; over `𝔽_q`, `Γ_m² = q^m (2 − 2g)`. -/
 theorem pair_heckeGraph_self (x : E) (g : G) :
