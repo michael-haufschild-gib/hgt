@@ -121,10 +121,14 @@ theorem abs_log_sub_log_gt_of_odd_lt_two_div {m n : ℕ} {θ₀ : ℝ}
     (hmax : max (n : ℝ) (m : ℝ) < 2 / θ₀) :
     θ₀ < |Real.log n - Real.log m| := by
   have h2 : (2 : ℝ) ≤ |(n : ℝ) - m| := by
-    have hne' : (n : ℤ) ≠ m := by exact_mod_cast hne
-    have hpar' : (n : ℤ) % 2 = (m : ℤ) % 2 := by exact_mod_cast hpar
-    have h2z : (2 : ℤ) ≤ |(n : ℤ) - m| := by omega
-    exact_mod_cast h2z
+    rcases lt_or_gt_of_ne hne with hlt | hgt
+    · have hge2 : 2 ≤ m - n := by omega
+      have hcast : (2 : ℝ) ≤ ((m - n : ℕ) : ℝ) := by exact_mod_cast hge2
+      rwa [Nat.cast_sub hlt.le, ← abs_of_nonneg (sub_nonneg.mpr (by exact_mod_cast hlt.le)),
+        abs_sub_comm] at hcast
+    · have hge2 : 2 ≤ n - m := by omega
+      have hcast : (2 : ℝ) ≤ ((n - m : ℕ) : ℝ) := by exact_mod_cast hge2
+      rwa [Nat.cast_sub hgt.le, ← abs_of_nonneg (sub_nonneg.mpr (by exact_mod_cast hgt.le))] at hcast
   have hmax0 : (0 : ℝ) < max (n : ℝ) (m : ℝ) :=
     lt_of_lt_of_le (by exact_mod_cast hm) (le_max_right _ _)
   have hθmax : θ₀ < 2 / max (n : ℝ) (m : ℝ) := by
@@ -608,11 +612,35 @@ theorem eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le
   have hX1 : 1 ≤ params43.X T := by
     rw [hXL]; exact Real.one_le_exp (by linarith)
   have hθ0 : 0 < T ^ (-1 + η) := Real.rpow_pos_of_pos hT0 _
-  have hg : ∀ y, |(params43.localFun T).g y| ≤ params43.L T := fun y =>
-    abs_g_le_L hF y
-  have hΩ : ∀ θ, |cosTransform (profileΩ u T) θ| ≤ T := fun θ =>
-    (abs_cosTransform_le (profileΩ_integrable hu hT0.le) (fun τ => profileΩ_nonneg hu τ) θ).trans
-      (integral_profileΩ_le hu hT0.le)
+  have hg : ∀ y, |(params43.localFun T).g y| ≤ params43.L T := fun y => by
+    rw [abs_of_nonneg (hF.g_nonneg y)]
+    exact hF.g_le_L y
+  set s₀ := T + ε₁ * T with hs₀
+  set s₁ := 2 * T - ε₁ * T with hs₁
+  have hε8 := hu.le
+  have hs : s₀ ≤ s₁ := by rw [hs₀, hs₁]; nlinarith only [hε8, hT0]
+  have hΩc : Continuous (profileΩ u T) := (contDiff_profileΩ hu T 0).continuous
+  have hΩ0 : ∀ τ, 0 ≤ profileΩ u T τ := fun τ => by unfold profileΩ; positivity
+  have hΩ1 : ∀ τ, profileΩ u T τ ≤ 1 := fun τ => by
+    unfold profileΩ; exact pow_le_one₀ (hu.nonneg _) (hu.le_one _)
+  have hΩS : ∀ τ, τ ∉ Icc s₀ s₁ → profileΩ u T τ = 0 := fun τ hτ => by
+    unfold profileΩ; rw [profileU_eq_zero hu hT0 hτ]; norm_num
+  have hΩi : Integrable (profileΩ u T) := by
+    have h := integrable_window_mul hΩc hΩS (v := fun _ => (1 : ℝ)) continuous_const
+    simpa using h
+  have hIΩ : ∫ τ, profileΩ u T τ ≤ T := by
+    have h := integral_window_mul_le hs hΩc hΩ1 hΩS (h := fun _ => (1 : ℝ)) continuous_const
+      (fun _ _ => zero_le_one) (C := 1) (fun _ _ => le_rfl)
+    simp only [mul_one, one_mul] at h
+    have hεT0 := mul_pos hu.pos hT0
+    exact h.trans (by linarith)
+  have hΩ : ∀ θ, |cosTransform (profileΩ u T) θ| ≤ T := by
+    intro θ
+    unfold cosTransform
+    refine (abs_integral_le_integral_abs).trans
+      ((integral_mono (integrable_window_mul_cos hΩi θ).abs hΩi fun τ => ?_).trans hIΩ)
+    rw [abs_mul, abs_of_nonneg (hΩ0 τ)]
+    exact mul_le_of_le_one_right (hΩ0 τ) (Real.abs_cos_le_one _)
   have hdiff := abs_coalSum_sub_primeCoalSum_le hX1 hθ0.le hθhalf (by linarith) hg hT0.le hΩ
   rw [hlogX] at hdiff
   obtain ⟨_, _, hsX, _⟩ := scale_facts hT4096 hhi
@@ -626,7 +654,7 @@ theorem eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le
   have ha2_sq : (1 / 4 : ℝ) * params43.L T ^ 2 ≤ (params43.a T * params43.L T) ^ 2 := by
     have h1 : 1 / 2 * params43.L T ≤ params43.a T * params43.L T :=
       mul_le_mul_of_nonneg_right ha2 (by linarith)
-    nlinarith
+    nlinarith only [h1, hL8]
   have hden0 : 0 < (params43.a T * params43.L T) ^ 2 := by positivity
   unfold coalescentSurplus primeCoalescentSurplus
   rw [← sub_div, abs_div, abs_of_pos hden0]
@@ -643,8 +671,7 @@ theorem eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le
           ring
   have hrpow : T * T ^ (-1 + η) * T ^ (2 / 3 : ℝ) = T ^ (2 / 3 + η) := by
     have h1 : T * T ^ (-1 + η) = T ^ η := by
-      rw [← Real.rpow_one_add' hT0.le (by linarith)]
-      ring_nf
+      rw [show (η : ℝ) = 1 + (-1 + η) by ring, Real.rpow_add hT0, Real.rpow_one]
     rw [h1, ← Real.rpow_add hT0]
     ring_nf
   rw [hrpow] at hnum
@@ -747,10 +774,11 @@ theorem coalescentSurplusAtMost_iff_primeCoalescentSurplusAtMost (β : ℝ) :
         |coalescentSurplus u η T - primeCoalescentSurplus u η T| ≤
           δ * (Ncount T (2 * T) : ℝ) := by
     intro u ε₁ η δ hu hη3 hδ
-    have hexp : 2 / 3 + η < 1 := by linarith
+    have hexp : (2 / 3 : ℝ) + η < 1 := by linarith
+    have hη1 : η < 1 := by linarith
     have hK : 0 ≤ 128 * Real.sqrt 2 / π := by positivity
     have hrate := eventually_log_pow_rpow_le 1 hexp hK (by positivity : (0 : ℝ) < δ / (8 * π))
-    filter_upwards [eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le hu (by linarith),
+    filter_upwards [eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le hu hη1,
       eventually_T_mul_log_div_eight_pi_le_Ncount, hrate, eventually_l_bounds,
       eventually_ge_atTop (1 : ℝ)]
       with T hdiff hNlow hrt ⟨hlog1, _, _, _⟩ hT1

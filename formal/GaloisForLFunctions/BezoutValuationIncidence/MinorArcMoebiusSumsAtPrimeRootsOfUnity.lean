@@ -452,8 +452,8 @@ theorem norm_sum_moebius_typeI_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsP
       have hI := norm_typeI_le hp hξ hUp a (fun k => (abs_truncAF_moebius_le U k).trans
         (by split_ifs <;> norm_num)) (fun k hk => by simp only [a, truncAF_apply_of_gt hk])
         (N / d) (N / d)
-      exact mul_le_mul ((abs_truncAF_moebius_le U d).trans (le_of_eq rfl)) hI (norm_nonneg _)
-        (by split_ifs <;> norm_num)
+      exact mul_le_mul (abs_truncAF_moebius_le U d) hI (norm_nonneg _)
+        (by rw [if_pos hdU]; norm_num)
     · rw [show a d = 0 from truncAF_apply_of_gt (by omega), abs_zero, zero_mul, if_neg hdU,
         zero_mul]
   calc _ ≤ ∑ d ∈ Icc 1 N, (if d ≤ U then 1 else 0) * rootHarmonicSum p :=

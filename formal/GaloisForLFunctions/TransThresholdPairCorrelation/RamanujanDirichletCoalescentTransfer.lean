@@ -393,14 +393,7 @@ theorem abs_cos_div_sin_sub_inv_le {x : ℝ} (hx0 : 0 < x) (hx1 : x ≤ 1) :
   have h3 : x ^ 3 - x ^ 5 / 6 ≤ x * (x * Real.sin x) := by
     have := mul_le_mul_of_nonneg_left hsin_lo.le (sq_nonneg x)
     linarith
-  have h4 : x * (x * Real.sin x) ≤ x * Real.sin x := by
-    calc x * (x * Real.sin x) ≤ 1 * (x * Real.sin x) :=
-          mul_le_mul_of_nonneg_right hx1 (mul_pos hx0 hsin_pos).le
-      _ = x * Real.sin x := one_mul _
-  have h5 : 0 < x * Real.sin x := mul_pos hx0 hsin_pos
-  constructor
-  · linarith only [h1, hsin_hi, h3, h4, hx5]
-  · linarith only [h2, hsin_lo, hx5, hx30, h5]
+  constructor <;> linarith only [h1, h2, hsin_lo, hsin_hi, h3, hx5, hx30]
 
 /-- For each divisor `d ∣ q` (`q ≥ 2`) and `0 < θ ≤ 2 / q`, the scaled cotangent residual satisfies
 `|d cos(dθ/2) / (2 sin(dθ/2)) − 1 / θ| ≤ d² θ / 4`. -/
@@ -522,7 +515,7 @@ theorem abs_sum_ramanujanLagCoefficient_mul_cosTransform_add_le
         (q.totient : ℝ) / 2 * (1 - Real.cos (((q * R : ℕ) : ℝ) * (τ / m)))) := by
     unfold S1 cosTransform
     simp_rw [← integral_const_mul]
-    rw [← integral_finset_sum (Finset.Icc 1 (q * R))
+    rw [← integral_finsetSum (Finset.Icc 1 (q * R))
       (fun h _ => (integrable_window_mul_cos hInt ((h : ℝ) / m)).const_mul _)]
     have hdiff_int : (∫ τ, (q.totient : ℝ) / 2 * (Ω τ * Real.cos (τ * 0))) -
         (∫ τ, (q.totient : ℝ) / 2 * (Ω τ * Real.cos (τ * (((q * R : ℕ) : ℝ) / m)))) =
@@ -536,7 +529,8 @@ theorem abs_sum_ramanujanLagCoefficient_mul_cosTransform_add_le
     rw [mul_sub, ← integral_const_mul, ← integral_const_mul, hdiff_int]
     rw [← integral_add]
     · refine integral_congr_ae (Eventually.of_forall fun τ => ?_)
-      rw [Finset.mul_sum]
+      dsimp only
+      rw [mul_add, Finset.mul_sum]
       have hsum_eq : (∑ h ∈ Finset.Icc 1 (q * R),
             ramanujanLagCoefficient q h * (Ω τ * Real.cos (τ * ((h : ℝ) / m)))) =
           ∑ h ∈ Finset.Icc 1 (q * R),
@@ -546,7 +540,7 @@ theorem abs_sum_ramanujanLagCoefficient_mul_cosTransform_add_le
         ring
       rw [hsum_eq]
       ring
-    · exact integrable_finset_sum _ fun h _ => (integrable_window_mul_cos hInt ((h : ℝ) / m)).const_mul _
+    · exact integrable_finsetSum _ fun h _ => (integrable_window_mul_cos hInt ((h : ℝ) / m)).const_mul _
     · have h1 := (integrable_window_mul_cos hInt 0).const_mul ((q.totient : ℝ) / 2)
       have h2 := (integrable_window_mul_cos hInt (((q * R : ℕ) : ℝ) / m)).const_mul ((q.totient : ℝ) / 2)
       refine (h1.sub h2).congr (Eventually.of_forall fun τ => ?_)
@@ -557,6 +551,7 @@ theorem abs_sum_ramanujanLagCoefficient_mul_cosTransform_add_le
   refine (norm_integral_le_integral_norm _).trans ?_
   refine integral_mono_of_nonneg (Eventually.of_forall fun _ => norm_nonneg _)
     (hInt.const_mul _) (Eventually.of_forall fun τ => ?_)
+  dsimp only
   rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hΩ0 τ)]
   by_cases hτ : τ ∈ Icc a b
   · obtain ⟨hτa, hτb⟩ := mem_Icc.mp hτ
@@ -568,22 +563,24 @@ theorem abs_sum_ramanujanLagCoefficient_mul_cosTransform_add_le
             ∑ d ∈ q.divisors, moebiusReal (q / d) *
               ((d : ℝ) * (((q / d) * R : ℕ) : ℝ)) := by
           have hq1 : 1 ≤ q := by omega
+          have hqR1 : 1 ≤ q * R := Nat.mul_pos hq1 hR
           have htop := Finset.sum_Icc_succ_top (a := 1) (b := q * R - 1)
-            (by exact Nat.le_sub_one_of_lt (Nat.mul_pos hq1 hR))
+            (by omega)
             (fun h => ramanujanLagCoefficient q h * 1)
-          have hsucc : q * R - 1 + 1 = q * R := Nat.sub_add_cancel (Nat.mul_pos hq1 hR)
+          have hsucc : q * R - 1 + 1 = q * R := by omega
           rw [hsucc] at htop
           rw [htop, ramanujanLagCoefficient_of_dvd hq1 (dvd_mul_right q R),
             ← sum_divisors_moebiusReal_div_mul hq1]
           unfold ramanujanLagCoefficient
-          simp_rw [mul_one, Finset.sum_comm (s := Finset.Icc 1 (q * R - 1)), Finset.mul_sum]
-          rw [← Finset.sum_add_distrib]
+          simp_rw [mul_one]
+          rw [Finset.sum_comm, ← Finset.sum_add_distrib]
           refine Finset.sum_congr rfl fun d hd => ?_
+          rw [← Finset.mul_sum, ← mul_add]
           have hdq : d ∣ q := Nat.dvd_of_mem_divisors hd
           have hd0 : 0 < d := Nat.pos_of_mem_divisors hd
           have hd_le : d ≤ q := Nat.le_of_dvd hq1 hdq
           have hM1 : 1 ≤ (q / d) * R := Nat.mul_pos (Nat.div_pos hd_le hd0) hR
-          rw [← mul_add, sum_Icc_filter_dvd_eq hR hd (fun _ => (d : ℝ))]
+          rw [sum_Icc_filter_dvd_eq hR hd (fun _ => (d : ℝ))]
           rw [Finset.sum_const, Nat.card_Icc, nsmul_eq_mul]
           have hcard : (((q / d) * R - 1 + 1 - 1 : ℕ) : ℝ) = (((q / d) * R : ℕ) : ℝ) - 1 := by
             have : (q / d) * R - 1 + 1 - 1 = (q / d) * R - 1 := by omega
@@ -616,8 +613,8 @@ theorem abs_sum_ramanujanLagCoefficient_mul_cosTransform_add_le
           _ ≤ 2 * m := hqm
       have hpt := abs_sum_ramanujanLagCoefficient_mul_cos_add_le hq hR hθ0 hθ
       have hτb_div : (τ / m) / 4 ≤ b / (4 * m) := by
-        rw [div_div, div_le_div_iff₀ (by positivity) (by positivity)]
-        linarith
+        rw [div_div, mul_comm m 4]
+        exact div_le_div_of_nonneg_right hτb (by positivity)
       have hsum_nn : 0 ≤ ∑ d ∈ q.divisors, (d : ℝ) ^ 2 :=
         Finset.sum_nonneg fun _ _ => sq_nonneg _
       calc Ω τ * |(∑ h ∈ Finset.Icc 1 (q * R),
@@ -674,7 +671,6 @@ theorem abs_sum_singularSeries_cosTransform_add_le
     have hφ0 : (q.totient : ℝ) ≠ 0 := by
       exact_mod_cast (Nat.totient_pos.mpr (by omega : 0 < q)).ne'
     field_simp
-    ring
   rw [hrew]
   refine (abs_sum_le_sum_abs _ _).trans ?_
   have hterm : ∀ q ∈ Finset.Icc 2 Q,
@@ -712,7 +708,7 @@ theorem abs_sum_singularSeries_cosTransform_add_le
           (b / (4 * m)) * cosTransform Ω 0 *
             ((RHTower.Sieve.sqfreeTotientInv q / (q.totient : ℝ)) *
               (∑ d ∈ q.divisors, (d : ℝ) ^ 2)) := by
-          field_simp; ring
+          field_simp
   refine (Finset.sum_le_sum hterm).trans (le_of_eq ?_)
   rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
 

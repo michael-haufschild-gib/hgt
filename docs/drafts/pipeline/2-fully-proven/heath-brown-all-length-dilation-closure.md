@@ -138,10 +138,20 @@ zero. This proves the exact `PropSixOneBound w k k` family. Applying
 the existing unconditional S₃ bound through `propTwelveOne_of_S_bounds`
 then proves the published Proposition 12.1 at every k≥1.
 
+## Lean certificate status
+
+The all-length proof is in
+`formal/GaloisForLFunctions/RHTower/Sieve/HeathBrownPairSumAllLengths.lean`.
+Its endpoint is `RHTower.GuthMaynard.heathBrownPairSumBound_holds`.
+The full source and all seven public declarations passed the scratch leaf
+check and transitive axiom audit, using only `propext`, `Classical.choice`,
+and `Quot.sound`. Canonical final checking and umbrella wiring remain pending.
+The sharp S₂ and Proposition 12.1 draft remains unchecked.
+
 ## Gates
 
 - [x] Exact published theorem, all quantifiers fixed.
 - [x] Paper proof without a missing analytic input.
-- [ ] Lean all-length estimate, uniform constant, and endpoint proposition.
+- [x] Lean all-length estimate, uniform constant, and endpoint proposition.
 - [ ] Sharp all-k S₂ application and Proposition 12.1 input.
 - [ ] Canonical leaf checks, all public transitive axioms, umbrella imports.

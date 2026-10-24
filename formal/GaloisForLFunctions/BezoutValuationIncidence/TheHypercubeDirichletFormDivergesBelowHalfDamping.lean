@@ -57,7 +57,8 @@ theorem dirichletDilationPrimitive_eq_signed (ε : ℝ) (P r n : ℕ) :
 
 /-- **Physical form.** The signed dilation Dirichlet form is the pronic energy of its primitive:
 each profile `Φ_r(d₁/d₂)` is `√(d₁d₂)` times the step Gram of the floor sequences
-`C_r(⌊·/d₁⌋)`, `C_r(⌊·/d₂⌋)`, and the weights `w(d) d^{-1/2-ε} √d = w(d) d^{-ε}` assemble the square. -/
+`C_r(⌊·/d₁⌋)`, `C_r(⌊·/d₂⌋)`, and the weights `w(d) d^{-1/2-ε} √d = w(d) d^{-ε}` assemble the
+square. -/
 theorem hasSum_signedDilationPrimitive_sq (w : ℕ → ℝ) (ε : ℝ) {D : Finset ℕ}
     (hD : ∀ d ∈ D, 0 < d) {r : ℕ} (hr : 1 < r) :
     HasSum (fun n : ℕ => signedDilationPrimitive w ε D r (n + 1) ^ 2 /

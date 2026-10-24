@@ -5,6 +5,8 @@ import GaloisForLFunctions.RHTower.EvenLandauPairTest
 import GaloisForLFunctions.BezoutValuationIncidence.ShortWindowPrimeSavingIsTheQuasiRiemannHypothesis
 import GaloisForLFunctions.BezoutValuationIncidence.ShortWindowMoebiusSavingIsTheQuasiRiemannHypothesis
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheHodgeDefectIsCyclic
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheReflectionSectorsOfTheHodgeDefect
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheDegreeFiltrationOfTheHodgeDefect
 
 /-!
 # The index exit: a second count for the Hodge defect
@@ -14,7 +16,8 @@ the critical line (`ArithmeticCastelnuovoSeveri.zeta_hodgeDefect_iff`). This mod
 second formula as a count of objects of a different kind, the collisions of the de Bruijn–Newman
 flow `H_t`, and determines what a bound on any of the counts attached to `D` yields.
 
-* **The second formula** (`eventually_collisionMassAfter_eq`). If `D < ∞`, then for all small
+* **The second formula** (`eventually_collisionMassAfter_eq`,
+  `eventually_collisionMassAfter_eq_hodgeDefect`). If `D < ∞`, then for all small
   `t > 0`
   `Σ_{s > t} C(s) = 2 (D + E)`,   `E = Σ_{Re ρ > ½} (m_ρ − 1) ≥ 0`,
   where `C(s)` is the number of nonreal zeros of the flow landing on the real axis at time `s`
@@ -68,7 +71,7 @@ theorem mem_rightCopies_iff (q : XiZeroCopy) : q ∈ rightCopies ↔ (xiSpectral
 theorem image_lineConj_rightCopies :
     xiZeroCopyLineConjEquiv '' rightCopies = {q | 0 < (xiSpectralPoint q).im} := by
   ext q
-  rw [Equiv.image_eq_preimage, mem_preimage, mem_rightCopies_iff, mem_setOf_eq]
+  rw [Equiv.image_eq_preimage_symm, mem_preimage, mem_rightCopies_iff, mem_setOf_eq]
   have h := xiSpectralPoint_lineConj (xiZeroCopyLineConjEquiv.symm q)
   rw [Equiv.apply_symm_apply] at h
   rw [h, Complex.conj_im]
@@ -172,7 +175,8 @@ excess of the right zeros. -/
 theorem eventually_collisionMassAfter_eq (hfin : (rightZeros zetaZeroConfig).Finite) :
     ∀ᶠ t in 𝓝[>] (0 : ℝ), collisionMassAfter t =
       2 * (hfin.toFinset.card + ∑ ρ ∈ hfin.toFinset, (xiMult ρ - 1)) := by
-  have hF : FiniteOffLine := rightZeros_zeta_finite_iff_finiteOffLine.mp hfin
+  have hF : {q : XiZeroCopy | (xiSpectralPoint q).im ≠ 0}.Finite :=
+    rightZeros_zeta_finite_iff_finiteOffLine.mp hfin
   have hc : rightCopies.Finite := hF.subset rightCopies_subset_offLineCopies
   -- the off-line copies are twice the right copies
   have hcard : hF.toFinset.card = 2 * hc.toFinset.card := by
@@ -190,6 +194,19 @@ theorem eventually_collisionMassAfter_eq (hfin : (rightZeros zetaZeroConfig).Fin
   filter_upwards [eventually_nonrealZeroCount_eq_of_finite hF, self_mem_nhdsWithin] with t ht ht0
   rw [← nonrealZeroCount_eq_collisionMassAfter ht0, ht, hcard, card_rightCopies_eq_sum hfin hc,
     hsum]
+
+/-- **The index exit identity in Hodge-defect form.** With `D = ⨆_a hodgeDefectAt ζ a` the Hodge
+defect of the scaling surface (the degree filtration exhausts the right zeros), for all small
+`t > 0` the collision mass of the flow after `t` is `2D + 2E`. -/
+theorem eventually_collisionMassAfter_eq_hodgeDefect (hfin : (rightZeros zetaZeroConfig).Finite) :
+    ∀ᶠ t in 𝓝[>] (0 : ℝ), (collisionMassAfter t : ℕ∞) =
+      2 * (⨆ a, hodgeDefectAt zetaZeroConfig a) +
+        2 * ((∑ ρ ∈ hfin.toFinset, (xiMult ρ - 1) : ℕ) : ℕ∞) := by
+  filter_upwards [eventually_collisionMassAfter_eq hfin] with t ht
+  rw [ht, iSup_hodgeDefectAt zetaZeroConfig SquareRootThreshold.temperedConfig_zetaZeroConfig,
+    hfin.encard_eq_coe_toFinset_card]
+  push_cast
+  ring
 
 /-- If `ζ` has infinitely many zeros right of the line, the collision mass after `t` is unbounded
 as `t → 0⁺`. -/
@@ -244,7 +261,7 @@ theorem exists_bound_horizontalCollisionCharge (hF : FiniteOffLine) :
     -- one of the two points is off the line
     have hoff : p.1.re ≠ 1 / 2 ∨ p.2.re ≠ 1 / 2 := by
       by_contra h
-      push_neg at h
+      simp only [not_or, not_not] at h
       exact hne (Complex.ext (h.1.trans h.2.symm) him)
     have hcar : ∀ z ∈ stripZeros T, z ∈ zetaZeroConfig.carrier := fun z hz =>
       CrossRouteReceiverBridges.mem_zetaZeroConfig_carrier_of_xi_eq_zero hz.2
@@ -261,17 +278,146 @@ theorem exists_bound_horizontalCollisionCharge (hF : FiniteOffLine) :
     exact ⟨⟨hmem _ h1 hlow, hmem _ h2 (by rw [← him]; exact hlow)⟩, him, hne⟩
   exact Finset.sum_le_sum_of_subset hsub
 
-/-- A uniform bound on the collision charge of the windows bounds the off-line divisor. -/
+/-- A uniform bound on the collision charge of the windows bounds the off-line divisor: the
+off-line order of a window is at most its charge. -/
 theorem finiteOffLine_of_bound_horizontalCollisionCharge {M : ℕ}
     (hM : ∀ T, xiHorizontalCollisionCharge T ≤ M) : FiniteOffLine := by
   classical
   rw [← CrossRouteReceiverBridges.offLineZeros_finite_iff_finiteOffLine]
-  -- the off-line zeros of nonnegative height have at most `M` elements
-  set P := {ρ ∈ offLineZeros | 0 ≤ ρ.im} with hP
+  set P := {ρ ∈ CHMDPolar.offLineZeros | 0 ≤ ρ.im} with hP
+  -- every finite set of off-line zeros of nonnegative height has at most `M` points
+  have hcard : ∀ S : Finset ℂ, (S : Set ℂ) ⊆ P → S.card ≤ M := by
+    intro S hS
+    have hxi : ∀ ρ ∈ S, xi ρ = 0 ∧ 0 < ρ.re ∧ ρ.re < 1 := fun ρ hρ =>
+      CrossRouteReceiverBridges.mem_zetaZeroConfig_carrier_iff_xi_eq_zero_and_strip.mp
+        (hS hρ).1.1
+    set T := ∑ ρ ∈ S, |ρ.im| + 1 with hT
+    have hST : S ⊆ (stripZeros_finite T).toFinset.filter (fun ρ => ρ.re ≠ 1 / 2) := by
+      intro ρ hρ
+      have hle : |ρ.im| ≤ ∑ ρ ∈ S, |ρ.im| :=
+        Finset.single_le_sum (f := fun x : ℂ => |x.im|) (fun _ _ => abs_nonneg _) hρ
+      rw [Finset.mem_filter, Set.Finite.mem_toFinset]
+      exact ⟨⟨⟨(hxi ρ hρ).2.1, (hxi ρ hρ).2.2, (hS hρ).2,
+        by have := le_abs_self ρ.im; linarith⟩, (hxi ρ hρ).1⟩, (hS hρ).1.2⟩
+    calc S.card = ∑ ρ ∈ S, 1 := Finset.card_eq_sum_ones S
+      _ ≤ ∑ ρ ∈ S, (analyticOrderAt xi ρ).toNat := Finset.sum_le_sum fun ρ hρ =>
+          Nat.one_le_iff_ne_zero.mpr (xi_order_toNat_ne_zero (hxi ρ hρ).1)
+      _ ≤ xiStripWindowOffLineOrder T := Finset.sum_le_sum_of_subset hST
+      _ ≤ xiHorizontalCollisionCharge T := xiStripWindowOffLineOrder_le_horizontalCollisionCharge T
+      _ ≤ M := hM T
   have hPfin : P.Finite := by
-    refine Set.finite_of_forall_not_lt_lt (fun _ _ _ _ _ => trivial) ?_ |>.elim (fun h => h) ?_
-    all_goals sorry
-  sorry
+    by_contra hinf
+    obtain ⟨S, hS, hScard⟩ := Set.Infinite.exists_subset_card_eq hinf (M + 1)
+    have := hcard S hS
+    omega
+  -- the off-line zeros below the real axis are conjugates of those above
+  refine (hPfin.union (hPfin.image conj)).subset fun ρ hρ => ?_
+  rcases le_or_gt 0 ρ.im with him | him
+  · exact Or.inl ⟨hρ, him⟩
+  · refine Or.inr ⟨conj ρ, ⟨⟨conj_mem_zetaZeroConfig hρ.1, by simpa using hρ.2⟩, ?_⟩, by simp⟩
+    simp only [Complex.conj_im]
+    linarith
+
+/-- **The first rung of the index exit.** The following are equivalent: the Hodge defect is
+finite; the off-line divisor is finite; the heat counts `N(t)`, `t > 0`, are bounded; the collision
+masses after `t > 0` are bounded; all zeros above some height lie on the critical line; the
+horizontal collision charges of the windows are bounded. -/
+theorem index_exit_first_rung_tfae :
+    [(rightZeros zetaZeroConfig).Finite,
+      FiniteOffLine,
+      ∃ M : ℕ, ∀ t, 0 < t → nonrealZeroCount t ≤ M,
+      ∃ M : ℕ, ∀ t, 0 < t → collisionMassAfter t ≤ M,
+      ∃ T₀ : ℝ, ∀ ρ ∈ zetaZeroConfig.carrier, T₀ < |ρ.im| → ρ.re = 1 / 2,
+      ∃ M : ℕ, ∀ T, xiHorizontalCollisionCharge T ≤ M].TFAE := by
+  tfae_have 1 ↔ 2 := rightZeros_zeta_finite_iff_finiteOffLine
+  tfae_have 2 → 3 := fun hF => ⟨(Set.Finite.toFinset hF).card, fun t ht =>
+    nonrealZeroCount_le_of_finite_nonreal_zeros hF ht⟩
+  tfae_have 3 → 2 := by
+    rintro ⟨M, hM⟩
+    by_contra hF
+    have hZ : {z : ℂ | riemannHeat 0 z = 0 ∧ z.im ≠ 0}.Infinite := fun h =>
+      hF (finite_nonrealCopies_of_finite_zeros h)
+    obtain ⟨t, ht1, ht2⟩ := (((tendsto_nonrealZeroCount_atTop_of_infinite hZ).eventually_ge_atTop
+      (M + 1)).and self_mem_nhdsWithin).exists
+    have := hM t ht2
+    omega
+  tfae_have 3 ↔ 4 := by
+    constructor <;> rintro ⟨M, hM⟩ <;> refine ⟨M, fun t ht => ?_⟩
+    · rw [← nonrealZeroCount_eq_collisionMassAfter ht]; exact hM t ht
+    · rw [nonrealZeroCount_eq_collisionMassAfter ht]; exact hM t ht
+  tfae_have 2 ↔ 5 := finiteOffLine_iff_exists_onLine_above
+  tfae_have 2 → 6 := exists_bound_horizontalCollisionCharge
+  tfae_have 6 → 2 := fun ⟨_, hM⟩ => finiteOffLine_of_bound_horizontalCollisionCharge hM
+  tfae_finish
+
+/-! ## The strength of the first rung -/
+
+/-- **A finite Hodge defect gives the quasi-Riemann hypothesis** `Θ < 1`: the right zeros are then
+finitely many points of the open strip, and every other zero has real part at most `½`. -/
+theorem zetaZeroAbscissa_lt_one_of_finite_rightZeros
+    (hfin : (rightZeros zetaZeroConfig).Finite) : zetaZeroAbscissa < 1 := by
+  obtain ⟨b, hb1, hb⟩ : ∃ b < 1, ∀ ρ ∈ rightZeros zetaZeroConfig, ρ.re ≤ b := by
+    rcases hfin.toFinset.eq_empty_or_nonempty with he | hne
+    · refine ⟨1 / 2, by norm_num, fun ρ hρ => ?_⟩
+      have h := (Set.Finite.mem_toFinset hfin).mpr hρ
+      rw [he] at h
+      exact absurd h (Finset.notMem_empty ρ)
+    · refine ⟨hfin.toFinset.sup' hne (fun ρ => ρ.re), ?_, fun ρ hρ =>
+        Finset.le_sup' (fun ρ : ℂ => ρ.re) ((Set.Finite.mem_toFinset hfin).mpr hρ)⟩
+      rw [Finset.sup'_lt_iff]
+      exact fun ρ hρ => ((Set.Finite.mem_toFinset hfin).mp hρ).1.2.2
+  unfold zetaZeroAbscissa
+  refine lt_of_le_of_lt (csSup_le zetaZeroReSet_nonempty fun x hx => ?_)
+    (max_lt hb1 (by norm_num : (1 : ℝ) / 2 < 1))
+  obtain ⟨ρ, hzero, rfl⟩ := hx
+  rcases le_or_gt ρ.re (1 / 2) with h | h
+  · exact h.trans (le_max_right _ _)
+  · have h1 : ρ.re < 1 := lt_of_not_ge fun h1 => riemannZeta_ne_zero_of_one_le_re h1 hzero
+    exact (hb ρ ⟨⟨hzero, by linarith, h1⟩, h⟩).trans (le_max_left _ _)
+
+/-- A finite Hodge defect gives power savings for the Möbius and prime sums in short windows. -/
+theorem moebius_and_prime_powerWindowSaving_of_finite_rightZeros
+    (hfin : (rightZeros zetaZeroConfig).Finite) :
+    MoebiusPowerWindowSaving ∧ PrimePowerWindowSaving :=
+  ⟨moebiusPowerWindowSaving_iff.mpr (zetaZeroAbscissa_lt_one_of_finite_rightZeros hfin),
+    primePowerWindowSaving_iff.mpr (zetaZeroAbscissa_lt_one_of_finite_rightZeros hfin)⟩
+
+/-! ## Quantization -/
+
+/-- **The Hodge defect is even**: the right zeros pair off under complex conjugation, which has no
+fixed point since no nontrivial zero is real. -/
+theorem even_ncard_rightZeros (hfin : (rightZeros zetaZeroConfig).Finite) :
+    Even hfin.toFinset.card := by
+  rw [← ZMod.natCast_eq_zero_iff_even, Finset.card_eq_sum_ones, Nat.cast_sum]
+  refine Finset.sum_involution (fun ρ _ => conj ρ) (fun ρ _ => CharTwo.add_self_eq_zero _)
+    (fun ρ hρ _ => ?_) (fun ρ hρ => ?_) (fun ρ _ => Complex.conj_conj ρ)
+  · intro h
+    apply zetaZeroConfig_im_ne_zero' ρ ((Set.Finite.mem_toFinset hfin).mp hρ).1
+    have h' := congrArg Complex.im h
+    simp only [Complex.conj_im] at h'
+    linarith
+  · have hρ' := (Set.Finite.mem_toFinset hfin).mp hρ
+    rw [Set.Finite.mem_toFinset]
+    exact ⟨conj_mem_zetaZeroConfig hρ'.1, by simpa using hρ'.2⟩
+
+/-- **RH is the first quantum of the Hodge defect**: RH holds iff fewer than two zeros of `ζ` lie
+right of the critical line. -/
+theorem riemannHypothesis_iff_encard_rightZeros_lt_two :
+    RiemannHypothesis ↔ (rightZeros zetaZeroConfig).encard < 2 := by
+  rw [← rightZeros_zeta_eq_empty_iff]
+  constructor
+  · intro h
+    rw [h, Set.encard_empty]
+    norm_num
+  · intro h
+    have hfin : (rightZeros zetaZeroConfig).Finite :=
+      Set.encard_lt_top_iff.mp (h.trans_le le_top)
+    have hc : hfin.toFinset.card < 2 := by
+      rw [hfin.encard_eq_coe_toFinset_card] at h
+      exact_mod_cast h
+    obtain ⟨j, hj⟩ := even_ncard_rightZeros hfin
+    have h0 : hfin.toFinset.card = 0 := by omega
+    rwa [Finset.card_eq_zero, Set.Finite.toFinset_eq_empty] at h0
 
 end
 

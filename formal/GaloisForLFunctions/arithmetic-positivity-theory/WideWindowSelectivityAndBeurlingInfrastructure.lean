@@ -160,18 +160,15 @@ theorem sum_windowValue_le_windowSum {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (
 
 /-- For `L₀ ≥ 0` and `n ≥ 2` with `L₀ + 1/2 < log n`, `windowValue g L n` vanishes on `(0, L₀]`,
 so its Laplace integral over `Ioi L₀` equals its full Laplace integral over `Ioi 0`. -/
-theorem integral_Ioi_windowValue_mul_exp_of_large {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g)
-    (hgc : HasCompactSupport g) (hsupp : ∀ u, 1 / 4 < |u| → g u = 0) {L₀ : ℝ} (hL₀ : 0 ≤ L₀)
+theorem integral_Ioi_windowValue_mul_exp_of_large {g : ℝ → ℝ}
+    (hsupp : ∀ u, 1 / 4 < |u| → g u = 0) {L₀ : ℝ} (hL₀ : 0 ≤ L₀)
     {n : ℕ} (hn2 : 2 ≤ n) (hlog : L₀ + 1 / 2 < Real.log n) (σ : ℝ) :
     ∫ L in Ioi L₀, windowValue g L n * Real.exp (-σ * L) =
       (n : ℝ) ^ (-(1 / 2 + σ)) * autoLaplaceReal g σ := by
   rw [← integral_windowValue_mul_exp hsupp hn2 σ]
   have hsub : Ioi L₀ ⊆ Ioi (0 : ℝ) := Ioi_subset_Ioi hL₀
-  have hInt : IntegrableOn (fun L => windowValue g L n * Real.exp (-σ * L)) (Ioi 0) :=
-    ((continuous_windowValue hg hgc n).mul (by fun_prop)).integrable_of_hasCompactSupport
-      (hasCompactSupport_windowValue hsupp n).mul_right |>.integrableOn
-  refine setIntegral_eq_of_subset_of_ae_diff_eq_zero measurableSet_Ioi.nullMeasurableSet hsub
-    (Eventually.of_forall fun L hL => ?_) hInt
+  refine (setIntegral_eq_of_subset_of_ae_sdiff_eq_zero measurableSet_Ioi.nullMeasurableSet hsub
+    (Eventually.of_forall fun L hL => ?_)).symm
   have hL0 : 0 < L := hL.1
   have hLL₀ : L ≤ L₀ := not_lt.mp hL.2
   have h1 : 1 / 2 < |Real.log n - L| := by
@@ -254,7 +251,7 @@ theorem exists_wide_windowSum_shiftedPairVonMangoldt_gt_shiftMajorant {g : ℝ �
         dsimp [F]
         simp_rw [mul_assoc]
         rw [integral_const_mul,
-          integral_Ioi_windowValue_mul_exp_of_large hg hgc hsupp hL₀ hn2 (hlogN₀ n hnN₀) σ]
+          integral_Ioi_windowValue_mul_exp_of_large hsupp hL₀ hn2 (hlogN₀ n hnN₀) σ]
       rw [hI]
       have hpow : (n : ℝ) ^ (-(1 / 2 + σ)) = ((n : ℝ) * (n : ℝ) ^ |a|)⁻¹ := by
         have h1 : -(1 / 2 + σ) = -(1 + |a|) := by unfold σ; ring
@@ -439,10 +436,8 @@ theorem shiftedPairHarmonicCharge_zero (m : ℕ) :
     shiftedPairHarmonicCharge 0 m = 2 * factorialCriticalPrimeHarmonicCharge m := by
   unfold shiftedPairHarmonicCharge factorialCriticalPrimeHarmonicCharge shiftedPairVonMangoldt
   simp only [neg_zero, Real.rpow_zero]
-  rw [← mul_assoc, mul_comm 2 (dyadicHarmonicChi m), mul_assoc, Finset.mul_sum]
-  congr 1
-  refine Finset.sum_congr rfl fun r _ => ?_
-  ring
+  rw [Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
+  exact Finset.sum_congr rfl fun r _ => by ring
 
 /-- Harmonic `2` is negative for every shift `a`, with exact charge `-2 log 2 (2^a + 2^{-a})`. -/
 theorem shiftedPairHarmonicCharge_two (a : ℝ) :
@@ -569,37 +564,30 @@ theorem shiftedPairHarmonicCharge_sign (a : ℝ) (m : ℕ) :
       have hp_ge3 : (3 : ℝ) ≤ p := by exact_mod_cast hp3
       have hcosh : (2 : ℝ) ^ a + (2 : ℝ) ^ (-a) ≤ (p : ℝ) ^ a + (p : ℝ) ^ (-a) := by
         have h2p : (2 : ℝ) ≤ p := by linarith
-        rcases le_or_gt 0 a with ha0 | ha0
-        · have h1 : (2 : ℝ) ^ a - (p : ℝ) ^ (-a) ≤ (p : ℝ) ^ a - (2 : ℝ) ^ (-a) := by
-            have hd1 : (2 : ℝ) ^ a ≤ (p : ℝ) ^ a := Real.rpow_le_rpow (by norm_num) h2p ha0
-            have hd2 : (p : ℝ) ^ (-a) ≤ (2 : ℝ) ^ (-a) :=
-              Real.rpow_le_rpow_of_exponent_nonpos (by norm_num) h2p (by linarith)
-            have hprod1 : (2 : ℝ) ^ a * (2 : ℝ) ^ (-a) = 1 := by
-              rw [← Real.rpow_add (by norm_num), add_neg_cancel, Real.rpow_zero]
-            have hprod2 : (p : ℝ) ^ a * (p : ℝ) ^ (-a) = 1 := by
-              rw [← Real.rpow_add (by linarith), add_neg_cancel, Real.rpow_zero]
-            have hge1 : 1 ≤ (2 : ℝ) ^ a := Real.one_le_rpow (by norm_num) ha0
-            have hdiff : 0 ≤ ((p : ℝ) ^ a - (2 : ℝ) ^ a) * (1 - (2 : ℝ) ^ (-a) * (p : ℝ) ^ (-a)) := by
-              refine mul_nonneg (by linarith) ?_
-              have hle1 : (2 : ℝ) ^ (-a) ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos (by norm_num) (by linarith)
-              have hle2 : (p : ℝ) ^ (-a) ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos (by linarith) (by linarith)
-              nlinarith [Real.rpow_nonneg (by norm_num : (0 : ℝ) ≤ 2) (-a),
-                Real.rpow_nonneg (by linarith : (0 : ℝ) ≤ p) (-a)]
-            nlinarith
-          linarith
-        · have ha' : 0 ≤ -a := by linarith
-          have hd1 : (2 : ℝ) ^ (-a) ≤ (p : ℝ) ^ (-a) := Real.rpow_le_rpow (by norm_num) h2p ha'
-          have hprod1 : (2 : ℝ) ^ (-a) * (2 : ℝ) ^ a = 1 := by
-            rw [← Real.rpow_add (by norm_num), neg_add_cancel, Real.rpow_zero]
-          have hprod2 : (p : ℝ) ^ (-a) * (p : ℝ) ^ a = 1 := by
-            rw [← Real.rpow_add (by linarith), neg_add_cancel, Real.rpow_zero]
-          have hdiff : 0 ≤ ((p : ℝ) ^ (-a) - (2 : ℝ) ^ (-a)) * (1 - (2 : ℝ) ^ a * (p : ℝ) ^ a) := by
-            refine mul_nonneg (by linarith) ?_
-            have hle1 : (2 : ℝ) ^ a ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos (by norm_num) ha0.le
-            have hle2 : (p : ℝ) ^ a ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos (by linarith) ha0.le
-            nlinarith [Real.rpow_nonneg (by norm_num : (0 : ℝ) ≤ 2) a,
-              Real.rpow_nonneg (by linarith : (0 : ℝ) ≤ p) a]
-          nlinarith
+        have hsymm : ∀ x : ℝ, x ^ a + x ^ (-a) = x ^ |a| + x ^ (-|a|) := fun x => by
+          rcases le_or_gt 0 a with ha0 | ha0
+          · rw [abs_of_nonneg ha0]
+          · rw [abs_of_neg ha0, neg_neg, add_comm]
+        rw [hsymm 2, hsymm p]
+        have hd1 : (2 : ℝ) ^ |a| ≤ (p : ℝ) ^ |a| :=
+          Real.rpow_le_rpow (by norm_num) h2p (abs_nonneg a)
+        have hprod1 : (2 : ℝ) ^ |a| * (2 : ℝ) ^ (-|a|) = 1 := by
+          rw [← Real.rpow_add (by norm_num), add_neg_cancel, Real.rpow_zero]
+        have hprod2 : (p : ℝ) ^ |a| * (p : ℝ) ^ (-|a|) = 1 := by
+          rw [← Real.rpow_add (by linarith), add_neg_cancel, Real.rpow_zero]
+        have hle1 : (2 : ℝ) ^ (-|a|) ≤ 1 :=
+          Real.rpow_le_one_of_one_le_of_nonpos (by norm_num) (neg_nonpos.mpr (abs_nonneg a))
+        have hle2 : (p : ℝ) ^ (-|a|) ≤ 1 :=
+          Real.rpow_le_one_of_one_le_of_nonpos (by linarith) (neg_nonpos.mpr (abs_nonneg a))
+        have hdiff : 0 ≤ ((p : ℝ) ^ |a| - (2 : ℝ) ^ |a|) *
+            (1 - (2 : ℝ) ^ (-|a|) * (p : ℝ) ^ (-|a|)) := by
+          refine mul_nonneg (by linarith) ?_
+          nlinarith [Real.rpow_nonneg (by norm_num : (0 : ℝ) ≤ 2) (-|a|),
+            Real.rpow_nonneg (by linarith : (0 : ℝ) ≤ p) (-|a|)]
+        have hid : ((p : ℝ) ^ |a| + (p : ℝ) ^ (-|a|)) - ((2 : ℝ) ^ |a| + (2 : ℝ) ^ (-|a|)) =
+            ((p : ℝ) ^ |a| - (2 : ℝ) ^ |a|) * (1 - (2 : ℝ) ^ (-|a|) * (p : ℝ) ^ (-|a|)) := by
+          linear_combination (2 : ℝ) ^ (-|a|) * hprod2 - (p : ℝ) ^ (-|a|) * hprod1
+        linarith
       have h2pos : 0 < (2 : ℝ) ^ a + (2 : ℝ) ^ (-a) := by positivity
       have hstrict : -2 * Real.log 2 * ((2 : ℝ) ^ a + (2 : ℝ) ^ (-a)) +
           (p : ℝ) * Real.log p * ((p : ℝ) ^ a + (p : ℝ) ^ (-a)) > 0 := by
@@ -1049,7 +1037,8 @@ theorem abs_weightedTruncatedPrimeEnergy_le_of_window {w : ℕ → ℝ} {C : ℝ
             gcongr
         _ = C * K * (L : ℝ) ^ ε * ((ArithmeticFunction.vonMangoldt r : ℝ) / (r * r ^ ε)) := by
             unfold K; field_simp
-    · have := ArithmeticFunction.vonMangoldt_nonneg (n := r)
+    · rw [mul_zero]
+      have := ArithmeticFunction.vonMangoldt_nonneg (n := r)
       have hrp : 0 ≤ (r : ℝ) ^ (1 + ε) := Real.rpow_nonneg (Nat.cast_nonneg r) _
       positivity
   have hmaj : Summable fun r : ℕ =>

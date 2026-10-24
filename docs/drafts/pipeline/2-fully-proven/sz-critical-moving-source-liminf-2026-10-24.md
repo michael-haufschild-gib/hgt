@@ -100,6 +100,7 @@ check and all three transitive axiom audits passed; see the
 
 The [fixed-source compact-L² capstone](../3-formalized/sz-critical-source-extended-energy-domain-2026-10-24.md)
 and [literal-family consequence](../3-formalized/sz-critical-family-literal-source-deficit-2026-10-24.md)
-are also certified. Joint signed-cusp convergence and the complete arithmetic
-liminf above remain paper-only. Their Lean formalization is parked while the
-broader research goal is paused.
+are also certified. Joint signed-cusp convergence, the complete arithmetic
+liminf, and constant recovery have an assembled Lean draft at
+`/tmp/hgt-just-work-suzuki-moving-signed.lean`. Its leaf check and transitive
+axiom audit remain pending; the paper statements are not yet Lean certificates.

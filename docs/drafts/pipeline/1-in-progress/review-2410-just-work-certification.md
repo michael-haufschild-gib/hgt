@@ -55,7 +55,9 @@ arithmetic estimates to make a dictionary applicable.
   `Classical.choice`, and `Quot.sound` occur. Per-leaf commands, source hashes,
   declaration lists, and outputs are retained in `logs/just-work-2410/`.
   This includes the explicit-collar module's 76 declarations and the
-  linear-window module's 23 declarations; their joint import remains to be checked.
+  linear-window module's 23 declarations. Their joint import also passed,
+  with both majorant declarations checked together; evidence is in
+  `logs/just-work-2410/APTJointImport.json`.
 - Concurrent work now supplies `CHMDSharpGeneratorDomain` and the literal
   `SuzukiCriticalLiteralFamilyContraction` result. The former's formalized
   card records domain admission, exact action, skew-adjointness, a uniform
@@ -79,10 +81,11 @@ arithmetic estimates to make a dictionary applicable.
 ## Pending proof sources
 
 - J3 paper proof: `2-fully-proven/heath-brown-all-length-dilation-closure.md`.
-  Assembled unchecked Lean drafts are
-  `/tmp/hgt-just-work-heath-brown-closure.lean` and
-  `/tmp/hgt-just-work-sharp-s2.lean`. These are the sources to check and repair;
-  their separate preparation fragments are not independent certificates.
+  `RHTower/Sieve/HeathBrownPairSumAllLengths.lean` proves the exact
+  `heathBrownPairSumBound_holds` endpoint. Its full-source scratch check and
+  all seven public transitive axiom audits passed; canonical final checking
+  and wiring remain pending. The sharp all-k S₂ draft is
+  `/tmp/hgt-just-work-sharp-s2.lean`; it still requires Lean verification.
 - J4(i) can use the existing cluster horizon followed by complete-form
   mollification. `TheRoutesMeasureOneAperture.contDiff_top_smooth` gives
   actual infinite smoothness; its support and complete-energy convergence
@@ -123,7 +126,7 @@ trusted computation, or resource-limit increases. Preserve concurrent work.
 
 - [x] Exact J1–J8 inventory and concrete source-selection policy.
 - [x] J1 integration leaves wired, checked, and audited.
-- [ ] J2 joint import compatibility checked after the name repair.
+- [x] J2 joint import compatibility checked after the name repair.
 - [ ] J3 exact published bounds formalized and audited.
 - [ ] J4 exact four paper results formalized or subsumed with checked bridges.
 - [ ] J5–J7 concrete inputs, bounds and applications certified.

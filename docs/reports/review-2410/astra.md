@@ -528,7 +528,7 @@ The admissible heats are exactly $[\lambda_{\rm WD},\infty)$. Every even coeffic
 \exists t\in\mathbb R:\ T_0(\lambda_{\rm WD},0,t)=0.
 \]
 
-At positive heat $T_0$ is strictly positive. Consequently, if RH fails, threshold contact occurs only at an even order at least two. This provides a precise alternative target: an arithmetic theorem excluding such higher-order contact at the boundary of the full coefficient cone.
+At positive heat $T_0$ is strictly positive. Consequently, if RH fails, threshold contact occurs only at even orders at least two. This provides a precise alternative target: an arithmetic theorem excluding a positive threshold with only higher-order contacts. It need not prohibit higher-order vanishing alongside a zeroth-order contact at heat zero.
 
 There are **two distinct heat constructions** here. WD applies forward horizontal heat $e^{(\lambda/2)\partial_x^2}$ to the original slice. The de Bruijn–Newman flow evolves the entire function $H_\lambda$. WD's heated coefficients are Gaussian height averages of the slice moments of $H_\lambda$; they are not those unaveraged moments. A cap built from the zeros of $H_\lambda$ therefore needs its own source identity and a proved bridge to whichever WD endpoint consumes it.
 
@@ -548,6 +548,8 @@ N_{\rm nr}(h)=\sum_{v>h}J(v),\qquad h>0.
 \]
 
 The sum is finite for every positive $h$; collisions vanish at and above heat $1/8$. Just before a collision at $v$, the nonreal count is $N_{\rm nr}(v)+J(v)$. Thus making the fibre collision law global is not an unpaid construction for this observable.
+
+**Paper deduction fixing the charge normalization:** each $J(v)$ is a multiple of four. The source proves [evenness of $H_v$](../../../formal/GaloisForLFunctions/RHTower/KiKimLeeLargeHeightReality.lean), `riemannHeat_neg`, and [nonvanishing at zero](../../../formal/GaloisForLFunctions/RHTower/KiKimLeeFiniteness.lean), `riemannHeat_zero_ne`. Its real multiple zeros therefore pair as $x,-x$, $x\ne0$, with equal multiplicity $m$. Each pair contributes $4\lfloor m/2\rfloor$. Hence $N_{\rm nr}(h)$ is also a multiple of four. This is a deduction from inspected source, not a claim that a separate divisibility theorem was located or compiled. The global heat count has a four-unit exclusion threshold; the positive-height horizontal charge in §7.2 has a two-unit threshold.
 
 The inspected [right-limit source](../../../formal/GaloisForLFunctions/RHTower/DeBruijnNonrealCountRightLimit.lean) also proves:
 
@@ -659,7 +661,7 @@ The heat formulation has an equally precise target. Write
 B(h)=\sum_{v>h}J(v)=N_{\rm nr}(h).
 \]
 
-**Deduction from the inspected collision and right-limit theorems:** a source bound $B(h_j)<2$ for positive $h_j\downarrow0$ would imply RH. Every summand is even, so $B(h_j)=0$; antitonicity then gives zero at every positive heat, and the right-limit criterion applies. A merely uniform finite bound instead proves finitely many off-line zeros.
+**Deduction from the inspected collision and right-limit theorems:** a source bound $B(h_j)<4$ for positive $h_j\downarrow0$ would imply RH. By the pairing argument in §7.7, $B(h_j)$ is a multiple of four, hence zero. Antitonicity then gives zero at every positive heat, and the right-limit criterion applies. A merely uniform finite bound instead proves finitely many off-line zeros. The stronger requirement $B(h_j)<2$ is sufficient but unnecessary for this global normalization.
 
 The useful new research object would be an arithmetic representation of $B(h)$, or a complete source budget dominating it, with constants controlled as $h\downarrow0$. The theta heat integral supplies a source definition of $H_h$, but an Euler product or an unchanged prime–Gamma formula for $H_h$ cannot be assumed. Any arithmetic current must be derived through the heat transformation with its boundary terms.
 
@@ -701,7 +703,7 @@ The viable heat-current programme is therefore: define the source current, prove
 
 ### 9.1 Central question
 
-**Why do the actual theta/Euler source and its prime–Gamma compatibility force every local divisor block into the coefficient cone, exclude higher-order threshold contact, or force the total adverse collision charge to vanish?**
+**Why do the actual theta/Euler source and its prime–Gamma compatibility force every local divisor block into the coefficient cone, force zeroth-order threshold contact, or force the total adverse collision charge to vanish?**
 
 The field would study local factors and their transition laws before imposing any real-zero condition. It would retain the singular information excluded by the entire-frame no-go.
 
@@ -741,8 +743,8 @@ The language would distinguish the coefficient cone from real-axis nonnegativity
 | Can source currents control integer collision charge? | A cofinal bound strictly below two | Positive weighted Ward cap or density-one estimates |
 | Can detector-scale head positivity be proved first for one fixed depth? | Correct $\kappa_0(\delta)/\log t$ scale, all required orders and finite-height accounting | Positivity at $(17/25)/\log t$ |
 | Can local degree and clustering be priced? | Bounds that remain sufficient at the actual height and multiplicity | Fixed-degree asymptotics |
-| Can arithmetic control total heat collision mass? | A bound for $B(h)$ uniform as $h\downarrow0$, with $B(h_j)<2$ giving RH | Finiteness at each positive heat or the known jump law |
-| What forbids higher-order contact at the WD threshold? | A source-specific rigidity theorem forcing a zeroth-order contact | The threshold/touching equivalence itself |
+| Can arithmetic control total heat collision mass? | A bound for $B(h)$ uniform as $h\downarrow0$, with $B(h_j)<4$ giving RH for the global count | Finiteness at each positive heat or the known jump law |
+| What rules out a positive WD threshold with only higher-order contacts? | A source-specific rigidity theorem forcing a zeroth-order contact | The threshold/touching equivalence itself |
 
 ### 9.5 A viable order of work
 
@@ -758,10 +760,10 @@ The first three stages can yield useful unconditional mathematics even if the fi
 
 Any one of the following, derived independently from the actual source, would suffice:
 
-- coefficient nonnegativity of every fixed-radius head;
+- coefficient nonnegativity of the radius-one head at every real height;
 - almost-everywhere nonpositivity of the real Ward cap at a suitable fixed positive $\tau$;
-- collision charge below two on cofinal cutoffs.
-- total heat collision mass below two on a sequence of positive heats approaching zero;
+- collision charge below two on cofinal cutoffs;
+- total global heat collision mass below four on a sequence of positive heats approaching zero;
 - a source theorem forcing zeroth-order contact at the WD threshold.
 
 A finite-order calculation, a positive averaged kernel, a model Gaussian statement, or a generic local real-rootedness criterion would not suffice.
@@ -774,7 +776,7 @@ The strongest practical recommendation is therefore **put the source coefficient
 
 Fable correctly insists on an independently proved arithmetic producer, distinguishes the detector constant from the heat-positivity constant, and emphasizes quantized endpoints. Its $17/25$ producer and two-threshold description are supported by inspected source and belong in the WD research programme. Balanced Bézout covariance, correctly signed enumerative certificates, and heat-current source identities are worthwhile directions.
 
-Its best WD question is concrete: **what property of the actual arithmetic source forbids higher-order contact at $\lambda_{\rm WD}$?** The threshold theorem makes that a precise research target. Its collision proposal is also useful once based on the existing global jump and right-limit laws rather than on a presumed window invariant.
+Its best WD question is concrete: **what property of the actual arithmetic source forces a zeroth-order contact at $\lambda_{\rm WD}$?** The threshold theorem makes that a precise research target. Its collision proposal is also useful once based on the existing global jump and right-limit laws rather than on a presumed window invariant.
 
 ### 10.2 Claims that exceed the cited theorems
 

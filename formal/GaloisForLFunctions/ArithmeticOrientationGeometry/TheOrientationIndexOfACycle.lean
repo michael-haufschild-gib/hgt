@@ -38,6 +38,7 @@ namespace GaloisForLFunctions.ArithmeticOrientationGeometry
 
 open ArithmeticCastelnuovoSeveri
 open GaloisForLFunctions.SquareRootThreshold (TemperedConfig temperedConfig_zetaZeroConfig)
+open GaloisForLFunctions.HTGeometry (hermNegIndex hermPosIndex)
 
 /-- `f` **sees** `ρ`: its transform vanishes at neither point of the reflection pair of `ρ`. -/
 def Sees (f : ℝ → ℝ) (ρ : ℂ) : Prop :=
@@ -67,13 +68,13 @@ theorem temperedConfig_seenConfig {Z : ZeroConfig} (hZ : TemperedConfig Z) (f : 
 theorem spectrallyGeneric_seenConfig (Z : ZeroConfig) (f : ℝ → ℝ) :
     SpectrallyGeneric (seenConfig Z f) (cx f) := fun _ hρ => hρ.2.1
 
-/-- The complex form of a translate of a real test. -/
-theorem cx_scaleShift_eq_translate (t : ℝ) (f : ℝ → ℝ) : cx (scaleShift t f) = translate t (cx f) :=
+/-- The complex form of a ArithmeticCastelnuovoSeveri.translate of a real test. -/
+theorem cx_scaleShift_eq_translate (t : ℝ) (f : ℝ → ℝ) : cx (scaleShift t f) = ArithmeticCastelnuovoSeveri.translate t (cx f) :=
   rfl
 
 /-- The summand of two translates of `f` vanishes at every zero `f` does not see. -/
 theorem Wsummand_translate_eq_zero {Z : ZeroConfig} {f : ℝ → ℝ} {ρ : ℂ} (h : ¬ Sees f ρ)
-    (s t : ℝ) : Z.Wsummand (translate s (cx f)) (translate t (cx f)) ρ = 0 := by
+    (s t : ℝ) : Z.Wsummand (ArithmeticCastelnuovoSeveri.translate s (cx f)) (ArithmeticCastelnuovoSeveri.translate t (cx f)) ρ = 0 := by
   rw [← cx_scaleShift_eq_translate, ← cx_scaleShift_eq_translate, Wsummand_scaleShift]
   rw [Sees, not_and_or, not_not, not_not] at h
   rcases h with h | h
@@ -82,12 +83,12 @@ theorem Wsummand_translate_eq_zero {Z : ZeroConfig} {f : ℝ → ℝ} {ρ : ℂ}
 
 /-- **On the orbit of `f`, the Weil form of `Z` is that of the zeros `f` sees.** -/
 theorem W_translate_seenConfig (Z : ZeroConfig) (f : ℝ → ℝ) (s t : ℝ) :
-    Z.W (translate s (cx f)) (translate t (cx f)) =
-      (seenConfig Z f).W (translate s (cx f)) (translate t (cx f)) := by
-  set F : ℂ → ℂ := fun ρ => Z.Wsummand (translate s (cx f)) (translate t (cx f)) ρ with hF
-  have hW : (seenConfig Z f).W (translate s (cx f)) (translate t (cx f)) =
+    Z.W (ArithmeticCastelnuovoSeveri.translate s (cx f)) (ArithmeticCastelnuovoSeveri.translate t (cx f)) =
+      (seenConfig Z f).W (ArithmeticCastelnuovoSeveri.translate s (cx f)) (ArithmeticCastelnuovoSeveri.translate t (cx f)) := by
+  set F : ℂ → ℂ := fun ρ => Z.Wsummand (ArithmeticCastelnuovoSeveri.translate s (cx f)) (ArithmeticCastelnuovoSeveri.translate t (cx f)) ρ with hF
+  have hW : (seenConfig Z f).W (ArithmeticCastelnuovoSeveri.translate s (cx f)) (ArithmeticCastelnuovoSeveri.translate t (cx f)) =
       ∑' ρ : (seenConfig Z f).carrier, F ρ := rfl
-  rw [ZeroConfig.W, hW, tsum_subtype, tsum_subtype]
+  rw [ZeroConfig.W, hW, _root_.tsum_subtype, _root_.tsum_subtype]
   congr 1
   funext ρ
   by_cases hρ : ρ ∈ Z.carrier
@@ -98,8 +99,8 @@ theorem W_translate_seenConfig (Z : ZeroConfig) (f : ℝ → ℝ) (s t : ℝ) :
   · rw [Set.indicator_of_notMem hρ, Set.indicator_of_notMem (fun h => hρ h.1)]
 
 theorem zeroGram_translates_seenConfig (Z : ZeroConfig) (f : ℝ → ℝ) (S : Finset ℝ) :
-    zeroGram Z (fun s : S => translate s (cx f)) =
-      zeroGram (seenConfig Z f) (fun s : S => translate s (cx f)) :=
+    zeroGram Z (fun s : S => ArithmeticCastelnuovoSeveri.translate s (cx f)) =
+      zeroGram (seenConfig Z f) (fun s : S => ArithmeticCastelnuovoSeveri.translate s (cx f)) :=
   Matrix.ext fun i j => W_translate_seenConfig Z f i j
 
 /-- The right zeros seen by `f`. -/
@@ -117,9 +118,14 @@ theorem rightZeros_seenConfig (Z : ZeroConfig) (f : ℝ → ℝ) :
 with at least `n` negative squares iff `f` sees at least `n` zeros right of the critical line. -/
 theorem orientationIndex_law (Z : ZeroConfig) (hZ : TemperedConfig Z) {f : ℝ → ℝ}
     (hf : f ∈ realTests) {D : Set ℝ} (hD : DenseShifts D) (n : ℕ) :
-    (∃ S : Finset ℝ, ↑S ⊆ D ∧ n ≤ hermNegIndex (zeroGram Z fun s : S => translate s (cx f))) ↔
+    (∃ S : Finset ℝ, ↑S ⊆ D ∧ n ≤ hermNegIndex (zeroGram Z fun s : S => ArithmeticCastelnuovoSeveri.translate s (cx f))) ↔
       (n : ℕ∞) ≤ (seenRightZeros Z f).encard := by
-  simp_rw [zeroGram_translates_seenConfig]
+  have h : ∀ S : Finset ℝ,
+      hermNegIndex (zeroGram Z fun s : S => ArithmeticCastelnuovoSeveri.translate s (cx f)) =
+        hermNegIndex (zeroGram (seenConfig Z f) fun s : S =>
+          ArithmeticCastelnuovoSeveri.translate s (cx f)) :=
+    fun S => by rw [zeroGram_translates_seenConfig]
+  simp only [h]
   rw [← rightZeros_seenConfig]
   exact cyclic_pontryagin_law (seenConfig Z f) (temperedConfig_seenConfig hZ f) (cx_contDiff hf.1)
     (cx_hasCompactSupport hf.2) (spectrallyGeneric_seenConfig Z f) hD n
@@ -127,7 +133,7 @@ theorem orientationIndex_law (Z : ZeroConfig) (hZ : TemperedConfig Z) {f : ℝ �
 /-- **An orbit with no negative square sees no right zero.** -/
 theorem orientationIndex_eq_zero_iff (Z : ZeroConfig) (hZ : TemperedConfig Z) {f : ℝ → ℝ}
     (hf : f ∈ realTests) {D : Set ℝ} (hD : DenseShifts D) :
-    (∀ S : Finset ℝ, ↑S ⊆ D → hermNegIndex (zeroGram Z fun s : S => translate s (cx f)) = 0) ↔
+    (∀ S : Finset ℝ, ↑S ⊆ D → hermNegIndex (zeroGram Z fun s : S => ArithmeticCastelnuovoSeveri.translate s (cx f)) = 0) ↔
       seenRightZeros Z f = ∅ := by
   constructor
   · intro h
@@ -140,7 +146,7 @@ theorem orientationIndex_eq_zero_iff (Z : ZeroConfig) (hZ : TemperedConfig Z) {f
     exact absurd hn (by norm_num)
   · intro h S hS
     by_contra hne
-    have h1 : 1 ≤ hermNegIndex (zeroGram Z fun s : S => translate s (cx f)) :=
+    have h1 : 1 ≤ hermNegIndex (zeroGram Z fun s : S => ArithmeticCastelnuovoSeveri.translate s (cx f)) :=
       Nat.one_le_iff_ne_zero.mpr hne
     have := (orientationIndex_law Z hZ hf hD 1).mp ⟨S, hS, h1⟩
     rw [h, Set.encard_empty] at this
@@ -152,10 +158,10 @@ the line that the test sees. -/
 theorem zeta_orientationIndex_law {f : ℝ → ℝ} (hf : f ∈ realTests) {D : Set ℝ}
     (hD : DenseShifts D) (n : ℕ) :
     (∃ S : Finset ℝ, ↑S ⊆ D ∧ n ≤ hermNegIndex (weilGram
-      (fun k => (ArithmeticFunction.vonMangoldt k : ℝ)) fun s : S => translate s (cx f))) ↔
+      (fun k => (ArithmeticFunction.vonMangoldt k : ℝ)) fun s : S => ArithmeticCastelnuovoSeveri.translate s (cx f))) ↔
       (n : ℕ∞) ≤ (seenRightZeros zetaZeroConfig f).encard := by
   have hW : ∀ S : Finset ℝ, weilGram (fun k => (ArithmeticFunction.vonMangoldt k : ℝ))
-      (fun s : S => translate s (cx f)) = zeroGram zetaZeroConfig fun s : S => translate s (cx f) :=
+      (fun s : S => ArithmeticCastelnuovoSeveri.translate s (cx f)) = zeroGram zetaZeroConfig fun s : S => ArithmeticCastelnuovoSeveri.translate s (cx f) :=
     fun S => weilGram_eq_zeroGram _ (fun s => translate_contDiff (cx_contDiff hf.1) s)
       (fun s => translate_hasCompactSupport (cx_hasCompactSupport hf.2) s)
   simp_rw [hW]
@@ -168,9 +174,15 @@ one positive square plus one for every seen right zero. -/
 theorem zeta_orbit_signature_law {f : ℝ → ℝ} (hf : f ∈ realTests) {D : Set ℝ}
     (hD : DenseShifts D) (n : ℕ) :
     (∃ S : Finset ℝ, ↑S ⊆ D ∧ n + 1 ≤ hermPosIndex (intersectionGram
-      (fun k => (ArithmeticFunction.vonMangoldt k : ℝ)) fun s : S => translate s (cx f))) ↔
+      (fun k => (ArithmeticFunction.vonMangoldt k : ℝ)) fun s : S => ArithmeticCastelnuovoSeveri.translate s (cx f))) ↔
       (n : ℕ∞) ≤ (seenRightZeros zetaZeroConfig f).encard := by
-  simp_rw [posIndex_intersectionGram, add_comm 1, Nat.add_le_add_iff_right]
+  have h : ∀ S : Finset ℝ, n + 1 ≤ hermPosIndex (intersectionGram
+      (fun k => (ArithmeticFunction.vonMangoldt k : ℝ)) fun s : S =>
+        ArithmeticCastelnuovoSeveri.translate s (cx f)) ↔
+      n ≤ hermNegIndex (weilGram (fun k => (ArithmeticFunction.vonMangoldt k : ℝ)) fun s : S =>
+        ArithmeticCastelnuovoSeveri.translate s (cx f)) := fun S => by
+    rw [posIndex_intersectionGram]; omega
+  simp only [h]
   exact zeta_orientationIndex_law hf hD n
 
 end GaloisForLFunctions.ArithmeticOrientationGeometry

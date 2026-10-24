@@ -45,6 +45,9 @@ namespace GaloisForLFunctions.BezoutValuationIncidence
 noncomputable section
 set_option autoImplicit false
 
+/-- The pronic norm `‖f‖_T = (Σ_{n ≤ T} f(n)²/(n(n+1)))^{1/2}` of Trans-Horizon Incidence Mechanics. -/
+local notation "pnorm" => TransHorizonIncidenceMechanics.pronicNorm
+
 /-! ## §1. Patterns, mean values and the leading coefficient -/
 
 /-- The centred prefix `A_s(n)` of the damped pattern `s(d) d^{-ε}`, centred at its own mean. -/
@@ -250,7 +253,7 @@ theorem eventually_abs_patternPrefix_le_of_meanZero {ε : ℝ} (hε : 0 < ε) (h
     _ ≤ θ * (n : ℝ) ^ (1 - ε) := by linarith
 
 /-- A prefix bound `|A| ≤ K n^{1-ε}` gives the cell bound `A²/(n(n+1)) ≤ K² n^{-2ε}`. -/
-theorem cell_le_of_abs_le_rpow {A K ε : ℝ} {n : ℕ} (hn : 1 ≤ n) (hK : 0 ≤ K)
+theorem cell_le_of_abs_le_rpow {A K ε : ℝ} {n : ℕ} (hn : 1 ≤ n)
     (hA : |A| ≤ K * (n : ℝ) ^ (1 - ε)) :
     A ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) ≤ K ^ 2 * (n : ℝ) ^ (-(2 * ε)) := by
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
@@ -295,7 +298,7 @@ theorem tendsto_patternReceiver_div_rpow_of_meanZero {ε : ℝ} (hε : 0 < ε) (
       · have : 0 ≤ θ ^ 2 * (n : ℝ) ^ (-(2 * ε)) := by positivity
         linarith
       · rw [zero_add]
-        exact cell_le_of_abs_le_rpow hn1 hθ0.le (hN₀ n (not_lt.mp h))
+        exact cell_le_of_abs_le_rpow hn1 (hN₀ n (not_lt.mp h))
     calc patternReceiver ε r T
         = ∑ n ∈ Icc 1 T, patternPrefix ε r n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) := rfl
       _ ≤ ∑ n ∈ Icc 1 T, ((if n < N₀ then patternPrefix ε r n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))
@@ -309,8 +312,10 @@ theorem tendsto_patternReceiver_div_rpow_of_meanZero {ε : ℝ} (hε : 0 < ε) (
             simp only [mem_filter, mem_Icc] at hn ⊢
             omega
           · exact sum_Icc_rpow_neg_two_mul_le_of_pos hε hε2 T
-  filter_upwards [hTa.eventually_ge_atTop (4 * (C₀ + θ ^ 2) / ϑ), eventually_ge_atTop 1]
-    with T hT hT1
+  obtain ⟨N₁, hN₁⟩ := eventually_atTop.mp
+    ((hTa.eventually_ge_atTop (4 * (C₀ + θ ^ 2) / ϑ)).and (eventually_ge_atTop 1))
+  refine ⟨N₁, fun T hT' => ?_⟩
+  obtain ⟨hT, hT1⟩ := hN₁ T hT'
   have hp : 0 < (T : ℝ) ^ (1 - 2 * ε) := Real.rpow_pos_of_pos (by exact_mod_cast hT1) _
   have hfirst : (C₀ + θ ^ 2) / (T : ℝ) ^ (1 - 2 * ε) ≤ ϑ / 4 := by
     rw [div_le_iff₀ hp]
@@ -355,7 +360,7 @@ theorem tendsto_patternPrefix_div_rpow {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 
       (𝓝 (L * subHalfZetaCoeff ε)) := by
   have hL1 := abs_le_one_of_hasMeanValue hs hL
   set r : ℕ → ℝ := fun d => (s d - L) / 2
-  have hr := abs_half_sub_le_one hs hL1
+  have hr : ∀ d, |r d| ≤ 1 := abs_half_sub_le_one hs hL1
   have hrm : HasMeanValue r 0 := hasMeanValue_half_sub hL
   have hu := tendsto_patternPrefix_unitSign_div_rpow hε (by linarith)
   have hR : Tendsto (fun n : ℕ => patternPrefix ε r n / (n : ℝ) ^ (1 - ε)) atTop (𝓝 0) := by
@@ -368,7 +373,7 @@ theorem tendsto_patternPrefix_div_rpow {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 
     obtain ⟨h, hn1⟩ := hN n hn
     have hp : 0 < (n : ℝ) ^ (1 - ε) := Real.rpow_pos_of_pos (by exact_mod_cast hn1) _
     rw [Real.dist_eq, sub_zero, abs_div, abs_of_pos hp, div_lt_iff₀ hp]
-    linarith
+    nlinarith [mul_pos hθ hp]
   have h := (hu.const_mul L).add (hR.const_mul 2)
   rw [mul_zero, add_zero] at h
   refine h.congr fun n => ?_
@@ -383,34 +388,32 @@ theorem tendsto_patternReceiver_div_rpow {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 
       (𝓝 (receiverLeadingCoeff ε * L ^ 2)) := by
   have hL1 := abs_le_one_of_hasMeanValue hs hL
   set r : ℕ → ℝ := fun d => (s d - L) / 2
-  have hr := abs_half_sub_le_one hs hL1
+  have hr : ∀ d, |r d| ≤ 1 := abs_half_sub_le_one hs hL1
   have hrm : HasMeanValue r 0 := hasMeanValue_half_sub hL
-  set P : (ℕ → ℝ) → ℕ → ℝ := fun f T => TransHorizonIncidenceMechanics.pronicNorm f T
-  set a : ℝ := 1 - 2 * ε
   -- normalized norms `√(E_T/T^a) = P/√(T^a)`
-  have hnorm : ∀ (f : ℕ → ℝ) (T : ℕ), Real.sqrt (patternReceiver ε f T / (T : ℝ) ^ a) =
-      P (patternPrefix ε f) T / Real.sqrt ((T : ℝ) ^ a) := fun f T => by
+  have hnorm : ∀ (f : ℕ → ℝ) (T : ℕ), Real.sqrt (patternReceiver ε f T / (T : ℝ) ^ (1 - 2 * ε)) =
+      pnorm (patternPrefix ε f) T / Real.sqrt ((T : ℝ) ^ (1 - 2 * ε)) := fun f T => by
     rw [Real.sqrt_div' _ (Real.rpow_nonneg (Nat.cast_nonneg T) _), patternReceiver_eq_sq,
       Real.sqrt_sq (TransHorizonIncidenceMechanics.pronicNorm_nonneg _ _)]
-  have hNu : Tendsto (fun T : ℕ => P (patternPrefix ε unitSign) T / Real.sqrt ((T : ℝ) ^ a)) atTop
+  have hNu : Tendsto (fun T : ℕ => pnorm (patternPrefix ε unitSign) T / Real.sqrt ((T : ℝ) ^ (1 - 2 * ε))) atTop
       (𝓝 (Real.sqrt (receiverLeadingCoeff ε))) := by
     simpa only [hnorm] using (tendsto_patternReceiver_unitSign_div_rpow hε hε2).sqrt
-  have hNr : Tendsto (fun T : ℕ => P (patternPrefix ε r) T / Real.sqrt ((T : ℝ) ^ a)) atTop
+  have hNr : Tendsto (fun T : ℕ => pnorm (patternPrefix ε r) T / Real.sqrt ((T : ℝ) ^ (1 - 2 * ε))) atTop
       (𝓝 0) := by
     simpa only [hnorm, Real.sqrt_zero] using
       (tendsto_patternReceiver_div_rpow_of_meanZero hε hε2 hr hrm).sqrt
   -- the triangle inequality in the pronic norm, both ways
   have hdec : patternPrefix ε s = fun n => L * patternPrefix ε unitSign n + 2 * patternPrefix ε r n :=
     funext (patternPrefix_eq_mean_add hε hs hL1)
-  have hup : ∀ T, P (patternPrefix ε s) T ≤ |L| * P (patternPrefix ε unitSign) T +
-      2 * P (patternPrefix ε r) T := fun T => by
+  have hup : ∀ T, pnorm (patternPrefix ε s) T ≤ |L| * pnorm (patternPrefix ε unitSign) T +
+      2 * pnorm (patternPrefix ε r) T := fun T => by
     have h := TransHorizonIncidenceMechanics.pronicNorm_add_le
       (fun n => L * patternPrefix ε unitSign n) (fun n => 2 * patternPrefix ε r n) T
-    simp only [P, hdec]
+    rw [hdec]
     rwa [TransHorizonIncidenceMechanics.pronicNorm_smul, TransHorizonIncidenceMechanics.pronicNorm_smul,
       abs_two] at h
-  have hlow : ∀ T, |L| * P (patternPrefix ε unitSign) T ≤ P (patternPrefix ε s) T +
-      2 * P (patternPrefix ε r) T := fun T => by
+  have hlow : ∀ T, |L| * pnorm (patternPrefix ε unitSign) T ≤ pnorm (patternPrefix ε s) T +
+      2 * pnorm (patternPrefix ε r) T := fun T => by
     have h := TransHorizonIncidenceMechanics.pronicNorm_add_le (patternPrefix ε s)
       (fun n => (-2) * patternPrefix ε r n) T
     have hfun : (fun n => patternPrefix ε s n + -2 * patternPrefix ε r n) =
@@ -420,21 +423,22 @@ theorem tendsto_patternReceiver_div_rpow {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 
       TransHorizonIncidenceMechanics.pronicNorm_smul, abs_neg, abs_two] at h
     exact h
   -- squeeze the normalized norm of `A_s`
-  have hlim : Tendsto (fun T : ℕ => P (patternPrefix ε s) T / Real.sqrt ((T : ℝ) ^ a)) atTop
+  have hlim : Tendsto (fun T : ℕ => pnorm (patternPrefix ε s) T / Real.sqrt ((T : ℝ) ^ (1 - 2 * ε))) atTop
       (𝓝 (|L| * Real.sqrt (receiverLeadingCoeff ε))) := by
     have hlo := (hNu.const_mul |L|).sub (hNr.const_mul 2)
     have hhi := (hNu.const_mul |L|).add (hNr.const_mul 2)
     rw [mul_zero, sub_zero] at hlo
     rw [mul_zero, add_zero] at hhi
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le hlo hhi (fun T => ?_) fun T => ?_
-    · have h := div_le_div_of_nonneg_right (hlow T) (Real.sqrt_nonneg ((T : ℝ) ^ a))
+    · have h := div_le_div_of_nonneg_right (hlow T) (Real.sqrt_nonneg ((T : ℝ) ^ (1 - 2 * ε)))
       simp only [add_div, mul_div_assoc] at h ⊢
       linarith
-    · have h := div_le_div_of_nonneg_right (hup T) (Real.sqrt_nonneg ((T : ℝ) ^ a))
+    · have h := div_le_div_of_nonneg_right (hup T) (Real.sqrt_nonneg ((T : ℝ) ^ (1 - 2 * ε)))
       simp only [add_div, mul_div_assoc] at h ⊢
       linarith
   have hsq := hlim.pow 2
-  rw [mul_pow, sq_abs, Real.sq_sqrt (receiverLeadingCoeff_pos hε hε2).le, mul_comm] at hsq
+  rw [mul_pow, sq_abs, Real.sq_sqrt (receiverLeadingCoeff_pos hε hε2).le,
+    mul_comm (L ^ 2) (receiverLeadingCoeff ε)] at hsq
   refine hsq.congr fun T => ?_
   rw [← hnorm, Real.sq_sqrt (div_nonneg (patternReceiver_nonneg ε s T)
     (Real.rpow_nonneg (Nat.cast_nonneg T) _))]
@@ -547,6 +551,7 @@ theorem sq_meanValue_le_of_abs_le {s t : ℕ → ℝ} (hst : ∀ d, |s d| ≤ t 
   have hle : |Ls| ≤ Lt := by
     refine le_of_tendsto_of_tendsto hs.abs ht (eventually_atTop.mpr ⟨1, fun x hx => ?_⟩)
     have hx0 : (0 : ℝ) < x := by exact_mod_cast hx
+    dsimp only
     rw [abs_div, Nat.abs_cast]
     exact div_le_div_of_nonneg_right ((abs_sum_le_sum_abs _ _).trans
       (sum_le_sum fun e _ => hst e)) hx0.le
@@ -574,7 +579,7 @@ theorem leadingCoeff_le_of_abs_le {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 1 / 2) 
 def kernelPattern (k : ℕ → ℝ) (ε : ℝ) (n : ℕ) : ℝ := ∑ j ∈ n.divisors, k j * (j : ℝ) ^ ε
 
 /-- `(k ⋆ d^{-ε})(n) = n^{-ε} Σ_{j | n} k(j) j^ε`. -/
-theorem dirichletConv_unit_eq_dampedSignWeight (k : ℕ → ℝ) {ε : ℝ} (hε : 0 < ε) :
+theorem dirichletConv_unit_eq_dampedSignWeight (k : ℕ → ℝ) (ε : ℝ) :
     RHTower.dirichletConv k (dampedSignWeight unitSign ε) =
       dampedSignWeight (kernelPattern k ε) ε := by
   funext n
@@ -609,7 +614,7 @@ theorem hasMeanValue_kernelPattern {k : ℕ → ℝ} {J : ℕ} (hk : ∀ j, J < 
       linarith
   have hlim : Tendsto (fun x : ℕ => ∑ j ∈ Icc 1 J, k j * (j : ℝ) ^ ε * (((x / j : ℕ) : ℝ) / x))
       atTop (𝓝 (∑ j ∈ Icc 1 J, k j * (j : ℝ) ^ ε * (1 / j))) :=
-    tendsto_finset_sum _ fun j hj => (hfl j (mem_Icc.mp hj).1).const_mul _
+    tendsto_finsetSum _ fun j hj => (hfl j (mem_Icc.mp hj).1).const_mul _
   have hval : ∑ j ∈ Icc 1 J, k j * (j : ℝ) ^ ε * (1 / j) = poleValue k J ε := by
     refine sum_congr rfl fun j hj => ?_
     have hj0 : (0 : ℝ) < j := by exact_mod_cast (mem_Icc.mp hj).1
@@ -617,16 +622,19 @@ theorem hasMeanValue_kernelPattern {k : ℕ → ℝ} {J : ℕ} (hk : ∀ j, J < 
     field_simp
   rw [hval] at hlim
   refine hlim.congr' (eventually_atTop.mpr ⟨J, fun x hx => ?_⟩)
+  dsimp only
   rw [show ∑ e ∈ Icc 1 x, kernelPattern k ε e = ∑ j ∈ Icc 1 x, k j * (j : ℝ) ^ ε * ((x / j : ℕ) : ℝ)
     from sum_Icc_sum_divisors_eq_floor (fun j => k j * (j : ℝ) ^ ε) x, sum_div]
-  symm
-  rw [← sum_subset (Icc_subset_Icc le_rfl hx) fun j hj hjJ => by
+  have hsub : ∑ j ∈ Icc 1 J, k j * (j : ℝ) ^ ε * ((x / j : ℕ) : ℝ) / x =
+      ∑ j ∈ Icc 1 x, k j * (j : ℝ) ^ ε * ((x / j : ℕ) : ℝ) / x := by
+    refine sum_subset (Icc_subset_Icc le_rfl hx) fun j hj hjJ => ?_
     have : J < j := by simp only [mem_Icc] at hj hjJ; omega
-    rw [hk j this]; simp]
+    rw [hk j this]; simp
+  rw [← hsub]
   exact sum_congr rfl fun j _ => by ring
 
 theorem abs_kernelPattern_le {k : ℕ → ℝ} {J : ℕ} (hk : ∀ j, J < j → k j = 0) {ε : ℝ}
-    (hε : 0 ≤ ε) (n : ℕ) :
+    (n : ℕ) :
     |kernelPattern k ε n| ≤ ∑ j ∈ Icc 1 J, |k j| * (j : ℝ) ^ ε := by
   unfold kernelPattern
   refine (abs_sum_le_sum_abs _ _).trans ?_
@@ -651,8 +659,8 @@ theorem tendsto_receiver_dirichletConv_unit_div_rpow {ε : ℝ} (hε : 0 < ε) (
     Tendsto (fun T : ℕ => weightPronicEnergy (RHTower.dirichletConv k (dampedSignWeight unitSign ε))
         (∑' d : ℕ, RHTower.dirichletConv k (dampedSignWeight unitSign ε) d / d) T /
           (T : ℝ) ^ (1 - 2 * ε)) atTop (𝓝 (receiverLeadingCoeff ε * poleValue k J ε ^ 2)) := by
-  rw [dirichletConv_unit_eq_dampedSignWeight k hε]
-  exact tendsto_patternReceiver_div_rpow_of_abs_le hε hε2 (abs_kernelPattern_le hk hε.le)
+  rw [dirichletConv_unit_eq_dampedSignWeight k ε]
+  exact tendsto_patternReceiver_div_rpow_of_abs_le hε hε2 (abs_kernelPattern_le hk)
     (hasMeanValue_kernelPattern hk ε)
 
 /-! ## §7. Exponent transfer: a power rate of the mean value -/
@@ -826,7 +834,7 @@ theorem exists_abs_sqrt_patternReceiver_sub_le_of_rate {ε : ℝ} (hε : 0 < ε)
           min (2 * (1 - β) * (1 - ε) / (2 - β)) ((1 - 2 * ε) / 2))) := by
   have hL1 := abs_le_one_of_hasMeanValue hs (hasMeanValue_of_rate hβ1 hrate)
   set r : ℕ → ℝ := fun d => (s d - L) / 2
-  have hr := abs_half_sub_le_one hs hL1
+  have hr : ∀ d, |r d| ≤ 1 := abs_half_sub_le_one hs hL1
   have hrrate : ∀ x : ℕ, 1 ≤ x → |∑ e ∈ Icc 1 x, r e| ≤ C / 2 * (x : ℝ) ^ β := by
     intro x hx
     have h : ∑ e ∈ Icc 1 x, r e = (∑ e ∈ Icc 1 x, s e - L * x) / 2 := by
@@ -837,20 +845,19 @@ theorem exists_abs_sqrt_patternReceiver_sub_le_of_rate {ε : ℝ} (hε : 0 < ε)
     linarith [hrate x hx]
   obtain ⟨K, hK0, hK⟩ := exists_patternReceiver_le_of_rate hε hε2 hr (by positivity) hβ0 hβ1 hrrate
   refine ⟨2 * Real.sqrt K, by positivity, fun T => ?_⟩
-  set P : (ℕ → ℝ) → ℕ → ℝ := fun f T => TransHorizonIncidenceMechanics.pronicNorm f T
-  have hsq : ∀ f, Real.sqrt (patternReceiver ε f T) = P (patternPrefix ε f) T := fun f => by
+  have hsq : ∀ f, Real.sqrt (patternReceiver ε f T) = pnorm (patternPrefix ε f) T := fun f => by
     rw [patternReceiver_eq_sq, Real.sqrt_sq (TransHorizonIncidenceMechanics.pronicNorm_nonneg _ _)]
   have hdec : patternPrefix ε s = fun n => L * patternPrefix ε unitSign n + 2 * patternPrefix ε r n :=
     funext (patternPrefix_eq_mean_add hε hs hL1)
-  have hup : P (patternPrefix ε s) T ≤ |L| * P (patternPrefix ε unitSign) T +
-      2 * P (patternPrefix ε r) T := by
+  have hup : pnorm (patternPrefix ε s) T ≤ |L| * pnorm (patternPrefix ε unitSign) T +
+      2 * pnorm (patternPrefix ε r) T := by
     have h := TransHorizonIncidenceMechanics.pronicNorm_add_le
       (fun n => L * patternPrefix ε unitSign n) (fun n => 2 * patternPrefix ε r n) T
-    simp only [P, hdec]
+    rw [hdec]
     rwa [TransHorizonIncidenceMechanics.pronicNorm_smul,
       TransHorizonIncidenceMechanics.pronicNorm_smul, abs_two] at h
-  have hlow : |L| * P (patternPrefix ε unitSign) T ≤ P (patternPrefix ε s) T +
-      2 * P (patternPrefix ε r) T := by
+  have hlow : |L| * pnorm (patternPrefix ε unitSign) T ≤ pnorm (patternPrefix ε s) T +
+      2 * pnorm (patternPrefix ε r) T := by
     have h := TransHorizonIncidenceMechanics.pronicNorm_add_le (patternPrefix ε s)
       (fun n => (-2) * patternPrefix ε r n) T
     have hfun : (fun n => patternPrefix ε s n + -2 * patternPrefix ε r n) =
@@ -859,7 +866,7 @@ theorem exists_abs_sqrt_patternReceiver_sub_le_of_rate {ε : ℝ} (hε : 0 < ε)
     rw [hfun, TransHorizonIncidenceMechanics.pronicNorm_smul,
       TransHorizonIncidenceMechanics.pronicNorm_smul, abs_neg, abs_two] at h
     exact h
-  have hPr : P (patternPrefix ε r) T ≤ Real.sqrt K * Real.sqrt (1 + (T : ℝ) ^ (1 - 2 * ε -
+  have hPr : pnorm (patternPrefix ε r) T ≤ Real.sqrt K * Real.sqrt (1 + (T : ℝ) ^ (1 - 2 * ε -
       min (2 * (1 - β) * (1 - ε) / (2 - β)) ((1 - 2 * ε) / 2))) := by
     rw [← hsq, ← Real.sqrt_mul hK0]
     exact Real.sqrt_le_sqrt (hK T)

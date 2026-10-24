@@ -1,5 +1,10 @@
 import GaloisForLFunctions.BiScaleUncertainty.WeilLagPacketCancellationAndPositivity
 import GaloisForLFunctions.SquareRootThreshold.TheWallsMeasureOneZeroWidth
+import GaloisForLFunctions.RHTower.CCM.CCMPrimeDeficitCoprimeBalance
+import GaloisForLFunctions.RHTower.CCM.CCMPrimeDeficitDiagonalControl
+import GaloisForLFunctions.RHTower.CCM.CCMPrimeDeficitChronologicalWork
+import GaloisForLFunctions.RHTower.CCM.CCMPrimeEntryEulerEndpointControl
+import GaloisForLFunctions.RHTower.CCM.CCMPrimeEntryBoundaryScale
 
 /-!
 # The critical prime-deficit energy and Weil-lag flux measure one zero width
@@ -50,6 +55,33 @@ This module connects the second-order prime-lag packet identities of
    Weil-lag energy `∫_0^T (weilLagFunctionReal t)² dt` or outgoing flux energy
    `∫_0^T (ccmPrimeDeficitOutgoing t)² dt` unconditionally implies `RiemannHypothesis` and linear
    critical deficit energy.
+
+4. **Arithmetic reductions and polynomial-to-linear self-improvement**
+   (`ccmPrimeDeficitCoprimeCrossWork_le_forty_nine_fourths`,
+   `criticalDeficitPointwiseRate_iff_coprimeCrossWorkLowerRate`,
+   `riemannHypothesis_iff_forall_coprimeCrossWorkLowerRate`,
+   `criticalDeficitEnergyRate_iff_centeredOffDiagonalRate`,
+   `riemannHypothesis_iff_quadratic_centeredOffDiagonal`,
+   `riemannHypothesis_iff_linear_centeredOffDiagonal`,
+   `criticalDeficitEnergyRate_iff_centeredEulerCurvatureRate`,
+   `riemannHypothesis_iff_cubic_centeredEulerCurvature`,
+   `riemannHypothesis_iff_linear_centeredEulerCurvature`,
+   `riemannHypothesis_of_quadratic_chronologicalWork`):
+   Because the coprime Möbius square source (`|·| ≤ 49/4`), the prime-entry diagonal
+   (`≤ T² + 78 T + 50`), the self-jump budget (`≤ T² + 78 T + 50`), and the Euler-deformation
+   endpoint (`≤ (T + 2)(T² / 2 + 30 T + 120)`) are unconditionally controlled, the zero-width
+   rate `zetaZeroWidth ≤ σ` and `RiemannHypothesis` reduce to any of the corresponding signed
+   arithmetic targets, with quadratic `O(1 + T²)` and cubic `O(1 + T³)` bounds self-improving
+   unconditionally to linear `O(1 + T)` bounds.
+
+5. **Unconditional Vinogradov–Korobov frontier bounds**
+   (`exists_eventually_ccmPrimeDeficitCriticalEnergy_le_vk`,
+   `exists_eventually_abs_ccmPrimeDeficitIncoming_le_vk`,
+   `exists_eventually_neg_ccmPrimeDeficitCoprimeCrossWork_le_vk`):
+   For every `0 < ex < 3 / 5`, unconditional Vinogradov–Korobov savings yield `C, κ > 0` such that
+   `ccmPrimeDeficitCriticalEnergy T ≤ C e^{T − κ T^{ex}}`,
+   `|ccmPrimeDeficitIncoming T| ≤ C e^{T/2 − κ T^{ex}}`, and
+   `-ccmPrimeDeficitCoprimeCrossWork T ≤ C e^{T − κ T^{ex}}` eventually.
 -/
 
 open MeasureTheory Set Filter Topology Complex
@@ -516,6 +548,373 @@ theorem riemannHypothesis_of_forall_outgoingDeficitFluxRate
     (h : ∀ β : ℝ, 0 < β → OutgoingDeficitFluxRate β) : RiemannHypothesis :=
   riemannHypothesis_iff_forall_criticalDeficitEnergyRate.mpr fun β hβ =>
     criticalDeficitEnergyRate_of_outgoingDeficitFluxRate hβ.le (h β hβ)
+
+/-! ## §4. Arithmetic reductions and polynomial-to-linear self-improvement -/
+
+private theorem self_le_exp_two_mul {β T : ℝ} (hβ : 0 < β) :
+    T ≤ 1 / (2 * β) * Real.exp (2 * β * T) := by
+  rw [one_div_mul_eq_div, le_div_iff₀ (by positivity)]
+  linarith [Real.add_one_le_exp (2 * β * T)]
+
+private theorem sq_le_exp_two_mul {β T : ℝ} (hβ : 0 < β) (hT : 0 ≤ T) :
+    T ^ 2 ≤ 1 / β ^ 2 * Real.exp (2 * β * T) := by
+  have h1 : β * T ≤ Real.exp (β * T) := by linarith [Real.add_one_le_exp (β * T)]
+  have h2 : (β * T) ^ 2 ≤ Real.exp (β * T) ^ 2 :=
+    pow_le_pow_left₀ (by positivity) h1 2
+  have hexp : Real.exp (β * T) ^ 2 = Real.exp (2 * β * T) := by
+    rw [sq, ← Real.exp_add]; congr 1; ring
+  rw [hexp, mul_pow] at h2
+  rw [one_div_mul_eq_div, le_div_iff₀ (by positivity)]
+  linarith
+
+private theorem cube_le_exp_two_mul {β T : ℝ} (hβ : 0 < β) (hT : 0 ≤ T) :
+    T ^ 3 ≤ 27 / (8 * β ^ 3) * Real.exp (2 * β * T) := by
+  have h1 : 2 / 3 * β * T ≤ Real.exp (2 / 3 * β * T) := by
+    linarith [Real.add_one_le_exp (2 / 3 * β * T)]
+  have h2 : (2 / 3 * β * T) ^ 3 ≤ Real.exp (2 / 3 * β * T) ^ 3 :=
+    pow_le_pow_left₀ (by positivity) h1 3
+  have hexp : Real.exp (2 / 3 * β * T) ^ 3 = Real.exp (2 * β * T) := by
+    rw [pow_succ, sq, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
+  have hpow : (2 / 3 * β * T) ^ 3 = 8 / 27 * β ^ 3 * T ^ 3 := by ring
+  rw [hexp, hpow] at h2
+  rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity)]
+  linarith
+
+/-- **Unconditional upper bound on the coprime Möbius cross work.** Because
+`ccmPrimeDeficitCriticalEnergy T ≥ 0` and
+`|ccmPrimeDeficitCriticalEnergy T + ccmPrimeDeficitCoprimeCrossWork T| ≤ 49 / 4`, the coprime
+cross work is uniformly bounded above by `49 / 4` for all `T ≥ 0`. -/
+theorem ccmPrimeDeficitCoprimeCrossWork_le_forty_nine_fourths {T : ℝ} (hT : 0 ≤ T) :
+    ccmPrimeDeficitCoprimeCrossWork T ≤ 49 / 4 := by
+  have h1 := (abs_le.mp (abs_ccmPrimeDeficitCriticalEnergy_add_coprimeCrossWork_le hT)).2
+  have h2 := ccmPrimeDeficitCriticalEnergy_nonneg T
+  linarith
+
+/-- **Two-sided sandwich between `ccmPrimeDeficitCriticalEnergy` and `-ccmPrimeDeficitCoprimeCrossWork`.**
+For all `T ≥ 0`, `-ccmPrimeDeficitCoprimeCrossWork T` differs from
+`ccmPrimeDeficitCriticalEnergy T` by at most `49 / 4`. -/
+theorem neg_ccmPrimeDeficitCoprimeCrossWork_bounds {T : ℝ} (hT : 0 ≤ T) :
+    ccmPrimeDeficitCriticalEnergy T - 49 / 4 ≤ -ccmPrimeDeficitCoprimeCrossWork T ∧
+      -ccmPrimeDeficitCoprimeCrossWork T ≤ ccmPrimeDeficitCriticalEnergy T + 49 / 4 := by
+  obtain ⟨hl, hu⟩ := abs_le.mp (abs_ccmPrimeDeficitCriticalEnergy_add_coprimeCrossWork_le hT)
+  exact ⟨by linarith, by linarith⟩
+
+/-- The negative coprime Möbius cross work `-ccmPrimeDeficitCoprimeCrossWork T` grows at most like
+`e^{2βT}`. -/
+def CoprimeCrossWorkLowerRate (β : ℝ) : Prop :=
+  ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, 0 ≤ T →
+    -ccmPrimeDeficitCoprimeCrossWork T ≤ C * Real.exp (2 * β * T)
+
+/-- For `β ≥ 0`, `CriticalDeficitPointwiseRate β` is unconditionally equivalent to
+`CoprimeCrossWorkLowerRate β`. -/
+theorem criticalDeficitPointwiseRate_iff_coprimeCrossWorkLowerRate {β : ℝ} (hβ : 0 ≤ β) :
+    CriticalDeficitPointwiseRate β ↔ CoprimeCrossWorkLowerRate β := by
+  constructor
+  · rintro ⟨C, hC0, hC⟩
+    refine ⟨C + 49 / 4, by positivity, fun T hT => ?_⟩
+    have h1 := (neg_ccmPrimeDeficitCoprimeCrossWork_bounds hT).2
+    have h2 := hC T hT
+    have hexp : 1 ≤ Real.exp (2 * β * T) := Real.one_le_exp (by positivity)
+    nlinarith
+  · rintro ⟨C, hC0, hC⟩
+    refine ⟨C + 49 / 4, by positivity, fun T hT => ?_⟩
+    have h1 := (neg_ccmPrimeDeficitCoprimeCrossWork_bounds hT).1
+    have h2 := hC T hT
+    have hexp : 1 ≤ Real.exp (2 * β * T) := Real.one_le_exp (by positivity)
+    nlinarith
+
+/-- `zetaZeroWidth ≤ σ` iff `CoprimeCrossWorkLowerRate β` holds for every `β > σ` (`0 ≤ σ < 1/2`). -/
+theorem zetaZeroWidth_le_iff_forall_coprimeCrossWorkLowerRate {σ : ℝ} (hσ : 0 ≤ σ)
+    (hσ' : σ < 1 / 2) :
+    zetaZeroWidth ≤ σ ↔ ∀ β : ℝ, σ < β → CoprimeCrossWorkLowerRate β := by
+  rw [zetaZeroWidth_le_iff_forall_criticalDeficitPointwiseRate hσ hσ']
+  exact forall₂_congr fun β hβ =>
+    criticalDeficitPointwiseRate_iff_coprimeCrossWorkLowerRate (hσ.trans hβ.le)
+
+/-- **RH is every subexponential lower bound on the coprime Möbius cross work.** -/
+theorem riemannHypothesis_iff_forall_coprimeCrossWorkLowerRate :
+    RiemannHypothesis ↔ ∀ β : ℝ, 0 < β → CoprimeCrossWorkLowerRate β :=
+  zetaZeroWidth_eq_zero_iff_riemannHypothesis.symm.trans
+    ((le_antisymm_iff.trans (and_iff_left zetaZeroWidth_nonneg)).symm.trans
+      (zetaZeroWidth_le_iff_forall_coprimeCrossWorkLowerRate le_rfl (by norm_num)))
+
+/-- **Two-sided quadratic sandwich for the centered off-diagonal prime-entry energy.** For all
+`T ≥ 0`,
+`ccmPrimeEntryCenteredOffDiagonal T ≤ ∫_0^T ccmPrimeDeficitCriticalEnergy t dt ≤ ccmPrimeEntryCenteredOffDiagonal T + T² + 78 T + 50`. -/
+theorem ccmPrimeEntryCenteredOffDiagonal_bounds {T : ℝ} (hT : 0 ≤ T) :
+    ccmPrimeEntryCenteredOffDiagonal T ≤
+        (∫ t in Icc 0 T, ccmPrimeDeficitCriticalEnergy t) ∧
+      (∫ t in Icc 0 T, ccmPrimeDeficitCriticalEnergy t) ≤
+        ccmPrimeEntryCenteredOffDiagonal T + T ^ 2 + 78 * T + 50 := by
+  have heq := ccmPrimeDeficitCriticalEnergy_integral_eq_diagonal_add_centered hT
+  rw [intervalIntegral.integral_of_le hT, ← integral_Icc_eq_integral_Ioc] at heq
+  have h0 := ccmPrimeEntryDiagonal_nonneg hT
+  have hq := ccmPrimeEntryDiagonal_le_quadratic hT
+  exact ⟨by linarith, by linarith⟩
+
+/-- The centered off-diagonal prime-entry energy grows at most like `e^{2βT}`. -/
+def CenteredOffDiagonalRate (β : ℝ) : Prop :=
+  ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, 0 ≤ T →
+    ccmPrimeEntryCenteredOffDiagonal T ≤ C * Real.exp (2 * β * T)
+
+/-- For `β > 0`, `CriticalDeficitEnergyRate β` is unconditionally equivalent to
+`CenteredOffDiagonalRate β`. -/
+theorem criticalDeficitEnergyRate_iff_centeredOffDiagonalRate {β : ℝ} (hβ : 0 < β) :
+    CriticalDeficitEnergyRate β ↔ CenteredOffDiagonalRate β := by
+  constructor
+  · rintro ⟨C, hC0, hC⟩
+    refine ⟨C, hC0, fun T hT => (ccmPrimeEntryCenteredOffDiagonal_bounds hT).1.trans (hC T hT)⟩
+  · rintro ⟨C, hC0, hC⟩
+    refine ⟨C + 1 / β ^ 2 + 78 * (1 / (2 * β)) + 50, by positivity, fun T hT => ?_⟩
+    have h1 := (ccmPrimeEntryCenteredOffDiagonal_bounds hT).2
+    have h2 := hC T hT
+    have hT2 := sq_le_exp_two_mul hβ hT
+    have hT1 := self_le_exp_two_mul hβ (T := T)
+    have hT0 : 1 ≤ Real.exp (2 * β * T) := Real.one_le_exp (by positivity)
+    linarith
+
+/-- `zetaZeroWidth ≤ σ` iff `CenteredOffDiagonalRate β` holds for every `β > σ` (`0 ≤ σ < 1/2`). -/
+theorem zetaZeroWidth_le_iff_forall_centeredOffDiagonalRate {σ : ℝ} (hσ : 0 ≤ σ)
+    (hσ' : σ < 1 / 2) :
+    zetaZeroWidth ≤ σ ↔ ∀ β : ℝ, σ < β → CenteredOffDiagonalRate β := by
+  rw [zetaZeroWidth_le_iff_forall_criticalDeficitEnergyRate hσ hσ']
+  exact forall₂_congr fun β hβ =>
+    criticalDeficitEnergyRate_iff_centeredOffDiagonalRate (hσ.trans_lt hβ)
+
+/-- **RH is a linear bound on `ccmPrimeEntryCenteredOffDiagonal`.** -/
+theorem riemannHypothesis_iff_linear_centeredOffDiagonal :
+    RiemannHypothesis ↔
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, 0 ≤ T →
+        ccmPrimeEntryCenteredOffDiagonal T ≤ C * (1 + T) := by
+  rw [riemannHypothesis_iff_linear_criticalDeficitEnergy]
+  constructor
+  · rintro ⟨C, hC0, hC⟩
+    exact ⟨C, hC0, fun T hT => (ccmPrimeEntryCenteredOffDiagonal_bounds hT).1.trans (hC T hT)⟩
+  · rintro ⟨C, hC0, hC⟩
+    refine riemannHypothesis_iff_linear_criticalDeficitEnergy.mp ?_
+    rw [riemannHypothesis_iff_forall_criticalDeficitEnergyRate]
+    intro β hβ
+    rw [criticalDeficitEnergyRate_iff_centeredOffDiagonalRate hβ]
+    refine ⟨C * (1 + 1 / (2 * β)), by positivity, fun T hT => ?_⟩
+    have h1 : 1 ≤ Real.exp (2 * β * T) := Real.one_le_exp (by positivity)
+    have hT1 := self_le_exp_two_mul hβ (T := T)
+    have h2 := hC T hT
+    nlinarith
+
+/-- **Quadratic-to-linear self-improvement for `ccmPrimeEntryCenteredOffDiagonal`.** A quadratic
+upper bound `ccmPrimeEntryCenteredOffDiagonal T ≤ C (1 + T²)` is unconditionally equivalent to
+`RiemannHypothesis` (and hence self-improves to `O(1 + T)`). -/
+theorem riemannHypothesis_iff_quadratic_centeredOffDiagonal :
+    RiemannHypothesis ↔
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, 0 ≤ T →
+        ccmPrimeEntryCenteredOffDiagonal T ≤ C * (1 + T ^ 2) := by
+  constructor
+  · intro hRH
+    obtain ⟨C, hC0, hC⟩ := riemannHypothesis_iff_linear_centeredOffDiagonal.mp hRH
+    refine ⟨2 * C, by positivity, fun T hT => ?_⟩
+    have h1 := hC T hT
+    have h2 : 1 + T ≤ 2 * (1 + T ^ 2) := by nlinarith [sq_nonneg (T - 1)]
+    nlinarith
+  · rintro ⟨C, hC0, hC⟩
+    rw [riemannHypothesis_iff_forall_criticalDeficitEnergyRate]
+    intro β hβ
+    rw [criticalDeficitEnergyRate_iff_centeredOffDiagonalRate hβ]
+    refine ⟨C * (1 + 1 / β ^ 2), by positivity, fun T hT => ?_⟩
+    have h1 : 1 ≤ Real.exp (2 * β * T) := Real.one_le_exp (by positivity)
+    have hT2 := sq_le_exp_two_mul hβ hT
+    have h2 := hC T hT
+    nlinarith
+
+/-- **Two-sided cubic sandwich for the centered Euler-deformation curvature.** For all `T ≥ 0`,
+`ccmPrimeDeficitCenteredEulerCurvature T ≤ ∫_0^T ccmPrimeDeficitCriticalEnergy t dt ≤ ccmPrimeDeficitCenteredEulerCurvature T + (T + 2)(T² / 2 + 30 T + 120)`. -/
+theorem ccmPrimeDeficitCenteredEulerCurvature_bounds {T : ℝ} (hT : 0 ≤ T) :
+    ccmPrimeDeficitCenteredEulerCurvature T ≤
+        (∫ t in Icc 0 T, ccmPrimeDeficitCriticalEnergy t) ∧
+      (∫ t in Icc 0 T, ccmPrimeDeficitCriticalEnergy t) ≤
+        ccmPrimeDeficitCenteredEulerCurvature T +
+          (T + 2) * (T ^ 2 / 2 + 30 * T + 120) := by
+  obtain ⟨hl, hu⟩ := ccmPrimeDeficitCriticalEnergy_integral_sub_centeredEuler_bounds hT
+  rw [intervalIntegral.integral_of_le hT, ← integral_Icc_eq_integral_Ioc] at hl hu
+  exact ⟨by linarith, by linarith⟩
+
+/-- The centered Euler-deformation curvature grows at most like `e^{2βT}`. -/
+def CenteredEulerCurvatureRate (β : ℝ) : Prop :=
+  ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, 0 ≤ T →
+    ccmPrimeDeficitCenteredEulerCurvature T ≤ C * Real.exp (2 * β * T)
+
+/-- For `β > 0`, `CriticalDeficitEnergyRate β` is unconditionally equivalent to
+`CenteredEulerCurvatureRate β`. -/
+theorem criticalDeficitEnergyRate_iff_centeredEulerCurvatureRate {β : ℝ} (hβ : 0 < β) :
+    CriticalDeficitEnergyRate β ↔ CenteredEulerCurvatureRate β := by
+  constructor
+  · rintro ⟨C, hC0, hC⟩
+    refine ⟨C, hC0, fun T hT =>
+      (ccmPrimeDeficitCenteredEulerCurvature_bounds hT).1.trans (hC T hT)⟩
+  · rintro ⟨C, hC0, hC⟩
+    refine ⟨C + 1 / 2 * (27 / (8 * β ^ 3)) + 31 * (1 / β ^ 2) + 180 * (1 / (2 * β)) + 240,
+      by positivity, fun T hT => ?_⟩
+    have h1 := (ccmPrimeDeficitCenteredEulerCurvature_bounds hT).2
+    have hpoly : (T + 2) * (T ^ 2 / 2 + 30 * T + 120) =
+        1 / 2 * T ^ 3 + 31 * T ^ 2 + 180 * T + 240 := by ring
+    rw [hpoly] at h1
+    have h2 := hC T hT
+    have hT3 := cube_le_exp_two_mul hβ hT
+    have hT2 := sq_le_exp_two_mul hβ hT
+    have hT1 := self_le_exp_two_mul hβ (T := T)
+    have hT0 : 1 ≤ Real.exp (2 * β * T) := Real.one_le_exp (by positivity)
+    linarith
+
+/-- `zetaZeroWidth ≤ σ` iff `CenteredEulerCurvatureRate β` holds for every `β > σ`
+(`0 ≤ σ < 1/2`). -/
+theorem zetaZeroWidth_le_iff_forall_centeredEulerCurvatureRate {σ : ℝ} (hσ : 0 ≤ σ)
+    (hσ' : σ < 1 / 2) :
+    zetaZeroWidth ≤ σ ↔ ∀ β : ℝ, σ < β → CenteredEulerCurvatureRate β := by
+  rw [zetaZeroWidth_le_iff_forall_criticalDeficitEnergyRate hσ hσ']
+  exact forall₂_congr fun β hβ =>
+    criticalDeficitEnergyRate_iff_centeredEulerCurvatureRate (hσ.trans_lt hβ)
+
+/-- **RH is a linear bound on `ccmPrimeDeficitCenteredEulerCurvature`.** -/
+theorem riemannHypothesis_iff_linear_centeredEulerCurvature :
+    RiemannHypothesis ↔
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, 0 ≤ T →
+        ccmPrimeDeficitCenteredEulerCurvature T ≤ C * (1 + T) := by
+  constructor
+  · intro hRH
+    obtain ⟨C, hC0, hC⟩ := riemannHypothesis_iff_linear_criticalDeficitEnergy.mp hRH
+    exact ⟨C, hC0, fun T hT =>
+      (ccmPrimeDeficitCenteredEulerCurvature_bounds hT).1.trans (hC T hT)⟩
+  · rintro ⟨C, hC0, hC⟩
+    rw [riemannHypothesis_iff_forall_criticalDeficitEnergyRate]
+    intro β hβ
+    rw [criticalDeficitEnergyRate_iff_centeredEulerCurvatureRate hβ]
+    refine ⟨C * (1 + 1 / (2 * β)), by positivity, fun T hT => ?_⟩
+    have h1 : 1 ≤ Real.exp (2 * β * T) := Real.one_le_exp (by positivity)
+    have hT1 := self_le_exp_two_mul hβ (T := T)
+    have h2 := hC T hT
+    nlinarith
+
+/-- **Cubic-to-linear self-improvement for `ccmPrimeDeficitCenteredEulerCurvature`.** A cubic upper
+bound `ccmPrimeDeficitCenteredEulerCurvature T ≤ C (1 + T³)` is unconditionally equivalent to
+`RiemannHypothesis` (and hence self-improves to `O(1 + T)`). -/
+theorem riemannHypothesis_iff_cubic_centeredEulerCurvature :
+    RiemannHypothesis ↔
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, 0 ≤ T →
+        ccmPrimeDeficitCenteredEulerCurvature T ≤ C * (1 + T ^ 3) := by
+  constructor
+  · intro hRH
+    obtain ⟨C, hC0, hC⟩ := riemannHypothesis_iff_linear_centeredEulerCurvature.mp hRH
+    refine ⟨2 * C, by positivity, fun T hT => ?_⟩
+    have h1 := hC T hT
+    have h2 : 1 + T ≤ 2 * (1 + T ^ 3) := by
+      by_cases hT1 : T ≤ 1
+      · have hT3 : 0 ≤ T ^ 3 := by positivity
+        linarith
+      · have hT1' : 1 ≤ T := le_of_not_ge hT1
+        have hT3 : T ≤ T ^ 3 := by nlinarith
+        linarith
+    nlinarith
+  · rintro ⟨C, hC0, hC⟩
+    rw [riemannHypothesis_iff_forall_criticalDeficitEnergyRate]
+    intro β hβ
+    rw [criticalDeficitEnergyRate_iff_centeredEulerCurvatureRate hβ]
+    refine ⟨C * (1 + 27 / (8 * β ^ 3)), by positivity, fun T hT => ?_⟩
+    have h1 : 1 ≤ Real.exp (2 * β * T) := Real.one_le_exp (by positivity)
+    have hT3 := cube_le_exp_two_mul hβ hT
+    have h2 := hC T hT
+    nlinarith
+
+/-- **Quadratic upper bound on chronological prime-entry work implies `RiemannHypothesis`.** -/
+theorem riemannHypothesis_of_quadratic_chronologicalWork
+    (h : ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, 0 ≤ T →
+      ccmPrimeDeficitChronologicalWork T ≤ C * (1 + T ^ 2)) :
+    RiemannHypothesis := by
+  obtain ⟨C, hC0, hC⟩ := h
+  rw [riemannHypothesis_iff_forall_criticalDeficitEnergyRate]
+  intro β hβ
+  refine ⟨2 * C * (1 + 1 / β ^ 2) + 1 / β ^ 2 + 78 * (1 / (2 * β)) + 52,
+    by positivity, fun T hT => ?_⟩
+  have h1 := ccmPrimeDeficitCausalStorage_add_energy_le_work hT
+  rw [intervalIntegral.integral_of_le hT, ← integral_Icc_eq_integral_Ioc] at h1
+  have h2 := ccmPrimeDeficitCausalStorage_nonneg T
+  have h3 := hC T hT
+  have hT2 := sq_le_exp_two_mul hβ hT
+  have hT1 := self_le_exp_two_mul hβ (T := T)
+  have hT0 : 1 ≤ Real.exp (2 * β * T) := Real.one_le_exp (by positivity)
+  nlinarith
+
+/-! ## §5. Unconditional Vinogradov–Korobov frontier bounds -/
+
+/-- **Unconditional Vinogradov–Korobov bound for the critical prime-deficit energy.** For every
+`0 < ex < 3 / 5`, there exist `C, κ > 0` such that eventually
+`ccmPrimeDeficitCriticalEnergy T ≤ C * Real.exp (T - κ * T ^ ex)`. -/
+theorem exists_eventually_ccmPrimeDeficitCriticalEnergy_le_vk
+    {ex : ℝ} (h0 : 0 < ex) (h35 : ex < 3 / 5) :
+    ∃ C κ : ℝ, 0 < C ∧ 0 < κ ∧
+      ∀ᶠ T in atTop,
+        ccmPrimeDeficitCriticalEnergy T ≤ C * Real.exp (T - κ * T ^ ex) := by
+  obtain ⟨C, κ, hC, hκ, hvk⟩ := exists_eventually_abs_ccmLogChebyshevDeficitPrimitive_le_vk h0 h35
+  refine ⟨C ^ 2, 2 * κ, by positivity, by positivity, ?_⟩
+  filter_upwards [hvk] with T hT
+  unfold ccmPrimeDeficitCriticalEnergy
+  have hsq : ccmLogChebyshevDeficitPrimitive T ^ 2 ≤
+      (C * Real.exp (T - κ * T ^ ex)) ^ 2 := by
+    rw [← sq_abs (ccmLogChebyshevDeficitPrimitive T)]
+    exact pow_le_pow_left₀ (abs_nonneg _) hT 2
+  calc Real.exp (-T) * ccmLogChebyshevDeficitPrimitive T ^ 2
+      ≤ Real.exp (-T) * (C * Real.exp (T - κ * T ^ ex)) ^ 2 :=
+        mul_le_mul_of_nonneg_left hsq (Real.exp_pos _).le
+    _ = C ^ 2 * (Real.exp (-T) * (Real.exp (T - κ * T ^ ex) * Real.exp (T - κ * T ^ ex))) := by
+        ring
+    _ = C ^ 2 * Real.exp (T - 2 * κ * T ^ ex) := by
+        rw [← Real.exp_add, ← Real.exp_add]
+        congr 2
+        ring
+
+/-- **Unconditional Vinogradov–Korobov bound for the incoming prime-deficit amplitude.** For every
+`0 < ex < 3 / 5`, there exist `C, κ > 0` such that eventually
+`|ccmPrimeDeficitIncoming T| ≤ C * Real.exp (T / 2 - κ * T ^ ex)`. -/
+theorem exists_eventually_abs_ccmPrimeDeficitIncoming_le_vk
+    {ex : ℝ} (h0 : 0 < ex) (h35 : ex < 3 / 5) :
+    ∃ C κ : ℝ, 0 < C ∧ 0 < κ ∧
+      ∀ᶠ T in atTop,
+        |ccmPrimeDeficitIncoming T| ≤ C * Real.exp (T / 2 - κ * T ^ ex) := by
+  obtain ⟨C, κ, hC, hκ, hvk⟩ := exists_eventually_abs_ccmLogChebyshevDeficitPrimitive_le_vk h0 h35
+  refine ⟨C, κ, hC, hκ, ?_⟩
+  filter_upwards [hvk] with T hT
+  unfold ccmPrimeDeficitIncoming
+  rw [abs_mul, abs_of_pos (Real.exp_pos _)]
+  calc Real.exp (-T / 2) * |ccmLogChebyshevDeficitPrimitive T|
+      ≤ Real.exp (-T / 2) * (C * Real.exp (T - κ * T ^ ex)) :=
+        mul_le_mul_of_nonneg_left hT (Real.exp_pos _).le
+    _ = C * (Real.exp (-T / 2) * Real.exp (T - κ * T ^ ex)) := by ring
+    _ = C * Real.exp (T / 2 - κ * T ^ ex) := by
+        rw [← Real.exp_add]
+        congr 2
+        ring
+
+/-- **Unconditional Vinogradov–Korobov lower bound for the coprime Möbius cross work.** For every
+`0 < ex < 3 / 5`, there exist `C, κ > 0` such that eventually
+`-ccmPrimeDeficitCoprimeCrossWork T ≤ C * Real.exp (T - κ * T ^ ex)`. -/
+theorem exists_eventually_neg_ccmPrimeDeficitCoprimeCrossWork_le_vk
+    {ex : ℝ} (h0 : 0 < ex) (h35 : ex < 3 / 5) :
+    ∃ C κ : ℝ, 0 < C ∧ 0 < κ ∧
+      ∀ᶠ T in atTop,
+        -ccmPrimeDeficitCoprimeCrossWork T ≤ C * Real.exp (T - κ * T ^ ex) := by
+  obtain ⟨C, κ, hC, hκ, hvk⟩ := exists_eventually_ccmPrimeDeficitCriticalEnergy_le_vk h0 h35
+  have hsub : Tendsto (fun T : ℝ => T - κ * T ^ ex) atTop atTop := by
+    have h1 : Tendsto (fun T : ℝ => T ^ (1 - ex) - κ) atTop atTop :=
+      (tendsto_rpow_atTop (by linarith)).atTop_add tendsto_const_nhds
+    have h2 : Tendsto (fun T : ℝ => T ^ ex * (T ^ (1 - ex) - κ)) atTop atTop :=
+      (tendsto_rpow_atTop h0).atTop_mul_atTop₀ h1
+    refine h2.congr' ?_
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT
+    rw [mul_sub, ← Real.rpow_add hT, add_sub_cancel, Real.rpow_one]
+  refine ⟨C + 49 / 4, κ, by positivity, hκ, ?_⟩
+  filter_upwards [hvk, eventually_ge_atTop (0 : ℝ),
+    hsub.eventually_ge_atTop (0 : ℝ)] with T hT hT0 hpos
+  have hb := (neg_ccmPrimeDeficitCoprimeCrossWork_bounds hT0).2
+  have hexp : 1 ≤ Real.exp (T - κ * T ^ ex) := Real.one_le_exp hpos
+  nlinarith
 
 end
 

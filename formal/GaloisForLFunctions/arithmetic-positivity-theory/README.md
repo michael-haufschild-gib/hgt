@@ -1026,20 +1026,68 @@ many dyadic blocks (`exists_criticalCompleteEnergy_pos_of_window`,
 sum $\sum\Lambda(r)r^{-1-\varepsilon}$ at $\varepsilon=1/(2+\log L)$ proves the same law with a
 constant worse by $6e$; it is kept because of what it reveals about selectivity.
 
-**The temperedness gate.** On the critical line the raw weight $\Lambda(r)/r$ diverges, and
+**The temperedness gate, wide-window selectivity against $\zeta(s-a)\zeta(s+a)$, and Beurling
+infrastructure invariance.** On the critical line the raw weight $\Lambda(r)/r$ diverges, and
 the window exponent $\varepsilon(L)=1/(2+\log L)$ restores summability with an explicit
 width-logarithmic sum, $\sum_r\Lambda(r)r^{-1-\varepsilon(L)}\le6(3+\log L)$
 (`summable_vonMangoldt_windowDilationExponent`). The shifted pair
-$\zeta(s-a)\zeta(s+a)$, $a\ne0$, has von Mangoldt weight $\Lambda(r)(r^a+r^{-a})\ge\Lambda(r)r^{\lvert a\rvert}$,
+$\zeta(s-a)\zeta(s+a)$, $a\ne0$, has von Mangoldt weight $\Lambda_a(r)=\Lambda(r)(r^a+r^{-a})\ge\Lambda(r)r^{\lvert a\rvert}$,
 so its version of the same sum diverges for *every* $\varepsilon\le\lvert a\rvert$, in
 particular on every window with $\log L\ge1/\lvert a\rvert-2$
 (`not_summable_shiftedPairVonMangoldt_div_rpow_of_le_abs`,
-`not_summable_shiftedPairVonMangoldt_windowDilationExponent`). The shifted pair does not
-merely miss the conclusion: it fails the one summability hypothesis the proof consumes, on
-all wide windows at once. This is the one place where the selectivity criterion is met by an
-identified arithmetic input, the temperedness of the prime channel of $\zeta$, rather than by
-a sign. It separates the *proof* from the shifted pair; whether the *statement* separates
-them is open (§7.7).
+`not_summable_shiftedPairVonMangoldt_windowDilationExponent`). Moreover,
+[WideWindowSelectivityAndBeurlingInfrastructure](WideWindowSelectivityAndBeurlingInfrastructure.lean)
+establishes the exact dividing line between wide-window prime-driven selectivity and critical-family
+infrastructure invariance:
+- *Wide-window prime-driven failure of Weil positivity for $\zeta(s-a)\zeta(s+a)$:* For every real
+  shift $a\ne0$, every nonnegative bump $g\in C^2_c([-1/4,1/4])$ with $\int g\ne0$, and every
+  horizon $L_0\ge0$, integrating finite partial sums of $\mathrm{windowValue}\,g\,L\,n\cdot e^{-\sigma L}$
+  at $\sigma=1/2+\lvert a\rvert>1/2$ over $L\in(L_0,\infty)$ against `integral_shiftMajorant_mul_exp`
+  and comparing with the divergence of $\sum_n\Lambda(n)/n$ produces a wide window shift
+  $L>\max(L_0,\log2)$ (where only prime powers $r\in[e^{L-1/2},e^{L+1/2}]$ enter the window sum) at
+  which $\mathrm{windowSum}(g,\Lambda_a,L)>\mathrm{shiftMajorant}(g,2c_{\mathrm{pole}}+2c_{\mathrm{arch}},L)$
+  and the full Weil functional of $\Lambda_a$ on the wide shift pair $g+g(\cdot-L)$ is strictly
+  negative (`exists_wide_windowSum_shiftedPairVonMangoldt_gt_shiftMajorant`,
+  `exists_wide_shiftPair_shiftedPairVonMangoldt_neg`,
+  `exists_wide_shiftPair_narrowG_shiftedPairVonMangoldt_neg`).
+- *Dilation-ring majorant divergence and sign reversal of the critical harmonic charge $A_a(m)$:*
+  For $\lvert a\rvert\ge1/2$, the dilation-ring majorant $r\mapsto(\Lambda_a(r)/r)\min(1,\sqrt{L/r})$
+  diverges on every scale window $L\ge1$ (`not_summable_shiftedPairWindowRingMajorant_of_half_le`),
+  and its prefix $2\le r\le L$ dominates $\sum_{2\le r\le L}\Lambda(r)r^{\lvert a\rvert-1}$
+  (`shiftedPairWindowRingMajorant_prefix_ge`). On the critical harmonic side, the divisor charge
+  $A_a(m)=\chi(m)\sum_{d\mid m}d\Lambda_a(d)\chi(m/d)$ has $A_a(2)=-2\log2(2^a+2^{-a})<0$ as its
+  unique negative harmonic and $A_a(p)=p\log p(p^a+p^{-a})>0$ at every odd prime $p$
+  (`shiftedPairHarmonicCharge_sign`, `shiftedPairHarmonicCharge_odd_prime`). Whereas for $\zeta$
+  ($a=0$) the cubic cumulative charge $\sum_{m=1}^N A_0(m)/m^3$ is strictly negative at $N=2,3,4$,
+  for $\lvert a\rvert\ge2$ the odd prime $m=3$ flips $\sum_{m=1}^N A_a(m)/m^3>0$ already at
+  $N=3,4$ (`shiftedPairCumulativeCharge_three_pos_of_two_le`), for $\lvert a\rvert\ge1$ it is
+  strictly positive for all $N\ge5$ (`shiftedPairCumulativeCharge_pos_of_one_le`), for
+  $\lvert a\rvert\ge2$ the cubic charge series $\sum_m A_a(m)/m^3$ diverges
+  (`not_summable_shiftedPairHarmonicCharge_div_cube_of_two_le`), and for $\lvert a\rvert\ge3$ the
+  singleton critical prime series $\sum_m A_a(m)J_m/m^4$ diverges
+  (`not_summable_shiftedPairSingletonPrimeSeries_of_three_le`).
+- *Tempered prime-weight infrastructure invariance, Beurling off-line zero systems, and quantifier
+  separation:* Every arithmetic weight $w:\mathbb N\to\mathbb R$ satisfying the temperedness bound
+  `TemperedPrimeWeight w C` ($\lvert w(r)\rvert\le C\Lambda(r)$ for $r\ge2$, requiring neither
+  multiplicativity nor prime-power support nor nonnegativity) obeys the exact identity
+  $\Re\mathcal W_w(g^V)=Q(g^V)+2P_\Lambda(g^V)-2P_w(g^V)$
+  (`re_weilFullFunctional_criticalTruncatedTest_eq`), the uniform-in-$V$ window bound
+  $\lvert P_w(g^V)\rvert\le C\cdot C_{TW}(3+\log L)\sum b_n^2$
+  (`abs_weightedTruncatedPrimeEnergy_le_of_window`), and uniform-in-$V$ polynomial scale-window
+  Weil positivity $\Re\mathcal W_w(g^V)\ge(s_T/4)\log M\sum b_n^2>0$
+  (`exists_temperedWeight_polynomial_window_weilFullFunctional_pos`). In particular, the
+  Liouville-twisted weight $(-1)^{\Omega(r)}\Lambda(r)$, the node-$4$-deleted weight
+  $\Lambda\cdot\mathbf 1_{r\ne4}$, and the primes-only weight $\Lambda\cdot\mathbf 1_{r\text{ prime}}$
+  all satisfy uniform-in-$V$ polynomial-window Weil positivity on the critical family, even though
+  adding an arbitrarily small positive generalized-prime density with reciprocal mass $<\varepsilon$
+  creates an off-line zero $\beta+i\gamma$ (`RHTower.BeurlingSensitivity.rh_sensitivity_threshold`)
+  and deleting $4$ or prime squares unconditionally refutes `ZeroPoleBlindPositiveOn` with exact
+  deletion price $-(\log2)/2$ (`beurling_offLine_zero_system_vs_critical_infrastructure`). Moreover,
+  at any *fixed* truncation $V$, **every** arithmetic weight $w$ whatsoever (including $\Lambda_a$)
+  satisfies polynomial-window Weil positivity once $M\ge M_0(w,V)$ because only $r\le\lfloor2V\rfloor$
+  enter $g^V$ (`exists_fixedV_polynomial_window_pos_for_any_weight`); what separates tempered
+  weights from $\Lambda_a$ on the critical family is **uniformity in $V$**
+  ($\exists M_0,\forall M\ge M_0,\forall V\ge V_0$).
 
 **Compact truncations.** The doubly collared source $g^V=\chi(e^{-x}/V)\,g_c$ is
 compact, supported in $[-\log2V,0]$. The two cutoffs merge in the correlation law,
@@ -1506,11 +1554,22 @@ theory's load-bearing walls.
     $7\zeta(3)/(256\pi^2)$; Baker's theorem separates the collar spectrum from the prime
     spectrum (`factorial_small_harmonic_gap_iff_affine`, `tendsto_factorialAffineCollarError_sharp`,
     `primeLog_linearForm_ne_collar_linearForm`).
-13. **The temperedness gate.** The window exponent $\varepsilon(L)=1/(2+\log L)$ makes the
-    critical-line prime sum $\le6(3+\log L)$, and the same hypothesis diverges for the shifted
-    pair on every wide window (`summable_vonMangoldt_windowDilationExponent`,
-    `not_summable_shiftedPairVonMangoldt_windowDilationExponent`): the one proved separation of a
-    proof of this theory from a positive twin.
+13. **Wide-window prime selectivity vs. tempered Beurling infrastructure invariance.** The window
+    exponent $\varepsilon(L)=1/(2+\log L)$ makes the critical-line prime sum $\le6(3+\log L)$, while
+    for every $a\ne0$ and every horizon $L_0\ge0$ the shifted pair $\zeta(s-a)\zeta(s+a)$ has a wide
+    window shift $L>\max(L_0,\log2)$ where its prime window sum strictly exceeds the polar–archimedean
+    budget and its full Weil functional on $g+g(\cdot-L)$ is strictly negative; for $\lvert a\rvert\ge2$
+    the odd prime $m=3$ flips the critical cumulative harmonic charge positive at $N=3,4$ and makes
+    $\sum_m A_a(m)/m^3$ diverge; conversely, every $C$-tempered weight $\lvert w(r)\rvert\le C\Lambda(r)$
+    (including $(-1)^{\Omega(r)}\Lambda(r)$, $\Lambda\cdot\mathbf 1_{r\ne4}$, and
+    $\Lambda\cdot\mathbf 1_{r\text{ prime}}$) satisfies uniform-in-$V$ polynomial-window Weil
+    positivity on the critical family, while at fixed $V$ every weight $w$ is eventually positive
+    (`summable_vonMangoldt_windowDilationExponent`,
+    `exists_wide_shiftPair_shiftedPairVonMangoldt_neg`,
+    `shiftedPairCumulativeCharge_three_pos_of_two_le`,
+    `exists_temperedWeight_polynomial_window_weilFullFunctional_pos`,
+    `beurling_offLine_zero_system_vs_critical_infrastructure`,
+    `exists_fixedV_polynomial_window_pos_for_any_weight`).
 14. **Admissible harmonic weights and cell-kernel sign trichotomy beyond the dyadic stencil.**
     Every weight sequence in `AdmissibleHarmonicWeight w C_w τ` (including all $q$-adic sign-flip
     stencils, all $q$-adic drift-free stencils with vanishing linear and quadratic drifts, and all
@@ -1560,7 +1619,7 @@ theory's load-bearing walls.
 | The pointwise envelope of the critical source pays its infinite prime head | The envelope has exponent $1/2$ only; the decay $e^{-3t/2}$ of the correlation comes from the bounded phase primitive, i.e. from oscillation. |
 | An endpoint value of the $L^1$ periodisation is a sign witness | The $L^1$ kernel and its continuous representative differ at integers; only pattern integrals matter. |
 | Zero-density bounds exclude a zero | They are upper counts; a single fixed off-line zero survives all of them. |
-| The temperedness gate makes the window theorem selective | It separates the *proof*. Nothing proved here forbids wide-window positivity for a non-tempered twin obtained by another argument. |
+| Fixed-$V$ window positivity on $g^V$ separates tempered weights from $\zeta(s-a)\zeta(s+a)$ | At fixed $V$, only primes $r\le\lfloor2V\rfloor$ enter $g^V$, so *every* weight $w$ is positive for $M\ge M_0(w,V)$ (`exists_fixedV_polynomial_window_pos_for_any_weight`). What separates tempered weights from $\Lambda_a$ on the critical family is uniformity in $V$, while wide shift pairs $g+g(\cdot-L)$ refute $\Lambda_a$ unconditionally (`exists_wide_shiftPair_shiftedPairVonMangoldt_neg`). |
 | Compact support of arbitrary length is the receiver's regime | The truncated window positivity holds at every support length with constants uniform in $V$, yet its margin is still the archimedean $\log M$. Long support removes the short-support objection, not the subsidy. |
 | Coupled low–high positivity settles the low scales | It needs every low mode tied to a high mode with $\lvert\gamma_n\rvert\ge\gamma_0$, or a standalone low-window certificate; the isolated low window is not proved positive. |
 | A strict Suzuki deficit on the critical family is a sign of the Suzuki form | It is the archimedean-paid family positivity read through the literal source tangent; the shift threshold depends on the source and no common shift is known. |
@@ -1618,9 +1677,22 @@ conclusion of an implication or inside an equivalence.
    loss on all odd compact tests suffices, and a loss $C_\sigma e^{2\sigma r}$ gives the strip
    $\tfrac12+\sigma$. Known prime inputs give rate $1/2$; the question is which source estimate
    beats it.
-5. **Is the statement selective, or only the proof?** The temperedness gate separates a proof
-   from the shifted pair; whether wide-window positivity itself fails for non-tempered twins is
-   open.
+5. **Is the statement selective, or only the proof?** Wide-window positivity on shift pairs
+   $g+g(\cdot-L)$ ($L>\max(L_0,\log2)$) is unconditionally selective against the non-tempered shifted
+   pair $\zeta(s-a)\zeta(s+a)$ for every $a\ne0$, driven purely by prime powers in
+   $[e^{L-1/2},e^{L+1/2}]$ (`exists_wide_shiftPair_shiftedPairVonMangoldt_neg`), and in the critical
+   prime channel the odd prime $m=3$ flips the cumulative harmonic charge $\sum_{m=1}^N A_a(m)/m^3$
+   strictly positive at $N=3,4$ for $\lvert a\rvert\ge2$ while $\sum_m A_a(m)/m^3$ diverges
+   (`shiftedPairCumulativeCharge_three_pos_of_two_le`,
+   `not_summable_shiftedPairHarmonicCharge_div_cube_of_two_le`). By contrast, on the compact
+   critical family $g^V$, every $C$-tempered weight $\lvert w(r)\rvert\le C\Lambda(r)$ (including
+   Beurling/node-deleted weights such as $\Lambda\cdot\mathbf 1_{r\ne4}$ and
+   $\Lambda\cdot\mathbf 1_{r\text{ prime}}$) satisfies uniform-in-$V$ polynomial-window Weil
+   positivity (`exists_temperedWeight_polynomial_window_weilFullFunctional_pos`), and at fixed $V$
+   every weight whatsoever is eventually positive (`exists_fixedV_polynomial_window_pos_for_any_weight`):
+   the admissible-source law, collared dilation inequality, and Montgomery–Vaughan endpoint bound are
+   purely $C$-tempered infrastructure, and node-criticality tests (`not_zeroPoleBlindPositiveOn_diff_four`)
+   are what refute prime-square deletions.
 6. **Which source space carries a positive realisation of the complete arithmetic form?** A
    positivity theorem on the complete critical family and a spectral realisation of it would be
    the same theorem.
@@ -1669,6 +1741,11 @@ Built and reusable:
   interface unifying $q$-adic sign-flip stencils, $q$-adic drift-free stencils, and higher-order
   non-Bernoulli filters through Bohr/window Riesz coercivity, general dyadic dilation bounds,
   all-five-forms block positivity, receiver landing, and Poisson-closed cell-kernel sign laws.
+- *Wide-window prime selectivity and tempered infrastructure calculus.* Laplace-transform integration
+  of finite prime window sums over $L\in(L_0,\infty)$ against `shiftMajorant`, shifted-pair harmonic
+  charge sign classification and cumulative-charge reversal, and the `TemperedPrimeWeight w C`
+  transfer on compact critical sources separating uniform-in-$V$ ($\exists M_0,\forall V$) from
+  fixed-$V$ ($\forall V,\exists M_0$) positivity.
 
 To be built:
 
@@ -1763,18 +1840,41 @@ progressions themselves.
 
 ### 7.7 Selectivity
 
-The window bound's own hypothesis diverges for $\zeta(s-a)\zeta(s+a)$ at every
-$\varepsilon\le\lvert a\rvert$, so no wide window admits the proof for the shifted pair. Is the
-*statement* selective: does some non-tempered twin satisfy wide-window positivity by another
-route, or does the conclusion itself fail there? Below $\log2$ the statement is selective, but
-not by arithmetic: on odd windows $t_*/2<r\le7/25$ ($t_*$ the log of the plastic number) the
-shifted pair's zero form is $2\hat Z(F)+4\int(\cosh at-1)(2\cosh\tfrac t2-\omega(t))A_F(t)\,dt$,
-no prime enters, and its own polar–archimedean screw kernel makes it negative while $\zeta$ is
-coercive (`odd_window_selective`, Arithmetic Incidence Positivity). A wide-window separation
-carried by the primes is what remains. Conversely, which of block positivity, the
-admissible-source law, the collared dilation inequality and the Montgomery–Vaughan endpoint
-bound survive verbatim for a Beurling system with an off-line zero, and are therefore
-infrastructure?
+By §3.13 ([WideWindowSelectivityAndBeurlingInfrastructure](WideWindowSelectivityAndBeurlingInfrastructure.lean)),
+both directions of the selectivity question are resolved unconditionally:
+1. *Wide-window prime-driven refutation of $\zeta(s-a)\zeta(s+a)$:* For every real shift $a\ne0$,
+   every nonnegative bump $g\in C^2_c([-1/4,1/4])$ with $\int g\ne0$, and every horizon $L_0\ge0$,
+   there exists a wide window shift $L>\max(L_0,\log2)$ (at which only prime powers in
+   $[e^{L-1/2},e^{L+1/2}]$ enter the window sum) where
+   $\mathrm{windowSum}(g,\Lambda_a,L)>\mathrm{shiftMajorant}(g,2c_{\mathrm{pole}}+2c_{\mathrm{arch}},L)$
+   and $\Re\mathcal W_{\Lambda_a}(g+g(\cdot-L))<0$
+   (`exists_wide_windowSum_shiftedPairVonMangoldt_gt_shiftMajorant`,
+   `exists_wide_shiftPair_shiftedPairVonMangoldt_neg`,
+   `exists_wide_shiftPair_narrowG_shiftedPairVonMangoldt_neg`). On the critical prime channel, the
+   dilation-ring majorant diverges for $\lvert a\rvert\ge1/2$
+   (`not_summable_shiftedPairWindowRingMajorant_of_half_le`), and while $A_a(2)=-2\log2(2^a+2^{-a})<0$
+   remains the unique negative harmonic (`shiftedPairHarmonicCharge_sign`), for $\lvert a\rvert\ge2$
+   the odd prime $m=3$ flips the cubic cumulative charge $\sum_{m=1}^N A_a(m)/m^3>0$ already at
+   $N=3,4$ (`shiftedPairCumulativeCharge_three_pos_of_two_le`), for $\lvert a\rvert\ge1$ it is
+   positive for all $N\ge5$ (`shiftedPairCumulativeCharge_pos_of_one_le`), and the cubic and
+   singleton prime series diverge for $\lvert a\rvert\ge2$ and $\lvert a\rvert\ge3$
+   (`not_summable_shiftedPairHarmonicCharge_div_cube_of_two_le`,
+   `not_summable_shiftedPairSingletonPrimeSeries_of_three_le`).
+2. *Tempered Beurling infrastructure invariance and quantifier separation:* Every arithmetic weight
+   $w:\mathbb N\to\mathbb R$ satisfying `TemperedPrimeWeight w C` ($\lvert w(r)\rvert\le C\Lambda(r)$
+   for $r\ge2$) inherits the collared/truncated dilation inequality, the Montgomery–Vaughan endpoint
+   bound, the admissible-source law, and uniform-in-$V$ polynomial scale-window Weil positivity on
+   `criticalTruncatedTest hVpos S b` (`abs_weightedTruncatedPrimeEnergy_le_of_window`,
+   `exists_temperedWeight_polynomial_window_weilFullFunctional_pos`). In particular,
+   $(-1)^{\Omega(r)}\Lambda(r)$, $\Lambda\cdot\mathbf 1_{r\ne4}$, and
+   $\Lambda\cdot\mathbf 1_{r\text{ prime}}$ all satisfy the exact same uniform-in-$V$ polynomial-window
+   positivity on the critical family as $\Lambda$, whereas Beurling generalized-prime perturbations of
+   arbitrarily small reciprocal mass $<\varepsilon$ create off-line zeros $\beta+i\gamma$ and node-$4$
+   or prime-square deletion is refuted only by node-criticality tests with exact deletion price
+   $-(\log2)/2$ (`beurling_offLine_zero_system_vs_critical_infrastructure`). At any fixed truncation
+   $V$, every weight $w$ whatsoever is eventually positive for $M\ge M_0(w,V)$
+   (`exists_fixedV_polynomial_window_pos_for_any_weight`), so uniformity in $V$ is the exact divider
+   between tempered and non-tempered weights on the critical family.
 
 ### 7.8 The spectral realisation
 

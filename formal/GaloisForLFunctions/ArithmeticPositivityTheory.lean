@@ -101,3 +101,4 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».DenseScaleWindowsAnd
 import GaloisForLFunctions.«arithmetic-positivity-theory».FromTheCriticalFamilyToTheReceiver
 import GaloisForLFunctions.«arithmetic-positivity-theory».QuantitativeGridTentDetection
 import GaloisForLFunctions.«arithmetic-positivity-theory».AdmissibleStencilsAndCellKernelsBeyondDyadic
+import GaloisForLFunctions.«arithmetic-positivity-theory».WideWindowSelectivityAndBeurlingInfrastructure
