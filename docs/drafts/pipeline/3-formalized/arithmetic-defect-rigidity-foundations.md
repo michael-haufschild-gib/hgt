@@ -1,6 +1,6 @@
 # Arithmetic defect rigidity: quantitative foundations
 
-Status: all twenty modules accepted; final individual checks in progress.
+Status: formalized. All twenty modules passed final individual Lean checks without diagnostics.
 
 ## Objective
 
@@ -37,7 +37,7 @@ critical-energy admission.
 
 ## Lean status
 
-Twelve modules passed their required dependency checks:
+All twenty modules passed ordinary checks that write no object files:
 
 - `TheForcingDominatesTheReceiver`
 - `ForcingScaleSeparation`
@@ -51,9 +51,6 @@ Twelve modules passed their required dependency checks:
 - `ThePoleTraceDefinesALinearCofactorRenormalization`
 - `CofactorSuccessorWordsHaveABoundaryCost`
 - `FixedCofactorsHaveAHarmonicBoundaryTrace`
-
-Eight leaf modules passed their final ordinary checks without generating dependency objects:
-
 - `TheReceiverIsTheGramTangent`
 - `ForcingEscapesAMovingCofactorWindow`
 - `BoundedWordErrorsHaveAnAbsoluteHorizonTail`
@@ -63,15 +60,18 @@ Eight leaf modules passed their final ordinary checks without generating depende
 - `TheResidualAndPoleTraceDetermineTheRow`
 - `MovingLocalizationsRetainTheSignedDensity`
 
-Final checks that write no object files are tracked separately for all twenty modules in
-`logs/arithmetic-defect-rigidity-final-audits.txt`; a dependency check alone is not a final PASS.
-Accepted modules are wired
-into `formal/GaloisForLFunctions/ArithmeticDefectRigidity.lean`, which is imported by
-`MainTheorems.lean`; neither umbrella is compiled.
+The complete per-module record is `logs/arithmetic-defect-rigidity-final-audits.txt`.
+Every source module is imported by `formal/GaloisForLFunctions/ArithmeticDefectRigidity.lean`,
+which is imported by `MainTheorems.lean`. Neither umbrella was compiled.
 
-Checks run directly from `formal/` with `lake --old env lean`, one owned Lean process at a
-time. Missing dependency objects are generated only for already written consumers. No
-Python orchestration, `lake build`, umbrella build, axiom checks or raised limits are used.
+All final audits ran directly from `formal/` with `lake --old env lean`, one owned Lean
+process at a time, without Python orchestration. Dependency objects were generated only
+when missing and required by already written consumers. No `lake build`, umbrella build,
+axiom checks or raised limits were used. The source/import inventory matches exactly;
+the source scan contains no placeholders or trusted-computation shortcuts.
+
+The existing proof package is complete. The questions below are research gaps, not unfinished
+formalizations of dependency-closed paper proofs.
 
 ## Remaining research questions
 

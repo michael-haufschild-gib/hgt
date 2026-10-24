@@ -110,7 +110,7 @@ theorem damp_conv (ε : ℝ) (ξ η : Correspondence G) :
       rw [conv_single_single, D.damp_single, D.damp_single, D.damp_single, conv_single_single,
         map_add, mul_add, Real.exp_add]
       congr 1
-      ring
+      ring_nf
 
 /-- Damping by `0` is the identity. -/
 theorem damp_zero_left (ξ : Correspondence G) : D.damp 0 ξ = ξ := by
@@ -128,7 +128,7 @@ theorem damp_damp (ε δ : ℝ) (ξ : Correspondence G) :
   | single g a =>
     rw [D.damp_single, D.damp_single, D.damp_single, ← mul_assoc, ← Real.exp_add]
     congr 2
-    ring
+    ring_nf
 
 /-- **Damping conjugates the Rosati involution to the opposite damping.** -/
 theorem rosati_damp (ε : ℝ) (ξ : Correspondence G) :
@@ -140,7 +140,7 @@ theorem rosati_damp (ε : ℝ) (ξ : Correspondence G) :
   | single g a =>
     rw [D.damp_single, rosati_single, rosati_single, D.damp_single, map_neg]
     congr 2
-    ring
+    ring_nf
 
 /-- **The damped trace** pairs `ξ` with the one-sided damped correlation `e^{−εs(g)} c_x(g)`. -/
 theorem traceAt_damp (ε : ℝ) (x : E) (ξ : Correspondence G) :

@@ -42,10 +42,13 @@ the seven questions and building the six tools of the summary §2.3.
   `EulerFactorsAndPayment`, `TheArchimedeanPlaceOrientsOrbitSegments`,
   `TheOrientationRateIsTheDepthOfTheDeepestSeenZero`, `TheSelectivityBatteryOfOrientation`,
   `TheShiftedPairAndTheClusterModels`, `SectionsOnTheOrbitOfACycle`, `EventualHasseWeilIsHasseWeil`,
-  `TheOrientationIndexOfACycle`, `CorrectorsAndTheLefschetzTrace` (topics A–D, F, G).
+  `TheOrientationIndexOfACycle`, `CorrectorsAndTheLefschetzTrace` (topics A–D, F, G),
+  `TheOrientationOfScaleStableFamilies`, `TheThetaH0OfSpecZ`, `CorrectorsInTheDampingParameter`,
+  `QuantitativeReadingsOnCurveOrbits` (topics H–K).
 - Not built: topic E (sieve one-sided Lefschetz bound).
 - Open: ℤ shifted pair as a zero-side datum (its zeros leave the strip unless the zero width is
-  below `½ − a`); planted Euler factors; parity twins; mechanism equivalence.
+  below `½ − a`); planted Euler factors; parity twins; mechanism equivalence; surface `h⁰` for
+  classes with a test component; quantitative readings over ℤ.
 
 ## Plan: the four remaining tools
 - **H. Families beyond single orbits** (`OrientationOfScaleStableSubspaces`): joint blindness of a

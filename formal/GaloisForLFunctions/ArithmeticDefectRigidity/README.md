@@ -1,5 +1,7 @@
 # Arithmetic Defect Rigidity
 
+Lean entry point: [ArithmeticDefectRigidity](../ArithmeticDefectRigidity.lean).
+
 Arithmetic defect rigidity studies which failures of critical arithmetic estimates can survive
 normalization, localization and passage to infinity. Its central question is quantitative:
 **which relations of the actual source restrict an escaping defect, and do those restrictions

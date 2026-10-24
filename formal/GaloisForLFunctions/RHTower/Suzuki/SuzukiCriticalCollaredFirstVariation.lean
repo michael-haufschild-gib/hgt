@@ -170,11 +170,11 @@ theorem intervalIntegral_realLag_phase_ibp {W W' : ℝ → ℝ} {T r : ℝ}
     have hconst : IntegrableOn (fun _ : ℝ => realPhaseLipschitz S b * max Cq 0) (Ioc 1 T) :=
       continuous_const.integrableOn_Icc.mono_set Ioc_subset_Icc_self
     refine hconst.mono' ?_ ?_
-      · have hm1 : AEStronglyMeasurable (deriv p) (volume.restrict (Ioc 1 T)) :=
-          (measurable_deriv p).aestronglyMeasurable
-        have hm2 : AEStronglyMeasurable (fun v => W v * G₀ v) (volume.restrict (Ioc 1 T)) :=
-          ((hW_cont.mul hG_cont).mono Ioc_subset_Icc_self).aestronglyMeasurable measurableSet_Ioc
-        exact (hm1.mul hm2).congr (Eventually.of_forall fun v => by dsimp only [Pi.mul_apply]; ring)
+    · have hm1 : AEStronglyMeasurable (deriv p) (volume.restrict (Ioc 1 T)) :=
+        (measurable_deriv p).aestronglyMeasurable
+      have hm2 : AEStronglyMeasurable (fun v => W v * G₀ v) (volume.restrict (Ioc 1 T)) :=
+        ((hW_cont.mul hG_cont).mono Ioc_subset_Icc_self).aestronglyMeasurable measurableSet_Ioc
+      exact (hm1.mul hm2).congr (Eventually.of_forall fun v => by dsimp only [Pi.mul_apply]; ring)
     · filter_upwards [ae_restrict_mem measurableSet_Ioc] with v hv
       have hv_icc : v ∈ Icc 1 T := Ioc_subset_Icc_self hv
       have hq_le : |W v * G₀ v| ≤ max Cq 0 :=
@@ -352,7 +352,8 @@ theorem integral_Ioi_realLag_phase_ibp {W W' : ℝ → ℝ} {r : ℝ} (hr : 0 < 
         (hm_dp.mul hWi.aestronglyMeasurable)).mul
         (hG_cont.aestronglyMeasurable measurableSet_Ioi))
     · filter_upwards [ae_restrict_mem measurableSet_Ioi] with v _
-      rw [Real.norm_eq_abs, abs_mul, Real.norm_eq_abs, Real.norm_eq_abs]
+      dsimp only [Pi.add_apply]
+      simp only [Real.norm_eq_abs, abs_mul]
       have h1 : |p v * W' v + deriv p v * W v| ≤ Bmax * |W' v| + Lp * |W v| := by
         refine (abs_add_le _ _).trans (add_le_add ?_ ?_)
         · rw [abs_mul]
@@ -373,7 +374,7 @@ theorem integral_Ioi_realLag_phase_ibp {W W' : ℝ → ℝ} {r : ℝ} (hr : 0 < 
     rw [tendsto_zero_iff_norm_tendsto_zero]
     refine squeeze_zero (fun _ => norm_nonneg _) (fun T => ?_)
       (by simpa using hWt.norm.mul_const (Bmax * (P / r)))
-    rw [Real.norm_eq_abs, abs_mul, abs_mul, Real.norm_eq_abs, mul_assoc]
+    simp only [Real.norm_eq_abs, abs_mul, mul_assoc]
     exact mul_le_mul_of_nonneg_left
       (mul_le_mul (abs_realPhaseCombination_le_two_mul S b T) (hG_bd (r * T))
         (abs_nonneg _) (mul_nonneg zero_le_two (Finset.sum_nonneg fun _ _ => abs_nonneg _)))
@@ -635,7 +636,7 @@ theorem autocorr_criticalCollaredSource_eq_realLag (S : Finset ℕ) (b : ℕ →
 
 /-- Beyond lag `log V`, the sharp truncation `criticalCollaredSharpTruncation V S b` (`1 ≤ V`) has
 identically vanishing autocorrelation. -/
-theorem autocorr_criticalCollaredSharpTruncation_eq_zero_of_log_le {V : ℝ} (hV : 1 ≤ V)
+theorem autocorr_criticalCollaredSharpTruncation_eq_zero_of_log_le {V : ℝ} (_hV : 1 ≤ V)
     (S : Finset ℕ) (b : ℕ → ℝ) {t : ℝ} (ht : Real.log V ≤ t) :
     autocorr (criticalCollaredSharpTruncation V S b) t = 0 := by
   rw [← autocorr_neg]
@@ -811,7 +812,7 @@ def criticalCollaredDecayConstant (S : Finset ℕ) (b : ℕ → ℝ) : ℝ :=
       (12 * ∑ n ∈ S, |b n| / ((n + 1 : ℕ) : ℝ)))
 
 private theorem autocorr_le_short_lag {f : ℝ → ℝ} (hf : MemLp f 2 volume) {U : ℝ}
-    (h0 : autocorr f 0 ≤ U) {t : ℝ} (ht0 : 0 ≤ t) (ht2 : t < Real.log 2) :
+    (h0 : autocorr f 0 ≤ U) {t : ℝ} (_ht0 : 0 ≤ t) (ht2 : t < Real.log 2) :
     |autocorr f t| ≤ U * Real.exp ((3 / 2 : ℝ) * Real.log 2) * Real.exp (-(3 / 2 : ℝ) * t) := by
   have h1 : |autocorr f t| ≤ autocorr f 0 := abs_autocorr_le_zero_of_memLp hf t
   have hU0 : 0 ≤ U := (abs_nonneg _).trans (h1.trans h0)
@@ -1000,10 +1001,13 @@ theorem abs_autocorr_criticalTruncatedSource_le {V : ℝ} (hV : 0 < V)
         (contDiff_criticalCollarWeight.continuous.mul (continuous_const.mul
           (hdσ.continuous.comp ((continuous_const.mul continuous_id).sub continuous_const))).neg)
     have hWt : Tendsto (criticalTruncatedWeight lam) atTop (𝓝 0) := by
+      have h0 : Tendsto (fun v => |criticalCollarWeight v|) atTop (𝓝 0) := by
+        simpa only [abs_zero] using tendsto_criticalCollarWeight_atTop.abs
       rw [tendsto_zero_iff_norm_tendsto_zero]
-      exact squeeze_zero (fun _ => norm_nonneg _)
-        (fun v => by rw [Real.norm_eq_abs]; exact abs_criticalTruncatedWeight_le lam v)
-        tendsto_criticalCollarWeight_atTop.abs
+      refine squeeze_zero (fun _ => norm_nonneg _) ?_ h0
+      intro v
+      rw [Real.norm_eq_abs]
+      exact abs_criticalTruncatedWeight_le lam v
     have hibp := abs_integral_Ioi_realLag_phase_le (Real.exp_pos t)
       (fun v _ => hasDerivAt_criticalTruncatedWeight lam v)
       hW'_cont.continuousOn
@@ -1059,7 +1063,7 @@ theorem abs_autocorr_criticalTruncatedSource_le {V : ℝ} (hV : 0 < V)
 /-! ## Section 3: Compact `L²` Polar Moment Factorization and Regularized Polar Normalization -/
 
 private theorem integrable_exp_mul_of_measurable_compact {f₀ : ℝ → ℝ} {R c : ℝ}
-    (hf₀_meas : Measurable f₀) (hf₀ : MemLp f₀ 2 volume) (hR0 : 0 ≤ R)
+    (_hf₀_meas : Measurable f₀) (hf₀ : MemLp f₀ 2 volume) (_hR0 : 0 ≤ R)
     (hsupp : ∀ x, x ∉ Icc (-R) R → f₀ x = 0) :
     Integrable (fun u => Real.exp (c * u) * f₀ u) := by
   set w : ℝ → ℝ := (Icc (-R) R).indicator (fun u => Real.exp (c * u))
@@ -1072,7 +1076,8 @@ private theorem integrable_exp_mul_of_measurable_compact {f₀ : ℝ → ℝ} {R
         measurableSet_Icc).aestronglyMeasurable
     · filter_upwards with u
       by_cases hu : u ∈ Icc (-R) R
-      · rw [Set.indicator_of_mem hu, Set.indicator_of_mem hu]
+      · dsimp only [w]
+        rw [Set.indicator_of_mem hu, Set.indicator_of_mem hu]
         exact (hCw u hu).trans (le_max_left _ _)
       · simp [w, hu]
   have hint := hw_lp.integrable_mul hf₀
@@ -1272,6 +1277,9 @@ private theorem tendsto_sharpTruncation_toLp (S : Finset ℕ) (b : ℕ → ℝ) 
       (criticalCollaredSharpTruncation ((k + 1 : ℕ) : ℝ) S b x -
         criticalCollaredSource S b x) ^ 2) atTop (𝓝 0) := by
     have hlim := tendsto_integral_of_dominated_convergence
+      (F := fun k x =>
+        (criticalCollaredSharpTruncation ((k + 1 : ℕ) : ℝ) S b x -
+          criticalCollaredSource S b x) ^ 2)
       (fun x => criticalCollaredSource S b x ^ 2)
       (fun k => ((memLp_criticalCollaredSharpTruncation ((k + 1 : ℕ) : ℝ) S b).sub
         hgc).integrable_sq.aestronglyMeasurable)
@@ -1294,16 +1302,14 @@ private theorem tendsto_sharpTruncation_toLp (S : Finset ℕ) (b : ℕ → ℝ) 
             have := Real.log_le_log (Real.exp_pos _) hk1
             rw [Real.log_exp] at this; linarith
           have hmem : x ∈ Icc (-Real.log ((k + 1 : ℕ) : ℝ)) 0 := ⟨hlog, hx0⟩
-          dsimp only
           rw [criticalCollaredSharpTruncation, Set.indicator_of_mem hmem, sub_self]
           norm_num
-        · refine (tendsto_const_nhds (x := (0 : ℝ))).congr' (Eventually.of_forall fun k => ?_)
+        · refine (tendsto_const_nhds (x := (0 : ℝ))).congr fun k => ?_
           have hgc0 : criticalCollaredSource S b x = 0 := by
             rw [criticalCollaredSource_eq, Real.smoothTransition.zero_of_nonpos (by
               have := Real.exp_le_exp.mpr (show -x ≤ 0 by linarith)
               rw [Real.exp_zero] at this; linarith), zero_mul]
           have hnot : x ∉ Icc (-Real.log ((k + 1 : ℕ) : ℝ)) 0 := fun hm => hx0 hm.2
-          dsimp only
           rw [criticalCollaredSharpTruncation, Set.indicator_of_notMem hnot, hgc0, sub_zero]
           norm_num)
     simpa only [integral_zero] using hlim
@@ -1943,15 +1949,20 @@ private theorem continuousOn_paramSource_toLp (S : Finset ℕ) :
         have hle := norm_criticalTruncatedSource_sub_collared_toLp_le h1q S (extendRealCoeff S u₀)
         have hsum1 : ∑ n ∈ S, (extendRealCoeff S u₀ n) ^ 2 = 1 := by
           rw [sum_extendRealCoeff_sq]; exact hu₀_mem.2
-        rw [hsum1, mul_one, div_one_div] at hle
+        have hdiv : criticalCollarMassUpper / (1 / q) = criticalCollarMassUpper * q := by
+          rw [one_div, div_inv_eq_mul]
+        rw [hsum1, mul_one, hdiv] at hle
         have hparam_eq : (memLp_paramSource S (q, u₀)).toLp (paramSource S (q, u₀)) -
             (memLp_paramSource S (0, u₀)).toLp (paramSource S (0, u₀)) =
             (memLp_criticalTruncatedSource (1 / q) S (extendRealCoeff S u₀)).toLp
               (criticalTruncatedSource (1 / q) S (extendRealCoeff S u₀)) -
             (memLp_criticalCollaredSource S (extendRealCoeff S u₀)).toLp
               (criticalCollaredSource S (extendRealCoeff S u₀)) := by
-          congr 1 <;> apply MemLp.toLp_congr_ae <;>
-            simp [paramSource, not_le.mpr hq_pos]
+          congr 1
+          · exact MemLp.toLp_congr _ _ (Eventually.of_forall fun x => by
+              simp [paramSource, not_le.mpr hq_pos])
+          · exact MemLp.toLp_congr _ _ (Eventually.of_forall fun x => by
+              simp [paramSource])
         rw [hparam_eq]
         have hq_dist : q < (η / 2) ^ 2 / (criticalCollarMassUpper + 1) := by
           simpa [Real.dist_eq, abs_of_pos hq_pos] using hdist
@@ -1974,6 +1985,7 @@ private theorem continuousOn_paramSource_toLp (S : Finset ℕ) :
       have hsq_zero : Tendsto (fun k => ∫ x,
           (paramSource S (qn k, u₀) x - paramSource S (q₀, u₀) x) ^ 2) atTop (𝓝 0) := by
         have hdom := tendsto_integral_of_dominated_convergence
+          (F := fun k x => (paramSource S (qn k, u₀) x - paramSource S (q₀, u₀) x) ^ 2)
           (fun x => (4 : ℝ) * criticalCollaredSource S (extendRealCoeff S u₀) x ^ 2)
           (fun k => ((memLp_paramSource S (qn k, u₀)).sub
             (memLp_paramSource S (q₀, u₀))).integrable_sq.aestronglyMeasurable)
@@ -2005,9 +2017,18 @@ private theorem continuousOn_paramSource_toLp (S : Finset ℕ) :
             rw [sub_self, zero_pow two_ne_zero] at hdiff
             refine hdiff.congr' ?_
             filter_upwards [hpos_ev] with k hk
-            dsimp only [c₀]
-            simp only [paramSource, if_neg (not_le.mpr hk), if_neg (not_le.mpr hq₀_pos),
-              criticalTruncatedSource, div_one_div])
+            have h1 : paramSource S (qn k, u₀) x =
+                criticalUpperCutoff (Real.exp (-x) * qn k) *
+                  criticalCollaredSource S (extendRealCoeff S u₀) x := by
+              rw [paramSource, if_neg (not_le.mpr hk), criticalTruncatedSource,
+                show Real.exp (-x) / (1 / qn k) = Real.exp (-x) * qn k by
+                  rw [one_div, div_inv_eq_mul]]
+            have h2 : paramSource S (q₀, u₀) x = c₀ := by
+              dsimp only [c₀]
+              rw [paramSource, if_neg (not_le.mpr hq₀_pos), criticalTruncatedSource,
+                show Real.exp (-x) / (1 / q₀) = Real.exp (-x) * q₀ by
+                  rw [one_div, div_inv_eq_mul]]
+            rw [h1, h2])
         simpa only [integral_zero] using hdom
       have hsqrt := (Real.continuous_sqrt.tendsto 0).comp hsq_zero
       rw [Real.sqrt_zero] at hsqrt
@@ -2018,10 +2039,12 @@ private theorem continuousOn_paramSource_toLp (S : Finset ℕ) :
   set δ₂ := ε / (2 * Real.sqrt ((criticalCollarMassUpper + 1) * (S.card + 1)))
   have hδ₂ : 0 < δ₂ := by positivity
   refine ⟨min δ₁ δ₂, lt_min hδ₁ hδ₂, fun ⟨q, u⟩ hp hdist => ?_⟩
+  have hmax : max (dist q q₀) (dist u u₀) < min δ₁ δ₂ := by
+    simpa only [Prod.dist_eq] using hdist
   have hdist_q : dist q q₀ < δ₁ :=
-    (Prod.dist_eq.symm ▸ le_max_left _ _).trans_lt (hdist.trans_le (min_le_left _ _))
+    (le_max_left _ _).trans_lt (hmax.trans_le (min_le_left _ _))
   have hdist_u : dist u u₀ < δ₂ :=
-    (Prod.dist_eq.symm ▸ le_max_right _ _).trans_lt (hdist.trans_le (min_le_right _ _))
+    (le_max_right _ _).trans_lt (hmax.trans_le (min_le_right _ _))
   have h1 : dist ((memLp_paramSource S (q, u₀)).toLp (paramSource S (q, u₀)))
       ((memLp_paramSource S (q₀, u₀)).toLp (paramSource S (q₀, u₀))) < ε / 2 :=
     hq_close hp.1 hdist_q

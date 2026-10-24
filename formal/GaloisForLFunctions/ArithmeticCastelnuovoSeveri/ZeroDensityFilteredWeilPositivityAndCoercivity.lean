@@ -1397,3 +1397,672 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
   · rw [hswap_add, htsum_add_eq]
     exact hbound_xi g_add hg_add_xi_sum
       (fun _ => div_nonneg (integral_nonneg fun _ => sq_nonneg _) (by norm_num)) hg_add_rem
+
+
+/-! ## §2b. Polarization Identity and Sub-Power Coercivity up to `(2/3) log Γ` -/
+
+/-- Exact complex polarization identity `(a * conj b).re = ‖a + b‖² / 4 - ‖a - b‖² / 4`. -/
+theorem re_mul_conj_polarization (a b : ℂ) :
+    (a * conj b).re = ‖a + b‖ ^ 2 / 4 - ‖a - b‖ ^ 2 / 4 := by
+  simp only [Complex.sq_norm, Complex.normSq_apply, Complex.add_re, Complex.add_im,
+    Complex.sub_re, Complex.sub_im, Complex.mul_re, Complex.conj_re, Complex.conj_im]
+  ring
+
+/-- Symmetric depth-sum profile `h_sum F₀ ρ u = F₀(u)((e^{(Re ρ - 1/2)u} + e^{-(Re ρ - 1/2)u})/2)e^{i Im ρ u}`
+whose `paperFT` at `-ω` equals `(paperFT F₀_ℂ (gammaOf ρ - ω) + paperFT F₀_ℂ (conj (gammaOf ρ) - ω)) / 2`. -/
+def depthSumProfile (F₀ : ℝ → ℝ) (ρ : ℂ) (u : ℝ) : ℂ :=
+  ((F₀ u * ((Real.exp ((ρ.re - 1 / 2) * u) + Real.exp (-((ρ.re - 1 / 2) * u))) / 2) : ℝ) : ℂ) *
+    Complex.exp (Complex.I * (ρ.im : ℂ) * (u : ℂ))
+
+theorem paperFT_depthSumProfile_eq {F₀ : ℝ → ℝ} (hF₀ : Continuous F₀)
+    (hF₀c : HasCompactSupport F₀) (ρ : ℂ) (ω : ℝ) :
+    paperFT (depthSumProfile F₀ ρ) (-(ω : ℂ)) =
+      (paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (ω : ℂ)) +
+        paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (ω : ℂ))) / 2 := by
+  have hi1 : Integrable fun u : ℝ =>
+      (F₀ u : ℂ) * Complex.exp (Complex.I * (gammaOf ρ - (ω : ℂ)) * (u : ℂ)) :=
+    ((Complex.continuous_ofReal.comp hF₀).mul (by fun_prop)).integrable_of_hasCompactSupport
+      ((hF₀c.comp_left Complex.ofReal_zero).mul_right)
+  have hi2 : Integrable fun u : ℝ =>
+      (F₀ u : ℂ) * Complex.exp (Complex.I * (conj (gammaOf ρ) - (ω : ℂ)) * (u : ℂ)) :=
+    ((Complex.continuous_ofReal.comp hF₀).mul (by fun_prop)).integrable_of_hasCompactSupport
+      ((hF₀c.comp_left Complex.ofReal_zero).mul_right)
+  unfold paperFT depthSumProfile
+  rw [← integral_add hi1 hi2, ← integral_div]
+  refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+  rw [gammaOf_sub_real, conj_gammaOf_sub_real]
+  simp only [Complex.ofReal_mul, Complex.ofReal_div, Complex.ofReal_add,
+    Complex.ofReal_ofNat, Complex.ofReal_exp]
+  have e1 : (((ρ.re - 1 / 2) * u : ℝ) : ℂ) + Complex.I * (ρ.im : ℂ) * (u : ℂ) +
+      Complex.I * -(ω : ℂ) * (u : ℂ) =
+      Complex.I * (((ρ.im - ω : ℝ) : ℂ) - ((ρ.re - 1 / 2 : ℝ) : ℂ) * Complex.I) * (u : ℂ) := by
+    push_cast; ring_nf; rw [Complex.I_sq]; ring
+  have e2 : ((-((ρ.re - 1 / 2) * u) : ℝ) : ℂ) + Complex.I * (ρ.im : ℂ) * (u : ℂ) +
+      Complex.I * -(ω : ℂ) * (u : ℂ) =
+      Complex.I * (((ρ.im - ω : ℝ) : ℂ) + ((ρ.re - 1 / 2 : ℝ) : ℂ) * Complex.I) * (u : ℂ) := by
+    push_cast; ring_nf; rw [Complex.I_sq]; ring
+  rw [← e1, ← e2, Complex.exp_add, Complex.exp_add, Complex.exp_add, Complex.exp_add]
+  ring
+
+/-- Finite-core polarization lower bound for `(zetaZeroConfig.W (complexModulatedSource F₀ γ) ...).re`:
+retains any chosen finite subset `C_fin` of positive depth-sum squares and subtracts the full
+off-line depth-difference series. -/
+theorem re_zeta_W_complexModulatedSource_ge_finset {F₀ : ℝ → ℝ}
+    (hF₀ : ContDiff ℝ 2 F₀) (hF₀c : HasCompactSupport F₀) (γ : ℝ)
+    (C_fin : Finset zetaZeroConfig.carrier)
+    (hd_sum : Summable fun ρ : zetaZeroConfig.carrier =>
+      (zetaZeroConfig.mult ρ : ℝ) *
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) :
+    (∑ ρ ∈ C_fin, (zetaZeroConfig.mult ρ : ℝ) *
+        ‖paperFT (depthSumProfile F₀ (ρ : ℂ)) (-(γ : ℂ))‖ ^ 2) -
+      (∑' ρ : zetaZeroConfig.carrier,
+        (zetaZeroConfig.mult ρ : ℝ) *
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) ≤
+      (zetaZeroConfig.W (complexModulatedSource F₀ γ) (complexModulatedSource F₀ γ)).re := by
+  have hf : ContDiff ℝ 2 (complexModulatedSource F₀ γ) := contDiff_complexModulatedSource hF₀ γ
+  have hfc : HasCompactSupport (complexModulatedSource F₀ γ) :=
+    hasCompactSupport_complexModulatedSource hF₀c γ
+  have hsumW := zeta_Wsummand_summable hf hf hfc hfc
+  have hw_re_sum : Summable fun ρ : zetaZeroConfig.carrier =>
+      (zetaZeroConfig.Wsummand (complexModulatedSource F₀ γ)
+        (complexModulatedSource F₀ γ) ρ).re :=
+    Complex.reCLM.summable hsumW
+  have hp_eq : ∀ ρ : zetaZeroConfig.carrier,
+      (zetaZeroConfig.Wsummand (complexModulatedSource F₀ γ)
+          (complexModulatedSource F₀ γ) ρ).re +
+        (zetaZeroConfig.mult ρ : ℝ) *
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 =
+      (zetaZeroConfig.mult ρ : ℝ) *
+        ‖paperFT (depthSumProfile F₀ (ρ : ℂ)) (-(γ : ℂ))‖ ^ 2 := fun ρ => by
+    have hw : (zetaZeroConfig.Wsummand (complexModulatedSource F₀ γ)
+        (complexModulatedSource F₀ γ) ρ).re =
+        (zetaZeroConfig.mult ρ : ℝ) *
+          (paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) *
+            conj (paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ)))).re := by
+      simp [ZeroConfig.Wsummand, paperFT_complexModulatedSource, mul_assoc]
+    rw [hw, re_mul_conj_polarization, paperFT_depthSumProfile_eq hF₀.continuous hF₀c (ρ : ℂ) γ,
+      norm_div, Complex.norm_ofNat]
+    ring
+  have hp_sum : Summable fun ρ : zetaZeroConfig.carrier =>
+      (zetaZeroConfig.mult ρ : ℝ) *
+        ‖paperFT (depthSumProfile F₀ (ρ : ℂ)) (-(γ : ℂ))‖ ^ 2 :=
+    (hw_re_sum.add hd_sum).congr hp_eq
+  have hle := Summable.sum_le_tsum C_fin (fun ρ _ => by positivity) hp_sum
+  have htsum : (∑' ρ : zetaZeroConfig.carrier,
+      (zetaZeroConfig.mult ρ : ℝ) *
+        ‖paperFT (depthSumProfile F₀ (ρ : ℂ)) (-(γ : ℂ))‖ ^ 2) =
+      (zetaZeroConfig.W (complexModulatedSource F₀ γ) (complexModulatedSource F₀ γ)).re +
+        ∑' ρ : zetaZeroConfig.carrier,
+          (zetaZeroConfig.mult ρ : ℝ) *
+            ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+              paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 := by
+    rw [← tsum_congr hp_eq, hw_re_sum.tsum_add hd_sum, ZeroConfig.W, Complex.re_tsum hsumW]
+  linarith
+
+/-- Finite-core polarization lower bound for a single real `cosineSource F₀ γ`:
+retains any chosen finite subset `C_fin` of `(1/8)‖S_-‖² - (1/4)‖S_+‖²` core contributions and
+subtracts the two-shift off-line depth-difference average `(∑' d_sub + ∑' d_add) / 2`. -/
+theorem fullZeroForm_cosineSource_ge_finset {F₀ : ℝ → ℝ}
+    (hF₀ : ContDiff ℝ 2 F₀) (hF₀c : HasCompactSupport F₀) (γ : ℝ)
+    (C_fin : Finset zetaZeroConfig.carrier)
+    (hd_sub_sum : Summable fun ρ : zetaZeroConfig.carrier =>
+      (zetaZeroConfig.mult ρ : ℝ) *
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4)
+    (hd_add_sum : Summable fun ρ : zetaZeroConfig.carrier =>
+      (zetaZeroConfig.mult ρ : ℝ) *
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4) :
+    (∑ ρ ∈ C_fin, (zetaZeroConfig.mult ρ : ℝ) *
+        (‖paperFT (depthSumProfile F₀ (ρ : ℂ)) (-(γ : ℂ))‖ ^ 2 / 8 -
+          ‖paperFT (depthSumProfile F₀ (ρ : ℂ)) (γ : ℂ)‖ ^ 2 / 4)) -
+      ((∑' ρ : zetaZeroConfig.carrier,
+          (zetaZeroConfig.mult ρ : ℝ) *
+            ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+              paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) +
+        ∑' ρ : zetaZeroConfig.carrier,
+          (zetaZeroConfig.mult ρ : ℝ) *
+            ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+              paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4) / 2 ≤
+      fullZeroForm (cosineSource F₀ γ) := by
+  have hcos : ContDiff ℝ 2 (cosineSource F₀ γ) := contDiff_cosineSource hF₀ γ
+  have hcosc : HasCompactSupport (cosineSource F₀ γ) := hF₀c.mul_right
+  have hfc2 : ContDiff ℝ 2 (fun u : ℝ => (cosineSource F₀ γ u : ℂ)) :=
+    Complex.ofRealCLM.contDiff.comp hcos
+  have hfcc : HasCompactSupport (fun u : ℝ => (cosineSource F₀ γ u : ℂ)) :=
+    hcosc.comp_left Complex.ofReal_zero
+  have hsumW := zeta_Wsummand_summable hfc2 hfc2 hfcc hfcc
+  have hw_re_sum : Summable fun ρ : zetaZeroConfig.carrier =>
+      (zetaZeroConfig.Wsummand (fun u => (cosineSource F₀ γ u : ℂ))
+        (fun u => (cosineSource F₀ γ u : ℂ)) ρ).re :=
+    Complex.reCLM.summable hsumW
+  have hd_avg_sum := (hd_sub_sum.add hd_add_sum).div_const 2
+  have hp_bounds : ∀ ρ : zetaZeroConfig.carrier,
+      0 ≤ (zetaZeroConfig.Wsummand (fun u => (cosineSource F₀ γ u : ℂ))
+            (fun u => (cosineSource F₀ γ u : ℂ)) ρ).re +
+          ((zetaZeroConfig.mult ρ : ℝ) *
+              ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+                paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 +
+            (zetaZeroConfig.mult ρ : ℝ) *
+              ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+                paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4) / 2 ∧
+      (zetaZeroConfig.mult ρ : ℝ) *
+          (‖paperFT (depthSumProfile F₀ (ρ : ℂ)) (-(γ : ℂ))‖ ^ 2 / 8 -
+            ‖paperFT (depthSumProfile F₀ (ρ : ℂ)) (γ : ℂ)‖ ^ 2 / 4) ≤
+        (zetaZeroConfig.Wsummand (fun u => (cosineSource F₀ γ u : ℂ))
+            (fun u => (cosineSource F₀ γ u : ℂ)) ρ).re +
+          ((zetaZeroConfig.mult ρ : ℝ) *
+              ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+                paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 +
+            (zetaZeroConfig.mult ρ : ℝ) *
+              ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+                paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4) / 2 :=
+    fun ρ => by
+      let um := paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ))
+      let up := paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ))
+      let vm := paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))
+      let vp := paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))
+      have hw : (zetaZeroConfig.Wsummand (fun u => (cosineSource F₀ γ u : ℂ))
+          (fun u => (cosineSource F₀ γ u : ℂ)) ρ).re =
+          (zetaZeroConfig.mult ρ : ℝ) *
+            (‖(um + up) / 2 + (vm + vp) / 2‖ ^ 2 / 4 -
+              ‖(um + up) / 2 - (vm + vp) / 2‖ ^ 2 / 4) := by
+        have h1 : (zetaZeroConfig.Wsummand (fun u => (cosineSource F₀ γ u : ℂ))
+            (fun u => (cosineSource F₀ γ u : ℂ)) ρ).re =
+            (zetaZeroConfig.mult ρ : ℝ) *
+              (((um + up) / 2) * conj ((vm + vp) / 2)).re := by
+          simp [ZeroConfig.Wsummand, paperFT_cosineSource hF₀.continuous hF₀c, mul_assoc,
+            um, up, vm, vp]
+        rw [h1, re_mul_conj_polarization]
+      have hdiff_le : ‖(um + up) / 2 - (vm + vp) / 2‖ ^ 2 / 4 ≤
+          (‖um - vm‖ ^ 2 / 4 + ‖up - vp‖ ^ 2 / 4) / 2 := by
+        have hrew : (um + up) / 2 - (vm + vp) / 2 = ((um - vm) + (up - vp)) / 2 := by ring
+        rw [hrew, norm_div, Complex.norm_ofNat]
+        have htri := norm_add_le (um - vm) (up - vp)
+        have hsq := pow_le_pow_left₀ (norm_nonneg _) htri 2
+        nlinarith [sq_nonneg (‖um - vm‖ - ‖up - vp‖)]
+      have hm : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
+      have hd_gap : 0 ≤ ((zetaZeroConfig.mult ρ : ℝ) * ‖um - vm‖ ^ 2 / 4 +
+            (zetaZeroConfig.mult ρ : ℝ) * ‖up - vp‖ ^ 2 / 4) / 2 -
+          (zetaZeroConfig.mult ρ : ℝ) * (‖(um + up) / 2 - (vm + vp) / 2‖ ^ 2 / 4) := by
+        have hmul := mul_le_mul_of_nonneg_left hdiff_le hm
+        linarith
+      have hS_minus : paperFT (depthSumProfile F₀ (ρ : ℂ)) (-(γ : ℂ)) = (um + vm) / 2 :=
+        paperFT_depthSumProfile_eq hF₀.continuous hF₀c (ρ : ℂ) γ
+      have hS_plus : paperFT (depthSumProfile F₀ (ρ : ℂ)) (γ : ℂ) = (up + vp) / 2 := by
+        simpa [sub_neg_eq_add, up, vp] using
+          paperFT_depthSumProfile_eq hF₀.continuous hF₀c (ρ : ℂ) (-γ)
+      have hsum_ge : ‖(um + vm) / 2‖ ^ 2 / 8 - ‖(up + vp) / 2‖ ^ 2 / 4 ≤
+          ‖(um + up) / 2 + (vm + vp) / 2‖ ^ 2 / 4 := by
+        have hrew : (um + up) / 2 + (vm + vp) / 2 = (um + vm) / 2 + (up + vp) / 2 := by ring
+        rw [hrew]
+        have htri : ‖(um + vm) / 2‖ ≤ ‖(um + vm) / 2 + (up + vp) / 2‖ + ‖(up + vp) / 2‖ := by
+          simpa using norm_sub_le ((um + vm) / 2 + (up + vp) / 2) ((up + vp) / 2)
+        have hsq := pow_le_pow_left₀ (norm_nonneg _) htri 2
+        nlinarith [sq_nonneg (‖(um + vm) / 2 + (up + vp) / 2‖ - ‖(up + vp) / 2‖)]
+      rw [hw, hS_minus, hS_plus]
+      refine ⟨?_, ?_⟩
+      · have hpos : 0 ≤ (zetaZeroConfig.mult ρ : ℝ) *
+            (‖(um + up) / 2 + (vm + vp) / 2‖ ^ 2 / 4) := by positivity
+        linarith
+      · have hmul := mul_le_mul_of_nonneg_left hsum_ge hm
+        linarith
+  have hfin_le := (Finset.sum_le_sum fun ρ _ => (hp_bounds ρ).2).trans
+    (Summable.sum_le_tsum C_fin (fun ρ _ => (hp_bounds ρ).1) (hw_re_sum.add hd_avg_sum))
+  have htsum : (∑' ρ : zetaZeroConfig.carrier,
+      ((zetaZeroConfig.Wsummand (fun u => (cosineSource F₀ γ u : ℂ))
+          (fun u => (cosineSource F₀ γ u : ℂ)) ρ).re +
+        ((zetaZeroConfig.mult ρ : ℝ) *
+            ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+              paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4 +
+          (zetaZeroConfig.mult ρ : ℝ) *
+            ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+              paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4) / 2)) =
+      fullZeroForm (cosineSource F₀ γ) +
+        ((∑' ρ : zetaZeroConfig.carrier,
+            (zetaZeroConfig.mult ρ : ℝ) *
+              ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+                paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) +
+          ∑' ρ : zetaZeroConfig.carrier,
+            (zetaZeroConfig.mult ρ : ℝ) *
+              ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+                paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4) / 2 := by
+    rw [hw_re_sum.tsum_add hd_avg_sum, fullZeroForm_eq_zeta_W_re hcos hcosc,
+      ZeroConfig.W, Complex.re_tsum hsumW, tsum_div_const, hd_sub_sum.tsum_add hd_add_sum]
+  linarith
+
+/-- **Sub-Power Frequency-Averaged Coercivity of the Quadrature Weil Form up to `(2/3) log Γ`
+(`exists_frequencyAverage_quadrature_fullZeroForm_ge_subpower`):**
+For every aperture slope `0 ≤ α < 2/3` (exceeding both Huxley `5/12` and Guth–Maynard `13/30`)
+and every `η > 0`, there exist `C ≥ 0`, `C_rem ≥ 0`, and `Γ₀ ≥ 8` such that for all `Γ ≥ Γ₀`,
+all `0 ≤ A ≤ α log Γ`, and every `F₀ ∈ C²_c(ℝ)` supported in `[-A, A]`,
+`(1 / Γ) ∫_Γ^{2Γ} (fullZeroForm (cosineSource F₀ γ) + fullZeroForm (sineSource F₀ γ)) dγ
+  ≥ -C Γ^η ∫ F₀² - C_rem Γ^{α - 2} envelopeWindowNorm F₀ ^ 2`. -/
+theorem exists_frequencyAverage_quadrature_fullZeroForm_ge_subpower
+    {α η : ℝ} (hα0 : 0 ≤ α) (hα : α < 2 / 3) (hη : 0 < η) :
+    ∃ C C_rem : ℝ, 0 ≤ C ∧ 0 ≤ C_rem ∧ ∃ Γ₀ : ℝ, 8 ≤ Γ₀ ∧
+      ∀ Γ : ℝ, Γ₀ ≤ Γ → ∀ A : ℝ, 0 ≤ A → A ≤ α * Real.log Γ →
+        ∀ F₀ : ℝ → ℝ, ContDiff ℝ 2 F₀ → HasCompactSupport F₀ →
+          (∀ u : ℝ, A < |u| → F₀ u = 0) →
+          -C * Γ ^ η * (∫ u, F₀ u ^ 2) -
+              C_rem * Γ ^ (α - 2) * envelopeWindowNorm F₀ ^ 2 ≤
+            (1 / Γ) * ∫ γ in Icc Γ (2 * Γ),
+              (fullZeroForm (cosineSource F₀ γ) + fullZeroForm (sineSource F₀ γ)) := by
+  obtain ⟨C_loc, hC_loc, Γ₀, hΓ₀, hthree⟩ :=
+    exists_sum_exp_foldedRe_threeShells_le_subpower hα0 hα hη
+  refine ⟨(Real.pi / 2) * C_loc, 32 * reciprocalSquareWeightTotal,
+    by positivity, by positivity [reciprocalSquareWeightTotal_nonneg], Γ₀, hΓ₀,
+    fun Γ hΓ A hA0 hA F₀ hF₀ hF₀c hsupp => ?_⟩
+  have hΓ8 : 8 ≤ Γ := hΓ₀.trans hΓ
+  have hΓ1 : 1 ≤ Γ := by linarith
+  have hΓ0 : 0 < Γ := by linarith
+  obtain ⟨hd_sub_sum, _hd_add_sum, hc_sub, _hc_add, G_loc, hG_loc, hsub_int, _hadd_int⟩ :=
+    integral_Icc_tsum_depthDiff_div_four_le hF₀ hF₀c hΓ1 hA0 hsupp
+  have hpt : ∀ γ ∈ Icc Γ (2 * Γ),
+      -(∑' ρ : zetaZeroConfig.carrier,
+          (zetaZeroConfig.mult ρ : ℝ) *
+            ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+              paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) ≤
+        fullZeroForm (cosineSource F₀ γ) + fullZeroForm (sineSource F₀ γ) := fun γ _ => by
+    rw [fullZeroForm_cosine_add_sine_eq_zeta_W_re hF₀ hF₀c γ]
+    have h := re_zeta_W_complexModulatedSource_ge_finset hF₀ hF₀c γ ∅ (hd_sub_sum γ)
+    simpa using h
+  have hquad_cont : Continuous fun γ : ℝ =>
+      fullZeroForm (cosineSource F₀ γ) + fullZeroForm (sineSource F₀ γ) := by
+    have heq : (fun γ : ℝ => fullZeroForm (cosineSource F₀ γ) + fullZeroForm (sineSource F₀ γ)) =
+        fun γ : ℝ =>
+          (zetaZeroConfig.W (complexModulatedSource F₀ γ) (complexModulatedSource F₀ γ)).re :=
+      funext (fullZeroForm_cosine_add_sine_eq_zeta_W_re hF₀ hF₀c)
+    rw [heq]
+    exact (continuous_zeta_W_re_modulated hF₀ hF₀c).1
+  have hint_ge := setIntegral_mono_on hc_sub.neg.integrableOn_Icc
+    hquad_cont.integrableOn_Icc measurableSet_Icc hpt
+  rw [integral_neg] at hint_ge
+  -- Bound the local Plancherel sum over `G_loc`
+  have hGloc_le : (∑ q ∈ G_loc,
+      (∫ γ in Icc Γ (2 * Γ),
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2) / 4) ≤
+      (Real.pi / 2) * (∫ u, F₀ u ^ 2) *
+        ∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2)) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun q _ => ?_
+    have hpl := (integral_norm_paperFT_depthDiff_sq_le hF₀.continuous hF₀c hA0 hsupp
+      (q.1 : ℂ) Γ (2 * Γ)).2.1
+    rw [← foldedRe_sub_half_eq_abs q] at hpl
+    linarith
+  have hshell := hthree Γ hΓ A hA0 hA G_loc hG_loc
+  have hmass_nn : 0 ≤ ∫ u, F₀ u ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  have hloc_tot : (1 / Γ) * ((Real.pi / 2) * (∫ u, F₀ u ^ 2) *
+      ∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2))) ≤
+      (Real.pi / 2) * C_loc * Γ ^ η * (∫ u, F₀ u ^ 2) := by
+    calc (1 / Γ) * ((Real.pi / 2) * (∫ u, F₀ u ^ 2) *
+          ∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2)))
+        = (Real.pi / 2) * (∫ u, F₀ u ^ 2) *
+            ((1 / Γ) * ∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2))) := by ring
+      _ ≤ (Real.pi / 2) * (∫ u, F₀ u ^ 2) * (C_loc * Γ ^ η) :=
+          mul_le_mul_of_nonneg_left hshell (by positivity)
+      _ = (Real.pi / 2) * C_loc * Γ ^ η * (∫ u, F₀ u ^ 2) := by ring
+  have hexpA : Real.exp A ≤ Γ ^ α := by
+    calc Real.exp A ≤ Real.exp (α * Real.log Γ) := Real.exp_le_exp.mpr hA
+      _ = Γ ^ α := by rw [Real.rpow_def_of_pos hΓ0, mul_comm]
+  have hrem_tot : (1 / Γ) * ((32 * reciprocalSquareWeightTotal / Γ) *
+      Real.exp A * envelopeWindowNorm F₀ ^ 2) ≤
+      32 * reciprocalSquareWeightTotal * Γ ^ (α - 2) * envelopeWindowNorm F₀ ^ 2 := by
+    have hrpow : (1 / Γ) * (1 / Γ) * Γ ^ α = Γ ^ (α - 2) := by
+      have hsq : (1 / Γ) * (1 / Γ) = Γ ^ (-2 : ℝ) := by
+        have h1 : (Γ ^ 2)⁻¹ = Γ ^ (-2 : ℝ) := by
+          rw [← Real.rpow_natCast Γ 2, ← Real.rpow_neg hΓ0.le]; norm_num
+        calc (1 / Γ) * (1 / Γ) = (Γ ^ 2)⁻¹ := by ring
+          _ = Γ ^ (-2 : ℝ) := h1
+      rw [hsq, ← Real.rpow_add hΓ0]; congr 1; ring
+    calc (1 / Γ) * ((32 * reciprocalSquareWeightTotal / Γ) *
+          Real.exp A * envelopeWindowNorm F₀ ^ 2)
+        ≤ (1 / Γ) * ((32 * reciprocalSquareWeightTotal / Γ) *
+            Γ ^ α * envelopeWindowNorm F₀ ^ 2) := by
+          refine mul_le_mul_of_nonneg_left
+            (mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_left hexpA
+                (by positivity [reciprocalSquareWeightTotal_nonneg]))
+              (sq_nonneg _)) (by positivity)
+      _ = 32 * reciprocalSquareWeightTotal * ((1 / Γ) * (1 / Γ) * Γ ^ α) *
+            envelopeWindowNorm F₀ ^ 2 := by ring
+      _ = 32 * reciprocalSquareWeightTotal * Γ ^ (α - 2) * envelopeWindowNorm F₀ ^ 2 := by
+          rw [hrpow]
+  have hupper : (1 / Γ) * (∫ γ in Icc Γ (2 * Γ),
+      ∑' ρ : zetaZeroConfig.carrier,
+        (zetaZeroConfig.mult ρ : ℝ) *
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) ≤
+      (Real.pi / 2) * C_loc * Γ ^ η * (∫ u, F₀ u ^ 2) +
+        32 * reciprocalSquareWeightTotal * Γ ^ (α - 2) * envelopeWindowNorm F₀ ^ 2 := by
+    have h1 := mul_le_mul_of_nonneg_left
+      (hsub_int.trans (add_le_add hGloc_le le_rfl)) (by positivity : 0 ≤ 1 / Γ)
+    rw [mul_add] at h1
+    exact h1.trans (add_le_add hloc_tot hrem_tot)
+  have hlower := mul_le_mul_of_nonneg_left hint_ge (by positivity : 0 ≤ 1 / Γ)
+  linarith
+
+/-- **Sub-Power Frequency-Averaged Coercivity of Single `cosineSource F₀ γ` up to `(2/3) log Γ`
+(`exists_frequencyAverage_fullZeroForm_cosineSource_ge_subpower`):**
+Same sub-power coercivity law for the single real modulated test `cosineSource F₀ γ`. -/
+theorem exists_frequencyAverage_fullZeroForm_cosineSource_ge_subpower
+    {α η : ℝ} (hα0 : 0 ≤ α) (hα : α < 2 / 3) (hη : 0 < η) :
+    ∃ C C_rem : ℝ, 0 ≤ C ∧ 0 ≤ C_rem ∧ ∃ Γ₀ : ℝ, 8 ≤ Γ₀ ∧
+      ∀ Γ : ℝ, Γ₀ ≤ Γ → ∀ A : ℝ, 0 ≤ A → A ≤ α * Real.log Γ →
+        ∀ F₀ : ℝ → ℝ, ContDiff ℝ 2 F₀ → HasCompactSupport F₀ →
+          (∀ u : ℝ, A < |u| → F₀ u = 0) →
+          -C * Γ ^ η * (∫ u, F₀ u ^ 2) -
+              C_rem * Γ ^ (α - 2) * envelopeWindowNorm F₀ ^ 2 ≤
+            (1 / Γ) * ∫ γ in Icc Γ (2 * Γ), fullZeroForm (cosineSource F₀ γ) := by
+  obtain ⟨C_loc, hC_loc, Γ₀, hΓ₀, hthree⟩ :=
+    exists_sum_exp_foldedRe_threeShells_le_subpower hα0 hα hη
+  refine ⟨(Real.pi / 2) * C_loc, 32 * reciprocalSquareWeightTotal,
+    by positivity, by positivity [reciprocalSquareWeightTotal_nonneg], Γ₀, hΓ₀,
+    fun Γ hΓ A hA0 hA F₀ hF₀ hF₀c hsupp => ?_⟩
+  have hΓ8 : 8 ≤ Γ := hΓ₀.trans hΓ
+  have hΓ1 : 1 ≤ Γ := by linarith
+  have hΓ0 : 0 < Γ := by linarith
+  obtain ⟨hd_sub_sum, hd_add_sum, hc_sub, hc_add, G_loc, hG_loc, hsub_int, hadd_int⟩ :=
+    integral_Icc_tsum_depthDiff_div_four_le hF₀ hF₀c hΓ1 hA0 hsupp
+  have hpt : ∀ γ ∈ Icc Γ (2 * Γ),
+      -(((∑' ρ : zetaZeroConfig.carrier,
+            (zetaZeroConfig.mult ρ : ℝ) *
+              ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+                paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) +
+          ∑' ρ : zetaZeroConfig.carrier,
+            (zetaZeroConfig.mult ρ : ℝ) *
+              ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+                paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4) / 2) ≤
+        fullZeroForm (cosineSource F₀ γ) := fun γ _ => by
+    have h := fullZeroForm_cosineSource_ge_finset hF₀ hF₀c γ ∅ (hd_sub_sum γ) (hd_add_sum γ)
+    simpa using h
+  have hf_cos_cont := (continuous_zeta_W_re_modulated hF₀ hF₀c).2
+  have hD_int : IntegrableOn
+      (fun γ : ℝ =>
+        ((∑' ρ : zetaZeroConfig.carrier,
+            (zetaZeroConfig.mult ρ : ℝ) *
+              ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+                paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) +
+          ∑' ρ : zetaZeroConfig.carrier,
+            (zetaZeroConfig.mult ρ : ℝ) *
+              ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+                paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4) / 2)
+      (Icc Γ (2 * Γ)) :=
+    ((hc_sub.add hc_add).div_const 2).integrableOn_Icc
+  have hint_ge := setIntegral_mono_on hD_int.neg hf_cos_cont.integrableOn_Icc measurableSet_Icc hpt
+  rw [integral_neg, integral_div, integral_add hc_sub.integrableOn_Icc hc_add.integrableOn_Icc] at hint_ge
+  have hGloc_sub : (∑ q ∈ G_loc,
+      (∫ γ in Icc Γ (2 * Γ),
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2) / 4) ≤
+      (Real.pi / 2) * (∫ u, F₀ u ^ 2) *
+        ∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2)) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun q _ => ?_
+    have hpl := (integral_norm_paperFT_depthDiff_sq_le hF₀.continuous hF₀c hA0 hsupp
+      (q.1 : ℂ) Γ (2 * Γ)).2.1
+    rw [← foldedRe_sub_half_eq_abs q] at hpl
+    linarith
+  have hGloc_add : (∑ q ∈ G_loc,
+      (∫ γ in Icc Γ (2 * Γ),
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2) / 4) ≤
+      (Real.pi / 2) * (∫ u, F₀ u ^ 2) *
+        ∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2)) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun q _ => ?_
+    have hpl := (integral_norm_paperFT_depthDiff_add_sq_le hF₀.continuous hF₀c hA0 hsupp
+      (q.1 : ℂ) Γ (2 * Γ)).1
+    rw [← foldedRe_sub_half_eq_abs q] at hpl
+    linarith
+  have hshell := hthree Γ hΓ A hA0 hA G_loc hG_loc
+  have hmass_nn : 0 ≤ ∫ u, F₀ u ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  have hloc_tot : (1 / Γ) * ((Real.pi / 2) * (∫ u, F₀ u ^ 2) *
+      ∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2))) ≤
+      (Real.pi / 2) * C_loc * Γ ^ η * (∫ u, F₀ u ^ 2) := by
+    calc (1 / Γ) * ((Real.pi / 2) * (∫ u, F₀ u ^ 2) *
+          ∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2)))
+        = (Real.pi / 2) * (∫ u, F₀ u ^ 2) *
+            ((1 / Γ) * ∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2))) := by ring
+      _ ≤ (Real.pi / 2) * (∫ u, F₀ u ^ 2) * (C_loc * Γ ^ η) :=
+          mul_le_mul_of_nonneg_left hshell (by positivity)
+      _ = (Real.pi / 2) * C_loc * Γ ^ η * (∫ u, F₀ u ^ 2) := by ring
+  have hexpA : Real.exp A ≤ Γ ^ α := by
+    calc Real.exp A ≤ Real.exp (α * Real.log Γ) := Real.exp_le_exp.mpr hA
+      _ = Γ ^ α := by rw [Real.rpow_def_of_pos hΓ0, mul_comm]
+  have hrem_tot : (1 / Γ) * ((32 * reciprocalSquareWeightTotal / Γ) *
+      Real.exp A * envelopeWindowNorm F₀ ^ 2) ≤
+      32 * reciprocalSquareWeightTotal * Γ ^ (α - 2) * envelopeWindowNorm F₀ ^ 2 := by
+    have hrpow : (1 / Γ) * (1 / Γ) * Γ ^ α = Γ ^ (α - 2) := by
+      have hsq : (1 / Γ) * (1 / Γ) = Γ ^ (-2 : ℝ) := by
+        have h1 : (Γ ^ 2)⁻¹ = Γ ^ (-2 : ℝ) := by
+          rw [← Real.rpow_natCast Γ 2, ← Real.rpow_neg hΓ0.le]; norm_num
+        calc (1 / Γ) * (1 / Γ) = (Γ ^ 2)⁻¹ := by ring
+          _ = Γ ^ (-2 : ℝ) := h1
+      rw [hsq, ← Real.rpow_add hΓ0]; congr 1; ring
+    calc (1 / Γ) * ((32 * reciprocalSquareWeightTotal / Γ) *
+          Real.exp A * envelopeWindowNorm F₀ ^ 2)
+        ≤ (1 / Γ) * ((32 * reciprocalSquareWeightTotal / Γ) *
+            Γ ^ α * envelopeWindowNorm F₀ ^ 2) := by
+          refine mul_le_mul_of_nonneg_left
+            (mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_left hexpA
+                (by positivity [reciprocalSquareWeightTotal_nonneg]))
+              (sq_nonneg _)) (by positivity)
+      _ = 32 * reciprocalSquareWeightTotal * ((1 / Γ) * (1 / Γ) * Γ ^ α) *
+            envelopeWindowNorm F₀ ^ 2 := by ring
+      _ = 32 * reciprocalSquareWeightTotal * Γ ^ (α - 2) * envelopeWindowNorm F₀ ^ 2 := by
+          rw [hrpow]
+  have havg_le : ((∫ γ in Icc Γ (2 * Γ),
+        ∑' ρ : zetaZeroConfig.carrier,
+          (zetaZeroConfig.mult ρ : ℝ) *
+            ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+              paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) +
+      ∫ γ in Icc Γ (2 * Γ),
+        ∑' ρ : zetaZeroConfig.carrier,
+          (zetaZeroConfig.mult ρ : ℝ) *
+            ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+              paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4) / 2 ≤
+      (Real.pi / 2) * (∫ u, F₀ u ^ 2) *
+          (∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2))) +
+        (32 * reciprocalSquareWeightTotal / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 := by
+    linarith [hsub_int, hadd_int, hGloc_sub, hGloc_add]
+  have hupper := mul_le_mul_of_nonneg_left havg_le (by positivity : 0 ≤ 1 / Γ)
+  rw [mul_add] at hupper
+  have htot := hupper.trans (add_le_add hloc_tot hrem_tot)
+  have hlower := mul_le_mul_of_nonneg_left hint_ge (by positivity : 0 ≤ 1 / Γ)
+  linarith
+
+/-! ## §3. Collapse of the Effective Exponential Floor Rate from `zetaZeroWidth` to `0` and Bad-Frequency Decay -/
+
+/-- **Collapse of the Effective Exponential Floor Rate to `0`
+(`exists_frequencyAverage_fullZeroForm_ge_neg_exp_every_pos_rate`):**
+While unfiltered `fullZeroForm` on `C²_c([-A, A])` has exponential worst-case growth governed by
+`zetaZeroWidth` (`AllParityCriticalDeficitAndEndpointSobolevLaws`), modulating along any exponential
+frequency schedule `Γ = e^{λ A}` with `λ > 3/2` collapses the effective exponential floor rate
+unconditionally to **`0`**: for **every** `β > 0`, the negative part grows at most as `O(e^{2βA})`. -/
+theorem exists_frequencyAverage_fullZeroForm_ge_neg_exp_every_pos_rate
+    {lam β : ℝ} (hlam : 3 / 2 < lam) (hβ : 0 < β) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∃ A₀ : ℝ, 0 ≤ A₀ ∧
+      ∀ A : ℝ, A₀ ≤ A →
+        ∀ F₀ : ℝ → ℝ, ContDiff ℝ 2 F₀ → HasCompactSupport F₀ →
+          (∀ u : ℝ, A < |u| → F₀ u = 0) →
+          -C * Real.exp (2 * β * A) * ((∫ u, F₀ u ^ 2) + envelopeWindowNorm F₀ ^ 2) ≤
+            (1 / Real.exp (lam * A)) *
+              ∫ γ in Icc (Real.exp (lam * A)) (2 * Real.exp (lam * A)),
+                fullZeroForm (cosineSource F₀ γ) := by
+  have hlam_pos : 0 < lam := by linarith
+  have hα0 : 0 ≤ 1 / lam := by positivity
+  have hα_lt : 1 / lam < 2 / 3 := by
+    rw [div_lt_div_iff₀ hlam_pos (by norm_num)]
+    linarith
+  have hη : 0 < 2 * β / lam := div_pos (by positivity) hlam_pos
+  obtain ⟨C₁, C_rem, hC₁, hC_rem, Γ₀, hΓ₀, hsub⟩ :=
+    exists_frequencyAverage_fullZeroForm_cosineSource_ge_subpower hα0 hα_lt hη
+  refine ⟨C₁ + C_rem, by positivity, max 0 (Real.log Γ₀ / lam), le_max_left _ _,
+    fun A hA F₀ hF₀ hF₀c hsupp => ?_⟩
+  have hA0 : 0 ≤ A := (le_max_left _ _).trans hA
+  have hA_log : Real.log Γ₀ / lam ≤ A := (le_max_right _ _).trans hA
+  have hΓ_ge : Γ₀ ≤ Real.exp (lam * A) := by
+    have hmul := (div_le_iff₀ hlam_pos).mp hA_log
+    calc Γ₀ = Real.exp (Real.log Γ₀) := (Real.exp_log (by linarith)).symm
+      _ ≤ Real.exp (lam * A) := Real.exp_le_exp.mpr (by linarith)
+  have hA_ap : A ≤ (1 / lam) * Real.log (Real.exp (lam * A)) := by
+    rw [Real.log_exp]; field_simp [hlam_pos.ne']; exact le_rfl
+  have hmain := hsub (Real.exp (lam * A)) hΓ_ge A hA0 hA_ap F₀ hF₀ hF₀c hsupp
+  have hrpow_η : (Real.exp (lam * A)) ^ (2 * β / lam) = Real.exp (2 * β * A) := by
+    rw [Real.rpow_def_of_pos (Real.exp_pos _), Real.log_exp]
+    congr 1; field_simp [hlam_pos.ne']
+  have hrpow_rem : (Real.exp (lam * A)) ^ (1 / lam - 2) ≤ Real.exp (2 * β * A) := by
+    have h1 : 1 ≤ Real.exp (lam * A) := Real.one_le_exp (by positivity)
+    have h2 : (Real.exp (lam * A)) ^ (1 / lam - 2) ≤ (Real.exp (lam * A)) ^ (0 : ℝ) :=
+      Real.rpow_le_rpow_of_exponent_le h1 (by linarith)
+    rw [Real.rpow_zero] at h2
+    exact h2.trans (Real.one_le_exp (by positivity))
+  rw [hrpow_η] at hmain
+  have hm1 : 0 ≤ ∫ u, F₀ u ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  have hm2 : 0 ≤ envelopeWindowNorm F₀ ^ 2 := sq_nonneg _
+  have hrem_le : C_rem * (Real.exp (lam * A)) ^ (1 / lam - 2) * envelopeWindowNorm F₀ ^ 2 ≤
+      C_rem * Real.exp (2 * β * A) * envelopeWindowNorm F₀ ^ 2 :=
+    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hrpow_rem hC_rem) hm2
+  have hexp_pos : 0 ≤ Real.exp (2 * β * A) := (Real.exp_pos _).le
+  nlinarith
+
+/-- **Sub-Linear Measure of Bad Frequencies (`exists_volume_bad_frequencies_fullZeroForm_cosineSource_le`):**
+For every `0 ≤ α < 2/3`, `η > 0`, and positive threshold `M > 0`, the Lebesgue measure of
+frequencies `γ ∈ [Γ, 2Γ]` where `fullZeroForm (cosineSource F₀ γ) < -M` is at most
+`(C Γ^{1 + η} ∫ F₀² + C_rem Γ^{α - 1} envelopeWindowNorm F₀ ^ 2) / M` (hence `O(Γ^{1 - δ})` when
+`M = Γ^{2δ}` and `η = δ`, which is `o(Γ)`). -/
+theorem exists_volume_bad_frequencies_fullZeroForm_cosineSource_le
+    {α η : ℝ} (hα0 : 0 ≤ α) (hα : α < 2 / 3) (hη : 0 < η) :
+    ∃ C C_rem : ℝ, 0 ≤ C ∧ 0 ≤ C_rem ∧ ∃ Γ₀ : ℝ, 8 ≤ Γ₀ ∧
+      ∀ Γ : ℝ, Γ₀ ≤ Γ → ∀ A : ℝ, 0 ≤ A → A ≤ α * Real.log Γ →
+        ∀ F₀ : ℝ → ℝ, ContDiff ℝ 2 F₀ → HasCompactSupport F₀ →
+          (∀ u : ℝ, A < |u| → F₀ u = 0) →
+          ∀ M : ℝ, 0 < M →
+            (MeasureTheory.volume
+              {γ ∈ Icc Γ (2 * Γ) | fullZeroForm (cosineSource F₀ γ) < -M}).toReal ≤
+              (C * Γ ^ (1 + η) * (∫ u, F₀ u ^ 2) +
+                C_rem * Γ ^ (α - 1) * envelopeWindowNorm F₀ ^ 2) / M := by
+  obtain ⟨C_loc, hC_loc, Γ₀, hΓ₀, hthree⟩ :=
+    exists_sum_exp_foldedRe_threeShells_le_subpower hα0 hα hη
+  refine ⟨(Real.pi / 2) * C_loc, 32 * reciprocalSquareWeightTotal,
+    by positivity, by positivity [reciprocalSquareWeightTotal_nonneg], Γ₀, hΓ₀,
+    fun Γ hΓ A hA0 hA F₀ hF₀ hF₀c hsupp M hM => ?_⟩
+  have hΓ8 : 8 ≤ Γ := hΓ₀.trans hΓ
+  have hΓ1 : 1 ≤ Γ := by linarith
+  have hΓ0 : 0 < Γ := by linarith
+  obtain ⟨hd_sub_sum, hd_add_sum, hc_sub, hc_add, G_loc, hG_loc, hsub_int, hadd_int⟩ :=
+    integral_Icc_tsum_depthDiff_div_four_le hF₀ hF₀c hΓ1 hA0 hsupp
+  let D : ℝ → ℝ := fun γ =>
+    ((∑' ρ : zetaZeroConfig.carrier,
+        (zetaZeroConfig.mult ρ : ℝ) *
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) +
+      ∑' ρ : zetaZeroConfig.carrier,
+        (zetaZeroConfig.mult ρ : ℝ) *
+          ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+            paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4) / 2
+  have hD_nn : ∀ γ : ℝ, 0 ≤ D γ := fun γ =>
+    div_nonneg (add_nonneg (tsum_nonneg fun _ => by positivity)
+      (tsum_nonneg fun _ => by positivity)) (by norm_num)
+  have hD_int : IntegrableOn D (Icc Γ (2 * Γ)) :=
+    ((hc_sub.add hc_add).div_const 2).integrableOn_Icc
+  let S : Set ℝ := {γ ∈ Icc Γ (2 * Γ) | fullZeroForm (cosineSource F₀ γ) < -M}
+  have hf_cos_cont := (continuous_zeta_W_re_modulated hF₀ hF₀c).2
+  have hS_meas : MeasurableSet S :=
+    measurableSet_Icc.inter (isOpen_Iio.preimage hf_cos_cont).measurableSet
+  have hS_sub : S ⊆ Icc Γ (2 * Γ) := fun _ h => h.1
+  have hM_le_D : ∀ γ ∈ S, M ≤ D γ := fun γ hγ => by
+    have hge := fullZeroForm_cosineSource_ge_finset hF₀ hF₀c γ ∅ (hd_sub_sum γ) (hd_add_sum γ)
+    simp only [Finset.sum_empty, zero_sub] at hge
+    have hlt : fullZeroForm (cosineSource F₀ γ) < -M := hγ.2
+    change -D γ ≤ fullZeroForm (cosineSource F₀ γ) at hge
+    linarith
+  have hmarkov : (MeasureTheory.volume S).toReal * M ≤ ∫ γ in Icc Γ (2 * Γ), D γ := by
+    calc (MeasureTheory.volume S).toReal * M
+        = ∫ _γ in S, M := by rw [setIntegral_const, Measure.real, smul_eq_mul]
+      _ ≤ ∫ γ in S, D γ :=
+          setIntegral_mono_on (continuous_const.integrableOn_Icc.mono_set hS_sub)
+            (hD_int.mono_set hS_sub) hS_meas hM_le_D
+      _ ≤ ∫ γ in Icc Γ (2 * Γ), D γ :=
+          setIntegral_mono_set hD_int (Eventually.of_forall hD_nn) (LE.le.eventuallyLE hS_sub)
+  -- Bound `∫ γ in Icc Γ (2 * Γ), D γ`
+  have hD_int_eq : (∫ γ in Icc Γ (2 * Γ), D γ) =
+      ((∫ γ in Icc Γ (2 * Γ),
+          ∑' ρ : zetaZeroConfig.carrier,
+            (zetaZeroConfig.mult ρ : ℝ) *
+              ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) - (γ : ℂ)) -
+                paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) - (γ : ℂ))‖ ^ 2 / 4) +
+        ∫ γ in Icc Γ (2 * Γ),
+          ∑' ρ : zetaZeroConfig.carrier,
+            (zetaZeroConfig.mult ρ : ℝ) *
+              ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (ρ : ℂ) + (γ : ℂ)) -
+                paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (ρ : ℂ)) + (γ : ℂ))‖ ^ 2 / 4) / 2 := by
+    dsimp [D]
+    rw [integral_div, integral_add hc_sub.integrableOn_Icc hc_add.integrableOn_Icc]
+  have hGloc_sub : (∑ q ∈ G_loc,
+      (∫ γ in Icc Γ (2 * Γ),
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) - (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) - (γ : ℂ))‖ ^ 2) / 4) ≤
+      (Real.pi / 2) * (∫ u, F₀ u ^ 2) *
+        ∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2)) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun q _ => ?_
+    have hpl := (integral_norm_paperFT_depthDiff_sq_le hF₀.continuous hF₀c hA0 hsupp
+      (q.1 : ℂ) Γ (2 * Γ)).2.1
+    rw [← foldedRe_sub_half_eq_abs q] at hpl
+    linarith
+  have hGloc_add : (∑ q ∈ G_loc,
+      (∫ γ in Icc Γ (2 * Γ),
+        ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
+          paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (q.1 : ℂ)) + (γ : ℂ))‖ ^ 2) / 4) ≤
+      (Real.pi / 2) * (∫ u, F₀ u ^ 2) *
+        ∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2)) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun q _ => ?_
+    have hpl := (integral_norm_paperFT_depthDiff_add_sq_le hF₀.continuous hF₀c hA0 hsupp
+      (q.1 : ℂ) Γ (2 * Γ)).1
+    rw [← foldedRe_sub_half_eq_abs q] at hpl
+    linarith
+  have hshell := hthree Γ hΓ A hA0 hA G_loc hG_loc
+  have hsum_le : ∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2)) ≤ C_loc * Γ ^ (1 + η) := by
+    have hmul := mul_le_mul_of_nonneg_left hshell hΓ0.le
+    have h1 : Γ * ((1 / Γ) * ∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2))) =
+        ∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2)) := by field_simp [hΓ0.ne']
+    have h2 : Γ * (C_loc * Γ ^ η) = C_loc * Γ ^ (1 + η) := by
+      calc Γ * (C_loc * Γ ^ η) = C_loc * (Γ ^ (1 : ℝ) * Γ ^ η) := by rw [Real.rpow_one]; ring
+        _ = C_loc * Γ ^ (1 + η) := by rw [← Real.rpow_add hΓ0]
+    linarith
+  have hexpA : Real.exp A ≤ Γ ^ α := by
+    calc Real.exp A ≤ Real.exp (α * Real.log Γ) := Real.exp_le_exp.mpr hA
+      _ = Γ ^ α := by rw [Real.rpow_def_of_pos hΓ0, mul_comm]
+  have hrem_le : (32 * reciprocalSquareWeightTotal / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2 ≤
+      32 * reciprocalSquareWeightTotal * Γ ^ (α - 1) * envelopeWindowNorm F₀ ^ 2 := by
+    have hrpow : (1 / Γ) * Γ ^ α = Γ ^ (α - 1) := by
+      rw [one_div, ← Real.rpow_neg_one, ← Real.rpow_add hΓ0]; congr 1; ring
+    calc (32 * reciprocalSquareWeightTotal / Γ) * Real.exp A * envelopeWindowNorm F₀ ^ 2
+        ≤ (32 * reciprocalSquareWeightTotal / Γ) * Γ ^ α * envelopeWindowNorm F₀ ^ 2 :=
+          mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_left hexpA
+              (by positivity [reciprocalSquareWeightTotal_nonneg]))
+            (sq_nonneg _)
+      _ = 32 * reciprocalSquareWeightTotal * ((1 / Γ) * Γ ^ α) * envelopeWindowNorm F₀ ^ 2 := by
+          ring
+      _ = 32 * reciprocalSquareWeightTotal * Γ ^ (α - 1) * envelopeWindowNorm F₀ ^ 2 := by
+          rw [hrpow]
+  have hmass_nn : 0 ≤ ∫ u, F₀ u ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  have hloc_le : (Real.pi / 2) * (∫ u, F₀ u ^ 2) *
+      (∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2))) ≤
+      (Real.pi / 2) * C_loc * Γ ^ (1 + η) * (∫ u, F₀ u ^ 2) := by
+    calc (Real.pi / 2) * (∫ u, F₀ u ^ 2) *
+          (∑ q ∈ G_loc, Real.exp (2 * A * (foldedRe q - 1 / 2)))
+        ≤ (Real.pi / 2) * (∫ u, F₀ u ^ 2) * (C_loc * Γ ^ (1 + η)) :=
+          mul_le_mul_of_nonneg_left hsum_le (by positivity)
+      _ = (Real.pi / 2) * C_loc * Γ ^ (1 + η) * (∫ u, F₀ u ^ 2) := by ring
+  rw [le_div_iff₀ hM]
+  linarith [hmarkov, hD_int_eq, hsub_int, hadd_int, hGloc_sub, hGloc_add, hloc_le, hrem_le]

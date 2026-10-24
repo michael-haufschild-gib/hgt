@@ -91,10 +91,10 @@ theorem integrable_and_integral_gaussDensity_poly {s : ℝ} (hs : 0 < s) (P : �
     ring
   have hint : Integrable (fun v : ℝ => gaussDensity s v * P.eval (c + v)) := by
     rw [hexp]
-    exact integrable_finset_sum _ fun j _ =>
+    exact integrable_finsetSum _ fun j _ =>
       (DeBruijn.integrable_gaussDensity_mul_pow hs j).const_mul _
   refine ⟨hint, ?_⟩
-  rw [hexp, integral_finset_sum _ (fun j _ =>
+  rw [hexp, integral_finsetSum _ (fun j _ =>
     (DeBruijn.integrable_gaussDensity_mul_pow hs j).const_mul _)]
   simp_rw [integral_const_mul]
   let f : ℕ → ℝ := fun j => (hasseDeriv j P).eval c * ∫ v : ℝ, gaussDensity s v * v ^ j
@@ -109,7 +109,7 @@ theorem integrable_and_integral_gaussDensity_poly {s : ℝ} (hs : 0 < s) (P : �
   change ∑ j ∈ Finset.range N, f j = (forwardPolyHeat s P).eval c
   rw [hext, DeBruijn.sum_range_two_mul]
   unfold forwardPolyHeat
-  rw [eval_finset_sum]
+  rw [eval_finsetSum]
   refine Finset.sum_congr rfl fun m _ => ?_
   have hodd : f (2 * m + 1) = 0 := by
     dsimp only [f]
@@ -123,7 +123,6 @@ theorem integrable_and_integral_gaussDensity_poly {s : ℝ} (hs : 0 < s) (P : �
   have hf2 : ((2 * m).factorial : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero _
   have hfm : (m.factorial : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero _
   field_simp
-  ring
 
 /-- Closed-form Mehler transform of `x ↦ P.eval x * exp(a x²)` at Gaussian heat `lam`:
 `σ^{-1/2} exp((a/σ) x²) * (forwardPolyHeat (lam/(2σ)) P).eval (x/σ)` with
@@ -195,10 +194,10 @@ def complexPolyRe (Q : ℂ[X]) : ℝ[X] :=
 theorem eval_complexPolyRe (Q : ℂ[X]) (x : ℝ) :
     (complexPolyRe Q).eval x = (Q.eval (x : ℂ)).re := by
   unfold complexPolyRe
-  rw [eval_finset_sum, Q.eval_eq_sum_range, Complex.re_sum]
+  rw [eval_finsetSum, Q.eval_eq_sum_range, Complex.re_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
-  rw [eval_mul, eval_C, eval_pow, eval_X, ← Complex.ofReal_pow]
-  simp [Complex.mul_re]
+  rw [eval_mul, eval_C, eval_pow, eval_X, ← Complex.ofReal_pow, Complex.mul_re,
+    Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero]
 
 /-- Complex polynomial representing `xiSliceGaussianFiniteHead t R`. -/
 def xiSliceGaussianFiniteHeadComplexPoly (t R : ℝ) : ℂ[X] :=
@@ -229,6 +228,14 @@ theorem eval_xiSliceGaussianFiniteHeadRealPoly_nonneg (t R x : ℝ) :
   rw [eval_xiSliceGaussianFiniteHeadRealPoly]
   exact xiSliceGaussianFiniteHead_ofReal_re_nonneg t R x
 
+private theorem eval_map_ofReal_eq (p : ℝ[X]) (y : ℝ) :
+    (p.map (algebraMap ℝ ℂ)).eval (y : ℂ) = ((p.eval y : ℝ) : ℂ) := by
+  conv_lhs => rw [p.as_sum_range_C_mul_X_pow]
+  conv_rhs => rw [p.as_sum_range_C_mul_X_pow]
+  rw [Polynomial.map_sum, eval_finsetSum, eval_finsetSum, Complex.ofReal_sum]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  simp
+
 /-- When `Ξ(t) ≠ 0` and `R ≥ 0`, `xiSliceGaussianFiniteHeadRealPoly t R` coincides with
 `C (XiC t ^ 2).re * expand ℝ 2 (sliceTruncPoly t (xiSliceGaussianRadiusHead t R))`. -/
 theorem xiSliceGaussianFiniteHeadRealPoly_eq_of_XiC_ne_zero {t R : ℝ} (ht : XiC t ≠ 0)
@@ -242,19 +249,14 @@ theorem xiSliceGaussianFiniteHeadRealPoly_eq_of_XiC_ne_zero {t R : ℝ} (ht : Xi
   have h0 := xiSliceGaussianFiniteHead_eq_XiC_sq_mul_eval_sliceTruncPoly ht hR 0
   have him0 : (XiC t ^ 2).im = 0 := by
     have h0' := xiSliceGaussianFiniteHead_ofReal_im_eq_zero t R 0
-    rw [Complex.ofReal_zero, h0, zero_pow (by decide : 2 ≠ 0), eval_map_algebraMap,
-      show algebraMap ℝ ℂ 0 = (0 : ℂ) by simp] at h0'
-    have hev0 : aeval (0 : ℂ) (sliceTruncPoly t (xiSliceGaussianRadiusHead t R)) = 1 := by
-      rw [aeval_def, ← eval_map,
-        show (0 : ℂ) = ((0 : ℝ) : ℂ) by simp, eval_map_algebraMap]
-      simp [eval_zero_sliceTruncPoly]
-    rw [hev0, mul_one] at h0'
+    have hz0 : (0 : ℂ) ^ 2 = ((0 : ℝ) : ℂ) := by norm_num
+    rw [Complex.ofReal_zero, h0, hz0, eval_map_ofReal_eq, eval_zero_sliceTruncPoly,
+      Complex.ofReal_one, mul_one] at h0'
     exact h0'
   have hevx : ((sliceTruncPoly t (xiSliceGaussianRadiusHead t R)).map
       (algebraMap ℝ ℂ)).eval ((x : ℂ) ^ 2) =
       (((sliceTruncPoly t (xiSliceGaussianRadiusHead t R)).eval (x ^ 2) : ℝ) : ℂ) := by
-    rw [← Complex.ofReal_pow, eval_map_algebraMap]
-    rfl
+    rw [← Complex.ofReal_pow, eval_map_ofReal_eq]
   rw [hhead, hevx]
   simp [Complex.mul_re, him0]
 
@@ -348,14 +350,21 @@ def polySecondCumulant (P : ℝ[X]) : ℝ :=
 
 theorem coeff_one_mul_of_coeff_zero_one {P Q : ℝ[X]} (hP : P.coeff 0 = 1) (hQ : Q.coeff 0 = 1) :
     (P * Q).coeff 1 = P.coeff 1 + Q.coeff 1 := by
-  rw [polynomial_coeff_mul_one, hP, hQ]
+  rw [coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk, Finset.sum_range_succ,
+    Finset.sum_range_one]
+  simp only [Nat.sub_zero, Nat.sub_self, hP, hQ, one_mul, mul_one]
   ring
 
 theorem polySecondCumulant_mul_of_coeff_zero_one {P Q : ℝ[X]} (hP : P.coeff 0 = 1)
     (hQ : Q.coeff 0 = 1) :
     polySecondCumulant (P * Q) = polySecondCumulant P + polySecondCumulant Q := by
+  have hc2 : (P * Q).coeff 2 = P.coeff 2 + P.coeff 1 * Q.coeff 1 + Q.coeff 2 := by
+    rw [coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk, Finset.sum_range_succ,
+      Finset.sum_range_succ, Finset.sum_range_one]
+    simp only [Nat.sub_zero, Nat.sub_self, Nat.add_sub_cancel, hP, hQ, one_mul, mul_one]
+    ring
   unfold polySecondCumulant
-  rw [coeff_one_mul_of_coeff_zero_one hP hQ, polynomial_coeff_mul_two, hP, hQ]
+  rw [coeff_one_mul_of_coeff_zero_one hP hQ, hc2]
   ring
 
 theorem coeff_zero_prod_eq_one {ι : Type*} (s : Finset ι) (f : ι → ℝ[X])
@@ -374,7 +383,7 @@ theorem coeff_one_prod_of_coeff_zero_one {ι : Type*} (s : Finset ι) (f : ι �
     (∏ i ∈ s, f i).coeff 1 = ∑ i ∈ s, (f i).coeff 1 := by
   classical
   induction s using Finset.induction_on with
-  | empty => simp
+  | empty => simp [Polynomial.coeff_one]
   | insert a s ha ih =>
     rw [Finset.prod_insert ha, Finset.sum_insert ha,
       coeff_one_mul_of_coeff_zero_one (hf a (Finset.mem_insert_self a s))
@@ -386,7 +395,7 @@ theorem polySecondCumulant_prod_of_coeff_zero_one {ι : Type*} (s : Finset ι) (
     polySecondCumulant (∏ i ∈ s, f i) = ∑ i ∈ s, polySecondCumulant (f i) := by
   classical
   induction s using Finset.induction_on with
-  | empty => simp [polySecondCumulant]
+  | empty => simp [polySecondCumulant, Polynomial.coeff_one]
   | insert a s ha ih =>
     rw [Finset.prod_insert ha, Finset.sum_insert ha,
       polySecondCumulant_mul_of_coeff_zero_one (hf a (Finset.mem_insert_self a s))
@@ -493,12 +502,15 @@ private theorem re_xiSliceGaussianReciprocal_pair_of_upper (t : ℝ) {q : XiZero
       starRingEnd ℂ (xiSliceGaussianReciprocal t q) := by
     unfold xiSliceGaussianReciprocal
     rw [xiSpectralPoint_lineConj]
-    have ht : starRingEnd ℂ (t : ℂ) = (t : ℂ) := Complex.conj_ofReal t
-    rw [← ht, ← map_sub, ← map_pow, ← map_inv₀]
+    simp only [map_inv₀, map_pow, map_sub, Complex.conj_ofReal]
   have hre1 : (xiSliceGaussianReciprocal t q).re = (d ^ 2 - e ^ 2) / (d ^ 2 + e ^ 2) ^ 2 := by
-    rw [hrec1]; simp
+    rw [hrec1]
+    simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.I_re, Complex.I_im, mul_zero, sub_zero, mul_one, add_zero]
   have him1 : (xiSliceGaussianReciprocal t q).im = -(2 * d * e) / (d ^ 2 + e ^ 2) ^ 2 := by
-    rw [hrec1]; simp
+    rw [hrec1]
+    simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.I_re, Complex.I_im, mul_one, mul_zero, add_zero, zero_add]
   have hre_conj : ∀ w : ℂ, (starRingEnd ℂ w).re = w.re := Complex.conj_re
   have hsq_re : ∀ w : ℂ, (w ^ 2).re = w.re ^ 2 - w.im ^ 2 := fun w => by
     rw [sq, Complex.mul_re]
@@ -747,7 +759,7 @@ private theorem sum_Ico_sub_succ (f : ℕ → ℝ) {N K : ℕ} (hNK : N ≤ K) :
 
 /-- Discrete Abel summation on `Finset.Ico N K` against a nonnegative antitone weight `w`. -/
 theorem abs_sum_Ico_diff_mul_antitone_le {E w : ℕ → ℝ} {N K : ℕ} {M : ℝ} (hNK : N ≤ K)
-    (hM : 0 ≤ M) (hwK : 0 ≤ w K) (hE : ∀ k : ℕ, N ≤ k → k ≤ K → |E k| ≤ M)
+    (_ : 0 ≤ M) (hwK : 0 ≤ w K) (hE : ∀ k : ℕ, N ≤ k → k ≤ K → |E k| ≤ M)
     (hw : ∀ k : ℕ, N ≤ k → k < K → w (k + 1) ≤ w k) :
     |∑ k ∈ Finset.Ico N K, (E (k + 1) - E k) * w k| ≤ 2 * M * w N := by
   have hid : ∀ d : ℕ,
@@ -836,7 +848,7 @@ private theorem inv_pow_four_sub_telescoping {k : ℕ} (hk : 2 ≤ k) :
     field_simp; ring
   have heqR : 6 * (1 / ((k : ℝ) - 1) ^ 4 - 1 / (k : ℝ) ^ 4) =
       6 * ((k : ℝ) ^ 4 - ((k : ℝ) - 1) ^ 4) / (((k : ℝ) - 1) ^ 4 * (k : ℝ) ^ 4) := by
-    field_simp; ring
+    field_simp
   rw [heqL, heqR]
   refine ⟨by positivity, ?_⟩
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
@@ -874,7 +886,7 @@ private theorem inv_pow_five_le_telescoping {k : ℕ} (hk : 2 ≤ k) :
   have hkm1 : (0 : ℝ) < (k : ℝ) - 1 := by linarith
   have heqR : 1 / ((k : ℝ) - 1) ^ 4 - 1 / (k : ℝ) ^ 4 =
       ((k : ℝ) ^ 4 - ((k : ℝ) - 1) ^ 4) / (((k : ℝ) - 1) ^ 4 * (k : ℝ) ^ 4) := by
-    field_simp; ring
+    field_simp
   have hkm4 : ((k : ℝ) - 1) ^ 4 ≤ (k : ℝ) ^ 4 :=
     pow_le_pow_left₀ hkm1.le (by linarith) 4
   have hdiff4 : (k : ℝ) ^ 3 ≤ (k : ℝ) ^ 4 - ((k : ℝ) - 1) ^ 4 := by
@@ -942,10 +954,13 @@ theorem routeKSmoothRVMCount_unit_increment_bounds {x : ℝ} (hx : 0 < x) :
       _ = 1 / x := Real.log_exp _
   have hlo_log : 1 / (x + 1) ≤ Real.log (x + 1) - Real.log x := by
     have h1 : Real.log (x / (x + 1)) ≤ -(1 / (x + 1)) := by
+      have hpos : 0 < 1 + -(1 / (x + 1)) := by
+        have : 1 / (x + 1) < 1 := (div_lt_one hx1).mpr (by linarith)
+        linarith
       calc Real.log (x / (x + 1))
           = Real.log (1 + (-(1 / (x + 1)))) := by congr 1; field_simp; ring
         _ ≤ Real.log (Real.exp (-(1 / (x + 1)))) :=
-            Real.log_le_log (by positivity) (by linarith [Real.add_one_le_exp (-(1 / (x + 1)))])
+            Real.log_le_log hpos (by linarith [Real.add_one_le_exp (-(1 / (x + 1)))])
         _ = -(1 / (x + 1)) := Real.log_exp _
     rw [Real.log_div hx.ne' hx1.ne'] at h1
     linarith
@@ -1005,8 +1020,9 @@ theorem abs_paired_routeKSmoothRVMCount_sub_main_le {t : ℝ} {k : ℕ} (ht : 8 
       Real.log (t / (2 * Real.pi)) / Real.pi =
       Real.log (1 - u) / (2 * Real.pi) := by
     have h1u : 0 < 1 - u := by linarith
-    have hlogp := Real.log_mul (div_pos hxp (by positivity)).ne' (div_pos hxm (by positivity)).ne'
-    rw [hprod, Real.log_mul (pow_pos (div_pos ht0 (by positivity)) 2).ne' h1u.ne',
+    have h2pi : 0 < 2 * Real.pi := mul_pos zero_lt_two hpi
+    have hlogp := Real.log_mul (div_pos hxp h2pi).ne' (div_pos hxm h2pi).ne'
+    rw [hprod, Real.log_mul (pow_pos (div_pos ht0 h2pi) 2).ne' h1u.ne',
       Real.log_pow, Nat.cast_ofNat] at hlogp
     field_simp [Real.pi_ne_zero]
     linarith
@@ -1034,7 +1050,7 @@ theorem abs_paired_routeKSmoothRVMCount_sub_main_le {t : ℝ} {k : ℕ} (ht : 8 
         ≤ (2 * u) / (2 * Real.pi) :=
           div_le_div_of_nonneg_right (abs_log_one_sub_le hu0 hu_half) (by positivity)
       _ = 1 / (Real.pi * t) + (k : ℝ) * ((k : ℝ) + 1) / (Real.pi * t ^ 2) := by
-          dsimp only [u]; field_simp [ht0.ne', Real.pi_ne_zero]; ring
+          dsimp only [u]; field_simp [ht0.ne', Real.pi_ne_zero]
   rw [hdecomp]
   calc |Ep + Em + Real.log (1 - u) / (2 * Real.pi)|
       ≤ |Ep + Em| + |Real.log (1 - u) / (2 * Real.pi)| := abs_add_le _ _
@@ -1063,7 +1079,7 @@ private theorem card_xiCopiesPos_sdiff_eq {a b : ℝ} (ha : 0 ≤ a) (hab : a �
   rw [Finset.card_sdiff_of_subset hsub, Nat.cast_sub (Finset.card_le_card hsub), hbC, haC]
 
 private theorem card_xiCopiesPos_le_mul_log {C T₀ T : ℝ} (hC : 0 < C) (hT₀ : 4 ≤ T₀)
-    (hbase : routeKRVMBase ≤ T₀)
+    (_hbase : routeKRVMBase ≤ T₀)
     (hclose : ∀ U : ℝ, T₀ ≤ U → |(xiZeroCount U : ℝ) - routeKSmoothRVMCount U| ≤ C * Real.log U)
     (hT : T₀ ≤ T) :
     ((xiCopiesPos T).card : ℝ) ≤ (1 + C) * T * Real.log T := by
@@ -1086,7 +1102,7 @@ private theorem card_xiCopiesPos_le_mul_log {C T₀ T : ℝ} (hC : 0 < C) (hT₀
         T / (2 * Real.pi) * Real.log T :=
       mul_le_mul_of_nonneg_left hlog_le (by positivity)
     have h2 : T / (2 * Real.pi) * Real.log T ≤ (1 / 6) * (T * Real.log T) := by
-      rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity)]
+      rw [div_mul_eq_mul_div, div_le_iff₀ (mul_pos zero_lt_two Real.pi_pos)]
       have : 0 ≤ T * Real.log T := by positivity
       nlinarith
     have hTlog : 4 ≤ T * Real.log T := by nlinarith
@@ -1170,7 +1186,8 @@ private theorem sum_pairedOrdWindow_eq_sum_Ico (f : XiZeroCopy → ℝ) {t : ℝ
     induction m with
     | zero => simp
     | succ m ih =>
-      rw [hsdiff_step (xiCopiesPos_mono (by push_cast; linarith))
+      rw [hsdiff_step (B := xiCopiesPos (t + ((N + m : ℕ) : ℝ)))
+        (xiCopiesPos_mono (by push_cast; linarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ (m : ℝ))]))
         (xiCopiesPos_mono (by push_cast; linarith)), ih,
         Nat.add_succ, Finset.sum_Ico_succ_top (Nat.le_add_right N m)]
       have hcast : t + ((N + m + 1 : ℕ) : ℝ) = t + ((N + m : ℕ) : ℝ) + 1 := by push_cast; ring
@@ -1184,7 +1201,7 @@ private theorem sum_pairedOrdWindow_eq_sum_Ico (f : XiZeroCopy → ℝ) {t : ℝ
     | succ m ih =>
       rw [hsdiff_step (B := xiCopiesPos (t - ((N + m : ℕ) : ℝ)))
         (xiCopiesPos_mono (by push_cast; linarith))
-        (xiCopiesPos_mono (by push_cast; linarith)), ih,
+        (xiCopiesPos_mono (by push_cast; linarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ (m : ℝ))])), ih,
         Nat.add_succ, Finset.sum_Ico_succ_top (Nat.le_add_right N m), add_comm]
       have hcast : t - ((N + m + 1 : ℕ) : ℝ) = t - ((N + m : ℕ) : ℝ) - 1 := by push_cast; ring
       rw [hcast]; rfl
@@ -1242,11 +1259,16 @@ private theorem reciprocal_bin_discretization {t : ℝ} {k : ℕ} {q : XiZeroCop
   have hb1_lo : 1 / ((k : ℝ) + 2) ^ 2 ≤ 1 / D2 := one_div_le_one_div_of_le hD2_pos hhi
   have hb1_hi : 1 / D2 ≤ 1 / (k : ℝ) ^ 2 := one_div_le_one_div_of_le (by positivity) hlo
   have hb2_lo : 1 / ((k : ℝ) + 2) ^ 4 ≤ (1 / D2) ^ 2 := by
-    calc 1 / ((k : ℝ) + 2) ^ 4 = (1 / ((k : ℝ) + 2) ^ 2) ^ 2 := by ring
-      _ ≤ (1 / D2) ^ 2 := pow_le_pow_left₀ (by positivity) hb1_lo 2
+    have hsq : 1 / ((k : ℝ) + 2) ^ 4 = (1 / ((k : ℝ) + 2) ^ 2) ^ 2 := by
+      have : (0 : ℝ) < (k : ℝ) + 2 := by linarith
+      field_simp
+    rw [hsq]
+    exact pow_le_pow_left₀ (by positivity) hb1_lo 2
   have hb2_hi : (1 / D2) ^ 2 ≤ 1 / (k : ℝ) ^ 4 := by
-    calc (1 / D2) ^ 2 ≤ (1 / (k : ℝ) ^ 2) ^ 2 := pow_le_pow_left₀ (by positivity) hb1_hi 2
-      _ = 1 / (k : ℝ) ^ 4 := by ring
+    have hsq : (1 / (k : ℝ) ^ 2) ^ 2 = 1 / (k : ℝ) ^ 4 := by
+      field_simp [hk0.ne']
+    rw [← hsq]
+    exact pow_le_pow_left₀ (by positivity) hb1_hi 2
   rw [hrec]
   constructor
   · rw [abs_of_nonpos (by linarith), neg_sub]
@@ -1255,7 +1277,11 @@ private theorem reciprocal_bin_discretization {t : ℝ} {k : ℕ} {q : XiZeroCop
       _ = (4 * (k : ℝ) + 4) / ((k : ℝ) ^ 2 * ((k : ℝ) + 2) ^ 2) := by field_simp; ring
       _ ≤ 8 / (k : ℝ) ^ 3 := by
           rw [div_le_div_iff₀ (by positivity) (by positivity)]
-          have h1 : (4 * (k : ℝ) + 4) * (k : ℝ) ^ 3 ≤ 6 * (k : ℝ) ^ 4 := by nlinarith only [hk2]
+          have h1 : (4 * (k : ℝ) + 4) * (k : ℝ) ^ 3 ≤ 6 * (k : ℝ) ^ 4 := by
+            calc (4 * (k : ℝ) + 4) * (k : ℝ) ^ 3
+                ≤ (6 * (k : ℝ)) * (k : ℝ) ^ 3 :=
+                  mul_le_mul_of_nonneg_right (by linarith) (by positivity)
+              _ = 6 * (k : ℝ) ^ 4 := by ring
           have h2 : (k : ℝ) ^ 2 ≤ ((k : ℝ) + 2) ^ 2 :=
             pow_le_pow_left₀ hk0.le (by linarith) 2
           have h3 : 8 * (k : ℝ) ^ 4 ≤ 8 * ((k : ℝ) ^ 2 * ((k : ℝ) + 2) ^ 2) := by
@@ -1351,7 +1377,7 @@ private theorem sum_far_ordinate_inv_pow_le {C T₀ t : ℝ} (hC : 0 < C) (hT₀
     have hrt : t < (r.1 : ℂ).im := hG r hr
     have hr0 : 0 < (r.1 : ℂ).im := lt_trans ht0 hrt
     have hceil_le : Nat.ceil ((r.1 : ℂ).im / t) ≤ G.sup (fun x => Nat.ceil ((x.1 : ℂ).im / t)) :=
-      Finset.le_sup hr
+      Finset.le_sup (f := fun x : XiZeroCopy => Nat.ceil ((x.1 : ℂ).im / t)) hr
     have hle_D : (r.1 : ℂ).im / t ≤ (D : ℝ) := by
       calc (r.1 : ℂ).im / t ≤ (Nat.ceil ((r.1 : ℂ).im / t) : ℝ) := Nat.le_ceil _
         _ ≤ (D : ℝ) := by exact_mod_cast Nat.le_succ_of_le hceil_le
@@ -1366,19 +1392,21 @@ private theorem sum_far_ordinate_inv_pow_le {C T₀ t : ℝ} (hC : 0 < C) (hT₀
     have hm1 : (1 : ℝ) ≤ (2 : ℝ) ^ (m + 1) := one_le_pow₀ (by norm_num)
     have hTm : T₀ ≤ (2 : ℝ) ^ (m + 1) * t := htT.trans (by nlinarith)
     have hle1 : ((shell m).card : ℝ) ≤ ((xiCopiesPos ((2 : ℝ) ^ (m + 1) * t)).card : ℝ) := by
+      dsimp only [shell]
       exact_mod_cast Finset.card_le_card Finset.sdiff_subset
     have hle2 := card_xiCopiesPos_le_mul_log hC hT₀ hbase hclose hTm
     have hpow_t : (2 : ℝ) ^ (m + 1) * t ≤ t ^ (m + 2) := by
       calc (2 : ℝ) ^ (m + 1) * t ≤ t ^ (m + 1) * t :=
             mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by norm_num) (by linarith) (m + 1)) ht0.le
-        _ = t ^ (m + 2) := by rw [pow_succ]
+        _ = t ^ (m + 2) := (pow_succ t (m + 1)).symm
     have hlog_m : Real.log ((2 : ℝ) ^ (m + 1) * t) ≤ 2 * ((m : ℝ) + 1) * Real.log t := by
+      have hm0 : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
       calc Real.log ((2 : ℝ) ^ (m + 1) * t)
           ≤ Real.log (t ^ (m + 2)) := Real.log_le_log (by positivity) hpow_t
         _ = ((m + 2 : ℕ) : ℝ) * Real.log t := Real.log_pow t (m + 2)
         _ ≤ 2 * ((m : ℝ) + 1) * Real.log t := by
             push_cast
-            exact mul_le_mul_of_nonneg_right (by linarith [Nat.cast_nonneg m]) hlog0
+            exact mul_le_mul_of_nonneg_right (by linarith) hlog0
     calc ((shell m).card : ℝ)
         ≤ (1 + C) * ((2 : ℝ) ^ (m + 1) * t) * Real.log ((2 : ℝ) ^ (m + 1) * t) :=
           hle1.trans hle2
@@ -1412,7 +1440,7 @@ private theorem sum_far_ordinate_inv_pow_le {C T₀ t : ℝ} (hC : 0 < C) (hT₀
                 mul_le_mul_of_nonneg_right (hshell_card m) (by positivity)
             _ = (4 * (1 + C) * Real.log t / t) * (((m : ℝ) + 1) / (2 : ℝ) ^ m) := by
                 have hp : ((2 : ℝ) ^ m) ≠ 0 := pow_ne_zero m two_ne_zero
-                field_simp [ht0.ne', hp]; ring
+                field_simp [ht0.ne', hp]
       _ = (4 * (1 + C) * Real.log t / t) *
             ∑ m ∈ Finset.range D, ((m : ℝ) + 1) / (2 : ℝ) ^ m :=
           (Finset.mul_sum _ _ _).symm
@@ -1432,7 +1460,8 @@ private theorem sum_far_ordinate_inv_pow_le {C T₀ t : ℝ} (hC : 0 < C) (hT₀
               (pow_le_pow_left₀ (by positivity) (hshell_im m r hr).le 4)
           have hpow4 : (2 : ℝ) ^ m * (2 : ℝ) ^ m ≤ ((2 : ℝ) ^ m) ^ 4 := by
             have h1 : (1 : ℝ) ≤ (2 : ℝ) ^ m := one_le_pow₀ (by norm_num)
-            nlinarith [sq_nonneg ((2 : ℝ) ^ m)]
+            calc (2 : ℝ) ^ m * (2 : ℝ) ^ m = ((2 : ℝ) ^ m) ^ 2 := (sq _).symm
+              _ ≤ ((2 : ℝ) ^ m) ^ 4 := pow_le_pow_right₀ h1 (by omega)
           calc ∑ r ∈ shell m, 1 / ((r.1 : ℂ).im) ^ 4
               ≤ ∑ _r ∈ shell m, 1 / ((2 : ℝ) ^ m * t) ^ 4 := Finset.sum_le_sum hterm
             _ = ((shell m).card : ℝ) * (1 / ((2 : ℝ) ^ m * t) ^ 4) := by simp
@@ -1440,9 +1469,9 @@ private theorem sum_far_ordinate_inv_pow_le {C T₀ t : ℝ} (hC : 0 < C) (hT₀
                   (1 / ((2 : ℝ) ^ m * t) ^ 4) :=
                 mul_le_mul_of_nonneg_right (hshell_card m) (by positivity)
             _ ≤ (4 * (1 + C) * Real.log t / t ^ 3) * (((m : ℝ) + 1) / (2 : ℝ) ^ m) := by
-                rw [mul_pow, div_mul_div_comm, mul_one, le_div_iff₀ (by positivity)]
                 have hp : 0 < ((2 : ℝ) ^ m) ^ 4 * t ^ 4 := by positivity
-                rw [div_mul_eq_mul_div, div_le_iff₀ hp]
+                have hq : 0 < t ^ 3 * (2 : ℝ) ^ m := by positivity
+                rw [mul_pow, mul_one_div, div_mul_div_comm, div_le_div_iff₀ hp hq]
                 have hnonneg : 0 ≤ 4 * (1 + C) * ((m : ℝ) + 1) * Real.log t * t ^ 4 := by positivity
                 calc 4 * (1 + C) * (2 : ℝ) ^ m * t * ((m : ℝ) + 1) * Real.log t *
                       (t ^ 3 * (2 : ℝ) ^ m)
@@ -1623,7 +1652,7 @@ private theorem compl_pairedOrdWindow_le {C T₀ t R : ℝ} (hC : 0 < C) (hT₀ 
       (a := t - R - 1) (b := t - R + 1) (by linarith) (by linarith) (by linarith)
     have hlog_u : Real.log (t + R - 1 + 2) ≤ 2 * Real.log t := by
       calc Real.log (t + R - 1 + 2) ≤ Real.log (t ^ 2) :=
-            Real.log_le_log (by positivity) (by nlinarith only [ht64, hRt])
+            Real.log_le_log (by linarith) (by nlinarith only [ht64, hRt])
         _ = 2 * Real.log t := by rw [Real.log_pow]; norm_num
     have hlog_l : Real.log (t - R - 1 + 2) ≤ Real.log t :=
       Real.log_le_log (by linarith) (by linarith)
@@ -1668,9 +1697,10 @@ private theorem compl_pairedOrdWindow_le {C T₀ t R : ℝ} (hC : 0 < C) (hT₀ 
       _ = 8 * (1 + C) * Real.log t / R ^ 4 := by ring
   -- Bounds for `S2` (`0 < Im q ≤ t - K`).
   have hS2_card : (S2.card : ℝ) ≤ (1 + C) * t * Real.log t := by
+    have hK0 : (0 : ℝ) ≤ (K : ℝ) := Nat.cast_nonneg K
     have hsub : S2 ⊆ xiCopiesPos t := fun q hq => by
       obtain ⟨_, hpos, hle⟩ := Finset.mem_filter.mp hq
-      exact mem_xiCopiesPos.mpr ⟨by rw [abs_of_pos hpos]; linarith [Nat.cast_nonneg K], hpos⟩
+      exact mem_xiCopiesPos.mpr ⟨by rw [abs_of_pos hpos]; linarith, hpos⟩
     exact (by exact_mod_cast Finset.card_le_card hsub : (S2.card : ℝ) ≤ _).trans
       (card_xiCopiesPos_le_mul_log hC hT₀ hbase0 hclose htT0)
   have hS2_dist : ∀ q ∈ S2, t / 3 ≤ ‖xiSpectralPoint q - (t : ℂ)‖ := fun q hq => by
@@ -1683,25 +1713,27 @@ private theorem compl_pairedOrdWindow_le {C T₀ t R : ℝ} (hC : 0 < C) (hT₀ 
     calc ∑ q ∈ S2, ‖xiSliceGaussianReciprocal t q‖
         ≤ ∑ _q ∈ S2, 1 / (t / 3) ^ 2 := Finset.sum_le_sum fun q hq =>
           (hrec_le_of_dist (by positivity) (hS2_dist q hq)).1
-      _ = (S2.card : ℝ) * (9 / t ^ 2) := by simp; ring
+      _ = (S2.card : ℝ) * (9 / t ^ 2) := by simp only [Finset.sum_const, nsmul_eq_mul]; ring
       _ ≤ ((1 + C) * t * Real.log t) * (9 / t ^ 2) :=
           mul_le_mul_of_nonneg_right hS2_card (by positivity)
-      _ = 9 * (1 + C) * Real.log t / t := by field_simp [ht0.ne']; ring
-  have hRt_pow : ∀ A : ℝ, 0 ≤ A → A / t ^ 3 ≤ A / (t ^ 2 * R) := fun A hA =>
-    div_le_div_of_nonneg_left hA (by positivity)
-      (by have : R ≤ t := by linarith; calc t ^ 2 * R ≤ t ^ 2 * t :=
-            mul_le_mul_of_nonneg_left this (by positivity)
-          _ = t ^ 3 := by ring)
+      _ = 9 * (1 + C) * Real.log t / t := by field_simp [ht0.ne']
+  have hRt_pow : ∀ A : ℝ, 0 ≤ A → A / t ^ 3 ≤ A / (t ^ 2 * R) := by
+    intro A hA
+    have hRt1 : R ≤ t := by linarith
+    have ht2R : t ^ 2 * R ≤ t ^ 3 := by
+      calc t ^ 2 * R ≤ t ^ 2 * t := mul_le_mul_of_nonneg_left hRt1 (by positivity)
+        _ = t ^ 3 := by ring
+    exact div_le_div_of_nonneg_left hA (by positivity) ht2R
   have hS2_b2 : ∑ q ∈ S2, ‖xiSliceGaussianReciprocal t q‖ ^ 2 ≤
       81 * (1 + C) * Real.log t / (t ^ 2 * R) := by
     refine (le_trans ?_ (hRt_pow (81 * (1 + C) * Real.log t) (by positivity)))
     calc ∑ q ∈ S2, ‖xiSliceGaussianReciprocal t q‖ ^ 2
         ≤ ∑ _q ∈ S2, 1 / (t / 3) ^ 4 := Finset.sum_le_sum fun q hq =>
           (hrec_le_of_dist (by positivity) (hS2_dist q hq)).2
-      _ = (S2.card : ℝ) * (81 / t ^ 4) := by simp; ring
+      _ = (S2.card : ℝ) * (81 / t ^ 4) := by simp only [Finset.sum_const, nsmul_eq_mul]; ring
       _ ≤ ((1 + C) * t * Real.log t) * (81 / t ^ 4) :=
           mul_le_mul_of_nonneg_right hS2_card (by positivity)
-      _ = 81 * (1 + C) * Real.log t / t ^ 3 := by field_simp [ht0.ne']; ring
+      _ = 81 * (1 + C) * Real.log t / t ^ 3 := by field_simp [ht0.ne']
   -- Bounds for `S3` (`-t ≤ Im q < 0`).
   have hS3_card : (S3.card : ℝ) ≤ (1 + C) * t * Real.log t := by
     have hsub : S3.map xiZeroCopyConjEquiv.toEmbedding ⊆ xiCopiesPos t := by
@@ -1738,10 +1770,11 @@ private theorem compl_pairedOrdWindow_le {C T₀ t R : ℝ} (hC : 0 < C) (hT₀ 
           mul_le_mul_of_nonneg_right hS3_card (by positivity)
       _ = (1 + C) * Real.log t / t ^ 3 := by field_simp [ht0.ne']
   -- Bounds for `S4` (`Im q > t + K`).
+  have hK0 : (0 : ℝ) ≤ (K : ℝ) := Nat.cast_nonneg K
   have hS4_far := sum_far_ordinate_inv_pow_le hC hT₀ hbase0 hclose htT0 (by linarith) S4
     fun q hq => by
       have := (Finset.mem_filter.mp hq).2
-      linarith [Nat.cast_nonneg K]
+      linarith
   have hS4_dist : ∀ q ∈ S4, (q.1 : ℂ).im / 4 ≤ ‖xiSpectralPoint q - (t : ℂ)‖ := fun q hq => by
     have hgt := (Finset.mem_filter.mp hq).2
     refine (le_trans ?_ (le_abs_self ((q.1 : ℂ).im - t))).trans (hdist_ge_im q)
@@ -1751,7 +1784,7 @@ private theorem compl_pairedOrdWindow_le {C T₀ t R : ℝ} (hC : 0 < C) (hT₀ 
     calc ∑ q ∈ S4, ‖xiSliceGaussianReciprocal t q‖
         ≤ ∑ q ∈ S4, 16 * (1 / ((q.1 : ℂ).im) ^ 2) := Finset.sum_le_sum fun q hq => by
           have him0 : 0 < (q.1 : ℂ).im := by
-            have := (Finset.mem_filter.mp hq).2; linarith [Nat.cast_nonneg K]
+            have := (Finset.mem_filter.mp hq).2; linarith
           refine (hrec_le_of_dist (by positivity) (hS4_dist q hq)).1.trans_eq ?_
           ring
       _ = 16 * ∑ q ∈ S4, 1 / ((q.1 : ℂ).im) ^ 2 := (Finset.mul_sum _ _ _).symm
@@ -1764,7 +1797,7 @@ private theorem compl_pairedOrdWindow_le {C T₀ t R : ℝ} (hC : 0 < C) (hT₀ 
     calc ∑ q ∈ S4, ‖xiSliceGaussianReciprocal t q‖ ^ 2
         ≤ ∑ q ∈ S4, 256 * (1 / ((q.1 : ℂ).im) ^ 4) := Finset.sum_le_sum fun q hq => by
           have him0 : 0 < (q.1 : ℂ).im := by
-            have := (Finset.mem_filter.mp hq).2; linarith [Nat.cast_nonneg K]
+            have := (Finset.mem_filter.mp hq).2; linarith
           refine (hrec_le_of_dist (by positivity) (hS4_dist q hq)).2.trans_eq ?_
           ring
       _ = 256 * ∑ q ∈ S4, 1 / ((q.1 : ℂ).im) ^ 4 := (Finset.mul_sum _ _ _).symm
@@ -1794,7 +1827,9 @@ private theorem compl_pairedOrdWindow_le {C T₀ t R : ℝ} (hC : 0 < C) (hT₀ 
                 ((abs_sub_comm _ _).trans_le (hdist_ge_im q))
               rw [xiZeroCopyConjEquiv_im]; linarith
             exact (hrec_le_of_dist him_c hd).1
-      _ = ∑ r ∈ S5c, 1 / ((r.1 : ℂ).im) ^ 2 := (Finset.sum_map _ _ _).symm
+      _ = ∑ r ∈ S5c, 1 / ((r.1 : ℂ).im) ^ 2 :=
+          (Finset.sum_map S5 xiZeroCopyConjEquiv.toEmbedding
+            (fun r : XiZeroCopy => 1 / ((r.1 : ℂ).im) ^ 2)).symm
       _ ≤ 16 * (1 + C) * Real.log t / t := hS5_far.1
   have hS5_b2 : ∑ q ∈ S5, ‖xiSliceGaussianReciprocal t q‖ ^ 2 ≤
       16 * (1 + C) * Real.log t / (t ^ 2 * R) := by
@@ -1811,7 +1846,9 @@ private theorem compl_pairedOrdWindow_le {C T₀ t R : ℝ} (hC : 0 < C) (hT₀ 
                 ((abs_sub_comm _ _).trans_le (hdist_ge_im q))
               rw [xiZeroCopyConjEquiv_im]; linarith
             exact (hrec_le_of_dist him_c hd).2
-      _ = ∑ r ∈ S5c, 1 / ((r.1 : ℂ).im) ^ 4 := (Finset.sum_map _ _ _).symm
+      _ = ∑ r ∈ S5c, 1 / ((r.1 : ℂ).im) ^ 4 :=
+          (Finset.sum_map S5 xiZeroCopyConjEquiv.toEmbedding
+            (fun r : XiZeroCopy => 1 / ((r.1 : ℂ).im) ^ 4)).symm
       _ ≤ 16 * (1 + C) * Real.log t / t ^ 3 := hS5_far.2
   have h1 := hsum_split (fun q => ‖xiSliceGaussianReciprocal t q‖) (fun _ => norm_nonneg _)
   have h2 := hsum_split (fun q => ‖xiSliceGaussianReciprocal t q‖ ^ 2) (fun _ => sq_nonneg _)
@@ -1837,132 +1874,93 @@ private theorem compl_pairedOrdWindow_le {C T₀ t R : ℝ} (hC : 0 < C) (hT₀ 
           4200 * ((1 + C) * (Real.log t / (t ^ 2 * R))) := by ring
     linarith
 
-private theorem pairedOrdWindow_asymptotics {C T₀ t R : ℝ} (hC : 0 < C) (hT₀ : 4 ≤ T₀)
+private def pairedBinCount (t : ℝ) (k : ℕ) : ℝ :=
+  ((upperOrdBin t k).card : ℝ) + ((lowerOrdBin t k).card : ℝ)
+
+private def pairedSmoothInc (t : ℝ) (k : ℕ) : ℝ :=
+  (routeKSmoothRVMCount (t + (k : ℝ) + 1) - routeKSmoothRVMCount (t + (k : ℝ))) +
+    (routeKSmoothRVMCount (t - (k : ℝ)) - routeKSmoothRVMCount (t - (k : ℝ) - 1))
+
+private def pairedRVMError (t : ℝ) (j : ℕ) : ℝ :=
+  ((xiZeroCount (t + (j : ℝ)) : ℝ) - routeKSmoothRVMCount (t + (j : ℝ))) -
+    ((xiZeroCount (t - (j : ℝ)) : ℝ) - routeKSmoothRVMCount (t - (j : ℝ)))
+
+private theorem pairedBin_bounds {C T₀ t : ℝ} {N K : ℕ} (hC : 0 < C) (hT₀ : 4 ≤ T₀)
     (hbase : routeKRVMBase + 2 ≤ T₀)
     (hclose : ∀ U : ℝ, T₀ ≤ U → |(xiZeroCount U : ℝ) - routeKSmoothRVMCount U| ≤ C * Real.log U)
-    (htT : 2 * T₀ + 16 ≤ t) (ht64 : 64 ≤ t) (hR8 : 8 ≤ R) (hRt : 8 * R ≤ t) :
-    let N := Nat.floor R + 1
-    let K := Nat.floor (t / 2)
-    |∑ q ∈ pairedOrdWindow t N K, ‖xiSliceGaussianReciprocal t q‖ -
-        Real.log (t / (2 * Real.pi)) / (Real.pi * R)| ≤
-      400 * (1 + C) * (Real.log t / R ^ 2 + Real.log t / t) ∧
-    |∑ q ∈ pairedOrdWindow t N K, ‖xiSliceGaussianReciprocal t q‖ ^ 2 -
-        Real.log (t / (2 * Real.pi)) / (3 * Real.pi * R ^ 3)| ≤
-      4500 * (1 + C) * (Real.log t / R ^ 4 + Real.log t / (t ^ 2 * R)) := by
-  classical
-  intro N K
+    (htT : 2 * T₀ + 16 ≤ t) (ht64 : 64 ≤ t) (hN9 : 9 ≤ N) (hKt2 : (K : ℝ) ≤ t / 2) :
+    (∀ k ∈ Finset.Ico N K,
+      pairedBinCount t k = pairedSmoothInc t k + (pairedRVMError t (k + 1) - pairedRVMError t k)) ∧
+    (∀ k ∈ Finset.Ico N K, pairedBinCount t k ≤ 8 * (1 + C) * Real.log t) ∧
+    (∀ j : ℕ, N ≤ j → j ≤ K → |pairedRVMError t j| ≤ 3 * C * Real.log t) := by
   have ht0 : 0 < t := by linarith
-  have hR0 : 0 < R := by linarith
-  have hpi : 0 < Real.pi := Real.pi_pos
-  have hpi3 : 3 < Real.pi := Real.pi_gt_three
   have hlog1 : 1 ≤ Real.log t := by
     rw [Real.le_log_iff_exp_le ht0]; linarith [Real.exp_one_lt_d9]
-  have hlog0 : 0 ≤ Real.log t := by linarith
-  have hlog_main_pos : 0 ≤ Real.log (t / (2 * Real.pi)) / Real.pi :=
-    div_nonneg (Real.log_nonneg (by rw [ one_le_div (by positivity) ]; linarith [Real.pi_lt_four]))
-      hpi.le
-  have hlog_main_le : Real.log (t / (2 * Real.pi)) / Real.pi ≤ Real.log t := by
-    have h1 : Real.log (t / (2 * Real.pi)) ≤ Real.log t :=
-      Real.log_le_log (by positivity) (div_le_self ht0.le (by linarith))
-    calc Real.log (t / (2 * Real.pi)) / Real.pi
-        ≤ Real.log t / Real.pi := div_le_div_of_nonneg_right h1 hpi.le
-      _ ≤ Real.log t / 1 := div_le_div_of_nonneg_left hlog0 zero_lt_one (by linarith)
-      _ = Real.log t := div_one _
-  have hRN : R < (N : ℝ) := by dsimp only [N]; push_cast; exact Nat.lt_floor_add_one R
-  have hNR1 : (N : ℝ) ≤ R + 1 := by dsimp only [N]; push_cast; linarith [Nat.floor_le hR0.le]
-  have hN9 : 9 ≤ N := by
-    have : 8 ≤ Nat.floor R := Nat.le_floor hR8
-    dsimp only [N]; omega
-  have hNm1_R : R / 2 ≤ (N : ℝ) - 1 := by linarith
-  have hKt2 : (K : ℝ) ≤ t / 2 := by dsimp only [K]; exact Nat.floor_le (by positivity)
-  have ht3K : t / 3 ≤ (K : ℝ) := by
-    have : t / 2 - 1 < (K : ℝ) := by dsimp only [K]; linarith [Nat.lt_floor_add_one (t / 2)]
-    linarith
-  have hNK : N ≤ K := by
-    have : (N : ℝ) < (K : ℝ) := by linarith
-    exact_mod_cast this.le
-  have hKt : (K : ℝ) < t := by linarith
-  let ΔN : ℕ → ℝ := fun k => ((upperOrdBin t k).card : ℝ) + ((lowerOrdBin t k).card : ℝ)
-  let ΔM : ℕ → ℝ := fun k =>
-    (routeKSmoothRVMCount (t + (k : ℝ) + 1) - routeKSmoothRVMCount (t + (k : ℝ))) +
-      (routeKSmoothRVMCount (t - (k : ℝ)) - routeKSmoothRVMCount (t - (k : ℝ) - 1))
-  let E : ℕ → ℝ := fun j =>
-    ((xiZeroCount (t + (j : ℝ)) : ℝ) - routeKSmoothRVMCount (t + (j : ℝ))) -
-      ((xiZeroCount (t - (j : ℝ)) : ℝ) - routeKSmoothRVMCount (t - (j : ℝ)))
-  have hΔN_eq : ∀ k ∈ Finset.Ico N K, ΔN k = ΔM k + (E (k + 1) - E k) := by
-    intro k hk
-    have hk2 : (k : ℝ) < (K : ℝ) := by exact_mod_cast (Finset.mem_Ico.mp hk).2
+  refine ⟨?_, ?_, ?_⟩
+  · intro k hk
+    have hk0 : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
+    have hkK : (k : ℝ) < (K : ℝ) := by exact_mod_cast (Finset.mem_Ico.mp hk).2
     have hcu : ((upperOrdBin t k).card : ℝ) =
         (xiZeroCount (t + (k : ℝ) + 1) : ℝ) - (xiZeroCount (t + (k : ℝ)) : ℝ) :=
       card_xiCopiesPos_sdiff_eq (by positivity) (by linarith)
     have hcl : ((lowerOrdBin t k).card : ℝ) =
         (xiZeroCount (t - (k : ℝ)) : ℝ) - (xiZeroCount (t - (k : ℝ) - 1) : ℝ) :=
       card_xiCopiesPos_sdiff_eq (by linarith) (by linarith)
-    dsimp only [ΔN, ΔM, E]
+    unfold pairedBinCount pairedSmoothInc pairedRVMError
     rw [hcu, hcl]
     push_cast
     ring
-  have hΔN_le : ∀ k ∈ Finset.Ico N K, ΔN k ≤ 8 * (1 + C) * Real.log t := by
-    intro k hk
+  · intro k hk
+    have hk0 : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
+    have hk2 : (2 : ℝ) ≤ (k : ℝ) := by
+      have := (Finset.mem_Ico.mp hk).1; exact_mod_cast (by omega : 2 ≤ k)
     have hkK : (k : ℝ) < (K : ℝ) := by exact_mod_cast (Finset.mem_Ico.mp hk).2
     have hcu := card_xiCopiesPos_sdiff_width_two_le hC hT₀ hbase hclose
-      (a := t + (k : ℝ)) (b := t + (k : ℝ) + 1) (by linarith [Nat.cast_nonneg k])
-      (by linarith) (by linarith)
+      (a := t + (k : ℝ)) (b := t + (k : ℝ) + 1) (by linarith) (by linarith) (by linarith)
     have hcl := card_xiCopiesPos_sdiff_width_two_le hC hT₀ hbase hclose
       (a := t - (k : ℝ) - 1) (b := t - (k : ℝ)) (by linarith) (by linarith) (by linarith)
     have hlogu : Real.log (t + (k : ℝ) + 2) ≤ 2 * Real.log t := by
       calc Real.log (t + (k : ℝ) + 2) ≤ Real.log (t ^ 2) :=
-            Real.log_le_log (by linarith [Nat.cast_nonneg k]) (by nlinarith only [ht64, hkK, hKt2])
+            Real.log_le_log (by linarith) (by nlinarith only [ht64, hkK, hKt2])
         _ = 2 * Real.log t := by rw [Real.log_pow]; norm_num
     have hlogl : Real.log (t - (k : ℝ) - 1 + 2) ≤ Real.log t :=
-      Real.log_le_log (by linarith) (by linarith [ (show (2 : ℝ) ≤ (k : ℝ) by
-        have := (Finset.mem_Ico.mp hk).1; exact_mod_cast (by omega : 2 ≤ k)) ])
-    dsimp only [ΔN]
-    nlinarith [mul_le_mul_of_nonneg_left hlogu (by positivity : 0 ≤ 2 * C + 2),
-      mul_le_mul_of_nonneg_left hlogl (by positivity : 0 ≤ 2 * C + 2)]
-  have hE_le : ∀ j : ℕ, N ≤ j → j ≤ K → |E j| ≤ 3 * C * Real.log t := by
-    intro j _ hjK
+      Real.log_le_log (by linarith) (by linarith)
+    have hu1 := hcu.trans (mul_le_mul_of_nonneg_left hlogu (by positivity))
+    have hl1 := hcl.trans (mul_le_mul_of_nonneg_left hlogl (by positivity))
+    have hpos : 0 ≤ (1 + C) * Real.log t := by positivity
+    have hrew1 : (2 * C + 2) * (2 * Real.log t) + (2 * C + 2) * Real.log t =
+        6 * ((1 + C) * Real.log t) := by ring
+    have hrew2 : 8 * (1 + C) * Real.log t = 8 * ((1 + C) * Real.log t) := by ring
+    unfold pairedBinCount upperOrdBin lowerOrdBin
+    linarith
+  · intro j _ hjK
+    have hj0 : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
     have hj : (j : ℝ) ≤ (K : ℝ) := by exact_mod_cast hjK
-    have hu := hclose (t + (j : ℝ)) (by linarith [Nat.cast_nonneg j])
+    have hu := hclose (t + (j : ℝ)) (by linarith)
     have hl := hclose (t - (j : ℝ)) (by linarith)
     have hlogu : Real.log (t + (j : ℝ)) ≤ 2 * Real.log t := by
       calc Real.log (t + (j : ℝ)) ≤ Real.log (t ^ 2) :=
-            Real.log_le_log (by linarith [Nat.cast_nonneg j]) (by nlinarith only [ht64, hj, hKt2])
+            Real.log_le_log (by linarith) (by nlinarith only [ht64, hj, hKt2])
         _ = 2 * Real.log t := by rw [Real.log_pow]; norm_num
     have hlogl : Real.log (t - (j : ℝ)) ≤ Real.log t :=
-      Real.log_le_log (by linarith) (by linarith [Nat.cast_nonneg j])
-    dsimp only [E]
+      Real.log_le_log (by linarith) (by linarith)
+    have hu1 := hu.trans (mul_le_mul_of_nonneg_left hlogu hC.le)
+    have hl1 := hl.trans (mul_le_mul_of_nonneg_left hlogl hC.le)
+    unfold pairedRVMError
     refine (abs_sub _ _).trans ?_
-    nlinarith [mul_le_mul_of_nonneg_left hlogu hC.le, mul_le_mul_of_nonneg_left hlogl hC.le]
-  -- Telescoping bounds on `∑ 1/k^p`.
-  have hsum_k3 : ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 3 ≤ 4 / R ^ 2 := by
-    calc ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 3
-        ≤ ∑ k ∈ Finset.Ico N K, (1 / ((k : ℝ) - 1) ^ 2 - 1 / (k : ℝ) ^ 2) :=
-          Finset.sum_le_sum fun k hk =>
-            inv_pow_three_le_telescoping (by have := (Finset.mem_Ico.mp hk).1; omega)
-      _ = 1 / ((N : ℝ) - 1) ^ 2 - 1 / ((K : ℝ) - 1) ^ 2 := by
-          have := sum_Ico_sub_succ (fun k : ℕ => 1 / ((k : ℝ) - 1) ^ 2) hNK
-          convert this using 2 with k
-          push_cast; ring
-      _ ≤ 1 / ((N : ℝ) - 1) ^ 2 := sub_le_self _ (by positivity)
-      _ ≤ 1 / (R / 2) ^ 2 := one_div_le_one_div_of_le (by positivity)
-          (pow_le_pow_left₀ (by positivity) hNm1_R 2)
-      _ = 4 / R ^ 2 := by ring
-  have hsum_k5 : ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 5 ≤ 16 / R ^ 4 := by
-    calc ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 5
-        ≤ ∑ k ∈ Finset.Ico N K, (1 / ((k : ℝ) - 1) ^ 4 - 1 / (k : ℝ) ^ 4) :=
-          Finset.sum_le_sum fun k hk =>
-            inv_pow_five_le_telescoping (by have := (Finset.mem_Ico.mp hk).1; omega)
-      _ = 1 / ((N : ℝ) - 1) ^ 4 - 1 / ((K : ℝ) - 1) ^ 4 := by
-          have := sum_Ico_sub_succ (fun k : ℕ => 1 / ((k : ℝ) - 1) ^ 4) hNK
-          convert this using 2 with k
-          push_cast; ring
-      _ ≤ 1 / ((N : ℝ) - 1) ^ 4 := sub_le_self _ (by positivity)
-      _ ≤ 1 / (R / 2) ^ 4 := one_div_le_one_div_of_le (by positivity)
-          (pow_le_pow_left₀ (by positivity) hNm1_R 4)
-      _ = 16 / R ^ 4 := by ring
-  have hsum_k2_le : ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 ≤ 2 / R := by
-    calc ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2
+    linarith
+
+private theorem pairedIco_inv_pow_sums {R : ℝ} {N K : ℕ} (hR8 : 8 ≤ R) (hN9 : 9 ≤ N)
+    (hNK : N ≤ K) (hNm1_R : R / 2 ≤ (N : ℝ) - 1) :
+    ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 ≤ 2 / R ∧
+    ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 3 ≤ 4 / R ^ 2 ∧
+    ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 4 ≤ 8 / R ^ 3 ∧
+    ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 5 ≤ 16 / R ^ 4 := by
+  have hR0 : 0 < R := by linarith
+  have hNK_cast : (N : ℝ) ≤ (K : ℝ) := by exact_mod_cast hNK
+  have hKm1 : 0 ≤ (K : ℝ) - 1 := by linarith
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · calc ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2
         ≤ ∑ k ∈ Finset.Ico N K, (1 / ((k : ℝ) - 1) - 1 / (k : ℝ)) :=
           Finset.sum_le_sum fun k hk => by
             have hk2 : (2 : ℝ) ≤ (k : ℝ) := by
@@ -1977,11 +1975,22 @@ private theorem pairedOrdWindow_asymptotics {C T₀ t R : ℝ} (hC : 0 < C) (hT�
           have := sum_Ico_sub_succ (fun k : ℕ => 1 / ((k : ℝ) - 1)) hNK
           convert this using 2 with k
           push_cast; ring
-      _ ≤ 1 / ((N : ℝ) - 1) := sub_le_self _ (div_nonneg zero_le_one (by linarith))
+      _ ≤ 1 / ((N : ℝ) - 1) := sub_le_self _ (div_nonneg zero_le_one hKm1)
       _ ≤ 1 / (R / 2) := one_div_le_one_div_of_le (by positivity) hNm1_R
       _ = 2 / R := by ring
-  have hsum_k4_le : ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 4 ≤ 8 / R ^ 3 := by
-    calc ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 4
+  · calc ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 3
+        ≤ ∑ k ∈ Finset.Ico N K, (1 / ((k : ℝ) - 1) ^ 2 - 1 / (k : ℝ) ^ 2) :=
+          Finset.sum_le_sum fun k hk =>
+            inv_pow_three_le_telescoping (by have := (Finset.mem_Ico.mp hk).1; omega)
+      _ = 1 / ((N : ℝ) - 1) ^ 2 - 1 / ((K : ℝ) - 1) ^ 2 := by
+          have := sum_Ico_sub_succ (fun k : ℕ => 1 / ((k : ℝ) - 1) ^ 2) hNK
+          convert this using 2 with k
+          push_cast; ring
+      _ ≤ 1 / ((N : ℝ) - 1) ^ 2 := sub_le_self _ (div_nonneg zero_le_one (pow_nonneg hKm1 2))
+      _ ≤ 1 / (R / 2) ^ 2 := one_div_le_one_div_of_le (by positivity)
+          (pow_le_pow_left₀ (by positivity) hNm1_R 2)
+      _ = 4 / R ^ 2 := by ring
+  · calc ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 4
         ≤ ∑ k ∈ Finset.Ico N K, (1 / ((k : ℝ) - 1) ^ 3 - 1 / (k : ℝ) ^ 3) :=
           Finset.sum_le_sum fun k hk =>
             inv_pow_four_le_telescoping (by have := (Finset.mem_Ico.mp hk).1; omega)
@@ -1989,246 +1998,339 @@ private theorem pairedOrdWindow_asymptotics {C T₀ t R : ℝ} (hC : 0 < C) (hT�
           have := sum_Ico_sub_succ (fun k : ℕ => 1 / ((k : ℝ) - 1) ^ 3) hNK
           convert this using 2 with k
           push_cast; ring
-      _ ≤ 1 / ((N : ℝ) - 1) ^ 3 := sub_le_self _ (by positivity)
+      _ ≤ 1 / ((N : ℝ) - 1) ^ 3 := sub_le_self _ (div_nonneg zero_le_one (pow_nonneg hKm1 3))
       _ ≤ 1 / (R / 2) ^ 3 := one_div_le_one_div_of_le (by positivity)
           (pow_le_pow_left₀ (by positivity) hNm1_R 3)
       _ = 8 / R ^ 3 := by ring
-  -- Part 1: `TailMass` paired window asymptotic.
-  have hpart1 : |∑ q ∈ pairedOrdWindow t N K, ‖xiSliceGaussianReciprocal t q‖ -
-      Real.log (t / (2 * Real.pi)) / (Real.pi * R)| ≤
-      400 * (1 + C) * (Real.log t / R ^ 2 + Real.log t / t) := by
-    rw [sum_pairedOrdWindow_eq_sum_Ico _ (by omega) hNK hKt]
-    -- Step 1a: discretization `‖rec‖ → 1/k^2`.
-    have hdisc1 : |∑ k ∈ Finset.Ico N K,
-          (∑ q ∈ upperOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ +
-            ∑ q ∈ lowerOrdBin t k, ‖xiSliceGaussianReciprocal t q‖) -
-        ∑ k ∈ Finset.Ico N K, ΔN k * (1 / (k : ℝ) ^ 2)| ≤
-        256 * (1 + C) * Real.log t / R ^ 2 := by
-      rw [← Finset.sum_sub_distrib]
-      calc |∑ k ∈ Finset.Ico N K,
-            ((∑ q ∈ upperOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ +
-              ∑ q ∈ lowerOrdBin t k, ‖xiSliceGaussianReciprocal t q‖) -
-              ΔN k * (1 / (k : ℝ) ^ 2))|
-          ≤ ∑ k ∈ Finset.Ico N K, ΔN k * (8 / (k : ℝ) ^ 3) := by
-            refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k hk => ?_)
-            have hk2 : 2 ≤ k := by have := (Finset.mem_Ico.mp hk).1; omega
-            have heq : (∑ q ∈ upperOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ +
-                ∑ q ∈ lowerOrdBin t k, ‖xiSliceGaussianReciprocal t q‖) -
-                ΔN k * (1 / (k : ℝ) ^ 2) =
-                (∑ q ∈ upperOrdBin t k, (‖xiSliceGaussianReciprocal t q‖ - 1 / (k : ℝ) ^ 2)) +
-                  (∑ q ∈ lowerOrdBin t k,
-                    (‖xiSliceGaussianReciprocal t q‖ - 1 / (k : ℝ) ^ 2)) := by
-              dsimp only [ΔN]
-              rw [Finset.sum_sub_distrib, Finset.sum_sub_distrib]
-              simp only [Finset.sum_const, nsmul_eq_mul]
-              ring
-            rw [heq]
-            refine (abs_add_le _ _).trans ?_
-            have hu : |∑ q ∈ upperOrdBin t k,
-                (‖xiSliceGaussianReciprocal t q‖ - 1 / (k : ℝ) ^ 2)| ≤
-                ((upperOrdBin t k).card : ℝ) * (8 / (k : ℝ) ^ 3) := by
-              refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
-              calc ∑ q ∈ upperOrdBin t k, |‖xiSliceGaussianReciprocal t q‖ - 1 / (k : ℝ) ^ 2|
-                  ≤ ∑ _q ∈ upperOrdBin t k, 8 / (k : ℝ) ^ 3 := Finset.sum_le_sum fun q hq =>
-                    (reciprocal_bin_discretization hk2 (Or.inl hq)).1
-                _ = ((upperOrdBin t k).card : ℝ) * (8 / (k : ℝ) ^ 3) := by simp
-            have hl : |∑ q ∈ lowerOrdBin t k,
-                (‖xiSliceGaussianReciprocal t q‖ - 1 / (k : ℝ) ^ 2)| ≤
-                ((lowerOrdBin t k).card : ℝ) * (8 / (k : ℝ) ^ 3) := by
-              refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
-              calc ∑ q ∈ lowerOrdBin t k, |‖xiSliceGaussianReciprocal t q‖ - 1 / (k : ℝ) ^ 2|
-                  ≤ ∑ _q ∈ lowerOrdBin t k, 8 / (k : ℝ) ^ 3 := Finset.sum_le_sum fun q hq =>
-                    (reciprocal_bin_discretization hk2 (Or.inr hq)).1
-                _ = ((lowerOrdBin t k).card : ℝ) * (8 / (k : ℝ) ^ 3) := by simp
-            dsimp only [ΔN]; linarith
-        _ ≤ ∑ k ∈ Finset.Ico N K, (64 * (1 + C) * Real.log t) * (1 / (k : ℝ) ^ 3) := by
-            refine Finset.sum_le_sum fun k hk => ?_
-            have := mul_le_mul_of_nonneg_right (hΔN_le k hk) (by positivity : 0 ≤ 8 / (k : ℝ) ^ 3)
-            linarith
-        _ = (64 * (1 + C) * Real.log t) * ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 3 :=
-            (Finset.mul_sum _ _ _).symm
-        _ ≤ (64 * (1 + C) * Real.log t) * (4 / R ^ 2) :=
-            mul_le_mul_of_nonneg_left hsum_k3 (by positivity)
-        _ = 256 * (1 + C) * Real.log t / R ^ 2 := by ring
-    -- Step 1b: Abel summation `ΔN k → ΔM k`.
-    have habel1 : |∑ k ∈ Finset.Ico N K, ΔN k * (1 / (k : ℝ) ^ 2) -
-        ∑ k ∈ Finset.Ico N K, ΔM k * (1 / (k : ℝ) ^ 2)| ≤
-        6 * C * Real.log t / R ^ 2 := by
-      have heq : ∑ k ∈ Finset.Ico N K, ΔN k * (1 / (k : ℝ) ^ 2) -
-          ∑ k ∈ Finset.Ico N K, ΔM k * (1 / (k : ℝ) ^ 2) =
-          ∑ k ∈ Finset.Ico N K, (E (k + 1) - E k) * (1 / (k : ℝ) ^ 2) := by
-        rw [← Finset.sum_sub_distrib]
-        refine Finset.sum_congr rfl fun k hk => ?_
-        rw [hΔN_eq k hk]; ring
-      rw [heq]
-      refine (abs_sum_Ico_diff_mul_antitone_le hNK (by positivity) (by positivity) hE_le
-        fun k hkN _ => ?_).trans ?_
-      · have hk0 : (0 : ℝ) < (k : ℝ) := by
-          have : 1 ≤ k := by omega
-          exact_mod_cast this
-        exact one_div_le_one_div_of_le (sq_pos_of_pos hk0)
-          (pow_le_pow_left₀ hk0.le (by push_cast; linarith) 2)
-      · calc 2 * (3 * C * Real.log t) * (1 / (N : ℝ) ^ 2)
-            ≤ 2 * (3 * C * Real.log t) * (1 / R ^ 2) :=
-              mul_le_mul_of_nonneg_left
-                (one_div_le_one_div_of_le (sq_pos_of_pos hR0) (pow_le_pow_left₀ hR0.le hRN.le 2))
-                (by positivity)
-          _ = 6 * C * Real.log t / R ^ 2 := by ring
-    -- Step 1c: smooth increment `ΔM k → log(t/(2π))/π`.
-    have hsmooth1 : |∑ k ∈ Finset.Ico N K, ΔM k * (1 / (k : ℝ) ^ 2) -
-        (Real.log (t / (2 * Real.pi)) / Real.pi) * ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2| ≤
-        2 * Real.log t / t := by
-      rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
-      calc |∑ k ∈ Finset.Ico N K,
-            (ΔM k - Real.log (t / (2 * Real.pi)) / Real.pi) * (1 / (k : ℝ) ^ 2)|
-          ≤ ∑ k ∈ Finset.Ico N K, ((1 / t) * (1 / (k : ℝ) ^ 2) + 1 / t ^ 2) := by
-            refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k hk => ?_)
-            have hkK : (k : ℝ) ≤ t / 2 :=
-              (by exact_mod_cast (Finset.mem_Ico.mp hk).2.le : (k : ℝ) ≤ (K : ℝ)).trans hKt2
-            have hk1 : (1 : ℝ) ≤ (k : ℝ) := by
-              have := (Finset.mem_Ico.mp hk).1; exact_mod_cast (by omega : 1 ≤ k)
-            rw [abs_mul, abs_of_pos (by positivity)]
-            have hpm := abs_paired_routeKSmoothRVMCount_sub_main_le (by linarith) hkK
-            have h1 : 3 / (Real.pi * t) ≤ 1 / t := by
-              rw [div_le_div_iff₀ (by positivity) ht0]; nlinarith
-            have h2 : (k : ℝ) * ((k : ℝ) + 1) / (Real.pi * t ^ 2) * (1 / (k : ℝ) ^ 2) ≤
-                1 / t ^ 2 := by
-              have hkk : (k : ℝ) * ((k : ℝ) + 1) ≤ 2 * (k : ℝ) ^ 2 := by nlinarith
-              rw [div_mul_div_comm, div_le_div_iff₀ (by positivity) (by positivity)]
-              nlinarith [sq_pos_of_pos ht0]
-            calc |ΔM k - Real.log (t / (2 * Real.pi)) / Real.pi| * (1 / (k : ℝ) ^ 2)
-                ≤ (3 / (Real.pi * t) + (k : ℝ) * ((k : ℝ) + 1) / (Real.pi * t ^ 2)) *
-                    (1 / (k : ℝ) ^ 2) :=
-                  mul_le_mul_of_nonneg_right hpm (by positivity)
-              _ = 3 / (Real.pi * t) * (1 / (k : ℝ) ^ 2) +
-                    (k : ℝ) * ((k : ℝ) + 1) / (Real.pi * t ^ 2) * (1 / (k : ℝ) ^ 2) := by ring
-              _ ≤ (1 / t) * (1 / (k : ℝ) ^ 2) + 1 / t ^ 2 :=
-                  add_le_add (mul_le_mul_of_nonneg_right h1 (by positivity)) h2
-        _ = (1 / t) * (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2) +
-              ((K - N : ℕ) : ℝ) * (1 / t ^ 2) := by
-            rw [Finset.sum_add_distrib, ← Finset.mul_sum, Finset.sum_const, Nat.card_Ico,
-              nsmul_eq_mul]
-        _ ≤ (1 / t) * (2 / R) + (t / 2) * (1 / t ^ 2) := by
-            refine add_le_add (mul_le_mul_of_nonneg_left hsum_k2_le (by positivity)) ?_
-            refine mul_le_mul_of_nonneg_right ?_ (by positivity)
-            exact (by exact_mod_cast Nat.sub_le K N : ((K - N : ℕ) : ℝ) ≤ (K : ℝ)).trans hKt2
-        _ ≤ 1 / t + 1 / t := by
-            have h1 : (1 / t) * (2 / R) ≤ 1 / t := by
-              have : 2 / R ≤ 1 := by rw [div_le_one hR0]; linarith
-              nlinarith [one_div_pos.mpr ht0]
-            have h2 : (t / 2) * (1 / t ^ 2) ≤ 1 / t := by
-              rw [show (t / 2) * (1 / t ^ 2) = 1 / (2 * t) by field_simp [ht0.ne']; ring]
-              exact one_div_le_one_div_of_le ht0 (by linarith)
-            linarith
-        _ ≤ 2 * Real.log t / t := by
-            rw [show 1 / t + 1 / t = 2 / t by ring]
-            exact div_le_div_of_nonneg_right (by linarith) ht0.le
-    -- Step 1d: telescoping `∑ 1/k^2 → 1/R`.
-    have htel1 : |(Real.log (t / (2 * Real.pi)) / Real.pi) *
-          (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2) -
+  · calc ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 5
+        ≤ ∑ k ∈ Finset.Ico N K, (1 / ((k : ℝ) - 1) ^ 4 - 1 / (k : ℝ) ^ 4) :=
+          Finset.sum_le_sum fun k hk =>
+            inv_pow_five_le_telescoping (by have := (Finset.mem_Ico.mp hk).1; omega)
+      _ = 1 / ((N : ℝ) - 1) ^ 4 - 1 / ((K : ℝ) - 1) ^ 4 := by
+          have := sum_Ico_sub_succ (fun k : ℕ => 1 / ((k : ℝ) - 1) ^ 4) hNK
+          convert this using 2 with k
+          push_cast; ring
+      _ ≤ 1 / ((N : ℝ) - 1) ^ 4 := sub_le_self _ (div_nonneg zero_le_one (pow_nonneg hKm1 4))
+      _ ≤ 1 / (R / 2) ^ 4 := one_div_le_one_div_of_le (by positivity)
+          (pow_le_pow_left₀ (by positivity) hNm1_R 4)
+      _ = 16 / R ^ 4 := by ring
+
+private theorem pairedOrdWindow_mass_asymptotic {C T₀ t R : ℝ} {N K : ℕ} (hC : 0 < C)
+    (hT₀ : 4 ≤ T₀) (hbase : routeKRVMBase + 2 ≤ T₀)
+    (hclose : ∀ U : ℝ, T₀ ≤ U → |(xiZeroCount U : ℝ) - routeKSmoothRVMCount U| ≤ C * Real.log U)
+    (htT : 2 * T₀ + 16 ≤ t) (ht64 : 64 ≤ t) (hR8 : 8 ≤ R) (hRt : 8 * R ≤ t)
+    (hRN : R < (N : ℝ)) (hNR1 : (N : ℝ) ≤ R + 1) (hN9 : 9 ≤ N)
+    (hKt2 : (K : ℝ) ≤ t / 2) (ht3K : t / 3 ≤ (K : ℝ)) :
+    |∑ q ∈ pairedOrdWindow t N K, ‖xiSliceGaussianReciprocal t q‖ -
         Real.log (t / (2 * Real.pi)) / (Real.pi * R)| ≤
-        5 * Real.log t / R ^ 2 + 3 * Real.log t / t := by
-      have hsub : |∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - 1 / R| ≤ 5 / R ^ 2 + 3 / t := by
-        have h1 : |∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - (1 / (N : ℝ) - 1 / (K : ℝ))| ≤
-            4 / R ^ 2 := by
-          have htel := sum_Ico_sub_succ (fun k : ℕ => 1 / (k : ℝ)) hNK
-          have htel' : ∑ k ∈ Finset.Ico N K, (1 / (k : ℝ) - 1 / ((k : ℝ) + 1)) =
-              1 / (N : ℝ) - 1 / (K : ℝ) := by
-            convert htel using 2 with k; push_cast; rfl
-          rw [← htel', ← Finset.sum_sub_distrib, abs_of_nonneg
-            (Finset.sum_nonneg fun k hk =>
-              (inv_pow_two_sub_telescoping (by have := (Finset.mem_Ico.mp hk).1; omega)).1)]
-          calc ∑ k ∈ Finset.Ico N K, (1 / (k : ℝ) ^ 2 - (1 / (k : ℝ) - 1 / ((k : ℝ) + 1)))
-              ≤ ∑ k ∈ Finset.Ico N K, (1 / ((k : ℝ) - 1) ^ 2 - 1 / (k : ℝ) ^ 2) :=
-                Finset.sum_le_sum fun k hk =>
-                  (inv_pow_two_sub_telescoping (by have := (Finset.mem_Ico.mp hk).1; omega)).2
-            _ = 1 / ((N : ℝ) - 1) ^ 2 - 1 / ((K : ℝ) - 1) ^ 2 := by
-                have := sum_Ico_sub_succ (fun k : ℕ => 1 / ((k : ℝ) - 1) ^ 2) hNK
-                convert this using 2 with k; push_cast; ring
-            _ ≤ 1 / (R / 2) ^ 2 := (sub_le_self _ (by positivity)).trans
-                (one_div_le_one_div_of_le (by positivity)
-                  (pow_le_pow_left₀ (by positivity) hNm1_R 2))
-            _ = 4 / R ^ 2 := by ring
-        have h2 : |1 / (N : ℝ) - 1 / R| ≤ 1 / R ^ 2 := by
-          have hNpos : 0 < (N : ℝ) := lt_trans hR0 hRN
-          rw [abs_of_nonpos (sub_nonpos.mpr (one_div_le_one_div_of_le hR0 hRN.le)), neg_sub]
-          calc 1 / R - 1 / (N : ℝ) = ((N : ℝ) - R) / (R * (N : ℝ)) := by field_simp; ring
-            _ ≤ 1 / R ^ 2 := by
-                rw [div_le_div_iff₀ (by positivity) (by positivity)]
-                nlinarith only [hNR1, hRN, hR0]
-        have h3 : 1 / (K : ℝ) ≤ 3 / t := by
-          calc 1 / (K : ℝ) ≤ 1 / (t / 3) := one_div_le_one_div_of_le (by positivity) ht3K
-            _ = 3 / t := by ring
-        have hsplit : ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - 1 / R =
-            (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - (1 / (N : ℝ) - 1 / (K : ℝ))) +
-              (1 / (N : ℝ) - 1 / R) - 1 / (K : ℝ) := by ring
-        rw [hsplit]
-        refine (abs_sub _ _).trans ?_
-        rw [abs_of_pos (by linarith [one_div_pos.mpr (lt_of_lt_of_le (by positivity) ht3K)])]
-        linarith [abs_add_le
-          (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - (1 / (N : ℝ) - 1 / (K : ℝ)))
-          (1 / (N : ℝ) - 1 / R)]
-      have hrew : (Real.log (t / (2 * Real.pi)) / Real.pi) *
-            (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2) -
-          Real.log (t / (2 * Real.pi)) / (Real.pi * R) =
-          (Real.log (t / (2 * Real.pi)) / Real.pi) *
-            (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - 1 / R) := by
-        field_simp [Real.pi_ne_zero, hR0.ne']; ring
-      rw [hrew, abs_mul, abs_of_nonneg hlog_main_pos]
-      calc (Real.log (t / (2 * Real.pi)) / Real.pi) *
-            |∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - 1 / R|
-          ≤ Real.log t * (5 / R ^ 2 + 3 / t) :=
-            mul_le_mul hlog_main_le hsub (abs_nonneg _) hlog0
-        _ = 5 * Real.log t / R ^ 2 + 3 * Real.log t / t := by ring
-    -- Triangle inequality for Part 1.
-    set A1 := ∑ k ∈ Finset.Ico N K,
-      (∑ q ∈ upperOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ +
-        ∑ q ∈ lowerOrdBin t k, ‖xiSliceGaussianReciprocal t q‖)
-    set A2 := ∑ k ∈ Finset.Ico N K, ΔN k * (1 / (k : ℝ) ^ 2)
-    set A3 := ∑ k ∈ Finset.Ico N K, ΔM k * (1 / (k : ℝ) ^ 2)
-    set A4 := (Real.log (t / (2 * Real.pi)) / Real.pi) * ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2
-    set A5 := Real.log (t / (2 * Real.pi)) / (Real.pi * R)
-    have htri : |A1 - A5| ≤ |A1 - A2| + |A2 - A3| + |A3 - A4| + |A4 - A5| := by
-      have : A1 - A5 = (A1 - A2) + (A2 - A3) + (A3 - A4) + (A4 - A5) := by ring
-      rw [this]
-      linarith [abs_add_le ((A1 - A2) + (A2 - A3) + (A3 - A4)) (A4 - A5),
-        abs_add_le ((A1 - A2) + (A2 - A3)) (A3 - A4), abs_add_le (A1 - A2) (A2 - A3)]
-    have hp1 : 0 ≤ Real.log t / R ^ 2 := by positivity
-    have hp2 : 0 ≤ Real.log t / t := by positivity
-    have hpC1 : 0 ≤ C * (Real.log t / R ^ 2) := by positivity
-    have hpC2 : 0 ≤ C * (Real.log t / t) := by positivity
-    have hsum_err : 256 * (1 + C) * Real.log t / R ^ 2 + 6 * C * Real.log t / R ^ 2 +
-        2 * Real.log t / t + (5 * Real.log t / R ^ 2 + 3 * Real.log t / t) =
-        261 * (Real.log t / R ^ 2) + 262 * (C * (Real.log t / R ^ 2)) +
-          5 * (Real.log t / t) := by ring
-    have htarget : 400 * (1 + C) * (Real.log t / R ^ 2 + Real.log t / t) =
-        400 * (Real.log t / R ^ 2) + 400 * (C * (Real.log t / R ^ 2)) +
-          400 * (Real.log t / t) + 400 * (C * (Real.log t / t)) := by ring
-    linarith
-  refine ⟨hpart1, ?_⟩
-  -- Part 2: `TailFourth` paired window asymptotic.
+      400 * (1 + C) * (Real.log t / R ^ 2 + Real.log t / t) := by
+  classical
+  have ht0 : 0 < t := by linarith
+  have hR0 : 0 < R := by linarith
+  have hpi : 0 < Real.pi := Real.pi_pos
+  have hpi3 : 3 < Real.pi := Real.pi_gt_three
+  have hlog1 : 1 ≤ Real.log t := by
+    rw [Real.le_log_iff_exp_le ht0]; linarith [Real.exp_one_lt_d9]
+  have hlog0 : 0 ≤ Real.log t := by linarith
+  have hlog_main_pos : 0 ≤ Real.log (t / (2 * Real.pi)) / Real.pi :=
+    div_nonneg (Real.log_nonneg (by rw [one_le_div (by positivity)]; linarith [Real.pi_lt_four]))
+      hpi.le
+  have hlog_main_le : Real.log (t / (2 * Real.pi)) / Real.pi ≤ Real.log t := by
+    have h1 : Real.log (t / (2 * Real.pi)) ≤ Real.log t :=
+      Real.log_le_log (by positivity) (div_le_self ht0.le (by linarith))
+    calc Real.log (t / (2 * Real.pi)) / Real.pi
+        ≤ Real.log t / Real.pi := div_le_div_of_nonneg_right h1 hpi.le
+      _ ≤ Real.log t / 1 := div_le_div_of_nonneg_left hlog0 zero_lt_one (by linarith)
+      _ = Real.log t := div_one _
+  have hNm1_R : R / 2 ≤ (N : ℝ) - 1 := by linarith
+  have hNK : N ≤ K := by
+    have : (N : ℝ) < (K : ℝ) := by linarith
+    exact_mod_cast this.le
+  have hKt : (K : ℝ) < t := by linarith
+  obtain ⟨hΔN_eq, hΔN_le, hE_le⟩ :=
+    pairedBin_bounds hC hT₀ hbase hclose htT ht64 hN9 hKt2
+  obtain ⟨hsum_k2_le, hsum_k3, _, _⟩ :=
+    pairedIco_inv_pow_sums hR8 hN9 hNK hNm1_R
+  rw [sum_pairedOrdWindow_eq_sum_Ico _ (by omega) hNK hKt]
+  -- Step 1a: discretization `‖rec‖ → 1/k^2`.
+  have hdisc1 : |∑ k ∈ Finset.Ico N K,
+        (∑ q ∈ upperOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ +
+          ∑ q ∈ lowerOrdBin t k, ‖xiSliceGaussianReciprocal t q‖) -
+      ∑ k ∈ Finset.Ico N K, pairedBinCount t k * (1 / (k : ℝ) ^ 2)| ≤
+      256 * (1 + C) * Real.log t / R ^ 2 := by
+    rw [← Finset.sum_sub_distrib]
+    calc |∑ k ∈ Finset.Ico N K,
+          ((∑ q ∈ upperOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ +
+            ∑ q ∈ lowerOrdBin t k, ‖xiSliceGaussianReciprocal t q‖) -
+            pairedBinCount t k * (1 / (k : ℝ) ^ 2))|
+        ≤ ∑ k ∈ Finset.Ico N K, pairedBinCount t k * (8 / (k : ℝ) ^ 3) := by
+          refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k hk => ?_)
+          have hk2 : 2 ≤ k := by have := (Finset.mem_Ico.mp hk).1; omega
+          have heq : (∑ q ∈ upperOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ +
+              ∑ q ∈ lowerOrdBin t k, ‖xiSliceGaussianReciprocal t q‖) -
+              pairedBinCount t k * (1 / (k : ℝ) ^ 2) =
+              (∑ q ∈ upperOrdBin t k, (‖xiSliceGaussianReciprocal t q‖ - 1 / (k : ℝ) ^ 2)) +
+                (∑ q ∈ lowerOrdBin t k,
+                  (‖xiSliceGaussianReciprocal t q‖ - 1 / (k : ℝ) ^ 2)) := by
+            unfold pairedBinCount
+            rw [Finset.sum_sub_distrib, Finset.sum_sub_distrib]
+            simp only [Finset.sum_const, nsmul_eq_mul]
+            ring
+          rw [heq]
+          refine (abs_add_le _ _).trans ?_
+          have hu : |∑ q ∈ upperOrdBin t k,
+              (‖xiSliceGaussianReciprocal t q‖ - 1 / (k : ℝ) ^ 2)| ≤
+              ((upperOrdBin t k).card : ℝ) * (8 / (k : ℝ) ^ 3) := by
+            refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+            calc ∑ q ∈ upperOrdBin t k, |‖xiSliceGaussianReciprocal t q‖ - 1 / (k : ℝ) ^ 2|
+                ≤ ∑ _q ∈ upperOrdBin t k, 8 / (k : ℝ) ^ 3 := Finset.sum_le_sum fun q hq =>
+                  (reciprocal_bin_discretization hk2 (Or.inl hq)).1
+              _ = ((upperOrdBin t k).card : ℝ) * (8 / (k : ℝ) ^ 3) := by simp
+          have hl : |∑ q ∈ lowerOrdBin t k,
+              (‖xiSliceGaussianReciprocal t q‖ - 1 / (k : ℝ) ^ 2)| ≤
+              ((lowerOrdBin t k).card : ℝ) * (8 / (k : ℝ) ^ 3) := by
+            refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+            calc ∑ q ∈ lowerOrdBin t k, |‖xiSliceGaussianReciprocal t q‖ - 1 / (k : ℝ) ^ 2|
+                ≤ ∑ _q ∈ lowerOrdBin t k, 8 / (k : ℝ) ^ 3 := Finset.sum_le_sum fun q hq =>
+                  (reciprocal_bin_discretization hk2 (Or.inr hq)).1
+              _ = ((lowerOrdBin t k).card : ℝ) * (8 / (k : ℝ) ^ 3) := by simp
+          unfold pairedBinCount; linarith
+      _ ≤ ∑ k ∈ Finset.Ico N K, (64 * (1 + C) * Real.log t) * (1 / (k : ℝ) ^ 3) :=
+          Finset.sum_le_sum fun k hk =>
+            (mul_le_mul_of_nonneg_right (hΔN_le k hk)
+              (by positivity : 0 ≤ 8 / (k : ℝ) ^ 3)).trans_eq (by ring)
+      _ = (64 * (1 + C) * Real.log t) * ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 3 :=
+          (Finset.mul_sum _ _ _).symm
+      _ ≤ (64 * (1 + C) * Real.log t) * (4 / R ^ 2) :=
+          mul_le_mul_of_nonneg_left hsum_k3 (by positivity)
+      _ = 256 * (1 + C) * Real.log t / R ^ 2 := by ring
+  -- Step 1b: Abel summation `pairedBinCount → pairedSmoothInc`.
+  have habel1 : |∑ k ∈ Finset.Ico N K, pairedBinCount t k * (1 / (k : ℝ) ^ 2) -
+      ∑ k ∈ Finset.Ico N K, pairedSmoothInc t k * (1 / (k : ℝ) ^ 2)| ≤
+      6 * C * Real.log t / R ^ 2 := by
+    have heq : ∑ k ∈ Finset.Ico N K, pairedBinCount t k * (1 / (k : ℝ) ^ 2) -
+        ∑ k ∈ Finset.Ico N K, pairedSmoothInc t k * (1 / (k : ℝ) ^ 2) =
+        ∑ k ∈ Finset.Ico N K, (pairedRVMError t (k + 1) - pairedRVMError t k) *
+          (1 / (k : ℝ) ^ 2) := by
+      rw [← Finset.sum_sub_distrib]
+      refine Finset.sum_congr rfl fun k hk => ?_
+      rw [hΔN_eq k hk]; ring
+    rw [heq]
+    refine (abs_sum_Ico_diff_mul_antitone_le hNK (by positivity) (by positivity) hE_le
+      fun k hkN _ => ?_).trans ?_
+    · have hk0 : (0 : ℝ) < (k : ℝ) := by
+        have : 1 ≤ k := by omega
+        exact_mod_cast this
+      exact one_div_le_one_div_of_le (sq_pos_of_pos hk0)
+        (pow_le_pow_left₀ hk0.le (by push_cast; linarith) 2)
+    · calc 2 * (3 * C * Real.log t) * (1 / (N : ℝ) ^ 2)
+          ≤ 2 * (3 * C * Real.log t) * (1 / R ^ 2) :=
+            mul_le_mul_of_nonneg_left
+              (one_div_le_one_div_of_le (sq_pos_of_pos hR0) (pow_le_pow_left₀ hR0.le hRN.le 2))
+              (by positivity)
+        _ = 6 * C * Real.log t / R ^ 2 := by ring
+  -- Step 1c: smooth increment `pairedSmoothInc → log(t/(2π))/π`.
+  have hsmooth1 : |∑ k ∈ Finset.Ico N K, pairedSmoothInc t k * (1 / (k : ℝ) ^ 2) -
+      (Real.log (t / (2 * Real.pi)) / Real.pi) * ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2| ≤
+      2 * Real.log t / t := by
+    rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+    simp_rw [← sub_mul]
+    calc |∑ k ∈ Finset.Ico N K,
+          (pairedSmoothInc t k - Real.log (t / (2 * Real.pi)) / Real.pi) * (1 / (k : ℝ) ^ 2)|
+        ≤ ∑ k ∈ Finset.Ico N K, ((1 / t) * (1 / (k : ℝ) ^ 2) + 1 / t ^ 2) := by
+          refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k hk => ?_)
+          have hkK : (k : ℝ) ≤ t / 2 :=
+            (by exact_mod_cast (Finset.mem_Ico.mp hk).2.le : (k : ℝ) ≤ (K : ℝ)).trans hKt2
+          have hk1 : (1 : ℝ) ≤ (k : ℝ) := by
+            have := (Finset.mem_Ico.mp hk).1; exact_mod_cast (by omega : 1 ≤ k)
+          have hk0 : (0 : ℝ) < (k : ℝ) := by linarith
+          rw [abs_mul, abs_of_pos (one_div_pos.mpr (sq_pos_of_pos hk0))]
+          have hpm : |pairedSmoothInc t k - Real.log (t / (2 * Real.pi)) / Real.pi| ≤
+              3 / (Real.pi * t) + (k : ℝ) * ((k : ℝ) + 1) / (Real.pi * t ^ 2) :=
+            abs_paired_routeKSmoothRVMCount_sub_main_le (by linarith) hkK
+          have h1 : 3 / (Real.pi * t) ≤ 1 / t := by
+            rw [div_le_div_iff₀ (by positivity) ht0]; nlinarith
+          have h2 : (k : ℝ) * ((k : ℝ) + 1) / (Real.pi * t ^ 2) * (1 / (k : ℝ) ^ 2) ≤
+              1 / t ^ 2 := by
+            have hkk : (k : ℝ) * ((k : ℝ) + 1) ≤ 2 * (k : ℝ) ^ 2 := by nlinarith
+            rw [div_mul_div_comm, div_le_div_iff₀ (by positivity) (by positivity)]
+            calc (k : ℝ) * ((k : ℝ) + 1) * 1 * t ^ 2
+                ≤ (2 * (k : ℝ) ^ 2) * 1 * t ^ 2 :=
+                  mul_le_mul_of_nonneg_right
+                    (mul_le_mul_of_nonneg_right hkk zero_le_one) (sq_nonneg t)
+              _ = 2 * (t ^ 2 * (k : ℝ) ^ 2) := by ring
+              _ ≤ Real.pi * (t ^ 2 * (k : ℝ) ^ 2) :=
+                  mul_le_mul_of_nonneg_right (by linarith) (by positivity)
+              _ = 1 * (Real.pi * t ^ 2 * (k : ℝ) ^ 2) := by ring
+          calc |pairedSmoothInc t k - Real.log (t / (2 * Real.pi)) / Real.pi| * (1 / (k : ℝ) ^ 2)
+              ≤ (3 / (Real.pi * t) + (k : ℝ) * ((k : ℝ) + 1) / (Real.pi * t ^ 2)) *
+                  (1 / (k : ℝ) ^ 2) :=
+                mul_le_mul_of_nonneg_right hpm (by positivity)
+            _ = 3 / (Real.pi * t) * (1 / (k : ℝ) ^ 2) +
+                  (k : ℝ) * ((k : ℝ) + 1) / (Real.pi * t ^ 2) * (1 / (k : ℝ) ^ 2) := by ring
+            _ ≤ (1 / t) * (1 / (k : ℝ) ^ 2) + 1 / t ^ 2 :=
+                add_le_add (mul_le_mul_of_nonneg_right h1 (by positivity)) h2
+      _ = (1 / t) * (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2) +
+            ((K - N : ℕ) : ℝ) * (1 / t ^ 2) := by
+          rw [Finset.sum_add_distrib, ← Finset.mul_sum, Finset.sum_const, Nat.card_Ico,
+            nsmul_eq_mul]
+      _ ≤ (1 / t) * (2 / R) + (t / 2) * (1 / t ^ 2) := by
+          refine add_le_add (mul_le_mul_of_nonneg_left hsum_k2_le (by positivity)) ?_
+          refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+          exact (by exact_mod_cast Nat.sub_le K N : ((K - N : ℕ) : ℝ) ≤ (K : ℝ)).trans hKt2
+      _ ≤ 1 / t + 1 / t := by
+          have h1 : (1 / t) * (2 / R) ≤ 1 / t := by
+            have : 2 / R ≤ 1 := by rw [div_le_one hR0]; linarith
+            nlinarith [one_div_pos.mpr ht0]
+          have h2 : (t / 2) * (1 / t ^ 2) ≤ 1 / t := by
+            rw [show (t / 2) * (1 / t ^ 2) = 1 / (2 * t) by field_simp [ht0.ne']]
+            exact one_div_le_one_div_of_le ht0 (by linarith)
+          linarith
+      _ ≤ 2 * Real.log t / t := by
+          rw [show 1 / t + 1 / t = 2 / t by ring]
+          exact div_le_div_of_nonneg_right (by linarith) ht0.le
+  -- Step 1d: telescoping `∑ 1/k^2 → 1/R`.
+  have htel1 : |(Real.log (t / (2 * Real.pi)) / Real.pi) *
+        (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2) -
+      Real.log (t / (2 * Real.pi)) / (Real.pi * R)| ≤
+      5 * Real.log t / R ^ 2 + 3 * Real.log t / t := by
+    have hsub : |∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - 1 / R| ≤ 5 / R ^ 2 + 3 / t := by
+      have h1 : |∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - (1 / (N : ℝ) - 1 / (K : ℝ))| ≤
+          4 / R ^ 2 := by
+        have htel := sum_Ico_sub_succ (fun k : ℕ => 1 / (k : ℝ)) hNK
+        have htel' : ∑ k ∈ Finset.Ico N K, (1 / (k : ℝ) - 1 / ((k : ℝ) + 1)) =
+            1 / (N : ℝ) - 1 / (K : ℝ) := by
+          convert htel using 2 with k; push_cast; rfl
+        rw [← htel', ← Finset.sum_sub_distrib, abs_of_nonneg
+          (Finset.sum_nonneg fun k hk =>
+            (inv_pow_two_sub_telescoping (by have := (Finset.mem_Ico.mp hk).1; omega)).1)]
+        calc ∑ k ∈ Finset.Ico N K, (1 / (k : ℝ) ^ 2 - (1 / (k : ℝ) - 1 / ((k : ℝ) + 1)))
+            ≤ ∑ k ∈ Finset.Ico N K, (1 / ((k : ℝ) - 1) ^ 2 - 1 / (k : ℝ) ^ 2) :=
+              Finset.sum_le_sum fun k hk =>
+                (inv_pow_two_sub_telescoping (by have := (Finset.mem_Ico.mp hk).1; omega)).2
+          _ = 1 / ((N : ℝ) - 1) ^ 2 - 1 / ((K : ℝ) - 1) ^ 2 := by
+              have := sum_Ico_sub_succ (fun k : ℕ => 1 / ((k : ℝ) - 1) ^ 2) hNK
+              convert this using 2 with k; push_cast; ring
+          _ ≤ 1 / (R / 2) ^ 2 := (sub_le_self _ (div_nonneg zero_le_one (sq_nonneg _))).trans
+              (one_div_le_one_div_of_le (by positivity)
+                (pow_le_pow_left₀ (by positivity) hNm1_R 2))
+          _ = 4 / R ^ 2 := by ring
+      have h2 : |1 / (N : ℝ) - 1 / R| ≤ 1 / R ^ 2 := by
+        have hNpos : 0 < (N : ℝ) := lt_trans hR0 hRN
+        rw [abs_of_nonpos (sub_nonpos.mpr (one_div_le_one_div_of_le hR0 hRN.le)), neg_sub]
+        calc 1 / R - 1 / (N : ℝ) = ((N : ℝ) - R) / (R * (N : ℝ)) := by field_simp
+          _ ≤ 1 / R ^ 2 := by
+              rw [div_le_div_iff₀ (by positivity) (by positivity)]
+              nlinarith only [hNR1, hRN, hR0]
+      have h3 : 1 / (K : ℝ) ≤ 3 / t := by
+        calc 1 / (K : ℝ) ≤ 1 / (t / 3) := one_div_le_one_div_of_le (by positivity) ht3K
+          _ = 3 / t := by ring
+      have hsplit : ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - 1 / R =
+          (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - (1 / (N : ℝ) - 1 / (K : ℝ))) +
+            (1 / (N : ℝ) - 1 / R) - 1 / (K : ℝ) := by ring
+      rw [hsplit]
+      refine (abs_sub _ _).trans ?_
+      have hKpos : 0 < (K : ℝ) := lt_of_lt_of_le (by positivity) ht3K
+      rw [abs_of_pos (by positivity)]
+      linarith [abs_add_le
+        (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - (1 / (N : ℝ) - 1 / (K : ℝ)))
+        (1 / (N : ℝ) - 1 / R)]
+    have hrew : (Real.log (t / (2 * Real.pi)) / Real.pi) *
+          (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2) -
+        Real.log (t / (2 * Real.pi)) / (Real.pi * R) =
+        (Real.log (t / (2 * Real.pi)) / Real.pi) *
+          (∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - 1 / R) := by
+      field_simp [Real.pi_ne_zero, hR0.ne']; ring
+    rw [hrew, abs_mul, abs_of_nonneg hlog_main_pos]
+    calc (Real.log (t / (2 * Real.pi)) / Real.pi) *
+          |∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2 - 1 / R|
+        ≤ Real.log t * (5 / R ^ 2 + 3 / t) :=
+          mul_le_mul hlog_main_le hsub (abs_nonneg _) hlog0
+      _ = 5 * Real.log t / R ^ 2 + 3 * Real.log t / t := by ring
+  -- Triangle inequality for Part 1.
+  set A1 := ∑ k ∈ Finset.Ico N K,
+    (∑ q ∈ upperOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ +
+      ∑ q ∈ lowerOrdBin t k, ‖xiSliceGaussianReciprocal t q‖)
+  set A2 := ∑ k ∈ Finset.Ico N K, pairedBinCount t k * (1 / (k : ℝ) ^ 2)
+  set A3 := ∑ k ∈ Finset.Ico N K, pairedSmoothInc t k * (1 / (k : ℝ) ^ 2)
+  set A4 := (Real.log (t / (2 * Real.pi)) / Real.pi) * ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 2
+  set A5 := Real.log (t / (2 * Real.pi)) / (Real.pi * R)
+  have htri : |A1 - A5| ≤ |A1 - A2| + |A2 - A3| + |A3 - A4| + |A4 - A5| := by
+    have : A1 - A5 = (A1 - A2) + (A2 - A3) + (A3 - A4) + (A4 - A5) := by ring
+    rw [this]
+    linarith [abs_add_le ((A1 - A2) + (A2 - A3) + (A3 - A4)) (A4 - A5),
+      abs_add_le ((A1 - A2) + (A2 - A3)) (A3 - A4), abs_add_le (A1 - A2) (A2 - A3)]
+  have hp1 : 0 ≤ Real.log t / R ^ 2 := by positivity
+  have hp2 : 0 ≤ Real.log t / t := by positivity
+  have hpC1 : 0 ≤ C * (Real.log t / R ^ 2) := by positivity
+  have hpC2 : 0 ≤ C * (Real.log t / t) := by positivity
+  have hsum_err : 256 * (1 + C) * Real.log t / R ^ 2 + 6 * C * Real.log t / R ^ 2 +
+      2 * Real.log t / t + (5 * Real.log t / R ^ 2 + 3 * Real.log t / t) =
+      261 * (Real.log t / R ^ 2) + 262 * (C * (Real.log t / R ^ 2)) +
+        5 * (Real.log t / t) := by ring
+  have htarget : 400 * (1 + C) * (Real.log t / R ^ 2 + Real.log t / t) =
+      400 * (Real.log t / R ^ 2) + 400 * (C * (Real.log t / R ^ 2)) +
+        400 * (Real.log t / t) + 400 * (C * (Real.log t / t)) := by ring
+  linarith
+
+private theorem pairedOrdWindow_fourth_asymptotic {C T₀ t R : ℝ} {N K : ℕ} (hC : 0 < C)
+    (hT₀ : 4 ≤ T₀) (hbase : routeKRVMBase + 2 ≤ T₀)
+    (hclose : ∀ U : ℝ, T₀ ≤ U → |(xiZeroCount U : ℝ) - routeKSmoothRVMCount U| ≤ C * Real.log U)
+    (htT : 2 * T₀ + 16 ≤ t) (ht64 : 64 ≤ t) (hR8 : 8 ≤ R) (hRt : 8 * R ≤ t)
+    (hRN : R < (N : ℝ)) (hNR1 : (N : ℝ) ≤ R + 1) (hN9 : 9 ≤ N)
+    (hKt2 : (K : ℝ) ≤ t / 2) (ht3K : t / 3 ≤ (K : ℝ)) :
+    |∑ q ∈ pairedOrdWindow t N K, ‖xiSliceGaussianReciprocal t q‖ ^ 2 -
+        Real.log (t / (2 * Real.pi)) / (3 * Real.pi * R ^ 3)| ≤
+      4500 * (1 + C) * (Real.log t / R ^ 4 + Real.log t / (t ^ 2 * R)) := by
+  classical
+  have ht0 : 0 < t := by linarith
+  have hR0 : 0 < R := by linarith
+  have hpi : 0 < Real.pi := Real.pi_pos
+  have hpi3 : 3 < Real.pi := Real.pi_gt_three
+  have hlog1 : 1 ≤ Real.log t := by
+    rw [Real.le_log_iff_exp_le ht0]; linarith [Real.exp_one_lt_d9]
+  have hlog0 : 0 ≤ Real.log t := by linarith
+  have hlog_main_pos : 0 ≤ Real.log (t / (2 * Real.pi)) / Real.pi :=
+    div_nonneg (Real.log_nonneg (by rw [one_le_div (by positivity)]; linarith [Real.pi_lt_four]))
+      hpi.le
+  have hlog_main_le : Real.log (t / (2 * Real.pi)) / Real.pi ≤ Real.log t := by
+    have h1 : Real.log (t / (2 * Real.pi)) ≤ Real.log t :=
+      Real.log_le_log (by positivity) (div_le_self ht0.le (by linarith))
+    calc Real.log (t / (2 * Real.pi)) / Real.pi
+        ≤ Real.log t / Real.pi := div_le_div_of_nonneg_right h1 hpi.le
+      _ ≤ Real.log t / 1 := div_le_div_of_nonneg_left hlog0 zero_lt_one (by linarith)
+      _ = Real.log t := div_one _
+  have hNm1_R : R / 2 ≤ (N : ℝ) - 1 := by linarith
+  have hNK : N ≤ K := by
+    have : (N : ℝ) < (K : ℝ) := by linarith
+    exact_mod_cast this.le
+  have hKt : (K : ℝ) < t := by linarith
+  obtain ⟨hΔN_eq, hΔN_le, hE_le⟩ :=
+    pairedBin_bounds hC hT₀ hbase hclose htT ht64 hN9 hKt2
+  obtain ⟨hsum_k2_le, _, hsum_k4_le, hsum_k5⟩ :=
+    pairedIco_inv_pow_sums hR8 hN9 hNK hNm1_R
   rw [sum_pairedOrdWindow_eq_sum_Ico _ (by omega) hNK hKt]
   -- Step 2a: discretization `‖rec‖^2 → 1/k^4`.
   have hdisc2 : |∑ k ∈ Finset.Ico N K,
         (∑ q ∈ upperOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ ^ 2 +
           ∑ q ∈ lowerOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ ^ 2) -
-      ∑ k ∈ Finset.Ico N K, ΔN k * (1 / (k : ℝ) ^ 4)| ≤
+      ∑ k ∈ Finset.Ico N K, pairedBinCount t k * (1 / (k : ℝ) ^ 4)| ≤
       4096 * (1 + C) * Real.log t / R ^ 4 := by
     rw [← Finset.sum_sub_distrib]
     calc |∑ k ∈ Finset.Ico N K,
           ((∑ q ∈ upperOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ ^ 2 +
             ∑ q ∈ lowerOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ ^ 2) -
-            ΔN k * (1 / (k : ℝ) ^ 4))|
-        ≤ ∑ k ∈ Finset.Ico N K, ΔN k * (32 / (k : ℝ) ^ 5) := by
+            pairedBinCount t k * (1 / (k : ℝ) ^ 4))|
+        ≤ ∑ k ∈ Finset.Ico N K, pairedBinCount t k * (32 / (k : ℝ) ^ 5) := by
           refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k hk => ?_)
           have hk2 : 2 ≤ k := by have := (Finset.mem_Ico.mp hk).1; omega
           have heq : (∑ q ∈ upperOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ ^ 2 +
               ∑ q ∈ lowerOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ ^ 2) -
-              ΔN k * (1 / (k : ℝ) ^ 4) =
+              pairedBinCount t k * (1 / (k : ℝ) ^ 4) =
               (∑ q ∈ upperOrdBin t k, (‖xiSliceGaussianReciprocal t q‖ ^ 2 - 1 / (k : ℝ) ^ 4)) +
                 (∑ q ∈ lowerOrdBin t k,
                   (‖xiSliceGaussianReciprocal t q‖ ^ 2 - 1 / (k : ℝ) ^ 4)) := by
-            dsimp only [ΔN]
+            unfold pairedBinCount
             rw [Finset.sum_sub_distrib, Finset.sum_sub_distrib]
             simp only [Finset.sum_const, nsmul_eq_mul]
             ring
@@ -2250,23 +2352,24 @@ private theorem pairedOrdWindow_asymptotics {C T₀ t R : ℝ} (hC : 0 < C) (hT�
                 ≤ ∑ _q ∈ lowerOrdBin t k, 32 / (k : ℝ) ^ 5 := Finset.sum_le_sum fun q hq =>
                   (reciprocal_bin_discretization hk2 (Or.inr hq)).2
               _ = ((lowerOrdBin t k).card : ℝ) * (32 / (k : ℝ) ^ 5) := by simp
-          dsimp only [ΔN]; linarith
-      _ ≤ ∑ k ∈ Finset.Ico N K, (256 * (1 + C) * Real.log t) * (1 / (k : ℝ) ^ 5) := by
-          refine Finset.sum_le_sum fun k hk => ?_
-          have := mul_le_mul_of_nonneg_right (hΔN_le k hk) (by positivity : 0 ≤ 32 / (k : ℝ) ^ 5)
-          linarith
+          unfold pairedBinCount; linarith
+      _ ≤ ∑ k ∈ Finset.Ico N K, (256 * (1 + C) * Real.log t) * (1 / (k : ℝ) ^ 5) :=
+          Finset.sum_le_sum fun k hk =>
+            (mul_le_mul_of_nonneg_right (hΔN_le k hk)
+              (by positivity : 0 ≤ 32 / (k : ℝ) ^ 5)).trans_eq (by ring)
       _ = (256 * (1 + C) * Real.log t) * ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 5 :=
           (Finset.mul_sum _ _ _).symm
       _ ≤ (256 * (1 + C) * Real.log t) * (16 / R ^ 4) :=
           mul_le_mul_of_nonneg_left hsum_k5 (by positivity)
       _ = 4096 * (1 + C) * Real.log t / R ^ 4 := by ring
-  -- Step 2b: Abel summation `ΔN k → ΔM k` against `1/k^4`.
-  have habel2 : |∑ k ∈ Finset.Ico N K, ΔN k * (1 / (k : ℝ) ^ 4) -
-      ∑ k ∈ Finset.Ico N K, ΔM k * (1 / (k : ℝ) ^ 4)| ≤
+  -- Step 2b: Abel summation `pairedBinCount → pairedSmoothInc` against `1/k^4`.
+  have habel2 : |∑ k ∈ Finset.Ico N K, pairedBinCount t k * (1 / (k : ℝ) ^ 4) -
+      ∑ k ∈ Finset.Ico N K, pairedSmoothInc t k * (1 / (k : ℝ) ^ 4)| ≤
       6 * C * Real.log t / R ^ 4 := by
-    have heq : ∑ k ∈ Finset.Ico N K, ΔN k * (1 / (k : ℝ) ^ 4) -
-        ∑ k ∈ Finset.Ico N K, ΔM k * (1 / (k : ℝ) ^ 4) =
-        ∑ k ∈ Finset.Ico N K, (E (k + 1) - E k) * (1 / (k : ℝ) ^ 4) := by
+    have heq : ∑ k ∈ Finset.Ico N K, pairedBinCount t k * (1 / (k : ℝ) ^ 4) -
+        ∑ k ∈ Finset.Ico N K, pairedSmoothInc t k * (1 / (k : ℝ) ^ 4) =
+        ∑ k ∈ Finset.Ico N K, (pairedRVMError t (k + 1) - pairedRVMError t k) *
+          (1 / (k : ℝ) ^ 4) := by
       rw [← Finset.sum_sub_distrib]
       refine Finset.sum_congr rfl fun k hk => ?_
       rw [hΔN_eq k hk]; ring
@@ -2284,16 +2387,17 @@ private theorem pairedOrdWindow_asymptotics {C T₀ t R : ℝ} (hC : 0 < C) (hT�
               (one_div_le_one_div_of_le (pow_pos hR0 4) (pow_le_pow_left₀ hR0.le hRN.le 4))
               (by positivity)
         _ = 6 * C * Real.log t / R ^ 4 := by ring
-  -- Step 2c: smooth increment `ΔM k → log(t/(2π))/π` against `1/k^4`.
-  have hsmooth2 : |∑ k ∈ Finset.Ico N K, ΔM k * (1 / (k : ℝ) ^ 4) -
+  -- Step 2c: smooth increment `pairedSmoothInc → log(t/(2π))/π` against `1/k^4`.
+  have hsmooth2 : |∑ k ∈ Finset.Ico N K, pairedSmoothInc t k * (1 / (k : ℝ) ^ 4) -
       (Real.log (t / (2 * Real.pi)) / Real.pi) * ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 4| ≤
       4 * Real.log t / R ^ 4 + 6 * Real.log t / (t ^ 2 * R) := by
     rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+    simp_rw [← sub_mul]
     have hraw : |∑ k ∈ Finset.Ico N K,
-          (ΔM k - Real.log (t / (2 * Real.pi)) / Real.pi) * (1 / (k : ℝ) ^ 4)| ≤
+          (pairedSmoothInc t k - Real.log (t / (2 * Real.pi)) / Real.pi) * (1 / (k : ℝ) ^ 4)| ≤
         8 / (t * R ^ 3) + 2 / (t ^ 2 * R) := by
       calc |∑ k ∈ Finset.Ico N K,
-            (ΔM k - Real.log (t / (2 * Real.pi)) / Real.pi) * (1 / (k : ℝ) ^ 4)|
+            (pairedSmoothInc t k - Real.log (t / (2 * Real.pi)) / Real.pi) * (1 / (k : ℝ) ^ 4)|
           ≤ ∑ k ∈ Finset.Ico N K,
               ((1 / t) * (1 / (k : ℝ) ^ 4) + (1 / t ^ 2) * (1 / (k : ℝ) ^ 2)) := by
             refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k hk => ?_)
@@ -2301,24 +2405,26 @@ private theorem pairedOrdWindow_asymptotics {C T₀ t R : ℝ} (hC : 0 < C) (hT�
               (by exact_mod_cast (Finset.mem_Ico.mp hk).2.le : (k : ℝ) ≤ (K : ℝ)).trans hKt2
             have hk1 : (1 : ℝ) ≤ (k : ℝ) := by
               have := (Finset.mem_Ico.mp hk).1; exact_mod_cast (by omega : 1 ≤ k)
-            rw [abs_mul, abs_of_pos (by positivity)]
-            have hpm := abs_paired_routeKSmoothRVMCount_sub_main_le (by linarith) hkK
+            have hk0 : (0 : ℝ) < (k : ℝ) := by linarith
+            rw [abs_mul, abs_of_pos (one_div_pos.mpr (pow_pos hk0 4))]
+            have hpm : |pairedSmoothInc t k - Real.log (t / (2 * Real.pi)) / Real.pi| ≤
+                3 / (Real.pi * t) + (k : ℝ) * ((k : ℝ) + 1) / (Real.pi * t ^ 2) :=
+              abs_paired_routeKSmoothRVMCount_sub_main_le (by linarith) hkK
             have h1 : 3 / (Real.pi * t) ≤ 1 / t := by
               rw [div_le_div_iff₀ (by positivity) ht0]; nlinarith
             have h2 : (k : ℝ) * ((k : ℝ) + 1) / (Real.pi * t ^ 2) * (1 / (k : ℝ) ^ 4) ≤
                 (1 / t ^ 2) * (1 / (k : ℝ) ^ 2) := by
               have hkk : (k : ℝ) * ((k : ℝ) + 1) ≤ 2 * (k : ℝ) ^ 2 := by nlinarith
-              have hk0 : (0 : ℝ) < (k : ℝ) := by linarith
               rw [div_mul_div_comm, div_mul_div_comm, mul_one, mul_one,
                 div_le_div_iff₀ (by positivity) (by positivity)]
               calc (k : ℝ) * ((k : ℝ) + 1) * (t ^ 2 * (k : ℝ) ^ 2)
                   ≤ (2 * (k : ℝ) ^ 2) * (t ^ 2 * (k : ℝ) ^ 2) :=
                     mul_le_mul_of_nonneg_right hkk (by positivity)
                 _ = 2 * (t ^ 2 * (k : ℝ) ^ 4) := by ring
-                _ ≤ Real.pi * t ^ 2 * (k : ℝ) ^ 4 := by
-                    have : 0 ≤ t ^ 2 * (k : ℝ) ^ 4 := by positivity
-                    nlinarith
-            calc |ΔM k - Real.log (t / (2 * Real.pi)) / Real.pi| * (1 / (k : ℝ) ^ 4)
+                _ ≤ Real.pi * (t ^ 2 * (k : ℝ) ^ 4) :=
+                    mul_le_mul_of_nonneg_right (by linarith) (by positivity)
+                _ = 1 * (Real.pi * t ^ 2 * (k : ℝ) ^ 4) := by ring
+            calc |pairedSmoothInc t k - Real.log (t / (2 * Real.pi)) / Real.pi| * (1 / (k : ℝ) ^ 4)
                 ≤ (3 / (Real.pi * t) + (k : ℝ) * ((k : ℝ) + 1) / (Real.pi * t ^ 2)) *
                     (1 / (k : ℝ) ^ 4) :=
                   mul_le_mul_of_nonneg_right hpm (by positivity)
@@ -2341,13 +2447,16 @@ private theorem pairedOrdWindow_asymptotics {C T₀ t R : ℝ} (hC : 0 < C) (hT�
             _ = R ^ 3 := by ring
         nlinarith only [sq_nonneg (t - R), hR23]
       have hrhs : 4 / R ^ 4 + 4 / (t ^ 2 * R) = 4 * (t ^ 2 + R ^ 3) / (t ^ 2 * R ^ 4) := by
-        field_simp [ht0.ne', hR0.ne']; ring
+        field_simp [ht0.ne', hR0.ne']
       rw [hrhs, div_le_div_iff₀ (by positivity) (by positivity)]
       calc 8 * (t ^ 2 * R ^ 4) = (4 * t * R ^ 3) * (2 * t * R) := by ring
         _ ≤ (4 * t * R ^ 3) * (t ^ 2 + R ^ 3) :=
             mul_le_mul_of_nonneg_left hnum (by positivity)
         _ = 4 * (t ^ 2 + R ^ 3) * (t * R ^ 3) := by ring
-    have h1 : 8 / (t * R ^ 3) + 2 / (t ^ 2 * R) ≤ 4 / R ^ 4 + 6 / (t ^ 2 * R) := by linarith
+    have h1 : 8 / (t * R ^ 3) + 2 / (t ^ 2 * R) ≤ 4 / R ^ 4 + 6 / (t ^ 2 * R) := by
+      calc 8 / (t * R ^ 3) + 2 / (t ^ 2 * R)
+          ≤ (4 / R ^ 4 + 4 / (t ^ 2 * R)) + 2 / (t ^ 2 * R) := add_le_add hamgm le_rfl
+        _ = 4 / R ^ 4 + 6 / (t ^ 2 * R) := by ring
     have h2 : 4 / R ^ 4 + 6 / (t ^ 2 * R) ≤
         4 * Real.log t / R ^ 4 + 6 * Real.log t / (t ^ 2 * R) := add_le_add
       (div_le_div_of_nonneg_right (by linarith) (by positivity))
@@ -2382,7 +2491,7 @@ private theorem pairedOrdWindow_asymptotics {C T₀ t R : ℝ} (hC : 0 < C) (hT�
               have := sum_Ico_sub_succ (fun k : ℕ => 1 / ((k : ℝ) - 1) ^ 4) hNK
               convert this using 2 with k; push_cast; ring
           _ ≤ 6 * (1 / (R / 2) ^ 4) := mul_le_mul_of_nonneg_left
-              ((sub_le_self _ (by positivity)).trans
+              ((sub_le_self _ (div_nonneg zero_le_one (pow_nonneg (by linarith) 4))).trans
                 (one_div_le_one_div_of_le (by positivity)
                   (pow_le_pow_left₀ (by positivity) hNm1_R 4))) (by norm_num)
           _ = 96 / R ^ 4 := by ring
@@ -2396,7 +2505,7 @@ private theorem pairedOrdWindow_asymptotics {C T₀ t R : ℝ} (hC : 0 < C) (hT�
           have : (N : ℝ) ^ 3 ≤ (R + 1) ^ 3 := pow_le_pow_left₀ hNpos.le hNR1 3
           nlinarith only [this, hR8]
         calc (1 / 3) * (1 / R ^ 3 - 1 / (N : ℝ) ^ 3)
-            = ((N : ℝ) ^ 3 - R ^ 3) / (3 * R ^ 3 * (N : ℝ) ^ 3) := by field_simp; ring
+            = ((N : ℝ) ^ 3 - R ^ 3) / (3 * R ^ 3 * (N : ℝ) ^ 3) := by field_simp
           _ ≤ 2 / R ^ 4 := by
               rw [div_le_div_iff₀ (by positivity) (by positivity)]
               have hRN3 : R ^ 3 ≤ (N : ℝ) ^ 3 := pow_le_pow_left₀ hR0.le hRN.le 3
@@ -2447,8 +2556,8 @@ private theorem pairedOrdWindow_asymptotics {C T₀ t R : ℝ} (hC : 0 < C) (hT�
   set B1 := ∑ k ∈ Finset.Ico N K,
     (∑ q ∈ upperOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ ^ 2 +
       ∑ q ∈ lowerOrdBin t k, ‖xiSliceGaussianReciprocal t q‖ ^ 2)
-  set B2 := ∑ k ∈ Finset.Ico N K, ΔN k * (1 / (k : ℝ) ^ 4)
-  set B3 := ∑ k ∈ Finset.Ico N K, ΔM k * (1 / (k : ℝ) ^ 4)
+  set B2 := ∑ k ∈ Finset.Ico N K, pairedBinCount t k * (1 / (k : ℝ) ^ 4)
+  set B3 := ∑ k ∈ Finset.Ico N K, pairedSmoothInc t k * (1 / (k : ℝ) ^ 4)
   set B4 := (Real.log (t / (2 * Real.pi)) / Real.pi) * ∑ k ∈ Finset.Ico N K, 1 / (k : ℝ) ^ 4
   set B5 := Real.log (t / (2 * Real.pi)) / (3 * Real.pi * R ^ 3)
   have htri2 : |B1 - B5| ≤ |B1 - B2| + |B2 - B3| + |B3 - B4| + |B4 - B5| := by
@@ -2469,6 +2578,35 @@ private theorem pairedOrdWindow_asymptotics {C T₀ t R : ℝ} (hC : 0 < C) (hT�
       4500 * (Real.log t / R ^ 4) + 4500 * (C * (Real.log t / R ^ 4)) +
         4500 * (Real.log t / (t ^ 2 * R)) + 4500 * (C * (Real.log t / (t ^ 2 * R))) := by ring
   linarith
+
+private theorem pairedOrdWindow_asymptotics {C T₀ t R : ℝ} (hC : 0 < C) (hT₀ : 4 ≤ T₀)
+    (hbase : routeKRVMBase + 2 ≤ T₀)
+    (hclose : ∀ U : ℝ, T₀ ≤ U → |(xiZeroCount U : ℝ) - routeKSmoothRVMCount U| ≤ C * Real.log U)
+    (htT : 2 * T₀ + 16 ≤ t) (ht64 : 64 ≤ t) (hR8 : 8 ≤ R) (hRt : 8 * R ≤ t) :
+    let N := Nat.floor R + 1
+    let K := Nat.floor (t / 2)
+    |∑ q ∈ pairedOrdWindow t N K, ‖xiSliceGaussianReciprocal t q‖ -
+        Real.log (t / (2 * Real.pi)) / (Real.pi * R)| ≤
+      400 * (1 + C) * (Real.log t / R ^ 2 + Real.log t / t) ∧
+    |∑ q ∈ pairedOrdWindow t N K, ‖xiSliceGaussianReciprocal t q‖ ^ 2 -
+        Real.log (t / (2 * Real.pi)) / (3 * Real.pi * R ^ 3)| ≤
+      4500 * (1 + C) * (Real.log t / R ^ 4 + Real.log t / (t ^ 2 * R)) := by
+  intro N K
+  have hR0 : 0 ≤ R := by linarith
+  have ht0 : 0 ≤ t := by linarith
+  have hRN : R < (N : ℝ) := by dsimp only [N]; push_cast; exact Nat.lt_floor_add_one R
+  have hNR1 : (N : ℝ) ≤ R + 1 := by dsimp only [N]; push_cast; linarith [Nat.floor_le hR0]
+  have hN9 : 9 ≤ N := by
+    have : 8 ≤ Nat.floor R := Nat.le_floor hR8
+    dsimp only [N]; omega
+  have hKt2 : (K : ℝ) ≤ t / 2 := by dsimp only [K]; exact Nat.floor_le (by positivity)
+  have ht3K : t / 3 ≤ (K : ℝ) := by
+    have : t / 2 - 1 < (K : ℝ) := by dsimp only [K]; linarith [Nat.lt_floor_add_one (t / 2)]
+    linarith
+  exact ⟨pairedOrdWindow_mass_asymptotic hC hT₀ hbase hclose htT ht64 hR8 hRt
+      hRN hNR1 hN9 hKt2 ht3K,
+    pairedOrdWindow_fourth_asymptotic hC hT₀ hbase hclose htT ht64 hR8 hRt
+      hRN hNR1 hN9 hKt2 ht3K⟩
 
 /-- **Subconvexity-free Riemann–von Mangoldt summation-by-parts cumulant asymptotics.**
 Using only `exists_xiZeroCount_routeKSmoothRVMCount_log_remainder` and `xiCopiesPos`, there exist
@@ -2544,7 +2682,8 @@ theorem exists_xiSliceGaussianTail_cumulant_asymptotics :
     refine (summable_norm_xiSliceGaussianTail t H).tsum_le_of_sum_le fun F => ?_
     let e : {q : XiZeroCopy // q ∉ H} ↪ XiZeroCopy := ⟨Subtype.val, Subtype.val_injective⟩
     have hmap : ∑ x ∈ F, ‖xiSliceGaussianReciprocal t x.1‖ =
-        ∑ q ∈ F.map e, ‖xiSliceGaussianReciprocal t q‖ := (Finset.sum_map F e _).symm
+        ∑ q ∈ F.map e, ‖xiSliceGaussianReciprocal t q‖ :=
+      (Finset.sum_map F e (fun q => ‖xiSliceGaussianReciprocal t q‖)).symm
     rw [hmap, ← Finset.sum_filter_add_sum_filter_not (F.map e) (fun q => q ∈ pairedOrdWindow t N K)]
     have hsub : (F.map e).filter (fun q => q ∈ pairedOrdWindow t N K) ⊆ pairedOrdWindow t N K :=
       fun _ hq => (Finset.mem_filter.mp hq).2
@@ -2557,7 +2696,8 @@ theorem exists_xiSliceGaussianTail_cumulant_asymptotics :
     refine (summable_sq_norm_xiSliceGaussianTail t H).tsum_le_of_sum_le fun F => ?_
     let e : {q : XiZeroCopy // q ∉ H} ↪ XiZeroCopy := ⟨Subtype.val, Subtype.val_injective⟩
     have hmap : ∑ x ∈ F, ‖xiSliceGaussianReciprocal t x.1‖ ^ 2 =
-        ∑ q ∈ F.map e, ‖xiSliceGaussianReciprocal t q‖ ^ 2 := (Finset.sum_map F e _).symm
+        ∑ q ∈ F.map e, ‖xiSliceGaussianReciprocal t q‖ ^ 2 :=
+      (Finset.sum_map F e (fun q => ‖xiSliceGaussianReciprocal t q‖ ^ 2)).symm
     rw [hmap, ← Finset.sum_filter_add_sum_filter_not (F.map e) (fun q => q ∈ pairedOrdWindow t N K)]
     have hsub : (F.map e).filter (fun q => q ∈ pairedOrdWindow t N K) ⊆ pairedOrdWindow t N K :=
       fun _ hq => (Finset.mem_filter.mp hq).2
@@ -2565,7 +2705,6 @@ theorem exists_xiSliceGaussianTail_cumulant_asymptotics :
       (Finset.sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => sq_nonneg _)
       (compl_pairedOrdWindow_le hC hT₀4 hbase hclose htT ht64 hR8 hRt F).2
   obtain ⟨hp_mass, hp_fourth⟩ := pairedOrdWindow_asymptotics hC hT₀4 hbase hclose htT ht64 hR8 hRt
-  dsimp only at hp_mass hp_fourth
   have hmass_err : |xiSliceGaussianTailMass t H -
       Real.log (t / (2 * Real.pi)) / (Real.pi * R)| ≤
       700 * (1 + C) * (Real.log t / R ^ 2 + Real.log t / t) := by
@@ -2610,7 +2749,7 @@ theorem exists_xiSliceGaussianTail_cumulant_asymptotics :
         Real.log_le_log (by positivity) (div_le_self ht0.le (by linarith [Real.pi_gt_three]))
       calc Real.log (t / (2 * Real.pi)) / (Real.pi * R)
           ≤ Real.log t / (Real.pi * R) := div_le_div_of_nonneg_right h1 (by positivity)
-        _ ≤ Real.log t / (1 * R) := div_le_div_of_nonneg_left hlog0 hR0
+        _ ≤ Real.log t / (1 * R) := div_le_div_of_nonneg_left hlog0 (by positivity)
             (mul_le_mul_of_nonneg_right (by linarith [Real.pi_gt_three]) hR0.le)
         _ = Real.log t / R := by ring
     have hR2_le : Real.log t / R ^ 2 ≤ Real.log t / R :=
@@ -2632,7 +2771,7 @@ theorem exists_xiSliceGaussianTail_cumulant_asymptotics :
         ≤ ((701 * (1 + C)) * (Real.log t / R) + (700 * (1 + C)) * (Real.log t / t)) / R :=
           div_le_div_of_nonneg_right hmass_upper hR0.le
       _ = 701 * (1 + C) * (Real.log t / R ^ 2) + 700 * (1 + C) * (Real.log t / (t * R)) := by
-          field_simp [hR0.ne']; ring
+          field_simp [hR0.ne']
       _ ≤ 701 * (1 + C) * (Real.log t / R ^ 2) + 701 * (1 + C) * (Real.log t / t) := by
           refine add_le_add le_rfl ?_
           calc 700 * (1 + C) * (Real.log t / (t * R))
@@ -2654,3 +2793,718 @@ theorem exists_xiSliceGaussianTail_cumulant_asymptotics :
   have hp2 : 0 ≤ (1 + C) * (Real.log t / R ^ 4 + Real.log t / (t ^ 2 * R)) := by positivity
   dsimp only [C₁]
   exact ⟨by linarith, by linarith, by linarith⟩
+
+/-! ## 4. Multi-pair Mehler threshold escalation (`1/4 → 16/57 → 4/11`) -/
+
+/-- Even polynomial `(X² - δ²)^{2m}` modeling `m` symmetric critical-line double zero pairs at `±δ`. -/
+def gaussianMultiPairPoly (m : ℕ) (δ : ℝ) : ℝ[X] :=
+  (X ^ 2 - C (δ ^ 2)) ^ (2 * m)
+
+/-- Gaussian heat convolution at variance `lam` of `(x² - δ²)^{2m} exp(a x²)`. -/
+def gaussianMultiPairHeat (m : ℕ) (δ a lam x : ℝ) : ℝ :=
+  ∫ u : ℝ, gaussDensity (lam / 2) u *
+    ((gaussianMultiPairPoly m δ).eval (x + u) * Real.exp (a * (x + u) ^ 2))
+
+/-- At `m = 1`, `gaussianMultiPairHeat` recovers `DeBruijn.gaussianModelHeat`. -/
+theorem gaussianMultiPairHeat_one_eq_gaussianModelHeat (δ a lam x : ℝ) :
+    gaussianMultiPairHeat 1 δ a lam x = DeBruijn.gaussianModelHeat δ a lam x := by
+  unfold gaussianMultiPairHeat DeBruijn.gaussianModelHeat DeBruijn.gaussianModel
+    gaussianMultiPairPoly
+  congr 1 with u
+  simp only [eval_pow, eval_sub, eval_X, eval_C]
+  ring
+
+/-- For `lam > 0` and `2 a lam < 1`, `gaussianMultiPairHeat m δ a lam` equals the closed-form
+polynomial Mehler transform of `gaussianMultiPairPoly m δ`. -/
+theorem gaussianMultiPairHeat_eq_mehlerPolyTransform (m : ℕ) (δ : ℝ) {a lam : ℝ}
+    (hlam : 0 < lam) (hconv : 2 * a * lam < 1) (x : ℝ) :
+    gaussianMultiPairHeat m δ a lam x =
+      mehlerPolyTransform a lam (gaussianMultiPairPoly m δ) x :=
+  (integrable_and_integral_gaussDensity_mul_exp_sq_poly hlam hconv
+    (gaussianMultiPairPoly m δ) x).2
+
+/-- Second derivative at the origin of `mehlerPolyTransform a lam P` (`2 a lam < 1`). -/
+theorem deriv_deriv_mehlerPolyTransform_zero {a lam : ℝ} (hconv : 2 * a * lam < 1) (P : ℝ[X]) :
+    let σ := DeBruijn.gaussianModelScale a lam
+    let s := lam / (2 * σ)
+    deriv (deriv (mehlerPolyTransform a lam P)) 0 =
+      σ ^ (-(1 / 2 : ℝ)) *
+        (2 * (a / σ) * (forwardPolyHeat s P).eval 0 +
+          (1 / σ ^ 2) * (forwardPolyHeat s (derivative (derivative P))).eval 0) := by
+  dsimp only
+  set σ := DeBruijn.gaussianModelScale a lam
+  set s := lam / (2 * σ)
+  set Q := forwardPolyHeat s P
+  have hσ : 0 < σ := DeBruijn.gaussianModelScale_pos hconv
+  have hsq : ∀ x : ℝ, HasDerivAt (fun y : ℝ => a / σ * y ^ 2) (2 * (a / σ) * x) x := by
+    intro x
+    have h := ((hasDerivAt_id x).mul (hasDerivAt_id x)).const_mul (a / σ)
+    have h' : HasDerivAt (fun y : ℝ => a / σ * y ^ 2) (a / σ * (1 * x + x * 1)) x :=
+      h.congr_of_eventuallyEq (Eventually.of_forall fun y => by
+        simp only [Pi.mul_apply, id_eq]; ring)
+    convert h' using 1
+    ring
+  have hexp : ∀ x : ℝ, HasDerivAt (fun y : ℝ => Real.exp (a / σ * y ^ 2))
+      (Real.exp (a / σ * x ^ 2) * (2 * (a / σ) * x)) x := fun x => (hsq x).exp
+  have hpoly : ∀ (R : ℝ[X]) (x : ℝ),
+      HasDerivAt (fun y : ℝ => R.eval (y / σ)) ((derivative R).eval (x / σ) * (1 / σ)) x := by
+    intro R x
+    have h := (R.hasDerivAt (x / σ)).comp x ((hasDerivAt_id x).div_const σ)
+    exact h.congr_deriv (by ring)
+  have hd1 : ∀ x : ℝ, HasDerivAt (mehlerPolyTransform a lam P)
+      (σ ^ (-(1 / 2 : ℝ)) *
+        ((Real.exp (a / σ * x ^ 2) * Q.eval (x / σ)) * (2 * (a / σ) * x) +
+          Real.exp (a / σ * x ^ 2) * ((derivative Q).eval (x / σ) * (1 / σ)))) x := by
+    intro x
+    have h := ((hexp x).mul (hpoly Q x)).const_mul (σ ^ (-(1 / 2 : ℝ)))
+    have h' : HasDerivAt (mehlerPolyTransform a lam P)
+        (σ ^ (-(1 / 2 : ℝ)) * (Real.exp (a / σ * x ^ 2) * (2 * (a / σ) * x) * Q.eval (x / σ) +
+          Real.exp (a / σ * x ^ 2) * ((derivative Q).eval (x / σ) * (1 / σ)))) x :=
+      h.congr_of_eventuallyEq (Eventually.of_forall fun y => by
+        simp only [Pi.mul_apply]; unfold mehlerPolyTransform; dsimp only [σ, s, Q]; ring)
+    exact h'.congr_deriv (by ring)
+  have hderiv1 : deriv (mehlerPolyTransform a lam P) = fun x : ℝ =>
+      σ ^ (-(1 / 2 : ℝ)) *
+        ((Real.exp (a / σ * x ^ 2) * Q.eval (x / σ)) * (2 * (a / σ) * x) +
+          Real.exp (a / σ * x ^ 2) * ((derivative Q).eval (x / σ) * (1 / σ))) := by
+    funext x
+    exact (hd1 x).deriv
+  rw [hderiv1]
+  have hf1 : HasDerivAt
+      (fun x : ℝ => (Real.exp (a / σ * x ^ 2) * Q.eval (x / σ)) * (2 * (a / σ) * x))
+      (2 * (a / σ) * Q.eval 0) 0 := by
+    have ha : HasDerivAt (fun x : ℝ => Real.exp (a / σ * x ^ 2) * Q.eval (x / σ))
+        (Real.exp (a / σ * 0 ^ 2) * (2 * (a / σ) * 0) * Q.eval (0 / σ) +
+          Real.exp (a / σ * 0 ^ 2) * ((derivative Q).eval (0 / σ) * (1 / σ))) 0 :=
+      ((hexp 0).mul (hpoly Q 0)).congr_of_eventuallyEq
+        (Eventually.of_forall fun y => by simp only [Pi.mul_apply])
+    have hb : HasDerivAt (fun x : ℝ => 2 * (a / σ) * x) (2 * (a / σ) * 1) 0 :=
+      (hasDerivAt_id (0 : ℝ)).const_mul (2 * (a / σ))
+    have hab : HasDerivAt
+        (fun x : ℝ => (Real.exp (a / σ * x ^ 2) * Q.eval (x / σ)) * (2 * (a / σ) * x)) _ 0 :=
+      (ha.mul hb).congr_of_eventuallyEq
+        (Eventually.of_forall fun y => by simp only [Pi.mul_apply])
+    exact hab.congr_deriv (by
+      simp only [zero_div, mul_zero, zero_mul, add_zero, zero_add, sq, Real.exp_zero,
+        one_mul, mul_one])
+  have hf2 : HasDerivAt
+      (fun x : ℝ => Real.exp (a / σ * x ^ 2) * ((derivative Q).eval (x / σ) * (1 / σ)))
+      ((1 / σ ^ 2) * (derivative (derivative Q)).eval 0) 0 := by
+    have hc := (hpoly (derivative Q) 0).mul_const (1 / σ)
+    have h2 : HasDerivAt
+        (fun x : ℝ => Real.exp (a / σ * x ^ 2) * ((derivative Q).eval (x / σ) * (1 / σ))) _ 0 :=
+      ((hexp 0).mul hc).congr_of_eventuallyEq
+        (Eventually.of_forall fun y => by simp only [Pi.mul_apply])
+    exact h2.congr_deriv (by
+      simp only [zero_div, mul_zero, zero_mul, add_zero, zero_add, sq, Real.exp_zero,
+        one_mul, mul_one]; ring)
+  have hd2_at : HasDerivAt
+      (fun x : ℝ => σ ^ (-(1 / 2 : ℝ)) *
+        ((Real.exp (a / σ * x ^ 2) * Q.eval (x / σ)) * (2 * (a / σ) * x) +
+          Real.exp (a / σ * x ^ 2) * ((derivative Q).eval (x / σ) * (1 / σ))))
+      (σ ^ (-(1 / 2 : ℝ)) *
+        (2 * (a / σ) * Q.eval 0 + (1 / σ ^ 2) * (derivative (derivative Q)).eval 0)) 0 :=
+    ((hf1.add hf2).const_mul (σ ^ (-(1 / 2 : ℝ)))).congr_of_eventuallyEq
+      (Eventually.of_forall fun y => by simp only [Pi.add_apply])
+  rw [hd2_at.deriv]
+  dsimp only [Q]
+  rw [derivative_forwardPolyHeat, derivative_forwardPolyHeat]
+
+/-- Rescaling a centered polynomial integral against `gaussDensity s` (`s > 0`) to the standard
+normal density `gaussDensity (1/2)`. -/
+theorem integral_gaussDensity_scale_eq_half {s : ℝ} (hs : 0 < s) (Q : ℝ[X]) :
+    ∫ v : ℝ, gaussDensity s v * Q.eval v =
+      ∫ z : ℝ, gaussDensity (1 / 2) z * Q.eval (Real.sqrt (2 * s) * z) := by
+  set r := Real.sqrt (2 * s)
+  have hr : 0 < r := Real.sqrt_pos.mpr (by positivity)
+  have hr2 : r ^ 2 = 2 * s := Real.sq_sqrt (by positivity)
+  rw [GaloisForLFunctions.integral_comp_mul_pos (fun v => gaussDensity s v * Q.eval v) hr,
+    ← integral_const_mul]
+  congr 1 with z
+  have hg : r * gaussDensity s (r * z) = gaussDensity (1 / 2) z := by
+    unfold gaussDensity
+    have hexp : -((r * z) ^ 2 / (4 * s)) = -(z ^ 2 / (4 * (1 / 2))) := by
+      rw [mul_pow, hr2]
+      field_simp [hs.ne']
+    have hnorm : r * (4 * Real.pi * s) ^ (-(1 / 2 : ℝ)) =
+        (4 * Real.pi * (1 / 2)) ^ (-(1 / 2 : ℝ)) := by
+      rw [show r = (2 * s) ^ (1 / 2 : ℝ) from Real.sqrt_eq_rpow (2 * s),
+        show 4 * Real.pi * s = (4 * Real.pi * (1 / 2)) * (2 * s) by ring,
+        Real.mul_rpow (x := 4 * Real.pi * (1 / 2)) (y := 2 * s) (by positivity) (by positivity)]
+      calc (2 * s) ^ (1 / 2 : ℝ) *
+            ((4 * Real.pi * (1 / 2)) ^ (-(1 / 2 : ℝ)) * (2 * s) ^ (-(1 / 2 : ℝ)))
+          = (4 * Real.pi * (1 / 2)) ^ (-(1 / 2 : ℝ)) *
+              ((2 * s) ^ (1 / 2 : ℝ) * (2 * s) ^ (-(1 / 2 : ℝ))) := by ring
+        _ = (4 * Real.pi * (1 / 2)) ^ (-(1 / 2 : ℝ)) *
+              (2 * s) ^ ((1 / 2 : ℝ) + -(1 / 2 : ℝ)) := by
+              rw [← Real.rpow_add (by positivity)]
+        _ = (4 * Real.pi * (1 / 2)) ^ (-(1 / 2 : ℝ)) := by norm_num
+    rw [hexp, ← mul_assoc, hnorm]
+  rw [← mul_assoc, hg]
+
+/-- **First-order polynomial Stein identity** for `gaussDensity (1/2)`:
+`∫ g_{1/2}(z) P₀'(z) dz = ∫ g_{1/2}(z) z P₀(z) dz`. -/
+theorem integral_gaussDensity_half_deriv_eq (P₀ : ℝ[X]) :
+    ∫ z : ℝ, gaussDensity (1 / 2) z * (derivative P₀).eval z =
+      ∫ z : ℝ, gaussDensity (1 / 2) z * (z * P₀.eval z) := by
+  have hs : (0 : ℝ) < 1 / 2 := by norm_num
+  have h1 := (integrable_and_integral_gaussDensity_poly hs (derivative P₀) 0).2
+  have h2 := (integrable_and_integral_gaussDensity_poly hs (X * P₀) 0).2
+  simp only [zero_add, eval_mul, eval_X] at h1 h2
+  rw [h1, h2, forwardPolyHeat_X_mul, derivative_forwardPolyHeat]
+  simp
+
+/-- **Second-order polynomial Stein identity** for `gaussDensity (1/2)`:
+`∫ g_{1/2}(z) P₀''(z) dz = ∫ g_{1/2}(z) (z² - 1) P₀(z) dz`. -/
+theorem integral_gaussDensity_half_deriv2_eq (P₀ : ℝ[X]) :
+    ∫ z : ℝ, gaussDensity (1 / 2) z * (derivative (derivative P₀)).eval z =
+      ∫ z : ℝ, gaussDensity (1 / 2) z * ((z ^ 2 - 1) * P₀.eval z) := by
+  have hs : (0 : ℝ) < 1 / 2 := by norm_num
+  rw [integral_gaussDensity_half_deriv_eq (derivative P₀)]
+  have hXP : derivative (X * P₀) = P₀ + X * derivative P₀ := by
+    rw [derivative_mul, derivative_X, one_mul]
+  have hpt : (fun z : ℝ => gaussDensity (1 / 2) z * (z * (derivative P₀).eval z)) =
+      fun z => gaussDensity (1 / 2) z * (derivative (X * P₀)).eval z -
+        gaussDensity (1 / 2) z * P₀.eval z := by
+    funext z
+    have hev := congrArg (fun R : ℝ[X] => R.eval z) hXP
+    simp only [eval_add, eval_mul, eval_X] at hev
+    linarith [congrArg (fun w => gaussDensity (1 / 2) z * w) hev]
+  have hi1 : Integrable (fun z : ℝ => gaussDensity (1 / 2) z * (derivative (X * P₀)).eval z) := by
+    simpa only [zero_add] using
+      (integrable_and_integral_gaussDensity_poly hs (derivative (X * P₀)) 0).1
+  have hi2 : Integrable (fun z : ℝ => gaussDensity (1 / 2) z * P₀.eval z) := by
+    simpa only [zero_add] using (integrable_and_integral_gaussDensity_poly hs P₀ 0).1
+  have hiX : Integrable (fun z : ℝ => gaussDensity (1 / 2) z * (z * (X * P₀).eval z)) :=
+    ((integrable_and_integral_gaussDensity_poly hs (X * (X * P₀)) 0).1).congr
+      (Eventually.of_forall fun z => by simp)
+  rw [hpt, integral_sub hi1 hi2, integral_gaussDensity_half_deriv_eq (X * P₀),
+    ← integral_sub hiX hi2]
+  congr 1 with z
+  simp only [eval_mul, eval_X]
+  ring
+
+/-- **Exact origin curvature formula for the `m`-pair Gaussian model at scaled offset.**
+At `δ = √(c₀ lam / (1 - 2 a lam))` (`c₀ ≥ 0`, `lam > 0`, `2 a lam < 1`), the second derivative
+of `gaussianMultiPairHeat m δ a lam` at `0` collapses to a single standard Gaussian integral of
+`(z² + 2 a lam - 1) (z² - c₀)^{2m}`. -/
+theorem deriv_deriv_gaussianMultiPairHeat_at_scaled_offset (m : ℕ) {c₀ a lam : ℝ}
+    (hc₀ : 0 ≤ c₀) (hlam : 0 < lam) (hconv : 2 * a * lam < 1) :
+    let σ := DeBruijn.gaussianModelScale a lam
+    let δ := Real.sqrt (c₀ * (lam / σ))
+    deriv (deriv (gaussianMultiPairHeat m δ a lam)) 0 =
+      σ ^ (-(1 / 2 : ℝ)) * ((lam / σ) ^ (2 * m) / (lam * σ)) *
+        ∫ z : ℝ, gaussDensity (1 / 2) z * ((z ^ 2 + 2 * a * lam - 1) * (z ^ 2 - c₀) ^ (2 * m)) := by
+  dsimp only
+  set σ := DeBruijn.gaussianModelScale a lam
+  have hσ : 0 < σ := DeBruijn.gaussianModelScale_pos hconv
+  have hratio : 0 < lam / σ := div_pos hlam hσ
+  set s := lam / (2 * σ)
+  have hs : 0 < s := by dsimp only [s]; positivity
+  have h2s : 2 * s = lam / σ := by dsimp only [s]; field_simp [hσ.ne']
+  set r := Real.sqrt (lam / σ)
+  have hr : 0 < r := Real.sqrt_pos.mpr hratio
+  have hr2 : r ^ 2 = lam / σ := Real.sq_sqrt hratio.le
+  set δ := Real.sqrt (c₀ * (lam / σ))
+  have hδ2 : δ ^ 2 = c₀ * (lam / σ) := Real.sq_sqrt (mul_nonneg hc₀ hratio.le)
+  set P := gaussianMultiPairPoly m δ
+  set P₀ : ℝ[X] := (X ^ 2 - C c₀) ^ (2 * m)
+  have hfun : gaussianMultiPairHeat m δ a lam = mehlerPolyTransform a lam P :=
+    funext fun x => gaussianMultiPairHeat_eq_mehlerPolyTransform m δ hlam hconv x
+  rw [hfun, deriv_deriv_mehlerPolyTransform_zero hconv P]
+  change σ ^ (-(1 / 2 : ℝ)) *
+      (2 * (a / σ) * (forwardPolyHeat s P).eval 0 +
+        (1 / σ ^ 2) * (forwardPolyHeat s (derivative (derivative P))).eval 0) = _
+  -- Relate `P` to `P₀.comp (C r⁻¹ * X)`.
+  have hP_comp : P = C ((lam / σ) ^ (2 * m)) * P₀.comp (C r⁻¹ * X) := by
+    dsimp only [P, gaussianMultiPairPoly, P₀]
+    have hinner : C (lam / σ) * ((C r⁻¹ * X) ^ 2 - C c₀) = X ^ 2 - C (δ ^ 2) := by
+      have h1 : C (lam / σ) * C r⁻¹ ^ 2 = (1 : ℝ[X]) := by
+        rw [← C_pow, ← C_mul, inv_pow, hr2, mul_inv_cancel₀ hratio.ne', C_1]
+      have h2 : C (lam / σ) * C c₀ = C (δ ^ 2) := by
+        rw [← C_mul, hδ2, mul_comm]
+      rw [mul_pow, mul_sub, ← mul_assoc, h1, one_mul, h2]
+    rw [pow_comp, sub_comp, pow_comp, X_comp, C_comp, C_pow, ← mul_pow, hinner]
+  have hd_lin : ∀ Q : ℝ[X], derivative (Q.comp (C r⁻¹ * X)) =
+      C r⁻¹ * (derivative Q).comp (C r⁻¹ * X) := by
+    intro Q
+    rw [Polynomial.derivative_comp, derivative_mul, derivative_C, zero_mul, zero_add,
+      derivative_X, mul_one, mul_comm]
+  have hd2_P : derivative (derivative P) =
+      C ((lam / σ) ^ (2 * m) * (lam / σ)⁻¹) * (derivative (derivative P₀)).comp (C r⁻¹ * X) := by
+    rw [hP_comp, derivative_C_mul, hd_lin, derivative_C_mul, derivative_C_mul, hd_lin]
+    have hrinv : r⁻¹ * r⁻¹ = (lam / σ)⁻¹ := by
+      rw [← sq, inv_pow, hr2]
+    rw [← mul_assoc, ← mul_assoc, ← C_mul, ← C_mul, mul_assoc ((lam / σ) ^ (2 * m)), hrinv]
+  -- Evaluate `(forwardPolyHeat s P).eval 0` and `(forwardPolyHeat s P'').eval 0`.
+  have heval0 : (forwardPolyHeat s P).eval 0 =
+      (lam / σ) ^ (2 * m) * ∫ z : ℝ, gaussDensity (1 / 2) z * P₀.eval z := by
+    have h := (integrable_and_integral_gaussDensity_poly hs P 0).2
+    simp only [zero_add] at h
+    rw [← h, integral_gaussDensity_scale_eq_half hs P, h2s]
+    change ∫ z : ℝ, gaussDensity (1 / 2) z * P.eval (r * z) = _
+    rw [← integral_const_mul]
+    congr 1 with z
+    rw [hP_comp]
+    simp only [eval_mul, eval_C, eval_comp, eval_X]
+    rw [← mul_assoc r⁻¹, inv_mul_cancel₀ hr.ne', one_mul]
+    ring
+  have heval2 : (forwardPolyHeat s (derivative (derivative P))).eval 0 =
+      (lam / σ) ^ (2 * m) * (lam / σ)⁻¹ *
+        ∫ z : ℝ, gaussDensity (1 / 2) z * ((z ^ 2 - 1) * P₀.eval z) := by
+    have h := (integrable_and_integral_gaussDensity_poly hs (derivative (derivative P)) 0).2
+    simp only [zero_add] at h
+    rw [← h, integral_gaussDensity_scale_eq_half hs (derivative (derivative P)), h2s]
+    change ∫ z : ℝ, gaussDensity (1 / 2) z * (derivative (derivative P)).eval (r * z) = _
+    rw [← integral_gaussDensity_half_deriv2_eq P₀, ← integral_const_mul]
+    congr 1 with z
+    rw [hd2_P]
+    simp only [eval_mul, eval_C, eval_comp, eval_X]
+    rw [← mul_assoc r⁻¹, inv_mul_cancel₀ hr.ne', one_mul]
+    ring
+  have hiP0 : Integrable (fun z : ℝ => gaussDensity (1 / 2) z * P₀.eval z) := by
+    simpa only [zero_add] using (integrable_and_integral_gaussDensity_poly (by norm_num) P₀ 0).1
+  have hiZ2 : Integrable (fun z : ℝ => gaussDensity (1 / 2) z * ((z ^ 2 - 1) * P₀.eval z)) := by
+    have h := (integrable_and_integral_gaussDensity_poly (by norm_num : (0 : ℝ) < 1 / 2)
+      ((X ^ 2 - 1) * P₀) 0).1
+    refine h.congr (Eventually.of_forall fun z => ?_)
+    simp
+  rw [heval0, heval2]
+  have hcomb : 2 * (a / σ) * ((lam / σ) ^ (2 * m) * ∫ z : ℝ, gaussDensity (1 / 2) z * P₀.eval z) +
+      1 / σ ^ 2 * ((lam / σ) ^ (2 * m) * (lam / σ)⁻¹ *
+        ∫ z : ℝ, gaussDensity (1 / 2) z * ((z ^ 2 - 1) * P₀.eval z)) =
+      ((lam / σ) ^ (2 * m) / (lam * σ)) *
+        ((2 * a * lam) * (∫ z : ℝ, gaussDensity (1 / 2) z * P₀.eval z) +
+          ∫ z : ℝ, gaussDensity (1 / 2) z * ((z ^ 2 - 1) * P₀.eval z)) := by
+    field_simp [hlam.ne', hσ.ne']
+  rw [hcomb, ← integral_const_mul (2 * a * lam), ← integral_add (hiP0.const_mul _) hiZ2]
+  have hpt : (fun z : ℝ => 2 * a * lam * (gaussDensity (1 / 2) z * P₀.eval z) +
+      gaussDensity (1 / 2) z * ((z ^ 2 - 1) * P₀.eval z)) =
+      fun z => gaussDensity (1 / 2) z * ((z ^ 2 + 2 * a * lam - 1) * (z ^ 2 - c₀) ^ (2 * m)) := by
+    funext z
+    dsimp only [P₀]
+    simp only [eval_pow, eval_sub, eval_X, eval_C]
+    ring
+  rw [hpt]
+  ring
+
+/-- **Exact two-pair (`m = 2`) curvature evaluation at `c₀ = 7`:**
+`∫ g_{1/2}(z) (z² + 2 a lam - 1) (z² - 7)⁴ dz = 56 (57 a lam - 16)`. -/
+theorem integral_gaussDensity_half_two_pair_seven (a lam : ℝ) :
+    ∫ z : ℝ, gaussDensity (1 / 2) z * ((z ^ 2 + 2 * a * lam - 1) * (z ^ 2 - 7) ^ 4) =
+      56 * (57 * (a * lam) - 16) := by
+  have hs : (0 : ℝ) < 1 / 2 := by norm_num
+  have hi (k : ℕ) : Integrable (fun z : ℝ => gaussDensity (1 / 2) z * z ^ (2 * k)) :=
+    DeBruijn.integrable_gaussDensity_mul_pow hs (2 * k)
+  have hm0 : ∫ z : ℝ, gaussDensity (1 / 2) z * z ^ (2 * 0) = 1 := by
+    rw [DeBruijn.integral_gaussDensity_mul_pow_even hs 0]; norm_num
+  have hm1 : ∫ z : ℝ, gaussDensity (1 / 2) z * z ^ (2 * 1) = 1 := by
+    rw [DeBruijn.integral_gaussDensity_mul_pow_even hs 1]; norm_num [Nat.factorial]
+  have hm2 : ∫ z : ℝ, gaussDensity (1 / 2) z * z ^ (2 * 2) = 3 := by
+    rw [DeBruijn.integral_gaussDensity_mul_pow_even hs 2]; norm_num [Nat.factorial]
+  have hm3 : ∫ z : ℝ, gaussDensity (1 / 2) z * z ^ (2 * 3) = 15 := by
+    rw [DeBruijn.integral_gaussDensity_mul_pow_even hs 3]; norm_num [Nat.factorial]
+  have hm4 : ∫ z : ℝ, gaussDensity (1 / 2) z * z ^ (2 * 4) = 105 := by
+    rw [DeBruijn.integral_gaussDensity_mul_pow_even hs 4]; norm_num [Nat.factorial]
+  have hm5 : ∫ z : ℝ, gaussDensity (1 / 2) z * z ^ (2 * 5) = 945 := by
+    rw [DeBruijn.integral_gaussDensity_mul_pow_even hs 5]; norm_num [Nat.factorial]
+  set κ := 2 * a * lam - 1
+  let fA : ℝ → ℝ := fun z =>
+    gaussDensity (1 / 2) z * z ^ (2 * 5) +
+      (κ - 28) * (gaussDensity (1 / 2) z * z ^ (2 * 4))
+  let fB : ℝ → ℝ := fun z =>
+    (294 - 28 * κ) * (gaussDensity (1 / 2) z * z ^ (2 * 3)) +
+      (294 * κ - 1372) * (gaussDensity (1 / 2) z * z ^ (2 * 2))
+  let fC : ℝ → ℝ := fun z =>
+    (2401 - 1372 * κ) * (gaussDensity (1 / 2) z * z ^ (2 * 1)) +
+      (2401 * κ) * (gaussDensity (1 / 2) z * z ^ (2 * 0))
+  have hexp : (fun z : ℝ => gaussDensity (1 / 2) z * ((z ^ 2 + 2 * a * lam - 1) * (z ^ 2 - 7) ^ 4)) =
+      fun z => (fA z + fB z) + fC z := by
+    funext z
+    dsimp only [fA, fB, fC, κ]
+    ring
+  have hiA : Integrable fA := (hi 5).add ((hi 4).const_mul (κ - 28))
+  have hiB : Integrable fB :=
+    ((hi 3).const_mul (294 - 28 * κ)).add ((hi 2).const_mul (294 * κ - 1372))
+  have hiAB : Integrable (fun z => fA z + fB z) := hiA.add hiB
+  have hiC : Integrable fC :=
+    ((hi 1).const_mul (2401 - 1372 * κ)).add ((hi 0).const_mul (2401 * κ))
+  rw [hexp, integral_add hiAB hiC, integral_add hiA hiB]
+  dsimp only [fA, fB, fC]
+  rw [integral_add (hi 5) ((hi 4).const_mul _),
+    integral_add ((hi 3).const_mul _) ((hi 2).const_mul _),
+    integral_add ((hi 1).const_mul _) ((hi 0).const_mul _)]
+  simp only [integral_const_mul, hm0, hm1, hm2, hm3, hm4, hm5]
+  dsimp only [κ]
+  ring
+
+/-- **Two-pair Mehler threshold escalation (`1/4 → 16/57`).**
+For any `lam > 0` and `a` with `a * lam < 16 / 57` (noting `16 / 57 > 1 / 4`), at the explicit
+offset `δ = √(7 lam / (1 - 2 a lam)) > 0`, the two-pair Gaussian model `gaussianMultiPairHeat 2 δ a lam`
+has strictly negative second derivative at the origin. -/
+theorem deriv_deriv_gaussianMultiPairHeat_two_neg {a lam : ℝ}
+    (hlam : 0 < lam) (hκ : a * lam < 16 / 57) :
+    let σ := DeBruijn.gaussianModelScale a lam
+    let δ := Real.sqrt (7 * (lam / σ))
+    0 < δ ∧ deriv (deriv (gaussianMultiPairHeat 2 δ a lam)) 0 < 0 := by
+  dsimp only
+  have hconv : 2 * a * lam < 1 := by linarith
+  have hσ : 0 < DeBruijn.gaussianModelScale a lam := DeBruijn.gaussianModelScale_pos hconv
+  set σ := DeBruijn.gaussianModelScale a lam
+  have hδ : 0 < Real.sqrt (7 * (lam / σ)) := Real.sqrt_pos.mpr (by positivity)
+  refine ⟨hδ, ?_⟩
+  have hcurv := deriv_deriv_gaussianMultiPairHeat_at_scaled_offset 2
+    (c₀ := 7) (by norm_num) hlam hconv
+  dsimp only at hcurv
+  rw [hcurv, integral_gaussDensity_half_two_pair_seven]
+  have hpos : 0 < σ ^ (-(1 / 2 : ℝ)) * ((lam / σ) ^ (2 * 2) / (lam * σ)) := by positivity
+  have hneg : 56 * (57 * (a * lam) - 16) < 0 := by linarith
+  exact mul_neg_of_pos_of_neg hpos hneg
+
+/-- **Dense-background two-pair negative curvature (`0 < κ < 16/57`).**
+For any heat rate `0 < κ < 16 / 57` and any arbitrarily small window radius `ε > 0`, whenever the
+Gaussian tail curvature `a` satisfies `7 κ / ((1 - 2κ) ε²) < a`, at heat `lam = κ / a` there exists
+`0 < δ < ε` such that `deriv (deriv (gaussianMultiPairHeat 2 δ a (κ / a))) 0 < 0`. -/
+theorem exists_dense_gaussianMultiPairHeat_two_deriv2_neg {κ ε a : ℝ}
+    (hκ0 : 0 < κ) (hκ : κ < 16 / 57) (hε : 0 < ε)
+    (ha : 7 * κ / ((1 - 2 * κ) * ε ^ 2) < a) :
+    ∃ δ : ℝ, 0 < δ ∧ δ < ε ∧
+      deriv (deriv (gaussianMultiPairHeat 2 δ a (κ / a))) 0 < 0 := by
+  have h12κ : 0 < 1 - 2 * κ := by linarith
+  have ha0 : 0 < a := lt_trans (by positivity) ha
+  set lam := κ / a
+  have hlam : 0 < lam := div_pos hκ0 ha0
+  have hprod : a * lam = κ := mul_div_cancel₀ κ ha0.ne'
+  obtain ⟨hδ0, hneg⟩ := deriv_deriv_gaussianMultiPairHeat_two_neg (a := a) (lam := lam) hlam
+    (by rw [hprod]; exact hκ)
+  set σ := DeBruijn.gaussianModelScale a lam
+  have hσ_eq : σ = 1 - 2 * κ := by
+    dsimp only [σ, DeBruijn.gaussianModelScale]
+    linarith [hprod]
+  refine ⟨Real.sqrt (7 * (lam / σ)), hδ0, ?_, hneg⟩
+  have hlt : 7 * (lam / σ) < ε ^ 2 := by
+    rw [hσ_eq]
+    dsimp only [lam]
+    have h1 : 7 * (κ / a / (1 - 2 * κ)) = 7 * κ / ((1 - 2 * κ) * a) := by
+      field_simp [ha0.ne', h12κ.ne']
+    rw [h1, div_lt_iff₀ (mul_pos h12κ ha0)]
+    have ha' := (div_lt_iff₀ (mul_pos h12κ (sq_pos_of_pos hε))).mp ha
+    linarith
+  calc Real.sqrt (7 * (lam / σ)) < Real.sqrt (ε ^ 2) :=
+        Real.sqrt_lt_sqrt (by rw [hσ_eq]; positivity) hlt
+    _ = ε := Real.sqrt_sq hε.le
+
+/-- Algebraic exponential majorant `|1 - u| ≤ exp((9/25) u)` for all `u ≥ 0`. -/
+private theorem abs_one_sub_le_exp_nine_twentyfifths {u : ℝ} (hu : 0 ≤ u) :
+    |1 - u| ≤ Real.exp ((9 / 25 : ℝ) * u) := by
+  set v := (9 / 100 : ℝ) * u
+  have hv : 0 ≤ v := by dsimp only [v]; positivity
+  have hpow_exp : (1 + v) ^ 4 ≤ Real.exp ((9 / 25 : ℝ) * u) := by
+    calc (1 + v) ^ 4 ≤ (Real.exp v) ^ 4 :=
+          pow_le_pow_left₀ (by positivity) (by linarith [Real.add_one_le_exp v]) 4
+      _ = Real.exp ((4 : ℕ) * v) := (Real.exp_nat_mul v 4).symm
+      _ = Real.exp ((9 / 25 : ℝ) * u) := by dsimp only [v]; push_cast; ring
+  refine (abs_le.mpr ⟨?_, ?_⟩).trans hpow_exp
+  · -- `-(1 + v)^4 ≤ 1 - u`, i.e. `u - 1 ≤ (1 + v)^4`.
+    set w := v - 2 / 5
+    have hident : (1 + v) ^ 4 - (u - 1) =
+        w ^ 2 * (w + 14 / 5) ^ 2 + (73 / 25 : ℝ) * w ^ 2 +
+          (w - 76 / 1125) ^ 2 + 496874 / 1265625 := by
+      dsimp only [w, v]
+      ring
+    have hnonneg : 0 ≤ (1 + v) ^ 4 - (u - 1) := by
+      rw [hident]
+      positivity
+    linarith
+  · -- `1 - u ≤ (1 + v)^4`.
+    have h1 : 1 ≤ (1 + v) ^ 4 := one_le_pow₀ (by linarith)
+    linarith
+
+/-- Elementary real limit `(1 + x / n)^n → exp x` as `n → ∞`. -/
+private theorem tendsto_one_add_div_pow_real_exp (x : ℝ) :
+    Tendsto (fun n : ℕ => (1 + x / (n : ℝ)) ^ n) atTop (𝓝 (Real.exp x)) := by
+  have hderiv : HasDerivAt (fun u : ℝ => Real.log (1 + x * u)) x 0 := by
+    have hlin : HasDerivAt (fun u : ℝ => 1 + x * u) (0 + x * 1) 0 :=
+      (hasDerivAt_const (0 : ℝ) (1 : ℝ)).add ((hasDerivAt_id (0 : ℝ)).const_mul x)
+    have hlog := (Real.hasDerivAt_log (by norm_num : (1 : ℝ) + x * 0 ≠ 0)).comp 0 hlin
+    exact hlog.congr_deriv (by ring)
+  have hslope : Tendsto (fun u : ℝ => u⁻¹ * Real.log (1 + x * u)) (𝓝[>] 0) (𝓝 x) := by
+    simpa [smul_eq_mul] using hderiv.tendsto_slope_zero_right
+  have hinv : Tendsto (fun n : ℕ => ((n : ℝ))⁻¹) atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
+      (tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop)
+      (by filter_upwards [eventually_gt_atTop 0] with n hn
+          exact inv_pos.mpr (Nat.cast_pos.mpr hn : (0 : ℝ) < (n : ℝ)))
+  have hlog_seq : Tendsto (fun n : ℕ => (n : ℝ) * Real.log (1 + x / (n : ℝ))) atTop (𝓝 x) := by
+    refine (hslope.comp hinv).congr' ?_
+    filter_upwards [eventually_gt_atTop 0] with n _
+    simp [div_eq_mul_inv]
+  refine ((Real.continuous_exp.tendsto x).comp hlog_seq).congr' ?_
+  filter_upwards [eventually_gt_atTop (Nat.ceil |x| + 1)] with n hn
+  have hnx : |x| < (n : ℝ) := by
+    calc |x| ≤ (Nat.ceil |x| : ℝ) := Nat.le_ceil |x|
+      _ < (n : ℝ) := by exact_mod_cast (by omega : Nat.ceil |x| < n)
+  have hn0 : (0 : ℝ) < (n : ℝ) := (abs_nonneg x).trans_lt hnx
+  have hpos : 0 < 1 + x / (n : ℝ) := by
+    have hdiv : -1 < x / (n : ℝ) := (lt_div_iff₀ hn0).mpr (by linarith [neg_abs_le x])
+    linarith
+  rw [Function.comp_apply, Real.exp_nat_mul, Real.exp_log hpos]
+
+/-- **Multi-pair Mehler threshold escalation beyond `1/3` (`0 < a lam < 4 / 11`).**
+For any `lam > 0` and `a` with `a * lam < 4 / 11` (noting `4 / 11 > 1 / 3`), there exist an integer
+multiplicity `m ≥ 1` and a critical-line offset `δ > 0` (explicitly `δ = √((3/2) m lam / (1 - 2 a lam))`)
+such that `deriv (deriv (gaussianMultiPairHeat m δ a lam)) 0 < 0`. -/
+theorem exists_multiplicity_deriv_deriv_gaussianMultiPairHeat_neg {a lam : ℝ}
+    (hlam : 0 < lam) (hκ : a * lam < 4 / 11) :
+    ∃ m : ℕ, 1 ≤ m ∧
+      let σ := DeBruijn.gaussianModelScale a lam
+      let δ := Real.sqrt (((3 / 2 : ℝ) * (m : ℝ)) * (lam / σ))
+      0 < δ ∧ deriv (deriv (gaussianMultiPairHeat m δ a lam)) 0 < 0 := by
+  have hconv : 2 * a * lam < 1 := by linarith
+  set σ := DeBruijn.gaussianModelScale a lam
+  have hσ : 0 < σ := DeBruijn.gaussianModelScale_pos hconv
+  -- Rescaled sequence of integrals at `m = n + 1` (`c_n = (3/2)(n + 1)`).
+  let f : ℕ → ℝ → ℝ := fun n z =>
+    gaussDensity (1 / 2) z *
+      ((z ^ 2 + 2 * a * lam - 1) *
+        (1 + (-(4 / 3 : ℝ) * z ^ 2) / ((2 * (n + 1) : ℕ) : ℝ)) ^ (2 * (n + 1)))
+  let flim : ℝ → ℝ := fun z =>
+    gaussDensity (1 / 2) z * ((z ^ 2 + 2 * a * lam - 1) * Real.exp (-(4 / 3 : ℝ) * z ^ 2))
+  -- Integrable majorant via `abs_one_sub_le_exp_nine_twentyfifths` and `gaussDensity (25/2)`.
+  let K₀ : ℝ := (4 * Real.pi * (1 / 2)) ^ (-(1 / 2 : ℝ)) /
+    (4 * Real.pi * (25 / 2)) ^ (-(1 / 2 : ℝ))
+  let bound : ℝ → ℝ := fun z =>
+    K₀ * (gaussDensity (25 / 2) z * z ^ 2 +
+      |2 * a * lam - 1| * (gaussDensity (25 / 2) z * z ^ 0))
+  have hbound_int : Integrable bound := by
+    have hs25 : (0 : ℝ) < 25 / 2 := by norm_num
+    exact ((DeBruijn.integrable_gaussDensity_mul_pow hs25 2).add
+      ((DeBruijn.integrable_gaussDensity_mul_pow hs25 0).const_mul _)).const_mul K₀
+  have hf_meas : ∀ n : ℕ, AEStronglyMeasurable (f n) volume := by
+    intro n
+    refine Continuous.aestronglyMeasurable ?_
+    dsimp only [f]
+    unfold gaussDensity
+    fun_prop
+  have hf_le : ∀ n : ℕ, ∀ᵐ z : ℝ, ‖f n z‖ ≤ bound z := by
+    intro n
+    refine Eventually.of_forall fun z => ?_
+    set N := 2 * (n + 1)
+    have hN0 : (0 : ℝ) < (N : ℝ) := by dsimp only [N]; positivity
+    set u := ((4 / 3 : ℝ) * z ^ 2) / (N : ℝ)
+    have hu0 : 0 ≤ u := by dsimp only [u]; positivity
+    have hpow_le : |(1 + (-(4 / 3 : ℝ) * z ^ 2) / (N : ℝ)) ^ N| ≤
+        Real.exp ((12 / 25 : ℝ) * z ^ 2) := by
+      have harg : 1 + (-(4 / 3 : ℝ) * z ^ 2) / (N : ℝ) = 1 - u := by
+        dsimp only [u]; ring
+      rw [harg, abs_pow]
+      calc |1 - u| ^ N ≤ (Real.exp ((9 / 25 : ℝ) * u)) ^ N :=
+            pow_le_pow_left₀ (abs_nonneg _) (abs_one_sub_le_exp_nine_twentyfifths hu0) N
+        _ = Real.exp ((N : ℝ) * ((9 / 25 : ℝ) * u)) := (Real.exp_nat_mul _ N).symm
+        _ = Real.exp ((12 / 25 : ℝ) * z ^ 2) := by
+            congr 1; dsimp only [u]; field_simp [hN0.ne']; ring
+    have hg_exp : gaussDensity (1 / 2) z * Real.exp ((12 / 25 : ℝ) * z ^ 2) =
+        K₀ * gaussDensity (25 / 2) z := by
+      dsimp only [K₀]
+      unfold gaussDensity
+      have hcpos : (0 : ℝ) < (4 * Real.pi * (25 / 2)) ^ (-(1 / 2 : ℝ)) := by positivity
+      have hexp : -(z ^ 2 / (4 * (1 / 2))) + (12 / 25 : ℝ) * z ^ 2 =
+          -(z ^ 2 / (4 * (25 / 2))) := by ring
+      rw [mul_assoc, ← Real.exp_add, hexp]
+      field_simp [hcpos.ne']
+    have hg0 : 0 ≤ gaussDensity (1 / 2) z := (gaussDensity_pos (by norm_num) z).le
+    have hg25 : 0 ≤ gaussDensity (25 / 2) z := (gaussDensity_pos (by norm_num) z).le
+    have hK0 : 0 ≤ K₀ := by dsimp only [K₀]; positivity
+    have htri : |z ^ 2 + 2 * a * lam - 1| ≤ z ^ 2 + |2 * a * lam - 1| := by
+      have := abs_add_le (z ^ 2) (2 * a * lam - 1)
+      rwa [abs_of_nonneg (sq_nonneg z), ← add_sub_assoc] at this
+    dsimp only [f, bound]
+    rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_nonneg hg0]
+    calc gaussDensity (1 / 2) z *
+          (|z ^ 2 + 2 * a * lam - 1| * |(1 + -(4 / 3) * z ^ 2 / (N : ℝ)) ^ N|)
+        ≤ gaussDensity (1 / 2) z *
+            ((z ^ 2 + |2 * a * lam - 1|) * Real.exp ((12 / 25 : ℝ) * z ^ 2)) :=
+          mul_le_mul_of_nonneg_left
+            (mul_le_mul htri hpow_le (abs_nonneg _) (by positivity)) hg0
+      _ = (gaussDensity (1 / 2) z * Real.exp ((12 / 25 : ℝ) * z ^ 2)) *
+            (z ^ 2 + |2 * a * lam - 1|) := by ring
+      _ = K₀ * gaussDensity (25 / 2) z * (z ^ 2 + |2 * a * lam - 1|) := by rw [hg_exp]
+      _ = K₀ * (gaussDensity (25 / 2) z * z ^ 2 +
+            |2 * a * lam - 1| * (gaussDensity (25 / 2) z * z ^ 0)) := by ring
+  have hf_tendsto : ∀ᵐ z : ℝ, Tendsto (fun n : ℕ => f n z) atTop (𝓝 (flim z)) := by
+    refine Eventually.of_forall fun z => ?_
+    have hsub : StrictMono (fun n : ℕ => 2 * (n + 1)) := by
+      intro a b hab; dsimp only; omega
+    have hexp_lim := (tendsto_one_add_div_pow_real_exp (-(4 / 3 : ℝ) * z ^ 2)).comp
+      hsub.tendsto_atTop
+    dsimp only [f, flim]
+    exact (hexp_lim.const_mul (z ^ 2 + 2 * a * lam - 1)).const_mul (gaussDensity (1 / 2) z)
+  have hint_tendsto : Tendsto (fun n : ℕ => ∫ z : ℝ, f n z) atTop (𝓝 (∫ z : ℝ, flim z)) :=
+    tendsto_integral_of_dominated_convergence bound hf_meas hbound_int hf_le hf_tendsto
+  -- Evaluate `∫ flim < 0` explicitly via `gaussDensity (3/22)`.
+  let K₁ : ℝ := (4 * Real.pi * (1 / 2)) ^ (-(1 / 2 : ℝ)) /
+    (4 * Real.pi * (3 / 22)) ^ (-(1 / 2 : ℝ))
+  have hK1_pos : 0 < K₁ := by dsimp only [K₁]; positivity
+  have hflim_val : ∫ z : ℝ, flim z = K₁ * (2 * (a * lam) - 8 / 11) := by
+    have hs3 : (0 : ℝ) < 3 / 22 := by norm_num
+    let g1 : ℝ → ℝ := fun z => gaussDensity (3 / 22) z * z ^ (2 * 1)
+    let g0 : ℝ → ℝ := fun z => (2 * a * lam - 1) * (gaussDensity (3 / 22) z * z ^ (2 * 0))
+    have hg1 : Integrable g1 := DeBruijn.integrable_gaussDensity_mul_pow hs3 2
+    have hg0 : Integrable g0 := (DeBruijn.integrable_gaussDensity_mul_pow hs3 0).const_mul _
+    have hrew : flim = fun z : ℝ => K₁ * (g1 z + g0 z) := by
+      funext z
+      dsimp only [flim, K₁, g1, g0]
+      unfold gaussDensity
+      have hcpos : (0 : ℝ) < (4 * Real.pi * (3 / 22)) ^ (-(1 / 2 : ℝ)) := by positivity
+      have hexp : -(z ^ 2 / (4 * (1 / 2))) + -(4 / 3 : ℝ) * z ^ 2 =
+          -(z ^ 2 / (4 * (3 / 22))) := by ring
+      have h1 : (4 * Real.pi * (1 / 2)) ^ (-(1 / 2 : ℝ)) * Real.exp (-(z ^ 2 / (4 * (1 / 2)))) *
+          ((z ^ 2 + 2 * a * lam - 1) * Real.exp (-(4 / 3 : ℝ) * z ^ 2)) =
+          ((4 * Real.pi * (1 / 2)) ^ (-(1 / 2 : ℝ)) *
+            (Real.exp (-(z ^ 2 / (4 * (1 / 2)))) * Real.exp (-(4 / 3 : ℝ) * z ^ 2))) *
+            (z ^ 2 + 2 * a * lam - 1) := by ring
+      rw [h1, ← Real.exp_add, hexp]
+      field_simp [hcpos.ne']
+      ring
+    rw [hrew, integral_const_mul, integral_add hg1 hg0]
+    dsimp only [g1, g0]
+    rw [integral_const_mul,
+      DeBruijn.integral_gaussDensity_mul_pow_even hs3 1,
+      DeBruijn.integral_gaussDensity_mul_pow_even hs3 0]
+    congr 1
+    norm_num [Nat.factorial]
+    ring
+  have hlim_neg : ∫ z : ℝ, flim z < 0 := by
+    rw [hflim_val]
+    exact mul_neg_of_pos_of_neg hK1_pos (by linarith)
+  obtain ⟨n, hn⟩ := (hint_tendsto.eventually (Iio_mem_nhds hlim_neg)).exists
+  set m := n + 1
+  have hm1 : 1 ≤ m := by omega
+  set c₀ := (3 / 2 : ℝ) * (m : ℝ)
+  have hc₀_pos : 0 < c₀ := by dsimp only [c₀, m]; positivity
+  set δ := Real.sqrt (c₀ * (lam / σ))
+  have hδ : 0 < δ := Real.sqrt_pos.mpr (mul_pos hc₀_pos (div_pos hlam hσ))
+  refine ⟨m, hm1, hδ, ?_⟩
+  have hcurv := deriv_deriv_gaussianMultiPairHeat_at_scaled_offset m hc₀_pos.le hlam hconv
+  dsimp only at hcurv
+  change deriv (deriv (gaussianMultiPairHeat m δ a lam)) 0 < 0
+  rw [hcurv]
+  -- Relate `∫ g_{1/2}(z) (z² + 2 a lam - 1) (z² - c₀)^{2m}` to `c₀^{2m} * ∫ f n z`.
+  have hscale_int :
+      ∫ z : ℝ, gaussDensity (1 / 2) z * ((z ^ 2 + 2 * a * lam - 1) * (z ^ 2 - c₀) ^ (2 * m)) =
+        c₀ ^ (2 * m) * ∫ z : ℝ, f n z := by
+    rw [← integral_const_mul]
+    congr 1 with z
+    dsimp only [f]
+    have hpow_eq : c₀ ^ (2 * m) *
+        (1 + (-(4 / 3 : ℝ) * z ^ 2) / ((2 * (n + 1) : ℕ) : ℝ)) ^ (2 * (n + 1)) =
+        (z ^ 2 - c₀) ^ (2 * m) := by
+      have hm_eq : 2 * (n + 1) = 2 * m := rfl
+      rw [hm_eq, ← mul_pow]
+      have hbase : c₀ * (1 + (-(4 / 3 : ℝ) * z ^ 2) / ((2 * m : ℕ) : ℝ)) = -(z ^ 2 - c₀) := by
+        have hm0 : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm1
+        dsimp only [c₀]
+        push_cast
+        field_simp [hm0.ne']
+        ring
+      rw [hbase, Even.neg_pow (even_two_mul m)]
+    calc gaussDensity (1 / 2) z * ((z ^ 2 + 2 * a * lam - 1) * (z ^ 2 - c₀) ^ (2 * m))
+        = gaussDensity (1 / 2) z * ((z ^ 2 + 2 * a * lam - 1) *
+            (c₀ ^ (2 * m) *
+              (1 + (-(4 / 3 : ℝ) * z ^ 2) / ((2 * (n + 1) : ℕ) : ℝ)) ^ (2 * (n + 1)))) := by
+            rw [hpow_eq]
+      _ = c₀ ^ (2 * m) * (gaussDensity (1 / 2) z * ((z ^ 2 + 2 * a * lam - 1) *
+            (1 + (-(4 / 3 : ℝ) * z ^ 2) / ((2 * (n + 1) : ℕ) : ℝ)) ^ (2 * (n + 1)))) := by ring
+  rw [hscale_int]
+  have hpref : 0 < σ ^ (-(1 / 2 : ℝ)) * ((lam / σ) ^ (2 * m) / (lam * σ)) := by positivity
+  have hc0_pow : 0 < c₀ ^ (2 * m) := pow_pos hc₀_pos (2 * m)
+  have hfn_neg : ∫ z : ℝ, f n z < 0 := hn
+  exact mul_neg_of_pos_of_neg hpref (mul_neg_of_pos_of_neg hc0_pow hfn_neg)
+
+/-- **Dense-background multi-pair negative curvature (`0 < κ < 4/11`, breaching `1/3`).**
+For any heat rate `0 < κ < 4 / 11` (strictly including `[1/3, 4/11)`), there exists an integer
+multiplicity `m ≥ 1` such that for every `ε > 0` and every Gaussian background curvature
+`a > (3/2) m κ / ((1 - 2κ) ε²)`, at heat `lam = κ / a` there exists `0 < δ < ε` with
+`deriv (deriv (gaussianMultiPairHeat m δ a (κ / a))) 0 < 0`. -/
+theorem exists_dense_multiPair_gaussianMultiPairHeat_deriv2_neg {κ : ℝ}
+    (hκ0 : 0 < κ) (hκ : κ < 4 / 11) :
+    ∃ m : ℕ, 1 ≤ m ∧ ∀ {ε a : ℝ}, 0 < ε →
+      ((3 / 2 : ℝ) * (m : ℝ)) * κ / ((1 - 2 * κ) * ε ^ 2) < a →
+      ∃ δ : ℝ, 0 < δ ∧ δ < ε ∧
+        deriv (deriv (gaussianMultiPairHeat m δ a (κ / a))) 0 < 0 := by
+  -- Extract the universal multiplicity `m ≥ 1` at unit background `a = 1, lam = κ`.
+  obtain ⟨m, hm1, _, hneg1⟩ := exists_multiplicity_deriv_deriv_gaussianMultiPairHeat_neg
+    (a := 1) (lam := κ) hκ0 (by linarith)
+  refine ⟨m, hm1, ?_⟩
+  intro ε a hε ha
+  have h12κ : 0 < 1 - 2 * κ := by linarith
+  have hm0 : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm1
+  have ha0 : 0 < a := lt_trans (by positivity) ha
+  set lam := κ / a
+  have hlam : 0 < lam := div_pos hκ0 ha0
+  have hprod : a * lam = κ := mul_div_cancel₀ κ ha0.ne'
+  have hconv : 2 * a * lam < 1 := by linarith [hprod]
+  set σ := DeBruijn.gaussianModelScale a lam
+  have hσ_eq : σ = 1 - 2 * κ := by
+    dsimp only [σ, DeBruijn.gaussianModelScale]
+    linarith [hprod]
+  have hσ1_eq : DeBruijn.gaussianModelScale 1 κ = 1 - 2 * κ := by
+    dsimp only [DeBruijn.gaussianModelScale]
+    ring
+  have hσ : 0 < σ := by rw [hσ_eq]; exact h12κ
+  set c₀ := (3 / 2 : ℝ) * (m : ℝ)
+  have hc₀ : 0 < c₀ := by dsimp only [c₀]; positivity
+  set δ := Real.sqrt (c₀ * (lam / σ))
+  have hδ0 : 0 < δ := Real.sqrt_pos.mpr (mul_pos hc₀ (div_pos hlam hσ))
+  -- Identify the `z`-integral at `(a, κ/a)` with the negative `z`-integral at `(1, κ)`.
+  have hcurv1 := deriv_deriv_gaussianMultiPairHeat_at_scaled_offset m hc₀.le hκ0
+    (a := 1) (lam := κ) (by linarith)
+  dsimp only at hcurv1
+  have hcurva := deriv_deriv_gaussianMultiPairHeat_at_scaled_offset m hc₀.le hlam hconv
+  dsimp only at hcurva
+  have hint_neg :
+      ∫ z : ℝ, gaussDensity (1 / 2) z * ((z ^ 2 + 2 * a * lam - 1) * (z ^ 2 - c₀) ^ (2 * m)) < 0 := by
+    have heq_int :
+        (∫ z : ℝ, gaussDensity (1 / 2) z * ((z ^ 2 + 2 * a * lam - 1) * (z ^ 2 - c₀) ^ (2 * m))) =
+        ∫ z : ℝ, gaussDensity (1 / 2) z * ((z ^ 2 + 2 * 1 * κ - 1) * (z ^ 2 - c₀) ^ (2 * m)) := by
+      congr 1 with z
+      rw [mul_assoc 2 a lam, hprod, mul_one]
+    rw [heq_int]
+    have hσ1 : 0 < DeBruijn.gaussianModelScale 1 κ := by rw [hσ1_eq]; exact h12κ
+    have hp1 : 0 < DeBruijn.gaussianModelScale 1 κ ^ (-(1 / 2 : ℝ)) *
+        ((κ / DeBruijn.gaussianModelScale 1 κ) ^ (2 * m) /
+          (κ * DeBruijn.gaussianModelScale 1 κ)) := by positivity
+    rw [hcurv1] at hneg1
+    nlinarith
+  have hnega : deriv (deriv (gaussianMultiPairHeat m δ a lam)) 0 < 0 := by
+    change deriv (deriv (gaussianMultiPairHeat m (Real.sqrt (c₀ * (lam / σ))) a lam)) 0 < 0
+    rw [hcurva]
+    have hpa : 0 < σ ^ (-(1 / 2 : ℝ)) * ((lam / σ) ^ (2 * m) / (lam * σ)) := by positivity
+    exact mul_neg_of_pos_of_neg hpa hint_neg
+  have hδ_lt : δ < ε := by
+    have hlt : c₀ * (lam / σ) < ε ^ 2 := by
+      rw [hσ_eq]
+      dsimp only [lam]
+      have h1 : c₀ * (κ / a / (1 - 2 * κ)) = c₀ * κ / ((1 - 2 * κ) * a) := by
+        field_simp [ha0.ne', h12κ.ne']
+      rw [h1, div_lt_iff₀ (mul_pos h12κ ha0)]
+      have ha' := (div_lt_iff₀ (mul_pos h12κ (sq_pos_of_pos hε))).mp ha
+      dsimp only [c₀] at *
+      linarith
+    calc δ < Real.sqrt (ε ^ 2) := Real.sqrt_lt_sqrt (by positivity) hlt
+      _ = ε := Real.sqrt_sq hε.le
+  exact ⟨δ, hδ0, hδ_lt, hnega⟩
+
+end
+
+end RHTower
+
+#print axioms RHTower.integrable_and_integral_gaussDensity_mul_exp_sq_poly
+#print axioms RHTower.integrable_and_mehler_bracket_xiSliceProduct
+#print axioms RHTower.coeff_one_sliceTruncPoly_eq_head_add_sdiff
+#print axioms RHTower.polySecondCumulant_sliceTruncPoly_eq_head_add_sdiff
+#print axioms RHTower.exists_xiSliceGaussianTail_cumulant_asymptotics
+#print axioms RHTower.deriv_deriv_gaussianMultiPairHeat_two_neg
+#print axioms RHTower.exists_dense_gaussianMultiPairHeat_two_deriv2_neg
+#print axioms RHTower.exists_multiplicity_deriv_deriv_gaussianMultiPairHeat_neg
+#print axioms RHTower.exists_dense_multiPair_gaussianMultiPairHeat_deriv2_neg

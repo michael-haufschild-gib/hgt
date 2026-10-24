@@ -160,6 +160,9 @@ requirements for such a principle concern its input and quantitative reach:
   battery (§9).
 * **Soft structure.** Identities that hold on every scaling datum, or on every model of the battery:
   Lefschetz, adjunction, pullback, λ-ring, functional equation, Euler product, integrality.
+* **Scale-stable family.** A subspace of tests containing every translate of its members; it
+  **jointly sees** `ρ` when some member is nonzero at `γ_ρ` and some member is nonzero at `γ̄_ρ`.
+* **Damped energy.** `E_x(ε) = sup_{t ≥ 0} e^{−εt}|c_x(t)| ∈ [0, ∞]`.
 
 ---
 
@@ -357,7 +360,97 @@ right are nonnegative, nonnegativity of collision mass supplies no upper
 bound. A useful producer must bound that mass uniformly towards heat zero,
 and reach the appropriate integer threshold.
 
-### 3.14 Inherited pillars
+### 3.14 The shifted pair and the cluster models (`TheShiftedPairAndTheClusterModels`)
+
+33. **A generic orbit reads the depth of every zero** (`generic_orbitCorr_rate_iff`,
+    `generic_not_oriented`): on a symmetric tempered configuration the orbit correlation of a
+    spectrally generic test grows at most like `e^{σt}` iff every zero has depth at most `σ`.
+34. **The shifted pair of a curve** (`curveShiftedPair`). `ζ_C(s − a)ζ_C(s + a)` is again a curve
+    datum, with eigenvalues `q^{±a}β_i`: conjugation- and functional-equation-closed, tempered, a
+    scaling datum. Its Frobenius traces are those of the curve times `q^{am} + q^{−am}`
+    (`powerSum_curveShiftedPair`), the analogue of the weights `Λ(n)(n^a + n^{−a})` of
+    `ζ(s − a)ζ(s + a)`; it is impure for `a ≠ 0` (`curveShiftedPair_not_pure`). For a curve satisfying
+    RH every zero has depth exactly `a` (`abs_re_sub_half_shiftedPairConfig`), a generic orbit has
+    orientation rate exactly `a` (`shiftedPair_orbitCorr_rate_iff`) and is not oriented
+    (`shiftedPair_not_oriented`).
+35. **Height averages do not see a cluster; one generic orbit does**
+    (`fesSymmetric_clusterConfig`, `cluster_orbitCorr_rate_iff`,
+    `cluster_heightAverages_blind_orbit_not`). On a cluster with symmetric depth profile and
+    `r · TV(d) · sinh(2δr) ≤ 1`, every windowed Weil form at resolution `r` is nonnegative, for tests
+    of every aperture, while a generic orbit is not oriented and its orientation rate is the
+    maximal depth.
+
+### 3.15 Scale-stable families (`TheOrientationOfScaleStableFamilies`)
+
+36. **Joint seeing is seeing** (`jointlySees_iff`, `jointlyBlind_iff_forall_blind`). If `f₁` misses
+    `γ̄_ρ` and `f₂` misses `γ_ρ`, then `f₁ + f₂` sees `ρ`; a family is jointly blind iff every member
+    is blind.
+37. **The orientation of a family** (`scaleStable_nonneg_iff_jointlyBlind`,
+    `zeta_scaleStable_nonneg_iff_jointlyBlind`). On a symmetric tempered configuration the Weil form
+    is nonnegative on a scale-stable family iff the family is jointly blind: at every off-line pair
+    all members vanish at the same point. For `ζ` the form is computed from primes, Gamma factor
+    and pole.
+38. **The oriented subspaces** (`orientedSubspace`, `scaleStable_nonneg_iff_le_orientedSubspace`). A
+    choice of one point in every off-line pair defines a scale-stable, jointly blind subspace; the
+    oriented scale-stable families are exactly their subfamilies.
+39. **The index of a family** (`negIndex_family_le`, `exists_mem_sees`, `scaleStable_index_law`). On
+    every tempered configuration the negative index of the Weil form on a scale-stable family is the
+    number of right zeros it jointly sees; the bound holds for every finite family of members, and it
+    is attained on the orbit of one generic member. This is the frustration count beyond single
+    orbits.
+40. **Riemann–Roch on the surface of a family** (`familySurface_riemannRoch_iff`): an ample section
+    cone of nonnegative degree satisfies Riemann–Roch iff it contains the open positive cone and the
+    family is jointly blind. The span of finitely many orbits jointly sees `ρ` iff some test is
+    nonzero at `γ_ρ` and some test is nonzero at `γ̄_ρ` (`jointlySees_orbitFamily_iff`): orientation is
+    not additive.
+
+### 3.16 The theta `h⁰` of `Spec ℤ` (`TheThetaH0OfSpecZ`)
+
+41. **An arithmetic `h⁰` with an independent Riemann–Roch** (`arithH0`, `arithH0_riemannRoch`). For
+    the Arakelov divisor of degree `d`, `h⁰(d) = log Σ_{n ∈ ℤ} e^{−πn²e^{−2d}}`, and
+    `h⁰(d) − h⁰(−d) = d` by Poisson summation (`thetaSum_inv`). No positivity of any form is used.
+42. **Effectivity, vanishing, asymptotics** (`arithH0_pos`, `arithH0_strictMono`,
+    `tendsto_arithH0_atBot`, `tendsto_arithH0_sub_atTop`): `h⁰ > 0` is strictly increasing,
+    `h⁰ → 0` as `d → −∞`, and `h⁰(d) − d → 0` as `d → ∞`.
+43. **`Λ(s)` is the generating function of `h⁰`** (`completedRiemannZeta_eq_mellin_arithH0`): for
+    `Re s > 1`, `π^{−s/2}Γ(s/2)ζ(s)` is half the Mellin transform at `s/2` of `e^{h⁰} − 1` in
+    `t = e^{−2d}`.
+44. **The pole plane** (`poleH0_riemannRoch`). On every polar surface, `D = aH + bV` and
+    `D^∨ = a⁻¹H + b⁻¹V` satisfy `h⁰(D) − h⁰(D^∨) = log(D²/2)`. This Riemann–Roch is that of the base:
+    it gives the functional equation and holds on every datum that has one. The Hodge index needs
+    Riemann–Roch on the surface, for classes with a test component.
+
+### 3.17 Correctors in the damping parameter (`CorrectorsInTheDampingParameter`)
+
+45. **Damping automorphisms** (`damp_conv`, `damp_damp`, `damp_zero_left`, `rosati_damp`,
+    `traceAt_damp`). Weighting by the character `e^{−εs(g)}` is an automorphism of the
+    correspondence algebra, additive in `ε`, and it conjugates the Rosati involution to the
+    opposite damping: `(α_ε ξ)′ = α_{−ε}(ξ′)`. The damped trace pairs `ξ` with the one-sided damped
+    correlation `e^{−εs(g)} c_x(g)`.
+46. **Damped correctors exist on every pair of scales** (`isCorrector_damp_twoPoint`,
+    `lefschetzTrace_damp_of_corrector`): `c(h)[g] − c(g)[h]`, `c(k) = e^{−εs(k)}(e^{s(k)} + 1)`, has
+    vanishing damped pole trace, and its damped Lefschetz trace is minus its primitive trace.
+47. **Relative to absolute without loss** (`dampedEnergy_lt_top_iff_blindAbove`, `dampedEnergy_tfae`,
+    `riemannHypothesis_iff_forall_damped_bounded`). On a symmetric tempered configuration `E_x(ε)` is
+    finite iff `x` is blind above depth `ε`, and the following are equivalent: `x` is oriented;
+    `E_x(0) < ∞`; `E_x(ε) < ∞` for every `ε > 0` with no control of the constants as `ε ↓ 0`;
+    `E_x(ε) = c_x(0)` for every `ε ≥ 0`. For `ζ` and one generic test this is RH.
+
+### 3.18 Quantitative readings on curve orbits (`QuantitativeReadingsOnCurveOrbits`)
+
+48. **The tower reads the Frobenius traces** (`curve_orbitCorr_tower`): for a test supported in an
+    interval shorter than `log q`, `c_f(ν log q) = log q · ‖f‖² · Re Σ_i β_i^ν`.
+49. **Turán's reading** (`exists_orbitCorr_ge_turan`, `exists_not_hasseWeilAt_window`). If
+    `|β_i| ≥ Z₀ > 0` for some `i`, every window `M < ν ≤ M + 2g` contains a scale with
+    `|c_f(ν log q)| ≥ log q · ‖f‖² · Z₀^ν / C(2g, M)`, `C(N, M) = 2eN(6(N + 1)(M + 2N + 2))^N`; if
+    `Z₀ ≥ 1` and `2g · C(2g, M) < Z₀^{M+1}`, the Hasse–Weil bound fails in that window.
+50. **Violations recur in every late window** (`eventually_exists_not_hasseWeilAt`,
+    `golden_eventually_exists_not_hasseWeilAt`): an impure curve violates the bound in every window
+    of `2g` consecutive tower scales beyond some point; the golden datum in every late pair of
+    consecutive powers of `5`. The precision cost is governed by the number `2g` of terms of the
+    exponential sum.
+
+### 3.19 Inherited pillars
 
 The following corpus theorems are the foundations of AOG in other languages; AOG states and uses
 them in the language of orbits.
@@ -407,6 +500,10 @@ AOG reads every candidate orientation mechanism as a way to prove the orbit Hodg
 | One generic cycle suffices, so orientation is easy to test | One spectrally generic cycle carries the whole defect, but proving its orientation is RH. |
 | Euler-product structure decides repair | It decides only where the product converges absolutely (`ε > ½`); every finite set of Euler factors is invisible to payment below. |
 | The archimedean place orients a cycle | It orients every finite orbit segment of a sufficiently blind cycle, at a cost growing doubly exponentially with the length, never a whole orbit. |
+| Orientation is additive | Two cycles blind at opposite points of an off-line pair span a family that sees it (`jointlySees_orbitFamily_iff`); the oriented locus is a union of oriented subspaces, one for each choice. |
+| An arithmetic `h⁰` with an independent Riemann–Roch would orient | The theta `h⁰` of `Spec ℤ` has one (`arithH0_riemannRoch`); it yields the functional equation. Orientation needs Riemann–Roch on the surface. |
+| Damped bounds lose the absolute energy as `ε ↓ 0` | On an orbit, finiteness of the damped energy at every `ε > 0`, with arbitrary constants, gives `E_x(ε) = c_x(0)` (`dampedEnergy_tfae`). |
+| Height averages read clusters | Windowed forms are blind to small-variation clusters; one generic orbit reads the maximal depth (`cluster_heightAverages_blind_orbit_not`). |
 
 ---
 
@@ -418,14 +515,18 @@ AOG reads every candidate orientation mechanism as a way to prove the orbit Hodg
    orbit surface of a cycle, an ample section cone of nonnegative degree satisfies Riemann–Roch iff
    the cycle is oriented. Sections with Riemann–Roch exist exactly over the oriented locus, and
    an independent arithmetic proof of this criterion remains open. Logical equivalence
-   to the sign does not preclude an independent geometric proof.
+   to the sign does not preclude an independent geometric proof. Beyond single orbits the
+   criterion holds for every scale-stable family (§3.15). An `h⁰` defined from arithmetic with a
+   Riemann–Roch proved without the sign exists on the base (§3.16); there it is the functional
+   equation.
 2. **Frustration against subsidy.** Why would prime-sum frustrations cost less than the archimedean
    subsidy uniformly in aperture? Answered on orbits (§3.4, §3.6, §3.11): on the orbit of a cycle
    the continuum signed form has exactly as many negative squares as the cycle sees right zeros;
    the subsidy pays every frustration along the orbit iff the cycle is blind to the off-line zeros,
    and along every finite segment for a sufficiently low-blind cycle. Uniformly in aperture for all
-   cycles it is RH. Arithmetic Orientation Theory supplies the frustration counts (prime sums,
-   matched samples) on finite samples.
+   cycles it is RH. Beyond orbits (§3.15) the negative index of a scale-stable family is the number
+   of right zeros it jointly sees. Arithmetic Orientation Theory supplies the frustration counts
+   (prime sums, matched samples) on finite samples.
 3. **Anti-collapse.** Which arithmetic invariant prevents `log γ` off-line multiplicity from
    collapsing into a unit window at doubly exponential height? Answered for orientation (§3.8):
    none is needed. Which cycles are oriented, and at which rate, depends only on the set of zeros,
@@ -433,12 +534,15 @@ AOG reads every candidate orientation mechanism as a way to prove the orbit Hodg
    is mass (Arithmetic Continuation and Critical Energy, the cluster dichotomy); for orientation the
    problem is depth, not collapse.
 4. **Relative to absolute.** What conserved quantity converts relative compensation into absolute
-   energy at every fixed small damping? The scale-flow identity (§3.12) is the Lefschetz
-   trace of correctors; it does not establish such an absolute bound. A correspondence with vanishing pole trace has Lefschetz trace equal to minus its
-   primitive trace, exactly and independently of the fibre degrees; the defect itself is conserved
-   by every scale (`defect_act`). The conservation is an identity; the sign of the absolute energy is
-   the orientation. In the damping picture the corresponding identities are those of Arithmetic
-   Continuation and Critical Energy and Arithmetic Compensation Theory.
+   energy at every fixed small damping? On the scale flow (§3.12) the Lefschetz trace of correctors:
+   a correspondence with vanishing pole trace has Lefschetz trace equal to minus its primitive trace,
+   exactly and independently of the fibre degrees. Damping acts on correspondences by automorphisms,
+   and damped correctors exist at every damping (§3.17). On orbits the conversion is lossless: the
+   damped energy `E_x(ε)` is finite iff `x` is blind above depth `ε`, and finiteness at every `ε > 0`,
+   with constants arbitrary as `ε ↓ 0`, gives `E_x(ε) = c_x(0)` (`dampedEnergy_tfae`). The identities
+   do not supply the finiteness; that is the orientation. In the damping picture of the source the
+   corresponding identities are those of Arithmetic Continuation and Critical Energy and Arithmetic
+   Compensation Theory.
 5. **Euler products and repair.** When is the repairing ideal of the damped Möbius source the whole
    critical Wiener algebra, and can Euler-product structure on the Bohr polydisk decide it?
    Answered (§3.5): the ideal is the whole algebra iff the receiver is paid (Arithmetic Orientation
@@ -456,7 +560,10 @@ AOG reads every candidate orientation mechanism as a way to prove the orbit Hodg
    source, and what does each cost? Partial (§3.4, §3.6): the orbit correlation of one spectrally
    generic real test is faithful for the actual `ζ` — it is bounded by its value at `0` iff RH. The
    archimedean place certifies it on every finite segment `[0, T]` for cycles blind to the grid
-   `D_{a + T/2}`, at a doubly exponential number of linear conditions, and on no infinite one.
+   `D_{a + T/2}`, at a doubly exponential number of linear conditions, and on no infinite one. Over
+   `𝔽_q` the reading is explicit (§3.18): every late window of `2g` tower scales detects an impure
+   eigenvalue with precision `Z₀^ν / C(2g, M)`, a cost exponential only in the genus. Generic orbits
+   read the depth of every battery model (§3.14), including clusters that height averages miss.
 
 ## 7. Tools the programme builds
 
@@ -484,19 +591,30 @@ Built:
 - *Self-improvement*: eventual bounds on orbit correlations upgrade to the sharp bound.
 - *Corrector theory on the scale flow*: Lefschetz, pole and primitive traces; correctors and their
   conservation law.
+- *Families beyond single orbits*: joint seeing, scale-stable families, oriented subspaces, the index
+  of a family, surfaces of families and their Riemann–Roch.
+- *Arakelov `h⁰` of the base*: the theta `h⁰` of `Spec ℤ`, its Riemann–Roch, effectivity and vanishing,
+  `Λ(s)` as its generating function, the pole-plane `h⁰`.
+- *Damping*: damping automorphisms of the correspondence algebra, damped correctors, the damped orbit
+  energy and its lossless cofinal limit.
+- *Quantitative readings*: the tower identity for curve orbits, Turán's reading with explicit
+  precision, recurrence of violations in every late window.
+- *Battery models*: the shifted pair of a curve, symmetric clusters, the generic depth law.
 
 To be built:
 
-- an Arakelov-type intersection theory with an arithmetic `h⁰` beyond single orbits (orbit
-  surfaces, their signature and their Riemann–Roch are built); signed spectral graph theory beyond
-  orbits (on orbits the frustration count is the orientation index); correctors in the damping
-  parameter; quantitative supra-Nyquist readings beyond the archimedean segment law. Arithmetic
-  anti-concentration is not needed for orientation (§3.8); it remains a tool for mass floors.
+- an arithmetic `h⁰` on the surface, for classes with a test component, with a Riemann–Roch proved
+  without the sign; exact index laws for families that are not scale-stable; quantitative readings
+  over `ℤ`, where the orbit correlation has infinitely many terms; the shifted pair over `ℤ` as a
+  zero-side datum. Arithmetic anti-concentration is not needed for orientation (§3.8); it remains a
+  tool for mass floors.
 
 ## 8. Research boundaries and open questions
 
-1. **The shifted pair and parity twins.** Place `ζ(s − a)ζ(s + a)` and the parity twins in the
-   battery as configurations and compute their orientation rates.
+1. **The shifted pair over `ℤ` and parity twins.** The shifted pair of a curve and symmetric
+   clusters are in the battery (§3.14). The zeros `ρ ± a` of `ζ(s − a)ζ(s + a)` leave the strip
+   `0 ≤ Re ≤ 1` unless the zero width is below `½ − a`, so its zero-side datum needs another
+   normalization; the parity twins remain to be placed.
 2. **Orientation index on the lattice of scales.** ACS already classifies finite and
    well-founded prime-tower visibility, exhibits the Wolff obstruction at a non-attained
    top, and proves two-prime completeness. The remaining single-tower question concerns
@@ -569,3 +687,8 @@ counts; planted Euler factors; finite-window mimics.
 | `TheOrientationIndexOfACycle` | seen zeros and seen configurations, the orientation index law, the signature of an orbit surface |
 | `TheIndexExit` | Hodge defect versus future heat collision mass, multiplicity excess, equivalent finite-count bounds, quasi-RH consequence and even index quantization |
 | `CorrectorsAndTheLefschetzTrace` | Lefschetz, pole and primitive traces of correspondences, correctors and the conservation law |
+| `TheShiftedPairAndTheClusterModels` | generic depth law, the shifted pair of a curve, symmetric clusters versus height averages |
+| `TheOrientationOfScaleStableFamilies` | joint seeing, orientation and index of scale-stable families, oriented subspaces, surfaces of families |
+| `TheThetaH0OfSpecZ` | theta sum, arithmetic `h⁰` of `Spec ℤ`, Riemann–Roch, vanishing and asymptotics, `Λ` as generating function, pole-plane `h⁰` |
+| `CorrectorsInTheDampingParameter` | damping automorphisms, damped correctors, damped orbit energy, lossless cofinal limit |
+| `QuantitativeReadingsOnCurveOrbits` | tower identity for curve orbits, Turán's reading, explicit violating windows, recurrence of violations |
