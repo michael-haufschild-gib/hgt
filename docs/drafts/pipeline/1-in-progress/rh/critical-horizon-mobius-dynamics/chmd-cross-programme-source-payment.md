@@ -206,8 +206,41 @@ admission and boundedness of the sharp cut, not another assumed boundary
 estimate. A complete paper proof, including domain admission before
 integration, is in
 `docs/drafts/pipeline/2-fully-proven/chmd-sharp-spatial-cut-domain.md`.
-The first Lean candidate checks actual half-line graph admission; the
-uniform norm bound and interval composition remain to be formalized.
+Actual half-line admission and exact aperture landing pass Lean. The
+uniform-bound proof uses stationary translation covariance and closed
+graphs; its remaining elaboration correction is included in the combined
+sharp-cut/window candidate.
+
+### 8. Sharp windows retain the complete nodal defect
+
+**Theorem on paper; Lean candidate written.** Expanding symmetric interval
+restrictions converge in the full maximal graph norm. They preserve odd
+parity and commute exactly with positive part, negative part and modulus.
+Consequently the complete signed nodal cross-pairing, Weil form and oneL
+defect converge along the same literal restrictions. The proof uses the
+common cut bound and eventual exact fixation of the existing dense compact
+C2 core. No continuity premise on a nonlinear nodal map is required.
+
+See `docs/drafts/pipeline/2-fully-proven/chmd-sharp-window-nodal-convergence.md`.
+This removes a localization premise; it does not establish the sign of the
+limiting defect.
+
+### 9. Sharp operator-domain localization
+
+**New conjecture.** The literal half-line restriction preserves the actual
+arithmetic generator domain, with a commutator bounded on mass L2 uniformly
+in the cut location. The existing compact operator core uses smooth
+cutoffs; it does not prove this sharp-boundary statement.
+
+**Proposed mechanism.** The antisymmetric form defect across a cut is the
+difference of two actual Gamma boundary pairings. Both factor through
+`thetaToVolume` and the bounded Carleman boundary operator. The prime term
+is the ordinary commutator of the bounded literal `primeGenerator` with
+the mass-L2 projection. All multiplication potentials commute with that
+projection. The Riesz resolvent identity should then produce the actual
+generator-domain vector, without an assumed boundary trace or multiplier
+admission. This strengthens localization of the eigenvector equation;
+the arithmetic sign remains a separate task.
 
 ## Proof integrity
 

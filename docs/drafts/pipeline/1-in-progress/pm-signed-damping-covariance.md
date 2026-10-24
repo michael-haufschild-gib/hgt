@@ -1101,3 +1101,143 @@ umbrella, or compiled artifact was changed, and no build was run.
 No numerical experiment, web search, novelty check, subagent, or added
 analytic assumption was used. Goal remains active; the obstacle is the
 unproved arithmetic pairing, not a user-input or external-state block.
+
+## 2026-10-24: Liouville transfer and signed square-count averaging
+
+Previous turn: no frontier advance. The current objective, PM frontier,
+and squarefree-discrepancy killed-route entry were checked. This batch
+tested a different actual source via the verified square-kernel transfer.
+
+Direct reads of `AnIndexFormulaForTheActualReceiver` and
+`MoebiusAndLiouvilleReceiversAreEquivalent` confirm
+
+`lambda = 1_square * mu`,
+`mu = squareMoebius * lambda`.
+
+After damping, both convolution kernels are critical Wiener units because
+their norm is controlled by `sum_j j^(-1-2 epsilon)`. The identities retain
+the SAME positive damping parameter. They do not convert admission at
+2 epsilon into admission at epsilon. Pointwise `lambda(n^2)=1` is not an
+inverse or contraction identity for the full receiver.
+
+### Signed renewal attempt
+
+The source of `SquarefreeDiscrepancyMellin.response_eq` and
+`response_eq_one_iff` was checked. For the actual squarefree discrepancy,
+
+`q(a) = 1 + a zeta(1-a)/(rho (1-a) zeta(2(1-a)))`.
+
+Its real-axis comparison does not bound the actual oscillating source;
+the complex unit-response condition still detects the reflected zeros.
+No absolute contraction was used, since the corpus already disproves
+that estimate near the half threshold. The exact cofactor transport in
+`LiouvilleSignedCofactorDilation` retains its nondivisible remainder.
+
+### Tested positive-average mechanism
+
+Write `H_mu(t)=sum_(n<=t) mu(n)/n` and
+`P_lambda(x)=sum_(m<=x) lambda(m)(x/m-1)`. For x>=1, finite summation gives
+
+`P_lambda(x) = integral_1^x H_mu(t) floor(sqrt(x/t)) dt`.
+
+To check the identity, expand the square count into the conditions
+`j^2 t<=x`. Integrating each finite harmonic-prefix step gives
+
+`sum_(j^2 n<=x) mu(n)(x/(n j^2)-1)`.
+
+Regrouping by m=n j^2 gives the actual Liouville coefficient through the
+checked square-convolution identity. There is no infinite interchange.
+
+The hoped-for positive-average argument fails at its weight: on [5,6),
+`H_mu=1-1/2-1/3-1/5=-1/30`, since mu(4)=0. This is a symbolic finite
+identity, not a numerical experiment. The square-count kernel is
+nonnegative, but the integrating weight is not. The identity neither
+disproves positivity of P_lambda nor pays its full signed integral.
+No uniqueness assertion about alternative integral representations was
+made. This failed mechanism was not formalized as another no-go result.
+
+The corpus's harmonic square-dilation identity and triangular Mellin
+formula were also inspected as leads. The positive recurrence in
+`LiouvilleEvenIndexPositiveRecurrence` supplies cofinally many positive
+binary additive correlations, not a uniform estimate for this source.
+
+### Status
+
+No significant source estimate, closed paper proof toward admission, or
+Lean premise discharge resulted. No Lean source, umbrella, or compiled
+artifact was changed; no build was run. No web search, numerical
+experiment, novelty check, subagent, or analytic assumption was used.
+Owned search files were removed after all four searches terminated.
+Goal remains active. The hard blocker is still collective cancellation
+of the complete source; there is no external-state or user-input block.
+
+## 2026-10-24: Haar endpoint and finite-prime Liouville resolvents
+
+PM route remains complete signed source admission at cofinally small
+positive damping. The preceding square-count attempt made no frontier
+advance. Corpus searches and direct source reads checked whether the
+orientation, compensation, Haar, or new critical-family results supply
+the missing source estimate. They do not currently supply it.
+
+The Haar Gram kernel is already explicit in
+`PMPowerDampedMobiusFiniteSmoothSource`: for positive dilation indices
+its entries are `max(0, 2/max(m,n)-1/min(m,n))`. Its positivity concerns
+the finite or absolutely convergent smooth-prime source. Passing to the
+complete pointwise source near zero still needs norm control. The fold
+geometry already isolates the harmonic shadow and leaves the fold-free
+endpoint error unpaid. Neither identity was counted as new knowledge.
+
+### Exact prime-resolvent conjecture and attack
+
+For a finite set P of primes, define the literal triangular source
+
+`F_P(x) = sum_(n<=x, all prime factors of n in P) lambda(n)(x/n-1)`.
+
+The empty-prime source is `f(x)=max(x-1,0)`. For a prime p outside P,
+unique p-adic decomposition and complete multiplicativity give
+
+`F_(P union {p})(x) = sum_(k>=0) (-1)^k F_P(x/p^k)`.
+
+At each positive x this sum has only finitely many nonzero terms. This
+is a source identity, with every cofactor retained. The candidate was to
+prove positivity by a cone preserved by these alternating resolvents.
+If that worked for every P, taking P to contain all primes up to x
+would cover the actual triangular Liouville source at x.
+
+Two natural proposed invariants fail directly on the source:
+
+* Convexity is lost at the first prime insertion. For P={2}, F_P(x)
+  is x-1 on (1,2), and x/2 on (2,4). Its slope drops at 2.
+* Monotonicity of the quotient F_P(x)/x is lost at the next insertion.
+  For P={2,3} and 3<x<4, the only active integers are 1,2,3, so
+  `F_P(x)=x/6+1` and `F_P(x)/x=1/6+1/x`, strictly decreasing.
+
+These symbolic identities reject those particular inductive cones.
+They do NOT refute positivity of F_P, do not imply negativity of the
+full triangular source, and do not rule out a different invariant.
+Positivity or a usable complete-source upper estimate remains unproved.
+No finite-prime sign statement was substituted for the all-prime input.
+The already proved smoothing threshold for finite Mobius packets also
+does not settle this Liouville resolvent: its square dilations must be
+retained. No further no-go module was added.
+
+### Scope of the newer critical-family positivity
+
+The actual statements in `CompactCriticalSourceWeilPositivity`,
+`SuzukiCriticalFamilyContraction`, and
+`MultiScaleLowModeAndGridTentSchurBridge` were checked. In particular,
+`DyadicScaleBlock S M` denotes a scale window, not the assertion that
+every index is a power of two. Separate lacunary-family theorems have
+additional hypotheses. No density claim or lack-of-density claim was
+proved here. The missing energy-controlled approximation of the actual
+PM source cannot be replaced by positivity on this family alone.
+
+### Audit
+
+No significant mathematical blocker was discharged. No closed paper
+proof of a new admission estimate, Lean theorem, source edit, umbrella
+edit, or compilation resulted. The work tested exact source mechanisms
+but did not move the RH frontier. There were no web searches, novelty
+checks, numerical experiments, subagents, added assumptions, or axioms.
+All owned searches terminated before scratch cleanup. Goal remains
+active; unresolved mathematics is not an external-state blocker.

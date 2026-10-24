@@ -194,17 +194,31 @@ pole and avoids extending the earlier private convolution lemmas.
 ## Lean checkpoint
 
 - Compiled canonical leaves: `SuzukiCriticalExtendedEnergy` (3 public declarations),
-  `SuzukiCriticalL2Energy` (8), `SuzukiCriticalL2Cusp` (5). Their dependency oleans
+  `SuzukiCriticalL2Energy` (8), `SuzukiCriticalL2Cusp` (5), and
+  `SuzukiCriticalL2PrimaryVariation` (4), and `SuzukiCriticalPolePointwise` (8). Their dependency oleans
   were created for actual downstream imports. Do not rebuild existing oleans.
-- The first 11 declarations' `#print axioms` outputs contain only `propext`,
+- The first 28 declarations' `#print axioms` outputs contain only `propext`,
   `Classical.choice`, and `Quot.sound`; the combined final clean audit remains pending.
-- `/tmp/sz-critical-ereal-api.lean` proves the actual L² primary quotient in `EReal`
-  and audits the five cusp declarations. Its first check is active.
-- `/tmp/sz-critical-pole-moment-api.lean` contains the full first-moment, pole
-  measurability, pointwise bound, and pole-limit proof draft; not checked yet.
-- `/tmp/sz-critical-l2-pole-api.lean` contains compact L² pole testing, signed cusp
-  convergence, and extended signed cusp variation; its planned imports are
-  `SuzukiCriticalPolePointwise` and `SuzukiCriticalL2PrimaryVariation`, not yet created.
+- `SuzukiCriticalL2PrimaryVariation.lean` proves the actual L² primary quotient
+  in `EReal`. Its four declarations passed their imported axiom inspection.
+- `SuzukiCriticalPolePointwise.lean` contains the full first-moment, pole
+  measurability, pointwise bound, and pole-limit proof; its canonical source check
+  and dependency olean creation both passed. Its eight declarations passed their
+  imported axiom inspection.
+- `SuzukiCriticalL2Pole.lean` contains compact L² pole testing, signed cusp
+  convergence, and extended signed cusp variation. The scratch check found one
+  composition/coercion simplification issue, now fixed; the canonical check and
+  downstream dependency olean creation are active. All other scratch declarations
+  passed. It imports the checked pointwise-pole and primary-variation leaves.
+- `SuzukiCriticalL2Arithmetic.lean` extends the exact literal finite sum and its
+  extended first variation. `SuzukiCriticalL2WeilNormalization.lean` identifies
+  the existing extended `sourceLevyEnergy` by the finite exponential correction
+  and Gamma recurrence. Both canonical sources await their first checks.
+- `/tmp/sz-critical-l2-source-api.lean` contains the complete cutoff-free capstone
+  and eventual strict deficit for infinite-energy compact L² sources.
+- The concrete unsmoothed critical-family consequence has a complete paper proof
+  in `sz-critical-family-literal-source-deficit-2026-10-24.md` and a pending draft
+  `/tmp/sz-critical-family-literal-api.lean`; finish the L² capstone first.
 - Remaining: check and canonicalize these drafts, extend the exact finite arithmetic
   assembly to L² sources, identify the compensated energy with the existing
   `ArithmeticPositivityTheory.sourceLevyEnergy` plus its finite exponential correction,

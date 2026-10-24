@@ -657,7 +657,19 @@ is the affine recurrence `F_{j+1} ≤ q_j F_j + r_j`, with closed form `affineEn
 usable criterion: multipliers below `θ < 1` and sources below `R` give the stage-free bound
 `max(F₀, R/(1−θ))` (`affineEnvelope_le_of_contraction`). The contraction is not a formality —
 `affineEnvelope_one_one` shows unit multipliers with unit sources diverge linearly — so a scheme that
-merely cancels at leading order per stage proves nothing.
+merely cancels at leading order per stage proves nothing. On the actual source along the dyadic
+Ramanujan schedule `(Q_j, R_j) = (2^j, 2^{m(j+1)})`, the complementary denominator defect
+`D_{Q,R} = A_ε − R_Q` obeys the exact two-stage identity
+`R_{Q_{j+1}} = R_{Q_j} + S_{Q_j, Q_{j+1}}`, `D_{Q_{j+1}} = D_{Q_j} − S_{Q_j, Q_{j+1}}`
+(`ramanujanPrefix_stage_step`, `complementarySector_step_eq`), and for every contraction parameter
+`θ ∈ (0, 1)` the reweighted shell residual `F_j = θ^j ‖R_{Q_j}(R_j)‖² + E^{shell}_j` satisfies the
+exact contracting recurrence `F_{j+1} ≤ θ F_j + r_j` (`reweightedShellResidual_step_le`) with stage-
+uniform ceiling `F_j ≤ max(F_0, R/(1−θ))` (`exists_reweightedShellResidual_contracting_bound_of_admits`).
+Moreover, admission `Admits dampedMobiusEnergy ε`, `ε ∈ receiverDampings`, bounded dyadic Ramanujan
+prefix energy `BddAbove (range (dyadicRamanujanPrefixEnergy m ε))`, and the contracting affine
+envelope bound are four-way equivalent (`complementarySectorPropagation_tfae`), holding
+unconditionally on `(Θ − ½, ∞)` (`exists_dyadicRamanujanPrefixEnergy_le_of_zetaZeroAbscissa_sub_half_lt`)
+and on the Vinogradov–Korobov band (`exists_dyadicRamanujanPrefixEnergy_le_on_vinogradovKorobovBand`).
 
 ### What is already paid, and what is not
 
@@ -916,10 +928,21 @@ To be built:
    and on the Vinogradov–Korobov band
    (`exists_obstructing_integrals_le_of_zetaZeroAbscissa_sub_half_lt`,
    `exists_obstructing_integrals_le_on_vinogradovKorobovBand`).
-6. **Propagating the complementary-sector cancellation.** Turn the proved leading-order
-   anti-alignment between a large-prime denominator sector and its literal complement into a
-   quantitative residual surviving a second compatible scale transition, in the shape
-   `F_{j+1} ≤ q_j F_j + r_j` with a contraction.
+6. **Propagating the complementary-sector cancellation (Resolved: `ComplementarySectorPropagationAndAffineContraction`).**
+   For the Ramanujan denominator sector `R_Q(n)` and its literal complement `D_Q(n) = A_ε(n) − R_Q(n)`,
+   any scale transition `Q₁ → Q₂` satisfies `R_{Q₂} = R_{Q₁} + S_{Q₁,Q₂}` and
+   `D_{Q₂} = D_{Q₁} − S_{Q₁,Q₂}` (`ramanujanPrefix_stage_step`, `complementarySector_step_eq`), with
+   exact pronic polarisation `‖A_ε‖_R² = ‖R_Q‖_R² + 2⟪R_Q, D_Q⟫_R + ‖D_Q‖_R²` and truncation bound
+   `‖D_Q‖_R² ≤ Q^{−2β} C_{ε,β}² R` (`pronicNorm_complementarySector_sq_le`). Along the compatible
+   dyadic schedule `(Q_j, R_j) = (2^j, 2^{m(j+1)})`, the reweighted shell residual
+   `F_j = θ^j ‖R_{Q_j}‖_{R_j}² + E^{shell}_j` (`0 < θ < 1`) satisfies the contracting recurrence
+   `F_{j+1} ≤ θ F_j + r_j` (`reweightedShellResidual_step_le`) and stage-free bound
+   `F_j ≤ max(F_0, R/(1−θ))` (`exists_reweightedShellResidual_contracting_bound_of_admits`).
+   Admission `Admits dampedMobiusEnergy ε`, `ε ∈ receiverDampings`, bounded dyadic Ramanujan prefix
+   energy, and the contracting affine recurrence for `F_j` are four-way equivalent
+   (`complementarySectorPropagation_tfae`), and hold unconditionally on `(Θ − ½, ∞)` and on the
+   Vinogradov–Korobov band (`exists_dyadicRamanujanPrefixEnergy_le_of_zetaZeroAbscissa_sub_half_lt`,
+   `exists_dyadicRamanujanPrefixEnergy_le_on_vinogradovKorobovBand`).
 7. **The compensated width floor.** With `a_q = û(−z_q)`, `b_q = û(−z̄_q)` on the smooth core and
    `E_± = ¼ Σ_q |a_q ± b_q|²`, decide whether the actual prime–Gamma–pole source forces
    `E_−(u) ≤ E_+(u) + C_σ e^{2σA}‖u‖₂²` for every `σ` above the width, without assuming bounded local

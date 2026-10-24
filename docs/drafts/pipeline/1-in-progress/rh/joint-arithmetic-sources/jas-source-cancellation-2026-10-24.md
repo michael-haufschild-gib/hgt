@@ -225,3 +225,116 @@ Research stays directed at the literal signed arithmetic estimate, retaining
 the boundary terms, the linear term, and the mixed shifted terms of any
 attempted iteration. External novelty checks and numerical experiments were
 not run, as requested.
+
+## Candidate: convexity of the literal damping energy
+
+This is an active conjecture, not an input to a Lean theorem. Set
+
+`F_η(n) = Σ_{j≤n} Σ_{d|j} μ(d) d^(-η)`,
+`C_η = 1/ζ(1+η)` for `η>0`, and `C_0 = 0`,
+`A_η(n) = F_η(n) - n C_η`,
+`E_T(η) = Σ_{1≤n≤T} A_η(n)^2/[n(n+1)]`.
+
+**Exact candidate:** for every natural cutoff `T`, `E_T` is convex on
+`[0,1/2]`. This retains the actual Möbius coefficients and the moving polar
+density. It asserts no abstract positivity hypothesis.
+
+At zero damping the exact divisor identity gives `A_0(n)=1` for `n≥1`,
+so `E_T(0)≤1`. The corpus supplies admission at half damping. If the stated
+convexity holds, it bounds every intermediate finite energy by the chord
+between these endpoints, uniformly in `T`. This would pay the critical
+damping admission needed by the existing receivers, and hence the JAS/RH
+destination. The endpoint identification and receiver transfer must be
+checked at their exact declarations before any proof claim.
+
+**Attack:** differentiate the literal energy twice, retaining
+`(A_η'(n))^2 + A_η(n) A_η''(n)` in every summand. The second term has no
+automatic sign. The existing arithmetic Markov square identity is not a
+convexity proof: its counting-measure boundary flux and density forcing
+remain signed. Search for an existing curvature result or counterexample,
+then attempt cancellation in that actual sum. `[OPEN CORE]`: prove the
+complete curvature nonnegative, or find an exact failure and revise the
+candidate. No convexity or RH theorem is currently claimed.
+
+### Corpus attack and exact remaining term
+
+The candidate's implication is already present, with the actual energy, in
+`ArithmeticContinuationAndCriticalEnergy/TheEscapeIsAnInteriorBump.lean`:
+`riemannHypothesis_of_convexOn_dampedMobiusEnergy`. Its zero-damping limit,
+half-damping admission and receiver dictionary were checked in Lean source.
+`TheSecondDampingTangentAndConvexity.lean` also already differentiates the
+literal source and proves
+
+`E_T''(η)/2 = ||A_η'||_T² + <A_η,A_η''>_T`.
+
+Here the second divisor-response weight is
+`Σ_{d|n} μ(d)(log d)²d^(-η)`, and its density is the exact second derivative
+of `1/ζ(1+η)`. The needed inequality is precisely
+`<A_η,A_η''>_T ≥ -||A_η'||_T²`, already named by the receiver
+`riemannHypothesis_of_second_tangent_pairing_ge`. Thus the convexity
+proposal is **REDISCOVERED as a criterion; its source inequality remains
+unproved**. No new criterion or conditional wrapper is to be formalized.
+
+The Markov formula in `DampingWorkAsArithmeticMarkovBoundaryFlux.lean`
+was read through the complete energy identity. It supplies a nonnegative
+jump energy, but also the counting-measure boundary flux and the density
+forcing. Neither has the sign needed to infer this curvature inequality.
+No invariant measure for the actual pronic receiver may be presumed.
+
+Two further source leads were checked at their exact scope:
+
+- The new paper card `gaussian-integer-divisibility-negative-correlation.md`
+  proves nonpositive coprime divisibility covariance for a literal Gaussian
+  integer measure. Its formalization is separate work and was not certified
+  here. The card explicitly leaves arbitrary signed combinations and Euler
+  inversions open. Its inequality has not been identified with the pronic
+  source/second-tangent pairing above.
+- `PMPowerDampedMobiusPrimeConvolution.lean` already proves an unconditional
+  signed prime-convolution asymptotic for the actual Fermi source, uniformly
+  at square-root lower cutoffs and fixed `0<η<1/2`. Its Mellin transform is
+  `(1-2^(1-s)) ζ(s)/(s ζ(s+η))`. The theorem retains the boundary jet, but
+  controls one convolution. No uniform iteration to the growing JAS power
+  window or curvature estimate follows from its stated quantifiers.
+
+This continuation has not proved the curvature conjecture, falsified it, or
+found a qualifying alternative source estimate. No new Lean source or audit
+is claimed. The goal remains the unconditional RH theorem; these scope
+checks are not counted as mathematical progress toward that theorem.
+
+## Finite Euler lattices, GCD bounds, and superlinear Möbius energy
+
+The frontier ledger is read-only for this work, following the user's explicit
+instruction. Subsequent research records belong on this card.
+
+Three additional corpus connections were checked at their source statements.
+
+1. `ArithmeticCastelnuovoSeveri/CrossTowerCollarAndFiniteEulerLatticePositivity`
+   bounds finite Euler-lattice prime incidence through prime-coordinate
+   slices. The JAS form instead contains `weilLagFunction(log n - log m)`.
+   Passing to that integrated lag kernel retains long-range prime and polar
+   terms. The incidence estimate does not identify or bound those terms.
+2. `TransHorizonIncidenceMechanics/FermiGcdGramPrimeProductBounds` proves
+   two-sided quadratic bounds for the actual kernel `gcd(a,b)^2/(ab)`, with
+   constants `prod_p (p-1)/(p+1)` and its reciprocal. This is a different
+   kernel from the JAS Weil lag kernel. No domination retaining the signed
+   prime–polar contribution was established. The positive GCD Gram cannot
+   be substituted for the native form.
+3. `BezoutValuationIncidence/TheMoebiusEnergyTransfersAtEverySuperlinearHorizon`
+   proves `sum_{k<=M} s_N(k)^2 / M -> cofinalMobiusSlope`, uniformly as both
+   `N` and `M/N` tend to infinity, for
+   `s_N(k) = sum_{d<=N, d|k} mu(d)`. The exact uniform declaration is
+   `exists_abs_sieveL2PrefixEnergy_div_sub_le`. The critical receiver involves
+   squared **centered cumulative prefixes**, so this row-energy estimate
+   leaves cross terms between different integer positions and, under damping
+   integration, different divisor cutoffs. Cauchy–Schwarz on the row alone
+   does not supply the required critical prefix bound.
+
+The new APT receiver file retains a conditional norm-controlled transfer; it
+does not supply the required global lower floor. The compensated-width file
+retains an open reverse ground-rate equality or a local off-line-depth
+assumption. Neither is an unconditional source-sign input for JAS.
+
+**Assessment:** these are useful existing results, but this batch proved no
+qualifying new source estimate. No Lean module was added or compiled, no
+route was retired, and no RH proof is claimed. The unresolved task remains
+the signed arithmetic bound uniform across the growing power window.

@@ -313,3 +313,15 @@ This card is the programme card: folder, umbrella, README and the continuation c
   - Five-way equivalence `obstructingTerms_positive_interval_tfae` on `[a, c]` and unconditional
     bounds above `Θ − ½` (`exists_obstructing_integrals_le_of_zetaZeroAbscissa_sub_half_lt`) and on
     the Vinogradov–Korobov band (`exists_obstructing_integrals_le_on_vinogradovKorobovBand`).
+- 2026-10-24 (cont. 5) — Open Problem 6 resolved (`ComplementarySectorPropagationAndAffineContraction`):
+  - Exact two-stage identity for the Ramanujan denominator sector and its literal complement:
+    `ramanujanPrefix_stage_step`, `complementarySector_step_eq`, and truncation bound
+    `pronicNorm_complementarySector_sq_le`.
+  - Contracting affine recurrence `reweightedShellResidual_step_le` (`F_{j+1} ≤ θ F_j + r_j`) and
+    stage-free bound `exists_reweightedShellResidual_contracting_bound_of_admits` along the dyadic
+    schedule `(Q_j, R_j) = (2^j, 2^{m(j+1)})`.
+  - Four-way equivalence `complementarySectorPropagation_tfae` connecting admission,
+    `ε ∈ receiverDampings`, bounded dyadic Ramanujan prefix energy, and contracting affine
+    propagation, plus unconditional bounds above `Θ − ½` and on the Vinogradov–Korobov band
+    (`exists_dyadicRamanujanPrefixEnergy_le_of_zetaZeroAbscissa_sub_half_lt`,
+    `exists_dyadicRamanujanPrefixEnergy_le_on_vinogradovKorobovBand`).

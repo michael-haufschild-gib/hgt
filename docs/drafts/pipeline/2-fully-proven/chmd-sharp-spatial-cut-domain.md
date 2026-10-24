@@ -110,9 +110,24 @@ No external novelty claim, numerical experiment or RH sign is asserted.
 Candidate `/tmp/chmd_sharp_cut_proof.lean` constructs the literal Gamma
 crossing term, transports absolute boundary integrability to the original
 edge coordinates, and derives `memLp_difference_indicator_Iio` for every
-actual maximal graph vector. Its first direct check is running. Uniform
-norm control and interval composition are not yet written in Lean.
+actual maximal graph vector. Its second direct check is running after
+fixing set-membership simplifications, one namespace and representative
+coercions. Uniform norm control and interval composition are written in
+the extension fragment but have not yet been checked.
 
 The initial API probe confirmed the required product/shear
 measure-preserving maps, real-to-complex L2 admission and real-part
 integrability. No missing boundary estimate was added as a premise.
+
+An equivalent proof of the uniform bound avoids explicit kernel-norm
+bookkeeping. Sharp restriction is linear; its graph is closed because
+the source projection is continuous and injective and ordinary L2
+restriction is continuous. Hence the zero cut is bounded on the complete
+stationary volume graph. `volumeGraphTranslate` is an isometry and
+conjugates every cut to the zero cut, giving one common stationary bound.
+The map from the full CHMD graph to its physical stationary graph is
+bounded by the same closed-graph argument. The inverse `fullGroundEquiv`
+controls the original graph norm by source norm plus physical stationary
+graph norm. This proves the asserted uniform full-graph bound without
+using an aperture-dependent equivalence. Exact Lean statements are
+prepared in `/tmp/chmd_sharp_cut_continuity.fragment` for the next check.

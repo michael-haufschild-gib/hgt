@@ -332,7 +332,9 @@ theorem dyadicRamanujanPrefixEnergy_le_dampedMobiusEnergy_add {ε : ℝ} (hε : 
     (by linarith : ε / 2 < ε) (R := 2 ^ (m * (j + 1))) (T := 0) (U := 2 ^ (j + 1))
     (by positivity) hUR
   have hcast : (((2 : ℕ) ^ (j + 1) : ℕ) : ℝ) = (2 : ℝ) ^ (j + 1) := by push_cast; ring
-  rw [h1, h2, hcast, shellError_eq] at hbound
+  have hcastR : (((2 : ℕ) ^ (m * (j + 1)) : ℕ) : ℝ) = ((2 : ℕ) : ℝ) ^ (m * (j + 1)) :=
+    Nat.cast_pow 2 (m * (j + 1))
+  rw [h1, h2, hcast, hcastR, shellError_eq] at hbound
   exact hbound
 
 /-- **Lower comparison: the receiver energy at `2^{j+1}` is bounded by twice the dyadic stage prefix
@@ -395,10 +397,12 @@ theorem dampedMobiusEnergy_le_dyadicRamanujanPrefixEnergy_add {ε : ℝ} (hε : 
   have herr := ramanujanCutoffHeadErrorEnergy_le hε (by positivity : (0 : ℝ) ≤ ε / 2)
     (by linarith : ε / 2 < ε) (Q := 2 ^ (m * (j + 1))) (T := 2 ^ (j + 1)) (by positivity) hUR
   have hcast : (((2 : ℕ) ^ (j + 1) : ℕ) : ℝ) = (2 : ℝ) ^ (j + 1) := by push_cast; ring
+  have hcastR : (((2 : ℕ) ^ (m * (j + 1)) : ℕ) : ℝ) = ((2 : ℕ) : ℝ) ^ (m * (j + 1)) :=
+    Nat.cast_pow 2 (m * (j + 1))
   have herr2 : 2 * ramanujanCutoffHeadErrorEnergy ε (2 ^ (m * (j + 1))) (2 ^ (j + 1)) ≤
       2 * ramanujanCutoffErrorConstant ε (ε / 2) ^ 2 * shellRatio ε m ^ (j + 1) := by
     have hmul := mul_le_mul_of_nonneg_left herr (by norm_num : (0 : ℝ) ≤ 2)
-    rw [← mul_assoc, hcast, shellError_eq] at hmul
+    rw [← mul_assoc, hcast, hcastR, shellError_eq] at hmul
     exact hmul
   linarith
 
@@ -560,9 +564,10 @@ For every damping floor `ε₀ > 0` and depth `m ≥ 1` with `1 < m ε₀`, ther
 for all `j : ℕ` and all `ε ∈ [ε₀, 1/2]` in the Vinogradov–Korobov band at horizon `2^{j+1}`,
 `dyadicRamanujanPrefixEnergy ε m j ≤ K`. -/
 theorem exists_dyadicRamanujanPrefixEnergy_le_on_vinogradovKorobovBand {ε₀ : ℝ} (hε₀ : 0 < ε₀)
-    {m : ℕ} (hm : 1 ≤ m) (hmε₀ : 1 < (m : ℝ) * ε₀) :
+    {m : ℕ} (hm : 1 ≤ m) :
     ∃ E : ℝ, 0 ≤ E ∧ ∀ (j : ℕ) (ε : ℝ), ε₀ ≤ ε → ε ≤ 1 / 2 →
-      1 / 2 - vkKappa * vkScale (2 ^ (j + 1)) / (480 * Real.log ((2 ^ (j + 1) : ℕ) : ℝ)) ≤ ε →
+      1 / 2 - vkKappa * vkScale ((2 ^ (j + 1) : ℕ) : ℝ) /
+        (480 * Real.log ((2 ^ (j + 1) : ℕ) : ℝ)) ≤ ε →
         dyadicRamanujanPrefixEnergy ε m j ≤
           2 * E + 2 * ramanujanCutoffErrorConstant ε (ε / 2) ^ 2 * shellRatio ε m ^ (j + 1) := by
   obtain ⟨E, hE0, hE⟩ := exists_receiver_le_on_vinogradovKorobovBand_of_pos hε₀

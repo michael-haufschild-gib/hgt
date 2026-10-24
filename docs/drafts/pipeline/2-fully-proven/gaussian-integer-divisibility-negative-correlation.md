@@ -226,6 +226,21 @@ Its covariance is therefore
 
 which is nonpositive by the four-point inequality.
 
+The inequality also iterates. If `d_1,...,d_k` are pairwise coprime
+positive integers, then
+
+```
+P_y(d_1...d_k | n) <= product_i P_y(d_i | n).
+```
+
+At each induction step apply the two-factor inequality to the product
+of the preceding moduli and the next modulus. The power prefactors
+multiply exactly, and the common normalizing mass is positive.
+Expanding `product_i (1+c_i 1_(d_i|n))` with `c_i>=0` therefore also
+gives the corresponding product bound on its expectation. This is a
+statement about nonnegative coefficients and intersections; it does
+not establish a sign for inclusion-exclusion or arbitrary signed tests.
+
 ## TG limit
 
 This supplies a sign for actual mixed coprime Gaussian statistics,

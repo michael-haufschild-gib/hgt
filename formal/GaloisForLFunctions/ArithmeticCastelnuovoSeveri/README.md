@@ -447,14 +447,46 @@ them. ACS isolates which of these mechanisms the scaling surface has.
       `eventually_near_radical_subspace_landauRate`), and critical-line zero-side coercivity
       `∑_{ρ ∈ S} m_ρ |f̂(γ_ρ)|² ≤ Re W_Z(f, f)` (`sum_norm_sq_paperFT_le_re_W_of_criticalLine`).
 
-### 3.7 Hecke incidence and the successor cell
+### 3.7 Hecke incidence, the collar between towers, and the successor cell
 
-23. **Cartesian law.** Two Hecke cycles meet through the primes only when their exponent vectors
-    differ in one coordinate `p`, with weight `τ_p(|v_p(a) − v_p(b)|)`: the prime part is a product
-    of one tower per prime (`heckeIncidence_eq_towerWeight`).
-24. **Resonators.** On `{p, q}`-boxes the cross-prime remainder against the Euler envelopes is
-    negative definite (`resonatorRemainder_neg`); positivity there comes from the collar and the
-    pole.
+23. **Cartesian law and rank-`P` Kronecker splitting.** Two Hecke cycles meet through the primes only
+    when their exponent vectors differ in one coordinate `p`, with weight `τ_p(|v_p(a) − v_p(b)|)`: the
+    prime part is a product of one tower per prime (`heckeIncidence_eq_towerWeight`). Off-`p`
+    valuation agreement is equality of the prime-to-`p` cofactor `primeCofactor p a = a / p^{v_p(a)}`
+    (`primeCofactor_eq_iff_factorization_eq_off`), so on any `P`-smooth support `S` the Hecke form
+    splits as `heckeFormOn S c = Σ_{p ∈ P} primeSliceForm p S c` with zero cross-prime prime coupling
+    (`heckeFormOn_eq_sum_primeSliceForm`), each slice is bounded by `E_p Σ_{a ∈ S} c(a)²`
+    (`abs_primeSliceForm_le`), and the total prime self-intersection obeys
+    `|heckeFormOn S c| ≤ (Σ_{p ∈ P} E_p) Σ_{a ∈ S} c(a)²` (`abs_heckeFormOn_le_sum_eulerEnvelope`).
+    On inductive rank-`P` product boxes `towerProductBox B p M`, the slices reduce to single-prime
+    tower forms (`primeSliceForm_towerProductBox_self`), and the resonant train `c ≡ 1` attains
+    `Σ_{p ∈ P} E_p` asymptotically (`exists_towerForm_one_gt_of_lt_eulerEnvelope`,
+    `exists_heckeForm_box_one_gt_of_lt_add_eulerEnvelope`).
+24. **Resonators, the collar between towers, and positivity of the finite-Euler-product form.** On
+    `{p, q}`-boxes the cross-prime remainder against the Euler envelopes is negative definite
+    (`resonatorRemainder_neg`), and on any `P`-smooth support `S` each cross-lag form obeys
+    `|crossLagOn p q S c| ≤ Σ_{a ∈ S} c(a)²` (`abs_crossLagOn_le`), so `rankPResonatorRemainder P S c`
+    is bounded by `−(Σ_{p ∈ P} (E_p − (|P| − 1) w_p²)) Σ_{a ∈ S} c(a)²` (`rankPResonatorRemainder_le`,
+    `rankPResonatorRemainder_le_card`); since `2 w_r² < E_r` for all `r ≥ 2`
+    (`two_mul_resonatorWeight_sq_lt_eulerEnvelope`), it is negative definite for every `1 ≤ |P| ≤ 3`
+    (`rankPResonatorRemainder_neg_of_card_le_three`). Between any `1 ≤ a < b`, the narrow archimedean
+    collar density is `ω(log(b/a)) = b√(ab)/(b² − a²)` (`archLevyDensity_log_div_nat`), and on `S` the
+    collar form splits into `intraTowerCollarForm P S c + crossTowerCollarForm P S c`
+    (`collarFormOn_eq_intra_add_cross`). Along each prime `p`,
+    `τ_p(k)/log p < ω(k log p) ≤ (p²/((p² − 1)log p)) τ_p(k)` (`archLevyDensity_mul_log_prime_bounds`),
+    bounding the intra-tower collar against the Euler envelopes by
+    `(Σ_{p ∈ P} (p²/((p² − 1)log p)) E_p) Σ_{a ∈ S} c(a)²` (`abs_intraTowerCollarForm_le`); across
+    towers (`heckeIncidence a b = 0`), `collarWeight a b ≤ (b/4)(√(b/a) + √(a/b))` against the pole
+    pairing (`collarWeight_le_polarWeight_mul`), `collarWeight a b ≤ (4/3)√(a/b)` when `2a ≤ b`
+    (`collarWeight_le_of_two_mul_le`), and for any disjointly supported bump family `{g_a}_{a ∈ S}`
+    the continuum collar coupling is bounded by the diagonal shift-jump self-energy
+    (`disjoint_family_shift_sq_eq`, `disjoint_lattice_collar_le_selfJump`). Consequently,
+    `finiteEulerLatticeForm S κ c = κ Σ_{a ∈ S} c(a)² − heckeFormOn S c` is positive semidefinite
+    whenever `κ ≥ Σ_{p ∈ P} E_p` (`finiteEulerLatticeForm_nonneg_of_sum_eulerEnvelope_le`) and on
+    `{p, q}`-boxes across all dimensions iff `κ ≥ E_p + E_q` (`box_finiteEulerForm_nonneg_forall_iff`),
+    while `collarCoupledEulerLatticeForm` and its pole-compensated form (`λ_pole ≥ B_max/4` on
+    `c ≥ 0`) are nonnegative at their exact envelope thresholds (`collarCoupledEulerLatticeForm_nonneg`,
+    `poleCompensatedCollarLatticeForm_nonneg`).
 25. **Mean field.** The cross-prime aggregate of wide odd tests is a mean field of size `≍ N`, and
     no polynomial adjunction bound holds (`not_exists_polynomial_adjunction_bound`).
 26. **The successor cell `[log k, log(k+1)]`.** Its pole mass is the pronic weight `1/(k(k+1))`
@@ -692,7 +724,9 @@ Built and reusable:
   side, Frobenius eigenvalues and weights, resonant primes.
 - *Bézout positivity* through the Lévy jump form of the collar.
 - *Source section cones*: determinantal effectivity defined from source data, Hecke-stable and ample.
-- *Hecke incidence*: the Cartesian law, resonators, the successor cell.
+- *Hecke incidence and the multi-tower collar*: the Cartesian and rank-`P` Kronecker laws, rank-`P`
+  resonator remainders, intra- and cross-tower collar bounds against `Σ_p E_p` and the pole pairing,
+  positivity decision for the finite-Euler-product form on lattice tests, and the successor cell.
 - *Rank–trace inertia* with spectral slack.
 - *The `λ`-ring*: Adams operations, Hecke correspondences and cycles, arithmetic Lefschetz numbers.
 - *The odd-sector ledger and section counts*: Lorentz–polar identity, reflected-prime/polar and
@@ -706,8 +740,7 @@ Built and reusable:
 
 To be built:
 
-- an effectivity stable under the Hecke correspondences that the golden datum violates;
-- a bound on the coupling of prime towers through the collar on rank-`P` boxes.
+- an effectivity stable under the Hecke correspondences that the golden datum violates.
 
 ---
 
@@ -768,9 +801,28 @@ To be built:
    (`zetaContactAperture_le_of_near_top_loglog_of_offLineCopiesLocallyBounded`,
    `re_lt_nearTopLogLogExcludedDepthOffLine_of_pos_on_Icc`,
    `re_lt_nearTopLogLogExcludedDepthOffLine_of_lt_contactAperture`).
-4. **The collar between towers.** On rank-`P` boxes the towers couple through the collar and the
-   pole only; bound this coupling against `Σ_p E_p` and decide positivity of the
-   finite-Euler-product form on lattice tests.
+4. **The collar between towers.** Settled (`CrossTowerCollarAndFiniteEulerLatticePositivity`):
+   using `primeCofactor p a = a / p^{v_p(a)}`, on any `P`-smooth support `S` the prime incidence form
+   splits as `heckeFormOn S c = Σ_{p ∈ P} primeSliceForm p S c` with zero cross-prime prime coupling
+   (`heckeFormOn_eq_sum_primeSliceForm`), bounded by `(Σ_{p ∈ P} E_p) Σ_{a ∈ S} c(a)²`
+   (`abs_heckeFormOn_le_sum_eulerEnvelope`) and asymptotically attained by `c ≡ 1` on product boxes
+   (`exists_towerForm_one_gt_of_lt_eulerEnvelope`, `exists_heckeForm_box_one_gt_of_lt_add_eulerEnvelope`).
+   The rank-`P` resonator remainder obeys `rankPResonatorRemainder P S c ≤ −(Σ_{p ∈ P} (E_p − (|P| − 1) w_p²)) Σ_{a ∈ S} c(a)²`
+   (`rankPResonatorRemainder_le`, `rankPResonatorRemainder_le_card`) and is negative definite for all
+   `1 ≤ |P| ≤ 3` (`two_mul_resonatorWeight_sq_lt_eulerEnvelope`, `rankPResonatorRemainder_neg_of_card_le_three`).
+   Between any `1 ≤ a < b`, `ω(log(b/a)) = b√(ab)/(b² − a²)` (`archLevyDensity_log_div_nat`), and
+   `collarFormOn S c = intraTowerCollarForm P S c + crossTowerCollarForm P S c`
+   (`collarFormOn_eq_intra_add_cross`): the intra-tower collar is bounded against the Euler envelopes
+   by `(Σ_{p ∈ P} (p²/((p² − 1)log p)) E_p) Σ_{a ∈ S} c(a)²` (`abs_intraTowerCollarForm_le`), while
+   the cross-tower collar (`heckeIncidence a b = 0`) is bounded pointwise by `(b/4)(√(b/a) + √(a/b))`
+   against the pole pairing (`collarWeight_le_polarWeight_mul`), by `(4/3)√(a/b)` when `2a ≤ b`
+   (`collarWeight_le_of_two_mul_le`), and on disjointly supported bumps `{g_a}_{a ∈ S}` by the
+   diagonal shift-jump self-energy (`disjoint_family_shift_sq_eq`, `disjoint_lattice_collar_le_selfJump`).
+   Consequently, `finiteEulerLatticeForm S κ c` is positive semidefinite for `κ ≥ Σ_{p ∈ P} E_p`
+   (`finiteEulerLatticeForm_nonneg_of_sum_eulerEnvelope_le`) and universally nonnegative on `{p, q}`-boxes
+   iff `κ ≥ E_p + E_q` (`box_finiteEulerForm_nonneg_forall_iff`), with matching coercivity and
+   pole-compensated positivity laws for `collarCoupledEulerLatticeForm`
+   (`collarCoupledEulerLatticeForm_nonneg`, `poleCompensatedCollarLatticeForm_nonneg`).
 5. **Effectivity from the `λ`-ring.** The Adams operations, Hecke correspondences and the pole-plane
    splitting exist (§3.9), and the source cones are stable under them (item 20). Open: a
    Hecke-stable cone with nonnegative ample degree and Riemann–Roch supply whose supply is proved
@@ -843,7 +895,7 @@ Weil's argument.
 | `TheVisibilityDegreeOfAnIsolatedPair`, `TheVisibilityDegreeOfRightZeros`, `HeightUniformVisibilityAndOffLineDensity`, `TuransInequalityWithoutBoundedOnLineDensity`, `DoublyLogarithmicVisibilityAndExcludedDepthLaw` | visibility degrees from on-line mass and densities; height-uniform visibility; eliminating the `log γ₀` Turán tail without bounded on-line density, two-sided `Θ_w(log γ₀)` law for `onLineEvenMass`, two-sided `Θ_{M,w}((1 + log log γ₀)/δ₀)` visibility lag, intrinsic on-line mass and Hodge-defect barriers, doubly-logarithmic contact-aperture and excluded-depth laws, and the clustering dichotomy |
 | `TheKroneckerRankDichotomy`, `TheZerosOfAnExponentialPolynomialRecur` | recurrent configurations have defect `0` or `∞` |
 | `TheHodgeDefectIsCyclic`, `TheHeckeTowerOfAPrimeIsThePeriodQuotient`, `AlmostEveryPrimeSeesEveryRightZero`, `TheTowerDefectCountsTheFrobeniusEigenvalues`, `OnePrimeSeesEveryWellFoundedLevel` | cyclic Pontryagin law; prime towers, Frobenius eigenvalues and weights; resonant primes; top-down class extraction, the tower law without finiteness, attained tops |
-| `ResonatorKroneckerLaw`, `HeckeIncidenceCartesianLaw`, `TheResonatorRemainderIsNegative`, `TheAdjunctionConjectureMeanField` | Hecke incidence: Cartesian law, resonators, mean field |
+| `ResonatorKroneckerLaw`, `HeckeIncidenceCartesianLaw`, `TheResonatorRemainderIsNegative`, `TheAdjunctionConjectureMeanField`, `CrossTowerCollarAndFiniteEulerLatticePositivity` | Hecke incidence: Cartesian and rank-`P` Kronecker laws, rank-`P` resonator remainders, intra- and cross-tower collar bounds against `Σ_p E_p` and the pole pairing, positivity decision for the finite-Euler-product form on lattice tests, mean field |
 | `ThePronicWeightIsThePoleMassOfTheSuccessorCell`, `TheSuccessorCollar` | the successor cell |
 | `TheTwoThirdsConstantIsPairCorrelation`, `BreakingTheCoalescenceBlindSpotAndThreeQuarters`, `SpectralSlackConservationAndTheHyperbolicDisplacementThreshold`, `WhatAGramFunctionalCertifiesWithoutEffectivity` | rank–trace inertia, the coalescence blind spot, spectral slack, routes to `3/4`, corpus upgrades |
 | `TheLambdaRingOfTheScalingSurface` | `λ`-ring, Adams operations, Hecke cycles, Lefschetz splitting |

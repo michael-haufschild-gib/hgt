@@ -105,7 +105,7 @@ theorem not_dvd_primeCofactor {p a : ℕ} (hp : p.Prime) (ha : a ≠ 0) :
   Nat.not_dvd_ordCompl hp ha
 
 /-- The prime factorization of `primeCofactor p a` vanishes at `p` and agrees with `a` off `p`. -/
-theorem factorization_primeCofactor {p a : ℕ} (hp : p.Prime) (ha : a ≠ 0) (r : ℕ) :
+theorem factorization_primeCofactor {p a : ℕ} (hp : p.Prime) (_ha : a ≠ 0) (r : ℕ) :
     (primeCofactor p a).factorization r = if r = p then 0 else a.factorization r := by
   have hdvd : p ^ (a.factorization p) ∣ a := Nat.ordProj_dvd a p
   have hdiv := congrArg (fun f => f r) (Nat.factorization_div hdvd)
@@ -204,10 +204,10 @@ theorem heckeIncidence_eq_sum_primes_of_primeFactors_subset {P : Finset ℕ}
   refine heckeIncidence_eq_sum_primes hP ha hb fun r hr => ?_
   have har : a.factorization r = 0 := by
     by_contra hne
-    exact hr (haP (Nat.mem_primeFactors_of_ne_zero hne))
+    exact hr (haP (Nat.support_factorization a ▸ Finsupp.mem_support_iff.mpr hne))
   have hbr : b.factorization r = 0 := by
     by_contra hne
-    exact hr (hbP (Nat.mem_primeFactors_of_ne_zero hne))
+    exact hr (hbP (Nat.support_factorization b ▸ Finsupp.mem_support_iff.mpr hne))
   rw [har, hbr]
 
 /-- The Hecke quadratic form on an arbitrary finite set of positive integers `S` with coefficients
@@ -241,37 +241,40 @@ theorem heckeFormOn_eq_sum_primeSliceForm {P S : Finset ℕ} (hP : ∀ p ∈ P, 
     refine Finset.sum_congr rfl fun p _ => ?_
     split_ifs <;> ring
   rw [Finset.sum_congr rfl fun a ha => Finset.sum_congr rfl (hterm a ha)]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun a _ => ?_
-  rw [Finset.sum_comm]
+  rw [Finset.sum_congr rfl fun a _ => Finset.sum_comm, Finset.sum_comm]
 
 /-- Along any single `p`-fibre `{b ∈ S : primeCofactor p b = primeCofactor p a}`, the row sum of
 the tower weights is bounded by the Euler envelope `E_p = 2 log p/(√p − 1)`. -/
 theorem sum_primeSlice_towerWeight_le {p : ℕ} (hp : p.Prime) {S : Finset ℕ}
-    {a : ℕ} (ha : a ∈ S) :
+    {a : ℕ} (_ha : a ∈ S) :
     (∑ b ∈ S, if primeCofactor p a = primeCofactor p b then
         towerWeight p (Nat.dist (a.factorization p) (b.factorization p)) else 0) ≤
       eulerEnvelope p := by
-  set M := S.sup (fun x => x.factorization p) + 1
+  generalize hM : S.sup (fun x => x.factorization p) + 1 = M
   rw [← Finset.sum_filter]
-  have hinj : ∀ b₁ ∈ S.filter (fun b => primeCofactor p a = primeCofactor p b),
-      ∀ b₂ ∈ S.filter (fun b => primeCofactor p a = primeCofactor p b),
-      b₁.factorization p = b₂.factorization p → b₁ = b₂ := by
+  have hinj : Set.InjOn (fun b : ℕ => b.factorization p)
+      (S.filter (fun b => primeCofactor p a = primeCofactor p b) : Finset ℕ) := by
     intro b₁ hb₁ b₂ hb₂ hfac
-    have h1 := (Finset.mem_filter.mp hb₁).2
-    have h2 := (Finset.mem_filter.mp hb₂).2
+    dsimp only at hfac
+    have h1 := (Finset.mem_filter.mp (Finset.mem_coe.mp hb₁)).2
+    have h2 := (Finset.mem_filter.mp (Finset.mem_coe.mp hb₂)).2
     rw [← primeCofactor_mul_pow p b₁, ← primeCofactor_mul_pow p b₂, ← h1, ← h2, hfac]
   have hsub : (S.filter (fun b => primeCofactor p a = primeCofactor p b)).image
       (fun b => b.factorization p) ⊆ range M := by
     intro k hk
     rcases Finset.mem_image.mp hk with ⟨b, hb, rfl⟩
     have hbS := (Finset.mem_filter.mp hb).1
-    exact Finset.mem_range.mpr (Nat.lt_succ_of_le (Finset.le_sup (f := fun x : ℕ => x.factorization p) hbS))
+    rw [Finset.mem_range, ← hM]
+    exact Nat.lt_succ_of_le (Finset.le_sup (f := fun x : ℕ => x.factorization p) hbS)
+  have himg : ∑ b ∈ S.filter (fun b => primeCofactor p a = primeCofactor p b),
+        towerWeight p (Nat.dist (a.factorization p) (b.factorization p)) =
+      ∑ i' ∈ (S.filter (fun b => primeCofactor p a = primeCofactor p b)).image
+          (fun b => b.factorization p), towerWeight p (Nat.dist (a.factorization p) i') :=
+    (Finset.sum_image (f := fun i' => towerWeight p (Nat.dist (a.factorization p) i')) hinj).symm
   calc ∑ b ∈ S.filter (fun b => primeCofactor p a = primeCofactor p b),
         towerWeight p (Nat.dist (a.factorization p) (b.factorization p))
       = ∑ i' ∈ (S.filter (fun b => primeCofactor p a = primeCofactor p b)).image
-          (fun b => b.factorization p), towerWeight p (Nat.dist (a.factorization p) i') :=
-        (Finset.sum_image hinj).symm
+          (fun b => b.factorization p), towerWeight p (Nat.dist (a.factorization p) i') := himg
     _ ≤ ∑ i' ∈ range M, towerWeight p (Nat.dist (a.factorization p) i') :=
         Finset.sum_le_sum_of_subset_of_nonneg hsub (fun _ _ _ => towerWeight_nonneg _ _)
     _ ≤ 2 * (Real.log p / (Real.sqrt p - 1)) := sum_towerWeight_dist_le hp M (a.factorization p)
@@ -309,10 +312,10 @@ theorem abs_primeSliceForm_le {p : ℕ} (hp : p.Prime) (S : Finset ℕ) (c : ℕ
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [Finset.mul_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun b _ => ?_
-    have heq : (primeCofactor p b = primeCofactor p a) ↔ (primeCofactor p a = primeCofactor p b) :=
-      eq_comm
-    rw [heq, Nat.dist_comm (b.factorization p) (a.factorization p)]
-    ring
+    rw [Nat.dist_comm (b.factorization p) (a.factorization p)]
+    by_cases h : primeCofactor p a = primeCofactor p b
+    · rw [if_pos h, if_pos h.symm]; ring
+    · rw [if_neg h, if_neg (Ne.symm h)]; ring
   calc |primeSliceForm p S c|
       ≤ ∑ a ∈ S, ∑ b ∈ S, |if primeCofactor p a = primeCofactor p b then
           c a * c b * towerWeight p (Nat.dist (a.factorization p) (b.factorization p)) else 0| := by
@@ -358,10 +361,10 @@ theorem factorization_mul_pow_prime_of_not_dvd {m p : ℕ} (hp : p.Prime) (hm0 :
 
 theorem injOn_towerProductBox {B : Finset ℕ} {p : ℕ} (hp : p.Prime)
     (hB : ∀ m ∈ B, m ≠ 0 ∧ ¬ p ∣ m) (M : ℕ) :
-    Set.InjOn (fun x : ℕ × ℕ => x.1 * p ^ x.2) (B ×ˢ range M) := by
+    Set.InjOn (fun x : ℕ × ℕ => x.1 * p ^ x.2) (B ×ˢ range M : Finset (ℕ × ℕ)) := by
   intro x hx y hy hxy
-  rcases Finset.mem_product.mp hx with ⟨hxB, _⟩
-  rcases Finset.mem_product.mp hy with ⟨hyB, _⟩
+  rcases Finset.mem_product.mp (Finset.mem_coe.mp hx) with ⟨hxB, _⟩
+  rcases Finset.mem_product.mp (Finset.mem_coe.mp hy) with ⟨hyB, _⟩
   have hx1 := factorization_mul_pow_prime_of_not_dvd hp (hB x.1 hxB).1 (hB x.1 hxB).2 x.2
   have hy1 := factorization_mul_pow_prime_of_not_dvd hp (hB y.1 hyB).1 (hB y.1 hyB).2 y.2
   have hi : x.2 = y.2 := by
@@ -495,7 +498,7 @@ theorem exists_towerForm_one_gt_of_lt_eulerEnvelope {p : ℕ} (hp : p.Prime) {c 
   have hMpos : (0 : ℝ) < M := by exact_mod_cast hM1
   have hKdiv : (K : ℝ) < δ * M := by
     have : (K : ℝ) / δ < M := lt_of_le_of_lt (le_max_right _ _) hM
-    rwa [div_lt_iff₀ hδ] at this
+    rwa [div_lt_iff₀ hδ, mul_comm] at this
   refine ⟨M, hM1, ?_⟩
   have hlo := two_mul_sub_mul_sum_towerWeight_le_towerForm_one (p := p) hKM
   rw [sum_towerWeight_eq hp K] at hlo
@@ -655,10 +658,20 @@ theorem rankPResonatorRemainder_le {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p) 
   unfold rankPResonatorRemainder
   linarith
 
+/-- Whenever `(∑_{p ∈ P} w_p)² − ∑_{p ∈ P} w_p² < ∑_{p ∈ P} E_p`, the rank-`P` resonator remainder
+is strictly negative on every nonzero coefficient vector. -/
+theorem rankPResonatorRemainder_neg_of_subEnvelope {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p)
+    (hsub : (∑ p ∈ P, resonatorWeight p) ^ 2 - ∑ p ∈ P, resonatorWeight p ^ 2 <
+      ∑ p ∈ P, eulerEnvelope p)
+    {S : Finset ℕ} {c : ℕ → ℝ} (hc : 0 < ∑ a ∈ S, c a ^ 2) :
+    rankPResonatorRemainder P S c < 0 := by
+  have hle := rankPResonatorRemainder_le hP S c
+  nlinarith
+
 /-- Cauchy–Schwarz bound on the rank-`P` resonator remainder in terms of `|P| - 1`:
 `rankPResonatorRemainder P S c ≤ −(∑_{p ∈ P} (E_p − (|P| − 1) w_p²)) ∑_{a ∈ S} c(a)²`. -/
 theorem rankPResonatorRemainder_le_card {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p)
-    (hcard : 1 ≤ P.card) (S : Finset ℕ) (c : ℕ → ℝ) :
+    (S : Finset ℕ) (c : ℕ → ℝ) :
     rankPResonatorRemainder P S c ≤
       -(∑ p ∈ P, (eulerEnvelope p - ((P.card : ℝ) - 1) * resonatorWeight p ^ 2)) *
         ∑ a ∈ S, c a ^ 2 := by
@@ -708,7 +721,7 @@ theorem rankPResonatorRemainder_neg_of_card_le_three {P : Finset ℕ} (hP : ∀ 
     (h1 : 1 ≤ P.card) (h3 : P.card ≤ 3) {S : Finset ℕ} {c : ℕ → ℝ}
     (hc : 0 < ∑ a ∈ S, c a ^ 2) :
     rankPResonatorRemainder P S c < 0 := by
-  have hle := rankPResonatorRemainder_le_card hP h1 S c
+  have hle := rankPResonatorRemainder_le_card hP S c
   have hcard_le : (P.card : ℝ) - 1 ≤ 2 := by
     have : (P.card : ℝ) ≤ 3 := by exact_mod_cast h3
     linarith
@@ -728,13 +741,634 @@ theorem archLevyDensity_log_div_nat {a b : ℕ} (ha : 1 ≤ a) (hab : a < b) :
     archLevyDensity (Real.log ((b : ℝ) / a)) =
       (b : ℝ) * Real.sqrt ((a : ℝ) * b) / ((b : ℝ) ^ 2 - (a : ℝ) ^ 2) := by
   have ha0 : (0 : ℝ) < a := by exact_mod_cast ha
+  have ha0' := ha0.ne'
   have hab' : (a : ℝ) < b := by exact_mod_cast hab
   have ht : 1 < (b : ℝ) / a := (one_lt_div ha0).mpr hab'
   have hsq : Real.sqrt ((a : ℝ) * b) = (a : ℝ) * Real.sqrt ((b : ℝ) / a) := by
     rw [show (a : ℝ) * b = (a : ℝ) ^ 2 * ((b : ℝ) / a) by field_simp,
       Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq ha0.le]
-  have hden : ((b : ℝ) / a) ^ 2 - 1 = ((b : ℝ) ^ 2 - (a : ℝ) ^ 2) / (a : ℝ) ^ 2 := by
-    field_simp
   have hba : (b : ℝ) ^ 2 - (a : ℝ) ^ 2 ≠ 0 := by nlinarith
-  rw [archLevyDensity_log ht, hdev := ?_]
-  all_goals sorry
+  rw [archLevyDensity_log ht, hsq,
+    show ((b : ℝ) / a) ^ 2 - 1 = ((b : ℝ) ^ 2 - (a : ℝ) ^ 2) / (a : ℝ) ^ 2 by field_simp]
+  field_simp
+
+/-- The off-diagonal archimedean collar weight between two positive integers:
+`collarWeight a b = ω(|log b − log a|)` for `a ≠ b` positive, and `0` on the diagonal or at `0`. -/
+def collarWeight (a b : ℕ) : ℝ :=
+  if a = b ∨ a = 0 ∨ b = 0 then 0 else archLevyDensity |Real.log b - Real.log a|
+
+theorem collarWeight_comm (a b : ℕ) : collarWeight a b = collarWeight b a := by
+  unfold collarWeight
+  have heq : (a = b ∨ a = 0 ∨ b = 0) ↔ (b = a ∨ b = 0 ∨ a = 0) := by tauto
+  simp only [heq, abs_sub_comm]
+
+theorem collarWeight_self (a : ℕ) : collarWeight a a = 0 := by
+  simp [collarWeight]
+
+theorem collarWeight_nonneg (a b : ℕ) : 0 ≤ collarWeight a b := by
+  unfold collarWeight
+  split_ifs with h
+  · exact le_rfl
+  · push Not at h
+    rcases h with ⟨hab, ha0, hb0⟩
+    have ha_pos : (0 : ℝ) < a := by exact_mod_cast Nat.pos_of_ne_zero ha0
+    have hb_pos : (0 : ℝ) < b := by exact_mod_cast Nat.pos_of_ne_zero hb0
+    have hlog_ne : Real.log (b : ℝ) - Real.log (a : ℝ) ≠ 0 := by
+      intro hsub
+      have hlog_eq : Real.log (b : ℝ) = Real.log (a : ℝ) := sub_eq_zero.mp hsub
+      have hba : (b : ℝ) = a := by
+        have := congrArg Real.exp hlog_eq
+        rwa [Real.exp_log hb_pos, Real.exp_log ha_pos] at this
+      exact hab (by exact_mod_cast hba.symm)
+    exact (archLevyDensity_pos (abs_pos.mpr hlog_ne)).le
+
+/-- For `1 ≤ a < b`, `collarWeight a b = b√(ab) / (b² − a²)`. -/
+theorem collarWeight_eq_of_lt {a b : ℕ} (ha : 1 ≤ a) (hab : a < b) :
+    collarWeight a b = (b : ℝ) * Real.sqrt ((a : ℝ) * b) / ((b : ℝ) ^ 2 - (a : ℝ) ^ 2) := by
+  have ha0 : (0 : ℝ) < a := by exact_mod_cast ha
+  have hb0 : (0 : ℝ) < b := by exact_mod_cast (by omega : 0 < b)
+  have hab' : (a : ℝ) < b := by exact_mod_cast hab
+  have hlog : Real.log (b : ℝ) - Real.log (a : ℝ) = Real.log ((b : ℝ) / a) :=
+    (Real.log_div hb0.ne' ha0.ne').symm
+  have hpos : 0 < Real.log ((b : ℝ) / a) := Real.log_pos ((one_lt_div ha0).mpr hab')
+  unfold collarWeight
+  rw [if_neg (by omega), hlog, abs_of_pos hpos, archLevyDensity_log_div_nat ha hab]
+
+/-- **Two-sided comparison of the single-tower collar with the prime tower weight.** Along the
+tower of a prime `p`, for every `k ≥ 1`,
+`τ_p(k) / log p < ω(k log p) ≤ (p² / ((p² − 1) log p)) τ_p(k)`. -/
+theorem archLevyDensity_mul_log_prime_bounds {p : ℕ} (hp : p.Prime) {k : ℕ} (hk : 1 ≤ k) :
+    towerWeight p k / Real.log p < archLevyDensity ((k : ℝ) * Real.log p) ∧
+      archLevyDensity ((k : ℝ) * Real.log p) ≤
+        ((p : ℝ) ^ 2 / (((p : ℝ) ^ 2 - 1) * Real.log p)) * towerWeight p k := by
+  have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
+  have hp0 : (0 : ℝ) < p := by linarith
+  have hlog : 0 < Real.log p := Real.log_pos (by linarith)
+  have hpk1 : 1 < (p : ℝ) ^ k := one_lt_pow₀ (by linarith) (by omega)
+  have hpk0 : 0 < (p : ℝ) ^ k := by positivity
+  have hlog_pow : (k : ℝ) * Real.log p = Real.log ((p : ℝ) ^ k) := (Real.log_pow p k).symm
+  rw [hlog_pow, archLevyDensity_log hpk1, towerWeight_eq hp hk]
+  have hsq : (p : ℝ) ^ k * Real.sqrt ((p : ℝ) ^ k) / (((p : ℝ) ^ k) ^ 2 - 1) =
+      (1 / Real.sqrt ((p : ℝ) ^ k)) / (1 - 1 / ((p : ℝ) ^ k) ^ 2) := by
+    have h1 : 0 < Real.sqrt ((p : ℝ) ^ k) := Real.sqrt_pos.mpr hpk0
+    have h2 : Real.sqrt ((p : ℝ) ^ k) * Real.sqrt ((p : ℝ) ^ k) = (p : ℝ) ^ k :=
+      Real.mul_self_sqrt hpk0.le
+    have h3 : ((p : ℝ) ^ k) ^ 2 - 1 ≠ 0 := by nlinarith
+    field_simp
+    nlinarith
+  rw [hsq]
+  have htw : Real.log p / Real.sqrt ((p : ℝ) ^ k) / Real.log p = 1 / Real.sqrt ((p : ℝ) ^ k) := by
+    field_simp [hlog.ne']
+  have hden_pos : 0 < 1 - 1 / ((p : ℝ) ^ k) ^ 2 := by
+    rw [sub_pos, div_lt_one (by positivity)]
+    nlinarith
+  have hden_lt : 1 - 1 / ((p : ℝ) ^ k) ^ 2 < 1 := by
+    have : 0 < 1 / ((p : ℝ) ^ k) ^ 2 := by positivity
+    linarith
+  constructor
+  · rw [htw, lt_div_iff₀ hden_pos]
+    have h1 : 0 < 1 / Real.sqrt ((p : ℝ) ^ k) := by positivity
+    nlinarith
+  · have hp_le_pk : (p : ℝ) ^ 2 ≤ ((p : ℝ) ^ k) ^ 2 := by
+      have : (p : ℝ) ^ 1 ≤ (p : ℝ) ^ k := pow_le_pow_right₀ (by linarith) hk
+      rw [pow_one] at this
+      exact pow_le_pow_left₀ hp0.le this 2
+    have hden_ge : ((p : ℝ) ^ 2 - 1) / (p : ℝ) ^ 2 ≤ 1 - 1 / ((p : ℝ) ^ k) ^ 2 := by
+      rw [show ((p : ℝ) ^ 2 - 1) / (p : ℝ) ^ 2 = 1 - 1 / (p : ℝ) ^ 2 by field_simp]
+      have : 1 / ((p : ℝ) ^ k) ^ 2 ≤ 1 / (p : ℝ) ^ 2 :=
+        one_div_le_one_div_of_le (by positivity) hp_le_pk
+      linarith
+    have hp2_pos : 0 < ((p : ℝ) ^ 2 - 1) / (p : ℝ) ^ 2 := by
+      have : (1 : ℝ) < (p : ℝ) ^ 2 := by nlinarith
+      positivity
+    calc (1 / Real.sqrt ((p : ℝ) ^ k)) / (1 - 1 / ((p : ℝ) ^ k) ^ 2)
+        ≤ (1 / Real.sqrt ((p : ℝ) ^ k)) / (((p : ℝ) ^ 2 - 1) / (p : ℝ) ^ 2) :=
+          div_le_div_of_nonneg_left (by positivity) hp2_pos hden_ge
+      _ = ((p : ℝ) ^ 2 / (((p : ℝ) ^ 2 - 1) * Real.log p)) *
+            (Real.log p / Real.sqrt ((p : ℝ) ^ k)) := by
+          have : (p : ℝ) ^ 2 - 1 ≠ 0 := by nlinarith
+          field_simp [hlog.ne']
+
+/-- When `primeCofactor p a = primeCofactor p b` (`a, b ≠ 0`), `collarWeight a b` is sandwiched
+between `(1 / log p) τ_p(dist(v_p a, v_p b))` and
+`(p² / ((p² − 1) log p)) τ_p(dist(v_p a, v_p b))`. -/
+theorem collarWeight_primeCofactor_eq_bounds {p a b : ℕ} (hp : p.Prime)
+    (ha : a ≠ 0) (hb : b ≠ 0) (hcof : primeCofactor p a = primeCofactor p b) :
+    towerWeight p (Nat.dist (a.factorization p) (b.factorization p)) / Real.log p ≤
+        collarWeight a b ∧
+      collarWeight a b ≤
+        ((p : ℝ) ^ 2 / (((p : ℝ) ^ 2 - 1) * Real.log p)) *
+          towerWeight p (Nat.dist (a.factorization p) (b.factorization p)) := by
+  by_cases hab : a = b
+  · subst hab
+    simp [collarWeight_self, Nat.dist_self, towerWeight_zero]
+  · have hk : 1 ≤ Nat.dist (a.factorization p) (b.factorization p) := by
+      by_contra h0
+      have hfac_p : a.factorization p = b.factorization p := by
+        rcases le_or_gt (a.factorization p) (b.factorization p) with hle | hgt
+        · have := Nat.dist_eq_sub_of_le hle; omega
+        · have := Nat.dist_eq_sub_of_le hgt.le; rw [Nat.dist_comm] at h0; omega
+      have ha_eq := primeCofactor_mul_pow p a
+      have hb_eq := primeCofactor_mul_pow p b
+      rw [hcof, hfac_p, hb_eq] at ha_eq
+      exact hab ha_eq.symm
+    have hlog_dist : |Real.log (b : ℝ) - Real.log (a : ℝ)| =
+        (Nat.dist (a.factorization p) (b.factorization p) : ℝ) * Real.log p := by
+      have ha_eq := (primeCofactor_mul_pow p a).symm
+      have hb_eq := (primeCofactor_mul_pow p b).symm
+      have hm0 : (0 : ℝ) < primeCofactor p a := by
+        exact_mod_cast Nat.pos_of_ne_zero (primeCofactor_ne_zero ha)
+      have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
+      have hlog_a : Real.log (a : ℝ) =
+          Real.log (primeCofactor p a) + (a.factorization p : ℝ) * Real.log p := by
+        conv_lhs => rw [ha_eq]
+        push_cast
+        rw [Real.log_mul hm0.ne' (pow_pos hp0 _).ne', Real.log_pow]
+      have hlog_b : Real.log (b : ℝ) =
+          Real.log (primeCofactor p a) + (b.factorization p : ℝ) * Real.log p := by
+        conv_lhs => rw [hb_eq, ← hcof]
+        push_cast
+        rw [Real.log_mul hm0.ne' (pow_pos hp0 _).ne', Real.log_pow]
+      rw [hlog_b, hlog_a, add_sub_add_left_eq_sub, ← sub_mul, abs_mul,
+        abs_of_nonneg (Real.log_natCast_nonneg p)]
+      congr 1
+      rcases le_or_gt (a.factorization p) (b.factorization p) with hle | hgt
+      · rw [Nat.dist_eq_sub_of_le hle, Nat.cast_sub hle, abs_of_nonneg (sub_nonneg.mpr (by exact_mod_cast hle))]
+      · rw [Nat.dist_comm, Nat.dist_eq_sub_of_le hgt.le, Nat.cast_sub hgt.le,
+          abs_sub_comm, abs_of_nonneg (sub_nonneg.mpr (by exact_mod_cast hgt.le))]
+    have hcw : collarWeight a b =
+        archLevyDensity ((Nat.dist (a.factorization p) (b.factorization p) : ℝ) * Real.log p) := by
+      unfold collarWeight
+      rw [if_neg (by tauto), hlog_dist]
+    rw [hcw]
+    have hbds := archLevyDensity_mul_log_prime_bounds hp hk
+    exact ⟨hbds.1.le, hbds.2⟩
+
+/-- The off-diagonal archimedean collar quadratic form on a finite set `S`:
+`collarFormOn S c = ∑_{a, b ∈ S} c(a) c(b) collarWeight a b`. -/
+def collarFormOn (S : Finset ℕ) (c : ℕ → ℝ) : ℝ :=
+  ∑ a ∈ S, ∑ b ∈ S, c a * c b * collarWeight a b
+
+/-- The `p`-slice of the intra-tower collar form on `S`. -/
+def intraTowerCollarSliceForm (p : ℕ) (S : Finset ℕ) (c : ℕ → ℝ) : ℝ :=
+  ∑ a ∈ S, ∑ b ∈ S,
+    if primeCofactor p a = primeCofactor p b then c a * c b * collarWeight a b else 0
+
+/-- The total intra-tower collar form across a finite prime set `P`. -/
+def intraTowerCollarForm (P S : Finset ℕ) (c : ℕ → ℝ) : ℝ :=
+  ∑ p ∈ P, intraTowerCollarSliceForm p S c
+
+/-- The cross-tower collar form on `S`: pairs `(a, b)` that differ in at least two prime
+coordinates (`∀ p ∈ P, primeCofactor p a ≠ primeCofactor p b`), where `heckeIncidence a b = 0`. -/
+def crossTowerCollarForm (P S : Finset ℕ) (c : ℕ → ℝ) : ℝ :=
+  ∑ a ∈ S, ∑ b ∈ S,
+    if ∀ p ∈ P, primeCofactor p a ≠ primeCofactor p b then c a * c b * collarWeight a b else 0
+
+/-- **Exact decomposition of the collar form into intra-tower and cross-tower parts.** On any
+finite set `S` of positive integers, `collarFormOn S c` is the sum of `intraTowerCollarForm P S c`
+and `crossTowerCollarForm P S c`. -/
+theorem collarFormOn_eq_intra_add_cross {P S : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
+    (hS : ∀ a ∈ S, a ≠ 0) (c : ℕ → ℝ) :
+    collarFormOn S c = intraTowerCollarForm P S c + crossTowerCollarForm P S c := by
+  unfold collarFormOn intraTowerCollarForm intraTowerCollarSliceForm crossTowerCollarForm
+  rw [Finset.sum_comm (s := P)]
+  have hinner : ∀ a ∈ S,
+      (∑ p ∈ P, ∑ b ∈ S,
+        if primeCofactor p a = primeCofactor p b then c a * c b * collarWeight a b else 0) =
+      ∑ b ∈ S, ∑ p ∈ P,
+        if primeCofactor p a = primeCofactor p b then c a * c b * collarWeight a b else 0 :=
+    fun a _ => Finset.sum_comm
+  rw [Finset.sum_congr rfl hinner, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun a ha => ?_
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun b hb => ?_
+  by_cases hab : a = b
+  · subst hab
+    simp [collarWeight_self]
+  · by_cases hex : ∃ p ∈ P, primeCofactor p a = primeCofactor p b
+    · rcases hex with ⟨p₀, hp₀P, hp₀eq⟩
+      rw [if_neg (by push Not; exact ⟨p₀, hp₀P, hp₀eq⟩), add_zero]
+      rw [Finset.sum_eq_single p₀]
+      · rw [if_pos hp₀eq]
+      · intro q hqP hqp₀
+        rw [if_neg]
+        intro hqeq
+        exact hab (eq_of_primeCofactor_eq_of_ne (hP p₀ hp₀P) (hP q hqP) hqp₀.symm
+          (hS a ha) (hS b hb) hp₀eq hqeq)
+      · intro hp₀_not; exact absurd hp₀P hp₀_not
+    · have hall : ∀ p ∈ P, primeCofactor p a ≠ primeCofactor p b := by
+        simpa using hex
+      rw [if_pos hall, Finset.sum_eq_zero (fun p hp => by rw [if_neg (hall p hp)]), zero_add]
+
+/-- Every pair `(a, b)` contributing to `crossTowerCollarForm P S c` on a `P`-smooth set `S` has
+vanishing prime Hecke incidence (`heckeIncidence a b = 0`). -/
+theorem heckeIncidence_eq_zero_of_crossTower {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
+    {a b : ℕ} (ha : a ≠ 0) (hb : b ≠ 0) (haP : a.primeFactors ⊆ P) (hbP : b.primeFactors ⊆ P)
+    (hcross : ∀ p ∈ P, primeCofactor p a ≠ primeCofactor p b) :
+    heckeIncidence a b = 0 := by
+  rw [heckeIncidence_eq_sum_primes_of_primeFactors_subset hP ha hb haP hbP]
+  exact Finset.sum_eq_zero fun p hp => by rw [if_neg (hcross p hp)]
+
+/-- **Schur bound on a single prime slice of the intra-tower collar.** For any prime `p` and any
+finite set `S` of positive integers,
+`|intraTowerCollarSliceForm p S c| ≤ (p² / ((p² − 1) log p)) E_p ∑_{a ∈ S} c(a)²`. -/
+theorem abs_intraTowerCollarSliceForm_le {p : ℕ} (hp : p.Prime) {S : Finset ℕ}
+    (hS : ∀ a ∈ S, a ≠ 0) (c : ℕ → ℝ) :
+    |intraTowerCollarSliceForm p S c| ≤
+      ((p : ℝ) ^ 2 / (((p : ℝ) ^ 2 - 1) * Real.log p)) * eulerEnvelope p * ∑ a ∈ S, c a ^ 2 := by
+  set κ := (p : ℝ) ^ 2 / (((p : ℝ) ^ 2 - 1) * Real.log p)
+  have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
+  have hlog : 0 < Real.log p := Real.log_pos (by linarith)
+  have hκ0 : 0 ≤ κ := by
+    simp only [κ]
+    have : (0 : ℝ) < (p : ℝ) ^ 2 - 1 := by nlinarith
+    positivity
+  have hterm : ∀ a ∈ S, ∀ b ∈ S,
+      |if primeCofactor p a = primeCofactor p b then c a * c b * collarWeight a b else 0| ≤
+        κ * ((c a ^ 2 / 2 + c b ^ 2 / 2) *
+          (if primeCofactor p a = primeCofactor p b then
+            towerWeight p (Nat.dist (a.factorization p) (b.factorization p)) else 0)) := by
+    intro a ha b hb
+    split_ifs with hcof
+    · rw [abs_mul, abs_of_nonneg (collarWeight_nonneg a b), abs_mul]
+      have hab : |c a| * |c b| ≤ c a ^ 2 / 2 + c b ^ 2 / 2 := by
+        nlinarith [sq_nonneg (|c a| - |c b|), sq_abs (c a), sq_abs (c b)]
+      have hcw := (collarWeight_primeCofactor_eq_bounds hp (hS a ha) (hS b hb) hcof).2
+      calc |c a| * |c b| * collarWeight a b
+          ≤ (c a ^ 2 / 2 + c b ^ 2 / 2) * (κ *
+              towerWeight p (Nat.dist (a.factorization p) (b.factorization p))) :=
+            mul_le_mul hab hcw (collarWeight_nonneg a b) (by positivity)
+        _ = κ * ((c a ^ 2 / 2 + c b ^ 2 / 2) *
+              towerWeight p (Nat.dist (a.factorization p) (b.factorization p))) := by ring
+    · simp
+  have hsym : ∑ a ∈ S, ∑ b ∈ S,
+      (c a ^ 2 / 2 + c b ^ 2 / 2) *
+        (if primeCofactor p a = primeCofactor p b then
+          towerWeight p (Nat.dist (a.factorization p) (b.factorization p)) else 0) =
+      ∑ a ∈ S, c a ^ 2 * ∑ b ∈ S,
+        (if primeCofactor p a = primeCofactor p b then
+          towerWeight p (Nat.dist (a.factorization p) (b.factorization p)) else 0) := by
+    simp only [add_mul, Finset.sum_add_distrib]
+    rw [Finset.sum_comm (f := fun a b => c b ^ 2 / 2 *
+      if primeCofactor p a = primeCofactor p b then
+        towerWeight p (Nat.dist (a.factorization p) (b.factorization p)) else 0)]
+    rw [← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun b _ => ?_
+    rw [Nat.dist_comm (b.factorization p) (a.factorization p)]
+    by_cases h : primeCofactor p a = primeCofactor p b
+    · rw [if_pos h, if_pos h.symm]; ring
+    · rw [if_neg h, if_neg (Ne.symm h)]; ring
+  calc |intraTowerCollarSliceForm p S c|
+      ≤ ∑ a ∈ S, ∑ b ∈ S,
+          |if primeCofactor p a = primeCofactor p b then c a * c b * collarWeight a b else 0| := by
+        unfold intraTowerCollarSliceForm
+        exact (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun a _ =>
+          Finset.abs_sum_le_sum_abs _ _)
+    _ ≤ ∑ a ∈ S, ∑ b ∈ S, κ * ((c a ^ 2 / 2 + c b ^ 2 / 2) *
+          (if primeCofactor p a = primeCofactor p b then
+            towerWeight p (Nat.dist (a.factorization p) (b.factorization p)) else 0)) :=
+        Finset.sum_le_sum fun a ha => Finset.sum_le_sum fun b hb => hterm a ha b hb
+    _ = κ * ∑ a ∈ S, ∑ b ∈ S, (c a ^ 2 / 2 + c b ^ 2 / 2) *
+          (if primeCofactor p a = primeCofactor p b then
+            towerWeight p (Nat.dist (a.factorization p) (b.factorization p)) else 0) := by
+        rw [Finset.mul_sum]
+        exact Finset.sum_congr rfl fun a _ => (Finset.mul_sum _ _ _).symm
+    _ = κ * ∑ a ∈ S, c a ^ 2 * ∑ b ∈ S,
+          (if primeCofactor p a = primeCofactor p b then
+            towerWeight p (Nat.dist (a.factorization p) (b.factorization p)) else 0) := by
+        rw [hsym]
+    _ ≤ κ * ∑ a ∈ S, c a ^ 2 * eulerEnvelope p :=
+        mul_le_mul_of_nonneg_left
+          (Finset.sum_le_sum fun a ha => mul_le_mul_of_nonneg_left
+            (sum_primeSlice_towerWeight_le hp ha) (sq_nonneg _)) hκ0
+    _ = κ * eulerEnvelope p * ∑ a ∈ S, c a ^ 2 := by rw [← Finset.sum_mul]; ring
+
+/-- **The intra-tower collar coupling is bounded against the Euler envelopes.** For any finite set
+`P` of primes and any finite set `S` of positive integers,
+`|intraTowerCollarForm P S c| ≤ (∑_{p ∈ P} (p² / ((p² − 1) log p)) E_p) ∑_{a ∈ S} c(a)²`. -/
+theorem abs_intraTowerCollarForm_le {P S : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
+    (hS : ∀ a ∈ S, a ≠ 0) (c : ℕ → ℝ) :
+    |intraTowerCollarForm P S c| ≤
+      (∑ p ∈ P, ((p : ℝ) ^ 2 / (((p : ℝ) ^ 2 - 1) * Real.log p)) * eulerEnvelope p) *
+        ∑ a ∈ S, c a ^ 2 := by
+  unfold intraTowerCollarForm
+  rw [Finset.sum_mul]
+  exact (Finset.abs_sum_le_sum_abs _ _).trans
+    (Finset.sum_le_sum fun p hp => abs_intraTowerCollarSliceForm_le (hP p hp) hS c)
+
+/-- On nonnegative coefficients `c ≥ 0`, each intra-tower collar slice is sandwiched between
+`(1 / log p) primeSliceForm p S c` and `(p² / ((p² − 1) log p)) primeSliceForm p S c`. -/
+theorem intraTowerCollarSliceForm_bounds_of_nonneg {p : ℕ} (hp : p.Prime) {S : Finset ℕ}
+    (hS : ∀ a ∈ S, a ≠ 0) {c : ℕ → ℝ} (hc : ∀ a ∈ S, 0 ≤ c a) :
+    primeSliceForm p S c / Real.log p ≤ intraTowerCollarSliceForm p S c ∧
+      intraTowerCollarSliceForm p S c ≤
+        ((p : ℝ) ^ 2 / (((p : ℝ) ^ 2 - 1) * Real.log p)) * primeSliceForm p S c := by
+  have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
+  have hlog : 0 < Real.log p := Real.log_pos (by linarith)
+  unfold primeSliceForm intraTowerCollarSliceForm
+  rw [Finset.sum_div, Finset.mul_sum]
+  constructor
+  · refine Finset.sum_le_sum fun a ha => ?_
+    rw [Finset.sum_div]
+    refine Finset.sum_le_sum fun b hb => ?_
+    split_ifs with hcof
+    · rw [mul_div_assoc]
+      exact mul_le_mul_of_nonneg_left
+        (collarWeight_primeCofactor_eq_bounds hp (hS a ha) (hS b hb) hcof).1
+        (mul_nonneg (hc a ha) (hc b hb))
+    · simp
+  · refine Finset.sum_le_sum fun a ha => ?_
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun b hb => ?_
+    split_ifs with hcof
+    · have hcw := (collarWeight_primeCofactor_eq_bounds hp (hS a ha) (hS b hb) hcof).2
+      exact (mul_le_mul_of_nonneg_left hcw (mul_nonneg (hc a ha) (hc b hb))).trans_eq (by ring)
+    · simp
+
+/-- **Pointwise bound on the collar weight against the polar weight `√(b/a) + √(a/b)`.** For any
+`1 ≤ a < b`, because `b − a ≥ 1` and `4ab ≤ (a + b)²`,
+`collarWeight a b ≤ (b / 4) (√(b/a) + √(a/b))`. -/
+theorem collarWeight_le_polarWeight_mul {a b : ℕ} (ha : 1 ≤ a) (hab : a < b) :
+    collarWeight a b ≤
+      ((b : ℝ) / 4) * (Real.sqrt ((b : ℝ) / a) + Real.sqrt ((a : ℝ) / b)) := by
+  rw [collarWeight_eq_of_lt ha hab]
+  have ha0 : (0 : ℝ) < a := by exact_mod_cast ha
+  have hb0 : (0 : ℝ) < b := by exact_mod_cast (by omega : 0 < b)
+  have hba1 : (1 : ℝ) ≤ (b : ℝ) - a := by
+    have : a + 1 ≤ b := hab
+    have : (a : ℝ) + 1 ≤ b := by exact_mod_cast this
+    linarith
+  have hpol : Real.sqrt ((b : ℝ) / a) + Real.sqrt ((a : ℝ) / b) =
+      ((a : ℝ) + b) / Real.sqrt ((a : ℝ) * b) := by
+    have hs : 0 < Real.sqrt ((a : ℝ) * b) := Real.sqrt_pos.mpr (mul_pos ha0 hb0)
+    rw [Real.sqrt_div hb0.le, Real.sqrt_div ha0.le, Real.sqrt_mul ha0.le]
+    have h1 : 0 < Real.sqrt a := Real.sqrt_pos.mpr ha0
+    have h2 : 0 < Real.sqrt b := Real.sqrt_pos.mpr hb0
+    field_simp
+    rw [Real.sq_sqrt ha0.le, Real.sq_sqrt hb0.le, add_comm]
+  have hpol2 : ((b : ℝ) / 4) * (Real.sqrt ((b : ℝ) / a) + Real.sqrt ((a : ℝ) / b)) =
+      ((b : ℝ) * ((a : ℝ) + b)) / (4 * Real.sqrt ((a : ℝ) * b)) := by
+    rw [hpol]
+    ring
+  rw [hpol2]
+  have hs : 0 < Real.sqrt ((a : ℝ) * b) := Real.sqrt_pos.mpr (mul_pos ha0 hb0)
+  have hden_pos : 0 < (b : ℝ) ^ 2 - (a : ℝ) ^ 2 := by nlinarith
+  rw [div_le_div_iff₀ hden_pos (by positivity)]
+  have hsq : Real.sqrt ((a : ℝ) * b) * Real.sqrt ((a : ℝ) * b) = (a : ℝ) * b :=
+    Real.mul_self_sqrt (mul_pos ha0 hb0).le
+  have h4ab : 4 * ((a : ℝ) * b) ≤ ((a : ℝ) + b) ^ 2 := by
+    nlinarith [sq_nonneg ((a : ℝ) - b)]
+  have hdiff : (a : ℝ) + b ≤ ((b : ℝ) - a) * ((a : ℝ) + b) := by
+    nlinarith
+  calc (b : ℝ) * Real.sqrt ((a : ℝ) * b) * (4 * Real.sqrt ((a : ℝ) * b))
+      = (b : ℝ) * (4 * ((a : ℝ) * b)) := by
+        linear_combination 4 * (b : ℝ) * hsq
+    _ ≤ (b : ℝ) * (((a : ℝ) + b) ^ 2) := mul_le_mul_of_nonneg_left h4ab hb0.le
+    _ ≤ (b : ℝ) * ((a : ℝ) + b) * ((b : ℝ) ^ 2 - (a : ℝ) ^ 2) := by
+        have : (b : ℝ) ^ 2 - (a : ℝ) ^ 2 = ((b : ℝ) - a) * ((a : ℝ) + b) := by ring
+        rw [this]
+        nlinarith
+
+/-- In the dyadically separated regime `2a ≤ b` (`a ≥ 1`), `collarWeight a b ≤ (4/3) √(a/b)`. -/
+theorem collarWeight_le_of_two_mul_le {a b : ℕ} (ha : 1 ≤ a) (hab : 2 * a ≤ b) :
+    collarWeight a b ≤ (4 / 3 : ℝ) * Real.sqrt ((a : ℝ) / b) := by
+  have hlt : a < b := by omega
+  rw [collarWeight_eq_of_lt ha hlt]
+  have ha0 : (0 : ℝ) < a := by exact_mod_cast ha
+  have hb0 : (0 : ℝ) < b := by exact_mod_cast (by omega : 0 < b)
+  have hab' : 2 * (a : ℝ) ≤ b := by exact_mod_cast hab
+  have hden : (3 / 4 : ℝ) * (b : ℝ) ^ 2 ≤ (b : ℝ) ^ 2 - (a : ℝ) ^ 2 := by nlinarith
+  have hsq : (b : ℝ) * Real.sqrt ((a : ℝ) * b) = (b : ℝ) ^ 2 * Real.sqrt ((a : ℝ) / b) := by
+    rw [Real.sqrt_mul ha0.le, Real.sqrt_div ha0.le]
+    have hsb0 : Real.sqrt b ≠ 0 := (Real.sqrt_pos.mpr hb0).ne'
+    field_simp
+    rw [Real.sq_sqrt hb0.le]
+  rw [hsq, div_le_iff₀ (by nlinarith)]
+  calc (b : ℝ) ^ 2 * Real.sqrt ((a : ℝ) / b)
+      = (4 / 3 : ℝ) * Real.sqrt ((a : ℝ) / b) * ((3 / 4 : ℝ) * (b : ℝ) ^ 2) := by ring
+    _ ≤ (4 / 3 : ℝ) * Real.sqrt ((a : ℝ) / b) * ((b : ℝ) ^ 2 - (a : ℝ) ^ 2) :=
+        mul_le_mul_of_nonneg_left hden (by positivity)
+
+/-- **Pointwise Lévy–Bochner identity for a disjointly supported family of bumps.** For any finite
+set `S`, pairwise disjointly supported real functions `g : ℕ → ℝ → ℝ`, and coefficients `c : ℕ → ℝ`,
+the squared shift difference of `F = ∑_{a ∈ S} c(a) g_a` equals the sum of the diagonal squared
+shift differences minus the off-diagonal collar cross-terms. -/
+theorem disjoint_family_shift_sq_eq {S : Finset ℕ} {g : ℕ → ℝ → ℝ}
+    (hdisj : ∀ a ∈ S, ∀ b ∈ S, a ≠ b → ∀ u : ℝ, g a u * g b u = 0)
+    (c : ℕ → ℝ) (u x : ℝ) :
+    ((∑ a ∈ S, c a * g a u) - ∑ a ∈ S, c a * g a (u + x)) ^ 2 =
+      (∑ a ∈ S, c a ^ 2 * (g a u - g a (u + x)) ^ 2) -
+        ∑ a ∈ S, ∑ b ∈ S.erase a, c a * c b * (g a u * g b (u + x) + g a (u + x) * g b u) := by
+  have hsub : (∑ a ∈ S, c a * g a u) - ∑ a ∈ S, c a * g a (u + x) =
+      ∑ a ∈ S, c a * (g a u - g a (u + x)) := by
+    rw [← Finset.sum_sub_distrib]
+    exact Finset.sum_congr rfl fun a _ => by ring
+  rw [hsub, sq, Finset.sum_mul_sum]
+  have hrow : ∀ a ∈ S,
+      (∑ b ∈ S, c a * (g a u - g a (u + x)) * (c b * (g b u - g b (u + x)))) =
+        c a ^ 2 * (g a u - g a (u + x)) ^ 2 -
+          ∑ b ∈ S.erase a, c a * c b * (g a u * g b (u + x) + g a (u + x) * g b u) := by
+    intro a ha
+    rw [← Finset.add_sum_erase _ _ ha]
+    have hdiag : c a * (g a u - g a (u + x)) * (c a * (g a u - g a (u + x))) =
+        c a ^ 2 * (g a u - g a (u + x)) ^ 2 := by ring
+    have hoff : ∀ b ∈ S.erase a,
+        c a * (g a u - g a (u + x)) * (c b * (g b u - g b (u + x))) =
+          -(c a * c b * (g a u * g b (u + x) + g a (u + x) * g b u)) := by
+      intro b hb
+      have hba : b ≠ a := (Finset.mem_erase.mp hb).1
+      have hbS : b ∈ S := Finset.mem_of_mem_erase hb
+      have h1 := hdisj a ha b hbS hba.symm u
+      have h2 := hdisj a ha b hbS hba.symm (u + x)
+      linear_combination c a * c b * h1 + c a * c b * h2
+    rw [hdiag, Finset.sum_congr rfl hoff, Finset.sum_neg_distrib]
+    ring
+  rw [Finset.sum_congr rfl hrow, Finset.sum_sub_distrib]
+
+/-- **The off-diagonal continuum collar coupling is universally bounded by the diagonal shift-jump
+energy.** -/
+theorem disjoint_lattice_collar_le_selfJump {S : Finset ℕ} {g : ℕ → ℝ → ℝ}
+    (hdisj : ∀ a ∈ S, ∀ b ∈ S, a ≠ b → ∀ u : ℝ, g a u * g b u = 0)
+    (c : ℕ → ℝ) (u x : ℝ) :
+    ∑ a ∈ S, ∑ b ∈ S.erase a, c a * c b * (g a u * g b (u + x) + g a (u + x) * g b u) ≤
+      ∑ a ∈ S, c a ^ 2 * (g a u - g a (u + x)) ^ 2 := by
+  have hid := disjoint_family_shift_sq_eq hdisj c u x
+  have hsq : 0 ≤ ((∑ a ∈ S, c a * g a u) - ∑ a ∈ S, c a * g a (u + x)) ^ 2 := sq_nonneg _
+  linarith
+
+/-! ## §4. Positivity decision for the finite-Euler-product form on lattice tests -/
+
+/-- The finite-Euler-product quadratic form on a finite set `S` at diagonal budget `κ`:
+`finiteEulerLatticeForm S κ c = κ ∑_{a ∈ S} c(a)² − heckeFormOn S c`. -/
+def finiteEulerLatticeForm (S : Finset ℕ) (κ : ℝ) (c : ℕ → ℝ) : ℝ :=
+  κ * (∑ a ∈ S, c a ^ 2) - heckeFormOn S c
+
+/-- **Sufficient condition for positivity on any `P`-smooth support.** Whenever
+`∑_{p ∈ P} E_p ≤ κ`, `finiteEulerLatticeForm S κ c` is nonnegative for all `c`, with coercivity
+margin `(κ − ∑_{p ∈ P} E_p) ∑_{a ∈ S} c(a)²`. -/
+theorem finiteEulerLatticeForm_ge_of_sum_eulerEnvelope {P S : Finset ℕ}
+    (hP : ∀ p ∈ P, p.Prime) (hS : ∀ a ∈ S, a ≠ 0 ∧ a.primeFactors ⊆ P)
+    (κ : ℝ) (c : ℕ → ℝ) :
+    (κ - ∑ p ∈ P, eulerEnvelope p) * (∑ a ∈ S, c a ^ 2) ≤
+      finiteEulerLatticeForm S κ c := by
+  unfold finiteEulerLatticeForm
+  have hle := (le_abs_self _).trans (abs_heckeFormOn_le_sum_eulerEnvelope hP hS c)
+  linarith
+
+theorem finiteEulerLatticeForm_nonneg_of_sum_eulerEnvelope_le {P S : Finset ℕ}
+    (hP : ∀ p ∈ P, p.Prime) (hS : ∀ a ∈ S, a ≠ 0 ∧ a.primeFactors ⊆ P)
+    {κ : ℝ} (hκ : ∑ p ∈ P, eulerEnvelope p ≤ κ) (c : ℕ → ℝ) :
+    0 ≤ finiteEulerLatticeForm S κ c := by
+  refine le_trans ?_ (finiteEulerLatticeForm_ge_of_sum_eulerEnvelope hP hS κ c)
+  exact mul_nonneg (sub_nonneg.mpr hκ) (Finset.sum_nonneg fun _ _ => sq_nonneg _)
+
+theorem finiteEulerLatticeForm_pos_of_sum_eulerEnvelope_lt {P S : Finset ℕ}
+    (hP : ∀ p ∈ P, p.Prime) (hS : ∀ a ∈ S, a ≠ 0 ∧ a.primeFactors ⊆ P)
+    {κ : ℝ} (hκ : ∑ p ∈ P, eulerEnvelope p < κ) {c : ℕ → ℝ} (hc : 0 < ∑ a ∈ S, c a ^ 2) :
+    0 < finiteEulerLatticeForm S κ c := by
+  refine lt_of_lt_of_le ?_ (finiteEulerLatticeForm_ge_of_sum_eulerEnvelope hP hS κ c)
+  exact mul_pos (sub_pos.mpr hκ) hc
+
+/-- **Sharpness of the `E_p + E_q` positivity threshold on `{p, q}`-boxes.** For any distinct
+primes `p ≠ q`, `κ ≥ E_p + E_q` is both necessary and sufficient for the box form
+`κ ∑_{x ∈ range M ×ˢ range N} c(x)² − heckeForm p q M N c` to be nonnegative for all box sizes
+`M, N` and all coefficient vectors `c`: if `κ < E_p + E_q`, the constant resonant train `c ≡ 1`
+makes the form strictly negative for sufficiently large `M, N ≥ 1`. -/
+theorem exists_finiteEulerLatticeForm_box_neg_of_lt {p q : ℕ} (hp : p.Prime) (hq : q.Prime)
+    (hpq : p ≠ q) {κ : ℝ} (hκ : κ < eulerEnvelope p + eulerEnvelope q) :
+    ∃ M N : ℕ, 1 ≤ M ∧ 1 ≤ N ∧
+      κ * (∑ _x ∈ range M ×ˢ range N, (1 : ℝ) ^ 2) - heckeForm p q M N (fun _ => 1) < 0 := by
+  obtain ⟨M, N, hM1, hN1, hgt⟩ := exists_heckeForm_box_one_gt_of_lt_add_eulerEnvelope hp hq hpq hκ
+  refine ⟨M, N, hM1, hN1, ?_⟩
+  have hsum : (∑ _x ∈ range M ×ˢ range N, (1 : ℝ) ^ 2) = (M : ℝ) * N := by
+    simp [Finset.sum_const, Finset.card_product, Finset.card_range, nsmul_eq_mul]
+  rw [hsum]
+  linarith
+
+/-- **Exact characterization of universal box positivity for two prime towers.** For distinct
+primes `p ≠ q`, the finite-Euler-product form on `{p, q}`-boxes is positive semidefinite across all
+box dimensions `M, N` iff `E_p + E_q ≤ κ`. -/
+theorem box_finiteEulerForm_nonneg_forall_iff {p q : ℕ} (hp : p.Prime) (hq : q.Prime)
+    (hpq : p ≠ q) (κ : ℝ) :
+    (∀ M N : ℕ, ∀ c : ℕ × ℕ → ℝ,
+      0 ≤ κ * (∑ x ∈ range M ×ˢ range N, c x ^ 2) - heckeForm p q M N c) ↔
+      eulerEnvelope p + eulerEnvelope q ≤ κ := by
+  constructor
+  · intro hall
+    by_contra hlt
+    push Not at hlt
+    obtain ⟨M, N, _, _, hneg⟩ := exists_finiteEulerLatticeForm_box_neg_of_lt hp hq hpq hlt
+    linarith [hall M N (fun _ => 1)]
+  · intro hκ M N c
+    have hle := (le_abs_self _).trans (abs_heckeForm_box_le hp hq hpq M N c)
+    have hE : 2 * (Real.log p / (Real.sqrt p - 1)) + 2 * (Real.log q / (Real.sqrt q - 1)) =
+        eulerEnvelope p + eulerEnvelope q := by
+      unfold eulerEnvelope; ring
+    rw [hE] at hle
+    have hsum : 0 ≤ ∑ x ∈ range M ×ˢ range N, c x ^ 2 :=
+      Finset.sum_nonneg fun _ _ => sq_nonneg _
+    nlinarith [mul_le_mul_of_nonneg_right hκ hsum]
+
+/-- The collar-coupled finite-Euler-product quadratic form on `S`:
+`collarCoupledEulerLatticeForm S κ c = κ ∑_{a ∈ S} c(a)² − heckeFormOn S c − collarFormOn S c`. -/
+def collarCoupledEulerLatticeForm (S : Finset ℕ) (κ : ℝ) (c : ℕ → ℝ) : ℝ :=
+  κ * (∑ a ∈ S, c a ^ 2) - heckeFormOn S c - collarFormOn S c
+
+/-- **Coercivity of the collar-coupled finite-Euler-product form.** On any finite set `S` of
+positive `P`-smooth integers, if `|crossTowerCollarForm P S c| ≤ C_cross ∑_{a ∈ S} c(a)²`, then
+`collarCoupledEulerLatticeForm S κ c` is bounded below by
+`(κ − ∑_{p ∈ P} (1 + p² / ((p² − 1) log p)) E_p − C_cross) ∑_{a ∈ S} c(a)²`. -/
+theorem collarCoupledEulerLatticeForm_ge {P S : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
+    (hS : ∀ a ∈ S, a ≠ 0 ∧ a.primeFactors ⊆ P) (κ C_cross : ℝ) (c : ℕ → ℝ)
+    (hcross : |crossTowerCollarForm P S c| ≤ C_cross * ∑ a ∈ S, c a ^ 2) :
+    (κ - (∑ p ∈ P, (1 + (p : ℝ) ^ 2 / (((p : ℝ) ^ 2 - 1) * Real.log p)) * eulerEnvelope p) -
+        C_cross) * (∑ a ∈ S, c a ^ 2) ≤
+      collarCoupledEulerLatticeForm S κ c := by
+  unfold collarCoupledEulerLatticeForm
+  rw [collarFormOn_eq_intra_add_cross hP (fun a ha => (hS a ha).1) c]
+  have h1 := (le_abs_self _).trans (abs_heckeFormOn_le_sum_eulerEnvelope hP hS c)
+  have h2 := (le_abs_self _).trans (abs_intraTowerCollarForm_le hP (fun a ha => (hS a ha).1) c)
+  have h3 := (le_abs_self _).trans hcross
+  have hsum : ∑ p ∈ P, (1 + (p : ℝ) ^ 2 / (((p : ℝ) ^ 2 - 1) * Real.log p)) * eulerEnvelope p =
+      (∑ p ∈ P, eulerEnvelope p) +
+        ∑ p ∈ P, ((p : ℝ) ^ 2 / (((p : ℝ) ^ 2 - 1) * Real.log p)) * eulerEnvelope p := by
+    rw [← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl fun p _ => by ring
+  rw [hsum]
+  linarith
+
+theorem collarCoupledEulerLatticeForm_nonneg {P S : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
+    (hS : ∀ a ∈ S, a ≠ 0 ∧ a.primeFactors ⊆ P) {κ C_cross : ℝ} {c : ℕ → ℝ}
+    (hcross : |crossTowerCollarForm P S c| ≤ C_cross * ∑ a ∈ S, c a ^ 2)
+    (hκ : (∑ p ∈ P, (1 + (p : ℝ) ^ 2 / (((p : ℝ) ^ 2 - 1) * Real.log p)) * eulerEnvelope p) +
+      C_cross ≤ κ) :
+    0 ≤ collarCoupledEulerLatticeForm S κ c := by
+  refine le_trans ?_ (collarCoupledEulerLatticeForm_ge hP hS κ C_cross c hcross)
+  exact mul_nonneg (by linarith) (Finset.sum_nonneg fun _ _ => sq_nonneg _)
+
+/-- The discrete polar pairing on a lattice support `S`:
+`latticePolarForm S c = ∑_{a, b ∈ S} c(a) c(b) (√(b/a) + √(a/b)) = 2 (∑_{a ∈ S} c(a) a^{−1/2}) (∑_{b ∈ S} c(b) b^{1/2})`. -/
+def latticePolarForm (S : Finset ℕ) (c : ℕ → ℝ) : ℝ :=
+  ∑ a ∈ S, ∑ b ∈ S, c a * c b * (Real.sqrt ((b : ℝ) / a) + Real.sqrt ((a : ℝ) / b))
+
+/-- On nonnegative coefficients `c ≥ 0` supported on `S ⊂ [1, B_max]`, the polar form pays the
+entire off-diagonal collar (and in particular the cross-tower collar):
+`collarFormOn S c ≤ (B_max / 4) latticePolarForm S c`. -/
+theorem collarFormOn_le_latticePolarForm {S : Finset ℕ} {B_max : ℕ}
+    (hS : ∀ a ∈ S, 1 ≤ a ∧ a ≤ B_max) {c : ℕ → ℝ} (hc : ∀ a ∈ S, 0 ≤ c a) :
+    collarFormOn S c ≤ ((B_max : ℝ) / 4) * latticePolarForm S c := by
+  unfold collarFormOn latticePolarForm
+  rw [Finset.mul_sum]
+  refine Finset.sum_le_sum fun a ha => ?_
+  rw [Finset.mul_sum]
+  refine Finset.sum_le_sum fun b hb => ?_
+  have hca := hc a ha
+  have hcb := hc b hb
+  have hcab : 0 ≤ c a * c b := mul_nonneg hca hcb
+  have hcw : collarWeight a b ≤
+      ((B_max : ℝ) / 4) * (Real.sqrt ((b : ℝ) / a) + Real.sqrt ((a : ℝ) / b)) := by
+    rcases lt_trichotomy a b with hlt | rfl | hgt
+    · calc collarWeight a b
+          ≤ ((b : ℝ) / 4) * (Real.sqrt ((b : ℝ) / a) + Real.sqrt ((a : ℝ) / b)) :=
+            collarWeight_le_polarWeight_mul (hS a ha).1 hlt
+        _ ≤ ((B_max : ℝ) / 4) * (Real.sqrt ((b : ℝ) / a) + Real.sqrt ((a : ℝ) / b)) := by
+            refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+            have : (b : ℝ) ≤ B_max := by exact_mod_cast (hS b hb).2
+            linarith
+    · rw [collarWeight_self]
+      positivity
+    · rw [collarWeight_comm, add_comm (Real.sqrt ((b : ℝ) / a))]
+      calc collarWeight b a
+          ≤ ((a : ℝ) / 4) * (Real.sqrt ((a : ℝ) / b) + Real.sqrt ((b : ℝ) / a)) :=
+            collarWeight_le_polarWeight_mul (hS b hb).1 hgt
+        _ ≤ ((B_max : ℝ) / 4) * (Real.sqrt ((a : ℝ) / b) + Real.sqrt ((b : ℝ) / a)) := by
+            refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+            have : (a : ℝ) ≤ B_max := by exact_mod_cast (hS a ha).2
+            linarith
+  exact (mul_le_mul_of_nonneg_left hcw hcab).trans_eq (by ring)
+
+/-- **Pole-compensated positivity of the collar-coupled finite-Euler-product form on effective
+lattice cycles.** When the polar pairing is included with weight `λ_pole ≥ B_max / 4`, it pays the
+entire collar on nonnegative coefficients `c ≥ 0`, so `κ ≥ ∑_{p ∈ P} E_p` suffices for positivity:
+`0 ≤ collarCoupledEulerLatticeForm S κ c + λ_pole * latticePolarForm S c`. -/
+theorem poleCompensatedCollarLatticeForm_nonneg {P S : Finset ℕ} {B_max : ℕ}
+    (hP : ∀ p ∈ P, p.Prime) (hS : ∀ a ∈ S, (1 ≤ a ∧ a ≤ B_max) ∧ a.primeFactors ⊆ P)
+    {κ lam_pole : ℝ} (hκ : ∑ p ∈ P, eulerEnvelope p ≤ κ)
+    (hlam : (B_max : ℝ) / 4 ≤ lam_pole) {c : ℕ → ℝ} (hc : ∀ a ∈ S, 0 ≤ c a) :
+    0 ≤ collarCoupledEulerLatticeForm S κ c + lam_pole * latticePolarForm S c := by
+  have hS_ne : ∀ a ∈ S, a ≠ 0 ∧ a.primeFactors ⊆ P := fun a ha => by
+    have h1 := (hS a ha).1.1
+    exact ⟨by omega, (hS a ha).2⟩
+  have hfe := finiteEulerLatticeForm_nonneg_of_sum_eulerEnvelope_le hP hS_ne hκ c
+  have hcol := collarFormOn_le_latticePolarForm (fun a ha => (hS a ha).1) hc
+  have hpol_nonneg : 0 ≤ latticePolarForm S c :=
+    Finset.sum_nonneg fun a ha => Finset.sum_nonneg fun b hb =>
+      mul_nonneg (mul_nonneg (hc a ha) (hc b hb)) (by positivity)
+  have hlam_col : collarFormOn S c ≤ lam_pole * latticePolarForm S c :=
+    hcol.trans (mul_le_mul_of_nonneg_right hlam hpol_nonneg)
+  unfold collarCoupledEulerLatticeForm finiteEulerLatticeForm at *
+  linarith
+
+end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

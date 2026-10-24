@@ -343,7 +343,8 @@ translation with error $C\varepsilon^\alpha$ from fifth and sixth arrays within 
 | coprime shear | `mulShift`, `addShift`, `addDiff` |
 | Ramanujan lag weight, period covariance | `ramanujanLagWeight`, `periodCovariance` |
 | translated and affine moments | `translatedMoment`, `affineMoment` |
-| visibility, local stability, top order | `Visible`, `LocalPairwiseHolder`, `TopAnchor.topOrder` |
+| visibility, local stability, top order, dyadic tower | `Visible`, `LocalPairwiseHolder`, `TopAnchor.topOrder`, `dyadicTowerOrders` |
+| zero-product relations, relation coefficient, mode sign character | `zeroProductTuples`, `relationCoeff`, `modeSignChar` |
 
 ---
 
@@ -1071,7 +1072,52 @@ to one physical translation with error $3(\sum_{q\le N}\varphi(q))\,\varepsilon^
 $\varepsilon^{1/6}$ produces two profiles with *equal* fifth and sixth arrays, to which exact
 recovery applies. No exponent above $1/6$ holds uniformly, already in every neighbourhood of the
 zero signal (`no_improved_physical_exponent_near_zero`). Global sixth-root stability is therefore
-sharp; its constant grows with the cutoff, and every observation here is a full-period moment.
+sharp.
+
+**Cutoff-independent coordinate constants, support strata, and windowed protocols.** In the
+Selberg coordinate basis and the normalized clock-period $L^2$ metric, the recovery constant is
+completely **independent of the cutoff $N$**: every mode $q\in[1,N]$ of $e$ agrees within
+$3\varepsilon^{1/6}$ with either $c$ or its threshold half-period reflection
+$\mathrm{HalfPeriod.reflection}\,N\,h_{\mathrm{rd}}\,c$, and at any common multiple $M$ of
+$[1,N]$ (including $M=\mathrm{lcm}(1,\dots,N)$ and $M=N!$) the exact Parseval identity
+$\sum_{k=1}^M(s_{N,a}(k)-s_{N,b}(k))^2=M\sum_{q=1}^N\varphi(q)(Y_{N,a}(q)-Y_{N,b}(q))^2$ gives normalized
+mean-square error at most $9(\sum_{q\le N}\varphi(q))\varepsilon^{1/3}$ (`sum_sieveSeq_sub_sq_eq_selberg_of_forall_dvd`,
+`exists_cutoff_independent_coordinate_and_reflection_error`,
+`exists_cutoff_independent_coordinate_and_reflection_holder`). On a common support stratum
+$\mathrm{activeModes}\subseteq S$, threshold rounding preserves vanishing outside $S$, sharpening
+the physical translation constant from $3\sum_{q\le N}\varphi(q)$ to $3\sum_{q\in S}\varphi(q)$
+globally (`exists_stratum_physical_translate_holder`) and $2\sum_{q\in S}\varphi(q)$ on the
+top-anchor stratum (`exists_topAnchor_stratum_translate_error`): independent of $N$ for any fixed
+finite support $S$, and equal to $3\cdot\mathrm{topOrder}\,N\le 3N$ on the dyadic tower
+`dyadicTowerOrders N` (`sum_totient_dyadicTowerOrders_eq_topOrder`,
+`exists_dyadicTower_physical_translate_holder`). Combining threshold rounding with the
+Bézout–Valuation Incidence window-transfer inequalities lifts global sixth-root coordinate and
+support-stratum physical recovery directly to finite windows of length $K>0$ at unknown phases, with
+explicit cutoff cost $(\|c\|_1^m+\|e\|_1^m)/K$ in the $\ell^1$ scale and
+$\mathrm{windowTransferError}\,N\,m\,K$ in the Selberg energy scale
+(`exists_global_physical_translate_of_windows_l1`,
+`exists_global_physical_translate_of_windowMoments`); observing only the $N$ two-point lag
+covariances $g\in\{1,\dots,N\}$ on a single window recovers every coordinate magnitude $|Y_{N,c}(q)|$
+with square-root stability (`abs_selbergCoord_abs_sub_sq_le_of_single_window_lags`).
+
+**The bounded-length relation organizing theorem.** Both halves of observation theory — in-support
+sign orientation and out-of-support missing-mode visibility — are governed by one Parseval
+relation-energy identity on the zero-product relation variety $\mathcal Z_{N,m}=\mathrm{zeroProductTuples}\,N\,m$.
+The standard additive character $\mathrm{ZMod.stdAddChar}$ maps every zero-sum frequency word
+$r:\mathrm{Fin}\,m\to\mathrm{ZMod}\,N!$ to $\zeta_r\in\mathcal Z_{N,m}$ with
+$\mathrm{orderOf}(\zeta_{r,j})=\mathrm{addOrderOf}(r_j)$ (`stdAddChar_mem_zeroProductTuples`,
+`relationCoeff_stdAddChar`), and the opposite missing-mode spike $\mathrm{spikeWeights}\,N\,b\,q\,(-t)$
+is identically the elementary sign-character twist $\mathrm{scaledSelbergRow}\,N\,(\mathrm{spikeWeights}\,N\,b\,q\,t)\,(\mathrm{modeSignChar}\,q)$
+(`spikeWeights_neg_eq_scaledSelbergRow`, `sum_sq_translatedMoment_spikeWeights_eq`). This yields a
+quantitative dichotomy on both sides (`quantitative_sign_relation_dichotomy`,
+`quantitative_visibility_relation_dichotomy`): a sign twist $\varepsilon$ or a missing mode $q$ is
+distinguishable at degree $m\in\{5,6\}$ iff $\mathcal Z_{N,m}$ contains an active relation $\zeta$
+with $\prod_j\varepsilon(\mathrm{ord}\,\zeta_j)=-1$, in which case the complete-period mean-square
+moment difference is at least $4(N!)^m A_c(\zeta)^2$ and some shift vector $v\in[0,N!)^m$ realizes
+$|M_m(c_\varepsilon;v)-M_m(c;v)|\ge 2|A_c(\zeta)|$; when no such relation exists in degrees $5$ and
+$6$, in-support sign twists have identical moments, while an invisible missing-mode spike has
+degree-$5/6$ moments and relation energy suppressed to $O(t^3)$ and $O(t^6)$ despite linear
+clock-period $L^2$ realization energy $4M\varphi(q)t^2$.
 
 Coercivity of the joint additive–multiplicative energy on integer windows has sharp doubling
 scale: every window $N\ge1024$ carries a doubling-resonant cosine with energy at most $384$ and
@@ -1260,8 +1306,13 @@ from one explicit energy bound.
     (`riemannHypothesis_of_abs_ccmWeilPoleCross_le`, `xiZeroHalfPlaneBound_iff_forall_exists_abs_ccmWeilPoleCross_le`).
 11. **Observation recovery is sharp.** Fifth and sixth translated moments determine a
     divisor-sieve signal up to one canonical translation; globally with exponent $1/6$, which
-    cannot be improved (`exists_physical_translate_holder`, `no_improved_physical_exponent`), and
-    with exponent $1/3$ on the nonzero top-coordinate stratum.
+    cannot be improved (`exists_physical_translate_holder`, `no_improved_physical_exponent`),
+    cutoff-independent coordinate constant $3$ (`exists_cutoff_independent_coordinate_and_reflection_holder`),
+    support-stratum constant $3\sum_{q\in S}\varphi(q)$ (`exists_stratum_physical_translate_holder`),
+    and exponent $1/3$ on the nonzero top-coordinate stratum; in-support sign orientation and
+    missing-mode visibility are unified by the Parseval relation-energy dichotomy on
+    $\mathrm{zeroProductTuples}\,N\,m$ (`quantitative_sign_relation_dichotomy`,
+    `quantitative_visibility_relation_dichotomy`).
 
 ---
 
@@ -1361,7 +1412,8 @@ Built and reusable:
   lifts, spectral designs — explicit tests with unconditional errors.
 - *The triangular Gram split* for synchronized packet blocks without orthogonality.
 - *Arithmetic observation theory*: Selberg coordinates, Ramanujan lag weights, valuation classes,
-  canonical translation, and the stratified and global stability theorems.
+  canonical translation, the stratified, global, cutoff-independent coordinate, and windowed
+  stability theorems, and the bounded-length relation organizing dichotomy.
 
 To be built:
 
@@ -1369,8 +1421,7 @@ To be built:
 - the exact two-tower slack and the slack of the prime-power-blind cone as a function of the
   window;
 - a certified finite-prime test of $E(U)=W(U)$ with a justified tail;
-- a producer family with bounded completion cost;
-- windowed or reduced observation protocols with a quantified cutoff cost.
+- a producer family with bounded completion cost.
 
 ---
 
@@ -1466,14 +1517,25 @@ $\Delta_{\mathrm{mult}}(U)$ (simplicity of all critical zeros, which RH alone do
 
 ### 7.5 Arithmetic observation
 
-Global sixth-root and stratified cube-root recovery are proved and sharp. Open: sharper constants
-than $3\sum_{q\le N}\varphi(q)$ on stated strata, or a constant independent of the cutoff;
-recovery from fewer or windowed observations with a quantified cutoff cost; and a common
-organizing theorem for the two halves of observation theory beyond the classification by sign
-characters of the subgroup generated by the support — the quantitative version through
-bounded-length relations, with energy and realization costs on both sides. Exact algebraic
-recovery bounds no receiver energy; the passage from period moments to finite horizons belongs to
-Bézout–Valuation Incidence.
+Global sixth-root and stratified cube-root recovery are proved and sharp. In Selberg coordinates
+and the normalized clock-period $L^2$ metric the recovery constants are $3$ and $9$ globally (and
+$2$ and $4$ on the top-anchor stratum), completely independent of the cutoff $N$
+(`exists_cutoff_independent_coordinate_and_reflection_error`,
+`exists_cutoff_independent_coordinate_and_reflection_holder`); on a stated support stratum $S$ the
+physical translation constant sharpens from $3\sum_{q\le N}\varphi(q)$ to $3\sum_{q\in S}\varphi(q)$
+globally and $2\sum_{q\in S}\varphi(q)$ on the top-anchor stratum (`exists_stratum_physical_translate_holder`,
+`exists_topAnchor_stratum_translate_error`, `exists_dyadicTower_physical_translate_holder`).
+Window-transfer bounds lift global sixth-root recovery to finite windows of length $K>0$ with
+explicit cutoff cost $O(1/K)$ (`exists_global_physical_translate_of_windows_l1`,
+`exists_global_physical_translate_of_windowMoments`), while $N$ two-point lags on one window
+recover all coordinate magnitudes (`abs_selbergCoord_abs_sub_sq_le_of_single_window_lags`). Both
+halves of observation theory — in-support sign orientation and missing-mode visibility — are
+governed by the Parseval relation-energy identity on $\mathrm{zeroProductTuples}\,N\,m$, which
+supplies quantitative mean-square and shift-realization bounds on the visible/active side and cubic
+moment suppression $O(t^3)$ against linear physical $L^2$ energy $4M\varphi(q)t^2$ on the invisible
+side (`quantitative_sign_relation_dichotomy`, `quantitative_visibility_relation_dichotomy`). Exact
+algebraic recovery bounds no receiver energy; the passage from period moments to finite horizons
+belongs to Bézout–Valuation Incidence.
 
 ### 7.6 Producers and completion
 
