@@ -1,8 +1,8 @@
 # All-length Heath–Brown closure by dilation beyond the balanced scale
 
 - **ID:** heath-brown-all-length-dilation-closure
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper and Lean)
 - **Source:** review-2410 J3; Guth–Maynard Theorem 1.6.
 - **Statement:** `HeathBrownPairSumBound` holds with its constant chosen before
   the separated set, interval, coefficients, and unrestricted block length.
@@ -151,7 +151,9 @@ the module once. Commands, source hashes and axiom output are recorded in
 `RHTower/Sieve/GuthMaynardSharpSTwo.lean` proves the sharp all-k S₂ family
 and Proposition 12.1. Its full source and all three public transitive axiom
 audits passed, again with only the three standard axioms. Its canonical
-final check and umbrella import remain pending.
+final check passed and the owning umbrella imports it once. The exact
+endpoints are `propSixOneBound_sharp` and `propTwelveOne_unconditional`.
+Their evidence is in `logs/just-work-2410/RHTower__Sieve__GuthMaynardSharpSTwo.*`.
 
 ## Gates
 
@@ -159,4 +161,4 @@ final check and umbrella import remain pending.
 - [x] Paper proof without a missing analytic input.
 - [x] Lean all-length estimate, uniform constant, and endpoint proposition.
 - [x] Sharp all-k S₂ application and Proposition 12.1 input.
-- [ ] Canonical leaf checks, all public transitive axioms, umbrella imports.
+- [x] Canonical leaf checks, all public transitive axioms, umbrella imports.

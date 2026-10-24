@@ -25,8 +25,8 @@ theorem pairFactor_rescale (u δ α : ℝ) (hα : (u ^ 2 + δ ^ 2) * α = δ ^ 2
       C ((u ^ 2 + δ ^ 2) ^ 2) * (X ^ 2 - C (2 * α) * X + 1) := by
   have hC := congrArg (C : ℝ → ℝ[X]) hα
   simp only [map_mul, map_add, map_sub, map_pow] at hC
-  simp only [pairFactor, add_comp, mul_comp, pow_comp, X_comp, C_comp,
-    map_mul, map_add, map_sub, map_pow, map_ofNat]
+  simp only [pairFactor, add_comp, mul_comp, pow_comp, X_comp, C_comp]
+  simp only [map_mul, map_add, map_sub, map_pow, map_ofNat]
   linear_combination 2 * (C u ^ 2 + C δ ^ 2) * X * hC
 
 /-- Rescaling the whole block retains the exact multiplier degree. -/
@@ -38,8 +38,12 @@ theorem geometricRepair_rescale (u δ α : ℝ) (n : ℕ)
       C (u ^ 2 + δ ^ 2) * (X + 1) := by
     simp only [add_comp, X_comp, C_comp]
     ring
+  have hpow : (C ((u ^ 2 + δ ^ 2) ^ (n + 2)) : ℝ[X]) =
+      C (u ^ 2 + δ ^ 2) ^ n * C (u ^ 2 + δ ^ 2) ^ 2 := by
+    rw [map_pow, pow_add]
   rw [geometricRepair, mul_comp, pow_comp, pairFactor_rescale u δ α hα, hlin, mul_pow]
-  simp only [binomialRepair, map_pow, pow_add]
+  rw [hpow, map_pow]
+  simp only [binomialRepair]
   ring
 
 theorem coeffNonneg_geometricRepair_iff (u δ : ℝ) (n : ℕ) (hr : 0 < u ^ 2 + δ ^ 2) :
@@ -106,3 +110,8 @@ theorem coeffNonneg_geometricRepair_odd_iff (u δ : ℝ) (m : ℕ) :
 end
 
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
+
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.coeffNonneg_geometricRepair_even_iff
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.coeffNonneg_geometricRepair_odd_iff
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.coeffNonneg_binomialRepair_even_iff
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.coeffNonneg_binomialRepair_odd_iff

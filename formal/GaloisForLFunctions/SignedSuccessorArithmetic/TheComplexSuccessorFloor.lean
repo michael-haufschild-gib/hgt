@@ -18,7 +18,8 @@ as unimodular functions, have mean `−1/3`, so the complex floor lies in `[−1
 The value `−1/2` would require `σ(n) ∈ {e^{±2πi/3}}` at every step, hence `f` with values in the
 cube roots of unity and consecutive values distinct. Catalan's pair forbids it: `f(8) = f(2)³ = 1`,
 and distinctness up to `4` forces `f(3) = 1`, so `f(9) = f(3)² = 1 = f(8)`
-(`no_cubeRoot_successor_coloring`).
+(`no_cubeRoot_successor_coloring`). A completely multiplicative sign is a unimodular function
+(`CMSign.toCMUnit`), and the bracket is `complex_floor_bracket`.
 -/
 
 namespace GaloisForLFunctions.SignedSuccessorArithmetic
@@ -264,5 +265,41 @@ theorem no_cubeRoot_successor_coloring (f : CMUnit) (hcube : ∀ n, 0 < n → f 
   apply hdist 8 (by norm_num) (by norm_num)
   rw [h8, h4, show (8 : ℕ) + 1 = 9 from rfl, h9, hc1]
   linear_combination hg3
+
+/-! ## Signs as unimodular functions, and the bracket -/
+
+/-- A completely multiplicative sign, viewed as a unimodular function. -/
+noncomputable def CMSign.toCMUnit (f : CMSign) : CMUnit where
+  toFun n := (((f n : ℤˣ) : ℤ) : ℂ)
+  norm_eq_one' := fun {n} _ => by
+    rcases Int.units_eq_one_or (f n) with h | h <;> simp [h]
+  map_one' := by simp
+  map_mul' := fun hm hn => by rw [f.map_mul hm hn]; push_cast; ring
+
+theorem re_unitSuccPhase_toCMUnit (f : CMSign) (n : ℕ) :
+    (unitSuccPhase f.toCMUnit n).re = (((succSign f n : ℤˣ) : ℤ) : ℝ) := by
+  simp only [unitSuccPhase, CMSign.toCMUnit, succSign, Units.val_mul]
+  push_cast
+  simp
+
+theorem logUnitCorr_toCMUnit (f : CMSign) (N : ℕ) :
+    logUnitCorr f.toCMUnit N = logSuccCorr f N := by
+  rw [logUnitCorr, logSuccCorr]
+  exact sum_congr rfl fun n _ => by rw [re_unitSuccPhase_toCMUnit]
+
+/-- **The complex floor lies in `[−1/2, −1/3]`.** Every unimodular completely multiplicative function
+has logarithmic successor correlation `≥ −(1/2) log M − 3`, and the conductor-three twins have
+`≤ −(1/3) log M + 2`. -/
+theorem complex_floor_bracket :
+    (∀ f : CMUnit, ∀ M : ℕ, 0 < M → -(Real.log M / 2) - 3 ≤ logUnitCorr f M) ∧
+      ∀ ε : ℤˣ, ∀ M : ℕ, 0 < M →
+        logUnitCorr (chi3Twin ε).toCMUnit M ≤ -(Real.log M / 3) + 2 := by
+  refine ⟨fun f _ hM => complex_log_floor f hM, fun ε M hM => ?_⟩
+  rw [logUnitCorr_toCMUnit, logSuccCorr_eq]
+  have h1 := logAgree_chi3Twin_le ε hM
+  have h2 := log_add_one_le_harmonic M
+  have h3 : Real.log M ≤ Real.log ((M + 1 : ℕ) : ℝ) :=
+    Real.log_le_log (by exact_mod_cast hM) (by exact_mod_cast Nat.le_succ M)
+  linarith
 
 end GaloisForLFunctions.SignedSuccessorArithmetic

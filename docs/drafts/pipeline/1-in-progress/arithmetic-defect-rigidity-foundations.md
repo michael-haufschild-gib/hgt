@@ -40,22 +40,39 @@ Can normalized cofactor forcing be retained in a useful defect state when its po
 The forcing floor and actual-source VK comparison in `TheForcingDominatesTheReceiver.lean`
 passed Lean. `ForcingScaleSeparation.lean` also passed: vanishing receiver/forcing ratio,
 divergent inverse ratio, exact unsigned-majorant comparison and impossibility of one common
-scalar normalization. Five further modules have dependency-closed paper arguments and Lean
-sources; their audits are in progress:
+scalar normalization. `FixedSuccessorsDisappearFromEscapingProfiles.lean` passed with bounded
+actual increments, quadratic successor cost and an admission-or-collapse dichotomy.
+Seven further modules have paper arguments and Lean sources; their audits are in progress:
 
 - `TheReceiverIsTheGramTangent`: exact signed Gram distance and determinant, degeneration in
   forcing normalization, unit distance in receiver normalization.
 - `TheCofactorTailCarriesTheForcing`: a uniform cutoff budget and convergence of every fixed
   signed cofactor tail to the complete forcing.
-- `FixedSuccessorsDisappearFromEscapingProfiles`: bounded actual increments, quadratic
-  successor cost, admission-or-fixed-successor-collapse dichotomy.
 - `CofactorSuccessorWordsHaveABoundaryCost`: the word action's denominator/boundary sandwich,
-  actual receiver energy cost, admission-or-fixed-word-collapse dichotomy.
+  actual receiver energy cost, bounded forcing work and fixed-word collapse in both quantities.
 - `ForcingEscapesAMovingCofactorWindow`: a source-defined growing cutoff
   `floor(log(F_T/E_T))` beyond which the signed tail still carries the complete forcing.
+- `TheForcingSplitsIntoAPowerAndAnAdmittedRemainder`: exact smooth-power subtraction,
+  uniform global remainder norm, and the paid actual cofactor residual.
+- `TheForcingHasFinitePronicMass`: uniform dual mass, exact prime-power mass
+  `-zeta'(1+epsilon)/zeta(1+epsilon)`, and its least-upper-bound property.
+- `TheRenormalizedCofactorIsAntipodalOnEscape`: the exact signed residual identity and
+  normalized cofactor pairing approaching `-1` on the escaping branch.
 
 The foundational README explains these mechanisms and the complete programme. Its theorem
 claims must be reconciled with the finished audits. Umbrella wiring and final no-output-file
 audits remain. Global source exclusion, complete joint extraction, stronger signed covariance,
 repairing-module transport, global allocation, multiplicity-sensitive anti-collapse and source
 effectivity remain open. These are substantive parts of the user's goal, not optional follow-ups.
+
+## Next mathematical targets
+
+The smooth-power asymptotic, first-pronic-moment law, Mellin-cell dilation law and bounded-energy
+Mellin functional are existing THIM results, reused rather than reproposed. The forcing
+subtraction defines an affine residual of the actual source; a bounded linear operator has not
+been constructed.
+
+Two extraction targets remain under investigation: a source energy-quantile carrier with
+explicit boundary error, and a joint state retaining signed cofactor covariances after the
+forcing power is subtracted. Neither generic compactness nor quantile coordinates provide
+the missing arithmetic exclusion estimate.

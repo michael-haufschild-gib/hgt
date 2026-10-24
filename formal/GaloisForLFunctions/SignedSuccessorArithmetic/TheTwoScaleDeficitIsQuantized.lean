@@ -120,7 +120,7 @@ theorem logAgree_le_of_zeroDefect (f : CMSign) (hf : ZeroDefect f) {M : ℕ} (hM
                 div_le_div_of_nonneg_right ha (Nat.cast_nonneg _)
             _ ≤ 1 / ((N : ℝ) + 1) := div_le_div_of_nonneg_left zero_le_one (by positivity)
                 (by push_cast; linarith [Nat.cast_nonneg (α := ℝ) k])
-        push_cast at ih ⊢
+        push_cast at ih h1 ⊢
         have : ((k : ℝ) + 1) / ((N : ℝ) + 1) = k / (N + 1) + 1 / (N + 1) := by ring
         linarith
     have := key (N + 1)
@@ -198,8 +198,9 @@ theorem zeroDefect_of_two_eq_one (f : CMSign) (hf : ZeroDefect f) (h2 : f 2 = 1)
     · exact h5
   have f10 : f 10 = -1 := by rw [show (10 : ℕ) = 2 * 5 from rfl, m 2 5 (by norm_num) (by norm_num),
     h2, f5, one_mul]
-  have f15 : f 15 = 1 := by rw [show (15 : ℕ) = 3 * 5 from rfl, m 3 5 (by norm_num) (by norm_num),
-    f3, f5]; simp
+  have f15 : f 15 = 1 := by
+    rw [show (15 : ℕ) = 3 * 5 from rfl, m 3 5 (by norm_num) (by norm_num), f3, f5]
+    simp
   -- `f(7) = 1` would give `σ(7) = 1`, hence `σ(14) = −1`, but `f(14) = f(15) = 1`
   have f7 : f 7 = -1 := by
     rcases Int.units_eq_one_or (f 7) with h7 | h7

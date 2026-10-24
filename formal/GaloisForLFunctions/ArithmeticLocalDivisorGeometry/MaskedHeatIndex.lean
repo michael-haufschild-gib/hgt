@@ -4,7 +4,6 @@ import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.NormNum
-import Mathlib.Tactic.NormCast
 
 /-!
 # Uniform coefficient-index bounds for centrally masked pairs
@@ -51,7 +50,7 @@ theorem maskedHeatIndex_pos_of_upper (m k : ℕ) {t : ℝ}
   have hB : 0 < (2 * m + 2 : ℝ) * (2 * m + 1) := by positivity
   have he : 0 < (8 * m + 5 : ℝ) := by positivity
   have hgap : (8 * m + 5 : ℝ) ^ 2 < 20 * ((2 * m + 2 : ℝ) * (2 * m + 1)) := by
-    nlinarith only [sq_nonneg (m : ℝ), Nat.cast_nonneg m]
+    nlinarith only [sq_nonneg (m : ℝ), Nat.cast_nonneg (α := ℝ) m]
   have hrem := positive_quadratic_remainder hB he hgap ht
   rw [maskedHeatIndex_square]
   have hs := sq_nonneg ((k : ℝ) - ((2 * m + 2 : ℝ) * (2 * m + 1)) * t + 1 / 2)
@@ -85,7 +84,7 @@ theorem maskedHeatIndex_floor_neg (m : ℕ) {t : ℝ} (ht : 0 < t)
   have hB : 0 < B := by dsimp only [B]; positivity
   have hBd : B < d * (m + 1 : ℝ) := by
     dsimp only [B, d]
-    nlinarith only [sq_nonneg (m : ℝ), Nat.cast_nonneg m]
+    nlinarith only [sq_nonneg (m : ℝ), Nat.cast_nonneg (α := ℝ) m]
   have hx : 0 < B * t := mul_pos hB ht
   have hlo := Nat.floor_le hx.le
   have hbound : B * t < (m + 1 : ℝ) := by

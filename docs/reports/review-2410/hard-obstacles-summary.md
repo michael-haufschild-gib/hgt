@@ -27,6 +27,13 @@ None of these closes a route; each converts proved or published mathematics into
 | **J7 — Apply proved dictionaries** | Translate a specified source through: the width functor; the aperture dictionary and aperture transport; the compensated-floor equivalence; Bohr-hull / repairing-ideal index formula; HF ceiling ⇒ AIP allocation; RW margin ⇒ heat-Hankel window; SZ first variation = Weil energy; ACS RR ⇔ AIP allocation; Lefschetz–adjunction identity. | All [L] except where marked [S]. | A converse not proved, a global sign, or a change of limit order. |
 | **J8 — Verify supplied finite certificates** | Finite Frobenius/tower Gram indices, SAEI path packings and supersolutions, BVI radical-state tests at a fixed horizon, finite Hausdorff/Jensen/moment lists, finite heat-Hankel ranks, finite photonic stacks. | Exact finite objects and verification methods. | Finding a successful certificate; cofinal versions. |
 
+**Qualification to J7:** applying the global HF ceiling dictionary requires
+`windowCeiling L ≤ exp(L/2)+B(1+L)` eventually. This input itself implies RH
+(`BiScaleUncertainty.PrimeWindowCeilingRHCriterion.riemannHypothesis_of_windowCeiling_le`);
+choosing a compact source does not discharge it. The unconditional local odd-window
+allocation and graded `(1/2,75)` allocation can be instantiated. The global ceiling
+application belongs to A3 until its missing input is proved.
+
 Completed (not to be repeated): the real centered damping spectrum is in the tree; the odd `181/500` window has been transferred to the lag family (S:SharperOddWindowAndPhaseSelectiveSingleHeightLaw); the AIP odd-lattice calibration has its axis jets and self-energy asymptotic; the BiScale recovery constants are sharpened.
 
 ## 2.2 Open mathematics

@@ -33,17 +33,14 @@ theorem cofactorHeadCoefficient_nonneg (ε : ℝ) (J : ℕ) :
 theorem cofactorHeadCoefficient_le (ε : SubcriticalDamping) (J : ℕ) :
     cofactorHeadCoefficient ε J ≤ (J : ℝ) := by
   unfold cofactorHeadCoefficient
-  calc _ ≤ ∑ _j ∈ Icc 2 J, (1 : ℝ) := by
+  calc
+    _ ≤ ∑ _j ∈ Icc 2 J, (1 : ℝ) := by
       refine sum_le_sum fun j hj => ?_
-      have hj1 : (1 : ℝ) ≤ j := by exact_mod_cast (show 1 ≤ j by
-        have := (mem_Icc.mp hj).1; omega)
-      have hr : (j : ℝ) ^ (-(ε : ℝ)) ≤ 1 := by
-        calc _ ≤ (j : ℝ) ^ (0 : ℝ) := Real.rpow_le_rpow_of_exponent_le hj1
-            (neg_nonpos.mpr ε.property.1.le)
-          _ = 1 := Real.rpow_zero _
-      have hs : (1 : ℝ) ≤ Real.sqrt (j : ℝ) := by
-        rw [Real.le_sqrt (by norm_num) (Nat.cast_nonneg j)]
-        simpa only [one_pow] using hj1
+      have hj1N : 1 ≤ j := by have := (mem_Icc.mp hj).1; omega
+      have hj1 : (1 : ℝ) ≤ j := by exact_mod_cast hj1N
+      have hr : (j : ℝ) ^ (-(ε : ℝ)) ≤ 1 :=
+        Real.rpow_le_one_of_one_le_of_nonpos hj1 (neg_nonpos.mpr ε.property.1.le)
+      have hs : (1 : ℝ) ≤ Real.sqrt (j : ℝ) := Real.one_le_sqrt.mpr hj1
       have hi : 1 / Real.sqrt (j : ℝ) ≤ 1 :=
         (div_le_one (lt_of_lt_of_le zero_lt_one hs)).mpr hs
       simpa only [one_mul] using mul_le_mul hr hi (by positivity) zero_le_one
@@ -119,7 +116,7 @@ theorem cofactorTailErrorEnergy_le (ε : ℝ) (J T : ℕ) :
       _ ≤ Real.sqrt (dampedMobiusEnergy ε T) +
           cofactorHeadCoefficient ε J * Real.sqrt (dampedMobiusEnergy ε T) := by
             rw [pronicNorm_centeredPrefix]
-            exact add_le_add_left (pronicNorm_cofactorHead_le ε J T) _
+            exact add_le_add (le_refl _) (pronicNorm_cofactorHead_le ε J T)
       _ = _ := by ring
   have h := pow_le_pow_left₀ (pronicNorm_nonneg T _) hnorm 2
   rw [mul_pow, Real.sq_sqrt (dampedMobiusEnergy_nonneg ε T)] at h

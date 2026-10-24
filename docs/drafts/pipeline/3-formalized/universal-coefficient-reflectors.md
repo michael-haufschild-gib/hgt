@@ -1,8 +1,8 @@
 # Universal coefficient-cone reflectors are positive monomials
 
 - **ID:** universal-coefficient-reflectors
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** Arithmetic Local Divisor Geometry; exact local factor transitions
 - **Statement:** For a real polynomial `Q`, multiplication by `Q` preserves and reflects coefficient nonnegativity on every real polynomial iff `Q=cX^a` for some `c>0` and natural `a`.
 
@@ -58,7 +58,7 @@ is nonnegative for `y≥0`. Thus for `y>0`, `R(y)≥(2D+1−b)y^D>0`; at zero, `
 - **Killed mechanism:** Universal cancellation of a nonmonomial coefficient-positive finite shell.
 - **Strongest positive survivor:** Exact classification of all universally reversible multipliers as positive monomials, with a strictly positive-on-the-nonnegative-axis counterexample for every other positive multiplier and an optimal universal degree bound `2deg Q`.
 - **New insight:** Central zero powers and positive scalars may be removed exactly; positive remote factors require additional signed information. The head-to-tail implication cannot be inverted merely because its tail lies in the coefficient cone.
-- **Status:** Complete elementary paper proof above; Lean formalization pending. This does not retire WD or exclude source-specific cancellation laws.
+- **Status:** Paper proof and exact Lean formalization complete. Plain module check passed; transitive dependencies use only `propext`, `Classical.choice`, and `Quot.sound`. This does not retire WD or exclude source-specific cancellation laws.
 
 ## Audit
 
@@ -68,5 +68,16 @@ Corpus queries `coefficient nonnegative monomial multiplier` and `CoeffNonneg ca
 
 - [x] Complete dependency-closed paper proof.
 - [x] Corpus duplication audit completed; no equivalent classification located.
-- [ ] Exact classification and constructive witness formalized.
-- [ ] Foreground module check and transitive axiom audit.
+- [x] Exact classification, constructive positive witness, and sharp degree bound formalized.
+- [x] Foreground module check and transitive axiom audit.
+
+## Lean declarations
+
+Module: `formal/GaloisForLFunctions/ArithmeticLocalDivisorGeometry/UniversalReflectors.lean`.
+
+- `universal_coefficient_reflector_iff`: exact positive-monomial classification.
+- `exists_positive_reflection_counterexample`: strictly positive-on-the-nonnegative-axis witness with degree at most `2deg Q`.
+- `coeffNonneg_mul_one_add_X_pow_iff_of_degree_lt`: sparse shells reflect coefficient signs below the sharp degree boundary.
+- `sparseReflectionWitness_mul`, `sparseReflectionWitness_eval_pos`, `sparseReflectionWitness_not_nonneg`, `sparseReflectionWitness_natDegree`: exact extremizer and optimality.
+
+The final plain command `lake --old env lean GaloisForLFunctions/ArithmeticLocalDivisorGeometry/UniversalReflectors.lean` exited 0 with all requested axiom checks standard-only. Temporary print commands were removed afterward; proof declarations were unchanged. The programme umbrella imports this leaf and was not compiled.

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticDefectRigidity.FixedSuccessorsDisappearFromEscapingProfiles
+import GaloisForLFunctions.ArithmeticDefectRigidity.TheForcingHasFinitePronicMass
 
 /-!
 # Boundary cost of finite cofactor-successor words
@@ -11,6 +12,9 @@ differs from its pure dilation by at most that cost in pronic norm.
 Every fixed word loses its successor information on an escaping normalized receiver. The
 quantitative estimate also prices moving words; it does not assert disappearance when their
 boundary costs grow on the receiver-energy scale.
+
+The forcing's finite pronic L1 mass also pays the signed boundary work uniformly. Thus fixed
+word boundaries disappear even in the full forcing pairing on the escaping branch.
 -/
 
 open Finset Filter Topology RHTower
@@ -149,7 +153,7 @@ def wordForcingWork (ε : ℝ) (w : CellWord) (T : ℕ) : ℝ :=
       pmPowerDampedCenteredDivisorPrefix ε (n / w.denominator))
     (inversionDefect ε)
 
-/-- A small word displacement still pairs with forcing at the larger forcing scale. -/
+/-- Cauchy--Schwarz prices boundary work using the complete forcing energy. -/
 theorem wordForcingWork_sq_le (ε : SubcriticalDamping) (w : CellWord) (T : ℕ) :
     wordForcingWork ε w T ^ 2 ≤ (w.boundaryCost : ℝ) ^ 2 * forcingEnergy ε T := by
   let v : ℕ → ℝ := fun n => pmPowerDampedCenteredDivisorPrefix ε (w.apply n) -
@@ -171,12 +175,51 @@ theorem wordForcingWork_sq_le (ε : SubcriticalDamping) (w : CellWord) (T : ℕ)
   exact hsq.trans (mul_le_mul_of_nonneg_right (wordDisplacementEnergy_le ε w T)
     (forcingEnergy_nonneg ε T))
 
-/-- Receiver-normalized boundary work keeps the second energy ratio `F/E²`. -/
+/-- The generic L2 work estimate retains the second energy ratio `F/E²`. -/
 theorem normalized_wordForcingWork_sq_le (ε : SubcriticalDamping) (w : CellWord) (T : ℕ) :
     (wordForcingWork ε w T / dampedMobiusEnergy ε T) ^ 2 ≤
       (w.boundaryCost : ℝ) ^ 2 * (forcingEnergy ε T / dampedMobiusEnergy ε T ^ 2) := by
   rw [div_pow]
   simpa only [mul_div_assoc] using div_le_div_of_nonneg_right (wordForcingWork_sq_le ε w T)
     (sq_nonneg (dampedMobiusEnergy ε T))
+
+/-- Finite pronic forcing mass improves the generic L2 estimate to an absolute work bound. -/
+theorem abs_wordForcingWork_le (ε : SubcriticalDamping) (w : CellWord) (T : ℕ) :
+    |wordForcingWork ε w T| ≤ (w.boundaryCost : ℝ) * forcingMassLimit ε := by
+  unfold wordForcingWork pronicPairing
+  calc _ ≤ ∑ n ∈ Icc 1 T,
+        |(pmPowerDampedCenteredDivisorPrefix (ε : ℝ) (w.apply n) -
+          pmPowerDampedCenteredDivisorPrefix (ε : ℝ) (n / w.denominator)) *
+          inversionDefect ε n / ((n : ℝ) * ((n : ℝ) + 1))| := abs_sum_le_sum_abs _ _
+    _ ≤ ∑ n ∈ Icc 1 T,
+        (w.boundaryCost : ℝ) * inversionDefect ε n / ((n : ℝ) * ((n : ℝ) + 1)) := by
+      refine sum_le_sum fun n _ => ?_
+      rw [abs_div, abs_mul, abs_of_nonneg (inversionDefect_nonneg ε.property.1 n),
+        abs_of_nonneg (show (0 : ℝ) ≤ (n : ℝ) * ((n : ℝ) + 1) by positivity)]
+      exact div_le_div_of_nonneg_right
+        (mul_le_mul_of_nonneg_right (abs_receiver_word_sub_dilation_le ε w n)
+          (inversionDefect_nonneg ε.property.1 n)) (by positivity)
+    _ = (w.boundaryCost : ℝ) * forcingPronicMass ε T := by
+      rw [forcingPronicMass, mul_sum]
+      exact sum_congr rfl fun n _ => by ring
+    _ ≤ (w.boundaryCost : ℝ) * forcingMassLimit ε :=
+      mul_le_mul_of_nonneg_left (forcingPronicMass_le_limit ε T) (Nat.cast_nonneg _)
+
+/-- The actual source pays moving-word work linearly in the boundary length. -/
+theorem normalized_abs_wordForcingWork_le (ε : SubcriticalDamping) (w : CellWord) (T : ℕ) :
+    |wordForcingWork ε w T| / dampedMobiusEnergy ε T ≤
+      (w.boundaryCost : ℝ) * forcingMassLimit ε / dampedMobiusEnergy ε T :=
+  div_le_div_of_nonneg_right (abs_wordForcingWork_le ε w T) (dampedMobiusEnergy_nonneg ε T)
+
+/-- Fixed word boundaries disappear in the complete forcing pairing whenever energy escapes. -/
+theorem admits_or_fixed_word_forcing_work_disappears (ε : SubcriticalDamping) :
+    Admits dampedMobiusEnergy ε ∨ ∀ w : CellWord,
+      Tendsto (fun T => |wordForcingWork ε w T| / dampedMobiusEnergy ε T) atTop (𝓝 0) := by
+  rcases admits_or_tendsto_atTop (ε : ℝ) with h | hE
+  · exact Or.inl h
+  · refine Or.inr fun w => squeeze_zero
+      (fun T => div_nonneg (abs_nonneg _) (dampedMobiusEnergy_nonneg ε T))
+      (normalized_abs_wordForcingWork_le ε w) ?_
+    exact tendsto_const_nhds.div_atTop hE
 
 end GaloisForLFunctions.ArithmeticDefectRigidity

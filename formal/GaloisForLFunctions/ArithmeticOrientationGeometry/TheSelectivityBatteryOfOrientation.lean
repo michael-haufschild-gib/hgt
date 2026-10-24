@@ -43,7 +43,8 @@ section Curves
 
 variable {ι : Type*} [Fintype ι] (D : CurveDatum ι) (hD : ∀ i, ‖D.β i‖ ≤ D.sqrtq)
 
-theorem CurveDatum.cpow_one_sub_sub_half {ρ : ℂ} :
+/-- The functional equation `ρ ↦ 1 − ρ` inverts the Frobenius eigenvalue `q^{ρ − ½}`. -/
+theorem curve_cpow_one_sub_sub_half {ρ : ℂ} :
     (D.q : ℂ) ^ ((1 - ρ) - 1 / 2) = ((D.q : ℂ) ^ (ρ - 1 / 2))⁻¹ := by
   rw [show (1 - ρ) - 1 / 2 = -(ρ - 1 / 2) by ring, Complex.cpow_neg]
 
@@ -53,10 +54,10 @@ theorem fesSymmetric_curveConfig : FESymmetric (D.curveConfig hD) := by
   obtain ⟨i, hi⟩ := (D.mem_curveConfig_iff hD).mp hρ
   have hfe : D.β (D.fePerm i) = (D.β i)⁻¹ := eq_inv_of_mul_eq_one_left (D.β_fePerm i)
   refine ⟨(D.mem_curveConfig_iff hD).mpr ⟨D.fePerm i, ?_⟩, ?_⟩
-  · rw [D.cpow_one_sub_sub_half, hi, hfe]
+  · rw [curve_cpow_one_sub_sub_half D, hi, hfe]
   · show (univ.filter fun j => (D.q : ℂ) ^ ((1 - ρ) - 1 / 2) = D.β j).card =
       (univ.filter fun j => (D.q : ℂ) ^ (ρ - 1 / 2) = D.β j).card
-    rw [D.cpow_one_sub_sub_half]
+    rw [curve_cpow_one_sub_sub_half D]
     refine Finset.card_bij (fun j _ => D.fePerm j) (fun j hj => ?_)
       (fun _ _ _ _ h => D.fePerm.injective h) (fun j hj => ⟨D.fePerm.symm j, ?_, by simp⟩)
     · have hj' := (Finset.mem_filter.mp hj).2
@@ -67,7 +68,7 @@ theorem fesSymmetric_curveConfig : FESymmetric (D.curveConfig hD) := by
       have h1 := D.β_fePerm (D.fePerm.symm j)
       rw [Equiv.apply_symm_apply] at h1
       rw [← hj'] at h1
-      rw [inv_eq_of_mul_eq_one_left h1]
+      exact inv_eq_of_mul_eq_one_right h1
 
 /-- The zeros of a unitary curve lie on the critical line. -/
 theorem curveConfig_onLine_of_unitary (hU : ∀ i, ‖D.β i‖ = 1) :
@@ -95,7 +96,7 @@ theorem fesSymmetric_goldenConfig : FESymmetric goldenConfig :=
   fesSymmetric_curveConfig goldenDatum goldenDatum_strip
 
 /-- The depth `log φ / log 5` of the golden zeros. -/
-def goldenDepth : ℝ := Real.log goldenRatio / Real.log 5
+def goldenDepth : ℝ := Real.log Real.goldenRatio / Real.log 5
 
 theorem goldenDepth_pos : 0 < goldenDepth :=
   div_pos (Real.log_pos Real.one_lt_goldenRatio) (Real.log_pos (by norm_num))
@@ -109,10 +110,10 @@ theorem abs_re_sub_half_goldenConfig {ρ : ℂ} (hρ : ρ ∈ goldenConfig.carri
   have hl : 0 < Real.log 5 := Real.log_pos (by norm_num)
   rw [hq, goldenDepth]
   fin_cases i
-  · show |Real.log ‖((goldenRatio : ℝ) : ℂ)‖ / Real.log 5| = _
+  · show |Real.log ‖((Real.goldenRatio : ℝ) : ℂ)‖ / Real.log 5| = _
     rw [Complex.norm_real, Real.norm_of_nonneg Real.goldenRatio_pos.le,
       abs_of_pos (div_pos (Real.log_pos Real.one_lt_goldenRatio) hl)]
-  · show |Real.log ‖((goldenRatio⁻¹ : ℝ) : ℂ)‖ / Real.log 5| = _
+  · show |Real.log ‖((Real.goldenRatio⁻¹ : ℝ) : ℂ)‖ / Real.log 5| = _
     rw [Complex.norm_real, Real.norm_of_nonneg (inv_pos.mpr Real.goldenRatio_pos).le,
       Real.log_inv, neg_div, abs_neg,
       abs_of_pos (div_pos (Real.log_pos Real.one_lt_goldenRatio) hl)]
@@ -181,8 +182,9 @@ theorem orientation_congr_carrier {Z Z' : ZeroConfig} (hZ : TemperedConfig Z)
     (h : Z.carrier = Z'.carrier) (x : ScalingCycle) :
     (∀ t : ℝ, (configScalingDatum Z hZ).HasseWeilAt x t) ↔
       ∀ t : ℝ, (configScalingDatum Z' hZ').HasseWeilAt x t := by
-  rw [(orientation_tfae Z hZ hFE x).out 0 2, (orientation_tfae Z' hZ' hFE' x).out 0 2,
-    ← blindAbove_zero_iff, ← blindAbove_zero_iff, blindAbove_congr_carrier h]
+  refine ((orientation_tfae Z hZ hFE x).out 0 2).trans
+    (Iff.trans ?_ ((orientation_tfae Z' hZ' hFE' x).out 0 2).symm)
+  rw [← blindAbove_zero_iff, ← blindAbove_zero_iff, blindAbove_congr_carrier h]
 
 /-- The orientation rate is blind to multiplicity as well. -/
 theorem orientationRate_congr_carrier {Z Z' : ZeroConfig} (hZ : TemperedConfig Z)

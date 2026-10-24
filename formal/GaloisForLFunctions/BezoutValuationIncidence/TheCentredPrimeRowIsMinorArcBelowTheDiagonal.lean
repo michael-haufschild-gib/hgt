@@ -79,6 +79,72 @@ theorem primeMinorArcBound_mono (p U : ℕ) {M N : ℕ} (h : M ≤ N) :
   have hsq := Real.sqrt_le_sqrt (typeIIBlockBound_mono p U h)
   gcongr
 
+/-- The short sum `‖Σ_{n ≤ N} Λ_U(n) ζⁿ‖ ≤ U log U` on the unit circle. -/
+theorem norm_sum_truncAF_vonMangoldt_le {ζ : ℂ} (hnorm : ‖ζ‖ = 1) (U N : ℕ) :
+    ‖∑ n ∈ Icc 1 N, ((truncAF vonMangoldt U n : ℝ) : ℂ) * ζ ^ n‖ ≤ U * Real.log U := by
+  refine (norm_sum_le _ _).trans ?_
+  calc ∑ n ∈ Icc 1 N, ‖((truncAF vonMangoldt U n : ℝ) : ℂ) * ζ ^ n‖
+      ≤ ∑ n ∈ Icc 1 N, (if n ≤ U then Real.log U else 0) := by
+        refine sum_le_sum fun n hn => ?_
+        rw [norm_mul, norm_pow, hnorm, one_pow, mul_one, Complex.norm_real, Real.norm_eq_abs,
+          truncAF_apply]
+        split_ifs with hnU
+        · rw [abs_of_nonneg vonMangoldt_nonneg]
+          exact vonMangoldt_le_log.trans
+            (Real.log_le_log (Nat.cast_pos.mpr (by have := (mem_Icc.mp hn).1; omega))
+              (by exact_mod_cast hnU))
+        · simp
+    _ ≤ U * Real.log U := sum_Icc_ite_le_le N U (Real.log_natCast_nonneg U)
+
+/-- **The `log`-weighted Type-I sum.** For `U < p`,
+`‖Σ_{n ≤ N} (μ_U ∗ log)(n) ζⁿ‖ ≤ 2 log N · W_p`. -/
+theorem norm_sum_truncAF_moebius_mul_log_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
+    (hprim : IsPrimitiveRoot ζ p) {U : ℕ} (hUp : U < p) (N : ℕ) :
+    ‖∑ n ∈ Icc 1 N, (((truncAF (moebius : ArithmeticFunction ℝ) U *
+      ArithmeticFunction.log) n : ℝ) : ℂ) * ζ ^ n‖ ≤ 2 * Real.log N * rootHarmonicSum p := by
+  have hnorm : ‖ζ‖ = 1 := hprim.norm'_eq_one hp.ne_zero
+  have hlogN : 0 ≤ Real.log N := Real.log_natCast_nonneg N
+  have hμU : ∀ b, |truncAF (moebius : ArithmeticFunction ℝ) U b| ≤ 1 := fun b =>
+    (abs_truncAF_moebius_le U b).trans (by split_ifs <;> norm_num)
+  rw [sum_Icc_mul_conv]
+  have hterm : ∀ b ∈ Icc 1 N, ‖∑ k ∈ Icc 1 (N / b), ((truncAF (moebius : ArithmeticFunction ℝ) U b *
+      ArithmeticFunction.log k : ℝ) : ℂ) * ζ ^ (b * k)‖ ≤
+      if b ≤ U then 2 * Real.log N * (2 / ‖ζ ^ b - 1‖) else 0 := by
+    intro b hb
+    have hrw : ∑ k ∈ Icc 1 (N / b), ((truncAF (moebius : ArithmeticFunction ℝ) U b *
+        ArithmeticFunction.log k : ℝ) : ℂ) * ζ ^ (b * k) =
+        ((truncAF (moebius : ArithmeticFunction ℝ) U b : ℝ) : ℂ) *
+          ∑ k ∈ Icc 1 (N / b), ((Real.log k : ℝ) : ℂ) * (ζ ^ b) ^ k := by
+      rw [mul_sum]
+      refine sum_congr rfl fun k _ => ?_
+      rw [ArithmeticFunction.log_apply, pow_mul]
+      push_cast
+      ring
+    rw [hrw, norm_mul, Complex.norm_real, Real.norm_eq_abs]
+    split_ifs with hbU
+    · have hne : ζ ^ b ≠ 1 := fun h => Nat.not_dvd_of_pos_of_lt (mem_Icc.mp hb).1 (by omega)
+        ((hprim.pow_eq_one_iff_dvd b).mp h)
+      have hw : ‖ζ ^ b‖ = 1 := by rw [norm_pow, hnorm, one_pow]
+      have hinner := norm_sum_Icc_log_mul_pow_le hw hne (N / b)
+      have hlog' : Real.log (N / b : ℕ) ≤ Real.log N := real_log_natCast_mono (Nat.div_le_self N b)
+      calc |truncAF (moebius : ArithmeticFunction ℝ) U b| *
+            ‖∑ k ∈ Icc 1 (N / b), ((Real.log k : ℝ) : ℂ) * (ζ ^ b) ^ k‖
+          ≤ 1 * (2 * (2 / ‖ζ ^ b - 1‖) * Real.log N) :=
+            mul_le_mul (hμU b) (hinner.trans (mul_le_mul_of_nonneg_left hlog' (by positivity)))
+              (norm_nonneg _) zero_le_one
+        _ = 2 * Real.log N * (2 / ‖ζ ^ b - 1‖) := by ring
+    · rw [truncAF_apply_of_gt (by omega), abs_zero, zero_mul]
+  calc _ ≤ ∑ b ∈ Icc 1 N, (if b ≤ U then 2 * Real.log N * (2 / ‖ζ ^ b - 1‖) else 0) :=
+        (norm_sum_le _ _).trans (sum_le_sum hterm)
+    _ = ∑ b ∈ (Icc 1 N).filter (· ≤ U), 2 * Real.log N * (2 / ‖ζ ^ b - 1‖) := (sum_filter _ _).symm
+    _ ≤ ∑ b ∈ Icc 1 U, 2 * Real.log N * (2 / ‖ζ ^ b - 1‖) :=
+        sum_le_sum_of_subset_of_nonneg (fun b hb => by
+          simp only [mem_filter, mem_Icc] at hb ⊢; omega) fun _ _ _ => by positivity
+    _ = 2 * Real.log N * ∑ b ∈ Icc 1 U, 2 / ‖ζ ^ b - 1‖ := by rw [mul_sum]
+    _ ≤ 2 * Real.log N * rootHarmonicSum p :=
+        mul_le_mul_of_nonneg_left (sum_Icc_two_div_norm_pow_sub_one_le hp hprim hUp)
+          (by positivity)
+
 /-- **The minor-arc law for `Λ` at prime roots of unity.** For `p` prime, `ζ ≠ 1` a `p`-th root of
 unity and `1 ≤ U < p`, `‖Σ_{n ≤ N} Λ(n) ζⁿ‖ ≤ primeMinorArcBound p U N`. -/
 theorem norm_sum_vonMangoldt_mul_pow_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
@@ -88,7 +154,6 @@ theorem norm_sum_vonMangoldt_mul_pow_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
   have hnorm : ‖ζ‖ = 1 := hprim.norm'_eq_one hp.ne_zero
   have hlogU : 0 ≤ Real.log U := Real.log_natCast_nonneg U
   have hlogN : 0 ≤ Real.log N := Real.log_natCast_nonneg N
-  have hW := rootHarmonicSum_nonneg p
   have hdec : ∀ n, ((vonMangoldt n : ℝ) : ℂ) =
       ((truncAF vonMangoldt U n : ℝ) : ℂ) -
         (((truncAF vonMangoldt U * truncAF (moebius : ArithmeticFunction ℝ) U *
@@ -108,21 +173,7 @@ theorem norm_sum_vonMangoldt_mul_pow_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
   rw [sum_congr rfl fun n _ => by rw [hdec n]]
   simp_rw [add_mul, sub_mul]
   rw [sum_add_distrib, sum_add_distrib, sum_sub_distrib]
-  -- the short sum
-  have h1 : ‖∑ n ∈ Icc 1 N, ((truncAF vonMangoldt U n : ℝ) : ℂ) * ζ ^ n‖ ≤ U * Real.log U := by
-    refine (norm_sum_le _ _).trans ?_
-    calc ∑ n ∈ Icc 1 N, ‖((truncAF vonMangoldt U n : ℝ) : ℂ) * ζ ^ n‖
-        ≤ ∑ n ∈ Icc 1 N, (if n ≤ U then Real.log U else 0) := by
-          refine sum_le_sum fun n hn => ?_
-          rw [norm_mul, norm_pow, hnorm, one_pow, mul_one, Complex.norm_real, Real.norm_eq_abs,
-            truncAF_apply]
-          split_ifs with hnU
-          · rw [abs_of_nonneg vonMangoldt_nonneg]
-            exact vonMangoldt_le_log.trans
-              (Real.log_le_log (Nat.cast_pos.mpr (by have := (mem_Icc.mp hn).1; omega))
-                (by exact_mod_cast hnU))
-          · simp
-      _ ≤ U * Real.log U := sum_Icc_ite_le_le N U hlogU
+  have h1 := norm_sum_truncAF_vonMangoldt_le hnorm U N
   -- the first Type-I sum
   have hΛU : ∀ a, |truncAF vonMangoldt U a| ≤ Real.log U := fun a => by
     rw [truncAF_apply]
@@ -137,48 +188,8 @@ theorem norm_sum_vonMangoldt_mul_pow_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
   have h2 := norm_sum_conv_conv_zeta_le hp hprim hUp hUp (truncAF vonMangoldt U)
     (truncAF (moebius : ArithmeticFunction ℝ) U) hΛU (fun a ha => truncAF_apply_of_gt ha) hμU
     (fun b hb => truncAF_apply_of_gt hb) N
-  -- the second Type-I sum, with the increasing weight `log m`
-  have h3 : ‖∑ n ∈ Icc 1 N, (((truncAF (moebius : ArithmeticFunction ℝ) U *
-      ArithmeticFunction.log) n : ℝ) : ℂ) * ζ ^ n‖ ≤ 2 * Real.log N * rootHarmonicSum p := by
-    rw [sum_Icc_mul_conv]
-    have hterm : ∀ b ∈ Icc 1 N, ‖∑ k ∈ Icc 1 (N / b), ((truncAF (moebius : ArithmeticFunction ℝ) U b *
-        ArithmeticFunction.log k : ℝ) : ℂ) * ζ ^ (b * k)‖ ≤
-        if b ≤ U then 2 * Real.log N * (2 / ‖ζ ^ b - 1‖) else 0 := by
-      intro b hb
-      have hrw : ∑ k ∈ Icc 1 (N / b), ((truncAF (moebius : ArithmeticFunction ℝ) U b *
-          ArithmeticFunction.log k : ℝ) : ℂ) * ζ ^ (b * k) =
-          ((truncAF (moebius : ArithmeticFunction ℝ) U b : ℝ) : ℂ) *
-            ∑ k ∈ Icc 1 (N / b), ((Real.log k : ℝ) : ℂ) * (ζ ^ b) ^ k := by
-        rw [mul_sum]
-        refine sum_congr rfl fun k _ => ?_
-        rw [ArithmeticFunction.log_apply, pow_mul]
-        push_cast
-        ring
-      rw [hrw, norm_mul, Complex.norm_real, Real.norm_eq_abs]
-      split_ifs with hbU
-      · have hne : ζ ^ b ≠ 1 := fun h => Nat.not_dvd_of_pos_of_lt (mem_Icc.mp hb).1 (by omega)
-          ((hprim.pow_eq_one_iff_dvd b).mp h)
-        have hw : ‖ζ ^ b‖ = 1 := by rw [norm_pow, hnorm, one_pow]
-        have hinner := norm_sum_Icc_log_mul_pow_le hw hne (N / b)
-        have hlog' : Real.log (N / b : ℕ) ≤ Real.log N := real_log_natCast_mono (Nat.div_le_self N b)
-        calc |truncAF (moebius : ArithmeticFunction ℝ) U b| *
-              ‖∑ k ∈ Icc 1 (N / b), ((Real.log k : ℝ) : ℂ) * (ζ ^ b) ^ k‖
-            ≤ 1 * (2 * (2 / ‖ζ ^ b - 1‖) * Real.log N) :=
-              mul_le_mul (hμU b) (hinner.trans (mul_le_mul_of_nonneg_left hlog' (by positivity)))
-                (norm_nonneg _) zero_le_one
-          _ = 2 * Real.log N * (2 / ‖ζ ^ b - 1‖) := by ring
-      · rw [truncAF_apply_of_gt (by omega), abs_zero, zero_mul]
-    calc _ ≤ ∑ b ∈ Icc 1 N, (if b ≤ U then 2 * Real.log N * (2 / ‖ζ ^ b - 1‖) else 0) :=
-          (norm_sum_le _ _).trans (sum_le_sum hterm)
-      _ = ∑ b ∈ (Icc 1 N).filter (· ≤ U), 2 * Real.log N * (2 / ‖ζ ^ b - 1‖) := (sum_filter _ _).symm
-      _ ≤ ∑ b ∈ Icc 1 U, 2 * Real.log N * (2 / ‖ζ ^ b - 1‖) :=
-          sum_le_sum_of_subset_of_nonneg (fun b hb => by
-            simp only [mem_filter, mem_Icc] at hb ⊢; omega) fun _ _ _ => by positivity
-      _ = 2 * Real.log N * ∑ b ∈ Icc 1 U, 2 / ‖ζ ^ b - 1‖ := by rw [mul_sum]
-      _ ≤ 2 * Real.log N * rootHarmonicSum p :=
-          mul_le_mul_of_nonneg_left (sum_Icc_two_div_norm_pow_sub_one_le hp hprim hUp)
-            (by positivity)
-  -- the Type-II sum
+  have h3 := norm_sum_truncAF_moebius_mul_log_le hp hprim hUp N
+  -- the Type-II sum, with long coefficients `|Λ| ≤ 1 + log N`
   have h4 : ‖∑ n ∈ Icc 1 N, (((typeIILong U * typeIIShort U) n : ℝ) : ℂ) * ζ ^ n‖ ≤
       (Nat.log 2 N + 1) * (1 + Real.log N) * Real.sqrt (typeIIBlockBound p U N) := by
     rw [sum_Icc_mul_conv]
@@ -197,8 +208,11 @@ theorem norm_sum_vonMangoldt_mul_pow_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
         ‖∑ n ∈ Icc 1 N, (((truncAF (moebius : ArithmeticFunction ℝ) U *
           ArithmeticFunction.log) n : ℝ) : ℂ) * ζ ^ n‖ +
         ‖∑ n ∈ Icc 1 N, (((typeIILong U * typeIIShort U) n : ℝ) : ℂ) * ζ ^ n‖ := by
-        refine (norm_add_le _ _).trans (add_le_add_right ((norm_add_le _ _).trans
-          (add_le_add_right (norm_sub_le _ _) _)) _)
+        refine (norm_add_le _ _).trans ?_
+        gcongr
+        refine (norm_add_le _ _).trans ?_
+        gcongr
+        exact norm_sub_le _ _
     _ ≤ _ := by linarith
 
 /-! ## §2. The centred prime row below the diagonal -/
@@ -242,7 +256,8 @@ theorem abs_kernelStatistic_centredPrimeBlock_le_minorArc {p : ℕ} (hp : p.Prim
     have hgeo : ‖ζ ^ Q * ∑ i ∈ range k, ζ ^ (i + 1)‖ ≤ (p : ℝ) / 2 := by
       have hne : ζ ≠ 1 := ((mem_nontrivialRoots hp.pos).mp hζ).1
       have h4 := four_div_le_norm_sub_one_of_mem_nontrivialRoots hp.pos hζ
-      have hpos : 0 < ‖ζ - 1‖ := lt_of_lt_of_le (by positivity) h4
+      have hpos : 0 < ‖ζ - 1‖ :=
+        lt_of_lt_of_le (div_pos (by norm_num) (by exact_mod_cast hp.pos)) h4
       rw [norm_mul, norm_pow, hnorm, one_pow, one_mul]
       refine (GaloisForLFunctions.HTGeometry.norm_sum_pow_succ_le hnorm.le hne k).trans ?_
       rw [div_le_div_iff₀ hpos (by norm_num)]
@@ -253,8 +268,10 @@ theorem abs_kernelStatistic_centredPrimeBlock_le_minorArc {p : ℕ} (hp : p.Prim
       (norm_sum_vonMangoldt_mul_pow_le hp hζ hU hUp x).trans (primeMinorArcBound_mono p U hx)
     rw [hdiff]
     calc ‖S (Q + k) - S Q - ζ ^ Q * ∑ i ∈ range k, ζ ^ (i + 1)‖
-        ≤ ‖S (Q + k)‖ + ‖S Q‖ + ‖ζ ^ Q * ∑ i ∈ range k, ζ ^ (i + 1)‖ :=
-          (norm_sub_le _ _).trans (add_le_add_right (norm_sub_le _ _) _)
+        ≤ ‖S (Q + k)‖ + ‖S Q‖ + ‖ζ ^ Q * ∑ i ∈ range k, ζ ^ (i + 1)‖ := by
+          refine (norm_sub_le _ _).trans ?_
+          gcongr
+          exact norm_sub_le _ _
       _ ≤ primeMinorArcBound p U (2 * Q) + primeMinorArcBound p U (2 * Q) + (p : ℝ) / 2 :=
           add_le_add (add_le_add (hS _ (by omega)) (hS _ (by omega))) hgeo
       _ = B' := by ring
@@ -384,7 +401,7 @@ theorem sum_range_centredPrimeBlock (Q x : ℕ) (hx : x ≤ Q) :
     ∑ i ∈ range x, centredPrimeBlock Q (Q + 1 + i) =
       (Chebyshev.psi ((Q + x : ℕ) : ℝ) - (Q + x : ℕ)) - (Chebyshev.psi (Q : ℝ) - Q) := by
   have hpsi : ∀ m : ℕ, Chebyshev.psi (m : ℝ) = ∑ n ∈ Icc 1 m, vonMangoldt n := fun m => by
-    rw [Chebyshev.psi, Nat.floor_natCast, ← Finset.Icc_add_one_left_eq_Ioc]
+    rw [Chebyshev.psi, Nat.floor_natCast, ← Finset.Icc_add_one_left_eq_Ioc, zero_add]
   induction x with
   | zero => simp
   | succ x ih =>
@@ -393,6 +410,38 @@ theorem sum_range_centredPrimeBlock (Q x : ℕ) (hx : x ≤ Q) :
       show Q + 1 + x = Q + x + 1 by ring]
     push_cast
     ring
+
+/-- `Σ_n |(Λ(n) - 1)𝟙_{(Q,2Q]}(n)|/n² ≤ (B + 1)/Q` when `Σ_{Q<n≤2Q} Λ(n) ≤ B Q`. -/
+theorem sum_Icc_abs_centredPrimeBlock_div_sq_le {Q N : ℕ} (hQ1 : 1 ≤ Q) {B : ℝ}
+    (hψ : ∑ n ∈ Ioc Q (2 * Q), vonMangoldt n ≤ B * Q) :
+    ∑ n ∈ Icc 1 N, |centredPrimeBlock Q n| / (n : ℝ) ^ 2 ≤ (B + 1) / Q := by
+  have hq0 : (0 : ℝ) < Q := by exact_mod_cast hQ1
+  have hsub : ∀ n ∈ Icc 1 N, |centredPrimeBlock Q n| / (n : ℝ) ^ 2 ≤
+      if Q < n ∧ n ≤ 2 * Q then (vonMangoldt n + 1) / (Q : ℝ) ^ 2 else 0 := by
+    intro n _
+    unfold centredPrimeBlock
+    split_ifs with hn
+    · have hnQ : (Q : ℝ) ≤ n := by exact_mod_cast hn.1.le
+      calc |vonMangoldt n - 1| / (n : ℝ) ^ 2 ≤ (vonMangoldt n + 1) / (n : ℝ) ^ 2 := by
+            gcongr
+            rw [abs_le]; constructor <;> linarith [vonMangoldt_nonneg (n := n)]
+        _ ≤ (vonMangoldt n + 1) / (Q : ℝ) ^ 2 :=
+            div_le_div_of_nonneg_left (by linarith [vonMangoldt_nonneg (n := n)]) (by positivity)
+              (pow_le_pow_left₀ hq0.le hnQ 2)
+    · simp
+  calc ∑ n ∈ Icc 1 N, |centredPrimeBlock Q n| / (n : ℝ) ^ 2
+      ≤ ∑ n ∈ Icc 1 N, (if Q < n ∧ n ≤ 2 * Q then (vonMangoldt n + 1) / (Q : ℝ) ^ 2 else 0) :=
+        sum_le_sum hsub
+    _ ≤ ∑ n ∈ Ioc Q (2 * Q), (vonMangoldt n + 1) / (Q : ℝ) ^ 2 := by
+        rw [← sum_filter]
+        exact sum_le_sum_of_subset_of_nonneg (fun n hn => by
+          simp only [mem_filter, mem_Icc, mem_Ioc] at hn ⊢; omega)
+          fun n _ _ => by have := vonMangoldt_nonneg (n := n); positivity
+    _ = ((∑ n ∈ Ioc Q (2 * Q), vonMangoldt n) + Q) / (Q : ℝ) ^ 2 := by
+        rw [← sum_div, sum_add_distrib, sum_const, Nat.card_Ioc, show 2 * Q - Q = Q by omega,
+          nsmul_eq_mul, mul_one]
+    _ ≤ (B * Q + Q) / (Q : ℝ) ^ 2 := by gcongr
+    _ = (B + 1) / Q := by field_simp
 
 /-- **The balanced dual-norm law for the centred prime row.** There is `c > 0` such that for every
 `K ≥ 1` there are `C ≥ 0` and `Q₀` with `|Λ_d((Λ - 1)𝟙_{(Q,2Q]})| ≤ C (d²/Q) e^{-(c/2)√(log Q)}` for
@@ -438,51 +487,27 @@ theorem exists_balanced_kernelStatisticAll_centredPrimeBlock_le :
           push_cast
           linarith
       _ = 3 * Cψ * Q * E := by ring
-  -- `Σ |Λ(n) - 1|/n² ≤ (3 + 2Cψ)/Q` from `ψ(2Q) ≤ (1 + Cψ) 2Q`
-  have hT : ∑ n ∈ Icc 1 N, |centredPrimeBlock Q n| / (n : ℝ) ^ 2 ≤ (3 + 2 * Cψ) / Q := by
-    have hsub : ∀ n ∈ Icc 1 N, |centredPrimeBlock Q n| / (n : ℝ) ^ 2 ≤
-        if Q < n ∧ n ≤ 2 * Q then (vonMangoldt n + 1) / (Q : ℝ) ^ 2 else 0 := by
-      intro n _
-      unfold centredPrimeBlock
-      split_ifs with hn
-      · have hnQ : (Q : ℝ) ≤ n := by exact_mod_cast hn.1.le
-        calc |vonMangoldt n - 1| / (n : ℝ) ^ 2 ≤ (vonMangoldt n + 1) / (n : ℝ) ^ 2 := by
-              gcongr
-              rw [abs_le]; constructor <;> linarith [vonMangoldt_nonneg (n := n)]
-          _ ≤ (vonMangoldt n + 1) / (Q : ℝ) ^ 2 :=
-              div_le_div_of_nonneg_left (by linarith [vonMangoldt_nonneg (n := n)]) (by positivity)
-                (pow_le_pow_left₀ hq0.le hnQ 2)
-      · simp
-    have hwin : ∑ n ∈ Icc 1 N, (if Q < n ∧ n ≤ 2 * Q then (vonMangoldt n + 1) / (Q : ℝ) ^ 2 else 0) =
-        ∑ n ∈ Ioc Q (2 * Q), (vonMangoldt n + 1) / (Q : ℝ) ^ 2 := by
-      rw [← sum_filter]
-      congr 1
-      ext n; simp only [mem_filter, mem_Icc, mem_Ioc]; omega
-    have hψ2 : ∑ n ∈ Ioc Q (2 * Q), vonMangoldt n ≤ (2 + 2 * Cψ) * Q := by
-      have hpsi2 : Chebyshev.psi ((2 * Q : ℕ) : ℝ) = ∑ n ∈ Icc 1 (2 * Q), vonMangoldt n := by
-        rw [Chebyshev.psi, Nat.floor_natCast, ← Finset.Icc_add_one_left_eq_Ioc]
-      have hsplit : ∑ n ∈ Ioc Q (2 * Q), vonMangoldt n ≤ ∑ n ∈ Icc 1 (2 * Q), vonMangoldt n :=
-        sum_le_sum_of_subset_of_nonneg (fun n hn => by
-          simp only [mem_Ioc, mem_Icc] at hn ⊢; omega) fun _ _ _ => vonMangoldt_nonneg
-      have h2Q := hψ ((2 * Q : ℕ) : ℝ) (by push_cast; linarith)
-      have hE1 : E ≤ 1 := Real.exp_le_one_iff.mpr (by
-        have := Real.sqrt_nonneg (Real.log Q); nlinarith)
-      have : Chebyshev.psi ((2 * Q : ℕ) : ℝ) ≤ (2 * Q : ℕ) + Cψ * ((2 * Q : ℕ) * E) := by
-        have := (abs_le.mp h2Q).2; linarith
-      rw [hpsi2] at this
-      push_cast at this
-      have : Cψ * (2 * Q * E) ≤ Cψ * (2 * Q) := by
-        have := mul_le_mul_of_nonneg_left hE1 (by positivity : (0 : ℝ) ≤ 2 * Q)
-        nlinarith
-      nlinarith
-    calc ∑ n ∈ Icc 1 N, |centredPrimeBlock Q n| / (n : ℝ) ^ 2
-        ≤ ∑ n ∈ Ioc Q (2 * Q), (vonMangoldt n + 1) / (Q : ℝ) ^ 2 := by
-          rw [← hwin]; exact sum_le_sum hsub
-      _ = ((∑ n ∈ Ioc Q (2 * Q), vonMangoldt n) + Q) / (Q : ℝ) ^ 2 := by
-          rw [← sum_div, sum_add_distrib, sum_const, Nat.card_Ioc, show 2 * Q - Q = Q by omega,
-            nsmul_eq_mul, mul_one]
-      _ ≤ ((2 + 2 * Cψ) * Q + Q) / (Q : ℝ) ^ 2 := by gcongr
-      _ = (3 + 2 * Cψ) / Q := by field_simp; ring
+  -- `Σ_{Q<n≤2Q} Λ(n) ≤ (2 + 2Cψ) Q` from `ψ(2Q) ≤ (1 + Cψ) 2Q`
+  have hψ2 : ∑ n ∈ Ioc Q (2 * Q), vonMangoldt n ≤ (2 + 2 * Cψ) * Q := by
+    have hpsi2 : Chebyshev.psi ((2 * Q : ℕ) : ℝ) = ∑ n ∈ Icc 1 (2 * Q), vonMangoldt n := by
+      rw [Chebyshev.psi, Nat.floor_natCast, ← Finset.Icc_add_one_left_eq_Ioc, zero_add]
+    have hsplit : ∑ n ∈ Ioc Q (2 * Q), vonMangoldt n ≤ ∑ n ∈ Icc 1 (2 * Q), vonMangoldt n :=
+      sum_le_sum_of_subset_of_nonneg (fun n hn => by
+        simp only [mem_Ioc, mem_Icc] at hn ⊢; omega) fun _ _ _ => vonMangoldt_nonneg
+    have h2Q := hψ ((2 * Q : ℕ) : ℝ) (by push_cast; linarith)
+    have hE1 : E ≤ 1 := Real.exp_le_one_iff.mpr (by
+      have := Real.sqrt_nonneg (Real.log Q); nlinarith)
+    have h3 : Chebyshev.psi ((2 * Q : ℕ) : ℝ) ≤ (2 * Q : ℕ) + Cψ * ((2 * Q : ℕ) * E) := by
+      have := (abs_le.mp h2Q).2; linarith
+    rw [hpsi2] at h3
+    push_cast at h3
+    have h4 : Cψ * (2 * Q * E) ≤ Cψ * (2 * Q) := by
+      refine mul_le_mul_of_nonneg_left ?_ hCψ
+      have := mul_le_mul_of_nonneg_left hE1 (by positivity : (0 : ℝ) ≤ 2 * Q)
+      linarith
+    linarith
+  have hT := sum_Icc_abs_centredPrimeBlock_div_sq_le (N := N) hQ1 hψ2
+  rw [show (2 + 2 * Cψ + 1) = (3 + 2 * Cψ) by ring] at hT
   exact hlaw Q hQ1 _ (fun n h => centredPrimeBlock_ne_zero_imp h) hA N hQN hT d hd hQd hd2
 
 /-! ## §4. The dichotomy for the actual rows -/

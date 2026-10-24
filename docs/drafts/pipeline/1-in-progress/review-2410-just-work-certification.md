@@ -109,14 +109,14 @@ arithmetic estimates to make a dictionary applicable.
 
 ## Pending proof sources
 
-- J3 paper proof: `2-fully-proven/heath-brown-all-length-dilation-closure.md`.
+- J3 certificate: `3-formalized/heath-brown-all-length-dilation-closure.md`.
   `RHTower/Sieve/HeathBrownPairSumAllLengths.lean` proves the exact
   `heathBrownPairSumBound_holds` endpoint. Its full-source scratch check and
   all seven public transitive axiom audits passed. The canonical leaf check
   passed and the owning umbrella imports it once.
   `RHTower/Sieve/GuthMaynardSharpSTwo.lean` supplies the sharp all-k S₂ family
-  and Proposition 12.1. Its full-source check and all three public axiom
-  audits passed; canonical final checking and wiring remain pending.
+  and Proposition 12.1. Its full-source check, all three public axiom audits,
+  and canonical final check passed; the owning umbrella imports it once.
 - J4(i) can use the existing cluster horizon followed by complete-form
   mollification. `TheRoutesMeasureOneAperture.contDiff_top_smooth` gives
   actual infinite smoothness; its support and complete-energy convergence
@@ -129,18 +129,24 @@ arithmetic estimates to make a dictionary applicable.
   discharge the horizon condition; smoothing enlarges the radius by at
   most one, paid by `a+1≤2u²`. This is a direct coarse consequence of the
   existing horizon, with no novelty claim. The required power-38 result
-  follows since `4+|γ|≥1`. Both still require Lean verification.
+  follows since `4+|γ|≥1`. The full-source check and all three public axiom
+  audits passed in `SquareRootThreshold/SmoothWeilDetectorPolynomialAperture.lean`;
+  canonical final checking and umbrella wiring remain pending.
   Exact paper proof and novelty audit:
   `2-fully-proven/cluster-horizon-smooth-polynomial-detector.md`.
-- Unchecked complete drafts now cover the polynomial detector aperture
-  (`/tmp/hgt-just-work-polynomial-aperture.lean`), the full moving-source
-  Suzuki theorem (`/tmp/hgt-just-work-suzuki-moving-signed.lean`), explicit
+- Unchecked complete drafts now cover the full moving-source Suzuki theorem
+  (`/tmp/hgt-just-work-suzuki-moving-signed.lean`), explicit
   aperture-scaled spline inputs (`/tmp/hgt-just-work-spline-aperture-inputs.lean`),
-  finite source certificates (`/tmp/hgt-just-work-finite-source-certificates.lean`),
-  explicit ranges (`/tmp/hgt-just-work-explicit-ranges.lean`), and concrete
+  and concrete
   dictionary instances (`/tmp/hgt-just-work-concrete-dictionaries.lean`).
   These are proof candidates, not certified results. Their canonical leaf
   checks and transitive axiom audits remain required.
+- `ArithmeticOrientationTheory/ConcreteReceiverScales.lean` passed the full-source
+  check and all seven public axiom audits. It proves the stated threshold,
+  visibility and centered-prime scales. Its canonical final check remains pending.
+- `ArithmeticOrientationTheory/ConcreteFiniteSourceCertificates.lean` passed the
+  full-source check and all 13 public axiom audits, covering every selected finite
+  object above. Its canonical final check remains pending.
 - The concrete dictionary instances use the radius-`1/5` spline and its odd
   part, the finite aperture chain `1/10, 1/5, 3/10`, and the actual
   half-damped Möbius receiver. The finite transport is bounded; no
@@ -158,7 +164,7 @@ trusted computation, or resource-limit increases. Preserve concurrent work.
 - [x] Exact J1–J8 inventory and concrete source-selection policy.
 - [x] J1 integration leaves wired, checked, and audited.
 - [x] J2 joint import compatibility checked after the name repair.
-- [ ] J3 exact published bounds formalized and audited.
+- [x] J3 exact published bounds formalized and audited.
 - [ ] J4 exact four paper results formalized or subsumed with checked bridges.
 - [ ] J5–J7 concrete inputs, bounds and applications certified.
 - [ ] J8 existing finite certificates certified.

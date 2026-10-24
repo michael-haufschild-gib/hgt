@@ -100,9 +100,10 @@ def orbitSurface (x : E) : PolarSurface (D.orbitSpan x) :=
   D.toPolarSurface.restrict (D.orbitSpan x) (D.H_mem_orbitSpan x) (D.V_mem_orbitSpan x)
 
 theorem corr_smul (c : ℝ) (ξ : Correspondence G) (x : E) : D.corr (c • ξ) x = c • D.corr ξ x := by
-  simp only [corr]
-  rw [Finsupp.sum_smul_index (fun _ => zero_smul ℝ _), Finsupp.smul_sum]
-  simp only [mul_smul]
+  induction ξ using Finsupp.induction_linear with
+  | zero => rw [smul_zero, D.corr_zero, smul_zero]
+  | add ξ η hξ hη => rw [smul_add, D.corr_add, D.corr_add, hξ, hη, smul_add]
+  | single g a => rw [Finsupp.smul_single, D.corr_single, D.corr_single, smul_eq_mul, mul_smul]
 
 /-- Every element of the span of the orbit is the action of a correspondence. -/
 theorem exists_corr_of_mem_span_orbit (x : E) {w : E}
@@ -184,7 +185,7 @@ theorem configOrbitSurface_riemannRoch_iff_blind (Z : Zeta23.ZeroConfig) (hZ : T
     (hA : ((configScalingDatum Z hZ).orbitSurface x).AmpleAxiom E') :
     ((configScalingDatum Z hZ).orbitSurface x).RiemannRochAxiom E' ↔
       ((configScalingDatum Z hZ).orbitSurface x).openPositiveCone ⊆ E' ∧ BlindOffLine Z x.2.2 := by
-  rw [(configScalingDatum Z hZ).orbitSurface_riemannRoch_iff x hdeg hA,
-    (orientation_tfae Z hZ hFE x).out 1 2]
+  rw [(configScalingDatum Z hZ).orbitSurface_riemannRoch_iff x hdeg hA]
+  exact and_congr Iff.rfl ((orientation_tfae Z hZ hFE x).out 1 2)
 
 end GaloisForLFunctions.ArithmeticOrientationGeometry

@@ -22,7 +22,7 @@ def flatPolynomial (n : ℕ) : ℝ[X] := ∑ j ∈ Finset.range (n + 1), X ^ j
 theorem flatPolynomial_coeff (n k : ℕ) :
     (flatPolynomial n).coeff k = if k ≤ n then 1 else 0 := by
   classical
-  simp [flatPolynomial, eq_comm, Nat.lt_succ_iff]
+  simp [flatPolynomial]
 
 theorem coeffNonneg_flatPolynomial (n : ℕ) : CoeffNonneg (flatPolynomial n) := by
   intro k
@@ -33,7 +33,8 @@ theorem coeffNonneg_flatPolynomial (n : ℕ) : CoeffNonneg (flatPolynomial n) :=
 theorem coeff_mul_flatPolynomial_band (q : ℝ[X]) {k : ℕ}
     (hk : q.natDegree ≤ k) (hk' : k ≤ 2 * q.natDegree) :
     (q * flatPolynomial (2 * q.natDegree)).coeff k = q.eval 1 := by
-  rw [coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ,
+  rw [coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ
+      (fun i j => q.coeff i * (flatPolynomial (2 * q.natDegree)).coeff j) k,
     eval_eq_sum_range' (show q.natDegree < k + 1 by omega)]
   apply Finset.sum_congr rfl
   intro j hj
@@ -135,7 +136,7 @@ theorem exists_positive_reflection_counterexample {q : ℝ[X]} (hq : CoeffNonneg
       (hmax _ (Finset.mem_range.mpr (Nat.lt_succ_self _)))
   have hother : ∃ j, j ≠ a ∧ q.coeff j ≠ 0 := by
     by_contra hn
-    push_neg at hn
+    push Not at hn
     apply hmono
     refine ⟨a, q.coeff a, hapos, ?_⟩
     ext j
@@ -257,7 +258,7 @@ theorem sparseReflectionWitness_not_nonneg {D : ℕ} (hD : 0 < D) :
   intro h
   have hc := h D
   simp only [sparseReflectionWitness, coeff_add, coeff_sub, coeff_X_pow,
-    if_neg (show D ≠ 2 * D by omega), if_pos rfl, coeff_one,
+    if_neg (show D ≠ 2 * D by omega), coeff_one,
     if_neg (show D ≠ 0 by omega)] at hc
   norm_num at hc
 
@@ -285,9 +286,3 @@ theorem sparseReflectionWitness_natDegree {D : ℕ} (hD : 0 < D) :
 
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
-
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.universal_coefficient_reflector_iff
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.exists_positive_reflection_counterexample
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.sparseReflectionWitness_natDegree
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.coeffNonneg_pairFactor_at_center_mul_iff
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.coeffNonneg_positive_rescale_iff

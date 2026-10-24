@@ -8,7 +8,9 @@ control the signed quantity consumed by an established receiver?**
 The first tools concern the centered damped Möbius receiver. They separate its energy from the
 larger positive forcing, retain the receiver as a signed Gram difference, locate the forcing in
 the cofactor tail, and price every finite word of successor translations and floor dilations.
-Together these results constrain how a useful arithmetic defect state can be constructed.
+An explicit power subtraction pays the remaining forcing in the global receiver norm. A
+separate pronic mass estimate pays bounded boundary errors even against the complete forcing.
+These results constrain how an arithmetic defect state can be constructed and renormalized.
 
 **The open core is exclusion.** These constraints do not prove that receiver energy is bounded.
 A source estimate excluding every escaping state for a cofinal family of positive dampings
@@ -76,6 +78,11 @@ D_\varepsilon(n)=\sum_{j=2}^n j^{-\varepsilon}A_\varepsilon(\lfloor n/j\rfloor).
 | Signed cofactor tail | $D_\varepsilon-D_{\varepsilon,\le J}$ | `cofactorTail` |
 | Tail error | Squared distance of that tail from the complete forcing | `cofactorTailErrorEnergy` |
 | Growing source window | $\lfloor\log(F_T/E_T)\rfloor$ | `forcingCofactorWindow` |
+| Forcing power | $c_\varepsilon n^{1-\varepsilon}$ with $c_\varepsilon=-m_\varepsilon\zeta(1-\varepsilon)/(1-\varepsilon)>0$ | `forcingPower` |
+| Paid forcing remainder | $R_\varepsilon=\rho_\varepsilon-c_\varepsilon n^{1-\varepsilon}$ | `forcingRemainder` |
+| Renormalized cofactor residual | $D_\varepsilon-c_\varepsilon n^{1-\varepsilon}$ for the actual source | `renormalizedCofactor` |
+| Pronic forcing mass | $\sum_{n\le T}\rho_\varepsilon(n)/(n(n+1))$ | `forcingPronicMass` |
+| Exact forcing mass | $L_\varepsilon=\sum_n\Lambda(n)n^{-1-\varepsilon}=-\zeta'(1+\varepsilon)/\zeta(1+\varepsilon)$ | `forcingMassLimit` |
 | Cell word | Finite composition of successor translations and positive integer floor dilations | `CellWord` |
 | Word boundary cost | Total translation length, with division allowed to reduce the displacement | `CellWord.boundaryCost` |
 
@@ -273,19 +280,123 @@ This result uses bounded arithmetic increments. It does not distinguish the sour
 sequence with bounded increments and does not prohibit successor methods using moving scales,
 amplified derivatives, raw coefficient observations, or a different justified topology.
 
-In particular, norm disappearance does not justify dropping the word boundary from the
-self-improving forcing pairing. If $W_{w,T}$ is its signed pairing with the complete forcing,
-the same module proves
+If $W_{w,T}$ is the boundary displacement's signed pairing with the complete forcing,
+Cauchy–Schwarz gives
 
 \[
 |W_{w,T}|^2\le B(w)^2F_T,\qquad
 |W_{w,T}/E_T|^2\le B(w)^2F_T/E_T^2.
 \]
 
-The vector cost $B(w)^2/E_T$ and the work cost $B(w)^2F_T/E_T^2$ are different. The former
-vanishes for a fixed word on the escaping branch; the results here do not force the latter to
-vanish. Fixed successor information may still matter through a pairing with unbounded forcing.
-Any proposed extraction must keep this extra rate before discarding that information.
+This generic estimate alone does not justify dropping the boundary work. The forcing's
+stronger pronic mass bound below supplies the missing control:
+
+\[
+|W_{w,T}|\le B(w)L_\varepsilon,\qquad
+|W_{w,T}|/E_T\le B(w)L_\varepsilon/E_T.
+\]
+
+Thus fixed words lose their boundary work as well as their vector displacement on the escaping
+branch. Moving words have two distinct costs: $B(w_T)^2/E_T$ in squared norm and
+$L_\varepsilon B(w_T)/E_T$ in normalized forcing work. This conclusion uses a proved dual
+estimate; it is not inferred from norm disappearance.
+
+### 6. An explicit power subtraction pays the complete forcing remainder
+
+[TheForcingSplitsIntoAPowerAndAnAdmittedRemainder](TheForcingSplitsIntoAPowerAndAnAdmittedRemainder.lean)
+connects the forcing to the existing smooth-power expansion in Trans-Horizon Incidence
+Mechanics. Put
+
+\[
+Z_\varepsilon=\frac{\zeta(1-\varepsilon)}{1-\varepsilon}<0,\qquad
+c_\varepsilon=-m_\varepsilon Z_\varepsilon>0,\qquad
+M_\varepsilon=K_\varepsilon+|Z_\varepsilon|,
+\]
+
+where $K_\varepsilon$ is the existing `floorSumRate` at $1-\varepsilon$. Then
+
+\[
+\rho_\varepsilon(n)=c_\varepsilon n^{1-\varepsilon}+R_\varepsilon(n),\qquad
+\|R_\varepsilon\|_T
+\le m_\varepsilon\sqrt{1+1/\varepsilon}\,M_\varepsilon
+=:B_\varepsilon
+\]
+
+at every horizon. The hyperbola expansion and its pointwise remainder estimate are existing
+THIM results. The contribution here identifies their exact forcing normalization and carries
+the paid remainder into the actual cofactor identity.
+
+Define $\widetilde D_\varepsilon=D_\varepsilon-c_\varepsilon n^{1-\varepsilon}$. The
+finite-cell relation and its global error are
+
+\[
+A_\varepsilon+\widetilde D_\varepsilon=R_\varepsilon,\qquad
+\|A_\varepsilon+\widetilde D_\varepsilon\|_T^2\le B_\varepsilon^2.
+\]
+
+The receiver is therefore admitted, or
+
+\[
+\frac{\|A_\varepsilon+\widetilde D_\varepsilon\|_T^2}{E_T}\longrightarrow0.
+\]
+
+This is a valid homogeneous relation in the global receiver norm after an explicit paid
+subtraction. It handles moving cells as well as fixed cells. The full forcing itself cannot
+be discarded at that normalization.
+
+The residual $\widetilde D_\varepsilon$ is an affine expression for the actual source.
+No bounded linear cofactor operator, invertibility, coercivity or exclusion theorem follows
+from this subtraction. Constructing a source-compatible operator domain and retaining its
+boundary trace remain separate questions.
+
+[TheRenormalizedCofactorIsAntipodalOnEscape](TheRenormalizedCofactorIsAntipodalOnEscape.lean)
+retains the signed pairing. If $\widetilde P_T=\langle A_\varepsilon,\widetilde
+D_\varepsilon\rangle_T$, then
+
+\[
+E_T+\widetilde P_T=\langle A_\varepsilon,R_\varepsilon\rangle_T,\qquad
+|E_T+\widetilde P_T|\le B_\varepsilon\sqrt{E_T},\qquad
+\left(\frac{\widetilde P_T}{E_T}+1\right)^2\le\frac{B_\varepsilon^2}{E_T}
+\quad(T\ge1).
+\]
+
+Hence every escaping receiver has renormalized cofactor pairing tending to $-1$. The relation
+is a necessary signed constraint on an escaping state, not a contradiction.
+
+### 7. Infinite forcing energy coexists with finite forcing mass
+
+[TheForcingHasFinitePronicMass](TheForcingHasFinitePronicMass.lean) uses the same expansion
+to prove
+
+\[
+0\le\rho_\varepsilon(n)
+\le m_\varepsilon M_\varepsilon n^{1-\varepsilon},\qquad
+0\le\sum_{n=1}^T\frac{\rho_\varepsilon(n)}{n(n+1)}
+\le M_\varepsilon.
+\]
+
+The power envelope is summable in pronic $L^1$ for every damping in the declared range,
+although the forcing's pronic $L^2$ energy diverges. The factor $m_\varepsilon$ cancels
+the zeta series in the mass estimate.
+
+The existing THIM first-moment identity supplies the exact mass:
+
+\[
+\sum_{n=1}^{\infty}\frac{\rho_\varepsilon(n)}{n(n+1)}
+=L_\varepsilon
+=\sum_{n=1}^{\infty}\Lambda(n)n^{-1-\varepsilon}
+=-\frac{\zeta'(1+\varepsilon)}{\zeta(1+\varepsilon)}
+\le M_\varepsilon.
+\]
+
+The finite masses converge to $L_\varepsilon$ and are all bounded by it. This identifies the
+optimal constant for pairing the positive forcing with rows bounded by one; the constant
+row itself exhausts that bound.
+
+This pays the forcing pairing of any bounded cell error. In particular, the actual word
+boundary bound gives the uniform work estimate in pillar 5. The estimate does not pay
+$\langle A_\varepsilon,\rho_\varepsilon\rangle_T$: the receiver prefix is not uniformly
+bounded, and inserting such a bound would assume the missing arithmetic control.
 
 ## Mechanisms and foundational principles
 
@@ -298,6 +409,10 @@ then forms a limit or a quotient. The established mechanisms are:
 - **Tail accounting:** carry a complete cofactor tail as a vector with an explicit cutoff cost.
 - **Word calculus:** price additive boundaries through finite compositions with multiplicative
   operations.
+- **Paid renormalization:** subtract an explicit forcing power only after its complete
+  remainder has a uniform critical-norm budget.
+- **Dual mass control:** price bounded cell errors using the forcing's finite pronic mass,
+  instead of losing its divergent L2 norm.
 
 Further mechanisms must satisfy the same principles:
 
@@ -329,10 +444,12 @@ These are requirements on theorem design, not new axioms about arithmetic.
 | Source effectivity | Can source-defined sections force the required sign independently of that sign? | A section or energy law with a proved landing in the effectivity receiver. |
 | Enumerative certificates | Can a source-defined incidence count bound a quantized defect in the right direction? | An identity such as $D+H=B$, $H\ge0$, together with an independent bound below the defect quantum. |
 
-The immediate extraction problem is now more precise. Fixed successor words become pure
-dilations, fixed cofactor heads miss the forcing, and one scalar scale cannot preserve both
-receiver and forcing. A candidate state must address all three facts. Keeping a finite Gram
-matrix without its rates does not do so.
+The extraction problem must accommodate fixed-word collapse, forcing in growing cofactor
+tails, and the impossibility of a common scalar normalization. The paid power subtraction
+offers one concrete response: retain the explicit power separately and carry the residual
+cofactor relation in the receiver norm. Its operator domain, joint source observations and
+diffuse escape still require construction. A finite Gram matrix without its rates does not
+resolve these questions.
 
 The exclusion problem is separate. Even a complete extraction theorem would leave the need
 for a source estimate forbidding its nonzero states. The current results give no such universal
@@ -341,6 +458,9 @@ exclusion and no independent all-damping admission producer.
 ## Traps
 
 - Pointwise disappearance of forcing does not justify discarding its global pairing.
+- Subtracting a power from the actual cofactor residual does not establish a bounded linear
+  operator on arbitrary rows.
+- Finite forcing mass controls bounded cell errors, not arbitrary receiver prefixes.
 - A positive forcing is not a bound for its signed pairing with the receiver.
 - Vanishing $E_T/F_T$ allows $E_T\to\infty$.
 - A positive semidefinite or rank-one limiting Gram matrix can lose the entire critical
@@ -363,7 +483,7 @@ exclusion and no independent all-damping admission producer.
 | [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Supplies normalized profiles, origin costs and escape. Defect rigidity studies which operations and forcing survive that normalization. |
 | [Arithmetic Continuation and Critical Energy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Supplies the receiver, inversion identity, signed pairings and dilation calculus. Defect rigidity retains their moving residuals and scales. |
 | [Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md) | Supplies actual-source bounds, successor covariance and the VK estimate. Its mixed arithmetic interactions are candidate sources of stronger rigidity. |
-| [Trans-Horizon Incidence Mechanics](../TransHorizonIncidenceMechanics/README.md) | Supplies exact finite incidence and boundary identities. Their critical-norm costs must survive moving horizons. |
+| [Trans-Horizon Incidence Mechanics](../TransHorizonIncidenceMechanics/README.md) | Supplies finite incidence, smooth-power expansions and remainder estimates. Defect rigidity uses these to pay the explicit forcing subtraction on moving horizons. |
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Preserves Möbius signs when passing from source incidence to energy. The same discipline governs the tangent covariance. |
 | [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Provides source-orientation and repairing objects whose quantitative defect dynamics remain to be constructed. |
 | [Arithmetic Orientation Geometry](../ArithmeticOrientationGeometry/README.md) | Places signed compatibility in geometric carriers. Defect rigidity requires the carrier to preserve the adverse mode and its cost. |
@@ -398,6 +518,6 @@ must specify:
 - the independently proved input, separated from the remaining open estimate.
 
 Framework-only interfaces, renamed equivalences and hidden analytic assumptions do not meet
-these criteria. The present pillars provide source scale separation and quantitative restrictions
-on extraction. Their next use must improve the retained signed residual or produce the missing
-exclusion estimate.
+these criteria. The present pillars provide source scale separation, paid forcing subtraction,
+dual boundary control and quantitative restrictions on extraction. Their next use must improve
+the retained signed residual or produce the missing exclusion estimate.

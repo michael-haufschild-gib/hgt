@@ -339,6 +339,7 @@ Lean proof of this card's theorem was written and then removed as redundant; not
 The [smooth cluster-horizon bridge](cluster-horizon-smooth-polynomial-detector.md)
 has a dependency-closed paper proof of the stronger bound
 `a ≤ C δ^(-2)(4+|γ|)^2`, including actual C∞ compact witnesses and the
-degree-38 specialization. Its Lean checks remain pending. Once certified,
-that exact subsumption discharges this card's theorem without needing a
+degree-38 specialization. Its full-source check and all three transitive axiom
+audits passed; the final canonical check and wiring remain pending. Once
+certified, that exact subsumption discharges this card's theorem without needing a
 second formalization of the centered-heat derivation above.

@@ -62,8 +62,11 @@ global positivity theorem and does not assert that such a zero exists.
 - [x] Dependency-closed paper proof of the stronger exact statement.
 - [x] Novelty audit: direct consequence of existing corpus results.
 - [ ] Canonical Lean leaf and degree-38 specialization checked.
-- [ ] Public declarations audited with `#print axioms`.
+- [x] Public declarations audited with `#print axioms`.
 - [ ] Owning umbrella import added.
 
-Unchecked source: `/tmp/hgt-just-work-polynomial-aperture.lean`.
-Intended owner: `SquareRootThreshold/SmoothWeilDetectorPolynomialAperture.lean`.
+Source: `SquareRootThreshold/SmoothWeilDetectorPolynomialAperture.lean`.
+The full-source scratch check and all three public transitive axiom audits
+passed, using only `propext`, `Classical.choice`, and `Quot.sound`. The
+canonical final check and owning umbrella import remain pending. Evidence:
+`logs/just-work-2410/SquareRootThreshold__SmoothWeilDetectorPolynomialAperture.axioms.*`.
