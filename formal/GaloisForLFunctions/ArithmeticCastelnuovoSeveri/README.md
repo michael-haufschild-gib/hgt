@@ -324,6 +324,31 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     top level by one generic tower at all but finitely many primes
     (`card_le_towerDefect_of_top`, `almost_every_prime_sees_the_top`); for `ζ` this is the
     `AttainedTop` case of the single-base lag analysis (`RHTower.WeilLagSingleBaseLowerSide`).
+    * *Laurent-moment Toeplitz rigidity, single-prime Wolff blindness at non-attained tops, and the
+      well-founded visible locus (`OnePrimeAgainstTwoAndWolffTowerObstruction`):* On any finite
+      window `K ⊂ ℤ`, `towerGram Z g ℓ K j k = towerMoment Z g ℓ (j − k)` where
+      `towerMoment Z g ℓ m = Σ'_τ zeroCoord Z g τ · conj(zeroCoord Z g (reflectCarrier Z τ)) · (frobEig ℓ τ)^m`
+      (`towerGram_apply_eq_towerMoment`), so `towerGram` and its `hermNegIndex` depend on `(Z, g)`
+      exclusively through the two-sided Laurent moments (`towerGram_eq_of_towerMoment_eq`). Without
+      `(· > ·)`-well-foundedness, the difference of normalized positive Wolff measures on disjoint
+      annuli `0 < r₁ < R₁ ≤ r₂ < R₂` (`exists_normalized_positive_wolff_annulus`) has vanishing
+      Laurent moments for *all* `m ∈ ℤ` while every class sum is nonzero
+      (`exists_counterexample_to_laurent_class_extraction_without_wellFounded`), and on every strip
+      `1/2 < Re ρ < 1/2 + Θ` the symmetric Wolff configuration has locally finite ordinates,
+      infinitely many outer Frobenius eigenvalues, strictly increasing real parts failing
+      `(· > ·)`-well-foundedness, and vanishing off-diagonal symmetric Laurent moments (`M(m) = 0`
+      for `m ≠ 0`, `M(0) = 4 Σ'_i c_i > 0`), so on *every* finite window `K` its Toeplitz matrix is
+      `(4 Σ'_i c_i) • 1` with `hermNegIndex = 0` and adding it to any nonnegative Toeplitz matrix
+      `H₀` preserves `hermNegIndex (H₀ + T_K) = 0`
+      (`exists_symmetric_wolff_toeplitz_blind_configuration`). Conversely, in any `ZeroConfig Z`
+      every bounded-ordinate slice `{τ ∈ rightZeros Z | |Im τ| ≤ T}` is finite and its upper levels
+      are `(· > ·)`-well-founded (`finite_rightZeros_of_abs_im_le`,
+      `upperLevels_wellFounded_of_bounded_im`, `not_wellFounded_upperLevels_imp_unbounded_im`), the
+      well-founded visible locus `wfVisibleSet Z g ℓ` unconditionally lower-bounds
+      `sup_K hermNegIndex (towerGram Z g ℓ K)` (`wfVisibleSet_sandwich_and_infinite_law`,
+      `visibleFrobSet_above_subset_wfVisibleSet_of_finite`), and two distinct primes `p ≠ q`
+      eliminate both resonant-prime collisions and Wolff annulus cancellation to recover the full
+      defect `(rightZeros Z).encard` (`one_prime_vs_two_primes_complete_law`).
 
 ### 3.5 Effectivity and Bézout (`HodgeIndexFromEffectivity`, `DistinctEffectiveCyclesMeetNonnegatively`, `SourceDeterminantalSectionsAndArithmeticRiemannRoch`, `AllApertureSourceRiemannRochAndCoercivityLaws`)
 
@@ -736,7 +761,7 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
 | A subexponential defect floor is a reduction of RH | It is equivalent to RH (§3.10): the floor rate is the zero width. A power saving in the floor is a zero-free strip, as hard as quasi-RH. |
 | The odd-sector ledger is a positivity mechanism | It is the explicit formula rewritten; the sign is still carried by `E(s) = e^s + s − 1 − ψ(e^s)`. |
 | The cyclic law is a positivity statement | It localizes the defect on one Hecke orbit; it does not bound it. |
-| One prime always sees everything | Resonant primes, where two right zeros share `p^{ρ − ½}`, can hide classes; with finitely many right zeros there are only finitely many of them, with infinitely many the eigenvalues may accumulate. |
+| One prime always sees everything | Resonant primes, where two right zeros share `p^{ρ − ½}`, can hide classes; with finitely many right zeros there are only finitely many of them, while at a non-attained top with real parts strictly increasing to their supremum (`|Im ρ| → ∞`) the symmetric Wolff configuration has Toeplitz matrix `(4 Σ c_i) • 1` and `hermNegIndex = 0` on every finite window (`OnePrimeAgainstTwoAndWolffTowerObstruction`). Two primes eliminate both obstructions. |
 | Multiplicities count | The defect counts distinct right zeros; depth and multiplicity are invisible. |
 | A finite degree certifies positivity | No degree works for all configurations over `ℚ`; over `𝔽_q` the window `2g` does. |
 | The comb aggregate is an intersection number | On resonators the prime intersection has no cross-prime terms; the aggregate is a mean-field shadow. |
@@ -794,7 +819,9 @@ Built and reusable:
 - *Visibility calculus* of right zeros from on-line mass, local and logarithmic density.
 - *The Kronecker-rank dichotomy* and exponential-polynomial recurrence.
 - *Cyclic density and prime towers*: spectrally generic tests, density of one Hecke orbit on the zero
-  side, Frobenius eigenvalues and weights, resonant primes.
+  side, Frobenius eigenvalues and weights, resonant primes, the Laurent-moment Toeplitz identity,
+  the well-founded visible locus `wfVisibleSet`, and the Wolff annulus counterexamples to
+  non-well-founded single-prime class extraction.
 - *Bézout positivity* through the Lévy jump form of the collar.
 - *Source section cones*: determinantal effectivity defined from source data, Hecke-stable and ample.
 - *Hecke incidence and the multi-tower collar*: the Cartesian and rank-`P` Kronecker laws, rank-`P`
@@ -843,13 +870,17 @@ Built and reusable:
    mixture. The sieve calibration says the coalescent bound needs signed cancellation among
    coalescent prime pairs; any `β < 5/36` already beats `2/3`. Trans-Threshold Pair Correlation owns
    the trans-threshold inputs.
-5. **One prime against two.** Two primes carry the whole defect; one prime tower carries every
-   visible outer eigenvalue whenever the real parts of the right zeros contain no strictly
-   increasing sequence, and every visible class on an attained top (item 17). Open: real parts
-   increasing to their supremum. There the closure argument cannot work — the difference of two
-   positive Wolff measures of equal mass on disjoint annuli kills every Laurent moment
-   (`HTGeometry.PositiveWolffMeasure.exists_positive_wolff_annulus`), so negative vectors can leave the
-   closed span of the tower. Does the tower's negative index nevertheless count the visible classes?
+5. **One prime against two.** Two primes carry the whole defect (`one_prime_vs_two_primes_complete_law`),
+   while on one prime tower `towerGram Z g ℓ K j k = towerMoment Z g ℓ (j − k)` depends exclusively on
+   the two-sided Laurent moments (`towerGram_apply_eq_towerMoment`), so the tower defect counts at
+   least the well-founded visible locus `wfVisibleSet Z g ℓ` (including every bounded-ordinate region
+   and any threshold with finitely many zeros above it, `wfVisibleSet_sandwich_and_infinite_law`,
+   `upperLevels_wellFounded_of_bounded_im`). At a non-attained top where real parts strictly increase
+   toward `1/2 + Θ` with `|Im ρ| → ∞`, the two-annulus Wolff difference kills all Laurent moments
+   `m ∈ ℤ` (`exists_counterexample_to_laurent_class_extraction_without_wellFounded`) and the
+   symmetric Wolff configuration has Toeplitz matrix `(4 Σ'_i c_i) • 1` and `hermNegIndex = 0` on
+   every finite window (`exists_symmetric_wolff_toeplitz_blind_configuration`). Open: rule out
+   vertical Wolff accumulation for `ζ` on a single prime tower without invoking a second prime.
 6. **Visibility when off-line zeros cluster.** Unconditionally, either every near-top zero is
    visible at the doubly-logarithmic lag and the degree-defect floor rate equals the zero width, or
    off-line zeros cluster without bound in unit windows (item 15,
@@ -912,7 +943,7 @@ Weil's argument.
 | `TheReflectionSectorsOfTheHodgeDefect`, `TheDegreeFiltrationOfTheHodgeDefect`, `SchurLendingOddHodgeIndexPastFirstPrime`, `WhatTheFailureOfTheHodgeIndexMeasures`, `TheHodgeDefectOfZetaIsFiniteAtEveryDegree`, `TheHodgeIndexOfZetaHoldsAwayFromLowFrequencies` | sectors and degrees; `ζ` below `3/10` and the odd sector through `181/500`; multiplicity and depth invariance; Sobolev floor rate = width; the degree defect of `ζ` is finite (archimedean horizon and Bessel count) and lives on an explicit low-frequency grid |
 | `TheVisibilityDegreeOfAnIsolatedPair`, `TheVisibilityDegreeOfRightZeros`, `HeightUniformVisibilityAndOffLineDensity`, `TuransInequalityWithoutBoundedOnLineDensity`, `DoublyLogarithmicVisibilityAndExcludedDepthLaw` | visibility degrees from on-line mass and densities; height-uniform visibility; eliminating the `log γ₀` Turán tail without bounded on-line density, two-sided `Θ_w(log γ₀)` law for `onLineEvenMass`, two-sided `Θ_{M,w}((1 + log log γ₀)/δ₀)` visibility lag, intrinsic on-line mass and Hodge-defect barriers, doubly-logarithmic contact-aperture and excluded-depth laws, and the clustering dichotomy |
 | `TheKroneckerRankDichotomy`, `TheZerosOfAnExponentialPolynomialRecur` | recurrent configurations have defect `0` or `∞` |
-| `TheHodgeDefectIsCyclic`, `TheHeckeTowerOfAPrimeIsThePeriodQuotient`, `AlmostEveryPrimeSeesEveryRightZero`, `TheTowerDefectCountsTheFrobeniusEigenvalues`, `OnePrimeSeesEveryWellFoundedLevel` | cyclic Pontryagin law; prime towers, Frobenius eigenvalues and weights; resonant primes; top-down class extraction, the tower law without finiteness, attained tops |
+| `TheHodgeDefectIsCyclic`, `TheHeckeTowerOfAPrimeIsThePeriodQuotient`, `AlmostEveryPrimeSeesEveryRightZero`, `TheTowerDefectCountsTheFrobeniusEigenvalues`, `OnePrimeSeesEveryWellFoundedLevel`, `OnePrimeAgainstTwoAndWolffTowerObstruction` | cyclic Pontryagin law; prime towers, Frobenius eigenvalues and weights; resonant primes; top-down class extraction, the tower law without finiteness, attained tops; Laurent-moment Toeplitz formula, two-annulus and symmetric Wolff single-prime Toeplitz blindness at non-attained tops, the well-founded visible locus `wfVisibleSet`, and two-prime completeness |
 | `ResonatorKroneckerLaw`, `HeckeIncidenceCartesianLaw`, `TheResonatorRemainderIsNegative`, `TheAdjunctionConjectureMeanField`, `CrossTowerCollarAndFiniteEulerLatticePositivity` | Hecke incidence: Cartesian and rank-`P` Kronecker laws, rank-`P` resonator remainders, intra- and cross-tower collar bounds against `Σ_p E_p` and the pole pairing, positivity decision for the finite-Euler-product form on lattice tests, mean field |
 | `ThePronicWeightIsThePoleMassOfTheSuccessorCell`, `TheSuccessorCollar` | the successor cell |
 | `TheTwoThirdsConstantIsPairCorrelation`, `BreakingTheCoalescenceBlindSpotAndThreeQuarters`, `SpectralSlackConservationAndTheHyperbolicDisplacementThreshold`, `WhatAGramFunctionalCertifiesWithoutEffectivity`, `CoalescentSurplusAndTransThresholdProportionLaws` | rank–trace inertia, the coalescence blind spot, spectral slack, routes to `3/4`, corpus upgrades; coalescent-band budgets, sieve calibration of the surplus, the exact two-window envelope, the `N₀*` reflection bound |

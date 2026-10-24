@@ -139,13 +139,24 @@ theorem mult_conj {Z : ZeroConfig} (hFE : FESymmetric Z) {ρ : ℂ} (hρ : ρ �
   rw [e] at h1
   rw [h1, (hFE ρ hρ).2]
 
+/-- The transform of a real test is conjugation-symmetric: `conj h_f(z) = h_f(−z̄)`. -/
+theorem conj_paperFT_cx (f : ℝ → ℝ) (z : ℂ) : conj (paperFT (cx f) z) = paperFT (cx f) (-conj z) := by
+  unfold paperFT
+  rw [← integral_conj]
+  congr 1
+  funext u
+  rw [map_mul, cx, Complex.conj_ofReal, ← Complex.exp_conj]
+  congr 2
+  simp only [map_mul, Complex.conj_I, Complex.conj_ofReal]
+  ring
+
 /-- Conjugating a summand of real tests moves it to the conjugate zero. -/
 theorem conj_Wsummand_ofReal (Z : ZeroConfig) (hFE : FESymmetric Z) (f g : ℝ → ℝ) {ρ : ℂ}
     (hρ : ρ ∈ Z.carrier) :
     conj (Z.Wsummand (cx f) (cx g) ρ) = Z.Wsummand (cx f) (cx g) (conj ρ) := by
-  have hcf : ∀ z, conj (paperFT (cx f) z) = paperFT (cx f) (-conj z) := conj_paperFT_ofReal f
+  have hcf : ∀ z, conj (paperFT (cx f) z) = paperFT (cx f) (-conj z) := conj_paperFT_cx f
   have hcg : ∀ z, paperFT (cx g) z = conj (paperFT (cx g) (-conj z)) := fun z => by
-    rw [conj_paperFT_ofReal g, neg_neg, conj_conj]
+    rw [conj_paperFT_cx g, map_neg, conj_conj, neg_neg]
   simp only [ZeroConfig.Wsummand, map_mul, conj_conj, Complex.conj_natCast, mult_conj hFE hρ,
     gammaOf_conj, hcf]
   rw [hcg (conj (gammaOf ρ)), conj_conj, map_neg, conj_conj]
@@ -155,8 +166,7 @@ theorem W_real_of_fes (Z : ZeroConfig) (hFE : FESymmetric Z) (f g : ℝ → ℝ)
     conj (Z.W (cx f) (cx g)) = Z.W (cx f) (cx g) := by
   rw [ZeroConfig.W, Complex.conj_tsum, ← (conjEquiv hFE).tsum_eq]
   refine tsum_congr fun τ => ?_
-  rw [conjEquiv_apply]
-  exact conj_Wsummand_ofReal Z hFE f g τ.2
+  rw [conjEquiv_apply, conj_Wsummand_ofReal Z hFE f g (hFE.conj_mem τ.2), conj_conj]
 
 /-! ### The self-upgrade: Hasse–Weil at every scale forces blindness -/
 
@@ -210,7 +220,7 @@ orbit satisfies the Hasse–Weil bound at every scale is blind to the off-line z
 theorem blindOffLine_of_hasseWeil (Z : ZeroConfig) (hZ : TemperedConfig Z) (hFE : FESymmetric Z)
     (x : ScalingCycle) (hHW : ∀ v : ℝ, (configScalingDatum Z hZ).HasseWeilAt x v) :
     BlindOffLine Z x.2.2 := by
-  set f : ℝ → ℝ := x.2.2 with hfdef
+  set f : ℝ → ℝ := (x.2.2 : ℝ → ℝ) with hfdef
   have hf : f ∈ realTests := x.2.2.2
   set b : ℝ → ℂ := cx f with hbdef
   intro ρ hρ hre
@@ -223,7 +233,7 @@ theorem blindOffLine_of_hasseWeil (Z : ZeroConfig) (hZ : TemperedConfig Z) (hFE 
     rw [offLineWeight_eq_Wsummand, ZeroConfig.Wsummand]
     have hm : (Z.mult t : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by have := Z.one_le_mult t ht; omega)
     exact mul_ne_zero (mul_ne_zero hm ha) ((map_ne_zero _).mpr hb')
-  obtain ⟨t, ht, hqt⟩ : ∃ t ∈ rightZeros Z, offLineWeight b (Z.mult t) t ≠ 0 := by
+  obtain ⟨t, ht, hqt⟩ : ∃ t ∈ SquareRootThreshold.rightZeros Z, offLineWeight b (Z.mult t) t ≠ 0 := by
     rcases lt_or_gt_of_ne hre with hlt | hgt
     · refine ⟨reflect ρ, ⟨Z.reflect_mem _ hρ, by simp [reflect]; linarith⟩, ?_⟩
       refine hw _ (Z.reflect_mem _ hρ) ?_ ?_
@@ -246,7 +256,7 @@ theorem blindOffLine_of_hasseWeil (Z : ZeroConfig) (hZ : TemperedConfig Z) (hFE 
   have hneg : S (-v) = S v := by
     rw [hS]
     dsimp only
-    rw [W_scaleShift_neg_eq, ← W_conj_symm Z (cx f) (cx (scaleShift v f)), W_real_of_fes]
+    rw [W_scaleShift_neg_eq, ← W_conj_symm Z (cx f) (cx (scaleShift v f)), W_real_of_fes Z hFE]
   have hcorr : ∀ w, (configScalingDatum Z hZ).orbitCorr x w = (S w).re := fun w => by
     rw [configScalingDatum_orbitCorr_eq, tsum_exp_Wsummand_eq_W]
   rw [hlag, hlag, hlag, hneg, hreal] at hv
@@ -298,7 +308,75 @@ theorem onLine_iff_blindOffLine_of_generic (Z : ZeroConfig) {f : ℝ → ℝ}
 theorem onLine_iff_hasseWeil_of_generic (Z : ZeroConfig) (hZ : TemperedConfig Z)
     (hFE : FESymmetric Z) (x : ScalingCycle) (hgen : RealSpectrallyGeneric Z x.2.2) :
     (∀ v : ℝ, (configScalingDatum Z hZ).HasseWeilAt x v) ↔ ∀ ρ ∈ Z.carrier, ρ.re = 1 / 2 := by
-  rw [(orientation_tfae Z hZ hFE x).out 0 2, onLine_iff_blindOffLine_of_generic Z hgen]
+  exact ((orientation_tfae Z hZ hFE x).out 0 2).trans (onLine_iff_blindOffLine_of_generic Z hgen)
+
+/-! ### Real generic tests exist -/
+
+/-- A real smooth bump of positive mass. -/
+def realBump : ℝ → ℝ :=
+  fun u => ({ rIn := 1, rOut := 2, rIn_pos := one_pos, rIn_lt_rOut := one_lt_two } :
+    ContDiffBump (0 : ℝ)) u
+
+theorem realBump_mem : realBump ∈ realTests :=
+  ⟨ContDiffBump.contDiff _, ContDiffBump.hasCompactSupport _⟩
+
+theorem paperFT_realBump_zero : paperFT (cx realBump) 0 ≠ 0 := by
+  have hpos : 0 < ∫ u, realBump u := ContDiffBump.integral_pos _
+  simp only [paperFT, mul_zero, zero_mul, Complex.exp_zero, mul_one, cx]
+  rw [integral_complex_ofReal]
+  exact_mod_cast hpos.ne'
+
+/-- The dilation `u ↦ f(u/λ)`. -/
+def dilateTest (l : ℝ) (f : ℝ → ℝ) : ℝ → ℝ := fun u => f (l⁻¹ * u)
+
+theorem dilateTest_mem {l : ℝ} (hl : l ≠ 0) {f : ℝ → ℝ} (hf : f ∈ realTests) :
+    dilateTest l f ∈ realTests :=
+  ⟨hf.1.comp (contDiff_const.mul contDiff_id),
+    hf.2.comp_homeomorph (Homeomorph.mulLeft₀ l⁻¹ (inv_ne_zero hl))⟩
+
+/-- **Dilation rescales the transform**: `h_{f(·/λ)}(z) = |λ| h_f(λz)`. -/
+theorem paperFT_dilateTest {l : ℝ} (hl : l ≠ 0) (f : ℝ → ℝ) (z : ℂ) :
+    paperFT (cx (dilateTest l f)) z = |l| * paperFT (cx f) (l * z) := by
+  set G : ℝ → ℂ := fun w => (f w : ℂ) * Complex.exp (Complex.I * ((l : ℂ) * z) * (w : ℂ))
+  have h1 : (fun u : ℝ => cx (dilateTest l f) u * Complex.exp (Complex.I * z * (u : ℂ))) =
+      fun u => G (l⁻¹ * u) := by
+    funext u
+    have hlc : (l : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hl
+    simp only [G, cx, dilateTest]
+    congr 2
+    push_cast
+    field_simp
+  rw [paperFT, h1, MeasureTheory.Measure.integral_comp_mul_left, inv_inv, paperFT]
+  simp only [G, Complex.real_smul, cx]
+
+/-- **Real generic tests exist.** A suitable dilation of the real bump has transform vanishing at no
+point of `Z`: the dilations killing it at some zero form a countable set. -/
+theorem exists_realSpectrallyGeneric (Z : ZeroConfig) :
+    ∃ f ∈ realTests, RealSpectrallyGeneric Z f := by
+  have hd : Differentiable ℂ (paperFT (cx realBump)) :=
+    RHTower.EvenSector.differentiable_paperFT_of_compact (cx_contDiff realBump_mem.1).continuous
+      (cx_hasCompactSupport realBump_mem.2)
+  have hcount := HTGeometry.countable_zeros_of_entire_nonzero hd paperFT_realBump_zero
+  set B : Set ℝ := {0} ∪ ⋃ ρ ∈ Z.carrier,
+    (fun l : ℝ => (l : ℂ) * gammaOf ρ) ⁻¹' {t | paperFT (cx realBump) t = 0} with hB
+  have hBc : B.Countable := by
+    refine (Set.countable_singleton 0).union
+      ((SquareRootThreshold.carrier_countable Z).biUnion fun ρ _ => ?_)
+    by_cases hγ : gammaOf ρ = 0
+    · refine Set.Countable.mono (fun l hl => ?_) (Set.countable_empty : (∅ : Set ℝ).Countable)
+      simp only [Set.mem_preimage, Set.mem_setOf_eq, hγ, mul_zero] at hl
+      exact paperFT_realBump_zero hl
+    · exact hcount.preimage fun a b h => by
+        simpa [mul_left_inj' hγ] using h
+  obtain ⟨l, hl⟩ : ∃ l, l ∉ B := by
+    by_contra h
+    push Not at h
+    exact Cardinal.not_countable_real (hBc.mono fun l _ => h l)
+  have hl0 : l ≠ 0 := fun h => hl (Or.inl h)
+  refine ⟨dilateTest l realBump, dilateTest_mem hl0 realBump_mem, fun ρ hρ h0 => hl (Or.inr ?_)⟩
+  rw [paperFT_dilateTest hl0] at h0
+  have habs : ((|l| : ℝ) : ℂ) ≠ 0 := by exact_mod_cast abs_ne_zero.mpr hl0
+  exact Set.mem_biUnion hρ ((mul_eq_zero.mp h0).resolve_left habs)
 
 /-! ### `ζ` -/
 
@@ -343,5 +421,13 @@ theorem riemannHypothesis_iff_hasseWeil_of_generic (x : ScalingCycle)
     have h := configSurface_hodgeIndex_of_onLine zetaZeroConfig temperedConfig_zetaZeroConfig hon
     rw [configSurface_zeta_eq] at h
     exact h
+
+
+/-- **One orbit decides RH.** There is a real test whose orbit satisfies the Hasse–Weil bound at
+every scale iff RH holds. -/
+theorem exists_orbit_deciding_riemannHypothesis :
+    ∃ x : ScalingCycle, RiemannHypothesis ↔ ∀ t : ℝ, zetaScalingDatum.HasseWeilAt x t := by
+  obtain ⟨f, hf, hgen⟩ := exists_realSpectrallyGeneric zetaZeroConfig
+  exact ⟨(0, 0, ⟨f, hf⟩), riemannHypothesis_iff_hasseWeil_of_generic _ hgen⟩
 
 end GaloisForLFunctions.ArithmeticOrientationGeometry

@@ -320,7 +320,7 @@ theorem primeBlindPositive_four_tier_equivalence :
   ⟨RHTower.riemannHypothesis_iff_primeBlindPositive_unconditional,
     riemannHypothesis_iff_zeroPoleBlindPositive,
     riemannHypothesis_iff_zeroPoleBlindPositiveOn_primePowers,
-    primeBlindPositiveEvenPolar_iff_riemannHypothesis⟩
+    primeBlindPositiveEvenPolar_iff_riemannHypothesis.symm⟩
 
 /-- **Sign-changing ground-state gauges across the even primitive and odd hyperplanes.**
 1. Every `f : RHTower.EvenPrimitiveWeilTestFn` has identically zero real pole term
@@ -343,7 +343,7 @@ theorem realPolar_even_odd_groundState_gauge (lam : ℕ → ℝ) :
 
 /-! ### 3. Phase-Sensitive Damped Readings vs. Twist-Invariant Window Extremes, and Summed Producers Across the Pole Compression, Packet, and Band -/
 
-open scoped ArithmeticFunction.Omega
+open scoped ArithmeticFunction.Omega CompactlySupported
 
 /-- **The Liouville twist as a `UnimodularTwist`.** It maps `n ↦ (-1)^{Ω(n)}` for `n ≥ 1` (and `0`
 at `0`), flipping the sign of every prime while fixing every prime square. -/
@@ -585,13 +585,20 @@ theorem shiftedPair_deviation_single_pairTestFn_two (a : ℝ) :
     rw [nodeArchEnergy_eq_shiftedPairWeilEnergy_add a c, add_sub_cancel_left, hsum]
     dsimp only [c] at hpos ⊢
     rw [nodeVector_single_pairTestFn hm2 (by norm_num : (-1 : ℝ) ^ 2 = 1)]
-    field_simp [hpos.ne']
-    ring
+    have hne : massOf (Finsupp.single (pairTestFn 2 (-1)) 1) ≠ 0 := hpos.ne'
+    calc RHTower.shiftedPairVonMangoldt a 2 *
+          (-1 * massOf (Finsupp.single (pairTestFn 2 (-1)) 1) / Real.sqrt 2) /
+          massOf (Finsupp.single (pairTestFn 2 (-1)) 1)
+        = -(RHTower.shiftedPairVonMangoldt a 2 / Real.sqrt 2) *
+            (massOf (Finsupp.single (pairTestFn 2 (-1)) 1) /
+              massOf (Finsupp.single (pairTestFn 2 (-1)) 1)) := by ring
+      _ = -(RHTower.shiftedPairVonMangoldt a 2 / Real.sqrt 2) := by
+        rw [div_self hne, mul_one]
   refine ⟨hdev, fun ha => ?_⟩
   rw [hdev, neg_lt_neg_iff]
   have hs2 : 0 < Real.sqrt 2 := Real.sqrt_pos.mpr two_pos
-  rw [mul_div_assoc, div_lt_div_iff_of_pos_right hs2, RHTower.shiftedPairVonMangoldt,
-    ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+  rw [← mul_div_assoc, div_lt_div_iff_of_pos_right hs2, RHTower.shiftedPairVonMangoldt,
+    ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two, Nat.cast_ofNat]
   have hgt : 2 < (2 : ℝ) ^ a + (2 : ℝ) ^ (-a) :=
     lt_of_not_ge fun hle => ha (RHTower.eq_zero_of_two_rpow_add_two_rpow_neg_le hle)
   have hl2 : 0 < Real.log 2 := Real.log_pos one_lt_two

@@ -56,6 +56,14 @@ arithmetic estimates to make a dictionary applicable.
   `SuzukiCriticalLiteralFamilyContraction` result. The former's formalized
   card records domain admission, exact action, skew-adjointness, a uniform
   commutator bound, and completed leaf/axiom checks. Preserve that work.
+- J4(ii) and J4(iv) have exact stage-3 certificates:
+  `chmd-sharp-generator-boundary-domain.md` and
+  `sz-critical-family-literal-source-deficit-2026-10-24.md`.
+  The latter derives finite energy and positivity for the literal
+  `criticalTruncatedTest`; no smoothing or assumed source-energy premise
+  remains. Their declared final checks and standard-axiom audits cover the
+  requested statements. Imported oleans are absent for these leaves, as
+  expected when no dependent file needs them.
 - `SuzukiCriticalMovingPrimaryEnergy` supplies the varying-source Fatou
   inequality. This is only the positive primary part of J4(iii); joint
   convergence of the signed compact-window correction is still required.
@@ -76,6 +84,14 @@ arithmetic estimates to make a dictionary applicable.
   actual infinite smoothness; its support and complete-energy convergence
   lemmas retain an arbitrarily small aperture enlargement. The certified
   `xi_ne_zero_of_im_sq_le` height floor removes the horizon's height premise.
+  The proposed bound is stronger: `a ≤ C δ⁻²(4+|γ|)²`. Set
+  `u=K(4+|γ|)/δ`, `a=u²`, with
+  `K=exp(6)+10⁹(A+1)` for the cluster-horizon constant `A≥1`.
+  The inequalities `log(u²)²≤16u` and `log(|γ|+306)≤77(4+|γ|)`
+  discharge the horizon condition; smoothing enlarges the radius by at
+  most one, paid by `a+1≤2u²`. This is a direct coarse consequence of the
+  existing horizon, with no novelty claim. The required power-38 result
+  follows since `4+|γ|≥1`. Both still require Lean verification.
 - Unchecked complete drafts now cover the polynomial detector aperture
   (`/tmp/hgt-just-work-polynomial-aperture.lean`), the full moving-source
   Suzuki theorem (`/tmp/hgt-just-work-suzuki-moving-signed.lean`), explicit

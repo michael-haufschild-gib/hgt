@@ -1201,9 +1201,41 @@ Write $A(c)$ for the archimedean part with the pole, $W(c)$ for the Weil functio
 $A-W=\sum_n\Lambda(n)L_n(c)$ with the node values $L_n$, and $w(m)=\Lambda(m)/\sqrt m$.
 
 **Incidence decides zero-pole positivity.** On every node set $\mathcal N$, zero-pole blind positivity
-holds iff RH holds and every prime power lies in $\mathcal N$; the pole constraint is invisible to
-node criticality, density never suffices (the primes miss $4$), and a non-prime-power such as $6$ can be
-added or deleted freely (`PrimePowerZeroPoleNodeCriticality`).
+holds iff RH holds and every prime power lies in $\mathcal N$ (`PrimePowerZeroPoleNodeCriticality`),
+equivalently $0\le\mathrm{zeroPoleBlindSymbolValue}(\mathcal N)$ or
+$|\Omega(0)|\le\mathrm{zeroPoleBlindLevyInfimum}(\mathcal N)$ (`zeroPoleBlindSymbolValue_nonneg_iff`,
+`abs_gammaBracket_le_zeroPoleBlindLevyInfimum_iff`). At arbitrary support, two-sided Farkas duality,
+pole-weight rigidity ($\beta=1$), and Weil-cone uniqueness force every certificate $(\beta,w)$
+dominating $A-\beta P$ on `WeilTestFn` to satisfy $\beta=1$ and $w(n)=\Lambda(n)$ for all $n\ge2$
+(`weilPositiveAt_certificate_rigidity`, `weilPositiveFull_charge_iff_isPrimePow`,
+`zeroPoleBlindPositiveOn_iff_exists_certificate`): a node $n\ge2$ carries positive certificate
+charge iff `IsPrimePow n`, with $w(4)=\log2>0$ and $w(6)=0$. Whenever any prime power is missing
+from $\mathcal N$ (in particular on $\mathbb N\setminus\{4\}$ or the primes $\{p\}$),
+$\mathrm{zeroPoleBlindSymbolValue}(\mathcal N)<0$ and
+$\mathrm{zeroPoleBlindLevyInfimum}(\mathcal N)<|\Omega(0)|$ unconditionally
+(`zeroPoleBlindSymbolValue_neg_of_missing_primePow`), while RH is equivalent to the deleted-node
+interval bounds $\mathrm{zeroPoleBlindSymbolValue}(\mathrm{primePowerNodes}\setminus\{m\})\in[-w(m),0)$
+for all prime powers $m$ (`riemannHypothesis_iff_deleted_symbol_and_levy_bounds`), and automatic pole
+completion on even pole-free tests unites the four prime-blind positivity tiers with the even/odd
+sign-changing ground-state gauges (`primeBlindPositiveEvenPolar_iff_riemannHypothesis`,
+`primeBlindPositive_four_tier_equivalence`, `realPolar_even_odd_groundState_gauge`).
+
+**Selectivity and calibration in Bi-Scale coordinates.** The three-scale separation of $\log4$ vs.
+$\log6$ (`threeScale_log_four_vs_log_six`), the contrast between twist-blind window extremes and the
+phase-sensitive half-damped receiver (`liouvilleUnimodularTwist`,
+`windowExtremes_twist_blind_and_mirror_symmetric`,
+`phaseSensitive_dampedReceiver_separates_untwisted_and_flipped`), the summed Chebyshev readings and
+unconditional producers across the Pole Compression, the Packet, and the Band
+(`poleCompression_summed_reading_and_producer`, `packet_summed_reading_and_local_gauge`,
+`band_summed_reading_and_cramer_limit`), and the four calibration models — pure function-field curves
+vs. the Golden Beurling fake curve and finite-window hiding
+(`functionField_vs_goldenFakeCurve_and_windowHiding`), the shifted pair $\zeta(s-a)\zeta(s+a)$ which
+agrees identically with $\zeta(s)$ on `BlindOn primePowerNodes` while failing the single-node-`2`
+deviation bound (`shiftedPairWeilEnergy_eq_nodeArchEnergy_of_blindOn_primePowers`,
+`shiftedPair_deviation_single_pairTestFn_two`, `shiftedPair_leaves_weilCone_and_ramanujan`), the
+Liouville twist, and Beurling node-deletion/primes-only/two-tower/admixture systems
+(`beurling_and_admixture_calibration_battery`) — calibrate every sector of the programme
+(`NodeCriticalityPhaseSensitivityAndCalibrationSynthesis`).
 
 **Deletion prices are local Euler factors.** On the cone blind at every prime power outside a set $D$,
 $(A-W)/\|c\|^2$ ranges over: $[-w(m),w(m)]$ for $D=\{m\}$ (tower Fejér bound, narrow pairs);
@@ -1549,27 +1581,37 @@ $\frac{N}{pq}(\mathrm{primeClockEdgeKernel}-\mathrm{primeClockMassKernel})$.
 
 ### 7.7 Research topics
 
-1. **Node criticality.** What in the multiplicative incidence of $\{\log n\}$ makes $\log4$
-   indispensable and $\log6$ redundant beyond the deletion prices and window thresholds of §3.16
-   (the price of $4$ is a local Euler factor and appears at its own lag; $\log6$ is the lag of a node
-   that is never charged), and how a positivity argument at arbitrary support reads it. This is
-   the criterion every closing mechanism of the shared target must pass.
-2. **Prime-blind archimedean positivity.** The infimum of $\mathcal J/h(0)$ on the full blind polar
-   class against $|\Omega(0)|$, with its exact slack, as an input to sign-changing ground-state
-   gauges.
-3. **Phase-sensitive readings.** Window extremes are twist-invariant and cannot see the phases of
-   the prime atoms; summed, damped receivers can (§3.16). Which of the band, the packet and the
-   pole compression can be rewritten as such a summed reading with an unconditional producer?
-4. **Selectivity and calibration models.** A Beurling system with an off-line zero, the shifted
-   pair $\zeta(s-a)\zeta(s+a)$, the Liouville twist and the function-field case $\mathbb F_q[T]$,
-   each written in this theory's coordinates (node values, window spectra, packets, the blind
-   cone), so that every positivity or cancellation theorem of the sibling programmes can be tested
-   against them. The Beurling deletion and perturbation systems of `RHTower` and `HTGeometry` and
-   the function-field window and purity modules are the starting objects; the unit is the list of
-   statements each model refutes. Arithmetic Orientation Theory collects the proved tests into one
-   selectivity battery; what this theory adds is each model written in its own coordinates, so
-   that a test can be run on a band, a packet or a window spectrum directly. Node criticality is the
-   node test of the battery, and window spectra fail the twist test by construction.
+1. **Node criticality.** At arbitrary support, Farkas duality, pole-weight rigidity ($\beta=1$), and
+   Weil-cone uniqueness force every certificate $(\beta,w)$ to have $\beta=1$ and $w(n)=\Lambda(n)$
+   for $n\ge2$ (`weilPositiveAt_certificate_rigidity`, `zeroPoleBlindPositiveOn_iff_exists_certificate`),
+   separating $\log4$ ($w(4)=\log2$) from $\log6$ ($w(6)=0$) across single-node deletion, window
+   decoupling on $(\log4,\log6]$, and whole-tower composite charge (`threeScale_log_four_vs_log_six`).
+   This remains the criterion every closing mechanism of the shared target must pass.
+2. **Prime-blind archimedean positivity.** For every node set $\mathcal N$,
+   $\mathrm{zeroPoleBlindLevyInfimum}(\mathcal N)\ge|\Omega(0)|$ holds iff RH holds and every prime
+   power lies in $\mathcal N$ (`abs_gammaBracket_le_zeroPoleBlindLevyInfimum_iff`), with exact
+   deleted-node interval bounds $[-w(m),0)$ (`riemannHypothesis_iff_deleted_symbol_and_levy_bounds`),
+   automatic pole completion on even pole-free tests (`primeBlindPositiveEvenPolar_iff_riemannHypothesis`,
+   `primeBlindPositive_four_tier_equivalence`), and the even/odd sign-changing ground-state gauges
+   (`realPolar_even_odd_groundState_gauge`). An unconditional proof of
+   $\mathrm{zeroPoleBlindSymbolValue}(\mathrm{primePowerNodes})\ge0$ remains RH itself.
+3. **Phase-sensitive readings.** Window extremes are invariant under every unimodular multiplicative
+   twist including the Liouville twist (`liouvilleUnimodularTwist`,
+   `windowExtremes_twist_blind_and_mirror_symmetric`), whereas the summed half-damped receiver
+   `phaseWeight 1 t₀ φ` separates $\varphi=0$ (bounded iff $\zeta(\tfrac12+it_0)=0$) from the
+   Liouville-flipped phase $\varphi=\pi$ (bounded unconditionally for every $t_0\ne0$,
+   `phaseSensitive_dampedReceiver_separates_untwisted_and_flipped`). In the Pole Compression, the
+   Packet, and the Band, the prime reading is a summed/integrated Chebyshev functional equipped with
+   an explicit unconditional producer (`poleCompression_summed_reading_and_producer`,
+   `packet_summed_reading_and_local_gauge`, `band_summed_reading_and_cramer_limit`).
+4. **Selectivity and calibration models.** Pure function-field curves vs. the Golden Beurling fake
+   curve and finite-window hiding (`functionField_vs_goldenFakeCurve_and_windowHiding`), the shifted
+   pair $\zeta(s-a)\zeta(s+a)$ (`shiftedPairWeilEnergy_eq_nodeArchEnergy_of_blindOn_primePowers`,
+   `shiftedPair_deviation_single_pairTestFn_two`, `shiftedPair_leaves_weilCone_and_ramanujan`), the
+   Liouville twist (`liouvilleUnimodularTwist`), and the Beurling node-deletion, primes-only,
+   two-tower, and admixture systems (`beurling_and_admixture_calibration_battery`) are expressed in
+   the theory's coordinates so that every candidate bound on a band, packet, blind cone, or window
+   spectrum can be tested directly against the battery.
 
 ---
 
