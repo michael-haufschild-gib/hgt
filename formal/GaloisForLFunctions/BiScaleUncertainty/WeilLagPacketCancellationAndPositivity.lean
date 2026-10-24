@@ -706,9 +706,12 @@ since it equals `weilLagFunctionReal t + e^{−t/2} log(2π) − ccmPrimeDeficit
 theorem continuousOn_exp_neg_half_mul_trivialZeroSeriesReal {w τ : ℝ} (hτ : w < τ) :
     ContinuousOn (fun t => Real.exp (-t / 2) * trivialZeroSeriesReal (Real.exp t))
       (Icc (τ - w) (τ + w)) := by
-  refine ((continuous_weilLagFunctionReal.add
-    ((Real.continuous_exp.comp (continuous_id.neg.div_const 2)).mul continuous_const)).sub
-    continuous_ccmPrimeDeficitOutgoing).continuousOn.congr fun t ht => ?_
+  have hc : Continuous (fun t => weilLagFunctionReal t +
+      Real.exp (-t / 2) * Real.log (2 * Real.pi) - ccmPrimeDeficitOutgoing t) :=
+    (continuous_weilLagFunctionReal.add
+      ((Real.continuous_exp.comp (continuous_id.neg.div_const 2)).mul continuous_const)).sub
+      continuous_ccmPrimeDeficitOutgoing
+  refine hc.continuousOn.congr fun t ht => ?_
   have ht0 : 0 < t := by linarith [ht.1]
   have h := ccmPrimeDeficitOutgoing_eq_weilLag ht0
   linarith

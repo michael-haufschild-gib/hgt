@@ -260,7 +260,84 @@ criteria for such a principle are those of the review:
     every combination of the translates `f(· − s)`, `0 ≤ s ≤ T`, and `f` is Hasse–Weil at every
     scale `|t| ≤ T`. The number of linear conditions grows doubly exponentially in `T`.
 
-### 3.7 Inherited pillars
+### 3.7 The orientation rate (`TheOrientationRateIsTheDepthOfTheDeepestSeenZero`)
+
+19. **The orientation rate theorem** (`orbitCorr_rate_iff_blindAbove`). On a symmetric tempered
+    configuration, for `σ ≥ 0`, the orbit correlation of a cycle satisfies `|c_f(t)| ≤ K e^{σt}` iff
+    the cycle sees no zero deeper than `σ` (`BlindAbove`). The upper rate holds on every tempered
+    configuration (`orbitCorr_le_of_blindAbove`); the lower rate is the top-pole argument
+    (`blindAbove_of_orbitCorr_le`). The exponent of a cycle is the depth of the deepest zero it
+    sees; `σ = 0` is the orientation theorem.
+20. **For `ζ` one generic orbit reads the zero width**
+    (`zeta_orbitCorr_rate_iff_zetaZeroWidth_le`): `|W(f, f(· − t))| ≤ K e^{σt}` iff
+    `zetaZeroWidth ≤ σ`. Its first improvement below `σ = ½` is a zero-free strip.
+
+### 3.8 The selectivity battery (`TheSelectivityBatteryOfOrientation`)
+
+21. **Curves.** Curve configurations are symmetric under the functional equation
+    (`fesSymmetric_curveConfig`); unitary curves orient every cycle
+    (`unitaryCurve_orbitHodgeIndex`).
+22. **Soft structure does not orient** (`golden_soft_structure_and_disorientation`). The golden datum
+    `1 − 5X + 5X²` has a Beurling system with nonnegative prime counts, an integral zeta series and
+    the functional equation; its configuration is a scaling datum, so every identity of §3.1–3.2
+    holds; every zero has depth `log φ/log 5` (`abs_re_sub_half_goldenConfig`); and the orbit of a
+    generic real test is not oriented, with orientation rate exactly `log φ/log 5`
+    (`golden_not_oriented`, `golden_orbitCorr_rate_iff`).
+23. **Orientation is blind to multiplicity** (`orientation_congr_carrier`,
+    `orientationRate_congr_carrier`): configurations with the same zeros orient the same cycles at
+    the same rates.
+
+### 3.9 Sections on the orbit of a cycle (`SectionsOnTheOrbitOfACycle`)
+
+24. **The orbit surface.** The span of `H, V` and the orbit of `x` carries the restricted polar
+    structure (`orbitSurface`); it is scale-stable when the scales act on the fibres by scalars
+    (`FibreCompatible`, `map_act_orbitSpan_le`). Each of its classes is a pole-plane class plus the
+    action of a correspondence (`exists_eq_corr_of_mem_orbitSpan`), so its Hodge index is the orbit
+    Hodge index of `x` (`orbitSurface_defect_nonneg_iff`).
+25. **Riemann–Roch on an orbit is orientation** (`orbitSurface_riemannRoch_iff`,
+    `configOrbitSurface_riemannRoch_iff_blind`): an ample section cone of nonnegative degree on the
+    orbit surface of `x` satisfies Riemann–Roch iff it contains the open positive cone and `x` is
+    oriented — on a configuration, iff `x` is blind to the off-line zeros.
+
+### 3.10 Eventual Hasse–Weil is Hasse–Weil (`EventualHasseWeilIsHasseWeil`)
+
+26. **The tensor-power trick on orbits** (`blindAbove_of_eventually_le`,
+    `hasseWeilAt_of_eventually_bounded`). On a symmetric tempered configuration, if the orbit
+    correlation of `x` is bounded, by any constant, at all sufficiently large scales, then `x`
+    satisfies the sharp Hasse–Weil bound at every scale; more generally an eventual bound
+    `K e^{σt}` gives blindness above depth `σ`. Over `𝔽_q` this is the classical fact that bounds on
+    `N_m` for large `m`, with any constant, imply the sharp bound for every `m`.
+27. **For `ζ`** (`riemannHypothesis_iff_eventually_bounded_of_generic`): for a spectrally generic real
+    test, RH holds iff `W(f, f(· − t))` stays bounded as `t → ∞`.
+
+### 3.11 The orientation index of a cycle (`TheOrientationIndexOfACycle`)
+
+28. **The seen configuration** (`seenConfig`). The zeros a test sees — those at which its transform
+    vanishes at neither point of the reflection pair — form a tempered configuration on which the
+    test is spectrally generic, and on the orbit of the test the Weil form of `Z` equals that of the
+    seen configuration (`W_translate_seenConfig`).
+29. **The orientation index law** (`orientationIndex_law`, `orientationIndex_eq_zero_iff`). For shifts
+    dense in `[0, ∞)`, the negative index of the Weil Gram matrices of translates of a real test
+    reaches `n` iff the test sees at least `n` zeros right of the line. The orientation index of a
+    cycle is the number of right zeros it sees; no functional-equation symmetry is needed. For `ζ`
+    with the Weil form computed from primes, Gamma factor and pole: `zeta_orientationIndex_law`.
+30. **The signature of an orbit surface** (`zeta_orbit_signature_law`). The intersection Gram matrix
+    of the pole plane and translates of a real test has one positive square plus one for every
+    right zero of `ζ` the test sees. On an orbit, the continuum signed form of `ζ` — archimedean
+    collar, prime atoms and pole — has exactly as many negative squares as the cycle sees right
+    zeros: this is the continuum frustration count of the orbit.
+
+### 3.12 Correctors and the Lefschetz trace (`CorrectorsAndTheLefschetzTrace`)
+
+31. **Lefschetz trace of a correspondence** (`lefschetzTrace_eq`):
+    `L(x, ξ) = poleTrace(ξ)·(x · H)(x · V) − Σ_g ξ(g) e^{s(g)/2} c_x(g)`.
+32. **Conservation law for correctors** (`lefschetzTrace_of_corrector`,
+    `lefschetzTrace_of_corrector_add_pole`). A corrector — a correspondence with vanishing pole
+    trace — has Lefschetz trace equal to minus its primitive trace, independent of the fibre
+    degrees of the cycle: relative compensation turns the Lefschetz trace into absolute energy read
+    only by the defect. Its sign under the orbit Hodge index is `traceAt_rosati_nonneg`.
+
+### 3.13 Inherited pillars
 
 The following corpus theorems are the foundations of AOG in other languages; AOG states and uses
 them in the language of orbits.
@@ -316,15 +393,30 @@ AOG reads every candidate orientation mechanism as a way to prove the orbit Hodg
 ## 6. Questions the programme aims to answer
 
 1. **Arithmetic sections.** What is an arithmetic section of a cycle on the scaling surface, and
-   why would it satisfy Riemann–Roch without reference to the Weil sign? Known: for every ample
-   Hecke-stable cone Riemann–Roch is equivalent to the defect floor (Arithmetic Castelnuovo–Severi,
-   universal floor law); a section theory must therefore carry its sign from an independent input.
+   why would it satisfy Riemann–Roch without reference to the Weil sign? Answered (§3.9): on the
+   orbit surface of a cycle, an ample section cone of nonnegative degree satisfies Riemann–Roch iff
+   the cycle is oriented. Sections with Riemann–Roch exist exactly over the oriented locus, and
+   Riemann–Roch cannot hold "without reference to the sign": on every orbit it is the sign.
 2. **Frustration against subsidy.** Why would prime-sum frustrations cost less than the archimedean
-   subsidy uniformly in aperture?
+   subsidy uniformly in aperture? Answered on orbits (§3.4, §3.6, §3.11): on the orbit of a cycle
+   the continuum signed form has exactly as many negative squares as the cycle sees right zeros;
+   the subsidy pays every frustration along the orbit iff the cycle is blind to the off-line zeros,
+   and along every finite segment for a sufficiently low-blind cycle. Uniformly in aperture for all
+   cycles it is RH. Arithmetic Orientation Theory supplies the frustration counts (prime sums,
+   matched samples) on finite samples.
 3. **Anti-collapse.** Which arithmetic invariant prevents `log γ` off-line multiplicity from
-   collapsing into a unit window at doubly exponential height?
+   collapsing into a unit window at doubly exponential height? Answered for orientation (§3.8):
+   none is needed. Which cycles are oriented, and at which rate, depends only on the set of zeros,
+   never on multiplicities. An anti-collapse principle enters only mass floors, where multiplicity
+   is mass (Arithmetic Continuation and Critical Energy, the cluster dichotomy); for orientation the
+   problem is depth, not collapse.
 4. **Relative to absolute.** What conserved quantity converts relative compensation into absolute
-   energy at every fixed small damping?
+   energy at every fixed small damping? Answered on the scale flow (§3.12): the Lefschetz trace of
+   correctors. A correspondence with vanishing pole trace has Lefschetz trace equal to minus its
+   primitive trace, exactly and independently of the fibre degrees; the defect itself is conserved
+   by every scale (`defect_act`). The conservation is an identity; the sign of the absolute energy is
+   the orientation. In the damping picture the corresponding identities are those of Arithmetic
+   Continuation and Critical Energy and Arithmetic Compensation Theory.
 5. **Euler products and repair.** When is the repairing ideal of the damped Möbius source the whole
    critical Wiener algebra, and can Euler-product structure on the Bohr polydisk decide it?
    Answered (§3.5): the ideal is the whole algebra iff the receiver is paid (Arithmetic Orientation
@@ -362,22 +454,31 @@ Built:
   the tail law of payment, the absolute-convergence dichotomy at `ε = ½`.
 - *Archimedean orientation*: recentred orbit combinations and the orientation of orbit segments
   of low-blind cycles.
+- *Orientation rates*: blindness above a depth, the upper and lower rate laws, the zero width as the
+  rate of a generic orbit.
+- *The battery*: curve configurations, unitary curves, the golden curve, multiplicity-blindness.
+- *Orbit surfaces*: restriction of polar surfaces, fibre compatibility, orbit spans as
+  correspondence images, Riemann–Roch on an orbit.
+- *Orientation index*: seen configurations and the orbit Pontryagin law for arbitrary cycles.
+- *Self-improvement*: eventual bounds on orbit correlations upgrade to the sharp bound.
+- *Corrector theory on the scale flow*: Lefschetz, pole and primitive traces; correctors and their
+  conservation law.
 
 To be built:
 
-- orientation index and rate of a cycle, and the orientation of the battery models;
-- the selectivity battery for orientation mechanisms;
-- an Arakelov-type intersection theory with arithmetic `h⁰`; signed spectral graph theory in the
-  continuum; corrector theory across scales; arithmetic anti-concentration; quantitative
-  supra-Nyquist readings.
+- an Arakelov-type intersection theory with an arithmetic `h⁰` beyond single orbits (orbit
+  surfaces, their signature and their Riemann–Roch are built); signed spectral graph theory beyond
+  orbits (on orbits the frustration count is the orientation index); correctors in the damping
+  parameter; quantitative supra-Nyquist readings beyond the archimedean segment law. Arithmetic
+  anti-concentration is not needed for orientation (§3.8); it remains a tool for mass floors.
 
 ## 8. Open research topics
 
-1. **The orientation of the battery.** Compute the orbit correlation, orientation index and rate of
-   the diagonal for unitary curves, the golden datum, shifted pairs and cluster configurations.
-2. **Orbit Pontryagin law for arbitrary cycles.** The orientation index of a cycle should be the
-   number of right zeros it sees; Arithmetic Castelnuovo–Severi proves this for spectrally generic
-   cycles.
+1. **The shifted pair and parity twins.** Place `ζ(s − a)ζ(s + a)` and the parity twins in the
+   battery as configurations and compute their orientation rates.
+2. **Orientation index on the lattice of scales.** The orientation index law uses shifts dense in
+   `[0, ∞)`. On one prime tower (shifts `k log p`) classes can merge (resonant primes); compute the
+   tower orientation index of an arbitrary cycle.
 3. **Infinite Euler data.** Which properties of the infinitely many local factors of `μ_ε`
    (equidistribution of `p^{it}`, sign patterns, densities) can repair it below half damping, now that
    every finite set of factors is invisible?
@@ -432,3 +533,9 @@ counts; planted Euler factors; finite-window mimics.
 | `TheOrientationOfACycle` | blindness, the orientation theorem, self-upgrade, oriented locus, real generic tests, one-orbit RH criterion |
 | `EulerFactorsAndPayment` | rough Möbius weights, tail law of payment, ideal and hull, absolute-convergence dichotomy |
 | `TheArchimedeanPlaceOrientsOrbitSegments` | recentred orbit combinations, orientation of orbit segments of low-blind cycles |
+| `TheOrientationRateIsTheDepthOfTheDeepestSeenZero` | blindness above a depth, upper and lower rate laws, the zero width as the rate of a generic orbit |
+| `TheSelectivityBatteryOfOrientation` | functional-equation symmetry of curve configurations, unitary curves, the golden curve, multiplicity-blindness |
+| `SectionsOnTheOrbitOfACycle` | restricted polar surfaces, orbit surfaces, fibre compatibility, Riemann–Roch on an orbit |
+| `EventualHasseWeilIsHasseWeil` | eventual rate bounds, the tensor-power trick on orbits, RH from eventual boundedness of one orbit |
+| `TheOrientationIndexOfACycle` | seen zeros and seen configurations, the orientation index law, the signature of an orbit surface |
+| `CorrectorsAndTheLefschetzTrace` | Lefschetz, pole and primitive traces of correspondences, correctors and the conservation law |

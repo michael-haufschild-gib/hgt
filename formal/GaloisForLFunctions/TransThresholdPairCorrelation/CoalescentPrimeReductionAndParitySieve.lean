@@ -65,7 +65,7 @@ namespace GaloisForLFunctions.TransThresholdPairCorrelation
 theorem log_sub_log_ge_sub_div {m n : ℕ} (hm : 1 ≤ m) (hmn : m < n) :
     ((n : ℝ) - m) / n ≤ Real.log n - Real.log m := by
   have hm0 : (0 : ℝ) < m := by exact_mod_cast hm
-  have hn0 : (0 : ℝ) < n := by exact_mod_cast ( lt_of_le_of_lt hm hmn )
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
   have hdiv : (0 : ℝ) < (m : ℝ) / n := div_pos hm0 hn0
   have hexp : (m : ℝ) / n ≤ Real.exp ((m : ℝ) / n - 1) := by
     have h := Real.add_one_le_exp ((m : ℝ) / n - 1)
@@ -106,11 +106,12 @@ theorem abs_log_sub_log_gt_of_lt_inv {m n : ℕ} {θ₀ : ℝ}
   have hmax0 : (0 : ℝ) < max (n : ℝ) (m : ℝ) :=
     lt_of_lt_of_le (by exact_mod_cast hm) (le_max_right _ _)
   have hθmax : θ₀ < 1 / max (n : ℝ) (m : ℝ) := by
-    rw [lt_div_iff₀ hmax0, ← lt_inv_iff₀ hθ₀]
-    simpa [mul_comm] using hmax
+    rw [lt_div_iff₀ hmax0]
+    rw [← one_div, lt_div_iff₀ hθ₀] at hmax
+    linarith
   have hdiv : 1 / max (n : ℝ) (m : ℝ) ≤ |(n : ℝ) - m| / max (n : ℝ) (m : ℝ) :=
     div_le_div_of_nonneg_right h1 hmax0.le
-  exact (hθmax.trans_le hdiv).trans (abs_log_sub_log_ge_abs_sub_div_max hm hn)
+  exact (hθmax.trans_le hdiv).trans_le (abs_log_sub_log_ge_abs_sub_div_max hm hn)
 
 /-- Sub-Nyquist vanishing for odd pairs: if `1 ≤ m, n` are distinct odd integers and
 `max(n, m) < 2 / θ₀` (`θ₀ > 0`), then `|log n - log m| > θ₀`. -/
@@ -120,6 +121,8 @@ theorem abs_log_sub_log_gt_of_odd_lt_two_div {m n : ℕ} {θ₀ : ℝ}
     (hmax : max (n : ℝ) (m : ℝ) < 2 / θ₀) :
     θ₀ < |Real.log n - Real.log m| := by
   have h2 : (2 : ℝ) ≤ |(n : ℝ) - m| := by
+    have hne' : (n : ℤ) ≠ m := by exact_mod_cast hne
+    have hpar' : (n : ℤ) % 2 = (m : ℤ) % 2 := by exact_mod_cast hpar
     have h2z : (2 : ℤ) ≤ |(n : ℤ) - m| := by omega
     exact_mod_cast h2z
   have hmax0 : (0 : ℝ) < max (n : ℝ) (m : ℝ) :=
@@ -130,7 +133,7 @@ theorem abs_log_sub_log_gt_of_odd_lt_two_div {m n : ℕ} {θ₀ : ℝ}
     linarith
   have hdiv : 2 / max (n : ℝ) (m : ℝ) ≤ |(n : ℝ) - m| / max (n : ℝ) (m : ℝ) :=
     div_le_div_of_nonneg_right h2 hmax0.le
-  exact (hθmax.trans_le hdiv).trans (abs_log_sub_log_ge_abs_sub_div_max hm hn)
+  exact (hθmax.trans_le hdiv).trans_le (abs_log_sub_log_ge_abs_sub_div_max hm hn)
 
 /-- Every summand of `coalSum` with `max(n, m) < θ₀⁻¹` vanishes identically. -/
 theorem coalSum_term_eq_zero_of_lt_inv (Ω g : ℝ → ℝ) {m n : ℕ} {θ₀ : ℝ}
@@ -267,7 +270,7 @@ theorem coalescent_partner_Window_bounds {m n : ℕ} {θ₀ : ℝ}
   have hmax0 : 0 < max (n : ℝ) (m : ℝ) := lt_of_lt_of_le hn0 (le_max_left _ _)
   have hlow := abs_log_sub_log_ge_abs_sub_div_max hm hn
   have hle : |(n : ℝ) - m| ≤ max (n : ℝ) (m : ℝ) * θ₀ := by
-    rw [← div_le_iff₀ hmax0]
+    rw [mul_comm, ← div_le_iff₀ hmax0]
     exact hlow.trans hgap
   have h3 : |(m : ℝ) - n| ≤ 2 * θ₀ * n := by
     rw [abs_sub_comm]
@@ -394,7 +397,7 @@ theorem sum_coalescent_partners_acoef_le {X θ₀ : ℝ} {n : ℕ}
     _ ≤ (4 * θ₀ * n) * (Real.sqrt 2 * Real.log X * (Λ n : ℝ) / n) :=
         mul_le_mul_of_nonneg_right hcard hconst0
     _ = 4 * Real.sqrt 2 * Real.log X * θ₀ * (Λ n : ℝ) := by
-        field_simp; ring
+        field_simp
 
 /-- **Explicit Finite-Height Prime-Power Elimination Bound in the Coalescent Band.**
 For `1 ≤ X`, `0 ≤ θ₀ ≤ 1/2`, `|g y| ≤ L`, and `|cosTransform Ω θ| ≤ M₀`, the difference between
@@ -422,8 +425,7 @@ theorem abs_coalSum_sub_primeCoalSum_le {Ω g : ℝ → ℝ} {X θ₀ L M₀ : �
     refine Finset.sum_congr rfl fun m _ => ?_
     by_cases hcoal : n ≠ m ∧ |Real.log n - Real.log m| ≤ θ₀
     · by_cases hp : n.Prime ∧ m.Prime
-      · have hnot : ¬ (¬ n.Prime ∨ ¬ m.Prime) := by tauto
-        simp [hcoal, hp, hnot]
+      · simp [hcoal, hp]
       · have hor : ¬ n.Prime ∨ ¬ m.Prime := not_and_or.mp hp
         simp [hcoal, hp, hor]
     · simp [hcoal]
@@ -454,12 +456,15 @@ theorem abs_coalSum_sub_primeCoalSum_le {Ω g : ℝ → ℝ} {X θ₀ L M₀ : �
             (if ¬ n.Prime ∧ n ≠ m ∧ |Real.log n - Real.log m| ≤ θ₀ then acoef n * acoef m else 0)
             + (if ¬ m.Prime ∧ m ≠ n ∧ |Real.log m - Real.log n| ≤ θ₀ then acoef m * acoef n else 0) := by
           rcases hor with hnP | hmP
-          · rw [if_pos ⟨hnP, hcoal⟩]
-            have : 0 ≤ (if ¬ m.Prime ∧ m ≠ n ∧ |Real.log m - Real.log n| ≤ θ₀
+          · have hpos : (if ¬ n.Prime ∧ n ≠ m ∧ |Real.log n - Real.log m| ≤ θ₀
+                then acoef n * acoef m else 0) = acoef n * acoef m := if_pos ⟨hnP, hcoal⟩
+            have hnn : 0 ≤ (if ¬ m.Prime ∧ m ≠ n ∧ |Real.log m - Real.log n| ≤ θ₀
                 then acoef m * acoef n else 0) := by split_ifs <;> linarith
             linarith
-          · rw [if_pos ⟨hmP, hcoal'⟩, mul_comm (acoef m)]
-            have : 0 ≤ (if ¬ n.Prime ∧ n ≠ m ∧ |Real.log n - Real.log m| ≤ θ₀
+          · have hpos : (if ¬ m.Prime ∧ m ≠ n ∧ |Real.log m - Real.log n| ≤ θ₀
+                then acoef m * acoef n else 0) = acoef n * acoef m := by
+              rw [if_pos ⟨hmP, hcoal'⟩, mul_comm]
+            have hnn : 0 ≤ (if ¬ n.Prime ∧ n ≠ m ∧ |Real.log n - Real.log m| ≤ θ₀
                 then acoef n * acoef m else 0) := by split_ifs <;> linarith
             linarith
         calc acoef n * acoef m * |g (Real.log m)| * |cosTransform Ω (Real.log n - Real.log m)|
@@ -486,7 +491,22 @@ theorem abs_coalSum_sub_primeCoalSum_le {Ω g : ℝ → ℝ} {X θ₀ L M₀ : �
     refine (abs_sum_le_sum_abs _ _).trans ?_
     refine (Finset.sum_le_sum fun n hn => (abs_sum_le_sum_abs _ _).trans
       (Finset.sum_le_sum fun m hm => hterm n hn m hm)).trans ?_
-    simp_rw [← Finset.mul_sum, Finset.sum_add_distrib]
+    have hpull : (∑ n ∈ primeRange X, ∑ m ∈ primeRange X,
+          L * M₀ * ((if ¬ n.Prime ∧ n ≠ m ∧ |Real.log n - Real.log m| ≤ θ₀
+              then acoef n * acoef m else 0)
+            + (if ¬ m.Prime ∧ m ≠ n ∧ |Real.log m - Real.log n| ≤ θ₀
+              then acoef m * acoef n else 0)))
+        = L * M₀ * ((∑ n ∈ primeRange X, ∑ m ∈ primeRange X,
+            if ¬ n.Prime ∧ n ≠ m ∧ |Real.log n - Real.log m| ≤ θ₀
+              then acoef n * acoef m else 0)
+          + (∑ n ∈ primeRange X, ∑ m ∈ primeRange X,
+            if ¬ m.Prime ∧ m ≠ n ∧ |Real.log m - Real.log n| ≤ θ₀
+              then acoef m * acoef n else 0)) := by
+      simp_rw [← Finset.sum_add_distrib]
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun n _ => ?_
+      rw [Finset.mul_sum]
+    rw [hpull]
     rw [Finset.sum_comm (s := primeRange X) (t := primeRange X)
       (f := fun n m => if ¬ m.Prime ∧ m ≠ n ∧ |Real.log m - Real.log n| ≤ θ₀
         then acoef m * acoef n else 0)]
@@ -564,7 +584,7 @@ For any window profile `u` and any `0 < η < 1/3`, the difference between the fu
 `coalescentSurplus u η T` and the pure prime `primeCoalescentSurplus u η T` is bounded by
 `(128 √2 / π) (log T) T^{−1/3+η}` for all large `T`, hence is `o(1)` (and `o(N(T, 2T))`). -/
 theorem eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le
-    (hu : WindowProfile ε₁ u) {η : ℝ} (hη1 : η < 1) :
+    {ε₁ : ℝ} {u : ℝ → ℝ} (hu : WindowProfile ε₁ u) {η : ℝ} (hη1 : η < 1) :
     ∀ᶠ T in atTop,
       |coalescentSurplus u η T - primeCoalescentSurplus u η T| ≤
         (128 * Real.sqrt 2 / π) * Real.log T * T ^ (-1 / 3 + η) := by
@@ -575,7 +595,7 @@ theorem eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le
     tendsto_rpow_neg_atTop (by linarith : 0 < -(-1 + η))
       |>.congr' (Eventually.of_forall fun T => by rw [neg_neg])
   filter_upwards [eventually_ge_atTop (max TL 4096), eventually_l_bounds,
-    htend.eventually (le_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2))]
+    htend.eventually (ge_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2))]
     with T hTmax ⟨hlog1, hl1, hlo, hhi⟩ hθhalf
   have hTLT : TL ≤ T := (le_max_left _ _).trans hTmax
   have hT4096 : (4096 : ℝ) ≤ T := (le_max_right _ _).trans hTmax
@@ -665,31 +685,31 @@ theorem eventually_T_mul_log_div_eight_pi_le_Ncount :
     ∀ᶠ T in atTop, T * Real.log T / (8 * π) ≤ (Ncount T (2 * T) : ℝ) := by
   obtain ⟨CR, TR, hRvM⟩ := paperInputs_zeta.RvM.main
   have hπ := Real.pi_pos
-  filter_upwards [eventually_ge_atTop (max TR (8 * π * |CR|)), eventually_l_bounds]
+  filter_upwards [eventually_ge_atTop (max TR (max (8 * π * |CR|) 1)), eventually_l_bounds]
     with T hTmax ⟨hlog1, _, hlo, _⟩
   have hTR : TR ≤ T := (le_max_left _ _).trans hTmax
-  have hTCR : 8 * π * |CR| ≤ T := (le_max_right _ _).trans hTmax
-  have hT0 : 0 < T := lt_of_lt_of_le (by positivity) hTCR
+  have hT2 : max (8 * π * |CR|) 1 ≤ T := (le_max_right _ _).trans hTmax
+  have hTCR : 8 * π * |CR| ≤ T := (le_max_left _ _).trans hT2
+  have hT1 : 1 ≤ T := (le_max_right _ _).trans hT2
+  have hT0 : 0 < T := by linarith
   have hRv0 := hRvM T hTR
-  have hc₀ : 0 ≤ 2 * Real.log 2 - 1 := by have := Real.log_two_gt_d9; linarith
-  have hMlow : T * Real.log T / (4 * π) ≤ T / (2 * π) * ell1 T := by
-    have h1 : Real.log T ≤ 2 * ell1 T := by unfold ell1; linarith
-    rw [div_le_iff₀ (by positivity)]
-    have := mul_le_mul_of_nonneg_left h1 (by positivity : (0 : ℝ) ≤ T / (2 * π))
-    nlinarith
-  have hCR : |CR| * Zeta23.l T ≤ T * Real.log T / (8 * π) := by
-    have hl : Zeta23.l T ≤ Real.log T := by
-      unfold Zeta23.l
-      exact Real.log_le_log (by positivity) (div_le_self hT0.le (by linarith [Real.pi_gt_three]))
-    have h1 : |CR| * Zeta23.l T ≤ |CR| * Real.log T :=
-      mul_le_mul_of_nonneg_left hl (abs_nonneg _)
-    have h2 : |CR| * Real.log T ≤ T / (8 * π) * Real.log T := by
-      refine mul_le_mul_of_nonneg_right ?_ (by linarith)
-      rwa [le_div_iff₀ (by positivity)]
-    linarith [show T / (8 * π) * Real.log T = T * Real.log T / (8 * π) by ring]
-  have hlow := (abs_le.mp hRv0).1
-  rw [zetaZeroConfig_N] at hlow
-  linarith
+  have hRv : |(zetaZeroConfig.N T (2 * T) : ℝ) - T * ell1 T / (2 * π)| ≤ |CR| * Real.log T := by
+    rw [show T * ell1 T / (2 * π) = T / (2 * π) * ell1 T by ring]
+    exact hRv0.trans (mul_le_mul_of_nonneg_right (le_abs_self _) (by linarith only [hlog1]))
+  have hc₀ : 0 ≤ 2 * Real.log 2 - 1 := by have := Real.log_two_gt_d9; linarith only [this]
+  have hMlow : T * Real.log T / (4 * π) ≤ T * ell1 T / (2 * π) := by
+    have h1 : Real.log T ≤ 2 * ell1 T := by unfold ell1; linarith only [hlo, hc₀]
+    rw [div_le_div_iff₀ (by positivity) (by positivity)]
+    have := mul_le_mul_of_nonneg_left h1 (by positivity : (0 : ℝ) ≤ T * (2 * π))
+    nlinarith only [this, hT0, hπ]
+  have hCRlog : |CR| * Real.log T ≤ T * Real.log T / (8 * π) := by
+    rw [le_div_iff₀ (by positivity)]
+    have := mul_le_mul_of_nonneg_right hTCR (by linarith only [hlog1] : (0 : ℝ) ≤ Real.log T)
+    linarith only [this]
+  have h1 := (abs_le.mp hRv).1
+  rw [zetaZeroConfig_N] at h1
+  have e : T * Real.log T / (4 * π) = 2 * (T * Real.log T / (8 * π)) := by ring
+  linarith only [h1, hMlow, hCRlog, e]
 
 /-- **Unconditional Equivalence of Full and Prime-Only Coalescent Surplus Hypotheses.**
 Because proper prime powers in the coalescent band `0 < |log(n/m)| ≤ T^{−1+η}` (`η < 1/3`)
@@ -708,14 +728,17 @@ theorem coalescentSurplusAtMost_iff_primeCoalescentSurplusAtMost (β : ℝ) :
     have hK : 0 ≤ 128 * Real.sqrt 2 / π := by positivity
     have hrate := eventually_log_pow_rpow_le 1 hexp hK (by positivity : (0 : ℝ) < δ / (8 * π))
     filter_upwards [eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le hu (by linarith),
-      eventually_T_mul_log_div_eight_pi_le_Ncount, hrate, eventually_l_bounds]
-      with T hdiff hNlow hrt ⟨hlog1, _, _, _⟩
+      eventually_T_mul_log_div_eight_pi_le_Ncount, hrate, eventually_l_bounds,
+      eventually_ge_atTop (1 : ℝ)]
+      with T hdiff hNlow hrt ⟨hlog1, _, _, _⟩ hT1
+    have hT0 : 0 < T := by linarith
     have hrt' : (128 * Real.sqrt 2 / π) * Real.log T * T ^ (-1 / 3 + η) ≤ δ / (8 * π) * T := by
       simpa [pow_one, mul_assoc] using hrt
     have h1 : δ / (8 * π) * T ≤ δ * (T * Real.log T / (8 * π)) := by
       have hmul : δ / (8 * π) * T * 1 ≤ δ / (8 * π) * T * Real.log T :=
         mul_le_mul_of_nonneg_left hlog1 (by positivity)
-      linarith [show δ / (8 * π) * T * Real.log T = δ * (T * Real.log T / (8 * π)) by ring]
+      have heq : δ / (8 * π) * T * Real.log T = δ * (T * Real.log T / (8 * π)) := by ring
+      linarith
     have h2 : δ * (T * Real.log T / (8 * π)) ≤ δ * (Ncount T (2 * T) : ℝ) :=
       mul_le_mul_of_nonneg_left hNlow hδ.le
     exact hdiff.trans (hrt'.trans (h1.trans h2))
@@ -782,10 +805,11 @@ theorem sum_Icc_eq_sum_even_shifts (K : ℕ) (f : ℕ → ℝ)
     rw [Finset.mem_filter, Finset.mem_Icc]
     omega
   · intro r₁ _ r₂ _ h
+    dsimp at h
     omega
   · intro d hd
     simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_Icc] at hd
-    refine ⟨d / 2, ?_, by omega⟩
+    refine ⟨d / 2, ?_, by dsimp; omega⟩
     simp only [Finset.mem_coe, Finset.mem_Icc]
     omega
 

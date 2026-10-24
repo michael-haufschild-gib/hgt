@@ -51,19 +51,20 @@ section Ext
 
 variable {a b : SuzukiPositiveAperture} (hab : a.1 ≤ b.1)
 
-@[simp] theorem apertureExt_val (u : CCMArchimedeanFormDomain a) :
-    (apertureExt hab u).1 = u.1 := rfl
+theorem apertureExt_val (u : CCMArchimedeanFormDomain a) :
+    (apertureExt hab u).1 = u.1 := by
+  unfold apertureExt
+  rfl
 
 theorem apertureExt_add (u v : CCMArchimedeanFormDomain a) :
-    apertureExt hab (u + v) = apertureExt hab u + apertureExt hab v := Subtype.ext rfl
+    apertureExt hab (u + v) = apertureExt hab u + apertureExt hab v := by
+  apply Subtype.ext
+  rw [Submodule.coe_add, apertureExt_val, apertureExt_val, apertureExt_val, Submodule.coe_add]
 
 theorem apertureExt_smul (c : ℂ) (u : CCMArchimedeanFormDomain a) :
-    apertureExt hab (c • u) = c • apertureExt hab u := Subtype.ext rfl
-
-theorem inner_apertureExt (u v : CCMArchimedeanFormDomain a) :
-    inner ℂ (apertureExt hab u) (apertureExt hab v) = inner ℂ u v := by
-  rw [Submodule.coe_inner, Submodule.coe_inner]
-  rfl
+    apertureExt hab (c • u) = c • apertureExt hab u := by
+  apply Subtype.ext
+  rw [Submodule.coe_smul, apertureExt_val, apertureExt_val, Submodule.coe_smul]
 
 theorem inner_embedding_apertureExt (u v : CCMArchimedeanFormDomain a) :
     inner ℂ (ccmArchimedeanFormToAperture b (apertureExt hab u))
@@ -108,22 +109,28 @@ theorem apertureForm_self_re (u : CCMArchimedeanFormDomain a) :
 
 theorem apertureForm_add_left (u v w : CCMArchimedeanFormDomain a) :
     apertureForm F a (u + v) w = apertureForm F a u w + apertureForm F a v w := by
-  simp only [apertureForm, map_add, inner_add_left]
+  rw [apertureForm, apertureForm, apertureForm, map_add, map_add, inner_add_left u v w,
+    inner_add_left (F.B a (ccmArchimedeanFormToAperture a u))
+      (F.B a (ccmArchimedeanFormToAperture a v)) (ccmArchimedeanFormToAperture a w)]
   ring
 
 theorem apertureForm_add_right (u v w : CCMArchimedeanFormDomain a) :
     apertureForm F a u (v + w) = apertureForm F a u v + apertureForm F a u w := by
-  simp only [apertureForm, map_add, inner_add_right]
+  rw [apertureForm, apertureForm, apertureForm, map_add, inner_add_right u v w,
+    inner_add_right (F.B a (ccmArchimedeanFormToAperture a u)) (ccmArchimedeanFormToAperture a v)
+      (ccmArchimedeanFormToAperture a w)]
   ring
 
 theorem apertureForm_smul_left (c : ℂ) (u v : CCMArchimedeanFormDomain a) :
     apertureForm F a (c • u) v = (starRingEnd ℂ) c * apertureForm F a u v := by
-  simp only [apertureForm, map_smul, inner_smul_left]
+  rw [apertureForm, apertureForm, map_smul, map_smul, inner_smul_left u v c,
+    inner_smul_left (F.B a (ccmArchimedeanFormToAperture a u)) (ccmArchimedeanFormToAperture a v) c]
   ring
 
 theorem apertureForm_smul_right (c : ℂ) (u v : CCMArchimedeanFormDomain a) :
     apertureForm F a u (c • v) = c * apertureForm F a u v := by
-  simp only [apertureForm, map_smul, inner_smul_right]
+  rw [apertureForm, apertureForm, map_smul, inner_smul_right u v c,
+    inner_smul_right (F.B a (ccmArchimedeanFormToAperture a u)) (ccmArchimedeanFormToAperture a v) c]
   ring
 
 /-- The form is Hermitian because `B_a` is self-adjoint. -/
@@ -133,31 +140,59 @@ theorem apertureForm_conj (u v : CCMArchimedeanFormDomain a) :
     (ccmArchimedeanFormToAperture a u)
   change inner ℂ (F.B a (ccmArchimedeanFormToAperture a v)) (ccmArchimedeanFormToAperture a u) =
     inner ℂ (ccmArchimedeanFormToAperture a v) (F.B a (ccmArchimedeanFormToAperture a u)) at hB
-  simp only [apertureForm, map_add, inner_conj_symm, hB]
+  rw [apertureForm, apertureForm, map_add, hB, inner_conj_symm v u,
+    inner_conj_symm (ccmArchimedeanFormToAperture a v) (F.B a (ccmArchimedeanFormToAperture a u))]
+
+theorem inner_embedding_self_re (u : CCMArchimedeanFormDomain a) :
+    (inner ℂ (ccmArchimedeanFormToAperture a u) (ccmArchimedeanFormToAperture a u)).re =
+      ‖ccmArchimedeanFormToAperture a u‖ ^ 2 := by
+  rw [inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (ccmArchimedeanFormToAperture a u)]
+  norm_cast
 
 theorem shiftedForm_self_re (E : ℝ) (u : CCMArchimedeanFormDomain a) :
     (shiftedForm F a E u u).re = F.Q a u - E * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 := by
-  rw [shiftedForm, sub_re, apertureForm_self_re, inner_self_eq_norm_sq_to_K]
-  norm_cast
+  rw [shiftedForm, sub_re, apertureForm_self_re, re_ofReal_mul, inner_embedding_self_re]
 
 theorem shiftedForm_conj (E : ℝ) (u v : CCMArchimedeanFormDomain a) :
     shiftedForm F a E v u = (starRingEnd ℂ) (shiftedForm F a E u v) := by
-  simp only [shiftedForm, map_sub, map_mul, Complex.conj_ofReal, inner_conj_symm,
-    apertureForm_conj F a u v]
+  rw [shiftedForm, shiftedForm, map_sub, map_mul, Complex.conj_ofReal, apertureForm_conj F a u v,
+    inner_conj_symm (ccmArchimedeanFormToAperture a v) (ccmArchimedeanFormToAperture a u)]
+
+theorem shiftedForm_add_right (E : ℝ) (u v w : CCMArchimedeanFormDomain a) :
+    shiftedForm F a E u (v + w) = shiftedForm F a E u v + shiftedForm F a E u w := by
+  rw [shiftedForm, shiftedForm, shiftedForm, apertureForm_add_right, map_add,
+    inner_add_right (ccmArchimedeanFormToAperture a u) (ccmArchimedeanFormToAperture a v)
+      (ccmArchimedeanFormToAperture a w)]
+  ring
+
+theorem shiftedForm_smul_right (E : ℝ) (c : ℂ) (u v : CCMArchimedeanFormDomain a) :
+    shiftedForm F a E u (c • v) = c * shiftedForm F a E u v := by
+  rw [shiftedForm, shiftedForm, apertureForm_smul_right, map_smul,
+    inner_smul_right (ccmArchimedeanFormToAperture a u) (ccmArchimedeanFormToAperture a v) c]
+  ring
+
+theorem shiftedForm_sub_right (E : ℝ) (u v w : CCMArchimedeanFormDomain a) :
+    shiftedForm F a E u (v - w) = shiftedForm F a E u v - shiftedForm F a E u w := by
+  rw [sub_eq_add_neg, shiftedForm_add_right, ← neg_one_smul ℂ w, shiftedForm_smul_right]
+  ring
+
+theorem shiftedForm_sub_left (E : ℝ) (u v w : CCMArchimedeanFormDomain a) :
+    shiftedForm F a E (u - v) w = shiftedForm F a E u w - shiftedForm F a E v w := by
+  rw [shiftedForm_conj F a E w (u - v), shiftedForm_sub_right, map_sub, ← shiftedForm_conj,
+    ← shiftedForm_conj]
+
+theorem shiftedForm_smul_left (E : ℝ) (c : ℂ) (u v : CCMArchimedeanFormDomain a) :
+    shiftedForm F a E (c • u) v = (starRingEnd ℂ) c * shiftedForm F a E u v := by
+  rw [shiftedForm_conj F a E v (c • u), shiftedForm_smul_right, map_mul, ← shiftedForm_conj]
 
 /-- The shifted form, with its arguments swapped, is a Hermitian form in the sense of
 `IsHermitianForm` (linear in the first slot). -/
 theorem isHermitianForm_shiftedForm (E : ℝ) :
     IsHermitianForm (fun x y : CCMArchimedeanFormDomain a => shiftedForm F a E y x) where
-  add_left x y z := by
-    simp only [shiftedForm, apertureForm_add_right, map_add, inner_add_right]
-    ring
-  smul_left c x y := by
-    simp only [shiftedForm, apertureForm_smul_right, map_smul, inner_smul_right]
-    ring
+  add_left x y z := shiftedForm_add_right F a E z x y
+  smul_left c x y := shiftedForm_smul_right F a E c y x
   symm x y := by
-    rw [shiftedForm_conj F a E x y]
-    rfl
+    rw [shiftedForm_conj F a E x y, Complex.star_def, Complex.conj_conj]
 
 /-- **Euler–Lagrange equation.** A ground form state annihilates the shifted form at the ground
 energy: the shifted form is nonnegative and Hermitian and vanishes on the diagonal at `u`. -/
@@ -165,10 +200,12 @@ theorem shiftedForm_eq_zero_of_isGround {u : CCMArchimedeanFormDomain a} (hu : I
     (v : CCMArchimedeanFormDomain a) : shiftedForm F a (F.energy a) u v = 0 := by
   have hpsd : ∀ x : CCMArchimedeanFormDomain a,
       0 ≤ ((fun x y => shiftedForm F a (F.energy a) y x) x x).re := fun x => by
-    simp only [shiftedForm_self_re]
+    change 0 ≤ (shiftedForm F a (F.energy a) x x).re
+    rw [shiftedForm_self_re]
     linarith [F.energy_mul_formNorm_sq_le a x]
   have hu0 : ((fun x y => shiftedForm F a (F.energy a) y x) u u).re = 0 := by
-    simp only [shiftedForm_self_re, hu.symm, sub_self]
+    change (shiftedForm F a (F.energy a) u u).re = 0
+    rw [shiftedForm_self_re, hu, sub_self]
   have h : shiftedForm F a (F.energy a) v u = 0 :=
     (isHermitianForm_shiftedForm F a (F.energy a)).eq_zero_of_self_re_eq_zero hpsd hu0 v
   rw [shiftedForm_conj F a _ v u, h, map_zero]
@@ -181,26 +218,35 @@ end Form
 
 /-! ## Polarized aperture compatibility -/
 
+/-- The defect of a form under extension, written with swapped arguments so that it is linear in
+the first slot. -/
+private def extDefect {a b : SuzukiPositiveAperture} (hab : a.1 ≤ b.1)
+    (x y : CCMArchimedeanFormDomain a) : ℂ :=
+  apertureForm F b (apertureExt hab y) (apertureExt hab x) - apertureForm F a y x
+
+private theorem isHermitianForm_extDefect {a b : SuzukiPositiveAperture} (hab : a.1 ≤ b.1) :
+    IsHermitianForm (extDefect F hab) where
+  add_left x x' z := by
+    rw [extDefect, extDefect, extDefect, apertureExt_add, apertureForm_add_right,
+      apertureForm_add_right]
+    ring
+  smul_left c x z := by
+    rw [extDefect, extDefect, apertureExt_smul, apertureForm_smul_right, apertureForm_smul_right]
+    ring
+  symm x z := by
+    rw [extDefect, extDefect, Complex.star_def, map_sub, ← apertureForm_conj, ← apertureForm_conj]
+
 /-- **Polarized compatibility.** The sesquilinear form is unchanged when both arguments are
 extended to a larger aperture; the diagonal law of `CCMRemainderFamily` polarizes. -/
 theorem apertureForm_ext {a b : SuzukiPositiveAperture} (hab : a.1 ≤ b.1)
     (x y : CCMArchimedeanFormDomain a) :
     apertureForm F b (apertureExt hab x) (apertureExt hab y) = apertureForm F a x y := by
-  let D : CCMArchimedeanFormDomain a → CCMArchimedeanFormDomain a → ℂ := fun x y =>
-    apertureForm F b (apertureExt hab y) (apertureExt hab x) - apertureForm F a y x
-  have hD : IsHermitianForm D where
-    add_left x x' z := by
-      simp only [D, apertureExt_add, apertureForm_add_right]
-      ring
-    smul_left c x z := by
-      simp only [D, apertureExt_smul, apertureForm_smul_right]
-      ring
-    symm x z := by
-      simp only [D, map_sub, ← apertureForm_conj]
-  have hdiag : ∀ z, (D z z).re = 0 := fun z => by
-    simp only [D, sub_re, apertureForm_self_re, F.Q_eq_of_val_eq hab (apertureExt_val hab z),
-      sub_self]
-  have h := hD.eq_zero_of_self_re_eq_zero (fun z => (hdiag z).ge) (hdiag y) x
+  have hdiag : ∀ z, (extDefect F hab z z).re = 0 := fun z => by
+    rw [extDefect, sub_re, apertureForm_self_re, apertureForm_self_re,
+      F.Q_eq_of_val_eq hab (apertureExt_val hab z), sub_self]
+  have h := (isHermitianForm_extDefect F hab).eq_zero_of_self_re_eq_zero
+    (fun z => (hdiag z).ge) (hdiag y) x
+  rw [extDefect] at h
   exact sub_eq_zero.mp h
 
 /-! ## The shell flux and the flux law -/
@@ -262,18 +308,9 @@ theorem energy_sub_energy_eq_shiftedForm {a b : SuzukiPositiveAperture} (hab : a
     rw [shiftedForm_conj, hR, map_zero]
   have hexp : shiftedForm F b (F.energy b) (e - c • u) (e - c • u) =
       shiftedForm F b (F.energy b) e e := by
-    have hlin : ∀ x y z : CCMArchimedeanFormDomain b,
-        shiftedForm F b (F.energy b) x (y - z) =
-          shiftedForm F b (F.energy b) x y - shiftedForm F b (F.energy b) x z := fun x y z => by
-      simp only [shiftedForm, apertureForm, map_sub, inner_sub_right]
-      ring
-    rw [hlin, hlin, hR, shiftedForm_conj F b _ (c • u) e, shiftedForm_conj F b _ (c • u) (c • u)]
-    have hcu : ∀ x, shiftedForm F b (F.energy b) x (c • u) = c * shiftedForm F b (F.energy b) x u :=
-      fun x => by
-        simp only [shiftedForm, apertureForm_smul_right, map_smul, inner_smul_right]
-        ring
-    rw [hcu, hcu, hL, hL]
-    simp
+    rw [shiftedForm_sub_left, shiftedForm_sub_right, shiftedForm_sub_right,
+      shiftedForm_smul_left, shiftedForm_smul_left, shiftedForm_smul_right, shiftedForm_smul_right]
+    simp only [hR, hL, mul_zero, sub_zero]
   rw [hexp, shiftedForm_self_re, F.Q_eq_of_val_eq hab (apertureExt_val hab _),
     norm_embedding_apertureExt, F.normalizedGround_Q, F.norm_normalizedGround_embedding]
   ring

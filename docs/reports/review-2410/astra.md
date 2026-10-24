@@ -207,6 +207,14 @@ Three separate problems must be solved:
 
 None follows from the ideal definition. In particular, I do not assume that the repairing ideal is closed, or that successor preserves it. The inspected source constructs an algebraic ideal in a Banach algebra and locates proper ideals through characters.
 
+One concrete successful output would be explicit repairing kernels $k_1,\ldots,k_m$ and critical Wiener kernels $g_1,\ldots,g_m$ satisfying
+
+\[
+\sum_{j=1}^{m}g_j*k_j=\delta_1,
+\]
+
+with each repaired receiver bounded by an independently proved source estimate. Then $1\in I(c)$ follows algebraically. No individual $k_j$ must be a unit. The new work is producing those bounds and the joint identity; the ideal argument itself is already available.
+
 This is a plausible new interface between AOT and the successor programmes. It is less mature than the explicit receiver identities. Its first useful result may be a classification of which successor actions are impossible, together with a viable domain-sensitive replacement.
 
 ### 5.4 Global low-sector control by a signed boundary flux
@@ -321,4 +329,337 @@ A proposed result advances this field only if it answers all of these:
 - Is the asserted input independently proved, or merely another form of the desired conclusion?
 
 The field earns its name by producing such theorems. A new vocabulary for the existing equivalences does not suffice.
+
+## 7. Route WD: what is actually left
+
+WD is **Ward orientation and horizontal collision**. Its several endpoints must be kept distinct.
+
+### 7.1 The Ward cap is already a positive detector
+
+For the canonical levels $\theta(s)\in(0,1/2)$, the inspected [global-cap source](../../../formal/GaloisForLFunctions/RHTower/XiWardGlobalCapRightZeroSum.lean) identifies, for almost every level parameter, the source-side cap with
+
+\[
+\mathcal C_\tau(s)
+=-8\pi\tau
+\sum_{\Re\rho>1/2+\theta(s)}
+\frac{m_\rho}{(\rho+1/100)^2+\tau^2}.
+\]
+
+For $0<\tau\le12$, its real part is nonnegative and vanishes exactly when the selected strict-right region contains no zeros. The source proves the almost-everywhere vanishing criterion for RH.
+
+**Deduction:** an independently established arithmetic upper bound
+
+\[
+\Re\mathcal C_1(s)\le0
+\quad\text{for almost every }s
+\]
+
+would close WD. The positivity and the all-level argument in the existing proof then exclude every strict-right zero.
+
+What is missing is this source cancellation. Cap nonnegativity, integrability, an explicit divisor formula, or cancellation of an isolated prime contribution does not prove it.
+
+The cap is a **weighted real charge**. Contributions can become small at large height. It has no universal two-unit gap.
+
+### 7.2 Collision charge has a different, quantized endpoint
+
+For a positive-height window, let $m_\rho$ be local multiplicity and $H_\gamma$ total multiplicity at exact ordinate $\gamma$. The [collision-charge source](../../../formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionChargeEndpoint.lean) defines
+
+\[
+C(T)=\sum_{\rho\text{ in window}}m_\rho(H_{\Im\rho}-m_\rho)
+=\sum_{\substack{\rho\ne\sigma\\\Im\rho=\Im\sigma}}
+m_\rho m_\sigma .
+\]
+
+It proves:
+
+- $C(T)$ is nonnegative, even and monotone in the cutoff;
+- off-line divisor multiplicity is bounded by $C(T)$;
+- an off-line reflected pair forces $C(T)\ge2$;
+- a bound $C(T)<2$ on **any cofinal family of cutoffs** implies RH.
+
+This does not assume simple zeros. Repeated multiplicity at one critical-line point is not a collision between distinct points.
+
+The cofinal subquantum endpoint is already proved. The missing input is an arithmetic upper bound on this exact charge. A sublinear bound, a small normalized proportion, or a bound for a different positive cap does not meet it.
+
+### 7.3 The exact tail is harmless for coefficient positivity
+
+This is the most useful sharpening found in the inspected WD source.
+
+For a zero copy write
+
+\[
+z_q=\Im\rho_q+i(1/2-\Re\rho_q).
+\]
+
+At real height $t$, retain the copies with $|z_q-t|\le R$. The [finite-head factorization](../../../formal/GaloisForLFunctions/RHTower/XiSliceGaussianFiniteHead.lean) is
+
+\[
+S_t(x)=Q_{t,R}(x)\,T_{t,R}(x),\qquad
+Q_{t,R}(x)=c_{t,R}
+\prod_{|z_q-t|\le R}\bigl(x^2+(z_q-t)^2\bigr).
+\]
+
+The source [XiSliceGaussianFiniteHeadPositivity](../../../formal/GaloisForLFunctions/RHTower/XiSliceGaussianFiniteHeadPositivity.lean) proves:
+
+1. $c_{t,R}$ is real and strictly positive for $R\ge0$.
+2. $Q_{t,R}(x)\ge0$ on the real axis, unconditionally.
+3. If $R\ge0$ and $R^2\ge1/2$, the **exact** tail $T_{t,R}$ has nonnegative Taylor coefficients.
+4. For any such fixed $R$,
+
+\[
+\mathrm{RH}\quad\Longleftrightarrow\quad
+\text{every }Q_{t,R}\text{ has nonnegative Taylor coefficients,
+ for every real }t.
+\]
+
+Central critical zeros retain their exact factors $x^2$; this statement does not divide by $\Xi(t)$.
+
+Thus one can fix **$R=1$**. No Gaussian approximation or fourth-moment error is needed for this coefficient-positivity reduction.
+
+There is also a short paper check of the converse. An off-line zero with ordinate $\gamma$ and depth $\delta>0$ belongs to the radius-one head centered at $t=\gamma$, since $\delta<1/2$. Its factor makes $Q_{\gamma,1}(\delta)=0$. But a nonzero polynomial with nonnegative coefficients is strictly positive at every positive argument. Contradiction.
+
+This is a localization of the unresolved problem, not a new proof mechanism. The retained head still depends on the actual zeros, and its local multiplicity is not uniformly bounded in height.
+
+### 7.4 Why real-axis positivity does not solve the head
+
+A conjugate spectral pair at offsets $u\pm i\delta$ contributes
+
+\[
+\bigl(x^2+(u+i\delta)^2\bigr)
+\bigl(x^2+(u-i\delta)^2\bigr)
+=x^4+2(u^2-\delta^2)x^2+(u^2+\delta^2)^2.
+\]
+
+At $u=0$ this is $(x^2-\delta^2)^2$: nonnegative for every real $x$, with a negative $x^2$ coefficient.
+
+That small example identifies the unpaid information. A norm square, positive real-axis integral, or positive Gaussian comparison can coexist with the exact coefficient defect detecting an off-line zero.
+
+A coefficient certificate also needs to survive vanishing coefficients at central zeros. A fixed strict margin is neither required nor available there.
+
+### 7.5 Heated finite-head reduction is already present
+
+The inspected [XiSliceHeatFiniteHeadReduction](../../../formal/GaloisForLFunctions/RHTower/XiSliceHeatFiniteHeadReduction.lean) goes further:
+
+- for $R^2+3\lambda\ge1/2$, coefficient nonnegativity of the normalized retained head after forward polynomial heat $\lambda/2$ transfers to all heated slice coefficients, initially at $\Xi(t)\ne0$;
+- dominated continuity removes central nonvanishing from the geometric heat criteria;
+- eventual finite-head positivity at the detector heat yields the corresponding eventual zero-free strip, including possible central-zero heights through continuity.
+
+These transfers should be reused, not proposed as new work.
+
+The current [KKL detector source](../../../formal/GaloisForLFunctions/RHTower/XiSliceKKLScaleOffLineDetection.lean) uses
+
+\[
+\kappa_0(\delta)=
+\frac{\delta^2}{200\bigl(\log(3/\delta)+1\bigr)}.
+\]
+
+An off-line zero of depth at least $\delta$ at sufficiently large height forces a negative heated coefficient at every heat $\kappa/\log t$ with $0<\kappa\le\kappa_0(\delta)$. The source supplies the explicit height bound $e^{16}$ for its stated detector application.
+
+By contrast, [effective unconditional positivity](../../../formal/GaloisForLFunctions/RHTower/XiSliceHeatEffectiveKKL.lean) is available eventually at heat at least $100/\log|t|$. Positivity propagates toward larger heat; this gives no reverse implication at the much smaller detector constant.
+
+The newer geometric profile $\lambda\ge x_0(t)^2/3$ improves its earlier geometric bound, but does not supply the required $\kappa_0(\delta)/\log t$ estimate.
+
+For a fixed $\delta$, an eventual detector-scale sign excludes deep zeros only above its threshold. It does not eliminate finitely many exceptions. Together with the critical-strip bounds on that finite remainder it yields quasi-RH strength, not automatically the exact global strip advertised by the eventual estimate.
+
+### 7.6 Ordered orientation cannot be scalarized away
+
+The inspected [ordered prime-cross source](../../../formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionOrderedPrimeCrossCurvature.lean) contains the exact function
+
+\[
+\mathcal O_{2,3}(a)=
+\frac{(2^a-3^a)(2^a-1)(3^a-1)}{2^a3^a}.
+\]
+
+It is negative for $a>0$, positive for $a<0$, odd, and zero exactly at $a=0$. This is a real orientation detector.
+
+But summing it over a reflection-stable finite carrier gives **zero identically**. A successful use must preserve ordered channels through a faithful source landing. The global scalar sum has already lost the desired orientation.
+
+### 7.7 The carrier must retain divisor singularities
+
+The [finite local spectral-frame obstruction](../../../formal/GaloisForLFunctions/RHTower/XiFiniteLocalSpectralFrameObstruction.lean) proves more than failure of one ansatz:
+
+- an entire Hermitian-diagonal multiplier for the horizontal Xi derivative would give an entire flux coboundary;
+- the coboundary would propagate zeros by a nonzero real shift;
+- iteration would leave the critical strip.
+
+Consequently, no finite constant-coefficient polynomial spectral frame supplies that horizontal derivative at positive aperture.
+
+This does not rule out the local polynomial heads above. They are height-dependent, divisor-sensitive objects with changing factors. It rules out replacing the whole transverse singular structure by a universal entire multiplier.
+
+The [killed-route catalogue](../rh-killed-routes.md) gives further WD cautions: averaged Husimi positivity loses pointwise coefficient sign; holomorphic excess bounds do not provide the missing mixed-class control; scalar shorting and baseline-cancelling nonnegative kernels have specific no-go results. None authorizes retiring WD itself.
+
+## 8. WD: opportunities for a new mechanism
+
+### 8.1 Priority: a source certificate for the local coefficient cone
+
+The most concrete target is:
+
+> Starting from the arithmetic/theta definition of $\Xi$, prove coefficient nonnegativity of the radius-one finite head at every real height.
+
+The head criterion is RH-equivalent. The opportunity is to find a source construction that certifies those coefficients, with no spectral sign assumed.
+
+A useful intermediate language is **contour-defined local factors**. Choose a conjugation-symmetric contour enclosing a local zero block and avoiding boundary zeros. Its power sums are
+
+\[
+p_j(t)=\frac1{2\pi i}\int_\Gamma
+(z-t)^{2j}\frac{\Xi'(z)}{\Xi(z)}\,dz.
+\]
+
+If
+
+\[
+P_{t,R}(y)=\prod_{|z_q-t|\le R}\bigl(y+(z_q-t)^2\bigr)
+=y^N+e_1y^{N-1}+\cdots+e_N,
+\]
+
+Newton's identities give
+
+\[
+k e_k=\sum_{j=1}^{k}(-1)^{j-1}e_{k-j}p_j,\qquad e_0=1.
+\]
+
+For boundary collisions one can choose an admissible radius in, for example, $[1,2]$. Existence of a zero-free boundary follows from discreteness; a useful quantitative separation bound does not follow automatically. A height-dependent admissible radius still detects every off-line zero at its own ordinate.
+
+**Contour reconstruction itself is not new.** The corpus already has [polynomial finite-contour identities](../../../formal/GaloisForLFunctions/RHTower/XiMassPolynomialFiniteContour.lean) and [polynomial Euler-contour source identities](../../../formal/GaloisForLFunctions/RHTower/XiMassPolynomialEulerContourSourceIdentity.lean). The additional theorem would be a source certificate for the *signed Newton combinations*.
+
+Possible certificate formats to investigate:
+
+- an exact nonnegative combinatorial expression for those combinations;
+- a source-defined family of Gram minors whose identity with the coefficients is proved;
+- a signed telescoping law whose complete boundary remainder is nonnegative.
+
+These are candidate formats, not available constructions. In particular, positivity of separate power sums does not justify positivity of the alternating Newton recursion.
+
+The certificate must work for $k$ up to the degree of the actual local head at height $t$. “For every fixed $k$, eventually in $t$” is a different statement.
+
+**What this bypasses:** Gaussian approximation error, distant-tail sign, and unnecessary division by $\Xi(t)$.
+
+**What remains:** the arithmetic coefficient inequality, with growing degree and arbitrary local multiplicity. This is the decisive wall, now isolated.
+
+### 8.2 Alternative: source residue transport giving a subquantum bound
+
+A second mechanism would construct the collision observable directly from arithmetic source currents, then prove
+
+\[
+C(T_j)<2
+\quad\text{on a cofinal sequence }T_j.
+\]
+
+Such a construction must represent **gross collision charge**, not a signed index whose opposite contributions cancel. It must retain local multiplicities and the ordered mixed prime–Gamma terms.
+
+The attractive feature is quantization: a strictly subquantum estimate can exclude every collision without estimating each zero's depth. But the quantized endpoint is already known; all novelty lies in the source bound and faithful landing.
+
+A plausible research object is a domain-sensitive residue current with a proved conservation/boundary law. Its hard theorem would be that the complete signed source budget dominates the collision charge with total error below two. A positive diagonal estimate does not control the required negative-cross terms.
+
+This direction avoids asking for coefficient positivity, but not source orientation. I rank it behind the finite-head target because its missing landing and budget are less localized.
+
+### 8.3 Direct cap cancellation remains a valid target
+
+One could instead prove $\Re\mathcal C_1\le0$ almost everywhere by a signed source identity. This would combine with the existing opposite inequality and settle WD.
+
+The desired identity must include the completed source, its residues and all mixed terms. It cannot replace the cap by a symmetric scalar average that vanishes for every reflected configuration.
+
+An exact cancellation or conservation theorem could be stronger than an estimate of individual prime terms. No such theorem emerged from the inspected corpus. Calling the cap a boundary term is not yet a proof that the boundary contributes zero.
+
+## 9. WD-specific field: arithmetic local divisor geometry
+
+### 9.1 Central question
+
+**Why do the actual theta/Euler source and its prime–Gamma compatibility force every local divisor block to have the correct coefficient orientation, or force every adverse residue charge to vanish?**
+
+The field would study local factors and their transition laws before imposing any real-zero condition. It would retain the singular information excluded by the entire-frame no-go.
+
+### 9.2 Objects
+
+1. **Source analytic germs:** theta, Euler and completed prime–Gamma descriptions with proved transition identities.
+2. **Contour-defined factor polynomials:** multiplicity-exact local factors, including central zero factors.
+3. **Coefficient cones:** nonnegative Taylor coefficients, forward-heat versions and their exact multiplication laws.
+4. **Residue currents:** Ward caps and local divisor fluxes, with their domains and exceptional boundary levels.
+5. **Ordered channels:** prime/Gamma cross terms retained before reflection or scalarization.
+6. **Transition data:** factors entering or leaving a moving contour and the corresponding changes in degree, residues and coefficients.
+7. **Arithmetic certificates:** finite source expressions with proved sign and controlled passage across all heights.
+
+The language would distinguish the coefficient cone from real-axis nonnegativity, and both from positive Hermitian forms. The example $(x^2-\delta^2)^2$ makes that distinction indispensable.
+
+### 9.3 Foundational principles
+
+- **Preserve the divisor exactly.** Keep central factors and all multiplicity copies; do not divide by a possibly vanishing central value.
+- **Use exact tail positivity when available.** Approximate Gaussian control should not replace a stronger exact result.
+- **Do not impose orientation in the definition.** A Gram representation, positive metric or real-rooted local factor is a theorem to prove.
+- **Keep singular transverse behavior.** Allow varying degree, nonlocal dependence and domain-sensitive currents.
+- **Retain ordered mixed terms.** Reflection invariance can erase an orientation detector.
+- **Match the endpoint's charge.** Weighted cap, multiplicity mass, collision count and negative index are separate observables.
+- **Control joint limits.** Height, degree, contour radius, heat and zero separation must be handled in the order the receiver needs.
+
+### 9.4 Research questions
+
+| Question | Required answer | Existing result it must exceed |
+|---|---|---|
+| Can local coefficients be computed from the source with a sign certificate? | A positive formula or complete signed identity for the Newton combinations | Contour reconstruction alone |
+| Can the certificates cross a contour containing a multiple zero? | Exact factor transition and sign preservation, without simplicity | Fixed generic contour calculations |
+| What arithmetic relation selects the coefficient cone? | A relation proved for the actual source and violated by relevant impure models | Symmetry and real-axis norm-square positivity |
+| Can ordered prime curvature reach the divisor without cancellation? | A faithful, singularity-preserving landing and bound on mixed terms | The scalar odd detector |
+| Can source currents control integer collision charge? | A cofinal bound strictly below two | Positive weighted Ward cap or density-one estimates |
+| Can detector-scale head positivity be proved first for one fixed depth? | Correct $\kappa_0(\delta)/\log t$ scale, all required orders and finite-height accounting | Positivity at $100/\log t$ |
+| Can local degree and clustering be priced? | Bounds that remain sufficient at the actual height and multiplicity | Fixed-degree asymptotics |
+
+### 9.5 A viable order of work
+
+1. **Exploit the existing exact head and heat transfers.** Establish a source-only description of their coefficient functionals, with all normalizations explicit.
+2. **Test candidate identities on small local blocks.** Include central multiplicities and a reflected off-line pair. A certificate that accepts the latter at its own ordinate is invalid.
+3. **Find a selective arithmetic identity.** Test it against shifted/impure data and preserve the complete Gamma/polar terms.
+4. **Prove a nontrivial family of head certificates with growing degree.** Identify exactly what prevents extending the family.
+5. **Supply all-height control.** Use either a full coefficient theorem, detector-scale bounds with the required depth/height quantifiers, or a cofinal collision-charge theorem.
+
+The first three stages can yield useful unconditional mathematics even if the final stage remains open. They should produce explicit formulas, obstructions or stability laws—not merely another definition of a positive head.
+
+### 9.6 What would constitute a WD breakthrough
+
+Any one of the following, derived independently from the actual source, would suffice:
+
+- coefficient nonnegativity of every fixed-radius head;
+- almost-everywhere nonpositivity of the real Ward cap at a suitable fixed positive $\tau$;
+- collision charge below two on cofinal cutoffs.
+
+A finite-order calculation, a positive averaged kernel, a model Gaussian statement, or a generic local real-rootedness criterion would not suffice.
+
+The strongest practical recommendation is therefore **put the source coefficient cone at the center of WD research**. Its exact receiver and tail transfer are already in place. Keep directed residue transport as the alternative if coefficient identities consistently expose an irreducible mixed current.
+
+## 10. Corrections and status distinctions affecting the recommendations
+
+### 10.1 BVI's readout target
+
+The BVI README's “faster than $\log N$” formulation is incompatible with the inspected [readout uncertainty theorem](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/ReadoutEnergyUncertaintyPrinciple.lean):
+
+\[
+\kappa R_N(c)^2\le(\log N-\kappa)Q_N(c),
+\qquad \kappa>0.
+\]
+
+For positive $Q_N$, this gives $R_N^2/Q_N=O(\log N)$. The same module proves RH equivalent to the ratio being **unbounded**, not superlogarithmic. The correct target can be much smaller than logarithmic growth.
+
+The README's earlier balanced-row “open” wording must also be read alongside its later actual-source balanced qualitative gains. The unpaid problem is a quantitative summable estimate.
+
+### 10.2 AIP's raw prime-comb target
+
+The requested documents contain both an older open polynomial-majorant target and the later obstruction showing the raw comb energy has exponential size. The latter governs. Signed completed compensation remains meaningful; a polynomial bound for the raw positive energy is not a surviving target.
+
+### 10.3 WD's detector constant
+
+The hard-obstacles report records $\delta^2/[100(\log(2/\delta)+1)]$. The inspected current source defines $\delta^2/[200(\log(3/\delta)+1)]$. This report uses the latter; no stronger constant is assumed.
+
+### 10.4 WD's exact reductions
+
+The frontier reports emphasize Gaussian comparisons. The inspected finite-head positivity and heat-reduction sources now supply stronger exact transfers. The report therefore does not propose proving those transfers again.
+
+### 10.5 Additional construction already present
+
+The later permitted README changes include APT's general stencil calculus and AOG's finite Euler-factor invariance and finite-orbit orientation. Corpus search additionally found the successor cocycle and its finite-field/counting calibration. All are treated as existing work.
+
+### 10.6 Meaning of “new”
+
+The searches support a proposed next theorem, not a proof of worldwide novelty. The present report establishes no new RH implication beyond elementary deductions from the inspected receivers, and no unconditional arithmetic producer closing a wall.
+
+Its substantive recommendation is narrower: **develop quantitative source rigidity on escaping defects; for WD, pursue source certificates for the exact local coefficient cone.** Those targets survive the reviewed obstructions while explicitly retaining the arithmetic theorem still needed.
+
 

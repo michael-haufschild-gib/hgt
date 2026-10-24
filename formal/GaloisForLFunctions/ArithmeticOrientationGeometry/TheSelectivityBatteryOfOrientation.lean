@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticOrientationGeometry.TheOrientationRateIsTheDepthOfTheDeepestSeenZero
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheGoldenCurveIsABeurlingSystem
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheScalingSurfaceOfACurve
 
 /-!
 # The selectivity battery of orientation
