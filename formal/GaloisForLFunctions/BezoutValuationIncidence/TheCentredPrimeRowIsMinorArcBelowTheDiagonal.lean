@@ -276,10 +276,13 @@ theorem abs_kernelStatistic_centredPrimeBlock_le_minorArc {p : ℕ} (hp : p.Prim
           add_le_add (add_le_add (hS _ (by omega)) (hS _ (by omega))) hgeo
       _ = B' := by ring
   have hB'0 : 0 ≤ B' := by
-    have h := htw _ ?_ 0 (Nat.zero_le _)
-    · exact (norm_nonneg _).trans h
-    · rw [nontrivialRoots_eq_primitiveRoots hp]
-      exact (mem_primitiveRoots hp.pos).mpr (Complex.isPrimitiveRoot_exp p hp.ne_zero)
+    have : 0 ≤ primeMinorArcBound p U (2 * Q) := by
+      unfold primeMinorArcBound
+      have := rootHarmonicSum_nonneg p
+      have := Real.log_natCast_nonneg U
+      have := Real.log_natCast_nonneg (2 * Q)
+      positivity
+    positivity
   have h2 : rowTransformMax N (centredPrimeBlock Q) p ≤ B' / ((Q : ℝ) + 1) ^ 2 :=
     rowTransformMax_le_of_forall (by positivity) fun ζ hζ =>
       norm_sum_window_div_pow_le_of_twisted Q N 2 hQN hsupp ζ (htw ζ hζ)

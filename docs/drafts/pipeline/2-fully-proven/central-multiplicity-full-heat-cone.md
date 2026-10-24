@@ -68,6 +68,8 @@ The coefficient cone is closed and nonempty at the upper bound. It is upward clo
 
 For positive integer `m`, multiplication by `8m/a` and squeezing gives `8mσ_m/a→1`. In contrast, the top-coefficient threshold `2a/C` has order `a/m²`. Near the full threshold the detecting index is near `j=m/2`, explaining why the top coefficient alone loses a factor proportional to multiplicity.
 
+The threshold decreases strictly with multiplicity. If `n>m`, then `8n+5≥8m+13>8m+10`, so `σ_n≤a/(8n+5)<a/(8m+10)≤σ_m`. The [exact middle-contact theorem](masked-pair-middle-order-contact.md) sharpens the active index and supplies the exact radical value.
+
 ## Programme significance
 
 Central factors are exactly removable from the unheated coefficient cone but not from its forward-heat counterpart. Heat transfers the adverse sign into lower orders. The full degree must be retained when pricing a local multiple zero. Any actual-source use must additionally pay the existing signed cofactor-deviation budget at the chosen order and heat; this polynomial result does not discharge that arithmetic estimate.

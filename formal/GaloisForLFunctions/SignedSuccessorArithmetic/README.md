@@ -217,7 +217,8 @@ a square root, such as `q` in `|S|² = q`).
     (`succCorr_legTwin_of_three_mod_four`).
 18. **Quantized bias.** `M(pJ) = ε M(J)` (`signSum_legTwin_prime_mul`), so
     `|M(N)| ≤ p(log_p N + 1)` (`abs_signSum_legTwin_le`) and `|C(pJ) + J| ≤ 2p(log_p J + 1)`
-    (`abs_succCorr_legTwin_add_le`): the mean successor sign of the prime-conductor twin is `−1/p`.
+    (`abs_succCorr_legTwin_add_le`); at every scale `|C(N) + N/p| ≤ 2p(log_p N + 2)`
+    (`abs_succCorr_legTwin_add_div_le`): the mean successor sign of the prime-conductor twin is `−1/p`.
 
 ### 3.6 The floor reads the parity of the shift (`TheFloorReadsTheParityOfTheShift`)
 
@@ -292,6 +293,19 @@ Ramanujan step vector `v`, proves it nonnegative, and bounds it uniformly in squ
     (`logAgree_le_of_zeroDefect`): zero-defect signs are extremal for the one-third floor.
 35. **A second branch.** Zero defect with `f(2) = 1` forces `f(3) = f(5) = f(7) = −1` and
     `f(11) = f(13) = 1` (`zeroDefect_of_two_eq_one`), a pattern no conductor-three twin has.
+
+### 3.11 The size-truncated hypercube form (`TheSizeTruncatedHypercubeForm`)
+
+The prime-supported form diverges for a reason unrelated to zeros; the form that can carry
+information about zeros truncates the divisors by size,
+`R_ε(D) = Σ_{d₁, d₂ ≤ D} μ(d₁) μ(d₂) (d₁ d₂)^{−1/2−ε} Φ_r(d₁/d₂)`.
+
+36. **Spectral form.** `R_ε(D) = ∫ W(ξ) |Σ_{d ≤ D} μ(d) d^{−σ} e^{2πiξ log d}|² dξ` with
+    `σ = 1/2 + ε` (`sizeHypercubeForm_eq_integral`, `sum_sum_cos_eq_moebiusPolySq`), hence
+    `R_ε(D) ≥ 0` (`sizeHypercubeForm_nonneg`).
+37. **Absolute convergence.** For `σ > 1`, `R_ε(D) ≤ ζ(σ)² Φ_r(1)` uniformly in `D`
+    (`sizeHypercubeForm_le_of_one_lt`, from `|Σ_{d ≤ D} μ(d) d^{−σ} e^{iθ log d}|² ≤ (Σ_{d ≤ D} d^{−σ})²`,
+    `moebiusPolySq_le`).
 
 ---
 
@@ -385,10 +399,14 @@ Built and reusable:
   spectral weight, and the identity `Φ_r(c) = ∫ W(ξ) cos(2πξ log c) dξ`; the divisor expansion of
   hypercube forms into partial Euler products.
 
+- *Size-truncated forms*: the spectral identity for `Σ_{d₁, d₂ ≤ D} μ(d₁)μ(d₂)(d₁d₂)^{−σ} Φ_r(d₁/d₂)`
+  as `∫ W |Σ_{d ≤ D} μ(d) d^{−σ} e^{2πiξ log d}|²`, nonnegativity, and the bound in the region of
+  absolute convergence.
+
 To build:
 
-- *Size-truncated forms*: the spectral identity for `Σ_{d₁, d₂ ≤ D} μ(d₁)μ(d₂)(d₁d₂)^{−σ} Φ_r(d₁/d₂)`
-  as `∫ W |Σ_{d ≤ D} μ(d) d^{−σ−2πiξ}|²`, and its relation to `1/ζ` on vertical lines.
+- *Size-truncated forms against `1/ζ`*: the relation of `R_ε(D)` to `1/ζ` on vertical lines in
+  `1/2 < σ ≤ 1`.
 - *Balanced Kloosterman forms*: from the second moment to the cross-scale Gram of BVI §3.13.
 
 ---
@@ -402,9 +420,10 @@ To build:
    saving at one scale. Its first output in receiver coordinates must be a zero-free strip, and the
    statement must say which one.
 3. **Size-truncated hypercube forms.** The prime-supported form is settled (§3.7). Its borderline
-   `ε = 1/2` (where the Euler product sits on the line of absolute convergence) is open, and so is
-   the size-truncated form above: its uniform boundedness for `1/2 < σ < 1` is where the zeros of
-   `ζ` enter, and its first rung is a zero-free strip.
+   `ε = 1/2` (where the Euler product sits on the line of absolute convergence) is open. The
+   size-truncated form `R_ε(D)` is a spectral mean square of the truncated Möbius polynomial
+   (§3.11) and is bounded for `σ > 1`; its uniform boundedness for `1/2 < σ ≤ 1` is where the zeros
+   of `ζ` enter, and its first rung is a zero-free strip.
 4. **Classify the zero-defect signs.** Zero-defect signs attain the floor (item 34). The
    conductor-three twins are zero-defect; the `f(2) = 1` branch is forced at the first primes
    (item 35). Is it realized by an infinite sign, and is it a twin of a character of larger
@@ -479,4 +498,5 @@ strongest positive survivor recorded.
 | `TheHypercubeDirichletFormIsUnbounded` | the step vector on the half line, the spectral form of the dilation profile, the twisted power and the divisor expansion, `Q_ε(P)` as a spectral integral, unboundedness for `−1/2 ≤ ε < 1/2` |
 | `TheKloostermanSecondMomentIsACount` | Kloosterman sums, conjugation of additive characters, the exact second moment, `K(0, b) = −1` |
 | `TheComplexSuccessorFloor` | unimodular signs, the unit-vector inequality, Cauchy–Schwarz on logarithmic sums, the complex floor `−1/2`, Catalan's pair |
+| `TheSizeTruncatedHypercubeForm` | the size-truncated hypercube form, its spectral identity, nonnegativity, and the bound for `σ > 1` |
 | `TheTwoScaleDeficitIsQuantized` | the two-scale deficit, its quantization, zero defect and equality, zero defect forces the floor, the `f(2) = 1` branch |

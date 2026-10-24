@@ -111,24 +111,39 @@ theorem exists_pos_xiFiniteHead_normalization (t : ℝ) {R : ℝ} (hR : 0 ≤ R)
     Complex.ext rfl (xiSliceGaussianFiniteHeadScalar_im_eq_zero t R)
   rw [xiFiniteHead_eq_localDivisorPolynomial, hs]
 
-/-- Each even Taylor coefficient of the exact source head is its real divisor coefficient
-times the canonical scalar. The identity holds also when the center is a multiple zero. -/
+/-- The exact canonical head as an even complex polynomial, including its scalar. -/
+def sourceHeadPolynomial (t R : ℝ) : ℂ[X] :=
+  C (xiSliceGaussianFiniteHeadScalar t R) *
+    expand ℂ 2 ((localDivisorPolynomial t (xiSliceGaussianRadiusHead t R)).map (algebraMap ℝ ℂ))
+
+theorem xiFiniteHead_eq_eval_sourceHeadPolynomial (t R : ℝ) :
+    xiSliceGaussianFiniteHead t R = fun z => (sourceHeadPolynomial t R).eval z := by
+  funext z
+  simp only [sourceHeadPolynomial, eval_mul, eval_C, expand_eval, eval_map]
+  exact xiFiniteHead_eq_localDivisorPolynomial t R z
+
+/-- Each even Taylor coefficient is its unnormalized real divisor coefficient times the
+canonical scalar. This remains valid at a multiple central zero. -/
 theorem xiFiniteHead_even_taylor (t R : ℝ) (k : ℕ) :
     (((2 * k).factorial : ℂ))⁻¹ *
       iteratedDeriv (2 * k) (xiSliceGaussianFiniteHead t R) 0 =
     xiSliceGaussianFiniteHeadScalar t R *
       (((localDivisorPolynomial t (xiSliceGaussianRadiusHead t R)).coeff k : ℝ) : ℂ) := by
-  let Q : ℂ[X] := C (xiSliceGaussianFiniteHeadScalar t R) *
-    expand ℂ 2 ((localDivisorPolynomial t (xiSliceGaussianRadiusHead t R)).map (algebraMap ℝ ℂ))
-  have heq : xiSliceGaussianFiniteHead t R = fun z => Q.eval z := by
-    funext z
-    simp only [Q, eval_mul, eval_C, expand_eval, eval_map]
-    exact xiFiniteHead_eq_localDivisorPolynomial t R z
-  rw [heq, factorial_inv_mul_iteratedDeriv_polynomial_eval]
-  dsimp only [Q]
+  rw [xiFiniteHead_eq_eval_sourceHeadPolynomial, factorial_inv_mul_iteratedDeriv_polynomial_eval]
+  unfold sourceHeadPolynomial
   rw [coeff_C_mul, show 2 * k = k * 2 by omega,
     coeff_expand_mul (by norm_num), coeff_map]
   rfl
+
+/-- Every odd Taylor coefficient vanishes by the exact squared-displacement factorization. -/
+theorem xiFiniteHead_odd_taylor (t R : ℝ) (k : ℕ) :
+    (((2 * k + 1).factorial : ℂ))⁻¹ *
+      iteratedDeriv (2 * k + 1) (xiSliceGaussianFiniteHead t R) 0 = 0 := by
+  rw [xiFiniteHead_eq_eval_sourceHeadPolynomial, factorial_inv_mul_iteratedDeriv_polynomial_eval]
+  unfold sourceHeadPolynomial
+  rw [coeff_C_mul, coeff_expand (by norm_num)]
+  have hodd : ¬2 ∣ 2 * k + 1 := by rintro ⟨n, hn⟩; omega
+  rw [if_neg hodd, mul_zero]
 
 /-- Real-axis nonnegativity follows factor by factor and imposes no coefficient signs. -/
 theorem localDivisorPolynomial_eval_nonneg (t : ℝ) (S : Finset XiZeroCopy) (x : ℝ) :
@@ -140,6 +155,48 @@ theorem localDivisorPolynomial_eval_nonneg (t : ℝ) (S : Finset XiZeroCopy) (x 
     simp only [eval_add, eval_X, eval_C]
     positivity
   · exact Finset.prod_nonneg fun q _ => pairFactor_eval_nonneg _ _ x
+
+/-- Disjoint divisor copies multiply exactly, with no nonvanishing assumption on the center. -/
+theorem localDivisorPolynomial_union (t : ℝ) {S T : Finset XiZeroCopy} (hST : Disjoint S T) :
+    localDivisorPolynomial t (S ∪ T) = localDivisorPolynomial t S * localDivisorPolynomial t T := by
+  classical
+  have hc : sliceTruncCrit (S ∪ T) = sliceTruncCrit S ∪ sliceTruncCrit T := by
+    ext q
+    simp only [mem_sliceTruncCrit, Finset.mem_union, or_and_right]
+  have hu : sliceTruncUp (S ∪ T) = sliceTruncUp S ∪ sliceTruncUp T := by
+    ext q
+    simp only [mem_sliceTruncUp, Finset.mem_union, or_and_right]
+  have hcd : Disjoint (sliceTruncCrit S) (sliceTruncCrit T) := by
+    rw [Finset.disjoint_left]
+    intro q hq hq'
+    exact Finset.disjoint_left.mp hST (mem_sliceTruncCrit.mp hq).1 (mem_sliceTruncCrit.mp hq').1
+  have hud : Disjoint (sliceTruncUp S) (sliceTruncUp T) := by
+    rw [Finset.disjoint_left]
+    intro q hq hq'
+    exact Finset.disjoint_left.mp hST (mem_sliceTruncUp.mp hq).1 (mem_sliceTruncUp.mp hq').1
+  unfold localDivisorPolynomial
+  rw [hc, hu, Finset.prod_union hcd, Finset.prod_union hud]
+  ring
+
+/-- Retained and removed copies form an unconditional exact transition, even at central zeros. -/
+theorem localDivisorPolynomial_split (t : ℝ) (S T : Finset XiZeroCopy) :
+    localDivisorPolynomial t S =
+      localDivisorPolynomial t (S ∩ T) * localDivisorPolynomial t (S \ T) := by
+  classical
+  have heq : (S ∩ T) ∪ (S \ T) = S := by ext q; simp; tauto
+  have hdisj : Disjoint (S ∩ T) (S \ T) := by
+    rw [Finset.disjoint_left]
+    intro q hq hq'
+    exact (Finset.mem_sdiff.mp hq').2 (Finset.mem_inter.mp hq).2
+  rw [← localDivisorPolynomial_union t hdisj, heq]
+
+/-- Every transition coefficient retains the full convolution, including signed mixed terms. -/
+theorem localDivisorPolynomial_split_coeff (t : ℝ) (S T : Finset XiZeroCopy) (n : ℕ) :
+    (localDivisorPolynomial t S).coeff n =
+      ∑ ij ∈ Finset.antidiagonal n,
+        (localDivisorPolynomial t (S ∩ T)).coeff ij.1 *
+          (localDivisorPolynomial t (S \ T)).coeff ij.2 := by
+  rw [localDivisorPolynomial_split t S T, coeff_mul]
 
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry

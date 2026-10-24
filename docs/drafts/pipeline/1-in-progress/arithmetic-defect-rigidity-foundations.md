@@ -42,12 +42,12 @@ passed Lean. `ForcingScaleSeparation.lean` also passed: vanishing receiver/forci
 divergent inverse ratio, exact unsigned-majorant comparison and impossibility of one common
 scalar normalization. `FixedSuccessorsDisappearFromEscapingProfiles.lean` passed with bounded
 actual increments, quadratic successor cost and an admission-or-collapse dichotomy.
+`TheCofactorTailCarriesTheForcing.lean` passed with uniform cutoff and VK budgets, and convergence
+of every fixed signed cofactor tail to the complete forcing.
 Seven further modules have paper arguments and Lean sources; their audits are in progress:
 
 - `TheReceiverIsTheGramTangent`: exact signed Gram distance and determinant, degeneration in
   forcing normalization, unit distance in receiver normalization.
-- `TheCofactorTailCarriesTheForcing`: a uniform cutoff budget and convergence of every fixed
-  signed cofactor tail to the complete forcing.
 - `CofactorSuccessorWordsHaveABoundaryCost`: the word action's denominator/boundary sandwich,
   actual receiver energy cost, bounded forcing work and fixed-word collapse in both quantities.
 - `ForcingEscapesAMovingCofactorWindow`: a source-defined growing cutoff
@@ -58,6 +58,8 @@ Seven further modules have paper arguments and Lean sources; their audits are in
   `-zeta'(1+epsilon)/zeta(1+epsilon)`, and its least-upper-bound property.
 - `TheRenormalizedCofactorIsAntipodalOnEscape`: the exact signed residual identity and
   normalized cofactor pairing approaching `-1` on the escaping branch.
+- `TheActualReceiverHasAnAbsolutePoleTrace`: absolute Mellin trace at `1-epsilon`, its
+  extension from the convergent side, and exact equality with the forcing power coefficient.
 
 The foundational README explains these mechanisms and the complete programme. Its theorem
 claims must be reconciled with the finished audits. Umbrella wiring and final no-output-file

@@ -1,7 +1,7 @@
 # Smooth polynomial-aperture detection from the cluster horizon
 
 - **ID:** cluster-horizon-smooth-polynomial-detector
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** formalization bridge; no novelty claim
 - **Source:** review-2410 J4(i); `zeta_hodge_index_cluster_horizon` and complete-form mollification.
 - **Statement:** There is an absolute C>0 such that every nontrivial zeta zero
@@ -61,12 +61,17 @@ global positivity theorem and does not assert that such a zero exists.
 
 - [x] Dependency-closed paper proof of the stronger exact statement.
 - [x] Novelty audit: direct consequence of existing corpus results.
-- [ ] Canonical Lean leaf and degree-38 specialization checked.
+- [x] Canonical Lean leaf and degree-38 specialization checked.
 - [x] Public declarations audited with `#print axioms`.
-- [ ] Owning umbrella import added.
+- [x] Owning umbrella import added.
 
 Source: `SquareRootThreshold/SmoothWeilDetectorPolynomialAperture.lean`.
-The full-source scratch check and all three public transitive axiom audits
-passed, using only `propext`, `Classical.choice`, and `Quot.sound`. The
-canonical final check and owning umbrella import remain pending. Evidence:
-`logs/just-work-2410/SquareRootThreshold__SmoothWeilDetectorPolynomialAperture.axioms.*`.
+The full-source scratch check, all three public transitive axiom audits, and
+the canonical `lake --old env lean` check passed. Only `propext`,
+`Classical.choice`, and `Quot.sound` occur. The owning umbrella imports the
+leaf exactly once. Evidence:
+`logs/just-work-2410/SquareRootThreshold__SmoothWeilDetectorPolynomialAperture.{axioms,check}.{json,txt}`.
+
+The exact declarations are `RHTower.exists_smooth_weil_negative_of_not_hodgeIndex`,
+`RHTower.exists_smooth_weil_negative_quadratic_aperture`, and
+`RHTower.exists_smooth_weil_negative_polynomial_aperture`.

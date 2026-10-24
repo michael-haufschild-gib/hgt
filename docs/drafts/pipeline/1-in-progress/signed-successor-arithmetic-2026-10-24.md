@@ -38,15 +38,17 @@ unconditional theorems on the research topics of fable.md §3.8.
 - [ ] 3 → 4  publication-ready
 
 ## Status
-- Compiled and wired: cocycle, one-third floor, conductor-three sharpness, F_q calibration,
-  conductor quantization, shift parity, partial Euler products diverge in the strip, spectral
-  hypercube form unbounded (L¹ weights). README v1 written.
-- In check: `TheHypercubeDirichletFormIsUnbounded` (BVI §7.5 / topic 3: unbounded for −1/2 ≤ ε < 1/2).
-- Drafted, to check in order: Kloosterman second moment, complex floor [−1/2, −1/3] + Catalan pair,
-  quantized two-scale deficit + zero-defect extremality + f(2)=1 forced values.
-- Then: README v2 (pillars 23–35, traps, questions, tools, survivor for topic 3), axiom audit.
+- Fourteen-file programme: umbrella + 13 modules, all checked with `lake --old env lean`, wired into
+  `SignedSuccessorArithmetic.lean` (wired into `MainTheorems.lean`). README v2 (§§3.1–3.11, pillars
+  1–37). Axiom audit: main theorems use only propext, Classical.choice, Quot.sound.
+- Resolved: review topic 3 / BVI §7.5 — the prime-supported hypercube form is unbounded for
+  −1/2 ≤ ε < 1/2 (pole-driven); survivor: size-truncated form (spectral identity built).
+- Open (README §7): λ beyond conductor 3, square-root scale over ℤ, borderline ε = 1/2 and
+  size-truncated boundedness in 1/2 < σ ≤ 1, zero-defect classification, lag floors, complex floor
+  constant in [−1/2, −1/3], μ calculus, index exit, Kloosterman to balanced Gram, Witt.
 
 ## Log
 - 2026-10-24 — created. Corpus survey: BVI (incidence counts, least seed, hypercube form, prefix
   lattice), THIM (selectivity classes), AOT (frustration index), RHTower Liouville additive
   correlation (no successor-sign calculus exists in the corpus).
+- 2026-10-24 — modules A–K compiled and audited; README v2; topic 3 settled negatively.

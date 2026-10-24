@@ -5,11 +5,18 @@ import GaloisForLFunctions.ArithmeticOrientationGeometry.TheOrientationOfACycle
 import GaloisForLFunctions.ArithmeticOrientationGeometry.EulerFactorsAndPayment
 import GaloisForLFunctions.ArithmeticOrientationGeometry.TheArchimedeanPlaceOrientsOrbitSegments
 import GaloisForLFunctions.ArithmeticOrientationGeometry.TheOrientationRateIsTheDepthOfTheDeepestSeenZero
+import GaloisForLFunctions.ArithmeticOrientationGeometry.TheSelectivityBatteryOfOrientation
+import GaloisForLFunctions.ArithmeticOrientationGeometry.SectionsOnTheOrbitOfACycle
+import GaloisForLFunctions.ArithmeticOrientationGeometry.EventualHasseWeilIsHasseWeil
+import GaloisForLFunctions.ArithmeticOrientationGeometry.TheOrientationIndexOfACycle
+import GaloisForLFunctions.ArithmeticOrientationGeometry.CorrectorsAndTheLefschetzTrace
 import GaloisForLFunctions.ArithmeticOrientationGeometry.TheIndexExit
 
 /-!
 # Arithmetic Orientation Geometry
 
 Umbrella for the geometry of the scaling correspondence: scaling data, orbit correlations,
-Lefschetz numbers, Weil planes and the correspondence algebra. See `ArithmeticOrientationGeometry/README.md`.
+Lefschetz numbers, Weil planes and the correspondence algebra; the orientation theorem, orientation
+rates and indices of cycles; orbit surfaces and Riemann–Roch; Euler factors, the archimedean place,
+correctors and the selectivity battery. See `ArithmeticOrientationGeometry/README.md`.
 -/

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Suzuki.SuzukiCriticalFamilyContraction
+import GaloisForLFunctions.«arithmetic-positivity-theory».DenseScaleWindowsAndMultiWindowPositivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».SourceSelectionInTheFullWeilCone
 
 /-!
@@ -226,15 +227,33 @@ theorem suzukiFirstVariationEnvelope_mul (A E₀ B : ℝ) {c : ℝ} (hc : 0 ≤ 
       c * suzukiFirstVariationEnvelope A E₀ B omega := by
   have hmax : max ((c * E₀) * (c * B)) 0 = c ^ 2 * max (E₀ * B) 0 := by
     rw [show (c * E₀) * (c * B) = c ^ 2 * (E₀ * B) by ring,
-      ← mul_max_of_nonneg _ _ (sq_nonneg c), mul_zero]
+      show (0 : ℝ) = c ^ 2 * 0 by ring, ← mul_max_of_nonneg _ _ (sq_nonneg c)]
   have hsqrt : Real.sqrt (max ((c * E₀) * (c * B)) 0) = c * Real.sqrt (max (E₀ * B) 0) := by
     rw [hmax, Real.sqrt_mul (sq_nonneg c), Real.sqrt_sq hc]
   unfold suzukiFirstVariationEnvelope
   dsimp only
-  rw [hsqrt, Finset.mul_sum]
-  ring_nf
-  congr 1
-  refine Finset.sum_congr rfl fun n _ => ?_
+  rw [hsqrt]
+  have hsum_eq : c * ∑ n ∈ Finset.Icc 2 ⌊Real.exp A⌋₊,
+      Real.exp (-Real.log n / 2) *
+        (|suzukiShiftedCoefficient omega n / omega| *
+          (Real.sqrt (max (E₀ * B) 0) *
+            Real.sqrt (max (2 * suzukiCriticalPrimaryMass omega *
+              suzukiCriticalPrimaryScale omega * omega * archWeightFirstMoment) 0) +
+            2 * omega * suzukiCriticalPrimaryMass omega * E₀ * A * Real.exp (A / 2)) +
+          |suzukiShiftedCoefficient omega n / omega * suzukiCriticalPrimaryMass omega -
+            2 * ArithmeticFunction.vonMangoldt n| * E₀) =
+    ∑ n ∈ Finset.Icc 2 ⌊Real.exp A⌋₊,
+      Real.exp (-Real.log n / 2) *
+        (|suzukiShiftedCoefficient omega n / omega| *
+          (c * Real.sqrt (max (E₀ * B) 0) *
+            Real.sqrt (max (2 * suzukiCriticalPrimaryMass omega *
+              suzukiCriticalPrimaryScale omega * omega * archWeightFirstMoment) 0) +
+            2 * omega * suzukiCriticalPrimaryMass omega * (c * E₀) * A * Real.exp (A / 2)) +
+          |suzukiShiftedCoefficient omega n / omega * suzukiCriticalPrimaryMass omega -
+            2 * ArithmeticFunction.vonMangoldt n| * (c * E₀)) := by
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun _ _ => by ring
+  rw [mul_add, hsum_eq]
   ring
 
 /-- Monotonicity of `suzukiFirstVariationEnvelope` in the energy and increment bounds `(E₀, B)`. -/
@@ -280,7 +299,7 @@ theorem tendsto_suzukiFirstVariationEnvelope (A E₀ B : ℝ) :
           suzukiCriticalPrimaryScale omega * omega * archWeightFirstMoment) 0))
       (𝓝[>] 0) (𝓝 0) := by
     have hin := (((hm.const_mul 2).mul hs).mul hi).mul_const archWeightFirstMoment
-    have hmax := hin.max tendsto_const_nhds
+    have hmax := hin.max (tendsto_const_nhds (x := (0 : ℝ)))
     have hrt := (Real.continuous_sqrt.continuousAt.tendsto.comp hmax).const_mul
       (Real.sqrt (max (E₀ * B) 0))
     simpa only [Function.comp_apply, mul_zero, zero_mul, max_self, Real.sqrt_zero] using hrt
@@ -340,7 +359,7 @@ theorem tendsto_suzukiFirstVariationEnvelope (A E₀ B : ℝ) :
 
 private theorem abs_primaryCusp_secant_sub_le {f : ℝ → ℝ}
     (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
-    {E₀ B omega : ℝ} (hE₀ : autocorr f 0 ≤ E₀) (hB0 : 0 ≤ B)
+    {E₀ B omega : ℝ} (hE₀ : autocorr f 0 ≤ E₀)
     (hB : ∀ t : ℝ, 0 < t → autocorr f 0 - autocorr f t ≤ B * t)
     (homega : 0 < omega) (homega2 : omega ≤ 2) :
     |(suzukiCriticalPrimaryCusp f omega 0 - autocorr f 0) / omega -
@@ -356,11 +375,9 @@ private theorem abs_primaryCusp_secant_sub_le {f : ℝ → ℝ}
   have hp0 : IntegrableOn (fun t => autocorr f t * suzukiCriticalPrimaryDensity omega t) (Ioi 0) := by
     simpa only [zero_add] using integrableOn_suzukiCriticalPrimaryCusp_integrand hf hfc homega homega5 0
   have hcomp_int : IntegrableOn (fun t => (autocorr f 0 - autocorr f t) *
-      (suzukiCriticalPrimaryDensity omega t / omega)) (Ioi 0) := by
-    refine ((hi.const_mul (autocorr f 0)).sub hp0).div_const omega |>.congr_fun ?_ measurableSet_Ioi
-    intro t _
-    dsimp only [Pi.sub_apply]
-    ring
+      (suzukiCriticalPrimaryDensity omega t / omega)) (Ioi 0) :=
+    (((hi.const_mul (autocorr f 0)).sub hp0).div_const omega).congr
+      (Eventually.of_forall fun t => by dsimp only [Pi.sub_apply]; ring)
   have htan_int : IntegrableOn (fun t => (autocorr f 0 - autocorr f t) *
       (2 * Real.exp (-(5 / 2 : ℝ) * t) / (1 - Real.exp (-2 * t)))) (Ioi 0) := by
     have hcm : ContinuousOn (fun t => (autocorr f 0 - autocorr f t) *
@@ -387,7 +404,7 @@ private theorem abs_primaryCusp_secant_sub_le {f : ℝ → ℝ}
       calc _ = (∫ t in Ioi 0, autocorr f 0 * suzukiCriticalPrimaryDensity omega t -
             autocorr f t * suzukiCriticalPrimaryDensity omega t) / omega := by
             rw [← integral_div]
-            exact congrArg (· / omega) (setIntegral_congr_fun measurableSet_Ioi fun _ _ => by ring)
+            exact setIntegral_congr_fun measurableSet_Ioi fun _ _ => by ring
         _ = _ := by
             rw [integral_sub (hi.const_mul _) hp0, integral_const_mul,
               integral_suzukiCriticalPrimaryDensity homega homega5]
@@ -433,7 +450,7 @@ private theorem abs_primaryCusp_secant_sub_le {f : ℝ → ℝ}
 
 private theorem primaryCuspError_and_cuspRadius_le_envelope {f : ℝ → ℝ}
     (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
-    {A E₀ B omega : ℝ} (hA : 0 ≤ A) (hE₀ : autocorr f 0 ≤ E₀) (hB0 : 0 ≤ B)
+    {A E₀ B omega : ℝ} (hA : 0 ≤ A) (hE₀ : autocorr f 0 ≤ E₀)
     (hB : ∀ t : ℝ, 0 < t → autocorr f 0 - autocorr f t ≤ B * t)
     (homega : 0 < omega) (homega2 : omega ≤ 2) :
     let Mω := suzukiCriticalPrimaryMass omega
@@ -499,7 +516,7 @@ private theorem primaryCuspError_and_cuspRadius_le_envelope {f : ℝ → ℝ}
 private theorem abs_poleCusp_zero_sub_le {f : ℝ → ℝ}
     (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
     {A E₀ B omega : ℝ} (hA : 0 < A) (hcut : ∀ t : ℝ, A ≤ t → autocorr f t = 0)
-    (hE₀ : autocorr f 0 ≤ E₀) (hB0 : 0 ≤ B)
+    (hE₀ : autocorr f 0 ≤ E₀)
     (hB : ∀ t : ℝ, 0 < t → autocorr f 0 - autocorr f t ≤ B * t)
     (homega : 0 < omega) (homega2 : omega ≤ 2) :
     |suzukiCriticalPoleCusp f omega 0 - ∫ s in Ioi 0, Real.exp (s / 2) * autocorr f s| ≤
@@ -510,7 +527,6 @@ private theorem abs_poleCusp_zero_sub_le {f : ℝ → ℝ}
             |suzukiCriticalPrimaryMass omega - 1| * E₀) +
           omega * A * E₀) := by
   have homega5 : omega < 5 / 2 := by linarith
-  have hR0 : 0 ≤ autocorr f 0 := GaloisForLFunctions.BiScaleUncertainty.autocorr_zero_nonneg f
   have hcutint : (∫ s in Ioi 0, Real.exp (s / 2) * autocorr f s) =
       ∫ s in Ioo 0 A, Real.exp (s / 2) * autocorr f s := by
     apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Ioi (fun _ hs => hs.1)
@@ -526,7 +542,9 @@ private theorem abs_poleCusp_zero_sub_le {f : ℝ → ℝ}
         suzukiCriticalPrimaryCusp f omega (0 + s)) :=
       (by fun_prop : Measurable fun s : ℝ => Real.exp ((1 / 2 - omega) * s)).mul
         ((measurable_suzukiCriticalPrimaryCusp hf hfc omega).comp (measurable_const.add measurable_id))
-    refine (integrableOn_const hmeas_Ioo.ne).mono' hm.aestronglyMeasurable ?_
+    refine (integrableOn_const
+      (C := Real.exp (A / 2) * (suzukiCriticalPrimaryMass omega * autocorr f 0))
+      hmeas_Ioo.ne).mono' hm.aestronglyMeasurable ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioo] with s hs
     have he : Real.exp ((1 / 2 - omega) * s) ≤ Real.exp (A / 2) := by
       apply Real.exp_le_exp.mpr
@@ -539,7 +557,7 @@ private theorem abs_poleCusp_zero_sub_le {f : ℝ → ℝ}
     (((by fun_prop : Continuous fun s : ℝ => Real.exp (s / 2)).mul
       (continuous_autocorr hf hfc)).integrableOn_Icc).mono_set Ioo_subset_Icc_self
   rw [← integral_sub hi1 hi2]
-  obtain ⟨hperr, -⟩ := primaryCuspError_and_cuspRadius_le_envelope hf hfc hA.le hE₀ hB0 hB homega homega2
+  obtain ⟨hperr, -⟩ := primaryCuspError_and_cuspRadius_le_envelope hf hfc hA.le hE₀ hB homega homega2
   set P_env := Real.sqrt (max (E₀ * B) 0) *
       Real.sqrt (max (2 * suzukiCriticalPrimaryMass omega *
         suzukiCriticalPrimaryScale omega * omega * archWeightFirstMoment) 0) +
@@ -602,7 +620,7 @@ within `suzukiFirstVariationEnvelope A E₀ B ω` of the complete Weil quadratic
 theorem abs_suzukiCriticalSourcePairing_firstVariation_sub_le {f : ℝ → ℝ}
     (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
     {A E₀ B omega : ℝ} (hA : 0 < A) (hcut : ∀ t : ℝ, A ≤ t → autocorr f t = 0)
-    (hE₀ : autocorr f 0 ≤ E₀) (hB0 : 0 ≤ B)
+    (hE₀ : autocorr f 0 ≤ E₀)
     (hB : ∀ t : ℝ, 0 < t → autocorr f 0 - autocorr f t ≤ B * t)
     (homega : 0 < omega) (homega2 : omega ≤ 2) :
     |(autocorr f 0 - suzukiCriticalSourcePairing f omega) / omega -
@@ -672,9 +690,9 @@ theorem abs_suzukiCriticalSourcePairing_firstVariation_sub_le {f : ℝ → ℝ}
   have halg : (-(P_sec - 2 * Q_sec) - S_sec) - (-(P_lim - 2 * Q_lim) - S_lim) =
       -(P_sec - P_lim) + 2 * (Q_sec - Q_lim) - (S_sec - S_lim) := by ring
   rw [halg]
-  have hp_bound := abs_primaryCusp_secant_sub_le hf hfc hE₀ hB0 hB homega homega2
-  have hq_bound := abs_poleCusp_zero_sub_le hf hfc hA hcut hE₀ hB0 hB homega homega2
-  obtain ⟨-, hrad_le⟩ := primaryCuspError_and_cuspRadius_le_envelope hf hfc hA.le hE₀ hB0 hB
+  have hp_bound := abs_primaryCusp_secant_sub_le hf hfc hE₀ hB homega homega2
+  have hq_bound := abs_poleCusp_zero_sub_le hf hfc hA hcut hE₀ hB homega homega2
+  obtain ⟨-, hrad_le⟩ := primaryCuspError_and_cuspRadius_le_envelope hf hfc hA.le hE₀ hB
     homega homega2
   have hs_bound : |S_sec - S_lim| ≤
       ∑ n ∈ Finset.Icc 2 ⌊Real.exp A⌋₊,
@@ -730,7 +748,7 @@ independent of `i`** such that for all `ω ∈ (0, ω₀)` and every `i` with `w
 `ω * (γ / 2 * w i) < autocorr (f_i) 0 - suzukiCriticalSourcePairing (f_i) ω`. -/
 theorem exists_common_suzuki_shift_of_bounded_envelope_family {ι : Type*}
     (f : ι → ℝ → ℝ) (w : ι → ℝ) {A E₀ B γ : ℝ}
-    (hA : 0 < A) (hB0 : 0 ≤ B) (hγ : 0 < γ)
+    (hA : 0 < A) (hγ : 0 < γ)
     (hf : ∀ i, ContDiff ℝ 2 (f i))
     (hfc : ∀ i, HasCompactSupport (f i))
     (hcut : ∀ i t, A ≤ t → autocorr (f i) t = 0)
@@ -747,15 +765,15 @@ theorem exists_common_suzuki_shift_of_bounded_envelope_family {ι : Type*}
     (tendsto_suzukiFirstVariationEnvelope A E₀ B).eventually (Iio_mem_nhds (by positivity))
   have ho2 : ∀ᶠ omega in 𝓝[>] (0 : ℝ), omega ≤ 2 :=
     mem_nhdsWithin_of_mem_nhds (Iic_mem_nhds (by norm_num : (0 : ℝ) < 2))
-  obtain ⟨s, hs_nhds, hs_sub⟩ := eventually_nhdsWithin_iff.mp (hev.and ho2)
-  obtain ⟨δ, hδ, hball⟩ := Metric.mem_nhds_iff.mp hs_nhds
+  obtain ⟨δ, hδ, hball⟩ :=
+    Metric.eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp (hev.and ho2))
   refine ⟨δ, hδ, fun omega homega homega_lt i hwi => ?_⟩
-  have hmem : omega ∈ s := hball (by
-    rw [Metric.mem_ball, dist_zero_right, Real.norm_eq_abs, abs_of_pos homega]
-    exact homega_lt)
-  obtain ⟨henv, homega2⟩ := hs_sub hmem homega
+  have hdist : dist omega 0 < δ := by
+    rw [dist_zero_right, Real.norm_eq_abs, abs_of_pos homega]
+    exact homega_lt
+  obtain ⟨henv, homega2⟩ := hball hdist homega
   have herr := abs_suzukiCriticalSourcePairing_firstVariation_sub_le (hf i) (hfc i) hA
-    (hcut i) (hE i) (mul_nonneg hwi.le hB0) (hinc i) homega homega2
+    (hcut i) (hE i) (hinc i) homega homega2
   rw [suzukiFirstVariationEnvelope_mul A E₀ B hwi.le omega] at herr
   have hlow := (abs_le.mp herr).1
   have hmul_lt : w i * suzukiFirstVariationEnvelope A E₀ B omega < w i * (γ / 2) :=
@@ -817,7 +835,7 @@ theorem abs_criticalSingleMode_le_two (V : ℝ) (n : ℕ) (x : ℝ) :
             (|Real.exp (x / 2)| * |realPhaseCombination {n} (fun _ => 1) (Real.exp (-x))|))
         ≤ 1 * (1 * (1 * 2)) :=
           mul_le_mul h1 (mul_le_mul h2 (mul_le_mul h3 h4 (abs_nonneg _) zero_le_one)
-            (abs_nonneg _) zero_le_one) (abs_nonneg _) zero_le_one
+            (by positivity) zero_le_one) (by positivity) zero_le_one
       _ = 2 := by ring
   · rw [criticalTruncatedSource_eq, Real.smoothTransition.zero_of_nonpos (by
       have := Real.exp_le_exp.mpr (show -x ≤ 0 by linarith)
@@ -930,11 +948,12 @@ theorem criticalSuzukiAperture_pos (V : ℝ) : 0 < criticalSuzukiAperture V := b
   linarith
 
 theorem criticalTruncatedTest_eq_zero_of_radius {V : ℝ} (hV : 0 < V) (S : Finset ℕ) (b : ℕ → ℝ)
-    {x : ℝ} (hx : criticalSupportRadius V < |x|) :
+    (x : ℝ) (hx : criticalSupportRadius V < |x|) :
     criticalTruncatedTest hV S b x = 0 := by
   rw [criticalTruncatedTest_apply]
   refine criticalTruncatedSource_eq_zero hV S b fun hmem => ?_
   have h1 : |x| ≤ criticalSupportRadius V := by
+    unfold criticalSupportRadius
     rw [abs_le]
     exact ⟨by linarith [le_max_left (Real.log (2 * V)) 0, hmem.1],
       hmem.2.trans (le_max_right _ _)⟩
@@ -1102,15 +1121,6 @@ theorem exists_common_suzuki_shift_dyadic_blocks :
   set B₀_amb := criticalSuzukiIncrementEnvelope hV T_amb
   set A_V := criticalSuzukiAperture V
   have hA_V : 0 < A_V := criticalSuzukiAperture_pos V
-  have hE₀_nn : 0 ≤ E₀_amb := by
-    unfold E₀_amb criticalSuzukiEnergyEnvelope
-    have := criticalSupportRadius_nonneg V
-    positivity
-  have hB₀_nn : 0 ≤ B₀_amb := by
-    unfold B₀_amb criticalSuzukiIncrementEnvelope
-    exact mul_nonneg (criticalScaleLipschitzConstant_nonneg hV T_amb)
-      (mul_nonneg (mul_nonneg (by norm_num) (criticalSupportRadius_nonneg V))
-        (criticalScaleAmplitudeConstant_nonneg T_amb))
   obtain ⟨k₀, hk₀_gt⟩ := exists_nat_gt (2 * max C_sm 0 / γ)
   have hev : ∀ᶠ omega in 𝓝[>] (0 : ℝ),
       suzukiFirstVariationEnvelope A_V E₀_amb B₀_amb omega < γ / 4 :=
@@ -1118,8 +1128,8 @@ theorem exists_common_suzuki_shift_dyadic_blocks :
       (Iio_mem_nhds (by positivity))
   have ho2 : ∀ᶠ omega in 𝓝[>] (0 : ℝ), omega ≤ 2 :=
     mem_nhdsWithin_of_mem_nhds (Iic_mem_nhds (by norm_num : (0 : ℝ) < 2))
-  obtain ⟨s, hs_nhds, hs_sub⟩ := eventually_nhdsWithin_iff.mp (hev.and ho2)
-  obtain ⟨δ, hδ, hball⟩ := Metric.mem_nhds_iff.mp hs_nhds
+  obtain ⟨δ, hδ, hball⟩ :=
+    Metric.eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp (hev.and ho2))
   refine ⟨k₀, δ, hδ, fun S hS b hb => ?_⟩
   set g := criticalTruncatedTest hV S b
   set E := ∑ n ∈ S, b n ^ 2
@@ -1161,10 +1171,10 @@ theorem exists_common_suzuki_shift_dyadic_blocks :
       mul_le_mul_of_nonneg_right hk_bound hE_pos.le
     linarith
   -- 2. Uniform first-variation error `< compactFullWeilEnergy g / 4`:
-  have hmem : omega ∈ s := hball (by
-    rw [Metric.mem_ball, dist_zero_right, Real.norm_eq_abs, abs_of_pos homega]
-    exact homega_lt)
-  obtain ⟨henv_lt, homega2⟩ := hs_sub hmem homega
+  have hdist : dist omega 0 < δ := by
+    rw [dist_zero_right, Real.norm_eq_abs, abs_of_pos homega]
+    exact homega_lt
+  obtain ⟨henv_lt, homega2⟩ := hball hdist homega
   obtain ⟨hfk_diff, hfk_cut, hfk_E, hfk_inc⟩ :=
     smoothCompactSource_criticalTruncatedTest_envelope hV S b k
   have hE_mono : criticalSuzukiEnergyEnvelope V S ≤ E₀_amb := by
@@ -1184,9 +1194,8 @@ theorem exists_common_suzuki_shift_dyadic_blocks :
     (hfk_inc t ht).trans (mul_le_mul_of_nonneg_right
       (mul_le_mul_of_nonneg_left hB_mono hE_pos.le) ht.le)
   have herr := abs_suzukiCriticalSourcePairing_firstVariation_sub_le hfk_diff fk.hasCompactSupport
-    hA_V hfk_cut hfk_E' (mul_nonneg hE_pos.le hB₀_nn) hfk_inc' homega homega2
+    hA_V hfk_cut hfk_E' hfk_inc' homega homega2
   rw [suzukiFirstVariationEnvelope_mul A_V E₀_amb B₀_amb hE_pos.le omega] at herr
-  have hlow := (abs_le.mp herr).1
   have hmul_lt : E * suzukiFirstVariationEnvelope A_V E₀_amb B₀_amb omega < E * (γ / 4) :=
     mul_lt_mul_of_pos_left henv_lt hE_pos
   have hquot : compactFullWeilEnergy g / 4 <
@@ -1244,11 +1253,6 @@ theorem exists_common_suzuki_shift_bounded_block_horizon :
   set B₀_amb := criticalSuzukiIncrementEnvelope hV T_amb
   set A_V := criticalSuzukiAperture V
   have hA_V : 0 < A_V := criticalSuzukiAperture_pos V
-  have hB₀_nn : 0 ≤ B₀_amb := by
-    unfold B₀_amb criticalSuzukiIncrementEnvelope
-    exact mul_nonneg (criticalScaleLipschitzConstant_nonneg hV T_amb)
-      (mul_nonneg (mul_nonneg (by norm_num) (criticalSupportRadius_nonneg V))
-        (criticalScaleAmplitudeConstant_nonneg T_amb))
   obtain ⟨k₀, hk₀_gt⟩ := exists_nat_gt (2 * max C_sm 0 / γ₀)
   have hev : ∀ᶠ omega in 𝓝[>] (0 : ℝ),
       suzukiFirstVariationEnvelope A_V E₀_amb B₀_amb omega < γ₀ / 4 :=
@@ -1256,8 +1260,8 @@ theorem exists_common_suzuki_shift_bounded_block_horizon :
       (Iio_mem_nhds (by positivity))
   have ho2 : ∀ᶠ omega in 𝓝[>] (0 : ℝ), omega ≤ 2 :=
     mem_nhdsWithin_of_mem_nhds (Iic_mem_nhds (by norm_num : (0 : ℝ) < 2))
-  obtain ⟨s, hs_nhds, hs_sub⟩ := eventually_nhdsWithin_iff.mp (hev.and ho2)
-  obtain ⟨δ, hδ, hball⟩ := Metric.mem_nhds_iff.mp hs_nhds
+  obtain ⟨δ, hδ, hball⟩ :=
+    Metric.eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp (hev.and ho2))
   refine ⟨k₀, δ, hδ, fun M hM_lo hM_hi S hS b hb k hk omega homega homega_lt => ?_⟩
   set g := criticalTruncatedTest hV S b
   set fk := smoothCompactSource g k
@@ -1302,10 +1306,10 @@ theorem exists_common_suzuki_shift_bounded_block_horizon :
     have h1 : max C_sm 0 / ((k : ℝ) + 1) * E ≤ (γ₀ / 2) * E :=
       mul_le_mul_of_nonneg_right hk_bound hE_pos.le
     linarith
-  have hmem : omega ∈ s := hball (by
-    rw [Metric.mem_ball, dist_zero_right, Real.norm_eq_abs, abs_of_pos homega]
-    exact homega_lt)
-  obtain ⟨henv_lt, homega2⟩ := hs_sub hmem homega
+  have hdist : dist omega 0 < δ := by
+    rw [dist_zero_right, Real.norm_eq_abs, abs_of_pos homega]
+    exact homega_lt
+  obtain ⟨henv_lt, homega2⟩ := hball hdist homega
   obtain ⟨hfk_diff, hfk_cut, hfk_E, hfk_inc⟩ :=
     smoothCompactSource_criticalTruncatedTest_envelope hV S b k
   have hE_mono : criticalSuzukiEnergyEnvelope V S ≤ E₀_amb := by
@@ -1325,7 +1329,7 @@ theorem exists_common_suzuki_shift_bounded_block_horizon :
     (hfk_inc t ht).trans (mul_le_mul_of_nonneg_right
       (mul_le_mul_of_nonneg_left hB_mono hE_pos.le) ht.le)
   have herr := abs_suzukiCriticalSourcePairing_firstVariation_sub_le hfk_diff fk.hasCompactSupport
-    hA_V hfk_cut hfk_E' (mul_nonneg hE_pos.le hB₀_nn) hfk_inc' homega homega2
+    hA_V hfk_cut hfk_E' hfk_inc' homega homega2
   rw [suzukiFirstVariationEnvelope_mul A_V E₀_amb B₀_amb hE_pos.le omega] at herr
   have hlow' : -(E * suzukiFirstVariationEnvelope A_V E₀_amb B₀_amb omega) ≤
       (autocorr fk 0 - suzukiCriticalSourcePairing fk omega) / omega -
@@ -1390,11 +1394,6 @@ theorem exists_common_suzuki_shift_lacunary_windows :
   set B₀_T := criticalSuzukiIncrementEnvelope hV T
   set A_V := criticalSuzukiAperture V
   have hA_V : 0 < A_V := criticalSuzukiAperture_pos V
-  have hB₀_nn : 0 ≤ B₀_T := by
-    unfold B₀_T criticalSuzukiIncrementEnvelope
-    exact mul_nonneg (criticalScaleLipschitzConstant_nonneg hV T)
-      (mul_nonneg (mul_nonneg (by norm_num) (criticalSupportRadius_nonneg V))
-        (criticalScaleAmplitudeConstant_nonneg T))
   obtain ⟨k₀, hk₀_gt⟩ := exists_nat_gt (2 * max C_sm 0 / γ)
   have hev : ∀ᶠ omega in 𝓝[>] (0 : ℝ),
       suzukiFirstVariationEnvelope A_V E₀_T B₀_T omega < γ / 4 :=
@@ -1402,8 +1401,8 @@ theorem exists_common_suzuki_shift_lacunary_windows :
       (Iio_mem_nhds (by positivity))
   have ho2 : ∀ᶠ omega in 𝓝[>] (0 : ℝ), omega ≤ 2 :=
     mem_nhdsWithin_of_mem_nhds (Iic_mem_nhds (by norm_num : (0 : ℝ) < 2))
-  obtain ⟨s, hs_nhds, hs_sub⟩ := eventually_nhdsWithin_iff.mp (hev.and ho2)
-  obtain ⟨ω₀, hω₀, hball⟩ := Metric.mem_nhds_iff.mp hs_nhds
+  obtain ⟨ω₀, hω₀, hball⟩ :=
+    Metric.eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp (hev.and ho2))
   refine ⟨k₀, ω₀, hω₀, fun b hb k hk omega homega homega_lt => ?_⟩
   set g := criticalTruncatedTest hV T b
   set fk := smoothCompactSource g k
@@ -1456,14 +1455,14 @@ theorem exists_common_suzuki_shift_lacunary_windows :
     have h1 : max C_sm 0 / ((k : ℝ) + 1) * E ≤ (γ / 2) * E :=
       mul_le_mul_of_nonneg_right hk_bound hE_pos.le
     linarith
-  have hmem : omega ∈ s := hball (by
-    rw [Metric.mem_ball, dist_zero_right, Real.norm_eq_abs, abs_of_pos homega]
-    exact homega_lt)
-  obtain ⟨henv_lt, homega2⟩ := hs_sub hmem homega
+  have hdist : dist omega 0 < ω₀ := by
+    rw [dist_zero_right, Real.norm_eq_abs, abs_of_pos homega]
+    exact homega_lt
+  obtain ⟨henv_lt, homega2⟩ := hball hdist homega
   obtain ⟨hfk_diff, hfk_cut, hfk_E, hfk_inc⟩ :=
     smoothCompactSource_criticalTruncatedTest_envelope hV T b k
   have herr := abs_suzukiCriticalSourcePairing_firstVariation_sub_le hfk_diff fk.hasCompactSupport
-    hA_V hfk_cut hfk_E (mul_nonneg hE_pos.le hB₀_nn) hfk_inc homega homega2
+    hA_V hfk_cut hfk_E hfk_inc homega homega2
   rw [suzukiFirstVariationEnvelope_mul A_V E₀_T B₀_T hE_pos.le omega] at herr
   have hlow' : -(E * suzukiFirstVariationEnvelope A_V E₀_T B₀_T omega) ≤
       (autocorr fk 0 - suzukiCriticalSourcePairing fk omega) / omega -
@@ -1517,7 +1516,7 @@ For every normalized increment-slope bound `B₀ ≥ 0`, there exists a common s
 `ω₀ > 0` such that every nonzero `F ∈ C_c²([-3/10, 3/10], ℝ)` satisfying
 `autocorr F 0 - autocorr F t ≤ B₀ * autocorr F 0 * t` (`t > 0`) has a strict first-order Suzuki
 deficit on `(0, ω₀)` with margin `(1 / 10000) * autocorr F 0` — with no scale parameter `M → ∞`. -/
-theorem exists_common_suzuki_shift_small_aperture_receiver {B₀ : ℝ} (hB₀ : 0 ≤ B₀) :
+theorem exists_common_suzuki_shift_small_aperture_receiver (B₀ : ℝ) :
     ∃ omega₀ : ℝ, 0 < omega₀ ∧ ∀ omega : ℝ, 0 < omega → omega < omega₀ →
       ∀ F : ℝ → ℝ, ContDiff ℝ 2 F → HasCompactSupport F →
         (∀ x : ℝ, 3 / 10 < |x| → F x = 0) →
@@ -1533,7 +1532,7 @@ theorem exists_common_suzuki_shift_small_aperture_receiver {B₀ : ℝ} (hB₀ :
     exists_common_suzuki_shift_of_bounded_envelope_family
       (ι := Sub) (f := Subtype.val) (w := fun F => autocorr F.1 0)
       (A := 1) (E₀ := 1) (B := B₀) (γ := 1 / 5000)
-      zero_lt_one hB₀ (by norm_num)
+      zero_lt_one (by norm_num)
       (fun F => F.2.1) (fun F => F.2.2.1)
       (fun F t ht => autocorr_eq_zero_of_far F.2.2.2.1 (by linarith [le_abs_self t]))
       (fun F => by rw [mul_one])
@@ -1553,7 +1552,7 @@ theorem exists_common_suzuki_shift_small_aperture_receiver {B₀ : ℝ} (hB₀ :
 
 /-- **Unconditional Common-Shift Suzuki Deficit on Odd Receiver Tests Past the First Prime
 (`[-181/500, 181/500]`, `(log 2)/2 < 181/500`) Without Any Archimedean Scale Subsidy.** -/
-theorem exists_common_suzuki_shift_odd_receiver_past_two {B₀ : ℝ} (hB₀ : 0 ≤ B₀) :
+theorem exists_common_suzuki_shift_odd_receiver_past_two (B₀ : ℝ) :
     Real.log 2 / 2 < 181 / 500 ∧
     ∃ omega₀ : ℝ, 0 < omega₀ ∧ ∀ omega : ℝ, 0 < omega → omega < omega₀ →
       ∀ F : ℝ → ℝ, ContDiff ℝ 2 F → HasCompactSupport F →
@@ -1564,7 +1563,7 @@ theorem exists_common_suzuki_shift_odd_receiver_past_two {B₀ : ℝ} (hB₀ : 0
           omega * ((1 / 2000) * autocorr F 0) <
             autocorr F 0 - suzukiCriticalSourcePairing F omega ∧
           suzukiCriticalSourcePairing F omega < autocorr F 0 := by
-  refine ⟨half_log_two_lt_threeHundredSixtyTwoThousandths, ?_⟩
+  refine ⟨by linarith [Real.log_two_lt_d9], ?_⟩
   let Sub := {F : ℝ → ℝ // ContDiff ℝ 2 F ∧ HasCompactSupport F ∧
     (∀ x : ℝ, F (-x) = -F x) ∧ (∀ x : ℝ, 181 / 500 < |x| → F x = 0) ∧
     (∀ t : ℝ, 0 < t → autocorr F 0 - autocorr F t ≤ (autocorr F 0 * B₀) * t)}
@@ -1572,7 +1571,7 @@ theorem exists_common_suzuki_shift_odd_receiver_past_two {B₀ : ℝ} (hB₀ : 0
     exists_common_suzuki_shift_of_bounded_envelope_family
       (ι := Sub) (f := Subtype.val) (w := fun F => autocorr F.1 0)
       (A := 1) (E₀ := 1) (B := B₀) (γ := 1 / 1000)
-      zero_lt_one hB₀ (by norm_num)
+      zero_lt_one (by norm_num)
       (fun F => F.2.1) (fun F => F.2.2.1)
       (fun F t ht => autocorr_eq_zero_of_far F.2.2.2.2.1 (by linarith [le_abs_self t]))
       (fun F => by rw [mul_one])
@@ -1630,7 +1629,7 @@ theorem suzuki_small_shift_deficit_iff_receiver_weil_ge {F : ℝ → ℝ}
       change μ - δ < (autocorr F 0 - suzukiCriticalSourcePairing F omega) / omega at hq
       have := (lt_div_iff₀ homega).mp hq
       linarith
-  · have hrefl := zetaZeroConfig.W_re_eq_squareMass_sub_reflectionDefect (fun x => (F x : ℂ))
+  · have hrefl := zeta_squareMass_sub_re_W_eq_reflectionDefect hF_c hFc_c
     linarith
 
 /-- **Graded Zero-Width Receiver Law From Small-Shift Suzuki Deficits Without Archimedean Subsidy.**

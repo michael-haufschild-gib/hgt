@@ -79,7 +79,8 @@ Both the literal Suzuki pairing and the extended Weil energy depend only on
 that autocorrelation. Apply the pointwise-window theorem to these representatives
 and substitute the equal quantities back. Constant recovery is unchanged.
 This is a representative-invariance bridge, with no additional analytic input
-or novelty claim. The a.e. versions are included in the unchecked Lean draft.
+or novelty claim. The shared Lean leaf states the result on an arbitrary
+interval `[a,b]`, so the centered window is a specialization.
 
 ## Positive consequence
 
@@ -93,6 +94,28 @@ proved independently. The source's aperture remains fixed in this consequence.
 
 Verdict: **BRIDGE**. This closes a joint source/shift passage, not the missing
 universal sign. No external novelty claim.
+
+## Compact-family uniform shift: paper and novelty audit
+
+Let K be a compact subset of a first-countable parameter space. Suppose the
+real L² sources f_p vary continuously in L² on K, share one a.e. support
+window `[a,b]`, and satisfy the supplied floor `c≤W_ext(f_p)` for p∈K.
+For every δ>0 there is ω₀>0 such that, simultaneously for p∈K and 0<ω<ω₀,
+
+`ω(c-δ) < autocorr(f_p,0)-suzukiCriticalSourcePairing(f_p,ω)`.
+
+Proof: otherwise choose violating pairs `(p_n,ω_n)` with
+`0<ω_n<1/(n+1)`. Compactness gives a convergent subsequence p_n→p∈K;
+continuity gives strong L² convergence of its sources. The joint liminf is
+at least W_ext(f_p)≥c, so the same subsequence eventually has quotient
+greater than c-δ/2, contradicting its upper bound c-δ. This includes an
+infinite limiting energy. No smoothness or increment-rate bound is used.
+
+This is a compactness corollary of the joint theorem, not an independent
+arithmetic positivity principle. The common Weil floor is an explicit input
+to this corollary; it is not an extra premise of the Gamma-liminf or recovery
+theorems. No novelty credit is assigned. The stronger consequence has a
+dependency-closed paper proof; Lean certification remains pending.
 
 ## Gates
 
@@ -113,7 +136,9 @@ check and all three transitive axiom audits passed; see the
 
 The [fixed-source compact-L² capstone](../3-formalized/sz-critical-source-extended-energy-domain-2026-10-24.md)
 and [literal-family consequence](../3-formalized/sz-critical-family-literal-source-deficit-2026-10-24.md)
-are also certified. Joint signed-cusp convergence, the complete arithmetic
-liminf, and constant recovery have an assembled Lean draft at
-`/tmp/hgt-just-work-suzuki-moving-signed.lean`. Its leaf check and transitive
-axiom audit remain pending; the paper statements are not yet Lean certificates.
+are also certified. The shared
+`RHTower/Suzuki/SuzukiCriticalMovingWindowDeficit.lean` now contains joint
+signed-cusp convergence, the complete arithmetic liminf on arbitrary a.e.
+common windows, constant recovery, deficit inheritance, and compact-family
+uniformity. Its leaf check and all public transitive axiom audits remain
+pending. The redundant local draft is not a second implementation target.

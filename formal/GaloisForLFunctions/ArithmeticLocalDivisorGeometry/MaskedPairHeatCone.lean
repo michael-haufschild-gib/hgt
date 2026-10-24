@@ -98,7 +98,6 @@ theorem evenHeatMonomialCoeff_succ (s : ℝ) {r j : ℕ} (hj : j ≤ r) :
     hf, hd, Nat.factorial_succ, pow_succ]
   push_cast
   field_simp
-  ring
 
 /-- The two adjacent monomial recurrences expose the complete signed index weight. -/
 theorem centralMaskedPair_heat_coeff_scaled (a t : ℝ) (m j : ℕ) (hj : j ≤ m) :

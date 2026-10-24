@@ -110,7 +110,7 @@ No near-top, attained-top, spectral gap, zero separation, or uniformly bounded l
 **Existing parents checked.** `FiniteOffLineSetsAreVisible` needs a finite off-line set and depth gap. `NearTopZerosForceNegativeGroundEnergyBeyondAnExplicitAperture` needs global near-topness. The heat Turan bottom-pair detector assumes a bottom conjugate pair; the tilted heat zero detector is qualitative. Polynomial Gaussian heat criteria already detect arbitrary off-line zeros qualitatively. None of these observations by itself proves novelty of the effective claim.
 
 **Verdict:** `SURVIVES PRELIMINARY ATTACK`, provisionally. The complete
-[paper proof](../../../2-fully-proven/centered-heat-polynomial-aperture-detection.md) is recorded.
+[paper proof](../../../3-formalized/centered-heat-polynomial-aperture-detection.md) is recorded.
 It proves aperture at most `C delta^(-2) (4+|gamma|)^38` using the actual logarithmic local count,
 eight-box phase recurrence, a positive heat derivative, and a quantitative smooth cutoff. There
 is no open paper dependency. Lean implementation started in

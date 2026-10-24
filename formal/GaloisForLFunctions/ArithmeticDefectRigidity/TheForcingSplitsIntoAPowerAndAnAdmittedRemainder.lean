@@ -19,7 +19,8 @@ open GaloisForLFunctions.ArithmeticCompensationTheory
 open GaloisForLFunctions.TransHorizonIncidenceMechanics
   (dampedSignWeight unitSign summable_unit_weight dampedSignWeight_div weightCenteredPrefix
    subHalfZetaCoeff subHalfZetaCoeff_neg subHalfRemainder subHalfDilationRemainder
-   abs_subHalfRemainder_le pronicNorm_subHalfDilationRemainder_le floorSumRate)
+   abs_subHalfRemainder_le pronicNorm_subHalfDilationRemainder_le floorSumRate
+   sum_Icc_sum_divisors_eq_floor)
 
 noncomputable section
 set_option autoImplicit false

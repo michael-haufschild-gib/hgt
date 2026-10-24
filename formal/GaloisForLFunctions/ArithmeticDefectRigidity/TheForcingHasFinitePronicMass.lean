@@ -98,7 +98,7 @@ theorem forcingPronicMass_le (ε : SubcriticalDamping) (T : ℕ) :
         div_le_div_of_nonneg_left
           (mul_nonneg (mul_nonneg hm hM) (Real.rpow_nonneg hn0.le _))
           (mul_pos hn0 hn0) (by nlinarith)
-      _ = _ := by rw [hpow]; field_simp; ring
+      _ = _ := by rw [hpow]; field_simp
   calc forcingPronicMass ε T ≤
         ∑ n ∈ Icc 1 T, (pmPowerDampedDivisorDensity (ε : ℝ)).re *
           forcingExpansionBudget ε * (n : ℝ) ^ (-(1 + (ε : ℝ))) := sum_le_sum hcell
@@ -156,7 +156,9 @@ theorem forcingPronicMass_le_limit (ε : SubcriticalDamping) (T : ℕ) :
 theorem tendsto_forcingPronicMass (ε : SubcriticalDamping) :
     Tendsto (forcingPronicMass ε) atTop (𝓝 (forcingMassLimit ε)) := by
   have h := (hasSum_forcingPronicMass ε).tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
-  simpa only [Function.comp_apply, dampedSign_sum_range_succ_eq_add_Icc, Nat.cast_zero,
+  change Tendsto (fun T : ℕ => ∑ n ∈ range (T + 1),
+    inversionDefect ε n / ((n : ℝ) * ((n : ℝ) + 1))) atTop (𝓝 (forcingMassLimit ε)) at h
+  simpa only [dampedSign_sum_range_succ_eq_add_Icc, Nat.cast_zero,
     zero_mul, div_zero, zero_add, forcingPronicMass] using h
 
 /-- The exact total mass is the least uniform bound for finite forcing masses. -/

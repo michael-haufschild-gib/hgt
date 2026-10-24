@@ -84,6 +84,19 @@ theorem maskedPairHeatThreshold_upper (m : ℕ) :
 theorem maskedPairHeatThreshold_pos (m : ℕ) : 0 < maskedPairHeatThreshold m :=
   (by positivity : 0 < 1 / (8 * m + 10 : ℝ)).trans_le (maskedPairHeatThreshold_lower m)
 
+/-- Each added central multiplicity strictly lowers the full heat threshold. -/
+theorem maskedPairHeatThreshold_strictAnti : StrictAnti maskedPairHeatThreshold := by
+  intro m n hmn
+  have hm : 0 < (8 * m + 10 : ℝ) := by positivity
+  have hn : 0 < (8 * n + 5 : ℝ) := by positivity
+  have hmn' : (m : ℝ) + 1 ≤ n := by exact_mod_cast Nat.succ_le_of_lt hmn
+  have hgap : (8 * m + 10 : ℝ) < 8 * n + 5 := by linarith only [hmn']
+  have hinv : 1 / (8 * n + 5 : ℝ) < 1 / (8 * m + 10 : ℝ) := by
+    apply (lt_div_iff₀ hm).mpr
+    rw [show 1 / (8 * n + 5 : ℝ) * (8 * m + 10) = (8 * m + 10) / (8 * n + 5) by ring]
+    exact (div_lt_iff₀ hn).mpr (by simpa only [one_mul] using hgap)
+  exact (maskedPairHeatThreshold_upper n).trans_lt (hinv.trans_le (maskedPairHeatThreshold_lower m))
+
 /-- Squared pair depth scales the threshold exactly, without changing the multiplicity. -/
 theorem coeffNonneg_centralMaskedPair_heat_iff_threshold {a : ℝ} (ha : 0 < a) (m : ℕ) (t : ℝ) :
     CoeffNonneg (forwardPolyHeat (a * t) (centralMaskedPair a m)) ↔ maskedPairHeatThreshold m ≤ t := by
@@ -178,6 +191,24 @@ theorem centralMaskedPair_heat_contact_iff {a : ℝ} (ha : 0 < a) (m k : ℕ) (h
   · rintro rfl
     exact maskedHeatIndex_middle_at_threshold m
 
+/-- Among all even coefficients through the degree, exactly one vanishes at first contact. -/
+theorem centralMaskedPair_heat_even_contact_iff {a : ℝ} (ha : 0 < a) (m j : ℕ) (hj : j ≤ m + 2) :
+    (forwardPolyHeat (a * maskedPairHeatThreshold m) (centralMaskedPair a m)).coeff (2 * j) = 0 ↔
+      2 * j = m + 2 + m % 2 := by
+  by_cases htop : j = m + 2
+  · subst j
+    rw [centralMaskedPair_heat_coeff_leading]
+    constructor
+    · intro h
+      norm_num at h
+    · intro h
+      omega
+  · have h := centralMaskedPair_heat_contact_iff ha m (m + 1 - j) (by omega)
+    rw [show m + 1 - (m + 1 - j) = j by omega] at h
+    rw [h]
+    have hd := maskedPair_contact_degree m
+    omega
+
 /-- The constant coefficient is strictly positive at the threshold for every multiplicity. -/
 theorem centralMaskedPair_heat_constant_pos_at_threshold {a : ℝ} (ha : 0 < a) (m : ℕ) :
     0 < (forwardPolyHeat (a * maskedPairHeatThreshold m) (centralMaskedPair a m)).coeff 0 := by
@@ -219,8 +250,7 @@ private theorem tendsto_heat_ratio {c : ℝ} (hc : 0 < c) :
   refine (tendsto_natCast_div_add_atTop (c / 8)).congr fun m => ?_
   have hden : (m : ℝ) + c / 8 ≠ 0 := by positivity
   have hden' : (8 * m : ℝ) + c ≠ 0 := by positivity
-  field_simp
-  ring
+  field_simp <;> ring
 
 /-- The full all-order heat threshold has inverse multiplicity scale with leading constant
 one eighth, in contrast to the inverse-square scale of the highest adverse coefficient. -/
@@ -238,5 +268,44 @@ theorem tendsto_maskedPairHeatThreshold :
       (show 0 ≤ (8 * m : ℝ) by positivity)
     simpa only [one_div, div_eq_mul_inv, mul_assoc] using h
 
+theorem coeffNonneg_centralMaskedPair_of_nonpos {a : ℝ} (ha : a ≤ 0) (m : ℕ) :
+    CoeffNonneg (centralMaskedPair a m) := by
+  have hX (n : ℕ) : CoeffNonneg ((X : ℝ[X]) ^ n) := by
+    intro k
+    simp only [coeff_X_pow]
+    split_ifs <;> norm_num
+  rw [centralMaskedPair_eq]
+  exact ((hX _).add ((hX _).C_mul (by linarith only [ha]))).add ((hX _).C_mul (sq_nonneg a))
+
+/-- Complete nonnegative-time classification for every real pair parameter, including the
+central degeneration. No zero-location or coefficient premise is required. -/
+theorem centralMaskedPair_heat_cone_classification (a s : ℝ) (m : ℕ) :
+    (0 ≤ s ∧ CoeffNonneg (forwardPolyHeat s (centralMaskedPair a m))) ↔
+      max a 0 * maskedPairHeatThreshold m ≤ s := by
+  by_cases ha : 0 < a
+  · rw [max_eq_left ha.le]
+    have hscale : a * (s / a) = s := by field_simp
+    constructor
+    · rintro ⟨_, h⟩
+      have hh := (coeffNonneg_centralMaskedPair_heat_iff_threshold ha m (s / a)).mp
+        (by rwa [hscale])
+      have hmul := (le_div_iff₀ ha).mp hh
+      simpa only [mul_comm] using hmul
+    · intro h
+      refine ⟨(mul_pos ha (maskedPairHeatThreshold_pos m)).le.trans h, ?_⟩
+      have hdiv : maskedPairHeatThreshold m ≤ s / a := (le_div_iff₀ ha).mpr
+        (by simpa only [mul_comm] using h)
+      have hc := (coeffNonneg_centralMaskedPair_heat_iff_threshold ha m (s / a)).mpr hdiv
+      rwa [hscale] at hc
+  · rw [max_eq_right (le_of_not_gt ha), zero_mul]
+    constructor
+    · exact And.left
+    · intro hs
+      exact ⟨hs, coeffNonneg_forwardPolyHeat (coeffNonneg_centralMaskedPair_of_nonpos (le_of_not_gt ha) m) hs⟩
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
+
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.maskedPairHeatThreshold_eq
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.centralMaskedPair_heat_cone_classification
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.centralMaskedPair_heat_even_contact_iff
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.tendsto_maskedPairHeatThreshold

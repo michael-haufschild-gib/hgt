@@ -24,7 +24,9 @@ theorem forwardPolyHeat_comp (s t : ℝ) (p : ℝ[X]) :
   | monomial n c ih =>
     have he : C c * X ^ (n + 1) = X * (C c * X ^ n) := by ring
     rw [he, forwardPolyHeat_X_mul t, forwardPolyHeat_add, forwardPolyHeat_X_mul,
-      forwardPolyHeat_C_mul, ← derivative_forwardPolyHeat, ih, forwardPolyHeat_X_mul]
+      forwardPolyHeat_C_mul s (2 * t) (derivative (forwardPolyHeat t (C c * X ^ n))),
+      ← derivative_forwardPolyHeat s (forwardPolyHeat t (C c * X ^ n)), ih,
+      forwardPolyHeat_X_mul]
     simp only [map_add, map_mul, map_ofNat]
     ring
 

@@ -21,8 +21,9 @@ This gives the **exact identity** (`succCorr_legTwin`)
 For `p ≡ 3 (mod 4)` the junction terms cancel and `C(pJ) = -J` exactly
 (`succCorr_legTwin_of_three_mod_four`). In general the summatory function is self-similar,
 `M(pJ) = ε M(J)`, hence `|M(N)| ≤ p (log_p N + 1)` and `|C(pJ) + J| ≤ 2p (log_p J + 1)`
-(`abs_succCorr_legTwin_add_le`): the mean successor sign of a prime-conductor twin is `-1/p`. The
-bias is quantized by the conductor, and the one-third floor is its value at `p = 3`.
+(`abs_succCorr_legTwin_add_le`), and at every scale `|C(N) + N/p| ≤ 2p (log_p N + 2)`
+(`abs_succCorr_legTwin_add_div_le`): the mean successor sign of a prime-conductor twin is `-1/p`.
+The bias is quantized by the conductor, and the one-third floor is its value at `p = 3`.
 -/
 
 namespace GaloisForLFunctions.SignedSuccessorArithmetic
@@ -313,5 +314,50 @@ theorem abs_succCorr_legTwin_add_le (hp2 : p ≠ 2) (J : ℕ) :
   calc |1 + quadraticChar (ZMod p) (-1)| * |signSum (legTwin p ε) J|
       ≤ 2 * (p * (Nat.log p J + 1)) := mul_le_mul h1 hM hM0 (by norm_num)
     _ = 2 * p * (Nat.log p J + 1) := by ring
+
+/-- **The bias law at every scale.** `|C(N) + N/p| ≤ 2p (log_p N + 2)` for every `N`: the successor
+correlation of a prime-conductor twin is `−N/p` up to a logarithmic error. -/
+theorem abs_succCorr_legTwin_add_div_le (hp2 : p ≠ 2) (N : ℕ) :
+    |(succCorr (legTwin p ε) N : ℝ) + N / p| ≤ 2 * p * (Nat.log p N + 2) := by
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.out.pos
+  set J := N / p
+  set s := N % p
+  have hN : N = p * J + s := (Nat.div_add_mod N p).symm
+  have hs : s < p := Nat.mod_lt N hp.out.pos
+  -- the partial period changes `C` by at most `s`
+  have hpart : |succCorr (legTwin p ε) N - succCorr (legTwin p ε) (p * J)| ≤ s := by
+    have hsplit : succCorr (legTwin p ε) (p * J + s) = succCorr (legTwin p ε) (p * J) +
+        ∑ r ∈ range s, (((succSign (legTwin p ε) (p * J + r + 1)) : ℤˣ) : ℤ) := by
+      rw [succCorr, sum_Icc_add_range, ← succCorr]
+    rw [hN, hsplit, add_sub_cancel_left]
+    refine (abs_sum_le_sum_abs _ _).trans ?_
+    calc ∑ r ∈ range s, |(((succSign (legTwin p ε) (p * J + r + 1)) : ℤˣ) : ℤ)|
+        ≤ ∑ _r ∈ range s, (1 : ℤ) := sum_le_sum fun r _ => by
+          rcases Int.units_eq_one_or (succSign (legTwin p ε) (p * J + r + 1)) with h | h <;> simp [h]
+      _ = s := by simp
+  have hmain := abs_succCorr_legTwin_add_le ε hp2 J
+  have hlog : Nat.log p J ≤ Nat.log p N := Nat.log_mono_right (Nat.div_le_self N p)
+  have hNp : (N : ℝ) / p = J + s / p := by
+    rw [hN]; push_cast; field_simp
+  have hs' : (s : ℝ) / p ≤ 1 := by
+    rw [div_le_one hp0]; exact_mod_cast hs.le
+  have hs0 : (0 : ℝ) ≤ s / p := by positivity
+  have hpartR : |(succCorr (legTwin p ε) N : ℝ) - succCorr (legTwin p ε) (p * J)| ≤ s := by
+    exact_mod_cast hpart
+  have hmainR : |(succCorr (legTwin p ε) (p * J) : ℝ) + J| ≤ 2 * p * (Nat.log p J + 1) := by
+    exact_mod_cast hmain
+  have hsp : (s : ℝ) ≤ p := by exact_mod_cast hs.le
+  have hlogR : (Nat.log p J : ℝ) ≤ Nat.log p N := by exact_mod_cast hlog
+  rw [hNp]
+  calc |(succCorr (legTwin p ε) N : ℝ) + (J + s / p)|
+      = |((succCorr (legTwin p ε) N : ℝ) - succCorr (legTwin p ε) (p * J)) +
+          ((succCorr (legTwin p ε) (p * J) : ℝ) + J) + s / p| := by ring_nf
+    _ ≤ |(succCorr (legTwin p ε) N : ℝ) - succCorr (legTwin p ε) (p * J)| +
+          |(succCorr (legTwin p ε) (p * J) : ℝ) + J| + |(s : ℝ) / p| := abs_add_three _ _ _
+    _ ≤ s + 2 * p * (Nat.log p J + 1) + 1 := by
+        rw [abs_of_nonneg hs0]; linarith
+    _ ≤ 2 * p * (Nat.log p N + 2) := by
+        have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast hp.out.one_lt.le
+        nlinarith [mul_nonneg hp0.le (sub_nonneg.mpr hlogR)]
 
 end GaloisForLFunctions.SignedSuccessorArithmetic

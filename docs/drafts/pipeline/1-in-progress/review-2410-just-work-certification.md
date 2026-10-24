@@ -42,7 +42,8 @@ arithmetic estimates to make a dictionary applicable.
   `10⁻²¹`. The quarter-radius, quarter-depth visibility probe retains its
   supplied loudness parameter. Centered rows use δ=1/10, ε=1/2, C=2:
   exponents 11/10, 283/170, 71/120, and coefficient 8; P₀ remains existential.
-- **Dictionary sources:** the radius-1/5 spline, its odd part, the aperture
+- **Dictionary sources:** the unscaled universal spline for the width reading,
+  the radius-1/5 spline, its odd part, the aperture
   chain 1/10, 1/5, 3/10, and the actual half-damped Möbius receiver.
   Conclusions include the 1/5000 terminal margin, compensated constant
   -1/5000, empty hull and quotient rank zero, prime-two heat window
@@ -68,12 +69,11 @@ arithmetic estimates to make a dictionary applicable.
 - APT's two `envelopePrimeMajorant_one_eq` declarations have different right-hand
   sides and quantifiers. The all-natural rpow formula is named
   `envelopePrimeMajorant_one_eq_rpow`; the restricted sqrt formula keeps its name.
-- The centered-heat paper card says its proof was removed as redundant with
-  `zeta_hodge_index_cluster_horizon`. Its exact target includes a C∞ compact
-  complex witness and the power-38 aperture bound; the new cluster-horizon
-  bridge includes both. The original card
-  `centered-heat-polynomial-aperture-detection.md` needs its exact-subsumption
-  status updated after that bridge's canonical and axiom checks pass.
+- The centered-heat target includes a C∞ compact complex witness and the
+  power-38 aperture bound. The certified cluster-horizon bridge includes both
+  and proves the stronger quadratic bound. Both theorem cards are in stage 3;
+  the alternative centered-heat derivation remains a paper proof, without
+  a separate novelty claim or a claim that its particular derivation is formalized.
 - J3 is not discharged by `guthMaynardLargeValuesBound_holds`: the requested
   pair-sum and all-k statements must each be checked independently.
 - All 22 integration leaves in `logs/just-work-2410/inventory.json` passed
@@ -130,23 +130,29 @@ arithmetic estimates to make a dictionary applicable.
   most one, paid by `a+1≤2u²`. This is a direct coarse consequence of the
   existing horizon, with no novelty claim. The required power-38 result
   follows since `4+|γ|≥1`. The full-source check and all three public axiom
-  audits passed in `SquareRootThreshold/SmoothWeilDetectorPolynomialAperture.lean`;
-  canonical final checking and umbrella wiring remain pending.
+  audits passed in `SquareRootThreshold/SmoothWeilDetectorPolynomialAperture.lean`.
+  The canonical final check passed; the owning umbrella imports it once.
   Exact paper proof and novelty audit:
-  `2-fully-proven/cluster-horizon-smooth-polynomial-detector.md`.
-- Unchecked complete drafts now cover the full moving-source Suzuki theorem
-  (`/tmp/hgt-just-work-suzuki-moving-signed.lean`), explicit
-  aperture-scaled spline inputs (`/tmp/hgt-just-work-spline-aperture-inputs.lean`),
-  and concrete
-  dictionary instances (`/tmp/hgt-just-work-concrete-dictionaries.lean`).
-  These are proof candidates, not certified results. Their canonical leaf
-  checks and transitive axiom audits remain required.
+  `3-formalized/cluster-horizon-smooth-polynomial-detector.md`.
+- The current corpus contains `RHTower/Suzuki/SuzukiCriticalMovingWindowDeficit.lean`,
+  with the exact joint extended-Weil liminf and constant recovery on arbitrary
+  a.e. common windows `[a,b]`. Certify that shared leaf; do not install the
+  redundant `/tmp/hgt-just-work-suzuki-moving-signed.lean` draft. Its additional
+  compact-family uniformity theorem retains a supplied common Weil floor and
+  does not produce a global sign.
+- `BiScaleUncertainty/ExplicitApertureSplineInputs.lean` passed its full-source
+  check, all 17 public axiom audits, and its canonical final check. The owning
+  umbrella imports it once.
+- Concrete dictionary instances remain a proof candidate at
+  `/tmp/hgt-just-work-concrete-dictionaries.lean`; their full-source axiom audit
+  and canonical final check remain required.
 - `ArithmeticOrientationTheory/ConcreteReceiverScales.lean` passed the full-source
   check and all seven public axiom audits. It proves the stated threshold,
-  visibility and centered-prime scales. Its canonical final check remains pending.
+  visibility and centered-prime scales. Its canonical final check passed;
+  the owning umbrella imports it once.
 - `ArithmeticOrientationTheory/ConcreteFiniteSourceCertificates.lean` passed the
   full-source check and all 13 public axiom audits, covering every selected finite
-  object above. Its canonical final check remains pending.
+  object above. Its canonical final check passed; the owning umbrella imports it once.
 - The concrete dictionary instances use the radius-`1/5` spline and its odd
   part, the finite aperture chain `1/10, 1/5, 3/10`, and the actual
   half-damped Möbius receiver. The finite transport is bounded; no
@@ -166,8 +172,10 @@ trusted computation, or resource-limit increases. Preserve concurrent work.
 - [x] J2 joint import compatibility checked after the name repair.
 - [x] J3 exact published bounds formalized and audited.
 - [ ] J4 exact four paper results formalized or subsumed with checked bridges.
-- [ ] J5–J7 concrete inputs, bounds and applications certified.
-- [ ] J8 existing finite certificates certified.
+- [x] J5 concrete source inputs certified.
+- [x] J6 concrete constants and ranges certified.
+- [ ] J7 applicable dictionaries certified; global HF premise classified separately.
+- [x] J8 existing finite certificates certified.
 - [ ] Final current-state requirement audit; owned scratch cleaned.
 
 Knowledge facts and failure modes: `logs/just-work-2410-knowledge.md`.

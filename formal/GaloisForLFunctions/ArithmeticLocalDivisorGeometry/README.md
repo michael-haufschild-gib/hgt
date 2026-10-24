@@ -158,9 +158,35 @@ For `0<t<1/(8m+10)`, the explicit index `k=⌊Bt⌋` detects a negative coeffici
 \qquad \sigma_m\sim\frac{a}{8m}.
 \]
 
+The threshold decreases strictly with multiplicity: adjacent rational brackets are disjoint.
+
 The highest adverse coefficient alone detects only heat below `2a/C`, of order `a/m²`. Optimizing over the actual growing set of orders recovers a factor proportional to multiplicity; near threshold the detecting order lies near the middle. This is a polynomial model law. The existing masked-pair Hermite receiver still requires its signed Xi cofactor-deviation estimate. Its Gaussian parameter is `λ=2s`, so the constants must be doubled when crossing that interface.
 
+The controlling order can be identified exactly. Put `h=⌊m/2⌋`. Throughout the whole threshold bracket,
+
+\[
+h<Bt<h+1,
+\]
+
+so `F_t(h)` is the unique smallest integer-index weight. Consequently
+
+\[
+\frac{\sigma_m}{a}
+=\frac{B(h+1)+\sqrt{B(h+1)\bigl(B-(C-B)h\bigr)}}{BC}.
+\]
+
+At this first contact, exactly one even coefficient through the polynomial's degree vanishes: its degree is `m+2+(m mod 2)`. Every other even coefficient is strictly positive, including the constant coefficient. Odd coefficients vanish identically by symmetry. Thus higher-order first contact persists in a growing, explicitly classified family of norm-square models. An arithmetic theorem forcing zeroth-order contact must use information beyond these polynomial properties. The [middle-order contact proof](../../../docs/drafts/pipeline/2-fully-proven/masked-pair-middle-order-contact.md) gives the parity argument and the exact Gaussian normalization.
+
 ## From source to local factor
+
+For a finite copy set closed under spectral conjugation, use the unnormalized real polynomial
+
+\[
+D_{t,S}(y)=\prod_{q\in S_{\mathrm{crit}}}\bigl(y+(\gamma_q-t)^2\bigr)
+\prod_{q\in S_{\mathrm{up}}}Q_{\gamma_q-t,\delta_q}(y).
+\]
+
+At a radius head `S=S(t,R)`, `R≥0`, the exact canonical head is `H_{t,R}(z)=c_{t,R}D_{t,S}(z²)` with `c_{t,R}>0`. Its even Taylor coefficient is therefore `c_{t,R}[y^k]D_{t,S}`, and every odd coefficient vanishes. This description divides by neither `Ξ(t)` nor a vanishing constant coefficient. A split of the copy set gives an exact polynomial product and hence a full coefficient convolution; central factors and signed mixed terms survive the transition.
 
 On an admissible contour the logarithmic derivative gives multiplicity-exact power sums:
 
@@ -183,6 +209,8 @@ The existing heated-head transfer consumes the correct radius/heat inequality an
 \]
 
 Positivity propagates to larger heat. An eventual estimate at detector scale still needs finite-height accounting; allowing every positive rate eventually does not eliminate finite off-line exceptions.
+
+The corpus also contains a stronger receiver for the retained polynomial itself. In [XiWardGlobalCapAndFiniteHeadArithmetic.lean](../RHTower/XiWardGlobalCapAndFiniteHeadArithmetic.lean), positivity at some `0≤λ(t)≤δ₀²/(320 log(180|t|))` for every `|t|≥73/5`, with a fixed head radius `1/2≤R≤1`, implies the global width bound `zetaZeroWidth≤δ₀`. This removes the logarithmic depth loss from that finite-head receiver. Its input still requires an independent producer: coefficient-positive tails cannot generally be canceled. The same module supplies polynomial heat inversion, a general degree-dependent root detector and a Prime–Cesàro identity for the first normalized head coefficient; these are existing tools.
 
 | Endpoint | Required arithmetic output |
 |---|---|
