@@ -80,7 +80,8 @@ theorem hasDerivAt_xiCenteredHeatTraceReal (c : ℝ) {y : ℝ} (hy : 1 < y) :
     (summable_xiCenteredHeatTerm hy.le c) hmem
   have hre := Complex.reCLM.hasFDerivAt.comp_hasDerivAt y hsum
   rw [tsum_neg] at hre
-  simpa [xiCenteredHeatTraceReal, xiCenteredHeatTrace, xiCenteredHeatMoment] using hre
+  convert hre using 1
+  all_goals rfl
 
 /-! ### Bounds at the base time and at a recurrence time -/
 
@@ -257,6 +258,7 @@ theorem exists_re_xiCenteredHeatMoment_lt (q₀ : XiZeroCopy) (hq₀ : (xiSpectr
       have hT' : T * δ ^ 2 = Real.log (4 * B + 4) := by
         simp only [T, heatRecurrenceStep]
         field_simp
+        rfl
       nlinarith [sq_nonneg δ]
     calc 4 * B + 4 = Real.exp (Real.log (4 * B + 4)) := (Real.exp_log (by linarith)).symm
       _ ≤ _ := Real.exp_le_exp.mpr hlog

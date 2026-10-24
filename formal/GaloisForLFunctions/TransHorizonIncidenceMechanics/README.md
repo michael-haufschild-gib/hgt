@@ -589,7 +589,17 @@ $$
 \lvert s_Q(n)-\tau_\varepsilon(n)\rvert\ \le\ \frac{1+\varepsilon}\varepsilon\,\tau(n)\,Q^{-\varepsilon}
 \qquad(n\ge1),
 $$
-uniformly small on every polynomial range $n\le Q^r$. Far beyond its horizon the
+uniformly small on every polynomial range $n\le Q^r$. Because $\sum_{d\le Q}K_Q(d)/d=1/\zeta(1+\varepsilon)$
+holds identically for every $Q\ge1$, the cofactor row has exact finite-horizon mean
+$H_{c_Q}(Q)=Y_Q(1)=\rho_\varepsilon$ (`finiteHarmonicSum_pmCofactorRealWeight`,
+`selbergMultiplesCoord_one_pmCofactorRealWeight`), so its centered prefix discrepancy has **zero
+linear mean-drift dipole** against $A_\varepsilon(n)=\sum_{k\le n}(\tau_\varepsilon(k)-\rho_\varepsilon)$:
+$\mathrm{sievePrefixDiscrepancy}(Q,n,c_Q)-A_\varepsilon(n)=\sum_{k=1}^n(s_Q(k)-\tau_\varepsilon(k))$,
+bounded by $\frac{1+\varepsilon}\varepsilon(\sum_{k=1}^n\tau(k))Q^{-\varepsilon}\le\frac{1+\varepsilon}\varepsilon n^2Q^{-\varepsilon}$
+(`sievePrefixDiscrepancy_pmCofactorRealWeight_sub_centeredPrefix_eq`,
+`abs_sievePrefixDiscrepancy_pmCofactorRealWeight_sub_centeredPrefix_le`) and in pronic $\ell^2$ norm by
+$\lvert\sqrt{E^{\mathrm{cof}}_{Q,T}}-\sqrt{E_T^{\mathrm{int}}(\varepsilon)}\rvert\le\tfrac12+\frac{1+\varepsilon}\varepsilon T\sqrt T Q^{-\varepsilon}$
+(`abs_sqrt_sieveTruncatedPronicEnergy_pmCofactor_sub_sqrt_interiorPronic_le`). Far beyond its horizon the
 receiver row observes the complete damped divisor function, which obeys the
 global unit envelope $0\le\tau_\varepsilon\le1=\tau_\varepsilon(1)$ and has first
 jump $\tau_\varepsilon(1)-\tau_\varepsilon(2)=2^{-\varepsilon}$; polarization with the
@@ -1684,7 +1694,14 @@ Liouville have the same positive admission set and the same width accumulation t
 $\Theta-\tfrac12$; and RH is admission at every positive damping, for either weight
 (`riemannHypothesis_iff_forall_pos_receiverBounded_moebius`,
 `riemannHypothesis_iff_forall_pos_receiverBounded_liouville`,
-`sInf_derivedSet_liouville_dampings_eq_zetaZeroAbscissa_sub_half`). The shrinking band admits no
+`sInf_derivedSet_liouville_dampings_eq_zetaZeroAbscissa_sub_half`). Eliminating the $1/4$ barrier
+across all $0<\varepsilon\le1/2$ via the all-damping hyperbola bound
+$\lvert A_\varepsilon(n)\rvert\le 3D^{1-\varepsilon}+(13/\varepsilon)LnD^{-\varepsilon}$ bounds
+$E_T(\varepsilon)$, $E_T^{\mathrm{int}}(\varepsilon)$, and the compensated interior martingale
+bracket uniformly on the Vinogradov–Korobov band $\varepsilon\ge\tfrac12-\kappa\sigma(T)/(480\log T)$
+above any $\varepsilon_0>0$ while the parity twin grows at least as $c_{\varepsilon_0}(\log(T+1)-\log100)$,
+and at every fixed $\varepsilon\in(0,1/2)$ bounds $E_T^{\mathrm{int}}(\varepsilon)\le C_\varepsilon T^{1-2\varepsilon}\exp(-\kappa\sigma(T)/270)=o_\varepsilon(E_{\mathrm{prim}}(T))$
+(`complete_signed_receiver_equivalence_and_all_damping_vk_laws`). The shrinking band admits no
 fixed $\varepsilon<1/2$ at all horizons.
 
 **Horizon rows of Möbius and Liouville.** The dipole obstruction of §3.17 is excluded on the
@@ -1896,6 +1913,22 @@ inside an equivalence.
     $(1-K_\varepsilon)/\varepsilon^2\to\sum_p(\log p/(p-1))^2$ and $\varepsilon^3$ laws
     (`tendsto_one_sub_varianceCorrection_div_sq`, `tendsto_dampedBezoutLimit_div_cube`,
     `tendsto_dampedDissipationRate_sub_variance_third_order`).
+16. **Complete signed trans-horizon energy calibration, growing-cutoff cofactor transfer, and
+    transfer selectivity.** The cofactor row preserves the exact infinite-horizon mean
+    $H_{c_Q}(Q)=\rho_\varepsilon$ at every $Q\ge1$, eliminating the linear mean-drift dipole and
+    transferring the truncated pronic energy to $E_T^{\mathrm{int}}(\varepsilon)$ with square-root
+    loss $\le\tfrac12+\frac{1+\varepsilon}\varepsilon T\sqrt T Q^{-\varepsilon}$
+    (`sievePrefixDiscrepancy_pmCofactorRealWeight_sub_centeredPrefix_eq`,
+    `abs_sqrt_sieveTruncatedPronicEnergy_pmCofactor_sub_sqrt_interiorPronic_le`,
+    `growingCutoff_cofactorPronicEnergy_bounded_iff_interiorPronicEnergy_bounded`); at every fixed
+    $\varepsilon\in(0,1/2)$ the interior energy decomposes into the 25-entry signed Vaughan pronic
+    Gram matrix with moving endpoints retained while the squared pointwise logarithmic source bound
+    is nonsummable (`complete_signed_interior_energy_and_vaughan_calibration`); and the theory's
+    conservation and dissipation laws partition sharply into Beurling-universal multiplicative laws,
+    sign-blind $(\mathbb Z/2\mathbb Z)^N$ parity-orbit laws, and $\mathbb Z$-lattice Bézout-selective
+    laws (`selectivity_class_I_beurling_universal_laws`,
+    `selectivity_class_II_signBlind_and_parityOrbit_laws`,
+    `selectivity_class_III_bezout_successor_selective_laws`).
 
 ---
 
@@ -2034,6 +2067,11 @@ Built and reusable:
   moduli, and the $d\ge23$ unpaid axis intervals; unconditional $\Theta$-drop bounds on the local
   cosh/sinh defect; and individual-lobe odd-polar balance, cross-lobe `weilBilin` polarization,
   and the two-sided cross-lobe sandwich on odd eigenvectors.
+- *Signed interior energy calibration and transfer selectivity*: dipole-free cofactor pronic energy
+  transfer along growing cutoffs, the 25-entry moving-endpoint Vaughan pronic Gram decomposition and
+  component-flip cross-pairing formula, birth-delayed conditional jump-orbit bounds, all-damping
+  Vinogradov–Korobov interior energy and period-ratio bounds across $(0,1/2)$, and the three-class
+  Beurling / $(\mathbb Z/2\mathbb Z)^N$ / Bézout selectivity partition.
 
 To be built:
 
@@ -2046,16 +2084,48 @@ To be built:
 
 ### 7.1 The complete signed trans-horizon energy
 
-The PM receiver needs $\sup_T\sum_{n\le T}I_\varepsilon(n)^2/(n(n+1))<\infty$ at arbitrarily small
-fixed $\varepsilon$. The receiver row is understood on the period torus: it observes the complete
-damped divisor function, its renormalized defect is eventually nonpositive at every prefix, its
-period variance is a partial Parseval sum bounded by $V(\varepsilon)$ uniformly in the horizon, and its
-primitive energy diverges for $\varepsilon\le1/2$, so complete-period averages cannot supply the bound.
-Missing is the pronic-weighted interior energy below the first period: cancellation in the
-coefficient-weighted energy with means, endpoints, mixed covariance and growing cutoffs retained,
-at fixed $\varepsilon\in(0,1/2)$, where the small arguments carry the weight $1/(n(n+1))$ and the
-Ramanujan truncation error $Q^{-\varepsilon}\tau(n)$ is not small. The actual-source estimates of
-§3.20 admit only a horizon-dependent band shrinking to $\varepsilon=1/2$.
+The complete signed trans-horizon energy calculus — with means, endpoints, active-pair boundaries,
+mixed Vaughan covariances, Ramanujan truncation errors, and growing cutoffs retained across
+$\varepsilon\in(0,1/2)$ — is now calibrated and classified
+([CompleteSignedTransHorizonEnergyAndTransferSelectivity](CompleteSignedTransHorizonEnergyAndTransferSelectivity.lean)).
+Because $\sum_{d\le Q}K_Q(d)/d=1/\zeta(1+\varepsilon)$ holds identically at every horizon $Q\ge1$,
+the actual cofactor row $c_Q=\mathrm{pmCofactorRealWeight}(\varepsilon,Q)$ has exact finite-horizon
+mean $H_{c_Q}(Q)=Y_Q(1)=\rho_\varepsilon$ (`finiteHarmonicSum_pmCofactorRealWeight`,
+`selbergMultiplesCoord_one_pmCofactorRealWeight`), so its centered prefix discrepancy has **zero
+linear mean-drift dipole** against $A_\varepsilon(n)$:
+$\mathrm{sievePrefixDiscrepancy}(Q,n,c_Q)-A_\varepsilon(n)=\sum_{k=1}^n(s_Q(k)-\tau_\varepsilon(k))$
+(`sievePrefixDiscrepancy_pmCofactorRealWeight_sub_centeredPrefix_eq`), bounded pointwise by
+$\frac{1+\varepsilon}\varepsilon(\sum_{k=1}^n\tau(k))Q^{-\varepsilon}\le\frac{1+\varepsilon}\varepsilon n^2Q^{-\varepsilon}$
+(`abs_sievePrefixDiscrepancy_pmCofactorRealWeight_sub_centeredPrefix_le`) and in the pronic $\ell^2$
+norm by
+$\lvert\sqrt{E^{\mathrm{cof}}_{Q,T}}-\sqrt{E_T^{\mathrm{int}}(\varepsilon)}\rvert\le\tfrac12+\frac{1+\varepsilon}\varepsilon T\sqrt T Q^{-\varepsilon}$
+(`abs_sqrt_sieveTruncatedPronicEnergy_pmCofactor_sub_sqrt_interiorPronic_le`). Along any growing
+cutoff schedule $Q(T)\ge1$ with $T\sqrt T Q(T)^{-\varepsilon}\le M$, boundedness of the cofactor
+row's truncated pronic energy is two-sided equivalent to boundedness of $E_T^{\mathrm{int}}(\varepsilon)$
+(`growingCutoff_cofactorPronicEnergy_bounded_iff_interiorPronicEnergy_bounded`). On the interior side,
+$\lvert\sqrt{E_T^{\mathrm{int}}(\varepsilon)}-\sqrt{E_T(\varepsilon)}\rvert\le\tfrac12$, the active
+boundary changes the pronic energy by an absolutely summable sequence on $(0,1/2)$
+(`pmInteriorPronicEnergy_sub_source_uniformly_bounded`), the interior gradient plus twice the
+local-impulse cross-sum cancels $E_T(\varepsilon)$ identically to equal the active-deleted diagonal
+plus twice the predecessor-peak martingale minus bounded boundary terms
+(`pmBezoutInteriorGradient_add_two_mul_localImpulse_eq_activeDeleted_add_predecessorPeak`), and the
+25-entry moving-endpoint Vaughan pronic Gram matrix decomposes
+$E_T^{\mathrm{int}}(\varepsilon)=\sum_{i=1}^5 G_{i,i}+R_T^{\mathrm{mix}}$ with diagonal entries
+invariant under component flips and off-diagonal flip gap $4(\sum_j G_{k,j}-G_{k,k})$, while the
+squared pointwise logarithmic majorant `pmPronicLogMajorant ε` is nonsummable at every
+$\varepsilon\in(0,1/2)$ (`complete_signed_interior_energy_and_vaughan_calibration`). Along any
+predecessor jump progression $n_k=d+1+(d+2)k$ at growing cutoff $N=(d+2)L$, delaying the conditional
+jump-orbit mean until modulus birth $e/(d+2)\le k$ eliminates interior-modulus growth and bounds the
+compensated progression by $\tfrac52(d+2)L$
+(`abs_pmBezoutInteriorPrefix_birthDelayed_compensated_le_five_halves_mul`). Across all $\varepsilon>0$,
+all five interior receiver formulations coincide with `receiverDampings`, hold unconditionally for
+$\varepsilon>\Theta-1/2$ with common derived-set infimum $\Theta-1/2$, are uniformly bounded on the
+all-damping Vinogradov–Korobov band $\varepsilon\ge\tfrac12-\kappa\sigma(T)/(480\log T)$ above any
+$\varepsilon_0>0$, and at every fixed $\varepsilon\in(0,1/2)$ obey
+$E_T^{\mathrm{int}}(\varepsilon)\le C_\varepsilon T^{1-2\varepsilon}\exp(-\kappa\sigma(T)/270)=o_\varepsilon(E_{\mathrm{prim}}(T))$
+(`complete_signed_receiver_equivalence_and_all_damping_vk_laws`). What remains open is proving an
+unconditional bound $\sup_T(R_T^{\mathrm{mix}}+\sum_i G_{i,i})<\infty$ at one fixed
+$\varepsilon<1/2$ without zero-free width hypotheses.
 
 ### 7.2 Small horizons
 
@@ -2278,7 +2348,18 @@ sawtooth problem of §7.1.
    `receiverBounded_iff_exists_lineEnergy_le`). Missing is an unconditional power-saving estimate on
    $\sum_{e\le N}(\mu\star\Lambda)(e)$ at one fixed $\beta<1$.
 2. **The complete signed trans-horizon energy** at fixed small damping, with means, endpoints,
-   mixed covariance and growing cutoffs retained.
+   mixed covariance and growing cutoffs retained: the cofactor row preserves the exact mean
+   $H_{c_Q}(Q)=\rho_\varepsilon$ at every $Q\ge1$ and transfers its truncated pronic energy to
+   $E_T^{\mathrm{int}}(\varepsilon)$ with square-root error
+   $\le\tfrac12+\frac{1+\varepsilon}\varepsilon T\sqrt T Q^{-\varepsilon}$
+   (`abs_sqrt_sieveTruncatedPronicEnergy_pmCofactor_sub_sqrt_interiorPronic_le`,
+   `growingCutoff_cofactorPronicEnergy_bounded_iff_interiorPronicEnergy_bounded`), the 25-entry
+   moving-endpoint Vaughan pronic Gram matrix isolates the signed off-diagonal remainder
+   $R_T^{\mathrm{mix}}$ omitted by diagonal norms while the squared pointwise logarithmic source bound
+   is nonsummable (`complete_signed_interior_energy_and_vaughan_calibration`), and birth-delayed
+   jump-orbit centering bounds the compensated progression at $N=(d+2)L$ by $\tfrac52(d+2)L$
+   (`abs_pmBezoutInteriorPrefix_birthDelayed_compensated_le_five_halves_mul`). Missing is an
+   unconditional bound on $R_T^{\mathrm{mix}}+\sum_i G_{i,i}$ at one fixed $\varepsilon<1/2$.
 3. **The odd-sector low-prime diagonal potential**, matched term by term with the unpaid axis
    intervals and the nine moduli of Arithmetic Incidence Positivity: midpoint reflection collapses
    the collar-mixed integral of any symmetric kernel to twice the one-point diagonal potential
@@ -2290,8 +2371,19 @@ sawtooth problem of §7.1.
    $[L_d,\log d-L_d]\cap(0,\log d)$ is nonpositive for $d\ge23$ while the inner axis ends remain
    strictly positive (`totalAntiDiagonal_oddProfile_nonpos_on_paid_middle_of_twenty_three_le`).
    One obstruction read from the sieve side and from the pair side.
-4. **Selectivity of the transfer laws.** Which conservation and dissipation laws hold for a
-   Beurling system or the shifted pair, and which are specific to $\mathbb N$.
+4. **Selectivity of the transfer laws.** The conservation and dissipation laws partition into three
+   exact classes (`CompleteSignedTransHorizonEnergyAndTransferSelectivity`): Class I
+   (Beurling-universal multiplicative laws — Möbius divisor inversion, transverse Gibbs
+   log-submodularity, divided-log prime-power completion, depth-zero Gamma gauge enclosure in
+   $[1,2]$, and the three-sector zero/one/higher large-label Buchstab decomposition,
+   `selectivity_class_I_beurling_universal_laws`), Class II (sign-blind $(\mathbb Z/2\mathbb Z)^N$
+   parity-orbit laws — all eleven complete-period quadratic forms and lag covariances, diagonal
+   Vaughan pronic Gram entries, and first-octave step-defect nonpositivity for $f(k)^2=\lvert f(k)\rvert$,
+   `selectivity_class_II_signBlind_and_parityOrbit_laws`), and Class III ($\mathbb Z$-lattice
+   Bézout-selective laws driven by $\gcd(n,n+1)=1$ and $pa-qb=1$ — zero-diagonal pronic Abel
+   summation, $(2r-1)$-step Bézout shell midpoint annihilation, conditional jump-orbit mean
+   classification, least Bézout successor-seed resonance, and trans-horizon separation of
+   parity-isometric rows, `selectivity_class_III_bezout_successor_selective_laws`).
 5. **"Paid" as an index class.** The paid class is a union of orbits of the critical Wiener
    monoid, is invariant under local factors with $\lvert a\rvert<\sqrt p$ and sparse flips, and
    reads the order of a pole through the all-order logarithmic pole moments

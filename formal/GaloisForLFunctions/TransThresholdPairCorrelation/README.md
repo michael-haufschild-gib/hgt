@@ -53,9 +53,10 @@ plainest form. Its unit is the pair `(λ, 2 − κ(λ))`. A partial result repor
 reaches and the proportion it certifies, or the budget it pays out of `1/18`.
 
 Read §1 for the barrier and the target constant, §2 for the objects, §§3.1–3.5 for the four
-reductions and the form-factor bridge, and §§3.6–3.8 for the three localization tools (height
-averaging, Lorentz mean values, smooth grid weights) and what each can and cannot reach; §4 lists
-the pillar theorems, §5 the traps, §§6–7 the questions and open problems.
+reductions and the form-factor bridge, §§3.6–3.8 for the three localization tools (height
+averaging, Lorentz mean values, smooth grid weights) and what each can and cannot reach, and §3.11
+for the smooth-window certificate that places the whole `1/18` budget on the coalescent band; §4
+lists the pillar theorems, §5 the traps, §§6–7 the questions and open problems.
 
 ---
 
@@ -294,6 +295,34 @@ off-diagonal Fejér close-pair terms vanish identically across the doubled range
 small-shift sieve bound controls the close-pair sum on `[1/b, (1 + δ)/b]` with a quadratic `O(δ²)`
 bound (`sieved_closePrimePair_strip_bound`).
 
+### 3.11 The smooth-window certificate
+
+The rank–trace seam holds for every grid weighting `|w_k| ≤ 1` (`RHTower.seamA_weighted`). Take
+`w_k = u((τ_k − T)/T)` for a smooth profile `u` with values in `[0, 1]`, vanishing off `[ε₁, 1 − ε₁]`
+and equal to `1` on `[2ε₁, 1 − 2ε₁]` (`WindowProfile`, `exists_windowProfile`). Then:
+
+* **Trace.** The weighted trace loses only its collar: `tr Ĝ_w ≥ N − 4ε₁Tl − O(T) − O(T^{11/12}l⁶)`
+  (`trace_ge_at`). The prime part of the collar is a cosine polynomial with Lipschitz coefficients;
+  summation by parts against `2 sin(θ/2) Σ_{j<K} cos(φ + jθ) = sin(φ + (K − ½)θ) − sin(φ − θ/2)` and
+  Jordan's inequality make it `O(T)` (`abs_weighted_P_part_le_lipschitz`).
+* **Frobenius norm.** The weighted Frobenius sum is `L²` times the smooth form
+  `∬ Ω(τ) Φ(τ − τ')² ν_X(τ) ν_X(τ')`, `Ω = u_T⁴`, up to a Lipschitz sampling error and the lattice
+  deficit inside the window (`abs_weightedFrobenius_sub_smoothForm_le`). Since `Φ² ⋆ P_X = −2C_g` is
+  again a prime polynomial, the form splits into nine channels along `μ + Π_X + P_X`
+  (`smoothPair_nuX_le`): the archimedean and prime diagonals (the unconditional core `43/36`), the
+  exact coalescent kernel `π⁻¹ a_n a_m g(log m) Ω̂(log n − log m)` on `0 < |log(n/m)| ≤ T^{−1+η}`
+  (`coalSum`), far pairs and sum frequencies paid by `|Ω̂(θ)| ≤ ‖Ω^{(k)}‖₁/|θ|^k`, archimedean–prime
+  channels by the half-period shift, and the prime–pole channels by Cauchy–Schwarz against the
+  Lorentz mean squares of `P_X` and `C_g` (`frob_le_at`).
+
+Assembled through the seam (`zeta_coalescent_certificate_four_thirds`, `zeta_coalescent_certificate`):
+
+    N₀*(T, 2T) ≥ (29/36 − ε) N(T, 2T) − coalescentSurplus u η T     for all large T.
+
+Since `29/36 − 3/4 = 1/18`, three quarters of the zeros on the line follow from
+`coalescentSurplus u η T ≤ (1/18 + o(1)) N(T, 2T)` for one profile and one `η > 0`: a statement about
+prime pairs at multiplicative distance at most `T^{−1+η}` only.
+
 ---
 
 ## 4. Foundational pillar theorems
@@ -330,6 +359,10 @@ All unconditional.
 10. **Narrow-strip exchange rate and `2`-adic parity collar doubling.** `2 − κ(1 + δ) > 2/3` iff
     `E(δ) < 2/(3δ) + 4/3` (`narrowStrip_beats_two_thirds_iff`), and `2`-adic parity forces all
     odd-odd close-pair terms to vanish up to `X = 2/b` (`odd_offDiag_fejer_sum_eq_zero_of_le_two_div_b`).
+11. **The bandwidth-`4/3` certificate lives on the coalescent band.** For every `ε, η > 0` there is
+    a smooth window with `N₀*(T, 2T) ≥ (29/36 − ε)N(T, 2T) − coalescentSurplus u η T` for all large
+    `T` (`zeta_coalescent_certificate`); the surplus is the smooth-window pair sum over
+    `0 < |log(n/m)| ≤ T^{−1+η}` normalised by `(aL)²`.
 
 ---
 
@@ -341,6 +374,7 @@ All unconditional.
 | Working with the sharp window `1_{[T,2T]}` | Pairs with `|θ| ≫ T⁻¹` still contribute `O(1/|θ|)` through the endpoints. A smooth weight, or Jackson grid weights, is needed to localize to `|θ| < 4b`. |
 | Expecting Jackson windows to reach the coalescent band | `F_b²` has cubic tails, so the outer Jackson mass is `≍ L/(b³M²)` and the far-pair error `≍ XL³/(b³M²)`; against the budget this forces `b ≫ X^{1/3}/T` (`b ≫ T^{−5/9}` at `λ = 4/3`). The "close pairs" `|log(n/m)| < 4b` then still include `T⁻¹ ≪ |θ| ≪ T^{−5/9}`, where the pair kernel is `≍ L/|θ|`. Jackson localization stops short of `h ≪ m/T`. |
 | Averaging over the height at fixed bandwidth | The cutoff `X(T)` moves with `T`, and the moving cutoff costs `≍ √ε X log²X`. Height averaging localizes at fixed `L` (§3.6), so it needs core estimates uniform in `λ`. |
+| Bounding the prime–pole channel of the smooth form by sup norms | `|Π_X| ≤ 3√X/T` against `|C_g| ≤ L·3√X` gives `≍ L X = L T^{4/3}`, above the budget. Cauchy–Schwarz against the Lorentz mean square of `C_g` gives `O(X L^{3/2}/√T) = O(T^{5/6}L^{3/2})` (`smoothPair_nuX_le`). |
 | Using the Lorentz mean value on the close pairs | It is a size bound of Montgomery–Vaughan shape; on a window of length `R ≍ T` it sees `|log(n/m)| ≲ 1/R` only through their number. The close-pair problem is a signed one. |
 | Positive spectral majorants | Montgomery's shift method uses only `F ≥ 0` and `F(α) = |α|` on `[−1, 1]`; the shifted Fejér kernel then gives `8/27`, a factor `8/3` above `1/9` (`fejer_shifted_bound_gap`). Arithmetic input on `[1, 4/3]` is required. |
 | Higher moments to bypass pair correlation | `tr(G̃^k)` in its unconditional range forces `kλ ≤ 1`, so `λ ≤ 1/3` for `k ≥ 3` (`higherMoment_rudnick_sarnak_cap`): higher moments shrink the bandwidth. |
@@ -402,12 +436,14 @@ Built and reusable:
 - *Narrow-strip Cesàro energy and `2`-adic parity collar*: exact first-order vs. second-order
   narrow-strip criterion, `2`-adic parity collar doubling up to `2/b`, and small-shift sieve strip
   bounds.
+- *Smooth-window certificate*: the convolution `Φ² ⋆ v` for slowly varying, decaying and prime
+  densities; the exact coalescent kernel; the nine-channel evaluation; the grid comparison with the
+  lattice deficit; the collar form of the weighted trace; the seam assembly at `λ = 4/3`.
 
 To be built:
 
 - a signed bound on the mixed mean value `∫_T^{2T}(C_gC_1 + S_gS_1)` at `X = T^{4/3}`;
-- the smooth-weighted bandwidth-`4/3` trace assembly, with the far pairs and sum frequencies paid
-  by the weight and the coalescent band isolated;
+- a bound `coalescentSurplus ≤ (1/18 + o(1)) N(T, 2T)` for the coalescent band (open problem 3);
 - an unconditional asymptotic transfer from the finite height-averaged prime-pair sum at `[T, 2T]` to
   the spectral form factor `F(α)` in `λ = 1 + δ`.
 
@@ -419,24 +455,20 @@ To be built:
    `primeSurplus ≤ (1/18 + o(1))(aL)²Tℓ₁/2π`, or equivalently through §3.2 that
    `(1/π)∫_T^{2T}(C_g(τ)C_1(τ) + S_g(τ)S_1(τ))dτ ≤ (4/9 + 1/18 + o(1))(aL)²Tℓ₁/2π`, unconditionally or
    under the weakest arithmetic mean-value input that suffices.
-2. **A weighted trace that reaches the coalescent band.** Replace the unweighted Frobenius norm in
-   the bandwidth-`4/3` assembly by a weighted one, with the same `1/18` budget, so that far pairs
-   and sum frequencies are paid by the weight and the remainder is the coalescent band
-   `|log(n/m)| ≤ T^{−1+η}`. Jackson weights pay them by the outer mass but cannot reach the band;
-   height averaging reaches it only at fixed `L` (§3.6). The open route is a smooth compactly
-   supported grid weight at fixed `λ` (§3.8): compare the weighted grid kernel with the smooth
-   continuous form `∬W(τ)²Φ²νν′` up to `O(Lip W)`, evaluate that form channel by channel (archimedean,
-   prime diagonal, far pairs, sum frequencies, cross terms), whose pair kernels decay like
-   `‖(W²)^{(k)}‖₁/|θ|^k`, and assemble through the weighted seam. The target statement is
-   `N₀*(T, 2T) ≥ (29/36 − ε − c_coal(T))N(T, 2T)`, with `c_coal` the normalized coalescent prime-pair
-   sum: the whole question of open problem 1 placed on the band of open problem 3.
+2. **A weighted trace that reaches the coalescent band (resolved in
+   `SmoothWeightedCertificateAtFourThirds`).** For every `ε, η > 0` there is a smooth window with
+   `N₀*(T, 2T) ≥ (29/36 − ε)N(T, 2T) − coalescentSurplus u η T` for all large `T`
+   (`zeta_coalescent_certificate`, §3.11). Open problem 1 is therefore equivalent, up to `o(1)`, to
+   `coalescentSurplus u η T ≤ (1/18 + o(1))N(T, 2T)`, a bound on the smooth-window prime-pair sum over
+   `0 < |log(n/m)| ≤ T^{−1+η}` alone.
 3. **Close pairs in short multiplicative intervals.** The multiplicative-to-additive linearization
    (`coalescent_sum_linearization_bound`), Frullani cancellation of the Poisson continuum
    (`abs_integral_dyadic_frullani_le`), and the five-model sieve threshold (`Υ ≤ 8/9 < 1` unsigned
    additive vs. `Υ ≤ 2` spectral in `calibration_five_models_four_thirds`) are proved in
    `CoalescentSieveAnatomyAndModelCalibration`. The remaining open step is an unconditional
    sign-sensitive estimate for `Σ_{m,h} Λ(m)Λ(m + h) m⁻¹ K(T h/m)` on `T < m ≤ T^{4/3}`, `0 < h ≪ m/T`
-   that breaks the unsigned parity barrier `Υ < 8/9` at `λ = 4/3`.
+   that breaks the unsigned parity barrier `Υ < 8/9` at `λ = 4/3`; by open problem 2 this band is
+   now the whole of the `1/18` budget.
 4. **The exchange rate just above `λ = 1`.** The exact narrow-strip Cesàro energy identity, the
    criterion `E(δ) < 2/(3δ) + 4/3` (`narrowStrip_beats_two_thirds_iff`), the `2`-adic parity collar
    doubling the odd-odd close-pair vanishing threshold from `1/b` to `2/b`
@@ -494,4 +526,11 @@ To be built:
 | `FejerWeightedPrimeMeanSquare` | Fejér mean square as an exact pair sum; Lorentz-weighted `(R + X)` mean value |
 | `SmoothGridWeightKernel` | grid kernel of a smooth height weight; Lipschitz comparison; Lorentz grid sums |
 | `CoalescentSieveAnatomyAndModelCalibration` | coalescent multiplicative-to-additive linearization; Frullani cancellation of the dyadic cosine kernel; HL logarithmic deficit negativity; general-`λ` prime-surplus bridge and five-model calibration |
+| `SmoothWindowContinuousForm` | `Φ² ⋆ v` for slowly varying, decaying and prime densities; Fubini under linear growth; exact coalescent kernel and its diagonal/close/far/sum-frequency split; half-period shift; Lorentz mean square of `C_w` |
+| `SmoothWindowFrobeniusChannels` | bilinear expansion along `μ + Π_X + P_X`; the nine channels (`smoothPair_nuX_le`) |
+| `SmoothWindowGridComparison` | weighted Frobenius sum as `L²` times the smooth form; Lorentz mean square of `ν_X`; lattice deficit at distance `D` |
+| `SmoothWindowWeightedTrace` | summation by parts; Jordan bound on the alias interval; prime part of the trace at `λ = 4/3`; collar form of the trace |
+| `SmoothWindowProfile` | window profiles, existence, scaled weights, derivative and collar bounds |
+| `SmoothWindowFrobeniusBound` | the smooth-window Frobenius bound at one height |
+| `SmoothWeightedCertificateAtFourThirds` | rates, one-height trace and Frobenius bounds, the seam assembly; `zeta_coalescent_certificate` |
 | `NarrowStripClosePairEnergyAndExchangeRate` | narrow-strip Cesàro energy and `2/3` escape criterion; exact sub-threshold close-pair vanishing; `2`-adic parity collar doubling (`X ≤ 2/b`); quadratic `O(δ²)` small-shift sieve strip bound |

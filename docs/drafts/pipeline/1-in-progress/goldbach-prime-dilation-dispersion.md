@@ -326,3 +326,14 @@ Even a proof of (C) would initially yield only the flat-source signed
 test. The elementary prime-divisor variance loses H_P^(-1/2), with
 H_P of order log log X; no arbitrary logarithmic saving or marked
 Type II estimate follows automatically.
+
+### Further corpus audit, 2026-10-24
+
+The new `BezoutValuationIncidence/MoebiusPrimitiveFibreMasses.lean`
+source was located by lexical corpus lookup and inspected. Its
+`jordanFibreMass_eq` regroups the positive weight μ(q)²J₂(q)/q² into
+coprime squarefree counts on quotient fibres. This may supply arithmetic
+row-mass bookkeeping, but it does not estimate the signed μ(T−mn)
+correlation required here. No signed covariance premise is discharged
+by that source inspection. Two accompanying semantic searches returned
+runtime errors, so their empty results are not evidence of absence.

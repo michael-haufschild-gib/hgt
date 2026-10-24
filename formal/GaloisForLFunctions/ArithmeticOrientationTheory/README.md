@@ -489,6 +489,53 @@ This is the square-root threshold of the aperture as a sampling threshold.
    and is equivalent across all apertures to every unit of the width dictionary
    (`nyquistRiemannRoch_beyond_rankNullity_tfae`, `nyquistRiemannRoch_beyond_rankNullity_synthesis`).
 
+### 3.3″ The Nyquist bound at the diagonal (`TheNyquistBoundAtTheDiagonal`)
+
+1. **Integer-quantized Nyquist injectivity and surjectivity thresholds.** Because `h0 A : ℕ` and
+   `h1 A : ℕ` are integer invariants, `h0_le_nyquist` forces `h0 A = 0` already when
+   `K * (dim − 1) < frobeniusMass A` (`h0_eq_zero_of_mul_sub_one_lt_frobeniusMass`), and `h1_le_nyquist`
+   forces `h1 A = 0` already when `K * (#nodes − 1) < frobeniusMass A`
+   (`h1_eq_zero_of_mul_sub_one_lt_frobeniusMass`). Conversely, above the diagonal (`#nodes < dim`),
+   rank–nullity forces `0 < dim − #nodes ≤ h0 A` (`h0_pos_of_card_lt_card`).
+2. **The logarithm-free `T + O(N)` affine mean-value constant.** Using `integral_Icc_normSq_dirPoly_le_affine_max`
+   with `∑_{m < N} (m + 1) ‖a_m‖² ≤ N ∑_{m < N} ‖a_m‖²` (`sum_mul_normSq_le_natCast_mul`), every
+   Dirichlet polynomial of length `N` satisfies on `[0, T]` (`T ≥ 0`)
+   `∫_0^T ‖dirPoly N a t‖² dt ≤ dirichletAffineFrameConstant T N * ∑_{m < N} ‖a_m‖²`
+   (`integral_normSq_dirPoly_le_dirichletAffineFrameConstant`), where
+   `dirichletAffineFrameConstant T N = (5π/2) max(T, 1) + 5πe N` is completely free of logarithms
+   and its height-linear and length-linear terms cross at the exact diagonal `T = 2e N`
+   (`dirichletAffineFrameConstant_diagonal_balance`).
+3. **Three logarithm-free and diagonal-sharpened readings at `1`-separated heights.**
+   - *Height-cell average sampling (`dirichletCellSampling`)*: reading the normalized cell averages
+     `(1/√δ) ∫_{λ_r − δ/2}^{λ_r + δ/2} (k+1)^{it} dt` eliminates the Sobolev derivative loss `F'`
+     by interval Cauchy–Schwarz (`norm_intervalIntegral_sq_le`) and gives the pure `T + O(N)` frame
+     bound `HasFrameBound (dirichletCellSampling N δ lam R) (dirichletAffineFrameConstant T N)`
+     with no logarithm anywhere (`hasFrameBound_dirichletCellSampling`).
+   - *Sobolev-normalized pointwise sampling (`sobolevDirichletSampling`)*: right-multiplying
+     `dirichletSampling N lam R` by `diag(1 / √(2/δ + δ (log(k+1))²))` (`diag(1 / √(2 + (log(k+1))²))`
+     at `δ = 1`) preserves `h0`, `rank`, and `h1` identically (`h0_rank_h1_sobolevDirichletSampling_eq`)
+     while satisfying the logarithm-free `T + O(N)` frame bound `dirichletAffineFrameConstant T N`
+     (`hasFrameBound_sobolevDirichletSampling`, `hasFrameBound_sobolevDirichletSampling_one_separated`).
+   - *Harmonic-reweighted pointwise sampling (`harmonicDirichletSampling`)*: right-multiplying by
+     `diag(1 / √(k+1))` preserves `h0`, `rank`, and `h1` identically
+     (`h0_rank_h1_harmonicDirichletSampling_eq`), reduces the `n`-weighted mass to the plain mass so
+     `N` drops out of the height factor (`dirichletAffineFrameConstant T 1`,
+     `hasFrameBound_harmonicDirichletSampling`), and gives Frobenius mass `(R + 1) ∑_{k=1}^N 1/k`,
+     whose `log N` cancels `1/δ + 2 log N` (`rank_dirichletSampling_ge_harmonic`).
+4. **Alignment with the square-root threshold of the aperture.** A test of aperture `a` has test
+   length `apertureTestLength a = e^a` and Weil-kernel prime horizon `aperturePrimeHorizon a = e^{2a} =
+   (apertureTestLength a)²` (`apertureTestLength_sq_eq_primeHorizon`). At the square-root aperture
+   `squareRootAperture T = (1/2) log T` (`T > 0`), `aperturePrimeHorizon a = T` and
+   `apertureTestLength a = √T` (`aperturePrimeHorizon_and_testLength_squareRootAperture`,
+   `le_squareRootAperture_iff`). Below `squareRootAperture T`, the windowed Dirichlet mean square is
+   exact diagonal (`windowed_dirichlet_diagonal_below_squareRootAperture`),
+   `dirichletAffineFrameConstant T N ≤ (5π/2 + 5πe) T` is purely linear in `T`
+   (`dirichletAffineFrameConstant_le_below_squareRootAperture`), and the periodic lattice of density
+   `L = log T` hides both position and depth (`lattice_nyquist_eq_squareRootAperture`). Above
+   `squareRootAperture T` (`T < N`), every `1`-separated sequence of heights in `[1/2, T − 1/2]` has
+   `R + 1 ≤ T < N` (`sample_count_le_T_of_one_separated`) and `0 < N − T ≤ h0 (dirichletSampling N lam R)`
+   (`h0_dirichletSampling_pos_above_diagonal`, `nyquist_diagonal_and_squareRoot_threshold_synthesis`).
+
 ### 3.4 The even flip is read at the prime two (`TheEvenFlipIsReadAtThePrimeTwo`)
 
 1. **The flip is an orientation.** Three faces (`evenFlip_apply`), involution
@@ -655,6 +702,14 @@ This is the square-root threshold of the aperture as a sampling threshold.
     theorem, one coordinate at a time (`coordEval_eq_zero_of_sphere`), over the whole hyperplane
     `ω(2) = √2/a` (`mem_obstructionHull_towerTwisted_of_two`). Such `a` exist (`exists_good_tower`), so
     some hull contains the untied point `ω(2) = √2/a, ω(q) = 0` (`exists_obstruction_not_tied`).
+13. **Unpayability carries multiplicity** (`UnpayabilityCarriesMultiplicity`). For
+    `ℓ_ε = (log d)d^{−ε}` (series `−ζ'(s + ε)`, a double pole), every repairing kernel vanishes at the
+    pole (`lSeries_eq_zero_of_repairs_logPower`, by continuation across the strip), and the hull is the
+    pole point, as for `d^{−ε}` (`mem_obstructionHull_logPower_iff`). Yet `δ₁ − 2^{1−ε}δ₂` does not
+    repair `ℓ_ε` while its square does: `P(ℓ_ε) ⊊ P(d^{−ε})` (`paidIdeal_logPower_lt_smoothPower`),
+    `P(ℓ_ε)` is not radical (`not_isRadical_paidIdeal_logPower`), and `rank 𝒲_{1/2}/P(ℓ_ε) ≥ 2`
+    (`two_le_rank_quotient_paidIdeal_logPower`). The hull is not a complete invariant; the ideal
+    records the order of the pole.
 11. **The orbit structure of the unpaid class** (`TheOrbitStructureOfTheUnpaidClass`). Under the
     critical Wiener monoid, `WienerUnitOrbit` (`c₂ = u ⋆ c₁` away from `0` for `IsWienerUnit u`) is an
     equivalence relation (`equivalence_wienerUnitOrbit`) and `WienerMonoidOrbit` (`c₂ = k ⋆ c₁` for
@@ -855,6 +910,44 @@ model of a reading that sees magnitudes of modes and no orientation.
    Globally the cone's Hodge index is one more unit of the width dictionary
    (`sectionEffectivityCone_widthDictionary_tfae`).
 
+### 3.10′ An effectivity from sections that does not read the form (`AnEffectivityFromSectionsThatDoesNotReadTheForm`)
+
+1. **The sign-free source Bézout mechanism.** On any polar surface `S`, a source energy functional
+   `Φ : C → ℝ` defines the `1 × 1` obstruction reading `sourceObstructionReading S Φ x` (vanishing iff
+   `x ∈ S.NefQuadrant` and `Φ x ≤ S.polar x x`), its section count `sourceH0 S Φ x ∈ {0, 1}`, and the
+   section cone `sourceSectionCone S Φ = {x : 1 ≤ sourceH0 S Φ x} = sourceCone S Φ`
+   (`sourceSectionCone_eq_sourceCone`). Whenever `0 ≤ Φ` on `sourceSectionCone S Φ` and
+   `S.defect x y ^ 2 ≤ Φ x * Φ y`, hyperbolic AM-GM (`polar_sq_sub_polar_mul_polar`) yields
+   `S.BezoutAxiom (sourceSectionCone S Φ)` directly from `Φ x * Φ y ≤ S.polar x x * S.polar y y ≤ S.polar x y ^ 2`
+   without reading the sign of `S.pair x x` (`sourceSectionCone_bezout_of_defect_sq_le`).
+2. **Frobenius-mass calibration over `𝔽_q` vs. the golden datum.** On `D.windowSurface W`, the
+   Frobenius evaluation matrix `frobEvalMatrix D W` defines `frobMassEnergy D W x = frobeniusMass (frobCycleReading D W x)`
+   and `frobMassSectionCone D W` (which reads only `frobeniusMass`, not `frobReflectedLag`). When
+   `|β_i| = 1`, Cauchy–Schwarz on `frobEvalMatrix` gives `|defect x y|² ≤ frobMassEnergy x · frobMassEnergy y`,
+   so `frobMassSectionCone D W` satisfies `BezoutAxiom` unconditionally without reading `x²` and
+   coincides with `sectionEffectivityCone` (`frobMassSectionCone_bezout_and_eq_of_unitary`). On
+   `goldenDatum.windowSurface {0, 1}`, `frobMassSectionCone` refutes `RiemannRochAxiom`
+   (`frobMassH0 = 0` on both `±goldenCounterexample`, where `frobMassEnergy = 18 > 4 = polar`), while
+   `frobReflectedSectionCone` refutes both `BezoutAxiom` and `RiemannRochAxiom`
+   (`goldenForwardPlus · goldenForwardMinus = −6 < 0`, `goldenDatum_refutes_frobMass_and_frobReflected`).
+3. **Logarithmic-box node and `E(s)` section reading over `ℤ`.** On `scalingSubsurface (oddRealTestsAt r)`
+   (`0 < r < R`), `chebyshevSourceEnergy r R` is built from `archGaugeBudget r R F ≥ 0` minus
+   `apertureH1ChebyshevCorrection r F = poleCharge F + primeNodeCorrelationObstruction r F` (the
+   lag-weighted integral of `E'(s) = e^s + 1 − dψ(e^s)` on `(0, 2r]`). By the two-aperture gauge
+   identity, `chebyshevSectionCone r R` is independent of `R > r` (`chebyshevSectionCone_independence`),
+   satisfies `AmpleAxiom`, `BezoutAxiom`, and `RiemannRochAxiom` unconditionally for `0 < r ≤ 181/500 < R`
+   (`chebyshevSectionCone_castelnuovoSeveri_of_le`), and separates `ℤ` from `shiftedPairVonMangoldt a`
+   (`a ≠ 0`, `r ≥ ½ log 2`): `shiftedPairSourceEnergy a r R x < chebyshevSourceEnergy r R x` whenever
+   `autoCorrelation F (log 2) > 0` (`primeNodeCorrelationObstruction_lt_shiftedPair`).
+4. **The convex, Hecke-stable `L²`-mass section cone over `ℤ`.** On `scalingSubsurface V` (`V ≤ realTests`),
+   `l2MassSectionCone c V` (`l2SourceEnergy c V x = c ∫ f(u)² du`) obeys the sign-free `L²` Bézout
+   bound `c ∫ f g ≤ polar x y` for all `c ≥ 0` by `L²` Cauchy–Schwarz and hyperbolic AM-GM
+   (`l2SourcePairing_le_polar_of_mem_l2MassSectionCone`), is convex and `AmpleAxiom` for all `c > 0`,
+   and satisfies `RiemannRochAxiom`, `AmpleAxiom`, and `SurfaceRiemannRochAxiom 0 0` past the first
+   prime `2` on `primitiveSmoothRealTestsAt r` (`r ≤ ½(log 2 + 1/50)`, `0 < c ≤ 1/1000`),
+   `polarFreeSmoothRealTestsAt r` (`0 < c ≤ 1/20`), and `oddRealTestsAt r` (`r ≤ 181/500`,
+   `0 < c ≤ 1/1000`, `l2MassSectionCone_convex_ample_and_primeTwo_riemannRoch`).
+
 ### 3.11 The index theorem of the receiver (`TheIndexTheoremOfTheReceiver`)
 
 1. **Discrete Euler characteristic.** For a reading `A`, `h⁰(A) − h¹(A) = dim − #nodes`, and
@@ -1005,7 +1098,16 @@ Built and reusable:
   *window-floor dissipation rate* `windowFloorDissipationRate`, the *`Φ`-gauge boundary-defect identity*
   (`fullZeroForm_phiDoob_eq_jump_sub_defect_add_flux`), the *aperture spectral jump*
   `apertureSpectralJump` with its `HasSum` RH equivalence, and the *ceiling-renormalized Lyapunov
-  functional* `ceilingScaledGroundEnergy`.
+  functional* `ceilingScaledGroundEnergy`;
+- the *logarithm-free diagonal frame constant* `dirichletAffineFrameConstant T N = (5π/2) max(T, 1) + 5πe N`,
+  the *height-cell average*, *Sobolev-normalized*, and *harmonic-reweighted* Dirichlet sampling
+  matrices (`dirichletCellSampling`, `sobolevDirichletSampling`, `harmonicDirichletSampling`), and
+  the *square-root aperture calibration* (`squareRootAperture`, `apertureTestLength`,
+  `aperturePrimeHorizon`);
+- the *source obstruction reading* `sourceObstructionReading S Φ` and *sign-free Bézout theorem*
+  (`sourceSectionCone_bezout_of_defect_sq_le`), the *Frobenius-mass section cone* `frobMassSectionCone`,
+  the *Chebyshev-defect section cone* `chebyshevSectionCone`, and the *`L²`-mass section cone*
+  `l2MassSectionCone`.
 
 ---
 
@@ -1087,15 +1189,38 @@ Built and reusable:
    `K > 0` (`A ≥ 3`) and vanishing-floor relative transport (`c_j ≤ 1`, `0 ≤ q_j`) starting at
    `(A 0).1 ≤ 3/10` is compatible with the Gaussian ceiling and equivalent to RH
    (`riemannHypothesis_of_vanishing_relative_step`, `riemannHypothesis_iff_exists_relative_step`).
-7. **The Nyquist bound at the diagonal.** Sharpen the frame bound to `T + O(N)` without the
-   logarithm at `1`-separated heights, and read the resulting injectivity threshold against the
-   square-root threshold of the aperture.
-8. **An effectivity from sections that does not read the form.** The section cone of §3.10 has
-   the right shape — its axioms are exactly the Hodge index, it reproduces Weil over `𝔽_q` and
-   fails on the golden datum — but its sections are defined by the sign of `x²`. Open: a section
-   reading built from source data (node counts on the logarithmic box, the defect `E(s)`, the
-   Frobenius mass) whose cone has the same calibration and whose Bézout axiom is proved without
-   that sign.
+7. **The Nyquist bound at the diagonal.** Answered by §3.3″
+   (`TheNyquistBoundAtTheDiagonal`): `integral_Icc_normSq_dirPoly_le_affine_max` with
+   `∑_{m < N} (m + 1) ‖a_m‖² ≤ N ∑_{m < N} ‖a_m‖²` replaces `T + 4N(1 + log N)` by the logarithm-free
+   diagonal constant `dirichletAffineFrameConstant T N = (5π/2) max(T, 1) + 5πe N` (balanced at
+   `T = 2e N`). At `1`-separated (and `δ`-separated) heights, `dirichletCellSampling` and
+   `sobolevDirichletSampling` (which preserves `h0`, `rank`, and `h1` of `dirichletSampling`
+   identically) both satisfy `HasFrameBound · (dirichletAffineFrameConstant T N)` with no logarithm
+   anywhere, while `harmonicDirichletSampling` drops `N` from the height factor and cancels `log N`
+   via its harmonic Frobenius mass `(R + 1) ∑_{k=1}^N 1/k`. At `squareRootAperture T = (1/2) log T`,
+   `aperturePrimeHorizon a = e^{2a} = T` and `apertureTestLength a = e^a = √T`: below `squareRootAperture T`
+   the windowed mean square is exact diagonal, `dirichletAffineFrameConstant T N ≤ (5π/2 + 5πe) T`,
+   and the periodic lattice of density `L = log T` hides both position and depth, whereas above
+   `squareRootAperture T` (`T < N`) every `1`-separated sampling matrix in `[1/2, T − 1/2]` loses
+   injectivity with `0 < N − T ≤ h0 (dirichletSampling N lam R)`.
+8. **An effectivity from sections that does not read the form.** Answered by §3.10′
+   (`AnEffectivityFromSectionsThatDoesNotReadTheForm`): on any polar surface `S`, the `1 × 1`
+   obstruction reading `sourceObstructionReading S Φ` defines `sourceSectionCone S Φ = {x : 1 ≤ sourceH0 S Φ x}`
+   whose Bézout axiom holds without reading `S.pair x x` whenever `S.defect x y ^ 2 ≤ Φ x * Φ y` via
+   hyperbolic AM-GM (`sourceSectionCone_bezout_of_defect_sq_le`). Over `𝔽_q`, `frobMassSectionCone D W`
+   (built from `frobeniusMass` on `frobEvalMatrix D W`) satisfies `BezoutAxiom` unconditionally for
+   unitary `D` (`frobMassSectionCone_bezout_and_eq_of_unitary`) while `goldenDatum.windowSurface {0, 1}`
+   refutes `RiemannRochAxiom` on `frobMassSectionCone` and both `BezoutAxiom` and `RiemannRochAxiom` on
+   `frobReflectedSectionCone` (`goldenDatum_refutes_frobMass_and_frobReflected`). Over `ℤ`,
+   `chebyshevSectionCone r R` (built from `archGaugeBudget r R F` and `apertureH1ChebyshevCorrection r F`)
+   is independent of `R > r`, satisfies `AmpleAxiom`, `BezoutAxiom`, and `RiemannRochAxiom` on
+   `(0, 181/500]` (`chebyshevSectionCone_castelnuovoSeveri_of_le`), and separates `ℤ` from
+   `shiftedPairVonMangoldt a` (`primeNodeCorrelationObstruction_lt_shiftedPair`), while
+   `l2MassSectionCone c V` obeys the sign-free `L²` Bézout bound `c ∫ f g ≤ polar x y` for all `c ≥ 0`
+   (`l2SourcePairing_le_polar_of_mem_l2MassSectionCone`) and satisfies `RiemannRochAxiom`, `AmpleAxiom`,
+   and `SurfaceRiemannRochAxiom 0 0` past the first prime `2` on `primitiveSmoothRealTestsAt r`,
+   `polarFreeSmoothRealTestsAt r`, and `oddRealTestsAt r`
+   (`l2MassSectionCone_convex_ample_and_primeTwo_riemannRoch`).
 9. **An index formula for the actual receiver.** The hull of `μ(d)d^{−ε}` contains every translated
    off-line zero `ρ − ε` with `ζ(ρ − ε) ≠ 0`, and the codimension of its repairing ideal is at least
    the number of such zeros (§3.6⁗). Open: the reverse inclusion (repairing kernels off the zeros),
@@ -1215,6 +1340,8 @@ be coupled to the Frobenius mass or to the defect `E(s) = e^s + s − 1 − ψ(e
   repairing kernels on its pole progression.
 - `ObstructionHullsAreNotConfinedToTheHalfPlane` — continuity of Bohr evaluation along the primes,
   untying coordinates by the identity theorem, the obstructed hyperplane, an untied obstruction.
+- `UnpayabilityCarriesMultiplicity` — the logarithmic smooth power: one-point hull, non-radical
+  repairing ideal, rank at least two.
 - `TheDampingFlowPreservesOrientation` — transport of residue combinations.
 - `TheWidthDictionary` — the equivalences in one theorem.
 - `PoleSubtractionAndTheForcingSignDictionary` — faithfulness of the Rosati reflection reading vs.
@@ -1280,3 +1407,22 @@ be coupled to the Frobenius mass or to the defect `E(s) = e^s + s − 1 − ψ(e
   relative transport (`exists_ceilingScaledGroundEnergy_le`, `hasDerivAt_exp_mul_floor`,
   `riemannHypothesis_of_vanishing_relative_step`, `riemannHypothesis_iff_exists_relative_step`,
   `apertureTransport_and_ceilingLyapunov_synthesis`).
+- `TheNyquistBoundAtTheDiagonal` — integer-quantized Nyquist injectivity and surjectivity thresholds
+  (`h0_eq_zero_of_mul_sub_one_lt_frobeniusMass`, `h1_eq_zero_of_mul_sub_one_lt_frobeniusMass`), the
+  logarithm-free `T + O(N)` affine frame constant `dirichletAffineFrameConstant`
+  (`integral_normSq_dirPoly_le_dirichletAffineFrameConstant`, `dirichletAffineFrameConstant_diagonal_balance`),
+  logarithm-free frame bounds for `dirichletCellSampling` and `sobolevDirichletSampling`
+  (`hasFrameBound_dirichletCellSampling`, `hasFrameBound_sobolevDirichletSampling_one_separated`),
+  harmonic logarithm cancellation (`hasFrameBound_harmonicDirichletSampling`,
+  `rank_dirichletSampling_ge_harmonic`), and exact alignment of the diagonal injectivity threshold
+  with `squareRootAperture T = (1/2) log T` (`aperturePrimeHorizon_and_testLength_squareRootAperture`,
+  `windowed_dirichlet_diagonal_below_squareRootAperture`, `h0_dirichletSampling_pos_above_diagonal`,
+  `lattice_nyquist_eq_squareRootAperture`, `nyquist_diagonal_and_squareRoot_threshold_synthesis`).
+- `AnEffectivityFromSectionsThatDoesNotReadTheForm` — the `1 × 1` source obstruction reading
+  `sourceObstructionReading S Φ` and sign-free Bézout theorem (`sourceSectionCone_bezout_of_defect_sq_le`),
+  Frobenius-mass calibration over `𝔽_q` (`frobMassSectionCone_bezout_and_eq_of_unitary`) vs. refutation
+  on `goldenDatum` (`goldenDatum_refutes_frobMass_and_frobReflected`), logarithmic-box node and `E(s)`
+  section cones over `ℤ` (`chebyshevSectionCone_independence`, `chebyshevSectionCone_castelnuovoSeveri_of_le`,
+  `primeNodeCorrelationObstruction_lt_shiftedPair`, `chebyshevSectionCone_widthDictionary_tfae`), and
+  the convex Hecke-stable `L²`-mass section cone (`l2SourcePairing_le_polar_of_mem_l2MassSectionCone`,
+  `l2MassSectionCone_convex_ample_and_primeTwo_riemannRoch`, `sourceSectionEffectivity_synthesis`).

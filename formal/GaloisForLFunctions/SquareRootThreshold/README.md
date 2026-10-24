@@ -121,9 +121,9 @@ them.
 | Tempered configuration | `Σ_ρ m_ρ/(1 + \|γ_ρ\|²) < ∞` | `TemperedConfig` |
 | Pair energy | `S(a) = ∫_{-a}^{a} sinh²(δu) du = sinh(2δa)/(2δ) − a` | `pairEnergy` |
 | Exponential sum | `Q(ξ) = Σ_j c_j e^{2πiξν_j}` | `expSum` |
-| Prime polynomial | `Π_f(ξ) = Σ_{2≤n≤X} Λ(n) n^{−1/2}(k_f(log n) n^{2πiξ} + k_f(−log n) n^{−2πiξ})` | `primePolynomial` |
+| Prime polynomial | `Π_f(ξ) = Σ_{2≤n≤X} Λ(n) n^{−1/2}(k_f(log n) n^{2πiξ} + k_f(−log n) n^{−2πiξ})`, with odd/even parity sectors `Π_f^odd`, `Π_f^even` | `primePolynomial`, `oddPrimePolynomial`, `evenPrimePolynomial` |
 | Archimedean–pole part | `A_f(ξ) = h_k(i/2) + h_k(−i/2) + ∫ h_k μ` with `k = S_ξ f ⋆ (S_ξ f)~` | `archPart` |
-| Diagonal energy | `V_f = Σ_{2≤n≤X} Λ(n)²/n (\|k_f(log n)\|² + \|k_f(−log n)\|²)` | `primeVariance` |
+| Diagonal energy | `V_f = Σ_{2≤n≤X} Λ(n)²/n (\|k_f(log n)\|² + \|k_f(−log n)\|²)`, split as `V_f^odd + V_f^even` | `primeVariance`, `oddPrimeVariance`, `evenPrimeVariance` |
 | Prime-only polynomial and envelope | the prime terms of `Π_f`; the `ℓ¹` envelope `M_f` of its coefficients | `primeOnlyPolynomial`, `primeEnvelope` |
 | Prime window functional | `P_v(k) = Σ_n Λ(n)/√n (k(log n) + k(−log n))` read on `\|log n − v\| ≤ 2w` | `lagPrimeWindow`, `lagPrimeWindowRHS` |
 
@@ -331,9 +331,19 @@ Finite lag ranges, records and the height window:
 15. **Height averaging.** `k_η(v) = ∫ |h_η(−2πξ)|² e^{2πiξv} dξ`. So windowed forms are height
     averages of localized forms, and positivity at aperture `r` passes to every windowed form of
     resolution `r`, whatever the aperture of the test.
-16. **Windowed Gram identity.**
+16. **Windowed Gram identity and threshold-localized variance.**
     `∫ |h_η(−2πξ)|² |Q(ξ)|² dξ = Σ_{j,k} c_j c̄_k k_η(ν_j − ν_k)`. Since `k_η` vanishes beyond
-    `2r`, only pairs of frequencies closer than `2r` interact.
+    `2r`, only pairs of frequencies closer than `2r` interact. For `Π_f` at any cutoff `X`, every
+    sub-threshold index `2r(n + 1) ≤ 1` has empty `2r`-neighbourhood (`closeSet_primeFreq_eq_empty_of_le`),
+    while a trans-threshold index `2r(n + 1) > 1` has at most `n(e^{2r} − e^{−2r})` neighbours,
+    cancelling the degree weight `1/n` in `|c_{n,b}|² = (Λ(n)²/n)|k_f(±log n)|²`
+    (`integral_windowed_sq_deviation_le_transThreshold_chebyshev`). Splitting `Π_f = Π_f^odd + Π_f^even`
+    by `2`-adic parity isolates `Π_f^even` onto powers of `2`, whose frequencies are `log 2`-separated
+    at every scale (`integral_normSq_mul_normSq_evenPrimePolynomial_eq`), and doubles the exact
+    diagonalization threshold of `Π_f^odd` from `2rX ≤ 1` to `rX ≤ 1`
+    (`integral_normSq_mul_normSq_oddPrimePolynomial_eq`, `integral_windowed_sq_deviation_le_of_doubled_threshold`),
+    with half-density trans-threshold neighbour count `(n/2)(e^{2r} − e^{−2r})` beyond `r(n + 2) > 1`
+    (`integral_windowed_sq_deviation_parity_chebyshev_le`).
 17. **Minimum-aperture resolution.** Averaging with two windows of apertures `r` and `ρ` multiplies
     their kernels, so only frequency pairs closer than `2 min(r, ρ)` interact. A secondary window
     that separates the frequencies restores the exact diagonal even when the primary window lies
@@ -870,17 +880,23 @@ To be built:
    * **Zero side.** An off-line zero of depth `δ` has weight `T^{2λδ}`, so the needed estimate is
      `N(½ + δ, T) ≪ T^{1 − 2λδ + ε}`. The density hypothesis gives `λ ≤ 1` exactly.
 
-   The pair-correlation conjecture is open on `(1, λ)` even under RH. Trans-Threshold Pair
-   Correlation works on this problem at `λ = 4/3`. There the diagonal, archimedean and pole core of
+   The pair-correlation conjecture is open on `(1, λ)` even under RH. Organizing the localized
+   explicit formula around the threshold (`ThresholdLocalizedExplicitFormulaAndParityVarianceLaw`)
+   shows that the sub-threshold core `2r(n + 1) ≤ 1` has empty `2r`-neighbourhood at every cutoff,
+   the local neighbour bound `|closeSet(n, b)| ≤ n(e^{2r} − e^{−2r})` cancels `1/n` inside the sum
+   to leave the Chebyshev tail `(e^{2r} − e^{−2r}) Σ_{2r(n+1)>1} Λ(n)²(|k_f(log n)|² + |k_f(−log n)|²)`,
+   the `2`-adic sector `Π_f^even` is globally diagonal for `2r ≤ log 2`, and the odd sector
+   `Π_f^odd` is diagonal through the doubled threshold `rX ≤ 1` (`2rX ≤ 2`) with half-density
+   trans-threshold excess beyond `r(n + 2) > 1`. Trans-Threshold Pair Correlation works on the
+   remaining odd trans-threshold regime at `λ = 4/3`. There the diagonal, archimedean and pole core of
    the Gram trace drops to `43/36`, and three-quarters of the zeros on the line reduces to a
    prime-surplus bound with budget `1/18`, equivalently `∫_1^{4/3}(4/3 − α)F(α)dα ≤ 1/9`. The
    sine half of the off-diagonal kernel has no close-pair pole, the cosine half reduces to a mixed
-   mean value of prime Dirichlet polynomials, and Jackson grid weights confine what is left to the
-   close pairs `|log(n/m)| < 4b` — but not to the coalescent band `|log(n/m)| ≲ 1/T` itself, since
-   their cubic tails force `b ≫ T^{−5/9}`; averaging over the height does reach the band, at fixed
-   prime cutoff. Montgomery's shifted Fejér majorant, which uses only `F ≥ 0` and the sub-threshold
+   mean value of prime Dirichlet polynomials, and smooth height weighting (`zeta_coalescent_certificate`)
+   confines the off-diagonal to the coalescent band `|log(n/m)| ≤ 2r` at fixed bandwidth `λ = 4/3`.
+   Montgomery's shifted Fejér majorant, which uses only `F ≥ 0` and the sub-threshold
    identity, misses the budget by the factor `8/3` (`fejer_shifted_bound_gap`): the missing input is
-   arithmetic information on `[1, 4/3]`, the signed correlation of prime pairs `(m, m + h)`,
+   arithmetic information on `[1, 4/3]`, the signed correlation of odd prime pairs `(m, m + 2h)`,
    `h ≪ m/T`.
 2. **Clusters without a depth gap.** For periodic configurations visibility is a Toeplitz question
    about cosh-weighted modes; for finite off-line sets the aperture is `(1/2g) log M` with `g` the
@@ -923,7 +939,11 @@ To be built:
    arithmetic task is to control what can lie beyond every finite horizon; finite-range visibility
    alone does not exclude that escape.
 3. **Localized explicit formula at height `T`** with the off-diagonal pair structure at bandwidth
-   `λ > 1`, organized around the square-root threshold rather than the cutoff.
+   `λ > 1`, organized around the square-root threshold rather than the cutoff
+   (`ThresholdLocalizedExplicitFormulaAndParityVarianceLaw`: sub-threshold core silence for
+   `2r(n + 1) ≤ 1`, degree-cancelled Chebyshev off-diagonal tail, global diagonalization of `Π_f^even`
+   for `2r ≤ log 2`, and `2`-adic parity threshold doubling `rX ≤ 1` with half-density trans-threshold
+   neighbour bound on `Π_f^odd`).
 4. **The visibility tradeoff.** The exact relation between aperture, height localization and
    arithmetic length needed to make a given off-line configuration visible, and the strongest
    estimate available at that length; the unit is `δ(n, R)` below `T(n, R)`.

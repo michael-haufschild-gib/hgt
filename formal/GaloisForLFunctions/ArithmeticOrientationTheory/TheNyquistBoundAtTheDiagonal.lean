@@ -105,7 +105,6 @@ variable {m n : Type*} [Fintype m] [Fintype n] [DecidableEq n]
 
 /-! ## §1. Integer-Quantized Nyquist Injectivity and Surjectivity Thresholds -/
 
-omit [DecidableEq n] in
 /-- **Strict integer-quantized Nyquist injectivity threshold.** Because `h0 A : ℕ` is an integer,
 `h0_le_nyquist` forces `h0 A = 0` (exact injectivity `ker A = ⊥`) as soon as
 `K * (Fintype.card n − 1) < frobeniusMass A`. -/
@@ -121,7 +120,6 @@ theorem h0_eq_zero_of_mul_sub_one_lt_frobeniusMass {A : Matrix m n ℂ} {K : ℝ
   have hnat : h0 A < 1 := by exact_mod_cast hlt1
   omega
 
-omit [DecidableEq n] in
 /-- **Strict integer-quantized Nyquist surjectivity threshold.** Because `h1 A : ℕ` is an integer,
 `h1_le_nyquist` forces `h1 A = 0` (`A.rank = Fintype.card m`) as soon as
 `K * (Fintype.card m − 1) < frobeniusMass A`. -/
@@ -159,11 +157,8 @@ def dirichletAffineFrameConstant (T : ℝ) (N : ℕ) : ℝ :=
 theorem dirichletAffineFrameConstant_pos (T : ℝ) (N : ℕ) :
     0 < dirichletAffineFrameConstant T N := by
   unfold dirichletAffineFrameConstant
-  have hmax : (1 : ℝ) ≤ max T 1 := le_max_right T 1
-  have hpi : 0 < Real.pi := Real.pi_pos
-  have hexp : 0 < Real.exp 1 := Real.exp_pos 1
-  have hN : (0 : ℝ) ≤ (N : ℝ) := Nat.cast_nonneg N
-  nlinarith
+  have hmax : (0 : ℝ) < max T 1 := lt_of_lt_of_le zero_lt_one (le_max_right T 1)
+  positivity
 
 /-- For `T ≥ 1`, `dirichletAffineFrameConstant T N = (5π/2) T + 5πe N`. -/
 theorem dirichletAffineFrameConstant_of_one_le {T : ℝ} (hT : 1 ≤ T) (N : ℕ) :
@@ -298,16 +293,21 @@ theorem dirichletCellSampling_mulVec (N : ℕ) (δ : ℝ) (lam : ℕ → ℝ) (R
         ∫ t in (lam r - δ / 2)..(lam r + δ / 2), dirPoly N a t := by
   unfold dirichletCellSampling dirPoly
   simp only [mulVec, dotProduct]
-  have hint : ∀ k : Fin N, IntervalIntegrable
-      (fun t : ℝ => Complex.exp (((t * Real.log ((k : ℕ) + 1) : ℝ) : ℂ) * Complex.I) * a k)
-      volume (lam r - δ / 2) (lam r + δ / 2) := fun k => by
-    refine Continuous.intervalIntegrable ?_ _ _
-    fun_prop
-  rw [Finset.mul_sum]
-  refine (Finset.sum_congr rfl fun k _ => ?_).trans
-    (congrArg (((1 / Real.sqrt δ : ℝ) : ℂ) * ·)
-      (intervalIntegral.integral_finset_sum fun k _ => hint k).symm)
-  rw [mul_assoc, ← intervalIntegral.integral_mul_const]
+  have h1 : ∀ k : Fin N,
+      (((1 / Real.sqrt δ : ℝ) : ℂ) *
+        ∫ t in (lam r - δ / 2)..(lam r + δ / 2),
+          Complex.exp (((t * Real.log ((k : ℕ) + 1) : ℝ) : ℂ) * Complex.I)) * a k =
+      ((1 / Real.sqrt δ : ℝ) : ℂ) *
+        ∫ t in (lam r - δ / 2)..(lam r + δ / 2),
+          a k * Complex.exp (((t * Real.log ((k : ℕ) + 1) : ℝ) : ℂ) * Complex.I) := fun k => by
+    rw [mul_assoc, ← intervalIntegral.integral_mul_const]
+    congr 1
+    exact intervalIntegral.integral_congr fun t _ => mul_comm _ (a k)
+  simp_rw [h1, ← Finset.mul_sum]
+  rw [← intervalIntegral.integral_finsetSum]
+  intro k _
+  refine Continuous.intervalIntegrable ?_ _ _
+  fun_prop
 
 /-- **Pure `T + O(N)` frame bound without logarithms for height-cell sampling.** At any `δ`-separated
 heights `lam 0, …, lam R` in `[δ/2, T − δ/2]` (in particular `δ = 1` at `1`-separated heights),
@@ -413,6 +413,9 @@ theorem largeValues_dirPoly_sobolev_diagonal (N : ℕ) (a : Fin N → ℂ) {lam 
   have hstep0 := mul_le_mul_of_nonneg_left hext1 hδinv.le
   have hstep1 := mul_le_mul_of_nonneg_left hI1 (by positivity : (0 : ℝ) ≤ 2 / δ)
   have hstep2 := mul_le_mul_of_nonneg_left hI2 hδ.le
+  have htwo : 1 / δ * (∫ t in (0 : ℝ)..T, ‖dirPoly N a t‖ ^ 2) +
+      1 / δ * (∫ t in (0 : ℝ)..T, ‖dirPoly N a t‖ ^ 2) =
+      2 / δ * ∫ t in (0 : ℝ)..T, ‖dirPoly N a t‖ ^ 2 := by ring
   have hcomb : (2 / δ) * (dirichletAffineFrameConstant T N * ∑ m : Fin N, ‖a m‖ ^ 2) +
       δ * (dirichletAffineFrameConstant T N *
         ∑ m : Fin N, (Real.log (((m : ℕ) : ℝ) + 1)) ^ 2 * ‖a m‖ ^ 2) =
@@ -440,15 +443,13 @@ theorem h0_rank_h1_sobolevDirichletSampling_eq (N : ℕ) {δ : ℝ} (hδ : 0 < �
       h1 (sobolevDirichletSampling N δ lam R) = h1 (dirichletSampling N lam R) := by
   have hne : ∀ k : Fin N, ((1 / dirichletSobolevWeight δ k : ℝ) : ℂ) ≠ 0 := fun k => by
     exact_mod_cast (one_div_pos.mpr (dirichletSobolevWeight_pos hδ k)).ne'
-  have h0eq := GaloisForLFunctions.ArithmeticCastelnuovoSeveri.h0_mul_diagonal_eq_of_ne_zero
-    (dirichletSampling N lam R) _ hne
   have hrk := rank_and_h1_mul_diagonal_eq_of_iff_eq_zero
     (A := dirichletSampling N lam R)
     (w₁ := fun k : Fin N => ((1 / dirichletSobolevWeight δ k : ℝ) : ℂ))
     (w₂ := fun _ : Fin N => (1 : ℂ))
     (fun k => ⟨fun h => absurd h (hne k), fun h => absurd h one_ne_zero⟩)
   simp only [diagonal_one, Matrix.mul_one] at hrk
-  exact ⟨h0eq, hrk.1, hrk.2⟩
+  exact hrk
 
 /-- Exact Frobenius mass of `sobolevDirichletSampling N δ lam R`. -/
 theorem frobeniusMass_sobolevDirichletSampling (N : ℕ) {δ : ℝ} (hδ : 0 < δ)
@@ -462,7 +463,7 @@ theorem frobeniusMass_sobolevDirichletSampling (N : ℕ) {δ : ℝ} (hδ : 0 < �
         1 / (2 / δ + δ * (Real.log (((k : ℕ) : ℝ) + 1)) ^ 2) := by
     intro r k
     rw [mul_diagonal, norm_mul, norm_dirichletSampling_apply, one_mul,
-      Complex.norm_real, Real.norm_eq_abs, mul_pow, sq_abs,
+      Complex.norm_real, Real.norm_eq_abs, sq_abs,
       div_pow, one_pow, dirichletSobolevWeight_sq hδ k]
   simp_rw [hterm, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   push_cast
@@ -574,15 +575,13 @@ theorem h0_rank_h1_harmonicDirichletSampling_eq (N : ℕ) (lam : ℕ → ℝ) (R
   have hne : ∀ k : Fin N, ((1 / Real.sqrt (((k : ℕ) : ℝ) + 1) : ℝ) : ℂ) ≠ 0 := fun k => by
     have hk : (0 : ℝ) < ((k : ℕ) : ℝ) + 1 := by positivity
     exact_mod_cast (one_div_pos.mpr (Real.sqrt_pos.mpr hk)).ne'
-  have h0eq := GaloisForLFunctions.ArithmeticCastelnuovoSeveri.h0_mul_diagonal_eq_of_ne_zero
-    (dirichletSampling N lam R) _ hne
   have hrk := rank_and_h1_mul_diagonal_eq_of_iff_eq_zero
     (A := dirichletSampling N lam R)
     (w₁ := fun k : Fin N => ((1 / Real.sqrt (((k : ℕ) : ℝ) + 1) : ℝ) : ℂ))
     (w₂ := fun _ : Fin N => (1 : ℂ))
     (fun k => ⟨fun h => absurd h (hne k), fun h => absurd h one_ne_zero⟩)
   simp only [diagonal_one, Matrix.mul_one] at hrk
-  exact ⟨h0eq, hrk.1, hrk.2⟩
+  exact hrk
 
 /-- The Frobenius mass of `harmonicDirichletSampling N lam R` is `(R + 1) ∑_{k=1}^N 1/k`. -/
 theorem frobeniusMass_harmonicDirichletSampling (N : ℕ) (lam : ℕ → ℝ) (R : ℕ) :
@@ -596,7 +595,7 @@ theorem frobeniusMass_harmonicDirichletSampling (N : ℕ) (lam : ℕ → ℝ) (R
     intro r k
     have hk : (0 : ℝ) ≤ ((k : ℕ) : ℝ) + 1 := by positivity
     rw [mul_diagonal, norm_mul, norm_dirichletSampling_apply, one_mul,
-      Complex.norm_real, Real.norm_eq_abs, mul_pow, sq_abs,
+      Complex.norm_real, Real.norm_eq_abs, sq_abs,
       div_pow, one_pow, Real.sq_sqrt hk]
   simp_rw [hterm, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   rw [← sum_fin_eq_sum_Icc N (fun k => 1 / (k : ℝ))]
@@ -718,11 +717,11 @@ theorem le_squareRootAperture_iff {a T : ℝ} (hT : 0 < T) :
       (a ≤ squareRootAperture T ↔ apertureTestLength a ≤ Real.sqrt T) := by
   obtain ⟨hP, hL⟩ := aperturePrimeHorizon_and_testLength_squareRootAperture hT
   refine ⟨?_, ?_⟩
-  · rw [← hP]
+  · conv_rhs => rw [← hP]
     unfold aperturePrimeHorizon
     rw [Real.exp_le_exp]
     constructor <;> intro h <;> linarith
-  · rw [← hL]
+  · conv_rhs => rw [← hL]
     unfold apertureTestLength
     exact Real.exp_le_exp.symm
 
@@ -736,7 +735,7 @@ theorem windowed_dirichlet_diagonal_below_squareRootAperture
     (ha : a ≤ squareRootAperture T) (s : Finset ℕ)
     (hs : ∀ n ∈ s, 1 ≤ n ∧ (n : ℝ) ≤ aperturePrimeHorizon a) (c : ℕ → ℂ) :
     ∫ ξ : ℝ, ‖Zeta23.paperFT η (-(2 * Real.pi * (ξ : ℂ)))‖ ^ 2 *
-        ‖expSum s c (fun n => Real.log n) ξ‖ ^ 2 =
+        ‖SquareRootThreshold.expSum s c (fun n => Real.log n) ξ‖ ^ 2 =
       (∫ t, ‖η t‖ ^ 2) * ∑ n ∈ s, ‖c n‖ ^ 2 := by
   have hX : aperturePrimeHorizon a ≤ T := ((le_squareRootAperture_iff hT).1).mp ha
   have hr : 0 ≤ 1 / (2 * T) := by positivity
@@ -843,39 +842,39 @@ Unites the four pillars resolving Open Problem 7:
    windowed mean square is exact diagonal, whereas above `squareRootAperture T` (`T < N`) every
    `1`-separated sampling matrix in `[1/2, T − 1/2]` has `0 < N − T ≤ h0 (dirichletSampling N lam R)`. -/
 theorem nyquist_diagonal_and_squareRoot_threshold_synthesis :
-    (∀ (N : ℕ) {lam : ℕ → ℝ} {δ T : ℝ},
+    (∀ (N : ℕ) (lam : ℕ → ℝ) (δ T : ℝ),
       0 < δ → 0 ≤ T → (∀ i, lam i + δ ≤ lam (i + 1)) →
       δ / 2 ≤ lam 0 → ∀ (R : ℕ), lam R + δ / 2 ≤ T →
       HasFrameBound (dirichletCellSampling N δ lam R) (dirichletAffineFrameConstant T N)) ∧
-    (∀ (N : ℕ) {lam : ℕ → ℝ} {T : ℝ},
+    (∀ (N : ℕ) (lam : ℕ → ℝ) (T : ℝ),
       0 ≤ T → (∀ i, lam i + 1 ≤ lam (i + 1)) →
       1 / 2 ≤ lam 0 → ∀ (R : ℕ), lam R + 1 / 2 ≤ T →
       h0 (sobolevDirichletSampling N 1 lam R) = h0 (dirichletSampling N lam R) ∧
         HasFrameBound (sobolevDirichletSampling N 1 lam R) (dirichletAffineFrameConstant T N)) ∧
-    (∀ (N : ℕ), 2 ≤ N → ∀ {lam : ℕ → ℝ} {δ T : ℝ},
+    (∀ (N : ℕ), 2 ≤ N → ∀ (lam : ℕ → ℝ) (δ T : ℝ),
       0 < δ → 0 ≤ T → (∀ i, lam i + δ ≤ lam (i + 1)) →
       δ / 2 ≤ lam 0 → ∀ (R : ℕ), lam R + δ / 2 ≤ T →
       (R + 1 : ℝ) * (∑ k ∈ Finset.Icc 1 N, 1 / (k : ℝ)) ≤
         ((1 / δ + 2 * Real.log N) * dirichletAffineFrameConstant T 1) *
           ((dirichletSampling N lam R).rank : ℝ)) ∧
-    (∀ {T : ℝ}, 0 < T →
+    (∀ (T : ℝ), 0 < T →
       aperturePrimeHorizon (squareRootAperture T) = T ∧
       apertureTestLength (squareRootAperture T) = Real.sqrt T ∧
-      ∀ {N : ℕ} {lam : ℕ → ℝ} (R : ℕ),
+      ∀ (N : ℕ) (lam : ℕ → ℝ) (R : ℕ),
         (∀ i, lam i + 1 ≤ lam (i + 1)) → 1 / 2 ≤ lam 0 → lam R + 1 / 2 ≤ T →
         T < (N : ℝ) →
         (N : ℝ) - T ≤ (h0 (dirichletSampling N lam R) : ℝ) ∧
           0 < h0 (dirichletSampling N lam R)) := by
-  refine ⟨fun N _ _ hδ hT hgap hlow R hhigh =>
+  refine ⟨fun N lam δ T hδ hT hgap hlow R hhigh =>
       hasFrameBound_dirichletCellSampling N hδ hT hgap hlow R hhigh,
-    fun N _ hT hgap hlow R hhigh =>
-      ⟨(h0_rank_h1_sobolevDirichletSampling_eq N one_pos _ R).1,
+    fun N lam T hT hgap hlow R hhigh =>
+      ⟨(h0_rank_h1_sobolevDirichletSampling_eq N one_pos lam R).1,
        (hasFrameBound_sobolevDirichletSampling_one_separated N hT hgap hlow R hhigh).1⟩,
-    fun N hN _ _ hδ hT hgap hlow R hhigh =>
+    fun N hN lam δ T hδ hT hgap hlow R hhigh =>
       rank_dirichletSampling_ge_harmonic N hN hδ hT hgap hlow R hhigh,
-    fun hT => ⟨(aperturePrimeHorizon_and_testLength_squareRootAperture hT).1,
+    fun T hT => ⟨(aperturePrimeHorizon_and_testLength_squareRootAperture hT).1,
       (aperturePrimeHorizon_and_testLength_squareRootAperture hT).2,
-      fun R hgap hlow hhigh habove =>
+      fun N lam R hgap hlow hhigh habove =>
         h0_dirichletSampling_pos_above_diagonal hgap hlow R hhigh habove⟩⟩
 
 end

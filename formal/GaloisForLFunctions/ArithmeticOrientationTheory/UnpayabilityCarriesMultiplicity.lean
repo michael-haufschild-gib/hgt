@@ -248,14 +248,14 @@ theorem poleFactor_conv_apply (hp : p.Prime) {n : ℕ} (hn : n ≠ 0) :
   by_cases h3 : n = p ^ 2
   · subst h3
     have hdvd : p ∣ p ^ 2 := dvd_pow_self p two_ne_zero
-    rw [if_neg h1p.symm, if_neg hpp.symm, if_pos rfl, if_pos hdvd,
-      Nat.pow_div (by norm_num) hp.pos]
-    simp [localFactorKernel, hp1, hpp.symm, h1p.symm]; ring
+    have hdiv : p ^ 2 / p = p := by rw [sq, Nat.mul_div_cancel _ hp.pos]
+    rw [if_neg h1p.symm, if_neg hpp.symm, if_pos rfl, if_pos hdvd, hdiv]
+    simp [localFactorKernel, hp1, hpp.symm]; ring
   rw [if_neg h1, if_neg h2, if_neg h3]
   simp only [localFactorKernel, if_neg h1, if_neg h2]
   split_ifs with hd h4 h5
-  · exfalso; exact h1 (by rw [← Nat.div_mul_cancel hd, h4, one_mul])
-  · exfalso; exact h3 (by rw [← Nat.div_mul_cancel hd, h5, sq])
+  · exfalso; exact h2 (by rw [← Nat.div_mul_cancel hd, h4, one_mul])
+  · exfalso; exact h3 (by rw [← Nat.div_mul_cancel hd, h5, ← sq])
   · ring
   · ring
 
@@ -268,8 +268,8 @@ theorem poleFactor_conv_eq_zero (hp : p.Prime) {n : ℕ} (hn : p ^ 2 < n) :
   rw [poleFactor_conv_apply hp (by omega), if_neg (by omega), if_neg (by omega), if_neg (by omega)]
 
 theorem poleFactor_eq_zero (hp : p.Prime) {n : ℕ} (hn : p < n) : poleFactor ε p n = 0 := by
-  have : n ≠ 1 := by have := hp.one_lt; omega
-  simp [localFactorKernel, this, (by omega : n ≠ p)]
+  have h1 : n ≠ 1 := by have := hp.one_lt; omega
+  simp only [localFactorKernel, if_neg h1, if_neg (show n ≠ p by omega)]
 
 theorem rpow_pole (hp : p.Prime) : (p : ℝ) ^ (1 - ε) * (p : ℝ) ^ (-(1 - ε)) = 1 := by
   rw [← Real.rpow_add (by exact_mod_cast hp.pos)]; simp
@@ -286,19 +286,22 @@ theorem not_receiverBounded_poleFactor (hε : 0 < ε) (hε2 : ε < 1 / 2) (hp : 
   have hp1 : p ≠ 1 := hp.one_lt.ne'
   have hsupp : ∀ j, p < j → poleFactor ε p j = 0 := fun j hj => poleFactor_eq_zero hp hj
   obtain ⟨-, hslope⟩ := (receiverBounded_dirichletConv_logWeight_unit_iff hε hε2.le hsupp).1 h
-  have hS : ({1, p} : Finset ℕ) ⊆ Icc 1 p := by
-    intro j hj; simp only [mem_insert, mem_singleton] at hj
-    rcases hj with rfl | rfl <;> simp [hp.one_le]
+  have hS : ({1, p} : Finset ℕ) ⊆ Icc 1 p :=
+    insert_subset_iff.2 ⟨mem_Icc.2 ⟨le_rfl, hp.one_le⟩,
+      singleton_subset_iff.2 (mem_Icc.2 ⟨hp.one_le, le_rfl⟩)⟩
+  have v1 : poleFactor ε p 1 = 1 := by simp [localFactorKernel]
+  have vp : poleFactor ε p p = -(p : ℝ) ^ (1 - ε) := by simp [localFactorKernel, hp1]
   unfold poleSlope at hslope
   rw [sum_Icc_eq_of_support {1, p} hS fun j hj hjS => by
       simp only [mem_insert, mem_singleton, not_or] at hjS
       simp [localFactorKernel, hjS.1, hjS.2],
-    sum_pair (Ne.symm hp1)] at hslope
+    sum_pair (Ne.symm hp1), v1, vp] at hslope
+  simp only [Nat.cast_one, Real.log_one, mul_zero, zero_mul, zero_add] at hslope
   have hlog : Real.log p ≠ 0 := (Real.log_pos (by exact_mod_cast hp.one_lt)).ne'
-  have := rpow_pole (ε := ε) hp
-  simp [localFactorKernel, hp1] at hslope
-  apply hlog
-  nlinarith [this]
+  have h3 : -(Real.log p) * ((p : ℝ) ^ (1 - ε) * (p : ℝ) ^ (-(1 - ε))) = 0 := by
+    rw [← hslope]; ring
+  rw [rpow_pole hp, mul_one, neg_eq_zero] at h3
+  exact hlog h3
 
 /-- Its square repairs `ℓ_ε`: value and slope at the pole vanish. -/
 theorem receiverBounded_poleFactor_sq (hε : 0 < ε) (hε2 : ε < 1 / 2) (hp : p.Prime) :
@@ -311,20 +314,26 @@ theorem receiverBounded_poleFactor_sq (hε : 0 < ε) (hε2 : ε < 1 / 2) (hp : p
   have hsupp : ∀ j, p ^ 2 < j →
       RHTower.dirichletConv (poleFactor ε p) (poleFactor ε p) j = 0 := fun j hj =>
     poleFactor_conv_eq_zero hp hj
-  have hS : ({1, p, p ^ 2} : Finset ℕ) ⊆ Icc 1 (p ^ 2) := by
-    intro j hj; simp only [mem_insert, mem_singleton] at hj
-    have : p ≤ p ^ 2 := Nat.le_self_pow two_ne_zero p
-    rcases hj with rfl | rfl | rfl <;> simp only [mem_Icc] <;> omega
+  have hS : ({1, p, p ^ 2} : Finset ℕ) ⊆ Icc 1 (p ^ 2) :=
+    insert_subset_iff.2 ⟨mem_Icc.2 ⟨le_rfl, hp2.le⟩, insert_subset_iff.2
+      ⟨mem_Icc.2 ⟨hp.one_le, Nat.le_self_pow two_ne_zero p⟩,
+        singleton_subset_iff.2 (mem_Icc.2 ⟨hp2.le, le_rfl⟩)⟩⟩
   have hval : ∀ j ∈ Icc 1 (p ^ 2), j ∉ ({1, p, p ^ 2} : Finset ℕ) →
       RHTower.dirichletConv (poleFactor ε p) (poleFactor ε p) j = 0 := fun j hj hjS => by
     simp only [mem_insert, mem_singleton, not_or] at hjS
     rw [poleFactor_conv_apply hp (by simp only [mem_Icc] at hj; omega), if_neg hjS.1,
       if_neg hjS.2.1, if_neg hjS.2.2]
-  set b := (p : ℝ) ^ (1 - ε)
-  set w := (p : ℝ) ^ (-(1 - ε))
-  have hbw : b * w = 1 := rpow_pole hp
+  have v1 : RHTower.dirichletConv (poleFactor ε p) (poleFactor ε p) 1 = 1 := by
+    rw [poleFactor_conv_apply hp one_ne_zero, if_pos rfl]
+  have vp : RHTower.dirichletConv (poleFactor ε p) (poleFactor ε p) p =
+      -(2 * (p : ℝ) ^ (1 - ε)) := by
+    rw [poleFactor_conv_apply hp hp.ne_zero, if_neg hp1, if_pos rfl]
+  have vp2 : RHTower.dirichletConv (poleFactor ε p) (poleFactor ε p) (p ^ 2) =
+      ((p : ℝ) ^ (1 - ε)) ^ 2 := by
+    rw [poleFactor_conv_apply hp (by omega), if_neg (by omega), if_neg (Ne.symm hpp), if_pos rfl]
+  have hbw := rpow_pole (ε := ε) hp
   have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
-  have hw2 : ((p ^ 2 : ℕ) : ℝ) ^ (-(1 - ε)) = w ^ 2 := by
+  have hw2 : ((p ^ 2 : ℕ) : ℝ) ^ (-(1 - ε)) = ((p : ℝ) ^ (-(1 - ε))) ^ 2 := by
     rw [Nat.cast_pow, ← Real.rpow_natCast, ← Real.rpow_mul hp0.le, ← Real.rpow_natCast,
       ← Real.rpow_mul hp0.le]; ring_nf
   have hl2 : Real.log ((p ^ 2 : ℕ) : ℝ) = 2 * Real.log p := by
@@ -335,26 +344,19 @@ theorem receiverBounded_poleFactor_sq (hε : 0 < ε) (hε2 : ε < 1 / 2) (hp : p
   refine (receiverBounded_dirichletConv_logWeight_unit_iff hε hε2.le hsupp).2 ⟨?_, ?_⟩
   · unfold poleValue
     rw [sum_Icc_eq_of_support _ hS fun j hj hjS => by rw [hval j hj hjS, zero_mul],
-      sum_insert hdist, sum_insert hdist', sum_singleton,
-      poleFactor_conv_apply hp one_ne_zero, poleFactor_conv_apply hp hp.ne_zero,
-      poleFactor_conv_apply hp (by omega), hw2]
-    simp only [if_true, if_neg (Ne.symm hp1), if_neg (by omega : p ^ 2 ≠ 1),
-      if_neg (Ne.symm hpp), Nat.cast_one, Real.one_rpow]
-    nlinarith [hbw]
+      sum_insert hdist, sum_insert hdist', sum_singleton, v1, vp, vp2, hw2, Nat.cast_one,
+      Real.one_rpow]
+    linear_combination ((p : ℝ) ^ (1 - ε) * (p : ℝ) ^ (-(1 - ε)) - 1) * hbw
   · unfold poleSlope
     rw [sum_Icc_eq_of_support _ hS fun j hj hjS => by rw [hval j hj hjS, zero_mul, zero_mul],
-      sum_insert hdist, sum_insert hdist', sum_singleton,
-      poleFactor_conv_apply hp one_ne_zero, poleFactor_conv_apply hp hp.ne_zero,
-      poleFactor_conv_apply hp (by omega), hw2, hl2]
-    simp only [if_true, if_neg (Ne.symm hp1), if_neg (by omega : p ^ 2 ≠ 1),
-      if_neg (Ne.symm hpp), Nat.cast_one, Real.log_one, mul_zero, zero_mul]
-    have : b ^ 2 * w ^ 2 = 1 := by rw [← mul_pow, hbw, one_pow]
-    nlinarith [hbw, this]
+      sum_insert hdist, sum_insert hdist', sum_singleton, v1, vp, vp2, hw2, hl2, Nat.cast_one,
+      Real.log_one]
+    linear_combination (2 * Real.log p * (p : ℝ) ^ (1 - ε) * (p : ℝ) ^ (-(1 - ε))) * hbw
 
 /-- The Bohr transform of the local factor at the pole. -/
 theorem bohrEval_poleFactor (hp : p.Prime) (ω : BohrPoint) :
     bohrEval (1 / 2) (toWiener _ (criticalWiener_localFactorKernel p ((p : ℝ) ^ (1 - ε)))).toFn ω =
-      1 - ((p : ℝ) ^ (1 - ε) : ℂ) * ω.ω p / (p : ℂ) ^ (((1 / 2 : ℝ)) : ℂ) := by
+      1 - (((p : ℝ) ^ (1 - ε) : ℝ) : ℂ) * ω.ω p / (p : ℂ) ^ (((1 / 2 : ℝ)) : ℂ) := by
   have hp1 : p ≠ 1 := hp.one_lt.ne'
   unfold bohrEval LSeries
   rw [tsum_eq_sum (s := {1, p}) fun m hm => ?_, sum_pair (Ne.symm hp1)]
@@ -375,14 +377,14 @@ theorem bohrEval_poleFactor_polePoint (hε2 : ε < 1 / 2) (hp : p.Prime) :
   have hpc : (p : ℂ) ≠ 0 := by exact_mod_cast hp.ne_zero
   have hω : (polePoint ε hε2.le).ω p = (p : ℂ) ^ (((1 / 2 : ℝ)) : ℂ) * (p : ℂ) ^ (-((1 - ε : ℝ) : ℂ)) := by
     simp only [polePoint, halfPlanePoint, hp.ne_zero, if_false]
-    rw [← cpow_add _ _ hpc]; congr 1; ring
+    rw [← cpow_add _ _ hpc]; congr 1
   have hsq : (p : ℂ) ^ (((1 / 2 : ℝ)) : ℂ) ≠ 0 := by
     rw [Ne, cpow_eq_zero_iff]; exact fun h => hpc h.1
   have hb : (((p : ℝ) ^ (1 - ε) : ℝ) : ℂ) * (p : ℂ) ^ (-((1 - ε : ℝ) : ℂ)) = 1 := by
     rw [ofReal_cpow hp0.le, ofReal_natCast, ← cpow_add _ _ hpc]; simp
   rw [hω]
   field_simp
-  linear_combination hb
+  linear_combination -hb
 
 /-! ### The theorems -/
 
@@ -423,7 +425,7 @@ theorem mem_obstructionHull_logPower_iff (ω : BohrPoint) :
       rw [Ne, cpow_eq_zero_iff]; exact fun h' => hq.ne_zero (by exact_mod_cast h'.1)
     have := h.symm.trans h0
     field_simp at this
-    exact mul_left_cancel₀ hb this
+    exact this
   · intro h k hk
     rw [bohrEval_congr k.toFn (BohrPoint.eq_of_primes h)]
     exact bohrEval_polePoint_eq_zero_of_mem hε hε2 hk
@@ -489,7 +491,7 @@ theorem two_le_rank_quotient_paidIdeal_logPower :
     by_contra ht
     rw [zero_smul, zero_add] at hst
     apply poleFactorTwo_not_mem hε hε2
-    have := P.smul_mem t⁻¹ hst
+    have := P.smul_of_tower_mem t⁻¹ hst
     rwa [smul_smul, inv_mul_cancel₀ ht, one_smul] at this
   have := hli.cardinal_le_rank
   simpa using this

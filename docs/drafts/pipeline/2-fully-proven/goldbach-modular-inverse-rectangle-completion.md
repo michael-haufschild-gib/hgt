@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** Classical bridge; no novelty claim
 - **Sources:** [composite Kloosterman budget](../3-formalized/not_new_scientific_knowledge/goldbach-composite-kloosterman-budget.md), [flat prime-dilation dispersion](goldbach-flat-prime-dilation-dispersion.md)
-- **Lean status:** Not formalized; existing interval-column completion has a different, larger remainder
+- **Lean status:** Formalization in progress in `goldbach/ModularInverseRectangleCompletion.lean`; the full inequality is written but its leaf check and closure audit remain pending.
 
 ## Exact statement
 
@@ -61,7 +61,14 @@ a=dt with 1≤t<q. Their characters satisfy e_M(dtu)=e_q(tu). Applying
 The same estimates hold for V.
 
 Finite character orthogonality counts the residue multiplicities of U
-and V. A unit x determines v≡c x⁻¹, so exact Fourier inversion gives
+and V. For a unit x, its pair fibre is the Cartesian product of the
+entries of U reducing to x and the entries of V reducing to c x⁻¹.
+Different unit fibres are disjoint, since their first coordinates have
+different residues. Their union is precisely the counted pairs: a unit
+first coordinate determines x uniquely, and uv=c is equivalent to
+v=c x⁻¹. Thus the sum of the two residue-multiplicity products is the
+cardinality of the actual finite pair set, including repeated residues
+when the intervals exceed M. Exact Fourier inversion gives
 
     C = M⁻² Σ_(a,b mod M) F_U(a)F_V(b) S(a,bc;M).    (5)
 
@@ -75,14 +82,17 @@ For the nonzero/nonzero terms, the separately proved cubic bound implies
 
     |S(a,bc;M)| ≤ 8 τ M^(2/3) gcd(M,a.val,(bc).val)^(1/3).
 
-The gcd is invariant under changing integer representatives. At each
-prime, the inequality
+The gcd is invariant under changing integer representatives. More precisely,
 
-    min(v_M,v_a,v_b+v_c)
-      ≤ min(v_M,v_c)+min(v_M,v_a,v_b)
+    gcd(M,a,bc mod M) | gcd(M,c) gcd(M,a,b).
 
-shows that it is at most g·gcd(M,a.val,b.val). If c=0 the same conclusion
-is immediate from the bound by M. For t=gcd(M,a.val,b.val), the term d=t
+For D=gcd(K,bc), first D divides both Kb and cb, hence divides
+gcd(K,c)b. It also divides gcd(K,c)K. Taking another gcd gives
+D | gcd(K,c)gcd(K,b). Apply this with K=gcd(M,a), then use
+gcd(K,c)|gcd(M,c). Reduction modulo M does not change the common
+divisibility because every divisor under consideration divides M.
+This proves the stronger divisibility statement, including c=0.
+For t=gcd(M,a.val,b.val), the term d=t
 is present in the divisor sum, hence
 
     t^(1/3) ≤ Σ_(d|M, d|a.val, d|b.val) d^(1/3).
@@ -102,11 +112,11 @@ The two axes must be kept separately. The Ramanujan bound
 
     |c_M(t)| ≤ gcd(M,t)
 
-follows from its prime-power values for k≥1: φ(p^k) when p^k|t, −p^(k−1)
-when p^(k−1)|t but p^k does not, and zero otherwise. These values follow
-by subtracting the complete sum over multiples of p from the full
-additive-character sum. CRT multiplies both the Ramanujan sums and the
-gcd bounds, proving the assertion for every M, including M=1.
+follows directly from conductor descent. Put d=gcd(M,t), q=M/d.
+Then t/d is a unit modulo q. The exact unit-fibre identity gives
+c_M(t)=κ c_q(t/d), with κ≤d. The finite Möbius-divisor formula
+reduces c_q(t/d) to μ(q), whose absolute value is at most one.
+Thus |c_M(t)|≤d for every M, including M=1 and t=0.
 
 As S(0,bc;M)=c_M(bc), F_U(0)=L, and
 gcd(M,bc)≤g·gcd(M,b), the a=0,b≠0 contribution has modulus at most
@@ -115,8 +125,8 @@ gcd(M,bc)≤g·gcd(M,b), the a=0,b≠0 contribution has modulus at most
       ≤ (Lg/M²) Σ_(d|M) d Σ_(b≠0,d|b.val) |F_V(b)|
       ≤ τ λ Lg/M.                                   (7)
 
-The gcd product inequality follows from the same primewise minimum
-inequality. The divisor expansion is an upper bound because it includes
+The gcd product inequality follows from the same two gcd extractions.
+The divisor expansion is an upper bound because it includes
 d=gcd(M,b.val); every summand is nonnegative. Similarly,
 S(a,0;M)=c_M(a) gives an a≠0,b=0 contribution at most τλH/M. Combining
 (6), (7), and this second axis proves (R). If M=1 both nonzero frequency
@@ -142,12 +152,15 @@ progression estimate (4).
 
 The inspected `RHTower/Sieve/KuzminLandau.lean` proves
 `two_mul_le_sin_pi_mul`, supplying the chord lower bound on the whole
-unit band. The RH programme's
-`BiScaleUncertainty/DivisorAverageChebyshevAndDyadicBlockVarianceProducer.lean`
-proves `realHarmonic_le_one_add_log` by its Chebyshev cell lengths.
-That logarithmic budget supplies the summation step in (3). The modulus-one
-case and each positive-index side condition are discharged from the
-actual interval data, rather than added to the final theorem.
+unit band. The further corpus search found
+`RHTower/SquareResidueQuadraticInterval.lean`'s
+`squareResidue_sum_reciprocalChord_le`, already summing the reciprocal
+chords for every positive modulus. The implementation uses this exact
+finite theorem for (3), and `ramanujanMultiplesFinEquiv` for the actual
+divisor-frequency descent in (4). The logarithmic harmonic mechanism
+also appears in BiScaleUncertainty's `realHarmonic_le_one_add_log`.
+The modulus-one case and each positive-index side condition are
+discharged from the actual interval data.
 
 Formalize the finite interval transform, (2)–(4), exact graph expansion
 (5), and the two frequency axes before claiming (R). The eventual
@@ -157,6 +170,12 @@ and marked Type II sum remain separate proof obligations.
 
 ## Log
 
+- 2026-10-24 — Separated rectangle completion from the reusable conductor
+  module under the updated olean compilation rules. The full error
+  inequality is now in Lean source, alongside exact interval descent,
+  both Ramanujan axes, the double Fourier identity, and divisor-weighted
+  Fourier budgets. Kernel verification remains pending; no certificate
+  for (R) or Goldbach is claimed.
 - 2026-10-23 — Formalization in progress in the existing Goldbach arithmetic
   leaf: actual finite interval transforms, character chords, and the
   progression-sensitive Fourier mass. The composite certificate remains

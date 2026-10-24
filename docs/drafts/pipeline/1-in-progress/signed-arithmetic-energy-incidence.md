@@ -120,6 +120,8 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
   `pwPerturbedCompanions_pay`, `hasSum_sq_pwDeriv_lattice`.
 - `OffLineConfigurationsArePaidByTheirKernelGram` — `pwConfiguration_pay_iff_gram`,
   `pwConfiguration_pay_of_gram`, `gram_of_pwConfiguration_pay`, `pwDeriv_eq_integral_kernel`.
+- `AtTheNyquistDensityEveryCompanionCounts` — `nyquistMinusOne_pay_iff`, `hasSum_pwDeriv_eq`,
+  `hasSum_pwSource_conj_mul`, `nyquistMinusOne_never_pays`.
 - `KronReductionNeverCreatesFrustration` — `HarmonicFrame.h_nonneg`,
   `HarmonicFrame.reduced_eq_sub_conductance`, `HarmonicFrame.pos_of_reduced_pos`,
   `nonneg_iff_payable_of_healed`.

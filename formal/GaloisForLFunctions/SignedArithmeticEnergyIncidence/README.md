@@ -651,7 +651,12 @@ rows of the envelope class, not over just the Möbius row or rows with its exact
     source of aperture `A` iff `Σ_{j,l} c̄_j c_l √(w_j w_l) S(t_j − t_l) ≤ (2π/h) Σ |c_j|²` for all
     `c`, `S(u) = ∫_{−A}^{A} ξ² e^{iuξ} dξ` (`pwConfiguration_pay_iff_gram`): one cluster costs the
     Nyquist price, nearby clusters pay jointly through the off-diagonal Gram entries, and the
-    companion offset plays no role. This is a polynomial model, not an exact
+    companion offset plays no role. At the Nyquist density itself every companion counts, and the
+    one-short law reappears: polarized lattice Parseval gives the derivative sampling formula
+    `f'(t) = (1/2A) Σ_k σ_k(t) f(x_k)`, `σ_k(t) = s'(t − x_k)`, `s(u) = ∫_{−A}^{A} e^{iuξ} dξ`
+    (`hasSum_pwDeriv_eq`), so with one companion `x₀` removed a positive depth mass at `t` is paid
+    iff `s'(t − x₀) = 0`, at price `A²/3` (`nyquistMinusOne_pay_iff`); elsewhere the sinc of `x₀`
+    defeats it (`nyquistMinusOne_never_pays`). This is a polynomial model, not an exact
     truncation of a Paley–Wiener source or of the full off-line zero form. The law transfers to an
     arbitrary source `f` at half the price: for any polynomial `p` of degree `< n`, if
     `2 w Λ(t) ≤ 1` then `Σ f(γ_i)² − w f'(t)² ≥ −(2 Σ (f − p)(γ_i)² + 4 w (f'(t) − p'(t))²)`

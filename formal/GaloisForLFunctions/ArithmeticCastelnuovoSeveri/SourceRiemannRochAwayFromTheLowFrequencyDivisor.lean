@@ -215,7 +215,7 @@ theorem exists_ne_zero_mem_lowBlindTests {a : ℝ} (ha : 0 < a) :
     rw [Module.finrank_pi_fintype, Complex.finrank_real_complex, Finset.sum_const,
       Finset.card_univ, smul_eq_mul, Module.finrank_fintype_fun_eq_card, Fintype.card_fin]
     omega
-  have hker := LinearMap.ker_ne_bot_of_finrank_lt hdim
+  have hker := LinearMap.ker_ne_bot_of_finrank_lt (f := L) hdim
   obtain ⟨c, hcker, hc0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hker
   set f : ℝ → ℝ := ∑ i, c i • v i with hfdef
   have hfmem : f ∈ realTests := by
