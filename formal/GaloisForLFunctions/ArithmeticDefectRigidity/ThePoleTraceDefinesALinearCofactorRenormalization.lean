@@ -1,18 +1,20 @@
 import GaloisForLFunctions.ArithmeticDefectRigidity.TheActualReceiverHasAnAbsolutePoleTrace
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.CriticalWienerKernelsRepairAPositiveDriftOnlyAtItsPole
 
 /-!
 # Linear cofactor renormalization on the absolute pole-trace domain
 
 The pole subtraction is linear when its coefficient is read from the row's Mellin trace.
 The actual receiver belongs to this domain without an admission assumption, and its trace
-is the coefficient already used in the paid forcing decomposition. No boundedness or
-invariance of this operator domain is asserted.
+is the coefficient already used in the paid forcing decomposition. Its image returns to the
+trace domain. Generic boundedness and domain invariance remain separate questions.
 -/
 
 open Finset Filter Topology RHTower
 open GaloisForLFunctions.BezoutValuationIncidence
 open GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy
-open GaloisForLFunctions.TransHorizonIncidenceMechanics (mellinCell)
+open GaloisForLFunctions.TransHorizonIncidenceMechanics
+  (mellinCell summable_mul_mellinCell_of_energy subHalfRemainder weightCenteredPrefix_zero)
 
 noncomputable section
 set_option autoImplicit false
@@ -43,8 +45,7 @@ def poleTrace (ε : SubcriticalDamping) : poleTraceDomain ε →ₗ[ℝ] ℝ whe
     intro v w
     change (∑' n, (v n + w n) * mellinCell (1 - (ε : ℝ)) n) / (1 - (ε : ℝ)) = _
     simp_rw [add_mul]
-    rw [v.property.2.tsum_add w.property.2, add_div]
-    rfl
+    rw [v.property.2.tsum_add w.property.2, add_div] <;> rfl
   map_smul' := by
     intro c v
     change (∑' n, (c * v n) * mellinCell (1 - (ε : ℝ)) n) / (1 - (ε : ℝ)) =
@@ -75,8 +76,7 @@ def polePowerOperator (ε : SubcriticalDamping) : poleTraceDomain ε →ₗ[ℝ]
     intro v w
     funext n
     change poleTrace ε (v + w) * (n : ℝ) ^ (1 - (ε : ℝ)) = _
-    rw [map_add, add_mul]
-    rfl
+    rw [map_add, add_mul] <;> rfl
   map_smul' := by
     intro c v
     funext n
@@ -109,8 +109,7 @@ theorem renormalizedCofactorOperator_actualTraceVector (ε : SubcriticalDamping)
   change (∑ j ∈ Icc 2 n, (j : ℝ) ^ (-(ε : ℝ)) *
     pmPowerDampedCenteredDivisorPrefix ε (n / j)) -
     poleTrace ε (actualTraceVector ε) * (n : ℝ) ^ (1 - (ε : ℝ)) = _
-  rw [poleTrace_actualTraceVector]
-  rfl
+  rw [poleTrace_actualTraceVector] <;> rfl
 
 /-- The actual linear residual has a uniform global pronic budget. -/
 theorem pronicNorm_actual_linearResidual_le (ε : SubcriticalDamping) (T : ℕ) :
@@ -118,5 +117,44 @@ theorem pronicNorm_actual_linearResidual_le (ε : SubcriticalDamping) (T : ℕ) 
       renormalizedCofactorOperator ε (actualTraceVector ε) n) ≤ forcingRemainderBudget ε := by
   rw [renormalizedCofactorOperator_actualTraceVector]
   exact pronicNorm_receiver_add_renormalizedCofactor_le ε T
+
+theorem forcingRemainder_zero (ε : SubcriticalDamping) : forcingRemainder ε 0 = 0 := by
+  have hα : 1 - (ε : ℝ) ≠ 0 := by linarith [ε.property.2]
+  rw [forcingRemainder_eq]
+  simp only [subHalfRemainder, weightCenteredPrefix_zero, Nat.cast_zero,
+    Real.zero_rpow hα, mul_zero, sub_self]
+
+/-- The paid global remainder belongs to the absolute trace domain. -/
+theorem forcingRemainder_mem_poleTraceDomain (ε : SubcriticalDamping) :
+    forcingRemainder ε ∈ poleTraceDomain ε := by
+  refine ⟨forcingRemainder_zero ε, ?_⟩
+  apply summable_mul_mellinCell_of_energy
+    (by linarith [ε.property.2] : 1 / 2 < 1 - (ε : ℝ)) (forcingRemainder_zero ε)
+  intro T
+  simpa only [pronicNorm_sq] using forcingRemainderEnergy_le ε T
+
+/-- The actual cofactor image returns to the trace domain after the power is removed. -/
+theorem actual_renormalizedCofactor_mem_poleTraceDomain (ε : SubcriticalDamping) :
+    renormalizedCofactorOperator ε (actualTraceVector ε) ∈ poleTraceDomain ε := by
+  have hsub := (poleTraceDomain ε).sub_mem (forcingRemainder_mem_poleTraceDomain ε)
+    (actualTraceVector ε).property
+  have heq : forcingRemainder ε - (actualTraceVector ε : ℕ → ℝ) = renormalizedCofactor ε := by
+    funext n
+    cases n with
+    | zero =>
+      have hα : 1 - (ε : ℝ) ≠ 0 := by linarith [ε.property.2]
+      have hIcc : (Icc 2 0 : Finset ℕ) = ∅ := Finset.Icc_eq_empty (by omega)
+      change forcingRemainder ε 0 - pmPowerDampedCenteredDivisorPrefix ε 0 = _
+      rw [forcingRemainder_zero,
+        ArithmeticContinuationAndCriticalEnergy.pmPowerDampedCenteredDivisorPrefix_zero]
+      simp only [renormalizedCofactor, offDiagonalUnitDilation, forcingPower,
+        hIcc, sum_empty, Nat.cast_zero,
+        Real.zero_rpow hα, mul_zero, sub_self]
+    | succ n =>
+      change forcingRemainder ε (n + 1) - pmPowerDampedCenteredDivisorPrefix ε (n + 1) = _
+      have h := receiver_add_renormalizedCofactor_eq ε n
+      linarith
+  rw [renormalizedCofactorOperator_actualTraceVector, ← heq]
+  exact hsub
 
 end GaloisForLFunctions.ArithmeticDefectRigidity

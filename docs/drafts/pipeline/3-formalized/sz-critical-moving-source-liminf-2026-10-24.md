@@ -1,19 +1,19 @@
 # Joint critical limit under strong L² source convergence
 
 - **ID:** sz-critical-moving-source-liminf-2026-10-24
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper and Lean)
 - **Source:** exact critical Beta tangent, L² correlation stability, literal finite arithmetic assembly.
 - **Statement:** On every fixed compact source window, the normalized literal Suzuki deficit has the full extended Weil form as its strong-L² Gamma limit.
 
-## Proof route and remaining blocker
+## Scope
 
 The fixed-source critical limit does not by itself justify exchanging smoothing
 and critical-shift limits. The joint lower bound below pays that exchange on a
 fixed compact window. It retains the full signed arithmetic source. A growing
 window and universal arithmetic positivity remain separate open problems.
 
-## Exact conjecture and outcome — proved on paper
+## Exact theorem
 
 Fix B>0. Let f_j and f be real L² functions vanishing outside [-B,B], with
 `||f_j-f||₂→0`, and let `ω_j→0+`. Set
@@ -115,15 +115,16 @@ This is a compactness corollary of the joint theorem, not an independent
 arithmetic positivity principle. The common Weil floor is an explicit input
 to this corollary; it is not an extra premise of the Gamma-liminf or recovery
 theorems. No novelty credit is assigned. The stronger consequence has a
-dependency-closed paper proof; Lean certification remains pending.
+dependency-closed paper proof and passed Lean certification.
 
 ## Gates
 
 - [x] Precise moving-source conjecture and complete paper proof.
 - [x] Every analytic input derived from L² convergence and a common compact window.
 - [x] Formalize the varying-primary Fatou theorem.
-- [ ] Formalize joint signed-cusp convergence and complete arithmetic liminf.
-- [ ] Direct canonical checks and all public transitive axiom audits.
+- [x] Formalize joint signed-cusp convergence and complete arithmetic liminf.
+- [x] Direct canonical checks and all public transitive axiom audits.
+- [x] Owning umbrella imports the finished leaf once.
 
 ## Lean checkpoint
 
@@ -140,5 +141,13 @@ are also certified. The shared
 `RHTower/Suzuki/SuzukiCriticalMovingWindowDeficit.lean` now contains joint
 signed-cusp convergence, the complete arithmetic liminf on arbitrary a.e.
 common windows, constant recovery, deficit inheritance, and compact-family
-uniformity. Its leaf check and all public transitive axiom audits remain
-pending. The redundant local draft is not a second implementation target.
+uniformity. Its canonical `lake --old env lean` check and all 17 public
+transitive axiom audits passed. Only `propext`, `Classical.choice`, and
+`Quot.sound` occur. The owning umbrella imports the leaf once.
+
+The exact endpoints are
+`RHTower.suzukiCriticalExtendedWeilEnergy_le_liminf_joint_ae_window` and
+`RHTower.tendsto_suzukiCriticalSourcePairing_joint_ae_constant_source`.
+The uniform consequence is
+`RHTower.exists_suzukiCriticalUniformShift_of_compact_window_family`.
+Evidence: `logs/just-work-2410/RHTower__Suzuki__SuzukiCriticalMovingWindowDeficit.check.txt`.

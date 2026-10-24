@@ -25,6 +25,14 @@ set_option autoImplicit false
 
 namespace GaloisForLFunctions.ArithmeticDefectRigidity
 
+private theorem receiverPrefix_bridge (ε : ℝ) (n : ℕ) :
+    GaloisForLFunctions.TransHorizonIncidenceMechanics.weightCenteredPrefix
+      (pmPowerDampedRealWeight ε) (dampedDensity ε) n =
+      pmPowerDampedCenteredDivisorPrefix ε n := by
+  rw [GaloisForLFunctions.TransHorizonIncidenceMechanics.weightCenteredPrefix,
+    RHTower.pmPowerDampedCenteredDivisorPrefix_eq]
+  rfl
+
 /-- An absolute envelope for the actual receiver's trace at the cofactor pole. -/
 def poleTraceEnvelope (ε : ℝ) (n : ℕ) : ℝ :=
   |pmPowerDampedCenteredDivisorPrefix ε n| * (n : ℝ) ^ (ε - 2)
@@ -48,7 +56,7 @@ theorem summable_poleTraceEnvelope (ε : SubcriticalDamping) :
       tendsto_natCast_atTop_atTop.eventually (eventually_vk_conditions one_pos 0)] with n hn h1 hvk
     have hn0 : (0 : ℝ) < n := by exact_mod_cast h1
     have hA := hsource ε ε.property.1 ε.property.2.le n hn
-    rw [weightCenteredPrefix_pmPowerDamped_eq] at hA
+    rw [receiverPrefix_bridge] at hA
     have hs := hvk.2.2.2.2.1
     rw [log_vkHeight] at hs
     have he : Real.exp (-(vkKappa * vkScale n / 240)) ≤
@@ -67,7 +75,7 @@ theorem summable_poleTraceEnvelope (ε : SubcriticalDamping) :
         calc
           _ = K / (ε : ℝ) * Real.exp (-(vkKappa * vkScale n / 240)) *
             ((n : ℝ) ^ (1 - (ε : ℝ)) * (n : ℝ) ^ ((ε : ℝ) - 2)) := by ring
-          _ = _ := by rw [hp, div_eq_mul_inv]
+          _ = _ := by rw [hp]; simp only [div_eq_mul_inv]
       _ ≤ _ := div_le_div_of_nonneg_right
         (mul_le_mul_of_nonneg_left he (div_nonneg hK ε.property.1.le)) hn0.le
   obtain ⟨N, hN⟩ := eventually_atTop.mp hbound
@@ -130,8 +138,9 @@ private theorem tendsto_traceGap_zero (ε : SubcriticalDamping) :
 
 private theorem tendsto_traceApproach (ε : SubcriticalDamping) :
     Tendsto (traceApproach ε) atTop (𝓝 (1 - (ε : ℝ))) := by
-  simpa only [traceApproach, add_zero] using
-    (tendsto_const_nhds.add (tendsto_traceGap_zero ε))
+  change Tendsto (fun k => 1 - (ε : ℝ) + traceGap ε k) atTop (𝓝 (1 - (ε : ℝ)))
+  simpa only [add_zero] using
+    ((tendsto_const_nhds (x := 1 - (ε : ℝ))).add (tendsto_traceGap_zero ε))
 
 private theorem traceApproach_mellin_bound (ε : SubcriticalDamping) (k n : ℕ) :
     ‖pmPowerDampedCenteredDivisorPrefix ε n * mellinCell (traceApproach ε k) n‖ ≤
@@ -201,7 +210,7 @@ private theorem tracePairing_eq_zeta_density (ε : SubcriticalDamping) (k : ℕ)
   have hmean : (∑' d : ℕ, pmPowerDampedRealWeight ε d / d) = dampedDensity ε :=
     (hasSum_pmPowerDampedRealWeight_div ε.property.1).tsum_eq
   rw [hmean, traceDirichletSeries_eq_density] at h
-  simp only [weightCenteredPrefix_pmPowerDamped_eq] at h
+  simp only [receiverPrefix_bridge] at h
   simpa only [Complex.ofReal_re, Complex.re_mul_ofReal] using congrArg Complex.re h
 
 /-- The actual boundary trace equals the coefficient of the forcing's positive power. -/

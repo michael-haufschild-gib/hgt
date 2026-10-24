@@ -109,7 +109,9 @@ theorem exists_pos_xiFiniteHead_normalization (t : ℝ) {R : ℝ} (hR : 0 ≤ R)
   have hs : xiSliceGaussianFiniteHeadScalar t R =
       ((xiSliceGaussianFiniteHeadScalar t R).re : ℂ) :=
     Complex.ext rfl (xiSliceGaussianFiniteHeadScalar_im_eq_zero t R)
-  rw [xiFiniteHead_eq_localDivisorPolynomial, hs]
+  rw [xiFiniteHead_eq_localDivisorPolynomial]
+  exact congrArg (fun c : ℂ => c *
+    (localDivisorPolynomial t (xiSliceGaussianRadiusHead t R)).eval₂ (algebraMap ℝ ℂ) (z ^ 2)) hs
 
 /-- The exact canonical head as an even complex polynomial, including its scalar. -/
 def sourceHeadPolynomial (t R : ℝ) : ℂ[X] :=
@@ -200,3 +202,8 @@ theorem localDivisorPolynomial_split_coeff (t : ℝ) (S T : Finset XiZeroCopy) (
 
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
+
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.exists_pos_xiFiniteHead_normalization
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.xiFiniteHead_even_taylor
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.xiFiniteHead_odd_taylor
+#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.localDivisorPolynomial_split_coeff

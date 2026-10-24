@@ -227,7 +227,7 @@ theorem suzukiFirstVariationEnvelope_mul (A E₀ B : ℝ) {c : ℝ} (hc : 0 ≤ 
       c * suzukiFirstVariationEnvelope A E₀ B omega := by
   have hmax : max ((c * E₀) * (c * B)) 0 = c ^ 2 * max (E₀ * B) 0 := by
     rw [show (c * E₀) * (c * B) = c ^ 2 * (E₀ * B) by ring,
-      show (0 : ℝ) = c ^ 2 * 0 by ring, ← mul_max_of_nonneg _ _ (sq_nonneg c)]
+      mul_max_of_nonneg (E₀ * B) 0 (sq_nonneg c), mul_zero]
   have hsqrt : Real.sqrt (max ((c * E₀) * (c * B)) 0) = c * Real.sqrt (max (E₀ * B) 0) := by
     rw [hmax, Real.sqrt_mul (sq_nonneg c), Real.sqrt_sq hc]
   unfold suzukiFirstVariationEnvelope
@@ -253,7 +253,7 @@ theorem suzukiFirstVariationEnvelope_mul (A E₀ B : ℝ) {c : ℝ} (hc : 0 ≤ 
             2 * ArithmeticFunction.vonMangoldt n| * (c * E₀)) := by
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun _ _ => by ring
-  rw [mul_add, hsum_eq]
+  rw [← hsum_eq]
   ring
 
 /-- Monotonicity of `suzukiFirstVariationEnvelope` in the energy and increment bounds `(E₀, B)`. -/
@@ -322,7 +322,8 @@ theorem tendsto_suzukiFirstVariationEnvelope (A E₀ B : ℝ) :
       |(suzukiCriticalPrimaryMass omega - 1) / omega -
         (Real.log Real.pi - (Complex.digamma ((5 / 4 : ℝ) : ℂ)).re)| * E₀ +
       B * suzukiUniversalPrimaryRemainder omega) (𝓝[>] 0) (𝓝 0) := by
-    have hsec := ((tendsto_suzukiCriticalPrimaryMass_secant.sub_const _).abs).mul_const E₀
+    have hsec := ((tendsto_suzukiCriticalPrimaryMass_secant.sub_const
+      (Real.log Real.pi - (Complex.digamma ((5 / 4 : ℝ) : ℂ)).re)).abs).mul_const E₀
     have hrem := tendsto_suzukiUniversalPrimaryRemainder.const_mul B
     simpa only [sub_self, abs_zero, zero_mul, mul_zero, add_zero] using hsec.add hrem
   have h2 : Tendsto (fun omega : ℝ =>
@@ -586,9 +587,9 @@ private theorem abs_poleCusp_zero_sub_le {f : ℝ → ℝ}
         Real.exp (A / 2) * (omega * A) := by
       have hfac : Real.exp ((1 / 2 - omega) * s) - Real.exp (s / 2) =
           -(Real.exp (s / 2) * (1 - Real.exp (-(omega * s)))) := by
-        rw [mul_sub, mul_one, ← Real.exp_add]
-        congr 1
-        ring_nf
+        have heq : (1 / 2 - omega) * s = s / 2 + -(omega * s) := by ring
+        rw [heq, Real.exp_add]
+        ring
       have hws0 : 0 ≤ omega * s := mul_nonneg homega.le hs.1.le
       have h1_nn : 0 ≤ 1 - Real.exp (-(omega * s)) :=
         sub_nonneg.mpr (Real.exp_le_one_iff.mpr (by linarith))
@@ -947,6 +948,37 @@ theorem criticalSuzukiAperture_pos (V : ℝ) : 0 < criticalSuzukiAperture V := b
   unfold criticalSuzukiAperture
   linarith
 
+theorem criticalSuzukiEnergyEnvelope_mono (V : ℝ) {S T : Finset ℕ} (hST : S ⊆ T) :
+    criticalSuzukiEnergyEnvelope V S ≤ criticalSuzukiEnergyEnvelope V T := by
+  unfold criticalSuzukiEnergyEnvelope
+  have hR0 := criticalSupportRadius_nonneg V
+  have hM0 := criticalScaleAmplitudeConstant_nonneg S
+  have hM := criticalScaleAmplitudeConstant_mono hST
+  gcongr
+
+theorem criticalSuzukiIncrementEnvelope_mono {V : ℝ} (hV : 0 < V) {S T : Finset ℕ} (hST : S ⊆ T) :
+    criticalSuzukiIncrementEnvelope hV S ≤ criticalSuzukiIncrementEnvelope hV T := by
+  unfold criticalSuzukiIncrementEnvelope
+  have hR0 := criticalSupportRadius_nonneg V
+  have hM0 := criticalScaleAmplitudeConstant_nonneg S
+  have hKT0 := criticalScaleLipschitzConstant_nonneg hV T
+  have hM := criticalScaleAmplitudeConstant_mono hST
+  have hK := criticalScaleLipschitzConstant_mono hV hST
+  gcongr
+
+theorem criticalSuzukiSmoothingCost_mono {V : ℝ} (hV : 0 < V) {S T : Finset ℕ} (hST : S ⊆ T) :
+    criticalSuzukiSmoothingCost hV S ≤ criticalSuzukiSmoothingCost hV T := by
+  unfold criticalSuzukiSmoothingCost compactFullWeilApproximationCost
+  have hR0 := criticalSupportRadius_nonneg V
+  have hM0 := criticalScaleAmplitudeConstant_nonneg S
+  have hK0 := criticalScaleLipschitzConstant_nonneg hV S
+  have hKT0 := criticalScaleLipschitzConstant_nonneg hV T
+  have hmass0 := mass_nonneg (compactFullWeilPrimeCutoff (criticalSupportRadius V))
+  have harch0 := archWeightFirstMoment_nonneg
+  have hM := criticalScaleAmplitudeConstant_mono hST
+  have hK := criticalScaleLipschitzConstant_mono hV hST
+  gcongr
+
 theorem criticalTruncatedTest_eq_zero_of_radius {V : ℝ} (hV : 0 < V) (S : Finset ℕ) (b : ℕ → ℝ)
     (x : ℝ) (hx : criticalSupportRadius V < |x|) :
     criticalTruncatedTest hV S b x = 0 := by
@@ -1137,10 +1169,6 @@ theorem exists_common_suzuki_shift_dyadic_blocks :
   have hE_pos : 0 < E :=
     lt_of_lt_of_le (sq_pos_of_ne_zero hbj₀) (Finset.single_le_sum (fun i _ => sq_nonneg (b i)) hj₀)
   have hsub : S ⊆ T_amb := subset_Icc_of_dyadicScaleBlock hS
-  have hM_mono : criticalScaleAmplitudeConstant S ≤ criticalScaleAmplitudeConstant T_amb :=
-    criticalScaleAmplitudeConstant_mono hsub
-  have hK_mono : criticalScaleLipschitzConstant hV S ≤ criticalScaleLipschitzConstant hV T_amb :=
-    criticalScaleLipschitzConstant_mono hV hsub
   have hweil_ge : γ * E ≤ compactFullWeilEnergy g := by
     have hcomp := criticalTruncatedCompleteEnergy_ge S b hM2 hS hVt
     rw [← compactFullWeilEnergy_criticalTruncatedTest hV] at hcomp
@@ -1149,14 +1177,8 @@ theorem exists_common_suzuki_shift_dyadic_blocks :
   refine ⟨hg_pos, fun k hk omega homega homega_lt => ?_⟩
   set fk := smoothCompactSource g k
   -- 1. Uniform smoothing margin `compactFullWeilEnergy g / 2 ≤ compactFullWeilEnergy fk`:
-  have hC_mono : criticalSuzukiSmoothingCost hV S ≤ C_sm := by
-    unfold criticalSuzukiSmoothingCost C_sm compactFullWeilApproximationCost
-    have hR0 := criticalSupportRadius_nonneg V
-    have hM0 := criticalScaleAmplitudeConstant_nonneg S
-    have hK0 := criticalScaleLipschitzConstant_nonneg hV S
-    have hmass0 := mass_nonneg (compactFullWeilPrimeCutoff (criticalSupportRadius V))
-    have harch0 := archWeightFirstMoment_nonneg
-    gcongr
+  have hC_mono : criticalSuzukiSmoothingCost hV S ≤ C_sm :=
+    criticalSuzukiSmoothingCost_mono hV hsub
   have hsm_err := (compactFullWeilEnergy_smoothing_error_criticalTruncatedTest hV S b k).trans
     (mul_le_mul_of_nonneg_right
       (div_le_div_of_nonneg_right (hC_mono.trans (le_max_left C_sm 0)) (by positivity)) hE_pos.le)
@@ -1177,17 +1199,10 @@ theorem exists_common_suzuki_shift_dyadic_blocks :
   obtain ⟨henv_lt, homega2⟩ := hball hdist homega
   obtain ⟨hfk_diff, hfk_cut, hfk_E, hfk_inc⟩ :=
     smoothCompactSource_criticalTruncatedTest_envelope hV S b k
-  have hE_mono : criticalSuzukiEnergyEnvelope V S ≤ E₀_amb := by
-    unfold criticalSuzukiEnergyEnvelope E₀_amb
-    have hR0 := criticalSupportRadius_nonneg V
-    have hM0 := criticalScaleAmplitudeConstant_nonneg S
-    gcongr
-  have hB_mono : criticalSuzukiIncrementEnvelope hV S ≤ B₀_amb := by
-    unfold criticalSuzukiIncrementEnvelope B₀_amb
-    have hR0 := criticalSupportRadius_nonneg V
-    have hM0 := criticalScaleAmplitudeConstant_nonneg S
-    have hK0 := criticalScaleLipschitzConstant_nonneg hV S
-    gcongr
+  have hE_mono : criticalSuzukiEnergyEnvelope V S ≤ E₀_amb :=
+    criticalSuzukiEnergyEnvelope_mono V hsub
+  have hB_mono : criticalSuzukiIncrementEnvelope hV S ≤ B₀_amb :=
+    criticalSuzukiIncrementEnvelope_mono hV hsub
   have hfk_E' : autocorr fk 0 ≤ E * E₀_amb :=
     hfk_E.trans (mul_le_mul_of_nonneg_left hE_mono hE_pos.le)
   have hfk_inc' : ∀ t : ℝ, 0 < t → autocorr fk 0 - autocorr fk t ≤ (E * B₀_amb) * t := fun t ht =>
@@ -1271,10 +1286,6 @@ theorem exists_common_suzuki_shift_bounded_block_horizon :
     lt_of_lt_of_le (sq_pos_of_ne_zero hbj₀) (Finset.single_le_sum (fun i _ => sq_nonneg (b i)) hj₀)
   have hsub : S ⊆ T_amb := (subset_Icc_of_dyadicScaleBlock hS).trans
     (Finset.Icc_subset_Icc_right (by omega))
-  have hM_mono : criticalScaleAmplitudeConstant S ≤ criticalScaleAmplitudeConstant T_amb :=
-    criticalScaleAmplitudeConstant_mono hsub
-  have hK_mono : criticalScaleLipschitzConstant hV S ≤ criticalScaleLipschitzConstant hV T_amb :=
-    criticalScaleLipschitzConstant_mono hV hsub
   have hlog_mono : Real.log M₀ ≤ Real.log M :=
     Real.log_le_log (by exact_mod_cast (show 0 < M₀ by omega)) (by exact_mod_cast hM_lo)
   have hweil_ge : γ₀ * E ≤ compactFullWeilEnergy g := by
@@ -1285,14 +1296,8 @@ theorem exists_common_suzuki_shift_bounded_block_horizon :
         (Real.log M - criticalTruncatedArchLogOffset) - criticalTruncatedChannelConstant := by
       unfold γ₀; nlinarith
     exact (mul_le_mul_of_nonneg_right hγ_le hE_pos.le).trans hcomp'
-  have hC_mono : criticalSuzukiSmoothingCost hV S ≤ C_sm := by
-    unfold criticalSuzukiSmoothingCost C_sm compactFullWeilApproximationCost
-    have hR0 := criticalSupportRadius_nonneg V
-    have hM0 := criticalScaleAmplitudeConstant_nonneg S
-    have hK0 := criticalScaleLipschitzConstant_nonneg hV S
-    have hmass0 := mass_nonneg (compactFullWeilPrimeCutoff (criticalSupportRadius V))
-    have harch0 := archWeightFirstMoment_nonneg
-    gcongr
+  have hC_mono : criticalSuzukiSmoothingCost hV S ≤ C_sm :=
+    criticalSuzukiSmoothingCost_mono hV hsub
   have hsm_err := (compactFullWeilEnergy_smoothing_error_criticalTruncatedTest hV S b k).trans
     (mul_le_mul_of_nonneg_right
       (div_le_div_of_nonneg_right (hC_mono.trans (le_max_left C_sm 0)) (by positivity)) hE_pos.le)
@@ -1312,17 +1317,10 @@ theorem exists_common_suzuki_shift_bounded_block_horizon :
   obtain ⟨henv_lt, homega2⟩ := hball hdist homega
   obtain ⟨hfk_diff, hfk_cut, hfk_E, hfk_inc⟩ :=
     smoothCompactSource_criticalTruncatedTest_envelope hV S b k
-  have hE_mono : criticalSuzukiEnergyEnvelope V S ≤ E₀_amb := by
-    unfold criticalSuzukiEnergyEnvelope E₀_amb
-    have hR0 := criticalSupportRadius_nonneg V
-    have hM0 := criticalScaleAmplitudeConstant_nonneg S
-    gcongr
-  have hB_mono : criticalSuzukiIncrementEnvelope hV S ≤ B₀_amb := by
-    unfold criticalSuzukiIncrementEnvelope B₀_amb
-    have hR0 := criticalSupportRadius_nonneg V
-    have hM0 := criticalScaleAmplitudeConstant_nonneg S
-    have hK0 := criticalScaleLipschitzConstant_nonneg hV S
-    gcongr
+  have hE_mono : criticalSuzukiEnergyEnvelope V S ≤ E₀_amb :=
+    criticalSuzukiEnergyEnvelope_mono V hsub
+  have hB_mono : criticalSuzukiIncrementEnvelope hV S ≤ B₀_amb :=
+    criticalSuzukiIncrementEnvelope_mono hV hsub
   have hfk_E' : autocorr fk 0 ≤ E * E₀_amb :=
     hfk_E.trans (mul_le_mul_of_nonneg_left hE_mono hE_pos.le)
   have hfk_inc' : ∀ t : ℝ, 0 < t → autocorr fk 0 - autocorr fk t ≤ (E * B₀_amb) * t := fun t ht =>
@@ -1354,7 +1352,7 @@ There exist `δ > 0` and `M₀ : ℕ` such that for any lacunary multi-window fa
 `k ≥ k₀` — on which the strict first-order Suzuki deficit holds across all nonzero patterns `b`. -/
 theorem exists_common_suzuki_shift_lacunary_windows :
     ∃ δ : ℝ, 0 < δ ∧ ∃ M₀ : ℕ, ∀ (J : ℕ) (M L : ℕ → ℕ) (W : ℕ → Finset ℕ),
-      LacunaryScaleWindows J M L W → M₀ ≤ M 0 →
+      IsLacunaryWindowFamily J M L W → M₀ ≤ M 0 →
       (∀ i < J, (L i : ℝ) ≤ (M 0 : ℝ) ^ δ) →
       ∀ {V : ℝ} (hV : 0 < V), criticalTruncationThreshold ≤ V →
         let T : Finset ℕ := (Finset.range J).biUnion W

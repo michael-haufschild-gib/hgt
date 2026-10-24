@@ -317,51 +317,8 @@ private theorem finiteEnergy_eq_extendedWeilEnergy {f : ℝ → ℝ} (hf : MemLp
           (2 * ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n / 2)) *
             autocorr f (Real.log n)) : ℝ) =
       suzukiCriticalExtendedWeilEnergy f := by
-  have htail : ∀ n : ℕ, n ∉ Finset.Icc 2 ⌊Real.exp A⌋₊ → primeTerm (autocorr f) n = 0 := by
-    intro n hn
-    by_cases h2 : 2 ≤ n
-    · have hN : ⌊Real.exp A⌋₊ < n := by simp only [Finset.mem_Icc] at hn; omega
-      have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
-      have he : Real.exp A < n :=
-        (Nat.lt_floor_add_one _).trans_le (by exact_mod_cast Nat.succ_le_iff.mpr hN)
-      have hlog : A ≤ Real.log n := ((Real.lt_log_iff_exp_lt hn0).mpr he).le
-      rw [primeTerm, if_pos h2, hcut _ hlog, mul_zero]
-    · rw [primeTerm, if_neg h2]
-  have hts : (∑' n : ℕ, primeTerm (autocorr f) n) =
-      ∑ n ∈ Finset.Icc 2 ⌊Real.exp A⌋₊, primeTerm (autocorr f) n := tsum_eq_sum htail
-  have hprime : (∑ n ∈ Finset.Icc 2 ⌊Real.exp A⌋₊,
-      (2 * ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n / 2)) *
-        autocorr f (Real.log n)) =
-      2 * ∑ n ∈ Finset.Icc 2 ⌊Real.exp A⌋₊, primeTerm (autocorr f) n := by
-    rw [Finset.mul_sum]
-    refine Finset.sum_congr rfl fun n hn => ?_
-    have hn2 := (Finset.mem_Icc.mp hn).1
-    have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
-    rw [primeTerm, if_pos hn2, primeWeight, RHTower.exp_neg_half_log hn0]
-    ring
-  have hpolar : (∫ t in Ici (0 : ℝ), polarDensity t * autocorr f t) =
-      2 * ∫ t in Ioi 0, autocorr f t * Real.cosh (t / 2) := by
-    rw [integral_Ici_eq_integral_Ioi, ← integral_const_mul]
-    exact integral_congr_ae (Eventually.of_forall fun t => by unfold polarDensity; ring)
-  have hpp : 4 * (∫ t in Ioi 0, autocorr f t * Real.cosh (t / 2)) -
-      ∑ n ∈ Finset.Icc 2 ⌊Real.exp A⌋₊,
-        (2 * ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n / 2)) *
-          autocorr f (Real.log n) = -2 * fullPairing (autocorr f) := by
-    rw [fullPairing, hts, hpolar, hprime]; ring
-  have h := congrArg (fun z : EReal => z +
-    ((-(∑ n ∈ Finset.Icc 2 ⌊Real.exp A⌋₊,
-      (2 * ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n / 2)) *
-        autocorr f (Real.log n)) : ℝ) : EReal)) (suzukiCriticalL2Weil_normalization hf hfc)
-  simp only [add_assoc, ← EReal.coe_add, ← sub_eq_add_neg] at h
-  have hreal : EF.gammaBracket 0 * autocorr f 0 +
-      4 * (∫ t in Ioi 0, autocorr f t * Real.cosh (t / 2)) -
-      ∑ n ∈ Finset.Icc 2 ⌊Real.exp A⌋₊,
-        (2 * ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n / 2)) *
-          autocorr f (Real.log n) =
-      EF.gammaBracket 0 * autocorr f 0 - 2 * fullPairing (autocorr f) := by
-    linarith only [hpp]
-  rw [hreal] at h
-  exact h
+  simpa only [suzukiCriticalExtendedWeilEnergy] using
+    suzukiCriticalFiniteEnergy_eq_extendedWeilEnergy hf hfc hcut
 
 /-- **Joint Γ-Liminf Inequality on a Common Correlation Cutoff.**
 Under strong `L²` convergence `f n → g` and `w n → 0⁺` with common correlation cutoff `A > 0`,

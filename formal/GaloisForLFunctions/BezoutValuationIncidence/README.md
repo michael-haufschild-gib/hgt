@@ -50,6 +50,8 @@ assembly into the complete receiver, not the existence of any arithmetic improve
 | [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Prices the loss from period averages, magnitudes and other coarsened readings. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Asks whether the finite arithmetic can produce genuine effectivity and a definite intersection form. |
 | [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Places the pronic Báez–Duarte criterion in the width dictionary as its Báez–Duarte unit. Shows that the damping flow transports the sign pattern of residue-mode combinations exactly, so the open question of the chain concerns magnitudes in the pronic norm, not orientation. |
+| [Signed Successor Arithmetic](../SignedSuccessorArithmetic/README.md) | Uses successor defects and coprime-factor constraints to recover signs that the diagonal Selberg forms erase. |
+| [Arithmetic Defect Rigidity](../ArithmeticDefectRigidity/README.md) | Uses the pronic norm and cofactor identities to test whether normalized receiver energy can escape every finite observation. |
 | [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | The other place where signed prime-row statistics beyond the large sieve are required: close prime pairs beyond the Montgomery–Vaughan threshold, against BVI's balanced-scale single-modulus statistics. |
 
 In the RH frontier BVI is a supporting framework, not a route: it supplies incidence, reciprocity,
@@ -1368,8 +1370,8 @@ subtracting the omitted-class main term itself, restoring mass $p/(p-1)$ on mult
 centering against the coprime indicator $\frac p{p-1}\mathbf 1_{\gcd(\cdot,p)=1}$
 (`tendsto_mul_kernelStatistic_primeWindowRow_sub_omittedClassMainTerm`,
 `tendsto_mul_kernelStatistic_restoredPrimeWindowRow`,
-`tendsto_mul_kernelStatistic_coprimeCentredPrimeWindowRow`). This is a law for fixed moduli; the dual
-norm at moduli $p\sim P$ growing with $Q$ is the open question of §5.
+`tendsto_mul_kernelStatistic_coprimeCentredPrimeWindowRow`). This is a law for fixed moduli. Growing-modulus dual norms are controlled by the
+following estimates; their receiver-strength quantitative improvement is §7.4.
 
 **The actual rows improve the generic bound at growing moduli.** Average the weighted
 large-scale row $x(n)=c'(n)/n^2$ over windows of length $H$. The Fourier multiplier of that
@@ -1408,6 +1410,29 @@ single $\varepsilon\sqrt{\sum c(p)^2p^2}\sqrt{Q+2Q_0^2}Q^{-3/2}$ term whenever $
 (`eventually_moebiusWindowRow_pure_largeSieve_le`,
 `eventually_centredPrimeBlock_pure_largeSieve_le`). This does not make the uncentred
 prime row equidistributed in its omitted class, and it does not establish a power saving.
+
+**Minor arcs and the diagonal use different inputs.** For the centred prime row
+$c'=(\Lambda-1)\mathbf1_{(Q,2Q]}$, Vaughan decomposition and root-of-unity
+Type-I/II bounds give
+$$
+|\Lambda_p(c')|\le24(1+\log(2Q))^4\frac{p^2}{Q}Q^{-\delta/4}
+\quad\text{for primes }Q^\delta\le p\le Q^{1-\delta},
+$$
+with the ranges and sufficiently large $Q$ specified in
+[TheCentredPrimeRowIsMinorArcBelowTheDiagonal](TheCentredPrimeRowIsMinorArcBelowTheDiagonal.lean).
+At balanced moduli $Q/K\le d\le2Q$, a partial-summation argument instead uses
+$\psi(Q+x)-\psi(Q)-x$ and gives a subpower saving
+$C(d^2/Q)e^{-(c/2)\sqrt{\log Q}}$. Thus a power saving below the diagonal
+must not be described as a power saving at the diagonal.
+
+The root-of-unity calculus also extends to composite order $r$ in
+[MinorArcSumsAtCompositeRootsOfUnity](MinorArcSumsAtCompositeRootsOfUnity.lean).
+Its extra Type-I contribution comes from resonances $r\mid d_1d_2$, possible
+even when neither factor is a multiple of $r$. Separating those terms gives
+the bound $UF(UN/r+(U+r)(1+\log r))$ for the double Type-I sum, with
+$|f|\le F$ and the second coefficient bounded by one. Composite moduli are
+therefore an available calculus, with an explicit resonance cost; removing
+that cost by importing a prime-modulus argument would be incorrect.
 
 **A power gain has a precise arithmetic price.** For either Möbius windows or centred prime
 windows, the existence of some $0<\alpha<1$, $\delta>0$ with mean-square bound
@@ -1835,10 +1860,11 @@ assumptions. Every module says in its header what its bounds do not prove.
 2. **What is the receiver energy made of?** One signed term, the Bézout interior martingale; the
    active-deleted diagonal and predecessor peak are paid after canonical compensation.
 3. **Where can the actual Möbius and prime rows beat generic bilinear bounds?** In the single-modulus
-   statistics to which the cross-scale Gram reduces exactly. Fixed-modulus statistics, the Möbius
-   block above its logarithmic small-prime threshold and the centred prime row on the unbalanced
-   range are proved qualitatively; balanced scales $Q\approx P$ for the prime row, and quantitative
-   gains strong enough for the receiver, are open. In mean square the Möbius row transfers at every
+   statistics to which the cross-scale Gram reduces exactly. Fixed-modulus statistics and growing-modulus improvements are available for both
+   actual rows, including tail-summed balanced-scale estimates for the centred prime
+   row. Below the diagonal, minor-arc estimates give explicit power gains in the
+   modulus range; on the diagonal, summatory cancellation gives a subpower gain.
+   What remains is a gain that assembles into the complete receiver. In mean square the Möbius row transfers at every
    superlinear horizon, where generic rows need $N^{2\pm o(1)}$ (§3.10).
 4. **What does the receiver cost in the damping unit?** Bounded on the zero-free bands, so
    unconditionally the band $\tfrac12-c\,\sigma(T)/\log T$; a band of fixed width would be a zero-free
@@ -1866,14 +1892,14 @@ Built and reusable:
 To be built:
 
 - a signed bound on the interior martingale over moduli — the coercive contraction;
-- single-modulus statistics of the actual rows at balanced scales with a quantitative gain, every
-  remainder summed;
+- a receiver-strength estimate for the actual-row dual norm at balanced scales;
+  qualitative gains with all displayed remainders summed are already available;
 - dual rows with both vanishing readout defect and vanishing centred energy;
 - a signed estimate for the reciprocal orbit of the chain in pronic $\ell^2$ at fixed sub-half damping.
 
 ---
 
-## 7. Open problems
+## 7. Research boundaries and open questions
 
 ### 7.1 The receiver
 
@@ -1908,9 +1934,13 @@ RH is the existence of rows with readout near one and vanishing centred energy, 
 unbounded ratio $\mathcal R(c)^2/Q^{\mathrm{ec}}(c)$ (§3.7). For the damped cofactor rows the readout
 obligation is discharged unconditionally and the residual vanishes iff the energy variance
 $V(\varepsilon,Q)$ does; unconditionally $V\ge\kappa/(2\log(Q+1))$, and a critical zero forces a
-residual floor linear in the damping. Open: an explicit family of rows on which
-$\mathcal R^2/Q^{\mathrm{ec}}$ grows faster than $\log N$ along the readout band, or a proof that every
-family which can do so is equivalent to the primal receiver bound of §7.1.
+residual floor linear in the damping. The open construction is a family with
+$\mathcal R^2/Q^{\mathrm{ec}}\to\infty$, equivalently vanishing optimally rescaled
+residual. Its rate must respect
+$\mathcal R^2/Q^{\mathrm{ec}}\le(\log N-\kappa)/\kappa$ from §3.7:
+growth faster than $\log N$ is excluded, not an open strengthening. The sharp
+attainable rate within that ceiling and an arithmetic construction of suitable
+cofactor rows remain substantive questions.
 
 ### 7.4 Bilinear dispersion of the actual rows
 

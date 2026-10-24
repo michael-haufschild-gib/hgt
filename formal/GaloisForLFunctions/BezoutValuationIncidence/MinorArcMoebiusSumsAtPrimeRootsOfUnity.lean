@@ -72,19 +72,19 @@ theorem isPrimitiveRoot_of_mem_nontrivialRoots {p : ℕ} (hp : p.Prime) {ζ : �
   rw [nontrivialRoots_eq_primitiveRoots hp] at hζ
   exact (mem_primitiveRoots hp.pos).mp hζ
 
-theorem pow_mem_nontrivialRoots_of_not_dvd {p : ℕ} (hp : p.Prime) {ζ : ℂ}
+theorem pow_mem_nontrivialRoots_of_not_dvd {p : ℕ} (hp : 0 < p) {ζ : ℂ}
     (hζ : IsPrimitiveRoot ζ p) {m : ℕ} (hm : ¬ p ∣ m) : ζ ^ m ∈ nontrivialRoots p := by
-  rw [mem_nontrivialRoots hp.pos]
+  rw [mem_nontrivialRoots hp]
   refine ⟨fun h => hm ((hζ.pow_eq_one_iff_dvd m).mp h), ?_⟩
   rw [← pow_mul, mul_comm, pow_mul, hζ.pow_eq_one, one_pow]
 
 theorem isPrimitiveRoot_pow_of_not_dvd {p : ℕ} (hp : p.Prime) {ζ : ℂ}
     (hζ : IsPrimitiveRoot ζ p) {m : ℕ} (hm : ¬ p ∣ m) : IsPrimitiveRoot (ζ ^ m) p :=
-  isPrimitiveRoot_of_mem_nontrivialRoots hp (pow_mem_nontrivialRoots_of_not_dvd hp hζ hm)
+  isPrimitiveRoot_of_mem_nontrivialRoots hp (pow_mem_nontrivialRoots_of_not_dvd hp.pos hζ hm)
 
-/-- **Injective harmonic sums.** For `V < p` the powers `ζ^m`, `1 ≤ m ≤ V`, are distinct
-nontrivial roots, so `Σ_{1 ≤ m ≤ V} 2/‖ζ^m - 1‖ ≤ W_p`. -/
-theorem sum_Icc_two_div_norm_pow_sub_one_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
+/-- **Injective harmonic sums.** For a primitive `p`-th root `ζ` and `V < p` the powers `ζ^m`,
+`1 ≤ m ≤ V`, are distinct nontrivial roots, so `Σ_{1 ≤ m ≤ V} 2/‖ζ^m - 1‖ ≤ W_p`. -/
+theorem sum_Icc_two_div_norm_pow_sub_one_le {p : ℕ} (hp : 0 < p) {ζ : ℂ}
     (hζ : IsPrimitiveRoot ζ p) {V : ℕ} (hV : V < p) :
     ∑ m ∈ Icc 1 V, 2 / ‖ζ ^ m - 1‖ ≤ rootHarmonicSum p := by
   have hinj : Set.InjOn (fun m => ζ ^ m) (Icc 1 V : Set ℕ) := by
@@ -199,15 +199,15 @@ theorem sum_nthRootsFinset_geomMajorant {p : ℕ} (hp : 0 < p) (K : ℝ) :
 
 /-- **Row sums of the Type-II correlation matrix.** For `d` fixed and `d'` over `(D, 2D]`,
 `Σ_{d'} F_K(ζ^d conj(ζ)^{d'}) ≤ (D/p + 1)(K + W_p)`. -/
-theorem sum_Ioc_geomMajorant_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsPrimitiveRoot ζ p)
+theorem sum_Ioc_geomMajorant_le {p : ℕ} (hp : 0 < p) {ζ : ℂ} (hζ : IsPrimitiveRoot ζ p)
     {K : ℝ} (hK : 0 ≤ K) (d D : ℕ) :
     ∑ d' ∈ Ioc D (2 * D), geomMajorant K (ζ ^ d * conj ζ ^ d') ≤
       ((D : ℝ) / p + 1) * (K + rootHarmonicSum p) := by
   have hξ : IsPrimitiveRoot (conj ζ) p :=
     hζ.map_of_injective (f := starRingEnd ℂ) (starRingEnd ℂ).injective
   have hz : (ζ ^ d) ^ p = 1 := by rw [← pow_mul, mul_comm, pow_mul, hζ.pow_eq_one, one_pow]
-  have h := sum_Ioc_root_mul_pow_le hp.pos hξ hz (geomMajorant K) (geomMajorant_nonneg hK) D D
-  rw [sum_nthRootsFinset_geomMajorant hp.pos, show D + D = 2 * D by ring] at h
+  have h := sum_Ioc_root_mul_pow_le hp hξ hz (geomMajorant K) (geomMajorant_nonneg hK) D D
+  rw [sum_nthRootsFinset_geomMajorant hp, show D + D = 2 * D by ring] at h
   exact h
 
 /-! ## §5. The Type-II block: Cauchy–Schwarz in the long variable -/
@@ -238,7 +238,7 @@ theorem masked_mul_conj (N d d' k : ℕ) (a a' : ℝ) (ζ : ℂ) :
 
 /-- **The Type-II block bound.** For `|α| ≤ 1`, a primitive `p`-th root `ζ` and `D ≥ 1`,
 `‖Σ_{D<d≤2D} Σ_{k≤N/d} α(d) β(k) ζ^{dk}‖² ≤ (Σ_{k≤N/D} β(k)²) · D (D/p + 1)(N/D + W_p)`. -/
-theorem norm_sq_typeII_block_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsPrimitiveRoot ζ p)
+theorem norm_sq_typeII_block_le {p : ℕ} (hp : 0 < p) {ζ : ℂ} (hζ : IsPrimitiveRoot ζ p)
     (N : ℕ) {D : ℕ} (hD : 0 < D) (α β : ℕ → ℝ) (hα : ∀ d, |α d| ≤ 1) :
     ‖∑ d ∈ Ioc D (2 * D), ∑ k ∈ Icc 1 (N / d), ((α d * β k : ℝ) : ℂ) * ζ ^ (d * k)‖ ^ 2 ≤
       (∑ k ∈ Icc 1 (N / D), β k ^ 2) *
@@ -281,7 +281,7 @@ theorem norm_sq_typeII_block_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsPri
     rw [sum_comm]
     refine sum_congr rfl fun d' _ => ?_
     rw [← sum_filter, filter_Icc_div_eq hD (mem_Ioc.mp hd).1, mul_sum]
-  have hnormζ : ‖ζ‖ = 1 := hζ.norm'_eq_one hp.ne_zero
+  have hnormζ : ‖ζ‖ = 1 := hζ.norm'_eq_one hp.ne'
   have hK0 : (0 : ℝ) ≤ ((N / D : ℕ) : ℝ) := Nat.cast_nonneg _
   have hdiag : ∑ k ∈ Icc 1 (N / D), ‖X k‖ ^ 2 ≤
       ∑ d ∈ Ioc D (2 * D), ∑ d' ∈ Ioc D (2 * D), geomMajorant (N / D : ℕ) (ζ ^ d * conj ζ ^ d') := by
@@ -388,7 +388,7 @@ theorem sum_Icc_ite_le_le (N U : ℕ) {c : ℝ} (hc : 0 ≤ c) :
 
 /-- **Type-I sums.** For `c` supported on `[1, V]`, `V < p`, `|c| ≤ 1` and a primitive `p`-th root
 `ξ`, `‖Σ_{d ≤ M} c(d) Σ_{m ≤ N/d} (ξ^d)^m‖ ≤ W_p`. -/
-theorem norm_typeI_le {p : ℕ} (hp : p.Prime) {ξ : ℂ} (hξ : IsPrimitiveRoot ξ p) {V : ℕ}
+theorem norm_typeI_le {p : ℕ} (hp : 0 < p) {ξ : ℂ} (hξ : IsPrimitiveRoot ξ p) {V : ℕ}
     (hV : V < p) (c : ℕ → ℝ) (hc : ∀ d, |c d| ≤ 1) (hcs : ∀ d, V < d → c d = 0) (M N : ℕ) :
     ‖∑ d ∈ Icc 1 M, (c d : ℂ) * ∑ m ∈ Icc 1 (N / d), (ξ ^ d) ^ m‖ ≤ rootHarmonicSum p := by
   have hterm : ∀ d ∈ Icc 1 M, ‖(c d : ℂ) * ∑ m ∈ Icc 1 (N / d), (ξ ^ d) ^ m‖ ≤
@@ -398,7 +398,7 @@ theorem norm_typeI_le {p : ℕ} (hp : p.Prime) {ξ : ℂ} (hξ : IsPrimitiveRoot
     · rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
       have hne : ξ ^ d ≠ 1 := fun h =>
         Nat.not_dvd_of_pos_of_lt (mem_Icc.mp hd).1 (by omega) ((hξ.pow_eq_one_iff_dvd d).mp h)
-      have hnorm : ‖ξ ^ d‖ ≤ 1 := by rw [norm_pow, hξ.norm'_eq_one hp.ne_zero, one_pow]
+      have hnorm : ‖ξ ^ d‖ ≤ 1 := by rw [norm_pow, hξ.norm'_eq_one hp.ne', one_pow]
       calc |c d| * ‖∑ m ∈ Icc 1 (N / d), (ξ ^ d) ^ m‖ ≤ 1 * (2 / ‖ξ ^ d - 1‖) :=
             mul_le_mul (hc d)
               (GaloisForLFunctions.RHTower.RootOfUnityCompletion.norm_sum_Icc_pow_le hnorm hne _)
@@ -452,7 +452,7 @@ theorem norm_sum_conv_conv_zeta_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : Is
     · have hξ : IsPrimitiveRoot (ζ ^ d) p := isPrimitiveRoot_pow_of_not_dvd hp hζ
         (Nat.not_dvd_of_pos_of_lt (mem_Icc.mp hd).1 (by omega))
       rw [if_pos hdU]
-      exact mul_le_mul (hf d) (norm_typeI_le hp hξ hVp c hc hcs (N / d) (N / d)) (norm_nonneg _)
+      exact mul_le_mul (hf d) (norm_typeI_le hp.pos hξ hVp c hc hcs (N / d) (N / d)) (norm_nonneg _)
         hF0
     · rw [hfs d (by omega), abs_zero, zero_mul, if_neg hdU]
   calc _ ≤ ∑ d ∈ Icc 1 N, (if d ≤ U then F * rootHarmonicSum p else 0) :=
@@ -501,7 +501,7 @@ theorem typeIIBlockBound_nonneg (p U N : ℕ) : 0 ≤ typeIIBlockBound p U N := 
 /-- **One dyadic Type-II block against `g = typeIIShort U`.** On `d ∈ (D, 2D]`, `D = 2^i U ≥ U`,
 with `|α| ≤ 1`, the block is empty unless `N/D > U` (since `g = 0` on `[1, U]`), and then
 `D ≤ N/U`, `N/D ≤ N/U`. -/
-theorem norm_sq_typeIIShort_block_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
+theorem norm_sq_typeIIShort_block_le {p : ℕ} (hp : 0 < p) {ζ : ℂ}
     (hζ : IsPrimitiveRoot ζ p) {U : ℕ} (hU : 1 ≤ U) (N i : ℕ) (α : ℕ → ℝ)
     (hα : ∀ d, |α d| ≤ 1) :
     ‖∑ d ∈ Ioc (2 ^ i * U) (2 * (2 ^ i * U)), ∑ k ∈ Icc 1 (N / d),
@@ -513,7 +513,7 @@ theorem norm_sq_typeIIShort_block_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
   set L := N / D
   set W := rootHarmonicSum p
   have hW : 0 ≤ W := rootHarmonicSum_nonneg p
-  have hpR : (0 : ℝ) < p := by exact_mod_cast hp.pos
+  have hpR : (0 : ℝ) < p := by exact_mod_cast hp
   have hUR : (1 : ℝ) ≤ U := by exact_mod_cast hU
   have hDR : (U : ℝ) ≤ D := by exact_mod_cast hD1
   have hH : 0 ≤ invSum N := invSum_nonneg N
@@ -575,7 +575,7 @@ theorem norm_sq_typeIIShort_block_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
 /-- **Type-II sums against `g = typeIIShort U`.** For `α` vanishing on `[1, U]` with
 `|α(d)| ≤ A` for `d ≤ N`,
 `‖Σ_{d ≤ N} Σ_{k ≤ N/d} α(d) g(k) ζ^{dk}‖ ≤ (log₂ N + 1) A √(typeIIBlockBound p U N)`. -/
-theorem norm_sum_typeIIShort_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsPrimitiveRoot ζ p)
+theorem norm_sum_typeIIShort_le {p : ℕ} (hp : 0 < p) {ζ : ℂ} (hζ : IsPrimitiveRoot ζ p)
     {U : ℕ} (hU : 1 ≤ U) (N : ℕ) (α : ℕ → ℝ) {A : ℝ} (hA : 0 < A)
     (hα : ∀ d, d ≤ N → |α d| ≤ A) (hα0 : ∀ d, d ≤ U → α d = 0) :
     ‖∑ d ∈ Icc 1 N, ∑ k ∈ Icc 1 (N / d), ((α d * typeIIShort U k : ℝ) : ℂ) * ζ ^ (d * k)‖ ≤
@@ -629,7 +629,7 @@ theorem norm_sum_typeIIShort_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsPri
         ring
 
 /-- **The Type-II part of `μ`.** `‖Σ_{n ≤ N} ((μ - μ_U) ∗ g)(n) ζⁿ‖ ≤ (log₂ N + 1) √(block bound)`. -/
-theorem norm_sum_moebius_typeII_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : IsPrimitiveRoot ζ p)
+theorem norm_sum_moebius_typeII_le {p : ℕ} (hp : 0 < p) {ζ : ℂ} (hζ : IsPrimitiveRoot ζ p)
     {U : ℕ} (hU : 1 ≤ U) (N : ℕ) :
     ‖∑ n ∈ Icc 1 N, (((((moebius : ArithmeticFunction ℝ) -
         truncAF (moebius : ArithmeticFunction ℝ) U) * typeIIShort U) n : ℝ) : ℂ) * ζ ^ n‖ ≤
@@ -643,15 +643,15 @@ theorem norm_sum_moebius_typeII_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : Is
   simpa using norm_sum_typeIIShort_le hp hζ hU N _ one_pos
     (fun d _ => abs_moebius_sub_truncAF_le U d) hb0
 
-/-- **The minor-arc law for Möbius at prime roots of unity.** For `p` prime, `ζ ≠ 1` a `p`-th root
-of unity and `1 ≤ U < p`,
-`‖Σ_{n ≤ N} μ(n) ζⁿ‖ ≤ 2U + U W_p + (log₂ N + 1) √(2(1 + H_N³)(N²/p + N²/U + N² W_p/(Up) + N W_p))`. -/
-theorem norm_sum_moebius_mul_pow_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : ζ ∈ nontrivialRoots p)
-    {U : ℕ} (hU : 1 ≤ U) (hUp : U < p) (N : ℕ) :
-    ‖∑ n ∈ Icc 1 N, (moebiusReal n : ℂ) * ζ ^ n‖ ≤
-      2 * U + U * rootHarmonicSum p + (Nat.log 2 N + 1) * Real.sqrt (typeIIBlockBound p U N) := by
-  have hprim := isPrimitiveRoot_of_mem_nontrivialRoots hp hζ
-  have hnorm : ‖ζ‖ = 1 := hprim.norm'_eq_one hp.ne_zero
+/-- **The Vinogradov split of a Möbius exponential sum.** On the unit circle,
+`‖Σ_{n ≤ N} μ(n) wⁿ‖ ≤ 2U + ‖Σ (μ_U ∗ μ_U ∗ 1)(n) wⁿ‖ + ‖Σ ((μ - μ_U) ∗ g)(n) wⁿ‖`. -/
+theorem norm_sum_moebius_mul_pow_le_split {w : ℂ} (hw : ‖w‖ = 1) (U N : ℕ) :
+    ‖∑ n ∈ Icc 1 N, (moebiusReal n : ℂ) * w ^ n‖ ≤
+      2 * U + ‖∑ n ∈ Icc 1 N, (((truncAF (moebius : ArithmeticFunction ℝ) U *
+          truncAF (moebius : ArithmeticFunction ℝ) U * (zeta : ArithmeticFunction ℝ)) n : ℝ) : ℂ) *
+          w ^ n‖ +
+        ‖∑ n ∈ Icc 1 N, (((((moebius : ArithmeticFunction ℝ) -
+          truncAF (moebius : ArithmeticFunction ℝ) U) * typeIIShort U) n : ℝ) : ℂ) * w ^ n‖ := by
   set a := truncAF (moebius : ArithmeticFunction ℝ) U
   set b := (moebius : ArithmeticFunction ℝ) - a
   have hdec : ∀ n, (moebiusReal n : ℂ) = (((a + a) n : ℝ) : ℂ) -
@@ -669,27 +669,39 @@ theorem norm_sum_moebius_mul_pow_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : �
   rw [sum_congr rfl fun n _ => by rw [hdec n]]
   simp_rw [add_mul, sub_mul]
   rw [sum_add_distrib, sum_sub_distrib]
-  have hA : ‖∑ n ∈ Icc 1 N, (((a + a) n : ℝ) : ℂ) * ζ ^ n‖ ≤ 2 * U := by
+  have hA : ‖∑ n ∈ Icc 1 N, (((a + a) n : ℝ) : ℂ) * w ^ n‖ ≤ 2 * U := by
     refine (norm_sum_le _ _).trans ?_
-    calc ∑ n ∈ Icc 1 N, ‖(((a + a) n : ℝ) : ℂ) * ζ ^ n‖
+    calc ∑ n ∈ Icc 1 N, ‖(((a + a) n : ℝ) : ℂ) * w ^ n‖
         ≤ ∑ n ∈ Icc 1 N, (if n ≤ U then (2 : ℝ) else 0) := by
           refine sum_le_sum fun n _ => ?_
-          rw [norm_mul, norm_pow, hnorm, one_pow, mul_one, Complex.norm_real, Real.norm_eq_abs]
+          rw [norm_mul, norm_pow, hw, one_pow, mul_one, Complex.norm_real, Real.norm_eq_abs]
           have h := abs_truncAF_moebius_le U n
           have h2 : |(a + a) n| ≤ |a n| + |a n| := abs_add_le _ _
           split_ifs at h ⊢ <;> linarith
       _ ≤ U * 2 := sum_Icc_ite_le_le N U (by norm_num)
       _ = 2 * U := by ring
-  have hB := norm_sum_moebius_typeI_le hp hprim hUp N
-  have hC := norm_sum_moebius_typeII_le hp hprim hU N
-  calc _ ≤ ‖∑ n ∈ Icc 1 N, (((a + a) n : ℝ) : ℂ) * ζ ^ n -
-          ∑ n ∈ Icc 1 N, (((a * a * (zeta : ArithmeticFunction ℝ)) n : ℝ) : ℂ) * ζ ^ n‖ +
-        ‖∑ n ∈ Icc 1 N, (((b * typeIIShort U) n : ℝ) : ℂ) * ζ ^ n‖ := norm_add_le _ _
-    _ ≤ ‖∑ n ∈ Icc 1 N, (((a + a) n : ℝ) : ℂ) * ζ ^ n‖ +
-          ‖∑ n ∈ Icc 1 N, (((a * a * (zeta : ArithmeticFunction ℝ)) n : ℝ) : ℂ) * ζ ^ n‖ +
-        ‖∑ n ∈ Icc 1 N, (((b * typeIIShort U) n : ℝ) : ℂ) * ζ ^ n‖ := by
+  calc _ ≤ ‖∑ n ∈ Icc 1 N, (((a + a) n : ℝ) : ℂ) * w ^ n -
+          ∑ n ∈ Icc 1 N, (((a * a * (zeta : ArithmeticFunction ℝ)) n : ℝ) : ℂ) * w ^ n‖ +
+        ‖∑ n ∈ Icc 1 N, (((b * typeIIShort U) n : ℝ) : ℂ) * w ^ n‖ := norm_add_le _ _
+    _ ≤ ‖∑ n ∈ Icc 1 N, (((a + a) n : ℝ) : ℂ) * w ^ n‖ +
+          ‖∑ n ∈ Icc 1 N, (((a * a * (zeta : ArithmeticFunction ℝ)) n : ℝ) : ℂ) * w ^ n‖ +
+        ‖∑ n ∈ Icc 1 N, (((b * typeIIShort U) n : ℝ) : ℂ) * w ^ n‖ := by
         gcongr; exact norm_sub_le _ _
     _ ≤ _ := by linarith
+
+/-- **The minor-arc law for Möbius at prime roots of unity.** For `p` prime, `ζ ≠ 1` a `p`-th root
+of unity and `1 ≤ U < p`,
+`‖Σ_{n ≤ N} μ(n) ζⁿ‖ ≤ 2U + U W_p + (log₂ N + 1) √(2(1 + H_N³)(N²/p + N²/U + N² W_p/(Up) + N W_p))`. -/
+theorem norm_sum_moebius_mul_pow_le {p : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : ζ ∈ nontrivialRoots p)
+    {U : ℕ} (hU : 1 ≤ U) (hUp : U < p) (N : ℕ) :
+    ‖∑ n ∈ Icc 1 N, (moebiusReal n : ℂ) * ζ ^ n‖ ≤
+      2 * U + U * rootHarmonicSum p + (Nat.log 2 N + 1) * Real.sqrt (typeIIBlockBound p U N) := by
+  have hprim := isPrimitiveRoot_of_mem_nontrivialRoots hp hζ
+  have hnorm : ‖ζ‖ = 1 := hprim.norm'_eq_one hp.ne_zero
+  have hB := norm_sum_moebius_typeI_le hp hprim hUp N
+  have hC := norm_sum_moebius_typeII_le hp.pos hprim hU N
+  have h := norm_sum_moebius_mul_pow_le_split hnorm U N
+  linarith
 
 end
 

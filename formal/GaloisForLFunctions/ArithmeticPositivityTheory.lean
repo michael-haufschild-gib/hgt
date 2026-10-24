@@ -103,3 +103,4 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».QuantitativeGridTent
 import GaloisForLFunctions.«arithmetic-positivity-theory».AdmissibleStencilsAndCellKernelsBeyondDyadic
 import GaloisForLFunctions.«arithmetic-positivity-theory».WideWindowSelectivityAndBeurlingInfrastructure
 import GaloisForLFunctions.«arithmetic-positivity-theory».SourceSelectionInTheFullWeilCone
+import GaloisForLFunctions.«arithmetic-positivity-theory».CommonShiftForTheSuzukiDeficit

@@ -98,11 +98,11 @@ theorem norm_sum_truncAF_vonMangoldt_le {ζ : ℂ} (hnorm : ‖ζ‖ = 1) (U N :
 
 /-- **The `log`-weighted Type-I sum.** For `U < p`,
 `‖Σ_{n ≤ N} (μ_U ∗ log)(n) ζⁿ‖ ≤ 2 log N · W_p`. -/
-theorem norm_sum_truncAF_moebius_mul_log_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
+theorem norm_sum_truncAF_moebius_mul_log_le {p : ℕ} (hp : 0 < p) {ζ : ℂ}
     (hprim : IsPrimitiveRoot ζ p) {U : ℕ} (hUp : U < p) (N : ℕ) :
     ‖∑ n ∈ Icc 1 N, (((truncAF (moebius : ArithmeticFunction ℝ) U *
       ArithmeticFunction.log) n : ℝ) : ℂ) * ζ ^ n‖ ≤ 2 * Real.log N * rootHarmonicSum p := by
-  have hnorm : ‖ζ‖ = 1 := hprim.norm'_eq_one hp.ne_zero
+  have hnorm : ‖ζ‖ = 1 := hprim.norm'_eq_one hp.ne'
   have hlogN : 0 ≤ Real.log N := Real.log_natCast_nonneg N
   have hμU : ∀ b, |truncAF (moebius : ArithmeticFunction ℝ) U b| ≤ 1 := fun b =>
     (abs_truncAF_moebius_le U b).trans (by split_ifs <;> norm_num)
@@ -145,15 +145,17 @@ theorem norm_sum_truncAF_moebius_mul_log_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
         mul_le_mul_of_nonneg_left (sum_Icc_two_div_norm_pow_sub_one_le hp hprim hUp)
           (by positivity)
 
-/-- **The minor-arc law for `Λ` at prime roots of unity.** For `p` prime, `ζ ≠ 1` a `p`-th root of
-unity and `1 ≤ U < p`, `‖Σ_{n ≤ N} Λ(n) ζⁿ‖ ≤ primeMinorArcBound p U N`. -/
-theorem norm_sum_vonMangoldt_mul_pow_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
-    (hζ : ζ ∈ nontrivialRoots p) {U : ℕ} (hU : 1 ≤ U) (hUp : U < p) (N : ℕ) :
-    ‖∑ n ∈ Icc 1 N, ((vonMangoldt n : ℝ) : ℂ) * ζ ^ n‖ ≤ primeMinorArcBound p U N := by
-  have hprim := isPrimitiveRoot_of_mem_nontrivialRoots hp hζ
-  have hnorm : ‖ζ‖ = 1 := hprim.norm'_eq_one hp.ne_zero
-  have hlogU : 0 ≤ Real.log U := Real.log_natCast_nonneg U
-  have hlogN : 0 ≤ Real.log N := Real.log_natCast_nonneg N
+/-- **The Vaughan split of a von Mangoldt exponential sum.** On the unit circle,
+`‖Σ_{n ≤ N} Λ(n) wⁿ‖ ≤ U log U + ‖Σ (Λ_U ∗ μ_U ∗ 1)(n) wⁿ‖ + ‖Σ (μ_U ∗ log)(n) wⁿ‖
+  + ‖Σ ((Λ - Λ_U) ∗ g)(n) wⁿ‖`. -/
+theorem norm_sum_vonMangoldt_mul_pow_le_split {w : ℂ} (hw : ‖w‖ = 1) (U N : ℕ) :
+    ‖∑ n ∈ Icc 1 N, ((vonMangoldt n : ℝ) : ℂ) * w ^ n‖ ≤
+      U * Real.log U +
+        ‖∑ n ∈ Icc 1 N, (((truncAF vonMangoldt U * truncAF (moebius : ArithmeticFunction ℝ) U *
+          (zeta : ArithmeticFunction ℝ)) n : ℝ) : ℂ) * w ^ n‖ +
+        ‖∑ n ∈ Icc 1 N, (((truncAF (moebius : ArithmeticFunction ℝ) U *
+          ArithmeticFunction.log) n : ℝ) : ℂ) * w ^ n‖ +
+        ‖∑ n ∈ Icc 1 N, (((typeIILong U * typeIIShort U) n : ℝ) : ℂ) * w ^ n‖ := by
   have hdec : ∀ n, ((vonMangoldt n : ℝ) : ℂ) =
       ((truncAF vonMangoldt U n : ℝ) : ℂ) -
         (((truncAF vonMangoldt U * truncAF (moebius : ArithmeticFunction ℝ) U *
@@ -173,47 +175,70 @@ theorem norm_sum_vonMangoldt_mul_pow_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
   rw [sum_congr rfl fun n _ => by rw [hdec n]]
   simp_rw [add_mul, sub_mul]
   rw [sum_add_distrib, sum_add_distrib, sum_sub_distrib]
-  have h1 := norm_sum_truncAF_vonMangoldt_le hnorm U N
-  -- the first Type-I sum
-  have hΛU : ∀ a, |truncAF vonMangoldt U a| ≤ Real.log U := fun a => by
-    rw [truncAF_apply]
-    split_ifs with haU
-    · rw [abs_of_nonneg vonMangoldt_nonneg]
-      rcases Nat.eq_zero_or_pos a with rfl | ha
-      · simp [hlogU]
-      · exact vonMangoldt_le_log.trans (Real.log_le_log (by exact_mod_cast ha) (by exact_mod_cast haU))
-    · simp [hlogU]
-  have hμU : ∀ b, |truncAF (moebius : ArithmeticFunction ℝ) U b| ≤ 1 := fun b =>
-    (abs_truncAF_moebius_le U b).trans (by split_ifs <;> norm_num)
-  have h2 := norm_sum_conv_conv_zeta_le hp hprim hUp hUp (truncAF vonMangoldt U)
-    (truncAF (moebius : ArithmeticFunction ℝ) U) hΛU (fun a ha => truncAF_apply_of_gt ha) hμU
-    (fun b hb => truncAF_apply_of_gt hb) N
-  have h3 := norm_sum_truncAF_moebius_mul_log_le hp hprim hUp N
-  -- the Type-II sum, with long coefficients `|Λ| ≤ 1 + log N`
-  have h4 : ‖∑ n ∈ Icc 1 N, (((typeIILong U * typeIIShort U) n : ℝ) : ℂ) * ζ ^ n‖ ≤
-      (Nat.log 2 N + 1) * (1 + Real.log N) * Real.sqrt (typeIIBlockBound p U N) := by
-    rw [sum_Icc_mul_conv]
-    refine norm_sum_typeIIShort_le hp hprim hU N (typeIILong U) (by positivity) (fun d hd => ?_)
-      (fun d hd => ?_)
-    · refine (abs_vonMangoldt_sub_truncAF_le U d).trans ?_
-      rcases Nat.eq_zero_or_pos d with rfl | hd0
-      · simp only [ArithmeticFunction.map_zero]; positivity
-      · exact vonMangoldt_le_log.trans ((real_log_natCast_mono hd).trans (by linarith))
-    · show vonMangoldt d - truncAF vonMangoldt U d = 0
-      rw [truncAF_apply, if_pos hd, sub_self]
-  unfold primeMinorArcBound
-  calc _ ≤ ‖∑ n ∈ Icc 1 N, ((truncAF vonMangoldt U n : ℝ) : ℂ) * ζ ^ n‖ +
+  have h1 := norm_sum_truncAF_vonMangoldt_le hw U N
+  calc _ ≤ ‖∑ n ∈ Icc 1 N, ((truncAF vonMangoldt U n : ℝ) : ℂ) * w ^ n‖ +
         ‖∑ n ∈ Icc 1 N, (((truncAF vonMangoldt U * truncAF (moebius : ArithmeticFunction ℝ) U *
-          (zeta : ArithmeticFunction ℝ)) n : ℝ) : ℂ) * ζ ^ n‖ +
+          (zeta : ArithmeticFunction ℝ)) n : ℝ) : ℂ) * w ^ n‖ +
         ‖∑ n ∈ Icc 1 N, (((truncAF (moebius : ArithmeticFunction ℝ) U *
-          ArithmeticFunction.log) n : ℝ) : ℂ) * ζ ^ n‖ +
-        ‖∑ n ∈ Icc 1 N, (((typeIILong U * typeIIShort U) n : ℝ) : ℂ) * ζ ^ n‖ := by
+          ArithmeticFunction.log) n : ℝ) : ℂ) * w ^ n‖ +
+        ‖∑ n ∈ Icc 1 N, (((typeIILong U * typeIIShort U) n : ℝ) : ℂ) * w ^ n‖ := by
         refine (norm_add_le _ _).trans ?_
         gcongr
         refine (norm_add_le _ _).trans ?_
         gcongr
         exact norm_sub_le _ _
     _ ≤ _ := by linarith
+
+/-- The long coefficients `Λ - Λ_U` vanish on `[1, U]` and are at most `1 + log N` up to `N`. -/
+theorem abs_typeIILong_le (U N d : ℕ) (hd : d ≤ N) : |typeIILong U d| ≤ 1 + Real.log N := by
+  have hlogN : 0 ≤ Real.log N := Real.log_natCast_nonneg N
+  refine (abs_vonMangoldt_sub_truncAF_le U d).trans ?_
+  rcases Nat.eq_zero_or_pos d with rfl | hd0
+  · simp only [ArithmeticFunction.map_zero]; positivity
+  · exact vonMangoldt_le_log.trans ((real_log_natCast_mono hd).trans (by linarith))
+
+theorem typeIILong_eq_zero {U d : ℕ} (hd : d ≤ U) : typeIILong U d = 0 := by
+  show vonMangoldt d - truncAF vonMangoldt U d = 0
+  rw [truncAF_apply, if_pos hd, sub_self]
+
+/-- The Type-II part of `Λ` at a primitive root of any order: at most
+`(log₂ N + 1)(1 + log N) √(typeIIBlockBound p U N)`. -/
+theorem norm_sum_vonMangoldt_typeII_le {p : ℕ} (hp : 0 < p) {ζ : ℂ} (hprim : IsPrimitiveRoot ζ p)
+    {U : ℕ} (hU : 1 ≤ U) (N : ℕ) :
+    ‖∑ n ∈ Icc 1 N, (((typeIILong U * typeIIShort U) n : ℝ) : ℂ) * ζ ^ n‖ ≤
+      (Nat.log 2 N + 1) * (1 + Real.log N) * Real.sqrt (typeIIBlockBound p U N) := by
+  have hlogN : 0 ≤ Real.log N := Real.log_natCast_nonneg N
+  rw [sum_Icc_mul_conv]
+  exact norm_sum_typeIIShort_le hp hprim hU N (typeIILong U) (by positivity)
+    (fun d hd => abs_typeIILong_le U N d hd) (fun d hd => typeIILong_eq_zero hd)
+
+theorem abs_truncAF_vonMangoldt_le (U a : ℕ) : |truncAF vonMangoldt U a| ≤ Real.log U := by
+  have hlogU : 0 ≤ Real.log U := Real.log_natCast_nonneg U
+  rw [truncAF_apply]
+  split_ifs with haU
+  · rw [abs_of_nonneg vonMangoldt_nonneg]
+    rcases Nat.eq_zero_or_pos a with rfl | ha
+    · simp [hlogU]
+    · exact vonMangoldt_le_log.trans (Real.log_le_log (by exact_mod_cast ha) (by exact_mod_cast haU))
+  · simp [hlogU]
+
+/-- **The minor-arc law for `Λ` at prime roots of unity.** For `p` prime, `ζ ≠ 1` a `p`-th root of
+unity and `1 ≤ U < p`, `‖Σ_{n ≤ N} Λ(n) ζⁿ‖ ≤ primeMinorArcBound p U N`. -/
+theorem norm_sum_vonMangoldt_mul_pow_le {p : ℕ} (hp : p.Prime) {ζ : ℂ}
+    (hζ : ζ ∈ nontrivialRoots p) {U : ℕ} (hU : 1 ≤ U) (hUp : U < p) (N : ℕ) :
+    ‖∑ n ∈ Icc 1 N, ((vonMangoldt n : ℝ) : ℂ) * ζ ^ n‖ ≤ primeMinorArcBound p U N := by
+  have hprim := isPrimitiveRoot_of_mem_nontrivialRoots hp hζ
+  have hnorm : ‖ζ‖ = 1 := hprim.norm'_eq_one hp.ne_zero
+  have hμU : ∀ b, |truncAF (moebius : ArithmeticFunction ℝ) U b| ≤ 1 := fun b =>
+    (abs_truncAF_moebius_le U b).trans (by split_ifs <;> norm_num)
+  have h2 := norm_sum_conv_conv_zeta_le hp hprim hUp hUp (truncAF vonMangoldt U)
+    (truncAF (moebius : ArithmeticFunction ℝ) U) (abs_truncAF_vonMangoldt_le U)
+    (fun a ha => truncAF_apply_of_gt ha) hμU (fun b hb => truncAF_apply_of_gt hb) N
+  have h3 := norm_sum_truncAF_moebius_mul_log_le hp.pos hprim hUp N
+  have h4 := norm_sum_vonMangoldt_typeII_le hp.pos hprim hU N
+  have h := norm_sum_vonMangoldt_mul_pow_le_split hnorm U N
+  unfold primeMinorArcBound
+  linarith
 
 /-! ## §2. The centred prime row below the diagonal -/
 

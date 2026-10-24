@@ -10,7 +10,10 @@ larger positive forcing, retain the receiver as a signed Gram difference, locate
 the cofactor tail, and price every finite word of successor translations and floor dilations.
 An explicit power subtraction pays the remaining forcing in the global receiver norm. A
 separate pronic mass estimate pays bounded boundary errors even against the complete forcing.
-These results constrain how an arithmetic defect state can be constructed and renormalized.
+The actual receiver's absolute Mellin trace identifies this subtraction as a linear source
+operation. Energy quantiles then retain diffuse receiver mass together with its signed
+renormalized cofactor pairing. These results constrain how an arithmetic defect state can be
+constructed and renormalized.
 
 **The open core is exclusion.** These constraints do not prove that receiver energy is bounded.
 A source estimate excluding every escaping state for a cofinal family of positive dampings
@@ -83,6 +86,11 @@ D_\varepsilon(n)=\sum_{j=2}^n j^{-\varepsilon}A_\varepsilon(\lfloor n/j\rfloor).
 | Renormalized cofactor residual | $D_\varepsilon-c_\varepsilon n^{1-\varepsilon}$ for the actual source | `renormalizedCofactor` |
 | Pronic forcing mass | $\sum_{n\le T}\rho_\varepsilon(n)/(n(n+1))$ | `forcingPronicMass` |
 | Exact forcing mass | $L_\varepsilon=\sum_n\Lambda(n)n^{-1-\varepsilon}=-\zeta'(1+\varepsilon)/\zeta(1+\varepsilon)$ | `forcingMassLimit` |
+| Absolute pole-trace domain | Zero-origin rows with summable pairing against the Mellin cells at $1-\varepsilon$ | `poleTraceDomain` |
+| Fixed trace-domain dilations | Proved domain endomorphisms with exact damped trace weight $1/j$ | `traceDilation`, `traceCofactorPacket` |
+| Linear cofactor subtraction | Finite cofactor operator minus the row's own trace times $n^{1-\varepsilon}$ | `renormalizedCofactorOperator` |
+| Energy quantile | First crossing of a prescribed fraction of $E_T$ | `receiverEnergyQuantile` |
+| Quantile cofactor work | Signed renormalized cofactor pairing between two energy crossings | `quantileCofactorWork` |
 | Cell word | Finite composition of successor translations and positive integer floor dilations | `CellWord` |
 | Word boundary cost | Total translation length, with division allowed to reduce the displacement | `CellWord.boundaryCost` |
 
@@ -344,10 +352,9 @@ This is a valid homogeneous relation in the global receiver norm after an explic
 subtraction. It handles moving cells as well as fixed cells. The full forcing itself cannot
 be discarded at that normalization.
 
-The residual $\widetilde D_\varepsilon$ is an affine expression for the actual source.
-No bounded linear cofactor operator, invertibility, coercivity or exclusion theorem follows
-from this subtraction. Constructing a source-compatible operator domain and retaining its
-boundary trace remain separate questions.
+This expression specifies an affine residual for the actual source. The absolute
+trace construction below realizes it as a linear operation on a proved domain. Boundedness,
+invertibility, domain invariance and coercivity require additional estimates.
 
 [TheRenormalizedCofactorIsAntipodalOnEscape](TheRenormalizedCofactorIsAntipodalOnEscape.lean)
 retains the signed pairing. If $\widetilde P_T=\langle A_\varepsilon,\widetilde
@@ -362,6 +369,26 @@ E_T+\widetilde P_T=\langle A_\varepsilon,R_\varepsilon\rangle_T,\qquad
 
 Hence every escaping receiver has renormalized cofactor pairing tending to $-1$. The relation
 is a necessary signed constraint on an escaping state, not a contradiction.
+
+The same paid remainder controls absolute localization. Define
+
+\[
+V_T=\sum_{n\le T}\frac{|A_\varepsilon(n)^2+
+  A_\varepsilon(n)\widetilde D_\varepsilon(n)|}{n(n+1)}.
+\]
+
+Then
+
+\[
+V_T=\sum_{n\le T}\frac{|A_\varepsilon(n)|\,|R_\varepsilon(n)|}{n(n+1)}
+\le B_\varepsilon\sqrt{E_T}.
+\]
+
+On escape, $V_T/E_T\to0$. This is total-variation control of the signed cofactor-density
+error. Consequently any cell multiplier of absolute value at most one, including one moving
+with the horizon, has normalized error at most $V_T/E_T$. The single global remainder budget
+pays every such localization; cancellation of the total pairing is not being substituted for
+absolute control. No analogous estimate has been proved for the unsubtracted forcing pairing.
 
 ### 7. Infinite forcing energy coexists with finite forcing mass
 
@@ -398,6 +425,176 @@ boundary bound gives the uniform work estimate in pillar 5. The estimate does no
 $\langle A_\varepsilon,\rho_\varepsilon\rangle_T$: the receiver prefix is not uniformly
 bounded, and inserting such a bound would assume the missing arithmetic control.
 
+[BoundedWordErrorsHaveAnAbsoluteHorizonTail](BoundedWordErrorsHaveAnAbsoluteHorizonTail.lean)
+also prices newly entering cells. With
+$C_\varepsilon^{\mathrm{tail}}=m_\varepsilon M_\varepsilon(1+\varepsilon)/\varepsilon$,
+
+\[
+0\le\sum_{H<n\le T}\frac{\rho_\varepsilon(n)}{n(n+1)}
+\le C_\varepsilon^{\mathrm{tail}}(H+1)^{-\varepsilon},
+\]
+
+\[
+\left|\sum_{H<n\le T}
+\frac{[A_\varepsilon(w(n))-A_\varepsilon(\lfloor n/q(w)\rfloor)]\rho_\varepsilon(n)}
+{n(n+1)}\right|
+\le B(w)C_\varepsilon^{\mathrm{tail}}(H+1)^{-\varepsilon}.
+\]
+
+Both estimates hold uniformly in the final horizon $T$. For every fixed word and positive
+error allowance, one sufficiently large cutoff pays all later final horizons. No receiver
+normalization is used. Moving words carry the displayed boundary-cost factor. This is an
+absolute compensation theorem for bounded word errors; it does not supply the same control
+for the unbounded receiver prefix or the full signed compensation problem.
+
+### 8. The actual source determines its linear boundary subtraction
+
+[TheActualReceiverHasAnAbsolutePoleTrace](TheActualReceiverHasAnAbsolutePoleTrace.lean)
+extends the actual Mellin pairing to its cofactor pole. Put $\alpha=1-\varepsilon$ and
+$\Delta_\alpha(n)=n^{-\alpha}-(n+1)^{-\alpha}$. Then
+
+\[
+\sum_{n\ge1}|A_\varepsilon(n)|n^{\varepsilon-2}<\infty,
+\qquad
+\mathcal L_\varepsilon(A_\varepsilon)
+:=\frac1\alpha\sum_{n\ge1}A_\varepsilon(n)\Delta_\alpha(n)
+=c_\varepsilon>0.
+\]
+
+Absolute convergence comes from the actual VK estimate. Its exponential saving dominates a
+summable envelope proportional to $n^{-1}\exp(-\sqrt{\log n}/120)$. To identify the value,
+approach $\alpha$ from the right in the existing THIM Mellin identity:
+
+\[
+\sum_n A_\varepsilon(n)\Delta_\sigma(n)
+=\zeta(\sigma)\left(\frac1{\zeta(\sigma+\varepsilon)}-m_\varepsilon\right),
+\qquad \alpha<\sigma<1.
+\]
+
+A common summable envelope permits passage to $\sigma=\alpha$, while the reciprocal zeta
+factor tends to zero. This argument does not represent the conditionally convergent
+$\sum\mu(n)/n$ as an absolutely summable series. The Mellin cells and their bounded-energy
+continuity are existing THIM tools; the source endpoint membership and exact value are the
+inputs supplied here.
+
+[ThePoleTraceDefinesALinearCofactorRenormalization](ThePoleTraceDefinesALinearCofactorRenormalization.lean)
+constructs the real vector space
+
+\[
+\mathcal X_\varepsilon
+=\left\{v:v(0)=0,\quad
+\sum_n|v(n)\Delta_\alpha(n)|<\infty\right\}
+\]
+
+and the linear map
+
+\[
+\widetilde{\mathcal D}_\varepsilon v(n)
+=\sum_{j=2}^{n}j^{-\varepsilon}v(\lfloor n/j\rfloor)
+-\mathcal L_\varepsilon(v)n^\alpha.
+\]
+
+The actual receiver belongs to $\mathcal X_\varepsilon$ independently of critical-energy
+admission. Its image is exactly $\widetilde D_\varepsilon$, so
+
+\[
+\|A_\varepsilon+\widetilde{\mathcal D}_\varepsilon A_\varepsilon\|_T\le B_\varepsilon.
+\]
+
+The operator is defined with values in all rows. For the actual receiver, its image lies again
+in $\mathcal X_\varepsilon$: the paid remainder has bounded pronic energy, hence an absolute
+Mellin trace, and $\widetilde D_\varepsilon=R_\varepsilon-A_\varepsilon$. General domain
+invariance and boundedness in critical energy remain unproved. They are mathematical
+requirements for any proposed iteration or resolvent argument. An escaping source would give
+an approximate eigenrelation with value $-1$ after normalization; identifying that relation
+is not a proof that it is impossible.
+
+[FixedCofactorsHaveAHarmonicBoundaryTrace](FixedCofactorsHaveAHarmonicBoundaryTrace.lean)
+proves that each fixed floor dilation preserves $\mathcal X_\varepsilon$. The missing
+summability is paid by finite absolute Mellin blocks:
+
+\[
+\sum_{n<Tj}|v(\lfloor n/j\rfloor)|\Delta_\alpha(n)
+=j^{-\alpha}\sum_{m<T}|v(m)|\Delta_\alpha(m).
+\]
+
+Every partial sum is bounded by a complete block, which establishes absolute convergence
+before applying the existing Mellin dilation law. The absolute trace mass
+$\sum_n|v(n)\Delta_\alpha(n)|$ scales by exactly $j^{-\alpha}$ under fixed dilation;
+this prices the operation without relying on signed cancellation. Consequently
+
+\[
+\mathcal L_\varepsilon(v(\lfloor\cdot/j\rfloor))
+=j^{-\alpha}\mathcal L_\varepsilon(v),\qquad
+\mathcal L_\varepsilon(j^{-\varepsilon}v(\lfloor\cdot/j\rfloor))
+=\frac1j\mathcal L_\varepsilon(v).
+\]
+
+For every finite set $S$ of positive cofactor indices,
+
+\[
+\mathcal L_\varepsilon\left(\sum_{j\in S}j^{-\varepsilon}
+  v(\lfloor\cdot/j\rfloor)\right)
+=\left(\sum_{j\in S}\frac1j\right)\mathcal L_\varepsilon(v).
+\]
+
+For the actual source the last factor is the proved positive $c_\varepsilon$. This is an exact
+boundary cost for finite packets. It does not authorize exchanging the complete cofactor sum
+with the trace: its harmonic coefficients are not summable. Fixed-dilation domain stability
+and stability under the full variable-horizon cofactor operator are different obligations.
+
+### 9. Energy quantiles retain diffuse mass and signed cofactor work
+
+[EnergyQuantilesRetainDiffuseEscape](EnergyQuantilesRetainDiffuseEscape.lean) uses the actual
+increment bound to give
+
+\[
+|A_\varepsilon(n)|\le n,\qquad
+0\le E_{n+1}-E_n\le1,\qquad E_{n+k}-E_n\le k.
+\]
+
+For $r\in[0,1]$, define $q_T(r)$ as the first integer with $E_{q_T(r)}\ge rE_T$.
+The horizon itself supplies a crossing. The quantile is monotone in $r$, lies at most at $T$,
+and satisfies
+
+\[
+0\le E_{q_T(r)}-rE_T\le1.
+\]
+
+For $0\le r\le s\le1$ and $T\ge1$ this implies
+
+\[
+\left|\frac{E_{q_T(s)}-E_{q_T(r)}}{E_T}-(s-r)\right|\le\frac1{E_T}.
+\]
+
+On the escaping branch, every fixed energy interval therefore retains its prescribed mass.
+No fixed spatial window or finite packet is required. This transport uses bounded increments;
+it does not by itself distinguish arithmetic from other rows with the same increment bound.
+
+[EnergyQuantilesPreserveTheSignedCofactorPairing](EnergyQuantilesPreserveTheSignedCofactorPairing.lean)
+adds the signed actual-source constraint. Let
+
+\[
+W_T(r,s)=\widetilde P_{q_T(s)}-\widetilde P_{q_T(r)}.
+\]
+
+The globally paid remainder and the quantile overshoot give, uniformly in both endpoints,
+
+\[
+|W_T(r,s)+(s-r)E_T|\le2B_\varepsilon\sqrt{E_T}+1,
+\]
+
+\[
+\left(\frac{W_T(r,s)}{E_T}+(s-r)\right)^2
+\le\frac{8B_\varepsilon^2}{E_T}+\frac2{E_T^2}
+\qquad(T\ge1).
+\]
+
+Thus energy-quantile transport preserves both positive energy mass and its antipodal signed
+cofactor work, even under diffuse escape. This is a joint transport theorem for these two
+specific observables. It does not preserve every cofactor/successor covariance, recover the
+original spatial geometry from the quantile labels, or exclude the resulting signed state.
+
 ## Mechanisms and foundational principles
 
 The programme starts with source identities, establishes the cost of observing them, and only
@@ -412,7 +609,11 @@ then forms a limit or a quotient. The established mechanisms are:
 - **Paid renormalization:** subtract an explicit forcing power only after its complete
   remainder has a uniform critical-norm budget.
 - **Dual mass control:** price bounded cell errors using the forcing's finite pronic mass,
-  instead of losing its divergent L2 norm.
+  with a uniform absolute tail budget for newly entering cells.
+- **Source boundary trace:** determine the linear subtraction from the actual row and prove
+  domain membership independently of energy admission.
+- **Energy quantile transport:** retain diffuse energy and its signed cofactor work with a
+  uniform, explicitly vanishing error.
 
 Further mechanisms must satisfy the same principles:
 
@@ -434,9 +635,10 @@ These are requirements on theorem design, not new axioms about arithmetic.
 | Topic | Question | Required output |
 |---|---|---|
 | Joint extraction | How can nonzero receiver mass, moving cofactor tails and signed forcing covariance survive in one construction? | A compactness or decomposition theorem retaining the rate and tangent coordinates, including diffuse escape. |
-| Quantitative source selectivity | Which actual arithmetic relation constrains the surviving tangent state beyond the present VK separation? | An independently proved estimate violated by the relevant impure models. |
+| Quantitative source selectivity | Which actual arithmetic relation excludes the surviving tangent state or its approximate renormalized cofactor eigenrelation? | An independently proved estimate violated by the relevant impure models. |
 | Mixed Bézout/Vaughan covariance | Can additive coprimality and multiplicative factorization give a summable signed gain after correct centering? | A bound for the complete mixed residual with horizon and damping dependence. |
 | Successor dynamics | Which moving words or amplified coefficient operations retain source information at a controlled cost? | A nontrivial action at the escape scale and a proved boundary estimate consumed by a receiver. |
+| Renormalized operator domains | On which source-compatible spaces can the linear cofactor subtraction be iterated or controlled? | Proved domain invariance and quantitative estimates; the actual trace-domain membership alone supplies neither. |
 | Repairing modules | How do these operations act on ideals, hulls and local vanishing orders? | A defined action or transport relation preserving the required local algebra; ideal invariance must be proved. |
 | Absolute compensation | Can the signed tail and its newly entering horizon cells be paid in the receiver norm? | An absolute bound including all cross terms; summable relative errors alone are insufficient. |
 | Shared allocation | Can one certificate control the full signed form across overlapping carriers? | A global allocation including frustration, boundary flux and one Gamma/polar reserve. |
@@ -447,9 +649,10 @@ These are requirements on theorem design, not new axioms about arithmetic.
 The extraction problem must accommodate fixed-word collapse, forcing in growing cofactor
 tails, and the impossibility of a common scalar normalization. The paid power subtraction
 offers one concrete response: retain the explicit power separately and carry the residual
-cofactor relation in the receiver norm. Its operator domain, joint source observations and
-diffuse escape still require construction. A finite Gram matrix without its rates does not
-resolve these questions.
+cofactor relation in the receiver norm. The absolute trace supplies a linear operator domain;
+energy quantiles retain diffuse energy and signed antipodal work. A complete extraction must
+still retain the additional joint source observations and their spatial and scale data. A
+finite Gram matrix without its rates does not resolve these questions.
 
 The exclusion problem is separate. Even a complete extraction theorem would leave the need
 for a source estimate forbidding its nonzero states. The current results give no such universal
@@ -519,5 +722,6 @@ must specify:
 
 Framework-only interfaces, renamed equivalences and hidden analytic assumptions do not meet
 these criteria. The present pillars provide source scale separation, paid forcing subtraction,
-dual boundary control and quantitative restrictions on extraction. Their next use must improve
+dual boundary control, a source-defined linear subtraction, and joint transport of diffuse
+energy and signed work. Their next use must improve
 the retained signed residual or produce the missing exclusion estimate.

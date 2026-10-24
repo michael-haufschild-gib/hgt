@@ -100,14 +100,14 @@ arithmetic estimates to make a dictionary applicable.
   Current source hashes match those certificates; reuse evidence is in
   `logs/just-work-2410/J4ExistingCertificates.json`.
 - `SuzukiCriticalMovingPrimaryEnergy` supplies the varying-source Fatou
-  inequality. This is only the positive primary part of J4(iii); joint
-  convergence of the signed compact-window correction is still required.
+  inequality. `SuzukiCriticalMovingWindowDeficit` supplies joint convergence
+  of the signed compact-window correction and closes J4(iii).
 - The canonical spline already has support radius 4, gauge derivative bound
   `exp(4)/2`, integrated gauge derivative bound `4 exp(4)`, mass bound
   `2 exp(8)`, and Fourier bound `cosh(1)^4/(1+r^2)^2` in
   `SplineProbeFiniteShiftBounds`. These are the selected concrete J5 inputs.
 
-## Pending proof sources
+## Lean evidence
 
 - J3 certificate: `3-formalized/heath-brown-all-length-dilation-closure.md`.
   `RHTower/Sieve/HeathBrownPairSumAllLengths.lean` proves the exact
@@ -117,12 +117,12 @@ arithmetic estimates to make a dictionary applicable.
   `RHTower/Sieve/GuthMaynardSharpSTwo.lean` supplies the sharp all-k S₂ family
   and Proposition 12.1. Its full-source check, all three public axiom audits,
   and canonical final check passed; the owning umbrella imports it once.
-- J4(i) can use the existing cluster horizon followed by complete-form
+- J4(i) uses the existing cluster horizon followed by complete-form
   mollification. `TheRoutesMeasureOneAperture.contDiff_top_smooth` gives
   actual infinite smoothness; its support and complete-energy convergence
   lemmas retain an arbitrarily small aperture enlargement. The certified
   `xi_ne_zero_of_im_sq_le` height floor removes the horizon's height premise.
-  The proposed bound is stronger: `a ≤ C δ⁻²(4+|γ|)²`. Set
+  The proved bound is stronger: `a ≤ C δ⁻²(4+|γ|)²`. Set
   `u=K(4+|γ|)/δ`, `a=u²`, with
   `K=exp(6)+10⁹(A+1)` for the cluster-horizon constant `A≥1`.
   The inequalities `log(u²)²≤16u` and `log(|γ|+306)≤77(4+|γ|)`
@@ -136,16 +136,17 @@ arithmetic estimates to make a dictionary applicable.
   `3-formalized/cluster-horizon-smooth-polynomial-detector.md`.
 - The current corpus contains `RHTower/Suzuki/SuzukiCriticalMovingWindowDeficit.lean`,
   with the exact joint extended-Weil liminf and constant recovery on arbitrary
-  a.e. common windows `[a,b]`. Certify that shared leaf; do not install the
-  redundant `/tmp/hgt-just-work-suzuki-moving-signed.lean` draft. Its additional
+  a.e. common windows `[a,b]`. All 17 public declarations passed the full-source
+  axiom audit and the canonical final check. The owning umbrella imports it once.
+  The additional
   compact-family uniformity theorem retains a supplied common Weil floor and
   does not produce a global sign.
 - `BiScaleUncertainty/ExplicitApertureSplineInputs.lean` passed its full-source
   check, all 17 public axiom audits, and its canonical final check. The owning
   umbrella imports it once.
-- Concrete dictionary instances remain a proof candidate at
-  `/tmp/hgt-just-work-concrete-dictionaries.lean`; their full-source axiom audit
-  and canonical final check remain required.
+- Concrete dictionary instances are in
+  `ArithmeticOrientationTheory/ConcreteSourceDictionaries.lean`, with explicit
+  `#print axioms` checks. Direct canonical checking remains required.
 - `ArithmeticOrientationTheory/ConcreteReceiverScales.lean` passed the full-source
   check and all seven public axiom audits. It proves the stated threshold,
   visibility and centered-prime scales. Its canonical final check passed;
@@ -171,7 +172,7 @@ trusted computation, or resource-limit increases. Preserve concurrent work.
 - [x] J1 integration leaves wired, checked, and audited.
 - [x] J2 joint import compatibility checked after the name repair.
 - [x] J3 exact published bounds formalized and audited.
-- [ ] J4 exact four paper results formalized or subsumed with checked bridges.
+- [x] J4 exact four paper results formalized or subsumed with checked bridges.
 - [x] J5 concrete source inputs certified.
 - [x] J6 concrete constants and ranges certified.
 - [ ] J7 applicable dictionaries certified; global HF premise classified separately.

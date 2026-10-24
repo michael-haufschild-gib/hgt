@@ -939,6 +939,32 @@ an exact asymptotic sandwich by $\tilde E(L)^2\|F\|_2^2/L$ and converges to $E(F
 $\tilde E(L)^2\|F\|_2^2/L\to0$ (`eventually_packetEnergy_div_cutoff_bounds`,
 `tendsto_packetEnergy_div_cutoff_iff`).
 
+**The integrated deficit attains the width endpoint.** Write
+$D(T)=\int_0^T(e^t-\psi(e^t))\,dt$ and $I(T)=e^{-T/2}D(T)$.
+The reciprocal-square spectral representation is
+$$
+I(T)=\Re\sum_\rho \frac{m_\rho e^{(\rho-1/2)T}}{\rho^2}
+       +O((1+T)e^{-T/2}),\qquad T\ge0.
+$$
+Absolute summability of $m_\rho/|\rho|^2$ gives a single constant $B$ with
+$|I(T)|\le B e^{\Delta T}$ at $\Delta=\mathrm{zetaZeroWidth}$ itself.
+Thus the admissible absolute deficit rates form the closed ray $[\Delta,\infty)$;
+there is no polynomial loss or unattained endpoint for this observable.
+Bounded critical deficit energy $I(T)^2$ and a lower bound for its signed
+coprime cross work are each equivalent to RH. Under RH,
+$$
+\frac1T\int_0^T I(t)^2\,dt\longrightarrow
+\sum_\rho\frac{m_\rho^2}{|\rho|^4}>0.
+$$
+This fourth-power energy belongs to the integrated deficit; the unintegrated
+Chebyshev band above has the reciprocal-square energy. Keeping those two
+normalisations separate prevents a false transfer of endpoint constants.
+One-sided exponential bounds for the Weil lag can also be tested on
+$k\log p+\ell\log q\ge0$, $k,\ell\in\mathbb Z$, for any two distinct primes.
+The negative exponents are essential: this is a dense rational-lag test, not a
+bound on two sparse prime-power sequences. See
+[WeilLagCriticalDeficitEndpointAndLimitLaw](WeilLagCriticalDeficitEndpointAndLimitLaw.lean).
+
 **Synchronized packets without orthogonality: the triangular Gram split.** Packet families are
 never orthogonal, and the natural device — a Gram matrix with controlled off-diagonal — is not
 available because nothing bounds the arithmetic cross entries. The usable substitute is an
@@ -1312,8 +1338,8 @@ built on such a summed, damped reading, not on a supremum over windows.
 
 ## 4. Foundational pillar theorems
 
-All unconditional; RH appears only inside an equivalence or as the conclusion of an implication
-from one explicit energy bound.
+The equivalences and structural identities below are unconditional. Limit laws stated
+under RH retain that premise; they calibrate a receiver and do not establish its bound.
 
 1. **Krein increment geometry.** $(h(x)-h(y))^2\le2h(0)(h(0)-h(x-y))$ and its linear smoothing
    bound every correlation by the Lévy energy $\mathcal J$, with no spectral second moment
@@ -1493,11 +1519,12 @@ To be built:
 - the exact two-tower slack and the slack of the prime-power-blind cone as a function of the
   window;
 - a certified finite-prime test of $E(U)=W(U)$ with a justified tail;
-- a producer family with bounded completion cost.
+- a producer family with completion and receiver-transfer costs controlled together,
+  beyond the pole-free and coherent-packet constructions already available.
 
 ---
 
-## 7. Open problems
+## 7. Research boundaries and open questions
 
 ### 7.1 The band
 
@@ -1535,8 +1562,9 @@ pole is invisible. Open:
 The coherent price $\log2$ is sharp, the finite-filter gain is strict off the even sources, and the
 folded sinh source's cell variance is the exact remaining slack. On the odd polar hyperplane the
 pole term vanishes identically, and nonnegativity of the full Weil functional there is RH (§3.7).
-Open: a source-derived bound on that cell variance, and through it any odd-sector positivity beyond
-the windows where no prime enters.
+Open: a source-derived bound on that cell variance that survives growing aperture.
+Small odd windows extending past the first prime atom are already positive in Arithmetic
+Positivity Theory; they do not settle the unrestricted odd receiver.
 
 ### 7.4 Packets and multiplicity
 
@@ -1574,44 +1602,28 @@ for far polar packets, coherent step subdivision cancels every integer atom at u
 archimedean energy (`exists_bounded_archimedean_coherent_polar_completion`). For the prime clocks,
 the mass and edge kernels are the inner products along `PrimeClock.curve k` and their difference is
 `sourcePair`, with exact stationary/generator/potential and stationary/archimedean/prime-shift
-decompositions, Cauchy–Schwarz bounds, and decay to $0$ as $t\to\pm\infty$ (§3.15). Open: a
-single-scale producer completion off the pole-free hyperplane with bounded normalized archimedean
-tail energy, and an unconditional nonnegativity proof for the distinct-prime sum of
+decompositions, Cauchy–Schwarz bounds, and decay to $0$ as $t\to\pm\infty$ (§3.15). The fixed single-scale completion above has a proved logarithmic obstruction; asking
+for the same completion at bounded cost would contradict it. The constructive question
+is which different multi-scale producer retains the desired receiver readout while
+controlling completion cost. A separate signed question is nonnegativity of the distinct-prime sum of
 $\frac{N}{pq}(\mathrm{primeClockEdgeKernel}-\mathrm{primeClockMassKernel})$.
 
-### 7.7 Research topics
+### 7.7 Arithmetic selectivity after the classification theorems
 
-1. **Node criticality.** At arbitrary support, Farkas duality, pole-weight rigidity ($\beta=1$), and
-   Weil-cone uniqueness force every certificate $(\beta,w)$ to have $\beta=1$ and $w(n)=\Lambda(n)$
-   for $n\ge2$ (`weilPositiveAt_certificate_rigidity`, `zeroPoleBlindPositiveOn_iff_exists_certificate`),
-   separating $\log4$ ($w(4)=\log2$) from $\log6$ ($w(6)=0$) across single-node deletion, window
-   decoupling on $(\log4,\log6]$, and whole-tower composite charge (`threeScale_log_four_vs_log_six`).
-   This remains the criterion every closing mechanism of the shared target must pass.
-2. **Prime-blind archimedean positivity.** For every node set $\mathcal N$,
-   $\mathrm{zeroPoleBlindLevyInfimum}(\mathcal N)\ge|\Omega(0)|$ holds iff RH holds and every prime
-   power lies in $\mathcal N$ (`abs_gammaBracket_le_zeroPoleBlindLevyInfimum_iff`), with exact
-   deleted-node interval bounds $[-w(m),0)$ (`riemannHypothesis_iff_deleted_symbol_and_levy_bounds`),
-   automatic pole completion on even pole-free tests (`primeBlindPositiveEvenPolar_iff_riemannHypothesis`,
-   `primeBlindPositive_four_tier_equivalence`), and the even/odd sign-changing ground-state gauges
-   (`realPolar_even_odd_groundState_gauge`). An unconditional proof of
-   $\mathrm{zeroPoleBlindSymbolValue}(\mathrm{primePowerNodes})\ge0$ remains RH itself.
-3. **Phase-sensitive readings.** Window extremes are invariant under every unimodular multiplicative
-   twist including the Liouville twist (`liouvilleUnimodularTwist`,
-   `windowExtremes_twist_blind_and_mirror_symmetric`), whereas the summed half-damped receiver
-   `phaseWeight 1 t₀ φ` separates $\varphi=0$ (bounded iff $\zeta(\tfrac12+it_0)=0$) from the
-   Liouville-flipped phase $\varphi=\pi$ (bounded unconditionally for every $t_0\ne0$,
-   `phaseSensitive_dampedReceiver_separates_untwisted_and_flipped`). In the Pole Compression, the
-   Packet, and the Band, the prime reading is a summed/integrated Chebyshev functional equipped with
-   an explicit unconditional producer (`poleCompression_summed_reading_and_producer`,
-   `packet_summed_reading_and_local_gauge`, `band_summed_reading_and_cramer_limit`).
-4. **Selectivity and calibration models.** Pure function-field curves vs. the Golden Beurling fake
-   curve and finite-window hiding (`functionField_vs_goldenFakeCurve_and_windowHiding`), the shifted
-   pair $\zeta(s-a)\zeta(s+a)$ (`shiftedPairWeilEnergy_eq_nodeArchEnergy_of_blindOn_primePowers`,
-   `shiftedPair_deviation_single_pairTestFn_two`, `shiftedPair_leaves_weilCone_and_ramanujan`), the
-   Liouville twist (`liouvilleUnimodularTwist`), and the Beurling node-deletion, primes-only,
-   two-tower, and admixture systems (`beurling_and_admixture_calibration_battery`) are expressed in
-   the theory's coordinates so that every candidate bound on a band, packet, blind cone, or window
-   spectrum can be tested directly against the battery.
+Node criticality, pole-weight rigidity, twist-blind window extremes, and the
+phase-sensitive damped receiver are established tools (§§3.15–3.16). They
+specify what information a candidate estimate must retain. For example,
+$\Lambda(4)=\log2$ and $\Lambda(6)=0$ force different deletion prices, while a
+Liouville twist leaves window extremes unchanged. Phase-sensitive summed
+readings can distinguish that twist even when extremal sizes cannot.
+
+The open task is to turn these distinctions into a bound for the actual band
+or packet. A calibration battery should be used to reject an insufficient
+mechanism, not advertised as the missing bound. Likewise, the closed endpoint
+rate law for the integrated deficit computes the receiver's exact meaning;
+it does not reduce $\Delta$. New arithmetic information must improve an
+exponent, establish the critical endpoint bound independently of RH, or control
+a receiver error with constants uniform in its growing horizon.
 
 ---
 

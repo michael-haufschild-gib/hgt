@@ -44,7 +44,11 @@ scalar normalization. `FixedSuccessorsDisappearFromEscapingProfiles.lean` passed
 actual increments, quadratic successor cost and an admission-or-collapse dichotomy.
 `TheCofactorTailCarriesTheForcing.lean` passed with uniform cutoff and VK budgets, and convergence
 of every fixed signed cofactor tail to the complete forcing.
-Seven further modules have paper arguments and Lean sources; their audits are in progress:
+`TheForcingSplitsIntoAPowerAndAnAdmittedRemainder.lean` passed its required dependency build:
+the explicit power subtraction and the global remainder budget are accepted.
+`TheForcingHasFinitePronicMass.lean` also passed: its exact prime-power mass, least-upper-bound
+property and logarithmic derivative identity are accepted.
+Ten further modules have paper arguments and Lean sources; their audits are in progress:
 
 - `TheReceiverIsTheGramTangent`: exact signed Gram distance and determinant, degeneration in
   forcing normalization, unit distance in receiver normalization.
@@ -52,18 +56,26 @@ Seven further modules have paper arguments and Lean sources; their audits are in
   actual receiver energy cost, bounded forcing work and fixed-word collapse in both quantities.
 - `ForcingEscapesAMovingCofactorWindow`: a source-defined growing cutoff
   `floor(log(F_T/E_T))` beyond which the signed tail still carries the complete forcing.
-- `TheForcingSplitsIntoAPowerAndAnAdmittedRemainder`: exact smooth-power subtraction,
-  uniform global remainder norm, and the paid actual cofactor residual.
-- `TheForcingHasFinitePronicMass`: uniform dual mass, exact prime-power mass
-  `-zeta'(1+epsilon)/zeta(1+epsilon)`, and its least-upper-bound property.
+- `BoundedWordErrorsHaveAnAbsoluteHorizonTail`: absolute new-cell forcing and word-work
+  budgets decaying with cutoff, uniformly in every final horizon.
 - `TheRenormalizedCofactorIsAntipodalOnEscape`: the exact signed residual identity and
-  normalized cofactor pairing approaching `-1` on the escaping branch.
+  normalized cofactor pairing approaching `-1` on the escaping branch, and total-variation
+  control of its signed density error under arbitrary bounded localization.
 - `TheActualReceiverHasAnAbsolutePoleTrace`: absolute Mellin trace at `1-epsilon`, its
   extension from the convergent side, and exact equality with the forcing power coefficient.
+- `ThePoleTraceDefinesALinearCofactorRenormalization`: a proved trace submodule, linear
+  boundary functional and cofactor subtraction, with actual-source membership and paid residual.
+- `FixedCofactorsHaveAHarmonicBoundaryTrace`: proved fixed-dilation domain stability and
+  exact harmonic trace budget for finite damped cofactor packets.
+- `EnergyQuantilesRetainDiffuseEscape`: source cell-energy and block budgets, first crossings,
+  monotonicity, uniform overshoot and normalized interval errors.
+- `EnergyQuantilesPreserveTheSignedCofactorPairing`: uniform transport of actual signed
+  renormalized cofactor work to energy coordinates, with explicit error tending to zero on escape.
 
 The foundational README explains these mechanisms and the complete programme. Its theorem
-claims must be reconciled with the finished audits. Umbrella wiring and final no-output-file
-audits remain. Global source exclusion, complete joint extraction, stronger signed covariance,
+claims must be reconciled with the finished audits. The own umbrella and MainTheorems import
+are wired for the six accepted modules; remaining imports and final no-output-file audits remain. Global source exclusion, complete
+joint extraction, stronger signed covariance,
 repairing-module transport, global allocation, multiplicity-sensitive anti-collapse and source
 effectivity remain open. These are substantive parts of the user's goal, not optional follow-ups.
 
@@ -71,10 +83,10 @@ effectivity remain open. These are substantive parts of the user's goal, not opt
 
 The smooth-power asymptotic, first-pronic-moment law, Mellin-cell dilation law and bounded-energy
 Mellin functional are existing THIM results, reused rather than reproposed. The forcing
-subtraction defines an affine residual of the actual source; a bounded linear operator has not
-been constructed.
+subtraction defines an affine residual of the actual source. A linear operator on the absolute
+trace domain is written but awaits audit; its boundedness and domain invariance are not proved.
 
-Two extraction targets remain under investigation: a source energy-quantile carrier with
-explicit boundary error, and a joint state retaining signed cofactor covariances after the
-forcing power is subtracted. Neither generic compactness nor quantile coordinates provide
+The energy-quantile carrier and its signed renormalized cofactor pairing now have quantitative
+paper proofs and Lean sources. A complete joint state must retain additional cofactor and
+successor covariances, rates and moving support. The quantile transport does not provide
 the missing arithmetic exclusion estimate.

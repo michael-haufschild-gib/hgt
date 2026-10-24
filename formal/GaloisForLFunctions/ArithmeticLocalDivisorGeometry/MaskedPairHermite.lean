@@ -42,7 +42,7 @@ theorem evenMonomialHermite_heat_coeff (lam : ℝ) (r j : ℕ) :
     have hfr : ((r - j).factorial : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero _
     rw [mul_assoc, hg, hp, evenHeatMonomialCoeff, if_pos hj,
       show lam / 2 = lam * (1 / 2) by ring, mul_pow]
-    field_simp <;> ring
+    field_simp
   · have hdesc : (2 * r).descFactorial (2 * j) = 0 :=
       Nat.descFactorial_eq_zero_iff_lt.mpr (by omega)
     rw [hdesc, Nat.cast_zero, mul_zero, zero_mul, evenHeatMonomialCoeff, if_neg hj, mul_zero]

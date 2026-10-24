@@ -1454,16 +1454,49 @@ bounds the de Bruijn–Newman heat time by half its square; RH is width zero.
 
 **Suzuki boundary limits.** The literal Suzuki arithmetic source has a positive-shift first
 variation equal to the complete Weil energy on every compact real $C^2$ source, with all prime,
-Gamma and polar terms (RHTower, `Suzuki/`). Composed with compact block positivity and
-finite-jump smoothing, this gives the first actual source inequality for that route on an
-arithmetic family of unbounded support: every nonzero high dyadic critical source, at every
-admissible truncation, has mollifications $g_k$ with
-$\omega Q(g)/4<a_{g_k}(0)-P_\omega(g_k)$ for all small positive shifts $\omega$
-(`RHTower.exists_suzukiCriticalFamily_strict_deficit`). The shift threshold depends on
-$(M,V,S,b,k)$. On paper, the untruncated collared source has the same literal limit equal to
-its complete collared energy: the bounded phase primitive of §3.11 gives
-$\lvert a_g(t)\rvert\le Ke^{-3t/2}$, which pays the infinite prime head that the pointwise
-envelope (exponent $1/2$ only) cannot.
+Gamma and polar terms (RHTower, `Suzuki/`). A source-independent first-variation envelope
+$\mathrm{suzukiFirstVariationEnvelope}(A,E_0,B,\omega)\to 0$ ($\omega\to 0^+$), homogeneous of
+degree $1$ in $(E_0,B)$, controls
+$\lvert(a_f(0)-P_\omega(f))/\omega-\Re\mathcal W_\Lambda(f\star\tilde f)\rvert$ across all compact
+$C^2$ sources with correlation cutoff $A$, energy $a_f(0)\le E_0$, and increment slope
+$a_f(0)-a_f(t)\le Bt$ (`abs_suzukiCriticalSourcePairing_firstVariation_sub_le`). Because
+mollification contracts correlation increments (`autocorr_smooth_sub_le`), all mollifications
+$g_k$ ($k\in\mathbb N$) of `criticalTruncatedTest hV S b` share a single $k$-independent envelope,
+yielding a **common smoothing threshold $k_0$** and a **common shift interval $(0,\omega_0)$**
+uniform across all dyadic blocks $S\subseteq[M,2M]$, all nonzero patterns $b$, all $k\ge k_0$,
+any bounded scale horizon $[M_0,M_{\max}]$, and any lacunary polynomial-width multi-window family
+(`exists_common_suzuki_shift_dyadic_blocks`, `exists_common_suzuki_shift_bounded_block_horizon`,
+`exists_common_suzuki_shift_lacunary_windows`). The literal unsubtracted polar integral grows like
+$e^{(1/2-\omega)s}$ over $A_V\asymp 2\log V$, whereas the untruncated source
+`criticalFactorialSource` has correlation decay $\lvert a_g(\log r)\rvert\le K r^{-3/2}$ via the
+bounded phase primitive (`abs_criticalFactorialSource_correlation_le_rpow`). Without any
+archimedean scale subsidy, common-shift Suzuki deficits hold on small-aperture receiver tests
+($[-3/10,3/10]$ and odd $[-181/500,181/500]$ past $(\log 2)/2$), and small-shift Suzuki deficit
+floors on odd receiver tests transfer directly to $\mathrm{zetaZeroWidth}\le\sigma$ and
+`RiemannHypothesis` (`exists_common_suzuki_shift_small_aperture_receiver`,
+`exists_common_suzuki_shift_odd_receiver_past_two`, `zetaZeroWidth_le_of_graded_odd_suzuki_deficit`,
+`riemannHypothesis_iff_suzuki_small_shift_non_overshoot`).
+
+**Moving sources and apertures.** First variation is not restricted to a smooth,
+fixed source. On a common compact window, $f_j\to g$ in $L^2$ and
+$\omega_j\to0^+$ imply
+$$
+W_{\mathrm{ext}}(g)\le\liminf_j
+\frac{a_{f_j}(0)-P_{\omega_j}(f_j)}{\omega_j},
+$$
+including infinite Lévy energy; the constant source sequence attains the limit.
+For moving or infinite apertures the same lower bound holds under a common
+correlation bound $|a_{f_j}(t)|\le K e^{-\beta t}$, $\beta>1/2$, without coupling
+aperture growth to the shift. Alternatively, arbitrary compact approximants to a
+supercritically decaying target are admitted when
+$e^{2A_j}\|f_j-g\|_2\to0$, where $A_j$ is their correlation cutoff. These are
+transport theorems, not new signs: a positive inherited deficit still requires
+a lower bound for $W_{\mathrm{ext}}(g)$. See
+[SuzukiCriticalMovingWindowDeficit](../RHTower/Suzuki/SuzukiCriticalMovingWindowDeficit.lean)
+and [SuzukiCriticalMovingAperture](../RHTower/Suzuki/SuzukiCriticalMovingAperture.lean).
+The distinction matters for the factorial family: its $r^{-3/2}$ correlation
+decay supplies an admissible target, but a bound for each source is not a
+common decay constant over every growing family.
 
 **Consumers.** The linear-window negativity of the isolated critical prime channel (§3.11) is
 the prime-side input of the signed prime scheduling route FU; the window, lacunary and dense
@@ -1602,6 +1635,22 @@ theory's load-bearing walls.
     `exists_truncatedRiemannKernelReal_weilFullFunctional_singleIndexPerturbation_neg`,
     `positiveOnNonposCone_iff_riemannHypothesis_and_vonMangoldt_le`,
     `weilPositiveFull_of_sourceIdentified_iff_additional_estimates`).
+16. **Universal Suzuki first-variation envelope, block-uniform common shifts, and subsidy-free
+    receiver transfer.** `suzukiFirstVariationEnvelope A E₀ B ω` vanishes as $\omega\to 0^+$ and
+    uniformly bounds $\lvert(a_f(0)-P_\omega(f))/\omega-\Re\mathcal W_\Lambda(f\star\tilde f)\rvert$
+    for every compact $C^2$ real source of correlation cutoff $A$, energy $\le E_0$, and increment
+    slope $\le B$; on `criticalTruncatedTest hV S b` it yields a common smoothing index $k_0$ and a
+    common shift interval $(0,\omega_0)$ independent of the pattern $b$, the block $S\subseteq[M,2M]$,
+    and $k\ge k_0$ (as well as across bounded horizons $[M_0,M_{\max}]$ and lacunary polynomial-width
+    multi-windows); on untruncated `criticalFactorialSource` the logarithmic correlation decays as
+    $O(r^{-3/2})$; and without any archimedean scale subsidy, common shifts hold on $[-3/10,3/10]$
+    and odd $[-181/500,181/500]$ while graded odd small-shift Suzuki floors certify
+    $\mathrm{zetaZeroWidth}\le\sigma$ and characterize `RiemannHypothesis`
+    (`abs_suzukiCriticalSourcePairing_firstVariation_sub_le`,
+    `exists_common_suzuki_shift_dyadic_blocks`, `exists_common_suzuki_shift_lacunary_windows`,
+    `abs_criticalFactorialSource_correlation_le_rpow`,
+    `zetaZeroWidth_le_of_graded_odd_suzuki_deficit`,
+    `riemannHypothesis_iff_suzuki_small_shift_non_overshoot`).
 
 ---
 
@@ -1642,7 +1691,7 @@ theory's load-bearing walls.
 | Fixed-$V$ window positivity on $g^V$ separates tempered weights from $\zeta(s-a)\zeta(s+a)$ | At fixed $V$, only primes $r\le\lfloor2V\rfloor$ enter $g^V$, so *every* weight $w$ is positive for $M\ge M_0(w,V)$ (`exists_fixedV_polynomial_window_pos_for_any_weight`). What separates tempered weights from $\Lambda_a$ on the critical family is uniformity in $V$, while wide shift pairs $g+g(\cdot-L)$ refute $\Lambda_a$ unconditionally (`exists_wide_shiftPair_shiftedPairVonMangoldt_neg`). |
 | Compact support of arbitrary length is the receiver's regime | The truncated window positivity holds at every support length with constants uniform in $V$, yet its margin is still the archimedean $\log M$. Long support removes the short-support objection, not the subsidy. |
 | Coupled low–high positivity settles the low scales | It needs every low mode tied to a high mode with $\lvert\gamma_n\rvert\ge\gamma_0$, or a standalone low-window certificate; the isolated low window is not proved positive. |
-| A strict Suzuki deficit on the critical family is a sign of the Suzuki form | It is the archimedean-paid family positivity read through the literal source tangent; the shift threshold depends on the source and no common shift is known. |
+| A strict Suzuki deficit on the critical family is a sign of the Suzuki form | Even with a shift interval $(0,\omega_0)$ uniform across all patterns $b$, all blocks $S\subseteq[M,2M]$, and all $k\ge k_0$ (`exists_common_suzuki_shift_dyadic_blocks`), the critical-family deficit is paid by the $\log M$ archimedean gain while the literal unsubtracted polar window grows as $A_V\asymp 2\log V$; genuine zero-width progress requires a graded odd receiver Suzuki floor without archimedean subsidy (`zetaZeroWidth_le_of_graded_odd_suzuki_deficit`). |
 | Window or high-height positivity is critical-scale progress | Windows through $3/10$ (all profiles) and $181/500$ (odd) are paid by sign-changing gauges on the archimedean conductance and one prime atom, heights beyond the horizon by the Gamma factor alone; neither sees the critical scale. |
 | A window through $3/10$ is a theorem about $\zeta$ | No prime power enters an aperture-$3/10$ window ($\log2>3/5$), so every arithmetic weight is Weil-positive there. |
 | A sign is required of the complete form | A floor losing less than an exponential in the aperture already gives RH: $\hat Z(F)\ge-C\int F^2$ on all odd $C^2_c$ tests is RH, and $-C_\sigma e^{2\sigma r}$ is the strip $\frac12+\sigma$. The demand is an exponent, not a sign. |
@@ -1766,6 +1815,10 @@ Built and reusable:
   charge sign classification and cumulative-charge reversal, and the `TemperedPrimeWeight w C`
   transfer on compact critical sources separating uniform-in-$V$ ($\exists M_0,\forall V$) from
   fixed-$V$ ($\forall V,\exists M_0$) positivity.
+- *Universal Suzuki first-variation envelope and common-shift calculus.* Source-independent Beta-tangent
+  remainder `suzukiUniversalPrimaryRemainder`, degree-$1$ homogeneous envelope
+  `suzukiFirstVariationEnvelope`, $k$-uniform mollified correlation envelopes via
+  `autocorr_smooth_sub_le`, and subsidy-free graded receiver transfer from small-shift Suzuki deficits.
 
 To be built:
 
@@ -1775,7 +1828,7 @@ To be built:
 
 ---
 
-## 7. Open problems
+## 7. Research boundaries and open questions
 
 ### 7.1 The isolated low window
 
@@ -1815,7 +1868,7 @@ mean-square counterpart.
 
 ### 7.4 Quantitative detection
 
-By §3.14 (`QuantitativeGridTentDetection`), nonnegativity of the real and imaginary grid patterns at a
+The grid-tent detection theorem of §3.14 gives a starting point: nonnegativity of the real and imaginary grid patterns at a
 single finite scale $n$ and radius $R$ certifies the explicit lower floor
 $\Re\mathcal W_\zeta(f,f)\ge-2C_{\mathrm{grid}}(R,M_g,K_g,L)\,d_{n+1}$, and eventual grid-tent
 nonnegativity on $[-R,R]$ ($R\ge e^6$) unconditionally excludes every zero of depth $\ge 1/R$ below
@@ -1830,7 +1883,7 @@ doubly-exponential log-log horizon $\exp(\exp(\Omega(R)))$ unconditionally (curr
 
 ### 7.5 Beyond the factorial family
 
-By §3.13 (`AdmissibleStencilsAndCellKernelsBeyondDyadic`), every harmonic weight sequence in
+The admissible-weight calculus of §3.13 already covers every harmonic weight sequence in
 `AdmissibleHarmonicWeight w C_w τ` ($w_0=0$, $w_1=1$, $\lvert w_k\rvert\le C_w/k^2$,
 $\sum_{k\ge2}\lvert w_k\rvert\le\tau<1$) — including all $q$-adic $3$-scale sign-flip stencils on
 $\{1,q,q^2\}$, all $q$-adic $3$-scale drift-free stencils with vanishing linear and quadratic
@@ -1858,127 +1911,57 @@ $[N,N^{1+\delta}]$, or on all scales at once? Beyond $\sqrt M$ the resonant cong
 leave the affine regime and the limit comparison must be replaced by an argument that sees the
 progressions themselves.
 
-### 7.7 Selectivity
+### 7.7 Selectivity beyond the calibration families
 
-By §3.13 ([WideWindowSelectivityAndBeurlingInfrastructure](WideWindowSelectivityAndBeurlingInfrastructure.lean)),
-both directions of the selectivity question are resolved unconditionally:
-1. *Wide-window prime-driven refutation of $\zeta(s-a)\zeta(s+a)$:* For every real shift $a\ne0$,
-   every nonnegative bump $g\in C^2_c([-1/4,1/4])$ with $\int g\ne0$, and every horizon $L_0\ge0$,
-   there exists a wide window shift $L>\max(L_0,\log2)$ (at which only prime powers in
-   $[e^{L-1/2},e^{L+1/2}]$ enter the window sum) where
-   $\mathrm{windowSum}(g,\Lambda_a,L)>\mathrm{shiftMajorant}(g,2c_{\mathrm{pole}}+2c_{\mathrm{arch}},L)$
-   and $\Re\mathcal W_{\Lambda_a}(g+g(\cdot-L))<0$
-   (`exists_wide_windowSum_shiftedPairVonMangoldt_gt_shiftMajorant`,
-   `exists_wide_shiftPair_shiftedPairVonMangoldt_neg`,
-   `exists_wide_shiftPair_narrowG_shiftedPairVonMangoldt_neg`). On the critical prime channel, the
-   dilation-ring majorant diverges for $\lvert a\rvert\ge1/2$
-   (`not_summable_shiftedPairWindowRingMajorant_of_half_le`), and while $A_a(2)=-2\log2(2^a+2^{-a})<0$
-   remains the unique negative harmonic (`shiftedPairHarmonicCharge_sign`), for $\lvert a\rvert\ge2$
-   the odd prime $m=3$ flips the cubic cumulative charge $\sum_{m=1}^N A_a(m)/m^3>0$ already at
-   $N=3,4$ (`shiftedPairCumulativeCharge_three_pos_of_two_le`), for $\lvert a\rvert\ge1$ it is
-   positive for all $N\ge5$ (`shiftedPairCumulativeCharge_pos_of_one_le`), and the cubic and
-   singleton prime series diverge for $\lvert a\rvert\ge2$ and $\lvert a\rvert\ge3$
-   (`not_summable_shiftedPairHarmonicCharge_div_cube_of_two_le`,
-   `not_summable_shiftedPairSingletonPrimeSeries_of_three_le`).
-2. *Tempered Beurling infrastructure invariance and quantifier separation:* Every arithmetic weight
-   $w:\mathbb N\to\mathbb R$ satisfying `TemperedPrimeWeight w C` ($\lvert w(r)\rvert\le C\Lambda(r)$
-   for $r\ge2$) inherits the collared/truncated dilation inequality, the Montgomery–Vaughan endpoint
-   bound, the admissible-source law, and uniform-in-$V$ polynomial scale-window Weil positivity on
-   `criticalTruncatedTest hVpos S b` (`abs_weightedTruncatedPrimeEnergy_le_of_window`,
-   `exists_temperedWeight_polynomial_window_weilFullFunctional_pos`). In particular,
-   $(-1)^{\Omega(r)}\Lambda(r)$, $\Lambda\cdot\mathbf 1_{r\ne4}$, and
-   $\Lambda\cdot\mathbf 1_{r\text{ prime}}$ all satisfy the exact same uniform-in-$V$ polynomial-window
-   positivity on the critical family as $\Lambda$, whereas Beurling generalized-prime perturbations of
-   arbitrarily small reciprocal mass $<\varepsilon$ create off-line zeros $\beta+i\gamma$ and node-$4$
-   or prime-square deletion is refuted only by node-criticality tests with exact deletion price
-   $-(\log2)/2$ (`beurling_offLine_zero_system_vs_critical_infrastructure`). At any fixed truncation
-   $V$, every weight $w$ whatsoever is eventually positive for $M\ge M_0(w,V)$
-   (`exists_fixedV_polynomial_window_pos_for_any_weight`), so uniformity in $V$ is the exact divider
-   between tempered and non-tempered weights on the critical family.
+Wide shift pairs already refute every nonzero shifted zeta pair, and the
+critical-family estimates already extend to every tempered prime weight
+(§§3.13, 4). These are established boundaries, not missing tests. The open
+question is which source mechanism distinguishes the literal von Mangoldt
+weight from tempered perturbations while controlling the complete form at
+arbitrary aperture. A candidate must retain the prime-power information that
+high-scale archimedean domination discards. Node-deletion and narrow-pair tests
+provide exact diagnostics; passing those diagnostics alone supplies no sign.
 
-### 7.8 The spectral realisation
+### 7.8 A positive spectral realisation
 
-In which Schatten or deficiency class, on which Hilbert space, do the primes modify the
-archimedean operator so that the spectral measure is the critical-zero measure, and under what
-condition do the finite-aperture ground transforms of the Connes–Consani–Moscovici operators
-converge to $\Xi$? Known constraints: the prime part is not trace class, finite rank or finite
-deficiency, and is as large as the unbounded $S(T)$; unitary producers have unit-modulus Euler
-factors; the finite-aperture logarithmic Dirac operator is real-rooted in its η-branch and
-reaches $\Xi$ only under an unproved premise; the archimedean Sonin-trace domination has an exact
-decomposition $-W=\operatorname{Tr}\vartheta S+\operatorname{Tr}\vartheta G$ with the sign of
-$\Re\operatorname{Tr}\vartheta G$ open. The candidate source class is the complete critical family
-on blocks, windows, truncations and lacunary unions.
+Which arithmetic construction produces a positive realisation of the complete
+form, with a source space and topology strong enough for receiver transfer?
+Self-adjoint and indefinite realisations already exist. The prime perturbation
+is not disposed of by declaring it finite rank, trace class, or finite
+deficiency. Any proposed limiting ground transform must prove its convergence
+to the completed zeta function and the sign of the remaining prime contribution.
+The spectral representation is useful only if those facts follow from
+independent arithmetic estimates.
 
-### 7.9 Source selection in the full Weil cone
+### 7.9 From identification to sign
 
-By [SourceSelectionInTheFullWeilCone](SourceSelectionInTheFullWeilCone.lean), both questions of source
-selection and sign certification in the full Weil cone are resolved unconditionally:
-1. *Admissible sources exposing every single-index perturbation and one-sided cone selection:*
-   - **Narrow pair tests `pairTest m σ` and real seeds `realPairTest m σ` ($m\ge2$):** Because
-     `narrowBump m` has radius $1/(4(m+1))<\frac12\min_{k\ne m}\lvert\log k-\log m\rvert$, the
-     pair test $h_m(u)+\sigma h_m(u-\log m)$ has $\ell$-vector supported exclusively at index $m$ with
-     weight $2\sigma(\int h_m^2)/\sqrt m>0$ (`re_weilFullFunctional_pairTest_eq`). Perturbing any weight
-     $w:\mathbb N\to\mathbb R$ to `singleIndexPerturbation w m δ` shifts the real Weil functional on
-     `pairTest k σ` by $-\delta\cdot 2\sigma(\int h_m^2)/\sqrt m$ at $k=m$ (or $-\delta\sigma/\sqrt m$
-     when normalized by `massOf` for $\sigma^2=1$) and by $0$ at all $k\ne m$
-     (`re_weilFullFunctional_singleIndexPerturbation_pairTest`). Choosing $\sigma=\operatorname{sgn}\delta$
-     strictly lowers the Weil functional by $\lvert\delta\rvert\cdot 2(\int h_m^2)/\sqrt m>0$ for every
-     $\delta\ne0$ (`exists_pairTest_strict_drop_of_singleIndexPerturbation`). Two weights $w_1,w_2$
-     agree on all $n\ge2$ iff their full Weil functionals agree on `pairTest m 1` for all $m\ge2$, with
-     explicit inversion recovering $w_1(m)$ (`forall_two_le_eq_iff_forall_re_weilFullFunctional_pairTest_eq`),
-     and `realPairTest m σ` transfers this coordinate evaluation to single-scale factorial grid tent
-     patterns `gridTentPattern` within $C_{\mathrm{grid}}(\log m+1,M_g,K_g,L)\,d_{n+1}$
-     (`realPairTest_weilFullFunctional_and_gridTent_approximation`).
-   - **Truncated Riemann kernels `truncatedRiemannKernelReal L` and unconditional refutation of
-     $\Lambda+\delta\mathbf 1_{n=m}$:** The exposing functional
-     $\ell(v)=\mathrm{atomPairing}(v,\mathrm{riemannKernelAutocorr})$ evaluates on
-     `singleIndexDelta m δ` to $(\delta/\sqrt m)(K(\log m)+K(-\log m))$, which has the exact sign of
-     $\delta$ (`atomPairing_singleIndexDelta_riemannKernelAutocorr_sign`). For every $m\ge2$ and
-     $\delta>0$, **unconditionally** (without RH), there exists $L_0$ such that for all $L\ge L_0$,
-     `truncatedRiemannKernelReal L` makes the full Weil functional of
-     $\Lambda+\delta\mathbf 1_{n=m}$ at most $-\ell/3<0$
-     (`exists_truncatedRiemannKernelReal_weilFullFunctional_singleIndexPerturbation_neg`). For every
-     $m\ge2$ and $\delta\ne0$ of either sign, $\Lambda+\delta\mathbf 1_{n=m}$ is unconditionally
-     outside the full Weil cone (`not_weilPositiveFull_vonMangoldtSingleIndexPerturbation_of_ne_zero`,
-     `weilPositiveFull_vonMangoldtSingleIndexPerturbation_iff`).
-   - **Unconditional one-sided cone selection without summability premises:** Combining M. Riesz
-     one-sided feasibility with unconditional full-cone uniqueness removes the summability hypotheses
-     from the one-sided criteria: for *every* $U,L:\mathbb N\to\mathbb R$,
-     $\mathrm{PositiveOnNonposCone}(U)\iff\mathrm{RH}\wedge\forall n\ge2,\Lambda(n)\le U(n)$ and
-     $\mathrm{PositiveOnNonnegCone}(L)\iff\mathrm{RH}\wedge\forall n\ge2,L(n)\le\Lambda(n)$, so
-     $\mathrm{WeilPositiveFull}(\mathrm{lam})\iff\mathrm{PositiveOnNonposCone}(\mathrm{lam})\wedge\mathrm{PositiveOnNonnegCone}(\mathrm{lam})$
-     (`positiveOnNonposCone_iff_riemannHypothesis_and_vonMangoldt_le`,
-     `positiveOnNonnegCone_iff_riemannHypothesis_and_le_vonMangoldt`,
-     `weilPositiveFull_iff_positiveOnNonposCone_and_positiveOnNonnegCone`).
-2. *Additional estimates proving the sign for the identified source:* Identifying a weight `lam` with
-   $\Lambda$ via `SourceIdentifiedWithVonMangoldt lam` (matching $\Lambda$ on `pairTest m 1` for all
-   $m\ge2$, equivalent to $\forall n\ge2,\mathrm{lam}(n)=\Lambda(n)$) is unconditionally satisfied by
-   $\Lambda$ and does not by itself prove `WeilPositiveFull lam`
-   (`sourceIdentifiedWithVonMangoldt_vonMangoldt_and_membership_iff`). For any source-identified `lam`,
-   full-cone positivity `WeilPositiveFull lam` is unconditionally equivalent to each of:
-   (i) `PositiveOnNonposCone lam` (where the prime sum is already nonnegative),
-   (ii) `PositiveOnNonnegCone lam`,
-   (iii) the prime-power deletion symbol slack bound
-         $\forall m\text{ prime power},\ \mathrm{ZeroPoleBlindSymbolSlackOn}(\mathrm{primePowerNodes}\setminus\{m\},\mathrm{lam}(m)/\sqrt m)$,
-   (iv) a constant-in-aperture floor $-C\int F^2$ on odd `gridTentPattern`s,
-   (v) a subexponential-in-aperture floor $-C_\sigma e^{2\sigma r}\int F^2$ ($\forall\sigma>0$) on odd
-       `gridTentPattern`s,
-   (vi) a subexponential-in-aperture floor on `fullZeroForm F` for all odd $F\in C^2_c([-r,r])$, and
-   (vii) `RiemannHypothesis` (`weilPositiveFull_of_sourceIdentified_iff_additional_estimates`). At a
-   graded level, an $(\alpha,\beta)$-norm-controlled subfamily transfer with rate-$2\sigma$ floor for
-   `lam` certifies $\mathrm{zetaZeroWidth}\le\sigma+\beta$, and eventual nonnegativity of `lam` on
-   `smoothGridTentDetector` at a single fixed aperture $R\ge e^6$ certifies `ZetaWindowPositive R` and
-   excludes all zeros of depth $\ge 1/R$ below $\mathrm{zetaClusterHorizonHeight}(A_0,R)$
-   (`graded_and_finite_aperture_sign_of_sourceIdentified`).
+Narrow pair tests recover every coefficient $w(m)$, and full-cone uniqueness
+excludes every nonzero single-index perturbation of $\Lambda$. One-sided cone
+selection is also characterised exactly (§4): its assertion already contains
+RH. Thus identifying the actual source, separating perturbations, and deriving
+equivalent sign criteria are available tools.
 
-### 7.10 A common shift for the Suzuki deficit
+The remaining problem is to prove one of the additional estimates for that
+identified source: an aperture-uniform odd-test floor, its subexponential
+version, or the equivalent prime-power deletion slack. A proof must use more
+than the fact that the source equals $\Lambda$. These formulations locate the
+arithmetic input; none supplies it.
 
-The literal Suzuki source has a strict small-shift deficit on every smoothed high critical
-source, with a threshold depending on the source. Is there a shift interval uniform in the
-truncation $V$, or in the pattern on a block? A uniform shift on an RH-complete family would be
-the Suzuki-side form of the receiver transfer of §7.2; on the critical family alone it would
-still be paid by the archimedean gain, and the question is whether the deficit survives without
-it.
+### 7.10 Suzuki transport at the critical boundary
+
+Common shifts on bounded-envelope families, joint $L^2$ limits on a fixed
+window, and moving-aperture transport under supercritical correlation decay
+are established mechanisms (§3.15). Their constants and hypotheses specify
+what may vary together. In particular, a shrinking threshold from the compact
+polar majorant is not an impossibility theorem for every truncation scheme.
+
+The research questions are whether critical-decay families can be controlled
+without the absolute $\beta>1/2$ margin, and whether the literal source gives a
+graded odd-receiver deficit with exponent below the elementary rate $1/2$.
+The latter would improve the zero-width bound. A familywise common shift,
+without that receiver estimate, does not. Any extension must preserve the
+signed prime–polar cancellation while allowing the source, shift and aperture
+to move; exchanging their limits without a common bound is precisely the trap.
 
 ---
 

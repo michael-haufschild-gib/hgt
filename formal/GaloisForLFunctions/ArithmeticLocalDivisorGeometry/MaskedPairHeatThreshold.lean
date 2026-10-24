@@ -36,7 +36,7 @@ theorem maskedPairHeatCone_nonempty (m : ℕ) :
   have he : (8 * m + 5 : ℝ) ≠ 0 := by positivity
   have h := coeffNonneg_centralMaskedPair_heat_of_upper (by norm_num : (0 : ℝ) < 1) m
     (show 1 ≤ (8 * m + 5 : ℝ) * (1 / (8 * m + 5 : ℝ)) by rw [mul_one_div_cancel he])
-  simpa only [one_mul] using h
+  simpa only [Set.mem_setOf_eq, one_mul] using h
 
 /-- Every admissible heat time pays the lower inverse-multiplicity cost. -/
 theorem le_heat_time_of_centralMaskedPair_cone (m : ℕ) {t : ℝ}
@@ -143,6 +143,7 @@ theorem maskedHeatIndex_middle_at_threshold (m : ℕ) :
   have hab := (maskedPairHeatThreshold_lower m).trans (maskedPairHeatThreshold_upper m)
   obtain ⟨r, ⟨hrlo, hrhi⟩, hrzero⟩ := intermediate_value_Icc hab hcont.continuousOn
     ⟨(maskedHeatIndex_middle_neg_at_lower m).le, hupper.le⟩
+  change maskedHeatIndex m r (m / 2) = 0 at hrzero
   have hrpos : 0 < r := (by positivity : 0 < 1 / (8 * m + 10 : ℝ)).trans_le hrlo
   have hrlo' : 1 ≤ (8 * m + 10 : ℝ) * r := by
     simpa only [mul_comm] using (div_le_iff₀ hd).mp hrlo
@@ -250,7 +251,7 @@ private theorem tendsto_heat_ratio {c : ℝ} (hc : 0 < c) :
   refine (tendsto_natCast_div_add_atTop (c / 8)).congr fun m => ?_
   have hden : (m : ℝ) + c / 8 ≠ 0 := by positivity
   have hden' : (8 * m : ℝ) + c ≠ 0 := by positivity
-  field_simp <;> ring
+  field_simp
 
 /-- The full all-order heat threshold has inverse multiplicity scale with leading constant
 one eighth, in contrast to the inverse-square scale of the highest adverse coefficient. -/
@@ -262,11 +263,11 @@ theorem tendsto_maskedPairHeatThreshold :
   · intro m
     have h := mul_le_mul_of_nonneg_left (maskedPairHeatThreshold_lower m)
       (show 0 ≤ (8 * m : ℝ) by positivity)
-    simpa only [one_div, div_eq_mul_inv, mul_assoc] using h
+    simpa only [one_div, div_eq_mul_inv, one_mul, mul_assoc] using h
   · intro m
     have h := mul_le_mul_of_nonneg_left (maskedPairHeatThreshold_upper m)
       (show 0 ≤ (8 * m : ℝ) by positivity)
-    simpa only [one_div, div_eq_mul_inv, mul_assoc] using h
+    simpa only [one_div, div_eq_mul_inv, one_mul, mul_assoc] using h
 
 theorem coeffNonneg_centralMaskedPair_of_nonpos {a : ℝ} (ha : a ≤ 0) (m : ℕ) :
     CoeffNonneg (centralMaskedPair a m) := by
@@ -304,8 +305,3 @@ theorem centralMaskedPair_heat_cone_classification (a s : ℝ) (m : ℕ) :
       exact ⟨hs, coeffNonneg_forwardPolyHeat (coeffNonneg_centralMaskedPair_of_nonpos (le_of_not_gt ha) m) hs⟩
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
-
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.maskedPairHeatThreshold_eq
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.centralMaskedPair_heat_cone_classification
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.centralMaskedPair_heat_even_contact_iff
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.tendsto_maskedPairHeatThreshold

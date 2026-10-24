@@ -99,4 +99,73 @@ theorem admits_or_renormalizedCofactorWork_is_antipodal (ε : SubcriticalDamping
     | zero => omega
     | succ T => exact normalized_renormalizedCofactorWork_error_le ε T
 
+/-- Total variation of the signed cofactor density's failure to equal negative receiver energy. -/
+def renormalizedCofactorVariation (ε : ℝ) (T : ℕ) : ℝ :=
+  ∑ n ∈ Icc 1 T,
+    |pmPowerDampedCenteredDivisorPrefix ε n ^ 2 +
+      pmPowerDampedCenteredDivisorPrefix ε n * renormalizedCofactor ε n| /
+        ((n : ℝ) * ((n : ℝ) + 1))
+
+theorem renormalizedCofactorVariation_nonneg (ε : ℝ) (T : ℕ) :
+    0 ≤ renormalizedCofactorVariation ε T :=
+  sum_nonneg fun n _ => div_nonneg (abs_nonneg _) (by positivity)
+
+/-- Absolute localization of the signed defect retains exactly the receiver-remainder product. -/
+theorem renormalizedCofactorVariation_eq (ε : SubcriticalDamping) (T : ℕ) :
+    renormalizedCofactorVariation ε T =
+      ∑ n ∈ Icc 1 T, |pmPowerDampedCenteredDivisorPrefix ε n| * |forcingRemainder ε n| /
+        ((n : ℝ) * ((n : ℝ) + 1)) := by
+  refine sum_congr rfl fun n hn => ?_
+  have hid : pmPowerDampedCenteredDivisorPrefix ε n + renormalizedCofactor ε n =
+      forcingRemainder ε n := by
+    cases n with
+    | zero => simp only [mem_Icc] at hn; omega
+    | succ n => exact receiver_add_renormalizedCofactor_eq ε n
+  rw [← hid, ← abs_mul]
+  congr 2
+  ring
+
+/-- One paid remainder budget controls the sum of absolute defects over every source cell. -/
+theorem renormalizedCofactorVariation_le (ε : SubcriticalDamping) (T : ℕ) :
+    renormalizedCofactorVariation ε T ≤
+      Real.sqrt (dampedMobiusEnergy ε T) * forcingRemainderBudget ε := by
+  have hnorm : ∀ v : ℕ → ℝ, pronicNorm T (fun n => |v n|) = pronicNorm T v := by
+    intro v
+    have hsq : pronicNorm T (fun n => |v n|) ^ 2 = pronicNorm T v ^ 2 := by
+      simp only [pronicNorm_sq, sq_abs]
+    nlinarith [pronicNorm_nonneg T (fun n => |v n|), pronicNorm_nonneg T v]
+  rw [renormalizedCofactorVariation_eq]
+  have hcs := sum_mul_div_le_pronicNorm T
+    (fun n => |pmPowerDampedCenteredDivisorPrefix (ε : ℝ) n|)
+    (fun n => |forcingRemainder ε n|)
+  rw [hnorm, hnorm, pronicNorm_centeredPrefix] at hcs
+  exact hcs.trans (mul_le_mul_of_nonneg_left (pronicNorm_forcingRemainder_le ε T)
+    (Real.sqrt_nonneg _))
+
+/-- Total variation has the same sharp squared budget as the unlocalized signed pairing. -/
+theorem renormalizedCofactorVariation_sq_le (ε : SubcriticalDamping) (T : ℕ) :
+    renormalizedCofactorVariation ε T ^ 2 ≤
+      dampedMobiusEnergy ε T * forcingRemainderBudget ε ^ 2 := by
+  have h := pow_le_pow_left₀ (renormalizedCofactorVariation_nonneg ε T)
+    (renormalizedCofactorVariation_le ε T) 2
+  simpa only [mul_pow, Real.sq_sqrt (dampedMobiusEnergy_nonneg ε T)] using h
+
+/-- Absolute signed-density error is negligible in the receiver normalization on escape. -/
+theorem admits_or_renormalizedCofactorVariation_vanishes (ε : SubcriticalDamping) :
+    Admits dampedMobiusEnergy ε ∨
+      Tendsto (fun T => (renormalizedCofactorVariation ε (T + 1) /
+        dampedMobiusEnergy ε (T + 1)) ^ 2) atTop (𝓝 0) := by
+  rcases admits_or_tendsto_atTop (ε : ℝ) with h | hE
+  · exact Or.inl h
+  · refine Or.inr (squeeze_zero (fun T => sq_nonneg _) (fun T => ?_)
+      (tendsto_const_nhds.div_atTop (hE.comp (tendsto_add_atTop_nat 1))))
+    have hpos := receiverEnergy_succ_pos ε T
+    rw [div_pow]
+    calc
+      _ ≤ (dampedMobiusEnergy ε (T + 1) * forcingRemainderBudget ε ^ 2) /
+          dampedMobiusEnergy ε (T + 1) ^ 2 :=
+        div_le_div_of_nonneg_right (renormalizedCofactorVariation_sq_le ε (T + 1)) (sq_nonneg _)
+      _ = forcingRemainderBudget ε ^ 2 / dampedMobiusEnergy ε (T + 1) := by
+        field_simp [hpos.ne']
+
 end GaloisForLFunctions.ArithmeticDefectRigidity

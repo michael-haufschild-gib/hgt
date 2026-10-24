@@ -110,8 +110,3 @@ theorem coeffNonneg_geometricRepair_odd_iff (u δ : ℝ) (m : ℕ) :
 end
 
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry
-
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.coeffNonneg_geometricRepair_even_iff
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.coeffNonneg_geometricRepair_odd_iff
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.coeffNonneg_binomialRepair_even_iff
-#print axioms GaloisForLFunctions.ArithmeticLocalDivisorGeometry.coeffNonneg_binomialRepair_odd_iff

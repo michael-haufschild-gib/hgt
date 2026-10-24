@@ -41,6 +41,8 @@ uniform in `T`, and why the order of the horizon and damping limits matters.
 | [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md), [Square-Root Threshold](../SquareRootThreshold/README.md) | Source approximation and zero-detection coordinates for estimates that reach a continuous receiver. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Seeks source-derived arithmetic effectivity that generic observer and dissipation identities do not provide. |
 | [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Treats the even flip as an orientation and reads it exactly at the prime $2$ through the first pronic moment. Restates the parity barrier for readings, and proves that the critical Wiener kernels form a monoid whose orbits the paid class is a union of. |
+| [Signed Successor Arithmetic](../SignedSuccessorArithmetic/README.md) | Keeps a Möbius orientation in successor and coprime-factor observations; tests whether their inverse constants survive a growing horizon. |
+| [Arithmetic Defect Rigidity](../ArithmeticDefectRigidity/README.md) | Reads the same pronic receiver through cofactor energy and its signed derivative, and studies what an unbounded normalized receiver can escape from. |
 | [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Meets the sieve parity barrier at close prime pairs beyond the Montgomery–Vaughan threshold, where upper-bound sieves lose the signed correlation by a factor two. |
 
 The basic mechanisms are complementary-divisor normal forms, Dirichlet polarization with its
@@ -1840,8 +1842,10 @@ the structure they use.
   classification, least successor-seed resonance, and trans-horizon separation of parity-isometric
   rows (`selectivity_class_III_bezout_successor_selective_laws`).
 
-Classes I and II fail the Beurling and the parity tests by construction. Class III is where the
-additive successor structure of $\mathbb N$ enters; a bound on the actual receiver has to use it.
+Classes I and II fail the Beurling and parity tests by construction. Class III is
+where these mechanisms retain the additive successor structure of $\mathbb N$.
+This identifies a candidate source of new information, not a theorem that every
+possible proof must use this particular classification.
 
 ### 3.22 Bridges
 
@@ -2127,7 +2131,7 @@ To be built:
 
 ---
 
-## 7. Open problems
+## 7. Research boundaries and open questions
 
 ### 7.1 The actual Möbius receiver at one fixed damping below one half
 
@@ -2143,8 +2147,19 @@ on the signed interior energy at one fixed $\varepsilon<\tfrac12$, with no zero-
 hypothesis, and then cofinally as $\varepsilon\downarrow0$. In arithmetic terms a power saving
 $\lvert\sum_{e\le N}(\mu\star\Lambda)(e)\rvert\le CN^\beta$ at one fixed $\beta<1$ pays Möbius and
 Liouville at every $\varepsilon>\beta/2$ (§3.20); Vinogradov–Korobov gives a subpower saving only.
-Such a bound must read signs (Class II laws cannot), must fail for Beurling systems (Class I laws
-cannot), and therefore has to use the successor structure of $\mathbb N$ (Class III).
+Such a bound must retain information lost by sign-blind observations and by the
+Beurling-universal identities. Within the three classes above, the successor
+structure is the available source of that information; its quantitative control
+of the mixed entries remains the problem.
+
+A complementary coordinate is the cofactor energy from
+[Arithmetic Defect Rigidity](../ArithmeticDefectRigidity/README.md): its Gram
+geometry gives the exact identity $E=F+G-2Q$, with forcing energy $F$,
+cofactor energy $G$ and signed forcing–cofactor pairing $Q$. That dictionary
+provides a way to study failure by normalizing divergent energy. It does not
+turn finite forcing mass, finite observations, or compactness in a weaker norm
+into admission. A useful new estimate must control the signed pairing or the
+whole pronic energy, including mass escaping to large indices.
 
 ### 7.2 Small horizons
 

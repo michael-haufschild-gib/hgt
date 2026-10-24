@@ -55,8 +55,8 @@ theorem receiverEnergy_shift_le (ε : SubcriticalDamping) (n k : ℕ) :
   | zero => simp only [Nat.add_zero, Nat.cast_zero, add_zero, le_refl]
   | succ k ih =>
     have h := receiverEnergy_succ_le ε (n + k)
-    rw [Nat.add_succ, Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one]
-    linarith
+    have hbound := h.trans (add_le_add ih (le_refl (1 : ℝ)))
+    simpa only [Nat.add_succ, Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, add_assoc] using hbound
 
 private theorem exists_receiverEnergy_crossing (ε : SubcriticalDamping) (T : ℕ)
     (r : EnergyFraction) : ∃ n, (r : ℝ) * dampedMobiusEnergy ε T ≤ dampedMobiusEnergy ε n := by
@@ -126,7 +126,7 @@ theorem abs_normalized_receiverEnergyQuantile_error_le (ε : SubcriticalDamping)
       ((dampedMobiusEnergy ε (receiverEnergyQuantile ε (T + 1) s) -
         dampedMobiusEnergy ε (receiverEnergyQuantile ε (T + 1) r)) -
         ((s : ℝ) - (r : ℝ)) * dampedMobiusEnergy ε (T + 1)) /
-        dampedMobiusEnergy ε (T + 1) := by field_simp [hE.ne']; ring
+        dampedMobiusEnergy ε (T + 1) := by field_simp [hE.ne'] <;> ring
   rw [heq, abs_div, abs_of_pos hE]
   exact div_le_div_of_nonneg_right (abs_receiverEnergyQuantile_interval_error_le ε (T + 1) r s) hE.le
 

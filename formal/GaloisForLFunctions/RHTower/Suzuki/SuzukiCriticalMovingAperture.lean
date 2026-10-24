@@ -269,6 +269,7 @@ theorem integral_norm_suzukiCriticalSourceCusp_le_of_exp_decay {f : ℝ → ℝ}
           refine integral_mono_ae hB.norm
             ((integrableOn_suzukiCriticalPrimaryDensity homega (by linarith)).const_mul _) ?_
           filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+          have ht0 : 0 < t := mem_Ioi.mp ht
           have hd_pos := suzukiCriticalPrimaryDensity_pos homega ht
           rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg hd_pos.le]
           refine mul_le_mul_of_nonneg_right ?_ hd_pos.le
@@ -283,12 +284,13 @@ theorem integral_norm_suzukiCriticalSourceCusp_le_of_exp_decay {f : ℝ → ℝ}
           (2 * omega) * ‖autocorr f (u + t) * suzukiCriticalPoleDensity omega t‖) := by
         refine integral_mono_ae hS.norm (hB.norm.add (hP.norm.const_mul (2 * omega))) ?_
         filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
-        dsimp only
         rw [suzukiCriticalSourceDensity_eq omega ht, mul_sub]
         refine (norm_sub_le _ _).trans ?_
+        have h2w : ‖(2 * omega) * (autocorr f (u + t) * suzukiCriticalPoleDensity omega t)‖ =
+            (2 * omega) * ‖autocorr f (u + t) * suzukiCriticalPoleDensity omega t‖ := by
+          rw [norm_mul, Real.norm_of_nonneg (by positivity)]
         rw [show autocorr f (u + t) * (2 * omega * suzukiCriticalPoleDensity omega t) =
-            (2 * omega) * (autocorr f (u + t) * suzukiCriticalPoleDensity omega t) by ring,
-          norm_mul, Real.norm_eq_abs, abs_of_pos (by positivity)]
+            (2 * omega) * (autocorr f (u + t) * suzukiCriticalPoleDensity omega t) by ring, h2w]
     _ = (∫ t in Ioi 0, ‖autocorr f (u + t) * suzukiCriticalPrimaryDensity omega t‖) +
           (2 * omega) * ∫ t in Ioi 0, ‖autocorr f (u + t) * suzukiCriticalPoleDensity omega t‖ := by
         rw [integral_add hB.norm (hP.norm.const_mul _), integral_const_mul]
@@ -327,8 +329,9 @@ private theorem shifted_source_integrable_of_exp_decay {f : ℝ → ℝ} (hf : M
     refine hi.congr (Eventually.of_forall fun s => ?_)
     by_cases hs : 0 < s
     · rw [indicator_of_mem (show s ∈ Ioi 0 from hs)]
-    · rw [indicator_of_notMem (show s ∉ Ioi 0 from hs),
-        suzukiCriticalSourceDensity_eq_zero_of_nonpos (le_of_not_gt hs), mul_zero]
+    · rw [indicator_of_notMem (show s ∉ Ioi 0 from hs)]
+      dsimp only
+      rw [suzukiCriticalSourceDensity_eq_zero_of_nonpos (le_of_not_gt hs), mul_zero]
   have hshift : Integrable (fun t => autocorr f t * suzukiCriticalSourceDensity omega (t - u)) := by
     refine (hfull.comp_add_left (-u)).congr (Eventually.of_forall fun t => ?_)
     change autocorr f (u + (-u + t)) * suzukiCriticalSourceDensity omega (-u + t) = _
@@ -350,7 +353,7 @@ private theorem shifted_source_integrable_of_exp_decay {f : ℝ → ℝ} (hf : M
       rw [suzukiCriticalSourceDensity_eq_zero_of_nonpos (le_of_not_gt hs), mul_zero, norm_zero]
     rw [hl, hr, ← integral_add_left_eq_self
       (fun t => ‖autocorr f t * suzukiCriticalSourceDensity omega (t - u)‖) u]
-    exact integral_congr_ae (Eventually.of_forall fun s => by rw [add_sub_cancel_left])
+    exact integral_congr_ae (Eventually.of_forall fun s => by dsimp only; rw [add_sub_cancel_left])
   rw [hnorm_eq]
   exact integral_norm_suzukiCriticalSourceCusp_le_of_exp_decay hf hβ hu hdec homega homega2
 
@@ -370,7 +373,7 @@ private theorem shifted_source_integral_eq {f : ℝ → ℝ} {omega u : ℝ} (hu
     rw [suzukiCriticalSourceDensity_eq_zero_of_nonpos (le_of_not_gt hs), mul_zero]
   rw [hl, suzukiCriticalSourceCusp, hr, ← integral_add_left_eq_self
     (fun t => autocorr f t * suzukiCriticalSourceDensity omega (t - u)) u]
-  exact integral_congr_ae (Eventually.of_forall fun s => by rw [add_sub_cancel_left])
+  exact integral_congr_ae (Eventually.of_forall fun s => by dsimp only; rw [add_sub_cancel_left])
 
 private theorem source_pairing_pointwise_tsum (f : ℝ → ℝ) (omega t : ℝ) :
     autocorr f t * (Real.exp (t / 2) * (suzukiSourceHFinite omega (Real.exp t)).re) =
@@ -426,11 +429,148 @@ private theorem exp_neg_mul_log_nat {n : ℕ} (hn : 1 ≤ n) (a : ℝ) :
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
   rw [Real.rpow_def_of_pos hn0, mul_comm]
 
+private def sourcePairingTerm (f : ℝ → ℝ) (omega : ℝ) (n : ℕ) (t : ℝ) : ℝ :=
+  if 1 ≤ n then
+    (suzukiShiftedCoefficient omega n * Real.exp (-Real.log n / 2)) *
+      (autocorr f t * suzukiCriticalSourceDensity omega (t - Real.log n))
+  else 0
+
+private theorem summable_integral_norm_sourcePairingTerm {f : ℝ → ℝ} (hf : MemLp f 2 volume)
+    {β K omega : ℝ} (hβ : 1 / 2 < β)
+    (hdec : ∀ t : ℝ, 0 ≤ t → |autocorr f t| ≤ K * Real.exp (-β * t))
+    (homega : 0 < omega) (homega2 : omega ≤ 1 / 2) (homega_gap : omega < β - 1 / 2) :
+    (∀ n : ℕ, Integrable (sourcePairingTerm f omega n) (volume.restrict (Ioi 0))) ∧
+    Summable (fun n : ℕ => ∫ t in Ioi 0, ‖sourcePairingTerm f omega n t‖) := by
+  have hK : 0 ≤ K := by simpa using (abs_nonneg _).trans (hdec 0 le_rfl)
+  have hF_int : ∀ n : ℕ, Integrable (sourcePairingTerm f omega n) (volume.restrict (Ioi 0)) := by
+    intro n
+    by_cases hn1 : 1 ≤ n
+    · have hlog : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast hn1)
+      have hi := (shifted_source_integrable_of_exp_decay hf hβ hlog hdec homega homega2).1
+      refine (hi.const_mul (suzukiShiftedCoefficient omega n * Real.exp (-Real.log n / 2))).congr ?_
+      exact Eventually.of_forall fun t => by simp [sourcePairingTerm, hn1]
+    · refine (integrable_zero _ _ _).congr ?_
+      exact Eventually.of_forall fun t => by simp [sourcePairingTerm, hn1]
+  refine ⟨hF_int, ?_⟩
+  set C_cusp := K * suzukiCriticalPrimaryMass omega * (1 + 2 * omega / (β - 1 / 2))
+  have hM_nn : 0 ≤ suzukiCriticalPrimaryMass omega := by
+    rw [← integral_suzukiCriticalPrimaryDensity homega (by linarith)]
+    exact integral_nonneg_of_ae (by
+      filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
+      exact (suzukiCriticalPrimaryDensity_pos homega hr).le)
+  have hC_nn : 0 ≤ C_cusp := by unfold C_cusp; positivity
+  set p := β + 1 / 2 - omega
+  have hp1 : 1 < p := by unfold p; linarith
+  have hbase := (summable_log_mul_rpow_neg hp1).mul_left (2 * omega * C_cusp)
+  have hfin1 : ({n : ℕ | n ≠ 1})ᶜ.Finite :=
+    (Set.finite_singleton 1).subset fun x hx => by
+      simp only [Set.mem_compl_iff, Set.mem_setOf_eq, not_not] at hx
+      exact hx
+  have hB_sum : Summable (fun n : ℕ =>
+      if n = 1 then C_cusp else 2 * omega * C_cusp * (Real.log n * (n : ℝ) ^ (-p))) := by
+    refine hbase.congr_cofinite ?_
+    filter_upwards [Filter.mem_cofinite.mpr hfin1] with n hn
+    exact (if_neg hn).symm
+  refine hB_sum.of_nonneg_of_le (fun n => integral_nonneg fun _ => norm_nonneg _) (fun n => ?_)
+  rcases lt_trichotomy n 1 with hn0 | rfl | hn2_lt
+  · have hn_z : n = 0 := by omega
+    subst hn_z
+    simp only [sourcePairingTerm, show ¬(1 ≤ 0) by omega, ↓reduceIte, norm_zero, integral_zero,
+      show (0 : ℕ) ≠ 1 by omega, Nat.cast_zero, Real.log_zero, zero_mul, mul_zero, le_refl]
+  · simp only [sourcePairingTerm, le_refl, ↓reduceIte, suzukiShiftedCoefficient, Nat.cast_one,
+      Real.one_rpow, Nat.primeFactors_one, Finset.prod_empty, mul_one, Real.log_one, neg_zero,
+      zero_div, Real.exp_zero, one_mul, sub_zero]
+    have hb1 := (shifted_source_integrable_of_exp_decay hf hβ (u := 0) le_rfl hdec
+      homega homega2).2
+    simpa only [mul_zero, Real.exp_zero, mul_one, sub_zero] using hb1
+  · have hn2 : 2 ≤ n := by omega
+    have hn1 : 1 ≤ n := by omega
+    have hn_pos : (0 : ℝ) < n := by exact_mod_cast hn1
+    have hlog : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast hn1)
+    obtain ⟨hdiv_nn, hdiv_le⟩ := suzukiShiftedCoefficient_div_bounds hn2 homega
+    have hc_nn : 0 ≤ suzukiShiftedCoefficient omega n := by
+      have := mul_nonneg hdiv_nn homega.le
+      rwa [div_mul_cancel₀ _ homega.ne'] at this
+    have hc_le : suzukiShiftedCoefficient omega n ≤ 2 * omega * (n : ℝ) ^ omega * Real.log n := by
+      have := (div_le_iff₀ homega).mp hdiv_le
+      linarith
+    have hcusp := (shifted_source_integrable_of_exp_decay hf hβ hlog hdec homega homega2).2
+    rw [if_neg (show n ≠ 1 by omega)]
+    have hpull : (∫ t in Ioi 0, ‖sourcePairingTerm f omega n t‖) =
+        (suzukiShiftedCoefficient omega n * Real.exp (-Real.log n / 2)) *
+          ∫ t in Ioi 0, ‖autocorr f t * suzukiCriticalSourceDensity omega (t - Real.log n)‖ := by
+      have hnn : 0 ≤ suzukiShiftedCoefficient omega n * Real.exp (-Real.log n / 2) :=
+        mul_nonneg hc_nn (Real.exp_pos _).le
+      have hcongr : ∀ t : ℝ, ‖sourcePairingTerm f omega n t‖ =
+          (suzukiShiftedCoefficient omega n * Real.exp (-Real.log n / 2)) *
+            ‖autocorr f t * suzukiCriticalSourceDensity omega (t - Real.log n)‖ := fun t => by
+        simp only [sourcePairingTerm, if_pos hn1, norm_mul,
+          Real.norm_of_nonneg hnn]
+      simp_rw [hcongr, integral_const_mul]
+    rw [hpull]
+    have hexp_n : Real.exp (-Real.log n / 2) * Real.exp (-β * Real.log n) =
+        (n : ℝ) ^ (-(1 / 2 + β)) := by
+      rw [← Real.exp_add, show -Real.log n / 2 + -β * Real.log n =
+          -(1 / 2 + β) * Real.log n by ring, exp_neg_mul_log_nat hn1]
+    calc (suzukiShiftedCoefficient omega n * Real.exp (-Real.log n / 2)) *
+          ∫ t in Ioi 0, ‖autocorr f t * suzukiCriticalSourceDensity omega (t - Real.log n)‖
+        ≤ (2 * omega * (n : ℝ) ^ omega * Real.log n) * Real.exp (-Real.log n / 2) *
+            (C_cusp * Real.exp (-β * Real.log n)) := by
+          refine mul_le_mul (mul_le_mul_of_nonneg_right hc_le (Real.exp_pos _).le) hcusp
+            (integral_nonneg fun _ => norm_nonneg _) (by positivity)
+      _ = 2 * omega * C_cusp * Real.log n *
+            ((n : ℝ) ^ omega * (Real.exp (-Real.log n / 2) * Real.exp (-β * Real.log n))) := by
+          ring
+      _ = 2 * omega * C_cusp * (Real.log n * (n : ℝ) ^ (-p)) := by
+          rw [hexp_n, ← Real.rpow_add hn_pos, show omega + -(1 / 2 + β) = -p by unfold p; ring]
+          ring
+
+private theorem integrable_tsum_of_summable_integral_norm
+    {α : Type*} [MeasurableSpace α] {μ : Measure α} {F : ℕ → α → ℝ}
+    (hF : ∀ n, Integrable (F n) μ)
+    (hsum : Summable (fun n => ∫ x, ‖F n x‖ ∂μ)) :
+    Integrable (fun x => ∑' n, F n x) μ := by
+  refine ⟨AEStronglyMeasurable.tsum fun n => (hF n).1, ?_⟩
+  rw [HasFiniteIntegral]
+  calc (∫⁻ x, ‖∑' n, F n x‖ₑ ∂μ)
+      ≤ ∫⁻ x, ∑' n, ‖F n x‖ₑ ∂μ := lintegral_mono fun _ => enorm_tsum_le_tsum_enorm
+    _ = ∑' n, ∫⁻ x, ‖F n x‖ₑ ∂μ := lintegral_tsum fun n => (hF n).1.enorm
+    _ = ∑' n, ENNReal.ofReal (∫ x, ‖F n x‖ ∂μ) := by
+        congr 1; funext n; rw [ofReal_integral_norm_eq_lintegral_enorm (hF n)]
+    _ = ENNReal.ofReal (∑' n, ∫ x, ‖F n x‖ ∂μ) :=
+        (ENNReal.ofReal_tsum_of_nonneg (fun n => integral_nonneg fun _ => norm_nonneg _) hsum).symm
+    _ < ⊤ := ENNReal.ofReal_lt_top
+
+private theorem tsum_ite_one_le_eq_one_add_two_le {g : ℕ → ℝ}
+    (hg : Summable (fun n : ℕ => if 1 ≤ n then g n else 0)) :
+    (∑' n : ℕ, if 1 ≤ n then g n else 0) = g 1 + ∑' n : ℕ, if 2 ≤ n then g n else 0 := by
+  have hind : Summable (fun n : ℕ => if n = 1 then g 1 else 0) :=
+    summable_of_ne_finset_zero (s := {1}) fun n hn => if_neg (Finset.notMem_singleton.mp hn)
+  have h2 : Summable (fun n : ℕ => if 2 ≤ n then g n else 0) := by
+    refine (hg.sub hind).congr fun n => ?_
+    rcases lt_trichotomy n 1 with h0 | rfl | h2
+    · have hz : n = 0 := by omega
+      subst hz; simp
+    · simp
+    · have hn2 : 2 ≤ n := by omega
+      have hn1 : n ≠ 1 := by omega
+      simp [hn2, hn1, show 1 ≤ n by omega]
+  have hpt : (fun n : ℕ => if 1 ≤ n then g n else 0) =
+      fun n : ℕ => (if n = 1 then g 1 else 0) + (if 2 ≤ n then g n else 0) := by
+    funext n
+    rcases lt_trichotomy n 1 with h0 | rfl | hgt
+    · have hz : n = 0 := by omega
+      subst hz; simp
+    · simp
+    · have hn2 : 2 ≤ n := by omega
+      have hn1 : n ≠ 1 := by omega
+      simp [hn2, hn1, show 1 ≤ n by omega]
+  rw [hpt, hind.tsum_add h2, tsum_ite_eq]
+
 /-- **Exact Infinite Arithmetic Fubini for Supercritical-Decay `L²` Sources.**
-If `|autocorr f t| ≤ K e^{-β t}` (`β > 1/2`), then for every `0 < ω < min(1/2, β - 1/2)` (and in
-particular `ω ≤ 1/2` with `ω < β - 1/2`), the literal Suzuki source pairing is absolutely
-integrable on `(0, ∞)` and expands into the absolutely convergent infinite series of translated
-signed cusps across all `n ≥ 1`. -/
+If `|autocorr f t| ≤ K e^{-β t}` (`β > 1/2`), then for every `0 < ω ≤ 1/2` with `ω < β - 1/2`, the
+literal Suzuki source pairing is absolutely integrable on `(0, ∞)` and expands into the absolutely
+convergent infinite series of translated signed cusps across all `n ≥ 1`. -/
 theorem suzukiCriticalSourcePairing_eq_tsum_of_exp_decay {f : ℝ → ℝ} (hf : MemLp f 2 volume)
     {β K omega : ℝ} (hβ : 1 / 2 < β)
     (hdec : ∀ t : ℝ, 0 ≤ t → |autocorr f t| ≤ K * Real.exp (-β * t))
@@ -443,142 +583,39 @@ theorem suzukiCriticalSourcePairing_eq_tsum_of_exp_decay {f : ℝ → ℝ} (hf :
         (suzukiShiftedCoefficient omega n * Real.exp (-Real.log n / 2)) *
           suzukiCriticalSourceCusp f omega (Real.log n)
       else 0 := by
-  have hK : 0 ≤ K := by simpa using (abs_nonneg _).trans (hdec 0 le_rfl)
-  let F : ℕ → ℝ → ℝ := fun n t => if 1 ≤ n then
-    (suzukiShiftedCoefficient omega n * Real.exp (-Real.log n / 2)) *
-      (autocorr f t * suzukiCriticalSourceDensity omega (t - Real.log n))
-    else 0
-  have hF_int : ∀ n : ℕ, Integrable (F n) (volume.restrict (Ioi 0)) := by
-    intro n
-    by_cases hn1 : 1 ≤ n
-    · have hlog : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast hn1)
-      have hi := (shifted_source_integrable_of_exp_decay hf hβ hlog hdec homega homega2).1
-      simpa only [F, if_pos hn1] using hi.const_mul _
-    · simp only [F, if_neg hn1]
-      exact integrable_zero _ _ _
-  set C_cusp := K * suzukiCriticalPrimaryMass omega * (1 + 2 * omega / (β - 1 / 2))
-  have hM_nn : 0 ≤ suzukiCriticalPrimaryMass omega := by
-    rw [← integral_suzukiCriticalPrimaryDensity homega (by linarith)]
-    exact integral_nonneg_of_ae (by
-      filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
-      exact (suzukiCriticalPrimaryDensity_pos homega hr).le)
-  have hC_nn : 0 ≤ C_cusp := by unfold C_cusp; positivity
-  set p := β + 1 / 2 - omega
-  have hp1 : 1 < p := by unfold p; linarith
-  have hF_sum : Summable (fun n : ℕ => ∫ t in Ioi 0, ‖F n t‖) := by
-    let B : ℕ → ℝ := fun n =>
-      if n = 1 then C_cusp else 2 * omega * C_cusp * (Real.log n * (n : ℝ) ^ (-p))
-    have hB_sum : Summable B := by
-      have hbase := (summable_log_mul_rpow_neg hp1).mul_left (2 * omega * C_cusp)
-      refine hbase.congr_cofinite ?_
-      filter_upwards [Filter.mem_cofinite.mpr (Set.finite_singleton 1)] with n hn
-      exact (if_neg hn).symm
-    refine hB_sum.of_nonneg_of_le (fun n => integral_nonneg fun _ => norm_nonneg _) (fun n => ?_)
-    rcases lt_trichotomy n 1 with hn0 | rfl | hn2_lt
-    · have hn_z : n = 0 := by omega
-      subst hn_z
-      simp only [F, show ¬(1 ≤ 0) by omega, ↓reduceIte, norm_zero, integral_zero, B,
-        show (0 : ℕ) ≠ 1 by omega, Nat.cast_zero, Real.log_zero, zero_mul, mul_zero, le_refl]
-    · simp only [F, le_refl, ↓reduceIte, suzukiShiftedCoefficient, Nat.cast_one, Real.one_rpow,
-        Nat.primeFactors_one, Finset.prod_empty, mul_one, Real.log_one, neg_zero, zero_div,
-        Real.exp_zero, one_mul, sub_zero, B]
-      have hb1 := (shifted_source_integrable_of_exp_decay hf hβ (u := 0) le_rfl hdec
-        homega homega2).2
-      simpa only [mul_zero, Real.exp_zero, mul_one, sub_zero] using hb1
-    · have hn2 : 2 ≤ n := by omega
-      have hn1 : 1 ≤ n := by omega
-      have hn_pos : (0 : ℝ) < n := by exact_mod_cast hn1
-      have hlog : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast hn1)
-      obtain ⟨hdiv_nn, hdiv_le⟩ := suzukiShiftedCoefficient_div_bounds hn2 homega
-      have hc_nn : 0 ≤ suzukiShiftedCoefficient omega n :=
-        (div_nonneg_iff.mp hdiv_nn).resolve_right (by linarith)
-      have hc_le : suzukiShiftedCoefficient omega n ≤ 2 * omega * (n : ℝ) ^ omega * Real.log n := by
-        have := (div_le_iff₀ homega).mp hdiv_le
-        linarith
-      have hcusp := (shifted_source_integrable_of_exp_decay hf hβ hlog hdec homega homega2).2
-      simp only [F, if_pos hn1, B, show n ≠ 1 by omega, ↓reduceIte, norm_mul, Real.norm_eq_abs,
-        integral_const_mul, abs_of_nonneg hc_nn, abs_of_pos (Real.exp_pos _)]
-      have hexp_n : Real.exp (-Real.log n / 2) * Real.exp (-β * Real.log n) =
-          (n : ℝ) ^ (-(1 / 2 + β)) := by
-        rw [← Real.exp_add, show -Real.log n / 2 + -β * Real.log n =
-            -(1 / 2 + β) * Real.log n by ring, exp_neg_mul_log_nat hn1]
-      calc suzukiShiftedCoefficient omega n * Real.exp (-Real.log n / 2) *
-            ∫ t in Ioi 0, ‖autocorr f t * suzukiCriticalSourceDensity omega (t - Real.log n)‖
-          ≤ (2 * omega * (n : ℝ) ^ omega * Real.log n) * Real.exp (-Real.log n / 2) *
-              (C_cusp * Real.exp (-β * Real.log n)) := by
-            refine mul_le_mul (mul_le_mul_of_nonneg_right hc_le (Real.exp_pos _).le) hcusp
-              (integral_nonneg fun _ => norm_nonneg _) (by positivity)
-        _ = 2 * omega * C_cusp * Real.log n *
-              ((n : ℝ) ^ omega * (Real.exp (-Real.log n / 2) * Real.exp (-β * Real.log n))) := by
-            ring
-        _ = 2 * omega * C_cusp * (Real.log n * (n : ℝ) ^ (-p)) := by
-            rw [hexp_n, ← Real.rpow_add hn_pos]
-            unfold p
-            ring_nf
+  obtain ⟨hF_int, hF_sum⟩ := summable_integral_norm_sourcePairingTerm hf hβ hdec homega homega2
+    homega_gap
   have hswap := MeasureTheory.integral_tsum_of_summable_integral_norm hF_int hF_sum
   have hpt : ∀ t : ℝ, autocorr f t * (Real.exp (t / 2) * (suzukiSourceHFinite omega (Real.exp t)).re) =
-      ∑' n : ℕ, F n t := source_pairing_pointwise_tsum f omega
+      ∑' n : ℕ, sourcePairingTerm f omega n t := source_pairing_pointwise_tsum f omega
   have hint_tot : IntegrableOn (fun t => autocorr f t *
-      (Real.exp (t / 2) * (suzukiSourceHFinite omega (Real.exp t)).re)) (Ioi 0) := by
-    have hnorm_sum : HasSum (fun n => ∫ t in Ioi 0, ‖F n t‖) (∑' n, ∫ t in Ioi 0, ‖F n t‖) :=
-      hF_sum.hasSum
-    have htsum_int : Integrable (fun t => ∑' n, F n t) (volume.restrict (Ioi 0)) := by
-      refine ⟨AEStronglyMeasurable.tsum fun n => (hF_int n).1, ?_⟩
-      rw [HasFiniteIntegral]
-      calc (∫⁻ t in Ioi 0, ‖∑' n, F n t‖ₑ)
-          ≤ ∫⁻ t in Ioi 0, ∑' n, ‖F n t‖ₑ := by
-            refine lintegral_mono fun t => ?_
-            exact enorm_tsum_le_tsum_enorm
-        _ = ∑' n, ∫⁻ t in Ioi 0, ‖F n t‖ₑ :=
-            lintegral_tsum fun n => (hF_int n).1.enorm
-        _ = ∑' n, ENNReal.ofReal (∫ t in Ioi 0, ‖F n t‖) := by
-            congr 1; funext n
-            rw [ofReal_integral_norm_eq_lintegral_enorm (hF_int n)]
-        _ = ENNReal.ofReal (∑' n, ∫ t in Ioi 0, ‖F n t‖) :=
-            (ENNReal.ofReal_tsum_of_nonneg (fun n => integral_nonneg fun _ => norm_nonneg _)
-              hF_sum).symm
-        _ < ⊤ := ENNReal.ofReal_lt_top
-    exact htsum_int.congr (Eventually.of_forall fun t => (hpt t).symm)
+      (Real.exp (t / 2) * (suzukiSourceHFinite omega (Real.exp t)).re)) (Ioi 0) :=
+    (integrable_tsum_of_summable_integral_norm hF_int hF_sum).congr
+      (Eventually.of_forall fun t => (hpt t).symm)
   refine ⟨hint_tot, ?_⟩
   rw [suzukiCriticalSourcePairing]
   simp_rw [hpt]
   rw [← hswap]
-  have hterm : ∀ n : ℕ, (∫ t in Ioi 0, F n t) =
-      if 1 ≤ n then
-        (suzukiShiftedCoefficient omega n * Real.exp (-Real.log n / 2)) *
-          suzukiCriticalSourceCusp f omega (Real.log n)
-      else 0 := by
+  set g : ℕ → ℝ := fun n =>
+    (suzukiShiftedCoefficient omega n * Real.exp (-Real.log n / 2)) *
+      suzukiCriticalSourceCusp f omega (Real.log n)
+  have hterm : ∀ n : ℕ, (∫ t in Ioi 0, sourcePairingTerm f omega n t) =
+      if 1 ≤ n then g n else 0 := by
     intro n
     by_cases hn1 : 1 ≤ n
     · have hlog : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast hn1)
-      simp only [F, if_pos hn1, integral_const_mul, shifted_source_integral_eq hlog]
-    · simp only [F, if_neg hn1, integral_zero]
+      simp only [sourcePairingTerm, if_pos hn1, integral_const_mul, shifted_source_integral_eq hlog, g]
+    · simp only [sourcePairingTerm, if_neg hn1, integral_zero]
   simp_rw [hterm]
-  have hsum_int : Summable (fun n : ℕ => if 1 ≤ n then
-      (suzukiShiftedCoefficient omega n * Real.exp (-Real.log n / 2)) *
-        suzukiCriticalSourceCusp f omega (Real.log n) else 0) := by
+  have hsum_int : Summable (fun n : ℕ => if 1 ≤ n then g n else 0) := by
     refine hF_sum.of_norm_bounded fun n => ?_
-    rw [ ← hterm n]
-    exact norm_integral_le_integral_norm (F n)
-  rw [tsum_eq_zero_add' hsum_int, tsum_eq_zero_add' (hsum_int.comp_injective Nat.succ_injective)]
-  simp only [show ¬(1 ≤ 0) by omega, ↓reduceIte, zero_add, Nat.reduceAdd, le_refl,
-    suzukiShiftedCoefficient, Nat.cast_one, Real.one_rpow, Nat.primeFactors_one, Finset.prod_empty,
-    mul_one, Real.log_one, neg_zero, zero_div, Real.exp_zero, one_mul]
-  congr 1
-  have htail_sum : Summable (fun k : ℕ =>
-      (suzukiShiftedCoefficient omega (k + 2) * Real.exp (-Real.log ((k + 2 : ℕ) : ℝ) / 2)) *
-        suzukiCriticalSourceCusp f omega (Real.log ((k + 2 : ℕ) : ℝ))) := by
-    simpa only [Function.comp_def, show ∀ k : ℕ, 1 ≤ k + 1 + 1 by omega, ↓reduceIte] using
-      (hsum_int.comp_injective Nat.succ_injective).comp_injective Nat.succ_injective
-  have hfull2 : Summable (fun n : ℕ => if 2 ≤ n then
-      (suzukiShiftedCoefficient omega n * Real.exp (-Real.log n / 2)) *
-        suzukiCriticalSourceCusp f omega (Real.log n) else 0) := by
-    refine (summable_nat_add_iff 2).mp ?_
-    simpa only [show ∀ k : ℕ, 2 ≤ k + 2 by omega, ↓reduceIte] using htail_sum
-  rw [tsum_eq_zero_add' hfull2, tsum_eq_zero_add' (hfull2.comp_injective Nat.succ_injective)]
-  simp only [show ¬(2 ≤ 0) by omega, show ¬(2 ≤ 1) by omega, ↓reduceIte, zero_add]
-  exact tsum_congr fun k => by simp only [show 1 ≤ k + 1 + 1 by omega, show 2 ≤ k + 1 + 1 by omega,
-    ↓reduceIte, Nat.add_assoc]
+    rw [← hterm n]
+    exact norm_integral_le_integral_norm (sourcePairingTerm f omega n)
+  rw [tsum_ite_one_le_eq_one_add_two_le hsum_int]
+  have hg1 : g 1 = suzukiCriticalSourceCusp f omega 0 := by
+    simp only [g, suzukiShiftedCoefficient, Nat.cast_one, Real.one_rpow, Nat.primeFactors_one,
+      Finset.prod_empty, mul_one, Real.log_one, neg_zero, zero_div, Real.exp_zero, one_mul]
+  rw [hg1]
 
 /-! ## Section 3: Noncompact Extended Weil Normalization & Uncoupled Moving-Aperture Γ-Liminf -/
 
@@ -619,6 +656,7 @@ theorem suzukiCriticalL2Weil_normalization_of_exp_decay {f : ℝ → ℝ} (hf : 
     rw [← integral_const_mul, ← integral_const_mul, ← integral_const_mul,
       ← integral_add (hp.const_mul 2) (hm.const_mul 2)]
     refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+    dsimp only
     rw [Real.cosh_eq, neg_div]
     ring
   have hdigamma : (Complex.digamma ((5 / 4 : ℝ) : ℂ)).re =
@@ -1009,7 +1047,6 @@ theorem tendsto_suzukiCriticalSourcePairing_extended_firstVariation_of_exp_decay
   apply Filter.tendsto_of_subseq_tendsto
   intro w hw
   refine ⟨id, ?_⟩
-  simp only [Function.comp_id]
   have hprim := (tendsto_suzukiCriticalCompensatedEnergy_autocorr hf).comp hw
   have hprimE := continuous_coe_ennreal_ereal.continuousAt.tendsto.comp hprim
   have hrem := tendsto_suzukiCriticalInfiniteSignedRemainder_joint_of_exp_decay
@@ -1086,11 +1123,12 @@ private theorem pole_cusp_sub_le_moving_cutoff {f g : ℝ → ℝ}
       refine setIntegral_mono_on (hisub.mono_set Ioc_subset_Ioi_self).norm
         (continuous_const.integrableOn_Icc.mono_set Ioc_subset_Icc_self) measurableSet_Ioc ?_
       intro t ht
+      have hE_nn : 0 ≤ E := by unfold E; positivity
       have hP := suzukiCriticalPoleDensity_bounds homega homega2 ht.1
       rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg hP.1]
       exact mul_le_mul (hcorr_sub (u + t))
         (hP.2.trans (mul_le_mul_of_nonneg_left
-          (Real.exp_le_exp.mpr (by linarith [ht.2])) hM)) hP.1 (abs_nonneg _)
+          (Real.exp_le_exp.mpr (by linarith [ht.2])) hM)) hP.1 hE_nn
     calc |∫ t in Ioc 0 A, (autocorr f (u + t) - autocorr g (u + t)) *
           suzukiCriticalPoleDensity omega t|
         ≤ ∫ _t in Ioc 0 A, E * (suzukiCriticalPrimaryMass omega * Real.exp (A / 2)) := hnorm1
@@ -1121,6 +1159,440 @@ private theorem pole_cusp_sub_le_moving_cutoff {f g : ℝ → ℝ}
           rw [integral_const_mul, integral_exp_mul_Ioi (by linarith : -(β - 1 / 2) < 0) A]
           field_simp [show β - 1 / 2 ≠ 0 by linarith]
 
+private theorem tendsto_pole_cusp_moving_cutoff
+    {f : ℕ → ℝ → ℝ} {g : ℝ → ℝ} {w A : ℕ → ℝ} {β K : ℝ}
+    (hf : ∀ j, MemLp (f j) 2 volume) (hg : MemLp g 2 volume)
+    (hfc : ∀ j, HasCompactSupport (f j))
+    (hA_pos : ∀ j, 0 < A j) (hA_top : Tendsto A atTop atTop)
+    (hcut : ∀ j t, A j ≤ t → autocorr (f j) t = 0)
+    (hfg : Tendsto (fun j => (hf j).toLp (f j)) atTop (𝓝 (hg.toLp g)))
+    (hw : Tendsto w atTop (𝓝[>] 0))
+    (hβ : 1 / 2 < β)
+    (hg_dec : ∀ t : ℝ, 0 ≤ t → |autocorr g t| ≤ K * Real.exp (-β * t))
+    (hrate : Tendsto (fun j => Real.exp (2 * A j) * ‖(hf j).toLp (f j) - hg.toLp g‖)
+      atTop (𝓝 0)) :
+    Tendsto (fun j => 2 * suzukiCriticalPoleCusp (f j) (w j) 0) atTop
+      (𝓝 (2 * ∫ t in Ioi 0, autocorr g t * Real.exp (t / 2))) := by
+  have hK : 0 ≤ K := by simpa using (abs_nonneg _).trans (hg_dec 0 le_rfl)
+  have hrate_E : Tendsto (fun j => Real.exp (2 * A j) *
+      ((‖(hf j).toLp (f j)‖ + ‖hg.toLp g‖) * ‖(hf j).toLp (f j) - hg.toLp g‖)) atTop (𝓝 0) := by
+    have hnorm_sum : Tendsto (fun j => ‖(hf j).toLp (f j)‖ + ‖hg.toLp g‖) atTop
+        (𝓝 (‖hg.toLp g‖ + ‖hg.toLp g‖)) :=
+      hfg.norm.add_const ‖hg.toLp g‖
+    have hprod := hnorm_sum.mul hrate
+    rw [mul_zero] at hprod
+    exact hprod.congr fun _ => by ring
+  have hp_g := tendsto_suzukiCriticalPoleCusp_joint_of_exp_decay
+    (f := fun _ => g) (g := g) (fun _ => hg) hg tendsto_const_nhds hw hβ le_rfl (fun _ => hg_dec)
+  simp only [zero_add] at hp_g
+  have hp_diff : Tendsto (fun j => suzukiCriticalPoleCusp (f j) (w j) 0 -
+      suzukiCriticalPoleCusp g (w j) 0) atTop (𝓝 0) := by
+    have hM2 : ∀ᶠ j in atTop, suzukiCriticalPrimaryMass (w j) < 2 :=
+      ((tendsto_suzukiCriticalPrimaryMass.mono_left nhdsWithin_le_nhds).comp hw).eventually
+        (Iio_mem_nhds (by norm_num : (1 : ℝ) < 2))
+    have ho : ∀ᶠ j in atTop, w j < 1 / 2 := hw.eventually
+      (mem_nhdsWithin_of_mem_nhds (Iio_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2)))
+    have htail0 : Tendsto (fun j => (2 * K / (β - 1 / 2)) * Real.exp (-(β - 1 / 2) * A j))
+        atTop (𝓝 0) := by
+      have hbot : Tendsto (fun j => -((β - 1 / 2) * A j)) atTop atBot :=
+        tendsto_neg_atTop_atBot.comp
+          (Tendsto.const_mul_atTop (by linarith : 0 < β - 1 / 2) hA_top)
+      have hexp0 : Tendsto (fun j => Real.exp (-(β - 1 / 2) * A j)) atTop (𝓝 0) :=
+        (Real.tendsto_exp_atBot.comp hbot).congr fun j => by
+          dsimp only [Function.comp_apply]; congr 1; ring
+      simpa only [mul_zero] using hexp0.const_mul (2 * K / (β - 1 / 2))
+    have hub := (hrate_E.const_mul 2).add htail0
+    simp only [mul_zero, add_zero] at hub
+    rw [tendsto_zero_iff_norm_tendsto_zero]
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hub
+      (Eventually.of_forall fun _ => norm_nonneg _) ?_
+    filter_upwards [hw.eventually self_mem_nhdsWithin, ho, hM2] with j hwj ho hMj
+    change 0 < w j at hwj
+    rw [Real.norm_eq_abs]
+    have hb := pole_cusp_sub_le_moving_cutoff (hf j) hg (hfc j) (hA_pos j) (hcut j) hβ le_rfl
+      hg_dec hwj ho.le
+    simp only [mul_zero, Real.exp_zero, mul_one] at hb
+    refine hb.trans (add_le_add ?_ ?_)
+    · have hA_exp : A j * Real.exp (A j / 2) ≤ Real.exp (2 * A j) := by
+        have h1 : A j ≤ Real.exp (A j) :=
+          (le_add_of_nonneg_right zero_le_one).trans (Real.add_one_le_exp (A j))
+        calc A j * Real.exp (A j / 2)
+            ≤ Real.exp (A j) * Real.exp (A j / 2) :=
+              mul_le_mul_of_nonneg_right h1 (Real.exp_pos _).le
+          _ = Real.exp (3 * A j / 2) := by rw [← Real.exp_add]; congr 1; ring
+          _ ≤ Real.exp (2 * A j) := Real.exp_le_exp.mpr (by linarith [hA_pos j])
+      have hEj_nn : 0 ≤ (‖(hf j).toLp (f j)‖ + ‖hg.toLp g‖) * ‖(hf j).toLp (f j) - hg.toLp g‖ :=
+        by positivity
+      calc A j * suzukiCriticalPrimaryMass (w j) * Real.exp (A j / 2) *
+            ((‖(hf j).toLp (f j)‖ + ‖hg.toLp g‖) * ‖(hf j).toLp (f j) - hg.toLp g‖)
+          ≤ 2 * (A j * Real.exp (A j / 2)) *
+              ((‖(hf j).toLp (f j)‖ + ‖hg.toLp g‖) * ‖(hf j).toLp (f j) - hg.toLp g‖) := by
+            refine mul_le_mul_of_nonneg_right ?_ hEj_nn
+            have h1 := mul_le_mul_of_nonneg_left hMj.le (hA_pos j).le
+            have h2 := mul_le_mul_of_nonneg_right h1 (Real.exp_pos (A j / 2)).le
+            linarith
+        _ ≤ 2 * (Real.exp (2 * A j) *
+              ((‖(hf j).toLp (f j)‖ + ‖hg.toLp g‖) * ‖(hf j).toLp (f j) - hg.toLp g‖)) := by
+            have := mul_le_mul_of_nonneg_right hA_exp hEj_nn
+            linarith
+    · refine mul_le_mul_of_nonneg_right ?_ (Real.exp_pos _).le
+      have h1 : K * suzukiCriticalPrimaryMass (w j) ≤ 2 * K := by nlinarith [hMj.le]
+      exact div_le_div_of_nonneg_right h1 (by linarith)
+  simpa only [sub_add_cancel, zero_add] using (hp_diff.add hp_g).const_mul 2
+
+private theorem tendsto_trunc_sum_target
+    {g : ℝ → ℝ} {w A : ℕ → ℝ} {β K : ℝ}
+    (hg : MemLp g 2 volume) (hA_top : Tendsto A atTop atTop)
+    (hw : Tendsto w atTop (𝓝[>] 0))
+    (hβ : 1 / 2 < β)
+    (hg_dec : ∀ t : ℝ, 0 ≤ t → |autocorr g t| ≤ K * Real.exp (-β * t)) :
+    Tendsto (fun j => ∑ n ∈ Finset.Icc 2 ⌊Real.exp (A j)⌋₊,
+      (suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
+        suzukiCriticalSourceCusp g (w j) (Real.log n)) atTop
+      (𝓝 (∑' n : ℕ, if 2 ≤ n then
+        (2 * ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n / 2)) *
+          autocorr g (Real.log n) else 0)) := by
+  have hK : 0 ≤ K := by simpa using (abs_nonneg _).trans (hg_dec 0 le_rfl)
+  set δ := min (1 / 2 : ℝ) ((β - 1 / 2) / 2)
+  have hδ : 0 < δ := lt_min (by norm_num) (by linarith)
+  set p := β + 1 / 2 - δ
+  have hp1 : 1 < p := by
+    have : δ ≤ (β - 1 / 2) / 2 := min_le_right _ _
+    unfold p; linarith
+  set C_dom := 4 * K * (1 + 1 / (β - 1 / 2))
+  have hC_dom : 0 ≤ C_dom := by unfold C_dom; positivity
+  have hB_sum : Summable (fun n : ℕ => C_dom * (Real.log n * (n : ℝ) ^ (-p))) :=
+    (summable_log_mul_rpow_neg hp1).mul_left C_dom
+  have hM2 : ∀ᶠ j in atTop, suzukiCriticalPrimaryMass (w j) < 2 :=
+    ((tendsto_suzukiCriticalPrimaryMass.mono_left nhdsWithin_le_nhds).comp hw).eventually
+      (Iio_mem_nhds (by norm_num : (1 : ℝ) < 2))
+  have hw_δ : ∀ᶠ j in atTop, w j < δ := hw.eventually
+    (mem_nhdsWithin_of_mem_nhds (Iio_mem_nhds hδ))
+  have hts_eq : ∀ j, (∑ n ∈ Finset.Icc 2 ⌊Real.exp (A j)⌋₊,
+      (suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
+        suzukiCriticalSourceCusp g (w j) (Real.log n)) =
+      ∑' n : ℕ, if 2 ≤ n ∧ n ≤ ⌊Real.exp (A j)⌋₊ then
+        (suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
+          suzukiCriticalSourceCusp g (w j) (Real.log n) else 0 := by
+    intro j
+    rw [tsum_eq_sum (s := Finset.Icc 2 ⌊Real.exp (A j)⌋₊)]
+    · refine Finset.sum_congr rfl fun n hn => (if_pos (Finset.mem_Icc.mp hn)).symm
+    · intro n hn
+      rw [if_neg]
+      simpa only [Finset.mem_Icc] using hn
+  simp_rw [hts_eq]
+  apply tendsto_tsum_of_dominated_convergence hB_sum
+  · intro n
+    by_cases hn2 : 2 ≤ n
+    · have hlog : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast (show 1 ≤ n by omega))
+      have hc_n : Tendsto (fun j => suzukiShiftedCoefficient (w j) n / w j) atTop
+          (𝓝 (2 * ArithmeticFunction.vonMangoldt n)) :=
+        (coeff_tangent_at_zero hn2).comp hw
+      have hlim_n := (hc_n.mul_const (Real.exp (-Real.log n / 2))).mul
+        (tendsto_suzukiCriticalSourceCusp_joint_of_exp_decay
+          (f := fun _ => g) (g := g) (fun _ => hg) hg tendsto_const_nhds hw hβ hlog
+          (fun _ => hg_dec))
+      simp only [if_pos hn2]
+      refine hlim_n.congr' ?_
+      have hAj_gt : ∀ᶠ j in atTop, Real.log n + 1 < A j := hA_top.eventually_gt_atTop _
+      filter_upwards [hAj_gt] with j hAj
+      have hn_le : n ≤ ⌊Real.exp (A j)⌋₊ := by
+        apply Nat.le_floor
+        have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
+        rw [← Real.exp_log hn0]
+        exact Real.exp_le_exp.mpr (by linarith)
+      rw [if_pos ⟨hn2, hn_le⟩]
+    · simp only [show ∀ j, ¬(2 ≤ n ∧ n ≤ ⌊Real.exp (A j)⌋₊) from fun _ h => hn2 h.1,
+        if_neg hn2, ↓reduceIte]
+      exact tendsto_const_nhds
+  · filter_upwards [hw.eventually self_mem_nhdsWithin, hw_δ, hM2] with j hwj hwj_δ hMj n
+    change 0 < w j at hwj
+    have hwj2 : w j ≤ 1 / 2 := hwj_δ.le.trans (min_le_left _ _)
+    by_cases hcond : 2 ≤ n ∧ n ≤ ⌊Real.exp (A j)⌋₊
+    · rw [if_pos hcond]
+      have hn2 := hcond.1
+      have hn1 : 1 ≤ n := by omega
+      have hn_pos : (0 : ℝ) < n := by exact_mod_cast hn1
+      have hlog : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast hn1)
+      obtain ⟨hdiv_nn, hdiv_le⟩ := suzukiShiftedCoefficient_div_bounds hn2 hwj
+      have hcusp := abs_suzukiCriticalSourceCusp_le_of_exp_decay hg hβ hlog hg_dec hwj hwj2
+      have h1 : 1 + 2 * w j / (β - 1 / 2) ≤ 1 + 1 / (β - 1 / 2) := by
+        have : 2 * w j ≤ 1 := by linarith
+        gcongr
+      have hM_nn : 0 ≤ suzukiCriticalPrimaryMass (w j) := by
+        rw [← integral_suzukiCriticalPrimaryDensity hwj (by linarith)]
+        exact integral_nonneg_of_ae (by
+          filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
+          exact (suzukiCriticalPrimaryDensity_pos hwj hr).le)
+      have hcusp' : |suzukiCriticalSourceCusp g (w j) (Real.log n)| ≤
+          2 * K * (1 + 1 / (β - 1 / 2)) * (n : ℝ) ^ (-β) := by
+        rw [← exp_neg_mul_log_nat hn1 (-β)]
+        refine hcusp.trans (mul_le_mul_of_nonneg_right ?_ (Real.exp_pos _).le)
+        calc K * suzukiCriticalPrimaryMass (w j) * (1 + 2 * w j / (β - 1 / 2))
+            ≤ K * 2 * (1 + 1 / (β - 1 / 2)) :=
+              mul_le_mul (mul_le_mul_of_nonneg_left hMj.le hK) h1 (by positivity) (by positivity)
+          _ = 2 * K * (1 + 1 / (β - 1 / 2)) := by ring
+      have hrpow_le : (n : ℝ) ^ (w j) ≤ (n : ℝ) ^ δ :=
+        Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hn1) hwj_δ.le
+      rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_nonneg hdiv_nn,
+        abs_of_pos (Real.exp_pos _), show -Real.log n / 2 = (-1 / 2 : ℝ) * Real.log n by ring,
+        exp_neg_mul_log_nat hn1]
+      calc suzukiShiftedCoefficient (w j) n / w j * (n : ℝ) ^ (-1 / 2 : ℝ) *
+            |suzukiCriticalSourceCusp g (w j) (Real.log n)|
+          ≤ (2 * (n : ℝ) ^ δ * Real.log n) * (n : ℝ) ^ (-1 / 2 : ℝ) *
+              (2 * K * (1 + 1 / (β - 1 / 2)) * (n : ℝ) ^ (-β)) := by
+            refine mul_le_mul (mul_le_mul_of_nonneg_right
+              (hdiv_le.trans (mul_le_mul_of_nonneg_right
+                (mul_le_mul_of_nonneg_left hrpow_le zero_le_two) hlog))
+              (Real.rpow_nonneg hn_pos.le _)) hcusp' (abs_nonneg _) (by positivity)
+        _ = C_dom * (Real.log n * (n : ℝ) ^ (-p)) := by
+            have hrp : (n : ℝ) ^ δ * (n : ℝ) ^ (-1 / 2 : ℝ) * (n : ℝ) ^ (-β) =
+                (n : ℝ) ^ (-p) := by
+              rw [← Real.rpow_add hn_pos, ← Real.rpow_add hn_pos,
+                show δ + (-1 / 2 : ℝ) + -β = -p by unfold p; ring]
+            unfold C_dom
+            linear_combination 4 * K * (1 + 1 / (β - 1 / 2)) * Real.log n * hrp
+    · rw [if_neg hcond, norm_zero]
+      rcases Nat.eq_zero_or_pos n with rfl | hn_pos
+      · simp
+      · exact mul_nonneg hC_dom (mul_nonneg (Real.log_nonneg (by exact_mod_cast hn_pos))
+          (Real.rpow_nonneg (Nat.cast_nonneg n) _))
+
+private theorem tendsto_trunc_sum_diff_moving_cutoff
+    {f : ℕ → ℝ → ℝ} {g : ℝ → ℝ} {w A : ℕ → ℝ} {β K : ℝ}
+    (hf : ∀ j, MemLp (f j) 2 volume) (hg : MemLp g 2 volume)
+    (hfc : ∀ j, HasCompactSupport (f j))
+    (hA_pos : ∀ j, 0 < A j)
+    (hcut : ∀ j t, A j ≤ t → autocorr (f j) t = 0)
+    (hfg : Tendsto (fun j => (hf j).toLp (f j)) atTop (𝓝 (hg.toLp g)))
+    (hw : Tendsto w atTop (𝓝[>] 0))
+    (hβ : 1 / 2 < β)
+    (hg_dec : ∀ t : ℝ, 0 ≤ t → |autocorr g t| ≤ K * Real.exp (-β * t))
+    (hrate : Tendsto (fun j => Real.exp (2 * A j) * ‖(hf j).toLp (f j) - hg.toLp g‖)
+      atTop (𝓝 0)) :
+    Tendsto (fun j =>
+      (∑ n ∈ Finset.Icc 2 ⌊Real.exp (A j)⌋₊,
+        (suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
+          suzukiCriticalSourceCusp (f j) (w j) (Real.log n)) -
+      (∑ n ∈ Finset.Icc 2 ⌊Real.exp (A j)⌋₊,
+        (suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
+          suzukiCriticalSourceCusp g (w j) (Real.log n))) atTop (𝓝 0) := by
+  have hK : 0 ≤ K := by simpa using (abs_nonneg _).trans (hg_dec 0 le_rfl)
+  have hrate_E : Tendsto (fun j => Real.exp (2 * A j) *
+      ((‖(hf j).toLp (f j)‖ + ‖hg.toLp g‖) * ‖(hf j).toLp (f j) - hg.toLp g‖)) atTop (𝓝 0) := by
+    have hnorm_sum : Tendsto (fun j => ‖(hf j).toLp (f j)‖ + ‖hg.toLp g‖) atTop
+        (𝓝 (‖hg.toLp g‖ + ‖hg.toLp g‖)) :=
+      hfg.norm.add_const ‖hg.toLp g‖
+    have hprod := hnorm_sum.mul hrate
+    rw [mul_zero] at hprod
+    exact hprod.congr fun _ => by ring
+  set δ := min (1 / 2 : ℝ) ((β - 1 / 2) / 2)
+  have hδ : 0 < δ := lt_min (by norm_num) (by linarith)
+  set p := β + 1 / 2 - δ
+  have hp1 : 1 < p := by
+    have : δ ≤ (β - 1 / 2) / 2 := min_le_right _ _
+    unfold p; linarith
+  have hM2 : ∀ᶠ j in atTop, suzukiCriticalPrimaryMass (w j) < 2 :=
+    ((tendsto_suzukiCriticalPrimaryMass.mono_left nhdsWithin_le_nhds).comp hw).eventually
+      (Iio_mem_nhds (by norm_num : (1 : ℝ) < 2))
+  have hw_δ : ∀ᶠ j in atTop, w j < δ := hw.eventually
+    (mem_nhdsWithin_of_mem_nhds (Iio_mem_nhds hδ))
+  have htail_sum : Summable (fun n : ℕ =>
+      (8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p))) :=
+    (summable_log_mul_rpow_neg hp1).mul_left _
+  have hw0 : Tendsto w atTop (𝓝 0) := hw.mono_right nhdsWithin_le_nhds
+  have hub := (hrate_E.const_mul 132).add
+    (hw0.mul_const (∑' n : ℕ, (8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p))))
+  simp only [mul_zero, zero_mul, add_zero] at hub
+  rw [tendsto_zero_iff_norm_tendsto_zero]
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hub
+    (Eventually.of_forall fun _ => norm_nonneg _) ?_
+  filter_upwards [hw.eventually self_mem_nhdsWithin, hw_δ, hM2] with j hwj hwj_δ hMj
+  change 0 < w j at hwj
+  have hwj2 : w j ≤ 1 / 2 := hwj_δ.le.trans (min_le_left _ _)
+  have hAj0 : 0 ≤ A j := (hA_pos j).le
+  set Ej := (‖(hf j).toLp (f j)‖ + ‖hg.toLp g‖) * ‖(hf j).toLp (f j) - hg.toLp g‖
+  have hE_nn : 0 ≤ Ej := by unfold Ej; positivity
+  rw [Real.norm_eq_abs, ← Finset.sum_sub_distrib]
+  refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+  set S_j := Finset.Icc 2 ⌊Real.exp (A j)⌋₊
+  have hterm_le : ∀ n ∈ S_j,
+      |(suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
+          suzukiCriticalSourceCusp (f j) (w j) (Real.log n) -
+        (suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
+          suzukiCriticalSourceCusp g (w j) (Real.log n)| ≤
+        (4 * A j + 8 * A j ^ 2 * Real.exp (A j / 2)) * Ej +
+          w j * ((8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p))) := by
+    intro n hn
+    have hn2 := (Finset.mem_Icc.mp hn).1
+    have hn_fl := (Finset.mem_Icc.mp hn).2
+    have hn1 : 1 ≤ n := by omega
+    have hn_pos : (0 : ℝ) < n := by exact_mod_cast hn1
+    have hlog : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast hn1)
+    have hn_exp : (n : ℝ) ≤ Real.exp (A j) :=
+      Nat.le_floor_iff (Real.exp_pos _).le |>.mp hn_fl
+    have hlog_le_A : Real.log n ≤ A j := by
+      simpa [Real.log_exp] using Real.log_le_log hn_pos hn_exp
+    obtain ⟨hdiv_nn, hdiv_le⟩ := suzukiShiftedCoefficient_div_bounds hn2 hwj
+    set α := suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)
+    have hα_nn : 0 ≤ α := mul_nonneg hdiv_nn (Real.exp_pos _).le
+    have hα_A : α ≤ 2 * A j := by
+      unfold α
+      rw [show -Real.log n / 2 = (-1 / 2 : ℝ) * Real.log n by ring, exp_neg_mul_log_nat hn1]
+      have hrp_le1 : (n : ℝ) ^ (w j) * (n : ℝ) ^ (-1 / 2 : ℝ) ≤ 1 := by
+        rw [← Real.rpow_add hn_pos]
+        exact (Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hn1)
+          (by linarith : w j + (-1 / 2 : ℝ) ≤ 0)).trans_eq (Real.rpow_zero _)
+      calc suzukiShiftedCoefficient (w j) n / w j * (n : ℝ) ^ (-1 / 2 : ℝ)
+          ≤ (2 * (n : ℝ) ^ (w j) * Real.log n) * (n : ℝ) ^ (-1 / 2 : ℝ) :=
+            mul_le_mul_of_nonneg_right hdiv_le (Real.rpow_nonneg hn_pos.le _)
+        _ = 2 * Real.log n * ((n : ℝ) ^ (w j) * (n : ℝ) ^ (-1 / 2 : ℝ)) := by ring
+        _ ≤ 2 * Real.log n * 1 := mul_le_mul_of_nonneg_left hrp_le1 (by positivity)
+        _ ≤ 2 * A j := by linarith
+    have hα_δ : α ≤ 2 * Real.log n * (n : ℝ) ^ (δ - 1 / 2) := by
+      unfold α
+      rw [show -Real.log n / 2 = (-1 / 2 : ℝ) * Real.log n by ring, exp_neg_mul_log_nat hn1]
+      have hrpow_le : (n : ℝ) ^ (w j) ≤ (n : ℝ) ^ δ :=
+        Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hn1) hwj_δ.le
+      calc suzukiShiftedCoefficient (w j) n / w j * (n : ℝ) ^ (-1 / 2 : ℝ)
+          ≤ (2 * (n : ℝ) ^ δ * Real.log n) * (n : ℝ) ^ (-1 / 2 : ℝ) :=
+            mul_le_mul_of_nonneg_right
+              (hdiv_le.trans (mul_le_mul_of_nonneg_right
+                (mul_le_mul_of_nonneg_left hrpow_le zero_le_two) hlog))
+              (Real.rpow_nonneg hn_pos.le _)
+        _ = 2 * Real.log n * (n : ℝ) ^ (δ - 1 / 2) := by
+            rw [show (2 * (n : ℝ) ^ δ * Real.log n) * (n : ℝ) ^ (-1 / 2 : ℝ) =
+                2 * Real.log n * ((n : ℝ) ^ δ * (n : ℝ) ^ (-1 / 2 : ℝ)) by ring,
+              ← Real.rpow_add hn_pos, show δ + (-1 / 2 : ℝ) = δ - 1 / 2 by ring]
+    rw [← mul_sub, abs_mul, abs_of_nonneg hα_nn,
+      suzukiCriticalSourceCusp_eq_of_memLp (hf j) (hfc j) hlog hwj hwj2,
+      suzukiCriticalSourceCusp_eq_of_exp_decay hg hβ hlog hg_dec hwj hwj2]
+    set ΔB := suzukiCriticalPrimaryCusp (f j) (w j) (Real.log n) -
+      suzukiCriticalPrimaryCusp g (w j) (Real.log n)
+    set ΔP := suzukiCriticalPoleCusp (f j) (w j) (Real.log n) -
+      suzukiCriticalPoleCusp g (w j) (Real.log n)
+    have hsplit_c : suzukiCriticalPrimaryCusp (f j) (w j) (Real.log n) -
+          2 * w j * suzukiCriticalPoleCusp (f j) (w j) (Real.log n) -
+        (suzukiCriticalPrimaryCusp g (w j) (Real.log n) -
+          2 * w j * suzukiCriticalPoleCusp g (w j) (Real.log n)) =
+        ΔB - 2 * w j * ΔP := by unfold ΔB ΔP; ring
+    rw [hsplit_c]
+    have hprim_sub : |ΔB| ≤ 2 * Ej := by
+      have h := abs_suzukiCriticalPrimaryCusp_sub_le_L2_norms ((hf j).toLp (f j)) (hg.toLp g) hwj
+        (by linarith) (Real.log n)
+      rw [suzukiCriticalPrimaryCusp_congr_ae (hf j).coeFn_toLp,
+        suzukiCriticalPrimaryCusp_congr_ae hg.coeFn_toLp] at h
+      exact h.trans (mul_le_mul_of_nonneg_right hMj.le hE_nn)
+    have hpole_sub := pole_cusp_sub_le_moving_cutoff (hf j) hg (hfc j) (hA_pos j) (hcut j)
+      hβ hlog hg_dec hwj hwj2
+    have hexp_A_le1 : Real.exp (-(β - 1 / 2) * A j) ≤ 1 :=
+      Real.exp_le_one_iff.mpr (by nlinarith)
+    have hpole_sub' : |ΔP| ≤ 2 * A j * Real.exp (A j / 2) * Ej +
+        (2 * K / (β - 1 / 2)) * (n : ℝ) ^ (-β) := by
+      rw [← exp_neg_mul_log_nat hn1 (-β)]
+      refine hpole_sub.trans (add_le_add ?_ ?_)
+      · have h1 := mul_le_mul_of_nonneg_left hMj.le hAj0
+        have h2 := mul_le_mul_of_nonneg_right h1 (Real.exp_pos (A j / 2)).le
+        exact mul_le_mul_of_nonneg_right (by linarith) hE_nn
+      · calc (K * suzukiCriticalPrimaryMass (w j) / (β - 1 / 2)) *
+              Real.exp (-β * Real.log n) * Real.exp (-(β - 1 / 2) * A j)
+            ≤ (K * 2 / (β - 1 / 2)) * Real.exp (-β * Real.log n) * 1 := by
+              refine mul_le_mul (mul_le_mul_of_nonneg_right ?_ (Real.exp_pos _).le)
+                hexp_A_le1 (Real.exp_pos _).le (by positivity)
+              refine div_le_div_of_nonneg_right ?_ (by linarith)
+              exact mul_le_mul_of_nonneg_left hMj.le hK
+          _ = (2 * K / (β - 1 / 2)) * Real.exp (-β * Real.log n) := by ring
+    have h2w_le1 : 2 * w j ≤ 1 := by linarith
+    have htri : α * |ΔB - 2 * w j * ΔP| ≤
+        α * (2 * Ej + (2 * A j * Real.exp (A j / 2) * Ej)) +
+          α * (2 * w j * ((2 * K / (β - 1 / 2)) * (n : ℝ) ^ (-β))) := by
+      have h1 : |ΔB - 2 * w j * ΔP| ≤ 2 * Ej + 2 * w j * |ΔP| := by
+        refine (abs_sub ΔB (2 * w j * ΔP)).trans (add_le_add hprim_sub ?_)
+        rw [abs_mul, abs_of_pos (by positivity : 0 < 2 * w j)]
+      have h2 : 2 * w j * |ΔP| ≤
+          2 * A j * Real.exp (A j / 2) * Ej +
+          2 * w j * ((2 * K / (β - 1 / 2)) * (n : ℝ) ^ (-β)) := by
+        have h2a := mul_le_mul_of_nonneg_left hpole_sub' (by positivity : 0 ≤ 2 * w j)
+        have h2b := mul_le_mul_of_nonneg_right h2w_le1
+          (show 0 ≤ 2 * A j * Real.exp (A j / 2) * Ej by positivity)
+        linarith
+      have h3 : α * |ΔB - 2 * w j * ΔP| ≤
+          α * ((2 * Ej + 2 * A j * Real.exp (A j / 2) * Ej) +
+            2 * w j * ((2 * K / (β - 1 / 2)) * (n : ℝ) ^ (-β))) :=
+        mul_le_mul_of_nonneg_left (h1.trans (by linarith)) hα_nn
+      linarith [show α * ((2 * Ej + 2 * A j * Real.exp (A j / 2) * Ej) +
+          2 * w j * ((2 * K / (β - 1 / 2)) * (n : ℝ) ^ (-β))) =
+          α * (2 * Ej + 2 * A j * Real.exp (A j / 2) * Ej) +
+          α * (2 * w j * ((2 * K / (β - 1 / 2)) * (n : ℝ) ^ (-β))) by ring]
+    refine htri.trans (add_le_add ?_ ?_)
+    · calc α * (2 * Ej + 2 * A j * Real.exp (A j / 2) * Ej)
+          ≤ (2 * A j) * (2 * Ej + 2 * A j * Real.exp (A j / 2) * Ej) :=
+            mul_le_mul_of_nonneg_right hα_A (by positivity)
+        _ = (4 * A j + 4 * A j ^ 2 * Real.exp (A j / 2)) * Ej := by ring
+        _ ≤ (4 * A j + 8 * A j ^ 2 * Real.exp (A j / 2)) * Ej := by
+            have hsq_nn : 0 ≤ A j ^ 2 * Real.exp (A j / 2) * Ej := by positivity
+            linarith
+    · calc α * (2 * w j * ((2 * K / (β - 1 / 2)) * (n : ℝ) ^ (-β)))
+          ≤ (2 * Real.log n * (n : ℝ) ^ (δ - 1 / 2)) *
+              (2 * w j * ((2 * K / (β - 1 / 2)) * (n : ℝ) ^ (-β))) :=
+            mul_le_mul_of_nonneg_right hα_δ (by positivity)
+        _ = w j * ((8 * K / (β - 1 / 2)) * (Real.log n *
+              ((n : ℝ) ^ (δ - 1 / 2) * (n : ℝ) ^ (-β)))) := by ring
+        _ = w j * ((8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p))) := by
+            rw [← Real.rpow_add hn_pos, show δ - 1 / 2 + -β = -p by unfold p; ring]
+  have hcard_le : (S_j.card : ℝ) ≤ Real.exp (A j) := by
+    have hcard_nat : S_j.card ≤ ⌊Real.exp (A j)⌋₊ := by
+      simp only [S_j, Nat.card_Icc]
+      omega
+    exact (Nat.cast_le.mpr hcard_nat).trans (Nat.floor_le (Real.exp_pos _).le)
+  have hsum1 : ∑ _n ∈ S_j, (4 * A j + 8 * A j ^ 2 * Real.exp (A j / 2)) * Ej ≤
+      132 * (Real.exp (2 * A j) * Ej) := by
+    rw [Finset.sum_const, nsmul_eq_mul]
+    have hA_exp : A j * Real.exp (A j) ≤ Real.exp (2 * A j) := by
+      have h1 : A j ≤ Real.exp (A j) :=
+        (le_add_of_nonneg_right zero_le_one).trans (Real.add_one_le_exp (A j))
+      calc A j * Real.exp (A j) ≤ Real.exp (A j) * Real.exp (A j) :=
+            mul_le_mul_of_nonneg_right h1 (Real.exp_pos _).le
+        _ = Real.exp (2 * A j) := by rw [← Real.exp_add]; congr 1; ring
+    have hA2_exp : A j ^ 2 * Real.exp (A j / 2) * Real.exp (A j) ≤
+        16 * Real.exp (2 * A j) := by
+      calc A j ^ 2 * Real.exp (A j / 2) * Real.exp (A j)
+          ≤ (16 * Real.exp (A j / 2)) * Real.exp (A j / 2) * Real.exp (A j) := by
+            gcongr; exact sq_le_sixteen_exp_half hAj0
+        _ = 16 * Real.exp (2 * A j) := by
+            rw [mul_assoc 16, mul_assoc 16, ← Real.exp_add, ← Real.exp_add]
+            congr 2; ring
+    calc (S_j.card : ℝ) * ((4 * A j + 8 * A j ^ 2 * Real.exp (A j / 2)) * Ej)
+        ≤ Real.exp (A j) * ((4 * A j + 8 * A j ^ 2 * Real.exp (A j / 2)) * Ej) :=
+          mul_le_mul_of_nonneg_right hcard_le (by positivity)
+      _ = (4 * (A j * Real.exp (A j)) +
+            8 * (A j ^ 2 * Real.exp (A j / 2) * Real.exp (A j))) * Ej := by ring
+      _ ≤ (4 * Real.exp (2 * A j) + 8 * (16 * Real.exp (2 * A j))) * Ej :=
+          mul_le_mul_of_nonneg_right (by linarith) hE_nn
+      _ = 132 * (Real.exp (2 * A j) * Ej) := by ring
+  have hsum2 : ∑ n ∈ S_j, w j * ((8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p))) ≤
+      w j * ∑' n : ℕ, (8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p)) := by
+    rw [← Finset.mul_sum]
+    refine mul_le_mul_of_nonneg_left (htail_sum.sum_le_tsum S_j fun m _ => ?_) hwj.le
+    rcases Nat.eq_zero_or_pos m with rfl | hm
+    · simp
+    · exact mul_nonneg (by positivity) (mul_nonneg (Real.log_nonneg (by exact_mod_cast hm))
+        (Real.rpow_nonneg (Nat.cast_nonneg m) _))
+  calc ∑ n ∈ S_j,
+        |(suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
+            suzukiCriticalSourceCusp (f j) (w j) (Real.log n) -
+          (suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
+            suzukiCriticalSourceCusp g (w j) (Real.log n)|
+      ≤ ∑ n ∈ S_j, ((4 * A j + 8 * A j ^ 2 * Real.exp (A j / 2)) * Ej +
+          w j * ((8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p)))) :=
+        Finset.sum_le_sum hterm_le
+    _ = (∑ _n ∈ S_j, (4 * A j + 8 * A j ^ 2 * Real.exp (A j / 2)) * Ej) +
+        (∑ n ∈ S_j, w j * ((8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p)))) :=
+        Finset.sum_add_distrib
+    _ ≤ 132 * (Real.exp (2 * A j) * Ej) +
+        w j * ∑' n : ℕ, (8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p)) :=
+        add_le_add hsum1 hsum2
+
 /-- **Coupled General Moving-Aperture Γ-Liminf Without Correlation Decay on Approximants.**
 Let `f j` be arbitrary compact `L²` approximants with correlation cutoffs `A j → ∞` (with no
 correlation decay assumed on `f j`) converging in `L²(ℝ)` to a supercritical-decay target `g`
@@ -1142,391 +1614,19 @@ theorem suzukiCriticalExtendedWeilEnergy_le_liminf_of_coupled_moving_aperture
     suzukiCriticalExtendedWeilEnergy g ≤
       liminf (fun j => (((autocorr (f j) 0 - suzukiCriticalSourcePairing (f j) (w j)) / w j : ℝ) :
         EReal)) atTop := by
-  have hK : 0 ≤ K := by simpa using (abs_nonneg _).trans (hg_dec 0 le_rfl)
-  let q (j : ℕ) : Velocity := (hf j).toLp (f j)
-  let r : Velocity := hg.toLp g
-  let E (j : ℕ) : ℝ := (‖q j‖ + ‖r‖) * ‖q j - r‖
-  have hrate_E : Tendsto (fun j => Real.exp (2 * A j) * E j) atTop (𝓝 0) := by
-    have hnorm_sum : Tendsto (fun j => ‖q j‖ + ‖r‖) atTop (𝓝 (‖r‖ + ‖r‖)) :=
-      hfg.norm.add_const ‖r‖
-    have hprod := hnorm_sum.mul hrate
-    rw [mul_zero] at hprod
-    exact hprod.congr fun j => by unfold E; ring
-  -- 1. Convergence of the Gamma mass secant and growing pole cusp of `f j`:
-  have hM_sec := (tendsto_suzukiCriticalPrimaryMass_secant.neg.comp hw).mul
-    (tendsto_autocorr_joint hf hg hfg 0)
-  have hneg : -(Real.log Real.pi - (Complex.digamma ((5 / 4 : ℝ) : ℂ)).re) =
-      (Complex.digamma ((5 / 4 : ℝ) : ℂ)).re - Real.log Real.pi := by ring
-  rw [hneg] at hM_sec
-  have hp_g := tendsto_suzukiCriticalPoleCusp_joint_of_exp_decay
-    (f := fun _ => g) (g := g) (fun _ => hg) hg tendsto_const_nhds hw hβ le_rfl (fun _ => hg_dec)
-  simp only [zero_add] at hp_g
-  have hp_diff : Tendsto (fun j => suzukiCriticalPoleCusp (f j) (w j) 0 -
-      suzukiCriticalPoleCusp g (w j) 0) atTop (𝓝 0) := by
-    have hM2 : ∀ᶠ j in atTop, suzukiCriticalPrimaryMass (w j) < 2 :=
-      ((tendsto_suzukiCriticalPrimaryMass.mono_left nhdsWithin_le_nhds).comp hw).eventually
-        (Iio_mem_nhds (by norm_num : (1 : ℝ) < 2))
-    have ho : ∀ᶠ j in atTop, w j < 1 / 2 := hw.eventually
-      (mem_nhdsWithin_of_mem_nhds (Iio_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2)))
-    have htail0 : Tendsto (fun j => (2 * K / (β - 1 / 2)) * Real.exp (-(β - 1 / 2) * A j))
-        atTop (𝓝 0) := by
-      have hexp0 : Tendsto (fun j => Real.exp (-(β - 1 / 2) * A j)) atTop (𝓝 0) :=
-        Real.tendsto_exp_atBot.comp
-          (Tendsto.neg_const_mul_atTop (by linarith : -(β - 1 / 2) < 0) hA_top)
-      simpa only [mul_zero] using hexp0.const_mul (2 * K / (β - 1 / 2))
-    have hub : Tendsto (fun j => 2 * (Real.exp (2 * A j) * E j) +
-        (2 * K / (β - 1 / 2)) * Real.exp (-(β - 1 / 2) * A j)) atTop (𝓝 0) := by
-      simpa using (hrate_E.const_mul 2).add htail0
-    rw [tendsto_zero_iff_norm_tendsto_zero]
-    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hub
-      (Eventually.of_forall fun _ => norm_nonneg _) ?_
-    filter_upwards [hw.eventually self_mem_nhdsWithin, ho, hM2] with j hwj ho hMj
-    rw [Real.norm_eq_abs]
-    have hb := pole_cusp_sub_le_moving_cutoff (hf j) hg (hfc j) (hA_pos j) (hcut j) hβ le_rfl
-      hg_dec hwj ho.le
-    simp only [mul_zero, Real.exp_zero, mul_one] at hb
-    refine hb.trans (add_le_add ?_ ?_)
-    · have hA_exp : A j * Real.exp (A j / 2) ≤ Real.exp (2 * A j) := by
-        have h1 : A j ≤ Real.exp (A j) :=
-          (le_add_of_nonneg_right zero_le_one).trans (Real.add_one_le_exp (A j))
-        calc A j * Real.exp (A j / 2)
-            ≤ Real.exp (A j) * Real.exp (A j / 2) :=
-              mul_le_mul_of_nonneg_right h1 (Real.exp_pos _).le
-          _ = Real.exp (3 * A j / 2) := by rw [← Real.exp_add]; congr 1; ring
-          _ ≤ Real.exp (2 * A j) := Real.exp_le_exp.mpr (by linarith [hA_pos j])
-      have hE_nn : 0 ≤ E j := by unfold E; positivity
-      calc A j * suzukiCriticalPrimaryMass (w j) * Real.exp (A j / 2) * E j
-          ≤ 2 * (A j * Real.exp (A j / 2)) * E j := by
-            have := mul_le_mul_of_nonneg_right
-              (mul_le_mul_of_nonneg_left hMj.le (hA_pos j).le) (Real.exp_pos _).le
-            exact mul_le_mul_of_nonneg_right (by linarith) hE_nn
-        _ ≤ 2 * (Real.exp (2 * A j) * E j) := by
-            nlinarith [mul_le_mul_of_nonneg_right hA_exp hE_nn]
-    · gcongr
-      linarith [hMj.le]
-  have hp_f : Tendsto (fun j => 2 * suzukiCriticalPoleCusp (f j) (w j) 0) atTop
-      (𝓝 (2 * ∫ t in Ioi 0, autocorr g t * Real.exp (t / 2))) := by
-    have := (hp_diff.add hp_g).const_mul 2
-    simpa only [sub_add_cancel, zero_add] using this
-  -- 2. Convergence of the truncated `g`-sum via Tannery:
-  set δ := min (1 / 2 : ℝ) ((β - 1 / 2) / 2)
-  have hδ : 0 < δ := lt_min (by norm_num) (by linarith)
-  set p := β + 1 / 2 - δ
-  have hp1 : 1 < p := by
-    have : δ ≤ (β - 1 / 2) / 2 := min_le_right _ _
-    unfold p; linarith
-  set C_dom := 4 * K * (1 + 1 / (β - 1 / 2))
-  have hC_dom : 0 ≤ C_dom := by unfold C_dom; positivity
-  have hB_sum : Summable (fun n : ℕ => C_dom * (Real.log n * (n : ℝ) ^ (-p))) :=
-    (summable_log_mul_rpow_neg hp1).mul_left C_dom
-  have hM2 : ∀ᶠ j in atTop, suzukiCriticalPrimaryMass (w j) < 2 :=
-    ((tendsto_suzukiCriticalPrimaryMass.mono_left nhdsWithin_le_nhds).comp hw).eventually
-      (Iio_mem_nhds (by norm_num : (1 : ℝ) < 2))
-  have hw_δ : ∀ᶠ j in atTop, w j < δ := hw.eventually
-    (mem_nhdsWithin_of_mem_nhds (Iio_mem_nhds hδ))
-  have hg_trunc_tendsto : Tendsto (fun j => ∑ n ∈ Finset.Icc 2 ⌊Real.exp (A j)⌋₊,
-      (suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
-        suzukiCriticalSourceCusp g (w j) (Real.log n)) atTop
-      (𝓝 (∑' n : ℕ, if 2 ≤ n then
-        (2 * ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n / 2)) *
-          autocorr g (Real.log n) else 0)) := by
-    have hts_eq : ∀ j, (∑ n ∈ Finset.Icc 2 ⌊Real.exp (A j)⌋₊,
-        (suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
-          suzukiCriticalSourceCusp g (w j) (Real.log n)) =
-        ∑' n : ℕ, if 2 ≤ n ∧ n ≤ ⌊Real.exp (A j)⌋₊ then
-          (suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
-            suzukiCriticalSourceCusp g (w j) (Real.log n) else 0 := by
-      intro j
-      rw [tsum_eq_sum (s := Finset.Icc 2 ⌊Real.exp (A j)⌋₊)]
-      · refine Finset.sum_congr rfl fun n hn => (if_pos (Finset.mem_Icc.mp hn)).symm
-      · intro n hn
-        rw [if_neg]
-        simpa only [Finset.mem_Icc] using hn
-    simp_rw [hts_eq]
-    apply tendsto_tsum_of_dominated_convergence hB_sum
-    · intro n
-      by_cases hn2 : 2 ≤ n
-      · have hlog : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast (show 1 ≤ n by omega))
-        have hlim_n := (((coeff_tangent_at_zero hn2).comp hw).mul_const
-          (Real.exp (-Real.log n / 2))).mul
-          (tendsto_suzukiCriticalSourceCusp_joint_of_exp_decay
-            (f := fun _ => g) (g := g) (fun _ => hg) hg tendsto_const_nhds hw hβ hlog
-            (fun _ => hg_dec))
-        simp only [if_pos hn2]
-        refine hlim_n.congr' ?_
-        have hAj_gt : ∀ᶠ j in atTop, Real.log n + 1 < A j := hA_top.eventually_gt_atTop _
-        filter_upwards [hAj_gt] with j hAj
-        have hn_le : n ≤ ⌊Real.exp (A j)⌋₊ := by
-          apply Nat.le_floor
-          have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
-          rw [← Real.exp_log hn0]
-          exact Real.exp_le_exp.mpr (by linarith)
-        rw [if_pos ⟨hn2, hn_le⟩]
-      · simp only [show ∀ j, ¬(2 ≤ n ∧ n ≤ ⌊Real.exp (A j)⌋₊) from fun _ h => hn2 h.1,
-          if_neg hn2, ↓reduceIte]
-        exact tendsto_const_nhds
-    · filter_upwards [hw.eventually self_mem_nhdsWithin, hw_δ, hM2] with j hwj hwj_δ hMj n
-      change 0 < w j at hwj
-      have hwj2 : w j ≤ 1 / 2 := hwj_δ.le.trans (min_le_left _ _)
-      by_cases hcond : 2 ≤ n ∧ n ≤ ⌊Real.exp (A j)⌋₊
-      · rw [if_pos hcond]
-        have hn2 := hcond.1
-        have hn1 : 1 ≤ n := by omega
-        have hn_pos : (0 : ℝ) < n := by exact_mod_cast hn1
-        have hlog : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast hn1)
-        obtain ⟨hdiv_nn, hdiv_le⟩ := suzukiShiftedCoefficient_div_bounds hn2 hwj
-        have hcusp := abs_suzukiCriticalSourceCusp_le_of_exp_decay hg hβ hlog hg_dec hwj hwj2
-        have h1 : 1 + 2 * w j / (β - 1 / 2) ≤ 1 + 1 / (β - 1 / 2) := by
-          have : 2 * w j ≤ 1 := by linarith
-          gcongr
-        have hM_nn : 0 ≤ suzukiCriticalPrimaryMass (w j) := by
-          rw [← integral_suzukiCriticalPrimaryDensity hwj (by linarith)]
-          exact integral_nonneg_of_ae (by
-            filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
-            exact (suzukiCriticalPrimaryDensity_pos hwj hr).le)
-        have hcusp' : |suzukiCriticalSourceCusp g (w j) (Real.log n)| ≤
-            2 * K * (1 + 1 / (β - 1 / 2)) * (n : ℝ) ^ (-β) := by
-          rw [← exp_neg_mul_log_nat hn1 (-β)]
-          refine hcusp.trans (mul_le_mul_of_nonneg_right ?_ (Real.exp_pos _).le)
-          calc K * suzukiCriticalPrimaryMass (w j) * (1 + 2 * w j / (β - 1 / 2))
-              ≤ K * 2 * (1 + 1 / (β - 1 / 2)) :=
-                mul_le_mul (mul_le_mul_of_nonneg_left hMj.le hK) h1 (by positivity) (by positivity)
-            _ = 2 * K * (1 + 1 / (β - 1 / 2)) := by ring
-        have hrpow_le : (n : ℝ) ^ (w j) ≤ (n : ℝ) ^ δ :=
-          Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hn1) hwj_δ.le
-        rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_nonneg hdiv_nn,
-          abs_of_pos (Real.exp_pos _), show -Real.log n / 2 = (-1 / 2 : ℝ) * Real.log n by ring,
-          exp_neg_mul_log_nat hn1]
-        calc suzukiShiftedCoefficient (w j) n / w j * (n : ℝ) ^ (-1 / 2 : ℝ) *
-              |suzukiCriticalSourceCusp g (w j) (Real.log n)|
-            ≤ (2 * (n : ℝ) ^ δ * Real.log n) * (n : ℝ) ^ (-1 / 2 : ℝ) *
-                (2 * K * (1 + 1 / (β - 1 / 2)) * (n : ℝ) ^ (-β)) := by
-              refine mul_le_mul (mul_le_mul_of_nonneg_right
-                (hdiv_le.trans (mul_le_mul_of_nonneg_right
-                  (mul_le_mul_of_nonneg_left hrpow_le zero_le_two) hlog))
-                (Real.rpow_nonneg hn_pos.le _)) hcusp' (abs_nonneg _) (by positivity)
-          _ = C_dom * (Real.log n * (n : ℝ) ^ (-p)) := by
-              have hrp : (n : ℝ) ^ δ * (n : ℝ) ^ (-1 / 2 : ℝ) * (n : ℝ) ^ (-β) =
-                  (n : ℝ) ^ (-p) := by
-                rw [← Real.rpow_add hn_pos, ← Real.rpow_add hn_pos]
-                unfold p; ring_nf
-              unfold C_dom
-              linear_combination 4 * K * (1 + 1 / (β - 1 / 2)) * Real.log n * hrp
-      · rw [if_neg hcond, norm_zero]
-        rcases Nat.eq_zero_or_pos n with rfl | hn_pos
-        · simp
-        · exact mul_nonneg hC_dom (mul_nonneg (Real.log_nonneg (by exact_mod_cast hn_pos))
-            (Real.rpow_nonneg (Nat.cast_nonneg n) _))
-  -- 3. Perturbation bound between the `f j` finite sum and the `g` finite sum on `Icc 2 ⌊e^{A j}⌋₊`:
-  have hsum_diff : Tendsto (fun j =>
-      (∑ n ∈ Finset.Icc 2 ⌊Real.exp (A j)⌋₊,
-        (suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
-          suzukiCriticalSourceCusp (f j) (w j) (Real.log n)) -
-      (∑ n ∈ Finset.Icc 2 ⌊Real.exp (A j)⌋₊,
-        (suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
-          suzukiCriticalSourceCusp g (w j) (Real.log n))) atTop (𝓝 0) := by
-    have htail_sum : Summable (fun n : ℕ =>
-        (8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p))) :=
-      (summable_log_mul_rpow_neg hp1).mul_left _
-    have hw0 : Tendsto w atTop (𝓝 0) := hw.mono_right nhdsWithin_le_nhds
-    have hub : Tendsto (fun j => 132 * (Real.exp (2 * A j) * E j) +
-        w j * (∑' n : ℕ, (8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p)))) atTop (𝓝 0) := by
-      simpa using (hrate_E.const_mul 132).add (hw0.mul_const _)
-    rw [tendsto_zero_iff_norm_tendsto_zero]
-    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hub
-      (Eventually.of_forall fun _ => norm_nonneg _) ?_
-    filter_upwards [hw.eventually self_mem_nhdsWithin, hw_δ, hM2] with j hwj hwj_δ hMj
-    change 0 < w j at hwj
-    have hwj2 : w j ≤ 1 / 2 := hwj_δ.le.trans (min_le_left _ _)
-    have hAj0 : 0 ≤ A j := (hA_pos j).le
-    have hE_nn : 0 ≤ E j := by unfold E; positivity
-    rw [Real.norm_eq_abs, ← Finset.sum_sub_distrib]
-    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
-    set S_j := Finset.Icc 2 ⌊Real.exp (A j)⌋₊
-    have hterm_le : ∀ n ∈ S_j,
-        |(suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
-            suzukiCriticalSourceCusp (f j) (w j) (Real.log n) -
-          (suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
-            suzukiCriticalSourceCusp g (w j) (Real.log n)| ≤
-          (4 * A j + 8 * A j ^ 2 * Real.exp (A j / 2)) * E j +
-            w j * ((8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p))) := by
-      intro n hn
-      have hn2 := (Finset.mem_Icc.mp hn).1
-      have hn_fl := (Finset.mem_Icc.mp hn).2
-      have hn1 : 1 ≤ n := by omega
-      have hn_pos : (0 : ℝ) < n := by exact_mod_cast hn1
-      have hlog : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast hn1)
-      have hn_exp : (n : ℝ) ≤ Real.exp (A j) :=
-        Nat.le_floor_iff (Real.exp_pos _).le |>.mp hn_fl
-      have hlog_le_A : Real.log n ≤ A j := by
-        simpa [Real.log_exp] using Real.log_le_log hn_pos hn_exp
-      obtain ⟨hdiv_nn, hdiv_le⟩ := suzukiShiftedCoefficient_div_bounds hn2 hwj
-      have hα_nn : 0 ≤ suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2) :=
-        mul_nonneg hdiv_nn (Real.exp_pos _).le
-      have hα_A : suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2) ≤
-          2 * A j := by
-        rw [show -Real.log n / 2 = (-1 / 2 : ℝ) * Real.log n by ring, exp_neg_mul_log_nat hn1]
-        have hrp_le1 : (n : ℝ) ^ (w j) * (n : ℝ) ^ (-1 / 2 : ℝ) ≤ 1 := by
-          rw [← Real.rpow_add hn_pos]
-          exact (Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hn1)
-            (by linarith : w j + (-1 / 2 : ℝ) ≤ 0)).trans_eq (Real.rpow_zero _)
-        calc suzukiShiftedCoefficient (w j) n / w j * (n : ℝ) ^ (-1 / 2 : ℝ)
-            ≤ (2 * (n : ℝ) ^ (w j) * Real.log n) * (n : ℝ) ^ (-1 / 2 : ℝ) :=
-              mul_le_mul_of_nonneg_right hdiv_le (Real.rpow_nonneg hn_pos.le _)
-          _ = 2 * Real.log n * ((n : ℝ) ^ (w j) * (n : ℝ) ^ (-1 / 2 : ℝ)) := by ring
-          _ ≤ 2 * Real.log n * 1 := mul_le_mul_of_nonneg_left hrp_le1 (by positivity)
-          _ ≤ 2 * A j := by linarith
-      have hα_δ : suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2) ≤
-          2 * Real.log n * (n : ℝ) ^ (δ - 1 / 2) := by
-        rw [show -Real.log n / 2 = (-1 / 2 : ℝ) * Real.log n by ring, exp_neg_mul_log_nat hn1]
-        have hrpow_le : (n : ℝ) ^ (w j) ≤ (n : ℝ) ^ δ :=
-          Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hn1) hwj_δ.le
-        calc suzukiShiftedCoefficient (w j) n / w j * (n : ℝ) ^ (-1 / 2 : ℝ)
-            ≤ (2 * (n : ℝ) ^ δ * Real.log n) * (n : ℝ) ^ (-1 / 2 : ℝ) :=
-              mul_le_mul_of_nonneg_right
-                (hdiv_le.trans (mul_le_mul_of_nonneg_right
-                  (mul_le_mul_of_nonneg_left hrpow_le zero_le_two) hlog))
-                (Real.rpow_nonneg hn_pos.le _)
-          _ = 2 * Real.log n * (n : ℝ) ^ (δ - 1 / 2) := by
-              rw [show (2 * (n : ℝ) ^ δ * Real.log n) * (n : ℝ) ^ (-1 / 2 : ℝ) =
-                  2 * Real.log n * ((n : ℝ) ^ δ * (n : ℝ) ^ (-1 / 2 : ℝ)) by ring,
-                ← Real.rpow_add hn_pos]
-              ring_nf
-      rw [← mul_sub, abs_mul, abs_of_nonneg hα_nn,
-        suzukiCriticalSourceCusp_eq_of_memLp (hf j) (hfc j) hlog hwj hwj2,
-        suzukiCriticalSourceCusp_eq_of_exp_decay hg hβ hlog hg_dec hwj hwj2]
-      have hsplit_c : suzukiCriticalPrimaryCusp (f j) (w j) (Real.log n) -
-            2 * w j * suzukiCriticalPoleCusp (f j) (w j) (Real.log n) -
-          (suzukiCriticalPrimaryCusp g (w j) (Real.log n) -
-            2 * w j * suzukiCriticalPoleCusp g (w j) (Real.log n)) =
-          (suzukiCriticalPrimaryCusp (f j) (w j) (Real.log n) -
-            suzukiCriticalPrimaryCusp g (w j) (Real.log n)) -
-          2 * w j * (suzukiCriticalPoleCusp (f j) (w j) (Real.log n) -
-            suzukiCriticalPoleCusp g (w j) (Real.log n)) := by ring
-      rw [hsplit_c]
-      have hprim_sub : |suzukiCriticalPrimaryCusp (f j) (w j) (Real.log n) -
-          suzukiCriticalPrimaryCusp g (w j) (Real.log n)| ≤ 2 * E j := by
-        have h := abs_suzukiCriticalPrimaryCusp_sub_le_L2_norms (q j) r hwj (by linarith)
-          (Real.log n)
-        rw [suzukiCriticalPrimaryCusp_congr_ae (hf j).coeFn_toLp,
-          suzukiCriticalPrimaryCusp_congr_ae hg.coeFn_toLp] at h
-        exact h.trans (mul_le_mul_of_nonneg_right hMj.le hE_nn)
-      have hpole_sub := pole_cusp_sub_le_moving_cutoff (hf j) hg (hfc j) (hA_pos j) (hcut j)
-        hβ hlog hg_dec hwj hwj2
-      have hexp_A_le1 : Real.exp (-(β - 1 / 2) * A j) ≤ 1 :=
-        Real.exp_le_one_iff.mpr (by nlinarith)
-      have hM_nn : 0 ≤ suzukiCriticalPrimaryMass (w j) := by
-        rw [← integral_suzukiCriticalPrimaryDensity hwj (by linarith)]
-        exact integral_nonneg_of_ae (by
-          filter_upwards [ae_restrict_mem measurableSet_Ioi] with s hs
-          exact (suzukiCriticalPrimaryDensity_pos hwj hs).le)
-      have hpole_sub' : |suzukiCriticalPoleCusp (f j) (w j) (Real.log n) -
-          suzukiCriticalPoleCusp g (w j) (Real.log n)| ≤
-          2 * A j * Real.exp (A j / 2) * E j +
-            (2 * K / (β - 1 / 2)) * (n : ℝ) ^ (-β) := by
-        rw [← exp_neg_mul_log_nat hn1 (-β)]
-        refine hpole_sub.trans (add_le_add ?_ ?_)
-        · have := mul_le_mul_of_nonneg_right
-            (mul_le_mul_of_nonneg_left hMj.le hAj0) (Real.exp_pos _).le
-          exact mul_le_mul_of_nonneg_right (by linarith) hE_nn
-        · calc (K * suzukiCriticalPrimaryMass (w j) / (β - 1 / 2)) *
-                Real.exp (-β * Real.log n) * Real.exp (-(β - 1 / 2) * A j)
-              ≤ (K * 2 / (β - 1 / 2)) * Real.exp (-β * Real.log n) * 1 := by
-                refine mul_le_mul (mul_le_mul_of_nonneg_right ?_ (Real.exp_pos _).le)
-                  hexp_A_le1 (Real.exp_pos _).le (by positivity)
-                gcongr
-                linarith [hMj.le]
-            _ = (2 * K / (β - 1 / 2)) * Real.exp (-β * Real.log n) := by ring
-      have h2w_le1 : 2 * w j ≤ 1 := by linarith
-      set α := suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)
-      have htri : α * |(suzukiCriticalPrimaryCusp (f j) (w j) (Real.log n) -
-            suzukiCriticalPrimaryCusp g (w j) (Real.log n)) -
-          2 * w j * (suzukiCriticalPoleCusp (f j) (w j) (Real.log n) -
-            suzukiCriticalPoleCusp g (w j) (Real.log n))| ≤
-          α * (2 * E j + (2 * A j * Real.exp (A j / 2) * E j)) +
-            α * (2 * w j * ((2 * K / (β - 1 / 2)) * (n : ℝ) ^ (-β))) := by
-        have h1 := (abs_sub _ _).trans (add_le_add hprim_sub (by
-          rw [abs_mul, abs_of_pos (by positivity : 0 < 2 * w j)]
-          exact mul_le_mul_of_nonneg_left hpole_sub' (by positivity)))
-        have h2 : 2 * w j * (2 * A j * Real.exp (A j / 2) * E j +
-            (2 * K / (β - 1 / 2)) * (n : ℝ) ^ (-β)) ≤
-            2 * A j * Real.exp (A j / 2) * E j +
-            2 * w j * ((2 * K / (β - 1 / 2)) * (n : ℝ) ^ (-β)) := by
-          have := mul_le_mul_of_nonneg_right h2w_le1
-            (show 0 ≤ 2 * A j * Real.exp (A j / 2) * E j by positivity)
-          linarith
-        have h3 := mul_le_mul_of_nonneg_left (h1.trans (by linarith)) hα_nn
-        linarith
-      refine htri.trans (add_le_add ?_ ?_)
-      · calc α * (2 * E j + 2 * A j * Real.exp (A j / 2) * E j)
-            ≤ (2 * A j) * (2 * E j + 2 * A j * Real.exp (A j / 2) * E j) :=
-              mul_le_mul_of_nonneg_right hα_A (by positivity)
-          _ = (4 * A j + 4 * A j ^ 2 * Real.exp (A j / 2)) * E j := by ring
-          _ ≤ (4 * A j + 8 * A j ^ 2 * Real.exp (A j / 2)) * E j := by
-              nlinarith [sq_nonneg (A j), Real.exp_pos (A j / 2)]
-      · calc α * (2 * w j * ((2 * K / (β - 1 / 2)) * (n : ℝ) ^ (-β)))
-            ≤ (2 * Real.log n * (n : ℝ) ^ (δ - 1 / 2)) *
-                (2 * w j * ((2 * K / (β - 1 / 2)) * (n : ℝ) ^ (-β))) :=
-              mul_le_mul_of_nonneg_right hα_δ (by positivity)
-          _ = w j * ((4 * K / (β - 1 / 2)) * (Real.log n *
-                ((n : ℝ) ^ (δ - 1 / 2) * (n : ℝ) ^ (-β)))) := by ring
-          _ = w j * ((4 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p))) := by
-              rw [← Real.rpow_add hn_pos]; unfold p; ring_nf
-          _ ≤ w j * ((8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p))) := by
-              gcongr; linarith [div_nonneg hK (show 0 ≤ β - 1 / 2 by linarith)]
-    have hcard_le : (S_j.card : ℝ) ≤ Real.exp (A j) := by
-      have hcard_nat : S_j.card ≤ ⌊Real.exp (A j)⌋₊ := by
-        simp only [S_j, Nat.card_Icc]
-        omega
-      exact (Nat.cast_le.mpr hcard_nat).trans (Nat.floor_le (Real.exp_pos _).le)
-    have hsum1 : ∑ _n ∈ S_j, (4 * A j + 8 * A j ^ 2 * Real.exp (A j / 2)) * E j ≤
-        132 * (Real.exp (2 * A j) * E j) := by
-      rw [Finset.sum_const, nsmul_eq_mul]
-      have hA_exp : A j * Real.exp (A j) ≤ Real.exp (2 * A j) := by
-        have h1 : A j ≤ Real.exp (A j) :=
-          (le_add_of_nonneg_right zero_le_one).trans (Real.add_one_le_exp (A j))
-        calc A j * Real.exp (A j) ≤ Real.exp (A j) * Real.exp (A j) :=
-              mul_le_mul_of_nonneg_right h1 (Real.exp_pos _).le
-          _ = Real.exp (2 * A j) := by rw [← Real.exp_add]; congr 1; ring
-      have hA2_exp : A j ^ 2 * Real.exp (A j / 2) * Real.exp (A j) ≤
-          16 * Real.exp (2 * A j) := by
-        calc A j ^ 2 * Real.exp (A j / 2) * Real.exp (A j)
-            ≤ (16 * Real.exp (A j / 2)) * Real.exp (A j / 2) * Real.exp (A j) := by
-              gcongr; exact sq_le_sixteen_exp_half hAj0
-          _ = 16 * Real.exp (2 * A j) := by
-              rw [mul_assoc 16, mul_assoc 16, ← Real.exp_add, ← Real.exp_add]
-              congr 2; ring
-      calc (S_j.card : ℝ) * ((4 * A j + 8 * A j ^ 2 * Real.exp (A j / 2)) * E j)
-          ≤ Real.exp (A j) * ((4 * A j + 8 * A j ^ 2 * Real.exp (A j / 2)) * E j) :=
-            mul_le_mul_of_nonneg_right hcard_le (by positivity)
-        _ = (4 * (A j * Real.exp (A j)) +
-              8 * (A j ^ 2 * Real.exp (A j / 2) * Real.exp (A j))) * E j := by ring
-        _ ≤ (4 * Real.exp (2 * A j) + 8 * (16 * Real.exp (2 * A j))) * E j :=
-            mul_le_mul_of_nonneg_right (by linarith) hE_nn
-        _ = 132 * (Real.exp (2 * A j) * E j) := by ring
-    have hsum2 : ∑ n ∈ S_j, w j * ((8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p))) ≤
-        w j * ∑' n : ℕ, (8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p)) := by
-      rw [← Finset.mul_sum]
-      refine mul_le_mul_of_nonneg_left (htail_sum.sum_le_tsum S_j fun m _ => ?_) hwj.le
-      rcases Nat.eq_zero_or_pos m with rfl | hm
-      · simp
-      · exact mul_nonneg (by positivity) (mul_nonneg (Real.log_nonneg (by exact_mod_cast hm))
-          (Real.rpow_nonneg (Nat.cast_nonneg m) _))
-    calc ∑ n ∈ S_j,
-          |(suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
-              suzukiCriticalSourceCusp (f j) (w j) (Real.log n) -
-            (suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
-              suzukiCriticalSourceCusp g (w j) (Real.log n)|
-        ≤ ∑ n ∈ S_j, ((4 * A j + 8 * A j ^ 2 * Real.exp (A j / 2)) * E j +
-            w j * ((8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p)))) :=
-          Finset.sum_le_sum hterm_le
-      _ = (∑ _n ∈ S_j, (4 * A j + 8 * A j ^ 2 * Real.exp (A j / 2)) * E j) +
-          (∑ n ∈ S_j, w j * ((8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p)))) :=
-          Finset.sum_add_distrib
-      _ ≤ 132 * (Real.exp (2 * A j) * E j) +
-          w j * ∑' n : ℕ, (8 * K / (β - 1 / 2)) * (Real.log n * (n : ℝ) ^ (-p)) :=
-          add_le_add hsum1 hsum2
-  -- 4. Assemble signed remainder convergence + Fatou primary energy:
+  have hM_sec : Tendsto (fun j => -((suzukiCriticalPrimaryMass (w j) - 1) / w j) *
+      autocorr (f j) 0) atTop
+      (𝓝 (((Complex.digamma ((5 / 4 : ℝ) : ℂ)).re - Real.log Real.pi) * autocorr g 0)) := by
+    have hsec : Tendsto (fun j => -((suzukiCriticalPrimaryMass (w j) - 1) / w j)) atTop
+        (𝓝 (-(Real.log Real.pi - (Complex.digamma ((5 / 4 : ℝ) : ℂ)).re))) :=
+      tendsto_suzukiCriticalPrimaryMass_secant.neg.comp hw
+    have hneg : -(Real.log Real.pi - (Complex.digamma ((5 / 4 : ℝ) : ℂ)).re) =
+        (Complex.digamma ((5 / 4 : ℝ) : ℂ)).re - Real.log Real.pi := by ring
+    rw [hneg] at hsec
+    exact hsec.mul (tendsto_autocorr_joint hf hg hfg 0)
+  have hp_f := tendsto_pole_cusp_moving_cutoff hf hg hfc hA_pos hA_top hcut hfg hw hβ hg_dec hrate
+  have hg_trunc_tendsto := tendsto_trunc_sum_target hg hA_top hw hβ hg_dec
+  have hsum_diff := tendsto_trunc_sum_diff_moving_cutoff hf hg hfc hA_pos hcut hfg hw hβ hg_dec hrate
   have hprime_f : Tendsto (fun j => ∑ n ∈ Finset.Icc 2 ⌊Real.exp (A j)⌋₊,
       (suzukiShiftedCoefficient (w j) n / w j * Real.exp (-Real.log n / 2)) *
         suzukiCriticalSourceCusp (f j) (w j) (Real.log n)) atTop
@@ -1612,25 +1712,3 @@ theorem eventually_suzukiCriticalDeficit_of_coupled_moving_aperture
 
 end
 end RHTower
-
-#print axioms RHTower.suzukiShiftedCoefficient_div_bounds
-#print axioms RHTower.integrableOn_suzukiCriticalPoleCusp_of_exp_decay
-#print axioms RHTower.integral_norm_suzukiCriticalPoleCusp_le_of_exp_decay
-#print axioms RHTower.integrableOn_suzukiCriticalSourceCusp_of_exp_decay
-#print axioms RHTower.suzukiCriticalSourceCusp_eq_of_exp_decay
-#print axioms RHTower.integral_norm_suzukiCriticalSourceCusp_le_of_exp_decay
-#print axioms RHTower.abs_suzukiCriticalSourceCusp_le_of_exp_decay
-#print axioms RHTower.suzukiCriticalSourcePairing_eq_tsum_of_exp_decay
-#print axioms RHTower.suzukiCriticalL2Weil_normalization_of_exp_decay
-#print axioms RHTower.suzukiCriticalInfinitePrimePolar_eq_fullPairing
-#print axioms RHTower.suzukiCriticalInfiniteEnergy_eq_extendedWeilEnergy_of_exp_decay
-#print axioms RHTower.suzukiCriticalInfiniteSignedRemainder
-#print axioms RHTower.suzukiCriticalSourcePairing_div_eq_energy_add_infiniteRemainder
-#print axioms RHTower.tendsto_suzukiCriticalPoleCusp_joint_of_exp_decay
-#print axioms RHTower.tendsto_suzukiCriticalSourceCusp_joint_of_exp_decay
-#print axioms RHTower.tendsto_suzukiCriticalInfiniteSignedRemainder_joint_of_exp_decay
-#print axioms RHTower.suzukiCriticalExtendedWeilEnergy_le_liminf_of_exp_decay_tendsto
-#print axioms RHTower.eventually_suzukiCriticalDeficit_of_exp_decay_tendsto
-#print axioms RHTower.tendsto_suzukiCriticalSourcePairing_extended_firstVariation_of_exp_decay
-#print axioms RHTower.suzukiCriticalExtendedWeilEnergy_le_liminf_of_coupled_moving_aperture
-#print axioms RHTower.eventually_suzukiCriticalDeficit_of_coupled_moving_aperture

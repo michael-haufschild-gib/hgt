@@ -158,8 +158,10 @@ theorem tendsto_forcingPronicMass (ε : SubcriticalDamping) :
   have h := (hasSum_forcingPronicMass ε).tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
   change Tendsto (fun T : ℕ => ∑ n ∈ range (T + 1),
     inversionDefect ε n / ((n : ℝ) * ((n : ℝ) + 1))) atTop (𝓝 (forcingMassLimit ε)) at h
-  simpa only [dampedSign_sum_range_succ_eq_add_Icc, Nat.cast_zero,
-    zero_mul, div_zero, zero_add, forcingPronicMass] using h
+  apply h.congr
+  intro T
+  rw [dampedSign_sum_range_succ_eq_add_Icc, forcingPronicMass,
+    Nat.cast_zero, zero_mul, div_zero, zero_add]
 
 /-- The exact total mass is the least uniform bound for finite forcing masses. -/
 theorem forcingMassLimit_isLUB (ε : SubcriticalDamping) :

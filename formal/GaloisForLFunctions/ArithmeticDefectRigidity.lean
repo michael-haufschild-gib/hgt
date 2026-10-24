@@ -1,0 +1,13 @@
+import GaloisForLFunctions.ArithmeticDefectRigidity.TheForcingDominatesTheReceiver
+import GaloisForLFunctions.ArithmeticDefectRigidity.ForcingScaleSeparation
+import GaloisForLFunctions.ArithmeticDefectRigidity.FixedSuccessorsDisappearFromEscapingProfiles
+import GaloisForLFunctions.ArithmeticDefectRigidity.TheCofactorTailCarriesTheForcing
+import GaloisForLFunctions.ArithmeticDefectRigidity.TheForcingSplitsIntoAPowerAndAnAdmittedRemainder
+import GaloisForLFunctions.ArithmeticDefectRigidity.TheForcingHasFinitePronicMass
+
+/-!
+# Arithmetic defect rigidity
+
+Quantitative source constraints on normalized arithmetic escape: distinct forcing and receiver
+scales, signed cofactor tails, successor boundary costs, and paid forcing renormalization.
+-/

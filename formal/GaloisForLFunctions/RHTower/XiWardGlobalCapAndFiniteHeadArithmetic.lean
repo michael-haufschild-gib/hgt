@@ -103,10 +103,8 @@ private theorem forwardPolyHeat_forwardPolyHeat_X_pow (s₁ s₂ : ℝ) :
           forwardPolyHeat (s₁ + s₂) (derivative (X ^ n)) := by
         rcases n with _ | m
         · simp [forwardPolyHeat_zero_poly]
-        · rw [derivative_X_pow, ← C_eq_natCast]
-          simp only [Nat.cast_add, Nat.cast_one]
-          rw [forwardPolyHeat_C_mul, forwardPolyHeat_C_mul, forwardPolyHeat_C_mul,
-            ih m (by omega)]
+        · rw [derivative_X_pow, Nat.add_sub_cancel, forwardPolyHeat_C_mul, forwardPolyHeat_C_mul,
+            forwardPolyHeat_C_mul, ih m (by omega)]
       rw [pow_succ', forwardPolyHeat_X_mul, forwardPolyHeat_add, forwardPolyHeat_X_mul,
         forwardPolyHeat_C_mul, derivative_forwardPolyHeat s₂, ih_deriv, ih_n,
         ← derivative_forwardPolyHeat (s₁ + s₂), forwardPolyHeat_X_mul, mul_add, C_add]
@@ -182,12 +180,9 @@ theorem polyHeat_X_pow_eq_scaledHermitePoly {lam : ℝ} (hlam : 0 < lam) (N : �
       have hd := congrArg derivative hHcomp
       rw [derivative_comp, hderiv_u, derivative_C_mul] at hd
       have hd' := congrArg (fun q => C (s ^ (N + 1) * s) * q) hd
-      have hLHS : C (s ^ (N + 1) * s) * ((derivative H).comp u * C s⁻¹) =
+      have hLHS : C (s ^ (N + 1) * s) * (C s⁻¹ * (derivative H).comp u) =
           C (s ^ (N + 1)) * (derivative H).comp u := by
-        calc C (s ^ (N + 1) * s) * ((derivative H).comp u * C s⁻¹)
-            = (C (s ^ (N + 1) * s) * C s⁻¹) * (derivative H).comp u := by ring
-          _ = C (s ^ (N + 1)) * (derivative H).comp u := by
-              rw [← C_mul, mul_assoc, hmul_inv, mul_one]
+        rw [← mul_assoc, ← C_mul, mul_assoc (s ^ (N + 1)) s s⁻¹, hmul_inv, mul_one]
       have hRHS : C (s ^ (N + 1) * s) * (C (s⁻¹ ^ N) * derivative (polyHeat (lam / 2) (X ^ N))) =
           C lam * derivative (polyHeat (lam / 2) (X ^ N)) := by
         rw [← mul_assoc, ← C_mul]
@@ -387,27 +382,38 @@ theorem expand_sliceTruncPoly_ne_zero (t : ℝ) (S : Finset XiZeroCopy) :
   rw [h0, eval_zero] at hev
   exact zero_ne_one hev
 
+private theorem natDegree_one_add_C_mul_X_le (a : ℝ) :
+    (1 + C a * X : ℝ[X]).natDegree ≤ 1 := by
+  rw [natDegree_le_iff_coeff_eq_zero]
+  intro n hn
+  rw [coeff_add, ← C_1, coeff_C, coeff_C_mul, coeff_X, if_neg (by omega), if_neg (by omega),
+    mul_zero, add_zero]
+
+private theorem natDegree_one_add_C_mul_X_add_C_mul_X_sq_le (b c : ℝ) :
+    (1 + C b * X + C c * X ^ 2 : ℝ[X]).natDegree ≤ 2 := by
+  rw [natDegree_le_iff_coeff_eq_zero]
+  intro n hn
+  rw [coeff_add, coeff_add, ← C_1, coeff_C, coeff_C_mul, coeff_X, coeff_C_mul, coeff_X_pow,
+    if_neg (by omega), if_neg (by omega), if_neg (by omega), mul_zero, mul_zero, add_zero,
+    add_zero]
+
 /-- Degree bound for `sliceTruncPoly t S`: `(sliceTruncPoly t S).natDegree ≤ (sliceTrunc S).card`. -/
 theorem natDegree_sliceTruncPoly_le (t : ℝ) (S : Finset XiZeroCopy) :
     (sliceTruncPoly t S).natDegree ≤ (sliceTrunc S).card := by
   rw [card_sliceTrunc]
   unfold sliceTruncPoly
-  refine (natDegree_mul_le).trans (add_le_add ?_ ?_)
-  · refine (natDegree_prod_le _ _).trans ?_
+  refine le_trans natDegree_mul_le (add_le_add ?_ ?_)
+  · refine le_trans (natDegree_prod_le _ _) ?_
     calc ∑ q ∈ sliceTruncCrit S, (1 + C (sliceAtom t q) * X).natDegree
-        ≤ ∑ _q ∈ sliceTruncCrit S, 1 := Finset.sum_le_sum fun q _ =>
-          (natDegree_add_le _ _).trans
-            (max_le (by simp) ((natDegree_C_mul_le _ _).trans natDegree_X_le))
+        ≤ ∑ _q ∈ sliceTruncCrit S, 1 :=
+          Finset.sum_le_sum fun q _ => natDegree_one_add_C_mul_X_le _
       _ = (sliceTruncCrit S).card := by simp
-  · refine (natDegree_prod_le _ _).trans ?_
+  · refine le_trans (natDegree_prod_le _ _) ?_
     calc ∑ q ∈ sliceTruncUp S,
           ((1 + C (sliceAtom t q) * X) ^ 2 - C (4 * sliceDefect t q) * X).natDegree
         ≤ ∑ _q ∈ sliceTruncUp S, 2 := Finset.sum_le_sum fun q _ => by
-          rw [DeBruijn.slicePairFactor_eq, ← C_pow]
-          refine (natDegree_add_le _ _).trans
-            (max_le ?_ ((natDegree_C_mul_le _ _).trans (natDegree_X_pow_le 2)))
-          exact (natDegree_add_le _ _).trans
-            (max_le (by simp) ((natDegree_C_mul_le _ _).trans (natDegree_X_le.trans (by omega))))
+          rw [DeBruijn.slicePairFactor_eq]
+          exact natDegree_one_add_C_mul_X_add_C_mul_X_sq_le _ _
       _ = 2 * (sliceTruncUp S).card := by simp [mul_comm]
 
 /-- For the radius head `H = xiSliceGaussianRadiusHead t R`, `expand ℝ 2 (sliceTruncPoly t H)` has
@@ -466,13 +472,12 @@ theorem eval_expand_sliceTruncPoly_eq_zero_of_offLine {ρ : ℂ} (hxi : xi ρ = 
     rw [him₀, hnorm]
     have hδ2 : δ ^ 2 ≠ 0 := pow_ne_zero 2 hδ_pos.ne'
     field_simp
-    ring
-  rw [expand_eval, sliceTruncPoly, eval_mul, eval_prod]
+  rw [expand_eval, sliceTruncPoly, eval_mul, eval_prod, eval_prod]
   refine mul_eq_zero_of_right _ (Finset.prod_eq_zero hmemUp ?_)
   simp only [eval_sub, eval_pow, eval_add, eval_one, eval_mul, eval_C, eval_X, hatom, hdef]
   have hδ2 : δ ^ 2 ≠ 0 := pow_ne_zero 2 hδ_pos.ne'
-  field_simp
-  ring
+  rw [mul_assoc 4, div_mul_cancel₀ 1 hδ2]
+  norm_num
 
 /-- **Multiplicity-sharp shifted finite-head detection.**
 If `ξ(ρ) = 0` with `σ < δ := |Re ρ − 1/2| ≤ R`, then for every `λ ≥ 0` satisfying
@@ -533,14 +538,15 @@ theorem zetaZeroWidth_le_of_finiteHead_pure_quadratic_heat {δ₀ R : ℝ} (hδ�
       CoeffNonneg (forwardPolyHeat (lam / 2)
         (expand ℝ 2 (sliceTruncPoly t (xiSliceGaussianRadiusHead t R))))) :
     zetaZeroWidth ≤ δ₀ := by
-  rw [Zeta23.zetaZeroWidth_le_iff_re_le hδ₀]
+  rw [zetaZeroWidth_le_iff_re_le hδ₀]
   intro ρ hρ
+  obtain ⟨hζ, hre0, hre1⟩ : riemannZeta ρ = 0 ∧ 0 < ρ.re ∧ ρ.re < 1 := hρ
   by_contra hlt
   push Not at hlt
-  have hρ0 : ρ ≠ 0 := by intro h0; rw [h0, Complex.zero_re] at hρ; linarith [hρ.2.1]
-  have hρ1 : ρ ≠ 1 := by intro h1; rw [h1, Complex.one_re] at hρ; linarith [hρ.2.2]
+  have hρ0 : ρ ≠ 0 := by intro h0; rw [h0, Complex.zero_re] at hre0; linarith
+  have hρ1 : ρ ≠ 1 := by intro h1; rw [h1, Complex.one_re] at hre1; linarith
   have hxi : xi ρ = 0 := by
-    rw [xi_eq_archFactor_mul_zeta hρ0 hρ1 (Gammaℝ_ne_zero_of_re_pos hρ.2.1), hρ.1, mul_zero]
+    rw [xi_eq_archFactor_mul_zeta hρ0 hρ1 (Gammaℝ_ne_zero_of_re_pos hre0), hζ, mul_zero]
   obtain ⟨q, hq⟩ := exists_xiZeroCopy_of_xi_eq_zero hxi
   have hoff : (q.1 : ℂ).re ≠ 1 / 2 := by rw [hq]; linarith
   have him_sq := orderTwentyThreeOptimizedHeightSq_le_im_sq_of_xiZeroCopy_offLine q hoff
@@ -562,7 +568,7 @@ theorem zetaZeroWidth_le_of_finiteHead_pure_quadratic_heat {δ₀ R : ℝ} (hδ�
   have hδ_pos : 0 < |ρ.re - 1 / 2| := lt_of_le_of_lt hδ₀ hδ_gt
   have hδR : |ρ.re - 1 / 2| ≤ R := by
     rw [abs_of_pos (by linarith)]
-    linarith [hρ.2.2]
+    linarith [hre1]
   have hlam_mul : 320 * Real.log (180 * |ρ.im|) * lam ≤ δ₀ ^ 2 := by
     have hden : 0 < 320 * Real.log (180 * |ρ.im|) := by positivity
     exact (le_div_iff₀' hden).mp hlam_le
@@ -582,19 +588,19 @@ theorem abs_im_xiSpectralPoint_le_zetaZeroWidth (q : XiZeroCopy) :
     have h : (xiSpectralPoint q).im = -((q.1 : ℂ).re - 1 / 2) := by simp [xiSpectralPoint]
     rw [h, abs_neg]
   rw [him]
-  exact Zeta23.abs_re_sub_half_le_zetaZeroWidth
+  exact abs_re_sub_half_le_zetaZeroWidth
     (CrossRouteReceiverBridges.xiZeroCopy_mem_zetaZeroConfig_carrier q)
 
 /-- **Unconditional polynomial heat positivity of `sliceTruncPoly` at every height** (no `Ξ(t) ≠ 0`
 needed, since every upper zero copy has `Im z_q > 0`, hence `z_q ≠ t`). -/
-theorem coeffNonneg_taylor_forwardPolyHeat_sliceTruncPoly_all {t s r : ℝ} (hs : 0 ≤ s)
-    (hr : 0 ≤ r)
+theorem coeffNonneg_taylor_forwardPolyHeat_sliceTruncPoly_all {t s r : ℝ}
+    {S : Finset XiZeroCopy} (hs : 0 ≤ s) (hr : 0 ≤ r)
     (hcone : ∀ q ∈ S, XiCopyUpper q →
       (xiSpectralPoint q).im ^ 2 ≤ ((xiSpectralPoint q).re - t) ^ 2 + r ^ 2 + 6 * s) :
     CoeffNonneg (taylor r (forwardPolyHeat s (expand ℝ 2 (sliceTruncPoly t S)))) := by
   classical
   unfold sliceTruncPoly
-  rw [Polynomial.map_mul, Polynomial.map_prod, Polynomial.map_prod]
+  rw [map_mul, map_prod, map_prod]
   refine coeffNonneg_taylor_forwardPolyHeat_mul hs r
     (coeffNonneg_taylor_forwardPolyHeat_prod hs r _ fun q _ => ?_)
     (coeffNonneg_taylor_forwardPolyHeat_prod hs r _ fun q hq => ?_)
@@ -629,20 +635,21 @@ theorem zetaZeroWidth_le_iff_forall_taylor_finiteHead_nonneg {σ R : ℝ} (hσ :
             exact pow_le_pow_left₀ (abs_nonneg _) habs 2
           nlinarith [sq_nonneg ((xiSpectralPoint q).re - t)]
   · intro hall
-    rw [Zeta23.zetaZeroWidth_le_iff_re_le hσ]
+    rw [zetaZeroWidth_le_iff_re_le hσ]
     intro ρ hρ
+    obtain ⟨hζ, hre0, hre1⟩ : riemannZeta ρ = 0 ∧ 0 < ρ.re ∧ ρ.re < 1 := hρ
     by_contra hlt
     push Not at hlt
-    have hρ0 : ρ ≠ 0 := by intro h0; rw [h0, Complex.zero_re] at hρ; linarith [hρ.2.1]
-    have hρ1 : ρ ≠ 1 := by intro h1; rw [h1, Complex.one_re] at hρ; linarith [hρ.2.2]
+    have hρ0 : ρ ≠ 0 := by intro h0; rw [h0, Complex.zero_re] at hre0; linarith
+    have hρ1 : ρ ≠ 1 := by intro h1; rw [h1, Complex.one_re] at hre1; linarith
     have hxi : xi ρ = 0 := by
-      rw [xi_eq_archFactor_mul_zeta hρ0 hρ1 (Gammaℝ_ne_zero_of_re_pos hρ.2.1), hρ.1, mul_zero]
+      rw [xi_eq_archFactor_mul_zeta hρ0 hρ1 (Gammaℝ_ne_zero_of_re_pos hre0), hζ, mul_zero]
     have hσδ : σ < |ρ.re - 1 / 2| := by
       rw [abs_of_pos (by linarith)]; linarith
     have hδR : |ρ.re - 1 / 2| ≤ R := by
-      rw [abs_of_pos (by linarith)]; linarith [hρ.2.2]
+      rw [abs_of_pos (by linarith)]; linarith [hre1]
     apply not_coeffNonneg_taylor_forwardPolyHeat_finiteHead_of_offLine_zero hxi hσ hσδ hδR
-      (lam := 0) le_rfl (by positivity)
+      (lam := 0) le_rfl (by rw [mul_zero, zero_mul]; exact sq_nonneg _)
     simpa [forwardPolyHeat_zero] using hall ρ.im
 
 /-- **Exact small-heat shifted finite-head characterization of `zetaZeroWidth ≤ σ`.**
@@ -664,18 +671,19 @@ theorem zetaZeroWidth_le_iff_forall_pos_taylor_forwardPolyHeat_finiteHead_nonneg
           exact pow_le_pow_left₀ (abs_nonneg _) habs 2
         nlinarith [sq_nonneg ((xiSpectralPoint q).re - t)]
   · intro hall
-    rw [Zeta23.zetaZeroWidth_le_iff_re_le hσ]
+    rw [zetaZeroWidth_le_iff_re_le hσ]
     intro ρ hρ
+    obtain ⟨hζ, hre0, hre1⟩ : riemannZeta ρ = 0 ∧ 0 < ρ.re ∧ ρ.re < 1 := hρ
     by_contra hlt
     push Not at hlt
-    have hρ0 : ρ ≠ 0 := by intro h0; rw [h0, Complex.zero_re] at hρ; linarith [hρ.2.1]
-    have hρ1 : ρ ≠ 1 := by intro h1; rw [h1, Complex.one_re] at hρ; linarith [hρ.2.2]
+    have hρ0 : ρ ≠ 0 := by intro h0; rw [h0, Complex.zero_re] at hre0; linarith
+    have hρ1 : ρ ≠ 1 := by intro h1; rw [h1, Complex.one_re] at hre1; linarith
     have hxi : xi ρ = 0 := by
-      rw [xi_eq_archFactor_mul_zeta hρ0 hρ1 (Gammaℝ_ne_zero_of_re_pos hρ.2.1), hρ.1, mul_zero]
+      rw [xi_eq_archFactor_mul_zeta hρ0 hρ1 (Gammaℝ_ne_zero_of_re_pos hre0), hζ, mul_zero]
     have hσδ : σ < |ρ.re - 1 / 2| := by
       rw [abs_of_pos (by linarith)]; linarith
     have hδR : |ρ.re - 1 / 2| ≤ R := by
-      rw [abs_of_pos (by linarith)]; linarith [hρ.2.2]
+      rw [abs_of_pos (by linarith)]; linarith [hre1]
     set Ccard : ℝ := ((xiSliceGaussianRadiusHead ρ.im R).card : ℝ)
     have hCcard : 0 ≤ Ccard := Nat.cast_nonneg _
     set lam : ℝ := (|ρ.re - 1 / 2| - σ) ^ 2 / (8 * (Ccard + 1))
@@ -718,9 +726,7 @@ theorem xiSliceGaussianFiniteHead_eq_XiC_sq_mul_eval_sliceTruncPoly {t R : ℝ} 
       pow_ne_zero 2 (sub_ne_zero.mpr (xiSpectralPoint_ne_ofReal ht q))
     unfold sliceFactorTerm
     have hIz : (I * z) ^ 2 = -z ^ 2 := by ring_nf; rw [I_sq]; ring
-    rw [hIz]
-    field_simp
-    ring
+    rw [hIz, neg_div, neg_neg, mul_add, mul_one, mul_div_cancel₀ _ hne, add_comm]
   calc xiSliceGaussianFiniteHead t R z
       = xiSliceGaussianFiniteHeadScalar t R *
           ∏ q ∈ H, ((xiSpectralPoint q - (t : ℂ)) ^ 2 * (1 + sliceFactorTerm t q (I * z))) := by
@@ -739,7 +745,7 @@ private theorem coeff_zero_and_one_prod {ι : Type*} (A : Finset ι) (f : ι →
     (∏ i ∈ A, f i).coeff 0 = 1 ∧ (∏ i ∈ A, f i).coeff 1 = ∑ i ∈ A, (f i).coeff 1 := by
   classical
   induction A using Finset.induction_on with
-  | empty => simp
+  | empty => simp [coeff_one]
   | insert a A ha ih =>
     obtain ⟨ih0, ih1⟩ := ih fun i hi => hf0 i (Finset.mem_insert_of_mem hi)
     have ha0 : (f a).coeff 0 = 1 := hf0 a (Finset.mem_insert_self a A)
@@ -764,7 +770,7 @@ private theorem re_xiSliceGaussianReciprocal_eq (t : ℝ) (q : XiZeroCopy) :
   · have hnorm_pos : 0 < ‖c‖ := norm_pos_iff.mpr hc
     have hnormSq : Complex.normSq c = ‖c‖ ^ 2 := Complex.normSq_eq_norm_sq c
     have hc2_re : (c ^ 2).re = c.re ^ 2 - c.im ^ 2 := by
-      rw [sq, Complex.mul_re]
+      rw [sq, Complex.mul_re]; ring
     have hsum_sq : c.re ^ 2 + c.im ^ 2 = ‖c‖ ^ 2 := by
       rw [← hnormSq, Complex.normSq_apply]; ring
     have hc_im : c.im = (xiSpectralPoint q).im := by simp [hc_def]
@@ -794,12 +800,14 @@ theorem coeff_one_sliceTruncPoly_eq_sum_re (t : ℝ) (S : Finset XiZeroCopy) :
       Finset.sum_range_one]
     simp only [Nat.sub_zero, Nat.sub_self, h0_crit, h0_up, one_mul, mul_one, h1_crit, h1_up]
     have hc1 : ∀ q ∈ sliceTruncCrit S, (1 + C (sliceAtom t q) * X : ℝ[X]).coeff 1 =
-        sliceAtom t q := fun _ _ => by simp
+        sliceAtom t q := fun _ _ => by simp [coeff_one]
     have hu1 : ∀ q ∈ sliceTruncUp S,
         ((1 + C (sliceAtom t q) * X) ^ 2 - C (4 * sliceDefect t q) * X : ℝ[X]).coeff 1 =
           2 * sliceAtom t q - 4 * sliceDefect t q := fun q _ => by
-      rw [DeBruijn.slicePairFactor_eq]
-      simp [coeff_X_pow]
+      rw [DeBruijn.slicePairFactor_eq, coeff_add, coeff_add, ← C_1, coeff_C, coeff_C_mul,
+        coeff_X_one, coeff_C_mul, coeff_X_pow]
+      norm_num
+      ring
     rw [Finset.sum_congr rfl hc1, Finset.sum_congr rfl hu1, add_comm]
   have hd1 : Disjoint (sliceTruncCrit S) (sliceTruncUp S) := by
     rw [Finset.disjoint_left]
@@ -833,7 +841,8 @@ theorem coeff_one_sliceTruncPoly_eq_sum_re (t : ℝ) (S : Finset XiZeroCopy) :
     have hconj : xiSliceGaussianReciprocal t (xiZeroCopyLineConjEquiv q) =
         starRingEnd ℂ (xiSliceGaussianReciprocal t q) := by
       unfold xiSliceGaussianReciprocal
-      rw [xiSpectralPoint_lineConj, ← Complex.conj_ofReal t, ← map_sub, ← map_pow, ← map_inv₀]
+      conv_lhs => rw [xiSpectralPoint_lineConj, ← Complex.conj_ofReal t, ← map_sub, ← map_pow,
+        ← map_inv₀]
     rw [hconj, Complex.conj_re, re_xiSliceGaussianReciprocal_eq]
     ring
 
@@ -860,7 +869,7 @@ theorem coeff_one_sliceTruncPoly_radius_eq_sliceCoeff_sub_tail {t : ℝ} (ht : X
       (pow_ne_zero 2 ht)]
     refine tsum_congr fun q => ?_
     unfold xiSliceGaussianReciprocal
-    congr 2
+    congr 1
     ring
   have hre_eq : (xiSliceCoeff t 2 / XiC t ^ 2).re =
       (∑ q ∈ H, (xiSliceGaussianReciprocal t q).re) + (xiSliceGaussianTailQuadratic t H).re := by
@@ -898,10 +907,10 @@ theorem coeff_one_sliceTruncPoly_radius_eq_cesaro_compensated {t : ℝ} (ht : Xi
           (Y : ℂ) ^ ((q.1 : ℂ) - laguerreLinePoint t) /
             ((q.1 : ℂ) - laguerreLinePoint t) ^ 2).re -
         (∑' q : {q : XiZeroCopy // q ∉ xiSliceGaussianRadiusHead t R},
-          ((Y : ℂ) ^ ((q.1 : ℂ) - laguerreLinePoint t) - 1) /
-            ((q.1 : ℂ) - laguerreLinePoint t) ^ 2).re := by
+          ((Y : ℂ) ^ ((q.1.1 : ℂ) - laguerreLinePoint t) - 1) /
+            ((q.1.1 : ℂ) - laguerreLinePoint t) ^ 2).re := by
   set s : ℂ := laguerreLinePoint t with hs_def
-  set H := xiSliceGaussianRadiusHead t R
+  set H := xiSliceGaussianRadiusHead t R with hH_def
   have hY0 : 0 < Y := by linarith
   have hξ : xi s ≠ 0 := by rw [hs_def, xi_laguerreLinePoint]; exact ht
   have hP0 : (Y : ℂ) ^ s ≠ 0 :=
@@ -910,9 +919,7 @@ theorem coeff_one_sliceTruncPoly_radius_eq_cesaro_compensated {t : ℝ} (ht : Xi
       (((q.1 : ℂ) - s) ^ 2)⁻¹ = -xiSliceGaussianReciprocal t q := by
     intro q
     have hdiff : (q.1 : ℂ) - s = I * (xiSpectralPoint q - (t : ℂ)) := by
-      unfold xiSpectralPoint laguerreLinePoint at *
-      rw [hs_def]
-      unfold laguerreLinePoint
+      simp only [hs_def, xiSpectralPoint, laguerreLinePoint]
       ring_nf
       rw [I_sq]
       ring
@@ -950,8 +957,8 @@ theorem coeff_one_sliceTruncPoly_radius_eq_cesaro_compensated {t : ℝ} (ht : Xi
     rw [← hsub_tw.tsum_add hsub_rec]
     refine tsum_congr fun q => ?_
     have hrel := neg_eq_iff_eq_neg.mpr (hsq_rel q.1)
-    rw [← hrel, sub_div, one_div]
-  rw [coeff_one_sliceTruncPoly_radius_eq_cesaro ht R hY, ← hs_def]
+    rw [← hrel, sub_div, one_div, ← sub_eq_add_neg]
+  rw [coeff_one_sliceTruncPoly_radius_eq_cesaro ht R hY, ← hs_def, ← hH_def]
   have htw_re : (twistedDivisorSum Y s).re + (xiSliceGaussianTailQuadratic t H).re =
       (∑ q ∈ H, (Y : ℂ) ^ ((q.1 : ℂ) - s) / ((q.1 : ℂ) - s) ^ 2).re +
         (∑' q : {q : XiZeroCopy // q ∉ H},
@@ -1088,32 +1095,38 @@ private theorem partialFractionDiff_wardPoles (tau : ℝ) (q : XiZeroCopy) :
       ((-(1 / 100 : ℂ) + (tau : ℂ) * I) - (q.1 : ℂ))⁻¹ =
       2 * I * (tau : ℂ) * xiWardZeroStieltjes tau q := by
   have hre_pos := xiZeroCopy_re_pos q
-  have h1 : (-(1 / 100 : ℂ) - (tau : ℂ) * I) - (q.1 : ℂ) ≠ 0 := by
+  set A : ℂ := (-(1 / 100 : ℂ) - (tau : ℂ) * I) - (q.1 : ℂ)
+  set B : ℂ := (-(1 / 100 : ℂ) + (tau : ℂ) * I) - (q.1 : ℂ)
+  have h1 : A ≠ 0 := by
     intro h
     have hre := congrArg Complex.re h
-    simp only [Complex.sub_re, Complex.neg_re, Complex.div_ofNat_re, Complex.one_re,
+    simp only [A, Complex.sub_re, Complex.neg_re, Complex.div_ofNat_re, Complex.one_re,
       Complex.mul_re, Complex.ofReal_re, Complex.I_re, Complex.ofReal_im, Complex.I_im,
       Complex.zero_re] at hre
     linarith
-  have h2 : (-(1 / 100 : ℂ) + (tau : ℂ) * I) - (q.1 : ℂ) ≠ 0 := by
+  have h2 : B ≠ 0 := by
     intro h
     have hre := congrArg Complex.re h
-    simp only [Complex.sub_re, Complex.add_re, Complex.neg_re, Complex.div_ofNat_re,
+    simp only [B, Complex.sub_re, Complex.add_re, Complex.neg_re, Complex.div_ofNat_re,
       Complex.one_re, Complex.mul_re, Complex.ofReal_re, Complex.I_re, Complex.ofReal_im,
       Complex.I_im, Complex.zero_re] at hre
     linarith
-  have hprod : ((-(1 / 100 : ℂ) - (tau : ℂ) * I) - (q.1 : ℂ)) *
-      ((-(1 / 100 : ℂ) + (tau : ℂ) * I) - (q.1 : ℂ)) =
-      ((q.1 : ℂ) + 1 / 100) ^ 2 + (tau : ℂ) ^ 2 := by
+  have hprod : A * B = ((q.1 : ℂ) + 1 / 100) ^ 2 + (tau : ℂ) ^ 2 := by
+    simp only [A, B]
     ring_nf
     rw [I_sq]
     ring
   have hprod_ne : ((q.1 : ℂ) + 1 / 100) ^ 2 + (tau : ℂ) ^ 2 ≠ 0 := by
     rw [← hprod]; exact mul_ne_zero h1 h2
   unfold xiWardZeroStieltjes
-  rw [inv_sub_inv' h1 h2, hprod]
-  field_simp [hprod_ne]
-  ring
+  apply mul_right_cancel₀ hprod_ne
+  calc (A⁻¹ - B⁻¹) * (((q.1 : ℂ) + 1 / 100) ^ 2 + (tau : ℂ) ^ 2)
+      = A⁻¹ * A * B - B⁻¹ * B * A := by rw [← hprod]; ring
+    _ = B - A := by rw [inv_mul_cancel₀ h1, inv_mul_cancel₀ h2, one_mul, one_mul]
+    _ = 2 * I * (tau : ℂ) := by simp only [A, B]; ring
+    _ = 2 * I * (tau : ℂ) * (((q.1 : ℂ) + 1 / 100) ^ 2 + (tau : ℂ) ^ 2)⁻¹ *
+          (((q.1 : ℂ) + 1 / 100) ^ 2 + (tau : ℂ) ^ 2) := by
+        rw [mul_assoc (2 * I * (tau : ℂ)), inv_mul_cancel₀ hprod_ne, mul_one]
 
 /-- For every `τ ≠ 0`, the full Ward–Stieltjes family `xiWardZeroStieltjes τ` is summable over
 `XiZeroCopy`. -/
@@ -1138,6 +1151,7 @@ theorem tsum_xiWardZeroStieltjes_eq_im_logDeriv_xi (tau : ℝ) :
   · have him0 : (logDeriv xi (101 / 100 : ℂ)).im = 0 := by
       have h := im_logDeriv_xi_conj_line (101 / 100) 0
       simp only [Complex.ofReal_zero, zero_mul, sub_zero, add_zero] at h
+      push_cast at h
       linarith
     simp [him0]
   · set s₁ : ℂ := -(1 / 100 : ℂ) - (tau : ℂ) * I
@@ -1145,8 +1159,10 @@ theorem tsum_xiWardZeroStieltjes_eq_im_logDeriv_xi (tau : ℝ) :
     set w : ℂ := (101 / 100 : ℂ) + (tau : ℂ) * I
     have hs₁ : xi s₁ ≠ 0 := xi_ne_zero_of_re_le_zero (by simp [s₁])
     have hs₂ : xi s₂ ≠ 0 := xi_ne_zero_of_re_le_zero (by simp [s₂])
-    have hdiff := logDeriv_xi_sub_eq_tsum hs₁ hs₂
-    simp_rw [partialFractionDiff_wardPoles] at hdiff
+    have hdiff : logDeriv xi s₁ - logDeriv xi s₂ =
+        ∑' q : XiZeroCopy, 2 * I * (tau : ℂ) * xiWardZeroStieltjes tau q :=
+      (logDeriv_xi_sub_eq_tsum hs₁ hs₂).trans
+        (tsum_congr fun q => partialFractionDiff_wardPoles tau q)
     rw [tsum_mul_left] at hdiff
     have hw₁ : s₁ = 1 - w := by simp only [s₁, w]; ring
     have hw₂ : s₂ = 1 - starRingEnd ℂ w := by
@@ -1159,7 +1175,9 @@ theorem tsum_xiWardZeroStieltjes_eq_im_logDeriv_xi (tau : ℝ) :
     rw [hsym₁, hsym₂] at hdiff
     have hconj_sub : -logDeriv xi w - -starRingEnd ℂ (logDeriv xi w) =
         -2 * I * ((logDeriv xi w).im : ℂ) := by
-      apply Complex.ext <;> simp
+      apply Complex.ext
+      · simp
+      · simp; ring
     rw [hconj_sub] at hdiff
     have h2I : (2 * I : ℂ) ≠ 0 := mul_ne_zero two_ne_zero I_ne_zero
     have htau_sum : (tau : ℂ) * ∑' q : XiZeroCopy, xiWardZeroStieltjes tau q =
@@ -1184,7 +1202,7 @@ theorem tsum_xiWardZeroStieltjes_eq_arithmetic (tau : ℝ) :
           LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
             ((101 / 100 : ℂ) + (tau : ℂ) * I)).im) := by
   rw [tsum_xiWardZeroStieltjes_eq_im_logDeriv_xi, Complex.ofReal_re]
-  have hre : 1 < ((101 / 100 : ℂ) + (tau : ℂ) * I).re := by simp
+  have hre : 1 < ((101 / 100 : ℂ) + (tau : ℂ) * I).re := by simp; norm_num
   rw [logDeriv_xi_eq_arithmetic hre]
   have hsub : (101 / 100 : ℂ) + (tau : ℂ) * I - 1 = (1 / 100 : ℂ) + (tau : ℂ) * I := by ring
   rw [hsub]
@@ -1197,7 +1215,62 @@ private theorem re_im_xiZeroCopyLineConjEquiv (q : XiZeroCopy) :
   have him := congrArg Complex.im h
   simp only [xiSpectralPoint, Complex.mul_re, Complex.sub_re, Complex.neg_re, Complex.I_re,
     Complex.sub_im, Complex.neg_im, Complex.I_im, Complex.conj_re, Complex.conj_im] at hre him
+  norm_num at hre him
   constructor <;> linarith
+
+private theorem wardQuad_re_and_normSq (a γ tau : ℝ) :
+    -(((a : ℂ) + (γ : ℂ) * I) ^ 2 + (tau : ℂ) ^ 2).re = (γ ^ 2 - tau ^ 2) - a ^ 2 ∧
+      Complex.normSq (((a : ℂ) + (γ : ℂ) * I) ^ 2 + (tau : ℂ) ^ 2) =
+        a ^ 4 + 2 * a ^ 2 * (γ ^ 2 + tau ^ 2) + (γ ^ 2 - tau ^ 2) ^ 2 := by
+  have hre : (((a : ℂ) + (γ : ℂ) * I) ^ 2 + (tau : ℂ) ^ 2).re = a ^ 2 - γ ^ 2 + tau ^ 2 := by
+    simp only [sq, Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.I_re, Complex.I_im, Complex.add_im, Complex.mul_im]
+    ring
+  have him : (((a : ℂ) + (γ : ℂ) * I) ^ 2 + (tau : ℂ) ^ 2).im = 2 * a * γ := by
+    simp only [sq, Complex.add_im, Complex.mul_im, Complex.add_re, Complex.mul_re,
+      Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im]
+    ring
+  refine ⟨by linarith, ?_⟩
+  rw [Complex.normSq_apply, hre, him]
+  ring
+
+private theorem neg_re_inv_wardQuad_lt {a a' γ tau : ℝ}
+    (ha'_pos : 0 < a') (ha'_lt_a : a' < a) (ha2_lt : a ^ 2 < γ ^ 2 - tau ^ 2) :
+    -((((a : ℂ) + (γ : ℂ) * I) ^ 2 + (tau : ℂ) ^ 2)⁻¹).re <
+      -((((a' : ℂ) + (γ : ℂ) * I) ^ 2 + (tau : ℂ) ^ 2)⁻¹).re := by
+  obtain ⟨hre, hns⟩ := wardQuad_re_and_normSq a γ tau
+  obtain ⟨hre', hns'⟩ := wardQuad_re_and_normSq a' γ tau
+  have ha2 : a' ^ 2 < a ^ 2 := by
+    simpa [sq] using mul_self_lt_mul_self ha'_pos.le ha'_lt_a
+  have ha4 : a' ^ 4 < a ^ 4 := by
+    have h := mul_self_lt_mul_self (sq_nonneg a') ha2
+    have h1 : a' ^ 2 * a' ^ 2 = a' ^ 4 := by ring
+    have h2 : a ^ 2 * a ^ 2 = a ^ 4 := by ring
+    rwa [h1, h2] at h
+  have hM_pos : 0 < γ ^ 2 - tau ^ 2 := lt_of_le_of_lt (sq_nonneg a) ha2_lt
+  have hγt_pos : 0 < γ ^ 2 + tau ^ 2 := by linarith [sq_nonneg tau]
+  have hns'_pos : 0 < Complex.normSq (((a' : ℂ) + (γ : ℂ) * I) ^ 2 + (tau : ℂ) ^ 2) := by
+    rw [hns']; positivity
+  have hns_lt : Complex.normSq (((a' : ℂ) + (γ : ℂ) * I) ^ 2 + (tau : ℂ) ^ 2) <
+      Complex.normSq (((a : ℂ) + (γ : ℂ) * I) ^ 2 + (tau : ℂ) ^ 2) := by
+    rw [hns', hns]
+    have hmul : a' ^ 2 * (γ ^ 2 + tau ^ 2) < a ^ 2 * (γ ^ 2 + tau ^ 2) :=
+      mul_lt_mul_of_pos_right ha2 hγt_pos
+    linarith
+  have hns_pos : 0 < Complex.normSq (((a : ℂ) + (γ : ℂ) * I) ^ 2 + (tau : ℂ) ^ 2) :=
+    hns'_pos.trans hns_lt
+  rw [Complex.inv_re, Complex.inv_re, ← neg_div, ← neg_div, hre, hre',
+    div_lt_div_iff₀ hns_pos hns'_pos]
+  have hnum_pos : 0 < (γ ^ 2 - tau ^ 2) - a ^ 2 := sub_pos.mpr ha2_lt
+  have hnum_lt : (γ ^ 2 - tau ^ 2) - a ^ 2 < (γ ^ 2 - tau ^ 2) - a' ^ 2 := sub_lt_sub_left ha2 _
+  calc ((γ ^ 2 - tau ^ 2) - a ^ 2) *
+        Complex.normSq (((a' : ℂ) + (γ : ℂ) * I) ^ 2 + (tau : ℂ) ^ 2)
+      < ((γ ^ 2 - tau ^ 2) - a ^ 2) *
+          Complex.normSq (((a : ℂ) + (γ : ℂ) * I) ^ 2 + (tau : ℂ) ^ 2) :=
+        mul_lt_mul_of_pos_left hns_lt hnum_pos
+    _ < ((γ ^ 2 - tau ^ 2) - a' ^ 2) *
+          Complex.normSq (((a : ℂ) + (γ : ℂ) * I) ^ 2 + (tau : ℂ) ^ 2) :=
+        mul_lt_mul_of_pos_right hnum_lt hns_pos
 
 /-- **Reflection-asymmetry strict comparison across the critical line.**
 Because the Ward poles sit at `−1/100 < 1/2`, reflecting any right-half-strip zero copy `q`
@@ -1210,78 +1283,25 @@ theorem neg_re_xiWardZeroStieltjes_lt_lineConj {tau : ℝ} (hτ0 : 0 ≤ tau) (h
     0 < -(xiWardZeroStieltjes tau q).re ∧
       -(xiWardZeroStieltjes tau q).re <
         -(xiWardZeroStieltjes tau (xiZeroCopyLineConjEquiv q)).re := by
-  have hpos_q : 0 < -(xiWardZeroStieltjes tau q).re :=
-    neg_pos.mpr (re_xiWardZeroStieltjes_neg_of_offLine hτ0 hτ (by linarith))
-  refine ⟨hpos_q, ?_⟩
-  set q' := xiZeroCopyLineConjEquiv q
+  refine ⟨neg_pos.mpr (re_xiWardZeroStieltjes_neg_of_offLine hτ0 hτ (by linarith)), ?_⟩
   obtain ⟨hre_q', him_q'⟩ := re_im_xiZeroCopyLineConjEquiv q
-  set a : ℝ := (q.1 : ℂ).re + 1 / 100
-  set a' : ℝ := (q'.1 : ℂ).re + 1 / 100
-  set γ : ℝ := (q.1 : ℂ).im
   have hβ1 := xiZeroCopy_re_lt_one q
-  have ha'_pos : 0 < a' := by simp only [a', hre_q']; linarith
-  have ha'_lt_a : a' < a := by simp only [a, a', hre_q']; linarith
-  have ha_lt : a < 101 / 100 := by simp only [a]; linarith
-  have hγ_sq : (431349 / 2000 : ℝ) ≤ γ ^ 2 := by
-    have h := orderTwentyThreeOptimizedHeightSq_le_im_sq_of_xiZeroCopy_offLine q (by linarith)
-    simpa [xiOrderTwentyThreeOptimizedHeightSq, γ] using h
-  set M : ℝ := γ ^ 2 - tau ^ 2
-  have hM_gt_a2 : a ^ 2 < M := by simp only [M]; nlinarith
-  have ha'2_lt_a2 : a' ^ 2 < a ^ 2 := sq_lt_sq.mpr (by rw [abs_of_pos ha'_pos,
-    abs_of_pos (ha'_pos.trans ha'_lt_a)]; exact ha'_lt_a)
-  set z : ℂ := ((q.1 : ℂ) + 1 / 100) ^ 2 + (tau : ℂ) ^ 2
-  set z' : ℂ := ((q'.1 : ℂ) + 1 / 100) ^ 2 + (tau : ℂ) ^ 2
-  have hz_re : -z.re = M - a ^ 2 := by
-    simp only [z, M, a, γ, Complex.add_re, sq, Complex.mul_re, Complex.add_im, Complex.ofReal_re,
-      Complex.ofReal_im]
-    norm_num
-    ring
-  have hz'_re : -z'.re = M - a' ^ 2 := by
-    simp only [z', M, a', γ, him_q', Complex.add_re, sq, Complex.mul_re, Complex.add_im,
-      Complex.ofReal_re, Complex.ofReal_im]
-    norm_num
-    ring
-  have hz_im : z.im = 2 * a * γ := by
-    simp only [z, a, γ, Complex.add_im, sq, Complex.mul_im, Complex.add_re, Complex.ofReal_re,
-      Complex.ofReal_im]
-    norm_num
-    ring
-  have hz'_im : z'.im = 2 * a' * γ := by
-    simp only [z', a', γ, him_q', Complex.add_im, sq, Complex.mul_im, Complex.add_re,
-      Complex.ofReal_re, Complex.ofReal_im]
-    norm_num
-    ring
-  have hnorm_z : Complex.normSq z = a ^ 4 + 2 * a ^ 2 * (γ ^ 2 + tau ^ 2) + M ^ 2 := by
-    rw [Complex.normSq_apply]
-    have hr : z.re = a ^ 2 - M := by linarith [hz_re]
-    rw [hr, hz_im]
-    simp only [M]
-    ring
-  have hnorm_z' : Complex.normSq z' = a' ^ 4 + 2 * a' ^ 2 * (γ ^ 2 + tau ^ 2) + M ^ 2 := by
-    rw [Complex.normSq_apply]
-    have hr : z'.re = a' ^ 2 - M := by linarith [hz'_re]
-    rw [hr, hz'_im]
-    simp only [M]
-    ring
-  have hnorm_z'_pos : 0 < Complex.normSq z' := by
-    rw [hnorm_z']
-    have hM_pos : 0 < M := lt_of_le_of_lt (sq_nonneg a) hM_gt_a2
-    positivity
-  have hnorm_lt : Complex.normSq z' < Complex.normSq z := by
-    rw [hnorm_z', hnorm_z]
-    have ha4 : a' ^ 4 < a ^ 4 := by
-      have h0 : 0 ≤ a' ^ 2 := sq_nonneg a'
-      nlinarith
-    have hγt : 0 < γ ^ 2 + tau ^ 2 := by linarith [sq_nonneg tau]
-    nlinarith [mul_lt_mul_of_pos_right ha'2_lt_a2 hγt]
-  have hnorm_z_pos : 0 < Complex.normSq z := hnorm_z'_pos.trans hnorm_lt
+  have hγ_sq : (431349 / 2000 : ℝ) ≤ (q.1 : ℂ).im ^ 2 := by
+    simpa [xiOrderTwentyThreeOptimizedHeightSq] using
+      orderTwentyThreeOptimizedHeightSq_le_im_sq_of_xiZeroCopy_offLine q (by linarith)
+  have hz_eq : (q.1 : ℂ) + 1 / 100 =
+      (((q.1 : ℂ).re + 1 / 100 : ℝ) : ℂ) + ((q.1 : ℂ).im : ℂ) * I := by
+    apply Complex.ext <;> simp
+  have hz'_eq : ((xiZeroCopyLineConjEquiv q).1 : ℂ) + 1 / 100 =
+      ((1 - (q.1 : ℂ).re + 1 / 100 : ℝ) : ℂ) + ((q.1 : ℂ).im : ℂ) * I := by
+    apply Complex.ext <;> simp [hre_q', him_q']
   unfold xiWardZeroStieltjes
-  change -(z⁻¹).re < -(z'⁻¹).re
-  rw [Complex.inv_re, Complex.inv_re, neg_div, neg_div, hz_re, hz'_re,
-    div_lt_div_iff₀ hnorm_z_pos hnorm_z'_pos]
-  have hnum_pos : 0 < M - a ^ 2 := by linarith
-  have hnum_lt : M - a ^ 2 < M - a' ^ 2 := by linarith
-  nlinarith
+  rw [hz_eq, hz'_eq]
+  refine neg_re_inv_wardQuad_lt (by linarith) (by linarith) ?_
+  have hτ_sq : tau ^ 2 ≤ (366 / 25 : ℝ) ^ 2 := by nlinarith [hτ0, hτ]
+  have ha_sq : ((q.1 : ℂ).re + 1 / 100) ^ 2 < (101 / 100 : ℝ) ^ 2 := by nlinarith [hq, hβ1]
+  have hnum : (101 / 100 : ℝ) ^ 2 + (366 / 25 : ℝ) ^ 2 < 431349 / 2000 := by norm_num
+  linarith
 
 /-- The critical-line contribution `8πτ ∑_{Re ρ = 1/2} (−Re(((ρ + 1/100)² + τ²)⁻¹))`. -/
 def xiWardCriticalStieltjesSum (tau : ℝ) : ℝ :=
@@ -1330,11 +1350,11 @@ theorem two_mul_xiWardRightStieltjesSum_le_euler_sub_critical {θ tau : ℝ} (h�
   set f_right : XiZeroCopy → ℝ := fun q => if 1 / 2 < (q.1 : ℂ).re then f q else 0
   set f_left : XiZeroCopy → ℝ := fun q => if (q.1 : ℂ).re < 1 / 2 then f q else 0
   have hs_crit : Summable f_crit := hf_norm.of_norm_bounded fun q => by
-    simp only [f_crit]; split_ifs <;> simp [norm_nonneg]
+    simp only [f_crit]; split_ifs <;> simp
   have hs_right : Summable f_right := hf_norm.of_norm_bounded fun q => by
-    simp only [f_right]; split_ifs <;> simp [norm_nonneg]
+    simp only [f_right]; split_ifs <;> simp
   have hs_left : Summable f_left := hf_norm.of_norm_bounded fun q => by
-    simp only [f_left]; split_ifs <;> simp [norm_nonneg]
+    simp only [f_left]; split_ifs <;> simp
   have hpart : ∀ q : XiZeroCopy, f q = f_crit q + f_right q + f_left q := by
     intro q
     simp only [f_crit, f_right, f_left]
@@ -1417,23 +1437,32 @@ theorem ae_forall_two_mul_xiWardGlobalCap_re_le_euler_sub_critical :
   rw [hre]
   exact two_mul_xiWardRightStieltjesSum_le_euler_sub_critical hθ.le hτ
 
+/-- For `σ ≥ 0`, `zetaZeroWidth ≤ σ` iff every `q : XiZeroCopy` satisfies `Re ρ_q ≤ 1/2 + σ`. -/
+theorem zetaZeroWidth_le_iff_forall_xiZeroCopy_re_le {σ : ℝ} (hσ : 0 ≤ σ) :
+    zetaZeroWidth ≤ σ ↔ ∀ q : XiZeroCopy, (q.1 : ℂ).re ≤ 1 / 2 + σ := by
+  rw [zetaZeroWidth_le_iff_re_le hσ]
+  constructor
+  · intro h q
+    exact h (q.1 : ℂ) (CrossRouteReceiverBridges.xiZeroCopy_mem_zetaZeroConfig_carrier q)
+  · intro h ρ hρ
+    obtain ⟨hζ, hre0, hre1⟩ : riemannZeta ρ = 0 ∧ 0 < ρ.re ∧ ρ.re < 1 := hρ
+    have hρ1 : ρ ≠ 1 := by intro h1; rw [h1, Complex.one_re] at hre1; linarith
+    obtain ⟨q, hq⟩ := exists_xiZeroCopy_of_riemannZeta_eq_zero hre0 hρ1 hζ
+    rw [← hq]
+    exact h q
+
 /-- `RiemannHypothesis` is equivalent to `(q.1 : ℂ).re = 1/2` for every `q : XiZeroCopy`. -/
 theorem riemannHypothesis_iff_forall_xiZeroCopy_re_eq_half :
     RiemannHypothesis ↔ ∀ q : XiZeroCopy, (q.1 : ℂ).re = 1 / 2 := by
-  rw [DeBruijn.riemannHypothesis_iff_zetaZeroWidth_eq_zero,
-    Zeta23.zetaZeroWidth_le_iff_re_le le_rfl |> fun h =>
-      le_antisymm_iff.trans (and_iff_left Zeta23.zetaZeroWidth_nonneg) |>.symm.trans h]
+  have hz0 : zetaZeroWidth = 0 ↔ zetaZeroWidth ≤ 0 :=
+    le_antisymm_iff.trans (and_iff_left zetaZeroWidth_nonneg) |>.symm
+  rw [riemannHypothesis_iff_zetaZeroWidth_eq_zero, hz0,
+    zetaZeroWidth_le_iff_forall_xiZeroCopy_re_le le_rfl]
   constructor
   · intro h
-    refine xiZeroCopy_re_eq_half_of_forall_le fun q => ?_
-    have hmem := CrossRouteReceiverBridges.xiZeroCopy_mem_zetaZeroConfig_carrier q
-    linarith [h (q.1 : ℂ) hmem]
-  · intro hall ρ hρ
-    have hρ0 : ρ ≠ 0 := by intro h0; rw [h0, Complex.zero_re] at hρ; linarith [hρ.2.1]
-    have hρ1 : ρ ≠ 1 := by intro h1; rw [h1, Complex.one_re] at hρ; linarith [hρ.2.2]
-    obtain ⟨q, hq⟩ := exists_xiZeroCopy_of_riemannZeta_eq_zero hρ.2.1 hρ1 hρ.1
-    rw [← hq, hall q]
-    linarith
+    exact xiZeroCopy_re_eq_half_of_forall_le fun q => by linarith [h q]
+  · intro hall q
+    linarith [hall q]
 
 /-- **Critical-line Stieltjes saturation equivalence.**
 For every `0 < τ ≤ 366/25`, `xiWardCriticalStieltjesSum τ ≤ 8π Im(ξ'/ξ(101/100 + iτ))`
@@ -1457,7 +1486,10 @@ theorem riemannHypothesis_iff_xiWardCriticalStieltjesSum_eq_euler {tau : ℝ}
       have h := congrArg Complex.re (tsum_xiWardZeroStieltjes_eq_im_logDeriv_xi tau)
       rw [show -(8 * Real.pi * tau : ℂ) = ((-(8 * Real.pi * tau) : ℝ) : ℂ) by push_cast; ring,
         Complex.re_ofReal_mul, Complex.re_tsum (summable_xiWardZeroStieltjes hτ.1.ne'),
-        Complex.ofReal_re, tsum_neg] at h
+        Complex.ofReal_re] at h
+      have hneg : -(8 * Real.pi * tau) * (∑' q : XiZeroCopy, (xiWardZeroStieltjes tau q).re) =
+          8 * Real.pi * tau * ∑' q : XiZeroCopy, -(xiWardZeroStieltjes tau q).re := by
+        rw [tsum_neg]; ring
       linarith
     rw [← heuler]
     unfold xiWardCriticalStieltjesSum
@@ -1480,24 +1512,11 @@ theorem riemannHypothesis_iff_xiWardCriticalStieltjesSum_eq_euler {tau : ℝ}
       mul_pos (by have := hτ.1; positivity) hts
     linarith
 
-/-- For `σ ≥ 0`, `zetaZeroWidth ≤ σ` iff every `q : XiZeroCopy` satisfies `Re ρ_q ≤ 1/2 + σ`. -/
-theorem zetaZeroWidth_le_iff_forall_xiZeroCopy_re_le {σ : ℝ} (hσ : 0 ≤ σ) :
-    zetaZeroWidth ≤ σ ↔ ∀ q : XiZeroCopy, (q.1 : ℂ).re ≤ 1 / 2 + σ := by
-  rw [Zeta23.zetaZeroWidth_le_iff_re_le hσ]
-  constructor
-  · intro h q
-    exact h (q.1 : ℂ) (CrossRouteReceiverBridges.xiZeroCopy_mem_zetaZeroConfig_carrier q)
-  · intro h ρ hρ
-    have hρ1 : ρ ≠ 1 := by intro h1; rw [h1, Complex.one_re] at hρ; linarith [hρ.2.2]
-    obtain ⟨q, hq⟩ := exists_xiZeroCopy_of_riemannZeta_eq_zero hρ.2.1 hρ1 hρ.1
-    rw [← hq]
-    exact h q
-
 /-- **Graded Global Ward Cap zero-width characterization.**
-For any `0 ≤ σ < 1/2` and any single height `τ ∈ (0, 366/25]`, `zetaZeroWidth ≤ σ` holds iff the
+For any `σ ≥ 0` and any single height `τ ∈ (0, 366/25]`, `zetaZeroWidth ≤ σ` holds iff the
 Global Ward Cap vanishes almost everywhere above transverse level `σ`. -/
 theorem zetaZeroWidth_le_iff_ae_xiWardGlobalCap_eq_zero_above {σ tau : ℝ} (hσ0 : 0 ≤ σ)
-    (hσ : σ < 1 / 2) (hτ : tau ∈ Ioc (0 : ℝ) (366 / 25)) :
+    (hτ : tau ∈ Ioc (0 : ℝ) (366 / 25)) :
     zetaZeroWidth ≤ σ ↔
       ∀ᵐ s : ℝ ∂(volume : Measure ℝ), σ ≤ xiWardTransverseLevel s →
         ∫ x : ℝ, xiWardSchwarzCapDifference tau s x *
@@ -1514,14 +1533,14 @@ theorem zetaZeroWidth_le_iff_ae_xiWardGlobalCap_eq_zero_above {σ tau : ℝ} (h�
   · intro hae q₀
     by_contra hq₀
     push Not at hq₀
-    set a₀ : ℝ := (q₀.1 : ℂ).re - 1 / 2
+    set a₀ : ℝ := (q₀.1 : ℂ).re - 1 / 2 with ha₀_def
     have ha₀_mem : a₀ ∈ Ioo (0 : ℝ) (1 / 2) :=
-      ⟨by linarith, by linarith [xiZeroCopy_re_lt_one q₀]⟩
-    have hσ_lt_a₀ : σ < a₀ := by simp only [a₀]; linarith
-    set b : ℝ := (σ + a₀) / 2
-    have hb_mem : b ∈ Ioo (0 : ℝ) (1 / 2) := ⟨by simp only [b]; linarith,
-      by simp only [b]; linarith [ha₀_mem.2]⟩
-    have hba₀ : b < a₀ := by simp only [b]; linarith
+      ⟨by linarith [ha₀_def], by linarith [ha₀_def, xiZeroCopy_re_lt_one q₀]⟩
+    have hσ_lt_a₀ : σ < a₀ := by linarith [ha₀_def]
+    set b : ℝ := (σ + a₀) / 2 with hb_def
+    have hb_mem : b ∈ Ioo (0 : ℝ) (1 / 2) := ⟨by linarith [hb_def],
+      by linarith [hb_def, ha₀_mem.2]⟩
+    have hba₀ : b < a₀ := by linarith [hb_def]
     set s₁ : ℝ := xiWardTransverseCoordinate b
     set s₂ : ℝ := xiWardTransverseCoordinate a₀
     have hs₁₂ : s₁ < s₂ := by
@@ -1539,13 +1558,12 @@ theorem zetaZeroWidth_le_iff_ae_xiWardGlobalCap_eq_zero_above {σ tau : ℝ} (h�
     have hlev_lo : σ < xiWardTransverseLevel s := by
       have h := xiWardTransverseLevel_strictMono hs_mem.1
       rw [xiWardTransverseLevel_coordinate hb_mem] at h
-      simp only [b] at h
-      linarith
+      linarith [hb_def]
     have hlev_hi : xiWardTransverseLevel s < a₀ := by
       have h := xiWardTransverseLevel_strictMono hs_mem.2
       rwa [xiWardTransverseLevel_coordinate ha₀_mem] at h
     have hq_le := (hsign tau hτ).2.mp (by rw [hcap_zero hlev_lo.le, Complex.zero_re]) q₀
-    linarith
+    linarith [ha₀_def]
 
 /-- **Unified Route-WD and Cross-Corpus Zero-Width Dictionary.**
 For `0 ≤ σ < 1/2`, `R ≥ 1/2`, and `0 < τ ≤ 366/25`, the single invariant `zetaZeroWidth ≤ σ` is
@@ -1577,7 +1595,8 @@ theorem routeWD_and_corpus_zeroWidth_dictionary {σ R tau : ℝ} (hσ0 : 0 ≤ �
       (∀ u : ℝ, σ ^ 2 / 2 < u → DeBruijn.collisionMass u = 0) ∧
       (∀ z : ℂ, 1 / 2 + σ < z.re → xi z ≠ 0 → 0 ≤ (logDeriv xi z).re) ∧
       (∀ h : ℝ, σ < h →
-        LaguerrePolya (fun z => (XiC (z + h * I) + XiC (z - h * I)) / 2))) ∧
+        GaloisForLFunctions.HTGeometry.LaguerrePolya
+          (fun z => (XiC (z + h * I) + XiC (z - h * I)) / 2))) ∧
     ((zetaZeroWidth ≤ σ ↔ ConvergesRightOf logZetaRegCoeff (1 / 2 + σ)) ∧
       (zetaZeroWidth ≤ σ ↔ ∀ u : ℝ, 0 < u → u < 1 / 2 - σ → WoldNatResidualSquareEnergy u) ∧
       (zetaZeroWidth ≤ σ ↔ SuzukiZetaZeroFreeRightOf σ) ∧
@@ -1586,20 +1605,20 @@ theorem routeWD_and_corpus_zeroWidth_dictionary {σ R tau : ℝ} (hσ0 : 0 ≤ �
       (zetaZeroWidth ≤ σ ↔ CriticalMellinDefectAnalyticAbove σ) ∧
       (zetaZeroWidth ≤ σ ↔ ∃ N : ℕ, DyadicWeightedPrimeWindowPowerUpper σ N) ∧
       (zetaZeroWidth ≤ σ ↔ xiProjectiveReflectionRadius ≤ σ)) := by
-  refine ⟨zetaZeroWidth_le_iff_ae_xiWardGlobalCap_eq_zero_above hσ0 hσ hτ,
+  refine ⟨zetaZeroWidth_le_iff_ae_xiWardGlobalCap_eq_zero_above hσ0 hτ,
     zetaZeroWidth_le_iff_forall_taylor_finiteHead_nonneg hσ0 hR,
     zetaZeroWidth_le_iff_forall_pos_taylor_forwardPolyHeat_finiteHead_nonneg hσ0 hR,
     fun hw => ?_,
     theRoutesMeasureOneZeroWidth hσ0 hσ⟩
   have hsq : zetaZeroWidth ^ 2 ≤ σ ^ 2 :=
-    pow_le_pow_left₀ Zeta23.zetaZeroWidth_nonneg hw 2
+    pow_le_pow_left₀ zetaZeroWidth_nonneg hw 2
   have hwd : DeBruijn.wdHeatThreshold ≤ σ ^ 2 / 3 :=
     DeBruijn.wdHeatThreshold_le_third_sq_zetaZeroWidth.trans (by linarith)
   have hΛ : DeBruijn.newmanConstant ≤ σ ^ 2 / 2 := by
     have hΛ0 : DeBruijn.newmanConstant ≤ zetaZeroWidth ^ 2 / 2 :=
       csInf_le DeBruijn.realRootedTimes_bddBelow
         ⟨by positivity,
-          fun _ hz => DeBruijn.riemannHeat_zeros_real_of_half_sq_zetaZeroWidth_le le_rfl hz⟩
+          fun _ hz => riemannHeat_zeros_real_of_half_sq_zetaZeroWidth_le le_rfl hz⟩
     linarith
   refine ⟨hwd, hΛ,
     fun u hu => DeBruijn.collisionMass_eq_zero_of_half_sq_zetaZeroWidth_lt (by linarith),
@@ -1609,4 +1628,15 @@ theorem routeWD_and_corpus_zeroWidth_dictionary {σ R tau : ℝ} (hσ0 : 0 ≤ �
 end
 
 end RHTower
+
+#print axioms RHTower.polyHeat_forwardPolyHeat
+#print axioms RHTower.not_coeffNonneg_taylor_forwardPolyHeat_of_eval_zero
+#print axioms RHTower.zetaZeroWidth_le_of_finiteHead_pure_quadratic_heat
+#print axioms RHTower.zetaZeroWidth_le_iff_forall_pos_taylor_forwardPolyHeat_finiteHead_nonneg
+#print axioms RHTower.coeff_one_sliceTruncPoly_radius_eq_cesaro_compensated
+#print axioms RHTower.tsum_xiWardZeroStieltjes_eq_arithmetic
+#print axioms RHTower.two_mul_xiWardRightStieltjesSum_le_euler_sub_critical
+#print axioms RHTower.riemannHypothesis_iff_xiWardCriticalStieltjesSum_eq_euler
+#print axioms RHTower.routeWD_and_corpus_zeroWidth_dictionary
+
 
