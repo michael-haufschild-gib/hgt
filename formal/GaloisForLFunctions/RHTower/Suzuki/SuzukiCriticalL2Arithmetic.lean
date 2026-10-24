@@ -185,8 +185,20 @@ theorem tendsto_suzukiCriticalSourcePairing_extended_firstVariation_finite {f : 
           ∑ n ∈ Finset.Icc 2 ⌊Real.exp A⌋₊,
             (2 * ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n/2)) *
               autocorr f (Real.log n)) : ℝ))) := by
-    dsimp only [Function.comp] at h
-    simpa only [add_assoc, ← EReal.coe_add, sub_eq_add_neg] using h
+    change Tendsto (fun omega : ℝ =>
+      ((((autocorr f 0-suzukiCriticalSourceCusp f omega 0)/omega : ℝ) : EReal) +
+        ((-(∑ n ∈ Finset.Icc 2 ⌊Real.exp A⌋₊,
+          (suzukiShiftedCoefficient omega n/omega * Real.exp (-Real.log n/2)) *
+            suzukiCriticalSourceCusp f omega (Real.log n)) : ℝ) : EReal))) (𝓝[>] 0)
+      (𝓝 (((suzukiCriticalLimitingCompensatedEnergy
+        (fun t => autocorr f 0-autocorr f t) : EReal) +
+        ((((Complex.digamma ((5/4 : ℝ) : ℂ)).re-Real.log Real.pi)*autocorr f 0 +
+          2 * (∫ t in Ioi 0, autocorr f t * Real.exp (t/2)) : ℝ) : EReal)) +
+        ((-(∑ n ∈ Finset.Icc 2 ⌊Real.exp A⌋₊,
+          (2 * ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n/2)) *
+            autocorr f (Real.log n)) : ℝ) : EReal))) at h
+    rw [add_assoc, ← EReal.coe_add] at h
+    simpa only [sub_eq_add_neg] using h
   apply hlim.congr'
   have ho : ∀ᶠ omega : ℝ in 𝓝[>] 0, omega < 1/2 :=
     mem_nhdsWithin_of_mem_nhds (Iio_mem_nhds (by norm_num : (0 : ℝ)<1/2))

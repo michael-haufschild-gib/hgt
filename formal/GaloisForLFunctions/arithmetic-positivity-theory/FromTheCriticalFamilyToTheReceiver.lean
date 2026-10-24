@@ -486,10 +486,10 @@ theorem autocorr_evenCompactSource_add_oddCompactSource (f : C_c(ℝ, ℝ)) (t :
     (f.continuous.mul (f.continuous.comp (continuous_id.add_const t))).integrable_of_hasCompactSupport
       f.hasCompactSupport.mul_right
   have hi_f2 : Integrable fun x => f (-x) * f (-x - t) := by
-    have h := (f.continuous.mul
-      (f.continuous.comp (continuous_id.sub (continuous_const : Continuous fun _ : ℝ => t)))).integrable_of_hasCompactSupport
-      f.hasCompactSupport.mul_right
-    exact h.comp_neg
+    have h : Integrable fun x => f x * f (x + -t) :=
+      (f.continuous.mul (f.continuous.comp (continuous_id.add_const (-t)))).integrable_of_hasCompactSupport
+        f.hasCompactSupport.mul_right
+    simpa only [sub_eq_add_neg] using h.comp_neg
   unfold autocorr
   rw [← integral_add hi_e hi_o]
   have hpt : (fun x => evenCompactSource f x * evenCompactSource f (x + t) +
@@ -504,9 +504,9 @@ theorem autocorr_evenCompactSource_add_oddCompactSource (f : C_c(ℝ, ℝ)) (t :
   have hneg : (∫ x, f (-x) * f (-x - t)) = ∫ x, f x * f (x - t) :=
     integral_neg_eq_self (fun x => f x * f (x - t)) volume
   have hshift : (∫ x, f x * f (x - t)) = ∫ x, f x * f (x + t) := by
-    have h1 := integral_add_right_eq_self (fun x => f (x - t) * f x) t
+    have h1 := integral_add_right_eq_self (μ := volume) (fun x => f (x - t) * f x) t
     simp only [add_sub_cancel_right] at h1
-    rw [← h1]
+    rw [h1]
     exact integral_congr_ae (Eventually.of_forall fun x => mul_comm _ _)
   rw [hneg, hshift]
   ring
@@ -913,7 +913,7 @@ If `ℱ` has `(α, β)`-norm-controlled receiver transfer (`α, β ≥ 0`) and s
 `ζ` satisfies `zetaZeroWidth ≤ σ + β`. -/
 theorem zetaZeroWidth_le_of_normControlled_subfamily_transfer
     {ℱ : ℝ → Set C_c(ℝ, ℝ)} {α β σ C : ℝ}
-    (hα : 0 ≤ α) (hβ : 0 ≤ β) (hσ : 0 ≤ σ) (hC : 0 ≤ C)
+    (_hα : 0 ≤ α) (hβ : 0 ≤ β) (hσ : 0 ≤ σ) (hC : 0 ≤ C)
     (htransfer : HasNormControlledReceiverTransfer ℱ α β)
     (hfloor : ∀ r : ℝ, 0 < r → ∀ g ∈ ℱ r,
       -(C * Real.exp (2 * σ * r) * ∫ x, g x ^ 2) ≤ compactFullWeilEnergy g) :
@@ -1237,8 +1237,12 @@ theorem exists_compactFullWeilEnergy_and_gridTent_ge_neg_of_zetaZeroWidth_lt
   have h1 := hfloor A hA F hF hFc hsupp D hD
   rw [hF_eq] at h1
   refine ⟨h1, fun {Mg Kg L} hMg hKg hGL n => ?_⟩
-  have happrox := (abs_le.mp (abs_compactFullWeilEnergy_gridTentPattern_sub_le Fc hA hsupp
-    hMg hKg hGL n)).1
+  have happrox : -(gridTentApproximationConstant A Mg Kg L * sourceFactorialWidth (n + 1)) ≤
+      compactFullWeilEnergy
+        (gridTentPattern (fun x => Real.exp (-(3 * x / 2)) * F x) n (-(A + 1))
+          ⌈2 * (A + 1) / sourceFactorialWidth (n + 1)⌉₊) -
+      compactFullWeilEnergy Fc :=
+    (abs_le.mp (abs_compactFullWeilEnergy_gridTentPattern_sub_le Fc hA hsupp hMg hKg hGL n)).1
   linarith
 
 /-! ## Section 5: Unconditional Small-Aperture Coercivity (`3/10` All-Profile, `181/500` Odd-Profile) and Finite-Scale Grid-Tent Transfer -/

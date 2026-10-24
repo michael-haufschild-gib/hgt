@@ -57,10 +57,9 @@ nonnegative size `A_H` would discard the orientation being estimated.
 `norm_xiSliceGaussianTail_sub_exp_le`,
 `xiSliceProduct_div_eq_gaussianHead_mul_tail`, and
 `norm_xiSliceProduct_sub_gaussianHead_exp_le`. The complete source passed a
-scratch-file kernel check and its named production olean build. All three
-capstones passed `#print axioms`: only `propext`, `Classical.choice`,
-`Quot.sound`. A final named check without output files remains before
-advancing the card.
+scratch-file kernel check, production olean build, and final named check.
+All three capstones passed `#print axioms`: only `propext`,
+`Classical.choice`, `Quot.sound`.
 
 ### C2. A rescaled far tail is an actual Gaussian limit — Lean verified
 
@@ -100,48 +99,30 @@ bound `25/R` after normalization.
 **Lean.** `RHTower/XiSliceGaussianTailLimit.lean` builds successfully. Its
 capstone `tendstoUniformlyOn_xiSliceGaussianNormalizedTail t M` has no
 analytic or zero-location premises: it applies to every real center and
-every fixed complex closed ball. Axiom audit and final named no-output
-check remain in the verification batch.
+every fixed complex closed ball. Axiom audits passed; the final named no-output check remains in the
+verification batch.
 
-### C3. Multiplicative compensation removes the total-mass exponential — paper proof
+### C3. Multiplicative compensation removes the total-mass exponential
 
-C1 still pays `exp(2|z|^2 A_H)`. This can overwhelm a small fourth moment in
-a dense background. Instead compensate each factor before estimating it.
-For the distance-`R` head, `R>0`, write `x_q=z^2 b_q`,
-`eta=|z|^2/R^2`, and `u_q=(1+x_q)exp(-x_q)`. Then
-
-```
-|exp(-z^2 C_H) T_H(z) - 1|
- <= exp(exp(2*eta) * |z|^4 B_H) - 1.
-```
-
-**Proof.** The existing exponential Taylor bound gives
-`|u_q-1| <= |x_q|^2 exp(2|x_q|) <= exp(2eta)|x_q|^2`.
-The right side is summable. For any finite set,
-`|product u_q-1| <= product (1+|u_q-1|)-1
- <= exp(sum |u_q-1|)-1`; the first inequality follows by induction from
-`ab-1=(a-1)b+(b-1)`. Passing to limits proves the same bound for the
-infinite product. Absolute summability of `x_q` identifies that product
-with `exp(-sum x_q) product(1+x_q)`. Summing the termwise bound gives
-the displayed estimate.
-
-This is stronger than C1 in a dense background: the error no longer pays an
-exponential in `A_H`. It still does not control the retained block or give
-an RH sign. The next source estimate to attack is a fourth-moment bound
-uniform in a moving height and cutoff.
-
-**Corpus connection and stronger survivor.** These compensated factors are
-exactly genus-one Weierstrass factors, `u_q=E1(-x_q)`. The corpus already
-proves `|E1(w)-1| <= |w|^2` for `|w|<=1` and the infinite-product bound
-`|product(1+v_q)-1| <= exp(sum|v_q|)-1`. Consequently, on `|z|<=R`,
+For the distance-`R` head, `R>0`, and `|z|<=R`, the exact theorem is
 
 ```
 |exp(-z^2 C_H) T_H(z) - 1| <= exp(|z|^4 B_H)-1.
 ```
 
-The parent estimate is existing canonical-product mathematics. The new
-source work is its exact centered Xi tail identification and the subsequent
-unconditional estimates on the actual moments; no external novelty claim.
+**Proof.** Set `x_q=z^2 b_q` and
+`u_q=(1+x_q)exp(-x_q)=E1(-x_q)`. The cutoff gives `|x_q|<=1`.
+The existing genus-one estimate gives `|u_q-1|<=|x_q|^2`, so these
+errors are summable and their sum is at most `|z|^4 B_H`. The existing
+infinite-product inequality gives
+`|product u_q-1|<=exp(sum |u_q-1|)-1`. Absolute summability of `x_q`
+identifies the product with `exp(-z^2 C_H)T_H(z)` and proves the result.
+
+This avoids C1's exponential in total mass `A_H`. The parent inequalities
+are existing canonical-product results; the connection identifies their
+literal centered Xi tail and retains the finite head. Multiplication by
+that head gives the corresponding normalized full-slice comparison.
+The finite-head sign remains open.
 
 ### C4. A dense Gaussian tail at growing height — paper route
 
@@ -172,7 +153,7 @@ and `B_R(t)<=D/u^2->0`. C3 gives relative Gaussian approximation on every
 fixed physical disc, even though the quadratic mass diverges. This is the
 scale missing from C2's fixed-center normalization.
 
-**Exact real orientation to formalize.** The reflection `lagPartner`
+**Exact real orientation.** The reflection `lagPartner`
 preserves the radius head and conjugates the spectral point. Its tail
 reciprocal sum is therefore real. Moreover, writing `d_q` for the centered
 spectral point gives
@@ -196,10 +177,6 @@ This is already the mechanism of `XiHorizontalSliceConeCriterion`, so it
 does not provide a new source sign. Retaining the finite bad-cone block
 remains essential. Continue with the multiplicatively compensated error
 and moving-height fourth moments, rather than repackage that cone criterion.
-
-## Verification obligations
-
-User constraint: do not edit the frontier ledger (`docs/reports/rh-current-frontier-map.md`).
 
 ### C5. Source mass at the scale needed for moving coefficient orders — paper proof
 
@@ -233,7 +210,8 @@ pay their product. A complete heat-integral and finite-block transfer is
 still open; this observation is not yet such a transfer theorem.
 
 **Status:** dependency-closed paper proof of the moment estimate above;
-Lean implementation pending. The coefficient-transfer discussion identifies
+Lean implementation and olean build passed; the named final audit remains.
+The coefficient-transfer discussion identifies
 the next conjecture, not an established sign.
 
 ### C6. Expanding-disc Gaussian approximation — paper proof
@@ -254,8 +232,8 @@ is exactly real by reflection. Its positive growth follows from
 discs with unbounded radius; no sign of the finite complementary block is
 asserted. Also `a_u<=A_u<=Du`, hence `B_u*a_u^2<=D^3/u^3 -> 0` once
 `a_u>=0`. This pays a square loss in coefficient size, stronger than the
-provisional saddle-loss rate in C5. Lean draft added to
-`/tmp/wd_gaussian_dense_limit.lean`.
+provisional saddle-loss rate in C5. The complete production module is
+`RHTower/XiSliceDenseGaussianTail.lean`; its olean build passed.
 
 ### C7. Global real-axis Gaussian bracketing — next exact statement
 
@@ -290,12 +268,13 @@ The upper bound follows from the lower exponential bracket and
 `1-exp(-y)<=y`. This gives a global real-axis relative error polynomial in
 `x`, dominated by the exact Gaussian. It pays real heat-integral error
 terms without a cutoff loss. Complex coefficient-sign transfer and the
-finite complementary block remain separate open work. Lean draft:
-`/tmp/wd_gaussian_tail_real.lean`.
+finite complementary block remain separate open work. The complete
+production module is `RHTower/XiSliceGaussianTailRealBounds.lean`; its
+scratch proof and all four capstone axiom audits passed.
 
 Multiplying by the retained head gives, for the actual normalized Xi slice,
 `|exp(-a*x^2) S_t(x)/S_t(0)-P_H(x)| <= |P_H(x)| B_R*x^4` on the whole real
-axis. This exact source estimate, also drafted, retains all nearby zeros.
+axis. This exact source estimate retains all nearby zeros.
 
 ### C8. Actual-tail Gaussian heat comparison — paper proof
 
@@ -335,20 +314,6 @@ Direct leaf checks only; no umbrella build. Audit transitive axioms, wire the
 completed modules, remove owned scratch files. No web, novelty audit, numerical
 experiment, unproved analytic premise, or raised Lean limit.
 
-## Implementation checkpoint
-
-**Paused at user's request.** The named final-check batch passed
-`XiSliceGaussianTailComparison.lean`, then was stopped during
-`XiSliceGaussianTailLimit.lean`. The remaining named checks for C2, C5, C6,
-and C7 are pending; do not repeat the completed C1 check without cause.
-C7's complete scratch check and four axiom audits passed before production
-integration. Its production file and umbrella import exist. C6 and C7
-oleans have not been built. C8's complete draft remains unchecked in
-`/tmp/wd_gaussian_tail_heat.lean`; C9's complete draft is now saved in
-`/tmp/wd_gaussian_finite_head.lean` and also remains unchecked. Both depend
-on C7, and C8 also depends on C6. Preserve the no-frontier-ledger-edit
-instruction when resuming.
-
 ### C9. Retain the central zero instead of dividing by it — paper proof
 
 The normalized slice formula excludes `XiC(t)=0`. The corpus already has
@@ -386,37 +351,51 @@ For complex `x` with `|x|<=R`, C3 gives the corresponding bound with
 corpus proof; the new connection removes the central nonvanishing premise
 from the Gaussian comparison. It does not establish the missing finite-head
 sign or claim new knowledge relative to external literature. Paper proof
-complete; Lean draft pending. Frontier ledger must not be edited.
+complete; complete Lean draft saved in `/tmp/wd_gaussian_finite_head.lean`.
+Frontier ledger must not be edited.
 
-- Gaussian model completed separately in
-  `docs/drafts/pipeline/3-formalized/wd-gaussian-background-heat-law.md`.
-- C1 production module and umbrella import exist; olean built for the next module.
-- C2 production module `RHTower/XiSliceGaussianTailLimit.lean` is built and
-  wired. Its unused terminal `ring` was removed afterward; no declaration
-  or executed proof step changed. Do not rebuild its existing olean.
-- C3 production module `RHTower/XiSliceGaussianTailCompensation.lean`
-  passed its named no-output check and its olean build for the growing-height
-  assembly. Both compensation capstones passed their axiom checks; the exact
-  real-orientation capstone remains in the final audit batch.
-- C2 capstone axiom audits passed: standard three axioms only.
-- C4 production module `RHTower/XiSliceGaussianTailHeightBounds.lean`
-  passed its named no-output check and its olean build for the growing-height
-  assembly. Umbrella import added. Capstone axiom audit remains.
-- C5 passed its complete scratch check and the production olean build in
-  `RHTower/XiSliceGaussianTailWindowBounds.lean`. It is wired into the umbrella.
-  Its final named no-output check remains.
-- C6 passed its complete scratch check and all axiom audits. The production
-  module `RHTower/XiSliceDenseGaussianTail.lean` is written and wired; its
-  final named no-output check remains. It proves expanding-disc convergence
-  and `B*a^2 -> 0`, in addition to the diverging real coefficient and
-  fixed-disc limit. Its olean has not been built.
-- The combined C1–C6 audit reports only `propext`, `Classical.choice`, and
-  `Quot.sound` for all fifteen capstones, including exact real orientation.
-- C7 global real-axis bracketing, reflection positivity, and linear relative
-  error are undergoing their second check in `/tmp/wd_gaussian_tail_real.lean`.
-  The first check found only a redundant conjugation rewrite, a nonexistent
-  `Summable.re` convenience method, and two ambiguous finite-sum limits.
-  These were replaced by norm domination and explicitly typed `Tendsto`s.
-  Intended production name: `RHTower/XiSliceGaussianTailRealBounds.lean`.
-- Obsolete scratch files for the Gaussian model and C1 through C4 were
-  removed. Active drafts above remain until integration and final audit.
+## Declaration map
+
+All source paths below are under `formal/GaloisForLFunctions/RHTower/`.
+C8 and C9 remain drafts until their pending kernel checks pass.
+
+| Part | Module | Main declarations |
+|---|---|---|
+| C1 | `XiSliceGaussianTailComparison.lean` | `norm_xiSliceGaussianTail_sub_exp_le`, `xiSliceProduct_div_eq_gaussianHead_mul_tail`, `norm_xiSliceProduct_sub_gaussianHead_exp_le` |
+| C2 | `XiSliceGaussianTailLimit.lean` | `tendstoUniformlyOn_xiSliceGaussianNormalizedTail`, `eventually_xiSliceGaussianTailFourth_normalized_le` |
+| C3 | `XiSliceGaussianTailCompensation.lean` | `xiSliceGaussianTailQuadratic_eq_mass_sub_transverse`, `norm_xiSliceGaussianTail_compensated_sub_one_le` |
+| C4 | `XiSliceGaussianTailHeightBounds.lean` | `xiSliceGaussianTailMass_le_log`, `xiSliceGaussianTailFourth_le_log`, `exists_xiSliceGaussianTailMass_height_lower` |
+| C5 | `XiSliceGaussianTailWindowBounds.lean` | `xiSliceGaussianTailMass_le_window_bound`, `xiSliceGaussianTailMass_le_cutoff_bound` |
+| C6 | `XiSliceDenseGaussianTail.lean` | `tendsto_xiSliceDenseGaussianCoefficient_atTop`, `tendsto_xiSliceDenseGaussianFourth_mul_coefficient_sq`, `tendstoUniformlyOn_xiSliceDenseGaussianTail_compensated`, `tendstoUniformlyOn_xiSliceDenseGaussianTail_dilated` |
+| C7 | `XiSliceGaussianTailRealBounds.lean` | `xiSliceGaussianTail_real_eq_norm`, `norm_xiSliceGaussianTail_real_bounds`, `norm_xiSliceGaussianTail_real_compensated_sub_one_le`, `norm_xiSliceProduct_real_compensated_sub_head_le` |
+| C8 | `XiSliceGaussianTailHeat.lean` | `DeBruijn.integrable_xiSliceGaussianTailHeat`, `DeBruijn.xiSliceGaussianTailHeat_bounds`, `DeBruijn.abs_xiSliceGaussianTailHeat_relative_error_le`, `DeBruijn.tendstoUniformlyOn_xiSliceDenseGaussianHeatNormalized` |
+| C9 | `XiSliceGaussianFiniteHead.lean` | `xiSliceGaussianFiniteHeadScalar_ne_zero`, `xiSliceProduct_eq_gaussianFiniteHead_mul_tail`, `norm_xiSliceProduct_compensated_sub_finiteHead_le`, `norm_xiSliceProduct_real_compensated_sub_finiteHead_le` |
+
+## Implementation checkpoint
+
+Finishing the saved Lean work at the user's request. Do not edit the frontier
+ledger. No broader RH result is claimed.
+
+- C1: named final check and transitive axiom audits passed.
+- C2: scratch proof, olean, and axiom audits passed; the interrupted named
+  final check remains pending. Do not rebuild its existing olean.
+- C3 and C4: named final checks, oleans, and capstone axiom audits passed.
+- C5: complete scratch check, production olean, and axiom audits passed;
+  named final check pending.
+- C6 and C7: complete scratch checks and capstone axiom audits passed;
+  production modules and umbrella imports exist. Their named final checks
+  remain pending. C6, C7, and the Gaussian model olean builds passed;
+  the C8 scratch proof is now undergoing its kernel and axiom checks.
+- C8: complete paper proof and full draft in `/tmp/wd_gaussian_tail_heat.lean`;
+  kernel verification pending. The public relative-error theorem exposes
+  the explicit Gaussian fourth moment.
+- C9: complete paper proof and full draft in `/tmp/wd_gaussian_finite_head.lean`;
+  kernel verification pending.
+- The C1–C6 combined audit reported only `propext`, `Classical.choice`, and
+  `Quot.sound` for all fifteen capstones; C7's four capstones have the same
+  axiom set. No placeholders or raised proof limits occur in these modules
+  or the C8/C9 drafts.
+- All finished leaves are wired into `RHTower.lean`; no umbrella build.
+  The Gaussian model itself is complete in the separate stage-3 card
+  `wd-gaussian-background-heat-law.md`.
+- Remove owned scratch files after production integration and final audits.

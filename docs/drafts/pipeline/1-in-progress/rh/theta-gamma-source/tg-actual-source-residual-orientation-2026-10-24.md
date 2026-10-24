@@ -387,8 +387,10 @@ inequality by the two-by-two determinant identity. The actual theta
 log-concavity therefore proves C5 for every `sigma>=0`.
 
 The dependency-closed paper proof is in
-`2-fully-proven/gaussian-integer-divisibility-negative-correlation.md`;
-formalization is in progress. No Lean certificate for C5 is claimed yet.
+`3-formalized/gaussian-integer-divisibility-negative-correlation.md`.
+The literal Gaussian four-point law, coprime divisibility covariance,
+and finite-product divisibility bound are Lean-checked. Their transitive
+axiom audit contains only `propext`, `Classical.choice`, and `Quot.sound`.
 
 **[OPEN CORE]:** transfer from this proved real Gaussian covariance sign
 to the complete prime--Gamma--polar residual. Nonpositive coprime

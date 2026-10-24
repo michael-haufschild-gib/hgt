@@ -68,8 +68,11 @@ private theorem correlation_decay_integrable {f : ℝ → ℝ} (hf : MemLp f 2 v
 
 private theorem deficit_decay_integrable {f : ℝ → ℝ} (hf : MemLp f 2 volume) :
     IntegrableOn (fun t => (autocorr f 0-autocorr f t)*(2*Real.exp (-t/2))) (Ioi 0) := by
-  apply ((decay_integrable.const_mul (2*autocorr f 0)).sub
-    ((correlation_decay_integrable hf).const_mul 2)).congr_fun _ measurableSet_Ioi
+  have hi : IntegrableOn (fun t => (2*autocorr f 0)*Real.exp (-t/2) -
+      2*(autocorr f t*Real.exp (-t/2))) (Ioi 0) :=
+    (decay_integrable.const_mul (2*autocorr f 0)).sub
+      ((correlation_decay_integrable hf).const_mul 2)
+  apply hi.congr_fun _ measurableSet_Ioi
   intro t _
   dsimp only [Pi.sub_apply]
   ring
@@ -106,6 +109,7 @@ theorem sourceLevyEnergy_eq_suzukiCriticalEnergy {f : ℝ → ℝ} (hf : MemLp f
       simp only [source_autocorr_eq]
       apply lintegral_congr_ae
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+      change 0 < t at ht
       have hD := AutocorrelationKrein.deficit_nonneg hf t
       have hd : 0 < 1-Real.exp (-2*t) :=
         sub_pos.mpr (Real.exp_lt_one_iff.mpr (by linarith))

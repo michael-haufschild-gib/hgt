@@ -98,3 +98,4 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».TheLinearWindowOfThe
 import GaloisForLFunctions.«arithmetic-positivity-theory».LowScaleCoupledPositivityAndSchurComplement
 import GaloisForLFunctions.«arithmetic-positivity-theory».ExplicitCollarThresholdsAndKernelShape
 import GaloisForLFunctions.«arithmetic-positivity-theory».DenseScaleWindowsAndMultiWindowPositivity
+import GaloisForLFunctions.«arithmetic-positivity-theory».FromTheCriticalFamilyToTheReceiver

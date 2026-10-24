@@ -1182,13 +1182,19 @@ dependence on radius, value and slope moments, so one accuracy index pays for
 arbitrary simultaneous growth of support, scales, translations and
 coefficients.
 
-**Weil completeness.** A grid tent pattern is $e^{3x/2}$ times the
+**Weil completeness and quantitative finite-scale transfer.** A grid tent pattern is $e^{3x/2}$ times the
 piecewise-linear interpolant of its nodal data; the interpolant keeps the
 Lipschitz constant of the data and is within $2Ld$ of it, the exponential
-transports Lipschitz control, and the stability bound gives
-$\lvert Q(f_n)-Q(g)\rvert\le C\,d_n\to0$ with $C$ uniform. Hence every compact
-$C^2$ test is a limit of single-scale grid tent patterns in the complete form,
-and together with mollification of tent patterns in the other direction,
+transports Lipschitz control, and the stability bound gives the explicit finite-scale law
+$\lvert Q(f_n)-Q(g)\rvert\le C_{\mathrm{grid}}(R,M_g,K_g,L)\,d_{n+1}\le C_{\mathrm{grid}}/(12(n+1))\to0$
+and $\lvert\int f_n^2-\int g^2\rvert\le C_{\mathrm{mass}}(R,M_g,L)\,d_{n+1}\to0$ across all five
+realizations of the form (`abs_compactFullWeilEnergy_gridTentPattern_sub_le`,
+`abs_integral_sq_gridTentPattern_sub_le`,
+`abs_smoothGridTentDetector_sub_compactFullWeilEnergy_le`;
+[FromTheCriticalFamilyToTheReceiver](FromTheCriticalFamilyToTheReceiver.lean)). Hence every compact
+$C^2$ test is a simultaneous $Q$- and $L^2$-limit of single-scale grid tent patterns
+(`hasNormControlledReceiverTransfer_gridTentFamily`), and together with mollification of tent
+patterns in the other direction,
 $$
 \text{RH}\iff Q(f)\ge0\ \text{for every finite tent pattern}\iff
 \forall G,\ R\ge0:\ Q\bigl(\text{grid pattern of }G\text{ on }[-R-1,R+1]\text{ at scale }n\bigr)\ge0
@@ -1196,6 +1202,24 @@ $$
 $$
 The factorial tent family is a complete RH test family inside the laboratory:
 positivity theorems on it are exactly partial RH information.
+
+**Exact channel-by-channel parity split and graded receiver transfer.** On $C_c(\mathbb R,\mathbb R)$,
+cross autocorrelations between even and odd parts cancel identically upon integration, so
+$\mathrm{autocorr}(f_{\mathrm{even}})(t)+\mathrm{autocorr}(f_{\mathrm{odd}})(t)=\mathrm{autocorr}(f)(t)$
+at every shift $t\in\mathbb R$, and $\int f^2$, `biScaleLevyEnergy`, `fullPairing`, $Q(f)$, and
+$\hat Z(f)$ split additively without cross terms (`autocorr_evenCompactSource_add_oddCompactSource`,
+`compactFullWeilEnergy_eq_evenCompactSource_add_oddCompactSource`). Because a doubly collared
+critical truncation $g^V$ is supported on $(-\infty,0]$ and vanishes at $0$, its odd and even
+projections each carry exact half of $\int(g^V)^2$ and individually satisfy logarithmic archimedean
+Lévy coercivity $\ge(s_T/2)(\log M-c_{T,\mathrm{odd}})\sum_{n\in S}b_n^2$
+(`integral_sq_oddCompactSource_criticalTruncatedTest`,
+`ofReal_le_oddPartReal_and_evenPartReal_criticalTruncatedLevyEnergy`). Any subfamily $\mathcal F_r$
+with $(\alpha,\beta)$-norm-controlled receiver transfer ($\int g^2\le\alpha e^{2\beta r}\int F^2+\delta$)
+transfers a graded floor $Q(g)\ge-Ce^{2\sigma r}\int g^2$ to $\mathrm{zetaZeroWidth}\le\sigma+\beta$
+(`zetaZeroWidth_le_of_normControlled_subfamily_transfer`), and at $\beta=0$ makes RH equivalent to a
+subexponential or constant-floor bound on single-scale grid tent patterns over odd receiver tests
+(`riemannHypothesis_iff_subexponential_gridTentPattern_odd_floor`,
+`riemannHypothesis_iff_bddBelow_gridTentPattern_odd_floor`).
 
 **Detection on the actual zero set.** Through the visibility theorems of the
 Square-Root Threshold programme, the real-part splitting of the RH tower, grid
@@ -1233,7 +1257,11 @@ bound alone, and $Q(F)\ge\tfrac1{5000}\int F^2$ for $a\le3/10$ by the sharp
 quartic gauges of Arithmetic Criticality Theory, still below the first prime
 window $2a\ge\log2$; odd sources are positive through $a\le181/500$, past the
 first prime, by the strip surplus and Schur lending of Arithmetic Incidence
-Positivity. At any aperture the localised explicit formula gives nonnegativity
+Positivity, and both transfer at explicit finite scale $C_{\mathrm{grid}}\,d_{n+1}\le\mu$ to
+`gridTentPattern` and `smoothGridTentDetector` across all five form realizations
+(`compactFullWeilEnergy_and_gridTent_ge_of_support_le_threeTenths`,
+`compactFullWeilEnergy_and_gridTent_ge_of_odd_support_le_threeHundredSixtyTwoThousandths`). At any
+aperture the localised explicit formula gives nonnegativity
 of $\mathcal Z-\mathcal R$ on height shifts beyond an explicit horizon. Off RH
 the ground-energy path $\mu(A)$ has a first contact aperture, beyond $3/10$,
 and a near-top zero seen by the lag family at lag $V$ forces $\mu(A)<0$ for
@@ -1467,8 +1495,16 @@ Built and reusable:
   curvature constant $I_0$, two-sided $1/k^2$ bounds on the couplings $\kappa(k)$, and quadratic
   difference bounds establishing strict monotonicity and exact extrema of $R$.
 - *Full-form stability.* Every channel is Lipschitz in $L^1$ distance with explicit value and
-  slope moments, so one accuracy index pays for tents of arbitrary support.
-- *The tent family* as a complete RH test family inside the laboratory.
+  slope moments, so one accuracy index pays for tents of arbitrary support; `gridTentPattern` and
+  `smoothGridTentDetector` approximate every compact $C^2$ source simultaneously in $Q$ and $L^2$
+  mass with explicit $O(d_{n+1})\le O(1/(12(n+1)))$ and $1/(q+1)$ error bounds across all five form
+  realizations (`abs_compactFullWeilEnergy_gridTentPattern_sub_le`,
+  `abs_smoothGridTentDetector_sub_compactFullWeilEnergy_le`).
+- *The tent family and norm-controlled receiver transfer.* Every compact source splits channel by
+  channel into even and odd parts without cross terms, the odd and even projections of $g^V$ each
+  carry half the mass and half the logarithmic archimedean Lévy slope, and `(1,0)`-norm-controlled
+  transfer bridges graded floors on `gridTentPattern` directly to `zetaZeroWidth` and the reflected
+  prime–polar ledger.
 - *Scale-free low-window Lévy calculus and shift-adapted Schur complement.* Global clock-Lipschitz
   interpolation $(g^V(u)-g^V(u+x))^2\le K^2\sqrt x\,e^{u/2}$ bounds the low-window Lévy energy
   independently of $V$ and of high scales, and shift-adapted Young weights give an exact bilinear
@@ -1476,7 +1512,6 @@ Built and reusable:
 
 To be built:
 
-- a norm-controlled transfer from positive subfamilies to the complete receiver;
 - an intrinsic low-mode positivity certificate on the isolated low window $[1,L_{\mathrm{low}}]$
   without high-scale coupling;
 - the quantitative detection law for grid tents;
@@ -1633,29 +1668,59 @@ and multi-window positivity are resolved:
 The tent family is Weil-complete and detects every actual off-line zero, and doubly collared
 truncations carry block and polynomial-window positivity to compact tests of every length,
 through to the actual zeta divisor as reflection dominance $\mathcal R(F)<\mathcal Z(F)$ with an
-explicit margin. Missing is the passage to the compact tests of the receiver on which RH is
-decided, those without the archimedean gain $\log M$: every positivity theorem on the critical
-family is paid by that gain, and on the RH-complete cone it is absent. The passage is a
-quantitative target rather than a sign: a floor on all odd compact tests whose loss grows
-subexponentially in the aperture suffices, and the obstruction is the rate. Beyond lag $O(1)$ the
-floor is exactly the prime–polar difference. The ledger identity of §1.2 makes this a theorem:
-the complete form is the archimedean energy minus $\int_0^{2r}E\,w_F$. The prime measure has
-density $\asymp e^{t/2}dt$ at lag $t$, the polar measure $2\cosh(t/2)$ has the same density, and
-the archimedean density $\omega(t)\asymp e^{-t/2}$ is smaller by $e^{t}$. The archimedean surplus
-therefore contributes nothing at the lags that carry the mass, and no amount of it buys the
-exponent. Unconditionally only $E(s)=o(e^s)$ is known, so
-$\lvert\int E\,w_F\rvert\le\sup_s\lvert E(s)e^{-s}\rvert\int e^s\lvert w_F\rvert$ loses
-$\asymp e^{r}$: rate one is the unconditional floor, proved on all odd compact tests with
-constant $8+\varepsilon$ (`exists_reflectedPrimePolarCost_le_eight_add_eps_mul_exp`, Arithmetic
-Incidence Positivity), and RH is $E(s)=O(se^{s/2})$. Between the two the grading is
-self-improving: any subexponential floor already forces width zero and hence exact positivity
-(`rightZeros_zeta_eq_empty_iff_subexponential_scalingSubsurface_odd_defect_floor`, Arithmetic
-Castelnuovo–Severi), so the target is to beat the exponent, not to reach zero.
-Oddness, edge decay of the autocorrelation and the strip structure give no power saving either:
-an odd test concentrated in an $O(1)$ window at the edge of its support has pole charge
-$\asymp e^{r}$ and prime correlation $\asymp-e^{r}$, of the same size and opposite sign, so the
-floor is their PNT-level difference. This is the face of the shared critical cancellation problem
-that Arithmetic Compensation Theory and Bi-Scale Uncertainty attack from the prime side.
+explicit margin. In [FromTheCriticalFamilyToTheReceiver](FromTheCriticalFamilyToTheReceiver.lean),
+the structural bridge from the critical family and its grid-tent patterns to the receiver is
+established across five pillars:
+- **Quantitative finite-scale grid-tent and smooth-detector transfer:** Explicit constants
+  $C_{\mathrm{grid}}(R,M_g,K_g,L)$ and $C_{\mathrm{mass}}(R,M_g,L)$ bound the approximation error of
+  `gridTentPattern` and `smoothGridTentDetector` simultaneously in $Q$ (and all five form
+  realizations) and in $L^2$ mass by $O(d_{n+1})\le O(1/(12(n+1)))$ and $1/(q+1)$, retaining the
+  prime cutoff `compactFullWeilPrimeCutoff (R + 2)` beyond the observation horizon
+  (`abs_compactFullWeilEnergy_gridTentPattern_sub_le`,
+  `abs_smoothGridTentDetector_sub_compactFullWeilEnergy_le`,
+  `abs_integral_sq_gridTentPattern_sub_le`).
+- **Channel-by-channel parity split and odd/even critical projections:** On $C_c(\mathbb R,\mathbb R)$,
+  $\mathrm{autocorr}(f_{\mathrm{even}})(t)+\mathrm{autocorr}(f_{\mathrm{odd}})(t)=\mathrm{autocorr}(f)(t)$
+  holds at every shift $t$, so $\int f^2$, `biScaleLevyEnergy`, `fullPairing`, and $Q(f)$ split
+  additively without cross terms (`compactFullWeilEnergy_eq_evenCompactSource_add_oddCompactSource`).
+  Because $g^V$ is supported on $(-\infty,0]$ and vanishes at $0$, its odd and even projections each
+  carry exact half of $\int(g^V)^2$ and individually satisfy logarithmic archimedean Lévy coercivity
+  with slope $s_T/2$ (`integral_sq_oddCompactSource_criticalTruncatedTest`,
+  `ofReal_le_oddPartReal_and_evenPartReal_criticalTruncatedLevyEnergy`).
+- **Norm-controlled subfamily transfer and graded grid-tent bootstrap:** Any subfamily $\mathcal F_r$
+  approximating odd receiver tests in $Q$ with $\int g^2\le\alpha e^{2\beta r}\int F^2+\delta$
+  transfers a floor $-Ce^{2\sigma r}\int g^2$ to $\mathrm{zetaZeroWidth}\le\sigma+\beta$
+  (`zetaZeroWidth_le_of_normControlled_subfamily_transfer`). The single-scale grid tent family has
+  unconditional $(1,0)$-norm-controlled transfer (`hasNormControlledReceiverTransfer_gridTentFamily`),
+  so a graded floor at rate $\sigma$ on `gridTentPattern` forces $\mathrm{zetaZeroWidth}\le\sigma$
+  (`zetaZeroWidth_le_of_eventually_gridTentPattern_odd_floor`), and any subexponential or uniform
+  constant floor forces RH and self-improves to exact positivity
+  (`riemannHypothesis_iff_subexponential_gridTentPattern_odd_floor`,
+  `riemannHypothesis_iff_bddBelow_gridTentPattern_odd_floor`). Conversely, $\mathrm{zetaZeroWidth}<\beta$
+  implies the rate-$2\beta$ floor on $Q(F)$ and finite-scale `gridTentPattern`
+  (`exists_compactFullWeilEnergy_and_gridTent_ge_neg_of_zetaZeroWidth_lt`).
+- **All-aperture reflected-prime/polar receiver ledger and small-aperture grid-tent coercivity:**
+  For every odd $F\in C^2_c[-r,r]$, $Q(F)$ equals the archimedean gauge budget minus
+  `reflectedPrimePolarCost F r`, equivalently minus the horizon-localized two-pole Chebyshev-defect
+  integral $\int_0^{2r}E(s)\,w_F(s)\,ds$ or the second-order critical-scale prefix integral
+  (`compactFullWeilEnergy_eq_reflectedPrimePolar_and_chebyshev_ledgers`), and satisfies the
+  unconditional rate-$1/2$ floor $-78e^r\int F^2$, the PNT floor $-((8+\varepsilon)e^r+C)\int F^2$,
+  and the de la Vallée Poussin Sobolev floor $-Ke^r e^{-c\sqrt r}(\int F^2+\frac12\int(F')^2)$
+  (`compactFullWeilEnergy_and_gridTent_ge_neg_seventy_eight_mul_exp`,
+  `exists_compactFullWeilEnergy_ge_neg_eight_add_eps_mul_exp`,
+  `exists_compactFullWeilEnergy_ge_neg_deLaValleePoussin_sobolev`), while unconditional coercivity
+  on $[-3/10,3/10]$ (all profiles) and $[-181/500,181/500]$ (odd profiles past $(\log 2)/2$)
+  transfers at explicit finite scale to `gridTentPattern` and `smoothGridTentDetector` across all
+  five form realizations (`compactFullWeilEnergy_and_gridTent_ge_of_support_le_threeTenths`,
+  `compactFullWeilEnergy_and_gridTent_ge_of_odd_support_le_threeHundredSixtyTwoThousandths`).
+
+Beyond lag $O(1)$ the remaining analytical gap between rate $1/2$ and subexponential rate $\sigma<1/2$
+is the PNT-level prime–polar cancellation in $\int_0^{2r}E\,w_F$: the prime measure and polar
+measure $2\cosh(t/2)$ both have density $\asymp e^{t/2}dt$ while $\omega(t)\asymp e^{-t/2}$ is
+smaller by $e^t$, and an odd edge test has pole charge $\asymp e^r$ and prime correlation
+$\asymp-e^r$ of opposite sign, so beating the rate-$1/2$ exponent in pure $L^2$ mass is the shared
+critical cancellation problem attacked from the prime side by Arithmetic Compensation Theory and
+Bi-Scale Uncertainty.
 
 ### 7.6 Quantitative detection
 

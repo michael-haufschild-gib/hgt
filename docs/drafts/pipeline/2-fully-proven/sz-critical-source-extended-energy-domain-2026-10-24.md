@@ -206,16 +206,23 @@ pole and avoids extending the earlier private convolution lemmas.
   and dependency olean creation both passed. Its eight declarations passed their
   imported axiom inspection.
 - `SuzukiCriticalL2Pole.lean` contains compact L² pole testing, signed cusp
-  convergence, and extended signed cusp variation. The scratch check found one
-  composition/coercion simplification issue, now fixed; the canonical check and
-  downstream dependency olean creation are active. All other scratch declarations
-  passed. It imports the checked pointwise-pole and primary-variation leaves.
+  convergence, and extended signed cusp variation. The scratch and first canonical checks found one
+  composition/coercion simplification issue. An isolated extended-real scratch
+  proof now passes: explicitly expose the sum-valued function before rewriting
+  its limit, rather than simplifying casts beneath an inferred composition.
+  That correction passed: the canonical file and its downstream dependency
+  olean are now checked. All six public declarations are proved; their combined
+  axiom audit remains pending. The normalization scratch check is active.
 - `SuzukiCriticalL2Arithmetic.lean` extends the exact literal finite sum and its
   extended first variation. `SuzukiCriticalL2WeilNormalization.lean` identifies
   the existing extended `sourceLevyEnergy` by the finite exponential correction
-  and Gamma recurrence. Both canonical sources await their first checks.
-- `/tmp/sz-critical-l2-source-api.lean` contains the complete cutoff-free capstone
-  and eventual strict deficit for infinite-energy compact L² sources.
+  and Gamma recurrence. The normalization scratch check verified the required
+  integral and EReal APIs; two elaboration issues were fixed by an explicit
+  `IntegrableOn` type and exposing positive-ray membership. Its canonical check
+  is active. The arithmetic leaf still awaits its first check.
+- `SuzukiCriticalL2FirstVariation.lean` contains the complete cutoff-free capstone
+  and eventual strict deficit for infinite-energy compact L² sources. It awaits
+  the arithmetic and normalization dependency checks.
 - The concrete unsmoothed critical-family consequence has a complete paper proof
   in `sz-critical-family-literal-source-deficit-2026-10-24.md` and a pending draft
   `/tmp/sz-critical-family-literal-api.lean`; finish the L² capstone first.

@@ -166,8 +166,15 @@ theorem tendsto_suzukiCriticalSourceCusp_extended_firstVariation {f : ℝ → �
         (fun t => autocorr f 0-autocorr f t) : EReal) +
         ((((Complex.digamma ((5/4 : ℝ) : ℂ)).re-Real.log Real.pi)*autocorr f 0 +
           2 * ∫ t in Ioi 0, autocorr f t * Real.exp (t/2)) : ℝ))) := by
-    dsimp only [Function.comp] at h
-    simpa only [add_assoc, ← EReal.coe_add] using h
+    change Tendsto (fun omega : ℝ =>
+      ((((autocorr f 0-suzukiCriticalPrimaryCusp f omega 0)/omega : ℝ) : EReal) +
+        ((2*suzukiCriticalPoleCusp f omega 0 : ℝ) : EReal))) (𝓝[>] 0)
+      (𝓝 (((suzukiCriticalLimitingCompensatedEnergy
+        (fun t => autocorr f 0-autocorr f t) : EReal) +
+        ((((Complex.digamma ((5/4 : ℝ) : ℂ)).re-Real.log Real.pi)*autocorr f 0 : ℝ) : EReal)) +
+        ((2 * ∫ t in Ioi 0, autocorr f t * Real.exp (t/2) : ℝ) : EReal))) at h
+    rw [add_assoc, ← EReal.coe_add] at h
+    exact h
   apply hlim.congr'
   have ho : ∀ᶠ omega : ℝ in 𝓝[>] 0, omega < 1/2 :=
     mem_nhdsWithin_of_mem_nhds (Iio_mem_nhds (by norm_num : (0 : ℝ)<1/2))

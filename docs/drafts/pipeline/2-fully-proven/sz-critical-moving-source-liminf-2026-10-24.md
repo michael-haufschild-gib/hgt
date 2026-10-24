@@ -90,3 +90,10 @@ universal sign. No external novelty claim.
 - [ ] Direct canonical checks and all public transitive axiom audits.
 
 Finish the fixed-source compact-L² capstone and literal-family consequence first.
+
+## Lean checkpoint
+
+`/tmp/sz-critical-moving-primary-api.lean` contains the fixed-lag L² continuity,
+varying-primary Fatou inequality, and infinite-energy convergence proofs. This
+draft has not yet been checked. The fixed-source canonical chain remains first
+in the compilation queue.

@@ -22,8 +22,9 @@ Write `P_c` for multiplication by `1_(-infinity,c)`. The sharp spatial
 cut theorem gives its lift `C_c:V->V`, with `J C_c=P_c J`. The source
 projection `P_c` is self-adjoint and contractive on `H`.
 
-Put `T=thetaToVolume`, so `Tu=Theta*u` is ordinary L2. In positive
-distance coordinates define the two contractions
+Put `T=sharpBoundaryPhysical`, so `Tu=Theta*u` is ordinary complex L2,
+viewed as a real Hilbert space. In positive distance coordinates define
+the two bounded maps
 
 ```
 U_-(u)(t)=(Tu)(c-t),  U_+(u)(s)=(Tu)(c+s),  s,t>0.
@@ -35,13 +36,15 @@ The literal Gamma boundary operator `K` has kernel
 Consequently
 
 ```
-b_c(u,v)=<K U_+(u), U_-(v)>-<K U_-(u), U_+(v)>
+F_c=U_-^* K U_+,
+B_c=F_c-F_c^*,
+b_c(u,v)=Re<K U_+(u), U_-(v)>-Re<K U_+(v), U_-(u)>.
 ```
 
-is a bounded real bilinear form on all of `H`, of norm at most
-`4*pi*||T||^2`, independently of `c`. Kernel symmetry gives
-`b_c(u,v)=-b_c(v,u)`. Riesz representation constructs a bounded
-skew-adjoint operator `B_c` with `<B_c u,v>=b_c(u,v)`.
+This constructs a bounded real operator `B_c` on all of `H`, of norm
+at most `2*||K||*||T||^2 <= 4*pi*||T||^2`, independently of `c`.
+Its definition gives skew-adjointness directly and
+`<B_c u,v>=b_c(u,v)`.
 
 For graph vectors `p,q`, expand the two literal differences. Across a
 crossing edge `(x,y)`, with `x<c<y`,
@@ -52,7 +55,7 @@ Delta(P_c p)*Delta(q)-Delta(p)*Delta(P_c q)
 ```
 
 Elsewhere the difference vanishes. Multiply by the actual archimedean
-edge weight and transport by `(h,x)->(x+h-c,c-x)`. Absolute boundary
+edge weight and transport by `(h,x)->(c-x,x+h-c)`. Absolute boundary
 integrability just proved justifies the identity of integrals. It gives
 the archimedean form defect `b_c(Jp,Jq)`; no boundary trace is used.
 

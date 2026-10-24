@@ -1,8 +1,8 @@
 # Sharp spatial cuts in the complete CHMD graph
 
 - **ID:** chmd-sharp-spatial-cut-domain
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean checked)
 - **Statement:** For every real cut location, multiplying the source coordinate by either half-line indicator preserves the full maximal CHMD graph. The resulting linear maps are bounded uniformly in the cut location. Two cuts give bounded interval localization without a transition collar.
 
 ## Route and contribution
@@ -98,22 +98,33 @@ Lebesgue measure and both endpoint maps preserve null sets.
 ## Gates
 
 - [x] Complete paper proof, including pre-identity domain admission.
-- [ ] Exact Lean transport from half-line L2 to literal edge measure.
-- [ ] Uniform graph bound and interval construction in Lean.
-- [ ] Candidate and final repository leaf checks.
-- [ ] Axiom audit, umbrella wiring and temporary-file cleanup.
+- [x] Exact Lean transport from half-line L2 to literal edge measure.
+- [x] Uniform graph bound and interval construction in Lean.
+- [x] Candidate and final repository leaf checks.
+- [x] Axiom audit and umbrella wiring.
+- [x] Temporary-file cleanup.
 
 No external novelty claim, numerical experiment or RH sign is asserted.
 
 ## Formalization state
 
-Candidate `/tmp/chmd_sharp_cut_proof.lean` constructs the literal Gamma
-crossing term, transports absolute boundary integrability to the original
-edge coordinates, and derives `memLp_difference_indicator_Iio` for every
-actual maximal graph vector. Its second direct check is running after
-fixing set-membership simplifications, one namespace and representative
-coercions. Uniform norm control and interval composition are written in
-the extension fragment but have not yet been checked.
+`formal/GaloisForLFunctions/RHTower/CHMDSharpSpatialCut.lean` constructs
+the literal Gamma crossing term, transports absolute boundary
+integrability to the original edge coordinates, and proves
+`memLp_difference_indicator_Iio` for every actual maximal graph vector.
+It also proves `exists_uniform_sharpLowerGraph_bound`,
+`exists_uniform_sharpIntervalGraph_bound` and
+`sharpIntervalGraph_mem_apertureGraphCompletion`.
+
+All four principal declarations were audited with `#print axioms`:
+only `propext`, `Classical.choice`, `Quot.sound`. The final actual-leaf
+check passed, exit 0, no diagnostics:
+
+```
+lake --old env lean GaloisForLFunctions/RHTower/CHMDSharpSpatialCut.lean
+```
+
+The umbrella imports the finished leaf. No umbrella build was run.
 
 The initial API probe confirmed the required product/shear
 measure-preserving maps, real-to-complex L2 admission and real-part
@@ -129,5 +140,5 @@ The map from the full CHMD graph to its physical stationary graph is
 bounded by the same closed-graph argument. The inverse `fullGroundEquiv`
 controls the original graph norm by source norm plus physical stationary
 graph norm. This proves the asserted uniform full-graph bound without
-using an aperture-dependent equivalence. Exact Lean statements are
-prepared in `/tmp/chmd_sharp_cut_continuity.fragment` for the next check.
+using an aperture-dependent equivalence. This is the proof used in the
+checked Lean module.

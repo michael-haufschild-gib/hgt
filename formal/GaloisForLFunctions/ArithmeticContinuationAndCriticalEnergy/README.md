@@ -619,10 +619,23 @@ sequence for this ground energy. Compensation Theory makes the constraint quanti
 transport is too slow along linearly growing apertures (`TheApertureFloorMustDecayDoublyExponentially`).
 
 The useful target is non-crossing with a lower bound allowed to tend to zero, or a graded negative
-floor. A product tending to zero is compatible with RH; this is not a failure of multiplicative
-transport. What must survive is positivity at each finite stage, with an estimate strong enough to
-exclude a finite contact aperture. Alternatively a floor `−Ce^{2σA}` on unbounded apertures gives
-a zero-width bound without insisting on a positive margin.
+floor. Along any unbounded sequence `A_j → ∞` starting at `(A 0).1 ≤ 3/10`, a relative step bound
+`(1 − c_j) μ(A_j) ≤ μ(A_{j+1})` with `c_j < 1` keeps the floor `(∏_{i<J}(1 − c_i))/5000` **strictly
+positive** at every finite stage `J` (`0 < μ(A_J)`, excluding finite contact and certifying
+`ZetaWindowPositive B` for `0 < B < A_J`) while allowing `∏_{i<J}(1 − c_i) → 0` at the doubly
+exponential Gaussian ceiling rate, and proves RH (`strict_vanishing_relative_step`,
+`riemannHypothesis_of_vanishing_relative_step`). Along a monotone unbounded sequence `A_j → ∞`, RH
+is four-way equivalent to the existence of relative step factors `0 ≤ q_j`, to the partial-sum
+spectral jump bound `∀ J, ∑_{j<J} Δ_spec(A_j, A_{j+1}) ≤ μ(A_0)`, and to `HasSum Δ_spec (μ(A_0))`
+(`vanishing_aperture_transport_tfae`), while monotonicity of the ceiling-renormalized Lyapunov
+functional `ceilingScaledGroundEnergy A = e^{β_ceil(A)} μ(A)` (unconditionally bounded above by `K`
+for `A ≥ 3`, `exists_ceilingScaledGroundEnergy_le`) propagates the doubly exponential positive floor
+`(1/5000) e^{β_ceil(A_0)} e^{apertureCeilingExponent(A_J)}` (`riemannHypothesis_of_ceilingScaledGroundEnergy_mono`).
+Alternatively, a graded negative-floor step `e^{−2σA_{j+1}} μ(A_{j+1}) ≥ e^{−2σA_j} μ(A_j) − e^{−2σA_{j+1}} δ_j`
+along `A_j → ∞` with bounded step gaps `A_{j+1} − A_j ≤ Δ` upgrades by antitonicity of `μ` to the
+continuous `CompensatedWidthFloor σ`, bounding `zetaZeroWidth ≤ σ`, `polarGroundEnergyRate ≤ σ`, and
+transporting damping admission on `(σ, ∞)` (`compensatedWidthFloor_of_discrete_aperture_sequence`,
+`zetaZeroWidth_le_of_graded_aperture_step`, `averagedDampingContinuation_of_graded_aperture_step`).
 
 ### The cutoff parameter is free
 
@@ -647,8 +660,23 @@ equivalent (the sampling side is maintained in
 under which the width equals the ground-energy rate with a sampling statement about the source. It
 is unsigned difference energy, not the signed Weil floor: it bounds the *hypothesis* of the floor
 theorem rather than the floor, and an aperture-dependent constant at even one aperture already
-reinstates the local-depth condition. The positive sampling term can compensate the negative one, so
-the next tool must compare both terms for the actual source.
+reinstates the local-depth condition. Polarising each zero-copy term on the smooth core gives
+`Q_a(u) = E_+(u) − E_−(u)` with `E_±(u) = ¼ Σ_q ‖û(−z_q) ± û(−z̄_q)‖²` unconditionally summable
+(`summable_pairedPlusTerm`, `summable_pairedMinusTerm`,
+`sourceQuadratic_eq_pairedPlusEnergy_sub_pairedMinusEnergy`). Consequently the compensated sampling
+bound `E_−(u) ≤ E_+(u) + B ‖u‖₂²` at aperture `a` is **equivalent** to `−B ≤ μ(a)`
+(`compensatedSamplingBound_iff_groundEnergy_ge`), holds unconditionally at every aperture
+(`exists_compensatedSamplingBound`), and holds with `B = −1/5000 < 0` on `a ≤ 3/10`
+(`compensatedSamplingBound_neg_one_div_5000_of_le_three_tenths`). Across apertures,
+`CompensatedWidthFloor σ` (`E_−(u) ≤ E_+(u) + C e^{2σa} ‖u‖₂²`) is equivalent to
+`μ(A) ≥ −C e^{2σA}` (`compensatedWidthFloor_iff_groundEnergy_ge_neg_exp`), bounds `zetaZeroWidth ≤ σ`
+and `polarGroundEnergyRate ≤ σ` (`zetaZeroWidth_le_of_compensatedWidthFloor`,
+`polarGroundEnergyRate_le_of_compensatedWidthFloor`), and holding for every `σ > zetaZeroWidth`
+closes `polarGroundEnergyRate = groundEnergyRate = zetaZeroWidth`
+(`polarGroundEnergyRate_eq_zetaZeroWidth_of_forall_compensatedWidthFloor`), which holds under
+`OffLineDepthLocallyBounded W` or `OffLineCopiesLocallyBounded M`
+(`compensatedWidthFloor_of_offLineDepthLocallyBounded`,
+`compensatedWidthFloor_of_offLineCopiesLocallyBounded`).
 
 ### Iterated compensation
 
@@ -943,15 +971,42 @@ To be built:
    (`complementarySectorPropagation_tfae`), and hold unconditionally on `(Θ − ½, ∞)` and on the
    Vinogradov–Korobov band (`exists_dyadicRamanujanPrefixEnergy_le_of_zetaZeroAbscissa_sub_half_lt`,
    `exists_dyadicRamanujanPrefixEnergy_le_on_vinogradovKorobovBand`).
-7. **The compensated width floor.** With `a_q = û(−z_q)`, `b_q = û(−z̄_q)` on the smooth core and
-   `E_± = ¼ Σ_q |a_q ± b_q|²`, decide whether the actual prime–Gamma–pole source forces
-   `E_−(u) ≤ E_+(u) + C_σ e^{2σA}‖u‖₂²` for every `σ` above the width, without assuming bounded local
-   off-line depth mass. This would close the reverse ground-rate inequality; it would not show the
-   common rate vanishes.
-8. **The aperture sequence with a vanishing floor.** Produce a relative or additive step estimate
-   compatible with the doubly exponential upper bound. It must exclude finite contact while
-   allowing the positive floor to vanish, or supply a subtrivial graded negative floor. A fixed
-   positive margin on an unbounded sequence is ruled out before any arithmetic estimate begins.
+7. **The compensated width floor (Resolved: `CompensatedWidthFloorAndGroundEnergyRate`).**
+   For every smooth interior source `u` at aperture `a`, both `E_+(u) = ¼ Σ_q ‖û(−z_q) + û(−z̄_q)‖²`
+   (`pairedPlusEnergy`) and `E_−(u) = ¼ Σ_q ‖û(−z_q) − û(−z̄_q)‖²` (`pairedMinusEnergy`) converge
+   unconditionally (`summable_pairedPlusTerm`, `summable_pairedMinusTerm`), with
+   `Q_a(u) = E_+(u) − E_−(u)` (`sourceQuadratic_eq_pairedPlusEnergy_sub_pairedMinusEnergy`). At a
+   single aperture `a`, `∀ u, E_−(u) ≤ E_+(u) + B ‖u‖₂²` (`CompensatedSamplingBound a B`) is
+   equivalent to `−B ≤ μ(a)` (`compensatedSamplingBound_iff_groundEnergy_ge`), whereas the
+   uncompensated bound `∀ u, E_−(u) ≤ B ‖u‖₂²` is equivalent to `UnsignedDepthSamplingBound a (4B)`
+   (`forall_pairedMinusEnergy_le_iff_unsignedDepthSamplingBound`) and to `∃ W, OffLineDepthLocallyBounded W`
+   (`exists_uncompensated_pairedMinusEnergy_bound_iff`). Across apertures, `CompensatedWidthFloor σ`
+   (`E_−(u) ≤ E_+(u) + C e^{2σa} ‖u‖₂²`) is equivalent to `μ(A) ≥ −C e^{2σA}`
+   (`compensatedWidthFloor_iff_groundEnergy_ge_neg_exp`), implies `zetaZeroWidth ≤ σ`,
+   `polarGroundEnergyRate ≤ σ`, the lag floor `−C' e^{σv}`, and damping continuation on `(σ, ∞)`
+   (`zetaZeroWidth_le_of_compensatedWidthFloor`, `lag_primeWindow_ge_neg_exp_of_compensatedWidthFloor`,
+   `averagedDampingContinuation_of_compensatedWidthFloor`), and holding for all `σ > zetaZeroWidth`
+   closes `polarGroundEnergyRate = groundEnergyRate = zetaZeroWidth`
+   (`polarGroundEnergyRate_eq_zetaZeroWidth_of_forall_compensatedWidthFloor`,
+   `forall_compensatedWidthFloor_or_depthMass_clusters`).
+8. **The aperture sequence with a vanishing floor (Resolved: `VanishingApertureFloorAndGradedTransport`).**
+   Along any unbounded sequence `A_j → ∞` starting at `(A 0).1 ≤ 3/10`, fixed-margin additive step
+   transport (`not_additive_step_transport`) and half-summable relative step transport
+   (`not_relative_step_transport`) are ruled out by the Gaussian ceiling. Replacing them with
+   `c_j < 1` (`0 < 1 − c_j`) in `(1 − c_j) μ(A_j) ≤ μ(A_{j+1})` gives strict finite-stage
+   non-contact `0 < (∏_{i<J}(1 − c_i))/5000 ≤ μ(A_J)`, window positivity below `A_J`, compatibility
+   with the doubly exponential ceiling, and RH (`strict_vanishing_relative_step`). Along a monotone
+   unbounded sequence `A_j → ∞`, RH is four-way equivalent to `∃ q ≥ 0` with `q_j μ(A_j) ≤ μ(A_{j+1})`,
+   to `∀ J, ∑_{j<J} Δ_spec(A_j, A_{j+1}) ≤ μ(A_0)`, and to `HasSum Δ_spec (μ(A_0))`
+   (`vanishing_aperture_transport_tfae`), and monotonicity of the ceiling-renormalized functional
+   `ceilingScaledGroundEnergy A = e^{β_ceil(A)} μ(A)` (bounded above by `K` on `A ≥ 3`,
+   `exists_ceilingScaledGroundEnergy_le`) propagates the doubly exponential positive floor
+   (`riemannHypothesis_of_ceilingScaledGroundEnergy_mono`). For a graded negative floor at rate
+   `σ ≥ 0`, the discrete step bound `e^{−2σA_{j+1}} μ(A_{j+1}) ≥ e^{−2σA_j} μ(A_j) − e^{−2σA_{j+1}} δ_j`
+   along `A_j → ∞` with `A_{j+1} − A_j ≤ Δ` upgrades to `CompensatedWidthFloor σ`, giving
+   `zetaZeroWidth ≤ σ`, `polarGroundEnergyRate ≤ σ`, and `AveragedDampingContinuation` on `(σ, ∞)`
+   (`compensatedWidthFloor_of_discrete_aperture_sequence`, `zetaZeroWidth_le_of_graded_aperture_step`,
+   `averagedDampingContinuation_of_graded_aperture_step`).
 9. **A stability theorem for a signed observation.** Find an observation map that is both
    origin-sensitive and sign-reading, and prove a quantitative stability estimate for it in the
    receiver's norm — the missing half of the recovery theorems.

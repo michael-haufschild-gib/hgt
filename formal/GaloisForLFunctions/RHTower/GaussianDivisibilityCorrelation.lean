@@ -21,6 +21,7 @@ theorem tsum_positiveGaussianWeight (σ y : ℝ) :
     (∑' n : ℕ, positiveGaussianWeight σ y n) = integerGaussianMass σ y := by
   have hi : Function.Injective (fun n : ℕ => n + 1) := by
     intro a b hab
+    dsimp only at hab
     omega
   have hs : Function.support (positiveGaussianWeight σ y) ⊆
       Set.range (fun n : ℕ => n + 1) := by
@@ -28,8 +29,8 @@ theorem tsum_positiveGaussianWeight (σ y : ℝ) :
     have hn0 : n ≠ 0 := by
       intro he
       subst n
-      exact hn (by simp only [positiveGaussianWeight, if_pos rfl])
-    exact ⟨n - 1, by omega⟩
+      exact hn (by simp only [positiveGaussianWeight, if_true])
+    exact ⟨n - 1, by change n - 1 + 1 = n; omega⟩
   have h := hi.tsum_eq hs
   have heq : (fun n : ℕ => positiveGaussianWeight σ y (n + 1)) =
       fun n : ℕ => (((n + 1 : ℕ) : ℝ) ^ (-σ)) *
@@ -61,7 +62,7 @@ theorem positiveGaussianWeight_mul (σ y : ℝ) {d : ℕ} (hd : 0 < d) (n : ℕ)
       (d : ℝ) ^ (-σ) * positiveGaussianWeight σ ((d : ℝ) ^ 2 * y) n := by
   by_cases hn : n = 0
   · subst n
-    simp only [mul_zero, positiveGaussianWeight, if_pos rfl]
+    simp only [mul_zero, positiveGaussianWeight, if_true]
   · simp only [positiveGaussianWeight, if_neg hn,
       if_neg (Nat.mul_ne_zero hd.ne' hn), Nat.cast_mul,
       Real.mul_rpow (Nat.cast_nonneg d) (Nat.cast_nonneg n)]
@@ -112,8 +113,8 @@ theorem divisibilityIntersectionMass_eq {a b : ℕ} (hab : a.Coprime b) (σ y : 
     · intro h
       exact hab.mul_dvd_of_dvd_of_dvd h.1 h.2
     · intro h
-      exact ⟨dvd_trans ⟨b, rfl⟩ h, dvd_trans ⟨a, Nat.mul_comm b a⟩ h⟩
-  rw [heq]
+      exact ⟨dvd_trans ⟨b, rfl⟩ h, dvd_trans ⟨a, Nat.mul_comm a b⟩ h⟩
+  simp only [heq]
 
 theorem divisibilityMass_nonneg (σ y : ℝ) (d : ℕ) :
     0 ≤ divisibilityMass σ y d := by
@@ -168,7 +169,6 @@ def divisibilityCovariance (σ y : ℝ) (a b : ℕ) : ℝ :=
 private theorem normalized_mass_difference (A B C Z : ℝ) (hZ : Z ≠ 0) :
     C / Z - (A / Z) * (B / Z) = Z⁻¹ ^ 2 * (C * Z - A * B) := by
   field_simp [hZ]
-  ring
 
 theorem divisibilityProbability_mul_modulus_le {σ y : ℝ} (hσ : 0 ≤ σ) (hy : 0 < y)
     {a b : ℕ} (ha : 0 < a) (hb : 0 < b) :

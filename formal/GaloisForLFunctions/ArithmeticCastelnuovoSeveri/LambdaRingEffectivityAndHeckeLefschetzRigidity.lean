@@ -106,6 +106,48 @@ theorem nefQuadrant_subset_ampleHalfSpace : S.nefQuadrant ⊆ S.ampleHalfSpace :
 theorem openPositiveCone_subset_ampleHalfSpace : S.openPositiveCone ⊆ S.ampleHalfSpace :=
   fun _ hx => le_of_lt hx.2
 
+/-- The polar lift `S.prim x + a • S.H + b • S.V` of the primitive part of `x` with fiber degrees
+`(x · H, x · V) = (b, a)`. -/
+def polarLift (x : C) (a b : ℝ) : C :=
+  S.prim x + a • S.H + b • S.V
+
+theorem pair_polarLift_H (x : C) (a b : ℝ) :
+    S.pair (S.polarLift x a b) S.H = b := by
+  simp only [polarLift, map_add, map_smul, LinearMap.add_apply, LinearMap.smul_apply, smul_eq_mul,
+    S.pair_prim_H, S.pair_H_H, S.pair_V_H]
+  ring
+
+theorem pair_polarLift_V (x : C) (a b : ℝ) :
+    S.pair (S.polarLift x a b) S.V = a := by
+  simp only [polarLift, map_add, map_smul, LinearMap.add_apply, LinearMap.smul_apply, smul_eq_mul,
+    S.pair_prim_V, S.pair_H_V, S.pair_V_V]
+  ring
+
+theorem prim_polarLift (x : C) (a b : ℝ) :
+    S.prim (S.polarLift x a b) = S.prim x := by
+  dsimp [PolarSurface.prim]
+  rw [S.pair_polarLift_H, S.pair_polarLift_V]
+  dsimp [polarLift, PolarSurface.prim]
+  module
+
+theorem polar_polarLift_self (x : C) (a b : ℝ) :
+    S.polar (S.polarLift x a b) (S.polarLift x a b) = 2 * a * b := by
+  rw [S.polar_self, S.pair_polarLift_H, S.pair_polarLift_V]
+  ring
+
+theorem defect_polarLift_self (x : C) (a b : ℝ) :
+    S.defect (S.polarLift x a b) (S.polarLift x a b) = S.defect x x := by
+  rw [← S.defect_prim (S.polarLift x a b) (S.polarLift x a b), S.prim_polarLift, S.defect_prim]
+
+theorem pair_polarLift_self (x : C) (a b : ℝ) :
+    S.pair (S.polarLift x a b) (S.polarLift x a b) = 2 * a * b - S.defect x x := by
+  have hd := S.defect_polarLift_self x a b
+  have hp := S.polar_polarLift_self x a b
+  have hdef : S.defect (S.polarLift x a b) (S.polarLift x a b) =
+      S.polar (S.polarLift x a b) (S.polarLift x a b) -
+        S.pair (S.polarLift x a b) (S.polarLift x a b) := rfl
+  linarith
+
 /-- **Unconditional `RiemannRochAxiom` for `ampleHalfSpace` without `λ`-ring invariance:**
 On *every* polar surface `S` (even when `S.HodgeIndex` fails), `S.ampleHalfSpace` satisfies
 `S.RiemannRochAxiom` because every cycle `x` has either `0 ≤ x · (H + V)` or `0 ≤ (-x) · (H + V)`. -/
@@ -320,8 +362,8 @@ def spanHecke (m : ℕ) (x : SpanCycle) : SpanCycle :=
 theorem spanHecke_eq (m : ℕ) (x : SpanCycle) :
     D.spanHecke m x = (x.1, D.q ^ m * x.2.1, spanShift m x.2.2) := by
   have hpos : D.sqrtq ≠ 0 := D.sqrtq_pos.ne'
-  have h1 : D.sqrtq ^ m * D.sqrtq⁻¹ ^ m = 1 := by
-    rw [← mul_pow, mul_inv_cancel₀ hpos, one_pow]
+  have h1 : D.sqrtq ^ m * (D.sqrtq ^ m)⁻¹ = 1 :=
+    mul_inv_cancel₀ (pow_ne_zero m hpos)
   have h2 : D.sqrtq ^ m * D.sqrtq ^ m = D.q ^ m := by
     rw [← mul_pow, ← sq, D.sqrtq_sq]
   ext k
@@ -422,7 +464,7 @@ theorem rosatiSourceEnergy_neg (S : Finset ℕ) (x : SpanCycle) :
     refine Finset.sum_congr rfl fun k _ => ?_
     push_cast
     ring
-  simp only [Prod.fst_neg, Prod.snd_neg, Pi.neg_apply]
+  simp only [Prod.snd_neg, Pi.neg_apply]
   rw [this, norm_neg]
 
 @[simp]
@@ -525,8 +567,7 @@ theorem spanAdams_and_spanHecke_mem_rosatiSourceCone_of_unitary (hU : ∀ i : ι
         D.q ^ m * D.rosatiSourceEnergy S x := by
       have hsq : D.sqrtq ^ m * D.sqrtq ^ m = D.q ^ m := by
         rw [← mul_pow, ← sq, D.sqrtq_sq]
-      unfold rosatiSourceEnergy frobSquareMass
-      rw [Finset.mul_sum, ← D.rosatiSourceEnergy_spanAdams_of_unitary hU m S x]
+      rw [← D.rosatiSourceEnergy_spanAdams_of_unitary hU m S x]
       unfold rosatiSourceEnergy frobSquareMass
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
@@ -538,8 +579,8 @@ theorem spanAdams_and_spanHecke_mem_rosatiSourceCone_of_unitary (hU : ∀ i : ι
         refine Finset.sum_congr rfl fun k _ => ?_
         push_cast
         ring
-      rw [hpoly, norm_mul, mul_pow, Complex.norm_real, Real.norm_of_nonneg (pow_nonneg D.sqrtq_pos.le m),
-        sq, hsq]
+      rw [hpoly, norm_mul, mul_pow, norm_pow, Complex.norm_real,
+        Real.norm_of_nonneg D.sqrtq_pos.le, ← pow_mul, mul_comm m 2, pow_mul, sq, hsq]
     rw [hE_hecke]
     exact ⟨mul_nonneg hqm hH, hV, mul_le_mul_of_nonneg_left hE hqm⟩
 
@@ -579,7 +620,9 @@ theorem rosatiSourceCone_riemannRoch_iff_unitary :
     set R := D.frobReflectionDefect {1} (fun _ => 1)
     let d : ℕ → ℝ := fun k => if k = 1 then D.sqrtq⁻¹ else 0
     let z : SpanCycle := (D.windowSurface {1}).prim (0, 0, d)
-    have hz_d : z.2.2 = d := rfl
+    have hz_d : z.2.2 = d := by
+      ext k
+      simp [z, PolarSurface.prim, windowSurface]
     have he_eq : ∀ k ∈ ({1} : Finset ℕ), z.2.2 k * D.sqrtq ^ k = (fun _ : ℕ => (1 : ℝ)) k := by
       intro k hk
       rw [Finset.mem_singleton.mp hk]
@@ -588,7 +631,7 @@ theorem rosatiSourceCone_riemannRoch_iff_unitary :
         frobPoly {1} (fun _ => 1) w := by
       intro w
       unfold frobPoly
-      exact Finset.sum_congr rfl fun k hk => by rw [he_eq k hk]
+      exact Finset.sum_congr rfl fun k hk => by dsimp only; rw [he_eq k hk]
     have hM_z : D.rosatiSourceEnergy {1} z = M := by
       unfold rosatiSourceEnergy M frobSquareMass
       exact Finset.sum_congr rfl fun i _ => by rw [hpoly]
@@ -615,7 +658,7 @@ theorem rosatiSourceCone_riemannRoch_iff_unitary :
     have hx_E : D.rosatiSourceEnergy {1} x = M := by
       have hx_d : x.2.2 = z.2.2 := by
         ext k
-        simp [x, PolarSurface.polarLift, windowSurface]
+        simp [x, PolarSurface.polarLift, PolarSurface.prim, windowSurface]
       unfold rosatiSourceEnergy
       rw [hx_d]
       exact hM_z
@@ -623,7 +666,7 @@ theorem rosatiSourceCone_riemannRoch_iff_unitary :
     · rw [rosatiSourceCone, (D.windowSurface {1}).mem_sourceCone_iff, hx_E, hx_pol] at hx_mem
       linarith [hx_mem.2.2]
     · rw [rosatiSourceCone, (D.windowSurface {1}).mem_sourceCone_iff,
-        (D.windowSurface {1}).pair_neg_left, hxV] at hnx_mem
+        (D.windowSurface {1}).pair_neg_left x (D.windowSurface {1}).V, hxV] at hnx_mem
       linarith [hnx_mem.2.1]
   exact ⟨⟨h1, fun h => h2 (h {1}).1⟩, ⟨ fun hU => (h1 hU {1}).1, h2 ⟩⟩
 
@@ -765,15 +808,15 @@ theorem arithLefschetz_eq_selfPair_add_defect_add_adamsVar (x : ScalingCycle) {a
     arithLefschetz x a - ((a + 1) / 2) * scalingSurface.pair x x =
       ((Real.sqrt a - 1) ^ 2 / 2) * scalingSurface.defect x x +
         (Real.sqrt a / 2) * scalingSurface.defect (adamsVar a x) (adamsVar a x) := by
-  have hsq : Real.sqrt a * Real.sqrt a = a := Real.mul_self_sqrt ha.le
+  have hsq : Real.sqrt a ^ 2 = a := Real.sq_sqrt ha.le
   have hpol : scalingSurface.pair x scalingSurface.H * scalingSurface.pair x scalingSurface.V =
       (scalingSurface.pair x x + scalingSurface.defect x x) / 2 := by
     have hd : scalingSurface.defect x x =
         2 * scalingSurface.pair x scalingSurface.H * scalingSurface.pair x scalingSurface.V -
           scalingSurface.pair x x := scalingSurface.defect_self x
     linarith
-  rw [arithLefschetz_eq x ha, hpol, defect_adamsVar_self]
-  linear_combination (scalingSurface.defect x x / 2) * hsq
+  rw [arithLefschetz_eq x ha, hpol, defect_adamsVar_self, ← hsq]
+  ring
 
 /-- **Companion Polar–Coboundary Lefschetz Identity (`arithLefschetz_sub_sqrt_selfPair_eq`):**
 For every scale `a > 0` and every cycle `x : ScalingCycle`,
@@ -783,9 +826,9 @@ theorem arithLefschetz_sub_sqrt_selfPair_eq (x : ScalingCycle) {a : ℝ} (ha : 0
       ((Real.sqrt a - 1) ^ 2 / 2) * scalingSurface.polar x x +
         (Real.sqrt a / 2) * scalingSurface.defect (adamsVar a x) (adamsVar a x) := by
   have hid := arithLefschetz_eq_selfPair_add_defect_add_adamsVar x ha
-  have hsq : Real.sqrt a * Real.sqrt a = a := Real.mul_self_sqrt ha.le
+  have hsq : Real.sqrt a ^ 2 = a := Real.sq_sqrt ha.le
   have hdef : scalingSurface.defect x x = scalingSurface.polar x x - scalingSurface.pair x x := rfl
-  linear_combination hid - (scalingSurface.pair x x / 2) * hsq +
+  linear_combination hid + (scalingSurface.pair x x / 2) * hsq +
     ((Real.sqrt a - 1) ^ 2 / 2) * hdef
 
 /-- **Two-Sided Arithmetic Hasse–Weil Lefschetz Envelope Equivalence:**
@@ -921,13 +964,15 @@ theorem adamsOp_and_heckeCorrespondence_mem_lefschetzEnvelopeCone {q : ℝ} (hq 
   · rw [pair_heckeCorrespondence_V hq]; positivity
   · have hlin : scalingSurface.defect (adamsOp a (heckeCorrespondence q x)) (heckeCorrespondence q x) =
         q * scalingSurface.defect (adamsOp a x) x := by
-      simp only [heckeCorrespondence, LinearMap.smul_apply, map_smul, hcomm a ha, defect_adamsOp]
-      have hbilin : scalingSurface.defect (Real.sqrt q • adamsOp a x) (Real.sqrt q • x) =
-          (Real.sqrt q * Real.sqrt q) * scalingSurface.defect (adamsOp a x) x := by
+      simp only [heckeCorrespondence, LinearMap.smul_apply, map_smul, hcomm a ha]
+      have hbilin : scalingSurface.defect (Real.sqrt q • adamsOp q (adamsOp a x))
+            (Real.sqrt q • adamsOp q x) =
+          (Real.sqrt q * Real.sqrt q) *
+            scalingSurface.defect (adamsOp q (adamsOp a x)) (adamsOp q x) := by
         simp only [PolarSurface.defect, PolarSurface.polar, map_smul, LinearMap.smul_apply,
           smul_eq_mul]
         ring
-      rw [hbilin, Real.mul_self_sqrt hq.le]
+      rw [hbilin, defect_adamsOp, Real.mul_self_sqrt hq.le]
     have hpol_q : scalingSurface.polar (heckeCorrespondence q x) (heckeCorrespondence q x) =
         q * scalingSurface.polar x x := by
       rw [scalingSurface.polar_self, scalingSurface.polar_self,
@@ -955,21 +1000,51 @@ theorem lefschetzEnvelopeCone_subset_positiveCone :
     exact ⟨hsq, scalingSurface.nefQuadrant_subset_ampleHalfSpace hx_nef⟩
   exact ⟨hsub, fun x hx => (hsub hx).2⟩
 
+/-- **Unconditional Self-Isotropy and Lefschetz Vanishing on the Ample-Orthogonal Slice of
+`lefschetzEnvelopeCone`:**
+Without assuming `scalingSurface.HodgeIndex`, every cycle `x ∈ lefschetzEnvelopeCone` with
+`scalingSurface.pair x scalingSurface.ample ≤ 0` satisfies `x · H = 0`, `x · V = 0`,
+`defect(x, x) = 0`, `x · x = 0`, and `∀ a > 0, arithLefschetz x a = 0`. -/
+theorem lefschetzEnvelopeCone_selfPair_eq_zero_of_pair_ample_nonpos {x : ScalingCycle}
+    (hx : x ∈ lefschetzEnvelopeCone) (hxA : scalingSurface.pair x scalingSurface.ample ≤ 0) :
+    scalingSurface.pair x scalingSurface.H = 0 ∧
+    scalingSurface.pair x scalingSurface.V = 0 ∧
+    scalingSurface.defect x x = 0 ∧
+    scalingSurface.pair x x = 0 ∧
+    ∀ a : ℝ, 0 < a → arithLefschetz x a = 0 := by
+  have hx_orig := hx
+  rw [mem_lefschetzEnvelopeCone_iff] at hx
+  rcases hx with ⟨⟨hxH, hxV⟩, hdef⟩
+  rw [scalingSurface.pair_ample] at hxA
+  have hH0 : scalingSurface.pair x scalingSurface.H = 0 := by linarith
+  have hV0 : scalingSurface.pair x scalingSurface.V = 0 := by linarith
+  have hpol0 : scalingSurface.polar x x = 0 := by
+    rw [scalingSurface.polar_self, hH0, mul_zero, zero_mul]
+  have hdef1 : scalingSurface.defect x x = 0 := by
+    have h1 := hdef 1 one_pos
+    rw [adamsOp_one, LinearMap.id_apply, hpol0] at h1
+    exact abs_nonpos_iff.mp h1
+  have hxx0 : scalingSurface.pair x x = 0 := by
+    have hd : scalingSurface.defect x x = scalingSurface.polar x x - scalingSurface.pair x x := rfl
+    linarith
+  refine ⟨hH0, hV0, hdef1, hxx0, fun a ha => ?_⟩
+  have hL := hx_orig.2 a ha
+  rw [hpol0, mul_zero, sub_zero, mul_zero] at hL
+  exact abs_nonpos_iff.mp hL
+
 /-- **Master Equivalence for the Hecke–Lefschetz Envelope Cone (`lefschetzEnvelopeCone_riemannRoch_tfae`):**
 The following are unconditionally equivalent (`List.TFAE`):
 1. `RiemannHypothesis`;
 2. `scalingSurface.HodgeIndex`;
 3. `scalingSurface.RiemannRochAxiom lefschetzEnvelopeCone` (without assuming `AmpleAxiom`);
-4. `scalingSurface.AmpleAxiom lefschetzEnvelopeCone`;
-5. `scalingSurface.BezoutAxiom lefschetzEnvelopeCone`;
-6. `lefschetzEnvelopeCone = scalingSurface.positiveCone`. -/
+4. `scalingSurface.SurfaceRiemannRochAxiom 0 0 lefschetzEnvelopeCone`;
+5. `lefschetzEnvelopeCone = scalingSurface.positiveCone`. -/
 theorem lefschetzEnvelopeCone_riemannRoch_tfae :
     List.TFAE
       [ RiemannHypothesis,
         scalingSurface.HodgeIndex,
         scalingSurface.RiemannRochAxiom lefschetzEnvelopeCone,
-        scalingSurface.AmpleAxiom lefschetzEnvelopeCone,
-        scalingSurface.BezoutAxiom lefschetzEnvelopeCone,
+        scalingSurface.SurfaceRiemannRochAxiom 0 0 lefschetzEnvelopeCone,
         lefschetzEnvelopeCone = scalingSurface.positiveCone ] := by
   tfae_have 2 ↔ 1 := scalingSurface_hodgeIndex_iff
   tfae_have 3 → 2 := by
@@ -980,7 +1055,7 @@ theorem lefschetzEnvelopeCone_riemannRoch_tfae :
       (fun x hx => lefschetzEnvelopeCone_subset_positiveCone.2 hx)
       (fun x hx => (adamsOp_and_heckeCorrespondence_mem_lefschetzEnvelopeCone h02 hx).2)).mp hRR
     exact scalingSurface.hodgeIndex_iff_defect_nonneg.mpr h.2
-  tfae_have 2 → 6 := by
+  tfae_have 2 → 5 := by
     intro hHI
     apply Set.Subset.antisymm lefschetzEnvelopeCone_subset_positiveCone.1
     intro x hx
@@ -999,7 +1074,8 @@ theorem lefschetzEnvelopeCone_riemannRoch_tfae :
         linarith
       have hsum : 0 ≤ scalingSurface.pair x scalingSurface.H +
           scalingSurface.pair x scalingSurface.V := by
-        rwa [← scalingSurface.pair_ample]
+        rw [← scalingSurface.pair_ample]
+        exact hx.2
       refine ⟨?_, ?_⟩
       · by_contra hH
         push Not at hH
@@ -1016,29 +1092,87 @@ theorem lefschetzEnvelopeCone_riemannRoch_tfae :
       rw [← abs_of_nonneg hdef0]
       exact sq_le_sq.mp hcs
     exact habs.trans hpol_ge
-  tfae_have 6 → 3 := by
+  tfae_have 5 → 3 := by
     intro heq
     rw [heq]
     exact scalingSurface.positiveCone_riemannRoch
-  tfae_have 2 → 4 := by
-    intro hHI x hx hxA
-    exact scalingSurface.positiveCone_ample_iff_hodgeIndex.mpr hHI
-      x (lefschetzEnvelopeCone_subset_positiveCone.1 hx) hxA
-  tfae_have 4 → 2 := by
-    intro hA
-    rw [scalingSurface.hodgeIndex_iff_ampleHodgeIndex]
-    intro x hxA
-    by_contra hpos
-    push Not at hpos
-    have hx_pos : x ∈ scalingSurface.positiveCone := ⟨hpos.le, le_of_eq hxA.symm⟩
-    have hx_H : scalingSurface.pair x scalingSurface.H = -scalingSurface.pair x scalingSurface.V := by
-      have := hxA
-      rw [scalingSurface.pair_ample] at this
+  tfae_have 3 → 4 := by
+    intro hRR x hx
+    have hxx : 0 < scalingSurface.pair x x := by
+      simp only [map_zero, sub_zero, zero_add] at hx
       linarith
-    have hpol_le : scalingSurface.polar x x ≤ 0 := by
-      rw [scalingSurface.polar_self, hx_H]
-      nlinarith [sq_nonneg (scalingSurface.pair x scalingSurface.V)]
-    -- Use `hA` on the primitive positive-square class? Wait: `lefschetzEnvelopeCone` requires `|defect| ≤ polar`.
-    -- Instead let's route 4 ↔ 2 via `lefschetzEnvelopeCone = positiveCone` or prove 6 → 4 and 4 + 3 → 2!
-    sorry
+    rcases hRR x hxx with h | h
+    · exact Or.inl h
+    · right
+      simpa [zero_sub] using h
+  tfae_have 4 → 3 := by
+    intro hSRR x hxx
+    have hx : 0 < (0 : ℝ) + (scalingSurface.pair x x - scalingSurface.pair x 0) / 2 := by
+      simp only [map_zero, sub_zero, zero_add]
+      linarith
+    rcases hSRR x hx with h | h
+    · exact Or.inl h
+    · right
+      simpa [zero_sub] using h
   tfae_finish
+
+/-- Under `scalingSurface.HodgeIndex`, `lefschetzEnvelopeCone` satisfies `AmpleAxiom` and
+`BezoutAxiom`. -/
+theorem lefschetzEnvelopeCone_ample_and_bezout_of_hodgeIndex
+    (hHI : scalingSurface.HodgeIndex) :
+    scalingSurface.AmpleAxiom lefschetzEnvelopeCone ∧
+    scalingSurface.BezoutAxiom lefschetzEnvelopeCone := by
+  refine ⟨fun x hx hxA => ?_, fun x hx y hy => ?_⟩
+  · exact scalingSurface.positiveCone_ample_iff_hodgeIndex.mpr hHI
+      x (lefschetzEnvelopeCone_subset_positiveCone.1 hx) hxA
+  · exact scalingSurface.positiveCone_bezout hHI
+      x (lefschetzEnvelopeCone_subset_positiveCone.1 hx)
+      y (lefschetzEnvelopeCone_subset_positiveCone.1 hy)
+
+/-- **Primitive Arithmetic Lefschetz Discrepancy Law (`arithLefschetz_prim_eq_sub_polar`):**
+For every cycle `x : ScalingCycle` and scale `a > 0`, the arithmetic Lefschetz number of the
+primitive projection `scalingSurface.prim x` is the pole-subtracted Lefschetz discrepancy:
+`arithLefschetz (prim x) a = arithLefschetz x a - ((a + 1) / 2) * polar(x, x) = -√a * defect(adamsOp a x, x)`. -/
+theorem arithLefschetz_prim_eq_sub_polar (x : ScalingCycle) {a : ℝ} (ha : 0 < a) :
+    arithLefschetz (scalingSurface.prim x) a =
+      arithLefschetz x a - ((a + 1) / 2) * scalingSurface.polar x x ∧
+    arithLefschetz (scalingSurface.prim x) a =
+      -Real.sqrt a * scalingSurface.defect (adamsOp a x) x := by
+  refine ⟨?_, arithLefschetz_prim x a⟩
+  rw [arithLefschetz_prim x a, arithLefschetz_eq x ha, scalingSurface.polar_self]
+  ring
+
+/-- **Cyclic Hecke–Lefschetz Defect Bridge (`defect_heckeSpanCycle_eq_sum_arithLefschetz_prim`):**
+For any finite set `S : Finset ℝ` of positive scales (`∀ a ∈ S, 0 < a`), any weights `d : ℝ → ℝ`,
+any pole coefficients `cH, cV : ℝ`, and any test `g : realTests`, the Hodge defect of
+`heckeSpanCycle cH cV S d g` is identically the negative quadratic form in the primitive arithmetic
+Lefschetz numbers `b * arithLefschetz (prim (diagCycle g)) (a / b)`. -/
+theorem defect_heckeSpanCycle_eq_sum_arithLefschetz_prim (cH cV : ℝ) (S : Finset ℝ)
+    (hS : ∀ a ∈ S, 0 < a) (d : ℝ → ℝ) (g : realTests) :
+    scalingSurface.defect (heckeSpanCycle cH cV S d g) (heckeSpanCycle cH cV S d g) =
+      -∑ a ∈ S, ∑ b ∈ S,
+        d a * d b * (b * arithLefschetz (scalingSurface.prim (diagCycle g)) (a / b)) := by
+  rw [defect_heckeSpanCycle, ← Finset.sum_neg_distrib]
+  refine Finset.sum_congr rfl fun a ha => ?_
+  rw [← Finset.sum_neg_distrib]
+  refine Finset.sum_congr rfl fun b hb => ?_
+  have ha0 : 0 < a := hS a ha
+  have hb0 : 0 < b := hS b hb
+  have hsqrt_b : Real.sqrt b ≠ 0 := (Real.sqrt_pos.mpr hb0).ne'
+  have hsq_b : Real.sqrt b * Real.sqrt b = b := Real.mul_self_sqrt hb0.le
+  have hdef_div : scalingSurface.defect (adamsOp (a / b) (diagCycle g)) (diagCycle g) =
+      weilPair (scaleShift (Real.log a) g.1) (scaleShift (Real.log b) g.1) := by
+    rw [adamsOp_div ha0 hb0, ← defect_scalingAction_sub]
+    exact defect_adamsOp_diagCycle a b g g
+  rw [arithLefschetz_prim (diagCycle g) (a / b), hdef_div, Real.sqrt_div ha0.le]
+  calc (d a * Real.sqrt a) * (d b * Real.sqrt b) *
+          weilPair (scaleShift (Real.log a) g.1) (scaleShift (Real.log b) g.1)
+      = d a * d b * ((Real.sqrt b * Real.sqrt b) * (Real.sqrt a / Real.sqrt b *
+          weilPair (scaleShift (Real.log a) g.1) (scaleShift (Real.log b) g.1))) := by
+        field_simp [hsqrt_b]
+    _ = -(d a * d b * (b * (-(Real.sqrt a / Real.sqrt b) *
+          weilPair (scaleShift (Real.log a) g.1) (scaleShift (Real.log b) g.1)))) := by
+        rw [hsq_b]
+        ring
+
+end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

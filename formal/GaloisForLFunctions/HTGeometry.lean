@@ -17498,3 +17498,4 @@ import GaloisForLFunctions.HTGeometry.PolynomialODE.OddCompactShiftedSource
 import GaloisForLFunctions.HTGeometry.PolynomialODE.SeamJetOrderValues
 import GaloisForLFunctions.HTGeometry.PolynomialODE.EvenCompactGapReversedGroups
 import GaloisForLFunctions.HTGeometry.UniformConstantDischarges
+import GaloisForLFunctions.HTGeometry.LogConcaveIntegralComposition

@@ -325,3 +325,31 @@ This card is the programme card: folder, umbrella, README and the continuation c
     propagation, plus unconditional bounds above `Θ − ½` and on the Vinogradov–Korobov band
     (`exists_dyadicRamanujanPrefixEnergy_le_of_zetaZeroAbscissa_sub_half_lt`,
     `exists_dyadicRamanujanPrefixEnergy_le_on_vinogradovKorobovBand`).
+- 2026-10-24 (cont. 6) — Open Problem 7 resolved (`CompensatedWidthFloorAndGroundEnergyRate`):
+  - Unconditional convergence of `pairedPlusEnergy` and `pairedMinusEnergy`
+    (`summable_pairedPlusTerm`, `summable_pairedMinusTerm`) and exact Weil polarization
+    `sourceQuadratic_eq_pairedPlusEnergy_sub_pairedMinusEnergy` (`Q_a(u) = E_+(u) − E_−(u)`).
+  - Exact single-aperture equivalence `compensatedSamplingBound_iff_groundEnergy_ge`
+    (`CompensatedSamplingBound a B ↔ −B ≤ ccmRestrictedWeilGroundEnergy a`), unconditionally
+    satisfied at every aperture (`exists_compensatedSamplingBound`) and with `B = −1/5000` on
+    `a ≤ 3/10` (`compensatedSamplingBound_neg_one_div_5000_of_le_three_tenths`), contrasting with
+    `forall_pairedMinusEnergy_le_iff_unsignedDepthSamplingBound` and
+    `exists_uncompensated_pairedMinusEnergy_bound_iff`.
+  - Across apertures, `compensatedWidthFloor_iff_groundEnergy_ge_neg_exp`,
+    `zetaZeroWidth_le_of_compensatedWidthFloor`, `polarGroundEnergyRate_le_of_compensatedWidthFloor`,
+    `lag_primeWindow_ge_neg_exp_of_compensatedWidthFloor`,
+    `polarGroundEnergyRate_eq_zetaZeroWidth_of_forall_compensatedWidthFloor`,
+    `compensatedWidthFloor_of_offLineDepthLocallyBounded`,
+    `compensatedWidthFloor_of_offLineCopiesLocallyBounded`,
+    `forall_compensatedWidthFloor_or_depthMass_clusters`, and
+    `averagedDampingContinuation_of_compensatedWidthFloor`.
+- 2026-10-24 (cont. 7) — Open Problem 8 resolved (`VanishingApertureFloorAndGradedTransport`):
+  - Strict finite-stage non-contact with a vanishing floor `strict_vanishing_relative_step`,
+    ceiling-renormalized Lyapunov transport `exists_ceilingScaledGroundEnergy_le` and
+    `riemannHypothesis_of_ceilingScaledGroundEnergy_mono`, and four-way equivalence
+    `vanishing_aperture_transport_tfae` connecting RH, nonnegative relative step factors,
+    partial-sum spectral jump bounds, and `HasSum apertureSpectralJump (μ(A_0))`.
+  - Subtrivial graded negative-floor step transport `groundEnergy_ge_neg_exp_of_graded_aperture_step`,
+    discrete-to-continuous upgrade `compensatedWidthFloor_of_discrete_aperture_sequence` along
+    bounded-gap sequences `A_{j+1} − A_j ≤ Δ`, and zero-width / damping-continuation consequences
+    `zetaZeroWidth_le_of_graded_aperture_step`, `averagedDampingContinuation_of_graded_aperture_step`.

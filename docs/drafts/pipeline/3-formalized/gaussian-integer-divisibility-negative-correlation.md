@@ -1,8 +1,8 @@
 # Gaussian integer mass has nonpositive coprime divisibility correlations
 
 - **ID:** gaussian-integer-divisibility-negative-correlation
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM; formalization in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM; Lean 4 verified
 - **Source:** TG Gaussian-correlation conjecture; the actual theta kernel's
   proved global log-concavity in `ThetaCuspKernelLogConcavity.lean`.
 - **Scope:** a source-specific consequence of theta log-concavity. No external
@@ -16,13 +16,18 @@ For `sigma>=0` and `y>0`, define the literal integer Gaussian mass
 Z_sigma(y) = sum_(n>=1) n^(-sigma) exp(-y n^2).
 ```
 
-Then `t -> log Z_sigma(exp(2t))` is concave on the whole real line. In
-particular, for arbitrary real `a,b>=1`,
+For arbitrary real `a,b>=1`, the literal masses satisfy
 
 ```
 Z_sigma(y) Z_sigma(a^2 b^2 y)
   <= Z_sigma(a^2 y) Z_sigma(b^2 y).
 ```
+
+This is the four-point log-concavity law in logarithmic scale. Together
+with continuity and positivity it implies that
+`t -> log Z_sigma(exp(2t))` is concave on the whole real line. The Lean
+endpoint states the four-point law directly; it does not introduce a
+separate `ConcaveOn` declaration for this equivalent reformulation.
 
 Consequently, under the probability mass
 `P_y(n)=n^(-sigma) exp(-y n^2)/Z_sigma(y)`, indicators of divisibility
@@ -252,6 +257,45 @@ assumption standing for one of them enters the theorem above.
 
 ## Formalization
 
-Paper proof complete. No Lean certificate claimed yet. The implementation
-must prove the positive integral representation, the integral composition
-inequality, and the exact multiples formula for the same literal series.
+Paper proof complete. All three Lean modules pass direct source checks;
+the transitive dependency audit passes.
+
+The implementation is divided into three modules:
+
+- `HTGeometry/LogConcaveIntegralComposition.lean`: exact determinant
+  identity and preservation of the four-point law under integral composition.
+- `RHTower/GaussianIntegerLogConcavity.lean`: actual theta flux, gamma
+  transform, integrability, and `integerGaussianMass_log_four_point` /
+  `integerGaussianMass_scale_submultiplicative` for the literal series.
+- `RHTower/GaussianDivisibilityCorrelation.lean`: exact multiples and
+  normalized event sums, `divisibilityCovariance_nonpos`, and the stronger
+  product-modulus inequality `divisibilityProbability_finset_prod_le`.
+
+Only domain conditions `sigma>=0`, `y>0`, positive moduli, and the stated
+coprimality of the two actual events enter the endpoints. Integrability,
+summability, normalization, and source identities are proved internally.
+
+The exported analytic endpoint is the four-point law. The `ConcaveOn`
+and positive-coefficient expectation reformulations above are paper
+corollaries, not separately named Lean declarations.
+
+## Verification
+
+All commands ran from `formal/`, one Lean process at a time:
+
+```
+lake --old env lean GaloisForLFunctions/HTGeometry/LogConcaveIntegralComposition.lean
+lake --old env lean GaloisForLFunctions/RHTower/GaussianIntegerLogConcavity.lean
+lake --old env lean GaloisForLFunctions/RHTower/GaussianDivisibilityCorrelation.lean
+```
+
+The source-copy `#print axioms` audit covered integral composition, the
+actual theta kernel's strict log-concavity, the gamma/source identity,
+both Gaussian four-point endpoints, exact multiples, probability
+normalization, coprime covariance, and the finite-product inequality.
+Every audited declaration depends only on
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+No placeholders, extra analytic premises, trusted-computation shortcuts,
+or resource-limit overrides occur in the three modules. Imports are wired
+into the `HTGeometry` and `RHTower` umbrellas; no umbrella build was run.

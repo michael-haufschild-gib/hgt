@@ -16,6 +16,9 @@ namespace RHTower
 open CHMDDoobGraph CHMDClosedJump CHMDPolar
 set_option autoImplicit false
 
+
+
+
 /-- Bounded literal interval restriction on the full maximal graph. -/
 def sharpIntervalGraphCLM (lo hi : ℝ) : SourceGraph →L[ℝ] SourceGraph :=
   (sharpLowerGraphCLM hi).comp
@@ -105,8 +108,10 @@ theorem tendsto_sharpIntervalGraph (p : SourceGraph) :
       Tendsto (fun n : ℕ => sharpIntervalGraphCLM (-(n:ℝ)) n q) atTop (𝓝 q) := by
     rintro q ⟨v, hv, hc, rfl⟩
     simp only [sharpIntervalGraphCLM_apply]
-    exact tendsto_const_nhds.congr'
-      (sharpIntervalGraph_eventually_compactLift v hv hc).symm
+    have heq : (fun _ : ℕ => compactLift v hv hc) =ᶠ[atTop]
+        (fun n : ℕ => sharpIntervalGraph (-(n:ℝ)) n (compactLift v hv hc)) :=
+      (sharpIntervalGraph_eventually_compactLift v hv hc).mono fun _ h => h.symm
+    exact tendsto_const_nhds.congr' heq
   have h := GaloisForLFunctions.HTGeometry.tendsto_of_dense_of_uniform_bound
     (T := fun n : ℕ => sharpIntervalGraphCLM (-(n:ℝ)) n)
     (S := ContinuousLinearMap.id ℝ SourceGraph) (by linarith : 0 ≤ C+1)
@@ -173,17 +178,32 @@ theorem tendsto_weilForm_sharpIntervalGraph (p : SourceGraph) :
       atTop (𝓝 (weilForm p)) :=
   continuous_weilForm.continuousAt.tendsto.comp (tendsto_sharpIntervalGraph p)
 
+private theorem sharpWindow_pair_tendsto {u v : ℕ → SourceGraph} {p q : SourceGraph}
+    (hu : Tendsto u atTop (𝓝 p)) (hv : Tendsto v atTop (𝓝 q)) :
+    Tendsto (fun n => sourcePair (u n) (v n)) atTop (𝓝 (sourcePair p q)) := by
+  have heu : Tendsto (fun n => edgeMap (u n)) atTop (𝓝 (edgeMap p)) :=
+    (edgeMap.continuous.tendsto p).comp hu
+  have hev : Tendsto (fun n => edgeMap (v n)) atTop (𝓝 (edgeMap q)) :=
+    (edgeMap.continuous.tendsto q).comp hv
+  have hsu : Tendsto (fun n => sourceMap (u n)) atTop (𝓝 (sourceMap p)) :=
+    (sourceMap.continuous.tendsto p).comp hu
+  have hsv : Tendsto (fun n => sourceMap (v n)) atTop (𝓝 (sourceMap q)) :=
+    (sourceMap.continuous.tendsto q).comp hv
+  exact (heu.inner (𝕜 := ℝ) hev).sub (hsu.inner (𝕜 := ℝ) hsv)
+
 /-- Localization retains the complete signed interaction between the two nodal lobes. -/
 theorem tendsto_sourcePair_nodal_sharpIntervalGraph (p : SourceGraph) :
     Tendsto (fun n : ℕ => sourcePair
       (posGraph (sharpIntervalGraph (-(n:ℝ)) n p))
       (negGraph (sharpIntervalGraph (-(n:ℝ)) n p))) atTop
       (𝓝 (sourcePair (posGraph p) (negGraph p))) := by
-  exact (continuous_sourcePair.tendsto (posGraph p, negGraph p)).comp
-    ((tendsto_posGraph_sharpIntervalGraph p).prodMk_nhds
-      (tendsto_negGraph_sharpIntervalGraph p))
+  exact sharpWindow_pair_tendsto
+    (u := fun n => posGraph (sharpIntervalGraph (-(n:ℝ)) n p))
+    (v := fun n => negGraph (sharpIntervalGraph (-(n:ℝ)) n p))
+    (tendsto_posGraph_sharpIntervalGraph p) (tendsto_negGraph_sharpIntervalGraph p)
 
-/-- Both terms of the unpaid oneL-defect comparison survive exact localization. -/
+/-- The signed nodal defect, including its squared ground-state moment,
+converges under exact localization. -/
 theorem tendsto_oneL_defect_sharpIntervalGraph (p : SourceGraph) :
     Tendsto (fun n : ℕ =>
       -4 * sourcePair (posGraph (sharpIntervalGraph (-(n:ℝ)) n p))
