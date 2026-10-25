@@ -12,7 +12,7 @@ For every actual common kernel K and positive integers p<=q, the matrix
 `p*D_p^*D_p >= q*D_q^*D_q` as quadratic forms on the actual Hilbert module.
 This strengthens numeric antitonicity of `p*K(p,p)`.
 
-## Paper route
+## Proof mechanism
 
 For a finite real packet u=sum c_j A(floor(n/j)), the complete-block
 identity identifies p times its dilated pronic energy at T with its
@@ -31,8 +31,25 @@ or |chi(delta_p)|=p^(-s), s>=1/2. Every hull character of a finite-dimensional
 actual module occurs on a common eigenvector, so its Bohr modulus is
 augmentation or |omega(p)|=p^(-alpha), alpha>=0. This classifies these
 magnitudes beyond rank-one modules.
-No phase classification follows: an abstract diagonal unitary action with
-arbitrary multiplicative phases still satisfies critical equality.
+No phase classification follows from these modulus statements. The scalar
+calibration below retains every multiplicative unit-norm phase while
+satisfying critical equality.
+
+## Formal scalar phase calibration
+
+For any multiplicative phase `eta : positive integers -> C` with
+`norm(eta(p))=1`, put `chi(p)=eta(p)/sqrt(p)` and `D_p z=chi(p)z`.
+Square-root multiplicativity gives `chi(pq)=chi(p)chi(q)`, hence the action
+law. Also `sqrt(p)chi(p)=eta(p)` and
+`p*norm(D_p z)^2=norm(z)^2`. This is a scalar calibration, not an actual
+Möbius escape realization. The canonical module
+`HTGeometry/MultiplicativePhasesPreserveCriticalScalarEnergy` constructs
+`criticalScalarCharacter` and proves `criticalScalarCharacter_phase`,
+`criticalScalarCharacter_action_mul`, and `criticalScalarCharacter_energy`.
+Final source-only audit `69412` passed with four reports containing only
+`propext`, `Classical.choice`, `Quot.sound`. Its umbrella import is wired;
+no olean is needed. The completed audit is tracked in
+[the completion ledger](q-iii-existing-findings-lean-completion.md).
 
 ## Status
 

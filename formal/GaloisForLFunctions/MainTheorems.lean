@@ -29,6 +29,7 @@ import GaloisForLFunctions.ArithmeticOrientationGeometry
 import GaloisForLFunctions.MultiplicativePositivityGeometry
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry
 import GaloisForLFunctions.TransThresholdPairCorrelation
+import GaloisForLFunctions.ArithmeticKunnethTheory
 import GaloisForLFunctions.SignedSuccessorArithmetic
 import GaloisForLFunctions.QuantumAlg
 import GaloisForLFunctions.PNTPlus
@@ -38,3 +39,4 @@ import GaloisForLFunctions.«twin-prime».Main
 import GaloisForLFunctions.FullyProvenNewTargets
 import GaloisForLFunctions.KummerRootApplications
 import GaloisForLFunctions.HTGeometry.NevanlinnaCharacteristicLowerBound
+import GaloisForLFunctions.StripBochnerWeilForcing

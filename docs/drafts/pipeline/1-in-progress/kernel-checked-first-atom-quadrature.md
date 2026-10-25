@@ -104,3 +104,27 @@ Certificates compiled without diagnostics (session 21390, exit 0). The last-cell
 for all five moment rows at cell 63, including the largest lower and upper polynomial degrees.
 It also checks the finite-sum rewrite names and prints transitive axioms for all five numerators.
 Active Lean tool session: 50931. No other owned Lean process is running.
+
+The last-cell probe failed at default recursion/simplification limits (session 50931, exit 1).
+Its five final certificates therefore remain unproved. Finite-sum rewrite names were verified.
+The final polynomial products are now split into one convolution row per equality certificate.
+Only this task's obsolete Certificates olean/ilean were unlinked, and its updated macro module
+is building in session 17463. The next last-cell probe also prints intermediate axiom sets to
+identify any earlier stage requiring further splitting. No limits were raised.
+
+The row-staged Certificates macro module compiled successfully (17463, exit 0). Its new
+last-cell check is running in session 93103. Added intermediate axiom diagnostics distinguish
+source/delta, Horner composition, Gibbs factors, prefactors, polynomial products, and integration.
+One remaining optimization to consider if integration fails: its width-power rewrites should be
+followed by `dsimp only` of the 58 width certificates before `cbv`, just like other cached values.
+
+Probe 93103 finished with only the five integration certificates failing recursion depth. All
+sources, deltas, Horner compositions, Gibbs factors, prefactors, and polynomial products at cell
+63 have clean axiom sets. Explicit width-certificate reduction has now been added to integration.
+The next compile is `/tmp/hgt_sum_div_probe.lean`, verifying a common-denominator rewrite for the
+final sums; after it finishes, regenerate only the changed Certificates olean/ilean and recheck
+the last cell. If width reduction does not suffice, split integration into short polynomial tails.
+
+The common-denominator rewrite passed in `/tmp/hgt_sum_div_probe.lean` (48899, exit 0) and is now
+used in Arithmetic before expanding the finite sums. The width-reduction Certificates rebuild
+passed (2662, exit 0). The last-cell probe is now running with that version.

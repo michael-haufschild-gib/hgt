@@ -76,7 +76,7 @@ theorem exists_eventual_mertens_sqrt_bound_of_vaughan_tail_bound
       exact abs_nonneg _
   have hpowsum : (∑ n ∈ Icc 1 N, (n : ℝ) ^ (-(1 / 2 : ℝ))) ≤ 3 * Real.sqrt (N : ℝ) := by
     have h := RHTower.Sieve.sum_rpow_neg_subcritical_le
-      (η := (1 / 2 : ℝ)) (by norm_num) (by norm_num) N
+      (c := (1 / 2 : ℝ)) (by norm_num) (by norm_num) N
     rw [show (1 : ℝ) - 1 / 2 = 1 / 2 by norm_num, ← Real.sqrt_eq_rpow] at h
     linarith only [h, hroot1]
   have hsum : |∑ n ∈ Icc 1 N, term n| ≤
@@ -181,10 +181,11 @@ theorem frequent_vaughan_reciprocalTail_sqrt_lower {ε : ℝ} (hε : 0 < ε) :
   rw [abs_mul, abs_of_pos (Real.rpow_pos_of_pos hN0 _)] at hN
   have hdiv : c / (N : ℝ) ^ (ε + 1 / 2) < |pmPronicVaughanReciprocalTail ε N| :=
     (div_lt_iff₀ (Real.rpow_pos_of_pos hN0 _)).mpr (by simpa only [mul_comm] using hN)
-  convert hdiv using 1
-  rw [div_eq_mul_inv, ← Real.rpow_neg hN0.le]
-  congr 2
-  ring
+  calc
+    c * (N : ℝ) ^ (-ε - 1 / 2) = c / (N : ℝ) ^ (ε + 1 / 2) := by
+      rw [show -ε - 1 / 2 = -(ε + 1 / 2) by ring, Real.rpow_neg hN0.le]
+      exact (div_eq_mul_inv c _).symm
+    _ < _ := hdiv
 
 /-- The square empty-leg energy has a positive reciprocal-cutoff-squared floor infinitely often. -/
 theorem frequent_vaughan_square_energy_endpoint_lower {ε : ℝ} (hε : 0 < ε) :
@@ -210,7 +211,7 @@ theorem frequent_vaughan_square_energy_endpoint_lower {ε : ℝ} (hε : 0 < ε) 
       show Real.sqrt (N : ℝ) ^ 4 = (Real.sqrt (N : ℝ) ^ 2) ^ 2 by ring,
       Real.sq_sqrt hN0.le]
   have hfour : c ^ 4 < |(N : ℝ) ^ (ε + 1 / 2) * pmPronicVaughanReciprocalTail ε N| ^ 4 :=
-    pow_lt_pow_left₀ hc.le hN (by norm_num)
+    pow_lt_pow_left₀ hN hc.le (by norm_num)
   calc
     _ < pmPronicPowerDensity ε ^ 2 / 2 *
         |(N : ℝ) ^ (ε + 1 / 2) * pmPronicVaughanReciprocalTail ε N| ^ 4 :=

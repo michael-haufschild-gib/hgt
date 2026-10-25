@@ -1,10 +1,11 @@
 # Complete Lean proofs of the existing Q-I findings
 
 - **ID:** q-i-existing-findings-lean-completion
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** FORMALIZATION REGISTER
-- **Source:** q-i-selective-square-root-band.md
-- **Scope:** Every significant finding already argued on paper in this Q-I branch, including its stated corollaries. No new conjecture branch while this register remains incomplete.
+- **Source:** ../1-in-progress/q-i-selective-square-root-band.md
+- **Status:** COMPLETE. Further research paused at the user's request; full Q-I remains open.
+- **Scope:** Every significant finding already argued on paper in this Q-I branch, including its stated corollaries. All 71 queued Lean leaves are complete.
 - **Proof standard:** Paper arguments and unchecked Lean drafts are UNPROVED. A completed result needs its direct Lean check, transitive axiom audit, umbrella import, and accurate corpus documentation.
 
 ## Build discipline
@@ -17,11 +18,11 @@ Write an olean only for a written importer or an exactly identified missing
 dependency. Preserve existing oleans. Verify new mathlib APIs in scratch;
 finish with a direct check of the repository leaf.
 
-## Existing paper obligations
+## Completed existing proof obligations
 
-Pending cards below remain in `../2-fully-proven/`; that legacy directory name
-does not certify them. Completed cards link to stage 3. Each pending statement
-remains UNPROVED until its complete Lean chain passes.
+All fifteen prior paper cards and the related factorial-order-one criterion
+are in stage 3. Every recorded result passed its complete Lean chain, final
+direct source check, and transitive axiom audit.
 Lean module names below are relative to `GaloisForLFunctions/`; BVI denotes
 `BezoutValuationIncidence/`.
 
@@ -40,8 +41,8 @@ Lean module names below are relative to `GaloisForLFunctions/`; BVI denotes
 | [vaughan-zero-cutoffs-remove-the-smooth-obstruction.md](../3-formalized/vaughan-zero-cutoffs-remove-the-smooth-obstruction.md) — COMPLETE | All twenty scalar and coefficient-space targets passed final direct checks and standard-axiom audits. Includes unique coordinate recovery, both exact spans, admitted and quotient dimensions, and unconditional half-damping admission. |
 | [vaughan-admitted-rank-filtration-reads-the-zero-abscissa.md](../3-formalized/vaughan-admitted-rank-filtration-reads-the-zero-abscissa.md) — COMPLETE | All twelve targets in BVI `TheVaughanAdmissionRankReadsTheZeroAbscissa` passed the final direct check and standard-axiom audits. Includes cutoff independence, exact zero-width boundary, all three RH criteria, and first/all damping-column summability equivalences. |
 | [all-positive-vaughan-tail-power-rates.md](../3-formalized/all-positive-vaughan-tail-power-rates.md) — COMPLETE | All five increment, inverse Abel, signed-tail, and square-energy targets in BVI `VaughanTailPowerGainsAtEveryPositiveDamping` passed final direct checks and standard-axiom audits. The exact fixed-strip equivalences hold at every positive damping. |
-| `vaughan-tail-and-energy-decay-indices.md` | All 30 targets in BVI `TheVaughanEmptyLegReadsTheZeroAbscissa`, including full rate-set independence, endpoint distinctions, the zero-width singleton classification, and three explicit equivalences with the unrestricted nonnegative bound definitions. |
-| `vaughan-endpoint-rates-and-zero-multiplicity.md` | BVI `VaughanEndpointScalesHaveUnavoidableOscillation`, `VaughanEndpointRatesForceSimpleBoundaryZeros`. |
+| [vaughan-tail-and-energy-decay-indices.md](../3-formalized/vaughan-tail-and-energy-decay-indices.md) — COMPLETE | All 30 targets in BVI `TheVaughanEmptyLegReadsTheZeroAbscissa` passed final direct checks and standard-axiom audits, including full rate-set independence, endpoint distinctions, the zero-width singleton classification, and three equivalences with the unrestricted nonnegative bound definitions. |
+| [vaughan-endpoint-rates-and-zero-multiplicity.md](../3-formalized/vaughan-endpoint-rates-and-zero-multiplicity.md) — COMPLETE | All thirteen targets in BVI `VaughanEndpointScalesHaveUnavoidableOscillation` and `VaughanEndpointRatesForceSimpleBoundaryZeros` passed final direct checks and standard-axiom audits. Includes positive cofinal floors, both little-o obstructions, boundary simplicity, all three endpoint consequences, and the common local-factor bound. |
 
 ## Checked progress
 
@@ -229,10 +230,26 @@ All five all-positive-damping targets passed producing and final direct checks
 with standard axioms only and no warnings. The module is wired and its scratch
 removed; the complete card is in stage 3. The earlier upper restriction on
 damping is removed from both exact fixed-strip equivalences.
-All remaining drafts now have their intended repository leaves. They remain
-uncertified until their final direct checks and axiom audits pass. Dependencies and
-live compiler handles are recorded in `/tmp/QIVerificationState.txt`; the
-complete module queue is `/tmp/QILeanCompletionQueue.md`.
+All thirty decay-index targets passed corrected producing and final direct
+checks with standard axioms only and no warnings. The module is wired and
+its scratch removed; the complete decay-index card is in stage 3. The full
+rate sets, all three exact indices, unrestricted-rate bridges, zero-width
+singleton, sharp exclusions, and all stated RH equivalences are certified.
+All seven endpoint-oscillation targets passed the corrected final direct check
+with standard axioms only and no warnings. The module is wired and its scratch
+removed. Positive cofinal tail and energy floors, both nonconvergence laws,
+and the explicit finite-head Mertens bound are certified.
+All six boundary-multiplicity targets passed the corrected final direct check
+with standard axioms only and no warnings. The module is wired and its scratch
+removed; the complete thirteen-target endpoint card is in stage 3.
+
+All 71 queued leaves passed their final direct checks. Every public target's
+transitive axiom audit contains only standard axioms: `propext`,
+`Classical.choice`, and `Quot.sound` (or a subset). Umbrella imports are wired;
+owned Lean scratch files are removed. No compiler remains active. Checks used
+direct `lake --old env lean` commands at default limits; no build scripts,
+umbrella builds, placeholders, kernel bypasses, or added analytic assumptions.
+Further research is paused at the user's request.
 
 Full Q-I remains open. Formalizing the stated equivalences does not prove a
 fixed strip or replace that missing conclusion by a premise.

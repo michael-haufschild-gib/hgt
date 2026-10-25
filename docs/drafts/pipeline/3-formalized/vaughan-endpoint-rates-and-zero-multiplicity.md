@@ -1,9 +1,9 @@
 # Vaughan endpoint rates, simple zeros, and unavoidable oscillation
 
 - **ID:** vaughan-endpoint-rates-and-zero-multiplicity
-- **Stage:** 2-fully-proven
-- **Type:** CLAIM (Lean verification pending)
-- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Verification:** All thirteen endpoint-oscillation and boundary-multiplicity targets passed final direct Lean checks and standard-axiom audits. Both modules are wired; owned scratch files are removed.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
 - **Statement:** Attained positive Vaughan tail rates force simple zeros on their boundary line; the maximal possible tail and empty-leg energy scales cannot have little-o decay.
 
@@ -18,7 +18,7 @@ all `N≥1`. Let `E_ε(N)` denote the centered square empty-leg energy divided b
 
 where `Z=ζ(1+ε)>0`.
 
-## Attained rates constrain multiplicity [LEAN VERIFICATION PENDING]
+## Attained rates constrain multiplicity [LEAN-VERIFIED]
 
 For every positive `η∈S_ε`, every zero on `Re(s)=1-η` is simple.
 In particular, attainment of tail exponent `1/2`, cutoff-energy exponent `2`,
@@ -43,7 +43,7 @@ if `ζ(s)=(s-ρ)g(s)` at a boundary zero, then
 `1≤4C polylogConst(0) |ρ| |g(ρ)|`.
 Thus endpoint attainment controls residues as well as multiplicity.
 
-## The square-root endpoint cannot be little-o [LEAN VERIFICATION PENDING]
+## The square-root endpoint cannot be little-o [LEAN-VERIFIED]
 
 For each fixed `ε>0`, there is a constant `c_ε>0` such that, for arbitrarily
 large integers `N`,
@@ -82,16 +82,34 @@ They do not decide whether the corresponding big-O endpoint bound holds.
 
 ## Status
 
-Unproved pending Lean verification. `/tmp/QIVaughanBoundaryMultiplicityTools.lean`
-now contains six complete proof drafts: the boundary order/factor estimate,
-simplicity from an attained tail rate, the tail/cutoff-energy/horizon-energy endpoint
-consequences, and the local-factor lower bound. These depend on the unchecked
-all-positive Abel and exact rate-set modules. No successful compile is claimed.
-The square-root oscillation consequences now have seven complete proof drafts in
-`/tmp/QIVaughanEndpointOscillationTools.lean`, planned as
-`VaughanEndpointScalesHaveUnavoidableOscillation.lean`. They retain the finite
-head in inverse Abel summation, contradict the existing positive Mertens
-square-root oscillation, and transfer the resulting tail floor through the
-quartic comparison. Both normalized nonconvergence statements and unscaled
-lower bounds are included. All seven are unchecked and remain unproved. Source proofs have been read; no external novelty claim or fixed positive
-strip is made.
+All six boundary declarations in `VaughanEndpointRatesForceSimpleBoundaryZeros.lean`
+passed the corrected final direct check, with standard axioms only and no warnings.
+The module is wired and its scratch removed:
+
+- `boundary_zeta_order_and_factor_bound_of_moebius_power`
+- `analyticOrderAt_eq_one_of_vaughan_tail_rate`
+- `riemannHypothesis_and_simple_zeros_of_vaughan_half_tail_rate`
+- `riemannHypothesis_and_simple_zeros_of_vaughan_square_energy_endpoint`
+- `riemannHypothesis_and_simple_zeros_of_vaughan_horizon_energy_endpoint`
+- `exists_boundary_factor_bound_of_vaughan_tail_rate`
+
+These certify the boundary order/factor estimate, simplicity from an attained
+tail rate, all three endpoint consequences, and the common local-factor bound.
+Their all-positive Abel and exact rate-set dependencies also passed final
+direct checks and standard-axiom audits.
+All seven oscillation declarations in `VaughanEndpointScalesHaveUnavoidableOscillation.lean`
+passed the corrected final direct check, with standard axioms only and no warnings.
+The module is wired and its scratch removed:
+
+- `exists_eventual_mertens_sqrt_bound_of_vaughan_tail_bound`
+- `frequent_vaughan_scaled_reciprocalTail_sqrt_lower`
+- `not_tendsto_vaughan_scaled_reciprocalTail_sqrt_zero`
+- `frequent_vaughan_reciprocalTail_sqrt_lower`
+- `frequent_vaughan_square_energy_endpoint_lower`
+- `not_tendsto_vaughan_square_energy_endpoint_zero`
+- `frequent_vaughan_square_energy_reciprocal_lower`
+
+These retain the finite head in inverse Abel summation and transfer the actual
+positive Mertens square-root oscillation through the quartic comparison. Both
+normalized nonconvergence statements and unscaled positive cofinal lower bounds
+are certified. No external novelty claim or fixed positive strip is made.

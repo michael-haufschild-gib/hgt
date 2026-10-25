@@ -125,4 +125,4 @@ check `86587` passed all four transitive axiom audits with only `propext`,
 `Classical.choice`, `Quot.sound`. All leaves are umbrella-wired.
 
 The complete canonical checks are tracked in
-[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
+[the completion ledger](q-iii-existing-findings-lean-completion.md).

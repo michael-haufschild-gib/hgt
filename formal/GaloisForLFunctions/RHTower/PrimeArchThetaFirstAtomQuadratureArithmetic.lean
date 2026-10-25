@@ -1,3 +1,4 @@
+import Mathlib.Algebra.BigOperators.Field
 import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomQuadratureCells0
 import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomQuadratureCells16
 import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomQuadratureCells32
@@ -27,8 +28,9 @@ macro "normalize_first_atom_cells " side:ident r:num : tactic => do
         "_" ++ toString j))
     numerators := numerators.push (← `(Lean.Parser.Tactic.simpLemma| ← ($name).property))
     values := values.push (← `(Lean.Parser.Tactic.simpLemma| $name:ident))
-  `(tactic| (simp only [Finset.sum_range_succ, Finset.sum_range_zero,
-    $bound:ident, $[$numerators],*]; dsimp only [$[$values],*]))
+  `(tactic| (simp only [$bound:ident]; rw [← Finset.sum_div];
+    simp only [Finset.sum_range_succ, Finset.sum_range_zero, $[$numerators],*];
+    dsimp only [$[$values],*]))
 
 private theorem lower_zero_certificate :
     (0.4969488 : ℚ) < ∑ j ∈ Finset.range 64, Enclosure.lower (Enclosure.massLo 0 j) := by

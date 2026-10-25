@@ -2,7 +2,7 @@
 
 - **ID:** q-iii-visible-poles-and-module-multiplicity
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE / source-identification audit
+- **Type:** CONJECTURE / source-identification audit paused
 - **Parent:** [Q-III](q-iii-escape-state-classification.md)
 - **Question:** Which uncancelled poles of the actual receiver transform are
   visible in its cofactor modules, and what relation connects their orders to
@@ -71,8 +71,9 @@ Required work:
    theorem, preserving the actual centered receiver and source conventions.
 2. Complete: exact visible interior pole orders and paid jets, including
    partial cancellation; boundary value vanishing and unit-orbit consequences.
-3. Prove which pole data constrain the paid ideal and the closed module
-   annihilator. Keep these two ideals separate.
+3. Paid-ideal part complete: independent interior jets and boundary values
+   give additive paid-quotient index bounds, preserved on Wiener-unit orbits.
+   Their relation to the closed actual module annihilator remains open.
 4. Relate actual cofactor modules to this divisor, or find the precise
    obstruction and a positive replacement. Purely algebraic joint
    multiplicities do not supply that relation.
@@ -80,7 +81,7 @@ Required work:
 This card records a source-based lead, not a proved arithmetic classification.
 No new analytic hypothesis or unproved interface is available as an input.
 
-## Dependency-closed positive refinement on paper
+## Formalized positive refinement
 
 Fix a translated zero `s0=rho-epsilon` with
 `1/2+epsilon<Re(rho)<1`. Both `zeta(s)` and `K(s)` are analytic near `s0`.
@@ -116,11 +117,12 @@ combines real and imaginary parts using the minimum order bound for sums,
 defines `visibleTranslatedZetaOrder`, and derives every lower kernel jet.
 The boundary and unit-orbit leaves also passed final canonical checks with
 standard axioms; exact audits are tracked in
-[the completion ledger](q-iii-existing-findings-lean-completion.md).
+[the completion ledger](../3-formalized/q-iii-existing-findings-lean-completion.md).
 No equality of the paid ideal with the jet ideal or actual annihilator is
-claimed. Finite mixed-jet interpolation and paid-index bounds passed their
-combined Lean check with standard axioms; their installed canonical leaves
-still require individual import-boundary audits.
+claimed. All six finite mixed-jet and paid-index application modules passed
+their final canonical checks with standard axioms, including unit-orbit and
+Liouville index transfer. See
+[the completed jet-index card](../3-formalized/visible-pole-jets-bound-the-paid-quotient-index.md).
 
 The dependency-closed paid-ideal refinement has its own card:
 [Paid kernels cover visible shifted zero orders](../3-formalized/paid-kernels-cover-visible-shifted-zero-orders.md).

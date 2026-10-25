@@ -399,6 +399,19 @@ For every fixed `ε>0`, a power gain for the normalized square empty-leg energy
 is equivalent to `Θ<1`, through its exact quartic comparison with the signed reciprocal
 tail (`VaughanTailPowerGainsAtEveryPositiveDamping`). All five all-positive-damping
 targets passed final direct checks and standard-axiom audits.
+The exact tail, cutoff-energy, and horizon-energy decay indices are
+`1-Θ`, `4(1-Θ)`, and `2(1-Θ)`. All thirty targets passed final direct checks
+and standard-axiom audits, including full rate-set independence, unrestricted
+rate descriptions, the zero-width singleton case, and all stated RH criteria
+(`TheVaughanEmptyLegReadsTheZeroAbscissa`). No endpoint attainment is asserted.
+All seven endpoint-oscillation targets are verified. The scaled tail and
+square empty-leg energy have positive cofinal floors, excluding little-o
+decay at their maximal endpoint scales
+(`VaughanEndpointScalesHaveUnavoidableOscillation`).
+All six boundary targets are verified: attained positive tail rates force
+simple boundary zeros and a common local-factor bound. Each maximal tail or
+energy endpoint implies RH and simple critical zeros
+(`VaughanEndpointRatesForceSimpleBoundaryZeros`). No endpoint attainment is asserted.
 The undamped truncated convolution also satisfies
 `Σ_(d≤n)(μ_≤U*μ_≤V*1)(d)=nH_UH_V+O_q(n/(log n)^q)` for every fixed integer `q≥0`,
 uniformly over all cutoff pairs (`UniformLogarithmicCancellationInTheVaughanConvolution`).
@@ -915,6 +928,8 @@ not supply purity.
   its finite quotient index drops by the dilation nullity. Positive
   contractions compose on kernels and principal quotient ideals. All these
   statements passed final canonical Lean checks with standard axioms.
+  The scalar calibration `chi(p)=eta(p)/sqrt(p)` is also formalized:
+  every multiplicative unit-norm phase survives exact critical energy.
 - Changing the cyclic vector by a critical Wiener unit gives a unitary
   comparison intertwining the full Wiener action. It preserves all operator
   norms, the annihilator, operator hull and dimension. Actual real unit
@@ -951,10 +966,14 @@ not supply purity.
   Lean checks with standard axioms. At the critical boundary, positive
   uncancelled order forces paid-kernel value vanishing and source nonpayment;
   these constraints persist on the Wiener-unit orbit, including Liouville.
-  The boundary and orbit leaves also passed final canonical checks. These
-  constrain the paid ideal; identifying actual module spectra or counting
-  independent jet conditions requires separate results. No boundary jets
-  are inferred.
+  The boundary and orbit leaves also passed final canonical checks. Finite
+  interior jets and additional boundary values can now be prescribed jointly.
+  Their independent conditions give a paid-quotient rank lower bound equal
+  to any finite visible interior multiplicity sum plus the number of distinct
+  critical-boundary points. The interpolation and combined index application
+  passed final canonical audits, as did the combined index transfer to
+  Wiener-unit orbits and Liouville. Identifying actual module spectra remains
+  open; no boundary derivatives are inferred.
 
 The open classification is still the arithmetic identification of the actual
 module hull with translated zero data, including Kronecker-curve generation

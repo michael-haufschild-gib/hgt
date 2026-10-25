@@ -114,30 +114,57 @@ macro "first_atom_cell " j:num : command => do
       let polynomial := Lean.mkIdent (.mkSimple ("polynomial" ++ suffix))
       let polynomialFn := Lean.mkIdent
         (if side == "Lo" then ``Enclosure.polynomialLo else ``Enclosure.polynomialHi)
+      -- One scaled row is added at a time, preserving the exact convolution order.
+      let rows := (if side == "Lo" then 9 else 10) + 2 * r
+      for offset in [:rows + 1] do
+        let k := rows - offset
+        let n := Lean.Syntax.mkNumLit (toString k)
+        let row := Lean.mkIdent (.mkSimple ("product" ++ suffix ++ "Row" ++ toString k))
+        let declaration ← if k == rows then
+          `(command| abbrev $row : {v // v = Enclosure.polyMul
+              (($prefactor).val.drop $n) ($gibbs).val} := by
+            certify_first_atom =>
+              change ([] : List Enclosure.Bounds)
+              cbv)
+        else do
+          let next := Lean.Syntax.mkNumLit (toString (k + 1))
+          let prev := Lean.mkIdent
+            (.mkSimple ("product" ++ suffix ++ "Row" ++ toString (k + 1)))
+          `(command| abbrev $row : {v // v = Enclosure.polyMul
+              (($prefactor).val.drop $n) ($gibbs).val} := by
+            certify_first_atom =>
+              change Enclosure.polyAdd
+                (Enclosure.polyScale
+                  ((($prefactor).val[$n]?).getD (Enclosure.point 0)) ($gibbs).val)
+                (Enclosure.point 0 :: Enclosure.polyMul
+                  (($prefactor).val.drop $next) ($gibbs).val)
+              simp only [← ($prev).property]
+              dsimp only [$prev:ident, $prefactor:ident, $gibbs:ident]
+              cbv)
+        declarations := declarations.push declaration
+      let product := Lean.mkIdent (.mkSimple ("product" ++ suffix ++ "Row0"))
       declarations := declarations.push (← `(command|
-        abbrev $polynomial : {v // v = $polynomialFn $order $j} := by
-          certify_first_atom =>
-            rw [$polynomialFn:ident]
-            simp only [← ($prefactor).property]
-            dsimp only [$prefactor:ident]
-            simp only [← ($gibbs).property]
-            dsimp only [$gibbs:ident]
-            cbv))
+        abbrev $polynomial : {v // v = $polynomialFn $order $j} :=
+          ⟨($product).val, ($product).property.trans
+            (congrArg₂ Enclosure.polyMul ($prefactor).property ($gibbs).property)⟩))
       let mass := Lean.mkIdent (.mkSimple ("mass" ++ suffix))
       let massFn := Lean.mkIdent
         (if side == "Lo" then ``Enclosure.massLo else ``Enclosure.massHi)
       let length := (if side == "Lo" then 54 else 42) + 2 * r
       let mut widths := #[]
+      let mut widthValues := #[]
       for k in [1:length + 1] do
         let width := Lean.mkIdent (.mkSimple ("widthPower" ++ toString k))
         widths := widths.push (← `(Lean.Parser.Tactic.simpLemma| ← ($width).property))
+        widthValues := widthValues.push (← `(Lean.Parser.Tactic.simpLemma| $width:ident))
       declarations := declarations.push (← `(command|
         abbrev $mass : {v // v = $massFn $order $j} := by
           certify_first_atom =>
             rw [$massFn:ident]
             simp only [← ($polynomial).property]
-            dsimp only [$polynomial:ident]
+            dsimp only [$polynomial:ident, $product:ident]
             simp only [Enclosure.mass, Nat.reduceAdd, $[$widths],*]
+            dsimp only [$[$widthValues],*]
             cbv))
       let raw := Lean.mkIdent (.mkSimple ("raw" ++ suffix))
       let projection := Lean.mkIdent

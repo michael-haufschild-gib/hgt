@@ -1,12 +1,13 @@
 # Visible pole jets bound the paid quotient index
 
 - **ID:** visible-pole-jets-bound-the-paid-quotient-index
-- **Stage:** 1-in-progress
-- **Type:** LEAN VERIFICATION (canonical import checks pending)
-- **Parent:** [Q-III](q-iii-escape-state-classification.md)
-- **Statement:** The actual paid-ideal quotient has rank at least the sum of
-  visible translated zero orders over any finite set of distinct interior
-  points, with critical-boundary visible points contributing at least one.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
+- **Statement:** For any finite set of distinct interior points and natural
+  multiplicities bounded by their visible translated zero orders, the actual
+  paid-ideal quotient has rank at least the multiplicity sum plus the number
+  of distinct critical-boundary visible points.
 
 ## Corpus inputs
 
@@ -36,10 +37,9 @@ these quotient multiplicities or infer occurrence of every visible zero
 in every actual cofactor module. Unit-orbit invariance transfers any proved
 paid-index bound to Liouville and finite Euler-factor variants.
 
-## Lean implementation route and endpoint value count
+## Lean construction and endpoint value count
 
-The inspected `DeningerJetInterpolation` suggests a direct mask construction,
-without a single global separating coordinate. For each target i, choose
+The construction uses a separate mask at each target. For each target i, choose
 pairwise separating Wiener factors vanishing at each other point j but not
 i, and raise them to the required orders m_j. Their product is nonzero at i.
 Multiply by successive powers of the local factor delta_2 minus its value
@@ -59,9 +59,8 @@ orbits transports this bound, including the Möbius–Liouville case.
 ## Canonical verification
 
 `InteriorWienerJets` passed final source-only audit `84720` with standard
-axioms. The complete application check finished without errors; all fourteen
-axiom reports in `/tmp/qiii-visible-mixed-jet-index-third.log` contain only
-`propext`, `Classical.choice`, `Quot.sound`.
+axioms. All six application modules also passed individual final canonical
+checks and transitive axiom audits.
 
 Six application modules are installed and umbrella-wired:
 
@@ -78,5 +77,17 @@ Six application modules are installed and umbrella-wired:
 - `VisibleJetIndexBoundsPersistOnWienerUnitOrbits`: the corresponding
   unit-orbit and Liouville paid-index bounds.
 
-Individual canonical import-boundary checks remain in
+Canonical import-boundary audits:
+
+| Module | Final source-only audit | Required olean |
+|---|---|---|
+| `VisiblePolesImposeIndependentPaidConditions` | `92781` passed | `82563` passed |
+| `FiniteWienerJetsCanBePrescribed` | `59279` passed | `65033` passed |
+| `VisiblePoleJetsBoundThePaidIndex` | `7575` passed | None needed |
+| `InteriorJetsAndBoundaryValuesCanBePrescribed` | `41657` passed | `61099` passed |
+| `VisibleInteriorAndBoundaryPolesBoundThePaidIndex` | `3973` passed | `62838` passed |
+| `VisibleJetIndexBoundsPersistOnWienerUnitOrbits` | `86413` passed | None needed |
+
+Every report contains only `propext`, `Classical.choice`, `Quot.sound`.
+All declarations are canonical and umbrella-wired. The completed audits are in
 [the completion ledger](q-iii-existing-findings-lean-completion.md).

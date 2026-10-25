@@ -21,7 +21,7 @@ boundary dimension/index, scalar origin-trace convergence in pronic norm,
 and the unbounded squared-length/energy obstruction along nonvanishing cofinal
 subsequences passed final canonical checks. The exact declarations and audits
 are recorded below and in
-[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
+[the completion ledger](q-iii-existing-findings-lean-completion.md).
 
 ## Proof mechanism
 

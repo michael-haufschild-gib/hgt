@@ -214,8 +214,14 @@ Bohr points annihilating `P(c)`. *Unit*: a coordinate on the width line.
     prescribed jointly (`exists_wiener_with_prescribed_finite_jets`), so their visible multiplicities add
     in the paid-quotient lower bound (`sum_visible_orders_le_rank_quotient_paidIdeal_moebius`). On the **critical boundary**
     `Re ρ = ½ + ε`, any order loss `ord ζ(ρ−ε) < ord ζ(ρ)` makes `μ d^{−ε}` unpaid
-    (`not_receiverBounded_moebius_of_critical_boundary_order_loss`). All persist on the unit orbit, including
+    (`not_receiverBounded_moebius_of_critical_boundary_order_loss`). These vanishing constraints persist on the unit orbit, including
     Liouville (`wienerUnitOrbit_moebius_liouville`, `not_receiverBounded_liouville_of_critical_boundary_order_loss`).
+    Interior jets and additional boundary values can be prescribed jointly
+    (`exists_wiener_with_mixed_finite_data`): finite visible multiplicities plus distinct boundary points
+    bound the paid-quotient rank (`sum_visible_orders_add_boundary_card_le_paid_index`).
+    The combined index bound persists on Wiener-unit orbits and for Liouville
+    (`sum_visible_orders_add_boundary_card_le_paid_unitOrbit_index`,
+    `sum_visible_orders_add_boundary_card_le_paid_liouville_index`).
     Real characters are paid; multiplicative weights with `f(p) = −1` lie in Möbius's forward cone.
 19. **Orientation-faithful norm.** `N(k) = Σ|k(j)|j^ε`; flip acts on pole coordinates
     `(P, P_e) ↦ (P + (1−2^ε)P_e, −P_e)`; both flip members paid ⇔ `P = P_e = 0`
@@ -229,11 +235,11 @@ Bohr points annihilating `P(c)`. *Unit*: a coordinate on the width line.
     every weaker weight, so the annihilator hull is full (`hull_eq_univ`) while operator spectra contract
     (`onePoint_not_mem_operatorHull`). Annihilator hulls of faithful cyclic modules carry no localization.
 
-The interior orders, jets, boundary values and unit-orbit statements in item 18
+The interior orders, joint jet/value interpolation, additive paid-index bounds and unit-orbit statements in item 18
 passed final canonical checks with standard axioms. The critical-kernel
 and max-kernel applications in item 20 also passed their individual canonical
 checks and standard-axiom audits. See the
-[completion ledger](../../../docs/drafts/pipeline/1-in-progress/q-iii-existing-findings-lean-completion.md).
+[completion ledger](../../../docs/drafts/pipeline/3-formalized/q-iii-existing-findings-lean-completion.md).
 
 ### Transport and dictionaries
 21. **Damping flow preserves orientation** on residue combinations (`sign_coeff_centeredOperator`).

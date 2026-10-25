@@ -222,6 +222,18 @@ $G_{ij}$; diagonal $D_T$; mixed remainder $R^{\text{mix}}_T$; $E^{\text{int}}_T=
     At [every positive damping](VaughanTailPowerGainsAtEveryPositiveDamping.lean),
     a signed-tail power gain or a normalized square empty-leg energy power gain
     is exactly equivalent to a fixed strip, by finite Abel inversion.
+    The [exact decay indices](TheVaughanEmptyLegReadsTheZeroAbscissa.lean) are
+    `1-Θ` for the tail, `4(1-Θ)` for cutoff energy, and `2(1-Θ)` for horizon
+    energy. The full rate sets are independent of positive damping, with
+    exact unrestricted-bound descriptions and a zero-width singleton law.
+    [Unconditional endpoint floors](VaughanEndpointScalesHaveUnavoidableOscillation.lean)
+    rule out little-o decay at the maximal tail and empty-leg energy scales.
+    They give positive cofinal lower bounds and retain the finite head in
+    inverse Abel summation.
+    [Attained endpoint rates](VaughanEndpointRatesForceSimpleBoundaryZeros.lean)
+    force simple boundary zeros and one common lower bound on their local
+    factors. The maximal tail, cutoff-energy, and horizon-energy rates each
+    imply RH and simple critical zeros; no endpoint attainment is asserted.
     [Two arithmetic cells](TheVaughanLimitRowsAreIndependentInTwoCells.lean)
     separate the actual prefix and pole at every positive damping, with
     determinant at least `2^(-2ε)/36`; their finite pronic Gram determinant is

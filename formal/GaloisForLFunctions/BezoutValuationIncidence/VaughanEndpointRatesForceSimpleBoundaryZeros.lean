@@ -27,10 +27,12 @@ private theorem mertens_subpowers_of_moebius_power {C β : ℝ}
   · simp only [Icc_eq_empty (by omega : ¬ (1 : ℕ) ≤ 0), sum_empty, abs_zero]
     positivity
   · refine (hM n hn).trans (mul_le_mul_of_nonneg_left ?_ hC)
+    have hn1 : (1 : ℝ) ≤ (n : ℝ) + 1 := by
+      linarith only [show (0 : ℝ) ≤ n from Nat.cast_nonneg n]
     exact (Real.rpow_le_rpow (Nat.cast_nonneg n)
-      (by linarith : (n : ℝ) ≤ (n : ℝ) + 1) hβ).trans
-      (Real.rpow_le_rpow_of_exponent_le (by linarith [Nat.cast_nonneg n])
-        (by linarith only [hδ]))
+      (by linarith only : (n : ℝ) ≤ (n : ℝ) + 1) hβ).trans
+      (Real.rpow_le_rpow_of_exponent_le hn1
+        (by linarith only [hδ] : β ≤ β + δ))
 
 private theorem abs_mertensReal_le_of_moebius_power {C β : ℝ}
     (hC : 0 ≤ C) (hβ : 0 ≤ β)

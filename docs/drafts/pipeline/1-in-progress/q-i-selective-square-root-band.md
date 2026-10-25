@@ -3,6 +3,7 @@
 - **ID:** q-i-selective-square-root-band
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
+- **Status:** PAUSED at the user's request after completing all existing-finding formalizations. The fixed-strip target remains open.
 - **Source:** ../../../reports/review-2410/opus.md, §3 Q-I
 - **Statement:** Find and unconditionally formalize a Beurling-selective, single-zeta estimate giving a fixed power saving at the square-root band, including its mathematical consequences and corpus applications.
 
@@ -471,8 +472,8 @@ centered and smooth-subtracted rows tend cellwise to `(A,A,-A,0,P)` when both
 cutoffs diverge. Both final direct checks and standard-axiom audits passed.
 This pointwise statement alone supplies no energy bound.
 
-The exact decay-index claims are recorded in
-`../2-fully-proven/vaughan-tail-and-energy-decay-indices.md`.
+The exact decay-index laws are Lean-verified in
+`../3-formalized/vaughan-tail-and-energy-decay-indices.md`.
 For every fixed `ε>0`, the supremal signed-tail gain is `1-Θ`, independent of
 damping; the normalized square empty-leg energy has index `4(1-Θ)` in `N`, or
 `2(1-Θ)` in the horizon. The proof combines the checked quartic identity, finite
@@ -480,11 +481,12 @@ Abel inversion, and the read Littlewood and absolute-Mertens-moment exponent law
 The compact-interval power-increment bound removes the earlier restriction `ε≤1`.
 All five extension targets passed final direct checks and standard-axiom audits;
 see `../3-formalized/all-positive-vaughan-tail-power-rates.md`.
-The full rate sets, including
-endpoint attainment, are independent of positive damping. Thirty Lean targets
-for the indices, exact rate sets, and horizon formulations are drafted, uncompiled.
-They include three explicit equivalences with the unrestricted nonnegative
-rate sets appearing in the paper statements and the stated zero-width singleton classification.
+The full rate sets, including possible endpoint attainment, are independent
+of positive damping. All thirty targets in
+`TheVaughanEmptyLegReadsTheZeroAbscissa.lean` passed final direct checks and
+standard-axiom audits. They include all three exact indices, three equivalences
+with the unrestricted nonnegative rate sets, the zero-width singleton
+classification, sharp exclusions, and all stated RH equivalences.
 These identities supply no positive lower bound for the width.
 
 ## Checked uniform undamped convolution rate
@@ -600,11 +602,13 @@ determinant lower bound. The complete phase card is
 The five zero-cutoff scalar targets and fifteen coefficient-space targets
 also passed final direct checks with standard axioms only; both modules are
 wired and the complete zero-cutoff card is in stage 3.
-The complete half-damping endpoint classification is also verified. Remaining
-power-rate consequences are under verification. All fifteen existing paper
-cards and their remaining Lean coverage are listed in
-`q-i-existing-findings-lean-completion.md`; completing that register has priority
-over new conjecture work. Paper arguments and unchecked drafts remain unproved.
+The complete half-damping endpoint classification and all existing power-rate
+consequences are verified. All fifteen prior paper cards and the related
+factorial criterion are complete in
+`../3-formalized/q-i-existing-findings-lean-completion.md`. All 71 queued leaves
+passed final direct checks and standard-axiom audits; their umbrella imports
+are wired and owned scratches removed. Further research is paused at the user's
+request. The original fixed-strip target remains open.
 
 The two uniform truncated-Möbius logarithmic targets passed their scratch
 axiom audits, producing check, and final direct check. They are wired as
@@ -636,10 +640,12 @@ Further consequences and their Lean status:
 - `../3-formalized/uniform-vaughan-convolution-stretched-exponential-rate.md`
   uses the read harmonic Möbius stretched-exponential source to strengthen the
   uniform convolution rate and give one threshold for factorial logarithmic bounds.
-- `../2-fully-proven/vaughan-endpoint-rates-and-zero-multiplicity.md` proves that
-  attained positive tail rates force simple zeros on their boundary line, while
-  the maximal tail scale cannot have little-o decay. The quartic comparison gives
-  the corresponding unconditional empty-leg energy oscillation.
+- `../3-formalized/vaughan-endpoint-rates-and-zero-multiplicity.md` has all
+  thirteen targets verified. The maximal tail and empty-leg energy scales
+  have positive cofinal floors and cannot have little-o decay. Attained positive
+  tail rates force simple boundary zeros and a common local-factor bound;
+  all three maximal endpoints imply RH and simple critical zeros. No endpoint
+  attainment is asserted.
 
 - `../3-formalized/vaughan-subcritical-gram-limit-classification.md` classifies
   all subcritical moving-cutoff Gram limits. Their amplitudes form a countably

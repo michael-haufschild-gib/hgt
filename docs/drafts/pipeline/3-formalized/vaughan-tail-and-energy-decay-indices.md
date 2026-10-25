@@ -1,9 +1,9 @@
 # Vaughan tail and empty-leg decay indices
 
 - **ID:** vaughan-tail-and-energy-decay-indices
-- **Stage:** 2-fully-proven
-- **Type:** CLAIM (Lean verification pending)
-- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Verification:** All thirty targets passed corrected producing and final direct Lean checks, with standard axioms only and no warnings. The module is wired; its owned scratch is removed.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
 - **Statement:** For every fixed `ε>0`, the optimal power-saving index of `N^ε(ρ-A_N)` is `1-Θ`, where `Θ=zetaZeroAbscissa`; the square empty-leg energy has four times that index in the cutoff variable.
 
@@ -32,7 +32,7 @@ The all-positive-damping extension of finite Abel inversion proves that a tail b
 gives `M(N)=O(N^(1-η))`. The read compact-interval power lemma bounds
 the inverse-weight increment by `(1+ε)2^ε n^ε` for every `ε≥0`; this
 removes the earlier upper restriction on damping. See
-[the verified extension](../3-formalized/all-positive-vaughan-tail-power-rates.md),
+[the verified extension](all-positive-vaughan-tail-power-rates.md),
 whose five targets passed final direct checks and standard-axiom audits.
 A pointwise bound `|M(N)|≤C N^β`, `β≥0`, gives
 `Σ_(k≤X)|M(k)|≤C(X+1)^(1+β)`. The read corpus theorem
@@ -83,19 +83,50 @@ damping independence of the tail-rate set.
   gains below `2`. No assertion is made at either endpoint.
 
 This is a Vaughan specialization of existing exponent laws and the proved quartic
-identity. Source checks close the paper proof. Broad discovery searches were partial;
+identity. The complete argument is Lean-verified. Broad discovery searches were partial;
 the follow-up found many general exponent laws and the existing reciprocal-tail strip
 equivalence, without an exact indexed empty-leg theorem. No external novelty claim is made.
-Thirty quantitative-transfer, rate-set, supremum, damping-independence, fixed-strip,
-and RH targets are drafted in `/tmp/QIVaughanDecayIndexTools.lean`, uncompiled.
-The draft includes unrestricted upper-rate exclusions, exact rate-set independence,
-actual horizon-rate sets, and all-strict-exponent RH formulations. Three explicit
-`mem_pmPronicVaughanTailPowerRates_iff_bound`,
-`mem_pmPronicVaughanSquareEnergyPowerRates_iff_bound`, and
-`mem_pmPronicVaughanHorizonEnergyPowerRates_iff_bound` drafts identify the formal
-rate sets with all nonnegative exponents satisfying the actual bounds. Their
-proofs derive the harmless upper caps from the unrestricted exclusion theorems.
-`pmPronicVaughanTailPowerRates_eq_singleton_zero_of_abscissa_eq_one` formalizes
-the stated degenerate-case singleton classification. These four additional
-targets remain unchecked. None of these index identities gives a positive lower
-bound for `1-Θ`; full Q-I remains open.
+
+## Lean declarations
+
+All thirty declarations in `TheVaughanEmptyLegReadsTheZeroAbscissa.lean` passed
+final direct checks. Their transitive axioms are only `propext`,
+`Classical.choice`, and `Quot.sound`:
+
+- `zetaZeroAbscissa_le_of_moebius_power_bound`
+- `exists_moebius_power_bound_of_abscissa_lt`
+- `zetaZeroAbscissa_le_one_sub_of_vaughan_tail_power`
+- `exists_vaughan_tail_power_of_lt_one_sub_abscissa`
+- `pmPronicVaughanTailPowerRates_le`
+- `mem_pmPronicVaughanTailPowerRates_of_lt`
+- `zero_mem_pmPronicVaughanTailPowerRates`
+- `pmPronicVaughanTailPowerRates_eq_singleton_zero_of_abscissa_eq_one`
+- `pmPronicVaughanTailDecayIndex_eq`
+- `pmPronicVaughanTailDecayIndex_independent`
+- `mem_pmPronicVaughanSquareEnergyPowerRates_iff`
+- `pmPronicVaughanSquareEnergyDecayIndex_eq`
+- `pmPronicVaughanTailDecayIndex_pos_iff`
+- `pmPronicVaughanTailDecayIndex_eq_half_iff`
+- `pmPronicVaughanSquareEnergyDecayIndex_eq_two_iff`
+- `not_exists_vaughan_tail_power_gt_half`
+- `not_exists_vaughan_square_energy_power_gt_two`
+- `riemannHypothesis_iff_all_strict_vaughan_tail_powers`
+- `riemannHypothesis_iff_all_strict_vaughan_square_energy_powers`
+- `mem_pmPronicVaughanTailPowerRates_iff_moebius_power`
+- `pmPronicVaughanTailPowerRates_independent`
+- `pmPronicVaughanSquareEnergyPowerRates_independent`
+- `mem_pmPronicVaughanHorizonEnergyPowerRates_iff`
+- `pmPronicVaughanHorizonEnergyDecayIndex_eq`
+- `pmPronicVaughanHorizonEnergyDecayIndex_eq_one_iff`
+- `pmPronicVaughanHorizonEnergyDecayIndex_pos_iff`
+- `pmPronicVaughanHorizonEnergyPowerRates_independent`
+- `mem_pmPronicVaughanTailPowerRates_iff_bound`
+- `mem_pmPronicVaughanSquareEnergyPowerRates_iff_bound`
+- `mem_pmPronicVaughanHorizonEnergyPowerRates_iff_bound`
+
+The three `_iff_bound` declarations identify the rate sets with all
+nonnegative exponents satisfying the actual bounds; the upper caps are
+derived from the unrestricted exclusions. The singleton declaration covers
+the stated zero-width case. Full rate-set independence includes possible
+endpoint attainment without asserting that attainment. None of these index
+identities gives a positive lower bound for `1-Θ`; full Q-I remains open.

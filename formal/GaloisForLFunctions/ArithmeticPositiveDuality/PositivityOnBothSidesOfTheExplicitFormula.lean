@@ -184,7 +184,3 @@ theorem splineCorr_prime_term_eq_zero {s : ℝ} {n : ℕ} (h1 : 8 < |Real.log n 
     rwa [show -Real.log n - s = -(Real.log n + s) by ring, abs_neg]), add_zero]
 
 end GaloisForLFunctions.ArithmeticPositiveDuality
-
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.positive_duality_of_the_explicit_formula
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.weilFullFunctional_of_prime_free
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.splineCorr_prime_term_eq_zero

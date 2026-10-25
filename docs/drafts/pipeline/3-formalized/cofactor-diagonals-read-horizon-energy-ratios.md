@@ -134,4 +134,4 @@ wired in `NumericHorizonOrderControlsTheCofactorAction`. Its required olean
 passed in `68599` and final source-only audit in `42266`, with only
 `propext`, `Classical.choice`, `Quot.sound`. All claims on this card are
 formalized; exact canonical audit records are in
-[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
+[the completion ledger](q-iii-existing-findings-lean-completion.md).

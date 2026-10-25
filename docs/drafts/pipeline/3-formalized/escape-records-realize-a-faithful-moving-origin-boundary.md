@@ -73,7 +73,7 @@ of the stated mixed kernel for every `c>0` on the escape branch.
 All thirteen boundary modules passed direct canonical source checks and
 transitive axiom audits containing only `propext`, `Classical.choice`,
 `Quot.sound`; sessions and dependency checks are in
-[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
+[the completion ledger](q-iii-existing-findings-lean-completion.md).
 
 - `admits_or_exists_record_horizons` in `EscapeRecordsControlMovingOriginMass`
   supplies cofinal observation horizons, interior origins, prescribed trace

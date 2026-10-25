@@ -2,17 +2,19 @@
 
 - **ID:** q-iii-escape-state-classification
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE / existing-proof formalization in progress
+- **Type:** CONJECTURE / research paused
 - **Source:** `docs/reports/review-2410/opus.md`, Q-III and Mechanism A.
 - **Statement:** Classify every actual common cofactor limit of the damped Möbius receiver, its signed data, Wiener annihilator, spectral hull, and index; decide generation by translated off-line zeros on the Kronecker curve.
 
 ## Goal and remaining mathematical gaps
 
 **Full Q-III remains open. Do not mark the persistent goal complete.**
-Current authorized scope: finish started Lean work and all existing paper
-proofs, then pause. The [completion ledger](q-iii-existing-findings-lean-completion.md)
-supersedes historical queue and session instructions below. Edit Lean directly;
-invoke each compiler command directly. No source-generation or build scripts.
+Started Lean work and all existing paper proofs in the completion queue are
+finished. Research remains paused as requested. The
+[completion ledger](../3-formalized/q-iii-existing-findings-lean-completion.md)
+records successful canonical checks and standard-axiom audits, superseding
+historical queue and session instructions below. Any later work must edit Lean
+directly and invoke each compiler command directly.
 The attachment is `/Users/michael/.codex/attachments/4336a717-ce0a-4c1f-8abb-88688fc210a7/pasted-text-1.txt`.
 It and the complete report have been read. No hgtl7 skill, numerical experiments,
 new analytic assumptions, or unproved interfaces are allowed.
@@ -131,8 +133,15 @@ order minus the numerator order in `PaidKernelsCoverVisibleTranslatedZeroOrders`
 Finite Wiener jet interpolation and the independent interior multiplicity bound
 also passed their final canonical checks with standard axioms in
 `FiniteWienerJetsCanBePrescribed` and `VisiblePoleJetsBoundThePaidIndex`.
-These constrain the paid quotient; identifying the hull of each individual
-actual module remains open.
+Mixed interpolation preserves every interior jet while prescribing additional
+boundary values. Its canonical paid-index application
+`sum_visible_orders_add_boundary_card_le_paid_index` adds any finite visible
+interior multiplicities to the number of distinct critical-boundary points;
+both final audits passed with standard axioms. These constrain the paid
+quotient; identifying the hull of each individual actual module remains open.
+The combined index bound also persists on Wiener-unit orbits, including
+Liouville; its final canonical audit passed. See
+[the completed jet-index card](../3-formalized/visible-pole-jets-bound-the-paid-quotient-index.md).
 
 ## Translation and signed data
 
@@ -269,7 +278,7 @@ perturbation ideal stability is formalized; full Gram stability is still paper.
 
 The notes below preserve the development record only. Their active-session,
 scratch-path, script and pending-status instructions are obsolete. Use the
-[completion ledger](q-iii-existing-findings-lean-completion.md) for current
+[completion ledger](../3-formalized/q-iii-existing-findings-lean-completion.md) for current
 state. Do not execute any historical source assembler or compilation script.
 
 **One active sequential Lean command: session `82907`,**
@@ -1112,24 +1121,16 @@ The user subsequently prohibited Python helpers as well. All owned Python
 assemblers and promoters were deleted. Edit Lean sources directly and invoke
 the compiler directly; do not recreate helper scripts.
 
-### Current stopping instruction and completion ledger
+### Completion and pause
 
-The user paused the research goal and then explicitly required: finish started
-Lean work, formalize every outstanding paper proof, then pause. Continue only
-that completion scope; do not resume conjecture generation or the open full
-classification problem. The current per-batch status and active compiler are
-in [the Lean completion ledger](q-iii-existing-findings-lean-completion.md),
-which supersedes historical session and queue instructions above.
+The requested existing-proof completion is finished. All listed batches,
+including raw/reset origins, continuum index, actual contractions, finite
+hulls, mixed jets, unit-orbit index bounds, the Fermi divisor formula and
+the scalar phase calibration, passed their final canonical Lean checks and
+transitive axiom audits. Their cards and declarations are recorded in
+[the completed Lean audit](../3-formalized/q-iii-existing-findings-lean-completion.md).
 
-The repaired cutoff/augmentation scratch passed directly with standard axioms.
-The cutoff's canonical source-only audit also passed, and its card moved to
-`3-formalized`. The old antipodality route moved to `5-failed` with its
-formalized unique-extension survivor. All finite joint-index and actual
-unit-transport canonical checks have now passed; both cards are in
-`3-formalized`. The expanded augmentation scratch includes its singleton
-character hull, first-coefficient action and exact scalar Gram; their canonical
-source audit `79225` passed with standard axioms. Rank-one multiplicative signs,
-actual conjugation, the singleton/continuum kernel-family alternative, visible
-pole orders and boundary values, and all thirteen reset-origin boundary leaves
-also passed their final canonical checks. The completion ledger records the
-remaining raw-origin/index, contraction, finite-hull and interpolation work.
+Completed proof cards are in `3-formalized`; retired routes retain their
+formalized positive survivors. Owned stale drafts and source-generation
+helpers have been removed. No Lean check remains active. The full
+classification remains open and the research goal remains paused.

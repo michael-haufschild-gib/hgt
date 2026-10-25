@@ -78,5 +78,5 @@ Its five audited targets are:
 All transitive axiom reports contain only `propext`, `Classical.choice`,
 `Quot.sound`. Every canonical leaf is wired into its programme umbrella.
 Final output: `/tmp/qiii-actual-kernel-family-canonical-final.log`.
-The [completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md)
+The [completion ledger](q-iii-existing-findings-lean-completion.md)
 tracks the remaining, separate formalization batches.

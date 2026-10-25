@@ -184,7 +184,7 @@ support loses multiplicity; moving parameters can have growing boundary cost.
 The origin-boundary leaves, raw-origin convergence, boundary-index corollaries,
 vanishing-relative-energy perturbation, complete cofactor contractions, numeric operator order and finite-hull approximation
 passed canonical Lean checks and standard-axiom audits. The
-[completion ledger](../../../docs/drafts/pipeline/1-in-progress/q-iii-existing-findings-lean-completion.md)
+[completion ledger](../../../docs/drafts/pipeline/3-formalized/q-iii-existing-findings-lean-completion.md)
 records each completed audit.
 
 ### Countermodels (Gram laws do not classify the source)

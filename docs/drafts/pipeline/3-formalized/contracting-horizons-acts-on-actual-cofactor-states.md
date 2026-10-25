@@ -92,7 +92,7 @@ individually. Every transitive axiom report contains only `propext`,
 numeric operator order `42266`, generic closed range `78185`, actual closed
 range `83434`, quotient index loss `60486`, and rank-one invariance `84026`.
 The earlier five canonical audits and all output records are in
-[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
+[the completion ledger](q-iii-existing-findings-lean-completion.md).
 
 `IncompleteDilationFibresHaveBoundedPairingCost` contains the exact terminal
 fibre and its mixed bound. `ContractingHorizonsProducesActualCofactorLimits`
