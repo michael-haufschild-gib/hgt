@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Verification:** Direct leaf checks and transitive axiom audits passed for the amplitude equivalence, matrix converse, convergence dichotomy, and mutual exclusion of its alternatives.
-- **Source:** ../2-fully-proven/vaughan-subcritical-gram-limit-classification.md
+- **Source:** vaughan-subcritical-gram-limit-classification.md
 - **Statement:** With positive cutoffs and a divergent horizon, the normalized subcritical centered Gram tends to zero exactly when the cutoff product diverges.
 
 ## Statement

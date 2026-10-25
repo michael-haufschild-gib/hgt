@@ -190,8 +190,8 @@ limits, the exact ray of limit matrices, and its ranks remain to formalize.
 
 ## Relation to subcritical limit classification
 
-The dependency-closed paper
-`vaughan-subcritical-gram-limit-classification.md` identifies the normalized
+The Lean-verified classification
+`../3-formalized/vaughan-subcritical-gram-limit-classification.md` identifies the normalized
 subcritical limit set as a countably infinite compact family, discrete away from
 zero. Positive nonzero limits there require an eventually fixed harmonic amplitude
 and bounded cutoffs. At half damping, the additional factor `J(T)` amplifies

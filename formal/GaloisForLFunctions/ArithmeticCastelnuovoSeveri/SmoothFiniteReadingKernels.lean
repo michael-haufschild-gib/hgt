@@ -73,7 +73,8 @@ theorem exists_nonzero_smooth_realTestAt_in_ker {r : ℝ} (hr : 0 < r)
     have hsum : ContDiff ℝ (⊤ : ℕ∞) (∑ i, c i • v i) := by
       rw [he]
       exact ContDiff.sum fun i _ => (hvd i).const_smul (c i)
-    simpa only [B, vTest, Submodule.coe_sum, Submodule.coe_smul] using hsum
+    change ContDiff ℝ (⊤ : ℕ∞) (∑ i, c i • vTest i).1.1
+    simpa only [vTest, Submodule.coe_sum, Submodule.coe_smul] using hsum
   refine ⟨B c, ?_, hBc, hcker⟩
   intro h0
   have hf0 : ∑ i, c i • v i = 0 := by
@@ -164,7 +165,3 @@ theorem exists_smooth_realTestAt_unit_mass_in_ker_weilPair_gt {r : ℝ} (hr : 0 
     nlinarith only [hscaled]
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_nonzero_smooth_realTestAt_in_ker
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_smooth_realTestAt_in_ker_weilPair_gt_mul_integral_sq
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_smooth_realTestAt_unit_mass_in_ker_weilPair_gt

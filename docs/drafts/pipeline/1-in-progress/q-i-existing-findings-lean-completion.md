@@ -28,9 +28,9 @@ Lean module names below are relative to `GaloisForLFunctions/`; BVI denotes
 | Existing paper card | Required Lean coverage |
 | --- | --- |
 | `uniform-second-scale-vaughan-gram-at-all-cutoffs.md` | BVI `PronicGramErrorsAroundASmoothRankOneTerm`, `UniformVaughanGramsFollowTheirSmoothRankOneTerm`, `VaughanPacketGramIdentities`, `UniformLogarithmicLawsForVaughanSuperpositions`; common floor-sum corollaries in `UniformLogarithmicCancellationInMobiusFloorSums`; the quantitative Mertens-to-convolution gain below `η/(2+η)` in `UniformVaughanPowerBoundsAreFixedStrips`. All-row logarithmic remainders and the finite Gram comparison are already checked. |
-| `vaughan-subcritical-gram-limit-classification.md` | BVI `TheCompactArithmeticAmplitudesOfVaughanGrams`, `TheSubcriticalVaughanGramLimitSet`, `TheOnlyAccumulationOfVaughanAmplitudesIsZero`, `TheRanksOfSubcriticalVaughanLimits`, `TheTopologyOfSubcriticalVaughanGramLimits`. The last leaf supplies exact matrix-family topology, beyond the scalar amplitude statements. |
+| [vaughan-subcritical-gram-limit-classification.md](../3-formalized/vaughan-subcritical-gram-limit-classification.md) — COMPLETE | All 39 targets in the five arithmetic-amplitude, classification, scalar-topology, matrix-rank, and matrix-topology leaves passed final direct checks and standard-axiom audits. Includes exact attainment and damping independence. |
 | [positive-vaughan-cutoff-escape-is-zero-gram-limit.md](../3-formalized/positive-vaughan-cutoff-escape-is-zero-gram-limit.md) — COMPLETE | Exact amplitude and matrix escape equivalences, finite-fiber rigidity, convergence dichotomy, positive-cutoff attainment, and mutually exclusive alternatives. All supporting leaf checks and axiom audits passed. |
-| `vaughan-relative-gram-and-harmonic-denominators.md` | RHTower `FiniteMobiusHarmonicSumsHaveExplicitLowerBounds`; BVI `VaughanGramsAtTheirActualHarmonicAmplitude`. |
+| [vaughan-relative-gram-and-harmonic-denominators.md](../3-formalized/vaughan-relative-gram-and-harmonic-denominators.md) — COMPLETE | All ten arithmetic and relative-Gram targets passed final direct checks and standard-axiom audits. Includes calibrated horizons for every positive cutoff schedule and the simultaneous zero/relative-rank-one corollary. |
 | `uniform-vaughan-convolution-stretched-exponential-rate.md`; related existing stage-1 [factorial criterion](vaughan-factorial-order-one-is-a-fixed-strip.md) | BVI `UniformStretchedExponentialCancellationInTheVaughanConvolution`; HTGeometry `FactorialLogarithmicBoundsArePowerBounds`; BVI `FactorialOrderOneInTheVaughanConvolutionIsAPowerSaving`. |
 | `uniform-vaughan-residual-power-rates-are-fixed-strips.md` | BVI `TheExtremeVaughanCutoffReadsItsHarmonicSum`, `PowerCancellationSurvivesTheDampedFloorTransform`, `FixedStripsControlAllVaughanFluctuationReceivers`, `UniformVaughanResidualPowerRatesAreFixedStrips`, `UniformVaughanPowerBoundsAreFixedStrips`; RHTower `MertensPowerBoundsControlMobiusHarmonicSums`. |
 | `the-centred-vaughan-pole-has-positive-finite-energy.md` | BVI `TheCentredVaughanPoleHasPositiveFiniteEnergy`, including the eventual faster-power obstruction. |
@@ -85,6 +85,19 @@ scratch was removed and the exact escape card moved to stage 3. The four matrix
 rank targets also passed corrected producing and final direct checks, with
 standard axioms only. `TheRanksOfSubcriticalVaughanLimits.lean` is wired and its
 scratch removed: zero amplitude has rank zero; every positive amplitude has rank one.
+All nine matrix-topology targets passed their corrected final direct check,
+with standard axioms only. `TheTopologyOfSubcriticalVaughanGramLimits.lean`
+is wired and its scratch removed. The complete 39-target subcritical card is
+now in stage 3, including matrix compactness, countable infinitude, unique zero
+accumulation, exact attainment, and normalized damping independence.
+The three arithmetic targets in `RHTower/FiniteMobiusHarmonicSumsHaveExplicitLowerBounds.lean`
+also passed corrected producing and final direct checks, with standard axioms
+only. The module is wired and its scratch removed. Common-denominator clearing
+gives `|H_N|≥1/D`, and the factorial specialization gives `|H_N|≥1/N!` for positive N.
+All seven targets in `VaughanGramsAtTheirActualHarmonicAmplitude.lean` passed
+their corrected final direct check, with standard axioms only. The module is
+wired and its scratch removed; the complete ten-target relative-Gram card is
+in stage 3.
 All other remaining leaves named in the table are unchecked drafts. Dependencies and
 live compiler handles are recorded in `/tmp/QIVerificationState.txt`; the
 complete module queue is `/tmp/QILeanCompletionQueue.md`.

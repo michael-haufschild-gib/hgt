@@ -1,9 +1,9 @@
 # Relative Vaughan Grams and finite harmonic denominators
 
 - **ID:** vaughan-relative-gram-and-harmonic-denominators
-- **Stage:** 2-fully-proven
-- **Type:** CLAIM (Lean verification pending)
-- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Verification:** All ten public targets passed final direct Lean checks and transitive axiom audits, with only standard axioms.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
 - **Statement:** Dividing the centered Gram by its actual harmonic amplitude gives a universal rank-one limit whenever its explicit factorial error vanishes; every positive cutoff schedule admits divergent horizons realizing that limit.
 
@@ -34,19 +34,21 @@ Thus any positive cutoff schedule with `(U!V!)²/(log T)^q→0` for some fixed
 statement about the chosen schedule, not an assumed analytic cancellation
 estimate. The horizon realization below applies to every positive cutoff schedule.
 
-## Audit and status
+## Source audit
 
 The corpus search for rational harmonic lower bounds found the exact
 terminal-prime valuation and nonvanishing theorem in
 `FiniteMobiusHarmonicSumsNeverVanish.lean`, read in full. It found no existing
-factorial lower bound or relative moving Vaughan Gram law. No mathlib name
-or new Lean theorem has yet been verified for the denominator step.
+factorial lower bound or relative moving Vaughan Gram law. The factorial
+divisibility, positivity, and cast APIs passed dedicated Lean scratch checks.
+All three arithmetic lower-bound targets passed corrected producing and final
+direct checks, with only standard transitive axioms.
 
-The uniform absolute Gram estimate is dependency-closed on paper but still
-under Lean verification. The relative law does not give a fixed
+The uniform absolute Gram estimate has passed its direct Lean checks and
+transitive axiom audits. The relative law does not give a fixed
 power saving at the square-root band and does not resolve Q-I.
 
-## Dependency-closed paper proof
+## Proof mechanism
 
 For any positive common multiple `D` of `1,...,N`,
 
@@ -81,21 +83,33 @@ actual harmonic-amplitude normalization along the same horizons.
 The conclusion concerns the selectable horizon scale. It imposes no
 estimate at the square-root cutoff relation `H≈UV`.
 
-Three arithmetic targets are drafted in `/tmp/QIHarmonicDenominatorTools.lean`
-(integerization, common-multiple lower bound, factorial specialization).
-They remain uncompiled. The broad and BVI-focused novelty searches found
-the fixed-cutoff normalized Gram, moving uncentered Gram, product-horizon
-zero density, and reciprocal mixed-remainder criterion, but no actual
-harmonic-amplitude relative law or factorial calibration. Those source
-theorems have already been read and checked in the present work. The new
-claim is this precise refinement; no external novelty claim is made.
+## Lean verification
 
-Seven further targets are drafted in `/tmp/QIRelativeVaughanGramTools.lean`:
-the harmonic factorial bridge, reciprocal-amplitude bound, uniform relative
-error, its schedule limit, calibrated horizon existence, and unconditional
-relative-limit realization for every positive cutoff schedule, and the stated
-simultaneous zero/relative-rank-one corollary along the same horizons. They remain
-uncompiled. Their planned imports also justify producing the arithmetic
-lower-bound module when its checks pass.
-The simultaneous corollary also imports the subcritical matrix-rank leaf;
-its rank assertion must pass Lean rather than remain an informal description.
+The arithmetic module is
+[FiniteMobiusHarmonicSumsHaveExplicitLowerBounds](../../../../formal/GaloisForLFunctions/RHTower/FiniteMobiusHarmonicSumsHaveExplicitLowerBounds.lean),
+in namespace `RHTower`. The relative Gram module is
+[VaughanGramsAtTheirActualHarmonicAmplitude](../../../../formal/GaloisForLFunctions/BezoutValuationIncidence/VaughanGramsAtTheirActualHarmonicAmplitude.lean),
+in namespace `GaloisForLFunctions.BezoutValuationIncidence`.
+
+| Checked declaration | Exact conclusion |
+| --- | --- |
+| `exists_int_mul_sum_moebius_div` | A common multiple clears every harmonic denominator. |
+| `one_div_le_abs_sum_moebius_div_of_common_multiple` | `|H_N|≥1/D` at positive cutoffs and positive common multiples. |
+| `one_div_factorial_le_abs_sum_moebius_div` | The explicit arithmetic bound `|H_N|≥1/N!`. |
+| `one_div_factorial_le_abs_deningerHarmonicPartial` | The same factorial bound in the Vaughan harmonic notation. |
+| `pmVaughanSmoothAmplitude_pos_and_inv_le_factorial` | Positive amplitude and reciprocal bound `(U!V!)²`. |
+| `exists_uniform_pmPronicVaughanCentredGram_relative_log_rate` | Uniform relative Gram error with explicit factorial cost. |
+| `tendsto_pmPronicVaughanCentredGram_relative_of_factorial_log_rate` | The relative limit whenever the stated schedule ratio vanishes. |
+| `exists_horizon_pmVaughan_factorial_log_rate` | Divergent horizons paying the factorial cost for any two cutoff schedules. |
+| `exists_horizon_pmPronicVaughanCentredGram_relative_limit` | Relative-limit realization for every positive cutoff schedule. |
+| `exists_horizon_vaughan_zero_and_relative_rank_one_limits` | Zero ordinary limit and rank-one relative limit along the same horizons. |
+
+Both leaves passed direct `lake --old env lean` checks from `formal/`.
+All ten `#print axioms` reports contain only `propext`, `Classical.choice`,
+and `Quot.sound`. The arithmetic dependency also passed its producing check;
+the terminal relative module required no olean. Both umbrella imports are
+present and the owned proof scratches were removed.
+
+The corpus audit found fixed-cutoff and moving Gram laws, but no matching
+relative harmonic-amplitude law or factorial horizon calibration. No external
+novelty claim is made. No fixed-strip width or full Q-I conclusion follows.

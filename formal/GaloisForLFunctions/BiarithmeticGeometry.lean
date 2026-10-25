@@ -57,6 +57,7 @@ import GaloisForLFunctions.BiarithmeticGeometry.CriticalGoldenClosure
 import GaloisForLFunctions.BiarithmeticGeometry.PowerTailCoefficients
 import GaloisForLFunctions.BiarithmeticGeometry.PowerTailIndependence
 import GaloisForLFunctions.BiarithmeticGeometry.PowerTailWienerFamily
+import GaloisForLFunctions.BiarithmeticGeometry.CriticalGoldenContinuumDefect
 
 /-!
 # Biarithmetic Geometry

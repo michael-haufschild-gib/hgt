@@ -54,7 +54,7 @@ theorem no_continuous_faithful_meyer_class_reading
 
 /-- Actual global Xi division makes the compact-open quotient Hausdorff. -/
 theorem meyerCompactOpenXiCohomology_t2Space : T2Space DeningerArithmeticCompactOpenH1 := by
-  letI : IsClosed (deningerCompactOpenXiRange.toAddSubgroup : Set DeningerCompactOpenEntire) :=
+  letI : IsClosed (deningerCompactOpenXiRange : Set DeningerCompactOpenEntire) :=
     deningerArithmeticXiRangeClosed
   infer_instance
 

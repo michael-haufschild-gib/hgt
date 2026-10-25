@@ -41,6 +41,10 @@ active and prepared check wrappers were deleted. Do not recreate or run wrappers
 check loops, or batch scripts. Run each `lake --old env lean ...` command directly,
 from `formal/`, one foreground Lean process at a time.
 
+### Verification history
+
+Later entries and the queue table supersede earlier pending or failed states.
+
 `FaithfulPositiveMeyerDegrees.lean` passed direct check **90918**, including all six
 transitive axiom audits with only `propext`, `Classical.choice`, and `Quot.sound`.
 The local binder-substitution error from **6529** is fixed. Temporary prints are
@@ -318,6 +322,30 @@ explicit tactic introductions. Downstream errors involved this failed
 definition; its failed audit output is not a certificate. The independent
 high simple-critical trace-one witness audit was standard.
 
+Bounded-surface recheck **42119** cleared the submodule errors. Only the
+zeroth-jet/Mellin normalization remained in the multiple-critical witness;
+explicitly reduced the local cycle and rewrote the raw jet as its zeroth
+iterated derivative. Direct check **7171** then passed with only the
+standard three axioms in all thirteen audits. The module is cleaned, wired,
+documented and its card is stage 3. Corrected quotient-topology API recheck
+**91370** passed, including the local `IsClosed` instance, norm approximation,
+restriction constructor and three standard dependency audits. The verified
+submodule-as-set closedness instance now replaces the failed additive-subgroup
+coercion in actual `OriginHilbertCohomologyObstruction`.
+The scratch API file is removed. The bounded-surface olean was confirmed missing;
+direct build **10578** passed for actual `BoundedMeyerFaithfulReserve`.
+Its olean now exists; never rebuild it. Bounded-faithful actual-file check
+**42102** passed with only the standard three axioms in all thirteen endpoint
+audits. The module is cleaned, wired and documented, and its card is stage 3.
+All bounded-orbit extensions are now formalized. Direct aperture-cone geometry
+check **44990** passed with the standard three axioms in all four audits.
+The module is cleaned, wired and documented in the existing stage-3 aperture
+majorant card. Smoothness API check **73466** passed both the differentiability
+order coercion and the finite function-sum argument. Actual smooth-kernel
+check **59070** failed only at transport of smoothness through the constructed
+linear map. Its application is now explicitly reduced to the subtype sum before
+the two coercions are simplified. The failed axiom output is not a certificate.
+
 ### Remaining verification queue
 
 All modules below are actual files under `ArithmeticCastelnuovoSeveri/`.
@@ -325,21 +353,21 @@ Rows explicitly marked certified have passed; all other rows remain unverified.
 
 | Module | State |
 |---|---|
-| `ArithmeticMajorantConeGeometry` | Pointedness correction awaits direct recheck |
-| `SmoothFiniteReadingKernels` | Corrected smoothness API probe, then actual recheck |
+| `ArithmeticMajorantConeGeometry` | CERTIFIED: direct 44990, four standard audits; cleaned, wired and documented |
+| `SmoothFiniteReadingKernels` | API probe 73466 passed; actual 59070 exposed one linear-map coercion, now explicitly reduced; direct recheck 42458 running with three audits |
 | `ArithmeticSharpAndTheHilbertAdjoint` | CERTIFIED: direct 96392, three standard axiom audits, missing-olean build 95594 passed |
 | `FaithfulHilbertSchmidtSourceReserves` | CERTIFIED: direct 4030, fifteen standard audits, missing-olean build 80282 passed |
 | `MeyerBoundedCenteredOrbits` | CERTIFIED: direct 20136, six standard audits, missing-olean build 75806 passed |
 | `MeyerCriticalTopAlgebra` | CERTIFIED: direct 71562, fifteen standard audits, missing-olean build 39547 passed |
-| `BoundedMeyerSourceSurface` | Direct 42119 cleared the binder cascade; only zeroth-jet/Mellin normalization remained, now explicitly rewritten; thirteen audits await recheck |
+| `BoundedMeyerSourceSurface` | CERTIFIED: direct 7171, thirteen standard audits, missing-olean build 10578 passed; cleaned, wired, documented; card moved to stage 3 |
 | `MeyerHilbertReserveFlowRigidity` | CERTIFIED: direct 35848, seven standard audits, missing-olean build 31048 passed; cleaned, wired, documented; bounded-orbit card moved to stage 3 |
-| `BoundedMeyerFaithfulReserve` | Thirteen endpoints; includes explicit positive adjoint-defect witness and exact linear-degree representation |
+| `BoundedMeyerFaithfulReserve` | CERTIFIED: direct 42102, thirteen standard audits; cleaned, wired, documented; card moved to stage 3 |
 | `MeyerFiniteJetAlgebra` | Seven endpoints; requires missing sharp-algebra olean |
 | `MeyerFiniteProjectorAlgebra` | Four endpoints; requires finite-jet olean |
 | `PositiveMeyerDegreesSeeReducedCriticalJets` | Six endpoints, including finite-weight converse |
 | `MeyerAlgebraicCharacters` | Eight endpoints; point-reading normalization corrected |
 | `PoissonBoundariesAreDenseInOriginMass` | Seven endpoints; requires missing HT translation-cyclicity olean |
-| `OriginHilbertCohomologyObstruction` | Four endpoints; corrected closedness instance awaits API check |
+| `OriginHilbertCohomologyObstruction` | Four endpoints; closedness instance corrected and verified by API check 91370, awaiting actual-file check |
 | `InvariantOriginMassDoesNotBoundTheWeilTrace` | Seven endpoints; requires smooth-kernel olean |
 | `MeyerHermitianDegreePart` | Seven endpoints; requires finite positive-degree olean |
 | `EveryFiniteMeyerJetGraphIsDenseInOriginHilbertSpace` | Ten endpoints; requires boundary-density olean |
@@ -1179,10 +1207,11 @@ API scratch check is `/tmp/QIIRosatiOwnerNames.lean`; the corrected Rosati leaf
 awaits retry. The serial audit now runs the independent radical and unit-mass leaves
 before the remaining scratch checks. No Rosati axiom list was clean in the failed run.
 
-`/tmp/QIIArithmeticMajorantConeGeometryDraft.lean` adds the exact aperture-majorant
+`ArithmeticMajorantConeGeometry.lean` formalizes the exact aperture-majorant
 bilinear form and its zero, addition, nonnegative scaling, convexity, pointedness,
-and generation corollaries. It is unrun. The generic cone scratch and global
-majorant draft now also state convexity explicitly.
+and generation corollaries. Direct actual-file check **44990** and four standard
+axiom audits passed. Generic quadratic-cone and global-majorant convexity are
+also formalized.
 
 Broader-corpus audit: `DeningerMeyerConvolutionQuotient.lean` already supplies the
 actual descended convolution product, commutativity, and associativity. Reuse this
@@ -1576,7 +1605,7 @@ source intersection surface is now checking in session 15986.
 
 The bounded-source restricted surface has a dependency-closed paper proof and
 complete unrun draft `/tmp/QIIBoundedMeyerSourceSurfaceDraft.lean`. Its card moved
-to `../2-fully-proven/bounded-meyer-source-surface-has-riemann-roch-and-bezout.md`.
+to `../3-formalized/bounded-meyer-source-surface-has-riemann-roch-and-bezout.md`.
 It proves actual restricted RR/Bézout/ampleness; numerical/principal equality
 and pointedness exactly under critical simplicity; full-carrier coverage
 exactly under RH plus simplicity; cofinal source witnesses of trace one from
@@ -1660,7 +1689,7 @@ requiring all selected points critical. The original class-level zero-product
 statement remains specific to reflection-stable/critical packets.
 
 A new complete paper survivor is
-`../2-fully-proven/faithful-reserves-on-the-bounded-meyer-surface.md`: on the
+`../3-formalized/faithful-reserves-on-the-bounded-meyer-surface.md`: on the
 bounded carrier, faithful-reserve RR and equality with the ordinary degree
 cone are exactly critical simplicity, while reserve-flow invariance always
 holds there. No multiple critical zero is claimed to exist. It prevents

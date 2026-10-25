@@ -434,7 +434,18 @@ the unique scalar amplitude accumulation point; positive amplitudes are isolated
 and the two convergence alternatives are mutually exclusive
 (`TheOnlyAccumulationOfVaughanAmplitudesIsZero`). Exact matrix ranks are checked:
 zero at zero amplitude and one at every positive amplitude
-(`TheRanksOfSubcriticalVaughanLimits`). Matrix-family topology remains under verification.
+(`TheRanksOfSubcriticalVaughanLimits`). The actual matrix family is compact and
+countably infinite with unique zero accumulation; its normalized form is
+independent of damping (`TheTopologyOfSubcriticalVaughanGramLimits`). All 39
+targets in the complete subcritical classification passed final direct checks.
+Finite denominator clearing also gives `|H_N|≥1/D` for every positive common
+multiple of `1,...,N`, hence `|H_N|≥1/N!` for positive N; all three arithmetic
+targets passed final checks (`FiniteMobiusHarmonicSumsHaveExplicitLowerBounds`).
+The relative Gram error is bounded by `C_(ε,q)(U!V!)²/(log H)^q`. Every positive
+cutoff schedule admits divergent horizons making this error vanish. With
+`U=V=n+1`, the same horizons give zero ordinary normalized limit and a rank-one
+relative limit (`VaughanGramsAtTheirActualHarmonicAmplitude`); all seven targets
+passed final direct checks.
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?
@@ -479,6 +490,8 @@ the full source energy. At every positive aperture, the explicit Chebyshev major
 an effective class of ample degree zero is actually zero. Its strictly positive extra
 reserve makes RR fail (`ArithmeticMajorantsSupplyBezout`). The remaining problem is
 simultaneous RR and Bézout, not independent Bézout alone.
+These same aperture cones are convex, pointed and generating, with closure
+under addition and nonnegative scaling (`ArithmeticMajorantConeGeometry`).
 
 The precise quadratic price is now certified: threshold `δ + κM` has original-pairing
 Bézout exactly when `δ + (κ/2)M` is nonnegative, for a nonnegative fibre-null quadratic
@@ -569,6 +582,22 @@ invariant there, equivalently when the source belongs to this carrier
 (`MeyerHilbertReserveFlowRigidity`). Global reserve invariance is exactly
 the faithful cone's RR condition, hence RH plus simplicity.
 
+Restricting the original pairing and both fibres to bounded source orbits
+gives RR, Bézout, ampleness and additive closure unconditionally
+(`BoundedMeyerSourceSurface`). Its numerical radical and cone lineality
+are exactly zero pole degrees and zero Xi values. Equality with principal
+cycles is equivalent to simplicity of critical zeros alone. Actual sources
+of trace one occur above every height; coverage of the full source surface
+still requires RH plus simplicity.
+On this restricted carrier the faithful reserve remains invariant, with
+Bézout and ampleness unconditionally (`BoundedMeyerFaithfulReserve`). Its
+RR axiom, adjoint compatibility, existence of a faithful positive degree,
+and exact linear-degree representation of the reserve are equivalent to
+critical simplicity alone. At any multiple critical point an explicit
+isometric nonprincipal source has zero ordinary trace and strictly positive
+reserve and squared adjoint defect. No multiple critical zero is assumed
+or proved to exist.
+
 Centered flow preserves the literal mixed arithmetic sharp product, so every
 reading of that product is invariant. A nonnegative invariant majorant controlling
 the original mixed trace exists exactly under RH
@@ -639,8 +668,8 @@ not supply purity.
 
 - A1–A2 now have unconditional proofs for every actual common Gram limit,
   including infinite-support paid Wiener kernels. The universal construction
-  and transitive axiom audits passed; the generalized source layers are under
-  leaf verification. See `TheCofactorLimitCarriesACyclicDilationAction`,
+  and all corresponding canonical source checks and transitive axiom audits
+  passed. See `TheCofactorLimitCarriesACyclicDilationAction`,
   `TheCofactorLimitIsAWienerModule`, and
   `PaidWienerKernelsAnnihilateTheCofactorLimit` in `ArithmeticDefectRigidity/`.
 - White noise **does not violate Gram antipodality**. Every positive kernel
@@ -689,9 +718,25 @@ not supply purity.
   horizon transport and its stronger module consequences remain pending.
 - Changing the cyclic vector by a critical Wiener unit gives a unitary
   comparison intertwining the full Wiener action. It preserves all operator
-  norms, the annihilator, operator hull and dimension. This abstract transport
-  passed final Lean checks; its normalization for actual convolved source
-  rows is a separate verification.
+  norms, the annihilator, operator hull and dimension. Actual real unit
+  convolutions now have the same transport after own-energy normalization:
+  the correction vanishes and the source-energy ratio has a positive limit.
+  Escape is preserved, including for the Möbius–Liouville unit relation.
+  These statements passed canonical Lean checks with standard axioms.
+- Finite actual annihilator-quotient dimension is the sum of joint generalized
+  character-space multiplicities, indexed by normalized Bohr representatives.
+  Every occurring multiplicity is positive. The exact counting theorem passed
+  canonical Lean checks; it does not identify these characters with zeta zeros.
+- Numeric horizon order has a sharp positive consequence: a zero cofactor at
+  `p` forces dimension at most `p-1`. It still does not select finite half-plane
+  points from abstract rank-one data. Augmentation satisfies every packet
+  contraction and numeric diagonal order, but its singleton hull lies outside
+  all finite half-plane points. Countermodel and cutoff survivor passed
+  canonical Lean checks; no actual Möbius realization of augmentation is asserted.
+- Every actual rank-one character is augmentation or a real power times a
+  multiplicative sign: `chi(p)=eta(p)*p^(-s)`, `s>=1/2`, `eta(p)` in `{−1,1}`.
+  The full factorization passed canonical Lean checks with standard axioms.
+  It leaves the signs unselected and gives no arithmetic zero identification.
 
 The open classification is still the arithmetic identification of the actual
 module hull with translated zero data, including Kronecker-curve generation

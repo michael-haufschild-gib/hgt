@@ -1,8 +1,8 @@
 # Rank-one cofactor moduli are Archimedean
 
 - **ID:** rank-one-cofactor-moduli-are-archimedean
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean completion pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
 - **Statement:** Every one-dimensional actual cofactor module has either the
   augmentation character or cofactor character magnitudes `n^(-s)` for one
@@ -14,13 +14,13 @@ In one complex dimension the commuting unital action is scalar. With the
 unit cyclic vector, K(n,n)=|chi(n)|^2 and chi is completely multiplicative.
 The new actual energy-ratio invariant makes r(n)=n*|chi(n)|^2 nonnegative,
 completely multiplicative and nonincreasing in the ordinary integer order.
-The conjectured elementary classification is: either r(n)=0 for all n>=2,
+The elementary classification is: either r(n)=0 for all n>=2,
 or r(n)=n^(-alpha) for alpha>=0. Comparison of integer powers through their
-logarithms should force the latter form. If any r(n)=0, monotonicity and
+logarithms forces the latter form. If any r(n)=0, monotonicity and
 multiplicativity force r(2)=0 and then every positive integer above one.
 
-The claim concerns magnitudes only. It does not put the full complex
-character on the Kronecker curve, control signs/phases, or identify s with
+The character is real and its signs are multiplicative. The theorem does
+not select those signs, put the character on the Kronecker curve, or identify s with
 a zeta real part. A global polynomial energy upper bound alone does not
 justify a bound on local subsequence escape exponents; do not add one.
 
@@ -29,7 +29,7 @@ justify a bound on local subsequence escape exponents; do not add one.
 - [x] Corpus search for the monotone multiplicative classification.
 - [x] Exact scalar extraction from actual rank one on paper.
 - [x] Dependency-closed paper proof.
-- [ ] Lean verification and transitive axioms.
+- [x] Lean verification and transitive axioms.
 
 ## Dependency-closed paper proof
 
@@ -68,9 +68,10 @@ with standard axioms. Their canonical leaves are installed and wired:
 `HTGeometry/MonotoneMultiplicativeProfilesArePowers` and
 `ArithmeticDefectRigidity/RankOneCofactorMagnitudesArePowers`. Both final
 canonical source audits passed in session `90975`, with standard axioms.
-The explicit sign-factorization
-consequence is drafted in `/tmp/qiii-rank-one-sign-character-check.lean`:
+`ArithmeticDefectRigidity/RankOneCofactorSignsAreMultiplicative` proves
+`ActualCofactorLimit.rankOneCharacter_eq_augmentation_or_signed_rpow`:
 the nonaugmentation branch has a multiplicative sign η valued in {−1,1},
-with χ(p)=η(p)*p^(-s). Its direct check and final canonical check remain.
-The required rank-one dependency olean exists. No sign-factorization completion
-is claimed before those checks.
+with χ(p)=η(p)*p^(-s). Scratch check `45147` and canonical source-only audit
+`87736` passed. The canonical leaf is wired into the programme umbrella;
+its transitive axioms are only `propext`, `Classical.choice`, `Quot.sound`.
+Final audit output: `/tmp/qiii-rank-one-sign-canonical-final.log`.

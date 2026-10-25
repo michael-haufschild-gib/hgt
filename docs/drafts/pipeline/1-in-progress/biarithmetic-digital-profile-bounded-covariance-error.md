@@ -196,3 +196,15 @@ limits, their normalized ratio, and diagonal energy escape. Exact positive-cell
 reindexing also identifies the programme's `normalizedSourceGram`, giving its
 full-horizon critical limit. Seven audits are drafted. Its bounded-error
 dependencies remain unchecked.
+
+Strict source comparison is an outstanding Lean obligation: divide the
+balanced covariance error by the expanding geometric power. Both normalized
+numerator and diagonal approach their varying annular main terms uniformly
+in the integer horizon. The annular diagonal has a positive fixed lower
+bound, so its source approximation eventually has half that bound. A direct
+quotient-difference estimate then makes the actual covariance ratio minus
+the balanced phase kernel tend to zero. This does not assume convergence
+of the horizon phases.
+
+The direct Lean draft is `/tmp/BiarithmeticDigitStrictPhaseComparison.lean`;
+its four audits and its annular dependencies remain unchecked.

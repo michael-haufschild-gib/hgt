@@ -18,7 +18,7 @@ theorem exists_int_mul_sum_moebius_div (N D : ℕ)
     (hD : ∀ d ∈ Icc 1 N, d ∣ D) :
     ∃ z : ℤ, (D : ℝ) * (∑ d ∈ Icc 1 N, (moebius d : ℝ) / d) = z := by
   refine ⟨∑ d ∈ Icc 1 N, moebius d * (D / d : ℕ), ?_⟩
-  push_cast
+  simp only [Int.cast_sum, Int.cast_mul, Int.cast_natCast]
   rw [mul_sum]
   apply sum_congr rfl
   intro d hd

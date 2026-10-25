@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticDefectRigidity.OriginStepsHaveTheMaxKernel
 import GaloisForLFunctions.ArithmeticOrientationTheory.TheMaxKernelWienerMapIsFaithful
 import GaloisForLFunctions.ArithmeticOrientationTheory.CriticalKernelActionsExtendToTheWienerAlgebra
+import GaloisForLFunctions.HTGeometry.RealPositiveKernelComplexification
 
 /-!
 # The origin-step module has the full Bohr hull

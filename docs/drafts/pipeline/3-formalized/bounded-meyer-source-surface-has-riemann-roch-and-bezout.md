@@ -1,9 +1,9 @@
 # The bounded Meyer source surface has Riemann–Roch and Bézout
 
 - **ID:** bounded-meyer-source-surface-has-riemann-roch-and-bezout
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean verification pending)
-- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Status:** FORMALIZED. Direct actual-file check 7171 and all thirteen endpoint audits passed with only `propext`, `Classical.choice`, and `Quot.sound`.
 - **Source:** Q-II; bounded full-Hasse source orbit and actual source trace.
 - **Statement:** Restricting the genuine Meyer surface to bounded centered source orbits gives unconditional RR, Bézout, and ampleness; principal and numerical equivalence agree there exactly when every critical Xi zero is simple.
 
@@ -14,7 +14,7 @@ Hilbert–Schmidt convolution orbit. The certified orbit theorem identifies thes
 critical highest jets. This is a restriction of the genuine source carrier;
 it does not assert the original all-source Q-II endpoint.
 
-## Proof argument (Lean verification pending)
+## Formalized argument
 
 The carrier is a complex linear subspace. Its ordinary sharp-square trace is
 a sum of nonnegative critical value squares: off-line values vanish. Restrict
@@ -48,8 +48,8 @@ The paper argument uses the certified bounded-orbit classification,
 trace-radical theorem, and positive-cone theorems. The generic direct
 restriction constructor passed its scratch check; this avoids an unrelated
 duplicate `PolarSurface.polarLift` declaration in the AOG import chain.
-The actual module still needs its direct check and thirteen axiom audits.
-Its older scratch copy is stale. External novelty unverified.
+The actual module passed its direct check and thirteen axiom audits.
+External novelty unverified.
 
 The simple-critical witness search found the unconditional theorem
 `RHTower.DeletionMixedRefinement.exists_high_simple_critical_xi` in
@@ -103,4 +103,20 @@ source has only its zeroth jet, belongs to W, and has self trace exactly one:
 critical reflection fixes the point, its multiplicity is one, and its source
 value is one. This gives cofinally many strictly positive source witnesses.
 
-Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/BoundedMeyerSourceSurface.lean`; unverified and unwired. Scratch draft retained until actual audit succeeds.
+Certified module: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/BoundedMeyerSourceSurface.lean`.
+Direct check **7171** passed. Temporary prints are removed; the module is
+wired and documented. Audited endpoints:
+
+- `meyerBoundedSurface_defect`
+- `meyerBoundedSurface_hodgeIndex`
+- `meyerBoundedDegreeSourceCone_eq_positiveCone`
+- `meyerBoundedDegreeSourceCone_riemannRoch`
+- `meyerBoundedDegreeSourceCone_bezout`
+- `meyerBoundedDegreeSourceCone_ample`
+- `meyerBoundedDegreeSourceCone_add_closed`
+- `meyerBoundedSurface_radical_iff`
+- `meyerBoundedDegreeSourceCone_lineality_iff`
+- `meyerBoundedSurface_radical_eq_principal_iff`
+- `meyerBoundedDegreeSourceCone_pointed_mod_principal_iff`
+- `meyerBoundedCycleSubmodule_eq_top_iff`
+- `exists_high_meyer_bounded_source_trace_one`

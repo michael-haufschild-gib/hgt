@@ -39,21 +39,21 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Augmentation countermodel and singleton character hull | Canonical source-only audit `79225` passed with standard axioms; countermodel complete |
 | Actual unit transport, Möbius/Liouville equivalence | All canonical source-only checks passed with standard axioms; card moved to `3-formalized` |
 | Finite joint spectral multiplicities and normalized Bohr representatives | All three canonical source-only checks passed with standard axioms; card moved to `3-formalized` |
-| Rank-one multiplicative signs | Scratch `45147` passed with standard axioms; canonical leaf installed/wired, final source audit running |
+| Rank-one multiplicative signs | Canonical audit `87736` passed with standard axioms; card in `3-formalized`, augmentation route retired with its checked positive survivors |
 | Visible interior pole orders, paid jets, critical boundary values, unit orbits | Canonical checks after successful combined scratch |
-| Reset moving origin, faithful step kernel and every positive boundary mass | Thirteen canonical leaves after successful combined scratch |
+| Reset moving origin, faithful step kernel and every positive boundary mass | Thirteen canonical leaves after successful combined scratch; prescribed-horizon extraction required olean now checking |
 | Raw moving origin, exclusion from actual zero-origin limits | Draft scratch after boundary dependencies |
 | Positive boundary modules have infinite dimension and continuum index | Draft scratch after boundary dependencies |
 | Exact incomplete dilation fibre and mixed C*D/p bound | Draft scratch; required by contraction bundle |
 | Actual horizon contraction, principal ideal quotient, full intertwining | Draft scratch after cutoff dependency |
 | Closed dilation range, index loss, matrix/operator horizon order | Draft scratch in contraction bundle |
 | Rank-one contraction fixes state | Draft scratch in contraction bundle |
-| Arbitrary commuting family has a common eigenvector | Draft scratch, then canonical placement/check |
+| Arbitrary commuting family has a common eigenvector | Final canonical audit `15948` passed with standard axioms; required olean exists |
 | Finite actual hull magnitudes and half-plane approximation | Draft scratch after operator order and generic eigenvector theorem |
 | Tied-torus and augmentation character limits | Draft scratch; refactor existing owner after verification |
 | Conjugation of actual source pairings, annihilator and hull | Draft scratch, then canonical placement/check |
 | Interior Wiener jets, mixed interpolation and paid quotient lower bounds | Base scratch, then full application and canonical checks |
-| Vanishing Gram steps, intermediate kernels, singleton/continuum alternative | Three draft stages, then canonical checks |
+| Vanishing Gram steps, intermediate kernels, singleton/continuum alternative | Generic crossing and actual Gram-step canonical audits passed; prescribed-horizon extraction checking, application remains |
 
 The square-root translation card contains completed origin-trace results plus
 later raw/reset-boundary consequences; close it only after the latter are
@@ -62,53 +62,53 @@ actual module spectra with arithmetic zeros, separate from the paid-ideal
 theorems being completed here. No complete actual escape classification is
 claimed.
 
+## Completed canonical audits
+
+Every audit below exited successfully with only standard axioms. Do not repeat
+unchanged checks. All required leaves are wired into their programme umbrellas.
+
+| Batch | Final source-only sessions | Required oleans |
+|---|---|---|
+| Zero-cofactor finite cutoff | `34006` | `25746` passed |
+| Joint characters, normalized Bohr characters, actual finite index | `27212`, `68534`, `49590` | `76210`, `35229`, `76428` passed |
+| Paid corrections, real unit convolutions, Möbius–Liouville transport | `78335`, `56886`, `94844` | Existing required oleans passed |
+| Augmentation countermodel, singleton hull, scalar Gram | `79225` | None needed |
+| Rank-one multiplicative signs | `87736` | None needed |
+| Arbitrary commuting-family common eigenvector | `15948` | `19547` passed |
+| Vanishing-step intermediate cluster values | `21506` | `98674` passed |
+| Actual normalized Gram steps | `86889` | `82801` passed |
+
+Recent final output files:
+`/tmp/qiii-augmentation-canonical-final.log`,
+`/tmp/qiii-rank-one-sign-canonical-final.log`,
+`/tmp/qiii-common-family-canonical-final.log`,
+`/tmp/qiii-intermediate-cluster-values-canonical-final.log`,
+`/tmp/qiii-cofactor-gram-steps-canonical-final.log`.
+
+The rank-one card is in `3-formalized`; the augmentation no-go is in `5-failed`
+with cutoff and full signed-power survivors checked. README and the Q-III
+correction in `opus.md` now record those completed results, actual unit
+transport and exact finite joint multiplicities.
+
 ## Active direct check
 
-Session `70868` exited successfully. Complete output is preserved in
-`/tmp/qiii-diagonal-cutoff-augmentation-retry-check.log`. The guarded text-only
-promoter installed and wired both leaves. Their final canonical checks remain.
-
-The required cutoff olean build, session `25746`, and final source-only audit,
-session `34006`, both passed with standard axioms. The cutoff leaf is complete.
-No owned Lean process remains from those sessions.
-
-Sessions `76210`, `35229`, and `76428` built the required joint-character,
-normalized-Bohr-character, and actual finite-index oleans successfully. Every
-printed target has standard axioms; the actual index leaf explicitly audits
-all seven main statements, including normalized counting and positivity.
-
-Sessions `27212` and `68534` passed the joint-character and normalized-Bohr
-final source-only audits. The output from actual finite-index session `35428`
-was lost during compaction and its process has exited; no success is inferred.
-Direct session `49590` passed the actual finite-index source-only check, with
-standard axioms for all seven printed statements. The finite-index batch is
-complete. Paid-correction final check `32327` exposed a misindented final
-rewrite in the nonnegative-energy corollary. The direct indentation repair
-passed in retry `78335`; both paid-correction statements have standard axioms.
-Paid corrections are complete. Real-convolution final source-only audit
-`56886` passed with standard axioms for all eight printed targets, including
-positive source-energy ratio and preservation of escape. Möbius–Liouville
-final source-only audit `94844` passed with standard axioms. The unit-transport
-batch is complete. Augmentation check `37698` passed the original countermodel
-again but rejected the added statements because unqualified `bohrCharacter`
-resolved to another declaration. The Wiener character is now explicitly
-qualified. Retry `11105` verified first-coefficient evaluation and the exact
-singleton hull with standard axioms. Its point-mass value rewrite failed,
-so the scalar Gram corollary is not yet verified. That value proof now uses
-the checked first-coefficient theorem and the literal `pointMassFn_apply`
-definition. Check `66531` was cancelled after source inspection caught its
-wrong zero-index guard; owned Lean PID `1832` was terminated and the session
-exited 143 before replacement. Output from corrected retry `10978` was lost
-at compaction; its process exited, so success is not inferred. Direct retry
-`21112` passed every target with standard axioms, including the scalar character
-Gram. The checked source was copied directly into its canonical leaf. Final
-source-only audit `79225` passed with standard axioms for all nine targets;
-output `/tmp/qiii-augmentation-canonical-final.log`. The augmentation leaf is
-complete. Rank-one sign scratch check `45147` passed with standard axioms,
-output `/tmp/qiii-rank-one-sign-character-check.log`. Its canonical leaf is
-installed and wired; final source-only audit is active, output
-`/tmp/qiii-rank-one-sign-canonical-final.log`.
-Exactly one owned Lean check is active.
+Actual Gram-step leaf is complete: final source-only check `86889` passed with
+standard axioms for both the quantitative bound and convergence.
+Prescribed-horizon build `32398` failed because the canonical split omitted the
+defining import for `ActualCofactorLimit`. Corpus search confirmed the structure
+in `TheCofactorLimitCarriesACyclicDilationAction`; that explicit import is now
+added. Source review found the same missing actual-limit dependency in
+`PositiveOriginMixturesAreFaithful`; it now has the same explicit import.
+`TheOriginStepModuleHasTheFullBohrHull` now explicitly imports
+`HTGeometry/RealPositiveKernelComplexification` for its real-to-complex
+positivity and packet comparison lemmas. These later leaves remain unchecked.
+No failed olean was produced. Exactly one
+required olean retry, session `34513`, is active from `formal/`:
+`ArithmeticDefectRigidity/CommonCofactorLimitsExistAlongPrescribedHorizons`.
+Output: `/tmp/qiii-common-horizons-olean-retry.log`. Its combined scratch passed
+previously; its own olean and final source-only check are still needed by the
+written kernel-family application and moving-origin developments.
+After its final audit, check `/tmp/qiii-actual-kernel-interpolation-check.lean`.
 
 ## Direct source work remaining
 
@@ -121,17 +121,14 @@ owner, add its umbrella import directly, and run the canonical check directly.
   `scaled_diagonal_mem_Icc`, the previously recorded interval bound for the
   contracted-energy profile. Use this current scratch when splitting canonical
   leaves; the older part files do not include this last corollary.
-- `/tmp/qiii-augmentation-full-check.lean` combines the countermodel and exact
-  singleton-hull claim, first-coefficient action and scalar character Gram.
-  All added claims are from the existing paper argument and passed scratch check.
-  Obsolete augmentation-hull and cutoff scratches were
-  removed; the completed cutoff source and audit logs remain.
-- Rank-one sign, common-family, crossing and Gram-step scratches now have proper
-  mathematical module comments and can be copied directly once checked.
+- Rank-one sign, augmentation, common-family, crossing and Gram-step scratches
+  have all been installed, wired and canonically checked.
 - `/tmp/qiii-finite-hull-moduli-check.lean` now directly combines the existing
   eigencharacter-power, finite-hull-modulus and half-plane-sequence bodies.
-  It is unchecked and needs the common-family, numeric-operator-order and
-  tied-torus canonical dependencies.
+  It is unchecked and needs numeric-operator-order and tied-torus dependencies;
+  the common-family dependency is complete. Its restricted commutation proof
+  now omits the same redundant subtype-extensionality step repaired in the
+  generic common-family theorem.
 - `/tmp/qiii-visible-mixed-jet-index-check.lean` retains point separation,
   masked finite jets, interior rank bounds, mixed interior/boundary
   interpolation and rank bounds, and the unit-orbit/Liouville corollaries.
@@ -144,4 +141,5 @@ owner, add its umbrella import directly, and run the canonical check directly.
   source statements and canonical dependencies are retained in their Lean files.
 - `/tmp/qiii-actual-kernel-interpolation-check.lean` now directly combines the
   intermediate-coordinate and singleton/continuum drafts. It is unchecked
-  and needs common-limit extraction, crossing and Gram-step canonical imports.
+  and needs the prescribed-horizon extraction olean and audit. Its crossing
+  and Gram-step dependencies are complete.

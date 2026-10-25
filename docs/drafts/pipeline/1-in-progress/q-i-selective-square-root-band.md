@@ -480,9 +480,18 @@ final direct checks with standard axioms only, and are wired as
 unique zero accumulation, and the convergence alternatives' mutual exclusion.
 Four matrix-rank targets also passed corrected producing and final direct
 checks with standard axioms only; `TheRanksOfSubcriticalVaughanLimits.lean`
-is wired. The remaining matrix-family topology, endpoint,
-and power-rate consequences remain
-under verification. All fifteen existing paper
+is wired. The nine matrix-topology targets passed corrected final direct checks
+with standard axioms only; `TheTopologyOfSubcriticalVaughanGramLimits.lean`
+is wired. The complete 39-target subcritical classification is in stage 3.
+Three arithmetic denominator targets also passed producing and final direct
+checks with standard axioms only. `FiniteMobiusHarmonicSumsHaveExplicitLowerBounds.lean`
+is wired and gives the explicit factorial separation `|H_N|≥1/N!` for positive N.
+Seven relative-Gram targets passed corrected final direct checks with standard
+axioms only. `VaughanGramsAtTheirActualHarmonicAmplitude.lean` is wired; the
+complete relative-normalization card is in stage 3, including calibrated
+horizons and simultaneous zero/relative-rank-one limits.
+The remaining floor-sum, stretched-exponential, endpoint, and power-rate consequences
+remain under verification. All fifteen existing paper
 cards and their remaining Lean coverage are listed in
 `q-i-existing-findings-lean-completion.md`; completing that register has priority
 over new conjecture work. Paper arguments and unchecked drafts remain unproved.
@@ -522,7 +531,7 @@ Four further consequences are dependency-closed on paper; their Lean status foll
   the maximal tail scale cannot have little-o decay. The quartic comparison gives
   the corresponding unconditional empty-leg energy oscillation.
 
-- `../2-fully-proven/vaughan-subcritical-gram-limit-classification.md` classifies
+- `../3-formalized/vaughan-subcritical-gram-limit-classification.md` classifies
   all subcritical moving-cutoff Gram limits. Their amplitudes form a countably
   infinite compact set, discrete away from zero. A nonzero limit forces the
   cutoffs eventually into one fixed finite amplitude fiber. Arithmetic and matrix

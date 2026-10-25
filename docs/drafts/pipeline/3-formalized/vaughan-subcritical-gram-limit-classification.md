@@ -1,11 +1,11 @@
 # Subcritical Vaughan Gram limits form a discrete set away from zero
 
 - **ID:** vaughan-subcritical-gram-limit-classification
-- **Stage:** 2-fully-proven
-- **Type:** CLAIM (Lean verification pending)
-- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
-- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs
-- **Statement:** Below half damping, all moving-cutoff normalized Gram limits form a countably infinite compact rank-one family whose only accumulation point is zero.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Verification:** All 39 public targets in five supporting leaves passed final direct checks and transitive axiom audits, with only standard axioms.
+- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Statement:** Below half damping, all moving-cutoff normalized Gram limits form a countably infinite compact family of rank at most one whose only accumulation point is zero.
 
 ## Goal
 
@@ -34,7 +34,7 @@ pair eventually to lie in one fixed finite fiber
 and the leading amplitude is eventually exactly constant. Positive limits have
 rank one; the zero limit has rank zero.
 
-## Dependency-closed paper proof
+## Proof mechanism
 
 The checked uniform Gram theorem gives, for every `i,j`,
 
@@ -95,48 +95,34 @@ a fixed power saving.
 - [x] Source-pure conjecture and proof mechanism recorded.
 - [x] Corpus novelty search and statement audit.
 - [x] Dependency-closed paper proof.
-- [ ] Exact Lean formalization and transitive axiom audit.
-- [ ] Final direct leaf checks and corpus integration.
+- [x] Exact Lean formalization and transitive axiom audit.
+- [x] Final direct leaf checks and corpus integration.
 
-## Status
+## Lean verification
 
-The corpus search found the fixed-cutoff and leading-mean Gram laws, but no
-matching subcritical limit-set classification. This is an internal novelty audit;
-no external novelty claim. The harmonic nonvanishing and boundedness leaves are
-checked. The uniform Gram theorem is fully checked in
-`UniformVaughanGramsFollowTheirSmoothRankOneTerm.lean`. The arithmetic set's
-fourteen targets are fully checked in `TheCompactArithmeticAmplitudesOfVaughanGrams.lean`:
-bounds, countability, compactness, finite
-cutoff control away from zero, arbitrarily small positive amplitudes, and
-infinitude, exact eventual amplitude and finite-fiber rigidity, and the positive-cutoff
-escape equivalence. Producing and final direct checks passed; all fourteen
-transitive axiom audits contain only standard axioms. The module is wired and
-its scratch removed. Eight targets in
-`TheSubcriticalVaughanGramLimitSet.lean` prove diagonal recovery,
-the full matrix classification, nonzero-limit rigidity, the zero-limit escape
-equivalence, the convergence dichotomy, attainment with positive cutoffs, and
-the already stated independent-horizon packet-energy limit. Corrected producing
-and final direct checks passed, with only standard transitive axioms. The module
-is wired and its scratch removed. Four targets in
-`TheOnlyAccumulationOfVaughanAmplitudesIsZero.lean` prove finiteness above a positive
-level, isolation of positive amplitudes, and the exact accumulation-point
-classification, plus the paper's mutual exclusion of product escape and an
-eventually fixed positive amplitude. Producing and final direct checks passed,
-with only standard transitive axioms; the module is wired and its scratch removed.
-Four targets in `TheRanksOfSubcriticalVaughanLimits.lean` prove
-the zero matrix, the outer-product rank bound, positive-amplitude rank one, and
-the complete rank dichotomy. Corrected producing and final direct checks passed,
-with only standard transitive axioms; the module is wired and its scratch removed.
+All modules belong to `GaloisForLFunctions.BezoutValuationIncidence`.
 
-The matrix-family topology stated above still needs exact Lean declarations:
-the existing topology draft treats the scalar amplitude set only. The additional
-leaf `TheTopologyOfSubcriticalVaughanGramLimits` must transfer compactness,
-countability, infinitude, and the unique accumulation point through the actual
-smooth matrix map, whose positive diagonal coefficient makes it injective.
-Nine targets are now drafted in `/tmp/QIVaughanMatrixTopologyTools.lean`:
-continuity, diagonal injectivity, compactness, countability, infinitude, unique
-zero accumulation, exact attainment with positive or arbitrary cutoffs, and
-damping independence after the stated scalar normalization. The neighborhood
-proof uses continuous diagonal recovery to transfer scalar isolation. All nine
-remain uncompiled. This closes draft coverage of an existing paper obligation;
-it certifies no consequence until Lean checks pass.
+| Lean module | Public targets | Exact coverage |
+| --- | --- | --- |
+| [TheCompactArithmeticAmplitudesOfVaughanGrams](../../../../formal/GaloisForLFunctions/BezoutValuationIncidence/TheCompactArithmeticAmplitudesOfVaughanGrams.lean) | 14 | Interval bounds, endpoints, compactness, countable infinitude, cutoff control, finite-fiber rigidity, positive-cutoff escape equivalence. |
+| [TheSubcriticalVaughanGramLimitSet](../../../../formal/GaloisForLFunctions/BezoutValuationIncidence/TheSubcriticalVaughanGramLimitSet.lean) | 8 | Diagonal recovery, exact limit classification and positive-cutoff attainment, zero-limit converse, convergence dichotomy, finite-fiber rigidity, independent-horizon packet-energy decay. |
+| [TheOnlyAccumulationOfVaughanAmplitudesIsZero](../../../../formal/GaloisForLFunctions/BezoutValuationIncidence/TheOnlyAccumulationOfVaughanAmplitudesIsZero.lean) | 4 | Finiteness above a positive level, isolation, unique scalar accumulation point, mutual exclusion of the convergence alternatives. |
+| [TheRanksOfSubcriticalVaughanLimits](../../../../formal/GaloisForLFunctions/BezoutValuationIncidence/TheRanksOfSubcriticalVaughanLimits.lean) | 4 | Zero matrix, outer-product rank bound, rank one at positive amplitude, exact rank dichotomy. |
+| [TheTopologyOfSubcriticalVaughanGramLimits](../../../../formal/GaloisForLFunctions/BezoutValuationIncidence/TheTopologyOfSubcriticalVaughanGramLimits.lean) | 9 | Continuous injective matrix map, compactness, countability, infinitude, unique zero accumulation, exact positive/arbitrary-cutoff attainment, normalized damping independence. |
+
+The complete finite limit set is `pmPronicVaughanCentredGram_limit_set_eq`;
+its set-valued forms are `mem_pmVaughanSmoothLimitSet_iff` and
+`mem_pmVaughanSmoothLimitSet_iff_arbitrary_cutoffs`. The exact rank is
+`rank_pmVaughanSmoothLimitMatrix`. The matrix topology and normalization are
+`accPt_pmVaughanSmoothLimitSet_iff` and
+`normalized_pmVaughanSmoothLimitSet_independent`.
+
+Each leaf passed `lake --old env lean` directly from `formal/`. Every listed
+target has a `#print axioms` audit containing only `propext`, `Classical.choice`,
+and `Quot.sound`. All five imports are wired into the programme umbrella;
+the owned proof scratches were removed. No theorem uses a proof placeholder,
+trusted-computation shortcut, raised limit, or additional analytic premise.
+
+The corpus search found the older fixed-cutoff and leading-mean Gram laws,
+but no matching complete subcritical limit-set classification. This is an
+internal audit, not an external novelty claim. Full Q-I remains open.

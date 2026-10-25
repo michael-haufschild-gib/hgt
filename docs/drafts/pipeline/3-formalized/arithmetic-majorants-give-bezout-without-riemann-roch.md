@@ -46,6 +46,24 @@ This construction separates that problem from replacing the intersection pairing
 
 ## Verification
 
+The same aperture cones are convex, pointed and generating. The explicit
+bilinear form is `arithmeticMajorantBilinear`; its diagonal is exactly `Q_r`.
+The positive quadratic cone laws give zero membership, additive closure,
+nonnegative scalar closure and convexity. If both a cycle and its negative
+are effective, both fibre degrees vanish; strict ampleness then makes the
+cycle zero. Fibre translation gives a difference of two effective cycles
+for every cycle.
+
+`ArithmeticMajorantConeGeometry.lean` passed direct check **44990** and all
+four transitive audits with only `propext`, `Classical.choice`, and `Quot.sound`:
+
+- `arithmeticMajorantSourceCone_add_closed`
+- `arithmeticMajorantSourceCone_convex`
+- `arithmeticMajorantSourceCone_pointed`
+- `arithmeticMajorantSourceCone_generating`
+
+The module is cleaned, wired and documented.
+
 - Dependencies: `criticalDeficitSourceEnergy_eq_defect`,
   `realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp`,
   `sourceCone_bezout_iff_defect_sq_le`, and the sharp source RR criterion.

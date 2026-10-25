@@ -28,6 +28,20 @@ This is an actual-source restriction beyond multiplicative dilation
 contraction. The exact mixed-horizon transport and its module consequences
 remain under Lean verification.
 
+[AZeroCofactorForcesFiniteDimension](AZeroCofactorForcesFiniteDimension.lean)
+proves that a zero cofactor at `p` forces dimension at most `p-1`.
+[CofactorContractionLawsDoNotSelectKroneckerPoints](CofactorContractionLawsDoNotSelectKroneckerPoints.lean)
+gives the augmentation countermodel: its scalar Gram satisfies positivity,
+critical contraction and numeric diagonal order, but its singleton character
+hull is outside every finite half-plane point. This abstract model has no
+asserted actual-source realization.
+
+[RankOneCofactorSignsAreMultiplicative](RankOneCofactorSignsAreMultiplicative.lean)
+classifies every actual rank-one character as augmentation or
+`chi(p)=eta(p)*p^(-s)`, where `s>=1/2` and `eta` is a multiplicative sign.
+The source laws determine the power magnitudes and reality; they do not
+select the signs or identify the exponent with a zeta zero.
+
 [TheCofactorOperatorHullObeysItsDilationRadii](TheCofactorOperatorHullObeysItsDilationRadii.lean)
 identifies the spectral locus controlled by operator decay: a nonempty subset
 of the module hull whose coordinates obey `|omega(p)| <= sqrt(p)||V_p||`.
@@ -56,6 +70,11 @@ Consequently, every finite-dimensional actual module forces escape.
 [TheAdmittedCofactorKernelIsUnique](TheAdmittedCofactorKernelIsUnique.lean)
 shows that the admitted kernel is independent of the chosen common subsequence.
 
+[FiniteCofactorIndexCountsJointMultiplicity](FiniteCofactorIndexCountsJointMultiplicity.lean)
+expresses the finite annihilator-quotient dimension as the sum of the joint
+generalized character-space dimensions. Normalized Bohr representatives index
+these spaces without duplication, and every occurring multiplicity is positive.
+
 [WienerUnitsTransportCofactorGrams](WienerUnitsTransportCofactorGrams.lean)
 constructs a unitary comparison after a Wiener unit changes the cyclic vector.
 It intertwines the complete Wiener action and preserves every operator norm,
@@ -63,6 +82,12 @@ the annihilator, operator hull and module dimension.
 [CompleteWienerSourceRowsRespectDilation](CompleteWienerSourceRowsRespectDilation.lean)
 also identifies multiplication by a point mass with exact dilation of the
 complete source row.
+[RealWienerConvolutionTransportsCofactorGrams](RealWienerConvolutionTransportsCofactorGrams.lean)
+proves the source-level transport: the convolution correction has vanishing
+normalized energy, the new receiver-energy ratio has a positive limit, and
+the transformed Gram is the unit-transported Gram. This preserves escape.
+[TheMoebiusAndLiouvilleCofactorModulesAreUnitEquivalent](TheMoebiusAndLiouvilleCofactorModulesAreUnitEquivalent.lean)
+applies that identity to the actual damped Möbius and Liouville sources.
 
 **The open core is exclusion.** These constraints do not prove that receiver energy is bounded.
 A source estimate excluding every escaping state for a cofinal family of positive dampings

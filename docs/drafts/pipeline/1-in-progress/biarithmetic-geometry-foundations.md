@@ -51,7 +51,7 @@ its parent card. Open programme questions without a proof plan remain open.
 
 | Source requirement | Required evidence | Status |
 |---|---|---|
-| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; fifty-nine direct-checked and axiom-audited leaves |
+| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; sixty direct-checked and axiom-audited leaves |
 | Horizon-complete objects; sign visibility | Exact signed finite-horizon laws and quantitative period/prefix comparison | Open |
 | Truncated affine representation theory | Source-defined action, boundary calculus, classification/calibration | Open |
 | A1–A2: paid ideal annihilates escape; hull inclusion | Actual receiver theorem, not an assumed ideal inclusion | Proved for every actual common Gram limit; ADR foundations reused, four interfaces directly checked and axiom-audited |
@@ -137,10 +137,11 @@ its parent card. Open programme questions without a proof plan remain open.
 | `PowerTailCoefficients` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `PowerTailIndependence` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `PowerTailWienerFamily` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
+| `CriticalGoldenContinuumDefect` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
 | `PaidSourcePerturbations` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `FullWienerAnnihilation` | Consolidated ADR interfaces and direct repository leaf passed | Four chosen and universal declarations clean |
 
-Completed main-declaration axiom audits for fifty-nine checked leaves report only `propext`,
+Completed main-declaration axiom audits for sixty checked leaves report only `propext`,
 `Classical.choice`, and `Quot.sound`. Audits used isolated Lean source copies; each leaf also passed its direct source check. The literal-B1
 no-go is closed in `5-failed/biarithmetic-literal-dimension-euler-characteristic.md`; its
 positive survivor and exact prefix visibility now have separate stage-3 cards.
@@ -1077,7 +1078,9 @@ are present.
 `PowerTailCoefficients` passed its repaired scratch check, all five transitive
 audits, and its direct repository check. `PowerTailIndependence` also passed
 its five audits and direct source check. Both stage-3 cards and imports are
-present; the actual lifted quotient dimension remains pending.
+present. `CriticalGoldenContinuumDefect` also passed its direct check and all
+four audits: both full actual ordinary golden quotient dimensions are
+exactly continuum. Intrinsic and coefficient-space comparisons remain pending.
 
 `DigitalCircleFourier` passed its direct repository check and all three
 transitive audits. The umbrella import and stage-3 card are present.
@@ -1147,3 +1150,40 @@ Pending source check: `/tmp/BiarithmeticIntrinsicAdmissionPhase.lean` gives
 the actual intrinsic source admission phase, both damping endpoints, and
 payment of every filtered Wiener kernel in the paid regimes. Seven audits
 are drafted; its source-comparison dependencies remain unchecked.
+
+Pending source check: `/tmp/BiarithmeticCriticalCoefficientContinuumDefect.lean`
+transfers actual power-tail class independence to the normalized one-prime
+coefficient quotient and closure defect, with matching continuum upper
+bounds. Four audits are drafted; both source dependencies remain unchecked.
+
+Pending source check: `/tmp/BiarithmeticDigitStrictPhaseComparison.lean`
+normalizes the bounded balanced error by the expanding geometric power,
+proves a positive eventual source diagonal, and compares the actual digit
+covariance ratio with its varying annular phase kernel, including the
+programme's own-energy Gram table. Four audits are drafted. No convergence
+of the horizon phases is assumed.
+
+Pending source check: `/tmp/BiarithmeticIntrinsicContinuumDefect.lean`
+identifies the preimage coefficient domain with finite energy of the actual
+intrinsic filtered receiver. Its power-tail family lies in the actual
+Wiener closure and maps to independent coefficient classes, giving both
+continuum rank equalities. Six audits are drafted; the intrinsic receiver
+and coefficient dependencies remain unchecked.
+
+Pending source check: `/tmp/BiarithmeticOnePrimeSourceGraphComparison.lean`
+pulls back the actual cofactor graph along the one-prime isometry, proves
+its exact paid input range, and drafts input-preserving continuous linear
+equivalences with the causal coefficient graph for ordinary geometric and
+golden sources. Six audits are drafted. Its dependency chain remains unchecked.
+
+Pending source check: `/tmp/BiarithmeticOnePrimeSourceFredholm.lean`
+defines the actual normalized payment inclusion from the complete source
+graph image, then drafts both ordinary tower and golden Fredholm loci and
+their exact indices. Seven audits are drafted; source graph and geometric
+Fredholm dependencies remain unchecked.
+
+Pending source check: `/tmp/BiarithmeticIntrinsicSourceGraphComparison.lean`
+uses actual filtered-receiver coordinates, including the bounded mean
+correction, to construct a complete graph. Six audits cover its source
+energy range, the causal graph equivalence on `[0,1)`, and the full-space
+Banach isomorphism at the undamped endpoint. Dependencies remain unchecked.

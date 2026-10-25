@@ -127,8 +127,14 @@ theorem exists_horizon_pmVaughan_factorial_log_rate (U V : ℕ → ℕ) :
     have h := (le_div_iff₀ (by positivity : 0 < (n : ℝ) + 1)).mpr
       (by simpa only [mul_comm] using hcal n)
     simpa only [div_eq_mul_inv, one_mul, mul_comm] using h
+  have hden : Tendsto (fun n : ℕ => (n : ℝ) + 1) atTop atTop := by
+    apply tendsto_atTop.2
+    intro b
+    filter_upwards [(tendsto_natCast_atTop_atTop :
+      Tendsto (fun n : ℕ => (n : ℝ)) atTop atTop).eventually_ge_atTop b] with n hn
+    exact hn.trans (le_add_of_nonneg_right zero_le_one)
   have hzero : Tendsto (fun n : ℕ => 1 / ((n : ℝ) + 1)) atTop (𝓝 0) :=
-    tendsto_const_nhds.div_atTop (tendsto_natCast_atTop_atTop.add_const 1)
+    tendsto_const_nhds.div_atTop hden
   apply squeeze_zero' (Eventually.of_forall ?_) (Eventually.of_forall hbound) hzero
   intro n
   have hH1 : 1 ≤ H n := (by omega : 1 ≤ n + 1).trans (hH n)

@@ -18,8 +18,8 @@ in a compact interval and supplies simultaneous subsequence extraction.
 increment by one. The actual cofactor rows have absolute value at most n.
 
 Searches for connected cofactor limit sets and intermediate sequence cluster
-values have not yet supplied an applicable theorem. No theorem is asserted
-by this card; the generic sequence and cardinality bridges remain open.
+values supplied no applicable theorem. The generic sequence bridge is now
+formalized; the actual-coordinate and cardinality applications remain pending.
 
 ## Mechanism to audit
 
@@ -30,8 +30,8 @@ therefore bounded by `(1+radius)/E(T+1)` under the corpus convention that
 `cofactorGram epsilon T` uses horizon `T+1`. On escape this tends to zero; on
 admission the complete Gram sequence converges already.
 
-A bounded real sequence with successive differences tending to zero should
-attain every intermediate cluster value: choose arbitrarily late crossings
+A real sequence with successive differences tending to zero attains every
+intermediate cluster value: choose arbitrarily late crossings
 of that value between visits near the two endpoint limits. The overshoot
 vanishes with the step size. Extract an increasing crossing sequence and
 then apply the actual common-limit extraction along those horizons.
@@ -45,25 +45,26 @@ connectedness of the product-topological limit set.
 
 ## Gates
 
-- [ ] Exact normalized successive-coordinate bound.
-- [ ] Generic intermediate cluster-value theorem in Lean.
+- [x] Exact normalized successive-coordinate bound.
+- [x] Generic intermediate cluster-value theorem in Lean.
 - [ ] Actual common-kernel interpolation with an increasing subsequence.
 - [ ] Singleton/continuum cardinality consequence in Lean.
 - [ ] Canonical source checks, standard transitive axioms, umbrella imports.
 
-All targets remain open until their exact Lean statements pass.
-
-The generic real-sequence bridge is drafted in
-`/tmp/qiii-intermediate-cluster-values-check.lean`. It chooses the first late
-crossing after a lower visit, bounds its overshoot by the vanishing step,
-and extracts an increasing subsequence. The actual reciprocal-energy step
-bound and its admission/escape proof are drafted in
-`/tmp/qiii-cofactor-gram-steps-check.lean`.
+`HTGeometry/VanishingStepsFillIntermediateClusterValues` proves
+`exists_strictMono_subseq_tendsto_between`. It chooses the first late crossing
+after a lower visit, bounds its overshoot by the vanishing step, and extracts
+an increasing subsequence. Required olean build `98674` and final canonical
+source-only audit `21506` passed with standard axioms.
+`ArithmeticDefectRigidity/ActualCofactorGramsHaveVanishingSteps` contains
+`abs_cofactorGram_succ_sub_le` and `cofactorGram_succ_sub_tendsto_zero`.
+Their repaired scratch passed in `91731`; required olean build `82801` and
+final canonical source-only audit `86889` also passed with standard axioms.
 
 The directly written application scratch
 `/tmp/qiii-actual-kernel-interpolation-check.lean` contains common-kernel
 interpolation, the interval injection, the countable-table cardinal bound,
 the singleton/continuum alternative, and nonuniqueness implying escape.
-It requires the two pending base leaves and canonical prescribed-horizon
-extraction. Every new statement remains UNVERIFIED; direct checks are tracked
+It requires canonical prescribed-horizon extraction, whose direct checks are
+underway. These application statements remain UNVERIFIED; direct checks are tracked
 in [the completion ledger](q-iii-existing-findings-lean-completion.md).

@@ -105,8 +105,3 @@ theorem arithmeticMajorantSourceCone_generating {r : ℝ} (hr : 0 < r)
     simp only [map_zero, le_refl]
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.arithmeticMajorantSourceCone_add_closed
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.arithmeticMajorantSourceCone_convex
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.arithmeticMajorantSourceCone_pointed
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.arithmeticMajorantSourceCone_generating

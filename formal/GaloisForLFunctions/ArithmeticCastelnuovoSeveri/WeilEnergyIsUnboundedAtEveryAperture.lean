@@ -289,3 +289,9 @@ theorem finiteFourierSourceCone_not_bezout {r : ℝ} (hr : 0 < r)
   exact finiteFourierPostprocessingSourceCone_not_bezout hr z (fun w => ∑ i, ‖w i‖ ^ 2)
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
+
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_realTestAt_in_ker_weilPair_gt_mul_integral_sq
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_realTestAt_in_ker_weilPair_gt
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.realTestsAt_l2SourceCones_not_bezout
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.gradedChebyshevSourceCone_riemannRoch_and_not_bezout
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.finiteLinearReadingSourceCone_not_bezout

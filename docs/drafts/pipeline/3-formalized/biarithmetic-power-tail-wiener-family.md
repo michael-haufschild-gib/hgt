@@ -21,5 +21,5 @@ Audited declarations: `powerTailWiener_pow`, `norm_powerTailWiener`,
 - [x] All four transitive audits contain only `propext`, `Classical.choice`, `Quot.sound`.
 - [x] Umbrella import wired; umbrella not compiled.
 
-Independence of the actual quotient classes and its exact dimension remain
-the next separate proof obligation.
+Independence and both exact actual quotient dimensions are formalized in
+the [continuum-defect leaf](biarithmetic-critical-golden-continuum-defect.md).

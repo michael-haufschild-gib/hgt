@@ -37,3 +37,10 @@ domination gives convergence of all Wiener evaluations using the same
 sequence. Prove the augmentation endpoint separately and apply the pending
 finite actual modulus theorem. All claims remain OPEN until Lean checks,
 transitive axiom audits, canonical source checks, and umbrella wiring pass.
+
+The common-eigenvector input is complete:
+`HTGeometry/FiniteCommutingFamiliesHaveCommonEigenvectors.exists_common_eigenvector_family`
+passed final canonical source audit `15948` with only standard axioms. Its
+olean is available to the written finite-hull application. Numeric operator
+order, tied-torus limits and the actual finite-hull application still require
+their direct checks.

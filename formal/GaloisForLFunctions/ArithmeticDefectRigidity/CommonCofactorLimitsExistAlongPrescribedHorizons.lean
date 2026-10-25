@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticDefectRigidity.WienerCovariancesFollowTheCommonCofactorLimit
+import GaloisForLFunctions.ArithmeticDefectRigidity.TheCofactorLimitCarriesACyclicDilationAction
 
 /-!
 # Common cofactor limits along prescribed horizons

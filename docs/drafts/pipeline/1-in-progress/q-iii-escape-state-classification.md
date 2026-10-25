@@ -644,10 +644,10 @@ Wiener-unit-orbit and Liouville applications of the interior jet and boundary
 obstruction statements. Its new application part is
 `/tmp/qiii_visible_poles_on_wiener_unit_orbits_body.lean`.
 
-A rank-one modulus lead is recorded in
-`1-in-progress/rank-one-cofactor-moduli-are-archimedean.md`; corpus search
-for monotone completely multiplicative power laws is pending. It concerns
-magnitudes only and must not be promoted to a phase/Kronecker claim.
+The completed rank-one classification is recorded in
+`3-formalized/rank-one-cofactor-moduli-are-archimedean.md`: augmentation or
+one power times a multiplicative real sign. It gives no sign selection or
+Kronecker-curve membership.
 
 ### Boundary elaboration repair and next queue
 
@@ -676,14 +676,10 @@ its statement/source before applying the underlying finite-dimensional API.
 The rank-one card remains a conjecture; no phase/Kronecker conclusion follows
 from magnitude rigidity alone.
 
-The rank-one magnitude card is now `2-fully-proven/rank-one-cofactor-moduli-are-archimedean.md`.
-Its complete paper proof derives the real cyclic character from K(p,1),
-proves the multiplicative energy profile is augmentation or a single power
-by integer-power/ceiling comparison, and obtains |chi(p)|=p^(-s), s>=1/2.
-No phase selection is claimed. The generic and actual Lean drafts are now
-included at the end of the diagonal scratch in the next queue, still unverified.
-The final canonical source checks have reached their last leaf,
-`AdmittedCofactorModulesAreFaithful`; the previous four checks passed.
+The rank-one card is now `3-formalized/rank-one-cofactor-moduli-are-archimedean.md`.
+Canonical Lean checks prove the real cyclic character from K(p,1), the
+augmentation-or-power magnitude classification, and the multiplicative-sign
+factorization with exponent at least one half. No phase selection is claimed.
 
 Prepared `/tmp/qiii-promote-verified-pole-refinements.py`, NOT RUN. It first
 requires the full critical-boundary scratch to be error-free with no sorryAx,
@@ -713,7 +709,7 @@ The next queue has finished the exactly missing white-noise olean and
 entered corrected unit scratch (PID `99836` at last observation).
 The diagonal scratch now also includes the augmentation model from
 `/tmp/qiii_augmentation_gram_body.lean`, still UNVERIFIED. Its paper card is
-`2-fully-proven/rank-one-horizon-order-does-not-select-kronecker-points.md`.
+`5-failed/rank-one-horizon-order-does-not-select-kronecker-points.md`.
 It passes even numeric-order antitonicity and has one character outside all
 finite half-plane points. This is only an abstract countermodel; no actual
 Möbius realization is claimed. The mandatory positive survivors are the

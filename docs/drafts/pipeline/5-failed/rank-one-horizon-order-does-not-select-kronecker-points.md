@@ -1,7 +1,7 @@
 # Rank-one horizon order does not select Kronecker points
 
 - **ID:** rank-one-horizon-order-does-not-select-kronecker-points
-- **Stage:** 2-fully-proven
+- **Stage:** 5-failed (countermodel and positive survivors formalized)
 - **Type:** ABSTRACT COUNTERMODEL / POSITIVE BOUNDARY
 - **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
 
@@ -39,11 +39,14 @@ Archimedean power law. These statements are stronger than merely recording
 failure of curve selection; their exact paper proofs are on:
 
 - [Horizon order and finite cutoff](../3-formalized/horizon-order-excludes-prime-deleted-white-noise.md).
-- [Rank-one modulus classification](rank-one-cofactor-moduli-are-archimedean.md).
+- [Rank-one character classification](../3-formalized/rank-one-cofactor-moduli-are-archimedean.md).
 
-The countermodel, cutoff and magnitude survivors passed final canonical checks.
-The explicit multiplicative-sign refinement remains. Do not retire this route
-until its Lean check passes.
+The countermodel, cutoff, magnitude and multiplicative-sign survivors all passed
+final canonical checks. The exact positive refinement is augmentation or
+`chi(p)=eta(p)*p^(-s)` with `s>=1/2` and multiplicative `eta` valued in `{−1,1}`.
+It constrains the entire rank-one character while leaving its signs unselected.
+The abstract inference from these laws to finite Kronecker points is retired;
+the actual Möbius realization question remains open.
 
 ## Search audit
 
@@ -62,3 +65,11 @@ contraction, numeric order, first-coefficient character, singleton hull and
 scalar character Gram. All transitive axiom reports contain only `propext`,
 `Classical.choice`, `Quot.sound`. Output:
 `/tmp/qiii-augmentation-canonical-final.log`.
+
+The positive survivors are
+`ActualCofactorLimit.finiteDimensional_and_finrank_le_of_kernel_diag_eq_zero`
+in `ArithmeticDefectRigidity/AZeroCofactorForcesFiniteDimension` and
+`ActualCofactorLimit.rankOneCharacter_eq_augmentation_or_signed_rpow`
+in `ArithmeticDefectRigidity/RankOneCofactorSignsAreMultiplicative`.
+Their final source-only audits were `34006` and `87736`, respectively, with
+only the same three standard axioms. No survivor remains paper-only.

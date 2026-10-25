@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticDefectRigidity.TheOriginStepModuleHasTheFullBohrHull
+import GaloisForLFunctions.ArithmeticDefectRigidity.TheCofactorLimitCarriesACyclicDilationAction
 import GaloisForLFunctions.HTGeometry.DominatedKernelsHaveContractiveComparisons
 
 /-!

@@ -230,3 +230,41 @@ causal output coordinates here. The output bounds are
 Together with the maximum graph norm, these give both norm-comparison
 constants explicitly. Five audits drafted; unchecked. The ordinary and
 intrinsic source graph calibrations remain separate obligations.
+
+Pending source check: `/tmp/BiarithmeticCriticalCoefficientContinuumDefect.lean`
+constructs both unreduced coefficient quotients in the restricted one-prime
+ambient space. Actual coefficient restriction lifts the power-tail family;
+mapping its classes into the full golden quotient reuses the finite
+independence proof. The coefficient isometry gives the matching cardinality
+upper bound. Four audits are drafted; the coefficient realization and
+ordinary golden quotient dependencies remain unchecked.
+
+Source graph comparison can use closed-graph uniqueness after proving the
+actual input-range equality. Pull back the complete actual cofactor graph
+along the normalized one-prime Wiener isometry. Its input range is exactly
+the source's paid domain by `PaidGraphIdentification`. The explicit tower
+criterion identifies that range with the geometric causal domain; the
+golden paid-ideal identity gives the corresponding golden range. The
+unique linear map preserving coefficient input between these complete
+graphs has closed graph, since input equality is a closed condition and
+both input maps are injective. Applying the Banach closed-graph theorem in
+both directions supplies the required source graph-norm equivalence.
+This is a proof plan, not a replacement for the exact range proofs.
+
+The direct draft `/tmp/BiarithmeticOnePrimeSourceGraphComparison.lean`
+includes those exact actual-source ranges, the complete restricted graph,
+both continuous linear equivalences, and their input-intertwining laws.
+Six audits are pending. Intrinsic filtered-source graph comparison and
+source-labelled Fredholm statements remain separate obligations.
+
+`/tmp/BiarithmeticOnePrimeSourceFredholm.lean` drafts the ordinary source
+statements using the actual complete graph image as its payment domain.
+Its seven audits cover the exact paid membership bridge, both Fredholm
+loci, and both index values for towers and golden sources. The intrinsic
+source and all these dependency checks remain pending.
+
+`/tmp/BiarithmeticIntrinsicSourceGraphComparison.lean` now drafts the
+intrinsic source graph itself with its actual mean correction. Its input
+range matches the causal domain on `[0,1)` and is the full coefficient
+space at `t=1`. Six audits are pending. The source-labelled intrinsic
+Fredholm packaging remains separate.

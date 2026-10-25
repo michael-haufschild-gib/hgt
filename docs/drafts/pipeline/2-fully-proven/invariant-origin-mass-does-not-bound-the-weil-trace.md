@@ -7,7 +7,7 @@
 - **Source:** ../1-in-progress/q-ii-source-effectivity-and-linear-degree.md
 - **Statement:** The strictly positive origin sharp-square mass is centered-flow invariant, but the original Weil trace is unbounded on its unit sphere, already among compact smooth sources in every positive aperture.
 
-## Paper proof [PROVED HERE]
+## Proof argument (Lean verification pending)
 
 Centered source flow is `g_c(t)=exp(-c/2)g(t-c)`. Its Mellin character is
 `exp(c(s-1/2))`. Arithmetic sharp reflects `s` to `1-conj(s)` and conjugates

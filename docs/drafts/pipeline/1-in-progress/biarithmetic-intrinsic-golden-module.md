@@ -274,3 +274,17 @@ exact admission equivalence `alpha*t<sqrt(5) or t=1` on `[0,1]`. It also
 proves payment of every filtered critical Wiener kernel in both paid regimes,
 including `t=0` through the subcritical case. Seven audits are drafted;
 the centered-convolution and remainder dependencies remain unchecked.
+
+The remaining intrinsic graph comparison will use the actual filtered
+receiver, including its mean correction. Each normalized output coordinate
+is a finite continuous source-coefficient functional plus a coordinate of
+the bounded intrinsic Wiener synthesis. These equations define a closed
+complete graph. The exact filtered payment laws then identify its input
+range with the causal coefficient domain below the undamped endpoint, and
+with the whole coefficient space at that endpoint. Closed-graph uniqueness
+gives the required source norm equivalence without an assumed energy bound.
+
+The direct draft `/tmp/BiarithmeticIntrinsicSourceGraphComparison.lean`
+contains these actual coordinates, closed graph, exact filtered-energy
+range, causal graph equivalence on `[0,1)`, and endpoint isomorphism.
+All six audits and the dependency chain remain unchecked.

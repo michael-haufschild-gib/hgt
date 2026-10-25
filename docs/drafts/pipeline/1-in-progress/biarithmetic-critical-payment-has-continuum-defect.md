@@ -83,7 +83,8 @@ in `ell1`. This extension follows from exactly the same ratio proof.
 The independence proof passed its direct repository check and all five
 transitive audits. The [formalized card](../3-formalized/biarithmetic-power-tail-independence.md)
 names its declarations. Quotient bundling and the cardinality upper bounds
-also passed their direct repository check; the lifted lower bounds remain.
+also passed their direct repository check. The actual lifted lower bounds
+are now formalized in `CriticalGoldenContinuumDefect`.
 
 The quotient-interface corpus audit found the existing finite-family proof
 pattern in `HTGeometry/ContinuumAnalyticEulerTailFaithfulnessUniversalityLaw.lean`
@@ -95,7 +96,7 @@ already exists as `WienerAlgebraAt.cardinal_le_continuum` in
 `ArithmeticDefectRigidity/TheClosedCofactorAnnihilatorHasNoCountableIndex.lean`;
 it follows from the actual coefficient injection into `C^N`. Its source was
 inspected and its dependency olean exists. These are reusable interfaces,
-not yet a formal quotient-dimension proof for this source.
+used in the source quotient-dimension proof below.
 
 The actual quotient construction has passed its scratch check in
 `CriticalGoldenPaymentQuotients`: restrict the paid ideal to complex scalars,
@@ -116,8 +117,9 @@ power-tail independence theorem forces every coefficient to vanish. The same
 family lifts to the closure defect; its canonical image is the independent
 family in the full quotient, so those lifted classes are independent as well.
 The interval has cardinality continuum, supplying both matching lower bounds.
-The lower-bound draft remains unchecked; its family, closure, and power-tail
-dependencies are now directly verified. This is a Lean proof chain for the ordinary-floor source only;
+The lower-bound leaf passed its direct repository check and all four
+transitive audits. Its [formalized card](../3-formalized/biarithmetic-critical-golden-continuum-defect.md)
+records both exact continuum rank equalities. This is a Lean proof chain for the ordinary-floor source only;
 the intrinsic-source comparison still requires its separate module construction.
 
 This proves dimension at least continuum. The ambient `ell1` space injects into
@@ -139,6 +141,20 @@ The one-prime annihilator quotient has dimension one, whereas its payment closur
 defect has dimension continuum. These are distinct from the Hilbert dimension of
 the tangent carrier. No Baire theorem for a nonclosed quotient is used.
 
+Intrinsic transfer will use the actual normalized five-power restriction of
+every Wiener kernel. Its preimage of the coefficient partial-sum domain is
+identified with finite energy of the actual intrinsic filtered receiver.
+The same power-tail classes map to the independent coefficient classes;
+corrected finite coefficient cores give their actual Wiener closure membership.
+This proves the full ambient quotient and closure-defect lower bounds without
+assuming an identification of the full ordinary-floor paid closure. The
+intrinsic filtered-receiver comparison and this transfer remain unchecked.
+
+The direct draft is `/tmp/BiarithmeticIntrinsicContinuumDefect.lean`, with
+six pending audits. Its submodule definition has a separate exact theorem
+equating membership with actual filtered-receiver square energy; no energy
+assertion is placed in an assumption or structure field.
+
 ## Scope and verification
 
 The independent-power construction and cardinality upper bound are elementary
@@ -148,16 +164,17 @@ counts arithmetic zeros nor proves a Riemann--Roch formula.
 
 - [x] Dependency-closed proof plan, including complex linear independence.
 - [x] Lean exact source payment criterion and corrected finite approximation.
-- [ ] Lean independent quotient family and matching cardinality bound.
-- [ ] Direct source checks, transitive axiom audits, and umbrella imports.
+- [x] Lean ordinary-source independent quotient family and matching cardinality bound.
+- [x] Ordinary-source direct checks, transitive axiom audits, and umbrella imports.
+- [ ] Intrinsic-source transfer, direct checks, transitive audits, and import.
 
 The first explicit boundary witness and its corrected finite approximation are
 formalized in `BiarithmeticGeometry/CriticalUnpaidSequence.lean`. It includes the exact
 coefficient norm, zero evaluation, divergent square partial sums, and exact
 `ell1` approximation distance. The direct source check and seven axiom audits
 passed; its [stage-3 card](../3-formalized/biarithmetic-explicit-critical-unpaid-sequence.md)
-records the exact scope. The continuum-independent
-family, complex Wiener embedding, and quotient dimension remain separate.
+records the exact scope. The continuum-independent family, complex Wiener
+embedding, and ordinary-source quotient dimensions have separate checked leaves.
 
 The actual real Wiener embedding is now promoted to
 `BiarithmeticGeometry/CriticalWienerLift.lean`, reusing AOT's `toWiener`,
@@ -181,9 +198,10 @@ the [stage-3 card](../3-formalized/biarithmetic-complex-critical-wiener-lift.md)
 records the exact scope. The corpus's general AOT weight
 isometry was inspected; no duplicate Wiener carrier is introduced.
 
-`CriticalGoldenClosure` separately drafts the full actual-closure transfer
+`CriticalGoldenClosure` separately proves the full actual-closure transfer
 for every absolutely summable complex coefficient sequence with zero total
 evaluation. It uses the corrected finite-core sequence, the complex lift's
 exact distances, and the actual golden payment criterion. Its assertion is
 inclusion in the full actual ideal's closure; it does not identify that full
-closure's intersection with the one-prime subalgebra. The draft is unchecked.
+closure's intersection with the one-prime subalgebra. The direct source
+check and all four transitive audits passed.
