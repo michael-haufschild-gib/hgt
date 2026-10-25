@@ -102,6 +102,7 @@ theorem abs_pmPronicVaughanCentredPiece_le_upperEnvelope {ε : ℝ} (hε : 1 / 2
       simp only [e, pmPronicVaughanCentredPiece, sum_sub_distrib, ← sum_mul,
         sum_pmPronicVaughanPiece, sum_pmPronicVaughanMean, zero_mul, sub_zero]
     simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero] at hs
+    change e 0 + (e 1 + (e 2 + (e 3 + e 4))) = pmBezoutInteriorPrefix ε n at hs
     have heq : e 3 = pmBezoutInteriorPrefix ε n - (e 0 + (e 1 + (e 2 + e 4))) := by
       linarith only [hs]
     rw [heq]

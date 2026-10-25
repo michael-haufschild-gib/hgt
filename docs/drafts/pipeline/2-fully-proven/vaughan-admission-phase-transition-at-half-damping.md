@@ -157,5 +157,6 @@ and final direct checks with standard axioms only. Its module is wired as
 uniformly for every `ε≥1/2`, with a positive prefix-pole minor at least
 `2^(-4ε)/15552`. Summability is derived from the endpoint and upper-half
 convergence theorems. The planned shared module is
-`TheActualVaughanLimitGramHasRankTwo.lean`; the endpoint's nine consequences
-specialize it. These are unchecked proofs, not certified findings.
+`TheActualVaughanLimitGramHasRankTwo.lean`; the endpoint's ten consequences
+specialize it, including positive definiteness of the prefix/pole submatrix.
+These are unchecked proofs, not certified findings.

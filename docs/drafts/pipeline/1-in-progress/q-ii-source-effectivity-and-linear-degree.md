@@ -10,7 +10,7 @@
 
 Answer Q-II in full; formalize the answer and its corollaries without extra analytic assumptions, and apply results across the existing programmes. A reformulation of RH, a compensated pairing, a restricted test space, or a degree-positive cone without Bézout does not complete this goal.
 
-## Gates
+## Gates for the full Q-II problem
 
 - [x] Read the full review and inspect the current source frontier.
 - [x] Search the Lean corpus before mathlib.
@@ -19,31 +19,32 @@ Answer Q-II in full; formalize the answer and its corollaries without extra anal
 - [ ] Umbrella imports and applications to relevant existing programmes.
 
 <!-- qii-live-status -->
-## Current verification checkpoint
+## Existing formalizations completed; research paused
 
-Full Q-II remains open. User requires every significant finding to be formalized;
-paper arguments alone are unverified, not completed results. Prioritize clearing
-the existing Lean candidates before developing further paper-only findings.
-User repeated the instruction: no build scripts; formalize everything still
-only on paper now. Finish the entire existing Q-II candidate queue and the older
-actual-file final audits before pursuing new findings. Each Lean invocation
-gets its own direct `lake --old env lean ...` command, without wrappers, loops,
-or a batch runner.
+All nineteen queued Q-II modules and all eleven older actual-file final audits
+passed. Existing dependency-closed paper findings, including the imaginary-square
+degree identity and regular-energy supremum/residual assertions, are formalized.
+No Q-II paper-proof card remains in stage 2. The certificate tables below record
+each direct check and endpoint-audit count.
 
-User then paused the research goal and explicitly requested completion of all
-started Lean work and existing paper-proof formalizations before pausing.
-Finish this verification queue and its older final audits, then stop research.
-Do not open new conjectures or resume the broader Q-II research goal.
+Every endpoint audit uses only `propext`, `Classical.choice`, and `Quot.sound`.
+Checks ran directly with `lake --old env lean ...` from `formal/`, one owned
+foreground Lean process at a time. No checking/build scripts, `lake build`,
+umbrella compilation, raised limits, or rebuilding of existing oleans was used
+in this completion pass. Missing oleans were built only for actual importers.
+Temporary audit prints and owned stale Lean drafts/API probes are removed;
+finished modules are wired and their cards, README and review are updated.
 
-User explicitly prohibited scripts for checking Lean. Session **51780** and its
-owned shell/lake/Lean processes were terminated and their exit verified. The
-active and prepared check wrappers were deleted. Do not recreate or run wrappers,
-check loops, or batch scripts. Run each `lake --old env lean ...` command directly,
-from `formal/`, one foreground Lean process at a time.
+Research is paused as requested; no owned Lean process remains. Full Q-II and
+the general positive-degree infinite-tail question remain open. The formalized
+regular residual is nonnegative; its vanishing has not been proved. Do not
+resume research or open new conjectures without a new user instruction.
 
-### Verification history
+### Verification history (archival)
 
 Later entries and the queue table supersede earlier pending or failed states.
+Before the direct completion pass, user-prohibited check wrappers were stopped
+and deleted; their owned processes exited. No wrapper was recreated.
 
 `FaithfulPositiveMeyerDegrees.lean` passed direct check **90918**, including all six
 transitive axiom audits with only `propext`, `Classical.choice`, and `Quot.sound`.
@@ -557,6 +558,15 @@ The file is cleaned, wired and documented; its card moved to stage 3 and
 its stale draft and API probe are removed. All nineteen candidate modules
 are now certified. Older numerical-equivalence final check **46883** is
 running with seven audits; six older actual-file final audits remain.
+All remaining older final audits passed: numerical equivalence **46883** (7),
+asymmetric source RR **15508** (6), exact arithmetic effectivity **84144** (8),
+finite-degree obstruction **60131** (6), Poisson principal cycles **60772** (5),
+and AOT section-boundary rigidity **57891** (8). Every endpoint has only the
+standard three axioms. Temporary prints are removed; existing oleans are
+untouched. The final AOT check has only an unused `zero_mul` simp-argument
+warning, left unchanged after its successful audit. The last owned stale
+boundary-audit scratch is removed. The completion queue is closed and research
+remains paused; no mathematical open obligation is marked solved by this audit.
 
 ### Candidate verification queue
 
@@ -602,8 +612,8 @@ successful actual-file exit, standard transitive axioms, and removal of temporar
 | `SourceRiemannRochWithoutSymmetry` | 15508 | 6 | CERTIFIED |
 | `ExactArithmeticSourceEffectivity` | 84144 | 8 | CERTIFIED |
 | `FiniteDegreeConesCannotSatisfyBezout` | 60131 | 6 | CERTIFIED |
-| `PoissonPrincipalCyclesOnTheScalingSurface` | Pending | 5 | Unverified |
-| AOT `SourceSectionBoundaryRigidity` | Pending | 8 | Unverified |
+| `PoissonPrincipalCyclesOnTheScalingSurface` | 60772 | 5 | CERTIFIED |
+| AOT `SourceSectionBoundaryRigidity` | 57891 | 8 | CERTIFIED |
 <!-- /qii-live-status -->
 
 The research record below preserves earlier draft and pending states. Those

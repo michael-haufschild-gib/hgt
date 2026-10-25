@@ -430,7 +430,7 @@ new work:
 - `2-fully-proven/resetting-the-moving-origin-adds-a-faithful-step-module.md`
   gives the dependency-closed paper limit and faithful-step argument when a
   moving origin trace is prescribed.
-- `2-fully-proven/escape-records-realize-a-faithful-moving-origin-boundary.md`
+- `3-formalized/escape-records-realize-a-faithful-moving-origin-boundary.md`
   derives a candidate construction of that trace from escape itself using
   large prefix records and first energy crossings. This would be an
   admission-or-existence theorem for shifted origin-reset rows, not an
@@ -465,7 +465,7 @@ in the prepared fourth scratch file. First-crossing sequence assembly,
 weak orthogonality and the faithful mixed realization remain to be written.
 
 The record-horizon construction is now dependency-closed on paper and moved
-to `2-fully-proven/escape-records-realize-a-faithful-moving-origin-boundary.md`.
+to `3-formalized/escape-records-realize-a-faithful-moving-origin-boundary.md`.
 Its card records the exact `T+1` normalization and avoids unnecessary sign
 extraction. It constructs a faithful mixed **shifted** boundary on escape;
 it does not assert a faithful unshifted actual limit. Lean work remains.

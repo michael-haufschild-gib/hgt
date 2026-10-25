@@ -41,7 +41,7 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Finite joint spectral multiplicities and normalized Bohr representatives | All three canonical source-only checks passed with standard axioms; card moved to `3-formalized` |
 | Rank-one multiplicative signs | Canonical audit `87736` passed with standard axioms; card in `3-formalized`, augmentation route retired with its checked positive survivors |
 | Visible interior pole orders, paid jets, critical boundary values, unit orbits | All six canonical sources passed final audits with standard axioms; both paper cards moved to `3-formalized` |
-| Reset moving origin, faithful step kernel and every positive boundary mass | Boundary entries 1–12 complete, including faithful positive mixtures and their full Bohr hulls; final realization leaf is under check |
+| Reset moving origin, faithful step kernel and every positive boundary mass | All thirteen canonical entries passed final checks, including every positive faithful realization |
 | Raw moving origin, exclusion from actual zero-origin limits | Draft scratch after boundary dependencies |
 | Positive boundary modules have infinite dimension and continuum index | Draft scratch after boundary dependencies |
 | Exact incomplete dilation fibre and mixed C*D/p bound | Combined scratch passed; canonical source installed and wired, individual checks pending |
@@ -97,6 +97,7 @@ unchanged checks. All required leaves are wired into their programme umbrellas.
 | Complete critical Wiener action, norm bound and cyclic intertwining | `5961` | `37998` passed |
 | Origin-step cyclic faithfulness and full Bohr hull | `35576` | `56254` passed |
 | Positive-origin cyclic faithfulness and full Bohr hull | `78330` | `5362` passed |
+| Every positive faithful origin boundary is realized on escape | `60215` | None needed |
 
 Recent final output files:
 `/tmp/qiii-augmentation-canonical-final.log`,
@@ -192,8 +193,8 @@ output `/tmp/qiii-origin-step-module-canonical-final.log`.
 Boundary entry 12, `PositiveOriginMixturesAreFaithful`, passed required
 olean `5362` and final source-only check `78330` with standard axioms;
 output `/tmp/qiii-positive-origin-mixtures-canonical-final.log`.
-Boundary entry 13, `EscapeRealizesEveryPositiveOriginBoundary`, is under its
-source-only final check; no importing source requires its olean. Output:
+Boundary entry 13, `EscapeRealizesEveryPositiveOriginBoundary`, passed its
+source-only final check `60215` with standard axioms; no importing source requires its olean. Output:
 `/tmp/qiii-faithful-origin-realization-canonical-final.log`.
 No other owned Lean process is active.
 The remaining standalone scratch sources listed below were scanned for
@@ -201,8 +202,8 @@ forbidden placeholders and raised limits: no matches. The contraction scratch
 has now passed; other listed scratches still require Lean checks. The eleven required
 boundary oleans were confirmed absent; existing dependencies must not be
 rebuilt. The completed common-horizon leaf is the first entry in
-`/tmp/qiii-boundary-canonical-modules.txt`; entries 1–12 are complete and only
-entry 13 remains. The max-kernel, comparison and critical-action leaves
+`/tmp/qiii-boundary-canonical-modules.txt`; all thirteen entries are complete.
+The max-kernel, comparison and critical-action leaves
 now explicitly print axioms for their representation and norm-bound results
 as well as the application targets.
 

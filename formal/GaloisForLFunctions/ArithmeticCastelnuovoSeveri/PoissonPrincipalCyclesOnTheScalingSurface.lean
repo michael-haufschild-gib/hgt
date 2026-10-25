@@ -284,9 +284,3 @@ theorem meyerScalingPair_compact_real {r : ℝ} (k h : SuzukiSmoothCompactTest r
   ring
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerScalingPair_add_principal_left
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerScalingPair_add_principal_right
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_nonzero_meyer_principal_cycle
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.compact_source_eq_zero_of_meyer_boundary
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerScalingPair_compact_real

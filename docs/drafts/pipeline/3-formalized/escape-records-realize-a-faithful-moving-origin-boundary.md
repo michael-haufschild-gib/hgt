@@ -1,10 +1,10 @@
 # Escape records realize a faithful moving-origin boundary
 
 - **ID:** escape-records-realize-a-faithful-moving-origin-boundary
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean completion pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
-- **Dependency:** [Resetting the moving origin](resetting-the-moving-origin-adds-a-faithful-step-module.md)
+- **Dependency:** [Resetting the moving origin](../2-fully-proven/resetting-the-moving-origin-adds-a-faithful-step-module.md)
 
 ## Construction
 
@@ -44,52 +44,6 @@ so the final statement must be admission-or-existence with no added analytic
 premise. It does not assert this mixed kernel is an unshifted Möbius
 `ActualCofactorLimit` and does not settle that classification.
 
-## Verification obligations
-
-- Search the corpus for an existing record-horizon boundary argument.
-- Check exact energy conventions, the source increment bound, and the
-  bounded-jump first-crossing estimate.
-- Prove record extraction, cofinality and common Gram extraction along the
-  constructed horizons without requiring strict monotonicity prematurely.
-- Formalize the fixed bounded-row weak-orthogonality lemma and the faithful
-  step module before claiming the final boundary construction.
-- Audit whether the definition of moving-origin compactification accepts
-  reset-only-origin rows; keep it separate from the unshifted source and
-  from fully recentered translation.
-
-No numerical experiment, actual escape instance, or zero configuration is
-used or claimed.
-
-## Source audit and first Lean drafts
-
-The corpus already proves `abs_receiver_shift_sub_le` from actual centered
-increments bounded by one; setting the old origin to zero gives
-`|A(n)|<=n`. `TheMaxKernelFormOfTheDampingAutocorrelation` already proves the
-pronic telescoping/max-kernel exchange and positivity. These are reused,
-not claimed as new. `sum_Icc_rpow_neg_le` supplies the finite power-sum bound
-needed to contradict admission from uniformly bounded sublinear square
-prefixes.
-
-The following components now passed the combined Lean scratch:
-
-- `/tmp/qiii_receiver_energy_crossings_body.lean`: actual linear prefix
-  bound, exact energy increment, jump bound one, and admission-or-existence
-  of every positive energy level with overshoot below one.
-- `/tmp/qiii_escape_prefix_records_body.lean`: sublinear square-prefix
-  bounds imply admission; otherwise arbitrarily large such spikes occur at
-  prefix records. Choice yields record origins with square heights tending
-  to infinity and `k^a/A(k)^2 -> 0` for each `0<=a<1`.
-- `/tmp/qiii_common_limit_along_horizons_body.lean`: common actual Gram
-  extraction along any prescribed cofinal horizon sequence.
-- `/tmp/qiii_step_gram_body.lean`: exact origin-step cofactor Gram limit.
-
-The normalized record-energy limit, crossing-sequence assembly, bounded-row
-weak orthogonality, faithful step/mixed modules and final admission-or-realization
-theorem all passed the full boundary scratch with standard axioms. Canonical
-leaves are installed and wired. Final direct standalone source checks remain in
-[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md). No actual
-escape instance is assumed or constructed.
-
 ## Closed construction and horizon convention
 
 To avoid a zero initial record height, cross the positive level
@@ -114,10 +68,28 @@ The recentered error and its fixed dilates vanish by the verified uniform
 source-power budget with `a=1-epsilon`. This closes the paper construction
 of the stated mixed kernel for every `c>0` on the escape branch.
 
-Record extraction, first crossings, prescribed-horizon extraction, bounded-row
-pairings and realization of every positive reset-origin Gram mass passed their
-final canonical checks with standard axioms. The complete Wiener-action and
-faithfulness consequences still need their individual canonical audits. The
-general record/first-crossing device is not claimed as a new general analysis
-theorem; its target is the exact actual Möbius moving-origin boundary. The
-original unshifted classification remains open.
+## Lean coverage
+
+All thirteen boundary modules passed direct canonical source checks and
+transitive axiom audits containing only `propext`, `Classical.choice`,
+`Quot.sound`; sessions and dependency checks are in
+[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
+
+- `admits_or_exists_record_horizons` in `EscapeRecordsControlMovingOriginMass`
+  supplies cofinal observation horizons, interior origins, prescribed trace
+  mass and vanishing source-power ratio (declaration namespace:
+  `GaloisForLFunctions.ArithmeticDefectRigidity`).
+- `CommonCofactorLimitsExistAlongPrescribedHorizons` extracts the actual
+  common Gram along those horizons.
+- `ResettingTheMovingOriginAddsTheMaxKernel` identifies the mixed Gram.
+- `TheOriginStepModuleHasTheFullBohrHull` and
+  `PositiveOriginMixturesAreFaithful` prove injective cyclic maps, zero
+  annihilators and full Bohr hulls using the complete Wiener action.
+- `EscapeRealizesEveryPositiveOriginBoundary` proves
+  `admits_or_every_positive_faithful_boundary_is_realized` and the zero-mass
+  recovery `mixedOrigin_kernel_zero`. Its final check was `60215`.
+
+The general record/first-crossing device is not claimed as a new general
+analysis theorem; its target is the exact actual Möbius moving-origin
+boundary. No numerical experiment, actual escape instance or zero
+configuration is used or claimed. The unshifted classification remains open.

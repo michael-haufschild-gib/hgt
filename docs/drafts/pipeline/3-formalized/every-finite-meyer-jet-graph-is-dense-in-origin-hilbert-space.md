@@ -43,9 +43,9 @@ in the origin norm is assumed. The range need not be complete for this argument.
 The existing half-density L1 graph closure has a critical/off-line split:
 critical zeroth evaluations remain single-valued, while off-line values
 become vertical. In origin-mass L2, every finite Xi reading becomes fully
-vertical, including critical zeroth values and all higher jets. Strengthening
-the positive ambient norm to an L2 Hilbert setting therefore does not preserve
-the critical cohomological reading. A closed graph cannot restore that loss.
+vertical, including critical zeroth values and all higher jets. Passing to
+this L2 Hilbert completion therefore loses the critical cohomological reading.
+A closed graph cannot restore that loss.
 
 ## Scope and certificate
 

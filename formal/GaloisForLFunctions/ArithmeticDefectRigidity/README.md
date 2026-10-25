@@ -159,10 +159,11 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     origin boundary violates cofactor contraction (`unreset_boundary_ne_actual_kernel`); bounded rows pair
     boundedly with subcritical cofactors (`exists_uniform_bounded_row_pairing`).
 
-Canonical audits of the origin-boundary leaves and vanishing-relative-energy perturbation remain
-pending after their combined Lean scratch passed. The
+All thirteen origin-boundary leaves and vanishing-relative-energy perturbation passed canonical
+Lean checks and standard-axiom audits. Raw-origin convergence and boundary-index corollaries
+remain under verification. The
 [completion ledger](../../../docs/drafts/pipeline/1-in-progress/q-iii-existing-findings-lean-completion.md)
-records each completed audit; these boundary leaves are not yet a finished canonical batch.
+records each completed audit.
 
 ### Countermodels (Gram laws do not classify the source)
 17. White noise satisfies the compactness laws and has a unique antipodal extension

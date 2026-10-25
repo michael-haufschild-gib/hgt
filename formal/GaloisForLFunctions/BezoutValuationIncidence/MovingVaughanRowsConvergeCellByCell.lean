@@ -78,6 +78,12 @@ theorem tendsto_pmPronicVaughanCentredPiece_moving_cell {ε : ℝ} (hε : 0 < ε
         simp only [pmPronicVaughanCentredPiece, sum_sub_distrib, ← sum_mul,
           sum_pmPronicVaughanPiece, sum_pmPronicVaughanMean, zero_mul, sub_zero]
       simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero] at hs
+      change pmPronicVaughanCentredPiece ε (U t) (V t) n 0 +
+        (pmPronicVaughanCentredPiece ε (U t) (V t) n 1 +
+          (pmPronicVaughanCentredPiece ε (U t) (V t) n 2 +
+            (pmPronicVaughanCentredPiece ε (U t) (V t) n 3 +
+              pmPronicVaughanCentredPiece ε (U t) (V t) n 4))) =
+        pmBezoutInteriorPrefix ε n at hs
       linarith only [hs]
     have h := (tendsto_const_nhds (x := pmBezoutInteriorPrefix ε n)).sub
       (h0.add (h1.add (h3.add h4)))
