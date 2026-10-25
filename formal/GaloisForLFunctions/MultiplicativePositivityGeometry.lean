@@ -15,6 +15,7 @@ import GaloisForLFunctions.MultiplicativePositivityGeometry.MultiFrequencyCap
 import GaloisForLFunctions.MultiplicativePositivityGeometry.ZeroFreeRegionCalibration
 import GaloisForLFunctions.MultiplicativePositivityGeometry.IntegralRealization
 import GaloisForLFunctions.MultiplicativePositivityGeometry.FiniteBoundaryDivisors
+import GaloisForLFunctions.MultiplicativePositivityGeometry.BoundaryZeroCapacity
 
 /-!
 # Multiplicative Positivity Geometry

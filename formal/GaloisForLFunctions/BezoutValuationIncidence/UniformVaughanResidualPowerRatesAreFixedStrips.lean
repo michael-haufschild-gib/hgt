@@ -206,8 +206,7 @@ theorem exists_uniform_pmPronicVaughanResidualGramError_power_of_fixed_strip
       (2 * c * H * B + B ^ 2 + c ^ 2 * D) * (T : ℝ) ^ (-γ) := by
     rw [show pmPronicVaughanCentredGram ε U V T i j / P - a i * a j / β =
       (pmPronicVaughanCentredGram ε U V T i j - a i * a j * P / β) / P by
-        field_simp [hP.ne', hβ.ne']
-        ring,
+        field_simp [hP.ne', hβ.ne'],
       abs_div, abs_of_pos hP]
     refine (div_le_div_of_nonneg_right hfinal hP.le).trans_eq ?_
     dsimp only [Q, P]

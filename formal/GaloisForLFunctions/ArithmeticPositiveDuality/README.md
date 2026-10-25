@@ -184,7 +184,7 @@ the spectral side. *Receiver*: an RH-equivalent reformulation; it never produces
 | **P3 Complex Fejér–tent law** | For arbitrary complex coefficients a self-dual theta relation forces `α + β = 0` and `Σ a_n (sin πλ_n/πλ_n)² = 0`. | `tsum_sin_sq_div_sq_eq_zero_of_freqTheta_relation` |
 | **P4 Beurling selectivity** | A Beurling prime measure generates integers with Riemann's theta law iff it is `Σ (Λ(n)/log n) δ_n`. | `eq_riemannPrimeMeasure_of_beurling_functional_equation` |
 | **P5 The degree-one FE-complete class is `{ζ}`** | A countable Beurling system with Riemann's completed FE has the simple pole forced, integers = positive integers, `beurlingZeta = ζ`, labels = rational primes. | `beurlingSystem_rigidity_of_completed_functional_equation` |
-| **P6 Poisson rigidity** | A locally finite positive measure with gap `(−1, 1) ∖ {0}` is self-dual on the tent translates iff it is `μ{0} Σ_n δ_n`; a wider gap forces `μ = 0`. | `tentSelfDual_iff_eq_smul_diracComb`, `eq_zero_of_wide_gap` |
+| **P6 Poisson rigidity** | A locally finite positive measure with gap `(−1, 1) ∖ {0}` is self-dual on the tent translates iff it is `μ{0} Σ_n δ_n`; a wider gap forces `μ = 0`; for every gap `a < 1` the dual lattices `Σ δ_{am} + a⁻¹ Σ δ_{k/a}` are self-dual and no comb, so the unit gap is sharp. | `tentSelfDual_iff_eq_smul_diracComb`, `eq_zero_of_wide_gap`, `exists_tentSelfDual_not_comb` |
 | **P7 One-sided density law** | If only the dual side has the gap, `μ ⋆ sinc(π·)² ≡ ν{0}` and `μ[s − ½, s + ½] ≤ (π²/4) ν{0}`. | `integral_sincSq_shift_eq`, `measure_Icc_le_of_poissonPair` |
 | **P8 Integer classification** | On every abelian group: integer-valued even positive definite with `φ(0) = 1` ⇔ sign character of a subgroup; isolation forces `1_{0}` ⇔ no 2-torsion. | `intValued_posDef_iff_signCharacter`, `isolation_forces_dirac_iff` |
 | **P9 Herglotz–Bochner on `ℤ^ι`** | Positive definite on `ℤ^ι` ⇔ coefficients of a finite positive measure on the torus; restriction is Kronecker push-forward. | `isPosDefOnLattice_iff`, `fourierCoeff_map_kroneckerLine` |
@@ -251,7 +251,7 @@ strip `(−½, 3/2)` with `O(1/(1 + t²))` decay. Cite it as "FE in Hamburger's 
 | FE + positivity is an axiom system with many models | At degree one on Beurling systems its only model is `ζ` (P5) |
 | Hamburger's theorem uses only the FE | The remainder must be holomorphic on the strip with quadratic decay |
 | The FE is a self-duality of the Weil pair | It is a self-duality of the integer measure; on the Weil pair positivity and gap sit on the same side (P7) |
-| A self-dual positive measure with any gap is a lattice | Only with the unit gap; a wider gap kills it (P6) |
+| A self-dual positive measure with any gap is a lattice | Only with the unit gap; a wider gap kills it, a narrower one admits two dual lattices (P6) |
 | Coupling more heights or primes buys more per zero | The barrier of each channel is the barrier of its fibre (P10) |
 | Independent channels share one barrier | Their barriers add: the joint barrier is the product (P11) |
 | Rank two decides RH, so rank-two positivity is progress | The two-prime Bochner problem is a receiver (P12) |

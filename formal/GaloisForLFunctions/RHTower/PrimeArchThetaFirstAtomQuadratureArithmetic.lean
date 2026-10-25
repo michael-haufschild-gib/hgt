@@ -1,4 +1,7 @@
-import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomQuadratureEnclosures
+import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomQuadratureCells0
+import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomQuadratureCells16
+import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomQuadratureCells32
+import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomQuadratureCells48
 
 /-!
 # Kernel-checked first-atom quadrature certificates
@@ -11,26 +14,45 @@ open scoped BigOperators
 
 namespace RHTower.ThetaRationalQuadrature
 
+-- Replace each enclosure by its separately checked integer numerator before summation.
+macro "normalize_first_atom_cells " side:ident r:num : tactic => do
+  let mut numerators := #[]
+  let bound := Lean.mkIdent
+    (if side.getId == `Lo then ``Enclosure.lower else ``Enclosure.upper)
+  for j in [:64] do
+    let name := Lean.mkIdent
+      (`RHTower.ThetaRationalQuadrature.Certificates ++
+        .mkSimple ("raw" ++ side.getId.toString ++ toString r.getNat ++
+        "_" ++ toString j))
+    numerators := numerators.push (← `(Lean.Parser.Tactic.simpLemma| ← ($name).property))
+  `(tactic| simp only [Finset.sum_range_succ, Finset.sum_range_zero,
+    $bound:ident, $[$numerators],*])
+
 private theorem lower_zero_certificate :
     (0.4969488 : ℚ) < ∑ j ∈ Finset.range 64, Enclosure.lower (Enclosure.massLo 0 j) := by
+  normalize_first_atom_cells Lo 0
   decide +kernel
 
 private theorem lower_one_certificate :
     (0.02297 : ℚ) < ∑ j ∈ Finset.range 64, Enclosure.lower (Enclosure.massLo 1 j) := by
+  normalize_first_atom_cells Lo 1
   decide +kernel
 
 private theorem lower_two_certificate :
     (0.0029627 : ℚ) < ∑ j ∈ Finset.range 64, Enclosure.lower (Enclosure.massLo 2 j) := by
+  normalize_first_atom_cells Lo 2
   decide +kernel
 
 private theorem upper_one_certificate :
     (∑ j ∈ Finset.range 64, Enclosure.upper (Enclosure.massHi 1 j)) + 1 / 40000000 <
       (0.0229718 : ℚ) := by
+  normalize_first_atom_cells Hi 1
   decide +kernel
 
 private theorem upper_three_certificate :
     (∑ j ∈ Finset.range 64, Enclosure.upper (Enclosure.massHi 3 j)) + 1 / 40000000 <
       (0.00059935 : ℚ) := by
+  normalize_first_atom_cells Hi 3
   decide +kernel
 
 /-- Rounded enclosures imply the five bounds for the original, unrounded rational masses. -/

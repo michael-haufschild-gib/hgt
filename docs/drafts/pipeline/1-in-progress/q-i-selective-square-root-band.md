@@ -77,7 +77,7 @@ answer to Q-I.
 
 ## Paper proof: pole mass and normalized mixed cancellation
 
-[PROVED HERE; first Lean leaf check passed] Write `ρ = Re(1/ζ(1+ε)) > 0`, `a_n` for the active
+[LEAN-VERIFIED; final direct check and standard-axiom audit passed] Write `ρ = Re(1/ζ(1+ε)) > 0`, `a_n` for the active
 correction, and `I_n` for the interior prefix. For every `ε > 0`, the source mean theorem
 gives `I_n/n → 0`, since the centered divisor prefix is `o(n)` and `|a_n| ≤ 1/2`.
 Cesàro averaging then gives `E_T^int/T → 0`. This uses absolute convergence at `1+ε`,
@@ -101,7 +101,7 @@ the requested zero-free information. This is not a negative answer to Q-I.
 
 ### Exact obstruction for individual cross entries
 
-[PROVED HERE; first Lean leaf check passed] The sum of the pole row is the pronic pairing of `p_4`
+[LEAN-VERIFIED; final direct check and standard-axiom audit passed] The sum of the pole row is the pronic pairing of `p_4`
 with `I`. Divided by `T`, that pairing tends to zero by the same Cesàro argument.
 Subtracting `G_44` therefore gives
 
@@ -117,7 +117,7 @@ The ratio here is `R_mix/D` for the uncentered Vaughan diagonal, whose pole cont
 has order `T`. It is not THIM's long-sawtooth/tail Cauchy–Schwarz ratio at order
 `T^(1-2ε)`. The latter's strict gap remains open in the report's interior region.
 
-Draft module: `formal/GaloisForLFunctions/BezoutValuationIncidence/TheVaughanDiagonalContainsLinearPoleMass.lean`.
+Lean module: `formal/GaloisForLFunctions/BezoutValuationIncidence/TheVaughanDiagonalContainsLinearPoleMass.lean`.
 Main names: `pmPronicVaughanDiagonal_linear_lower`,
 `tendsto_pmPronicVaughanGram_pole_div_nat`,
 `tendsto_pmPronicVaughanPoleMixed_div_nat`,
@@ -221,7 +221,7 @@ a lower bound on the actual signed remainder. Useful corpus inputs:
 `tendsto_window_squarefree_density`, `squarefreeDensity_eq`,
 `sum_rpow_neg_subcritical_le`, `pronicNorm_sum_le`, and `pronicNorm_smul`.
 
-Draft `TheAbsoluteVaughanRemainderBudgetHasTheTrivialExponent.lean` currently contains the
+`TheAbsoluteVaughanRemainderBudgetHasTheTrivialExponent.lean` formalizes the
 exact small-small extraction, signed-remainder norm bound, upper/lower bounds for the absolute
 mass, squared-budget power bounds, and the explicit no-power-saving corollary. Its first direct
 leaf check left two proof-script errors (addition order and an unreduced composition), both
@@ -382,11 +382,11 @@ standard-axiom audits; the complete second-scale parent is now in stage 3.
 No unconditional fixed power saving has been produced.
 
 An exact extreme-cutoff invariant sharpens this boundary:
-`../2-fully-proven/uniform-vaughan-residual-power-rates-are-fixed-strips.md`.
+`../3-formalized/uniform-vaughan-residual-power-rates-are-fixed-strips.md`.
 At `U=1,V=T`, the two centered convolution pieces are proportional with factor `ρ-1`.
 After subtracting the smooth Gram model, their corresponding error contrast equals
 `ρ subHalfZetaCoeff(ε)^2 H_T^2/(1-2ε)>0`. A fixed power rate for the uniform residual
-Gram law's fixed-strip equivalence remains under verification. All twelve
+Gram law is now Lean-verified equivalent to a fixed strip. All twelve
 finite identity, positivity, cofinal-obstruction, and harmonic-rate targets
 in `TheExtremeVaughanCutoffReadsItsHarmonicSum.lean` passed final direct checks
 and standard-axiom audits. This includes the eventual common-exponent-above-one
@@ -399,6 +399,15 @@ The three damped-transfer targets also passed final direct checks and
 standard-axiom audits in `PowerCancellationSurvivesTheDampedFloorTransform.lean`:
 every strict gain `γ<κ(1-ε)/(1+κ)` survives, with the corresponding
 pronic norm bound when `ε+γ<1/2`.
+All four actual receiver targets also passed final direct checks and
+standard-axiom audits in `FixedStripsControlAllVaughanFluctuationReceivers.lean`:
+under a fixed strip, one positive norm gain controls the convolution,
+truncated Möbius, and interior sources uniformly in both cutoffs.
+All four full Gram assembly targets also passed their final direct check and
+standard-axiom audits in `UniformVaughanResidualPowerRatesAreFixedStrips.lean`.
+They cover all five row rates, the uniform full-matrix implication, the
+two-entry extreme-cutoff converse, and the exact fixed-strip equivalence.
+The complete twenty-nine-target residual-power card is now in stage 3.
 
 ## External calibration
 

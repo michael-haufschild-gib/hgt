@@ -209,6 +209,11 @@ $G_{ij}$; diagonal $D_T$; mixed remainder $R^{\text{mix}}_T$; $E^{\text{int}}_T=
     The [damped floor transform](PowerCancellationSurvivesTheDampedFloorTransform.lean)
     preserves every strict gain `γ<κ(1-ε)/(1+κ)`, including the corresponding
     pronic norm bound when `ε+γ<1/2`.
+    [All actual fluctuating receivers](FixedStripsControlAllVaughanFluctuationReceivers.lean)
+    share one positive pronic norm gain under a fixed strip, uniformly in both cutoffs.
+    A [uniform residual Gram power rate](UniformVaughanResidualPowerRatesAreFixedStrips.lean)
+    is equivalent to a fixed strip. Two entries at the extreme cutoff already
+    force the converse; the forward bound controls the full matrix.
     [Two arithmetic cells](TheVaughanLimitRowsAreIndependentInTwoCells.lean)
     separate the actual prefix and pole at every positive damping, with
     determinant at least `2^(-2ε)/36`; their finite pronic Gram determinant is

@@ -543,6 +543,12 @@ cancellation is exactly equivalent to a fixed strip
 All three damped-transfer targets are verified: every strict gain
 `γ<κ(1-ε)/(1+κ)` survives, with its pronic norm bound when `ε+γ<1/2`
 (`PowerCancellationSurvivesTheDampedFloorTransform`).
+All four actual receiver targets are verified: a fixed strip gives one common
+positive pronic norm gain for the convolution, truncated Möbius, and interior
+sources (`FixedStripsControlAllVaughanFluctuationReceivers`).
+All four full Gram-power targets are verified: the complete matrix power-rate
+criterion is equivalent to a fixed strip, with only two extreme-cutoff entries
+needed for the converse (`UniformVaughanResidualPowerRatesAreFixedStrips`).
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?

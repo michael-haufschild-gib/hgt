@@ -56,3 +56,13 @@ small kernel-checked sums.
 After success: audit `/tmp/hgt_steinberg_axioms.lean` and `/tmp/hgt_first_atom_axioms.lean`, then run
 the required direct final checks of both requested source files. Scratch files use the exact
 `/tmp/hgt_*` names created during this task; remove only those files after completion.
+
+The reusable implementation now lives in `QuadratureSeeds` (scalar and endpoint certificates),
+`QuadratureCertificates` (cell certificate macro), and four `QuadratureCells{0,16,32,48}` modules.
+These suffixes abbreviate `PrimeArchThetaFirstAtomQuadrature` in the filenames. Each cell module
+contains sixteen cells. The macros expand to ordinary equality declarations; `cbv` produces
+proof terms for their arithmetic. All six new modules are wired into the RHTower umbrella.
+`QuadratureArithmetic` rewrites the five sums using the certified integer numerators before
+kernel reduction. Seed compilation is pending after correcting syntax antiquotation around
+field projections. Next checks: compile the certificate macro module, check the last-cell probe
+`/tmp/hgt_last_cell_probe.lean`, then compile the four cell modules and arithmetic module.

@@ -125,6 +125,7 @@ unchanged checks. All required leaves are wired into their programme umbrellas.
 | Finite actual hull common eigenvectors, radial moduli and simultaneous half-plane limits | `82346` | None needed |
 | Zero-dilation alternative and actual kernel/principal-ideal contraction composition | `73435` | None needed |
 | Closed operator range as closed span of image features; invariance under nonzero scaling | `78185` | `55322` passed |
+| Actual contracted module equals closed dilation range; finite dimension drops by nullity | `83434` | `64753` passed |
 
 The full mixed-jet third check completed without errors, with all fourteen
 standard-axiom reports in `/tmp/qiii-visible-mixed-jet-index-third.log`.
@@ -223,14 +224,17 @@ The generic closed-range required olean passed in session `55322`, with
 two standard-axiom reports in `/tmp/qiii-feature-closed-range-required-olean.log`.
 Its final source-only check `78185` passed, with both standard-axiom reports
 in `/tmp/qiii-feature-closed-range-canonical-final.log`.
-One active Lean process: required olean for
-`ArithmeticDefectRigidity/ContractedCofactorModulesAreClosedDilationRanges`, output
-`/tmp/qiii-contracted-range-required-olean.log`.
+The actual contracted-range required olean passed in session `64753`, with
+two standard-axiom reports in `/tmp/qiii-contracted-range-required-olean.log`.
+Its final source-only check `83434` passed, with both standard-axiom reports
+in `/tmp/qiii-contracted-range-canonical-final.log`.
+One active Lean process: terminal source-only check of
+`ArithmeticDefectRigidity/CofactorContractionIndexDropsByDilationNullity`, output
+`/tmp/qiii-contraction-index-canonical-final.log`.
 
 After it finishes, the pending canonical checks are:
 
-- Contraction: finish required olean and final `ContractedCofactorModulesAreClosedDilationRanges`;
-  terminal source-only `CofactorContractionIndexDropsByDilationNullity` and
+- Contraction: finish terminal source-only `CofactorContractionIndexDropsByDilationNullity` and
   `RankOneCofactorStatesAreFixedByContraction`. All sources are installed and
   wired; their combined scratch passed. Numeric horizon order is complete.
 - Jets: required olean and final `VisiblePolesImposeIndependentPaidConditions`,

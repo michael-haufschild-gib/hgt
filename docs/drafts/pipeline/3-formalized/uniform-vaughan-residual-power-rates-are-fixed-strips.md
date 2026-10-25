@@ -1,9 +1,9 @@
 # Uniform Vaughan residual power rates are fixed strips
 
 - **ID:** uniform-vaughan-residual-power-rates-are-fixed-strips
-- **Stage:** 2-fully-proven
-- **Type:** CLAIM (Lean verification pending)
-- **Verification:** All twenty-one extreme-cutoff, Mertens-to-harmonic, undamped-power, and damped-transfer targets passed final direct Lean checks and standard-axiom audits. The full uniform Gram-power equivalence remains UNPROVED pending its remaining Lean chain.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Verification:** All twenty-nine extreme-cutoff, Mertens-to-harmonic, undamped-power, damped-transfer, receiver, and full Gram targets passed final direct Lean checks and standard-axiom audits. Every module is wired into its umbrella; all owned scratch files are removed.
 - **Source:** ../3-formalized/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** At any fixed `0<ε<1/2`, a fixed power rate in the uniform second-scale centered Vaughan Gram law is equivalent to `zetaZeroAbscissa<1`.
 - **Novelty status:** Exact specialization of the Vaughan pieces plus the uniform hyperbola proof. No external novelty claim.
@@ -103,7 +103,7 @@ neither a strip nor impossibility of a strip. Full Q-I remains open.
 
 ## Lean status
 
-The complete Gram-power equivalence remains under verification. Required finite ingredients
+The complete Gram-power equivalence is Lean-verified. Its finite ingredients
 are the existing weighted Vaughan identity, Möbius divisor inversion, reciprocal
 mean factorization, and finite Abel summation. The generic divisor-square hyperbola estimate is checked in
 `HyperbolaCancellationWithDivisorBoundedCoefficients.lean`; its logarithmic
@@ -161,16 +161,30 @@ and no final warnings. The module is wired and its scratch removed:
 
 They certify every prefix gain `0<γ<κ(1-ε)/(1+κ)`, together with its
 pronic norm transfer when `ε+γ<1/2`.
-The actual receiver transfer has four further drafts in
-`/tmp/QIVaughanPowerReceiverTools.lean`: common truncated partial sums, bounded
-pattern power norms, convolution fluctuation power norms, and one common gain
-for all three actual fluctuating sources under a fixed strip. These are unchecked.
-The complete assembly now has four proof drafts in
-`/tmp/QIVaughanGramPowerTools.lean`, planned as
-`UniformVaughanResidualPowerRatesAreFixedStrips.lean`: all five norm rates, the
-full residual Gram power rate from a strip, the converse using only the two
-extreme-cutoff entries, and the exact full-matrix equivalence. All remain
-unproved pending Lean checks and transitive axiom audits.
+All four targets in `FixedStripsControlAllVaughanFluctuationReceivers.lean`
+passed corrected producing and final direct checks, with standard axioms only
+and no warnings. The module is wired and its scratch removed:
+
+- `abs_sum_truncatedMoebius_le_of_mertens_power`
+- `exists_uniform_patternPrefix_pronicNorm_power_of_partial_sum_power`
+- `exists_uniform_pmVaughanConvolutionFluctuation_pronicNorm_power`
+- `exists_uniform_vaughan_source_pronicNorm_power_of_fixed_strip`
+
+They certify common truncated partial sums, bounded-pattern power norms,
+convolution fluctuation power norms, and one common gain for all three actual
+fluctuating sources under a fixed strip.
+All four assembly targets in `UniformVaughanResidualPowerRatesAreFixedStrips.lean`
+passed the corrected final direct check, with standard axioms only and no warnings.
+The module is wired and its scratch removed:
+
+- `exists_uniform_pmPronicVaughanSmoothRemainder_power_of_fixed_strip`
+- `exists_uniform_pmPronicVaughanResidualGramError_power_of_fixed_strip`
+- `zetaZeroAbscissa_lt_one_of_extreme_vaughan_residual_power`
+- `zetaZeroAbscissa_lt_one_iff_uniform_pmPronicVaughanResidualGramError_power`
+
+These certify all five norm rates, the full residual Gram power rate from a
+strip, the converse using only the two extreme-cutoff entries, and the exact
+full-matrix equivalence. No fixed strip is asserted unconditionally.
 
 The pole entry imposes a stronger rate cap on the full matrix: its smooth coefficient
 is zero and its centered energy tends to a strictly positive constant. Hence a full

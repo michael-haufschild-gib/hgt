@@ -40,8 +40,9 @@ theorem abs_mul_exp_le_of_factorial_bounds {x t A C r : ℝ}
       rw [Real.norm_eq_abs, abs_of_nonneg (by positivity :
         0 ≤ |x| * ((r * t / A) ^ q / (q.factorial : ℝ)))]
       exact hterm q)
-  simpa only [Real.norm_eq_abs, abs_of_nonneg (by positivity :
-    0 ≤ |x| * Real.exp (r * t / A)), div_eq_mul_inv] using hsum
+  rw [Real.norm_eq_abs, abs_of_nonneg
+    (mul_nonneg (abs_nonneg x) (Real.exp_pos (r * t / A)).le)] at hsum
+  simpa only [div_eq_mul_inv] using hsum
 
 /-- Factorial bounds give every exponential rate strictly inside their reciprocal scale. -/
 theorem abs_le_exp_neg_of_factorial_bounds {x t A C r : ℝ}

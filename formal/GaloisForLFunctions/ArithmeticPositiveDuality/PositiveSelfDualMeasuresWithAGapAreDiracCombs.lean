@@ -627,7 +627,3 @@ theorem exists_tentSelfDual_not_comb {a : ℝ} (ha0 : 0 < a) (ha1 : a < 1) :
     exact absurd h1 (by norm_num)
 
 end GaloisForLFunctions.ArithmeticPositiveDuality
-
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.exists_tentSelfDual_not_comb
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.tentSelfDual_iff_eq_smul_diracComb
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.measure_Icc_le_of_poissonPair

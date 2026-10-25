@@ -653,8 +653,8 @@ theorem re_logDeriv_Gammaℝ_le_all_heights {σ t : ℝ} (hσ1 : 1 ≤ σ) (hσ2
   have hpi : (1 : ℝ) ≤ Real.log Real.pi := by
     have h3 : Real.exp 1 < Real.pi := lt_trans (by linarith [Real.exp_one_lt_d9]) Real.pi_gt_three
     have h := Real.log_lt_log (Real.exp_pos 1) h3
-    rwa [Real.log_exp] at h ⊢; exact h.le
-  -- Re-check `hpi` cleanly:
+    rw [Real.log_exp] at h
+    exact h.le
   have hG : logDeriv Complex.Gammaℝ s =
       Complex.digamma z / 2 - ((Real.log Real.pi : ℝ) : ℂ) / 2 :=
     GaloisForLFunctions.logDeriv_Gammaℝ_digamma (by rw [hsre]; linarith)
@@ -883,17 +883,9 @@ theorem collective_half_pole_interior_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
       have h1 : q ^ N ≤ (((N + 1 : ℕ) : ℝ) ^ r) :=
         (hgeom N).trans (by exact_mod_cast hS_upper N)
       have hqpos : 0 < q ^ (N + 1) := pow_pos (zero_lt_one.trans hq1) _
-      rw [div_le_div_iff₀ (zero_lt_one.trans hq1) hqpos]
-      calc 1 * q ^ N * q = q * q ^ N := by ring
-        _ ≤ q * (((N + 1 : ℕ) : ℝ) ^ r) := mul_le_mul_of_nonneg_left h1 (zero_le_one.trans hq1.le)
-    -- Wait: check `div_le_div_iff₀` above (`1 * q ^ (N + 1) ≤ ((N + 1) ^ r) * q`)!
-    have hge' : 1 / q ≤ (((N + 1 : ℕ) : ℝ) ^ r) / q ^ (N + 1) := by
-      have h1 : q ^ N ≤ (((N + 1 : ℕ) : ℝ) ^ r) :=
-        (hgeom N).trans (by exact_mod_cast hS_upper N)
-      have hqpos : 0 < q ^ (N + 1) := pow_pos (zero_lt_one.trans hq1) _
       rw [div_le_div_iff₀ (zero_lt_one.trans hq1) hqpos, one_mul, pow_succ]
       exact mul_le_mul_of_nonneg_right h1 (zero_le_one.trans hq1.le)
-    linarith [hlt, hge']
+    linarith [hlt, hge]
   -- Index `S k` by `e : Fin n ≃ S k` with uniform weights `c j = 1 / √n`.
   set n : ℕ := (S k).card
   have hn1 : 1 ≤ n := hS_pos k
@@ -935,18 +927,19 @@ theorem collective_half_pole_interior_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
   let H_k : ℝ := (k : ℝ) * ∑ ℓ, γ ℓ
   have hHk_nn : 0 ≤ H_k := mul_nonneg (Nat.cast_nonneg k)
     (Finset.sum_nonneg fun ℓ _ => (him ℓ).le)
-  let G_k : ℝ := (κ : ℝ) * (1 + offDiag / (n : ℝ)) +
+  let G_k : ℝ := (κ : ℝ) * ((n : ℝ) + offDiag / (n : ℝ)) +
       (n : ℝ) * (d : ℝ) * (Real.log (3 + H_k) / 2 + 1 / 4)
   -- Check positivity and `κ ≤ G_k` for `width_ge_of_pole_growth_bound`.
   have hlog_nn : 0 ≤ Real.log (3 + H_k) := Real.log_nonneg (by linarith)
   have hd_pos_r : (1 : ℝ) ≤ d := by exact_mod_cast hS.degree_pos
+  have hn_ge1 : (1 : ℝ) ≤ n := by exact_mod_cast hn1
   have hGk_pos : 0 < G_k := by
-    have h1 : (0 : ℝ) ≤ (κ : ℝ) * (1 + offDiag / (n : ℝ)) := by positivity
+    have h1 : (0 : ℝ) ≤ (κ : ℝ) * ((n : ℝ) + offDiag / (n : ℝ)) := by positivity
     have h2 : (0 : ℝ) < (n : ℝ) * (d : ℝ) * (Real.log (3 + H_k) / 2 + 1 / 4) := by positivity
     simp only [G_k]; linarith
   have hAGk : (κ : ℝ) ≤ G_k := by
-    have h1 : (κ : ℝ) ≤ (κ : ℝ) * (1 + offDiag / (n : ℝ)) :=
-      le_mul_of_one_le_right (Nat.cast_nonneg κ) (by positivity)
+    have h1 : (κ : ℝ) ≤ (κ : ℝ) * ((n : ℝ) + offDiag / (n : ℝ)) :=
+      le_mul_of_one_le_right (Nat.cast_nonneg κ) (by linarith [div_nonneg hoff_nn hn_pos.le])
     have h2 : (0 : ℝ) ≤ (n : ℝ) * (d : ℝ) * (Real.log (3 + H_k) / 2 + 1 / 4) := by positivity
     simp only [G_k]; linarith
   -- Apply `coupled_strip_pole_zero_forcing` for every `δ ∈ (0, 1]`.
@@ -1060,7 +1053,7 @@ theorem collective_half_pole_interior_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
         ∑ j, ∑ j', c j * c j' *
           (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I) +
             1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - 1)).re ≤
-        1 / δ + 1 + offDiag / (n : ℝ) := by
+        1 / δ + (n : ℝ) + offDiag / (n : ℝ) := by
       have hsplit_pole :
           (∑ j, ∑ j', c j * c j' *
             (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I) +
@@ -1078,8 +1071,6 @@ theorem collective_half_pole_interior_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
       rw [hsplit_pole]
       have h0_pole : (1 / (n : ℝ)) * (∑ j : Fin n, ∑ j' : Fin n,
           (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I)).re) ≤ (n : ℝ) := by
-        -- Wait: `(1 / n) * (n * n * 1) = n`, NOT `1`!
-        -- GOOD CATCH! Let's check: `∑_{j, j'} c_j c_{j'} = n^2 * (1/n) = n`!
         have hb : ∑ j : Fin n, ∑ j' : Fin n,
             (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I)).re ≤ (n : ℝ) * (n : ℝ) := by
           calc ∑ j : Fin n, ∑ j' : Fin n,
@@ -1090,8 +1081,876 @@ theorem collective_half_pole_interior_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
         have := mul_le_mul_of_nonneg_left hb (by positivity : (0 : ℝ) ≤ 1 / (n : ℝ))
         have he : (1 / (n : ℝ)) * ((n : ℝ) * (n : ℝ)) = (n : ℝ) := by field_simp
         linarith
-      -- Wait: look at `h0_pole`: `(1 / n) * ∑_{j, j'} Re(1/s_{j,j'}) ≤ n`, so we should include
-      -- `(κ : ℝ) * n` in `G_k` instead of `(κ : ℝ) * 1`! Notice `(n : ℝ) ≥ 1`, so `κ ≤ κ * n` STILL holds!
-      exact absurd rfl (by decide) -- placeholder caught right before saving!
-    exact absurd rfl (by decide)
-  exact absurd rfl (by decide)
+      have h1_pole : (1 / (n : ℝ)) * (∑ j : Fin n,
+            ((1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j : ℝ) : ℂ) * I - 1)).re +
+              ∑ j' ∈ Finset.univ.erase j,
+                (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - 1)).re)) ≤
+          1 / δ + offDiag / (n : ℝ) := by
+        have hdiag : ∀ j : Fin n,
+            (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j : ℝ) : ℂ) * I - 1)).re = 1 / δ := by
+          intro j; rw [sub_self]; exact re_pole_one_eq_of_zero hδ0
+        have hoff : ∀ j : Fin n, ∀ j' ∈ Finset.univ.erase j,
+            (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - 1)).re ≤
+              1 / (x j - x j') ^ 2 := by
+          intro j j' hj'
+          have hne_idx : j' ≠ j := (Finset.mem_erase.mp hj').1
+          have hne_x : x j - x j' ≠ 0 := sub_ne_zero.mpr fun h =>
+            hne_idx.symm (e.injective (Subtype.ext h))
+          exact re_pole_one_le_inv_sq hδ0 hδ1 hne_x
+        have hsum_le : ∑ j : Fin n,
+            ((1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j : ℝ) : ℂ) * I - 1)).re +
+              ∑ j' ∈ Finset.univ.erase j,
+                (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - 1)).re) ≤
+            (n : ℝ) * (1 / δ) + offDiag := by
+          rw [Finset.sum_add_distrib]
+          refine add_le_add ?_ (Finset.sum_le_sum fun j _ => Finset.sum_le_sum (hoff j))
+          simp_rw [hdiag]
+          simp
+        have hm' := mul_le_mul_of_nonneg_left hsum_le (by positivity : (0 : ℝ) ≤ 1 / (n : ℝ))
+        have he' : (1 / (n : ℝ)) * ((n : ℝ) * (1 / δ) + offDiag) = 1 / δ + offDiag / (n : ℝ) := by
+          field_simp
+        linarith
+      linarith
+    have harch_bound :
+        ∑ j, ∑ j', c j * c j' *
+          (logDeriv Complex.Gammaℝ (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I)).re ≤
+        (n : ℝ) * (Real.log (3 + H_k) / 2 + 1 / 4) := by
+      have hpt_arch : ∀ j j' : Fin n,
+          (logDeriv Complex.Gammaℝ (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I)).re ≤
+            Real.log (3 + H_k) / 2 + 1 / 4 := by
+        intro j j'
+        have hb1 := hS_bounds k (x j) (e j).2
+        have hb2 := hS_bounds k (x j') (e j').2
+        have habs : |x j - x j'| ≤ H_k := abs_le.mpr ⟨by linarith, by linarith⟩
+        have hlog_le : Real.log (3 + |x j - x j'|) ≤ Real.log (3 + H_k) :=
+          Real.log_le_log (by positivity) (by linarith)
+        have hg := re_logDeriv_Gammaℝ_le_all_heights (σ := 1 + δ) (t := x j - x j')
+          (by linarith) (by linarith)
+        linarith
+      calc ∑ j, ∑ j', c j * c j' *
+            (logDeriv Complex.Gammaℝ (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I)).re
+          ≤ ∑ _j : Fin n, ∑ _j' : Fin n,
+              (1 / (n : ℝ)) * (Real.log (3 + H_k) / 2 + 1 / 4) := by
+            refine Finset.sum_le_sum fun j _ => Finset.sum_le_sum fun j' _ => ?_
+            rw [hcc]
+            exact mul_le_mul_of_nonneg_left (hpt_arch j j') (by positivity)
+        _ = (n : ℝ) * (Real.log (3 + H_k) / 2 + 1 / 4) := by
+            simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+            field_simp
+    have hkp := mul_le_mul_of_nonneg_left hpole_bound (Nat.cast_nonneg κ)
+    have hda := mul_le_mul_of_nonneg_left harch_bound (Nat.cast_nonneg d)
+    have hGk_expand : (κ : ℝ) * (1 / δ + (n : ℝ) + offDiag / (n : ℝ)) +
+        (d : ℝ) * ((n : ℝ) * (Real.log (3 + H_k) / 2 + 1 / 4)) =
+        (κ : ℝ) / δ + G_k := by simp only [G_k]; ring
+    linarith [hlhs, hforce, hkp, hda, hGk_expand]
+  -- Extract strict interior width via `width_ge_of_pole_growth_bound`.
+  have hAB : (κ : ℝ) < 2 * (M : ℝ) - 1 / 2 := by
+    have hnat : κ + 1 ≤ 2 * M := by omega
+    have hr : (κ : ℝ) + 1 ≤ 2 * (M : ℝ) := by exact_mod_cast hnat
+    linarith
+  have hw_le := width_ge_of_pole_growth_bound (Nat.cast_nonneg κ) hAB hGk_pos hAGk hη_nonneg hmain_δ
+  set w : ℝ := min 1 ((Real.sqrt (2 * (M : ℝ) - 1 / 2) - Real.sqrt κ) ^ 2 / G_k)
+  have hw_pos : 0 < w := by
+    have hs_lt : Real.sqrt κ < Real.sqrt (2 * (M : ℝ) - 1 / 2) :=
+      Real.sqrt_lt_sqrt (Nat.cast_nonneg κ) hAB
+    have hsub_pos : 0 < Real.sqrt (2 * (M : ℝ) - 1 / 2) - Real.sqrt κ := sub_pos.mpr hs_lt
+    exact lt_min zero_lt_one (div_pos (sq_pos_of_pos hsub_pos) hGk_pos)
+  exact ⟨w, hw_pos, ℓ_max, by linarith [hw_le, hη_eq]⟩
+
+/-! ### 6. Uniform `(r + 1)`-channel star collar forcing and `κ²` collar sparsity -/
+
+/-- Explicit growth constant for the `(r + 1)`-channel star `(0, Im ρ_1, …, Im ρ_r)` on ordinates
+in `[Δ, T]` with pairwise ordinate separation `Δ > 0`. -/
+def starCollarGrowth (κ d r : ℕ) (Δ T : ℝ) : ℝ :=
+  (3 * packConstant / (2 * Δ ^ 2)) * (κ : ℝ) +
+    2 * (r : ℝ) * ((κ : ℝ) + (d : ℝ) * (Real.log (3 + T) / 2 + 1 / 4))
+
+theorem starCollarGrowth_pos {κ d r : ℕ} (hd : 1 ≤ d) (hr : 1 ≤ r) {Δ T : ℝ}
+    (hΔ : 0 < Δ) (hT : 0 ≤ T) :
+    0 < starCollarGrowth κ d r Δ T := by
+  unfold starCollarGrowth
+  have hp := packConstant_pos
+  have hd' : (1 : ℝ) ≤ d := by exact_mod_cast hd
+  have hr' : (1 : ℝ) ≤ r := by exact_mod_cast hr
+  have hlog : 0 ≤ Real.log (3 + T) := Real.log_nonneg (by linarith)
+  have h1 : 0 ≤ (3 * packConstant / (2 * Δ ^ 2)) * (κ : ℝ) := by positivity
+  have h2 : 0 < 2 * (r : ℝ) * ((κ : ℝ) + (d : ℝ) * (Real.log (3 + T) / 2 + 1 / 4)) := by positivity
+  linarith
+
+/-- **Quantitative `(r + 1)`-channel star collar forcing.** Coupling `0` with weight `√r` against
+`r ≥ 1` `Δ`-separated upper-half-plane zeros in `[Δ, T]` with unit weights gives explicit collar
+repulsion whenever `√r · κ < ∑_ℓ m_ℓ`. Unlike single-zero certificates (which fail whenever
+`κ ≥ 2`), increasing `r` beats any pole budget `κ` with explicit height dependence
+`1 / (d log(3 + T))`. -/
+theorem collective_star_collar_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
+    (hS : CompletedPositiveSystem κ d F Λ) {r : ℕ} (hr : 1 ≤ r)
+    (ρ : Fin r → ℂ) (m : Fin r → ℕ) {Δ T : ℝ} (hΔ : 0 < Δ)
+    (him_lo : ∀ ℓ, Δ ≤ (ρ ℓ).im)
+    (him_hi : ∀ ℓ, (ρ ℓ).im ≤ T)
+    (hsep : ∀ ℓ ℓ', ℓ ≠ ℓ' → Δ ≤ |(ρ ℓ).im - (ρ ℓ').im|)
+    (hm_pos : ∀ ℓ, 1 ≤ m ℓ)
+    (hm : ∀ ℓ, m ℓ ≤ (analyticOrderAt Λ (ρ ℓ)).toNat)
+    (hM : Real.sqrt r * (κ : ℝ) < ∑ ℓ, (m ℓ : ℝ)) :
+    ∃ ℓ : Fin r, (ρ ℓ).re ≤ 1 -
+      min 1 ((Real.sqrt ((∑ i, (m i : ℝ)) / Real.sqrt r) - Real.sqrt κ) ^ 2 /
+        starCollarGrowth κ d r Δ T) := by
+  classical
+  haveI : Nonempty (Fin r) := Fin.pos_iff_nonempty.mp hr
+  have hr_pos : (0 : ℝ) < r := by exact_mod_cast hr
+  have hr_ge1 : (1 : ℝ) ≤ r := by exact_mod_cast hr
+  have hsqr_pos : 0 < Real.sqrt r := Real.sqrt_pos.mpr hr_pos
+  have hsqr_le_r : Real.sqrt r ≤ (r : ℝ) := by
+    nlinarith [Real.sq_sqrt hr_pos.le, sq_nonneg (Real.sqrt r - 1), hsqr_pos]
+  have hT_nn : 0 ≤ T := hΔ.le.trans ((him_lo ⟨0, hr⟩).trans (him_hi ⟨0, hr⟩))
+  have him : ∀ ℓ, 0 < (ρ ℓ).im := fun ℓ => lt_of_lt_of_le hΔ (him_lo ℓ)
+  have hdist : ∀ ℓ ℓ', ℓ ≠ ℓ' → (ρ ℓ).im ≠ (ρ ℓ').im := fun ℓ ℓ' hne heq => by
+    have := hsep ℓ ℓ' hne; rw [heq, sub_self, abs_zero] at this; linarith
+  have hρ_strip : ∀ ℓ, 0 ≤ (ρ ℓ).re ∧ (ρ ℓ).re ≤ 1 := fun ℓ =>
+    hS.zero_re_mem_Icc (hS.eq_zero_of_one_le_order_toNat ((hm_pos ℓ).trans (hm ℓ)))
+  set η : ℝ := Finset.univ.sup' Finset.univ_nonempty (fun ℓ => 1 - (ρ ℓ).re)
+  have hη_ge : ∀ ℓ, 1 - (ρ ℓ).re ≤ η := fun ℓ => Finset.le_sup' (fun i => 1 - (ρ i).re) (mem_univ ℓ)
+  obtain ⟨ℓ_max, _, hη_eq⟩ := Finset.exists_mem_eq_sup' Finset.univ_nonempty (fun ℓ => 1 - (ρ ℓ).re)
+  have hη_nn : 0 ≤ η := by linarith [(hρ_strip ℓ_max).2, hη_ge ℓ_max]
+  set M_r : ℝ := ∑ ℓ, (m ℓ : ℝ)
+  set G : ℝ := starCollarGrowth κ d r Δ T
+  have hG_pos : 0 < G := starCollarGrowth_pos hS.degree_pos hr hΔ hT_nn
+  have hAG : (κ : ℝ) ≤ G := by
+    unfold G starCollarGrowth
+    have hp := packConstant_pos
+    have hd' : (1 : ℝ) ≤ d := by exact_mod_cast hS.degree_pos
+    have hlog : 0 ≤ Real.log (3 + T) := Real.log_nonneg (by linarith)
+    have h1 : 0 ≤ (3 * packConstant / (2 * Δ ^ 2)) * (κ : ℝ) := by positivity
+    have h2 : 0 ≤ (d : ℝ) * (Real.log (3 + T) / 2 + 1 / 4) := by positivity
+    nlinarith [Nat.cast_nonneg (α := ℝ) κ]
+  -- Star configuration on `Fin (r + 1)`: index `0` at height `0` with weight `√r`,
+  -- indices `ℓ.succ` at height `(ρ ℓ).im` with weight `1`.
+  let x : Fin (r + 1) → ℝ := Fin.cases 0 (fun ℓ => (ρ ℓ).im)
+  let c : Fin (r + 1) → ℝ := Fin.cases (Real.sqrt r) (fun _ => 1)
+  have hc_nn : ∀ j, 0 ≤ c j := Fin.cases hsqr_pos.le (fun _ => zero_le_one)
+  have hx_bounds : ∀ j, 0 ≤ x j ∧ x j ≤ T :=
+    Fin.cases ⟨le_rfl, hT_nn⟩ (fun ℓ => ⟨(him ℓ).le, him_hi ℓ⟩)
+  -- Separated inverse-square bounds via `sum_inv_sq_le_of_separated`.
+  have hinj_im : Function.Injective (fun ℓ : Fin r => (ρ ℓ).im) := fun ℓ ℓ' h => by
+    by_contra hne; exact hdist ℓ ℓ' hne h
+  have hpack_zero : ∑ ℓ : Fin r, 1 / ((ρ ℓ).im) ^ 2 ≤ packConstant / Δ ^ 2 := by
+    let P : Finset ℝ := Finset.univ.image (fun ℓ : Fin r => (ρ ℓ).im)
+    have hP_sep : ∀ p ∈ P, ∀ p' ∈ P, p ≠ p' → Δ ≤ |p - p'| := by
+      intro p hp p' hp' hne
+      obtain ⟨ℓ, _, rfl⟩ := Finset.mem_image.mp hp
+      obtain ⟨ℓ', _, rfl⟩ := Finset.mem_image.mp hp'
+      exact hsep ℓ ℓ' (fun h => hne (congrArg _ h))
+    have hP_far : ∀ p ∈ P, Δ ≤ ‖(0 : ℂ) - p‖ := by
+      intro p hp
+      obtain ⟨ℓ, _, rfl⟩ := Finset.mem_image.mp hp
+      rw [zero_sub, norm_neg, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (him ℓ)]
+      exact him_lo ℓ
+    have hpack := sum_inv_sq_le_of_separated hΔ P hP_sep 0 hP_far
+    have hsum_eq : ∑ p ∈ P, 1 / ‖(0 : ℂ) - (p : ℂ)‖ ^ 2 = ∑ ℓ : Fin r, 1 / ((ρ ℓ).im) ^ 2 := by
+      rw [Finset.sum_image (fun ℓ _ ℓ' _ h => hinj_im h)]
+      refine Finset.sum_congr rfl fun ℓ _ => ?_
+      rw [zero_sub, norm_neg, Complex.norm_real, Real.norm_eq_abs, sq_abs]
+    linarith
+  have hpack_pair : ∀ j : Fin r,
+      ∑ k ∈ Finset.univ.erase j, 1 / ((ρ j).im - (ρ k).im) ^ 2 ≤ packConstant / Δ ^ 2 := by
+    intro j
+    let Pj : Finset ℝ := (Finset.univ.erase j).image (fun k : Fin r => (ρ k).im)
+    have hPj_sep : ∀ p ∈ Pj, ∀ p' ∈ Pj, p ≠ p' → Δ ≤ |p - p'| := by
+      intro p hp p' hp' hne
+      obtain ⟨k, _, rfl⟩ := Finset.mem_image.mp hp
+      obtain ⟨k', _, rfl⟩ := Finset.mem_image.mp hp'
+      exact hsep k k' (fun h => hne (congrArg _ h))
+    have hPj_far : ∀ p ∈ Pj, Δ ≤ ‖((ρ j).im : ℂ) - p‖ := by
+      intro p hp
+      obtain ⟨k, hk, rfl⟩ := Finset.mem_image.mp hp
+      have hkj : k ≠ j := (Finset.mem_erase.mp hk).1
+      rw [← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs]
+      exact hsep j k hkj.symm
+    have hpack := sum_inv_sq_le_of_separated hΔ Pj hPj_sep ((ρ j).im : ℂ) hPj_far
+    have hsum_eq : ∑ p ∈ Pj, 1 / ‖((ρ j).im : ℂ) - (p : ℂ)‖ ^ 2 =
+        ∑ k ∈ Finset.univ.erase j, 1 / ((ρ j).im - (ρ k).im) ^ 2 := by
+      rw [Finset.sum_image (fun k _ k' _ h => hinj_im h)]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      rw [← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs, sq_abs]
+    linarith
+  -- Main inequality for every `δ ∈ (0, 1]`.
+  have hmain_δ : ∀ δ : ℝ, 0 < δ → δ ≤ 1 →
+      (M_r / Real.sqrt r) / (δ + η) ≤ (κ : ℝ) / δ + G := by
+    intro δ hδ0 hδ1
+    have hforce := coupled_strip_pole_zero_forcing hS ρ m him hdist hm x c hc_nn hδ0
+    -- Lower bound LHS by keeping `(ℓ.succ, 0)` and `(0, ℓ.succ)`.
+    have hlhs_ℓ : ∀ ℓ : Fin r,
+        2 * Real.sqrt r / (δ + η) ≤
+          ∑ j, ∑ k, c j * c k *
+            ((1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I - ρ ℓ)).re +
+              (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I - starRingEnd ℂ (ρ ℓ))).re) := by
+      intro ℓ
+      have hnn : ∀ j k : Fin (r + 1),
+          0 ≤ c j * c k *
+            ((1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I - ρ ℓ)).re +
+              (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I - starRingEnd ℂ (ρ ℓ))).re) := by
+        intro j k
+        refine mul_nonneg (mul_nonneg (hc_nn j) (hc_nn k)) (add_nonneg ?_ ?_)
+        · exact re_one_div_nonneg_of_re_le (by simp; linarith [(hρ_strip ℓ).2])
+        · exact re_one_div_nonneg_of_re_le (by simp; linarith [(hρ_strip ℓ).2])
+      rw [Finset.sum_product']
+      have hne_pair : (ℓ.succ, (0 : Fin (r + 1))) ≠ (0, ℓ.succ) := fun h =>
+        Fin.succ_ne_zero ℓ (Prod.mk.inj h).1
+      have hsub := Finset.sum_le_sum_of_subset_of_nonneg
+        (s := {(ℓ.succ, (0 : Fin (r + 1))), ((0 : Fin (r + 1)), ℓ.succ)})
+        (t := Finset.univ ×ˢ Finset.univ)
+        (fun p _ => by simp) (fun p _ _ => hnn p.1 p.2)
+      rw [Finset.sum_pair hne_pair] at hsub
+      have ht1 : Real.sqrt r / (δ + η) ≤
+          c ℓ.succ * c 0 *
+            ((1 / (((1 + δ : ℝ) : ℂ) + ((x ℓ.succ - x 0 : ℝ) : ℂ) * I - ρ ℓ)).re +
+              (1 / (((1 + δ : ℝ) : ℂ) + ((x ℓ.succ - x 0 : ℝ) : ℂ) * I -
+                starRingEnd ℂ (ρ ℓ))).re) := by
+        have hcc1 : c ℓ.succ * c 0 = Real.sqrt r := by simp [c]
+        have hx1 : x ℓ.succ - x 0 = (ρ ℓ).im := by simp [x]
+        rw [hcc1, hx1]
+        have hr1 := re_zero_resonant_ge hδ0 (hρ_strip ℓ).2 (hη_ge ℓ)
+        have hr2 : 0 ≤ (1 / (((1 + δ : ℝ) : ℂ) + (((ρ ℓ).im : ℝ) : ℂ) * I -
+            starRingEnd ℂ (ρ ℓ))).re :=
+          re_one_div_nonneg_of_re_le (by simp; linarith [(hρ_strip ℓ).2])
+        have := mul_le_mul_of_nonneg_left (show 1 / (δ + η) ≤ _ by linarith) hsqr_pos.le
+        rwa [mul_one_div] at this
+      have ht2 : Real.sqrt r / (δ + η) ≤
+          c 0 * c ℓ.succ *
+            ((1 / (((1 + δ : ℝ) : ℂ) + ((x 0 - x ℓ.succ : ℝ) : ℂ) * I - ρ ℓ)).re +
+              (1 / (((1 + δ : ℝ) : ℂ) + ((x 0 - x ℓ.succ : ℝ) : ℂ) * I -
+                starRingEnd ℂ (ρ ℓ))).re) := by
+        have hcc2 : c 0 * c ℓ.succ = Real.sqrt r := by simp [c]
+        have hx2 : x 0 - x ℓ.succ = -((ρ ℓ).im) := by simp [x]
+        rw [hcc2, hx2]
+        have hr1 : 0 ≤ (1 / (((1 + δ : ℝ) : ℂ) + ((-((ρ ℓ).im) : ℝ) : ℂ) * I - ρ ℓ)).re :=
+          re_one_div_nonneg_of_re_le (by simp; linarith [(hρ_strip ℓ).2])
+        have hr2 := re_conj_zero_resonant_ge hδ0 (hρ_strip ℓ).2 (hη_ge ℓ)
+        have := mul_le_mul_of_nonneg_left (show 1 / (δ + η) ≤ _ by linarith) hsqr_pos.le
+        rwa [mul_one_div] at this
+      have he : 2 * Real.sqrt r / (δ + η) = Real.sqrt r / (δ + η) + Real.sqrt r / (δ + η) := by
+        ring
+      linarith
+    have hlhs : 2 * Real.sqrt r * M_r / (δ + η) ≤
+        ∑ ℓ, (m ℓ : ℝ) * ∑ j, ∑ k, c j * c k *
+          ((1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I - ρ ℓ)).re +
+            (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I - starRingEnd ℂ (ρ ℓ))).re) := by
+      have he : 2 * Real.sqrt r * M_r / (δ + η) =
+          M_r * (2 * Real.sqrt r / (δ + η)) := by ring
+      rw [he, show M_r = ∑ ℓ, (m ℓ : ℝ) from rfl, Finset.sum_mul]
+      exact Finset.sum_le_sum fun ℓ _ => mul_le_mul_of_nonneg_left (hlhs_ℓ ℓ) (Nat.cast_nonneg _)
+    -- Total channel weight sum `∑ j, ∑ k, c j * c k ≤ 4 * r ^ 2`.
+    have hweight_sum : ∑ j, ∑ k, c j * c k ≤ 4 * (r : ℝ) ^ 2 := by
+      have hcsum : ∑ j, c j = Real.sqrt r + (r : ℝ) := by
+        rw [Fin.sum_univ_succ]; simp [c]
+      rw [← Finset.sum_mul_sum, hcsum]
+      nlinarith [hsqr_le_r, hsqr_pos]
+    -- Upper bound `1 / s_{j,k}` and `logDeriv Gammaℝ s_{j,k}` terms.
+    have hpole0_bound :
+        ∑ j, ∑ k, c j * c k *
+          (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I)).re ≤ 4 * (r : ℝ) ^ 2 := by
+      calc ∑ j, ∑ k, c j * c k *
+            (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I)).re
+          ≤ ∑ j, ∑ k, c j * c k * 1 := Finset.sum_le_sum fun j _ => Finset.sum_le_sum fun k _ =>
+              mul_le_mul_of_nonneg_left (re_one_div_le_one hδ0) (mul_nonneg (hc_nn j) (hc_nn k))
+        _ = ∑ j, ∑ k, c j * c k := by simp
+        _ ≤ 4 * (r : ℝ) ^ 2 := hweight_sum
+    have harch_bound :
+        ∑ j, ∑ k, c j * c k *
+          (logDeriv Complex.Gammaℝ (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I)).re ≤
+        4 * (r : ℝ) ^ 2 * (Real.log (3 + T) / 2 + 1 / 4) := by
+      have hlog_nn : 0 ≤ Real.log (3 + T) / 2 + 1 / 4 := by
+        have := Real.log_nonneg (show (1 : ℝ) ≤ 3 + T by linarith); positivity
+      calc ∑ j, ∑ k, c j * c k *
+            (logDeriv Complex.Gammaℝ (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I)).re
+          ≤ ∑ j, ∑ k, c j * c k * (Real.log (3 + T) / 2 + 1 / 4) := by
+            refine Finset.sum_le_sum fun j _ => Finset.sum_le_sum fun k _ =>
+              mul_le_mul_of_nonneg_left ?_ (mul_nonneg (hc_nn j) (hc_nn k))
+            have hb1 := hx_bounds j; have hb2 := hx_bounds k
+            have habs : |x j - x k| ≤ T := abs_le.mpr ⟨by linarith, by linarith⟩
+            have hlog_le : Real.log (3 + |x j - x k|) ≤ Real.log (3 + T) :=
+              Real.log_le_log (by positivity) (by linarith)
+            have hg := re_logDeriv_Gammaℝ_le_all_heights (σ := 1 + δ) (t := x j - x k)
+              (by linarith) (by linarith)
+            linarith
+        _ = (∑ j, ∑ k, c j * c k) * (Real.log (3 + T) / 2 + 1 / 4) := by
+            simp_rw [← Finset.sum_mul]
+        _ ≤ 4 * (r : ℝ) ^ 2 * (Real.log (3 + T) / 2 + 1 / 4) :=
+            mul_le_mul_of_nonneg_right hweight_sum hlog_nn
+    -- Upper bound `1 / (s_{j,k} - 1)` pole sum by `2 r / δ + 3 r packConstant / Δ^2`.
+    have hpole1_bound :
+        ∑ j, ∑ k, c j * c k *
+          (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I - 1)).re ≤
+        2 * (r : ℝ) / δ + 3 * (r : ℝ) * (packConstant / Δ ^ 2) := by
+      let P1 : Fin (r + 1) → Fin (r + 1) → ℝ := fun j k =>
+        c j * c k * (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I - 1)).re
+      change ∑ j, ∑ k, P1 j k ≤ _
+      rw [Fin.sum_univ_succ]
+      have hrow0 : ∑ k, P1 0 k ≤ (r : ℝ) / δ + (r : ℝ) * (packConstant / Δ ^ 2) := by
+        rw [Fin.sum_univ_succ]
+        have h00 : P1 0 0 = (r : ℝ) / δ := by
+          simp only [P1, c, x, Fin.cases_zero, sub_self, re_pole_one_eq_of_zero hδ0,
+            Real.mul_self_sqrt hr_pos.le, mul_one_div]
+        have h0s : ∑ k : Fin r, P1 0 k.succ ≤ (r : ℝ) * (packConstant / Δ ^ 2) := by
+          calc ∑ k : Fin r, P1 0 k.succ
+              ≤ ∑ k : Fin r, Real.sqrt r * (1 / ((ρ k).im) ^ 2) := by
+                refine Finset.sum_le_sum fun k _ => ?_
+                simp only [P1, c, x, Fin.cases_zero, Fin.cases_succ, mul_one, zero_sub]
+                refine mul_le_mul_of_nonneg_left ?_ hsqr_pos.le
+                have := re_pole_one_le_inv_sq hδ0 hδ1 (neg_ne_zero.mpr (him k).ne')
+                rwa [neg_sq] at this
+            _ = Real.sqrt r * ∑ k : Fin r, 1 / ((ρ k).im) ^ 2 := (Finset.mul_sum _ _ _).symm
+            _ ≤ (r : ℝ) * (packConstant / Δ ^ 2) :=
+                mul_le_mul hsqr_le_r hpack_zero
+                  (Finset.sum_nonneg fun _ _ => by positivity) hr_pos.le
+        linarith
+      have hrows : ∑ j : Fin r, ∑ k, P1 j.succ k ≤
+          (r : ℝ) / δ + 2 * (r : ℝ) * (packConstant / Δ ^ 2) := by
+        have hsplit_rows : ∑ j : Fin r, ∑ k, P1 j.succ k =
+            (∑ j : Fin r, P1 j.succ 0) + ∑ j : Fin r, ∑ k : Fin r, P1 j.succ k.succ := by
+          simp_rw [Fin.sum_univ_succ, Finset.sum_add_distrib]
+        rw [hsplit_rows]
+        have hcol0 : ∑ j : Fin r, P1 j.succ 0 ≤ (r : ℝ) * (packConstant / Δ ^ 2) := by
+          calc ∑ j : Fin r, P1 j.succ 0
+              ≤ ∑ j : Fin r, Real.sqrt r * (1 / ((ρ j).im) ^ 2) := by
+                refine Finset.sum_le_sum fun j _ => ?_
+                simp only [P1, c, x, Fin.cases_zero, Fin.cases_succ, one_mul, sub_zero]
+                rw [mul_comm (Real.sqrt r)]
+                exact mul_le_mul_of_nonneg_right
+                  (re_pole_one_le_inv_sq hδ0 hδ1 (him j).ne') hsqr_pos.le
+            _ = Real.sqrt r * ∑ j : Fin r, 1 / ((ρ j).im) ^ 2 := (Finset.mul_sum _ _ _).symm
+            _ ≤ (r : ℝ) * (packConstant / Δ ^ 2) :=
+                mul_le_mul hsqr_le_r hpack_zero
+                  (Finset.sum_nonneg fun _ _ => by positivity) hr_pos.le
+        have hblock : ∑ j : Fin r, ∑ k : Fin r, P1 j.succ k.succ ≤
+            (r : ℝ) / δ + (r : ℝ) * (packConstant / Δ ^ 2) := by
+          have hinner_j : ∀ j : Fin r, ∑ k : Fin r, P1 j.succ k.succ ≤
+              1 / δ + packConstant / Δ ^ 2 := by
+            intro j
+            rw [← Finset.add_sum_erase _ _ (Finset.mem_univ j)]
+            have hdiag : P1 j.succ j.succ = 1 / δ := by
+              simp only [P1, c, x, Fin.cases_succ, mul_one, sub_self,
+                re_pole_one_eq_of_zero hδ0]
+            have hoff : ∑ k ∈ Finset.univ.erase j, P1 j.succ k.succ ≤ packConstant / Δ ^ 2 := by
+              calc ∑ k ∈ Finset.univ.erase j, P1 j.succ k.succ
+                  ≤ ∑ k ∈ Finset.univ.erase j, 1 / ((ρ j).im - (ρ k).im) ^ 2 := by
+                    refine Finset.sum_le_sum fun k hk => ?_
+                    simp only [P1, c, x, Fin.cases_succ, one_mul]
+                    have hkj : k ≠ j := (Finset.mem_erase.mp hk).1
+                    exact re_pole_one_le_inv_sq hδ0 hδ1
+                      (sub_ne_zero.mpr (hdist j k hkj.symm))
+                _ ≤ packConstant / Δ ^ 2 := hpack_pair j
+            linarith
+          calc ∑ j : Fin r, ∑ k : Fin r, P1 j.succ k.succ
+              ≤ ∑ _j : Fin r, (1 / δ + packConstant / Δ ^ 2) :=
+                Finset.sum_le_sum fun j _ => hinner_j j
+            _ = (r : ℝ) / δ + (r : ℝ) * (packConstant / Δ ^ 2) := by
+                simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+                ring
+        linarith
+      linarith
+    -- Assemble and divide by `2 * r > 0`.
+    have hpole_tot : ∑ j, ∑ k, c j * c k *
+        (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I) +
+          1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I - 1)).re ≤
+        2 * (r : ℝ) / δ + 3 * (r : ℝ) * (packConstant / Δ ^ 2) + 4 * (r : ℝ) ^ 2 := by
+      have hsp : (∑ j, ∑ k, c j * c k *
+          (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I) +
+            1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I - 1)).re) =
+          (∑ j, ∑ k, c j * c k *
+            (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I)).re) +
+          (∑ j, ∑ k, c j * c k *
+            (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I - 1)).re) := by
+        simp_rw [Complex.add_re, mul_add, Finset.sum_add_distrib]
+      linarith
+    have hkp := mul_le_mul_of_nonneg_left hpole_tot (Nat.cast_nonneg κ)
+    have hda := mul_le_mul_of_nonneg_left harch_bound (Nat.cast_nonneg d)
+    have h2r_mul : 2 * (r : ℝ) * ((M_r / Real.sqrt r) / (δ + η)) ≤
+        2 * (r : ℝ) * ((κ : ℝ) / δ + G) := by
+      have hlhs_eq : 2 * (r : ℝ) * ((M_r / Real.sqrt r) / (δ + η)) =
+          2 * Real.sqrt r * M_r / (δ + η) := by
+        have hsq : (r : ℝ) = Real.sqrt r * Real.sqrt r := (Real.mul_self_sqrt hr_pos.le).symm
+        conv_lhs => rw [hsq]
+        field_simp
+      have hrhs_eq : 2 * (r : ℝ) * ((κ : ℝ) / δ + G) =
+          (κ : ℝ) * (2 * (r : ℝ) / δ + 3 * (r : ℝ) * (packConstant / Δ ^ 2) + 4 * (r : ℝ) ^ 2) +
+            (d : ℝ) * (4 * (r : ℝ) ^ 2 * (Real.log (3 + T) / 2 + 1 / 4)) := by
+        unfold G starCollarGrowth
+        field_simp
+        ring
+      linarith [hlhs, hforce, hkp, hda, hlhs_eq, hrhs_eq]
+    exact le_of_mul_le_mul_left h2r_mul (by positivity)
+  have hAB : (κ : ℝ) < M_r / Real.sqrt r := (lt_div_iff₀ hsqr_pos).mpr (by linarith)
+  have hw := width_ge_of_pole_growth_bound (Nat.cast_nonneg κ) hAB hG_pos hAG hη_nn hmain_δ
+  exact ⟨ℓ_max, by linarith [hw, hη_eq]⟩
+
+/-- Explicit collar width at the critical star multiplicity `r = κ² + 1`, scaling as
+`≍_{κ, Δ} 1 / (d log(3 + T))` uniformly across heights `T ≥ Δ > 0`. -/
+def collarWidth (κ d : ℕ) (Δ T : ℝ) : ℝ :=
+  min 1 ((Real.sqrt (Real.sqrt (((κ ^ 2 + 1 : ℕ) : ℝ))) - Real.sqrt κ) ^ 2 /
+    starCollarGrowth κ d (κ ^ 2 + 1) Δ T)
+
+theorem collarWidth_pos {κ d : ℕ} (hd : 1 ≤ d) {Δ T : ℝ} (hΔ : 0 < Δ) (hT : 0 ≤ T) :
+    0 < collarWidth κ d Δ T := by
+  unfold collarWidth
+  have hg : 0 < starCollarGrowth κ d (κ ^ 2 + 1) Δ T :=
+    starCollarGrowth_pos hd (by omega) hΔ hT
+  have hk1 : (κ : ℝ) ^ 2 < (((κ ^ 2 + 1 : ℕ) : ℝ)) := by push_cast; linarith
+  have hk2 : (κ : ℝ) < Real.sqrt (((κ ^ 2 + 1 : ℕ) : ℝ)) := by
+    rw [← Real.sqrt_sq (Nat.cast_nonneg κ)]
+    exact Real.sqrt_lt_sqrt (sq_nonneg _) hk1
+  have hk3 : Real.sqrt κ < Real.sqrt (Real.sqrt (((κ ^ 2 + 1 : ℕ) : ℝ))) :=
+    Real.sqrt_lt_sqrt (Nat.cast_nonneg κ) hk2
+  exact lt_min zero_lt_one (div_pos (sq_pos_of_pos (sub_pos.mpr hk3)) hg)
+
+/-- **Uniform `κ²` collar sparsity across heights.** In any completed positive system
+`(κ, d, F, Λ)`, at most `κ²` zeros of `Λ` with ordinates in `[Δ, T]` and pairwise ordinate
+separation `≥ Δ` can enter the explicit collar `Re ρ > 1 − collarWidth κ d Δ T`.
+For `κ = 0` this gives `0` collar zeros; for `κ = 1` at most `1` (Landau–Page sparsity). -/
+theorem card_separated_collar_zeros_le_sq_poleOrder {κ d : ℕ} {F Λ : ℂ → ℂ}
+    (hS : CompletedPositiveSystem κ d F Λ) {Δ T : ℝ} (hΔ : 0 < Δ) (Z : Finset ℂ)
+    (hzero : ∀ z ∈ Z, Λ z = 0)
+    (him_lo : ∀ z ∈ Z, Δ ≤ z.im)
+    (him_hi : ∀ z ∈ Z, z.im ≤ T)
+    (hsep : ∀ z ∈ Z, ∀ w ∈ Z, z ≠ w → Δ ≤ |z.im - w.im|)
+    (hcollar : ∀ z ∈ Z, 1 - collarWidth κ d Δ T < z.re) :
+    Z.card ≤ κ ^ 2 := by
+  by_contra hgt
+  rw [not_le] at hgt
+  set r₀ : ℕ := κ ^ 2 + 1
+  have hr₀ : 1 ≤ r₀ := by omega
+  have hcard : r₀ ≤ Z.card := hgt
+  let eZ : Fin Z.card ≃ Z := Z.equivFin.symm
+  let ρ : Fin r₀ → ℂ := fun ℓ => (eZ ⟨ℓ.1, ℓ.2.trans_le hcard⟩ : ℂ)
+  have hρ_mem : ∀ ℓ, ρ ℓ ∈ Z := fun ℓ => (eZ ⟨ℓ.1, ℓ.2.trans_le hcard⟩).2
+  have hρ_inj : ∀ ℓ ℓ', ℓ ≠ ℓ' → ρ ℓ ≠ ρ ℓ' := by
+    intro ℓ ℓ' hne heq
+    apply hne
+    have hsub : eZ ⟨ℓ.1, ℓ.2.trans_le hcard⟩ = eZ ⟨ℓ'.1, ℓ'.2.trans_le hcard⟩ := Subtype.ext heq
+    have hfin := eZ.injective hsub
+    exact Fin.ext (Fin.mk.inj hfin)
+  let m : Fin r₀ → ℕ := fun _ => 1
+  have hm_sum : (∑ _i : Fin r₀, (1 : ℝ)) = (r₀ : ℝ) := by simp
+  have hM : Real.sqrt r₀ * (κ : ℝ) < ∑ ℓ : Fin r₀, (m ℓ : ℝ) := by
+    simp only [m, hm_sum]
+    have hr₀_pos : (0 : ℝ) < r₀ := by positivity
+    have hk_lt : (κ : ℝ) < Real.sqrt r₀ := by
+      rw [← Real.sqrt_sq (Nat.cast_nonneg κ)]
+      exact Real.sqrt_lt_sqrt (sq_nonneg _) (by simp [r₀]; push_cast; linarith)
+    calc Real.sqrt r₀ * (κ : ℝ) < Real.sqrt r₀ * Real.sqrt r₀ :=
+          mul_lt_mul_of_pos_left hk_lt (Real.sqrt_pos.mpr hr₀_pos)
+      _ = (r₀ : ℝ) := Real.mul_self_sqrt hr₀_pos.le
+  obtain ⟨ℓ, hℓ⟩ := collective_star_collar_forcing hS hr₀ ρ m hΔ
+    (fun i => him_lo _ (hρ_mem i))
+    (fun i => him_hi _ (hρ_mem i))
+    (fun i j hij => hsep _ (hρ_mem i) _ (hρ_mem j) (hρ_inj i j hij))
+    (fun _ => le_rfl)
+    (fun i => hS.one_le_order_toNat_of_eq_zero (hzero _ (hρ_mem i)))
+    hM
+  have hdiv_sqrt : (∑ _i : Fin r₀, (1 : ℝ)) / Real.sqrt r₀ = Real.sqrt r₀ := by
+    rw [hm_sum]
+    have hr₀_pos : (0 : ℝ) < r₀ := by positivity
+    have hsq := Real.mul_self_sqrt hr₀_pos.le
+    have hne : Real.sqrt r₀ ≠ 0 := (Real.sqrt_pos.mpr hr₀_pos).ne'
+    exact (div_eq_iff hne).mpr hsq.symm
+  simp only [m, Nat.cast_one, hdiv_sqrt] at hℓ
+  have hlt := hcollar _ (hρ_mem ℓ)
+  unfold collarWidth at hlt
+  linarith
+
+/-! ### 7. Canonical `ζ` instance and exact sharpness at `2M = κ − 1` -/
+
+/-- The Riemann zeta function with completion `2 ξ(s) = s(s − 1) Γ_ℝ(s) ζ(s)` forms a canonical
+`CompletedPositiveSystem` of pole budget `κ = 1` and degree `d = 1`. -/
+theorem completedPositiveSystem_riemannZeta :
+    CompletedPositiveSystem 1 1 riemannZeta (fun s => 2 * RHTower.xi s) where
+  degree_pos := le_rfl
+  diffOn_F s hs := by
+    have hs1 : s ≠ 1 := fun h => by rw [h] at hs; simp at hs
+    exact (differentiableAt_riemannZeta hs1).differentiableWithinAt
+  ne_zero_F _ hs := riemannZeta_ne_zero_of_one_lt_re hs
+  posDef_neg_logDeriv {σ} hσ := by
+    have heq : (fun u : ℝ => (-logDeriv riemannZeta ((σ : ℂ) + (u : ℂ) * I)).re) =
+        fun u : ℝ => zetaRealLogDeriv σ u := by
+      funext u
+      unfold zetaRealLogDeriv
+      rw [logDeriv_apply, neg_div]
+    rw [heq]
+    exact zetaRealLogDeriv_isEvenPosDef hσ
+  entire_Λ := RHTower.xi_differentiable.const_mul 2
+  orderOne_Λ := OrderOneEnvelope.const_mul 2 RHTower.orderOneEnvelope_xi
+  sym_Λ s := by rw [RHTower.xi_one_sub]
+  conj_Λ s := by rw [map_mul, map_ofNat, RHTower.xi_conj]
+  completed_eq s hs := by
+    have hs0 : s ≠ 0 := fun h => by rw [h] at hs; simp at hs
+    have hs1 : s ≠ 1 := fun h => by rw [h] at hs; simp at hs
+    have hΓ : Complex.Gammaℝ s ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos (by linarith)
+    rw [RHTower.xi_eq_half_mul hs0 hs1, riemannZeta_def_of_ne_zero hs0, pow_one, pow_one]
+    field_simp
+    ring
+
+private theorem isEvenPosDef_add {φ ψ : ℝ → ℝ} (hφ : IsEvenPosDef φ) (hψ : IsEvenPosDef ψ) :
+    IsEvenPosDef (fun u => φ u + ψ u) where
+  even u := by rw [hφ.even, hψ.even]
+  posDef n x c := by
+    have h : (∑ i, ∑ j, c i * c j * (φ (x i - x j) + ψ (x i - x j))) =
+        (∑ i, ∑ j, c i * c j * φ (x i - x j)) + ∑ i, ∑ j, c i * c j * ψ (x i - x j) := by
+      simp_rw [mul_add, Finset.sum_add_distrib]
+    rw [h]
+    exact add_nonneg (hφ.posDef n x c) (hψ.posDef n x c)
+
+/-- Elementary Laplace identity on `Ioi 0`: for `a > 0` and `b ∈ ℝ`,
+`Re(1 / (a + ib)) = ∫_{t > 0} e^{−at} cos(bt) dt`. -/
+private theorem re_one_div_eq_laplace_cos {a : ℝ} (ha : 0 < a) (b : ℝ) :
+    (1 / ((a : ℂ) + (b : ℂ) * I)).re =
+      ∫ t : ℝ in Ioi 0, Real.exp (-a * t) * Real.cos (b * t) := by
+  set w : ℂ := -((a : ℂ) + (b : ℂ) * I)
+  have hw_re : w.re < 0 := by simp [w]; linarith
+  have hint_c : IntegrableOn (fun t : ℝ => Complex.exp (w * t)) (Ioi 0) :=
+    integrableOn_exp_mul_complex_Ioi hw_re 0
+  have hval := integral_exp_mul_complex_Ioi hw_re 0
+  have hrhs_eq : -Complex.exp (w * (0 : ℝ)) / w = 1 / ((a : ℂ) + (b : ℂ) * I) := by
+    simp only [mul_zero, Complex.exp_zero, w, div_neg, neg_neg]
+  rw [hrhs_eq] at hval
+  rw [← hval]
+  have hre_int : (∫ t : ℝ in Ioi 0, Complex.exp (w * t)).re =
+      ∫ t : ℝ in Ioi 0, (Complex.exp (w * t)).re :=
+    (Complex.reCLM.integral_comp_comm hint_c).symm
+  rw [hre_int]
+  refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
+  have hw_t_re : (w * (t : ℂ)).re = -a * t := by simp [w]; ring
+  have hw_t_im : (w * (t : ℂ)).im = -(b * t) := by simp [w]; ring
+  rw [Complex.exp_re, hw_t_re, hw_t_im, Real.cos_neg]
+
+/-- The real resolvent second difference
+`Re(2/(a + iu) − 1/(a + i(u − γ)) − 1/(a + i(u + γ)))` is even positive definite for every `a > 0`
+and `γ ∈ ℝ`, with nonnegative Laplace density `2 e^{−at} (1 − cos(γ t)) ≥ 0` on `(0, ∞)`. -/
+private def resolventSecondDiff (a γ u : ℝ) : ℝ :=
+  (2 / ((a : ℂ) + (u : ℂ) * I) -
+    1 / ((a : ℂ) + ((u - γ : ℝ) : ℂ) * I) -
+    1 / ((a : ℂ) + ((u + γ : ℝ) : ℂ) * I)).re
+
+private theorem isEvenPosDef_resolventSecondDiff {a : ℝ} (ha : 0 < a) (γ : ℝ) :
+    IsEvenPosDef (resolventSecondDiff a γ) := by
+  have hint_exp : IntegrableOn (fun t : ℝ => Real.exp (-a * t)) (Ioi 0) :=
+    integrableOn_exp_mul_Ioi (by linarith) 0
+  have hint_cos : ∀ b : ℝ, IntegrableOn (fun t : ℝ => Real.exp (-a * t) * Real.cos (b * t)) (Ioi 0) := by
+    intro b
+    refine Integrable.mono' hint_exp ?_ (Eventually.of_forall fun t => ?_)
+    · exact (Continuous.aestronglyMeasurable (by fun_prop)).restrict
+    · rw [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)]
+      exact mul_le_of_le_one_right (Real.exp_pos _).le (Real.abs_cos_le_one _)
+  have hrep : ∀ u : ℝ, resolventSecondDiff a γ u =
+      ∫ t : ℝ in Ioi 0, (2 * Real.exp (-a * t) * (1 - Real.cos (γ * t))) * Real.cos (t * u) := by
+    intro u
+    unfold resolventSecondDiff
+    have h2 : (2 / ((a : ℂ) + (u : ℂ) * I)).re = 2 * (1 / ((a : ℂ) + (u : ℂ) * I)).re := by
+      have : (2 : ℂ) / ((a : ℂ) + (u : ℂ) * I) = ((2 : ℝ) : ℂ) * (1 / ((a : ℂ) + (u : ℂ) * I)) := by
+        push_cast; ring
+      rw [this, Complex.re_ofReal_mul]
+    rw [Complex.sub_re, Complex.sub_re, h2,
+      re_one_div_eq_laplace_cos ha u,
+      re_one_div_eq_laplace_cos ha (u - γ),
+      re_one_div_eq_laplace_cos ha (u + γ),
+      ← integral_const_mul, ← integral_sub (hint_cos u |>.const_mul 2) (hint_cos (u - γ)),
+      ← integral_sub ((hint_cos u |>.const_mul 2).sub (hint_cos (u - γ))) (hint_cos (u + γ))]
+    refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
+    have htrig : 2 * Real.cos (u * t) - Real.cos ((u - γ) * t) - Real.cos ((u + γ) * t) =
+        2 * (1 - Real.cos (γ * t)) * Real.cos (t * u) := by
+      rw [sub_mul, add_mul, Real.cos_sub, Real.cos_add, mul_comm t u]
+      ring
+    calc 2 * (Real.exp (-a * t) * Real.cos (u * t)) -
+            Real.exp (-a * t) * Real.cos ((u - γ) * t) -
+            Real.exp (-a * t) * Real.cos ((u + γ) * t)
+        = Real.exp (-a * t) *
+            (2 * Real.cos (u * t) - Real.cos ((u - γ) * t) - Real.cos ((u + γ) * t)) := by ring
+      _ = Real.exp (-a * t) * (2 * (1 - Real.cos (γ * t)) * Real.cos (t * u)) := by rw [htrig]
+      _ = (2 * Real.exp (-a * t) * (1 - Real.cos (γ * t))) * Real.cos (t * u) := by ring
+  have hint_ker : ∀ u : ℝ, IntegrableOn
+      (fun t : ℝ => (2 * Real.exp (-a * t) * (1 - Real.cos (γ * t))) * Real.cos (t * u)) (Ioi 0) := by
+    intro u
+    refine Integrable.mono' (hint_exp.const_mul 4) ?_ (Eventually.of_forall fun t => ?_)
+    · exact (Continuous.aestronglyMeasurable (by fun_prop)).restrict
+    · have hc1 : -1 ≤ Real.cos (γ * t) := Real.neg_one_le_cos _
+      have hc2 : Real.cos (γ * t) ≤ 1 := Real.cos_le_one _
+      have hpos : 0 ≤ 2 * Real.exp (-a * t) * (1 - Real.cos (γ * t)) :=
+        mul_nonneg (by positivity) (by linarith)
+      rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg hpos]
+      have h1 : 2 * Real.exp (-a * t) * (1 - Real.cos (γ * t)) ≤ 4 * Real.exp (-a * t) := by
+        nlinarith [Real.exp_pos (-a * t)]
+      exact (mul_le_of_le_one_right hpos (Real.abs_cos_le_one _)).trans h1
+  refine ⟨fun u => ?_, fun n x c => ?_⟩
+  · rw [hrep (-u), hrep u]
+    refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
+    rw [mul_neg, Real.cos_neg]
+  · have hsum_int : ∑ i, ∑ j, c i * c j * resolventSecondDiff a γ (x i - x j) =
+        ∫ t : ℝ in Ioi 0, (2 * Real.exp (-a * t) * (1 - Real.cos (γ * t))) *
+          ∑ i, ∑ j, c i * c j * Real.cos (t * (x i - x j)) := by
+      simp_rw [hrep, ← integral_const_mul]
+      have h1 : ∀ i : Fin n,
+          ∑ j : Fin n, ∫ t : ℝ in Ioi 0, c i * c j *
+            ((2 * Real.exp (-a * t) * (1 - Real.cos (γ * t))) * Real.cos (t * (x i - x j))) =
+          ∫ t : ℝ in Ioi 0, ∑ j : Fin n, c i * c j *
+            ((2 * Real.exp (-a * t) * (1 - Real.cos (γ * t))) * Real.cos (t * (x i - x j))) :=
+        fun i => (integral_finset_sum Finset.univ fun j _ =>
+          (hint_ker (x i - x j)).const_mul (c i * c j)).symm
+      simp_rw [h1]
+      rw [← integral_finset_sum Finset.univ fun i _ =>
+        integrable_finset_sum Finset.univ fun j _ =>
+          (hint_ker (x i - x j)).const_mul (c i * c j)]
+      refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
+      simp_rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+      ring
+    rw [hsum_int]
+    refine integral_nonneg fun t => mul_nonneg ?_ ?_
+    · exact mul_nonneg (by positivity) (sub_nonneg.mpr (Real.cos_le_one _))
+    · rw [gram_cos_eq]
+      positivity
+
+/-- Symmetric degree-`4` polynomial `((s − 1)² + γ²)(s² + γ²)` placing boundary zeros at
+`1 ± iγ` and `± iγ`. -/
+def boundaryTwistPoly (γ : ℝ) (s : ℂ) : ℂ :=
+  ((s - 1) ^ 2 + (γ : ℂ) ^ 2) * (s ^ 2 + (γ : ℂ) ^ 2)
+
+/-- Uncompleted rational boundary twist factor `((s − 1)² + γ²)(s² + γ²) / (s(s − 1))²`. -/
+def boundaryTwistFactor (γ : ℝ) (s : ℂ) : ℂ :=
+  boundaryTwistPoly γ s / (s * (s - 1)) ^ 2
+
+private theorem boundaryTwistPoly_factor (γ : ℝ) (s : ℂ) :
+    boundaryTwistPoly γ s =
+      (s - 1 - (γ : ℂ) * I) * (s - 1 + (γ : ℂ) * I) * (s - (γ : ℂ) * I) * (s + (γ : ℂ) * I) := by
+  unfold boundaryTwistPoly
+  have hI : (I : ℂ) ^ 2 = -1 := I_sq
+  have h1 : (s - 1 - (γ : ℂ) * I) * (s - 1 + (γ : ℂ) * I) = (s - 1) ^ 2 + (γ : ℂ) ^ 2 := by
+    calc (s - 1 - (γ : ℂ) * I) * (s - 1 + (γ : ℂ) * I)
+        = (s - 1) ^ 2 - (γ : ℂ) ^ 2 * I ^ 2 := by ring
+      _ = (s - 1) ^ 2 + (γ : ℂ) ^ 2 := by rw [hI]; ring
+  have h2 : (s - (γ : ℂ) * I) * (s + (γ : ℂ) * I) = s ^ 2 + (γ : ℂ) ^ 2 := by
+    calc (s - (γ : ℂ) * I) * (s + (γ : ℂ) * I)
+        = s ^ 2 - (γ : ℂ) ^ 2 * I ^ 2 := by ring
+      _ = s ^ 2 + (γ : ℂ) ^ 2 := by rw [hI]; ring
+  calc boundaryTwistPoly γ s = ((s - 1) ^ 2 + (γ : ℂ) ^ 2) * (s ^ 2 + (γ : ℂ) ^ 2) := rfl
+    _ = ((s - 1 - (γ : ℂ) * I) * (s - 1 + (γ : ℂ) * I)) *
+          ((s - (γ : ℂ) * I) * (s + (γ : ℂ) * I)) := by rw [h1, h2]
+    _ = (s - 1 - (γ : ℂ) * I) * (s - 1 + (γ : ℂ) * I) *
+          (s - (γ : ℂ) * I) * (s + (γ : ℂ) * I) := by ring
+
+private theorem orderOneEnvelope_boundaryTwistPoly (γ : ℝ) :
+    OrderOneEnvelope (boundaryTwistPoly γ) := by
+  have hid := RHTower.orderOneEnvelope_id
+  have hs1 : OrderOneEnvelope (fun s : ℂ => s - 1) :=
+    (hid.add (orderOneEnvelope_const (-1))).congr fun s => by ring
+  have hsq1 : OrderOneEnvelope (fun s : ℂ => (s - 1) ^ 2 + (γ : ℂ) ^ 2) :=
+    ((hs1.mul hs1).add (orderOneEnvelope_const ((γ : ℂ) ^ 2))).congr fun s => by ring
+  have hsq0 : OrderOneEnvelope (fun s : ℂ => s ^ 2 + (γ : ℂ) ^ 2) :=
+    ((hid.mul hid).add (orderOneEnvelope_const ((γ : ℂ) ^ 2))).congr fun s => by ring
+  exact hsq1.mul hsq0
+
+private theorem neg_logDeriv_boundaryTwistFactor_re (γ : ℝ) {σ : ℝ} (hσ : 1 < σ) (u : ℝ) :
+    (-logDeriv (boundaryTwistFactor γ) ((σ : ℂ) + (u : ℂ) * I)).re =
+      resolventSecondDiff (σ - 1) γ u + resolventSecondDiff σ γ u := by
+  set s : ℂ := (σ : ℂ) + (u : ℂ) * I
+  have hsre : s.re = σ := by simp [s]
+  have hs0 : s ≠ 0 := fun h => by rw [h] at hsre; simp at hsre; linarith
+  have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr fun h => by rw [h] at hsre; simp at hsre; linarith
+  have hn1 : s - 1 - (γ : ℂ) * I ≠ 0 := fun h => by
+    have := congrArg Complex.re h; simp [hsre] at this; linarith
+  have hn2 : s - 1 + (γ : ℂ) * I ≠ 0 := fun h => by
+    have := congrArg Complex.re h; simp [hsre] at this; linarith
+  have hn3 : s - (γ : ℂ) * I ≠ 0 := fun h => by
+    have := congrArg Complex.re h; simp [hsre] at this; linarith
+  have hn4 : s + (γ : ℂ) * I ≠ 0 := fun h => by
+    have := congrArg Complex.re h; simp [hsre] at this; linarith
+  have hd_lin : ∀ c : ℂ, logDeriv (fun z : ℂ => z - c) s = 1 / (s - c) := fun c => by
+    rw [logDeriv_apply, deriv_sub_const, deriv_id'', one_div]
+  have hf_eq : boundaryTwistFactor γ =
+      fun z : ℂ => ((z - (1 + (γ : ℂ) * I)) * (z - (1 - (γ : ℂ) * I)) *
+        (z - (γ : ℂ) * I) * (z - (-(γ : ℂ) * I))) / (z ^ 2 * (z - 1) ^ 2) := by
+    funext z
+    unfold boundaryTwistFactor
+    rw [boundaryTwistPoly_factor, mul_pow]
+    congr 1 <;> ring
+  have hnum_ne : ((s - (1 + (γ : ℂ) * I)) * (s - (1 - (γ : ℂ) * I)) *
+      (s - (γ : ℂ) * I) * (s - (-(γ : ℂ) * I))) ≠ 0 := by
+    refine mul_ne_zero (mul_ne_zero (mul_ne_zero ?_ ?_) hn3) ?_
+    · convert hn1 using 1; ring
+    · convert hn2 using 1; ring
+    · convert hn4 using 1; ring
+  have hden_ne : s ^ 2 * (s - 1) ^ 2 ≠ 0 := mul_ne_zero (pow_ne_zero 2 hs0) (pow_ne_zero 2 hs1)
+  have hd1 : DifferentiableAt ℂ (fun z : ℂ => z - (1 + (γ : ℂ) * I)) s :=
+    differentiableAt_id.sub_const _
+  have hd2 : DifferentiableAt ℂ (fun z : ℂ => z - (1 - (γ : ℂ) * I)) s :=
+    differentiableAt_id.sub_const _
+  have hd3 : DifferentiableAt ℂ (fun z : ℂ => z - (γ : ℂ) * I) s :=
+    differentiableAt_id.sub_const _
+  have hd4 : DifferentiableAt ℂ (fun z : ℂ => z - (-(γ : ℂ) * I)) s :=
+    differentiableAt_id.sub_const _
+  have hds0 : DifferentiableAt ℂ (fun z : ℂ => z) s := differentiableAt_id
+  have hds1 : DifferentiableAt ℂ (fun z : ℂ => z - 1) s := differentiableAt_id.sub_const 1
+  have hld_num : logDeriv (fun z : ℂ => (z - (1 + (γ : ℂ) * I)) * (z - (1 - (γ : ℂ) * I)) *
+      (z - (γ : ℂ) * I) * (z - (-(γ : ℂ) * I))) s =
+      1 / (s - (1 + (γ : ℂ) * I)) + 1 / (s - (1 - (γ : ℂ) * I)) +
+        1 / (s - (γ : ℂ) * I) + 1 / (s - (-(γ : ℂ) * I)) := by
+    have p12_ne : (s - (1 + (γ : ℂ) * I)) * (s - (1 - (γ : ℂ) * I)) ≠ 0 :=
+      mul_ne_zero (by convert hn1 using 1; ring) (by convert hn2 using 1; ring)
+    have p123_ne : (s - (1 + (γ : ℂ) * I)) * (s - (1 - (γ : ℂ) * I)) * (s - (γ : ℂ) * I) ≠ 0 :=
+      mul_ne_zero p12_ne hn3
+    have p4_ne : s - (-(γ : ℂ) * I) ≠ 0 := by convert hn4 using 1; ring
+    rw [logDeriv_mul (f := fun z => (z - (1 + (γ : ℂ) * I)) * (z - (1 - (γ : ℂ) * I)) *
+          (z - (γ : ℂ) * I)) (g := fun z => z - (-(γ : ℂ) * I)) s
+          p123_ne p4_ne ((hd1.mul hd2).mul hd3) hd4,
+      logDeriv_mul (f := fun z => (z - (1 + (γ : ℂ) * I)) * (z - (1 - (γ : ℂ) * I)))
+        (g := fun z => z - (γ : ℂ) * I) s p12_ne hn3 (hd1.mul hd2) hd3,
+      logDeriv_mul (f := fun z => z - (1 + (γ : ℂ) * I)) (g := fun z => z - (1 - (γ : ℂ) * I)) s
+        (by convert hn1 using 1; ring) (by convert hn2 using 1; ring) hd1 hd2,
+      hd_lin, hd_lin, hd_lin, hd_lin]
+  have hld_den : logDeriv (fun z : ℂ => z ^ 2 * (z - 1) ^ 2) s =
+      2 / s + 2 / (s - 1) := by
+    rw [logDeriv_mul (f := fun z : ℂ => z ^ 2) (g := fun z : ℂ => (z - 1) ^ 2) s
+          (pow_ne_zero 2 hs0) (pow_ne_zero 2 hs1) (hds0.fun_pow 2) (hds1.fun_pow 2),
+      logDeriv_fun_pow hds0 2, logDeriv_fun_pow hds1 2]
+    have h0' : logDeriv (fun z : ℂ => z) s = 1 / s := by rw [logDeriv_apply, deriv_id'', one_div]
+    rw [h0', hd_lin 1]
+    push_cast; ring
+  have hld : -logDeriv (boundaryTwistFactor γ) s =
+      (2 / (((σ - 1 : ℝ) : ℂ) + (u : ℂ) * I) -
+        1 / (((σ - 1 : ℝ) : ℂ) + ((u - γ : ℝ) : ℂ) * I) -
+        1 / (((σ - 1 : ℝ) : ℂ) + ((u + γ : ℝ) : ℂ) * I)) +
+      (2 / ((σ : ℂ) + (u : ℂ) * I) -
+        1 / ((σ : ℂ) + ((u - γ : ℝ) : ℂ) * I) -
+        1 / ((σ : ℂ) + ((u + γ : ℝ) : ℂ) * I)) := by
+    rw [hf_eq, logDeriv_div s hnum_ne hden_ne (((hd1.mul hd2).mul hd3).mul hd4)
+      ((hds0.fun_pow 2).mul (hds1.fun_pow 2)), hld_num, hld_den]
+    have e1 : s - 1 = ((σ - 1 : ℝ) : ℂ) + (u : ℂ) * I := by simp [s]; push_cast; ring
+    have e2 : s - (1 + (γ : ℂ) * I) = ((σ - 1 : ℝ) : ℂ) + ((u - γ : ℝ) : ℂ) * I := by
+      simp [s]; push_cast; ring
+    have e3 : s - (1 - (γ : ℂ) * I) = ((σ - 1 : ℝ) : ℂ) + ((u + γ : ℝ) : ℂ) * I := by
+      simp [s]; push_cast; ring
+    have e4 : s - (γ : ℂ) * I = (σ : ℂ) + ((u - γ : ℝ) : ℂ) * I := by
+      simp [s]; push_cast; ring
+    have e5 : s - (-(γ : ℂ) * I) = (σ : ℂ) + ((u + γ : ℝ) : ℂ) * I := by
+      simp [s]; push_cast; ring
+    rw [e1, e2, e3, e4, e5]
+    simp only [s]
+    ring
+  rw [hld, Complex.add_re]
+  rfl
+
+/-- Twisting any `CompletedPositiveSystem κ d F Λ` by `boundaryTwistFactor γ` produces a
+`CompletedPositiveSystem (κ + 2) d` whose completion vanishes at `1 + iγ` while preserving every
+existing zero of `Λ`. -/
+theorem CompletedPositiveSystem.twistBoundaryZero {κ d : ℕ} {F Λ : ℂ → ℂ}
+    (hS : CompletedPositiveSystem κ d F Λ) (γ : ℝ) :
+    CompletedPositiveSystem (κ + 2) d
+      (fun s => F s * boundaryTwistFactor γ s)
+      (fun s => Λ s * boundaryTwistPoly γ s) ∧
+    (Λ (1 + (γ : ℂ) * I) * boundaryTwistPoly γ (1 + (γ : ℂ) * I) = 0) := by
+  have hpoly_zero : boundaryTwistPoly γ (1 + (γ : ℂ) * I) = 0 := by
+    rw [boundaryTwistPoly_factor]
+    have : (1 + (γ : ℂ) * I) - 1 - (γ : ℂ) * I = 0 := by ring
+    rw [this]; simp
+  refine ⟨?_, by rw [hpoly_zero, mul_zero]⟩
+  have htf_nz : ∀ s : ℂ, 1 < s.re → boundaryTwistFactor γ s ≠ 0 := by
+    intro s hs
+    have hs0 : s ≠ 0 := fun h => by rw [h] at hs; simp at hs
+    have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr fun h => by rw [h] at hs; simp at hs
+    have hp_nz : boundaryTwistPoly γ s ≠ 0 := by
+      rw [boundaryTwistPoly_factor]
+      have n1 : s - 1 - (γ : ℂ) * I ≠ 0 := fun h => by
+        have := congrArg Complex.re h; simp at this; linarith
+      have n2 : s - 1 + (γ : ℂ) * I ≠ 0 := fun h => by
+        have := congrArg Complex.re h; simp at this; linarith
+      have n3 : s - (γ : ℂ) * I ≠ 0 := fun h => by
+        have := congrArg Complex.re h; simp at this; linarith
+      have n4 : s + (γ : ℂ) * I ≠ 0 := fun h => by
+        have := congrArg Complex.re h; simp at this; linarith
+      exact mul_ne_zero (mul_ne_zero (mul_ne_zero n1 n2) n3) n4
+    exact div_ne_zero hp_nz (pow_ne_zero 2 (mul_ne_zero hs0 hs1))
+  have htf_diffOn : DifferentiableOn ℂ (boundaryTwistFactor γ) {s : ℂ | 1 < s.re} := by
+    intro s hs
+    change 1 < s.re at hs
+    have hs0 : s ≠ 0 := fun h => by rw [h] at hs; simp at hs
+    have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr fun h => by rw [h] at hs; simp at hs
+    have hden : (s * (s - 1)) ^ 2 ≠ 0 := pow_ne_zero 2 (mul_ne_zero hs0 hs1)
+    have hpd : DifferentiableAt ℂ (boundaryTwistPoly γ) s := by unfold boundaryTwistPoly; fun_prop
+    have hdd : DifferentiableAt ℂ (fun z : ℂ => (z * (z - 1)) ^ 2) s := by fun_prop
+    exact (hpd.div hdd hden).differentiableWithinAt
+  refine
+    { degree_pos := hS.degree_pos
+      diffOn_F := hS.diffOn_F.mul htf_diffOn
+      ne_zero_F := fun s hs => mul_ne_zero (hS.ne_zero_F s hs) (htf_nz s hs)
+      posDef_neg_logDeriv := ?_
+      entire_Λ := hS.entire_Λ.mul (by unfold boundaryTwistPoly; fun_prop)
+      orderOne_Λ := hS.orderOne_Λ.mul (orderOneEnvelope_boundaryTwistPoly γ)
+      sym_Λ := fun s => by
+        rw [hS.sym_Λ]
+        congr 1
+        unfold boundaryTwistPoly
+        ring
+      conj_Λ := fun s => by
+        rw [map_mul, hS.conj_Λ]
+        congr 1
+        unfold boundaryTwistPoly
+        simp only [map_mul, map_add, map_pow, map_sub, map_one, Complex.conj_ofReal]
+      completed_eq := fun s hs => by
+        have hs0 : s ≠ 0 := fun h => by rw [h] at hs; simp at hs
+        have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr fun h => by rw [h] at hs; simp at hs
+        have hden : (s * (s - 1)) ^ 2 ≠ 0 := pow_ne_zero 2 (mul_ne_zero hs0 hs1)
+        unfold boundaryTwistFactor
+        rw [hS.completed_eq s hs, pow_add]
+        have hmul : (s * (s - 1)) ^ 2 * (boundaryTwistPoly γ s / (s * (s - 1)) ^ 2) =
+            boundaryTwistPoly γ s := mul_div_cancel₀ _ hden
+        calc (s * (s - 1)) ^ κ * (s * (s - 1)) ^ 2 * Complex.Gammaℝ s ^ d *
+              (F s * (boundaryTwistPoly γ s / (s * (s - 1)) ^ 2))
+            = (s * (s - 1)) ^ κ * Complex.Gammaℝ s ^ d * F s *
+                ((s * (s - 1)) ^ 2 * (boundaryTwistPoly γ s / (s * (s - 1)) ^ 2)) := by ring
+          _ = (s * (s - 1)) ^ κ * Complex.Gammaℝ s ^ d * F s * boundaryTwistPoly γ s := by
+              rw [hmul] }
+  -- Prove `posDef_neg_logDeriv` for `F * boundaryTwistFactor γ`.
+  intro σ hσ
+  have hopen : IsOpen {w : ℂ | 1 < w.re} := isOpen_lt continuous_const Complex.continuous_re
+  have heq : (fun u : ℝ =>
+      (-logDeriv (fun s => F s * boundaryTwistFactor γ s) ((σ : ℂ) + (u : ℂ) * I)).re) =
+      fun u : ℝ => (-logDeriv F ((σ : ℂ) + (u : ℂ) * I)).re +
+        (resolventSecondDiff (σ - 1) γ u + resolventSecondDiff σ γ u) := by
+    funext u
+    set s : ℂ := (σ : ℂ) + (u : ℂ) * I
+    have hs : 1 < s.re := by simp [s]; exact hσ
+    have hFd : DifferentiableAt ℂ F s := (hS.diffOn_F s hs).differentiableAt (hopen.mem_nhds hs)
+    have htd : DifferentiableAt ℂ (boundaryTwistFactor γ) s :=
+      (htf_diffOn s hs).differentiableAt (hopen.mem_nhds hs)
+    rw [logDeriv_mul s (hS.ne_zero_F s hs) (htf_nz s hs) hFd htd, neg_add, Complex.add_re,
+      neg_logDeriv_boundaryTwistFactor_re γ hσ u]
+  rw [heq]
+  exact isEvenPosDef_add (hS.posDef_neg_logDeriv hσ)
+    (isEvenPosDef_add (isEvenPosDef_resolventSecondDiff (by linarith) γ)
+      (isEvenPosDef_resolventSecondDiff (by linarith) γ))
+
+/-- **Exact sharpness of the half-pole threshold `2M > κ`.** For every `r ∈ ℕ` and any `r`
+ordinates `γ : Fin r → ℝ`, iterating `twistBoundaryZero` `r` times on `ζ` constructs an explicit
+`CompletedPositiveSystem (2 * r + 1) 1 F Λ` whose completion vanishes on the boundary line `Re s = 1`
+at all `r` points `1 + i γ_ℓ` (`2 r = κ − 1 ≤ κ`, zero interior depth). Consequently, the strict
+inequality `κ < 2 * ∑_ℓ m_ℓ` in `collective_half_pole_interior_forcing` cannot be weakened for any
+`r ∈ ℕ`. -/
+theorem exists_completedPositiveSystem_boundary_zeros_at_half_pole (r : ℕ) (γ : Fin r → ℝ) :
+    ∃ F Λ : ℂ → ℂ,
+      CompletedPositiveSystem (2 * r + 1) 1 F Λ ∧
+      ∀ ℓ : Fin r, Λ (1 + (γ ℓ : ℂ) * I) = 0 := by
+  induction r with
+  | zero =>
+    exact ⟨riemannZeta, fun s => 2 * RHTower.xi s, completedPositiveSystem_riemannZeta,
+      fun ℓ => Fin.elim0 ℓ⟩
+  | succ r ih =>
+    obtain ⟨F₀, Λ₀, hS₀, hzeros₀⟩ := ih (fun i => γ i.castSucc)
+    obtain ⟨hS₁, hzero_last⟩ := hS₀.twistBoundaryZero (γ (Fin.last r))
+    have hκ : 2 * r + 1 + 2 = 2 * (r + 1) + 1 := by omega
+    rw [hκ] at hS₁
+    refine ⟨_, _, hS₁, fun ℓ => ?_⟩
+    rcases Fin.eq_castSucc_or_eq_last ℓ with ⟨i, rfl⟩ | rfl
+    · simp [hzeros₀ i]
+    · exact hzero_last
+
+end GaloisForLFunctions.StripBochnerWeilForcing
+
+
+

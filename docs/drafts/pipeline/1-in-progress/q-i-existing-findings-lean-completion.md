@@ -32,7 +32,7 @@ Lean module names below are relative to `GaloisForLFunctions/`; BVI denotes
 | [positive-vaughan-cutoff-escape-is-zero-gram-limit.md](../3-formalized/positive-vaughan-cutoff-escape-is-zero-gram-limit.md) — COMPLETE | Exact amplitude and matrix escape equivalences, finite-fiber rigidity, convergence dichotomy, positive-cutoff attainment, and mutually exclusive alternatives. All supporting leaf checks and axiom audits passed. |
 | [vaughan-relative-gram-and-harmonic-denominators.md](../3-formalized/vaughan-relative-gram-and-harmonic-denominators.md) — COMPLETE | All ten arithmetic and relative-Gram targets passed final direct checks and standard-axiom audits. Includes calibrated horizons for every positive cutoff schedule and the simultaneous zero/relative-rank-one corollary. |
 | [uniform-vaughan-convolution-stretched-exponential-rate.md](../3-formalized/uniform-vaughan-convolution-stretched-exponential-rate.md) — COMPLETE; related existing stage-1 [factorial criterion](vaughan-factorial-order-one-is-a-fixed-strip.md) still pending | All three BVI `UniformStretchedExponentialCancellationInTheVaughanConvolution` targets passed final direct checks and standard-axiom audits. The distinct factorial-order-one criterion still needs HTGeometry `FactorialLogarithmicBoundsArePowerBounds` and BVI `FactorialOrderOneInTheVaughanConvolutionIsAPowerSaving`. |
-| `uniform-vaughan-residual-power-rates-are-fixed-strips.md` | All twenty-one extreme-cutoff, Mertens-to-harmonic, undamped-power, and damped-transfer targets passed final direct checks and standard-axiom audits. Remaining: BVI `FixedStripsControlAllVaughanFluctuationReceivers`, `UniformVaughanResidualPowerRatesAreFixedStrips`. |
+| [uniform-vaughan-residual-power-rates-are-fixed-strips.md](../3-formalized/uniform-vaughan-residual-power-rates-are-fixed-strips.md) — COMPLETE | All twenty-nine extreme-cutoff, Mertens-to-harmonic, undamped-power, damped-transfer, receiver, and full Gram targets passed final direct checks and standard-axiom audits. The complete matrix power-rate criterion is exactly equivalent to a fixed strip. |
 | [the-centred-vaughan-pole-has-positive-finite-energy.md](../3-formalized/the-centred-vaughan-pole-has-positive-finite-energy.md) — COMPLETE | All seven energy/rate targets and the actual nonzero endpoint product-horizon limit passed final direct checks and standard-axiom audits. Both cutoffs diverge for this matrix limit; product divergence alone removes harmonic mass. |
 | [the-endpoint-vaughan-limit-has-rank-two.md](../3-formalized/the-endpoint-vaughan-limit-has-rank-two.md) — COMPLETE | All 34 finite, shared infinite-Gram, and endpoint targets passed final direct checks and standard-axiom audits. Includes actual summability, exact rank two, positive-definite prefix/pole submatrix, endpoint determinant `≥1/62208`, pole energy `≥1/64`, and nonzero actual Gram. |
 | [uniform-half-damping-vaughan-harmonic-gram.md](../3-formalized/uniform-half-damping-vaughan-harmonic-gram.md) — COMPLETE | Every finite Gram/packet, moving-limit, pronic-convergence, rank, harmonic-mass, realization, and product-horizon claim passed final direct checks and standard-axiom audits. Exact declarations and the complete dependency chain are recorded on the card. |
@@ -211,6 +211,13 @@ All three damped-transfer targets passed corrected producing and final direct
 checks with standard axioms only, without final warnings. The module is wired
 and its scratch removed. Every strict prefix gain `γ<κ(1-ε)/(1+κ)` and its
 pronic norm consequence are certified.
+All four actual receiver targets passed corrected producing and final direct
+checks with standard axioms only and no warnings. The module is wired and its
+scratch removed. Explicit family and exponent parameters keep the proof within
+default limits; the common gain and all finite-head bounds are unchanged.
+All four full Gram-power targets passed the corrected final direct check
+with standard axioms only and no warnings. The module is wired and its scratch
+removed; the complete twenty-nine-target residual-power card is in stage 3.
 All remaining drafts now have their intended repository leaves. They remain
 uncertified until their final direct checks and axiom audits pass. Dependencies and
 live compiler handles are recorded in `/tmp/QIVerificationState.txt`; the

@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Verification:** All seven energy/rate targets and the actual endpoint product-horizon consequence passed final direct Lean checks and standard-axiom audits.
-- **Source:** ../2-fully-proven/uniform-vaughan-residual-power-rates-are-fixed-strips.md
+- **Source:** uniform-vaughan-residual-power-rates-are-fixed-strips.md
 - **Statement:** For every `ε≥0`, the centered pole energy has a cutoff-independent limit `L_ε` with `2^(-2ε)/32≤L_ε≤1/4`. Consequently its normalization by `T^(1-2ε)` cannot decay with a larger power exponent.
 - **Novelty status:** Exact positive first-cell refinement of the existing active-pair energy bound. No external novelty claim.
 

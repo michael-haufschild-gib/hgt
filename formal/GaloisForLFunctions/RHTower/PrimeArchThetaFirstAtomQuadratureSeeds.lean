@@ -45,7 +45,7 @@ macro "first_atom_widths" : command => do
       `(command| abbrev $name : {v // v = Enclosure.pow (Enclosure.point (1 / 64)) $n} := by
         certify_first_atom =>
           rw [Enclosure.pow]
-          simp only [← $prev.property]
+          simp only [← ($prev).property]
           cbv)
     declarations := declarations.push declaration
   return ⟨Lean.mkNullNode declarations⟩
@@ -71,8 +71,8 @@ macro "first_atom_endpoints" : command => do
         `(command| abbrev $name : {v // v = Enclosure.pow $exponential $n} := by
           certify_first_atom =>
             rw [Enclosure.pow]
-            simp only [← $prev.property]
-            simp only [← $data.property]
+            simp only [← ($prev).property]
+            simp only [← ($data).property]
             cbv)
       declarations := declarations.push declaration
       let inc := Lean.mkIdent (.mkSimple ("increment" ++ side ++ toString j))
@@ -81,9 +81,9 @@ macro "first_atom_endpoints" : command => do
       declarations := declarations.push (← `(command|
         abbrev $inc : {v // v = $increment $n} := by
           certify_first_atom =>
-            rw [$increment]
-            simp only [← $name.property]
-            simp only [← $data.property]
+            rw [$increment:ident]
+            simp only [← ($name).property]
+            simp only [← ($data).property]
             cbv))
       let ep := Lean.mkIdent (.mkSimple ("endpoint" ++ side ++ toString j))
       let endpoint := Lean.mkIdent
@@ -91,7 +91,7 @@ macro "first_atom_endpoints" : command => do
       let declaration ← if j == 0 then
         `(command| abbrev $ep : {v // v = $endpoint $n} := by
           certify_first_atom =>
-            rw [$endpoint]
+            rw [$endpoint:ident]
             cbv)
       else do
         let prev := Lean.mkIdent (.mkSimple ("endpoint" ++ side ++ toString (j - 1)))
@@ -101,10 +101,10 @@ macro "first_atom_endpoints" : command => do
           else Lean.mkIdent `coeffData9
         `(command| abbrev $ep : {v // v = $endpoint $n} := by
           certify_first_atom =>
-            rw [$endpoint]
-            simp only [← $prev.property]
-            simp only [← $increment.property]
-            simp only [← $coefficients.property]
+            rw [$endpoint:ident]
+            simp only [← ($prev).property]
+            simp only [← ($increment).property]
+            simp only [← ($coefficients).property]
             cbv)
       declarations := declarations.push declaration
   return ⟨Lean.mkNullNode declarations⟩
