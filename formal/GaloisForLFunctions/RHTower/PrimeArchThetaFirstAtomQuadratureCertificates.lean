@@ -161,38 +161,32 @@ macro "first_atom_cell " j:num : command => do
           `(command| abbrev $tail : {v // v = Enclosure.mass
               (($polynomial).val.drop $degree) $degree (Enclosure.point (1 / 64))} := by
             certify_first_atom =>
-              change Enclosure.point 0
+              dsimp only [$polynomial:ident, $product:ident, List.drop]
+              rw [Enclosure.mass.eq_1]
               cbv)
         else do
           let finish := min length (k + 8)
-          let nextDegree := Lean.Syntax.mkNumLit (toString finish)
           let nextTail := Lean.mkIdent
             (.mkSimple ("integral" ++ suffix ++ "Tail" ++ toString finish))
-          let mut expression ← `(term| Enclosure.mass
-            (($polynomial).val.drop $nextDegree) $nextDegree (Enclosure.point (1 / 64)))
+          let mut recurrences := #[]
           let mut widths := #[]
           let mut widthValues := #[]
           for offset in [:finish - k] do
             let position := finish - offset - 1
-            let coefficientIndex := Lean.Syntax.mkNumLit (toString position)
-            let exponent := Lean.Syntax.mkNumLit (toString (position + 1))
-            expression ← `(term| Enclosure.add
-              (Enclosure.divNat
-                (Enclosure.mul
-                  ((($polynomial).val[$coefficientIndex]?).getD (Enclosure.point 0))
-                  (Enclosure.pow (Enclosure.point (1 / 64)) $exponent)) $exponent)
-              $expression)
+            recurrences := recurrences.push
+              (← `(Lean.Parser.Tactic.rwRule| Enclosure.mass.eq_2))
             let width := Lean.mkIdent (.mkSimple ("widthPower" ++ toString (position + 1)))
             widths := widths.push (← `(Lean.Parser.Tactic.simpLemma| ← ($width).property))
             widthValues := widthValues.push (← `(Lean.Parser.Tactic.simpLemma| $width:ident))
           `(command| abbrev $tail : {v // v = Enclosure.mass
               (($polynomial).val.drop $degree) $degree (Enclosure.point (1 / 64))} := by
+            have htail := ($nextTail).property
+            dsimp only [$polynomial:ident, $product:ident, List.drop] at htail
             certify_first_atom =>
-              change $expression
-              simp only [← ($nextTail).property]
-              dsimp only [$nextTail:ident, $polynomial:ident, $product:ident]
-              simp only [$[$widths],*]
-              dsimp only [$[$widthValues],*]
+              dsimp only [$polynomial:ident, $product:ident, List.drop]
+              rw [$[$recurrences],*]
+              simp only [Nat.reduceAdd, ← htail, $[$widths],*]
+              dsimp only [$nextTail:ident, $[$widthValues],*]
               cbv)
         declarations := declarations.push declaration
       let integral := Lean.mkIdent (.mkSimple ("integral" ++ suffix ++ "Tail0"))

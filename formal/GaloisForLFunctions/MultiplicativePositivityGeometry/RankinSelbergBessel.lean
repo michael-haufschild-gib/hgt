@@ -254,32 +254,34 @@ theorem rankinSelberg_bessel_sharp :
       Tendsto (fun x => x * signedTrace g x 1) (𝓝[>] 0) (𝓝 (-1)) ∧
       Tendsto (fun x => x * squareTrace g x) (𝓝[>] 0) (𝓝 3) := by
   intro g
-  have htw : ∀ u, signedTrace g = fun x u' => cosineTrace (twistedWeight signedCoeff 1 1 x)
-      logFrequency u' := fun _ => by
+  have htw : signedTrace g = fun x u' =>
+      cosineTrace (twistedWeight signedCoeff 1 1 x) logFrequency u' := by
     funext x u'
     simp only [signedTrace, cosineTrace, twistedWeight, g]
-  have hsq : ∀ x, squareTrace g x = cosineTrace (twistedWeight signedSquareCoeff 2 1 x)
-      logFrequency 0 := fun x => by
+  have hsq : ∀ x, squareTrace g x =
+      cosineTrace (twistedWeight signedSquareCoeff 2 1 x) logFrequency 0 := fun x => by
     simp only [squareTrace, cosineTrace, twistedWeight, g, mul_zero, Real.cos_zero, mul_one]
     refine tsum_congr fun n => ?_
     congr 1
     simp only [HTGeometry.cosinePolynomial, Finset.sum_range_succ, Finset.sum_range_zero,
       signedCoeff, signedSquareCoeff]
     push_cast
-    rw [show (2 : ℝ) * (1 * logFrequency n) = 2 * (1 * logFrequency n) from rfl,
-      Real.cos_two_mul]
+    rw [Real.cos_two_mul]
+    simp only [zero_mul, one_mul, Real.cos_zero]
     ring
   refine ⟨?_, ?_, ?_⟩
   · have h := tendsto_twistedTrace signedCoeff 1 1 0
     rw [twistedDivisor_zero _ _ one_ne_zero] at h
-    simpa [htw 0, signedCoeff] using h
+    simp only [htw]
+    simpa [signedCoeff] using h
   · have h := tendsto_twistedTrace signedCoeff 1 1 1
     rw [twistedDivisor_one_at_one] at h
-    norm_num [signedCoeff] at h
-    simpa [htw 1] using h
+    simp only [htw]
+    convert h using 2
+    norm_num [signedCoeff]
   · have h := tendsto_twistedTrace signedSquareCoeff 2 1 0
     rw [twistedDivisor_zero _ _ one_ne_zero] at h
-    simp only [signedSquareCoeff] at h
-    simpa [hsq] using h
+    simp only [hsq]
+    simpa [signedSquareCoeff] using h
 
 end GaloisForLFunctions.MultiplicativePositivityGeometry

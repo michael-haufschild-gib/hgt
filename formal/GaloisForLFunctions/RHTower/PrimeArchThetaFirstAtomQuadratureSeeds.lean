@@ -56,7 +56,9 @@ macro "first_atom_widths" : command => do
     let n := Lean.Syntax.mkNumLit (toString k)
     let declaration ← if k == 0 then
       `(command| abbrev $name : {v // v = Enclosure.pow (Enclosure.point (1 / 64)) $n} := by
-        certify_first_atom => normalize_first_atom_seed)
+        certify_first_atom =>
+          rw [Enclosure.pow]
+          normalize_first_atom_seed)
     else do
       let prev := Lean.mkIdent (.mkSimple ("widthPower" ++ toString (k - 1)))
       `(command| abbrev $name : {v // v = Enclosure.pow (Enclosure.point (1 / 64)) $n} := by
@@ -137,3 +139,11 @@ macro "first_atom_endpoints" : command => do
 first_atom_endpoints
 
 end RHTower.ThetaRationalQuadrature.Certificates
+
+set_option pp.proofs false in
+#print RHTower.ThetaRationalQuadrature.Certificates.widthPower0
+set_option pp.proofs false in
+#print RHTower.ThetaRationalQuadrature.Certificates.widthPower1
+set_option pp.proofs false in
+#print RHTower.ThetaRationalQuadrature.Certificates.widthPower57
+#print axioms RHTower.ThetaRationalQuadrature.Certificates.widthPower57

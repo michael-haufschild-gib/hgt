@@ -149,3 +149,65 @@ before their cached certificates apply. `/tmp/hgt_integration_step_probe.lean` g
 already validated polynomials and gives that two-term integration proof explicit source lines.
 Its current compile will identify the exact failing tactic. No owned Lean process from 61016
 remains, and no cell-table olean has been built yet.
+
+The focused probe (97466, exit 1) identifies `change` as the failure, before any cached width-power
+rewrite. The new focused probe retains only the needed lower-order-two polynomial and replaces
+`change` by two/eight explicit `rw [Enclosure.mass]` steps, followed immediately by the cached
+tail and width rewrites. It tests both the final two coefficients and the preceding eight, with
+precise source locations. Production Certificates still uses the unverified `change` version;
+update it only after this focused rewrite succeeds.
+
+The recurrence-only focused probe (74261) failed because rewriting `Enclosure.mass` could not
+match through the polynomial certificate projections. The current probe, session 28036, first
+uses `dsimp only [polynomialLo2_63, productLo2_63Row0]`, then the bounded recurrence rewrites.
+It prints the polynomial axiom set before checking two- and eight-coefficient tails. The own
+sample file `/tmp/hgt_integration_sample.txt` records proof-producing polynomial normalization;
+remove it during cleanup. The production macro has not changed yet.
+
+The final direct HT check passed (26180, exit 0): `exists_fin4_fourth`, index independence,
+Milnor-to-Steinberg surjectivity, and the quotient-kernel equivalence all depend only on
+`propext, Classical.choice, Quot.sound`. Temporary axiom-print commands were removed afterward.
+The polynomial-projection probe (28036) still failed at recurrence rewriting. A small independent
+probe `/tmp/hgt_mass_recurrence_probe.lean` (33032) checks equation lemmas and a synthetic
+58-coefficient list before any further changes to production certificate generation.
+
+The small explicit-equation probe (41885) showed the real mismatch: `List.drop` hides the cons
+constructor from rewriting. The list-only probe (66303) passes after
+`dsimp only [testPolynomial, List.drop]` and explicit `Enclosure.mass.eq_2` rewrites. The focused
+real-polynomial probe now normalizes both its own list and the cached next-tail equation before
+recurrence rewriting; width bounds remain substituted before arithmetic. It is checking the
+two- and eight-coefficient tails again. Session 33032 was interrupted cleanly (130), and the
+second sample `/tmp/hgt_mass_eq_sample.txt` shows import processing, not an arithmetic stall.
+
+Current owned Lean session: 64771 (`/tmp/hgt_integration_step_probe.lean`). The production
+Certificates macro now has the same list-tail normalization and explicit nonempty recurrence;
+its existing olean/ilean are stale and must be unlinked before its next build. No cell-table
+olean exists yet. Both own stack samples have been removed. Final HT audit is complete; PA
+integration, all cells, the arithmetic sum module, and the final PA audit remain.
+
+Focused probe 64771 reached the final scalar `cbv` but failed there with recursion depth; list
+normalization and recurrence/cached-value rewrites now pass. Temporary module
+`formal/HgtFirstAtomPolynomialProbe.lean` contains only the already proved lower-order-two
+last-cell polynomial. Its olean/ilean build is session 64928, because the new scratch file
+`/tmp/hgt_integration_cached_probe.lean` imports it. This avoids regenerating polynomial proofs
+while isolating scalar integration. The cached probe traces the final expression and tries
+`norm_num` for the remaining two scalar terms. Remove this temporary module and both its build
+artifacts after completion; it is not a production module and is not wired into an umbrella.
+
+The temporary polynomial cache built successfully (64928, exit 0). Its scalar-integration
+consumer is now running in session 91829. Most obsolete `/tmp/hgt_*` files were removed by an
+exact-name list; retain only `/tmp/hgt_last_cell_probe.lean`,
+`/tmp/hgt_integration_step_probe.lean`, and `/tmp/hgt_integration_cached_probe.lean` until the
+remaining checks finish. The temporary `formal/HgtFirstAtomPolynomialProbe.lean` and its two
+build artifacts remain solely for this consumer.
+
+Root cause found in 91829: the traced scalar expression contains the entire nested width-power
+recurrence. `first_atom_widths` normalized its zero case without unfolding `Enclosure.pow`, so
+its valid equality certificates carried unevaluated arithmetic instead of literal values.
+The width-zero branch now explicitly rewrites `Enclosure.pow`, matching the already-correct
+endpoint-power base case. Seeds olean/ilean were unlinked as own stale artifacts and are being
+rebuilt in session 79079. Temporary print commands in Seeds inspect widths 0, 1, and 57 plus the
+axioms of width 57; remove those diagnostics after success. The cached integration probe now
+checks both two- and eight-coefficient tails with the production `cbv` scalar step and no large
+trace output. Its polynomial cache does not use width certificates; all its arithmetic
+references remain unchanged. No cell table has been built yet.

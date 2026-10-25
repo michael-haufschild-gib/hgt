@@ -27,5 +27,28 @@ Deliver a complete, unconditional, axiom-clean (`propext`, `Classical.choice`, `
 4. **Origin-`L²` & Finite-Reading Blindness (`PoissonBoundariesAreDenseInOriginMass`, `OriginHilbertCohomologyObstruction`, `FiniteDegreeConesCannotSatisfyBezout`):** Poisson boundaries `∑_{n≥1} f(nx)` are dense in `L²(ℝ, du)` half-densities; every continuous cohomological functional factoring through origin `L²` is constant; every finite-dimensional linear reading has negative-square cycles in its kernel.
 5. **Countermodel Elimination (`BeurlingRiemannFunctionalEquationRigidity`, `HamburgerIntegralMassRigidity`, `C-18`):** Positive integer masses `ℕ` + Poisson/theta functional equation uniquely force `∑_{n≥1} δ_n`; 2-periodicity + full additive sieve `∑_{m≥1} m^{-1-ε} G_ε(mx) = C_2(⌊x⌋)` uniquely force `μ(d)`. Thus any mechanism genuinely coupling `(ℤ, +)` Poisson/successor structure with `(ℕ_{≥1}, ×)` complete Euler/Möbius factorization has **no** countermodels.
 
-### Active Conjecture Arena (Phase 3 Queue)
-To be populated and attacked in Phase 3 & 4.
+### Active Conjecture Arena (Phase 3 & Phase 4 Ledger)
+
+#### Refuted / Circular Initial Candidates (Phase 4 Diagnostics)
+- **M-01 (Zwegers / Vignéras Indefinite Theta `h⁰` on `orbitSurface`):** `CIRCULAR`. Zwegers's double-error-function completion `sgn(B(c₁, x)) - sgn(B(c₂, x))` is supported in `{Q ≥ 0}` iff `{Q < 0}` splits into two disconnected light-cone components, which requires Lorentzian `(1, r-1)` signature (`defect ≥ 0`) as an input; on an orbit seeing `D ≥ 1` off-line zeros (`zeta_orbit_signature_law`), `{pair > 0}` is connected and the sum diverges.
+- **M-02 (Critical-Line Bochner Measure Majorants `Φ_μ(g) = ∫ |g~(1/2 + it)|² dμ(t)` on `DeningerMeyerStrongLogTarget`):** `INSUFFICIENT / BLIND`. Taking the quotient infimum `Φ_quot(g) = inf_{f ∈ Cap} Φ(g + Sum f)` preserves nonnegativity, centered-flow invariance, and `meyerSourceTrace` majorization, while multiplication by `ξ(1/2 + it)` on cap functions is dense away from critical-line zeros, annihilating `μ|_{\{ξ ≠ 0\}}` and leaving `Φ_quot` blind to off-line zeros.
+- **M-03 (Suzuki Screw-Line Norm `‖𝔖_t‖_{L²(ℝ)}²` Identification):** `CIRCULAR`. Unconditional `memLp_suzukiFrakSFull t` gives `‖𝔖_t‖² ≥ 0`, whereas `‖𝔖_t‖² = 2π Ψ(t)` (`riemannHypothesis_iff_norm_sq_suzukiFrakSFull`) requires `E(z) = XiC(z) + i XiC'(z)` to have no upper-half-plane zeros (`StrictHermiteBiehlerGivesRH`).
+
+#### Exact Pure Harmonic-Analysis Reduction of `EWU` / `ACS` (Derived & Verified Analytically)
+By `EvenSectorBlindMinimumSmallAperturePositivity.primeBlindPositiveEvenPolar_iff_riemannHypothesis` and `EvenSectorExactMomentRealization.exists_single_smooth_exact_moments`, all three ACS targets (full-cone RR + Bézout/ampleness on `globalExactArithmeticSourceCone` / `meyerDegreeSourceCone`, centered-flow-invariant `meyerSourceTrace` majorant, and zero-rate `H¹` Sobolev defect floor) hold unconditionally iff for every single smooth even pole-free test `g : SmoothEvenPolarTestFn` with `logVector g.1.1 = 0`, `weilArchRe (EF.weilTest g g) ≥ 0`.
+
+Setting `G(y) := |y|^{-1/2} g(log |y|)` (`G(0) := 0`) and `Ĝ = 𝓕 G`:
+1. `G ∈ C^∞_c(ℝ \ {0}) ⊂ 𝓢_even(ℝ)` satisfies `G(1/y) = |y| G(y)` (`∀ y ≠ 0`) and `Ĝ(0) = ∫_ℝ G(y) dy = 0` (`Ĝ'(0) = 0`, so `|Ĝ(ξ)| = O(ξ²)` as `ξ → 0`).
+2. **All-integer dilation orthogonality (both sides):** `∫_0^∞ G(n y) conj(G(y)) dy = ∫_0^∞ Ĝ(n ξ) conj(Ĝ(ξ)) dξ = 0` for every integer `n ≥ 2`.
+3. **Beckner–Tate exact identity (verified on `G(y) = e^{-π y²}`):** Because `G(1/y) = |y| G(y)` kills `∫_0^∞ (log y) |G(y)|² dy = 0`,
+   `weilArchRe (EF.weilTest g g) = ∫_0^∞ (log ξ) |Ĝ(ξ)|² dξ`.
+4. **Co-Poisson identity:** `∑_{n=1}^∞ Ĝ(n ξ) = ∑_{m=1}^∞ (1/m) G(ξ / m)` for all `ξ > 0`; in particular `∑_{n=1}^∞ Ĝ(n ξ) = 0` identically on `ξ ∈ (0, e^{-A})` where `supp(G) ⊂ [e^{-A}, e^A]`.
+5. **Phase-4 Necessity Checks Passed:**
+   - Dropping `G(1/y) = |y| G(y)` fails under `Ĝ ↦ √λ Ĝ(λ ·)` (`λ → +∞` sends `∫ (log ξ) |Ĝ_λ(ξ)|² dξ → -∞`).
+   - Dropping integer dilation orthogonality `(2)` fails because `λ ≡ 0 ∉ WeilPositiveEvenPolar` (`source_unique_of_weilPositiveEvenPolar`).
+   - Pairing `conj(Ĝ(ξ))` with `∑_{n≥1} Ĝ(n ξ)` against flat weight `1` collapses to the tautology `∑_{m≥1} Φ(m) = φ(1) = ‖G‖²`.
+
+#### Next Competing Non-Circular Mechanisms Under Attack (Phase 3 → Phase 4)
+- **M-04 (Multiplicative-to-Additive Bi-Dilation / Hilbert-Space Projection on `(G, Ĝ)`):** Couple `(2)` (`⟨U_n G, G⟩ = ⟨U_n Ĝ, Ĝ⟩ = 0` for `n ≥ 2`), `(1)` (`G(1/y) = |y| G(y)`), and `(4)` (`∑_{n≥1} Ĝ(n ξ) = ∑_{m≥1} m^{-1} G(ξ/m)`) with logarithmic scale integration `∫_0^∞ (dc/c) ∫_0^c ...` or Mellin–Hardy Hankel/Toeplitz factorization.
+- **M-05 (Two-Channel / Biarithmetic Meyer Correspondence Positivity on `DeningerMeyerStrongLogTarget`):** Test whether coupling centered scaling `D_a` with additive Fourier/sheaf translation escapes single-channel `isGreatest_meyerSharpPositiveIdeal`.
+- **M-06 (Signed Coalescent Surplus Control in `TransThresholdPairCorrelation`):** Test whether signed Ramanujan–Dirichlet lobe cancellation + additive shift structure controls `oddEvenShiftPrimeCoalescentSurplus` across `η ∈ (0, 1/3)` without hitting the Bombieri–Friedlander–Iwaniec parity barrier.
