@@ -18,6 +18,7 @@ import GaloisForLFunctions.MultiplicativePositivityGeometry.FiniteBoundaryDiviso
 import GaloisForLFunctions.MultiplicativePositivityGeometry.BoundaryZeroCapacity
 import GaloisForLFunctions.MultiplicativePositivityGeometry.PositivityMargin
 import GaloisForLFunctions.MultiplicativePositivityGeometry.BoundaryDivisorRange
+import GaloisForLFunctions.MultiplicativePositivityGeometry.CharacterFamilies
 
 /-!
 # Multiplicative Positivity Geometry

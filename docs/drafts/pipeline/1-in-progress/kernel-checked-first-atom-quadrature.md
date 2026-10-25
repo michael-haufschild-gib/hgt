@@ -141,3 +141,11 @@ and final audits remain pending.
 The eight-coefficient-tail Certificates module compiled successfully (44871, exit 0).
 Current last-cell check: session 61016. The probe prints each integration-tail axiom set as well
 as the polynomial and final numerator sets, so any remaining failure can be located precisely.
+
+Probe 61016 failed: empty integration tails pass, but even the two-coefficient lower-order-two
+tail at degrees 56–57 hits recursion depth. All polynomial certificates remain clean. Block size
+therefore is not the root cause; `change` or a subsequent rewrite is expanding high width powers
+before their cached certificates apply. `/tmp/hgt_integration_step_probe.lean` generates only the
+already validated polynomials and gives that two-term integration proof explicit source lines.
+Its current compile will identify the exact failing tactic. No owned Lean process from 61016
+remains, and no cell-table olean has been built yet.

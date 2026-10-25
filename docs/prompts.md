@@ -270,11 +270,6 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 
 
-
-do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
-
-read fully the movitation and context of our recent research programmes:
-
 do not use the hgtl7 skill. 
 
 our current research programmes:
@@ -296,44 +291,23 @@ our current research programmes:
 - formal/GaloisForLFunctions/SignedSuccessorArithmetic/README.md
 - formal/GaloisForLFunctions/ArithmeticDefectRigidity/README.md
 - formal/GaloisForLFunctions/BiarithmeticGeometry/README.md
+- formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
+- formal/GaloisForLFunctions/ArithmeticPositiveDuality/README.md
+- formal/GaloisForLFunctions/StripBochnerWeilForcing/README.md
 
-read
-- docs/reports/rh-current-frontier-map.md 
-- docs/reports/rh-killed-routes.md
+do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
 
-on every turn: 
-find an formalize a contribution that significantly advances one of the routes. 
-
-the contribution either:
-- discharges a hypothesis or premise
-- answers a significant questions
-
-Not valid are improvements of numbers, nogos, redressing existing knowledge in new language, anything that does not clearly count as significant progress in overcoming the open problem in a route from docs/reports/rh-current-frontier-map.md.
-
+read fully:
+formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md
 
 on every turn: 
-either:
-- answer an open question in a research programme
+research, derive, formalize a significant contribution to the field that significantly helps to either:
+- find an answer to an open question in a research programme
 - gain one of the mathematical tools a research programme is missing
-- prove a significant cross-programme theorem that significantly advances our research about the RH as a whole 
-- solves one of the open arithmetic problems in any route in docs/reports/rh-current-frontier-map.md
+- gain a deeper insight about the problem the field is exploring and the nature of the field itself 
+- prove a significant theorem that significantly advances our research about the RH as a whole 
   
 Not valid are improvements of numbers, nogos, redressing existing knowledge in new language, anything that does not clearly count as significant progress, or that is not something that needs to exist in this field and couldnt exist otherwise.
-
-
-
-read fully line by line:
-- docs/reports/review-2510/route-unification-ledger.md
-- docs/reports/review-2510/walls-ledger.md
-- docs/reports/review-2510/hard-obstacles.md
-  
-your research is about finding an answer to the central question "what forces the actual arithmetic source to be blind to off-line zeros?" 
-
-on every turn: 
-
-make a significant contribution to answering the question "what forces the actual arithmetic source to be blind to off-line zeros?" 
-
-Not valid are improvements of numbers, redressing existing knowledge in new language, anything that does not clearly count as significant progress and brings us clearly closer to answering the question.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -354,11 +328,9 @@ always look at the big picture, try to understand what all our research is tryin
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-Maintain a working log in logs/. 
+Maintain a working log in logs/. Do not use the README.md as a diary or working log or theorem ledger. Only update when the foundational information in it changes.
 
 the goal is met when you have made 250 such significant contributions.
-
-
 
 the goal is met when all walls are demolished and no longer a mathematical obstacle.
 
@@ -382,29 +354,6 @@ use the search tool for our lean corpus, and find instances where multiple "dots
 
 goal is met when 250 discharges could be made.
 
-## research after review
-
-we did a review of our current research: 
-docs/reports/review-2410/hard-obstacles.md
-docs/reports/review-2410/hard-obstacles-summary.md
-
-your task: work through the tasks from section "## 2.1 All "just work" tasks" in docs/reports/review-2410/hard-obstacles-summary.md
-
-**Lean rules:**
-1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
-2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
-3. No computations
-4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
-5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
-6. make sure you don't leave staleclean up after yourself.
-7. Optimize lean code. No raising heartbeat hacks.
-8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
-
-Keep a knowledge ledger in logs/ for your own work (there are multiple agents active) - not a working log or history or diary, but a collection of crisp facts and failures to learn from in future research sessions.
-
-Do not clutter any document with useless ledgers or diary entries or otherwise add content that is not in the spirit of the document´s purpose. Best you only keep it to pipeline cards and your own log.
-
-Always make good use the search tool for our lean corpus to find existing work, building blocks, and leads for new ideas and solutions.
 
 ## update obstacles
 previously we had created these documentss:
@@ -418,10 +367,9 @@ also we have:
 - docs/reports/rh-killed-routes.md
 
 and these new research results:
-- formal/GaloisForLFunctions/ArithmeticPositiveDuality/PositiveMeasureHamburgerRigidity.lean
-- fformal/GaloisForLFunctions/ArithmeticPositiveDuality/BeurlingRiemannFunctionalEquationRigidity.lean
-- formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/ArithmeticForcesBlindness.lean
-- formal/GaloisForLFunctions/ArithmeticDefectRigidity/RecordMinimaForceInfiniteCofactorLimits.lean
+- formal/GaloisForLFunctions/ArithmeticPositiveDuality/README.md
+- formal/GaloisForLFunctions/StripBochnerWeilForcing/README.md
+- formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
     
 create updated versions of the reviews to reflect the current status quo and frontier of our research:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
@@ -440,7 +388,7 @@ do not rely only on these markdown files which are partly outdated. use the sear
 the reports are not diaries or history log, but status quo reports.
 
 update the existing reports in folder docs/reports/review-2510/
-do not run builds.
+do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
 ## update programme README.mds
@@ -513,7 +461,9 @@ and read the current research programmes:
 - formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
 - formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
 - formal/GaloisForLFunctions/ArithmeticPositiveDuality/README.md
-    
+- formal/GaloisForLFunctions/StripBochnerWeilForcing/README.md
+- formal/GaloisForLFunctions/ArithmeticKunnethTheory/
+        
 Only read these documents, no other markdown files.
 
 Use the search tool for our lean corpus to research what we have proven and not proven. Do not assume, our research is far ahead of your training data. Take the time to search and understand. 
@@ -525,17 +475,17 @@ The questions for you to answer:
 2. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
 3. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-2510/opus.md
+Write a report in docs docs/reports/review-2510/astra.md
 
-do not run any builds. do not search the web.
+do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 
 ## Init new field programme
 
 Do not use the hgtl7 skill.
 
-Read fully the report docs/reports/review-2510/fable.md
+Read fully the report docs/reports/review-2510/astra.md
 
-In section "## 4. Question 3 — the field that would supply the missing tools" the document describes a new field/research programme - naming it "Arithmetic Positive Duality"
+In section "## 4. The field these questions suggest" the document describes a new field/research programme - naming it "Arithmetic Correlation Geometry"
 
 Your task: develop this new field / programme.
 
@@ -621,18 +571,17 @@ always look at the big picture, try to understand what all our research is tryin
 Goal is met when a proof route is fully closed and formalized in lean and RH is proven. Do not stop until an RH proof is fully formalized.
 
 ## argon do task
-read: docs/reports/review-2510/route-unification-ledger.md
+read: formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md
 
-understand this part from the document:
-"3. **The three families reduce to three bridges and one law.**
-   - **U1 — escape exclusion (Q3).** The only non-graded handle below quasi-RH.
-   - **U2 — selection (Q1).** Pass from averaged positivity, already proved beyond Nyquist, to individual heights.
-   - **U3 — selectivity of invariants (Q2), then forcing.** Decide whether ζ's invariants characterize it, then force the source into the maximal blind ideal with input outside the single-channel class.
-   - **The common law:** arithmetic forces blindness. In the cancellation family it would appear as rate zero, in the positivity family as a complete sign, and in the realization family as exhaustion of the maximal blind ideal."
+related: 
+formal/GaloisForLFunctions/StripBochnerWeilForcing/README.md
+formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
+formal/GaloisForLFunctions/ArithmeticKunnethTheory/README.md
+formal/GaloisForLFunctions/ArithmeticPositiveDuality/README.md
 
-Find and formalize this common law.
+your task: Establish RR and Bézout/ampleness on the same full arithmetic source cone, or an independent invariant trace majorant/zero-rate H¹ floor. Full Hasse faithfulness adds simplicity; bounded-carrier positivity cannot establish its own exhaustion. Quantitative branch still needs signed coalescent surplus control, not better census alone.
 
-We are not interested in more criteria, estimates, improving some number, more nogos, but the actual common law.
+We are not interested in more criteria, estimates, improving some number, more nogos, but a complete and formalized solution of the given task.
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -644,10 +593,10 @@ We are not interested in more criteria, estimates, improving some number, more n
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-Do not edit the md document.
-
 Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
 
+
+Do not edit the md document.
 
 ## argon single task open question
 
