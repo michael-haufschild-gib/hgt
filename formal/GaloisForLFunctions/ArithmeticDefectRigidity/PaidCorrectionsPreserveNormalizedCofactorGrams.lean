@@ -128,7 +128,7 @@ theorem normalized_pronicPairing_perturbation_tendsto_zero_of_nonneg
   rw [zero_mul] at hmul
   apply hmul.congr
   intro T
-    rw [← mul_div_assoc, div_mul_cancel₀ _ (hplus T).ne']
+  rw [← mul_div_assoc, div_mul_cancel₀ _ (hplus T).ne']
 
 end GaloisForLFunctions.ArithmeticDefectRigidity
 

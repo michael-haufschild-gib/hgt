@@ -408,6 +408,135 @@ theorem false_of_functionalEquation_of_decaying_count {σ p K c : ℝ} (hσ1 : -
         have := mul_le_mul_of_nonneg_left hTT hm0
         nlinarith
 
+/-! ## The over-regular Beurling systems -/
+
+section OverRegular
+
+open RHTower.BeurlingOverRegularIntegers
+
+/-- The count error `N(e^v) - ρe^v - C = -(c₁/p₁)e^{-p₁v} - (c₂/p₂)e^{-p₂v}` of the over-regular
+system. -/
+def overRegularCountError (μ ν γ v : ℝ) : ℝ :=
+  -(lowResidue μ ν γ / (3 * μ - 1 - ν)) * Real.exp (-(3 * μ - 1 - ν) * v) -
+    highResidue μ ν γ / (3 * μ - 1 + ν) * Real.exp (-(3 * μ - 1 + ν) * v)
+
+theorem countLog_sub_eq (μ ν γ v : ℝ) :
+    countLog μ ν γ v - rho μ ν γ * Real.exp v - countConst μ ν γ =
+      overRegularCountError μ ν γ v := by
+  simp only [countLog, overRegularCountError, neg_mul]
+  ring
+
+/-- On `Re s > -p₁` the count-error continuation is the over-regular zeta itself. -/
+theorem countContinuation_overRegular {μ ν γ : ℝ} (hν : 0 < ν) (hlow : 0 < 3 * μ - 1 - ν)
+    {s : ℂ} (hs : -(3 * μ - 1 - ν) < s.re) (hs1 : s ≠ 1) :
+    countContinuation (rho μ ν γ) (countConst μ ν γ) (overRegularCountError μ ν γ) s =
+      overRegularZeta μ ν γ s := by
+  set p₁ : ℝ := 3 * μ - 1 - ν with hp₁
+  set p₂ : ℝ := 3 * μ - 1 + ν with hp₂
+  have hp₁0 : (p₁ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hlow.ne'
+  have hp₂pos : 0 < p₂ := by rw [hp₂]; linarith
+  have hp₂0 : (p₂ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hp₂pos.ne'
+  have hl : 0 < (s + p₁).re := by simp; linarith
+  have hh : 0 < (s + p₂).re := by simp; linarith
+  have ne : ∀ z : ℂ, 0 < z.re → z ≠ 0 := fun z hz h => by rw [h] at hz; simp at hz
+  have hpt : ∀ v : ℝ, (overRegularCountError μ ν γ v : ℂ) * cexp (-(s * v)) =
+      (-(lowResidue μ ν γ / p₁ : ℝ) : ℂ) * cexp (-(s + p₁) * v) -
+        ((highResidue μ ν γ / p₂ : ℝ) : ℂ) * cexp (-(s + p₂) * v) := by
+    intro v
+    rw [overRegularCountError, ← hp₁, ← hp₂]
+    push_cast
+    have e1 : cexp (-(s + p₁) * v) = cexp (-((p₁ : ℂ) * v)) * cexp (-(s * v)) := by
+      rw [← Complex.exp_add]; ring_nf
+    have e2 : cexp (-(s + p₂) * v) = cexp (-((p₂ : ℂ) * v)) * cexp (-(s * v)) := by
+      rw [← Complex.exp_add]; ring_nf
+    rw [e1, e2]
+    ring_nf
+  have hint1 := (integrableOn_cexp_neg_mul hl).const_mul ((-(lowResidue μ ν γ / p₁) : ℝ) : ℂ)
+  have hint2 := (integrableOn_cexp_neg_mul hh).const_mul (((highResidue μ ν γ / p₂) : ℝ) : ℂ)
+  have hI : (∫ v in Ioi (0 : ℝ), (overRegularCountError μ ν γ v : ℂ) * cexp (-(s * v))) =
+      (-(lowResidue μ ν γ / p₁ : ℝ) : ℂ) * (1 / (s + p₁)) -
+        ((highResidue μ ν γ / p₂ : ℝ) : ℂ) * (1 / (s + p₂)) := by
+    simp_rw [hpt]
+    rw [integral_sub hint1 hint2, integral_const_mul, integral_const_mul,
+      integral_cexp_neg_mul hl, integral_cexp_neg_mul hh]
+  have hν0 : ν ≠ 0 := hν.ne'
+  have h₁ : 3 * μ - ν ≠ 0 := by rw [hp₁] at hlow; linarith
+  have h₂ : 3 * μ + ν ≠ 0 := by rw [hp₁] at hlow; linarith
+  rw [countContinuation, hI, overRegularZeta_eq_partialFractions hν0 h₁ h₂ (sub_ne_zero.mpr hs1)
+    (ne _ hl) (ne _ hh), countConst]
+  have hu := mul_inv_cancel₀ (sub_ne_zero.mpr hs1)
+  have hv₁ := mul_inv_cancel₀ (ne _ hl)
+  have hv₂ := mul_inv_cancel₀ (ne _ hh)
+  have hq₁ := div_mul_cancel₀ (lowResidue μ ν γ : ℂ) hp₁0
+  have hq₂ := div_mul_cancel₀ (highResidue μ ν γ : ℂ) hp₂0
+  push_cast
+  simp only [div_eq_mul_inv, one_mul]
+  linear_combination (rho μ ν γ : ℂ) * hu -
+    ((lowResidue μ ν γ : ℂ) * (p₁ : ℂ)⁻¹ * s) * hv₁ -
+    ((highResidue μ ν γ : ℂ) * (p₂ : ℂ)⁻¹ * s) * hv₂ +
+    (s * (s + p₁)⁻¹) * hq₁ + (s * (s + p₂)⁻¹) * hq₂
+
+/-- The Euler product keeps the over-regular zeta away from `0` on `Re s = 1 - σ > 1`. -/
+theorem exists_norm_overRegularZeta_ge {μ ν γ σ : ℝ} (hlow : 0 ≤ 3 * μ - 1 - ν)
+    (hhigh : 0 ≤ 3 * μ - 1 + ν) (h4 : 0 ≤ 4 * μ - 1) (hσ : σ < 0) :
+    ∃ c > 0, ∀ t : ℝ, c ≤ ‖overRegularZeta μ ν γ (1 - ((σ : ℂ) + (t : ℂ) * I))‖ := by
+  refine ⟨Real.exp (-∫ u in Ioi (0 : ℝ), Real.exp (-((1 - σ) * u)) * |primeDensity μ ν γ u|),
+    Real.exp_pos _, fun t => ?_⟩
+  have hre : 1 < (1 - ((σ : ℂ) + (t : ℂ) * I)).re := by simp; linarith
+  rw [← cexp_integral_primeDensity hlow hhigh h4 hre, Complex.norm_exp]
+  apply Real.exp_le_exp.mpr
+  have hX := norm_integral_le_integral_norm (μ := volume.restrict (Ioi (0 : ℝ)))
+    (fun u : ℝ => Complex.exp (-((1 - ((σ : ℂ) + (t : ℂ) * I)) * u)) * (primeDensity μ ν γ u : ℂ))
+  have hnorm : ∀ u : ℝ, ‖Complex.exp (-((1 - ((σ : ℂ) + (t : ℂ) * I)) * u)) *
+      (primeDensity μ ν γ u : ℂ)‖ = Real.exp (-((1 - σ) * u)) * |primeDensity μ ν γ u| := by
+    intro u
+    rw [norm_mul, Complex.norm_exp, Complex.norm_real, Real.norm_eq_abs]
+    congr 2
+    simp
+  simp_rw [hnorm] at hX
+  have := (Complex.abs_re_le_norm _).trans hX
+  rw [abs_le] at this
+  linarith [this.1]
+
+/-- **The over-regular systems violate the functional equation.**  On every line
+`max(-p₁, -1/2) < σ < 0`, `Γ_ℝ(s) ζ(s) = Γ_ℝ(1-s) ζ(1-s)` fails for some `s = σ + it`, `t ≥ 4`. -/
+theorem overRegularZeta_not_functionalEquation {μ ν γ σ : ℝ} (hμ2 : μ < 1 / 2) (hν0 : 0 < ν)
+    (hν1 : ν < 3 * μ - 1) (hσlow : -(3 * μ - 1 - ν) < σ) (hσ1 : -1 / 2 < σ) (hσ2 : σ < 0) :
+    ¬ ∀ t : ℝ, 4 ≤ t →
+      Gammaℝ ((σ : ℂ) + (t : ℂ) * I) * overRegularZeta μ ν γ ((σ : ℂ) + (t : ℂ) * I) =
+        Gammaℝ (1 - ((σ : ℂ) + (t : ℂ) * I)) *
+          overRegularZeta μ ν γ (1 - ((σ : ℂ) + (t : ℂ) * I)) := by
+  intro hFE
+  have hlow : 0 < 3 * μ - 1 - ν := by linarith
+  have hhigh : 0 < 3 * μ - 1 + ν := by linarith
+  obtain ⟨c, hc, hZ⟩ := exists_norm_overRegularZeta_ge (γ := γ) hlow.le hhigh.le (by linarith) hσ2
+  set K : ℝ := |lowResidue μ ν γ / (3 * μ - 1 - ν)| + |highResidue μ ν γ / (3 * μ - 1 + ν)|
+  refine false_of_functionalEquation_of_decaying_count (p := 3 * μ - 1 - ν) (K := K) hσ1 hσ2
+    (by linarith) hc (g := overRegularCountError μ ν γ) (by unfold overRegularCountError; fun_prop)
+    (fun v hv => ?_) (rho μ ν γ) (countConst μ ν γ) (overRegularZeta μ ν γ)
+    (fun t _ => hZ t) (fun t ht => ?_)
+  · have he : Real.exp (-(3 * μ - 1 + ν) * v) ≤ Real.exp (-(3 * μ - 1 - ν) * v) :=
+      Real.exp_le_exp.mpr (by nlinarith)
+    have he0 := (Real.exp_pos (-(3 * μ - 1 + ν) * v)).le
+    rw [overRegularCountError]
+    calc |-(lowResidue μ ν γ / (3 * μ - 1 - ν)) * Real.exp (-(3 * μ - 1 - ν) * v) -
+          highResidue μ ν γ / (3 * μ - 1 + ν) * Real.exp (-(3 * μ - 1 + ν) * v)|
+        ≤ |lowResidue μ ν γ / (3 * μ - 1 - ν)| * Real.exp (-(3 * μ - 1 - ν) * v) +
+            |highResidue μ ν γ / (3 * μ - 1 + ν)| * Real.exp (-(3 * μ - 1 + ν) * v) := by
+          refine (abs_sub _ _).trans (add_le_add ?_ ?_) <;>
+            rw [abs_mul, abs_of_pos (Real.exp_pos _)] <;> simp
+      _ ≤ K * Real.exp (-(3 * μ - 1 - ν) * v) := by
+          have := mul_le_mul_of_nonneg_left he (abs_nonneg (highResidue μ ν γ / (3 * μ - 1 + ν)))
+          simp only [K]
+          nlinarith
+  · have hsre : -(3 * μ - 1 - ν) < ((σ : ℂ) + (t : ℂ) * I).re := by simp; linarith
+    have hs1 : ((σ : ℂ) + (t : ℂ) * I) ≠ 1 := by
+      intro h; have := congrArg Complex.re h; simp at this; linarith
+    rw [countContinuation_overRegular hν0 hlow hsre hs1]
+    exact hFE t ht
+
+end OverRegular
+
 end
 
 end RHTower.FunctionalEquationCountFluctuation

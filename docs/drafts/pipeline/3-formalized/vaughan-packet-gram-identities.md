@@ -32,5 +32,6 @@ transitive axiom reports contain only `propext`, `Classical.choice`, and
 no redundant full scratch pass was needed. The BVI umbrella import is present,
 the owned scratch was removed, and no limits were raised.
 
-The uniform packet bounds remain under verification. These finite identities
+The uniform packet bounds are now checked in
+`uniform-logarithmic-laws-for-vaughan-superpositions.md`. These finite identities
 do not settle a fixed strip or full Q-I.

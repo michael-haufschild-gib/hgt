@@ -316,6 +316,15 @@ base-five digits of `n` at a real parameter `a`, obtaining `D_a(n)`. Euclidean s
 limit; for nonnegative `a`, the leading digit also gives `D_a(n)>=a^k` on the `k`th block.
 The finite identities are proved in `WeightedBaseFiveDigits.lean`.
 
+For `a>1`, the normalized grids `a^(-M) D_a(floor(5^M x))` increase
+uniformly on the whole real axis to a right-continuous profile `F_a`.
+Their error lies between zero and `4 a^(-M)/(a-1)`. The profile satisfies
+`F_a(5x)=a F_a(x)` and has exact finite digit values at every base-five
+rational. Each refinement appends one digit; its geometric tail supplies
+the uniform error.
+Source: `DigitRefinement.lean`, `fiveDigitProfile_sub_grid_bounds`,
+`fiveDigitGrid_tendstoUniformly`, `fiveDigitProfile_fiveAdic`.
+
 They identify the actual receiver of the geometric source `I_a(5^r)=a^r`, zero elsewhere.
 For `|a|<5`, its mean converges absolutely to `5/(5-a)` and its centered ordinary-floor
 prefix is exactly `-a/(5-a) D_a(n)`. The Euler-factor convolution identity gives the same
@@ -411,6 +420,15 @@ actual tower paid-ideal criterion reads the partial-sum energy of `g`.
 Source: `CriticalWienerLift.lean`, `norm_fiveCriticalWienerLift`,
 `norm_fiveCriticalWienerLift_sub`, `mem_paidIdeal_critical_fiveCriticalWienerLift_iff`.
 
+At the exact golden critical parameter, those finite repairs belong to the
+actual paid ideal and converge in Wiener norm to an unpaid kernel of norm
+two. Their distance is exactly twice the remaining inverse-square-root
+tail. Thus the actual critical golden paid ideal is not Wiener closed.
+Source: `CriticalGoldenPaymentNonclosed.lean`,
+`criticalFiniteWienerRepair_distance`,
+`criticalFiniteWienerRepair_mem_golden_paidIdeal`,
+`not_isClosed_golden_critical_paidIdeal`.
+
 The same coordinates preserve the complex coefficient norm and distance.
 For `g` in complex `ell1`, the lifted kernel has coefficient
 `sqrt(5)^r*g_r` at `5^r` and zero elsewhere. Its critical golden payment
@@ -461,6 +479,13 @@ The source's origin value is irrelevant. A complete graph can have a
 nonclosed image in the input Wiener norm, so these are distinct properties.
 Source: `CofactorGraphDomain.lean`, `isClosed_cofactorGraphDomain`,
 `cofactorGraphDomain_completeSpace`, `mem_range_cofactorGraphInput_iff`.
+
+The input image is Wiener closed exactly when one constant bounds every
+graph output norm by that constant times its input norm. An output bound
+`C` gives inverse bound `max(1,C)` for the complete maximum graph norm;
+the Banach inverse theorem gives the converse.
+Source: `CofactorGraphClosedness.lean`,
+`isClosed_range_cofactorGraphInput_iff`.
 
 For the actual centered prefix of any source with absolutely convergent
 mean, this graph image is exactly its complex paid ideal. Every paid

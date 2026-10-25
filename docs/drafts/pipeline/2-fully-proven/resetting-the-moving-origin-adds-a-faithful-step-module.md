@@ -86,8 +86,9 @@ zero-origin actual cofactor diagonal is at most `1/j`. Arbitrarily large
 
 The exact source-power disappearance theorem is already formalized. The
 uniform absolute-pronic cofactor bound, step-module realization and
-faithfulness, mixed source Gram convergence, and unreset exclusion remain to
-be formalized. The separate record-horizon paper proof constructs shifts
+faithfulness, and reset-source Gram convergence passed their combined Lean
+scratch; canonical checks remain. Raw-source convergence and the dimension
+corollaries remain unchecked. The separate record-horizon paper proof constructs shifts
 with nonzero origin trace on escape. Neither result identifies the unshifted
 actual escape spectrum.
 
@@ -107,10 +108,9 @@ the uniform summation argument, rather than a bare interchange of limits.
 ## Formalization coverage
 
 The reset-origin realization, complete step Wiener action and positive-mixture
-faithfulness are in the active boundary scratch retry. Canonical promotion
-is prepared in `/tmp/qiii-promote-verified-boundary-refinements.py` but must
-wait for a clean completed log. The raw, unreset Gram formula was still only
-on paper; `/tmp/qiii_unreset_origin_gram_body.lean` now drafts its exact
+faithfulness passed the combined scratch and are installed in their canonical
+Lean leaves. The raw, unreset Gram formula was still only on paper;
+`/tmp/qiii_unreset_origin_gram_body.lean` now drafts its exact
 receiver-scale and own-scale limits, realization of every positive mass on
 escape, and exclusion from every actual zero-origin common kernel. Its
 scratch `/tmp/qiii-unreset-origin-check.lean` needs the new canonical boundary
@@ -127,7 +127,7 @@ scratch is assembled but UNVERIFIED, awaiting canonical boundary imports.
 ## Boundary scratch passed; canonical completion pending
 
 The full moving-origin scratch passed with standard axioms in session `6979`.
-The boundary promoter ran, installing and wiring all thirteen new leaves
+All thirteen new leaves are installed and wired
 (the shared first-crossing leaf was already installed by diagonal promotion).
 Unused closing tactics and the unused completeness binder were removed before
 canonical placement. Final direct canonical checks remain pending in

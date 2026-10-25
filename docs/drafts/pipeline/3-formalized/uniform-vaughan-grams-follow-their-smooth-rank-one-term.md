@@ -34,6 +34,7 @@ Module: [UniformVaughanGramsFollowTheirSmoothRankOneTerm.lean](../../../../forma
 Scratch, producing, and final direct `lake --old env lean` checks passed.
 All four transitive axiom reports contain only `propext`, `Classical.choice`,
 and `Quot.sound`. The BVI umbrella import is present; the scratch was removed.
-No limits were raised. Packet, classification, and endpoint consequences
-remain in the existing formalization queue. No fixed power gain is proved;
+No limits were raised. Packet consequences are now checked in
+`uniform-logarithmic-laws-for-vaughan-superpositions.md`; classification and
+endpoint consequences remain in the existing formalization queue. No fixed power gain is proved;
 full Q-I remains open.

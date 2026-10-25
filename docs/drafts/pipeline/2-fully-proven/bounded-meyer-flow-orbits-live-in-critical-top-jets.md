@@ -158,6 +158,9 @@ algebra and reserve-flow extensions pass their own Lean checks.
 The actual algebra module contains positive trace, radical-annihilation, and
 unconditional nontriviality endpoints. Its inputs are the exact full-jet algebra
 and bounded-orbit classification; its direct check and axiom audit are pending.
+It also explicitly defines `meyerCriticalTopCohomologySubmodule`, with candidate
+proofs of its representative criterion, sharp and convolution closure, and
+nontriviality, so the paper's quotient-subspace assertion has its own Lean object.
 
 ## Exact reserve orbit law
 

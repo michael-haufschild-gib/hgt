@@ -157,16 +157,17 @@ no tower-support restriction and no presumed closedness of payment.
 The closed graph, completeness, input injectivity, and exact energy-domain
 identification passed the five audits and direct source check in
 `CofactorGraphDomain`; its [stage-3 card](../3-formalized/biarithmetic-complete-cofactor-graph.md)
-records the exact scope. The ambient closedness criterion is drafted in
-`/tmp/BiarithmeticCofactorGraphClosedness.lean`. Corpus search found a Hilbert-space
+records the exact scope. The ambient closedness criterion is formalized in
+`BiarithmeticGeometry/CofactorGraphClosedness.lean`. Corpus search found a Hilbert-space
 bounded-below criterion, which does not apply to the Wiener Banach domain.
 Mathlib's Banach theorem
 `ContinuousLinearMap.isClosed_range_iff_antilipschitz_of_injective` applies
 directly instead. For the maximum graph norm, output bound `C` gives inverse
 bound `max(1,C)`, and any inverse bound controls the output. This supplies
 exactly the paper criterion without imposing a Hilbert structure on the Wiener
-algebra. Its first check exposed an unloaded nonnegative-real notation; the
-explicit `NNReal` carrier repairs that elaboration error. Recheck remains pending.
+algebra. Its direct repository check and both transitive audits passed;
+the [stage-3 card](../3-formalized/biarithmetic-cofactor-graph-closedness.md)
+records the exact criterion.
 
 ## Exact finite-core errors
 

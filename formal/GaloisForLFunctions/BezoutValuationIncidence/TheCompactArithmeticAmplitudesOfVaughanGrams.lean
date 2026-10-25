@@ -112,7 +112,7 @@ theorem exists_pos_pmVaughanSmoothAmplitude_lt {δ : ℝ} (hδ : 0 < δ) :
 theorem infinite_pmVaughanSmoothAmplitudeSet : pmVaughanSmoothAmplitudeSet.Infinite := by
   intro hfinite
   have hclosed : IsClosed (pmVaughanSmoothAmplitudeSet \ {0}) :=
-    (hfinite.subset Set.diff_subset).isClosed
+    (hfinite.subset Set.sdiff_subset).isClosed
   have hlim : Tendsto (fun N : ℕ => deningerHarmonicPartial (N + 1) ^ 2) atTop (𝓝 0) := by
     simpa only [Function.comp_def, zero_pow (by norm_num : (2 : ℕ) ≠ 0)] using
       (harmonic_tendsto_zero.comp (tendsto_add_atTop_nat 1)).pow 2
@@ -127,7 +127,7 @@ theorem infinite_pmVaughanSmoothAmplitudeSet : pmVaughanSmoothAmplitudeSet.Infin
 private theorem eventually_eq_of_tendsto_in_finite_set {S : Set ℝ} (hS : S.Finite)
     {f : ℕ → ℝ} {a : ℝ} (hmem : ∀ᶠ n : ℕ in atTop, f n ∈ S)
     (hlim : Tendsto f atTop (𝓝 a)) : ∀ᶠ n : ℕ in atTop, f n = a := by
-  have hclosed : IsClosed (S \ {a}) := (hS.subset Set.diff_subset).isClosed
+  have hclosed : IsClosed (S \ {a}) := (hS.subset Set.sdiff_subset).isClosed
   have hnhood : (S \ {a})ᶜ ∈ 𝓝 a := hclosed.isOpen_compl.mem_nhds (by simp)
   filter_upwards [hmem, hlim.eventually hnhood] with n hn hnot
   by_contra hne

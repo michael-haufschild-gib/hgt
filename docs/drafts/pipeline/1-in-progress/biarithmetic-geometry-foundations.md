@@ -51,7 +51,7 @@ its parent card. Open programme questions without a proof plan remain open.
 
 | Source requirement | Required evidence | Status |
 |---|---|---|
-| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; forty-five direct-checked and axiom-audited leaves |
+| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; forty-eight direct-checked and axiom-audited leaves |
 | Horizon-complete objects; sign visibility | Exact signed finite-horizon laws and quantitative period/prefix comparison | Open |
 | Truncated affine representation theory | Source-defined action, boundary calculus, classification/calibration | Open |
 | A1–A2: paid ideal annihilates escape; hull inclusion | Actual receiver theorem, not an assumed ideal inclusion | Proved for every actual common Gram limit; ADR foundations reused, four interfaces directly checked and axiom-audited |
@@ -123,9 +123,9 @@ its parent card. Open programme questions without a proof plan remain open.
 | `CriticalPartialSumCore` | Direct repository leaf passed; stage-3 card | Seven main declarations clean |
 | `GoldenNormalizedCube` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
 | `NormalizedCubicTrace` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
-| `CriticalGoldenPaymentNonclosed` | Scratch passed; direct repository check pending | Six main declarations clean |
-| `CofactorGraphClosedness` | Scratch passed; direct repository check pending | Two main declarations clean |
-| `DigitRefinement` | Scratch passed; direct repository check pending | Nine main declarations clean |
+| `CriticalGoldenPaymentNonclosed` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
+| `CofactorGraphClosedness` | Direct repository leaf passed; stage-3 card | Two main declarations clean |
+| `DigitRefinement` | Direct repository leaf passed; stage-3 card | Nine main declarations clean |
 | `DigitalCircleFourier` | Scratch passed; direct repository check pending | Three main declarations clean |
 | `FinitePronicStepEmbedding` | Scratch passed; direct repository check pending | Two main declarations clean |
 | `GoldenDivisorResponse` | Scratch passed; direct repository check pending | Five main declarations clean |
@@ -137,7 +137,7 @@ its parent card. Open programme questions without a proof plan remain open.
 | `PaidSourcePerturbations` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `FullWienerAnnihilation` | Consolidated ADR interfaces and direct repository leaf passed | Four chosen and universal declarations clean |
 
-Completed main-declaration axiom audits for forty-five checked leaves report only `propext`,
+Completed main-declaration axiom audits for forty-eight checked leaves report only `propext`,
 `Classical.choice`, and `Quot.sound`. Audits used isolated source-copy drivers; each leaf also passed its direct source check. The literal-B1
 no-go is closed in `5-failed/biarithmetic-literal-dimension-euler-characteristic.md`; its
 positive survivor and exact prefix visibility now have separate stage-3 cards.
@@ -739,14 +739,14 @@ Active drafts:
 - `CriticalGoldenPaymentNonclosed.lean`: lifts the explicit
   unpaid sequence and its finite repairs into the actual Wiener algebra,
   proves their exact distances, and transfers nonclosedness to the critical
-  golden paid ideal. First check passed the norm, distance, and convergence
-  audits; source transfer failed a dependent rewrite. That rewrite is repaired
-  in the scratch file; dependent claims remain unproved pending recheck.
+  golden paid ideal. Scratch check, all six transitive audits, and direct
+  repository check passed. Stage-3 card and umbrella import are present.
 - `/tmp/BiarithmeticCriticalGoldenClosure.lean`: corrected finite complex
   kernels pay the actual critical golden source; exact Wiener errors tend to
   the absolute total evaluation. Zero evaluation therefore places the full
-  one-prime lift in the full actual paid-ideal closure. Unchecked; depends on
-  the complex lift and finite-core drafts. No converse for the full ideal's
+  one-prime lift in the full actual paid-ideal closure. Scratch check and all
+  four audits passed; wired production source awaits direct check.
+  No converse for the full ideal's
   closure is asserted.
 - `/tmp/BiarithmeticPowerTailCoefficients.lean`: power-tail differences with
   exact norm two and zero evaluation for every positive exponent; square
@@ -901,7 +901,8 @@ Active drafts:
   source-inspected Banach injective closed-range theorem, not the corpus's
   Hilbert-only version. First check found an unloaded nonnegative-real notation;
   the explicit `NNReal` carrier now replaces it. Revised scratch check and both
-  audits passed. Production source is wired; direct check is queued.
+  audits and direct repository check passed. Stage-3 card and umbrella import
+  are present.
 - `GeometricFutureTail.lean`: joint absolute summability of
   the backward geometric tail, its resolvent recurrence, and explicit `b/(1-b)` coefficient-norm
   bound, for the strict one-prime Fredholm phase. First check found an implicit
@@ -1005,7 +1006,10 @@ including empty final partial blocks. Three audits drafted; unchecked.
 
 `/tmp/BiarithmeticPaidGramStability.lean` drafts own-energy normalization
 and all-subsequence invariance under paid perturbations, reusing ADR's
-finite pairing bound. Eight audits are pending; actual golden specialization
+finite pairing bound. First check found norm-wrapper conversion, scalar
+function reduction, a unit-cofactor rewrite, and an untargeted absolute-value
+rewrite. Explicit conversions and targeted simplification repair those errors;
+recheck and eight clean audits remain required. Actual golden specialization
 remains a separate obligation on the paid-perturbations card.
 `/tmp/BiarithmeticGoldenGramReduction.lean` drafts that actual-source
 specialization with escape derived from the checked admission threshold.
@@ -1059,11 +1063,12 @@ whereas every positivity-compatible lift is paid. This remains a formalization o
 and does not refute intrinsic Beurling positivity.
 
 The repaired `CriticalGoldenPaymentNonclosed` scratch check and all six
-transitive audits passed. Production source is wired; direct check is queued
-in `/tmp/BiarithmeticBatchSeven.direct`. No stage-3 claim yet.
+transitive audits passed. Direct production check also passed; its umbrella
+import and stage-3 card are present.
 
 `DigitRefinement` passed its revised scratch check and all nine transitive
-axiom audits. Production source is wired; direct check is queued.
+axiom audits and its direct repository check. Stage-3 card and umbrella import
+are present.
 `PowerTailCoefficients` still failed at the unsaturated tail function in
 the limit statement; an explicit function target now fixes that conversion.
 No proof depending on the failed limit is promoted; the revised scratch

@@ -356,8 +356,9 @@ as `UniformVaughanGramsFollowTheirSmoothRankOneTerm.lean`; the scratch was
 removed. The complete matrix law, including independent divergent horizon and
 cutoff-product schedules, is recorded in
 `../3-formalized/uniform-vaughan-grams-follow-their-smooth-rank-one-term.md`.
-The packet, single-floor, and quantitative Mertens-power consequences remain
-under verification, so this combined paper card is not yet fully formalized.
+The packet laws are now checked below. The single-floor and quantitative
+Mertens-power consequences remain under verification, so this combined paper
+card is not yet fully formalized.
 
 The first logarithmic-transform scratch check found two algebraic Lean issues
 (nested inverse normalization and function composition); both were corrected.
@@ -374,4 +375,8 @@ Gram identities are shared with the upper-half branch through
 producing and final direct checks, with standard transitive axioms only.
 The module is wired and its scratch was removed; see
 `../3-formalized/vaughan-packet-gram-identities.md`. The seven uniform packet
-bounds remain under verification.
+targets also passed their corrected producing and final direct checks, with
+standard transitive axioms only. They are wired as
+`UniformLogarithmicLawsForVaughanSuperpositions.lean`; its scratch was removed.
+The completed packet card is
+`../3-formalized/uniform-logarithmic-laws-for-vaughan-superpositions.md`.

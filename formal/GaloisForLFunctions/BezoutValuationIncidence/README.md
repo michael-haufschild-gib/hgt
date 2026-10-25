@@ -1226,6 +1226,12 @@ For every real coefficient vector, centering commutes with superposition and
 the packet energy is exactly the Gram quadratic form; its smooth direction
 reads the difference of the two convolution coefficients
 (`VaughanPacketGramIdentities`).
+Writing $L(w)=\sum_i|w_i|$, every centered packet has a common logarithmic
+smooth-remainder norm bound with factor $L(w)$ and a normalized energy error
+with factor $L(w)^2$ (`UniformLogarithmicLawsForVaughanSuperpositions`). Equal
+convolution coefficients remove the smooth term. Bounded moving coefficients
+preserve zero normalized packet norm at independently divergent horizons and
+cutoff products.
 
 **Finite harmonic rigidity.** Every $H_N$ with $N\ge1$ is nonzero. For every prime
 $N/2<p\le N$, its rational $p$-adic valuation is exactly $-1$; all such distinct primes

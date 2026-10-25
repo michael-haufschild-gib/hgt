@@ -785,15 +785,13 @@ theorem paperFT_annOp {b : ℂ} (hb : b ≠ 0) {h : ℝ → ℂ} (hs : ContDiff 
     (hc : HasCompactSupport h) (z : ℂ) : paperFT (annOp b h) z = (1 - z / b) * paperFT h z := by
   have hd : ContDiff ℝ (⊤ : ℕ∞) (deriv h) := (contDiff_infty_iff_deriv.mp hs).2
   show paperFT (fun u => h u + (I * b)⁻¹ * deriv h u) z = _
-  rw [paperFT_add_of_compact hs.continuous hc (continuous_const.mul hd.continuous)
-    hc.deriv.mul_left]
+  rw [paperFT_add_of_compact (h := fun u => (I * b)⁻¹ * deriv h u) hs.continuous hc
+    (continuous_const.mul hd.continuous) hc.deriv.mul_left]
   have hmul : paperFT (fun u => (I * b)⁻¹ * deriv h u) z = (I * b)⁻¹ * paperFT (deriv h) z := by
     simp only [paperFT, mul_assoc]; exact integral_const_mul _ _
   rw [hmul, RHTower.EvenSector.paperFT_deriv_of_compact (hs.of_le (by exact_mod_cast le_top)) hc]
   field_simp
   ring_nf
-  rw [Complex.I_sq]
-  ring
 
 /-- Iterates `L_{a_{N−1}} ⋯ L_{a_0} φ`. -/
 def annIter (a : ℕ → ℂ) (φ : ℝ → ℂ) : ℕ → ℝ → ℂ

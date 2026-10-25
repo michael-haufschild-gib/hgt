@@ -80,6 +80,7 @@ end ActualCofactorLimit
 end GaloisForLFunctions.ArithmeticDefectRigidity
 
 #print axioms GaloisForLFunctions.ArithmeticDefectRigidity.ActualCofactorLimit.wienerUnitSourceGram_tendsto
+#print axioms GaloisForLFunctions.ArithmeticDefectRigidity.ActualCofactorLimit.unit_source_energy_ratio_tendsto
 end
 end
 

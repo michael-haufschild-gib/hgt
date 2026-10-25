@@ -27,6 +27,30 @@ def meyerCriticalTopSourceSubmodule : Submodule ℂ DeningerMeyerStrongLogTarget
     intro c g hg rho j hj
     rw [map_smul, hg rho j hj, smul_zero]
 
+/-- The bounded-orbit carrier in genuine Poisson cohomology. -/
+def meyerCriticalTopCohomologySubmodule : Submodule ℂ DeningerMeyerStrongLogCohomology where
+  carrier := {u | ∀ (rho : XiDivisorSupport) (j : DeningerArithmeticJetIndex rho),
+    ((rho : ℂ).re ≠ 1 / 2 ∨ j.val + 1 < xiSupportMultiplicity rho) →
+      deningerMeyerXiSupportJetEvaluationLM rho j u = 0}
+  zero_mem' := by intro rho j _; exact map_zero _
+  add_mem' := by
+    intro u v hu hv rho j hj
+    rw [map_add, hu rho j hj, hv rho j hj, zero_add]
+  smul_mem' := by
+    intro c u hu rho j hj
+    rw [map_smul, hu rho j hj, smul_zero]
+
+/-- Quotient membership is exactly the full source jet condition. -/
+theorem meyerCriticalTopCohomology_mk_mem_iff (g : DeningerMeyerStrongLogTarget) :
+    (Submodule.Quotient.mk g : DeningerMeyerStrongLogCohomology) ∈
+      meyerCriticalTopCohomologySubmodule ↔ MeyerCriticalTopJets g := by
+  constructor
+  · intro h rho j hj
+    simpa only [deningerMeyerXiSupportJetEvaluationLM_mk] using h rho j hj
+  · intro h rho j hj
+    rw [deningerMeyerXiSupportJetEvaluationLM_mk]
+    exact h rho j hj
+
 theorem meyerLineReflect_eq_self_of_critical (rho : XiDivisorSupport)
     (hr : (rho : ℂ).re = 1 / 2) : meyerLineReflect rho = rho := by
   apply Subtype.ext
@@ -56,6 +80,18 @@ theorem meyerCriticalTopJets_sharp {g : DeningerMeyerStrongLogTarget}
     · right
       rwa [meyerLineReflect_multiplicity]
   rw [meyerSourceSharp_jet, hg (meyerLineReflect rho) ⟨j.val, hi⟩ hk, star_zero, mul_zero]
+
+/-- Arithmetic sharp preserves the bounded-orbit subspace of genuine classes. -/
+theorem meyerCriticalTopCohomology_sharp_mem
+    {u : DeningerMeyerStrongLogCohomology} (hu : u ∈ meyerCriticalTopCohomologySubmodule) :
+    deningerMeyerStrongLogCohomologyJ (deningerMeyerCohomologyConj u) ∈
+      meyerCriticalTopCohomologySubmodule := by
+  induction u using Submodule.Quotient.induction_on with
+  | H g =>
+    change (Submodule.Quotient.mk (deningerMeyerSourceSharp g) :
+      DeningerMeyerStrongLogCohomology) ∈ meyerCriticalTopCohomologySubmodule
+    exact (meyerCriticalTopCohomology_mk_mem_iff _).mpr
+      (meyerCriticalTopJets_sharp ((meyerCriticalTopCohomology_mk_mem_iff g).mp hu))
 
 /-- Products of bounded-orbit sources vanish in every off-line or multiple block. -/
 theorem meyerCriticalTopJets_product_jet_zero
@@ -94,6 +130,22 @@ theorem meyerCriticalTopJets_convolution {g h : DeningerMeyerStrongLogTarget}
   rcases hj with hoff | hj
   · exact Or.inl hoff
   · exact Or.inr (by omega)
+
+/-- Convolution preserves the bounded-orbit subspace of genuine classes. -/
+theorem meyerCriticalTopCohomology_convolution_mem
+    {u v : DeningerMeyerStrongLogCohomology}
+    (hu : u ∈ meyerCriticalTopCohomologySubmodule)
+    (hv : v ∈ meyerCriticalTopCohomologySubmodule) :
+    deningerMeyerCohomologyConvolution u v ∈ meyerCriticalTopCohomologySubmodule := by
+  induction u using Submodule.Quotient.induction_on with
+  | H g =>
+    induction v using Submodule.Quotient.induction_on with
+    | H h =>
+      rw [deningerMeyerCohomologyConvolution_mk]
+      exact (meyerCriticalTopCohomology_mk_mem_iff _).mpr
+        (meyerCriticalTopJets_convolution
+          ((meyerCriticalTopCohomology_mk_mem_iff g).mp hu)
+          ((meyerCriticalTopCohomology_mk_mem_iff h).mp hv))
 
 /-- The value-zero part annihilates the entire bounded-orbit algebra in genuine cohomology. -/
 theorem meyerCriticalTopJets_value_zero_product_boundary
@@ -143,6 +195,7 @@ theorem meyerSingleTopSource_criticalTopJets (rho : XiDivisorSupport)
   intro sigma j hj
   rw [meyerSingleJetSource_jet, if_neg]
   rintro ⟨hs, he⟩
+  change j.val = xiSupportMultiplicity rho - 1 at he
   rcases hj with hoff | hj
   · exact hoff ((congrArg (fun q : XiDivisorSupport => (q : ℂ).re) hs).trans hr)
   · have hp := xiSupportMultiplicity_pos rho
@@ -159,6 +212,19 @@ theorem exists_nonprincipal_meyer_bounded_orbit :
   refine ⟨meyerSingleJetSource q.1 j, ?_, meyerSingleJetSource_not_boundary q.1 j⟩
   exact meyerHilbertOrbitIsometric_of_criticalTopJets
     (meyerSingleTopSource_criticalTopJets q.1 hq)
+
+/-- The bounded-orbit subspace contains a nonzero genuine cohomology class. -/
+theorem meyerCriticalTopCohomologySubmodule_ne_bot :
+    meyerCriticalTopCohomologySubmodule ≠ ⊥ := by
+  intro hbot
+  obtain ⟨g, hg, hn⟩ := exists_nonprincipal_meyer_bounded_orbit
+  have hmem : (Submodule.Quotient.mk g : DeningerMeyerStrongLogCohomology) ∈
+      meyerCriticalTopCohomologySubmodule :=
+    (meyerCriticalTopCohomology_mk_mem_iff g).mpr
+      ((meyerHilbertOrbitIsometric_iff_criticalTopJets g).mp hg)
+  rw [hbot] at hmem
+  change (Submodule.Quotient.mk g : DeningerMeyerStrongLogCohomology) = 0 at hmem
+  exact hn ((Submodule.Quotient.mk_eq_zero _).mp hmem)
 
 /-- A multiple critical highest jet has principal sharp square despite its faithful nonzero class. -/
 theorem meyerMultipleCriticalTopSource_sharp_square_boundary
@@ -224,6 +290,10 @@ theorem meyerCriticalTopJets_trace_radical_annihilates
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerCriticalTopCohomology_mk_mem_iff
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerCriticalTopCohomology_sharp_mem
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerCriticalTopCohomology_convolution_mem
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerCriticalTopCohomologySubmodule_ne_bot
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerLineReflect_eq_self_of_critical
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerCriticalTopJets_sharp
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerCriticalTopJets_product_jet_zero

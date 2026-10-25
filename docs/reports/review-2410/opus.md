@@ -416,8 +416,13 @@ cutoffs; their sum is exactly the Bézout interior
 satisfies the uniform smooth rank-one law with every logarithmic error rate
 (`UniformVaughanGramsFollowTheirSmoothRankOneTerm`). Hence every normalized
 entry tends to zero when the horizon and cutoff product diverge separately,
-with no relation required between those scales. Packet and classification
-consequences remain under verification.
+with no relation required between those scales. Every centered packet has the
+corresponding homogeneous logarithmic norm and energy bounds, with factors
+`L(w)=Σ_i|w_i|` and `L(w)^2`. Equal convolution coefficients remove the smooth
+term, and bounded moving coefficients preserve zero normalized packet norm at
+independently divergent horizons and cutoff products
+(`UniformLogarithmicLawsForVaughanSuperpositions`). Classification consequences
+remain under verification.
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?

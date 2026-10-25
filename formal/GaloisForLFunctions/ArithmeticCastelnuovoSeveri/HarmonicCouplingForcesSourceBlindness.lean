@@ -285,7 +285,13 @@ private theorem weilTest_modCx (s : ℝ) (f : ℝ → ℝ) (u : ℝ) :
     congr 1
     push_cast
     ring
-  linear_combination (cx f t * conj (cx f (t - u))) * he
+  calc
+    cx f t * Complex.exp (I * (s : ℂ) * (t : ℂ)) *
+        (conj (cx f (t - u)) * Complex.exp (-(I * (s : ℂ) * ((t - u : ℝ) : ℂ))))
+      = (Complex.exp (I * (s : ℂ) * (t : ℂ)) *
+          Complex.exp (-(I * (s : ℂ) * ((t - u : ℝ) : ℂ)))) *
+          (cx f t * conj (cx f (t - u))) := by ring
+    _ = Complex.exp (I * (s : ℂ) * (u : ℂ)) * (cx f t * conj (cx f (t - u))) := by rw [he]
 
 private theorem weilTest_modCx_pair (s : ℝ) (f : ℝ → ℝ) (u : ℝ) :
     ((1 / 2 : ℝ) : ℂ) *
@@ -1132,7 +1138,13 @@ theorem doublePole_harmonic_nonneg (t0 : ℝ) {K : ℕ} {a : ℕ → ℝ}
           = (Real.exp (-(σ * t)) * Real.exp t) * (2 * (1 - Real.cos (t0 * t))) := by ring
         _ = Real.exp (-((σ - 1) * t)) * (2 * (1 - Real.cos (t0 * t))) := by
             rw [← Real.exp_add]; congr 1; ring
-    linear_combination a k * Real.cos ((k : ℝ) * (u * t)) * hexp
+    calc
+      a k * (Real.exp (-(σ * t)) * Real.cos ((k : ℝ) * (u * t)) *
+          (2 * Real.exp t * (1 - Real.cos (t0 * t))))
+        = a k * ((Real.exp (-(σ * t)) * (2 * Real.exp t * (1 - Real.cos (t0 * t)))) *
+            Real.cos ((k : ℝ) * (u * t))) := by ring
+      _ = a k * (Real.exp (-((σ - 1) * t)) * (2 * (1 - Real.cos (t0 * t))) *
+            Real.cos ((k : ℝ) * (u * t))) := by rw [hexp]
   have hint_k (k : ℕ) : IntegrableOn
       (fun t : ℝ => a k * (Real.exp (-((σ - 1) * t)) * (2 * (1 - Real.cos (t0 * t))) *
         Real.cos ((k : ℝ) * (u * t)))) (Ioi (0 : ℝ)) := by
@@ -1553,35 +1565,5 @@ theorem periodicPole_boundary_zero_survives_with_second_harmonic_pole {ℓ : ℝ
     ring
   · refine (tendsto_periodicPole_origin hℓ).congr fun σ => ?_
     rw [hshift_two σ]
-
-#print axioms meyerTraceOrbitBounded_iff_offLine_values_zero
-#print axioms meyerSingleJetSource_traceOrbitBounded_of_critical
-#print axioms meyerTraceBoundedIdeal_eq_top_iff
-#print axioms meyerTraceBoundedSurface_hodgeIndex
-#print axioms meyerTraceBoundedDegreeCone_riemannRoch
-#print axioms meyerTraceBoundedDegreeCone_bezout
-#print axioms meyerTraceBoundedDegreeCone_ample
-#print axioms meyerTraceBoundedDegreeCone_add_closed
-#print axioms isGreatest_meyerSharpPositiveIdeal
-#print axioms zeta_blindOffLine_of_scaleShift_subspace_weil_nonneg
-#print axioms degree_one_cosinePolynomial_le_const
-#print axioms cosinePolynomial_fejerAutoCoeff
-#print axioms fejerAutoCoeff_two_const_lt_first
-#print axioms cosinePolynomial_purchase_ratio_lt_two
-#print axioms harmonicCoupledZeroSide_eq_poleGamma_sub_primes
-#print axioms harmonicCoupledPrimeSum_nonneg
-#print axioms harmonicCoupledOffLineZeroSide_le_poleGamma
-#print axioms harmonic_divisor_order_le
-#print axioms harmonic_quantized_zero_vanishing
-#print axioms riemannZeta_boundary_ne_zero_from_harmonic_forcing
-#print axioms harmonicZeroFreeCollar_nonempty_in_strip
-#print axioms xiDivisorSupport_disjoint_boundary_and_harmonicCollar
-#print axioms cexp_integral_doublePolePrimeDensity_eq
-#print axioms neg_logDeriv_doublePoleZeta_eq
-#print axioms doublePole_harmonic_nonneg
-#print axioms doublePole_boundary_zero_survives_all_degrees
-#print axioms neg_logDeriv_periodicPoleZeta_eq
-#print axioms periodicPole_harmonic_nonneg
-#print axioms periodicPole_boundary_zero_survives_with_second_harmonic_pole
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

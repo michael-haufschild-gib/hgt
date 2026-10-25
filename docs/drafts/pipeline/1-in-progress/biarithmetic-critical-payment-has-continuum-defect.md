@@ -149,18 +149,23 @@ family, complex Wiener embedding, and quotient dimension remain separate.
 The actual real Wiener embedding is now promoted to
 `BiarithmeticGeometry/CriticalWienerLift.lean`, reusing AOT's `toWiener`,
 `norm_term_realFn`, and the local-factor critical weight identity. It includes
-exact coefficient norm and distance preservation. The separate draft
-`/tmp/BiarithmeticCriticalGoldenPaymentNonclosed.lean` transfers the explicit
+exact coefficient norm and distance preservation. The separate leaf
+`BiarithmeticGeometry/CriticalGoldenPaymentNonclosed.lean` transfers the explicit
 witness and finite repairs to the actual critical golden paid ideal. The real
 embedding passed its direct source check and four audits, with a
 [stage-3 card](../3-formalized/biarithmetic-critical-wiener-lift.md).
-The nonclosedness draft is unchecked. Neither proves the continuum-dimensional quotient yet.
+The nonclosedness leaf passed its direct check and all six transitive audits;
+its [formalized card](../3-formalized/biarithmetic-critical-golden-payment-nonclosed.md)
+records the explicit paid approximants and exact Wiener distance. Neither
+this leaf nor the coefficient lift proves the continuum-dimensional quotient.
 
-The complex normalized lift is separately drafted in
-`/tmp/BiarithmeticComplexCriticalWienerLift.lean`. It assembles the existing
+The complex normalized lift is formalized in
+`BiarithmeticGeometry/ComplexCriticalWienerLift.lean`. It assembles the existing
 real embeddings, proves the exact coefficient formula and complex norm,
 and transfers the checked complex golden criterion to ordinary coefficient
-partial sums. Its proofs are unchecked. The corpus's general AOT weight
+partial sums. Its direct check and all five transitive audits passed;
+the [stage-3 card](../3-formalized/biarithmetic-complex-critical-wiener-lift.md)
+records the exact scope. The corpus's general AOT weight
 isometry was inspected; no duplicate Wiener carrier is introduced.
 
 `CriticalGoldenClosure` separately drafts the full actual-closure transfer

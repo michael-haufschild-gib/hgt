@@ -82,10 +82,13 @@ final source-only audits. The output from actual finite-index session `35428`
 was lost during compaction and its process has exited; no success is inferred.
 Direct session `49590` passed the actual finite-index source-only check, with
 standard axioms for all seven printed statements. The finite-index batch is
-complete. The next direct source-only check is
-`ArithmeticDefectRigidity/PaidCorrectionsPreserveNormalizedCofactorGrams.lean`.
-All three unit-transport leaves still require final source-only checks.
-No concurrent owned Lean process.
+complete. Paid-correction final check `32327` exposed a misindented final
+rewrite in the nonnegative-energy corollary. The direct indentation repair
+passed in retry `78335`; both paid-correction statements have standard axioms.
+Paid corrections are complete. The next direct source-only audit is
+`RealWienerConvolutionTransportsCofactorGrams.lean`, which now also explicitly
+prints axioms for `unit_source_energy_ratio_tendsto`. The Möbius–Liouville
+leaf still needs its final source-only check. No concurrent owned Lean process.
 
 ## Direct source work remaining
 

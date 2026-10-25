@@ -64,6 +64,10 @@ The four finite packet identities passed producing and final direct checks,
 with standard transitive axioms only. They are wired as
 `VaughanPacketGramIdentities.lean`; the scratch was removed. See
 `../3-formalized/vaughan-packet-gram-identities.md`.
+The seven homogeneous packet laws also passed corrected producing and final
+direct checks, with standard transitive axioms only. They are wired as
+`UniformLogarithmicLawsForVaughanSuperpositions.lean`; the scratch was removed.
+See `../3-formalized/uniform-logarithmic-laws-for-vaughan-superpositions.md`.
 All other remaining leaves named in the table are unchecked drafts. Dependencies and
 live compiler handles are recorded in `/tmp/QIVerificationState.txt`; the
 complete module queue is `/tmp/QILeanCompletionQueue.md`.

@@ -178,12 +178,14 @@ claim is made. The programme use is the exact ordinary-pronic covariance error a
 transfer to the actual golden inverse-zeta coefficients.
 
 - [x] Dependency-closed paper refinement, strict and critical errors, and golden cross-term bound.
-- [ ] Lean refinement limit and quantitative profile comparison.
+- [x] Lean uniform refinement limit, right continuity, and exact grid values.
+- [ ] Lean compact bounds and quantitative covariance comparison.
 - [ ] Lean exact step embedding and covariance estimates.
 - [ ] Lean actual-source transfer, direct checks, axiom audits, and umbrella imports.
 
 The `DigitRefinement` scratch check and all nine transitive axiom audits
-passed. Its production source is wired; the direct repository check is
-queued. Subsequent compact bounds and annular comparisons remain unchecked.
+and its direct repository check passed. Its umbrella import and
+[stage-3 card](../3-formalized/biarithmetic-uniform-digit-refinement.md)
+are present. Subsequent compact bounds and annular comparisons remain unchecked.
 
 Pending source check: `/tmp/BiarithmeticDigitCovarianceMainTerms.lean` derives the balanced expanding covariance formula and a horizon-uniform linear-shell error at the exact critical weight `sqrt(5)`. Its bounded-error dependency chain remains unchecked.
