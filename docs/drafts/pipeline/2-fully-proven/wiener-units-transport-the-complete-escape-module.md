@@ -2,7 +2,7 @@
 
 - **ID:** wiener-units-transport-the-complete-escape-module
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CONJECTURE (Lean completion pending)
 - **Source:** Q-III; exact prefix convolution; full Wiener covariance convergence;
   `UnitsOfTheWienerMonoidPreservePayment.lean` and
   `AnIndexFormulaForTheActualReceiver.lean`.
@@ -76,7 +76,9 @@ The complete actual real convolution theorem, positive source-energy ratio,
 preservation of escape and Möbius–Liouville specialization passed the combined
 scratch with only standard axioms. Their canonical leaves are installed and
 umbrella-wired; final per-file audits are pending in
-`/tmp/qiii-refinements-canonical-audit.sh`.
+`/tmp/qiii-refinements-canonical-resume.sh`. The first canonical split
+check exposed a missing import in the real-convolution leaf; that import is
+fixed. The final checks are part of active session `90975`.
 
 Canonical source application leaves:
 - `ArithmeticDefectRigidity/PaidCorrectionsPreserveNormalizedCofactorGrams.lean`

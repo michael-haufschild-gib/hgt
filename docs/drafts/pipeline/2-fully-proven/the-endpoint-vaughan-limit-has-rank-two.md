@@ -2,7 +2,8 @@
 
 - **ID:** the-endpoint-vaughan-limit-has-rank-two
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CLAIM (Lean verification pending)
+- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
 - **Source:** uniform-half-damping-vaughan-harmonic-gram.md
 - **Statement:** At every positive damping, the first two cells of the actual centered Möbius row and centered pole row have determinant at least `2^(-2ε)/36`. Consequently the endpoint limiting Gram has rank exactly two.
 - **Novelty status:** Corpus search found general prefix observability and Gram laws, but no matching two-row independence theorem. The arithmetic determinant specialization is new within this audit; no external novelty claim.
@@ -82,4 +83,17 @@ Source statements have been read in `PMPowerDampedMobiusDiscreteEnergy`,
 No numerical experiment was used. Twelve finite Euler, initial-cell, determinant,
 independence, row-span, and pronic Gram lower-bound targets are drafted in
 `/tmp/QIRankTwoLimitTools.lean`, uncompiled. The infinite endpoint Gram rank still
-needs a Lean proof.
+needs a verified Lean proof.
+
+`/tmp/QIHalfVaughanInfiniteGramTools.lean` now drafts nine infinite-limit
+consequences, including absolute-series pair limits, symmetry, positivity of
+every quadratic form, the exact two-outer-product representation, and rank at
+most two. Passing the finite arithmetic minor bound to the limit gives
+`1/62208`; its nonsingular two-by-two submatrix gives rank exactly two. The
+pole entry retains its lower bound `1/64`. These nine targets now specialize
+the shared ten-target draft `/tmp/QIVaughanInfiniteGramTools.lean`, planned as
+`TheActualVaughanLimitGramHasRankTwo.lean`. That draft derives summability
+from the actual endpoint and upper-half limits, and proves the same exact
+rank and quantitative minor for every `ε≥1/2`. No analytic summability
+premise is left to assume. All these drafts remain UNPROVED until their
+dependency checks and axiom audits pass.

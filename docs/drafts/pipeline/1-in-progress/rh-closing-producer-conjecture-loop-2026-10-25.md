@@ -228,9 +228,13 @@ We run an uninterrupted loop of `Conjecture -> Paper Proof / Refutation -> Stron
 6. `SignedSuccessorArithmetic/TheHalfDampingBorderlineSplitsBySign.lean` — verified (exit 0) & wired.
 7. `SignedSuccessorArithmetic/ForwardBackwardDilationNormalityAndFoldedSieve.lean` — verified (exit 0) & wired.
 8. `BezoutValuationIncidence/MultiplicativeConvolutionOfTheReciprocityKernel.lean` — verified (exit 0) & wired.
-9. `ArithmeticOrientationTheory/HorizonUniformSchurDominanceOfThePrimeTowers.lean` — written, Rule-3 check running (`task-1959`).
-10. `BezoutValuationIncidence/ExactParsevalAndRankThreeKloostermanLawOfThePrimeGram.lean` — written, awaiting sequential Rule-3 check.
-11. `ArithmeticOrientationTheory/ActiveCosetTowerPaymentAndTopOctaveDominance.lean` — written, awaiting `ContinuumTowerReflectionCholesky.olean` + Rule-3 check.
+9. `ArithmeticOrientationTheory/HorizonUniformSchurDominanceOfThePrimeTowers.lean` — verified (exit 0) & wired.
+10. `BezoutValuationIncidence/ExactParsevalAndRankThreeKloostermanLawOfThePrimeGram.lean` — verified (exit 0) & wired.
+11. `ArithmeticContinuationAndCriticalEnergy/ThresholdVanishingAndCollarDominanceOfThePrimeShell.lean` — verified (exit 0) & wired.
+12. `ArithmeticContinuationAndCriticalEnergy/UnconditionalEqualityOfPolarAndFullGroundEnergyRates.lean` — verified (exit 0) & wired.
+13. `ArithmeticContinuationAndCriticalEnergy/UnconditionalBirmanSchwingerRateReadsTheZeroWidth.lean` — verified (exit 0) & wired (eliminates `NonClusteringAtWidth`: proves `formGroundEnergyRate = birmanSchwingerNormRate = zetaZeroWidth` unconditionally).
+14. `SignedSuccessorArithmetic/TheSignedPrimeDivisorEndpointAtHalfDamping.lean` — written (C-40s `stepSpectralWeight` `L^∞` + dyadic `O((k+5)/2^k)` decay, C-40a finite-deletion primorial `O_r(1)` at `ε = 1/2`, C-40b uniform `O_r((log z)^{17/24})` across all `2^{π(z)}` subsets `S ⊆ primesLE z`), building dependency `.olean` + Rule-3 check.
+15. `ArithmeticOrientationTheory/ActiveCosetTowerPaymentAndTopOctaveDominance.lean` — written, awaiting `ContinuumTowerReflectionCholesky.olean` + Rule-3 check.
 
 ## Log
 - 2026-10-25 — Created persistent conjecture-loop card in `1-in-progress`; mapped concurrent agent worktrees to ensure zero file collisions.

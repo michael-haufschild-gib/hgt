@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-weighted-digit-moments
 - **Stage:** 3-formalized
 - **Type:** CLASSICAL FINITE-MOMENT CALIBRATION
-- **Parent:** [Digital energy and tower payment](../2-fully-proven/biarithmetic-digital-energy-and-prime-tower-payment.md)
+- **Parent:** [Digital energy and tower payment](../1-in-progress/biarithmetic-digital-energy-and-prime-tower-payment.md)
 - **Statement:** Every signed linear readout of all base-five words has exact first and second moments. Restricting the leading digit to one through four gives an exact block moment and a lower bound independent of the lower coefficients.
 
 ## Paper proof

@@ -851,6 +851,20 @@ dropped on unrestricted tests. See
    eigenvalues; pole-subtracted Hasse–Weil bounds `|N_k − (q^k + 1)| = O(q^{k/2})`; forward
    light-cone Bézout positivity, or ambient Bézout plus Riemann–Roch. Over `ℤ` the counterparts are
    coupled odd-cone Bézout and all-aperture payment of the pole-cancelled Chebyshev remainder `E(s)`.
+   One side suffices, with one exception. A lower bound `N_k ≥ q^k + 1 − Cq^{k/2}` forces purity;
+   an upper bound `N_k ≤ q^k + 1 + Cq^{k/2}` (Bombieri's shape) forces it unless a top outer
+   eigenvalue is a positive real, i.e. a real zero (`oneSided_forcing_tfae`; cause: unimodular
+   power sums change sign infinitely often). The golden datum is such a real-zero fake: it obeys
+   every upper bound with `C = 0`. On the scaling surface difference lag tests detect every impure
+   curve, sum lag tests every impure curve without a real zero (`differenceLagTests_nonneg_iff_unitary`,
+   `sumLagTests_nonneg_iff_unitary`). `ζ` has no real zeros in `(0, 1)`, so the upper-bound route
+   over `ℤ` has no real-zero exception.
+   In genus one the Hodge index on the window `{Δ, Γ_F}` is a linear degree law: the isotropic graph
+   class of `m − nF` with `x · V = 1` has defect `2 deg(m − nF)`, so Hasse is degree positivity of
+   the ring `ℤ[F]` (`genusOne_hasse_tfae`; golden: `deg(2 − F) = −1`). It uses the theorem of the
+   square (`graphCycle_square`); distinct Hecke scales of `ℤ` satisfy no such relation even up to
+   fibres (`heckeCorrespondence_no_square_relation`): the scaling surface has graphs of the Hecke
+   monoid, not of a ring of correspondences.
 4. **What can a Gram functional certify without effectivity?** A proportion: `(2 − κ)N` simple
    critical zeros and the exclusion laws of item 27, exactly and no more for any functional of
    `(Â, N)`; more than `2/3` below pair correlation, never `3/4` there; `3/4` on one of two
@@ -1007,6 +1021,8 @@ Weil's argument.
 | `AllParityCriticalDeficitAndEndpointSobolevLaws` | positive horizon term, all-parity critical-deficit identity, Vinogradov–Korobov Sobolev floors, attained width endpoint and graded source Riemann–Roch |
 | `RiemannRochForZAndTheReflectedPrimePolarLedger` | tautological cones, Lorentz–polar identity, odd-sector ledgers, `75e^r` and `(3 + ε)e^r` floors, first- and second-order de la Vallée Poussin Sobolev floors, shared derivative payment bootstrap, degree floor ⟺ zero width |
 | `WhichArithmeticDataForceTheSign` | Toeplitz–Rosati reflection identity, pole masking of point counts, forcing equivalences over `𝔽_q` and on the scaling surface |
+| `UpperLefschetzBoundsAreBlindOnlyToRealZeros` | one-sided power-sum sign law; lower Lefschetz bounds force purity, upper bounds force it except at real zeros; golden datum as real-zero fake; difference vs. sum lag tests |
+| `TheDefectOfAGraphIsTwiceItsDegree` | isotropic unit-degree classes have linear defect; genus-one graph defect `= 2 deg`, Hasse as degree positivity, golden `deg(2 − F) = −1`; theorem of the square vs. numerically free Hecke scales |
 | `SectionCountRiemannRochAndPrimeBlindSelectivity`, `SectionEffectivityAndTheUniversalFloorLaw` | nef quadrant and Hecke-stable ampleness, universal floor law `RiemannRochAxiom E ↔ openPositiveCone ⊆ E ∧ ∀ x, 0 ≤ defect(x, x)` for ample cones, sign-free Bézout positivity from source section readings, prime-power node section counts `h⁰ ≥ DoF − node count`, `DoF − node count = E(s)`, exact odd pole-charge cancellation, prime-blind section vanishing, diagonal relabeling invariance vs. Frobenius selectivity |
 | `SourceDeterminantalSectionsAndArithmeticRiemannRoch` | source section cones, non-vacuous ampleness, Hecke stability, Riemann–Roch ⟺ coercive floor, Riemann–Roch past the first prime, all-aperture Chebyshev and de la Vallée Poussin floors |
 | `SourceRiemannRochAwayFromTheLowFrequencyDivisor` | source effectivity (Riemann–Roch, ampleness, Hodge index) at every degree on the tests blind to the low-frequency divisor, coercivity `E(a)(1 − 1/π)` |
@@ -1027,3 +1043,8 @@ Weil's argument.
 | `MeyerSharpConvolutionAlgebra` | arithmetic sharp descends as a conjugate-linear convolution involution; positive Hermitian degree null squares annihilate all complex mixed readings |
 | `GlobalArithmeticMajorantsSupplyBezout` | one aperture-independent arithmetic reserve gives a pointed generating convex cone with Bézout and strict ampleness on the original compact surface; its positive added reserve forces RR to fail |
 | `MeyerSourceIntersectionSurface` | actual Poisson source surface and descended linear trace degree: RR is unconditional; Bézout, ampleness, and additive closure each hold iff RH; numerical and principal equivalence agree iff Xi zeros are simple |
+| `FaithfulPositiveMeyerDegrees` | a faithful positive linear degree on genuine cohomology exists iff RH and Xi simplicity; a single jet has principal sharp square exactly when its reflected block is distinct or twice its order reaches multiplicity |
+| `PositiveMeyerDegreesCanForgetClasses` | critical Xi evaluation gives an unconditional positive multiplicative degree on genuine cohomology, normalized on one sharp square and zero on the sharp square of an explicit nonprincipal source |
+| `FlowInvariantMeyerMajorantsForceCriticality` | invariant nonnegative majorants of the original mixed trace exist iff RH; two point sources give evaluation control, and centered flow preserves the literal mixed sharp product |
+| `CriticalMeyerTraceDegree` | the full critical-value trace is a positive descended linear degree with exact critical-value kernel; its invariant square energy dominates the original mixed trace iff RH and is faithful iff RH plus Xi simplicity |
+| `MeyerQuasiInverseRadical` | actual quasi-inversion is equivalent to avoiding value −1 at every Xi point; universal product quasi-invertibility is exactly the ordinary trace radical, and this radical vanishes iff Xi zeros are simple |

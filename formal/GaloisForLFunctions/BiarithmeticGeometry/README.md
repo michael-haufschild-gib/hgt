@@ -411,6 +411,27 @@ actual tower paid-ideal criterion reads the partial-sum energy of `g`.
 Source: `CriticalWienerLift.lean`, `norm_fiveCriticalWienerLift`,
 `norm_fiveCriticalWienerLift_sub`, `mem_paidIdeal_critical_fiveCriticalWienerLift_iff`.
 
+The same coordinates preserve the complex coefficient norm and distance.
+For `g` in complex `ell1`, the lifted kernel has coefficient
+`sqrt(5)^r*g_r` at `5^r` and zero elsewhere. Its critical golden payment
+criterion is exactly `sum_M |sum_(r<=M)g_r|^2<infinity`, with real and
+imaginary payment combined into the complex square norm.
+Source: `ComplexCriticalWienerLift.lean`, `norm_fiveComplexCriticalWienerLift`,
+`fiveComplexCriticalWienerLift_linear`,
+`mem_golden_critical_fiveComplexCriticalWienerLift_iff`.
+
+The critical coefficient domain has a finite core over the complex numbers.
+For `S_M=sum_(r<=M)g_r`, retain `g_r` through `N`, subtract `S_N` from
+the last retained coefficient, and delete all later terms. The corrected
+partial sums equal `S_M` for `M<N` and vanish thereafter. Its exact
+coefficient error is `|S_N|+sum_(r>N)|g_r|`, tending to `|sum_r g_r|`.
+If the original partial sums are square summable, their limit forces
+`sum_r g_r=0`; the squared partial-sum error is exactly the deleted
+energy tail. Thus the same finite corrections converge in both parts
+of the critical graph norm.
+Source: `CriticalPartialSumCore.lean`, `criticalCorrectedTruncation_norm_error`,
+`criticalCorrectedTruncation_sq_error`, `criticalCorrectedTruncation_graph_errors_tendsto`.
+
 ### Admission and total pronic energy
 
 For any real row `f`, the positive cells have energies
@@ -482,6 +503,17 @@ unpaid. This threshold follows from finite digit monotonicity and the existing c
 sharpness theorem, before constructing the limiting profile.
 Source: `GoldenSourceAdmission.lean`, `receiverBounded_fiveTower_iff`,
 `receiverBounded_goldenArithmeticSource_iff`.
+
+The actual roots also test normalized amplification. Sending each root
+`z` to `z^3/5` preserves their product five and gives trace ten. The first
+two transformed point counts are exactly `-4` and `-64`, while every
+original golden point count is nonnegative. Thus this operation fails
+to preserve the positive-count class even with fixed rank and determinant.
+Those invariants do not define analytic conductor, so the general
+bounded-conductor question requires a separate formulation and theorem.
+Source: `GoldenNormalizedCube.lean`, `goldenNormalizedCube_product`,
+`goldenNormalizedCubePointCount_two`,
+`golden_pointCount_positive_but_normalizedCube_negative`.
 
 ### Intrinsic counting changes the golden receiver
 

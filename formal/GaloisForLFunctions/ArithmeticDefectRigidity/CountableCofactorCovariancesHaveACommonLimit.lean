@@ -128,8 +128,7 @@ private theorem pronicNorm_sq_eq_pairing (T : ℕ) (v : ℕ → ℝ) :
   rw [pronicNorm_sq]
   simp only [pronicPairing, pow_two]
 
-/-- Finite packet energy is exactly the quadratic form of its normalized pairings. -/
-theorem packet_gram_eq (T : ℕ) (E : ℝ) (S : Finset ℕ+) (c : ℕ+ → ℝ)
+private theorem packet_gram_eq (T : ℕ) (E : ℝ) (S : Finset ℕ+) (c : ℕ+ → ℝ)
     (v : ℕ+ → ℕ → ℝ) :
     (∑ j ∈ S, ∑ k ∈ S, c j * c k * (pronicPairing T (v j) (v k) / E)) =
       pronicNorm T (fun n => ∑ j ∈ S, c j * v j n) ^ 2 / E := by
@@ -137,6 +136,13 @@ theorem packet_gram_eq (T : ℕ) (E : ℝ) (S : Finset ℕ+) (c : ℕ+ → ℝ)
   simp_rw [pairing_sum_right]
   simp only [sum_div, mul_sum]
   exact sum_congr rfl fun j _ => sum_congr rfl fun k _ => by ring
+
+/-- Finite packet energy is exactly the quadratic form of its normalized pairings. -/
+theorem pronicPairing_packet_energy_eq (T : ℕ) (E : ℝ) (S : Finset ℕ+) (c : ℕ+ → ℝ)
+    (v : ℕ+ → ℕ → ℝ) :
+    (∑ j ∈ S, ∑ k ∈ S, c j * c k * (pronicPairing T (v j) (v k) / E)) =
+      pronicNorm T (fun n => ∑ j ∈ S, c j * v j n) ^ 2 / E :=
+  packet_gram_eq T E S c v
 
 /-- A finite cofactor packet retains its complete quadratic energy in the Gram table. -/
 theorem cofactorGram_quadratic_eq (ε : SubcriticalDamping) (T : ℕ)

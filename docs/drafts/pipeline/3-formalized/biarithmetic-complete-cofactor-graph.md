@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-complete-cofactor-graph
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean; closed graph construction)
-- **Parent:** [Payment graph norm](../2-fully-proven/biarithmetic-payment-graph-norm.md)
+- **Parent:** [Payment graph norm](../1-in-progress/biarithmetic-payment-graph-norm.md)
 - **Statement:** For every complex arithmetic row, its finite cofactor coordinates define a closed graph in the product of the critical Wiener algebra and complex square-summable pronic coordinates. The graph is complete, its input projection is injective, and its Wiener image is exactly the total-energy domain.
 
 ## Proof

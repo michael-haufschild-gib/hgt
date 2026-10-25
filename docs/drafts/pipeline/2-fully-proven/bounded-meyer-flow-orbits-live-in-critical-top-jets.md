@@ -2,10 +2,10 @@
 
 - **ID:** bounded-meyer-flow-orbits-live-in-critical-top-jets
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CONJECTURE (Lean verification pending)
 - **Source:** Q-II; faithful Hilbert–Schmidt reserve and genuine full-Hasse flow.
 - **Statement:** An actual Meyer source has bounded centered-flow orbit in Hilbert–Schmidt convolution norm exactly when its Xi jets vanish off the critical line and only the highest jet survives in each critical multiplicity block.
-- **Status:** `[PROVED HERE, paper]`; Lean formalization pending; external novelty unverified.
+- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass; external novelty unverified.
 
 ## Exact theorem
 

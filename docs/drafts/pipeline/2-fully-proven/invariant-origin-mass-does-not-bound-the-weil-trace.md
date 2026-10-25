@@ -2,7 +2,8 @@
 
 - **ID:** qii-invariant-origin-mass
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CONJECTURE (Lean verification pending)
+- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass.
 - **Source:** ../1-in-progress/q-ii-source-effectivity-and-linear-degree.md
 - **Statement:** The strictly positive origin sharp-square mass is centered-flow invariant, but the original Weil trace is unbounded on its unit sphere, already among compact smooth sources in every positive aperture.
 

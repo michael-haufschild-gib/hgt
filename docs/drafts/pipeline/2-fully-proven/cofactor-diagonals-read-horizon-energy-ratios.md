@@ -2,7 +2,7 @@
 
 - **ID:** cofactor-diagonals-read-horizon-energy-ratios
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Type:** CONJECTURE (Lean completion pending)
 - **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
 - **Statement:** The diagonal of every actual common cofactor limit
   determines the asymptotic receiver-energy ratio at each integer-contracted
@@ -50,7 +50,7 @@ identify dilation eigenvalues with arithmetic zeros.
 - [x] Existing block law and common-limit definitions inspected.
 - [ ] Exact finite-horizon identity, including N=0 and incomplete block.
 - [ ] Uniform correction bound for actual rows.
-- [ ] Actual diagonal limit and monotonicity.
+- [x] Actual diagonal limit and monotonicity: canonical Lean and standard axioms.
 - [ ] Mixed change-of-horizon consequences.
 - [ ] Source checks, transitive axiom audit, umbrella import.
 
@@ -124,11 +124,14 @@ its diagonal stage has not yet started.
 
 ## Current verification status
 
-The first combined diagonal check completed. The energy crossing, deleted
-white-noise positivity, actual rank-one character construction, augmentation
-positivity and augmentation numeric diagonal order passed independently.
-Other parts had local elaboration errors. Import, endpoint normalization,
-finite-dimensional API, cast, dependent-if rewrite and augmentation
-multiplication repairs are staged. No new leaf from this batch is promoted.
-The retry is `/tmp/qiii-diagonal-energy-check.lean`, queued after the current
-moving-origin check; its log will be `/tmp/qiii-diagonal-energy-retry-check.log`.
+The complete-block and actual diagonal leaves passed canonical builds,
+final source-only checks and standard transitive axiom audits in session
+`90975`. Their imports are wired. The card remains open because its exact
+terminal-fibre correction and mixed refinement still require Lean.
+
+Those exact statements are now in
+`/tmp/qiii_exact_horizon_remainder_body.lean` and
+`/tmp/qiii_mixed_horizon_error_body.lean`, including the zero quotient,
+the general C*D/p bound and its actual unit-bound specialization. They lead
+the unverified contracted-horizon assembler. No mixed result is inferred
+from the diagonal theorem alone.

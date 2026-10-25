@@ -14,6 +14,10 @@ answer. The report identifies the target with `zetaZeroAbscissa < 1`. Audit that
 against the actual declarations before applying it. Do not use the `hgtl7` skill or numerical
 experiments. Preserve pre-existing worktree changes.
 
+Only results with successful Lean proof checks and transitive axiom audits count
+as proved. Paper arguments and unchecked drafts remain open formalization
+obligations. Every significant finding below must reach that standard.
+
 ## Gates
 
 - [x] Read the complete source report and task attachment; inspect repository instructions.
@@ -437,7 +441,18 @@ card is `../3-formalized/divisor-bounded-damped-floor-logarithmic-transfer.md`.
 The actual fluctuation and exact centered-row decomposition also passed all nine
 scratch axiom audits, producing and final direct checks; see
 `../3-formalized/vaughan-convolution-mean-and-logarithmic-fluctuation.md`.
-The prefix-to-energy transfer and full uniform Gram law remain under formalization.
+The generic prefix-to-energy transfer passed all six standard-axiom audits and
+its producing and final direct checks; see
+`../3-formalized/uniform-logarithmic-prefix-to-pronic-energy.md`. The five actual
+convolution and truncated-Möbius norm targets also passed their standard-axiom
+audits, producing check, and final direct check. They are wired as
+`UniformLogarithmicEnergyInTheVaughanConvolution.lean`; see
+`../3-formalized/uniform-logarithmic-vaughan-convolution-energy.md`.
+The four actual Möbius prefix and interior targets also passed standard-axiom
+audits, producing and final direct checks. They are wired as
+`LogarithmicEnergySavingsForTheMobiusInterior.lean`; see
+`../3-formalized/logarithmic-energy-savings-for-the-mobius-interior.md`.
+The full uniform Gram law remains under verification.
 
 The two uniform truncated-Möbius logarithmic targets passed their scratch
 axiom audits, producing check, and final direct check. They are wired as

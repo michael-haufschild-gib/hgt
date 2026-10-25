@@ -2,10 +2,10 @@
 
 - **ID:** faithful-reserves-on-the-bounded-meyer-surface
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CONJECTURE (Lean verification pending)
 - **Source:** Q-II; bounded full-Hasse source algebra and faithful Hilbert–Schmidt reserve.
 - **Statement:** On the bounded centered-orbit carrier, the faithful Hilbert–Schmidt source cone has RR exactly when every critical Xi zero is simple. Its reserve is flow invariant on that carrier regardless of this condition.
-- **Status:** Dependency-closed paper proof; Lean formalization pending. No critical multiplicity or off-line zero is asserted to exist.
+- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass. No critical multiplicity or off-line zero is asserted to exist.
 
 ## Carrier and distinction
 
@@ -59,8 +59,10 @@ Consequently the following assertions are equivalent:
 3. P equals ordinary trace square on B.
 4. The faithful reserve cone on the bounded source surface has RR.
 5. The faithful reserve cone equals its ordinary degree cone.
-6. Some complex-linear cohomological degree is strictly positive on every
-   nonprincipal bounded-carrier sharp square.
+6. Some complex-linear cohomological degree is strictly positive on the sharp
+   square of every nonprincipal bounded-carrier source.
+7. Some complex-linear cohomological degree represents `P(g)` on every
+   bounded-carrier sharp square as `Re d([g*g#])`.
 
 For assertion 6, necessity uses the same multiple critical highest jet: its
 sharp square is principal, so every descended linear degree reads zero.
@@ -68,6 +70,14 @@ Under critical simplicity, choose the ordinary trace degree. On B its square
 reading equals the faithful reserve, which is strictly positive off genuine
 boundaries. Positivity is required only on B; no claim is made about the
 chosen degree on sources outside B.
+
+Assertion 7 implies 6 because the reserve is nonnegative and vanishes precisely
+on genuine boundaries. Under critical simplicity, assertion 3 makes the ordinary
+trace degree a witness for 7. Thus exact linear-degree representation also has
+the bounded carrier's RR criterion, with no condition on off-line zeros.
+These implications are included as actual Lean proof candidates, still unverified.
+Corpus search found the bounded faithful-degree criterion and the full-carrier
+reserve-representation candidate, but no exact bounded reserve-representation result.
 
 No assertion concerns jets outside B. On the full source carrier the analogous
 criterion is RH together with simplicity. This domain distinction prevents
@@ -84,8 +94,8 @@ invariance and RR to a restricted carrier.
 
 The diagonal argument uses actual rows and the existing l2 inner-product sum,
 without a new source realization or infinite norm expansion premise. Lean must
-formalize the six equivalent assertions and preserve the unconditional reserve
+formalize the seven equivalent assertions and preserve the unconditional reserve
 invariance separately. Lean draft: `/tmp/QIIBoundedMeyerFaithfulReserveDraft.lean`; unchecked.
 External novelty unverified.
 
-Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/BoundedMeyerFaithfulReserve.lean`; unverified and unwired. Scratch draft retained until actual audit succeeds.
+Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/BoundedMeyerFaithfulReserve.lean`; unverified and unwired, with twelve audit endpoints. The actual module includes `exists_meyerBoundedHilbertReserve_linear_degree_iff` and `meyerBoundedHilbertSourceCone_riemannRoch_iff_linear_degree`; its older scratch copy lacks these two corollaries.

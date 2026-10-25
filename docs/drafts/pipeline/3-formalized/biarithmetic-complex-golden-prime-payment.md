@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-complex-golden-prime-payment
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Digital energy and payment](../2-fully-proven/biarithmetic-digital-energy-and-prime-tower-payment.md)
+- **Parent:** [Digital energy and payment](../1-in-progress/biarithmetic-digital-energy-and-prime-tower-payment.md)
 - **Statement:** Every complex critical Wiener kernel supported on powers of five repairs the actual golden source exactly when its weighted partial pole sums have finite square energy. The critical parameter and the fully paid zero endpoint are explicit.
 
 ## Proof

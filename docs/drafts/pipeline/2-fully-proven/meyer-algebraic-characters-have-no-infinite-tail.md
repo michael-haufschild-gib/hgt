@@ -2,7 +2,8 @@
 
 - **ID:** meyer-algebraic-characters-have-no-infinite-tail
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CONJECTURE (Lean verification pending)
+- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass.
 - **Source:** Q-II; positive degree classification and source-class inversion.
 - **Statement:** Every nonzero complex-linear multiplicative functional on genuine Meyer cohomology is evaluation at one Xi divisor point, without any continuity assumption. It respects arithmetic sharp exactly at critical points.
 

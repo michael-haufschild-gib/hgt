@@ -2,7 +2,8 @@
 
 - **ID:** vaughan-admission-phase-transition-at-half-damping
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CLAIM (Lean verification pending)
+- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
 - **Statement:** Extend the fixed Vaughan coefficient classification through half damping and prove uniform payment of all centered pieces above half damping.
 
@@ -117,9 +118,34 @@ five-component specialization, with no external novelty claim.
 the smooth endpoint obstruction, complete scalar classification, exact admitted span,
 dimension three, and quotient dimension two at positive cutoffs. Planned repository
 name: `VaughanAdmissionAtHalfDamping.lean`.
-`/tmp/QIUpperHalfCriticalTools.lean` contains twelve audit targets, including the common
+`/tmp/QIUpperHalfCriticalTools.lean` contains eleven audit targets, including the common
 critical Wiener bound, uniform admission of every centered piece and packet, the exact
 linear-mean kernel, dimension four, and quotient dimension one. It imports that planned
 endpoint leaf; its planned name is `VaughanAdmissionAboveHalfDamping.lean`.
-Both drafts remain uncompiled. Lower-half residual and coefficient-space audits passed;
+The finite packet-centering identity is now shared through
+`/tmp/QIVaughanPacketGramIdentityTools.lean`, planned as `VaughanPacketGramIdentities.lean`.
+Its four exact finite identities also support the logarithmic packet module,
+avoiding duplicate declarations when both branches are imported.
+These drafts remain uncompiled. Lower-half residual and coefficient-space audits passed;
 no endpoint or upper-half formal verification is yet claimed.
+
+The joint upper-half Gram limit and its rank-two consequence above are separate
+UNPROVED obligations; the admission draft does not establish them.
+Their common summable envelope can be obtained from the positive divisor
+majorant's centered floor defect: its critical Wiener bound pays the square
+envelope, and the five-piece identity pays the both-large row. The already
+drafted all-positive cell limits and dominated moving-sum transfer then apply.
+`/tmp/QIUpperHalfVaughanMovingLimitTools.lean` now contains eight unchecked targets:
+the explicit envelope norm bound, domination of all five actual rows, common
+summable square and pair envelopes, summability of the limiting Gram entries,
+the independent joint Gram limit, full pronic square convergence, and convergence
+at every finite moving horizon. Its planned repository name is
+`UpperHalfVaughanGramsHaveAnActualLimit.lean`. The positive-floor domination and
+dominated square-norm transfer are shared with the endpoint through
+`PositiveFloorMajorantsControlPronicEnergy.lean`. Verification remains pending.
+`/tmp/QIVaughanInfiniteGramTools.lean` now drafts the exact rank-two consequence
+uniformly for every `ε≥1/2`, with a positive prefix-pole minor at least
+`2^(-4ε)/15552`. Summability is derived from the endpoint and upper-half
+convergence theorems. The planned shared module is
+`TheActualVaughanLimitGramHasRankTwo.lean`; the endpoint's nine consequences
+specialize it. These are unchecked proofs, not certified findings.

@@ -119,3 +119,18 @@ laws are in `/tmp/qiii_contracted_range_body.lean`. In finite dimension,
 exactly the dilation nullity. This is a theorem about actual contracted
 states, once the pending construction is verified; all drafts remain
 UNVERIFIED.
+
+The stated rank-one fixed-state corollary is now explicitly drafted in
+`/tmp/qiii_rank_one_contraction_body.lean`: the exact simultaneous-dilation
+identity, equality of every positively normalized contracted kernel, and
+invariance of the complete Wiener annihilator. It applies at every nonzero
+cofactor, so the augmentation branch is handled without assuming it away.
+It remains UNVERIFIED and depends on the rank-one and contracted-state leaves.
+
+The exact terminal-fibre correction now precedes the uniform bound in the
+assembler. The bound covers arbitrary nonnegative linear constants C,D,
+with cost C*D/p, not only the actual unit constants. Full operator
+intertwining is explicit in `contractedKernelIsometry_dilation` and
+`contractedKernelIsometry_wiener`; the cyclic-vector formula consumes the
+latter. This makes the claimed comparison a full Wiener-module embedding.
+These additions are UNVERIFIED and included in the same pending scratch.

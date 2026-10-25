@@ -396,6 +396,25 @@
   correction of C61 (no change at `u = 2`), the first selects which simple critical zeros are counted
   (horizontal isolation) without raising the count. REDISCOVERED; the joint census
   `S + 2M ≤ 1 − HD`, `(3/2 + √2)M ≤ 1 − HD` leaves `N₀ ≥ HD` final.
+- **C100 almost-all short-interval PNT into zero sums** (short-interval explicit formula S5 with
+  `H = x/T = X^θ`, `θ > 1/6`, corpus `tendsto_volume_psi_short_asymptotic`): `|ψ(x + H) − ψ(x) − H| ≤ εH`
+  for almost all `x` gives `|Σ_ρ x^{iγ_ρ}ŵ(γ_ρ/T)| ≤ ε√x + O(√T)`, weaker than the trivial `T log T` for
+  bandwidth `α = 1/(1 − θ) < 2`. Information flows from zero density to primes, not back. FALSE.
+- **C101 one-sided prime side** (`w ≥ 0` makes `T Σ Λ(n)n^{−1/2}w(T log(n/x)) ≥ 0`): gives
+  `Re Σ_ρ x^{iγ_ρ}ŵ ≤ √x ŵ(−i/2T) + O(√T/log x)` for every `x`, i.e. the explicit formula with a nonnegative
+  test. Upper bounds on one-level sums only; pair statistics need squares, whose prime sides are prime
+  pairs. REDISCOVERED (Weil/Odlyzko positivity).
+- **C102 Levinson against the rank–trace adversary**: for `V = ζ + ζ'/L`, locally
+  `V/ζ ≈ 1/2 + Σ 1/(u − u_ρ)` (`u = (s − ½ − iγ)L`); two simple critical zeros give two `V`-zeros at
+  `Re u = −2`, an off-line pair at `±a` gives `u = −2 ± √(4 + a²)`, one right of the line, and a critical
+  double gives `u = 0` (on the line). Near pairs and doubles both cost one `V⁺`-zero: Levinson is
+  continuous and counts simple critical zeros. The rank–trace extremal configuration
+  (`2/3` simple + near pairs) meets Levinson's `N_V⁺ ≤ 0.29N`, so the joint LP stays at `HD(1)`. TRUE as a
+  classification; no gain.
+- **C103 every known counting method counts simple-or-odd critical zeros**: rank–trace (continuous),
+  Levinson (simple, Heath-Brown/Selberg), sign changes (odd order). A `3/4` proof by any of them
+  proves `≥ 3/4` simple-like zeros, under RH beyond `19/27`. The open core of the loop is therefore
+  the simple-zero problem plus removing RH. TRUE (classification).
 - **C82 ordinate certificates**: an off-line pair is an ordinate double in every real-ordinate
   statistic, and real-ordinate Gram data are not source-computable off RH (C31, C58); the ordinate
   census `4/5` (`#pairs ≤ N/6`) cannot be pushed to the needed `N/8` from ordinates alone. FALSE.
@@ -431,6 +450,10 @@ arithmetic input of type (i) or (ii).
   off-line ordinate charged twice.
   Card `3-formalized/zeta-off-line-multiple-exclusion-and-simple-off-line-core.md`; module
   `RHTower/Zeta23OffLineMultipleExclusion.lean`, `…MontgomeryTaylor.lean`.
+- **S5 (formalized):** smoothed Landau formula over all zeros, unconditional:
+  `|Σ_ρ m_ρ x^{ρ−½}ŵ(γ_ρ/T) + T w(0)Λ(x)/√x| ≤ 2e^{1/2}‖w‖₁√x + K√T/log x` for `T ≥ x + 2`
+  (`RHTower/ZetaSmoothedLandauFormula.lean`, card `3-formalized/zeta-smoothed-landau-formula.md`).
+  Input for discrete moments over zeros.
 
 ## Log
 - 2026-10-25 — created; corpus frontier re-read (Zeta23, TTPC, ACS, g75-1012).

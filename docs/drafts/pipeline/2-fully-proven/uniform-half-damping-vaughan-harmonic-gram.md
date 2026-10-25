@@ -2,7 +2,8 @@
 
 - **ID:** uniform-half-damping-vaughan-harmonic-gram
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CLAIM (Lean verification pending)
+- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
 - **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** At half damping, the centered Vaughan Gram differs from its explicit harmonic rank-one term by a bounded matrix uniformly over all cutoffs and horizons. Its renormalized moving-cutoff limit is an actual finite Gram of two source rows.
 - **Novelty status:** Endpoint refinement of the uniform convolution argument; initial corpus search found the fixed-cutoff admission law and smooth-power estimates, not this uniform bounded-error statement. No external novelty claim.
@@ -112,8 +113,9 @@ The positive first pole cell also gives `G∞_44≥1/64`; see
 `the-centred-vaughan-pole-has-positive-finite-energy.md`. Both refinements have
 dependency-closed paper proofs and await Lean verification.
 A finite limit of the scalar harmonic mass `K_(U,V)^2 J(T)→ℓ` gives
-actual Gram limit `G∞+ℓssᵀ`; an unbounded harmonic mass forces the corresponding
-convolution diagonal to diverge. The cutoff/horizon interaction is thus carried by
+actual Gram limit `G∞+ℓssᵀ`; harmonic mass tending to `+∞` forces the corresponding
+convolution diagonal to tend to `+∞`. Mere unboundedness does not assert convergence
+to infinity. The cutoff/horizon interaction is thus carried by
 one explicit nonnegative scalar at the endpoint.
 
 The finite limiting matrices consequently form the ray `G∞+ℓssᵀ`, `ℓ≥0`.
@@ -124,10 +126,12 @@ convergence of the harmonic mass, because its `(3,3)` entry is that mass plus a
 remainder tending to zero.
 
 Every value `ℓ≥0` is attainable with both cutoffs divergent. For `ℓ=0`, take
-`U=V=N,T=N²`. For `ℓ>0`, put `k_N=K_(N,N)^2>0` and take
-`T_N=ceil(exp(ℓ/k_N))`. Harmonic nonvanishing makes this well-defined; `k_N→0`
-makes `T_N→∞`. Since `J(T)-log T` stays bounded and rounding changes the logarithm
-by a quantity tending to zero, `k_N J(T_N)→ℓ`. Thus the ray is the exact set of
+`U=V=N,T=N²`. For `ℓ>0`, put `k_N=K_(N,N)^2>0` and choose the first integer
+`T_N` with `k_N J(T_N)≥ℓ`. Harmonic divergence guarantees existence; finite
+harmonic nonvanishing gives `k_N>0`. Each increment of `J` is at most one, so
+`ℓ≤k_N J(T_N)≤ℓ+k_N`. Since `k_N→0`, the mass tends to `ℓ`. Also `J(T)≤T`;
+for any fixed bound `B`, eventually `k_N B<ℓ`, forcing `T_N>B`.
+Thus the ray is the exact set of
 finite joint-limit matrices, not merely an upper description. These rank and
 realization corollaries also await Lean formalization.
 
@@ -140,6 +144,13 @@ the factorization. Finite products and zero products are harmless. The centered
 product-horizon trace therefore has one uniform finite bound at half damping.
 If both cutoffs diverge, the actual centered product-horizon Gram tends to `G∞`.
 The limit is nonzero: its pole diagonal is at least `1/64`.
+
+The Lean draft uses an equivalent separated majorant:
+`J(UV)≤(1+log U)(1+log V)` for positive cutoffs. The nonnegative sequence
+`g(N)=H_N²(1+log N)` tends to zero and is globally bounded. Hence
+`K_(U,V)²J(UV)≤subHalfZetaCoeff(1/2)² g(U)g(V)`. The checked product-index
+lemma makes the right side vanish whenever `UV→∞`, including factorizations
+with one bounded cutoff. This also directly supplies the common finite bound.
 
 ## Audit and status
 
@@ -187,3 +198,62 @@ and bounded cutoffs. At half damping, the additional factor `J(T)` amplifies
 vanishing amplitudes into every finite nonnegative harmonic mass, producing the
 continuous ray above even with both cutoffs divergent. The distinction concerns
 the exact limiting matrices; it supplies no fixed-strip power estimate.
+
+## Moving-cell proof obligations
+
+`/tmp/QIVaughanMovingRowTools.lean` drafts the centered and smooth-remainder
+cell limits, importing the finite row frame from the twelve-target independence
+draft. For each fixed cell, the finite floor sums stabilize once both cutoffs
+cover it; the checked moving-mean theorem supplies their centered limits. The
+five-piece identity supplies the convolution limit without exchanging an
+infinite convolution and a limit. This argument works for every `ε>0`, a
+stronger pointwise statement than the endpoint application. The source hypotheses
+were checked at every positive damping; no energy conclusion follows from this
+pointwise extension alone. Both Lean drafts remain unproved pending verification.
+
+The independence module's planned name is
+`TheVaughanLimitRowsAreIndependentInTwoCells.lean`; the moving-cell module's is
+`MovingVaughanRowsConvergeCellByCell.lean`. Dominated moving pairings, endpoint
+Gram ranks, the exact limit ray and its realization remain unfinished.
+
+`/tmp/QIMovingDominatedTools.lean` drafts the reusable passage from a common
+summable envelope and cellwise convergence to sums at independently growing
+horizons. `/tmp/QIHalfVaughanMovingLimitTools.lean` drafts six actual endpoint
+applications: one common absolute pairing envelope, summability of the limiting
+Gram, convergence of the moving remainder pairings, convergence in the full
+infinite pronic square norm, convergence at any finite moving horizon, and the
+renormalized moving Gram limit above. The final step uses the common absolute
+mixed-pairing bound and the vanishing harmonic amplitude. All seven targets are
+UNPROVED pending Lean verification and axiom audits. The infinite Gram ranks,
+limit ray, realization, endpoint packet bound, and product-horizon consequences
+remain unfinished.
+
+The endpoint packet consequence is drafted in `/tmp/QIHalfVaughanPacketTools.lean`:
+the harmonic energy error is bounded by one constant times the square of the
+absolute coefficient sum. Two further targets give common energy bounds when
+the smooth coefficient vanishes, in particular when the two convolution
+coefficients agree. All three are UNPROVED pending Lean verification.
+
+`/tmp/QIHalfVaughanInfiniteGramTools.lean` drafts the actual infinite Gram's
+positive semidefiniteness, quantitative positive minor, positive pole entry,
+and exact rank two. `/tmp/QIHalfVaughanLimitRayTools.lean` drafts nine subsequent
+targets: nonnegative harmonic mass, the scalar readout at entry `(3,3)`,
+both directions of finite matrix-limit classification, and exact ranks two
+and three on the nonnegative ray. These eighteen targets remain UNPROVED.
+Realization of every ray point and the endpoint product-horizon consequences
+still require Lean drafts and verification.
+
+Those remaining constructions are now drafted. `/tmp/QIHalfVaughanProductTools.lean`
+has six targets: the separated logarithmic horizon bound, vanishing product
+harmonic mass, its common finite bound, uniform bounds for every product-horizon
+Gram entry and trace, and the actual product-horizon limit. The stronger entry
+bound follows directly from the common harmonic Gram error and the bounded
+mass; it adds no analytic input. `/tmp/QIHarmonicMassRealizationTools.lean`
+has four reusable harmonic-sum targets, including the first-crossing argument
+above. `/tmp/QIHalfVaughanRayRealizationTools.lean` discharges positivity and
+vanishing of the actual arithmetic scale and drafts three realization and
+exact-limit-set targets. All thirteen remain UNPROVED.
+
+The ray draft now has eleven targets, including the exact equivalence between
+divergence to `+∞` of the fourth diagonal and of the harmonic mass. This corrects
+the earlier overly weak word “unbounded”; no unconditional divergence is claimed.

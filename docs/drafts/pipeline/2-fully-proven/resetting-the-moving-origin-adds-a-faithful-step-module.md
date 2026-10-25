@@ -2,7 +2,7 @@
 
 - **ID:** resetting-the-moving-origin-adds-a-faithful-step-module
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM / boundary classification
+- **Type:** CONJECTURE (Lean completion pending)
 - **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
 
 ## Exact source convention
@@ -103,3 +103,34 @@ translation invisibility alone does not control the uncentered boundary.
 For finite kernels the shifted source pairing conclusion follows directly
 from the finite Gram limits. Extension to full source Wiener pairings needs
 the uniform summation argument, rather than a bare interchange of limits.
+
+## Formalization coverage
+
+The reset-origin realization, complete step Wiener action and positive-mixture
+faithfulness are in the active boundary scratch retry. Canonical promotion
+is prepared in `/tmp/qiii-promote-verified-boundary-refinements.py` but must
+wait for a clean completed log. The raw, unreset Gram formula was still only
+on paper; `/tmp/qiii_unreset_origin_gram_body.lean` now drafts its exact
+receiver-scale and own-scale limits, realization of every positive mass on
+escape, and exclusion from every actual zero-origin common kernel. Its
+scratch `/tmp/qiii-unreset-origin-check.lean` needs the new canonical boundary
+imports and has NOT been checked. These are separate source conventions,
+not a claimed new actual unshifted escape state.
+
+The corresponding dimension/index corollaries are now explicitly drafted in
+`/tmp/qiii_origin_boundary_index_body.lean`: the step module and every positive
+origin mixture are infinite-dimensional and their annihilator quotients have
+continuum Hamel rank. The proof applies the existing infinite Hilbert-image
+rank theorem to the injective continuous cyclic Wiener map. The separate
+scratch is assembled but UNVERIFIED, awaiting canonical boundary imports.
+
+## Boundary scratch passed; canonical completion pending
+
+The full moving-origin scratch passed with standard axioms in session `6979`.
+The boundary promoter ran, installing and wiring all thirteen new leaves
+(the shared first-crossing leaf was already installed by diagonal promotion).
+Unused closing tactics and the unused completeness binder were removed before
+canonical placement. Final checks are in active session `90975`, after the
+diagonal and unit/finite/pole batches. The raw-translation and continuum-index
+corollaries are queued after those canonical boundary checks; both still need
+their own verification. This card is not complete yet.

@@ -57,7 +57,8 @@ theorem meyerSingleJetSource_sharp_square_boundary
     have hk' : k ≤ i.val := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
     have hklt : k < xiSupportMultiplicity sigma := lt_of_le_of_lt hk' i.isLt
     by_cases hfirst : sigma = rho ∧ k = j.val
-    · obtain ⟨rfl, hkval⟩ := hfirst
+    · obtain ⟨hsigma, hkval⟩ := hfirst
+      subst sigma
       have hsub : i.val - k < xiSupportMultiplicity (meyerLineReflect rho) := by
         rw [meyerLineReflect_multiplicity]
         exact lt_of_le_of_lt (Nat.sub_le _ _) i.isLt
@@ -224,10 +225,3 @@ theorem exists_faithful_positive_meyer_degree_iff :
     exact lt_of_le_of_ne ht.1 (fun he => hnot (ht.2.mp he.symm))
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerSourceSharp_jet
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerSingleJetSource_sharp_square_boundary_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_meyer_principal_sharp_square_of_off_line
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_meyer_principal_sharp_square_of_multiple
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerSource_sharp_square_root_boundary_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_faithful_positive_meyer_degree_iff

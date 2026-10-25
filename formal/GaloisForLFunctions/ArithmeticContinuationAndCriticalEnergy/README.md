@@ -29,6 +29,12 @@ reductions make the arithmetic demand concrete: the work is edge mass minus dila
 plus its polar correction, and the full receiver norm is equivalent to one-step block energy.
 The aperture analogue is an exact shell-flux law: geometric relaxation and newly admitted prime correlations account for the ground-energy drop. These identities locate the missing source estimate; they do not supply it.
 
+[ThePronicPairingHasExactDilationBlocks](ThePronicPairingHasExactDilationBlocks.lean)
+retains the bilinear complete-block identity: for a zero-origin row `u`,
+`Q_(p*(N+1)-1)(D_p u,D_p v) = Q_N(u,v)/p`. In Arithmetic Defect Rigidity,
+this identifies actual cofactor diagonals with contracted-horizon energy
+ratios and makes their scaled profile decrease in numeric order.
+
 | Programme | Connection |
 |---|---|
 | [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md) | Fixes the source and complete energy before a transport is proposed. |

@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-explicit-critical-unpaid-sequence
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean; normalized coefficient calibration)
-- **Parent:** [Critical payment defect](../2-fully-proven/biarithmetic-critical-payment-has-continuum-defect.md)
+- **Parent:** [Critical payment defect](../1-in-progress/biarithmetic-critical-payment-has-continuum-defect.md)
 - **Statement:** An explicit real sequence has absolute sum two and total sum zero, but divergent squared partial sums. Finite zero-sum repairs have finite partial-sum energy and approach it at exact coefficient distance `2/sqrt(N+1)`.
 
 ## Proof

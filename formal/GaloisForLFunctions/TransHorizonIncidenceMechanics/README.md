@@ -1273,6 +1273,19 @@ $\sum_{p\in P}p^{-1/2-\varepsilon}<\infty$ never change the class (`receiverBoun
 paid $\pm1$ pattern flips a prime set of divergent critical-line mass. The twist kernels of all the
 pairs lie just outside the algebra exactly when $\varepsilon\le1/2$.
 
+**Higher prime powers at half damping.** Let $f'$ be multiplicative with $\lvert f'\rvert\le1$ and $f$
+its completely multiplicative companion ($f(p)=f'(p)$). The kernel $g=f'\star\mu f$ has $g(p)=0$ and
+$\lvert g(p^k)\rvert\le2$, and its inverse $h$ has local sums
+$\sum_k\lvert h(p^k)\rvert p^{-k}\le(1-r_p)^{-1}$, $r_p=\sum_k\lvert g(p^k)\rvert p^{-k}\le3p^{-2}$ for odd $p$
+(`sum_range_abs_mul_pow_le_of_inv`). At $p=2$, $r_2<1$ unless every two-adic step is extremal,
+which happens exactly for the tails $f'(2^k)=-1$ and $f'(2^k)=(-1)^{k+1}$ (`twoAdicStep_extremal_iff`).
+Off these two tails $h$ is critical Wiener and $f'(d)d^{-1/2}$ is paid iff $f(d)d^{-1/2}$ is
+(`receiverBounded_half_iff_companion`). On them the two-adic local factor vanishes on $\operatorname{Re}w=1$
+and can repair the boundary: at $t_0=2\pi m/\log2$ the weight $f'(n)=(-1)^{[2\mid n]}f_{t_0}(n)$,
+$f_{t_0}(p)=\cos(t_0\log p)$, has series $(1-2^{1-w})F_{t_0}(w)$ and is always paid
+(`receiverBounded_twoAdicRepair`), while its companion is paid iff $\zeta(\tfrac12+it_0)=0$
+(`receiverBounded_twoAdicCompanion_iff`).
+
 **The pole law.** The Mellin pairing is multiplicative under convolution,
 $\Phi_{k\star q}=K(\sigma)\Phi_q+m_q\Phi_k$, because the cells of a dilation telescope. A paid receiver
 has $\lvert\Phi(\sigma)\rvert=O((\sigma-1/2)^{-1/2})$, while a positive drift $\kappa n^{1-\varepsilon}$
@@ -1541,6 +1554,25 @@ lies in the critical Wiener algebra (`criticalWiener_mul_patternMoebiusAF`), so 
 payment and uniform horizon-row payment are invariant under $\ell^1(p^{-(1/2+\varepsilon)})$ prime
 perturbations (`receiverBounded_iff_of_summable_prime_diff`,
 `horizonRows_bounded_of_summable_prime_diff`, `receiverBounded_primeVaryingMultiPhase_half_iff`).
+
+**Divergent critical-line mass: the Dini law.** Completely monotone amplitude defects
+$f(p)=(1-c\,g(p))\cos(t_0\log p)$, $g(p)=\sum_kw_kp^{-s_k}$ ($w_k\ge0$, $W=\sum_kw_k<\infty$,
+$0<s_k\le\tfrac12$, $c\ge0$, $cW\le2$) are decided exactly. The Euler product sees $\zeta$ at $w\pm it_0$
+and at the shifted points $w+s_k\pm it_0$, so with $\rho=(\Re w-1)+\lvert\Im w-t_0\rvert$ one has
+$\lvert F(w)\rvert^2\asymp e^{-c\Lambda(\rho)}/\rho$, where $\Lambda(\rho)=\sum_kw_k\log(1/(s_k+\rho))$ is the
+defect profile (`exists_abs_log_norm_defectSeries_sub_profile_le`). For $t_0>0$ the half-damped weight
+is paid iff $\int_0^1e^{-c\Lambda(\rho)}\,d\rho/\rho<\infty$ or $\zeta(\tfrac12+it_0)=0$
+(`receiverBounded_defectWeight_iff`). For the harmonic defect $w_k=1/((k+1)(k+2))$, $s_k=e^{-(k+1)}$
+the profile is $\log\log(1/\rho)+O(1)$, and for $0\le c\le2$ the weight is paid iff $c>1$ or
+$\zeta(\tfrac12+it_0)=0$ (`receiverBounded_harmonicDefect_iff`), while the critical-line mass
+$\sum_p\lvert f(p)-\cos(t_0\log p)\rvert/p$ diverges at every $c>0$
+(`not_summable_criticalLineMass_harmonic`). The harmonic defect is $1/\log\log p+O((\log\log p)^{-2})$
+(`abs_cmDefect_harmonic_sub_le`) and $\sum_p1/(p\,\ell(p)^2)<\infty$ for $\ell=\max(1,\log\log)$
+(`summable_inv_mul_logLogFloor_sq`), so the natural amplitude $a_p=1-c/\ell(p)$ has the same
+threshold: $(1-c/\ell(p))\cos(t_0\log p)$ is paid iff $c>1$ or $\zeta(\tfrac12+it_0)=0$
+(`receiverBounded_logLogPattern_iff`), with divergent critical-line mass at every $c>0$
+(`not_summable_criticalLineMass_logLog`). Summable-perturbation invariance stops at convergent mass;
+the phase boundary lies inside the divergent regime and is the Dini integral of the profile.
 
 **Reading.** For any completely multiplicative $f$ with $\lvert f(p)\rvert\le1$, the Euler product
 pinches $\log\lvert F(w)\rvert$ within $S=\sum_p p^{-2}$ of the real part of the prime Dirichlet series
@@ -1870,7 +1902,7 @@ sections give the full statements, mechanisms and supporting declarations.
 | One admissible damping bounds the width | It does not: a single admissible damping only translates zeros along $\rho,\rho-\varepsilon,\rho-2\varepsilon,\dots$. The width is the infimum of the derived set of the admissible dampings, exactly $\Theta-\tfrac12$. |
 | Higher-degree translated moments see the parity of squarefree rows | Cubic moments pin odd-modulus signs, but the even flip is invisible at every degree and can break the receiver (the Fermi pair). |
 | Finitely many flipped primes make a parity pair | Local factors with $\lvert a\rvert<\sqrt p$ never change the receiver class, nor do flips on prime sets of convergent $\sum p^{-1/2-\varepsilon}$; a pair needs a prime set of divergent critical-line mass. |
-| Higher prime powers are invisible to the receiver | True for $\mu$-pretentious weights; for $1$-pretentious weights they enter through the local factor $L_p$ at the pole. |
+| Higher prime powers are invisible to the receiver | At half damping, for every $\lvert f'\rvert\le1$ off the two extremal two-adic tails; on those tails the factor at $2$ vanishes on $\operatorname{Re}w=1$ and can pay an unpaid companion. For $1$-pretentious weights they enter through the local factor $L_p$ at the pole. |
 | A separating observable bounds the receiver | The logarithmic moments separate every pair and bound nothing; separation is qualitative and carries no exponent. |
 | Divergence proofs need a nonnegative weight | The pole law proves divergence of sign-changing convolutions $k\star q$ through the Mellin pairing at $\sigma=1-\varepsilon+\delta$. |
 | The density of flipped primes decides the receiver of a sign pattern | Only on residue patterns (quarter law). Oscillating prime patterns with the same prime signs and the same prime mean can be paid and unpaid; the receiver reads the size of the Dirichlet series beside the line at every height. |
@@ -1993,10 +2025,11 @@ class it never occurs.
 Every completely multiplicative pattern with $\lvert f(p)\rvert\le1$ is decided at half damping by the
 size of $\Re\ell_f$ beside the line, height by height; below half damping the integer-order
 obstruction is necessary only. Sufficient conditions below half damping need the size of the
-series inside the strip, which for the Liouville pattern is the Möbius problem itself. Open:
-phase diagrams for multiplicative patterns that are not completely multiplicative, where higher
-prime powers enter through local factors, and for patterns with prime-varying amplitudes of
-divergent critical-line mass.
+series inside the strip, which for the Liouville pattern is the Möbius problem itself. At half
+damping, multiplicative patterns reduce to their completely multiplicative companions except on two
+two-adic tails (§3.16), and amplitude defects of divergent critical-line mass obey the Dini law,
+including $1-c/\log\log p$ (§3.18). Open: defects that are not within summable critical-line mass of
+a completely monotone one.
 
 ### 7.8 Research topics
 

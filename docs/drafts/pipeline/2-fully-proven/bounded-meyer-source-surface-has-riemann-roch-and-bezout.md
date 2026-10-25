@@ -2,7 +2,8 @@
 
 - **ID:** bounded-meyer-source-surface-has-riemann-roch-and-bezout
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CONJECTURE (Lean verification pending)
+- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass.
 - **Source:** Q-II; bounded full-Hasse source orbit and actual source trace.
 - **Statement:** Restricting the genuine Meyer surface to bounded centered source orbits gives unconditional RR, Bézout, and ampleness; principal and numerical equivalence agree there exactly when every critical Xi zero is simple.
 

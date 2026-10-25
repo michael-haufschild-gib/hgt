@@ -11,6 +11,7 @@ The full-Hasse convolution representation supplies a positive quadratic reserve
 without an order assumption. Its excess over the actual source trace is exactly
 half the squared adjoint defect. The cone has Bézout and ampleness; its Riemann–Roch
 axiom detects simple critical zeros, including the higher-jet obstruction.
+Representation of this reserve by a linear sharp-square degree has the same criterion.
 -/
 
 noncomputable section
@@ -271,9 +272,16 @@ theorem meyerHilbertSourceCone_pointed_mod_principal {x : MeyerScalingCycle}
   apply (meyerHilbertSourceCone_ample_zero_iff x).mp
   refine ⟨hx, ?_⟩
   rw [meyerHilbertSourceCone, PolarSurface.mem_sourceCone_iff] at hx hnx
-  simp only [map_neg, LinearMap.neg_apply] at hnx
+  have hnH : 0 ≤ -meyerScalingSurface.pair x meyerScalingSurface.H := by
+    calc
+      0 ≤ meyerScalingSurface.pair (-x) meyerScalingSurface.H := hnx.1
+      _ = _ := (meyerScalingSurface.pair.flip meyerScalingSurface.H).map_neg x
+  have hnV : 0 ≤ -meyerScalingSurface.pair x meyerScalingSurface.V := by
+    calc
+      0 ≤ meyerScalingSurface.pair (-x) meyerScalingSurface.V := hnx.2.1
+      _ = _ := (meyerScalingSurface.pair.flip meyerScalingSurface.V).map_neg x
   rw [PolarSurface.pair_ample]
-  linarith only [hx.1, hx.2.1, hnx.1, hnx.2.1]
+  linarith only [hx.1, hx.2.1, hnH, hnV]
 
 theorem meyerHilbertSourceCone_generating (x : MeyerScalingCycle) :
     ∃ y ∈ meyerHilbertSourceCone, ∃ z ∈ meyerHilbertSourceCone, x = y - z := by
@@ -310,6 +318,39 @@ theorem meyerHilbertSourceCone_riemannRoch_iff :
       RiemannHypothesis ∧ ∀ rho : XiDivisorSupport, xiSupportMultiplicity rho = 1 :=
   meyerHilbertSourceCone_riemannRoch_iff_adjoint.trans meyerHilbertConvolution_sharp_eq_adjoint_iff
 
+/-- A linear degree represents the faithful reserve exactly at simple criticality. -/
+theorem exists_meyerHilbertReserve_linear_degree_iff :
+    (∃ d : DeningerMeyerStrongLogCohomology →ₗ[ℂ] ℂ,
+      ∀ g : DeningerMeyerStrongLogTarget,
+        meyerHilbertReserve (0, 0, g) =
+          (d (Submodule.Quotient.mk
+            (deningerMeyerSourceConvolution g (deningerMeyerSourceSharp g)))).re) ↔
+      RiemannHypothesis ∧ ∀ rho : XiDivisorSupport, xiSupportMultiplicity rho = 1 := by
+  constructor
+  · rintro ⟨d, hd⟩
+    apply exists_faithful_positive_meyer_degree_iff.mp
+    refine ⟨d, fun g hg => ?_⟩
+    rw [← hd g]
+    exact lt_of_le_of_ne (meyerHilbertReserve_nonneg _) (fun he =>
+      hg ((meyerHilbertReserve_eq_zero_iff (0, 0, g)).mp he.symm))
+  · intro h
+    refine ⟨meyerCohomologyTraceDegree, fun g => ?_⟩
+    rw [← meyerSourceTrace_eq_degree_product]
+    have he := (meyerScalingSurface.sourceCone_riemannRoch_and_bezout_iff
+      meyerHilbertReserve_nonneg reserve_neg reserve_fibre).mp
+        ⟨meyerHilbertSourceCone_riemannRoch_iff.mpr h, meyerHilbertSourceCone_bezout⟩ (0, 0, g)
+    simpa only [meyerScalingSurface_defect] using he
+
+/-- For the faithful reserve, linear sharp-square representation and RR are equivalent. -/
+theorem meyerHilbertSourceCone_riemannRoch_iff_linear_degree :
+    meyerScalingSurface.RiemannRochAxiom meyerHilbertSourceCone ↔
+      ∃ d : DeningerMeyerStrongLogCohomology →ₗ[ℂ] ℂ,
+        ∀ g : DeningerMeyerStrongLogTarget,
+          meyerHilbertReserve (0, 0, g) =
+            (d (Submodule.Quotient.mk
+              (deningerMeyerSourceConvolution g (deningerMeyerSourceSharp g)))).re :=
+  meyerHilbertSourceCone_riemannRoch_iff.trans exists_meyerHilbertReserve_linear_degree_iff.symm
+
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertReserve_sub_defect
@@ -322,3 +363,5 @@ end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertSourceCone_generating
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertSourceCone_pointed_mod_principal
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertSourceCone_riemannRoch_iff
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_meyerHilbertReserve_linear_degree_iff
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertSourceCone_riemannRoch_iff_linear_degree

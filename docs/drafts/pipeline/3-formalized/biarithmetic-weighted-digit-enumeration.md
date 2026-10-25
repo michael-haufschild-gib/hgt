@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-weighted-digit-enumeration
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Digital energy and payment](../2-fully-proven/biarithmetic-digital-energy-and-prime-tower-payment.md)
+- **Parent:** [Digital energy and payment](../1-in-progress/biarithmetic-digital-energy-and-prime-tower-payment.md)
 - **Statement:** Arbitrary signed base-five digit readouts have the exact complete-prefix and annular second moments on ordinary natural-number indices, including a positive lower bound determined by the leading weight alone.
 
 ## Enumeration and moments

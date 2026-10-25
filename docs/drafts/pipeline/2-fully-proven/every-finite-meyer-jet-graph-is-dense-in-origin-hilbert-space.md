@@ -2,7 +2,8 @@
 
 - **ID:** qii-origin-hilbert-full-jet-graph
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CONJECTURE (Lean verification pending)
+- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass.
 - **Source:** ../1-in-progress/q-ii-source-effectivity-and-linear-degree.md
 - **Statement:** The joint map from actual Meyer sources to half-density L2 and any surjective normed cohomological linear reading has dense image in their product. In particular every finite full-Xi-jet graph has full product closure, including critical value coordinates.
 

@@ -169,16 +169,31 @@ theorem analyticOnNhd_lSeries_kernel :
   calc abscissaOfAbsConv (cplx k) ≤ ((1 / 2 : ℝ) : ℂ).re := by simpa using this
     _ < s.re := by simpa using hs
 
-/-- **A repairing kernel vanishes at every translated off-line zero**: if `k ⋆ μ_ε` is paid and
-`ζ(ρ) = 0` with `½ + ε < Re ρ < 1`, then `ζ(ρ − ε) K(ρ − ε) = 0`. -/
-theorem riemannZeta_mul_lSeries_eq_zero_of_repairs
-    (hB : ReceiverBounded (RHTower.dirichletConv k (pmPowerDampedRealWeight ε))) {ρ : ℂ}
-    (hρ : 1 / 2 + ε < ρ.re) (hρ1 : ρ.re < 1) (hz : riemannZeta ρ = 0) :
-    riemannZeta (ρ - ε) * LSeries (cplx k) (ρ - ε) = 0 := by
+end Kernel
+
+/-- The actual Mellin pairing satisfies the identity obtained by clearing shifted zeta poles. -/
+theorem complexMellinPairing_cleared_identity_of_repairs
+    {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 1 / 2) {k : ℕ → ℝ} (hk : CriticalWiener k)
+    (hB : ReceiverBounded (RHTower.dirichletConv k (pmPowerDampedRealWeight ε))) :
+    ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 →
+      RHTower.zetaResidueUnit (s + ε) *
+        complexMellinPairing (weightCenteredPrefix
+          (RHTower.dirichletConv k (pmPowerDampedRealWeight ε))
+          (∑' d : ℕ, RHTower.dirichletConv k (pmPowerDampedRealWeight ε) d / d)) s =
+        (s + ε - 1) * riemannZeta s * LSeries (cplx k) s -
+          ((∑' d : ℕ, RHTower.dirichletConv k (pmPowerDampedRealWeight ε) d / d : ℝ) : ℂ) *
+            riemannZeta s * RHTower.zetaResidueUnit (s + ε) := by
   set c := RHTower.dirichletConv k (pmPowerDampedRealWeight ε)
   obtain ⟨E, hE⟩ := hB
-  obtain ⟨Φ, hΦ, hΦσ⟩ := exists_holomorphic_continuation (a := 1 - ε) (by linarith)
-    (fun θ hθ => summable_repaired_rpow hε hε2 hk hθ) hE
+  let Φ := complexMellinPairing (weightCenteredPrefix c (∑' d : ℕ, c d / d))
+  have hΦ : DifferentiableOn ℂ Φ {s : ℂ | 1 / 2 < s.re} :=
+    differentiableOn_complexMellinPairing (weightCenteredPrefix_zero _ _) (fun T => hE T)
+  have hΦσ (σ : ℝ) (hσ : 1 - ε < σ) (hσ1 : σ < 1) :
+      Φ σ = riemannZeta σ *
+        (((∑' d : ℕ, c d * (d : ℝ) ^ (-σ)) - ∑' d : ℕ, c d / d : ℝ) : ℂ) :=
+    complexMellinPairing_eq_zeta_mul (θ := (1 - ε + σ) / 2)
+      (by linarith only [hε2, hσ]) (by linarith only [hσ]) hσ1
+      (summable_repaired_rpow hε hε2 hk (by linarith only [hσ]))
   set m : ℂ := ((∑' d : ℕ, c d / d : ℝ) : ℂ)
   set U : Set ℂ := {s | 1 / 2 < s.re ∧ s.re < 1}
   -- both sides of the cleared identity are holomorphic on the strip
@@ -233,10 +248,35 @@ theorem riemannZeta_mul_lSeries_eq_zero_of_repairs
     · exact hreal _ (by linarith) (by linarith [min_le_right (r0 / 2) (ε / 4)])
   have heq := hL.eqOn_of_preconnected_of_frequently_eq hR
     ((convex_halfSpace_re_gt (1 / 2)).inter (convex_halfSpace_re_lt 1)).isPreconnected hrU hfreq
-  -- evaluate at the translated zero
-  have hs : ρ - ε ∈ U := by
-    simp only [U, Set.mem_setOf_eq, Complex.sub_re, Complex.ofReal_re]; constructor <;> linarith
-  have h := heq hs
+  exact fun s hs hs1 => heq ⟨hs, hs1⟩
+
+
+/-- A paid repaired receiver supplies an analytic factor in the cleared identity. -/
+theorem exists_cleared_continuation_of_repairs
+    {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 1 / 2) {k : ℕ → ℝ} (hk : CriticalWiener k)
+    (hB : ReceiverBounded (RHTower.dirichletConv k (pmPowerDampedRealWeight ε))) :
+    ∃ Φ : ℂ → ℂ,
+      AnalyticOnNhd ℂ Φ {s : ℂ | 1 / 2 < s.re} ∧
+      ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 →
+        RHTower.zetaResidueUnit (s + ε) * Φ s =
+          (s + ε - 1) * riemannZeta s * LSeries (cplx k) s -
+            ((∑' d : ℕ, RHTower.dirichletConv k (pmPowerDampedRealWeight ε) d / d : ℝ) : ℂ) *
+              riemannZeta s * RHTower.zetaResidueUnit (s + ε) := by
+  obtain ⟨E, hE⟩ := hB
+  exact ⟨_, (differentiableOn_complexMellinPairing (weightCenteredPrefix_zero _ _)
+    (fun T => hE T)).analyticOnNhd (isOpen_lt continuous_const Complex.continuous_re),
+    complexMellinPairing_cleared_identity_of_repairs hε hε2 hk ⟨E, hE⟩⟩
+
+
+/-- Evaluating the cleared continuation recovers the translated-zero vanishing identity. -/
+theorem riemannZeta_mul_lSeries_eq_zero_of_repairs
+    {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 1 / 2) {k : ℕ → ℝ} (hk : CriticalWiener k)
+    (hB : ReceiverBounded (RHTower.dirichletConv k (pmPowerDampedRealWeight ε))) {ρ : ℂ}
+    (hρ : 1 / 2 + ε < ρ.re) (hρ1 : ρ.re < 1) (hz : riemannZeta ρ = 0) :
+    riemannZeta (ρ - ε) * LSeries (cplx k) (ρ - ε) = 0 := by
+  obtain ⟨Φ, _, hclear⟩ := exists_cleared_continuation_of_repairs hε hε2 hk hB
+  have h := hclear (ρ - ε) (by simp only [sub_re, ofReal_re]; linarith)
+    (by simp only [sub_re, ofReal_re]; linarith)
   simp only [sub_add_cancel] at h
   have hρne : ρ ≠ 1 := fun h' => by rw [h'] at hρ1; simp at hρ1
   have hZρ : RHTower.zetaResidueUnit ρ = 0 := by
@@ -246,7 +286,6 @@ theorem riemannZeta_mul_lSeries_eq_zero_of_repairs
     linear_combination -h
   exact (mul_eq_zero.1 h2).resolve_left (sub_ne_zero.2 hρne)
 
-end Kernel
 
 /-! ### Obstruction points of the Möbius receiver -/
 
@@ -308,3 +347,6 @@ theorem not_receiverBounded_moebius_of_zero {ε : ℝ} (hε : 0 < ε) (hε2 : ε
 end
 
 end GaloisForLFunctions.ArithmeticOrientationTheory
+
+#print axioms GaloisForLFunctions.ArithmeticOrientationTheory.complexMellinPairing_cleared_identity_of_repairs
+#print axioms GaloisForLFunctions.ArithmeticOrientationTheory.riemannZeta_mul_lSeries_eq_zero_of_repairs

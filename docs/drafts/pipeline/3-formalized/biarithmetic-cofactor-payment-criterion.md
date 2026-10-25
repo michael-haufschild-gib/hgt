@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-cofactor-payment-criterion
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Digital energy and payment](../2-fully-proven/biarithmetic-digital-energy-and-prime-tower-payment.md)
+- **Parent:** [Digital energy and payment](../1-in-progress/biarithmetic-digital-energy-and-prime-tower-payment.md)
 - **Statement:** For a source with absolutely convergent actual mean, a critical Wiener kernel repairs the source precisely when its full finite cofactor action has uniformly bounded pronic norm.
 
 ## Exact comparison

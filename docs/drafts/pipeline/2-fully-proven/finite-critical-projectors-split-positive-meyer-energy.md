@@ -2,10 +2,10 @@
 
 - **ID:** finite-critical-projectors-split-positive-meyer-energy
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CONJECTURE (Lean verification pending)
 - **Source:** Q-II; positive-meyer-degrees-and-the-infinite-source-tail.
 - **Statement:** For every positive Hermitian degree and every finite critical packet, the actual causal projector splits the full sharp-square degree into its exact weighted critical-value contribution and a nonnegative residual.
-- **Status:** [PROVED HERE, paper]; Lean draft unverified; external novelty unverified.
+- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass; external novelty unverified.
 
 ## Complete paper proof
 

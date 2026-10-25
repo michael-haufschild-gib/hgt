@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-completed-pronic-dilations
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean; universal ordinary-energy action)
-- **Parent:** [Payment graph norm](../2-fully-proven/biarithmetic-payment-graph-norm.md)
+- **Parent:** [Payment graph norm](../1-in-progress/biarithmetic-payment-graph-norm.md)
 - **Statement:** Completed floor dilations have exact contraction factor `j^(-1/2)`, compose multiplicatively, and integrate to a contractive unital representation of the actual critical Wiener algebra.
 
 ## Proof

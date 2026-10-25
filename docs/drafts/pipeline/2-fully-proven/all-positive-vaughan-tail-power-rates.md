@@ -2,7 +2,8 @@
 
 - **ID:** all-positive-vaughan-tail-power-rates
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CLAIM (Lean verification pending)
+- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
 - **Statement:** Extend the signed-tail and square empty-leg fixed-strip equivalences from `0<ε≤1` to every `ε>0`.
 

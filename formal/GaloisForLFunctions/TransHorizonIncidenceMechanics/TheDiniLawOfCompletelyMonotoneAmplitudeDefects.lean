@@ -1,4 +1,5 @@
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.ThePhaseLawOfOscillatingPrimePatterns
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.MultiFrequencyPrimePatternsAndGeneralMultiplicativeSpectra
 
 /-!
 # The Dini law of completely monotone amplitude defects
@@ -17,7 +18,22 @@ the shifted points `w + s_k ± it₀`:
 
 Near the height `t₀`, with `w = 1 + u + i(t₀ + τ)` and `ρ = u + |τ|`, this is
 `|F(w)|² ≍ e^{−cΛ(ρ)}/ρ`, where `Λ(ρ) = Σ_k w_k log(1/(s_k + ρ))` is the defect profile
-(`defectProfile`).
+(`defectProfile`, `exists_abs_log_norm_defectSeries_sub_profile_le`).
+
+**The Dini law** (`receiverBounded_defectWeight_iff`): the half-damped weight `f(d) d^{-1/2}` has
+bounded receiver iff the Dini density `h(ρ) = e^{−cΛ(ρ)}/ρ` (`diniDensity`) is integrable on `(0, 1]`
+or `ζ(1/2 + it₀) = 0`. It is the instance of an abstract law for every completely multiplicative
+`|f| ≤ 1` with this box estimate at a height `t₀ ≥ 0` (`DiniBox`) and `|F(v)| ≪ (Im v)^{1/4}`
+(`DiniLarge`) (`receiverBounded_half_iff_of_diniBox`):
+
+* Payment (`receiverBounded_half_of_integrableOn`): `h` is almost decreasing
+  (`h(ρ) ≤ 4h(x)` for `x ≤ ρ ≤ 2x`), so the line integrand at `σ = 1/2 + u` is dominated by
+  `A(u⁻¹ 1_{|t − t₀| < u} + h(|t − t₀|)) + A'`, whose integrals are bounded uniformly in `u`
+  (`exists_lineEnergy_le_of_majorant_family`); at large heights `|F| ≪ (log t)^{27}`.
+* A critical zero pays (`receiverBounded_half_of_zero`): `|ζ(s)|² ≤ L²ρ²` cancels `h ≤ 1/ρ`.
+* Obstruction (`integrableOn_diniDensity_of_receiverBounded_half`): if `ζ(1/2 + it₀) ≠ 0`, the line
+  integrand on `t₀ ≤ t ≤ t₀ + r` is `≥ κ h(u + τ) − C'`, so a paid receiver bounds `∫_u^r h`
+  uniformly in `u`.
 -/
 
 open Filter Topology MeasureTheory Complex Set
@@ -224,20 +240,13 @@ theorem abs_tsum_mul_sub_tsum_mul_le (hd : AdmissibleDefect w s) {a b : ℕ → 
   rw [Real.norm_eq_abs, ← mul_sub, abs_mul, abs_of_nonneg (hd.nonneg k)]
   exact mul_le_mul_of_nonneg_left (hab k) (hd.nonneg k)
 
-/-- **The Euler comparison for the defect pattern.** On `Re v > 1`,
-`|log|F(v)| − D(v)| ≤ (2 + cW) S` with `S = Σ_p p^{-2}`. -/
-theorem abs_log_norm_defectSeries_sub_le (hd : AdmissibleDefect w s) {c : ℝ} (hc : 0 ≤ c)
-    (hcW : c * ∑' k, w k ≤ 2) (t₀ : ℝ) {v : ℂ} (hv : 1 < v.re) :
-    |Real.log ‖∑' n : ℕ, (defectPattern c t₀ w s n : ℂ) * ((n : ℝ) : ℂ) ^ (-v)‖ -
-      defectLogModel c t₀ w s v| ≤ (2 + c * ∑' k, w k) * primeSquareMass := by
-  have hF := abs_log_norm_tsum_sub_re_le (cweightedPatternHom (defectPattern c t₀ w s) v) hv
-    fun n => by
-      simp only [cweightedPatternHom, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, norm_mul,
-        Complex.norm_real, Real.norm_eq_abs, Complex.ofReal_natCast]
-      exact mul_le_of_le_one_left (norm_nonneg _) (abs_defectPattern_le hd hc hcW t₀ n)
-  have hFn : ∑' n, cweightedPatternHom (defectPattern c t₀ w s) v n =
-      ∑' n : ℕ, (defectPattern c t₀ w s n : ℂ) * ((n : ℝ) : ℂ) ^ (-v) := tsum_congr fun n => rfl
-  rw [hFn, tsum_defectPattern_primes hd c t₀ hv] at hF
+/-- **The Euler model of the prime sum.** On `Re v > 1`,
+`|Re Σ_p f(p) p^{-v} − D(v)| ≤ (1 + cW) S`, `S = Σ_p p^{-2}`. -/
+theorem abs_re_primeSum_defectPattern_sub_le (hd : AdmissibleDefect w s) {c : ℝ} (hc : 0 ≤ c)
+    (t₀ : ℝ) {v : ℂ} (hv : 1 < v.re) :
+    |(∑' p : Nat.Primes, cweightedPatternHom (defectPattern c t₀ w s) v p).re -
+      defectLogModel c t₀ w s v| ≤ (1 + c * ∑' k, w k) * primeSquareMass := by
+  rw [tsum_defectPattern_primes hd c t₀ hv]
   set Q : ℕ → ℂ := fun k => cosPrimeSeries t₀ (v + s k)
   set M := ∑' p : Nat.Primes, ((p : ℕ) : ℝ) ^ (-v.re)
   have hvk : ∀ k, 1 < (v + s k).re := fun k => by simp; linarith [hd.pos k]
@@ -250,7 +259,7 @@ theorem abs_log_norm_defectSeries_sub_le (hd : AdmissibleDefect w s) {c : ℝ} (
   have hre : (c * ∑' k, (w k : ℂ) * Q k).re = c * ∑' k, w k * (Q k).re := by
     rw [Complex.re_ofReal_mul, Complex.re_tsum hQs]
     simp only [Complex.re_ofReal_mul]
-  rw [Complex.sub_re, hre, ← primeSquareMass] at hF
+  rw [Complex.sub_re, hre]
   set Zk : ℕ → ℝ := fun k => Real.log ‖riemannZeta (v + s k - t₀ * I)‖ +
     Real.log ‖riemannZeta (v + s k + t₀ * I)‖
   have hQZ : ∀ k, |(Q k).re - Zk k / 2| ≤ primeSquareMass := fun k =>
@@ -264,13 +273,33 @@ theorem abs_log_norm_defectSeries_sub_le (hd : AdmissibleDefect w s) {c : ℝ} (
   have h0 := abs_re_cosPrimeSeries_sub_le t₀ hv
   have hcs := mul_le_mul_of_nonneg_left hsum hc
   rw [← abs_of_nonneg hc, ← abs_mul, abs_of_nonneg hc] at hcs
-  have hS : 0 ≤ primeSquareMass := tsum_nonneg fun p => Real.rpow_nonneg (Nat.cast_nonneg _) _
   simp only [defectLogModel]
-  set Lf := Real.log ‖∑' n : ℕ, (defectPattern c t₀ w s n : ℂ) * ((n : ℝ) : ℂ) ^ (-v)‖
   set A := ∑' k, w k * (Q k).re
   set Bz := ∑' k, w k * Zk k
-  rw [abs_le] at hF h0 hcs ⊢
-  constructor <;> nlinarith [hF.1, hF.2, h0.1, h0.2, hcs.1, hcs.2]
+  rw [abs_le] at h0 hcs ⊢
+  constructor <;> nlinarith [h0.1, h0.2, hcs.1, hcs.2]
+
+/-- **The Euler comparison for the defect pattern.** On `Re v > 1`,
+`|log|F(v)| − D(v)| ≤ (2 + cW) S` with `S = Σ_p p^{-2}`. -/
+theorem abs_log_norm_defectSeries_sub_le (hd : AdmissibleDefect w s) {c : ℝ} (hc : 0 ≤ c)
+    (hcW : c * ∑' k, w k ≤ 2) (t₀ : ℝ) {v : ℂ} (hv : 1 < v.re) :
+    |Real.log ‖∑' n : ℕ, (defectPattern c t₀ w s n : ℂ) * ((n : ℝ) : ℂ) ^ (-v)‖ -
+      defectLogModel c t₀ w s v| ≤ (2 + c * ∑' k, w k) * primeSquareMass := by
+  have hF := abs_log_norm_tsum_sub_re_le (cweightedPatternHom (defectPattern c t₀ w s) v) hv
+    fun n => by
+      simp only [cweightedPatternHom, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, norm_mul,
+        Complex.norm_real, Real.norm_eq_abs, Complex.ofReal_natCast]
+      exact mul_le_of_le_one_left (norm_nonneg _) (abs_defectPattern_le hd hc hcW t₀ n)
+  have hFn : ∑' n, cweightedPatternHom (defectPattern c t₀ w s) v n =
+      ∑' n : ℕ, (defectPattern c t₀ w s n : ℂ) * ((n : ℝ) : ℂ) ^ (-v) := tsum_congr fun n => rfl
+  rw [hFn, ← primeSquareMass] at hF
+  have hR := abs_re_primeSum_defectPattern_sub_le hd hc t₀ hv
+  have := abs_add_le (Real.log ‖∑' n : ℕ, (defectPattern c t₀ w s n : ℂ) * ((n : ℝ) : ℂ) ^ (-v)‖ -
+    (∑' p : Nat.Primes, cweightedPatternHom (defectPattern c t₀ w s) v p).re)
+    ((∑' p : Nat.Primes, cweightedPatternHom (defectPattern c t₀ w s) v p).re -
+      defectLogModel c t₀ w s v)
+  rw [sub_add_sub_cancel] at this
+  linarith
 
 /-! ### The defect profile -/
 
@@ -759,17 +788,16 @@ theorem log_two_mul_pow_le {y : ℝ} (hy : 1 ≤ y) :
         norm_num
     _ ≤ 2 * 108 ^ 27 * y ^ (1 / 4 : ℝ) := by nlinarith
 
-/-- **The large-height bound.** `|F(v)| ≤ C (Im v)^{1/4}` on `1 < Re v ≤ 3/2`, `Im v ≥ t₀ + 9`. -/
-theorem exists_norm_defectSeries_le_large (hd : AdmissibleDefect w s) {c t₀ : ℝ} (hc : 0 ≤ c)
-    (hcW : c * ∑' k, w k ≤ 2) (ht₀ : 0 < t₀) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ v : ℂ, 1 < v.re → v.re ≤ 3 / 2 → t₀ + 9 ≤ v.im →
-      ‖∑' n : ℕ, (defectPattern c t₀ w s n : ℂ) * ((n : ℝ) : ℂ) ^ (-v)‖ ≤
-        C * v.im ^ (1 / 4 : ℝ) := by
+/-- **The model at large heights.** `|D(v)| ≤ 27 log log(2 Im v) + C₁` on `1 < Re v ≤ 3/2`,
+`Im v ≥ t₀ + 9`, from `|log|ζ(σ + it)|| ≤ 9 log log|t| + C`. -/
+theorem exists_abs_defectLogModel_le_large (hd : AdmissibleDefect w s) {c t₀ : ℝ} (hc : 0 ≤ c)
+    (hcW : c * ∑' k, w k ≤ 2) (ht₀ : 0 ≤ t₀) :
+    ∃ C₁ : ℝ, 0 ≤ C₁ ∧ ∀ v : ℂ, 1 < v.re → v.re ≤ 3 / 2 → t₀ + 9 ≤ v.im →
+      |defectLogModel c t₀ w s v| ≤ 27 * Real.log (Real.log (2 * v.im)) + C₁ := by
   obtain ⟨C₀, hC₀⟩ := RHTower.exists_norm_zetaEulerLog_le_large
   set W := ∑' k, w k
   have hW : 0 ≤ W := tsum_nonneg hd.nonneg
-  set K : ℝ := Real.exp (3 * |C₀| + 4 * primeSquareMass)
-  refine ⟨K * (2 * 108 ^ 27), by positivity, fun v hv hv2 hvy => ?_⟩
+  refine ⟨3 * |C₀|, by positivity, fun v hv hv2 hvy => ?_⟩
   set y := v.im
   have hy : 9 ≤ y := by linarith
   have hlog2y : 1 < Real.log (2 * y) := by
@@ -778,7 +806,6 @@ theorem exists_norm_defectSeries_le_large (hd : AdmissibleDefect w s) {c t₀ : 
   have hΛ0 : 0 ≤ Real.log (Real.log (2 * y)) := Real.log_nonneg hlog2y.le
   set Λy : ℝ := 9 * Real.log (Real.log (2 * y)) + |C₀|
   have hΛy : 0 ≤ Λy := by positivity
-  -- every `ζ` value in the model is bounded by `Λy`
   have hZ : ∀ v' : ℂ, 1 < v'.re → v'.re ≤ 2 → 9 ≤ v'.im → v'.im ≤ 2 * y →
       |Real.log ‖riemannZeta v'‖| ≤ Λy := by
     intro v' h1 h2 h9 h2y
@@ -805,47 +832,87 @@ theorem exists_norm_defectSeries_le_large (hd : AdmissibleDefect w s) {c t₀ : 
   have hsum := abs_tsum_mul_sub_tsum_mul_le hd (b := fun _ => (0 : ℝ)) (B := 0)
     (fun _ => by simp) hZk
   simp only [mul_zero, tsum_zero, sub_zero] at hsum
-  have hE := abs_log_norm_defectSeries_sub_le hd hc hcW t₀ hv
-  have hS : 0 ≤ primeSquareMass := tsum_nonneg fun p => Real.rpow_nonneg (Nat.cast_nonneg _) _
-  set F := ‖∑' n : ℕ, (defectPattern c t₀ w s n : ℂ) * ((n : ℝ) : ℂ) ^ (-v)‖
-  have hF0 : 0 < F := norm_pos_iff.mpr (defectSeries_ne_zero hd hc hcW t₀ hv)
-  -- `log F ≤ (1 + cW) Λy + (2 + cW) S ≤ 3 Λy + 4 S`
-  have hlogF : Real.log F ≤ 27 * Real.log (Real.log (2 * y)) + (3 * |C₀| + 4 * primeSquareMass) := by
-    simp only [defectLogModel] at hE
-    have hcs := mul_le_mul_of_nonneg_left hsum (by positivity : (0 : ℝ) ≤ c / 2)
-    rw [← abs_of_nonneg (by positivity : (0 : ℝ) ≤ c / 2), ← abs_mul,
-      abs_of_nonneg (by positivity : (0 : ℝ) ≤ c / 2)] at hcs
-    have hcW' : c / 2 * (W * (2 * Λy)) ≤ 2 * Λy := by
-      have := mul_le_mul_of_nonneg_right hcW (by positivity : (0 : ℝ) ≤ Λy)
-      nlinarith
-    have hcS : c * W * primeSquareMass ≤ 2 * primeSquareMass := mul_le_mul_of_nonneg_right hcW hS
-    rw [abs_le] at hE hcs hZm hZp
-    nlinarith [hE.1, hE.2, hcs.1, hcs.2, hZm.1, hZm.2, hZp.1, hZp.2]
+  have hcs := mul_le_mul_of_nonneg_left hsum (by positivity : (0 : ℝ) ≤ c / 2)
+  rw [← abs_of_nonneg (by positivity : (0 : ℝ) ≤ c / 2), ← abs_mul,
+    abs_of_nonneg (by positivity : (0 : ℝ) ≤ c / 2)] at hcs
+  have hcW' : c / 2 * (W * (2 * Λy)) ≤ 2 * Λy := by
+    have := mul_le_mul_of_nonneg_right hcW (by positivity : (0 : ℝ) ≤ Λy)
+    nlinarith
+  simp only [defectLogModel]
+  rw [abs_le] at hcs hZm hZp ⊢
+  constructor <;> nlinarith [hcs.1, hcs.2, hZm.1, hZm.2, hZp.1, hZp.2]
+
+/-- `log X ≤ 27 log log(2y) + C` gives `X ≤ e^C · 2 · 108^{27} y^{1/4}` for `y ≥ 9`. -/
+theorem le_mul_rpow_quarter_of_log_le {X y C : ℝ} (hX : 0 < X) (hy : 9 ≤ y)
+    (h : Real.log X ≤ 27 * Real.log (Real.log (2 * y)) + C) :
+    X ≤ Real.exp C * (2 * 108 ^ 27) * y ^ (1 / 4 : ℝ) := by
+  have hlog2y : 1 < Real.log (2 * y) := by
+    rw [Real.lt_log_iff_exp_lt (by linarith)]
+    have := Real.exp_one_lt_d9; linarith
   have hpow : Real.exp (27 * Real.log (Real.log (2 * y))) = Real.log (2 * y) ^ 27 := by
     rw [show (27 : ℝ) * Real.log (Real.log (2 * y)) = Real.log (Real.log (2 * y) ^ 27) by
       rw [Real.log_pow]; push_cast; ring, Real.exp_log (pow_pos (by linarith) 27)]
-  calc F = Real.exp (Real.log F) := (Real.exp_log hF0).symm
-    _ ≤ Real.exp (27 * Real.log (Real.log (2 * y)) + (3 * |C₀| + 4 * primeSquareMass)) :=
-        Real.exp_le_exp.mpr hlogF
-    _ = K * Real.log (2 * y) ^ 27 := by rw [Real.exp_add, hpow, mul_comm]
-    _ ≤ K * (2 * 108 ^ 27 * y ^ (1 / 4 : ℝ)) :=
+  calc X = Real.exp (Real.log X) := (Real.exp_log hX).symm
+    _ ≤ Real.exp (27 * Real.log (Real.log (2 * y)) + C) := Real.exp_le_exp.mpr h
+    _ = Real.exp C * Real.log (2 * y) ^ 27 := by rw [Real.exp_add, hpow, mul_comm]
+    _ ≤ Real.exp C * (2 * 108 ^ 27 * y ^ (1 / 4 : ℝ)) :=
         mul_le_mul_of_nonneg_left (log_two_mul_pow_le (by linarith)) (Real.exp_pos _).le
-    _ = K * (2 * 108 ^ 27) * y ^ (1 / 4 : ℝ) := by ring
+    _ = Real.exp C * (2 * 108 ^ 27) * y ^ (1 / 4 : ℝ) := by ring
+
+/-- **The large-height bound.** `|F(v)| ≤ C (Im v)^{1/4}` on `1 < Re v ≤ 3/2`, `Im v ≥ t₀ + 9`. -/
+theorem exists_norm_defectSeries_le_large (hd : AdmissibleDefect w s) {c t₀ : ℝ} (hc : 0 ≤ c)
+    (hcW : c * ∑' k, w k ≤ 2) (ht₀ : 0 ≤ t₀) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v : ℂ, 1 < v.re → v.re ≤ 3 / 2 → t₀ + 9 ≤ v.im →
+      ‖∑' n : ℕ, (defectPattern c t₀ w s n : ℂ) * ((n : ℝ) : ℂ) ^ (-v)‖ ≤
+        C * v.im ^ (1 / 4 : ℝ) := by
+  obtain ⟨C₁, hC₁, hD⟩ := exists_abs_defectLogModel_le_large hd hc hcW ht₀
+  have hS : 0 ≤ primeSquareMass := tsum_nonneg fun p => Real.rpow_nonneg (Nat.cast_nonneg _) _
+  set E : ℝ := C₁ + 4 * primeSquareMass
+  refine ⟨Real.exp E * (2 * 108 ^ 27), by positivity, fun v hv hv2 hvy => ?_⟩
+  have hE := abs_log_norm_defectSeries_sub_le hd hc hcW t₀ hv
+  have hcS : c * (∑' k, w k) * primeSquareMass ≤ 2 * primeSquareMass :=
+    mul_le_mul_of_nonneg_right hcW hS
+  have hDv := hD v hv hv2 hvy
+  refine le_mul_rpow_quarter_of_log_le (norm_pos_iff.mpr (defectSeries_ne_zero hd hc hcW t₀ hv))
+    (by linarith) ?_
+  rw [abs_le] at hE hDv
+  simp only [E]
+  nlinarith [hE.2, hDv.2]
 
 /-! ### Payment -/
 
-/-- **An integrable Dini density pays the receiver.** -/
-theorem receiverBounded_defectWeight_of_integrableOn (hd : AdmissibleDefect w s) {c t₀ : ℝ}
-    (hc : 0 ≤ c) (hcW : c * ∑' k, w k ≤ 2) (ht₀ : 0 < t₀)
-    (hI : IntegrableOn (diniDensity c w s) (Ioc 0 1)) :
-    ReceiverBounded (defectWeight c t₀ w s) := by
+/-- The box estimate of the abstract Dini law: near the height `t₀`, on `1 < Re v ≤ 3/2`,
+`0 ≤ Im v ≤ t₀ + 11`, `log|F(v)|` is `½ log(1/ρ) − (c/2) Λ(ρ)` up to `B`, `ρ = (Re v − 1) + |Im v − t₀|`. -/
+def DiniBox (f : ℕ →*₀ ℝ) (c t₀ : ℝ) (w s : ℕ → ℝ) (B : ℝ) : Prop :=
+  ∀ v : ℂ, 1 < v.re → v.re ≤ 3 / 2 → 0 ≤ v.im → v.im ≤ t₀ + 11 →
+    |Real.log ‖∑' n : ℕ, (f n : ℂ) * ((n : ℝ) : ℂ) ^ (-v)‖ -
+      (1 / 2 * Real.log (v.re - 1 + |v.im - t₀|)⁻¹ -
+        c / 2 * defectProfile w s (v.re - 1 + |v.im - t₀|))| ≤ B
+
+/-- The large-height bound of the abstract Dini law: `|F(v)| ≤ C (Im v)^{1/4}` above `t₀ + 9`. -/
+def DiniLarge (f : ℕ →*₀ ℝ) (t₀ C : ℝ) : Prop :=
+  ∀ v : ℂ, 1 < v.re → v.re ≤ 3 / 2 → t₀ + 9 ≤ v.im →
+    ‖∑' n : ℕ, (f n : ℂ) * ((n : ℝ) : ℂ) ^ (-v)‖ ≤ C * v.im ^ (1 / 4 : ℝ)
+
+/-- **An integrable Dini density pays the receiver** of every completely multiplicative `|f| ≤ 1`
+with a Dini box at `t₀ ≥ 0` and the large-height bound. -/
+theorem receiverBounded_half_of_integrableOn (hd : AdmissibleDefect w s) {c t₀ B Cl : ℝ}
+    (hc : 0 ≤ c) (hcW : c * ∑' k, w k ≤ 2) (ht₀ : 0 ≤ t₀) {f : ℕ →*₀ ℝ}
+    (hf : ∀ p : ℕ, p.Prime → |f p| ≤ 1) (hB : DiniBox f c t₀ w s B)
+    (hCl : DiniLarge f t₀ Cl) (hI : IntegrableOn (diniDensity c w s) (Ioc 0 1)) :
+    ReceiverBounded (dampedSignWeight ⇑f (1 / 2)) := by
   set T : ℝ := t₀ + 11
   have hT : 2 ≤ T := by simp only [T]; linarith
-  obtain ⟨B, hB⟩ := exists_abs_log_norm_defectSeries_sub_profile_le hd hc hcW ht₀
-    (show 0 ≤ T by linarith)
-  obtain ⟨Cl, hCl0, hCl⟩ := exists_norm_defectSeries_le_large hd hc hcW ht₀
   obtain ⟨Z₀, hZ₀, hZ⟩ := exists_norm_zeta_le_on_tall_box T
-  set cw := defectWeight c t₀ w s
+  set cw := dampedSignWeight ⇑f (1 / 2)
+  have hWS : ∀ z, weightDirichletSeries cw z =
+      ∑' n : ℕ, (f n : ℂ) * ((n : ℝ) : ℂ) ^ (-(z + 1 / 2)) := fun z =>
+    weightDirichletSeries_pattern f z
+  have hcd : DampedClass 1 (1 / 2) cw := fun d => by
+    simp only [cw, dampedSignWeight]
+    rw [one_mul, abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg d) _)]
+    exact mul_le_of_le_one_left (Real.rpow_nonneg (Nat.cast_nonneg d) _)
+      (abs_patternHom_le_one f hf d)
   set P : ℝ := ∑' d : ℕ, cw d / d
   set A : ℝ := 32 * Z₀ ^ 2 * Real.exp (2 * B)
   set A' : ℝ := 8 * Z₀ ^ 2 * P ^ 2
@@ -865,14 +932,14 @@ theorem receiverBounded_defectWeight_of_integrableOn (hd : AdmissibleDefect w s)
   have hwim : ∀ σ y : ℝ, ((σ : ℂ) + y * I + 1 / 2).im = y := fun σ y => by simp
   -- `|F(v)|² ≤ e^{2B} h(ρ)` on the box
   have hFsq : ∀ σ y : ℝ, 1 / 2 < σ → σ < 3 / 4 → 0 < y → y ≤ T →
-      ‖∑' n : ℕ, (defectPattern c t₀ w s n : ℂ) * ((n : ℝ) : ℂ) ^ (-((σ : ℂ) + y * I + 1 / 2))‖ ^ 2
+      ‖∑' n : ℕ, (f n : ℂ) * ((n : ℝ) : ℂ) ^ (-((σ : ℂ) + y * I + 1 / 2))‖ ^ 2
         ≤ Real.exp (2 * B) * diniDensity c w s (σ - 1 / 2 + |y - t₀|) := by
     intro σ y hσ hσ' hy hyT
     have hb := hB ((σ : ℂ) + y * I + 1 / 2) (by rw [hwre]; linarith) (by rw [hwre]; linarith)
       (by rw [hwim]; linarith) (by rw [hwim]; exact hyT)
     rw [hwre, hwim, show σ + 1 / 2 - 1 = σ - 1 / 2 by ring] at hb
     exact sq_le_exp_mul_diniDensity
-      (norm_pos_iff.mpr (defectSeries_ne_zero hd hc hcW t₀ (by rw [hwre]; linarith)))
+      (norm_pos_iff.mpr (patternSeries_ne_zero hf (by rw [hwre]; linarith)))
       (by positivity) (abs_le.mp hb).2
   -- `h(ρ) ≤ 4 (ind + H)`
   have hdens : ∀ σ y : ℝ, 1 / 2 < σ → σ < 3 / 4 →
@@ -900,16 +967,16 @@ theorem receiverBounded_defectWeight_of_integrableOn (hd : AdmissibleDefect w s)
     intro σ y hσ hσ' hy hyT
     have hF := (hFsq σ y hσ hσ' hy hyT).trans
       (mul_le_mul_of_nonneg_left (hdens σ y hσ hσ') (Real.exp_pos _).le)
-    set Fn := ‖∑' n : ℕ, (defectPattern c t₀ w s n : ℂ) *
+    set Fn := ‖∑' n : ℕ, (f n : ℂ) *
       ((n : ℝ) : ℂ) ^ (-((σ : ℂ) + y * I + 1 / 2))‖
     have hC : ‖weightDirichletSeries cw ((σ : ℂ) + y * I) - (P : ℂ)‖ ≤ Fn + |P| := by
-      rw [weightDirichletSeries_defectWeight]
+      rw [hWS]
       exact (norm_sub_le _ _).trans (by rw [Complex.norm_real, Real.norm_eq_abs])
     have hsq : ‖weightDirichletSeries cw ((σ : ℂ) + y * I) - (P : ℂ)‖ ^ 2 ≤
         2 * Fn ^ 2 + 2 * P ^ 2 := by
       have h := pow_le_pow_left₀ (norm_nonneg _) hC 2
       nlinarith [sq_nonneg (Fn - |P|), sq_abs P, norm_nonneg (∑' n : ℕ,
-        (defectPattern c t₀ w s n : ℂ) * ((n : ℝ) : ℂ) ^ (-((σ : ℂ) + y * I + 1 / 2)))]
+        (f n : ℂ) * ((n : ℝ) : ℂ) ^ (-((σ : ℂ) + y * I + 1 / 2)))]
     have hζ2 : ‖riemannZeta ((σ : ℂ) + y * I)‖ ^ 2 ≤ Z₀ ^ 2 :=
       pow_le_pow_left₀ (norm_nonneg _) (hZ σ y hσ.le hσ'.le (by rw [abs_of_pos hy]; exact hyT)) 2
     have hsn : σ ≤ ‖(σ : ℂ) + y * I‖ := by
@@ -966,7 +1033,7 @@ theorem receiverBounded_defectWeight_of_integrableOn (hd : AdmissibleDefect w s)
   have hlarge : ∀ σ y : ℝ, 1 / 2 < σ → σ < 3 / 4 → T < y →
       ‖weightDirichletSeries cw ((σ : ℂ) + y * I) - (P : ℂ)‖ ≤ (Cl + |P|) * y ^ (1 / 4 : ℝ) := by
     intro σ y hσ hσ' hy
-    rw [weightDirichletSeries_defectWeight]
+    rw [hWS]
     refine (norm_sub_le _ _).trans ?_
     have h := hCl ((σ : ℂ) + y * I + 1 / 2) (by rw [hwre]; linarith) (by rw [hwre]; linarith)
       (by rw [hwim]; simp only [T] at hy; linarith)
@@ -976,23 +1043,29 @@ theorem receiverBounded_defectWeight_of_integrableOn (hd : AdmissibleDefect w s)
     nlinarith [abs_nonneg P]
   obtain ⟨M, hM⟩ := exists_lineEnergy_le_of_majorant_family hT hgI hgG hsmall hlarge
   exact ⟨3 * M / (4 * Real.pi),
-    weightPronicEnergy_le_of_lineEnergy_le (dampedClass_defectWeight hd hc hcW t₀) hM⟩
+    weightPronicEnergy_le_of_lineEnergy_le hcd hM⟩
 
 /-- **A critical zero pays the receiver**, whatever the defect. -/
-theorem receiverBounded_defectWeight_of_zero (hd : AdmissibleDefect w s) {c t₀ : ℝ}
-    (hc : 0 ≤ c) (hcW : c * ∑' k, w k ≤ 2) (ht₀ : 0 < t₀)
-    (hz : riemannZeta (1 / 2 + t₀ * I) = 0) :
-    ReceiverBounded (defectWeight c t₀ w s) := by
+theorem receiverBounded_half_of_zero (hd : AdmissibleDefect w s) {c t₀ B Cl : ℝ}
+    (hc : 0 ≤ c) (hcW : c * ∑' k, w k ≤ 2) (ht₀ : 0 ≤ t₀) {f : ℕ →*₀ ℝ}
+    (hf : ∀ p : ℕ, p.Prime → |f p| ≤ 1) (hB : DiniBox f c t₀ w s B)
+    (hCl : DiniLarge f t₀ Cl) (hz : riemannZeta (1 / 2 + t₀ * I) = 0) :
+    ReceiverBounded (dampedSignWeight ⇑f (1 / 2)) := by
   have hs₀1 : (1 / 2 + t₀ * I : ℂ) ≠ 1 := by
     intro h; have := congrArg Complex.re h; norm_num at this
   obtain ⟨rL, L, hrL, hL, hLip⟩ := exists_norm_zeta_sub_le hs₀1
   set T : ℝ := t₀ + 11
   have hT : 2 ≤ T := by simp only [T]; linarith
-  obtain ⟨B, hB⟩ := exists_abs_log_norm_defectSeries_sub_profile_le hd hc hcW ht₀
-    (show 0 ≤ T by linarith)
-  obtain ⟨Cl, hCl0, hCl⟩ := exists_norm_defectSeries_le_large hd hc hcW ht₀
   obtain ⟨Z₀, hZ₀, hZ⟩ := exists_norm_zeta_le_on_tall_box T
-  set cw := defectWeight c t₀ w s
+  set cw := dampedSignWeight ⇑f (1 / 2)
+  have hWS : ∀ z, weightDirichletSeries cw z =
+      ∑' n : ℕ, (f n : ℂ) * ((n : ℝ) : ℂ) ^ (-(z + 1 / 2)) := fun z =>
+    weightDirichletSeries_pattern f z
+  have hcd : DampedClass 1 (1 / 2) cw := fun d => by
+    simp only [cw, dampedSignWeight]
+    rw [one_mul, abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg d) _)]
+    exact mul_le_of_le_one_left (Real.rpow_nonneg (Nat.cast_nonneg d) _)
+      (abs_patternHom_le_one f hf d)
   set P : ℝ := ∑' d : ℕ, cw d / d
   set r' : ℝ := min rL (1 / 2)
   have hr' : 0 < r' := lt_min hrL (by norm_num)
@@ -1017,11 +1090,11 @@ theorem receiverBounded_defectWeight_of_zero (hd : AdmissibleDefect w s) {c t₀
     have hb := hB ((σ : ℂ) + y * I + 1 / 2) (by rw [hwre]; linarith) (by rw [hwre]; linarith)
       (by rw [hwim]; linarith) (by rw [hwim]; exact hyT)
     rw [hwre, hwim, show σ + 1 / 2 - 1 = σ - 1 / 2 by ring] at hb
-    set Fn := ‖∑' n : ℕ, (defectPattern c t₀ w s n : ℂ) *
+    set Fn := ‖∑' n : ℕ, (f n : ℂ) *
       ((n : ℝ) : ℂ) ^ (-((σ : ℂ) + y * I + 1 / 2))‖
     have hF : Fn ^ 2 ≤ E2 * diniDensity c w s ρ :=
       sq_le_exp_mul_diniDensity
-        (norm_pos_iff.mpr (defectSeries_ne_zero hd hc hcW t₀ (by rw [hwre]; linarith)))
+        (norm_pos_iff.mpr (patternSeries_ne_zero hf (by rw [hwre]; linarith)))
         hρ (abs_le.mp hb).2
     have hζZ : ‖riemannZeta ((σ : ℂ) + y * I)‖ ≤ Z₀ :=
       hZ σ y hσ.le hσ'.le (by rw [abs_of_pos hy]; exact hyT)
@@ -1055,13 +1128,13 @@ theorem receiverBounded_defectWeight_of_zero (hd : AdmissibleDefect w s) {c t₀
                 (sq_nonneg _) (sq_nonneg _)
           _ ≤ K₁ := le_max_right _ _
     have hC : ‖weightDirichletSeries cw ((σ : ℂ) + y * I) - (P : ℂ)‖ ≤ Fn + |P| := by
-      rw [weightDirichletSeries_defectWeight]
+      rw [hWS]
       exact (norm_sub_le _ _).trans (by rw [Complex.norm_real, Real.norm_eq_abs])
     have hsq : ‖weightDirichletSeries cw ((σ : ℂ) + y * I) - (P : ℂ)‖ ^ 2 ≤
         2 * Fn ^ 2 + 2 * P ^ 2 := by
       have h := pow_le_pow_left₀ (norm_nonneg _) hC 2
       nlinarith [sq_nonneg (Fn - |P|), sq_abs P, norm_nonneg (∑' n : ℕ,
-        (defectPattern c t₀ w s n : ℂ) * ((n : ℝ) : ℂ) ^ (-((σ : ℂ) + y * I + 1 / 2)))]
+        (f n : ℂ) * ((n : ℝ) : ℂ) ^ (-((σ : ℂ) + y * I + 1 / 2)))]
     have hsn : σ ≤ ‖(σ : ℂ) + y * I‖ := by
       have := Complex.abs_re_le_norm ((σ : ℂ) + y * I)
       simp only [add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im, mul_one, sub_self,
@@ -1085,7 +1158,7 @@ theorem receiverBounded_defectWeight_of_zero (hd : AdmissibleDefect w s) {c t₀
   have hlarge : ∀ σ y : ℝ, 1 / 2 < σ → σ < 3 / 4 → T < y →
       ‖weightDirichletSeries cw ((σ : ℂ) + y * I) - (P : ℂ)‖ ≤ (Cl + |P|) * y ^ (1 / 4 : ℝ) := by
     intro σ y hσ hσ' hy
-    rw [weightDirichletSeries_defectWeight]
+    rw [hWS]
     refine (norm_sub_le _ _).trans ?_
     have h := hCl ((σ : ℂ) + y * I + 1 / 2) (by rw [hwre]; linarith) (by rw [hwre]; linarith)
       (by rw [hwim]; simp only [T] at hy; linarith)
@@ -1097,26 +1170,32 @@ theorem receiverBounded_defectWeight_of_zero (hd : AdmissibleDefect w s) {c t₀
     (intervalIntegrable_iff_integrableOn_Ioc_of_le (by linarith)).mp intervalIntegrable_const
   obtain ⟨M, hM⟩ := exists_lineEnergy_le_of_majorant (g := fun _ : ℝ => A) hT hg hsmall hlarge
   exact ⟨3 * M / (4 * Real.pi),
-    weightPronicEnergy_le_of_lineEnergy_le (dampedClass_defectWeight hd hc hcW t₀) hM⟩
+    weightPronicEnergy_le_of_lineEnergy_le hcd hM⟩
 
 /-! ### The obstruction -/
 
 /-- **A paid receiver forces an integrable Dini density** when `ζ(1/2 + it₀) ≠ 0`: on the segment
 `t₀ ≤ t ≤ t₀ + r` the line integrand at `σ = 1/2 + u` is `≥ κ h(u + τ) − C'`, so the line energy
 `≤ 4πE` bounds `∫_u^r h` uniformly in `u`. -/
-theorem integrableOn_diniDensity_of_receiverBounded (hd : AdmissibleDefect w s) {c t₀ : ℝ}
-    (hc : 0 ≤ c) (hcW : c * ∑' k, w k ≤ 2) (ht₀ : 0 < t₀)
-    (hz : riemannZeta (1 / 2 + t₀ * I) ≠ 0) (hR : ReceiverBounded (defectWeight c t₀ w s)) :
+theorem integrableOn_diniDensity_of_receiverBounded_half (hd : AdmissibleDefect w s)
+    {c t₀ B : ℝ} (hc : 0 ≤ c) (hcW : c * ∑' k, w k ≤ 2) (ht₀ : 0 ≤ t₀) {f : ℕ →*₀ ℝ}
+    (hf : ∀ p : ℕ, p.Prime → |f p| ≤ 1) (hB : DiniBox f c t₀ w s B)
+    (hz : riemannZeta (1 / 2 + t₀ * I) ≠ 0) (hR : ReceiverBounded (dampedSignWeight ⇑f (1 / 2))) :
     IntegrableOn (diniDensity c w s) (Ioc 0 1) := by
   obtain ⟨E, hE⟩ := hR
-  set cw := defectWeight c t₀ w s
-  have hcd : DampedClass 1 (1 / 2) cw := dampedClass_defectWeight hd hc hcW t₀
+  set cw := dampedSignWeight ⇑f (1 / 2)
+  have hWS : ∀ z, weightDirichletSeries cw z =
+      ∑' n : ℕ, (f n : ℂ) * ((n : ℝ) : ℂ) ^ (-(z + 1 / 2)) := fun z =>
+    weightDirichletSeries_pattern f z
+  have hcd : DampedClass 1 (1 / 2) cw := fun d => by
+    simp only [cw, dampedSignWeight]
+    rw [one_mul, abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg d) _)]
+    exact mul_le_of_le_one_left (Real.rpow_nonneg (Nat.cast_nonneg d) _)
+      (abs_patternHom_le_one f hf d)
   set m : ℝ := ∑' d : ℕ, cw d / d
   have hs₀1 : (1 / 2 + (t₀ : ℂ) * I : ℂ) ≠ 1 := by
     intro h; have := congrArg Complex.re h; norm_num at this
   obtain ⟨r₀, hr₀, hζ0⟩ := exists_norm_zeta_gt_near hs₀1 hz
-  obtain ⟨B, hB⟩ := exists_abs_log_norm_defectSeries_sub_profile_le hd hc hcW ht₀ (T := t₀ + 1)
-    (by linarith)
   have hc₀ : 0 < ‖riemannZeta (1 / 2 + (t₀ : ℂ) * I)‖ := norm_pos_iff.mpr hz
   set r : ℝ := min (r₀ / 4) (1 / 4)
   have hr : 0 < r := lt_min (by positivity) (by norm_num)
@@ -1159,16 +1238,16 @@ theorem integrableOn_diniDensity_of_receiverBounded (hd : AdmissibleDefect w s) 
     have hρ : v.re - 1 + |v.im - t₀| = u + τ := by
       rw [hvre, hvim, show t₀ + τ - t₀ = τ by ring, abs_of_nonneg hτ]; ring
     rw [hρ] at hb
-    set Pn := ‖∑' n : ℕ, (defectPattern c t₀ w s n : ℂ) * ((n : ℝ) : ℂ) ^ (-v)‖
+    set Pn := ‖∑' n : ℕ, (f n : ℂ) * ((n : ℝ) : ℂ) ^ (-v)‖
     have hPn0 : 0 < Pn :=
-      norm_pos_iff.mpr (defectSeries_ne_zero hd hc hcW t₀ (by rw [hvre]; linarith))
+      norm_pos_iff.mpr (patternSeries_ne_zero hf (by rw [hvre]; linarith))
     have hP2 : Real.exp (-(2 * B)) * diniDensity c w s (u + τ) ≤ Pn ^ 2 :=
       exp_mul_diniDensity_le_sq hPn0 hut (abs_le.mp hb).1
     set Y := ‖weightDirichletSeries cw s' - (m : ℂ)‖
     have hPY : Pn ≤ Y + |m| := by
       have h := norm_sub_norm_le (weightDirichletSeries cw s') (m : ℂ)
       have hW : ‖weightDirichletSeries cw s'‖ = Pn := by
-        rw [weightDirichletSeries_defectWeight, hw_eq]
+        rw [hWS, hw_eq]
       rw [hW, Complex.norm_real, Real.norm_eq_abs] at h
       linarith
     have hY0 : 0 ≤ Y := norm_nonneg _
@@ -1272,6 +1351,32 @@ theorem integrableOn_diniDensity_of_receiverBounded (hd : AdmissibleDefect w s) 
 
 /-! ### The phase diagram -/
 
+/-- The Dini box and the large-height bound of the defect pattern at `t₀ > 0`. -/
+theorem exists_diniBox_defectPattern (hd : AdmissibleDefect w s) {c t₀ : ℝ} (hc : 0 ≤ c)
+    (hcW : c * ∑' k, w k ≤ 2) (ht₀ : 0 < t₀) :
+    ∃ B Cl : ℝ, DiniBox (defectPattern c t₀ w s) c t₀ w s B ∧ 0 ≤ Cl ∧
+      DiniLarge (defectPattern c t₀ w s) t₀ Cl := by
+  obtain ⟨B, hB⟩ := exists_abs_log_norm_defectSeries_sub_profile_le hd hc hcW ht₀ (T := t₀ + 11)
+    (by linarith)
+  obtain ⟨Cl, hCl0, hCl⟩ := exists_norm_defectSeries_le_large hd hc hcW ht₀.le
+  exact ⟨B, Cl, hB, hCl0, hCl⟩
+
+/-- **The abstract Dini law.** A completely multiplicative `|f| ≤ 1` with a Dini box at `t₀ ≥ 0`
+and the large-height bound has a paid half-damped receiver iff the Dini density is integrable on
+`(0, 1]` or `ζ(1/2 + it₀) = 0`. -/
+theorem receiverBounded_half_iff_of_diniBox (hd : AdmissibleDefect w s) {c t₀ B Cl : ℝ}
+    (hc : 0 ≤ c) (hcW : c * ∑' k, w k ≤ 2) (ht₀ : 0 ≤ t₀) {f : ℕ →*₀ ℝ}
+    (hf : ∀ p : ℕ, p.Prime → |f p| ≤ 1) (hB : DiniBox f c t₀ w s B)
+    (hCl : DiniLarge f t₀ Cl) :
+    ReceiverBounded (dampedSignWeight ⇑f (1 / 2)) ↔
+      IntegrableOn (diniDensity c w s) (Ioc 0 1) ∨ riemannZeta (1 / 2 + t₀ * I) = 0 := by
+  refine ⟨fun h => ?_, fun h => h.elim
+    (receiverBounded_half_of_integrableOn hd hc hcW ht₀ hf hB hCl)
+    (receiverBounded_half_of_zero hd hc hcW ht₀ hf hB hCl)⟩
+  by_cases hz : riemannZeta (1 / 2 + t₀ * I) = 0
+  · exact Or.inr hz
+  · exact Or.inl (integrableOn_diniDensity_of_receiverBounded_half hd hc hcW ht₀ hf hB hz h)
+
 /-- **The Dini law of completely monotone amplitude defects.** For admissible defect data,
 `c ≥ 0` with `cW ≤ 2` and `t₀ > 0`, the half-damped weight of
 `f(p) = (1 − c Σ_k w_k p^{-s_k}) cos(t₀ log p)` has bounded receiver if and only if the Dini density
@@ -1280,11 +1385,9 @@ theorem receiverBounded_defectWeight_iff (hd : AdmissibleDefect w s) {c t₀ : �
     (hcW : c * ∑' k, w k ≤ 2) (ht₀ : 0 < t₀) :
     ReceiverBounded (defectWeight c t₀ w s) ↔
       IntegrableOn (diniDensity c w s) (Ioc 0 1) ∨ riemannZeta (1 / 2 + t₀ * I) = 0 := by
-  refine ⟨fun h => ?_, fun h => h.elim (receiverBounded_defectWeight_of_integrableOn hd hc hcW ht₀)
-    (receiverBounded_defectWeight_of_zero hd hc hcW ht₀)⟩
-  by_cases hz : riemannZeta (1 / 2 + t₀ * I) = 0
-  · exact Or.inr hz
-  · exact Or.inl (integrableOn_diniDensity_of_receiverBounded hd hc hcW ht₀ hz h)
+  obtain ⟨B, Cl, hB, -, hCl⟩ := exists_diniBox_defectPattern hd hc hcW ht₀
+  exact receiverBounded_half_iff_of_diniBox hd hc hcW ht₀.le
+    (fun p _ => abs_defectPattern_le hd hc hcW t₀ p) hB hCl
 
 end
 

@@ -362,11 +362,11 @@ spectrum and annihilator hull that Q-III's weighted-white calibration exposes ab
 All of these circle comparisons and radius consequences still require Lean verification.
 
 The full prime-five-supported payment domain is sharpened further in
-`../2-fully-proven/biarithmetic-digital-energy-and-prime-tower-payment.md`: weighted digit moments
+`../1-in-progress/biarithmetic-digital-energy-and-prime-tower-payment.md`: weighted digit moments
 make it an explicit weighted `ell2` condition on coefficient partial sums. At critical damping
 this gives the exact nonclosed domain, beyond a single counterexample.
 The stronger paper calibration in
-`../2-fully-proven/biarithmetic-critical-payment-has-continuum-defect.md` constructs a continuum
+`../1-in-progress/biarithmetic-critical-payment-has-continuum-defect.md` constructs a continuum
 of independent unpaid classes inside its Wiener closure. This closure defect already appears
 in the prime-five subalgebra, whose tangent module is rank one; the distinct index notions
 therefore cannot be interchanged. The source payment criterion and this quotient theorem
@@ -405,7 +405,7 @@ At every continuity point, the digit grid identity gives convergence to `F_a(x/j
 ## Quantitative refinement of the profile argument
 
 The fully proved paper card
-`../2-fully-proven/biarithmetic-digital-profile-bounded-covariance-error.md`
+`../1-in-progress/biarithmetic-digital-profile-bounded-covariance-error.md`
 replaces qualitative profile convergence by the exact refinement
 `H_(M+1)-H_M=C*a^(-M-1)*r`, `0<=r<=4`. It gives global uniform error
 `0<=F-H_M<=4C*a^(-M)/(a-1)`, bounded absolute errors for every strict-regime

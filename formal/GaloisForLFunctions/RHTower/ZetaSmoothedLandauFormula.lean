@@ -11,7 +11,11 @@ Landau test `k(u) = T·w(T(u − log x))` has transform `h_k(z) = x^{iz}·ŵ(z/T
 `Σ_ρ m_ρ x^{ρ − ½} ŵ(γ_ρ/T) = h_k(i/2) + h_k(−i/2) − T w(0) Λ(x)/√x + (Gamma term)`,
 
 with `γ_ρ = (ρ − ½)/i`.  Only `n = x` survives in the prime sum once `T ≥ x + 2`
-(`primeSum_landauTest`), and the pole terms are at most `2e·√x·‖w‖₁` (`norm_pole_landauTest_le`).
+(`primeSum_landauTest`), the pole terms are at most `2e^{1/2}·√x·‖w‖₁` (`norm_pole_landauTest_le`),
+and the Gamma term `∫ h_k(τ) μ(τ) dτ = ∫ ŵ(τ/T) μ(τ) e^{iτ log x} dτ` is `O(√T / log x)`: one
+integration by parts against the phase, with `μ = O(log|τ|)`, `μ' = O(1/|τ|)` from the Stirling facts
+and `ŵ(s), ŵ'(s) = O(1/(1 + s²))` (`exists_gammaTerm_landau_le`).  Together:
+`exists_smoothedLandau_le`.
 -/
 
 open Complex MeasureTheory Real
@@ -618,6 +622,73 @@ lemma landauTest_contDiff_hasCompactSupport (hw : ContDiff ℝ 2 w)
   rw [div_lt_iff₀ hT] at h1
   linarith
 
+/-- **Zero sum against the full prime side.**  For real `x > 1` and `T ≥ 1`, with `k` the Landau
+test at `log x`, `|Σ_ρ m_ρ h_k(γ_ρ) + Σ_n Λ(n)n^{−1/2}(k(log n) + k(−log n))| ≤
+2e^{1/2}‖w‖₁ √x + K √T / log x`: the explicit formula with the pole and Gamma terms bounded. -/
+theorem exists_zeroSum_add_primeSum_le (hw : ContDiff ℝ 2 w) (hsupp : ∀ u, w u ≠ 0 → |u| ≤ 1) :
+    ∃ K : ℝ, ∀ x : ℝ, 1 < x → ∀ T : ℝ, 1 ≤ T →
+      ‖(∑' ρ : zetaZeroConfig.carrier, (zetaZeroConfig.mult ρ : ℂ) *
+          paperFT (landauTest w T (Real.log x)) (gammaOf ρ)) +
+        ∑' n : ℕ, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ) *
+          (landauTest w T (Real.log x) (Real.log n) + landauTest w T (Real.log x) (-Real.log n))‖ ≤
+        2 * Real.exp (1 / 2) * (∫ u, ‖w u‖) * Real.sqrt x + K * Real.sqrt T / Real.log x := by
+  obtain ⟨K, hK⟩ := exists_gammaTerm_landau_le hw hsupp
+  refine ⟨K, fun x hx T hT1 => ?_⟩
+  have hTpos : 0 < T := by linarith
+  have hlog : 0 < Real.log x := Real.log_pos hx
+  have hwi : Integrable w := hw.continuous.integrable_of_hasCompactSupport
+    (hasCompactSupport_of_support_subset_abs hsupp)
+  obtain ⟨hkd, hkc⟩ := landauTest_contDiff_hasCompactSupport hw hsupp hTpos (Real.log x)
+  rw [(Zeta23.WeilEF.EF_lit_zetaZeroConfig _ hkd hkc).2, EF.literatureRHS, EF.gamma_term]
+  set k := landauTest w T (Real.log x)
+  set P := ∑' n : ℕ, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ) *
+    (k (Real.log n) + k (-Real.log n))
+  have hpole : ∀ s : ℂ, |s.im| ≤ 1 / 2 →
+      ‖paperFT k s‖ ≤ Real.exp (1 / 2) * (∫ u, ‖w u‖) * Real.sqrt x := by
+    intro s hs
+    refine (norm_pole_landauTest_le hwi hsupp hTpos hlog.le s hs).trans ?_
+    have hT' : 1 / T ≤ 1 := by rw [div_le_one hTpos]; exact hT1
+    have hsq : Real.sqrt x = Real.exp (Real.log x / 2) := by
+      rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos (by linarith)]; ring_nf
+    rw [hsq, mul_right_comm, ← Real.exp_add]
+    gcongr
+    linarith
+  have hI : |(I / 2 : ℂ).im| ≤ 1 / 2 := by simp [abs_of_pos]
+  have hI' : |(-I / 2 : ℂ).im| ≤ 1 / 2 := by norm_num [abs_div]
+  have hG := hK T hT1 (Real.log x) hlog
+  calc ‖paperFT k (I / 2) + paperFT k (-I / 2) - P + (∫ τ : ℝ, paperFT k τ * (mu τ : ℂ)) + P‖
+      = ‖paperFT k (I / 2) + paperFT k (-I / 2) + ∫ τ : ℝ, paperFT k τ * (mu τ : ℂ)‖ := by ring_nf
+    _ ≤ ‖paperFT k (I / 2)‖ + ‖paperFT k (-I / 2)‖ + ‖∫ τ : ℝ, paperFT k τ * (mu τ : ℂ)‖ :=
+        norm_add₃_le
+    _ ≤ _ := by linarith [hpole _ hI, hpole _ hI']
+
+/-- **Short-interval explicit formula.**  For real `x > 1`, `T ≥ 1` with `T log x > 1`:
+`|Σ_ρ m_ρ x^{ρ − ½} ŵ(γ_ρ/T) + T Σ_n Λ(n) n^{−1/2} w(T log(n/x))| ≤ 2e^{1/2}‖w‖₁ √x + K √T / log x`.
+The prime side counts prime powers in `[x e^{−1/T}, x e^{1/T}]`, at every bandwidth
+`log x / log T`, including beyond `1`. -/
+theorem exists_shortInterval_explicitFormula_le (hw : ContDiff ℝ 2 w)
+    (hsupp : ∀ u, w u ≠ 0 → |u| ≤ 1) :
+    ∃ K : ℝ, ∀ x : ℝ, 1 < x → ∀ T : ℝ, 1 ≤ T → 1 < T * Real.log x →
+      ‖(∑' ρ : zetaZeroConfig.carrier, (zetaZeroConfig.mult ρ : ℂ) *
+          paperFT (landauTest w T (Real.log x)) (gammaOf ρ)) +
+        ∑' n : ℕ, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ) *
+          landauTest w T (Real.log x) (Real.log n)‖ ≤
+        2 * Real.exp (1 / 2) * (∫ u, ‖w u‖) * Real.sqrt x + K * Real.sqrt T / Real.log x := by
+  obtain ⟨K, hK⟩ := exists_zeroSum_add_primeSum_le hw hsupp
+  refine ⟨K, fun x hx T hT1 hTx => ?_⟩
+  have hlog : 0 < Real.log x := Real.log_pos hx
+  -- the reflected points `−log n` never meet the support
+  have hneg : ∀ n : ℕ, landauTest w T (Real.log x) (-Real.log n) = 0 := by
+    intro n
+    apply landauTest_eq_zero hsupp
+    have hn0 : 0 ≤ Real.log n := Real.log_natCast_nonneg n
+    rw [show T * (-Real.log n - Real.log x) = -(T * (Real.log n + Real.log x)) by ring, abs_neg,
+      abs_of_nonneg (by positivity)]
+    nlinarith
+  have h := hK x hx T hT1
+  simp only [hneg, add_zero] at h
+  exact h
+
 /-- **The smoothed Landau formula.**  For a `C²` profile `w` supported in `[−1, 1]` there is `K`
 such that for every integer `x ≥ 2` and every `T ≥ x + 2`, with `k` the Landau test at `log x`,
 `|Σ_ρ m_ρ h_k(γ_ρ) + T w(0) Λ(x)/√x| ≤ 2 e^{1/2} ‖w‖₁ √x + K √T / log x`.
@@ -628,41 +699,11 @@ theorem exists_smoothedLandau_le (hw : ContDiff ℝ 2 w) (hsupp : ∀ u, w u ≠
           paperFT (landauTest w T (Real.log x)) (gammaOf ρ)) +
         ((ArithmeticFunction.vonMangoldt x / Real.sqrt x : ℝ) : ℂ) * ((T : ℂ) * w 0)‖ ≤
         2 * Real.exp (1 / 2) * (∫ u, ‖w u‖) * Real.sqrt x + K * Real.sqrt T / Real.log x := by
-  obtain ⟨K, hK⟩ := exists_gammaTerm_landau_le hw hsupp
+  obtain ⟨K, hK⟩ := exists_zeroSum_add_primeSum_le hw hsupp
   refine ⟨K, fun x hx T hT => ?_⟩
   have hx2 : (2 : ℝ) ≤ x := by exact_mod_cast hx
-  have hTpos : 0 < T := by linarith
-  have hT1 : 1 ≤ T := by linarith
-  have hlog : 0 < Real.log x := Real.log_pos (by linarith)
-  have hwi : Integrable w := hw.continuous.integrable_of_hasCompactSupport
-    (hasCompactSupport_of_support_subset_abs hsupp)
-  obtain ⟨hkd, hkc⟩ := landauTest_contDiff_hasCompactSupport hw hsupp hTpos (Real.log x)
-  have hEF := (Zeta23.WeilEF.EF_lit_zetaZeroConfig _ hkd hkc).2
-  rw [hEF, EF.literatureRHS, EF.gamma_term, primeSum_landauTest hsupp hx hT]
-  -- pole terms
-  have hpole : ∀ s : ℂ, |s.im| ≤ 1 / 2 →
-      ‖paperFT (landauTest w T (Real.log x)) s‖ ≤ Real.exp (1 / 2) * (∫ u, ‖w u‖) * Real.sqrt x := by
-    intro s hs
-    refine (norm_pole_landauTest_le hwi hsupp hTpos hlog.le s hs).trans ?_
-    have hT' : 1 / T ≤ 1 := by rw [div_le_one hTpos]; exact hT1
-    have hsq : Real.sqrt x = Real.exp (Real.log x / 2) := by
-      rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos (by linarith)]; ring_nf
-    rw [hsq, mul_right_comm, ← Real.exp_add]
-    gcongr
-    linarith
-  have hI : |(I / 2 : ℂ).im| ≤ 1 / 2 := by simp [abs_of_pos]
-  have hI' : |(-I / 2 : ℂ).im| ≤ 1 / 2 := by simp [abs_of_pos]
-  have hG := hK T hT1 (Real.log x) hlog
-  calc ‖paperFT (landauTest w T (Real.log x)) (I / 2) + paperFT (landauTest w T (Real.log x)) (-I / 2)
-        - ((ArithmeticFunction.vonMangoldt x / Real.sqrt x : ℝ) : ℂ) * ((T : ℂ) * w 0)
-        + (∫ τ : ℝ, paperFT (landauTest w T (Real.log x)) τ * (mu τ : ℂ))
-        + ((ArithmeticFunction.vonMangoldt x / Real.sqrt x : ℝ) : ℂ) * ((T : ℂ) * w 0)‖
-      = ‖paperFT (landauTest w T (Real.log x)) (I / 2) + paperFT (landauTest w T (Real.log x)) (-I / 2)
-        + ∫ τ : ℝ, paperFT (landauTest w T (Real.log x)) τ * (mu τ : ℂ)‖ := by ring_nf
-    _ ≤ ‖paperFT (landauTest w T (Real.log x)) (I / 2)‖ +
-        ‖paperFT (landauTest w T (Real.log x)) (-I / 2)‖ +
-        ‖∫ τ : ℝ, paperFT (landauTest w T (Real.log x)) τ * (mu τ : ℂ)‖ := norm_add₃_le
-    _ ≤ _ := by linarith [hpole _ hI, hpole _ hI']
+  have h := hK x (by linarith) T (by linarith)
+  rwa [primeSum_landauTest hsupp hx hT] at h
 
 end GammaTerm
 

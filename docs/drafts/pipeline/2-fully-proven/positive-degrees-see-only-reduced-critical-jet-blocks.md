@@ -2,9 +2,9 @@
 
 - **ID:** positive-degrees-see-only-reduced-critical-jet-blocks
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; exact finite-block restriction)
+- **Type:** CONJECTURE (Lean verification pending)
 - **Source:** Q-II; actual Poisson quotient and finite causal Xi sections.
-- **Status:** Dependency-closed paper argument below; Lean pending; external novelty unverified.
+- **Status:** UNVERIFIED until the actual finite-jet and positive-degree modules and their transitive axiom audits pass; external novelty unverified.
 
 ## Exact statement
 
@@ -79,12 +79,13 @@ product and sharp equalities in the quotient, Hermitian-degree Cauchy–Schwarz,
 descending jet induction, and the finite-packet weighted evaluation formula.
 Do not strengthen this to a classification of arbitrary infinite-quotient degrees.
 
-Implementation drafts now contain the quotient sharp algebra and complex
-null-pair lemma, normalized Hasse class multiplication and sharp laws, exact
-finite causal expansion, off-line and higher-jet annihilation, and the finite
-causal weighted-value formula. None has passed Lean yet. The converse finite
-positive-weight construction remains to be written; no claim about recovering
-arbitrary infinite-quotient functionals is added.
-
-Actual candidate file exists with endpoint axiom prints; its actual-file
-verification is pending. It is not wired into the umbrella.
+`MeyerSharpConvolutionAlgebra.lean`, including the complex null-pair lemma,
+has passed its actual-file Lean check and standard transitive axiom audit.
+The actual `MeyerFiniteJetAlgebra.lean` candidate contains normalized Hasse
+class multiplication, sharp laws, and exact finite causal expansion.
+`PositiveMeyerDegreesSeeReducedCriticalJets.lean` contains off-line and
+higher-jet annihilation, the finite causal weighted-value formula, and the
+converse positive Hermitian finite-weight construction on the whole quotient.
+The latter two modules remain unverified and unwired, with endpoint axiom
+prints awaiting direct checks. No claim about recovering arbitrary
+infinite-quotient functionals is added.

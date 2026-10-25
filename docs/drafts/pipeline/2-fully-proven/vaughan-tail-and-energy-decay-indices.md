@@ -2,7 +2,8 @@
 
 - **ID:** vaughan-tail-and-energy-decay-indices
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CLAIM (Lean verification pending)
+- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
 - **Statement:** For every fixed `ε>0`, the optimal power-saving index of `N^ε(ρ-A_N)` is `1-Θ`, where `Θ=zetaZeroAbscissa`; the square empty-leg energy has four times that index in the cutoff variable.
 

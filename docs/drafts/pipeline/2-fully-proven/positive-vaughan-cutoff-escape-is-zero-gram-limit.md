@@ -2,7 +2,8 @@
 
 - **ID:** positive-vaughan-cutoff-escape-is-zero-gram-limit
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CLAIM (Lean verification pending)
+- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
 - **Source:** ../2-fully-proven/vaughan-subcritical-gram-limit-classification.md
 - **Statement:** With positive cutoffs and a divergent horizon, the normalized subcritical centered Gram tends to zero exactly when the cutoff product diverges.
 
@@ -16,7 +17,7 @@ for every `0<ε<1/2`.
 
 ## Dependency-closed paper proof
 
-[PROVED HERE] Write `a_t=H_(U(t))²H_(V(t))²` and `β=1-2ε`. The uniform Gram law
+[LEAN VERIFICATION PENDING] Write `a_t=H_(U(t))²H_(V(t))²` and `β=1-2ε`. The uniform Gram law
 and `subHalfZetaCoeff(ε)≠0` show that the normalized `(2,2)` entry tends to zero
 if and only if `a_t→0`. If this holds, the same uniform law makes every matrix
 entry tend to zero. Thus it suffices to characterize `a_t→0`.

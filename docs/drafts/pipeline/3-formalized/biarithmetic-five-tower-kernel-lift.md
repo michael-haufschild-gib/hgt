@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-five-tower-kernel-lift
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Digital energy and payment](../2-fully-proven/biarithmetic-digital-energy-and-prime-tower-payment.md)
+- **Parent:** [Digital energy and payment](../1-in-progress/biarithmetic-digital-energy-and-prime-tower-payment.md)
 - **Statement:** Extending arbitrary real coefficients by zero off powers of five gives a critical Wiener kernel exactly when the normalized coefficients are absolutely summable; its ordinary cofactor action is exactly the finite visible-power sum.
 
 ## Exact arithmetic interfaces

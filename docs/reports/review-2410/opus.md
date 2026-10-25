@@ -403,7 +403,14 @@ centered convolution row is exactly `-H_UH_V A_(1,ε)-A_(r,ε)`
 (`TheVaughanConvolutionSeparatesItsSmoothMean`). All truncated Möbius partial sums
 and their damped centered prefixes also share every logarithmic rate uniformly
 over the cutoff (`UniformLogarithmicCancellationInTruncatedMobiusReceivers`).
-Uniform Gram consequences remain under formalization.
+The checked generic prefix-to-energy transfer preserves these logarithmic rates
+in pronic norm below half damping, retaining the common finite-head bound
+(`UniformLogarithmicEnergyFromPrefixCancellation`). The actual convolution
+fluctuation and all truncated Möbius receivers now satisfy those common norm
+bounds (`UniformLogarithmicEnergyInTheVaughanConvolution`). The actual centered
+Möbius prefix and Bézout interior now have every logarithmic norm saving below
+half damping (`LogarithmicEnergySavingsForTheMobiusInterior`). Uniform Gram
+consequences remain under verification.
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?
@@ -487,11 +494,44 @@ simplicity of the Xi divisor. Ordinary sharp-square trace positivity is exactly 
 with no simplicity requirement. These are distinct obligations, even on the genuine
 source quotient; a multiple zero supplies an actual nonprincipal square-zero class.
 
+Actual source inversion now gives an algebraic description of the same radical
+(`MeyerQuasiInverseRadical`). A class has a quasi-inverse precisely when none of
+its Xi values equals −1. Every product of a class has a quasi-inverse precisely
+when all its Xi values vanish. Thus this universal inversion condition is exactly
+the ordinary trace radical; its vanishing is equivalent to Xi simplicity.
+
 The genuine Meyer surface now carries this descended linear trace degree as an
 actual RR construction (`MeyerSourceIntersectionSurface`). Its degree cone has
 Bézout, ampleness, and additive closure each exactly under RH. The full source
 carrier and genuine principal classes therefore do not remove the order obligation;
 faithfulness of numerical equivalence retains the separate simplicity condition.
+
+A critical Xi point supplied by Hardy gives an unconditional positive descended
+degree with an explicit nonprincipal null source (`PositiveMeyerDegreesCanForgetClasses`).
+Its sharp-square degree is normalized to one on another actual source.
+
+Changing the linear degree cannot remove this second obstruction while retaining
+strict positivity on the sharp square of every nonprincipal source. Existence of any such degree
+is exactly RH together with simplicity (`FaithfulPositiveMeyerDegrees`). The exact
+local witness is a single jet of order `j`: its sharp square is principal precisely
+when reflection moves its Xi point or `2j` reaches the local multiplicity. These
+criteria are formalized on the genuine source quotient without continuity assumptions.
+
+Centered flow preserves the literal mixed arithmetic sharp product, so every
+reading of that product is invariant. A nonnegative invariant majorant controlling
+the original mixed trace exists exactly under RH
+(`FlowInvariantMeyerMajorantsForceCriticality`). Two fixed point sources already
+turn such a majorant into control of each Mellin evaluation; no norm axioms or
+quotient descent are needed. Positivity and invariance of another degree alone
+therefore do not supply the missing comparison with the original pairing.
+
+The sum over all critical Xi multiplicity copies now gives a canonical positive
+linear degree on genuine cohomology (`CriticalMeyerTraceDegree`). Its square
+energy is exactly the summable critical-value norm square; its kernel consists
+of sources vanishing at every critical Xi value. This energy is invariant,
+dominates the original mixed trace exactly under RH, and is faithful exactly
+under RH plus simplicity. The construction does not classify arbitrary positive
+degrees or provide an independent prime-side positivity law.
 
 **Why this one.**
 - It is the only formulation in which positivity could be *forced* rather than estimated, which
@@ -589,6 +629,12 @@ not supply purity.
   and continuum annihilator-quotient index. Thus a finite-dimensional actual
   module forces escape. These refinements passed final Lean source checks.
   These admitted modules are not counterexamples about escaping receivers.
+- Actual diagonal data now retain numeric horizon order:
+  `E(floor((T_m+1)/p))/E(T_m+1)` tends to `p*K(p,p)` for every actual
+  common limit. This profile decreases in the ordinary integer order and
+  equals one on admission. Exact dilation blocks and the diagonal theorem
+  passed canonical Lean source checks and standard axiom audits. Mixed
+  horizon transport and its stronger module consequences remain pending.
 - Changing the cyclic vector by a critical Wiener unit gives a unitary
   comparison intertwining the full Wiener action. It preserves all operator
   norms, the annihilator, operator hull and dimension. This abstract transport

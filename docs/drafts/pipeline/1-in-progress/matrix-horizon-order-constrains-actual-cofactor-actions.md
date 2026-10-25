@@ -39,7 +39,8 @@ arbitrary multiplicative phases still satisfies critical equality.
 The real finite-packet theorem `scaled_packet_antitone` is now drafted in
 `/tmp/qiii_matrix_horizon_order_body.lean` and included in the pending
 contracted-horizon scratch. It reuses the existing finite-packet Gram identity.
-Complexification and the operator-completion statement remain to draft. Depends on the pending mixed
+Complexification and the complete-module inequality are also drafted in
+`/tmp/qiii_operator_horizon_order_body.lean`. They depend on the pending mixed
 horizon error and actual contracted-pairing limit. Nearby-dilation
 continuity is a separate corpus search, not an assumed analytic input.
 
@@ -53,3 +54,28 @@ Finite joint generalized eigenspaces supply actual common eigenvectors;
 that step is essential and must be proved. Nearby-dilation search found
 continuous CCM/log-dilation models but no continuity bridge for actual
 Möbius escape modules. Such continuity remains an open input.
+
+## Finite joint-eigenvector bridge
+
+Corpus searches found a two-operator common-eigenvector theorem and joint
+generalized eigenspace decomposition, but no arbitrary-family common-vector
+lemma. The missing elementary bridge is drafted in
+`/tmp/qiii_commuting_family_eigenvector_body.lean`: induct on dimension;
+if every operator is scalar, choose any nonzero vector; otherwise restrict
+the family to a nonzero proper eigenspace of one nonscalar operator.
+Commutativity preserves that space. This will be checked before use in
+the finite actual hull modulus theorem. It is not yet a formalized finding.
+
+The modulus bridge and finite actual hull application are now drafted in
+`/tmp/qiii_eigencharacter_power_body.lean` and
+`/tmp/qiii_finite_hull_moduli_body.lean`. The final target is
+`finite_moduleHull_modulus_classification`: every finite actual hull point
+has augmentation modulus or `|omega(p)|=p^(-alpha)` for one alpha>=0.
+No phase claim is included. These parts are not yet in a check queue; the
+operator horizon-order and common-family eigenvector dependencies must
+first pass. All findings remain OPEN until formalized.
+
+Complex packet order and complete-Hilbert dilation order are now both
+included in the contracted-horizon draft. The finite-hull assembler target
+is also prepared, but it still needs the eventual canonical operator-order
+import before compilation. No finite-hull modulus claim is verified yet.

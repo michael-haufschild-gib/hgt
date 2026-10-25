@@ -2,7 +2,7 @@
 
 - **ID:** critical-boundary-paid-kernel-obstruction
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Type:** CONJECTURE (Lean completion pending)
 - **Source:** Q-III; the cleared Möbius Mellin identity and the paid-energy Mellin bound.
 - **Statement:** A translated zeta pole on `Re s = 1/2` with strictly positive uncancelled order forces every paid critical Wiener kernel to vanish at that boundary point.
 
@@ -110,3 +110,16 @@ cancellation, and actual real/complex paid-kernel applications. All new
 boundary pieces remain unverified. This replaces the two smaller Mellin
 checks in the prepared next queue; do not start it before session `32035`
 finishes.
+
+## Lean verification update
+
+The complete critical-boundary scratch passed. Its printed declarations use
+only `propext`, `Classical.choice`, and `Quot.sound`: actual cleared Mellin
+identity, interior order comparison and paid jets, complex Mellin boundary
+rate, generic boundary cancellation, actual paid boundary vanishing and hull
+membership, and the Liouville unit-orbit consequences. Five canonical leaves
+were installed and umbrella-wired, together with the explicit Mellin helper
+in `TheOffLineZerosObstructTheMoebiusReceiver`. Redundant tactics were removed.
+Final canonical checks remain pending in `/tmp/qiii-pole-canonical-audit.sh`;
+this card remains OPEN until those pass. No actual escape-hull classification
+or boundary jet theorem is inferred.

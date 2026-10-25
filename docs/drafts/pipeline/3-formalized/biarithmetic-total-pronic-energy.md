@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-total-pronic-energy
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean; exact domain comparison)
-- **Parent:** [Payment graph norm](../2-fully-proven/biarithmetic-payment-graph-norm.md)
+- **Parent:** [Payment graph norm](../1-in-progress/biarithmetic-payment-graph-norm.md)
 - **Statement:** Uniform finite-horizon pronic norm bounds are equivalent to summability of the positive-cell energy. This identifies actual receiver admission with finite total energy and gives the exact complex real/imaginary decomposition.
 
 ## Proof

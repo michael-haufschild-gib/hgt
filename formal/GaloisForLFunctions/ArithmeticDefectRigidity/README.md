@@ -20,6 +20,14 @@ covariances, finite packet energies and their dilation bounds. Every such actual
 now carries a cyclic critical Wiener representation. On escape, the complete paid ideal
 annihilates this module, including paid kernels with infinite support.
 
+[ActualCofactorDiagonalsAreHorizonEnergyRatios](ActualCofactorDiagonalsAreHorizonEnergyRatios.lean)
+identifies `p*K(p,p)` with the limiting ratio of receiver energy at the
+integer-contracted horizon to its original energy. The profile decreases
+in ordinary integer order, lies in `[0,1]`, and equals one on admission.
+This is an actual-source restriction beyond multiplicative dilation
+contraction. The exact mixed-horizon transport and its module consequences
+remain under Lean verification.
+
 [TheCofactorOperatorHullObeysItsDilationRadii](TheCofactorOperatorHullObeysItsDilationRadii.lean)
 identifies the spectral locus controlled by operator decay: a nonempty subset
 of the module hull whose coordinates obey `|omega(p)| <= sqrt(p)||V_p||`.

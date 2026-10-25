@@ -2,7 +2,8 @@
 
 - **ID:** vaughan-subcritical-gram-limit-classification
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CLAIM (Lean verification pending)
+- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
 - **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs
 - **Statement:** Below half damping, all moving-cutoff normalized Gram limits form a countably infinite compact rank-one family whose only accumulation point is zero.
 
@@ -35,7 +36,7 @@ rank one; the zero limit has rank zero.
 
 ## Dependency-closed paper proof
 
-[PROVED HERE] The uniform Gram theorem gives, for every `i,j`,
+[LEAN VERIFICATION PENDING] The proposed uniform Gram theorem gives, for every `i,j`,
 
 `G^c_ij(H(t);U(t),V(t))/H(t)^β
  = (c²/β) a_t s_i s_j + o(1)`,

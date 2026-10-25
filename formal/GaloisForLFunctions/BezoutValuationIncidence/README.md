@@ -1203,8 +1203,16 @@ exactly $-H_UH_V A_{1,\varepsilon}-A_{r,\varepsilon}$
 (`TheVaughanConvolutionSeparatesItsSmoothMean`). Every truncated Möbius partial
 sum and its centered damped floor prefix has the corresponding common logarithmic
 rate, uniformly over its cutoff
-(`UniformLogarithmicCancellationInTruncatedMobiusReceivers`). The complete
-uniform Gram law remains under verification.
+(`UniformLogarithmicCancellationInTruncatedMobiusReceivers`). A common global
+smooth-power bound and every common logarithmic prefix saving imply pronic
+energy $O_q(T^{1-2\varepsilon}/(\log T)^{2q})$ and the corresponding norm
+bound below half damping (`UniformLogarithmicEnergyFromPrefixCancellation`).
+Its finite head is controlled explicitly. The actual convolution fluctuation and
+all truncated Möbius receivers now satisfy these uniform logarithmic norm bounds
+(`UniformLogarithmicEnergyInTheVaughanConvolution`). The actual centered Möbius
+prefix and Bézout interior inherit every logarithmic norm saving as well
+(`LogarithmicEnergySavingsForTheMobiusInterior`). The complete uniform Gram law
+remains under verification.
 
 **Finite harmonic rigidity.** Every $H_N$ with $N\ge1$ is nonzero. For every prime
 $N/2<p\le N$, its rational $p$-adic valuation is exactly $-1$; all such distinct primes

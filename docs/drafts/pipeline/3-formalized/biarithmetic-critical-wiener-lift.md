@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-critical-wiener-lift
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean; actual Wiener embedding)
-- **Parent:** [Critical payment defect](../2-fully-proven/biarithmetic-critical-payment-has-continuum-defect.md)
+- **Parent:** [Critical payment defect](../1-in-progress/biarithmetic-critical-payment-has-continuum-defect.md)
 - **Statement:** Normalized real coefficients lift to actual critical Wiener kernels with exact coefficient mass and distances. Their payment for the critical tower is exactly square summability of their coefficient partial sums.
 
 ## Proof

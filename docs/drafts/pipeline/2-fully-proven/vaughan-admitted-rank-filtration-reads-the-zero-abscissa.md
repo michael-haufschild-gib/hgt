@@ -2,7 +2,8 @@
 
 - **ID:** vaughan-admitted-rank-filtration-reads-the-zero-abscissa
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CLAIM (Lean verification pending)
+- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
 - **Statement:** For every fixed pair of cutoffs, the damping set where the admitted Vaughan coefficient space acquires its receiver direction equals the actual receiver damping set. The lower accumulation boundary is exactly `zetaZeroAbscissa-1/2`.
 - **Novelty status:** Exact finite-family realization of existing receiver index laws; no external novelty claim.
@@ -65,6 +66,7 @@ coefficient-space dimension proofs passed all ten scratch axiom audits and the r
 olean check and final direct audit. Zero-cutoff and phase extensions remain uncompiled. This application is
 drafted as twelve audit targets in `/tmp/QIRankFiltrationTools.lean`, importing the planned
 `VaughanAdmissionAboveHalfDamping` and `TheZeroCutoffVaughanCoefficientSpace` leaves.
+Its planned repository name is `TheVaughanAdmissionRankReadsTheZeroAbscissa.lean`.
 Its set equality, cutoff independence, exact boundary, strip criterion, and three RH rank
 criteria remain uncompiled. It gives no new receiver admission or fixed strip.
 

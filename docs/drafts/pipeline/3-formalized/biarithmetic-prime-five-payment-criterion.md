@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-prime-five-payment-criterion
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Digital energy and payment](../2-fully-proven/biarithmetic-digital-energy-and-prime-tower-payment.md)
+- **Parent:** [Digital energy and payment](../1-in-progress/biarithmetic-digital-energy-and-prime-tower-payment.md)
 - **Statement:** For every real nonzero `a` with `|a|<5` and every critical Wiener kernel supported on powers of five, actual payment of the geometric source is equivalent to weighted square summability of its partial pole sums. At `a=sqrt(5)`, normalized coefficient partial sums must lie in `ell2`.
 
 ## Proof

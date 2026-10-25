@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-digit-pronic-blocks
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Digital energy and payment](../2-fully-proven/biarithmetic-digital-energy-and-prime-tower-payment.md)
+- **Parent:** [Digital energy and payment](../1-in-progress/biarithmetic-digital-energy-and-prime-tower-payment.md)
 - **Statement:** For arbitrary real digit weights, the pronic energy on `5^M<=n<5^(M+1)` is at least `x_M^2/5^(M+1)` and at most `(64/5)5^(-M)(sum_(i<=M)|x_i|)^2`.
 
 ## Exact block proof

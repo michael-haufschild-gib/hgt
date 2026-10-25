@@ -325,8 +325,9 @@ private theorem hasDerivAt_boundaryLogSqMajorantPrimitive {t : ℝ} (ht : 0 < t)
   have hw_pos : 0 < 1 - Real.exp (-t) :=
     sub_pos.mpr (Real.exp_lt_one_iff.mpr (by linarith))
   have hexp : HasDerivAt (fun x : ℝ => 1 - Real.exp (-x)) (Real.exp (-t)) t := by
-    convert (((hasDerivAt_id t).neg).exp).const_sub 1 using 1
-    ring
+    have h1 : HasDerivAt (fun x : ℝ => 1 - Real.exp (-x)) (0 - Real.exp (-t) * -1) t :=
+      (hasDerivAt_const t (1 : ℝ)).sub ((Real.hasDerivAt_exp (-t)).comp t (hasDerivAt_id t).neg)
+    exact h1.congr_deriv (by ring)
   have hsq := ((hexp.sqrt hw_pos.ne').sub_const 1).const_mul 2
   unfold boundaryLogSqMajorantPrimitive
   refine hsq.congr_deriv ?_
@@ -338,7 +339,7 @@ private theorem tendsto_boundaryLogSqMajorantPrimitive_atTop :
   have hexp : Tendsto (fun t : ℝ => Real.exp (-t)) atTop (𝓝 0) :=
     Real.tendsto_exp_atBot.comp tendsto_neg_atTop_atBot
   have hsub : Tendsto (fun t : ℝ => 1 - Real.exp (-t)) atTop (𝓝 1) := by
-    have h1 := tendsto_const_nhds.sub hexp
+    have h1 := (tendsto_const_nhds (x := (1 : ℝ))).sub hexp
     rwa [sub_zero] at h1
   have hsqrt : Tendsto (fun t : ℝ => Real.sqrt (1 - Real.exp (-t))) atTop (𝓝 1) := by
     have h1 : Tendsto (fun t : ℝ => Real.sqrt (1 - Real.exp (-t))) atTop (𝓝 (Real.sqrt 1)) :=
@@ -633,11 +634,15 @@ theorem isPolarConstrained_ccmPolarConstrainedPart (a : SuzukiPositiveAperture)
   have horthm1 : inner ℂ (J pm1) (J p1) = 0 := by
     rw [← inner_conj_symm (J pm1) (J p1), horth1m, map_zero]
   have hself1 : inner ℂ (J p1) (J p1) = ((2 * (2 * Real.sinh a.1 + 2 * a.1 * 1) : ℝ) : ℂ) := by
-    rw [inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (J p1), ← Complex.ofReal_pow,
+    rw [inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (J p1)]
+    simp only [RCLike.ofReal_eq_complex_ofReal, ← Complex.ofReal_pow]
+    rw [show ‖J p1‖ ^ 2 = 2 * (2 * Real.sinh a.1 + 2 * a.1 * 1) from
       norm_sq_ccmPolarParityFormVector_physical a (Or.inl rfl)]
   have hselfm1 : inner ℂ (J pm1) (J pm1) =
       ((2 * (2 * Real.sinh a.1 + 2 * a.1 * (-1)) : ℝ) : ℂ) := by
-    rw [inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (J pm1), ← Complex.ofReal_pow,
+    rw [inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (J pm1)]
+    simp only [RCLike.ofReal_eq_complex_ofReal, ← Complex.ofReal_pow]
+    rw [show ‖J pm1‖ ^ 2 = 2 * (2 * Real.sinh a.1 + 2 * a.1 * (-1)) from
       norm_sq_ccmPolarParityFormVector_physical a (Or.inr rfl)]
   have hd1 : ((2 * (2 * Real.sinh a.1 + 2 * a.1 * 1) : ℝ) : ℂ) ≠ 0 := by
     exact_mod_cast (mul_pos two_pos (polarParityGram_pos a (Or.inl rfl))).ne'
@@ -863,7 +868,7 @@ theorem ccmRestrictedWeilGroundEnergy_ge_of_polar_and_defect_bounds
     have hp_eq : p = (c1 + cm1) • ccmPolarFormVector a (1 / 2) +
         (c1 - cm1) • ccmPolarFormVector a (-1 / 2) := by
       dsimp [p, p1, pm1, ccmPolarParityFormVector]
-      simp only [Complex.ofReal_one, Complex.ofReal_neg, one_smul, neg_one_smul]
+      simp only [one_smul]
       module
     have hQ_p_eq : ccmRestrictedWeilSourceQuadratic a p =
         2 * (ccmWeilPoleDiagonal a + ccmWeilPoleCross a) * ‖c1‖ ^ 2 +
@@ -901,7 +906,10 @@ theorem ccmRestrictedWeilGroundEnergy_ge_of_polar_and_defect_bounds
         _ = ‖c‖ * ‖inner ℂ (ccmPolarParityBoundaryDefect a r) (J w)‖ := by
             rw [hform_smul, norm_mul, Complex.norm_conj]
         _ ≤ ‖c‖ * (‖ccmPolarParityBoundaryDefect a r‖ * ‖J w‖) :=
-            mul_le_mul_of_nonneg_left (norm_inner_le_norm _ _) (norm_nonneg c)
+            mul_le_mul_of_nonneg_left
+              (@norm_inner_le_norm ℂ (suzukiApertureHilbert a) _ _ _
+                (ccmPolarParityBoundaryDefect a r) (J w))
+              (norm_nonneg c)
         _ ≤ ‖c‖ * (2 * ‖ccmPolarWeilBoundaryDefect a‖ * ‖J w‖) :=
             mul_le_mul_of_nonneg_left
               (mul_le_mul_of_nonneg_right
@@ -937,24 +945,261 @@ theorem ccmRestrictedWeilGroundEnergy_ge_of_polar_and_defect_bounds
     change 2 * |(ccmRestrictedWeilForm a (cm1 • pm1) w).re| ≤
       M_cpl * E * (‖cm1‖ ^ 2 * Dm1 + ‖J w‖ ^ 2) at hcm1
     rw [hp_lin, Complex.add_re]
-    have h1L := (abs_le.mp (show |(ccmRestrictedWeilForm a (c1 • p1) w).re| ≤ _ by linarith)).1
-    have hm1L := (abs_le.mp (show |(ccmRestrictedWeilForm a (cm1 • pm1) w).re| ≤ _ by linarith)).1
+    have h1L : -|(ccmRestrictedWeilForm a (c1 • p1) w).re| ≤
+        (ccmRestrictedWeilForm a (c1 • p1) w).re := neg_abs_le _
+    have hm1L : -|(ccmRestrictedWeilForm a (cm1 • pm1) w).re| ≤
+        (ccmRestrictedWeilForm a (cm1 • pm1) w).re := neg_abs_le _
     have hnn1 : 0 ≤ ‖c1‖ ^ 2 * D1 := mul_nonneg (sq_nonneg _) hD1_pos.le
     have hnnm1 : 0 ≤ ‖cm1‖ ^ 2 * Dm1 := mul_nonneg (sq_nonneg _) hDm1_pos.le
     have hC_nn : 0 ≤ M_cpl * E := mul_nonneg hM_cpl hE
-    nlinarith [hpyth, mul_nonneg hC_nn hnn1, mul_nonneg hC_nn hnnm1]
+    have hsum_abs : 2 * |(ccmRestrictedWeilForm a (c1 • p1) w).re| +
+        2 * |(ccmRestrictedWeilForm a (cm1 • pm1) w).re| ≤
+        (2 * M_cpl * E) * ‖J v‖ ^ 2 := by
+      have hdist : (2 * M_cpl * E) * ‖J v‖ ^ 2 =
+          M_cpl * E * (‖c1‖ ^ 2 * D1 + ‖J w‖ ^ 2) +
+            M_cpl * E * (‖cm1‖ ^ 2 * Dm1 + ‖J w‖ ^ 2) +
+            M_cpl * E * (‖c1‖ ^ 2 * D1) +
+            M_cpl * E * (‖cm1‖ ^ 2 * Dm1) := by
+        rw [hpyth]; ring
+      rw [hdist]
+      linarith [hc1, hcm1, mul_nonneg hC_nn hnn1, mul_nonneg hC_nn hnnm1]
+    linarith [h1L, hm1L, hsum_abs]
   have hQ_v : -((M₁ + M_pole + 2 * M_cpl) * E) * ‖J v‖ ^ 2 ≤
       ccmRestrictedWeilSourceQuadratic a v := by
-    rw [hv_decomp, ccmRestrictedWeilSourceQuadratic_add_eq]
+    have hQ_expand : ccmRestrictedWeilSourceQuadratic a v =
+        ccmRestrictedWeilSourceQuadratic a w + ccmRestrictedWeilSourceQuadratic a p +
+          2 * (ccmRestrictedWeilForm a p w).re := by
+      rw [hv_decomp, ccmRestrictedWeilSourceQuadratic_add_eq]
+    rw [hQ_expand]
     have hnn_w : 0 ≤ ‖J w‖ ^ 2 := sq_nonneg _
-    have hnn_p : 0 ≤ ‖c1‖ ^ 2 * D1 + ‖cm1‖ ^ 2 * Dm1 := by positivity
+    have hnn_p : 0 ≤ ‖c1‖ ^ 2 * D1 + ‖cm1‖ ^ 2 * Dm1 := add_nonneg
+      (mul_nonneg (sq_nonneg _) hD1_pos.le) (mul_nonneg (sq_nonneg _) hDm1_pos.le)
     have hC1_nn : 0 ≤ M₁ * E := mul_nonneg hM₁ hE
     have hCp_nn : 0 ≤ M_pole * E := mul_nonneg hM_pole hE
-    nlinarith [hpyth, hQ_w, hQ_p, hcross_total,
-      mul_nonneg hC1_nn hnn_p, mul_nonneg hCp_nn hnn_w]
+    have h1_v : -(M₁ * E) * ‖J v‖ ^ 2 ≤ ccmRestrictedWeilSourceQuadratic a w := by
+      have : -(M₁ * E) * ‖J v‖ ^ 2 ≤ -(M₁ * E) * ‖J w‖ ^ 2 := by
+        rw [hpyth]
+        have := mul_nonneg hC1_nn hnn_p
+        linarith
+      exact this.trans hQ_w
+    have hp_v : -(M_pole * E) * ‖J v‖ ^ 2 ≤ ccmRestrictedWeilSourceQuadratic a p := by
+      have : -(M_pole * E) * ‖J v‖ ^ 2 ≤ -(M_pole * E) * (‖c1‖ ^ 2 * D1 + ‖cm1‖ ^ 2 * Dm1) := by
+        rw [hpyth]
+        have := mul_nonneg hCp_nn hnn_w
+        linarith
+      exact this.trans hQ_p
+    have hdist : -((M₁ + M_pole + 2 * M_cpl) * E) * ‖J v‖ ^ 2 =
+        -(M₁ * E) * ‖J v‖ ^ 2 + -(M_pole * E) * ‖J v‖ ^ 2 + -(2 * M_cpl * E) * ‖J v‖ ^ 2 := by
+      ring
+    rw [hdist]
+    linarith [h1_v, hp_v, hcross_total]
   change -( _) * ‖ccmArchimedeanFormToAperture a v‖ ^ 2 ≤ _ at hQ_v
   rw [hv_ground] at hQ_v
   exact le_of_mul_le_mul_right hQ_v hv_pos
+
+private theorem exists_ccmWeilPoleEntry_exp_bounds {α β σ : ℝ}
+    (hα_nonneg : 0 ≤ α) (hα_half : α < 1 / 2) (hw_α : zetaZeroWidth ≤ α)
+    (hαβ : α < β) (hβσ : β < σ) :
+    ∃ C_pole : ℝ, 0 ≤ C_pole ∧ ∀ a : SuzukiPositiveAperture, 4 ≤ a.1 →
+      -(C_pole * Real.exp (2 * σ * a.1) * (2 * (2 * Real.sinh a.1 + 2 * a.1 * 1))) ≤
+          2 * (ccmWeilPoleDiagonal a + ccmWeilPoleCross a) ∧
+        -(C_pole * Real.exp (2 * σ * a.1) * (2 * (2 * Real.sinh a.1 + 2 * a.1 * (-1)))) ≤
+          2 * (ccmWeilPoleDiagonal a - ccmWeilPoleCross a) := by
+  have hδ : 0 < σ - β := sub_pos.mpr hβσ
+  have h2δ : 0 < 2 * (σ - β) := mul_pos (by norm_num) hδ
+  have hβ_nonneg : 0 ≤ β := hα_nonneg.trans hαβ.le
+  obtain ⟨B_prim, hB_prim0, hprim⟩ :=
+    exists_abs_deficitPrimitive_le_of_zetaZeroWidth_le hα_nonneg hα_half hw_α hαβ
+  obtain ⟨K_lin, hK_pos, hK_def⟩ : ∃ K_lin : ℝ, 0 ≤ K_lin ∧
+      K_lin = |-Real.eulerMascheroniConstant - Real.log (2 * Real.pi)| + Real.log 4 + 5 :=
+    ⟨_, by positivity, rfl⟩
+  obtain ⟨B_const, hB_pos, hB_def⟩ : ∃ B_const : ℝ, 0 ≤ B_const ∧
+      B_const = 2 * Real.log 2 + Real.pi + 1 :=
+    ⟨_, by positivity, rfl⟩
+  let C_cross : ℝ := B_prim * (3 / (2 * (σ - β)) + 1) + B_const + K_lin / (σ - β) + 1
+  have hC_cross_nn : 0 ≤ C_cross := by
+    have h1 : 0 ≤ B_prim * (3 / (2 * (σ - β)) + 1) :=
+      mul_nonneg hB_prim0 (add_nonneg (div_nonneg (by norm_num) h2δ.le) zero_le_one)
+    have h2 : 0 ≤ K_lin / (σ - β) := div_nonneg hK_pos hδ.le
+    dsimp only [C_cross]
+    linarith
+  refine ⟨4 * (ccmWeilPoleUniformDiagonalBound + C_cross),
+    by linarith [ccmWeilPoleUniformDiagonalBound_pos], fun a ha4 => ?_⟩
+  have ha0 : 0 < a.1 := a.2
+  have ha_exp_2δ : 1 + 2 * a.1 ≤ (3 / (2 * (σ - β))) * Real.exp (2 * (σ - β) * a.1) := by
+    have h := Real.add_one_le_exp (2 * (σ - β) * a.1)
+    have hpos2 : 0 ≤ 3 / (2 * (σ - β)) := div_nonneg (by norm_num) h2δ.le
+    have hmul := mul_le_mul_of_nonneg_left h hpos2
+    have hcancel : (3 / (2 * (σ - β))) * (2 * (σ - β) * a.1 + 1) =
+        3 * a.1 + 3 / (2 * (σ - β)) := by
+      field_simp [hδ.ne']
+    linarith
+  have ha_exp_σ : 2 * a.1 ≤ (1 / (σ - β)) * Real.exp ((1 + 2 * σ) * a.1) := by
+    have h := Real.add_one_le_exp (2 * (σ - β) * a.1)
+    have hexp_le : Real.exp (2 * (σ - β) * a.1) ≤ Real.exp ((1 + 2 * σ) * a.1) :=
+      Real.exp_le_exp.mpr (by
+        have hσ_ge : 0 ≤ σ := hβ_nonneg.trans hβσ.le
+        nlinarith)
+    have hpos1 : 0 ≤ 1 / (σ - β) := div_nonneg zero_le_one hδ.le
+    have hmul := mul_le_mul_of_nonneg_left (h.trans hexp_le) hpos1
+    have hcancel : (1 / (σ - β)) * (2 * (σ - β) * a.1 + 1) =
+        2 * a.1 + 1 / (σ - β) := by
+      field_simp [hδ.ne']
+    linarith
+  have hσ_nn : 0 ≤ σ := hβ_nonneg.trans hβσ.le
+  have hdiag : |ccmWeilPoleDiagonal a| ≤
+      ccmWeilPoleUniformDiagonalBound * Real.exp ((1 + 2 * σ) * a.1) := by
+    refine (abs_ccmWeilPoleDiagonal_le a).trans ?_
+    exact mul_le_mul_of_nonneg_left
+      (Real.exp_le_exp.mpr (by nlinarith)) ccmWeilPoleUniformDiagonalBound_pos.le
+  have hcross : |ccmWeilPoleCross a| ≤ C_cross * Real.exp ((1 + 2 * σ) * a.1) := by
+    have hp := hprim (2 * a.1) (by linarith)
+    rw [← ccmPoleIntegratedChebyshevDeficit_eq_logPrimitive] at hp
+    have hexp_2δ_eq : Real.exp (2 * (σ - β) * a.1) * Real.exp ((1 / 2 + β) * (2 * a.1)) =
+        Real.exp ((1 + 2 * σ) * a.1) := by
+      rw [← Real.exp_add]; congr 1; ring
+    have hp' : |ccmPoleIntegratedChebyshevDeficit a| ≤
+        B_prim * (3 / (2 * (σ - β)) + 1) * Real.exp ((1 + 2 * σ) * a.1) := by
+      calc |ccmPoleIntegratedChebyshevDeficit a|
+          ≤ B_prim * (1 + 2 * a.1) * Real.exp ((1 / 2 + β) * (2 * a.1)) := hp
+        _ ≤ B_prim * ((3 / (2 * (σ - β))) * Real.exp (2 * (σ - β) * a.1)) *
+              Real.exp ((1 / 2 + β) * (2 * a.1)) :=
+            mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_left ha_exp_2δ hB_prim0) (Real.exp_pos _).le
+        _ = B_prim * (3 / (2 * (σ - β))) *
+              (Real.exp (2 * (σ - β) * a.1) * Real.exp ((1 / 2 + β) * (2 * a.1))) := by ring
+        _ = B_prim * (3 / (2 * (σ - β))) * Real.exp ((1 + 2 * σ) * a.1) := by rw [hexp_2δ_eq]
+        _ ≤ B_prim * (3 / (2 * (σ - β)) + 1) * Real.exp ((1 + 2 * σ) * a.1) :=
+            mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_left (by linarith) hB_prim0) (Real.exp_pos _).le
+    have hdiff : |ccmPoleIntegratedChebyshevDeficit a - ccmWeilPoleCross a| ≤
+        B_const + K_lin * (2 * a.1) + 1 := by
+      have hd := abs_integratedChebyshevDeficit_sub_weilPoleCross_le a
+      have hB := ccmGammaPoleCrossBoundaryMass_le a
+      rw [← hK_def] at hd
+      rw [← hB_def] at hB
+      linarith
+    have htri : |ccmWeilPoleCross a| ≤ |ccmPoleIntegratedChebyshevDeficit a| +
+        |ccmPoleIntegratedChebyshevDeficit a - ccmWeilPoleCross a| := by
+      have h := abs_sub_le (ccmWeilPoleCross a) (ccmPoleIntegratedChebyshevDeficit a) 0
+      rw [sub_zero, sub_zero, abs_sub_comm] at h
+      linarith
+    have h1exp : 1 ≤ Real.exp ((1 + 2 * σ) * a.1) := Real.one_le_exp (by nlinarith)
+    have hB_exp : B_const ≤ B_const * Real.exp ((1 + 2 * σ) * a.1) :=
+      le_mul_of_one_le_right hB_pos h1exp
+    have hK_term : K_lin * (2 * a.1) ≤ (K_lin / (σ - β)) * Real.exp ((1 + 2 * σ) * a.1) := by
+      calc K_lin * (2 * a.1)
+          ≤ K_lin * ((1 / (σ - β)) * Real.exp ((1 + 2 * σ) * a.1)) :=
+            mul_le_mul_of_nonneg_left ha_exp_σ hK_pos
+        _ = (K_lin / (σ - β)) * Real.exp ((1 + 2 * σ) * a.1) := by ring
+    have hexp_pos : 0 ≤ Real.exp ((1 + 2 * σ) * a.1) := (Real.exp_pos _).le
+    dsimp only [C_cross]
+    rw [add_mul, add_mul, add_mul, one_mul]
+    linarith
+  have hexp_split : Real.exp ((1 + 2 * σ) * a.1) =
+      Real.exp (2 * σ * a.1) * Real.exp a.1 := by
+    rw [← Real.exp_add]; congr 1; ring
+  have hCp_nn : 0 ≤ 4 * (ccmWeilPoleUniformDiagonalBound + C_cross) := by
+    linarith [ccmWeilPoleUniformDiagonalBound_pos]
+  constructor
+  · have hD1_ge := half_exp_le_polarParityGram a ha4 (Or.inl rfl)
+    have hsum : -(2 * (ccmWeilPoleUniformDiagonalBound + C_cross) *
+        Real.exp ((1 + 2 * σ) * a.1)) ≤
+        2 * (ccmWeilPoleDiagonal a + ccmWeilPoleCross a) := by
+      linarith [(abs_le.mp hdiag).1, (abs_le.mp hcross).1]
+    have hD_prod : 2 * (ccmWeilPoleUniformDiagonalBound + C_cross) *
+        Real.exp ((1 + 2 * σ) * a.1) ≤
+        4 * (ccmWeilPoleUniformDiagonalBound + C_cross) *
+          Real.exp (2 * σ * a.1) * (2 * (2 * Real.sinh a.1 + 2 * a.1 * 1)) := by
+      rw [hexp_split]
+      have hm := mul_le_mul_of_nonneg_left hD1_ge
+        (mul_nonneg hCp_nn (Real.exp_pos (2 * σ * a.1)).le)
+      linarith
+    linarith
+  · have hDm1_ge := half_exp_le_polarParityGram a ha4 (Or.inr rfl)
+    have hsum : -(2 * (ccmWeilPoleUniformDiagonalBound + C_cross) *
+        Real.exp ((1 + 2 * σ) * a.1)) ≤
+        2 * (ccmWeilPoleDiagonal a - ccmWeilPoleCross a) := by
+      linarith [(abs_le.mp hdiag).1, (abs_le.mp hcross).2]
+    have hD_prod : 2 * (ccmWeilPoleUniformDiagonalBound + C_cross) *
+        Real.exp ((1 + 2 * σ) * a.1) ≤
+        4 * (ccmWeilPoleUniformDiagonalBound + C_cross) *
+          Real.exp (2 * σ * a.1) * (2 * (2 * Real.sinh a.1 + 2 * a.1 * (-1))) := by
+      rw [hexp_split]
+      have hm := mul_le_mul_of_nonneg_left hDm1_ge
+        (mul_nonneg hCp_nn (Real.exp_pos (2 * σ * a.1)).le)
+      linarith
+    linarith
+
+private theorem exists_ccmPolarWeilBoundaryDefect_gram_quotient_bound {α β σ : ℝ}
+    (hα_nonneg : 0 ≤ α) (hα_half : α < 1 / 2) (hw_α : zetaZeroWidth ≤ α)
+    (hαβ : α < β) (hβσ : β < σ) :
+    ∃ C_cpl : ℝ, 0 ≤ C_cpl ∧ ∀ a : SuzukiPositiveAperture, 4 ≤ a.1 →
+      ∀ r : ℝ, r = 1 ∨ r = -1 →
+        2 * ‖ccmPolarWeilBoundaryDefect a‖ ≤
+          C_cpl * Real.exp (2 * σ * a.1) *
+            Real.sqrt (2 * (2 * Real.sinh a.1 + 2 * a.1 * r)) := by
+  have hδ : 0 < σ - β := sub_pos.mpr hβσ
+  have h4δ : 0 < 4 * (σ - β) := mul_pos (by norm_num) hδ
+  obtain ⟨C_def, hC_def0, hdef⟩ :=
+    exists_norm_ccmPolarWeilBoundaryDefect_sq_le_of_zetaZeroWidth_le hα_nonneg hα_half hw_α hαβ
+  have hR_arg : 0 ≤ C_def / (4 * (σ - β)) + 1 :=
+    add_nonneg (div_nonneg hC_def0.le h4δ.le) zero_le_one
+  obtain ⟨R_def, hR_nonneg, hR_sq⟩ : ∃ R_def : ℝ, 0 ≤ R_def ∧
+      R_def ^ 2 = C_def / (4 * (σ - β)) + 1 :=
+    ⟨Real.sqrt (C_def / (4 * (σ - β)) + 1), Real.sqrt_nonneg _, Real.sq_sqrt hR_arg⟩
+  refine ⟨4 * R_def, mul_nonneg (by norm_num) hR_nonneg, fun a ha4 r hr => ?_⟩
+  have ha1 : 1 ≤ a.1 := by linarith
+  have ha_exp_δ : a.1 ≤ (1 / (4 * (σ - β))) * Real.exp (4 * (σ - β) * a.1) := by
+    have h := Real.add_one_le_exp (4 * (σ - β) * a.1)
+    have hpos4 : 0 ≤ 1 / (4 * (σ - β)) := div_nonneg zero_le_one h4δ.le
+    have hmul := mul_le_mul_of_nonneg_left h hpos4
+    have hcancel : (1 / (4 * (σ - β))) * (4 * (σ - β) * a.1 + 1) =
+        a.1 + 1 / (4 * (σ - β)) := by
+      field_simp [hδ.ne']
+    linarith
+  have hd_sq := hdef a ha1
+  have hexp_4δ_eq : Real.exp (4 * (σ - β) * a.1) * Real.exp ((1 + 4 * β) * a.1) =
+      Real.exp ((2 : ℕ) * ((1 / 2 + 2 * σ) * a.1)) := by
+    rw [← Real.exp_add]; congr 1; push_cast; ring
+  have hd_sq' : ‖ccmPolarWeilBoundaryDefect a‖ ^ 2 ≤
+      (R_def * Real.exp ((1 / 2 + 2 * σ) * a.1)) ^ 2 := by
+    rw [mul_pow, hR_sq, ← Real.exp_nat_mul]
+    calc ‖ccmPolarWeilBoundaryDefect a‖ ^ 2
+        ≤ C_def * a.1 * Real.exp ((1 + 4 * β) * a.1) := hd_sq
+      _ ≤ C_def * ((1 / (4 * (σ - β))) * Real.exp (4 * (σ - β) * a.1)) *
+            Real.exp ((1 + 4 * β) * a.1) :=
+          mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_left ha_exp_δ hC_def0.le) (Real.exp_pos _).le
+      _ = (C_def / (4 * (σ - β))) *
+            (Real.exp (4 * (σ - β) * a.1) * Real.exp ((1 + 4 * β) * a.1)) := by ring
+      _ = (C_def / (4 * (σ - β))) * Real.exp ((2 : ℕ) * ((1 / 2 + 2 * σ) * a.1)) := by
+          rw [hexp_4δ_eq]
+      _ ≤ (C_def / (4 * (σ - β)) + 1) * Real.exp ((2 : ℕ) * ((1 / 2 + 2 * σ) * a.1)) :=
+          mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
+  have hdef_a : ‖ccmPolarWeilBoundaryDefect a‖ ≤ R_def * Real.exp ((1 / 2 + 2 * σ) * a.1) :=
+    (abs_le_of_sq_le_sq' hd_sq' (mul_nonneg hR_nonneg (Real.exp_pos _).le)).2
+  have hD_ge := half_exp_le_polarParityGram a ha4 hr
+  have hsD_ge : (1 / 2) * Real.exp (a.1 / 2) ≤
+      Real.sqrt (2 * (2 * Real.sinh a.1 + 2 * a.1 * r)) := by
+    refine Real.le_sqrt_of_sq_le ?_
+    calc ((1 / 2) * Real.exp (a.1 / 2)) ^ 2
+        = (1 / 4) * Real.exp a.1 := by
+          rw [mul_pow, ← Real.exp_nat_mul, show ((2 : ℕ) * (a.1 / 2) : ℝ) = a.1 by push_cast; ring]
+          norm_num
+      _ ≤ (1 / 2) * Real.exp a.1 := by linarith [Real.exp_pos a.1]
+      _ ≤ 2 * (2 * Real.sinh a.1 + 2 * a.1 * r) := hD_ge
+  calc 2 * ‖ccmPolarWeilBoundaryDefect a‖
+      ≤ 2 * (R_def * Real.exp ((1 / 2 + 2 * σ) * a.1)) := by linarith
+    _ = 4 * R_def * Real.exp (2 * σ * a.1) * ((1 / 2) * Real.exp (a.1 / 2)) := by
+        have hexp_eq : Real.exp ((1 / 2 + 2 * σ) * a.1) =
+            Real.exp (2 * σ * a.1) * Real.exp (a.1 / 2) := by
+          rw [← Real.exp_add]; congr 1; ring
+        rw [hexp_eq]; ring
+    _ ≤ 4 * R_def * Real.exp (2 * σ * a.1) *
+          Real.sqrt (2 * (2 * Real.sinh a.1 + 2 * a.1 * r)) :=
+        mul_le_mul_of_nonneg_left hsD_ge
+          (mul_nonneg (mul_nonneg (by norm_num) hR_nonneg) (Real.exp_pos (2 * σ * a.1)).le)
 
 /-- **Unconditional polar-to-full rate bridge.** Every rate `σ > polarGroundEnergyRate` satisfies
 `CompensatedWidthFloor σ` unconditionally, without any off-line zero-clustering hypothesis. -/
@@ -963,38 +1208,25 @@ theorem compensatedWidthFloor_of_polarGroundEnergyRate_lt {σ : ℝ}
     CompensatedWidthFloor σ := by
   rcases le_or_gt (1 / 2) σ with hhalf | hσ_half
   · exact compensatedWidthFloor_of_half_le hhalf
-  · let σ₀ := polarGroundEnergyRate
-    have hσ₀_nonneg : 0 ≤ σ₀ := polarGroundEnergyRate_nonneg
-    have hgap : 0 < σ - σ₀ := sub_pos.mpr hσ
-    let α : ℝ := σ₀ + (σ - σ₀) / 3
-    let β : ℝ := σ₀ + 2 * (σ - σ₀) / 3
-    have hα_gt : σ₀ < α := by dsimp [α]; linarith
-    have hα_nonneg : 0 ≤ α := by linarith
-    have hα_half : α < 1 / 2 := by dsimp [α]; linarith
-    have hαβ : α < β := by dsimp [α, β]; linarith
-    have hβσ : β < σ := by dsimp [β]; linarith
-    have hδ : 0 < σ - β := sub_pos.mpr hβσ
+  · obtain ⟨α, hα_gt, hα_lt_σ⟩ := exists_between hσ
+    obtain ⟨β, hαβ, hβσ⟩ := exists_between hα_lt_σ
+    have hα_nonneg : 0 ≤ α := polarGroundEnergyRate_nonneg.trans hα_gt.le
+    have hα_half : α < 1 / 2 := hα_lt_σ.trans hσ_half
     have hw_α : zetaZeroWidth ≤ α :=
       zetaZeroWidth_le_polarGroundEnergyRate.trans hα_gt.le
     obtain ⟨σ₁, hσ₁_mem, hσ₁_lt⟩ := exists_lt_of_csInf_lt
       ⟨1 / 2, half_mem_polarGroundEnergyRates⟩ hα_gt
     obtain ⟨_, C₁, A₁, hC₁⟩ := hσ₁_mem
-    obtain ⟨B_prim, hB_prim0, hprim⟩ :=
-      exists_abs_deficitPrimitive_le_of_zetaZeroWidth_le hα_nonneg hα_half hw_α hαβ
-    obtain ⟨C_def, hC_def0, hdef⟩ :=
-      exists_norm_ccmPolarWeilBoundaryDefect_sq_le_of_zetaZeroWidth_le hα_nonneg hα_half hw_α hαβ
-    let K_lin : ℝ := |-Real.eulerMascheroniConstant - Real.log (2 * Real.pi)| + Real.log 4 + 5
-    let C_cross : ℝ := B_prim * (3 / (2 * (σ - β)) + 1) +
-      (2 * Real.log 2 + Real.pi + 1) + K_lin / (σ - β) + 1
-    let C_pole : ℝ := 4 * (ccmWeilPoleUniformDiagonalBound + C_cross)
-    let C_cpl : ℝ := 4 * Real.sqrt (C_def / (4 * (σ - β)) + 1)
-    let C_tot : ℝ := max C₁ 0 + C_pole + 2 * C_cpl
+    obtain ⟨C_pole, hCp_nonneg, hpole⟩ :=
+      exists_ccmWeilPoleEntry_exp_bounds hα_nonneg hα_half hw_α hαβ hβσ
+    obtain ⟨C_cpl, hCcpl_nonneg, hcpl⟩ :=
+      exists_ccmPolarWeilBoundaryDefect_gram_quotient_bound hα_nonneg hα_half hw_α hαβ hβσ
     rw [compensatedWidthFloor_iff_groundEnergy_ge_neg_exp]
-    refine ⟨C_tot, max 4 A₁, fun a ha_ge => ?_⟩
+    refine ⟨max C₁ 0 + C_pole + 2 * C_cpl, max 4 A₁, fun a ha_ge => ?_⟩
     have ha4 : 4 ≤ a.1 := (le_max_left 4 A₁).trans ha_ge
     have haA₁ : A₁ ≤ a.1 := (le_max_right 4 A₁).trans ha_ge
-    have ha1 : 1 ≤ a.1 := by linarith
     have ha0 : 0 < a.1 := a.2
+    have hσ₁_lt_σ : σ₁ < σ := hσ₁_lt.trans hα_lt_σ
     have hμ₀ : -(max C₁ 0 * Real.exp (2 * σ * a.1)) ≤ ccmRestrictedWeilPolarGroundEnergy a := by
       have h1 := hC₁ a haA₁
       have hexp : Real.exp (2 * σ₁ * a.1) ≤ Real.exp (2 * σ * a.1) :=
@@ -1006,174 +1238,9 @@ theorem compensatedWidthFloor_of_polarGroundEnergyRate_lt {σ : ℝ}
           _ ≤ max C₁ 0 * Real.exp (2 * σ * a.1) :=
               mul_le_mul_of_nonneg_left hexp (le_max_right C₁ 0)
       linarith
-    have ha_exp_δ : a.1 ≤ (1 / (4 * (σ - β))) * Real.exp (4 * (σ - β) * a.1) := by
-      have h := Real.add_one_le_exp (4 * (σ - β) * a.1)
-      have hmul := mul_le_mul_of_nonneg_left h (show 0 ≤ 1 / (4 * (σ - β)) by positivity)
-      have hcancel : (1 / (4 * (σ - β))) * (4 * (σ - β) * a.1 + 1) =
-          a.1 + 1 / (4 * (σ - β)) := by
-        field_simp [hδ.ne']
-      linarith [show (0 : ℝ) ≤ 1 / (4 * (σ - β)) by positivity]
-    have ha_exp_2δ : 1 + 2 * a.1 ≤ (3 / (2 * (σ - β))) * Real.exp (2 * (σ - β) * a.1) := by
-      have h := Real.add_one_le_exp (2 * (σ - β) * a.1)
-      have h3a : 1 + 2 * a.1 ≤ 3 * a.1 := by linarith
-      have hmul := mul_le_mul_of_nonneg_left h (show 0 ≤ 3 / (2 * (σ - β)) by positivity)
-      have hcancel : (3 / (2 * (σ - β))) * (2 * (σ - β) * a.1 + 1) =
-          3 * a.1 + 3 / (2 * (σ - β)) := by
-        field_simp [hδ.ne']
-      linarith [show (0 : ℝ) ≤ 3 / (2 * (σ - β)) by positivity]
-    have ha_exp_σ : 2 * a.1 ≤ (1 / (σ - β)) * Real.exp ((1 + 2 * σ) * a.1) := by
-      have h := Real.add_one_le_exp (2 * (σ - β) * a.1)
-      have hexp_le : Real.exp (2 * (σ - β) * a.1) ≤ Real.exp ((1 + 2 * σ) * a.1) :=
-        Real.exp_le_exp.mpr (by nlinarith)
-      have hmul := mul_le_mul_of_nonneg_left (h.trans hexp_le)
-        (show 0 ≤ 1 / (σ - β) by positivity)
-      have hcancel : (1 / (σ - β)) * (2 * (σ - β) * a.1 + 1) =
-          2 * a.1 + 1 / (σ - β) := by
-        field_simp [hδ.ne']
-      linarith [show (0 : ℝ) ≤ 1 / (σ - β) by positivity]
-    have hdiag : |ccmWeilPoleDiagonal a| ≤
-        ccmWeilPoleUniformDiagonalBound * Real.exp ((1 + 2 * σ) * a.1) := by
-      refine (abs_ccmWeilPoleDiagonal_le a).trans ?_
-      exact mul_le_mul_of_nonneg_left
-        (Real.exp_le_exp.mpr (by nlinarith)) ccmWeilPoleUniformDiagonalBound_pos.le
-    have hcross : |ccmWeilPoleCross a| ≤ C_cross * Real.exp ((1 + 2 * σ) * a.1) := by
-      have hp := hprim (2 * a.1) (by linarith)
-      rw [← ccmPoleIntegratedChebyshevDeficit_eq_logPrimitive] at hp
-      have hexp_2δ_eq : Real.exp (2 * (σ - β) * a.1) * Real.exp ((1 / 2 + β) * (2 * a.1)) =
-          Real.exp ((1 + 2 * σ) * a.1) := by
-        rw [← Real.exp_add]
-        congr 1
-        ring
-      have hp' : |ccmPoleIntegratedChebyshevDeficit a| ≤
-          B_prim * (3 / (2 * (σ - β)) + 1) * Real.exp ((1 + 2 * σ) * a.1) := by
-        calc |ccmPoleIntegratedChebyshevDeficit a|
-            ≤ B_prim * (1 + 2 * a.1) * Real.exp ((1 / 2 + β) * (2 * a.1)) := hp
-          _ ≤ B_prim * ((3 / (2 * (σ - β))) * Real.exp (2 * (σ - β) * a.1)) *
-                Real.exp ((1 / 2 + β) * (2 * a.1)) :=
-              mul_le_mul_of_nonneg_right
-                (mul_le_mul_of_nonneg_left ha_exp_2δ hB_prim0) (Real.exp_pos _).le
-          _ = B_prim * (3 / (2 * (σ - β))) *
-                (Real.exp (2 * (σ - β) * a.1) * Real.exp ((1 / 2 + β) * (2 * a.1))) := by ring
-          _ = B_prim * (3 / (2 * (σ - β))) * Real.exp ((1 + 2 * σ) * a.1) := by rw [hexp_2δ_eq]
-          _ ≤ B_prim * (3 / (2 * (σ - β)) + 1) * Real.exp ((1 + 2 * σ) * a.1) := by
-              nlinarith [Real.exp_pos ((1 + 2 * σ) * a.1)]
-      have hdiff := abs_integratedChebyshevDeficit_sub_weilPoleCross_le a
-      have hB := ccmGammaPoleCrossBoundaryMass_le a
-      have htri : |ccmWeilPoleCross a| ≤ |ccmPoleIntegratedChebyshevDeficit a| +
-          |ccmPoleIntegratedChebyshevDeficit a - ccmWeilPoleCross a| := by
-        have h := abs_sub_le (ccmWeilPoleCross a) (ccmPoleIntegratedChebyshevDeficit a) 0
-        rw [sub_zero, sub_zero, abs_sub_comm] at h
-        linarith
-      have h1exp : 1 ≤ Real.exp ((1 + 2 * σ) * a.1) := Real.one_le_exp (by nlinarith)
-      have hK_pos : 0 ≤ K_lin := by dsimp [K_lin]; positivity
-      have hB_pos : 0 ≤ 2 * Real.log 2 + Real.pi + 1 := by positivity
-      have hK_term : K_lin * (2 * a.1) ≤ (K_lin / (σ - β)) * Real.exp ((1 + 2 * σ) * a.1) := by
-        calc K_lin * (2 * a.1)
-            ≤ K_lin * ((1 / (σ - β)) * Real.exp ((1 + 2 * σ) * a.1)) :=
-              mul_le_mul_of_nonneg_left ha_exp_σ hK_pos
-          _ = (K_lin / (σ - β)) * Real.exp ((1 + 2 * σ) * a.1) := by ring
-      dsimp only [C_cross, K_lin] at *
-      nlinarith [mul_le_mul_of_nonneg_left h1exp hB_pos]
-    have hdef_a : ‖ccmPolarWeilBoundaryDefect a‖ ≤
-        Real.sqrt (C_def / (4 * (σ - β)) + 1) * Real.exp ((1 / 2 + 2 * σ) * a.1) := by
-      have hd_sq := hdef a ha1
-      have hexp_4δ_eq : Real.exp (4 * (σ - β) * a.1) * Real.exp ((1 + 4 * β) * a.1) =
-          Real.exp ((2 : ℕ) * ((1 / 2 + 2 * σ) * a.1)) := by
-        rw [← Real.exp_add]
-        congr 1
-        push_cast
-        ring
-      have hd_sq' : ‖ccmPolarWeilBoundaryDefect a‖ ^ 2 ≤
-          (Real.sqrt (C_def / (4 * (σ - β)) + 1) * Real.exp ((1 / 2 + 2 * σ) * a.1)) ^ 2 := by
-        rw [mul_pow, Real.sq_sqrt (by positivity), ← Real.exp_nat_mul]
-        calc ‖ccmPolarWeilBoundaryDefect a‖ ^ 2
-            ≤ C_def * a.1 * Real.exp ((1 + 4 * β) * a.1) := hd_sq
-          _ ≤ C_def * ((1 / (4 * (σ - β))) * Real.exp (4 * (σ - β) * a.1)) *
-                Real.exp ((1 + 4 * β) * a.1) :=
-              mul_le_mul_of_nonneg_right
-                (mul_le_mul_of_nonneg_left ha_exp_δ hC_def0.le) (Real.exp_pos _).le
-          _ = (C_def / (4 * (σ - β))) *
-                (Real.exp (4 * (σ - β) * a.1) * Real.exp ((1 + 4 * β) * a.1)) := by ring
-          _ = (C_def / (4 * (σ - β))) * Real.exp ((2 : ℕ) * ((1 / 2 + 2 * σ) * a.1)) := by
-              rw [hexp_4δ_eq]
-          _ ≤ (C_def / (4 * (σ - β)) + 1) * Real.exp ((2 : ℕ) * ((1 / 2 + 2 * σ) * a.1)) := by
-              nlinarith [Real.exp_pos ((2 : ℕ) * ((1 / 2 + 2 * σ) * a.1))]
-      exact (abs_le_of_sq_le_sq' hd_sq' (by positivity)).2
-    have hCp_nonneg : 0 ≤ C_pole := by
-      dsimp [C_pole, C_cross, K_lin]
-      have := ccmWeilPoleUniformDiagonalBound_pos
-      positivity
-    have hCcpl_nonneg : 0 ≤ C_cpl := by dsimp [C_cpl]; positivity
-    have hexp_split : Real.exp ((1 + 2 * σ) * a.1) =
-        Real.exp (2 * σ * a.1) * Real.exp a.1 := by
-      rw [← Real.exp_add]; congr 1; ring
-    have h1_entry : -(C_pole * Real.exp (2 * σ * a.1) *
-        (2 * (2 * Real.sinh a.1 + 2 * a.1 * 1))) ≤
-        2 * (ccmWeilPoleDiagonal a + ccmWeilPoleCross a) := by
-      have hD1_ge := half_exp_le_polarParityGram a ha4 (Or.inl rfl)
-      have hsum : -(2 * (ccmWeilPoleUniformDiagonalBound + C_cross) *
-          Real.exp ((1 + 2 * σ) * a.1)) ≤
-          2 * (ccmWeilPoleDiagonal a + ccmWeilPoleCross a) := by
-        linarith [(abs_le.mp hdiag).1, (abs_le.mp hcross).1]
-      have hD_prod : 2 * (ccmWeilPoleUniformDiagonalBound + C_cross) *
-          Real.exp ((1 + 2 * σ) * a.1) ≤
-          C_pole * Real.exp (2 * σ * a.1) * (2 * (2 * Real.sinh a.1 + 2 * a.1 * 1)) := by
-        rw [hexp_split]
-        have hm := mul_le_mul_of_nonneg_left hD1_ge
-          (mul_nonneg hCp_nonneg (Real.exp_pos (2 * σ * a.1)).le)
-        dsimp [C_pole] at hm ⊢
-        linarith
-      linarith
-    have hm1_entry : -(C_pole * Real.exp (2 * σ * a.1) *
-        (2 * (2 * Real.sinh a.1 + 2 * a.1 * (-1)))) ≤
-        2 * (ccmWeilPoleDiagonal a - ccmWeilPoleCross a) := by
-      have hDm1_ge := half_exp_le_polarParityGram a ha4 (Or.inr rfl)
-      have hsum : -(2 * (ccmWeilPoleUniformDiagonalBound + C_cross) *
-          Real.exp ((1 + 2 * σ) * a.1)) ≤
-          2 * (ccmWeilPoleDiagonal a - ccmWeilPoleCross a) := by
-        linarith [(abs_le.mp hdiag).1, (abs_le.mp hcross).2]
-      have hD_prod : 2 * (ccmWeilPoleUniformDiagonalBound + C_cross) *
-          Real.exp ((1 + 2 * σ) * a.1) ≤
-          C_pole * Real.exp (2 * σ * a.1) * (2 * (2 * Real.sinh a.1 + 2 * a.1 * (-1))) := by
-        rw [hexp_split]
-        have hm := mul_le_mul_of_nonneg_left hDm1_ge
-          (mul_nonneg hCp_nonneg (Real.exp_pos (2 * σ * a.1)).le)
-        dsimp [C_pole] at hm ⊢
-        linarith
-      linarith
-    have hquot : ∀ r : ℝ, r = 1 ∨ r = -1 →
-        2 * ‖ccmPolarWeilBoundaryDefect a‖ ≤
-          C_cpl * Real.exp (2 * σ * a.1) *
-            Real.sqrt (2 * (2 * Real.sinh a.1 + 2 * a.1 * r)) := by
-      intro r hr
-      have hD_ge := half_exp_le_polarParityGram a ha4 hr
-      have hsD_ge : (1 / 2) * Real.exp (a.1 / 2) ≤
-          Real.sqrt (2 * (2 * Real.sinh a.1 + 2 * a.1 * r)) := by
-        refine Real.le_sqrt_of_sq_le ?_
-        calc ((1 / 2) * Real.exp (a.1 / 2)) ^ 2
-            = (1 / 4) * Real.exp a.1 := by
-              rw [mul_pow, ← Real.exp_nat_mul]
-              norm_num
-              congr 1; ring
-          _ ≤ (1 / 2) * Real.exp a.1 := by linarith [Real.exp_pos a.1]
-          _ ≤ 2 * (2 * Real.sinh a.1 + 2 * a.1 * r) := hD_ge
-      calc 2 * ‖ccmPolarWeilBoundaryDefect a‖
-          ≤ 2 * (Real.sqrt (C_def / (4 * (σ - β)) + 1) *
-              Real.exp ((1 / 2 + 2 * σ) * a.1)) := by linarith [hdef_a]
-        _ = C_cpl * Real.exp (2 * σ * a.1) * ((1 / 2) * Real.exp (a.1 / 2)) := by
-            dsimp [C_cpl]
-            have hexp_eq : Real.exp ((1 / 2 + 2 * σ) * a.1) =
-                Real.exp (2 * σ * a.1) * Real.exp (a.1 / 2) := by
-              rw [← Real.exp_add]; congr 1; ring
-            rw [hexp_eq]
-            ring
-        _ ≤ C_cpl * Real.exp (2 * σ * a.1) *
-              Real.sqrt (2 * (2 * Real.sinh a.1 + 2 * a.1 * r)) :=
-            mul_le_mul_of_nonneg_left hsD_ge
-              (mul_nonneg hCcpl_nonneg (Real.exp_pos (2 * σ * a.1)).le)
     exact ccmRestrictedWeilGroundEnergy_ge_of_polar_and_defect_bounds a ha4
       (le_max_right C₁ 0) hCp_nonneg hCcpl_nonneg (Real.exp_pos (2 * σ * a.1)).le
-      hμ₀ h1_entry hm1_entry hquot
+      hμ₀ (hpole a ha4).1 (hpole a ha4).2 (hcpl a ha4)
 
 /-- **Unconditional equality of the unrestricted and polar restricted-Weil ground-energy rates.**
 Removing the two polar constraints cannot increase the exponential ground-energy growth rate. -/

@@ -2,7 +2,8 @@
 
 - **ID:** qii-origin-mass-boundary-density
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CONJECTURE (Lean verification pending)
+- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass.
 - **Source:** ../1-in-progress/q-ii-source-effectivity-and-linear-degree.md
 - **Statement:** Genuine Poisson boundaries are dense in the canonical half-density L2 completion of the all-weight Meyer source; every genuine class therefore has representatives with arbitrarily small origin square mass.
 

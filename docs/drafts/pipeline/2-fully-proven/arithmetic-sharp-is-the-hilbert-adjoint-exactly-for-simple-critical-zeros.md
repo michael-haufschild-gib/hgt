@@ -2,7 +2,8 @@
 
 - **ID:** qii-meyer-sharp-adjoint
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CONJECTURE (Lean verification pending)
+- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass.
 - **Source:** ../1-in-progress/q-ii-source-effectivity-and-linear-degree.md
 - **Statement:** In the actual faithful full-Hasse Hilbert convolution representation, arithmetic sharp equals Hilbert adjoint for every original source if and only if RH holds and every Xi zero is simple.
 
@@ -15,7 +16,7 @@ genuine Poisson boundary. `DeningerMeyerConvolutionWeilTrace` explicitly
 distinguishes arithmetic sharp from the Hilbert adjoint. Corpus searches
 found no theorem identifying them unconditionally.
 
-## Paper proof [PROVED HERE]
+## Proof argument (Lean verification pending)
 
 Write `T_g` for the actual bounded convolution operator. Suppose
 `T_(g^sharp)=T_g^*` for every source. If `g*g^sharp` is a Poisson boundary,
@@ -50,8 +51,9 @@ diagonal value coordinates when invoking Hilbert positivity.
 - Apply actual convolution faithfulness and the sharp-root criterion.
 - Audit both directions and the resulting faithful positive representation criterion.
 
-All inputs have unconditional proofs or complete paper proofs on the cited
-Q-II cards. Lean implementation pending. External novelty unverified.
+The actual module uses the existing source representation and the certified
+sharp-root criterion. Its adjoint proof and three transitive axiom audits
+remain unverified. External novelty unverified.
 
 Actual candidate file exists with endpoint axiom prints; its actual-file
 verification is pending. It is not wired into the umbrella.

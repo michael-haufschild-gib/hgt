@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-digit-cofactor-convolution
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Digital energy and payment](../2-fully-proven/biarithmetic-digital-energy-and-prime-tower-payment.md)
+- **Parent:** [Digital energy and payment](../1-in-progress/biarithmetic-digital-energy-and-prime-tower-payment.md)
 - **Statement:** Every signed prime-five cofactor packet is exactly the digit row of a causal geometric convolution.
 
 ## Exact identity

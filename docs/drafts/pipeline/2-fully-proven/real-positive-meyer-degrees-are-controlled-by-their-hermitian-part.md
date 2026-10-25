@@ -2,7 +2,8 @@
 
 - **ID:** qii-hermitian-part-degree
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CONJECTURE (Lean verification pending)
+- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass.
 - **Source:** ../1-in-progress/q-ii-source-effectivity-and-linear-degree.md
 - **Statement:** For every complex-linear degree on genuine Meyer cohomology, the real sharp-square reading equals the reading of its canonical Hermitian part. If nonnegative, that part restricts on every finite jet packet to nonnegative critical value weights.
 

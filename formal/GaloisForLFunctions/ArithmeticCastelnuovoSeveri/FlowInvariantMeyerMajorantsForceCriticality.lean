@@ -52,6 +52,7 @@ theorem meyerEvaluation_bounded_of_trace_majorant
   let z := deningerMeyerStrongLogMellin g (rho : ℂ)
   let m : ℝ := xiSupportMultiplicity rho
   have hm : 1 ≤ m := by
+    dsimp only [m]
     exact_mod_cast (show 1 ≤ xiSupportMultiplicity rho from xiSupportMultiplicity_pos rho)
   have hr : meyerSourceTrace g h0 = m * z.re := by
     rw [point_trace_reading]
@@ -61,7 +62,7 @@ theorem meyerEvaluation_bounded_of_trace_majorant
   have hi : meyerSourceTrace g h1 = -(m * z.im) := by
     rw [point_trace_reading]
     simp only [Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im,
-      Complex.natCast_re, Complex.natCast_im, zero_mul, one_mul, zero_add, sub_zero, zero_sub]
+      Complex.natCast_re, Complex.natCast_im, zero_mul, one_mul, add_zero, sub_zero, zero_sub]
     rfl
   have h0b := hbound g h0
   have h1b := hbound g h1
@@ -118,6 +119,7 @@ theorem meyerSourceConvolution_centered_flow_sharp
         deningerMeyerSourceConvolution g (deningerMeyerSourceSharp h) := by
   apply deningerMeyerStrongLogMellin_injective
   funext s
+  dsimp only
   rw [deningerMeyerSourceConvolution_mellin, deningerMeyerSourceSharp_mellin,
     meyerCenteredSourceFlow_mellin, meyerCenteredSourceFlow_mellin,
     deningerMeyerSourceConvolution_mellin, deningerMeyerSourceSharp_mellin]
@@ -171,9 +173,3 @@ theorem exists_invariant_meyer_trace_majorant_iff :
     simpa only [meyerScalingSurface_defect] using hb
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerEvaluation_bounded_of_trace_majorant
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyer_trace_majorant_invariant_forces_criticality
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerSourceConvolution_centered_flow_sharp
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerSourceProductReading_centered_flow
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_invariant_meyer_trace_majorant_iff

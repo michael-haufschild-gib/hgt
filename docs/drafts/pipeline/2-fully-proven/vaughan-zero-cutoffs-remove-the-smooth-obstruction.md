@@ -2,7 +2,8 @@
 
 - **ID:** vaughan-zero-cutoffs-remove-the-smooth-obstruction
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CLAIM (Lean verification pending)
+- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
 - **Statement:** When either Vaughan cutoff is zero, the admitted coefficient dimension below half damping is three or four according to admission of the actual receiver. At half damping it is four. This gives the exact boundary of the positive-cutoff dimension law.
 - **Novelty status:** Algebraic corollary of the checked fixed-packet normal form; no external novelty claim.

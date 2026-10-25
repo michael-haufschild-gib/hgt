@@ -2,10 +2,10 @@
 
 - **ID:** finite-cofactor-index-counts-joint-spectral-multiplicity
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Type:** CONJECTURE (Lean completion pending)
 - **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
 - **Statement:** In the finite-dimensional branch of every actual cofactor
-  module, the module hull is a finite set of joint generalized characters.
+  module, the normalized module hull is a finite set of joint generalized characters.
   Its closed-annihilator index is the sum of the positive dimensions of their
   joint generalized eigenspaces. These are module multiplicities, not yet
   identified with orders of arithmetic zeros.
@@ -58,7 +58,7 @@ chi choose a_chi with phi(a_chi)!=chi(a_chi). Choose N_chi so that
 annihilates every J_chi, hence all H, by commutativity and the exhaustive
 decomposition. Therefore b belongs to I. But phi(b) is a finite product of
 nonzero numbers, contradicting that phi vanishes on I. This proves that the
-hull consists exactly of the finite joint-character set.
+normalized hull consists exactly of the finite joint-character set.
 
 Finally cyclicity identifies W/I linearly with H in finite dimension. Its
 index is consequently the sum of `dim J_omega` over the distinct characters

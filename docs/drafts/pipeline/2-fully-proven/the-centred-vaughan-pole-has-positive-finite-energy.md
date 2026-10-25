@@ -2,7 +2,8 @@
 
 - **ID:** the-centred-vaughan-pole-has-positive-finite-energy
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CLAIM (Lean verification pending)
+- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
 - **Source:** uniform-vaughan-residual-power-rates-are-fixed-strips.md
 - **Statement:** For every `ε≥0`, the centered pole energy has a cutoff-independent limit `L_ε` with `2^(-2ε)/32≤L_ε≤1/4`. Consequently its normalization by `T^(1-2ε)` cannot decay with a larger power exponent.
 - **Novelty status:** Exact positive first-cell refinement of the existing active-pair energy bound. No external novelty claim.

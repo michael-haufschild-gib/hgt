@@ -247,6 +247,37 @@ theorem exists_faithful_positive_bounded_meyer_degree_iff :
       le_antisymm (le_of_not_gt hnot) (meyerHilbertReserve_nonneg _)
     exact hnonprincipal ((meyerHilbertReserve_eq_zero_iff (0, 0, g)).mp hz)
 
+/-- Exact linear-degree representation on bounded sources detects critical simplicity alone. -/
+theorem exists_meyerBoundedHilbertReserve_linear_degree_iff :
+    (∃ d : DeningerMeyerStrongLogCohomology →ₗ[ℂ] ℂ,
+      ∀ g : DeningerMeyerStrongLogTarget, MeyerCriticalTopJets g →
+        meyerHilbertReserve (0, 0, g) =
+          (d (Submodule.Quotient.mk
+            (deningerMeyerSourceConvolution g (deningerMeyerSourceSharp g)))).re) ↔
+      ∀ rho : XiDivisorSupport, (rho : ℂ).re = 1 / 2 → xiSupportMultiplicity rho = 1 := by
+  constructor
+  · rintro ⟨d, hd⟩
+    apply exists_faithful_positive_bounded_meyer_degree_iff.mp
+    refine ⟨d, fun g hg hnot => ?_⟩
+    rw [← hd g hg]
+    exact lt_of_le_of_ne (meyerHilbertReserve_nonneg _) (fun he =>
+      hnot ((meyerHilbertReserve_eq_zero_iff (0, 0, g)).mp he.symm))
+  · intro hs
+    refine ⟨meyerCohomologyTraceDegree, fun g hg => ?_⟩
+    rw [← meyerSourceTrace_eq_degree_product]
+    exact meyerBounded_reserve_eq_trace_iff.mpr hs g hg
+
+/-- Linear representation of the bounded reserve is exactly its restricted RR condition. -/
+theorem meyerBoundedHilbertSourceCone_riemannRoch_iff_linear_degree :
+    meyerBoundedSurface.RiemannRochAxiom meyerBoundedHilbertSourceCone ↔
+      ∃ d : DeningerMeyerStrongLogCohomology →ₗ[ℂ] ℂ,
+        ∀ g : DeningerMeyerStrongLogTarget, MeyerCriticalTopJets g →
+          meyerHilbertReserve (0, 0, g) =
+            (d (Submodule.Quotient.mk
+              (deningerMeyerSourceConvolution g (deningerMeyerSourceSharp g)))).re :=
+  meyerBoundedHilbertSourceCone_riemannRoch_iff.trans
+    exists_meyerBoundedHilbertReserve_linear_degree_iff.symm
+
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerBounded_sharp_eq_adjoint_of_critical_simple
@@ -260,3 +291,5 @@ end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerBoundedHilbertReserve_flow_invariant
 
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_faithful_positive_bounded_meyer_degree_iff
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_meyerBoundedHilbertReserve_linear_degree_iff
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerBoundedHilbertSourceCone_riemannRoch_iff_linear_degree

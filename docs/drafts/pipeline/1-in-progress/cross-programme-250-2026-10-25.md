@@ -38,6 +38,26 @@ sieve); integrate and translate: `κ = ρ Σ_δ μ(δ)w(δ)² ‖g_δ‖₂²`, 
 `ζ(1+it) ≠ 0` give `ĝ_δ(t) = B_δ(it)/(it ζ(1+it))`; Plancherel. (3) swap `Σ_δ`, `∫`.
 (4) `B_δ = B/∏_{p|δ}(1 − p^{−s}/(p+1))`, Euler product in `δ`.
 
+C4 (THIM §7.7): divergent critical-line mass. For `f(p) = (1 − c g(p)) cos(t₀ log p)`,
+`g(p) = Σ_k w_k p^{−s_k}`, the half-damped receiver is paid iff `∫_0^1 e^{−cΛ(ρ)} dρ/ρ < ∞` or
+`ζ(1/2+it₀) = 0`, `Λ(ρ) = Σ_k w_k log(1/(s_k+ρ))`.
+Paper proof: Euler product gives `log|F(w)| = ½(Z(w−it₀)+Z(w+it₀)) − (c/2)Σ w_k(Z(w+s_k−it₀)+Z(w+s_k+it₀)) + O(1)`,
+`Z = log|ζ|`; on boxes `Z(v) = −log|v−1| + O(1)`, hence `|F|² ≍ h(ρ) = e^{−cΛ(ρ)}/ρ`. Payment: `h` almost
+decreasing, majorant `u⁻¹1_{|τ|<u} + h(|τ|)` uniform in `u`; zero case `|ζ|² ≤ L²ρ²`. Obstruction:
+integrand `≥ κh(u+τ) − C'` on the segment, so `∫_u^r h ≤ (4πE + C'r)/κ`. Harmonic defect:
+`Λ = log log(1/ρ) + O(1)`, threshold `c = 1`; mass divergent via `Σ_p cos² p^{−1−σ} ≥ ½log(1/σ) − C`.
+C6: `1 − c/log log p` has the same threshold (harmonic defect `= 1/y + O(1/y²)`, `Σ_p 1/(p ℓ²) < ∞`).
+
+C5 (THIM §7.7): non-completely-multiplicative patterns at half damping. `f' = g ⋆ f`, `g = f' ⋆ μf`,
+`g(p) = 0`, `|g(p^k)| ≤ 2`; inverse `h` with `Σ_k |h(p^k)|p^{−k} ≤ (1−r_p)^{−1}` (truncations
+`S_K ≤ 1 + r S_K`). `r_p ≤ 3/p²` (odd `p`); `r_2 = 1` iff all two-adic steps extremal iff tails
+`−1` or `(−1)^{k+1}`. Off them `h d^{−1/2}` critical Wiener, `f = h ⋆ f'`: classes coincide. On the
+tail `−1` at `t₀ = 2πm/log 2`: series `(1 − 2^{1−w})F_{t₀}`, factor `≤ 2 min(1,|z|)` cancels
+`|z|^{−1/2}`: paid; companion paid iff `ζ(1/2+it₀) = 0`.
+
 ## Log
 - 2026-10-25 — created; C1, C2 paper proofs complete.
 - 2026-10-25 — C1 formalized (#1). C2 formalized (not counted). C3 formalized (#2).
+- 2026-10-25 — C4 formalized (#3).
+- 2026-10-25 — C5 formalized (#4).
+- 2026-10-25 — C6 formalized (#5).

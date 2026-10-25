@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-finite-geometric-convolution
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Digital energy and payment](../2-fully-proven/biarithmetic-digital-energy-and-prime-tower-payment.md)
+- **Parent:** [Digital energy and payment](../1-in-progress/biarithmetic-digital-energy-and-prime-tower-payment.md)
 - **Statement:** For every real sequence `u`, every `0<=q<1`, and every horizon `R`, causal geometric convolution satisfies `(1-q)^2 sum_(M<=R) C_q(u)_M^2 <= sum_(M<=R) u_M^2`.
 
 ## Exact finite proof

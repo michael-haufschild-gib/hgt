@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-weighted-digit-pronic-energy
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Digital energy and payment](../2-fully-proven/biarithmetic-digital-energy-and-prime-tower-payment.md)
+- **Parent:** [Digital energy and payment](../1-in-progress/biarithmetic-digital-energy-and-prime-tower-payment.md)
 - **Statement:** For arbitrary real base-five digit coefficients `x_l`, the ordinary readout has uniformly bounded pronic energy exactly when `sum_l x_l^2/5^l` converges.
 
 ## Uniform finite theorem

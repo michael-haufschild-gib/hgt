@@ -2,7 +2,8 @@
 
 - **ID:** uniform-second-scale-vaughan-gram-at-all-cutoffs
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CLAIM (Lean verification pending)
+- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
 - **Statement:** The fixed-cutoff smooth-power Gram asymptotic holds uniformly over every pair of cutoffs, without a product-horizon relation.
 - **Novelty status:** A uniform refinement of the checked fixed-cutoff law, derived from the corpus's arbitrary logarithmic Möbius estimates. No external novelty claim.
@@ -289,34 +290,46 @@ final direct checks passed. The scratch file was removed; the completed card is
 The subsequent prefix-to-energy transfer
 retains a common finite-head bound.
 
-`/tmp/QIUniformLogEnergyTools.lean` now drafts that transfer as six generic
-targets: a common linear majorant pays the finite head of an eventual smooth-power
-bound; a finite split controls pronic energy; a square-root split preserves all
-uniform logarithmic energy and norm rates; fixed logarithms lie below positive norm powers;
-bounded norm families inherit those logarithmic rates. The first scratch check
-found two uses of a shadowed addition-order lemma with the wrong orientation.
-Both were replaced by explicit two-sided addition bounds; the corrected check is
-running. The three independent targets audited with standard axioms, while the
-dependent targets require that corrected check.
+The six generic prefix-to-energy targets passed their corrected scratch checks,
+standard-axiom audits, producing check, and final direct repository check.
+`UniformLogarithmicEnergyFromPrefixCancellation.lean` absorbs the common finite
+head, bounds the split pronic sum, preserves every logarithmic energy and norm
+rate, and handles bounded norm families. It is wired; its scratch file was removed.
+The completed card is `../3-formalized/uniform-logarithmic-prefix-to-pronic-energy.md`.
 
 That application is drafted as five further targets in
 `/tmp/QIConvolutionEnergyRateTools.lean`: the common linear floor-transform bound,
 its actual divisor-majorant specialization, the global smooth-power bound, and
 uniform logarithmic pronic norm estimates for both the convolution fluctuation
-and the truncated Möbius receivers. All five remain uncompiled.
+and the truncated Möbius receivers. The first check found a redundant `ring`
+after the preceding rewrite had already closed the identity. It was removed;
+the corrected scratch check passed all five targets with only standard axioms.
+They are migrated and wired as
+`UniformLogarithmicEnergyInTheVaughanConvolution.lean`; producing and final
+direct repository checks passed. The scratch was removed. The completed card is
+`../3-formalized/uniform-logarithmic-vaughan-convolution-energy.md`.
 
 `/tmp/QIMobiusInteriorLogTools.lean` drafts four unconditional actual-receiver targets.
 The read series identity `hasSum_pmPowerDampedRealWeight_div` identifies the mean
 with the reciprocal zeta density. Generic logarithmic prefix and energy transfers
 then apply to the actual Möbius pattern; subtracting the bounded active increment
-gives every logarithmic norm saving for the interior. All four remain uncompiled.
+gives every logarithmic norm saving for the interior. The first check found an
+invalid reverse-definition simplification and an unopened namespace. Both were
+fixed. All four corrected scratch targets passed with standard axioms only.
+They are migrated and wired as `LogarithmicEnergySavingsForTheMobiusInterior.lean`;
+producing and final direct repository checks passed. The scratch was removed.
+The completed card is `../3-formalized/logarithmic-energy-savings-for-the-mobius-interior.md`.
 
 `/tmp/QIUniformVaughanSmoothErrorTools.lean` drafts six targets assembling all five
 rows. The convolution smooth remainder is a bounded unit-pattern correction plus
 the actual coefficient fluctuation. The opposite smooth terms cancel exactly in
 the five-row sum, so the both-large remainder is bounded by the other four rows
 and the interior. Thus all five share every logarithmic norm saving uniformly in
-both cutoffs. These six targets remain uncompiled.
+both cutoffs. A reserved-token conflict and a rewrite targeting the wrong
+summand were corrected. All six scratch targets now pass Lean with standard
+axioms only. The module is migrated and wired as
+`UniformLogarithmicRemaindersInAllVaughanRows.lean`; its producing check is
+running, with the final direct repository check still required.
 
 The finite Gram comparison is drafted as three targets in
 `/tmp/QIPronicGramTools.lean`: a bounded smooth-energy error, a smooth norm
@@ -331,8 +344,10 @@ The first logarithmic-transform scratch check found two algebraic Lean issues
 The cutoff-bounds theorem passed with standard axioms; the complete transfer
 passed its corrected check with standard axioms. No analytic premise was added.
 
-Eleven targets in `/tmp/QIUniformVaughanPacketsTools.lean` draft the homogeneous
-superposition consequences: exact centered and smooth-remainder sums, the norm
+Seven targets in `/tmp/QIUniformVaughanPacketsTools.lean` draft the homogeneous
+superposition consequences: the exact smooth-remainder sum, the norm
 and energy bounds with `L(w)` and `L(w)^2`, the smooth-neutral specialization,
 and zero normalized norms for bounded moving coefficients at independent
-divergent horizon and cutoff-product scales. All remain uncompiled.
+divergent horizon and cutoff-product scales. Four exact finite centering and
+Gram identities are shared with the upper-half branch through
+`/tmp/QIVaughanPacketGramIdentityTools.lean`. All remain uncompiled.

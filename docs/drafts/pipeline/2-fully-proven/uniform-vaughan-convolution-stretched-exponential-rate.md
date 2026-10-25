@@ -2,7 +2,8 @@
 
 - **ID:** uniform-vaughan-convolution-stretched-exponential-rate
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CLAIM (Lean verification pending)
+- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
 - **Statement:** A common stretched-exponential bound controls the summatory truncated Vaughan convolution, uniformly in both cutoffs; consequently one threshold controls all logarithmic orders with factorial growth.
 
@@ -28,7 +29,7 @@ one, so the Mertens saving `s(x)²` is bounded by `s(D)` for every `x≥D`.
 The harmonic bound has the same envelope. The constants are independent of
 `U,V,D,n`.
 
-## Paper proof [PROVED HERE]
+## Argument awaiting Lean verification
 
 Put `D=floor(n^(1/4))`. The already verified cutoff inequalities give, eventually,
 `D²+D≤2sqrt(n)`, `log D≥(log n)/8`, and `h(n)²≤4(log n)²`.

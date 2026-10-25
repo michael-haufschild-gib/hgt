@@ -21,9 +21,31 @@ Answer Q-II in full; formalize the answer and its corollaries without extra anal
 <!-- qii-live-status -->
 ## Current verification checkpoint
 
-Full Q-II remains open. Current owned serial Lean session is **51780**, running
-`/tmp/QIIVerifyFollowup.sh`, logged in `/tmp/qii-verify-followup.tsv`. One owned
-Lean process only; do not start another until this script closes.
+Full Q-II remains open. User requires every significant finding to be formalized;
+paper arguments alone are unverified, not completed results. Prioritize clearing
+the existing Lean candidates before developing further paper-only findings.
+
+User explicitly prohibited scripts for checking Lean. Session **51780** and its
+owned shell/lake/Lean processes were terminated and their exit verified. The
+active and prepared check wrappers were deleted. Do not recreate or run wrappers,
+check loops, or batch scripts. Run each `lake --old env lean ...` command directly,
+from `formal/`, one foreground Lean process at a time.
+
+`FaithfulPositiveMeyerDegrees.lean` passed direct check **90918**, including all six
+transitive axiom audits with only `propext`, `Classical.choice`, and `Quot.sound`.
+The local binder-substitution error from **6529** is fixed. Temporary prints are
+removed; the module is wired, its README and review entries updated, and its card
+moved to stage 3. Missing olean build **96410** passed for actual importers
+`ArithmeticSharpAndTheHilbertAdjoint`, `MeyerFiniteJetAlgebra`, and
+`MeyerCriticalTopAlgebra`. Its olean now exists; never rebuild it.
+
+`PositiveMeyerDegreesCanForgetClasses.lean` passed direct check **85919** and all
+four standard transitive axiom audits. The numeral-coercion error from **60922**
+is fixed. It is cleaned, wired, and documented in the README, review, and stage-3
+faithful-degree card. Missing olean build **20153** passed for the actual
+critical-trace and finite-algebra importers. Its olean now exists; never rebuild it.
+Historical results remain in
+`/tmp/qii-verify-followup.tsv`; that log will no longer update automatically.
 
 `GlobalArithmeticMajorantsSupplyBezout` now passed its actual-file check and all
 eight standard transitive axiom audits. It is cleaned, wired, documented in the
@@ -31,8 +53,8 @@ review, and its card is stage 3. Global reserve gives Bézout, strict ampleness,
 pointedness, convexity and generation on every compact source, and provably fails
 RR. No olean needed yet. Aperture cone geometry failed only its pointedness proof: negative fibre
 readings were not normalized. Explicit flipped-linear-map negation proofs now
-replace that simplification, pending recheck. The surface/dependent leaves remain
-in the active serial script; actual status is recorded in the log.
+replace that simplification, pending a direct recheck. Subsequent dependent leaves
+have not yet been checked; the cancelled script did not reach them.
 
 `MeyerSourceIntersectionSurface` has now passed its actual-file check and all
 nine standard axiom audits, and is wired and documented. Its missing olean
@@ -49,19 +71,27 @@ Two API files failed before their source corrections: smooth finite function sum
 now use an explicit extensional rewrite; compact-open quotient separation now
 uses actual `deningerArithmeticXiRangeClosed` as a local closedness instance.
 `/tmp/QIISmoothCoercionAPIs.lean` and `/tmp/QIIRestrictedSurfaceAPIs.lean` need
-rechecking after 51780 closes. Corrected actual `SmoothFiniteReadingKernels` is
-not in the current queue. The inverse, global-comparison injectivity, and high
+direct rechecks. The latter now also probes the norm approximation extracted
+from `Metric.mem_closure_iff`; the installed statement confirms the distance
+orientation used in the boundary-density draft, so that draft needs no change.
+After the corpus adjoint search, this probe also includes the adjoint norm,
+adjoint characterization, and coordinate inner-product names used by the
+unverified sharp/adjoint module.
+Corrected actual `SmoothFiniteReadingKernels` also needs a direct
+check. The inverse, global-comparison injectivity, and high
 simple critical-point input axiom audits already passed with standard axioms.
 
-New full paper results: algebraic characters have no infinite tail; arbitrary
+Significant unverified findings awaiting Lean: algebraic characters have no infinite tail; arbitrary
 finite Xi projectors split every positive degree's energy; on the bounded source
 carrier faithful-reserve RR is exactly critical simplicity, while reserve-flow
 invariance there is unconditional. The general positive-degree infinite tail
-remains open. New paper card
-`../2-fully-proven/the-critical-meyer-trace-is-positive-but-selective.md`
-constructs the full critical-value trace degree. Draft
-`/tmp/QIICriticalMeyerTraceDegreeDraft.lean` is complete but not yet an actual
-module; `/tmp/QIICriticalTraceAPIs.lean` must be checked first. This canonical
+remains open. Certified card
+`../3-formalized/the-critical-meyer-trace-is-positive-but-selective.md`
+describes the full critical-value trace degree.
+`CriticalMeyerTraceDegree.lean` passed direct recheck **61269** and all ten
+standard transitive axiom audits; it is cleaned and wired. Its API probe passed
+direct check **87678**, including
+the standard transitive axiom audit of the actual quasi-inverse theorem. This canonical
 degree is positive and descended, but original-trace domination is exactly RH
 and faithfulness additionally requires simplicity. It is not an arbitrary-degree
 classification. The restricted theorem does not imply RH or critical simplicity.
@@ -72,20 +102,97 @@ New actual candidates, unverified and unwired:
 `OriginHilbertCohomologyObstruction`,
 `InvariantOriginMassDoesNotBoundTheWeilTrace`, `MeyerHermitianDegreePart`,
 `EveryFiniteMeyerJetGraphIsDenseInOriginHilbertSpace`,
-`FiniteMeyerProjectorsSplitPositiveEnergy`, and `MeyerQuasiInverseRadical`.
-The last leaf proves the paper inversion/radical classification in
-`../2-fully-proven/meyer-trace-radical-is-the-quasi-inverse-radical.md`.
+and `FiniteMeyerProjectorsSplitPositiveEnergy`.
+`MeyerQuasiInverseRadical` is now certified; its inversion/radical classification is in
+`../3-formalized/meyer-trace-radical-is-the-quasi-inverse-radical.md`.
 Their scratch copies and the earlier actual
 candidate scratch copies remain until verification succeeds. The bounded-faithful
-leaf has ten axiom audit endpoints, including existence of any faithful positive
+leaf has twelve axiom audit endpoints, including existence of any faithful positive
 linear degree restricted to bounded classes iff critical simplicity. Paper cards record their current status.
 
-Current script also gates faithful/point/flow, bounded-orbit, adjoint/reserve,
-finite algebra/projector/degree/character, and boundary-density actual checks on
-missing dependency builds, then performs eleven older actual-file final checks. The boundary-density leaf
+Pending direct checks include bounded-orbit, adjoint/reserve,
+finite algebra/projector/degree/character, boundary-density, and the eleven older
+actual-file final checks previously listed in this card. Build a missing dependency
+olean only for its actual importer, with a direct command. The boundary-density leaf
 now also audits the exact classwise lower-bound criterion for origin square
 mass: every representative has mass at least b iff b<=0.
 No existing olean is rebuilt; no umbrella is compiled.
+
+The flow module, its dependency olean, and the actual critical-trace importer
+are certified. Static review of all
+remaining new source candidates is complete; no additional paper-only finding
+was developed during this verification pass.
+
+The actual `FaithfulHilbertSchmidtSourceReserves.lean` candidate now also contains
+`exists_meyerHilbertReserve_linear_degree_iff` and
+`meyerHilbertSourceCone_riemannRoch_iff_linear_degree`, with twelve total audit
+endpoints. They target exact representation of the reserve by a complex-linear
+degree on arithmetic sharp squares, equivalent to RH plus simplicity and to RR.
+Corpus novelty search and dependency-closed argument are recorded on its existing
+unverified card. These are Lean candidates, not certified findings; use the actual
+module, since its older scratch copy lacks these two corollaries.
+
+The bounded-faithful actual module likewise includes
+`exists_meyerBoundedHilbertReserve_linear_degree_iff` and
+`meyerBoundedHilbertSourceCone_riemannRoch_iff_linear_degree`.
+They target exact representation of the reserve on bounded sources iff critical
+simplicity, equivalently its restricted RR condition. Its existing card records
+the seven equivalent candidate assertions and the corpus novelty audit. Its older
+scratch copy also lacks these two corollaries. No new analytic premise is added.
+
+Flow check **24096** failed at three Lean normalization steps: unfolding a local
+real multiplicity before casting, eliminating a trailing zero in the imaginary
+probe, and beta-reducing the Mellin-injectivity goal before rewriting. These are
+corrected. The same beta reduction is added to the unverified reserve-flow leaf.
+Its older scratch copy lacks this correction.
+
+`FlowInvariantMeyerMajorantsForceCriticality.lean` passed direct actual-file
+recheck **28957**, including all five transitive audits with only the standard
+three axioms. Prints are removed; it is wired, documented in the README and
+review, and its card moved to stage 3. Its missing olean is needed by the actual
+`CriticalMeyerTraceDegree` importer. No owned Lean process remains from this check.
+
+Direct missing-olean build **6563** passed for
+`FlowInvariantMeyerMajorantsForceCriticality.lean`. Its olean now exists; never
+rebuild it. The actual critical-trace importer is now being checked directly.
+The old `/tmp/QIIMeyerInvariantMajorantDraft.lean` and
+`/tmp/QIIMeyerFlowNames.lean` files are already absent.
+
+Actual critical-trace check **42274** failed. Required corrections: finish the
+scalar-linearity reduction; replace the nonexistent `tsum_eq_zero` at three
+zero-sum proofs; give the indicator function explicitly in the RH comparison.
+Its failed audit output contains `sorryAx` from these errors and is not a
+certificate. No owned Lean process remains from this check.
+
+`/tmp/QIICriticalTraceZeroSums.lean` passed direct check **70311**, verifying
+`tsum_congr`, `tsum_zero`, and the explicit indicator-function argument. All
+reported critical-trace errors are corrected in the actual module. Its old
+scratch copy lacks these corrections.
+
+`CriticalMeyerTraceDegree.lean` passed direct recheck **61269** with only
+`propext`, `Classical.choice`, and `Quot.sound` in all ten audits. Temporary
+prints are removed; it is wired, documented in the README and review, and its
+card is stage 3. No olean build is needed yet. Its old scratch draft and both
+API scratch files have been deleted after verification.
+
+Quasi-inverse check **62163** failed only on an unreduced `if True` in the
+point-source probe. Its first endpoint audit was standard; the downstream
+failed audits are not certificates. The actual proof now uses `↓reduceIte`.
+The same visible simplification pattern was corrected in two point readings
+of the unverified actual `MeyerAlgebraicCharacters.lean` candidate; its older
+scratch copy lacks these corrections.
+
+`MeyerQuasiInverseRadical.lean` passed direct recheck **13602** with only the
+standard three axioms in all four audits. Prints are removed; it is wired,
+documented in the README and review, and its card is stage 3. Its old scratch
+draft is deleted. No olean build is needed yet. No owned Lean process remains.
+
+Next direct check: the corrected `/tmp/QIIRestrictedSurfaceAPIs.lean` probe,
+then `ArithmeticSharpAndTheHilbertAdjoint.lean`. Before starting the probe,
+inspect the installed quotient Hausdorff API: its current local closedness
+instance may need to use the actual closed-subgroup class rather than a bare
+`IsClosed` proposition. The actual global Xi closed-range theorem is certified
+and was read; no closed-range hypothesis is to be added.
 <!-- /qii-live-status -->
 
 ## Current evidence
@@ -710,11 +817,12 @@ Further proof drafts awaiting their first Lean checks:
   `ACS/OriginDegreeDoesNotDescendThroughPoissonBoundaries.lean`: exact positive origin
   degree, positive-degree Poisson boundary, and failure of descent. Direct source check
   and temporary axiom audit remain pending; it is not wired yet.
-- `/tmp/QIIMeyerSharpRootDraft.lean`: reflected full jets, exact single-jet sharp-square
+- `ACS/FaithfulPositiveMeyerDegrees.lean`: reflected full jets, exact single-jet sharp-square
   classification, sharp-square-root closure of the actual Poisson ideal iff RH plus
   simplicity, and existence of any faithful positive linear cohomological degree iff
-  those same two conditions. The dependency-closed paper proof is recorded in
-  `../2-fully-proven/faithful-positive-meyer-degrees-require-simple-critical-zeros.md`.
+  those same two conditions. Direct actual-file check and all six standard axiom
+  audits passed. The formalized card is
+  `../3-formalized/faithful-positive-meyer-degrees-require-simple-critical-zeros.md`.
 - `/tmp/QIIMeyerPointDegreeDraft.lean`: an unconditional positive linear degree on the
   genuine quotient, with an explicit nonprincipal null source. Hardy supplies a critical
   divisor point; its zeroth Mellin evaluation sends sharp squares to squared norms.
@@ -889,7 +997,7 @@ degrees on the whole quotient are not claimed to be determined by these restrict
 The finite-block algebra identities and classification remain to be formalized.
 
 The Meyer invariant-majorant conjecture now has a dependency-closed paper proof:
-`../2-fully-proven/flow-invariant-meyer-majorants-force-criticality.md`.
+`../3-formalized/flow-invariant-meyer-majorants-force-criticality.md`.
 Two fixed sharp point sources read real and imaginary Mellin values. Their mixed
 bounds control squared evaluation, and `Phi+1` gives the existing abstract invariant
 gauge theorem its norm bound. This avoids any assumed quotient descent or norm law.

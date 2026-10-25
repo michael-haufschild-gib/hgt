@@ -2,10 +2,10 @@
 
 - **ID:** hilbert-schmidt-reserves-measure-the-arithmetic-adjoint-defect
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** CONJECTURE (Lean verification pending)
 - **Source:** Q-II; actual full-Hasse Meyer convolution representation.
 - **Statement:** A faithful quadratic reserve on genuine Meyer cohomology supplies Bézout unconditionally; its exact excess over the ordinary Weil form is half the squared Hilbert–Schmidt adjoint defect. Its RR axiom is equivalent to simple critical Xi zeros.
-- **Status:** `[PROVED HERE, paper]`; Lean formalization pending; external novelty unverified.
+- **Status:** UNVERIFIED. Actual Lean candidate present; direct check and transitive axiom audit pending. External novelty unverified.
 
 ## Genuine source and exact reserve
 
@@ -74,6 +74,27 @@ Thus the new cone has unconditional Bézout and genuine-class faithfulness,
 while RR detects the complete adjoint defect, including nilpotent jets.
 This statement is an unconditional equivalence; neither RH nor simplicity
 is assumed or claimed proved.
+
+## Exact linear-degree representation target
+
+Unverified corollary, now included in the actual Lean candidate: a complex-linear
+cohomological degree `d` represents the faithful reserve on every arithmetic sharp
+square, `P(g)=Re d([g*g#])`, if and only if RH and Xi simplicity hold. Equivalently,
+such a representation exists exactly when this reserve cone satisfies RR.
+
+The forward argument uses the reserve's exact zero set: any representing degree
+is strictly positive on every nonprincipal source square. The certified theorem
+`exists_faithful_positive_meyer_degree_iff` then forces both conditions. Conversely,
+the candidate RR criterion and its independent Bézout theorem force `P=delta`
+by source-boundary rigidity, so the actual ordinary trace degree represents it.
+Thus no continuity, square-root factorization, or new analytic input is needed.
+
+Corpus search for a faithful Hilbert–Schmidt reserve represented by a linear
+sharp-square degree found the existing adjoint/faithful-degree equivalence and
+the reserve's RR/adjoint candidate, but no exact reserve-representation theorem.
+External novelty remains unverified. Lean targets:
+`exists_meyerHilbertReserve_linear_degree_iff` and
+`meyerHilbertSourceCone_riemannRoch_iff_linear_degree`.
 
 ## What this changes
 

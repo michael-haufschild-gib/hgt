@@ -2,7 +2,7 @@
 
 - **ID:** escape-records-realize-a-faithful-moving-origin-boundary
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / actual-source construction
+- **Type:** CONJECTURE (Lean completion pending)
 - **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
 - **Dependency:** [Resetting the moving origin](resetting-the-moving-origin-adds-a-faithful-step-module.md)
 
@@ -70,7 +70,7 @@ not claimed as new. `sum_Icc_rpow_neg_le` supplies the finite power-sum bound
 needed to contradict admission from uniformly bounded sublinear square
 prefixes.
 
-New untested drafts:
+The following components now passed the combined Lean scratch:
 
 - `/tmp/qiii_receiver_energy_crossings_body.lean`: actual linear prefix
   bound, exact energy increment, jump bound one, and admission-or-existence
@@ -84,9 +84,11 @@ New untested drafts:
 - `/tmp/qiii_step_gram_body.lean`: exact origin-step cofactor Gram limit.
 
 The normalized record-energy limit, crossing-sequence assembly, bounded-row
-weak orthogonality, and faithful step/mixed modules remain unwritten in Lean.
-All drafted components await the boundary-foundations check in the queued
-followup batch. No actual escape instance is used.
+weak orthogonality, faithful step/mixed modules and final admission-or-realization
+theorem all passed the full boundary scratch with standard axioms. Canonical
+leaves are installed and wired. Final standalone source checks are queued in
+`/tmp/qiii-boundary-canonical-audit.sh` within active session `90975`. No actual
+escape instance is assumed or constructed.
 
 ## Closed construction and horizon convention
 
@@ -112,8 +114,8 @@ The recentered error and its fixed dilates vanish by the verified uniform
 source-power budget with `a=1-epsilon`. This closes the paper construction
 of the stated mixed kernel for every `c>0` on the escape branch.
 
-The construction has a dependency-closed paper proof. Lean verification and
-assembly are unfinished. The general record/first-crossing device is not
+The construction has a dependency-closed paper proof. Canonical source verification remains unfinished; the combined Lean proof
+and transitive axiom audit passed. The general record/first-crossing device is not
 claimed as a new general analysis theorem; its target is the exact actual
 Möbius moving-origin boundary. The original unshifted classification remains
 open.

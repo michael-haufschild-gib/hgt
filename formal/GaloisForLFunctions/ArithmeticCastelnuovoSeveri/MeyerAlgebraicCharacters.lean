@@ -232,10 +232,10 @@ theorem meyerPointDegree_positive_iff (rho : XiDivisorSupport) :
     let u := meyerHasseJetClass rho ⟨0, xiSupportMultiplicity_pos rho⟩ -
       meyerHasseJetClass (meyerLineReflect rho) ⟨0, xiSupportMultiplicity_pos _⟩
     have hfirst : meyerPointDegree rho u = 1 := by
-      simp only [u, map_sub, meyerPointDegree_hasse, and_true, if_pos rfl,
+      simp only [u, map_sub, meyerPointDegree_hasse, and_true, ↓reduceIte,
         if_neg (Ne.symm hne), sub_zero]
     have hsecond : meyerPointDegree (meyerLineReflect rho) u = -1 := by
-      simp only [u, map_sub, meyerPointDegree_hasse, and_true, if_pos rfl,
+      simp only [u, map_sub, meyerPointDegree_hasse, and_true, ↓reduceIte,
         if_neg hne, zero_sub]
     have hp := h u
     rw [meyerDegreePair, meyerPointDegree_product, meyerPointDegree_sharp,

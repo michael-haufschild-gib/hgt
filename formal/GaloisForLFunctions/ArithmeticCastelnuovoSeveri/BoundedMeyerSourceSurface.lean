@@ -110,15 +110,21 @@ theorem meyerBoundedDegreeSourceCone_lineality_iff (x : meyerBoundedCycleSubmodu
     rw [meyerBoundedDegreeSourceCone_eq_positiveCone] at hx hn
     have hp := hx.2
     have hm := hn.2
-    simp only [map_neg, LinearMap.neg_apply] at hm
-    linarith only [hp, hm]
+    have he : meyerBoundedSurface.pair (-x) meyerBoundedSurface.ample =
+        -meyerBoundedSurface.pair x meyerBoundedSurface.ample :=
+      (meyerBoundedSurface.pair.flip meyerBoundedSurface.ample).map_neg x
+    rw [he] at hm
+    exact le_antisymm (neg_nonneg.mp hm) hp
   · intro h
     rw [meyerBoundedDegreeSourceCone_eq_positiveCone]
     constructor
     · exact ⟨(h x).ge, (h _).ge⟩
-    · constructor
-      · simpa only [map_neg, LinearMap.neg_apply, neg_neg] using (h x).ge
-      · simpa only [map_neg, LinearMap.neg_apply, h _, neg_zero] using (le_refl (0 : ℝ))
+    · have hn (y : meyerBoundedCycleSubmodule) : meyerBoundedSurface.pair (-x) y = 0 := by
+        calc
+          meyerBoundedSurface.pair (-x) y = -meyerBoundedSurface.pair x y :=
+            (meyerBoundedSurface.pair.flip y).map_neg x
+          _ = 0 := by rw [h y, neg_zero]
+      exact ⟨(hn (-x)).ge, (hn _).ge⟩
 
 /-- The only remaining discrepancy between numerical and principal classes is critical multiplicity. -/
 theorem meyerBoundedSurface_radical_eq_principal_iff :

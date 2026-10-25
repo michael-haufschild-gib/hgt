@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-intrinsic-golden-series
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean; counting-kernel calibration)
-- **Parent:** [Intrinsic golden module](../2-fully-proven/biarithmetic-intrinsic-golden-module.md)
+- **Parent:** [Intrinsic golden module](../1-in-progress/biarithmetic-intrinsic-golden-module.md)
 - **Statement:** The actual golden counting series has explicit exponential-affine coefficients. Centering convolution by the actual damped inverse mean cancels the counting pole exactly, with explicit values at both damping endpoints.
 
 ## Proof

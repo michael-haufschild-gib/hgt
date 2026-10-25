@@ -201,7 +201,7 @@ It explains why the paid-ideal bridge is explicitly an admission-or-annihilation
 dichotomy: admission makes the paid ideal whole, without making the normalized
 common-limit Hilbert space zero.
 The complete paper proof and its dimension/uniqueness consequences are now on
-[the admitted-module card](../2-fully-proven/admitted-cofactor-modules-are-faithful.md).
+[the admitted-module card](../3-formalized/admitted-cofactor-modules-are-faithful.md).
 The further dimension and full-horizon uniqueness consequences are in
 `/tmp/qiii_admitted_dimension_body.lean` and
 `/tmp/qiii_admitted_kernel_unique_check.lean`, both queued for their first check.
@@ -801,3 +801,210 @@ an earlier handoff assumption. `/tmp/qiii-next-refinement-checks.sh` now
 builds exactly this missing module before the diagonal retry; any further
 missing dependency must be resolved one at a time. Do not start this queue
 until session `84684` exits (currently moving-origin foundations).
+
+### Verification queue transition
+
+Session `84684` exited with status 3 (unit and finite scratches passed;
+critical-boundary, first diagonal and moving-origin scratches had the
+recorded local errors). All those errors have staged fixes. No Lean process
+from that session remains. New session `6979` runs
+`/tmp/qiii-next-refinement-checks.sh` sequentially: repaired critical-boundary
+scratch; changed packet foundation and six canonical unit/finite leaf audits;
+exactly missing normalized-profile olean; repaired diagonal scratch; repaired
+moving-origin scratch. Do not start another Lean process until it exits.
+
+The latest moving-origin check independently verified actual cofinal limit
+extraction, step-pairing convergence, all prefix-record and dominated-energy
+lemmas, bounded cross-pairing, moving-Gram perturbations, max-kernel Wiener
+faithfulness, critical-kernel action extension, and the origin-step module's
+faithfulness/full hull. Its remaining errors were an implicit limit constant,
+three reflexive conversion goals, a large scalar identity, a redundant tactic
+and beta reduction before a rewrite; all have staged fixes.
+
+The contracted-state scratch is assembled but NOT IN THIS CHECK QUEUE. It
+now includes actual contracted limits, principal annihilator quotients, hull
+inclusions, zero/cutoff alternative, composition, closed dilation range,
+finite index loss by nullity, and matrix/operator horizon order. Pending
+parts and exact statements are on its card. No claimed result may stop at
+this draft or at a paper argument.
+
+The packet foundation change now preserves the original private proof
+and exports `pronicPairing_packet_energy_eq` as a public wrapper. This
+reuses the existing proof without removing any original declaration. The
+matrix-order draft consumes that public theorem.
+
+### Critical-boundary scratch passed; canonical proof installed
+
+Session `6979` completed its critical-boundary scratch with standard axioms
+only, then entered the existing unit/finite canonical audit. The guarded
+pole promoter ran: explicit actual Mellin identity refactored into its owner,
+all five pole/order/boundary leaves installed and wired. Final source audits
+are prepared in `/tmp/qiii-pole-canonical-audit.sh`, NOT STARTED while session
+`6979` runs. All findings still require canonical completion before promotion.
+
+### Canonical tracking and remaining paper-only boundary consequence
+
+The admission card is now in `3-formalized`, reflecting the already completed
+session `32035` source audits: admitted faithfulness/full hull, infinite
+Hilbert dimension, continuum quotient rank, finite-module escape, and unique
+full-horizon admitted kernel. No redundant rechecks were run for that move.
+
+The new boundary promoter `/tmp/qiii-promote-verified-boundary-refinements.py`
+is prepared but UNRUN. It checks the completed second-retry log before
+installing the generic comparison/action, max-kernel faithfulness, records,
+reset-origin Gram and faithful realization leaves. It reuses the shared
+receiver-crossing module if diagonal promotion has already installed it.
+
+The older translation card's unreset Gram formula still lacked Lean, even
+though its algebraic exclusion theorem was already checked. A separate exact
+draft is now `/tmp/qiii_unreset_origin_gram_body.lean`, assembled as
+`/tmp/qiii-unreset-origin-check.lean`. It proves raw Gram K+c, own Gram
+(K+c)/(1+c), and realization of every c>0 on escape with exclusion from the
+actual zero-origin class. UNVERIFIED; canonical boundary imports are required.
+The active Lean queue remains session `6979`; do not overlap it.
+
+### Current verification state and additional exact drafts
+
+Session `6979` built and source-checked the changed common packet foundation.
+The six-leaf canonical audit then stopped at the real Wiener transport leaf:
+it omitted the import owning `complexWienerEnergy` and
+`wienerSourcePairing_self_re`. That import is now fixed. The resume script
+`/tmp/qiii-refinements-canonical-resume.sh` skips the completed foundation and
+existing dependency oleans, then runs all six final source checks. It has
+NOT STARTED. The current session has built the previously missing normalized
+receiver profile olean and is checking the diagonal scratch; the moving-origin
+retry follows. No second Lean process may start while this session runs.
+
+The next prepared queue `/tmp/qiii-common-vector-and-pole-audits.sh` now runs:
+canonical unit/finite resume, common-family eigenvector scratch, Wiener jet
+functional scratch, and pole canonical audit. Only start after `6979` exits.
+The boundary canonical audit script is prepared separately, conditional on
+its guarded promoter passing the completed second-retry log.
+
+Further exact drafts, all UNVERIFIED:
+
+- `/tmp/qiii_origin_boundary_index_body.lean`: origin-step and positive mixed
+  modules have infinite Hilbert dimension and continuum Wiener quotient rank;
+  assembled `/tmp/qiii-origin-boundary-index-check.lean`.
+- `/tmp/qiii_rank_one_contraction_body.lean`: every defined positive horizon
+  contraction fixes a rank-one actual kernel and its annihilator. Included in
+  the pending contracted-state assembler.
+- `/tmp/qiii_visible_pole_point_count_body.lean`: closed critical-half-plane
+  visible point count, including positive order loss at the boundary.
+- Wiener jet functionals, simple local parameters, separated masks, triangular
+  interpolation and the strict-interior multiplicity-weighted paid quotient
+  lower bound are now exact drafts. `/tmp/qiii-visible-jet-index-check.lean`
+  assembles these with the point-count bridge. The mixed boundary/interior
+  weighted count is still to be written.
+
+No new arithmetic hull equality is asserted. All these drafts and paper
+arguments remain OPEN until their own canonical Lean checks and axioms pass.
+
+### Diagonal findings split by verified dependency closure
+
+The diagonal retry completed. Exact dilation blocks, first energy crossings,
+actual energy-ratio identification and numeric diagonal order, the
+prime-deleted-white-noise exclusion, the monotone multiplicative power law,
+and actual rank-one magnitude classification all passed with standard axioms.
+The zero-cutoff branch failed only on an unavailable cancellation lemma; the
+augmentation branch failed on two malformed one-line tactic blocks and a
+no-progress simplification. All local fixes are staged.
+
+The guarded partial promoter `/tmp/qiii-promote-verified-diagonal-foundations.py`
+has RUN, installing and wiring the six independently verified leaves. Do not
+rerun it or the obsolete all-eight promoter. Canonical foundation checks are
+prepared in `/tmp/qiii-diagonal-foundations-canonical-audit.sh`. The two
+remaining proofs have a small retry scratch importing the canonical
+foundation: `/tmp/qiii-diagonal-cutoff-augmentation-check.lean`. Its guarded
+two-leaf promoter is `/tmp/qiii-promote-verified-cutoff-augmentation.py`, UNRUN.
+
+The next queue is now `/tmp/qiii-next-canonical-and-local-checks.sh`: it runs
+the diagonal foundation audit and the two local retries, then the earlier
+unit/finite/common-eigenvector/jet-functional/pole queue. Start only after
+session `6979` exits; that session has entered its last moving-origin scratch.
+The contracted-state assembler now imports the three canonical diagonal,
+zero-cutoff and rank-one leaves instead of repeating their proofs; regenerate
+it only once the remaining cutoff leaf is installed.
+
+### Boundary passed and next sequential queue started
+
+Session `6979` is CLOSED, exit 2: one canonical import failure and the two
+recorded local diagonal branches failed; the full moving-origin scratch
+passed, with standard axioms for every final target. Its harmless unused
+closing tactics and completeness binder were removed.
+`/tmp/qiii-promote-verified-boundary-refinements.py` has RUN and must not be
+rerun. The thirteen installed modules are listed in
+`/tmp/qiii-boundary-canonical-modules.txt`.
+
+Current single Lean session: `90975`, parent shell PID `83059`, running
+`/tmp/qiii-next-canonical-and-local-checks.sh` from `formal/`. The queue is:
+
+1. Final diagonal-foundation audits and missing dependency oleans.
+2. The two repaired cutoff/augmentation proofs (only if step 1 passes).
+3. Unit/finite canonical resume, common-family eigenvector scratch, Wiener
+   jet-linear-functional scratch, and pole canonical audits.
+4. Boundary canonical audits (only if step 1 passes).
+5. Raw unreset-origin Gram and boundary continuum-index scratches (only if
+   boundary canonical audits pass).
+
+Do not start another Lean process until session `90975` exits. Source and
+log paths are in the queue scripts. Every unresolved card remains open.
+
+### Additional exact corollaries queued with the canonical audit
+
+Session `90975` remains the only active Lean session. Exact pronic dilation
+blocks and receiver energy crossings have passed their canonical build and
+final source checks with standard axioms. The diagonal foundation audit
+has moved to actual energy ratios. No other canonical batch is complete.
+
+The later, not-yet-started `/tmp/qiii-common-vector-and-pole-audits.sh` now
+also checks two new scratches after the Wiener jet API and before pole
+audits:
+
+- `/tmp/qiii-tied-torus-character-limits-check.lean`: reusable finite-prime
+  approximation, one vertical sequence converging on all Wiener elements
+  for a common radial modulus, and augmentation as Re(s) tends to infinity.
+  The corpus proof in `AKernelBoundedBelowOnTheHalfPlaneIsAUnit` supplies the
+  prime approximation mechanism; `HTGeometry/LSeriesRightLimit` supplies the
+  augmentation endpoint. The finite actual application is separately
+  drafted and awaits the operator-order and finite-hull modulus proofs.
+- `/tmp/qiii-actual-conjugate-hull-check.lean`: real source rows imply
+  conjugation of complete Wiener pairings, equal cyclic norms, invariance
+  of the actual annihilator and conjugation symmetry of each module hull.
+
+New cards: `finite-cofactor-hulls-approach-the-half-plane-curve.md` and
+`actual-cofactor-hulls-preserve-complex-conjugation.md`, both in progress.
+These are pending Lean findings. Curve approximation is not exact curve
+membership and does not restrict approximants to translated zeta zeros.
+Conjugation symmetry does not exclude real hull points or prove an even
+index. The full arithmetic classification remains open.
+
+The mixed paid-jet index scratch now also contains exact unit-orbit and
+Liouville corollaries in `/tmp/qiii_visible_jet_index_unit_orbit_body.lean`.
+They are UNVERIFIED and are not yet in the live queue.
+
+### Exact finite-horizon and sign corollaries retained for Lean completion
+
+Session `90975` remains active. Exact dilation blocks, energy crossings,
+actual diagonal energy ratios and the generic multiplicative power law have
+passed their final canonical source checks with standard axioms. Rank-one,
+cutoff, unit/finite, pole and boundary checks remain in the sequential queue.
+The rank-one sign factorization is also in its later scratch stage.
+
+The diagonal card's exact terminal-fibre formula was still paper-only.
+`/tmp/qiii_exact_horizon_remainder_body.lean` now states both its finite-sum
+remainder and closed telescoped correction, including quotient zero.
+`/tmp/qiii_mixed_horizon_error_body.lean` consumes this identity and states
+the full bound C*D/p for rows bounded by C*n and D*n, plus the unit-bound
+corollary needed by actual contractions. These parts lead the contracted
+horizon assembler and remain UNVERIFIED. Do not promote the diagonal card
+before these and its mixed consequences pass canonical Lean checks.
+
+Guarded small-proof promoter: `/tmp/qiii-promote-verified-small-followups.py`
+with arguments `family`, `jets`, `conjugation`, or `signs`; all UNRUN.
+Guarded tied-torus promoter `/tmp/qiii-promote-verified-tied-torus.py` is also
+UNRUN. It extracts the finite-prime approximation into its existing owner
+and reuses that helper in the existing tied-torus bound, before installing
+the common-sequence theorem. Its final checks are prepared in
+`/tmp/qiii-tied-torus-canonical-audit.sh`. None may run before the associated
+scratch finishes cleanly with standard axioms.

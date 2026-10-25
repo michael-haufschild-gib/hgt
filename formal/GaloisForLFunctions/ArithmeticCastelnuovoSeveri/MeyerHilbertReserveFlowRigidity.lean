@@ -21,6 +21,7 @@ theorem meyerSourceSharp_centeredFlow (c : ℝ) (g : DeningerMeyerStrongLogTarge
       deningerMeyerStrongLogCenteredFlow (-c) (deningerMeyerSourceSharp g) := by
   apply deningerMeyerStrongLogMellin_injective
   funext s
+  dsimp only
   rw [deningerMeyerSourceSharp_mellin, meyerCenteredSourceFlow_mellin,
     meyerCenteredSourceFlow_mellin, deningerMeyerSourceSharp_mellin]
   have hh : conj (1 / 2 : ℂ) = 1 / 2 := by

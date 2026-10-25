@@ -16,6 +16,7 @@ import GaloisForLFunctions.ArithmeticOrientationGeometry.TheThetaH0OfSpecZ
 import GaloisForLFunctions.ArithmeticOrientationGeometry.CorrectorsInTheDampingParameter
 import GaloisForLFunctions.ArithmeticOrientationGeometry.QuantitativeReadingsOnCurveOrbits
 import GaloisForLFunctions.ArithmeticOrientationGeometry.TheIndexExit
+import GaloisForLFunctions.ArithmeticOrientationGeometry.TheSplineOrbitDecidesTheCriticalLine
 
 /-!
 # Arithmetic Orientation Geometry

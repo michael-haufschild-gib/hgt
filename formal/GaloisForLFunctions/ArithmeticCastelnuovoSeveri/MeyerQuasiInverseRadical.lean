@@ -60,7 +60,7 @@ theorem meyerQuasiRadical_iff_values_zero (u : DeningerMeyerStrongLogCohomology)
     rw [meyerPointDegree_product]
     have hv : meyerPointDegree rho v = -(meyerPointDegree rho u)⁻¹ := by
       simp only [v, map_smul, meyerPointDegree_mk, meyerPointSource_values,
-        if_pos rfl, smul_eq_mul, mul_one]
+        ↓reduceIte, smul_eq_mul, mul_one]
     rw [hv, mul_neg, mul_inv_cancel₀ hz, add_neg_cancel]
   · intro hu v
     apply (meyerQuasiRegular_iff_values _).mpr
@@ -92,8 +92,3 @@ theorem meyerQuasiRadical_eq_zero_iff_simple :
         ((h g).trans (Submodule.Quotient.mk_eq_zero (LinearMap.range deningerMeyerStrongLogSumLM)).symm)
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerQuasiRegular_iff_values
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerQuasiRadical_iff_values_zero
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerQuasiRadical_mk_iff_trace_radical
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerQuasiRadical_eq_zero_iff_simple

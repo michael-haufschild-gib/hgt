@@ -75,7 +75,7 @@ theorem exists_positive_meyer_degree_with_nonprincipal_null_source :
     have hrho : (rho : ℂ) = 1 / 2 := by
       apply Complex.ext
       · simpa using hr
-      · change (rho : ℂ).im = 0
+      · rw [show (1 / 2 : ℂ).im = 0 by norm_num]
         linarith only [him]
     exact xi_divisor_support_ne_half rho hrho
   refine ⟨meyerPointDegree rho, ?_, ?_, ?_⟩
@@ -96,9 +96,3 @@ theorem exists_positive_meyer_degree_with_nonprincipal_null_source :
       simp only [Complex.normSq_zero, Complex.ofReal_zero]
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerPointDegree_mk
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerPointDegree_sharp_square
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_positive_meyer_degree_with_nonprincipal_null_source
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerPointDegree_product

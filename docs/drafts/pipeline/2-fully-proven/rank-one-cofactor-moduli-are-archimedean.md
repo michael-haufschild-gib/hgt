@@ -2,7 +2,7 @@
 
 - **ID:** rank-one-cofactor-moduli-are-archimedean
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Type:** CONJECTURE (Lean completion pending)
 - **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
 - **Statement:** Every one-dimensional actual cofactor module has either the
   augmentation character or cofactor character magnitudes `n^(-s)` for one
@@ -77,11 +77,14 @@ ceiling comparison directly so the general theorem has no sieve dependency.
 
 ## Current verification status
 
-The first combined diagonal check completed. The energy crossing, deleted
-white-noise positivity, actual rank-one character construction, augmentation
-positivity and augmentation numeric diagonal order passed independently.
-Other parts had local elaboration errors. Import, endpoint normalization,
-finite-dimensional API, cast, dependent-if rewrite and augmentation
-multiplication repairs are staged. No new leaf from this batch is promoted.
-The retry is `/tmp/qiii-diagonal-energy-check.lean`, queued after the current
-moving-origin check; its log will be `/tmp/qiii-diagonal-energy-retry-check.log`.
+The generic power classification and actual rank-one character, Gram product,
+and magnitude classification passed `/tmp/qiii-diagonal-energy-retry-check.log`
+with standard axioms. Their canonical leaves are installed and wired:
+`HTGeometry/MonotoneMultiplicativeProfilesArePowers` and
+`ArithmeticDefectRigidity/RankOneCofactorMagnitudesArePowers`. Both final
+canonical source audits passed in session `90975`, with standard axioms.
+The explicit sign-factorization
+consequence is now drafted in `/tmp/qiii_rank_one_sign_character_body.lean`:
+the nonaugmentation branch has a multiplicative sign η valued in {−1,1},
+with χ(p)=η(p)*p^(-s). Its check is in the same session's later common queue,
+conditional on the rank-one dependency olean. No completion is claimed.

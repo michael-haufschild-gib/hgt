@@ -39,3 +39,60 @@ P subset I does not transfer a lower index bound to W/I. Do not identify
 these quotient multiplicities or infer occurrence of every visible zero
 in every actual cofactor module. Unit-orbit invariance transfers any proved
 paid-index bound to Liouville and finite Euler-factor variants.
+
+## Lean implementation route and endpoint value count
+
+The inspected `DeningerJetInterpolation` suggests a direct mask construction,
+without a single global separating coordinate. For each target i, choose
+pairwise separating Wiener factors vanishing at each other point j but not
+i, and raise them to the required orders m_j. Their product is nonzero at i.
+Multiply by successive powers of the local factor delta_2 minus its value
+at i; that factor has a simple zero at i. Analytic-order calculus makes the
+resulting local jet matrix triangular with nonzero diagonal, while every
+other target jet vanishes. `deningerTriangular_solvable` then supplies all
+coefficients. This route still needs exact Lean implementation and audit.
+
+The endpoint distinct-value consequence is separately drafted in
+`/tmp/qiii_visible_pole_point_count_body.lean` and assembled as
+`/tmp/qiii-visible-pole-point-count-check.lean`. It proves closed-half-plane
+character separation, unifies strict-interior and boundary visible pole
+obstructions, and bounds the paid quotient rank by their finite point count.
+UNVERIFIED. This is only the value count; the multiplicity-weighted claim
+above remains open until the full masked jet interpolation passes.
+
+## Exact masked interpolation draft
+
+The local analytic bridge and the full strict-interior masked interpolation
+now have Lean drafts: `/tmp/qiii_wiener_jet_evaluation_body.lean` and
+`/tmp/qiii_wiener_masked_interpolation_body.lean`. The former constructs
+linear jet functionals on the full Wiener algebra and proves local product
+and power order laws. The latter constructs a simple dyadic local parameter,
+pairwise separation masks, triangular jet matrices, and joint surjectivity.
+Both are UNVERIFIED. The derivative API scratch is queued after the current
+refinement queue; the combined interpolation scratch needs the new pole
+dependency oleans. Quotient-rank and mixed boundary/interior multiplicity
+applications remain to be written and checked. No paper claim is complete.
+
+The strict-interior quotient application is now drafted in
+`/tmp/qiii_visible_jet_quotient_index_body.lean`. It descends the proved-to-be
+surjective jet map through an arbitrary ideal imposing the jet conditions,
+then applies the actual paid-kernel visible-order theorem. Its exact target
+is the sum of any finite lower multiplicities of the visible orders, with
+no assumed interpolation or rank bound. The assembled
+`/tmp/qiii-visible-jet-index-check.lean` remains UNVERIFIED.
+
+The mixed endpoint claim also has a complete draft.
+`/tmp/qiii_wiener_mixed_interpolation_body.lean` constructs masks vanishing to
+the interior orders while avoiding a selected additional half-plane point.
+Separated boundary value interpolation then corrects values without changing
+any interior jet. `/tmp/qiii_visible_mixed_jet_index_body.lean` descends that
+surjection and gives the sum of visible interior multiplicities plus the
+number of distinct critical-boundary poles as a paid quotient lower bound.
+The complete scratch is `/tmp/qiii-visible-mixed-jet-index-check.lean`; all
+new claims are UNVERIFIED, not completed by these drafts.
+
+The exact unit-orbit and Liouville corollaries are drafted in
+`/tmp/qiii_visible_jet_index_unit_orbit_body.lean` and included in the mixed
+index assembler. They rewrite the already established equality of paid
+ideals; no new arithmetic premise is introduced. These corollaries remain
+UNVERIFIED with their interpolation and quotient-index dependencies.
