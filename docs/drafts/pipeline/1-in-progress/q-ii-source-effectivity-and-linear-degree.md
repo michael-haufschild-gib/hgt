@@ -312,7 +312,11 @@ The verified direct restriction constructor now replaces the conflicting
 AOG import in `BoundedMeyerSourceSurface`. No theorem statement changed.
 Direct missing-olean build **31048** passed for the certified reserve-flow module.
 Its olean now exists; never rebuild it. Direct bounded-surface check **56753**
-is running with all thirteen audits.
+failed at the source submodule's addition field: a term lambda consumed the
+two membership hypotheses before the intended variables. Replaced it with
+explicit tactic introductions. Downstream errors involved this failed
+definition; its failed audit output is not a certificate. The independent
+high simple-critical trace-one witness audit was standard.
 
 ### Remaining verification queue
 
@@ -327,7 +331,7 @@ Rows explicitly marked certified have passed; all other rows remain unverified.
 | `FaithfulHilbertSchmidtSourceReserves` | CERTIFIED: direct 4030, fifteen standard audits, missing-olean build 80282 passed |
 | `MeyerBoundedCenteredOrbits` | CERTIFIED: direct 20136, six standard audits, missing-olean build 75806 passed |
 | `MeyerCriticalTopAlgebra` | CERTIFIED: direct 71562, fifteen standard audits, missing-olean build 39547 passed |
-| `BoundedMeyerSourceSurface` | Thirteen endpoints; verified direct restriction constructor replaces conflicting AOG import; direct check 56753 running |
+| `BoundedMeyerSourceSurface` | Direct 42119 cleared the binder cascade; only zeroth-jet/Mellin normalization remained, now explicitly rewritten; thirteen audits await recheck |
 | `MeyerHilbertReserveFlowRigidity` | CERTIFIED: direct 35848, seven standard audits, missing-olean build 31048 passed; cleaned, wired, documented; bounded-orbit card moved to stage 3 |
 | `BoundedMeyerFaithfulReserve` | Thirteen endpoints; includes explicit positive adjoint-defect witness and exact linear-degree representation |
 | `MeyerFiniteJetAlgebra` | Seven endpoints; requires missing sharp-algebra olean |

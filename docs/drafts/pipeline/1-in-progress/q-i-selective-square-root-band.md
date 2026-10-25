@@ -478,7 +478,9 @@ moving-packet energy decay. Four scalar-topology targets passed producing and
 final direct checks with standard axioms only, and are wired as
 `TheOnlyAccumulationOfVaughanAmplitudesIsZero.lean`: positive-amplitude isolation,
 unique zero accumulation, and the convergence alternatives' mutual exclusion.
-The remaining matrix rank and topology, endpoint,
+Four matrix-rank targets also passed corrected producing and final direct
+checks with standard axioms only; `TheRanksOfSubcriticalVaughanLimits.lean`
+is wired. The remaining matrix-family topology, endpoint,
 and power-rate consequences remain
 under verification. All fifteen existing paper
 cards and their remaining Lean coverage are listed in

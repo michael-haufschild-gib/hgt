@@ -36,10 +36,10 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Finding | Current gate |
 |---|---|
 | Zero cofactor forces dimension at most p-1 | Final canonical source check passed; positive survivor and exclusion card moved to `3-formalized` |
-| Augmentation countermodel and singleton character hull | Complete scratch `21112` passed with standard axioms; canonical source-only audit running |
+| Augmentation countermodel and singleton character hull | Canonical source-only audit `79225` passed with standard axioms; countermodel complete |
 | Actual unit transport, Möbius/Liouville equivalence | All canonical source-only checks passed with standard axioms; card moved to `3-formalized` |
 | Finite joint spectral multiplicities and normalized Bohr representatives | All three canonical source-only checks passed with standard axioms; card moved to `3-formalized` |
-| Rank-one multiplicative signs | Draft scratch, then canonical placement/check |
+| Rank-one multiplicative signs | Scratch `45147` passed with standard axioms; canonical leaf installed/wired, final source audit running |
 | Visible interior pole orders, paid jets, critical boundary values, unit orbits | Canonical checks after successful combined scratch |
 | Reset moving origin, faithful step kernel and every positive boundary mass | Thirteen canonical leaves after successful combined scratch |
 | Raw moving origin, exclusion from actual zero-origin limits | Draft scratch after boundary dependencies |
@@ -101,8 +101,13 @@ wrong zero-index guard; owned Lean PID `1832` was terminated and the session
 exited 143 before replacement. Output from corrected retry `10978` was lost
 at compaction; its process exited, so success is not inferred. Direct retry
 `21112` passed every target with standard axioms, including the scalar character
-Gram. The checked source was copied directly into its canonical leaf; final
-source-only audit is active, output `/tmp/qiii-augmentation-canonical-final.log`.
+Gram. The checked source was copied directly into its canonical leaf. Final
+source-only audit `79225` passed with standard axioms for all nine targets;
+output `/tmp/qiii-augmentation-canonical-final.log`. The augmentation leaf is
+complete. Rank-one sign scratch check `45147` passed with standard axioms,
+output `/tmp/qiii-rank-one-sign-character-check.log`. Its canonical leaf is
+installed and wired; final source-only audit is active, output
+`/tmp/qiii-rank-one-sign-canonical-final.log`.
 Exactly one owned Lean check is active.
 
 ## Direct source work remaining

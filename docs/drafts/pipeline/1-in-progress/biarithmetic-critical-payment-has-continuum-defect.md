@@ -106,8 +106,9 @@ and the existing Wiener cardinality theorem. All three transitive axiom
 audits are clean. The direct production check passed; its stage-3 card and
 umbrella import are present.
 
-`PowerTailWienerFamily` drafts actual norm-two closure members for every positive
-exponent, with payment exactly above one half. The concluding
+`PowerTailWienerFamily` formalizes actual norm-two closure members for every positive
+exponent, with payment exactly above one half. Its direct repository check and
+all four transitive audits passed. The concluding
 `CriticalGoldenContinuumDefect` draft uses the open interval `(0,1/2)`.
 A finite relation in the actual quotient becomes a paid Wiener sum. Continuous
 coefficient evaluation reads its exact normalized partial sums, and the
@@ -115,8 +116,8 @@ power-tail independence theorem forces every coefficient to vanish. The same
 family lifts to the closure defect; its canonical image is the independent
 family in the full quotient, so those lifted classes are independent as well.
 The interval has cardinality continuum, supplying both matching lower bounds.
-The two family/lower-bound drafts and their closure/power dependencies are unchecked.
-This completes a proposed Lean proof chain for the ordinary-floor source only;
+The lower-bound draft remains unchecked; its family, closure, and power-tail
+dependencies are now directly verified. This is a Lean proof chain for the ordinary-floor source only;
 the intrinsic-source comparison still requires its separate module construction.
 
 This proves dimension at least continuum. The ambient `ell1` space injects into
@@ -146,7 +147,7 @@ This provides an explicit source calibration of the index ambiguity; it neither
 counts arithmetic zeros nor proves a Riemann--Roch formula.
 
 - [x] Dependency-closed proof plan, including complex linear independence.
-- [ ] Lean exact source payment criterion and corrected finite approximation.
+- [x] Lean exact source payment criterion and corrected finite approximation.
 - [ ] Lean independent quotient family and matching cardinality bound.
 - [ ] Direct source checks, transitive axiom audits, and umbrella imports.
 

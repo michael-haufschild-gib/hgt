@@ -1,6 +1,6 @@
 # Walls ledger
 
-Status: 2026-10-25, corpus snapshot `86591dd4b` plus the working tree. Every obstacle in the corpus belongs to one of three core families:
+Status: 2026-10-25, corpus snapshot `0fa51c933`. Every obstacle in the corpus belongs to one of three core families:
 
 - **Wall 1 — critical arithmetic sign.** Estimates and signs at the critical endpoint.
 - **Wall 3 — transfer.** Readings, norms, completions, limits, shared budgets and selection.
@@ -82,7 +82,7 @@ Sources: [origin obstruction](../../../formal/GaloisForLFunctions/ArithmeticCast
 | **14.9 Positivity–faithfulness dilemma** | Refined | Using operator-norm faithful positivity to prove RH alone. | A faithful positive degree exists ⇔ RH + simple; Hilbert–Schmidt reserve RR ⇔ RH + simple [L]. Positive Hermitian degrees are blind [S]. The trace-bounded maximal ideal reaches RH alone with every jet retained [L]. | RH-only routes force through trace-bounded data; faithful routes must also prove simplicity (B2.3, B1.8). |
 | **14.10 Single-channel exhaustion** | New | Seeking forcing inside single-channel quadratic positivity. | **Theorem [L]:** every sharp-stable right convolution ideal with nonnegative trace lies in the maximal blind ideal (`isGreatest_meyerSharpPositiveIdeal`); every scale-shift-invariant Weil-nonnegative test space is blind (`zeta_blindOffLine_of_scaleShift_subspace_weil_nonneg`). | An input outside this class: coupled channels, rigidity of invariants, or escape exclusion. |
 | **14.11 Multiplicative forcing** | New | Treating an imported zero-free region as forced; finite-degree coupling against a non-simple pole or with harmonic poles. | **Theorem [L]:** harmonic positivity + simple pole + no harmonic poles + integer orders force zero order 0 on `Re s = 1` (`harmonic_quantized_zero_vanishing`); for ζ non-circularly. Sharpness models for both pole conditions; Fejér barrier `a₁ < 2a₀`. With growth input: dlVP, Littlewood and VK regions [L]. | Interior forcing beyond growth input (B3.14); the next graded rung is 1.0. |
-| **14.12 Completeness of invariants** | New | Assuming that a countermodel with all of ζ's invariants exists, or that none does. | FE + decaying count error impossible; over-regular Beurling systems violate FE [L]. Hamburger for ordinary frequencies [L]; general-frequency Laplace step [S]; `Γ_R^d` abundance without Euler positivity [L]. No full-invariant countermodel in the corpus. | Uniqueness for FE + Beurling Euler positivity + simple pole, or a countermodel with an off-line zero (B3.15, Q2). |
+| **14.12 Completeness of invariants** | New | Assuming that a countermodel with all of ζ's invariants exists, or that none does. | FE + decaying count error impossible; over-regular Beurling systems violate FE [L]. Hamburger for ordinary frequencies and the general-frequency Laplace step [L]; `Γ_R^d` abundance without Euler positivity [L]. No full-invariant countermodel in the corpus. | Uniqueness for FE + Beurling Euler positivity + simple pole, or a countermodel with an off-line zero (B3.15, Q2). |
 
 Sources: [Meyer surface](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/MeyerSourceIntersectionSurface.lean), [maximal blind ideal](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/MaximalBlindIdealOfTheMeyerSource.lean), [harmonic coupling](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HarmonicCouplingForcesSourceBlindness.lean), [faithful degrees](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FaithfulPositiveMeyerDegrees.lean), [boundary rigidity](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/SourceConeBoundaryRigidity.lean), [graph degree](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheDefectOfAGraphIsTwiceItsDegree.lean), [theta sections](../../../formal/GaloisForLFunctions/ArithmeticOrientationGeometry/TheThetaH0OfSpecZ.lean), [FE and counts](../../../formal/GaloisForLFunctions/RHTower/RiemannFunctionalEquationForcesCountFluctuation.lean), [pre-divisor weld](../../../formal/GaloisForLFunctions/RHTower/XiPreDivisorReflectionDefectStabilization.lean).
 
@@ -100,7 +100,7 @@ This table records present disposition. A solved local passage is not a research
 | Nonvanishing on `Re s = 1` as a forcing law | Proved with sharpness models [L]. | 14.11 interior. |
 | Half-damping signed hypercube endpoint (all squarefree `P`) | Bounded [L]. | 3.7 below half. |
 | Local exponents of paid patterns below half damping | Integer; zero off the real axis [L]. | 3.7, B3.11. |
-| Vaughan subcritical moving-cutoff Gram limits | Completely classified [L] (leaves [S]). | 1.8 residual. |
+| Vaughan subcritical moving-cutoff Gram limits | Completely classified [L] (topology leaf [S]). | 1.8 residual. |
 | Functional equation versus decaying count error | Incompatible [L]. | 14.12. |
 | Sparse-spectrum annihilating tests | Constructed for `Σ|a|^{−s} < ∞`, `s < 1` [L]. | Not applicable to ζ zeros. |
 | Finite-level weight existence | ⇔ RH [L]. | 1.3. |

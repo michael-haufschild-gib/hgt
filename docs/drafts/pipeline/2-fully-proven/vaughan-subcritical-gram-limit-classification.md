@@ -123,9 +123,10 @@ level, isolation of positive amplitudes, and the exact accumulation-point
 classification, plus the paper's mutual exclusion of product escape and an
 eventually fixed positive amplitude. Producing and final direct checks passed,
 with only standard transitive axioms; the module is wired and its scratch removed.
-Four targets in `/tmp/QIVaughanLimitMatrixRankTools.lean` draft
+Four targets in `TheRanksOfSubcriticalVaughanLimits.lean` prove
 the zero matrix, the outer-product rank bound, positive-amplitude rank one, and
-the complete rank dichotomy. Two rank targets need corrected elaboration before certification.
+the complete rank dichotomy. Corrected producing and final direct checks passed,
+with only standard transitive axioms; the module is wired and its scratch removed.
 
 The matrix-family topology stated above still needs exact Lean declarations:
 the existing topology draft treats the scalar amplitude set only. The additional

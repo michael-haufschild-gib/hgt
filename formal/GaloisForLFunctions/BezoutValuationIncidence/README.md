@@ -1247,8 +1247,10 @@ amplitude (`TheSubcriticalVaughanGramLimitSet`). Its explicit bounded-packet
 energy corollary also gives zero normalized energy when the horizon and cutoff
 product diverge independently. Zero is the unique scalar amplitude accumulation
 point, positive amplitudes are isolated, and the two convergence alternatives
-are mutually exclusive (`TheOnlyAccumulationOfVaughanAmplitudesIsZero`). Exact
-matrix ranks and matrix-family topology remain under verification.
+are mutually exclusive (`TheOnlyAccumulationOfVaughanAmplitudesIsZero`). The
+smooth limit matrix has rank zero at zero amplitude and rank one at each
+positive amplitude (`TheRanksOfSubcriticalVaughanLimits`). Matrix-family
+topology remains under verification.
 
 **Finite harmonic rigidity.** Every $H_N$ with $N\ge1$ is nonzero. For every prime
 $N/2<p\le N$, its rational $p$-adic valuation is exactly $-1$; all such distinct primes

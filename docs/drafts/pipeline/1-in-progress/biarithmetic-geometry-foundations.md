@@ -51,7 +51,7 @@ its parent card. Open programme questions without a proof plan remain open.
 
 | Source requirement | Required evidence | Status |
 |---|---|---|
-| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; fifty-eight direct-checked and axiom-audited leaves |
+| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; fifty-nine direct-checked and axiom-audited leaves |
 | Horizon-complete objects; sign visibility | Exact signed finite-horizon laws and quantitative period/prefix comparison | Open |
 | Truncated affine representation theory | Source-defined action, boundary calculus, classification/calibration | Open |
 | A1–A2: paid ideal annihilates escape; hull inclusion | Actual receiver theorem, not an assumed ideal inclusion | Proved for every actual common Gram limit; ADR foundations reused, four interfaces directly checked and axiom-audited |
@@ -136,10 +136,11 @@ its parent card. Open programme questions without a proof plan remain open.
 | `NormalizedCubicRootLaw` | Direct repository leaf passed; stage-3 card | Eight main declarations clean |
 | `PowerTailCoefficients` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `PowerTailIndependence` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `PowerTailWienerFamily` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
 | `PaidSourcePerturbations` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `FullWienerAnnihilation` | Consolidated ADR interfaces and direct repository leaf passed | Four chosen and universal declarations clean |
 
-Completed main-declaration axiom audits for fifty-eight checked leaves report only `propext`,
+Completed main-declaration axiom audits for fifty-nine checked leaves report only `propext`,
 `Classical.choice`, and `Quot.sound`. Audits used isolated Lean source copies; each leaf also passed its direct source check. The literal-B1
 no-go is closed in `5-failed/biarithmetic-literal-dimension-euler-characteristic.md`; its
 positive survivor and exact prefix visibility now have separate stage-3 cards.
@@ -765,10 +766,11 @@ Active drafts:
   division algebra, and an explicit subtype binder. Production source and
   umbrella import and stage-3 card are present; direct repository check passed. The actual
   quotient lower bounds remain separate.
-- `/tmp/BiarithmeticPowerTailWienerFamily.lean`: actual norm-two golden kernels
+- `PowerTailWienerFamily.lean`: actual norm-two golden kernels
   for all positive power-tail exponents, actual payment iff the exponent exceeds
   one half, and membership of the whole family in the full paid-ideal closure.
-  Unchecked; depends on power coefficients and the generic actual-closure bridge.
+  Scratch check and all four audits passed. Production source and umbrella
+  import and stage-3 card are present; direct repository check passed.
 - `CriticalGoldenPaymentQuotients.lean`: actual paid subspace,
   its closure, closure-defect and unreduced quotient, canonical comparison map,
   and rank-at-most-continuum for both quotients. Scratch check and all three
@@ -1140,3 +1142,8 @@ Pending source check: `/tmp/BiarithmeticComplexShellShift.lean` constructs compl
 Pending source check: `/tmp/BiarithmeticIntrinsicShellConvolution.lean` constructs bounded convolution by every actual critical Wiener kernel, identifies its finite Cauchy coordinates, and proves weighted shell-energy stability with operator bound `||k||`. This addresses the infinite-kernel action required by the intrinsic centered-convolution proof plan.
 
 Pending source check: `/tmp/BiarithmeticIntrinsicPaymentDomain.lean` identifies the actual centered filtered receiver, pays its mean correction and geometric remainder, and reduces full intrinsic payment to weighted square summability of its geometric causal response. Every analytic input has a queued Lean proof obligation; no additional source hypothesis is used. The draft also identifies intrinsic payment with actual ordinary golden payment on the one-prime algebra throughout positive-damping escape.
+
+Pending source check: `/tmp/BiarithmeticIntrinsicAdmissionPhase.lean` gives
+the actual intrinsic source admission phase, both damping endpoints, and
+payment of every filtered Wiener kernel in the paid regimes. Seven audits
+are drafted; its source-comparison dependencies remain unchecked.

@@ -1,6 +1,6 @@
 # Hard mathematical obstacles: routes, candidates and supporting programmes
 
-Status: 2026-10-25, corpus snapshot `86591dd4b` plus the working tree. Scope: the 31 live routes, 17 standalone candidates, PW-B, and the supporting programmes that change their prospects. Companions: [summary, next questions and new-field assessment](hard-obstacles-summary.md), [walls ledger](walls-ledger.md), [route unification](route-unification-ledger.md). The supporting note [what forces blindness](what-forces-blindness.md) is assessed against its Lean sources in §1.5.
+Status: 2026-10-25, corpus snapshot `0fa51c933`. Scope: the 31 live routes, 17 standalone candidates, PW-B, and the supporting programmes that change their prospects. Companions: [summary, next questions and new-field assessment](hard-obstacles-summary.md), [walls ledger](walls-ledger.md), [route unification](route-unification-ledger.md). The supporting note [what forces blindness](what-forces-blindness.md) is assessed against its Lean sources in §1.5.
 
 ## Evidence and classification
 
@@ -31,7 +31,7 @@ Notation: `Δ = sup_ρ |Re ρ − 1/2|` (zero width), `Θ = 1/2 + Δ`. A receive
 | Item | Present status | Consequence |
 |---|---|---|
 | Summation-scope "defects" | **None exists.** Mathlib parses `∑ x ∈ s, f x - c` as `(∑ x ∈ s, f x) - c`. This was checked for every statement previously reported as defective, including `sum_Ioc_sq_mul_eq_abel` and `abs_sum_Ioc_sub_tsum_le_of_blocks` (centred-prime band) and `abs_sum_re_pow_sub_le` (upper Lefschetz bounds). Under the alleged parse each statement fails at an explicit point (`a₁ = a₁ − c` at `N = 1`; `2 ≤ windowConst 1 = 0` at `u = 1, N = 2`), and the proofs use the correct reading. | The centred-prime band and the balanced statistic are [L] quasi-RH equivalences (`centredPrimeBandPowerSaving_iff`, `balancedStatisticPowerSaving_iff`). The one-sided Lefschetz and genus-one graph-degree modules are [L] and prove exactly what they state (§2, HF and ACS). |
-| Integration | 21 committed modules and one untracked module are [S]: 15 ACS Meyer and reading modules (`BoundedMeyerSourceSurface`, `BoundedMeyerFaithfulReserve`, `PositiveMeyerDegreesSeeReducedCriticalJets`, `MeyerAlgebraicCharacters`, `MeyerHermitianDegreePart`, `FiniteMeyerProjectorsSplitPositiveEnergy`, `MeyerFiniteJetAlgebra`, `MeyerFiniteProjectorAlgebra`, `MeyerHilbertReserveFlowRigidity`, the four origin-mass modules, `SmoothFiniteReadingKernels`, `ArithmeticMajorantConeGeometry`); AOT active cosets; three BVI Vaughan-limit leaves (`TheOnlyAccumulationOfVaughanAmplitudesIsZero`, `TheRanksOfSubcriticalVaughanLimits`, untracked `TheTopologyOfSubcriticalVaughanGramLimits`); `HamburgerGeneralFrequencies`; `FiniteMobiusHarmonicSumsHaveExplicitLowerBounds`; APT `CriticalPrimeChannelBeyondLinearWindows`. | Everything else cited below is [L]. This includes the maximal blind Meyer ideal, harmonic coupling, sparse-spectrum annihilators, the FE/count-fluctuation theorem, the Vaughan subcritical limit set, THIM integer local exponents, the SSA half-damping endpoints, the ground-rate equality, the prime-shell ladder, the Meyer source surface and the global majorants. `W1` integrates the rest. |
+| Integration | 20 committed modules are [S]: 14 ACS Meyer and reading modules (`BoundedMeyerSourceSurface`, `BoundedMeyerFaithfulReserve`, `PositiveMeyerDegreesSeeReducedCriticalJets`, `MeyerAlgebraicCharacters`, `MeyerHermitianDegreePart`, `FiniteMeyerProjectorsSplitPositiveEnergy`, `MeyerFiniteJetAlgebra`, `MeyerFiniteProjectorAlgebra`, the four origin-mass modules, `SmoothFiniteReadingKernels`, `ArithmeticMajorantConeGeometry`); four BVI Vaughan leaves (`TheTopologyOfSubcriticalVaughanGramLimits`, `UniformLogarithmicCancellationInMobiusFloorSums`, `UniformStretchedExponentialCancellationInTheVaughanConvolution`, `VaughanGramsAtTheirActualHarmonicAmplitude`); `FiniteMobiusHarmonicSumsHaveExplicitLowerBounds`; APT `CriticalPrimeChannelBeyondLinearWindows`. | Everything else cited below is [L]. This includes the maximal blind Meyer ideal, harmonic coupling, sparse-spectrum annihilators, the FE/count-fluctuation theorem, the general-frequency Hamburger step, the Vaughan subcritical limit set with its amplitude and rank leaves, AOT active cosets, THIM integer local exponents, the SSA half-damping endpoints, the ground-rate equality, the prime-shell ladder, the Meyer source surface and the global majorants. `W1` integrates the rest. |
 | Proof integrity | No `sorry`, `admit`, `axiom`, `opaque` or `unsafe` in code positions of the project packages. `native_decide` occurs at `RHTower/PrimeArchThetaFirstAtomHighOrderMomentBounds.lean:749` (PA order-24 quadrature) and at `HTGeometry/MilnorKTwoSteinbergSurjective.lean:138` (not route-related). The first is imported only by three modules: `PrimeArchMomentTwentyThreeClosure`, `ThetaFirstAtomTailMajorantOrder` and `PrimeArchPositivePairedDiagonalExteriorOverlap`. | No route receiver depends on it. `W2` replaces both certificates. |
 
 ### 1.2 The first rung of every cancellation receiver is quasi-RH
@@ -147,7 +147,7 @@ Neither model is shown to be compatible or incompatible with full paid-ideal ann
 ### 1.8 Vaughan calibration and the half-damping endpoint
 
 - **Vaughan [L].** At fixed cutoffs the leading Gram is rank one. Uniform product horizons give centered Grams `o(T^{1−2ε})`, and the absolute remainder budget has the trivial exponent `T^{1−2ε}`. A power gain for the empty leg is equivalent to `Θ < 1`.
-- **Subcritical limit classification** (`TheSubcriticalVaughanGramLimitSet` [L]; companion leaves [S]). Every moving-cutoff normalized limit at `0 < ε < 1/2` is the rank-≤ 1 smooth matrix at an amplitude `H_U² H_V²`. The amplitudes form a compact countable set whose only accumulation point is 0. Convergence occurs iff the cutoff product escapes or the amplitude is eventually constant. The leading order is classified completely; the residual below `T^{1−2ε}` is untouched.
+- **Subcritical limit classification** (`TheSubcriticalVaughanGramLimitSet`, `TheOnlyAccumulationOfVaughanAmplitudesIsZero`, `TheRanksOfSubcriticalVaughanLimits` [L]; topology leaf [S]). Every moving-cutoff normalized limit at `0 < ε < 1/2` is the rank-≤ 1 smooth matrix at an amplitude `H_U² H_V²`. The amplitudes form a compact countable set whose only accumulation point is 0. Convergence occurs iff the cutoff product escapes or the amplitude is eventually constant. The leading order is classified completely; the residual below `T^{1−2ε}` is untouched.
 - **Half damping [L].**
   - The signed prime-divisor hypercube form `Q_{1/2}(P)` is uniformly bounded over all squarefree `P`. This completes its phase diagram for `ε ≥ −1/2`.
   - Below half damping, a paid completely multiplicative pattern has an integer local exponent at every height, and exponent 0 off the real axis (`exists_int_localExponent_of_receiverBounded_damped`).
@@ -155,7 +155,7 @@ Neither model is shown to be compatible or incompatible with full paid-ideal ann
 
 ### 1.9 Functional equation and count regularity
 
-A generalized-integer system with count error `O(x^{−p})`, `p > −σ`, cannot satisfy Riemann's functional equation on `−1/2 < σ < 0` (`false_of_functionalEquation_of_decaying_count` [L]). The over-regular Beurling systems with genuine zeros in `1/2 < Re s < 2/3` therefore violate it (`overRegularZeta_not_functionalEquation`). Under the functional equation the count must fluctuate at least as much as the sawtooth of `⌊x⌋`. Hamburger's theorem is formalized for ordinary Dirichlet series. Its Laplace step holds for arbitrary frequencies [S], and the Γ_R^d functional equation (d ≥ 3) has infinitely many solutions without Euler positivity [L]. **The corpus contains no system satisfying Riemann's functional equation, a Beurling Euler product with nonnegative prime measure and a simple pole, other than ζ.** It therefore has no countermodel with all of these invariants and an off-line zero.
+A generalized-integer system with count error `O(x^{−p})`, `p > −σ`, cannot satisfy Riemann's functional equation on `−1/2 < σ < 0` (`false_of_functionalEquation_of_decaying_count` [L]). The over-regular Beurling systems with genuine zeros in `1/2 < Re s < 2/3` therefore violate it (`overRegularZeta_not_functionalEquation`). Under the functional equation the count must fluctuate at least as much as the sawtooth of `⌊x⌋`. Hamburger's theorem is formalized for ordinary Dirichlet series. Its Laplace step holds for arbitrary frequencies, where the imaginary-axis residues read the Bohr spectrum [L], and the Γ_R^d functional equation (d ≥ 3) has infinitely many solutions without Euler positivity [L]. **The corpus contains no system satisfying Riemann's functional equation, a Beurling Euler product with nonnegative prime measure and a simple pole, other than ζ.** It therefore has no countermodel with all of these invariants and an off-line zero.
 
 ## 2. The 31 routes
 
@@ -349,8 +349,8 @@ Each entry gives the present status, the (a) and (b) obstacles, and the walls in
 **Walls:** 1.3, 3.1, 3.4.
 
 ### AIP — Arithmetic incidence positivity
-**Status.** Odd allocation for a test ⇔ nonnegativity of its zero form; allocation for all tests ⇔ RH. With universal constants, allocation holds up to a deficit `K e^r e^{−c√r}` (Sobolev norm), which is rate `1/2` [L]. Horizon-uniform Schur payment leaves a finite-head debt [L]. Active-coset payment is [S]. Shared-budget descent is exact: the excess is `kB`.
-**(a)** W1: integrate active cosets. W4/W7: finite ledgers.
+**Status.** Odd allocation for a test ⇔ nonnegativity of its zero form; allocation for all tests ⇔ RH. With universal constants, allocation holds up to a deficit `K e^r e^{−c√r}` (Sobolev norm), which is rate `1/2` [L]. Horizon-uniform Schur payment leaves a finite-head debt [L]. Active-coset payment and top-octave dominance are [L]. Shared-budget descent is exact: the excess is `kB`.
+**(a)** W4/W7: finite ledgers.
 **(b)** B1.3: one shared signed budget. B3.8: a nonlocal frustration calculus.
 **Walls:** 1.3, 3.4.
 
@@ -407,12 +407,12 @@ The zero-indexed diagnostics of HJ, SEC, CDC, BSH, IRK and W1C all read `Re ρ =
 | Programme | Established | (a) Just work | (b) Open |
 |---|---|---|---|
 | **BVI** row cancellation | Prime and composite minor arcs. All-modulus `Q^{−δ/32}` saving. Diagonal reduction. Balanced and centred-prime band ⇔ `Θ<1` [L]. Kloosterman Parseval; prime Gram of rank three. | W6 | B2.1; B1.2 |
-| **BVI** Vaughan | Leading Gram paid; product horizon `o(T^{1−2ε})`; absolute budget trivial; empty leg ⇔ strip; subcritical limit set classified (§1.8). | W1 (three leaves) | Signed interior energy (B1.2) |
+| **BVI** Vaughan | Leading Gram paid; product horizon `o(T^{1−2ε})`; absolute budget trivial; empty leg ⇔ strip; subcritical limit set classified (§1.8). | W1 (four leaves) | Signed interior energy (B1.2) |
 | **ADR** cofactor module | §1.7. | W4 | B3.2, B3.3; ideal/hull equality |
 | **ACCE** aperture flow, rates | §1.3; ground = polar rate [L]. | W8(i) | B3.6, B3.1 |
 | **ACS / Meyer** | §1.4, §1.5. | W1, W8(iv) | B3.4, B3.5, B3.14, B3.15; B1.6, B1.8 |
 | **AOG** orientation, index, theta `h⁰` | Generic orbit; scale-stable families; index exit; spline-orbit index laws; base theta `h⁰` with RR and Mellin. | W6 | B3.10, B3.5; B2.2 |
-| **AOT** readings, hulls, width functor | Width functor; Wiener hull calculus; Bohr characters; active cosets [S]. | W1 | B3.4 |
+| **AOT** readings, hulls, width functor | Width functor; Wiener hull calculus; Bohr characters; active cosets [L]. | W6 | B3.4 |
 | **ALDG** local divisor heat | §1.6. | W8(iii) | B3.9; B1.5 |
 | **APT** full cone, selectivity, phases | Source selection; wide windows; grid tents; phase-selective single height; finite-level existence. | W1 for the beyond-linear-window module | B1.4 |
 | **BiScale** lag, packet, filtering | Endpoints; high-zero tail; filtered deficit. | W8(v) | B1.4, B2.4 |
@@ -421,7 +421,7 @@ The zero-indexed diagnostics of HJ, SEC, CDC, BSH, IRK and W1C all read `Re ρ =
 | **THIM** damping and Dini laws | Dini thresholds; monotone-defect Dini law; integer local exponents below half damping [L]. | — | B3.11 |
 | **Biarithmetic** carriers | Affine quotient; torsion; golden calibration and closure; cofactor-graph closedness ⇔ uniform estimate; finite pronic step embedding [L]. | — | Successor-sensitive carrier (B3.4) |
 | **TTPC** coalescent pairs | `N₀* ≥ (29/36−ε)N − surplus`; `β ≤ 1/18` would give 3/4. | — | B2.5, B2.7 |
-| **Analytic inputs** | Guth–Maynard large values; 30/13 density; Heath–Brown all-length; sharp `S₂`; KKL horizon; dlVP, Littlewood and VK regions; FE/count fluctuation; Hamburger (ordinary frequencies) [L], general-frequency Laplace step [S]. | W1 | B2.4, B2.8 |
+| **Analytic inputs** | Guth–Maynard large values; 30/13 density; Heath–Brown all-length; sharp `S₂`; KKL horizon; dlVP, Littlewood and VK regions; FE/count fluctuation; Hamburger (ordinary frequencies) and the general-frequency Laplace step [L]. | — | B2.4, B2.8 |
 
 ## 5. Not open tasks
 

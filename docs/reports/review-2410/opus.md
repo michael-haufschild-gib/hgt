@@ -432,8 +432,9 @@ eventual constancy of a positive amplitude (`TheSubcriticalVaughanGramLimitSet`)
 The explicit bounded-packet energy decay corollary is checked as well. Zero is
 the unique scalar amplitude accumulation point; positive amplitudes are isolated
 and the two convergence alternatives are mutually exclusive
-(`TheOnlyAccumulationOfVaughanAmplitudesIsZero`). Exact matrix ranks and
-matrix-family topology remain under verification.
+(`TheOnlyAccumulationOfVaughanAmplitudesIsZero`). Exact matrix ranks are checked:
+zero at zero amplitude and one at every positive amplitude
+(`TheRanksOfSubcriticalVaughanLimits`). Matrix-family topology remains under verification.
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?

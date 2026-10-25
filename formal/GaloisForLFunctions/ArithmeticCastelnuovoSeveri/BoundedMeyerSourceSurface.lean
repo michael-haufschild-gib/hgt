@@ -19,7 +19,9 @@ namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 def meyerBoundedCycleSubmodule : Submodule ℝ MeyerScalingCycle where
   carrier := {x | MeyerCriticalTopJets x.2.2}
   zero_mem' := meyerCriticalTopSourceSubmodule.zero_mem
-  add_mem' := fun _ _ hx hy => meyerCriticalTopSourceSubmodule.add_mem hx hy
+  add_mem' := by
+    intro x y hx hy
+    exact meyerCriticalTopSourceSubmodule.add_mem hx hy
   smul_mem' a x hx := by
     change MeyerCriticalTopJets ((a : ℂ) • x.2.2)
     exact meyerCriticalTopSourceSubmodule.smul_mem (a : ℂ) hx
@@ -153,9 +155,11 @@ theorem meyerBoundedSurface_radical_eq_principal_iff :
       refine ⟨by simp only [x, meyerDegreeH, neg_add_cancel],
         by simp only [x, meyerDegreeV, neg_add_cancel], ?_⟩
       intro sigma
+      change deningerMeyerStrongLogMellin (meyerSingleJetSource rho j) (sigma : ℂ) = 0
       have he := meyerSingleJetSource_jet rho j sigma ⟨0, xiSupportMultiplicity_pos sigma⟩
       have hj : (0 : ℕ) ≠ j.val := by dsimp only [j]; omega
-      simpa only [hj, and_false, ↓reduceIte] using he
+      simpa only [deningerMeyerStrongLogMellinJetLM_eq_iteratedDeriv,
+        iteratedDeriv_zero, hj, and_false, ↓reduceIte] using he
     obtain ⟨f, hf⟩ := (h x).mp hrad
     have he : g = deningerMeyerStrongLogSumLM f := congrArg (fun z : MeyerScalingCycle => z.2.2) hf
     exact meyerSingleJetSource_not_boundary rho j ⟨f, he.symm⟩

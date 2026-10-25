@@ -266,3 +266,11 @@ Pending source check: `/tmp/BiarithmeticComplexShellShift.lean` constructs compl
 Pending source check: `/tmp/BiarithmeticIntrinsicShellConvolution.lean` constructs bounded convolution by every actual critical Wiener kernel, identifies its finite Cauchy coordinates, and proves weighted shell-energy stability with operator bound `||k||`. This addresses the infinite-kernel action required by the intrinsic centered-convolution proof plan.
 
 Pending source check: `/tmp/BiarithmeticIntrinsicPaymentDomain.lean` identifies the actual centered filtered receiver, pays its mean correction and geometric remainder, and reduces full intrinsic payment to weighted square summability of its geometric causal response. Every analytic input has a queued Lean proof obligation; no additional source hypothesis is used. The draft also identifies intrinsic payment with actual ordinary golden payment on the one-prime algebra throughout positive-damping escape.
+
+Pending source check: `/tmp/BiarithmeticIntrinsicAdmissionPhase.lean` gives
+absolute convergence below the primary square-root radius, infinite actual
+source energy between critical contact and the undamped endpoint, and the
+exact admission equivalence `alpha*t<sqrt(5) or t=1` on `[0,1]`. It also
+proves payment of every filtered critical Wiener kernel in both paid regimes,
+including `t=0` through the subcritical case. Seven audits are drafted;
+the centered-convolution and remainder dependencies remain unchecked.

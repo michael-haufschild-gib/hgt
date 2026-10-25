@@ -473,6 +473,12 @@ forces divergent square energy.
 Source: `PowerTailIndependence.lean`, `powerTailCombination_ratio_tendsto`,
 `criticalPowerCoeff_interval_independent_mod_squareSums`.
 
+Their actual complex Wiener lifts have norm two, pay the critical golden
+source exactly above exponent one half, and all lie in the full paid-ideal
+closure. This transfers the coefficient threshold to the specified source.
+Source: `PowerTailWienerFamily.lean`, `norm_powerTailWiener`,
+`powerTailWiener_mem_paidIdeal_iff`, `powerTailWiener_mem_closure_paidIdeal`.
+
 The geometric future tail `B_b g(m)=sum_(s>=0)b^(s+1)g(m+s+1)` has
 absolute coefficient norm at most `b/(1-b)||g||_1` for `0<=b<1`.
 It satisfies `B_b g(m)=b*g(m+1)+b*B_b g(m+1)`. Joint absolute

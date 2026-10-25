@@ -31,7 +31,7 @@ Lean module names below are relative to `GaloisForLFunctions/`; BVI denotes
 | `vaughan-subcritical-gram-limit-classification.md` | BVI `TheCompactArithmeticAmplitudesOfVaughanGrams`, `TheSubcriticalVaughanGramLimitSet`, `TheOnlyAccumulationOfVaughanAmplitudesIsZero`, `TheRanksOfSubcriticalVaughanLimits`, `TheTopologyOfSubcriticalVaughanGramLimits`. The last leaf supplies exact matrix-family topology, beyond the scalar amplitude statements. |
 | [positive-vaughan-cutoff-escape-is-zero-gram-limit.md](../3-formalized/positive-vaughan-cutoff-escape-is-zero-gram-limit.md) — COMPLETE | Exact amplitude and matrix escape equivalences, finite-fiber rigidity, convergence dichotomy, positive-cutoff attainment, and mutually exclusive alternatives. All supporting leaf checks and axiom audits passed. |
 | `vaughan-relative-gram-and-harmonic-denominators.md` | RHTower `FiniteMobiusHarmonicSumsHaveExplicitLowerBounds`; BVI `VaughanGramsAtTheirActualHarmonicAmplitude`. |
-| `uniform-vaughan-convolution-stretched-exponential-rate.md` | BVI `UniformStretchedExponentialCancellationInTheVaughanConvolution`; HTGeometry `FactorialLogarithmicBoundsArePowerBounds`; BVI `FactorialOrderOneInTheVaughanConvolutionIsAPowerSaving`. |
+| `uniform-vaughan-convolution-stretched-exponential-rate.md`; related existing stage-1 [factorial criterion](vaughan-factorial-order-one-is-a-fixed-strip.md) | BVI `UniformStretchedExponentialCancellationInTheVaughanConvolution`; HTGeometry `FactorialLogarithmicBoundsArePowerBounds`; BVI `FactorialOrderOneInTheVaughanConvolutionIsAPowerSaving`. |
 | `uniform-vaughan-residual-power-rates-are-fixed-strips.md` | BVI `TheExtremeVaughanCutoffReadsItsHarmonicSum`, `PowerCancellationSurvivesTheDampedFloorTransform`, `FixedStripsControlAllVaughanFluctuationReceivers`, `UniformVaughanResidualPowerRatesAreFixedStrips`, `UniformVaughanPowerBoundsAreFixedStrips`; RHTower `MertensPowerBoundsControlMobiusHarmonicSums`. |
 | `the-centred-vaughan-pole-has-positive-finite-energy.md` | BVI `TheCentredVaughanPoleHasPositiveFiniteEnergy`, including the eventual faster-power obstruction. |
 | `the-endpoint-vaughan-limit-has-rank-two.md` | BVI `TheVaughanLimitRowsAreIndependentInTwoCells`, `TheActualVaughanLimitGramHasRankTwo`, `TheActualEndpointVaughanGramHasRankTwo`; actual summability supplied by the moving-limit leaves below. |
@@ -81,7 +81,10 @@ horizon packet-energy-zero corollary. The amplitude-topology leaf's four targets
 also passed producing and final direct checks, with standard transitive axioms
 only. They give finiteness above each positive level, isolation, the unique zero
 accumulation point, and mutual exclusion of the two convergence cases. Its
-scratch was removed and the exact escape card moved to stage 3.
+scratch was removed and the exact escape card moved to stage 3. The four matrix
+rank targets also passed corrected producing and final direct checks, with
+standard axioms only. `TheRanksOfSubcriticalVaughanLimits.lean` is wired and its
+scratch removed: zero amplitude has rank zero; every positive amplitude has rank one.
 All other remaining leaves named in the table are unchecked drafts. Dependencies and
 live compiler handles are recorded in `/tmp/QIVerificationState.txt`; the
 complete module queue is `/tmp/QILeanCompletionQueue.md`.

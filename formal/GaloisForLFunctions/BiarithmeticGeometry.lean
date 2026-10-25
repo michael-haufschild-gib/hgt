@@ -56,6 +56,7 @@ import GaloisForLFunctions.BiarithmeticGeometry.GeometricShellHilbert
 import GaloisForLFunctions.BiarithmeticGeometry.CriticalGoldenClosure
 import GaloisForLFunctions.BiarithmeticGeometry.PowerTailCoefficients
 import GaloisForLFunctions.BiarithmeticGeometry.PowerTailIndependence
+import GaloisForLFunctions.BiarithmeticGeometry.PowerTailWienerFamily
 
 /-!
 # Biarithmetic Geometry

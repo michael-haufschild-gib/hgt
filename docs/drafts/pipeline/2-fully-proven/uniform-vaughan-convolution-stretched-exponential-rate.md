@@ -63,8 +63,9 @@ the proved envelope has exponent proportional to `(log n)^(1/3)`, not `log n`.
 Dependency-closed paper proof. `/tmp/QIStretchedConvolutionTools.lean` now drafts
 three targets: the finite common saving envelope, the uniform stretched-exponential
 rate, and the factorial envelope with one threshold for all logarithmic orders.
-The draft uses the valid coarser constant
-`2+(11B+C)c^(-6)6!`, obtained by putting all three tail terms under `(log n)^2`.
+The draft now uses the stated constant `2+3B+C+8B c^(-6)6!`: only the
+harmonic-square term pays the factorial cost, while the other tail terms use
+`exp(-2t)≤exp(-t)` directly.
 These targets remain uncompiled. The finite convolution and
 arbitrary logarithmic rate have passed scratch, producing, and final direct checks;
 their audits are tracked on

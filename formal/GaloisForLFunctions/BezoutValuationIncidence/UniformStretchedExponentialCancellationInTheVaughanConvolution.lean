@@ -151,7 +151,7 @@ theorem exists_uniform_pmUndampedVaughanConvolutionPrefix_stretched_rate :
       tendsto_natCast_atTop_atTop)
   have hloglim : Tendsto (fun n : ℕ => Real.log (n : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  refine ⟨2 + (11 * B + C) * (1 / c) ^ 6 * (6.factorial : ℝ), by positivity, ?_⟩
+  refine ⟨2 + 3 * B + C + 8 * B * (1 / c) ^ 6 * (6.factorial : ℝ), by positivity, ?_⟩
   filter_upwards [hDlim.eventually_ge_atTop D₀, hloglim.eventually_ge_atTop 1,
     hloglim.eventually_ge_atTop (8 * Real.log 2), eventually_ge_atTop 1]
       with n hD hlog1 hlog8 hn U V
@@ -159,6 +159,7 @@ theorem exists_uniform_pmUndampedVaughanConvolutionPrefix_stretched_rate :
   have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have hl : 0 ≤ Real.log (n : ℝ) := zero_le_one.trans hlog1
   let t := c * Real.log (n : ℝ) ^ (1 / 3 : ℝ)
+  have ht : 0 ≤ t := mul_nonneg hc.le (Real.rpow_nonneg hl _)
   have hDn : D n ≤ n := by
     apply Nat.floor_le_of_le
     simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le hn1
@@ -185,22 +186,32 @@ theorem exists_uniform_pmUndampedVaughanConvolutionPrefix_stretched_rate :
       linarith only [hsum, hlog1]
     have hnonneg : 0 ≤ ∑ k ∈ Icc 1 n, 1 / (k : ℝ) := sum_nonneg fun k _ => by positivity
     simpa only [mul_pow, show (2 : ℝ) ^ 2 = 4 by norm_num] using pow_le_pow_left₀ hnonneg hlin 2
-  have hlog2 : 1 ≤ Real.log (n : ℝ) ^ 2 := one_le_pow₀ hlog1
-  have hnum : 3 * B * n + 2 * B * n * (∑ k ∈ Icc 1 n, 1 / (k : ℝ)) ^ 2 + C * n ≤
-      (11 * B + C) * n * Real.log (n : ℝ) ^ 2 := by
-    have hfirst := mul_le_mul_of_nonneg_left hlog2 (by positivity : 0 ≤ 3 * B * n)
-    have hmiddle := mul_le_mul_of_nonneg_left hH (by positivity : 0 ≤ 2 * B * n)
-    have hlast := mul_le_mul_of_nonneg_left hlog2 (by positivity : 0 ≤ C * n)
-    nlinarith only [hfirst, hmiddle, hlast]
+  have hexp_le : Real.exp (-(2 * t)) ≤ Real.exp (-t) :=
+    Real.exp_le_exp.mpr (by linarith only [ht])
+  have hplain : (3 * B * n + C * n) * DeletionStretchedEnergy.saving (D n) ≤
+      (3 * B + C) * n * Real.exp (-t) :=
+    (mul_le_mul_of_nonneg_left (hsD.trans hexp_le) (by positivity)).trans_eq (by ring)
+  have hmiddle : (2 * B * n * (∑ k ∈ Icc 1 n, 1 / (k : ℝ)) ^ 2) *
+      DeletionStretchedEnergy.saving (D n) ≤
+        (8 * B * (1 / c) ^ 6 * (6.factorial : ℝ)) * n * Real.exp (-t) := by
+    calc
+      _ ≤ (2 * B * n * (4 * Real.log (n : ℝ) ^ 2)) * Real.exp (-(2 * t)) :=
+        mul_le_mul (mul_le_mul_of_nonneg_left hH (by positivity)) hsD
+          (vaughan_saving_pos _).le (by positivity)
+      _ = (8 * B * n) * (Real.log (n : ℝ) ^ 2 * Real.exp (-(2 * t))) := by ring
+      _ ≤ (8 * B * n) * ((1 / c) ^ 6 * (6.factorial : ℝ) * Real.exp (-t)) :=
+        mul_le_mul_of_nonneg_left (log_square_mul_exp_le hl hc) (by positivity)
+      _ = _ := by ring
   have htail : (3 * B * n + 2 * B * n * (∑ k ∈ Icc 1 n, 1 / (k : ℝ)) ^ 2 + C * n) *
       DeletionStretchedEnergy.saving (D n) ≤
-        ((11 * B + C) * (1 / c) ^ 6 * (6.factorial : ℝ)) * n * Real.exp (-t) := by
+        (3 * B + C + 8 * B * (1 / c) ^ 6 * (6.factorial : ℝ)) * n * Real.exp (-t) := by
     calc
-      _ ≤ ((11 * B + C) * n * Real.log (n : ℝ) ^ 2) * Real.exp (-(2 * t)) :=
-        mul_le_mul hnum hsD (vaughan_saving_pos _).le (by positivity)
-      _ = ((11 * B + C) * n) * (Real.log (n : ℝ) ^ 2 * Real.exp (-(2 * t))) := by ring
-      _ ≤ ((11 * B + C) * n) * ((1 / c) ^ 6 * (6.factorial : ℝ) * Real.exp (-t)) :=
-        mul_le_mul_of_nonneg_left (log_square_mul_exp_le hl hc) (by positivity)
+      _ = (3 * B * n + C * n) * DeletionStretchedEnergy.saving (D n) +
+          (2 * B * n * (∑ k ∈ Icc 1 n, 1 / (k : ℝ)) ^ 2) *
+            DeletionStretchedEnergy.saving (D n) := by ring
+      _ ≤ (3 * B + C) * n * Real.exp (-t) +
+          (8 * B * (1 / c) ^ 6 * (6.factorial : ℝ)) * n * Real.exp (-t) :=
+        add_le_add hplain hmiddle
       _ = _ := by ring
   have hu : Real.log (n : ℝ) ^ (1 / 3 : ℝ) ≤ Real.log (n : ℝ) := by
     simpa only [Real.rpow_one] using

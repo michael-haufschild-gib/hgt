@@ -41,9 +41,9 @@ failure of curve selection; their exact paper proofs are on:
 - [Horizon order and finite cutoff](../3-formalized/horizon-order-excludes-prime-deleted-white-noise.md).
 - [Rank-one modulus classification](rank-one-cofactor-moduli-are-archimedean.md).
 
-The cutoff and magnitude survivors passed final canonical checks. The explicit
-multiplicative-sign refinement and the complete countermodel audit remain.
-Do not retire this route until both pass Lean.
+The countermodel, cutoff and magnitude survivors passed final canonical checks.
+The explicit multiplicative-sign refinement remains. Do not retire this route
+until its Lean check passes.
 
 ## Search audit
 
@@ -55,8 +55,10 @@ BohrPoint definition in `WienersLemmaOnTheBohrPolydisk` and
 
 ## Current verification status
 
-The countermodel, first-coefficient character and exact singleton hull passed
-scratch checks with standard axioms. The scalar character Gram is included in
-the current direct check of `/tmp/qiii-augmentation-full-check.lean`.
-The final canonical source check remains. The completion ledger records the
-active check and supersedes historical scratch queues.
+`ArithmeticDefectRigidity/CofactorContractionLawsDoNotSelectKroneckerPoints`
+passed final canonical source-only check `79225`. The nine audited targets
+cover the countermodel, quotient dimension, critical radius, packet
+contraction, numeric order, first-coefficient character, singleton hull and
+scalar character Gram. All transitive axiom reports contain only `propext`,
+`Classical.choice`, `Quot.sound`. Output:
+`/tmp/qiii-augmentation-canonical-final.log`.

@@ -1,6 +1,6 @@
 # Route-unification ledger
 
-**Status 2026-10-25, corpus snapshot `86591dd4b` plus the working tree.** The 31 live routes, 17 candidates and PW-B are faces of three construction problems:
+**Status 2026-10-25, corpus snapshot `0fa51c933`.** The 31 live routes, 17 candidates and PW-B are faces of three construction problems:
 
 - **U1 — critical arithmetic cancellation**: the *rate* reading of blindness.
 - **U2 — complete signed positivity**: the *sign* reading of blindness.

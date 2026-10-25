@@ -5,12 +5,14 @@
 - **Type:** CANDIDATE (Lean formalization incomplete)
 - **Proof status:** Only statements with completed Lean checks and axiom audits are proved. Paper arguments below are proof plans; every significant claim remains a formalization obligation.
 - **Parent:** [Biarithmetic Geometry](../1-in-progress/biarithmetic-geometry-foundations.md)
-- **Statement:** For the geometric source `I_a`, `0<a<5`, restrict kernels to powers of five and give its paid ideal the source graph norm. Its inclusion into the critical Wiener algebra is Fredholm of index zero when `a<sqrt(5)`, Fredholm of index minus one when `a>sqrt(5)`, and non-Fredholm at equality. At equality its reduced cokernel is isometrically `C`, but its unreduced cokernel has Hamel dimension continuum.
+- **Statement:** For the geometric source `I_a`, `0<a<5`, restrict both the paid domain and its ambient critical Wiener algebra to kernels supported on powers of five, and give the paid domain its source graph norm. Inclusion into that one-prime ambient space is Fredholm of index zero when `a<sqrt(5)`, Fredholm of index minus one when `a>sqrt(5)`, and non-Fredholm at equality. At equality its reduced cokernel is isometrically `C`, but its unreduced cokernel has Hamel dimension continuum.
 
 ## Canonical complex and its domain
 
 Normalize one-prime kernel coefficients by `g_r=5^(-r/2)f(5^r)`, identifying the
-critical Wiener algebra with `W=ell1(N,C)`. Put `q=a/sqrt(5)>0` and
+critical Wiener subspace supported on powers of five with `W=ell1(N,C)`.
+The Fredholm codomain throughout this card is this restricted space, as
+specified by its actual normalized coefficient isometry. Put `q=a/sqrt(5)>0` and
 
 `T_q g(m)=sum_(r<=m) q^(m-r)g_r`.
 
