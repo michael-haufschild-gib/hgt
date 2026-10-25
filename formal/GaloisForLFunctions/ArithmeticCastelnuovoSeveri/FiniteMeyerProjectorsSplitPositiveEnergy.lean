@@ -62,6 +62,32 @@ theorem meyerFiniteCriticalProjector_complement_product_zero (S : Finset XiDivis
     ← meyerFiniteXiCausalProjector_mul_right,
     ← meyerFiniteCriticalProjector_sharp S hcrit, hz, map_zero, map_zero]
 
+/-- A critical packet splits the actual sharp square in genuine cohomology. -/
+theorem meyerFiniteCriticalProjector_square_decomposition (S : Finset XiDivisorSupport)
+    (hcrit : ∀ rho ∈ S, (rho : ℂ).re = 1 / 2)
+    (u : DeningerMeyerStrongLogCohomology) :
+    deningerMeyerCohomologyConvolution u (meyerCohomologySharp u) =
+      deningerMeyerCohomologyConvolution (deningerMeyerFiniteXiCausalProjector S u)
+        (meyerCohomologySharp (deningerMeyerFiniteXiCausalProjector S u)) +
+      deningerMeyerCohomologyConvolution (u - deningerMeyerFiniteXiCausalProjector S u)
+        (meyerCohomologySharp (u - deningerMeyerFiniteXiCausalProjector S u)) := by
+  let p := deningerMeyerFiniteXiCausalProjector S u
+  let r := u - p
+  have hpr : deningerMeyerCohomologyConvolution p (meyerCohomologySharp r) = 0 :=
+    meyerFiniteCriticalProjector_complement_product_zero S hcrit u
+  have hrp : deningerMeyerCohomologyConvolution r (meyerCohomologySharp p) = 0 := by
+    have he := congrArg meyerCohomologySharp hpr
+    rw [meyerCohomologySharp_convolution, meyerCohomologySharp_sq, map_zero,
+      deningerMeyerCohomologyConvolution_comm] at he
+    exact he
+  have hu : u = p + r := by dsimp only [r]; abel
+  calc
+    deningerMeyerCohomologyConvolution u (meyerCohomologySharp u) =
+        deningerMeyerCohomologyConvolution (p + r) (meyerCohomologySharp (p + r)) := by
+      rw [← hu]
+    _ = _ := by
+      simp only [map_add, LinearMap.add_apply, hpr, hrp, add_zero, zero_add]
+
 /-- Every Hermitian degree has an exact orthogonal finite-packet energy decomposition. -/
 theorem meyerFiniteCriticalProjector_degree_decomposition
     (d : DeningerMeyerStrongLogCohomology →ₗ[ℂ] ℂ)
@@ -336,6 +362,7 @@ end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalProjector_sharp
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalProjector_complement_product_zero
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalProjector_square_decomposition
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalProjector_degree_decomposition
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalProjector_degree_le
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalProjector_degree_eq_iff

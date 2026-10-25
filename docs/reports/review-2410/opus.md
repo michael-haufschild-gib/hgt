@@ -718,6 +718,12 @@ not supply purity.
   and continuum annihilator-quotient index. Thus a finite-dimensional actual
   module forces escape. These refinements passed final Lean source checks.
   These admitted modules are not counterexamples about escaping receivers.
+- Actual normalized Gram coordinates have vanishing successive increments.
+  Every intermediate value between two actual coordinate limits occurs in
+  another actual common kernel. Thus the kernel family is a singleton or has
+  exactly continuum cardinality, and nonuniqueness forces escape. These
+  statements passed canonical Lean checks with standard axioms. They count
+  kernels; module isomorphism classes remain unclassified.
 - Actual diagonal data now retain numeric horizon order:
   `E(floor((T_m+1)/p))/E(T_m+1)` tends to `p*K(p,p)` for every actual
   common limit. This profile decreases in the ordinary integer order and

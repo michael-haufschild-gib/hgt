@@ -126,7 +126,10 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     Gram steps vanish (`cofactorGram_succ_sub_tendsto_zero`); paid corrections and vanishing-relative-energy
     perturbations preserve moving Grams (`normalized_moving_gram_perturbation_tendsto_zero`). Diagonal
     `pK(p,p) = lim E(⌊T/p⌋)/E(T)`, nonincreasing (`contracted_energy_ratio_tendsto`, `scaled_diagonal_antitone`);
-    admission ⇒ unique full-horizon kernel (`kernel_eq_of_admits`).
+    admission ⇒ unique full-horizon kernel (`kernel_eq_of_admits`). Every intermediate coordinate limit
+    occurs in another actual kernel (`exists_kernel_with_intermediate_coordinate`); the kernel family is
+    a singleton or has exactly continuum cardinality (`actualCofactorKernelSet_singleton_or_continuum`).
+    Nonuniqueness forces escape (`not_admits_of_kernel_ne`). Module isomorphism classes remain unclassified.
 13. **Wiener module.** Every actual limit has a cyclic Hilbert realization with `‖V_p‖ ≤ p^{−½}`, integrating to a
     contractive unital `𝒲_{1/2}` representation; annihilator closed, proper, nonempty hull
     (`moduleHull_nonempty`). On escape the paid ideal annihilates it, so `∅ ≠ hull ⊆ obstructionHull(μ_ε)`
@@ -152,6 +155,11 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     `admits_or_every_positive_faithful_boundary_is_realized`) — shifted, not unshifted limits. A constant
     origin boundary violates cofactor contraction (`unreset_boundary_ne_actual_kernel`); bounded rows pair
     boundedly with subcritical cofactors (`exists_uniform_bounded_row_pairing`).
+
+Canonical audits of the origin-boundary leaves and vanishing-relative-energy perturbation remain
+pending after their combined Lean scratch passed. The
+[completion ledger](../../../docs/drafts/pipeline/1-in-progress/q-iii-existing-findings-lean-completion.md)
+records each completed audit; these boundary leaves are not yet a finished canonical batch.
 
 ### Countermodels (Gram laws do not classify the source)
 17. White noise satisfies the compactness laws and has a unique antipodal extension

@@ -1019,14 +1019,12 @@ No other Lean process is running for this task. The cutoff survivor,
 augmentation and sign corollaries still need their own completion; the
 corresponding cards remain open.
 
-The not-yet-started common-proof child queue now also checks
-`/tmp/qiii-intermediate-cluster-values-check.lean`, a generic late-crossing
-lemma. Its new actual-state target is recorded, without proof claims, in
-`actual-cofactor-kernel-limits-have-no-discrete-branching.md`. Exact actual
-successive-Gram and intermediate-kernel applications are drafted in
-`/tmp/qiii_cofactor_gram_steps_body.lean` and
-`/tmp/qiii_actual_kernel_interpolation_body.lean`; these are UNVERIFIED and
-not in the active queue. Cardinality consequences remain open.
+The complete kernel-family development is now formalized in
+`../3-formalized/actual-cofactor-kernel-limits-have-no-discrete-branching.md`.
+Generic late crossings, actual Gram-step bounds, prescribed-horizon common
+limits, intermediate-coordinate kernels, the exact singleton/continuum
+alternative and nonuniqueness forcing escape all passed canonical source
+checks with standard axioms. The final application audit was `79971`.
 
 The contracted module draft now proves full Wiener-operator intertwining,
 not only its cyclic-vector identity. Its guarded promoter

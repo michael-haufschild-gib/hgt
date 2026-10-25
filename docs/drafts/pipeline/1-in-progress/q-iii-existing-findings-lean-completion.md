@@ -40,7 +40,7 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Actual unit transport, Möbius/Liouville equivalence | All canonical source-only checks passed with standard axioms; card moved to `3-formalized` |
 | Finite joint spectral multiplicities and normalized Bohr representatives | All three canonical source-only checks passed with standard axioms; card moved to `3-formalized` |
 | Rank-one multiplicative signs | Canonical audit `87736` passed with standard axioms; card in `3-formalized`, augmentation route retired with its checked positive survivors |
-| Visible interior pole orders, paid jets, critical boundary values, unit orbits | Canonical checks after successful combined scratch |
+| Visible interior pole orders, paid jets, critical boundary values, unit orbits | Updated explicit Mellin owner olean checking for the written pole clients; five new canonical leaves remain |
 | Reset moving origin, faithful step kernel and every positive boundary mass | Prescribed-horizon extraction complete; twelve other canonical leaves still need their direct checks |
 | Raw moving origin, exclusion from actual zero-origin limits | Draft scratch after boundary dependencies |
 | Positive boundary modules have infinite dimension and continuum index | Draft scratch after boundary dependencies |
@@ -53,7 +53,7 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Tied-torus and augmentation character limits | Draft scratch; refactor existing owner after verification |
 | Conjugation of actual source pairings, annihilator and hull | Draft scratch, then canonical placement/check |
 | Interior Wiener jets, mixed interpolation and paid quotient lower bounds | Base scratch, then full application and canonical checks |
-| Vanishing Gram steps, intermediate kernels, singleton/continuum alternative | All three dependencies complete; full application scratch `6026` passed, canonical leaf installed/wired, final source audit running |
+| Vanishing Gram steps, intermediate kernels, singleton/continuum alternative | Final canonical audit `79971` passed with standard axioms; card moved to `3-formalized` |
 
 The square-root translation card contains completed origin-trace results plus
 later raw/reset-boundary consequences; close it only after the latter are
@@ -78,6 +78,7 @@ unchanged checks. All required leaves are wired into their programme umbrellas.
 | Vanishing-step intermediate cluster values | `21506` | `98674` passed |
 | Actual normalized Gram steps | `86889` | `82801` passed |
 | Common limits along prescribed increasing/cofinal horizons | `11914` | `34513` passed |
+| Actual kernel interpolation and singleton/continuum alternative | `79971` | None needed |
 
 Recent final output files:
 `/tmp/qiii-augmentation-canonical-final.log`,
@@ -85,7 +86,8 @@ Recent final output files:
 `/tmp/qiii-common-family-canonical-final.log`,
 `/tmp/qiii-intermediate-cluster-values-canonical-final.log`,
 `/tmp/qiii-cofactor-gram-steps-canonical-final.log`,
-`/tmp/qiii-common-horizons-canonical-final.log`.
+`/tmp/qiii-common-horizons-canonical-final.log`,
+`/tmp/qiii-actual-kernel-family-canonical-final.log`.
 
 The rank-one card is in `3-formalized`; the augmentation no-go is in `5-failed`
 with cutoff and full signed-power survivors checked. README and the Q-III
@@ -101,16 +103,14 @@ for both statements. Its canonical split now explicitly imports
 `TheOriginStepModuleHasTheFullBohrHull` now explicitly imports
 `HTGeometry/RealPositiveKernelComplexification` for its real-to-complex
 positivity and packet comparison lemmas. These later leaves remain unchecked.
-Application scratch `6819` passed the countable-table cardinal bound and
-nonuniqueness-implies-escape with standard axioms. Its interpolation proof
-failed because simplification left a function composition unexpanded under
-`Tendsto`. That equality is now proved pointwise with `Tendsto.congr`.
-Direct retry `6026` passed all five targets with standard axioms, output
-`/tmp/qiii-actual-kernel-interpolation-retry.log`. The checked source is installed
-as `ArithmeticDefectRigidity/ActualCofactorKernelFamiliesAreSingletonOrContinuum`
-and wired into its umbrella. Exactly one final source-only audit is active from
-`formal/`, output `/tmp/qiii-actual-kernel-family-canonical-final.log`.
-No olean is needed because no written leaf imports this application.
+Kernel-family application is complete; `79971` passed all five targets with
+standard axioms. Its card moved to `3-formalized`.
+Exactly one direct olean build, session `23314`, is active from `formal/` on the modified owned
+module `ArithmeticOrientationTheory/TheOffLineZerosObstructTheMoebiusReceiver`.
+Its new explicit Mellin helper is required by the written boundary-pole client;
+the existing olean predates that source change. Output:
+`/tmp/qiii-explicit-mellin-owner-olean.log`. Final source-only owner audit and
+the five new pole leaves remain. Their combined scratch passed previously.
 
 ## Direct source work remaining
 
@@ -141,7 +141,5 @@ owner, add its umbrella import directly, and run the canonical check directly.
   It remains unchecked until the base jet and pole dependencies are complete.
 - Raw-origin and boundary-index scratch files remain unchecked. Their exact
   source statements and canonical dependencies are retained in their Lean files.
-- `/tmp/qiii-actual-kernel-interpolation-check.lean` now directly combines the
-  intermediate-coordinate and singleton/continuum drafts. It is unchecked
-  and has passed. Its canonical application is in final source-only audit;
-  all three dependency oleans and final source audits are complete.
+- `/tmp/qiii-actual-kernel-interpolation-check.lean` and its canonical application
+  are complete, together with all three dependencies.

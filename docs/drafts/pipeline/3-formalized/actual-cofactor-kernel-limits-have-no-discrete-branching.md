@@ -1,13 +1,13 @@
 # Actual cofactor kernel limits have no discrete branching
 
 - **ID:** actual-cofactor-kernel-limits-have-no-discrete-branching
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
-- **Parent:** [Q-III](q-iii-escape-state-classification.md)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
 - **Statement:** Between two different actual common kernels, every
   intermediate value of a differing coordinate occurs in another actual
-  common kernel. Consequently the family is a singleton or has continuum
-  cardinality, if the cardinality argument also passes Lean.
+  common kernel. Consequently the family is a singleton or has exactly
+  continuum cardinality.
 
 ## Corpus starting points
 
@@ -18,8 +18,8 @@ in a compact interval and supplies simultaneous subsequence extraction.
 increment by one. The actual cofactor rows have absolute value at most n.
 
 Searches for connected cofactor limit sets and intermediate sequence cluster
-values supplied no applicable theorem. The generic sequence bridge is now
-formalized; the actual-coordinate and cardinality applications remain pending.
+values supplied no applicable theorem. The generic sequence bridge,
+actual-coordinate interpolation and cardinality applications are now formalized.
 
 ## Mechanism to audit
 
@@ -47,9 +47,9 @@ connectedness of the product-topological limit set.
 
 - [x] Exact normalized successive-coordinate bound.
 - [x] Generic intermediate cluster-value theorem in Lean.
-- [ ] Actual common-kernel interpolation with an increasing subsequence.
-- [ ] Singleton/continuum cardinality consequence in Lean.
-- [ ] Canonical source checks, standard transitive axioms, umbrella imports.
+- [x] Actual common-kernel interpolation with an increasing subsequence.
+- [x] Singleton/continuum cardinality consequence in Lean.
+- [x] Canonical source checks, standard transitive axioms, umbrella imports.
 
 `HTGeometry/VanishingStepsFillIntermediateClusterValues` proves
 `exists_strictMono_subseq_tendsto_between`. It chooses the first late crossing
@@ -61,12 +61,22 @@ source-only audit `21506` passed with standard axioms.
 Their repaired scratch passed in `91731`; required olean build `82801` and
 final canonical source-only audit `86889` also passed with standard axioms.
 
-The directly written application scratch
-`/tmp/qiii-actual-kernel-interpolation-check.lean` contains common-kernel
-interpolation, the interval injection, the countable-table cardinal bound,
-the singleton/continuum alternative, and nonuniqueness implying escape.
 Prescribed-horizon extraction passed required olean build `34513` and final
 canonical source-only audit `11914`, with standard axioms. All three dependency
-leaves are complete. The combined application is now checking directly; its
-statements remain UNVERIFIED until it passes. Checks are tracked
-in [the completion ledger](q-iii-existing-findings-lean-completion.md).
+leaves are complete.
+
+`ArithmeticDefectRigidity/ActualCofactorKernelFamiliesAreSingletonOrContinuum`
+passed full scratch check `6026` and final canonical source-only audit `79971`.
+Its five audited targets are:
+
+- `ActualCofactorLimit.exists_kernel_with_intermediate_coordinate`;
+- `cardinal_actualCofactorKernelSet_le_continuum`;
+- `ActualCofactorLimit.cardinal_actualKernelSet_eq_continuum_of_ne`;
+- `actualCofactorKernelSet_singleton_or_continuum`;
+- `ActualCofactorLimit.not_admits_of_kernel_ne`.
+
+All transitive axiom reports contain only `propext`, `Classical.choice`,
+`Quot.sound`. Every canonical leaf is wired into its programme umbrella.
+Final output: `/tmp/qiii-actual-kernel-family-canonical-final.log`.
+The [completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md)
+tracks the remaining, separate formalization batches.

@@ -431,3 +431,17 @@ modulation, and scalar laws on every positive-length `AddCircle`. The more dista
 classification by nonzero frequencies, but in a bounded-chain space. Its public theorem
 cannot be applied to the digital circle without a comparison; its finite rotated-mean
 proof is a possible technique reference. No such comparison is asserted.
+
+## Digit carry and the missing jump input
+
+The full cofactor-annihilator proof still needs actual profile jumps. The exact
+finite carry identity is
+`(a-1)D_a(5^M n-1)=a^M((a-1)D_a(n-1)+4)-4` for `n>0`.
+After normalization its limit is `D_a(n-1)+4/(a-1)`. A finite grid is constant
+immediately left of a positive integer, and the already checked uniform grid
+error transfers this limit to the actual profile. If `5` does not divide `n`,
+the right value minus the left limit is `(a-5)/(a-1)`.
+These are existing jump-proof obligations, drafted directly in
+`/tmp/BiarithmeticDigitCarryBoundary.lean`; they remain unchecked. Extending
+the jump calculation to arbitrary cofactor sums and proving uniform Wiener
+tail control are separate obligations.

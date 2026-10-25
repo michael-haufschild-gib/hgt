@@ -1209,3 +1209,9 @@ Pending source check: `/tmp/BiarithmeticCriticalContinuousDual.lean` uses
 the actual quotient topology, without a closedness instance for payment,
 to construct its continuous scalar evaluation, classify every continuous
 functional, and identify its continuous dual with `C`. Five audits pending.
+
+Pending source check: `/tmp/BiarithmeticDigitCarryBoundary.lean` drafts the
+finite trailing-carry identity, normalized predecessor limit, actual profile
+left limit at positive integers, and the exact five-free jump. Seven audits
+are pending. Full cofactor jump recovery and uniform Wiener tail control
+remain separate obligations on the golden digital-module card.

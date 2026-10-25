@@ -104,4 +104,4 @@ endpoints are now in the existing energy draft, including exact finite weights
 and saturation; their actual-file verification remains pending. The critical-packet algebraic
 zero-product statement remains stronger at the class level and is retained.
 
-Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FiniteMeyerProjectorsSplitPositiveEnergy.lean`; unverified and unwired. The scratch copy remains until actual-file verification succeeds.
+Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FiniteMeyerProjectorsSplitPositiveEnergy.lean`; unverified and unwired, with fifteen audit endpoints. The paper's literal class-level sharp-square decomposition is explicitly stated as `meyerFiniteCriticalProjector_square_decomposition`, independently of any degree. Its proof takes the sharp of the zero mixed product and expands convolution. This formalizes the displayed existing paper identity; it is not a new research claim. The older scratch copy lacks this declaration and remains stale until actual-file verification succeeds.

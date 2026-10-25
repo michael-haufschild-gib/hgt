@@ -357,7 +357,17 @@ never rebuild it. Both smooth scratch files are removed after certification.
 Actual origin-mass check **73371** passed with only the standard three axioms
 in all seven endpoint audits. The module is cleaned, wired and documented;
 its card is now stage 3. The certified sharp-algebra olean was confirmed missing;
-direct build **20346** is running for actual `MeyerFiniteJetAlgebra`.
+direct build **20346** passed for actual `MeyerFiniteJetAlgebra`. Its olean now
+exists; never rebuild it. Direct finite-jet check **15463** is running with
+all seven endpoint audits.
+
+The finite-energy paper explicitly states a sharp-square decomposition in
+genuine cohomology, independently of a degree. Its candidate previously exposed
+only the mixed-product zero theorem and degree decomposition. The actual file
+now also states `meyerFiniteCriticalProjector_square_decomposition`, proving
+that exact existing paper identity by sharp and bilinearity. It remains
+unverified and raises the energy module's audit count to fifteen; its old
+scratch copy is stale. No new mathematical claim is added to the paper queue.
 The shared ACS README was reorganized concurrently. Preserve its new structure;
 the certified cone, smooth-kernel, bounded-carrier and reserve results are now
 recorded within its mechanism summaries and module anchors. Unchecked origin
@@ -379,7 +389,7 @@ Rows explicitly marked certified have passed; all other rows remain unverified.
 | `BoundedMeyerSourceSurface` | CERTIFIED: direct 7171, thirteen standard audits, missing-olean build 10578 passed; cleaned, wired, documented; card moved to stage 3 |
 | `MeyerHilbertReserveFlowRigidity` | CERTIFIED: direct 35848, seven standard audits, missing-olean build 31048 passed; cleaned, wired, documented; bounded-orbit card moved to stage 3 |
 | `BoundedMeyerFaithfulReserve` | CERTIFIED: direct 42102, thirteen standard audits; cleaned, wired, documented; card moved to stage 3 |
-| `MeyerFiniteJetAlgebra` | Seven endpoints; requires missing sharp-algebra olean |
+| `MeyerFiniteJetAlgebra` | Direct check 15463 running with seven endpoints; sharp-algebra olean now exists |
 | `MeyerFiniteProjectorAlgebra` | Four endpoints; requires finite-jet olean |
 | `PositiveMeyerDegreesSeeReducedCriticalJets` | Six endpoints, including finite-weight converse |
 | `MeyerAlgebraicCharacters` | Eight endpoints; point-reading normalization corrected |
@@ -388,7 +398,7 @@ Rows explicitly marked certified have passed; all other rows remain unverified.
 | `InvariantOriginMassDoesNotBoundTheWeilTrace` | CERTIFIED: direct 73371, seven standard audits; cleaned, wired, documented; card moved to stage 3 |
 | `MeyerHermitianDegreePart` | Seven endpoints; requires finite positive-degree olean |
 | `EveryFiniteMeyerJetGraphIsDenseInOriginHilbertSpace` | Ten endpoints; requires boundary-density olean |
-| `FiniteMeyerProjectorsSplitPositiveEnergy` | Fourteen endpoints; requires finite-degree, critical-top and projector oleans |
+| `FiniteMeyerProjectorsSplitPositiveEnergy` | Fifteen endpoints, including the paper's literal class-level square decomposition; requires finite-degree and projector oleans |
 
 Completed older actual-file final checks: `WeilEnergyIsUnboundedAtEveryAperture`
 (direct **52222**, five standard axiom audits, prints removed).
