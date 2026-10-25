@@ -89,7 +89,7 @@ Paid corrections are complete. Real-convolution final source-only audit
 `56886` passed with standard axioms for all eight printed targets, including
 positive source-energy ratio and preservation of escape. Möbius–Liouville
 final source-only audit `94844` passed with standard axioms. The unit-transport
-batch is complete. The current direct check is
+batch is complete. The current direct check is session `37698` of
 `/tmp/qiii-augmentation-full-check.lean`, covering the existing countermodel
 and its previously paper-only singleton hull and scalar-character Gram.
 Exactly one owned Lean check is active.
@@ -101,7 +101,10 @@ Read and edit Lean sources directly; copy a checked source into its mathematical
 owner, add its umbrella import directly, and run the canonical check directly.
 
 - `/tmp/qiii-contracted-horizons-check.lean` contains the current exact remainder,
-  mixed bound and full operator intertwining drafts.
+  mixed bound and full operator intertwining drafts. It also explicitly states
+  `scaled_diagonal_mem_Icc`, the previously recorded interval bound for the
+  contracted-energy profile. Use this current scratch when splitting canonical
+  leaves; the older part files do not include this last corollary.
 - `/tmp/qiii-augmentation-full-check.lean` combines the countermodel and exact
   singleton-hull claim, first-coefficient action and scalar character Gram.
   All added claims are from the existing paper argument and remain unchecked.

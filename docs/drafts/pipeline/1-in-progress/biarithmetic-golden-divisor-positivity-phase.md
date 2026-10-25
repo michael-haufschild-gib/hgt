@@ -91,11 +91,20 @@ This search is a reuse check, not evidence of external originality.
 - [ ] Lean divisor enumeration, exact response interval, and divergence at the boundary.
 - [ ] Direct checks, transitive axiom audits, and umbrella wiring.
 
-The unchecked draft `/tmp/BiarithmeticGoldenDivisorResponse.lean` contains
+The checked source `BiarithmeticGeometry/GoldenDivisorResponse.lean` contains
 the valuation formula, realization of every profile value at a power of five,
 monotonicity in the valuation and parameter, and the universal upper bound one.
+Its direct check and all five audits passed; its
+[stage-3 card](../3-formalized/biarithmetic-golden-divisor-response.md) records that scope.
 The unchecked draft `/tmp/BiarithmeticGoldenDivisorPositivity.lean` contains
 the exact rational limit and greatest lower bound, finite divergence bound,
 full nonnegative-parameter sign classification, and payment of every
-positivity-compatible source in the damping interval. No Lean claim is made
-until both drafts and their transitive audits pass.
+positivity-compatible source in the damping interval. These dependent claims
+remain unproved until their source check and transitive audits pass.
+
+The positivity draft also explicitly transfers the profile range to actual
+positive integer arguments, proves its supremum and infimum, and states
+negative-infinity convergence along powers of five and the exact boundedness
+phase. These are the existing range claims above; all remain unchecked.
+The positive-integer restriction is essential for the infimum statement,
+because the separately defined response at zero is zero.

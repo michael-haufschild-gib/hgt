@@ -599,6 +599,31 @@ Source: `IntrinsicGoldenSeries.lean`, `goldenIntrinsicCount_eq`,
 `goldenIntrinsicCount_bounds`, `goldenIntrinsicReceiverSeries_factorization`,
 `goldenIntrinsicReceiverSeries_one`.
 
+### Exact primary pole removal
+
+For `S_b(X)=(1-X)²(1-bX)`, subtracting
+`[P(1/a)/S_b(1/a)]/(1-aX)` from `P(X)/[(1-aX)S_b(X)]`
+leaves `Q(X)/S_b(X)` exactly. A cubic numerator leaves a quadratic `Q`.
+The remainder converges absolutely for `|u|<1` and `|bu|<1`, including
+the secondary-pole collision `b=1`. The primary root must avoid zero,
+one, and `b`, precisely so that its residue is defined by a nonzero denominator.
+
+Source: `GeometricPoleExtraction.lean`, `geometricPole_extraction`,
+`geometricPoleRemainderPolynomial_natDegree_le`,
+`geometricPole_remainder_absoluteSummableAt`.
+
+### Golden ordinary divisor responses
+
+At a positive integer of five-adic valuation `M`, the actual golden source
+has divisor response `1-(1/sqrt(5)) Σᵣ₌₀ᴹ ((αt)^r-(βt)^r)`.
+Every value occurs at `5^M`. For nonnegative damping, the response decreases
+with valuation and damping and is at most one. Determining its lower
+endpoint and positivity chamber requires the separate limit analysis.
+
+Source: `GoldenDivisorResponse.lean`, `goldenDivisorResponse_eq_profile`,
+`goldenDivisorResponse_pow`, `goldenDivisorProfile_antitone`,
+`goldenDivisorProfile_parameter_antitone`, `goldenDivisorResponse_le_one`.
+
 ### Exact finite step covariance
 
 For arbitrary real rows `s,t`, the sum `Σₙ₌₁ᴺ s(n)t(n)/(n(n+1))`

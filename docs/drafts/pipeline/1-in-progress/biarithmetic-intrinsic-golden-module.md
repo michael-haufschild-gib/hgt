@@ -203,20 +203,21 @@ rank-one limit along the full horizon sequence. Five audits drafted;
 unchecked. Its residue, shell, and perturbation dependencies also remain
 under verification; no completed-module isomorphism is asserted yet.
 
-`/tmp/BiarithmeticGeometricPoleExtraction.lean` drafts exact polynomial
+`BiarithmeticGeometry/GeometricPoleExtraction.lean` proves exact polynomial
 division after removing the primary reciprocal evaluation, the residual
 degree bound, and absolute summability with both secondary geometric
 factors retained. It imports the corpus's actual `geom` series and
-`HTGeometry/PowerSeriesAbsoluteEvaluation.lean`; both dependency oleans
-already exist. The draft awaits its first check.
+`HTGeometry/PowerSeriesAbsoluteEvaluation.lean`. Its direct source check
+and all four transitive audits passed; the umbrella import and
+[stage-3 card](../3-formalized/biarithmetic-primary-geometric-pole-extraction.md)
+are present.
 
 `/tmp/BiarithmeticIntrinsicGoldenRemainder.lean` applies that construction
 to the actual centered intrinsic series. Its proposed declarations identify
 the real residue, prove its strict negative sign throughout positive-damping
 escape, split every source coefficient exactly, and prove weighted absolute
 summability of the remainder at radius `1/sqrt(5)`. This draft is also
-unchecked. The missing `IntrinsicGoldenSeries` olean may be created when
-checking this actual importer; no existing olean should be rebuilt.
+unchecked. The `IntrinsicGoldenSeries` dependency olean is available.
 
 `/tmp/BiarithmeticIntrinsicPointKernelEnergy.lean` separately formalizes the
 paper point-kernel estimate from the checked actual counting formula. Its

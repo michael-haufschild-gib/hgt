@@ -10,11 +10,11 @@
 ## Exact scope
 
 Retain both fibre classes and precisely the actual sources with bounded
-Hilbert–Schmidt convolution orbit. The earlier paper identifies these with
+Hilbert–Schmidt convolution orbit. The certified orbit theorem identifies these with
 critical highest jets. This is a restriction of the genuine source carrier;
 it does not assert the original all-source Q-II endpoint.
 
-## Dependency-closed paper proof [PROVED HERE]
+## Proof argument (Lean verification pending)
 
 The carrier is a complex linear subspace. Its ordinary sharp-square trace is
 a sum of nonnegative critical value squares: off-line values vanish. Restrict

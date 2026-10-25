@@ -11,7 +11,7 @@
 
 Let B consist of actual sources whose lower Xi jets vanish off the critical
 line and whose critical jets vanish below the highest local order. The
-bounded-orbit paper identifies B with both bounded and isometric full-Hasse
+certified bounded-orbit theorem identifies B with both bounded and isometric full-Hasse
 centered orbits. B is a source subalgebra preserved by arithmetic sharp.
 
 Restrict the original Meyer surface to both fibres and B. Its ordinary trace
@@ -36,6 +36,11 @@ Equivalently its source convolution matrix has a nonzero terminal lower
 entry and its arithmetic sharp has the same lower position. The Hilbert
 adjoint occupies the upper position. Their exact squared adjoint defect is
 nonzero even though the source orbit moves only by a unit phase.
+The actual candidate now states this witness explicitly as
+`exists_bounded_meyer_source_adjoint_defect_pos`: an isometric nonprincipal
+source in B with zero ordinary trace, strictly positive faithful reserve,
+and strictly positive squared Hilbert adjoint defect. This packages the
+preceding paper assertion; its Lean verification is pending.
 
 ## Sufficiency and exact adjoint criterion
 
@@ -86,10 +91,11 @@ invariance and RR to a restricted carrier.
 
 ## Exact dependencies and pending work
 
-- `MeyerBoundedCenteredOrbits`: exact carrier classification; actual candidate unchecked.
-- `MeyerCriticalTopAlgebra`: sharp stability and highest critical source witness; draft unchecked.
+- `MeyerBoundedCenteredOrbits`: exact carrier classification; Lean certified.
+- `MeyerCriticalTopAlgebra`: sharp stability, quotient subspace and highest critical source witness; Lean certified.
 - `BoundedMeyerSourceSurface`: original restricted surface and ordinary cone; draft unchecked.
-- `FaithfulHilbertSchmidtSourceReserves`: actual reserve, exact adjoint defect and faithfulness; candidate unchecked.
+- `FaithfulHilbertSchmidtSourceReserves`: actual reserve, exact adjoint defect and faithfulness; Lean certified.
+- `MeyerHilbertReserveFlowRigidity`: reserve-flow invariance and its exact locus; candidate unchecked.
 - `MeyerHilbertSchmidtSource` and HT `HilbertSchmidtTraceDefect`: actual-file certified foundations.
 
 The diagonal argument uses actual rows and the existing l2 inner-product sum,
@@ -98,4 +104,4 @@ formalize the seven equivalent assertions and preserve the unconditional reserve
 invariance separately. Lean draft: `/tmp/QIIBoundedMeyerFaithfulReserveDraft.lean`; unchecked.
 External novelty unverified.
 
-Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/BoundedMeyerFaithfulReserve.lean`; unverified and unwired, with twelve audit endpoints. The actual module includes `exists_meyerBoundedHilbertReserve_linear_degree_iff` and `meyerBoundedHilbertSourceCone_riemannRoch_iff_linear_degree`; its older scratch copy lacks these two corollaries.
+Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/BoundedMeyerFaithfulReserve.lean`; unverified and unwired, with thirteen audit endpoints. The actual module includes the explicit positive-adjoint-defect witness, `exists_meyerBoundedHilbertReserve_linear_degree_iff` and `meyerBoundedHilbertSourceCone_riemannRoch_iff_linear_degree`; its older scratch copy lacks these additions and the later proof corrections.

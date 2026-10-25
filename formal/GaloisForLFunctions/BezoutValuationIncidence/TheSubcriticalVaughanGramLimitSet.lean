@@ -47,7 +47,7 @@ theorem tendsto_pmVaughanSmoothAmplitude_of_centredGram_diagonal_limit
     (1 - 2 * ε) / subHalfZetaCoeff ε ^ 2 *
       ((subHalfZetaCoeff ε * deningerHarmonicPartial (U t) * deningerHarmonicPartial (V t)) ^ 2 *
         (-1) * (-1) / (1 - 2 * ε))
-  field_simp [hc, hβ.ne'] <;> ring
+  field_simp [hc, hβ.ne']
 
 /-- Convergence of the arithmetic amplitude determines every centered Gram limit. -/
 theorem tendsto_pmPronicVaughanCentredGram_of_amplitude_limit
@@ -160,7 +160,7 @@ theorem pmPronicVaughanCentredGram_converges_iff_escape_or_fixed_amplitude
       intro i j
       simpa only [hzero i j] using hG i j
     · right
-      push_neg at hzero
+      push Not at hzero
       obtain ⟨a, ha, _hamem, _N, _hL, hfinite⟩ :=
         eventually_finite_fiber_of_nonzero_centredGram_limit hε hε2 H U V hH L hG hzero
       exact ⟨a, ha, hfinite.mono fun t ht => ht.2.2⟩
@@ -168,7 +168,7 @@ theorem pmPronicVaughanCentredGram_converges_iff_escape_or_fixed_amplitude
     · exact ⟨fun _ _ => 0, fun i j =>
         tendsto_pmPronicVaughanCentredGram_div_of_horizon_and_product hε hε2 H U V hH hUV i j⟩
     · have ha : Tendsto (fun t => deningerHarmonicPartial (U t) ^ 2 * deningerHarmonicPartial (V t) ^ 2)
-          atTop (𝓝 a) := tendsto_const_nhds.congr' heq.symm
+          atTop (𝓝 a) := (tendsto_congr' heq).mpr tendsto_const_nhds
       exact ⟨pmVaughanSmoothLimitMatrix ε a,
         tendsto_pmPronicVaughanCentredGram_of_amplitude_limit hε hε2 H U V hH ha⟩
 
@@ -193,12 +193,15 @@ theorem pmPronicVaughanCentredGram_limit_set_eq
         have hsq : t + 1 ≤ (t + 1) * (t + 1) := by
           simpa only [Nat.mul_one] using Nat.mul_le_mul_left (t + 1) (by omega : 1 ≤ t + 1)
         exact ht.trans ((Nat.le_succ t).trans hsq)
-      refine ⟨fun t => t + 1, fun t => t + 1, fun t => by omega, fun t => by omega, fun i j => ?_⟩
+      refine ⟨fun t => t + 1, fun t => t + 1,
+        fun t => Nat.succ_le_succ (Nat.zero_le t),
+        fun t => Nat.succ_le_succ (Nat.zero_le t), fun i j => ?_⟩
       rw [hL i j]
       simpa only [pmVaughanSmoothLimitMatrix, mul_zero, zero_mul] using
         tendsto_pmPronicVaughanCentredGram_div_of_horizon_and_product hε hε2 H
           (fun t => t + 1) (fun t => t + 1) hH hUV i j
     · obtain ⟨⟨u, v⟩, huv⟩ := hamem
+      change deningerHarmonicPartial u ^ 2 * deningerHarmonicPartial v ^ 2 = a at huv
       have hz : deningerHarmonicPartial 0 = 0 := by simp [deningerHarmonicPartial]
       have hu : 1 ≤ u := by
         by_contra h

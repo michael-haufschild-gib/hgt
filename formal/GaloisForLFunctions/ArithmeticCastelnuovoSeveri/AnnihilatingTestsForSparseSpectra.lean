@@ -979,10 +979,6 @@ theorem exists_annihilating_test {s : ℝ} (hs0 : 0 < s) (hs1 : s < 1) {a : ℕ 
     refine (norm_inghamFT_le_exp_rpow hp1 x).trans (le_of_eq ?_)
     rw [Real.rpow_zero, mul_one, ← Real.exp_add]
     congr 1
-    ring
-  have hprodB : ∀ (u v : ℝ), ‖(u : ℂ)‖ ≤ Real.exp (K * |v| ^ s) →
-      ‖inghamFT p v‖ ≤ Real.exp 1 * Real.exp (-(c * |v| ^ (1 / p))) → True := fun _ _ _ _ => trivial
-  clear hprodB
   have hmulB : ∀ (P : ℂ) (x : ℝ), ‖P‖ ≤ Real.exp (K * |x| ^ s) → ‖P * inghamFT p x‖ ≤ B x := by
     intro P x hP
     rw [norm_mul]

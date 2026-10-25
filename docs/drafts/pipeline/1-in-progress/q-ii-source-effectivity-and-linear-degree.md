@@ -276,11 +276,20 @@ the already stated paper claim, with no new mathematical premise. Its audit
 list now has fifteen endpoints. Direct actual-file recheck **71562** passed with
 the standard three axioms in every audit. The module is cleaned, wired and
 documented; its old scratch draft is deleted. The bounded-orbit card now awaits
-only the reserve-flow extension. Its olean was explicitly confirmed missing;
-direct missing-olean build **39547** is the sole owned Lean process, required by
-the actual reserve-flow, bounded-surface and finite-energy importers. Wait for
-exit before any further Lean invocation. Next check the actual
-`MeyerHilbertReserveFlowRigidity.lean`.
+only the reserve-flow extension. Missing-olean build **39547** passed for the
+actual reserve-flow, bounded-surface and finite-energy importers. Its olean now
+exists; never rebuild it. Direct actual-file check **72805** of
+`MeyerHilbertReserveFlowRigidity.lean`, with seven endpoint audits, is the sole
+owned Lean process. Wait for exit before any further Lean invocation.
+
+The existing bounded-faithful paper explicitly asserts a strictly positive
+adjoint-defect witness at any multiple critical zero. Its actual candidate now
+packages that assertion as `exists_bounded_meyer_source_adjoint_defect_pos`,
+including bounded/isometric membership, a nonprincipal class, zero ordinary
+trace, and strictly positive reserve and squared adjoint defect. The trace
+comparison criterion reuses this witness. This is formalization of the existing
+paper assertion, not a new research direction; the candidate now has thirteen
+audits and remains unverified. Its old scratch copy is stale.
 The same visible newly constructed-index pattern is normalized explicitly in
 the two unverified nilpotent-order inductions in `MeyerAlgebraicCharacters` and
 `PositiveMeyerDegreesSeeReducedCriticalJets`. Their old scratch copies are stale.
@@ -299,10 +308,10 @@ Rows explicitly marked certified have passed; all other rows remain unverified.
 | `ArithmeticSharpAndTheHilbertAdjoint` | CERTIFIED: direct 96392, three standard axiom audits, missing-olean build 95594 passed |
 | `FaithfulHilbertSchmidtSourceReserves` | CERTIFIED: direct 4030, fifteen standard audits, missing-olean build 80282 passed |
 | `MeyerBoundedCenteredOrbits` | CERTIFIED: direct 20136, six standard audits, missing-olean build 75806 passed |
-| `MeyerCriticalTopAlgebra` | CERTIFIED: direct 71562 and fifteen standard audits; missing-olean build 39547 running |
+| `MeyerCriticalTopAlgebra` | CERTIFIED: direct 71562, fifteen standard audits, missing-olean build 39547 passed |
 | `BoundedMeyerSourceSurface` | Thirteen endpoints; direct restriction must replace conflicting AOG import |
-| `MeyerHilbertReserveFlowRigidity` | Seven endpoints; requires reserve and critical-top oleans |
-| `BoundedMeyerFaithfulReserve` | Twelve endpoints; includes exact linear-degree representation |
+| `MeyerHilbertReserveFlowRigidity` | Seven endpoints; actual direct check 72805 running |
+| `BoundedMeyerFaithfulReserve` | Thirteen endpoints; includes explicit positive adjoint-defect witness and exact linear-degree representation |
 | `MeyerFiniteJetAlgebra` | Seven endpoints; requires missing sharp-algebra olean |
 | `MeyerFiniteProjectorAlgebra` | Four endpoints; requires finite-jet olean |
 | `PositiveMeyerDegreesSeeReducedCriticalJets` | Six endpoints, including finite-weight converse |

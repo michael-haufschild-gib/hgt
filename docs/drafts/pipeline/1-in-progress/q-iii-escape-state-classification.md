@@ -1078,12 +1078,9 @@ No unit/finite final source batch, small scratch batch, pole canonical batch
 or boundary canonical batch ran to completion. All obsolete `/tmp/qiii*.sh`
 compilation drivers have been removed.
 
-Current direct Lean session: `73496`, checking
-`/tmp/qiii-diagonal-cutoff-augmentation-retry-check.lean`. No second Lean
-process may start until it exits. Its output is returned directly by the
-tool; preserve the completed output as the retry log before any guarded
-source promotion. The two staged fixes are direct positivity contradiction
-and natural-factor bounds via `Nat.le_mul_of_pos_right/left`.
+The first direct cutoff/augmentation check was session `73496`; its failed
+local cancellation step was subsequently repaired. The successful direct
+retry and canonical cutoff audit are recorded in the completion ledger.
 
 Formalization now takes precedence over further conjecture generation.
 All already drafted findings remain in scope: cutoff/augmentation and signs;
@@ -1094,8 +1091,9 @@ index loss; finite-hull radial moduli and half-plane approximation; complete
 jet interpolation and paid-index bounds; actual conjugation; and the drafted
 singleton/continuum kernel-family alternative. Every card stays open until
 its exact declarations, canonical source checks and transitive axioms pass.
-Text-only assemblers/promoters do not execute Lean; any later use must still
-be followed by direct per-file Lean calls, never a compilation driver.
+The user subsequently prohibited Python helpers as well. All owned Python
+assemblers and promoters were deleted. Edit Lean sources directly and invoke
+the compiler directly; do not recreate helper scripts.
 
 ### Current stopping instruction and completion ledger
 
@@ -1107,8 +1105,10 @@ in [the Lean completion ledger](q-iii-existing-findings-lean-completion.md),
 which supersedes historical session and queue instructions above.
 
 The repaired cutoff/augmentation scratch passed directly with standard axioms.
-Both leaves are installed and wired. The cutoff olean also passed; its final
-source-only audit is running. The old antipodality route's completed source
-audits were reconciled, and its card moved to `5-failed` with its formalized
-unique-extension survivor. The augmentation paper claim about its singleton
-character hull has a separate unchecked draft, retained in the completion scope.
+The cutoff's canonical source-only audit also passed, and its card moved to
+`3-formalized`. The old antipodality route moved to `5-failed` with its
+formalized unique-extension survivor. All finite joint-index and actual
+unit-transport canonical checks have now passed; both cards are in
+`3-formalized`. The expanded augmentation scratch includes its singleton
+character hull, first-coefficient action and exact scalar Gram; these additions
+are being checked and are not yet claimed as formalized.

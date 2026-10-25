@@ -58,6 +58,17 @@ theorem of calculus on every unit interval bounds the difference between its sum
 uniformly in the upper horizon. The finitely many initial floor cells contribute a fixed
 constant. Thus the complete discrete covariance differs from its continuous integral by `O(1)`.
 
+The formalization can use the simpler uniform derivative bound already
+drafted in `ChirpSourceRegularity`. Above the finitely many initial cells,
+the mean-value inequality gives `|v(floor(n/j))-v(n/j)|<=C_j`, while
+`|v(n/j)|<=C_j n^β`. The weighted floor error is then bounded by
+`C_(j,k) n^(β-2)`, a summable power because `β<1`. Likewise the derivative
+of the weighted continuous product is bounded by
+`C_(j,k)(x^(β-2)+x^(2β-3))`, both integrable at infinity. The second power
+is bounded by the first above one. This reduces the bounded-error obligation
+to power estimates without a separate logarithmic derivative majorant. These estimates still
+require Lean checks before use in the asymptotic theorem.
+
 ## Oscillatory integral proof
 
 The cosine-product identity splits the integral into difference and sum phases. The difference
@@ -199,3 +210,11 @@ including integrability and strict positive energy. It reduces to the existing
 half-line exponential Gram theorem. Three audits are drafted; the Cauchy-kernel
 dependency and this source are unchecked. The boundary-loss law and source
 asymptotics remain separate obligations.
+
+Pending source check: `/tmp/BiarithmeticChirpHaarAverage.lean` constructs
+normalized Haar measure on the actual phase group and drafts the exact
+diagonal average of the explicit kernel. Nontrivial coordinate characters
+are witnessed by concrete orbit points; no character-separation premise is
+added. Five audits are pending after the phase-group and Cauchy-kernel
+dependencies. Exclusion of that average as an actual source tangent still
+requires the source asymptotic and nonhomogeneity bridges.

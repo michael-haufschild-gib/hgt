@@ -16,6 +16,32 @@ open GaloisForLFunctions.HTGeometry
 open scoped ComplexConjugate
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
+/-- A multiple critical zero gives an isometric source with strictly positive adjoint defect. -/
+theorem exists_bounded_meyer_source_adjoint_defect_pos
+    (rho : XiDivisorSupport) (hr : (rho : ℂ).re = 1 / 2)
+    (hm : 1 < xiSupportMultiplicity rho) :
+    ∃ g : DeningerMeyerStrongLogTarget,
+      MeyerCriticalTopJets g ∧ MeyerHilbertOrbitIsometric g ∧
+      g ∉ LinearMap.range deningerMeyerStrongLogSumLM ∧ meyerSourceTrace g g = 0 ∧
+      0 < meyerHilbertReserve (0, 0, g) ∧
+      0 < hsNormSq (deningerMeyerHilbertConvolution g -
+        adjoint (deningerMeyerHilbertConvolution (deningerMeyerSourceSharp g))) := by
+  obtain ⟨g, hi, hn, hb⟩ := meyerMultipleCriticalTopSource_sharp_square_boundary rho hr hm
+  have ht : meyerSourceTrace g g = 0 := by
+    have hq : (Submodule.Quotient.mk
+        (deningerMeyerSourceConvolution g (deningerMeyerSourceSharp g)) :
+        DeningerMeyerStrongLogCohomology) = 0 :=
+      (Submodule.Quotient.mk_eq_zero _).mpr hb
+    rw [meyerSourceTrace_eq_degree_product, hq, map_zero, Complex.zero_re]
+  have hp : 0 < meyerHilbertReserve (0, 0, g) :=
+    lt_of_le_of_ne (meyerHilbertReserve_nonneg _) (fun he =>
+      hn ((meyerHilbertReserve_eq_zero_iff (0, 0, g)).mp he.symm))
+  have he := meyerHilbertReserve_sub_defect (0, 0, g)
+  rw [meyerScalingSurface_defect, ht, sub_zero] at he
+  refine ⟨g, (meyerHilbertOrbitIsometric_iff_criticalTopJets g).mp hi,
+    hi, hn, ht, hp, ?_⟩
+  linarith only [he, hp]
+
 private theorem bounded_operator_diagonal
     (hs : ∀ rho : XiDivisorSupport, (rho : ℂ).re = 1 / 2 → xiSupportMultiplicity rho = 1)
     {g : DeningerMeyerStrongLogTarget} (hg : MeyerCriticalTopJets g)
@@ -81,19 +107,9 @@ theorem meyerBounded_reserve_eq_trace_iff :
     have hm : 1 < xiSupportMultiplicity rho := by
       have hp := xiSupportMultiplicity_pos rho
       omega
-    let j : DeningerArithmeticJetIndex rho := ⟨xiSupportMultiplicity rho - 1, by omega⟩
-    let g := meyerSingleJetSource rho j
-    have hg : MeyerCriticalTopJets g := meyerSingleTopSource_criticalTopJets rho hr
-    have hv : ∀ sigma : XiDivisorSupport, deningerMeyerStrongLogMellin g (sigma : ℂ) = 0 := by
-      intro sigma
-      have h := meyerSingleJetSource_jet rho j sigma ⟨0, xiSupportMultiplicity_pos sigma⟩
-      have hj : (0 : ℕ) ≠ j.val := by dsimp only [j]; omega
-      simpa only [hj, and_false, ↓reduceIte] using h
-    have ht : meyerSourceTrace g g = 0 :=
-      (meyerSourceTrace_radical_iff_values_zero g).mpr hv g
+    obtain ⟨g, hg, _, _, ht, hp, _⟩ := exists_bounded_meyer_source_adjoint_defect_pos rho hr hm
     have hz : meyerHilbertReserve (0, 0, g) = 0 := (he g hg).trans ht
-    exact meyerSingleJetSource_not_boundary rho j
-      ((meyerHilbertReserve_eq_zero_iff (0, 0, g)).mp hz)
+    exact hp.ne' hz
   · intro hs g hg
     have ha := meyerBounded_sharp_eq_adjoint_of_critical_simple hs hg
     have h := meyerHilbertReserve_sub_defect (0, 0, g)
@@ -278,6 +294,7 @@ theorem meyerBoundedHilbertSourceCone_riemannRoch_iff_linear_degree :
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_bounded_meyer_source_adjoint_defect_pos
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerBounded_sharp_eq_adjoint_of_critical_simple
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerBounded_reserve_eq_trace_iff
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerBounded_sharp_eq_adjoint_iff
