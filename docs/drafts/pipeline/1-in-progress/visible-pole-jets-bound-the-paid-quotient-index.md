@@ -2,7 +2,7 @@
 
 - **ID:** visible-pole-jets-bound-the-paid-quotient-index
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** LEAN VERIFICATION (canonical import checks pending)
 - **Parent:** [Q-III](q-iii-escape-state-classification.md)
 - **Statement:** The actual paid-ideal quotient has rank at least the sum of
   visible translated zero orders over any finite set of distinct interior
@@ -17,10 +17,10 @@ point count without multiplicity. `DeningerJetInterpolation` and
 `DeningerArithmeticFiniteJetInterpolation` supply polynomial finite-Hermite
 mechanisms. No existing paid-Wiener finite-jet index theorem surfaced.
 
-## Missing bridge
+## Interpolation mechanism
 
-Prove joint jet evaluation onto the finite jet target from the full critical
-Wiener algebra. Do not add surjectivity as a theorem hypothesis.
+Joint jet evaluation onto the finite jet target is constructed from the full
+critical Wiener algebra; surjectivity is not a theorem hypothesis.
 A proposed finite-polynomial route chooses a Dirichlet polynomial a(s) separating all
 selected points with a'(s) nonzero at each, avoiding finitely many linear
 conditions on coefficients. Polynomial Hermite interpolation in a(s) then
@@ -30,9 +30,8 @@ that separation must be constructed, not assumed. Finite-polynomial witnesses
 were a proposed refinement, not an established finding. The exact construction
 below proves full-Wiener interpolation, which suffices for the paid-index bound.
 
-After surjectivity, the paid ideal lies in the evaluation kernel and quotient
-rank bounds follow. All arithmetic vanishing inputs are proved by the new
-order/endpoint theorems, but the interpolation bridge remains open.
+The paid ideal lies in the evaluation kernel, so quotient rank bounds follow.
+The arithmetic vanishing inputs are the checked order and endpoint theorems.
 
 ## Scope
 
@@ -52,50 +51,37 @@ Multiply by successive powers of the local factor delta_2 minus its value
 at i; that factor has a simple zero at i. Analytic-order calculus makes the
 resulting local jet matrix triangular with nonzero diagonal, while every
 other target jet vanishes. `deningerTriangular_solvable` then supplies all
-coefficients. This route still needs exact Lean implementation and audit.
+coefficients.
 
-The endpoint distinct-value consequence is drafted in
-`/tmp/qiii_visible_pole_point_count_body.lean` and included in
-`/tmp/qiii-visible-mixed-jet-index-check.lean`. It proves closed-half-plane
-character separation, unifies strict-interior and boundary visible pole
-obstructions, and bounds the paid quotient rank by their finite point count.
-UNVERIFIED. This is only the value count; the multiplicity-weighted claim
-above remains open until the full masked jet interpolation passes.
+Additional value selectors are multiplied by masks vanishing to every
+interior order. Normalizing each selector at its own point corrects the
+additional values without changing any interior jet. No boundary derivative
+is required. The resulting surjective linear map descends through the paid
+ideal. Its finite target has dimension equal to the sum of interior orders
+plus the number of boundary points. Equality of paid ideals on Wiener unit
+orbits transports this bound, including the Möbius–Liouville case.
 
-## Exact masked interpolation draft
+## Canonical verification
 
-The local analytic bridge and the full strict-interior masked interpolation
-now have Lean drafts: `/tmp/qiii-wiener-jet-evaluation-check.lean` and
-`/tmp/qiii_wiener_masked_interpolation_body.lean`. The former constructs
-linear jet functionals on the full Wiener algebra and proves local product
-and power order laws. The latter constructs a simple dyadic local parameter,
-pairwise separation masks, triangular jet matrices, and joint surjectivity.
-Both are UNVERIFIED. The base check is
-`/tmp/qiii-wiener-jet-evaluation-check.lean`; the full application is
-`/tmp/qiii-visible-mixed-jet-index-check.lean`. All pole dependency oleans and
-their canonical audits are complete. The base jets, interpolation and index
-applications still require direct Lean checks. No paper claim is complete.
+`InteriorWienerJets` passed final source-only audit `84720` with standard
+axioms. The complete application check finished without errors; all fourteen
+axiom reports in `/tmp/qiii-visible-mixed-jet-index-third.log` contain only
+`propext`, `Classical.choice`, `Quot.sound`.
 
-The strict-interior quotient application is now drafted in
-`/tmp/qiii_visible_jet_quotient_index_body.lean`. It descends the proved-to-be
-surjective jet map through an arbitrary ideal imposing the jet conditions,
-then applies the actual paid-kernel visible-order theorem. Its exact target
-is the sum of any finite lower multiplicities of the visible orders, with
-no assumed interpolation or rank bound. It is included in the unverified
-`/tmp/qiii-visible-mixed-jet-index-check.lean`.
+Six application modules are installed and umbrella-wired:
 
-The mixed endpoint claim also has a complete draft.
-`/tmp/qiii_wiener_mixed_interpolation_body.lean` constructs masks vanishing to
-the interior orders while avoiding a selected additional half-plane point.
-Separated boundary value interpolation then corrects values without changing
-any interior jet. `/tmp/qiii_visible_mixed_jet_index_body.lean` descends that
-surjection and gives the sum of visible interior multiplicities plus the
-number of distinct critical-boundary poles as a paid quotient lower bound.
-The complete scratch is `/tmp/qiii-visible-mixed-jet-index-check.lean`; all
-new claims are UNVERIFIED, not completed by these drafts.
+- `VisiblePolesImposeIndependentPaidConditions`: separated half-plane
+  characters, closed-half-plane obstruction and finite visible-point count.
+- `FiniteWienerJetsCanBePrescribed`:
+  `exists_wiener_with_prescribed_finite_jets` and its surjectivity theorem.
+- `VisiblePoleJetsBoundThePaidIndex`:
+  `sum_visible_orders_le_rank_quotient_paidIdeal_moebius`.
+- `InteriorJetsAndBoundaryValuesCanBePrescribed`:
+  `exists_wiener_with_mixed_finite_data`.
+- `VisibleInteriorAndBoundaryPolesBoundThePaidIndex`:
+  `sum_visible_orders_add_boundary_card_le_paid_index`.
+- `VisibleJetIndexBoundsPersistOnWienerUnitOrbits`: the corresponding
+  unit-orbit and Liouville paid-index bounds.
 
-The exact unit-orbit and Liouville corollaries are drafted in
-`/tmp/qiii_visible_jet_index_unit_orbit_body.lean` and included in the mixed
-index scratch. They rewrite the already established equality of paid
-ideals; no new arithmetic premise is introduced. These corollaries remain
-UNVERIFIED with their interpolation and quotient-index dependencies.
+Individual canonical import-boundary checks remain in
+[the completion ledger](q-iii-existing-findings-lean-completion.md).

@@ -45,7 +45,7 @@ private theorem exists_halfLogHarmonicWeight_bound :
   refine ⟨B, zero_le_one.trans hB1, fun n => ?_⟩
   by_cases hn : n < N
   · have h : |halfLogHarmonicWeight n| ≤ ∑ m ∈ range N, |halfLogHarmonicWeight m| :=
-      single_le_sum (fun _ _ => abs_nonneg _) (mem_range.mpr hn)
+      single_le_sum (fun m _ => abs_nonneg (halfLogHarmonicWeight m)) (mem_range.mpr hn)
     exact h.trans (le_add_of_nonneg_left zero_le_one)
   · have h := hN n (not_lt.mp hn)
     exact (by simpa only [Real.dist_eq, sub_zero] using h : |halfLogHarmonicWeight n| < 1).le.trans hB1

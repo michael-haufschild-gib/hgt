@@ -85,8 +85,16 @@ This is a Vaughan specialization of existing exponent laws and the proved quarti
 identity. Source checks close the paper proof. Broad discovery searches were partial;
 the follow-up found many general exponent laws and the existing reciprocal-tail strip
 equivalence, without an exact indexed empty-leg theorem. No external novelty claim is made.
-Twenty-six quantitative-transfer, rate-set, supremum, damping-independence, fixed-strip,
+Thirty quantitative-transfer, rate-set, supremum, damping-independence, fixed-strip,
 and RH targets are drafted in `/tmp/QIVaughanDecayIndexTools.lean`, uncompiled.
 The draft includes unrestricted upper-rate exclusions, exact rate-set independence,
-actual horizon-rate sets, and all-strict-exponent RH formulations. None of these index identities gives a positive lower
+actual horizon-rate sets, and all-strict-exponent RH formulations. Three explicit
+`mem_pmPronicVaughanTailPowerRates_iff_bound`,
+`mem_pmPronicVaughanSquareEnergyPowerRates_iff_bound`, and
+`mem_pmPronicVaughanHorizonEnergyPowerRates_iff_bound` drafts identify the formal
+rate sets with all nonnegative exponents satisfying the actual bounds. Their
+proofs derive the harmless upper caps from the unrestricted exclusion theorems.
+`pmPronicVaughanTailPowerRates_eq_singleton_zero_of_abscissa_eq_one` formalizes
+the stated degenerate-case singleton classification. These four additional
+targets remain unchecked. None of these index identities gives a positive lower
 bound for `1-Θ`; full Q-I remains open.

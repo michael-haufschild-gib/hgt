@@ -24,7 +24,7 @@ correlation on `ℤ log p₁ + ⋯ + ℤ log p_r ≅ ℤ^r` is the existence of 
 -/
 
 open Complex MeasureTheory Filter Topology Set
-open scoped ComplexConjugate BigOperators Real ENNReal NNReal
+open scoped ComplexConjugate BigOperators Real ENNReal NNReal BoundedContinuousFunction
 
 noncomputable section
 
@@ -101,7 +101,7 @@ def IsPosDefOnLattice (φ : (ι → ℤ) → ℂ) : Prop :=
   ∀ (N : ℕ) (x : Fin N → ι → ℤ) (c : Fin N → ℂ),
     ∃ r : ℝ, 0 ≤ r ∧ ∑ a, ∑ b, star (c a) * φ (x b - x a) * c b = r
 
-omit [DecidableEq ι] in
+omit [Fintype ι] [DecidableEq ι] in
 /-- The Gram form over any finite index type. -/
 theorem IsPosDefOnLattice.form {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnLattice φ) {κ : Type*}
     [Fintype κ] (x : κ → ι → ℤ) (c : κ → ℂ) :
@@ -114,7 +114,7 @@ theorem IsPosDefOnLattice.form {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnLatt
   rw [← e.sum_comp]
   rfl
 
-omit [DecidableEq ι] in
+omit [Fintype ι] [DecidableEq ι] in
 theorem IsPosDefOnLattice.re_nonneg_im_eq_zero {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnLattice φ)
     {κ : Type*} [Fintype κ] (x : κ → ι → ℤ) (c : κ → ℂ) :
     0 ≤ (∑ a, ∑ b, star (c a) * φ (x b - x a) * c b).re ∧
@@ -123,13 +123,13 @@ theorem IsPosDefOnLattice.re_nonneg_im_eq_zero {φ : (ι → ℤ) → ℂ} (hφ 
   rw [h]
   simp [hr]
 
-omit [DecidableEq ι] in
+omit [Fintype ι] [DecidableEq ι] in
 theorem IsPosDefOnLattice.zero {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnLattice φ) :
     0 ≤ (φ 0).re ∧ (φ 0).im = 0 := by
   have h := hφ.re_nonneg_im_eq_zero (κ := Unit) (fun _ => 0) (fun _ => 1)
   simpa using h
 
-omit [DecidableEq ι] in
+omit [Fintype ι] [DecidableEq ι] in
 /-- The `2 × 2` form at `0, m`. -/
 theorem IsPosDefOnLattice.two_form {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnLattice φ) (m : ι → ℤ)
     (a b : ℂ) :
@@ -138,7 +138,7 @@ theorem IsPosDefOnLattice.two_form {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOn
   have h := hφ.re_nonneg_im_eq_zero (κ := Fin 2) ![0, m] ![a, b]
   simpa [Fin.sum_univ_two, add_assoc] using h
 
-omit [DecidableEq ι] in
+omit [Fintype ι] [DecidableEq ι] in
 theorem IsPosDefOnLattice.neg {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnLattice φ) (m : ι → ℤ) :
     φ (-m) = conj (φ m) := by
   have h1 := (hφ.two_form m 1 1).2
@@ -150,7 +150,7 @@ theorem IsPosDefOnLattice.neg {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnLatti
   · simp only [Complex.conj_re]; linarith
   · simp only [Complex.conj_im]; linarith
 
-omit [DecidableEq ι] in
+omit [Fintype ι] [DecidableEq ι] in
 /-- `|φ(m)| ≤ φ(0)`. -/
 theorem IsPosDefOnLattice.norm_le {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnLattice φ) (m : ι → ℤ) :
     ‖φ m‖ ≤ (φ 0).re := by
@@ -190,7 +190,7 @@ theorem IsPosDefOnLattice.norm_le {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnL
       · linarith
     nlinarith [norm_nonneg (φ m)]
 
-omit [DecidableEq ι] in
+omit [Fintype ι] [DecidableEq ι] in
 theorem IsPosDefOnLattice.const_mul {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnLattice φ) {c : ℝ}
     (hc : 0 ≤ c) : IsPosDefOnLattice fun m => (c : ℂ) * φ m := by
   intro N x v
@@ -226,10 +226,10 @@ theorem isPosDefOnLattice_fourierCoeff (μ : Measure (ι → ℝ)) [IsFiniteMeas
     ring
   rw [← integral_complex_ofReal]
   simp_rw [← hpt]
-  rw [integral_finset_sum _ fun a _ => integrable_finset_sum _ fun b _ =>
+  rw [integral_finsetSum _ fun a _ => integrable_finsetSum _ fun b _ =>
     ((integrable_latticeChar μ _).const_mul _).mul_const _]
   refine Finset.sum_congr rfl fun a _ => ?_
-  rw [integral_finset_sum _ fun b _ => ((integrable_latticeChar μ _).const_mul _).mul_const _]
+  rw [integral_finsetSum _ fun b _ => ((integrable_latticeChar μ _).const_mul _).mul_const _]
   refine Finset.sum_congr rfl fun b _ => ?_
   rw [integral_mul_const, integral_const_mul]
   rfl
@@ -285,7 +285,6 @@ omit [DecidableEq ι] in
 theorem fejerScale_nonneg (N : ℕ) : 0 ≤ fejerScale ι N := by
   unfold fejerScale; positivity
 
-omit [DecidableEq ι] in
 /-- The Fejér density is real and nonnegative. -/
 theorem latticeFejerDensity_nonneg {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnLattice φ) (N : ℕ)
     (θ : ι → ℝ) :
@@ -294,7 +293,6 @@ theorem latticeFejerDensity_nonneg {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOn
   rw [latticeFejerDensity, Complex.re_ofReal_mul, Complex.im_ofReal_mul]
   exact ⟨mul_nonneg (fejerScale_nonneg N) h1, by rw [h2, mul_zero]⟩
 
-omit [DecidableEq ι] in
 theorem continuous_latticeFejerDensity (φ : (ι → ℤ) → ℂ) (N : ℕ) :
     Continuous (latticeFejerDensity φ N) := by
   unfold latticeFejerDensity
@@ -306,7 +304,6 @@ theorem continuous_latticeFejerDensity (φ : (ι → ℤ) → ℂ) (N : ℕ) :
 def latticeFejerMeasure (φ : (ι → ℤ) → ℂ) (N : ℕ) : Measure (ι → ℝ) :=
   boxMeasure.withDensity fun θ => ((latticeFejerDensity φ N θ).re.toNNReal : ℝ≥0∞)
 
-omit [DecidableEq ι] in
 theorem integral_latticeFejerMeasure {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnLattice φ) (N : ℕ)
     (g : (ι → ℝ) → ℂ) :
     ∫ θ, g θ ∂latticeFejerMeasure φ N = ∫ θ, latticeFejerDensity φ N θ * g θ ∂boxMeasure := by
@@ -358,10 +355,12 @@ theorem sum_window_pairs (N : ℕ) (m : ι → ℤ) :
       ∑ k : ι → Fin (N + 1), ∏ i, (if ((k i : ℕ) : ℤ) = ((j i : ℕ) : ℤ) + m i then (1 : ℂ) else 0) =
         ∏ i, (if 0 ≤ ((j i : ℕ) : ℤ) + m i ∧ ((j i : ℕ) : ℤ) + m i ≤ N then (1 : ℂ) else 0) := by
     intro j
-    rw [← Fintype.piFinset_univ, ← Finset.prod_univ_sum]
+    refine (Fintype.prod_sum (fun i (b : Fin (N + 1)) =>
+      if ((b : ℕ) : ℤ) = ((j i : ℕ) : ℤ) + m i then (1 : ℂ) else 0)).symm.trans ?_
     exact Finset.prod_congr rfl fun i _ => sum_fin_ite_intCast_eq N _ 1
   simp_rw [hinner]
-  rw [← Fintype.piFinset_univ, ← Finset.prod_univ_sum]
+  refine (Fintype.prod_sum (fun i (a : Fin (N + 1)) =>
+    if 0 ≤ ((a : ℕ) : ℤ) + m i ∧ ((a : ℕ) : ℤ) + m i ≤ N then (1 : ℂ) else 0)).symm.trans ?_
   exact Finset.prod_congr rfl fun i _ => sum_fin_window_eq_pairCount N (m i)
 
 /-- The Fejér weight `Π_i c(N, m_i)/(N+1)`. -/
@@ -371,7 +370,8 @@ def fejerWeight (N : ℕ) (m : ι → ℤ) : ℝ := ∏ i, (Bochner.pairCount N 
 theorem fourierCoeff_latticeFejerMeasure {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnLattice φ) (N : ℕ)
     (m : ι → ℤ) :
     fourierCoeff (latticeFejerMeasure φ N) m = (fejerWeight N m : ℂ) * φ m := by
-  rw [fourierCoeff, integral_latticeFejerMeasure hφ, latticeFejerDensity]
+  rw [fourierCoeff, integral_latticeFejerMeasure hφ]
+  unfold latticeFejerDensity
   have hterm : ∀ (j k : ι → Fin (N + 1)) (θ : ι → ℝ),
       star (latticeChar (-windowPt N j) θ) * φ (windowPt N k - windowPt N j) *
           latticeChar (-windowPt N k) θ * latticeChar m θ =
@@ -385,8 +385,8 @@ theorem fourierCoeff_latticeFejerMeasure {φ : (ι → ℤ) → ℂ} (hφ : IsPo
       φ (windowPt N k - windowPt N j) * latticeChar (m - (windowPt N k - windowPt N j)) θ)
       boxMeasure := fun j k => (integrable_latticeChar _ _).const_mul _
   simp_rw [mul_assoc (fejerScale ι N : ℂ), Finset.sum_mul, hterm]
-  rw [integral_const_mul, integral_finset_sum _ fun j _ => integrable_finset_sum _ fun k _ => hint j k]
-  simp_rw [integral_finset_sum _ fun k _ => hint _ k, integral_const_mul,
+  rw [integral_const_mul, integral_finsetSum _ fun j _ => integrable_finsetSum _ fun k _ => hint j k]
+  simp_rw [integral_finsetSum _ fun k _ => hint _ k, integral_const_mul,
     integral_latticeChar_boxMeasure, sub_eq_zero]
   have hswap : ∀ j k : ι → Fin (N + 1),
       φ (windowPt N k - windowPt N j) *
@@ -413,11 +413,15 @@ theorem fejerWeight_zero (ι : Type*) [Fintype ι] (N : ℕ) : fejerWeight (ι :
   push_cast
   field_simp
 
+omit [DecidableEq ι] in
 /-- The Fejér weights tend to `1`. -/
 theorem tendsto_fejerWeight (m : ι → ℤ) : Tendsto (fun N => fejerWeight N m) atTop (𝓝 1) := by
   unfold fejerWeight
-  rw [show (1 : ℝ) = ∏ _i : ι, (1 : ℝ) by simp]
-  refine tendsto_finset_prod _ fun i _ => ?_
+  suffices h : ∀ i ∈ (Finset.univ : Finset ι), Tendsto
+      (fun N : ℕ => (Bochner.pairCount N (m i) : ℝ) / ((N : ℝ) + 1)) atTop (𝓝 1) by
+    have := tendsto_finsetProd Finset.univ h
+    rwa [Finset.prod_const_one] at this
+  intro i _
   have hlow : ∀ N : ℕ, 1 - |(m i : ℝ)| / ((N : ℝ) + 1) ≤
       (Bochner.pairCount N (m i) : ℝ) / ((N : ℝ) + 1) := by
     intro N
@@ -429,8 +433,9 @@ theorem tendsto_fejerWeight (m : ι → ℤ) : Tendsto (fun N => fejerWeight N m
     rw [div_le_one (by positivity)]
     exact_mod_cast Bochner.pairCount_le N (m i)
   have hz : Tendsto (fun N : ℕ => 1 - |(m i : ℝ)| / ((N : ℝ) + 1)) atTop (𝓝 1) := by
-    have h := tendsto_one_div_add_atTop_nhds_zero_nat.const_mul |(m i : ℝ)|
-    simpa [div_eq_mul_one_div] using h.const_sub 1
+    have h := (tendsto_one_div_add_atTop_nhds_zero_nat.const_mul |(m i : ℝ)|).const_sub 1
+    rw [mul_zero, sub_zero] at h
+    exact h.congr fun N => by rw [mul_one_div]
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le hz tendsto_const_nhds hlow hup
 
 /-! ### Herglotz–Bochner -/
@@ -439,9 +444,153 @@ theorem isFiniteMeasure_latticeFejerMeasure (φ : (ι → ℤ) → ℂ) (N : ℕ
     IsFiniteMeasure (latticeFejerMeasure φ N) := by
   have hc : Continuous fun θ => (latticeFejerDensity φ N θ).re :=
     Complex.continuous_re.comp (continuous_latticeFejerDensity φ N)
-  obtain ⟨C, hC⟩ : ∃ C, ∀ θ ∈ Set.pi univ fun _ : ι => Icc (-π) π,
-      ‖(latticeFejerDensity φ N θ).re‖ ≤ C :=
-    (isCompact_univ_pi fun _ => isCompact_Icc).exists_bound_of_continuousOn hc.continuousOn
-  sorry
+  have hb : ∀ θ, ‖(latticeFejerDensity φ N θ).re‖ ≤ fejerScale ι N *
+      ∑ j : ι → Fin (N + 1), ∑ k : ι → Fin (N + 1), ‖φ (windowPt N k - windowPt N j)‖ := by
+    intro θ
+    rw [Real.norm_eq_abs]
+    refine (Complex.abs_re_le_norm _).trans ?_
+    rw [latticeFejerDensity, norm_mul, Complex.norm_real,
+      Real.norm_of_nonneg (fejerScale_nonneg N)]
+    refine mul_le_mul_of_nonneg_left ((norm_sum_le _ _).trans (Finset.sum_le_sum fun j _ =>
+      (norm_sum_le _ _).trans (Finset.sum_le_sum fun k _ => ?_))) (fejerScale_nonneg N)
+    rw [norm_mul, norm_mul, norm_star, norm_latticeChar, norm_latticeChar, one_mul, mul_one]
+  have hint : Integrable (fun θ => (latticeFejerDensity φ N θ).re) boxMeasure :=
+    Integrable.of_bound hc.aestronglyMeasurable _ (Eventually.of_forall hb)
+  exact isFiniteMeasure_withDensity_ofReal hint.hasFiniteIntegral
+
+/-- The closed box `[−π, π]^ι`. -/
+def closedBox : Set (ι → ℝ) := Set.pi univ fun _ => Icc (-π) π
+
+omit [DecidableEq ι] in
+theorem boxMeasure_compl_closedBox : boxMeasure (closedBoxᶜ : Set (ι → ℝ)) = 0 := by
+  have hmeas : MeasurableSet (closedBox : Set (ι → ℝ)) :=
+    MeasurableSet.univ_pi fun _ => measurableSet_Icc
+  rw [measure_compl hmeas (measure_ne_top _ _), boxMeasure, closedBox, Measure.pi_pi,
+    ← Set.pi_univ, Measure.pi_pi]
+  simp only [Measure.restrict_apply measurableSet_Icc, Measure.restrict_apply MeasurableSet.univ,
+    Set.univ_inter, Set.inter_eq_right.mpr Ioc_subset_Icc_self, tsub_self]
+
+theorem latticeFejerMeasure_compl_closedBox (φ : (ι → ℤ) → ℂ) (N : ℕ) :
+    latticeFejerMeasure φ N (closedBoxᶜ : Set (ι → ℝ)) = 0 :=
+  withDensity_absolutelyContinuous _ _ boxMeasure_compl_closedBox
+
+theorem isProbabilityMeasure_latticeFejerMeasure {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnLattice φ)
+    (hφ0 : φ 0 = 1) (N : ℕ) : IsProbabilityMeasure (latticeFejerMeasure φ N) := by
+  haveI := isFiniteMeasure_latticeFejerMeasure φ N
+  constructor
+  have h := fourierCoeff_latticeFejerMeasure hφ N 0
+  rw [fejerWeight_zero, hφ0, fourierCoeff] at h
+  simp only [latticeChar_zero, integral_const, Complex.real_smul, mul_one, Complex.ofReal_one]
+    at h
+  have hr : (latticeFejerMeasure φ N).real univ = 1 := by exact_mod_cast h
+  rw [← ENNReal.ofReal_toReal (measure_ne_top _ univ)]
+  simp only [Measure.real] at hr
+  rw [hr, ENNReal.ofReal_one]
+
+/-- **Herglotz–Bochner, normalized.** A positive-definite `φ` on `ℤ^ι` with `φ(0) = 1` is the
+coefficient sequence of a probability measure. -/
+theorem exists_probabilityMeasure_fourierCoeff_eq {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnLattice φ)
+    (hφ0 : φ 0 = 1) :
+    ∃ μ : ProbabilityMeasure (ι → ℝ), ∀ m, fourierCoeff (μ : Measure (ι → ℝ)) m = φ m := by
+  set seq : ℕ → ProbabilityMeasure (ι → ℝ) := fun N =>
+    ⟨latticeFejerMeasure φ N, isProbabilityMeasure_latticeFejerMeasure hφ hφ0 N⟩
+  have htight : IsTightMeasureSet {x | ∃ μ ∈ range seq, (μ : Measure (ι → ℝ)) = x} := by
+    rw [isTightMeasureSet_iff_exists_isCompact_measure_compl_le]
+    intro ε _
+    refine ⟨closedBox, isCompact_univ_pi fun _ => isCompact_Icc, ?_⟩
+    rintro _ ⟨μ, ⟨N, rfl⟩, rfl⟩
+    rw [show ((seq N : ProbabilityMeasure (ι → ℝ)) : Measure (ι → ℝ)) =
+      latticeFejerMeasure φ N from rfl, latticeFejerMeasure_compl_closedBox]
+    exact zero_le
+  have hcomp := isCompact_closure_of_isTightMeasureSet htight
+  obtain ⟨μ₀, -, σ, hσ, hlim⟩ := hcomp.tendsto_subseq (x := seq)
+    (fun n => subset_closure (mem_range_self n))
+  refine ⟨μ₀, fun m => ?_⟩
+  have hconv := (ProbabilityMeasure.tendsto_iff_forall_integral_rclike_tendsto ℂ).mp hlim
+    (latticeCharBCF m)
+  have hseq : ∀ N, ∫ θ, latticeCharBCF m θ ∂(seq N : Measure (ι → ℝ)) =
+      (fejerWeight N m : ℂ) * φ m := fun N => fourierCoeff_latticeFejerMeasure hφ N m
+  have hlim2 : Tendsto (fun n => (fejerWeight (σ n) m : ℂ) * φ m) atTop (𝓝 (φ m)) := by
+    have := ((Complex.continuous_ofReal.tendsto 1).comp
+      ((tendsto_fejerWeight m).comp hσ.tendsto_atTop)).mul_const (φ m)
+    simpa using this
+  refine tendsto_nhds_unique ?_ hlim2
+  have hconv' : Tendsto (fun n => ∫ θ, latticeCharBCF m θ ∂(seq (σ n) : Measure (ι → ℝ)))
+      atTop (𝓝 (∫ θ, latticeCharBCF m θ ∂(μ₀ : Measure (ι → ℝ)))) := hconv
+  simp only [hseq] at hconv'
+  exact hconv'
+
+/-- **Herglotz–Bochner on `ℤ^ι`.** A positive-definite function on `ℤ^ι` is the coefficient
+sequence of a finite positive measure. -/
+theorem exists_measure_fourierCoeff_eq {φ : (ι → ℤ) → ℂ} (hφ : IsPosDefOnLattice φ) :
+    ∃ μ : Measure (ι → ℝ), IsFiniteMeasure μ ∧ ∀ m, fourierCoeff μ m = φ m := by
+  obtain ⟨hp0, hpim⟩ := hφ.zero
+  set p : ℝ := (φ 0).re with hp
+  rcases eq_or_lt_of_le hp0 with hp00 | hppos
+  · refine ⟨0, inferInstance, fun m => ?_⟩
+    have := hφ.norm_le m
+    rw [← hp, ← hp00] at this
+    rw [norm_le_zero_iff.mp this, fourierCoeff, integral_zero_measure]
+  · have hψ := hφ.const_mul (by positivity : (0 : ℝ) ≤ 1 / p)
+    have hφ0 : φ 0 = (p : ℂ) := Complex.ext (by simp [hp]) (by simp [hpim])
+    have hpc : (p : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hppos.ne'
+    have hψ0 : (fun m => ((1 / p : ℝ) : ℂ) * φ m) 0 = 1 := by
+      simp only [hφ0]
+      push_cast
+      field_simp
+    obtain ⟨μ₀, hμ₀⟩ := exists_probabilityMeasure_fourierCoeff_eq hψ hψ0
+    refine ⟨ENNReal.ofReal p • (μ₀ : Measure (ι → ℝ)), ⟨?_⟩, fun m => ?_⟩
+    · rw [Measure.smul_apply, smul_eq_mul]
+      exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top (measure_lt_top _ _)
+    rw [fourierCoeff, integral_smul_measure, ← fourierCoeff, hμ₀ m,
+      ENNReal.toReal_ofReal hppos.le, Complex.real_smul]
+    push_cast
+    field_simp
+
+/-- **Herglotz–Bochner, both directions.** -/
+theorem isPosDefOnLattice_iff (φ : (ι → ℤ) → ℂ) :
+    IsPosDefOnLattice φ ↔
+      ∃ μ : Measure (ι → ℝ), IsFiniteMeasure μ ∧ ∀ m, fourierCoeff μ m = φ m := by
+  constructor
+  · exact exists_measure_fourierCoeff_eq
+  · rintro ⟨μ, hμ, hφ⟩
+    rw [show φ = fourierCoeff μ from funext fun m => (hφ m).symm]
+    exact isPosDefOnLattice_fourierCoeff μ
+
+/-! ### Restriction to a finite-rank subgroup: the Kronecker push-forward -/
+
+/-- The Kronecker line `t ↦ (γ_i t)_i`. -/
+def kroneckerLine (γ : ι → ℝ) (t : ℝ) : ι → ℝ := fun i => γ i * t
+
+omit [Fintype ι] [DecidableEq ι] in
+theorem measurable_kroneckerLine (γ : ι → ℝ) : Measurable (kroneckerLine γ) :=
+  measurable_pi_lambda _ fun _ => measurable_const.mul measurable_id
+
+omit [DecidableEq ι] in
+/-- **Restriction is push-forward.** The characteristic function of `ν` on the subgroup
+`{⟨m, γ⟩ : m ∈ ℤ^ι}` of `ℝ` is the coefficient sequence of the push-forward of `ν` along the
+Kronecker line. -/
+theorem fourierCoeff_map_kroneckerLine (ν : Measure ℝ) (γ : ι → ℝ) (m : ι → ℤ) :
+    fourierCoeff (ν.map (kroneckerLine γ)) m = charFun ν (pairing m γ) := by
+  rw [fourierCoeff, integral_map (measurable_kroneckerLine γ).aemeasurable
+    (continuous_latticeChar m).aestronglyMeasurable, charFun_apply_real]
+  refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+  simp only [latticeChar, pairing, kroneckerLine]
+  have e : (∑ i, (m i : ℝ) * (γ i * t)) = (∑ i, (m i : ℝ) * γ i) * t := by
+    rw [Finset.sum_mul]
+    exact Finset.sum_congr rfl fun i _ => by ring
+  rw [e]
+  push_cast
+  ring_nf
+
+omit [DecidableEq ι] in
+/-- The restriction of a characteristic function to `m ↦ ⟨m, γ⟩` is positive definite on `ℤ^ι`. -/
+theorem isPosDefOnLattice_charFun_comp (ν : Measure ℝ) [IsFiniteMeasure ν] (γ : ι → ℝ) :
+    IsPosDefOnLattice fun m => charFun ν (pairing m γ) := by
+  have h : fourierCoeff (ν.map (kroneckerLine γ)) = fun m => charFun ν (pairing m γ) :=
+    funext fun m => fourierCoeff_map_kroneckerLine ν γ m
+  rw [← h]
+  exact isPosDefOnLattice_fourierCoeff _
 
 end GaloisForLFunctions.ArithmeticPositiveDuality
+

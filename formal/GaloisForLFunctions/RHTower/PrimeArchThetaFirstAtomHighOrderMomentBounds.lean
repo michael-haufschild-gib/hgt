@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomHighOrderQuadrature
+import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomQuadratureArithmetic
 
 /-!
 # Exact first-atom moment bounds from high-order quadrature
@@ -31,47 +31,6 @@ theorem integral_Ioi_eq_intervalIntegral_add_tail_local
     intervalIntegral.integral_of_le hab]
 
 namespace ThetaRationalQuadrature
-
-def momentMass : QPoly → ℕ → ℚ → ℚ
-  | [], _, _ => 0
-  | a :: p, k, h =>
-      a * h ^ (k + 1) / (k + 1 : ℚ) + momentMass p (k + 1) h
-
-def integralMass (p : QPoly) (h : ℚ) : ℚ := momentMass p 0 h
-
-def upperDelta (j : ℕ) : QPoly :=
-  sub (mul (C ((3.14159265358979323847 : ℚ) * thirtySecondExpUpper ^ j))
-      (sub expTwoTaylorUpper (C 1)))
-    (mul (C (5 / 2)) X)
-
-def lowerDelta (j : ℕ) : QPoly :=
-  sub (mul (C ((3.14159265358979323846 : ℚ) * thirtySecondExpLower ^ j))
-      (sub expTwoTaylor (C 1)))
-    (mul (C (5 / 2)) X)
-
-def localLower (j : ℕ) : QPoly := comp (expNeg 6) (upperDelta j)
-def localUpper (j : ℕ) : QPoly := comp (expNeg 5) (lowerDelta j)
-
-def sourceLower (j : ℕ) : QPoly :=
-  sub (mul (C ((6.28318530717958647692 : ℚ) * thirtySecondExpLower ^ j))
-    expTwoTaylor) (C 3)
-
-def sourceUpper (j : ℕ) : QPoly :=
-  sub (mul (C ((6.28318530717958647694 : ℚ) * thirtySecondExpUpper ^ j))
-    expTwoTaylorUpper) (C 3)
-
-def lowerPolynomial (r j : ℕ) : QPoly :=
-  mul (mul (mul (C (12.5663706143591729538 : ℚ))
-    (pow (add (C ((j : ℚ) / 64)) X) (2 * r))) (sourceLower j))
-    (mul (C ((0.0432139182637 : ℚ) * endpointLower j)) (localLower j))
-
-def upperPolynomial (r j : ℕ) : QPoly :=
-  mul (mul (mul (C (12.5663706143591729539 : ℚ))
-    (pow (add (C ((j : ℚ) / 64)) X) (2 * r))) (sourceUpper j))
-    (mul (C ((0.0432139182638 : ℚ) * endpointUpper j)) (localUpper j))
-
-def lowerMass (r j : ℕ) : ℚ := integralMass (lowerPolynomial r j) (1 / 64)
-def upperMass (r j : ℕ) : ℚ := integralMass (upperPolynomial r j) (1 / 64)
 
 noncomputable def realPolynomial : QPoly → ℝ[X]
   | [] => 0
@@ -746,11 +705,10 @@ theorem thetaRationalQuadrature_firstAtom_bounds :
         1 / 40000000 < (0.0229718 : ℚ)) ∧
     ((∑ j ∈ Finset.range 64, ThetaRationalQuadrature.upperMass 3 j) +
         1 / 40000000 < (0.00059935 : ℚ)) := by
-  native_decide
+  exact ThetaRationalQuadrature.firstAtom_bounds
 
-/-- Generated rational quadrature discharges all five first-atom premises of the order-24
-sixth-trace reduction.  No tabulated numerical value is assumed: every mass is computed from the
-Taylor recurrences above and checked by the kernel. -/
+/-- Rational quadrature discharges all five first-atom premises of the order-24 sixth-trace
+reduction. Outward enclosures of the Taylor recurrences certify the rational mass bounds. -/
 theorem thetaCuspFirstAtom_highOrder_five_bounds :
     (0.4969488 : ℝ) < thetaCuspAtomRawEvenMoment 0 1 ∧
     (0.02297 : ℝ) < thetaCuspAtomRawEvenMoment 1 1 ∧

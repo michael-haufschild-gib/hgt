@@ -314,6 +314,37 @@ theorem norm_list_prod_sub_le {a b : ℕ → ℂ} {ε : ℝ} (l : List ℕ)
               ((norm_nonneg _).trans (hab x (by simp)))
       _ = ((l.length + 1 : ℕ) : ℝ) * ε := by push_cast; ring
 
+/-- A vertical half-plane character approximates every finite aperture of a tied Bohr torus. -/
+theorem exists_halfPlanePoint_approx_primes (σ : ℝ) {u δ : ℝ}
+    (hu : 0 ≤ u) (hδ : 0 < δ) (N : ℕ) (ω : BohrPoint) (hω : OnTorus N u ω) :
+    ∃ t : ℝ, ∀ p : ℕ, p.Prime → p < N →
+      ‖(WienerAlgebraAt.halfPlanePoint σ
+          ((σ + u : ℝ) - (t : ℂ) * I) (by simp; linarith only [hu])).ω p - ω.ω p‖ ≤ δ := by
+  obtain ⟨t, ht⟩ := primeTorus_cpow_dense N
+    (fun p => arg (ω.ω ((p : Nat.Primes) : ℕ))) hδ
+  refine ⟨t, fun p hp hpN => ?_⟩
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
+  have hmem : (⟨p, hp⟩ : Nat.Primes) ∈ primesLE N := (mem_primesLE N _).2 hpN.le
+  have h1 := ht ⟨⟨p, hp⟩, hmem⟩
+  simp only at h1
+  have hωp : ω.ω p = (((p : ℝ) ^ (-u) : ℝ) : ℂ) * exp ((arg (ω.ω p) : ℝ) * I) := by
+    rw [← hω p hp hpN]
+    exact (norm_mul_exp_arg_mul_I _).symm
+  have hjp : (WienerAlgebraAt.halfPlanePoint σ
+      ((σ + u : ℝ) - (t : ℂ) * I) (by simp; linarith only [hu])).ω p =
+      (((p : ℝ) ^ (-u) : ℝ) : ℂ) * (p : ℂ) ^ ((t : ℂ) * I) := by
+    simp only [WienerAlgebraAt.halfPlanePoint, hp.ne_zero, if_false]
+    have hpc : (p : ℂ) ≠ 0 := by exact_mod_cast hp.ne_zero
+    rw [show (σ : ℂ) - ((σ + u : ℝ) - (t : ℂ) * I) = (-u : ℝ) + (t : ℂ) * I by
+        push_cast; ring, cpow_add _ _ hpc, ← ofReal_natCast, ← ofReal_cpow hp0.le]
+  rw [hjp, hωp, ← mul_sub, norm_mul, norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (Real.rpow_nonneg hp0.le _)]
+  calc
+    (p : ℝ) ^ (-u) * _ ≤ 1 * δ :=
+      mul_le_mul (Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast hp.one_le)
+        (by linarith only [hu])) h1.le (norm_nonneg _) zero_le_one
+    _ = δ := one_mul _
+
 /-- **The bound on the tied tori.**  For `g` supported on `N`-smooth integers, a lower bound for
 `L(g, s)` on `Re s ≥ σ` holds at every point with `|ω(p)| = p^{−u}`: Kronecker's theorem steers the
 line `Re s = σ + u` to it. -/
@@ -321,34 +352,16 @@ theorem le_norm_bohrEval_of_onTorus {σ : ℝ} {g : ArithmeticFunction ℂ}
     (hg : LSeriesSummable (⇑g) σ) {N : ℕ} (hgN : ∀ n, n ∉ Nat.smoothNumbers N → g n = 0)
     {u δ : ℝ} (hu : 0 ≤ u) (hhalf : ∀ s : ℂ, σ ≤ s.re → δ ≤ ‖LSeries (⇑g) s‖) (ω : BohrPoint)
     (hω : OnTorus N u ω) : δ ≤ ‖bohrEval σ g ω‖ := by
-  -- Phases of `ω` at the primes `≤ N`, and times steering `p^{it}` to them.
-  have hK : ∀ j : ℕ, ∃ t : ℝ, ∀ p : primesLE N,
-      ‖(((p : Nat.Primes) : ℕ) : ℂ) ^ ((t : ℂ) * I) -
-        exp ((arg (ω.ω ((p : Nat.Primes) : ℕ)) : ℝ) * I)‖ < 1 / ((j : ℝ) + 1) := fun j =>
-    primeTorus_cpow_dense N (fun p => arg (ω.ω ((p : Nat.Primes) : ℕ))) (by positivity)
+  have hK (j : ℕ) := exists_halfPlanePoint_approx_primes σ hu
+    (show 0 < 1 / ((j : ℝ) + 1) by positivity) N ω hω
   choose t ht using hK
-  have hs : ∀ j : ℕ, σ ≤ ((σ + u : ℝ) - (t j : ℂ) * I : ℂ).re := fun j => by simp; linarith
+  have hs : ∀ j : ℕ, σ ≤ ((σ + u : ℝ) - (t j : ℂ) * I : ℂ).re :=
+    fun j => by simp; linarith only [hu]
   set ωj : ℕ → BohrPoint := fun j => WienerAlgebraAt.halfPlanePoint σ _ (hs j)
   -- At the primes below `N` the points `ωj` converge to `ω`.
-  have hprime : ∀ j : ℕ, ∀ p, p.Prime → p < N → ‖(ωj j).ω p - ω.ω p‖ ≤ 1 / ((j : ℝ) + 1) := by
-    intro j p hp hpN
-    have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
-    have hmem : (⟨p, hp⟩ : Nat.Primes) ∈ primesLE N := (mem_primesLE N _).2 hpN.le
-    have h1 := ht j ⟨⟨p, hp⟩, hmem⟩
-    simp only at h1
-    have hωp : ω.ω p = (((p : ℝ) ^ (-u) : ℝ) : ℂ) * exp ((arg (ω.ω p) : ℝ) * I) := by
-      rw [← hω p hp hpN]; exact (norm_mul_exp_arg_mul_I _).symm
-    have hjp : (ωj j).ω p = (((p : ℝ) ^ (-u) : ℝ) : ℂ) * (p : ℂ) ^ ((t j : ℂ) * I) := by
-      simp only [ωj, WienerAlgebraAt.halfPlanePoint, hp.ne_zero, if_false]
-      have hpc : (p : ℂ) ≠ 0 := by exact_mod_cast hp.ne_zero
-      rw [show (σ : ℂ) - ((σ + u : ℝ) - (t j : ℂ) * I) = (-u : ℝ) + (t j : ℂ) * I by
-          push_cast; ring, cpow_add _ _ hpc, ← ofReal_natCast, ← ofReal_cpow hp0.le]
-    rw [hjp, hωp, ← mul_sub, norm_mul, norm_real, Real.norm_eq_abs,
-      abs_of_nonneg (Real.rpow_nonneg hp0.le _)]
-    calc (p : ℝ) ^ (-u) * _ ≤ 1 * (1 / ((j : ℝ) + 1)) :=
-          mul_le_mul (Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast hp.one_le)
-            (by linarith)) h1.le (norm_nonneg _) zero_le_one
-      _ = _ := one_mul _
+  have hprime : ∀ j : ℕ, ∀ p, p.Prime → p < N →
+      ‖(ωj j).ω p - ω.ω p‖ ≤ 1 / ((j : ℝ) + 1) :=
+    fun j p hp hpN => ht j p hp hpN
   -- Termwise convergence and domination give convergence of the Bohr evaluations.
   have hlim : Tendsto (fun j => bohrEval σ g (ωj j)) atTop (𝓝 (bohrEval σ g ω)) := by
     unfold bohrEval LSeries
@@ -636,3 +649,7 @@ end WienerAlgebraAt
 end
 
 end GaloisForLFunctions.ArithmeticOrientationTheory
+
+#print axioms GaloisForLFunctions.ArithmeticOrientationTheory.exists_halfPlanePoint_approx_primes
+#print axioms GaloisForLFunctions.ArithmeticOrientationTheory.le_norm_bohrEval_of_onTorus
+#print axioms GaloisForLFunctions.ArithmeticOrientationTheory.WienerAlgebraAt.isUnit_iff_exists_le_norm_lSeries

@@ -45,6 +45,14 @@ vector on `0, h, …, (N−1)h` gives `0 ≤ N D(0) + 2Σ_{r<N}(N−r−1) D((r+
 `N → ∞` with `D ≤ 0` on the progression: `Σ_r −D((r+1)h) ≤ D(0)/2`. Sharp: the double-pole profile
 `2δ₀ − δ_{±t₀}` has mass `1 = D(0)/2` (`doublePoleProfile_progression_mass`).
 
+**P4′ Total zero mass law** (`total_zero_mass_le`, `card_zero_heights_le`,
+`eq_zero_of_simple_pole`, `doublePoleProfile_total_mass`). Let `Z` be a finite set of positive
+heights and `F_N = {Σ_{z∈Z} n_z z : 0 ≤ n_z < N}`. Then `0 ≤ Σ_{x,y∈F_N} D(x−y)`. Each pair
+contributes `D(0)` if `x = y`, `D(±z)` if `x − y = ±z`, and at most `0` otherwise. `F_N + z ⊆ F_{N+1}`
+gives at least `2|F_N| − |F_{N+1}|` pairs with `x − y = z`. Hence
+`0 ≤ |F_N| D(0) + 2(2|F_N| − |F_{N+1}|) Σ_z D(z)`. Because `|F_N| ≤ N^{|Z|}`, the ratio
+`|F_{N+1}|/|F_N|` is below `1 + ε` for some `N`, so `D(0) + 2(1 − ε)Σ_z D(z) ≥ 0`. Let `ε → 0`.
+
 **P5 ζ on the line** (`zetaBoundaryDivisor_eq`, `riemannZeta_boundary_ne_zero_of_posDef`). `D_ζ` is
 integer valued with `D_ζ(0) = 1` and `D_ζ ≤ 0` off `0` (ζ has no poles there). By P2 a zero at `u`
 would give `D_ζ(2u) = 1`, a pole. So `D_ζ = 1_{0}`.
@@ -104,4 +112,4 @@ cosine sums are bounded by `1/|sin(vπ/2M)|`, so `0 ≤ N(a(0) − a(γ)/2) + K`
 - **Status:** all statements formalized; see README §5.
 
 ## Log
-- 2026-10-25 — created in 1-in-progress; formalized (14 modules); moved to 3-formalized
+- 2026-10-25 — created in 1-in-progress; formalized (15 modules); moved to 3-formalized

@@ -3,7 +3,7 @@
 - **ID:** uniform-critical-pronic-pairings-from-logarithmic-cancellation
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../2-fully-proven/uniform-half-damping-vaughan-harmonic-gram.md
+- **Source:** uniform-half-damping-vaughan-harmonic-gram.md
 - **Statement:** A common two-logarithm saving at the square-root prefix scale gives a summable envelope for both pronic energy and absolute smooth pairings.
 
 For a family `f_i(n)`, assume a common linear bound on positive cells and a

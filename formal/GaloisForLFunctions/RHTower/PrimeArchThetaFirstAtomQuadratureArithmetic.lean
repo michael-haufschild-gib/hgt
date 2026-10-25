@@ -1,0 +1,56 @@
+import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomQuadratureEnclosures
+
+/-!
+# Kernel-checked first-atom quadrature certificates
+
+Outward rounding bounds the original rational polynomials coefficient by coefficient.
+The five remaining comparisons reduce to integer arithmetic with a fixed denominator.
+-/
+
+open scoped BigOperators
+
+namespace RHTower.ThetaRationalQuadrature
+
+private theorem lower_zero_certificate :
+    (0.4969488 : ℚ) < ∑ j ∈ Finset.range 64, Enclosure.lower (Enclosure.massLo 0 j) := by
+  decide +kernel
+
+private theorem lower_one_certificate :
+    (0.02297 : ℚ) < ∑ j ∈ Finset.range 64, Enclosure.lower (Enclosure.massLo 1 j) := by
+  decide +kernel
+
+private theorem lower_two_certificate :
+    (0.0029627 : ℚ) < ∑ j ∈ Finset.range 64, Enclosure.lower (Enclosure.massLo 2 j) := by
+  decide +kernel
+
+private theorem upper_one_certificate :
+    (∑ j ∈ Finset.range 64, Enclosure.upper (Enclosure.massHi 1 j)) + 1 / 40000000 <
+      (0.0229718 : ℚ) := by
+  decide +kernel
+
+private theorem upper_three_certificate :
+    (∑ j ∈ Finset.range 64, Enclosure.upper (Enclosure.massHi 3 j)) + 1 / 40000000 <
+      (0.00059935 : ℚ) := by
+  decide +kernel
+
+/-- Rounded enclosures imply the five bounds for the original, unrounded rational masses. -/
+theorem firstAtom_bounds :
+    ((0.4969488 : ℚ) < ∑ j ∈ Finset.range 64, lowerMass 0 j) ∧
+    ((0.02297 : ℚ) < ∑ j ∈ Finset.range 64, lowerMass 1 j) ∧
+    ((0.0029627 : ℚ) < ∑ j ∈ Finset.range 64, lowerMass 2 j) ∧
+    ((∑ j ∈ Finset.range 64, upperMass 1 j) + 1 / 40000000 < (0.0229718 : ℚ)) ∧
+    ((∑ j ∈ Finset.range 64, upperMass 3 j) + 1 / 40000000 < (0.00059935 : ℚ)) := by
+  have hlo (r : ℕ) :
+      (∑ j ∈ Finset.range 64, Enclosure.lower (Enclosure.massLo r j)) ≤
+        ∑ j ∈ Finset.range 64, lowerMass r j :=
+    Finset.sum_le_sum fun j _ => (Enclosure.contains_massLo r j).1
+  have hhi (r : ℕ) :
+      (∑ j ∈ Finset.range 64, upperMass r j) ≤
+        ∑ j ∈ Finset.range 64, Enclosure.upper (Enclosure.massHi r j) :=
+    Finset.sum_le_sum fun j _ => (Enclosure.contains_massHi r j).2
+  exact ⟨lower_zero_certificate.trans_le (hlo 0),
+    lower_one_certificate.trans_le (hlo 1), lower_two_certificate.trans_le (hlo 2),
+    (add_le_add_right (hhi 1) _).trans_lt upper_one_certificate,
+    (add_le_add_right (hhi 3) _).trans_lt upper_three_certificate⟩
+
+end RHTower.ThetaRationalQuadrature

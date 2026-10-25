@@ -1,10 +1,10 @@
 # Uniform harmonic Gram law at half damping
 
 - **ID:** uniform-half-damping-vaughan-harmonic-gram
-- **Stage:** 2-fully-proven
-- **Type:** CLAIM (Lean verification pending)
-- **Verification:** The finite Gram/packet laws, actual renormalized moving limit, and pronic convergence are Lean-verified. Infinite Gram rank, limit-ray classification, realization, and product-horizon corollaries remain pending.
-- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Verification:** Every stated finite Gram/packet, moving-limit, pronic-convergence, rank, harmonic-mass, realization, and product-horizon claim passed final direct Lean checks and standard-axiom audits.
+- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** At half damping, the centered Vaughan Gram differs from its explicit harmonic rank-one term by a bounded matrix uniformly over all cutoffs and horizons. Its renormalized moving-cutoff limit is an actual finite Gram of two source rows.
 - **Novelty status:** Endpoint refinement of the uniform convolution argument; initial corpus search found the fixed-cutoff admission law and smooth-power estimates, not this uniform bounded-error statement. No external novelty claim.
 
@@ -108,10 +108,10 @@ The two smooth/remainder pairings are uniformly bounded in absolute value, while
 
 The limiting matrix is positive semidefinite and has rank exactly two. All five rows
 lie in the span of `A` and `P`; their two-cell determinant proves independence, with
-`det Gram(A,P)≥1/62208`, as shown in `the-endpoint-vaughan-limit-has-rank-two.md`.
+`det Gram(A,P)≥1/62208`, as shown in `../3-formalized/the-endpoint-vaughan-limit-has-rank-two.md`.
 The positive first pole cell also gives `G∞_44≥1/64`; see
-`the-centred-vaughan-pole-has-positive-finite-energy.md`. Both refinements have
-dependency-closed paper proofs and await Lean verification.
+`../3-formalized/the-centred-vaughan-pole-has-positive-finite-energy.md`. Both refinements are
+Lean-verified, including positive definiteness and the explicit nonzero matrix.
 A finite limit of the scalar harmonic mass `K_(U,V)^2 J(T)→ℓ` gives
 actual Gram limit `G∞+ℓssᵀ`; harmonic mass tending to `+∞` forces the corresponding
 convolution diagonal to tend to `+∞`. Mere unboundedness does not assert convergence
@@ -132,8 +132,8 @@ harmonic nonvanishing gives `k_N>0`. Each increment of `J` is at most one, so
 `ℓ≤k_N J(T_N)≤ℓ+k_N`. Since `k_N→0`, the mass tends to `ℓ`. Also `J(T)≤T`;
 for any fixed bound `B`, eventually `k_N B<ℓ`, forcing `T_N>B`.
 Thus the ray is the exact set of
-finite joint-limit matrices, not merely an upper description. These rank and
-realization corollaries also await Lean formalization.
+finite joint-limit matrices, not merely an upper description. The rank
+corollaries and realization of every ray point are Lean-verified.
 
 ## Product horizons
 
@@ -145,7 +145,7 @@ product-horizon trace therefore has one uniform finite bound at half damping.
 If both cutoffs diverge, the actual centered product-horizon Gram tends to `G∞`.
 The limit is nonzero: its pole diagonal is at least `1/64`.
 
-The Lean draft uses an equivalent separated majorant:
+The checked Lean proof uses an equivalent separated majorant:
 `J(UV)≤(1+log U)(1+log V)` for positive cutoffs. The nonnegative sequence
 `g(N)=H_N²(1+log N)` tends to zero and is globally bounded. Hence
 `K_(U,V)²J(UV)≤subHalfZetaCoeff(1/2)² g(U)g(V)`. The checked product-index
@@ -162,8 +162,9 @@ analytic premise. The uniform double-convolution logarithmic theorem, generic
 damped logarithmic transfer, actual convolution fluctuation, and uniform
 truncated-Möbius logarithmic prefixes are now checked
 in Lean. The actual bounded-error and renormalized moving-limit laws are
-verified, including full pronic convergence. Rank, limit-ray, realization,
-and product-horizon corollaries remain under verification. Full Q-I remains open.
+verified, including full pronic convergence, exact rank two, and the harmonic-mass
+convergence criterion with the rank-two/three ray law. Product-horizon corollaries
+and arithmetic realization are also checked. Full Q-I remains open.
 
 The generic endpoint summation step is Lean-verified in
 `UniformCriticalPronicPairingsFromLogarithmicCancellation.lean`: two logarithms
@@ -189,8 +190,7 @@ The three packet laws also passed their corrected final direct check and
 standard-axiom audits in `UniformHarmonicEnergyLawsForVaughanSuperpositions.lean`.
 Their homogeneous error bound and both smooth-annihilation corollaries are
 included in the endpoint Gram audit. The packet module is wired and its
-scratch removed. Moving renormalized limits are also checked below; the exact
-limit ray and ranks remain under verification.
+scratch removed. Moving renormalized limits and exact ray ranks are also checked below.
 
 ## Relation to subcritical limit classification
 
@@ -222,8 +222,9 @@ removed:
 
 All twelve targets in `TheVaughanLimitRowsAreIndependentInTwoCells.lean`
 passed final direct checks with standard axioms only. Dominated endpoint moving
-pairings are also checked below. Gram ranks, the exact limit ray, and its
-realization remain unfinished.
+pairings and rank two are also checked below. The harmonic-mass convergence
+criterion and ray ranks are checked as well; product-horizon consequences are
+certified below, together with arithmetic realization.
 
 The five shared majorant and pronic-convergence targets are certified in
 `PositiveFloorMajorantsControlPronicEnergy.lean`. Positive reciprocal majorants
@@ -254,8 +255,8 @@ bound and vanishing harmonic amplitude:
 
 These prove absolute summability of the actual limiting pairings, convergence
 at independently divergent horizons, full pronic square convergence, and norm
-convergence at every finite moving horizon. The infinite Gram ranks, limit ray,
-realization, and product-horizon consequences remain unfinished.
+convergence at every finite moving horizon. Realization of every ray point
+and the product-horizon consequences are checked below.
 
 The endpoint packet consequence is certified in `UniformHarmonicEnergyLawsForVaughanSuperpositions.lean`:
 the harmonic energy error is bounded by one constant times the square of the
@@ -264,27 +265,68 @@ the smooth coefficient vanishes, in particular when the two convolution
 coefficients agree. All three passed their final direct check and standard-axiom
 audits; their declarations are listed in the endpoint Gram audit linked above.
 
-`TheActualEndpointVaughanGramHasRankTwo.lean` drafts the actual infinite Gram's
-positive semidefiniteness, positive-definite prefix/pole submatrix, quantitative positive minor, positive pole entry,
-and exact rank two. `/tmp/QIHalfVaughanLimitRayTools.lean` drafts eleven subsequent
-targets: nonnegative harmonic mass, the scalar readout at entry `(3,3)`,
-both directions of finite matrix-limit classification, and exact ranks two
-and three on the nonnegative ray. Including the explicit nonzero endpoint Gram
-corollary, these twenty-two targets remain under Lean verification.
-Realization of every ray point and the endpoint product-horizon consequences
-still require Lean verification.
+All eleven targets in `TheActualEndpointVaughanGramHasRankTwo.lean` passed
+producing and final direct checks with standard axioms only. The module is
+wired and its scratch removed. They certify positive semidefiniteness,
+the positive-definite prefix/pole submatrix, determinant at least `1/62208`,
+pole entry at least `1/64`, a nonzero matrix, and exact rank two. See the
+complete rank card linked above. All eleven targets in
+`TheHalfDampingVaughanGramLimitsFormARankThreeRay.lean` also passed corrected
+producing and final direct checks with standard axioms only, under default limits.
+The module is wired and its scratch removed. They certify nonnegative harmonic
+mass, its scalar readout at `(3,3)`, both directions of the finite convergence
+criterion, divergence equivalence, and the exact ray ranks:
 
-Those remaining constructions are now drafted. `/tmp/QIHalfVaughanProductTools.lean`
-has six targets: the separated logarithmic horizon bound, vanishing product
-harmonic mass, its common finite bound, uniform bounds for every product-horizon
-Gram entry and trace, and the actual product-horizon limit. The stronger entry
-bound follows directly from the common harmonic Gram error and the bounded
-mass; it adds no analytic input. `/tmp/QIHarmonicMassRealizationTools.lean`
-has four reusable harmonic-sum targets, including the first-crossing argument
-above. `/tmp/QIHalfVaughanRayRealizationTools.lean` discharges positivity and
-vanishing of the actual arithmetic scale and drafts three realization and
-exact-limit-set targets. All thirteen remain UNPROVED.
+- `pmPronicVaughanHalfHarmonicMass_nonneg`
+- `pmPronicVaughanHalfLimitGram_large`
+- `pmPronicVaughanHalfLimitRay_large_diag`
+- `tendsto_pmPronicVaughanCentredGram_half_of_harmonic_mass`
+- `tendsto_pmPronicVaughanCentredGram_half_large_sub_harmonicMass`
+- `tendsto_pmPronicVaughanCentredGram_half_large_atTop_iff`
+- `pmPronicVaughanCentredGram_half_limit_forces_harmonic_mass`
+- `tendsto_pmPronicVaughanCentredGram_half_iff_harmonic_mass`
+- `pmPronicVaughanHalfLimitRay_zero`
+- `rank_pmPronicVaughanHalfLimitRay_of_pos`
+- `rank_pmPronicVaughanHalfLimitRay`
 
-The ray draft now has eleven targets, including the exact equivalence between
+All six targets in `ProductHorizonVaughanGramsAtHalfDampingHaveFiniteLimits.lean`
+passed corrected producing and final direct checks with standard axioms only.
+The module is wired and its scratch removed:
+
+- `sum_Icc_reciprocal_succ_product_le`
+- `tendsto_pmPronicVaughanHalfHarmonicMass_product`
+- `exists_uniform_pmPronicVaughanHalfHarmonicMass_product_bound`
+- `exists_uniform_pmPronicVaughanCentredGram_half_product_bound`
+- `exists_uniform_pmPronicVaughanCentredGram_half_product_trace_bound`
+- `tendsto_pmPronicVaughanCentredGram_half_product`
+
+The first five require no separate divergence of both cutoffs. The final
+matrix-limit theorem does require both cutoffs to diverge. The stronger entry
+bound follows directly from the common harmonic Gram error and bounded mass.
+All four generic targets in
+`HTGeometry/VanishingPositiveScalesRealizeHarmonicMasses.lean` passed producing
+and final direct checks with standard axioms only. The module is wired and
+its scratch removed:
+
+- `shiftedHarmonicSum_le`
+- `tendsto_shiftedHarmonicSum_atTop`
+- `exists_scaled_shiftedHarmonicSum_between`
+- `exists_tendsto_scaled_shiftedHarmonicSum`
+
+They formalize harmonic divergence and first-crossing realization for every
+positive vanishing scale. All three actual arithmetic targets in
+`EveryNonnegativeEndpointVaughanLimitIsRealized.lean` passed their final direct
+check with standard axioms only. The module is wired and its scratch removed:
+
+- `exists_pmPronicVaughanHalfHarmonicMass_limit`
+- `exists_pmPronicVaughanCentredGram_half_limit`
+- `pmPronicVaughanCentredGram_half_joint_limit_iff`
+
+Actual finite harmonic nonvanishing and logarithmic cancellation supply the
+positive vanishing scale without an analytic premise. These targets certify
+every nonnegative mass, every ray matrix, and both directions of the exact
+joint-limit classification with all three schedules divergent.
+
+The eleven checked ray targets include the exact equivalence between
 divergence to `+∞` of the fourth diagonal and of the harmonic mass. This corrects
 the earlier overly weak word “unbounded”; no unconditional divergence is claimed.

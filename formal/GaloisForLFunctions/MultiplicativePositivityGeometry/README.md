@@ -121,6 +121,9 @@ The language keeps these distinctions explicit:
    AM–GM (`exclusion_at_geometric_mean`).
 9. **Discrete Bohr mean.** Sampling along a non-resonant progression isolates the constant term
    of an almost-periodic polynomial (`abs_cosSum_le`).
+10. **Følner sets without a basis.** The sets `{Σ n_z z : 0 ≤ n_z < N}` grow polynomially, so some
+    step grows by at most `1 + ε`, and their Gram forms see every zero with weight about
+    `|F_N|` (`folnerSet`, `exists_folner_step`, `card_shift_mem_ge`).
 
 ---
 
@@ -131,7 +134,7 @@ The language keeps these distinctions explicit:
 | **P1 Boundary positivity** | The boundary divisor of nonnegative weights is even positive definite on `ℝ`. | `isEvenPosDef_cosineTrace`, `IsBoundaryDivisor.isEvenPosDef` |
 | **P2 Simple-pole rigidity** | With (Z) and (S): `D ∈ {−1, 0, 1}`, `D(ku) = D(u)^{|k|}`, and a zero at `u` forces a pole at `2u`. | `boundary_values`, `boundary_mul_natAbs`, `boundary_zero_forces_double_pole` |
 | **P3 Trichotomy** | A locally finite simple-pole integer divisor is `1_{0}`, `1_{cℤ}` or the alternating character on `cℤ`, and each type occurs. | `boundary_trichotomy`, `boundary_trichotomy_realized` |
-| **P4 Progression law** | On a pole-free progression the total zero mass is at most `D(0)/2`, sharp. | `boundary_progression_zero_mass_le`, `doublePoleProfile_progression_mass` |
+| **P4 Total zero mass law** | Without off-origin poles, the zero masses at any finite set of positive heights add up to at most `D(0)/2`, sharp. With an integer divisor at most `D(0)/2` heights carry zeros, and a simple pole admits none. The progression law is the special case of one progression. | `total_zero_mass_le`, `card_zero_heights_le`, `eq_zero_of_simple_pole`, `doublePoleProfile_total_mass`, `boundary_progression_zero_mass_le` |
 | **P5 ζ on the line** | `D_ζ = 1_{0}`; `ζ(1+iu) ≠ 0` from positive definiteness alone; prime phases at distinct heights are asymptotically orthonormal. | `zetaBoundaryDivisor_eq`, `riemannZeta_boundary_ne_zero_of_posDef`, `zeta_boundary_gram_tendsto` |
 | **P6 Realization** | A finitely supported even profile is a boundary profile iff it is positive definite on `ℤ`, iff its cosine polynomial is nonnegative. Twisted von Mangoldt weights realize every such profile. | `boundary_profile_iff`, `profile_isEvenPosDef_iff`, `twisted_isBoundaryDivisor` |
 | **P7 Completeness and minimality** | (N), (Z), (S), (I) force `D = 1_{0}`. Dropping any one admits a boundary zero, realized by an explicit datum. | `boundary_forcing_law`, `isolation_necessary`, `simplicity_necessary`, `integrality_necessary`, `nonnegativity_necessary` |
@@ -174,8 +177,10 @@ consists of four statements.
 No multi-channel structure supplies the missing margin. An interior gain must come from a smaller
 growth term `G`, which is outside multiplicative positivity.
 
-**How can quantization force vanishing?** On the boundary, integrality plus `|D| ≤ D(0) = 1`
-makes `D` a character, and a character cannot have an isolated `−1` (P2). In the interior, the zero
+**How can quantization force vanishing?** On the boundary there are two routes. Integrality plus
+`|D| ≤ D(0) = 1` makes `D` a character, and a character cannot have an isolated `−1` (P2).
+Alternatively, the total zero mass is at most `D(0)/2 = 1/2`, while an integer zero has mass at least
+`1` (P4). In the interior, the zero
 order is not a limit of positive-definite data (P8). Interior quantization needs an object that is
 not a boundary datum.
 
@@ -238,8 +243,9 @@ To build:
    inside the proof of `exists_riemannZeta_ne_zero_vinogradovKorobov_width`. Stated on a `δ`-range,
    it would give the VK region with its optimal constant and its barrier. Inputs with genuinely
    `δ`-dependent `G(δ)` remain open.
-5. **Higher poles.** Classify integer positive-definite functions with `D(0) = k ≥ 2` beyond the
-   progression law.
+5. **Higher poles.** The total mass law bounds the zeros of a pole of order `k`. Classify the
+   extremal configurations, those with total mass exactly `k/2`, and the case with off-origin
+   poles.
 
 ---
 
@@ -276,6 +282,7 @@ A contribution must:
 | `ProgressionModels` | One-prime boundary data; lattice and alternating divisors |
 | `BoundaryCompleteness` | The four invariants: forcing law and minimality; the trichotomy realized |
 | `BoundaryCalculus` | Scaling, sums, twists; bounded data invisible; interior zeros invisible |
+| `TotalZeroMass` | Følner sets; total zero mass `≤ D(0)/2`; zero count; simple pole without zeros |
 | `ExactFejerBarrier` | `a₁ ≤ 2cos(π/(K+2)) a₀`, quadrature certificate, extremal profile |
 | `GrowthToForcing` | Interior positivity; the exact exclusion law; degree-`K` width caps |
 | `MultiFrequencyCap` | `a(γ) ≤ 2a(0)` for every finite real spectrum; universal width cap |

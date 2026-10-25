@@ -358,8 +358,8 @@ as `UniformVaughanGramsFollowTheirSmoothRankOneTerm.lean`; the scratch was
 removed. The complete matrix law, including independent divergent horizon and
 cutoff-product schedules, is recorded in
 `../3-formalized/uniform-vaughan-grams-follow-their-smooth-rank-one-term.md`.
-The packet laws are now checked below. The single-floor and quantitative
-Mertens-power consequences remain under verification, so this combined paper
+The packet and single-floor laws are checked. The quantitative
+Mertens-power consequence remains under verification, so this combined paper
 card is not yet fully formalized.
 
 The first logarithmic-transform scratch check found two algebraic Lean issues

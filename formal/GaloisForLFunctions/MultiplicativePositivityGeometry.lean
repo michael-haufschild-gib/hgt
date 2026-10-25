@@ -8,6 +8,7 @@ import GaloisForLFunctions.MultiplicativePositivityGeometry.ProfileCharacterizat
 import GaloisForLFunctions.MultiplicativePositivityGeometry.ProgressionModels
 import GaloisForLFunctions.MultiplicativePositivityGeometry.BoundaryCompleteness
 import GaloisForLFunctions.MultiplicativePositivityGeometry.BoundaryCalculus
+import GaloisForLFunctions.MultiplicativePositivityGeometry.TotalZeroMass
 import GaloisForLFunctions.MultiplicativePositivityGeometry.ExactFejerBarrier
 import GaloisForLFunctions.MultiplicativePositivityGeometry.GrowthToForcing
 import GaloisForLFunctions.MultiplicativePositivityGeometry.MultiFrequencyCap
@@ -20,8 +21,8 @@ Umbrella for the positive-definite geometry of Euler log-coefficients.
 
 * Boundary: even positive-definite functions on additive groups and the boundary positivity
   theorem; the simple-pole classification; the boundary divisor of ζ; realization by ζ-twists and
-  one-prime factors; completeness and minimality of the four boundary invariants; the calculus of
-  boundary data and the invisibility of the interior.
+  one-prime factors; completeness and minimality of the four boundary invariants; the total zero
+  mass law; the calculus of boundary data and the invisibility of the interior.
 * Interior: the exact Fejér barrier, the two-sided growth-to-forcing law, the multi-frequency
   purchase cap and the de la Vallée Poussin calibration.
 

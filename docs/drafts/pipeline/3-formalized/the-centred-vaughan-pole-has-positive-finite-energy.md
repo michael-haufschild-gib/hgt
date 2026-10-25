@@ -1,10 +1,10 @@
 # The centered Vaughan pole has positive finite energy
 
 - **ID:** the-centred-vaughan-pole-has-positive-finite-energy
-- **Stage:** 2-fully-proven
-- **Type:** CLAIM (Lean verification pending)
-- **Verification:** The seven centered-pole energy and rate-obstruction targets are Lean-verified. The endpoint product-horizon consequence below remains pending its actual Gram-limit chain.
-- **Source:** uniform-vaughan-residual-power-rates-are-fixed-strips.md
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Verification:** All seven energy/rate targets and the actual endpoint product-horizon consequence passed final direct Lean checks and standard-axiom audits.
+- **Source:** ../2-fully-proven/uniform-vaughan-residual-power-rates-are-fixed-strips.md
 - **Statement:** For every `ε≥0`, the centered pole energy has a cutoff-independent limit `L_ε` with `2^(-2ε)/32≤L_ε≤1/4`. Consequently its normalization by `T^(1-2ε)` cannot decay with a larger power exponent.
 - **Novelty status:** Exact positive first-cell refinement of the existing active-pair energy bound. No external novelty claim.
 
@@ -43,10 +43,11 @@ Thus a power rate for the entire residual matrix can have exponent at most
 `1-2ε`. The harmonic contrast's separate exponent-one obstruction still describes
 the convolution block after the pole row is removed.
 
-At half damping the pole entry converges to a positive constant. In the uniform
-endpoint Gram law, the limiting matrix of rows `(A,A,-A,0,P)` therefore has rank
-at least one, as well as the already proved paper upper bound of two. In particular
-the endpoint product-horizon Gram limit is nonzero.
+At half damping the pole entry converges to a positive constant. When both
+cutoffs diverge, the product-horizon Gram tends to the actual matrix of rows
+`(A,A,-A,0,P)`. Its rank is exactly two and its pole diagonal is at least `1/64`;
+in particular this limit is nonzero. Product divergence alone removes the
+harmonic mass; convergence to this particular matrix uses both divergent cutoffs.
 
 ## Positive survivor and status
 
@@ -69,5 +70,11 @@ wired and its scratch removed:
 - `not_pmPronicVaughanCentredGram_pole_faster_power`
 
 The final theorem rules out eventual faster-power bounds, including arbitrary
-moving cutoffs. The original card remains here until the stated nonzero
-endpoint product-horizon Gram consequence is also verified. No route is retired.
+moving cutoffs. The actual endpoint matrix is now formally nonzero, with
+pole entry at least `1/64`, in `TheActualEndpointVaughanGramHasRankTwo.lean`.
+The endpoint convergence theorem
+`tendsto_pmPronicVaughanCentredGram_half_product` in
+`ProductHorizonVaughanGramsAtHalfDampingHaveFiniteLimits.lean` also passed its
+final direct check and standard-axiom audit. Together with
+`pmPronicVaughanHalfLimitGram_ne_zero`, it discharges the stated nonzero-limit
+consequence. All supporting modules are wired. No route is retired.

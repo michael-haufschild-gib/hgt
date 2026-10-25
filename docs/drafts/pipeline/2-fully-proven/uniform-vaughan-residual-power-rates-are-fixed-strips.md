@@ -138,7 +138,7 @@ The pole entry imposes a stronger rate cap on the full matrix: its smooth coeffi
 is zero and its centered energy tends to a strictly positive constant. Hence a full
 matrix power exponent cannot exceed `1-2ε`. The separate exponent-one contrast remains
 useful for the convolution block. The positive finite-energy invariant and its complete
-paper proof are recorded in `the-centred-vaughan-pole-has-positive-finite-energy.md`;
+Lean proof are recorded in `../3-formalized/the-centred-vaughan-pole-has-positive-finite-energy.md`;
 all seven targets passed final direct Lean checks and standard-axiom audits in
 `TheCentredVaughanPoleHasPositiveFiniteEnergy.lean`.
 

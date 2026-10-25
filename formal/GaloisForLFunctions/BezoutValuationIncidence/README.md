@@ -214,6 +214,19 @@ $G_{ij}$; diagonal $D_T$; mixed remainder $R^{\text{mix}}_T$; $E^{\text{int}}_T=
     The [actual infinite Gram](TheActualVaughanLimitGramHasRankTwo.lean) is
     positive semidefinite of rank exactly two for every `ε≥1/2`; its prefix/pole
     submatrix is positive definite, with determinant at least `2^(-4ε)/15552`.
+    At the [endpoint](TheActualEndpointVaughanGramHasRankTwo.lean), this determinant
+    is at least `1/62208`, and the pole diagonal is at least `1/64`.
+    The [endpoint harmonic mass](TheHalfDampingVaughanGramLimitsFormARankThreeRay.lean)
+    determines every finite moving Gram limit. Its ray matrices have rank two
+    at zero mass and three at positive mass; divergence of the fourth diagonal
+    is equivalent to divergence of that scalar mass.
+    [Product horizons](ProductHorizonVaughanGramsAtHalfDampingHaveFiniteLimits.lean)
+    give uniformly bounded entries and trace; harmonic mass vanishes whenever
+    the cutoff product diverges. Both cutoffs diverging gives the actual rank-two limit.
+    [Every nonnegative ray point](EveryNonnegativeEndpointVaughanLimitIsRealized.lean)
+    is attained with all cutoffs and horizons divergent, giving the exact finite
+    joint-limit set. The [harmonic first-crossing theorem](../HTGeometry/VanishingPositiveScalesRealizeHarmonicMasses.lean)
+    realizes every positive mass for any positive scale tending to zero.
     [Dominated moving sums](../HTGeometry/MovingTruncationsPreserveDominatedLimits.lean)
     permit independently divergent horizons under a common summable envelope.
     The [uniform stretched-exponential estimate](UniformStretchedExponentialCancellationInTheVaughanConvolution.lean)

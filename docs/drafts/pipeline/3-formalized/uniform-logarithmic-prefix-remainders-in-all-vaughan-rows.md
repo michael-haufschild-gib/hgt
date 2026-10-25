@@ -3,7 +3,7 @@
 - **ID:** uniform-logarithmic-prefix-remainders-in-all-vaughan-rows
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Source:** ../2-fully-proven/uniform-half-damping-vaughan-harmonic-gram.md
+- **Source:** uniform-half-damping-vaughan-harmonic-gram.md
 - **Verification:** Six targets passed producing and final direct repository checks. Transitive axioms: `propext`, `Classical.choice`, `Quot.sound` only.
 
 For every `0<ε≤1/2` and integer `q≥0`, all five smooth-subtracted Vaughan

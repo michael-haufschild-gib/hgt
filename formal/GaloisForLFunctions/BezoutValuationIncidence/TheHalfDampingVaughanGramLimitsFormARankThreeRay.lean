@@ -18,7 +18,7 @@ def pmPronicVaughanHalfHarmonicMass (U V T : ℕ) : ℝ :=
   (subHalfZetaCoeff (1 / 2) * deningerHarmonicPartial U * deningerHarmonicPartial V) ^ 2 *
     (∑ n ∈ Icc 1 T, 1 / ((n : ℝ) + 1))
 
-/-- The candidate endpoint limit matrix for a prescribed finite harmonic mass. -/
+/-- The endpoint limit matrix for a prescribed finite harmonic mass. -/
 def pmPronicVaughanHalfLimitRay (ℓ : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
   pmPronicVaughanHalfLimitGram +
     Matrix.vecMulVec (fun i => ℓ * pmPronicVaughanSmoothSigns i) pmPronicVaughanSmoothSigns
@@ -34,11 +34,27 @@ theorem pmPronicVaughanHalfLimitGram_large (j : Fin 5) :
     pmPronicVaughanHalfLimitGram 3 j = 0 := by
   simp [pmPronicVaughanHalfLimitGram, pmPronicVaughanLimitGram, pmPronicVaughanLimitFrame]
 
+private theorem vaughanHalfLimitRay_prefix_row (ℓ : ℝ) (j : Fin 5) :
+    pmPronicVaughanHalfLimitRay ℓ 0 j = pmPronicVaughanHalfLimitGram 0 j := by
+  change pmPronicVaughanHalfLimitGram 0 j + (ℓ * 0) * pmPronicVaughanSmoothSigns j = _
+  rw [mul_zero, zero_mul, add_zero]
+
+private theorem vaughanHalfLimitRay_pole_row (ℓ : ℝ) (j : Fin 5) :
+    pmPronicVaughanHalfLimitRay ℓ 4 j = pmPronicVaughanHalfLimitGram 4 j := by
+  change pmPronicVaughanHalfLimitGram 4 j + (ℓ * 0) * pmPronicVaughanSmoothSigns j = _
+  rw [mul_zero, zero_mul, add_zero]
+
+private theorem vaughanHalfLimitRay_large_row (ℓ : ℝ) (j : Fin 5) :
+    pmPronicVaughanHalfLimitRay ℓ 3 j = ℓ * pmPronicVaughanSmoothSigns j := by
+  change pmPronicVaughanHalfLimitGram 3 j + (ℓ * 1) * pmPronicVaughanSmoothSigns j = _
+  rw [pmPronicVaughanHalfLimitGram_large, mul_one, zero_add]
+
 /-- The fourth diagonal of the limit ray reads its scalar parameter exactly. -/
 theorem pmPronicVaughanHalfLimitRay_large_diag (ℓ : ℝ) :
     pmPronicVaughanHalfLimitRay ℓ 3 3 = ℓ := by
-  simp [pmPronicVaughanHalfLimitRay, Matrix.vecMulVec_apply,
-    pmPronicVaughanHalfLimitGram_large, pmPronicVaughanSmoothSigns]
+  rw [vaughanHalfLimitRay_large_row]
+  change ℓ * 1 = ℓ
+  exact mul_one ℓ
 
 /-- A finite harmonic-mass limit gives the corresponding actual endpoint Gram limit. -/
 theorem tendsto_pmPronicVaughanCentredGram_half_of_harmonic_mass
@@ -67,7 +83,7 @@ theorem tendsto_pmPronicVaughanCentredGram_half_large_sub_harmonicMass
     (hU : Tendsto U atTop atTop) (hV : Tendsto V atTop atTop) :
     Tendsto (fun t => pmPronicVaughanCentredGram (1 / 2) (U t) (V t) (H t) 3 3 -
       pmPronicVaughanHalfHarmonicMass (U t) (V t) (H t)) atTop (𝓝 0) := by
-  simpa only [pmPronicVaughanSmoothSigns, Matrix.cons_val_succ, Matrix.cons_val_zero,
+  simpa only [show pmPronicVaughanSmoothSigns 3 = 1 from rfl,
     mul_one, pmPronicVaughanHalfLimitGram_large, pmPronicVaughanHalfHarmonicMass] using
     tendsto_pmPronicVaughanCentredGram_half_sub_harmonic hH hU hV 3 3
 
@@ -169,11 +185,13 @@ theorem rank_pmPronicVaughanHalfLimitRay_of_pos {ℓ : ℝ} (hℓ : 0 < ℓ) :
         pmPronicVaughanHalfLimitRay ℓ 3 4 -
       pmPronicVaughanHalfLimitRay ℓ 0 3 * pmPronicVaughanHalfLimitRay ℓ 4 4 *
         pmPronicVaughanHalfLimitRay ℓ 3 0 = _
-    simp only [pmPronicVaughanHalfLimitRay, Matrix.add_apply, Matrix.vecMulVec_apply,
-      pmPronicVaughanSmoothSigns, mul_zero, zero_mul, mul_one, add_zero,
-      pmPronicVaughanHalfLimitGram_large,
-      pmPronicVaughanHalfLimitGram_symm 0 3, pmPronicVaughanHalfLimitGram_symm 4 3,
-      pmPronicVaughanHalfLimitGram_symm 4 0]
+    simp only [vaughanHalfLimitRay_prefix_row, vaughanHalfLimitRay_pole_row,
+      vaughanHalfLimitRay_large_row,
+      show pmPronicVaughanSmoothSigns 0 = 0 from rfl,
+      show pmPronicVaughanSmoothSigns 3 = 1 from rfl,
+      show pmPronicVaughanSmoothSigns 4 = 0 from rfl,
+      mul_zero, mul_one, sub_zero, add_zero]
+    rw [pmPronicVaughanHalfLimitGram_symm 4 0]
     ring
   have hdet0 : 0 < (Matrix.submatrix (pmPronicVaughanHalfLimitRay ℓ) e e).det := by
     rw [hdet]

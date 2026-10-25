@@ -3,7 +3,7 @@
 - **ID:** uniform-harmonic-vaughan-grams-at-half-damping
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Source:** ../2-fully-proven/uniform-half-damping-vaughan-harmonic-gram.md
+- **Source:** uniform-half-damping-vaughan-harmonic-gram.md
 - **Verification:** Three Gram targets passed corrected producing and final direct repository checks; three packet targets passed their corrected final direct check. All six transitive audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
 
 Put `K_(U,V)=subHalfZetaCoeff(1/2)H_UH_V`, `s=(0,0,-1,1,0)`, and

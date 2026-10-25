@@ -134,8 +134,17 @@ theorem steinbergSymbol_reverse_index {i j k ℓ : n}
 theorem exists_fin4_fourth {i j k : Fin 4}
     (hij : i ≠ j) (hik : i ≠ k) (hjk : j ≠ k) :
     ∃ ℓ : Fin 4, ℓ ≠ i ∧ ℓ ≠ j ∧ ℓ ≠ k := by
-  fin_cases i <;> fin_cases j <;> fin_cases k <;> simp_all
-  all_goals native_decide
+  -- Three indices cannot exhaust a set of cardinality four.
+  by_contra hn
+  have hsub : Finset.univ ⊆ ({i, j, k} : Finset (Fin 4)) := by
+    intro ℓ _
+    by_contra hℓ
+    exact hn ⟨ℓ, by
+      simpa only [Finset.mem_insert, Finset.mem_singleton, not_or] using hℓ⟩
+  have hthree : ({i, j, k} : Finset (Fin 4)).card = 3 := by simp [hij, hik, hjk]
+  have hc := Finset.card_le_card hsub
+  rw [hthree] at hc
+  norm_num at hc
 
 /-- Two distinct indices in `Fin 4` have two mutually distinct complements. -/
 theorem exists_fin4_two_complements {i j : Fin 4} (hij : i ≠ j) :

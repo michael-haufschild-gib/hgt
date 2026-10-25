@@ -463,7 +463,7 @@ At half damping the actual remainder energies and absolute square-root mixed
 pairings have one common summable envelope. Every Gram entry differs from its
 explicit harmonic rank-one term by a uniformly bounded error
 (`UniformHarmonicVaughanGramsAtHalfDamping`); all three targets passed final
-direct checks. Moving-limit and rank specializations remain under verification.
+direct checks. Moving-limit and rank specializations are certified below.
 The three endpoint packet laws are also verified: error at most `C(Σ|w_i|)²`
 after subtracting the harmonic energy, with a common finite energy bound
 when the smooth coefficient vanishes
@@ -511,6 +511,24 @@ All eleven actual infinite-Gram targets are verified for every `ε≥1/2`:
 absolute pairing summability, positive semidefiniteness, a positive-definite
 prefix/pole minor with lower bound `2^(-4ε)/15552`, and exact rank two
 (`TheActualVaughanLimitGramHasRankTwo`).
+The eleven endpoint specializations are verified too: determinant at least
+`1/62208`, pole diagonal at least `1/64`, a nonzero positive semidefinite
+Gram of rank two, and a positive-definite prefix/pole submatrix
+(`TheActualEndpointVaughanGramHasRankTwo`).
+The eleven endpoint harmonic-mass/ray targets are verified: finite Gram
+convergence is equivalent to scalar mass convergence; the fourth diagonal
+diverges exactly when that mass does. The ray matrices have rank two at zero
+mass and three at positive mass
+(`TheHalfDampingVaughanGramLimitsFormARankThreeRay`).
+All six product-horizon targets are verified: harmonic mass vanishes under
+product divergence; entries and trace have uniform finite bounds; both
+divergent cutoffs give the actual nonzero rank-two limit
+(`ProductHorizonVaughanGramsAtHalfDampingHaveFiniteLimits`).
+The generic harmonic first-crossing construction and its actual arithmetic
+specialization passed all seven final checks: every nonnegative mass and ray
+matrix is attained, and the ray is exactly the finite joint-limit set
+(`VanishingPositiveScalesRealizeHarmonicMasses`,
+`EveryNonnegativeEndpointVaughanLimitIsRealized`).
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?

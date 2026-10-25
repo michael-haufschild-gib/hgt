@@ -3,7 +3,7 @@
 - **ID:** moving-truncations-preserve-dominated-limits
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Source:** ../2-fully-proven/uniform-half-damping-vaughan-harmonic-gram.md; vaughan-admission-phase-transition-at-half-damping.md
+- **Source:** uniform-half-damping-vaughan-harmonic-gram.md; vaughan-admission-phase-transition-at-half-damping.md
 - **Verification:** Producing and final direct repository checks passed. Transitive axioms: `propext`, `Classical.choice`, `Quot.sound` only.
 
 Let `f_t(n)` be real sequences with one nonnegative summable envelope

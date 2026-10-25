@@ -121,6 +121,20 @@ theorem zero_mem_pmPronicVaughanTailPowerRates {ε : ℝ} (hε : 0 < ε) :
     (le_div_iff₀ (Real.rpow_pos_of_pos hn0 ε)).mpr (by simpa only [mul_comm] using h)
   simpa only [sub_zero, Real.rpow_neg hn0.le, div_eq_mul_inv] using hdiv
 
+/-- When the zero-free width vanishes, the only nonnegative tail rate is zero. -/
+theorem pmPronicVaughanTailPowerRates_eq_singleton_zero_of_abscissa_eq_one
+    {ε : ℝ} (hε : 0 < ε) (hΘ : zetaZeroAbscissa = 1) :
+    pmPronicVaughanTailPowerRates ε = {0} := by
+  ext η
+  change η ∈ pmPronicVaughanTailPowerRates ε ↔ η = 0
+  constructor
+  · intro hη
+    have hu := pmPronicVaughanTailPowerRates_le hε.le hη
+    rw [hΘ, sub_self] at hu
+    exact le_antisymm hu hη.1
+  · rintro rfl
+    exact zero_mem_pmPronicVaughanTailPowerRates hε
+
 /-- The supremum of the nonnegative powers saved by the actual reciprocal tail. -/
 def pmPronicVaughanTailDecayIndex (ε : ℝ) : ℝ := sSup (pmPronicVaughanTailPowerRates ε)
 
@@ -343,22 +357,24 @@ def pmPronicVaughanHorizonEnergyPowerRates (ε : ℝ) : Set ℝ :=
     pmPronicVaughanCentredGram ε n n (n ^ 2) 3 3 / ((n ^ 2 : ℕ) : ℝ) ^ (1 - 2 * ε) ≤
       C * ((n ^ 2 : ℕ) : ℝ) ^ (-γ)}
 
+private theorem vaughan_square_horizon_rpow (n : ℕ) (γ : ℝ) :
+    ((n ^ 2 : ℕ) : ℝ) ^ (-γ) = (n : ℝ) ^ (-(2 * γ)) := by
+  rw [Nat.cast_pow, ← Real.rpow_natCast, ← Real.rpow_mul (Nat.cast_nonneg n)]
+  congr 1
+  push_cast
+  ring
+
 /-- A square-horizon exponent is exactly half the corresponding cutoff exponent. -/
 theorem mem_pmPronicVaughanHorizonEnergyPowerRates_iff {ε γ : ℝ} :
     γ ∈ pmPronicVaughanHorizonEnergyPowerRates ε ↔
       2 * γ ∈ pmPronicVaughanSquareEnergyPowerRates ε := by
-  have hpow (n : ℕ) : ((n ^ 2 : ℕ) : ℝ) ^ (-γ) = (n : ℝ) ^ (-(2 * γ)) := by
-    rw [Nat.cast_pow, ← Real.rpow_natCast, ← Real.rpow_mul (Nat.cast_nonneg n)]
-    congr 1
-    push_cast
-    ring
   constructor
   · rintro ⟨hγ0, hγ2, C, hC, hE⟩
     exact ⟨by linarith only [hγ0], by linarith only [hγ2], C, hC,
-      fun n hn => by simpa only [hpow] using hE n hn⟩
+      fun n hn => by simpa only [vaughan_square_horizon_rpow] using hE n hn⟩
   · rintro ⟨hγ0, hγ2, C, hC, hE⟩
     exact ⟨by linarith only [hγ0], by linarith only [hγ2], C, hC,
-      fun n hn => by simpa only [hpow] using hE n hn⟩
+      fun n hn => by simpa only [vaughan_square_horizon_rpow] using hE n hn⟩
 
 /-- The supremum of the empty-leg powers saved in the horizon variable. -/
 def pmPronicVaughanHorizonEnergyDecayIndex (ε : ℝ) : ℝ :=
@@ -416,6 +432,53 @@ theorem pmPronicVaughanHorizonEnergyPowerRates_independent {ε κ : ℝ}
     mem_pmPronicVaughanHorizonEnergyPowerRates_iff,
     pmPronicVaughanSquareEnergyPowerRates_independent hε hκ]
 
+/-- The tail-rate set contains exactly all nonnegative exponents admitting the actual bound. -/
+theorem mem_pmPronicVaughanTailPowerRates_iff_bound {ε η : ℝ} (hε : 0 < ε) :
+    η ∈ pmPronicVaughanTailPowerRates ε ↔
+      0 ≤ η ∧ ∃ K : ℝ, 0 ≤ K ∧ ∀ n : ℕ, 1 ≤ n →
+        |pmPronicVaughanReciprocalTail ε n| ≤ K * (n : ℝ) ^ (-ε - η) := by
+  constructor
+  · rintro ⟨hη0, _hη1, hF⟩
+    exact ⟨hη0, hF⟩
+  · rintro ⟨hη0, hF⟩
+    have hhalf : η ≤ 1 / 2 := by
+      by_contra h
+      exact not_exists_vaughan_tail_power_gt_half hε.le (lt_of_not_ge h) hF
+    exact ⟨hη0, hhalf.trans_lt (by norm_num), hF⟩
+
+/-- The square-energy rate set imposes no restriction beyond nonnegativity and the actual bound. -/
+theorem mem_pmPronicVaughanSquareEnergyPowerRates_iff_bound {ε δ : ℝ} (hε : 0 < ε) :
+    δ ∈ pmPronicVaughanSquareEnergyPowerRates ε ↔
+      0 ≤ δ ∧ ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, 1 ≤ n →
+        pmPronicVaughanCentredGram ε n n (n ^ 2) 3 3 / ((n ^ 2 : ℕ) : ℝ) ^ (1 - 2 * ε) ≤
+          C * (n : ℝ) ^ (-δ) := by
+  constructor
+  · rintro ⟨hδ0, _hδ4, hE⟩
+    exact ⟨hδ0, hE⟩
+  · rintro ⟨hδ0, hE⟩
+    have htwo : δ ≤ 2 := by
+      by_contra h
+      exact not_exists_vaughan_square_energy_power_gt_two hε (lt_of_not_ge h) hE
+    exact ⟨hδ0, htwo.trans_lt (by norm_num), hE⟩
+
+/-- The horizon-energy rate set likewise equals the unrestricted set of nonnegative actual rates. -/
+theorem mem_pmPronicVaughanHorizonEnergyPowerRates_iff_bound {ε γ : ℝ} (hε : 0 < ε) :
+    γ ∈ pmPronicVaughanHorizonEnergyPowerRates ε ↔
+      0 ≤ γ ∧ ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, 1 ≤ n →
+        pmPronicVaughanCentredGram ε n n (n ^ 2) 3 3 / ((n ^ 2 : ℕ) : ℝ) ^ (1 - 2 * ε) ≤
+          C * ((n ^ 2 : ℕ) : ℝ) ^ (-γ) := by
+  constructor
+  · rintro ⟨hγ0, _hγ2, hE⟩
+    exact ⟨hγ0, hE⟩
+  · rintro ⟨hγ0, C, hC, hE⟩
+    apply mem_pmPronicVaughanHorizonEnergyPowerRates_iff.mpr
+    apply (mem_pmPronicVaughanSquareEnergyPowerRates_iff_bound hε).mpr
+    refine ⟨by linarith only [hγ0], C, hC, fun n hn => ?_⟩
+    simpa only [vaughan_square_horizon_rpow] using hE n hn
+
+#print axioms mem_pmPronicVaughanTailPowerRates_iff_bound
+#print axioms mem_pmPronicVaughanSquareEnergyPowerRates_iff_bound
+#print axioms mem_pmPronicVaughanHorizonEnergyPowerRates_iff_bound
 #print axioms mem_pmPronicVaughanTailPowerRates_iff_moebius_power
 #print axioms pmPronicVaughanTailPowerRates_independent
 #print axioms pmPronicVaughanSquareEnergyPowerRates_independent
@@ -429,6 +492,7 @@ theorem pmPronicVaughanHorizonEnergyPowerRates_independent {ε κ : ℝ}
 #print axioms riemannHypothesis_iff_all_strict_vaughan_tail_powers
 #print axioms riemannHypothesis_iff_all_strict_vaughan_square_energy_powers
 #print axioms zero_mem_pmPronicVaughanTailPowerRates
+#print axioms pmPronicVaughanTailPowerRates_eq_singleton_zero_of_abscissa_eq_one
 #print axioms pmPronicVaughanTailDecayIndex_eq
 #print axioms pmPronicVaughanTailDecayIndex_independent
 #print axioms mem_pmPronicVaughanSquareEnergyPowerRates_iff

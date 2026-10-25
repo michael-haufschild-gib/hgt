@@ -90,8 +90,8 @@ every `ε>0`, so this upper-half limiting Gram has rank exactly two.
 
 Above half damping there is a single joint limit of rank two. The row and Gram
 limits, coefficient Wiener convergence, and rank assertion are all Lean-verified
-below. At half damping, the additional harmonic-mass ray is a separate obligation
-on the endpoint card; it is not needed for this upper-half uniqueness theorem.
+below. At half damping, the additional harmonic-mass ray and every-mass realization
+are certified on `uniform-half-damping-vaughan-harmonic-gram.md`.
 These results introduce no below-half admission estimate.
 
 ## Corpus and novelty audit

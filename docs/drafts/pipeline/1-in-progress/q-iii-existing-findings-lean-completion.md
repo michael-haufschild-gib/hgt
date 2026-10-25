@@ -53,7 +53,7 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Finite actual hull magnitudes and half-plane approximation | Draft scratch after operator order and generic eigenvector theorem |
 | Tied-torus and augmentation character limits | Draft scratch; refactor existing owner after verification |
 | Conjugation of actual source pairings, annihilator and hull | Final canonical audit `78866` passed with standard axioms; card moved to `3-formalized` |
-| Interior Wiener jets, mixed interpolation and paid quotient lower bounds | Base scratch, then full application and canonical checks |
+| Interior Wiener jets, mixed interpolation and paid quotient lower bounds | Base canonical checks passed; full mixed scratch retry has one repaired derivative-rewrite mismatch awaiting recheck |
 | Vanishing Gram steps, intermediate kernels, singleton/continuum alternative | Final canonical audit `79971` passed with standard axioms; card moved to `3-formalized` |
 
 The square-root translation card is now in `3-formalized`, including its
@@ -113,6 +113,28 @@ unchanged checks. All required leaves are wired into their programme umbrellas.
 | Actual contracted horizons, admitted self-similarity and mixed limits | `13848` | `45241` passed |
 | Principal ideal quotients localize character hulls | `76726` | `71040` passed |
 | Actual cofactor annihilators and hull inclusions | `61116` | `29837` passed |
+| Full contracted-module embedding, Wiener intertwining and exact annihilator | `33454` | `78435` passed |
+| Interior Wiener jet linearity, analytic order calculus and point-mass evaluation | `84720` | `28902` passed |
+| Extracted finite-prime torus approximation and preserved half-plane unit theorem | `5652` | Updated owner `46690` passed |
+
+The full mixed-jet third check completed without errors, with all fourteen
+standard-axiom reports in `/tmp/qiii-visible-mixed-jet-index-third.log`.
+Its terminal session handle was lost at compaction; canonical exit statuses
+remain to be recorded for each installed leaf. No overlapping Lean process
+was started. The tied-torus owner helper is extracted and reused by its old
+torus-bound proof; the new tied-torus/augmentation leaf is installed and wired.
+The changed owner's required olean passed in session `46690`, with three
+standard-axiom reports in `/tmp/qiii-tied-torus-owner-required-olean.log`.
+Its final source-only check `5652` passed, with three standard-axiom reports
+in `/tmp/qiii-tied-torus-owner-canonical-final.log`.
+The new tied-torus leaf is now generating its required olean for the written
+finite-hull application; output `/tmp/qiii-tied-torus-limits-required-olean.log`.
+All six mixed-jet application sources are installed and umbrella-wired;
+canonical import-boundary checks are the remaining jet gate.
+The six completed first-five contraction staging fragments and the completed
+torus-prime helper fragment were removed. Their checked canonical sources
+and audit logs are authoritative; remaining contraction and torus leaves
+still retain their full combined scratches.
 
 Recent final output files:
 `/tmp/qiii-augmentation-canonical-final.log`,
@@ -204,8 +226,54 @@ embedding passed required olean `78435` with standard axioms; output
 `/tmp/qiii-contracted-module-required-olean.log`. Its final canonical source
 check remains due. The tied-torus combined scratch is checking next so its
 verified helper extraction can proceed while later contraction sources check.
-All Lean invocations remain sequential; output
+All Lean invocations remain sequential. Tied-torus scratch `56537` passed
+the prime helper and simultaneous vertical convergence with standard axioms,
+then failed at a positive-natural coercion in the augmentation rewrite.
+The proof now ascribes the zero coordinate as an equality at the natural
+index before rewriting. Combined scratch and both relevant staging parts
+are synchronized; the retry is still due. First output:
 `/tmp/qiii-tied-torus-character-limits-first.log`.
+Base interior-jet first check `95750` found two local issues: simplifying
+`algebraMap ℂ ℂ`, and applying the constant-multiple iterated-derivative
+identity to the order and evaluation point. Analytic product/power orders
+and point-mass evaluation passed their standard-axiom audits. Both repairs
+are now applied: `Algebra.algebraMap_self_apply` and pointwise application
+of the derivative identity at order `n`. The base check and body agree;
+a retry remains due. Output `/tmp/qiii-wiener-jet-evaluation-first.log`.
+The same scalar-map simplification is explicit in the unverified masked
+and mixed interpolation drafts, including their full combined scratch.
+Their non-obvious mask and triangular-system steps now have mathematical
+comments. No theorem statements changed.
+The contracted-module final source check `33454` passed with standard axioms
+after required olean `78435`; output
+`/tmp/qiii-contracted-module-canonical-final.log`.
+The repaired base-jet scratch passed in session `66409` with standard axioms;
+output `/tmp/qiii-wiener-jet-evaluation-retry.log`. It was copied directly to
+`ArithmeticOrientationTheory/InteriorWienerJets` and umbrella-wired. Its
+required olean passed in session `28902` with standard axioms; output
+`/tmp/qiii-interior-wiener-jets-required-olean.log`.
+Full mixed-jet first check `63605` passed character separation, the complete
+closed-half-plane point count and the jet-avoiding mask with standard axioms.
+It found local issues in the dyadic cast and field-notation syntax, rewriting
+the local function `Q`, `Fin.isLt` projections, and the scalar instance on
+the ideal quotient. The combined source and three affected staging modules
+now use the explicit dyadic cast normalization, a named analytic witness,
+`dsimp only [Q]`, `Fin.isLt`, and an explicitly typed ideal-quotient linear
+map. No statements changed; the retry remains due.
+Output `/tmp/qiii-visible-mixed-jet-index-first.log`. The base jet final
+canonical source check `84720` passed with standard axioms; output
+`/tmp/qiii-interior-wiener-jets-canonical-final.log`. Its completed scratch
+and staging body were removed. Full mixed-jet retry `2696` resolved all
+previous errors except rewriting the derivative of the negated identity.
+The local parameter now has an explicitly typed derivative witness with
+`Pi.neg_apply` and `id_eq` normalization, synchronized in its staging module.
+That third check is still due; output of the second check is
+`/tmp/qiii-visible-mixed-jet-index-retry.log`.
+The repaired tied-torus scratch passed all four audits with standard axioms
+in session `65079`; output `/tmp/qiii-tied-torus-character-limits-retry.log`.
+Its helper extraction and new canonical leaf can now be installed, followed
+by their required oleans and final source checks. The full mixed-jet scratch
+is in its third check; output `/tmp/qiii-visible-mixed-jet-index-third.log`.
 Successful output: `/tmp/qiii-contracted-horizons-third-retry.log`.
 The failed drafts `84380`, `26409`, `7091` were repaired by explicit finite-sum
 cancellation, casts, principal-ideal coercions, and a named complete-block
@@ -351,8 +419,9 @@ owner, add its umbrella import directly, and run the canonical check directly.
   mathematical comments and closed sections. Their proofs still match the
   unverified combined scratch. Required oleans will be point separation,
   finite jets, mixed interpolation and mixed index; interior-only index and
-  unit-orbit index are terminal source-only leaves. The base jets are also a
-  required dependency. No jet source has yet passed its first check.
+  unit-orbit index are terminal source-only leaves. The base jets passed
+  scratch retry `66409`, required canonical olean `28902`, and final
+  source-only check `84720`. The repaired full mixed application is checking again.
 - The actual kernel-family canonical application is complete, together with
   all three dependencies; its redundant scratch check was removed.
 - Seventeen completed boundary staging/check files were removed after all

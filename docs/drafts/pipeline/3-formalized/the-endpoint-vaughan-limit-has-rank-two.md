@@ -1,9 +1,9 @@
 # The endpoint Vaughan limit has rank two
 
 - **ID:** the-endpoint-vaughan-limit-has-rank-two
-- **Stage:** 2-fully-proven
-- **Type:** CLAIM (Lean verification pending)
-- **Verification:** The twelve finite targets and eleven shared infinite-Gram targets are Lean-verified, including exact rank two for every `ε≥1/2`. The eleven explicit endpoint specializations remain under direct verification.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Verification:** COMPLETE. All 34 finite, shared infinite-Gram, and endpoint targets passed final direct Lean checks and standard-axiom audits. All three modules are wired.
 - **Source:** uniform-half-damping-vaughan-harmonic-gram.md
 - **Statement:** At every positive damping, the first two cells of the actual centered Möbius row and centered pole row have determinant at least `2^(-2ε)/36`. Consequently the endpoint limiting Gram has rank exactly two.
 - **Novelty status:** Corpus search found general prefix observability and Gram laws, but no matching two-row independence theorem. The arithmetic determinant specialization is new within this audit; no external novelty claim.
@@ -105,7 +105,7 @@ producing and final direct checks with standard axioms only. The module is wired
 and its scratch removed. Its exact declarations are listed on
 `../3-formalized/vaughan-admission-phase-transition-at-half-damping.md`.
 
-`TheActualEndpointVaughanGramHasRankTwo.lean` drafts eleven infinite-limit
+`TheActualEndpointVaughanGramHasRankTwo.lean` proves eleven infinite-limit
 consequences, including absolute-series pair limits, symmetry, positivity of
 every quadratic form, the exact two-outer-product representation, and rank at
 most two. Passing the finite arithmetic minor bound to the limit gives
@@ -116,10 +116,21 @@ the checked eleven-target module `TheActualVaughanLimitGramHasRankTwo.lean`.
 It derives summability
 from the actual endpoint and upper-half limits, and proves the same exact
 rank and quantitative minor for every `ε≥1/2`. No analytic summability
-premise is left to assume. The endpoint's explicit numerical specializations
-remain under verification.
+premise is left to assume. All eleven endpoint targets passed producing and
+final direct checks with only `propext`, `Classical.choice`, and `Quot.sound`.
+The module is wired and its scratch removed:
 
-The shared positive-definiteness claim is certified as
-`pmPronicVaughanLimitGram_prefix_pole_posDef`. Its explicit endpoint
-specialization `pmPronicVaughanHalfLimitGram_prefix_pole_posDef` is among the
-eleven endpoint targets still being checked.
+- `tendsto_sum_pmPronicVaughanHalfLimitGram_terms`
+- `pmPronicVaughanHalfLimitGram_symm`
+- `sum_sum_mul_pmPronicVaughanHalfLimitGram_nonneg`
+- `pmPronicVaughanHalfLimitGram_eq_two_outer_products`
+- `rank_pmPronicVaughanHalfLimitGram_le_two`
+- `pmPronicVaughanHalfLimitGram_prefix_pole_minor_lower`
+- `pmPronicVaughanHalfLimitGram_pole_lower`
+- `pmPronicVaughanHalfLimitGram_ne_zero`
+- `pmPronicVaughanHalfLimitGram_posSemidef`
+- `pmPronicVaughanHalfLimitGram_prefix_pole_posDef`
+- `rank_pmPronicVaughanHalfLimitGram`
+
+The shared and explicit endpoint positive-definiteness claims are therefore
+both certified. This completes the finite and infinite rank statements on this card.

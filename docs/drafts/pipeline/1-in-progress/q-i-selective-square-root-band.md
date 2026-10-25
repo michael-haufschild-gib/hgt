@@ -244,9 +244,9 @@ also records this exact vanishing, keeping the two limiting regimes distinct.
 The dependency-closed structural result and exact restricted no-go are tracked separately in
 `../3-formalized/vaughan-pole-mass-and-fixed-cutoff-gram.md`. This Q-I card remains in progress.
 
-### Stronger conjecture: uniform leading Gram law
+### Uniform leading Gram law
 
-[PROVED HERE on paper; Lean draft started] Absolute convergence gives a uniform extension of
+[LEAN-VERIFIED] Absolute convergence gives a uniform extension of
 the leading matrix approximation: `G_ij(T;U,V)/T-c_i(U,V)c_j(U,V)→0` uniformly over both
 cutoffs. For a coefficient family dominated by `b(d)` with `Σ b(d)/d<∞`, the floor-mean
 error is uniformly bounded by
@@ -258,7 +258,7 @@ bound for all Gram entries.
 At square-root cutoffs a simpler proof may suffice: the both-large piece vanishes exactly,
 the two small legs differ from the full Möbius floor prefix by at most
 `n Σ_(d>N)d^(-1-ε)`, and the five-piece identity determines the small-small leg.
-This predicts `G(N²;N,N)/N²→ρ² vvᵀ`, `v=(1,1,-1,0,-1)`, and diagonal density `4ρ²`.
+The checked specialization gives `G(N²;N,N)/N²→ρ² vvᵀ`, `v=(1,1,-1,0,-1)`, and diagonal density `4ρ²`.
 It is a further leading-order classification, not a residual saving. The dependency-closed proof
 and internal novelty audit are in `../3-formalized/uniform-vaughan-gram-leading-term.md`.
 No external novelty is claimed for this specialization of uniform dominated convergence.
@@ -337,10 +337,11 @@ The classification across half damping is checked in
 three at half damping for positive cutoffs and four above it for every cutoff
 pair, with one uniform upper-half centered-component bound. All twenty
 admission targets passed final direct checks and standard-axiom audits.
-The parent phase card's joint Gram limit and rank consequences remain pending.
+The parent phase card's joint Gram limit, coefficient Wiener convergence, and
+exact rank-two consequences are also Lean-verified.
 The coefficient-space, unique-coordinate, and quotient-dimension corollaries are fully
 checked in `TheAdmittedVaughanCoefficientSpace.lean`, with ten standard-axiom reports.
-The product-horizon paper result has a stronger uniform extension in
+The product-horizon result has a Lean-verified uniform extension in
 `../3-formalized/uniform-product-horizon-vaughan-second-scale.md`: only the product
 must diverge. Uniform mean-zero estimates for all truncated Möbius patterns pay the
 two small centered legs at the trivial scale. The ten uniform-pattern, energy, and exact
@@ -403,30 +404,38 @@ The endpoint bounded-error and packet laws are Lean-verified in
 `../3-formalized/uniform-harmonic-vaughan-grams-at-half-damping.md`: subtracting
 the explicit harmonic rank-one term leaves one bounded matrix error for all
 cutoffs and horizons. The parent card
-`../2-fully-proven/uniform-half-damping-vaughan-harmonic-gram.md` now also has
+`../3-formalized/uniform-half-damping-vaughan-harmonic-gram.md` now also has
 the six checked targets in `UniformHalfDampingVaughanGramsHaveAnActualLimit.lean`:
 actual limiting-pairing summability, full pronic convergence, and the renormalized
 moving limit of rows `(A,A,-A,0,P)` at independently divergent horizons.
-Exact rank two, vanishing product-horizon harmonic mass, and the uniform endpoint
-trace bound remain under Lean verification. No fixed strip below half damping
-is supplied by these endpoint laws.
+Exact rank two and the eleven harmonic-mass/ray targets are also Lean-verified:
+finite Gram convergence is equivalent to harmonic-mass convergence, and ray
+matrices have rank two at zero mass and three at positive mass. All six
+product-horizon targets are Lean-verified too: scalar mass vanishes whenever
+the product diverges, entries and trace have uniform bounds, and both divergent
+cutoffs give the actual nonzero matrix limit. The generic first-crossing
+argument and actual arithmetic realization also passed all seven final checks
+and standard-axiom audits: every nonnegative ray point occurs, and the ray is
+exactly the finite joint-limit set. No fixed strip below half damping is supplied.
 
 The pole's positive finite energy is Lean-verified in
-`../2-fully-proven/the-centred-vaughan-pole-has-positive-finite-energy.md`.
+`../3-formalized/the-centred-vaughan-pole-has-positive-finite-energy.md`.
 For every `ε≥0`, its limit lies between `2^(-2ε)/32` and `1/4`, independently of
 moving cutoffs. The full normalized residual matrix therefore cannot decay with
 power exponent greater than `1-2ε`, even for eventual bounds and arbitrary moving
 cutoffs. All seven targets passed final direct checks and standard-axiom audits.
-The card's nonzero endpoint product-horizon Gram consequence remains pending
-its separate actual-limit chain.
+The card's nonzero endpoint product-horizon Gram consequence also passed its
+complete actual-limit chain; the card is now in stage 3.
 
 The finite two-cell refinement is Lean-verified in
-`../2-fully-proven/the-endpoint-vaughan-limit-has-rank-two.md`: finite Euler factors
+`../3-formalized/the-endpoint-vaughan-limit-has-rank-two.md`: finite Euler factors
 at primes two and three give an explicit positive determinant for the actual prefix
 and pole rows. All twelve finite targets passed final direct checks and
 standard-axiom audits, including linear independence and exact dimension two
-of the five-row span. The actual infinite Gram's endpoint determinant bound
-`1/62208`, positive definiteness, and exact rank two remain under verification.
+of the five-row span. The eleven shared infinite-Gram targets and eleven endpoint
+specializations also passed final direct checks and standard-axiom audits.
+The actual endpoint Gram has determinant bound `1/62208` on its positive-definite
+prefix/pole submatrix, pole entry at least `1/64`, and rank exactly two.
 The two moving-cell targets are also Lean-verified in
 `MovingVaughanRowsConvergeCellByCell.lean`: at every positive damping, both
 centered and smooth-subtracted rows tend cellwise to `(A,A,-A,0,P)` when both
@@ -441,8 +450,10 @@ damping; the normalized square empty-leg energy has index `4(1-Θ)` in `N`, or
 Abel inversion, and the read Littlewood and absolute-Mertens-moment exponent laws.
 The compact-interval power-increment bound removes the earlier restriction `ε≤1`
 on paper; its five Lean targets remain unverified. The full rate sets, including
-endpoint attainment, are independent of positive damping. Twenty-six Lean targets
+endpoint attainment, are independent of positive damping. Thirty Lean targets
 for the indices, exact rate sets, and horizon formulations are drafted, uncompiled.
+They include three explicit equivalences with the unrestricted nonnegative
+rate sets appearing in the paper statements and the stated zero-width singleton classification.
 These identities supply no positive lower bound for the width.
 
 ## Checked uniform undamped convolution rate
@@ -558,8 +569,8 @@ determinant lower bound. The complete phase card is
 The five zero-cutoff scalar targets and fifteen coefficient-space targets
 also passed final direct checks with standard axioms only; both modules are
 wired and the complete zero-cutoff card is in stage 3.
-The remaining endpoint and power-rate consequences
-remain under verification. All fifteen existing paper
+The complete half-damping endpoint classification is also verified. Remaining
+power-rate consequences are under verification. All fifteen existing paper
 cards and their remaining Lean coverage are listed in
 `q-i-existing-findings-lean-completion.md`; completing that register has priority
 over new conjecture work. Paper arguments and unchecked drafts remain unproved.

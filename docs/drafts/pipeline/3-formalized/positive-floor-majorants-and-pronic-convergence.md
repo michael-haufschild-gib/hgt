@@ -3,7 +3,7 @@
 - **ID:** positive-floor-majorants-and-pronic-convergence
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Source:** ../2-fully-proven/uniform-half-damping-vaughan-harmonic-gram.md; vaughan-admission-phase-transition-at-half-damping.md
+- **Source:** uniform-half-damping-vaughan-harmonic-gram.md; vaughan-admission-phase-transition-at-half-damping.md
 - **Verification:** Five targets passed corrected producing and final direct repository checks. Transitive axioms: `propext`, `Classical.choice`, `Quot.sound` only.
 
 Write `A_a(n)` for the centered floor prefix with reciprocal mean `Σ a(d)/d`.

@@ -54,8 +54,9 @@ must account for zero intermediate diagonal values.
 - [x] Audit and formalize the uniform mixed last-fibre error.
 - [x] Actual cofinal subsequence construction with horizon shift by one.
 - [x] Admitted branch from full pairing convergence.
+- [x] Principal quotient ideal, full Wiener intertwining and hull inclusions.
 - [ ] Exact zero-dilation branch.
-- [ ] Composition, hull and module consequences.
+- [ ] Composition, closed range and exact index loss.
 
 ## Module and hull consequences to formalize
 
@@ -87,9 +88,12 @@ canonical import boundaries are being audited.
 
 The complete combined proof passed direct Lean check `12682`; all 23 printed
 targets have only standard axioms. Eleven canonical sources are installed
-and umbrella-wired. Their separate source checks and required dependency
-oleans remain in [the completion ledger](q-iii-existing-findings-lean-completion.md).
-The card stays open until those canonical checks pass.
+and umbrella-wired. The incomplete fibre, actual contracted subsequence,
+principal-ideal hull helper, actual cofactor ideal and full Wiener-module
+embedding passed separate canonical checks with standard axioms. Composition,
+numeric operator order, closed range, index loss and rank-one invariance still
+need their canonical checks, tracked in
+[the completion ledger](q-iii-existing-findings-lean-completion.md).
 
 `IncompleteDilationFibresHaveBoundedPairingCost` contains the exact terminal
 fibre and its mixed bound. `ContractingHorizonsProducesActualCofactorLimits`

@@ -22,7 +22,7 @@ theorem pmPronicVaughanPiece_smallSmall_one_of_le (ε : ℝ) {V n : ℕ}
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp [pmPronicVaughanPiece]
   have h0 : pmPronicVaughanPiece ε 1 V n 0 = n := by
-    simp [pmPronicVaughanPiece, min_eq_left hn, pmPronicFloorWeight]
+    simp [pmPronicVaughanPiece, min_eq_left (by omega : 1 ≤ n), pmPronicFloorWeight]
   have h3 : pmPronicVaughanPiece ε 1 V n 3 = 0 :=
     pmPronicVaughanPiece_large_eq_zero_of_cover ε (by omega)
   have h14 : pmPronicVaughanPiece ε 1 V n 1 +
@@ -101,9 +101,11 @@ theorem pmPronicVaughanResidualGramError_harmonic_identity {ε : ℝ}
       (pmPowerDampedDivisorDensity ε).re *
         (subHalfZetaCoeff ε * (∑ b ∈ Icc 1 T, (moebius b : ℝ) / b)) ^ 2 /
           (1 - 2 * ε) := by
+  have hone : (∑ a ∈ Icc 1 1, (moebius a : ℝ) / a) = (1 : ℝ) := by norm_num
   simp only [pmPronicVaughanResidualGramError,
-    pmPronicVaughanCentredGram_one_cross_eq hε]
-  norm_num [pmPronicVaughanSmoothSigns, Fin.ext_iff]
+    pmPronicVaughanCentredGram_one_cross_eq hε, hone, mul_one,
+    show pmPronicVaughanSmoothSigns 2 = -1 from rfl,
+    show pmPronicVaughanSmoothSigns 3 = 1 from rfl]
   ring
 
 /-- The harmonic invariant is strictly positive at every positive horizon below half damping. -/
@@ -136,8 +138,7 @@ theorem frequent_pmPronicVaughanResidualGramError_harmonic_floor {ε : ℝ}
   have h := mul_le_mul_of_nonneg_left hfloorT hk.le
   rw [deningerHarmonicPartial_eq_sum_Icc] at h
   rw [pmPronicVaughanResidualGramError_harmonic_identity hε]
-  dsimp only [k] at h
-  convert h using 1 <;> ring
+  exact h.trans_eq (by dsimp only [k]; ring)
 
 /-- The residual contrast cannot be little-o of the reciprocal horizon. -/
 theorem not_tendsto_nat_mul_pmPronicVaughanResidualGramError_contrast_zero {ε : ℝ}
@@ -247,7 +248,7 @@ theorem not_both_pmPronicVaughanResidualGramErrors_power_gt_one
     rw [Real.norm_eq_abs, abs_mul, abs_of_pos hT0]
     refine (mul_le_mul_of_nonneg_left hT hT0.le).trans_eq ?_
     rw [Real.rpow_sub hT0, Real.rpow_one]
-    field_simp [hT0.ne', (Real.rpow_pos_of_pos hT0 δ).ne'] <;> ring
+    field_simp [hT0.ne', (Real.rpow_pos_of_pos hT0 δ).ne']
   exact not_both_pmPronicVaughanResidualGramErrors_reciprocal_little_o hε hε2
     ⟨hzero 2 3 (hbound.mono fun _ h => h.1), hzero 2 2 (hbound.mono fun _ h => h.2)⟩
 
