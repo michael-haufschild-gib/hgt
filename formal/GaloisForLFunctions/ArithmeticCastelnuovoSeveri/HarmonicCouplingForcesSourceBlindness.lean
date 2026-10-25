@@ -148,11 +148,11 @@ def fejerProfile2 : ℕ → ℝ
   | _ => 0
 
 theorem fejerProfile2_nonneg (j : ℕ) : 0 ≤ fejerProfile2 j := by
-  match j with
-  | 0 => norm_num [fejerProfile2]
-  | 1 => norm_num [fejerProfile2]
-  | 2 => norm_num [fejerProfile2]
-  | _ + 3 => norm_num [fejerProfile2]
+  rcases j with _ | _ | _ | j
+  · exact zero_le_one
+  · exact zero_le_two
+  · exact zero_le_one
+  · exact le_rfl
 
 theorem fejerAutoCoeff_two_zero : fejerAutoCoeff 2 fejerProfile2 0 = 6 := by
   simp only [fejerAutoCoeff, natDist, fejerProfile2, Finset.sum_filter, Finset.sum_product,
@@ -181,7 +181,7 @@ theorem fejerAutoCoeff_two_const_lt_first :
 theorem cosinePolynomial_purchase_ratio_lt_two {a : ℕ → ℝ} {K : ℕ} (hK : 1 ≤ K)
     (hP : ∀ θ : ℝ, 0 ≤ HTGeometry.cosinePolynomial a K θ) (ha0 : 0 < a 0) :
     a 1 < 2 * a 0 := by
-  have h2pi : (0 : ℝ) < 2 * Real.pi := Real.two_pi_pos
+  have h2pi : (0 : ℝ) < 2 * Real.pi := mul_pos zero_lt_two Real.pi_pos
   have hex_pos : ∃ c ∈ Ioo (0 : ℝ) (2 * Real.pi), 0 < HTGeometry.cosinePolynomial a K c := by
     by_contra hall
     push Not at hall
@@ -209,7 +209,7 @@ theorem cosinePolynomial_purchase_ratio_lt_two {a : ℕ → ℝ} {K : ℕ} (hK :
       rw [Real.cos_two_mul, ← Real.sin_sq_add_cos_sq (c / 2)]
       ring
     rw [hcos_eq]
-    positivity
+    exact mul_pos zero_lt_two (pow_pos hsin 2)
   let g : ℝ → ℝ := fun θ => (1 - Real.cos θ) * HTGeometry.cosinePolynomial a K θ
   have hgc : Continuous g :=
     (continuous_const.sub Real.continuous_cos).mul (HTGeometry.continuous_cosinePolynomial a K)
@@ -333,12 +333,12 @@ theorem harmonicCoupledKernel_apply (M : ℕ) (c : ℕ → ℝ) (ω : ℝ) (f : 
 theorem harmonicCoupledKernel_hasCompactSupport (M : ℕ) (c : ℕ → ℝ) (ω : ℝ)
     {f : ℝ → ℝ} (hfc : HasCompactSupport f) :
     HasCompactSupport (harmonicCoupledKernel M c ω f) := by
-  unfold harmonicCoupledKernel
-  refine HasCompactSupport.finset_sum _ fun m _ => ?_
-  have hp := modCx_hasCompactSupport (s := (m : ℝ) * ω) hfc
-  have hm := modCx_hasCompactSupport (s := -((m : ℝ) * ω)) hfc
-  exact ((EF.weilTest_hasCompactSupport hp hp).add
-    (EF.weilTest_hasCompactSupport hm hm)).smul_left
+  have heq : harmonicCoupledKernel M c ω f =
+      fun u => (HTGeometry.cosinePolynomial c M (ω * u) : ℂ) * EF.weilTest (cx f) (cx f) u :=
+    funext (harmonicCoupledKernel_apply M c ω f)
+  rw [heq]
+  exact (EF.weilTest_hasCompactSupport (cx_hasCompactSupport hfc)
+    (cx_hasCompactSupport hfc)).mul_left
 
 /-- Harmonic-coupled zero-side Weil sum across harmonics `±m ω`. -/
 def harmonicCoupledZeroSide (M : ℕ) (c : ℕ → ℝ) (ω : ℝ) (f : ℝ → ℝ) : ℝ :=
@@ -423,7 +423,7 @@ theorem harmonicCoupledPrimeSum_nonneg (M : ℕ) {c : ℕ → ℝ} (ω : ℝ) {f
   refine tsum_nonneg fun n => ?_
   rw [Complex.re_ofReal_mul]
   have ha : 0 ≤ (if 2 ≤ n then (ArithmeticFunction.vonMangoldt n : ℝ) / Real.sqrt n else 0) := by
-    split_ifs with h2
+    split_ifs
     · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
     · exact le_rfl
   refine mul_nonneg ha ?_
@@ -472,7 +472,7 @@ theorem harmonicCoupledOffLineZeroSide_le_poleGamma (M : ℕ) {c : ℕ → ℝ} 
         (zetaZeroConfig.W (modCx s f) (modCx s f)).re := by
       let S : Set zetaZeroConfig.carrier := {ρ | (ρ : ℂ).re = 1 / 2}
       have hsum_c := summable_Wsummand_zetaZeroConfig
-        (modCx_contDiff hf.1) (modCx_hasCompactSupport hf.2)
+        (modCx_contDiff (s := s) hf.1) (modCx_hasCompactSupport (s := s) hf.2)
       have hsum_r : Summable (fun ρ : zetaZeroConfig.carrier =>
           (zetaZeroConfig.Wsummand (modCx s f) (modCx s f) ρ).re) :=
         Complex.reCLM.summable hsum_c
@@ -482,7 +482,7 @@ theorem harmonicCoupledOffLineZeroSide_le_poleGamma (M : ℕ) {c : ℕ → ℝ} 
           (zetaZeroConfig.Wsummand (modCx s f) (modCx s f) ρ.1).re :=
         tsum_nonneg fun ρ =>
           SquareRootThreshold.re_Wsummand_nonneg_of_onLine zetaZeroConfig _ ρ.2
-      change (∑' ρ : Sᶜ, (zetaZeroConfig.Wsummand (modCx s f) (modCx s f) ρ.1).re) ≤ _
+      change (∑' ρ : ↥(Sᶜ), (zetaZeroConfig.Wsummand (modCx s f) (modCx s f) ρ.1).re) ≤ _
       linarith only [hon_nonneg]
     exact mul_le_mul_of_nonneg_left
       (add_le_add (hsingle ((m : ℝ) * ω)) (hsingle (-((m : ℝ) * ω)))) hcm
@@ -523,14 +523,17 @@ theorem harmonic_divisor_order_le {K : ℕ} {a : ℕ → ℝ}
       (fun σ : ℝ => ∑ k ∈ Finset.range (K + 1), a k * ((σ - 1) * L σ ((k : ℝ) * t)))
       (𝓝[>] 1)
       (𝓝 (∑ k ∈ Finset.range (K + 1), a k * (μ_pole ((k : ℝ) * t) - μ_zero ((k : ℝ) * t)))) :=
-    tendsto_finset_sum _ fun k _ => (hlim ((k : ℝ) * t)).const_mul (a k)
+    tendsto_finsetSum _ fun k _ => (hlim ((k : ℝ) * t)).const_mul (a k)
   have hev : ∀ᶠ σ : ℝ in 𝓝[>] 1,
       0 ≤ ∑ k ∈ Finset.range (K + 1), a k * ((σ - 1) * L σ ((k : ℝ) * t)) := by
     filter_upwards [self_mem_nhdsWithin] with σ hσ
     have hσ1 : 0 ≤ σ - 1 := sub_nonneg.mpr (le_of_lt hσ)
     have hmul := mul_nonneg hσ1 (hpos hσ t)
-    rwa [Finset.mul_sum, Finset.sum_congr rfl (fun k _ => by ring)] at hmul
-  haveI : NeBot (𝓝[>] (1 : ℝ)) := nhdsGT_neBot 1
+    have hsum_eq : (σ - 1) * ∑ k ∈ Finset.range (K + 1), a k * L σ ((k : ℝ) * t) =
+        ∑ k ∈ Finset.range (K + 1), a k * ((σ - 1) * L σ ((k : ℝ) * t)) := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun k _ => by ring
+    rwa [hsum_eq] at hmul
   have hsum_nonneg : 0 ≤ ∑ k ∈ Finset.range (K + 1),
       a k * (μ_pole ((k : ℝ) * t) - μ_zero ((k : ℝ) * t)) :=
     ge_of_tendsto htend hev
@@ -571,7 +574,7 @@ theorem harmonic_quantized_zero_vanishing {K : ℕ} {a : ℕ → ℝ}
     have h1eq : a 1 * (μ_zero ((1 : ℕ) * t) : ℝ) = a 1 * (μ_zero t : ℝ) := by
       simp only [Nat.cast_one, one_mul]
     rw [← h1eq]
-    exact Finset.single_le_sum
+    exact Finset.single_le_sum (f := fun k => a k * (μ_zero ((k : ℝ) * t) : ℝ))
       (fun k hk => mul_nonneg (ha_pos k hk) (Nat.cast_nonneg _)) h1mem
   by_contra hne
   have hm1 : (1 : ℝ) ≤ (μ_zero t : ℝ) := by
@@ -646,6 +649,23 @@ theorem zetaRealLogDeriv_harmonic_nonneg {K : ℕ} {a : ℕ → ℝ}
         (Real.rpow_pos_of_pos (by exact_mod_cast hn) _).le)
       (hP (t * Real.log n))
 
+private theorem analyticOrderAt_riemannZeta_ne_top_of_ne_one {w : ℂ} (hw : w ≠ 1) :
+    analyticOrderAt riemannZeta w ≠ ⊤ := by
+  intro htop
+  have hlocal : riemannZeta =ᶠ[𝓝 w] (0 : ℂ → ℂ) := by
+    filter_upwards [analyticOrderAt_eq_top.mp htop] with z hz
+    simpa using hz
+  have hpreconnected : IsPreconnected ({(1 : ℂ)}ᶜ : Set ℂ) :=
+    (isConnected_compl_singleton_of_one_lt_rank (by simp) (1 : ℂ)).isPreconnected
+  have hana_on : AnalyticOnNhd ℂ riemannZeta ({(1 : ℂ)}ᶜ : Set ℂ) :=
+    fun z hz => HTGeometry.analyticAt_riemannZeta hz
+  have hglobal : Set.EqOn riemannZeta 0 ({(1 : ℂ)}ᶜ : Set ℂ) :=
+    hana_on.eqOn_of_preconnected_of_eventuallyEq
+      analyticOnNhd_const hpreconnected (by simpa using hw) hlocal
+  have hzetaTwo : riemannZeta (2 : ℂ) = 0 := by
+    simpa using hglobal (show (2 : ℂ) ∈ ({(1 : ℂ)}ᶜ : Set ℂ) by norm_num)
+  exact riemannZeta_ne_zero_of_one_lt_re (by norm_num) hzetaTwo
+
 /-- Boundary order limit of `-Re (ζ'/ζ)` along `σ → 1⁺`, established from the
 residue at `s = 1` and local Weierstrass factorization on `{1}ᶜ` using only
 `ζ(2) ≠ 0` in the Euler half-plane `σ > 1`. -/
@@ -673,22 +693,9 @@ theorem tendsto_zetaRealLogDeriv_boundary (u : ℝ) :
       simp only [ρ, Complex.add_im, Complex.one_im, Complex.mul_im, Complex.ofReal_re,
         Complex.I_im, mul_one, Complex.ofReal_im, Complex.I_re, mul_zero, add_zero, zero_add] at him
       exact hu him
-    let U : Set ℂ := {(1 : ℂ)}ᶜ
-    have hU_conn : IsConnected U :=
-      isConnected_compl_singleton_of_one_lt_rank
-        (by rw [Complex.rank_real_complex]; norm_num) 1
-    have hana_on : AnalyticOnNhd ℂ riemannZeta U :=
-      fun z hz => HTGeometry.analyticAt_riemannZeta hz
-    have h2mem : (2 : ℂ) ∈ U := by simp [U]
-    have h2_ord : analyticOrderAt riemannZeta 2 ≠ ⊤ := by
-      rw [(HTGeometry.analyticAt_riemannZeta h2mem).analyticOrderAt_eq_zero.mpr
-        (riemannZeta_ne_zero_of_one_lt_re (by norm_num))]
-      exact ENat.zero_ne_top
-    have hρ_ord : analyticOrderAt riemannZeta ρ ≠ ⊤ :=
-      (hana_on.exists_analyticOrderAt_ne_top_iff_forall hU_conn).mp
-        ⟨⟨2, h2mem⟩, h2_ord⟩ ⟨ρ, hρ1⟩
     obtain ⟨g, hg, hg0, hfac⟩ :=
-      (HTGeometry.analyticAt_riemannZeta hρ1).analyticOrderAt_ne_top.mp hρ_ord
+      (HTGeometry.analyticAt_riemannZeta hρ1).analyticOrderAt_ne_top.mp
+        (analyticOrderAt_riemannZeta_ne_top_of_ne_one hρ1)
     have hres := (_root_.RHTower.logDeriv_residue_of_factorization hg hg0 hfac).neg
     have hpath : Tendsto (fun σ : ℝ => (σ : ℂ) + (u : ℂ) * I) (𝓝[>] 1) (𝓝[≠] ρ) := by
       refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
@@ -753,22 +760,9 @@ theorem riemannZeta_boundary_ne_zero_from_harmonic_forcing {t : ℝ} (ht : t ≠
     simp only [ρ, Complex.add_im, Complex.one_im, Complex.mul_im, Complex.ofReal_re,
       Complex.I_im, mul_one, Complex.ofReal_im, Complex.I_re, mul_zero, add_zero, zero_add] at him
     exact ht him
-  let U : Set ℂ := {(1 : ℂ)}ᶜ
-  have hU_conn : IsConnected U :=
-    isConnected_compl_singleton_of_one_lt_rank
-      (by rw [Complex.rank_real_complex]; norm_num) 1
-  have hana_on : AnalyticOnNhd ℂ riemannZeta U :=
-    fun z hz => HTGeometry.analyticAt_riemannZeta hz
-  have h2mem : (2 : ℂ) ∈ U := by simp [U]
-  have h2_ord : analyticOrderAt riemannZeta 2 ≠ ⊤ := by
-    rw [(HTGeometry.analyticAt_riemannZeta h2mem).analyticOrderAt_eq_zero.mpr
-      (riemannZeta_ne_zero_of_one_lt_re (by norm_num))]
-    exact ENat.zero_ne_top
-  have hρ_ord : analyticOrderAt riemannZeta ρ ≠ ⊤ :=
-    (hana_on.exists_analyticOrderAt_ne_top_iff_forall hU_conn).mp
-      ⟨⟨2, h2mem⟩, h2_ord⟩ ⟨ρ, hρ1⟩
   obtain ⟨g, -, hg0, hfac⟩ :=
-    (HTGeometry.analyticAt_riemannZeta hρ1).analyticOrderAt_ne_top.mp hρ_ord
+    (HTGeometry.analyticAt_riemannZeta hρ1).analyticOrderAt_ne_top.mp
+      (analyticOrderAt_riemannZeta_ne_top_of_ne_one hρ1)
   have hval := hfac.eq_of_nhds
   change riemannZeta ρ = (ρ - ρ) ^ analyticOrderNatAt riemannZeta ρ • g ρ at hval
   rw [hz, pow_zero, one_smul] at hval
@@ -785,23 +779,23 @@ points strictly inside the open critical strip `0 < Re z < 1` off `Re z = 1 / 2`
 theorem harmonicZeroFreeCollar_nonempty_in_strip {t : ℝ} (ht : 9 ≤ |t|) :
     ∃ z ∈ harmonicZeroFreeCollar,
       0 < z.re ∧ z.re < 1 ∧ z.re ≠ 1 / 2 ∧ z.im = t := by
-  have hlog_pos : 0 < Real.log |t| := Real.log_pos (by linarith only [ht])
   have hlog_ge_one : 1 ≤ Real.log |t| := by
     have he := _root_.RHTower.exp_two_lt_eight
     have he1 : Real.exp 1 < Real.exp 2 := Real.exp_lt_exp.mpr (by norm_num)
     have hlt : Real.exp 1 < |t| := by linarith only [ht, he, he1]
     have h := Real.log_lt_log (Real.exp_pos 1) hlt
-    rwa [Real.log_exp] at h
+    rw [Real.log_exp] at h
+    exact h.le
   have hpow_ge : 1 ≤ Real.log |t| ^ (9 : ℕ) := one_le_pow₀ hlog_ge_one
-  have hc_pos : 0 < _root_.RHTower.zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) :=
-    div_pos _root_.RHTower.zetaZeroFreeC_pos (by positivity)
-  have hc_le : _root_.RHTower.zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) ≤ 1 / 2 := by
-    calc _root_.RHTower.zetaZeroFreeC / Real.log |t| ^ (9 : ℕ)
+  let w : ℝ := _root_.RHTower.zetaZeroFreeC / Real.log |t| ^ (9 : ℕ)
+  have hw_pos : 0 < w :=
+    div_pos _root_.RHTower.zetaZeroFreeC_pos (lt_of_lt_of_le zero_lt_one hpow_ge)
+  have hw_le : w ≤ 1 / 2 := by
+    calc w
         ≤ _root_.RHTower.zetaZeroFreeC / 1 :=
           div_le_div_of_nonneg_left _root_.RHTower.zetaZeroFreeC_pos.le zero_lt_one hpow_ge
       _ = _root_.RHTower.zetaZeroFreeC := div_one _
       _ ≤ 1 / 2 := _root_.RHTower.zetaZeroFreeC_le_half
-  let w : ℝ := _root_.RHTower.zetaZeroFreeC / Real.log |t| ^ (9 : ℕ)
   let z : ℂ := ((1 - w / 2 : ℝ) : ℂ) + (t : ℂ) * I
   have hz_re : z.re = 1 - w / 2 := by
     simp [z, Complex.add_re, Complex.mul_re]
@@ -810,11 +804,11 @@ theorem harmonicZeroFreeCollar_nonempty_in_strip {t : ℝ} (ht : 9 ≤ |t|) :
   refine ⟨z, ?_, ?_, ?_, ?_, hz_im⟩
   · refine ⟨by rwa [hz_im], Or.inl ?_⟩
     rw [hz_im, hz_re]
-    dsimp only [w] at hc_pos ⊢
-    linarith only [hc_pos]
-  · rw [hz_re]; dsimp only [w] at hc_le; linarith only [hc_le]
-  · rw [hz_re]; dsimp only [w] at hc_pos; linarith only [hc_pos]
-  · rw [hz_re]; dsimp only [w] at hc_le; intro heq; linarith only [hc_le, heq]
+    change 1 - w < 1 - w / 2
+    linarith only [hw_pos]
+  · rw [hz_re]; linarith only [hw_le]
+  · rw [hz_re]; linarith only [hw_pos]
+  · rw [hz_re]; intro heq; linarith only [hw_le, heq]
 
 /-- Harmonic phase coupling excludes the actual Meyer-source spectral support
 `XiDivisorSupport` from both boundary lines `Re z = 0, 1` and from both reflected
@@ -920,33 +914,35 @@ theorem cexp_integral_doublePolePrimeDensity_eq (t0 : ℝ) {s : ℂ} (hs : 1 < s
           (Complex.exp (-(z0 * t)) - Complex.exp (-(z2 * t))) / t := by
     unfold doublePolePrimeDensity
     push_cast
-    rw [Complex.ofReal_exp, Complex.ofReal_cos,
-      show ((t0 * t : ℝ) : ℂ) = (t0 : ℂ) * (t : ℂ) by push_cast; ring,
-      Complex.cos]
+    rw [Complex.cos]
     have he0 : Complex.exp (-(s * (t : ℂ))) * Complex.exp (t : ℂ) = Complex.exp (-(z0 * t)) := by
       rw [← Complex.exp_add]; congr 1; dsimp only [z0]; ring
     have he1 : Complex.exp (-(z0 * t)) * Complex.exp ((t0 : ℂ) * (t : ℂ) * I) =
         Complex.exp (-(z1 * t)) := by
       rw [← Complex.exp_add]; congr 1; dsimp only [z0, z1]; ring
-    have he2 : Complex.exp (-(z0 * t)) * Complex.exp (-((t0 : ℂ) * (t : ℂ) * I)) =
+    have he2 : Complex.exp (-(z0 * t)) * Complex.exp (-((t0 : ℂ) * (t : ℂ)) * I) =
         Complex.exp (-(z2 * t)) := by
       rw [← Complex.exp_add]; congr 1; dsimp only [z0, z2]; ring
-    rw [mul_div_assoc, ← add_div]
-    congr 1
-    calc
-      Complex.exp (-(s * t)) * (2 * Complex.exp t *
-          (1 - (Complex.exp ((t0 : ℂ) * t * I) + Complex.exp (-((t0 : ℂ) * t * I))) / 2))
-        = (Complex.exp (-(s * t)) * Complex.exp t) *
-            (2 - (Complex.exp ((t0 : ℂ) * t * I) + Complex.exp (-((t0 : ℂ) * t * I)))) := by ring
-      _ = Complex.exp (-(z0 * t)) *
-            (2 - (Complex.exp ((t0 : ℂ) * t * I) + Complex.exp (-((t0 : ℂ) * t * I)))) := by
-          rw [he0]
-      _ = 2 * Complex.exp (-(z0 * t)) -
-            Complex.exp (-(z0 * t)) * Complex.exp ((t0 : ℂ) * t * I) -
-            Complex.exp (-(z0 * t)) * Complex.exp (-((t0 : ℂ) * t * I)) := by ring
-      _ = (Complex.exp (-(z0 * t)) - Complex.exp (-(z1 * t))) +
-            (Complex.exp (-(z0 * t)) - Complex.exp (-(z2 * t))) := by
-          rw [he1, he2]; ring
+    have hnum : Complex.exp (-(s * (t : ℂ))) * (2 * Complex.exp (t : ℂ) *
+        (1 - (Complex.exp ((t0 : ℂ) * (t : ℂ) * I) +
+          Complex.exp (-((t0 : ℂ) * (t : ℂ)) * I)) / 2)) =
+        (Complex.exp (-(z0 * t)) - Complex.exp (-(z1 * t))) +
+          (Complex.exp (-(z0 * t)) - Complex.exp (-(z2 * t))) := by
+      calc
+        Complex.exp (-(s * t)) * (2 * Complex.exp t *
+            (1 - (Complex.exp ((t0 : ℂ) * t * I) + Complex.exp (-((t0 : ℂ) * t) * I)) / 2))
+          = (Complex.exp (-(s * t)) * Complex.exp t) *
+              (2 - (Complex.exp ((t0 : ℂ) * t * I) + Complex.exp (-((t0 : ℂ) * t) * I))) := by ring
+        _ = Complex.exp (-(z0 * t)) *
+              (2 - (Complex.exp ((t0 : ℂ) * t * I) + Complex.exp (-((t0 : ℂ) * t) * I))) := by
+            rw [he0]
+        _ = 2 * Complex.exp (-(z0 * t)) -
+              Complex.exp (-(z0 * t)) * Complex.exp ((t0 : ℂ) * t * I) -
+              Complex.exp (-(z0 * t)) * Complex.exp (-((t0 : ℂ) * t) * I) := by ring
+        _ = (Complex.exp (-(z0 * t)) - Complex.exp (-(z1 * t))) +
+              (Complex.exp (-(z0 * t)) - Complex.exp (-(z2 * t))) := by
+            rw [he1, he2]; ring
+    rw [← mul_div_assoc, hnum, add_div]
   simp_rw [hpoint]
   have hz0_ne : z0 ≠ 0 := fun h => by rw [h, Complex.zero_re] at hz0; exact lt_irrefl 0 hz0
   have hz1_ne : z1 ≠ 0 := fun h => by rw [h, Complex.zero_re] at hz1; exact lt_irrefl 0 hz1
@@ -980,29 +976,23 @@ theorem neg_logDeriv_doublePoleZeta_eq (t0 : ℝ) {s : ℂ}
     calc (s - 1) ^ 2 + (t0 : ℂ) ^ 2
         = (s - 1) ^ 2 - (t0 : ℂ) ^ 2 * I ^ 2 := by rw [Complex.I_sq]; ring
       _ = (s - 1 - (t0 : ℂ) * I) * (s - 1 + (t0 : ℂ) * I) := by ring
-  have hd_sub : HasDerivAt (fun z : ℂ => (z - 1) ^ 2) (2 * (s - 1) * 1) s :=
-    ((hasDerivAt_id s).sub_const 1).pow 2
-  have hd : HasDerivAt (doublePoleZeta t0)
-      (((2 * (s - 1) * 1 + 0) * (s - 1) ^ 2 -
-        ((s - 1) ^ 2 + (t0 : ℂ) ^ 2) * (2 * (s - 1) * 1)) /
-        ((s - 1) ^ 2) ^ 2) s := by
-    unfold doublePoleZeta
-    exact (hd_sub.add (hasDerivAt_const s ((t0 : ℂ) ^ 2))).div hd_sub (pow_ne_zero 2 hz0)
-  rw [hd.deriv]
-  unfold doublePoleZeta doublePoleNegLogDeriv
-  rw [hnum_fac]
+  have hsq : doublePoleZeta t0 =
+      fun z : ℂ => ((z - 1) * (z - 1) + (t0 : ℂ) ^ 2) / ((z - 1) * (z - 1)) := by
+    funext z; unfold doublePoleZeta; rw [sq]
+  have h1 : HasDerivAt (fun z : ℂ => z - 1) 1 s := (hasDerivAt_id s).sub_const 1
+  have hd_sub : HasDerivAt (fun z : ℂ => (z - 1) * (z - 1))
+      (1 * (s - 1) + (s - 1) * 1) s := h1.mul h1
+  have hd : HasDerivAt (fun z : ℂ => ((z - 1) * (z - 1) + (t0 : ℂ) ^ 2) / ((z - 1) * (z - 1)))
+      (((1 * (s - 1) + (s - 1) * 1 + 0) * ((s - 1) * (s - 1)) -
+        ((s - 1) * (s - 1) + (t0 : ℂ) ^ 2) * (1 * (s - 1) + (s - 1) * 1)) /
+        ((s - 1) * (s - 1)) ^ 2) s :=
+    (hd_sub.add (hasDerivAt_const s ((t0 : ℂ) ^ 2))).div hd_sub (mul_ne_zero hz0 hz0)
+  rw [hsq, hd.deriv]
+  dsimp only
+  unfold doublePoleNegLogDeriv
+  rw [← sq, hnum_fac]
   field_simp [hz0, hzp, hzm]
-  calc -((2 * (s - 1) * (s - 1) ^ 2 -
-        (s - 1 - (t0 : ℂ) * I) * (s - 1 + (t0 : ℂ) * I) * (2 * (s - 1))))
-      = 2 * (s - 1) * ((s - 1 - (t0 : ℂ) * I) * (s - 1 + (t0 : ℂ) * I) - (s - 1) ^ 2) := by ring
-    _ = 2 * (s - 1) * ((s - 1) ^ 2 + (t0 : ℂ) ^ 2 - (s - 1) ^ 2) := by rw [← hnum_fac]
-    _ = 2 * (s - 1 - (t0 : ℂ) * I) * (s - 1 + (t0 : ℂ) * I) -
-          (s - 1) * (s - 1 + (t0 : ℂ) * I) - (s - 1) * (s - 1 - (t0 : ℂ) * I) := by
-        calc 2 * (s - 1) * ((s - 1) ^ 2 + (t0 : ℂ) ^ 2 - (s - 1) ^ 2)
-            = 2 * (s - 1) * (t0 : ℂ) ^ 2 := by ring
-          _ = 2 * (s - 1) * ((s - 1 - (t0 : ℂ) * I) * (s - 1 + (t0 : ℂ) * I) - (s - 1) ^ 2) := by
-              rw [← hnum_fac]; ring
-          _ = _ := by ring
+  ring
 
 /-- Laplace representation of `doublePoleNegLogDeriv` against the nonnegative
 weight `2 e^t (1 - cos(t0 t)) ≥ 0` on `1 < Re s`. -/
@@ -1028,37 +1018,43 @@ theorem doublePoleNegLogDeriv_eq_integral (t0 : ℝ) {s : ℂ} (hs : 1 < s.re) :
         ((2 : ℂ) * Complex.exp (-(z0 * t)) - Complex.exp (-(z1 * t))) -
           Complex.exp (-(z2 * t)) := by
     push_cast
-    rw [Complex.ofReal_exp, Complex.ofReal_cos,
-      show ((t0 * t : ℝ) : ℂ) = (t0 : ℂ) * (t : ℂ) by push_cast; ring, Complex.cos]
+    rw [Complex.cos]
     have he0 : Complex.exp (-(s * (t : ℂ))) * Complex.exp (t : ℂ) = Complex.exp (-(z0 * t)) := by
       rw [← Complex.exp_add]; congr 1; dsimp only [z0]; ring
     have he1 : Complex.exp (-(z0 * t)) * Complex.exp ((t0 : ℂ) * (t : ℂ) * I) =
         Complex.exp (-(z1 * t)) := by
       rw [← Complex.exp_add]; congr 1; dsimp only [z0, z1]; ring
-    have he2 : Complex.exp (-(z0 * t)) * Complex.exp (-((t0 : ℂ) * (t : ℂ) * I)) =
+    have he2 : Complex.exp (-(z0 * t)) * Complex.exp (-((t0 : ℂ) * (t : ℂ)) * I) =
         Complex.exp (-(z2 * t)) := by
       rw [← Complex.exp_add]; congr 1; dsimp only [z0, z2]; ring
     calc
       Complex.exp (-(s * t)) * (2 * Complex.exp t *
-          (1 - (Complex.exp ((t0 : ℂ) * t * I) + Complex.exp (-((t0 : ℂ) * t * I))) / 2))
+          (1 - (Complex.exp ((t0 : ℂ) * t * I) + Complex.exp (-((t0 : ℂ) * t) * I)) / 2))
         = (Complex.exp (-(s * t)) * Complex.exp t) *
-            (2 - (Complex.exp ((t0 : ℂ) * t * I) + Complex.exp (-((t0 : ℂ) * t * I)))) := by ring
+            (2 - (Complex.exp ((t0 : ℂ) * t * I) + Complex.exp (-((t0 : ℂ) * t) * I))) := by ring
       _ = Complex.exp (-(z0 * t)) *
-            (2 - (Complex.exp ((t0 : ℂ) * t * I) + Complex.exp (-((t0 : ℂ) * t * I)))) := by
+            (2 - (Complex.exp ((t0 : ℂ) * t * I) + Complex.exp (-((t0 : ℂ) * t) * I))) := by
           rw [he0]
       _ = 2 * Complex.exp (-(z0 * t)) -
             Complex.exp (-(z0 * t)) * Complex.exp ((t0 : ℂ) * t * I) -
-            Complex.exp (-(z0 * t)) * Complex.exp (-((t0 : ℂ) * t * I)) := by ring
+            Complex.exp (-(z0 * t)) * Complex.exp (-((t0 : ℂ) * t) * I) := by ring
       _ = ((2 : ℂ) * Complex.exp (-(z0 * t)) - Complex.exp (-(z1 * t))) -
             Complex.exp (-(z2 * t)) := by
           rw [he1, he2]
   simp_rw [hpoint]
-  rw [integral_sub (((HTGeometry.integrableOn_cexp_neg_mul hz0).const_mul 2).sub
-      (HTGeometry.integrableOn_cexp_neg_mul hz1))
-      (HTGeometry.integrableOn_cexp_neg_mul hz2),
-    integral_sub ((HTGeometry.integrableOn_cexp_neg_mul hz0).const_mul 2)
-      (HTGeometry.integrableOn_cexp_neg_mul hz1),
-    integral_const_mul, HTGeometry.integral_cexp_neg_mul hz0,
+  let f0 : ℝ → ℂ := fun t => (2 : ℂ) * Complex.exp (-(z0 * t))
+  let f1 : ℝ → ℂ := fun t => Complex.exp (-(z1 * t))
+  let f2 : ℝ → ℂ := fun t => Complex.exp (-(z2 * t))
+  have hf0 : IntegrableOn f0 (Ioi (0 : ℝ)) :=
+    (HTGeometry.integrableOn_cexp_neg_mul hz0).const_mul 2
+  have hf1 : IntegrableOn f1 (Ioi (0 : ℝ)) := HTGeometry.integrableOn_cexp_neg_mul hz1
+  have hf2 : IntegrableOn f2 (Ioi (0 : ℝ)) := HTGeometry.integrableOn_cexp_neg_mul hz2
+  change doublePoleNegLogDeriv t0 s = ∫ t in Ioi (0 : ℝ), (f0 - f1) t - f2 t
+  rw [integral_sub (hf0.sub hf1) hf2]
+  change doublePoleNegLogDeriv t0 s = (∫ t in Ioi (0 : ℝ), f0 t - f1 t) - ∫ t in Ioi (0 : ℝ), f2 t
+  rw [integral_sub hf0 hf1]
+  dsimp only [f0, f1, f2]
+  rw [integral_const_mul, HTGeometry.integral_cexp_neg_mul hz0,
     HTGeometry.integral_cexp_neg_mul hz1, HTGeometry.integral_cexp_neg_mul hz2]
   unfold doublePoleNegLogDeriv
   dsimp only [z0, z1, z2]
@@ -1076,9 +1072,8 @@ theorem doublePole_harmonic_nonneg (t0 : ℝ) {K : ℕ} {a : ℕ → ℝ}
     have hdom : IntegrableOn (fun t : ℝ => 4 * Real.exp (-(σ - 1) * t)) (Ioi (0 : ℝ)) :=
       (exp_neg_integrableOn_Ioi 0 (sub_pos.mpr hσ)).const_mul 4
     refine hdom.mono' ?_ ?_
-    · exact ((Real.continuous_exp.comp (continuous_const.mul continuous_id)).mul
-        (continuous_const.mul (continuous_const.sub
-          (Real.continuous_cos.comp (continuous_const.mul continuous_id))))).aestronglyMeasurable
+    · exact (by fun_prop : Continuous
+        (fun t : ℝ => Real.exp (-((σ - 1) * t)) * (2 * (1 - Real.cos (t0 * t))))).aestronglyMeasurable
     · filter_upwards [ae_restrict_mem measurableSet_Ioi] with t _
       have hc1 : -1 ≤ Real.cos (t0 * t) := Real.neg_one_le_cos _
       have hc2 : Real.cos (t0 * t) ≤ 1 := Real.cos_le_one _
@@ -1118,7 +1113,9 @@ theorem doublePole_harmonic_nonneg (t0 : ℝ) {K : ℕ} {a : ℕ → ℝ}
                 rw [← Real.exp_add]; congr 1; ring
         rw [hexp]
     change a k * (∫ t in Ioi (0 : ℝ), g_c t).re = _
-    rw [integral_re hint_c, ← integral_const_mul]
+    have hre_int : (∫ t in Ioi (0 : ℝ), g_c t).re = ∫ t in Ioi (0 : ℝ), (g_c t).re :=
+      (integral_re hint_c).symm
+    rw [hre_int, ← integral_const_mul]
     refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
     dsimp only [g_c]
     rw [Complex.mul_re, Complex.ofReal_im, mul_zero, sub_zero, Complex.ofReal_re,
@@ -1140,8 +1137,9 @@ theorem doublePole_harmonic_nonneg (t0 : ℝ) {K : ℕ} {a : ℕ → ℝ}
       (fun t : ℝ => a k * (Real.exp (-((σ - 1) * t)) * (2 * (1 - Real.cos (t0 * t))) *
         Real.cos ((k : ℝ) * (u * t)))) (Ioi (0 : ℝ)) := by
     refine ((hint_w.mono' ?_ ?_).const_mul (a k))
-    · exact (hint_w.aestronglyMeasurable.mul
-        (Real.continuous_cos.comp (continuous_const.mul (continuous_const.mul continuous_id))).aestronglyMeasurable)
+    · exact (by fun_prop : Continuous
+        (fun t : ℝ => Real.exp (-((σ - 1) * t)) * (2 * (1 - Real.cos (t0 * t))) *
+          Real.cos ((k : ℝ) * (u * t)))).aestronglyMeasurable
     · filter_upwards [ae_restrict_mem measurableSet_Ioi] with t _
       rw [Real.norm_eq_abs, abs_mul,
         abs_of_nonneg (mul_nonneg (Real.exp_pos _).le (by linarith [Real.cos_le_one (t0 * t)]))]
@@ -1168,23 +1166,26 @@ theorem doublePole_harmonic_nonneg (t0 : ℝ) {K : ℕ} {a : ℕ → ℝ}
 theorem tendsto_doublePole_origin {t0 : ℝ} (ht0 : t0 ≠ 0) :
     Tendsto (fun σ : ℝ => (σ - 1) * (doublePoleNegLogDeriv t0 (σ : ℂ)).re)
       (𝓝[>] 1) (𝓝 2) := by
-  have hz1 : ((1 : ℂ) - 1 - (t0 : ℂ) * I) ≠ 0 := by
+  let d1 : ℝ → ℂ := fun σ => (σ : ℂ) - 1 - (t0 : ℂ) * I
+  let d2 : ℝ → ℂ := fun σ => (σ : ℂ) - 1 + (t0 : ℂ) * I
+  have hz1 : d1 1 ≠ 0 := by
     intro h
     have him := congrArg Complex.im h
-    simp at him
+    simp [d1] at him
     exact ht0 him
-  have hz2 : ((1 : ℂ) - 1 + (t0 : ℂ) * I) ≠ 0 := by
+  have hz2 : d2 1 ≠ 0 := by
     intro h
     have him := congrArg Complex.im h
-    simp at him
+    simp [d2] at him
     exact ht0 him
-  let rem : ℝ → ℂ := fun σ =>
-    1 / ((σ : ℂ) - 1 - (t0 : ℂ) * I) + 1 / ((σ : ℂ) - 1 + (t0 : ℂ) * I)
-  have hrem_cont : ContinuousAt rem 1 := by
-    dsimp only [rem]
-    refine (continuousAt_const.div ?_ hz1).add (continuousAt_const.div ?_ hz2)
-    · exact (Complex.continuous_ofReal.sub continuous_const).sub continuous_const |>.continuousAt
-    · exact (Complex.continuous_ofReal.sub continuous_const).add continuous_const |>.continuousAt
+  have hd1_c : Continuous d1 := by dsimp only [d1]; fun_prop
+  have hd2_c : Continuous d2 := by dsimp only [d2]; fun_prop
+  let rem : ℝ → ℂ := fun σ => 1 / d1 σ + 1 / d2 σ
+  have hrem_cont : ContinuousAt rem 1 :=
+    (ContinuousAt.div (f := fun _ : ℝ => (1 : ℂ)) (g := d1)
+        continuousAt_const hd1_c.continuousAt hz1).add
+      (ContinuousAt.div (f := fun _ : ℝ => (1 : ℂ)) (g := d2)
+        continuousAt_const hd2_c.continuousAt hz2)
   have hsub0 : Tendsto (fun σ : ℝ => ((σ - 1 : ℝ) : ℂ)) (𝓝[>] 1) (𝓝 0) := by
     have hc : Continuous (fun σ : ℝ => ((σ - 1 : ℝ) : ℂ)) :=
       Complex.continuous_ofReal.comp (continuous_id.sub continuous_const)
@@ -1193,19 +1194,20 @@ theorem tendsto_doublePole_origin {t0 : ℝ} (ht0 : t0 ≠ 0) :
       (𝓝[>] 1) (𝓝 2) := by
     simpa using tendsto_const_nhds.sub (hsub0.mul (hrem_cont.tendsto.mono_left nhdsWithin_le_nhds))
   have hre := (Complex.continuous_re.tendsto (2 : ℂ)).comp hprod
-  simp only [Complex.ofNat_re] at hre
+  have h2re : ((2 : ℂ)).re = 2 := by norm_num
+  rw [h2re] at hre
   refine hre.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with σ hσ
   have hne : ((σ : ℂ) - 1) ≠ 0 := by
     intro h
     have hr := congrArg Complex.re h
     simp at hr
-    linarith only [hσ, hr]
+    linarith only [Set.mem_Ioi.mp hσ, hr]
   simp only [Function.comp_apply]
   have hident : ((σ - 1 : ℝ) : ℂ) * doublePoleNegLogDeriv t0 (σ : ℂ) =
       (2 : ℂ) - ((σ - 1 : ℝ) : ℂ) * rem σ := by
     unfold doublePoleNegLogDeriv
-    dsimp only [rem]
+    dsimp only [rem, d1, d2]
     have hs : ((σ - 1 : ℝ) : ℂ) = (σ : ℂ) - 1 := by push_cast; ring
     rw [hs]
     field_simp [hne]
@@ -1224,19 +1226,20 @@ theorem doublePole_boundary_zero_survives_all_degrees {t0 : ℝ} (ht0 : t0 ≠ 0
         (𝓝[>] 1) (𝓝 (-1)) ∧
       a 1 * (1 : ℝ) < a 0 * (2 : ℝ) := by
   refine ⟨doublePoleZeta_boundary_zero_pos t0, ?_, ?_⟩
-  · have hz0 : ((1 : ℂ) + (t0 : ℂ) * I - 1) ≠ 0 := by
-      intro h; have him := congrArg Complex.im h; simp at him; exact ht0 him
-    have hz2 : ((1 : ℂ) + (t0 : ℂ) * I - 1 + (t0 : ℂ) * I) ≠ 0 := by
-      intro h; have him := congrArg Complex.im h; simp at him; linarith only [ht0, him]
-    let rem : ℝ → ℂ := fun σ =>
-      2 / ((σ : ℂ) + (t0 : ℂ) * I - 1) -
-        1 / ((σ : ℂ) + (t0 : ℂ) * I - 1 + (t0 : ℂ) * I)
-    have hrem_cont : ContinuousAt rem 1 := by
-      dsimp only [rem]
-      refine (continuousAt_const.div ?_ hz0).sub (continuousAt_const.div ?_ hz2)
-      · exact ((Complex.continuous_ofReal.add continuous_const).sub continuous_const).continuousAt
-      · exact (((Complex.continuous_ofReal.add continuous_const).sub continuous_const).add
-          continuous_const).continuousAt
+  · let d0 : ℝ → ℂ := fun σ => (σ : ℂ) + (t0 : ℂ) * I - 1
+    let d2 : ℝ → ℂ := fun σ => (σ : ℂ) + (t0 : ℂ) * I - 1 + (t0 : ℂ) * I
+    have hz0 : d0 1 ≠ 0 := by
+      intro h; have him := congrArg Complex.im h; simp [d0] at him; exact ht0 him
+    have hz2 : d2 1 ≠ 0 := by
+      intro h; have him := congrArg Complex.im h; simp [d2] at him; exact ht0 him
+    have hd0_c : Continuous d0 := by dsimp only [d0]; fun_prop
+    have hd2_c : Continuous d2 := by dsimp only [d2]; fun_prop
+    let rem : ℝ → ℂ := fun σ => 2 / d0 σ - 1 / d2 σ
+    have hrem_cont : ContinuousAt rem 1 :=
+      (ContinuousAt.div (f := fun _ : ℝ => (2 : ℂ)) (g := d0)
+          continuousAt_const hd0_c.continuousAt hz0).sub
+        (ContinuousAt.div (f := fun _ : ℝ => (1 : ℂ)) (g := d2)
+          continuousAt_const hd2_c.continuousAt hz2)
     have hsub0 : Tendsto (fun σ : ℝ => ((σ - 1 : ℝ) : ℂ)) (𝓝[>] 1) (𝓝 0) := by
       have hc : Continuous (fun σ : ℝ => ((σ - 1 : ℝ) : ℂ)) :=
         Complex.continuous_ofReal.comp (continuous_id.sub continuous_const)
@@ -1252,12 +1255,12 @@ theorem doublePole_boundary_zero_survives_all_degrees {t0 : ℝ} (ht0 : t0 ≠ 0
       intro h
       have hr := congrArg Complex.re h
       simp at hr
-      linarith only [hσ, hr]
+      linarith only [Set.mem_Ioi.mp hσ, hr]
     simp only [Function.comp_apply]
     have hident : ((σ - 1 : ℝ) : ℂ) * doublePoleNegLogDeriv t0 ((σ : ℂ) + (t0 : ℂ) * I) =
         (-1 : ℂ) + ((σ - 1 : ℝ) : ℂ) * rem σ := by
       unfold doublePoleNegLogDeriv
-      dsimp only [rem]
+      dsimp only [rem, d0, d2]
       have hs : ((σ : ℂ) + (t0 : ℂ) * I - 1 - (t0 : ℂ) * I) = ((σ - 1 : ℝ) : ℂ) := by
         push_cast; ring
       have hs0 : ((σ - 1 : ℝ) : ℂ) ≠ 0 := by rwa [← hs]
@@ -1328,7 +1331,7 @@ theorem periodicPoleZeta_boundary_zero {ℓ : ℝ} (hℓ : 0 < ℓ) :
     push_cast
     field_simp [hℓc]
     ring
-  rw [harg, Complex.exp_neg_pi_mul_I, add_neg_cancel, zero_div]
+  rw [harg, Complex.exp_neg, Complex.exp_pi_mul_I, inv_neg, inv_one, add_neg_cancel, zero_div]
 
 /-- Odd-harmonic geometric series expansion of `periodicPoleNegLogDeriv` on `1 < Re s`
 with positive prime weights `2 ℓ > 0`. -/
@@ -1420,7 +1423,8 @@ theorem periodicPole_harmonic_nonneg {ℓ : ℝ} (hℓ : 0 < ℓ) {K : ℕ} {a :
       simp [Complex.mul_im, Complex.sub_im, Complex.add_im, Complex.mul_re,
         Complex.sub_re, Complex.add_re]
       ring
-    rw [hre, him, Real.cos_neg, mul_assoc]
+    rw [hre, him, Real.cos_neg]
+    ring
   have hsum_k (k : ℕ) : Summable (fun n : ℕ =>
       a k * (2 * ℓ * Real.exp (-(((2 * n + 1 : ℕ) : ℝ) * ℓ * (σ - 1))) *
         Real.cos ((k : ℝ) * (((2 * n + 1 : ℕ) : ℝ) * ℓ * t)))) := by
@@ -1457,7 +1461,7 @@ theorem tendsto_periodicPole_origin {ℓ : ℝ} (hℓ : 0 < ℓ) :
   have hderiv : HasDerivAt g 2 0 := by
     have h1 : HasDerivAt (fun x : ℝ => -2 * x) (-2 * 1) 0 := (hasDerivAt_id (0 : ℝ)).const_mul (-2)
     have h2 := h1.exp.const_sub 1
-    simpa only [g, mul_zero, Real.exp_zero, mul_one, zero_sub, neg_neg] using h2
+    exact h2.congr_deriv (by simp)
   have hslope : Tendsto (fun x : ℝ => (1 - Real.exp (-2 * x)) / x) (𝓝[≠] 0) (𝓝 2) := by
     refine (hasDerivAt_iff_tendsto_slope.mp hderiv).congr' ?_
     filter_upwards [self_mem_nhdsWithin] with x _
@@ -1493,13 +1497,12 @@ theorem tendsto_periodicPole_origin {ℓ : ℝ} (hℓ : 0 < ℓ) :
         (1 - Real.exp (-2 * ((σ - 1) * ℓ))) : ℝ) : ℂ) := by
     unfold periodicPoleNegLogDeriv
     have h1 : -(((σ : ℂ) - 1) * (ℓ : ℂ)) = ((-((σ - 1) * ℓ) : ℝ) : ℂ) := by push_cast; ring
-    rw [h1, ← Complex.ofReal_exp, ← sq, ← Real.exp_nat_mul]
+    rw [h1, ← Complex.ofReal_exp, ← Complex.ofReal_pow, ← Real.exp_nat_mul]
     push_cast
     congr 2
     ring
   rw [hval, Complex.ofReal_re]
   field_simp [ne_of_gt hden_pos]
-  ring
 
 /-- Sharpness of harmonic pole isolation: `periodicPoleZeta ℓ` has positive
 odd-harmonic prime weights, a simple pole `μ_pole 0 = 1`, a periodic simple pole
@@ -1518,6 +1521,8 @@ theorem periodicPole_boundary_zero_survives_with_second_harmonic_pole {ℓ : ℝ
           ((σ : ℂ) + ((2 * (Real.pi / ℓ) : ℝ) : ℂ) * I)).re)
         (𝓝[>] 1) (𝓝 1) := by
   have hℓc : (ℓ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hℓ)
+  have hepi : Complex.exp (-(Real.pi * I)) = -1 := by
+    rw [Complex.exp_neg, Complex.exp_pi_mul_I, inv_neg, inv_one]
   have hshift_one (σ : ℝ) :
       periodicPoleNegLogDeriv ℓ ((σ : ℂ) + ((Real.pi / ℓ : ℝ) : ℂ) * I) =
         -periodicPoleNegLogDeriv ℓ (σ : ℂ) := by
@@ -1527,7 +1532,7 @@ theorem periodicPole_boundary_zero_survives_with_second_harmonic_pole {ℓ : ℝ
       have harg : -((((σ : ℂ) + ((Real.pi / ℓ : ℝ) : ℂ) * I) - 1) * (ℓ : ℂ)) =
           -(((σ : ℂ) - 1) * (ℓ : ℂ)) + (-(Real.pi * I)) := by
         push_cast; field_simp [hℓc]; ring
-      rw [harg, Complex.exp_add, Complex.exp_neg_pi_mul_I, mul_neg_one]
+      rw [harg, Complex.exp_add, hepi, mul_neg_one]
     rw [hexp, neg_sq]
     ring
   have hshift_two (σ : ℝ) :
@@ -1539,7 +1544,7 @@ theorem periodicPole_boundary_zero_survives_with_second_harmonic_pole {ℓ : ℝ
       have harg : -((((σ : ℂ) + ((2 * (Real.pi / ℓ) : ℝ) : ℂ) * I) - 1) * (ℓ : ℂ)) =
           -(((σ : ℂ) - 1) * (ℓ : ℂ)) + ((-(Real.pi * I)) + (-(Real.pi * I))) := by
         push_cast; field_simp [hℓc]; ring
-      rw [harg, Complex.exp_add, Complex.exp_add, Complex.exp_neg_pi_mul_I]
+      rw [harg, Complex.exp_add, Complex.exp_add, hepi]
       ring
     rw [hexp]
   refine ⟨periodicPoleZeta_boundary_zero hℓ, tendsto_periodicPole_origin hℓ, ?_, ?_⟩
@@ -1548,5 +1553,35 @@ theorem periodicPole_boundary_zero_survives_with_second_harmonic_pole {ℓ : ℝ
     ring
   · refine (tendsto_periodicPole_origin hℓ).congr fun σ => ?_
     rw [hshift_two σ]
+
+#print axioms meyerTraceOrbitBounded_iff_offLine_values_zero
+#print axioms meyerSingleJetSource_traceOrbitBounded_of_critical
+#print axioms meyerTraceBoundedIdeal_eq_top_iff
+#print axioms meyerTraceBoundedSurface_hodgeIndex
+#print axioms meyerTraceBoundedDegreeCone_riemannRoch
+#print axioms meyerTraceBoundedDegreeCone_bezout
+#print axioms meyerTraceBoundedDegreeCone_ample
+#print axioms meyerTraceBoundedDegreeCone_add_closed
+#print axioms isGreatest_meyerSharpPositiveIdeal
+#print axioms zeta_blindOffLine_of_scaleShift_subspace_weil_nonneg
+#print axioms degree_one_cosinePolynomial_le_const
+#print axioms cosinePolynomial_fejerAutoCoeff
+#print axioms fejerAutoCoeff_two_const_lt_first
+#print axioms cosinePolynomial_purchase_ratio_lt_two
+#print axioms harmonicCoupledZeroSide_eq_poleGamma_sub_primes
+#print axioms harmonicCoupledPrimeSum_nonneg
+#print axioms harmonicCoupledOffLineZeroSide_le_poleGamma
+#print axioms harmonic_divisor_order_le
+#print axioms harmonic_quantized_zero_vanishing
+#print axioms riemannZeta_boundary_ne_zero_from_harmonic_forcing
+#print axioms harmonicZeroFreeCollar_nonempty_in_strip
+#print axioms xiDivisorSupport_disjoint_boundary_and_harmonicCollar
+#print axioms cexp_integral_doublePolePrimeDensity_eq
+#print axioms neg_logDeriv_doublePoleZeta_eq
+#print axioms doublePole_harmonic_nonneg
+#print axioms doublePole_boundary_zero_survives_all_degrees
+#print axioms neg_logDeriv_periodicPoleZeta_eq
+#print axioms periodicPole_harmonic_nonneg
+#print axioms periodicPole_boundary_zero_survives_with_second_harmonic_pole
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

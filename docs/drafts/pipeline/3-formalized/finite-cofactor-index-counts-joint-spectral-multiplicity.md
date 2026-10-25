@@ -1,8 +1,8 @@
 # Finite cofactor index counts joint spectral multiplicity
 
 - **ID:** finite-cofactor-index-counts-joint-spectral-multiplicity
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean completion pending)
+- **Stage:** 3-formalized
+- **Type:** LEAN THEOREM
 - **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
 - **Statement:** In the finite-dimensional branch of every actual cofactor
   module, the normalized module hull is a finite set of joint generalized characters.
@@ -104,12 +104,21 @@ umbrella-wired:
 - `ArithmeticOrientationTheory/NormalizedBohrCharacters.lean`
 - `ArithmeticDefectRigidity/FiniteCofactorIndexCountsJointMultiplicity.lean`
 
-Final direct per-file checks remain; see
-[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
+All three canonical source-only checks passed. Transitive axiom reports for
+the normalized hull bijection, finite counting, positive multiplicities,
+exact dimension sum and finite-or-continuum alternative contain only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+The actual application declarations are in `ActualCofactorLimit`:
+`mem_moduleHull_iff_jointBohrSpace_ne_bot`,
+`jointCharacterEquivNormalizedHull`, `normalizedModuleHullFintype`,
+`finrank_quotient_eq_sum_jointCharacter`,
+`finrank_quotient_eq_sum_normalizedModuleHull`,
+`jointBohrSpace_finrank_pos`, and `finite_joint_index_or_continuum`.
 
 - [x] Dependency-closed paper argument, with all actual structural inputs proved.
 - [x] Relevant corpus mechanisms inspected; no arithmetic hypothesis added.
 - [x] Lean finite joint decomposition and exact dimension sum.
 - [x] Multiplicative characters, normalized Bohr hull equality, actual index formula.
 - [x] Transitive scratch axiom audit and umbrella imports.
-- [ ] Final canonical source checks.
+- [x] Final canonical source checks and transitive axiom audits.

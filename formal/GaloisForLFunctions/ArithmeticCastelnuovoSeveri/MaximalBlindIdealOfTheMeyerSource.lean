@@ -611,8 +611,10 @@ theorem blindOffLine_of_scaleShift_subspace_weil_nonneg
   apply ((ArithmeticOrientationGeometry.orientation_tfae Z hZ hFE x).out 1 2).mp
   rw [ArithmeticOrientationGeometry.ScalingDatum.orbitHodgeIndex_iff_defect_nonneg]
   intro S c
-  change 0 ≤ (configSurface Z hZ).defect _ _
-  rw [configSurface_defect, configWeil, ArithmeticOrientationGeometry.orbitComb_test Z hZ x S c]
+  change 0 ≤ (ArithmeticOrientationGeometry.configSurface Z hZ).defect _ _
+  rw [ArithmeticOrientationGeometry.configSurface_defect,
+    ArithmeticOrientationGeometry.configWeil,
+    ArithmeticOrientationGeometry.orbitComb_test Z hZ x S c]
   exact hpos _ (U.sum_mem fun t _ => U.smul_mem (c t) (hshift t hf))
 
 /-- Specialization to `ζ`: every scale-shift-invariant Weil-nonnegative subspace of compact

@@ -2,13 +2,17 @@
 
 - **ID:** q-iii-escape-state-classification
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE / active research programme
+- **Type:** CONJECTURE / existing-proof formalization in progress
 - **Source:** `docs/reports/review-2410/opus.md`, Q-III and Mechanism A.
 - **Statement:** Classify every actual common cofactor limit of the damped Möbius receiver, its signed data, Wiener annihilator, spectral hull, and index; decide generation by translated off-line zeros on the Kronecker curve.
 
 ## Goal and remaining mathematical gaps
 
 **Full Q-III remains open. Do not mark the persistent goal complete.**
+Current authorized scope: finish started Lean work and all existing paper
+proofs, then pause. The [completion ledger](q-iii-existing-findings-lean-completion.md)
+supersedes historical queue and session instructions below. Edit Lean directly;
+invoke each compiler command directly. No source-generation or build scripts.
 The attachment is `/Users/michael/.codex/attachments/4336a717-ce0a-4c1f-8abb-88688fc210a7/pasted-text-1.txt`.
 It and the complete report have been read. No hgtl7 skill, numerical experiments,
 new analytic assumptions, or unproved interfaces are allowed.
@@ -99,12 +103,13 @@ normalization may lose lower logarithmic orders. A filtered multiplicity index
 remains a conjecture, not an actual Möbius theorem.
 
 A dependency-closed finite-branch refinement is on
-[the joint multiplicity card](../2-fully-proven/finite-cofactor-index-counts-joint-spectral-multiplicity.md).
+[the joint multiplicity card](../3-formalized/finite-cofactor-index-counts-joint-spectral-multiplicity.md).
 The corpus's `MatrixPrincipalSymbolAbelianSpectrum` supplies independent,
 exhaustive joint generalized eigenspaces for commuting finite-dimensional
 families. Their nonzero joint functions are algebra characters, and a finite
 annihilating product proves they exhaust the actual module hull. The finite
-index is the sum of their positive sector dimensions. Lean is pending;
+index is the sum of their positive sector dimensions. All three canonical
+Lean leaves and transitive axiom audits passed;
 identifying these module multiplicities with arithmetic zero orders remains open.
 The next source audit is recorded in
 [visible poles and module multiplicity](q-iii-visible-poles-and-module-multiplicity.md).

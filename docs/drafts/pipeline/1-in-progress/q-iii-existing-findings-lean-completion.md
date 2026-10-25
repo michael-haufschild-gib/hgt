@@ -38,7 +38,7 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Zero cofactor forces dimension at most p-1 | Final canonical source check passed; positive survivor and exclusion card moved to `3-formalized` |
 | Augmentation countermodel and singleton character hull | Existing countermodel scratch passed; complete source with singleton claim is `/tmp/qiii-augmentation-full-check.lean`, unchecked |
 | Actual unit transport, Möbius/Liouville equivalence | Canonical final checks; real convolution olean exists |
-| Finite joint spectral multiplicities and normalized Bohr representatives | All three required oleans passed with standard axioms; final source-only checks running |
+| Finite joint spectral multiplicities and normalized Bohr representatives | All three canonical source-only checks passed with standard axioms; card moved to `3-formalized` |
 | Rank-one multiplicative signs | Draft scratch, then canonical placement/check |
 | Visible interior pole orders, paid jets, critical boundary values, unit orbits | Canonical checks after successful combined scratch |
 | Reset moving origin, faithful step kernel and every positive boundary mass | Thirteen canonical leaves after successful combined scratch |
@@ -77,12 +77,15 @@ normalized-Bohr-character, and actual finite-index oleans successfully. Every
 printed target has standard axioms; the actual index leaf explicitly audits
 all seven main statements, including normalized counting and positivity.
 
-Current direct session `27212` is the final source-only check of
-`HTGeometry/FiniteCommutingAlgebraActionsHaveJointCharacters.lean`. After it
-finishes, check `ArithmeticOrientationTheory/NormalizedBohrCharacters.lean`
-and `ArithmeticDefectRigidity/FiniteCofactorIndexCountsJointMultiplicity.lean`
-directly, one at a time. Then all three unit-transport leaves still require
-their final source-only checks. No concurrent Lean process.
+Sessions `27212` and `68534` passed the joint-character and normalized-Bohr
+final source-only audits. The output from actual finite-index session `35428`
+was lost during compaction and its process has exited; no success is inferred.
+Direct session `49590` passed the actual finite-index source-only check, with
+standard axioms for all seven printed statements. The finite-index batch is
+complete. The next direct source-only check is
+`ArithmeticDefectRigidity/PaidCorrectionsPreserveNormalizedCofactorGrams.lean`.
+All three unit-transport leaves still require final source-only checks.
+No concurrent owned Lean process.
 
 ## Direct source work remaining
 
@@ -93,15 +96,24 @@ owner, add its umbrella import directly, and run the canonical check directly.
 - `/tmp/qiii-contracted-horizons-check.lean` contains the current exact remainder,
   mixed bound and full operator intertwining drafts.
 - `/tmp/qiii-augmentation-full-check.lean` combines the countermodel and exact
-  singleton-hull claim. Obsolete augmentation-hull and cutoff scratches were
+  singleton-hull claim, first-coefficient action and scalar character Gram.
+  All added claims are from the existing paper argument and remain unchecked.
+  Obsolete augmentation-hull and cutoff scratches were
   removed; the completed cutoff source and audit logs remain.
 - Rank-one sign, common-family, crossing and Gram-step scratches now have proper
   mathematical module comments and can be copied directly once checked.
-- Finite-hull completion must combine the existing eigencharacter-power,
-  finite-hull-modulus and half-plane-sequence bodies. It needs the common-family,
-  numeric-operator-order and tied-torus canonical dependencies.
-- Full jet completion must retain point separation, masked finite jets, interior
-  rank bounds, mixed interior/boundary interpolation and rank bounds, and the
-  unit-orbit/Liouville corollaries. Existing scratch and part files remain.
+- `/tmp/qiii-finite-hull-moduli-check.lean` now directly combines the existing
+  eigencharacter-power, finite-hull-modulus and half-plane-sequence bodies.
+  It is unchecked and needs the common-family, numeric-operator-order and
+  tied-torus canonical dependencies.
+- `/tmp/qiii-visible-mixed-jet-index-check.lean` retains point separation,
+  masked finite jets, interior rank bounds, mixed interior/boundary
+  interpolation and rank bounds, and the unit-orbit/Liouville corollaries.
+  It now imports the intended `InteriorWienerJets` owner rather than duplicating
+  its body, and explicitly imports `AnIndexFormulaForTheActualReceiver`.
+  It remains unchecked until the base jet and pole dependencies are complete.
 - Raw-origin and boundary-index scratch files remain unchecked. Their exact
   source statements and canonical dependencies are retained in their Lean files.
+- `/tmp/qiii-actual-kernel-interpolation-check.lean` now directly combines the
+  intermediate-coordinate and singleton/continuum drafts. It is unchecked
+  and needs common-limit extraction, crossing and Gram-step canonical imports.

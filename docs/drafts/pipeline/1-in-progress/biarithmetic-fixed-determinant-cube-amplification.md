@@ -108,7 +108,8 @@ The complex-root specialization also records that each second point count
 is the corresponding real integer. Thus the classification covers arbitrary
 complex reciprocal roots, including the pure nonreal cases, by taking real
 parts of the exact integer identity. The root-purity extension below is also
-included, giving eight audits in total; unchecked.
+included. Scratch check and all eight transitive audits passed. Production
+source is wired; its direct check remains pending.
 
 ## Root purity exposed by the trace classification
 

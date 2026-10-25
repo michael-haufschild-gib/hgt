@@ -2,10 +2,10 @@
 
 - **ID:** bounded-meyer-flow-orbits-live-in-critical-top-jets
 - **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean verification pending)
+- **Type:** THEOREM (core classification); extensions awaiting Lean verification
 - **Source:** Q-II; faithful Hilbert–Schmidt reserve and genuine full-Hasse flow.
 - **Statement:** An actual Meyer source has bounded centered-flow orbit in Hilbert–Schmidt convolution norm exactly when its Xi jets vanish off the critical line and only the highest jet survives in each critical multiplicity block.
-- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass; external novelty unverified.
+- **Status:** CORE FORMALIZED. The four-way orbit classification and fixed-source/global criteria passed actual-file check and all six axiom audits. Product, radical, nontriviality and reserve-flow extensions remain unverified. External novelty unverified.
 
 ## Exact theorem
 
@@ -23,7 +23,7 @@ flow. The following conditions are equivalent:
 These are statements about actual admitted sources, not arbitrary prescribed
 infinite jet families. The genuine source quotient retains all these jets.
 
-## Dependency-closed paper proof
+## Formalized bounded-orbit argument
 
 Every actual convolution operator is Hilbert–Schmidt by its existing
 resolvent factorization. Let `a_j` be the raw Mellin jet at a fixed Xi point
@@ -129,16 +129,31 @@ HS norm, and the converse follows from the norm isometry above.
 - Exact finite Hasse algebra: paper proof complete, Lean verification pending.
 
 Searches located the preceding mechanisms but no full bounded-orbit critical-highest-jet
-classification. Lean must formalize the four-way equivalence, exact product/radical
-corollaries, unconditional nontriviality, and the fixed-source/global criteria.
+classification. The four-way equivalence and fixed-source/global criteria are now
+formalized. Exact product/radical corollaries, unconditional nontriviality and
+reserve-flow assertions still await verification.
 The core source/jet bounds are drafted in
 `ArithmeticCastelnuovoSeveri/MeyerHilbertSchmidtSource.lean` (actual-file certified); the four-way classification and
 fixed-source/global criteria are drafted in
-`ArithmeticCastelnuovoSeveri/MeyerBoundedCenteredOrbits.lean` (actual candidate; unverified). The source base is certified; the bounded-orbit leaf remains unverified. The product,
+`ArithmeticCastelnuovoSeveri/MeyerBoundedCenteredOrbits.lean` (certified). The product,
 trace-radical, and nontriviality endpoints are present in the actual
 `ArithmeticCastelnuovoSeveri/MeyerCriticalTopAlgebra.lean` candidate, also unverified.
 This jet-selected restricted carrier does not supply an independent all-source
 RR/Bézout mechanism on the original scaling surface.
+
+Direct `lake --old env lean` check **20136** passed with only `propext`,
+`Classical.choice`, and `Quot.sound` in all six endpoint audits:
+
+- `meyerHilbertOrbitBounded_iff_criticalTopJets`
+- `meyerJetOrbitBounded_iff_criticalTopJets`
+- `meyerHilbertOrbitIsometric_iff_criticalTopJets`
+- `meyerXiAvoidingHilbertOrbitBounded_iff`
+- `all_meyerHilbertOrbits_bounded_iff`
+- `all_meyerHilbertOrbits_isometric_iff`
+
+Temporary prints and the core scratch draft are removed; the core module is
+wired and documented. This card remains in stage 2 until its remaining
+algebra and reserve-flow extensions pass their own Lean checks.
 
 The actual algebra module contains positive trace, radical-annihilation, and
 unconditional nontriviality endpoints. Its inputs are the exact full-jet algebra

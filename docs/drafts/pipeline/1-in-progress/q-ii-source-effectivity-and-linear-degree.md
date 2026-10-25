@@ -253,10 +253,25 @@ the failed file as a whole is not certified. Recheck now includes explicit
 ampleness, additive-closure and scalar-closure audits, fifteen endpoints total.
 Direct actual-file reserve recheck **4030** passed with only the standard three
 axioms in all fifteen endpoint audits. The module is cleaned, wired, documented,
-and its card moved to stage 3. Its old scratch draft is deleted. Its olean was
-explicitly confirmed missing; direct missing-olean build **80282** is the sole
-owned Lean process, required by the actual reserve-flow importer. Wait for exit
-before any further Lean invocation.
+and its card moved to stage 3. Its old scratch draft is deleted. Missing-olean
+build **80282** passed for the actual reserve-flow importer. Its olean now exists;
+never rebuild it. Actual bounded-orbit check **23633** failed only because
+`omega` treated the coerced newly constructed jet index as a separate variable.
+The proof now explicitly changes its goal to `i + 1 < xiSupportMultiplicity rho`
+before arithmetic. Failed endpoint audits are not certificates. Direct recheck
+**20136** passed with the standard three axioms in all six audits. The core
+bounded-orbit module is cleaned, wired, and documented; its old scratch draft
+is deleted. Its card remains stage 2 because the algebra and reserve-flow
+extensions are still unverified. The core's olean was explicitly confirmed
+missing. Direct missing-olean build **75806** passed for the actual
+`MeyerCriticalTopAlgebra` importer. Its olean now exists; never rebuild it.
+Direct actual-file check **47078** of `MeyerCriticalTopAlgebra.lean`, with eleven
+endpoint audits, is the sole owned Lean process. Wait for exit before another
+invocation. Then verify its dependent reserve-flow module; both are needed to
+finish the bounded-orbit card.
+The same visible newly constructed-index pattern is normalized explicitly in
+the two unverified nilpotent-order inductions in `MeyerAlgebraicCharacters` and
+`PositiveMeyerDegreesSeeReducedCriticalJets`. Their old scratch copies are stale.
 User reiterated: write no Python scripts; use direct Lean edits
 and direct `lake --old env lean ...` commands.
 
@@ -270,9 +285,9 @@ Rows explicitly marked certified have passed; all other rows remain unverified.
 | `ArithmeticMajorantConeGeometry` | Pointedness correction awaits direct recheck |
 | `SmoothFiniteReadingKernels` | Corrected smoothness API probe, then actual recheck |
 | `ArithmeticSharpAndTheHilbertAdjoint` | CERTIFIED: direct 96392, three standard axiom audits, missing-olean build 95594 passed |
-| `FaithfulHilbertSchmidtSourceReserves` | CERTIFIED: direct 4030 and fifteen standard audits; missing-olean build 80282 running |
-| `MeyerBoundedCenteredOrbits` | Six endpoints; required HS-source olean now exists |
-| `MeyerCriticalTopAlgebra` | Eleven endpoints; requires bounded-orbit olean |
+| `FaithfulHilbertSchmidtSourceReserves` | CERTIFIED: direct 4030, fifteen standard audits, missing-olean build 80282 passed |
+| `MeyerBoundedCenteredOrbits` | CERTIFIED: direct 20136, six standard audits, missing-olean build 75806 passed |
+| `MeyerCriticalTopAlgebra` | Eleven endpoints; actual direct check 47078 running |
 | `BoundedMeyerSourceSurface` | Thirteen endpoints; direct restriction must replace conflicting AOG import |
 | `MeyerHilbertReserveFlowRigidity` | Seven endpoints; requires reserve and critical-top oleans |
 | `BoundedMeyerFaithfulReserve` | Twelve endpoints; includes exact linear-degree representation |

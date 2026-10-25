@@ -538,6 +538,12 @@ and pointedness modulo genuine principal classes unconditionally. Its RR axiom,
 and existence of a linear degree representing this exact reserve on arithmetic
 sharp squares, are each equivalent to RH plus simplicity.
 
+Full-Hasse centered orbits have an exact support classification
+(`MeyerBoundedCenteredOrbits`): Hilbert–Schmidt boundedness, boundedness of every
+individual Xi jet, support only in critical highest jets, and Hilbert–Schmidt
+norm isometry are equivalent. Boundedness for all sources, or already for the
+fixed Xi-avoiding source, is exactly RH plus simplicity.
+
 Centered flow preserves the literal mixed arithmetic sharp product, so every
 reading of that product is invariant. A nonnegative invariant majorant controlling
 the original mixed trace exists exactly under RH

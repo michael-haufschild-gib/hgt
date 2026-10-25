@@ -55,7 +55,7 @@ private theorem centered_character_norm (rho : XiDivisorSupport)
   rw [Complex.norm_exp]
   have he : (((c : ℝ) : ℂ) * ((rho : ℂ) - 1 / 2)).re = 0 := by
     simp only [Complex.mul_re, Complex.sub_re, Complex.ofReal_re, Complex.ofReal_im,
-      Complex.div_ofNat_re, Complex.one_re, hr, zero_mul, sub_zero, mul_zero, sub_self]
+      Complex.div_ofNat_re, Complex.one_re, hr, zero_mul, mul_zero, sub_self]
   rw [he, Real.exp_zero]
 
 /-- An admitted Hilbert–Schmidt orbit bound controls every lower raw jet separately. -/
@@ -124,7 +124,9 @@ private theorem top_jet_character (g : DeningerMeyerStrongLogTarget) (hg : Meyer
     deningerMeyerHasseMoment (deningerMeyerStrongLogCenteredFlow c g) k (rho : ℂ) =
       Complex.exp ((c : ℂ) * ((rho : ℂ) - 1 / 2)) * deningerMeyerHasseMoment g k (rho : ℂ) := by
   rw [deningerMeyerHasseMoment, meyerCenteredSource_jet_of_lower_zero c g k (rho : ℂ)
-    (fun i hi => hg rho ⟨i, hi.trans hk⟩ (Or.inr (by omega))), deningerMeyerHasseMoment]
+    (fun i hi => hg rho ⟨i, hi.trans hk⟩ (Or.inr (by
+      change i + 1 < xiSupportMultiplicity rho
+      omega))), deningerMeyerHasseMoment]
   ring
 
 private theorem top_source_operator_row (g : DeningerMeyerStrongLogTarget)
@@ -250,10 +252,3 @@ theorem all_meyerHilbertOrbits_isometric_iff :
       (all_criticalTopJets_of_simple_critical hRH hs g)
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertOrbitBounded_iff_criticalTopJets
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerJetOrbitBounded_iff_criticalTopJets
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertOrbitIsometric_iff_criticalTopJets
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerXiAvoidingHilbertOrbitBounded_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.all_meyerHilbertOrbits_bounded_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.all_meyerHilbertOrbits_isometric_iff

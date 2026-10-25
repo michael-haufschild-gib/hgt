@@ -117,6 +117,9 @@ theorem integrable_gaussW (a : ℝ) {b : ℝ} (hb : 0 < b) : Integrable (gaussW 
   rw [div_pow]
   field_simp
 
+theorem continuous_gaussW (a b : ℝ) : Continuous (gaussW a b) := by
+  unfold gaussW; fun_prop
+
 theorem continuous_gaussK (b : ℝ) : Continuous (gaussK b) := by
   unfold gaussK; fun_prop
 

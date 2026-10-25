@@ -60,9 +60,13 @@ direct repository checks. All four targets have only standard transitive
 axioms. It is wired as `UniformVaughanGramsFollowTheirSmoothRankOneTerm.lean`;
 its scratch was removed. See
 `../3-formalized/uniform-vaughan-grams-follow-their-smooth-rank-one-term.md`.
-The four finite packet identities are undergoing their producing check.
+The four finite packet identities passed producing and final direct checks,
+with standard transitive axioms only. They are wired as
+`VaughanPacketGramIdentities.lean`; the scratch was removed. See
+`../3-formalized/vaughan-packet-gram-identities.md`.
 All other remaining leaves named in the table are unchecked drafts. Dependencies and
-live compiler handles are recorded in `/tmp/QIVerificationState.txt`.
+live compiler handles are recorded in `/tmp/QIVerificationState.txt`; the
+complete module queue is `/tmp/QILeanCompletionQueue.md`.
 
 Full Q-I remains open. Formalizing the stated equivalences does not prove a
 fixed strip or replace that missing conclusion by a premise.

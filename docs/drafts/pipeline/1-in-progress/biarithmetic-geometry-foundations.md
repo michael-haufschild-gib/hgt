@@ -26,6 +26,10 @@ paper proofs, then pause. Complete this verification and formalization queue;
 do not expand the research frontier before pausing. The full programme remains
 incomplete, and the eventual pause must not be reported as goal completion.
 
+Handle proof review, promotion, and documentation directly. Do not write or use
+Python automation for these tasks. The prepared promotion helper and its queued
+driver were removed. Pending-check manifests remain as data only.
+
 The closeout scope includes the existing proof plans on the digital-energy,
 payment-graph, paid-Gram-stability, normalized-cube, divisor-positivity,
 intrinsic-golden, critical-continuum-defect, one-prime-Fredholm, digit-profile,
@@ -119,6 +123,17 @@ its parent card. Open programme questions without a proof plan remain open.
 | `CriticalPartialSumCore` | Direct repository leaf passed; stage-3 card | Seven main declarations clean |
 | `GoldenNormalizedCube` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
 | `NormalizedCubicTrace` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `CriticalGoldenPaymentNonclosed` | Scratch passed; direct repository check pending | Six main declarations clean |
+| `CofactorGraphClosedness` | Scratch passed; direct repository check pending | Two main declarations clean |
+| `DigitRefinement` | Scratch passed; direct repository check pending | Nine main declarations clean |
+| `DigitalCircleFourier` | Scratch passed; direct repository check pending | Three main declarations clean |
+| `FinitePronicStepEmbedding` | Scratch passed; direct repository check pending | Two main declarations clean |
+| `GoldenDivisorResponse` | Scratch passed; direct repository check pending | Five main declarations clean |
+| `GeometricPoleExtraction` | Scratch passed; direct repository check pending | Four main declarations clean |
+| `GeometricShellHilbert` | Scratch passed; direct repository check pending | Six main declarations clean |
+| `CriticalGoldenClosure` | Scratch passed; direct repository check pending | Four main declarations clean |
+| `PronicFiniteExtension` | Scratch passed; direct repository check pending | Four main declarations clean |
+| `NormalizedCubicRootLaw` | Scratch passed; direct repository check pending | Eight main declarations clean |
 | `PaidSourcePerturbations` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `FullWienerAnnihilation` | Consolidated ADR interfaces and direct repository leaf passed | Four chosen and universal declarations clean |
 
@@ -795,7 +810,8 @@ Active drafts:
 - `/tmp/BiarithmeticNormalizedCubicRootLaw.lean`: field-valued determinant,
   trace, and normalization identities; real and complex reciprocal-root
   point-count bridges to the integral classification, and actual square-root
-  root norms for every surviving pair. Eight audits drafted; unchecked.
+  root norms for every surviving pair. Scratch check and all eight audits passed.
+  Production source is wired; direct check remains pending.
 - `GoldenSourceAdmission.lean`: positive tower threshold and actual golden admission
   phase passed direct check and five audits. Stage-3 card present; obsolete scratch removed.
 - `IntrinsicGoldenSeries.lean`: exact intrinsic counting-pole cancellation
@@ -804,7 +820,8 @@ Active drafts:
   Stage-3 card and umbrella import present; obsolete scratch removed.
 - `/tmp/BiarithmeticGeometricPoleExtraction.lean`: exact primary-pole
   polynomial division, quadratic remainder bound for cubic numerators, and
-  absolute summability retaining the double pole at one. First check pending.
+  absolute summability retaining the double pole at one. Scratch check and
+  all four audits passed; production source is wired and awaits direct check.
 - `/tmp/BiarithmeticIntrinsicGoldenRemainder.lean`: actual intrinsic residue,
   strict negative sign on the positive-damping escape interval, quadratic
   numerator, exact coefficient decomposition, and critically weighted absolute
@@ -826,13 +843,18 @@ Active drafts:
 - `/tmp/BiarithmeticGeometricShellHilbert.lean`: the canonical geometric
   kernel completion is isometric to the complex line, with exact shift
   eigenvalues and composition. Reuses corpus Gram completion and total-feature
-  unitary equivalence. Six audits drafted; unchecked.
+  unitary equivalence. Scratch check and all six audits passed; wired production
+  source awaits direct check.
 - `/tmp/BiarithmeticIntrinsicGoldenTangentModule.lean`: actual-source
   limit comparison, canonical completed-module isometry, complex dimension one,
   and exact norm-lattice shift eigenvalues. Four audits drafted; unchecked.
 - `/tmp/BiarithmeticIntrinsicPointKernelEnergy.lean`: exact centered point
   response of the actual intrinsic count, uniform affine tail, and total
-  shell-energy bound `6*5^(-r)`. Four audits drafted; unchecked. Infinite
+  shell-energy bound `6*5^(-r)`. First check failed in the geometric majorants:
+  a power rewrite targeted the square instead of the geometric factor, and
+  induction retained an unrelated bound. Targeted rewrites, a clean induction
+  context, and removal of two redundant tactics repair those failures; recheck
+  and all four clean audits remain required. Infinite
   Wiener synthesis and the intrinsic convolution/payment bridge remain.
 - `/tmp/BiarithmeticIntrinsicWienerSynthesis.lean`: actual intrinsic point
   responses in the completed shell space, exact norm-square identification,
@@ -865,7 +887,8 @@ Active drafts:
 - `/tmp/BiarithmeticPronicFiniteExtension.lean`: reuses the corpus's exact `lp`
   coordinate isometry, embeds arbitrary finite source horizons, and derives the
   full complex formal cofactor composition law from the completed representation.
-  Unchecked. The finite-extension proof is recorded on the payment-graph card;
+  Scratch check and all four audits passed; wired production source awaits its
+  direct check. The finite-extension proof is recorded on the payment-graph card;
   it imposes no growth premise on the original arithmetic row.
 - `/tmp/BiarithmeticPronicGraphAction.lean`: invariant source graph under the
   actual Wiener product, exact input/output action, unit and composition,
@@ -893,8 +916,10 @@ Active drafts:
   on that in-progress card.
 - `/tmp/BiarithmeticGeometricCausalDivision.lean`: the strict expanding complex
   response has finite square energy iff its reciprocal evaluation vanishes;
-  exact negative-future-tail formula and explicit absolute-sum bound. Unchecked,
-  dependent on the future-tail draft. This proves the sequence domain, with
+  exact negative-future-tail formula and explicit absolute-sum bound. First
+  check found one redundant tactic after field normalization; removed, with
+  recheck pending. Its future-tail dependency is checked and built. This
+  addresses the sequence domain, with
   transfer to the actual one-prime payment complex still separate.
 - `/tmp/BiarithmeticStrictPrimePayment.lean`: exact normalization of the actual
   complex tower criterion as a geometric causal-response domain, then the
@@ -1063,8 +1088,21 @@ Pending source check: `/tmp/BiarithmeticDigitCovarianceMainTerms.lean` derives t
 
 Pending source check: `/tmp/BiarithmeticChirpPhaseRigidity.lean` contains the three-rotation rigidity argument and the exact nondegenerate prime-two angle. It does not yet identify these three samples with actual source tangents; the discrete asymptotics, tangent realization, and boundary-loss representation remain outstanding.
 
+Pending source check: `/tmp/BiarithmeticChirpPhaseGroup.lean` constructs the
+compact closure group of the actual logarithmic phase flow and derives its
+cofactor multiplicativity by closedness. Integer-horizon realization is pending.
+
+Pending source check: `/tmp/BiarithmeticChirpCauchyKernel.lean` drafts strict
+finite-packet positivity of the explicit chirp kernel by an invertible
+diagonal congruence of the corpus's Cauchy Gram. Four audits are pending.
+This does not establish the discrete source asymptotic or tangent realization.
+
+Pending source check: `/tmp/BiarithmeticChirpSourceRegularity.lean` drafts
+the actual scalar chirp row, its derivative and derivative decay, and an
+explicit uniform integer-increment bound. Four audits remain unchecked.
+
 Pending source check: `/tmp/BiarithmeticComplexShellShift.lean` constructs complex normalized shell shifts with exact isometry and semigroup laws. This is the missing bounded-operator input for the existing intrinsic infinite-kernel convolution proof plan.
 
 Pending source check: `/tmp/BiarithmeticIntrinsicShellConvolution.lean` constructs bounded convolution by every actual critical Wiener kernel, identifies its finite Cauchy coordinates, and proves weighted shell-energy stability with operator bound `||k||`. This addresses the infinite-kernel action required by the intrinsic centered-convolution proof plan.
 
-Pending source check: `/tmp/BiarithmeticIntrinsicPaymentDomain.lean` identifies the actual centered filtered receiver, pays its mean correction and geometric remainder, and reduces full intrinsic payment to weighted square summability of its geometric causal response. All analytic inputs are proved in the queued dependencies, not introduced as source hypotheses.
+Pending source check: `/tmp/BiarithmeticIntrinsicPaymentDomain.lean` identifies the actual centered filtered receiver, pays its mean correction and geometric remainder, and reduces full intrinsic payment to weighted square summability of its geometric causal response. Every analytic input has a queued Lean proof obligation; no additional source hypothesis is used. The draft also identifies intrinsic payment with actual ordinary golden payment on the one-prime algebra throughout positive-damping escape.

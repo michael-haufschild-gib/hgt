@@ -1491,7 +1491,15 @@ prime mean $\nu$ is therefore unpaid unless $\nu\in\{0,-1\}$ (`not_receiverBound
 which is why the constant-sign diagram has only the Liouville line below half damping. The same
 holds height by height: $f(p)=a\cos(t_0\log p)$, $t_0\ne0$, has local prime mean $a/2$ at height
 $t_0$, so $f(d)d^{-\varepsilon}$ is paid iff $a=0$ (`receiverBounded_oscPattern_damped_iff`). The
-prime mean is quantized at every height.
+prime mean is quantized at every height. No mean has to be assumed: if $f(d)d^{-\varepsilon}$ is paid,
+$0<\varepsilon<\tfrac12$, then at every height $\log\lvert F(1+u+it_0)\rvert=k\log(1/u)+O(1)$ with
+$k\in\mathbb Z$ the order of $\zeta$ minus the order of $C\zeta$ at $1-\varepsilon+it_0$
+(`exists_int_localExponent_of_receiverBounded_damped`). Off the real axis
+$\lvert\cos x\rvert\le\tfrac34+\tfrac14\cos2x$ and $\zeta(1+2it_0)\ne0$ cap $\lvert k\rvert$ at $\tfrac34$, so $F$
+stays bounded and bounded away from $0$ along every ray at $t_0\ne0$
+(`exists_abs_log_norm_patternSeries_le_of_receiverBounded_damped`). A Dini box has exponent
+$\tfrac12-o(1)$, so Dini patterns, and in particular all completely monotone amplitude defects, are
+unpaid at every damping below one half (`not_receiverBounded_damped_of_diniBox`).
 
 **Residue-class flips.** For $f_{q,S}$ flipping the primes in the classes $S\subseteq\mathbb Z/q$,
 the flipped primes have exact logarithmic density $\rho=\#(S\cap(\mathbb Z/q)^\times)/\varphi(q)$
@@ -1576,7 +1584,12 @@ same law holds: $(1-c\,g(p))/2$ is paid iff $\int_0^1e^{-c\Lambda(\rho)}\,d\rho/
 (`receiverBounded_halfDefectWeight_iff`; $\zeta(\tfrac12)\ne0$ leaves no zero alternative), with
 threshold $c=1$ for the harmonic and log-log defects (`receiverBounded_halfHarmonicDefect_iff`,
 `receiverBounded_halfLogLogPattern_iff`) and divergent mass $\sum_p\lvert f(p)-\tfrac12\rvert/p$
-(`not_summable_halfHarmonicMass`). Summable-perturbation invariance stops at convergent mass;
+(`not_summable_halfHarmonicMass`). Monotone defects are completely monotone up to summable mass: a
+step $1_{p<R}$ and $p^{-s}$, $s=\min(\tfrac12,1/\log R)$, differ by
+$\sum_p\lvert1_{p<R}-p^{-s}\rvert/p\le12$ (`sum_abs_step_sub_rpow_le`). Hence, for $d$ antitone along the
+primes with $0\le d\le2$ and $d\to0$, and $t_0>0$, the pattern $(1-d(p))\cos(t_0\log p)$ is paid iff
+$\int_0^1\exp(-\sum_pd(p)p^{-1-\rho})\,d\rho/\rho<\infty$ or $\zeta(\tfrac12+it_0)=0$
+(`receiverBounded_monotoneDefectPattern_iff`). Summable-perturbation invariance stops at convergent mass;
 the phase boundary lies inside the divergent regime and is the Dini integral of the profile.
 
 **Reading.** For any completely multiplicative $f$ with $\lvert f(p)\rvert\le1$, the Euler product
@@ -2028,13 +2041,14 @@ class it never occurs.
 ### 7.7 Beyond the solved phase diagrams
 
 Every completely multiplicative pattern with $\lvert f(p)\rvert\le1$ is decided at half damping by the
-size of $\Re\ell_f$ beside the line, height by height; below half damping the integer-order
-obstruction is necessary only. Sufficient conditions below half damping need the size of the
+size of $\Re\ell_f$ beside the line, height by height; below half damping a paid pattern has an
+integral local exponent at every height, zero off the real axis (§3.18), and these conditions are
+necessary only. Sufficient conditions below half damping need the size of the
 series inside the strip, which for the Liouville pattern is the Möbius problem itself. At half
 damping, multiplicative patterns reduce to their completely multiplicative companions except on two
 two-adic tails (§3.16), and amplitude defects of divergent critical-line mass obey the Dini law,
-including $1-c/\log\log p$ (§3.18). Open: defects that are not within summable critical-line mass of
-a completely monotone one.
+including $1-c/\log\log p$ and every defect monotone along the primes (§3.18). Open: non-monotone
+defects of divergent critical-line mass.
 
 ### 7.8 Research topics
 

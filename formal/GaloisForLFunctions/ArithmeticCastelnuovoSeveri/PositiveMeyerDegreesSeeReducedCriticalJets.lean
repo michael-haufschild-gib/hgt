@@ -60,7 +60,9 @@ theorem meyerPositiveDegree_higher_jet_zero
         by_cases hlt : k.val + k.val < xiSupportMultiplicity rho
         · rw [meyerHasseJetClass_product_same rho k k hlt, map_smul]
           have hz := ih (xiSupportMultiplicity rho - (k.val + k.val))
-            (by have hki := k.isLt; omega) ⟨k.val + k.val, hlt⟩ rfl (by omega)
+            (by have hki := k.isLt; omega) ⟨k.val + k.val, hlt⟩ rfl (by
+              change 0 < k.val + k.val
+              omega)
           rw [hz, smul_zero, Complex.zero_re]
         · rw [meyerHasseJetClass_product_truncated rho k k (Nat.le_of_not_gt hlt),
             smul_zero, map_zero, Complex.zero_re]

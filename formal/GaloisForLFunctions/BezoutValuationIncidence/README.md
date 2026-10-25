@@ -1222,6 +1222,10 @@ weighted Cauchy–Schwarz and the bounded smooth-energy error
 (`PronicGramErrorsAroundASmoothRankOneTerm`). Arbitrary moving cutoffs retain
 this asymptotic at every divergent horizon schedule; every normalized entry
 tends to zero if the cutoff product diverges independently as well.
+For every real coefficient vector, centering commutes with superposition and
+the packet energy is exactly the Gram quadratic form; its smooth direction
+reads the difference of the two convolution coefficients
+(`VaughanPacketGramIdentities`).
 
 **Finite harmonic rigidity.** Every $H_N$ with $N\ge1$ is nonzero. For every prime
 $N/2<p\le N$, its rational $p$-adic valuation is exactly $-1$; all such distinct primes

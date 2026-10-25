@@ -1658,7 +1658,7 @@ private theorem sum_exp_neg_half_Ico_le (j₀ k : ℕ) :
       calc ∑ n ∈ Finset.range (m + 1), (Real.exp (-1 / 2)) ^ n
           = (∑ n ∈ Finset.range m, (Real.exp (-1 / 2)) ^ n) + (Real.exp (-1 / 2)) ^ m :=
             Finset.sum_range_succ _ m
-        _ ≤ (3 - 3 * (Real.exp (-1 / 2)) ^ m) + (Real.exp (-1 / 2)) ^ m := add_le_add_right ih _
+        _ ≤ (3 - 3 * (Real.exp (-1 / 2)) ^ m) + (Real.exp (-1 / 2)) ^ m := add_le_add_left ih _
         _ = 3 - 2 * (Real.exp (-1 / 2)) ^ m := by ring
         _ ≤ 3 - 3 * ((Real.exp (-1 / 2)) ^ m * Real.exp (-1 / 2)) := sub_le_sub_left hmul 3
         _ = 3 - 3 * (Real.exp (-1 / 2)) ^ (m + 1) := by rw [pow_succ]
@@ -1886,7 +1886,7 @@ private theorem sum_exp_neg_fifth_le (K : ℕ) :
       calc ∑ n ∈ Finset.range (m + 1), (Real.exp (-1 / 5)) ^ n
           = (∑ n ∈ Finset.range m, (Real.exp (-1 / 5)) ^ n) + (Real.exp (-1 / 5)) ^ m :=
             Finset.sum_range_succ _ m
-        _ ≤ (6 - 6 * (Real.exp (-1 / 5)) ^ m) + (Real.exp (-1 / 5)) ^ m := add_le_add_right ih _
+        _ ≤ (6 - 6 * (Real.exp (-1 / 5)) ^ m) + (Real.exp (-1 / 5)) ^ m := add_le_add_left ih _
         _ = 6 - 5 * (Real.exp (-1 / 5)) ^ m := by ring
         _ ≤ 6 - 6 * ((Real.exp (-1 / 5)) ^ m * Real.exp (-1 / 5)) := sub_le_sub_left hmul 6
         _ = 6 - 6 * (Real.exp (-1 / 5)) ^ (m + 1) := by rw [pow_succ]
@@ -2063,7 +2063,7 @@ private theorem setIntegral_exp_desingLogProd_two_pi_unit_le {C_exp_int : ℝ} (
     rw [div_le_one (by positivity)]
     linarith [Real.pi_gt_three]
   calc ∫ ξ in b..(b + 1), f ξ
-      ≤ (4 / (2 * Real.pi)) * C_exp_int := by linarith
+      ≤ (4 / (2 * Real.pi)) * C_exp_int := hsum4.trans_eq (by ring)
     _ ≤ 1 * C_exp_int := mul_le_mul_of_nonneg_right h4_le hC.le
     _ = C_exp_int := one_mul _
 

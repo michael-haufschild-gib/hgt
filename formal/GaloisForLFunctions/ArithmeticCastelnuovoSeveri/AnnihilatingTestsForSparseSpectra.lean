@@ -540,4 +540,396 @@ theorem integrable_moment_of_le_exp_rpow {f : ℝ → ℂ} (hf : AEStronglyMeasu
     _ = (1 + x ^ 2) * |x| ^ n * Real.exp (K * |x| ^ s - c * |x| ^ q) := by ring
     _ ≤ M := h
 
+/-! ### 8. The Ingham bump -/
+
+variable {p : ℝ}
+
+theorem norm_inghamFT_le_envelope (hp : 1 / 2 < p) (x : ℝ) :
+    ‖inghamFT p x‖ ≤ inghamEnvelope p x :=
+  le_of_tendsto ((tendsto_paperFT_inghamPartial hp x).norm.comp (tendsto_add_atTop_nat 1))
+    (Eventually.of_forall fun n => norm_paperFT_inghamPartial_le p n x)
+
+theorem aestronglyMeasurable_inghamFT (hp : 1 / 2 < p) :
+    AEStronglyMeasurable (fun r : ℝ => inghamFT p r) volume :=
+  aestronglyMeasurable_of_tendsto_ae atTop
+    (f := fun n (r : ℝ) => paperFT (inghamPartial p (n + 1)) r)
+    (fun n => (continuous_paperFT_ofReal
+      (inghamPartial_integrable_hasCompactSupport p (n + 1)).1).aestronglyMeasurable)
+    (Eventually.of_forall fun r =>
+      (tendsto_paperFT_inghamPartial hp r).comp (tendsto_add_atTop_nat 1))
+
+theorem integrable_inghamFT (hp : 1 / 2 < p) : Integrable fun r : ℝ => inghamFT p r :=
+  (integrable_inghamEnvelope p).mono' (aestronglyMeasurable_inghamFT hp)
+    (Eventually.of_forall (norm_inghamFT_le_envelope hp))
+
+/-- The partial transforms converge to the Ingham transform in `L¹(ℝ)`. -/
+theorem tendsto_integral_norm_sub_inghamFT (hp : 1 / 2 < p) :
+    Tendsto (fun n => ∫ r : ℝ, ‖paperFT (inghamPartial p (n + 1)) r - inghamFT p r‖) atTop
+      (𝓝 0) := by
+  have h := tendsto_integral_of_dominated_convergence (μ := volume)
+    (F := fun n (r : ℝ) => ‖paperFT (inghamPartial p (n + 1)) r - inghamFT p r‖)
+    (f := fun _ => (0 : ℝ)) (fun r => 2 * inghamEnvelope p r)
+    (fun n => ((continuous_paperFT_ofReal
+      (inghamPartial_integrable_hasCompactSupport p (n + 1)).1).aestronglyMeasurable.sub
+        (aestronglyMeasurable_inghamFT hp)).norm)
+    ((integrable_inghamEnvelope p).const_mul 2)
+    (fun n => Eventually.of_forall fun r => by
+      rw [norm_norm]
+      calc ‖paperFT (inghamPartial p (n + 1)) r - inghamFT p r‖
+          ≤ ‖paperFT (inghamPartial p (n + 1)) r‖ + ‖inghamFT p r‖ := norm_sub_le _ _
+        _ ≤ inghamEnvelope p r + inghamEnvelope p r :=
+            add_le_add (norm_paperFT_inghamPartial_le p n r) (norm_inghamFT_le_envelope hp r)
+        _ = 2 * inghamEnvelope p r := by ring)
+    (Eventually.of_forall fun r => by
+      have := ((tendsto_paperFT_inghamPartial hp r).comp (tendsto_add_atTop_nat 1)).sub_const
+        (inghamFT p r)
+      simpa using this.norm)
+  simpa using h
+
+/-- The **Ingham bump** `φ = invFT Φ`. -/
+def inghamBump (p : ℝ) : ℝ → ℂ := invFT fun r : ℝ => inghamFT p r
+
+/-- The partial bumps converge to the Ingham bump uniformly. -/
+theorem norm_inghamPartial_sub_inghamBump_le (hp : 1 / 2 < p) (n : ℕ) (u : ℝ) :
+    ‖inghamPartial p (n + 1) u - inghamBump p u‖ ≤
+      (2 * π)⁻¹ * ∫ r : ℝ, ‖paperFT (inghamPartial p (n + 1)) r - inghamFT p r‖ := by
+  rw [inghamPartial_eq_invFT, inghamBump]
+  exact norm_invFT_sub_le (integrable_paperFT_inghamPartial p n) (integrable_inghamFT hp) u
+
+theorem tendsto_inghamPartial (hp : 1 / 2 < p) (u : ℝ) :
+    Tendsto (fun n => inghamPartial p (n + 1) u) atTop (𝓝 (inghamBump p u)) := by
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  refine squeeze_zero (fun n => norm_nonneg _) (norm_inghamPartial_sub_inghamBump_le hp ·  u) ?_
+  simpa using (tendsto_integral_norm_sub_inghamFT hp).const_mul (2 * π)⁻¹
+
+/-- The total half-width `R = Σ_k ε_k`. -/
+def inghamTotalRadius (p : ℝ) : ℝ := ∑' k : ℕ, inghamWidth p k
+
+theorem inghamRadius_le_total (hp : 1 < p) (n : ℕ) : inghamRadius p n ≤ inghamTotalRadius p :=
+  (summable_inghamWidth hp).sum_le_tsum _ (fun k _ => (inghamWidth_pos p k).le)
+
+theorem inghamBump_eq_zero (hp : 1 < p) {u : ℝ} (hu : inghamTotalRadius p < |u|) :
+    inghamBump p u = 0 := by
+  have hzero : ∀ n, inghamPartial p (n + 1) u = 0 := by
+    intro n
+    by_contra hne
+    have hmem := support_inghamPartial_subset p (n + 1) hne
+    have := abs_le.mpr ⟨hmem.1, hmem.2⟩
+    linarith [inghamRadius_le_total hp (n + 1)]
+  have h := tendsto_inghamPartial (by linarith : (1 : ℝ) / 2 < p) u
+  simp only [hzero] at h
+  exact (tendsto_nhds_unique h tendsto_const_nhds)
+
+theorem tsupport_inghamBump_subset (hp : 1 < p) :
+    tsupport (inghamBump p) ⊆ Icc (-inghamTotalRadius p) (inghamTotalRadius p) := by
+  refine closure_minimal (fun u hu => ?_) isClosed_Icc
+  by_contra hnot
+  apply hu
+  refine inghamBump_eq_zero hp ?_
+  simp only [Set.mem_Icc, not_and_or, not_le] at hnot
+  have h0 : 0 ≤ inghamTotalRadius p := tsum_nonneg fun k => (inghamWidth_pos p k).le
+  rcases hnot with h | h
+  · rw [abs_of_neg (by linarith)]; linarith
+  · rw [abs_of_pos (by linarith)]; exact h
+
+theorem inghamBump_hasCompactSupport (hp : 1 < p) : HasCompactSupport (inghamBump p) :=
+  isCompact_Icc.of_isClosed_subset (isClosed_tsupport _) (tsupport_inghamBump_subset hp)
+
+/-- **Stretched-exponential decay of the Ingham transform**: `|Φ(x)| ≤ e^{1 − (|x|/e)^{1/p}}`. -/
+theorem norm_inghamFT_le_exp (hp : 1 < p) (x : ℝ) :
+    ‖inghamFT p x‖ ≤ Real.exp (1 - (|x| / Real.exp 1) ^ (1 / p)) := by
+  set M : ℕ := ⌊(|x| / Real.exp 1) ^ (1 / p)⌋₊
+  have hp0 : 0 < p := by linarith
+  have hbig : ∀ k < M, ‖sincC ((inghamWidth p k : ℂ) * x)‖ ≤ (Real.exp 1)⁻¹ := by
+    intro k hk
+    have hk1 : ((k : ℝ) + 1) ≤ (|x| / Real.exp 1) ^ (1 / p) := by
+      have : ((k + 1 : ℕ) : ℝ) ≤ M := by exact_mod_cast hk
+      exact (by push_cast at this; exact this.trans (Nat.floor_le (by positivity)))
+    have hkp : ((k : ℝ) + 1) ^ p ≤ |x| / Real.exp 1 := by
+      have := Real.rpow_le_rpow (by positivity) hk1 hp0.le
+      rwa [← Real.rpow_mul (by positivity), one_div_mul_cancel hp0.ne', Real.rpow_one] at this
+    have hex : Real.exp 1 ≤ inghamWidth p k * |x| := by
+      rw [inghamWidth, Real.rpow_neg (by positivity), inv_mul_eq_div, le_div_iff₀ (by positivity)]
+      rw [le_div_iff₀ (Real.exp_pos 1)] at hkp; linarith
+    have hx0 : inghamWidth p k * x ≠ 0 := by
+      intro h0
+      have : inghamWidth p k * |x| = 0 := by
+        rw [← abs_of_pos (inghamWidth_pos p k), ← abs_mul, h0, abs_zero]
+      linarith [Real.exp_pos 1]
+    rw [← Complex.ofReal_mul]
+    refine (norm_sincC_ofReal_le_inv _ hx0).trans ?_
+    rw [abs_mul, abs_of_pos (inghamWidth_pos p k)]
+    exact inv_anti₀ (Real.exp_pos 1) hex
+  have hpart : ∀ n, M ≤ n → ‖∏ k ∈ range n, sincC ((inghamWidth p k : ℂ) * x)‖ ≤
+      (Real.exp 1)⁻¹ ^ M := by
+    intro n hn
+    rw [norm_prod, ← Finset.prod_range_mul_prod_Ico _ hn]
+    have h1 : ∏ k ∈ range M, ‖sincC ((inghamWidth p k : ℂ) * x)‖ ≤ (Real.exp 1)⁻¹ ^ M := by
+      have hc : (Real.exp 1)⁻¹ ^ M = ∏ _k ∈ range M, (Real.exp 1)⁻¹ := by
+        rw [Finset.prod_const, Finset.card_range]
+      rw [hc]
+      exact Finset.prod_le_prod (fun _ _ => norm_nonneg _) fun k hk => hbig k (mem_range.mp hk)
+    have h2 : ∏ k ∈ Ico M n, ‖sincC ((inghamWidth p k : ℂ) * x)‖ ≤ 1 :=
+      Finset.prod_le_one (fun _ _ => norm_nonneg _) fun k _ => by
+        rw [← Complex.ofReal_mul]; exact norm_sincC_ofReal_le_one _
+    calc (∏ k ∈ range M, ‖sincC ((inghamWidth p k : ℂ) * x)‖) *
+          ∏ k ∈ Ico M n, ‖sincC ((inghamWidth p k : ℂ) * x)‖
+        ≤ (Real.exp 1)⁻¹ ^ M * 1 := mul_le_mul h1 h2 (by positivity) (by positivity)
+      _ = _ := mul_one _
+  have hlim := ((multipliable_ingham (p := p) (by linarith) (x : ℂ)).tendsto_prod_tprod_nat).norm
+  have hle : ‖inghamFT p x‖ ≤ (Real.exp 1)⁻¹ ^ M :=
+    le_of_tendsto hlim (eventually_atTop.mpr ⟨M, hpart⟩)
+  refine hle.trans ?_
+  rw [← Real.exp_neg, ← Real.exp_nat_mul, mul_neg, mul_one, Real.exp_le_exp]
+  have := Nat.lt_floor_add_one ((|x| / Real.exp 1) ^ (1 / p))
+  linarith
+
+theorem norm_inghamFT_le_exp_rpow (hp : 1 < p) (x : ℝ) :
+    ‖inghamFT p x‖ ≤ Real.exp (1 * |x| ^ (0 : ℝ) - (Real.exp 1)⁻¹ ^ (1 / p) * |x| ^ (1 / p)) := by
+  refine (norm_inghamFT_le_exp hp x).trans (le_of_eq ?_)
+  congr 1
+  rw [Real.rpow_zero, Real.div_rpow (abs_nonneg x) (Real.exp_pos 1).le, Real.inv_rpow
+    (Real.exp_pos 1).le]
+  field_simp
+
+/-- **The Ingham bump is smooth.** -/
+theorem contDiff_inghamBump (hp : 1 < p) : ContDiff ℝ (⊤ : ℕ∞) (inghamBump p) :=
+  contDiff_invFT fun n _ => integrable_moment_of_le_exp_rpow (aestronglyMeasurable_inghamFT
+    (by linarith)) le_rfl (by positivity : (0 : ℝ) < 1 / p) (by positivity)
+    (norm_inghamFT_le_exp_rpow hp) n
+
+/-- A uniform bound for the partial bumps. -/
+theorem norm_inghamPartial_le (p : ℝ) (n : ℕ) (u : ℝ) :
+    ‖inghamPartial p (n + 1) u‖ ≤ (2 * π)⁻¹ * ∫ r : ℝ, inghamEnvelope p r := by
+  rw [inghamPartial_eq_invFT]
+  have h := norm_invFT_sub_le (integrable_paperFT_inghamPartial p n) (integrable_zero ℝ ℂ volume) u
+  have h0 : invFT (fun _ : ℝ => (0 : ℂ)) u = 0 := by simp [invFT]
+  simp only [Pi.zero_apply] at h
+  rw [show (0 : ℝ → ℂ) = fun _ => 0 from rfl, h0, sub_zero] at h
+  refine h.trans (mul_le_mul_of_nonneg_left (integral_mono_of_nonneg
+    (Eventually.of_forall fun _ => norm_nonneg _) (integrable_inghamEnvelope p)
+    (Eventually.of_forall fun r => by simpa using norm_paperFT_inghamPartial_le p n r))
+    (by positivity))
+
+/-- **The transform of the Ingham bump is the Ingham product, on the whole complex plane.** -/
+theorem paperFT_inghamBump (hp : 1 < p) (z : ℂ) : paperFT (inghamBump p) z = inghamFT p z := by
+  set R := inghamTotalRadius p
+  set C := (2 * π)⁻¹ * ∫ r : ℝ, inghamEnvelope p r
+  have hC0 : 0 ≤ C := mul_nonneg (by positivity) (integral_nonneg fun r => by
+    have := inghamWidth_pos p 0; have := inghamWidth_pos p 1
+    unfold inghamEnvelope; positivity)
+  have hR : 0 ≤ R := tsum_nonneg fun k => (inghamWidth_pos p k).le
+  have hzero : ∀ n (u : ℝ), R < |u| → inghamPartial p (n + 1) u = 0 := by
+    intro n u hu
+    by_contra hne
+    have hmem := support_inghamPartial_subset p (n + 1) hne
+    have := abs_le.mpr ⟨hmem.1, hmem.2⟩
+    linarith [inghamRadius_le_total hp (n + 1)]
+  have hconv : Tendsto (fun n => paperFT (inghamPartial p (n + 1)) z) atTop
+      (𝓝 (paperFT (inghamBump p) z)) := by
+    simp only [paperFT]
+    refine tendsto_integral_of_dominated_convergence
+      (fun u => Set.indicator (Icc (-R) R) (fun _ => C * Real.exp (|z.im| * R)) u)
+      (fun n => ((inghamPartial_integrable_hasCompactSupport p (n + 1)).1.aestronglyMeasurable.mul
+        (by fun_prop : Continuous fun u : ℝ => cexp (I * z * u)).aestronglyMeasurable))
+      ((integrableOn_const (isCompact_Icc.measure_lt_top).ne).integrable_indicator measurableSet_Icc)
+      (fun n => Eventually.of_forall fun u => ?_)
+      (Eventually.of_forall fun u => ((tendsto_inghamPartial (p := p) (by linarith) u).mul_const _))
+    by_cases hu : u ∈ Icc (-R) R
+    · rw [Set.indicator_of_mem hu, norm_mul, Complex.norm_exp]
+      have hre : (I * z * u).re = -(z.im * u) := by simp [Complex.mul_re]
+      rw [hre]
+      refine mul_le_mul (norm_inghamPartial_le p n u) (Real.exp_le_exp.mpr ?_) (Real.exp_pos _).le
+        hC0
+      have : |u| ≤ R := abs_le.mpr ⟨hu.1, hu.2⟩
+      calc -(z.im * u) ≤ |z.im * u| := neg_le_abs _
+        _ = |z.im| * |u| := abs_mul _ _
+        _ ≤ |z.im| * R := mul_le_mul_of_nonneg_left this (abs_nonneg _)
+    · rw [Set.indicator_of_notMem hu, hzero n u (by
+        simp only [Set.mem_Icc, not_and_or, not_le] at hu
+        rcases hu with h | h
+        · rw [abs_of_neg (by linarith)]; linarith
+        · rw [abs_of_pos (by linarith)]; exact h)]
+      simp
+  have hprod := (tendsto_paperFT_inghamPartial (p := p) (by linarith) z).comp
+    (tendsto_add_atTop_nat 1)
+  exact tendsto_nhds_unique hconv hprod
+
+/-! ### 9. Annihilating operators -/
+
+/-- The operator `L_b h = h + (ib)⁻¹ h'`, whose symbol is `1 − z/b`. -/
+def annOp (b : ℂ) (h : ℝ → ℂ) : ℝ → ℂ := fun u => h u + (I * b)⁻¹ * deriv h u
+
+theorem annOp_smooth {b : ℂ} {h : ℝ → ℂ} (hs : ContDiff ℝ (⊤ : ℕ∞) h) (hc : HasCompactSupport h) :
+    ContDiff ℝ (⊤ : ℕ∞) (annOp b h) ∧ HasCompactSupport (annOp b h) := by
+  have hd : ContDiff ℝ (⊤ : ℕ∞) (deriv h) := (contDiff_infty_iff_deriv.mp hs).2
+  exact ⟨hs.add (contDiff_const.mul hd), hc.add hc.deriv.mul_left⟩
+
+theorem tsupport_annOp_subset (b : ℂ) (h : ℝ → ℂ) : tsupport (annOp b h) ⊆ tsupport h := by
+  refine closure_minimal (fun u hu => ?_) (isClosed_tsupport _)
+  by_contra hnot
+  apply hu
+  have h0 : h u = 0 := image_eq_zero_of_notMem_tsupport hnot
+  have h1 : deriv h u = 0 := image_eq_zero_of_notMem_tsupport fun hm => hnot (tsupport_deriv_subset hm)
+  simp [annOp, h0, h1]
+
+theorem paperFT_add_of_compact {f h : ℝ → ℂ} (hf : Continuous f) (hfc : HasCompactSupport f)
+    (hh : Continuous h) (hhc : HasCompactSupport h) (z : ℂ) :
+    paperFT (fun u => f u + h u) z = paperFT f z + paperFT h z := by
+  simp only [paperFT, add_mul]
+  exact integral_add ((hf.mul (by fun_prop)).integrable_of_hasCompactSupport hfc.mul_right)
+    ((hh.mul (by fun_prop)).integrable_of_hasCompactSupport hhc.mul_right)
+
+/-- **The symbol of `L_b`**: `paperFT (L_b h) z = (1 − z/b) paperFT h z`. -/
+theorem paperFT_annOp {b : ℂ} (hb : b ≠ 0) {h : ℝ → ℂ} (hs : ContDiff ℝ (⊤ : ℕ∞) h)
+    (hc : HasCompactSupport h) (z : ℂ) : paperFT (annOp b h) z = (1 - z / b) * paperFT h z := by
+  have hd : ContDiff ℝ (⊤ : ℕ∞) (deriv h) := (contDiff_infty_iff_deriv.mp hs).2
+  show paperFT (fun u => h u + (I * b)⁻¹ * deriv h u) z = _
+  rw [paperFT_add_of_compact hs.continuous hc (continuous_const.mul hd.continuous)
+    hc.deriv.mul_left]
+  have hmul : paperFT (fun u => (I * b)⁻¹ * deriv h u) z = (I * b)⁻¹ * paperFT (deriv h) z := by
+    simp only [paperFT, mul_assoc]; exact integral_const_mul _ _
+  rw [hmul, RHTower.EvenSector.paperFT_deriv_of_compact (hs.of_le (by exact_mod_cast le_top)) hc]
+  field_simp
+  ring_nf
+  rw [Complex.I_sq]
+  ring
+
+/-- Iterates `L_{a_{N−1}} ⋯ L_{a_0} φ`. -/
+def annIter (a : ℕ → ℂ) (φ : ℝ → ℂ) : ℕ → ℝ → ℂ
+  | 0 => φ
+  | N + 1 => annOp (a N) (annIter a φ N)
+
+theorem annIter_smooth (a : ℕ → ℂ) {φ : ℝ → ℂ} (hs : ContDiff ℝ (⊤ : ℕ∞) φ)
+    (hc : HasCompactSupport φ) (N : ℕ) :
+    ContDiff ℝ (⊤ : ℕ∞) (annIter a φ N) ∧ HasCompactSupport (annIter a φ N) := by
+  induction N with
+  | zero => exact ⟨hs, hc⟩
+  | succ N ih => exact annOp_smooth ih.1 ih.2
+
+theorem tsupport_annIter_subset (a : ℕ → ℂ) (φ : ℝ → ℂ) (N : ℕ) :
+    tsupport (annIter a φ N) ⊆ tsupport φ := by
+  induction N with
+  | zero => exact le_rfl
+  | succ N ih => exact (tsupport_annOp_subset _ _).trans ih
+
+theorem paperFT_annIter {a : ℕ → ℂ} (ha : ∀ k, a k ≠ 0) {φ : ℝ → ℂ}
+    (hs : ContDiff ℝ (⊤ : ℕ∞) φ) (hc : HasCompactSupport φ) (N : ℕ) (z : ℂ) :
+    paperFT (annIter a φ N) z = (∏ k ∈ range N, (1 - z / a k)) * paperFT φ z := by
+  induction N with
+  | zero => simp [annIter]
+  | succ N ih =>
+    have h := annIter_smooth a hs hc N
+    rw [annIter, paperFT_annOp (ha N) h.1 h.2, ih, Finset.prod_range_succ]
+    ring
+
+/-! ### 10. The annihilating product -/
+
+/-- `1 + t ≤ e^{t^s/s}` for `t ≥ 0`, `0 < s ≤ 1`. -/
+theorem one_add_le_exp_rpow {s t : ℝ} (hs0 : 0 < s) (hs1 : s ≤ 1) (ht : 0 ≤ t) :
+    1 + t ≤ Real.exp (t ^ s / s) := by
+  have h1 : (1 + t) ^ s ≤ 1 + t ^ s := by
+    have := Real.rpow_add_le_add_rpow (p := s) zero_le_one ht hs0.le hs1
+    simpa using this
+  have h2 : 1 + t ^ s ≤ Real.exp (t ^ s) := by
+    have := Real.add_one_le_exp (t ^ s); linarith
+  have h3 : (1 + t) ^ s ≤ Real.exp (t ^ s) := h1.trans h2
+  have h4 := Real.rpow_le_rpow (by positivity) h3 (by positivity : (0 : ℝ) ≤ 1 / s)
+  rw [← Real.rpow_mul (by positivity), mul_one_div_cancel hs0.ne', Real.rpow_one,
+    ← Real.exp_mul] at h4
+  calc 1 + t ≤ Real.exp (t ^ s * (1 / s)) := h4
+    _ = Real.exp (t ^ s / s) := by rw [mul_one_div]
+
+section Annihilator
+
+variable {s : ℝ} {a : ℕ → ℂ}
+
+theorem summable_norm_inv_of_rpow (hs0 : 0 < s) (hs1 : s ≤ 1)
+    (hsum : Summable fun k => ‖a k‖⁻¹ ^ s) : Summable fun k => ‖a k‖⁻¹ := by
+  have hlim : Tendsto (fun k => ‖a k‖⁻¹ ^ s) atTop (𝓝 0) := hsum.tendsto_atTop_zero
+  refine Summable.of_norm_bounded_eventually (g := fun k => ‖a k‖⁻¹ ^ s) hsum ?_
+  rw [Nat.cofinite_eq_atTop]
+  have hev : ∀ᶠ k in atTop, ‖a k‖⁻¹ ^ s < 1 := hlim.eventually (gt_mem_nhds one_pos)
+  refine hev.mono fun k hk => ?_
+  rw [Real.norm_of_nonneg (inv_nonneg.mpr (norm_nonneg _))]
+  by_cases h1 : ‖a k‖⁻¹ ≤ 1
+  · exact Real.self_le_rpow_of_le_one (inv_nonneg.mpr (norm_nonneg _)) h1 hs1
+  · push Not at h1
+    exact absurd hk (not_lt.mpr (Real.one_lt_rpow h1 hs0).le)
+
+/-- The annihilating product `P(z) = Π_k (1 − z/a_k)`. -/
+def annProd (a : ℕ → ℂ) (z : ℂ) : ℂ := ∏' k : ℕ, (1 - z / a k)
+
+theorem summable_norm_div (hsI : Summable fun k => ‖a k‖⁻¹) (z : ℂ) :
+    Summable fun k => ‖-(z / a k)‖ := by
+  refine (hsI.mul_left ‖z‖).congr fun k => ?_
+  rw [norm_neg, norm_div, div_eq_mul_inv]
+
+theorem multipliable_annProd (hsI : Summable fun k => ‖a k‖⁻¹) (z : ℂ) :
+    Multipliable fun k => (1 - z / a k) := by
+  have h := multipliable_one_add_of_summable (summable_norm_div hsI z)
+  simpa [sub_eq_add_neg] using h
+
+theorem tendsto_prod_annProd (hsI : Summable fun k => ‖a k‖⁻¹) (z : ℂ) :
+    Tendsto (fun N => ∏ k ∈ range N, (1 - z / a k)) atTop (𝓝 (annProd a z)) :=
+  (multipliable_annProd hsI z).tendsto_prod_tprod_nat
+
+theorem annProd_apply_eq_zero (hsI : Summable fun k => ‖a k‖⁻¹) (ha : ∀ k, a k ≠ 0) (j : ℕ) :
+    annProd a (a j) = 0 := by
+  have hev : ∀ᶠ N in atTop, ∏ k ∈ range N, (1 - a j / a k) = 0 :=
+    eventually_atTop.mpr ⟨j + 1, fun N hN =>
+      Finset.prod_eq_zero (Finset.mem_range.mpr (show j < N by omega))
+        (by rw [div_self (ha j), sub_self])⟩
+  exact tendsto_nhds_unique (tendsto_prod_annProd hsI (a j))
+    (tendsto_const_nhds.congr' (hev.mono fun _ h => h.symm))
+
+theorem annProd_ne_zero (hsI : Summable fun k => ‖a k‖⁻¹) {w : ℂ} (hw : ∀ k, w ≠ a k)
+    (ha : ∀ k, a k ≠ 0) : annProd a w ≠ 0 := by
+  have h := tprod_one_add_ne_zero_of_summable (f := fun k => -(w / a k))
+    (fun k => by
+      rw [← sub_eq_add_neg, sub_ne_zero]
+      intro h1
+      exact hw k ((div_eq_one_iff_eq (ha k)).mp h1.symm))
+    (summable_norm_div hsI w)
+  simpa [annProd, sub_eq_add_neg] using h
+
+/-- The growth constant `K = (1/s) Σ_k |a_k|^{-s}`. -/
+def annGrowth (s : ℝ) (a : ℕ → ℂ) : ℝ := (∑' k, ‖a k‖⁻¹ ^ s) / s
+
+theorem norm_prod_annProd_le (hs0 : 0 < s) (hs1 : s ≤ 1) (hsum : Summable fun k => ‖a k‖⁻¹ ^ s)
+    (N : ℕ) (x : ℝ) :
+    ‖∏ k ∈ range N, (1 - (x : ℂ) / a k)‖ ≤ Real.exp (annGrowth s a * |x| ^ s) := by
+  rw [norm_prod]
+  have hfac : ∀ k, ‖1 - (x : ℂ) / a k‖ ≤ Real.exp (|x| ^ s * ‖a k‖⁻¹ ^ s / s) := by
+    intro k
+    have ht : 0 ≤ |x| * ‖a k‖⁻¹ := by positivity
+    calc ‖1 - (x : ℂ) / a k‖ ≤ ‖(1 : ℂ)‖ + ‖(x : ℂ) / a k‖ := norm_sub_le _ _
+      _ = 1 + |x| * ‖a k‖⁻¹ := by
+          rw [norm_one, norm_div, Complex.norm_real, Real.norm_eq_abs, div_eq_mul_inv]
+      _ ≤ Real.exp ((|x| * ‖a k‖⁻¹) ^ s / s) := one_add_le_exp_rpow hs0 hs1 ht
+      _ = Real.exp (|x| ^ s * ‖a k‖⁻¹ ^ s / s) := by
+          rw [Real.mul_rpow (abs_nonneg _) (inv_nonneg.mpr (norm_nonneg _))]
+  calc ∏ k ∈ range N, ‖1 - (x : ℂ) / a k‖ ≤ ∏ k ∈ range N, Real.exp (|x| ^ s * ‖a k‖⁻¹ ^ s / s) :=
+        Finset.prod_le_prod (fun _ _ => norm_nonneg _) fun k _ => hfac k
+    _ = Real.exp (∑ k ∈ range N, |x| ^ s * ‖a k‖⁻¹ ^ s / s) := (Real.exp_sum _ _).symm
+    _ ≤ Real.exp (annGrowth s a * |x| ^ s) := by
+        apply Real.exp_le_exp.mpr
+        have hle : ∑ k ∈ range N, ‖a k‖⁻¹ ^ s ≤ ∑' k, ‖a k‖⁻¹ ^ s :=
+          hsum.sum_le_tsum _ fun k _ => by positivity
+        have heq : ∑ k ∈ range N, |x| ^ s * ‖a k‖⁻¹ ^ s / s =
+            |x| ^ s / s * ∑ k ∈ range N, ‖a k‖⁻¹ ^ s := by
+          rw [Finset.mul_sum]; refine Finset.sum_congr rfl fun k _ => by ring
+        rw [heq, annGrowth]
+        have : 0 ≤ |x| ^ s / s := by positivity
+        calc |x| ^ s / s * ∑ k ∈ range N, ‖a k‖⁻¹ ^ s ≤ |x| ^ s / s * ∑' k, ‖a k‖⁻¹ ^ s :=
+              mul_le_mul_of_nonneg_left hle this
+          _ = (∑' k, ‖a k‖⁻¹ ^ s) / s * |x| ^ s := by ring
+
+theorem norm_annProd_le (hs0 : 0 < s) (hs1 : s ≤ 1) (hsum : Summable fun k => ‖a k‖⁻¹ ^ s)
+    (x : ℝ) : ‖annProd a x‖ ≤ Real.exp (annGrowth s a * |x| ^ s) :=
+  le_of_tendsto (tendsto_prod_annProd (summable_norm_inv_of_rpow hs0 hs1 hsum) x).norm
+    (Eventually.of_forall fun N => norm_prod_annProd_le hs0 hs1 hsum N x)
+
+end Annihilator
+
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

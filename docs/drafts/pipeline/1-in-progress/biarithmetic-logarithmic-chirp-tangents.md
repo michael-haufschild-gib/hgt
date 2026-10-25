@@ -176,3 +176,19 @@ refutes only the inference from scalar regular variation and the coarse cofactor
 to individual stationary homogeneity. Lean results must not use it before formalization.
 
 Pending source check: `/tmp/BiarithmeticChirpPhaseRigidity.lean` contains the three-rotation rigidity argument and the exact nondegenerate prime-two angle. It does not yet identify these three samples with actual source tangents; the discrete asymptotics, tangent realization, and boundary-loss representation remain outstanding.
+
+Pending source check: `/tmp/BiarithmeticChirpPhaseGroup.lean` constructs the
+compact closure group of the actual logarithmic phase flow and derives its
+cofactor multiplicativity by closedness. Realization along diverging integer
+horizons remains a separate obligation.
+
+Pending source check: `/tmp/BiarithmeticChirpCauchyKernel.lean` identifies
+the explicit kernel as a diagonal congruence of the corpus's strict Cauchy
+Gram. It drafts strict positivity for every finite set of distinct
+cofactors and arbitrary unit phases. Four audits remain unchecked.
+The actual source asymptotics and weighted packet integral remain separate.
+
+Pending source check: `/tmp/BiarithmeticChirpSourceRegularity.lean` defines
+the actual scalar row, differentiates its positive-line interpolation,
+proves derivative decay, and gives an explicit bound for every integer
+increment. Four audits are drafted; no check has yet passed.

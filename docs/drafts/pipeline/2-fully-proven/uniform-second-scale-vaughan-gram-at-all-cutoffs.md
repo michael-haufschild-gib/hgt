@@ -370,6 +370,8 @@ and energy bounds with `L(w)` and `L(w)^2`, the smooth-neutral specialization,
 and zero normalized norms for bounded moving coefficients at independent
 divergent horizon and cutoff-product scales. Four exact finite centering and
 Gram identities are shared with the upper-half branch through
-`/tmp/QIVaughanPacketGramIdentityTools.lean`. The four finite identities are
-copied to `VaughanPacketGramIdentities.lean` and undergoing their producing
-check. These packet consequences remain under verification.
+`VaughanPacketGramIdentities.lean`. The four finite identities passed their
+producing and final direct checks, with standard transitive axioms only.
+The module is wired and its scratch was removed; see
+`../3-formalized/vaughan-packet-gram-identities.md`. The seven uniform packet
+bounds remain under verification.

@@ -115,7 +115,7 @@ theorem sum_abs_step_sub_rpow_le {R : ℝ} (hR : 2 ≤ R) (u : Finset ℕ) :
       _ = 1 := by rw [one_div, inv_mul_cancel₀ hL0.ne']
   have hinvs : 1 / s ≤ 2 + L := by
     rcases min_choice (1 / 2 : ℝ) (1 / L) with h | h
-    · rw [← hs_def] at h; rw [h]; norm_num <;> linarith
+    · rw [← hs_def] at h; rw [h]; norm_num; linarith
     · rw [← hs_def] at h; rw [h, one_div_one_div]; linarith
   have hinvL : 1 / L ≤ 2 := by
     rw [div_le_iff₀ hL0]; linarith
@@ -190,15 +190,15 @@ theorem sum_abs_step_sub_rpow_le {R : ℝ} (hR : 2 ≤ R) (u : Finset ℕ) :
 theorem summable_stepMajorant (hw : ∀ k, 0 ≤ w k) (hws : Summable w) (hR : ∀ k, 2 ≤ R k) :
     Summable fun n : ℕ => ∑' k, w k * (if n.Prime then
       |(if (n : ℝ) < R k then 1 else 0) - (n : ℝ) ^ (-stepShift R k)| / n else 0) := by
-  have hnn : ∀ n k, 0 ≤ (if n.Prime then
+  have hnn : ∀ n k : ℕ, 0 ≤ (if n.Prime then
       |(if (n : ℝ) < R k then 1 else 0) - (n : ℝ) ^ (-stepShift R k)| / n else (0 : ℝ)) :=
     fun n k => by split_ifs <;> positivity
-  have hle : ∀ n k, (if n.Prime then
+  have hle : ∀ n k : ℕ, (if n.Prime then
       |(if (n : ℝ) < R k then 1 else 0) - (n : ℝ) ^ (-stepShift R k)| / n else (0 : ℝ)) ≤ 12 := by
     intro n k
     have := sum_abs_step_sub_rpow_le (hR k) {n}
     rwa [Finset.sum_singleton] at this
-  have hsk : ∀ n, Summable fun k => w k * (if n.Prime then
+  have hsk : ∀ n : ℕ, Summable fun k => w k * (if n.Prime then
       |(if (n : ℝ) < R k then 1 else 0) - (n : ℝ) ^ (-stepShift R k)| / n else 0) :=
     fun n => (hws.mul_right 12).of_nonneg_of_le (fun k => mul_nonneg (hw k) (hnn n k))
       fun k => mul_le_mul_of_nonneg_left (hle n k) (hw k)
@@ -241,11 +241,10 @@ theorem summable_abs_stepDefect_sub_cmDefect (hw : ∀ k, 0 ≤ w k) (hws : Summ
   split_ifs with hn
   · have hx : (1 : ℝ) ≤ n := by exact_mod_cast hn.one_lt.le
     have hn0 : (0 : ℝ) < n := by linarith
-    simp only [if_pos hn]
     rw [div_le_iff₀ hn0, ← tsum_mul_right]
     refine (abs_stepDefect_sub_cmDefect_le hw hws hR hx).trans (le_of_eq (tsum_congr fun k => ?_))
     rw [mul_assoc, div_mul_cancel₀ _ hn0.ne']
-  · simp [hn]
+  · simp
 
 /-! ### The Dini law for step defects -/
 
@@ -477,17 +476,17 @@ theorem receiverBounded_stepPattern_iff_primeProfile (hw : ∀ k, 0 ≤ w k) (hw
     have h0 := cmDefect_nonneg hd (x := p) (by exact_mod_cast hp.one_lt.le)
     have h1 := cmDefect_le hd (x := p) (by exact_mod_cast hp.one_lt.le)
     rw [abs_of_nonneg h0]; linarith
-  have hM := abs_primeProfile_sub_le (d := fun n => stepDefect w R n)
-    (d' := fun n => cmDefect w (stepShift R) n)
+  have hM := fun ρ (hρ : 0 < ρ) => abs_primeProfile_sub_le (ρ := ρ)
+    (d := fun n => stepDefect w R n) (d' := fun n => cmDefect w (stepShift R) n)
     (fun p _ => (abs_of_nonneg (hstep0 _)).trans_le (hstep2 _)) hcm
-    (summable_abs_stepDefect_sub_cmDefect hw hws hR)
+    (summable_abs_stepDefect_sub_cmDefect hw hws hR) hρ
   rw [receiverBounded_stepPattern_iff hw hws hR hW ht₀,
     integrableOn_exp_neg_div_iff hd (C := ∑' n : ℕ, (if n.Prime then
       |stepDefect w R n - cmDefect w (stepShift R) n| / n else 0) + C)
       (primeProfile_antitoneOn (d := fun n : ℕ => stepDefect w R n) (fun p _ => hstep0 _)
         fun p _ => hstep2 _)
       fun ρ hρ hρ1 => ?_]
-  have h1 := hM hρ
+  have h1 := hM ρ hρ
   have h2 := hC ρ hρ hρ1
   have := abs_sub_le (primeProfile (fun n : ℕ => stepDefect w R n) ρ)
     (primeProfile (fun n : ℕ => cmDefect w (stepShift R) n) ρ) (defectProfile w (stepShift R) ρ)
@@ -535,7 +534,7 @@ theorem hasSum_monotoneSteps_add {d : ℕ → ℝ}
     refine ⟨N₀, fun N hN => ?_⟩
     rw [Real.dist_eq, sub_zero]
     refine hN₀ _ (nthPrime_prime _) (le_trans hN ?_)
-    exact (nthPrime_strictMono.id_le (m + N)).trans' (by omega)
+    exact (nthPrime_strictMono.id_le (m + N)).trans' (Nat.le_add_left N m)
   simpa using hq.const_sub (d (nthPrime m))
 
 /-- **A defect antitone along the primes is a step defect.** -/
@@ -628,7 +627,3 @@ theorem receiverBounded_monotoneDefectPattern_iff {d : ℕ → ℝ}
 end
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics
-
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_monotoneDefectPattern_iff
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_stepPattern_iff_primeProfile
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.summable_abs_stepDefect_sub_cmDefect

@@ -61,7 +61,9 @@ theorem meyerMultiplicativeDegree_higher_jet_zero
         by_cases hlt : k.val + k.val < xiSupportMultiplicity rho
         · rw [meyerHasseJetClass_product_same rho k k hlt]
           exact ih (xiSupportMultiplicity rho - (k.val + k.val))
-            (by have hki := k.isLt; omega) ⟨k.val + k.val, hlt⟩ rfl (by omega)
+            (by have hki := k.isLt; omega) ⟨k.val + k.val, hlt⟩ rfl (by
+              change 0 < k.val + k.val
+              omega)
         · rw [meyerHasseJetClass_product_truncated rho k k (Nat.le_of_not_gt hlt), map_zero]
       exact (mul_eq_zero.mp hs).elim id id
   exact hrec (xiSupportMultiplicity rho - j.val) j rfl hj
