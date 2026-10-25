@@ -81,3 +81,8 @@ theorem lowBlind_fibre_degree_cone_not_bezout {a : ℝ} (ha : 0 < a) :
   exact hf.ne' hz
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
+
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.PolarSurface.sourceCone_zero_bezout_iff
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.lowBlind_halfCoercivity_riemannRoch_ample_and_negative_square
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.lowBlind_halfCoercivity_not_bezout
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.lowBlind_halfCoercivity_nonneg_degrees

@@ -493,7 +493,23 @@ horizons and simultaneous zero/relative-rank-one limits.
 Seven floor-sum targets passed final direct checks and standard-axiom audits.
 `UniformLogarithmicCancellationInMobiusFloorSums.lean` is wired, including the
 exact omitted-tail identity and every cutoff-uniform logarithmic rate.
-The remaining stretched-exponential, endpoint, and power-rate consequences
+Three generic critical-pairing targets passed corrected producing and final
+direct checks, with standard axioms only. The summable-envelope module is
+wired.
+The six all-row logarithmic prefix targets also passed producing and final
+direct checks with standard axioms only. Their module is wired and includes
+the common linear finite-head bound through half damping.
+The three actual endpoint specializations passed corrected producing and final
+direct checks with standard axioms only. The summable remainder envelope,
+uniform energy and absolute mixed pairings, and bounded harmonic Gram error
+are now certified in `UniformHarmonicVaughanGramsAtHalfDamping.lean`.
+The three endpoint packet laws also passed final direct checks and
+standard-axiom audits, including the homogeneous harmonic error and uniform
+energy bounds when the smooth coefficient vanishes. Their module is wired.
+The three stretched-exponential targets passed their final direct check and
+standard-axiom audits. The module is wired, including its exact stated constant
+and factorial envelope at one common threshold for every logarithmic order.
+The remaining endpoint and power-rate consequences
 remain under verification. All fifteen existing paper
 cards and their remaining Lean coverage are listed in
 `q-i-existing-findings-lean-completion.md`; completing that register has priority
@@ -526,7 +542,7 @@ identities remain available; this observation does not retire that route.
 
 Four further consequences are dependency-closed on paper; their Lean status follows:
 
-- `../2-fully-proven/uniform-vaughan-convolution-stretched-exponential-rate.md`
+- `../3-formalized/uniform-vaughan-convolution-stretched-exponential-rate.md`
   uses the read harmonic Möbius stretched-exponential source to strengthen the
   uniform convolution rate and give one threshold for factorial logarithmic bounds.
 - `../2-fully-proven/vaughan-endpoint-rates-and-zero-multiplicity.md` proves that

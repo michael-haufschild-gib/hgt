@@ -51,7 +51,7 @@ its parent card. Open programme questions without a proof plan remain open.
 
 | Source requirement | Required evidence | Status |
 |---|---|---|
-| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; sixty-one direct-checked and axiom-audited leaves |
+| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; sixty-five direct-checked and axiom-audited leaves |
 | Horizon-complete objects; sign visibility | Exact signed finite-horizon laws and quantitative period/prefix comparison | Open |
 | Truncated affine representation theory | Source-defined action, boundary calculus, classification/calibration | Open |
 | A1–A2: paid ideal annihilates escape; hull inclusion | Actual receiver theorem, not an assumed ideal inclusion | Proved for every actual common Gram limit; ADR foundations reused, four interfaces directly checked and axiom-audited |
@@ -122,6 +122,10 @@ its parent card. Open programme questions without a proof plan remain open.
 | `PronicWienerCoordinates` | Direct repository leaf passed; stage-3 card | Both main declarations clean |
 | `CriticalPartialSumCore` | Direct repository leaf passed; stage-3 card | Seven main declarations clean |
 | `CriticalCoefficientDomain` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `CriticalCoefficientNonclosed` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
+| `CriticalCoefficientWienerRealization` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
+| `CriticalReducedCokernel` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
+| `CriticalContinuousDual` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `GoldenNormalizedCube` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
 | `NormalizedCubicTrace` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `CriticalGoldenPaymentNonclosed` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
@@ -142,7 +146,7 @@ its parent card. Open programme questions without a proof plan remain open.
 | `PaidSourcePerturbations` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `FullWienerAnnihilation` | Consolidated ADR interfaces and direct repository leaf passed | Four chosen and universal declarations clean |
 
-Completed main-declaration axiom audits for sixty-one checked leaves report only `propext`,
+Completed main-declaration axiom audits for sixty-five checked leaves report only `propext`,
 `Classical.choice`, and `Quot.sound`. Audits used isolated Lean source copies; each leaf also passed its direct source check. The literal-B1
 no-go is closed in `5-failed/biarithmetic-literal-dimension-euler-characteristic.md`; its
 positive survivor and exact prefix visibility now have separate stage-3 cards.
@@ -780,28 +784,29 @@ Active drafts:
   import present. Obsolete scratch and logs removed. Reuses the existing
   actual Wiener coefficient cardinality bound; no Banach theorem is applied to
   a non-Hausdorff quotient.
-- `/tmp/BiarithmeticCriticalGoldenContinuumDefect.lean`: finite coefficient
+- `CriticalGoldenContinuumDefect.lean`: finite coefficient
   relations in the actual quotient reduce to the power-tail independence
   theorem. The open unpaid exponent interval gives continuum many independent
   classes already in the closure defect; ambient coefficient cardinality gives
-  equality for both actual quotients. Unchecked, with all preceding power-tail,
-  closure, and quotient leaves as dependencies. The intrinsic-source claim
-  remains separate even after this ordinary-floor draft is verified.
-- `/tmp/BiarithmeticCriticalCoefficientDomain.lean`: actual complex `ell1`
+  equality for both actual quotients. Direct repository check and all four
+  transitive audits passed. The intrinsic-source claim remains separate.
+- `CriticalCoefficientDomain.lean`: actual complex `ell1`
   partial-sum submodule, exact closure as the augmentation kernel, attained
   distance to that kernel, and continuous annihilator classification. Reuses
-  the corpus augmentation functional. Five audits drafted; first check pending.
-- `/tmp/BiarithmeticCriticalReducedCokernel.lean`: exact quotient norm, linear
+  the corpus augmentation functional. Direct repository check and all five
+  transitive audits passed.
+- `CriticalReducedCokernel.lean`: exact quotient norm, linear
   isometry with `C`, and reduced dimension one for the preceding domain.
-  Four audits drafted; first check pending.
-- `/tmp/BiarithmeticCriticalCoefficientNonclosed.lean`: the explicit unpaid
+  Direct repository check and all four transitive audits passed.
+- `CriticalCoefficientNonclosed.lean`: the explicit unpaid
   norm-two boundary vector in actual complex `ell1`, its zero evaluation,
   finite-core approximation, and nonclosedness of the coefficient payment
-  submodule. Four audits drafted; unchecked. Reuses the checked real
+  submodule. Direct repository check and all four transitive audits passed. Reuses the checked real
   inverse-square-root-tail witness rather than a new asymptotic example.
-- `/tmp/BiarithmeticCriticalCoefficientWienerRealization.lean`: actual complex
+- `CriticalCoefficientWienerRealization.lean`: actual complex
   coefficient linear isometry, summable inverse coordinates, exact prime-five
-  range, and actual paid-domain identification. Six audits drafted; unchecked.
+  range, and actual paid-domain identification. Direct repository check and
+  all six transitive audits passed.
 - `NormalizedCubicTrace.lean`: exact integral trace
   classification for fixed-determinant cubic amplification at every prime,
   with the four nonzero small-prime survivors and forced square-root trace
@@ -1119,7 +1124,8 @@ cofactor multiplicativity by closedness. Integer-horizon realization is pending.
 
 Pending source check: `/tmp/BiarithmeticChirpCauchyKernel.lean` drafts strict
 finite-packet positivity of the explicit chirp kernel by an invertible
-diagonal congruence of the corpus's Cauchy Gram. Four audits are pending.
+diagonal congruence of the corpus's Cauchy Gram, together with exact amplitude
+norms, diagonals, and phase continuity. Eight audits are pending.
 This does not establish the discrete source asymptotic or tangent realization.
 
 Pending source check: `/tmp/BiarithmeticChirpSourceRegularity.lean` drafts
@@ -1202,16 +1208,88 @@ unreduced continuum dimensions. Eight audits and dependencies remain unchecked.
 `CriticalCoefficientDomain` passed its direct repository check and all five
 audits after factoring linearity into small lemmas under default limits.
 Its stage-3 card records exact closure, attained distance, and the continuous
-annihilator law. The quotient isometry and actual Wiener identification remain
-in dependent drafts.
+annihilator law. The dependent quotient isometry and actual Wiener
+identification have also passed their direct checks and transitive audits.
 
-Pending source check: `/tmp/BiarithmeticCriticalContinuousDual.lean` uses
+`CriticalContinuousDual.lean` uses
 the actual quotient topology, without a closedness instance for payment,
 to construct its continuous scalar evaluation, classify every continuous
-functional, and identify its continuous dual with `C`. Five audits pending.
+functional, and identify its continuous dual with `C`. Direct repository
+check and all five transitive audits passed; stage-3 card and umbrella import present.
 
 Pending source check: `/tmp/BiarithmeticDigitCarryBoundary.lean` drafts the
 finite trailing-carry identity, normalized predecessor limit, actual profile
-left limit at positive integers, and the exact five-free jump. Seven audits
+left limit at positive integers, and the exact five-free jump. Eight audits
 are pending. Full cofactor jump recovery and uniform Wiener tail control
 remain separate obligations on the golden digital-module card.
+
+`CriticalReducedCokernel` passed its direct repository check and four transitive
+audits. The exact reduced quotient norm, complex linear isometry, and dimension
+one are recorded on its stage-3 card. The proof reuses attained distance and
+separates the two norm bounds under default limits.
+
+Pending source check: `/tmp/BiarithmeticDigitWienerProfile.lean` drafts the
+square-root cofactor bound, actual Wiener summable majorant, absolute convergence,
+and uniform finite-cofactor approximation on `[0,5]`. Six audits are pending;
+its compact-profile dependency remains unchecked.
+
+Pending source check: `/tmp/BiarithmeticChirpContinuousCovariance.lean`
+drafts the actual continuous covariance derivative, its summable power
+majorant, and absolute summability of the pronic-to-square weight error.
+Four audits are pending. Unit-cell integral comparison and oscillatory
+asymptotics remain separate source obligations.
+
+Pending source check: `/tmp/BiarithmeticChirpSumIntegral.lean` drafts
+summable unit-cell quadrature error, the exact decomposition of actual
+discrete errors, and their uniform finite-horizon integral comparison.
+Eight audits are pending, including the full `Icc 1 N` horizon and its
+explicit initial-cell correction. Its actual continuous derivative and floor-error
+dependencies remain unchecked; no generic derivative assumption replaces them.
+
+Pending source check: `/tmp/BiarithmeticChirpQuadraticIntegral.lean` specializes
+the corpus integration-by-parts theorem to the actual exponentially weighted
+quadratic phase. It drafts an explicit threshold, an inverse-height relative
+bound, and normalized decay. Four audits are pending; the actual logarithmic
+covariance substitution remains a separate obligation.
+
+`CriticalCoefficientWienerRealization` passed its direct repository check
+and all six transitive audits. The stage-3 card records its exact isometric
+prime-five range, both inverse identities, and actual critical paid-domain
+pullback. No larger ambient source space is identified with complex `ell1`.
+
+Pending source check: `/tmp/BiarithmeticChirpIntegerPhases.lean` drafts
+cofinal real orbit approximation and realization of every actual phase-group
+point by positive integer horizons. Three audits are pending. It reuses the
+inspected corpus recurrence and logarithmic ceiling theorem; actual covariance
+limits still require the separate source asymptotics.
+
+Pending source check: `/tmp/BiarithmeticDigitWienerRefinement.lean` drafts
+uniform grid refinement for every actual critical Wiener kernel. It uses
+the minimum of a geometric term bound and a summable weighted majorant;
+dominated convergence makes the total error vanish. Two audits and the
+Wiener-profile dependency are pending.
+
+Pending source bridge: `/tmp/BiarithmeticChirpLogarithmicIntegrals.lean`
+is the exact exponential change of variables for actual chirp covariance,
+its linear difference-phase primitive, and its quadratic sum-phase
+decomposition. Checks and dependent source asymptotics remain pending.
+
+Pending source bridge: `/tmp/BiarithmeticChirpCovarianceMainTerm.lean`
+assembles the explicit linear phase, negligible quadratic integral, and
+bounded discrete correction into the actual full-horizon covariance
+asymptotic. No source limit is introduced as a premise.
+
+Pending algebraic bridge: `/tmp/BiarithmeticChirpKernelPhaseFormula.lean`
+identifies the actual covariance leading term with the Cauchy kernel on
+the logarithmic orbit. Shared amplitude norms, diagonals, and phase
+continuity live in `ChirpCauchyKernel`. No checked source classification is claimed yet.
+
+Pending source classification: `/tmp/BiarithmeticChirpTangentClassification.lean`
+uses actual `normalizedSourceGram`, proves each phase kernel occurs, and
+extracts a phase subsequence from every convergent cofactor Gram sequence.
+The source-asymptotic and integer-phase dependencies remain unchecked.
+
+Pending source boundary proof: `/tmp/BiarithmeticChirpBoundaryPositivity.lean`
+uses the explicit entire packet extension and the inspected corpus
+almost-everywhere identity theorem to prove strictly positive boundary
+mass on every nonempty positive interval. Its packet dependencies remain unchecked.

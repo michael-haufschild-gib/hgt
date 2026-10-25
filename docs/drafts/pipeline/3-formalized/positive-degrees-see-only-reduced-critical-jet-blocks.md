@@ -1,10 +1,10 @@
 # Positive degrees see only reduced critical jet blocks
 
 - **ID:** positive-degrees-see-only-reduced-critical-jet-blocks
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean verification pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** Q-II; actual Poisson quotient and finite causal Xi sections.
-- **Status:** UNVERIFIED until the actual finite-jet and positive-degree modules and their transitive axiom audits pass; external novelty unverified.
+- **Status:** FORMALIZED. Actual-file checks and transitive axiom audits passed for both finite algebra and positive-degree classification; external novelty unverified.
 
 ## Exact statement
 
@@ -74,18 +74,40 @@ and reflection-incidence positivity criteria, not this finite-block classificati
 concerns summability of coefficient-recovering prime masses, not the present algebra.
 
 Existing inputs: finite causal sections, full jet separation, Hasse convolution,
-and conjugation/reflection jet formulas. New formal obligations: normalized jet
+and conjugation/reflection jet formulas. Formal proof components: normalized jet
 product and sharp equalities in the quotient, Hermitian-degree Cauchy–Schwarz,
 descending jet induction, and the finite-packet weighted evaluation formula.
 Do not strengthen this to a classification of arbitrary infinite-quotient degrees.
 
 `MeyerSharpConvolutionAlgebra.lean`, including the complex null-pair lemma,
 has passed its actual-file Lean check and standard transitive axiom audit.
-The actual `MeyerFiniteJetAlgebra.lean` candidate contains normalized Hasse
+The actual `MeyerFiniteJetAlgebra.lean` module formalizes normalized Hasse
 class multiplication, sharp laws, and exact finite causal expansion.
+Direct check **48574** passed with only `propext`, `Classical.choice`, and
+`Quot.sound` in all seven endpoint audits:
+
+- `meyerHasseJetSource_moment`
+- `meyerSourceClass_eq_of_hasse_moments_eq`
+- `meyerHasseJetClass_product_distinct`
+- `meyerHasseJetClass_product_same`
+- `meyerHasseJetClass_product_truncated`
+- `meyerHasseJetClass_sharp`
+- `meyerFiniteXiCausalSection_eq_hasse_sum`
+
+Temporary prints are removed; the finite-jet module is wired and documented.
 `PositiveMeyerDegreesSeeReducedCriticalJets.lean` contains off-line and
 higher-jet annihilation, the finite causal weighted-value formula, and the
 converse positive Hermitian finite-weight construction on the whole quotient.
-The latter two modules remain unverified and unwired, with endpoint axiom
-prints awaiting direct checks. No claim about recovering arbitrary
+Direct classifier check **14494** passed with only `propext`, `Classical.choice`,
+and `Quot.sound` in all six endpoint audits:
+
+- `meyerPositiveDegree_off_line_jet_zero`
+- `meyerPositiveDegree_higher_jet_zero`
+- `meyerPositiveDegree_finite_causal_formula`
+- `meyerFiniteCriticalDegree_hermitian`
+- `meyerFiniteCriticalDegree_nonnegative`
+- `meyerFiniteCriticalDegree_hasse_class`
+
+Temporary prints are removed; the classifier is wired and documented. Its
+stale scratch draft is deleted. No claim about recovering arbitrary
 infinite-quotient functionals is added.

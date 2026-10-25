@@ -68,10 +68,11 @@ now have Lean drafts: `/tmp/qiii_wiener_jet_evaluation_body.lean` and
 linear jet functionals on the full Wiener algebra and proves local product
 and power order laws. The latter constructs a simple dyadic local parameter,
 pairwise separation masks, triangular jet matrices, and joint surjectivity.
-Both are UNVERIFIED. The derivative API scratch is queued after the current
-refinement queue; the combined interpolation scratch needs the new pole
-dependency oleans. Quotient-rank and mixed boundary/interior multiplicity
-applications remain to be written and checked. No paper claim is complete.
+Both are UNVERIFIED. The base check is
+`/tmp/qiii-wiener-jet-evaluation-check.lean`; the full application is
+`/tmp/qiii-visible-mixed-jet-index-check.lean`. All pole dependency oleans and
+their canonical audits are complete. The base jets, interpolation and index
+applications still require direct Lean checks. No paper claim is complete.
 
 The strict-interior quotient application is now drafted in
 `/tmp/qiii_visible_jet_quotient_index_body.lean`. It descends the proved-to-be
@@ -93,6 +94,6 @@ new claims are UNVERIFIED, not completed by these drafts.
 
 The exact unit-orbit and Liouville corollaries are drafted in
 `/tmp/qiii_visible_jet_index_unit_orbit_body.lean` and included in the mixed
-index assembler. They rewrite the already established equality of paid
+index scratch. They rewrite the already established equality of paid
 ideals; no new arithmetic premise is introduced. These corollaries remain
 UNVERIFIED with their interpolation and quotient-index dependencies.

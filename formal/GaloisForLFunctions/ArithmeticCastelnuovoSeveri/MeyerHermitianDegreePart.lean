@@ -104,6 +104,16 @@ theorem meyerDegreeHermitianPart_square
   change (1 / 2 : ℂ) * (meyerDegreePair d u u + conj (meyerDegreePair d u u)) = _
   apply Complex.ext <;> norm_num [Complex.mul_re, Complex.mul_im] <;> ring
 
+/-- The second Hermitian component reads the exact imaginary part of every square. -/
+theorem meyerDegreeImaginaryPart_square
+    (d : DeningerMeyerStrongLogCohomology →ₗ[ℂ] ℂ)
+    (u : DeningerMeyerStrongLogCohomology) :
+    meyerDegreePair (meyerDegreeImaginaryPart d) u u = ((meyerDegreePair d u u).im : ℂ) := by
+  rw [meyerDegreeImaginaryPart, meyerDegreeHermitianPart_square]
+  change ((-I * meyerDegreePair d u u).re : ℂ) = _
+  congr 1
+  norm_num [Complex.mul_re]
+
 /-- Real square positivity makes no demand on the anti-Hermitian part. -/
 theorem meyerDegree_real_positive_iff_hermitianPart_positive
     (d : DeningerMeyerStrongLogCohomology →ₗ[ℂ] ℂ) :
@@ -131,5 +141,6 @@ end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerDegree_hermitian_decomposition
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerDegree_hermitian_decomposition_unique
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerDegreeHermitianPart_square
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerDegreeImaginaryPart_square
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerDegree_real_positive_iff_hermitianPart_positive
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerRealPositiveDegree_finite_causal_hermitian_formula

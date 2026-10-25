@@ -121,6 +121,8 @@ theorem meyerHasseJetClass_product_same
     deningerMeyerCohomologyConvolution (meyerHasseJetClass rho j) (meyerHasseJetClass rho k) =
       meyerHasseJetClass rho ⟨j.val + k.val, hlt⟩ := by
   apply meyerSourceClass_eq_of_hasse_moments_eq
+    (deningerMeyerSourceConvolution (meyerHasseJetSource rho j) (meyerHasseJetSource rho k))
+    (meyerHasseJetSource rho ⟨j.val + k.val, hlt⟩)
   intro tau i
   rw [meyerHasseJetSource_product_moment, meyerHasseJetSource_moment]
   by_cases h : tau = rho <;> simp only [h, true_and, false_and, ↓reduceIte]
@@ -171,7 +173,7 @@ theorem meyerHasseMoment_sharp (g : DeningerMeyerStrongLogTarget) (k : ℕ)
       (k.factorial : ℂ) =
     (-1 : ℂ) ^ k * conj
       (deningerMeyerStrongLogMellinJetLM k (meyerLineReflect rho : ℂ) g / (k.factorial : ℂ))
-  rw [map_div, map_natCast, mul_div_assoc]
+  rw [map_div₀, map_natCast, mul_div_assoc]
 
 /-- Sharp reflects the actual local polynomial block and signs each monomial by its order. -/
 theorem meyerHasseJetClass_sharp (rho : XiDivisorSupport) (j : DeningerArithmeticJetIndex rho) :
@@ -196,11 +198,12 @@ theorem meyerHasseJetClass_sharp (rho : XiDivisorSupport) (j : DeningerArithmeti
   rw [meyerHasseMoment_sharp,
     meyerHasseJetSource_moment rho j (meyerLineReflect tau) ⟨i.val, hi⟩,
     meyerHasseMoment_smul, meyerHasseJetSource_moment]
+  simp only [heq]
   by_cases ht : tau = meyerLineReflect rho
   · by_cases hij : i.val = j.val
-    · simp only [heq, ht, hij, and_self, ↓reduceIte, map_one, mul_one]
-    · simp only [heq, ht, hij, and_false, ↓reduceIte, map_zero, mul_zero]
-  · simp only [heq, ht, false_and, ↓reduceIte, map_zero, mul_zero]
+    · simp only [ht, hij, and_self, ↓reduceIte, map_one, mul_one]
+    · simp only [ht, hij, and_false, ↓reduceIte, map_zero, mul_zero]
+  · simp only [ht, false_and, ↓reduceIte, map_zero, mul_zero]
 
 /-- Raw jets of the normalized class have exactly the corresponding factorial. -/
 theorem meyerHasseJetClass_raw_jet (rho : XiDivisorSupport)
@@ -257,11 +260,3 @@ theorem meyerFiniteXiCausalSection_eq_hasse_sum (S : Finset XiDivisorSupport)
     rw [if_neg hn, mul_zero]
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHasseJetSource_moment
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerSourceClass_eq_of_hasse_moments_eq
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHasseJetClass_product_distinct
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHasseJetClass_product_same
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHasseJetClass_product_truncated
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHasseJetClass_sharp
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteXiCausalSection_eq_hasse_sum

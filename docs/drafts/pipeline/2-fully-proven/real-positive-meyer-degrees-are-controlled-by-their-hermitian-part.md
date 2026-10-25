@@ -51,4 +51,4 @@ scope are the point. External novelty unverified. Complete unrun Lean draft:
 projection, and the finite causal restriction without a Hermiticity premise
 on the original degree.
 
-Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/MeyerHermitianDegreePart.lean`; unverified and unwired. The scratch copy remains until actual-file verification succeeds.
+Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/MeyerHermitianDegreePart.lean`; unverified and unwired, with eight audit endpoints. Both square-reading identities are explicit: `meyerDegreeHermitianPart_square` and `meyerDegreeImaginaryPart_square`. The latter applies the first identity to `-I • d`, formalizing the existing displayed paper corollary. The scratch copy lacks this endpoint and remains until actual-file verification succeeds.

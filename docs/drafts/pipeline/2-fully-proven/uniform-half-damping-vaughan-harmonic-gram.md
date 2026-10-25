@@ -161,32 +161,35 @@ and the uniform finite floor majorant. The endpoint argument introduces no new
 analytic premise. The uniform double-convolution logarithmic theorem, generic
 damped logarithmic transfer, actual convolution fluctuation, and uniform
 truncated-Möbius logarithmic prefixes are now checked
-in Lean. This card's bounded-error law and moving-limit corollaries remain
-unformalized. Existing half-admission and product-horizon drafts do not yet establish
-these stronger claims. Full Q-I remains open.
+in Lean. The actual bounded-error law is now also verified. Moving-limit, rank,
+and realization corollaries remain unformalized. Full Q-I remains open.
 
-`/tmp/QICriticalLogPairingTools.lean` drafts the generic endpoint summation step:
-two logarithms in a common critical-prefix bound give one summable envelope
-dominating both the squared cell and its absolute square-root mixed cell.
-The common linear majorant pays the finite head. This uses the read public
-`pm_summable_reciprocal_log_sq` source, whose proof shifts the logarithmic
-integral comparison away from the origin. All three generic targets remain
-unchecked; the actual five-row pointwise specialization is still required.
-
-`/tmp/QIVaughanPrefixRemainderTools.lean` now drafts that pointwise specialization
-as six targets, including the bounded active correction, the unit-pattern
-remainder, the exact both-large triangle bound, and the common logarithmic
-rate for all five rows through half damping. It also drafts a common linear
-finite-head bound for those five smooth remainders, obtained from the actual
-reciprocal divisor majorant and the unit-bounded pattern estimate. These remain
-unchecked; the actual summable-envelope and Gram specializations are next.
-
-Those specializations are drafted in `/tmp/QIHalfVaughanGramTools.lean`:
-one summable envelope for every actual endpoint remainder, common energy and
-absolute mixed-pairing bounds, and the uniform bounded harmonic Gram error.
-The last proof expands the three error pairings and uses the mixed absolute
-bound directly. All three targets remain uncompiled. Moving renormalized
-limits, the exact ray of limit matrices, and its ranks remain to formalize.
+The generic endpoint summation step is Lean-verified in
+`UniformCriticalPronicPairingsFromLogarithmicCancellation.lean`: two logarithms
+in a common critical-prefix bound give one summable envelope dominating both
+the squared cell and its absolute square-root mixed cell. A common linear
+majorant pays the finite head. All three targets passed corrected producing
+and final direct checks with standard axioms only. The module is wired and
+its scratch removed; see [the audit](../3-formalized/uniform-critical-pronic-pairings-from-logarithmic-cancellation.md).
+The actual five-row pointwise specialization also passed its producing and
+final direct checks. All six targets have standard transitive axioms only.
+`UniformLogarithmicPrefixRemaindersInAllVaughanRows.lean` proves the bounded
+active correction, unit-pattern remainder, exact both-large triangle bound,
+common logarithmic prefix rate through half damping, and common linear
+finite-head bound. The module is wired and its scratch removed; see
+[the prefix audit](../3-formalized/uniform-logarithmic-prefix-remainders-in-all-vaughan-rows.md).
+The three actual specializations passed corrected producing and final direct
+checks with standard axioms only in `UniformHarmonicVaughanGramsAtHalfDamping.lean`:
+one summable envelope for every endpoint remainder, common energy and absolute
+mixed-pairing bounds, and the uniform bounded harmonic Gram error. The module
+is wired and its scratch removed; see
+[the endpoint Gram audit](../3-formalized/uniform-harmonic-vaughan-grams-at-half-damping.md).
+The three packet laws also passed their corrected final direct check and
+standard-axiom audits in `UniformHarmonicEnergyLawsForVaughanSuperpositions.lean`.
+Their homogeneous error bound and both smooth-annihilation corollaries are
+included in the endpoint Gram audit. The packet module is wired and its
+scratch removed. Moving renormalized limits, the exact limit ray, and ranks
+remain under verification.
 
 ## Relation to subcritical limit classification
 

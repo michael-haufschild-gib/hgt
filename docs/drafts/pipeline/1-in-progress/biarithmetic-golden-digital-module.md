@@ -445,3 +445,22 @@ These are existing jump-proof obligations, drafted directly in
 `/tmp/BiarithmeticDigitCarryBoundary.lean`; they remain unchecked. Extending
 the jump calculation to arbitrary cofactor sums and proving uniform Wiener
 tail control are separate obligations.
+
+The required uniform tail majorant can be obtained without summing an
+unweighted covariance error. Put `L=floor(log_5 j)`. Scaling the profile
+by `5^L` keeps its argument in `[0,5]`, while `a>=sqrt(5)` gives
+`sqrt(j)<=sqrt(5)*a^L`. Hence
+`0<=F_a(x/j)<=sqrt(5)*B_a/sqrt(j)` on `[0,5]`.
+Multiplication by actual Wiener coefficients gives a summable uniform
+majorant. `/tmp/BiarithmeticDigitWienerProfile.lean` drafts this bound,
+absolute summability, and uniform convergence of the actual coefficient
+series. Checks remain pending; no infinite-cofactor conclusion is inferred
+from finite covariance errors alone.
+
+For the full Wiener grid refinement, each coefficient error is bounded
+both by its individual geometric grid error and by the summable critical
+Wiener majorant. Taking the minimum of those bounds gives a summable
+majorant whose total tends to zero by dominated convergence for series.
+This proves uniform refinement of the entire Wiener profile without an
+unweighted coefficient summability assumption. The direct draft is
+`/tmp/BiarithmeticDigitWienerRefinement.lean`; checks remain pending.

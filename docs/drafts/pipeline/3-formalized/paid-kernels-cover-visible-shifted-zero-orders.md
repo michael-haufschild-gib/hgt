@@ -1,8 +1,8 @@
 # Paid kernels cover visible shifted zero orders
 
 - **ID:** paid-kernels-cover-visible-shifted-zero-orders
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (canonical Lean completion pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** [Visible poles and module multiplicity](../1-in-progress/q-iii-visible-poles-and-module-multiplicity.md)
 
 ## Exact statement
@@ -74,14 +74,28 @@ cofactor module hull. The full module annihilator can strictly contain the
 paid ideal. Joint generalized eigenspace dimensions have not been identified
 with these arithmetic orders.
 
-## Lean status
+## Lean verification
 
-The strict-interior and complete critical-boundary scratches passed with only
-`propext`, `Classical.choice`, and `Quot.sound`: real and complex kernel order
-bounds, all jets below visible order, partial-cancellation hull membership,
-and the actual Mellin identity and bound. Canonical extraction and original
-continuation-proof refactoring are installed; new leaves are umbrella-wired.
+Canonical source-only checks passed for
+`ArithmeticOrientationTheory/TheOffLineZerosObstructTheMoebiusReceiver`
+(`11733`) and
+`ArithmeticOrientationTheory/PaidKernelsCoverVisibleTranslatedZeroOrders`
+(`55727`). Required oleans passed, and the new leaf is umbrella-wired.
+Transitive axiom reports contain only `propext`, `Classical.choice`, and
+`Quot.sound`.
 
-Final direct checks of `TheOffLineZerosObstructTheMoebiusReceiver` and
-`PaidKernelsCoverVisibleTranslatedZeroOrders` remain pending. See
-[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
+Exact declarations:
+
+- `complexMellinPairing_cleared_identity_of_repairs` supplies the actual
+  Mellin identity and supports the refactored existing translated-zero proof.
+- `zeta_order_le_translated_order_add_kernel_order_of_repairs` and
+  `zeta_order_le_translated_order_add_paid_kernel_order` give the real and
+  complex order bounds.
+- `visibleTranslatedZetaOrder_le_paid_kernel_order` and
+  `paid_kernel_jets_vanish_below_visible_order` give the residual multiplicity
+  and every required interior jet.
+- `mem_obstructionHull_moebius_of_strict_order_loss` and
+  `not_receiverBounded_moebius_of_strict_order_loss` give partial-cancellation
+  hull membership and the resulting source nonpayment.
+
+No boundary jet or actual module spectral identification is claimed.

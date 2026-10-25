@@ -3,7 +3,7 @@
 - **ID:** vaughan-factorial-order-one-is-a-fixed-strip
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
-- **Source:** ../2-fully-proven/uniform-vaughan-convolution-stretched-exponential-rate.md
+- **Source:** ../3-formalized/uniform-vaughan-convolution-stretched-exponential-rate.md
 - **Statement:** A common-threshold logarithmic envelope with constants `C A^q q!` for the actual uniform undamped Vaughan convolution is equivalent to a fixed zero-free strip.
 
 ## Question

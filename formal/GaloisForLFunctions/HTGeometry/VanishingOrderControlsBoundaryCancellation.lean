@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Analytic.Order
+import Mathlib.Analysis.Complex.Basic
 
 /-!
 # Vanishing order controls boundary cancellation

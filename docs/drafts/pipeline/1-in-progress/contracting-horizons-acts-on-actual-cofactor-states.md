@@ -92,8 +92,9 @@ drafted in `/tmp/qiii_mixed_horizon_error_body.lean` and
 of the selected actual diagonal, with the zero branch handled separately.
 Generic principal-colon character cancellation and actual cofactor vector
 annihilators are drafted in `/tmp/qiii_character_colon_hull_body.lean` and
-`/tmp/qiii_cofactor_colon_hull_body.lean`. All are UNVERIFIED. The assembler
-now provides `qiii-contracted-horizons-check.lean`; no compile launched yet.
+`/tmp/qiii_cofactor_colon_hull_body.lean`. All are UNVERIFIED. Their current
+direct Lean scratch is `/tmp/qiii-contracted-horizons-check.lean`; it still
+needs its first direct check.
 
 A stronger paper consequence is worth a separate audit: the same mixed
 fibre error and positivity show that the entire matrix
@@ -127,8 +128,8 @@ invariance of the complete Wiener annihilator. It applies at every nonzero
 cofactor, so the augmentation branch is handled without assuming it away.
 It remains UNVERIFIED and depends on the rank-one and contracted-state leaves.
 
-The exact terminal-fibre correction now precedes the uniform bound in the
-assembler. The bound covers arbitrary nonnegative linear constants C,D,
+The exact terminal-fibre correction precedes the uniform bound in the
+current scratch. The bound covers arbitrary nonnegative linear constants C,D,
 with cost C*D/p, not only the actual unit constants. Full operator
 intertwining is explicit in `contractedKernelIsometry_dilation` and
 `contractedKernelIsometry_wiener`; the cyclic-vector formula consumes the

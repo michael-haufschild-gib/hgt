@@ -95,3 +95,7 @@ theorem normalizedFiniteLinearReadingGradedSourceCone_not_ample {r : ℝ} (hr : 
   exact hA x ((scalingSubsurface (realTestsAt r)).sourceCone_subset_gradedSourceCone _ hx)
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
+
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.PolarSurface.sourceCone_ample_iff_defect_radical
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.normalizedFiniteLinearReadingSourceCone_not_ample_and_not_bezout
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.normalizedFiniteLinearReadingGradedSourceCone_not_ample

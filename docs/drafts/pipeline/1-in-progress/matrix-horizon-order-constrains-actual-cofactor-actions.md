@@ -63,8 +63,10 @@ lemma. The missing elementary bridge is drafted in
 `/tmp/qiii_commuting_family_eigenvector_body.lean`: induct on dimension;
 if every operator is scalar, choose any nonzero vector; otherwise restrict
 the family to a nonzero proper eigenspace of one nonscalar operator.
-Commutativity preserves that space. This will be checked before use in
-the finite actual hull modulus theorem. It is not yet a formalized finding.
+Commutativity preserves that space. The bridge is now canonical as
+`HTGeometry.exists_common_eigenvector_family` in
+`FiniteCommutingFamiliesHaveCommonEigenvectors`. Its required olean and final
+source-only audit `15948` passed with standard axioms.
 
 The modulus bridge and finite actual hull application are now drafted in
 `/tmp/qiii_eigencharacter_power_body.lean` and
@@ -72,10 +74,11 @@ The modulus bridge and finite actual hull application are now drafted in
 `finite_moduleHull_modulus_classification`: every finite actual hull point
 has augmentation modulus or `|omega(p)|=p^(-alpha)` for one alpha>=0.
 No phase claim is included. These parts are not yet in a check queue; the
-operator horizon-order and common-family eigenvector dependencies must
-first pass. All findings remain OPEN until formalized.
+operator horizon-order dependency must first pass; the common-family
+eigenvector dependency is complete. The modulus conclusions remain OPEN
+until formalized.
 
 Complex packet order and complete-Hilbert dilation order are now both
-included in the contracted-horizon draft. The finite-hull assembler target
-is also prepared, but it still needs the eventual canonical operator-order
+included in the contracted-horizon draft. The finite-hull scratch
+is also prepared, but it still needs the canonical operator-order
 import before compilation. No finite-hull modulus claim is verified yet.

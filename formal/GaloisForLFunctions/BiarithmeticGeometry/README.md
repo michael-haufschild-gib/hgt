@@ -122,10 +122,17 @@ van der Geer–Schoof theta dimensions (real-valued analogues stay distinct from
 19. **Payment criterion**: `k(5^r) = f_r` repairs `I_a` ⇔ `Σ(a²/5)^l(Σ_{r≤l} f_r/a^r)² < ∞`
     (`receiverBounded_fiveTowerKernelLift_iff`); at criticality ⇔ partial sums of `g` square-summable
     (`receiverBounded_critical_fiveTower_iff_partialSums`, `mem_paidIdeal_golden_critical_fiveTower_iff`). Lifts are
-    isometric (`norm_fiveCriticalWienerLift`).
+    isometric (`norm_fiveCriticalWienerLift`); complex `ell1` is isometric onto the actual prime-five
+    supported subspace, with normalized restriction inverse (`criticalCoefficientLift`,
+    `mem_range_criticalCoefficientLift_iff`, `criticalNormalizedCoefficients_lift`).
 20. **Critical paid ideal is not closed.** Finite zero-sum repairs converge to an unpaid kernel
     (`not_isClosed_golden_critical_paidIdeal`); closure of the critical coefficient domain = kernel of total
     evaluation, distance = |total| (`closure_criticalCoefficientDomain`, `criticalTotalEvaluation_minimum_distance`);
+    reduced coefficient cokernel is isometrically `ℂ` (`criticalReducedCoefficientCokernelIsometry`);
+    the explicit norm-two coefficient witness proves its payment domain nonclosed
+    (`norm_criticalUnpaidCoefficientVector`, `not_isClosed_criticalCoefficientDomain`);
+    the unreduced quotient's continuous dual is exactly one complex dimension
+    (`criticalUnreducedContinuousDualEquiv`, `finrank_criticalUnreducedContinuousDual`);
     zero-sum lifts lie in the closure (`fiveComplexCriticalWienerLift_mem_closure_paidIdeal`). Power-tail family
     pays iff exponent > ½ (`powerTailWiener_mem_paidIdeal_iff`); exponents in `(0, ½)` are independent, so both the
     payment quotient and the closure defect have Hamel dimension exactly continuum

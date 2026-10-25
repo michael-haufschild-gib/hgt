@@ -95,11 +95,14 @@ theorem twisted_isBoundaryDivisor {a : ℕ → ℝ} {K : ℕ}
           (x * cosineTrace (zetaBoundaryWeight x) logFrequency (u + k * t₀) +
             x * cosineTrace (zetaBoundaryWeight x) logFrequency (u - k * t₀)))
         (𝓝[>] 0) (𝓝 (twistedDivisor a K t₀ u)) := by
-      unfold twistedDivisor
-      refine tendsto_finsetSum _ fun k _ => ((zeta_isBoundaryDivisor.tendsto _).add
-        (zeta_isBoundaryDivisor.tendsto _)).const_mul _ |>.congr' ?_ |> fun h => ?_
-      · exact Eventually.of_forall fun x => rfl
-      · simpa only [zetaBoundaryDivisor_eq, diracAt] using h
+      have h : Tendsto (fun x => ∑ k ∈ range (K + 1), a k / 2 *
+            (x * cosineTrace (zetaBoundaryWeight x) logFrequency (u + k * t₀) +
+              x * cosineTrace (zetaBoundaryWeight x) logFrequency (u - k * t₀)))
+          (𝓝[>] 0) (𝓝 (∑ k ∈ range (K + 1), a k / 2 *
+            (zetaBoundaryDivisor (u + k * t₀) + zetaBoundaryDivisor (u - k * t₀)))) :=
+        tendsto_finsetSum _ fun k _ =>
+          ((zeta_isBoundaryDivisor.tendsto _).add (zeta_isBoundaryDivisor.tendsto _)).const_mul _
+      simpa only [zetaBoundaryDivisor_eq, twistedDivisor, diracAt] using h
     refine hlim.congr' ?_
     filter_upwards [self_mem_nhdsWithin] with x hx
     rw [cosineTrace_twistedWeight (Set.mem_Ioi.mp hx), Finset.mul_sum]
@@ -115,7 +118,8 @@ theorem twistedDivisor_zero (a : ℕ → ℝ) (K : ℕ) {t₀ : ℝ} (ht₀ : t�
     twistedDivisor a K t₀ 0 = a 0 := by
   unfold twistedDivisor
   rw [Finset.sum_eq_single 0]
-  · simp [diracAt]
+  · simp only [diracAt, Nat.cast_zero, zero_mul, add_zero, sub_zero, if_true]
+    ring
   · intro k _ hk
     have hk' : (k : ℝ) * t₀ ≠ 0 := mul_ne_zero (Nat.cast_ne_zero.mpr hk) ht₀
     simp [diracAt, hk']
@@ -137,8 +141,7 @@ theorem twistedDivisor_mul (a : ℕ → ℝ) {K m : ℕ} (hm : 1 ≤ m) (hmK : m
       exact mul_ne_zero (by positivity) ht₀
     have h2 : (m : ℝ) * t₀ - k * t₀ ≠ 0 := by
       rw [← sub_mul]
-      refine mul_ne_zero (sub_ne_zero.mpr ?_) ht₀
-      exact_mod_cast fun h => hk h.symm
+      exact mul_ne_zero (sub_ne_zero.mpr (by exact_mod_cast (Ne.symm hk))) ht₀
     simp [diracAt, h1, h2]
   · intro h
     exact absurd (Finset.mem_range.mpr (Nat.lt_succ_of_le hmK)) h
@@ -157,9 +160,8 @@ theorem twistedDivisor_eq_zero (a : ℕ → ℝ) (K : ℕ) {t₀ u : ℝ}
 theorem twistedProfile_isEvenPosDef {a : ℕ → ℝ} {K : ℕ}
     (hP : ∀ θ, 0 ≤ HTGeometry.cosinePolynomial a K θ) (t₀ : ℝ) :
     IsEvenPosDef (fun m : ℤ => twistedDivisor a K t₀ (m * t₀)) := by
-  have := (twistedDivisor_isEvenPosDef hP t₀).comp_addMonoidHom
+  exact (twistedDivisor_isEvenPosDef hP t₀).comp_addMonoidHom
     ((AddMonoidHom.mulRight t₀).comp (Int.castAddHom ℝ))
-  simpa [Function.comp] using this
 
 /-! ### The double-pole profile -/
 

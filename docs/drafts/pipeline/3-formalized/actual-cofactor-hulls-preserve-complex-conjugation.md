@@ -1,9 +1,9 @@
 # Actual cofactor hulls preserve complex conjugation
 
 - **ID:** actual-cofactor-hulls-preserve-complex-conjugation
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE (Lean completion pending)
-- **Parent:** [Q-III](q-iii-escape-state-classification.md)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
 - **Statement:** Every actual cofactor annihilator and its module hull are
   invariant under coefficient and character conjugation, respectively.
 
@@ -23,7 +23,20 @@ not identify module characters with zeta zeros or exclude real characters.
 An even zero-count or paired multiplicity formula is not inferred from
 set symmetry alone.
 
-## Status
+## Lean verification
 
-Exact Lean draft: `/tmp/qiii_actual_conjugate_hull_body.lean`. Pending source
-check and transitive axiom audit; no paper-only completion.
+Canonical module:
+`ArithmeticDefectRigidity/ActualCofactorHullsRespectConjugation.lean`.
+Scratch retry `19444` and final canonical source-only check `78866` passed.
+The module is umbrella-wired; no olean was needed for a written importer.
+Transitive axiom reports contain only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+- `complexWienerRow_conj` and `wienerSourcePairing_conj`: exact finite-source
+  conjugation identities.
+- `ActualCofactorLimit.inner_wiener_conj` and `norm_wiener_conj`: limiting
+  cyclic inner products and norms.
+- `ActualCofactorLimit.conjW_mem_annihilator_iff`: coefficient-conjugation
+  invariance of the complete annihilator.
+- `ActualCofactorLimit.conj_mem_moduleHull`: conjugation symmetry of each
+  actual module hull.

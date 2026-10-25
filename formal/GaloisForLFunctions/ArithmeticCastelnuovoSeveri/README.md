@@ -160,6 +160,11 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
     This strictly positive source mass is centered-flow invariant, but Weil trace is unbounded on
     its unit sphere at every positive aperture; no nonlinear function of mass bounds the mixed
     trace (`InvariantOriginMassDoesNotBoundTheWeilTrace.lean`).
+    Factorial-normalized actual classes obey truncated local polynomial product rules and the
+    reflected parity law for sharp; every finite causal section has an exact Hasse expansion
+    (`MeyerFiniteJetAlgebra.lean`). Actual finite causal projectors select complete jet blocks and
+    are central convolution multipliers; each value idempotent acts as its whole local block
+    projector (`MeyerFiniteProjectorAlgebra.lean`).
 18. **Meyer source surface.** Linear trace degree on genuine cohomology gives graded RR
     unconditionally; Bézout, ampleness, additive closure ⇔ RH; numerical = principal ⇔ Xi simplicity.
     Bounded-orbit carrier (full-Hasse Hilbert–Schmidt): RR, Bézout, ampleness unconditional;
@@ -178,6 +183,10 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
 21. **Faithful degrees and adjoints.** Faithful positive linear degree on genuine cohomology ⇔ RH +
     simplicity ⇔ arithmetic sharp = Hilbert adjoint; flow-invariant majorants of the mixed trace ⇔ RH;
     critical trace degree positive with exact kernel; quasi-inverse radical vanishes ⇔ simplicity.
+    Every positive Hermitian degree restricts on finite causal packets to nonnegative critical
+    value weights: off-line blocks and higher jets vanish. Conversely finite nonnegative critical
+    weights define positive Hermitian degrees on the whole quotient
+    (`PositiveMeyerDegreesSeeReducedCriticalJets.lean`).
     The faithful Hilbert–Schmidt reserve gives Bézout and ampleness; its RR and exact linear-degree
     representation hold iff RH + simplicity. Reserve boundedness and invariance both select critical
     highest jets. On that restricted carrier, faithful-reserve RR and linear representation hold iff

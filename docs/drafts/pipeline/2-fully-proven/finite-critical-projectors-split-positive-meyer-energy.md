@@ -52,20 +52,22 @@ question on `../1-in-progress/positive-meyer-degrees-and-the-infinite-source-tai
 ## Source audit and formalization
 
 `DeningerMeyerFiniteXiCausalSplitting` supplies the actual projector,
-idempotence, exact selected jets, and off-packet vanishing. The new finite
-Hasse algebra and positive-degree classification have complete paper proofs
-and unverified Lean drafts. Their actual leaf checks must precede promotion
-of this theorem. The complete unrun draft `/tmp/QIIFiniteCriticalProjectorEnergyDraft.lean`
+idempotence, exact selected jets, and off-packet vanishing. The finite
+Hasse algebra and positive-degree classification are certified by direct checks
+**48574** and **14494**, with standard transitive axiom audits. The energy
+module still requires its own actual-file check. The stale draft `/tmp/QIIFiniteCriticalProjectorEnergyDraft.lean`
 contains exact block selection, central multiplication, sharp compatibility,
 zero mixed product, degree decomposition, residual saturation, and the
 weighted finite energy formula/bound. Its finite sum is indexed by the
 existing full-jet slot type with only order zero retained, equivalently one
 term for each selected Xi point.
 
-The generic block-selection and central-multiplier proof has been isolated in
-`/tmp/QIIMeyerFiniteProjectorAlgebraDraft.lean` for reuse by the algebraic
-character classification. The energy draft imports its planned module; both
-are still unverified.
+The generic block-selection and central-multiplier proof is certified in
+`MeyerFiniteProjectorAlgebra.lean`: direct check **24913** passed with only
+`propext`, `Classical.choice`, and `Quot.sound` in all four endpoint audits.
+It also proves the complete singleton-block action of the local value
+idempotent. Temporary prints are removed; the module is wired and documented.
+The energy and character importers still await their own direct checks.
 
 ## Stronger survivor: arbitrary finite packets [PROVED HERE, paper]
 
@@ -104,4 +106,4 @@ endpoints are now in the existing energy draft, including exact finite weights
 and saturation; their actual-file verification remains pending. The critical-packet algebraic
 zero-product statement remains stronger at the class level and is retained.
 
-Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FiniteMeyerProjectorsSplitPositiveEnergy.lean`; unverified and unwired, with fifteen audit endpoints. The paper's literal class-level sharp-square decomposition is explicitly stated as `meyerFiniteCriticalProjector_square_decomposition`, independently of any degree. Its proof takes the sharp of the zero mixed product and expands convolution. This formalizes the displayed existing paper identity; it is not a new research claim. The older scratch copy lacks this declaration and remains stale until actual-file verification succeeds.
+Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FiniteMeyerProjectorsSplitPositiveEnergy.lean`; unverified and unwired, with seventeen audit endpoints. The paper's literal class-level sharp-square decomposition is explicitly stated as `meyerFiniteCriticalProjector_square_decomposition`, independently of any degree. Its proof takes the sharp of the zero mixed product and expands convolution. The infinite-tail card's existing regular-energy assertion is also explicit: `meyerDegreeRegularEnergy` is the supremum of finite projected energies; `meyerPositiveDegree_regular_energy_bounds` and `meyerPositiveDegree_regular_residual` bound it and give a nonnegative remainder. The generic supremum API passed direct check **27654**. No zero residual or infinite interchange is asserted. These formalize existing paper claims. The older scratch copy lacks these declarations and remains stale until actual-file verification succeeds.

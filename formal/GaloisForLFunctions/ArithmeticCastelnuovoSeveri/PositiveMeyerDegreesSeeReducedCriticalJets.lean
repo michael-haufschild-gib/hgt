@@ -15,6 +15,12 @@ open Complex RHTower
 open scoped ComplexConjugate
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
+private theorem hasse_class_congr {rho sigma : XiDivisorSupport} (h : rho = sigma)
+    (j : DeningerArithmeticJetIndex rho) (k : DeningerArithmeticJetIndex sigma)
+    (hj : j.val = k.val) : meyerHasseJetClass rho j = meyerHasseJetClass sigma k := by
+  subst sigma
+  exact congrArg (meyerHasseJetClass rho) (Fin.ext hj)
+
 /-- A positive Hermitian degree annihilates every jet in a nonfixed reflection block. -/
 theorem meyerPositiveDegree_off_line_jet_zero
     (d : DeningerMeyerStrongLogCohomology →ₗ[ℂ] ℂ)
@@ -31,8 +37,10 @@ theorem meyerPositiveDegree_off_line_jet_zero
   have hs : meyerCohomologySharp
       (meyerHasseJetClass (meyerLineReflect rho) ⟨0, xiSupportMultiplicity_pos _⟩) =
         meyerHasseJetClass rho ⟨0, xiSupportMultiplicity_pos rho⟩ := by
-    simpa only [meyerLineReflect_sq, pow_zero, one_smul] using
-      meyerHasseJetClass_sharp (meyerLineReflect rho) ⟨0, xiSupportMultiplicity_pos _⟩
+    have he := meyerHasseJetClass_sharp (meyerLineReflect rho)
+      ⟨0, xiSupportMultiplicity_pos _⟩
+    simp only [pow_zero, one_smul] at he
+    exact he.trans (hasse_class_congr (meyerLineReflect_sq rho) _ _ rfl)
   rw [meyerDegreePair, hs, meyerHasseJetClass_product_unit] at hp
   exact hp
 
@@ -40,7 +48,9 @@ private theorem sharp_fixed_jet (rho : XiDivisorSupport) (hfix : meyerLineReflec
     (j : DeningerArithmeticJetIndex rho) :
     meyerCohomologySharp (meyerHasseJetClass rho j) =
       (-1 : ℂ) ^ j.val • meyerHasseJetClass rho j := by
-  simpa only [hfix] using meyerHasseJetClass_sharp rho j
+  have he := meyerHasseJetClass_sharp rho j
+  rw [hasse_class_congr hfix _ j rfl] at he
+  exact he
 
 /-- Every positive-order jet in a critical block is invisible to a positive Hermitian degree. -/
 theorem meyerPositiveDegree_higher_jet_zero
@@ -204,9 +214,3 @@ theorem meyerFiniteCriticalDegree_hasse_class (S : Finset XiDivisorSupport)
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerPositiveDegree_off_line_jet_zero
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerPositiveDegree_higher_jet_zero
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerPositiveDegree_finite_causal_formula
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalDegree_hermitian
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalDegree_nonnegative
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalDegree_hasse_class

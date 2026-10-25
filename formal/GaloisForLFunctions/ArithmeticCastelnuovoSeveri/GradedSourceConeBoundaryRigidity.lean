@@ -88,3 +88,6 @@ theorem gradedSourceCone_riemannRoch_and_bezout_iff {Φ : C → ℝ}
     exact (S.sourceCone_riemannRoch_and_bezout_iff hnn heven hfib).mpr heq
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.PolarSurface
+
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.PolarSurface.gradedSourceCone_riemannRoch_and_bezout_iff
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.PolarSurface.gradedSourceCone_bezout_iff

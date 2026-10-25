@@ -9,6 +9,8 @@ Actual causal projectors cut out complete local jet blocks. They are central
 multipliers of the genuine convolution algebra and commute with arithmetic sharp
 on critical packets. Every positive Hermitian degree therefore splits into the
 selected finite energy and a nonnegative complementary energy, without continuity.
+The supremum of finite projected energies is finite and leaves a nonnegative
+residual in the full energy.
 -/
 
 noncomputable section
@@ -27,6 +29,21 @@ private theorem cohomologySharp_jet (u : DeningerMeyerStrongLogCohomology)
       deningerMeyerXiSupportJetEvaluationLM_mk]
     exact meyerSourceSharp_jet g j.val rho
 
+private theorem cohomology_jet_congr {rho sigma : XiDivisorSupport} (h : rho = sigma)
+    (j : DeningerArithmeticJetIndex rho) (k : DeningerArithmeticJetIndex sigma)
+    (hj : j.val = k.val) (u : DeningerMeyerStrongLogCohomology) :
+    deningerMeyerXiSupportJetEvaluationLM rho j u =
+      deningerMeyerXiSupportJetEvaluationLM sigma k u := by
+  subst sigma
+  exact congrArg (fun i => deningerMeyerXiSupportJetEvaluationLM rho i u) (Fin.ext hj)
+
+private theorem cohomologySharp_fixed_jet (u : DeningerMeyerStrongLogCohomology)
+    (rho : XiDivisorSupport) (hfix : meyerLineReflect rho = rho)
+    (j : DeningerArithmeticJetIndex rho) :
+    deningerMeyerXiSupportJetEvaluationLM rho j (meyerCohomologySharp u) =
+      (-1 : ℂ) ^ j.val * star (deningerMeyerXiSupportJetEvaluationLM rho j u) := by
+  rw [cohomologySharp_jet, cohomology_jet_congr hfix _ j rfl u]
+
 /-- On a finite critical packet the actual causal projector commutes with arithmetic sharp. -/
 theorem meyerFiniteCriticalProjector_sharp (S : Finset XiDivisorSupport)
     (hcrit : ∀ rho ∈ S, (rho : ℂ).re = 1 / 2)
@@ -38,8 +55,9 @@ theorem meyerFiniteCriticalProjector_sharp (S : Finset XiDivisorSupport)
   intro rho j
   by_cases hr : rho ∈ S
   · have hfix := meyerLineReflect_eq_self_of_critical rho (hcrit rho hr)
-    rw [cohomologySharp_jet, meyerFiniteXiCausalProjector_jet, hfix, if_pos hr,
-      meyerFiniteXiCausalProjector_jet, if_pos hr, cohomologySharp_jet, hfix]
+    rw [cohomologySharp_fixed_jet _ rho hfix, meyerFiniteXiCausalProjector_jet,
+      if_pos hr, meyerFiniteXiCausalProjector_jet, if_pos hr,
+      cohomologySharp_fixed_jet _ rho hfix]
   · have href : meyerLineReflect rho ∉ S := by
       intro he
       have hfix := meyerLineReflect_eq_self_of_critical (meyerLineReflect rho)
@@ -234,7 +252,7 @@ private theorem point_degree_sharp_fixed (rho : XiDivisorSupport)
     meyerPointDegree rho (meyerCohomologySharp u) = conj (meyerPointDegree rho u) := by
   change deningerMeyerXiSupportJetEvaluationLM rho ⟨0, xiSupportMultiplicity_pos rho⟩
     (meyerCohomologySharp u) = _
-  rw [cohomologySharp_jet, hr, pow_zero, one_mul]
+  rw [cohomologySharp_fixed_jet _ rho hr, pow_zero, one_mul]
   rfl
 
 private theorem positive_degree_zero_on_finite_range
@@ -358,6 +376,50 @@ theorem meyerFiniteProjector_positive_degree_eq_iff
   rw [Complex.add_re] at he
   constructor <;> intro h <;> linarith only [he, h]
 
+/-- The regular energy recovered from all finite causal projections. -/
+def meyerDegreeRegularEnergy (d : DeningerMeyerStrongLogCohomology →ₗ[ℂ] ℂ)
+    (u : DeningerMeyerStrongLogCohomology) : ℝ :=
+  sSup (Set.range fun S : Finset XiDivisorSupport =>
+    (meyerDegreePair d (deningerMeyerFiniteXiCausalProjector S u)
+      (deningerMeyerFiniteXiCausalProjector S u)).re)
+
+/-- Positive finite energies have a genuine supremum between zero and the full energy. -/
+theorem meyerPositiveDegree_regular_energy_bounds
+    (d : DeningerMeyerStrongLogCohomology →ₗ[ℂ] ℂ)
+    (hd : ∀ u, d (meyerCohomologySharp u) = conj (d u))
+    (hpos : ∀ u, 0 ≤ (meyerDegreePair d u u).re)
+    (u : DeningerMeyerStrongLogCohomology) :
+    (∀ S : Finset XiDivisorSupport,
+      (meyerDegreePair d (deningerMeyerFiniteXiCausalProjector S u)
+        (deningerMeyerFiniteXiCausalProjector S u)).re ≤ meyerDegreeRegularEnergy d u) ∧
+      0 ≤ meyerDegreeRegularEnergy d u ∧
+      meyerDegreeRegularEnergy d u ≤ (meyerDegreePair d u u).re := by
+  have hb : BddAbove (Set.range fun S : Finset XiDivisorSupport =>
+      (meyerDegreePair d (deningerMeyerFiniteXiCausalProjector S u)
+        (deningerMeyerFiniteXiCausalProjector S u)).re) := by
+    refine ⟨(meyerDegreePair d u u).re, ?_⟩
+    rintro _ ⟨S, rfl⟩
+    exact meyerFiniteProjector_positive_degree_le d hd hpos S u
+  have hsup (S : Finset XiDivisorSupport) :
+      (meyerDegreePair d (deningerMeyerFiniteXiCausalProjector S u)
+        (deningerMeyerFiniteXiCausalProjector S u)).re ≤ meyerDegreeRegularEnergy d u :=
+    le_csSup hb ⟨S, rfl⟩
+  refine ⟨hsup, (hpos _).trans (hsup ∅), csSup_le ⟨_, ∅, rfl⟩ ?_⟩
+  rintro _ ⟨S, rfl⟩
+  exact meyerFiniteProjector_positive_degree_le d hd hpos S u
+
+/-- The full energy splits into the regular supremum and a nonnegative residual. -/
+theorem meyerPositiveDegree_regular_residual
+    (d : DeningerMeyerStrongLogCohomology →ₗ[ℂ] ℂ)
+    (hd : ∀ u, d (meyerCohomologySharp u) = conj (d u))
+    (hpos : ∀ u, 0 ≤ (meyerDegreePair d u u).re)
+    (u : DeningerMeyerStrongLogCohomology) :
+    0 ≤ (meyerDegreePair d u u).re - meyerDegreeRegularEnergy d u ∧
+      (meyerDegreePair d u u).re = meyerDegreeRegularEnergy d u +
+        ((meyerDegreePair d u u).re - meyerDegreeRegularEnergy d u) := by
+  refine ⟨sub_nonneg.mpr (meyerPositiveDegree_regular_energy_bounds d hd hpos u).2.2, ?_⟩
+  ring
+
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalProjector_sharp
@@ -375,3 +437,5 @@ end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteProjector_positive_degree_formula
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteProjector_positive_degree_le
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteProjector_positive_degree_eq_iff
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerPositiveDegree_regular_energy_bounds
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerPositiveDegree_regular_residual

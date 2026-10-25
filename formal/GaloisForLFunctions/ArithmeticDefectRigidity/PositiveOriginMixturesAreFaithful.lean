@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.DominatedKernelsHaveContractiveComparisons
 # Positive origin mixtures are faithful
 
 Every positive max-kernel mixture of an actual cofactor Gram has a bounded
-comparison onto the origin-step cyclic module. This forces its entire Wiener
+comparison to the origin-step cyclic module. This forces its entire Wiener
 action to be faithful, without assuming an orthogonal direct-sum splitting.
 -/
 

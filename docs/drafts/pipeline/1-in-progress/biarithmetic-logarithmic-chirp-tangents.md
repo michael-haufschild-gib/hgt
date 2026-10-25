@@ -196,7 +196,8 @@ horizons remains a separate obligation.
 Pending source check: `/tmp/BiarithmeticChirpCauchyKernel.lean` identifies
 the explicit kernel as a diagonal congruence of the corpus's strict Cauchy
 Gram. It drafts strict positivity for every finite set of distinct
-cofactors and arbitrary unit phases. Four audits remain unchecked.
+cofactors and arbitrary unit phases, exact amplitude norms and diagonals,
+and phase continuity. Eight audits remain unchecked.
 The actual source asymptotics and weighted packet integral remain separate.
 
 Pending source check: `/tmp/BiarithmeticChirpSourceRegularity.lean` defines
@@ -224,3 +225,75 @@ uniform floor perturbation bound and absolute summability of the actual
 row's fixed pronic covariance correction. It uses only the previously
 drafted derivative bound and elementary sublinear power estimates.
 Five audits remain unchecked; sum–integral comparison is still separate.
+
+The sum–integral comparison can use unit-cell variation bounds directly.
+For the continuous density `f(x)=v(x/j)v(x/k)/x^2`, the differentiated
+product and the uniform chirp derivative estimate give
+`|f'(x)|<=(2B_beta+2)x^(beta-2)` once `x>=max(j,k)`.
+The power is summable at integer cells because `beta<1`; the same power
+also controls replacing `1/(n(n+1))` by `1/n^2`. These actual-source
+estimates are drafted in `/tmp/BiarithmeticChirpContinuousCovariance.lean`.
+They remain unchecked. The cell-integral summation identity and the
+oscillatory integral asymptotics are still required.
+
+`/tmp/BiarithmeticChirpSumIntegral.lean` drafts that cell comparison.
+The mean-value inequality bounds each right-endpoint quadrature error by
+`(2B_beta+2)n^(beta-2)`. Absolute summability combines this with the already
+drafted floor and weight corrections. Summing adjacent cell integrals then
+gives a uniform bound for the actual discrete cofactor covariance minus its
+continuous integral. No derivative-integrability premise is added to the
+source theorem. The draft and its dependencies remain unchecked.
+The draft also restores the first cell, giving a uniform bound for the
+complete `Icc 1 N` covariance minus its integral from `1` to `N`.
+
+The quadratic sum-phase estimate can reuse the corpus's checked
+`VanDerCorputIBP.norm_integral_cexp_le_of_antiderivative`. For
+`phi(u)=2u^2-du+c`, set `v(u)=exp(alpha*u)/(4u-d)`. Beyond an explicit
+threshold, `v` and `v'` are nonnegative. The integration-by-parts bound
+therefore telescopes to `2v(U)`, giving the required `O(exp(alpha*U)/U)`
+rate after restoring the fixed initial interval. This source-specific
+specialization is drafted in `/tmp/BiarithmeticChirpQuadraticIntegral.lean`;
+checks and the logarithmic change-of-variable bridge remain pending.
+
+Integer-horizon realization reuses the inspected corpus theorem
+`RHTower.tendsto_log_natCeil_exp_sub`: rounding an escaping real phase
+time through `ceil(exp(t))` changes its logarithm by a quantity tending
+to zero. Finite simultaneous recurrence first makes any sequence in the
+orbit closure cofinal while preserving every coordinate limit.
+`/tmp/BiarithmeticChirpIntegerPhases.lean` drafts both steps for the actual
+countable cofactor phase group. Its checks remain pending.
+
+The remaining integral dictionary is being formalized in
+`/tmp/BiarithmeticChirpLogarithmicIntegrals.lean`. Exponential substitution
+turns the actual continuous covariance into a sum of its linear difference
+phase and quadratic sum phase. The linear phase has an exact exponential
+primitive; the quadratic estimate above supplies its relative remainder.
+This is a proof obligation, not a checked source asymptotic.
+
+`/tmp/BiarithmeticChirpCovarianceMainTerm.lean` assembles the exact
+integral dictionary with the summable discrete error. Its target is the
+full integer covariance divided by `N^(2*beta-1)`, minus the explicit
+linear difference-phase term, tending to zero. It does not assume a
+covariance estimate or a source limit; all inputs are the preceding
+source-specific proof obligations.
+
+`/tmp/BiarithmeticChirpKernelPhaseFormula.lean` connects that leading
+term to the explicit Cauchy kernel along the actual phase flow. The common
+amplitude norms, diagonals, and continuity lemmas live in `ChirpCauchyKernel`;
+the Haar draft reuses that amplitude norm. These identifications require Lean checks
+before the source-tangent classification can use them.
+
+`/tmp/BiarithmeticChirpTangentClassification.lean` drafts the final
+identification using the corpus's actual `normalizedSourceGram`, including
+its `T+1` horizon convention. Integer phase realization proves existence
+of every proposed kernel; compact phase subsequence extraction proves
+exhaustion. The draft and its source-asymptotic dependencies remain unchecked.
+
+Strict positive boundary mass can reuse
+`HTGeometry.entire_eq_zero_of_ae_vanishing_on_real_interval`, inspected in
+`CompactFourierEntire.lean`. If a finite packet's weighted boundary
+integral vanishes, positivity makes the packet vanish almost everywhere
+there. Its explicit entire exponential extension then vanishes globally,
+contradicting the packet's positive half-line energy. This exact argument
+is drafted in `/tmp/BiarithmeticChirpBoundaryPositivity.lean`; no interval
+independence premise is introduced. Checks and dilation transport remain pending.

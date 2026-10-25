@@ -368,10 +368,102 @@ now also states `meyerFiniteCriticalProjector_square_decomposition`, proving
 that exact existing paper identity by sharp and bilinearity. It remains
 unverified and raises the energy module's audit count to fifteen; its old
 scratch copy is stale. No new mathematical claim is added to the paper queue.
+
+Finite-jet check **15463** failed at three proof steps: the same-block product
+inferred the linear-map convolution wrapper; complex conjugation requires
+`map_div₀` rather than the group-only division lemma; and simplifying the
+reflection condition after substituting the point obscured its iff rewrite.
+Source arguments are now explicit, and the reflection iff is normalized before
+the case split. Corpus-first lookup located the division lemma in installed
+mathlib and its statement was read. Direct `/tmp/QIIFiniteJetConjugationAPIs.lean`
+check **93650** passed. The verified `map_div₀` rewrite is now applied to the
+actual Hasse-sharp proof. Failed audits from **15463** are not certificates.
+Direct actual-file recheck **48574** passed with only the standard three
+axioms in all seven audits. The module is cleaned, wired and documented;
+the finite positive-degree card remains stage 2 until its classifier passes.
+Older actual-file final check **9947** passed directly on
+`SourceConeBoundaryRigidity`, including six endpoint audits with only
+`propext`, `Classical.choice`, and `Quot.sound`. Temporary prints are removed;
+its existing olean is preserved. The finite-jet olean was confirmed missing;
+direct build **7262** passed for the actual projector and classifier importers.
+Its olean now exists; never rebuild it. Actual projector check **24913** passed
+with only the standard three axioms in all four endpoint audits. The module is
+cleaned, wired and documented; its energy and character cards remain stage 2.
+Its olean was confirmed missing and is needed by those actual importers.
 The shared ACS README was reorganized concurrently. Preserve its new structure;
 the certified cone, smooth-kernel, bounded-carrier and reserve results are now
 recorded within its mechanism summaries and module anchors. Unchecked origin
 and finite-graph assertions are explicitly marked pending there.
+
+The nine remaining older actual files now contain temporary endpoint axiom
+prints for their required individual final checks. No additional build is
+authorized for their existing oleans. Remove these prints after each successful
+check. The original boundary and numerical scratch audit files remain until
+their corresponding actual-file checks finish.
+
+The existing infinite-tail card asserts that the bounded finite energies define
+a regular square energy. Its finite bounds are drafted, but that supremum has
+no explicit endpoint yet. Formalize the existing assertion in the energy module:
+define the supremum of finite projected energies, prove all finite energies
+lie below it and that it lies between zero and the full energy, then record the
+nonnegative residual. This does not assert a zero residual or commute a degree
+with an infinite sum. Corpus search found the reusable `le_csSup`/`csSup_le`
+mechanism in `GuthMaynardAffineSum`; a narrow API check must precede its use.
+API check **39517** failed because `Mathlib.Data.Real.Basic` does not supply
+real order completeness. The installed definition was read in
+`Mathlib.Algebra.Order.Archimedean.Real.Basic`; the probe now imports that
+module and awaits a direct recheck. Actual positive finite-degree check
+**90703** is the sole owned Lean process.
+
+Positive finite-degree check **90703** failed only at two dependent jet-index
+rewrites across reflection. A local congruence lemma now transports both the
+support point and the finite jet index explicitly. Its three finite-weight
+converse audits were standard, but the whole file remains unverified.
+Corrected supremum API check **27654** is now the sole owned Lean process.
+Corrected API check **27654** passed. The actual energy candidate now defines
+`meyerDegreeRegularEnergy` and has two additional endpoints proving its finite
+projection bounds, nonnegativity, upper bound and nonnegative residual. These
+formalize the existing infinite-tail card's regular-energy assertion; they
+remain unverified with the energy file, now seventeen audits total. The older
+scratch copy lacks them. Positive finite-degree recheck **14494** is running
+directly with its six audits.
+Positive finite-degree recheck **14494** passed with the standard three axioms
+in all six audits. Its dependent-index transport repair is certified. The file
+is cleaned, wired and documented; its card moved to stage 3. Both projector
+and positive-degree oleans were confirmed missing. Projector build **49711**
+is running directly for the actual character and energy importers.
+The Hermitian-part paper also explicitly states that its second component
+reads the imaginary square value. The existing decomposition implies this,
+and the actual candidate now exposes the literal endpoint
+`meyerDegreeImaginaryPart_square` by applying the real-part identity to `-I • d`.
+This existing paper corollary is unverified with the module, now eight audits;
+its scratch draft is stale.
+Projector missing-olean build **49711** passed. Its olean now exists and must
+not be rebuilt. Actual character check **9486** is running directly with eight
+endpoint audits. The positive finite-degree olean remains missing and is needed
+by the actual Hermitian-part and finite-energy importers.
+The unverified energy file had the same dependent reflection-index rewrite
+pattern just repaired in the classifier. It now transports the point and index
+together through a private evaluation congruence lemma, then uses the fixed-point
+sharp-jet formula. This static repair changes no statement or assumption.
+Character check **9486** failed at quotient-coercion normalization and two `ext`
+calls that descended past the quotient to source representatives. The normalized
+inverse product is now explicit, and both equalities use `LinearMap.ext` followed
+by a quotient-class binder. Its point-positivity audit was standard; the whole
+character module remains unverified pending recheck.
+The positive finite-degree olean was reconfirmed absent. Direct build **33799**
+passed for actual `MeyerHermitianDegreePart` and
+`FiniteMeyerProjectorsSplitPositiveEnergy`. Its olean now exists; never rebuild
+it. Corrected actual character check **37775** is the sole owned Lean process,
+with all eight endpoint audits.
+Character recheck **37775** passed finite detection and the Hermitian/positive
+point criteria, but the global point-identification proof exhausted the default
+heartbeat limit at the implicit `hfinite _ _` application. Its local jet and
+finite causal arguments are now small named lemmas; the singleton packet and
+its jet data are explicit in the final application. No limits were changed.
+Failed downstream kernel audits are not certificates. Actual Hermitian-part
+check **73508** is now running directly with all eight endpoints, including
+the imaginary-square corollary.
 
 ### Remaining verification queue
 
@@ -389,22 +481,22 @@ Rows explicitly marked certified have passed; all other rows remain unverified.
 | `BoundedMeyerSourceSurface` | CERTIFIED: direct 7171, thirteen standard audits, missing-olean build 10578 passed; cleaned, wired, documented; card moved to stage 3 |
 | `MeyerHilbertReserveFlowRigidity` | CERTIFIED: direct 35848, seven standard audits, missing-olean build 31048 passed; cleaned, wired, documented; bounded-orbit card moved to stage 3 |
 | `BoundedMeyerFaithfulReserve` | CERTIFIED: direct 42102, thirteen standard audits; cleaned, wired, documented; card moved to stage 3 |
-| `MeyerFiniteJetAlgebra` | Direct check 15463 running with seven endpoints; sharp-algebra olean now exists |
-| `MeyerFiniteProjectorAlgebra` | Four endpoints; requires finite-jet olean |
-| `PositiveMeyerDegreesSeeReducedCriticalJets` | Six endpoints, including finite-weight converse |
-| `MeyerAlgebraicCharacters` | Eight endpoints; point-reading normalization corrected |
+| `MeyerFiniteJetAlgebra` | CERTIFIED: direct 48574, seven standard audits, missing-olean build 7262 passed; cleaned, wired and documented |
+| `MeyerFiniteProjectorAlgebra` | CERTIFIED: direct 24913, four standard audits, missing-olean build 49711 passed; cleaned, wired and documented |
+| `PositiveMeyerDegreesSeeReducedCriticalJets` | CERTIFIED: direct 14494, six standard audits, missing-olean build 33799 passed; cleaned, wired, documented; card moved to stage 3 |
+| `MeyerAlgebraicCharacters` | Eight endpoints; quotient-coercion and extensionality repairs awaiting recheck |
 | `PoissonBoundariesAreDenseInOriginMass` | Seven endpoints; requires missing HT translation-cyclicity olean |
 | `OriginHilbertCohomologyObstruction` | Four endpoints; closedness instance corrected and verified by API check 91370, awaiting actual-file check |
 | `InvariantOriginMassDoesNotBoundTheWeilTrace` | CERTIFIED: direct 73371, seven standard audits; cleaned, wired, documented; card moved to stage 3 |
-| `MeyerHermitianDegreePart` | Seven endpoints; requires finite positive-degree olean |
+| `MeyerHermitianDegreePart` | Eight endpoints, including the paper's literal imaginary-square reading; requires finite positive-degree olean |
 | `EveryFiniteMeyerJetGraphIsDenseInOriginHilbertSpace` | Ten endpoints; requires boundary-density olean |
-| `FiniteMeyerProjectorsSplitPositiveEnergy` | Fifteen endpoints, including the paper's literal class-level square decomposition; requires finite-degree and projector oleans |
+| `FiniteMeyerProjectorsSplitPositiveEnergy` | Seventeen endpoints, including the paper's class-level square decomposition and regular-energy supremum/residual; requires finite-degree and projector oleans |
 
 Completed older actual-file final checks: `WeilEnergyIsUnboundedAtEveryAperture`
-(direct **52222**, five standard axiom audits, prints removed).
+(direct **52222**, five standard axiom audits, prints removed), and
+`SourceConeBoundaryRigidity` (direct **9947**, six standard audits, prints removed).
 
-Older actual-file final checks still remaining: `SourceConeBoundaryRigidity`,
-`SourceConeBoundaryApplications`,
+Older actual-file final checks still remaining: `SourceConeBoundaryApplications`,
 `GradedSourceConeBoundaryRigidity`, `SourceConePrimitiveFaithfulness`,
 `NumericalEquivalenceOnTheScalingSurface`, `SourceRiemannRochWithoutSymmetry`,
 `ExactArithmeticSourceEffectivity`, `FiniteDegreeConesCannotSatisfyBezout`,
@@ -1207,7 +1299,7 @@ Further positive survivor, paper proved: finite causal jet blocks admit an exact
 classification of positive Hermitian degree restrictions. All off-line blocks and
 all positive-order critical jets are invisible; the remaining critical values have
 nonnegative real weights. See
-`../2-fully-proven/positive-degrees-see-only-reduced-critical-jet-blocks.md`.
+`../3-formalized/positive-degrees-see-only-reduced-critical-jet-blocks.md`.
 The proof uses normalized actual jet classes, Hasse convolution, Cauchy–Schwarz,
 and descending nilpotent order. Its scope is finite packets; arbitrary discontinuous
 degrees on the whole quotient are not claimed to be determined by these restrictions.

@@ -13,8 +13,8 @@
 inverse for each finite-resonance repaired convolution. Its underlying input
 `exists_deningerMeyerSourceQuasiInverse` proves that absence of common Xi zeros
 is the sole obstruction to quasi-inversion inside the original source class.
-`MeyerFiniteJetAlgebra` supplies exact finite causal Hasse expansions and the
-truncated local product; its formal verification is still pending.
+`MeyerFiniteJetAlgebra` supplies certified finite causal Hasse expansions and the
+truncated local product (direct check **48574**, seven standard axiom audits).
 
 ## Dependency-closed paper proof
 
@@ -83,10 +83,11 @@ possibility, with no assumption of continuity or exchange of infinite sums.
 
 ## Lean work
 
-`/tmp/QIIMeyerFiniteProjectorAlgebraDraft.lean` isolates the reused finite
-projector algebra, including the local idempotent identity. The finite critical
-energy draft now imports that proposed module instead of duplicating its
-central-multiplier proof. Both drafts remain unverified.
+`MeyerFiniteProjectorAlgebra.lean` certifies the reused finite projector algebra,
+including the local idempotent identity. Direct check **24913** passed with only
+`propext`, `Classical.choice`, and `Quot.sound` in all four endpoint audits.
+The module is cleaned, wired and documented. Its character and energy importers
+remain unverified until their individual checks pass.
 
 `ArithmeticCastelnuovoSeveri/MeyerAlgebraicCharacters.lean` now contains unverified proofs of
 finite detection by the actual repaired inverse, zero higher character jets,

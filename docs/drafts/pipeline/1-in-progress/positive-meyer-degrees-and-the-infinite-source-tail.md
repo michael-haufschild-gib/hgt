@@ -5,12 +5,12 @@
 - **Type:** CONJECTURE
 - **Source:** Q-II; exact positive finite-jet degree classification.
 - **Statement:** Does positivity on the full actual sharp-convolution algebra force a degree to be determined by its nonnegative critical-value weights, without a continuity premise?
-- **Status:** OPEN. The finite-degree, projector, character, and Hermitian-part modules below remain unverified until their direct Lean checks and transitive axiom audits pass. The critical trace and quasi-inverse radical modules are now certified.
+- **Status:** OPEN; broader research paused. Finite-degree classification, projector algebra, critical trace and quasi-inverse radical are certified. Character, Hermitian-part and energy modules still await direct Lean checks and transitive axiom audits.
 
-## Finite classification candidate
+## Certified finite classification
 
-The unverified Lean candidate `PositiveMeyerDegreesSeeReducedCriticalJets.lean`,
-described in `positive-degrees-see-only-reduced-critical-jet-blocks.md`,
+The certified `PositiveMeyerDegreesSeeReducedCriticalJets.lean`,
+described in `../3-formalized/positive-degrees-see-only-reduced-critical-jet-blocks.md`,
 classifies the restriction to every actual finite jet packet: off-line blocks
 and higher critical jets have zero degree; critical value weights are real
 and nonnegative. It does not determine an arbitrary degree on infinite
@@ -40,6 +40,11 @@ by E_d(u), for each actual class u. This bound needs no continuity of d.
 
 These bounded finite sums give a well-defined regular square energy. They
 do not by themselves show that the remaining nonnegative energy is zero.
+A precise candidate definition is the supremum of all finite projected
+energies, `meyerDegreeRegularEnergy`. Its finite lower bounds, nonnegativity,
+full-energy upper bound and nonnegative residual are now explicit endpoints in
+`FiniteMeyerProjectorsSplitPositiveEnergy.lean`, still awaiting actual-file
+verification. This uses real order completeness and no infinite interchange.
 A degree might, a priori, vanish on every finite packet while retaining
 infinite-class energy. No interchange of an infinite packet expansion with
 an arbitrary algebraic functional is authorized.
@@ -66,8 +71,9 @@ be passed through an arbitrary discontinuous degree.
 3. First formalize the exact finite-projector product law and square-energy
    decomposition above; these are the dependency-closed positive result.
 
-No infinite classification, continuity, or zero tail is assumed. This route
-is active and has not been declared false or retired. No numerical experiment.
+No infinite classification, continuity, or zero tail is assumed. Broader
+research is paused at the user's request while the existing formalizations
+finish. This route has not been declared false or retired. No numerical experiment.
 
 A distinct multiplicative subproblem has an unverified Lean candidate,
 `MeyerAlgebraicCharacters.lean`, described in

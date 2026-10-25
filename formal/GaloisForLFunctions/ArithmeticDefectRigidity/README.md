@@ -144,6 +144,9 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     (`finiteDimensional_and_finrank_le_of_kernel_diag_eq_zero`). Rank-one modules: augmentation or
     `χ(p) = η(p)p^{−s}`, `s ≥ ½`, `η` multiplicative sign (`rankOneCharacter_eq_augmentation_or_signed_rpow`) —
     magnitudes forced, signs/exponent not tied to zeros. Operator hull obeys dilation radii.
+    Complete source pairings respect conjugation; cyclic norms are unchanged,
+    the annihilator is conjugation-invariant (`conjW_mem_annihilator_iff`),
+    and every actual module hull is conjugation-symmetric (`conj_mem_moduleHull`).
 15. **Unit transport.** Real Wiener unit convolution transports Grams and preserves escape
     (`admits_or_real_unit_convolution_gram_tendsto`); Möbius and Liouville modules are unit-equivalent
     (`admits_or_liouville_gram_is_unit_transport`).

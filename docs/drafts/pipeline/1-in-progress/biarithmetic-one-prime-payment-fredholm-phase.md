@@ -161,20 +161,24 @@ passed its direct repository check and all five transitive audits. The
 [formalized card](../3-formalized/biarithmetic-critical-coefficient-domain.md)
 records these exact conclusions. No proof limit was raised.
 
-`/tmp/BiarithmeticCriticalReducedCokernel.lean` drafts the exact quotient norm,
-the quotient's linear isometry with `C`, and its dimension one. Its quotient
+`BiarithmeticGeometry/CriticalReducedCokernel.lean` proves the exact quotient
+norm, the quotient's linear isometry with `C`, and its dimension one. Its
 denominator is the closure of the coefficient payment domain, identified
-with the augmentation kernel by the preceding leaf. The four audit targets
-remain unchecked. These are obligations, not established cokernel results.
+with the augmentation kernel by the preceding leaf. The direct repository
+check and all four transitive audits passed under default limits. The
+[stage-3 card](../3-formalized/biarithmetic-critical-reduced-cokernel.md)
+records the coefficient scope; actual source comparisons remain pending.
 
-`/tmp/BiarithmeticCriticalCoefficientWienerRealization.lean` drafts the
+`BiarithmeticGeometry/CriticalCoefficientWienerRealization.lean` proves the
 actual source bridge for that coefficient space: a complex linear isometry,
 normalized coefficient restriction for every Wiener kernel, both inverse
 identities on the prime-five support, the exact range classification, and
 the pullback of the actual critical golden paid ideal. Summability of the
 restricted coordinates follows from AOT's actual `summable_norm` theorem
-and injectivity of the five-power map. Six audits are drafted; no result
-from this file is established yet.
+and injectivity of the five-power map. Its direct repository check and all six
+transitive audits passed under default limits. The
+[stage-3 card](../3-formalized/biarithmetic-critical-coefficient-wiener-realization.md)
+records the exact prime-five ambient restriction.
 
 `/tmp/BiarithmeticSubcriticalCausalBound.lean` drafts the complementary
 subcritical analytic estimate, including `q=0`. The complex response norm
@@ -196,12 +200,13 @@ The other bounded Fredholm interface requires Hilbert spaces, so it is not
 silently applied to the `ell1` coefficient space. Graph completeness and
 the actual source comparison remain required in addition to the index claim.
 
-`/tmp/BiarithmeticCriticalCoefficientNonclosed.lean` drafts the critical
+`CriticalCoefficientNonclosed.lean` proves the critical
 nonclosed-range input in actual complex `ell1`. It embeds the checked real
 inverse-square-root-tail differences, preserving their exact norm two and
 zero total evaluation. Their complex partial-sum squares remain the
 divergent harmonic sequence. The checked finite-core mechanism supplies
-convergent paid approximants. Four audits drafted; unchecked.
+convergent paid approximants. Direct repository check and all four transitive
+audits passed; [stage-3 card](../3-formalized/biarithmetic-critical-coefficient-nonclosed.md).
 
 `/tmp/BiarithmeticGeometricCoefficientFredholm.lean` drafts the index part
 using that existing partial-map interface. The operator is the identity
@@ -283,8 +288,9 @@ one, and unreduced cokernels and closure defects of continuum dimension,
 for both actual ordinary and intrinsic one-prime source domains. Eight
 audits are pending; the ambient space is explicitly the prime-five subspace.
 
-`/tmp/BiarithmeticCriticalContinuousDual.lean` drafts the continuous dual
+`CriticalContinuousDual.lean` proves the continuous dual
 of the unreduced coefficient quotient itself, using Mathlib's continuous
 quotient map and lift. It gives an explicit linear equivalence with `C`,
-dimension one, and vanishing on all closure-defect classes. Five audits
-are pending; no closedness assumption is made on the paid submodule.
+dimension one, and vanishing on all closure-defect classes. Direct repository
+check and all five transitive audits passed; no closedness assumption is made
+on the paid submodule. See its [stage-3 card](../3-formalized/biarithmetic-critical-continuous-dual.md).

@@ -31,7 +31,7 @@ Lean module names below are relative to `GaloisForLFunctions/`; BVI denotes
 | [vaughan-subcritical-gram-limit-classification.md](../3-formalized/vaughan-subcritical-gram-limit-classification.md) — COMPLETE | All 39 targets in the five arithmetic-amplitude, classification, scalar-topology, matrix-rank, and matrix-topology leaves passed final direct checks and standard-axiom audits. Includes exact attainment and damping independence. |
 | [positive-vaughan-cutoff-escape-is-zero-gram-limit.md](../3-formalized/positive-vaughan-cutoff-escape-is-zero-gram-limit.md) — COMPLETE | Exact amplitude and matrix escape equivalences, finite-fiber rigidity, convergence dichotomy, positive-cutoff attainment, and mutually exclusive alternatives. All supporting leaf checks and axiom audits passed. |
 | [vaughan-relative-gram-and-harmonic-denominators.md](../3-formalized/vaughan-relative-gram-and-harmonic-denominators.md) — COMPLETE | All ten arithmetic and relative-Gram targets passed final direct checks and standard-axiom audits. Includes calibrated horizons for every positive cutoff schedule and the simultaneous zero/relative-rank-one corollary. |
-| `uniform-vaughan-convolution-stretched-exponential-rate.md`; related existing stage-1 [factorial criterion](vaughan-factorial-order-one-is-a-fixed-strip.md) | BVI `UniformStretchedExponentialCancellationInTheVaughanConvolution`; HTGeometry `FactorialLogarithmicBoundsArePowerBounds`; BVI `FactorialOrderOneInTheVaughanConvolutionIsAPowerSaving`. |
+| [uniform-vaughan-convolution-stretched-exponential-rate.md](../3-formalized/uniform-vaughan-convolution-stretched-exponential-rate.md) — COMPLETE; related existing stage-1 [factorial criterion](vaughan-factorial-order-one-is-a-fixed-strip.md) still pending | All three BVI `UniformStretchedExponentialCancellationInTheVaughanConvolution` targets passed final direct checks and standard-axiom audits. The distinct factorial-order-one criterion still needs HTGeometry `FactorialLogarithmicBoundsArePowerBounds` and BVI `FactorialOrderOneInTheVaughanConvolutionIsAPowerSaving`. |
 | `uniform-vaughan-residual-power-rates-are-fixed-strips.md` | BVI `TheExtremeVaughanCutoffReadsItsHarmonicSum`, `PowerCancellationSurvivesTheDampedFloorTransform`, `FixedStripsControlAllVaughanFluctuationReceivers`, `UniformVaughanResidualPowerRatesAreFixedStrips`, `UniformVaughanPowerBoundsAreFixedStrips`; RHTower `MertensPowerBoundsControlMobiusHarmonicSums`. |
 | `the-centred-vaughan-pole-has-positive-finite-energy.md` | BVI `TheCentredVaughanPoleHasPositiveFiniteEnergy`, including the eventual faster-power obstruction. |
 | `the-endpoint-vaughan-limit-has-rank-two.md` | BVI `TheVaughanLimitRowsAreIndependentInTwoCells`, `TheActualVaughanLimitGramHasRankTwo`, `TheActualEndpointVaughanGramHasRankTwo`; actual summability supplied by the moving-limit leaves below. |
@@ -103,7 +103,29 @@ audits. `UniformLogarithmicCancellationInMobiusFloorSums.lean` is wired; its
 scratch was removed. The rounding, exact omitted-tail identity, common finite
 bound, and full uniform logarithmic rate are certified in
 `../3-formalized/uniform-logarithmic-cancellation-in-mobius-floor-sums.md`.
-All other remaining leaves named in the table are unchecked drafts. Dependencies and
+All three generic critical-pairing targets passed corrected producing and
+final direct checks, with standard axioms only. The module is wired and its
+scratch removed; see
+`../3-formalized/uniform-critical-pronic-pairings-from-logarithmic-cancellation.md`.
+The six actual all-row prefix targets passed producing and final direct checks,
+with standard axioms only. The module is wired and its scratch removed; see
+`../3-formalized/uniform-logarithmic-prefix-remainders-in-all-vaughan-rows.md`.
+This discharges the common logarithmic prefix and linear finite-head inputs
+for the endpoint specialization.
+All three actual endpoint Gram targets passed corrected producing and final
+direct checks with standard axioms only. The module is wired and its scratch
+removed; see `../3-formalized/uniform-harmonic-vaughan-grams-at-half-damping.md`.
+Its common summable envelope, energy and mixed-pairing bounds, and bounded
+harmonic Gram error are certified. Moving-limit and rank claims remain pending.
+The three endpoint packet targets passed their corrected final direct check
+and standard-axiom audits. The module is wired and its scratch removed; the
+endpoint Gram card now covers all six finite Gram and packet targets.
+All three stretched-exponential targets passed their corrected final direct
+check, with standard axioms only. The module is wired and its scratch removed;
+the complete card is now in stage 3. This includes the exact stated constant
+and the `(3q)!` envelope at one common threshold for all logarithmic orders.
+All remaining drafts now have their intended repository leaves. They remain
+uncertified until their final direct checks and axiom audits pass. Dependencies and
 live compiler handles are recorded in `/tmp/QIVerificationState.txt`; the
 complete module queue is `/tmp/QILeanCompletionQueue.md`.
 

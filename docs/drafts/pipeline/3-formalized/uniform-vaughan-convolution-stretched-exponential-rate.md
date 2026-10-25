@@ -1,9 +1,9 @@
 # Uniform stretched-exponential cancellation in the Vaughan convolution
 
 - **ID:** uniform-vaughan-convolution-stretched-exponential-rate
-- **Stage:** 2-fully-proven
-- **Type:** CLAIM (Lean verification pending)
-- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Verification:** All three targets passed the final direct repository check and transitive axiom audits; only `propext`, `Classical.choice`, and `Quot.sound` occur.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
 - **Statement:** A common stretched-exponential bound controls the summatory truncated Vaughan convolution, uniformly in both cutoffs; consequently one threshold controls all logarithmic orders with factorial growth.
 
@@ -29,7 +29,7 @@ one, so the Mertens saving `s(x)²` is bounded by `s(D)` for every `x≥D`.
 The harmonic bound has the same envelope. The constants are independent of
 `U,V,D,n`.
 
-## Argument awaiting Lean verification
+## Formalized argument
 
 Put `D=floor(n^(1/4))`. The already verified cutoff inequalities give, eventually,
 `D²+D≤2sqrt(n)`, `log D≥(log n)/8`, and `h(n)²≤4(log n)²`.
@@ -60,16 +60,21 @@ the proved envelope has exponent proportional to `(log n)^(1/3)`, not `log n`.
 
 ## Lean status
 
-Dependency-closed paper proof. `/tmp/QIStretchedConvolutionTools.lean` now drafts
-three targets: the finite common saving envelope, the uniform stretched-exponential
-rate, and the factorial envelope with one threshold for all logarithmic orders.
-The draft now uses the stated constant `2+3B+C+8B c^(-6)6!`: only the
-harmonic-square term pays the factorial cost, while the other tail terms use
-`exp(-2t)≤exp(-t)` directly.
-These targets remain uncompiled. The finite convolution and
-arbitrary logarithmic rate have passed scratch, producing, and final direct checks;
-their audits are tracked on
-`../3-formalized/uniform-undamped-vaughan-convolution-cancellation.md`.
-The source stretched-exponential theorem has been read, but its transitive axiom
-audit must be included when this consequence is formalized. No full Q-I answer
-or positive fixed-strip width is asserted.
+The module
+`GaloisForLFunctions/BezoutValuationIncidence/UniformStretchedExponentialCancellationInTheVaughanConvolution.lean`
+proves:
+
+- `exists_uniform_pmUndampedVaughanConvolutionPrefix_stretched_bound`: the finite common saving envelope;
+- `exists_uniform_pmUndampedVaughanConvolutionPrefix_stretched_rate`: the cutoff-uniform stretched-exponential rate with the stated constant;
+- `exists_uniform_pmUndampedVaughanConvolutionPrefix_factorial_rate`: the factorial envelope at one threshold for every logarithmic order.
+
+All three passed `lake --old env lean` on the repository leaf. Their transitive
+axiom audits include the actual source estimates and contain only standard axioms.
+The module is imported by the programme umbrella; no olean was needed because
+no written non-umbrella module imports this leaf. Its temporary draft was removed.
+The finite convolution and arbitrary logarithmic estimates are certified in
+`uniform-undamped-vaughan-convolution-cancellation.md`.
+No full Q-I answer or positive fixed-strip width is asserted. The distinct
+factorial-order-one criterion remains on
+`../1-in-progress/vaughan-factorial-order-one-is-a-fixed-strip.md` until its own
+Lean verification finishes.

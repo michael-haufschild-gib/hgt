@@ -86,7 +86,9 @@ theorem meyerMultiplicativeDegree_detects_finite_jet
     have hg : χ (Submodule.Quotient.mk g) = -1 := by
       change χ ((LinearMap.range deningerMeyerStrongLogSumLM).mkQ
         ((-(χ (Submodule.Quotient.mk a))⁻¹) • a)) = -1
-      rw [map_smul, map_smul, smul_eq_mul, neg_mul, inv_mul_cancel₀ hu]
+      rw [map_smul, map_smul, smul_eq_mul, neg_mul]
+      change -((χ (Submodule.Quotient.mk a))⁻¹ * χ (Submodule.Quotient.mk a)) = -1
+      rw [inv_mul_cancel₀ hu]
     let S := deningerMeyerConvolutionResonantPacket g
     let v := deningerMeyerOriginalConvolutionInverse g (Submodule.Quotient.mk a)
     have hR := congrArg χ
@@ -125,6 +127,43 @@ theorem meyerMultiplicativeDegree_detects_value
   rw [meyerHasseJetClass_product_unit] at hid
   exact (mul_left_cancel₀ hj (by simpa only [mul_one] using hid)).symm
 
+/-- A selected value idempotent determines the character on every local Hasse monomial. -/
+private theorem multiplicativeDegree_hasse_eq_point_of_value_one
+    (χ : DeningerMeyerStrongLogCohomology →ₗ[ℂ] ℂ)
+    (hm : ∀ u v, χ (deningerMeyerCohomologyConvolution u v) = χ u * χ v)
+    (rho : XiDivisorSupport)
+    (he : χ (meyerHasseJetClass rho ⟨0, xiSupportMultiplicity_pos rho⟩) = 1)
+    (sigma : XiDivisorSupport) (j : DeningerArithmeticJetIndex sigma) :
+    χ (meyerHasseJetClass sigma j) = meyerPointDegree rho (meyerHasseJetClass sigma j) := by
+  classical
+  rw [meyerPointDegree_hasse]
+  by_cases hj : j.val = 0
+  · by_cases hs : rho = sigma
+    · subst sigma
+      have hji : j = ⟨0, xiSupportMultiplicity_pos rho⟩ := Fin.ext hj
+      rw [hji, if_pos ⟨rfl, rfl⟩]
+      exact he
+    · rw [if_neg (fun h => hs h.1)]
+      have hz := hm (meyerHasseJetClass sigma j)
+        (meyerHasseJetClass rho ⟨0, xiSupportMultiplicity_pos rho⟩)
+      rw [meyerHasseJetClass_product_distinct sigma rho (Ne.symm hs), map_zero, he, mul_one] at hz
+      exact hz.symm
+  · rw [if_neg (fun h => hj h.2)]
+    exact meyerMultiplicativeDegree_higher_jet_zero χ hm sigma j (Nat.pos_of_ne_zero hj)
+
+/-- Agreement on Hasse monomials extends through the exact finite causal expansion. -/
+private theorem multiplicativeDegree_causal_eq_point_of_value_one
+    (χ : DeningerMeyerStrongLogCohomology →ₗ[ℂ] ℂ)
+    (hm : ∀ u v, χ (deningerMeyerCohomologyConvolution u v) = χ u * χ v)
+    (rho : XiDivisorSupport)
+    (he : χ (meyerHasseJetClass rho ⟨0, xiSupportMultiplicity_pos rho⟩) = 1)
+    (S : Finset XiDivisorSupport) (c : DeningerMeyerFiniteXiJetPacket S) :
+    χ (deningerMeyerFiniteXiCausalSection S c) =
+      meyerPointDegree rho (deningerMeyerFiniteXiCausalSection S c) := by
+  classical
+  rw [meyerFiniteXiCausalSection_eq_hasse_sum]
+  simp only [map_sum, map_smul, multiplicativeDegree_hasse_eq_point_of_value_one χ hm rho he]
+
 /-- Every nonzero algebraic character is exactly one Xi value evaluation. -/
 theorem meyerMultiplicativeDegree_eq_unique_point
     (χ : DeningerMeyerStrongLogCohomology →ₗ[ℂ] ℂ) (hne : χ ≠ 0)
@@ -132,36 +171,18 @@ theorem meyerMultiplicativeDegree_eq_unique_point
     ∃! rho : XiDivisorSupport, χ = meyerPointDegree rho := by
   classical
   obtain ⟨rho, he⟩ := meyerMultiplicativeDegree_detects_value χ hne hm
-  have hjet (sigma : XiDivisorSupport) (j : DeningerArithmeticJetIndex sigma) :
-      χ (meyerHasseJetClass sigma j) = meyerPointDegree rho (meyerHasseJetClass sigma j) := by
-    rw [meyerPointDegree_hasse]
-    by_cases hj : j.val = 0
-    · by_cases hs : rho = sigma
-      · subst sigma
-        have hji : j = ⟨0, xiSupportMultiplicity_pos rho⟩ := Fin.ext hj
-        rw [hji, if_pos ⟨rfl, rfl⟩]
-        exact he
-      · rw [if_neg (fun h => hs h.1)]
-        have hz := hm (meyerHasseJetClass sigma j)
-          (meyerHasseJetClass rho ⟨0, xiSupportMultiplicity_pos rho⟩)
-        rw [meyerHasseJetClass_product_distinct sigma rho (Ne.symm hs), map_zero, he, mul_one] at hz
-        exact hz.symm
-    · rw [if_neg (fun h => hj h.2)]
-      exact meyerMultiplicativeDegree_higher_jet_zero χ hm sigma j (Nat.pos_of_ne_zero hj)
-  have hfinite (S : Finset XiDivisorSupport) (c : DeningerMeyerFiniteXiJetPacket S) :
-      χ (deningerMeyerFiniteXiCausalSection S c) =
-        meyerPointDegree rho (deningerMeyerFiniteXiCausalSection S c) := by
-    rw [meyerFiniteXiCausalSection_eq_hasse_sum]
-    simp only [map_sum, map_smul, hjet]
   have hχ : χ = meyerPointDegree rho := by
-    ext u
+    apply LinearMap.ext
+    intro u
     calc
       χ u = χ (deningerMeyerCohomologyConvolution u
           (meyerHasseJetClass rho ⟨0, xiSupportMultiplicity_pos rho⟩)) := by
         rw [hm, he, mul_one]
       _ = χ (deningerMeyerFiniteXiCausalProjector {rho} u) := by
         rw [meyerHasseValueClass_mul_eq_projector]
-      _ = meyerPointDegree rho (deningerMeyerFiniteXiCausalProjector {rho} u) := hfinite _ _
+      _ = meyerPointDegree rho (deningerMeyerFiniteXiCausalProjector {rho} u) :=
+        multiplicativeDegree_causal_eq_point_of_value_one χ hm rho he {rho}
+          (deningerMeyerFiniteXiJetPacketLM {rho} u)
       _ = meyerPointDegree rho u := by
         change deningerMeyerXiSupportJetEvaluationLM rho ⟨0, xiSupportMultiplicity_pos rho⟩
           (deningerMeyerFiniteXiCausalProjector {rho} u) = _
@@ -214,7 +235,8 @@ theorem meyerPointDegree_hermitian_iff (rho : XiDivisorSupport) :
   · intro h
     apply (reflection_fixed_iff rho).mp
     apply meyerPointDegree_injective
-    ext u
+    apply LinearMap.ext
+    intro u
     have he := h u
     rw [meyerPointDegree_sharp] at he
     have he' := congrArg conj he

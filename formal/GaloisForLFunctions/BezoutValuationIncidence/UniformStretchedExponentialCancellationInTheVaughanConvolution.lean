@@ -107,7 +107,7 @@ private theorem quarter_head_le {n : ℕ} (hn : 1 ≤ n) :
 
 private theorem log_square_mul_exp_le {l c : ℝ} (hl : 0 ≤ l) (hc : 0 < c) :
     l ^ 2 * Real.exp (-(2 * (c * l ^ (1 / 3 : ℝ)))) ≤
-      (1 / c) ^ 6 * (6.factorial : ℝ) * Real.exp (-(c * l ^ (1 / 3 : ℝ))) := by
+      (1 / c) ^ 6 * (Nat.factorial 6 : ℝ) * Real.exp (-(c * l ^ (1 / 3 : ℝ))) := by
   let t := c * l ^ (1 / 3 : ℝ)
   have ht : 0 ≤ t := by dsimp only [t]; positivity
   have hcube : (l ^ (1 / 3 : ℝ)) ^ 3 = l := by
@@ -118,12 +118,14 @@ private theorem log_square_mul_exp_le {l c : ℝ} (hl : 0 ≤ l) (hc : 0 < c) :
     have hsix : (l ^ (1 / 3 : ℝ)) ^ 6 = l ^ 2 := by
       rw [show (6 : ℕ) = 3 * 2 by norm_num, pow_mul, hcube]
     rw [mul_pow, hsix]
-  have hpoly : l ^ 2 ≤ (1 / c) ^ 6 * (6.factorial : ℝ) * Real.exp t := by
+  have hpoly : l ^ 2 ≤ (1 / c) ^ 6 * (Nat.factorial 6 : ℝ) * Real.exp t := by
     have h := Real.pow_div_factorial_le_exp t ht 6
     rw [hpower] at h
-    have hf : (0 : ℝ) < 6.factorial := by positivity
+    have hf : (0 : ℝ) < (Nat.factorial 6 : ℝ) := by positivity
     have hm := (div_le_iff₀ hf).mp h
-    have heq : l ^ 2 = (1 / c) ^ 6 * (c ^ 6 * l ^ 2) := by field_simp [hc.ne']
+    have heq : l ^ 2 = (1 / c) ^ 6 * (c ^ 6 * l ^ 2) := by
+      rw [div_pow, one_pow]
+      field_simp [hc.ne']
     rw [heq]
     exact (mul_le_mul_of_nonneg_left hm (by positivity)).trans_eq (by ring)
   have hexp : Real.exp t * Real.exp (-(2 * t)) = Real.exp (-t) := by
@@ -131,7 +133,7 @@ private theorem log_square_mul_exp_le {l c : ℝ} (hl : 0 ≤ l) (hc : 0 < c) :
     congr 1
     ring
   calc
-    _ ≤ ((1 / c) ^ 6 * (6.factorial : ℝ) * Real.exp t) * Real.exp (-(2 * t)) :=
+    _ ≤ ((1 / c) ^ 6 * (Nat.factorial 6 : ℝ) * Real.exp t) * Real.exp (-(2 * t)) :=
       mul_le_mul_of_nonneg_right hpoly (Real.exp_pos _).le
     _ = _ := by rw [mul_assoc, hexp]
 
@@ -151,7 +153,7 @@ theorem exists_uniform_pmUndampedVaughanConvolutionPrefix_stretched_rate :
       tendsto_natCast_atTop_atTop)
   have hloglim : Tendsto (fun n : ℕ => Real.log (n : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  refine ⟨2 + 3 * B + C + 8 * B * (1 / c) ^ 6 * (6.factorial : ℝ), by positivity, ?_⟩
+  refine ⟨2 + 3 * B + C + 8 * B * (1 / c) ^ 6 * (Nat.factorial 6 : ℝ), by positivity, ?_⟩
   filter_upwards [hDlim.eventually_ge_atTop D₀, hloglim.eventually_ge_atTop 1,
     hloglim.eventually_ge_atTop (8 * Real.log 2), eventually_ge_atTop 1]
       with n hD hlog1 hlog8 hn U V
@@ -193,24 +195,24 @@ theorem exists_uniform_pmUndampedVaughanConvolutionPrefix_stretched_rate :
     (mul_le_mul_of_nonneg_left (hsD.trans hexp_le) (by positivity)).trans_eq (by ring)
   have hmiddle : (2 * B * n * (∑ k ∈ Icc 1 n, 1 / (k : ℝ)) ^ 2) *
       DeletionStretchedEnergy.saving (D n) ≤
-        (8 * B * (1 / c) ^ 6 * (6.factorial : ℝ)) * n * Real.exp (-t) := by
+        (8 * B * (1 / c) ^ 6 * (Nat.factorial 6 : ℝ)) * n * Real.exp (-t) := by
     calc
       _ ≤ (2 * B * n * (4 * Real.log (n : ℝ) ^ 2)) * Real.exp (-(2 * t)) :=
         mul_le_mul (mul_le_mul_of_nonneg_left hH (by positivity)) hsD
           (vaughan_saving_pos _).le (by positivity)
       _ = (8 * B * n) * (Real.log (n : ℝ) ^ 2 * Real.exp (-(2 * t))) := by ring
-      _ ≤ (8 * B * n) * ((1 / c) ^ 6 * (6.factorial : ℝ) * Real.exp (-t)) :=
+      _ ≤ (8 * B * n) * ((1 / c) ^ 6 * (Nat.factorial 6 : ℝ) * Real.exp (-t)) :=
         mul_le_mul_of_nonneg_left (log_square_mul_exp_le hl hc) (by positivity)
       _ = _ := by ring
   have htail : (3 * B * n + 2 * B * n * (∑ k ∈ Icc 1 n, 1 / (k : ℝ)) ^ 2 + C * n) *
       DeletionStretchedEnergy.saving (D n) ≤
-        (3 * B + C + 8 * B * (1 / c) ^ 6 * (6.factorial : ℝ)) * n * Real.exp (-t) := by
+        (3 * B + C + 8 * B * (1 / c) ^ 6 * (Nat.factorial 6 : ℝ)) * n * Real.exp (-t) := by
     calc
       _ = (3 * B * n + C * n) * DeletionStretchedEnergy.saving (D n) +
           (2 * B * n * (∑ k ∈ Icc 1 n, 1 / (k : ℝ)) ^ 2) *
             DeletionStretchedEnergy.saving (D n) := by ring
       _ ≤ (3 * B + C) * n * Real.exp (-t) +
-          (8 * B * (1 / c) ^ 6 * (6.factorial : ℝ)) * n * Real.exp (-t) :=
+          (8 * B * (1 / c) ^ 6 * (Nat.factorial 6 : ℝ)) * n * Real.exp (-t) :=
         add_le_add hplain hmiddle
       _ = _ := by ring
   have hu : Real.log (n : ℝ) ^ (1 / 3 : ℝ) ≤ Real.log (n : ℝ) := by
@@ -225,7 +227,7 @@ theorem exists_uniform_pmUndampedVaughanConvolutionPrefix_stretched_rate :
   have hhalf : (n : ℝ) ^ (1 / 2 : ℝ) ≤ (n : ℝ) * Real.exp (-t) := by
     have hexp : Real.exp t ≤ (n : ℝ) ^ (1 / 2 : ℝ) := by
       rw [Real.rpow_def_of_pos hn0]
-      exact Real.exp_le_exp.mpr (by simpa only [div_eq_mul_inv] using htlog)
+      exact Real.exp_le_exp.mpr (by simpa only [div_eq_mul_inv, one_mul] using htlog)
     have he : Real.exp t * Real.exp (-t) = 1 := by
       rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
     have hsq : ((n : ℝ) ^ (1 / 2 : ℝ)) ^ 2 = n := by
@@ -266,7 +268,9 @@ theorem exists_uniform_pmUndampedVaughanConvolutionPrefix_factorial_rate :
   have hpoly : Real.log (n : ℝ) ^ q ≤
       ((1 / c) ^ (3 * q) * ((3 * q).factorial : ℝ)) * Real.exp t := by
     have heq : Real.log (n : ℝ) ^ q =
-        (1 / c) ^ (3 * q) * (c ^ (3 * q) * Real.log (n : ℝ) ^ q) := by field_simp [hc.ne']
+        (1 / c) ^ (3 * q) * (c ^ (3 * q) * Real.log (n : ℝ) ^ q) := by
+      rw [div_pow, one_pow]
+      field_simp [hc.ne']
     rw [heq]
     exact (mul_le_mul_of_nonneg_left hm (by positivity)).trans_eq (by ring)
   have he : Real.exp (-t) * Real.exp t = 1 := by

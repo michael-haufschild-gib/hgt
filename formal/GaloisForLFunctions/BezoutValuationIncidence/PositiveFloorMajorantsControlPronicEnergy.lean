@@ -29,7 +29,9 @@ theorem abs_weightCenteredPrefix_le_abs_majorant {a b : ℕ → ℝ}
   have hD : 0 ≤ pmFloorMeanDefect b n :=
     pmFloorMeanDefect_nonneg (fun d => (abs_nonneg _).trans (hab d)) hb n
   have heqb : |weightCenteredPrefix b (∑' d : ℕ, b d / d) n| = pmFloorMeanDefect b n * n := by
-    rw [heq, abs_mul, Nat.abs_cast, abs_sub_comm, abs_of_nonneg hD]
+    rw [heq, abs_mul, Nat.abs_cast, abs_sub_comm]
+    change |pmFloorMeanDefect b n| * (n : ℝ) = pmFloorMeanDefect b n * n
+    rw [abs_of_nonneg hD]
   rw [heqb, heq, abs_mul, Nat.abs_cast]
   exact mul_le_mul_of_nonneg_right (abs_pmFloorAverage_sub_density_le hb hab n) hn0.le
 
@@ -82,11 +84,12 @@ theorem tendsto_tsum_pronic_square_sub_of_summable_envelope
     le_of_tendsto' (((hpoint n).pow 2).div_const (pronicSeq n : ℝ)) (fun t => hbound t n)
   have hdom (t n : ℕ) : ‖(f t n - F n) ^ 2 / (pronicSeq n : ℝ)‖ ≤ 4 * g n :=
     norm_pronic_square_sub_le_four (hbound t n) (hF n)
-  have hlim := tendsto_tsum_of_dominated_convergence (hg.mul_left 4)
-    (g := fun _ : ℕ => (0 : ℝ)) (fun n => ?_) (Eventually.of_forall hdom)
-  · simpa only [tsum_zero] using hlim
-  · simpa only [sub_self, zero_pow (by decide : (2 : ℕ) ≠ 0), zero_div] using
-      (((hpoint n).sub tendsto_const_nhds).pow 2).div_const (pronicSeq n : ℝ)
+  have hpoint' (n : ℕ) :
+      Tendsto (fun t => (f t n - F n) ^ 2 / (pronicSeq n : ℝ)) atTop (𝓝 (0 : ℝ)) := by
+    simpa only [sub_self, zero_pow (by decide : (2 : ℕ) ≠ 0), zero_div] using
+      (((hpoint n).sub (tendsto_const_nhds (x := F n))).pow 2).div_const (pronicSeq n : ℝ)
+  simpa only [tsum_zero] using
+    tendsto_tsum_of_dominated_convergence (hg.mul_left 4) hpoint' (Eventually.of_forall hdom)
 
 /-- The same summable envelope controls pronic norm convergence at every moving finite horizon. -/
 theorem tendsto_pronicNorm_sub_at_moving_horizon_of_summable_envelope

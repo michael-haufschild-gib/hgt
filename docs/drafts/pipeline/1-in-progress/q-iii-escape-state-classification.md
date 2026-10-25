@@ -495,12 +495,12 @@ mass. These are unverified drafts, listed in the current assembler.
 The assembler now accepts a filename argument and can regenerate only one
 scratch file; never regenerate a currently compiling file.
 
-A new boundary-pole candidate is recorded in
-`critical-boundary-poles-also-obstruct-paid-kernels.md`. A first generic
-complex paid Mellin bound is drafted separately in
-`/tmp/qiii_complex_paid_mellin_bound_body.lean`; it is not in the running
-check script. It uses generic energy rather than a half-damped coefficient
-assumption.
+The [critical-boundary refinement](../3-formalized/critical-boundary-poles-also-obstruct-paid-kernels.md)
+is now formalized. The actual Mellin identity, generic complex paid-energy
+bound and radial rate, finite-order cancellation, boundary obstruction and
+Wiener-unit/Liouville consequences all passed final canonical source checks
+with standard axioms. The strict-interior order and jet card is likewise in
+`3-formalized`. No actual module spectral identification follows.
 
 ### Unit and finite-check feedback
 
@@ -958,9 +958,7 @@ blocks and receiver energy crossings have passed their canonical build and
 final source checks with standard axioms. The diagonal foundation audit
 has moved to actual energy ratios. No other canonical batch is complete.
 
-The later, not-yet-started `/tmp/qiii-common-vector-and-pole-audits.sh` now
-also checks two new scratches after the Wiener jet API and before pole
-audits:
+The tied-torus approximation remains pending; conjugation is complete:
 
 - `/tmp/qiii-tied-torus-character-limits-check.lean`: reusable finite-prime
   approximation, one vertical sequence converging on all Wiener elements
@@ -969,13 +967,14 @@ audits:
   prime approximation mechanism; `HTGeometry/LSeriesRightLimit` supplies the
   augmentation endpoint. The finite actual application is separately
   drafted and awaits the operator-order and finite-hull modulus proofs.
-- `/tmp/qiii-actual-conjugate-hull-check.lean`: real source rows imply
-  conjugation of complete Wiener pairings, equal cyclic norms, invariance
-  of the actual annihilator and conjugation symmetry of each module hull.
+- `ArithmeticDefectRigidity/ActualCofactorHullsRespectConjugation.lean`:
+  real source rows imply conjugation of complete Wiener pairings, equal
+  cyclic norms, invariance of the actual annihilator and conjugation symmetry
+  of each module hull. Final canonical audit `78866` passed with standard axioms.
 
-New cards: `finite-cofactor-hulls-approach-the-half-plane-curve.md` and
-`actual-cofactor-hulls-preserve-complex-conjugation.md`, both in progress.
-These are pending Lean findings. Curve approximation is not exact curve
+The [finite-hull approximation card](finite-cofactor-hulls-approach-the-half-plane-curve.md)
+remains in progress; the [conjugation card](../3-formalized/actual-cofactor-hulls-preserve-complex-conjugation.md)
+is formalized. Curve approximation is not exact curve
 membership and does not restrict approximants to translated zeta zeros.
 Conjugation symmetry does not exclude real hull points or prove an even
 index. The full arithmetic classification remains open.

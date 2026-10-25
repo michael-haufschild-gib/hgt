@@ -308,3 +308,4 @@ theorem exists_strictL2SourceCone_negative_square {c : ℝ} (hc : 0 ≤ c)
       simpa only [l2SourceEnergy, scalingSubsurface_defect_self] using hlt)
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
+

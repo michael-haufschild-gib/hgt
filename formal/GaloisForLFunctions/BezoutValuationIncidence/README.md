@@ -172,6 +172,17 @@ $G_{ij}$; diagonal $D_T$; mixed remainder $R^{\text{mix}}_T$; $E^{\text{int}}_T=
     includes exact ranks, attainment, topology, and normalized damping independence.
     The [single-floor specialization](UniformLogarithmicCancellationInMobiusFloorSums.lean)
     has every logarithmic saving uniformly in its cutoff, with an exact omitted-tail identity.
+    A [critical pairing bound](UniformCriticalPronicPairingsFromLogarithmicCancellation.lean)
+    converts two logarithms of square-root prefix cancellation into one summable energy
+    and absolute mixed-pairing envelope.
+    All five [actual smooth remainders](UniformLogarithmicPrefixRemaindersInAllVaughanRows.lean)
+    satisfy common logarithmic prefix bounds through half damping and a uniform linear head bound.
+    At half damping, the [harmonic Gram error](UniformHarmonicVaughanGramsAtHalfDamping.lean)
+    is bounded uniformly in both cutoffs and the horizon, using one summable remainder envelope.
+    The [endpoint packet law](UniformHarmonicEnergyLawsForVaughanSuperpositions.lean)
+    has error `C(Σ|w_i|)²`; a zero smooth coefficient gives uniform finite energy.
+    The [uniform stretched-exponential estimate](UniformStretchedExponentialCancellationInTheVaughanConvolution.lean)
+    gives a `(3q)!` logarithmic envelope with one threshold for all orders and cutoffs.
 11. **Dilation profiles and the Bézout seed.** $\Phi_r(p/q)$ = pairing of jump streams of $pr,qr$;
     least seed isolated; dyadic windows reduce consecutive divisor edges to the single pair $(2,3)$.
 12. **Literal Möbius on linear windows.** Uniform first-moment cancellation; finite Euler-product

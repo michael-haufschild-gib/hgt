@@ -1,8 +1,8 @@
 # Critical-boundary poles also obstruct paid kernels
 
 - **ID:** critical-boundary-paid-kernel-obstruction
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean completion pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** Q-III; the cleared Möbius Mellin identity and the paid-energy Mellin bound.
 - **Statement:** A translated zeta pole on `Re s = 1/2` with strictly positive uncancelled order forces every paid critical Wiener kernel to vanish at that boundary point.
 
@@ -17,7 +17,7 @@ zeta zero in this position.
 
 - [x] 0 → 1: source fixed, exact boundary and analytic inputs identified.
 - [x] 1 → 2: complete paper proof and novelty audit.
-- [ ] 2 → 3: leaf `lake --old env lean` checks and transitive axiom audit.
+- [x] 2 → 3: leaf `lake --old env lean` checks and transitive axiom audit.
 - [ ] 3 → 4: publication audit.
 
 ## Approach
@@ -64,13 +64,6 @@ Relevant checked source statements:
   stronger real-axis little-oh paid Mellin bound; the big-oh bound already
   suffices for integral positive pole order.
 
-## Status
-
-Analytic proof outline established. Exact complex bound, boundary continuity,
-finite zeta-order factorizations, and boundary specialization still require
-Lean verification. The strict-interior order/jet refinement is independently
-being checked. No canonical source theorem changed for this candidate.
-
 ## Closed paper argument and source audit
 
 All analytic inputs are now identified in existing checked sources:
@@ -104,23 +97,37 @@ This is an endpoint application of ordinary analytic factorization and the
 paid-energy Mellin estimate. No new general removable-singularity principle
 is claimed. Kernel jets at the boundary remain outside the conclusion.
 
-The assembled `/tmp/qiii-critical-boundary-pole-check.lean` contains the
-explicit cleared identity, paid Mellin bound and rate, generic order-loss
-cancellation, and actual real/complex paid-kernel applications. All new
-boundary pieces remain unverified. This replaces the two smaller Mellin
-checks in the prepared next queue; do not start it before session `32035`
-finishes.
+## Lean verification
 
-## Lean verification update
+All required oleans and final canonical source-only checks passed. All leaves
+are umbrella-wired. Printed transitive axiom reports contain only `propext`,
+`Classical.choice`, and `Quot.sound`.
 
-The complete critical-boundary scratch passed. Its printed declarations use
-only `propext`, `Classical.choice`, and `Quot.sound`: actual cleared Mellin
-identity, interior order comparison and paid jets, complex Mellin boundary
-rate, generic boundary cancellation, actual paid boundary vanishing and hull
-membership, and the Liouville unit-orbit consequences. Five canonical leaves
-were installed and umbrella-wired, together with the explicit Mellin helper
-in `TheOffLineZerosObstructTheMoebiusReceiver`. Redundant tactics were removed.
-Final direct canonical checks remain pending; see
-[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
-This card remains OPEN until those pass. No actual escape-hull classification
-or boundary jet theorem is inferred.
+- `ArithmeticOrientationTheory/TheOffLineZerosObstructTheMoebiusReceiver`:
+  `complexMellinPairing_cleared_identity_of_repairs` exposes the actual
+  identity; the original translated-zero theorem uses it. Final audit `11733`.
+- `TransHorizonIncidenceMechanics/PaidMellinPairingsHaveNoCriticalBoundaryPole`:
+  `norm_complexMellinPairing_le_of_energy`,
+  `norm_mul_complexMellinPairing_sq_le`, and
+  `mul_complexMellinPairing_tendsto_zero_at_boundary` prove the complex bound
+  and radial rate. Final audit `3754`.
+- `HTGeometry/VanishingOrderControlsBoundaryCancellation`:
+  `eq_zero_of_boundary_order_loss` proves the analytic cancellation lemma.
+  Its split import explicitly includes complex analysis. Final audit `38501`.
+- `ArithmeticOrientationTheory/CriticalBoundaryPolesObstructPaidKernels`:
+  `lSeries_kernel_eq_zero_of_critical_boundary_order_loss`,
+  `mem_obstructionHull_moebius_of_critical_boundary_order_loss`, and
+  `not_receiverBounded_moebius_of_critical_boundary_order_loss` prove the
+  actual real-kernel, complex paid-hull and nonpayment consequences.
+  Final audit `46157`.
+- `ArithmeticOrientationTheory/VisiblePoleConstraintsPersistOnWienerUnitOrbits`:
+  `paid_unitOrbit_kernel_jets_vanish_below_visible_order` and
+  `mem_obstructionHull_unitOrbit_of_critical_boundary_order_loss` transport
+  the constraints; their Liouville specializations include
+  `not_receiverBounded_liouville_of_critical_boundary_order_loss`.
+  Final audit `9109`, including explicit audits of both Möbius nonpayment
+  corollaries.
+
+The [strict-interior order and jet result](paid-kernels-cover-visible-shifted-zero-orders.md)
+is also formalized. No actual escape-hull classification or boundary jet
+theorem is inferred.

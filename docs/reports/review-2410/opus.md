@@ -395,6 +395,10 @@ tail (`TheEmptyVaughanLegDetectsAFixedStrip`).
 The undamped truncated convolution also satisfies
 `Σ_(d≤n)(μ_≤U*μ_≤V*1)(d)=nH_UH_V+O_q(n/(log n)^q)` for every fixed integer `q≥0`,
 uniformly over all cutoff pairs (`UniformLogarithmicCancellationInTheVaughanConvolution`).
+The stronger cutoff-uniform rate `Kn exp(-c(log n)^(1/3))` is also verified,
+including its exact stated constant and common-threshold envelope
+`|S_UV(n)-nH_UH_V|(log n)^q≤Kn c^(-3q)(3q)!`
+(`UniformStretchedExponentialCancellationInTheVaughanConvolution`).
 The generic damped floor transform now preserves all common logarithmic savings
 for divisor-square bounded coefficient families with convergent reciprocal mass
 (`LogarithmicCancellationSurvivesTheDampedFloorTransform`, `0<ε≤1/2`).
@@ -412,7 +416,10 @@ Möbius prefix and Bézout interior now have every logarithmic norm saving below
 half damping (`LogarithmicEnergySavingsForTheMobiusInterior`). All five actual
 smooth-subtracted rows now share every logarithmic norm saving uniformly in both
 cutoffs; their sum is exactly the Bézout interior
-(`UniformLogarithmicRemaindersInAllVaughanRows`). The complete centered Gram now
+(`UniformLogarithmicRemaindersInAllVaughanRows`). All five rows also have
+common pointwise logarithmic bounds through half damping,
+including a linear finite-head bound
+(`UniformLogarithmicPrefixRemaindersInAllVaughanRows`). The complete centered Gram now
 satisfies the uniform smooth rank-one law with every logarithmic error rate
 (`UniformVaughanGramsFollowTheirSmoothRankOneTerm`). Hence every normalized
 entry tends to zero when the horizon and cutoff product diverge separately,
@@ -446,6 +453,15 @@ cutoff schedule admits divergent horizons making this error vanish. With
 `U=V=n+1`, the same horizons give zero ordinary normalized limit and a rank-one
 relative limit (`VaughanGramsAtTheirActualHarmonicAmplitude`); all seven targets
 passed final direct checks.
+At half damping the actual remainder energies and absolute square-root mixed
+pairings have one common summable envelope. Every Gram entry differs from its
+explicit harmonic rank-one term by a uniformly bounded error
+(`UniformHarmonicVaughanGramsAtHalfDamping`); all three targets passed final
+direct checks. Moving-limit and rank specializations remain under verification.
+The three endpoint packet laws are also verified: error at most `C(Σ|w_i|)²`
+after subtracting the harmonic energy, with a common finite energy bound
+when the smooth coefficient vanishes
+(`UniformHarmonicEnergyLawsForVaughanSuperpositions`).
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?
@@ -561,6 +577,22 @@ is exactly RH together with simplicity (`FaithfulPositiveMeyerDegrees`). The exa
 local witness is a single jet of order `j`: its sharp square is principal precisely
 when reflection moves its Xi point or `2j` reaches the local multiplicity. These
 criteria are formalized on the genuine source quotient without continuity assumptions.
+
+Factorial-normalized actual source classes realize each Hasse coordinate
+(`MeyerFiniteJetAlgebra`). Their products obey the truncated local polynomial
+rules, with zero product between distinct Xi blocks. Arithmetic sharp reflects
+the block with the exact parity sign, and every canonical finite causal section
+has its exact finite Hasse expansion. Actual finite causal projectors are central
+convolution multipliers, and each local value idempotent acts as the complete
+singleton block projector (`MeyerFiniteProjectorAlgebra`).
+
+Every positive Hermitian degree annihilates off-line jet blocks and all higher
+critical jets. On each finite causal packet it is exactly a nonnegative real
+weighting of critical values. Conversely every finite nonnegative critical
+weighting gives a positive Hermitian degree on the whole genuine quotient
+(`PositiveMeyerDegreesSeeReducedCriticalJets`). This classifies finite
+restrictions and supplies whole-quotient examples; it does not classify arbitrary
+infinite source readings.
 
 The actual faithful full-Hasse convolution representation respects arithmetic
 sharp as Hilbert adjoint exactly under the same RH-and-simplicity condition
@@ -724,6 +756,10 @@ not supply purity.
   exactly continuum cardinality, and nonuniqueness forces escape. These
   statements passed canonical Lean checks with standard axioms. They count
   kernels; module isomorphism classes remain unclassified.
+- Complete source pairings preserve coefficient conjugation. Each actual
+  module therefore has a conjugation-invariant annihilator and a
+  conjugation-symmetric hull. Canonical Lean checks passed with standard
+  axioms. Set symmetry alone supplies no even-multiplicity formula.
 - Actual diagonal data now retain numeric horizon order:
   `E(floor((T_m+1)/p))/E(T_m+1)` tends to `p*K(p,p)` for every actual
   common limit. This profile decreases in the ordinary integer order and
@@ -751,6 +787,16 @@ not supply purity.
   multiplicative sign: `chi(p)=eta(p)*p^(-s)`, `s>=1/2`, `eta(p)` in `{−1,1}`.
   The full factorization passed canonical Lean checks with standard axioms.
   It leaves the signs unselected and gives no arithmetic zero identification.
+- Every paid critical Wiener kernel supplies the uncancelled translated zeta
+  order in the strict interior, including all corresponding vanishing jets.
+  The actual Mellin identity and real/complex order bounds passed canonical
+  Lean checks with standard axioms. At the critical boundary, positive
+  uncancelled order forces paid-kernel value vanishing and source nonpayment;
+  these constraints persist on the Wiener-unit orbit, including Liouville.
+  The boundary and orbit leaves also passed final canonical checks. These
+  constrain the paid ideal; identifying actual module spectra or counting
+  independent jet conditions requires separate results. No boundary jets
+  are inferred.
 
 The open classification is still the arithmetic identification of the actual
 module hull with translated zero data, including Kronecker-curve generation

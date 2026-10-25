@@ -115,7 +115,8 @@ theorem not_pmPronicVaughanCentredGram_pole_faster_power {ε δ : ℝ}
       div_le_iff₀ (Real.rpow_pos_of_pos hT0 (1 - 2 * ε))] at h
     refine h.trans_eq ?_
     rw [Real.rpow_sub hT0]
-    field_simp
+    field_simp [Real.rpow_ne_zero hT0.ne' (1 - 2 * ε),
+      Real.rpow_ne_zero hT0.ne' δ]
   have hzero : Tendsto (pmActivePairPronicEnergy ε) atTop (𝓝 0) :=
     squeeze_zero' (Eventually.of_forall fun T => (pmActivePairPronicEnergy_bounds hε T).1)
       hupper (tendsto_const_nhds.div_atTop hpow)

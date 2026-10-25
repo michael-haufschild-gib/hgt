@@ -141,7 +141,8 @@ theorem exists_uniform_pmPronicVaughanCentredGram_half_harmonic_error_bound :
               a j * Real.sqrt (n : ℝ) * r i n + r i n * r j n := by ring
         _ = _ := by rw [hsq]
     rw [hprod]
-    field_simp [hn0.ne', (show (n : ℝ) + 1 ≠ 0 by positivity)] <;> ring
+    field_simp [hn0.ne', (show (n : ℝ) + 1 ≠ 0 by positivity)]
+    ring
   have herror : |pmPronicVaughanCentredGram (1 / 2) U V T i j -
       a i * a j * (∑ n ∈ Icc 1 T, 1 / ((n : ℝ) + 1))| ≤ (2 * c + 1) * C := by
     rw [heq]
@@ -151,10 +152,11 @@ theorem exists_uniform_pmPronicVaughanCentredGram_half_harmonic_error_bound :
             |∑ n ∈ Icc 1 T, r i n * r j n / ((n : ℝ) * ((n : ℝ) + 1))| :=
         (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
       _ ≤ c * C + c * C + C := by
-        rw [abs_mul, abs_mul]
         exact add_le_add (add_le_add
-          (mul_le_mul (ha i) (hmixed j) (abs_nonneg _) hc)
-          (mul_le_mul (ha j) (hmixed i) (abs_nonneg _) hc)) hres
+          ((abs_mul (a i) _).trans_le
+            (mul_le_mul (ha i) (hmixed j) (abs_nonneg _) hc))
+          ((abs_mul (a j) _).trans_le
+            (mul_le_mul (ha j) (hmixed i) (abs_nonneg _) hc))) hres
       _ = _ := by ring
   have haa : a i * a j =
       (subHalfZetaCoeff (1 / 2) * deningerHarmonicPartial U * deningerHarmonicPartial V) ^ 2 *

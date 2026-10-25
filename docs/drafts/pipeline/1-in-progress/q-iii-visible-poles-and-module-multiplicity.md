@@ -31,10 +31,12 @@ on `Re(s)>1/2` and proves on `1/2<Re(s)<1` the exact cleared identity
 
 where `Z_epsilon(s)=(s+epsilon-1)zeta(s+epsilon)` is the residue-unit
 continuation and `K` is the kernel L-series. This is a direct paid-receiver
-argument. Its identity is presently internal to
-`riemannZeta_mul_lSeries_eq_zero_of_repairs`; expose and reuse it for orders.
+argument. The reusable
+`complexMellinPairing_cleared_identity_of_repairs` now exposes the actual
+Mellin identity; the original translated-zero proof uses it. Its canonical
+source-only audit passed with standard axioms.
 
-The newly drafted finite-module index counts joint generalized eigenspace
+The formalized finite-module index counts joint generalized eigenspace
 dimensions. It does not identify them with arithmetic zero orders. The
 existing AOT index formula for the actual receiver is an above-width
 empty-hull result; its below-width classification remains open.
@@ -59,11 +61,10 @@ configuration of zeta is asserted or assumed here.
 
 Required work:
 
-1. Extract the existing cleared analytic identity as a reusable theorem;
-   preserve its actual centered receiver and source conventions.
-2. Extend the existing noncancellation bridge to exact visible pole orders
-   using meromorphic-order calculus. Account for partial cancellation without
-   adding a nonvanishing premise.
+1. Complete: extract the existing cleared analytic identity as a reusable
+   theorem, preserving the actual centered receiver and source conventions.
+2. Complete: exact visible interior pole orders and paid jets, including
+   partial cancellation; boundary value vanishing and unit-orbit consequences.
 3. Prove which pole data constrain the paid ideal and the closed module
    annihilator. Keep these two ideals separate.
 4. Relate actual cofactor modules to this divisor, or find the precise
@@ -98,32 +99,25 @@ kernel jet order `max(ord_rho(zeta)-ord_(rho-epsilon)(zeta),0)`.
 The argument uses the already proved paid-receiver continuation, not a new
 source-growth premise. It identifies a lower constraint on the paid ideal;
 it does not put these points into every actual module hull or prove the
-requested reverse inclusion. Lean extraction, order calculus, and jet
-consequences remain to be checked. General analytic order arithmetic is not
+requested reverse inclusion. The canonical order and interior jet checks
+passed with standard axioms. General analytic order arithmetic is not
 claimed as new; the target application is the exact actual repairing ideal.
 
-## Lean drafts awaiting their first check
+## Lean completion
 
-- `/tmp/qiii_cleared_continuation_body.lean`: exact extraction of the existing
-  centered-receiver continuation argument, retaining its full strip identity.
-- `/tmp/qiii_paid_kernel_zero_order_body.lean`: real-kernel order inequality,
-  strict-order-loss vanishing, partial-cancellation Bohr obstruction, and
-  nonpayment. The proof multiplies through by the nonzero residue factor,
-  avoiding local division. Uses the existing translation-invariance and
-  residue-unit order theorems.
-
-These drafts have not passed Lean. Once checked, extract the continuation
-helper into the existing AOT module and refactor its old value-at-zero proof
-through that helper; do not retain two copies of the continuation argument.
-
-The order draft now also combines real and imaginary parts using the minimum
-order bound for sums. It states the complex paid-kernel inequality, defines
-`visibleTranslatedZetaOrder`, and derives every lower kernel-jet vanishing
-condition. All these additions remain unverified in Lean. No equality of the
-paid ideal with this jet ideal, nor equality with the actual annihilator, is
-claimed.
+The Mellin owner and strict-interior leaf are canonically checked. The latter
+combines real and imaginary parts using the minimum order bound for sums,
+defines `visibleTranslatedZetaOrder`, and derives every lower kernel jet.
+The boundary and unit-orbit leaves also passed final canonical checks with
+standard axioms; exact audits are tracked in
+[the completion ledger](q-iii-existing-findings-lean-completion.md).
+No equality of the paid ideal with the jet ideal or actual annihilator is
+claimed. The finite mixed-jet interpolation and paid-index drafts remain
+unchecked.
 
 The dependency-closed paid-ideal refinement has its own card:
-[Paid kernels cover visible shifted zero orders](../2-fully-proven/paid-kernels-cover-visible-shifted-zero-orders.md).
+[Paid kernels cover visible shifted zero orders](../3-formalized/paid-kernels-cover-visible-shifted-zero-orders.md).
+The [critical-boundary refinement](../3-formalized/critical-boundary-poles-also-obstruct-paid-kernels.md)
+is also formalized, including the Liouville specializations.
 The present card retains the unresolved identification with actual module
 spectra and multiplicities.

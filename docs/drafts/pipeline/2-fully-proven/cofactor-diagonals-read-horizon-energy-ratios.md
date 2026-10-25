@@ -103,12 +103,9 @@ and the scale-one value is one. This proves the unconditional invariant
 without a regular-variation premise. The mixed identity is a separate
 refinement; it is not required for this diagonal result.
 
-Lean drafts: `/tmp/qiii_exact_dilated_pronic_body.lean` and
-`/tmp/qiii_actual_diagonal_energy_body.lean`, assembled with the elementary
-energy-crossing helpers in `/tmp/qiii-diagonal-energy-check.lean`.
-They have not been checked. The next independent check queue is
-`/tmp/qiii-explicit-mellin-and-diagonal-checks.sh`; do not start it while
-session `32035` is active.
+The complete-block and diagonal arguments are now canonical in
+`ThePronicPairingHasExactDilationBlocks` and
+`ActualCofactorDiagonalsAreHorizonEnergyRatios`. Their final checks passed.
 
 ## Existing sandwich reused
 
@@ -119,8 +116,7 @@ A more targeted corpus search surfaced
 that existing sandwich directly, rather than reproving its horizon bounds.
 The bilinear complete-block draft remains for the mixed pairing refinement.
 Energy jumps likewise use the existing `receiverEnergy_succ_le` from
-`EnergyQuantilesRetainDiffuseEscape`. Session `84684` is the live check queue;
-its diagonal stage has not yet started.
+`EnergyQuantilesRetainDiffuseEscape`.
 
 ## Current verification status
 
@@ -132,6 +128,6 @@ terminal-fibre correction and mixed refinement still require Lean.
 Those exact statements are now in
 `/tmp/qiii_exact_horizon_remainder_body.lean` and
 `/tmp/qiii_mixed_horizon_error_body.lean`, including the zero quotient,
-the general C*D/p bound and its actual unit-bound specialization. They lead
-the unverified contracted-horizon assembler. No mixed result is inferred
+the general C*D/p bound and its actual unit-bound specialization. Their current
+direct Lean scratch is `/tmp/qiii-contracted-horizons-check.lean`. No mixed result is inferred
 from the diagonal theorem alone.

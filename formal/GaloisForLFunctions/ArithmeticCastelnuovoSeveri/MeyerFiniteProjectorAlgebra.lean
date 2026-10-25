@@ -128,7 +128,3 @@ theorem meyerHasseValueClass_mul_eq_projector (rho : XiDivisorSupport)
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteXiCausalProjector_jet
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteXiCausalProjector_mul_left
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteXiCausalProjector_mul_right
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHasseValueClass_mul_eq_projector
