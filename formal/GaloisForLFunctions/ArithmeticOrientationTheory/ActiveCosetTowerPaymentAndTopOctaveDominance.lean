@@ -64,7 +64,7 @@ shared-payment architecture across arbitrary finite sets of primes:
      `shiftedTowerOddPrimeSide a δ_p p p 1 + archReflectedDiagWeight p < 0`.
 -/
 
-open Finset ArithmeticFunction MeasureTheory Set
+open Finset ArithmeticFunction MeasureTheory
 open GaloisForLFunctions.ArithmeticIncidencePositivity
 
 namespace GaloisForLFunctions.ArithmeticOrientationTheory
@@ -123,6 +123,7 @@ theorem cosetTail_eq_single_of_lt_mul {q : ℕ → ℝ} {X : ℕ} (hq : ∀ n, X
     have hij : j + 1 ≤ i := (Finset.mem_Ico.mp hi).1
     have hgt : X < p ^ i * a' :=
       lt_of_lt_of_le htop (Nat.mul_le_mul_right a' (Nat.pow_le_pow_right hp.pos hij))
+    dsimp only
     rw [hq _ hgt, mul_zero]
   rw [hnext0, mul_zero, add_zero]
 
@@ -229,8 +230,8 @@ theorem towerOddPrimeSide_ge_neg_primeTowerCharge {q : ℕ → ℝ} {X : ℕ} (h
           calc X < p * n := hgt_mul
             _ = p * (p ^ ((n.factorization p - 1) + 1) * pfreePart p n) := by rw [hmul_n]
             _ = p ^ ((n.factorization p - 1) + 1 + 1) * pfreePart p n := by rw [pow_succ']; ring
-        refine ⟨Finset.mem_product.mpr ⟨pfreePart_mem_pfreeLabels hp ⟨by omega, hnX⟩,
-          Finset.mem_range.mpr (by omega)⟩, hmul_n, ?_⟩
+        refine ⟨Finset.mem_product.mpr ⟨pfreePart_mem_pfreeLabels hp (Finset.mem_Icc.mpr ⟨by omega, hnX⟩),
+          Finset.mem_range.mpr (by dsimp only [φ]; omega)⟩, hmul_n, ?_⟩
         dsimp only [φ]
         rw [cosetTail_eq_single_of_lt_mul hq hp (by omega) htop_pow, hmul_n]
       have hinj : Set.InjOn φ TopDvd := fun n₁ hn₁ n₂ hn₂ heq => by
@@ -241,7 +242,9 @@ theorem towerOddPrimeSide_ge_neg_primeTowerCharge {q : ℕ → ℝ} {X : ℕ} (h
       have hrew_sq : ∑ n ∈ TopDvd, q n ^ 2 =
           ∑ n ∈ TopDvd, (fun x : ℕ × ℕ => cosetTail q p X x.1 (x.2 + 1) ^ 2) (φ n) :=
         Finset.sum_congr rfl fun n hn => by dsimp only; rw [(hφ_props n hn).2.2]
-      rw [hrew_sq, ← Finset.sum_image hinj, ← Finset.sum_product']
+      rw [hrew_sq,
+        ← Finset.sum_image (f := fun x : ℕ × ℕ => cosetTail q p X x.1 (x.2 + 1) ^ 2) hinj,
+        ← Finset.sum_product']
       exact Finset.sum_le_sum_of_subset_of_nonneg
         (fun x hx => by obtain ⟨n, hn, rfl⟩ := Finset.mem_image.mp hx; exact (hφ_props n hn).1)
         (fun _ _ _ => sq_nonneg _)
@@ -472,19 +475,21 @@ theorem sum_towerOddPrimeSide_add_archDiag_ge_sub_sqrtHorizon {q : ℕ → ℝ} 
     (hX : 1 ≤ X) (hq : ∀ n, X < n → q n = 0) {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime)
     {K : ℕ → ℕ} (hK : ∀ p ∈ S, p ≤ X → Nat.log p X ≤ K p) :
     -(∑ n ∈ (Icc 2 X).filter
-        (fun n => n < 5 ∨ (n : ℝ) ^ 2 < 9 * (X : ℝ) + 3 * (n : ℝ) * Real.log n),
+        (fun n : ℕ => n < 5 ∨ (n : ℝ) ^ 2 < 9 * (X : ℝ) + 3 * (n : ℝ) * Real.log (n : ℝ)),
       activeTowerWeight S X n * q n ^ 2) ≤
       (∑ p ∈ S, towerOddPrimeSide q X p (K p)) +
         ∑ n ∈ Icc 4 X, archReflectedDiagWeight n * q n ^ 2 := by
   have htower := sum_towerOddPrimeSide_ge_neg_activeTowerWeight hX hq hS hK
   set Sub := (Icc 2 X).filter
-    (fun n => n < 5 ∨ (n : ℝ) ^ 2 < 9 * (X : ℝ) + 3 * (n : ℝ) * Real.log n)
+    (fun n : ℕ => n < 5 ∨ (n : ℝ) ^ 2 < 9 * (X : ℝ) + 3 * (n : ℝ) * Real.log (n : ℝ))
   set Sup := (Icc 2 X).filter
-    (fun n => ¬ (n < 5 ∨ (n : ℝ) ^ 2 < 9 * (X : ℝ) + 3 * (n : ℝ) * Real.log n))
+    (fun n : ℕ => ¬ (n < 5 ∨ (n : ℝ) ^ 2 < 9 * (X : ℝ) + 3 * (n : ℝ) * Real.log (n : ℝ)))
   have hpart : ∑ n ∈ Icc 2 X, activeTowerWeight S X n * q n ^ 2 =
       (∑ n ∈ Sub, activeTowerWeight S X n * q n ^ 2) +
         ∑ n ∈ Sup, activeTowerWeight S X n * q n ^ 2 :=
-    (Finset.sum_filter_add_sum_filter_not _ _).symm
+    (Finset.sum_filter_add_sum_filter_not (Icc 2 X)
+      (fun n : ℕ => n < 5 ∨ (n : ℝ) ^ 2 < 9 * (X : ℝ) + 3 * (n : ℝ) * Real.log (n : ℝ))
+      (fun n => activeTowerWeight S X n * q n ^ 2)).symm
   have hsup_le : ∑ n ∈ Sup, activeTowerWeight S X n * q n ^ 2 ≤
       ∑ n ∈ Icc 4 X, archReflectedDiagWeight n * q n ^ 2 := by
     have hsub : Sup ⊆ Icc 4 X := fun n hn => by
@@ -500,9 +505,13 @@ theorem sum_towerOddPrimeSide_add_archDiag_ge_sub_sqrtHorizon {q : ℕ → ℝ} 
             (activeTowerWeight_lt_archReflectedDiagWeight_of_sq_horizon hS hnot.1 hnot.2).le
             (sq_nonneg _)
       _ ≤ ∑ n ∈ Icc 4 X, archReflectedDiagWeight n * q n ^ 2 :=
-          Finset.sum_le_sum_of_subset_of_nonneg hsub fun n hn _ =>
-            mul_nonneg (lt_trans (by positivity)
-              (div_six_lt_archReflectedDiagWeight (Finset.mem_Icc.mp hn).1)).le (sq_nonneg _)
+          Finset.sum_le_sum_of_subset_of_nonneg hsub fun n hn _ => by
+            have hn4 : 4 ≤ n := (Finset.mem_Icc.mp hn).1
+            have hn_pos : (0 : ℝ) < (n : ℝ) / 6 := by
+              have : (4 : ℝ) ≤ n := by exact_mod_cast hn4
+              positivity
+            exact mul_nonneg (lt_trans hn_pos (div_six_lt_archReflectedDiagWeight hn4)).le
+              (sq_nonneg _)
   linarith
 
 /-! ## §4. Continuum single-cell Cholesky compensation (`log p ≥ A`) and shifted-pair selectivity -/
@@ -511,25 +520,23 @@ theorem sum_towerOddPrimeSide_add_archDiag_ge_sub_sqrtHorizon {q : ℕ → ℝ} 
 If `F : ℝ → ℝ` vanishes on `[A, ∞)` (`A ≥ 0`), then every prime `p` with `2 A ≤ log p` has
 `continuumPrimeTower F p 0 = 0` identically. -/
 theorem continuumPrimeTower_eq_zero_of_two_mul_le_log {F : ℝ → ℝ} {A : ℝ} (hA : 0 ≤ A)
-    (hF : ∀ x, A ≤ x → F x = 0) {p : ℕ} (hp : p.Prime) (hlog : 2 * A ≤ Real.log p) :
+    (hF : ∀ x, A ≤ x → F x = 0) {p : ℕ} (_hp : p.Prime) (hlog : 2 * A ≤ Real.log p) :
     continuumPrimeTower F p 0 = 0 := by
   unfold continuumPrimeTower
-  simp only [Nat.mul_zero, zero_add, Finset.Icc_self, Finset.sum_singleton, pow_one, Nat.cast_zero,
+  simp only [Nat.mul_zero, zero_add, Finset.Icc_self, Finset.sum_singleton, pow_one,
     Nat.cast_one, one_mul]
   have hL : 0 ≤ Real.log p := by linarith
   have h1 : (∫ x in (0 : ℝ)..Real.log p, F x * F (x + Real.log p)) = 0 := by
     calc (∫ x in (0 : ℝ)..Real.log p, F x * F (x + Real.log p))
         = ∫ _x in (0 : ℝ)..Real.log p, (0 : ℝ) := by
           refine intervalIntegral.integral_congr fun x hx => ?_
-          dsimp only
-          rw [uIcc_of_le hL] at hx
+          rw [Set.uIcc_of_le hL] at hx
           rw [hF (x + Real.log p) (by linarith [hx.1]), mul_zero]
       _ = 0 := by simp
   have h2 : (∫ x in (0 : ℝ)..Real.log p, F x * F (Real.log p - x)) = 0 := by
     calc (∫ x in (0 : ℝ)..Real.log p, F x * F (Real.log p - x))
         = ∫ _x in (0 : ℝ)..Real.log p, (0 : ℝ) := by
           refine intervalIntegral.integral_congr fun x _ => ?_
-          dsimp only
           rcases le_or_gt A x with hxA | hxA
           · rw [hF x hxA, zero_mul]
           · rw [hF (Real.log p - x) (by linarith), mul_zero]
@@ -570,10 +577,10 @@ theorem continuumPrimeTower_zero_ge_neg_div_sqrt {F : ℝ → ℝ} (hF_cont : Co
     rw [hmass_eq] at hchol
     linarith
   rw [continuumPrimeTower_eq hp hsupp0]
-  have hmul := mul_le_mul_of_nonneg_left h2R_sub hL
-  rw [hr_eq] at hmul
-  linarith [show Real.log p * (-(1 / Real.sqrt p) * ∫ x in (0 : ℝ)..Real.log p, F x ^ 2) =
-    -(Real.log p / Real.sqrt p) * ∫ x in (0 : ℝ)..Real.log p, F x ^ 2 by ring]
+  have hcoeff : Real.log p * (-r * ∫ x in (0 : ℝ)..Real.log p, F x ^ 2) =
+      -(Real.log p / Real.sqrt p) * ∫ x in (0 : ℝ)..Real.log p, F x ^ 2 := by
+    rw [hr_eq]; ring
+  exact hcoeff ▸ mul_le_mul_of_nonneg_left h2R_sub hL
 
 /-- For a continuous profile `F` vanishing on `[A, ∞)`, the `L²` integral over `[0, B]` equals
 `∫_0^A F(x)² dx` for every `B ≥ A`. -/
@@ -587,8 +594,7 @@ theorem integral_sq_eq_of_le {F : ℝ → ℝ} (hF_cont : Continuous F) {A B : �
     calc (∫ x in A..B, F x ^ 2)
         = ∫ _x in A..B, (0 : ℝ) := by
           refine intervalIntegral.integral_congr fun x hx => ?_
-          dsimp only
-          rw [uIcc_of_le hAB] at hx
+          rw [Set.uIcc_of_le hAB] at hx
           rw [hF_supp x hx.1, zero_pow two_ne_zero]
       _ = 0 := by simp
   rw [hzero, add_zero]
@@ -601,9 +607,9 @@ theorem continuumPrimeTower_eq_zero_trunc_of_le_log {F : ℝ → ℝ} {A : ℝ} 
     continuumPrimeTower F p N = continuumPrimeTower F p 0 := by
   have hL : 0 ≤ Real.log p := hA.trans hlog
   unfold continuumPrimeTower
-  have hsub : Icc 1 (2 * 0 + 1) ⊆ Icc 1 (2 * N + 1) :=
+  have hsub : (Icc 1 (2 * 0 + 1) : Finset ℕ) ⊆ Icc 1 (2 * N + 1) :=
     Finset.Icc_subset_Icc_right (by omega)
-  have hvanish : ∀ k ∈ Icc 1 (2 * N + 1), k ∉ Icc 1 (2 * 0 + 1) →
+  have hvanish : ∀ k ∈ Icc 1 (2 * N + 1), k ∉ (Icc 1 (2 * 0 + 1) : Finset ℕ) →
       ArithmeticFunction.vonMangoldt (p ^ k) * ((p ^ k : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) *
         (2 * (∫ x in (0 : ℝ)..((N + 1 : ℕ) : ℝ) * Real.log p,
           F x * F (x + (k : ℝ) * Real.log p)) -
@@ -621,8 +627,7 @@ theorem continuumPrimeTower_eq_zero_trunc_of_le_log {F : ℝ → ℝ} {A : ℝ} 
             F x * F (x + (k : ℝ) * Real.log p))
           = ∫ _x in (0 : ℝ)..((N + 1 : ℕ) : ℝ) * Real.log p, (0 : ℝ) := by
             refine intervalIntegral.integral_congr fun x hx => ?_
-            dsimp only
-            rw [uIcc_of_le hNL] at hx
+            rw [Set.uIcc_of_le hNL] at hx
             rw [hF_supp (x + (k : ℝ) * Real.log p) (by nlinarith [hx.1]), mul_zero]
         _ = 0 := by simp
     have hi2 : (∫ x in (0 : ℝ)..(k : ℝ) * Real.log p,
@@ -631,7 +636,6 @@ theorem continuumPrimeTower_eq_zero_trunc_of_le_log {F : ℝ → ℝ} {A : ℝ} 
             F x * F ((k : ℝ) * Real.log p - x))
           = ∫ _x in (0 : ℝ)..(k : ℝ) * Real.log p, (0 : ℝ) := by
             refine intervalIntegral.integral_congr fun x _ => ?_
-            dsimp only
             rcases le_or_gt A x with hxA | hxA
             · rw [hF_supp x hxA, zero_mul]
             · rw [hF_supp ((k : ℝ) * Real.log p - x) (by nlinarith), mul_zero]
@@ -640,22 +644,20 @@ theorem continuumPrimeTower_eq_zero_trunc_of_le_log {F : ℝ → ℝ} {A : ℝ} 
     ring
   rw [← Finset.sum_subset hsub hvanish]
   simp only [Nat.mul_zero, zero_add, Finset.Icc_self, Finset.sum_singleton, pow_one,
-    Nat.cast_zero, Nat.cast_one, one_mul]
+    Nat.cast_one, one_mul]
   have h1N : (∫ x in (0 : ℝ)..((N + 1 : ℕ) : ℝ) * Real.log p, F x * F (x + Real.log p)) = 0 := by
     have hNL : 0 ≤ ((N + 1 : ℕ) : ℝ) * Real.log p := mul_nonneg (Nat.cast_nonneg _) hL
     calc (∫ x in (0 : ℝ)..((N + 1 : ℕ) : ℝ) * Real.log p, F x * F (x + Real.log p))
         = ∫ _x in (0 : ℝ)..((N + 1 : ℕ) : ℝ) * Real.log p, (0 : ℝ) := by
           refine intervalIntegral.integral_congr fun x hx => ?_
-          dsimp only
-          rw [uIcc_of_le hNL] at hx
+          rw [Set.uIcc_of_le hNL] at hx
           rw [hF_supp (x + Real.log p) (by linarith [hx.1]), mul_zero]
       _ = 0 := by simp
   have h10 : (∫ x in (0 : ℝ)..Real.log p, F x * F (x + Real.log p)) = 0 := by
     calc (∫ x in (0 : ℝ)..Real.log p, F x * F (x + Real.log p))
         = ∫ _x in (0 : ℝ)..Real.log p, (0 : ℝ) := by
           refine intervalIntegral.integral_congr fun x hx => ?_
-          dsimp only
-          rw [uIcc_of_le hL] at hx
+          rw [Set.uIcc_of_le hL] at hx
           rw [hF_supp (x + Real.log p) (by linarith [hx.1]), mul_zero]
       _ = 0 := by simp
   rw [h1N, h10]
@@ -701,7 +703,7 @@ theorem sum_primes_log_div_sqrt_le_ten_sqrt (M : ℕ) :
       exact Nat.lt_succ_of_le (Nat.log_mono_right hpM)
     · rintro ⟨_, _, hpP, _⟩
       exact hpP
-  have hdisj : Set.PairwiseDisjoint (range (L + 1) : Set ℕ)
+  have hdisj : Set.PairwiseDisjoint ((Finset.range (L + 1) : Finset ℕ) : Set ℕ)
       (fun j => P.filter (fun p => Nat.log 2 p = j)) := by
     intro i _ j _ hij
     refine Finset.disjoint_left.mpr fun p hpi hpj => hij ?_
@@ -715,7 +717,12 @@ theorem sum_primes_log_div_sqrt_le_ten_sqrt (M : ℕ) :
         (14 / 5 : ℝ) * (Real.sqrt 2) ^ j := by
     intro j _
     have hsqrt_pow : (Real.sqrt 2) ^ j = Real.sqrt ((2 ^ j : ℕ) : ℝ) := by
-      rw [Nat.cast_pow, Nat.cast_ofNat, Real.sqrt_pow (by norm_num)]
+      symm
+      calc Real.sqrt ((2 ^ j : ℕ) : ℝ)
+          = Real.sqrt (((Real.sqrt 2) ^ 2) ^ j) := by
+            rw [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2), Nat.cast_pow, Nat.cast_ofNat]
+        _ = Real.sqrt (((Real.sqrt 2) ^ j) ^ 2) := by rw [← pow_mul, mul_comm 2 j, pow_mul]
+        _ = (Real.sqrt 2) ^ j := Real.sqrt_sq (by positivity)
     have hsqrt_pos : 0 < (Real.sqrt 2) ^ j := by positivity
     have hterm : ∀ p ∈ P.filter (fun p => Nat.log 2 p = j),
         Real.log p / Real.sqrt p ≤ Real.log p / (Real.sqrt 2) ^ j := by
@@ -771,7 +778,12 @@ theorem sum_primes_log_div_sqrt_le_ten_sqrt (M : ℕ) :
     exact Real.sqrt_le_sqrt (by norm_num)
   have h2L_le : (Real.sqrt 2) ^ L ≤ Real.sqrt M := by
     have hsqrt_L : (Real.sqrt 2) ^ L = Real.sqrt ((2 ^ L : ℕ) : ℝ) := by
-      rw [Nat.cast_pow, Nat.cast_ofNat, Real.sqrt_pow (by norm_num)]
+      symm
+      calc Real.sqrt ((2 ^ L : ℕ) : ℝ)
+          = Real.sqrt (((Real.sqrt 2) ^ 2) ^ L) := by
+            rw [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2), Nat.cast_pow, Nat.cast_ofNat]
+        _ = Real.sqrt (((Real.sqrt 2) ^ L) ^ 2) := by rw [← pow_mul, mul_comm 2 L, pow_mul]
+        _ = (Real.sqrt 2) ^ L := Real.sqrt_sq (by positivity)
     rw [hsqrt_L]
     exact Real.sqrt_le_sqrt (by exact_mod_cast Nat.pow_log_le_self 2 (by omega : M ≠ 0))
   calc ∑ p ∈ P, Real.log p / Real.sqrt p
@@ -837,15 +849,16 @@ theorem sum_continuumPrimeTower_ge_neg_twelve_exp {F : ℝ → ℝ} (hF_cont : C
   suffices hw_le : ∑ p ∈ S, w p ≤ 12 * Real.exp A by
     nlinarith
   -- Split `S` at `A ≤ log p`
-  rw [← Finset.sum_filter_add_sum_filter_not S (fun p => A ≤ Real.log p)]
+  rw [← Finset.sum_filter_add_sum_filter_not S (fun p : ℕ => A ≤ Real.log (p : ℝ))]
   -- Low primes (`log p < A`) have `p ≤ ⌊e^A⌋` and carry `w p = log p`
-  have hlow : ∑ p ∈ S.filter (fun p => ¬ A ≤ Real.log p), w p ≤ 2 * Real.exp A := by
-    have hrew : ∀ p ∈ S.filter (fun p => ¬ A ≤ Real.log p), w p = Real.log p := by
+  have hlow : ∑ p ∈ S.filter (fun p : ℕ => ¬ A ≤ Real.log (p : ℝ)), w p ≤ 2 * Real.exp A := by
+    have hrew : ∀ p ∈ S.filter (fun p : ℕ => ¬ A ≤ Real.log (p : ℝ)), w p = Real.log p := by
       intro p hp
-      have hnot : ¬ A ≤ Real.log p := (Finset.mem_filter.mp hp).2
-      have hnot2 : ¬ 2 * A ≤ Real.log p := fun h2 => hnot (by linarith)
-      simp only [w, if_neg hnot2, if_neg hnot]
-    have hsub : S.filter (fun p => ¬ A ≤ Real.log p) ⊆
+      have hnot : ¬ A ≤ Real.log (p : ℝ) := (Finset.mem_filter.mp hp).2
+      have hnot2 : ¬ 2 * A ≤ Real.log (p : ℝ) := fun h2 => hnot (by linarith)
+      dsimp only [w]
+      rw [if_neg hnot2, if_neg hnot]
+    have hsub : S.filter (fun p : ℕ => ¬ A ≤ Real.log (p : ℝ)) ⊆
         (Ioc 0 ⌊Real.exp A⌋₊).filter Nat.Prime := by
       intro p hp
       obtain ⟨hpS, hnot⟩ := Finset.mem_filter.mp hp
@@ -858,8 +871,9 @@ theorem sum_continuumPrimeTower_ge_neg_twelve_exp {F : ℝ → ℝ} (hF_cont : C
     have hlog4 : Real.log 4 ≤ 2 := by
       rw [show (4 : ℝ) = (2 : ℝ) ^ 2 by norm_num, Real.log_pow]
       push_cast; linarith [Real.log_two_lt_d9]
-    calc ∑ p ∈ S.filter (fun p => ¬ A ≤ Real.log p), w p
-        = ∑ p ∈ S.filter (fun p => ¬ A ≤ Real.log p), Real.log p := Finset.sum_congr rfl hrew
+    calc ∑ p ∈ S.filter (fun p : ℕ => ¬ A ≤ Real.log (p : ℝ)), w p
+        = ∑ p ∈ S.filter (fun p : ℕ => ¬ A ≤ Real.log (p : ℝ)), Real.log p :=
+          Finset.sum_congr rfl hrew
       _ ≤ ∑ p ∈ (Ioc 0 ⌊Real.exp A⌋₊).filter Nat.Prime, Real.log p :=
           Finset.sum_le_sum_of_subset_of_nonneg hsub fun p hp _ =>
             Real.log_nonneg (by exact_mod_cast (Finset.mem_filter.mp hp).2.one_le)
@@ -867,19 +881,22 @@ theorem sum_continuumPrimeTower_ge_neg_twelve_exp {F : ℝ → ℝ} (hF_cont : C
       _ ≤ Real.log 4 * Real.exp A := Chebyshev.theta_le_log4_mul_x (Real.exp_pos A).le
       _ ≤ 2 * Real.exp A := mul_le_mul_of_nonneg_right hlog4 (Real.exp_pos A).le
   -- Middle/high primes (`A ≤ log p`) vanish above `2 A` and carry `log p / √p` on `[e^A, e^{2A})`
-  have hmid : ∑ p ∈ S.filter (fun p => A ≤ Real.log p), w p ≤ 10 * Real.exp A := by
+  have hmid : ∑ p ∈ S.filter (fun p : ℕ => A ≤ Real.log (p : ℝ)), w p ≤ 10 * Real.exp A := by
     rw [← Finset.sum_filter_add_sum_filter_not
-      (S.filter (fun p => A ≤ Real.log p)) (fun p => 2 * A ≤ Real.log p)]
-    have hz : ∑ p ∈ (S.filter (fun p => A ≤ Real.log p)).filter (fun p => 2 * A ≤ Real.log p),
-        w p = 0 :=
+      (S.filter (fun p : ℕ => A ≤ Real.log (p : ℝ))) (fun p : ℕ => 2 * A ≤ Real.log (p : ℝ))]
+    have hz : ∑ p ∈ (S.filter (fun p : ℕ => A ≤ Real.log (p : ℝ))).filter
+        (fun p : ℕ => 2 * A ≤ Real.log (p : ℝ)), w p = 0 :=
       Finset.sum_eq_zero fun p hp => by
-        simp only [w, if_pos (Finset.mem_filter.mp hp).2]
+        dsimp only [w]
+        rw [if_pos (Finset.mem_filter.mp hp).2]
     rw [hz, zero_add]
-    set S_mid := (S.filter (fun p => A ≤ Real.log p)).filter (fun p => ¬ 2 * A ≤ Real.log p)
+    set S_mid := (S.filter (fun p : ℕ => A ≤ Real.log (p : ℝ))).filter
+      (fun p : ℕ => ¬ 2 * A ≤ Real.log (p : ℝ))
     have hrew : ∀ p ∈ S_mid, w p = Real.log p / Real.sqrt p := by
       intro p hp
       obtain ⟨hp1, hnot2⟩ := Finset.mem_filter.mp hp
-      simp only [w, if_neg hnot2, if_pos (Finset.mem_filter.mp hp1).2]
+      dsimp only [w]
+      rw [if_neg hnot2, if_pos (Finset.mem_filter.mp hp1).2]
     have hsub : S_mid ⊆ (Icc 1 ⌊Real.exp (2 * A)⌋₊).filter Nat.Prime := by
       intro p hp
       obtain ⟨hp1, hnot2⟩ := Finset.mem_filter.mp hp
@@ -932,6 +949,7 @@ theorem shiftedTowerOddPrimeSide_point_top_octave_lt_neg_arch {a : ℝ} (ha : 1 
     have hk1 : 1 ≤ k := (Finset.mem_Icc.mp hk).1
     have hinner0 : ∑ i ∈ range (Nat.log p p + 1), q (p ^ i * a') * q (p ^ (i + k) * a') = 0 :=
       Finset.sum_eq_zero fun i _ => by
+        dsimp only [q]
         by_cases h1 : p ^ i * a' = p
         · have h2 : p < p ^ (i + k) * a' := by
             calc p = p ^ i * a' := h1.symm
@@ -960,12 +978,14 @@ theorem shiftedTowerOddPrimeSide_point_top_octave_lt_neg_arch {a : ℝ} (ha : 1 
     push_cast
     congr 1 <;> congr 1 <;> ring
   have hsel := archReflectedDiagWeight_lt_shiftedPrimeDiag_of_one_le ha hp le_rfl
+  rw [pow_one] at hsel
   push_cast at hsel
   have hrew : Real.log p * (-((p : ℝ) ^ (a - 1 / 2)) ^ 2 - ((p : ℝ) ^ (-a - 1 / 2)) ^ 2) =
       -(Real.log p * (p : ℝ) ^ (-(1 : ℝ)) *
         ((p : ℝ) ^ (2 * (1 : ℝ) * a) + (p : ℝ) ^ (-(2 * (1 : ℝ) * a)))) := by
     linear_combination -Real.log p * hsq_eq
-  linarith
+  rw [hrew, add_comm, ← sub_eq_add_neg, sub_neg]
+  exact hsel
 
 end
 

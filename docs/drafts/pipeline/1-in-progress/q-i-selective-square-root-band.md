@@ -470,7 +470,16 @@ The fourteen arithmetic amplitude targets also passed producing and final
 direct checks with standard axioms only. They are wired as
 `TheCompactArithmeticAmplitudesOfVaughanGrams.lean`: compact countable infinitude,
 finite-fiber rigidity at positive limits, and exact positive-cutoff escape.
-The remaining matrix classification, endpoint, and power-rate consequences remain
+The eight matrix-classification targets passed corrected producing and final
+direct checks with standard axioms only, and are wired as
+`TheSubcriticalVaughanGramLimitSet.lean`. They include positive-cutoff attainment,
+the exact zero-limit converse, the convergence dichotomy, and explicit bounded
+moving-packet energy decay. Four scalar-topology targets passed producing and
+final direct checks with standard axioms only, and are wired as
+`TheOnlyAccumulationOfVaughanAmplitudesIsZero.lean`: positive-amplitude isolation,
+unique zero accumulation, and the convergence alternatives' mutual exclusion.
+The remaining matrix rank and topology, endpoint,
+and power-rate consequences remain
 under verification. All fifteen existing paper
 cards and their remaining Lean coverage are listed in
 `q-i-existing-findings-lean-completion.md`; completing that register has priority
@@ -516,7 +525,7 @@ Four further consequences are dependency-closed on paper; their Lean status foll
   infinite compact set, discrete away from zero. A nonzero limit forces the
   cutoffs eventually into one fixed finite amplitude fiber. Arithmetic and matrix
   classification drafts exist but remain unchecked.
-- `../2-fully-proven/positive-vaughan-cutoff-escape-is-zero-gram-limit.md` proves
+- `../3-formalized/positive-vaughan-cutoff-escape-is-zero-gram-limit.md` proves
   that, for positive cutoffs and a divergent horizon, the zero normalized Gram
   limit is equivalent to cutoff-product escape. Its converse and the resulting
   convergence dichotomy are drafted but unchecked.

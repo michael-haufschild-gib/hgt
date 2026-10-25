@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-golden-normalized-cube
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean; exact source counterexample)
-- **Parent:** [Fixed-determinant cubic amplification](../1-in-progress/biarithmetic-fixed-determinant-cube-amplification.md)
+- **Parent:** [Fixed-determinant cubic amplification](biarithmetic-fixed-determinant-cube-amplification.md)
 - **Statement:** Cubing each actual golden root and dividing by five preserves their product five, gives trace ten, and changes the first two point counts to minus four and minus sixty-four. The original actual golden datum has nonnegative point counts at every degree.
 
 For the actual roots `alpha,beta`, the checked identities

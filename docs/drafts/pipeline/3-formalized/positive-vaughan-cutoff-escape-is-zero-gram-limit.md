@@ -1,9 +1,9 @@
 # Positive cutoff escape is exactly the zero subcritical Gram limit
 
 - **ID:** positive-vaughan-cutoff-escape-is-zero-gram-limit
-- **Stage:** 2-fully-proven
-- **Type:** CLAIM (Lean verification pending)
-- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Verification:** Direct leaf checks and transitive axiom audits passed for the amplitude equivalence, matrix converse, convergence dichotomy, and mutual exclusion of its alternatives.
 - **Source:** ../2-fully-proven/vaughan-subcritical-gram-limit-classification.md
 - **Statement:** With positive cutoffs and a divergent horizon, the normalized subcritical centered Gram tends to zero exactly when the cutoff product diverges.
 
@@ -15,9 +15,9 @@ For positive natural cutoff schedules `U(t),V(t)` and `H(t)→∞`,
 
 for every `0<ε<1/2`.
 
-## Dependency-closed paper proof
+## Proof mechanism
 
-[LEAN VERIFICATION PENDING] Write `a_t=H_(U(t))²H_(V(t))²` and `β=1-2ε`. The uniform Gram law
+Write `a_t=H_(U(t))²H_(V(t))²` and `β=1-2ε`. The uniform Gram law
 and `subHalfZetaCoeff(ε)≠0` show that the normalized `(2,2)` entry tends to zero
 if and only if `a_t→0`. If this holds, the same uniform law makes every matrix
 entry tend to zero. Thus it suffices to characterize `a_t→0`.
@@ -53,15 +53,30 @@ Zero cutoffs cannot be admitted to the converse: a permanently zero cutoff has
 zero smooth amplitude at a bounded product. The uniform Gram paper itself still
 includes zero cutoffs; only the escape equivalence needs positivity.
 
+## Lean audit
+
+All declarations are in `GaloisForLFunctions.BezoutValuationIncidence`.
+
+| Result | Checked declaration | Module |
+| --- | --- | --- |
+| Amplitude escape equivalence | `tendsto_pmVaughanSmoothAmplitude_zero_iff_product` | [TheCompactArithmeticAmplitudesOfVaughanGrams.lean](../../../../formal/GaloisForLFunctions/BezoutValuationIncidence/TheCompactArithmeticAmplitudesOfVaughanGrams.lean) |
+| Zero matrix-limit equivalence | `tendsto_pmPronicVaughanCentredGram_zero_iff_product` | [TheSubcriticalVaughanGramLimitSet.lean](../../../../formal/GaloisForLFunctions/BezoutValuationIncidence/TheSubcriticalVaughanGramLimitSet.lean) |
+| Nonzero-limit rigidity | `eventually_finite_fiber_of_nonzero_centredGram_limit` | Same matrix-classification module |
+| Exact convergence dichotomy | `pmPronicVaughanCentredGram_converges_iff_escape_or_fixed_amplitude` | Same matrix-classification module |
+| Positive-cutoff attainment | `pmPronicVaughanCentredGram_limit_set_eq` | Same matrix-classification module |
+| Mutually exclusive alternatives | `not_product_escape_and_eventually_positive_amplitude` | [TheOnlyAccumulationOfVaughanAmplitudesIsZero.lean](../../../../formal/GaloisForLFunctions/BezoutValuationIncidence/TheOnlyAccumulationOfVaughanAmplitudesIsZero.lean) |
+
+Each module passed producing and final direct `lake --old env lean` checks.
+All transitive axiom reports contain only `propext`, `Classical.choice`, and
+`Quot.sound`. Umbrella imports are present; owned scratches were removed.
+No proof placeholders, trusted-computation shortcuts, or increased limits were used.
+
 ## Status
 
 Corpus search found logarithmic harmonic limits and the known sufficient
 product-divergence mechanism, without an indexed exact converse for positive
 Vaughan cutoffs. This is an internal audit, not an external novelty claim.
-The finite harmonic nonvanishing and uniform Gram leaves are checked. The
-harmonic amplitude escape equivalence passed producing and final direct checks
-in `TheCompactArithmeticAmplitudesOfVaughanGrams.lean`, with only standard
-transitive axioms. The matrix converse, convergence dichotomy,
-and exact attained matrix limit set are drafted in
-`/tmp/QIVaughanGramLimitClassificationTools.lean`; that leaf is under verification.
+The exact statement and its convergence dichotomy are formalized, including
+mutual exclusion of the two alternatives. Matrix ranks and matrix-family
+topology belong to the separate subcritical classification card.
 No quantitative rate for escaping cutoffs or fixed zero-free strip follows.

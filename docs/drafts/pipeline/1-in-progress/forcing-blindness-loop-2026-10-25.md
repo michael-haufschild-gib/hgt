@@ -30,14 +30,14 @@ instead.
 |---|---|---|
 | Positive prime measure + integer-count regularity at any precision | CLOSED (1) | over-regular continuous system, `N(x) = ρx + C − (c₁/p₁)x^{−p₁} − (c₂/p₂)x^{−p₂}`, zero at `1 − μ + iγ`; survivor: structure of `N` beyond its size |
 | Functional equation + decaying count error | INCOMPATIBLE (2) | FE forces `‖ζ(σ+it)‖ ≫ t^{1/2−σ}`, a decaying count allows only `O(T²)` window mean square; survivor: under the FE the count fluctuates at order one (lattice scale) |
-| Functional equation + positive Euler product | OPEN (next) | conjecture: the FE places the generalized integers on `ℤ` (Abel clustering, `ρ = 1`), and with the Euler product forces `ℕ` |
+| Functional equation (Poisson form) + positive integral masses | RIGID (3) | the only such measure on `[1, ∞)` is `Σ_{n≥1}δ_n`; Bohr spectrum = support; no Euler product needed; survivor: the countermodel route is exhausted — every remaining question is about `ζ` itself |
 
 ## Conjecture ledger
 | # | Conjecture | Outcome | Lean |
 |---|---|---|---|
 | 1 | Integer-count regularity beyond `⌊x⌋` coexists with an off-line zero | PROVED | `RHTower/BeurlingOverRegularIntegersOffLineZeros` |
 | 2 | The Riemann FE excludes every decaying count error | PROVED | `RHTower/RiemannFunctionalEquationForcesCountFluctuation` |
-| 3 | FE + positivity put generalized integers on `ℤ` in Abel mean | OPEN | — |
+| 3 | FE + positivity + integral masses force `ℕ` | PROVED | `HTGeometry/HamburgerIntegralMassRigidity` |
 
 ## Log
 - 2026-10-25 — created in 1-in-progress

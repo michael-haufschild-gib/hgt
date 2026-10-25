@@ -218,3 +218,9 @@ are witnessed by concrete orbit points; no character-separation premise is
 added. Five audits are pending after the phase-group and Cauchy-kernel
 dependencies. Exclusion of that average as an actual source tangent still
 requires the source asymptotic and nonhomogeneity bridges.
+
+Pending source check: `/tmp/BiarithmeticChirpFloorError.lean` drafts the
+uniform floor perturbation bound and absolute summability of the actual
+row's fixed pronic covariance correction. It uses only the previously
+drafted derivative bound and elementary sublinear power estimates.
+Five audits remain unchecked; sum–integral comparison is still separate.

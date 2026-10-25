@@ -34,6 +34,7 @@ theorem meyerSourceSharp_centeredFlow (c : ℝ) (g : DeningerMeyerStrongLogTarge
   change conj (Complex.exp ((c : ℂ) * (conj (1 - s) - 1 / 2)) *
       deningerMeyerStrongLogMellin g (conj (1 - s))) = _
   rw [map_mul, ← Complex.exp_conj, he]
+  rfl
 
 private theorem hsNormSq_centeredFlow_of_top (g : DeningerMeyerStrongLogTarget)
     (hg : MeyerCriticalTopJets g) (c : ℝ) :
@@ -126,11 +127,3 @@ theorem meyerHilbertSourceCone_riemannRoch_iff_reserve_invariant :
   meyerHilbertSourceCone_riemannRoch_iff.trans all_meyerHilbertReserves_invariant_iff.symm
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerSourceSharp_centeredFlow
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertReserve_centeredFlow_of_criticalTopJets
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertOrbitBounded_of_reserve_bounded
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertReserve_invariant_iff_criticalTopJets
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertReserve_bounded_iff_criticalTopJets
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.all_meyerHilbertReserves_invariant_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertSourceCone_riemannRoch_iff_reserve_invariant

@@ -41,8 +41,9 @@ failure of curve selection; their exact paper proofs are on:
 - [Horizon order and finite cutoff](../3-formalized/horizon-order-excludes-prime-deleted-white-noise.md).
 - [Rank-one modulus classification](rank-one-cofactor-moduli-are-archimedean.md).
 
-All three new Lean developments are still pending. Do not retire this route
-as formalized until both the countermodel and positive survivors pass Lean.
+The cutoff and magnitude survivors passed final canonical checks. The explicit
+multiplicative-sign refinement and the complete countermodel audit remain.
+Do not retire this route until both pass Lean.
 
 ## Search audit
 
@@ -54,11 +55,8 @@ BohrPoint definition in `WienersLemmaOnTheBohrPolydisk` and
 
 ## Current verification status
 
-The first combined diagonal check completed. The energy crossing, deleted
-white-noise positivity, actual rank-one character construction, augmentation
-positivity and augmentation numeric diagonal order passed independently.
-Other parts had local elaboration errors. Import, endpoint normalization,
-finite-dimensional API, cast, dependent-if rewrite and augmentation
-multiplication repairs are staged. No new leaf from this batch is promoted.
-The retry is `/tmp/qiii-diagonal-energy-check.lean`, queued after the current
-moving-origin check; its log will be `/tmp/qiii-diagonal-energy-retry-check.log`.
+The countermodel, first-coefficient character and exact singleton hull passed
+scratch checks with standard axioms. The scalar character Gram is included in
+the current direct check of `/tmp/qiii-augmentation-full-check.lean`.
+The final canonical source check remains. The completion ledger records the
+active check and supersedes historical scratch queues.

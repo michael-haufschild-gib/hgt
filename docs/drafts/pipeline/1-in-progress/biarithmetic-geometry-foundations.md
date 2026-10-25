@@ -51,11 +51,11 @@ its parent card. Open programme questions without a proof plan remain open.
 
 | Source requirement | Required evidence | Status |
 |---|---|---|
-| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; fifty-two direct-checked and axiom-audited leaves |
+| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; fifty-eight direct-checked and axiom-audited leaves |
 | Horizon-complete objects; sign visibility | Exact signed finite-horizon laws and quantitative period/prefix comparison | Open |
 | Truncated affine representation theory | Source-defined action, boundary calculus, classification/calibration | Open |
 | A1–A2: paid ideal annihilates escape; hull inclusion | Actual receiver theorem, not an assumed ideal inclusion | Proved for every actual common Gram limit; ADR foundations reused, four interfaces directly checked and axiom-audited |
-| A3: regular-variation dilation law | Precise subsequence hypotheses proved for source or exact unconditional classification | Actual source open; scalar logarithmic-chirp tangent family paper-classified, Lean pending |
+| A3: regular-variation dilation law | Precise subsequence hypotheses proved for source or exact unconditional classification | Actual source open; scalar logarithmic-chirp tangent proof plan recorded, Lean pending |
 | A4: moving translations and covariance | Construction at a corrected scale with controlled boundaries | Proposed square-root scale collapses for actual source; ADR has formalized the stronger source-power collapse, with exact capped costs and uniform budgets; nonzero action at a corrected scale remains open |
 | Golden module and white-noise battery | Actual signed-data checks, not just positivity/dilation checks | Golden inverse-zeta digital-module derivation on a separate in-progress card; antipodality-only white-noise exclusion refuted by ADR's unique positive extension |
 | B1: payment cohomology and Euler characteristic | Well-posed definition and exact relation to corpus box defect | Literal dimension identity refuted; degree/torsion survivor formalized; one-prime graph-norm complex and Fredholm phases have proof plans, with Lean obligations outstanding |
@@ -64,7 +64,7 @@ its parent card. Open programme questions without a proof plan remain open.
 | C1–C2: Stepanov calibration and replacement identity | Finite-field calibration and signed integer source test | Open |
 | Quantitative Class III | New off-diagonal signed estimate, or sharp obstruction plus positive survivor | Open |
 | Infinite-rank coercivity | Precise transfer law or complete countermodel classification | Open |
-| Bounded-conductor amplification | Well-defined operation class; proof or counterexample | General question open; actual golden cubic failure formalized; integral trace classification checked; complex-root purity still pending |
+| Bounded-conductor amplification | Well-defined operation class; proof or counterexample | General question open; specified normalized cube fully formalized, including exact arithmetic classification and complex-root purity |
 | Orientation | Ring-selective polarization with independent sign proof | Open |
 | K1 | Curve cohomology dimension `2g`, Serre duality, Weil calibration | Open |
 | K2 | Golden, Beurling, shifted-pair, Estermann, parity, node-4/node-6 tests | Open |
@@ -130,15 +130,17 @@ its parent card. Open programme questions without a proof plan remain open.
 | `FinitePronicStepEmbedding` | Direct repository leaf passed; stage-3 card | Two main declarations clean |
 | `GoldenDivisorResponse` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `GeometricPoleExtraction` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
-| `GeometricShellHilbert` | Scratch passed; direct repository check pending | Six main declarations clean |
-| `CriticalGoldenClosure` | Scratch passed; direct repository check pending | Four main declarations clean |
-| `PronicFiniteExtension` | Scratch passed; direct repository check pending | Four main declarations clean |
-| `NormalizedCubicRootLaw` | Scratch passed; direct repository check pending | Eight main declarations clean |
+| `GeometricShellHilbert` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
+| `CriticalGoldenClosure` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
+| `PronicFiniteExtension` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
+| `NormalizedCubicRootLaw` | Direct repository leaf passed; stage-3 card | Eight main declarations clean |
+| `PowerTailCoefficients` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `PowerTailIndependence` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `PaidSourcePerturbations` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `FullWienerAnnihilation` | Consolidated ADR interfaces and direct repository leaf passed | Four chosen and universal declarations clean |
 
-Completed main-declaration axiom audits for fifty-two checked leaves report only `propext`,
-`Classical.choice`, and `Quot.sound`. Audits used isolated source-copy drivers; each leaf also passed its direct source check. The literal-B1
+Completed main-declaration axiom audits for fifty-eight checked leaves report only `propext`,
+`Classical.choice`, and `Quot.sound`. Audits used isolated Lean source copies; each leaf also passed its direct source check. The literal-B1
 no-go is closed in `5-failed/biarithmetic-literal-dimension-euler-characteristic.md`; its
 positive survivor and exact prefix visibility now have separate stage-3 cards.
 
@@ -739,26 +741,30 @@ Active drafts:
   proves their exact distances, and transfers nonclosedness to the critical
   golden paid ideal. Scratch check, all six transitive audits, and direct
   repository check passed. Stage-3 card and umbrella import are present.
-- `/tmp/BiarithmeticCriticalGoldenClosure.lean`: corrected finite complex
+- `CriticalGoldenClosure.lean`: corrected finite complex
   kernels pay the actual critical golden source; exact Wiener errors tend to
   the absolute total evaluation. Zero evaluation therefore places the full
   one-prime lift in the full actual paid-ideal closure. Scratch check and all
-  four audits passed; wired production source awaits direct check.
+  four audits and direct repository check passed; stage-3 card and umbrella
+  import are present.
   No converse for the full ideal's
   closure is asserted.
-- `/tmp/BiarithmeticPowerTailCoefficients.lean`: power-tail differences with
+- `PowerTailCoefficients.lean`: power-tail differences with
   exact norm two and zero evaluation for every positive exponent; square
   partial-sum energy iff the exponent exceeds one half. First check passed the
   finite partial sums, absolute summability, and exact energy-threshold audits;
   the shifted limit needed explicit function-composition reduction. That repair
-  is drafted, with recheck pending. This
+  passed recheck and all five transitive audits. Production source and import
+  and stage-3 card are present; direct repository check passed. This
   supplies the explicit coefficient family for the continuum defect; finite
   complex independence and quotient cardinality remain separate obligations.
-- `/tmp/BiarithmeticPowerTailIndependence.lean`: normalized smallest-exponent
+- `PowerTailIndependence.lean`: normalized smallest-exponent
   limit for finite complex combinations, divergent power-energy lower bound,
-  and coefficient independence modulo square partial sums. Unchecked;
-  depends on the power-tail coefficient draft. Quotient bundling and the
-  continuum upper/lower cardinality comparison remain separate.
+  and coefficient independence modulo square partial sums. Revised scratch
+  passed all five audits after explicit composition reduction, direct finite
+  division algebra, and an explicit subtype binder. Production source and
+  umbrella import and stage-3 card are present; direct repository check passed. The actual
+  quotient lower bounds remain separate.
 - `/tmp/BiarithmeticPowerTailWienerFamily.lean`: actual norm-two golden kernels
   for all positive power-tail exponents, actual payment iff the exponent exceeds
   one half, and membership of the whole family in the full paid-ideal closure.
@@ -805,11 +811,13 @@ Active drafts:
   counts, and comparison with the original source's nonnegative counts.
   Scratch check, all four audits, and direct repository check passed; stage-3
   card and umbrella import present. Fixed determinant is not asserted to be analytic conductor.
-- `/tmp/BiarithmeticNormalizedCubicRootLaw.lean`: field-valued determinant,
+- `NormalizedCubicRootLaw.lean`: field-valued determinant,
   trace, and normalization identities; real and complex reciprocal-root
   point-count bridges to the integral classification, and actual square-root
   root norms for every surviving pair. Scratch check and all eight audits passed.
-  Production source is wired; direct check remains pending.
+  Direct repository check passed; stage-3 card and umbrella import present.
+  The complete specified normalized-cube parent moved to stage 3, with the
+  general bounded-conductor question still open.
 - `GoldenSourceAdmission.lean`: positive tower threshold and actual golden admission
   phase passed direct check and five audits. Stage-3 card present; obsolete scratch removed.
 - `IntrinsicGoldenSeries.lean`: exact intrinsic counting-pole cancellation
@@ -838,11 +846,11 @@ Active drafts:
   decomposition on integer shells, finite remainder energy, full-horizon
   escape, and the actual norm-lattice Gram limit. Five audits drafted;
   unchecked, including its pending analytic and shell dependencies.
-- `/tmp/BiarithmeticGeometricShellHilbert.lean`: the canonical geometric
+- `GeometricShellHilbert.lean`: the canonical geometric
   kernel completion is isometric to the complex line, with exact shift
   eigenvalues and composition. Reuses corpus Gram completion and total-feature
-  unitary equivalence. Scratch check and all six audits passed; wired production
-  source awaits direct check.
+  unitary equivalence. Direct source check and all six audits passed;
+  stage-3 card and umbrella import are present.
 - `/tmp/BiarithmeticIntrinsicGoldenTangentModule.lean`: actual-source
   limit comparison, canonical completed-module isometry, complex dimension one,
   and exact norm-lattice shift eigenvalues. Four audits drafted; unchecked.
@@ -882,11 +890,11 @@ Active drafts:
   Operator-series evaluation reuses Mathlib's
   `ContinuousLinearMap.apply` and `HasSum.mapL`, source-inspected through the
   corpus's operator-series proofs.
-- `/tmp/BiarithmeticPronicFiniteExtension.lean`: reuses the corpus's exact `lp`
+- `PronicFiniteExtension.lean`: reuses the corpus's exact `lp`
   coordinate isometry, embeds arbitrary finite source horizons, and derives the
   full complex formal cofactor composition law from the completed representation.
-  Scratch check and all four audits passed; wired production source awaits its
-  direct check. The finite-extension proof is recorded on the payment-graph card;
+  Scratch check, all four audits, and direct repository check passed; stage-3
+  card and umbrella import are present. The finite-extension proof is recorded on the payment-graph card;
   it imposes no growth premise on the original arithmetic row.
 - `/tmp/BiarithmeticPronicGraphAction.lean`: invariant source graph under the
   actual Wiener product, exact input/output action, unit and composition,
@@ -1064,10 +1072,10 @@ import and stage-3 card are present.
 `DigitRefinement` passed its revised scratch check and all nine transitive
 axiom audits and its direct repository check. Stage-3 card and umbrella import
 are present.
-`PowerTailCoefficients` still failed at the unsaturated tail function in
-the limit statement; an explicit function target now fixes that conversion.
-No proof depending on the failed limit is promoted; the revised scratch
-requires its next check.
+`PowerTailCoefficients` passed its repaired scratch check, all five transitive
+audits, and its direct repository check. `PowerTailIndependence` also passed
+its five audits and direct source check. Both stage-3 cards and imports are
+present; the actual lifted quotient dimension remains pending.
 
 `DigitalCircleFourier` passed its direct repository check and all three
 transitive audits. The umbrella import and stage-3 card are present.
@@ -1085,6 +1093,17 @@ Pending source check: `/tmp/BiarithmeticDigitParameterContinuity.lean` contains 
 Pending source check: `/tmp/BiarithmeticDigitAnnularContinuity.lean` applies dominated convergence to actual annular digit products and their normalized full-annulus ratio. It depends on the unchecked annular integrability and parameter-continuity drafts.
 
 Pending source check: `/tmp/BiarithmeticDigitCovarianceMainTerms.lean` derives the balanced expanding covariance formula and a horizon-uniform linear-shell error at the exact critical weight `sqrt(5)`. Its bounded-error dependency chain remains unchecked.
+
+Pending source check: `/tmp/BiarithmeticDigitCriticalGramLimit.lean` uses
+`Nat.log 5 (N+1)` to obtain the actual full-horizon critical covariance per
+shell, its diagonal-normalized ratio, and full diagonal energy escape.
+Exact positive-cell reindexing also transfers this to `normalizedSourceGram`.
+Seven audits are drafted; its bounded-error dependencies remain unchecked.
+
+Pending source check: `/tmp/BiarithmeticDigitAnnularPhaseVariation.lean`
+gives the exact balanced annular quotient, its phase-variation estimate,
+and uniform critical collapse. Four audits are drafted; the strict actual
+source-limit comparison and full fixed-kernel covariance extension remain.
 
 Pending source check: `/tmp/BiarithmeticChirpPhaseRigidity.lean` contains the three-rotation rigidity argument and the exact nondegenerate prime-two angle. It does not yet identify these three samples with actual source tangents; the discrete asymptotics, tangent realization, and boundary-loss representation remain outstanding.
 
@@ -1110,6 +1129,11 @@ Pending source check: `/tmp/BiarithmeticChirpHaarAverage.lean` drafts the
 actual phase group's normalized Haar measure, nontriviality of distinct
 coordinate characters, and the exact diagonal kernel average. Five audits
 are pending. The source-tangent exclusion remains a separate obligation.
+
+Pending source check: `/tmp/BiarithmeticChirpFloorError.lean` drafts the
+actual chirp's uniform floor error and absolute summability of each fixed
+pronic cofactor covariance correction. It uses the power `n^(β-2)` and
+depends on the regularity draft. Five audits are pending.
 
 Pending source check: `/tmp/BiarithmeticComplexShellShift.lean` constructs complex normalized shell shifts with exact isometry and semigroup laws. This is the missing bounded-operator input for the existing intrinsic infinite-kernel convolution proof plan.
 

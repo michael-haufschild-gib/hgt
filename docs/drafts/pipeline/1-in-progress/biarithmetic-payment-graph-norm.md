@@ -251,6 +251,12 @@ was arbitrary, this proves the full formal composition law. It uses a finite
 extension separately at each horizon; it does not assert that the original
 source belongs to the completed pronic space.
 
+This finite-extension bridge is Lean-verified in `PronicFiniteExtension.lean`.
+The direct repository check and all four transitive audits passed; the
+[formalized card](../3-formalized/biarithmetic-pronic-finite-extension.md)
+records the exact coordinate and composition laws. The graph action below
+remains a separate formalization obligation.
+
 For a graph member `(b,w)` with `w=P_bv`, the same finite coordinate identity
 shows that `(a*b,pi(a)w)` belongs to the graph. The two norm estimates in the
 complete factors then give the graph-ideal bound for either the maximum norm

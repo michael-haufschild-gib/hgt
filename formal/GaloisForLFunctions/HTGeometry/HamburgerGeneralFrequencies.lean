@@ -472,4 +472,210 @@ theorem freqSeries_eq_of_freqTheta_relation (hlam : ∀ n, 1 ≤ lam n)
   exact hf.eqOn_of_preconnected_of_frequently_eq hg (convex_halfSpace_re_gt 0).isPreconnected
     h1U hfreq ht
 
+/-! ## Residues on the imaginary axis -/
+
+/-- On the vertical segment `t = ε + iτ`, `‖λ² + t²‖ ≥ λ |λ - τ|`. -/
+theorem norm_sq_add_sq_ge_vertical {l τ ε : ℝ} (hl : 0 ≤ l) (hτ : 0 ≤ τ) :
+    l * |l - τ| ≤ ‖(l : ℂ) ^ 2 + ((ε : ℂ) + (τ : ℂ) * I) ^ 2‖ := by
+  set t : ℂ := (ε : ℂ) + (τ : ℂ) * I with ht
+  have hfac : (l : ℂ) ^ 2 + t ^ 2 = ((l : ℂ) + I * t) * ((l : ℂ) - I * t) := by
+    linear_combination t ^ 2 * Complex.I_sq
+  have h1 : |l - τ| ≤ ‖(l : ℂ) + I * t‖ := by
+    have := Complex.abs_re_le_norm ((l : ℂ) + I * t)
+    simpa [ht, sub_eq_add_neg] using this
+  have h2 : l ≤ ‖(l : ℂ) - I * t‖ := by
+    have := Complex.abs_re_le_norm ((l : ℂ) - I * t)
+    have hre : ((l : ℂ) - I * t).re = l + τ := by simp [ht]
+    rw [hre, abs_of_nonneg (by linarith)] at this
+    linarith
+  rw [hfac, norm_mul]
+  calc l * |l - τ| = |l - τ| * l := by ring
+    _ ≤ ‖(l : ℂ) + I * t‖ * ‖(l : ℂ) - I * t‖ :=
+      mul_le_mul h1 h2 hl (norm_nonneg _)
+
+/-- A term of `L` at `ε + iτ` away from the pole: `‖a t/(π(λ² + t²))‖ ≤ ‖a‖ |t|/(π c λ²)`. -/
+theorem norm_freqTerm_le {l τ ε c : ℝ} (hl : 0 < l) (hτ : 0 ≤ τ) (hc : 0 < c)
+    (hsep : c * l ≤ |l - τ|) (z : ℂ) :
+    ‖z * ((ε : ℂ) + (τ : ℂ) * I) / ((Real.pi : ℂ) * ((l : ℂ) ^ 2 + ((ε : ℂ) + (τ : ℂ) * I) ^ 2))‖
+      ≤ ‖((ε : ℂ) + (τ : ℂ) * I)‖ / (Real.pi * c) * (‖z‖ / l ^ 2) := by
+  have hden : c * l ^ 2 ≤ ‖(l : ℂ) ^ 2 + ((ε : ℂ) + (τ : ℂ) * I) ^ 2‖ := by
+    have := norm_sq_add_sq_ge_vertical (ε := ε) hl.le hτ
+    nlinarith [mul_le_mul_of_nonneg_left hsep hl.le]
+  have hpos : 0 < c * l ^ 2 := by positivity
+  rw [norm_div, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_pos Real.pi_pos, div_le_iff₀ (mul_pos Real.pi_pos (lt_of_lt_of_le hpos hden))]
+  calc ‖z‖ * ‖((ε : ℂ) + (τ : ℂ) * I)‖ =
+      ‖((ε : ℂ) + (τ : ℂ) * I)‖ / (Real.pi * c) * (‖z‖ / l ^ 2) * (Real.pi * (c * l ^ 2)) := by
+        field_simp
+    _ ≤ ‖((ε : ℂ) + (τ : ℂ) * I)‖ / (Real.pi * c) * (‖z‖ / l ^ 2) *
+          (Real.pi * ‖(l : ℂ) ^ 2 + ((ε : ℂ) + (τ : ℂ) * I) ^ 2‖) := by
+        gcongr
+
+theorem norm_vertical_le {τ ε : ℝ} (hτ : 0 ≤ τ) (hε0 : 0 ≤ ε) (hε : ε ≤ 1) :
+    ‖((ε : ℂ) + (τ : ℂ) * I)‖ ≤ 1 + τ := by
+  refine (norm_add_le _ _).trans ?_
+  simp [abs_of_nonneg hε0, abs_of_nonneg hτ]
+  linarith
+
+theorem tendsto_mul_const_nhdsGT (B : ℝ) : Tendsto (fun ε : ℝ => ε * B) (𝓝[>] 0) (𝓝 0) := by
+  have h : Tendsto (fun ε : ℝ => ε * B) (𝓝 0) (𝓝 (0 * B)) :=
+    (continuous_id.mul continuous_const).tendsto 0
+  rw [zero_mul] at h
+  exact h.mono_left nhdsWithin_le_nhds
+
+/-- With every frequency a proportion `c` away from `τ > 0`, `L` is bounded on
+`ε + iτ`, `0 < ε ≤ 1`. -/
+theorem norm_freqSeries_vertical_le (hlam : ∀ n, 1 ≤ lam n)
+    (ha : Summable fun n => ‖a n‖ / lam n ^ 2) {τ c : ℝ} (hτ : 0 ≤ τ) (hc : 0 < c)
+    (hsep : ∀ n, c * lam n ≤ |lam n - τ|) {ε : ℝ} (hε0 : 0 < ε) (hε : ε ≤ 1) :
+    ‖freqSeries a lam ((ε : ℂ) + (τ : ℂ) * I)‖ ≤
+      (1 + τ) / (Real.pi * c) * ∑' n, ‖a n‖ / lam n ^ 2 := by
+  have hbd : ∀ n, ‖a n * ((ε : ℂ) + (τ : ℂ) * I) /
+      ((Real.pi : ℂ) * ((lam n : ℂ) ^ 2 + ((ε : ℂ) + (τ : ℂ) * I) ^ 2))‖ ≤
+      (1 + τ) / (Real.pi * c) * (‖a n‖ / lam n ^ 2) := fun n =>
+    (norm_freqTerm_le (lt_of_lt_of_le one_pos (hlam n)) hτ hc (hsep n) (a n)).trans
+      (mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_right
+        (norm_vertical_le hτ hε0.le hε) (by positivity)) (by positivity))
+  have hsum := (ha.mul_left ((1 + τ) / (Real.pi * c))).of_nonneg_of_le (fun _ => norm_nonneg _) hbd
+  rw [freqSeries]
+  refine (norm_tsum_le_tsum_norm hsum).trans ?_
+  rw [← tsum_mul_left]
+  exact hsum.tsum_le_tsum hbd (ha.mul_left _)
+
+/-- **No pole at `iτ`**: if every frequency stays a proportion away from `τ ≥ 0`, then
+`ε L(ε + iτ) → 0`. -/
+theorem tendsto_mul_freqSeries_gap (hlam : ∀ n, 1 ≤ lam n)
+    (ha : Summable fun n => ‖a n‖ / lam n ^ 2) {τ c : ℝ} (hτ : 0 ≤ τ) (hc : 0 < c)
+    (hsep : ∀ n, c * lam n ≤ |lam n - τ|) :
+    Tendsto (fun ε : ℝ => (ε : ℂ) * freqSeries a lam ((ε : ℂ) + (τ : ℂ) * I)) (𝓝[>] 0) (𝓝 0) := by
+  set B : ℝ := (1 + τ) / (Real.pi * c) * ∑' n, ‖a n‖ / lam n ^ 2
+  have hB : Tendsto (fun ε : ℝ => ε * B) (𝓝[>] 0) (𝓝 0) := tendsto_mul_const_nhdsGT B
+  refine squeeze_zero_norm' ?_ hB
+  filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < 1 by norm_num)] with ε hε
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hε.1]
+  exact mul_le_mul_of_nonneg_left (norm_freqSeries_vertical_le hlam ha hτ hc hsep hε.1 hε.2.le)
+    hε.1.le
+
+/-- **The residue at `iλ_m`**: if `λ_m = τ > 0` and every other frequency stays a proportion away
+from `τ`, then `ε L(ε + iτ) → a_m/(2π)`. -/
+theorem tendsto_mul_freqSeries_atom (hlam : ∀ n, 1 ≤ lam n)
+    (ha : Summable fun n => ‖a n‖ / lam n ^ 2) {m : ℕ} {τ c : ℝ} (hm : lam m = τ)
+    (hτ : 0 < τ) (hc : 0 < c) (hsep : ∀ n, n ≠ m → c * lam n ≤ |lam n - τ|) :
+    Tendsto (fun ε : ℝ => (ε : ℂ) * freqSeries a lam ((ε : ℂ) + (τ : ℂ) * I)) (𝓝[>] 0)
+      (𝓝 (a m / (2 * Real.pi))) := by
+  -- split off the `m`-th term
+  set b : ℕ → ℂ := fun n => if n = m then 0 else a n with hb
+  have hbn : ∀ n, ‖b n‖ ≤ ‖a n‖ := fun n => by
+    by_cases h : n = m <;> simp [hb, h]
+  have hbsum : Summable fun n => ‖b n‖ / lam n ^ 2 :=
+    ha.of_nonneg_of_le (fun _ => by positivity) fun n =>
+      div_le_div_of_nonneg_right (hbn n) (by have := hlam n; positivity)
+  have hbsep : ∀ n, b n ≠ 0 → c * lam n ≤ |lam n - τ| := by
+    intro n hn
+    by_cases h : n = m
+    · simp [hb, h] at hn
+    · exact hsep n h
+  have hsplit : ∀ ε : ℝ, 0 < ε → ε ≤ 1 → freqSeries a lam ((ε : ℂ) + (τ : ℂ) * I) =
+      a m * ((ε : ℂ) + (τ : ℂ) * I) /
+          ((Real.pi : ℂ) * ((lam m : ℂ) ^ 2 + ((ε : ℂ) + (τ : ℂ) * I) ^ 2)) +
+        ∑' n, b n * ((ε : ℂ) + (τ : ℂ) * I) /
+          ((Real.pi : ℂ) * ((lam n : ℂ) ^ 2 + ((ε : ℂ) + (τ : ℂ) * I) ^ 2)) := by
+    intro ε hε0 hε1
+    have hbd : ∀ n, ‖b n * ((ε : ℂ) + (τ : ℂ) * I) /
+        ((Real.pi : ℂ) * ((lam n : ℂ) ^ 2 + ((ε : ℂ) + (τ : ℂ) * I) ^ 2))‖ ≤
+        (1 + τ) / (Real.pi * c) * (‖b n‖ / lam n ^ 2) := by
+      intro n
+      by_cases hn : b n = 0
+      · simp [hn]
+      · exact (norm_freqTerm_le (lt_of_lt_of_le one_pos (hlam n)) hτ.le hc (hbsep n hn) (b n)).trans
+          (mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_right
+            (norm_vertical_le hτ.le hε0.le hε1) (by positivity)) (by positivity))
+    have hsumb := Summable.of_norm ((hbsum.mul_left ((1 + τ) / (Real.pi * c))).of_nonneg_of_le
+      (fun _ => norm_nonneg _) hbd)
+    have hsum : Summable fun n => a n * ((ε : ℂ) + (τ : ℂ) * I) /
+        ((Real.pi : ℂ) * ((lam n : ℂ) ^ 2 + ((ε : ℂ) + (τ : ℂ) * I) ^ 2)) := by
+      refine (hsumb.add ((summable_of_ne_finset_zero (s := {m}) fun n hn => ?_) :
+        Summable fun n : ℕ => if n = m then a m * ((ε : ℂ) + (τ : ℂ) * I) /
+          ((Real.pi : ℂ) * ((lam m : ℂ) ^ 2 + ((ε : ℂ) + (τ : ℂ) * I) ^ 2)) else 0)).congr
+        fun n => ?_
+      · simp only [Finset.mem_singleton] at hn; simp [hn]
+      · by_cases h : n = m <;> simp [hb, h]
+    rw [freqSeries, hsum.tsum_eq_add_tsum_ite m]
+    congr 1
+    refine tsum_congr fun n => ?_
+    by_cases h : n = m <;> simp [hb, h]
+  -- the tail times `ε` tends to `0`
+  have htail : Tendsto (fun ε : ℝ => (ε : ℂ) * ∑' n, b n * ((ε : ℂ) + (τ : ℂ) * I) /
+      ((Real.pi : ℂ) * ((lam n : ℂ) ^ 2 + ((ε : ℂ) + (τ : ℂ) * I) ^ 2))) (𝓝[>] 0) (𝓝 0) := by
+    set B : ℝ := (1 + τ) / (Real.pi * c) * ∑' n, ‖b n‖ / lam n ^ 2
+    have hB : Tendsto (fun ε : ℝ => ε * B) (𝓝[>] 0) (𝓝 0) := tendsto_mul_const_nhdsGT B
+    refine squeeze_zero_norm' ?_ hB
+    filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < 1 by norm_num)] with ε hε
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hε.1]
+    refine mul_le_mul_of_nonneg_left ?_ hε.1.le
+    have hbd : ∀ n, ‖b n * ((ε : ℂ) + (τ : ℂ) * I) /
+        ((Real.pi : ℂ) * ((lam n : ℂ) ^ 2 + ((ε : ℂ) + (τ : ℂ) * I) ^ 2))‖ ≤
+        (1 + τ) / (Real.pi * c) * (‖b n‖ / lam n ^ 2) := by
+      intro n
+      by_cases hn : b n = 0
+      · simp [hn]
+      · exact (norm_freqTerm_le (lt_of_lt_of_le one_pos (hlam n)) hτ.le hc (hbsep n hn) (b n)).trans
+          (mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_right
+            (norm_vertical_le hτ.le hε.1.le hε.2.le) (by positivity)) (by positivity))
+    have hs := (hbsum.mul_left ((1 + τ) / (Real.pi * c))).of_nonneg_of_le (fun _ => norm_nonneg _) hbd
+    refine (norm_tsum_le_tsum_norm hs).trans ?_
+    calc ∑' n, ‖b n * ((ε : ℂ) + (τ : ℂ) * I) /
+          ((Real.pi : ℂ) * ((lam n : ℂ) ^ 2 + ((ε : ℂ) + (τ : ℂ) * I) ^ 2))‖
+        ≤ ∑' n, (1 + τ) / (Real.pi * c) * (‖b n‖ / lam n ^ 2) :=
+          hs.tsum_le_tsum hbd (hbsum.mul_left _)
+      _ = B := tsum_mul_left
+  -- the pole term: `ε a t/(π(τ² + t²)) = a t/(π(ε + 2iτ))`
+  have hpole : Tendsto (fun ε : ℝ => a m * ((ε : ℂ) + (τ : ℂ) * I) /
+      ((Real.pi : ℂ) * ((ε : ℂ) + 2 * (τ : ℂ) * I))) (𝓝[>] 0) (𝓝 (a m / (2 * Real.pi))) := by
+    have hτ0 : (τ : ℂ) ≠ 0 := by exact_mod_cast hτ.ne'
+    have hcont : ContinuousAt (fun ε : ℝ => a m * ((ε : ℂ) + (τ : ℂ) * I) /
+        ((Real.pi : ℂ) * ((ε : ℂ) + 2 * (τ : ℂ) * I))) 0 := by
+      refine ContinuousAt.div (by fun_prop) (by fun_prop) ?_
+      simp only [Complex.ofReal_zero, zero_add]
+      refine mul_ne_zero (by exact_mod_cast Real.pi_ne_zero) ?_
+      exact mul_ne_zero (mul_ne_zero two_ne_zero hτ0) Complex.I_ne_zero
+    have hval : a m * (((0 : ℝ) : ℂ) + (τ : ℂ) * I) /
+        ((Real.pi : ℂ) * (((0 : ℝ) : ℂ) + 2 * (τ : ℂ) * I)) = a m / (2 * Real.pi) := by
+      have hπ : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+      simp only [Complex.ofReal_zero, zero_add]
+      field_simp
+    have := hcont.tendsto
+    rw [hval] at this
+    exact this.mono_left nhdsWithin_le_nhds
+  have hpole' : ∀ ε : ℝ, 0 < ε → (ε : ℂ) * (a m * ((ε : ℂ) + (τ : ℂ) * I) /
+      ((Real.pi : ℂ) * ((lam m : ℂ) ^ 2 + ((ε : ℂ) + (τ : ℂ) * I) ^ 2))) =
+      a m * ((ε : ℂ) + (τ : ℂ) * I) / ((Real.pi : ℂ) * ((ε : ℂ) + 2 * (τ : ℂ) * I)) := by
+    intro ε hε
+    have hε0 : (ε : ℂ) ≠ 0 := by exact_mod_cast hε.ne'
+    have hd : (ε : ℂ) + 2 * (τ : ℂ) * I ≠ 0 := by
+      intro h
+      have := congrArg Complex.re h
+      simp at this
+      linarith
+    have hπ : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+    have hsq : (lam m : ℂ) ^ 2 + ((ε : ℂ) + (τ : ℂ) * I) ^ 2 =
+        (ε : ℂ) * ((ε : ℂ) + 2 * (τ : ℂ) * I) := by
+      rw [hm]
+      linear_combination ((τ : ℂ) ^ 2) * Complex.I_sq
+    rw [hsq]
+    field_simp
+  have hsum_lim := hpole.add htail
+  rw [add_zero] at hsum_lim
+  refine hsum_lim.congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < 1 by norm_num)] with ε hε
+  rw [hsplit ε hε.1 hε.2.le, mul_add (ε : ℂ), hpole' ε hε.1]
+
+/-- `ε L(ε) → 0` along the positive axis. -/
+theorem tendsto_mul_freqSeries_ofReal (hlam : ∀ n, 1 ≤ lam n)
+    (ha : Summable fun n => ‖a n‖ / lam n ^ 2) :
+    Tendsto (fun ε : ℝ => (ε : ℂ) * freqSeries a lam (ε : ℂ)) (𝓝[>] 0) (𝓝 0) := by
+  have h := tendsto_mul_freqSeries_gap (τ := 0) (c := 1) (a := a) (lam := lam) hlam ha le_rfl
+    one_pos fun n => by rw [sub_zero, one_mul, abs_of_nonneg (by linarith [hlam n])]
+  simpa using h
+
 end GaloisForLFunctions.HTGeometry.FreqHamburger

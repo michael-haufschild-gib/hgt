@@ -22,7 +22,7 @@ tool, or exposes a mechanism, calibrated over `𝔽_q`.
 - **C2 (genus one: defect of a graph = 2·degree).** Window `{Δ, Γ_F}`: isotropic graph classes
   of `m − nF` with `x·V = 1` have defect `2 deg(m − nF)`; Hasse ⟺ integer degree positivity;
   golden `deg(2 − F) = −1`; theorem of the square in genus one vs. numerical freedom of Hecke
-  scales over `ℤ`. Status: Lean in progress.
+  scales over `ℤ`. Status: DONE (Lean, contribution 2).
 - **C3 (README Open 5: one prime suffices for ζ).** Conjecture: for every prime `p`,
   `sup_g` (p-tower defect of `g`) = #{distinct outer p-eigenvalues of right zeros of ζ}.
   Paper proof plan: (i) choose finitely many classes `b_1..b_n`, one zero `τ_j` each, depth
@@ -34,11 +34,15 @@ tool, or exposes a mechanism, calibrated over `𝔽_q`.
   with `ĝ = P φ̂` vanishing on `A` and not at `τ_j, τ̄_j`; (iv) above level `δ₀` only the `τ_j` are
   visible, so `visibleFrobSet_above_subset_wfVisibleSet_of_finite` gives tower defect ≥ n.
   Mechanism: Wolff blindness needs dense deep zeros; zero-density sparseness plus Paley–Wiener
-  annihilation defeats it. Status: paper plan; Lean infrastructure (Ingham bump, annihilator)
-  not in corpus.
+  annihilation defeats it. Status: step (iii) formalized
+  (`AnnihilatingTestsForSparseSpectra.exists_annihilating_test`); steps (ii) zero-density
+  summability and (iv) restricted configuration + tower law remain. Note: `upperLevels Z ρ` is
+  defined from all right zeros of `Z`, so the killed zeros must be removed from the
+  configuration (`Z'`, with `W_Z = W_{Z'}` on tests vanishing there) before applying
+  `mem_wfVisibleSet_of_finite_above`.
 
 ## Avoid (other agents active 2026-10-25)
 Q-II Meyer source modules; `MaximalBlindIdealOfTheMeyerSource.lean` (another agent); biarithmetic; rh-closing-producer Stepanov tracks (HTGeometry Stepanov).
 
 ## Log
-- 2026-10-25 — created.
+- 2026-10-25 — created; C1, C2 done; C3 step (iii) done; paused on user request.

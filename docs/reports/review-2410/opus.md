@@ -425,8 +425,15 @@ independently divergent horizons and cutoff products
 `{H_U²H_V²}` is now Lean-verified compact and countably infinite; positive limits
 force eventual equality in one finite cutoff fiber. At positive cutoffs its
 zero limit is equivalent to product escape
-(`TheCompactArithmeticAmplitudesOfVaughanGrams`). Matrix classification and
-accumulation-point consequences remain under verification.
+(`TheCompactArithmeticAmplitudesOfVaughanGrams`). Every finite subcritical Gram
+limit is the smooth matrix of an amplitude in that set; every amplitude is
+attained with positive cutoffs. Convergence is equivalent to product escape or
+eventual constancy of a positive amplitude (`TheSubcriticalVaughanGramLimitSet`).
+The explicit bounded-packet energy decay corollary is checked as well. Zero is
+the unique scalar amplitude accumulation point; positive amplitudes are isolated
+and the two convergence alternatives are mutually exclusive
+(`TheOnlyAccumulationOfVaughanAmplitudesIsZero`). Exact matrix ranks and
+matrix-family topology remain under verification.
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?
@@ -556,6 +563,10 @@ The bounded-orbit classes form an explicitly defined nontrivial complex subspace
 stable under sharp and convolution (`MeyerCriticalTopAlgebra`). Products retain
 only simple critical values. Ordinary trace is nonnegative on this carrier,
 and its value-zero radical annihilates the carrier in genuine cohomology.
+The faithful reserve is bounded along a source orbit exactly when it is
+invariant there, equivalently when the source belongs to this carrier
+(`MeyerHilbertReserveFlowRigidity`). Global reserve invariance is exactly
+the faithful cone's RR condition, hence RH plus simplicity.
 
 Centered flow preserves the literal mixed arithmetic sharp product, so every
 reading of that product is invariant. A nonnegative invariant majorant controlling

@@ -183,10 +183,10 @@ the entire complex line. The resulting isometry sends each canonical vector
 to `e_r`; conjugating scalar multiplication gives the unique bounded shift
 extension, with `shift_r delta_s=delta_(r+s)`. This is a dependency-closed
 proof plan for the completed rank-one module. Corpus statements and their
-source proofs were inspected; the specialization still requires Lean checks.
-`/tmp/BiarithmeticGeometricShellHilbert.lean` now contains that specialization
-with six audits. Both imported dependency oleans exist; its first check is
-queued. Actual-source comparison remains the separate tangent transfer.
+source proofs were inspected. `BiarithmeticGeometry/GeometricShellHilbert.lean`
+passed its direct source check and all six transitive audits; its umbrella
+import and [stage-3 card](../3-formalized/biarithmetic-geometric-shell-hilbert-module.md)
+are present. Actual-source comparison remains the separate tangent transfer.
 
 `/tmp/BiarithmeticIntrinsicGoldenTangentModule.lean` connects that canonical
 completion to the actual source limit and records dimension one and all

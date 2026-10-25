@@ -65,7 +65,21 @@ theorem accPt_pmVaughanSmoothAmplitudeSet_iff (a : ℝ) :
     refine ⟨b, ⟨hball ?_, hb⟩, hb0.ne'⟩
     simpa only [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_pos hb0] using hbδ
 
+/-- Product escape and an eventually fixed positive amplitude are mutually exclusive. -/
+theorem not_product_escape_and_eventually_positive_amplitude
+    (U V : ℕ → ℕ) (hU : ∀ t, 1 ≤ U t) (hV : ∀ t, 1 ≤ V t) :
+    ¬ (Tendsto (fun t => U t * V t) atTop atTop ∧
+      ∃ a : ℝ, 0 < a ∧ ∀ᶠ t : ℕ in atTop,
+        deningerHarmonicPartial (U t) ^ 2 * deningerHarmonicPartial (V t) ^ 2 = a) := by
+  rintro ⟨hUV, a, ha, heq⟩
+  have hzero := (tendsto_pmVaughanSmoothAmplitude_zero_iff_product U V hU hV).mpr hUV
+  have hconst : Tendsto (fun t =>
+      deningerHarmonicPartial (U t) ^ 2 * deningerHarmonicPartial (V t) ^ 2) atTop (𝓝 a) :=
+    (tendsto_congr' heq).mpr tendsto_const_nhds
+  exact ha.ne' (tendsto_nhds_unique hconst hzero)
+
 #print axioms finite_pmVaughanSmoothAmplitudeSet_above
+#print axioms not_product_escape_and_eventually_positive_amplitude
 #print axioms isolated_pmVaughanSmoothAmplitude_of_pos
 #print axioms accPt_pmVaughanSmoothAmplitudeSet_iff
 end GaloisForLFunctions.BezoutValuationIncidence

@@ -189,3 +189,10 @@ and its direct repository check passed. Its umbrella import and
 are present. Subsequent compact bounds and annular comparisons remain unchecked.
 
 Pending source check: `/tmp/BiarithmeticDigitCovarianceMainTerms.lean` derives the balanced expanding covariance formula and a horizon-uniform linear-shell error at the exact critical weight `sqrt(5)`. Its bounded-error dependency chain remains unchecked.
+
+Pending source check: `/tmp/BiarithmeticDigitCriticalGramLimit.lean` uses the
+actual shell index `Nat.log 5 (N+1)` to derive full-horizon critical covariance
+limits, their normalized ratio, and diagonal energy escape. Exact positive-cell
+reindexing also identifies the programme's `normalizedSourceGram`, giving its
+full-horizon critical limit. Seven audits are drafted. Its bounded-error
+dependencies remain unchecked.

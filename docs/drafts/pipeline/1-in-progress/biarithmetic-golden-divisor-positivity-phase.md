@@ -101,6 +101,8 @@ the exact rational limit and greatest lower bound, finite divergence bound,
 full nonnegative-parameter sign classification, and payment of every
 positivity-compatible source in the damping interval. These dependent claims
 remain unproved until their source check and transitive audits pass.
+The payment theorem needs no separate upper damping premise: positivity
+itself forces `t<=1/5`, hence `t<=1`, before invoking the admission criterion.
 
 The positivity draft also explicitly transfers the profile range to actual
 positive integer arguments, proves its supremum and infimum, and states

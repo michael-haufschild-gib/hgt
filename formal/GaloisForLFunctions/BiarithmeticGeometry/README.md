@@ -450,6 +450,29 @@ of the critical graph norm.
 Source: `CriticalPartialSumCore.lean`, `criticalCorrectedTruncation_norm_error`,
 `criticalCorrectedTruncation_sq_error`, `criticalCorrectedTruncation_graph_errors_tendsto`.
 
+Lifting these corrected coefficients gives actual finite paid kernels.
+For every complex `ell1` sequence, their Wiener error tends to the absolute
+total sum. Every zero-sum one-prime lift consequently lies in the closure
+of the full actual critical golden paid ideal.
+Source: `CriticalGoldenClosure.lean`, `criticalCorrectedWiener_norm_error_tendsto`,
+`fiveComplexCriticalWienerLift_mem_closure_paidIdeal`.
+
+The same coefficient obstruction has a complete power-tail family. For
+each `alpha>0`, successive differences of `(n+1)^(-alpha)`, with initial
+coefficient `-1`, have absolute sum two and total sum zero. Their inclusive
+partial sums are exactly `-(M+1)^(-alpha)`, so square energy is finite
+exactly when `alpha>1/2`.
+Source: `PowerTailCoefficients.lean`, `tsum_abs_criticalPowerCoeff`,
+`tsum_criticalPowerCoeff`, `summable_sq_criticalPowerCoeff_partialSum_iff`.
+
+These tails remain complex-linearly independent modulo square partial
+sums when their distinct exponents lie at or below one half. In every
+nonzero finite combination, division by the smallest active power tail
+leaves its nonzero coefficient in the limit. The resulting lower bound
+forces divergent square energy.
+Source: `PowerTailIndependence.lean`, `powerTailCombination_ratio_tendsto`,
+`criticalPowerCoeff_interval_independent_mod_squareSums`.
+
 The geometric future tail `B_b g(m)=sum_(s>=0)b^(s+1)g(m+s+1)` has
 absolute coefficient norm at most `b/(1-b)||g||_1` for `0<=b<1`.
 It satisfies `B_b g(m)=b*g(m+1)+b*B_b g(m+1)`. Joint absolute
@@ -512,6 +535,14 @@ Terms above the cell vanish, so the full operator series agrees with the
 arithmetic formula at every horizon.
 Source: `PronicWienerCoordinates.lean`, `pronicRowCoordinate_dilation`,
 `pronicRowCoordinate_wiener`.
+
+Every finite complex source horizon has a finite-support extension into
+this completed representation. Its coordinates and all cofactor transforms
+agree through the prescribed horizon. Thus the representation law proves
+formal cofactor composition for arbitrary source rows, without a growth
+or summability premise on the row.
+Source: `PronicFiniteExtension.lean`, `pronicFiniteExtension_coordinate`,
+`pronicFiniteExtension_wiener`, `formalWienerCofactor_comp`.
 
 ### Paid perturbations preserve the complete ideal
 
@@ -581,6 +612,15 @@ If `p*U=T^3-3p*T` and both second point-count bounds
 Source: `NormalizedCubicTrace.lean`, `exists_normalizedCubicTrace_iff`,
 `normalizedCubicTrace_pure_bound`, `normalizedCubicTrace_unique`.
 
+The root identities connect this classification to arbitrary complex
+reciprocal pairs with integral traces. Their second point counts are
+exactly the corresponding real integers. Every surviving pair has both
+root norms equal to `sqrt(p)`: reality of trace and determinant, together
+with `T^2<=4p`, forces equal real parts and equal norm squares.
+Source: `NormalizedCubicRootLaw.lean`,
+`normalizedCubicTraceCondition_iff_complexRootPointCounts`,
+`normalizedCubicRoot_survivor_pure`.
+
 ### Intrinsic counting changes the golden receiver
 
 Using the golden system's own generalized-integer count gives cumulative series
@@ -598,6 +638,19 @@ do not themselves identify the completed intrinsic tangent module.
 Source: `IntrinsicGoldenSeries.lean`, `goldenIntrinsicCount_eq`,
 `goldenIntrinsicCount_bounds`, `goldenIntrinsicReceiverSeries_factorization`,
 `goldenIntrinsicReceiverSeries_one`.
+
+### The geometric shell completion
+
+The canonical completion of `K(r,s)=a^(-(r+s))` is isometrically the
+complex line: its scalar features are `a^(-r)`, and the zeroth feature
+spans that line. Norm-lattice shifts extend by multiplication with
+`a^(-r)`, giving exact norms and composition. This classifies the geometric
+kernel's completion; comparison with the actual intrinsic source requires
+its own tangent theorem.
+
+Source: `GeometricShellHilbert.lean`, `geometricShellTangentIsometry`,
+`finrank_geometricShellTangentSpace`, `geometricShellTangentShift_vector`,
+`norm_geometricShellTangentShift`, `geometricShellTangentShift_comp`.
 
 ### Exact primary pole removal
 

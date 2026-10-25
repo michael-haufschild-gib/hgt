@@ -155,7 +155,103 @@ end GaloisForLFunctions.ArithmeticDefectRigidity
 #print axioms GaloisForLFunctions.ArithmeticOrientationTheory.augmentationBohrPoint_ne_halfPlanePoint
 #print axioms GaloisForLFunctions.ArithmeticOrientationTheory.augmentation_quotient_finrank
 #print axioms GaloisForLFunctions.ArithmeticDefectRigidity.isPSDKernel_augmentation
+#print axioms GaloisForLFunctions.ArithmeticDefectRigidity.abs_augmentationKernel_le
 #print axioms GaloisForLFunctions.ArithmeticDefectRigidity.augmentationKernel_packet_dilation_le
 #print axioms GaloisForLFunctions.ArithmeticDefectRigidity.augmentationKernel_scaled_diagonal_antitone
 end
+end
+
+noncomputable section
+set_option autoImplicit false
+namespace GaloisForLFunctions.ArithmeticOrientationTheory
+open WienerAlgebraAt
+
+/-- Augmentation evaluates a complete critical Wiener kernel at its first coefficient. -/
+theorem bohrCharacter_augmentation_eq_coefficient_one (a : WienerAlgebraAt (1 / 2)) :
+    WienerAlgebraAt.bohrCharacter (1 / 2) augmentationBohrPoint a = a.toFn 1 := by
+  rw [bohrCharacter_apply]
+  unfold bohrEval LSeries
+  rw [tsum_eq_single 1]
+  · simp [augmentationBohrPoint]
+  · intro n hn
+    rcases eq_or_ne n 0 with rfl | h0
+    · simp only [LSeries.term_zero]
+    · rw [LSeries.term_of_ne_zero h0]
+      simp only [augmentationBohrPoint, if_neg hn, mul_zero, zero_div]
+
+/-- The point masses in the augmentation ideal force every nonidentity coordinate to zero. -/
+theorem eq_augmentation_of_vanishes_ker (ω : BohrPoint)
+    (hω : ∀ a ∈ RingHom.ker (WienerAlgebraAt.bohrCharacter (1 / 2) augmentationBohrPoint),
+      bohrEval (1 / 2) a.toFn ω = 0) : ω = augmentationBohrPoint := by
+  have hzero {n : ℕ} (hn0 : n ≠ 0) (hn1 : n ≠ 1) : ω.ω n = 0 := by
+    have ha : pointMass n ∈ RingHom.ker (WienerAlgebraAt.bohrCharacter (1 / 2) augmentationBohrPoint) := by
+      rw [RingHom.mem_ker, bohrCharacter_pointMass _ hn0]
+      simp only [augmentationBohrPoint, if_neg hn1, zero_div]
+    have hz := hω (pointMass n) ha
+    rw [toFn_pointMass, bohrEval_pointMass hn0] at hz
+    have hden : (n : ℂ) ^ ((1 / 2 : ℝ) : ℂ) ≠ 0 := by
+      rw [Ne, Complex.cpow_eq_zero_iff]
+      exact fun h => hn0 (by exact_mod_cast h.1)
+    have h := congrArg (fun z : ℂ => z * (n : ℂ) ^ ((1 / 2 : ℝ) : ℂ)) hz
+    simpa only [div_mul_cancel₀ _ hden, zero_mul] using h
+  have htwo : ω.ω 2 = 0 := hzero (by decide) (by decide)
+  have h0 : ω.ω 0 = 0 := by
+    have h := ω.map_mul 0 2
+    simpa only [zero_mul, htwo, mul_zero] using h
+  have hfun : ω.ω = augmentationBohrPoint.ω := by
+    funext n
+    rcases eq_or_ne n 0 with rfl | hn0
+    · simpa only [augmentationBohrPoint, show (0 : ℕ) ≠ 1 by decide, if_false] using h0
+    rcases eq_or_ne n 1 with rfl | hn1
+    · simpa only [augmentationBohrPoint, if_true] using ω.map_one
+    · simpa only [augmentationBohrPoint, if_neg hn1] using hzero hn0 hn1
+  rcases ω with ⟨w, hw1, hwm, hwb⟩
+  change w = augmentationBohrPoint.ω at hfun
+  cases hfun
+  rfl
+
+/-- The complete augmentation ideal has precisely its augmentation Bohr point as hull. -/
+theorem augmentation_character_hull_eq_singleton :
+    {ω : BohrPoint | ∀ a ∈ RingHom.ker (WienerAlgebraAt.bohrCharacter (1 / 2) augmentationBohrPoint),
+      bohrEval (1 / 2) a.toFn ω = 0} = {augmentationBohrPoint} := by
+  apply Set.Subset.antisymm
+  · intro ω hω
+    exact Set.mem_singleton_iff.mpr (eq_augmentation_of_vanishes_ker ω hω)
+  · intro ω hω
+    rcases Set.mem_singleton_iff.mp hω with rfl
+    intro a ha
+    exact ha
+
+end GaloisForLFunctions.ArithmeticOrientationTheory
+
+namespace GaloisForLFunctions.ArithmeticDefectRigidity
+open ArithmeticOrientationTheory WienerAlgebraAt
+
+/-- The scalar augmentation action has exactly the augmentation cofactor values. -/
+theorem augmentationCharacter_pointMass (p : ℕ+) :
+    WienerAlgebraAt.bohrCharacter (1 / 2) augmentationBohrPoint (pointMass (p : ℕ)) =
+      (augmentationCofactor p : ℂ) := by
+  rw [bohrCharacter_augmentation_eq_coefficient_one, toFn_pointMass, pointMassFn_apply]
+  by_cases hp : p = 1
+  · subst p
+    norm_num [augmentationCofactor]
+  · have hnat : (p : ℕ) ≠ 1 := fun h => hp (Subtype.ext h)
+    simp only [show ¬ ((1 : ℕ) ≠ 0 ∧ 1 = (p : ℕ)) from fun h => hnat h.2.symm,
+      if_false, augmentationCofactor, if_neg hp, Complex.ofReal_zero]
+
+/-- The augmentation Gram is the scalar character Gram on the one-dimensional complex space. -/
+theorem augmentationKernel_eq_characterGram (j k : ℕ+) :
+    (augmentationKernel j k : ℂ) =
+      (starRingEnd ℂ (WienerAlgebraAt.bohrCharacter (1 / 2) augmentationBohrPoint (pointMass (k : ℕ)))) *
+        WienerAlgebraAt.bohrCharacter (1 / 2) augmentationBohrPoint (pointMass (j : ℕ)) := by
+  rw [augmentationCharacter_pointMass, augmentationCharacter_pointMass,
+    Complex.conj_ofReal]
+  simp only [augmentationKernel, Complex.ofReal_mul]
+  exact mul_comm _ _
+
+end GaloisForLFunctions.ArithmeticDefectRigidity
+
+#print axioms GaloisForLFunctions.ArithmeticOrientationTheory.bohrCharacter_augmentation_eq_coefficient_one
+#print axioms GaloisForLFunctions.ArithmeticOrientationTheory.augmentation_character_hull_eq_singleton
+#print axioms GaloisForLFunctions.ArithmeticDefectRigidity.augmentationKernel_eq_characterGram
 end

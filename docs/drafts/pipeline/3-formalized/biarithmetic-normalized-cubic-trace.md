@@ -3,7 +3,7 @@
 - **ID:** biarithmetic-normalized-cubic-trace
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Fixed-determinant cubic amplification](../1-in-progress/biarithmetic-fixed-determinant-cube-amplification.md)
+- **Parent:** [Fixed-determinant cubic amplification](biarithmetic-fixed-determinant-cube-amplification.md)
 - **Statement:** For a prime `p`, integral traces satisfying `pU=T^3-3pT` and both bounds `T^2,U^2<=(p+1)^2` have `T=U=0` when `p>=5`. The remaining nonzero cases are `(p,T,U)=(2,2,-2),(2,-2,2),(3,3,0),(3,-3,0)`.
 
 Prime divisibility first gives `p|T`. The first square bound reduces
@@ -20,6 +20,6 @@ Audited declarations: `prime_dvd_of_integral_normalizedCube`,
 - [x] All five transitive audits contain only `propext`, `Classical.choice`, `Quot.sound`; uniqueness uses only `propext`.
 - [x] Umbrella import wired; umbrella not compiled.
 
-The general complex-root comparison and the forced purity of the
-surviving roots are separate pending obligations. Fixed determinant
+The general complex-root comparison and forced purity of surviving roots
+are formalized separately in `NormalizedCubicRootLaw.lean`. Fixed determinant
 does not define analytic conductor.

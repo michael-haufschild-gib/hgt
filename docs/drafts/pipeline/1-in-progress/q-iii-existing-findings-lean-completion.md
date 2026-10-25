@@ -36,7 +36,7 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Finding | Current gate |
 |---|---|
 | Zero cofactor forces dimension at most p-1 | Final canonical source check passed; positive survivor and exclusion card moved to `3-formalized` |
-| Augmentation countermodel and singleton character hull | Existing countermodel scratch passed; complete source with singleton claim is `/tmp/qiii-augmentation-full-check.lean`, unchecked |
+| Augmentation countermodel and singleton character hull | Complete scratch `21112` passed with standard axioms; canonical source-only audit running |
 | Actual unit transport, Möbius/Liouville equivalence | All canonical source-only checks passed with standard axioms; card moved to `3-formalized` |
 | Finite joint spectral multiplicities and normalized Bohr representatives | All three canonical source-only checks passed with standard axioms; card moved to `3-formalized` |
 | Rank-one multiplicative signs | Draft scratch, then canonical placement/check |
@@ -89,9 +89,20 @@ Paid corrections are complete. Real-convolution final source-only audit
 `56886` passed with standard axioms for all eight printed targets, including
 positive source-energy ratio and preservation of escape. Möbius–Liouville
 final source-only audit `94844` passed with standard axioms. The unit-transport
-batch is complete. The current direct check is session `37698` of
-`/tmp/qiii-augmentation-full-check.lean`, covering the existing countermodel
-and its previously paper-only singleton hull and scalar-character Gram.
+batch is complete. Augmentation check `37698` passed the original countermodel
+again but rejected the added statements because unqualified `bohrCharacter`
+resolved to another declaration. The Wiener character is now explicitly
+qualified. Retry `11105` verified first-coefficient evaluation and the exact
+singleton hull with standard axioms. Its point-mass value rewrite failed,
+so the scalar Gram corollary is not yet verified. That value proof now uses
+the checked first-coefficient theorem and the literal `pointMassFn_apply`
+definition. Check `66531` was cancelled after source inspection caught its
+wrong zero-index guard; owned Lean PID `1832` was terminated and the session
+exited 143 before replacement. Output from corrected retry `10978` was lost
+at compaction; its process exited, so success is not inferred. Direct retry
+`21112` passed every target with standard axioms, including the scalar character
+Gram. The checked source was copied directly into its canonical leaf; final
+source-only audit is active, output `/tmp/qiii-augmentation-canonical-final.log`.
 Exactly one owned Lean check is active.
 
 ## Direct source work remaining
@@ -107,7 +118,7 @@ owner, add its umbrella import directly, and run the canonical check directly.
   leaves; the older part files do not include this last corollary.
 - `/tmp/qiii-augmentation-full-check.lean` combines the countermodel and exact
   singleton-hull claim, first-coefficient action and scalar character Gram.
-  All added claims are from the existing paper argument and remain unchecked.
+  All added claims are from the existing paper argument and passed scratch check.
   Obsolete augmentation-hull and cutoff scratches were
   removed; the completed cutoff source and audit logs remain.
 - Rank-one sign, common-family, crossing and Gram-step scratches now have proper
@@ -121,6 +132,8 @@ owner, add its umbrella import directly, and run the canonical check directly.
   interpolation and rank bounds, and the unit-orbit/Liouville corollaries.
   It now imports the intended `InteriorWienerJets` owner rather than duplicating
   its body, and explicitly imports `AnIndexFormulaForTheActualReceiver`.
+  Its Wiener character names, and the corresponding base-jet and part files,
+  are explicitly qualified following the augmentation collision.
   It remains unchecked until the base jet and pole dependencies are complete.
 - Raw-origin and boundary-index scratch files remain unchecked. Their exact
   source statements and canonical dependencies are retained in their Lean files.

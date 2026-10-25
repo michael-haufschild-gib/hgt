@@ -123,3 +123,14 @@ Pending source check: `/tmp/BiarithmeticDigitParameterContinuity.lean` contains 
 Pending source check: `/tmp/BiarithmeticDigitAnnularContinuity.lean` applies dominated convergence to actual annular digit products and their normalized full-annulus ratio. It depends on the unchecked annular integrability and parameter-continuity drafts.
 
 Pending source check: `/tmp/BiarithmeticDigitCovarianceMainTerms.lean` derives the balanced expanding covariance formula and a horizon-uniform linear-shell error at the exact critical weight `sqrt(5)`. Its bounded-error dependency chain remains unchecked.
+
+Pending source check: `/tmp/BiarithmeticDigitCriticalGramLimit.lean` derives
+the unique critical ratio and energy escape at all integer horizons from
+the shell-index error estimate. Its dependencies remain unchecked.
+
+Pending source check: `/tmp/BiarithmeticDigitAnnularPhaseVariation.lean`
+defines the balanced annular quotient, proves its exact phase-one value,
+the bound `(a^2/5-1)K(a,1)`, and uniform convergence of all annular phases
+to the critical table. Four audits are drafted. This uses actual annular
+integrals, but the strict source-limit identification, cofactor-radius bound,
+and fixed-Wiener covariance extension remain separate obligations.

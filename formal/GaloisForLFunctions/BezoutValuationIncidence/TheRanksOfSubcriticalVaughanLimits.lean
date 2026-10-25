@@ -38,10 +38,11 @@ theorem rank_pmVaughanSmoothLimitMatrix_of_pos {ε a : ℝ}
     simpa only [mul_neg_one, neg_neg] using h
   have hne : Matrix.rank (pmVaughanSmoothLimitMatrix ε a) ≠ 0 := by
     intro hz
-    have hlin : (pmVaughanSmoothLimitMatrix ε a).mulVecLin = 0 := by
+    have hlin : Matrix.mulVecLin (pmVaughanSmoothLimitMatrix ε a) = 0 := by
       simpa only [Matrix.rank, Submodule.finrank_eq_zero, LinearMap.range_eq_bot] using hz
-    have hcell := congrFun
-      (congrFun (congrArg DFunLike.coe hlin) (Pi.single (2 : Fin 5) 1)) (2 : Fin 5)
+    have hcell := congrArg
+      (fun f : (Fin 5 → ℝ) →ₗ[ℝ] (Fin 5 → ℝ) =>
+        f (Pi.single (2 : Fin 5) 1) (2 : Fin 5)) hlin
     have hzcell : pmVaughanSmoothLimitMatrix ε a 2 2 = 0 := by
       simpa [Matrix.mulVecLin, Matrix.mulVec, dotProduct, Pi.single_apply] using hcell
     exact hdiag.ne' hzcell
@@ -56,6 +57,7 @@ theorem rank_pmVaughanSmoothLimitMatrix {ε : ℝ}
   by_cases hz : a = 0
   · subst a
     rw [if_pos rfl, pmVaughanSmoothLimitMatrix_zero]
+    change Matrix.rank (0 : Matrix (Fin 5) (Fin 5) ℝ) = 0
     simp
   · rw [if_neg hz]
     exact rank_pmVaughanSmoothLimitMatrix_of_pos hε hε2

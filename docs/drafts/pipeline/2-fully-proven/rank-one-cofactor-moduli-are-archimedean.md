@@ -60,21 +60,6 @@ This also proves reality of the character and the product formula for the
 entire rank-one Gram. In the positive branch each sign z_n/|z_n| lies in
 {−1,1} and is multiplicative. The argument does not select those signs.
 
-## Lean draft
-
-Unverified parts:
-- `/tmp/qiii_monotone_multiplicative_body.lean`: generic logarithm-additive
-  monotonicity and multiplicative power classification.
-- `/tmp/qiii_actual_rank_one_body.lean`: actual scalar extraction, real
-  character, energy character, and magnitude classification.
-
-Both are appended to the next diagonal scratch. No canonical promotion.
-The scalar extraction uses mathlib's checked source statement
-`finrank_eq_one_iff_of_nonzero'`, not the unrelated matrix-kernel wrapper.
-The preceding corpus log-ceiling search surfaced
-`RHTower.Sieve.ceil_log_ratio_spec`; the draft uses the same elementary
-ceiling comparison directly so the general theorem has no sieve dependency.
-
 ## Current verification status
 
 The generic power classification and actual rank-one character, Gram product,
@@ -84,7 +69,8 @@ with standard axioms. Their canonical leaves are installed and wired:
 `ArithmeticDefectRigidity/RankOneCofactorMagnitudesArePowers`. Both final
 canonical source audits passed in session `90975`, with standard axioms.
 The explicit sign-factorization
-consequence is now drafted in `/tmp/qiii_rank_one_sign_character_body.lean`:
+consequence is drafted in `/tmp/qiii-rank-one-sign-character-check.lean`:
 the nonaugmentation branch has a multiplicative sign η valued in {−1,1},
-with χ(p)=η(p)*p^(-s). Its check is in the same session's later common queue,
-conditional on the rank-one dependency olean. No completion is claimed.
+with χ(p)=η(p)*p^(-s). Its direct check and final canonical check remain.
+The required rank-one dependency olean exists. No sign-factorization completion
+is claimed before those checks.

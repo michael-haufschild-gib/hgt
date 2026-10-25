@@ -1238,8 +1238,17 @@ countably infinite subset of $[0,1]$ containing both endpoints. Amplitudes
 bounded away from zero force both cutoffs into a finite rectangle. A positive
 amplitude limit is eventually attained exactly in one finite fiber. For positive
 cutoffs, amplitude convergence to zero is equivalent to divergence of $UV$
-(`TheCompactArithmeticAmplitudesOfVaughanGrams`). Matrix-limit classification
-and the exact accumulation-point statements remain under verification.
+(`TheCompactArithmeticAmplitudesOfVaughanGrams`). Every finite normalized Gram
+limit is $(c_\varepsilon^2/(1-2\varepsilon))a ss^\mathsf{T}$ for some $a\in S$,
+and every such amplitude is attained with positive cutoff schedules at any
+divergent horizon. The convolution diagonal recovers the amplitude. Positive-cutoff
+convergence is equivalent to product escape or an eventually fixed positive
+amplitude (`TheSubcriticalVaughanGramLimitSet`). Its explicit bounded-packet
+energy corollary also gives zero normalized energy when the horizon and cutoff
+product diverge independently. Zero is the unique scalar amplitude accumulation
+point, positive amplitudes are isolated, and the two convergence alternatives
+are mutually exclusive (`TheOnlyAccumulationOfVaughanAmplitudesIsZero`). Exact
+matrix ranks and matrix-family topology remain under verification.
 
 **Finite harmonic rigidity.** Every $H_N$ with $N\ge1$ is nonzero. For every prime
 $N/2<p\le N$, its rational $p$-adic valuation is exactly $-1$; all such distinct primes

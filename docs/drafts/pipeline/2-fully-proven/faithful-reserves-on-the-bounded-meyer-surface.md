@@ -95,7 +95,7 @@ invariance and RR to a restricted carrier.
 - `MeyerCriticalTopAlgebra`: sharp stability, quotient subspace and highest critical source witness; Lean certified.
 - `BoundedMeyerSourceSurface`: original restricted surface and ordinary cone; draft unchecked.
 - `FaithfulHilbertSchmidtSourceReserves`: actual reserve, exact adjoint defect and faithfulness; Lean certified.
-- `MeyerHilbertReserveFlowRigidity`: reserve-flow invariance and its exact locus; candidate unchecked.
+- `MeyerHilbertReserveFlowRigidity`: reserve-flow invariance and its exact locus; Lean certified by direct check 35848 and seven standard axiom audits.
 - `MeyerHilbertSchmidtSource` and HT `HilbertSchmidtTraceDefect`: actual-file certified foundations.
 
 The diagonal argument uses actual rows and the existing l2 inner-product sum,

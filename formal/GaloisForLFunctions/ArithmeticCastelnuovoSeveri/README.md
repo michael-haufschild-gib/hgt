@@ -949,6 +949,11 @@ Built and reusable:
    symmetric Wolff configuration has Toeplitz matrix `(4 Σ'_i c_i) • 1` and `hermNegIndex = 0` on
    every finite window (`exists_symmetric_wolff_toeplitz_blind_configuration`). Open: rule out
    vertical Wolff accumulation for `ζ` on a single prime tower without invoking a second prime.
+   Proposed route: a test whose transform vanishes on all deep right zeros but finitely many
+   chosen ones leaves finitely many visible zeros above their level. Such tests exist whenever
+   `Σ|a|^{-s} < ∞` for some `s < 1` (`exists_annihilating_test`, Ingham bump times
+   `Π(1 − z/a)`); zero density makes deep zeros of `ζ` that sparse, but this application is not
+   yet formalized.
 6. **Visibility when off-line zeros cluster.** Unconditionally, either every near-top zero is
    visible at the doubly-logarithmic lag and the degree-defect floor rate equals the zero width, or
    off-line zeros cluster without bound in unit windows (item 15,
@@ -1023,6 +1028,7 @@ Weil's argument.
 | `WhichArithmeticDataForceTheSign` | Toeplitz–Rosati reflection identity, pole masking of point counts, forcing equivalences over `𝔽_q` and on the scaling surface |
 | `UpperLefschetzBoundsAreBlindOnlyToRealZeros` | one-sided power-sum sign law; lower Lefschetz bounds force purity, upper bounds force it except at real zeros; golden datum as real-zero fake; difference vs. sum lag tests |
 | `TheDefectOfAGraphIsTwiceItsDegree` | isotropic unit-degree classes have linear defect; genus-one graph defect `= 2 deg`, Hasse as degree positivity, golden `deg(2 − F) = −1`; theorem of the square vs. numerically free Hecke scales |
+| `AnnihilatingTestsForSparseSpectra` | Ingham bump (smooth, compact, transform `Π sin(ε_n z)/(ε_n z)`, zero-free off `ℝ`); operators `h + (ib)⁻¹h'`; compactly supported tests annihilating any sequence with `Σ|a|^{-s} < ∞`, `s < 1` |
 | `SectionCountRiemannRochAndPrimeBlindSelectivity`, `SectionEffectivityAndTheUniversalFloorLaw` | nef quadrant and Hecke-stable ampleness, universal floor law `RiemannRochAxiom E ↔ openPositiveCone ⊆ E ∧ ∀ x, 0 ≤ defect(x, x)` for ample cones, sign-free Bézout positivity from source section readings, prime-power node section counts `h⁰ ≥ DoF − node count`, `DoF − node count = E(s)`, exact odd pole-charge cancellation, prime-blind section vanishing, diagonal relabeling invariance vs. Frobenius selectivity |
 | `SourceDeterminantalSectionsAndArithmeticRiemannRoch` | source section cones, non-vacuous ampleness, Hecke stability, Riemann–Roch ⟺ coercive floor, Riemann–Roch past the first prime, all-aperture Chebyshev and de la Vallée Poussin floors |
 | `SourceRiemannRochAwayFromTheLowFrequencyDivisor` | source effectivity (Riemann–Roch, ampleness, Hodge index) at every degree on the tests blind to the low-frequency divisor, coercivity `E(a)(1 − 1/π)` |
@@ -1048,6 +1054,7 @@ Weil's argument.
 | `FaithfulPositiveMeyerDegrees` | a faithful positive linear degree on genuine cohomology exists iff RH and Xi simplicity; a single jet has principal sharp square exactly when its reflected block is distinct or twice its order reaches multiplicity |
 | `ArithmeticSharpAndTheHilbertAdjoint` | arithmetic sharp equals the actual full-Hasse Hilbert adjoint iff RH and Xi simplicity, equivalently iff a faithful positive linear degree exists on genuine cohomology |
 | `FaithfulHilbertSchmidtSourceReserves` | a faithful descended Hilbert–Schmidt reserve gives Bézout, ampleness, convexity and generation unconditionally; its excess is half the squared adjoint defect, and RR or exact representation by a linear sharp-square degree holds iff RH plus Xi simplicity |
+| `MeyerHilbertReserveFlowRigidity` | reserve boundedness, reserve invariance and critical highest-jet support are equivalent for each source; global invariance is exactly the faithful cone's RR condition, equivalently RH plus Xi simplicity |
 | `PositiveMeyerDegreesCanForgetClasses` | critical Xi evaluation gives an unconditional positive multiplicative degree on genuine cohomology, normalized on one sharp square and zero on the sharp square of an explicit nonprincipal source |
 | `FlowInvariantMeyerMajorantsForceCriticality` | invariant nonnegative majorants of the original mixed trace exist iff RH; two point sources give evaluation control, and centered flow preserves the literal mixed sharp product |
 | `CriticalMeyerTraceDegree` | the full critical-value trace is a positive descended linear degree with exact critical-value kernel; its invariant square energy dominates the original mixed trace iff RH and is faithful iff RH plus Xi simplicity |

@@ -111,17 +111,21 @@ cutoff control away from zero, arbitrarily small positive amplitudes, and
 infinitude, exact eventual amplitude and finite-fiber rigidity, and the positive-cutoff
 escape equivalence. Producing and final direct checks passed; all fourteen
 transitive axiom audits contain only standard axioms. The module is wired and
-its scratch removed. Eight further targets in
-`/tmp/QIVaughanGramLimitClassificationTools.lean` draft diagonal recovery,
+its scratch removed. Eight targets in
+`TheSubcriticalVaughanGramLimitSet.lean` prove diagonal recovery,
 the full matrix classification, nonzero-limit rigidity, the zero-limit escape
 equivalence, the convergence dichotomy, attainment with positive cutoffs, and
-the already stated independent-horizon packet-energy limit. This classification
-leaf is under verification. Three targets in
-`/tmp/QIVaughanAmplitudeTopologyTools.lean` now draft finiteness above a positive
+the already stated independent-horizon packet-energy limit. Corrected producing
+and final direct checks passed, with only standard transitive axioms. The module
+is wired and its scratch removed. Four targets in
+`TheOnlyAccumulationOfVaughanAmplitudesIsZero.lean` prove finiteness above a positive
 level, isolation of positive amplitudes, and the exact accumulation-point
-classification. Four targets in `/tmp/QIVaughanLimitMatrixRankTools.lean` draft
+classification, plus the paper's mutual exclusion of product escape and an
+eventually fixed positive amplitude. Producing and final direct checks passed,
+with only standard transitive axioms; the module is wired and its scratch removed.
+Four targets in `/tmp/QIVaughanLimitMatrixRankTools.lean` draft
 the zero matrix, the outer-product rank bound, positive-amplitude rank one, and
-the complete rank dichotomy. These drafts remain uncompiled.
+the complete rank dichotomy. Two rank targets need corrected elaboration before certification.
 
 The matrix-family topology stated above still needs exact Lean declarations:
 the existing topology draft treats the scalar amplitude set only. The additional

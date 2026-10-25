@@ -22,6 +22,12 @@ where `S_M=sum_(r<=M)g_r`. The corrected finite sequence has partial sums `S_m`
 for `m<M` and zero for `m>=M`; it belongs to `D`. Its `ell1` distance from `g`
 is at most `|S_M|+sum_(r>M)|g_r|`, which tends to zero for `g in Z`.
 
+The actual one-prime lift of this inclusion is Lean-verified in
+`CriticalGoldenClosure.lean`: the corrected finite kernels pay and converge
+in Wiener norm whenever the total coefficient sum is zero. All four audits
+and the direct repository check passed. This inclusion does not yet identify
+the closure of the full paid ideal.
+
 ## Explicit independent unpaid classes
 
 For each real `alpha` with `0<alpha<=1/2`, define
@@ -50,18 +56,21 @@ exactly for `alpha>1/2`. This supplies a complete parameter calibration
 on both sides of the critical sequence boundary. Dedicated corpus searches
 did not return a general power-difference family; Mathlib's classical
 `Real.summable_nat_rpow` supplies the power-series criterion. The extension
-is a paper deduction, with no separate originality claim and Lean pending.
+is Lean-verified, with no separate originality claim.
 
-The power-difference family and exact half-exponent threshold are drafted in
-`/tmp/BiarithmeticPowerTailCoefficients.lean`, unchecked. The finite-combination
+The power-difference family and exact half-exponent threshold are formalized in
+`BiarithmeticGeometry/PowerTailCoefficients.lean`. The direct repository check
+and all five transitive audits passed; the
+[formalized card](../3-formalized/biarithmetic-power-tail-coefficients.md)
+names the audited declarations. The finite-combination
 argument can use the corpus's dominant-exponent method from
 `HTGeometry/ExponentialSumAsymptotics.lean`: normalize by the smallest active
 exponent, pass a finite sum through the limit, and retain its nonzero complex
 coefficient. That existing theorem is for real exponential sums; the required
-complex discrete power-tail specialization and divergent lower bound remain
-to be formalized. Its source proof was inspected before reuse of the method.
+complex discrete power-tail specialization and divergent lower bound are
+formalized below. Its source proof was inspected before reuse of the method.
 
-That specialization is now drafted in `/tmp/BiarithmeticPowerTailIndependence.lean`.
+That specialization is formalized in `BiarithmeticGeometry/PowerTailIndependence.lean`.
 It divides a finite combination by its smallest active power tail, passes the
 finite complex sum through the limit, and obtains its nonzero coefficient.
 Eventually the norm is at least half that coefficient norm times the dominant
@@ -71,8 +80,10 @@ taking the minimum active exponent gives the full finite independence statement.
 The lower-bound argument only needs exponents at most one half; positivity
 of the exponents is needed separately to place their coefficient differences
 in `ell1`. This extension follows from exactly the same ratio proof.
-The independence draft is unchecked. Quotient bundling and the cardinality
-upper bounds passed scratch verification and await the direct repository check.
+The independence proof passed its direct repository check and all five
+transitive audits. The [formalized card](../3-formalized/biarithmetic-power-tail-independence.md)
+names its declarations. Quotient bundling and the cardinality upper bounds
+also passed their direct repository check; the lifted lower bounds remain.
 
 The quotient-interface corpus audit found the existing finite-family proof
 pattern in `HTGeometry/ContinuumAnalyticEulerTailFaithfulnessUniversalityLaw.lean`
@@ -92,7 +103,8 @@ take its actual Wiener closure, and quotient that closure by the pulled-back
 paid subspace. The canonical map to the full unreduced quotient is well defined.
 Both ranks are at most continuum by quotient surjectivity, subtype injection,
 and the existing Wiener cardinality theorem. All three transitive axiom
-audits are clean. The wired production leaf awaits its direct source check.
+audits are clean. The direct production check passed; its stage-3 card and
+umbrella import are present.
 
 `PowerTailWienerFamily` drafts actual norm-two closure members for every positive
 exponent, with payment exactly above one half. The concluding

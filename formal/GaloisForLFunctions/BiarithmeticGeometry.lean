@@ -54,6 +54,8 @@ import GaloisForLFunctions.BiarithmeticGeometry.FullWienerAnnihilation
 import GaloisForLFunctions.BiarithmeticGeometry.GeometricPoleExtraction
 import GaloisForLFunctions.BiarithmeticGeometry.GeometricShellHilbert
 import GaloisForLFunctions.BiarithmeticGeometry.CriticalGoldenClosure
+import GaloisForLFunctions.BiarithmeticGeometry.PowerTailCoefficients
+import GaloisForLFunctions.BiarithmeticGeometry.PowerTailIndependence
 
 /-!
 # Biarithmetic Geometry

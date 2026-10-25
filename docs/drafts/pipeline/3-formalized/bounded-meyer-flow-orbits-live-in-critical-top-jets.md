@@ -1,11 +1,11 @@
 # Bounded Meyer flow orbits live in critical top jets
 
 - **ID:** bounded-meyer-flow-orbits-live-in-critical-top-jets
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (core classification and algebra); reserve-flow extension awaiting Lean verification
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** Q-II; faithful Hilbert–Schmidt reserve and genuine full-Hasse flow.
 - **Statement:** An actual Meyer source has bounded centered-flow orbit in Hilbert–Schmidt convolution norm exactly when its Xi jets vanish off the critical line and only the highest jet survives in each critical multiplicity block.
-- **Status:** CORE AND ALGEBRA FORMALIZED. The four-way classification, fixed-source/global criteria, quotient subspace, product laws, trace radical and nontriviality passed actual-file checks and all endpoint audits. Only the reserve-flow extension remains unverified. External novelty unverified.
+- **Status:** FORMALIZED. Core classification, algebra, and reserve-flow extension passed direct actual-file checks and every endpoint axiom audit. Only `propext`, `Classical.choice`, and `Quot.sound` occur. External novelty unverified.
 
 ## Exact theorem
 
@@ -131,7 +131,7 @@ HS norm, and the converse follows from the norm isometry above.
 Searches located the preceding mechanisms but no full bounded-orbit critical-highest-jet
 classification. The four-way equivalence and fixed-source/global criteria are now
 formalized, together with exact product/radical corollaries and unconditional
-nontriviality. Reserve-flow assertions still await verification.
+nontriviality and the exact reserve-flow law.
 The core source/jet bounds are drafted in
 `ArithmeticCastelnuovoSeveri/MeyerHilbertSchmidtSource.lean` (actual-file certified); the four-way classification and
 fixed-source/global criteria are drafted in
@@ -152,8 +152,7 @@ Direct `lake --old env lean` check **20136** passed with only `propext`,
 - `all_meyerHilbertOrbits_isometric_iff`
 
 Temporary prints and the core scratch draft are removed; the core module is
-wired and documented. This card remains in stage 2 until its remaining
-reserve-flow extension passes its own Lean check.
+wired and documented. The reserve-flow extension has also passed its own Lean check.
 
 The actual algebra module contains positive trace, radical-annihilation, and
 unconditional nontriviality endpoints. Its inputs are the exact full-jet algebra
@@ -180,7 +179,7 @@ subspace assertion has its own Lean object. Audited endpoints:
 
 The algebra module is cleaned, wired and documented; its old scratch draft is deleted.
 
-## Exact reserve orbit law (Lean verification pending)
+## Formalized exact reserve orbit law
 
 Arithmetic sharp reverses centered flow: sharp(F_c g)=F_(-c)(sharp g), by the
 Mellin character formula and injectivity. The faithful reserve is the mean
@@ -190,7 +189,17 @@ upper bound for the reserve bounds the first squared HS norm by twice that
 constant, hence forces the same critical highest-jet condition. Therefore
 reserve boundedness, reserve invariance, and critical highest-jet support are
 equivalent for each actual source. Global invariance is exactly the faithful
-cone RR condition, both equivalent to simple criticality. Actual candidate:
+cone RR condition, both equivalent to simple criticality. Certified module:
 `ArithmeticCastelnuovoSeveri/MeyerHilbertReserveFlowRigidity.lean`, importing
-`FaithfulHilbertSchmidtSourceReserves.lean`. Direct verification is pending;
-the old scratch copy does not contain every subsequent correction.
+`FaithfulHilbertSchmidtSourceReserves.lean`. Direct check **35848** passed
+with only the standard three axioms in all seven endpoint audits:
+
+- `meyerSourceSharp_centeredFlow`
+- `meyerHilbertReserve_centeredFlow_of_criticalTopJets`
+- `meyerHilbertOrbitBounded_of_reserve_bounded`
+- `meyerHilbertReserve_invariant_iff_criticalTopJets`
+- `meyerHilbertReserve_bounded_iff_criticalTopJets`
+- `all_meyerHilbertReserves_invariant_iff`
+- `meyerHilbertSourceCone_riemannRoch_iff_reserve_invariant`
+
+Temporary prints are removed; the module is wired and documented.

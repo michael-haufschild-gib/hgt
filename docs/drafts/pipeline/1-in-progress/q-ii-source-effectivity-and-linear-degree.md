@@ -296,6 +296,24 @@ the two unverified nilpotent-order inductions in `MeyerAlgebraicCharacters` and
 User reiterated: write no Python scripts; use direct Lean edits
 and direct `lake --old env lean ...` commands.
 
+Reserve-flow check **72805** ended, but its output was unavailable after
+compaction. Recovery check **50685** exposed only the final definitional
+`conj`/`star` equality. Added `rfl`; direct check **35848** passed with only
+the standard three axioms in all seven audits. Temporary prints and the
+stale scratch draft are removed; the module is wired and documented, and
+the bounded-orbit card is now stage 3. Its olean is confirmed missing and
+needed by the existing `BoundedMeyerFaithfulReserve` importer.
+Restricted-surface API check **26932** verified the direct restriction
+constructor, all named APIs, the norm-approximation example and the three
+dependency axiom audits. Only the quotient Hausdorff example failed: the
+additive-subgroup coercion was not elaborated. Its local closedness instance
+now uses the source submodule as a set directly, pending a recheck.
+The verified direct restriction constructor now replaces the conflicting
+AOG import in `BoundedMeyerSourceSurface`. No theorem statement changed.
+Direct missing-olean build **31048** passed for the certified reserve-flow module.
+Its olean now exists; never rebuild it. Direct bounded-surface check **56753**
+is running with all thirteen audits.
+
 ### Remaining verification queue
 
 All modules below are actual files under `ArithmeticCastelnuovoSeveri/`.
@@ -309,8 +327,8 @@ Rows explicitly marked certified have passed; all other rows remain unverified.
 | `FaithfulHilbertSchmidtSourceReserves` | CERTIFIED: direct 4030, fifteen standard audits, missing-olean build 80282 passed |
 | `MeyerBoundedCenteredOrbits` | CERTIFIED: direct 20136, six standard audits, missing-olean build 75806 passed |
 | `MeyerCriticalTopAlgebra` | CERTIFIED: direct 71562, fifteen standard audits, missing-olean build 39547 passed |
-| `BoundedMeyerSourceSurface` | Thirteen endpoints; direct restriction must replace conflicting AOG import |
-| `MeyerHilbertReserveFlowRigidity` | Seven endpoints; actual direct check 72805 running |
+| `BoundedMeyerSourceSurface` | Thirteen endpoints; verified direct restriction constructor replaces conflicting AOG import; direct check 56753 running |
+| `MeyerHilbertReserveFlowRigidity` | CERTIFIED: direct 35848, seven standard audits, missing-olean build 31048 passed; cleaned, wired, documented; bounded-orbit card moved to stage 3 |
 | `BoundedMeyerFaithfulReserve` | Thirteen endpoints; includes explicit positive adjoint-defect witness and exact linear-degree representation |
 | `MeyerFiniteJetAlgebra` | Seven endpoints; requires missing sharp-algebra olean |
 | `MeyerFiniteProjectorAlgebra` | Four endpoints; requires finite-jet olean |
@@ -1452,7 +1470,7 @@ degrees. Its necessity can use induction on jet order and a bounded affine
 function argument, avoiding a general exponential-polynomial asymptotic input.
 
 The bounded full-Hasse orbit candidate has a complete paper proof and moved to
-`../2-fully-proven/bounded-meyer-flow-orbits-live-in-critical-top-jets.md`.
+`../3-formalized/bounded-meyer-flow-orbits-live-in-critical-top-jets.md`.
 The exact jet flow formula and first-column recovery close the argument:
 induction kills every off-line jet; bounded affine first-order shear kills
 all but the highest critical jet; rowwise unit phases give the converse HS

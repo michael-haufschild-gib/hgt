@@ -18,8 +18,8 @@ it does not assert the original all-source Q-II endpoint.
 
 The carrier is a complex linear subspace. Its ordinary sharp-square trace is
 a sum of nonnegative critical value squares: off-line values vanish. Restrict
-the existing polar surface, using `PolarSurface.restrict` from
-`ArithmeticOrientationGeometry/SectionsOnTheOrbitOfACycle.lean`. Its defect
+the existing polar surface by composing its pairing with the submodule
+inclusion and retaining both fibre classes. Its defect
 is therefore nonnegative, and the existing positive-cone RR, Bézout, and
 ampleness theorems apply with their hypotheses proved on this carrier.
 
@@ -44,11 +44,12 @@ source proof read, as recorded below.
 
 ## Status
 
-The paper proof is dependency-closed on the bounded-orbit classification,
-its trace-radical theorem, and the existing polar-surface restriction and
-positive-cone theorems. Complete unrun draft:
-`/tmp/QIIBoundedMeyerSourceSurfaceDraft.lean`. Lean certification pending;
-external novelty unverified.
+The paper argument uses the certified bounded-orbit classification,
+trace-radical theorem, and positive-cone theorems. The generic direct
+restriction constructor passed its scratch check; this avoids an unrelated
+duplicate `PolarSurface.polarLift` declaration in the AOG import chain.
+The actual module still needs its direct check and thirteen axiom audits.
+Its older scratch copy is stale. External novelty unverified.
 
 The simple-critical witness search found the unconditional theorem
 `RHTower.DeletionMixedRefinement.exists_high_simple_critical_xi` in

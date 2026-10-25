@@ -1,5 +1,4 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.MeyerCriticalTopAlgebra
-import GaloisForLFunctions.ArithmeticOrientationGeometry.SectionsOnTheOrbitOfACycle
 import GaloisForLFunctions.RHTower.ArithmeticJointJetExclusion
 import GaloisForLFunctions.RHTower.XiHedenmalmJordanNormalCollision
 
@@ -32,8 +31,15 @@ private theorem bounded_V : meyerScalingSurface.V ∈ meyerBoundedCycleSubmodule
   meyerCriticalTopSourceSubmodule.zero_mem
 
 /-- The restriction retains the original pairing and both pole degrees. -/
-def meyerBoundedSurface : PolarSurface meyerBoundedCycleSubmodule :=
-  meyerScalingSurface.restrict meyerBoundedCycleSubmodule bounded_H bounded_V
+def meyerBoundedSurface : PolarSurface meyerBoundedCycleSubmodule where
+  pair := meyerScalingSurface.pair.compl₁₂
+    meyerBoundedCycleSubmodule.subtype meyerBoundedCycleSubmodule.subtype
+  pair_comm x y := meyerScalingSurface.pair_comm x.1 y.1
+  H := ⟨meyerScalingSurface.H, bounded_H⟩
+  V := ⟨meyerScalingSurface.V, bounded_V⟩
+  pair_H_H := meyerScalingSurface.pair_H_H
+  pair_V_V := meyerScalingSurface.pair_V_V
+  pair_H_V := meyerScalingSurface.pair_H_V
 
 theorem meyerBoundedSurface_defect (x y : meyerBoundedCycleSubmodule) :
     meyerBoundedSurface.defect x y = meyerSourceTrace x.1.2.2 y.1.2.2 :=

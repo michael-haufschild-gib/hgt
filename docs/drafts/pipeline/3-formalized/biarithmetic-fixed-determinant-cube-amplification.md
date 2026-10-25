@@ -1,9 +1,9 @@
 # Fixed-determinant cubic amplification and its arithmetic cost
 
 - **ID:** biarithmetic-fixed-determinant-cube-amplification
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE (Lean formalization incomplete)
-- **Proof status:** Only statements with completed Lean checks and axiom audits are proved. Paper arguments below are proof plans; every significant claim remains a formalization obligation.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Proof status:** The specified operation, complete integral trace classification, actual golden counterexample, complex-root comparison, and survivor purity all passed direct Lean checks and transitive axiom audits.
 - **Parent:** [Biarithmetic Geometry](../1-in-progress/biarithmetic-geometry-foundations.md)
 - **Statement:** Audit the natural operation `alpha -> alpha^3/p` on reciprocal genus-one roots of product `p`. It preserves rank and determinant while cubing the normalized roots. Determine exactly when integrality and nonnegative low-degree point counts survive, and test the actual golden roots.
 
@@ -48,9 +48,9 @@ integral/positive trace classification, rather than the bare failure.
 - [x] Corpus-first reuse audit and exact candidate operation specified.
 - [x] Dependency-closed proof plan, including small primes and exact source-root identity.
 - [x] Lean trace classification and actual golden counterexample.
-- [ ] Direct source checks, transitive audits, and umbrella import.
+- [x] Direct source checks, transitive audits, and umbrella imports.
 
-No retirement or formal theorem is claimed yet. In particular, most genuine
+The specified normalized-cube route is closed with its exact positive survivor. Most genuine
 curve traces also lose integrality under this normalization: the operation
 is not assumed to preserve the finite-field calibration.
 
@@ -96,10 +96,10 @@ check and four clean transitive audits. Its
 records the preserved determinant, trace ten, transformed counts minus four
 and minus sixty-four, and comparison with every original point count.
 The general integral trace classification also passed its direct repository check.
-The complex-root bridge and purity theorem remain pending.
+The complex-root bridge and purity theorem also passed direct verification.
 
-The root-to-trace bridge is drafted in
-`/tmp/BiarithmeticNormalizedCubicRootLaw.lean`. Its field identities retain
+The root-to-trace bridge is formalized in
+`BiarithmeticGeometry/NormalizedCubicRootLaw.lean`. Its field identities retain
 the determinant, give Newton's exact transformed trace, and show that
 dividing by a square-root scale turns the operation into cubing normalized
 roots. The real-root specialization identifies the two second point-count
@@ -108,8 +108,11 @@ The complex-root specialization also records that each second point count
 is the corresponding real integer. Thus the classification covers arbitrary
 complex reciprocal roots, including the pure nonreal cases, by taking real
 parts of the exact integer identity. The root-purity extension below is also
-included. Scratch check and all eight transitive audits passed. Production
-source is wired; its direct check remains pending.
+included. Scratch check, all eight transitive audits, and the direct repository
+check passed. The umbrella import is wired; the umbrella was not compiled.
+The [root-law card](biarithmetic-normalized-cubic-root-law.md) names all eight
+audited declarations. Their dependencies use only `propext`, `Classical.choice`,
+and `Quot.sound`.
 
 ## Root purity exposed by the trace classification
 
@@ -123,4 +126,6 @@ norm squares equal `p`. Applied to the checked integral classification,
 every root pair surviving normalized cubing's two positive-count tests is
 pure. Corpus searches returned general curve purity machinery but no
 matching elementary reciprocal-pair criterion. This strengthened survivor
-remains a Lean obligation and must be checked before closing the route.
+is Lean-verified by `normalizedCubicRoot_survivor_pure`. Thus the obstruction
+retains its exact arithmetic classification and actual root-purity survivor.
+The general bounded-conductor question remains open.
