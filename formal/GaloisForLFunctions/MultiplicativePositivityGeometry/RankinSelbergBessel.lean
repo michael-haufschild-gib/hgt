@@ -98,10 +98,10 @@ theorem residual_hasSum (hg : ∀ n, |g n| ≤ M) {x : ℝ} (hx : 0 < x) (a₀ :
   have hQ : HasSum (fun n => zetaBoundaryWeight x n * g n ^ 2) (squareTrace g x) :=
     (summable_squareTrace_terms hg hx).hasSum
   have hall := ((((hQ.sub ((hS 0).mul_left (2 * a₀))).sub
-    ((hasSum_sum fun u _ => (hS u).mul_left (a u)).mul_left 2)).add
+    ((hasSum_sum (s := U) fun u _ => (hS u).mul_left (a u)).mul_left 2)).add
     ((hC 0).mul_left (a₀ ^ 2))).add
-    ((hasSum_sum fun u _ => (hC u).mul_left (a u)).mul_left (2 * a₀))).add
-    (hasSum_sum fun u _ => hasSum_sum fun v _ =>
+    ((hasSum_sum (s := U) fun u _ => (hC u).mul_left (a u)).mul_left (2 * a₀))).add
+    (hasSum_sum (s := U) fun u _ => hasSum_sum (s := U) fun v _ =>
       (((hC (u - v)).add (hC (u + v))).div_const 2).mul_left (a u * a v))
   refine hall.congr_fun fun n => ?_
   simp only [mul_zero, Real.cos_zero, mul_one]
