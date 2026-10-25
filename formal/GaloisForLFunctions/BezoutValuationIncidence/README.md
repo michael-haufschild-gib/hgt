@@ -202,6 +202,9 @@ $G_{ij}$; diagonal $D_T$; mixed remainder $R^{\text{mix}}_T$; $E^{\text{int}}_T=
     at least `2^(-4ε)/15552` for horizons containing both cells.
     [Divergent cutoffs](MovingVaughanRowsConvergeCellByCell.lean) recover
     `(A,A,-A,0,P)` cellwise in both centered and smooth-subtracted rows for every `ε>0`.
+    At half damping, a [common summable envelope](UniformHalfDampingVaughanGramsHaveAnActualLimit.lean)
+    gives full pronic convergence and the actual renormalized infinite Gram
+    at independently divergent cutoffs and horizons.
     [Dominated moving sums](../HTGeometry/MovingTruncationsPreserveDominatedLimits.lean)
     permit independently divergent horizons under a common summable envelope.
     The [uniform stretched-exponential estimate](UniformStretchedExponentialCancellationInTheVaughanConvolution.lean)

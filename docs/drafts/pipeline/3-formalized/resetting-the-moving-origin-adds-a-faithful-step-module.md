@@ -1,8 +1,8 @@
 # Resetting the moving origin adds a faithful step module
 
 - **ID:** resetting-the-moving-origin-adds-a-faithful-step-module
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean completion pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
 
 ## Exact source convention
@@ -18,7 +18,7 @@ The normalized integer cofactor Gram sees this distinction because floor
 dilation reads the value at zero. The relevant fixed step row is
 `u(0)=0`, `u(n)=1` for positive `n`.
 
-## Exact limit statement on paper
+## Exact limit statement
 
 Take any actual escaping common Gram subsequence, with source energy `E`
 and limit `K`. Along moving integer shifts suppose
@@ -88,9 +88,9 @@ The exact source-power disappearance theorem, uniform bounded-row pairing,
 moving-Gram perturbation, reset and raw source Gram convergence, every
 positive-mass realization, complete step and mixture faithfulness, full
 Bohr hulls, and exclusion of constant boundary mass passed final canonical
-Lean checks with standard axioms. Only the dimension/index corollaries below
-remain unchecked. These shifted-source results do not identify the unshifted
-actual escape spectrum.
+Lean checks with standard axioms. The dimension/index corollaries below also
+passed their final canonical check. These shifted-source results do not
+identify the unshifted actual escape spectrum.
 
 ## Consequence for moving-source repair transport
 
@@ -115,13 +115,14 @@ receiver-scale formula, own-scale formula, realization of every positive
 mass on escape and exclusion from every actual zero-origin kernel, at every
 subcritical damping. The canonical sources and imports are installed.
 
-The corresponding dimension/index corollaries are now explicitly drafted in
-`/tmp/qiii_origin_boundary_index_body.lean`: the step module and every positive
-origin mixture are infinite-dimensional and their annihilator quotients have
-continuum Hamel rank. The proof applies the existing infinite Hilbert-image
-rank theorem to the injective continuous cyclic Wiener map. The separate
-scratch is assembled but UNVERIFIED, awaiting canonical boundary imports.
+`PositiveOriginBoundariesHaveContinuumIndex` proves the step module and every
+positive origin mixture are infinite-dimensional and their annihilator
+quotients have continuum Hamel rank. In each namespace `OriginStepModule`
+and `MixedOriginModule`, the exact declarations are `not_finiteDimensional`
+and `annihilator_quotient_rank`. They apply the existing Hilbert-image rank
+theorem to the injective continuous cyclic Wiener map. Final canonical
+check `86587` passed all four transitive axiom audits with only `propext`,
+`Classical.choice`, `Quot.sound`. All leaves are umbrella-wired.
 
-The dimension/index scratch is under direct verification. Its completion and
-all final canonical checks are tracked in
+The complete canonical checks are tracked in
 [the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).

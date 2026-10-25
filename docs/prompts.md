@@ -421,7 +421,8 @@ and these new research results:
 - formal/GaloisForLFunctions/ArithmeticPositiveDuality/PositiveMeasureHamburgerRigidity.lean
 - fformal/GaloisForLFunctions/ArithmeticPositiveDuality/BeurlingRiemannFunctionalEquationRigidity.lean
 - formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/ArithmeticForcesBlindness.lean
-  
+- formal/GaloisForLFunctions/ArithmeticDefectRigidity/RecordMinimaForceInfiniteCofactorLimits.lean
+    
 create updated versions of the reviews to reflect the current status quo and frontier of our research:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
 2. then create a summary document that combines all the information and:
@@ -464,7 +465,9 @@ go one by one through the following research programmes and update their README.
 - formal/GaloisForLFunctions/SignedSuccessorArithmetic/README.md
 - formal/GaloisForLFunctions/ArithmeticDefectRigidity/README.md
 - formal/GaloisForLFunctions/BiarithmeticGeometry/README.md
-    
+- formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
+- formal/GaloisForLFunctions/ArithmeticPositiveDuality/README.md
+  
 important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics, the questions it aims to answer, the tools it aims to create, its foundational pillar theorems, where it sits in the context of our whole research, how it relates to other research programmes.
 
 where needed use the search tool for the lean corpus to confirm:
@@ -508,7 +511,9 @@ and read the current research programmes:
 - formal/GaloisForLFunctions/ArithmeticDefectRigidity/README.md
 - formal/GaloisForLFunctions/BiarithmeticGeometry/README.md
 - formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
-  
+- formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
+- formal/GaloisForLFunctions/ArithmeticPositiveDuality/README.md
+    
 Only read these documents, no other markdown files.
 
 Use the search tool for our lean corpus to research what we have proven and not proven. Do not assume, our research is far ahead of your training data. Take the time to search and understand. 
@@ -516,11 +521,11 @@ Use the search tool for our lean corpus to research what we have proven and not 
 Keep a log file in logs/ for your research to note down facts and findings, since this research will go over multiple context window compactions that otherwise may lose information.
 
 The questions for you to answer:
-1. Do you see any opportunity for a new proof mechanism or route that circumvents the walls?
+1. Do you see any opportunity for a new proof mechanism or route that circumvents the walls or destroy a wall?
 2. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
 3. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-2510/fable.md
+Write a report in docs docs/reports/review-2510/opus.md
 
 do not run any builds. do not search the web.
 

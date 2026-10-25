@@ -368,3 +368,10 @@ theorem fejer_barrier_sharp {K : ℕ} (hK : 1 ≤ K) {c : ℝ}
   exact le_of_mul_le_mul_right this h0
 
 end GaloisForLFunctions.MultiplicativePositivityGeometry
+
+open GaloisForLFunctions.MultiplicativePositivityGeometry in
+#print axioms cosinePolynomial_first_le_fejer
+open GaloisForLFunctions.MultiplicativePositivityGeometry in
+#print axioms fejer_barrier_attained
+open GaloisForLFunctions.MultiplicativePositivityGeometry in
+#print axioms fejer_barrier_sharp

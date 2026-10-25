@@ -489,6 +489,10 @@ actual prefix and pole (`TheVaughanLimitRowsAreIndependentInTwoCells`).
 Both moving-cell targets are verified: divergent cutoffs recover
 `(A,A,-A,0,P)` cellwise in centered and smooth-subtracted rows at every
 positive damping (`MovingVaughanRowsConvergeCellByCell`).
+All six endpoint moving-limit targets are verified: actual pairings are
+absolutely summable; remainders converge in full pronic square norm; subtracting
+the harmonic term gives the actual infinite Gram at independent growing
+horizons (`UniformHalfDampingVaughanGramsHaveAnActualLimit`).
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?
@@ -804,6 +808,14 @@ not supply purity.
   bounded `k^(1-epsilon)/E` for recentered shifts and bounded
   `k^(2-2epsilon)/E` for raw shifts. Both passed Lean axiom audits and final
   source verification.
+- Resetting only the moving origin retains an exact max-kernel component:
+  the own-normalized Gram is `(K+c/max(j,k))/(1+c)`. Escape records realize
+  every positive mass `c`; the resulting Wiener module is faithful, has the
+  full Bohr hull, infinite Hilbert dimension and continuum annihilator-quotient
+  rank. Keeping the raw origin instead yields `(K+c)/(1+c)`, excluded from
+  every actual zero-origin kernel when `c>0`. These statements passed final
+  canonical Lean checks with standard axioms. They concern shifted rows and
+  do not construct an actual unshifted escaping state.
 - The closed Wiener-annihilator quotient cannot have countably infinite Hamel
   dimension. Its finite dimension agrees with the cyclic Hilbert module’s
   dimension. The stronger exact infinite value, continuum Hamel dimension,

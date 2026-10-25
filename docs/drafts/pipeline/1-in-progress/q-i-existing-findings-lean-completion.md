@@ -36,7 +36,7 @@ Lean module names below are relative to `GaloisForLFunctions/`; BVI denotes
 | `the-centred-vaughan-pole-has-positive-finite-energy.md` | All seven BVI `TheCentredVaughanPoleHasPositiveFiniteEnergy` targets passed final direct checks and standard-axiom audits, including the eventual faster-power obstruction. The stated endpoint product-horizon nonzero limit still needs its actual Gram chain. |
 | `the-endpoint-vaughan-limit-has-rank-two.md` | All twelve BVI `TheVaughanLimitRowsAreIndependentInTwoCells` targets passed final direct checks and standard-axiom audits. `TheActualVaughanLimitGramHasRankTwo` and `TheActualEndpointVaughanGramHasRankTwo` remain pending, including the explicit positive-definite two-by-two prefix/pole Gram corollary; actual summability comes from the moving-limit leaves below. |
 | `uniform-half-damping-vaughan-harmonic-gram.md` | BVI `UniformCriticalPronicPairingsFromLogarithmicCancellation`, `UniformLogarithmicPrefixRemaindersInAllVaughanRows`, `UniformHarmonicVaughanGramsAtHalfDamping`, `PositiveFloorMajorantsControlPronicEnergy`, `MovingVaughanRowsConvergeCellByCell`, `UniformHalfDampingVaughanGramsHaveAnActualLimit`, `UniformHarmonicEnergyLawsForVaughanSuperpositions`, `TheHalfDampingVaughanGramLimitsFormARankThreeRay`, `ProductHorizonVaughanGramsAtHalfDampingHaveFiniteLimits`, `EveryNonnegativeEndpointVaughanLimitIsRealized`; HTGeometry `MovingTruncationsPreserveDominatedLimits`, `VanishingPositiveScalesRealizeHarmonicMasses`. |
-| `vaughan-admission-phase-transition-at-half-damping.md` | BVI `VaughanAdmissionAtHalfDamping`, `VaughanAdmissionAboveHalfDamping`, `UpperHalfVaughanGramsHaveAnActualLimit`; actual upper-half rank two in the shared infinite-Gram leaf. |
+| `vaughan-admission-phase-transition-at-half-damping.md` | BVI `VaughanAdmissionAtHalfDamping`, `VaughanAdmissionAboveHalfDamping`, `UpperHalfVaughanGramsHaveAnActualLimit`; actual upper-half rank two in the shared infinite-Gram leaf. The paper also asserts critical Wiener convergence of the three floor-coefficient families. This coefficient-norm claim needs its own exact formalization; row-norm convergence alone does not discharge it. |
 | [vaughan-zero-cutoffs-remove-the-smooth-obstruction.md](../3-formalized/vaughan-zero-cutoffs-remove-the-smooth-obstruction.md) — COMPLETE | All twenty scalar and coefficient-space targets passed final direct checks and standard-axiom audits. Includes unique coordinate recovery, both exact spans, admitted and quotient dimensions, and unconditional half-damping admission. |
 | [vaughan-admitted-rank-filtration-reads-the-zero-abscissa.md](../3-formalized/vaughan-admitted-rank-filtration-reads-the-zero-abscissa.md) — COMPLETE | All twelve targets in BVI `TheVaughanAdmissionRankReadsTheZeroAbscissa` passed the final direct check and standard-axiom audits. Includes cutoff independence, exact zero-width boundary, all three RH criteria, and first/all damping-column summability equivalences. |
 | `all-positive-vaughan-tail-power-rates.md` | BVI `VaughanTailPowerGainsAtEveryPositiveDamping`. |
@@ -154,6 +154,11 @@ with standard axioms only. `MovingVaughanRowsConvergeCellByCell.lean` is wired
 and its scratch removed. For every positive damping, both centered and
 smooth-subtracted rows converge cellwise to the actual two-row frame when
 both cutoffs diverge.
+All six endpoint moving-limit targets passed corrected producing and final
+direct checks with standard axioms only. The module is wired and its scratch
+removed. It supplies actual limiting-pairing summability, full pronic convergence,
+and the renormalized Gram limit at independent horizons. Rank and limit-ray
+corollaries remain pending.
 The independent moving-horizon summation theorem passed producing and final
 direct checks with standard axioms only. Its HTGeometry module is wired and
 its scratch removed; see

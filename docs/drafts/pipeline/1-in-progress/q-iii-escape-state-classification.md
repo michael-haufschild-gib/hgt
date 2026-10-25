@@ -151,7 +151,11 @@ their own normalized Gram divides this by 1+b². The step orbit is faithful,
 so its projection forces full hull even without claiming a direct-sum cyclic
 space. Raw unreset boundary contributes a constant Gram and a dilation-invariant
 component, which conflicts with zero-origin critical contraction when nonzero.
-These boundary consequences still need Lean and do not construct actual b!=0.
+The reset/raw Gram formulas, faithfulness, full hulls and constant-boundary
+exclusion passed canonical Lean checks. Escape records realize every positive
+squared origin mass; this is an admission-or-realization theorem and asserts
+no particular escaping damping. The step and positive-mixture modules also
+have checked infinite dimension and continuum annihilator-quotient index.
 See [origin/translation card](../2-fully-proven/square-root-energy-translations-still-disappear.md).
 
 For receiver A, renormalized residual R, and paid forcing remainder F, R=F-A
@@ -430,7 +434,7 @@ ends. The next script has been prepared but NOT started.
 Two new boundary cards separate the established source-power estimate from
 new work:
 
-- `2-fully-proven/resetting-the-moving-origin-adds-a-faithful-step-module.md`
+- `3-formalized/resetting-the-moving-origin-adds-a-faithful-step-module.md`
   gives the dependency-closed paper limit and faithful-step argument when a
   moving origin trace is prescribed.
 - `3-formalized/escape-records-realize-a-faithful-moving-origin-boundary.md`

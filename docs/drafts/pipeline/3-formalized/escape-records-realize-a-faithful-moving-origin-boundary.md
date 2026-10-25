@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
-- **Dependency:** [Resetting the moving origin](../2-fully-proven/resetting-the-moving-origin-adds-a-faithful-step-module.md)
+- **Dependency:** [Resetting the moving origin](resetting-the-moving-origin-adds-a-faithful-step-module.md)
 
 ## Construction
 

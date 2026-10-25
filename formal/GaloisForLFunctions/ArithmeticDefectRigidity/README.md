@@ -157,11 +157,14 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     `c`, giving shifted rows with Gram `K + c/max(j,k)` (`admits_or_every_positive_resetOrigin_boundary_is_realized`,
     `admits_or_every_positive_faithful_boundary_is_realized`) — shifted, not unshifted limits. A constant
     origin boundary violates cofactor contraction (`unreset_boundary_ne_actual_kernel`); bounded rows pair
-    boundedly with subcritical cofactors (`exists_uniform_bounded_row_pairing`).
+    boundedly with subcritical cofactors (`exists_uniform_bounded_row_pairing`). Raw shifted rows realize
+    `(K+c)/(1+c)` for every positive `c` on escape and cannot equal any actual zero-origin kernel
+    (`admits_or_every_positive_unreset_boundary_is_realized`). The step module and every positive
+    reset mixture are infinite-dimensional with continuum annihilator-quotient rank
+    (`not_finiteDimensional`, `annihilator_quotient_rank` in the two origin-module namespaces).
 
-All thirteen origin-boundary leaves and vanishing-relative-energy perturbation passed canonical
-Lean checks and standard-axiom audits. Raw-origin convergence and boundary-index corollaries
-remain under verification. The
+All origin-boundary leaves, raw-origin convergence, boundary-index corollaries and
+vanishing-relative-energy perturbation passed canonical Lean checks and standard-axiom audits. The
 [completion ledger](../../../docs/drafts/pipeline/1-in-progress/q-iii-existing-findings-lean-completion.md)
 records each completed audit.
 

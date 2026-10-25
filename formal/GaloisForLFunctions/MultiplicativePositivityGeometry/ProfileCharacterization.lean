@@ -98,8 +98,3 @@ theorem boundary_profile_iff (hev : ∀ m, d (-m) = d m)
     exact twistedDivisor_profileCoeff hev hsupp hP m
 
 end GaloisForLFunctions.MultiplicativePositivityGeometry
-
-open GaloisForLFunctions.MultiplicativePositivityGeometry in
-#print axioms boundary_profile_iff
-open GaloisForLFunctions.MultiplicativePositivityGeometry in
-#print axioms profile_isEvenPosDef_iff

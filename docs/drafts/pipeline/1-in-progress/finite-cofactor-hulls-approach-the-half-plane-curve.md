@@ -4,8 +4,9 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE (Lean completion pending)
 - **Parent:** [Q-III](q-iii-escape-state-classification.md)
-- **Statement:** Every finite actual cofactor hull character is a pointwise
-  limit, on the full critical Wiener algebra, of half-plane evaluations.
+- **Statement:** Every hull character of a finite-dimensional actual cofactor
+  module is a pointwise limit, on the full critical Wiener algebra, of
+  half-plane evaluations.
 
 ## Corpus evidence and exact scope
 
@@ -24,7 +25,8 @@ should be approached as Re(s) tends to infinity. Values at zero are ignored
 by all arithmetic-function evaluations; no artificial normalization of
 raw Bohr points is needed for the character statement.
 
-This is approximation by the whole half-plane curve. It does not assert
+The finiteness hypothesis is finite Hilbert dimension, not merely finitely
+many hull points. This is approximation by the whole half-plane curve. It does not assert
 exact curve membership, approximation by translated zeta zeros, occurrence
 of these points in actual modules, or a result for infinite module hulls.
 

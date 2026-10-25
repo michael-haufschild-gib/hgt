@@ -162,3 +162,10 @@ convergence theorems. The planned shared module is
 `TheActualVaughanLimitGramHasRankTwo.lean`; the endpoint's ten consequences
 specialize it, including positive definiteness of the prefix/pole submatrix.
 These are unchecked proofs, not certified findings.
+
+The paper's separate coefficient-level assertion also remains an explicit
+formalization obligation: as both cutoffs diverge, the first three damped
+floor-coefficient differences tend to zero in critical Wiener norm. The
+current row-limit leaf uses a direct row envelope, so its verification does
+not certify this intermediate coefficient claim. The completion register
+includes a dedicated coefficient-norm proof before this card can close.

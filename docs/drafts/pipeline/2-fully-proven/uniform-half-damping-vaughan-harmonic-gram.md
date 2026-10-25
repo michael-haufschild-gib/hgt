@@ -3,7 +3,7 @@
 - **ID:** uniform-half-damping-vaughan-harmonic-gram
 - **Stage:** 2-fully-proven
 - **Type:** CLAIM (Lean verification pending)
-- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
+- **Verification:** The finite Gram/packet laws, actual renormalized moving limit, and pronic convergence are Lean-verified. Infinite Gram rank, limit-ray classification, realization, and product-horizon corollaries remain pending.
 - **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** At half damping, the centered Vaughan Gram differs from its explicit harmonic rank-one term by a bounded matrix uniformly over all cutoffs and horizons. Its renormalized moving-cutoff limit is an actual finite Gram of two source rows.
 - **Novelty status:** Endpoint refinement of the uniform convolution argument; initial corpus search found the fixed-cutoff admission law and smooth-power estimates, not this uniform bounded-error statement. No external novelty claim.
@@ -161,8 +161,9 @@ and the uniform finite floor majorant. The endpoint argument introduces no new
 analytic premise. The uniform double-convolution logarithmic theorem, generic
 damped logarithmic transfer, actual convolution fluctuation, and uniform
 truncated-Möbius logarithmic prefixes are now checked
-in Lean. The actual bounded-error law is now also verified. Moving-limit, rank,
-and realization corollaries remain unformalized. Full Q-I remains open.
+in Lean. The actual bounded-error and renormalized moving-limit laws are
+verified, including full pronic convergence. Rank, limit-ray, realization,
+and product-horizon corollaries remain under verification. Full Q-I remains open.
 
 The generic endpoint summation step is Lean-verified in
 `UniformCriticalPronicPairingsFromLogarithmicCancellation.lean`: two logarithms
@@ -188,8 +189,8 @@ The three packet laws also passed their corrected final direct check and
 standard-axiom audits in `UniformHarmonicEnergyLawsForVaughanSuperpositions.lean`.
 Their homogeneous error bound and both smooth-annihilation corollaries are
 included in the endpoint Gram audit. The packet module is wired and its
-scratch removed. Moving renormalized limits, the exact limit ray, and ranks
-remain under verification.
+scratch removed. Moving renormalized limits are also checked below; the exact
+limit ray and ranks remain under verification.
 
 ## Relation to subcritical limit classification
 
@@ -220,8 +221,9 @@ removed:
 - `tendsto_pmPronicVaughanSmoothRemainder_moving_cell`
 
 All twelve targets in `TheVaughanLimitRowsAreIndependentInTwoCells.lean`
-passed final direct checks with standard axioms only. Dominated moving pairings, endpoint
-Gram ranks, the exact limit ray and its realization remain unfinished.
+passed final direct checks with standard axioms only. Dominated endpoint moving
+pairings are also checked below. Gram ranks, the exact limit ray, and its
+realization remain unfinished.
 
 The five shared majorant and pronic-convergence targets are certified in
 `PositiveFloorMajorantsControlPronicEnergy.lean`. Positive reciprocal majorants
@@ -237,15 +239,23 @@ checks with standard axioms only in
 `HTGeometry/MovingTruncationsPreserveDominatedLimits.lean`. The module is wired
 and its scratch removed; see
 [the moving-sum audit](../3-formalized/moving-truncations-preserve-dominated-limits.md).
-`/tmp/QIHalfVaughanMovingLimitTools.lean` drafts six actual endpoint
-applications: one common absolute pairing envelope, summability of the limiting
-Gram, convergence of the moving remainder pairings, convergence in the full
-infinite pronic square norm, convergence at any finite moving horizon, and the
-renormalized moving Gram limit above. The final step uses the common absolute
-mixed-pairing bound and the vanishing harmonic amplitude. These six targets are
-UNPROVED pending Lean verification and axiom audits. The infinite Gram ranks,
-limit ray, realization, and product-horizon consequences
-remain unfinished.
+All six actual endpoint applications in
+`UniformHalfDampingVaughanGramsHaveAnActualLimit.lean` passed corrected producing
+and final direct checks with only standard axioms. The module is wired and
+its scratch removed. The final step uses the common absolute mixed-pairing
+bound and vanishing harmonic amplitude:
+
+- `exists_summable_pmPronicVaughanSmoothRemainder_half_pair_envelope`
+- `summable_pmPronicVaughanHalfLimitGram_terms`
+- `tendsto_pmPronicVaughanSmoothRemainder_half_pairing`
+- `tendsto_tsum_pmPronicVaughanSmoothRemainder_half_sub_limit_sq`
+- `tendsto_pronicNorm_pmPronicVaughanSmoothRemainder_half_sub_limit`
+- `tendsto_pmPronicVaughanCentredGram_half_sub_harmonic`
+
+These prove absolute summability of the actual limiting pairings, convergence
+at independently divergent horizons, full pronic square convergence, and norm
+convergence at every finite moving horizon. The infinite Gram ranks, limit ray,
+realization, and product-horizon consequences remain unfinished.
 
 The endpoint packet consequence is certified in `UniformHarmonicEnergyLawsForVaughanSuperpositions.lean`:
 the harmonic energy error is bounded by one constant times the square of the

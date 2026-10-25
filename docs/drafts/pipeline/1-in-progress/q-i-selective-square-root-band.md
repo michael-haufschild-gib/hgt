@@ -403,11 +403,13 @@ The endpoint bounded-error and packet laws are Lean-verified in
 `../3-formalized/uniform-harmonic-vaughan-grams-at-half-damping.md`: subtracting
 the explicit harmonic rank-one term leaves one bounded matrix error for all
 cutoffs and horizons. The parent card
-`../2-fully-proven/uniform-half-damping-vaughan-harmonic-gram.md` also asserts
-the renormalized moving limit of rows `(A,A,-A,0,P)`, exact rank two, vanishing
-product-horizon harmonic mass, and a uniform endpoint trace bound. Those
-additional claims remain under Lean verification. No fixed strip below half
-damping is supplied by the certified bounded-error law.
+`../2-fully-proven/uniform-half-damping-vaughan-harmonic-gram.md` now also has
+the six checked targets in `UniformHalfDampingVaughanGramsHaveAnActualLimit.lean`:
+actual limiting-pairing summability, full pronic convergence, and the renormalized
+moving limit of rows `(A,A,-A,0,P)` at independently divergent horizons.
+Exact rank two, vanishing product-horizon harmonic mass, and the uniform endpoint
+trace bound remain under Lean verification. No fixed strip below half damping
+is supplied by these endpoint laws.
 
 The pole's positive finite energy is Lean-verified in
 `../2-fully-proven/the-centred-vaughan-pole-has-positive-finite-energy.md`.
