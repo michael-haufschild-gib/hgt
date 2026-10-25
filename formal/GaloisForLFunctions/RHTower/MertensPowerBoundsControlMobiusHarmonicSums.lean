@@ -21,11 +21,12 @@ theorem deningerHarmonicPartial_eq_succ_boundary_sub_tail {N : ℕ} (hN : 1 ≤ 
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   have hpartial := Sieve.deningerHarmonicPartial_eq_mertens_boundary_add N
   have hsplit := deningerMertensHarmonic_summable.sum_add_tsum_nat_add (N + 1)
-  rw [Sieve.tsum_mertensHarmonic_eq_zero, sum_range_succ] at hsplit
+  rw [Sieve.tsum_mertensHarmonic_eq_zero, Finset.sum_range_succ] at hsplit
   have hb : Sieve.mertensM N / (N : ℝ) -
       Sieve.mertensM N / ((N : ℝ) * ((N : ℝ) + 1)) =
         Sieve.mertensM N / ((N : ℝ) + 1) := by
-    field_simp [hN0.ne', (show (N : ℝ) + 1 ≠ 0 by positivity)] <;> ring
+    field_simp [hN0.ne', (show (N : ℝ) + 1 ≠ 0 by positivity)]
+    ring
   linear_combination hpartial + hsplit + hb
 
 /-- A Mertens power saving transfers to the harmonic Möbius sum with the same exponent. -/
@@ -46,7 +47,8 @@ theorem abs_deningerHarmonicPartial_le_of_mertens_power {η C : ℝ}
         div_le_div_of_nonneg_left (by positivity) (sq_pos_of_pos hn0)
           (by nlinarith only [hn0])
       _ = _ := by
-        rw [show -1 - η = (1 - η) - 2 by ring, Real.rpow_sub hn0, Real.rpow_two]
+        rw [show -1 - η = (1 - η) - 2 by ring,
+          Real.rpow_sub hn0 (1 - η) (2 : ℝ), Real.rpow_two]
         ring
   have hs : Summable (fun i : ℕ => Sieve.mertensM (i + (N + 1)) /
       (((i + (N + 1) : ℕ) : ℝ) * (((i + (N + 1) : ℕ) : ℝ) + 1))) :=

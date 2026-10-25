@@ -265,7 +265,7 @@ No external novelty is claimed for this specialization of uniform dominated conv
 
 ### Fixed-cutoff classification and finite harmonic rigidity
 
-The normal-form paper proof is now dependency-closed in
+The normal-form classification is Lean-verified in
 `../3-formalized/vaughan-finite-cutoff-receiver-normal-form.md`. Every fixed packet is
 `w_3 I_ε + L_w n + Q_w n^(1-ε)` plus bounded pronic energy. The existing VK source
 estimate and smooth-power norm asymptotic force both explicit coefficients to vanish
@@ -382,10 +382,15 @@ An exact extreme-cutoff invariant sharpens this boundary:
 At `U=1,V=T`, the two centered convolution pieces are proportional with factor `ρ-1`.
 After subtracting the smooth Gram model, their corresponding error contrast equals
 `ρ subHalfZetaCoeff(ε)^2 H_T^2/(1-2ε)>0`. A fixed power rate for the uniform residual
-Gram law is therefore equivalent, on paper, to a fixed zero-free strip. Twelve
+Gram law's fixed-strip equivalence remains under verification. All twelve
 finite identity, positivity, cofinal-obstruction, and harmonic-rate targets
-are drafted in `TheExtremeVaughanCutoffReadsItsHarmonicSum.lean`, including
-the eventual common-exponent-above-one obstruction. Their checks remain pending.
+in `TheExtremeVaughanCutoffReadsItsHarmonicSum.lean` passed final direct checks
+and standard-axiom audits. This includes the eventual common-exponent-above-one
+obstruction and the positive cofinal harmonic floor.
+The two forward Mertens-to-harmonic targets also passed final direct checks
+and standard-axiom audits in `MertensPowerBoundsControlMobiusHarmonicSums.lean`:
+the successor boundary minus strict Mertens tail preserves the power exponent
+with constant `C(1+1/η)`.
 
 ## External calibration
 
@@ -442,14 +447,14 @@ centered and smooth-subtracted rows tend cellwise to `(A,A,-A,0,P)` when both
 cutoffs diverge. Both final direct checks and standard-axiom audits passed.
 This pointwise statement alone supplies no energy bound.
 
-The exact decay indices are now proved on paper in
+The exact decay-index claims are recorded in
 `../2-fully-proven/vaughan-tail-and-energy-decay-indices.md`.
 For every fixed `ε>0`, the supremal signed-tail gain is `1-Θ`, independent of
 damping; the normalized square empty-leg energy has index `4(1-Θ)` in `N`, or
 `2(1-Θ)` in the horizon. The proof combines the checked quartic identity, finite
 Abel inversion, and the read Littlewood and absolute-Mertens-moment exponent laws.
 The compact-interval power-increment bound removes the earlier restriction `ε≤1`
-on paper; its five Lean targets remain unverified. The full rate sets, including
+in the proposed proof; its five Lean targets remain unverified. The full rate sets, including
 endpoint attainment, are independent of positive damping. Thirty Lean targets
 for the indices, exact rate sets, and horizon formulations are drafted, uncompiled.
 They include three explicit equivalences with the unrestricted nonnegative

@@ -46,14 +46,14 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Positive boundary modules have infinite dimension and continuum index | Final canonical audit `86587` passed with standard axioms; no olean needed |
 | Scalar origin-trace convergence and nonvanishing successor scale | Final canonical audit `80601` passed with standard axioms; no olean needed |
 | Exact incomplete dilation fibre and mixed C*D/p bound | Required olean `69760` and final canonical source check `89066` passed with standard axioms |
-| Actual horizon contraction, principal ideal quotient, full intertwining | Combined scratch passed; canonical sources installed and wired, individual checks pending |
+| Actual horizon contraction, principal ideal quotient, full intertwining | Canonical source checks `13848`, `76726`, `61116`, `33454` passed with standard axioms |
 | Closed dilation range, index loss, matrix/operator horizon order | Combined scratch passed; canonical sources installed and wired, individual checks pending |
 | Rank-one contraction fixes state | Combined scratch passed; canonical source installed and wired, final check pending |
 | Arbitrary commuting family has a common eigenvector | Final canonical audit `15948` passed with standard axioms; required olean exists |
-| Finite actual hull magnitudes and half-plane approximation | Draft scratch after operator order and generic eigenvector theorem |
-| Tied-torus and augmentation character limits | Draft scratch; refactor existing owner after verification |
+| Finite actual hull magnitudes and half-plane approximation | Full scratch `83688` passed all five standard-axiom audits; three canonical leaves installed and wired, individual checks pending |
+| Tied-torus and augmentation character limits | Owner final `5652` and leaf final `10781` passed with standard axioms; required oleans complete |
 | Conjugation of actual source pairings, annihilator and hull | Final canonical audit `78866` passed with standard axioms; card moved to `3-formalized` |
-| Interior Wiener jets, mixed interpolation and paid quotient lower bounds | Base canonical checks passed; full mixed scratch retry has one repaired derivative-rewrite mismatch awaiting recheck |
+| Interior Wiener jets, mixed interpolation and paid quotient lower bounds | Full combined scratch finished without errors, fourteen standard-axiom reports; base final `84720` passed; six application leaves installed and wired, individual checks pending |
 | Vanishing Gram steps, intermediate kernels, singleton/continuum alternative | Final canonical audit `79971` passed with standard axioms; card moved to `3-formalized` |
 
 The square-root translation card is now in `3-formalized`, including its
@@ -116,6 +116,8 @@ unchanged checks. All required leaves are wired into their programme umbrellas.
 | Full contracted-module embedding, Wiener intertwining and exact annihilator | `33454` | `78435` passed |
 | Interior Wiener jet linearity, analytic order calculus and point-mass evaluation | `84720` | `28902` passed |
 | Extracted finite-prime torus approximation and preserved half-plane unit theorem | `5652` | Updated owner `46690` passed |
+| Simultaneous vertical and augmentation limits on the full Wiener algebra | `10781` | `95510` passed |
+| Numeric real/complex packet order, complete-module dilation order and diagonal interval | `42266` | `68599` passed |
 
 The full mixed-jet third check completed without errors, with all fourteen
 standard-axiom reports in `/tmp/qiii-visible-mixed-jet-index-third.log`.
@@ -127,8 +129,44 @@ The changed owner's required olean passed in session `46690`, with three
 standard-axiom reports in `/tmp/qiii-tied-torus-owner-required-olean.log`.
 Its final source-only check `5652` passed, with three standard-axiom reports
 in `/tmp/qiii-tied-torus-owner-canonical-final.log`.
-The new tied-torus leaf is now generating its required olean for the written
-finite-hull application; output `/tmp/qiii-tied-torus-limits-required-olean.log`.
+The new tied-torus leaf's required olean passed in session `95510`, with all
+three standard-axiom reports in `/tmp/qiii-tied-torus-limits-required-olean.log`.
+Its final source-only check `10781` passed, with all three standard-axiom
+reports in `/tmp/qiii-tied-torus-limits-canonical-final.log`.
+The numeric horizon-order required olean passed in session `68599`, with
+three standard-axiom reports in `/tmp/qiii-numeric-horizon-order-required-olean.log`.
+Its final source-only check `42266` passed, with all three standard-axiom
+reports in `/tmp/qiii-numeric-horizon-order-canonical-final.log`.
+The finite-hull scratch now has all required dependencies and is checking;
+session `97457`, output `/tmp/qiii-finite-hull-moduli-first.log`.
+That first check exited with one local failure: the unit coefficient was
+written `pointMass ↑1`, so its rewrite did not match `pointMass 1`.
+The character's `map_one'` now explicitly changes to the natural-indexed
+point mass before rewriting, in both combined and staging sources. The
+generic and actual common-eigencharacter magnitude theorems had standard
+axioms; the three hull reports inherited the failed definition and are not
+accepted. The repaired full scratch `83688` passed, with all five
+standard-axiom reports in `/tmp/qiii-finite-hull-moduli-retry.log`.
+The generic magnitude, actual eigencharacter and finite-hull application
+leaves are installed and umbrella-wired. Their individual import-boundary
+audits remain. The generic and actual magnitude leaves need oleans for the
+written importers; the final finite-hull application is source-only.
+The diagonal/horizon-energy card completed every gate and moved to
+`3-formalized/cofactor-diagonals-read-horizon-energy-ratios.md`.
+
+A further card audit identified one existing paper assertion still missing
+its exact application theorem: the local divisor order of the Fermi Mellin
+quotient, away from scalar poles, is numerator zeta order minus shifted
+denominator order. This is a source diagnostic, not a bridge to centered
+cofactor modules. The eta-factor nonvanishing input already exists as
+`RHTower.one_sub_two_cpow_ne_zero` in `FermiNymanBeurlingHaarTarget`.
+The exact order application is now part of this completion queue; no new
+arithmetic source claim or analytic premise is authorized.
+Its proof and pending status are on
+[the Fermi divisor card](fermi-mellin-divisors-count-only-uncancelled-zeta-orders.md);
+complete scratch `/tmp/qiii-fermi-divisor-order-check.lean` is checking in
+session `64886`, output `/tmp/qiii-fermi-divisor-order-first.log`.
+Numeric-order final audit `42266` and finite-hull scratch `83688` are complete.
 All six mixed-jet application sources are installed and umbrella-wired;
 canonical import-boundary checks are the remaining jet gate.
 The six completed first-five contraction staging fragments and the completed

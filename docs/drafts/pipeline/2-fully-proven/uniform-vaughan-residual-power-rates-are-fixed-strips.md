@@ -3,7 +3,7 @@
 - **ID:** uniform-vaughan-residual-power-rates-are-fixed-strips
 - **Stage:** 2-fully-proven
 - **Type:** CLAIM (Lean verification pending)
-- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
+- **Verification:** The twelve extreme-cutoff targets and both Mertens-to-harmonic targets passed final direct Lean checks and standard-axiom audits. The full uniform-power equivalence remains UNPROVED pending its remaining Lean chain.
 - **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** At any fixed `0<ε<1/2`, a fixed power rate in the uniform second-scale centered Vaughan Gram law is equivalent to `zetaZeroAbscissa<1`.
 - **Novelty status:** Exact specialization of the Vaughan pieces plus the uniform hyperbola proof. No external novelty claim.
@@ -93,7 +93,8 @@ a fixed power rate for every normalized centered Gram error, uniformly in both c
 
 ## Positive survivor and scope
 
-The exact invariant (1) is unconditional on paper and remains under Lean verification.
+The exact invariant (1), strict positivity, and cofinal reciprocal-horizon floor
+are Lean-verified, together with both faster-rate obstructions.
 The uniform logarithmic Gram law has passed its complete direct Lean checks and
 standard-axiom audits in `UniformVaughanGramsFollowTheirSmoothRankOneTerm.lean`.
 The equivalence identifies the precise
@@ -102,24 +103,47 @@ neither a strip nor impossibility of a strip. Full Q-I remains open.
 
 ## Lean status
 
-Paper proof dependency-closed. Lean formalization pending. Required finite ingredients
+The complete power equivalence remains under verification. Required finite ingredients
 are the existing weighted Vaughan identity, Möbius divisor inversion, reciprocal
 mean factorization, and finite Abel summation. The generic divisor-square hyperbola estimate is checked in
 `HyperbolaCancellationWithDivisorBoundedCoefficients.lean`; its logarithmic
 transfer is checked in `LogarithmicCancellationSurvivesTheDampedFloorTransform.lean`.
-The exact extreme-cutoff identities, strict positivity, cofinal floor, and reciprocal
-little-o obstruction, and harmonic-power transfer to Mertens sums are drafted as twelve
-audit targets in `/tmp/QIExtremeCutoffTools.lean`.
-The twelfth states the paper's explicit eventual exponent-above-one obstruction
-for the two convolution entries, deriving it from their reciprocal little-o obstruction.
-The source statements in `BaezDuarteMobiusCriticalTailObstruction.lean` have been read;
-their new specialization has not yet been compiled.
+All twelve targets in `TheExtremeVaughanCutoffReadsItsHarmonicSum.lean` passed
+corrected producing and final direct checks, with only `propext`,
+`Classical.choice`, and `Quot.sound` as transitive axioms. The module is wired
+and its scratch removed:
+
+- `pmPronicVaughanSmallDensity_one`
+- `pmPronicVaughanPiece_smallSmall_one_of_le`
+- `pmPronicVaughanCentredPiece_large_one_eq`
+- `pmPronicVaughanCentredGram_one_cross_eq`
+- `pmPronicVaughanResidualGramError_harmonic_identity`
+- `pmPronicVaughanResidualGramError_harmonic_pos`
+- `frequent_pmPronicVaughanResidualGramError_harmonic_floor`
+- `not_tendsto_nat_mul_pmPronicVaughanResidualGramError_contrast_zero`
+- `not_both_pmPronicVaughanResidualGramErrors_reciprocal_little_o`
+- `abs_sum_moebiusReal_le_of_harmonic_power`
+- `zetaZeroAbscissa_lt_one_of_harmonic_power`
+- `not_both_pmPronicVaughanResidualGramErrors_power_gt_one`
+
+The final target rules out even eventual common exponents above one for the
+two convolution entries. The positive survivor is the exact arithmetic
+contrast and its positive cofinal floor, without a fixed-strip premise.
 
 The undamped uniform power step now has a four-target Lean draft in
 `/tmp/QIUniformVaughanPowerTools.lean`, including every gain strictly below
-`η/(2+η)` and the exact power/fixed-strip equivalence. Its forward harmonic
-input has a two-target draft in `/tmp/QIMertensHarmonicPowerTools.lean`.
-Neither draft is checked. The divisor-square damped power transfer now has
+`η/(2+η)` and the exact power/fixed-strip equivalence. That draft remains unchecked.
+Its forward harmonic input is now certified in
+`RHTower/MertensPowerBoundsControlMobiusHarmonicSums.lean`:
+
+- `deningerHarmonicPartial_eq_succ_boundary_sub_tail`
+- `abs_deningerHarmonicPartial_le_of_mertens_power`
+
+Both passed corrected producing and final direct checks, with standard axioms
+only and no final warnings. The module is wired and its scratch removed.
+The exact successor-boundary identity and strict Mertens tail preserve the
+power exponent with constant `C(1+1/η)`.
+The divisor-square damped power transfer now has
 a three-target draft in `/tmp/QIDivisorSquarePowerTransferTools.lean`, planned as
 `PowerCancellationSurvivesTheDampedFloorTransform.lean`. It targets every prefix
 gain `0<γ<κ(1-ε)/(1+κ)`, together with its pronic norm transfer when `ε+γ<1/2`.

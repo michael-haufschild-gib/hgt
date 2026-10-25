@@ -73,3 +73,14 @@ in `ArithmeticDefectRigidity/AZeroCofactorForcesFiniteDimension` and
 in `ArithmeticDefectRigidity/RankOneCofactorSignsAreMultiplicative`.
 Their final source-only audits were `34006` and `87736`, respectively, with
 only the same three standard axioms. No survivor remains paper-only.
+
+The augmentation endpoint also has a checked positive approximation law:
+`bohrEval_eq_unit_coefficient_of_augmentation` and
+`exists_halfPlane_sequence_tendsto_bohrEval_of_radial_or_augmentation`, in
+`ArithmeticOrientationTheory/TiedBohrToriAreLimitsOfVerticalCharacters`,
+passed final canonical audit `10781` with standard axioms. One sequence
+with real parts tending to infinity approaches augmentation on every Wiener
+element. Exclusion from finite half-plane points therefore does not exclude
+membership in their pointwise closure. The application to every hull point
+of a finite-dimensional actual module is tracked separately on
+[the finite-hull card](../1-in-progress/finite-cofactor-hulls-approach-the-half-plane-curve.md).

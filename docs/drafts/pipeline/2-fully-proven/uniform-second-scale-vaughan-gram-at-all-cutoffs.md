@@ -121,6 +121,11 @@ bound gives `L,K=O(D^(-η))`. Balancing the head `D²` with the tail `nD^(-η)`
 at `D≈n^(1/(2+η))` yields every gain strictly below `η/(2+η)` for the undamped
 convolution mean, uniformly in both cutoffs. This strengthens the quantitative
 transfer used in the fixed-strip equivalence; it does not produce a power rate.
+The harmonic transfer itself is now Lean-verified in
+`RHTower/MertensPowerBoundsControlMobiusHarmonicSums.lean`: the exact successor
+boundary minus strict tail gives constant `C(1+1/η)` at the original exponent.
+Both targets passed final direct checks and standard-axiom audits. The balanced
+uniform-convolution consequence remains under verification.
 
 ## Transfer through the damped floor transform
 
@@ -250,15 +255,15 @@ the unit second cutoff. They are wired as
 [the complete audit](../3-formalized/uniform-logarithmic-cancellation-in-mobius-floor-sums.md).
 The owned scratch was removed.
 
-The direct finite proof is now drafted as ten audit targets in
-`/tmp/QIDoubleConvolutionTools.lean`: the arithmetic-function and summatory Vaughan
+The direct finite proof has ten checked targets in
+`UniformCancellationInTheUndampedVaughanConvolution.lean`: the arithmetic-function and summatory Vaughan
 identities, exact tail blocks, their signed bound, the full double floor rectangle,
 rounding, bound (1), and its unconditional finite logarithmic specialization.
 It reuses the checked harmonic bound `|H_U|≤1`. All ten targets passed their scratch
 checks with only standard axioms. They are migrated and wired as
 `UniformCancellationInTheUndampedVaughanConvolution.lean`; its producing and final
 direct repository audits passed.
-The full uniform logarithmic rate is drafted in `/tmp/QIUniformConvolutionLogTools.lean`
+The full uniform logarithmic rate is checked in `UniformLogarithmicCancellationInTheVaughanConvolution.lean`
 using the quarter-power cutoff and the read bound `log_floor_rpow_ge`; its scratch
 check passed with standard axioms. It is migrated and wired as
 `UniformLogarithmicCancellationInTheVaughanConvolution.lean`; its final direct
@@ -266,13 +271,13 @@ check has passed. The undamped theorem is recorded in
 `../3-formalized/uniform-undamped-vaughan-convolution-cancellation.md`.
 The complete uniform Gram law is now checked below.
 
-The logarithmic hyperbola transfer is drafted in `/tmp/QILogHyperbolaTools.lean`:
+The logarithmic hyperbola transfer is checked in `LogarithmicCancellationSurvivesTheDampedFloorTransform.lean`:
 the cutoff `floor(n/(log n)^(2(q+5)))` remains above `sqrt(n)` and preserves
 `log D ≥ (log n)/2`; the resulting head and tail bounds give every prescribed
 logarithmic rate for a divisor-square bounded family. The actual coefficient
 fluctuation, discharge of those family hypotheses, and its exact decomposition
-of the centered convolution piece are drafted as nine targets in
-`/tmp/QIVaughanConvolutionResidualTools.lean`. The corrected logarithmic transfer scratch check passed with standard axioms. It is migrated and wired as
+of the centered convolution piece are checked as nine targets in
+`TheVaughanConvolutionSeparatesItsSmoothMean.lean`. The corrected logarithmic transfer scratch check passed with standard axioms. It is migrated and wired as
 `LogarithmicCancellationSurvivesTheDampedFloorTransform.lean`; producing and final
 direct repository audits passed. Its scratch file was removed. The actual-family
 file passed all nine scratch axiom audits after algebraic and inference fixes.
@@ -281,7 +286,7 @@ its producing and final direct checks passed, and its scratch file was removed.
 The completed subtheorem card is
 `../3-formalized/vaughan-convolution-mean-and-logarithmic-fluctuation.md`.
 
-`/tmp/QITruncatedLogRateTools.lean` drafts the two corresponding small-leg
+`UniformLogarithmicCancellationInTruncatedMobiusReceivers.lean` proves the two corresponding small-leg
 targets. Splitting `min(U,n)` at `sqrt(n)` gives uniform logarithmic bounds for
 the truncated Möbius partial sums; the general divisor-square transfer then
 gives uniform logarithmic bounds for their damped prefixes. Both targets passed
@@ -300,8 +305,8 @@ head, bounds the split pronic sum, preserves every logarithmic energy and norm
 rate, and handles bounded norm families. It is wired; its scratch file was removed.
 The completed card is `../3-formalized/uniform-logarithmic-prefix-to-pronic-energy.md`.
 
-That application is drafted as five further targets in
-`/tmp/QIConvolutionEnergyRateTools.lean`: the common linear floor-transform bound,
+That application has five checked targets in
+`UniformLogarithmicEnergyInTheVaughanConvolution.lean`: the common linear floor-transform bound,
 its actual divisor-majorant specialization, the global smooth-power bound, and
 uniform logarithmic pronic norm estimates for both the convolution fluctuation
 and the truncated Möbius receivers. The first check found a redundant `ring`
@@ -312,7 +317,7 @@ They are migrated and wired as
 direct repository checks passed. The scratch was removed. The completed card is
 `../3-formalized/uniform-logarithmic-vaughan-convolution-energy.md`.
 
-`/tmp/QIMobiusInteriorLogTools.lean` drafts four unconditional actual-receiver targets.
+`LogarithmicEnergySavingsForTheMobiusInterior.lean` proves four unconditional actual-receiver targets.
 The read series identity `hasSum_pmPowerDampedRealWeight_div` identifies the mean
 with the reciprocal zeta density. Generic logarithmic prefix and energy transfers
 then apply to the actual Möbius pattern; subtracting the bounded active increment
@@ -323,7 +328,7 @@ They are migrated and wired as `LogarithmicEnergySavingsForTheMobiusInterior.lea
 producing and final direct repository checks passed. The scratch was removed.
 The completed card is `../3-formalized/logarithmic-energy-savings-for-the-mobius-interior.md`.
 
-`/tmp/QIUniformVaughanSmoothErrorTools.lean` drafts six targets assembling all five
+`UniformLogarithmicRemaindersInAllVaughanRows.lean` proves six targets assembling all five
 rows. The convolution smooth remainder is a bounded unit-pattern correction plus
 the actual coefficient fluctuation. The opposite smooth terms cancel exactly in
 the five-row sum, so the both-large remainder is bounded by the other four rows
@@ -336,10 +341,10 @@ with the same standard-axiom audits. The final direct repository check passed;
 the scratch was removed. The completed card is
 `../3-formalized/uniform-logarithmic-remainders-in-all-vaughan-rows.md`.
 
-The finite Gram comparison is drafted as three targets in
-`/tmp/QIPronicGramTools.lean`: a bounded smooth-energy error, a smooth norm
+The finite Gram comparison has three checked targets in
+`PronicGramErrorsAroundASmoothRankOneTerm.lean`: a bounded smooth-energy error, a smooth norm
 majorant, and the exact three-pairing bound around a rank-one term.
-`/tmp/QIUniformVaughanGramTools.lean` now drafts four targets for the complete
+`UniformVaughanGramsFollowTheirSmoothRankOneTerm.lean` proves four targets for the complete
 uniform matrix law: every logarithmic rate, its normalized form, arbitrary moving
 horizon smooth asymptotics, and zero normalized Gram whenever the horizon and
 cutoff product diverge separately. The first finite Gram check passed both
@@ -367,7 +372,7 @@ The first logarithmic-transform scratch check found two algebraic Lean issues
 The cutoff-bounds theorem passed with standard axioms; the complete transfer
 passed its corrected check with standard axioms. No analytic premise was added.
 
-Seven targets in `/tmp/QIUniformVaughanPacketsTools.lean` draft the homogeneous
+Seven checked targets in `UniformLogarithmicLawsForVaughanSuperpositions.lean` prove the homogeneous
 superposition consequences: the exact smooth-remainder sum, the norm
 and energy bounds with `L(w)` and `L(w)^2`, the smooth-neutral specialization,
 and zero normalized norms for bounded moving coefficients at independent

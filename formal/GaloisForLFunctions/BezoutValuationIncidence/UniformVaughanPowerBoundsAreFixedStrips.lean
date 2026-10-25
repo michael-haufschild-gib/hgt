@@ -22,7 +22,7 @@ theorem pmUndampedVaughanConvolutionPrefix_one_full {n : ℕ} (hn : 1 ≤ n) :
     pmUndampedVaughanConvolutionPrefix 1 n n = 1 := by
   rw [pmUndampedVaughanConvolutionPrefix_eq_rectangle]
   have hm : moebiusReal 1 = 1 := by simp [moebiusReal]
-  simp only [Icc_self, sum_singleton, hm, one_mul, Nat.one_mul]
+  simp only [Icc_self, sum_singleton, hm, one_mul]
   simpa only [moebiusReal] using moebius_floor_summatory n hn
 
 /-- Balancing floor rounding and the Mertens tail transfers every gain below `η/(2+η)`. -/

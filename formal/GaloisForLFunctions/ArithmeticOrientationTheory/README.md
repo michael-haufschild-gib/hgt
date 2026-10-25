@@ -194,7 +194,10 @@ Bohr points annihilating `P(c)`. *Unit*: a coordinate on the width line.
     (`not_isUnit_threeTermKernel`); local factor unit ⇔ all `|α_i| < p^σ` (`isUnit_prod_localFactor_iff`);
     units preserve payment both ways (`receiverBounded_dirichletConv_iff_of_isWienerUnit`). Coefficients are
     continuous, point masses independent, `𝒲_σ` infinite-dimensional (`not_finiteDimensional`); normalized Bohr
-    points represent distinct characters (`normalizedBohrPoint_eq_of_character_eq`).
+    points represent distinct characters (`normalizedBohrPoint_eq_of_character_eq`). A tied radial point
+    is approached on every Wiener element by one vertical sequence
+    (`exists_vertical_sequence_tendsto_bohrEval`); augmentation is approached as the real part tends
+    to infinity (`exists_halfPlane_sequence_tendsto_bohrEval_of_radial_or_augmentation`).
 17. **Unpayability on the polydisk.** Unpaid ⇔ nonempty obstruction hull (`not_receiverBounded_iff_exists_obstruction`);
     computations: `d^{−ε}` → pole point; oscillating probe → `{ρ, ρ̄}` unless `ζ(ρ) = 0`
     (`obstructionHull_oscillating_nonempty_iff`); codimension counts points (`finrank_quotient_paidIdeal_probeSum`);

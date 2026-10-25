@@ -57,7 +57,11 @@ away from the explicit scalar poles, the meromorphic order is the sum of
 numerator orders minus the shifted denominator order. The eta factor is
 nonzero in the open strip below real part one. Thus any proposed zero count
 must first identify the uncancelled receiver divisor. No common-zero
-configuration of zeta is asserted or assumed here.
+configuration of zeta is asserted or assumed here. The eta nonvanishing
+input already exists as `RHTower.one_sub_two_cpow_ne_zero` in
+`FermiNymanBeurlingHaarTarget`. The exact local meromorphic-order formula
+for `etaZetaQuotient` is being formalized as an existing paper assertion;
+it is not yet counted as a completed Lean result.
 
 Required work:
 

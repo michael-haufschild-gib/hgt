@@ -196,6 +196,13 @@ $G_{ij}$; diagonal $D_T$; mixed remainder $R^{\text{mix}}_T$; $E^{\text{int}}_T=
     The [centered pole](TheCentredVaughanPoleHasPositiveFiniteEnergy.lean) has
     a cutoff-independent energy limit between `2^(-2ε)/32` and `1/4` for `ε≥0`;
     its normalized energy admits no eventual power exponent above `1-2ε`.
+    Below half damping, an [extreme cutoff](TheExtremeVaughanCutoffReadsItsHarmonicSum.lean)
+    reads the squared Möbius harmonic sum in two residual entries. This contrast
+    is positive with a cofinal reciprocal-horizon floor; both entries cannot be
+    `o(1/T)` or share an eventual power exponent above one.
+    [Mertens power bounds](../RHTower/MertensPowerBoundsControlMobiusHarmonicSums.lean)
+    transfer to harmonic Möbius sums with the same exponent and constant
+    `C(1+1/η)`, by the exact successor-boundary/strict-tail identity.
     [Two arithmetic cells](TheVaughanLimitRowsAreIndependentInTwoCells.lean)
     separate the actual prefix and pole at every positive damping, with
     determinant at least `2^(-2ε)/36`; their finite pronic Gram determinant is

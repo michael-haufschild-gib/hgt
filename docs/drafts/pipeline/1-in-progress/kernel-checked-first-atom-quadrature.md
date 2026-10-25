@@ -33,8 +33,12 @@ definitions passes in `/tmp/hgt_first_atom_integer_enclosures.lean`. The earlier
 certificate build was interrupted and exited with status 130; no Lean process from that build
 remains. Only this task's obsolete enclosure olean/ilean were removed before the new support build.
 
-The integer support olean/ilean build passed. The arithmetic module now uses explicit
-`Enclosure.lower`/`Enclosure.upper` accessors and is undergoing its five `decide +kernel` checks.
+The integer support olean/ilean build passed. The arithmetic module uses explicit
+`Enclosure.lower`/`Enclosure.upper` accessors. Whole-sum kernel reduction was interrupted (exit
+130); the next refinement is separate normalized cell certificates, checked using `norm_num`,
+so final comparisons use small certified integer literals. The current probe is
+`/tmp/hgt_cell_certificate_probe.lean`. No proof is being treated as complete from the interrupted
+whole-sum checks.
 After success: audit `/tmp/hgt_steinberg_axioms.lean` and `/tmp/hgt_first_atom_axioms.lean`, then run
 the required direct final checks of both requested source files. Scratch files use the exact
 `/tmp/hgt_*` names created during this task; remove only those files after completion.

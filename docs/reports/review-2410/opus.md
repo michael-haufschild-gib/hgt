@@ -529,6 +529,13 @@ specialization passed all seven final checks: every nonnegative mass and ray
 matrix is attained, and the ray is exactly the finite joint-limit set
 (`VanishingPositiveScalesRealizeHarmonicMasses`,
 `EveryNonnegativeEndpointVaughanLimitIsRealized`).
+All twelve extreme-cutoff targets are verified: exact harmonic contrast,
+strict positivity, a cofinal reciprocal-horizon floor, both faster-rate
+obstructions, and the finite Abel harmonic-to-Mertens power transfer
+(`TheExtremeVaughanCutoffReadsItsHarmonicSum`).
+Both forward Mertens-to-harmonic targets are verified too: the successor
+boundary minus strict tail preserves the power exponent with constant
+`C(1+1/η)` (`MertensPowerBoundsControlMobiusHarmonicSums`).
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?
@@ -880,8 +887,13 @@ not supply purity.
   `E(floor((T_m+1)/p))/E(T_m+1)` tends to `p*K(p,p)` for every actual
   common limit. This profile decreases in the ordinary integer order and
   equals one on admission. Exact dilation blocks and the diagonal theorem
-  passed canonical Lean source checks and standard axiom audits. Mixed
-  horizon transport and its stronger module consequences remain pending.
+  passed canonical Lean source checks and standard axiom audits. The exact
+  terminal-fibre correction and uniform mixed bound also passed. Every
+  positive cofactor diagonal yields an actual contracted state with Gram
+  `K(p*j,p*k)/K(p,p)`, full Wiener intertwining and annihilator `I:delta_p`.
+  Numeric horizon order extends to every complete-module quadratic form
+  `p*||D_p x||^2`. These statements passed canonical Lean checks; the closed
+  range, composition and index refinements still await their separate audits.
 - Changing the cyclic vector by a critical Wiener unit gives a unitary
   comparison intertwining the full Wiener action. It preserves all operator
   norms, the annihilator, operator hull and dimension. Actual real unit

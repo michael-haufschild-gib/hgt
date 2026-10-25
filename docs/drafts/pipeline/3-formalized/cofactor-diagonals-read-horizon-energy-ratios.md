@@ -1,8 +1,8 @@
 # Cofactor diagonals read horizon energy ratios
 
 - **ID:** cofactor-diagonals-read-horizon-energy-ratios
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean completion pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
 - **Statement:** The diagonal of every actual common cofactor limit
   determines the asymptotic receiver-energy ratio at each integer-contracted
@@ -48,11 +48,11 @@ identify dilation eigenvalues with arithmetic zeros.
 ## Gates
 
 - [x] Existing block law and common-limit definitions inspected.
-- [ ] Exact finite-horizon identity, including N=0 and incomplete block.
-- [ ] Uniform correction bound for actual rows.
+- [x] Exact finite-horizon identity, including N=0 and incomplete block.
+- [x] Uniform correction bound for actual rows.
 - [x] Actual diagonal limit and monotonicity: canonical Lean and standard axioms.
-- [ ] Mixed change-of-horizon consequences.
-- [ ] Source checks, transitive axiom audit, umbrella import.
+- [x] Mixed change-of-horizon consequences.
+- [x] Source checks, transitive axiom audit, umbrella import.
 
 ## Stronger unconditional formulation
 
@@ -120,20 +120,18 @@ Energy jumps likewise use the existing `receiverEnergy_succ_le` from
 
 ## Current verification status
 
-The exact terminal-fibre correction, general C*D/p bound, diagonal interval
-bound and mixed horizon consequences passed combined direct check `12682`
-with standard axioms. Their canonical modules are installed and wired;
-individual source checks remain in
+The complete-block and actual diagonal leaves passed their final source-only
+checks and standard transitive axiom audits in session `90975`.
+`IncompleteDilationFibresHaveBoundedPairingCost` passed final source-only
+check `89066`, including the exact terminal fibre, zero quotient, general
+C*D/p bound and actual unit-bound specialization.
+`ContractingHorizonsProducesActualCofactorLimits` passed final source-only
+check `13848`, including the mixed limits and admitted branch. No mixed
+result is inferred from the diagonal theorem alone.
+
+The explicit interval theorem `scaled_diagonal_mem_Icc` is installed and
+wired in `NumericHorizonOrderControlsTheCofactorAction`. Its required olean
+passed in `68599` and final source-only audit in `42266`, with only
+`propext`, `Classical.choice`, `Quot.sound`. All claims on this card are
+formalized; exact canonical audit records are in
 [the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
-
-The complete-block and actual diagonal leaves passed canonical builds,
-final source-only checks and standard transitive axiom audits in session
-`90975`. Their imports are wired. The card remains open because its exact
-terminal-fibre correction and mixed refinement still require Lean.
-
-Those exact statements are now in
-`/tmp/qiii_exact_horizon_remainder_body.lean` and
-`/tmp/qiii_mixed_horizon_error_body.lean`, including the zero quotient,
-the general C*D/p bound and its actual unit-bound specialization. Their current
-direct Lean scratch is `/tmp/qiii-contracted-horizons-check.lean`. No mixed result is inferred
-from the diagonal theorem alone.

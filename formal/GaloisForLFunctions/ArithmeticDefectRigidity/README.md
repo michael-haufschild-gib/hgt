@@ -126,6 +126,9 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     Gram steps vanish (`cofactorGram_succ_sub_tendsto_zero`); paid corrections and vanishing-relative-energy
     perturbations preserve moving Grams (`normalized_moving_gram_perturbation_tendsto_zero`). Diagonal
     `pK(p,p) = lim E(⌊T/p⌋)/E(T)`, nonincreasing (`contracted_energy_ratio_tendsto`, `scaled_diagonal_antitone`);
+    all scaled dilation quadratic forms decrease in numeric order
+    (`scaled_dilation_norm_sq_antitone`), and every `pK(p,p)` lies in `[0,1]`
+    (`scaled_diagonal_mem_Icc`). Exact incomplete fibres give the uniform mixed error `C·D/p`.
     admission ⇒ unique full-horizon kernel (`kernel_eq_of_admits`). Every intermediate coordinate limit
     occurs in another actual kernel (`exists_kernel_with_intermediate_coordinate`); the kernel family is
     a singleton or has exactly continuum cardinality (`actualCofactorKernelSet_singleton_or_continuum`).
@@ -136,6 +139,9 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     (`admits_or_moduleHull_subset_obstructionHull`); repairing kernels have bounded dilation energy, vanishing
     after normalization (`admits_or_all_gram_limits_annihilate_repairs`). Signed realization: residual vectors are
     `−v_j`, remainder vectors 0, normalized fixed traces 0 (`admits_or_signedCofactorGram_tendsto`).
+    Every positive cofactor diagonal yields an actual contracted state
+    `K_p(j,k)=K(pj,pk)/K(p,p)` (`exists_actual_contracted_module`), with full Wiener intertwining
+    (`contractedKernelIsometry_wiener`) and annihilator `I:δ_p` (`cofactorAnnihilator`).
 14. **Module structure.** Admitted modules are faithful with full Bohr hull, infinite-dimensional, continuum
     quotient (`faithful_or_receiver_escapes`, `receiver_escapes_of_finiteDimensional`): a finite-dimensional or
     non-faithful actual module forces escape. Annihilator quotient is finite or continuum, never countable

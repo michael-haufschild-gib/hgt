@@ -38,6 +38,8 @@ namespace GaloisForLFunctions.ArithmeticPositiveDuality
 
 section Group
 
+open scoped Classical
+
 variable {G : Type*} [Group G]
 
 /-- Positive definiteness on a group: every Gram form `Σ c̄_a φ(x_a⁻¹ x_b) c_b` is real and
@@ -114,7 +116,8 @@ theorem isPosDefOnGroup_extendFromSubgroup {H : Subgroup G} {ψ : H → ℂ}
         simp only [cosetPart, Subgroup.coe_mul, Subgroup.coe_inv, hab, mul_inv_rev, inv_inv]
         group
       rw [Finset.sum_eq_single_of_mem _ ha]
-      · simp only [c', if_pos rfl, if_pos hab.symm, hpart, extendFromSubgroup, dif_pos hmem]
+      · simp only [c', if_pos rfl, if_pos hab.symm, hpart, extendFromSubgroup]
+        rw [dif_pos hmem]
       · intro ρ _ hρ
         simp only [c', if_neg (Ne.symm hρ), star_zero, zero_mul]
     · have hnot : (x a)⁻¹ * x b ∉ H := fun h => hab ((leftCosetRep_eq_iff H _ _).mpr h)
@@ -130,11 +133,14 @@ theorem isPosDefOnGroup_extendFromSubgroup {H : Subgroup G} {ψ : H → ℂ}
     fun ρ _ => hψ.form (fun a => cosetPart H (x a)) (c' ρ)
   choose! r hr0 hr using hρ
   refine ⟨∑ ρ ∈ R, r ρ, Finset.sum_nonneg hr0, ?_⟩
-  simp_rw [hsplit]
-  rw [Finset.sum_comm]
-  simp_rw [Finset.sum_comm (s := (Finset.univ : Finset (Fin N))) (t := R)]
-  push_cast
-  exact Finset.sum_congr rfl fun ρ hρ' => hr ρ hρ'
+  set F : G → Fin N → Fin N → ℂ := fun ρ a b =>
+    star (c' ρ a) * ψ ((cosetPart H (x a))⁻¹ * cosetPart H (x b)) * c' ρ b
+  calc ∑ a, ∑ b, star (c a) * extendFromSubgroup H ψ ((x a)⁻¹ * x b) * c b
+      = ∑ a, ∑ b, ∑ ρ ∈ R, F ρ a b := by simp_rw [hsplit]; rfl
+    _ = ∑ a, ∑ ρ ∈ R, ∑ b, F ρ a b := Finset.sum_congr rfl fun a _ => Finset.sum_comm
+    _ = ∑ ρ ∈ R, ∑ a, ∑ b, F ρ a b := Finset.sum_comm
+    _ = ∑ ρ ∈ R, ((r ρ : ℝ) : ℂ) := Finset.sum_congr rfl fun ρ hρ' => hr ρ hρ'
+    _ = ((∑ ρ ∈ R, r ρ : ℝ) : ℂ) := by push_cast; rfl
 
 /-- **Restriction–induction law.** A function on a subgroup extends to a positive-definite
 function on the group iff it is positive definite on the subgroup. -/
@@ -169,7 +175,8 @@ theorem successor_apply (x : ℚ) : successor x = 1 + x := by
   simp [successor, vadd_eq_add]
 
 /-- The two ring operations do not commute. -/
-theorem dilation_mul_successor_ne : dilation (2 : ℚˣ) * successor ≠ successor * dilation (2 : ℚˣ) := by
+theorem dilation_mul_successor_ne :
+    dilation (Units.mk0 2 two_ne_zero) * successor ≠ successor * dilation (Units.mk0 2 two_ne_zero) := by
   intro h
   have := congrArg (fun e : AffineGroupQ => e 0) h
   simp only [AffineEquiv.coe_mul, Function.comp_apply, dilation_apply, successor_apply] at this
@@ -193,7 +200,7 @@ def posUnits : Subgroup ℚˣ where
     rw [Units.val_inv_eq_inv_val]
     exact inv_pos.mpr ha
 
-open ArithmeticCastelnuovoSeveri ArithmeticOrientationGeometry GaloisForLFunctions.HTGeometry
+open Matrix ArithmeticCastelnuovoSeveri ArithmeticOrientationGeometry GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline contDiff_cubicSpline
   hasCompactSupport_cubicSpline)
 
@@ -216,7 +223,7 @@ theorem dotProduct_weilGram_eq_ratCorr {κ : Type*} [Fintype κ] (x : κ → pos
     star c ⬝ᵥ (weilGram vonMangoldtWeight (fun a => ArithmeticCastelnuovoSeveri.translate
       (logPos (x a)) (cx cubicSpline)) *ᵥ c) =
       ∑ a, ∑ b, star (c a) * ratCorr ((x a)⁻¹ * x b) * c b := by
-  simp only [dotProduct, Matrix.mulVec, Finset.mul_sum, Pi.star_apply]
+  simp only [dotProduct, mulVec, Finset.mul_sum, Pi.star_apply]
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   rw [weilGram_translate_cubicSpline, ratCorr, logPos_inv_mul, neg_sub]
   ring

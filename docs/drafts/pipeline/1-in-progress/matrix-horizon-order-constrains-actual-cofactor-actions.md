@@ -37,18 +37,16 @@ arbitrary multiplicative phases still satisfies critical equality.
 ## Status
 
 Real packet, complex packet and complete-Hilbert operator order passed
-combined direct Lean check `12682` with standard axioms. The canonical owner
-`NumericHorizonOrderControlsTheCofactorAction` is installed and wired, pending
-its separate check and dependency olean. Finite-hull consequences still await
-their own direct verification.
+canonical checks with standard axioms. The owner
+`NumericHorizonOrderControlsTheCofactorAction` is installed and wired;
+required olean `68599` and final source-only audit `42266` passed.
+Finite-hull consequences still await their own direct verification.
 
-The real finite-packet theorem `scaled_packet_antitone` is now drafted in
-`/tmp/qiii_matrix_horizon_order_body.lean` and included in the pending
-contracted-horizon scratch. It reuses the existing finite-packet Gram identity.
-Complexification and the complete-module inequality are also drafted in
-`/tmp/qiii_operator_horizon_order_body.lean`. They depend on the pending mixed
-horizon error and actual contracted-pairing limit. Nearby-dilation
-continuity is a separate corpus search, not an assumed analytic input.
+`scaled_packet_antitone` reuses the finite-packet Gram identity.
+`scaled_kernelForm_antitone` complexifies it;
+`scaled_dilation_norm_sq_antitone` passes to the complete Hilbert module.
+All consume the checked mixed horizon error and contracted-pairing limit.
+Nearby-dilation continuity is not an assumed analytic input.
 
 ## Infinite-dimensional limitation
 
@@ -79,12 +77,9 @@ The modulus bridge and finite actual hull application are now drafted in
 `/tmp/qiii_finite_hull_moduli_body.lean`. The final target is
 `finite_moduleHull_modulus_classification`: every finite actual hull point
 has augmentation modulus or `|omega(p)|=p^(-alpha)` for one alpha>=0.
-No phase claim is included. The operator horizon-order draft is under direct
-verification in the contraction scratch; the common-family
-eigenvector dependency is complete. The modulus conclusions remain OPEN
-until formalized.
+No phase claim is included. The operator horizon-order and common-family
+eigenvector dependencies are complete. The modulus conclusions remain OPEN
+until their own Lean check passes.
 
-Complex packet order and complete-Hilbert dilation order are now both
-included in the contracted-horizon draft. The finite-hull scratch
-is also prepared, but it still needs the canonical operator-order
-import before compilation. No finite-hull modulus claim is verified yet.
+The finite-hull scratch now has every required dependency and is under
+direct verification. No finite-hull modulus claim is verified yet.

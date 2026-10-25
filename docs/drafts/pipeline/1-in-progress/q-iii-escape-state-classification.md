@@ -572,7 +572,7 @@ in session `32035`. That session is now building the missing source-power
 olean before the four scratch checks and five final canonical source checks.
 
 A new dependency-closed paper result is recorded in
-`2-fully-proven/cofactor-diagonals-read-horizon-energy-ratios.md`: every
+`3-formalized/cofactor-diagonals-read-horizon-energy-ratios.md`: every
 actual common limit satisfies
 `E(floor((T_m+1)/p))/E(T_m+1) -> p*K(p,p)`, and this scaled diagonal is
 antitone in p. Complete pronic blocks plus bounded energy jumps prove the

@@ -58,8 +58,10 @@ The latter depends on `/tmp/QIUniformVaughanPowerTools.lean`: the exact
 unit/full-cutoff value, every transferred gain `κ<η/(2+η)`, the extreme-cutoff
 converse, and the uniform power/fixed-strip equivalence. The optimized cutoff
 is `D=floor(n^(1/(2+η)))`; the strict gap absorbs the harmonic logarithms.
-`/tmp/QIMertensHarmonicPowerTools.lean` supplies the missing forward harmonic
-bound with constant `C(1+1/η)` using the exact strict Mertens tail.
-The harmonic-power converse is in the existing unchecked extreme-cutoff draft.
-All these drafts require compilation and axiom audits. No fixed strip or Q-I
-completion is claimed.
+The forward harmonic bound with constant `C(1+1/η)` and its exact strict-tail
+identity are now Lean-verified in
+`RHTower/MertensPowerBoundsControlMobiusHarmonicSums.lean`. Both targets passed
+their final direct checks and standard-axiom audits. The harmonic-power
+converse is verified in `TheExtremeVaughanCutoffReadsItsHarmonicSum.lean`.
+The generic factorial and actual convolution criterion drafts still require
+their full checks. No fixed strip or Q-I completion is claimed.
