@@ -104,7 +104,8 @@ umbrella-wired:
 - `ArithmeticOrientationTheory/NormalizedBohrCharacters.lean`
 - `ArithmeticDefectRigidity/FiniteCofactorIndexCountsJointMultiplicity.lean`
 
-Final per-file checks remain in `/tmp/qiii-refinements-canonical-audit.sh`.
+Final direct per-file checks remain; see
+[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
 
 - [x] Dependency-closed paper argument, with all actual structural inputs proved.
 - [x] Relevant corpus mechanisms inspected; no arithmetic hypothesis added.

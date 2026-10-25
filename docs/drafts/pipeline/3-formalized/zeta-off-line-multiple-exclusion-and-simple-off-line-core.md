@@ -43,7 +43,12 @@ off-line pair costs exactly `2c − 1` per copy (`c² = 2(2c − 1)`) and a mult
 least `1 − (1 − HD(1))/(3/2 + √2) − ε = 0.8876…` of the zero copies are simple or critical
 (`simple_or_critical_optimal`; cumulative `simple_or_critical_optimal_cumulative`): Lamzouri's constant, the optimum of the `c`-family
 (`max_c (2c − 1 − c²/4)` subject to `c² ≤ 2(2c − 1)`, `levelGap_le`; the trace-aware mixture bound
-`(1 − α²)/(3 − α) ≤ 6 − 4√2 = (3/2 + √2)⁻¹`, `mixture_le`, `six_sub_four_sqrt_two_eq`). The same budget runs through Theorem D for
+`(1 − α²)/(3 − α) ≤ 6 − 4√2 = (3/2 + √2)⁻¹`, `mixture_le`, `six_sub_four_sqrt_two_eq`). Per-copy
+cost table of the level-`c` certificate: a critical double costs `k_c(2)/2 = 2c − 2` and an off-line
+pair `c²/2 = k_c(2)/2 + (c − 2)²/2` (`kc_two_div_two_add_sq`), so no level charges a near pair less than
+a double; a pair costs more than a simple critical zero exactly when `c > 2 + √2`
+(`kc_one_lt_sq_div_two_iff`); the simple off-line coefficient `2c − 1 − c²/2` is at most `1`
+(`simpleLevelGap_le`), so no level improves `S_off + M_off ≤ (1 − HD(1))N`. The same budget runs through Theorem D for
 `L(s, χ)`: for every primitive `χ` mod `q > 1`, at least `0.8876…` of the zero copies of `L(s, χ)` are
 simple or critical (`Zeta23DirichletSimpleOrCriticalOptimal.lean`,
 `simple_or_critical_optimal_dirichlet`), and `≥ 0.8042…` of its zero ordinates are critical

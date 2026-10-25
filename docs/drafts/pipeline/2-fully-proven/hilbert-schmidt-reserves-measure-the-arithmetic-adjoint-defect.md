@@ -68,7 +68,7 @@ The first norm identity shows that this holds exactly when
 `T(g#)=T(g)*` for every actual source `g`.
 
 The dependency-closed adjoint classification in
-`arithmetic-sharp-is-the-hilbert-adjoint-exactly-for-simple-critical-zeros.md`
+`../3-formalized/arithmetic-sharp-is-the-hilbert-adjoint-exactly-for-simple-critical-zeros.md`
 identifies this with RH together with simplicity of every Xi zero.
 Thus the new cone has unconditional Bézout and genuine-class faithfulness,
 while RR detects the complete adjoint defect, including nilpotent jets.
@@ -113,7 +113,7 @@ source positivity problem.
 - `HilbertSchmidtOperator`, `HilbertSchmidtTrace`: polarization, adjoint isometry, trace pairing.
 - `MeyerSourceIntersectionSurface`: actual surface and ordinary trace defect; actual-file certified with standard axiom audits.
 - `ArithmeticMajorantsSupplyBezout`, `PositiveQuadraticSourceCones`: mixed bound and cone geometry.
-- Actual arithmetic-sharp adjoint classification: paper proof complete, Lean verification pending.
+- Actual arithmetic-sharp adjoint classification: Lean certified with standard transitive axiom audits.
 
 No infinite coordinate expansion of the Hilbert–Schmidt norm is needed or claimed.
 

@@ -58,8 +58,11 @@ vectors passed Lean audits. Five zero-cutoff and coefficient-replacement lemmas,
 the all-positive-damping admission equivalence, are drafted in `/tmp/QIZeroCutoffTools.lean`,
 uncompiled. `/tmp/QIZeroCutoffDimensionsTools.lean` now drafts the four-vector
 representation, independent frames, exact admitted spans, dimensions three/four, and
-the quotient dimension test; those ten declarations remain uncompiled. Its imports
+the quotient dimension test. Five further targets state the exact quotient
+dimensions in both receiver cases and discharge the endpoint receiver input
+to prove the empty-cutoff half-damping admission, dimension-four, and
+dimension-one quotient corollaries. All fifteen declarations remain uncompiled. Its imports
 name the planned coefficient-space and zero-cutoff repository leaves, which have not
-yet been created. The endpoint uses the
+yet been created, together with `VaughanAdmissionAtHalfDamping.lean`. The endpoint uses the
 dependency-closed half-damping paper theorem. No receiver admission below half damping
 is inferred.

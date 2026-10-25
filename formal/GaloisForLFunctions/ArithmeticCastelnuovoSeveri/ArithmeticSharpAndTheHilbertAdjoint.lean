@@ -29,6 +29,7 @@ theorem meyerHilbertConvolution_apply_of_simple
   simp only [Nat.zero_add, Finset.range_one, Finset.sum_singleton,
     deningerMeyerHasseMoment, Nat.factorial_zero, Nat.cast_one, div_one,
     deningerMeyerStrongLogMellinJetLM_eq_iteratedDeriv, iteratedDeriv_zero]
+  congr 1
 
 /-- Adjoint compatibility forces sharp-square-root closure of the genuine Poisson ideal. -/
 theorem meyerHilbertConvolution_adjoint_forces_sharp_roots
@@ -105,7 +106,3 @@ theorem meyerHilbertConvolution_adjoint_iff_faithful_positive_degree :
     exists_faithful_positive_meyer_degree_iff.symm
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertConvolution_apply_of_simple
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertConvolution_sharp_eq_adjoint_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertConvolution_adjoint_iff_faithful_positive_degree

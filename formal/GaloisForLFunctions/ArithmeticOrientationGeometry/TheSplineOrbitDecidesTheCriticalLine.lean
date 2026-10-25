@@ -252,9 +252,9 @@ theorem riemannHypothesis_iff_splineOrbit_negIndex_le_one {D : Set ℝ} (hD : De
       rw [zeta_rightZeros_encard_eq_two_mul_sectorZeros 1] at hR ⊢
       have hk : (sectorZeros zetaZeroConfig 1).encard ≠ 0 := fun h0 => hR (by rw [h0, mul_zero])
       have h1 : (1 : ℕ∞) ≤ (sectorZeros zetaZeroConfig 1).encard :=
-        ENat.one_le_iff_ne_zero.mpr hk
+        Order.one_le_iff_ne_zero.mpr hk
       calc ((2 : ℕ) : ℕ∞) = 2 * 1 := by norm_num
-        _ ≤ 2 * (sectorZeros zetaZeroConfig 1).encard := mul_le_mul_left' h1 2
+        _ ≤ 2 * (sectorZeros zetaZeroConfig 1).encard := by gcongr
     obtain ⟨S, hS, h2⟩ := (zeta_splineOrbit_negIndex_law hD 2).mpr htwo
     have := h S hS
     omega

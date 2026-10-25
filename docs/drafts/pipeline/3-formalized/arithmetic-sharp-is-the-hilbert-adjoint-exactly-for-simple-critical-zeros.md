@@ -1,9 +1,9 @@
 # Arithmetic sharp is the Hilbert adjoint exactly for simple critical zeros
 
 - **ID:** qii-meyer-sharp-adjoint
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean verification pending)
-- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Status:** FORMALIZED. Actual-file direct Lean check and all three transitive axiom audits passed.
 - **Source:** ../1-in-progress/q-ii-source-effectivity-and-linear-degree.md
 - **Statement:** In the actual faithful full-Hasse Hilbert convolution representation, arithmetic sharp equals Hilbert adjoint for every original source if and only if RH holds and every Xi zero is simple.
 
@@ -16,7 +16,7 @@ genuine Poisson boundary. `DeningerMeyerConvolutionWeilTrace` explicitly
 distinguishes arithmetic sharp from the Hilbert adjoint. Corpus searches
 found no theorem identifying them unconditionally.
 
-## Proof argument (Lean verification pending)
+## Formalized proof argument
 
 Write `T_g` for the actual bounded convolution operator. Suppose
 `T_(g^sharp)=T_g^*` for every source. If `g*g^sharp` is a Poisson boundary,
@@ -44,16 +44,16 @@ positivity requires RH alone. Higher Xi jets are faithfully present in the
 existing Hilbert representation; they cannot be silently replaced by
 diagonal value coordinates when invoking Hilbert positivity.
 
-## Formalization obligations
+## Lean certificate
 
-- Reduce the full coordinate action under multiplicity one.
-- Verify the adjoint characterization and coordinate inner-product APIs.
-- Apply actual convolution faithfulness and the sharp-root criterion.
-- Audit both directions and the resulting faithful positive representation criterion.
+Module: `ArithmeticCastelnuovoSeveri/ArithmeticSharpAndTheHilbertAdjoint.lean`.
+Direct `lake --old env lean` check **96392** passed. Audited endpoints:
 
-The actual module uses the existing source representation and the certified
-sharp-root criterion. Its adjoint proof and three transitive axiom audits
-remain unverified. External novelty unverified.
+- `meyerHilbertConvolution_apply_of_simple`
+- `meyerHilbertConvolution_sharp_eq_adjoint_iff`
+- `meyerHilbertConvolution_adjoint_iff_faithful_positive_degree`
 
-Actual candidate file exists with endpoint axiom prints; its actual-file
-verification is pending. It is not wired into the umbrella.
+All transitive audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
+Temporary prints are removed and the module is wired into its umbrella.
+The construction uses the existing representation and certified sharp-root
+criterion. External novelty remains unverified.

@@ -104,7 +104,8 @@
   bound. Continuity again (the flow is a continuous deformation). BLOCKED.
 - **C34 per-zero cost table of the `c`-family**: off-line pair `c²/2`, on-line double
   `k_c(2)/2 = 2c − 2`, simple `2c − 1`; `c²/2 − (2c − 2) = (c − 2)²/2 ≥ 0`, so no `c` charges a near
-  pair less than a double, and pairs cost more than simple zeros once `c > 2 + √2`. TRUE; this is the
+  pair less than a double, and pairs cost more than simple zeros once `c > 2 + √2`. TRUE, formalized
+  (`kc_two_div_two_add_sq`, `kc_one_lt_sq_div_two_iff`); this is the
   certificate form of the continuity barrier: inside the explicit-formula Gram paradigm (traces of
   order `≤ 2`, bandwidth `≤ 1`) the `0.6725` LP optimum is final.
 
@@ -128,8 +129,9 @@
 - **C38 the `c`-family LP**: with `k = 1 − HD(1)`, the level-`c` certificate reads
   `A(c)S_off + B(c)M_off ≤ k` (per copy, `A = 2c − 1 − c²/2`, `B = 2c − 1 − c²/4` for doubled pairs).
   `max S_off + M_off = k` at `c = 2` (no level does better: `A ≤ 1`); `max M_off = k/(3/2 + √2)` at
-  `c = 2 + √2` where `A = 0` (Lamzouri's `0.8876`). TRUE; the second is formalized
-  (`Zeta23SimpleOrCriticalOptimal.lean`), the first is the final word of the paradigm for `3/4`.
+  `c = 2 + √2` where `A = 0` (Lamzouri's `0.8876`). TRUE, both formalized
+  (`Zeta23SimpleOrCriticalOptimal.lean`: `simpleLevelGap_le`, `levelGap_le`); the first is the final
+  word of the paradigm for `3/4`.
 - **C39 Chebyshev-system sign detection** (`Z` has `≥ k` sign changes on `I` if `|∫_I Zp| < ∫_I|Z||p|`
   for every `p` of degree `< k` with roots in `I`): exact, but evaluating the supremum needs the local
   law of `Z` at scale `1/L`. BLOCKED.
@@ -453,7 +455,10 @@ arithmetic input of type (i) or (ii).
 - **S5 (formalized):** smoothed Landau formula over all zeros, unconditional:
   `|Σ_ρ m_ρ x^{ρ−½}ŵ(γ_ρ/T) + T w(0)Λ(x)/√x| ≤ 2e^{1/2}‖w‖₁√x + K√T/log x` for `T ≥ x + 2`
   (`RHTower/ZetaSmoothedLandauFormula.lean`, card `3-formalized/zeta-smoothed-landau-formula.md`).
-  Input for discrete moments over zeros.
+  Input for discrete moments over zeros. Companions, formalized: the short-interval explicit formula
+  (all real `x > 1`, prime side kept), the smoothed Riemann–von Mangoldt formula
+  `Σ_ρ m_ρŵ(γ_ρ/T) = T w(0) log T + c_w T + O(1)` (`ZetaSmoothedZeroCount.lean`), and Dirichlet
+  polynomials over the zeros, a smoothed Gonek lemma (`ZetaZeroDirichletPolynomialMoment.lean`).
 
 ## Log
 - 2026-10-25 — created; corpus frontier re-read (Zeta23, TTPC, ACS, g75-1012).

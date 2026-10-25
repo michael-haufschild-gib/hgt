@@ -119,6 +119,20 @@ and differences of prefixes with their real-interval integrals, without a
 source growth assumption. Three audits drafted; unchecked. The scaled
 digit specialization still requires its own equality.
 
+`/tmp/BiarithmeticDigitAnnularStepComparison.lean` drafts that specialization:
+floor cofactors commute exactly with the grid, and changing variables
+identifies each scaled partial-annulus grid integral with the actual
+finite covariance block. Two audits drafted; unchecked. The sum of the
+annular error bounds and the resulting full-horizon asymptotics remain.
+
+`/tmp/BiarithmeticDigitCovarianceBoundedError.lean` drafts the complete
+finite error decomposition and geometric bound, uniformly in both
+positive cofactors. It includes empty partial blocks through the exact
+range `5^M<=N+1<=5^(M+1)`. The proposed bound is
+`fiveDigitAnnularErrorBound(a)/(1-a/5)` for `1<a<5`. Three audits
+drafted; unchecked. This is the quantitative finite source theorem;
+strict/critical limits and actual golden transfer remain to be checked.
+
 At `a=sqrt(5)`, work on the fixed annulus `1<=x<=5`. The same uniform refinement estimate
 bounds each mixed annular covariance error by `C_(j,k) a^(-M)`. These errors are summable
 in `M`. Since the scale factor `a^2/5` is one, every complete block contributes its fixed

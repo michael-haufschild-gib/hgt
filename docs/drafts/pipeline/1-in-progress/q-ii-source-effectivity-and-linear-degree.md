@@ -223,25 +223,35 @@ Actual adjoint check **3494** failed at four proof steps: rewriting a dependent
 Fin bound, an extra tactic after simplification had closed the goal, conversion
 of the operator norm product to a square, and normalization of `starRingEnd`.
 All four are corrected in the actual file; failed axiom output is not a certificate.
-Direct adjoint recheck **35594** is running; no second owned Lean process may
-start until it exits. The same dependent-index rewrite issue is corrected in
+Direct adjoint recheck **35594** failed only at the lower-coordinate equality:
+`congr 1` is required and itself closes the goal; only the subsequent explicit
+lower-coordinate proof was redundant. Restored this one tactic in the actual
+adjoint and bounded-adjoint candidates. The same dependent-index rewrite issue is corrected in
 the actual bounded-orbit, bounded-surface, and bounded-faithful-reserve candidates.
 The bounded adjoint proof also uses the corrected scalar conjugation step and
 removes the redundant lower-coordinate proof. Their scratch copies are stale.
 The corrected restricted API probe
 and direct bounded-surface construction are required before the bounded-surface
 branch is checked.
+The restricted API probe now includes the full generic restriction constructor,
+matching the existing source construction without importing the conflicting module.
+Direct adjoint recheck **96392** passed with only `propext`, `Classical.choice`,
+and `Quot.sound` in all three audits. The module is cleaned, wired, documented,
+and its card moved to stage 3. Its old scratch draft and API probe are removed.
+Its missing olean is required by the actual `FaithfulHilbertSchmidtSourceReserves`
+importer. Absence was checked explicitly; direct missing-olean build **95594**
+is the sole owned Lean process. Wait for its exit before another Lean invocation.
 
 ### Remaining verification queue
 
 All modules below are actual files under `ArithmeticCastelnuovoSeveri/`.
-They remain unverified until their direct checks and endpoint axiom audits pass.
+Rows explicitly marked certified have passed; all other rows remain unverified.
 
 | Module | State |
 |---|---|
 | `ArithmeticMajorantConeGeometry` | Pointedness correction awaits direct recheck |
 | `SmoothFiniteReadingKernels` | Corrected smoothness API probe, then actual recheck |
-| `ArithmeticSharpAndTheHilbertAdjoint` | Corrected actual check running: 35594 |
+| `ArithmeticSharpAndTheHilbertAdjoint` | CERTIFIED: direct 96392 and three standard axiom audits; missing importer olean still needed |
 | `FaithfulHilbertSchmidtSourceReserves` | Twelve endpoints; requires missing adjoint, HS-source and HT trace-defect oleans |
 | `MeyerBoundedCenteredOrbits` | Six endpoints; requires missing HS-source olean |
 | `MeyerCriticalTopAlgebra` | Eleven endpoints; requires bounded-orbit olean |
@@ -1225,7 +1235,7 @@ and quantitative transport must be linked before claiming a new theorem.
 
 The full source Hilbert convolution jets, faithfulness, and actual boundary
 sharp-root obstruction expose another dependency-closed paper result:
-`../2-fully-proven/arithmetic-sharp-is-the-hilbert-adjoint-exactly-for-simple-critical-zeros.md`.
+`../3-formalized/arithmetic-sharp-is-the-hilbert-adjoint-exactly-for-simple-critical-zeros.md`.
 Adjoint identification forces sharp-square-root closure by the Hilbert Gram
 norm identity; conversely RH and simplicity make every actual block scalar
 and sharp conjugates its multiplier. No Lean draft yet. This sharpens the

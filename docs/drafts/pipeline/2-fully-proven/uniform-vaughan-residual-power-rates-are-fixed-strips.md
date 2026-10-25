@@ -106,8 +106,10 @@ mean factorization, and finite Abel summation. The generic divisor-square hyperb
 `HyperbolaCancellationWithDivisorBoundedCoefficients.lean`; its logarithmic
 transfer is checked in `LogarithmicCancellationSurvivesTheDampedFloorTransform.lean`.
 The exact extreme-cutoff identities, strict positivity, cofinal floor, and reciprocal
-little-o obstruction, and harmonic-power transfer to Mertens sums are drafted as eleven
+little-o obstruction, and harmonic-power transfer to Mertens sums are drafted as twelve
 audit targets in `/tmp/QIExtremeCutoffTools.lean`.
+The twelfth states the paper's explicit eventual exponent-above-one obstruction
+for the two convolution entries, deriving it from their reciprocal little-o obstruction.
 The source statements in `BaezDuarteMobiusCriticalTailObstruction.lean` have been read;
 their new specialization has not yet been compiled.
 

@@ -65,7 +65,24 @@ Session `70868` exited successfully. Complete output is preserved in
 `/tmp/qiii-diagonal-cutoff-augmentation-retry-check.log`. The guarded text-only
 promoter installed and wired both leaves. Their final canonical checks remain.
 
-Current direct session `25746` builds the missing
-`ArithmeticDefectRigidity/AZeroCofactorForcesFiniteDimension.olean` required by
-the already-written contraction modules. It must finish before another Lean
-process starts. No final source-only check has yet run for this leaf.
+The required cutoff olean build, session `25746`, passed with standard axioms;
+its output is `/tmp/qiii-zero-cofactor-olean.log`. Current direct session
+`34006` runs the final source-only check of
+`ArithmeticDefectRigidity/AZeroCofactorForcesFiniteDimension.lean`. It must
+finish before another Lean process starts.
+
+## Prepared source placement, not compiler drivers
+
+- `/tmp/qiii-assemble-followup-checks.py` only assembles Lean text. The contracted
+  scratch was regenerated after its exact-remainder and intertwining changes.
+- The finite-hull scratch now imports the future common-family, operator-order
+  and tied-torus leaves, and includes the half-plane sequence corollary. Generate
+  it only after those dependencies are verified.
+- The full jet-index scratch now imports the future `InteriorWienerJets` leaf
+  instead of repeating its body. Regenerate it after that leaf is verified.
+- `/tmp/qiii-promote-verified-jet-index.py` is an UNRUN text-only guarded source
+  placer for six jet/index leaves. It requires a clean full scratch log with
+  standard axioms on every target. Direct canonical checks remain separate.
+- Small guarded source placement now also supports `augmentation_hull`,
+  `raw_origin`, and `boundary_index`; none has run. The raw-origin body now has
+  its explicit canonical dependency import; regenerate its scratch before use.

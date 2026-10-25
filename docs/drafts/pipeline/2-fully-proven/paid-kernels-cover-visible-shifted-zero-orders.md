@@ -2,7 +2,7 @@
 
 - **ID:** paid-kernels-cover-visible-shifted-zero-orders
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM / actual-source obstruction
+- **Type:** CONJECTURE (canonical Lean completion pending)
 - **Parent:** [Visible poles and module multiplicity](../1-in-progress/q-iii-visible-poles-and-module-multiplicity.md)
 
 ## Exact statement
@@ -76,20 +76,12 @@ with these arithmetic orders.
 
 ## Lean status
 
-Drafts `/tmp/qiii_cleared_continuation_body.lean` and
-`/tmp/qiii_paid_kernel_zero_order_body.lean` await their first Lean check.
-After validation, extract the continuation helper into the existing AOT
-module and reuse it in the old value-at-zero proof. Final leaf checks,
-transitive axiom audit, and umbrella wiring remain required.
+The strict-interior and complete critical-boundary scratches passed with only
+`propext`, `Classical.choice`, and `Quot.sound`: real and complex kernel order
+bounds, all jets below visible order, partial-cancellation hull membership,
+and the actual Mellin identity and bound. Canonical extraction and original
+continuation-proof refactoring are installed; new leaves are umbrella-wired.
 
-## Verified strict-interior scratch
-
-`/tmp/qiii-order-followup-check.lean` passed in session `32035` with only
-`propext`, `Classical.choice`, and `Quot.sound` on every printed result:
-real repairing-kernel order bound; complex paid-ideal order bound; all jets
-below visible order; partial-cancellation hull membership; and the generic
-complex paid Mellin bound. The finite-order arguments add no analytic input.
-Canonical extraction, original continuation-proof refactoring, imports and
-final source-only audits remain open. The stronger explicit Mellin helper is
-being checked separately before that refactor, to retain the actual Mellin
-factor needed at the critical boundary.
+Final direct checks of `TheOffLineZerosObstructTheMoebiusReceiver` and
+`PaidKernelsCoverVisibleTranslatedZeroOrders` remain pending. See
+[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).

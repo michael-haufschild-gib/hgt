@@ -343,7 +343,10 @@ cutoff product diverge separately. The first finite Gram check passed both
 smooth-energy targets but found an unavailable Cauchy–Schwarz reference in the
 private pairing adapter. The adapter now uses finite weighted Cauchy–Schwarz
 directly, avoiding an import that would shadow the norm throughout this branch.
-The corrected three-target check remains required; the four complete matrix
+The corrected three-target scratch check and all transitive axiom audits passed
+with standard axioms only. They are migrated and wired as
+`PronicGramErrorsAroundASmoothRankOneTerm.lean`; its producing check passed,
+and its final direct repository check is running. The four complete matrix
 targets remain uncompiled.
 
 The first logarithmic-transform scratch check found two algebraic Lean issues

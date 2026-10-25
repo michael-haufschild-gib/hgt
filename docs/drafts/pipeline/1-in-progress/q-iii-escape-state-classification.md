@@ -1091,3 +1091,19 @@ singleton/continuum kernel-family alternative. Every card stays open until
 its exact declarations, canonical source checks and transitive axioms pass.
 Text-only assemblers/promoters do not execute Lean; any later use must still
 be followed by direct per-file Lean calls, never a compilation driver.
+
+### Current stopping instruction and completion ledger
+
+The user paused the research goal and then explicitly required: finish started
+Lean work, formalize every outstanding paper proof, then pause. Continue only
+that completion scope; do not resume conjecture generation or the open full
+classification problem. The current per-batch status and active compiler are
+in [the Lean completion ledger](q-iii-existing-findings-lean-completion.md),
+which supersedes historical session and queue instructions above.
+
+The repaired cutoff/augmentation scratch passed directly with standard axioms.
+Both leaves are installed and wired. The cutoff olean also passed; its final
+source-only audit is running. The old antipodality route's completed source
+audits were reconciled, and its card moved to `5-failed` with its formalized
+unique-extension survivor. The augmentation paper claim about its singleton
+character hull has a separate unchecked draft, retained in the completion scope.

@@ -37,10 +37,18 @@ Take the Landau test `k(u) = T w(T(u − log x))`. Its transform is `h_k(z) = x^
   is `∫ŵ(τ/T)μ(τ)dτ`, and `μ(τ) = (1/2π)log(|τ|/2π) + muRem(τ)` with `muRem` integrable
   (`integrable_muRem`: `O(τ^{−2})` by Stirling, logarithmic at `0`); rescaling and `∫ŵ = 2πw(0)`
   (`integral_paperFT_ofReal`) give the main terms.
+- **Dirichlet polynomials over the zeros** (`ZetaZeroDirichletPolynomialMoment.lean`,
+  `exists_zeroSum_dirichletPolynomial_le`, a smoothed Gonek lemma): for `1 ≤ Y`, `T ≥ max 2 (Y + 2)`,
+  `|Σ_ρ m_ρ ŵ(γ_ρ/T) Σ_{n≤Y} a_n n^{−(ρ−½)} − (a_1(T w(0) log T + c_w T) − T w(0)Σ_{2≤n≤Y} a_n Λ(n)/√n)|
+  ≤ K Σ_n |a_n|(√n + √T)`. Proof: `n^{−(ρ−½)}ŵ(γ_ρ/T)` is the transform of the Landau test at
+  `−log n`; Weil's right-hand side is invariant under `u ↦ −u` because `μ` is even
+  (`literatureRHS_comp_neg`, `zeroSum_comp_neg`), so the Landau formula for the reflected profile
+  gives each `n ≥ 2` term (`exists_smoothedLandau_neg_le`), and `n = 1` is the smoothed zero count.
 
 ## Lean
-`formal/GaloisForLFunctions/RHTower/ZetaSmoothedLandauFormula.lean` and
-`formal/GaloisForLFunctions/RHTower/ZetaSmoothedZeroCount.lean`, wired into `RHTower.lean`.
+`formal/GaloisForLFunctions/RHTower/ZetaSmoothedLandauFormula.lean`,
+`formal/GaloisForLFunctions/RHTower/ZetaSmoothedZeroCount.lean` and
+`formal/GaloisForLFunctions/RHTower/ZetaZeroDirichletPolynomialMoment.lean`, wired into `RHTower.lean`.
 `paperFT_landauTest`, `primeSum_landauTest`, `norm_pole_landauTest_le`, `hasDerivAt_paperFT_ofReal`,
 `norm_paperFT_ofReal_mul_le`, `exists_abs_mu_le`, `exists_abs_deriv_mu_le`,
 `norm_integral_mul_exp_le` (integration by parts against `e^{iyτ}`), `exists_gammaTerm_landau_le`,

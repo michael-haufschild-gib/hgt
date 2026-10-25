@@ -120,6 +120,7 @@ rate, generic boundary cancellation, actual paid boundary vanishing and hull
 membership, and the Liouville unit-orbit consequences. Five canonical leaves
 were installed and umbrella-wired, together with the explicit Mellin helper
 in `TheOffLineZerosObstructTheMoebiusReceiver`. Redundant tactics were removed.
-Final canonical checks remain pending in `/tmp/qiii-pole-canonical-audit.sh`;
-this card remains OPEN until those pass. No actual escape-hull classification
+Final direct canonical checks remain pending; see
+[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
+This card remains OPEN until those pass. No actual escape-hull classification
 or boundary jet theorem is inferred.

@@ -55,6 +55,29 @@ C5 (THIM §7.7): non-completely-multiplicative patterns at half damping. `f' = g
 tail `−1` at `t₀ = 2πm/log 2`: series `(1 − 2^{1−w})F_{t₀}`, factor `≤ 2 min(1,|z|)` cancels
 `|z|^{−1/2}`: paid; companion paid iff `ζ(1/2+it₀) = 0`.
 
+C7 (THIM §3.18 at height zero): `f(p) = (1 − c g(p))/2` (boundary amplitude ½ of the quarter law)
+is paid at half damping iff `∫_0^1 e^{−cΛ}dρ/ρ < ∞` (`ζ(1/2) ≠ 0`); harmonic/log-log thresholds `c = 1`.
+Proof: Dini box at `t₀ = 0` from `log|F| = ½(log|ζ(v)| − cΣw_k log|ζ(v+s_k)|) + O(1)`; abstract Dini law.
+
+C8 (THIM §7.7 below half damping): if `f(d)d^{−ε}` is paid, `0 < ε < ½`, then at every height
+`log|F(1+u+it₀)| = k log(1/u) + O(1)` with `k ∈ ℤ` (no mean hypothesis), and `k = 0` for `t₀ ≠ 0`.
+Proof: `Q = Cζ` analytic at `s₁ = 1−ε+it₀`; ray bounds `A u^n ≤ |g(s₁+u)| ≤ B u^n` for `Q` and `ζ`
+give `k = ord ζ − ord Q`; for `t₀ ≠ 0`, `|cos x| ≤ ¾ + ¼cos 2x` and `ζ(1+2it₀) ≠ 0` give
+`|log|F|| ≤ ¾ log(1/u) + O(1)`. Corollary: Dini-box patterns (`Λ = o(log 1/ρ)`) unpaid below ½.
+
+C9 (THIM §7.7, beyond completely monotone): every monotone defect obeys the Dini law with the
+intrinsic profile `P_d(ρ) = Σ_p d(p) p^{−1−ρ}`: for `d` antitone on primes, `0 ≤ d ≤ 2`, `d → 0`,
+`(1 − d(p))cos(t₀ log p)` (`t₀ > 0`) is paid at half damping iff `∫_0^1 e^{−P_d(ρ)}dρ/ρ < ∞` or
+`ζ(1/2+it₀) = 0`.
+Proof: (A) one step costs bounded mass: `R ≥ 2`, `s = min(½, 1/log R)`:
+`Σ_p |1_{p<R} − p^{−s}|/p ≤ (es + 1/log R) Σ_p log p · p^{−1−s} ≤ (es + 1/log R)(1/s + 1) ≤ 12`
+(`p < R`: `1 − p^{−s} ≤ s log p ≤ e s log p · p^{−s}` as `s log p ≤ 1`; `p ≥ R`: `1 ≤ log p/log R`).
+(B) `d = Σ_k w_k 1_{·<R_k}` (telescoping over primes, `w_k = d(q_k) − d(q_{k+1})`, `R_k = q_k + 1`);
+the completely monotone `g = Σ_k w_k x^{−s_k}` has `Σ_p |d − g|/p ≤ 12 W`, `W = d(2) ≤ 2`.
+(C) summable-perturbation invariance + C4 Dini law for `g`. (D) `Σ_p g(p)p^{−1−ρ} =
+Σ_k w_k Σ_p p^{−1−ρ−s_k} = Λ(ρ) + O(W)` (Mertens at the pole), `|P_d − P_g| ≤ 12W`: the two Dini
+densities are comparable. Consequence: §7.7's open class is the non-monotone defects.
+
 ## Log
 - 2026-10-25 — created; C1, C2 paper proofs complete.
 - 2026-10-25 — C1 formalized (#1). C2 formalized (not counted). C3 formalized (#2).

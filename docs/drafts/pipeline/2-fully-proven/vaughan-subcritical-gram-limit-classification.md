@@ -124,4 +124,10 @@ the existing topology draft treats the scalar amplitude set only. The additional
 leaf `TheTopologyOfSubcriticalVaughanGramLimits` must transfer compactness,
 countability, infinitude, and the unique accumulation point through the actual
 smooth matrix map, whose positive diagonal coefficient makes it injective.
-This is an existing paper obligation, not a newly certified consequence.
+Nine targets are now drafted in `/tmp/QIVaughanMatrixTopologyTools.lean`:
+continuity, diagonal injectivity, compactness, countability, infinitude, unique
+zero accumulation, exact attainment with positive or arbitrary cutoffs, and
+damping independence after the stated scalar normalization. The neighborhood
+proof uses continuous diagonal recovery to transfer scalar isolation. All nine
+remain uncompiled. This closes draft coverage of an existing paper obligation;
+it certifies no consequence until Lean checks pass.

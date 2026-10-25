@@ -2,9 +2,25 @@
 
 - **ID:** square-root-energy-translations-still-disappear
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** LEAN RESULTS WITH PENDING COROLLARIES
 - **Source:** `docs/reports/review-2410/opus.md`, Mechanism A and Q-III; `FixedSuccessorsDisappearFromEscapingProfiles.lean`.
 - **Statement:** For the actual damped Möbius receiver, every moving successor of length `O(sqrt(E))` has vanishing normalized displacement on escape.
+
+## Current formalization coverage
+
+The uniform subquadratic raw budget, square-root-scale disappearance, sharp
+additive-defect envelope, exact capped-row cost, origin-trace decomposition,
+and recentered energy-scale disappearance passed canonical source checks and
+standard-axiom audits. Their owners are `TheOriginTraceControlsMovingSuccessors`,
+`TheExactPronicCostOfACappedRow`, and `RecenteredSuccessorsVanishAtTheEnergyScale`.
+The stronger source-power refinement is already in
+`3-formalized/the-source-power-saving-enlarges-the-invisible-translation-scale.md`.
+
+This card remains open for its later reset/raw moving-origin Gram and faithful
+boundary-module consequences. Their combined reset-origin scratch passed;
+canonical boundary checks and the separate raw-origin and index corollaries
+remain pending. Historical pending labels below are superseded by this coverage
+record and [the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
 
 ## Paper proof
 

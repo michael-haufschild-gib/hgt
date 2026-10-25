@@ -520,6 +520,12 @@ local witness is a single jet of order `j`: its sharp square is principal precis
 when reflection moves its Xi point or `2j` reaches the local multiplicity. These
 criteria are formalized on the genuine source quotient without continuity assumptions.
 
+The actual faithful full-Hasse convolution representation respects arithmetic
+sharp as Hilbert adjoint exactly under the same RH-and-simplicity condition
+(`ArithmeticSharpAndTheHilbertAdjoint`). Thus an operator Gram interpretation
+of every arithmetic sharp square has precisely the faithful-degree obstruction;
+the Hilbert representation alone does not discharge it.
+
 Centered flow preserves the literal mixed arithmetic sharp product, so every
 reading of that product is invariant. A nonnegative invariant majorant controlling
 the original mixed trace exists exactly under RH

@@ -31,6 +31,7 @@ private theorem bounded_operator_diagonal
     simp only [Nat.zero_add, Finset.range_one, Finset.sum_singleton,
       deningerMeyerHasseMoment, Nat.factorial_zero, Nat.cast_one, div_one,
       deningerMeyerStrongLogMellinJetLM_eq_iteratedDeriv, iteratedDeriv_zero]
+    congr 1
   · have hv : deningerMeyerStrongLogMellin g (q.1 : ℂ) = 0 :=
       hg q.1 ⟨0, xiSupportMultiplicity_pos q.1⟩ (Or.inl hr)
     rw [hv, zero_mul, deningerMeyerHilbertConvolution_jets]

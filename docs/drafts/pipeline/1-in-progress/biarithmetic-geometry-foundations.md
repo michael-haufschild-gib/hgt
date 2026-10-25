@@ -647,7 +647,7 @@ Active drafts:
   rows to the support-recovery lemma. The production leaf is wired, its direct
   source check passed, and its stage-3 card is present. It includes
   the exact golden critical parameter and the fully paid zero-parameter endpoint.
-- `/tmp/BiarithmeticGoldenDivisorResponse.lean`: exact valuation reduction of the
+- `GoldenDivisorResponse.lean`: exact valuation reduction of the
   ordinary divisor response, realization at powers of five, antitonicity in the
   valuation and source parameter, and upper bound one. First check passed the
   valuation reduction, power realization, and parameter-monotonicity audits.
@@ -659,7 +659,7 @@ Active drafts:
   complete positivity phase for all `t>=0`, and payment in the positivity
   chamber. Unchecked. The wider parameter range and finite bound have paper
   proofs recorded on the positivity card before any Lean claim.
-- `/tmp/BiarithmeticFinitePronicStepEmbedding.lean`: exact finite signed covariance
+- `FinitePronicStepEmbedding.lean`: exact finite signed covariance
   as the existing step-Gram integral of truncated rows. Finite absolute sums
   discharge the step theorem's boundedness premise for arbitrary source rows.
   First check found an ambiguous `mem_range` in the zero-tail proof; it is
@@ -967,6 +967,16 @@ the positive diagonal bound `4/25`, and the integrated error with ratio
 prefix and block-difference interval integrals, reusing the corpus's
 frozen-cell integrability and pronic cell formula. Three audits drafted;
 unchecked. The actual scaled digit specialization remains an obligation.
+`/tmp/BiarithmeticIntrinsicCenteredConvolution.lean` drafts the actual
+inverse-norm centered convolution identity, paid kernel mean correction,
+and exact comparison with the golden receiver series. Seven audits
+drafted; unchecked. Full intrinsic repairing-domain classification remains.
+`/tmp/BiarithmeticDigitAnnularStepComparison.lean` drafts the exact
+floor-cofactor grid identity and scaled partial-annulus comparison with
+the actual finite pronic covariance block. Two audits drafted; unchecked.
+`/tmp/BiarithmeticDigitCovarianceBoundedError.lean` drafts exact full-block
+telescoping and the uniform bounded covariance error for every `1<a<5`,
+including empty final partial blocks. Three audits drafted; unchecked.
 
 `/tmp/BiarithmeticPaidGramStability.lean` drafts own-energy normalization
 and all-subsequence invariance under paid perturbations, reusing ADR's
@@ -1037,3 +1047,10 @@ requires its next check.
 `DigitalCircleFourier` passed its repaired scratch check and all three
 transitive audits. The production leaf is wired; direct check is queued.
 The source-profile/cyclic-module comparison is not part of this leaf.
+
+`FinitePronicStepEmbedding` passed its revised scratch check and both
+transitive audits. Production source is wired; its direct check is queued.
+
+`GoldenDivisorResponse` passed its repaired scratch check and all five
+transitive audits. Production source is wired; direct check is queued.
+The full positivity-parameter classification remains in its dependent draft.

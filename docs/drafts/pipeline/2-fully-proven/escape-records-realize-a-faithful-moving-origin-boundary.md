@@ -86,8 +86,8 @@ The following components now passed the combined Lean scratch:
 The normalized record-energy limit, crossing-sequence assembly, bounded-row
 weak orthogonality, faithful step/mixed modules and final admission-or-realization
 theorem all passed the full boundary scratch with standard axioms. Canonical
-leaves are installed and wired. Final standalone source checks are queued in
-`/tmp/qiii-boundary-canonical-audit.sh` within active session `90975`. No actual
+leaves are installed and wired. Final direct standalone source checks remain in
+[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md). No actual
 escape instance is assumed or constructed.
 
 ## Closed construction and horizon convention

@@ -251,3 +251,11 @@ the claimed bound `6*||k||_W^2`. This is a proof plan until its Lean checks pass
 `/tmp/BiarithmeticIntrinsicKernelPayment.lean` drafts these five main claims.
 The arbitrary-source centered convolution identity and the full intrinsic
 repairing-domain classification remain separate formalization obligations.
+
+`/tmp/BiarithmeticIntrinsicCenteredConvolution.lean` drafts that exact
+convolution identity using actual inverse-norm absolute evaluation, its
+finite-coefficient counting comparison, and the paid critical-Wiener mean
+correction. It also identifies the generic construction with the actual
+golden receiver, proving mean convergence from the already checked
+arithmetic-source theorem. Seven audits drafted; unchecked. The bounded
+shell action and full repairing-domain classification remain obligations.

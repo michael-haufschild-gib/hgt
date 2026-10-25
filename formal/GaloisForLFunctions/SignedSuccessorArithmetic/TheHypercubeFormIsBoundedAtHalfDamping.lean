@@ -71,7 +71,8 @@ private theorem halfDensityPullback_stepSource_eq_primitiveSource_neg (r : ℕ) 
     halfDensityPullback (pmRamanujanStepSource r) x =
       halfDensityPullback (pmRamanujanPrimitiveSource r) (-x) := by
   unfold halfDensityPullback pmRamanujanStepSource pmRamanujanPrimitiveSource stepFun
-  rw [pmRamanujanPrimitive_re_ofReal, one_div, Real.exp_neg, inv_inv,
+  rw [pmRamanujanPrimitive_re_ofReal,
+    show 1 / Real.exp (-x) = Real.exp x by rw [one_div, Real.exp_neg, inv_inv],
     sqrt_exp_eq_half, sqrt_exp_eq_half]
   have hexp : ((Real.exp (x / 2) : ℝ) : ℂ) * ((Real.exp x : ℝ) : ℂ)⁻¹ =
       ((Real.exp (-x / 2) : ℝ) : ℂ) := by
@@ -88,18 +89,20 @@ private theorem halfDensityPullback_stepSource_conj (r : ℕ) (x : ℝ) :
     starRingEnd ℂ (halfDensityPullback (pmRamanujanStepSource r) x) =
       halfDensityPullback (pmRamanujanStepSource r) x := by
   unfold halfDensityPullback pmRamanujanStepSource stepFun
-  simp
+  simp only [map_mul, map_inv₀, Complex.conj_ofReal]
 
 private theorem fourier_halfDensityPullback_stepSource_neg (r : ℕ) (ξ : ℝ) :
     𝓕 (halfDensityPullback (pmRamanujanStepSource r)) (-ξ) =
       starRingEnd ℂ (𝓕 (halfDensityPullback (pmRamanujanStepSource r)) ξ) := by
   rw [Real.fourier_real_eq, Real.fourier_real_eq, ← integral_conj]
   refine integral_congr_ae (Eventually.of_forall fun v => ?_)
-  simp only [Circle.smul_def, smul_eq_mul, map_mul, halfDensityPullback_stepSource_conj]
+  simp only [Circle.smul_def, Real.fourierChar_apply, smul_eq_mul, map_mul,
+    halfDensityPullback_stepSource_conj]
   congr 1
-  rw [Circle.coe_exp, Circle.coe_exp, ← Complex.exp_conj]
+  rw [← Complex.exp_conj]
   congr 1
-  simp only [mul_neg, neg_neg, map_neg, map_mul, Complex.conj_ofReal, Complex.conj_I]
+  push_cast
+  simp only [map_mul, map_neg, Complex.conj_ofReal, Complex.conj_I]
   ring
 
 private theorem fourier_halfDensityPullback_stepSource_eq_mellin {r : ℕ} (hr : 1 < r) (ξ : ℝ) :
@@ -111,6 +114,7 @@ private theorem fourier_halfDensityPullback_stepSource_eq_mellin {r : ℕ} (hr :
       𝓕 (halfDensityPullback (pmRamanujanPrimitiveSource r)) (-ξ) := by
     rw [Real.fourier_real_eq, Real.fourier_real_eq, ← integral_neg_eq_self]
     refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+    dsimp only
     rw [halfDensityPullback_stepSource_eq_primitiveSource_neg, neg_neg]
     congr 2
     ring
@@ -119,8 +123,10 @@ private theorem fourier_halfDensityPullback_stepSource_eq_mellin {r : ℕ} (hr :
       (1 / 2 : ℂ) + ((2 * Real.pi * ξ : ℝ) : ℂ) * Complex.I := by
     push_cast; ring
   rw [hs_eq]
-  have hs0 : (0 : ℝ) < ((1 / 2 : ℂ) + ((2 * Real.pi * ξ : ℝ) : ℂ) * Complex.I).re := by simp
-  have hs1 : ((1 / 2 : ℂ) + ((2 * Real.pi * ξ : ℝ) : ℂ) * Complex.I).re < 1 := by simp
+  have hs0 : (0 : ℝ) < ((1 / 2 : ℂ) + ((2 * Real.pi * ξ : ℝ) : ℂ) * Complex.I).re := by
+    simp
+  have hs1 : ((1 / 2 : ℂ) + ((2 * Real.pi * ξ : ℝ) : ℂ) * Complex.I).re < 1 := by
+    simp; norm_num
   exact (hasMellin_pmRamanujanPrimitiveSource hr hs0 hs1).2
 
 private theorem norm_pmRamanujanMellinSymbol_half_le (r : ℕ) (t : ℝ) :
@@ -161,12 +167,13 @@ private theorem exists_norm_fourier_stepSource_le_inv_rpow {r : ℕ} (hr : 1 < r
       ‖(1 / 2 : ℂ) + ((2 * Real.pi * |ξ| : ℝ) : ℂ) * Complex.I‖ := by
     have hre := Complex.abs_re_le_norm ((1 / 2 : ℂ) + ((2 * Real.pi * |ξ| : ℝ) : ℂ) * Complex.I)
     have him := Complex.abs_im_le_norm ((1 / 2 : ℂ) + ((2 * Real.pi * |ξ| : ℝ) : ℂ) * Complex.I)
-    simp only [Complex.add_re, Complex.one_re, Complex.div_ofNat_re, Complex.mul_re,
-      Complex.ofReal_re, Complex.I_re, mul_zero, Complex.ofReal_im, Complex.I_im, mul_one,
-      sub_self, add_zero, Complex.add_im, Complex.one_im, Complex.div_ofNat_im, zero_div,
-      zero_add] at hre him
-    rw [abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)] at hre
-    rw [abs_of_pos ht_pos] at him
+    have hre_eq : ((1 / 2 : ℂ) + ((2 * Real.pi * |ξ| : ℝ) : ℂ) * Complex.I).re = 1 / 2 := by
+      simp [Complex.add_re, Complex.mul_re]
+    have him_eq : ((1 / 2 : ℂ) + ((2 * Real.pi * |ξ| : ℝ) : ℂ) * Complex.I).im =
+        2 * Real.pi * |ξ| := by
+      simp [Complex.add_im, Complex.mul_im]
+    rw [hre_eq, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)] at hre
+    rw [him_eq, abs_of_pos ht_pos] at him
     nlinarith
   have hsym := norm_pmRamanujanMellinSymbol_half_le r (2 * Real.pi * |ξ|)
   have hsym' : ‖pmRamanujanMellinSymbol r
@@ -184,8 +191,10 @@ private theorem exists_norm_fourier_stepSource_le_inv_rpow {r : ℕ} (hr : 1 < r
     have hs_pos : 0 < ‖(1 / 2 : ℂ) + ((2 * Real.pi * |ξ| : ℝ) : ℂ) * Complex.I‖ := by linarith
     rw [div_le_iff₀ hs_pos]
     have hrpow_id : (1 + |ξ|) ^ (-(2 / 3 : ℝ)) * (1 + |ξ|) = (1 + |ξ|) ^ (1 / 3 : ℝ) := by
-      conv_lhs => rw [← Real.rpow_one (1 + |ξ|), ← Real.rpow_add h1ξ_pos]
-      norm_num
+      calc (1 + |ξ|) ^ (-(2 / 3 : ℝ)) * (1 + |ξ|)
+          = (1 + |ξ|) ^ (-(2 / 3 : ℝ)) * (1 + |ξ|) ^ (1 : ℝ) := by rw [Real.rpow_one]
+        _ = (1 + |ξ|) ^ (-(2 / 3 : ℝ) + 1) := (Real.rpow_add h1ξ_pos _ _).symm
+        _ = (1 + |ξ|) ^ (1 / 3 : ℝ) := by norm_num
     calc ‖riemannZeta ((1 / 2 : ℂ) + ((2 * Real.pi * |ξ| : ℝ) : ℂ) * Complex.I)‖
         ≤ C_conv * (2 * Real.pi * |ξ|) ^ (1 / 3 : ℝ) := hzeta
       _ ≤ C_conv * ((2 * Real.pi) ^ (1 / 3 : ℝ) * (1 + |ξ|) ^ (1 / 3 : ℝ)) :=
@@ -232,11 +241,14 @@ theorem stepSpectralWeight_ae_le_inv_rpow {r : ℕ} (hr : 1 < r) :
           ≤ Real.exp (x / 2) * (pmRamanujanPrimitiveBound r * (Real.exp x)⁻¹) :=
             mul_le_mul_of_nonneg_left (norm_stepFun_le hb (Real.exp_pos x)) (Real.exp_pos _).le
         _ = pmRamanujanPrimitiveBound r * Real.exp (-(1 / 2) * x) := by
-            rw [← Real.exp_neg]; ring_nf; rw [← Real.exp_add]; congr 2; ring
+            rw [← Real.exp_neg, mul_left_comm (Real.exp (x / 2)), ← Real.exp_add]
+            congr 1; congr 1; ring
     · have hneg : x < 0 := lt_of_le_of_ne (not_lt.mp hx) hx0
       have hexp : Real.exp x < 1 := Real.exp_lt_one_iff.mpr hneg
-      simp [halfDensityPullback, pmRamanujanStepSource, stepFun, Nat.floor_eq_zero.mpr hexp,
-        pmRamanujanPrimitive, indicator_of_notMem hx]
+      have h0 : halfDensityPullback (pmRamanujanStepSource r) x = 0 := by
+        simp [halfDensityPullback, pmRamanujanStepSource, stepFun,
+          Nat.floor_eq_zero.mpr hexp, pmRamanujanPrimitive]
+      rw [h0, norm_zero, indicator_of_notMem (show x ∉ Ioi (0 : ℝ) from hx)]
   have hU : (halfLineExpUnitary (stepHalfLine hr) : ℝ → ℂ) =ᵐ[volume]
       halfDensityPullback (pmRamanujanStepSource r) :=
     halfLineExpUnitary_ae_halfDensityPullback (stepHalfLine_ae_eq hr)
@@ -289,25 +301,33 @@ private theorem exists_zetaEntire_pole_box_bounds :
       ∀ σ ∈ Icc (1 : ℝ) 2, ∀ u ∈ Icc (-1 : ℝ) 1,
         c_box ≤ ‖RHTower.zetaEntire ((σ : ℂ) + (u : ℂ) * Complex.I)‖ ∧
           ‖RHTower.zetaEntire ((σ : ℂ) + (u : ℂ) * Complex.I)‖ ≤ M_box := by
-  let K : Set (ℝ × ℝ) := Icc (1 : ℝ) 2 ×ˢ Icc (-1 : ℝ) 1
-  have hcompact : IsCompact K := isCompact_Icc.prod isCompact_Icc
-  have hne : K.Nonempty := ⟨(1, 0), ⟨le_rfl, by norm_num⟩, ⟨by norm_num, by norm_num⟩⟩
-  have h1 : Continuous (fun q : ℝ × ℝ => ((q.1 : ℂ) + (q.2 : ℂ) * Complex.I)) :=
+  have hmap : Continuous (fun q : ℝ × ℝ => ((q.1 : ℂ) + (q.2 : ℂ) * Complex.I)) :=
     (Complex.continuous_ofReal.comp continuous_fst).add
       ((Complex.continuous_ofReal.comp continuous_snd).mul continuous_const)
-  have hcont : ContinuousOn
-      (fun q : ℝ × ℝ => ‖RHTower.zetaEntire ((q.1 : ℂ) + (q.2 : ℂ) * Complex.I)‖) K :=
-    (RHTower.differentiable_zetaEntire.continuous.comp h1).norm.continuousOn
-  obtain ⟨q_min, hq_min, hmin⟩ := hcompact.exists_isMinOn hne hcont
-  obtain ⟨K₀, hK₀⟩ := (isCompact_closedBall (0 : ℂ) 4).exists_bound_of_continuousOn
-    (RHTower.differentiable_zetaEntire.continuous.continuousOn (s := Metric.closedBall (0 : ℂ) 4))
-  have hc0 : 0 < ‖RHTower.zetaEntire ((q_min.1 : ℂ) + (q_min.2 : ℂ) * Complex.I)‖ := by
-    refine norm_pos_iff.mpr (RHTower.Sieve.zetaEntire_ne_zero_of_one_le_re ?_)
+  let B_box : Set ℂ :=
+    (fun q : ℝ × ℝ => ((q.1 : ℂ) + (q.2 : ℂ) * Complex.I)) '' (Icc (1 : ℝ) 2 ×ˢ Icc (-1 : ℝ) 1)
+  have hB_compact : IsCompact B_box := (isCompact_Icc.prod isCompact_Icc).image hmap
+  have hB_ne_zero : ∀ s ∈ B_box, RHTower.zetaEntire s ≠ 0 := by
+    rintro s ⟨⟨σ, u⟩, ⟨hσ, _⟩, rfl⟩
+    refine RHTower.Sieve.zetaEntire_ne_zero_of_one_le_re ?_
     simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, mul_zero,
       Complex.ofReal_im, Complex.I_im, mul_one, sub_zero, add_zero]
-    exact hq_min.1.1
-  refine ⟨‖RHTower.zetaEntire ((q_min.1 : ℂ) + (q_min.2 : ℂ) * Complex.I)‖,
-    max 1 K₀, hc0, le_max_left _ _, fun σ hσ u hu => ⟨hmin ⟨hσ, hu⟩, ?_⟩⟩
+    exact hσ.1
+  have hcont_inv : ContinuousOn (fun s : ℂ => (RHTower.zetaEntire s)⁻¹) B_box :=
+    RHTower.differentiable_zetaEntire.continuous.continuousOn.inv₀ hB_ne_zero
+  obtain ⟨M_inv, hM_inv⟩ := hB_compact.exists_bound_of_continuousOn hcont_inv
+  obtain ⟨K₀, hK₀⟩ := (isCompact_closedBall (0 : ℂ) 4).exists_bound_of_continuousOn
+    (RHTower.differentiable_zetaEntire.continuous.continuousOn (s := Metric.closedBall (0 : ℂ) 4))
+  let R_inv : ℝ := max 1 M_inv
+  have hR_pos : 0 < R_inv := lt_of_lt_of_le zero_lt_one (le_max_left 1 M_inv)
+  refine ⟨R_inv⁻¹, max 1 K₀, inv_pos.mpr hR_pos, le_max_left _ _, fun σ hσ u hu => ?_⟩
+  have hsB : ((σ : ℂ) + (u : ℂ) * Complex.I) ∈ B_box := ⟨(σ, u), ⟨hσ, hu⟩, rfl⟩
+  have hpos_norm : 0 < ‖RHTower.zetaEntire ((σ : ℂ) + (u : ℂ) * Complex.I)‖ :=
+    norm_pos_iff.mpr (hB_ne_zero _ hsB)
+  have hinv_le : ‖RHTower.zetaEntire ((σ : ℂ) + (u : ℂ) * Complex.I)‖⁻¹ ≤ R_inv := by
+    rw [← norm_inv]
+    exact (hM_inv _ hsB).trans (le_max_right 1 M_inv)
+  refine ⟨(inv_le_comm₀ hR_pos hpos_norm).mpr hinv_le, ?_⟩
   have hmem : ((σ : ℂ) + (u : ℂ) * Complex.I) ∈ Metric.closedBall (0 : ℂ) 4 := by
     rw [Metric.mem_closedBall, dist_zero_right]
     calc ‖((σ : ℂ) + (u : ℂ) * Complex.I)‖
@@ -429,7 +449,7 @@ theorem exists_subset_neg_two_cos_le_pole_free :
     (1 + Real.log 4)
   let C_win : ℝ := |Real.log M_box - Real.log (c_box / 3)| + 2 * C_pass
   let C₀ : ℝ := 17 / 24 * |RHTower.Sieve.mertensSecondUpperConst| +
-    C₁ + C_pass + Real.log 4 + 2 * C_win + 1
+    C₁ + C_pass + Real.log 5 + 2 * C_win + 1
   have hC_pass_nn : 0 ≤ C_pass := by
     dsimp [C_pass]
     have hm := RHTower.Sieve.mertensFirstConst_nonneg
@@ -437,7 +457,7 @@ theorem exists_subset_neg_two_cos_le_pole_free :
     have hl4 : 0 ≤ Real.log 4 := Real.log_nonneg (by norm_num)
     positivity
   have hC_win_nn : 0 ≤ C_win := by dsimp [C_win]; positivity
-  have hlog4_nn : 0 ≤ Real.log 4 := Real.log_nonneg (by norm_num)
+  have hlog5_nn : 0 ≤ Real.log 5 := Real.log_nonneg (by norm_num)
   refine ⟨C₀, by dsimp [C₀]; positivity, fun w hw S' hS' t => ?_⟩
   have hw3 : (3 : ℝ) ≤ (w : ℝ) := by exact_mod_cast hw
   have hlogw1 : (1 : ℝ) ≤ Real.log (w : ℝ) := by
@@ -479,7 +499,7 @@ theorem exists_subset_neg_two_cos_le_pole_free :
       (w := ((1 + 1 / Real.log (w : ℝ) : ℝ) : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I)
       (by rw [hre]; exact hσ_mem.1) (by rw [hre]; exact hσ_mem.2) (by rw [him_abs]; linarith)
     rw [him_abs] at hzeta_hi
-    have hB_le : 3 + Real.log (4 + 2 * |t|) ≤ 4 * Real.log (|t| + Real.exp 1) := by
+    have hB_le : 3 + Real.log (4 + 2 * |t|) ≤ 5 * Real.log (|t| + Real.exp 1) := by
       have harg : 4 + 2 * |t| ≤ 2 * (|t| + Real.exp 1) := by
         linarith [Real.exp_one_gt_d9]
       have hlog_arg : Real.log (4 + 2 * |t|) ≤ Real.log 2 + Real.log (|t| + Real.exp 1) :=
@@ -491,8 +511,11 @@ theorem exists_subset_neg_two_cos_le_pole_free :
         rwa [Real.log_exp] at h
       linarith
     have hcos2 := sum_cos_div_prime_le_of_zeta_upper (z := w) (u := 2 * t)
-      (B := 4 * Real.log (|t| + Real.exp 1)) hw (hzeta_hi.trans hB_le)
+      (B := 5 * Real.log (|t| + Real.exp 1)) hw (hzeta_hi.trans hB_le)
     rw [Real.log_mul (by norm_num) hL_pos.ne'] at hcos2
+    have hcos2' : ∑ p ∈ Nat.primesLE w, Real.cos (2 * t * Real.log p) / (p : ℝ) ≤
+        Real.log 5 + Real.log (Real.log (|t| + Real.exp 1)) + C_pass := by
+      dsimp [C_pass]; linarith [hcos2]
     have hmaj : ∑ p ∈ S', (-2 * Real.cos (t * Real.log p) / (p : ℝ)) ≤
         17 / 24 * (∑ p ∈ Nat.primesLE w, 1 / (p : ℝ)) -
           (∑ p ∈ Nat.primesLE w, Real.cos (t * Real.log p) / (p : ℝ)) +
@@ -508,13 +531,13 @@ theorem exists_subset_neg_two_cos_le_pole_free :
             Finset.sum_le_sum_of_subset_of_nonneg hS' fun p _ _ =>
               div_nonneg (two_squares_cos_majorant (t * Real.log p)).1 (Nat.cast_nonneg p)
         _ = _ := by
-            rw [Finset.mul_sum, Finset.mul_sum, ← sub_eq_add_neg, ← Finset.sum_neg_distrib,
+            rw [Finset.mul_sum, Finset.mul_sum, sub_eq_add_neg, ← Finset.sum_neg_distrib,
               ← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
             refine Finset.sum_congr rfl fun p _ => ?_
             rw [show 2 * (t * Real.log (p : ℝ)) = 2 * t * Real.log (p : ℝ) by ring]; ring
     have hc1 := hcos1 w t
-    dsimp [C₀, C_pass] at hcos2 ⊢
-    linarith
+    dsimp [C₀]
+    linarith [hmaj, hmert_abs, hc1, hcos2']
   · have ht_lt : |t| < 1 / 2 := not_le.mp ht_half
     by_cases htw : |t| * Real.log (w : ℝ) ≤ 1
     · have hnonpos : ∑ p ∈ S', (-2 * Real.cos (t * Real.log p) / (p : ℝ)) ≤ 0 := by
@@ -570,10 +593,10 @@ theorem exists_subset_neg_two_cos_le_pole_free :
         have hmul := (div_lt_iff₀ ht_pos).mp hlog_sq
         linarith
       have hsplit_S' : ∑ p ∈ S', (-2 * Real.cos (t * Real.log p) / (p : ℝ)) =
-          (∑ p ∈ S' ∩ Nat.primesLE w₀, (-2 * Real.cos (t * Real.log p) / (p : ℝ))) +
-            ∑ p ∈ S' \ Nat.primesLE w₀, (-2 * Real.cos (t * Real.log p) / (p : ℝ)) := by
-        rw [← Finset.sum_union (Finset.disjoint_sdiff_inter S' (Nat.primesLE w₀)).symm,
-          Finset.inter_union_sdiff]
+          (∑ p ∈ S' \ Nat.primesLE w₀, (-2 * Real.cos (t * Real.log p) / (p : ℝ))) +
+            ∑ p ∈ S' ∩ Nat.primesLE w₀, (-2 * Real.cos (t * Real.log p) / (p : ℝ)) := by
+        rw [← Finset.sum_union (Finset.disjoint_sdiff_inter S' (Nat.primesLE w₀)),
+          Finset.sdiff_union_inter]
       have hhead_nonpos :
           ∑ p ∈ S' ∩ Nat.primesLE w₀, (-2 * Real.cos (t * Real.log p) / (p : ℝ)) ≤ 0 := by
         refine Finset.sum_nonpos fun p hp => ?_
@@ -620,13 +643,14 @@ theorem exists_subset_neg_two_cos_le_pole_free :
               (∑ p ∈ Nat.primesLE w \ Nat.primesLE w₀, Real.cos (t * Real.log p) / (p : ℝ)) +
               1 / 3 * (∑ p ∈ Nat.primesLE w \ Nat.primesLE w₀,
                 Real.cos (2 * t * Real.log p) / (p : ℝ)) := by
-          rw [Finset.mul_sum, Finset.mul_sum, ← sub_eq_add_neg, ← Finset.sum_neg_distrib,
+          rw [Finset.mul_sum, Finset.mul_sum, sub_eq_add_neg, ← Finset.sum_neg_distrib,
             ← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
           refine Finset.sum_congr rfl fun p _ => ?_
           rw [show 2 * (t * Real.log (p : ℝ)) = 2 * t * Real.log (p : ℝ) by ring]; ring
         have h3 : ∑ p ∈ Nat.primesLE w \ Nat.primesLE w₀, 1 / (p : ℝ) ≤
             ∑ p ∈ Nat.primesLE w, 1 / (p : ℝ) :=
-          Finset.sum_le_sum_of_subset_of_nonneg Finset.sdiff_subset fun _ _ _ => by positivity
+          Finset.sum_le_sum_of_subset_of_nonneg (f := fun p : ℕ => 1 / (p : ℝ))
+            Finset.sdiff_subset fun _ _ _ => by positivity
         linarith
       have hw_log_inv : 1 / Real.log (w : ℝ) ≤ 2 * |t| :=
         (div_le_div_of_nonneg_left zero_le_one

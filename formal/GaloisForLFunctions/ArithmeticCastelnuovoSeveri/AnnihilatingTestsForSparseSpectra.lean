@@ -194,11 +194,10 @@ theorem eq_invFT_paperFT {k : ℝ → ℂ} (hk : Continuous k) (hki : Integrable
     (hF : Integrable fun r : ℝ => paperFT k r) (u : ℝ) :
     k u = invFT (fun r : ℝ => paperFT k r) u := by
   have hF' : Integrable (FourierTransform.fourier k) := by
-    have h := hF.comp_mul_left' (R := -(2 * π)) (by positivity)
+    have h := hF.comp_mul_left' (R := -(2 * π)) (neg_ne_zero.mpr (by positivity))
     refine h.congr (Eventually.of_forall fun v => ?_)
     simp only
     rw [EF.paperFT_ofReal_eq_fourier]
-    congr 1
     field_simp
   exact EF.paper_inversion hk hki hF' u
 
@@ -233,7 +232,6 @@ theorem invFT_eq_fourier (Ψ : ℝ → ℂ) :
   congr 2
   push_cast
   field_simp
-  ring
 
 /-- **Smoothness of the inverse transform** from integrable moments. -/
 theorem contDiff_invFT {Ψ : ℝ → ℂ} {N : ℕ∞}
@@ -247,9 +245,9 @@ theorem contDiff_invFT {Ψ : ℝ → ℂ} {N : ℕ∞}
 theorem inghamWidth_sq (p : ℝ) (k : ℕ) :
     inghamWidth p k ^ 2 = ((((k + 1 : ℕ) : ℝ)) ^ (2 * p))⁻¹ := by
   have hpos : (0 : ℝ) < (k : ℝ) + 1 := by positivity
-  rw [inghamWidth, ← Real.rpow_natCast, ← Real.rpow_mul hpos.le, ← Real.rpow_neg hpos.le]
-  push_cast
-  ring_nf
+  rw [inghamWidth, ← Real.rpow_natCast, ← Real.rpow_mul hpos.le,
+    show (-p * ((2 : ℕ) : ℝ)) = -(2 * p) by push_cast; ring, Real.rpow_neg hpos.le]
+  push_cast; rfl
 
 theorem summable_inghamWidth_sq {p : ℝ} (hp : 1 / 2 < p) :
     Summable fun k : ℕ => inghamWidth p k ^ 2 := by
@@ -305,10 +303,124 @@ theorem inghamFT_ne_zero {p : ℝ} (hp : 1 / 2 < p) {z : ℂ} (hz : z.im ≠ 0) 
     (fun k => by
       simp only [add_sub_cancel]
       refine sincC_ne_zero_of_im_ne_zero ?_
-      rw [Complex.re_ofReal_mul.symm.symm ▸ (by simp [Complex.mul_im] : ((inghamWidth p k : ℂ) * z).im
-        = inghamWidth p k * z.im)]
+      have him : ((inghamWidth p k : ℂ) * z).im = inghamWidth p k * z.im := by
+        simp [Complex.mul_im]
+      rw [him]
       exact mul_ne_zero (inghamWidth_pos p k).ne' hz)
     (summable_norm_sincC_sub_one hp z)
   simpa [inghamFT] using h
+
+/-! ### 6. The partial bumps are continuous and invert their transforms -/
+
+theorem convolution_boxTest_apply {f : ℝ → ℂ} {ε : ℝ} (hε : 0 < ε) (x : ℝ) :
+    convolution f (boxTest ε) (ContinuousLinearMap.mul ℝ ℂ) volume x =
+      ((2 * ε : ℝ)⁻¹ : ℂ) * ∫ t in (x - ε)..(x + ε), f t := by
+  rw [convolution_def, intervalIntegral.integral_of_le (by linarith),
+    ← integral_Icc_eq_integral_Ioc, ← integral_const_mul, ← integral_indicator measurableSet_Icc]
+  congr 1
+  funext t
+  simp only [ContinuousLinearMap.mul_apply', boxTest, Set.indicator]
+  by_cases ht : t ∈ Icc (x - ε) (x + ε)
+  · have h : x - t ∈ Icc (-ε) ε := ⟨by linarith [ht.2], by linarith [ht.1]⟩
+    simp only [ht, h, if_true]; ring
+  · have h : x - t ∉ Icc (-ε) ε := fun h => ht ⟨by linarith [h.2], by linarith [h.1]⟩
+    simp only [ht, h, if_false, mul_zero]
+
+theorem continuous_inghamPartial_succ (p : ℝ) (n : ℕ) : Continuous (inghamPartial p (n + 1)) := by
+  have hf := (inghamPartial_integrable_hasCompactSupport p n).1
+  have hε := inghamWidth_pos p (n + 1)
+  have hII : ∀ a b : ℝ, IntervalIntegrable (inghamPartial p n) volume a b :=
+    fun a b => hf.intervalIntegrable
+  have heq : inghamPartial p (n + 1) = fun x => ((2 * inghamWidth p (n + 1) : ℝ)⁻¹ : ℂ) *
+      ((∫ t in (0 : ℝ)..(x + inghamWidth p (n + 1)), inghamPartial p n t) -
+        ∫ t in (0 : ℝ)..(x - inghamWidth p (n + 1)), inghamPartial p n t) := by
+    funext x
+    show convolution _ _ _ _ x = _
+    rw [convolution_boxTest_apply hε, intervalIntegral.integral_interval_sub_left (hII _ _)
+      (hII _ _)]
+  rw [heq]
+  have hprim := intervalIntegral.continuous_primitive hII 0
+  exact continuous_const.mul ((hprim.comp (continuous_id.add continuous_const)).sub
+    (hprim.comp (continuous_id.sub continuous_const)))
+
+/-- The transform of a continuous integrable function is continuous on the real line. -/
+theorem continuous_paperFT_ofReal {k : ℝ → ℂ} (hk : Integrable k) :
+    Continuous fun r : ℝ => paperFT k r := by
+  have h : (fun r : ℝ => paperFT k r) =
+      fun r : ℝ => FourierTransform.fourier k (-r / (2 * π)) := by
+    funext r; exact EF.paperFT_ofReal_eq_fourier k r
+  rw [h]
+  exact (Real.continuous_fourier hk).comp (by fun_prop)
+
+/-- Two sinc factors give quadratic decay: `|sinc(ax) sinc(bx)| ≤ 2/(1 + abx²)`. -/
+theorem norm_sincC_mul_sincC_le {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (x : ℝ) :
+    ‖sincC ((a : ℂ) * x)‖ * ‖sincC ((b : ℂ) * x)‖ ≤ 2 * (1 + a * b * x ^ 2)⁻¹ := by
+  have hpos : 0 < 1 + a * b * x ^ 2 := by positivity
+  rw [← Complex.ofReal_mul, ← Complex.ofReal_mul]
+  by_cases ht : a * b * x ^ 2 ≤ 1
+  · have h1 := norm_sincC_ofReal_le_one (a * x)
+    have h2 := norm_sincC_ofReal_le_one (b * x)
+    have : (1 : ℝ) ≤ 2 * (1 + a * b * x ^ 2)⁻¹ := by
+      rw [le_mul_inv_iff₀ hpos]; linarith
+    calc ‖sincC ((a * x : ℝ) : ℂ)‖ * ‖sincC ((b * x : ℝ) : ℂ)‖ ≤ 1 * 1 :=
+          mul_le_mul h1 h2 (norm_nonneg _) zero_le_one
+      _ ≤ _ := by linarith
+  · push Not at ht
+    have hx : x ≠ 0 := by rintro rfl; simp at ht; linarith
+    have hax : a * x ≠ 0 := mul_ne_zero ha.ne' hx
+    have hbx : b * x ≠ 0 := mul_ne_zero hb.ne' hx
+    have h1 := norm_sincC_ofReal_le_inv (a * x) hax
+    have h2 := norm_sincC_ofReal_le_inv (b * x) hbx
+    have hprod : |a * x|⁻¹ * |b * x|⁻¹ = (a * b * x ^ 2)⁻¹ := by
+      rw [← mul_inv, ← abs_mul, show a * x * (b * x) = a * b * x ^ 2 by ring,
+        abs_of_pos (by positivity)]
+    calc ‖sincC ((a * x : ℝ) : ℂ)‖ * ‖sincC ((b * x : ℝ) : ℂ)‖ ≤ |a * x|⁻¹ * |b * x|⁻¹ :=
+          mul_le_mul h1 h2 (norm_nonneg _) (inv_nonneg.mpr (abs_nonneg _))
+      _ = (a * b * x ^ 2)⁻¹ := hprod
+      _ ≤ 2 * (1 + a * b * x ^ 2)⁻¹ := by
+          rw [inv_le_iff_one_le_mul₀ (by positivity)]
+          rw [mul_comm, mul_assoc, inv_mul_eq_div, le_div_iff₀ hpos]
+          linarith
+
+/-- The quadratic envelope `2/(1 + ε₀ε₁x²)` of the partial transforms. -/
+def inghamEnvelope (p : ℝ) (x : ℝ) : ℝ := 2 * (1 + inghamWidth p 0 * inghamWidth p 1 * x ^ 2)⁻¹
+
+theorem integrable_inghamEnvelope (p : ℝ) : Integrable (inghamEnvelope p) := by
+  have hc : 0 < inghamWidth p 0 * inghamWidth p 1 :=
+    mul_pos (inghamWidth_pos p 0) (inghamWidth_pos p 1)
+  have h := (integrable_inv_one_add_sq.comp_mul_left'
+    (R := Real.sqrt (inghamWidth p 0 * inghamWidth p 1)) (Real.sqrt_pos.mpr hc).ne').const_mul 2
+  refine h.congr (Eventually.of_forall fun x => ?_)
+  simp only [inghamEnvelope]
+  rw [mul_pow, Real.sq_sqrt hc.le]
+
+theorem norm_paperFT_inghamPartial_le (p : ℝ) (n : ℕ) (x : ℝ) :
+    ‖paperFT (inghamPartial p (n + 1)) x‖ ≤ inghamEnvelope p x := by
+  rw [paperFT_inghamPartial, norm_prod, Finset.prod_range_succ', Finset.prod_range_succ']
+  have hrest : ∏ k ∈ range n, ‖sincC ((inghamWidth p (k + 1 + 1) : ℂ) * x)‖ ≤ 1 :=
+    Finset.prod_le_one (fun _ _ => norm_nonneg _) fun k _ => by
+      rw [← Complex.ofReal_mul]; exact norm_sincC_ofReal_le_one _
+  have h01 := norm_sincC_mul_sincC_le (inghamWidth_pos p 0) (inghamWidth_pos p 1) x
+  have hnn : 0 ≤ ‖sincC ((inghamWidth p 0 : ℂ) * x)‖ * ‖sincC ((inghamWidth p 1 : ℂ) * x)‖ :=
+    by positivity
+  calc (∏ k ∈ range n, ‖sincC ((inghamWidth p (k + 1 + 1) : ℂ) * x)‖) *
+        ‖sincC ((inghamWidth p (0 + 1) : ℂ) * x)‖ * ‖sincC ((inghamWidth p 0 : ℂ) * x)‖
+      = (∏ k ∈ range n, ‖sincC ((inghamWidth p (k + 1 + 1) : ℂ) * x)‖) *
+          (‖sincC ((inghamWidth p 0 : ℂ) * x)‖ * ‖sincC ((inghamWidth p 1 : ℂ) * x)‖) := by ring
+    _ ≤ 1 * (‖sincC ((inghamWidth p 0 : ℂ) * x)‖ * ‖sincC ((inghamWidth p 1 : ℂ) * x)‖) :=
+        mul_le_mul_of_nonneg_right hrest hnn
+    _ ≤ inghamEnvelope p x := by rw [one_mul]; exact h01
+
+theorem integrable_paperFT_inghamPartial (p : ℝ) (n : ℕ) :
+    Integrable fun r : ℝ => paperFT (inghamPartial p (n + 1)) r :=
+  (integrable_inghamEnvelope p).mono'
+    (continuous_paperFT_ofReal (inghamPartial_integrable_hasCompactSupport p (n + 1)).1).aestronglyMeasurable
+    (Eventually.of_forall (norm_paperFT_inghamPartial_le p n))
+
+/-- **Inversion for the partial bumps.** -/
+theorem inghamPartial_eq_invFT (p : ℝ) (n : ℕ) (u : ℝ) :
+    inghamPartial p (n + 1) u = invFT (fun r : ℝ => paperFT (inghamPartial p (n + 1)) r) u :=
+  eq_invFT_paperFT (continuous_inghamPartial_succ p n)
+    (inghamPartial_integrable_hasCompactSupport p (n + 1)).1 (integrable_paperFT_inghamPartial p n) u
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

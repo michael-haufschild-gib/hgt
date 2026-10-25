@@ -1,6 +1,6 @@
 ## MISC
 
-optimize lean code. no raising heartbeat hacks.
+do formalize every significant finding and dont leave it as paper proof. things are only proven when they are formalized in lean.
 
 do not pivot on unanswered mathematical problems. your job is precisely to solve problems that neither our lean corpus nor literature have solved yet. EVEN IF THIS MEANS TO INVENT A COMPLETE NEW FIELD OR BRANCH OF MATHEMATICS and to fail for weeks and months on tens of thousands of conjectures.
 
@@ -268,19 +268,16 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 ## Open Research - New field of mathematics 
 
-read fully line by line and understand the motivation and context of the fields including traps to avoid:  
-- formal/GaloisForLFunctions/TransThresholdPairCorrelation/README.md
-    
-on every turn: 
-create a significant novel contribution to the fields open research topics and problems, so that that the field either 
-- answers one of the field´s open questions
-- gains one of the mathematical tool it aims to develop
+
+
 
 do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
 
 read fully the movitation and context of our recent research programmes:
 
-anything in these research programmes that can give you a new idea or lead:
+do not use the hgtl7 skill. 
+
+our current research programmes:
 - formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
 - formal/GaloisForLFunctions/BiScaleUncertainty/README.md
 - formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md
@@ -295,14 +292,48 @@ anything in these research programmes that can give you a new idea or lead:
 - formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/README.md
 - formal/GaloisForLFunctions/TransThresholdPairCorrelation/README.md
 - formal/GaloisForLFunctions/ArithmeticOrientationTheory/README.md
+- formal/GaloisForLFunctions/ArithmeticLocalDivisorGeometry/README.md
+- formal/GaloisForLFunctions/SignedSuccessorArithmetic/README.md
+- formal/GaloisForLFunctions/ArithmeticDefectRigidity/README.md
+- formal/GaloisForLFunctions/BiarithmeticGeometry/README.md
+
+read
+- docs/reports/rh-current-frontier-map.md 
+- docs/reports/rh-killed-routes.md
 
 on every turn: 
-use the search tool for the lean corpus across the whole corpus, not just these programs, and combine proofs from across to corpus to either:
+find an formalize a contribution that significantly advances one of the routes. 
+
+the contribution either:
+- discharges a hypothesis or premise
+- answers a significant questions
+
+Not valid are improvements of numbers, nogos, redressing existing knowledge in new language, anything that does not clearly count as significant progress in overcoming the open problem in a route from docs/reports/rh-current-frontier-map.md.
+
+
+on every turn: 
+either:
 - answer an open question in a research programme
 - gain one of the mathematical tools a research programme is missing
 - prove a significant cross-programme theorem that significantly advances our research about the RH as a whole 
-
+- solves one of the open arithmetic problems in any route in docs/reports/rh-current-frontier-map.md
+  
 Not valid are improvements of numbers, nogos, redressing existing knowledge in new language, anything that does not clearly count as significant progress, or that is not something that needs to exist in this field and couldnt exist otherwise.
+
+
+
+read fully line by line:
+- docs/reports/review-2510/route-unification-ledger.md
+- docs/reports/review-2510/walls-ledger.md
+- docs/reports/review-2510/hard-obstacles.md
+  
+your research is about finding an answer to the central question "what forces the actual arithmetic source to be blind to off-line zeros?" 
+
+on every turn: 
+
+make a significant contribution to answering the question "what forces the actual arithmetic source to be blind to off-line zeros?" 
+
+Not valid are improvements of numbers, redressing existing knowledge in new language, anything that does not clearly count as significant progress and brings us clearly closer to answering the question.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -323,7 +354,7 @@ always look at the big picture, try to understand what all our research is tryin
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-do not use a README.md as a working log or diary. It is a foundational document, keep it crisp. Maintain a working log in logs/.
+Maintain a working log in logs/. 
 
 the goal is met when you have made 250 such significant contributions.
 
@@ -377,10 +408,10 @@ Always make good use the search tool for our lean corpus to find existing work, 
 
 ## update obstacles
 previously we had created these documentss:
-- docs/reports/review-2410/walls-ledger.md
-- docs/reports/review-2410/hard-obstacles.md
-- docs/reports/review-2410/hard-obstacles-summary.md
-- docs/reports/review-2410/route-unification-ledger.md
+- docs/reports/review-2510/walls-ledger.md
+- docs/reports/review-2510/hard-obstacles.md
+- docs/reports/review-2510/hard-obstacles-summary.md
+- docs/reports/review-2510/route-unification-ledger.md
 
 also we have:
 - docs/reports/rh-current-frontier-map.md
@@ -391,16 +422,20 @@ create updated versions of the reviews to reflect the current status quo and fro
 2. then create a summary document that combines all the information and:
    2.1 lists all tasks / obstacles that we can solve and are "just work"
    2.2 lists the open mathematical obstacles/research topics nobody has a solution to
-   2.3 ideates whether solving these obstacles in 2.2 would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
+   2.3 name the 3 questions we should answer next to make the most progress to a breakthrough in our research
+   2.4 ideates whether solving these obstacles in 2.2 would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
 3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
-   
+5. correct any issue you have identified in docs/reports/rh-current-frontier-map.md and docs/reports/rh-killed-routes.md
+
 do not read other markdown files, only the ones i mentioned.
 do not rely only on these markdown files which are partly outdated. use the search tool for our lean corpus to research what our research currently shows. keep a working log in logs/ to write down research findings, so they do not get lost during context window compaction. the expectation is that you do real in-depth research and not just read the markdown files and do some spot checks on recently changed files.
 
 the reports are not diaries or history log, but status quo reports.
 
-rewrite the existing reports in folder docs/reports/review-2410/
+update the existing reports in folder docs/reports/review-2510/
+do not run builds.
+
 
 ## update programme README.mds
 go one by one through the following research programmes and update their README.md - we have done a lot of research in these programmes which may or may not change the content of the README.md:
@@ -529,10 +564,11 @@ Make good use of the search tool for our lean corpus to find existing work and g
 Goal is achieved when the opening/input is fully developed.
 
 ## research something
+Do not use the hgtl7 skill. 
 
-Research, derive and formalize a complete solution of the open mathematical obstacles of route WA and LA in docs/reports/rh-current-frontier-map.md
+Research, derive and formalize a complete solution of the open mathematical obstacles to fully close the route for one or more routes in docs/reports/rh-current-frontier-map.md
 
-We are not looking for more criteria, improving some numbers, more nogos, we are looking for actual progress on solving the stated problems: Force cap/collision mass to vanish, prove Euler–Stieltjes saturation independently of the zero divisor, or supply all-height finite-head coefficient positivity at arbitrarily small heat. Exact arithmetic formulas, root detection and tail transfer do not orient the signed coefficients.
+We are not looking for more criteria, improving some numbers, more nogos, we are looking for actual progress on solving the stated open problems and close a route to the RH proof.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -553,18 +589,19 @@ always look at the big picture, try to understand what all our research is tryin
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-Do not do websearch. Do not do novelty checks against external literature.
-
-Goal is met when the proof is formalized and all mathematical obstacles and blockers in route WD have been solved and the solutions are formalized.
+Goal is met when a proof route is fully closed and formalized in lean and RH is proven. Do not stop until an RH proof is fully formalized.
 
 ## argon do task
-read and understand route SZ:
+read and understand why:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
+3. Obstacles report: docs/reports/review-2510/hard-obstacles.md
 
-Prove sign of complete first variation on an RH-complete family and control general moving apertures. Formalize joint compact-window limits and the untruncated collared extension, including real-lag integration by parts, divided-coefficient domination and regularized polar normalization. The pointwise envelope alone has only critical half-decay; absolute Fubini for the untruncated polar moment is unavailable.
+Find an answer/solution to the question: What forces the actual arithmetic source to be blind to off-line zeros?
 
-We are not interested in more criteria, estimates, improving some number, more nogos, but the actual proofs and solution of the arithmetic obstacles named above. 
+Formalize the answer in lean.
+
+We are not interested in more criteria, estimates, improving some number, more nogos, but the actual answer to the question: What forces the actual arithmetic source to be blind to off-line zeros?
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -576,7 +613,7 @@ We are not interested in more criteria, estimates, improving some number, more n
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-Do not edit the two md documents.
+Do not edit the md documents.
 
 Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
 

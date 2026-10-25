@@ -50,9 +50,9 @@ axioms. Scratch, producing, and final direct checks passed; its import and
 corpus documentation are present. See
 `../3-formalized/uniform-logarithmic-remainders-in-all-vaughan-rows.md`.
 
-The finite Gram comparison is undergoing its corrected scratch check after
-repairing an unavailable Cauchy–Schwarz reference; its two smooth-energy targets
-passed their first standard-axiom audits, but the leaf is not yet certified.
+The finite Gram comparison passed its corrected scratch and producing checks,
+with all three public targets using only standard axioms. Its final direct
+repository check remains pending, so the leaf is not yet certified.
 All other leaves named in the table remain unchecked drafts. Dependencies and
 live compiler handles are recorded in `/tmp/QIVerificationState.txt`.
 

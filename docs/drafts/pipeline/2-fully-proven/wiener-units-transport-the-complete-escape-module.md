@@ -75,10 +75,10 @@ conjugacy have passed canonical source checks and transitive axiom audits.
 The complete actual real convolution theorem, positive source-energy ratio,
 preservation of escape and Möbius–Liouville specialization passed the combined
 scratch with only standard axioms. Their canonical leaves are installed and
-umbrella-wired; final per-file audits are pending in
-`/tmp/qiii-refinements-canonical-resume.sh`. The first canonical split
+umbrella-wired; final direct per-file audits are pending. The first canonical split
 check exposed a missing import in the real-convolution leaf; that import is
-fixed. The final checks are part of active session `90975`.
+fixed and its olean build passed. Remaining checks follow
+[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
 
 Canonical source application leaves:
 - `ArithmeticDefectRigidity/PaidCorrectionsPreserveNormalizedCofactorGrams.lean`

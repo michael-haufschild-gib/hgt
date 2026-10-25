@@ -130,7 +130,8 @@ The full moving-origin scratch passed with standard axioms in session `6979`.
 The boundary promoter ran, installing and wiring all thirteen new leaves
 (the shared first-crossing leaf was already installed by diagonal promotion).
 Unused closing tactics and the unused completeness binder were removed before
-canonical placement. Final checks are in active session `90975`, after the
-diagonal and unit/finite/pole batches. The raw-translation and continuum-index
-corollaries are queued after those canonical boundary checks; both still need
+canonical placement. Final direct canonical checks remain pending in
+[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
+The raw-translation and continuum-index corollaries depend on those boundary
+checks; both still need
 their own verification. This card is not complete yet.
