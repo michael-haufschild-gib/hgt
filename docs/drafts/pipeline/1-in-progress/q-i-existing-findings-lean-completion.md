@@ -27,12 +27,12 @@ Lean module names below are relative to `GaloisForLFunctions/`; BVI denotes
 
 | Existing paper card | Required Lean coverage |
 | --- | --- |
-| `uniform-second-scale-vaughan-gram-at-all-cutoffs.md` | BVI `PronicGramErrorsAroundASmoothRankOneTerm`, `UniformVaughanGramsFollowTheirSmoothRankOneTerm`, `VaughanPacketGramIdentities`, `UniformLogarithmicLawsForVaughanSuperpositions`; common floor-sum corollaries in `UniformLogarithmicCancellationInMobiusFloorSums`; the quantitative Mertens-to-convolution gain below `η/(2+η)` in `UniformVaughanPowerBoundsAreFixedStrips`. All-row logarithmic remainders and the finite Gram comparison are already checked. |
+| [uniform-second-scale-vaughan-gram-at-all-cutoffs.md](../3-formalized/uniform-second-scale-vaughan-gram-at-all-cutoffs.md) — COMPLETE | All finite, logarithmic, Gram, packet, single-floor, and quantitative Mertens-power consequences passed final direct checks and standard-axiom audits. The exact transferred gain `κ<η/(2+η)` is certified in `UniformVaughanPowerBoundsAreFixedStrips`. |
 | [vaughan-subcritical-gram-limit-classification.md](../3-formalized/vaughan-subcritical-gram-limit-classification.md) — COMPLETE | All 39 targets in the five arithmetic-amplitude, classification, scalar-topology, matrix-rank, and matrix-topology leaves passed final direct checks and standard-axiom audits. Includes exact attainment and damping independence. |
 | [positive-vaughan-cutoff-escape-is-zero-gram-limit.md](../3-formalized/positive-vaughan-cutoff-escape-is-zero-gram-limit.md) — COMPLETE | Exact amplitude and matrix escape equivalences, finite-fiber rigidity, convergence dichotomy, positive-cutoff attainment, and mutually exclusive alternatives. All supporting leaf checks and axiom audits passed. |
 | [vaughan-relative-gram-and-harmonic-denominators.md](../3-formalized/vaughan-relative-gram-and-harmonic-denominators.md) — COMPLETE | All ten arithmetic and relative-Gram targets passed final direct checks and standard-axiom audits. Includes calibrated horizons for every positive cutoff schedule and the simultaneous zero/relative-rank-one corollary. |
 | [uniform-vaughan-convolution-stretched-exponential-rate.md](../3-formalized/uniform-vaughan-convolution-stretched-exponential-rate.md) — COMPLETE; related existing stage-1 [factorial criterion](vaughan-factorial-order-one-is-a-fixed-strip.md) still pending | All three BVI `UniformStretchedExponentialCancellationInTheVaughanConvolution` targets passed final direct checks and standard-axiom audits. The distinct factorial-order-one criterion still needs HTGeometry `FactorialLogarithmicBoundsArePowerBounds` and BVI `FactorialOrderOneInTheVaughanConvolutionIsAPowerSaving`. |
-| `uniform-vaughan-residual-power-rates-are-fixed-strips.md` | Twelve extreme-cutoff targets and both RHTower `MertensPowerBoundsControlMobiusHarmonicSums` targets passed final direct checks and standard-axiom audits. Remaining: BVI `PowerCancellationSurvivesTheDampedFloorTransform`, `FixedStripsControlAllVaughanFluctuationReceivers`, `UniformVaughanResidualPowerRatesAreFixedStrips`, `UniformVaughanPowerBoundsAreFixedStrips`. |
+| `uniform-vaughan-residual-power-rates-are-fixed-strips.md` | All twenty-one extreme-cutoff, Mertens-to-harmonic, undamped-power, and damped-transfer targets passed final direct checks and standard-axiom audits. Remaining: BVI `FixedStripsControlAllVaughanFluctuationReceivers`, `UniformVaughanResidualPowerRatesAreFixedStrips`. |
 | [the-centred-vaughan-pole-has-positive-finite-energy.md](../3-formalized/the-centred-vaughan-pole-has-positive-finite-energy.md) — COMPLETE | All seven energy/rate targets and the actual nonzero endpoint product-horizon limit passed final direct checks and standard-axiom audits. Both cutoffs diverge for this matrix limit; product divergence alone removes harmonic mass. |
 | [the-endpoint-vaughan-limit-has-rank-two.md](../3-formalized/the-endpoint-vaughan-limit-has-rank-two.md) — COMPLETE | All 34 finite, shared infinite-Gram, and endpoint targets passed final direct checks and standard-axiom audits. Includes actual summability, exact rank two, positive-definite prefix/pole submatrix, endpoint determinant `≥1/62208`, pole energy `≥1/64`, and nonzero actual Gram. |
 | [uniform-half-damping-vaughan-harmonic-gram.md](../3-formalized/uniform-half-damping-vaughan-harmonic-gram.md) — COMPLETE | Every finite Gram/packet, moving-limit, pronic-convergence, rank, harmonic-mass, realization, and product-horizon claim passed final direct checks and standard-axiom audits. Exact declarations and the complete dependency chain are recorded on the card. |
@@ -203,6 +203,14 @@ Both forward Mertens-to-harmonic targets also passed corrected producing and
 final direct checks with standard axioms only. The module is wired and its
 scratch removed; the final audit has no warnings. The exact strict-tail
 identity preserves the power exponent with constant `C(1+1/η)`.
+All four actual undamped-power targets also passed producing and final direct
+checks with standard axioms only. The module is wired and scratch removed;
+the final audit has no warnings. The exact quantitative gain and fixed-strip
+equivalence close the complete second-scale parent, now in stage 3.
+All three damped-transfer targets passed corrected producing and final direct
+checks with standard axioms only, without final warnings. The module is wired
+and its scratch removed. Every strict prefix gain `γ<κ(1-ε)/(1+κ)` and its
+pronic norm consequence are certified.
 All remaining drafts now have their intended repository leaves. They remain
 uncertified until their final direct checks and axiom audits pass. Dependencies and
 live compiler handles are recorded in `/tmp/QIVerificationState.txt`; the

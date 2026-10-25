@@ -3,7 +3,7 @@
 - **ID:** uniform-logarithmic-truncated-mobius-receivers
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** Every truncated Möbius partial sum and positively damped centered floor prefix shares each prescribed logarithmic saving, uniformly over the truncation cutoff.
 
 ## Exact result

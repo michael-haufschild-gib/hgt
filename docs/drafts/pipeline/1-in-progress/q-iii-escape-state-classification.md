@@ -110,6 +110,15 @@ annihilating product proves they exhaust the actual module hull. The finite
 index is the sum of their positive sector dimensions. All three canonical
 Lean leaves and transitive axiom audits passed;
 identifying these module multiplicities with arithmetic zero orders remains open.
+
+Numeric horizon order now holds on the complete module:
+`p*||D_p x||^2` is antitone in the ordinary integer order. Every hull character
+of a finite-dimensional actual module has a common eigenvector, hence
+augmentation or one tied radial modulus. A single sequence of half-plane
+evaluations approaches it on every Wiener element. These results passed
+canonical Lean checks and standard-axiom audits; see
+[finite-hull approximation](../3-formalized/finite-cofactor-hulls-approach-the-half-plane-curve.md).
+They supply no approximation by arithmetic zeros or infinite-hull classification.
 The next source audit is recorded in
 [visible poles and module multiplicity](q-iii-visible-poles-and-module-multiplicity.md).
 The inspected literal Fermi Mellin quotient has both numerator and shifted
@@ -975,7 +984,7 @@ The tied-torus approximation remains pending; conjugation is complete:
   cyclic norms, invariance of the actual annihilator and conjugation symmetry
   of each module hull. Final canonical audit `78866` passed with standard axioms.
 
-The [finite-hull approximation card](finite-cofactor-hulls-approach-the-half-plane-curve.md)
+The [finite-hull approximation card](../3-formalized/finite-cofactor-hulls-approach-the-half-plane-curve.md)
 remains in progress; the [conjugation card](../3-formalized/actual-cofactor-hulls-preserve-complex-conjugation.md)
 is formalized. Curve approximation is not exact curve
 membership and does not restrict approximants to translated zeta zeros.

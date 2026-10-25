@@ -3,7 +3,7 @@
 - **ID:** vaughan-packet-gram-identities
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** Finite centering commutes with Vaughan superposition, and the exact centered packet energy is the quadratic form of its Gram matrix.
 
 For every real damping, both natural cutoffs, every real coefficient vector

@@ -150,6 +150,9 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     (`finiteDimensional_and_finrank_le_of_kernel_diag_eq_zero`). Rank-one modules: augmentation or
     `χ(p) = η(p)p^{−s}`, `s ≥ ½`, `η` multiplicative sign (`rankOneCharacter_eq_augmentation_or_signed_rpow`) —
     magnitudes forced, signs/exponent not tied to zeros. Operator hull obeys dilation radii.
+    Every hull character of a finite-dimensional actual module has augmentation or radial modulus
+    (`finite_moduleHull_modulus_classification`), and one sequence of half-plane evaluations converges
+    to it on every Wiener element (`exists_halfPlane_sequence_of_mem_finite_moduleHull`).
     Complete source pairings respect conjugation; cyclic norms are unchanged,
     the annihilator is conjugation-invariant (`conjW_mem_annihilator_iff`),
     and every actual module hull is conjugation-symmetric (`conj_mem_moduleHull`).
@@ -173,8 +176,9 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     cofinal displacement forces `k²/E` above every bound frequently
     (`admits_or_nonvanishing_successors_require_unbounded_scale`).
 
-All origin-boundary leaves, raw-origin convergence, boundary-index corollaries and
-vanishing-relative-energy perturbation passed canonical Lean checks and standard-axiom audits. The
+The origin-boundary leaves, raw-origin convergence, boundary-index corollaries,
+vanishing-relative-energy perturbation, numeric operator order and finite-hull approximation
+passed canonical Lean checks and standard-axiom audits. The
 [completion ledger](../../../docs/drafts/pipeline/1-in-progress/q-iii-existing-findings-lean-completion.md)
 records each completed audit.
 

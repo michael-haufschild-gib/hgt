@@ -1,9 +1,9 @@
 # Fermi Mellin divisors count only uncancelled zeta orders
 
 - **ID:** fermi-mellin-divisors-count-only-uncancelled-zeta-orders
-- **Stage:** 1-in-progress
-- **Type:** EXISTING PAPER PROOF / LEAN COMPLETION
-- **Parent:** [Visible poles and module multiplicity](q-iii-visible-poles-and-module-multiplicity.md)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Parent:** [Visible poles and module multiplicity](../1-in-progress/q-iii-visible-poles-and-module-multiplicity.md)
 - **Statement:** For `s != 0`, `Re(s)<1` and `s+epsilon != 1`,
   `ord_s etaZetaQuotient(epsilon) = ord_s zeta - ord_(s+epsilon) zeta`.
 
@@ -25,10 +25,11 @@ retained and no assumed nonvanishing of either zeta value.
 
 ## Lean status
 
-Draft: `/tmp/qiii-fermi-divisor-order-check.lean`.
-Target: `RHTower.meromorphicOrderAt_etaZetaQuotient`.
-Corpus inputs were searched and inspected before mathlib. The scratch
-explicitly checks the mathlib order API before proving the application.
-Direct check, standard-axiom audit, canonical source check and umbrella
-wiring remain pending. Intended owner:
+`RHTower.meromorphicOrderAt_etaZetaQuotient` is canonical in
 `RHTower/TheFermiMellinDivisorSubtractsShiftedZetaOrders.lean`.
+Corpus inputs were searched and inspected before mathlib; its order API
+was checked in the scratch before canonical use. Scratch retry `45203`
+and final canonical source-only audit `7871` passed. Both axiom reports
+contain only `propext`, `Classical.choice`, `Quot.sound`.
+The RHTower umbrella imports the leaf. No olean was needed.
+Final output: `/tmp/qiii-fermi-divisor-order-canonical-final.log`.

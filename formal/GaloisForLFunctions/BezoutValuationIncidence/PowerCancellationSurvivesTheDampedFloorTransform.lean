@@ -19,7 +19,7 @@ The split at `n^(1/(1+κ))` transfers every gain below `κ(1-ε)/(1+κ)`. -/
 theorem exists_uniform_weightCenteredPrefix_dampedSign_power_of_divisor_square
     {ι : Type*} {s : ι → ℕ → ℝ} {ε C B κ γ : ℝ}
     (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) (hC : 0 ≤ C) (hB : 0 ≤ B)
-    (hκ : 0 < κ) (hγ : 0 < γ) (hγκ : γ < κ * (1 - ε) / (1 + κ))
+    (hκ : 0 < κ) (_hγ : 0 < γ) (hγκ : γ < κ * (1 - ε) / (1 + κ))
     (hs : ∀ i : ι, ∀ d : ℕ, 1 ≤ d → |s i d| ≤ C * (d.divisors.card : ℝ) ^ 2)
     (hsum : ∀ i, Summable (fun d : ℕ => dampedSignWeight (s i) ε d / d))
     (hS : ∀ᶠ x : ℕ in atTop, ∀ i,
@@ -37,10 +37,12 @@ theorem exists_uniform_weightCenteredPrefix_dampedSign_power_of_divisor_square
   have hgap : 0 < g - γ := sub_pos.mpr hγκ
   have hbalance : a * (1 - ε) = 1 - ε - g := by
     dsimp only [a, g]
-    field_simp [(show (1 : ℝ) + κ ≠ 0 by positivity)] <;> ring
+    field_simp [(show (1 : ℝ) + κ ≠ 0 by positivity)]
+    ring
   have hbalanceTail : 1 + a * (-(κ + ε)) = a * (1 - ε) := by
     dsimp only [a]
-    field_simp [(show (1 : ℝ) + κ ≠ 0 by positivity)] <;> ring
+    field_simp [(show (1 : ℝ) + κ ≠ 0 by positivity)]
+    ring
   obtain ⟨N₀, hN₀⟩ := eventually_atTop.mp hS
   let D : ℕ → ℕ := fun n => ⌊(n : ℝ) ^ a⌋₊
   have hDlim : Tendsto D atTop atTop :=
@@ -61,8 +63,8 @@ theorem exists_uniform_weightCenteredPrefix_dampedSign_power_of_divisor_square
   have hD0 : (0 : ℝ) < D n := by exact_mod_cast hD1
   have hDy : (D n : ℝ) ≤ (n : ℝ) ^ a := Nat.floor_le (Real.rpow_nonneg hn0.le _)
   have hDn : D n ≤ n := by
-    exact_mod_cast hDy.trans (by
-      simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le hn1 ha1)
+    apply Nat.floor_le_of_le
+    simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le hn1 ha1
   have hyD : (n : ℝ) ^ a / 2 ≤ D n := by
     have hf := Nat.lt_floor_add_one ((n : ℝ) ^ a)
     change (n : ℝ) ^ a < (D n : ℝ) + 1 at hf
@@ -160,8 +162,10 @@ theorem pronicNorm_le_sqrt_rpow_of_prefix_power {f : ℕ → ℝ} {ε γ K : ℝ
         exact h.trans_eq (by ring)
   have h := Real.sqrt_le_sqrt hsum
   change pronicNorm f T ≤ _ at h
-  simpa only [Real.sqrt_mul (mul_nonneg (sq_nonneg K) (by positivity)),
-    Real.sqrt_mul (sq_nonneg K), Real.sqrt_sq hK] using h
+  have hfactor : 0 ≤ 1 + 1 / (1 - 2 * (ε + γ)) := by positivity
+  rw [Real.sqrt_mul (mul_nonneg (sq_nonneg K) hfactor),
+    Real.sqrt_mul (sq_nonneg K), Real.sqrt_sq hK] at h
+  exact h
 
 /-- A common linear bound absorbs the finite head of an eventual prefix power saving. -/
 theorem exists_uniform_pronicNorm_power_of_eventually_prefix_power

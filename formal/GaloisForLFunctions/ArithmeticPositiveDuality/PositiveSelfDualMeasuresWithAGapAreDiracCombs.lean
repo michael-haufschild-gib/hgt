@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.BandLimitedPositiveDensity
+import GaloisForLFunctions.HTGeometry.FejerLatticeVanishing
 
 /-!
 # Positive self-dual measures with a gap are Dirac combs
@@ -18,6 +19,10 @@ On `ℤ` the transform of `Λ(· − n)` is `δ_{0}` and `Λ(· − n)` is `δ_{
 
 * **The gap is at most one** (`eq_zero_of_wide_gap`): a positive tent-self-dual measure with a
   gap `(−a, a) ∖ {0}`, `a > 1`, is zero.
+* **The unit gap is sharp** (`exists_tentSelfDual_not_comb`). For `0 < a < 1` the two dual
+  lattices `Σ_m δ_{am} + a⁻¹ Σ_k δ_{k/a}` form a locally finite positive tent-self-dual measure
+  with gap `(−a, a) ∖ {0}` that is no multiple of the Dirac comb. Self-duality is Poisson
+  summation on `aℤ` and on `a⁻¹ℤ` (`tsum_tentAt_lattice`).
 * **One-sided pairs** (`integral_sincSq_shift_eq`, `measure_Icc_le_of_poissonPair`). If only the
   dual side `ν` has the gap and `μ` is positive, the identity says `μ ⋆ sinc(π·)² ≡ ν{0}`:
   `μ` has uniform local mass, `μ[s − ½, s + ½] ≤ (π²/4) ν{0}`. It forces no lattice.
@@ -375,4 +380,254 @@ theorem measure_Icc_le_of_poissonPair {μ ν : Measure ℝ} (hgap : ν (Ioo (-1)
   rw [show π ^ 2 * (μ.real I * (4 / π ^ 2)) = 4 * μ.real I by field_simp] at this
   linarith
 
+/-! ### The unit gap is sharp: two dual lattices -/
+
+open GaloisForLFunctions.HTGeometry (eventually_abs_ge_cocompact abs_sinc_le_inv)
+open Asymptotics Filter
+open scoped ENNReal
+
+/-- The comb `Σ_m δ_{bm}` of the lattice `bℤ`. -/
+def latticeComb (b : ℝ) : Measure ℝ := Measure.sum fun m : ℤ => (1 : ℝ≥0∞) • Measure.dirac (b * m)
+
+/-- Two dual lattices: `Σ_m δ_{bm} + b⁻¹ Σ_k δ_{b⁻¹k}`. -/
+def dualLatticePair (b : ℝ) : Measure ℝ := latticeComb b + ENNReal.ofReal b⁻¹ • latticeComb b⁻¹
+
+theorem integral_latticeComb (b : ℝ) (f : ℝ → ℂ) :
+    ∫ x, f x ∂latticeComb b = ∑' m : ℤ, f (b * m) := by
+  rw [latticeComb, integral_sum_dirac (fun _ => ENNReal.one_ne_top)]
+  simp
+
+theorem one_div_sq_eq_abs_rpow (x : ℝ) : |x| ^ (-(2 : ℝ)) = 1 / x ^ 2 := by
+  rw [Real.rpow_neg (abs_nonneg x), show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast,
+    sq_abs, one_div]
+
+/-- A function bounded by `K/y²` off the origin is summable along `bℤ`. -/
+theorem summable_lattice {b : ℝ} (hb : 0 < b) {f : ℝ → ℂ} {K : ℝ}
+    (hf : ∀ y, y ≠ 0 → ‖f y‖ ≤ K / y ^ 2) : Summable fun m : ℤ => ‖f (b * m)‖ := by
+  refine Summable.of_norm_bounded_eventually (g := fun m : ℤ => K / b ^ 2 * (1 / (m : ℝ) ^ 2))
+    ((summable_one_div_int_pow.mpr (by norm_num)).mul_left _) ?_
+  filter_upwards [eventually_cofinite_ne 0] with m hm
+  have hm' : (m : ℝ) ≠ 0 := by exact_mod_cast hm
+  rw [norm_norm]
+  calc ‖f (b * m)‖ ≤ K / (b * m) ^ 2 := hf _ (mul_ne_zero hb.ne' hm')
+    _ = K / b ^ 2 * (1 / (m : ℝ) ^ 2) := by field_simp
+
+theorem norm_fourier_tentAt (c ξ : ℝ) : ‖FourierTransform.fourier (tentAt c) ξ‖ = sincSq ξ := by
+  rw [fourier_tentAt, norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul, Complex.norm_real,
+    Real.norm_of_nonneg (sincSq_nonneg ξ)]
+
+theorem sincSq_le_div_sq {y : ℝ} (hy : y ≠ 0) : sincSq y ≤ (1 / π ^ 2) / y ^ 2 := by
+  have h := abs_sinc_le_inv (mul_ne_zero Real.pi_ne_zero hy)
+  have hpos : 0 < |π * y| := abs_pos.mpr (mul_ne_zero Real.pi_ne_zero hy)
+  unfold sincSq
+  rw [← sq_abs]
+  calc |Real.sinc (π * y)| ^ 2 ≤ (1 / |π * y|) ^ 2 := pow_le_pow_left₀ (abs_nonneg _) h 2
+    _ = (1 / π ^ 2) / y ^ 2 := by rw [div_pow, sq_abs]; field_simp
+
+theorem norm_tentAt_le (c y : ℝ) : ‖tentAt c y‖ ≤ 1 := by
+  rw [tentAt, Complex.norm_real, Real.norm_of_nonneg (by unfold triangle; positivity)]
+  unfold triangle
+  exact max_le zero_le_one (by linarith [abs_nonneg (y - c)])
+
+theorem norm_tentAt_le_div_sq (c : ℝ) {y : ℝ} (hy : y ≠ 0) :
+    ‖tentAt c y‖ ≤ (|c| + 1) ^ 2 / y ^ 2 := by
+  by_cases h : 1 ≤ |y - c|
+  · rw [tentAt_eq_zero h, norm_zero]; positivity
+  · push Not at h
+    have hy2 : y ^ 2 ≤ (|c| + 1) ^ 2 := by
+      rw [← sq_abs y]
+      have : |y| ≤ |c| + 1 := by
+        have := abs_sub_abs_le_abs_sub y c
+        linarith
+      exact pow_le_pow_left₀ (abs_nonneg _) this 2
+    rw [le_div_iff₀ (by positivity)]
+    calc ‖tentAt c y‖ * y ^ 2 ≤ 1 * (|c| + 1) ^ 2 :=
+          mul_le_mul (norm_tentAt_le c y) hy2 (by positivity) zero_le_one
+      _ = (|c| + 1) ^ 2 := one_mul _
+
+/-- The transform of a dilated tent: `𝓕[Λ(b · − c)](ξ) = b⁻¹ 𝓕[Λ(· − c)](ξ/b)`. -/
+theorem fourier_tentAt_comp_mul {b : ℝ} (hb : 0 < b) (c ξ : ℝ) :
+    FourierTransform.fourier (fun x => tentAt c (b * x)) ξ =
+      ((b⁻¹ : ℝ) : ℂ) * FourierTransform.fourier (tentAt c) (ξ / b) := by
+  rw [Real.fourier_real_eq_integral_exp_smul, Real.fourier_real_eq_integral_exp_smul]
+  set G : ℝ → ℂ := fun y => cexp (((-2 * π * y * (ξ / b) : ℝ) : ℂ) * I) • tentAt c y
+  have e : (fun v : ℝ => cexp (((-2 * π * v * ξ : ℝ) : ℂ) * I) • tentAt c (b * v)) =
+      fun v => G (b * v) := by
+    funext v
+    simp only [G]
+    congr 3
+    field_simp
+  rw [e, Measure.integral_comp_mul_left G b, abs_inv, abs_of_pos hb, Complex.real_smul]
+
+theorem continuous_tentAt_comp_mul (b c : ℝ) : Continuous fun x => tentAt c (b * x) := by
+  unfold tentAt
+  exact Complex.continuous_ofReal.comp
+    (continuous_triangle.comp ((continuous_const.mul continuous_id).sub continuous_const))
+
+/-- **Poisson summation on `bℤ` for a tent.** -/
+theorem tsum_tentAt_lattice {b : ℝ} (hb : 0 < b) (c : ℝ) :
+    ∑' m : ℤ, tentAt c (b * m) =
+      ((b⁻¹ : ℝ) : ℂ) * ∑' k : ℤ, FourierTransform.fourier (tentAt c) (b⁻¹ * k) := by
+  have h1 : (fun x => tentAt c (b * x)) =O[cocompact ℝ] (|·| ^ (-(2 : ℝ))) := by
+    refine IsBigO.of_bound 1 ?_
+    filter_upwards [eventually_abs_ge_cocompact ((|c| + 1) / b)] with x hx
+    have h : 1 ≤ |b * x - c| := by
+      have h1 : |c| + 1 ≤ b * |x| := by rwa [div_le_iff₀ hb, mul_comm] at hx
+      have h2 : b * |x| - |c| ≤ |b * x - c| := by
+        have := abs_sub_abs_le_abs_sub (b * x) c
+        rwa [abs_mul, abs_of_pos hb] at this
+      linarith
+    rw [tentAt_eq_zero h, norm_zero]
+    positivity
+  have h2 : FourierTransform.fourier (fun x => tentAt c (b * x)) =O[cocompact ℝ]
+      (|·| ^ (-(2 : ℝ))) := by
+    refine IsBigO.of_bound (b / π ^ 2) ?_
+    filter_upwards [eventually_abs_ge_cocompact 1] with ξ hξ
+    have hξ0 : ξ ≠ 0 := by
+      intro h; rw [h, abs_zero] at hξ; linarith
+    rw [fourier_tentAt_comp_mul hb, norm_mul, Complex.norm_real,
+      Real.norm_of_nonneg (inv_nonneg.mpr hb.le), norm_fourier_tentAt, Real.norm_eq_abs,
+      abs_of_nonneg (by positivity), one_div_sq_eq_abs_rpow]
+    have := sincSq_le_div_sq (div_ne_zero hξ0 hb.ne')
+    calc b⁻¹ * sincSq (ξ / b) ≤ b⁻¹ * ((1 / π ^ 2) / (ξ / b) ^ 2) :=
+          mul_le_mul_of_nonneg_left this (inv_nonneg.mpr hb.le)
+      _ = b / π ^ 2 * (1 / ξ ^ 2) := by field_simp
+  have h := Real.tsum_eq_tsum_fourier_of_rpow_decay (continuous_tentAt_comp_mul b c)
+    (by norm_num : (1 : ℝ) < 2) h1 h2 0
+  simp only [zero_add, fourier_coe_apply, Complex.ofReal_zero, mul_zero, zero_div,
+    Complex.exp_zero, mul_one] at h
+  rw [h, ← tsum_mul_left]
+  refine tsum_congr fun k => ?_
+  rw [fourier_tentAt_comp_mul hb]
+  congr 2
+  field_simp
+
+theorem integrable_latticeComb {b : ℝ} (hb : 0 < b) {f : ℝ → ℂ} {K : ℝ}
+    (hf : ∀ y, y ≠ 0 → ‖f y‖ ≤ K / y ^ 2) : Integrable f (latticeComb b) := by
+  rw [latticeComb, integrable_sum_dirac_iff (fun _ => ENNReal.one_ne_top)]
+  simpa using summable_lattice hb hf
+
+theorem integral_dualLatticePair {b : ℝ} (hb : 0 < b) {f : ℝ → ℂ} {K : ℝ}
+    (hf : ∀ y, y ≠ 0 → ‖f y‖ ≤ K / y ^ 2) :
+    ∫ x, f x ∂dualLatticePair b =
+      ∑' m : ℤ, f (b * m) + ((b⁻¹ : ℝ) : ℂ) * ∑' k : ℤ, f (b⁻¹ * k) := by
+  rw [dualLatticePair, integral_add_measure (integrable_latticeComb hb hf)
+    ((integrable_latticeComb (inv_pos.mpr hb) hf).smul_measure ENNReal.ofReal_ne_top),
+    integral_smul_measure, integral_latticeComb, integral_latticeComb,
+    ENNReal.toReal_ofReal (inv_nonneg.mpr hb.le), Complex.real_smul]
+
+/-- **Two dual lattices are tent self-dual.** -/
+theorem isTentSelfDual_dualLatticePair {b : ℝ} (hb : 0 < b) :
+    IsTentSelfDual (dualLatticePair b) := by
+  have hF : ∀ n : ℤ, ∀ y, y ≠ 0 → ‖FourierTransform.fourier (tentAt n) y‖ ≤ (1 / π ^ 2) / y ^ 2 :=
+    fun n y hy => by rw [norm_fourier_tentAt]; exact sincSq_le_div_sq hy
+  refine ⟨?_, fun n => ?_⟩
+  · have hs : ∀ y, y ≠ 0 → ‖((sincSq y : ℝ) : ℂ)‖ ≤ (1 / π ^ 2) / y ^ 2 := fun y hy => by
+      rw [Complex.norm_real, Real.norm_of_nonneg (sincSq_nonneg y)]; exact sincSq_le_div_sq hy
+    have h1 := integrable_latticeComb hb hs
+    have h2 := (integrable_latticeComb (inv_pos.mpr hb) hs).smul_measure
+      (ENNReal.ofReal_ne_top (r := b⁻¹))
+    exact (h1.add_measure h2).re.congr (Eventually.of_forall fun y => by simp)
+  · rw [integral_dualLatticePair hb (hF n), integral_dualLatticePair hb
+      (fun y hy => norm_tentAt_le_div_sq (n : ℝ) hy), tsum_tentAt_lattice hb,
+      tsum_tentAt_lattice (inv_pos.mpr hb), inv_inv]
+    have hb' : ((b : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hb.ne'
+    push_cast
+    field_simp
+    ring
+
+/-- The lattice comb puts no mass on `S` when no lattice point lies in `S`. -/
+theorem latticeComb_eq_zero {b : ℝ} {S : Set ℝ} (hS : MeasurableSet S)
+    (h : ∀ m : ℤ, b * m ∉ S) : latticeComb b S = 0 := by
+  rw [latticeComb, Measure.sum_apply _ hS]
+  refine ENNReal.tsum_eq_zero.mpr fun m => ?_
+  rw [Measure.smul_apply, Measure.dirac_apply' _ hS, indicator_of_notMem (h m), smul_zero]
+
+theorem one_le_latticeComb {b : ℝ} {S : Set ℝ} (hS : MeasurableSet S) {m : ℤ} (hm : b * m ∈ S) :
+    1 ≤ latticeComb b S := by
+  rw [latticeComb, Measure.sum_apply _ hS]
+  refine le_trans ?_ (ENNReal.le_tsum m)
+  rw [Measure.smul_apply, Measure.dirac_apply' _ hS, indicator_of_mem hm]
+  simp
+
+theorem latticeComb_Icc_lt_top {b : ℝ} (hb : 0 < b) (x : ℝ) :
+    latticeComb b (Icc (x - 1) (x + 1)) < ⊤ := by
+  classical
+  set F : Finset ℤ := Finset.Icc (⌊(x - 1) / b⌋) (⌈(x + 1) / b⌉)
+  rw [latticeComb, Measure.sum_apply _ measurableSet_Icc, tsum_eq_sum (s := F)]
+  · exact ENNReal.sum_lt_top.mpr fun m _ => by
+      rw [Measure.smul_apply, one_smul]
+      exact measure_lt_top _ _
+  · intro m hm
+    rw [Measure.smul_apply, Measure.dirac_apply' _ measurableSet_Icc, indicator_of_notMem, smul_zero]
+    intro hmem
+    apply hm
+    rw [Finset.mem_Icc]
+    constructor
+    · exact Int.floor_le_iff.mpr (by
+        have := hmem.1
+        have h : (x - 1) / b ≤ m := by rw [div_le_iff₀ hb]; linarith
+        linarith)
+    · exact Int.le_ceil_iff.mpr (by
+        have := hmem.2
+        have h : (m : ℝ) ≤ (x + 1) / b := by rw [le_div_iff₀ hb]; linarith
+        linarith)
+
+instance isLocallyFiniteMeasure_dualLatticePair {b : ℝ} [Fact (0 < b)] :
+    IsLocallyFiniteMeasure (dualLatticePair b) := by
+  have hb : 0 < b := Fact.out
+  refine ⟨fun x => ⟨Icc (x - 1) (x + 1), Icc_mem_nhds (by linarith) (by linarith), ?_⟩⟩
+  rw [dualLatticePair, Measure.add_apply, Measure.smul_apply, smul_eq_mul]
+  exact ENNReal.add_lt_top.mpr ⟨latticeComb_Icc_lt_top hb x,
+    ENNReal.mul_lt_top ENNReal.ofReal_lt_top (latticeComb_Icc_lt_top (inv_pos.mpr hb) x)⟩
+
+/-- **The unit gap is sharp.** For `0 < a < 1` the two dual lattices form a locally finite
+positive tent-self-dual measure with gap `(−a, a) ∖ {0}` that is no multiple of the Dirac comb. -/
+theorem exists_tentSelfDual_not_comb {a : ℝ} (ha0 : 0 < a) (ha1 : a < 1) :
+    ∃ μ : Measure ℝ, IsLocallyFiniteMeasure μ ∧ μ (Ioo (-a) a \ {0}) = 0 ∧ IsTentSelfDual μ ∧
+      μ ≠ μ {0} • diracComb := by
+  haveI : Fact (0 < a) := ⟨ha0⟩
+  have hmeas : MeasurableSet (Ioo (-a) a \ {0}) := measurableSet_Ioo.diff (measurableSet_singleton 0)
+  refine ⟨dualLatticePair a, inferInstance, ?_, isTentSelfDual_dualLatticePair ha0, ?_⟩
+  · rw [dualLatticePair, Measure.add_apply, Measure.smul_apply, smul_eq_mul,
+      latticeComb_eq_zero hmeas, latticeComb_eq_zero hmeas, mul_zero, add_zero]
+    · intro m ⟨⟨h1, h2⟩, h0⟩
+      have hm0 : m ≠ 0 := by rintro rfl; simp at h0
+      have hm1 : (1 : ℝ) ≤ |(m : ℝ)| := by exact_mod_cast Int.one_le_abs hm0
+      have : a⁻¹ ≤ |a⁻¹ * m| := by
+        rw [abs_mul, abs_of_pos (inv_pos.mpr ha0)]
+        nlinarith [inv_pos.mpr ha0]
+      have ha' : a < a⁻¹ := by
+        rw [lt_inv_comm₀ ha0 ha0]
+        calc a⁻¹ > 1 := one_lt_inv_iff₀.mpr ⟨ha0, ha1⟩
+          _ > a := ha1
+      cases abs_cases (a⁻¹ * m) <;> linarith
+    · intro m ⟨⟨h1, h2⟩, h0⟩
+      have hm0 : m ≠ 0 := by rintro rfl; simp at h0
+      have hm1 : (1 : ℝ) ≤ |(m : ℝ)| := by exact_mod_cast Int.one_le_abs hm0
+      have : a ≤ |a * m| := by rw [abs_mul, abs_of_pos ha0]; nlinarith
+      cases abs_cases (a * m) <;> linarith
+  · intro h
+    have h1 : 1 ≤ dualLatticePair a {a} := by
+      rw [dualLatticePair, Measure.add_apply]
+      exact le_add_right (one_le_latticeComb (measurableSet_singleton a) (m := 1) (by simp))
+    have h2 : diracComb {a} = 0 := by
+      unfold diracComb
+      rw [Measure.sum_apply _ (measurableSet_singleton a)]
+      refine ENNReal.tsum_eq_zero.mpr fun n => ?_
+      rw [Measure.dirac_apply' _ (measurableSet_singleton a), indicator_of_notMem]
+      rw [mem_singleton_iff]
+      intro hn
+      have hn0 : (0 : ℝ) < n := hn ▸ ha0
+      have hn1 : (n : ℝ) < 1 := hn ▸ ha1
+      have : (0 : ℤ) < n := by exact_mod_cast hn0
+      have : n < (1 : ℤ) := by exact_mod_cast hn1
+      omega
+    rw [h, Measure.smul_apply, h2, smul_zero] at h1
+    exact absurd h1 (by norm_num)
+
 end GaloisForLFunctions.ArithmeticPositiveDuality
+
+#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.exists_tentSelfDual_not_comb
+#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.tentSelfDual_iff_eq_smul_diracComb
+#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.measure_Icc_le_of_poissonPair

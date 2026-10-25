@@ -72,7 +72,7 @@ private theorem tendsto_eval_div_pow_natDegree (P : ℂ[X]) :
       atTop
       (𝓝 (∑ i ∈ Finset.range (P.natDegree + 1),
         if i = P.natDegree then P.coeff i else 0)) := by
-    refine tendsto_finset_sum _ fun i hi => ?_
+    refine tendsto_finsetSum _ fun i hi => ?_
     have hle : i ≤ P.natDegree := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
     by_cases heq : i = P.natDegree
     · subst heq
@@ -233,7 +233,7 @@ theorem exists_monic_poly_of_completed_gauge {κ : ℕ} {σ₀ S : ℝ} {G E : �
         isClosed_le continuous_const Complex.continuous_re
       have h1 : closure (Complex.re ⁻¹' Ioo (1 - N) N) ⊆ {z : ℂ | 1 - N ≤ z.re} :=
         hcl.closure_subset_iff.mpr fun z hz => hz.1.le
-      exact fun z hz => by have := h1 hz; change -N < z.re; linarith
+      exact fun z hz => by have h1z : 1 - N ≤ z.re := h1 hz; change -N < z.re; linarith
     have hdOn : DifferentiableOn ℂ w {z : ℂ | -N < z.re} := by
       intro z hz
       change -N < z.re at hz
@@ -285,8 +285,8 @@ theorem exists_monic_poly_of_completed_gauge {κ : ℕ} {σ₀ S : ℝ} {G E : �
     have hpow2 : (1 : ℝ) ≤ 2 ^ (2 * κ) := one_le_pow₀ (by norm_num)
     rw [hwdef, norm_div, div_le_iff₀ hQpos]
     calc ‖E z‖ ≤ S * (‖z‖ + 1) ^ (2 * κ) := hright z hz.ge
-      _ ≤ S * 2 ^ (2 * κ) * (‖z‖ + 1) ^ (2 * κ) := by
-          nlinarith [pow_nonneg (by positivity : 0 ≤ ‖z‖ + 1) (2 * κ)]
+      _ ≤ S * 2 ^ (2 * κ) * (‖z‖ + 1) ^ (2 * κ) :=
+          mul_le_mul_of_nonneg_right (le_mul_of_one_le_right hS hpow2) (by positivity)
       _ ≤ S * 2 ^ (2 * κ) * ((N + 3) ^ (2 * κ) * ‖Q z‖) :=
           mul_le_mul_of_nonneg_left (hnorm_le_za z hz1) (by positivity)
       _ = B₀ * ‖Q z‖ := by rw [hB₀def]; ring
@@ -294,7 +294,7 @@ theorem exists_monic_poly_of_completed_gauge {κ : ℕ} {σ₀ S : ℝ} {G E : �
       ‖E z‖ ≤ B₀ * (N + 2) ^ (2 * κ) * (‖z‖ + 1) ^ (2 * κ) := by
     intro z h1 h2
     have hwz : ‖w z‖ ≤ B₀ :=
-      PhragmenLindelof.vertical_strip hw_diff hwO hw_left hw_right h1 h2
+      PhragmenLindelof.vertical_strip hw_diff ⟨c, hc, B, hwO⟩ hw_left hw_right h1 h2
     have hQpos : 0 < ‖Q z‖ := lt_of_lt_of_le zero_lt_one (hQ1 z h1)
     have hEw : ‖E z‖ ≤ B₀ * ‖Q z‖ := by
       rw [hwdef, norm_div, div_le_iff₀ hQpos] at hwz
@@ -319,18 +319,16 @@ theorem exists_monic_poly_of_completed_gauge {κ : ℕ} {σ₀ S : ℝ} {G E : �
     rcases le_or_gt N z.re with h2 | h2
     · have hr := hright z h2
       have hpow2 : (1 : ℝ) ≤ 2 ^ (2 * κ) := one_le_pow₀ (by norm_num)
+      have hs2 : S ≤ S * 2 ^ (2 * κ) := le_mul_of_one_le_right hS hpow2
       have hb : 0 ≤ B₀ * (N + 2) ^ (2 * κ) := by positivity
-      rw [hM₀def]
-      nlinarith
+      exact hr.trans (mul_le_mul_of_nonneg_right (by rw [hM₀def]; linarith) hp0)
     rcases le_or_gt (1 - N) z.re with h1 | h1
     · have hs := hstrip z h1 h2.le
       have ha0 : 0 ≤ S * 2 ^ (2 * κ) := by positivity
-      rw [hM₀def]
-      nlinarith
+      exact hs.trans (mul_le_mul_of_nonneg_right (by rw [hM₀def]; linarith) hp0)
     · have hl := hleft z h1.le
       have hb : 0 ≤ B₀ * (N + 2) ^ (2 * κ) := by positivity
-      rw [hM₀def]
-      nlinarith
+      exact hl.trans (mul_le_mul_of_nonneg_right (by rw [hM₀def]; linarith) hp0)
   obtain ⟨P, hP⟩ := RHTower.exists_polynomial_of_polyGrowth hE hgrow
   -- Asymptotic `P(σ) / σ^{2κ} → 1` along `+∞`.
   have hinv : Tendsto (fun σ : ℝ => ((σ : ℂ))⁻¹) atTop (𝓝 0) := by
@@ -375,12 +373,15 @@ theorem exists_monic_poly_of_completed_gauge {κ : ℕ} {σ₀ S : ℝ} {G E : �
         congr 1
         push_cast
         field_simp [hσc]
+        ring
       refine (by simpa using h1.mul h2 : Tendsto _ atTop (𝓝 (1 : ℂ))).congr' ?_
       filter_upwards [eventually_gt_atTop (0 : ℝ)] with σ hσ
-      have hs1 : ((1 + σ : ℝ) : ℂ) ^ (2 * κ) ≠ 0 :=
-        pow_ne_zero _ (Complex.ofReal_ne_zero.mpr (by linarith))
-      rw [← hP]
-      field_simp [hs1]
+      have hs1 : ((1 + (σ : ℂ)) ^ (2 * κ)) ≠ 0 := by
+        have : ((1 + σ : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (by linarith)
+        push_cast at this
+        exact pow_ne_zero _ this
+      have heq1 : ((1 + σ : ℝ) : ℂ) = 1 + (σ : ℂ) := by push_cast; rfl
+      rw [heq1, ← hP (1 + (σ : ℂ)), div_pow, div_mul_div_cancel₀ hs1]
     have hneg : Tendsto (fun σ : ℝ => E (-(σ : ℂ)) / (σ : ℂ) ^ (2 * κ)) atTop (𝓝 1) := by
       have hlead := tendsto_eval_div_pow_natDegree (P.comp (-Polynomial.X))
       have hnd : (P.comp (-Polynomial.X)).natDegree = 2 * κ := by
@@ -477,22 +478,26 @@ theorem exists_monic_poly_of_laplace_exp_gauge {κ : ℕ} {σ₀ : ℝ} {μ : Me
             refine Real.tendsto_exp_atBot.comp ?_
             have : Tendsto (fun σ : ℝ => σ * u) atTop atTop :=
               Tendsto.atTop_mul_const hu0 tendsto_id
-            simpa only [neg_mul] using tendsto_neg_atTop_atBot.comp this
-          refine (by simpa using h1 : Tendsto _ atTop (𝓝 0)).congr fun σ => ?_
+            simpa only [Function.comp_def, neg_mul] using tendsto_neg_atTop_atBot.comp this
+          have h1' : Tendsto (fun σ : ℝ => ((Real.exp (-σ * u) : ℝ) : ℂ)) atTop (𝓝 0) := by
+            simpa only [Complex.ofReal_zero] using h1
+          refine h1'.congr' ?_
+          refine Eventually.of_forall fun σ => ?_
+          dsimp only
           rw [Complex.ofReal_exp]
           congr 1
           push_cast
           ring
         simpa using hexp.const_mul (f u)
-    simpa [hGdef] using (Complex.continuous_exp.tendsto 0).comp hint0
+    simpa [hGdef, Function.comp_def] using (Complex.continuous_exp.tendsto 0).comp hint0
   exact exists_monic_poly_of_completed_gauge (Real.exp_pos I₀).le hG_bound hG_lim hE hfin hε
     hsym hcomp
 
 /-! ### 3. Whole-strip zero-multiplicity and off-critical quartet budgets -/
 
-/-- For a nonzero polynomial `P : ℂ[X]`, the sum of root multiplicities over any finite subset of
-`ℂ` is bounded by `P.natDegree`. -/
-theorem sum_rootMultiplicity_le_natDegree {P : ℂ[X]} (hP : P ≠ 0) (S : Finset ℂ) :
+/-- For any polynomial `P : ℂ[X]`, the sum of root multiplicities over any finite subset of `ℂ` is
+bounded by `P.natDegree`. -/
+theorem sum_rootMultiplicity_le_natDegree (P : ℂ[X]) (S : Finset ℂ) :
     ∑ z ∈ S, P.rootMultiplicity z ≤ P.natDegree := by
   let M : Multiset ℂ := S.val.bind (fun z => Multiset.replicate (P.roots.count z) z)
   have hle : M ≤ P.roots := by
@@ -505,19 +510,18 @@ theorem sum_rootMultiplicity_le_natDegree {P : ℂ[X]} (hP : P ≠ 0) (S : Finse
     · rw [Finset.sum_eq_single w]
       · simp
       · intro z _ hzw
-        rw [Multiset.count_replicate, if_neg (Ne.symm hzw)]
+        rw [Multiset.count_replicate, if_neg hzw]
       · intro hnot
         exact absurd hw hnot
     · have h0 : ∑ z ∈ S, (Multiset.replicate (P.roots.count z) z).count w = 0 := by
         refine Finset.sum_eq_zero fun z hz => ?_
-        have hzw : w ≠ z := fun h => hw (h ▸ hz)
+        have hzw : z ≠ w := fun h => hw (h ▸ hz)
         rw [Multiset.count_replicate, if_neg hzw]
       rw [h0]
       exact Nat.zero_le _
   have hcard : M.card = ∑ z ∈ S, P.rootMultiplicity z := by
-    simp only [M, Finset.sum, Multiset.card_bind, Multiset.card_replicate]
-    refine Multiset.map_congr rfl fun z _ => ?_
-    exact Polynomial.count_roots P
+    simp only [M, Multiset.card_bind, Function.comp_def, Multiset.card_replicate, Finset.sum]
+    exact congrArg Multiset.sum (Multiset.map_congr rfl fun z _ => Polynomial.count_roots P)
   calc ∑ z ∈ S, P.rootMultiplicity z = M.card := hcard.symm
     _ ≤ P.roots.card := Multiset.card_le_card hle
     _ ≤ P.natDegree := Polynomial.card_roots' P
@@ -548,7 +552,7 @@ theorem completed_gauge_zero_and_quartet_budget {κ : ℕ} {E : ℂ → ℂ} {P 
   have hpart1 : ∀ S : Finset ℂ, ∑ z ∈ S, (analyticOrderAt E z).toNat ≤ 2 * κ := by
     intro S
     simp_rw [hord]
-    exact (sum_rootMultiplicity_le_natDegree hP0 S).trans hDeg.le
+    exact (sum_rootMultiplicity_le_natDegree P S).trans hDeg.le
   refine ⟨hpart1, fun hconj hsym q ρ m him hdist hre hm => ?_⟩
   classical
   have hEdiff : Differentiable ℂ E := by
@@ -565,7 +569,7 @@ theorem completed_gauge_zero_and_quartet_budget {κ : ℕ} {E : ℂ → ℂ} {P 
     rw [show E = fun y => P.eval y from funext hEP] at h ⊢
     rw [analyticOrderAt_eval_eq_rootMultiplicity hP0,
       analyticOrderAt_eval_eq_rootMultiplicity hP0] at h ⊢
-    simp only [ENat.map_coe, Int.ofNat_eq_coe, WithTop.untop₀_coe, Nat.cast_inj] at h
+    simp only [ENat.map_coe, WithTop.untop₀_coe, Nat.cast_inj] at h
     exact congrArg Nat.cast h
   have hord_conj : ∀ z : ℂ,
       (analyticOrderAt E (starRingEnd ℂ z)).toNat = (analyticOrderAt E z).toNat := by
@@ -582,7 +586,8 @@ theorem completed_gauge_zero_and_quartet_budget {κ : ℕ} {E : ℂ → ℂ} {P 
         (r : ℕ∞) ≤ analyticOrderAt E (starRingEnd ℂ w) := by
       intro w r hr
       obtain ⟨g, hgan, _, hwg⟩ := (hEan w (mem_univ w)).analyticOrderAt_eq_natCast.mp hr
-      refine (hEan _ (mem_univ _)).le_analyticOrderAt (g := fun y => starRingEnd ℂ (g (starRingEnd ℂ y))) ?_ ?_
+      refine (natCast_le_analyticOrderAt (hEan _ (mem_univ _))).mpr
+        ⟨fun y => starRingEnd ℂ (g (starRingEnd ℂ y)), ?_, ?_⟩
       · have hgd : DifferentiableOn ℂ (fun y => starRingEnd ℂ (g (starRingEnd ℂ y)))
             {y | AnalyticAt ℂ g (starRingEnd ℂ y)} := by
           intro y hy
@@ -591,12 +596,16 @@ theorem completed_gauge_zero_and_quartet_budget {κ : ℕ} {E : ℂ → ℂ} {P 
         have hopen : IsOpen {y : ℂ | AnalyticAt ℂ g (starRingEnd ℂ y)} :=
           isOpen_analyticAt ℂ g |>.preimage Complex.continuous_conj
         exact hgd.analyticAt (hopen.mem_nhds (by simpa using hgan))
-      · have hopen_nhds : ∀ᶠ y in 𝓝 (starRingEnd ℂ w),
-            E (starRingEnd ℂ y) = (starRingEnd ℂ y - w) ^ r * g (starRingEnd ℂ y) :=
-          Complex.continuous_conj.continuousAt.eventually hwg
+      · have ht_conj : Tendsto (starRingEnd ℂ) (𝓝 (starRingEnd ℂ w)) (𝓝 w) := by
+          simpa only [Complex.conj_conj] using
+            (Complex.continuous_conj.continuousAt (x := starRingEnd ℂ w)).tendsto
+        have hopen_nhds : ∀ᶠ y in 𝓝 (starRingEnd ℂ w),
+            E (starRingEnd ℂ y) = (starRingEnd ℂ y - w) ^ r • g (starRingEnd ℂ y) :=
+          ht_conj.eventually hwg
         filter_upwards [hopen_nhds] with y hy
+        simp only [smul_eq_mul] at hy ⊢
         have hc := congrArg (starRingEnd ℂ) hy
-        rw [← hconj, Complex.conj_conj, map_mul, map_pow, map_sub] at hc
+        rw [← hconj, map_mul, map_pow, map_sub, Complex.conj_conj] at hc
         exact hc
     have h1 := hle z n hn
     have h2 := hle (starRingEnd ℂ z) k hk
@@ -636,7 +645,7 @@ theorem completed_gauge_zero_and_quartet_budget {κ : ℕ} {E : ℂ → ℂ} {P 
     have hne24 : starRingEnd ℂ (ρ i) ≠ 1 - starRingEnd ℂ (ρ i) := fun h => by
       have := congrArg Complex.im h; simp at this; linarith
     have hne34 : 1 - ρ i ≠ 1 - starRingEnd ℂ (ρ i) := fun h =>
-      hne12 (sub_left_inj.mp h)
+      hne12 (by linear_combination -h)
     have hmem1 : ρ i ∉ ({starRingEnd ℂ (ρ i), 1 - ρ i, 1 - starRingEnd ℂ (ρ i)} : Finset ℂ) := by
       simp [hne12, hne13, hne14]
     have hmem2 : starRingEnd ℂ (ρ i) ∉ ({1 - ρ i, 1 - starRingEnd ℂ (ρ i)} : Finset ℂ) := by
@@ -665,6 +674,28 @@ theorem completed_gauge_zero_and_quartet_budget {κ : ℕ} {E : ℂ → ℂ} {P 
 
 /-! ### 4. Simple-pole (`κ = 1`) critical-refund rigidity via Landau's real-axis theorem -/
 
+private theorem frequently_eq_of_eventually_nhdsNE_real {f g : ℂ → ℂ} {t₀ : ℝ}
+    (h : ∀ᶠ t : ℝ in 𝓝[≠] t₀, f (t : ℂ) = g (t : ℂ)) :
+    ∃ᶠ z : ℂ in 𝓝[≠] (t₀ : ℂ), f z = g z := by
+  rw [Filter.frequently_iff]
+  intro U hU
+  obtain ⟨r, hr, hrU⟩ := Metric.mem_nhdsWithin_iff.mp hU
+  obtain ⟨ε, hε, hεh⟩ := Metric.eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp h)
+  set d := min r ε / 2
+  have hd : 0 < d := by positivity
+  have hdr : d < r := by have := min_le_left r ε; simp only [d]; linarith
+  have hdε : d < ε := by have := min_le_right r ε; simp only [d]; linarith
+  refine ⟨((t₀ + d : ℝ) : ℂ), hrU ⟨?_, ?_⟩, hεh ?_ ?_⟩
+  · rw [Metric.mem_ball, dist_eq_norm, ← Complex.ofReal_sub, Complex.norm_real,
+      Real.norm_eq_abs, add_sub_cancel_left, abs_of_pos hd]
+    exact hdr
+  · rw [mem_compl_singleton_iff, Ne, Complex.ofReal_inj]
+    linarith
+  · rw [Real.dist_eq, add_sub_cancel_left, abs_of_pos hd]
+    exact hdε
+  · rw [mem_compl_singleton_iff]
+    linarith
+
 private theorem ne_zero_of_entire_linear_ode {E W : ℂ → ℂ} {t₀ : ℝ}
     (hE : Differentiable ℂ E) (hE_nz : ∃ z₀, E z₀ ≠ 0)
     (hW : AnalyticAt ℂ W (t₀ : ℂ))
@@ -684,29 +715,29 @@ private theorem ne_zero_of_entire_linear_ode {E W : ℂ → ℂ} {t₀ : ℝ}
     rcases eq_or_ne m 0 with rfl | hm0
     · exact absurd hm.symm hne0
     · omega
-  obtain ⟨g, hgan, hg0, hEg⟩ := (hEan z₀ (mem_univ z₀)).analyticOrderAt_eq_natCast.mp hm.symm
+  obtain ⟨g, hgan, hg0, hEg₀⟩ := (hEan z₀ (mem_univ z₀)).analyticOrderAt_eq_natCast.mp hm.symm
+  have hEg : ∀ᶠ z in 𝓝 z₀, E z = (z - z₀) ^ m * g z := by
+    filter_upwards [hEg₀] with z hz
+    simpa only [smul_eq_mul] using hz
   -- Transfer `deriv E = W * E` from the punctured real ray to `𝓝 z₀`.
   have hdE_an : AnalyticAt ℂ (deriv E) z₀ := (hEan z₀ (mem_univ z₀)).deriv
   have hWE_an : AnalyticAt ℂ (fun z => W z * E z) z₀ := hW.mul (hEan z₀ (mem_univ z₀))
-  have hfreq : ∃ᶠ z : ℂ in 𝓝[≠] z₀, deriv E z = W z * E z := by
-    have hnb : (𝓝[≠] t₀).NeBot := mem_closure_iff_nhdsWithin_neBot.mp (by simp)
-    have htend := RHTower.tendsto_ofReal_nhdsNE t₀
-    exact (heq.frequently).map htend
   have hEqC : deriv E =ᶠ[𝓝 z₀] fun z => W z * E z :=
-    hdE_an.eventually_eq_of_frequently_eq hWE_an hfreq
+    (hdE_an.frequently_eq_iff_eventually_eq hWE_an).mp (frequently_eq_of_eventually_nhdsNE_real heq)
   -- Compare vanishing orders of `deriv E` and `W * E` at `z₀`.
   have hderiv_g : ∀ᶠ z in 𝓝 z₀, AnalyticAt ℂ g z := hgan.eventually_analyticAt
   have hd_local : ∀ᶠ z in 𝓝 z₀,
       deriv E z = (z - z₀) ^ (m - 1) * ((m : ℂ) * g z + (z - z₀) * deriv g z) := by
-    obtain ⟨U, hU_sub, hU_open, hz₀U⟩ := eventually_iff_exists_mem.mp (hEg.and hderiv_g)
+    obtain ⟨U, hU_sub, hU_open, hz₀U⟩ := eventually_nhds_iff.mp (hEg.and hderiv_g)
     filter_upwards [hU_open.mem_nhds hz₀U] with z hzU
     have hev : E =ᶠ[𝓝 z] fun w => (w - z₀) ^ m * g w := by
       filter_upwards [hU_open.mem_nhds hzU] with w hwU
-      exact (hU_sub hwU).1
-    have hgz : DifferentiableAt ℂ g z := (hU_sub hzU).2.differentiableAt
+      exact (hU_sub w hwU).1
+    have hgz : DifferentiableAt ℂ g z := (hU_sub z hzU).2.differentiableAt
     have hd1 : HasDerivAt (fun w : ℂ => (w - z₀) ^ m)
         ((m : ℂ) * (z - z₀) ^ (m - 1)) z := by
-      simpa using ((hasDerivAt_id z).sub_const z₀).pow m
+      have h := ((hasDerivAt_id' z).sub_const z₀).fun_pow m
+      rwa [mul_one] at h
     have hd2 : HasDerivAt (fun w : ℂ => (w - z₀) ^ m * g w)
         ((m : ℂ) * (z - z₀) ^ (m - 1) * g z + (z - z₀) ^ m * deriv g z) z :=
       hd1.mul hgz.hasDerivAt
@@ -760,25 +791,30 @@ private theorem ne_zero_at_endpoint_of_nonneg_logDeriv_diff {E : ℂ → ℂ} {c
     rcases eq_or_ne m 0 with rfl | hm0
     · exact absurd hm.symm hne0
     · omega
-  obtain ⟨g, hgan, hg0, hEg⟩ := (hEan z₀ (mem_univ z₀)).analyticOrderAt_eq_natCast.mp hm.symm
+  obtain ⟨g, hgan, hg0, hEg₀⟩ := (hEan z₀ (mem_univ z₀)).analyticOrderAt_eq_natCast.mp hm.symm
+  have hEg : ∀ᶠ z in 𝓝 z₀, E z = (z - z₀) ^ m * g z := by
+    filter_upwards [hEg₀] with z hz
+    simpa only [smul_eq_mul] using hz
   have hlog : ∀ᶠ z in 𝓝[≠] z₀,
       logDeriv E z = (m : ℂ) / (z - z₀) + logDeriv g z := by
     have hgnz : ∀ᶠ z in 𝓝 z₀, g z ≠ 0 := hgan.continuousAt.eventually_ne hg0
     have hgan' : ∀ᶠ z in 𝓝 z₀, AnalyticAt ℂ g z := hgan.eventually_analyticAt
-    obtain ⟨U, hU_sub, hU_open, hz₀U⟩ := eventually_iff_exists_mem.mp (hEg.and (hgnz.and hgan'))
+    obtain ⟨U, hU_sub, hU_open, hz₀U⟩ := eventually_nhds_iff.mp (hEg.and (hgnz.and hgan'))
     filter_upwards [nhdsWithin_le_nhds (hU_open.mem_nhds hz₀U), self_mem_nhdsWithin] with z hzU hz
     have hev : E =ᶠ[𝓝 z] fun w => (w - z₀) ^ m * g w := by
       filter_upwards [hU_open.mem_nhds hzU] with w hwU
-      exact (hU_sub hwU).1
+      exact (hU_sub w hwU).1
     have hsub0 : z - z₀ ≠ 0 := sub_ne_zero.mpr hz
-    have hgz0 : g z ≠ 0 := (hU_sub hzU).2.1
-    have hgd : DifferentiableAt ℂ g z := (hU_sub hzU).2.2.differentiableAt
+    have hgz0 : g z ≠ 0 := (hU_sub z hzU).2.1
+    have hgd : DifferentiableAt ℂ g z := (hU_sub z hzU).2.2.differentiableAt
+    have hsub : DifferentiableAt ℂ (fun w : ℂ => w - z₀) z :=
+      differentiableAt_id.sub_const z₀
     have hpd : DifferentiableAt ℂ (fun w : ℂ => (w - z₀) ^ m) z :=
-      ((differentiableAt_id.sub_const z₀).pow m)
+      hsub.fun_pow m
     have hle1 : logDeriv E z = logDeriv (fun w => (w - z₀) ^ m * g w) z := by
       rw [logDeriv_apply, logDeriv_apply, hev.deriv_eq, hev.eq_of_nhds]
-    rw [hle1, logDeriv_mul z (pow_ne_zero _ hsub0) hgz0 hpd hgd,
-      logDeriv_fun_pow (differentiableAt_id.sub_const z₀) m]
+    rw [hle1, logDeriv_mul (f := fun w => (w - z₀) ^ m) (g := g) z (pow_ne_zero m hsub0) hgz0
+      hpd hgd, logDeriv_fun_pow hsub m]
     congr 1
     rw [logDeriv_apply, deriv_sub_const, deriv_id'', one_div, div_eq_mul_inv]
   have hxian : AnalyticAt ℂ (logDeriv RHTower.xi) z₀ := by
@@ -793,17 +829,22 @@ private theorem ne_zero_at_endpoint_of_nonneg_logDeriv_diff {E : ℂ → ℂ} {c
   have hlim : Tendsto
       (fun t : ℝ => (t - c) * (-logDeriv E (t : ℂ) + logDeriv RHTower.xi (t : ℂ)).re)
       (𝓝[>] c) (𝓝 (-(m : ℝ))) := by
-    have hrem_cont : ContinuousAt
-        (fun t : ℝ => (-logDeriv g (t : ℂ) + logDeriv RHTower.xi (t : ℂ)).re) c :=
-      Complex.continuous_re.continuousAt.comp
-        (((hgan_ld.neg.add hxian).continuousAt).comp Complex.continuous_ofReal.continuousAt)
+    have hrem_tend : Tendsto
+        (fun t : ℝ => (-logDeriv g (t : ℂ) + logDeriv RHTower.xi (t : ℂ)).re)
+        (𝓝 c) (𝓝 (-logDeriv g z₀ + logDeriv RHTower.xi z₀).re) := by
+      have hc1 : ContinuousAt (fun z : ℂ => (-logDeriv g z + logDeriv RHTower.xi z).re) z₀ :=
+        Complex.continuous_re.continuousAt.comp (hgan_ld.neg.add hxian).continuousAt
+      exact hc1.tendsto.comp
+        (by simpa only [hz₀] using (Complex.continuous_ofReal.continuousAt (x := c)).tendsto)
     have hsub0 : Tendsto (fun t : ℝ => t - c) (𝓝[>] c) (𝓝 0) := by
-      simpa using (tendsto_id.mono_left nhdsWithin_le_nhds).sub_const c
+      have hc2 : ContinuousAt (fun t : ℝ => t - c) c :=
+        continuousAt_id.sub continuousAt_const
+      simpa only [sub_self] using hc2.tendsto.mono_left nhdsWithin_le_nhds
     have hprod : Tendsto
         (fun t : ℝ => -(m : ℝ) +
           (t - c) * (-logDeriv g (t : ℂ) + logDeriv RHTower.xi (t : ℂ)).re)
         (𝓝[>] c) (𝓝 (-(m : ℝ) + 0 * (-logDeriv g z₀ + logDeriv RHTower.xi z₀).re)) :=
-      tendsto_const_nhds.add (hsub0.mul (hrem_cont.tendsto.mono_left nhdsWithin_le_nhds))
+      tendsto_const_nhds.add (hsub0.mul (hrem_tend.mono_left nhdsWithin_le_nhds))
     simp only [zero_mul, add_zero] at hprod
     refine hprod.congr' ?_
     filter_upwards [ht_ne.eventually hlog, self_mem_nhdsWithin] with t ht htc
@@ -907,7 +948,9 @@ theorem simple_pole_nonneg_laplace_refund_rigidity {ν : Measure ℝ} {σ₁ : �
     have hld : logDeriv E (t : ℂ) = W (t : ℂ) := by
       rw [logDeriv_apply, div_eq_iff hEt0]
       exact hode
-    rw [hld, hWdef, complexLaplace_ofReal]
+    rw [hld]
+    dsimp only [W]
+    rw [complexLaplace_ofReal]
     ring
   -- Step A: `laplaceMass ν σ ≠ ⊤` for every real `σ`.
   have hfin_all : ∀ σ : ℝ, laplaceMass ν σ ≠ ⊤ := by
@@ -945,7 +988,7 @@ theorem simple_pole_nonneg_laplace_refund_rigidity {ν : Measure ℝ} {σ₁ : �
     have hi_nu : Integrable (fun u : ℝ => Complex.exp (-z * (u : ℂ)))
         (ν.restrict (Ioi (0 : ℝ))) := hi_sum.left_of_add_measure
     have hi_vol := integrable_cexp_of_gt_abscissa isAbscissa_volume_zero hz
-    unfold complexLaplace
+    simp only [Pi.sub_apply, complexLaplace]
     rw [Measure.restrict_add, integral_add_measure hi_nu hi_vol]
     ring
   have hray0 := hpropagate 0 hCL_pos
@@ -975,10 +1018,12 @@ theorem simple_pole_nonneg_laplace_refund_rigidity {ν : Measure ℝ} {σ₁ : �
       exact hi_sum.left_of_add_measure
     have hae := (integral_eq_zero_iff_of_nonneg_ae
       (Eventually.of_forall fun u => (Real.exp_pos _).le) hint14).mp hl14_zero
-    have hnull : (ν.restrict (Ioi (0 : ℝ))) univ = 0 := by
-      rw [← ae_iff]
+    have hfalse : ∀ᵐ u ∂(ν.restrict (Ioi (0 : ℝ))), False := by
       filter_upwards [hae] with u hu
-      exact absurd hu (Real.exp_pos _).ne'
+      exact (Real.exp_pos _).ne' hu
+    have hnull : (ν.restrict (Ioi (0 : ℝ))) univ = 0 := by
+      have h := ae_iff.mp hfalse
+      simpa using h
     exact Measure.measure_univ_eq_zero.mp hnull
   -- Deduce `E(s) = (E(1) / ξ(1)) ξ(s)` on all of `ℂ` and `ε = 1`.
   have hExi : ∀ s : ℂ, E s = (E 1 / RHTower.xi 1) * RHTower.xi s := by
@@ -1007,7 +1052,7 @@ theorem simple_pole_nonneg_laplace_refund_rigidity {ν : Measure ℝ} {σ₁ : �
         have hnum : deriv E (t : ℂ) * RHTower.xi (t : ℂ) -
             E (t : ℂ) * deriv RHTower.xi (t : ℂ) = 0 := by
           rw [logDeriv_apply, logDeriv_apply, div_eq_div_iff hEt hxit] at hld_eq
-          exact sub_eq_zero.mpr hld_eq
+          linear_combination hld_eq
         have hdC : HasDerivAt q 0 (t : ℂ) := by
           have hdq := (hE (t : ℂ)).hasDerivAt.div
             (RHTower.xi_differentiable (t : ℂ)).hasDerivAt hxit
@@ -1020,7 +1065,8 @@ theorem simple_pole_nonneg_laplace_refund_rigidity {ν : Measure ℝ} {σ₁ : �
         fun y hy => (hderiv0 y hy).differentiableAt.differentiableWithinAt
       exact hconv.is_const_of_fderivWithin_eq_zero hdOn
         (fun y hy => by
-          rw [fderivWithin_eq_fderiv (isOpen_Ioo.uniqueDiffWithinAt hy),
+          rw [fderivWithin_eq_fderiv (isOpen_Ioo.uniqueDiffWithinAt hy)
+              (hderiv0 y hy).differentiableAt,
             (hderiv0 y hy).hasFDerivAt.fderiv]
           ext; simp)
         ht ⟨by linarith, by linarith⟩
@@ -1032,22 +1078,16 @@ theorem simple_pole_nonneg_laplace_refund_rigidity {ν : Measure ℝ} {σ₁ : �
         simpa [hqdef] using ht
       exact (div_eq_iff hxit).mp ht'
     have hfreq : ∃ᶠ z : ℂ in 𝓝[≠] (1 : ℂ),
-        E z = (E 1 / RHTower.xi 1) * RHTower.xi z := by
-      have hnb : (𝓝[≠] (1 : ℝ)).NeBot := mem_closure_iff_nhdsWithin_neBot.mp (by simp)
-      have hev' : ∀ᶠ t : ℝ in 𝓝[≠] (1 : ℝ),
-          E (t : ℂ) = (E 1 / RHTower.xi 1) * RHTower.xi (t : ℂ) :=
-        nhdsWithin_le_nhds hE_eq_ray
-      exact hev'.frequently.map (RHTower.tendsto_ofReal_nhdsNE 1)
+        E z = (E 1 / RHTower.xi 1) * RHTower.xi z :=
+      frequently_eq_of_eventually_nhdsNE_real (nhdsWithin_le_nhds hE_eq_ray)
     have hRHS_an : AnalyticOnNhd ℂ (fun z => (E 1 / RHTower.xi 1) * RHTower.xi z) univ :=
       fun z _ => analyticAt_const.mul (RHTower.xi_analyticOnNhd_univ z (mem_univ z))
-    have hloc := (hEan 1 (mem_univ 1)).eventually_eq_of_frequently_eq (hRHS_an 1 (mem_univ 1)) hfreq
-    exact fun s => hEan.eqOn_of_preconnected_of_eventuallyEq hRHS_an isPreconnected_univ
-      (mem_univ 1) hloc (mem_univ s)
+    exact congrFun (hEan.eq_of_frequently_eq hRHS_an hfreq)
   have hε1 : ε = 1 := by
     obtain ⟨z₀, hz₀⟩ := hE_nz
     have h1 := hsym z₀
-    rw [hExi (1 - z₀), hExi z₀, RHTower.xi_one_sub] at h1
-    have h2 : ε * E z₀ = 1 * E z₀ := by rw [← hExi z₀] at h1; exact h1.symm
+    rw [hExi (1 - z₀), hExi z₀, RHTower.xi_one_sub, ← hExi z₀] at h1
+    have h2 : ε * E z₀ = 1 * E z₀ := by linear_combination -h1
     exact mul_right_cancel₀ hz₀ h2
   exact ⟨hnu_zero, hε1, hExi⟩
 

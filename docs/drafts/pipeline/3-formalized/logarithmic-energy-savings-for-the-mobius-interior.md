@@ -3,7 +3,7 @@
 - **ID:** logarithmic-energy-savings-for-the-mobius-interior
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** The actual centered Möbius divisor prefix and its Bézout interior have every logarithmic pronic norm saving below half damping.
 
 ## Exact results

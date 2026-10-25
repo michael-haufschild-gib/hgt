@@ -3,7 +3,7 @@
 - **ID:** vaughan-convolution-mean-and-logarithmic-fluctuation
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** The actual truncated Vaughan convolution splits into its harmonic mean and a divisor-square bounded fluctuation with every uniform logarithmic prefix saving.
 
 ## Exact arithmetic statement

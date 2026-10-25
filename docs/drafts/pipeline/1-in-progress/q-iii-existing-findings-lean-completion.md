@@ -47,14 +47,15 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Scalar origin-trace convergence and nonvanishing successor scale | Final canonical audit `80601` passed with standard axioms; no olean needed |
 | Exact incomplete dilation fibre and mixed C*D/p bound | Required olean `69760` and final canonical source check `89066` passed with standard axioms |
 | Actual horizon contraction, principal ideal quotient, full intertwining | Canonical source checks `13848`, `76726`, `61116`, `33454` passed with standard axioms |
-| Closed dilation range, index loss, matrix/operator horizon order | Combined scratch passed; canonical sources installed and wired, individual checks pending |
+| Closed dilation range, index loss, matrix/operator horizon order | Numeric operator order passed final `42266`; closed-range and index canonical checks pending |
 | Rank-one contraction fixes state | Combined scratch passed; canonical source installed and wired, final check pending |
 | Arbitrary commuting family has a common eigenvector | Final canonical audit `15948` passed with standard axioms; required olean exists |
-| Finite actual hull magnitudes and half-plane approximation | Full scratch `83688` passed all five standard-axiom audits; three canonical leaves installed and wired, individual checks pending |
+| Finite actual hull magnitudes and half-plane approximation | All three canonical leaves passed final audits `64788`, `82260`, `82346` with standard axioms |
 | Tied-torus and augmentation character limits | Owner final `5652` and leaf final `10781` passed with standard axioms; required oleans complete |
 | Conjugation of actual source pairings, annihilator and hull | Final canonical audit `78866` passed with standard axioms; card moved to `3-formalized` |
 | Interior Wiener jets, mixed interpolation and paid quotient lower bounds | Full combined scratch finished without errors, fourteen standard-axiom reports; base final `84720` passed; six application leaves installed and wired, individual checks pending |
 | Vanishing Gram steps, intermediate kernels, singleton/continuum alternative | Final canonical audit `79971` passed with standard axioms; card moved to `3-formalized` |
+| Exact Fermi Mellin quotient divisor order | Final canonical audit `7871` passed with standard axioms; card moved to `3-formalized` |
 
 The square-root translation card is now in `3-formalized`, including its
 origin-trace convergence, raw/reset-boundary consequences and nonvanishing-scale
@@ -118,6 +119,12 @@ unchanged checks. All required leaves are wired into their programme umbrellas.
 | Extracted finite-prime torus approximation and preserved half-plane unit theorem | `5652` | Updated owner `46690` passed |
 | Simultaneous vertical and augmentation limits on the full Wiener algebra | `10781` | `95510` passed |
 | Numeric real/complex packet order, complete-module dilation order and diagonal interval | `42266` | `68599` passed |
+| Exact Fermi Mellin quotient divisor, including partial zeta cancellation | `7871` | None needed |
+| Complex multiplicative characters with antitone critical norm profile | `64788` | `83574` passed |
+| Actual common-eigencharacter augmentation/power magnitude classification | `82260` | `75431` passed |
+| Finite actual hull common eigenvectors, radial moduli and simultaneous half-plane limits | `82346` | None needed |
+| Zero-dilation alternative and actual kernel/principal-ideal contraction composition | `73435` | None needed |
+| Closed operator range as closed span of image features; invariance under nonzero scaling | `78185` | `55322` passed |
 
 The full mixed-jet third check completed without errors, with all fourteen
 standard-axiom reports in `/tmp/qiii-visible-mixed-jet-index-third.log`.
@@ -163,9 +170,19 @@ cofactor modules. The eta-factor nonvanishing input already exists as
 The exact order application is now part of this completion queue; no new
 arithmetic source claim or analytic premise is authorized.
 Its proof and pending status are on
-[the Fermi divisor card](fermi-mellin-divisors-count-only-uncancelled-zeta-orders.md);
+[the Fermi divisor card](../3-formalized/fermi-mellin-divisors-count-only-uncancelled-zeta-orders.md);
 complete scratch `/tmp/qiii-fermi-divisor-order-check.lean` is checking in
 session `64886`, output `/tmp/qiii-fermi-divisor-order-first.log`.
+That check verified the order API and eta-factor axiom report, then found
+two local elaboration errors: `isOpen_ne` was the wrong neighborhood API,
+and `id` did not syntactically match the explicit identity function in the
+quotient rewrite. The scratch now uses complements of singleton preimages
+and an explicit `id` denominator. Retry `45203` passed, with both
+standard-axiom reports in `/tmp/qiii-fermi-divisor-order-retry.log`.
+The canonical leaf is installed and umbrella-wired, with API `#check` lines
+removed. Its final source-only check `7871` passed with standard axioms;
+output `/tmp/qiii-fermi-divisor-order-canonical-final.log`. The card moved to
+`3-formalized` and the completed scratch was removed.
 Numeric-order final audit `42266` and finite-hull scratch `83688` are complete.
 All six mixed-jet application sources are installed and umbrella-wired;
 canonical import-boundary checks are the remaining jet gate.
@@ -188,7 +205,49 @@ with cutoff and full signed-power survivors checked. README and the Q-III
 correction in `opus.md` now record those completed results, actual unit
 transport and exact finite joint multiplicities.
 
-## Active direct check
+## Current remaining canonical checks
+
+The generic complex-character required olean passed in session `83574`,
+with a standard-axiom report in `/tmp/qiii-complex-character-powers-required-olean.log`.
+Its final source-only check `64788` passed, with a standard-axiom report
+in `/tmp/qiii-complex-character-powers-canonical-final.log`.
+The actual eigencharacter required olean passed in session `75431`, with a
+standard-axiom report in `/tmp/qiii-actual-eigencharacter-powers-required-olean.log`.
+Its final source-only check `82260` passed, with a standard-axiom report
+in `/tmp/qiii-actual-eigencharacter-powers-canonical-final.log`.
+Finite-hull final source-only check `82346` passed, with all three standard-axiom
+reports in `/tmp/qiii-finite-hull-canonical-final.log`.
+Contraction composition final source-only check `73435` passed, with all
+three standard-axiom reports in `/tmp/qiii-contraction-composition-canonical-final.log`.
+The generic closed-range required olean passed in session `55322`, with
+two standard-axiom reports in `/tmp/qiii-feature-closed-range-required-olean.log`.
+Its final source-only check `78185` passed, with both standard-axiom reports
+in `/tmp/qiii-feature-closed-range-canonical-final.log`.
+One active Lean process: required olean for
+`ArithmeticDefectRigidity/ContractedCofactorModulesAreClosedDilationRanges`, output
+`/tmp/qiii-contracted-range-required-olean.log`.
+
+After it finishes, the pending canonical checks are:
+
+- Contraction: finish required olean and final `ContractedCofactorModulesAreClosedDilationRanges`;
+  terminal source-only `CofactorContractionIndexDropsByDilationNullity` and
+  `RankOneCofactorStatesAreFixedByContraction`. All sources are installed and
+  wired; their combined scratch passed. Numeric horizon order is complete.
+- Jets: required olean and final `VisiblePolesImposeIndependentPaidConditions`,
+  then `FiniteWienerJetsCanBePrescribed`; terminal source-only
+  `VisiblePoleJetsBoundThePaidIndex`; required olean and final
+  `InteriorJetsAndBoundaryValuesCanBePrescribed`, then
+  `VisibleInteriorAndBoundaryPolesBoundThePaidIndex`; terminal source-only
+  `VisibleJetIndexBoundsPersistOnWienerUnitOrbits`. All six sources are
+  installed and wired; the combined scratch passed. Base `InteriorWienerJets`
+  is complete. All six required finite-hull/jet oleans were confirmed absent.
+
+Reconcile cards, README/report and remaining owned scratch files after these
+checks. The diagonal, finite-hull, matrix and Fermi-divisor cards are in
+`3-formalized`. Contraction and jet cards still await the listed gates. Pause
+after completing this queue; full Q-III classification remains open.
+
+## Earlier checks (superseded by the current audit table)
 
 Prescribed-horizon final source-only audit `11914` passed with standard axioms
 for both statements. Its canonical split now explicitly imports

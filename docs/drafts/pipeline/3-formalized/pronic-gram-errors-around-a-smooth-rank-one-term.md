@@ -3,7 +3,7 @@
 - **ID:** pronic-gram-errors-around-a-smooth-rank-one-term
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** Smooth-power pronic energy has a bounded integral error, and a rank-one Gram approximation has an explicit three-pairing error bound.
 
 For `0<ε<1/2`, let `β=1-2ε` and `h(n)=n^(1-ε)`. There is `D≥0`

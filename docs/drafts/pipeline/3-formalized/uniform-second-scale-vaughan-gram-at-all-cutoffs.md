@@ -1,9 +1,9 @@
 # Uniform second-scale Vaughan Gram at all cutoffs
 
 - **ID:** uniform-second-scale-vaughan-gram-at-all-cutoffs
-- **Stage:** 2-fully-proven
-- **Type:** CLAIM (Lean verification pending)
-- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Verification:** All stated finite, logarithmic, Gram, packet, single-floor, and quantitative Mertens-power consequences passed final direct Lean checks and standard-axiom audits.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
 - **Statement:** The fixed-cutoff smooth-power Gram asymptotic holds uniformly over every pair of cutoffs, without a product-horizon relation.
 - **Novelty status:** A uniform refinement of the checked fixed-cutoff law, derived from the corpus's arbitrary logarithmic Möbius estimates. No external novelty claim.
@@ -125,7 +125,10 @@ The harmonic transfer itself is now Lean-verified in
 `RHTower/MertensPowerBoundsControlMobiusHarmonicSums.lean`: the exact successor
 boundary minus strict tail gives constant `C(1+1/η)` at the original exponent.
 Both targets passed final direct checks and standard-axiom audits. The balanced
-uniform-convolution consequence remains under verification.
+uniform-convolution consequence is also certified in
+`UniformVaughanPowerBoundsAreFixedStrips.lean` by
+`exists_uniform_pmUndampedVaughan_power_of_mertens_power`. It retains every
+strict gain `κ<η/(2+η)`, with no loss hidden in an existential conclusion.
 
 ## Transfer through the damped floor transform
 
@@ -233,13 +236,13 @@ the uniform row and Gram laws, with no new analytic premise or power saving.
 
 ## Status
 
-Dependency-closed paper proof. Lean formalization remains pending. Source proofs read:
+All claims on this card are Lean-verified. Source proofs include:
 `MoebiusHarmonicArbitraryLogRate.lean`, `DeningerHarmonicPartial.lean`,
 `CriticalDivisorAffineMeanSquare.lean`,
 `AllDampingVinogradovKorobovBandAndInteriorGrowth.lean`, and
 `ReceiverBoundedInTheZeroFreeBandBelowHalfDamping.lean`.
 The fixed-cutoff residual-density theorem and uniform truncated-pattern transfer
-passed their final direct Lean audits. No fixed power estimate or full Q-I answer
+passed their final direct Lean audits. No unconditional fixed power saving or full Q-I answer
 is claimed.
 
 The generalized hyperbola estimate has four audited targets, including the finite
@@ -363,9 +366,19 @@ as `UniformVaughanGramsFollowTheirSmoothRankOneTerm.lean`; the scratch was
 removed. The complete matrix law, including independent divergent horizon and
 cutoff-product schedules, is recorded in
 `../3-formalized/uniform-vaughan-grams-follow-their-smooth-rank-one-term.md`.
-The packet and single-floor laws are checked. The quantitative
-Mertens-power consequence remains under verification, so this combined paper
-card is not yet fully formalized.
+The packet, single-floor, and quantitative Mertens-power consequences are
+checked. All four targets in `UniformVaughanPowerBoundsAreFixedStrips.lean`
+passed producing and final direct checks with standard axioms only, without
+final warnings. The module is wired and its scratch removed:
+
+- `pmUndampedVaughanConvolutionPrefix_one_full`
+- `exists_uniform_pmUndampedVaughan_power_of_mertens_power`
+- `zetaZeroAbscissa_lt_one_of_uniform_pmUndampedVaughan_power`
+- `zetaZeroAbscissa_lt_one_iff_uniform_pmUndampedVaughan_power`
+
+The first fixes the extreme-cutoff summatory value at one; the second proves
+the exact quantitative transfer stated above. The last two identify a uniform
+undamped power saving with a fixed strip, without asserting either property.
 
 The first logarithmic-transform scratch check found two algebraic Lean issues
 (nested inverse normalization and function composition); both were corrected.

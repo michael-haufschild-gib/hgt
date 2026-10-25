@@ -55,8 +55,8 @@ must account for zero intermediate diagonal values.
 - [x] Actual cofinal subsequence construction with horizon shift by one.
 - [x] Admitted branch from full pairing convergence.
 - [x] Principal quotient ideal, full Wiener intertwining and hull inclusions.
-- [ ] Exact zero-dilation branch.
-- [ ] Composition, closed range and exact index loss.
+- [x] Exact zero-dilation branch and kernel/ideal composition.
+- [ ] Closed range, exact index loss and rank-one invariance.
 
 ## Module and hull consequences to formalize
 
@@ -90,9 +90,10 @@ The complete combined proof passed direct Lean check `12682`; all 23 printed
 targets have only standard axioms. Eleven canonical sources are installed
 and umbrella-wired. The incomplete fibre, actual contracted subsequence,
 principal-ideal hull helper, actual cofactor ideal and full Wiener-module
-embedding passed separate canonical checks with standard axioms. Composition,
-numeric operator order, closed range, index loss and rank-one invariance still
-need their canonical checks, tracked in
+embedding passed separate canonical checks with standard axioms. Composition
+passed final audit `73435` and numeric operator order passed `42266`.
+Closed range, index loss and rank-one invariance still need their canonical
+checks, tracked in
 [the completion ledger](q-iii-existing-findings-lean-completion.md).
 
 `IncompleteDilationFibresHaveBoundedPairingCost` contains the exact terminal

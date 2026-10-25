@@ -367,15 +367,19 @@ first/all damping-column summability equivalences.
 
 The uniform second-scale theorem is Lean-verified for all cutoffs independently
 of the horizon; its parent card is
-`../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md`.
+`../3-formalized/uniform-second-scale-vaughan-gram-at-all-cutoffs.md`.
 The undamped small-small convolution has mean `H_U H_V` uniformly with every logarithmic
 rate. A generalized finite hyperbola bound transfers this to the damped centered pieces.
 Thus the normalized centered Gram is uniformly asymptotic to its smooth rank-one term;
 if both the horizon and the cutoff product diverge, that entire Gram tends to zero at
 the trivial scale. The error admits every prescribed logarithmic saving.
 These finite Gram and packet laws passed final direct checks and standard-axiom
-audits. The parent's distinct quantitative Mertens power-transfer claim remains
-under verification; no fixed power saving has been produced.
+audits. The distinct quantitative Mertens power-transfer claim also passed:
+every gain `κ<η/(2+η)` transfers uniformly, and actual undamped uniform power
+cancellation is equivalent to a fixed strip. All four targets in
+`UniformVaughanPowerBoundsAreFixedStrips.lean` passed final direct checks and
+standard-axiom audits; the complete second-scale parent is now in stage 3.
+No unconditional fixed power saving has been produced.
 
 An exact extreme-cutoff invariant sharpens this boundary:
 `../2-fully-proven/uniform-vaughan-residual-power-rates-are-fixed-strips.md`.
@@ -391,6 +395,10 @@ The two forward Mertens-to-harmonic targets also passed final direct checks
 and standard-axiom audits in `MertensPowerBoundsControlMobiusHarmonicSums.lean`:
 the successor boundary minus strict Mertens tail preserves the power exponent
 with constant `C(1+1/η)`.
+The three damped-transfer targets also passed final direct checks and
+standard-axiom audits in `PowerCancellationSurvivesTheDampedFloorTransform.lean`:
+every strict gain `γ<κ(1-ε)/(1+κ)` survives, with the corresponding
+pronic norm bound when `ε+γ<1/2`.
 
 ## External calibration
 

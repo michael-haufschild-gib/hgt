@@ -3,7 +3,7 @@
 - **ID:** uniform-vaughan-grams-follow-their-smooth-rank-one-term
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** Below half damping, the complete centered Vaughan Gram has every logarithmic error rate around its smooth rank-one term, uniformly over both cutoffs.
 
 For `0<ε<1/2`, put `β=1-2ε`, `c=subHalfZetaCoeff ε`,

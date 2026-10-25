@@ -3,7 +3,7 @@
 - **ID:** uniform-logarithmic-laws-for-vaughan-superpositions
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** Every centered Vaughan packet has uniform logarithmic norm and energy errors, homogeneous in its absolute coefficient sum.
 
 Let `0<ε<1/2`, `β=1-2ε`, `c=subHalfZetaCoeff ε`,

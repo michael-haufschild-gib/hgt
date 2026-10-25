@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Verification:** All 39 public targets in five supporting leaves passed final direct checks and transitive axiom audits, with only standard axioms.
-- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** Below half damping, all moving-cutoff normalized Gram limits form a countably infinite compact family of rank at most one whose only accumulation point is zero.
 
 ## Goal

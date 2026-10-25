@@ -3,7 +3,7 @@
 - **ID:** uniform-logarithmic-prefix-to-pronic-energy
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** Every common logarithmic prefix saving survives in pronic energy and norm below half damping, with the finite head retained.
 
 ## Exact result

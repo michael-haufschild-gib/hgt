@@ -536,6 +536,13 @@ obstructions, and the finite Abel harmonic-to-Mertens power transfer
 Both forward Mertens-to-harmonic targets are verified too: the successor
 boundary minus strict tail preserves the power exponent with constant
 `C(1+1/η)` (`MertensPowerBoundsControlMobiusHarmonicSums`).
+All four actual undamped-power targets are verified: the extreme summatory
+value is one, every gain `κ<η/(2+η)` transfers uniformly, and uniform power
+cancellation is exactly equivalent to a fixed strip
+(`UniformVaughanPowerBoundsAreFixedStrips`).
+All three damped-transfer targets are verified: every strict gain
+`γ<κ(1-ε)/(1+κ)` survives, with its pronic norm bound when `ε+γ<1/2`
+(`PowerCancellationSurvivesTheDampedFloorTransform`).
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?
@@ -905,6 +912,13 @@ not supply purity.
   character-space multiplicities, indexed by normalized Bohr representatives.
   Every occurring multiplicity is positive. The exact counting theorem passed
   canonical Lean checks; it does not identify these characters with zeta zeros.
+- Every hull character of a finite-dimensional actual module has a common
+  eigenvector. Numeric operator order forces augmentation or a tied radial
+  modulus. One sequence of half-plane evaluations then converges to that
+  character on every Wiener element. The common eigenvector, modulus and
+  approximation results passed final canonical Lean checks with standard
+  axioms. This does not assert approximation by arithmetic zeros or a result
+  for infinite-dimensional module hulls.
 - Numeric horizon order has a sharp positive consequence: a zero cofactor at
   `p` forces dimension at most `p-1`. It still does not select finite half-plane
   points from abstract rank-one data. Augmentation satisfies every packet

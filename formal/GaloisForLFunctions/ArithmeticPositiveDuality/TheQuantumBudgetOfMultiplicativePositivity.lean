@@ -196,6 +196,7 @@ theorem fejer_quantumBudget_half {a : ℕ → ℝ} {K : ℕ} (hK : 1 ≤ K)
       have e : Real.sqrt 2 = 1 / Real.sqrt 2 + 1 / Real.sqrt 2 := by
         field_simp
         rw [hsq2]
+        norm_num
       linarith
     have h0 : 0 ≤ Real.sqrt 2 := hs2.le
     nlinarith

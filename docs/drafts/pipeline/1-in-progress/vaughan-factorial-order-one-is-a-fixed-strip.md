@@ -54,9 +54,11 @@ geometric-series, and norm-comparison declarations have been read in mathlib
 after the corpus search. `/tmp/QIVaughanFactorialEnvelopeTools.lean` now drafts
 both the actual factorial/power equivalence and its fixed-strip equivalence.
 
-The latter depends on `/tmp/QIUniformVaughanPowerTools.lean`: the exact
-unit/full-cutoff value, every transferred gain `κ<η/(2+η)`, the extreme-cutoff
-converse, and the uniform power/fixed-strip equivalence. The optimized cutoff
+Its undamped-power dependency is now checked in
+`UniformVaughanPowerBoundsAreFixedStrips.lean`: all four targets passed final
+direct checks and standard-axiom audits, covering the exact unit/full-cutoff
+value, every gain `κ<η/(2+η)`, the extreme-cutoff converse, and the uniform
+power/fixed-strip equivalence. The optimized cutoff
 is `D=floor(n^(1/(2+η)))`; the strict gap absorbs the harmonic logarithms.
 The forward harmonic bound with constant `C(1+1/η)` and its exact strict-tail
 identity are now Lean-verified in

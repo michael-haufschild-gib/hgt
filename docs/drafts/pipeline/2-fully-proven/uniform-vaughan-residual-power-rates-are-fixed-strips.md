@@ -3,8 +3,8 @@
 - **ID:** uniform-vaughan-residual-power-rates-are-fixed-strips
 - **Stage:** 2-fully-proven
 - **Type:** CLAIM (Lean verification pending)
-- **Verification:** The twelve extreme-cutoff targets and both Mertens-to-harmonic targets passed final direct Lean checks and standard-axiom audits. The full uniform-power equivalence remains UNPROVED pending its remaining Lean chain.
-- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Verification:** All twenty-one extreme-cutoff, Mertens-to-harmonic, undamped-power, and damped-transfer targets passed final direct Lean checks and standard-axiom audits. The full uniform Gram-power equivalence remains UNPROVED pending its remaining Lean chain.
+- **Source:** ../3-formalized/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** At any fixed `0<ε<1/2`, a fixed power rate in the uniform second-scale centered Vaughan Gram law is equivalent to `zetaZeroAbscissa<1`.
 - **Novelty status:** Exact specialization of the Vaughan pieces plus the uniform hyperbola proof. No external novelty claim.
 
@@ -103,7 +103,7 @@ neither a strip nor impossibility of a strip. Full Q-I remains open.
 
 ## Lean status
 
-The complete power equivalence remains under verification. Required finite ingredients
+The complete Gram-power equivalence remains under verification. Required finite ingredients
 are the existing weighted Vaughan identity, Möbius divisor inversion, reciprocal
 mean factorization, and finite Abel summation. The generic divisor-square hyperbola estimate is checked in
 `HyperbolaCancellationWithDivisorBoundedCoefficients.lean`; its logarithmic
@@ -130,9 +130,17 @@ The final target rules out even eventual common exponents above one for the
 two convolution entries. The positive survivor is the exact arithmetic
 contrast and its positive cofinal floor, without a fixed-strip premise.
 
-The undamped uniform power step now has a four-target Lean draft in
-`/tmp/QIUniformVaughanPowerTools.lean`, including every gain strictly below
-`η/(2+η)` and the exact power/fixed-strip equivalence. That draft remains unchecked.
+All four targets in `UniformVaughanPowerBoundsAreFixedStrips.lean` passed
+producing and final direct checks, with standard axioms only and no final warnings.
+The module is wired and its scratch removed:
+
+- `pmUndampedVaughanConvolutionPrefix_one_full`
+- `exists_uniform_pmUndampedVaughan_power_of_mertens_power`
+- `zetaZeroAbscissa_lt_one_of_uniform_pmUndampedVaughan_power`
+- `zetaZeroAbscissa_lt_one_iff_uniform_pmUndampedVaughan_power`
+
+These include every strict gain `κ<η/(2+η)` and the exact undamped
+power/fixed-strip equivalence.
 Its forward harmonic input is now certified in
 `RHTower/MertensPowerBoundsControlMobiusHarmonicSums.lean`:
 
@@ -143,10 +151,16 @@ Both passed corrected producing and final direct checks, with standard axioms
 only and no final warnings. The module is wired and its scratch removed.
 The exact successor-boundary identity and strict Mertens tail preserve the
 power exponent with constant `C(1+1/η)`.
-The divisor-square damped power transfer now has
-a three-target draft in `/tmp/QIDivisorSquarePowerTransferTools.lean`, planned as
-`PowerCancellationSurvivesTheDampedFloorTransform.lean`. It targets every prefix
-gain `0<γ<κ(1-ε)/(1+κ)`, together with its pronic norm transfer when `ε+γ<1/2`.
+All three targets in `PowerCancellationSurvivesTheDampedFloorTransform.lean`
+passed corrected producing and final direct checks, with standard axioms only
+and no final warnings. The module is wired and its scratch removed:
+
+- `exists_uniform_weightCenteredPrefix_dampedSign_power_of_divisor_square`
+- `pronicNorm_le_sqrt_rpow_of_prefix_power`
+- `exists_uniform_pronicNorm_power_of_eventually_prefix_power`
+
+They certify every prefix gain `0<γ<κ(1-ε)/(1+κ)`, together with its
+pronic norm transfer when `ε+γ<1/2`.
 The actual receiver transfer has four further drafts in
 `/tmp/QIVaughanPowerReceiverTools.lean`: common truncated partial sums, bounded
 pattern power norms, convolution fluctuation power norms, and one common gain
@@ -166,7 +180,7 @@ Lean proof are recorded in `../3-formalized/the-centred-vaughan-pole-has-positiv
 all seven targets passed final direct Lean checks and standard-axiom audits in
 `TheCentredVaughanPoleHasPositiveFiniteEnergy.lean`.
 
-## Quantitative damped transfer awaiting Lean verification
+## Quantitative damped transfer
 
 For common partial-sum bounds `B x^(1-κ)`, set `a=1/(1+κ)` and
 `D=floor(n^a)`. The checked hyperbola estimate has head at most
@@ -177,4 +191,4 @@ into any strict loss from that gain. One constant and threshold work for
 the whole coefficient family. A global resulting prefix bound gives
 pronic norm at most
 `K sqrt(1+1/(1-2(ε+γ))) sqrt(T^(1-2(ε+γ)))`.
-These are precise formalization obligations, not checked results.
+These statements are certified by the three damped-transfer declarations above.

@@ -60,8 +60,10 @@ must first identify the uncancelled receiver divisor. No common-zero
 configuration of zeta is asserted or assumed here. The eta nonvanishing
 input already exists as `RHTower.one_sub_two_cpow_ne_zero` in
 `FermiNymanBeurlingHaarTarget`. The exact local meromorphic-order formula
-for `etaZetaQuotient` is being formalized as an existing paper assertion;
-it is not yet counted as a completed Lean result.
+is now `RHTower.meromorphicOrderAt_etaZetaQuotient` in
+`TheFermiMellinDivisorSubtractsShiftedZetaOrders`. Final canonical audit
+`7871` passed with standard axioms. See
+[the exact divisor card](../3-formalized/fermi-mellin-divisors-count-only-uncancelled-zeta-orders.md).
 
 Required work:
 
@@ -116,8 +118,9 @@ The boundary and unit-orbit leaves also passed final canonical checks with
 standard axioms; exact audits are tracked in
 [the completion ledger](q-iii-existing-findings-lean-completion.md).
 No equality of the paid ideal with the jet ideal or actual annihilator is
-claimed. The finite mixed-jet interpolation and paid-index drafts remain
-unchecked.
+claimed. Finite mixed-jet interpolation and paid-index bounds passed their
+combined Lean check with standard axioms; their installed canonical leaves
+still require individual import-boundary audits.
 
 The dependency-closed paid-ideal refinement has its own card:
 [Paid kernels cover visible shifted zero orders](../3-formalized/paid-kernels-cover-visible-shifted-zero-orders.md).

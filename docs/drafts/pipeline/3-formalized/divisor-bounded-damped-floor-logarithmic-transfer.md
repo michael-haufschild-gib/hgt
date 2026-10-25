@@ -3,7 +3,7 @@
 - **ID:** divisor-bounded-damped-floor-logarithmic-transfer
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** For `0<ε≤1/2`, every common logarithmic partial-sum saving survives the centered damped floor transform of a divisor-square bounded family with convergent reciprocal mass.
 
 ## Exact transfer

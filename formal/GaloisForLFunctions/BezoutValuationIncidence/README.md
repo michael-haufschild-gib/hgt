@@ -203,6 +203,12 @@ $G_{ij}$; diagonal $D_T$; mixed remainder $R^{\text{mix}}_T$; $E^{\text{int}}_T=
     [Mertens power bounds](../RHTower/MertensPowerBoundsControlMobiusHarmonicSums.lean)
     transfer to harmonic Möbius sums with the same exponent and constant
     `C(1+1/η)`, by the exact successor-boundary/strict-tail identity.
+    [Uniform undamped power cancellation](UniformVaughanPowerBoundsAreFixedStrips.lean)
+    is equivalent to a fixed zero-free strip. A Mertens gain `η>0` transfers
+    every gain `κ<η/(2+η)` uniformly over both cutoffs.
+    The [damped floor transform](PowerCancellationSurvivesTheDampedFloorTransform.lean)
+    preserves every strict gain `γ<κ(1-ε)/(1+κ)`, including the corresponding
+    pronic norm bound when `ε+γ<1/2`.
     [Two arithmetic cells](TheVaughanLimitRowsAreIndependentInTwoCells.lean)
     separate the actual prefix and pole at every positive damping, with
     determinant at least `2^(-2ε)/36`; their finite pronic Gram determinant is

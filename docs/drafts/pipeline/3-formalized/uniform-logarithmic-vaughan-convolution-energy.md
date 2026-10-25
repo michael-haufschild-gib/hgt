@@ -3,7 +3,7 @@
 - **ID:** uniform-logarithmic-vaughan-convolution-energy
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** The actual Vaughan convolution fluctuation and all truncated Möbius receivers have every logarithmic pronic norm saving, uniformly over their cutoffs, below half damping.
 
 ## Exact result

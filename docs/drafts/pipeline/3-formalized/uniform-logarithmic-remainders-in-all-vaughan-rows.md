@@ -3,7 +3,7 @@
 - **ID:** uniform-logarithmic-remainders-in-all-vaughan-rows
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** All five actual Vaughan rows, after centering and removing their common smooth direction, have every logarithmic pronic norm saving uniformly in both cutoffs.
 
 ## Exact result

@@ -66,6 +66,7 @@ theorem exists_uniform_patternPrefix_pronicNorm_power_of_partial_sum_power
     simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le
       (by exact_mod_cast hn) (by linarith only [hε] : 1 - ε ≤ 1)
   exact exists_uniform_pronicNorm_power_of_eventually_prefix_power
+    (f := fun i => patternPrefix ε (r i)) (ε := ε) (γ := γ)
     (by linarith only [hε, hγ]) hεγ hA hK hlinear hprefix
 
 /-- A common undamped Vaughan power gain controls the actual damped convolution norm. -/
@@ -85,6 +86,7 @@ theorem exists_uniform_pmVaughanConvolutionFluctuation_pronicNorm_power
     filter_upwards [hS] with n hn a
     simpa only [sum_pmVaughanConvolutionFluctuation] using hn a.1 a.2
   obtain ⟨K, hK, hprefix⟩ := exists_uniform_weightCenteredPrefix_dampedSign_power_of_divisor_square
+    (s := fun a : ℕ × ℕ => pmVaughanConvolutionFluctuation a.1 a.2)
     hε hε2 (by norm_num : (0 : ℝ) ≤ 2) hB hκ hγ hγκ
     (fun a d hd => abs_pmVaughanConvolutionFluctuation_le a.1 a.2 hd)
     (fun a => summable_pmVaughanConvolutionFluctuation_div hε a.1 a.2) hS'
@@ -93,6 +95,7 @@ theorem exists_uniform_pmVaughanConvolutionFluctuation_pronicNorm_power
       div_nonneg (pmVaughanFloorMajorant_nonneg ε d) (Nat.cast_nonneg d))
   obtain ⟨C, hC, hnorm⟩ := exists_uniform_pronicNorm_power_of_eventually_prefix_power
     (f := fun a : ℕ × ℕ => pmVaughanConvolutionFluctuationPrefix ε a.1 a.2)
+    (ε := ε) (γ := γ)
     (by linarith only [hε, hγ]) hεγ hA hK
     (fun a n hn => abs_pmVaughanConvolutionFluctuationPrefix_le_linear hε a.1 a.2 hn) hprefix
   exact ⟨C, hC, fun U V T hT => hnorm (U, V) T hT⟩
@@ -122,6 +125,7 @@ theorem exists_uniform_vaughan_source_pronicNorm_power_of_fixed_strip
   have hγg : γ < g := (half_lt_self (lt_min hg (sub_pos.mpr hε2))).trans_le (min_le_left _ _)
   have hεγ : ε + γ < 1 / 2 := by
     have h := (half_lt_self (lt_min hg (sub_pos.mpr hε2))).trans_le (min_le_right _ _)
+    change γ < 1 / 2 - ε at h
     linarith only [h]
   have hκ₀le : κ ≤ κ₀ := min_le_left _ _
   have hβκ : β ≤ 1 - κ := by

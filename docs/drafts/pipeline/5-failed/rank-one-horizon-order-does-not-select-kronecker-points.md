@@ -82,5 +82,8 @@ passed final canonical audit `10781` with standard axioms. One sequence
 with real parts tending to infinity approaches augmentation on every Wiener
 element. Exclusion from finite half-plane points therefore does not exclude
 membership in their pointwise closure. The application to every hull point
-of a finite-dimensional actual module is tracked separately on
-[the finite-hull card](../1-in-progress/finite-cofactor-hulls-approach-the-half-plane-curve.md).
+of a finite-dimensional actual module also passed final canonical audit
+`82346`: `exists_halfPlane_sequence_of_mem_finite_moduleHull` in
+`FiniteCofactorHullsApproachTheHalfPlaneCurve`. Its radial-modulus and common
+eigenvector inputs are checked too. See
+[the finite-hull card](../3-formalized/finite-cofactor-hulls-approach-the-half-plane-curve.md).

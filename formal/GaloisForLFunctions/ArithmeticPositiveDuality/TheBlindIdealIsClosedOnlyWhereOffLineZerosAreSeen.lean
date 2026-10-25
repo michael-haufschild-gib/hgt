@@ -77,7 +77,7 @@ def criticalJetReading (g : DeningerMeyerStrongLogTarget) : CriticalJetSlot → 
   fun q => deningerMeyerStrongLogMellinJetLM q.2.val (q.1.1 : ℂ) g
 
 /-- The critical-jet topology: the coarsest topology making every critical jet continuous. -/
-def criticalJetTopology : TopologicalSpace DeningerMeyerStrongLogTarget :=
+@[reducible] def criticalJetTopology : TopologicalSpace DeningerMeyerStrongLogTarget :=
   TopologicalSpace.induced criticalJetReading inferInstance
 
 /-- **Critical interpolation inside the blind ideal.** Any finitely many critical jets of any
@@ -144,6 +144,10 @@ theorem rh_of_isClosed_of_criticalJetTopology_le {τ : TopologicalSpace Deninger
       (meyerTraceBoundedIdeal : Set DeningerMeyerStrongLogTarget)) : RiemannHypothesis :=
   isClosed_criticalJet_iff.mp (hc.mono hτ)
 
+section Comparison
+
+open scoped DeningerMeyerNaturalTopology
+
 /-- The natural topology reads every critical jet: it is finer than the critical-jet topology. -/
 theorem natural_le_criticalJetTopology :
     deningerMeyerStrongLogTopology ≤ criticalJetTopology := by
@@ -154,5 +158,7 @@ theorem natural_le_criticalJetTopology :
 theorem not_criticalJetTopology_le_natural (h : ¬ RiemannHypothesis) :
     ¬ criticalJetTopology ≤ deningerMeyerStrongLogTopology :=
   fun hle => h (rh_of_isClosed_of_criticalJetTopology_le hle isClosed_meyerTraceBoundedIdeal)
+
+end Comparison
 
 end GaloisForLFunctions.ArithmeticPositiveDuality

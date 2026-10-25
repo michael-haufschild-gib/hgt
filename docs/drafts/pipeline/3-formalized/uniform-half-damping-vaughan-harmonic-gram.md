@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Verification:** Every stated finite Gram/packet, moving-limit, pronic-convergence, rank, harmonic-mass, realization, and product-horizon claim passed final direct Lean checks and standard-axiom audits.
-- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** At half damping, the centered Vaughan Gram differs from its explicit harmonic rank-one term by a bounded matrix uniformly over all cutoffs and horizons. Its renormalized moving-cutoff limit is an actual finite Gram of two source rows.
 - **Novelty status:** Endpoint refinement of the uniform convolution argument; initial corpus search found the fixed-cutoff admission law and smooth-power estimates, not this uniform bounded-error statement. No external novelty claim.
 

@@ -3,7 +3,7 @@
 - **ID:** uniform-logarithmic-cancellation-in-mobius-floor-sums
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md
+- **Source:** uniform-second-scale-vaughan-gram-at-all-cutoffs.md
 - **Statement:** Truncated Möbius floor sums have every logarithmic saving around their harmonic mean, uniformly over every cutoff.
 
 Write `S_U(n)=Σ_(d≤U)μ(d)⌊n/d⌋` and `H_U=Σ_(d≤U)μ(d)/d`.
