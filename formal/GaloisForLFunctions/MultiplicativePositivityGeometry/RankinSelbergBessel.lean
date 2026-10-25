@@ -121,7 +121,8 @@ theorem residual_hasSum (hg : ∀ n, |g n| ≤ M) {x : ℝ} (hx : 0 < x) (a₀ :
     refine Finset.sum_congr rfl fun u _ => ?_
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun v _ => ?_
-    rw [cos_mul_cos_log]
+    rw [show a u * Real.cos (L * u) * (a v * Real.cos (L * v)) =
+      a u * a v * (Real.cos (L * u) * Real.cos (L * v)) by ring, cos_mul_cos_log]
     ring
   rw [hgS, hzS, hSS]
   ring
@@ -158,8 +159,23 @@ theorem rankinSelberg_bessel (hg : ∀ n, |g n| ≤ M) {Df : ℝ → ℝ} {R : �
       (tendsto_finsetSum U fun u _ => tendsto_finsetSum U fun v _ =>
         (((hT (u - v)).add (hT (u + v))).div_const 2).const_mul (a u * a v)))
     refine h.congr fun x => ?_
-    simp only [Finset.mul_sum]
-    ring_nf
+    have e1 : ∑ c ∈ U, a c * (x * signedTrace g x c) = x * ∑ c ∈ U, a c * signedTrace g x c := by
+      rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun c _ => by ring
+    have e2 : ∑ c ∈ U, a c * (x * cosineTrace (zetaBoundaryWeight x) logFrequency c) =
+        x * ∑ c ∈ U, a c * cosineTrace (zetaBoundaryWeight x) logFrequency c := by
+      rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun c _ => by ring
+    have e3 : ∑ c ∈ U, ∑ d ∈ U, a c * a d *
+        ((x * cosineTrace (zetaBoundaryWeight x) logFrequency (c - d) +
+          x * cosineTrace (zetaBoundaryWeight x) logFrequency (c + d)) / 2) =
+        x * ∑ c ∈ U, ∑ d ∈ U, a c * a d *
+          ((cosineTrace (zetaBoundaryWeight x) logFrequency (c - d) +
+            cosineTrace (zetaBoundaryWeight x) logFrequency (c + d)) / 2) := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun c _ => ?_
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun d _ => by ring
+    rw [e1, e2, e3]
+    ring
   -- Evaluate the limit.
   have hval : R - 2 * a₀ * Df 0 - 2 * ∑ u ∈ U, a u * Df u +
       a₀ ^ 2 * (if (0 : ℝ) = 0 then 1 else 0) +
