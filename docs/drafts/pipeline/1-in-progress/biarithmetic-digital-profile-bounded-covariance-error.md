@@ -185,3 +185,5 @@ transfer to the actual golden inverse-zeta coefficients.
 The `DigitRefinement` scratch check and all nine transitive axiom audits
 passed. Its production source is wired; the direct repository check is
 queued. Subsequent compact bounds and annular comparisons remain unchecked.
+
+Pending source check: `/tmp/BiarithmeticDigitCovarianceMainTerms.lean` derives the balanced expanding covariance formula and a horizon-uniform linear-shell error at the exact critical weight `sqrt(5)`. Its bounded-error dependency chain remains unchecked.

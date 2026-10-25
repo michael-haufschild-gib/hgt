@@ -42,7 +42,8 @@ reformulations do not count.
 | 5 | SRT/RW | Grid laws without the resonant-step exception | NOT DISCHARGEABLE | — | Resonance involves all zero heights; no explicit step is certifiable without arithmetic of ordinates |
 | 6 | WD | Arithmetic head formula without `Ξ(t) ≠ 0` | NOT A PREMISE | — | The normalized coefficient `Σ Re((z_q − t)⁻²)` has genuine poles at zero ordinates |
 | 7 | HF | S/L>45 without the second-moment premise | NOT PURSUED | — | Premise is dischargeable (`f ∈ C²_c`), but the inequality is auxiliary and does not sign the ground minimum |
+| 9 | EWU/WL | Finite-level existence of Weil-positive weights decides RH (full cone) | PROVED (#2) | `riemannHypothesis_iff_forall_level_exists_weilPositiveFullUpTo` | Uniqueness was already unconditional for the full cone; compactness transfers existence to finite apertures |
 | 8 | SZ | `MangoldtLogHaarCapacity` (`Σ_{d≤n} Λ(d)/d ≤ log n`) | NOT PURSUED | — | Small `n` need explicit Mertens errors or finite checks; feeds a side transport lemma only |
 
 ## Log
-- 2026-10-25 — created.
+- 2026-10-25 — created; contributions #1 (SRT genericity discharge) and #2 (full-cone Minkowski split) formalized. Paused at user request.

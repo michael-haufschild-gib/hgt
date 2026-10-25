@@ -7,7 +7,7 @@
 - **Source:** ../1-in-progress/q-ii-source-effectivity-and-linear-degree.md
 - **Statement:** The joint map from actual Meyer sources to half-density L2 and any surjective normed cohomological linear reading has dense image in their product. In particular every finite full-Xi-jet graph has full product closure, including critical value coordinates.
 
-## Paper proof [PROVED HERE]
+## Proof argument (Lean verification pending)
 
 Write iota for the existing half-density source embedding, B for the genuine
 Poisson boundary, and q for the actual quotient map. The boundary-density
@@ -58,8 +58,8 @@ finite-jet surjection. The source statements were read. Complete unrun draft: `/
 full product closure and the exact empty-packet single-valuedness criterion. The
 draft also includes full graph closure for the entire faithful operator range
 and its nonzero vertical classes. The
-boundary-density prerequisite is fully proved on paper but not yet checked
-in Lean. External novelty unverified.
+boundary-density prerequisite has a complete candidate argument and Lean file,
+but remains unverified. External novelty unverified.
 
 ## Dense-image extension
 

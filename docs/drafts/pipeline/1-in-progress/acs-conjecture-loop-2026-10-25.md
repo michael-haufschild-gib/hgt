@@ -38,7 +38,7 @@ tool, or exposes a mechanism, calibrated over `𝔽_q`.
   not in corpus.
 
 ## Avoid (other agents active 2026-10-25)
-Q-II Meyer source modules; biarithmetic; rh-closing-producer Stepanov tracks (HTGeometry Stepanov).
+Q-II Meyer source modules; `MaximalBlindIdealOfTheMeyerSource.lean` (another agent); biarithmetic; rh-closing-producer Stepanov tracks (HTGeometry Stepanov).
 
 ## Log
 - 2026-10-25 — created.

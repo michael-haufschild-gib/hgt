@@ -458,7 +458,12 @@ saving uniformly over both cutoffs for all five smooth-subtracted rows, whose
 sum is exactly the Bézout interior. They are wired as
 `UniformLogarithmicRemaindersInAllVaughanRows.lean`; see
 `../3-formalized/uniform-logarithmic-remainders-in-all-vaughan-rows.md`.
-The full uniform Gram law remains under verification. All fifteen existing paper
+The four complete uniform Gram targets also passed scratch, producing, and
+final direct checks with standard axioms only. They are wired as
+`UniformVaughanGramsFollowTheirSmoothRankOneTerm.lean`; see
+`../3-formalized/uniform-vaughan-grams-follow-their-smooth-rank-one-term.md`.
+The remaining packet, classification, endpoint, and power-rate consequences
+remain under verification. All fifteen existing paper
 cards and their remaining Lean coverage are listed in
 `q-i-existing-findings-lean-completion.md`; completing that register has priority
 over new conjecture work. Paper arguments and unchecked drafts remain unproved.

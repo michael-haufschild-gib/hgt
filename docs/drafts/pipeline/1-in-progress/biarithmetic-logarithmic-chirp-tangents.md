@@ -174,3 +174,5 @@ remove a defect of the earlier discontinuous logarithmic square-wave candidate, 
 Möbius or absolutely summable-mean divisor-source realization is claimed. The paper theorem
 refutes only the inference from scalar regular variation and the coarse cofactor constraints
 to individual stationary homogeneity. Lean results must not use it before formalization.
+
+Pending source check: `/tmp/BiarithmeticChirpPhaseRigidity.lean` contains the three-rotation rigidity argument and the exact nondegenerate prime-two angle. It does not yet identify these three samples with actual source tangents; the discrete asymptotics, tangent realization, and boundary-loss representation remain outstanding.

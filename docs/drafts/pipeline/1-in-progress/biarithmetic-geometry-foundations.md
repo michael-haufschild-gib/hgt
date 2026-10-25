@@ -1054,3 +1054,17 @@ transitive audits. Production source is wired; its direct check is queued.
 `GoldenDivisorResponse` passed its repaired scratch check and all five
 transitive audits. Production source is wired; direct check is queued.
 The full positivity-parameter classification remains in its dependent draft.
+
+Pending source check: `/tmp/BiarithmeticDigitParameterContinuity.lean` contains finite-row parameter continuity, a common geometric refinement bound on every parameter half-line above one, and continuity of the actual digit profile at every spatial point. No declaration in this draft is yet certified.
+
+Pending source check: `/tmp/BiarithmeticDigitAnnularContinuity.lean` applies dominated convergence to actual annular digit products and their normalized full-annulus ratio. It depends on the unchecked annular integrability and parameter-continuity drafts.
+
+Pending source check: `/tmp/BiarithmeticDigitCovarianceMainTerms.lean` derives the balanced expanding covariance formula and a horizon-uniform linear-shell error at the exact critical weight `sqrt(5)`. Its bounded-error dependency chain remains unchecked.
+
+Pending source check: `/tmp/BiarithmeticChirpPhaseRigidity.lean` contains the three-rotation rigidity argument and the exact nondegenerate prime-two angle. It does not yet identify these three samples with actual source tangents; the discrete asymptotics, tangent realization, and boundary-loss representation remain outstanding.
+
+Pending source check: `/tmp/BiarithmeticComplexShellShift.lean` constructs complex normalized shell shifts with exact isometry and semigroup laws. This is the missing bounded-operator input for the existing intrinsic infinite-kernel convolution proof plan.
+
+Pending source check: `/tmp/BiarithmeticIntrinsicShellConvolution.lean` constructs bounded convolution by every actual critical Wiener kernel, identifies its finite Cauchy coordinates, and proves weighted shell-energy stability with operator bound `||k||`. This addresses the infinite-kernel action required by the intrinsic centered-convolution proof plan.
+
+Pending source check: `/tmp/BiarithmeticIntrinsicPaymentDomain.lean` identifies the actual centered filtered receiver, pays its mean correction and geometric remainder, and reduces full intrinsic payment to weighted square summability of its geometric causal response. All analytic inputs are proved in the queued dependencies, not introduced as source hypotheses.

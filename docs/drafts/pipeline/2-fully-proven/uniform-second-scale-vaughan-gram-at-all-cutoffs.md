@@ -245,7 +245,8 @@ standard axioms; it is migrated and wired as
 `/tmp/QIUniformUndampedTools.lean` drafts seven further targets: rounding, the exact
 omitted Möbius floor tail, a common cutoff estimate, its unconditional finite
 logarithmic bound, and the full logarithmic rate through the unit second cutoff.
-The final uniform Gram theorem remains to formalize.
+The complete uniform Gram theorem is now checked below; the single-floor
+corollaries remain under verification.
 
 The direct finite proof is now drafted as ten audit targets in
 `/tmp/QIDoubleConvolutionTools.lean`: the arithmetic-function and summatory Vaughan
@@ -261,7 +262,7 @@ check passed with standard axioms. It is migrated and wired as
 `UniformLogarithmicCancellationInTheVaughanConvolution.lean`; its final direct
 check has passed. The undamped theorem is recorded in
 `../3-formalized/uniform-undamped-vaughan-convolution-cancellation.md`.
-The final uniform Gram law remains pending.
+The complete uniform Gram law is now checked below.
 
 The logarithmic hyperbola transfer is drafted in `/tmp/QILogHyperbolaTools.lean`:
 the cutoff `floor(n/(log n)^(2(q+5)))` remains above `sqrt(n)` and preserves
@@ -346,8 +347,17 @@ directly, avoiding an import that would shadow the norm throughout this branch.
 The corrected three-target scratch check and all transitive axiom audits passed
 with standard axioms only. They are migrated and wired as
 `PronicGramErrorsAroundASmoothRankOneTerm.lean`; its producing check passed,
-and its final direct repository check is running. The four complete matrix
-targets remain uncompiled.
+and its final direct repository check passed with the same standard axioms.
+The scratch was removed; see
+`../3-formalized/pronic-gram-errors-around-a-smooth-rank-one-term.md`.
+The four complete matrix targets passed their scratch, producing, and final
+direct repository checks with only standard transitive axioms. They are wired
+as `UniformVaughanGramsFollowTheirSmoothRankOneTerm.lean`; the scratch was
+removed. The complete matrix law, including independent divergent horizon and
+cutoff-product schedules, is recorded in
+`../3-formalized/uniform-vaughan-grams-follow-their-smooth-rank-one-term.md`.
+The packet, single-floor, and quantitative Mertens-power consequences remain
+under verification, so this combined paper card is not yet fully formalized.
 
 The first logarithmic-transform scratch check found two algebraic Lean issues
 (nested inverse normalization and function composition); both were corrected.
@@ -360,4 +370,6 @@ and energy bounds with `L(w)` and `L(w)^2`, the smooth-neutral specialization,
 and zero normalized norms for bounded moving coefficients at independent
 divergent horizon and cutoff-product scales. Four exact finite centering and
 Gram identities are shared with the upper-half branch through
-`/tmp/QIVaughanPacketGramIdentityTools.lean`. All remain uncompiled.
+`/tmp/QIVaughanPacketGramIdentityTools.lean`. The four finite identities are
+copied to `VaughanPacketGramIdentities.lean` and undergoing their producing
+check. These packet consequences remain under verification.

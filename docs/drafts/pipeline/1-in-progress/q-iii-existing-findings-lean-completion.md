@@ -6,6 +6,9 @@
 - **Scope:** Finish every existing paper finding before new research.
 - **User stopping condition:** Finish started Lean work and every outstanding
   paper proof, then pause. Do not resume the open classification research.
+- **Latest user instruction:** No Python helpers. Edit Lean files directly and
+  invoke each Lean command directly. All owned `/tmp/qiii*.py` helpers were
+  removed; their references below are historical and must not be followed.
 
 Every compile is a direct `lake --old env lean ...` invocation from `formal/`,
 one process at a time. No compilation scripts, umbrella builds or increased
@@ -32,10 +35,10 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 
 | Finding | Current gate |
 |---|---|
-| Zero cofactor forces dimension at most p-1; augmentation countermodel | Combined direct scratch passed with standard axioms; two canonical leaves installed/wired; final checks pending |
-| Augmentation character hull is a singleton | Exact remaining paper claim drafted in `/tmp/qiii_augmentation_hull_body.lean`; unchecked |
+| Zero cofactor forces dimension at most p-1 | Final canonical source check passed; positive survivor and exclusion card moved to `3-formalized` |
+| Augmentation countermodel and singleton character hull | Existing countermodel scratch passed; complete source with singleton claim is `/tmp/qiii-augmentation-full-check.lean`, unchecked |
 | Actual unit transport, Möbius/Liouville equivalence | Canonical final checks; real convolution olean exists |
-| Finite joint spectral multiplicities and normalized Bohr representatives | Two required oleans missing, then canonical checks |
+| Finite joint spectral multiplicities and normalized Bohr representatives | All three required oleans passed with standard axioms; final source-only checks running |
 | Rank-one multiplicative signs | Draft scratch, then canonical placement/check |
 | Visible interior pole orders, paid jets, critical boundary values, unit orbits | Canonical checks after successful combined scratch |
 | Reset moving origin, faithful step kernel and every positive boundary mass | Thirteen canonical leaves after successful combined scratch |
@@ -65,24 +68,40 @@ Session `70868` exited successfully. Complete output is preserved in
 `/tmp/qiii-diagonal-cutoff-augmentation-retry-check.log`. The guarded text-only
 promoter installed and wired both leaves. Their final canonical checks remain.
 
-The required cutoff olean build, session `25746`, passed with standard axioms;
-its output is `/tmp/qiii-zero-cofactor-olean.log`. Current direct session
-`34006` runs the final source-only check of
-`ArithmeticDefectRigidity/AZeroCofactorForcesFiniteDimension.lean`. It must
-finish before another Lean process starts.
+The required cutoff olean build, session `25746`, and final source-only audit,
+session `34006`, both passed with standard axioms. The cutoff leaf is complete.
+No owned Lean process remains from those sessions.
 
-## Prepared source placement, not compiler drivers
+Sessions `76210`, `35229`, and `76428` built the required joint-character,
+normalized-Bohr-character, and actual finite-index oleans successfully. Every
+printed target has standard axioms; the actual index leaf explicitly audits
+all seven main statements, including normalized counting and positivity.
 
-- `/tmp/qiii-assemble-followup-checks.py` only assembles Lean text. The contracted
-  scratch was regenerated after its exact-remainder and intertwining changes.
-- The finite-hull scratch now imports the future common-family, operator-order
-  and tied-torus leaves, and includes the half-plane sequence corollary. Generate
-  it only after those dependencies are verified.
-- The full jet-index scratch now imports the future `InteriorWienerJets` leaf
-  instead of repeating its body. Regenerate it after that leaf is verified.
-- `/tmp/qiii-promote-verified-jet-index.py` is an UNRUN text-only guarded source
-  placer for six jet/index leaves. It requires a clean full scratch log with
-  standard axioms on every target. Direct canonical checks remain separate.
-- Small guarded source placement now also supports `augmentation_hull`,
-  `raw_origin`, and `boundary_index`; none has run. The raw-origin body now has
-  its explicit canonical dependency import; regenerate its scratch before use.
+Current direct session `27212` is the final source-only check of
+`HTGeometry/FiniteCommutingAlgebraActionsHaveJointCharacters.lean`. After it
+finishes, check `ArithmeticOrientationTheory/NormalizedBohrCharacters.lean`
+and `ArithmeticDefectRigidity/FiniteCofactorIndexCountsJointMultiplicity.lean`
+directly, one at a time. Then all three unit-transport leaves still require
+their final source-only checks. No concurrent Lean process.
+
+## Direct source work remaining
+
+All Python source assemblers and promoters were deleted at the user's request.
+Read and edit Lean sources directly; copy a checked source into its mathematical
+owner, add its umbrella import directly, and run the canonical check directly.
+
+- `/tmp/qiii-contracted-horizons-check.lean` contains the current exact remainder,
+  mixed bound and full operator intertwining drafts.
+- `/tmp/qiii-augmentation-full-check.lean` combines the countermodel and exact
+  singleton-hull claim. Obsolete augmentation-hull and cutoff scratches were
+  removed; the completed cutoff source and audit logs remain.
+- Rank-one sign, common-family, crossing and Gram-step scratches now have proper
+  mathematical module comments and can be copied directly once checked.
+- Finite-hull completion must combine the existing eigencharacter-power,
+  finite-hull-modulus and half-plane-sequence bodies. It needs the common-family,
+  numeric-operator-order and tied-torus canonical dependencies.
+- Full jet completion must retain point separation, masked finite jets, interior
+  rank bounds, mixed interior/boundary interpolation and rank bounds, and the
+  unit-orbit/Liouville corollaries. Existing scratch and part files remain.
+- Raw-origin and boundary-index scratch files remain unchecked. Their exact
+  source statements and canonical dependencies are retained in their Lean files.

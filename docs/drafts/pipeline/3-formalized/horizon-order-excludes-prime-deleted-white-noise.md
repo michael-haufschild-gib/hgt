@@ -1,15 +1,15 @@
 # Horizon order excludes prime-deleted white noise
 
 - **ID:** horizon-order-excludes-prime-deleted-white-noise
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean completion pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
 - **Statement:** Numeric horizon order gives an actual-source constraint beyond
   positivity, normalization, radius, and multiplicative dilation contraction.
 
 ## Mechanism under audit
 
-The paper-proved contracted-energy identity gives antitonicity of
+The Lean-proved contracted-energy identity gives antitonicity of
 `p*K(p,p)` for every actual common limit. Consider instead the explicit
 real diagonal kernel
 
@@ -44,8 +44,8 @@ on the Kronecker curve. No actual escape instance is assumed or constructed.
 - [x] Corpus novelty audit beyond the existing white-noise models.
 - [x] Exact odd-kernel structural proofs in canonical Lean.
 - [x] Actual diagonal invariant formally verified, with standard axioms.
-- [ ] Actual exclusion and finite-dimensional cutoff consequence.
-- [ ] Leaf source checks and transitive axioms.
+- [x] Actual exclusion and finite-dimensional cutoff consequence.
+- [x] Leaf source checks and transitive axioms.
 
 ## Closed paper proof and draft status
 
@@ -65,18 +65,22 @@ space. Its dimension is at most p-1. Thus an infinite actual module has
 strictly positive diagonal at every cofactor. This is the positive invariant
 exposed by the counterexample, not a restatement of the exclusion.
 
-Unverified Lean parts `/tmp/qiii_odd_white_exclusion_body.lean` and
-`/tmp/qiii_actual_zero_cofactor_finite_body.lean` are included in the next
-`/tmp/qiii-diagonal-energy-check.lean`. The required white-noise olean is
-missing and is the only new dependency build in that prepared queue.
+## Lean declarations and verification
 
-## Current verification status
+`ArithmeticDefectRigidity/HorizonOrderExcludesPrimeDeletedWhiteNoise.lean`:
 
-The odd-kernel structure and actual exclusion passed the completed diagonal
-scratch with standard axioms. Their canonical leaf is installed and wired;
-its final source check passed in session `90975`, with standard axioms. The finite-cutoff survivor had
-one local cancellation-lemma error. Its repair uses positive multiplication
-cancellation and is in `/tmp/qiii-diagonal-cutoff-augmentation-check.lean`,
-queued after the diagonal foundation audits in the same session. The no-go
-card stays open until both exclusion and positive cutoff survivor pass their
-canonical checks and transitive axiom audits.
+- `isPSDKernel_oddWhiteNoise`
+- `oddWhiteNoiseKernel_packet_dilation_le`
+- `actual_kernel_ne_oddWhiteNoise`
+
+`ArithmeticDefectRigidity/AZeroCofactorForcesFiniteDimension.lean`, in
+namespace `ActualCofactorLimit`:
+
+- `vector_eq_zero_of_le_of_kernel_diag_eq_zero`
+- `finiteDimensional_and_finrank_le_of_kernel_diag_eq_zero`
+- `kernel_diag_pos_of_infinite`
+
+Both canonical source-only checks passed, and both leaves are umbrella-wired.
+The cutoff audit used direct `lake --old env lean` and printed only `propext`,
+`Classical.choice`, and `Quot.sound`; the earlier exclusion audit has the same
+axiom set. The exclusion and its positive finite-cutoff survivor are complete.

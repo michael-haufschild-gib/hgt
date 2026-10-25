@@ -259,3 +259,9 @@ correction. It also identifies the generic construction with the actual
 golden receiver, proving mean convergence from the already checked
 arithmetic-source theorem. Seven audits drafted; unchecked. The bounded
 shell action and full repairing-domain classification remain obligations.
+
+Pending source check: `/tmp/BiarithmeticComplexShellShift.lean` constructs complex normalized shell shifts with exact isometry and semigroup laws. This is the missing bounded-operator input for the existing intrinsic infinite-kernel convolution proof plan.
+
+Pending source check: `/tmp/BiarithmeticIntrinsicShellConvolution.lean` constructs bounded convolution by every actual critical Wiener kernel, identifies its finite Cauchy coordinates, and proves weighted shell-energy stability with operator bound `||k||`. This addresses the infinite-kernel action required by the intrinsic centered-convolution proof plan.
+
+Pending source check: `/tmp/BiarithmeticIntrinsicPaymentDomain.lean` identifies the actual centered filtered receiver, pays its mean correction and geometric remainder, and reduces full intrinsic payment to weighted square summability of its geometric causal response. All analytic inputs are proved in the queued dependencies, not introduced as source hypotheses.

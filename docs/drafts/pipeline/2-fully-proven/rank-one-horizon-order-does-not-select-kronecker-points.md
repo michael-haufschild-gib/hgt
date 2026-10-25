@@ -38,7 +38,7 @@ classifies the whole possible magnitude profile as augmentation or one
 Archimedean power law. These statements are stronger than merely recording
 failure of curve selection; their exact paper proofs are on:
 
-- [Horizon order and finite cutoff](horizon-order-excludes-prime-deleted-white-noise.md).
+- [Horizon order and finite cutoff](../3-formalized/horizon-order-excludes-prime-deleted-white-noise.md).
 - [Rank-one modulus classification](rank-one-cofactor-moduli-are-archimedean.md).
 
 All three new Lean developments are still pending. Do not retire this route

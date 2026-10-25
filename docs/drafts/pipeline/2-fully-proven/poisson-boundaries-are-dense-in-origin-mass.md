@@ -23,7 +23,7 @@ space, identifies its Fourier transform with Xi on the critical line, and
 uses cyclicity. Its translates remain genuine boundaries. Density then gives
 small origin-mass representatives in each actual source coset.
 
-## Paper proof [PROVED HERE]
+## Proof argument (Lean verification pending)
 
 Let B be the actual cap-to-Poisson-boundary map and let iota(g)(t)=exp(t/2)g(t)
 be the existing injective map into ordinary complex L2. Exact norm integration
@@ -104,8 +104,8 @@ continuous recovery of the faithful full-Hasse convolution operator, even by
 a nonlinear map. Nontriviality is unconditional: Hardy supplies a Xi point,
 and its actual point source has value one there. This applies the result to
 the existing compact-open and operator completions without assuming a positive
-Gelfand interface. Draft: `/tmp/QIIOriginHilbertCohomologyObstructionDraft.lean`,
-unverified.
+Gelfand interface. Actual candidate:
+`ArithmeticCastelnuovoSeveri/OriginHilbertCohomologyObstruction.lean`, unverified.
 
 The actual candidate now states the quotient-infimum conclusion without implicit
 limit interchange: `meyerOriginSquareMass_class_lower_bound_iff` says a real b

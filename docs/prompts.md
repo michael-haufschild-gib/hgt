@@ -458,10 +458,20 @@ go one by one through the following research programmes and update their README.
 - formal/GaloisForLFunctions/ArithmeticLocalDivisorGeometry/README.md
 - formal/GaloisForLFunctions/SignedSuccessorArithmetic/README.md
 - formal/GaloisForLFunctions/ArithmeticDefectRigidity/README.md
-  
+- formal/GaloisForLFunctions/BiarithmeticGeometry/README.md
+    
 important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics, the questions it aims to answer, the tools it aims to create, its foundational pillar theorems, where it sits in the context of our whole research, how it relates to other research programmes.
 
-where needed use the search tool for the lean corpus to confirm whether questions are really still open and tools really still missing.
+where needed use the search tool for the lean corpus to confirm:
+- what are the pillar theorems, objects, mechanisms on which the field/research programme rests
+- what are really the open questions and research topics
+- what are really the missing tools still to build
+
+remove any form of theorem ledger and overly verbose explanations. 
+write clean, simple, to the point. the readers are not humans but AI agents like you - so make sure you optimize for maximum information in minimum token usage.
+
+keep the files under 1500 lines.
+do not run any builds. do not read anything outside the formal/ folder. do not run web searches. use the search tool for the lean corpus when searching the lean corpus.
 
 ## review
 Read the following documents:

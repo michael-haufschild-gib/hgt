@@ -611,7 +611,7 @@ pole scratch, then checks the exact diagonal and its new consequences.
 It remains NOT STARTED. The prepared six-leaf promoter remains NOT RUN.
 
 New paper card:
-`2-fully-proven/horizon-order-excludes-prime-deleted-white-noise.md`.
+`3-formalized/horizon-order-excludes-prime-deleted-white-noise.md`.
 Deleting the even white-noise coordinates passes all original abstract
 Gram constraints but violates the actual diagonal's numeric antitonicity
 at 2 and 3. The positive consequence: one zero actual cofactor forces

@@ -1,11 +1,11 @@
 # Hilbert–Schmidt reserves measure the arithmetic adjoint defect
 
 - **ID:** hilbert-schmidt-reserves-measure-the-arithmetic-adjoint-defect
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean verification pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** Q-II; actual full-Hasse Meyer convolution representation.
 - **Statement:** A faithful quadratic reserve on genuine Meyer cohomology supplies Bézout unconditionally; its exact excess over the ordinary Weil form is half the squared Hilbert–Schmidt adjoint defect. Its RR axiom is equivalent to simple critical Xi zeros.
-- **Status:** UNVERIFIED. Actual Lean candidate present; direct check and transitive axiom audit pending. External novelty unverified.
+- **Status:** FORMALIZED. Actual-file direct check and all fifteen transitive axiom audits passed. External novelty unverified.
 
 ## Genuine source and exact reserve
 
@@ -75,24 +75,24 @@ while RR detects the complete adjoint defect, including nilpotent jets.
 This statement is an unconditional equivalence; neither RH nor simplicity
 is assumed or claimed proved.
 
-## Exact linear-degree representation target
+## Exact linear-degree representation
 
-Unverified corollary, now included in the actual Lean candidate: a complex-linear
+Formalized equivalence: a complex-linear
 cohomological degree `d` represents the faithful reserve on every arithmetic sharp
 square, `P(g)=Re d([g*g#])`, if and only if RH and Xi simplicity hold. Equivalently,
 such a representation exists exactly when this reserve cone satisfies RR.
 
 The forward argument uses the reserve's exact zero set: any representing degree
-is strictly positive on every nonprincipal source square. The certified theorem
+is strictly positive on every nonprincipal source square. The theorem
 `exists_faithful_positive_meyer_degree_iff` then forces both conditions. Conversely,
-the candidate RR criterion and its independent Bézout theorem force `P=delta`
+the RR criterion and its independent Bézout theorem force `P=delta`
 by source-boundary rigidity, so the actual ordinary trace degree represents it.
 Thus no continuity, square-root factorization, or new analytic input is needed.
 
 Corpus search for a faithful Hilbert–Schmidt reserve represented by a linear
 sharp-square degree found the existing adjoint/faithful-degree equivalence and
 the reserve's RR/adjoint candidate, but no exact reserve-representation theorem.
-External novelty remains unverified. Lean targets:
+External novelty remains unverified. Certified Lean declarations:
 `exists_meyerHilbertReserve_linear_degree_iff` and
 `meyerHilbertSourceCone_riemannRoch_iff_linear_degree`.
 
@@ -101,7 +101,8 @@ External novelty remains unverified. Lean targets:
 The positive origin degree is faithful on literal sources but fails to descend;
 ordinary trace descends but loses higher jets. The reserve above is both
 cohomological and faithful, and its price is an explicit adjoint-defect square.
-It is quadratic rather than a degree of the arithmetic sharp-square product.
+Its representation by a linear degree of arithmetic sharp squares has exactly
+the RH-and-simplicity criterion above.
 The underlying Hilbert representation uses Xi jets, so this construction is
 not an independent arithmetic proof of RR or a replacement for the remaining
 source positivity problem.
@@ -124,5 +125,25 @@ already certified for a special diagonal Xi kernel. The new assertion concerns
 the whole genuine source algebra, faithful full Hasse blocks, and the exact RR
 criterion; the elementary Hilbert–Schmidt polarization identity is not claimed new.
 
-Actual candidate file exists with endpoint axiom prints; its actual-file
-verification is pending. It is not wired into the umbrella.
+Module: `ArithmeticCastelnuovoSeveri/FaithfulHilbertSchmidtSourceReserves.lean`.
+Direct `lake --old env lean` check **4030** passed. All fifteen transitive audits
+contain only `propext`, `Classical.choice`, and `Quot.sound`. Audited endpoints:
+
+- `meyerHilbertReserve_sub_defect`
+- `meyerHilbertReserve_add_defect`
+- `meyerHilbertReserve_eq_zero_iff`
+- `meyerHilbertReserve_congr`
+- `meyerHilbertSourceCone_bezout`
+- `meyerHilbertSourceCone_ample`
+- `meyerHilbertSourceCone_ample_zero_iff`
+- `meyerHilbertSourceCone_add_closed`
+- `meyerHilbertSourceCone_smul`
+- `meyerHilbertSourceCone_convex`
+- `meyerHilbertSourceCone_generating`
+- `meyerHilbertSourceCone_pointed_mod_principal`
+- `meyerHilbertSourceCone_riemannRoch_iff`
+- `exists_meyerHilbertReserve_linear_degree_iff`
+- `meyerHilbertSourceCone_riemannRoch_iff_linear_degree`
+
+Temporary prints and the old scratch draft are removed. The module is wired
+into its umbrella and documented in the programme README and Q-II review.

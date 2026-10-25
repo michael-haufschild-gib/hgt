@@ -55,3 +55,6 @@ import GaloisForLFunctions.BiarithmeticGeometry.FullWienerAnnihilation
 
 Finite-horizon affine actions, signed arithmetic observation, and source-defined obstructions.
 -/
+import GaloisForLFunctions.BiarithmeticGeometry.GeometricPoleExtraction
+import GaloisForLFunctions.BiarithmeticGeometry.GeometricShellHilbert
+import GaloisForLFunctions.BiarithmeticGeometry.CriticalGoldenClosure

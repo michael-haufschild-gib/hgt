@@ -84,3 +84,4 @@ densities are comparable. Consequence: §7.7's open class is the non-monotone de
 - 2026-10-25 — C4 formalized (#3).
 - 2026-10-25 — C5 formalized (#4).
 - 2026-10-25 — C6 formalized (#5).
+- 2026-10-25 — C7 formalized (#6).

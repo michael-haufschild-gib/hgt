@@ -1571,7 +1571,12 @@ $\sum_p\lvert f(p)-\cos(t_0\log p)\rvert/p$ diverges at every $c>0$
 (`summable_inv_mul_logLogFloor_sq`), so the natural amplitude $a_p=1-c/\ell(p)$ has the same
 threshold: $(1-c/\ell(p))\cos(t_0\log p)$ is paid iff $c>1$ or $\zeta(\tfrac12+it_0)=0$
 (`receiverBounded_logLogPattern_iff`), with divergent critical-line mass at every $c>0$
-(`not_summable_criticalLineMass_logLog`). Summable-perturbation invariance stops at convergent mass;
+(`not_summable_criticalLineMass_logLog`). At height zero the boundary amplitude is $\tfrac12$ and the
+same law holds: $(1-c\,g(p))/2$ is paid iff $\int_0^1e^{-c\Lambda(\rho)}\,d\rho/\rho<\infty$
+(`receiverBounded_halfDefectWeight_iff`; $\zeta(\tfrac12)\ne0$ leaves no zero alternative), with
+threshold $c=1$ for the harmonic and log-log defects (`receiverBounded_halfHarmonicDefect_iff`,
+`receiverBounded_halfLogLogPattern_iff`) and divergent mass $\sum_p\lvert f(p)-\tfrac12\rvert/p$
+(`not_summable_halfHarmonicMass`). Summable-perturbation invariance stops at convergent mass;
 the phase boundary lies inside the divergent regime and is the Dini integral of the profile.
 
 **Reading.** For any completely multiplicative $f$ with $\lvert f(p)\rvert\le1$, the Euler product

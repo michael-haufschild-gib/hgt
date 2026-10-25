@@ -149,10 +149,12 @@ theorem sum_abs_step_sub_rpow_le {R : ℝ} (hR : 2 ≤ R) (u : Finset ℕ) :
           rw [hexp]; exact hexp3.trans (Real.exp_le_exp.mpr (by linarith))
         have hps1 : (n : ℝ) ^ (-s) ≤ 1 :=
           Real.rpow_le_one_of_one_le_of_nonpos hp1.le (by linarith)
+        have hmain : 1 - (n : ℝ) ^ (-s) ≤ 3 * s * Real.log n * (n : ℝ) ^ (-s) := by
+          have := mul_nonneg (sub_nonneg.mpr h3) (mul_nonneg hs.le hlogp.le)
+          nlinarith
         rw [abs_of_nonneg (by linarith)]
         calc (1 - (n : ℝ) ^ (-s)) / n ≤ 3 * s * Real.log n * (n : ℝ) ^ (-s) / n :=
-              div_le_div_of_nonneg_right (by nlinarith [mul_nonneg (sub_nonneg.mpr h3)
-                (mul_nonneg hs.le hlogp.le)]) hp0.le
+              div_le_div_of_nonneg_right hmain hp0.le
           _ = 3 * s * (Real.log n * ((n : ℝ) ^ (-s) / n)) := by ring
           _ ≤ (3 * s + 1 / L) * (Real.log n * ((n : ℝ) ^ (-s) / n)) :=
               mul_le_mul_of_nonneg_right (by linarith [one_div_pos.mpr hL0]) (by positivity)
@@ -314,7 +316,8 @@ theorem exists_abs_tsum_primes_rpow_sub_log_le :
         rw [one_div, Real.log_inv] at this; linarith
       · have := Real.log_le_log hx (show x ≤ 2 by linarith)
         linarith
-    rw [abs_le] at hlog ⊢
+    obtain ⟨hl1, hl2'⟩ := abs_le.mp hlog
+    rw [abs_le]
     constructor <;> linarith
 
 /-- `Σ_p g(p) p^{−1−ρ} = Σ_k w_k Σ_p p^{−1−ρ−s_k}` for a completely monotone defect `g`. -/
@@ -328,6 +331,8 @@ theorem primeProfile_cmDefect {w s : ℕ → ℝ} (hd : AdmissibleDefect w s) {�
     (Nat.Primes.summable_rpow.mpr (by linarith [hd.pos k])).mul_left _
   have hfle : ∀ k, ∑' p, f k p ≤ w k * ∑' p : Nat.Primes, ((p : ℕ) : ℝ) ^ (-(1 + ρ)) := by
     intro k
+    rw [hf]
+    dsimp only
     rw [tsum_mul_left]
     refine mul_le_mul_of_nonneg_left ((Nat.Primes.summable_rpow.mpr
       (by linarith [hd.pos k])).tsum_le_tsum (fun p => Real.rpow_le_rpow_of_exponent_le
@@ -484,8 +489,8 @@ theorem receiverBounded_stepPattern_iff_primeProfile (hw : ∀ k, 0 ≤ w k) (hw
       fun ρ hρ hρ1 => ?_]
   have h1 := hM hρ
   have h2 := hC ρ hρ hρ1
-  have := abs_sub_le (primeProfile (fun n => stepDefect w R n) ρ)
-    (primeProfile (cmDefect w (stepShift R)) ρ) (defectProfile w (stepShift R) ρ)
+  have := abs_sub_le (primeProfile (fun n : ℕ => stepDefect w R n) ρ)
+    (primeProfile (fun n : ℕ => cmDefect w (stepShift R) n) ρ) (defectProfile w (stepShift R) ρ)
   exact this.trans (add_le_add h1 h2)
 
 /-! ### Monotone defects -/
@@ -555,7 +560,7 @@ theorem stepDefect_monotoneSteps {d : ℕ → ℝ}
     by
       refine (summable_nat_add_iff m).mp ?_
       exact hS.summable.congr fun j => by
-        rw [if_pos ((hind _).mpr (by omega)), mul_one]
+        simp only [if_pos ((hind (j + m)).mpr (by omega)), mul_one]
   have hS' : HasSum (fun j => monotoneSteps d (j + m)) (d p) := by rw [← hqm]; exact hS
   rw [stepDefect, ← hsum.sum_add_tsum_nat_add m, Finset.sum_eq_zero fun k hk => by
     rw [if_neg (fun h => absurd ((hind k).mp h) (by simp at hk; omega)), mul_zero], zero_add,
@@ -602,11 +607,16 @@ theorem receiverBounded_monotoneDefectPattern_iff {d : ℕ → ℝ}
   have hdiff : Summable (fun p : ℕ => if p.Prime then
       |monotoneDefectPattern t₀ d p - stepPattern t₀ (monotoneSteps d) monotoneThresholds p| *
         (p : ℝ) ^ (-(1 / 2 + 1 / 2 : ℝ)) else 0) := by
-    refine summable_zero.congr fun p => ?_
-    split_ifs with hp
-    · rw [monotoneDefectPattern_prime t₀ d hp, stepPattern_prime t₀ _ _ hp, hval p hp, sub_self,
-        abs_zero, zero_mul]
-    · rfl
+    have hzero : (fun p : ℕ => if p.Prime then
+        |monotoneDefectPattern t₀ d p - stepPattern t₀ (monotoneSteps d) monotoneThresholds p| *
+          (p : ℝ) ^ (-(1 / 2 + 1 / 2 : ℝ)) else 0) = fun _ => 0 := by
+      funext p
+      split_ifs with hp
+      · rw [monotoneDefectPattern_prime t₀ d hp, stepPattern_prime t₀ _ _ hp, hval p hp, sub_self,
+          abs_zero, zero_mul]
+      · rfl
+    rw [hzero]
+    exact summable_zero
   have hprof : primeProfile (fun n : ℕ => stepDefect (monotoneSteps d) monotoneThresholds n) =
       primeProfile d := by
     funext ρ
@@ -618,3 +628,7 @@ theorem receiverBounded_monotoneDefectPattern_iff {d : ℕ → ℝ}
 end
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics
+
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_monotoneDefectPattern_iff
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_stepPattern_iff_primeProfile
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.summable_abs_stepDefect_sub_cmDefect

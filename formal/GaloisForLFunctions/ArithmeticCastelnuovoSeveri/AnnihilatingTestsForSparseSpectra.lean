@@ -346,11 +346,14 @@ theorem continuous_inghamPartial_succ (p : ℝ) (n : ℕ) : Continuous (inghamPa
 /-- The transform of a continuous integrable function is continuous on the real line. -/
 theorem continuous_paperFT_ofReal {k : ℝ → ℂ} (hk : Integrable k) :
     Continuous fun r : ℝ => paperFT k r := by
-  have h : (fun r : ℝ => paperFT k r) =
-      fun r : ℝ => FourierTransform.fourier k (-r / (2 * π)) := by
-    funext r; exact EF.paperFT_ofReal_eq_fourier k r
-  rw [h]
-  exact (Real.continuous_fourier hk).comp (by fun_prop)
+  simp only [paperFT]
+  refine continuous_of_dominated (bound := fun u => ‖k u‖) (fun r => ?_) (fun r => ?_) hk.norm ?_
+  · exact hk.aestronglyMeasurable.mul (by fun_prop : Continuous fun u : ℝ =>
+      cexp (I * (r : ℂ) * u)).aestronglyMeasurable
+  · refine Eventually.of_forall fun u => ?_
+    rw [norm_mul, Complex.norm_exp]
+    simp
+  · exact Eventually.of_forall fun u => by fun_prop
 
 /-- Two sinc factors give quadratic decay: `|sinc(ax) sinc(bx)| ≤ 2/(1 + abx²)`. -/
 theorem norm_sincC_mul_sincC_le {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (x : ℝ) :
@@ -378,9 +381,8 @@ theorem norm_sincC_mul_sincC_le {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (x : ℝ) 
           mul_le_mul h1 h2 (norm_nonneg _) (inv_nonneg.mpr (abs_nonneg _))
       _ = (a * b * x ^ 2)⁻¹ := hprod
       _ ≤ 2 * (1 + a * b * x ^ 2)⁻¹ := by
-          rw [inv_le_iff_one_le_mul₀ (by positivity)]
-          rw [mul_comm, mul_assoc, inv_mul_eq_div, le_div_iff₀ hpos]
-          linarith
+          rw [show 2 * (1 + a * b * x ^ 2)⁻¹ = ((1 + a * b * x ^ 2) / 2)⁻¹ by field_simp]
+          exact inv_anti₀ (by positivity) (by linarith)
 
 /-- The quadratic envelope `2/(1 + ε₀ε₁x²)` of the partial transforms. -/
 def inghamEnvelope (p : ℝ) (x : ℝ) : ℝ := 2 * (1 + inghamWidth p 0 * inghamWidth p 1 * x ^ 2)⁻¹
@@ -422,5 +424,120 @@ theorem inghamPartial_eq_invFT (p : ℝ) (n : ℕ) (u : ℝ) :
     inghamPartial p (n + 1) u = invFT (fun r : ℝ => paperFT (inghamPartial p (n + 1)) r) u :=
   eq_invFT_paperFT (continuous_inghamPartial_succ p n)
     (inghamPartial_integrable_hasCompactSupport p (n + 1)).1 (integrable_paperFT_inghamPartial p n) u
+
+/-! ### 7. Stretched-exponential envelopes have all moments -/
+
+/-- `K tˢ` is absorbed by half of `c t^q` up to a constant when `s < q`. -/
+theorem exists_mul_rpow_le_half_rpow {K c s q : ℝ} (hs : 0 ≤ s) (hsq : s < q) (hc : 0 < c) :
+    ∃ C₁ : ℝ, ∀ t : ℝ, 0 ≤ t → K * t ^ s ≤ c / 2 * t ^ q + C₁ := by
+  set K' := max K 0
+  set T₀ : ℝ := max 1 ((2 * K' / c) ^ (1 / (q - s)))
+  have hT₀ : 1 ≤ T₀ := le_max_left _ _
+  refine ⟨K' * T₀ ^ s, fun t ht => ?_⟩
+  have hK : K * t ^ s ≤ K' * t ^ s :=
+    mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.rpow_nonneg ht _)
+  have hK' : 0 ≤ K' := le_max_right _ _
+  by_cases htT : t ≤ T₀
+  · have : K' * t ^ s ≤ K' * T₀ ^ s :=
+      mul_le_mul_of_nonneg_left (Real.rpow_le_rpow ht htT hs) hK'
+    have : 0 ≤ c / 2 * t ^ q := by positivity
+    linarith
+  · push Not at htT
+    have ht1 : 1 < t := hT₀.trans_lt htT
+    have ht0 : 0 < t := by linarith
+    have hqs : 0 < q - s := by linarith
+    have hsplit : t ^ q = t ^ s * t ^ (q - s) := by
+      rw [← Real.rpow_add ht0]; ring_nf
+    have hbig : 2 * K' / c ≤ t ^ (q - s) := by
+      have h1 : (2 * K' / c) = ((2 * K' / c) ^ (1 / (q - s))) ^ (q - s) := by
+        rw [← Real.rpow_mul (by positivity), one_div_mul_cancel hqs.ne', Real.rpow_one]
+      rw [h1]
+      exact Real.rpow_le_rpow (by positivity) ((le_max_right _ _).trans htT.le) hqs.le
+    have : K' * t ^ s ≤ c / 2 * t ^ q := by
+      rw [hsplit]
+      have hts : 0 ≤ t ^ s := Real.rpow_nonneg ht0.le _
+      have := mul_le_mul_of_nonneg_left hbig hts
+      have hc2 : c / 2 * (t ^ s * (2 * K' / c)) = K' * t ^ s := by field_simp
+      nlinarith
+    have : 0 ≤ K' * T₀ ^ s := by positivity
+    linarith
+
+/-- A stretched-exponential envelope beats every polynomial: `(1 + t²) tⁿ e^{K tˢ − c t^q}` is
+bounded on `t ≥ 0` when `0 ≤ s < q`. -/
+theorem exists_bound_mul_exp_rpow {K c s q : ℝ} (hs : 0 ≤ s) (hsq : s < q) (hc : 0 < c) (n : ℕ) :
+    ∃ M : ℝ, ∀ t : ℝ, 0 ≤ t → (1 + t ^ 2) * t ^ n * Real.exp (K * t ^ s - c * t ^ q) ≤ M := by
+  obtain ⟨C₁, hC₁⟩ := exists_mul_rpow_le_half_rpow (K := K) hs hsq hc
+  have hq : 0 < q := lt_of_le_of_lt hs hsq
+  set m : ℕ := ⌈((n : ℝ) + 2) / q⌉₊
+  have hm : (n : ℝ) + 2 ≤ q * m := by
+    have := Nat.le_ceil (((n : ℝ) + 2) / q)
+    rw [div_le_iff₀ hq] at this; linarith
+  set C₂ : ℝ := 2 + 2 * (m.factorial : ℝ) / (c / 2) ^ m
+  refine ⟨Real.exp C₁ * C₂, fun t ht => ?_⟩
+  have hexp : Real.exp (K * t ^ s - c * t ^ q) ≤ Real.exp C₁ * Real.exp (-(c / 2 * t ^ q)) := by
+    rw [← Real.exp_add]; apply Real.exp_le_exp.mpr; linarith [hC₁ t ht]
+  have hB : (1 + t ^ 2) * t ^ n * Real.exp (-(c / 2 * t ^ q)) ≤ C₂ := by
+    have hC₂ : 2 ≤ C₂ := by
+      have : 0 ≤ 2 * (m.factorial : ℝ) / (c / 2) ^ m := by positivity
+      linarith
+    by_cases ht1 : t ≤ 1
+    · have h1 : (1 + t ^ 2) * t ^ n ≤ 2 := by
+        have : t ^ 2 ≤ 1 := pow_le_one₀ ht ht1
+        have : t ^ n ≤ 1 := pow_le_one₀ ht ht1
+        nlinarith [pow_nonneg ht n]
+      have h2 : Real.exp (-(c / 2 * t ^ q)) ≤ 1 := by
+        rw [Real.exp_le_one_iff]; have := Real.rpow_nonneg ht q; nlinarith
+      calc (1 + t ^ 2) * t ^ n * Real.exp (-(c / 2 * t ^ q)) ≤ 2 * 1 :=
+            mul_le_mul h1 h2 (Real.exp_pos _).le (by norm_num)
+        _ ≤ C₂ := by linarith
+    · push Not at ht1
+      have ht0 : 0 < t := by linarith
+      set y := c / 2 * t ^ q
+      have hy : 0 < y := by positivity
+      have hfac := Real.pow_div_factorial_le_exp (x := y) hy.le m
+      have hexpy : Real.exp (-y) ≤ (m.factorial : ℝ) / y ^ m := by
+        rw [Real.exp_neg, inv_le_comm₀ (Real.exp_pos _) (by positivity), inv_div]
+        exact hfac
+      have hym : y ^ m = (c / 2) ^ m * t ^ (q * m) := by
+        rw [mul_pow, ← Real.rpow_natCast (t ^ q), ← Real.rpow_mul ht0.le]
+      have hpoly : (1 + t ^ 2) * t ^ n ≤ 2 * t ^ (q * m) := by
+        have h1 : (1 + t ^ 2) * t ^ n ≤ 2 * t ^ (n + 2) := by
+          have : 1 ≤ t ^ 2 := one_le_pow₀ ht1.le
+          rw [pow_add]; nlinarith [pow_nonneg ht0.le n]
+        have h2 : t ^ (n + 2) ≤ t ^ (q * m) := by
+          rw [← Real.rpow_natCast]
+          exact Real.rpow_le_rpow_of_exponent_le ht1.le (by push_cast; linarith)
+        linarith
+      calc (1 + t ^ 2) * t ^ n * Real.exp (-y) ≤ 2 * t ^ (q * m) * ((m.factorial : ℝ) / y ^ m) :=
+            mul_le_mul hpoly hexpy (Real.exp_pos _).le (by positivity)
+        _ = 2 * (m.factorial : ℝ) / (c / 2) ^ m := by
+            rw [hym]
+            have : t ^ (q * m) ≠ 0 := (Real.rpow_pos_of_pos ht0 _).ne'
+            have : (c / 2) ^ m ≠ 0 := by positivity
+            field_simp
+        _ ≤ C₂ := by linarith
+  calc (1 + t ^ 2) * t ^ n * Real.exp (K * t ^ s - c * t ^ q)
+      ≤ (1 + t ^ 2) * t ^ n * (Real.exp C₁ * Real.exp (-(c / 2 * t ^ q))) :=
+        mul_le_mul_of_nonneg_left hexp (by positivity)
+    _ = Real.exp C₁ * ((1 + t ^ 2) * t ^ n * Real.exp (-(c / 2 * t ^ q))) := by ring
+    _ ≤ Real.exp C₁ * C₂ := mul_le_mul_of_nonneg_left hB (Real.exp_pos _).le
+
+/-- **All moments of a stretched-exponentially decaying function are integrable.** -/
+theorem integrable_moment_of_le_exp_rpow {f : ℝ → ℂ} (hf : AEStronglyMeasurable f volume)
+    {K c s q : ℝ} (hs : 0 ≤ s) (hsq : s < q) (hc : 0 < c)
+    (hb : ∀ x : ℝ, ‖f x‖ ≤ Real.exp (K * |x| ^ s - c * |x| ^ q)) (n : ℕ) :
+    Integrable fun x : ℝ => ‖x‖ ^ n * ‖f x‖ := by
+  obtain ⟨M, hM⟩ := exists_bound_mul_exp_rpow (K := K) hs hsq hc n
+  refine (integrable_inv_one_add_sq.const_mul M).mono'
+    ((continuous_norm.pow n).aestronglyMeasurable.mul hf.norm) (Eventually.of_forall fun x => ?_)
+  have h := hM |x| (abs_nonneg x)
+  rw [sq_abs] at h
+  have hpos : 0 < 1 + x ^ 2 := by positivity
+  rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (by positivity), abs_of_nonneg (norm_nonneg _),
+    Real.norm_eq_abs, le_mul_inv_iff₀ hpos]
+  calc |x| ^ n * ‖f x‖ * (1 + x ^ 2) ≤ |x| ^ n * Real.exp (K * |x| ^ s - c * |x| ^ q) * (1 + x ^ 2) := by
+        gcongr; exact hb x
+    _ = (1 + x ^ 2) * |x| ^ n * Real.exp (K * |x| ^ s - c * |x| ^ q) := by ring
+    _ ≤ M := h
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

@@ -238,9 +238,27 @@ matching the existing source construction without importing the conflicting modu
 Direct adjoint recheck **96392** passed with only `propext`, `Classical.choice`,
 and `Quot.sound` in all three audits. The module is cleaned, wired, documented,
 and its card moved to stage 3. Its old scratch draft and API probe are removed.
-Its missing olean is required by the actual `FaithfulHilbertSchmidtSourceReserves`
-importer. Absence was checked explicitly; direct missing-olean build **95594**
-is the sole owned Lean process. Wait for its exit before another Lean invocation.
+Its missing olean build **95594** passed for the actual
+`FaithfulHilbertSchmidtSourceReserves` importer. That olean now exists; never rebuild it.
+The certified `MeyerHilbertSchmidtSource` missing-olean build **47729** passed
+for the actual reserve and bounded-orbit importers. Its olean now exists; never
+rebuild it. The certified HT `HilbertSchmidtTraceDefect` missing-olean build
+**31303** also passed for the actual reserve importer; its olean now exists and
+must not be rebuilt. Direct actual-file reserve check **27716** failed only in
+the bilinear self-value proof: generic `RCLike.re` did not match concrete
+`Complex.re` during rewriting with an implicit source. A typed local identity
+with explicit source now supplies that rewrite. The independent norm-defect,
+zero-kernel, class-descent, ample-zero and pointedness audits were standard;
+the failed file as a whole is not certified. Recheck now includes explicit
+ampleness, additive-closure and scalar-closure audits, fifteen endpoints total.
+Direct actual-file reserve recheck **4030** passed with only the standard three
+axioms in all fifteen endpoint audits. The module is cleaned, wired, documented,
+and its card moved to stage 3. Its old scratch draft is deleted. Its olean was
+explicitly confirmed missing; direct missing-olean build **80282** is the sole
+owned Lean process, required by the actual reserve-flow importer. Wait for exit
+before any further Lean invocation.
+User reiterated: write no Python scripts; use direct Lean edits
+and direct `lake --old env lean ...` commands.
 
 ### Remaining verification queue
 
@@ -251,9 +269,9 @@ Rows explicitly marked certified have passed; all other rows remain unverified.
 |---|---|
 | `ArithmeticMajorantConeGeometry` | Pointedness correction awaits direct recheck |
 | `SmoothFiniteReadingKernels` | Corrected smoothness API probe, then actual recheck |
-| `ArithmeticSharpAndTheHilbertAdjoint` | CERTIFIED: direct 96392 and three standard axiom audits; missing importer olean still needed |
-| `FaithfulHilbertSchmidtSourceReserves` | Twelve endpoints; requires missing adjoint, HS-source and HT trace-defect oleans |
-| `MeyerBoundedCenteredOrbits` | Six endpoints; requires missing HS-source olean |
+| `ArithmeticSharpAndTheHilbertAdjoint` | CERTIFIED: direct 96392, three standard axiom audits, missing-olean build 95594 passed |
+| `FaithfulHilbertSchmidtSourceReserves` | CERTIFIED: direct 4030 and fifteen standard audits; missing-olean build 80282 running |
+| `MeyerBoundedCenteredOrbits` | Six endpoints; required HS-source olean now exists |
 | `MeyerCriticalTopAlgebra` | Eleven endpoints; requires bounded-orbit olean |
 | `BoundedMeyerSourceSurface` | Thirteen endpoints; direct restriction must replace conflicting AOG import |
 | `MeyerHilbertReserveFlowRigidity` | Seven endpoints; requires reserve and critical-top oleans |
@@ -1341,7 +1359,7 @@ The preceding queue stopped there, so the later pole-blind, surface, and API
 checks have not yet run. Factor-two scalar corollaries are now second in queue.
 
 A further dependency-closed paper survivor is recorded in
-`../2-fully-proven/hilbert-schmidt-reserves-measure-the-arithmetic-adjoint-defect.md`.
+`../3-formalized/hilbert-schmidt-reserves-measure-the-arithmetic-adjoint-defect.md`.
 The actual full-Hasse convolution resolvent factorization proves unconditional
 Hilbert–Schmidt admission. The average source/sharp HS squared norm descends
 faithfully to genuine cohomology, gives Bézout and ampleness, and exceeds the

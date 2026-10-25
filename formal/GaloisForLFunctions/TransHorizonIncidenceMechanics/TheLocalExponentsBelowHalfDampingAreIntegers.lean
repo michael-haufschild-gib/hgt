@@ -316,7 +316,7 @@ theorem not_receiverBounded_damped_of_diniBox (hd : AdmissibleDefect w s) {c t�
     linarith [le_abs_self B, le_abs_self B']
   have hdiff2 : (1 / 2 - (k : ℝ)) * Real.log u⁻¹ - c / 2 * defectProfile w s u ≤
       |B| + |B'| := by
-    linarith [neg_abs_le B, neg_abs_le B']
+    linarith [le_abs_self B, le_abs_self B']
   have hL0 : 0 ≤ Real.log u⁻¹ := le_trans (by linarith [abs_nonneg B, abs_nonneg B']) hLX
   -- `(c/2) Λ(u) ≤ ¼ log(1/u) + (c/2)|C|`
   have hcη : c / 2 * (1 / (2 * c + 2)) ≤ 1 / 4 := by

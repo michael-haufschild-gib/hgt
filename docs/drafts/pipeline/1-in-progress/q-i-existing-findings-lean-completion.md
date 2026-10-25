@@ -10,7 +10,8 @@
 ## Build discipline
 
 Use only direct `lake --old env lean ...` commands from `formal/`, with one
-foreground compiler at a time. No build scripts or wrappers, `lake build`,
+foreground compiler at a time. No Python scripts for builds, edits, or audits.
+No build scripts or wrappers, `lake build`,
 umbrella builds, limit increases, placeholders, or added analytic assumptions.
 Write an olean only for a written importer or an exactly identified missing
 dependency. Preserve existing oleans. Verify new mathlib APIs in scratch;
@@ -23,9 +24,9 @@ not certify them. Each remains UNPROVED until its complete Lean chain passes.
 Lean module names below are relative to `GaloisForLFunctions/`; BVI denotes
 `BezoutValuationIncidence/`.
 
-| Existing paper card | Exact remaining Lean coverage |
+| Existing paper card | Required Lean coverage |
 | --- | --- |
-| `uniform-second-scale-vaughan-gram-at-all-cutoffs.md` | BVI `PronicGramErrorsAroundASmoothRankOneTerm`, `UniformVaughanGramsFollowTheirSmoothRankOneTerm`, `VaughanPacketGramIdentities`, `UniformLogarithmicLawsForVaughanSuperpositions`; common floor-sum corollaries in `UniformLogarithmicCancellationInMobiusFloorSums`. All-row logarithmic remainders are already checked. |
+| `uniform-second-scale-vaughan-gram-at-all-cutoffs.md` | BVI `PronicGramErrorsAroundASmoothRankOneTerm`, `UniformVaughanGramsFollowTheirSmoothRankOneTerm`, `VaughanPacketGramIdentities`, `UniformLogarithmicLawsForVaughanSuperpositions`; common floor-sum corollaries in `UniformLogarithmicCancellationInMobiusFloorSums`; the quantitative Mertens-to-convolution gain below `η/(2+η)` in `UniformVaughanPowerBoundsAreFixedStrips`. All-row logarithmic remainders and the finite Gram comparison are already checked. |
 | `vaughan-subcritical-gram-limit-classification.md` | BVI `TheCompactArithmeticAmplitudesOfVaughanGrams`, `TheSubcriticalVaughanGramLimitSet`, `TheOnlyAccumulationOfVaughanAmplitudesIsZero`, `TheRanksOfSubcriticalVaughanLimits`, `TheTopologyOfSubcriticalVaughanGramLimits`. The last leaf supplies exact matrix-family topology, beyond the scalar amplitude statements. |
 | `positive-vaughan-cutoff-escape-is-zero-gram-limit.md` | Exact amplitude escape equivalence and matrix convergence dichotomy in the preceding amplitude/classification leaves. |
 | `vaughan-relative-gram-and-harmonic-denominators.md` | RHTower `FiniteMobiusHarmonicSumsHaveExplicitLowerBounds`; BVI `VaughanGramsAtTheirActualHarmonicAmplitude`. |
@@ -50,10 +51,17 @@ axioms. Scratch, producing, and final direct checks passed; its import and
 corpus documentation are present. See
 `../3-formalized/uniform-logarithmic-remainders-in-all-vaughan-rows.md`.
 
-The finite Gram comparison passed its corrected scratch and producing checks,
-with all three public targets using only standard axioms. Its final direct
-repository check remains pending, so the leaf is not yet certified.
-All other leaves named in the table remain unchecked drafts. Dependencies and
+The finite Gram comparison also passed its corrected scratch, producing, and
+final direct repository checks, with all three public targets using only
+standard axioms. It is wired and its scratch was removed; see
+`../3-formalized/pronic-gram-errors-around-a-smooth-rank-one-term.md`.
+The complete uniform matrix law passed its scratch, producing, and final
+direct repository checks. All four targets have only standard transitive
+axioms. It is wired as `UniformVaughanGramsFollowTheirSmoothRankOneTerm.lean`;
+its scratch was removed. See
+`../3-formalized/uniform-vaughan-grams-follow-their-smooth-rank-one-term.md`.
+The four finite packet identities are undergoing their producing check.
+All other remaining leaves named in the table are unchecked drafts. Dependencies and
 live compiler handles are recorded in `/tmp/QIVerificationState.txt`.
 
 Full Q-I remains open. Formalizing the stated equivalences does not prove a

@@ -46,6 +46,7 @@ private theorem point_trace_reading (g : DeningerMeyerStrongLogTarget)
 private theorem critical_reflect_eq_self (rho : XiDivisorSupport)
     (hr : (rho : ℂ).re = 1 / 2) : meyerLineReflect rho = rho := by
   apply Subtype.ext
+  rw [meyerLineReflect_val]
   apply Complex.ext
   · change 1 - (rho : ℂ).re = (rho : ℂ).re
     linarith only [hr]
@@ -75,8 +76,8 @@ theorem meyerSourceTrace_eq_critical_of_offLine_zero {g : DeningerMeyerStrongLog
       apply tsum_congr
       intro q
       by_cases hq : (q.1 : ℂ).re = 1 / 2
-      · exact Set.indicator_of_mem hq _
-      · rw [Set.indicator_of_notMem hq]
+      · exact Set.indicator_of_mem (show q ∈ {q : XiZeroCopy | (q.1 : ℂ).re = 1 / 2} from hq) _
+      · rw [Set.indicator_of_notMem (show q ∉ {q : XiZeroCopy | (q.1 : ℂ).re = 1 / 2} from hq)]
         symm
         change deningerMeyerStrongLogMellin
           (deningerMeyerSourceConvolution g (deningerMeyerSourceSharp h)) (q.1 : ℂ) = 0
@@ -100,20 +101,17 @@ theorem meyerTraceOrbit_le_criticalSquareEnergy_of_offLine_zero {g : DeningerMey
   have hp_sum : Summable (fun q : MeyerCriticalXiCopy =>
       deningerMeyerStrongLogMellin p (q.1.1 : ℂ)) :=
     (deningerMeyerHilbertConvolution_summable_diagonal p).subtype _
-  have hre : |(meyerCriticalSourceTraceDegree p).re| ≤
-      ‖∑' q : MeyerCriticalXiCopy, deningerMeyerStrongLogMellin p (q.1.1 : ℂ)‖ :=
-    Complex.abs_re_le_norm _
-  have hnorm_sum : ‖∑' q : MeyerCriticalXiCopy, deningerMeyerStrongLogMellin p (q.1.1 : ℂ)‖ ≤
-      ∑' q : MeyerCriticalXiCopy, ‖deningerMeyerStrongLogMellin p (q.1.1 : ℂ)‖ :=
-    norm_tsum_le_tsum_norm hp_sum.norm
+  have hre_sum : Summable (fun q : MeyerCriticalXiCopy =>
+      (deningerMeyerStrongLogMellin p (q.1.1 : ℂ)).re) :=
+    Complex.reCLM.summable hp_sum
   have hmaj_sum : Summable (fun q : MeyerCriticalXiCopy =>
-      (Complex.normSq (deningerMeyerStrongLogMellin g (q.1.1 : ℂ)) +
-        Complex.normSq (deningerMeyerStrongLogMellin h (q.1.1 : ℂ))) / 2) :=
-    ((meyerCriticalSquares_summable g).add (meyerCriticalSquares_summable h)).div_const 2
+      (1 / 2 : ℝ) * (Complex.normSq (deningerMeyerStrongLogMellin g (q.1.1 : ℂ)) +
+        Complex.normSq (deningerMeyerStrongLogMellin h (q.1.1 : ℂ)))) :=
+    ((meyerCriticalSquares_summable g).add (meyerCriticalSquares_summable h)).mul_left (1 / 2)
   have hterm (q : MeyerCriticalXiCopy) :
-      ‖deningerMeyerStrongLogMellin p (q.1.1 : ℂ)‖ ≤
-        (Complex.normSq (deningerMeyerStrongLogMellin g (q.1.1 : ℂ)) +
-          Complex.normSq (deningerMeyerStrongLogMellin h (q.1.1 : ℂ))) / 2 := by
+      |(deningerMeyerStrongLogMellin p (q.1.1 : ℂ)).re| ≤
+        (1 / 2 : ℝ) * (Complex.normSq (deningerMeyerStrongLogMellin g (q.1.1 : ℂ)) +
+          Complex.normSq (deningerMeyerStrongLogMellin h (q.1.1 : ℂ))) := by
     let rho : XiDivisorSupport := q.1.1
     have hr : (rho : ℂ).re = 1 / 2 := q.2
     have hnorm_flow : ‖deningerMeyerStrongLogMellin
@@ -122,29 +120,48 @@ theorem meyerTraceOrbit_le_criticalSquareEnergy_of_offLine_zero {g : DeningerMey
       rw [meyerCenteredSourceFlow_mellin, norm_mul, Complex.norm_exp]
       have hre0 : ((c : ℂ) * ((rho : ℂ) - 1 / 2)).re = 0 := by
         simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
-          Complex.sub_re, Complex.div_ofNat_re, Complex.one_re, zero_mul, sub_zero, hr, sub_self,
+          Complex.sub_re, Complex.div_ofNat_re, Complex.one_re, zero_mul, hr, sub_self,
           mul_zero]
       rw [hre0, Real.exp_zero, one_mul]
     have hnorm_sharp : ‖deningerMeyerStrongLogMellin (deningerMeyerSourceSharp h) (rho : ℂ)‖ =
         ‖deningerMeyerStrongLogMellin h (rho : ℂ)‖ := by
       rw [deningerMeyerSourceSharp_mellin, ← meyerLineReflect_val,
         critical_reflect_eq_self rho hr, norm_star]
-    change ‖deningerMeyerStrongLogMellin
-      (deningerMeyerSourceConvolution (deningerMeyerStrongLogCenteredFlow c g)
-        (deningerMeyerSourceSharp h)) (rho : ℂ)‖ ≤ _
-    rw [deningerMeyerSourceConvolution_mellin, norm_mul, hnorm_flow, hnorm_sharp,
-      ← Complex.sq_norm, ← Complex.sq_norm]
-    nlinarith only [sq_nonneg (‖deningerMeyerStrongLogMellin g (rho : ℂ)‖ -
+    have habs_le : |(deningerMeyerStrongLogMellin p (rho : ℂ)).re| ≤
+        ‖deningerMeyerStrongLogMellin p (rho : ℂ)‖ :=
+      Complex.abs_re_le_norm _
+    have hnorm_p : ‖deningerMeyerStrongLogMellin p (rho : ℂ)‖ =
+        ‖deningerMeyerStrongLogMellin g (rho : ℂ)‖ *
+          ‖deningerMeyerStrongLogMellin h (rho : ℂ)‖ := by
+      change ‖deningerMeyerStrongLogMellin
+        (deningerMeyerSourceConvolution (deningerMeyerStrongLogCenteredFlow c g)
+          (deningerMeyerSourceSharp h)) (rho : ℂ)‖ = _
+      rw [deningerMeyerSourceConvolution_mellin, norm_mul, hnorm_flow, hnorm_sharp]
+    have hsq1 : Complex.normSq (deningerMeyerStrongLogMellin g (rho : ℂ)) =
+        ‖deningerMeyerStrongLogMellin g (rho : ℂ)‖ ^ 2 := (Complex.sq_norm _).symm
+    have hsq2 : Complex.normSq (deningerMeyerStrongLogMellin h (rho : ℂ)) =
+        ‖deningerMeyerStrongLogMellin h (rho : ℂ)‖ ^ 2 := (Complex.sq_norm _).symm
+    change |(deningerMeyerStrongLogMellin p (rho : ℂ)).re| ≤
+      (1 / 2 : ℝ) * (Complex.normSq (deningerMeyerStrongLogMellin g (rho : ℂ)) +
+        Complex.normSq (deningerMeyerStrongLogMellin h (rho : ℂ)))
+    rw [hsq1, hsq2]
+    nlinarith only [habs_le, hnorm_p, sq_nonneg (‖deningerMeyerStrongLogMellin g (rho : ℂ)‖ -
       ‖deningerMeyerStrongLogMellin h (rho : ℂ)‖)]
-  have htsum_le := hp_sum.norm.tsum_le_tsum hterm hmaj_sum
+  change |(∑' q : MeyerCriticalXiCopy, deningerMeyerStrongLogMellin p (q.1.1 : ℂ)).re| ≤ _
+  rw [Complex.re_tsum hp_sum]
   have hmaj_eq : (∑' q : MeyerCriticalXiCopy,
-      (Complex.normSq (deningerMeyerStrongLogMellin g (q.1.1 : ℂ)) +
-        Complex.normSq (deningerMeyerStrongLogMellin h (q.1.1 : ℂ))) / 2) =
+      (1 / 2 : ℝ) * (Complex.normSq (deningerMeyerStrongLogMellin g (q.1.1 : ℂ)) +
+        Complex.normSq (deningerMeyerStrongLogMellin h (q.1.1 : ℂ)))) =
       (meyerCriticalSquareEnergy g + meyerCriticalSquareEnergy h) / 2 := by
-    rw [tsum_div_const,
+    rw [tsum_mul_left,
       (meyerCriticalSquares_summable g).tsum_add (meyerCriticalSquares_summable h),
       ← meyerCriticalSquareEnergy_eq_tsum, ← meyerCriticalSquareEnergy_eq_tsum]
-  linarith only [hre, hnorm_sum, htsum_le, hmaj_eq]
+    ring
+  rw [← hmaj_eq, abs_le]
+  refine ⟨?_, hre_sum.tsum_le_tsum (fun q => (le_abs_self _).trans (hterm q)) hmaj_sum⟩
+  have hneg := hre_sum.neg.tsum_le_tsum (fun q => (neg_le_abs _).trans (hterm q)) hmaj_sum
+  rw [tsum_neg] at hneg
+  linarith only [hneg]
 
 /-- Pre-divisor mixed-trace orbit boundedness holds if and only if the Mellin transform
 vanishes at every off-line Xi zero, with no restriction on critical jet multiplicities. -/
@@ -344,8 +361,10 @@ theorem meyerTraceBoundedIdeal_eq_top_iff :
 def meyerTraceBoundedCycleSubmodule : Submodule ℝ MeyerScalingCycle where
   carrier := {x | MeyerTraceOrbitBounded x.2.2}
   zero_mem' := meyerTraceBoundedIdeal.zero_mem
-  add_mem' := fun _ _ hx hy => meyerTraceBoundedIdeal.add_mem hx hy
-  smul_mem' a _ hx := meyerTraceBoundedIdeal.smul_mem (a : ℂ) hx
+  add_mem' hx hy := meyerTraceBoundedIdeal.add_mem hx hy
+  smul_mem' a x hx := by
+    change MeyerTraceOrbitBounded ((a : ℂ) • x.2.2)
+    exact meyerTraceBoundedIdeal.smul_mem (a : ℂ) hx
 
 private theorem traceBounded_H : meyerScalingSurface.H ∈ meyerTraceBoundedCycleSubmodule :=
   meyerTraceBoundedIdeal.zero_mem
@@ -354,8 +373,15 @@ private theorem traceBounded_V : meyerScalingSurface.V ∈ meyerTraceBoundedCycl
   meyerTraceBoundedIdeal.zero_mem
 
 /-- Restriction of the genuine Meyer scaling surface to the pre-divisor blind ideal. -/
-def meyerTraceBoundedSurface : PolarSurface meyerTraceBoundedCycleSubmodule :=
-  meyerScalingSurface.restrict meyerTraceBoundedCycleSubmodule traceBounded_H traceBounded_V
+def meyerTraceBoundedSurface : PolarSurface meyerTraceBoundedCycleSubmodule where
+  pair := meyerScalingSurface.pair.compl₁₂
+    meyerTraceBoundedCycleSubmodule.subtype meyerTraceBoundedCycleSubmodule.subtype
+  pair_comm x y := meyerScalingSurface.pair_comm x.1 y.1
+  H := ⟨meyerScalingSurface.H, traceBounded_H⟩
+  V := ⟨meyerScalingSurface.V, traceBounded_V⟩
+  pair_H_H := meyerScalingSurface.pair_H_H
+  pair_V_V := meyerScalingSurface.pair_V_V
+  pair_H_V := meyerScalingSurface.pair_H_V
 
 theorem meyerTraceBoundedSurface_defect (x y : meyerTraceBoundedCycleSubmodule) :
     meyerTraceBoundedSurface.defect x y = meyerSourceTrace x.1.2.2 y.1.2.2 :=
@@ -438,6 +464,37 @@ theorem meyerTraceBoundedIdeal_sharpPositiveIdeal :
    fun _ hg h => meyerTraceOrbitBounded_convolution_right hg h,
    fun _ hg => meyerTraceOrbitBounded_trace_nonneg hg⟩
 
+private theorem trace_add_left (f g h : DeningerMeyerStrongLogTarget) :
+    meyerSourceTrace (f + g) h = meyerSourceTrace f h + meyerSourceTrace g h := by
+  simp only [meyerSourceTrace_eq_degree_product, meyerCohomologyTraceDegree_mk]
+  change (meyerSourceTraceDegree
+    (deningerMeyerSourceConvolutionLM (f + g) (deningerMeyerSourceSharp h))).re = _
+  rw [map_add, LinearMap.add_apply, map_add, Complex.add_re]
+  rfl
+
+private theorem trace_smul_left (a : ℝ) (g h : DeningerMeyerStrongLogTarget) :
+    meyerSourceTrace (a • g) h = a * meyerSourceTrace g h := by
+  let d : DeningerMeyerStrongLogTarget →ₗ[ℝ] ℝ :=
+    Complex.reCLM.toLinearMap.comp (meyerSourceTraceDegree.restrictScalars ℝ)
+  have he := congrArg
+    (fun L : DeningerMeyerStrongLogTarget →ₗ[ℂ] DeningerMeyerStrongLogTarget =>
+      L (deningerMeyerSourceSharp h))
+    ((deningerMeyerSourceConvolutionLM.restrictScalars ℝ).map_smul a g)
+  change deningerMeyerSourceConvolution (a • g) (deningerMeyerSourceSharp h) =
+    a • deningerMeyerSourceConvolution g (deningerMeyerSourceSharp h) at he
+  simp only [meyerSourceTrace_eq_degree_product, meyerCohomologyTraceDegree_mk]
+  change d (deningerMeyerSourceConvolution (a • g) (deningerMeyerSourceSharp h)) =
+    a * d (deningerMeyerSourceConvolution g (deningerMeyerSourceSharp h))
+  rw [he, map_smul]
+  rfl
+
+private theorem trace_sub_left (f g h : DeningerMeyerStrongLogTarget) :
+    meyerSourceTrace (f - g) h = meyerSourceTrace f h - meyerSourceTrace g h := by
+  have hn := trace_smul_left (-1) g h
+  have hneg : (-1 : ℝ) • g = -g := neg_one_smul ℝ g
+  rw [hneg, neg_one_mul] at hn
+  rw [sub_eq_add_neg, trace_add_left, hn, sub_eq_add_neg]
+
 private theorem meyerSourceTrace_self_eq_of_values_eq {a b : DeningerMeyerStrongLogTarget}
     (hab : ∀ sigma : XiDivisorSupport,
       deningerMeyerStrongLogMellin a (sigma : ℂ) =
@@ -449,14 +506,10 @@ private theorem meyerSourceTrace_self_eq_of_values_eq {a b : DeningerMeyerStrong
     change deningerMeyerStrongLogMellinLM (sigma : ℂ) (a - b) = 0
     rw [map_sub]
     exact sub_eq_zero.mpr (hab sigma)
-  have hsub_left (x y z : DeningerMeyerStrongLogTarget) :
-      meyerSourceTrace (x - y) z = meyerSourceTrace x z - meyerSourceTrace y z := by
-    have he := meyerScalingSurface.defect_sub_left (0, 0, x) (0, 0, y) (0, 0, z)
-    simpa only [meyerScalingSurface_defect] using he
   have h1 : meyerSourceTrace a a = meyerSourceTrace b a :=
-    sub_eq_zero.mp (by rw [← hsub_left]; exact hdiff a)
+    sub_eq_zero.mp (by rw [← trace_sub_left]; exact hdiff a)
   have h2 : meyerSourceTrace a b = meyerSourceTrace b b :=
-    sub_eq_zero.mp (by rw [← hsub_left]; exact hdiff b)
+    sub_eq_zero.mp (by rw [← trace_sub_left]; exact hdiff b)
   rw [h1, meyerSourceTrace_comm b a, h2]
 
 /-- Every sharp-stable convolution ideal with nonnegative diagonal source trace is contained
@@ -479,8 +532,9 @@ theorem le_meyerTraceBoundedIdeal_of_sharpPositiveIdeal
   have hu : u ∈ I := I.smul_mem (conj z) (hmul g hg (meyerPointSource rho))
   let w : DeningerMeyerStrongLogTarget := u - deningerMeyerSourceSharp u
   have hw : w ∈ I := I.sub_mem hu (hsharp u hu)
-  let p : DeningerMeyerStrongLogTarget :=
-    (r : ℂ) • (meyerPointSource rho - meyerPointSource (meyerLineReflect rho))
+  let q0 : DeningerMeyerStrongLogTarget :=
+    meyerPointSource rho - meyerPointSource (meyerLineReflect rho)
+  let p : DeningerMeyerStrongLogTarget := r • q0
   have hval_u (sigma : XiDivisorSupport) :
       deningerMeyerStrongLogMellin u (sigma : ℂ) =
         (r : ℂ) * deningerMeyerStrongLogMellin (meyerPointSource rho) (sigma : ℂ) := by
@@ -499,15 +553,18 @@ theorem le_meyerTraceBoundedIdeal_of_sharpPositiveIdeal
   have hval_w (sigma : XiDivisorSupport) :
       deningerMeyerStrongLogMellin w (sigma : ℂ) =
         deningerMeyerStrongLogMellin p (sigma : ℂ) := by
-    change deningerMeyerStrongLogMellinLM (sigma : ℂ) (u - deningerMeyerSourceSharp u) =
-      deningerMeyerStrongLogMellinLM (sigma : ℂ)
-        ((r : ℂ) • (meyerPointSource rho - meyerPointSource (meyerLineReflect rho)))
-    rw [map_sub, map_smul, map_sub, smul_eq_mul]
-    change deningerMeyerStrongLogMellin u (sigma : ℂ) -
-      deningerMeyerStrongLogMellin (deningerMeyerSourceSharp u) (sigma : ℂ) =
-      (r : ℂ) * (deningerMeyerStrongLogMellin (meyerPointSource rho) (sigma : ℂ) -
-        deningerMeyerStrongLogMellin (meyerPointSource (meyerLineReflect rho)) (sigma : ℂ))
-    rw [hval_u sigma, deningerMeyerSourceSharp_mellin, ← meyerLineReflect_val,
+    have hL : deningerMeyerStrongLogMellin w (sigma : ℂ) =
+        deningerMeyerStrongLogMellin u (sigma : ℂ) -
+          deningerMeyerStrongLogMellin (deningerMeyerSourceSharp u) (sigma : ℂ) :=
+      (deningerMeyerStrongLogMellinLM (sigma : ℂ)).map_sub u (deningerMeyerSourceSharp u)
+    have hR : deningerMeyerStrongLogMellin p (sigma : ℂ) =
+        (r : ℂ) * (deningerMeyerStrongLogMellin (meyerPointSource rho) (sigma : ℂ) -
+          deningerMeyerStrongLogMellin (meyerPointSource (meyerLineReflect rho)) (sigma : ℂ)) := by
+      change deningerMeyerStrongLogMellinLM (sigma : ℂ) ((r : ℂ) • q0) = _
+      rw [(deningerMeyerStrongLogMellinLM (sigma : ℂ)).map_smul, smul_eq_mul,
+        (deningerMeyerStrongLogMellinLM (sigma : ℂ)).map_sub]
+      rfl
+    rw [hL, hR, hval_u sigma, deningerMeyerSourceSharp_mellin, ← meyerLineReflect_val,
       hval_u (meyerLineReflect sigma)]
     have href_iff : meyerLineReflect sigma = rho ↔ sigma = meyerLineReflect rho := by
       constructor
@@ -522,20 +579,9 @@ theorem le_meyerTraceBoundedIdeal_of_sharpPositiveIdeal
     · simp only [hs, ↓reduceIte, mul_zero, star_zero, mul_sub]
   have htrace_eq : meyerSourceTrace w w = meyerSourceTrace p p :=
     meyerSourceTrace_self_eq_of_values_eq hval_w
-  have hp_smul : p = r • (meyerPointSource rho - meyerPointSource (meyerLineReflect rho)) := rfl
-  have hp_trace : meyerSourceTrace p p =
-      r ^ 2 * meyerSourceTrace
-        (meyerPointSource rho - meyerPointSource (meyerLineReflect rho))
-        (meyerPointSource rho - meyerPointSource (meyerLineReflect rho)) := by
-    let q0 := meyerPointSource rho - meyerPointSource (meyerLineReflect rho)
-    have hsmul1 := meyerScalingSurface.defect_smul_left r (0, 0, q0) (0, 0, p)
-    have hsmul2 := meyerScalingSurface.defect_smul_right r (0, 0, q0) (0, 0, q0)
-    simp only [meyerScalingSurface_defect] at hsmul1 hsmul2
-    change meyerSourceTrace (r • q0) p = r * meyerSourceTrace q0 p at hsmul1
-    change meyerSourceTrace q0 (r • q0) = r * meyerSourceTrace q0 q0 at hsmul2
-    rw [hp_smul]
-    change meyerSourceTrace (r • q0) (r • q0) = r ^ 2 * meyerSourceTrace q0 q0
-    rw [← hp_smul, hsmul1, hp_smul, hsmul2]
+  have hp_trace : meyerSourceTrace p p = r ^ 2 * meyerSourceTrace q0 q0 := by
+    dsimp only [p]
+    rw [trace_smul_left, meyerSourceTrace_comm q0 (r • q0), trace_smul_left]
     ring
   have hneg := meyerOffLinePacket_trace_neg rho hoff
   have hw_neg : meyerSourceTrace w w < 0 := by
@@ -563,7 +609,7 @@ theorem blindOffLine_of_scaleShift_subspace_weil_nonneg
   intro f hf
   let x : ScalingCycle := (0, 0, ⟨f, hU hf⟩)
   apply ((ArithmeticOrientationGeometry.orientation_tfae Z hZ hFE x).out 1 2).mp
-  rw [ScalingDatum.orbitHodgeIndex_iff_defect_nonneg]
+  rw [ArithmeticOrientationGeometry.ScalingDatum.orbitHodgeIndex_iff_defect_nonneg]
   intro S c
   change 0 ≤ (configSurface Z hZ).defect _ _
   rw [configSurface_defect, configWeil, ArithmeticOrientationGeometry.orbitComb_test Z hZ x S c]

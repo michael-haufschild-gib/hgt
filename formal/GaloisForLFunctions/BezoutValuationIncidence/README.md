@@ -1215,7 +1215,13 @@ prefix and Bézout interior inherit every logarithmic norm saving as well
 after subtracting $c_\varepsilon H_UH_Vs_i n^{1-\varepsilon}$ with
 $s=(0,0,-1,1,0)$, now share every logarithmic norm saving uniformly in both
 cutoffs (`UniformLogarithmicRemaindersInAllVaughanRows`). Their exact sum is the
-Bézout interior. The complete uniform Gram law remains under verification.
+Bézout interior. The complete centered Gram now follows its smooth rank-one
+term with every common logarithmic error rate
+(`UniformVaughanGramsFollowTheirSmoothRankOneTerm`). The proof uses finite
+weighted Cauchy–Schwarz and the bounded smooth-energy error
+(`PronicGramErrorsAroundASmoothRankOneTerm`). Arbitrary moving cutoffs retain
+this asymptotic at every divergent horizon schedule; every normalized entry
+tends to zero if the cutoff product diverges independently as well.
 
 **Finite harmonic rigidity.** Every $H_N$ with $N\ge1$ is nonzero. For every prime
 $N/2<p\le N$, its rational $p$-adic valuation is exactly $-1$; all such distinct primes

@@ -117,3 +117,9 @@ between different Hilbert carriers is made.
 - [ ] Lean profile parameter continuity and annular integral identity.
 - [ ] Lean actual Gram comparison and critical phase convergence.
 - [ ] Direct source checks, transitive audits, and umbrella imports.
+
+Pending source check: `/tmp/BiarithmeticDigitParameterContinuity.lean` contains finite-row parameter continuity, a common geometric refinement bound on every parameter half-line above one, and continuity of the actual digit profile at every spatial point. No declaration in this draft is yet certified.
+
+Pending source check: `/tmp/BiarithmeticDigitAnnularContinuity.lean` applies dominated convergence to actual annular digit products and their normalized full-annulus ratio. It depends on the unchecked annular integrability and parameter-continuity drafts.
+
+Pending source check: `/tmp/BiarithmeticDigitCovarianceMainTerms.lean` derives the balanced expanding covariance formula and a horizon-uniform linear-shell error at the exact critical weight `sqrt(5)`. Its bounded-error dependency chain remains unchecked.

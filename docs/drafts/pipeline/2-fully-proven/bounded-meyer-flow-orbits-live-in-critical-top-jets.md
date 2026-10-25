@@ -71,7 +71,7 @@ of summands, not an unproved uniform domination across Xi points.
 ## Positive carrier and its product
 
 The classes satisfying condition 3 form a complex linear subspace, stable
-under arithmetic sharp and convolution. It is the critical socle: highest
+under arithmetic sharp and convolution. It consists of critical highest
 local jets, including nilpotent jets at multiple critical zeros.
 
 At a critical point of multiplicity one, multiplication retains ordinary
@@ -112,7 +112,7 @@ to RH plus simplicity. That stronger hypothesis must not be advertised as
 an RH-only producer.
 
 The faithful source/sharp reserve from
-`hilbert-schmidt-reserves-measure-the-arithmetic-adjoint-defect.md` is invariant
+`../3-formalized/hilbert-schmidt-reserves-measure-the-arithmetic-adjoint-defect.md` is invariant
 on this bounded-orbit carrier. Its invariance on every actual source is also
 equivalent to simple critical zeros: it bounds each source operator's squared
 HS norm, and the converse follows from the norm isometry above.
@@ -128,7 +128,7 @@ HS norm, and the converse follows from the norm isometry above.
 - `XiRealCriticalPointSignLaw.exists_xiZeroCopy_re_eq_half`: unconditional nontriviality.
 - Exact finite Hasse algebra: paper proof complete, Lean verification pending.
 
-Searches located the preceding mechanisms but no full bounded-orbit critical-socle
+Searches located the preceding mechanisms but no full bounded-orbit critical-highest-jet
 classification. Lean must formalize the four-way equivalence, exact product/radical
 corollaries, unconditional nontriviality, and the fixed-source/global criteria.
 The core source/jet bounds are drafted in

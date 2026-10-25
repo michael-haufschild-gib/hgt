@@ -412,8 +412,12 @@ Möbius prefix and Bézout interior now have every logarithmic norm saving below
 half damping (`LogarithmicEnergySavingsForTheMobiusInterior`). All five actual
 smooth-subtracted rows now share every logarithmic norm saving uniformly in both
 cutoffs; their sum is exactly the Bézout interior
-(`UniformLogarithmicRemaindersInAllVaughanRows`). Uniform Gram consequences
-remain under verification.
+(`UniformLogarithmicRemaindersInAllVaughanRows`). The complete centered Gram now
+satisfies the uniform smooth rank-one law with every logarithmic error rate
+(`UniformVaughanGramsFollowTheirSmoothRankOneTerm`). Hence every normalized
+entry tends to zero when the horizon and cutoff product diverge separately,
+with no relation required between those scales. Packet and classification
+consequences remain under verification.
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?
@@ -525,6 +529,14 @@ sharp as Hilbert adjoint exactly under the same RH-and-simplicity condition
 (`ArithmeticSharpAndTheHilbertAdjoint`). Thus an operator Gram interpretation
 of every arithmetic sharp square has precisely the faithful-degree obstruction;
 the Hilbert representation alone does not discharge it.
+
+The actual full-Hasse operators nevertheless supply a faithful descended
+quadratic reserve (`FaithfulHilbertSchmidtSourceReserves`). Its difference
+from the ordinary trace defect is exactly half the squared Hilbert–Schmidt
+adjoint defect. The resulting cone has Bézout, ampleness, convexity, generation,
+and pointedness modulo genuine principal classes unconditionally. Its RR axiom,
+and existence of a linear degree representing this exact reserve on arithmetic
+sharp squares, are each equivalent to RH plus simplicity.
 
 Centered flow preserves the literal mixed arithmetic sharp product, so every
 reading of that product is invariant. A nonnegative invariant majorant controlling

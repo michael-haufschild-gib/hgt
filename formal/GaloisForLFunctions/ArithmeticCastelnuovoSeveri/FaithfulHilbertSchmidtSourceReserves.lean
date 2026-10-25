@@ -82,8 +82,11 @@ theorem meyerHilbertReserveBilinear_self (x : MeyerScalingCycle) :
       (deningerMeyerHilbertConvolution x.2.2)).re +
     (hsInner (deningerMeyerHilbertConvolution (deningerMeyerSourceSharp x.2.2))
       (deningerMeyerHilbertConvolution (deningerMeyerSourceSharp x.2.2))).re) = _
-  rw [hsInner_self_re (meyerHilbertConvolution_isHilbertSchmidt _),
-    hsInner_self_re (meyerHilbertConvolution_isHilbertSchmidt _)]
+  have hself (g : DeningerMeyerStrongLogTarget) :
+      (hsInner (deningerMeyerHilbertConvolution g) (deningerMeyerHilbertConvolution g)).re =
+        hsNormSq (deningerMeyerHilbertConvolution g) :=
+    hsInner_self_re (meyerHilbertConvolution_isHilbertSchmidt g)
+  rw [hself x.2.2, hself (deningerMeyerSourceSharp x.2.2)]
   unfold meyerHilbertReserve
   ring
 
@@ -287,7 +290,7 @@ theorem meyerHilbertSourceCone_generating (x : MeyerScalingCycle) :
     ∃ y ∈ meyerHilbertSourceCone, ∃ z ∈ meyerHilbertSourceCone, x = y - z := by
   apply meyerScalingSurface.sourceCone_generating reserve_fibre ?_ x
   rw [← meyerHilbertReserveBilinear_self]
-  simp only [map_zero, LinearMap.zero_apply, le_refl]
+  simp only [map_zero, le_refl]
 
 /-- RR for the faithful reserve is exactly compatibility of arithmetic sharp with Hilbert adjoint. -/
 theorem meyerHilbertSourceCone_riemannRoch_iff_adjoint :
@@ -352,16 +355,3 @@ theorem meyerHilbertSourceCone_riemannRoch_iff_linear_degree :
   meyerHilbertSourceCone_riemannRoch_iff.trans exists_meyerHilbertReserve_linear_degree_iff.symm
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertReserve_sub_defect
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertReserve_add_defect
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertReserve_eq_zero_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertReserve_congr
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertSourceCone_bezout
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertSourceCone_ample_zero_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertSourceCone_convex
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertSourceCone_generating
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertSourceCone_pointed_mod_principal
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertSourceCone_riemannRoch_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_meyerHilbertReserve_linear_degree_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHilbertSourceCone_riemannRoch_iff_linear_degree
