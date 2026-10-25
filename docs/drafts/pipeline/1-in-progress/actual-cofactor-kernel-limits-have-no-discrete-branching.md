@@ -26,7 +26,8 @@ by this card; the generic sequence and cardinality bridges remain open.
 For each fixed pair j,k, the unnormalized pronic pairing changes by at most
 one when the horizon increases by one. Its absolute value is at most the
 receiver energy times the fixed Gram radius. The quotient difference is
-therefore bounded by (1+radius)/E(T). On escape this tends to zero; on
+therefore bounded by `(1+radius)/E(T+1)` under the corpus convention that
+`cofactorGram epsilon T` uses horizon `T+1`. On escape this tends to zero; on
 admission the complete Gram sequence converges already.
 
 A bounded real sequence with successive differences tending to zero should
@@ -52,23 +53,17 @@ connectedness of the product-topological limit set.
 
 All targets remain open until their exact Lean statements pass.
 
-The generic real-sequence bridge now has an exact draft:
-`/tmp/qiii_intermediate_cluster_values_body.lean`. It chooses the first late
+The generic real-sequence bridge is drafted in
+`/tmp/qiii-intermediate-cluster-values-check.lean`. It chooses the first late
 crossing after a lower visit, bounds its overshoot by the vanishing step,
-and extracts an increasing subsequence. Its standalone check is
-`/tmp/qiii-intermediate-cluster-values-check.lean`, added to the not-yet-started
-common-proof child queue of session `90975`. The actual Gram increment and
-common-kernel/cardinality applications remain to be written. No result on
-this card is yet proved.
+and extracts an increasing subsequence. The actual reciprocal-energy step
+bound and its admission/escape proof are drafted in
+`/tmp/qiii-cofactor-gram-steps-check.lean`.
 
-The actual reciprocal-energy step bound and its admission/escape proof are
-now drafted in `/tmp/qiii_cofactor_gram_steps_body.lean`; their standalone
-check is queued after the generic crossing proof in session `90975`.
-`/tmp/qiii_actual_kernel_interpolation_body.lean` applies the crossing
-subsequence followed by common extraction along prescribed horizons.
-`/tmp/qiii_actual_kernel_cardinality_body.lean` injects a nonempty real
-interval into the actual kernel set and encodes all kernels as countable
-real tables, giving the exact singleton/continuum alternative. The combined
-application target `/tmp/qiii-actual-kernel-interpolation-check.lean` is in
-the assembler but not queued: it needs the two pending base leaves and
-canonical prescribed-horizon extraction. Every new statement is UNVERIFIED.
+The directly written application scratch
+`/tmp/qiii-actual-kernel-interpolation-check.lean` contains common-kernel
+interpolation, the interval injection, the countable-table cardinal bound,
+the singleton/continuum alternative, and nonuniqueness implying escape.
+It requires the two pending base leaves and canonical prescribed-horizon
+extraction. Every new statement remains UNVERIFIED; direct checks are tracked
+in [the completion ledger](q-iii-existing-findings-lean-completion.md).

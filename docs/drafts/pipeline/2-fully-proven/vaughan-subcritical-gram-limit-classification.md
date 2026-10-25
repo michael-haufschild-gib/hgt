@@ -36,7 +36,7 @@ rank one; the zero limit has rank zero.
 
 ## Dependency-closed paper proof
 
-[LEAN VERIFICATION PENDING] The proposed uniform Gram theorem gives, for every `i,j`,
+The checked uniform Gram theorem gives, for every `i,j`,
 
 `G^c_ij(H(t);U(t),V(t))/H(t)^β
  = (c²/β) a_t s_i s_j + o(1)`,
@@ -103,16 +103,20 @@ a fixed power saving.
 The corpus search found the fixed-cutoff and leading-mean Gram laws, but no
 matching subcritical limit-set classification. This is an internal novelty audit;
 no external novelty claim. The harmonic nonvanishing and boundedness leaves are
-checked. The uniform Gram theorem has a dependency-closed paper proof and a Lean
-draft, with its Lean chain still under verification. The arithmetic set is now drafted as fourteen targets in
-`/tmp/QISmoothAmplitudeSetTools.lean`: bounds, countability, compactness, finite
+checked. The uniform Gram theorem is fully checked in
+`UniformVaughanGramsFollowTheirSmoothRankOneTerm.lean`. The arithmetic set's
+fourteen targets are fully checked in `TheCompactArithmeticAmplitudesOfVaughanGrams.lean`:
+bounds, countability, compactness, finite
 cutoff control away from zero, arbitrarily small positive amplitudes, and
 infinitude, exact eventual amplitude and finite-fiber rigidity, and the positive-cutoff
-escape equivalence. Seven further targets in
+escape equivalence. Producing and final direct checks passed; all fourteen
+transitive axiom audits contain only standard axioms. The module is wired and
+its scratch removed. Eight further targets in
 `/tmp/QIVaughanGramLimitClassificationTools.lean` draft diagonal recovery,
 the full matrix classification, nonzero-limit rigidity, the zero-limit escape
-equivalence, the convergence dichotomy, and attainment with positive cutoffs.
-Both drafts remain uncompiled. Three targets in
+equivalence, the convergence dichotomy, attainment with positive cutoffs, and
+the already stated independent-horizon packet-energy limit. This classification
+leaf is under verification. Three targets in
 `/tmp/QIVaughanAmplitudeTopologyTools.lean` now draft finiteness above a positive
 level, isolation of positive amplitudes, and the exact accumulation-point
 classification. Four targets in `/tmp/QIVaughanLimitMatrixRankTools.lean` draft

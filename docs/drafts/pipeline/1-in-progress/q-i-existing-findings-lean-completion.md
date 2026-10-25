@@ -68,6 +68,13 @@ The seven homogeneous packet laws also passed corrected producing and final
 direct checks, with standard transitive axioms only. They are wired as
 `UniformLogarithmicLawsForVaughanSuperpositions.lean`; the scratch was removed.
 See `../3-formalized/uniform-logarithmic-laws-for-vaughan-superpositions.md`.
+The fourteen arithmetic amplitude results passed producing and final direct
+checks, with standard transitive axioms only. They are wired as
+`TheCompactArithmeticAmplitudesOfVaughanGrams.lean`; the scratch was removed.
+They cover compactness, countable infinitude, finite fibers away from zero,
+and the exact positive-cutoff amplitude escape equivalence.
+The explicit independent-horizon packet-energy-zero corollary is drafted in
+`TheSubcriticalVaughanGramLimitSet.lean` (eight targets); it remains unchecked.
 All other remaining leaves named in the table are unchecked drafts. Dependencies and
 live compiler handles are recorded in `/tmp/QIVerificationState.txt`; the
 complete module queue is `/tmp/QILeanCompletionQueue.md`.

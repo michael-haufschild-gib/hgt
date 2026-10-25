@@ -273,9 +273,14 @@ the source-only submodule did not explicitly package that claim. The actual file
 now defines `meyerCriticalTopCohomologySubmodule` and proves representative
 membership, sharp and convolution closure, and nontriviality. These formalize
 the already stated paper claim, with no new mathematical premise. Its audit
-list now has fifteen endpoints. Direct actual-file recheck **71562** is the sole
-owned Lean process; wait for its exit before another Lean invocation.
-Then verify the dependent reserve-flow module to finish the bounded-orbit card.
+list now has fifteen endpoints. Direct actual-file recheck **71562** passed with
+the standard three axioms in every audit. The module is cleaned, wired and
+documented; its old scratch draft is deleted. The bounded-orbit card now awaits
+only the reserve-flow extension. Its olean was explicitly confirmed missing;
+direct missing-olean build **39547** is the sole owned Lean process, required by
+the actual reserve-flow, bounded-surface and finite-energy importers. Wait for
+exit before any further Lean invocation. Next check the actual
+`MeyerHilbertReserveFlowRigidity.lean`.
 The same visible newly constructed-index pattern is normalized explicitly in
 the two unverified nilpotent-order inductions in `MeyerAlgebraicCharacters` and
 `PositiveMeyerDegreesSeeReducedCriticalJets`. Their old scratch copies are stale.
@@ -294,7 +299,7 @@ Rows explicitly marked certified have passed; all other rows remain unverified.
 | `ArithmeticSharpAndTheHilbertAdjoint` | CERTIFIED: direct 96392, three standard axiom audits, missing-olean build 95594 passed |
 | `FaithfulHilbertSchmidtSourceReserves` | CERTIFIED: direct 4030, fifteen standard audits, missing-olean build 80282 passed |
 | `MeyerBoundedCenteredOrbits` | CERTIFIED: direct 20136, six standard audits, missing-olean build 75806 passed |
-| `MeyerCriticalTopAlgebra` | Fifteen endpoints; index correction and explicit quotient subspace added after 47078; direct recheck 71562 running |
+| `MeyerCriticalTopAlgebra` | CERTIFIED: direct 71562 and fifteen standard audits; missing-olean build 39547 running |
 | `BoundedMeyerSourceSurface` | Thirteen endpoints; direct restriction must replace conflicting AOG import |
 | `MeyerHilbertReserveFlowRigidity` | Seven endpoints; requires reserve and critical-top oleans |
 | `BoundedMeyerFaithfulReserve` | Twelve endpoints; includes exact linear-degree representation |

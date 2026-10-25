@@ -1233,6 +1233,14 @@ convolution coefficients remove the smooth term. Bounded moving coefficients
 preserve zero normalized packet norm at independently divergent horizons and
 cutoff products.
 
+The arithmetic amplitudes $S=\{H_U^2H_V^2:U,V\in\mathbb N\}$ form a compact,
+countably infinite subset of $[0,1]$ containing both endpoints. Amplitudes
+bounded away from zero force both cutoffs into a finite rectangle. A positive
+amplitude limit is eventually attained exactly in one finite fiber. For positive
+cutoffs, amplitude convergence to zero is equivalent to divergence of $UV$
+(`TheCompactArithmeticAmplitudesOfVaughanGrams`). Matrix-limit classification
+and the exact accumulation-point statements remain under verification.
+
 **Finite harmonic rigidity.** Every $H_N$ with $N\ge1$ is nonzero. For every prime
 $N/2<p\le N$, its rational $p$-adic valuation is exactly $-1$; all such distinct primes
 divide its reduced denominator once. This is proved in

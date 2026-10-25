@@ -24,7 +24,6 @@ The following still require an answer, not merely structural necessary condition
 - Are hull points on the Kronecker curve, in a closure of translated zero points, or elsewhere?
 - Which dimensions occur, and how do arithmetic zero multiplicities enter an index?
 - What source property controls mixed dilation scaling and nonzero moving translations?
-- Complete actual Möbius–Liouville module transport and other relevant corpus applications.
 
 Search the Lean corpus before mathlib, inspect source statements, and keep
 generic calibrations separate from actual source realizations. No-go closure
@@ -189,9 +188,10 @@ a paid correction. Thus transformed energy divided by original energy tends to
 ||w||²>0 and transformed normalized Gram is that of `V_j w/||w||`. Equal-Gram
 total-family unitaries identify the full modules and preserve annihilator, both
 hulls, and dimensions. The actual Möbius–Liouville square-indicator unit is already
-proved. Source comparison and transport remain to be formalized. Reuse
-`HTGeometry.DenseFeatureGramUnitary`; see
-[unit card](../2-fully-proven/wiener-units-transport-the-complete-escape-module.md).
+proved. Source comparison, transport, positive energy ratio, escape
+preservation and the Möbius–Liouville specialization passed their final
+canonical Lean checks; see
+[unit card](../3-formalized/wiener-units-transport-the-complete-escape-module.md).
 
 Further paper consequence: on admission, the common Gram limit is unique and
 its Wiener action faithful. The source first cell is nonzero. If a coefficient

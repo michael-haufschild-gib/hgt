@@ -2,10 +2,10 @@
 
 - **ID:** bounded-meyer-flow-orbits-live-in-critical-top-jets
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (core classification); extensions awaiting Lean verification
+- **Type:** THEOREM (core classification and algebra); reserve-flow extension awaiting Lean verification
 - **Source:** Q-II; faithful Hilbert–Schmidt reserve and genuine full-Hasse flow.
 - **Statement:** An actual Meyer source has bounded centered-flow orbit in Hilbert–Schmidt convolution norm exactly when its Xi jets vanish off the critical line and only the highest jet survives in each critical multiplicity block.
-- **Status:** CORE FORMALIZED. The four-way orbit classification and fixed-source/global criteria passed actual-file check and all six axiom audits. Product, radical, nontriviality and reserve-flow extensions remain unverified. External novelty unverified.
+- **Status:** CORE AND ALGEBRA FORMALIZED. The four-way classification, fixed-source/global criteria, quotient subspace, product laws, trace radical and nontriviality passed actual-file checks and all endpoint audits. Only the reserve-flow extension remains unverified. External novelty unverified.
 
 ## Exact theorem
 
@@ -126,18 +126,18 @@ HS norm, and the converse follows from the norm isometry above.
 - `DeningerMeyerXiAvoidingCenteredOrbitCriterion`: bounded nonzero eigenfunctional
   forces imaginary exponent; fixed compact source avoids every Xi value zero.
 - `XiRealCriticalPointSignLaw.exists_xiZeroCopy_re_eq_half`: unconditional nontriviality.
-- Exact finite Hasse algebra: paper proof complete, Lean verification pending.
+- `MeyerCriticalTopAlgebra`: certified bounded-carrier product and radical laws.
 
 Searches located the preceding mechanisms but no full bounded-orbit critical-highest-jet
 classification. The four-way equivalence and fixed-source/global criteria are now
-formalized. Exact product/radical corollaries, unconditional nontriviality and
-reserve-flow assertions still await verification.
+formalized, together with exact product/radical corollaries and unconditional
+nontriviality. Reserve-flow assertions still await verification.
 The core source/jet bounds are drafted in
 `ArithmeticCastelnuovoSeveri/MeyerHilbertSchmidtSource.lean` (actual-file certified); the four-way classification and
 fixed-source/global criteria are drafted in
 `ArithmeticCastelnuovoSeveri/MeyerBoundedCenteredOrbits.lean` (certified). The product,
-trace-radical, and nontriviality endpoints are present in the actual
-`ArithmeticCastelnuovoSeveri/MeyerCriticalTopAlgebra.lean` candidate, also unverified.
+trace-radical, quotient-subspace and nontriviality endpoints are certified in
+`ArithmeticCastelnuovoSeveri/MeyerCriticalTopAlgebra.lean`.
 This jet-selected restricted carrier does not supply an independent all-source
 RR/Bézout mechanism on the original scaling surface.
 
@@ -153,16 +153,34 @@ Direct `lake --old env lean` check **20136** passed with only `propext`,
 
 Temporary prints and the core scratch draft are removed; the core module is
 wired and documented. This card remains in stage 2 until its remaining
-algebra and reserve-flow extensions pass their own Lean checks.
+reserve-flow extension passes its own Lean check.
 
 The actual algebra module contains positive trace, radical-annihilation, and
 unconditional nontriviality endpoints. Its inputs are the exact full-jet algebra
-and bounded-orbit classification; its direct check and axiom audit are pending.
-It also explicitly defines `meyerCriticalTopCohomologySubmodule`, with candidate
-proofs of its representative criterion, sharp and convolution closure, and
-nontriviality, so the paper's quotient-subspace assertion has its own Lean object.
+and bounded-orbit classification. Direct check **71562** and all fifteen axiom
+audits passed with only `propext`, `Classical.choice`, and `Quot.sound`.
+It explicitly defines `meyerCriticalTopCohomologySubmodule`; the paper's quotient
+subspace assertion has its own Lean object. Audited endpoints:
 
-## Exact reserve orbit law
+- `meyerCriticalTopCohomology_mk_mem_iff`
+- `meyerCriticalTopCohomology_sharp_mem`
+- `meyerCriticalTopCohomology_convolution_mem`
+- `meyerCriticalTopCohomologySubmodule_ne_bot`
+- `meyerLineReflect_eq_self_of_critical`
+- `meyerCriticalTopJets_sharp`
+- `meyerCriticalTopJets_product_jet_zero`
+- `meyerCriticalTopJets_convolution`
+- `meyerCriticalTopJets_value_zero_product_boundary`
+- `meyerCriticalTopJets_trace_nonneg`
+- `meyerSingleTopSource_criticalTopJets`
+- `exists_nonprincipal_meyer_bounded_orbit`
+- `meyerMultipleCriticalTopSource_sharp_square_boundary`
+- `meyerCriticalTopJets_trace_radical_iff`
+- `meyerCriticalTopJets_trace_radical_annihilates`
+
+The algebra module is cleaned, wired and documented; its old scratch draft is deleted.
+
+## Exact reserve orbit law (Lean verification pending)
 
 Arithmetic sharp reverses centered flow: sharp(F_c g)=F_(-c)(sharp g), by the
 Mellin character formula and injectivity. The faithful reserve is the mean

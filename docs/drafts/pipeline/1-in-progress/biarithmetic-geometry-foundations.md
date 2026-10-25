@@ -51,7 +51,7 @@ its parent card. Open programme questions without a proof plan remain open.
 
 | Source requirement | Required evidence | Status |
 |---|---|---|
-| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; forty-eight direct-checked and axiom-audited leaves |
+| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; fifty direct-checked and axiom-audited leaves |
 | Horizon-complete objects; sign visibility | Exact signed finite-horizon laws and quantitative period/prefix comparison | Open |
 | Truncated affine representation theory | Source-defined action, boundary calculus, classification/calibration | Open |
 | A1–A2: paid ideal annihilates escape; hull inclusion | Actual receiver theorem, not an assumed ideal inclusion | Proved for every actual common Gram limit; ADR foundations reused, four interfaces directly checked and axiom-audited |
@@ -126,8 +126,8 @@ its parent card. Open programme questions without a proof plan remain open.
 | `CriticalGoldenPaymentNonclosed` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
 | `CofactorGraphClosedness` | Direct repository leaf passed; stage-3 card | Two main declarations clean |
 | `DigitRefinement` | Direct repository leaf passed; stage-3 card | Nine main declarations clean |
-| `DigitalCircleFourier` | Scratch passed; direct repository check pending | Three main declarations clean |
-| `FinitePronicStepEmbedding` | Scratch passed; direct repository check pending | Two main declarations clean |
+| `DigitalCircleFourier` | Direct repository leaf passed; stage-3 card | Three main declarations clean |
+| `FinitePronicStepEmbedding` | Direct repository leaf passed; stage-3 card | Two main declarations clean |
 | `GoldenDivisorResponse` | Scratch passed; direct repository check pending | Five main declarations clean |
 | `GeometricPoleExtraction` | Scratch passed; direct repository check pending | Four main declarations clean |
 | `GeometricShellHilbert` | Scratch passed; direct repository check pending | Six main declarations clean |
@@ -137,7 +137,7 @@ its parent card. Open programme questions without a proof plan remain open.
 | `PaidSourcePerturbations` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `FullWienerAnnihilation` | Consolidated ADR interfaces and direct repository leaf passed | Four chosen and universal declarations clean |
 
-Completed main-declaration axiom audits for forty-eight checked leaves report only `propext`,
+Completed main-declaration axiom audits for fifty checked leaves report only `propext`,
 `Classical.choice`, and `Quot.sound`. Audits used isolated source-copy drivers; each leaf also passed its direct source check. The literal-B1
 no-go is closed in `5-failed/biarithmetic-literal-dimension-euler-characteristic.md`; its
 positive survivor and exact prefix visibility now have separate stage-3 cards.
@@ -609,10 +609,8 @@ Active drafts:
   direct source check and all four audits. Stage-3 card and dependency olean present.
 - `DigitRefinement.lean`: exact grid refinement, uniform supremum bound,
   uniform convergence, integer interpolation, exact base-five scaling, right continuity,
-  and interpolation at every nonnegative base-five rational. First check passed
-  the first five audits, including uniform convergence. Cast normalization,
-  reciprocal cancellation, and explicit right-neighbourhood membership are
-  repaired in the remaining proofs; recheck pending.
+  and interpolation at every nonnegative base-five rational. Direct source check
+  and all nine transitive audits passed; stage-3 card and umbrella import present.
 - `WeightedDigitEnumeration.lean`: natural-index enumeration of complete
   digit words, exact logarithmic block length, geometric-row comparison, and actual
   integer block second moment. The missing `WeightedDigitMoments` dependency olean
@@ -961,12 +959,9 @@ cards. The admission threshold also has a stage-3 card, including its unpaid cri
 The corpus's `HTGeometry/L1PeriodizationFourier.lean` already contains
 `fourierCoeffOn_l1PeriodizationAtScale` for every integrable complex seed. Together with
 `RHTower.integral_Ioi_zero_fract_cpow`, it supplies the full-strip circle coefficient law.
-The paper card is `../1-in-progress/biarithmetic-digital-circle-fourier.md`; the unverified
-draft is `DigitalCircleFourier.lean`. Its first check exposed
-ambiguous fractional-part casts and a missing import of the corpus's exponential
-change-of-variables theorem. Explicit real casts and the exact
-`BurnolCoPoissonBerezinFaithful` import repair those issues; its dependency olean
-exists. Recheck remains pending. The critical-line seed alone is already in
+The formalized card is `../3-formalized/biarithmetic-digital-circle-fourier.md`.
+`DigitalCircleFourier.lean` passed its direct check and all three transitive
+axiom audits. The critical-line seed alone is already in
 `RHTower/ZetaCriticalLineNotSquareIntegrable.lean`; the new draft extends the seed to the
 whole open strip needed by the golden family.
 
@@ -1074,12 +1069,12 @@ the limit statement; an explicit function target now fixes that conversion.
 No proof depending on the failed limit is promoted; the revised scratch
 requires its next check.
 
-`DigitalCircleFourier` passed its repaired scratch check and all three
-transitive audits. The production leaf is wired; direct check is queued.
+`DigitalCircleFourier` passed its direct repository check and all three
+transitive audits. The umbrella import and stage-3 card are present.
 The source-profile/cyclic-module comparison is not part of this leaf.
 
-`FinitePronicStepEmbedding` passed its revised scratch check and both
-transitive audits. Production source is wired; its direct check is queued.
+`FinitePronicStepEmbedding` passed its direct source check and both
+transitive audits. The umbrella import and stage-3 card are present.
 
 `GoldenDivisorResponse` passed its repaired scratch check and all five
 transitive audits. Production source is wired; direct check is queued.
@@ -1105,6 +1100,11 @@ This does not establish the discrete source asymptotic or tangent realization.
 Pending source check: `/tmp/BiarithmeticChirpSourceRegularity.lean` drafts
 the actual scalar chirp row, its derivative and derivative decay, and an
 explicit uniform integer-increment bound. Four audits remain unchecked.
+
+Pending source check: `/tmp/BiarithmeticChirpPacketIntegral.lean` drafts
+the exact weighted half-line realization of the explicit chirp kernel,
+its integrability, and strictly positive energy for nonzero finite packets.
+Three audits are pending after the Cauchy-kernel dependency.
 
 Pending source check: `/tmp/BiarithmeticComplexShellShift.lean` constructs complex normalized shell shifts with exact isometry and semigroup laws. This is the missing bounded-operator input for the existing intrinsic infinite-kernel convolution proof plan.
 

@@ -1,8 +1,8 @@
 # Wiener units transport the complete escape module
 
 - **ID:** wiener-units-transport-the-complete-escape-module
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean completion pending)
+- **Stage:** 3-formalized
+- **Type:** LEAN THEOREM
 - **Source:** Q-III; exact prefix convolution; full Wiener covariance convergence;
   `UnitsOfTheWienerMonoidPreservePayment.lean` and
   `AnIndexFormulaForTheActualReceiver.lean`.
@@ -73,17 +73,23 @@ module does not.
 Full Wiener pairing convergence, exact source-row dilation and abstract unit
 conjugacy have passed canonical source checks and transitive axiom audits.
 The complete actual real convolution theorem, positive source-energy ratio,
-preservation of escape and Möbius–Liouville specialization passed the combined
-scratch with only standard axioms. Their canonical leaves are installed and
-umbrella-wired; final direct per-file audits are pending. The first canonical split
-check exposed a missing import in the real-convolution leaf; that import is
-fixed and its olean build passed. Remaining checks follow
-[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
+preservation of escape and Möbius–Liouville specialization passed their final
+canonical source-only checks. All transitive axiom reports contain only
+`propext`, `Classical.choice`, and `Quot.sound`. Their canonical leaves are
+installed and umbrella-wired.
 
 Canonical source application leaves:
 - `ArithmeticDefectRigidity/PaidCorrectionsPreserveNormalizedCofactorGrams.lean`
 - `ArithmeticDefectRigidity/RealWienerConvolutionTransportsCofactorGrams.lean`
 - `ArithmeticDefectRigidity/TheMoebiusAndLiouvilleCofactorModulesAreUnitEquivalent.lean`
+
+The actual application declarations in `ActualCofactorLimit` include
+`unit_source_energy_ratio_tendsto`, `wienerUnitSourceGram_tendsto`,
+`admits_or_real_unit_convolution_gram_tendsto`,
+`admits_or_real_unit_convolution_energy_ratio_tendsto`,
+`admits_or_real_unit_convolution_escapes`, and
+`admits_or_liouville_gram_is_unit_transport`. The abstract unitary equivalence
+and full Wiener intertwining are in `WienerUnitsTransportCofactorGrams`.
 
 ## Gates
 
@@ -91,4 +97,4 @@ Canonical source application leaves:
 - [x] Full Wiener pairing convergence in Lean.
 - [x] Unit-twisted cyclic realization and exact source Gram comparison in scratch.
 - [x] Möbius–Liouville specialization and transitive scratch axiom audit.
-- [ ] Final canonical source checks for the actual convolution applications.
+- [x] Final canonical source checks and transitive axiom audits for the actual convolution applications.

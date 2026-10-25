@@ -37,7 +37,7 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 |---|---|
 | Zero cofactor forces dimension at most p-1 | Final canonical source check passed; positive survivor and exclusion card moved to `3-formalized` |
 | Augmentation countermodel and singleton character hull | Existing countermodel scratch passed; complete source with singleton claim is `/tmp/qiii-augmentation-full-check.lean`, unchecked |
-| Actual unit transport, Möbius/Liouville equivalence | Canonical final checks; real convolution olean exists |
+| Actual unit transport, Möbius/Liouville equivalence | All canonical source-only checks passed with standard axioms; card moved to `3-formalized` |
 | Finite joint spectral multiplicities and normalized Bohr representatives | All three canonical source-only checks passed with standard axioms; card moved to `3-formalized` |
 | Rank-one multiplicative signs | Draft scratch, then canonical placement/check |
 | Visible interior pole orders, paid jets, critical boundary values, unit orbits | Canonical checks after successful combined scratch |
@@ -85,10 +85,14 @@ standard axioms for all seven printed statements. The finite-index batch is
 complete. Paid-correction final check `32327` exposed a misindented final
 rewrite in the nonnegative-energy corollary. The direct indentation repair
 passed in retry `78335`; both paid-correction statements have standard axioms.
-Paid corrections are complete. The next direct source-only audit is
-`RealWienerConvolutionTransportsCofactorGrams.lean`, which now also explicitly
-prints axioms for `unit_source_energy_ratio_tendsto`. The Möbius–Liouville
-leaf still needs its final source-only check. No concurrent owned Lean process.
+Paid corrections are complete. Real-convolution final source-only audit
+`56886` passed with standard axioms for all eight printed targets, including
+positive source-energy ratio and preservation of escape. Möbius–Liouville
+final source-only audit `94844` passed with standard axioms. The unit-transport
+batch is complete. The current direct check is
+`/tmp/qiii-augmentation-full-check.lean`, covering the existing countermodel
+and its previously paper-only singleton hull and scalar-character Gram.
+Exactly one owned Lean check is active.
 
 ## Direct source work remaining
 

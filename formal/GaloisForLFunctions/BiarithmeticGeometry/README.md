@@ -599,6 +599,28 @@ Source: `IntrinsicGoldenSeries.lean`, `goldenIntrinsicCount_eq`,
 `goldenIntrinsicCount_bounds`, `goldenIntrinsicReceiverSeries_factorization`,
 `goldenIntrinsicReceiverSeries_one`.
 
+### Exact finite step covariance
+
+For arbitrary real rows `s,t`, the sum `Σₙ₌₁ᴺ s(n)t(n)/(n(n+1))`
+equals the integral of their horizon-truncated floor-step product against
+`x⁻² dx` on `(1,∞)`. Truncation supplies boundedness while retaining every
+signed term. This exact embedding has no growth premise on the source rows.
+
+Source: `FinitePronicStepEmbedding.lean`, `finitePronicPairing_eq_stepGram`,
+`finitePronicPairing_eq_integral`.
+
+### Zeta coefficients of the digital circle seed
+
+For `0<γ<1`, the seed `frac(exp y) exp(-γy)` is integrable on the real line.
+Its periodization at circumference `L>0` has Fourier coefficient
+`-ζ(s)/(Ls)` at `s=γ+2πim/L`. Logarithmic substitution turns the line
+transform into the fractional-part Mellin integral. This covers the whole
+open strip and makes no nonvanishing assertion about the sampled zeta values.
+The comparison with the actual digit profile and its cyclic module remains separate.
+
+Source: `DigitalCircleFourier.lean`, `integrable_digitalLogSeed`,
+`fourier_digitalLogSeed`, `fourierCoeff_digitalCircleProfile`.
+
 ## Mechanisms and traps
 
 1. **Affine identities need a normalization.** Multiplying every dilation by a multiplicative

@@ -192,3 +192,10 @@ Pending source check: `/tmp/BiarithmeticChirpSourceRegularity.lean` defines
 the actual scalar row, differentiates its positive-line interpolation,
 proves derivative decay, and gives an explicit bound for every integer
 increment. Four audits are drafted; no check has yet passed.
+
+Pending source check: `/tmp/BiarithmeticChirpPacketIntegral.lean` identifies
+the exact weighted half-line packet integral with the explicit real kernel,
+including integrability and strict positive energy. It reduces to the existing
+half-line exponential Gram theorem. Three audits are drafted; the Cauchy-kernel
+dependency and this source are unchecked. The boundary-loss law and source
+asymptotics remain separate obligations.

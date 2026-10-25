@@ -58,10 +58,10 @@ includes zero cutoffs; only the escape equivalence needs positivity.
 Corpus search found logarithmic harmonic limits and the known sufficient
 product-divergence mechanism, without an indexed exact converse for positive
 Vaughan cutoffs. This is an internal audit, not an external novelty claim.
-The finite harmonic nonvanishing leaf is checked. The uniform Gram and compact
-amplitude papers are dependency-closed; their Lean chains remain under verification.
-The harmonic amplitude escape equivalence is drafted in
-`/tmp/QISmoothAmplitudeSetTools.lean`. The matrix converse, convergence dichotomy,
+The finite harmonic nonvanishing and uniform Gram leaves are checked. The
+harmonic amplitude escape equivalence passed producing and final direct checks
+in `TheCompactArithmeticAmplitudesOfVaughanGrams.lean`, with only standard
+transitive axioms. The matrix converse, convergence dichotomy,
 and exact attained matrix limit set are drafted in
-`/tmp/QIVaughanGramLimitClassificationTools.lean`. Both remain uncompiled.
+`/tmp/QIVaughanGramLimitClassificationTools.lean`; that leaf is under verification.
 No quantitative rate for escaping cutoffs or fixed zero-free strip follows.

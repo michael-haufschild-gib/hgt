@@ -421,8 +421,12 @@ corresponding homogeneous logarithmic norm and energy bounds, with factors
 `L(w)=Σ_i|w_i|` and `L(w)^2`. Equal convolution coefficients remove the smooth
 term, and bounded moving coefficients preserve zero normalized packet norm at
 independently divergent horizons and cutoff products
-(`UniformLogarithmicLawsForVaughanSuperpositions`). Classification consequences
-remain under verification.
+(`UniformLogarithmicLawsForVaughanSuperpositions`). The actual amplitude set
+`{H_U²H_V²}` is now Lean-verified compact and countably infinite; positive limits
+force eventual equality in one finite cutoff fiber. At positive cutoffs its
+zero limit is equivalent to product escape
+(`TheCompactArithmeticAmplitudesOfVaughanGrams`). Matrix classification and
+accumulation-point consequences remain under verification.
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?
@@ -548,6 +552,10 @@ Full-Hasse centered orbits have an exact support classification
 individual Xi jet, support only in critical highest jets, and Hilbert–Schmidt
 norm isometry are equivalent. Boundedness for all sources, or already for the
 fixed Xi-avoiding source, is exactly RH plus simplicity.
+The bounded-orbit classes form an explicitly defined nontrivial complex subspace,
+stable under sharp and convolution (`MeyerCriticalTopAlgebra`). Products retain
+only simple critical values. Ordinary trace is nonnegative on this carrier,
+and its value-zero radical annihilates the carrier in genuine cohomology.
 
 Centered flow preserves the literal mixed arithmetic sharp product, so every
 reading of that product is invariant. A nonnegative invariant majorant controlling

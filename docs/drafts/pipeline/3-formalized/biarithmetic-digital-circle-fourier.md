@@ -1,9 +1,9 @@
 # Zeta coefficients of the digital circle profile
 
 - **ID:** biarithmetic-digital-circle-fourier
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE (Lean formalization incomplete)
-- **Proof status:** Only statements with completed Lean checks and axiom audits are proved. Paper arguments below are proof plans; every significant claim remains a formalization obligation.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Proof status:** Direct Lean source check and all three transitive axiom audits passed.
 - **Parent:** [Golden digital module](../1-in-progress/biarithmetic-golden-digital-module.md)
 - **Statement:** For `0<gamma<1`, periodizing `frac(exp y) exp(-gamma*y)` at circumference `L>0` gives Fourier coefficient `-zeta(s)/(L*s)` at `s=gamma+2*pi*i*m/L`.
 
@@ -28,9 +28,13 @@ In particular this coefficient theorem asserts no zeta nonvanishing on an arithm
 ## Verification
 
 - [x] Dependency-closed proof plan from the corpus's strip Mellin and L1 periodization results.
-- [ ] Lean general-strip seed, integrability, line transform, and circle coefficients.
-- [ ] Direct source check, axiom audit, and umbrella import.
+- [x] Lean general-strip seed, integrability, line transform, and circle coefficients.
+- [x] Direct source check, axiom audit, and umbrella import.
 
-`DigitalCircleFourier.lean` passed its scratch check and all three
-transitive axiom audits. Its production source is wired; the direct
-repository check is queued before moving this card to stage 3.
+Lean: `BiarithmeticGeometry/DigitalCircleFourier.lean`.
+Audited declarations: `integrable_digitalLogSeed`, `fourier_digitalLogSeed`,
+and `fourierCoeff_digitalCircleProfile`. All report only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+Direct check: `lake --old env lean GaloisForLFunctions/BiarithmeticGeometry/DigitalCircleFourier.lean`.
+Umbrella import wired; umbrella not compiled.
