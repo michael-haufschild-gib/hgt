@@ -59,6 +59,15 @@ Consequently the following assertions are equivalent:
 3. P equals ordinary trace square on B.
 4. The faithful reserve cone on the bounded source surface has RR.
 5. The faithful reserve cone equals its ordinary degree cone.
+6. Some complex-linear cohomological degree is strictly positive on every
+   nonprincipal bounded-carrier sharp square.
+
+For assertion 6, necessity uses the same multiple critical highest jet: its
+sharp square is principal, so every descended linear degree reads zero.
+Under critical simplicity, choose the ordinary trace degree. On B its square
+reading equals the faithful reserve, which is strictly positive off genuine
+boundaries. Positivity is required only on B; no claim is made about the
+chosen degree on sources outside B.
 
 No assertion concerns jets outside B. On the full source carrier the analogous
 criterion is RH together with simplicity. This domain distinction prevents
@@ -75,5 +84,8 @@ invariance and RR to a restricted carrier.
 
 The diagonal argument uses actual rows and the existing l2 inner-product sum,
 without a new source realization or infinite norm expansion premise. Lean must
-formalize the five equivalent assertions and preserve the unconditional reserve
-invariance separately. No Lean draft for this leaf yet. External novelty unverified.
+formalize the six equivalent assertions and preserve the unconditional reserve
+invariance separately. Lean draft: `/tmp/QIIBoundedMeyerFaithfulReserveDraft.lean`; unchecked.
+External novelty unverified.
+
+Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/BoundedMeyerFaithfulReserve.lean`; unverified and unwired. Scratch draft retained until actual audit succeeds.

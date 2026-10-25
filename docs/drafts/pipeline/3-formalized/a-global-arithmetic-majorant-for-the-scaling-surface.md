@@ -1,11 +1,11 @@
 # A global arithmetic majorant for the scaling surface
 
 - **ID:** a-global-arithmetic-majorant-for-the-scaling-surface
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** Q-II; extension of the aperture majorant.
 - **Statement:** One quadratic arithmetic reserve gives Bézout and ampleness on the entire compact-source scaling surface, independently of RH, and fails RR.
-- **Status:** `[PROVED HERE, paper]`; Lean proof pending; external novelty unverified.
+- **Status:** `[PROVED HERE, paper and Lean]`; actual-file final audit passed; external novelty unverified.
 
 ## Source estimate
 
@@ -84,7 +84,7 @@ coordinates to vanish. Thus the cone is pointed. For any class, adding sufficien
 large positive multiples of both fibres makes the degrees positive and their product
 larger than its fixed finite reserve. The added pure-fibre class is itself effective,
 so every class is a difference of two effective classes. These arguments also apply
-to the aperture majorant cone. Their exact Lean statements remain to be added.
+to the aperture majorant cone. The global cone statements are formalized below; the aperture geometry leaf is checked separately.
 
 ## New insight and remaining work
 
@@ -106,6 +106,22 @@ bound; this construction does not prove that step.
 - `ArithmeticCriticalityTheory/FullZeroFormWeilPositivity.lean`: exact pole split.
 - ACS: original defect/full-zero-form identity and sharp source cone criteria.
 
-All source estimates have explicit proofs above. Formalization must establish the
-weighted correlation lemma, its actual prime-sum landing, the weighted bilinear
-reserve, and the three cone conclusions before moving this card to stage 3.
+## Lean certificate
+
+`ArithmeticCastelnuovoSeveri/GlobalArithmeticMajorantsSupplyBezout.lean` passed
+its actual-file `lake --old env lean` audit. The eight endpoint audits reported
+only `propext`, `Classical.choice`, and `Quot.sound`:
+
+- `globalArithmeticMajorant_eq_defect_add_two_reserve`
+- `defect_sq_le_globalArithmeticMajorant`
+- `globalArithmeticMajorantCone_bezout`
+- `globalArithmeticMajorantCone_ample_zero`
+- `globalArithmeticMajorantCone_not_riemannRoch`
+- `globalArithmeticMajorantCone_convex`
+- `globalArithmeticMajorantCone_generating`
+- `globalArithmeticMajorantCone_pointed`
+
+The module also proves the mass floors, ampleness, additive closure, nonnegative
+scalar closure, and zero membership. The source estimates are independently
+certified in `ExponentialSourceMassControlsTheFullPrimeSum`. Both modules are
+wired into the programme umbrella; the umbrella was not compiled.

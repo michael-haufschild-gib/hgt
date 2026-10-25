@@ -91,17 +91,24 @@ here puts the characters on the Kronecker curve, identifies them with zeta
 zeros, or identifies m_omega with a zero order. Those remain actual-source
 classification questions.
 
-## Gates
+## Lean status and gates
 
-The first Lean draft is `/tmp/qiii_finite_joint_characters_body.lean`.
-It uses the existing `HTGeometry.exists_common_eigenvector` inside each
-nonzero joint sector to prove multiplicativity, avoiding a separate nilpotent
-binomial expansion. It also derives the exact finite dimension sum from the
-existing independent-supremum rank theorem. This draft is not checked yet;
-Bohr identification and the converse hull inclusion remain to be drafted.
+The full finite joint-character scratch passed with standard axioms. The
+proof uses `HTGeometry.exists_common_eigenvector` inside a nonzero joint
+sector to prove multiplicativity, and the existing independent-supremum
+rank theorem for the dimension sum. Normalized Bohr identification and
+both hull directions passed as well. Canonical leaves are installed and
+umbrella-wired:
+
+- `HTGeometry/FiniteCommutingAlgebraActionsHaveJointCharacters.lean`
+- `ArithmeticOrientationTheory/NormalizedBohrCharacters.lean`
+- `ArithmeticDefectRigidity/FiniteCofactorIndexCountsJointMultiplicity.lean`
+
+Final per-file checks remain in `/tmp/qiii-refinements-canonical-audit.sh`.
 
 - [x] Dependency-closed paper argument, with all actual structural inputs proved.
 - [x] Relevant corpus mechanisms inspected; no arithmetic hypothesis added.
-- [ ] Lean finite joint decomposition and exact dimension sum.
-- [ ] Multiplicative characters, finite Bohr hull equality, actual index formula.
-- [ ] Transitive axiom audit, final source checks, umbrella imports.
+- [x] Lean finite joint decomposition and exact dimension sum.
+- [x] Multiplicative characters, normalized Bohr hull equality, actual index formula.
+- [x] Transitive scratch axiom audit and umbrella imports.
+- [ ] Final canonical source checks.

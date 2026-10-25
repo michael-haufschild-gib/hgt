@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper; closed-operator calibration)
 - **Parent:** [Golden digital module](../1-in-progress/biarithmetic-golden-digital-module.md)
-- **Statement:** For every zero-origin arithmetic row, the critical Wiener kernels whose full cofactor action has finite total pronic energy form the domain of a closed operator and a canonical Banach ideal. For an absolutely mean-summable source this is exactly its paid ideal. Ambient Wiener closedness is equivalent to a uniform total-energy estimate on all paid kernels.
+- **Statement:** For every arithmetic row, the critical Wiener kernels whose full cofactor action has finite total pronic energy form the domain of a closed operator and a canonical Banach ideal. The source's origin value is irrelevant. For an absolutely mean-summable source this is exactly its paid ideal. Ambient Wiener closedness is equivalent to a uniform total-energy estimate on all paid kernels.
 
 ## The universal pronic action
 
@@ -29,6 +29,15 @@ Every coordinate is a finite sum. The floor-composition identity gives
 `P_(a*b)v=P_a(P_bv)` exactly. On `H`, this formal action agrees with `pi(a)`: finite
 Wiener truncations converge in operator norm, and each coordinate of the finite sum
 stabilizes. Coordinate evaluation is continuous in both the Wiener and pronic norms.
+
+The zero-origin condition on the source row can be removed. For every summation
+index `1<=j<=n`, one has `floor(n/j)>=1`; at `n=0` the sum is empty.
+Consequently no cofactor coordinate reads `v(0)`, and the output always has
+zero origin. Replacing the source's origin by zero leaves its entire cofactor
+action and graph domain unchanged. The formal construction exposes this slight
+strengthening; the finite-index observation proves it independently on paper.
+It is an elementary extension of the same construction, not a separate
+originality claim.
 
 ## Closed graph and Banach ideal
 
@@ -115,7 +124,8 @@ general `lp` norm and matrix constructions, not an existing universal pronic
 payment graph. The graph's coordinates can therefore be defined directly in
 `W_(1/2) x lp(C,2)` by the finite cofactor formula divided by the square root
 of the pronic weight; closedness is a countable intersection of coordinate
-equalizers. This is a construction plan, not a formalized theorem.
+equalizers. This graph construction is now formalized; its source comparison
+and Wiener ideal action remain separate pending leaves.
 
 For the critical closure, `HTGeometry/ConstraintMotiveRelativity/PrimeAugmentationCompletion.lean`
 already proves `closure_image_augIdeal_one`: finite zero-sum vectors are dense
@@ -124,7 +134,7 @@ Its statement and proof were inspected. The actual source comparison and the
 square-partial-sum domain still require their own proofs; the abstract density
 theorem does not supply them.
 
-The current graph draft inherits the product's maximum norm. It is equivalent
+The formalized graph inherits the product's maximum norm. It is equivalent
 to the displayed sum norm, since `max(x,y)<=x+y<=2*max(x,y)` for nonnegative
 `x,y`. Thus the checked construction must distinguish which norm is literally
 defined from the equivalent sum norm used in the paper estimates. No Lean
@@ -140,8 +150,9 @@ remains unchecked. This source identification uses every Wiener coefficient, wit
 no tower-support restriction and no presumed closedness of payment.
 
 The closed graph, completeness, input injectivity, and exact energy-domain
-identification passed the five audits in `CofactorGraphDomain`; its direct
-repository check is pending. The ambient closedness criterion is drafted in
+identification passed the five audits and direct source check in
+`CofactorGraphDomain`; its [stage-3 card](../3-formalized/biarithmetic-complete-cofactor-graph.md)
+records the exact scope. The ambient closedness criterion is drafted in
 `/tmp/BiarithmeticCofactorGraphClosedness.lean`. Corpus search found a Hilbert-space
 bounded-below criterion, which does not apply to the Wiener Banach domain.
 Mathlib's Banach theorem
@@ -169,6 +180,9 @@ nonnegative series. The dedicated finite-core corpus query returned generic
 tail estimates and other graph cores, but no exact partial-sum core theorem.
 No external originality is claimed for this elementary sequence result.
 
+`CriticalPartialSumCore` passed its scratch check and all seven audits;
+the source is promoted and wired, with its direct repository check pending.
+
 ## Reusable completed block operators
 
 The further corpus search found `HTGeometry/PositiveIntegerBlockOperators.lean`.
@@ -187,7 +201,10 @@ mass is exactly `1/j`, by the public theorem
 Thus the existing operator is exactly normalized pronic dilation, with squared
 norm `(1/j)||f||^2`; its composition formula reduces to cancellation of the
 middle weight. This reuses the completed operator infrastructure. The pronic
-specialization and its integration to the Wiener action remain to be formalized.
+specialization and its integrated Wiener action are now formalized in
+`PronicDilationOperators`, with a direct check and six clean audits;
+the [stage-3 card](../3-formalized/biarithmetic-completed-pronic-dilations.md)
+records its ordinary-energy scope.
 
 The subsequent coordinate audit found the existing real identity
 `RHTower.floorTransform_comp` in `RHTower/FloorTransformHarmonicInverse.lean`:

@@ -439,6 +439,12 @@ scratch axiom audits, producing and final direct checks; see
 `../3-formalized/vaughan-convolution-mean-and-logarithmic-fluctuation.md`.
 The prefix-to-energy transfer and full uniform Gram law remain under formalization.
 
+The two uniform truncated-Möbius logarithmic targets passed their scratch
+axiom audits, producing check, and final direct check. They are wired as
+`UniformLogarithmicCancellationInTruncatedMobiusReceivers.lean`; the completed
+card is `../3-formalized/uniform-logarithmic-truncated-mobius-receivers.md`.
+One threshold works for every truncation cutoff, including at half damping.
+
 The fresh source `TheCofinalSlopeIsTheOneLineEnergyOfOneOverZeta.lean`
 expresses the cofinal slope as a weighted integral of
 `1/|it ζ(1+it)|²`, with an absolutely convergent Euler-product weight.
@@ -492,3 +498,32 @@ Fourier-energy lower bound and a linear Fourier `ℓ¹` bound without the extra
 square-root loss. These are concrete inputs for a future signed average over
 primes; no such average or fixed-strip producer follows from the read statements.
 This audit does not certify the concurrently edited leaf or retire that route.
+
+The physical-residue Kloosterman carrier preserves the signed modulus sum
+exactly (`KloostermanPhysicalResidueModulusBilinear`). Its integer-kernel
+operator source proves Cauchy and Hilbert–Schmidt reductions and a scalar
+cardinality/totient baseline. The missing spectral estimate remains an
+estimate on that signed kernel; neither bookkeeping identity supplies it.
+The separate `MRFibreReduction` source requires its averaged short-interval
+property explicitly, so it cannot be used as an unconditional source bound.
+Both sources were read; no new fixed-strip producer follows from them.
+
+The one-prime Mertens transfer is an exact nonnegative discrete tent, but
+its double sum retains the signs of both prime-free Möbius coefficients.
+`MobiusMertensPrimeRemovalTentLaw` also proves a negative unit-seed lobe
+after removing two primes. Thus entrywise positivity of the one-prime
+kernel is not a sign bound on its signed quadratic form, and iterated
+prime deletion does not preserve that entrywise positivity. This is an
+existing local obstruction with an exact tent-law survivor, not a
+retirement of the signed averaging route.
+
+The fresh cofactor-module sources give unit transport from Möbius to Liouville
+and a joint-multiplicity formula when the actual limit Hilbert space is finite
+dimensional. The latter is an explicit hypothesis; the complete result also
+allows continuum Hamel index. Neither source excludes actual escape. In
+particular, the finite five-row Vaughan Gram at the trivial power scale cannot
+be identified with the complete cofactor Gram normalized by actual receiver
+energy. The checked interior energy is `o(T^(1-2ε))`, so the trivial-scale
+law alone gives no bound after division by that smaller energy. Its rank-one
+law therefore supplies no finite-index or hull-support bound for that module.
+The concurrent sources were read, not independently certified here.

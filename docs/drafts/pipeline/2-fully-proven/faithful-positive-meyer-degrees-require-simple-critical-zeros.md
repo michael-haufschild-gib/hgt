@@ -96,7 +96,7 @@ Lean target; it is not implied merely by the terminal equivalence.
 - `DeningerMeyerCausalConjugation`: conjugated raw jets.
 - `DeningerMeyerConvolutionWeilTrace`: genuine source sharp and trace.
 - `MeyerNumericalRadicalAndMultiplicity`: exact boundary and numerical kernels; actual-file check and standard axiom audits passed.
-- `MeyerSourceIntersectionSurface`: positive faithful ordinary trace criterion; actual unchecked module.
+- `MeyerSourceIntersectionSurface`: positive faithful ordinary trace criterion; actual-file certified with standard axiom audits.
 
 `FaithfulPositiveMeyerDegrees.lean` contains the complete proof attempts for the
 local classification and the terminal equivalences. Its jet and divisor APIs have

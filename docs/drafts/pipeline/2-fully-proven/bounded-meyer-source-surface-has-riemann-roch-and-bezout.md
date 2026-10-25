@@ -100,3 +100,5 @@ At each simple critical point supplied above any height, the actual point
 source has only its zeroth jet, belongs to W, and has self trace exactly one:
 critical reflection fixes the point, its multiplicity is one, and its source
 value is one. This gives cofinally many strictly positive source witnesses.
+
+Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/BoundedMeyerSourceSurface.lean`; unverified and unwired. Scratch draft retained until actual audit succeeds.

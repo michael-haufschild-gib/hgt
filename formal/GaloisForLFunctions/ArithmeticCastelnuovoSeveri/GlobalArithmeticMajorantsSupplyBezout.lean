@@ -234,7 +234,7 @@ theorem globalArithmeticMajorantCone_ample_zero (x : ScalingCycle)
   change scalingPairFun (x.1, x.2.1, 0) (0, 1, 0) = 0 at hV
   have hz : ((0 : realTests) : ℝ → ℝ) = 0 := rfl
   simp only [scalingPairFun, hz, poleA_zero, poleB_zero, localPair_zero_left,
-    mul_zero, zero_mul, mul_one, one_mul, add_zero, zero_add] at hH hV
+    mul_zero, mul_one, add_zero, zero_add] at hH hV
   change (x.1, x.2.1, (0 : realTests)) = (0, 0, 0)
   rw [hH, hV]
 
@@ -300,12 +300,3 @@ theorem globalArithmeticMajorantCone_pointed {x : ScalingCycle}
   linarith only [hx.1, hx.2.1, hnx.1, hnx.2.1]
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.globalArithmeticMajorant_eq_defect_add_two_reserve
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.defect_sq_le_globalArithmeticMajorant
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.globalArithmeticMajorantCone_bezout
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.globalArithmeticMajorantCone_ample_zero
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.globalArithmeticMajorantCone_not_riemannRoch
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.globalArithmeticMajorantCone_convex
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.globalArithmeticMajorantCone_generating
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.globalArithmeticMajorantCone_pointed

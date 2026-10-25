@@ -73,8 +73,22 @@ theorem arithmeticMajorantSourceCone_pointed {r : ℝ} (hr : 0 < r)
   change x ∈ (scalingSubsurface (realTestsAt r)).sourceCone (arithmeticMajorantSourceEnergy r) at hx
   change -x ∈ (scalingSubsurface (realTestsAt r)).sourceCone (arithmeticMajorantSourceEnergy r) at hnx
   rw [PolarSurface.mem_sourceCone_iff] at hx hnx
+  have hnH : 0 ≤ -((scalingSubsurface (realTestsAt r)).pair x)
+      (scalingSubsurface (realTestsAt r)).H := by
+    calc
+      0 ≤ ((scalingSubsurface (realTestsAt r)).pair (-x))
+          (scalingSubsurface (realTestsAt r)).H := hnx.1
+      _ = _ := ((scalingSubsurface (realTestsAt r)).pair.flip
+        (scalingSubsurface (realTestsAt r)).H).map_neg x
+  have hnV : 0 ≤ -((scalingSubsurface (realTestsAt r)).pair x)
+      (scalingSubsurface (realTestsAt r)).V := by
+    calc
+      0 ≤ ((scalingSubsurface (realTestsAt r)).pair (-x))
+          (scalingSubsurface (realTestsAt r)).V := hnx.2.1
+      _ = _ := ((scalingSubsurface (realTestsAt r)).pair.flip
+        (scalingSubsurface (realTestsAt r)).V).map_neg x
   rw [PolarSurface.pair_ample]
-  linarith only [hx.1, hx.2.1, hnx.1, hnx.2.1]
+  linarith only [hx.1, hx.2.1, hnH, hnV]
 
 /-- Every aperture cycle is a difference of two arithmetic effective cycles. -/
 theorem arithmeticMajorantSourceCone_generating {r : ℝ} (hr : 0 < r)

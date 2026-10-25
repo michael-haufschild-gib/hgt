@@ -49,3 +49,5 @@ scope are the point. External novelty unverified. Complete unrun Lean draft:
 `/tmp/QIIMeyerHermitianDegreePartDraft.lean`, including uniqueness, exact square
 projection, and the finite causal restriction without a Hermiticity premise
 on the original degree.
+
+Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/MeyerHermitianDegreePart.lean`; unverified and unwired. The scratch copy remains until actual-file verification succeeds.

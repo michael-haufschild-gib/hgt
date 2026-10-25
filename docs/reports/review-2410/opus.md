@@ -400,8 +400,10 @@ for divisor-square bounded coefficient families with convergent reciprocal mass
 (`LogarithmicCancellationSurvivesTheDampedFloorTransform`, `0<ε≤1/2`).
 The actual Vaughan coefficient minus `H_UH_V` now satisfies those bounds, and its
 centered convolution row is exactly `-H_UH_V A_(1,ε)-A_(r,ε)`
-(`TheVaughanConvolutionSeparatesItsSmoothMean`). Uniform Gram consequences remain
-under formalization.
+(`TheVaughanConvolutionSeparatesItsSmoothMean`). All truncated Möbius partial sums
+and their damped centered prefixes also share every logarithmic rate uniformly
+over the cutoff (`UniformLogarithmicCancellationInTruncatedMobiusReceivers`).
+Uniform Gram consequences remain under formalization.
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?
@@ -456,6 +458,13 @@ The full prime source also has an aperture-independent estimate
 (`ExponentialSourceMassControlsTheFullPrimeSum`). These are unconditional source
 bounds; neither removes the extra reserve required by RR.
 
+This prime bound now gives one globally compatible arithmetic cone on the full
+compact-source surface, with no aperture parameter. It is convex, pointed, and
+generating; Bézout and strict ampleness hold on the original pairing. Its reserve
+is exactly `δ+2R`, with `R` bounded below by source mass, so RR fails
+(`GlobalArithmeticMajorantsSupplyBezout`). Aperture gluing is therefore unnecessary
+for independent arithmetic Bézout; eliminating the extra reserve remains open.
+
 Linearity also does not settle descent or positivity. On the larger actual Meyer source,
 origin evaluation is a complex-linear degree whose sharp-square value is the strictly
 positive mass `integral exp(t)|g(t)|²`. A nonzero Xi-cap Poisson boundary has positive square
@@ -477,6 +486,12 @@ jets to vanish. Equality of numerical and principal equivalence is therefore exa
 simplicity of the Xi divisor. Ordinary sharp-square trace positivity is exactly RH,
 with no simplicity requirement. These are distinct obligations, even on the genuine
 source quotient; a multiple zero supplies an actual nonprincipal square-zero class.
+
+The genuine Meyer surface now carries this descended linear trace degree as an
+actual RR construction (`MeyerSourceIntersectionSurface`). Its degree cone has
+Bézout, ampleness, and additive closure each exactly under RH. The full source
+carrier and genuine principal classes therefore do not remove the order obligation;
+faithfulness of numerical equivalence retains the separate simplicity condition.
 
 **Why this one.**
 - It is the only formulation in which positivity could be *forced* rather than estimated, which

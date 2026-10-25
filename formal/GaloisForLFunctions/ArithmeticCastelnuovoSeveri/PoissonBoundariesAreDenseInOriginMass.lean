@@ -148,6 +148,26 @@ theorem exists_meyer_representative_small_origin_square
   rw [← meyerHalfDensityL2_norm_sq]
   nlinarith only [hn, norm_nonneg (deningerMeyerHalfDensityL2LM h), Real.sq_sqrt hε.le]
 
+/-- Every genuine class has exactly the nonpositive numbers as lower bounds for its origin mass. -/
+theorem meyerOriginSquareMass_class_lower_bound_iff
+    (u : DeningerMeyerStrongLogCohomology) (b : ℝ) :
+    (∀ g : DeningerMeyerStrongLogTarget,
+      (Submodule.Quotient.mk g : DeningerMeyerStrongLogCohomology) = u →
+        b ≤ (meyerOriginDegree
+          (deningerMeyerSourceConvolution g (deningerMeyerSourceSharp g))).re) ↔ b ≤ 0 := by
+  constructor
+  · intro hb
+    by_contra hnot
+    have hpos : 0 < b := lt_of_not_ge hnot
+    obtain ⟨g, hg⟩ := (LinearMap.range deningerMeyerStrongLogSumLM).mkQ_surjective u
+    obtain ⟨h, he, hm⟩ := exists_meyer_representative_small_origin_square g hpos
+    have hclass : (Submodule.Quotient.mk h : DeningerMeyerStrongLogCohomology) = u :=
+      he.trans hg
+    exact (not_lt_of_ge (hb h hclass)) hm
+  · intro hb g _
+    rw [← meyerHalfDensityL2_norm_sq]
+    exact hb.trans (sq_nonneg _)
+
 /-- Every continuous linear reporter killing genuine boundaries vanishes on the whole completion. -/
 theorem meyerHalfDensity_continuous_boundary_reporter_zero
     {Y : Type*} [AddCommGroup Y] [Module ℂ Y] [TopologicalSpace Y] [T2Space Y]
@@ -192,3 +212,5 @@ end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_meyer_representative_small_origin_square
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHalfDensity_continuous_boundary_reporter_zero
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHalfDensity_continuous_class_reading_iff_constant
+
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerOriginSquareMass_class_lower_bound_iff

@@ -57,3 +57,5 @@ and `/tmp/QIIInvariantOriginMassDraft.lean`. The finite-kernel proof explicitly
 retains infinite differentiability. The origin draft contains the exact compact
 mass identity, unit-mass unboundedness, and the stronger nonlinear mass-only
 obstruction. All remain unchecked.
+
+Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/InvariantOriginMassDoesNotBoundTheWeilTrace.lean`; unverified and unwired. The scratch copy remains until actual-file verification succeeds.

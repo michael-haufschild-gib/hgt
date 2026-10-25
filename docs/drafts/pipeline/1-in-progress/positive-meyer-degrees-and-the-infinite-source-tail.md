@@ -66,3 +66,19 @@ original source-class Fredholm inversion forces every nonzero algebraic
 character to detect a finite resonant packet, hence a unique zeroth Xi value.
 Its positive/Hermitian characters are exactly the critical evaluations. This
 does not yet eliminate residual energy for an arbitrary positive linear degree.
+
+## Quasi-inverse refinement
+
+The actual source quasi-inverse theorem gives the paper result
+`../2-fully-proven/meyer-trace-radical-is-the-quasi-inverse-radical.md`:
+a class has all Xi values zero exactly when every one of its products admits
+an actual quasi-inverse. This identifies the trace radical by convolution
+solvability, without passing through a Hilbert completion.
+
+The remaining candidate mechanism is an exact source order or square-root
+factorization, possibly after finite resonant repair. Existing source inversion
+alone constructs rational functions of a class; it does not yet construct
+positive square roots or justify applying a discontinuous degree to a limit.
+Corpus searches for automatic positivity/continuity and Meyer holomorphic
+functional calculus have not supplied that missing theorem. No conclusion
+about the infinite residual is drawn from quasi-inversion alone.

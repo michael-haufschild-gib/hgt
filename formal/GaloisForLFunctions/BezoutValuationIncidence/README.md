@@ -1200,8 +1200,11 @@ saving give every common logarithmic saving for $A_{s,\varepsilon}$
 coefficient, subtracting $H_UH_V$ gives a fluctuation bounded by $2\tau(d)^2$
 with every common logarithmic prefix saving. Its centered convolution row is
 exactly $-H_UH_V A_{1,\varepsilon}-A_{r,\varepsilon}$
-(`TheVaughanConvolutionSeparatesItsSmoothMean`). The complete uniform Gram law
-remains under verification.
+(`TheVaughanConvolutionSeparatesItsSmoothMean`). Every truncated Möbius partial
+sum and its centered damped floor prefix has the corresponding common logarithmic
+rate, uniformly over its cutoff
+(`UniformLogarithmicCancellationInTruncatedMobiusReceivers`). The complete
+uniform Gram law remains under verification.
 
 **Finite harmonic rigidity.** Every $H_N$ with $N\ge1$ is nonzero. For every prime
 $N/2<p\le N$, its rational $p$-adic valuation is exactly $-1$; all such distinct primes

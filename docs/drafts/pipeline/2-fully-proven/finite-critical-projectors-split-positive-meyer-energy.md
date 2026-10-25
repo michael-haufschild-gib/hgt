@@ -103,3 +103,5 @@ bounds. This stronger theorem is not yet Lean-certified. All six general-packet
 endpoints are now in the existing energy draft, including exact finite weights
 and saturation; their actual-file verification remains pending. The critical-packet algebraic
 zero-product statement remains stronger at the class level and is retained.
+
+Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FiniteMeyerProjectorsSplitPositiveEnergy.lean`; unverified and unwired. The scratch copy remains until actual-file verification succeeds.

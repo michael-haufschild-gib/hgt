@@ -59,7 +59,12 @@ the proved envelope has exponent proportional to `(log n)^(1/3)`, not `log n`.
 
 ## Lean status
 
-Dependency-closed paper proof. Lean draft pending. The finite convolution and
+Dependency-closed paper proof. `/tmp/QIStretchedConvolutionTools.lean` now drafts
+three targets: the finite common saving envelope, the uniform stretched-exponential
+rate, and the factorial envelope with one threshold for all logarithmic orders.
+The draft uses the valid coarser constant
+`2+(11B+C)c^(-6)6!`, obtained by putting all three tail terms under `(log n)^2`.
+These targets remain uncompiled. The finite convolution and
 arbitrary logarithmic rate have passed scratch, producing, and final direct checks;
 their audits are tracked on
 `../3-formalized/uniform-undamped-vaughan-convolution-cancellation.md`.

@@ -105,3 +105,10 @@ and its actual point source has value one there. This applies the result to
 the existing compact-open and operator completions without assuming a positive
 Gelfand interface. Draft: `/tmp/QIIOriginHilbertCohomologyObstructionDraft.lean`,
 unverified.
+
+The actual candidate now states the quotient-infimum conclusion without implicit
+limit interchange: `meyerOriginSquareMass_class_lower_bound_iff` says a real b
+bounds the origin square mass of every representative of a fixed genuine class
+exactly when b<=0. Nonnegativity supplies all such bounds; a positive b is
+contradicted by the proved small representative with epsilon=b. This endpoint
+is unchecked together with the arithmetic density leaf.

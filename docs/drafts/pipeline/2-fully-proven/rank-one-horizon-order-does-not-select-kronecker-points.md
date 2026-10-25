@@ -51,3 +51,14 @@ returned no directly usable existing declaration. Existing inputs are the
 BohrPoint definition in `WienersLemmaOnTheBohrPolydisk` and
 `finrank_quotient_ker_bohrCharacter` in
 `TheObstructionCountIsTheCodimensionOfTheRepairingIdeal`.
+
+## Current verification status
+
+The first combined diagonal check completed. The energy crossing, deleted
+white-noise positivity, actual rank-one character construction, augmentation
+positivity and augmentation numeric diagonal order passed independently.
+Other parts had local elaboration errors. Import, endpoint normalization,
+finite-dimensional API, cast, dependent-if rewrite and augmentation
+multiplication repairs are staged. No new leaf from this batch is promoted.
+The retry is `/tmp/qiii-diagonal-energy-check.lean`, queued after the current
+moving-origin check; its log will be `/tmp/qiii-diagonal-energy-retry-check.log`.

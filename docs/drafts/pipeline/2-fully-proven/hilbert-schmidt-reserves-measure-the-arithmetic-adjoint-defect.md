@@ -90,7 +90,7 @@ source positivity problem.
 - `DeningerMeyerConvolutionTraceClass`: actual resolvent factorization and trace admission.
 - `DeningerMeyerFaithfulConvolution`: exact boundary kernel and faithful quotient representation.
 - `HilbertSchmidtOperator`, `HilbertSchmidtTrace`: polarization, adjoint isometry, trace pairing.
-- `MeyerSourceIntersectionSurface`: actual surface and ordinary trace defect; Lean verification pending.
+- `MeyerSourceIntersectionSurface`: actual surface and ordinary trace defect; actual-file certified with standard axiom audits.
 - `ArithmeticMajorantsSupplyBezout`, `PositiveQuadraticSourceCones`: mixed bound and cone geometry.
 - Actual arithmetic-sharp adjoint classification: paper proof complete, Lean verification pending.
 

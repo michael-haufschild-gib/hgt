@@ -280,14 +280,24 @@ The completed subtheorem card is
 `/tmp/QITruncatedLogRateTools.lean` drafts the two corresponding small-leg
 targets. Splitting `min(U,n)` at `sqrt(n)` gives uniform logarithmic bounds for
 the truncated Möbius partial sums; the general divisor-square transfer then
-gives uniform logarithmic bounds for their damped prefixes. Both targets remain
-uncompiled. The subsequent prefix-to-energy transfer must retain a common
-finite-head bound.
+gives uniform logarithmic bounds for their damped prefixes. Both targets passed
+their corrected scratch checks and transitive axiom audits with standard axioms.
+They are migrated and wired as
+`UniformLogarithmicCancellationInTruncatedMobiusReceivers.lean`; producing and
+final direct checks passed. The scratch file was removed; the completed card is
+`../3-formalized/uniform-logarithmic-truncated-mobius-receivers.md`.
+The subsequent prefix-to-energy transfer
+retains a common finite-head bound.
 
 `/tmp/QIUniformLogEnergyTools.lean` now drafts that transfer as six generic
 targets: a common linear majorant pays the finite head of an eventual smooth-power
 bound; a finite split controls pronic energy; a square-root split preserves all
-uniform logarithmic energy and norm rates; fixed logarithms lie below positive norm powers; bounded norm families inherit those logarithmic rates. These targets remain uncompiled.
+uniform logarithmic energy and norm rates; fixed logarithms lie below positive norm powers;
+bounded norm families inherit those logarithmic rates. The first scratch check
+found two uses of a shadowed addition-order lemma with the wrong orientation.
+Both were replaced by explicit two-sided addition bounds; the corrected check is
+running. The three independent targets audited with standard axioms, while the
+dependent targets require that corrected check.
 
 That application is drafted as five further targets in
 `/tmp/QIConvolutionEnergyRateTools.lean`: the common linear floor-transform bound,

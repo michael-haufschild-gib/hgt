@@ -70,18 +70,23 @@ module does not.
 
 ## Lean status
 
-The exact source convolution, bounded correction, unit identification, and
-all first-coordinate Wiener covariance limits are already proved in the
-corpus. The double covariance limit and exact complete-source pairing identity
-passed Lean with standard axioms and final source checks. The unit-twisted Gram
-unitary and dilation intertwining passed in scratch. Normalization and source
-energy ratio are queued; exact real convolution comparison, full action
-transport, and the actual Möbius--Liouville specialization are drafted but
-unchecked. No full unit-transport theorem is yet claimed as formalized.
+Full Wiener pairing convergence, exact source-row dilation and abstract unit
+conjugacy have passed canonical source checks and transitive axiom audits.
+The complete actual real convolution theorem, positive source-energy ratio,
+preservation of escape and Möbius–Liouville specialization passed the combined
+scratch with only standard axioms. Their canonical leaves are installed and
+umbrella-wired; final per-file audits are pending in
+`/tmp/qiii-refinements-canonical-audit.sh`.
+
+Canonical source application leaves:
+- `ArithmeticDefectRigidity/PaidCorrectionsPreserveNormalizedCofactorGrams.lean`
+- `ArithmeticDefectRigidity/RealWienerConvolutionTransportsCofactorGrams.lean`
+- `ArithmeticDefectRigidity/TheMoebiusAndLiouvilleCofactorModulesAreUnitEquivalent.lean`
 
 ## Gates
 
 - [x] Dependency-closed paper proof.
 - [x] Full Wiener pairing convergence in Lean.
-- [ ] Unit-twisted cyclic realization and exact source Gram comparison.
-- [ ] Möbius--Liouville specialization, transitive axiom audits, source checks.
+- [x] Unit-twisted cyclic realization and exact source Gram comparison in scratch.
+- [x] Möbius–Liouville specialization and transitive scratch axiom audit.
+- [ ] Final canonical source checks for the actual convolution applications.

@@ -74,3 +74,14 @@ The scalar extraction uses mathlib's checked source statement
 The preceding corpus log-ceiling search surfaced
 `RHTower.Sieve.ceil_log_ratio_spec`; the draft uses the same elementary
 ceiling comparison directly so the general theorem has no sieve dependency.
+
+## Current verification status
+
+The first combined diagonal check completed. The energy crossing, deleted
+white-noise positivity, actual rank-one character construction, augmentation
+positivity and augmentation numeric diagonal order passed independently.
+Other parts had local elaboration errors. Import, endpoint normalization,
+finite-dimensional API, cast, dependent-if rewrite and augmentation
+multiplication repairs are staged. No new leaf from this batch is promoted.
+The retry is `/tmp/qiii-diagonal-energy-check.lean`, queued after the current
+moving-origin check; its log will be `/tmp/qiii-diagonal-energy-retry-check.log`.

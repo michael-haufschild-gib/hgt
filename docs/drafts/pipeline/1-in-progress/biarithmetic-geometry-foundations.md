@@ -28,7 +28,7 @@ The `hgtl7` skill is expressly excluded. No numerical experiments or computation
 
 | Source requirement | Required evidence | Status |
 |---|---|---|
-| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; thirty-three direct-checked and axiom-audited leaves |
+| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; thirty-six direct-checked and axiom-audited leaves |
 | Horizon-complete objects; sign visibility | Exact signed finite-horizon laws and quantitative period/prefix comparison | Open |
 | Truncated affine representation theory | Source-defined action, boundary calculus, classification/calibration | Open |
 | A1–A2: paid ideal annihilates escape; hull inclusion | Actual receiver theorem, not an assumed ideal inclusion | Proved for every actual common Gram limit; ADR foundations reused, four interfaces directly checked and axiom-audited |
@@ -87,11 +87,14 @@ The `hgtl7` skill is expressly excluded. No numerical experiments or computation
 | `GoldenPrimePayment` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `IntrinsicGoldenSeries` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
 | `CriticalUnpaidSequence` | Direct repository leaf passed; stage-3 card | Seven main declarations clean |
+| `CriticalWienerLift` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
 | `PronicEnergyDomain` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
+| `CofactorGraphDomain` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `PronicDilationOperators` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
 | `PaidSourcePerturbations` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `FullWienerAnnihilation` | Consolidated ADR interfaces and direct repository leaf passed | Four chosen and universal declarations clean |
 
-Completed main-declaration axiom audits for thirty-three checked leaves report only `propext`,
+Completed main-declaration axiom audits for thirty-six checked leaves report only `propext`,
 `Classical.choice`, and `Quot.sound`. Audits used isolated source-copy drivers; each leaf also passed its direct source check. The literal-B1
 no-go is closed in `5-failed/biarithmetic-literal-dimension-euler-characteristic.md`; its
 positive survivor and exact prefix visibility now have separate stage-3 cards.
@@ -636,8 +639,8 @@ Active drafts:
   functionals, closed graph in `W_(1/2) x ell2`, inherited completeness, injective
   input projection, and exact square-summability domain. Initial check passed
   the first four audits; the domain theorem stopped at missing `ENNReal` notation
-  scope. Revised scratch and all five audits passed; promoted and wired,
-  direct repository check pending.
+  scope. Revised scratch and all five audits passed; direct repository check
+  passed. Stage-3 card and umbrella import present.
   Actual paid-ideal identification and the graph-norm ideal action remain pending.
 - `PronicEnergyDomain.lean`: exact positive-cell reindexing,
   bounded finite pronic norms iff summable total energy, actual receiver admission,
@@ -652,14 +655,15 @@ Active drafts:
 - `/tmp/BiarithmeticSignedTowerAdmission.lean`: exact admission radius for every
   real `|a|<5`, invariance under the prime-five sign flip, and the unpaid negative
   critical endpoint. Unchecked; paper proof has its own stage-2 card.
-- `/tmp/BiarithmeticCriticalPartialSumCore.lean`: corrected finite complex
+- `CriticalPartialSumCore.lean`: corrected finite complex
   truncations, exact coefficient and square-energy tail errors, zero evaluation
   forced by payment, and convergence in both parts of the graph norm. First
   check passed the four algebraic/finite-tail audits. Limit proofs needed the
   normed infinite-sum import and explicit constant-limit types. The next check
   also exposed the missing complex completeness instance and an inferred
   composed limit function; `Complex.Basic` and an explicit partial-sum limit
-  type now fix those two issues. Rerun pending.
+  type fixed those two issues. Revised scratch and all seven audits passed;
+  promoted and wired, direct repository check pending.
   The exact error equalities strengthen the earlier upper bound and have been
   paper-audited on the payment-graph card before formal verification.
 - `CriticalWienerLift.lean`: uses AOT's actual `toWiener`
@@ -668,8 +672,8 @@ Active drafts:
   reduction, a zero-branch simplification, and an obsolete subtraction-application
   name. The revised check passes the mass, norm, and membership audits; the
   distance proof needs only the defining reduction of `realFn` at zero.
-  Revised scratch and all four audits passed; promoted and wired, with direct
-  repository check pending. Existing embedding
+  Revised scratch and all four audits passed; direct repository check passed.
+  Stage-3 card and umbrella import present. Existing embedding
   and coefficient/term laws were source-inspected before drafting.
 - `/tmp/BiarithmeticComplexCriticalWienerLift.lean`: assembles real and imaginary
   lifts into the actual complex one-prime subalgebra, with exact norm and distance,
@@ -681,26 +685,64 @@ Active drafts:
   proves their exact distances, and transfers nonclosedness to the critical
   golden paid ideal. Unchecked; depends on the witness, lift, and complex
   golden payment drafts.
+- `/tmp/BiarithmeticCriticalGoldenClosure.lean`: corrected finite complex
+  kernels pay the actual critical golden source; exact Wiener errors tend to
+  the absolute total evaluation. Zero evaluation therefore places the full
+  one-prime lift in the full actual paid-ideal closure. Unchecked; depends on
+  the complex lift and finite-core drafts. No converse for the full ideal's
+  closure is asserted.
+- `/tmp/BiarithmeticPowerTailCoefficients.lean`: power-tail differences with
+  exact norm two and zero evaluation for every positive exponent; square
+  partial-sum energy iff the exponent exceeds one half. Unchecked. This
+  supplies the explicit coefficient family for the continuum defect; finite
+  complex independence and quotient cardinality remain separate obligations.
+- `/tmp/BiarithmeticPowerTailIndependence.lean`: normalized smallest-exponent
+  limit for finite complex combinations, divergent power-energy lower bound,
+  and coefficient independence modulo square partial sums. Unchecked;
+  depends on the power-tail coefficient draft. Quotient bundling and the
+  continuum upper/lower cardinality comparison remain separate.
+- `/tmp/BiarithmeticPowerTailWienerFamily.lean`: actual norm-two golden kernels
+  for all positive power-tail exponents, actual payment iff the exponent exceeds
+  one half, and membership of the whole family in the full paid-ideal closure.
+  Unchecked; depends on power coefficients and the generic actual-closure bridge.
+- `/tmp/BiarithmeticCriticalGoldenPaymentQuotients.lean`: actual paid subspace,
+  its closure, closure-defect and unreduced quotient, canonical comparison map,
+  and rank-at-most-continuum for both quotients. Unchecked. Reuses the existing
+  actual Wiener coefficient cardinality bound; no Banach theorem is applied to
+  a non-Hausdorff quotient.
+- `/tmp/BiarithmeticCriticalGoldenContinuumDefect.lean`: finite coefficient
+  relations in the actual quotient reduce to the power-tail independence
+  theorem. The open unpaid exponent interval gives continuum many independent
+  classes already in the closure defect; ambient coefficient cardinality gives
+  equality for both actual quotients. Unchecked, with all preceding power-tail,
+  closure, and quotient leaves as dependencies. The intrinsic-source claim
+  remains separate even after this ordinary-floor draft is verified.
 - `/tmp/BiarithmeticNormalizedCubicTrace.lean`: exact integral trace
   classification for fixed-determinant cubic amplification at every prime,
   with the four nonzero small-prime survivors and forced square-root trace
-  bound. Unchecked; separate stage-2 paper proof is complete.
-- `/tmp/BiarithmeticGoldenNormalizedCube.lean`: exact actual golden root
+  bound. First scratch check found a missing algebra tactic and the unloaded
+  prime-number normalization extension. The divisibility equation is now an
+  explicit ring calculation, and compositeness of four follows directly from
+  its divisor two. Rerun pending; separate stage-2 paper proof is complete.
+- `GoldenNormalizedCube.lean`: exact actual golden root
   product and trace after normalized cubing, negative first two transformed
   counts, and comparison with the original source's nonnegative counts.
-  Unchecked. Fixed determinant is not asserted to be analytic conductor.
+  Scratch check and all four audits passed; promoted and wired, direct
+  repository check pending. Fixed determinant is not asserted to be analytic conductor.
 - `GoldenSourceAdmission.lean`: positive tower threshold and actual golden admission
   phase passed direct check and five audits. Stage-3 card present; obsolete scratch removed.
 - `IntrinsicGoldenSeries.lean`: exact intrinsic counting-pole cancellation
   using the actual source mean, cumulative-count partial fractions and coefficients, and
   both damping endpoints. Direct repository check and all six audits passed.
   Stage-3 card and umbrella import present; obsolete scratch removed.
-- `/tmp/BiarithmeticPronicDilationOperators.lean`: exact completed pronic dilation
+- `PronicDilationOperators.lean`: exact completed pronic dilation
   norms, coordinate formula, multiplicative composition, and contractive Wiener
   representation, using the existing
   `HTGeometry.PNatBlock` library and the public pronic fibre-mass identity.
-  Unchecked; both dependency oleans exist. The reuse and specialization proof
-  are recorded on the payment-graph card.
+  Revised scratch passed all six audits after explicit square-root nonnegativity
+  and the elementary quotient-order bound replaced two failed rewrites.
+  Direct source check passed; stage-3 card and umbrella import present. The reuse and specialization
+  proof are recorded on the payment-graph card.
 - `/tmp/BiarithmeticPronicWienerCoordinates.lean`: continuous unnormalized row
   coordinates, exact floor-dilation intertwining, and equality of the integrated
   Wiener action with every finite cofactor coordinate. Unchecked; depends on
@@ -724,8 +766,24 @@ Active drafts:
   Hilbert-only version. Unchecked; paper argument recorded on the graph card.
 - `/tmp/BiarithmeticGeometricFutureTail.lean`: joint absolute summability of
   the backward geometric tail, its resolvent recurrence, and explicit `b/(1-b)` coefficient-norm
-  bound, for the strict one-prime Fredholm phase. Unchecked. The product
-  injection and nonnegative-series proof are recorded on that stage-2 card.
+  bound, for the strict one-prime Fredholm phase. First check found an implicit
+  pair-projection arithmetic goal, the missing complex analytic structures,
+  and a no-op rewrite in the tail bound. Explicit projection types,
+  `Complex.Basic`, and a typed tail identity now address those failures;
+  the next check still exposed ambiguous pair-projection inference. Destructured
+  pairs and explicit function arguments to `Summable.comp_injective` now remove
+  that inference work; rerun pending. The product injection and nonnegative-series proof are recorded
+  on that stage-2 card.
+- `/tmp/BiarithmeticGeometricCausalDivision.lean`: the strict expanding complex
+  response has finite square energy iff its reciprocal evaluation vanishes;
+  exact negative-future-tail formula and explicit absolute-sum bound. Unchecked,
+  dependent on the future-tail draft. This proves the sequence domain, with
+  transfer to the actual one-prime payment complex still separate.
+- `/tmp/BiarithmeticStrictPrimePayment.lean`: exact normalization of the actual
+  complex tower criterion as a geometric causal-response domain, then the
+  strict evaluation-kernel classification for the actual tower and golden
+  source. Unchecked; depends on complex lifting and geometric division.
+  This source transfer does not yet bundle the domain as a Fredholm complex.
 
 The exact source-to-digit recurrence and actual golden source reduction both have stage-3
 cards. The admission threshold also has a stage-3 card, including its unpaid critical endpoint.

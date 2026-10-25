@@ -357,6 +357,315 @@ lemma log_two_add_le {t : ℝ} (ht : 0 ≤ t) : Real.log (2 + t) ≤ 8 * (1 + t)
     _ ≤ 4 * (2 ^ (1 / 4 : ℝ) * (1 + t) ^ (1 / 4 : ℝ)) := by gcongr
     _ ≤ 8 * (1 + t) ^ (1 / 4 : ℝ) := by nlinarith
 
+/-- `T²/(T² + τ²) ≤ 2T²(1 + |τ|)^{-2}` for `T ≥ 1`. -/
+lemma sq_div_sq_add_sq_le_inv_sq {T τ : ℝ} (hT : 1 ≤ T) :
+    T ^ 2 / (T ^ 2 + τ ^ 2) ≤ 2 * T ^ 2 * (1 + |τ|) ^ (-(2 : ℝ)) := by
+  have ha : 0 < 1 + |τ| := by positivity
+  rw [Real.rpow_neg ha.le, show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast,
+    div_le_iff₀ (by positivity)]
+  have h1 : (1 + |τ|) ^ 2 ≤ 2 * (T ^ 2 + τ ^ 2) := by
+    nlinarith [sq_abs τ, sq_nonneg (|τ| - 1), abs_nonneg τ]
+  have h2 : 0 < ((1 + |τ|) ^ 2)⁻¹ := by positivity
+  calc T ^ 2 = 2 * T ^ 2 * ((1 + |τ|) ^ 2)⁻¹ * ((1 + |τ|) ^ 2 / 2) := by field_simp
+    _ ≤ 2 * T ^ 2 * ((1 + |τ|) ^ 2)⁻¹ * (T ^ 2 + τ ^ 2) := by gcongr; linarith
+
+/-! ## The Gamma term -/
+
+section GammaTerm
+
+variable {w : ℝ → ℂ}
+
+/-- `u ↦ i u w(u)` is `C²` when `w` is. -/
+lemma contDiff_I_mul_id_mul (hw : ContDiff ℝ 2 w) : ContDiff ℝ 2 (fun u : ℝ => I * u * w u) :=
+  (contDiff_const.mul Complex.ofRealCLM.contDiff).mul hw
+
+/-- Decay of the transforms of `w` and of `u ↦ i u w(u)` on the real axis. -/
+lemma exists_paperFT_decay (hw : ContDiff ℝ 2 w) (hsupp : ∀ u, w u ≠ 0 → |u| ≤ 1) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ s : ℝ, ‖paperFT w s‖ ≤ C / (1 + s ^ 2) ∧
+      ‖paperFT (fun u => I * u * w u) s‖ ≤ C / (1 + s ^ 2) := by
+  have hgsupp : ∀ u, (fun u : ℝ => I * u * w u) u ≠ 0 → |u| ≤ 1 :=
+    fun u hu => hsupp u (right_ne_zero_of_mul hu)
+  set C₀ := (∫ u, ‖w u‖) + ∫ u, ‖deriv (deriv w) u‖
+  set C₁ := (∫ u, ‖(fun u : ℝ => I * u * w u) u‖) +
+    ∫ u, ‖deriv (deriv (fun u : ℝ => I * u * w u)) u‖
+  have hC₀ : 0 ≤ C₀ :=
+    add_nonneg (integral_nonneg fun _ => norm_nonneg _) (integral_nonneg fun _ => norm_nonneg _)
+  refine ⟨max C₀ C₁, hC₀.trans (le_max_left _ _), fun s => ⟨?_, ?_⟩⟩
+  · rw [le_div_iff₀ (by positivity)]
+    exact (norm_paperFT_ofReal_mul_le hw hsupp s).trans (le_max_left _ _)
+  · rw [le_div_iff₀ (by positivity)]
+    exact (norm_paperFT_ofReal_mul_le (contDiff_I_mul_id_mul hw) hgsupp s).trans (le_max_right _ _)
+
+/-- Integration by parts against `e^{iyτ}`: `|∫ F(τ) e^{iyτ} dτ| ≤ ‖F'‖₁ / y`. -/
+lemma norm_integral_mul_exp_le {F F' : ℝ → ℂ} (hFd : ∀ τ, HasDerivAt F (F' τ) τ)
+    (hFi : Integrable F) (hF'i : Integrable F') {y : ℝ} (hy : 0 < y) :
+    ‖∫ τ : ℝ, F τ * Complex.exp (I * y * τ)‖ ≤ (∫ τ, ‖F' τ‖) / y := by
+  have hyC : I * (y : ℂ) ≠ 0 := mul_ne_zero I_ne_zero (by exact_mod_cast hy.ne')
+  set e : ℝ → ℂ := fun τ => Complex.exp (I * y * τ) with he
+  set v : ℝ → ℂ := fun τ => e τ / (I * y) with hv
+  have hvd : ∀ τ : ℝ, HasDerivAt v (e τ) τ := by
+    intro τ
+    have h1 : HasDerivAt (fun τ : ℝ => I * (y : ℂ) * τ) (I * y * 1) τ :=
+      (hasDerivAt_id τ).ofReal_comp.const_mul (I * y)
+    have h2 := h1.cexp.div_const (I * y)
+    rw [mul_one, mul_div_assoc, div_self hyC, mul_one] at h2
+    exact h2
+  have hen : ∀ τ : ℝ, ‖e τ‖ = 1 := by
+    intro τ; rw [he, Complex.norm_exp]; simp
+  have hvn : ∀ τ : ℝ, ‖v τ‖ = 1 / y := by
+    intro τ
+    rw [hv, norm_div, hen, norm_mul, norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos hy]
+  have hec : Continuous e := by rw [he]; fun_prop
+  have hvc : Continuous v := hec.div_const _
+  have hFc : Continuous F := continuous_iff_continuousAt.mpr fun τ => (hFd τ).continuousAt
+  have h1 : Integrable (F * e) :=
+    hFi.norm.mono' (hFc.mul hec).aestronglyMeasurable
+      (Filter.Eventually.of_forall fun τ => by simp [hen])
+  have h2 : Integrable (F' * v) :=
+    (hF'i.norm.mul_const (1 / y)).mono' (hF'i.aestronglyMeasurable.mul hvc.aestronglyMeasurable)
+      (Filter.Eventually.of_forall fun τ => by simp only [Pi.mul_apply, norm_mul, hvn, le_refl])
+  have h3 : Integrable (F * v) :=
+    (hFi.norm.mul_const (1 / y)).mono' (hFc.mul hvc).aestronglyMeasurable
+      (Filter.Eventually.of_forall fun τ => by simp only [Pi.mul_apply, norm_mul, hvn, le_refl])
+  have hibp := integral_mul_deriv_eq_deriv_mul_of_integrable (fun τ _ => hFd τ)
+    (fun τ _ => hvd τ) h1 h2 h3
+  change ‖∫ τ : ℝ, F τ * e τ‖ ≤ _
+  rw [hibp, norm_neg]
+  refine (norm_integral_le_integral_norm _).trans (le_of_eq ?_)
+  simp only [norm_mul, hvn]
+  rw [integral_mul_const]
+  ring
+
+/-- The amplitude `ŵ(τ/T) μ(τ)` of the Gamma term of the Landau test. -/
+def gammaAmp (w : ℝ → ℂ) (T τ : ℝ) : ℂ := paperFT w ((τ / T : ℝ) : ℂ) * (mu τ : ℂ)
+
+/-- The derivative of `gammaAmp` in `τ`. -/
+def gammaAmpDeriv (w : ℝ → ℂ) (T τ : ℝ) : ℂ :=
+  ((1 / T : ℝ) : ℂ) * paperFT (fun u => I * u * w u) ((τ / T : ℝ) : ℂ) * (mu τ : ℂ) +
+    paperFT w ((τ / T : ℝ) : ℂ) * ((deriv mu τ : ℝ) : ℂ)
+
+lemma hasDerivAt_gammaAmp {w : ℝ → ℂ} (hwi : Integrable w)
+    (hwi' : Integrable (fun x : ℝ => x • w x)) (T τ : ℝ) :
+    HasDerivAt (gammaAmp w T) (gammaAmpDeriv w T τ) τ := by
+  have h1 : HasDerivAt (fun τ : ℝ => paperFT w ((τ / T : ℝ) : ℂ))
+      ((1 / T : ℝ) • paperFT (fun u => I * u * w u) ((τ / T : ℝ) : ℂ)) τ := by
+    have := (hasDerivAt_paperFT_ofReal hwi hwi' (τ / T)).scomp τ ((hasDerivAt_id τ).div_const T)
+    simpa [Function.comp_def, one_div] using this
+  have h2 : HasDerivAt (fun τ : ℝ => (mu τ : ℂ)) ((deriv mu τ : ℝ) : ℂ) τ :=
+    ((gammaFacts.smooth.differentiable (by simp)) τ).hasDerivAt.ofReal_comp
+  have e : gammaAmpDeriv w T τ = (1 / T : ℝ) • paperFT (fun u => I * u * w u) ((τ / T : ℝ) : ℂ) *
+      (mu τ : ℂ) + paperFT w ((τ / T : ℝ) : ℂ) * ((deriv mu τ : ℝ) : ℂ) := by
+    rw [gammaAmpDeriv, Complex.real_smul]
+  rw [e]
+  exact h1.mul h2
+
+/-- `|μ(τ)| ≤ (|A| + 8)(1 + |τ|)^{1/4}` from `|μ(τ)| ≤ A + log(2 + |τ|)`. -/
+lemma abs_mu_le_rpow {A : ℝ} (hA : ∀ τ : ℝ, |mu τ| ≤ A + Real.log (2 + |τ|)) (τ : ℝ) :
+    |mu τ| ≤ (|A| + 8) * (1 + |τ|) ^ (1 / 4 : ℝ) := by
+  have h1 := hA τ
+  have h2 := log_two_add_le (abs_nonneg τ)
+  have h3 : 1 ≤ (1 + |τ|) ^ (1 / 4 : ℝ) :=
+    Real.one_le_rpow (by linarith [abs_nonneg τ]) (by norm_num)
+  nlinarith [le_abs_self A, abs_nonneg A]
+
+/-- `‖ŵ(τ/T)‖ ≤ C T²/(T² + τ²)` from `‖ŵ(s)‖ ≤ C/(1 + s²)`. -/
+lemma norm_paperFT_div_le {f : ℝ → ℂ} {C T : ℝ} (hT : 0 < T)
+    (hC : ∀ s : ℝ, ‖paperFT f s‖ ≤ C / (1 + s ^ 2)) (τ : ℝ) :
+    ‖paperFT f ((τ / T : ℝ) : ℂ)‖ ≤ C * (T ^ 2 / (T ^ 2 + τ ^ 2)) := by
+  have e : C / (1 + (τ / T) ^ 2) = C * (T ^ 2 / (T ^ 2 + τ ^ 2)) := by field_simp
+  rw [← e]; exact hC _
+
+lemma rpow_mul_rpow_one_add_abs (τ a b : ℝ) :
+    (1 + |τ|) ^ a * (1 + |τ|) ^ b = (1 + |τ|) ^ (a + b) :=
+  (Real.rpow_add (by positivity) a b).symm
+
+/-- The derivative of the amplitude decays like `√T (1 + |τ|)^{-5/4}`. -/
+lemma norm_gammaAmpDeriv_le {w : ℝ → ℂ} {C A D T : ℝ} (hT : 1 ≤ T)
+    (hC : ∀ s : ℝ, ‖paperFT w s‖ ≤ C / (1 + s ^ 2) ∧
+      ‖paperFT (fun u => I * u * w u) s‖ ≤ C / (1 + s ^ 2)) (hC0 : 0 ≤ C)
+    (hA : ∀ τ : ℝ, |mu τ| ≤ A + Real.log (2 + |τ|)) (hD : ∀ τ : ℝ, |deriv mu τ| ≤ D / (1 + |τ|))
+    (τ : ℝ) :
+    ‖gammaAmpDeriv w T τ‖ ≤
+      (8 * C * (|A| + 8) + 2 * C * |D|) * Real.sqrt T * (1 + |τ|) ^ (-(5 / 4 : ℝ)) := by
+  have hTpos : 0 < T := by linarith
+  have ha : 0 < 1 + |τ| := by positivity
+  have hW := norm_paperFT_div_le hTpos (fun s => (hC s).1) τ
+  have hW₁ := norm_paperFT_div_le hTpos (fun s => (hC s).2) τ
+  have hmu := abs_mu_le_rpow hA τ
+  have hp1 := div_sq_add_sq_le (τ := τ) hT
+  have hp2 := sq_div_sq_add_sq_le (τ := τ) hT
+  have hfrac : 0 ≤ T ^ 2 / (T ^ 2 + τ ^ 2) := by positivity
+  have hq1 : 0 ≤ (1 + |τ|) ^ (1 / 4 : ℝ) := Real.rpow_nonneg ha.le _
+  have t1 : ‖((1 / T : ℝ) : ℂ) * paperFT (fun u => I * u * w u) ((τ / T : ℝ) : ℂ) * (mu τ : ℂ)‖ ≤
+      8 * C * (|A| + 8) * Real.sqrt T * (1 + |τ|) ^ (-(5 / 4 : ℝ)) := by
+    rw [norm_mul, norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
+      Real.norm_eq_abs, abs_of_pos (by positivity : (0 : ℝ) < 1 / T)]
+    have hk : 1 / T * (C * (T ^ 2 / (T ^ 2 + τ ^ 2))) = C * (T / (T ^ 2 + τ ^ 2)) := by
+      field_simp
+    calc 1 / T * ‖paperFT (fun u => I * u * w u) ((τ / T : ℝ) : ℂ)‖ * |mu τ|
+        ≤ 1 / T * (C * (T ^ 2 / (T ^ 2 + τ ^ 2))) * ((|A| + 8) * (1 + |τ|) ^ (1 / 4 : ℝ)) := by
+          gcongr
+      _ = C * (T / (T ^ 2 + τ ^ 2)) * ((|A| + 8) * (1 + |τ|) ^ (1 / 4 : ℝ)) := by rw [hk]
+      _ ≤ C * (8 * Real.sqrt T * (1 + |τ|) ^ (-(3 / 2 : ℝ))) *
+          ((|A| + 8) * (1 + |τ|) ^ (1 / 4 : ℝ)) := by gcongr
+      _ = 8 * C * (|A| + 8) * Real.sqrt T *
+          ((1 + |τ|) ^ (-(3 / 2 : ℝ)) * (1 + |τ|) ^ (1 / 4 : ℝ)) := by ring
+      _ = 8 * C * (|A| + 8) * Real.sqrt T * (1 + |τ|) ^ (-(5 / 4 : ℝ)) := by
+          rw [rpow_mul_rpow_one_add_abs]; norm_num
+  have t2 : ‖paperFT w ((τ / T : ℝ) : ℂ) * ((deriv mu τ : ℝ) : ℂ)‖ ≤
+      2 * C * |D| * Real.sqrt T * (1 + |τ|) ^ (-(5 / 4 : ℝ)) := by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
+    have hDτ : |deriv mu τ| ≤ |D| * (1 + |τ|) ^ (-(1 : ℝ)) := by
+      rw [Real.rpow_neg_one, ← div_eq_mul_inv]
+      exact (hD τ).trans (div_le_div_of_nonneg_right (le_abs_self D) ha.le)
+    calc ‖paperFT w ((τ / T : ℝ) : ℂ)‖ * |deriv mu τ|
+        ≤ C * (T ^ 2 / (T ^ 2 + τ ^ 2)) * (|D| * (1 + |τ|) ^ (-(1 : ℝ))) := by gcongr
+      _ ≤ C * (2 * Real.sqrt T * (1 + |τ|) ^ (-(1 / 4 : ℝ))) * (|D| * (1 + |τ|) ^ (-(1 : ℝ))) := by
+          gcongr
+      _ = 2 * C * |D| * Real.sqrt T *
+          ((1 + |τ|) ^ (-(1 / 4 : ℝ)) * (1 + |τ|) ^ (-(1 : ℝ))) := by ring
+      _ = 2 * C * |D| * Real.sqrt T * (1 + |τ|) ^ (-(5 / 4 : ℝ)) := by
+          rw [rpow_mul_rpow_one_add_abs]; norm_num
+  calc ‖gammaAmpDeriv w T τ‖ ≤ _ := norm_add_le _ _
+    _ ≤ _ := add_le_add t1 t2
+    _ = _ := by ring
+
+/-- The amplitude itself decays like `T² (1 + |τ|)^{-5/4}`. -/
+lemma norm_gammaAmp_le {w : ℝ → ℂ} {C A T : ℝ} (hT : 1 ≤ T)
+    (hC : ∀ s : ℝ, ‖paperFT w s‖ ≤ C / (1 + s ^ 2)) (hC0 : 0 ≤ C)
+    (hA : ∀ τ : ℝ, |mu τ| ≤ A + Real.log (2 + |τ|)) (τ : ℝ) :
+    ‖gammaAmp w T τ‖ ≤ 2 * C * T ^ 2 * (|A| + 8) * (1 + |τ|) ^ (-(5 / 4 : ℝ)) := by
+  have hTpos : 0 < T := by linarith
+  have ha : 0 < 1 + |τ| := by positivity
+  have hW := norm_paperFT_div_le hTpos hC τ
+  have hmu := abs_mu_le_rpow hA τ
+  have hp := sq_div_sq_add_sq_le_inv_sq (τ := τ) hT
+  have hq1 : 0 ≤ (1 + |τ|) ^ (1 / 4 : ℝ) := Real.rpow_nonneg ha.le _
+  have hm : (1 + |τ|) ^ (-(2 : ℝ) + 1 / 4) ≤ (1 + |τ|) ^ (-(5 / 4 : ℝ)) :=
+    Real.rpow_le_rpow_of_exponent_le (by linarith [abs_nonneg τ]) (by norm_num)
+  unfold gammaAmp
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
+  calc ‖paperFT w ((τ / T : ℝ) : ℂ)‖ * |mu τ|
+      ≤ C * (T ^ 2 / (T ^ 2 + τ ^ 2)) * ((|A| + 8) * (1 + |τ|) ^ (1 / 4 : ℝ)) := by gcongr
+    _ ≤ C * (2 * T ^ 2 * (1 + |τ|) ^ (-(2 : ℝ))) * ((|A| + 8) * (1 + |τ|) ^ (1 / 4 : ℝ)) := by
+        gcongr
+    _ = 2 * C * T ^ 2 * (|A| + 8) * ((1 + |τ|) ^ (-(2 : ℝ)) * (1 + |τ|) ^ (1 / 4 : ℝ)) := by ring
+    _ ≤ 2 * C * T ^ 2 * (|A| + 8) * (1 + |τ|) ^ (-(5 / 4 : ℝ)) := by
+        rw [rpow_mul_rpow_one_add_abs]; gcongr
+
+/-- **The Gamma term of the Landau test**: `|∫ h_k(τ) μ(τ) dτ| ≤ K √T / y` for `T ≥ 1`, `y > 0`,
+by one integration by parts against the phase `e^{iτy}`. -/
+theorem exists_gammaTerm_landau_le (hw : ContDiff ℝ 2 w) (hsupp : ∀ u, w u ≠ 0 → |u| ≤ 1) :
+    ∃ K : ℝ, ∀ T : ℝ, 1 ≤ T → ∀ y : ℝ, 0 < y →
+      ‖∫ τ : ℝ, paperFT (landauTest w T y) τ * (mu τ : ℂ)‖ ≤ K * Real.sqrt T / y := by
+  obtain ⟨C, hC0, hC⟩ := exists_paperFT_decay hw hsupp
+  obtain ⟨A, hA⟩ := exists_abs_mu_le
+  obtain ⟨D, hD⟩ := exists_abs_deriv_mu_le
+  have hJi : Integrable (fun τ : ℝ => (1 + |τ|) ^ (-(5 / 4 : ℝ))) := by
+    have := integrable_one_add_norm (E := ℝ) (μ := volume) (r := 5 / 4) (by norm_num)
+    simpa [Real.norm_eq_abs] using this
+  set K₀ := 8 * C * (|A| + 8) + 2 * C * |D| with hK₀
+  refine ⟨K₀ * ∫ τ : ℝ, (1 + |τ|) ^ (-(5 / 4 : ℝ)), fun T hT y hy => ?_⟩
+  have hTpos : 0 < T := by linarith
+  have hwi : Integrable w := hw.continuous.integrable_of_hasCompactSupport
+    (hasCompactSupport_of_support_subset_abs hsupp)
+  have hwi' : Integrable (fun x : ℝ => x • w x) :=
+    (continuous_id.smul hw.continuous).integrable_of_hasCompactSupport
+      (hasCompactSupport_of_support_subset_abs (Λ := 1) fun u hu =>
+        hsupp u fun h => hu (by simp [h]))
+  have hFd := hasDerivAt_gammaAmp hwi hwi' T
+  have hFc : Continuous (gammaAmp w T) :=
+    continuous_iff_continuousAt.mpr fun τ => (hFd τ).continuousAt
+  have hFi : Integrable (gammaAmp w T) :=
+    (hJi.const_mul (2 * C * T ^ 2 * (|A| + 8))).mono' hFc.aestronglyMeasurable
+      (Filter.Eventually.of_forall (norm_gammaAmp_le hT (fun s => (hC s).1) hC0 hA))
+  have hF'm : AEStronglyMeasurable (gammaAmpDeriv w T) := by
+    have : gammaAmpDeriv w T = deriv (gammaAmp w T) := funext fun τ => (hFd τ).deriv.symm
+    rw [this]
+    exact (measurable_deriv _).aestronglyMeasurable
+  have hF'i : Integrable (gammaAmpDeriv w T) :=
+    (hJi.const_mul (K₀ * Real.sqrt T)).mono' hF'm
+      (Filter.Eventually.of_forall (norm_gammaAmpDeriv_le hT hC hC0 hA hD))
+  have hrw : (fun τ : ℝ => paperFT (landauTest w T y) τ * (mu τ : ℂ)) =
+      fun τ : ℝ => gammaAmp w T τ * Complex.exp (I * y * τ) := by
+    funext τ
+    rw [paperFT_landauTest w hTpos, gammaAmp]
+    push_cast
+    ring_nf
+  rw [hrw]
+  refine (norm_integral_mul_exp_le hFd hFi hF'i hy).trans ?_
+  gcongr
+  calc (∫ τ, ‖gammaAmpDeriv w T τ‖)
+      ≤ ∫ τ : ℝ, K₀ * Real.sqrt T * (1 + |τ|) ^ (-(5 / 4 : ℝ)) :=
+        integral_mono hF'i.norm (hJi.const_mul _) (norm_gammaAmpDeriv_le hT hC hC0 hA hD)
+    _ = K₀ * (∫ τ : ℝ, (1 + |τ|) ^ (-(5 / 4 : ℝ))) * Real.sqrt T := by
+        rw [integral_const_mul]; ring
+
+/-- The Landau test is `C²` with compact support. -/
+lemma landauTest_contDiff_hasCompactSupport (hw : ContDiff ℝ 2 w)
+    (hsupp : ∀ u, w u ≠ 0 → |u| ≤ 1) {T : ℝ} (hT : 0 < T) (y : ℝ) :
+    ContDiff ℝ 2 (landauTest w T y) ∧ HasCompactSupport (landauTest w T y) := by
+  refine ⟨contDiff_const.mul (hw.comp (contDiff_const.mul (contDiff_id.sub contDiff_const))), ?_⟩
+  refine hasCompactSupport_of_support_subset_abs (Λ := |y| + 1 / T) fun u hu => ?_
+  by_contra hlt
+  apply hu
+  apply landauTest_eq_zero hsupp
+  rw [abs_mul, abs_of_pos hT]
+  have h1 : 1 / T < |u - y| := by
+    have := abs_sub_abs_le_abs_sub u y
+    linarith [not_le.mp hlt]
+  rw [div_lt_iff₀ hT] at h1
+  linarith
+
+/-- **The smoothed Landau formula.**  For a `C²` profile `w` supported in `[−1, 1]` there is `K`
+such that for every integer `x ≥ 2` and every `T ≥ x + 2`, with `k` the Landau test at `log x`,
+`|Σ_ρ m_ρ h_k(γ_ρ) + T w(0) Λ(x)/√x| ≤ 2 e^{1/2} ‖w‖₁ √x + K √T / log x`.
+Here `h_k(γ_ρ) = x^{ρ − ½} ŵ(γ_ρ/T)`: the zero sum detects the prime power `x` at height `T`. -/
+theorem exists_smoothedLandau_le (hw : ContDiff ℝ 2 w) (hsupp : ∀ u, w u ≠ 0 → |u| ≤ 1) :
+    ∃ K : ℝ, ∀ x : ℕ, 2 ≤ x → ∀ T : ℝ, (x : ℝ) + 2 ≤ T →
+      ‖(∑' ρ : zetaZeroConfig.carrier, (zetaZeroConfig.mult ρ : ℂ) *
+          paperFT (landauTest w T (Real.log x)) (gammaOf ρ)) +
+        ((ArithmeticFunction.vonMangoldt x / Real.sqrt x : ℝ) : ℂ) * ((T : ℂ) * w 0)‖ ≤
+        2 * Real.exp (1 / 2) * (∫ u, ‖w u‖) * Real.sqrt x + K * Real.sqrt T / Real.log x := by
+  obtain ⟨K, hK⟩ := exists_gammaTerm_landau_le hw hsupp
+  refine ⟨K, fun x hx T hT => ?_⟩
+  have hx2 : (2 : ℝ) ≤ x := by exact_mod_cast hx
+  have hTpos : 0 < T := by linarith
+  have hT1 : 1 ≤ T := by linarith
+  have hlog : 0 < Real.log x := Real.log_pos (by linarith)
+  have hwi : Integrable w := hw.continuous.integrable_of_hasCompactSupport
+    (hasCompactSupport_of_support_subset_abs hsupp)
+  obtain ⟨hkd, hkc⟩ := landauTest_contDiff_hasCompactSupport hw hsupp hTpos (Real.log x)
+  have hEF := (Zeta23.WeilEF.EF_lit_zetaZeroConfig _ hkd hkc).2
+  rw [hEF, EF.literatureRHS, EF.gamma_term, primeSum_landauTest hsupp hx hT]
+  -- pole terms
+  have hpole : ∀ s : ℂ, |s.im| ≤ 1 / 2 →
+      ‖paperFT (landauTest w T (Real.log x)) s‖ ≤ Real.exp (1 / 2) * (∫ u, ‖w u‖) * Real.sqrt x := by
+    intro s hs
+    refine (norm_pole_landauTest_le hwi hsupp hTpos hlog.le s hs).trans ?_
+    have hT' : 1 / T ≤ 1 := by rw [div_le_one hTpos]; exact hT1
+    have hsq : Real.sqrt x = Real.exp (Real.log x / 2) := by
+      rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos (by linarith)]; ring_nf
+    rw [hsq, mul_right_comm, ← Real.exp_add]
+    gcongr
+    linarith
+  have hI : |(I / 2 : ℂ).im| ≤ 1 / 2 := by simp [abs_of_pos]
+  have hI' : |(-I / 2 : ℂ).im| ≤ 1 / 2 := by simp [abs_of_pos]
+  have hG := hK T hT1 (Real.log x) hlog
+  calc ‖paperFT (landauTest w T (Real.log x)) (I / 2) + paperFT (landauTest w T (Real.log x)) (-I / 2)
+        - ((ArithmeticFunction.vonMangoldt x / Real.sqrt x : ℝ) : ℂ) * ((T : ℂ) * w 0)
+        + (∫ τ : ℝ, paperFT (landauTest w T (Real.log x)) τ * (mu τ : ℂ))
+        + ((ArithmeticFunction.vonMangoldt x / Real.sqrt x : ℝ) : ℂ) * ((T : ℂ) * w 0)‖
+      = ‖paperFT (landauTest w T (Real.log x)) (I / 2) + paperFT (landauTest w T (Real.log x)) (-I / 2)
+        + ∫ τ : ℝ, paperFT (landauTest w T (Real.log x)) τ * (mu τ : ℂ)‖ := by ring_nf
+    _ ≤ ‖paperFT (landauTest w T (Real.log x)) (I / 2)‖ +
+        ‖paperFT (landauTest w T (Real.log x)) (-I / 2)‖ +
+        ‖∫ τ : ℝ, paperFT (landauTest w T (Real.log x)) τ * (mu τ : ℂ)‖ := norm_add₃_le
+    _ ≤ _ := by linarith [hpole _ hI, hpole _ hI']
+
+end GammaTerm
+
 end RHTower
 
 end

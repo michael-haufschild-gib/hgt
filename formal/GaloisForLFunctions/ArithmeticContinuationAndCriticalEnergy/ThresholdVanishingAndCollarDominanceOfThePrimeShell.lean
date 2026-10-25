@@ -308,7 +308,7 @@ theorem riemannHypothesis_iff_sum_frozen_relaxation_le :
           ccmRestrictedWeilGroundEnergy (primeThresholdLadder 0) := by
   rw [riemannHypothesis_iff_sum_apertureSpectralJump_le tendsto_primeThresholdLadder_atTop]
   refine forall_congr' fun J => ?_
-  rw [Finset.sum_congr rfl fun j _ => (apertureSpectralJump_primeThresholdLadder_eq_frozen j).2.1]
+  rw [Finset.sum_congr rfl fun j _ => (apertureSpectralJump_primeThresholdLadder_eq_frozen j).2.2.1]
 
 /-! ## 3. The Pythagorean collar-core decomposition -/
 
@@ -701,9 +701,10 @@ private theorem abs_re_inner_visiblePrimeBlock_le (c : SuzukiPositiveAperture) (
         ≤ (ArithmeticFunction.vonMangoldt n : ℝ) * 1 * (2 * ‖f.1‖ ^ 2) := by
           exact mul_le_mul
             (mul_le_mul_of_nonneg_left hinv_le ArithmeticFunction.vonMangoldt_nonneg)
-            hsum_re (abs_nonneg _) ArithmeticFunction.vonMangoldt_nonneg
+            hsum_re (abs_nonneg _)
+            (mul_nonneg ArithmeticFunction.vonMangoldt_nonneg zero_le_one)
       _ = (ArithmeticFunction.vonMangoldt n : ℝ) * (2 * ‖f.1‖ ^ 2) := by ring
-  · rw [ccmVisiblePrimeBlock_of_invisible c hn, ContinuousLinearMap.zero_apply,
+  · rw [ccmVisiblePrimeBlock_of_invisible c hn, zero_apply,
       inner_zero_left, Complex.zero_re, abs_zero]
     exact mul_nonneg ArithmeticFunction.vonMangoldt_nonneg (by positivity)
 
@@ -727,13 +728,13 @@ theorem frozenFamily_Q_le_continuous_add_two_psi (N : ℕ) (c : SuzukiPositiveAp
         ∑ n ∈ Finset.Icc 2 M, g n := by
       refine Finset.sum_congr rfl fun n hn => ?_
       dsimp only [g]
-      rw [ccmVisiblePrimeBlock, if_pos hn, ContinuousLinearMap.smul_apply, inner_smul_left,
+      rw [ccmVisiblePrimeBlock, if_pos hn, smul_apply, inner_smul_left,
         Complex.conj_ofReal]
     rw [h1]
     refine Finset.sum_subset hsub fun n hn0 hn2 => ?_
     dsimp only [g]
     have hinv : n ∉ Finset.Icc 2 M := hn2
-    rw [ccmVisiblePrimeBlock_of_invisible c hinv, ContinuousLinearMap.zero_apply,
+    rw [ccmVisiblePrimeBlock_of_invisible c hinv, zero_apply,
       inner_zero_left, Complex.zero_re]
   have hshell : primeShellCorrelation N c f = ∑ n ∈ Finset.Ioc (min N M) M, g n := by
     rw [primeShellCorrelation_eq_sum]
@@ -793,7 +794,7 @@ theorem eventually_frozenFamily_energy_le_neg_mul_exp (N : ℕ) {α : ℝ} (hα 
   set B : ℝ := max 3 (Real.log (4 * Chebyshev.psi (N : ℝ) / (1 - β) + 1))
   have hB_pos : 0 < B := lt_of_lt_of_le (by norm_num : (0 : ℝ) < 3) (le_max_left _ _)
   have hev_ge : ∀ᶠ c : SuzukiPositiveAperture in atTop, (⟨B, hB_pos⟩ : SuzukiPositiveAperture) ≤ c :=
-    Filter.eventually_ge_atTop ⟨B, hB_pos⟩
+    Filter.eventually_ge_atTop (⟨B, hB_pos⟩ : SuzukiPositiveAperture)
   filter_upwards [hev_bal, hev_ge] with c hbal hcB
   have hcB' : B ≤ c.1 := hcB
   have hc3 : 3 ≤ c.1 := (le_max_left 3 _).trans hcB'
@@ -897,7 +898,7 @@ theorem not_exists_subtrivial_exp_floor_frozenFamily (N : ℕ) {σ : ℝ} (hσ :
   have hcA₀ : A₀ ≤ c.1 := (le_max_left A₀ 1).trans ((le_max_right c₀.1 _).trans (le_max_left _ _))
   have hlogK : Real.log K ≤ (1 - 2 * σ) * c.1 := by
     have hdiv : Real.log K / (1 - 2 * σ) ≤ c.1 := le_max_right _ _
-    exact (div_le_iff₀ hgap).mp hdiv
+    linarith [(div_le_iff₀ hgap).mp hdiv]
   have hexpK : K ≤ Real.exp ((1 - 2 * σ) * c.1) := by
     rw [← Real.exp_log hK_pos]
     exact Real.exp_le_exp.mpr hlogK

@@ -403,6 +403,14 @@ Thus zero evaluation alone is weaker than the critical energy condition.
 Source: `CriticalUnpaidSequence.lean`, `criticalUnpaidCoeff_partialSum`,
 `not_summable_sq_criticalUnpaidCoeff_partialSum`, `criticalFiniteRepair_distance`.
 
+The normalization is isometric in the actual Wiener algebra. The real lift
+`k_g(5^r)=sqrt(5)^r g_r`, zero elsewhere, satisfies
+`||k_g||_W=sum_r|g_r|` and `||k_g-k_h||_W=sum_r|g_r-h_r|`.
+The exact critical weight cancellation proves these identities, and the
+actual tower paid-ideal criterion reads the partial-sum energy of `g`.
+Source: `CriticalWienerLift.lean`, `norm_fiveCriticalWienerLift`,
+`norm_fiveCriticalWienerLift_sub`, `mem_paidIdeal_critical_fiveCriticalWienerLift_iff`.
+
 ### Admission and total pronic energy
 
 For any real row `f`, the positive cells have energies
@@ -414,6 +422,25 @@ splits exactly into its real and imaginary parts. These domain identities
 do not supply an admission estimate for an escaping source.
 Source: `PronicEnergyDomain.lean`, `bounded_pronicNorm_iff_summable`,
 `receiverBounded_iff_summable_pronicCellEnergy`, `summable_complex_pronicEnergy_iff`.
+
+For an arbitrary complex source row, every normalized cofactor coordinate
+is a finite continuous linear combination of Wiener coefficients. Equating
+these coordinates with an `ell2` output defines a closed submodule of
+`W_(1/2) x ell2`. Its inherited maximum norm is complete; the input
+projection is injective, with image exactly the finite-total-energy domain.
+The source's origin value is irrelevant. A complete graph can have a
+nonclosed image in the input Wiener norm, so these are distinct properties.
+Source: `CofactorGraphDomain.lean`, `isClosed_cofactorGraphDomain`,
+`cofactorGraphDomain_completeSpace`, `mem_range_cofactorGraphInput_iff`.
+
+The ordinary completed pronic space also has exact dilations. In normalized
+positive-cell coordinates, the floor action has weight
+`sqrt(m(m+1))/sqrt(n(n+1))`, where `m=floor(n/j)`. Its block mass is exactly
+`1/j`, so `||D_j f||=||f||/sqrt(j)`. The operators compose as `D_j D_k=D_(jk)`
+and integrate to a unital representation of the critical Wiener algebra with
+`||pi(a)||<=||a||_W`. This ordinary energy module precedes normalization by
+escaping source energy. Source: `PronicDilationOperators.lean`,
+`norm_pronicDilationOp`, `pronicDilationOp_comp`, `pronicWienerRepresentation`.
 
 ### Paid perturbations preserve the complete ideal
 

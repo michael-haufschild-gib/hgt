@@ -721,3 +721,83 @@ index, finite actual modules forcing escape, unique admitted kernel, exact
 complete source-row dilation, and full abstract unit-action conjugacy.
 Unverified source convolution, pole, moving-origin and diagonal additions
 are not reported as formalized there.
+
+Fresh frontier search surfaced the existing `receiverEnergy_succ_le` and
+`abs_receiver_le_cell` in `EnergyQuantilesRetainDiffuseEscape`, whose olean
+already exists. Removed the duplicate drafted prefix/jump proofs and their
+unused successor identity; the pending crossing, record and diagonal parts
+now consume that existing leaf. The absolute-level strict-overshoot theorem
+remains new. Boundary and diagonal scratches were reassembled while the
+queue was still checking unit transport.
+
+New actual-state transport lead:
+`1-in-progress/contracting-horizons-acts-on-actual-cofactor-states.md`.
+The generic mixed last-fibre error is drafted in
+`/tmp/qiii_mixed_horizon_error_body.lean`, NOT YET IN A CHECK QUEUE. It is
+intended to prove actual contracted-horizon realization
+K_p(j,k)=K(pj,pk)/K(p,p) when K(p,p)>0, with a zero-operator/finite-dimensional
+alternative at K(p,p)=0. No multiplicativity or fixed-state assumption.
+
+### Actual unit source transport passed
+
+The corrected unit scratch in session `84684` completed with no errors and
+standard axioms for every printed theorem, including real Wiener source
+normalization, positive limiting energy ratio, preservation of escape and
+Möbius–Liouville Gram transport. Its only warning was a redundant `change`
+in the nonnegative-energy perturbation proof; removed that no-op from the
+staged source before canonical promotion. No recheck of the whole scratch
+is needed solely for that removal; canonical leaf checks remain required.
+The queue is now checking finite joint characters (PID `2732`). The guarded
+six-leaf promoter remains unrun until that log is clean as well.
+
+The mixed-horizon transport card now records its exact module consequence:
+the new cyclic module is the closed D_p-cyclic range and has annihilator
+I:delta_p. This gives Hull(I)\{omega(p)=0} subset Hull(I_p) subset Hull(I),
+without claiming equality at zero coordinates. Contractions compose when
+the normalizations are positive; nonaugmentation rank-one states would be
+fixed. These paper deductions are not yet Lean proofs.
+
+### Finite joint multiplicity passed; canonical promotion
+
+The corrected finite scratch completed with standard axioms for the full
+joint-character decomposition, normalized hull correspondence, multiplicity
+sum and finite-or-continuum index theorem. The guarded six-leaf promoter
+ran successfully, installing and umbrella-wiring the actual unit-source
+transport and finite joint-character leaves. Canonical final audits remain
+pending in `/tmp/qiii-refinements-canonical-audit.sh`; do not run while
+session `84684` is active. That session has entered the critical-boundary
+pole scratch, followed by diagonal and moving-origin scratches.
+
+### Critical-boundary retry and contracted-horizon expansion
+
+The explicit actual Mellin identity and all interior order/jet assertions
+passed in the critical-boundary scratch. The new boundary parts had local
+elaboration failures: unspecified continuity endpoints, analytic composition
+inference, a local-definition rewrite, composition eta reduction, and two
+redundant tactics. These are repaired in the staged parts and the critical
+scratch reassembled. No boundary source promotion occurred. Session `84684`
+has proceeded to the first diagonal check; moving-origin remains next.
+
+The contracted-horizon draft now includes an actual Gram isometric
+embedding, equality of full Wiener annihilators with the principal quotient,
+hull inclusions, the zero-dilation/finite-cutoff alternative and composition
+laws. Its scratch is still UNVERIFIED. The existing private finite-packet
+identity `packet_gram_eq` in `CountableCofactorCovariancesHaveACommonLimit`
+was made public without changing its proof, so the new matrix-order
+application can reuse it. This changed foundation needs its own source
+audit and dependent olean before the contracted scratch.
+
+### Formalization is the completion criterion
+
+The user explicitly reiterated: formalize every significant finding; paper
+proofs do not count as proved. All pending boundary, diagonal, rank-one,
+augmentation, contracted-horizon, range/index and matrix-order results remain
+OPEN until their exact Lean statements pass, transitive axioms are clean,
+canonical source checks pass and imports are wired. Paper-stage placement
+tracks the repository pipeline only; it is not completion.
+
+The normalized receiver profile dependency olean is actually absent despite
+an earlier handoff assumption. `/tmp/qiii-next-refinement-checks.sh` now
+builds exactly this missing module before the diagonal retry; any further
+missing dependency must be resolved one at a time. Do not start this queue
+until session `84684` exits (currently moving-origin foundations).

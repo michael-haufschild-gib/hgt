@@ -534,15 +534,15 @@ theorem not_summable_criticalLineMass_defect (hd : AdmissibleDefect w s) {c t₀
       |>.trans (le_of_eq tsum_mul_right)
   have hcs : Summable fun k => ∑' p : Nat.Primes, q p k :=
     (hd.summable.mul_left (∑' p : Nat.Primes, ((p : ℕ) : ℝ) ^ (-(1 + u)))).of_nonneg_of_le
-      (fun k => tsum_nonneg fun p => hq0 p k) fun k => by rw [mul_comm]; exact hPu k
+      (fun k => tsum_nonneg fun p => hq0 p k) hPu
   have hlows : Summable fun k => (w k * Real.log (s k + u)⁻¹) / 2 - C / 2 * w k :=
     ((summable_defectProfile hd hu).div_const 2).sub (hd.summable.mul_left (C / 2))
   have hX2 : (defectProfile w s u) / 2 - C / 2 * W ≤ ∑' p : Nat.Primes, ∑' k, q p k := by
     rw [hswap]
     refine le_trans (le_of_eq ?_) (hlows.tsum_le_tsum hcol hcs)
-    rw [hlows.tsum_sub _, tsum_div_const, tsum_mul_left]
-    · rfl
-    · exact hd.summable.mul_left (C / 2)
+    rw [Summable.tsum_sub ((summable_defectProfile hd hu).div_const 2)
+      (hd.summable.mul_left (C / 2)), tsum_div_const, tsum_mul_left]
+    rfl
   have hcc : c * (Sm / c + 1 / 2) = Sm + c / 2 := by field_simp
   have hge : Sm / c + 1 / 2 ≤ ∑' p : Nat.Primes, ∑' k, q p k := by
     have : (2 * Sm / c + C * W + 1) / 2 - C / 2 * W = Sm / c + 1 / 2 := by ring

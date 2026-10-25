@@ -41,6 +41,70 @@ at least `(|c0|/2)(m+1)^(-alpha0)`. Its squared partial sums still diverge. Ever
 such combination therefore lies outside `D`. The classes of the `g_alpha` form
 a linearly independent family in `Z/D` indexed by a real interval.
 
+The same coefficient construction makes sense for every `alpha>0`, not
+only the unpaid interval. Telescoping still gives absolute sum two, total
+sum zero, and partial sum `-(m+1)^(-alpha)`. The exact square energy is
+the shifted power series with exponent `-2alpha`, hence it is finite
+exactly for `alpha>1/2`. This supplies a complete parameter calibration
+on both sides of the critical sequence boundary. Dedicated corpus searches
+did not return a general power-difference family; Mathlib's classical
+`Real.summable_nat_rpow` supplies the power-series criterion. The extension
+is a paper deduction, with no separate originality claim and Lean pending.
+
+The power-difference family and exact half-exponent threshold are drafted in
+`/tmp/BiarithmeticPowerTailCoefficients.lean`, unchecked. The finite-combination
+argument can use the corpus's dominant-exponent method from
+`HTGeometry/ExponentialSumAsymptotics.lean`: normalize by the smallest active
+exponent, pass a finite sum through the limit, and retain its nonzero complex
+coefficient. That existing theorem is for real exponential sums; the required
+complex discrete power-tail specialization and divergent lower bound remain
+to be formalized. Its source proof was inspected before reuse of the method.
+
+That specialization is now drafted in `/tmp/BiarithmeticPowerTailIndependence.lean`.
+It divides a finite combination by its smallest active power tail, passes the
+finite complex sum through the limit, and obtains its nonzero coefficient.
+Eventually the norm is at least half that coefficient norm times the dominant
+tail. Squaring and removing a finite prefix transfers summability to the
+divergent power series, a contradiction. Filtering zero coefficients and
+taking the minimum active exponent gives the full finite independence statement.
+The lower-bound argument only needs exponents at most one half; positivity
+of the exponents is needed separately to place their coefficient differences
+in `ell1`. This extension follows from exactly the same ratio proof.
+The draft is unchecked, and neither quotient bundling nor the cardinality
+upper bound has yet been formalized.
+
+The quotient-interface corpus audit found the existing finite-family proof
+pattern in `HTGeometry/ContinuumAnalyticEulerTailFaithfulnessUniversalityLaw.lean`
+(`linearIndependent_iff'`, `Submodule.mkQ`, and its zero-membership law).
+`HTGeometry/InfiniteHilbertImagesHaveContinuumRank.lean` supplies the interval
+cardinality/rank comparison pattern. Its Hilbert-image theorem is not being
+applied to the non-Hausdorff payment quotient. The needed ambient upper bound
+already exists as `WienerAlgebraAt.cardinal_le_continuum` in
+`ArithmeticDefectRigidity/TheClosedCofactorAnnihilatorHasNoCountableIndex.lean`;
+it follows from the actual coefficient injection into `C^N`. Its source was
+inspected and its dependency olean exists. These are reusable interfaces,
+not yet a formal quotient-dimension proof for this source.
+
+The actual quotient construction is now drafted in
+`CriticalGoldenPaymentQuotients`: restrict the paid ideal to complex scalars,
+take its actual Wiener closure, and quotient that closure by the pulled-back
+paid subspace. The canonical map to the full unreduced quotient is well defined.
+Both ranks are at most continuum by quotient surjectivity, subtype injection,
+and the existing Wiener cardinality theorem.
+
+`PowerTailWienerFamily` drafts actual norm-two closure members for every positive
+exponent, with payment exactly above one half. The concluding
+`CriticalGoldenContinuumDefect` draft uses the open interval `(0,1/2)`.
+A finite relation in the actual quotient becomes a paid Wiener sum. Continuous
+coefficient evaluation reads its exact normalized partial sums, and the
+power-tail independence theorem forces every coefficient to vanish. The same
+family lifts to the closure defect; its canonical image is the independent
+family in the full quotient, so those lifted classes are independent as well.
+The interval has cardinality continuum, supplying both matching lower bounds.
+All three drafts and their preceding closure/power dependencies are unchecked.
+This completes a proposed Lean proof chain for the ordinary-floor source only;
+the intrinsic-source comparison still requires its separate module construction.
+
 This proves dimension at least continuum. The ambient `ell1` space injects into
 `C^N`, which has cardinality continuum, so any quotient and any Hamel basis in it
 have cardinality at most continuum. Consequently `dim_C(Z/D)=continuum`.
@@ -86,7 +150,8 @@ The actual real Wiener embedding is now promoted to
 exact coefficient norm and distance preservation. The separate draft
 `/tmp/BiarithmeticCriticalGoldenPaymentNonclosed.lean` transfers the explicit
 witness and finite repairs to the actual critical golden paid ideal. The real
-embedding passed its scratch check and four audits; its direct check is pending.
+embedding passed its direct source check and four audits, with a
+[stage-3 card](../3-formalized/biarithmetic-critical-wiener-lift.md).
 The nonclosedness draft is unchecked. Neither proves the continuum-dimensional quotient yet.
 
 The complex normalized lift is separately drafted in
@@ -95,3 +160,10 @@ real embeddings, proves the exact coefficient formula and complex norm,
 and transfers the checked complex golden criterion to ordinary coefficient
 partial sums. Its proofs are unchecked. The corpus's general AOT weight
 isometry was inspected; no duplicate Wiener carrier is introduced.
+
+`CriticalGoldenClosure` separately drafts the full actual-closure transfer
+for every absolutely summable complex coefficient sequence with zero total
+evaluation. It uses the corrected finite-core sequence, the complex lift's
+exact distances, and the actual golden payment criterion. Its assertion is
+inclusion in the full actual ideal's closure; it does not identify that full
+closure's intersection with the one-prime subalgebra. The draft is unchecked.

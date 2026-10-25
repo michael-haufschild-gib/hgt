@@ -1025,3 +1025,5 @@ Weil's argument.
 | `PoleBlindPoissonBoundariesHavePositiveOriginDegree` | an explicit nonzero pure-source principal cycle has positive origin degree and vanishing pole and intersection readings; no nonlinear correction using the two pole values repairs origin-degree descent |
 | `MeyerHilbertSchmidtSource` | actual resolvent admission to Hilbert–Schmidt class, factorial bounds for every lower Xi jet, and exact centered character and affine-shear jet transport |
 | `MeyerSharpConvolutionAlgebra` | arithmetic sharp descends as a conjugate-linear convolution involution; positive Hermitian degree null squares annihilate all complex mixed readings |
+| `GlobalArithmeticMajorantsSupplyBezout` | one aperture-independent arithmetic reserve gives a pointed generating convex cone with Bézout and strict ampleness on the original compact surface; its positive added reserve forces RR to fail |
+| `MeyerSourceIntersectionSurface` | actual Poisson source surface and descended linear trace degree: RR is unconditional; Bézout, ampleness, and additive closure each hold iff RH; numerical and principal equivalence agree iff Xi zeros are simple |

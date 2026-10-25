@@ -109,3 +109,26 @@ energy-crossing helpers in `/tmp/qiii-diagonal-energy-check.lean`.
 They have not been checked. The next independent check queue is
 `/tmp/qiii-explicit-mellin-and-diagonal-checks.sh`; do not start it while
 session `32035` is active.
+
+## Existing sandwich reused
+
+A more targeted corpus search surfaced
+`ArithmeticCompensationTheory.pronicEnergy_rowDilate_sandwich` and
+`pronicEnergy_rowDilate_eq_complete` in
+`TheNormalizedReceiverBlowUpProfile`. The diagonal error draft now consumes
+that existing sandwich directly, rather than reproving its horizon bounds.
+The bilinear complete-block draft remains for the mixed pairing refinement.
+Energy jumps likewise use the existing `receiverEnergy_succ_le` from
+`EnergyQuantilesRetainDiffuseEscape`. Session `84684` is the live check queue;
+its diagonal stage has not yet started.
+
+## Current verification status
+
+The first combined diagonal check completed. The energy crossing, deleted
+white-noise positivity, actual rank-one character construction, augmentation
+positivity and augmentation numeric diagonal order passed independently.
+Other parts had local elaboration errors. Import, endpoint normalization,
+finite-dimensional API, cast, dependent-if rewrite and augmentation
+multiplication repairs are staged. No new leaf from this batch is promoted.
+The retry is `/tmp/qiii-diagonal-energy-check.lean`, queued after the current
+moving-origin check; its log will be `/tmp/qiii-diagonal-energy-retry-check.log`.

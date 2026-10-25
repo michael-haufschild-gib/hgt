@@ -1,12 +1,12 @@
 # Relative Vaughan Grams and finite harmonic denominators
 
 - **ID:** vaughan-relative-gram-and-harmonic-denominators
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
-- **Source:** q-i-selective-square-root-band.md
-- **Statement:** Test a universal rank-one limit after dividing the centered Gram by its actual nonzero harmonic amplitude, with a quantitative cutoff condition from finite rational denominators.
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper)
+- **Source:** ../1-in-progress/q-i-selective-square-root-band.md
+- **Statement:** Dividing the centered Gram by its actual harmonic amplitude gives a universal rank-one limit whenever its explicit factorial error vanishes; every positive cutoff schedule admits divergent horizons realizing that limit.
 
-## Candidate and purpose
+## Exact statement and purpose
 
 The uniform Gram paper gives, for `0<ε<1/2`, `β=1-2ε`, and every natural `q`,
 
@@ -17,21 +17,21 @@ nonzero second normalization even when `UV→∞` makes the usual normalized
 Gram vanish. The division must be controlled quantitatively; nonvanishing
 alone does not suffice.
 
-Candidate arithmetic bound: for positive `N`,
+For positive `N`,
 
 `|H_N|≥1/N!`.
 
 Each summand has denominator dividing `N!`, so `N! H_N` is an integer;
-the checked nonvanishing theorem would make its absolute value at least one.
-This would give
+the checked nonvanishing theorem makes its absolute value at least one.
+This gives
 
 `|Gᶜ_ij/(T^β H_U²H_V²)-(c_ε²/β)s_i s_j|
  ≤C_(ε,q)(U!V!)²/(log T)^q`.
 
 Thus any positive cutoff schedule with `(U!V!)²/(log T)^q→0` for some fixed
-`q` would have the same nonzero relative Gram limit. This condition is a
+`q` has the same nonzero relative Gram limit. This condition is a
 statement about the chosen schedule, not an assumed analytic cancellation
-estimate. Its applicability to explicit divergent schedules still needs proof.
+estimate. The horizon realization below applies to every positive cutoff schedule.
 
 ## Audit and status
 
@@ -42,7 +42,7 @@ factorial lower bound or relative moving Vaughan Gram law. No mathlib name
 or new Lean theorem has yet been verified for the denominator step.
 
 The uniform absolute Gram estimate is dependency-closed on paper but still
-under Lean verification. The proposed relative law does not give a fixed
+under Lean verification. The relative law does not give a fixed
 power saving at the square-root band and does not resolve Q-I.
 
 ## Dependency-closed paper proof
@@ -82,6 +82,16 @@ estimate at the square-root cutoff relation `H≈UV`.
 
 Three arithmetic targets are drafted in `/tmp/QIHarmonicDenominatorTools.lean`
 (integerization, common-multiple lower bound, factorial specialization).
-They remain uncompiled. The relative Gram targets are not yet drafted;
-their corpus novelty audit is pending. This card remains at stage one
-until that audit is complete.
+They remain uncompiled. The broad and BVI-focused novelty searches found
+the fixed-cutoff normalized Gram, moving uncentered Gram, product-horizon
+zero density, and reciprocal mixed-remainder criterion, but no actual
+harmonic-amplitude relative law or factorial calibration. Those source
+theorems have already been read and checked in the present work. The new
+claim is this precise refinement; no external novelty claim is made.
+
+Six further targets are drafted in `/tmp/QIRelativeVaughanGramTools.lean`:
+the harmonic factorial bridge, reciprocal-amplitude bound, uniform relative
+error, its schedule limit, calibrated horizon existence, and unconditional
+relative-limit realization for every positive cutoff schedule. They remain
+uncompiled. Their planned imports also justify producing the arithmetic
+lower-bound module when its checks pass.

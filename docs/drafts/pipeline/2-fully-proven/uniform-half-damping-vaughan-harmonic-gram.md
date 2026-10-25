@@ -148,10 +148,34 @@ prefix hyperbola estimate at `ε≤1/2`, the actual half-damping receiver budget
 arbitrary logarithmic Mertens and harmonic bounds, the exact five-piece identity,
 and the uniform finite floor majorant. The endpoint argument introduces no new
 analytic premise. The uniform double-convolution logarithmic theorem, generic
-damped logarithmic transfer, and actual convolution fluctuation are now checked
+damped logarithmic transfer, actual convolution fluctuation, and uniform
+truncated-Möbius logarithmic prefixes are now checked
 in Lean. This card's bounded-error law and moving-limit corollaries remain
 unformalized. Existing half-admission and product-horizon drafts do not yet establish
 these stronger claims. Full Q-I remains open.
+
+`/tmp/QICriticalLogPairingTools.lean` drafts the generic endpoint summation step:
+two logarithms in a common critical-prefix bound give one summable envelope
+dominating both the squared cell and its absolute square-root mixed cell.
+The common linear majorant pays the finite head. This uses the read public
+`pm_summable_reciprocal_log_sq` source, whose proof shifts the logarithmic
+integral comparison away from the origin. All three generic targets remain
+unchecked; the actual five-row pointwise specialization is still required.
+
+`/tmp/QIVaughanPrefixRemainderTools.lean` now drafts that pointwise specialization
+as six targets, including the bounded active correction, the unit-pattern
+remainder, the exact both-large triangle bound, and the common logarithmic
+rate for all five rows through half damping. It also drafts a common linear
+finite-head bound for those five smooth remainders, obtained from the actual
+reciprocal divisor majorant and the unit-bounded pattern estimate. These remain
+unchecked; the actual summable-envelope and Gram specializations are next.
+
+Those specializations are drafted in `/tmp/QIHalfVaughanGramTools.lean`:
+one summable envelope for every actual endpoint remainder, common energy and
+absolute mixed-pairing bounds, and the uniform bounded harmonic Gram error.
+The last proof expands the three error pairings and uses the mixed absolute
+bound directly. All three targets remain uncompiled. Moving renormalized
+limits, the exact ray of limit matrices, and its ranks remain to formalize.
 
 ## Relation to subcritical limit classification
 

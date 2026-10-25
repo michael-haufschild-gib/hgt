@@ -120,3 +120,24 @@ the same initial value and recurrence as `T_q g`, since `q=1/b`:
 formula without a separate rescaling and reindexing of each infinite tail.
 `GeometricFutureTail` drafts the recurrence together with the norm bound;
 the source comparison and Fredholm conclusion remain pending in Lean.
+
+The dependent `/tmp/BiarithmeticGeometricCausalDivision.lean` now drafts the
+full complex sequence-domain equivalence. For necessity, square summability
+makes the causal response tend to zero, while its product with `b^M` is
+exactly the `M`th partial sum of the reciprocal evaluation. That product
+tends to zero and the absolutely convergent evaluation therefore vanishes.
+For sufficiency, the recurrence identifies the response with the negative
+future tail; its proved paper absolute-sum bound implies square summability.
+The draft includes the explicit norm bound and is unchecked. Actual source
+transfer, bounded evaluation maps, and the Fredholm cokernel still need Lean
+construction; the sequence-domain theorem alone does not discharge them.
+
+The exact source transfer is drafted separately as `StrictPrimePayment`.
+For `q=a/sqrt(5)` and lifted coefficients `f_r=sqrt(5)^r g_r`, the finite
+pole sum is `sum_(r<=M)g_r/q^r`; multiplication by `q^M` is the causal
+response. Since `q^2=a^2/5`, its norm square is exactly the checked source
+payment summand. Thus above threshold the source criterion becomes
+`sum_r (sqrt(5)/a)^r g_r=0`. Applying the existing actual golden ideal
+identity replaces `a` by `alpha*t`. This normalization introduces no
+comparison constants or additional summability premise. The new draft is
+unchecked; its bounded cokernel and Fredholm packaging remain separate.

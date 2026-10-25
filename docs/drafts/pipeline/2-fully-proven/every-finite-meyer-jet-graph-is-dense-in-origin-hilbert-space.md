@@ -71,3 +71,5 @@ reading image. This strengthens the abstract draft and requires no continuity
 of the algebraic cohomological reading. The earlier generic Hilbert graph
 annihilator criterion is `HTGeometry/GraphSaturationCore.lean`; here genuine
 boundary density supplies the missing arithmetic annihilator rigidity.
+
+Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/EveryFiniteMeyerJetGraphIsDenseInOriginHilbertSpace.lean`; unverified and unwired. The scratch copy remains until actual-file verification succeeds.
