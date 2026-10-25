@@ -16,10 +16,11 @@ standard-axiom audits. Their owners are `TheOriginTraceControlsMovingSuccessors`
 The stronger source-power refinement is already in
 `3-formalized/the-source-power-saving-enlarges-the-invisible-translation-scale.md`.
 
-This card remains open for its later reset/raw moving-origin Gram and faithful
-boundary-module consequences. Their combined reset-origin scratch passed;
-canonical boundary checks and the separate raw-origin and index corollaries
-remain pending. Historical pending labels below are superseded by this coverage
+All reset/raw moving-origin Gram and faithful boundary-module consequences
+passed final canonical checks. Boundary dimension/index and two explicit
+prose corollaries still need their own checks: scalar origin-trace convergence
+in pronic norm, and unbounded squared-length/energy ratio along every
+nonvanishing cofinal subsequence. Historical pending labels below are superseded by this coverage
 record and [the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
 
 ## Paper proof

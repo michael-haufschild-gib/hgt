@@ -149,6 +149,11 @@ and final direct checks with standard axioms only. The module is wired and
 its scratch removed. Both quantitative determinants, linear independence,
 the exact row span, and its dimension two are certified at every positive
 damping; the infinite Gram consequences remain pending.
+Both moving-cell targets passed corrected producing and final direct checks
+with standard axioms only. `MovingVaughanRowsConvergeCellByCell.lean` is wired
+and its scratch removed. For every positive damping, both centered and
+smooth-subtracted rows converge cellwise to the actual two-row frame when
+both cutoffs diverge.
 The independent moving-horizon summation theorem passed producing and final
 direct checks with standard axioms only. Its HTGeometry module is wired and
 its scratch removed; see

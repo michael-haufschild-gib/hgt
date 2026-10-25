@@ -61,8 +61,9 @@ theorem exists_uniform_pmUndampedVaughan_power_of_mertens_power {η κ B : ℝ}
       Real.log (n : ℝ) ^ 2 ≤ (n : ℝ) ^ (a * η - κ) := by
     have h := eventually_log_pow_le_sqrt_rpow 2
       (β := 2 * (a * η - κ)) (by positivity)
-    simpa only [Real.sqrt_eq_rpow, ← Real.rpow_mul (Nat.cast_nonneg _),
-      show 2 * (a * η - κ) * (1 / 2 : ℝ) = a * η - κ by ring] using h
+    filter_upwards [h] with n hn
+    simpa only [Real.sqrt_eq_rpow, ← Real.rpow_mul (Nat.cast_nonneg n),
+      show 2 * (a * η - κ) * (1 / 2 : ℝ) = a * η - κ by ring] using hn
   refine ⟨2 + 2 ^ η * (11 * B + BH), by positivity, ?_⟩
   filter_upwards [hDlim.eventually_ge_atTop 1, hloglim.eventually_ge_atTop 1,
     hlogPower, eventually_ge_atTop 1] with n hD1 hlog1 hlogPower hn U V

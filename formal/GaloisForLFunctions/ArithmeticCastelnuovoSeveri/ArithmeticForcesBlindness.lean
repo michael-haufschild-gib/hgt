@@ -108,6 +108,8 @@ theorem measureTheta_nat_sum_eq_jacobiTheta {x : ℝ} (hx : 0 < x) :
   have hP_mom : Integrable (fun u : ℝ => 1 / u ^ 2) riemannPrimeMeasure :=
     integrable_inv_sq_of_integrable_rpow_neg_three_halves hP_Iio
       integrable_rpow_neg_three_halves_riemannPrimeMeasure
+  haveI : SigmaFinite riemannPrimeMeasure :=
+    sigmaFinite_of_measure_Iio_one_eq_zero hP_Iio hP_mom
   have hν_supp : ν₀ (Iio 1) = 0 := by
     dsimp only [ν₀]
     rw [← beurlingIntegerMeasure_riemannPrimeMeasure]
@@ -148,14 +150,15 @@ theorem measureTheta_nat_sum_relation {x : ℝ} (hx : 0 < x) :
   let τ : ℍ := ⟨I * ((x⁻¹ : ℝ) : ℂ), by simp [hx_inv]⟩
   have hS := jacobiTheta_S_smul τ
   rw [UpperHalfPlane.modular_S_smul] at hS
+  change jacobiTheta (-(τ : ℂ))⁻¹ = (-I * (τ : ℂ)) ^ (1 / 2 : ℂ) * jacobiTheta (τ : ℂ) at hS
   have hxC : (x : ℂ) ≠ 0 := by exact_mod_cast hx.ne'
-  have hxinvC : ((x⁻¹ : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hx_inv.ne'
-  have hS_lhs : -(τ : ℂ)⁻¹ = I * (x : ℂ) := by
-    change -(I * ((x⁻¹ : ℝ) : ℂ))⁻¹ = I * (x : ℂ)
-    field_simp [hxinvC, I_ne_zero]
-    rw [Complex.I_sq]
-    norm_cast
-    field_simp [hx.ne']
+  have hS_lhs : (-(τ : ℂ))⁻¹ = I * (x : ℂ) := by
+    change (-(I * ((x⁻¹ : ℝ) : ℂ)))⁻¹ = I * (x : ℂ)
+    rw [Complex.ofReal_inv]
+    refine inv_eq_of_mul_eq_one_right ?_
+    calc -(I * (x : ℂ)⁻¹) * (I * (x : ℂ))
+        = -(I ^ 2) * ((x : ℂ)⁻¹ * (x : ℂ)) := by ring
+      _ = 1 := by rw [Complex.I_sq, inv_mul_cancel₀ hxC]; ring
   have hS_base : -I * (τ : ℂ) = ((x⁻¹ : ℝ) : ℂ) := by
     change -I * (I * ((x⁻¹ : ℝ) : ℂ)) = ((x⁻¹ : ℝ) : ℂ)
     calc -I * (I * ((x⁻¹ : ℝ) : ℂ))
@@ -165,9 +168,8 @@ theorem measureTheta_nat_sum_relation {x : ℝ} (hx : 0 < x) :
   rw [hS_lhs, hS_base, hτ] at hS
   have hcpow : ((x⁻¹ : ℝ) : ℂ) ^ (1 / 2 : ℂ) = (x : ℂ) ^ (-(1 / 2 : ℂ)) := by
     have h1 : (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) := by norm_num
-    have h2 : (-(1 / 2 : ℂ)) = ((-(1 / 2 : ℝ) : ℝ) : ℂ) := by push_cast; ring
-    rw [h1, h2, ← Complex.ofReal_cpow hx_inv.le, ← Complex.ofReal_cpow hx.le,
-      Real.inv_rpow hx.le, ← Real.rpow_neg hx.le]
+    rw [h1, ← Complex.ofReal_neg, ← Complex.ofReal_cpow hx_inv.le,
+      ← Complex.ofReal_cpow hx.le, Real.inv_rpow hx.le, ← Real.rpow_neg hx.le]
   rw [hcpow] at hS
   rw [hS]
   ring
@@ -459,7 +461,7 @@ theorem mem_meyerTraceBoundedIdeal_of_offLine_support_subset {Ω : Set ℂ}
     {g : _root_.RHTower.DeningerMeyerStrongLogTarget}
     (hsupp : ∀ z : ℂ, z.re ≠ 1 / 2 → z ∉ Ω →
       _root_.RHTower.deningerMeyerStrongLogMellin g z = 0) :
-    g ∈ meyerTraceBoundedIdeal ∧ 0 ≤ _root_.RHTower.meyerSourceTrace g g := by
+    g ∈ meyerTraceBoundedIdeal ∧ 0 ≤ meyerSourceTrace g g := by
   have hg : MeyerTraceOrbitBounded g := by
     rw [meyerTraceOrbitBounded_iff_offLine_values_zero]
     intro rho hoff
@@ -474,7 +476,7 @@ theorem forcedZeroFreeRegion_forces_meyerTraceBoundedIdeal
     {g : _root_.RHTower.DeningerMeyerStrongLogTarget}
     (hsupp : ∀ z : ℂ, z.re ≠ 1 / 2 → z ∉ forcedZeroFreeRegion →
       _root_.RHTower.deningerMeyerStrongLogMellin g z = 0) :
-    g ∈ meyerTraceBoundedIdeal ∧ 0 ≤ _root_.RHTower.meyerSourceTrace g g :=
+    g ∈ meyerTraceBoundedIdeal ∧ 0 ≤ meyerSourceTrace g g :=
   mem_meyerTraceBoundedIdeal_of_offLine_support_subset
     xiDivisorSupport_notMem_forcedZeroFreeRegion hsupp
 
@@ -567,7 +569,7 @@ theorem arithmetic_forces_blindness_unconditional :
     ((∀ g : _root_.RHTower.DeningerMeyerStrongLogTarget,
         (∀ z : ℂ, z.re ≠ 1 / 2 → z ∉ forcedZeroFreeRegion →
           _root_.RHTower.deningerMeyerStrongLogMellin g z = 0) →
-        g ∈ meyerTraceBoundedIdeal ∧ 0 ≤ _root_.RHTower.meyerSourceTrace g g) ∧
+        g ∈ meyerTraceBoundedIdeal ∧ 0 ≤ meyerSourceTrace g g) ∧
       (∀ x : ScalingCycle,
         (∀ z : ℂ, z.re ≠ 1 / 2 → z ∉ forcedZeroFreeRegion →
           paperFT (cx x.2.2) (gammaOf z) = 0 ∨ paperFT (cx x.2.2) (conj (gammaOf z)) = 0) →

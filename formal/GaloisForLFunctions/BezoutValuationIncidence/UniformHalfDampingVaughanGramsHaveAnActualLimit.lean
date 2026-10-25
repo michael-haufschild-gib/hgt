@@ -127,10 +127,11 @@ theorem tendsto_pmPronicVaughanCentredGram_half_sub_harmonic
           abs_of_nonneg (by positivity : (0 : ℝ) ≤ (n : ℝ) * ((n : ℝ) + 1))]
       _ ≤ C := (hbound (U t) (V t) (H t) k).1
   have hproduct (k l : Fin 5) : Tendsto (fun t => a k t * M l t) atTop (𝓝 0) := by
-    apply squeeze_zero_norm' (Eventually.of_forall fun t => ?_) ?_
-    · rw [Real.norm_eq_abs, abs_mul]
-      exact mul_le_mul_of_nonneg_left (hM l t) (abs_nonneg _)
-    · simpa only [abs_zero, zero_mul] using (ha k).abs.mul_const C
+    have hz : Tendsto (fun t : ℕ => |a k t| * C) atTop (𝓝 0) := by
+      simpa only [abs_zero, zero_mul] using (ha k).abs.mul_const C
+    apply squeeze_zero_norm' (Eventually.of_forall fun t => ?_) hz
+    rw [Real.norm_eq_abs, abs_mul]
+    exact mul_le_mul_of_nonneg_left (hM l t) (abs_nonneg _)
   have heq (t : ℕ) : pmPronicVaughanCentredGram (1 / 2) (U t) (V t) (H t) i j -
       (subHalfZetaCoeff (1 / 2) * deningerHarmonicPartial (U t) * deningerHarmonicPartial (V t)) ^ 2 *
         pmPronicVaughanSmoothSigns i * pmPronicVaughanSmoothSigns j *
@@ -167,7 +168,8 @@ theorem tendsto_pmPronicVaughanCentredGram_half_sub_harmonic
     ring
   have hlim := ((hproduct i j).add (hproduct j i)).add
     (tendsto_pmPronicVaughanSmoothRemainder_half_pairing hH hU hV i j)
-  simpa only [zero_add, ← heq] using hlim
+  apply (tendsto_congr' (Eventually.of_forall heq)).mpr
+  simpa only [zero_add] using hlim
 
 #print axioms exists_summable_pmPronicVaughanSmoothRemainder_half_pair_envelope
 #print axioms summable_pmPronicVaughanHalfLimitGram_terms

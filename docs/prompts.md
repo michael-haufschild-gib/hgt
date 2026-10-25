@@ -417,6 +417,11 @@ also we have:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
 
+and these new research results:
+- formal/GaloisForLFunctions/ArithmeticPositiveDuality/PositiveMeasureHamburgerRigidity.lean
+- fformal/GaloisForLFunctions/ArithmeticPositiveDuality/BeurlingRiemannFunctionalEquationRigidity.lean
+- formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/ArithmeticForcesBlindness.lean
+  
 create updated versions of the reviews to reflect the current status quo and frontier of our research:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
 2. then create a summary document that combines all the information and:
@@ -477,9 +482,10 @@ do not run any builds. do not read anything outside the formal/ folder. do not r
 Read the following documents:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
-3. Unification of the routes: docs/reports/review-2410/route-unification-ledger.md
-4. Hard obstacles: docs/reports/review-2410/hard-obstacles.md
-5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2410/walls-ledger.md
+3. Unification of the routes: docs/reports/review-2510/route-unification-ledger.md
+4. Hard obstacles: docs/reports/review-2510/hard-obstacles.md
+5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2510/walls-ledger.md
+6. docs/reports/review-2510/what-forces-blindness.md
 
 and read the current research programmes:
 - formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
@@ -500,7 +506,9 @@ and read the current research programmes:
 - formal/GaloisForLFunctions/ArithmeticLocalDivisorGeometry/README.md
 - formal/GaloisForLFunctions/SignedSuccessorArithmetic/README.md
 - formal/GaloisForLFunctions/ArithmeticDefectRigidity/README.md
-
+- formal/GaloisForLFunctions/BiarithmeticGeometry/README.md
+- formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
+  
 Only read these documents, no other markdown files.
 
 Use the search tool for our lean corpus to research what we have proven and not proven. Do not assume, our research is far ahead of your training data. Take the time to search and understand. 
@@ -512,7 +520,7 @@ The questions for you to answer:
 2. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
 3. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-2410/opus.md
+Write a report in docs docs/reports/review-2510/fable.md
 
 do not run any builds. do not search the web.
 
@@ -520,11 +528,15 @@ do not run any builds. do not search the web.
 
 Do not use the hgtl7 skill.
 
-Read fully the report docs/reports/review-2410/opus.md
+Read fully the report docs/reports/review-2510/fable.md
 
-In section "## 4. Q3 — A field that would supply the tools: *Biarithmetic Geometry*" the document describes a new field/research programme "Biarithmetic Geometry"
+In section "## 4. Question 3 — the field that would supply the missing tools" the document describes a new field/research programme - naming it "Arithmetic Positive Duality"
 
 Your task: develop this new field / programme.
+
+The folder and umbrella are already created: formal/GaloisForLFunctions/ArithmeticPositiveDuality and formal/GaloisForLFunctions/ArithmeticPositiveDuality.lean
+
+Two modules are also already added: PositiveMeasureHamburgerRigidity.lean and formal/GaloisForLFunctions/ArithmeticPositiveDuality/BeurlingRiemannFunctionalEquationRigidity.lean - they relate to formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/ArithmeticForcesBlindness.lean
 
 Follow the example of other research programmes: formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri or formal/GaloisForLFunctions/ArithmeticOrientationGeometry
 
@@ -547,6 +559,8 @@ Follow the example of other research programmes: formal/GaloisForLFunctions/Arit
 Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
 
 The goal is done when the field is fully developed, the questions are answered, the tools are developed as described in the original document.
+
+Start with writing the first draft of README.md
 
 ## openings
 Do not use the hgtl7 skill.
@@ -602,16 +616,18 @@ always look at the big picture, try to understand what all our research is tryin
 Goal is met when a proof route is fully closed and formalized in lean and RH is proven. Do not stop until an RH proof is fully formalized.
 
 ## argon do task
-read and understand why:
-1. Route ledger: docs/reports/rh-current-frontier-map.md
-2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
-3. Obstacles report: docs/reports/review-2510/hard-obstacles.md
+read: docs/reports/review-2510/route-unification-ledger.md
 
-Find an answer/solution to the question: What forces the actual arithmetic source to be blind to off-line zeros?
+understand this part from the document:
+"3. **The three families reduce to three bridges and one law.**
+   - **U1 — escape exclusion (Q3).** The only non-graded handle below quasi-RH.
+   - **U2 — selection (Q1).** Pass from averaged positivity, already proved beyond Nyquist, to individual heights.
+   - **U3 — selectivity of invariants (Q2), then forcing.** Decide whether ζ's invariants characterize it, then force the source into the maximal blind ideal with input outside the single-channel class.
+   - **The common law:** arithmetic forces blindness. In the cancellation family it would appear as rate zero, in the positivity family as a complete sign, and in the realization family as exhaustion of the maximal blind ideal."
 
-Formalize the answer in lean.
+Find and formalize this common law.
 
-We are not interested in more criteria, estimates, improving some number, more nogos, but the actual answer to the question: What forces the actual arithmetic source to be blind to off-line zeros?
+We are not interested in more criteria, estimates, improving some number, more nogos, but the actual common law.
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -623,7 +639,7 @@ We are not interested in more criteria, estimates, improving some number, more n
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-Do not edit the md documents.
+Do not edit the md document.
 
 Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
 

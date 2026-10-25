@@ -1,1 +1,2 @@
 import GaloisForLFunctions.ArithmeticPositiveDuality.PositiveMeasureHamburgerRigidity
+import GaloisForLFunctions.ArithmeticPositiveDuality.BeurlingRiemannFunctionalEquationRigidity

@@ -200,6 +200,8 @@ $G_{ij}$; diagonal $D_T$; mixed remainder $R^{\text{mix}}_T$; $E^{\text{int}}_T=
     separate the actual prefix and pole at every positive damping, with
     determinant at least `2^(-2ε)/36`; their finite pronic Gram determinant is
     at least `2^(-4ε)/15552` for horizons containing both cells.
+    [Divergent cutoffs](MovingVaughanRowsConvergeCellByCell.lean) recover
+    `(A,A,-A,0,P)` cellwise in both centered and smooth-subtracted rows for every `ε>0`.
     [Dominated moving sums](../HTGeometry/MovingTruncationsPreserveDominatedLimits.lean)
     permit independently divergent horizons under a common summable envelope.
     The [uniform stretched-exponential estimate](UniformStretchedExponentialCancellationInTheVaughanConvolution.lean)

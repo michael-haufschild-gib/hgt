@@ -225,9 +225,9 @@ Bohr points annihilating `P(c)`. *Unit*: a coordinate on the width line.
     (`onePoint_not_mem_operatorHull`). Annihilator hulls of faithful cyclic modules carry no localization.
 
 The interior orders, jets, boundary values and unit-orbit statements in item 18
-passed final canonical checks with standard axioms. The new critical-kernel
-and max-kernel applications in item 20 passed combined scratches but still
-await their individual canonical audits. See the
+passed final canonical checks with standard axioms. The critical-kernel
+and max-kernel applications in item 20 also passed their individual canonical
+checks and standard-axiom audits. See the
 [completion ledger](../../../docs/drafts/pipeline/1-in-progress/q-iii-existing-findings-lean-completion.md).
 
 ### Transport and dictionaries

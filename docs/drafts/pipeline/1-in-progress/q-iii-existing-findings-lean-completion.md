@@ -42,8 +42,9 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Rank-one multiplicative signs | Canonical audit `87736` passed with standard axioms; card in `3-formalized`, augmentation route retired with its checked positive survivors |
 | Visible interior pole orders, paid jets, critical boundary values, unit orbits | All six canonical sources passed final audits with standard axioms; both paper cards moved to `3-formalized` |
 | Reset moving origin, faithful step kernel and every positive boundary mass | All thirteen canonical entries passed final checks, including every positive faithful realization |
-| Raw moving origin, exclusion from actual zero-origin limits | Draft scratch after boundary dependencies |
-| Positive boundary modules have infinite dimension and continuum index | Draft scratch after boundary dependencies |
+| Raw moving origin, exclusion from actual zero-origin limits | Final canonical audit `46880` passed with standard axioms; no olean needed |
+| Positive boundary modules have infinite dimension and continuum index | First direct scratch check active |
+| Scalar origin-trace convergence and nonvanishing successor scale | Existing translation-card prose consequences lacked explicit declarations; direct Lean draft required |
 | Exact incomplete dilation fibre and mixed C*D/p bound | Combined scratch passed; canonical source installed and wired, individual checks pending |
 | Actual horizon contraction, principal ideal quotient, full intertwining | Combined scratch passed; canonical sources installed and wired, individual checks pending |
 | Closed dilation range, index loss, matrix/operator horizon order | Combined scratch passed; canonical sources installed and wired, individual checks pending |
@@ -61,6 +62,13 @@ checked. The visible-poles card retains its genuinely open identification of
 actual module spectra with arithmetic zeros, separate from the paid-ideal
 theorems being completed here. No complete actual escape classification is
 claimed.
+
+The parent card's logarithmic-chirp reference belongs to the separate
+parallel Biarithmetic programme. Its phase rigidity, group and Cauchy-kernel
+components are formalized; its source asymptotic and tangent classification
+are still open on that programme's card. They are not inputs to Q-III and
+their sources are preserved for their existing owner. This completion ledger
+covers the Q-III drafts and paper deductions, not unrelated parallel work.
 
 ## Completed canonical audits
 
@@ -98,6 +106,7 @@ unchanged checks. All required leaves are wired into their programme umbrellas.
 | Origin-step cyclic faithfulness and full Bohr hull | `35576` | `56254` passed |
 | Positive-origin cyclic faithfulness and full Bohr hull | `78330` | `5362` passed |
 | Every positive faithful origin boundary is realized on escape | `60215` | None needed |
+| Raw-origin Gram limits, every positive mass and actual-kernel exclusion | `46880` | None needed |
 
 Recent final output files:
 `/tmp/qiii-augmentation-canonical-final.log`,
@@ -121,7 +130,8 @@ for both statements. Its canonical split now explicitly imports
 `PositiveOriginMixturesAreFaithful`; it now has the same explicit import.
 `TheOriginStepModuleHasTheFullBohrHull` now explicitly imports
 `HTGeometry/RealPositiveKernelComplexification` for its real-to-complex
-positivity and packet comparison lemmas. These later leaves remain unchecked.
+positivity and packet comparison lemmas. These leaves subsequently passed their
+required olean checks and final canonical source audits listed below.
 The positive-mixture module comment now says comparison **to** the step
 module; its construction does not assert surjectivity, which faithfulness
 does not need.
@@ -196,7 +206,19 @@ output `/tmp/qiii-positive-origin-mixtures-canonical-final.log`.
 Boundary entry 13, `EscapeRealizesEveryPositiveOriginBoundary`, passed its
 source-only final check `60215` with standard axioms; no importing source requires its olean. Output:
 `/tmp/qiii-faithful-origin-realization-canonical-final.log`.
-No other owned Lean process is active.
+Raw-origin scratch check `78649` failed only on four positive-natural one
+coercions and their rewrites. The one-step helper now states its positive
+index explicitly, and the own-energy calculation supplies the exact cast
+identity. Retry `22302` passed with standard axioms; output
+`/tmp/qiii-unreset-origin-retry.log`. `RawMovingOriginsAddConstantGramMass`
+was copied directly and umbrella-wired. Final canonical source check `46880`
+passed with standard axioms; output `/tmp/qiii-raw-origin-canonical-final.log`.
+Its olean is not needed by a written importer. Boundary-index first check
+`5615` found missing `NNReal` notation scope and an ideal/restricted-submodule
+quotient rewrite mismatch. The existing actual quotient equivalence supplies
+the exact repair: ascribe the equivalence at the ideal quotient before using
+its rank equality. The source now has that ascription and the explicit scope.
+Its retry is the only active Lean check; output `/tmp/qiii-origin-boundary-index-retry.log`.
 The remaining standalone scratch sources listed below were scanned for
 forbidden placeholders and raised limits: no matches. The contraction scratch
 has now passed; other listed scratches still require Lean checks. The eleven required
@@ -272,5 +294,31 @@ owner, add its umbrella import directly, and run the canonical check directly.
   statements and move them only after the relevant canonical audits pass.
 - Raw-origin and boundary-index scratch files remain unchecked. Their exact
   source statements and canonical dependencies are retained in their Lean files.
+- Tied-torus and finite-hull staging sources now have explicit imports,
+  mathematical comments and closed sections. The tied-torus staging file
+  includes augmentation; the finite-hull staging file includes the final
+  half-plane sequence. Do not append the old separate fragments again.
+  Generic character powers and actual eigencharacter powers are split between
+  `qiii_eigencharacter_power_body.lean` and
+  `qiii_actual_eigencharacter_power_body.lean`. Their combined scratch is
+  unchanged and still awaits its required dependencies.
+- All six jet-application staging sources now have explicit imports,
+  mathematical comments and closed sections. Their proofs still match the
+  unverified combined scratch. Required oleans will be point separation,
+  finite jets, mixed interpolation and mixed index; interior-only index and
+  unit-orbit index are terminal source-only leaves. The base jets are also a
+  required dependency. No jet source has yet passed its first check.
 - The actual kernel-family canonical application is complete, together with
   all three dependencies; its redundant scratch check was removed.
+- Seventeen completed boundary staging/check files were removed after all
+  thirteen canonical boundary leaves passed. Canonical sources and final
+  logs remain authoritative; no removed draft is needed by pending work.
+- A reread of the translation card exposed two exact prose corollaries
+  not named in existing Lean: normalized raw displacement converges in
+  pronic norm to its scalar origin trace when the recentered error vanishes;
+  nonvanishing displacement along cofinal horizons forces squared shift
+  length divided by energy to exceed every bound frequently on escape.
+  They now have a complete direct draft in
+  `/tmp/qiii-moving-origin-trace-corollaries-check.lean`, using the checked sharp
+  defect and uniform small-budget lemmas. It still needs a check before closing
+  that card. No new source estimate is needed.

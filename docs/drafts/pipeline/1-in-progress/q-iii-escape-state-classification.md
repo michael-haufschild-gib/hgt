@@ -234,8 +234,11 @@ variation or mixed-stationarity premise is available.
 The independently formalized Biarithmetic `DiagonalScalingCountermodel` supplies
 a rank-three calibration with all critical constraints and exact diagonal
 scaling but unequal mixed scaling, plus a stationary averaged positive survivor.
-The logarithmic-chirp source-tangent counterexample remains paper only. Neither
-is an actual Möbius counterexample. The weighted faithful family above separately
+The parallel [logarithmic-chirp source-tangent project](biarithmetic-logarithmic-chirp-tangents.md)
+has checked phase rigidity, phase-group and strict Cauchy-kernel components;
+its source asymptotic and complete tangent classification remain unverified.
+Q-III uses none of those unverified claims. Neither calibration is an actual
+Möbius counterexample. The weighted faithful family above separately
 refutes inferring annihilator-hull radii from operator growth alone.
 
 The golden Beurling datum at q=5 is not itself an integer-prefix source. The
@@ -1103,5 +1106,9 @@ The cutoff's canonical source-only audit also passed, and its card moved to
 formalized unique-extension survivor. All finite joint-index and actual
 unit-transport canonical checks have now passed; both cards are in
 `3-formalized`. The expanded augmentation scratch includes its singleton
-character hull, first-coefficient action and exact scalar Gram; these additions
-are being checked and are not yet claimed as formalized.
+character hull, first-coefficient action and exact scalar Gram; their canonical
+source audit `79225` passed with standard axioms. Rank-one multiplicative signs,
+actual conjugation, the singleton/continuum kernel-family alternative, visible
+pole orders and boundary values, and all thirteen reset-origin boundary leaves
+also passed their final canonical checks. The completion ledger records the
+remaining raw-origin/index, contraction, finite-hull and interpolation work.

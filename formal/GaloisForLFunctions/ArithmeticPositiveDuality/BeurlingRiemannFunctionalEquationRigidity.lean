@@ -218,7 +218,9 @@ theorem tendsto_integral_tentSeriesKernel {l : ℝ} (hl : 1 ≤ l) :
   have hmaj : Tendsto (fun ε : ℝ => (24 * Real.sqrt ε / Real.pi) * (1 / l ^ 2)) (𝓝[>] 0) (𝓝 0) := by
     have hsq : Tendsto Real.sqrt (𝓝[>] 0) (𝓝 0) := by
       simpa using (Real.continuous_sqrt.tendsto 0).mono_left nhdsWithin_le_nhds
-    simpa using (((hsq.const_mul 24).div_const Real.pi).mul_const (1 / l ^ 2))
+    have h0 : 24 * (0 : ℝ) / Real.pi * (1 / l ^ 2) = 0 := by ring
+    have ht := (((hsq.const_mul 24).div_const Real.pi).mul_const (1 / l ^ 2))
+    rwa [h0] at ht
   refine squeeze_zero' ?_ ?_ hmaj
   · filter_upwards [Ioo_mem_nhdsGT one_pos] with ε hε
     exact intervalIntegral.integral_nonneg zero_le_one fun τ hτ =>
@@ -245,7 +247,8 @@ theorem tendsto_integral_tentSeriesKernel {l : ℝ} (hl : 1 ≤ l) :
       intervalIntegral.integral_nonneg (by norm_num) fun τ hτ =>
         fejerSeriesKernel_nonneg hε0 (abs_le.mpr ⟨hτ.1, by linarith [hτ.2]⟩) l
     have hsplit := intervalIntegral.integral_add_adjacent_intervals
-      (hc_fej.intervalIntegrable (-1) 0) (hc_fej.intervalIntegrable 0 1)
+      (hc_fej.intervalIntegrable (μ := volume) (-1) 0)
+      (hc_fej.intervalIntegrable (μ := volume) 0 1)
     have hfej := intervalIntegral_fejerSeriesKernel_le hl hε0 hε1
     linarith
 
@@ -258,7 +261,7 @@ theorem integral_tentDualKernel {l : ℝ} (hl : 1 ≤ l) (ε : ℝ) :
   have hc : Continuous (fun τ : ℝ => fejerDualKernel ε τ l) :=
     (continuous_uncurry_fejerDualKernel ε).comp (continuous_id.prodMk continuous_const)
   have hsplit := (intervalIntegral.integral_add_adjacent_intervals
-    (hc.intervalIntegrable (-1) 0) (hc.intervalIntegrable 0 1)).symm
+    (hc.intervalIntegrable (μ := volume) (-1) 0) (hc.intervalIntegrable (μ := volume) 0 1)).symm
   have hL : (∫ τ in (-1 : ℝ)..0, fejerDualKernel ε τ l) =
       ∫ τ in (0 : ℝ)..1, tentDualKernel l ε τ := by
     have hneg := intervalIntegral.integral_comp_neg (fun τ : ℝ => fejerDualKernel ε τ l) (a := 0) (b := 1)
@@ -320,7 +323,7 @@ theorem tendsto_integral_tentPoleKernel :
   have hc : Continuous g :=
     (continuous_const.sub continuous_abs).mul (continuous_const.div (by fun_prop) fun _ => by positivity)
   have hsplit := (intervalIntegral.integral_add_adjacent_intervals
-    (hc.intervalIntegrable (-1) 0) (hc.intervalIntegrable 0 1)).symm
+    (hc.intervalIntegrable (μ := volume) (-1) 0) (hc.intervalIntegrable (μ := volume) 0 1)).symm
   have hL : (∫ τ in (-1 : ℝ)..0, g τ) = ∫ τ in (0 : ℝ)..1, g τ := by
     have hneg := intervalIntegral.integral_comp_neg g (a := 0) (b := 1)
     simp only [neg_zero] at hneg
@@ -747,7 +750,7 @@ private theorem freqDirichlet_eq_riemannZeta_of_measure_eq
         rw [Measure.dirac_apply, Set.indicator_of_notMem]
         simp only [mem_singleton_iff]
         intro heq
-        exact hnot ⟨k + 1, by omega, by push_cast; exact heq⟩
+        exact hnot ⟨k + 1, by omega, by push_cast; exact heq.symm⟩
       rw [hsum0, smul_zero]
     rw [hzero, nonpos_iff_eq_zero, ENNReal.ofReal_eq_zero] at hle1
     linarith
@@ -762,8 +765,12 @@ private theorem freqDirichlet_eq_riemannZeta_of_measure_eq
         ENNReal.ofReal_tsum_of_nonneg (fun n => by split_ifs <;> linarith [hw n])
           (summable_ite_of_sq hw hsum2 m)]
       refine tsum_congr fun n => ?_
-      rw [Measure.smul_apply, smul_eq_mul, Measure.dirac_apply]
-      by_cases h : lam n = ((m + 1 : ℕ) : ℝ) <;> simp [h]
+      rw [Measure.smul_apply, smul_eq_mul]
+      by_cases h : lam n = ((m + 1 : ℕ) : ℝ)
+      · rw [if_pos h, h, Measure.dirac_apply_of_mem (mem_singleton _), mul_one]
+      · rw [if_neg h, Measure.dirac_apply' _ (measurableSet_singleton _),
+          Set.indicator_of_notMem (by simpa [mem_singleton_iff] using h), mul_zero,
+          ENNReal.ofReal_zero]
     have hrhs : (ENNReal.ofReal (-2 * α.re) •
         Measure.sum (fun k : ℕ => Measure.dirac ((k : ℝ) + 1))) {((m + 1 : ℕ) : ℝ)} =
         ENNReal.ofReal (-2 * α.re) := by
@@ -1042,7 +1049,7 @@ private theorem beurlingSystem_rigidity_of_measure_eq
       rw [Measure.dirac_apply, Set.indicator_of_notMem]
       simp only [mem_singleton_iff]
       intro heq
-      exact hnot ⟨k + 1, by omega, by push_cast; exact heq⟩
+      exact hnot ⟨k + 1, by omega, by push_cast; exact heq.symm⟩
     rw [hzero] at hle1
     exact absurd hle1 (by norm_num)
   -- Every `m ≥ 1` occurs for a unique `g : B.Integer`
@@ -1056,7 +1063,7 @@ private theorem beurlingSystem_rigidity_of_measure_eq
         rw [Measure.dirac_apply, Set.indicator_of_notMem]
         simp only [mem_singleton_iff]
         intro heq
-        have hkm : k + 1 = m := by exact_mod_cast heq.symm
+        have hkm : k + 1 = m := by exact_mod_cast heq
         exact hk (by omega)
     have htsum_m : (∑' g : B.Integer, if B.intNorm g = (m : ℝ) then (1 : ℝ≥0∞) else 0) = 1 := by
       have h := hν_m
@@ -1078,8 +1085,9 @@ private theorem beurlingSystem_rigidity_of_measure_eq
     norm_num at hle
   -- `beurlingZeta B s = riemannZeta s` on `Re s > 1`
   have hzeta : ∀ s : ℂ, 1 < s.re → beurlingZeta B s = riemannZeta s := fun s hs => by
-    rw [← measureDirichlet_beurlingSystemIntegerMeasure, hν_nat,
-      measureDirichlet_nat_succ_eq_riemannZeta hs]
+    rw [← measureDirichlet_beurlingSystemIntegerMeasure]
+    change measureDirichlet ν s = riemannZeta s
+    rw [hν_nat, measureDirichlet_nat_succ_eq_riemannZeta hs]
   -- Norm-preserving bijection `B.Label ≃ {p : ℕ // Nat.Prime p}`
   have hp_prime : ∀ l : B.Label, ∃ p : ℕ, Nat.Prime p ∧ B.labelNorm l = (p : ℝ) := by
     intro l
@@ -1250,8 +1258,3 @@ theorem beurlingSystem_rigidity_of_completed_functional_equation
     B (hBsum (3 / 2) (by norm_num)) hE hdecay hR hL
 
 end GaloisForLFunctions.ArithmeticPositiveDuality
-
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.tsum_sin_sq_div_sq_eq_zero_of_freqTheta_relation
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.freqDirichlet_eq_riemannZeta_of_completed_functional_equation_rpow
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.beurlingSystem_rigidity_of_completed_functional_equation_rpow
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.beurlingSystem_rigidity_of_completed_functional_equation

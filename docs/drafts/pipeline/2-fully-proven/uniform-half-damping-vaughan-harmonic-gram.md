@@ -204,7 +204,7 @@ the exact limiting matrices; it supplies no fixed-strip power estimate.
 
 ## Moving-cell proof obligations
 
-`MovingVaughanRowsConvergeCellByCell.lean` drafts the centered and smooth-remainder
+`MovingVaughanRowsConvergeCellByCell.lean` proves the centered and smooth-remainder
 cell limits, importing the checked finite row frame from the twelve-target
 independence module. For each fixed cell, the finite floor sums stabilize once both cutoffs
 cover it; the checked moving-mean theorem supplies their centered limits. The
@@ -212,7 +212,12 @@ five-piece identity supplies the convolution limit without exchanging an
 infinite convolution and a limit. This argument works for every `ε>0`, a
 stronger pointwise statement than the endpoint application. The source hypotheses
 were checked at every positive damping; no energy conclusion follows from this
-pointwise extension alone. The two moving-cell targets remain under verification.
+pointwise extension alone. Both targets passed corrected producing and final
+direct checks with standard axioms only. The module is wired and its scratch
+removed:
+
+- `tendsto_pmPronicVaughanCentredPiece_moving_cell`
+- `tendsto_pmPronicVaughanSmoothRemainder_moving_cell`
 
 All twelve targets in `TheVaughanLimitRowsAreIndependentInTwoCells.lean`
 passed final direct checks with standard axioms only. Dominated moving pairings, endpoint

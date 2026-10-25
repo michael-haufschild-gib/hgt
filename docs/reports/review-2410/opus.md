@@ -486,6 +486,9 @@ All twelve finite two-cell targets are verified: Euler factors at two and
 three give a positive arithmetic determinant and a quantitative pronic Gram
 minor at every positive damping. The five limiting rows span exactly the
 actual prefix and pole (`TheVaughanLimitRowsAreIndependentInTwoCells`).
+Both moving-cell targets are verified: divergent cutoffs recover
+`(A,A,-A,0,P)` cellwise in centered and smooth-subtracted rows at every
+positive damping (`MovingVaughanRowsConvergeCellByCell`).
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?

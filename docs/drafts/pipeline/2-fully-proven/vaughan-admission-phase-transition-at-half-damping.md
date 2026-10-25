@@ -136,7 +136,9 @@ UNPROVED obligations; the admission draft does not establish them.
 Their common summable envelope can be obtained from the positive divisor
 majorant's centered floor defect: its critical Wiener bound pays the square
 envelope, and the five-piece identity pays the both-large row. The already
-drafted all-positive cell limits and dominated moving-sum transfer then apply.
+checked all-positive cell limits and dominated moving-sum transfer then apply.
+Both `MovingVaughanRowsConvergeCellByCell.lean` targets passed final direct
+checks with standard axioms only; the module is wired and its scratch removed.
 `/tmp/QIUpperHalfVaughanMovingLimitTools.lean` now contains eight unchecked targets:
 the explicit envelope norm bound, domination of all five actual rows, common
 summable square and pair envelopes, summability of the limiting Gram entries,

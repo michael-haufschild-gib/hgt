@@ -85,12 +85,12 @@ zero-origin actual cofactor diagonal is at most `1/j`. Arbitrarily large
 ## Audit and Lean status
 
 The exact source-power disappearance theorem, uniform bounded-row pairing,
-moving-Gram perturbation, reset-source Gram convergence, positive-mass
-realization and exclusion of constant boundary mass passed final canonical
-Lean checks with standard axioms. Complete step-module and positive-mixture
-faithfulness still need their individual canonical checks. Raw-source
-convergence and dimension corollaries remain unchecked. These shifted-source
-results do not identify the unshifted actual escape spectrum.
+moving-Gram perturbation, reset and raw source Gram convergence, every
+positive-mass realization, complete step and mixture faithfulness, full
+Bohr hulls, and exclusion of constant boundary mass passed final canonical
+Lean checks with standard axioms. Only the dimension/index corollaries below
+remain unchecked. These shifted-source results do not identify the unshifted
+actual escape spectrum.
 
 ## Consequence for moving-source repair transport
 
@@ -107,15 +107,13 @@ the uniform summation argument, rather than a bare interchange of limits.
 
 ## Formalization coverage
 
-The reset-origin realization, complete step Wiener action and positive-mixture
-faithfulness passed the combined scratch and are installed in their canonical
-Lean leaves. The raw, unreset Gram formula was still only on paper;
-`/tmp/qiii_unreset_origin_gram_body.lean` now drafts its exact
-receiver-scale and own-scale limits, realization of every positive mass on
-escape, and exclusion from every actual zero-origin common kernel. Its
-scratch `/tmp/qiii-unreset-origin-check.lean` needs the new canonical boundary
-imports and has NOT been checked. These are separate source conventions,
-not a claimed new actual unshifted escape state.
+All thirteen reset-origin boundary leaves passed final canonical source
+checks. `RawMovingOriginsAddConstantGramMass` also passed final check `46880`
+with standard axioms for `admits_or_unreset_own_gram_tendsto` and
+`admits_or_every_positive_unreset_boundary_is_realized`. These include the
+receiver-scale formula, own-scale formula, realization of every positive
+mass on escape and exclusion from every actual zero-origin kernel, at every
+subcritical damping. The canonical sources and imports are installed.
 
 The corresponding dimension/index corollaries are now explicitly drafted in
 `/tmp/qiii_origin_boundary_index_body.lean`: the step module and every positive
@@ -124,14 +122,6 @@ continuum Hamel rank. The proof applies the existing infinite Hilbert-image
 rank theorem to the injective continuous cyclic Wiener map. The separate
 scratch is assembled but UNVERIFIED, awaiting canonical boundary imports.
 
-## Boundary scratch passed; canonical completion pending
-
-The full moving-origin scratch passed with standard axioms in session `6979`.
-All thirteen new leaves are installed and wired
-(the shared first-crossing leaf was already installed by diagonal promotion).
-Unused closing tactics and the unused completeness binder were removed before
-canonical placement. Final direct canonical checks remain pending in
+The dimension/index scratch is under direct verification. Its completion and
+all final canonical checks are tracked in
 [the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
-The raw-translation and continuum-index corollaries depend on those boundary
-checks; both still need
-their own verification. This card is not complete yet.

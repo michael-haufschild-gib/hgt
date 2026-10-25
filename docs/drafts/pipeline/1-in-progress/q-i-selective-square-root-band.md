@@ -425,6 +425,11 @@ and pole rows. All twelve finite targets passed final direct checks and
 standard-axiom audits, including linear independence and exact dimension two
 of the five-row span. The actual infinite Gram's endpoint determinant bound
 `1/62208`, positive definiteness, and exact rank two remain under verification.
+The two moving-cell targets are also Lean-verified in
+`MovingVaughanRowsConvergeCellByCell.lean`: at every positive damping, both
+centered and smooth-subtracted rows tend cellwise to `(A,A,-A,0,P)` when both
+cutoffs diverge. Both final direct checks and standard-axiom audits passed.
+This pointwise statement alone supplies no energy bound.
 
 The exact decay indices are now proved on paper in
 `../2-fully-proven/vaughan-tail-and-energy-decay-indices.md`.

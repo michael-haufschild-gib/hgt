@@ -147,12 +147,3 @@ theorem boundary_progression_zero_mass_le (hD : IsEvenPosDef D) (h : ℝ)
   simpa [nsmul_eq_mul] using this
 
 end GaloisForLFunctions.MultiplicativePositivityGeometry
-
-open GaloisForLFunctions.MultiplicativePositivityGeometry in
-#print axioms boundary_trichotomy
-open GaloisForLFunctions.MultiplicativePositivityGeometry in
-#print axioms boundary_eq_delta_of_no_pole
-open GaloisForLFunctions.MultiplicativePositivityGeometry in
-#print axioms boundary_progression_zero_mass_le
-open GaloisForLFunctions.MultiplicativePositivityGeometry in
-#print axioms intValued_mul
