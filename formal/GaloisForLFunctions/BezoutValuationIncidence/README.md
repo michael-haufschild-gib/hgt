@@ -1101,6 +1101,21 @@ the both-large piece and its entire Gram row and column vanish exactly
 (`pmPronicVaughanGram_square_large_zero`); controlling the remaining signed terms is still
 required.
 
+**Uniform leading matrix for moving cutoffs.** A common summable majorant
+$b_\varepsilon(d)=\tau(d)^2d^{-\varepsilon}$ controls the first three floor transforms.
+The nonnegative defect $\Delta_b(n)=\sum_db(d)/d-n^{-1}\sum_{d\le n}b(d)\lfloor n/d\rfloor$
+tends to zero and bounds every dominated floor-mean error
+(`abs_pmFloorAverage_sub_density_le`, `tendsto_pmFloorMeanDefect_zero`). The exact five-piece
+identity then bounds every component error uniformly in both cutoffs. Cesàro averaging gives
+$\sup_{U,V}|G_{ij}(T;U,V)/T-c_i(U,V)c_j(U,V)|\to0$
+(`abs_pmPronicVaughanGram_div_sub_means_le`, `tendsto_pmVaughanGramError_zero`).
+For any divergent horizon and two divergent cutoff schedules, the limiting matrix is
+$\rho^2vv^\mathsf{T}$ with $v=(1,1,-1,0,-1)$
+(`tendsto_pmPronicVaughanGram_div_moving`). In particular the square-root diagonal obeys
+$D(N^2;N,N)/N^2\to4\rho^2$ (`tendsto_pmPronicVaughanDiagonal_square`).
+This uniform extension fixes the leading matrix at the requested band; the signed residual
+still requires its own quantitative estimate.
+
 **The smooth remainder's absolute budget.** The unsigned divisor expansion specializes exactly
 to the small-small piece:
 $p_2(n)=-ZL_{U,V}(n)-c_\varepsilon n^{1-\varepsilon}P_{U,V}(n)-R_{U,V}(n)$, with
@@ -1117,6 +1132,83 @@ or $T^{1-2\varepsilon}$ at $T=N^2$, and admits no eventual fixed power saving
 (`not_pmVaughan_absolute_square_budget_power_saving`). This lower bound is on the absolute
 budget. The signed remainder and its cross terms with the retained floor and pole terms still
 require an estimate.
+
+**The admitted fixed-cutoff packets.** For $0<\varepsilon<1/2$, every fixed real packet
+$P_w=\sum_iw_ip_i$ has the exact form
+$P_w=w_3 I_\varepsilon+L_w n+Q_w n^{1-\varepsilon}+R_w$, where
+$L_w=\sum_iw_ic_i$, $Q_w=c_\varepsilon H_UH_V(w_3-w_2)$, and $R_w$ has bounded pronic
+norm. Here $H_U=\sum_{a\le U}\mu(a)/a$. The actual interior is negligible at energy scale
+$T^{1-2\varepsilon}$, while the smooth term has exact density $Q_w^2/(1-2\varepsilon)$.
+Consequently $P_w$ has bounded pronic norm exactly when $L_w=Q_w=0$ and either $w_3=0$
+or the original interior is admitted (`pmPronicVaughanPacketAdmitted_iff`).
+For positive cutoffs, $H_UH_V\ne0$, so $Q_w=0$ is exactly $w_2=w_3$
+(`pmPronicVaughanPacketAdmitted_iff_of_pos_cutoffs`). The two compensated small-leg
+directions are always admitted; the remaining receiver direction retains its original
+analytic admission problem.
+
+The admitted coefficient submodule has dimension two when the receiver is unpaid and
+three when it is paid; the quotient dimensions are three and two. Every admitted vector
+has unique coordinates in the two compensated small-leg directions and the all-ones
+receiver direction (`TheAdmittedVaughanCoefficientSpace`). This is an exact finite
+coefficient-space classification, with the analytic admission question retained.
+
+**The second Gram scale.** At fixed cutoffs the centered Gram divided by
+$T^{1-2\varepsilon}$ tends to
+$c_\varepsilon^2H_U^2H_V^2ss^\mathsf{T}/(1-2\varepsilon)$, with $s=(0,0,-1,1,0)$
+(`tendsto_pmPronicVaughanCentredGram_div`). At square cutoffs, the centered both-large
+diagonal equals $Z^2(\rho-A_N)^4\|n\|_{N^2}^2$ exactly, even though its uncentered piece
+vanishes (`pmPronicVaughanCentredGram_square_large_eq_tail`). Centering retains the omitted
+infinite reciprocal tail. These fixed-cutoff laws give no uniform moving-cutoff power rate.
+
+At the product horizon $T=UV$, every centered component norm is uniformly
+$o(T^{1/2-\varepsilon})$ over all factorizations; every centered Gram entry and the
+centered diagonal are uniformly $o(T^{1-2\varepsilon})$. Only the product must diverge.
+The same holds for packets with bounded moving coefficients
+(`ProductHorizonVaughanGramsHaveZeroTrivialDensity`). The proof uses the common
+mean-zero modulus of all truncated Möbius patterns and
+$N^\varepsilon(\rho-A_N)\to0$ for the actual signed reciprocal tail
+(`UniformTruncatedMobiusReceiversHaveZeroTrivialDensity`,
+`SignedVaughanTailsVanishAtTheirAbsoluteScale`). This supplies no fixed power rate.
+
+For every fixed $0<\varepsilon\le1$, a positive power gain in the signed reciprocal
+tail is equivalent to $\Theta<1$. The normalized square empty-leg energy is comparable,
+within a factor two, to $Z^2[N^\varepsilon(\rho-A_N)]^4$. Its power-gain problem is
+therefore exactly the fixed-strip problem
+(`VaughanReciprocalTailPowerGainsAreFixedStrips`, `TheEmptyVaughanLegDetectsAFixedStrip`).
+An energy gain $N^{-\delta}$ corresponds to tail gain $N^{-\delta/4}$ and horizon
+gain $T^{-\delta/2}$; no positive gain is established.
+
+The undamped convolution has every logarithmic summatory saving uniformly over
+all cutoffs: for each integer $q\ge0$,
+$\sum_{d\le n}(\mu_{\le U}*\mu_{\le V}*1)(d)
+=nH_UH_V+O_q(n/(\log n)^q)$.
+The finite estimate splits at $D$ and costs
+$D^2+D+3Ln+2Ln h(n)^2+Kn$, where $|M(x)|\le Lx$ and $|H_x|\le K$ for $x\ge D$.
+Taking $D=\lfloor n^{1/4}\rfloor$ gives one constant and threshold for every pair
+of cutoffs (`UniformCancellationInTheUndampedVaughanConvolution`,
+`UniformLogarithmicCancellationInTheVaughanConvolution`). This estimate gives no
+fixed power saving. Its damped uniform Gram consequences remain under formalization.
+
+The checked damped transfer keeps the exact weighted head:
+$|A_{s,\varepsilon}(n)|\le\sum_{d\le D}|s(d)|d^{-\varepsilon}
++(13/\varepsilon)LnD^{-\varepsilon}$ when the reciprocal series converges and
+the partial sums beyond $D$ are bounded by $Lx$. For $0<\varepsilon\le1/2$,
+a common bound $|s(d)|\le C\tau(d)^2$ and every common logarithmic partial-sum
+saving give every common logarithmic saving for $A_{s,\varepsilon}$
+(`HyperbolaCancellationWithDivisorBoundedCoefficients`,
+`LogarithmicCancellationSurvivesTheDampedFloorTransform`). For the actual Vaughan
+coefficient, subtracting $H_UH_V$ gives a fluctuation bounded by $2\tau(d)^2$
+with every common logarithmic prefix saving. Its centered convolution row is
+exactly $-H_UH_V A_{1,\varepsilon}-A_{r,\varepsilon}$
+(`TheVaughanConvolutionSeparatesItsSmoothMean`). The complete uniform Gram law
+remains under verification.
+
+**Finite harmonic rigidity.** Every $H_N$ with $N\ge1$ is nonzero. For every prime
+$N/2<p\le N$, its rational $p$-adic valuation is exactly $-1$; all such distinct primes
+divide its reduced denominator once. This is proved in
+[`FiniteMobiusHarmonicSumsNeverVanish`](../RHTower/FiniteMobiusHarmonicSumsNeverVanish.lean).
+The finite nonvanishing result supplies the coefficient equality above; it supplies
+no polynomial lower bound for the real magnitude of $H_N$.
 
 ### 3.9 Dilation profiles and the Bézout seed
 
@@ -1208,6 +1300,20 @@ $M\le(B+1)N$ with $B$ fixed.
   $\lvert S'_g(X)\rvert\ll\Pi(g)^2\log^{-4}X$ with $\sum_{g\le N}\mu(g)^2\Pi(g)^2/g\ll\log N$,
   $\Pi(g)=\prod_{p\mid g}(1-p^{-3/4})^{-1}$ ([CoprimeMoebiusHarmonicSumsDecay](CoprimeMoebiusHarmonicSumsDecay.lean)).
   With the white-noise floor this gives $\kappa\ge1/288$.
+- **The slope is the one-line energy of $1/\zeta$.** The coprimality sieve writes $\kappa$ as the
+  signed energy sum $\rho\sum_{\delta\ge1}\mu(\delta)w(\delta)^2\int g_\delta^2$ of the profiles
+  $g_\delta(v)=T_\delta(\lfloor e^v\rfloor)$, $w=\mu/\sigma$
+  ([TheCofinalSlopeIsASumOfCoprimeEnergies](TheCofinalSlopeIsASumOfCoprimeEnergies.lean)); their Laplace
+  transforms are $L(c_\delta,s)/s=L(\beta_\delta,s)/(s\,\zeta(1+s))$, the boundary value on
+  $\operatorname{Re}s=0$ exists by $\zeta(1+it)\ne0$, and Plancherel gives the closed form
+  $$
+  \kappa=\frac{\rho}{2\pi}\int_{\mathbb R}\frac{|B(it)|^2\prod_p\bigl(1-|p+1-p^{-it}|^{-2}\bigr)}{|t\,\zeta(1+it)|^2}\,dt,
+  \qquad B(s)=\sum_{n\ge1}\frac{n^{-1-s}}{\prod_{p\mid n}(p+1)},
+  $$
+  $B$ absolutely convergent on $\operatorname{Re}s\ge0$
+  ([TheCofinalSlopeIsTheOneLineEnergyOfOneOverZeta](TheCofinalSlopeIsTheOneLineEnergyOfOneOverZeta.lean),
+  `cofinalMobiusSlope_eq_integral_eulerProduct`). The undamped cofinal slope reads $1/\zeta$ on
+  the line $\operatorname{Re}s=1$; numerically $\kappa\approx0.4408$.
 - **Superlinear transfer.** The cofinal laws hold uniformly in the band ratio: for every
   $\varepsilon>0$ there are $B_0,N_0$ with $\bigl\lvert\frac1M\sum_{k\le M}s_{N,\mu}(k)^2-\kappa\bigr\rvert\le\varepsilon$
   for all $N\ge N_0$ and all $M\ge B_0N$, so the prefix mean square tends to $\kappa$ along every
@@ -2003,8 +2109,8 @@ Markov work estimate.
 The arbitrary-phase observability horizon is superlinear and at most $\Phi(N)\asymp N^2$; the optimal
 window sandwich constant has exact order $N^2$, within the bracket
 $[\Phi(N)-2,\,N(N-1)]$; the cofinal Möbius slope $\kappa\approx0.4407$ has an explicit
-three-term convergence rate. Open: the exact growth of $L_{\mathrm{obs}}(N)$ between linear and
-quadratic, the exact constant $S_{\mathrm{opt}}(N)/N^2$, and a closed form for $\kappa$.
+three-term convergence rate and the closed form of §3 (Large-band law). Open: the exact growth of
+$L_{\mathrm{obs}}(N)$ between linear and quadratic, and the exact constant $S_{\mathrm{opt}}(N)/N^2$.
 
 ### 7.8 Research topics
 

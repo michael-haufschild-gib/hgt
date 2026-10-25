@@ -6,10 +6,10 @@ import GaloisForLFunctions.RHTower.PMRamanujanComplementaryCancellation
 /-!
 # Propagating the Complementary-Sector Cancellation Across Scale Transitions
 
-This module resolves Open Problem 6 of the Arithmetic Continuation and Critical Energy programme by
-turning the leading-order anti-alignment between the large-prime denominator sector `L_P` and its
-literal complement `C_P` into a quantitative two-scale residual and proving its contractive affine
-recurrence `F_{j+1} ≤ q_j F_j + r_j` (`0 ≤ q_j ≤ θ < 1`) across compatible scale transitions.
+The large-prime sector and its complement admit exact compensation coordinates.
+Common-head cutoff changes have a contracting error envelope. A contractive
+recurrence for the full stage energy is equivalent to receiver admission; the
+cutoff error bound alone does not establish that recurrence.
 
 1. **Exact Compensation Coordinates and Anti-Alignment (`§1`)**:
    At denominator cutoff `P²`, projecting the literal complement `C_P` onto the large-prime sector
@@ -52,7 +52,7 @@ recurrence `F_{j+1} ≤ q_j F_j + r_j` (`0 ≤ q_j ≤ θ < 1`) across compatibl
 4. **Unconditional Contractive Propagation Above `Θ − ½` and on the Vinogradov–Korobov Band (`§4`)**:
    Above the zero width `Θ − ½`, both `dyadicRamanujanPrefixEnergy ε m` (at every `ε > Θ − ½`) and
    the compensated large-prime head energy `(1 − α_{2^{j+1}})² ‖L_{2^{j+1}}‖² + ‖R_{2^{j+1}}‖²` (for
-   `ε > max(1/4, Θ − ½)`) unconditionally satisfy contractive affine recurrences with explicit
+   `ε > max(1/2, Θ − ½)`) satisfy contractive affine recurrences with explicit
    horizon-free envelopes (`exists_contractive_affine_propagation_above_zeroWidth`,
    `exists_compensated_head_affine_contraction_above_zeroWidth`), and `dyadicRamanujanPrefixEnergy`
    is uniformly controlled on the Vinogradov–Korobov band

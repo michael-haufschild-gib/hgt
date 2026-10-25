@@ -233,8 +233,7 @@ a square root, such as `q` in `|S|² = q`).
 21. **Even shifts break it.** The conductor-four twins disagree at every odd position for `h = 2`
     (`agreeAt_chi4Twin_two_odd`), are perfectly balanced along the successor, `C(4J) = 0`
     (`succCorr_chi4Twin_four_mul`), and have lag-two mass `≤ (1/4) log M + 1`
-    (`chi4Twin_lag_two_log_le`); every sign has lag-two mass `≥ (1/6) log M − 1`
-    (`lag_two_log_floor`). The lag-two floor lies in `[1/6, 1/4]` (`lag_two_bracket`).
+    (`chi4Twin_lag_two_log_le`). The lag-two floor is exactly `1/4` (item 38).
 22. **The alternating control.** `(−1)^n` flips at every step (`alternating_succSign`,
     `alternating_logAgree`) and violates the cocycle (`alternating_not_cocycle`).
 
@@ -311,6 +310,22 @@ information about zeros truncates the divisors by size,
     (`sizeHypercubeForm_le_of_one_lt`, from `|Σ_{d ≤ D} μ(d) d^{−σ} e^{iθ log d}|² ≤ (Σ_{d ≤ D} d^{−σ})²`,
     `moebiusPolySq_le`).
 
+### 3.12 The shift floors are exact; zero defect beyond conductor three (`TheShiftFloorsAreExact`, `TheZeroDefectSignsBeyondConductorThree`)
+
+38. **Lag two: the floor is `1/4`.** Three signs contain an agreeing pair,
+    `a(n) + a(n+1) + a₂(n) ≥ 1`, so odd positions give `L₂ ≥ H/2 − L₁/2` while even positions give
+    `L₂ ≥ L₁/2`; hence `Σ_{n ≤ M, f(n) = f(n+2)} 1/n ≥ (1/4) log M − 2` (`lag_two_quarter_floor`),
+    attained by the conductor-four twins (`lag_two_floor_sharp`). The successor floor is not used.
+39. **Odd shifts: the floor is `1/3`, attained by one sign at every odd shift.** Zero lag-`h`
+    doubling defect forces `L_h(N) ≤ H_N/3 + h` (`logAgreeAt_le_of_zeroDefectAt`). The conductor-two
+    twin `T(n) = (−1)^{v₂(n)}` has zero lag-`h` defect for every odd `h`, so it attains `1/3` at all
+    odd shifts at once, including those divisible by `3` (`odd_shift_floor_sharp`).
+40. **Zero defect.** Every zero-defect sign has `f(2) = −1`: the `f(2) = 1` branch dies at the steps
+    `25 → 26` and `50 → 51` (`zeroDefect_two_eq_neg_one`). The rule is then
+    `f(n) = f(n+1) ⇒ f(2n+1) = f(n)` (`zeroDefect_odd_of_agree`); `T` has zero defect
+    (`zeroDefect_twoTwin`) and is not a conductor-three twin (`twoTwin_ne_chi3Twin`);
+    `f(3) = −1` forces `f(5) = −1` and `f(3) = 1` forces `f(7) = 1` (`zeroDefect_branches`).
+
 ---
 
 ## 4. Mechanisms
@@ -362,7 +377,8 @@ information about zeros truncates the divisors by size,
    (§3.1).
 2. **Does the successor force positivity on multiplicative signs, unconditionally, and how much?**
    Yes, at density scale: the one-third floor, with an exact identity whose defect is a count, the
-   exact constant `1/3`, and extremals at conductor three with zero defect (§§3.2–3.3, 3.10).
+   exact constant `1/3`, and extremals at conductors three and two with zero defect
+   (§§3.2–3.3, 3.10, 3.12). At lag two the exact constant is `1/4`.
 3. **Is successor bias quantized?** For prime-conductor twins the mean successor sign is `−1/p`;
    over `𝔽_q` the successor correlation is `−1` for an inverse pair and has modulus `√q` otherwise;
    the two-scale deficit is four times a count (§§3.4, 3.5, 3.10).
@@ -429,12 +445,11 @@ To build:
    size-truncated form `R_ε(D)` is a spectral mean square of the truncated Möbius polynomial
    (§3.11) and is bounded for `σ > 1`; its uniform boundedness for `1/2 < σ ≤ 1` is where the zeros
    of `ζ` enter, and its first rung is a zero-free strip.
-4. **Classify the zero-defect signs.** Zero-defect signs attain the floor (item 34). The
-   conductor-three twins are zero-defect; the `f(2) = 1` branch is forced at the first primes
-   (item 35). Is it realized by an infinite sign, and is it a twin of a character of larger
-   conductor?
-5. **Lag floors.** The lag-two floor lies in `[1/6, 1/4]`. Determine it, and determine the floor for
-   odd shifts divisible by `3`, where the conductor-three twin agrees at two thirds of the steps.
+4. **Classify the zero-defect signs.** Every zero-defect sign has `f(2) = −1`, and besides the
+   conductor-three twins the conductor-two twin `(−1)^{v₂(n)}` has zero defect (§3.12). Are these
+   three signs all of them?
+5. **Lag floors.** Lag two (`1/4`) and every odd shift (`1/3`) are settled (§3.12). The floors at
+   even shifts `h ≥ 4` are open; the conductor-eight twins have lag-four density `1/4`.
 6. **The complex floor.** Determine the constant in `[−1/2, −1/3]`.
 7. **From `λ` to `μ`.** `μ = λ · μ²`, and the squarefree restriction breaks the cocycle
    (`μ(2n) = 0` for even `n`). Find the successor calculus of squarefree-supported signs.
@@ -500,7 +515,7 @@ strongest positive survivor recorded.
 | `TheFloorIsAttainedAtConductorThree` | conductor-three twins, exact agreement counts, zero doubling defect, sharpness of `1/3`, comparison with `λ` |
 | `SquareRootCancellationIsACount` | successor correlations of characters as Jacobi sums, perfect cancellation, the consecutive-residue count, `|S|² = q` |
 | `TheSuccessorBiasIsQuantizedByTheConductor` | Legendre symbol on `ℕ`, prime-conductor twins, block sums, `C(pJ) = −J + (1 + χ(−1)) ε M(J)`, `p ≡ 3 (mod 4)`, self-similar summatory functions, bias `−1/p` |
-| `TheFloorReadsTheParityOfTheShift` | lag-`h` signs and cocycle, the odd-shift floor, conductor-four twins with perfect balance, the lag-two bracket `[1/6, 1/4]`, the alternating control |
+| `TheFloorReadsTheParityOfTheShift` | lag-`h` signs and cocycle, the odd-shift floor, conductor-four twins with perfect balance, the alternating control |
 | `PartialEulerProductsDivergeInTheStrip` | squared Euler factors, prime windows from `θ ~ id`, phase alignment, aligned windows, divergence against continuous weights |
 | `TheSpectralHypercubeFormIsUnbounded` | aligned heights and radii, eventual alignment, divergence against every integrable weight with positive mass |
 | `TheHypercubeDirichletFormIsUnbounded` | the step vector on the half line, the spectral form of the dilation profile, the twisted power and the divisor expansion, `Q_ε(P)` as a spectral integral, unboundedness for `−1/2 ≤ ε < 1/2` |
@@ -508,3 +523,5 @@ strongest positive survivor recorded.
 | `TheComplexSuccessorFloor` | unimodular signs, the unit-vector inequality, Cauchy–Schwarz on logarithmic sums, the complex floor `−1/2`, Catalan's pair |
 | `TheSizeTruncatedHypercubeForm` | the size-truncated hypercube form, its spectral identity, nonnegativity, and the bound for `σ > 1` |
 | `TheTwoScaleDeficitIsQuantized` | the two-scale deficit, its quantization, zero defect and equality, zero defect forces the floor, the `f(2) = 1` branch |
+| `TheShiftFloorsAreExact` | the three-sign agreement bound, the lag-two floor `1/4`, zero lag-`h` defect forces `1/3`, the conductor-two twin attains every odd-shift floor |
+| `TheZeroDefectSignsBeyondConductorThree` | `f(2) = −1` for every zero-defect sign, the rule `f(n) = f(n+1) ⇒ f(2n+1) = f(n)`, zero defect of the conductor-two twin, the branches at `3` |

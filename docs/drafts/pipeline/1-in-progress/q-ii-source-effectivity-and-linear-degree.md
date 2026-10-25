@@ -18,6 +18,46 @@ Answer Q-II in full; formalize the answer and its corollaries without extra anal
 - [ ] Lean proofs, individual foreground `lake --old env lean` audits, and transitive axiom checks.
 - [ ] Umbrella imports and applications to relevant existing programmes.
 
+<!-- qii-live-status -->
+## Current verification checkpoint
+
+Full Q-II remains open. Current owned serial Lean session is **51780**, running
+`/tmp/QIIVerifyFollowup.sh` and logged in `/tmp/qii-verify-followup.tsv`.
+Session 15986 closed with exit 1. Global majorant had two local reduction
+errors; aperture cone geometry had one no-progress simplification. Both are
+repaired but not rechecked. Surface remains unchecked. The smoothness API verified the ENat order lemma;
+its finite sum still needed an explicit function-extensional rewrite. That
+rewrite is now in the API and actual smooth-source file, pending recheck.
+
+New actual-file certificates: `MeyerHilbertSchmidtSource`,
+`MeyerSharpConvolutionAlgebra`, HT `HilbertSchmidtTraceDefect`, and
+HT `L2TranslationCyclicity`. Each has standard transitive axiom audits and
+umbrella wiring. Numerical-radical recheck passed. Its missing olean, and the
+missing exponential-mass and positive-quadratic-cone oleans, now exist: do not
+rebuild them.
+
+Active serial script: `/tmp/QIIVerifyFollowup.sh`.
+It checks smoothness APIs and restricted-surface/inverse APIs, corrected global
+majorant and surface, aperture cone geometry, then gated actual faithful/point/flow, bounded-orbit,
+adjoint/reserve, finite algebra/projector/degree/character, and boundary-density
+leaves. Missing oleans are built only for actual importers. It ends with the
+outstanding eleven old actual-file final checks; no existing olean is rebuilt.
+One owned Lean process only; do not start another while 51780 is active.
+
+New full paper result: `../2-fully-proven/meyer-algebraic-characters-have-no-infinite-tail.md`.
+Every nonzero multiplicative degree is a unique actual Xi evaluation; positive
+characters are exactly critical evaluations. Actual candidate
+`MeyerAlgebraicCharacters.lean` is unverified. The exact source inverse rules
+out an infinite character tail, but the general positive degree residual remains
+open. Generic causal projector algebra has been factored into the unverified
+`MeyerFiniteProjectorAlgebra.lean`; the finite critical energy draft imports it.
+
+Additional actual candidates now present, unchecked and unwired:
+`ArithmeticSharpAndTheHilbertAdjoint`, `PositiveMeyerDegreesSeeReducedCriticalJets`,
+`FaithfulHilbertSchmidtSourceReserves`, `PoissonBoundariesAreDenseInOriginMass`.
+Their scratch source copies remain until actual verification succeeds.
+<!-- /qii-live-status -->
+
 ## Current evidence
 
 Existing `AllApertureSourceRiemannRochAndCoercivityLaws` proves all-aperture RR for graded cones with negative reserves, and RR on compensated surfaces. Neither provides the requested cone with an independent Bézout law on the original surface. The existing nonnegative source-cone theorem identifies RR with the lower bound `Φ ≤ defect`.
@@ -127,29 +167,37 @@ repair Bézout. This gives the sharp positive replacement for the signed-reserve
 
 ### Section-count application
 
-[PROVED HERE, paper; Lean draft written.] The AOT `1×1` source obstruction matrix has
+[PROVED HERE, paper and Lean; transitive axiom audit clean; final plain-file audit pending.] The AOT `1×1` source obstruction matrix has
 `sourceH0∈{0,1}` and defines exactly `sourceCone`. The boundary classification therefore
 transfers unchanged. Moreover, for every additive constant `M`, pure-fibre degrees `(c,1)`
 with `c=2+max(Φ(0),0)+max(M,0)` give a source-effective class with
 `sourceH0(x)+M<x²=2c`. Thus the Boolean membership count cannot provide a surface RR
 dimension-growth estimate. This does not invalidate its existing role as a cone encoding.
 
+The obstruction is independent of the canonical class and Euler constant. For every `K,χ`
+and every reserve, the Boolean counts fail the classical dimension inequality
+`h⁰(x)+h⁰(K-x) ≥ x·(x-K)/2+χ` somewhere. Along `x=t(H+V)` the left side is at most two,
+while the right side is `t²-t((H+V)·K)/2+χ`. Taking
+`t=|((H+V)·K)|+|χ|+4` makes the right side strictly greater than two. No invariance or
+positivity property of the reserve is needed for this stronger obstruction.
+
 ### Principal-divisor direction
 
-Corpus searches found the curve-side numerical radical classified by the Frobenius ideal
-(`radical_iff_eq_frobPolyTest`), but no matching scaling-surface principal-divisor degree law.
+The curve-side numerical radical is classified by the Frobenius ideal
+(`radical_iff_eq_frobPolyTest`). The compact scaling surface instead has zero numerical radical.
 Do not confuse the spectral vanishing radical with the kernel of every Weil pairing, or
 use RH to identify them. An independently constructed motion relation must preserve the
 intersection pairings needed by its degree argument; the necessary numerical-equivalence
-bridge is still to be proved or refuted.
+bridge below compiles, with a clean transitive axiom audit. The later Meyer construction
+provides actual principal representatives on a larger source carrier.
 
 The broader corpus supplies a stronger lead: `RHTower.compactXiWeilPairing_left_radical_iff_zero`
 in `RHTower/XiCompactPolarWeilRealization.lean` proves zero numerical radical on complex compact
 polar tests unconditionally, using density in the absolute folded Xi divisor Hilbert space.
 It is not merely the conditional positive-definiteness theorem in `InfiniteGenusLaw`.
-Next obligation: extend the density argument to unrestricted compact source inputs and identify
-its literal polarization with the real scaling `weilPair`. If successful, numerical equivalence
-on the existing scaling cycle space is equality; genuine divisor movement must then occur on a
+Extending the density argument to unrestricted compact source inputs and identifying
+its literal polarization with the real scaling `weilPair` proves numerical equivalence
+on the existing scaling cycle space is equality. Genuine divisor movement must occur on a
 richer source space before passage to these numerical classes.
 
 The finite-reading conjecture has a dependency-closed paper proof and Lean draft: Weil energy
@@ -161,9 +209,9 @@ samples) as a Bézout source reserve. The exact survivor is unbounded Rayleigh q
 such kernel. The full generalized module compiles; its transitive axiom audit reports only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
-### Numerical-equivalence conjecture and paper proof
+### Numerical-equivalence separation theorem
 
-[PROVED HERE, paper; Lean draft written.] The literal real scaling pairing is
+[PROVED HERE, paper and Lean; transitive axiom audit clean; final plain-file audit pending.] The literal real scaling pairing is
 nondegenerate, without RH. Its proof uses the existing compact-polar density theorem:
 
 1. A compact complex `C²` source has a square-summable Xi evaluation vector. Critical-line
@@ -189,7 +237,7 @@ Any intersection-preserving translation in this cycle space is trivial. This is 
 scope restriction for a principal-divisor construction, not a proof that richer divisor
 presentations cannot exist. The positive survivor is unconditional separation of every
 scaling class by the intersection pairing, plus separation by compact polar tests on the
-source side. The bridge and dependency audit must be formalized before this route is closed.
+source side. The module compiles; its transitive dependency audit and Hecke applications remain pending.
 
 The mixed defect radical is consequently exactly the fibre plane: a cycle annihilates every
 source defect pairing precisely when its compact source is zero. Combining this with the
@@ -199,7 +247,7 @@ of the reserve on every nonzero compact source. The bridge and this corollary ar
 
 ### Primitive faithfulness and ampleness
 
-[PROVED HERE, paper; Lean implementation pending.] For any fibre-invariant reserve `Φ`,
+[PROVED HERE, paper and Lean; transitive axiom audit clean; final plain-file audit pending.] For any fibre-invariant reserve `Φ`,
 ampleness of the nonnegative-fibre source cone is equivalent to the exact condition
 `Φ(x)≤0 ⇒ δ(x,y)=0 for every y`. Necessity follows by translating `x` and `y` to zero
 fibre degrees: the first lift is effective with ample degree zero, and their intersection
@@ -249,6 +297,14 @@ even with arbitrary nonlinear postprocessing: such a factorization would make it
 constant on that reading's kernel, contradicting the proved unbounded Weil energy there.
 The Lean draft includes this irreducibility statement and the all-aperture RH dictionaries.
 
+The global cone itself is also irreducible to finitely many linear degrees, independently
+of whether Bézout holds. It contains the ample class, whose square is positive. Every finite
+reading fibre through that class contains a negative-square class, which is outside the exact
+source cone. Thus membership cannot be constant on those fibres. More strongly, no effective
+class's finite readings force effectivity: the same readings always admit an ineffective
+class. This is a direct obstruction for the specific arithmetic RR construction, not merely
+an implication contingent on its unresolved Bézout property.
+
 ### Arbitrary finite degree descriptions
 
 [PROVED HERE, paper; Lean implementation pending.] Strengthen the source-reserve obstruction:
@@ -269,7 +325,192 @@ This conclusion does not exclude infinitely many degree inequalities or a degree
 richer divisor presentation. Its positive survivor is the exact affine-fibre unboundedness
 law, stronger than failure of any one finite-rank reserve or finite polyhedral cone.
 
+[NEXT STRENGTHENING, paper argument to formalize.] The same affine-fibre obstruction can be
+made arbitrarily small in source `L²` mass. Jointly constrain the finite reading, both pole
+degrees, and pairing with a fixed base cycle `x`. The Rayleigh-kernel theorem supplies a
+primitive `p=(0,0,f)` with `x·p=0` and arbitrarily large `W(f,f)/∫f²`. Rescale to
+`t²∫f²=ε/2`; then `y=x+tp` has the same finite readings, source displacement mass below `ε`,
+and `y²=x²-t²W(f,f)` below any prescribed target. This would show that even arbitrarily
+small `L²` source changes preserving all chosen finite readings can destroy exact arithmetic
+effectivity. The positive replacement must therefore retain stronger source regularity,
+consistent with the Meyer topology distinction above.
+
 ## Next source questions
+
+- The source-native theta-convolution lead already has a sharp topology obstruction in
+  `RHTower/XiThetaConvolutionDefectTrilemma.lean`: theta convolution is injective with dense,
+  nonclosed range on `L²`. Any continuous degree vanishing on that proposed principal image
+  must vanish identically. A Hausdorff Hilbert quotient therefore loses the divisor data.
+  The analytic entire quotient retains it, but its definition builds in `XiC` and is explicitly
+  a comparison carrier. A principal-divisor construction must specify a stronger source
+  topology and prove its comparison with compact scaling classes, not silently replace the
+  analytic quotient by the zero reduced Hilbert cokernel.
+- A stronger source carrier is already available: `DeningerMeyerSourceConvolution.lean`
+  constructs literal convolution on the original all-weight Meyer source space and proves
+  that the actual Poisson boundary range is an ideal. `DeningerMeyerConvolutionWeilTrace.lean`
+  identifies the ordinary composition trace of compact source convolutions with the literal
+  mixed Weil form, retaining both polar terms. This is more than the bare entire comparison
+  quotient. Audit and build its direct scaling-surface application: for a Poisson boundary
+  `g`, use the cycle `(-Re Mellin(g)(1), -Re Mellin(g)(0), g)`. Its two fibre degrees vanish;
+  faithfulness identifies the boundary's convolution operator with zero, so its mixed Weil
+  traces vanish. Sharp-stability of the boundary is required for the right radical. This
+  should produce genuine source-defined principal representatives on a larger carrier,
+  while compact-source injectivity prevents those representatives from lying in the original
+  compact cycle space.
+- Keep ordinary Weil trace and the full Hasse pairing distinct. The former reads eigenvalue
+  values with multiplicity; the latter retains Jordan jets. The existing theta trilemma makes
+  a local full Jordan block Hermitian only at a real **simple** divisor point. Identifying
+  arithmetic sharp with the Hilbert adjoint could therefore demand more than RH. Search and
+  audit the trace radical versus the actual Poisson ideal before treating this as a positive
+  Hodge realization.
+
+[PROVED HERE, paper; Lean draft.] Let `Z` be the literal Meyer Poisson map. On
+`ℝ × ℝ × DeningerMeyerStrongLogTarget`, define degrees
+`dH(a,b,g)=b+Re M(g)(0)` and `dV(a,b,g)=a+Re M(g)(1)`, and pair by their hyperbolic product
+minus `Re Tr(Tg T(g′ sharp))`. The source-defined cycle
+`P(f)=(-Re M(Zf)(1),-Re M(Zf)(0),Zf)` has both degrees zero. Faithful convolution gives
+`T(Zf)=0`; source reflection sends `Zf` to `Z(Fourier(conj f))`, so both left and right trace
+terms vanish. Adding `P(f)` therefore preserves every intersection reading. For the explicit
+Xi-cap source, `M(Zf)(1)=Xi(1)=1/2`, hence `P(f)≠0`.
+
+On compact smooth real sources, centered source Mellin moments are precisely the original
+two pole moments, and the existing whole-source trace theorem gives exactly the original
+scaling intersection. No identification of the entire C² carrier with the all-weight Meyer
+source is claimed. A centered compact smooth source in `range Z` has Fourier transform zero
+at every Xi zero, by the proved entire-quotient identity; compact Xi evaluation injectivity
+then forces that source to vanish. Thus the larger carrier supplies actual nonzero principal
+representatives while preserving the earlier compact rigidity. It does not yet construct
+an effective sheaf or prove positivity of the descended pairing.
+
+[NEXT STRUCTURAL STEP.] Package this representative pairing as a real `PolarSurface`,
+using genuine source convolution bilinearity and critical-line divisor reindexing for
+Hermitian symmetry. The centered Meyer Mellin map compares its trace directly with the
+already proved `xiWeilPolarization_conj_symm`; no identification of arithmetic sharp with
+the Hasse Hilbert adjoint is needed. Then its defect is the ordinary source trace, so the
+source-trace sign criterion transfers to the enlarged intersection surface. The compact
+comparison currently covers smooth real sources only; do not claim an embedding of every
+compact C² test into the smooth Meyer carrier.
+
+[NEXT CONJECTURE.] The polynomial Xi-cap orbit should give infinitely many independent
+principal representatives, since its Mellin transforms are `P(s)Xi(s)`. Audit this exact
+source statement, and distinguish the ordinary trace radical (zeroth values) from the
+full Poisson kernel (all Hasse jets) at possible multiple zeros.
+
+[PROVED HERE, paper argument; Lean pending.] The finite causal splitting supplies an exact
+description of that distinction. At each Xi divisor point, its source section realizes an
+arbitrary local jet packet and has zero jets at every other divisor point. Choose the packet
+with value one and higher jets zero; an actual source representative `eρ` then has Mellin
+values `1` at `ρ` and `0` elsewhere. The ordinary convolution trace satisfies
+`Tr(Tg Teρ)=mρ M(g)(ρ)`. Testing the real Weil trace against `sharp(c eρ)` for arbitrary
+complex `c` therefore detects the complete complex value `M(g)(ρ)`. Conversely, if every
+such value vanishes, every ordinary product trace vanishes termwise. Thus the source trace
+radical is exactly the kernel of all zeroth-value readings.
+
+The genuine Poisson kernel requires all Hasse jets below each multiplicity to vanish.
+Consequently these two kernels coincide exactly when every Xi zero is simple. If `mρ>1`,
+the local packet with value zero and first derivative one supplies an actual source in the
+ordinary trace radical but outside the Poisson boundary. If all multiplicities are one,
+zeroth-value vanishing is the whole jet condition and faithful convolution forces a boundary.
+The previously proved inserted Paugam trace detects the complete class and is the positive
+replacement for this loss of information, but its alternating product is not the symmetric
+Weil intersection. No simplicity or positivity hypothesis may be silently supplied.
+
+[NEXT SOURCE AUDIT.] A linear degree on the actual source convolution algebra is different
+from membership determined by finitely many linear degrees. Ordinary convolution trace is
+complex-linear on the entire Meyer source space (all source operators are proved trace class),
+vanishes on the Poisson boundary, and therefore descends to genuine source cohomology.
+The Weil defect is its real value on the literal product `g * sharp(h)`. Formalize this positive
+linear-degree representation while keeping its order obligation explicit: linearity does not
+show that those product degrees are nonnegative. In particular ordinary sharp-square trace
+positivity should require only RH, whereas identifying the full Hasse sharp with a Hilbert
+adjoint would additionally constrain Jordan blocks. Do not confuse numerical removal of
+higher jets with an assumption that the zeros are simple.
+
+[PROVED HERE, paper; Lean draft.] The genuine source quotient has a nonzero square-zero
+class at every multiple Xi point. At a point of multiplicity `m>1`, choose the actual finite
+causal source with only its `(m-1)`st jet equal to one. It is not a Poisson boundary, since
+that jet survives. Every jet of its convolution square below order `m` vanishes: the Hasse
+product sum can have a nonzero summand only at total order `2(m-1)≥m`. At every other
+point all jets vanish. Full-jet injectivity therefore makes the square a genuine boundary.
+Conversely, when all multiplicities are one, a principal square has squared Mellin values
+zero, hence all Mellin values zero, hence its source is principal. Thus square-root closure
+of the actual Poisson ideal is exactly simplicity. This gives an algebraic positive survivor
+for the information lost by ordinary degree; it is independent of the RH positivity issue.
+
+[PROVED HERE, paper; Lean extension pending.] Ordinary source sharp-square degree is
+nonnegative for every actual Meyer source exactly when RH holds, without any simplicity
+condition. Under RH, every divisor point obeys `conj(1-rho)=rho`; the absolutely summable
+trace expansion is therefore a sum of `|M(g)(rho)|²`, repeated by multiplicity. Conversely,
+nonnegativity for all Meyer sources applies to centered smooth compact sources. The proved
+CCM trace comparison identifies their diagonal trace with the literal source quadratic;
+the existing all-aperture polar-multiplier criterion yields RH. This establishes the exact
+order obligation on the genuine linear degree, separately from the higher-jet radical.
+
+[PROVED HERE, paper; Lean extension pending.] Off-line negativity has an explicit actual
+two-point source producer. For a divisor point `rho`, let `sigma=conj(1-rho)` and assume
+`sigma≠rho`. The finite causal point sources `e_rho,e_sigma` have self trace zero and mixed
+traces equal to the respective positive multiplicities: the first point source reads the
+second source's Mellin value at the reflected point. Therefore
+`Tr_W(e_rho-e_sigma,e_rho-e_sigma)=-(m_rho+m_sigma)<0`.
+This gives a literal finite causal packet witnessing the order obstruction, rather than
+only extracting a source existentially through the compact polar-multiplier criterion.
+The packet proof needs the real trace bilinearity and exact reflected point evaluation;
+it assumes neither simplicity nor unproved analytic admission.
+
+[PROVED HERE, paper; Lean construction pending.] The enlarged Meyer representative carrier
+itself has an unconditional real polar-surface structure. Centering Mellin transforms
+identifies the complex source product trace with `xiWeilPolarization`; its proved Hermitian
+symmetry gives symmetry of the real trace. Source convolution and its linear degree give
+real bilinearity. The two compensated Mellin pole degrees then define the hyperbolic plane
+exactly as in the compact scaling surface. Its defect is the real source product trace,
+so Hodge index is equivalent to the sharp-square order condition above. Genuine Poisson
+principal representatives lie in its numerical radical without a positivity assumption.
+This packages the source extension within the existing surface machinery; it does not
+identify the ordinary radical with the full Poisson ideal unless simplicity holds.
+
+[PROVED HERE, paper; Lean draft pending.] Evaluation at the source origin supplies
+a different, strictly positive square degree:
+`(g * sharp(g))(0) = integral(exp(t) * normSq(g(t)))`.
+This follows formally from literal convolution and `sharp(g)(t)=exp(-t)*conj(g(-t))`.
+`deningerMeyerSourceConvolution_integrable` gives integrability of this literal product;
+all-weight source smoothness gives continuity. A zero nonnegative integral forces zero
+almost everywhere, then everywhere by continuity, hence `g=0`. Its exact obstruction to cohomological descent
+is then concrete: choose the nonzero Xi-cap Poisson boundary `g`; the convolution ideal
+makes `g * sharp(g)` a boundary as well, but its origin value is positive. Thus a faithful
+source-mass degree cannot vanish on genuine principal boundaries. The source admission
+dependency is now checked; `/tmp/QIIMeyerOriginDraft.lean` contains the complete proof draft,
+including an explicit positive-degree boundary and the failure of cohomological descent.
+
+[CONJECTURE; full sharp-jet proof to formalize.] A faithful positive linear degree on the
+entire genuine Meyer cohomology exists exactly when RH and simplicity both hold. Here
+faithful means positive real degree on every sharp square of a nonprincipal source.
+For an off-line point, its actual one-point source is nonprincipal, but its sharp square
+is principal because reflection moves its full jet support to a disjoint point. At a
+multiple point, the top-jet source is nonprincipal and its sharp square is principal:
+either reflection moves the block, or both factors start at order `m-1`, so their product
+vanishes below order `m`. The full sharp-jet formula follows from the already proved
+`deningerMeyerStrongLogMellinJetLM_J` and `deningerMeyerStrongLogMellinJetLM_conj`.
+Conversely RH makes ordinary trace a sum of nonnegative squared values, and simplicity
+makes some value nonzero for every nonprincipal source, hence its trace strictly positive.
+This concerns faithful positivity on the full quotient; ordinary semidefinite trace
+positivity alone requires only RH and must not be strengthened silently to simplicity.
+
+The associated algebraic criterion to test is sharp-square-root closure of the genuine
+Poisson ideal: `g * sharp(g)` principal should force `g` principal exactly under RH plus
+simplicity. Ordinary square-root closure, already in the radical-module draft, requires
+only simplicity. Passing instead to the zeroth-value numerical ideal removes the extra
+simplicity requirement. This identifies the precise quotient on which a positive faithful
+intersection degree should live; retaining all higher jets changes the required theorem.
+
+[PROVED HERE, paper; Lean draft.] The exact arithmetic RR set is closed under addition
+if and only if Hodge index holds. This separates membership-level RR supply from an
+effective-section monoid. On any polar surface, if a primitive `p` has `p²>0`, set
+`t=√(p²/2)` and `d=H-V`. Both `p+td` and `-p+td` have square zero and ample degree zero,
+so both lie in the full positive cone. Their sum is `2td` with square `-8t²<0`, contradicting
+additive closure. Conversely Hodge index gives pairwise Bézout, so expanding `(x+y)²`
+proves closure. Applying the exact arithmetic identity gives the local Hodge-index criterion
+and the global equivalence with RH. A source-only RR formula therefore must not be presented
+as an independently established additive theory of sections.
 
 - [PROVED HERE, paper; Lean draft written.] Glue the exact all-parity source cones over aperture into a source-defined subset of the
   original `ScalingCycle` space, using compact-support exhaustion. Its equality to the global
@@ -278,11 +519,10 @@ law, stronger than failure of any one finite-rank reserve or finite polyhedral c
   at one scale greater than one, together with RR and nonnegative ample degree, already
   forces Hodge index. Thus the new RR supply must not be described as an independently
   proved motion-compatible effective theory.
-- After the numerical bridge compiles, test the proposed Hecke principal differences.
-  `scalingAction t` translates the compact source and rescales the two raw pole coordinates.
-  For `t≠0`, compact translation rigidity should force every fixed scaling cycle to be zero.
-  Combined with numerical nondegeneracy, no nonzero such difference is a principal numerical
-  relation within the compact cycle space. A richer representative carrier remains necessary.
+- [PROVED HERE, paper; Lean draft written.] The Hecke principal-difference test is strengthened
+  below to exact fixed spaces and freedom of every finite distinct-scale orbit. Numerical
+  nondegeneracy rules out nonzero principal numerical relations inside those compact orbits.
+  A richer representative carrier remains necessary.
 
 ### Scaling and Hecke fixed classes
 
@@ -299,11 +539,69 @@ nontrivial compact Hecke or Adams motion cannot be mistaken for principal numeri
 equivalence. This distinguishes an isometry acting simultaneously on both intersection
 arguments from a principal move preserving every reading with the other argument fixed.
 
+The corpus's `linearIndependent_real_translate` strengthens this to every finite motion
+relation. If a scaling class has nonzero compact source, its images under any distinct
+logarithmic scales are linearly independent: project a putative relation to the compact
+source and apply translation independence. Distinct positive Adams scales inherit this by
+injectivity of the logarithm; Hecke scales inherit it after multiplying coefficients by the
+nonzero square roots. Numerical nondegeneracy then makes every numerically trivial finite
+Adams or Hecke combination have all coefficients zero. This excludes polynomial principal
+relations on a nonzero compact source, not only individual fixed differences. Its positive
+survivor is the exact freedom of every finite distinct-scale orbit.
+
 ## Verification queue
+
+### Finite-field calibration and absolute spectral reserves
+
+[PROVED HERE, paper; Lean draft pending verification.] The existing Rosati source cone has
+Bézout for every finite `CurveDatum`, including the golden datum: the mixed defect is the
+inner product of one Frobenius evaluation vector with the reflected second vector, and the
+reflection permutes the finite spectrum. Cauchy–Schwarz therefore bounds its square by the
+two Rosati masses without a unitarity premise. Its RR condition remains exactly vanishing
+of the reflection defect; over all windows this is the existing unitarity criterion. If one
+mass vanishes, the mixed bound forces that source into the defect radical, so ampleness is
+also unconditional. At window `{1}`, the golden datum therefore has Bézout and ampleness but
+fails RR. The matrix-section cone equals this Rosati cone, so the same conclusion applies
+to its source reading. The draft proves the mixed pairing identity directly from the graph
+entry formula and reflected power sums; it does not infer mixed control from a diagonal
+upper bound alone. The finite complex Cauchy–Schwarz scratch proof compiled successfully.
+
+The compact Xi Hilbert realization suggests the parallel infinite-dimensional calibration:
+the squared absolute evaluation norm defines a cone with unconditional Bézout and ampleness,
+whereas RR would require its reflection gap to vanish. This reserve is spectral, so it does
+not supply the independently arithmetic degree mechanism requested by Q-II. The comparison
+should explain why finite Frobenius readings can suffice for the curve quotient while the
+proved affine-fibre obstruction excludes finite readings of the full scaling surface.
+
+[FURTHER ARITHMETIC PRODUCER TO AUDIT.] An independent Bézout cone alone should also come
+from an arithmetic quadratic majorant of the absolute Weil form, using Lévy energy,
+squared pole moments, and an absolute prime-correlation budget. The missing equality with
+the signed reserve would remain the RR obligation. The relevant generic paper lemma is:
+if a quadratic form `Q` dominates `|δ(v,v)|` for every `v`, then
+`δ(x,y)²≤Q(x)Q(y)`. Indeed, add `δ(x+ty,x+ty)≤Q(x+ty)` to
+`-δ(x-ty,x-ty)≤Q(x-ty)`; polarization cancels the mixed terms of `Q` and gives
+`0≤Q(y)t²-2δ(x,y)t+Q(x)` for all real `t`, so the discriminant is nonpositive.
+This argument requires a genuine quadratic majorant, not an arbitrary nonlinear diagonal
+bound.
+
+[PROVED HERE, paper; Lean draft pending.] The corpus's unconditional floor supplies an
+actual arithmetic majorant without another analytic premise. Put `C(r)=10+72*exp(r)` and
+`Q_r(f)=criticalDeficitSourceEnergy(r,f)+2*C(r)*integral(f²)`. The proved
+`realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp` says
+`δ(f,f)≥-C(r)*integral(f²)`. Thus `Q_r(f)-δ(f,f)=2*C(r)*integral(f²)≥0` and
+`Q_r(f)+δ(f,f)=2*(δ(f,f)+C(r)*integral(f²))≥0`. The exact arithmetic identity makes
+`Q_r` a genuine quadratic reserve; the preceding polarization argument gives mixed Bézout.
+Zero reserve forces the defect radical, giving ampleness as well. In fact
+`Q_r≥C(r)*integral(f²)`, so zero reserve has zero source. RR fails at every positive aperture:
+the sharp RR criterion would require `2*C(r)*integral(f²)≤0` for every source, contradicted
+by any nonzero compact test. This yields an independent arithmetic Bézout cone on the
+original pairing, with its precise RR obstruction. Unlike a finite L² reserve alone, it
+retains the full unbounded arithmetic source energy. No claim of simultaneous RR and Bézout
+is made.
 
 ### Removing source symmetry
 
-[PROVED HERE, paper; Lean implementation pending.] Evenness of the reserve is unnecessary
+[PROVED HERE, paper and Lean; transitive axiom audit clean; final plain-file audit pending.] Evenness of the reserve is unnecessary
 for the RR classification. For every fibre-invariant real reserve, graded RR is equivalent
 to `Φ(x)≤δ(x,x)` for every source. For necessity, if `δ(x,x)<Φ(x)`, choose a polar
 capacity `c` strictly between them and fibre degrees `b=|c|+1`, `a=c/(2b)`.
@@ -331,13 +629,131 @@ was used in the earlier classification. Formalization must retain this distincti
 | ACS `SourceConeBoundaryApplications` | Compiled; main transitive axiom endpoint clean. |
 | ACS `WeilEnergyIsUnboundedAtEveryAperture` | Compiled; generalized finite-kernel and no-go endpoints axiom-clean. |
 | ACS `GradedSourceConeBoundaryRigidity` | Compiled; RR/Bézout endpoint axiom-clean; umbrella wired. |
-| ACS `SourceConePrimitiveFaithfulness` | Olean compilation passed; transitive axiom audit pending. |
-| ACS `NumericalEquivalenceOnTheScalingSurface` | First compile exposed implicit-function elaboration timeouts and integral/name errors. Proof split into smaller lemmas with explicit functions and a real integral type. Revised olean compilation running; no concurrent Lean process permitted. |
-| ACS `HeckeClassesDoNotMoveNumerically` | Draft; needs numerical-equivalence olean, then compile and audit. |
-| ACS `FiniteDegreeConesCannotSatisfyBezout` | Draft; compile and transitive audit pending. |
-| ACS `ExactArithmeticSourceEffectivity` | Draft; compile and transitive audit pending. |
-| AOT `SourceSectionBoundaryRigidity` | Draft; needs numerical-equivalence olean, then compile and audit. |
-| AOT `AllApertureChebyshevSourceEffectivity` | Draft; needs preceding AOT olean, then compile and audit. |
+| ACS `SourceConePrimitiveFaithfulness` | Olean compilation and transitive axiom audit passed; final plain-file audit pending. |
+| ACS `NumericalEquivalenceOnTheScalingSurface` | Revised olean compilation and transitive axiom audit passed. Explicit source functions and split realification avoid elaboration timeouts without raised limits. Final plain-file audit pending. |
+| ACS `HeckeClassesDoNotMoveNumerically` | Direct plain-file check and transitive axiom audit passed. Exact eigen/fixed spaces and freedom of every finite distinct-scale orbit checked; temporary directives removed; umbrella wired. |
+| ACS `FiniteDegreeConesCannotSatisfyBezout` | Olean compilation and transitive axiom audit passed, including the small-L² affine-fibre strengthening. Final plain-file audit pending. |
+| ACS `ExactArithmeticSourceEffectivity` | Olean compilation and transitive axiom audit passed, including global aperture gluing, exact all-parity arithmetic RR, finite-reading obstruction, additive-closure criterion, and one-scale Adams criterion. Final plain-file check pending. |
+| ACS `ExactSourceEffectivityRequiresInfinitelyManyDegrees` | Direct plain-file check and transitive axiom audit passed. Temporary audit directives removed; umbrella wired. |
+| AOT `SourceSectionBoundaryRigidity` | Olean exists and import/transitive axiom audit passed. Includes signed/asymmetric boundaries and the canonical-class-independent Boolean dimension obstruction. Final plain-file audit pending. |
+| AOT `AllApertureChebyshevSourceEffectivity` | Direct plain-file check and transitive axiom audit passed. All-aperture odd arithmetic RR and exact payment criteria checked; temporary directives removed; umbrella wired. |
+| ACS `SourceRiemannRochWithoutSymmetry` | Scalar scratch, olean compilation, and transitive axiom audit passed; umbrella wired; final plain-file audit pending. |
+| ACS `PoissonPrincipalCyclesOnTheScalingSurface` | Olean compilation and transitive axiom audit passed. Genuine linear trace degree, nonzero principal representatives, compact-boundary rigidity, and the exact compact smooth comparison are checked. Final plain-file audit pending. |
+| AOT `RosatiSectionsHaveBezoutWithoutUnitarity` | Paper proof and Lean draft. Mixed reflected evaluation, universal Bézout and ampleness, exact local RR condition, and golden matrix-section counterexample; compile pending. |
+| ACS `MeyerNumericalRadicalAndMultiplicity` | Paper proof and Lean draft. Actual single-jet sources, exact ordinary source and cycle trace radicals, equality with the principal kernel iff simplicity, source sharp-square positivity iff RH, and nonprincipal square-zero classes at every multiple zero. Its import requires the principal-cycle module's olean. |
+| ACS `FiniteReadingsAndMassCannotSupplyBezout` | Paper proof and Lean draft. Unit-mass unbounded energy in each finite linear kernel; arbitrary nonlinear functions of finite readings and exact L² mass fail closed, strict, and graded source-cone Bézout. |
+
+`/tmp/QIIBatchAudit.lean` completed successfully. All queried endpoints in the numerical,
+primitive-faithfulness, graded, asymmetric, and section modules use only `propext`,
+`Classical.choice`, and `Quot.sound`. The same holds transitively for the Meyer source trace,
+faithful convolution representation, Poisson ideal, and entire-quotient comparison used below.
+
+`/tmp/QIIMeyerNames.lean` also passed. Finite causal source sections, their off-block
+vanishing, full-jet cohomology injectivity, and the explicit Xi-cap Mellin identity all have
+the same clean transitive axiom list. Thus the local jet producers used by the new radical
+comparison do not import an unproved analytic input.
+
+The small-source-mass affine-fibre strengthening compiled in the finite-degree module.
+Its global and exact-effectivity consequences in
+`ExactSourceEffectivityRequiresInfinitelyManyDegrees` passed the final plain-file check and
+transitive axiom audit. The exact source, finite-degree, global exclusion, and principal-cycle
+modules are now wired into the ACS umbrella; the umbrella is not compiled.
+
+`/tmp/QIIMeyerPrincipalAudit.lean` passed: every queried endpoint in the principal-cycle,
+exact arithmetic RR, and finite-degree modules depends only on `propext`, `Classical.choice`,
+and `Quot.sound`. Remaining leaves are queued for direct checks with temporary axiom
+directives; remove those directives once the corresponding file passes.
+
+Further proof drafts awaiting their first Lean checks:
+
+- `/tmp/QIIMeyerSurfaceNames.lean`: centered Mellin polarization and real scalar bilinearity.
+- `/tmp/QIIMeyerSurfaceDraft.lean`: full Meyer polar surface, actual degree source RR,
+  principal/numerical distinction, and explicit negative reflected two-point packets.
+  Imports the radical/multiplicity module, whose olean will be needed when this draft is
+  promoted to its source module.
+- `/tmp/QIIArithmeticMajorantNames.lean` passed, including the generic quadratic-majorant
+  proof. Its application is now `ACS/ArithmeticMajorantsSupplyBezout.lean`: independent
+  arithmetic Bézout/ample cone, strict mass floor, and failure of RR. Direct source check
+  and temporary axiom audit remain pending; it is not wired yet.
+- `/tmp/QIIMeyerOriginNames.lean` passed, including the actual convolution integrability
+  and boundary-ideal axiom audits. The application is now
+  `ACS/OriginDegreeDoesNotDescendThroughPoissonBoundaries.lean`: exact positive origin
+  degree, positive-degree Poisson boundary, and failure of descent. Direct source check
+  and temporary axiom audit remain pending; it is not wired yet.
+- `/tmp/QIIMeyerSharpRootDraft.lean`: reflected full jets, exact single-jet sharp-square
+  classification, sharp-square-root closure of the actual Poisson ideal iff RH plus
+  simplicity, and existence of any faithful positive linear cohomological degree iff
+  those same two conditions. The dependency-closed paper proof is recorded in
+  `../2-fully-proven/faithful-positive-meyer-degrees-require-simple-critical-zeros.md`.
+- `/tmp/QIIMeyerPointDegreeDraft.lean`: an unconditional positive linear degree on the
+  genuine quotient, with an explicit nonprincipal null source. Hardy supplies a critical
+  divisor point; its zeroth Mellin evaluation sends sharp squares to squared norms.
+  The conjugate divisor point is distinct, since the Xi divisor misses `1/2`, and its
+  actual point source has degree zero while remaining nonprincipal. Thus existence of
+  some nonzero positive linear degree is already unconditional; it does not supply the
+  original mixed intersection or faithfulness.
+- `/tmp/QIIGlobalPrimeMajorantDraft.lean`: the weighted correlation estimate and its
+  full prime-sum bound. `/tmp/QIIGlobalMajorantNames.lean` checks their supporting APIs.
+- `/tmp/QIIQuadraticSourceConeStructure.lean`: positive quadratic reserves give additive
+  source cones containing zero and closed under nonnegative scaling. Its direct scratch
+  check is queued; the pointed/generating arguments remain on the global-majorant paper card.
+- `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/BezoutCostsTwiceTheNegativeReserve.lean`: complete proof attempt for the exact factor-two
+  boundary, its compensated Hodge-index equivalence, and closed/graded RR criteria.
+  It imports the new majorant leaf and has not run. Promote it to an actual module
+  before building that missing dependency olean; never rebuild an olean that exists.
+
+These drafts have no placeholders. Scratch names must pass before the corresponding
+source modules are installed, and each installed module still needs its direct file check,
+axiom audit, and umbrella import.
+
+[PROVED HERE, paper; Lean pending.] The aperture-gluing limitation of the first majorant
+can be removed. Exponentially weighted source mass bounds every translated correlation
+by `exp(-|a|)` times that mass. The actual prime sum is then bounded by twice the
+summable three-halves von Mangoldt mass. Together with the archimedean Lévy lower bound
+and the exact two pole moments, this gives one global quadratic arithmetic reserve
+dominating both signs of the original defect. Its source cone has global mixed Bézout
+and ampleness and fails RR by a strict positive reserve. Exact formulas and the complete
+paper proof are in `../2-fully-proven/a-global-arithmetic-majorant-for-the-scaling-surface.md`.
+The weighted correlation, actual prime-sum landing, and global cone still need Lean proofs.
+
+[PROVED HERE, paper; Lean pending.] The factor two in the majorant has an exact
+structural meaning. For a nonnegative symmetric fibre-annihilating quadratic form `R`,
+the original closed or graded source cone with reserve `delta+2R` has Bézout iff
+`delta+R>=0`, equivalently Hodge index for the pairing compensated by `R`.
+Graded RR holds iff `R=0` on the diagonal; closed RR additionally requires
+`delta>=0`. The proof uses the absolute diagonal majorant criterion and the exact
+positive-part boundary laws. Full paper proof and scalar threshold interpretation:
+`../3-formalized/bezout-costs-twice-the-negative-reserve.md`. This exact theorem
+must be formalized after the majorant leaf passes; no optimal-floor attainment is assumed.
+
+Verification continuation: the first Meyer surface scratch audit found a missing
+`ContinuousLinearMap` namespace opening and a conjugated-half simplification failure.
+Both have explicit source-based fixes; real scalar linearity itself passed. The Rosati
+audit was stopped before completion to replace its implicit permutation reindexing
+function by an explicit one. It still requires a complete direct check, as do the
+radical/multiplicity and unit-mass leaves. The quadratic-majorant scratch audit passed and its application source is installed.
+The current sequential scratch audit continues with the origin, corrected surface,
+sharp-root, and global-majorant APIs before promoting those drafts. No new application theorem in those drafts is yet reported as Lean-checked.
+The corrected Meyer polarization scratch proof then reduced to the definitional
+`star`/`starRingEnd` equality; an explicit `rfl` is added and still awaits its retry.
+The current serial direct-check batch starts with `ArithmeticMajorantsSupplyBezout`,
+then origin descent, Rosati, numerical radical, and the unit-mass obstruction, followed
+by the remaining scratch API checks. It stops at the first error; do not assume later
+files ran. Temporary axiom directives remain until their corresponding source passes.
+The first direct majorant check found only a right-scalar `mul`/`smul` normalization
+goal in `defectLinearMap`. It is corrected with `smul_eq_mul`; the direct check is
+running again before the remaining files. The generic majorant, mass floor, strict
+ample-zero result, and RR obstruction printed clean standard axiom lists, but the
+mixed bound and Bézout result must not be certified until this corrected check passes.
+
+[PROVED HERE, paper; Lean draft written.] Normalizing the positive-mass
+finite-kernel witnesses gives unit-L²-mass sources of arbitrarily large Weil energy in
+every finite linear reading kernel. Therefore even an arbitrary nonlinear reserve
+`F(L(f), integral(f²))` fails source-cone Bézout: on these witnesses its value is the fixed
+number `F(0,1)`, while the defect is unbounded. This is stronger than excluding finite
+scalar L² coefficients. It does not exclude every arbitrary membership rule using mass:
+for example, a rule supported only at source mass zero can retain the pure fibre quadrant.
+The precise target remains a source cone with an available fibre lift for every source.
 
 The `/tmp/QIIBoundaryAudit.lean` run printed clean axiom lists but exited nonzero because a
 scratch `#check` incorrectly qualified the global name `integral_complex_ofReal`. That scratch
@@ -347,12 +763,609 @@ umbrella imports, and the finite-degree failed-route closure are still pending.
 
 ## Related ongoing work
 
+### Flow-invariant majorant frontier
+
+[CONJECTURE; exact source landing pending.] A finite nonnegative reserve on the
+actual Meyer source which supplies the absolute mixed trace bound and is invariant
+under centered dilation should already force RH, without an RR premise or a
+faithfulness premise. Fixed point sources and their imaginary multiples recover the
+real and imaginary parts of each Mellin evaluation from the mixed trace. The mixed
+bound therefore controls that evaluation by a finite multiple of the square root of
+the reserve. The evaluation has centered character `exp(t*(rho-1/2))`, so a nonzero
+real exponent contradicts invariance.
+
+The corpus already proves the abstract eigenfunctional step and its quotient version
+in `RHTower/Deninger/DeningerMeyerInvariantEvaluationGaugeFrontier.lean`, read in full.
+Do not duplicate that argument. The new obligation is the exact point-source trace
+landing and the reserve-to-gauge construction, then an unconditional equivalence
+using ordinary trace for the converse under RH. Applying the same boundary to the
+original compact carrier requires a separate bridge to the proved universal-probe
+translated-pairing criterion in
+`BiScaleUncertainty/WeilLagPacketCancellationAndPositivity.lean:1269`.
+No such bridge or invariance of the new exponential-weight majorant is assumed.
+
+### Further source-sign conjecture
+
+[CONJECTURE; dependency audit pending.] The continuous `apertureH1ChebyshevCorrection`
+should have a sharp first-prime signature transition, rather than being a nonnegative
+cohomology dimension. For odd tests supported below `log(2)/2`, its prime correlations
+vanish and the correction is exactly the nonnegative rank-one pole charge. Above that
+aperture, localize two small packets about `±log(2)/2`; keep their total correlation support
+below `log(3)` so every node except `2` vanishes. An even local packet, extended oddly about
+the origin, has correlation at `log(2)` equal to minus its squared mass. An odd local packet,
+extended oddly with the opposite sign convention, gives plus its squared mass. Imposing
+the one pole moment does not remove the infinite-dimensional local packet space. This
+suggests infinite positive and negative index for the continuous correction immediately
+after the first prime. Search and verify the exact source constructors, support exclusions,
+and pole constraint before claiming this theorem. It would distinguish weighted aperture
+correction from the genuinely finite prime-node count and from any new sheaf obstruction.
+
+The proposed positive survivor is sharper than mere indefiniteness. With
+`a=log(2)/2` and a sufficiently small local packet `h`, the two constructions
+`F_-(t)=h(t-a)-h(t+a)` for even `h` and `F_+(t)=h(t-a)+h(t+a)` for odd `h`
+have source mass `2 integral(h²)` and prime-two correlation respectively
+`-integral(h²)` and `integral(h²)`. Keep their total correlation support below `log(3)`
+and impose the single odd pole moment. The exact correction then equals
+`-vonMangoldtAtom(2)*integral(F_-²)` or
+`vonMangoldtAtom(2)*integral(F_+²)` on the corresponding packet subspace.
+Disjoint reflection of arbitrarily many small translates in a positive half-interval
+produces independent even or odd local packets; one linear pole condition leaves
+arbitrarily large finite-dimensional subspaces. At and below `r=a`, all prime
+correlations vanish, including the endpoint overlap, so only the rank-one pole charge
+remains. Exact support, parity, mass, correlation, and finite-kernel constructors are
+the remaining formal proof obligations.
+
 The independent `biarithmetic-geometry-foundations` card audits the proposed ordinary
 dimension identity `h⁰-h¹=E(s)` and its weighted arithmetic replacement. It already records
-the nonintegrality obstruction below the first prime. Avoid duplicating that work; use its
-finished theorem when available. This obstruction does not itself construct the requested
-payment sheaf or prove duality.
+the completed `BiarithmeticGeometry/ArithmeticEulerCharacteristic.lean` result, with direct
+checks and clean axiom audits. Read that module fully. Its `no_dimension_model_for_boxDefect`
+refutes literal B1, and `boxDefect_eq_degree_sub_log_card` / `boxDefect_all_apertures` give
+the exact integer-degree-minus-log-torsion replacement and continuous cell evolution.
+Applied this correction to the review's Mechanism B and action list. No duplicate formalization
+was added. These identities do not themselves construct the requested payment sheaf or prove duality.
 
 ## Log
 
 - 2026-10-25 — Read attachment and full review; discovered existing all-aperture RR results and the opposite inequalities governing RR versus Bézout. Began boundary-rigidity audit.
+
+Verification update: `ArithmeticMajorantsSupplyBezout` passed its direct file check and
+all six main axiom audits with only the standard axioms. It is wired, documented,
+and its card is in `3-formalized`. The origin-degree check stopped on a reducible
+`RCLike.re`/`Complex.re` integrability normalization; an explicit `change` repairs
+that mismatch. Later files in that serial batch did not run.
+
+The factor-two draft is now an actual module, still unchecked and unwired.
+`/tmp/QIIGlobalArithmeticMajorantDraft.lean` now contains the complete global
+reserve, weighted bilinear construction, original-pair mixed bound, Bézout,
+ampleness, strict ample-zero conclusion, RR obstruction, addition/scaling closure,
+generation, and pointedness proof attempts. The generic cone scratch file now
+also proves generation for every finite fibre-invariant threshold with `Phi(0)<=0`.
+These drafts still require their serial direct checks and axiom audits.
+
+`OriginDegreeDoesNotDescendThroughPoissonBoundaries` passed its corrected direct
+check and all five main axiom audits, with only standard axioms. It is wired and
+documented; exact proof and positive survivor are recorded in
+`../3-formalized/positive-origin-degree-does-not-descend-through-poisson-boundaries.md`.
+Current serial checks have advanced to the Rosati leaf.
+
+Further positive survivor, paper proved: finite causal jet blocks admit an exact
+classification of positive Hermitian degree restrictions. All off-line blocks and
+all positive-order critical jets are invisible; the remaining critical values have
+nonnegative real weights. See
+`../2-fully-proven/positive-degrees-see-only-reduced-critical-jet-blocks.md`.
+The proof uses normalized actual jet classes, Hasse convolution, Cauchy–Schwarz,
+and descending nilpotent order. Its scope is finite packets; arbitrary discontinuous
+degrees on the whole quotient are not claimed to be determined by these restrictions.
+The finite-block algebra identities and classification remain to be formalized.
+
+The Meyer invariant-majorant conjecture now has a dependency-closed paper proof:
+`../2-fully-proven/flow-invariant-meyer-majorants-force-criticality.md`.
+Two fixed sharp point sources read real and imaginary Mellin values. Their mixed
+bounds control squared evaluation, and `Phi+1` gives the existing abstract invariant
+gauge theorem its norm bound. This avoids any assumed quotient descent or norm law.
+The converse uses ordinary trace under RH; centered trace invariance itself is an
+exact reflected-Mellin cancellation, independent of RH. Exact Lean source landing
+and the separate compact-source bridge remain pending.
+
+`/tmp/QIIMeyerInvariantMajorantDraft.lean` now contains the complete actual-source
+flow, two-point evaluation bound, invariant-majorant criticality theorem, exact
+centered trace invariance, and converse proof attempts. Its additional API audit is
+`/tmp/QIIMeyerFlowNames.lean`; neither has run. The quadratic cone scratch now
+reuses the existing `HTGeometry.bilinForm_sq_le` instead of duplicating Cauchy–Schwarz.
+`HTGeometry/NonnegFormRadical.olean` already exists and must not be rebuilt.
+
+Rosati direct check failed: the newer `CurveDatum.frobPoly` shadows the scalar
+evaluation polynomial, and the Rosati reserve owner was not imported. All uses
+now explicitly name the scalar polynomial, the owner import is added (its olean
+already exists), and mixed reindexing has explicit source coefficients. An owner
+API scratch check is `/tmp/QIIRosatiOwnerNames.lean`; the corrected Rosati leaf
+awaits retry. The serial audit now runs the independent radical and unit-mass leaves
+before the remaining scratch checks. No Rosati axiom list was clean in the failed run.
+
+`/tmp/QIIArithmeticMajorantConeGeometryDraft.lean` adds the exact aperture-majorant
+bilinear form and its zero, addition, nonnegative scaling, convexity, pointedness,
+and generation corollaries. It is unrun. The generic cone scratch and global
+majorant draft now also state convexity explicitly.
+
+Broader-corpus audit: `DeningerMeyerConvolutionQuotient.lean` already supplies the
+actual descended convolution product, commutativity, and associativity. Reuse this
+product for the finite-jet degree classification. `DeningerMeyerPaugamInsertedTrace.lean`
+was read fully: bounded top-Hasse insertion recovers a nondegenerate alternating
+pairing, but explicitly does not prove positivity or a geometric cup identification.
+The positive-degree classification must distinguish that alternating inserted trace
+from Hermitian sharp-square positivity. Recent off-line-multiplicity corpus results
+are density bounds and alternatives; they do not prove all zeros simple or all
+multiple zeros critical. No simplification of the simplicity obstruction follows.
+
+The first radical/multiplicity check certified actual single-jet realization,
+trace positivity iff RH, and the multiple-zero convolution-square witness, but
+the full file failed on explicit zeroth-jet normalization, multiplicity unfolding,
+a scalar/source coercion in the point reading, and rewriting a dependent Fin bound.
+The fixes unfold only the named transform definitions, type the scalar source
+explicitly, and let arithmetic use the multiplicity equality without dependent
+rewriting. A serial retry starts with this corrected leaf and stops on first error.
+
+A further dependency-closed positive survivor is recorded in
+`../3-formalized/pole-blind-poisson-boundaries-have-positive-origin-degree.md`.
+The actual cap `E²(fXi)-E(fXi)` has boundary transform `s(s-1)xi(s)`,
+vanishing at both poles but nonzero at 2. Its sharp square is a genuine
+positive-origin-degree boundary with zero pole values, hence a nonzero
+pure-source principal cycle. This refutes every normalized correction using
+only those two values, even nonlinear corrections. The actual new leaf
+`PoleBlindPoissonBoundariesHavePositiveOriginDegree.lean` is written but unrun.
+It imports the certified origin module; that missing olean may now be built
+once when the serial compile slot is free.
+
+`MeyerNumericalRadicalAndMultiplicity.lean` passed its corrected actual-file
+check and all nine main axiom audits with only `propext`, `Classical.choice`,
+and `Quot.sound`. The two remaining zeroth-jet coercions were resolved by
+explicitly changing the statement to the raw Mellin transform, without
+expanding the linear-map constructor. Temporary audits and one unused simp
+argument were removed; the module is wired and documented. Its complete
+proof card is `../3-formalized/meyer-numerical-radical-and-multiplicity.md`.
+`MeyerSourceIntersectionSurface`, `FaithfulPositiveMeyerDegrees`, and
+`ExponentialSourceMassControlsTheFullPrimeSum` are now actual unchecked
+modules, with their old draft files removed. The surface imports the radical
+module, so its missing olean may now be built once for that dependency.
+
+The finite positive-degree classification is being split into reusable exact
+algebra and its finite-jet application. `/tmp/QIIMeyerDegreeAlgebraDraft.lean`
+constructs descended arithmetic sharp from the existing quotient conjugation
+and Paugam involution, proves convolution compatibility by actual Mellin
+injectivity, and derives complex null-pair annihilation for every positive
+Hermitian linear degree. The corresponding API check is
+`/tmp/QIIMeyerDegreeAlgebraNames.lean`; neither has run. The draft makes no
+continuity assumption or claim about arbitrary infinite-packet degree recovery.
+
+`FiniteReadingsAndMassCannotSupplyBezout.lean` passed its actual-file check
+and all three main axiom audits with only standard axioms. Temporary audits
+removed; umbrella and README wired. The exact unit-mass positive survivor
+and restricted reserve no-go are recorded in
+`../5-failed/finite-readings-and-exact-mass-source-reserves.md`. This does not
+rule out arbitrary sets selected by mass: the theorem concerns fibre-threshold
+source cones with every source available after a finite fibre lift.
+
+The normalized finite algebra and positive restriction now have explicit
+proof drafts: `/tmp/QIIMeyerFiniteJetAlgebraDraft.lean` constructs factorial
+normalized Hasse source classes, exact cross-block zero products, same-block
+truncated products, local identities, and sharp reflection with parity.
+`/tmp/QIIMeyerPositiveFiniteJetDegreeDraft.lean` uses the complex null-pair
+lemma to kill off-line blocks and descend through higher critical jets, then
+proves the weighted-value formula for finite sums of these actual classes.
+Still pending: direct checks, exact identification of the finite causal
+section with this Hasse-class span, and the converse finite positive-weight
+construction. These files remain drafts and are not cited as certified.
+
+The surface API examples and sharp-root APIs passed. The global-majorant
+API check stopped because the guessed bare `tsum_le_tsum` identifier does
+not exist in this mathlib. Its actual prime-sum proof remains unchecked;
+a corpus-first lookup is resolving the correct summable monotonicity lemma.
+The next serial batch starts with the remaining point, cone, flow, Rosati,
+and sharp-algebra checks, then the Rosati leaf and missing dependency builds
+for the factor-two, pole-blind, and actual surface leaves. It stops on the
+first failure; no existing olean is rebuilt.
+
+The point-degree API check passed, including clean axioms for Hardy's
+critical-point existence and exclusion of the central real point. The point
+draft is now the actual unrun module `PositiveMeyerDegreesCanForgetClasses`,
+with its old draft removed. The finite positive-degree draft now also includes
+the converse finite nonnegative critical weighting on the whole actual
+quotient and exact prescribed value weights.
+
+A further paper theorem is
+`../2-fully-proven/invariant-origin-mass-does-not-bound-the-weil-trace.md`.
+The smooth version of the finite-kernel construction is drafted in
+`/tmp/QIISmoothFiniteReadingKernelsDraft.lean`; the original bump can be chosen
+C-infinity and finite sums preserve that regularity. This supplies actual
+compact Meyer witnesses for unit-origin-mass unboundedness. The compact
+origin identity and final trace obstruction remain to be written and checked.
+
+`/tmp/QIIInvariantOriginMassDraft.lean` now contains positive origin square
+mass, centered-flow invariance from literal product invariance, the exact
+compact real mass identity, smooth unit-mass trace-unbounded witnesses at
+every aperture, and failure of every nonlinear function of that mass as a
+mixed-trace majorant. The extra API scratch is `/tmp/QIIOriginMassNames.lean`.
+All are unrun. The strengthened finite-degree classification also now includes
+the exact finite causal expansion and converse finite critical weight degree;
+its remaining obligations are serial checks and audits.
+
+The positive-quadratic-cone scratch passed its substantial arguments but
+failed its zero-membership simplification: the remaining term was
+`0 <= 2*0*0`, needing `mul_zero` rather than `zero_mul`. That targeted fix
+and removal of an unused helper premise are in place. The next serial
+batch starts with the corrected summable-order API check, then retries
+the cone scratch and proceeds through the queued actual leaves. The
+sharp-algebra, origin-mass API, and smooth-kernel scratch checks follow
+those leaves if all preceding checks pass.
+
+Removed the completed API/audit scratch files for the surface, sharp-root,
+point-degree, aperture-majorant, origin-degree, earlier finite-Cauchy/source
+checks, and earlier principal audit. Their passing results are recorded
+above; actual source modules retain the implementations. Current queued
+checks and every unverified proof draft are preserved.
+
+Further corpus audit: `GaussHodgeWeilKreinDecomposition.lean` was read fully.
+It already gives the abstract square-summable value-space signature split;
+`XiWeilLineConjHilbert.norm_xiWeilPolarization_le` already gives its mixed
+Cauchy bound. Do not duplicate either result. A proposed actual-source
+Rosati mass and exact exponential flow-growth classification remain only
+a frontier investigation; square-summability of the centered Meyer transform
+and quantitative transport must be linked before claiming a new theorem.
+
+The full source Hilbert convolution jets, faithfulness, and actual boundary
+sharp-root obstruction expose another dependency-closed paper result:
+`../2-fully-proven/arithmetic-sharp-is-the-hilbert-adjoint-exactly-for-simple-critical-zeros.md`.
+Adjoint identification forces sharp-square-root closure by the Hilbert Gram
+norm identity; conversely RH and simplicity make every actual block scalar
+and sharp conjugates its multiplier. No Lean draft yet. This sharpens the
+existing source warning that arithmetic sharp is not automatically Hilbert
+adjoint, and separates operator positivity from ordinary trace positivity.
+
+The corrected summation API is `Summable.tsum_le_tsum`, used as
+`hf.tsum_le_tsum hterm hg`. Its dedicated scratch example passed; the
+actual global prime-mass leaf now uses that verified form. All other
+APIs in its earlier scratch check had already passed.
+
+The positive quadratic source-cone scratch passed. It is now the actual module
+`PositiveQuadraticSourceCones.lean`, with five temporary axiom audits; its
+actual-file final check is pending. The old scratch was removed. The active
+serial batch has advanced to the flow API check.
+
+The centered-flow APIs passed, including the exact exponential conjugation
+orientation and clean invariant-evaluation-gauge axioms. The implementation
+is now `FlowInvariantMeyerMajorantsForceCriticality.lean`; its old draft was
+removed. The actual-file check awaits the actual surface dependency.
+
+Corpus search located the existing centered source flow in
+`DeningerMeyerHalfDensityL1Completion`. The new trace-majorant leaf now uses
+that exact existing map instead of defining a duplicate. The origin-mass
+draft uses the same map. Its half-density L2 embedding is already supplied
+by `FrankensteinMeyerHalfDensityL2KoszulDescent`; the boundary-density
+conjecture is tracked separately in `poisson-boundaries-are-dense-in-origin-mass.md`.
+
+The adjoint classification has a complete unrun proof draft in
+`/tmp/QIIMeyerSharpAdjointDraft.lean`, including the exact equivalence with
+existence of an arbitrary faithful positive linear quotient degree.
+
+The global majorant and aperture cone-geometry drafts are now actual unrun
+leaves `GlobalArithmeticMajorantsSupplyBezout.lean` and
+`ArithmeticMajorantConeGeometry.lean`, with temporary axiom audits. Their
+old drafts were removed. The Rosati-owner API check passed; the active batch
+is now checking the actual Rosati leaf. Completed sum-order, flow, and
+Rosati-owner API scratch files were removed after recording their results.
+
+`RosatiSectionsHaveBezoutWithoutUnitarity.lean` passed its actual-file final
+check and all six main axiom audits, each using only propext, Classical.choice,
+and Quot.sound. Temporary prints removed; AOT umbrella and README wired;
+Q-II review updated. Its exact positive survivor and paper proof are recorded
+in `../3-formalized/rosati-sections-have-bezout-without-unitarity.md`.
+The active batch has advanced to the missing aperture-majorant olean required
+by the actual factor-two theorem.
+
+The origin-mass boundary-density candidate now has a dependency-closed paper
+proof and has moved to `../2-fully-proven/poisson-boundaries-are-dense-in-origin-mass.md`.
+Its actual Xi-cap Fourier profile is nonzero almost everywhere; exact centered
+flow supplies a dense orbit of genuine boundaries. Every genuine class has
+representatives with arbitrarily small origin square mass, and every continuous
+linear L2 boundary-annihilating reporter is zero. The general cyclicity and
+actual boundary-density proofs are drafted in `/tmp/QIIL2TranslationCyclicityDraft.lean`
+and `/tmp/QIIPoissonBoundaryDensityDraft.lean`; APIs are in
+`/tmp/QIIBoundaryDensityNames.lean`. All three remain unchecked.
+
+The aperture-majorant dependency olean was built successfully for the actual
+factor-two importer. That importer failed only on its hand-expanded bilinear
+fibre expression (wrong expansion order) and two redundant `dsimp` calls.
+The expansion is now normalized by the direct defect-map evaluation identity;
+the two no-progress calls are removed. Remaining queued leaves did not run.
+
+The finite-degree audit exposed a qualification worth making exact: positivity
+of only the real sharp-square degree does not force the original complex
+degree to be Hermitian. The canonical Hermitian part has exactly the same
+real square readings, so the finite critical-value classification applies
+to that part. The complete paper proof is recorded in
+`../2-fully-proven/real-positive-meyer-degrees-are-controlled-by-their-hermitian-part.md`.
+No infinite-packet classification or automatic continuity is claimed.
+
+Boundary density gives a stronger exact graph theorem, recorded in
+`../2-fully-proven/every-finite-meyer-jet-graph-is-dense-in-origin-hilbert-space.md`.
+Every surjective normed cohomological reading has full product graph closure
+with the origin Hilbert coordinate. In particular all actual finite Xi-jet
+packets become maximally multivalued, even critical value coordinates. This
+applies the existing finite-packet surjection and distinguishes the actual
+L1 critical graph law from L2 collapse. Lean draft pending.
+
+The factor-two core passed its corrected actual-file check and all five
+transitive axiom audits with standard axioms only. The two scalar-coefficient
+corollaries explicitly stated on its paper card have now been added to the
+same leaf; they require a final check before the whole card is promoted.
+The active serial batch has advanced to the actual positive-quadratic-cone
+leaf. No factor-two olean was built.
+
+Complete unrun drafts now include the canonical degree decomposition and
+its finite restriction (`/tmp/QIIMeyerHermitianDegreePartDraft.lean`) and the
+full product graph closure of every finite jet packet
+(`/tmp/QIIMeyerOriginJetGraphDraft.lean`). The latter also proves that its
+closed graph is single-valued exactly when the packet is empty.
+
+`PositiveQuadraticSourceCones.lean` passed its actual-file final check and
+all five standard-axiom audits. Temporary prints removed; ACS umbrella and
+README wired. Its complete certificate is
+`../3-formalized/positive-quadratic-source-cones-are-convex-and-generating.md`.
+The active serial batch has advanced to the actual full prime-sum leaf.
+
+The full prime-sum actual check failed only at the compact-support multiplication
+elaboration. An explicit intermediate function fixes its inferred pointwise
+product; the corrected file heads the active serial queue (session 62192).
+The preceding queue stopped there, so the later pole-blind, surface, and API
+checks have not yet run. Factor-two scalar corollaries are now second in queue.
+
+A further dependency-closed paper survivor is recorded in
+`../2-fully-proven/hilbert-schmidt-reserves-measure-the-arithmetic-adjoint-defect.md`.
+The actual full-Hasse convolution resolvent factorization proves unconditional
+Hilbert–Schmidt admission. The average source/sharp HS squared norm descends
+faithfully to genuine cohomology, gives Bézout and ampleness, and exceeds the
+ordinary source form by exactly half the squared adjoint defect. RR is therefore
+equivalent to simple critical zeros. A generic operator proof is drafted in
+`/tmp/QIIHilbertSchmidtDefectDraft.lean`; no check has run. Corpus audit found the
+existing `HilbertSchmidtRankOne.hsNormSq_add` and reuses it, and identified the
+special diagonal-kernel predecessor in `XiThermalQuadraticReflectionDefectSpectrum`.
+No infinite Hasse-coordinate norm expansion is claimed.
+
+`ExponentialSourceMassControlsTheFullPrimeSum.lean` passed its corrected
+actual-file check and both endpoint axiom audits with standard axioms only.
+Temporary prints removed; ACS umbrella and README wired; standalone certificate
+`../3-formalized/exponential-source-mass-controls-the-full-prime-sum.md` added.
+The obsolete global-majorant API scratch was removed. The active serial queue
+has advanced to the actual factor-two leaf with its scalar corollaries.
+
+The faithful Hilbert–Schmidt reserve now has a complete unrun source draft,
+`/tmp/QIIMeyerHilbertSchmidtReserveDraft.lean`: actual admission from the
+resolvent factorization; a real bilinear reserve; exact plus/minus adjoint
+squares; genuine-class descent and faithfulness; mixed Bézout and ampleness;
+ample-zero iff principal; convexity, generation, and pointedness modulo
+principal cycles; RR iff actual adjoint compatibility and hence simple
+critical Xi zeros. Its planned imports are `ArithmeticSharpAndTheHilbertAdjoint`
+(from the existing adjoint draft) and HT `HilbertSchmidtTraceDefect` (from the
+new generic draft). Neither is yet an actual module or verified result.
+
+`BezoutCostsTwiceTheNegativeReserve.lean` passed its final actual-file check,
+including both scalar-coefficient corollaries. All seven transitive axiom audits
+use only propext, Classical.choice, and Quot.sound. Temporary prints removed;
+card moved to `../3-formalized/bezout-costs-twice-the-negative-reserve.md`; ACS
+umbrella and README wired. The active serial queue is building the previously
+missing origin-degree dependency olean for the actual pole-blind importer.
+
+The origin graph theorem now also covers the entire faithful convolution
+operator range, endowed with its inherited operator norm. Its range restriction
+is surjective, so the same boundary-density argument makes the full graph dense
+in the product. Every nonprincipal source supplies a nonzero vertical operator.
+Paper proof and `/tmp/QIIMeyerOriginJetGraphDraft.lean` updated; range APIs added
+to the queued boundary API check. This is still unverified Lean draft work.
+
+The origin-degree dependency olean was built successfully (previously absent),
+and the active serial batch is now checking
+`PoleBlindPoissonBoundariesHavePositiveOriginDegree.lean`. Before that check,
+the cap Mellin calculation was normalized with targeted `simp only` so all
+negative-Euler occurrences are rewritten. No other origin olean rebuild is allowed.
+
+A new bounded-flow candidate is recorded in
+`bounded-meyer-flow-orbits-live-in-critical-top-jets.md`. Corpus search found
+exact centered full-jet packet transport, the generic `opNorm_le_hsNorm`, and
+the fixed Xi-avoiding source eigenfunctional criterion. The candidate selects
+critical highest jets, not the reduced critical values seen by positive linear
+degrees. Its necessity can use induction on jet order and a bounded affine
+function argument, avoiding a general exponential-polynomial asymptotic input.
+
+The bounded full-Hasse orbit candidate has a complete paper proof and moved to
+`../2-fully-proven/bounded-meyer-flow-orbits-live-in-critical-top-jets.md`.
+The exact jet flow formula and first-column recovery close the argument:
+induction kills every off-line jet; bounded affine first-order shear kills
+all but the highest critical jet; rowwise unit phases give the converse HS
+isometry with no infinite-sum interchange. The paper also classifies products
+and the trace radical on this carrier, proves unconditional nontriviality via
+Hardy's critical point, and shows that the existing single Xi-avoiding compact
+source has bounded full-HS orbit iff RH and simplicity. No Lean draft yet.
+
+The first pole-blind actual check failed only at two `rw [q]` calls on a local
+let value. Both now use the explicit convolution expression before rewriting.
+Its Mellin identity audited with standard axioms; the dependent endpoints await
+the corrected check. The previous serial batch stopped, so its surface and API
+checks never ran. New owned serial batch is session 50477 and records each
+completed file's exit code in `/tmp/qii-verify-current.tsv`; independent checks
+continue after failures. Queue: pole-blind actual; missing Q olean then surface
+actual; consolidated `/tmp/QIICohomologyAndHilbertAPIs.lean`; smooth-kernel draft;
+L2 cyclicity draft; generic HS trace-defect draft. No parallel owned Lean process.
+
+Four API scratches were consolidated into one narrow import/check file; originals
+remain until the combined check passes, then can be removed. The combined file
+also checks the exact full-jet flow, Hilbert–Schmidt, and finite-sum APIs needed
+by the new source draft. `/tmp/QIIMeyerHilbertSchmidtSourceDraft.lean` now isolates
+actual HS admission, first-column factorial jet bounds, centered raw jet transport,
+and the character/affine forms after lower coefficients vanish. The faithful
+reserve draft imports this planned base module instead of duplicating admission.
+This new source draft is not yet queued or checked.
+
+`PoleBlindPoissonBoundariesHavePositiveOriginDegree.lean` passed the corrected
+actual-file check. All five transitive axiom audits use only propext,
+Classical.choice, and Quot.sound. Temporary prints removed; card moved to
+stage 3; ACS umbrella and README wired. The active queue has advanced to the
+previously missing numerical-radical dependency olean for the actual surface.
+
+`/tmp/QIIMeyerBoundedCenteredOrbitsDraft.lean` now contains a complete unrun
+proof of the four-way bounded-jet/critical-top/HS-bounded/HS-isometric law and
+the fixed Xi-avoiding source and global simple-critical criteria. It imports
+the planned source HS base. Product, trace-radical, and nontriviality corollaries
+from the paper still need their exact Lean endpoints; the draft is not queued.
+
+The numerical-radical olean attempt failed: its vertical fibre simplification
+had lost `zero_add`, while the horizontal fibre simplification retained that
+unused rewrite. The rewrite is now correctly placed. No Q olean was produced;
+the surface check was therefore skipped. The previously certified Q source
+requires a fresh actual-file check of this corrected text before the missing
+olean attempt is retried. The active batch continues with consolidated APIs
+and independent drafts. This is a local proof-rewrite repair, not a new premise.
+
+The consolidated cohomology/Hilbert API audit passed, including range restriction,
+full raw jet flow, first-column recovery, HS operator norm, and exact lp norm APIs.
+Its three dependency axiom audits use only standard kernel axioms. Five superseded
+API files and completed search outputs were removed. The existing off-line
+multiple-zero census gives bounds, not exclusion; no stronger premise is imported.
+The HS source base and sharp convolution algebra now have actual candidate files
+with endpoint axiom audits, still unchecked and unwired. The corrected numerical
+radical file has its nine endpoint audits restored for the required fresh check.
+
+The smooth finite-reading draft reached a smoothness-index coercion error at
+`(hvd i).of_le le_top`: the target is `2 ≤ (⊤ : ℕ∞)` coerced into `WithTop ℕ∞`.
+Its next check must use an explicit cast of the inner order comparison. No mathematical
+premise changes. The bounded-orbit algebra and trace-radical corollaries have an
+unrun draft `/tmp/QIIMeyerCriticalTopAlgebraDraft.lean`; no new result is certified.
+
+Serial session 50477 finished: generic HS trace-defect draft passed; smooth-kernel
+draft failed only the explicit smoothness-order cast; L2 cyclicity failed three
+zero-function coercions. Both local repairs are in actual candidate files with
+endpoint audits. The generic HS leaf now also has an actual candidate file,
+awaiting its required actual-file audit. No failed or scratch-only result is wired.
+
+Current owned serial audit is session 15986, logged in `/tmp/qii-verify-next.tsv`.
+Queue: corrected Q actual then missing Q olean and actual surface; actual HS source
+base; actual sharp convolution algebra; corrected smooth-kernel actual; actual
+HS trace defect; corrected L2 cyclicity actual; missing prime and quadratic oleans
+for the actual global majorant and cone-geometry importers, then those actual files.
+Missing-olean checks preserve existing files. There is one owned Lean process.
+
+Boundary-density paper and draft now also classify all continuous nonlinear
+cohomological readings into a Hausdorff target: they are constant. The linear
+reporter result accordingly has a general Hausdorff topological-vector target.
+No completion or positive Hodge interface is assumed.
+
+The corrected actual numerical-radical file passed session 15986. All nine
+endpoint axiom audits again contain only propext, Classical.choice, and Quot.sound.
+The stage-3 repair note is resolved. Its missing olean build is now active for
+the surface importer; temporary axiom prints remain until that build finishes.
+
+The existing faithful compact-open comparison was located in
+`DeningerMeyerXiSpectralInclusion` and its injection in `DeningerMeyerGlobalXiSynthesis`.
+Boundary density now has an unrun companion draft excluding continuous recovery
+of this comparison or of the full faithful convolution operator from origin L2,
+even by nonlinear maps: `/tmp/QIIOriginHilbertCohomologyObstructionDraft.lean`.
+The full-HS reserve flow corollaries are drafted in
+`/tmp/QIIMeyerHilbertReserveFlowRigidityDraft.lean`: local boundedness equals local
+invariance equals critical highest jets; global invariance equals the reserve
+cone RR criterion. All remain paper proofs and unverified drafts.
+
+The corrected numerical-radical olean build also passed and the missing artifact
+now exists. Never rebuild it. Temporary axiom prints were removed; the actual
+source intersection surface is now checking in session 15986.
+
+The bounded-source restricted surface has a dependency-closed paper proof and
+complete unrun draft `/tmp/QIIBoundedMeyerSourceSurfaceDraft.lean`. Its card moved
+to `../2-fully-proven/bounded-meyer-source-surface-has-riemann-roch-and-bezout.md`.
+It proves actual restricted RR/Bézout/ampleness; numerical/principal equality
+and pointedness exactly under critical simplicity; full-carrier coverage
+exactly under RH plus simplicity; cofinal source witnesses of trace one from
+the existing unconditional simple-critical census. Existing restriction APIs
+are reused. The focused API file `/tmp/QIIRestrictedSurfaceAPIs.lean` is unrun
+and not in current serial queue. This is a restricted theorem, not full Q-II.
+
+The actual source-surface audit failed only in `trace_sub_left`: simplification
+did not normalize the restricted real `(-1)` action on the complex source.
+It now uses the explicit equality `neg_one_smul ℝ g` before rewriting. Eight
+printed endpoints had standard axioms; the negative packet endpoint inherited
+the failed proof, so the entire file remains unverified and unwired pending
+a corrected actual check. No surface olean was produced. The serial batch has
+advanced to the actual HS source base.
+
+The next infinite-degree question is now explicit in
+`positive-meyer-degrees-and-the-infinite-source-tail.md`: finite packet
+classification does not justify passing an arbitrary degree through an
+infinite expansion. A complete paper finite-to-global energy decomposition
+is recorded in `../2-fully-proven/finite-critical-projectors-split-positive-meyer-energy.md`.
+Actual critical causal projectors split every positive degree square into
+its finite weighted-value energy and a nonnegative residual. The residual
+vanishing/automatic-continuity question remains open; no analytic input is
+assumed. The projector product and orthogonality Lean endpoints are not drafted.
+
+`MeyerHilbertSchmidtSource.lean` passed its actual-file check, with four
+standard-axiom endpoint audits. Temporary prints and one certified unreachable
+`ring` were removed; ACS umbrella/README wired; the stage-3 foundation card is
+`meyer-hilbert-schmidt-admission-and-triangular-flow.md`. Its stale /tmp source
+copy was removed. `MeyerBoundedCenteredOrbits.lean` is now an actual unverified
+importer with six endpoint audits; this authorizes the missing HS-source olean
+when that dependent audit is queued. It is not in the active 15986 queue.
+
+The finite critical energy decomposition now has a complete unrun draft:
+`/tmp/QIIFiniteCriticalProjectorEnergyDraft.lean`. It contains exact causal block
+selection, central multiplication, sharp compatibility, genuine zero mixed
+products, degree decomposition/saturation, and the finite weighted energy
+formula and bound. The formula uses the existing full-jet slot type and keeps
+only order zero, equivalent to one term per selected critical point. The
+infinite-tail question remains active with no continuity or zero-tail premise.
+
+`MeyerSharpConvolutionAlgebra.lean` passed actual-file verification and all
+four endpoint axiom audits use only standard kernel axioms. Prints removed;
+ACS umbrella/README wired; stage-3 card `arithmetic-sharp-and-positive-degree-radicals.md`
+added; obsolete /tmp algebra source removed. `MeyerFiniteJetAlgebra.lean` is
+now an actual unverified importer with seven endpoint audits. Its future check
+requires the missing sharp-algebra and faithful-positive-degree oleans; the
+latter must first pass after the corrected surface. This file is not in the
+active 15986 queue, which now checks the corrected smooth-kernel actual file.
+
+The smooth-source actual check still failed on the WithTop smoothness cast and
+pointwise finite-sum elaboration. A narrow API scratch now isolates both fixes;
+that file must pass before transferring the verified expressions. Generic
+`HTGeometry/HilbertSchmidtTraceDefect.lean` and
+`HTGeometry/L2TranslationCyclicity.lean` both passed actual-file checks and all
+standard-axiom audits. Prints removed, HT umbrella wired, standalone stage-3
+cards added. Their obsolete scratch copies were removed. The actual candidate
+`PoissonBoundariesAreDenseInOriginMass.lean` now imports the certified cyclicity
+leaf, with six endpoint audits; its missing dependency olean is authorized.
+It remains unchecked and unwired. The global-majorant queue 15986 continues.
+
+Session 15986 closed: the majorant cone geometry failed only a no-progress
+simplification on the negative source degrees. Its other printed endpoints
+were standard-axiom proofs. That call and an unused zero-map rewrite were
+removed. The global majorant now reduces its pole-moment map by reflexivity
+and normalizes the realTests zero coercion explicitly. Both corrected actual
+files are queued in active session 51780. The new algebraic character proof
+uses a public point-degree product lemma now placed in the pending point-degree
+leaf, avoiding duplicate declarations.
+
+The first check in 51780 verified `ENat.natCast_le_of_coe_top_le_withTop` but
+found that finite function sums need a pointwise function-extensional equality
+before `ContDiff.sum`. That explicit equality is now in the API scratch and
+both smooth-source copies. Their next check remains pending; the active script
+has advanced to the restricted-surface and original-inverse API audit.
+
+The arbitrary finite-packet positive energy decomposition is now fully drafted
+in `/tmp/QIIFiniteCriticalProjectorEnergyDraft.lean`: exact critical-value
+weights, zero mixed degree, energy splitting, bound and saturation without
+requiring all selected points critical. The original class-level zero-product
+statement remains specific to reflection-stable/critical packets.
+
+A new complete paper survivor is
+`../2-fully-proven/faithful-reserves-on-the-bounded-meyer-surface.md`: on the
+bounded carrier, faithful-reserve RR and equality with the ordinary degree
+cone are exactly critical simplicity, while reserve-flow invariance always
+holds there. No multiple critical zero is claimed to exist. It prevents
+transferring a full-carrier equivalence to a restricted carrier without its
+domain condition. This new leaf has no Lean draft yet.

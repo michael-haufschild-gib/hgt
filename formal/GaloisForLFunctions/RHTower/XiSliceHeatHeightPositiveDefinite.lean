@@ -1,26 +1,34 @@
 import GaloisForLFunctions.RHTower.XiSliceHeatTransferPositivity
+import GaloisForLFunctions.RHTower.XiLaguerreOffLineNeighbourhood
 
 /-!
-# Heated Ξ-slice coefficients are positive-definite functions of the height
+# Even slice coefficients are positive-definite functions of the height
 
-For even order `2k` and heat `λ ≥ 0`, the heated slice coefficient is
+Every even-order slice coefficient used by routes WD and LA is a Fourier transform, in the variable
+`u + v`, of a nonnegative integrable weight on `ℝ²`:
 
-  `T_{2k}(λ, 0, t) = ∫∫ w(u, v) e^{it(u+v)}`,
-  `w(u, v) = Φ(u) Φ(v) e^{λ(u−v)²/2} (u − v)^{2k}/(2k)! ≥ 0`,
+* the heated Ξ-slice coefficient at abscissa `x₀`,
+  `T_{2k}(λ, x₀, t) = ∫∫ Φ(u)Φ(v) e^{λ(u−v)²/2} e^{x₀(u−v)} (u−v)^{2k}/(2k)! e^{it(u+v)}`, `λ ≥ 0`
+  (`xiSliceHeatTransfer`);
+* the slice moment of any super-exponential kernel `g`, in particular of the de Bruijn–Newman flow
+  `g = Φ e^{μu²}`, `M_{2k}(g, x₀, t) = ∫∫ g(u)g(v) e^{x₀(u−v)} (u−v)^{2k}/(2k)! e^{it(u+v)}`
+  (`kernelSliceMoment`).
 
-a Fourier transform in the variable `u + v` of a nonnegative integrable weight
-(`xiSliceHeatTransfer_eq_integral`).  Hence, as a function of the height `t`:
+For such a transform `T(t) = ∫ w(p) e^{it(p₁+p₂)}` with `w ≥ 0` (`heightTransform`):
 
-* **positive definiteness** (`sum_sum_mul_xiSliceHeatTransfer_nonneg`): for heights `t_i` and complex
-  `a_i`, `Σ_{i,j} a_i conj(a_j) T_{2k}(λ, 0, t_i − t_j) = ∫ w |Σ_i a_i e^{it_i(u+v)}|² ≥ 0`;
-* **central domination** (`norm_xiSliceHeatTransfer_le_central`): `|T_{2k}(λ, 0, t)| ≤ T_{2k}(λ, 0, 0)`,
-  and the central value is real and strictly positive (`xiSliceHeatTransfer_central_pos`).
+* **positive definiteness** (`sum_sum_mul_heightTransform_nonneg`): for heights `t_i` and complex
+  `a_i`, `Σ_{i,j} a_i conj(a_j) T(t_i − t_j) = ∫ w |Σ_i a_i e^{it_i(p₁+p₂)}|² ≥ 0`;
+* **central domination** (`norm_heightTransform_le_central`): `|T(t)| ≤ T(0) = ∫ w`, and `T(0) > 0`
+  when `w` is continuous and positive somewhere (`heightTransform_central_pos`).
 
-At `λ = 0` this is the Ξ-slice itself (`norm_xiSliceCoeff_le_central`): every Taylor coefficient
-`c_{2k}(t)` of `ξ(½+x+it) ξ(½−x+it)` satisfies `|c_{2k}(t)| ≤ c_{2k}(0)`, the corresponding Taylor
-coefficient of `ξ(½+x)²`, which is positive.  So the negative part of every slice coefficient, at
-every height and every heat, is bounded by the central coefficient: RH asks the coefficient
-function to lie in the positive cone, and it already lies in the Bochner cone.
+At `λ = 0`, `x₀ = 0` this is the Ξ-slice itself (`norm_xiSliceCoeff_le_central`): every Taylor
+coefficient `c_{2k}(t)` of `ξ(½+x+it) ξ(½−x+it)` satisfies `|c_{2k}(t)| ≤ c_{2k}(0)`, the
+corresponding Taylor coefficient of `ξ(½+x)²`, which is positive.  For `k = 1` this says that the first Laguerre
+expression of `Ξ` is maximal at the origin (`norm_laguerre_XiC_le_central`):
+`|Ξ'(t)² − Ξ(t)Ξ''(t)| ≤ Ξ'(0)² − Ξ(0)Ξ''(0)`.  So the negative part of every
+even slice coefficient, at every height, heat and abscissa, is bounded by the central coefficient:
+RH asks the coefficient function to lie in the positive cone, and it already lies in the Bochner
+cone.
 -/
 
 open Complex MeasureTheory Filter Topology
@@ -30,64 +38,23 @@ namespace RHTower.DeBruijn
 
 noncomputable section
 
-/-- The nonnegative weight of the even heated slice coefficient,
-`w(u, v) = Φ(u) Φ(v) e^{λ(u−v)²/2} (u − v)^{2k}/(2k)!` (with the trivial centre factor
-`e^{0·(u−v)}` kept so that the transfer integrand matches definitionally). -/
-def sliceHeatWeight (lam : ℝ) (k : ℕ) (p : ℝ × ℝ) : ℝ :=
-  riemannKernelReal p.1 * riemannKernelReal p.2 * Real.exp (lam * (p.1 - p.2) ^ 2 / 2) *
-    Real.exp (0 * (p.1 - p.2)) * ((p.1 - p.2) ^ (2 * k) / (2 * k).factorial)
+/-! ## Fourier transforms of nonnegative weights along `u + v` -/
 
-theorem sliceHeatWeight_nonneg (lam : ℝ) (k : ℕ) (p : ℝ × ℝ) : 0 ≤ sliceHeatWeight lam k p := by
-  have h1 := riemannKernel_superExp.nonneg p.1
-  have h2 := riemannKernel_superExp.nonneg p.2
-  have h3 : 0 ≤ (p.1 - p.2) ^ (2 * k) := (even_two_mul k).pow_nonneg _
-  unfold sliceHeatWeight
-  positivity
+section Abstract
 
-theorem continuous_sliceHeatWeight (lam : ℝ) (k : ℕ) : Continuous (sliceHeatWeight lam k) := by
-  have := continuous_riemannKernelReal
-  unfold sliceHeatWeight
-  fun_prop
+variable {w : ℝ × ℝ → ℝ}
 
-/-- The weight is dominated by the integrable product majorant of `Φ e^{λu²}`. -/
-theorem integrable_sliceHeatWeight {lam : ℝ} (hlam : 0 ≤ lam) (k : ℕ) :
-    Integrable (sliceHeatWeight lam k) := by
-  have hD := integrable_prod_majorant (riemannKernel_superExp.mul_exp_sq hlam) 1
-  refine hD.mono' (continuous_sliceHeatWeight lam k).aestronglyMeasurable
-    (Eventually.of_forall fun p => ?_)
-  rw [Real.norm_of_nonneg (sliceHeatWeight_nonneg lam k p)]
-  have hΦ : 0 ≤ riemannKernelReal p.1 * riemannKernelReal p.2 :=
-    mul_nonneg (riemannKernel_superExp.nonneg _) (riemannKernel_superExp.nonneg _)
-  have hsq : Real.exp (lam * (p.1 - p.2) ^ 2 / 2) ≤
-      Real.exp (lam * p.1 ^ 2) * Real.exp (lam * p.2 ^ 2) := by
-    rw [← Real.exp_add]
-    exact Real.exp_le_exp.mpr (by nlinarith [sq_nonneg (p.1 + p.2)])
-  have hpow := abs_sub_pow_div_mul_exp_le 0 p.1 p.2 (2 * k)
-  rw [abs_zero, zero_add, (even_two_mul k).pow_abs] at hpow
-  calc sliceHeatWeight lam k p
-      = riemannKernelReal p.1 * riemannKernelReal p.2 * Real.exp (lam * (p.1 - p.2) ^ 2 / 2) *
-          ((p.1 - p.2) ^ (2 * k) / (2 * k).factorial * Real.exp (0 * (p.1 - p.2))) := by
-        unfold sliceHeatWeight; ring
-    _ ≤ riemannKernelReal p.1 * riemannKernelReal p.2 *
-          (Real.exp (lam * p.1 ^ 2) * Real.exp (lam * p.2 ^ 2)) *
-          (Real.exp (1 * |p.1|) * Real.exp (1 * |p.2|)) := by
-        gcongr
-        exact mul_nonneg (div_nonneg ((even_two_mul k).pow_nonneg _) (by positivity))
-          (Real.exp_pos _).le
-    _ = _ := by ring
+/-- The height transform `T(t) = ∫ w(p) e^{it(p₁+p₂)}` of a weight on `ℝ²`. -/
+def heightTransform (w : ℝ × ℝ → ℝ) (t : ℝ) : ℂ :=
+  ∫ p : ℝ × ℝ, (w p : ℂ) * cexp (I * t * (p.1 + p.2))
 
-/-- The even heated slice coefficient is the Fourier transform of its weight in `u + v`. -/
-theorem xiSliceHeatTransfer_eq_integral (lam t : ℝ) (k : ℕ) :
-    xiSliceHeatTransfer lam 0 t (2 * k) =
-      ∫ p : ℝ × ℝ, (sliceHeatWeight lam k p : ℂ) * cexp (I * t * (p.1 + p.2)) := rfl
-
-theorem integrable_sliceHeatWeight_mul_cexp {lam : ℝ} (hlam : 0 ≤ lam) (k : ℕ) (t : ℝ) (c : ℂ) :
-    Integrable fun p : ℝ × ℝ =>
-      c * ((sliceHeatWeight lam k p : ℂ) * cexp (I * t * (p.1 + p.2))) := by
-  refine ((integrable_sliceHeatWeight hlam k).norm.const_mul ‖c‖).mono' ?_
-    (Eventually.of_forall fun p => ?_)
-  · have := continuous_sliceHeatWeight lam k
-    exact Continuous.aestronglyMeasurable (by fun_prop)
+theorem integrable_const_mul_weight_mul_cexp (hwi : Integrable w) (t : ℝ) (c : ℂ) :
+    Integrable fun p : ℝ × ℝ => c * ((w p : ℂ) * cexp (I * t * (p.1 + p.2))) := by
+  refine (hwi.norm.const_mul ‖c‖).mono' ?_ (Eventually.of_forall fun p => ?_)
+  · have hw : AEStronglyMeasurable (fun p => (w p : ℂ)) volume :=
+      Complex.continuous_ofReal.comp_aestronglyMeasurable hwi.aestronglyMeasurable
+    exact aestronglyMeasurable_const.mul
+      (hw.mul (Continuous.aestronglyMeasurable (by fun_prop)))
   · rw [norm_mul, norm_mul, Complex.norm_real, norm_cexp_I_mul_ofReal_add, mul_one]
 
 /-- The pointwise Hermitian square: `Σ_{i,j} a_i conj(a_j) e^{i(t_i−t_j)σ} = |Σ_i a_i e^{it_iσ}|²`. -/
@@ -104,22 +71,22 @@ theorem sum_sum_mul_cexp_eq_normSq {ι : Type*} (s : Finset ι) (a : ι → ℂ)
   push_cast
   ring_nf
 
-/-- **Positive definiteness in the height.**  For every heat `λ ≥ 0`, order `2k`, heights `t_i`
-and coefficients `a_i`, `Σ_{i,j} a_i conj(a_j) T_{2k}(λ, 0, t_i − t_j) ≥ 0`. -/
-theorem sum_sum_mul_xiSliceHeatTransfer_nonneg {lam : ℝ} (hlam : 0 ≤ lam) (k : ℕ)
+/-- **Positive definiteness in the height.** -/
+theorem sum_sum_mul_heightTransform_nonneg (hw0 : ∀ p, 0 ≤ w p) (hwi : Integrable w)
     {ι : Type*} (s : Finset ι) (a : ι → ℂ) (τ : ι → ℝ) :
-    0 ≤ ∑ i ∈ s, ∑ j ∈ s, a i * conj (a j) * xiSliceHeatTransfer lam 0 (τ i - τ j) (2 * k) := by
-  simp_rw [xiSliceHeatTransfer_eq_integral, ← integral_const_mul]
+    0 ≤ ∑ i ∈ s, ∑ j ∈ s, a i * conj (a j) * heightTransform w (τ i - τ j) := by
+  unfold heightTransform
+  simp_rw [← integral_const_mul]
   have hinner : ∀ i, ∑ j ∈ s, ∫ p : ℝ × ℝ, a i * conj (a j) *
-      ((sliceHeatWeight lam k p : ℂ) * cexp (I * ((τ i - τ j : ℝ) : ℂ) * (p.1 + p.2))) =
+      ((w p : ℂ) * cexp (I * ((τ i - τ j : ℝ) : ℂ) * (p.1 + p.2))) =
       ∫ p : ℝ × ℝ, ∑ j ∈ s, a i * conj (a j) *
-        ((sliceHeatWeight lam k p : ℂ) * cexp (I * ((τ i - τ j : ℝ) : ℂ) * (p.1 + p.2))) :=
-    fun i => (integral_finsetSum s fun j _ => integrable_sliceHeatWeight_mul_cexp hlam k _ _).symm
+        ((w p : ℂ) * cexp (I * ((τ i - τ j : ℝ) : ℂ) * (p.1 + p.2))) :=
+    fun i => (integral_finsetSum s fun j _ => integrable_const_mul_weight_mul_cexp hwi _ _).symm
   rw [Finset.sum_congr rfl fun i _ => hinner i, ← integral_finsetSum s fun i _ =>
-    integrable_finsetSum s fun j _ => integrable_sliceHeatWeight_mul_cexp hlam k _ _]
+    integrable_finsetSum s fun j _ => integrable_const_mul_weight_mul_cexp hwi _ _]
   have e : (fun p : ℝ × ℝ => ∑ i ∈ s, ∑ j ∈ s, a i * conj (a j) *
-      ((sliceHeatWeight lam k p : ℂ) * cexp (I * ((τ i - τ j : ℝ) : ℂ) * (p.1 + p.2)))) =
-      fun p => ((sliceHeatWeight lam k p *
+      ((w p : ℂ) * cexp (I * ((τ i - τ j : ℝ) : ℂ) * (p.1 + p.2)))) =
+      fun p => ((w p *
         Complex.normSq (∑ i ∈ s, a i * cexp (I * τ i * ((p.1 + p.2 : ℝ) : ℂ))) : ℝ) : ℂ) := by
     funext p
     have h := sum_sum_mul_cexp_eq_normSq s a τ (p.1 + p.2)
@@ -131,32 +98,96 @@ theorem sum_sum_mul_xiSliceHeatTransfer_nonneg {lam : ℝ} (hlam : 0 ≤ lam) (k
     ring
   rw [e, integral_complex_ofReal]
   exact Complex.zero_le_real.mpr (integral_nonneg fun p =>
-    mul_nonneg (sliceHeatWeight_nonneg lam k p) (Complex.normSq_nonneg _))
+    mul_nonneg (hw0 p) (Complex.normSq_nonneg _))
 
-/-- The central heated coefficient is the total mass of the weight. -/
-theorem xiSliceHeatTransfer_central_eq (lam : ℝ) (k : ℕ) :
-    xiSliceHeatTransfer lam 0 0 (2 * k) = ((∫ p : ℝ × ℝ, sliceHeatWeight lam k p : ℝ) : ℂ) := by
-  rw [xiSliceHeatTransfer_eq_integral, ← integral_complex_ofReal]
+/-- The central value is the total mass of the weight. -/
+theorem heightTransform_zero (w : ℝ × ℝ → ℝ) :
+    heightTransform w 0 = ((∫ p : ℝ × ℝ, w p : ℝ) : ℂ) := by
+  rw [heightTransform, ← integral_complex_ofReal]
   refine integral_congr_ae (Eventually.of_forall fun p => ?_)
   simp
 
-/-- **Central domination.**  `|T_{2k}(λ, 0, t)| ≤ T_{2k}(λ, 0, 0)` at every height. -/
-theorem norm_xiSliceHeatTransfer_le_central (lam t : ℝ) (k : ℕ) :
-    ‖xiSliceHeatTransfer lam 0 t (2 * k)‖ ≤ (xiSliceHeatTransfer lam 0 0 (2 * k)).re := by
-  rw [xiSliceHeatTransfer_central_eq, Complex.ofReal_re, xiSliceHeatTransfer_eq_integral]
+/-- **Central domination.**  `|T(t)| ≤ T(0)`. -/
+theorem norm_heightTransform_le_central (hw0 : ∀ p, 0 ≤ w p) (t : ℝ) :
+    ‖heightTransform w t‖ ≤ (heightTransform w 0).re := by
+  rw [heightTransform_zero, Complex.ofReal_re, heightTransform]
   refine (norm_integral_le_integral_norm _).trans (le_of_eq (integral_congr_ae
     (Eventually.of_forall fun p => ?_)))
   dsimp only
   rw [norm_mul, Complex.norm_real, norm_cexp_I_mul_ofReal_add, mul_one,
-    Real.norm_of_nonneg (sliceHeatWeight_nonneg lam k p)]
+    Real.norm_of_nonneg (hw0 p)]
 
-/-- The weight is positive somewhere: near the diagonal point `(a, 0)` with `Φ(a) > 0`, `a ≠ 0`. -/
-theorem exists_sliceHeatWeight_pos (lam : ℝ) (k : ℕ) : ∃ p, 0 < sliceHeatWeight lam k p := by
-  obtain ⟨a, ha, ha0⟩ : ∃ a : ℝ, 0 < riemannKernelReal a ∧ a ≠ 0 := by
-    have h1 : ∀ᶠ a in 𝓝[≠] (0 : ℝ), 0 < riemannKernelReal a :=
-      nhdsWithin_le_nhds ((continuous_riemannKernelReal.tendsto 0).eventually
-        (lt_mem_nhds riemannKernel_superExp.pos_zero))
-    exact (h1.and self_mem_nhdsWithin).exists
+/-- **The central value is strictly positive** for a continuous weight positive somewhere. -/
+theorem heightTransform_central_pos (hw0 : ∀ p, 0 ≤ w p) (hwi : Integrable w)
+    (hwc : Continuous w) (hpos : ∃ p, 0 < w p) : 0 < (heightTransform w 0).re := by
+  rw [heightTransform_zero, Complex.ofReal_re]
+  obtain ⟨p, hp⟩ := hpos
+  refine (integral_pos_iff_support_of_nonneg hw0 hwi).mpr ?_
+  exact hwc.isOpen_support.measure_pos volume ⟨p, hp.ne'⟩
+
+end Abstract
+
+/-- A point `a ≠ 0` with `Φ(a) > 0`. -/
+theorem exists_riemannKernelReal_pos_ne_zero : ∃ a : ℝ, 0 < riemannKernelReal a ∧ a ≠ 0 := by
+  have h1 : ∀ᶠ a in 𝓝[≠] (0 : ℝ), 0 < riemannKernelReal a :=
+    nhdsWithin_le_nhds ((continuous_riemannKernelReal.tendsto 0).eventually
+      (lt_mem_nhds riemannKernel_superExp.pos_zero))
+  exact (h1.and self_mem_nhdsWithin).exists
+
+/-! ## Heated Ξ-slice coefficients at abscissa `x₀` -/
+
+/-- The weight of the even heated slice coefficient at abscissa `x₀`,
+`Φ(u) Φ(v) e^{λ(u−v)²/2} e^{x₀(u−v)} (u − v)^{2k}/(2k)!`. -/
+def sliceHeatWeight (lam x₀ : ℝ) (k : ℕ) (p : ℝ × ℝ) : ℝ :=
+  riemannKernelReal p.1 * riemannKernelReal p.2 * Real.exp (lam * (p.1 - p.2) ^ 2 / 2) *
+    Real.exp (x₀ * (p.1 - p.2)) * ((p.1 - p.2) ^ (2 * k) / (2 * k).factorial)
+
+theorem xiSliceHeatTransfer_eq_heightTransform (lam x₀ t : ℝ) (k : ℕ) :
+    xiSliceHeatTransfer lam x₀ t (2 * k) = heightTransform (sliceHeatWeight lam x₀ k) t := rfl
+
+theorem sliceHeatWeight_nonneg (lam x₀ : ℝ) (k : ℕ) (p : ℝ × ℝ) :
+    0 ≤ sliceHeatWeight lam x₀ k p := by
+  have h1 := riemannKernel_superExp.nonneg p.1
+  have h2 := riemannKernel_superExp.nonneg p.2
+  have h3 : 0 ≤ (p.1 - p.2) ^ (2 * k) := (even_two_mul k).pow_nonneg _
+  unfold sliceHeatWeight
+  positivity
+
+theorem continuous_sliceHeatWeight (lam x₀ : ℝ) (k : ℕ) :
+    Continuous (sliceHeatWeight lam x₀ k) := by
+  have := continuous_riemannKernelReal
+  unfold sliceHeatWeight
+  fun_prop
+
+/-- The weight is dominated by the integrable product majorant of `Φ e^{λu²}`. -/
+theorem integrable_sliceHeatWeight {lam : ℝ} (hlam : 0 ≤ lam) (x₀ : ℝ) (k : ℕ) :
+    Integrable (sliceHeatWeight lam x₀ k) := by
+  have hD := integrable_prod_majorant (riemannKernel_superExp.mul_exp_sq hlam) (|x₀| + 1)
+  refine hD.mono' (continuous_sliceHeatWeight lam x₀ k).aestronglyMeasurable
+    (Eventually.of_forall fun p => ?_)
+  rw [Real.norm_of_nonneg (sliceHeatWeight_nonneg lam x₀ k p)]
+  have hsq : Real.exp (lam * (p.1 - p.2) ^ 2 / 2) ≤
+      Real.exp (lam * p.1 ^ 2) * Real.exp (lam * p.2 ^ 2) := by
+    rw [← Real.exp_add]
+    exact Real.exp_le_exp.mpr (by nlinarith [sq_nonneg (p.1 + p.2)])
+  have hpow := abs_sub_pow_div_mul_exp_le x₀ p.1 p.2 (2 * k)
+  rw [(even_two_mul k).pow_abs] at hpow
+  calc sliceHeatWeight lam x₀ k p
+      = riemannKernelReal p.1 * riemannKernelReal p.2 * Real.exp (lam * (p.1 - p.2) ^ 2 / 2) *
+          ((p.1 - p.2) ^ (2 * k) / (2 * k).factorial * Real.exp (x₀ * (p.1 - p.2))) := by
+        unfold sliceHeatWeight; ring
+    _ ≤ riemannKernelReal p.1 * riemannKernelReal p.2 *
+          (Real.exp (lam * p.1 ^ 2) * Real.exp (lam * p.2 ^ 2)) *
+          (Real.exp ((|x₀| + 1) * |p.1|) * Real.exp ((|x₀| + 1) * |p.2|)) := by
+        have hΦ : 0 ≤ riemannKernelReal p.1 * riemannKernelReal p.2 :=
+          mul_nonneg (riemannKernel_superExp.nonneg _) (riemannKernel_superExp.nonneg _)
+        gcongr
+        exact mul_nonneg (div_nonneg ((even_two_mul k).pow_nonneg _) (by positivity))
+          (Real.exp_pos _).le
+    _ = _ := by ring
+
+theorem exists_sliceHeatWeight_pos (lam x₀ : ℝ) (k : ℕ) : ∃ p, 0 < sliceHeatWeight lam x₀ k p := by
+  obtain ⟨a, ha, ha0⟩ := exists_riemannKernelReal_pos_ne_zero
   refine ⟨(a, 0), ?_⟩
   have h0 := riemannKernel_superExp.pos_zero
   have hp : 0 < (a - 0) ^ (2 * k) := by
@@ -164,38 +195,124 @@ theorem exists_sliceHeatWeight_pos (lam : ℝ) (k : ℕ) : ∃ p, 0 < sliceHeatW
   unfold sliceHeatWeight
   positivity
 
-/-- **The central heated coefficient is strictly positive.** -/
-theorem xiSliceHeatTransfer_central_pos {lam : ℝ} (hlam : 0 ≤ lam) (k : ℕ) :
-    0 < (xiSliceHeatTransfer lam 0 0 (2 * k)).re := by
-  rw [xiSliceHeatTransfer_central_eq, Complex.ofReal_re]
-  obtain ⟨p, hp⟩ := exists_sliceHeatWeight_pos lam k
-  refine (integral_pos_iff_support_of_nonneg (sliceHeatWeight_nonneg lam k)
-    (integrable_sliceHeatWeight hlam k)).mpr ?_
-  exact (continuous_sliceHeatWeight lam k).isOpen_support.measure_pos volume ⟨p, hp.ne'⟩
+/-- **Heated slice coefficients are positive definite in the height**, at every heat `λ ≥ 0`,
+abscissa `x₀` and even order `2k`. -/
+theorem sum_sum_mul_xiSliceHeatTransfer_nonneg {lam : ℝ} (hlam : 0 ≤ lam) (x₀ : ℝ) (k : ℕ)
+    {ι : Type*} (s : Finset ι) (a : ι → ℂ) (τ : ι → ℝ) :
+    0 ≤ ∑ i ∈ s, ∑ j ∈ s, a i * conj (a j) * xiSliceHeatTransfer lam x₀ (τ i - τ j) (2 * k) :=
+  sum_sum_mul_heightTransform_nonneg (sliceHeatWeight_nonneg lam x₀ k)
+    (integrable_sliceHeatWeight hlam x₀ k) s a τ
 
-/-! ## The unheated slice -/
+/-- **Central domination of heated slice coefficients:** `|T_{2k}(λ, x₀, t)| ≤ T_{2k}(λ, x₀, 0)`,
+and the central value is strictly positive. -/
+theorem norm_xiSliceHeatTransfer_le_central {lam : ℝ} (hlam : 0 ≤ lam) (x₀ t : ℝ) (k : ℕ) :
+    ‖xiSliceHeatTransfer lam x₀ t (2 * k)‖ ≤ (xiSliceHeatTransfer lam x₀ 0 (2 * k)).re ∧
+      0 < (xiSliceHeatTransfer lam x₀ 0 (2 * k)).re :=
+  ⟨norm_heightTransform_le_central (sliceHeatWeight_nonneg lam x₀ k) t,
+    heightTransform_central_pos (sliceHeatWeight_nonneg lam x₀ k)
+      (integrable_sliceHeatWeight hlam x₀ k) (continuous_sliceHeatWeight lam x₀ k)
+      (exists_sliceHeatWeight_pos lam x₀ k)⟩
 
-theorem xiSliceHeatTransfer_heat_zero (t : ℝ) (n : ℕ) :
-    xiSliceHeatTransfer 0 0 t n = xiSliceCoeff t n := by
-  rw [← kernelSliceMoment_riemannKernel_eq_xiSliceCoeff]
-  unfold xiSliceHeatTransfer kernelSliceMoment
-  refine integral_congr_ae (Eventually.of_forall fun p => ?_)
-  simp
+/-! ## Slices of super-exponential kernels: the de Bruijn–Newman flow -/
 
-/-- **Slice coefficients are positive definite in the height.** -/
+section Kernel
+
+variable {g : ℝ → ℝ}
+
+/-- The weight of the even slice moment of a kernel `g` at abscissa `x₀`. -/
+def kernelSliceWeight (g : ℝ → ℝ) (x₀ : ℝ) (k : ℕ) (p : ℝ × ℝ) : ℝ :=
+  g p.1 * g p.2 * Real.exp (x₀ * (p.1 - p.2)) * ((p.1 - p.2) ^ (2 * k) / (2 * k).factorial)
+
+theorem kernelSliceMoment_eq_heightTransform (g : ℝ → ℝ) (x₀ t : ℝ) (k : ℕ) :
+    kernelSliceMoment g x₀ t (2 * k) = heightTransform (kernelSliceWeight g x₀ k) t := rfl
+
+theorem kernelSliceWeight_nonneg (hg : SuperExpKernel g) (x₀ : ℝ) (k : ℕ) (p : ℝ × ℝ) :
+    0 ≤ kernelSliceWeight g x₀ k p := by
+  have h1 := hg.nonneg p.1
+  have h2 := hg.nonneg p.2
+  have h3 : 0 ≤ (p.1 - p.2) ^ (2 * k) := (even_two_mul k).pow_nonneg _
+  unfold kernelSliceWeight
+  positivity
+
+theorem continuous_kernelSliceWeight (hg : SuperExpKernel g) (x₀ : ℝ) (k : ℕ) :
+    Continuous (kernelSliceWeight g x₀ k) := by
+  have := hg.continuous
+  unfold kernelSliceWeight
+  fun_prop
+
+theorem integrable_kernelSliceWeight (hg : SuperExpKernel g) (x₀ : ℝ) (k : ℕ) :
+    Integrable (kernelSliceWeight g x₀ k) := by
+  refine (integrable_prod_majorant hg (|x₀| + 1)).mono'
+    (continuous_kernelSliceWeight hg x₀ k).aestronglyMeasurable (Eventually.of_forall fun p => ?_)
+  rw [Real.norm_of_nonneg (kernelSliceWeight_nonneg hg x₀ k p)]
+  have hpow := abs_sub_pow_div_mul_exp_le x₀ p.1 p.2 (2 * k)
+  rw [(even_two_mul k).pow_abs] at hpow
+  have hgg : 0 ≤ g p.1 * g p.2 := mul_nonneg (hg.nonneg _) (hg.nonneg _)
+  calc kernelSliceWeight g x₀ k p
+      = g p.1 * g p.2 * ((p.1 - p.2) ^ (2 * k) / (2 * k).factorial *
+          Real.exp (x₀ * (p.1 - p.2))) := by unfold kernelSliceWeight; ring
+    _ ≤ g p.1 * g p.2 * (Real.exp ((|x₀| + 1) * |p.1|) * Real.exp ((|x₀| + 1) * |p.2|)) :=
+        mul_le_mul_of_nonneg_left hpow hgg
+    _ = _ := by ring
+
+theorem exists_kernelSliceWeight_pos (hg : SuperExpKernel g) (x₀ : ℝ) (k : ℕ) :
+    ∃ p, 0 < kernelSliceWeight g x₀ k p := by
+  obtain ⟨a, ha, ha0⟩ : ∃ a : ℝ, 0 < g a ∧ a ≠ 0 := by
+    have h1 : ∀ᶠ a in 𝓝[≠] (0 : ℝ), 0 < g a :=
+      nhdsWithin_le_nhds ((hg.continuous.tendsto 0).eventually (lt_mem_nhds hg.pos_zero))
+    exact (h1.and self_mem_nhdsWithin).exists
+  refine ⟨(a, 0), ?_⟩
+  have h0 := hg.pos_zero
+  have hp : 0 < (a - 0) ^ (2 * k) := by
+    rw [sub_zero, pow_mul]; exact pow_pos (by positivity) k
+  unfold kernelSliceWeight
+  positivity
+
+/-- **Kernel slice moments are positive definite in the height.**  For `g = Φ e^{μu²}`, `μ ≥ 0`,
+these are the Taylor coefficients at `x₀` of the slices of the de Bruijn–Newman flow `H_μ`
+(`kernelSliceMoment_heat_eq`). -/
+theorem sum_sum_mul_kernelSliceMoment_nonneg (hg : SuperExpKernel g) (x₀ : ℝ) (k : ℕ)
+    {ι : Type*} (s : Finset ι) (a : ι → ℂ) (τ : ι → ℝ) :
+    0 ≤ ∑ i ∈ s, ∑ j ∈ s, a i * conj (a j) * kernelSliceMoment g x₀ (τ i - τ j) (2 * k) :=
+  sum_sum_mul_heightTransform_nonneg (kernelSliceWeight_nonneg hg x₀ k)
+    (integrable_kernelSliceWeight hg x₀ k) s a τ
+
+/-- **Central domination of kernel slice moments.** -/
+theorem norm_kernelSliceMoment_le_central (hg : SuperExpKernel g) (x₀ t : ℝ) (k : ℕ) :
+    ‖kernelSliceMoment g x₀ t (2 * k)‖ ≤ (kernelSliceMoment g x₀ 0 (2 * k)).re ∧
+      0 < (kernelSliceMoment g x₀ 0 (2 * k)).re :=
+  ⟨norm_heightTransform_le_central (kernelSliceWeight_nonneg hg x₀ k) t,
+    heightTransform_central_pos (kernelSliceWeight_nonneg hg x₀ k)
+      (integrable_kernelSliceWeight hg x₀ k) (continuous_kernelSliceWeight hg x₀ k)
+      (exists_kernelSliceWeight_pos hg x₀ k)⟩
+
+end Kernel
+
+/-! ## The unheated Ξ-slice -/
+
+/-- **Ξ-slice coefficients are positive definite in the height.** -/
 theorem sum_sum_mul_xiSliceCoeff_nonneg (k : ℕ) {ι : Type*} (s : Finset ι) (a : ι → ℂ)
     (τ : ι → ℝ) :
     0 ≤ ∑ i ∈ s, ∑ j ∈ s, a i * conj (a j) * xiSliceCoeff (τ i - τ j) (2 * k) := by
-  simpa only [xiSliceHeatTransfer_heat_zero] using
-    sum_sum_mul_xiSliceHeatTransfer_nonneg le_rfl k s a τ
+  simpa only [kernelSliceMoment_riemannKernel_eq_xiSliceCoeff] using
+    sum_sum_mul_kernelSliceMoment_nonneg riemannKernel_superExp 0 k s a τ
 
 /-- **Every Ξ-slice coefficient is dominated by the central one.**  `|c_{2k}(t)| ≤ c_{2k}(0)` and
 `c_{2k}(0) > 0`, where `c_n(t)` are the Taylor coefficients of `ξ(½+x+it) ξ(½−x+it)` at `x = 0`. -/
 theorem norm_xiSliceCoeff_le_central (t : ℝ) (k : ℕ) :
     ‖xiSliceCoeff t (2 * k)‖ ≤ (xiSliceCoeff 0 (2 * k)).re ∧ 0 < (xiSliceCoeff 0 (2 * k)).re := by
-  simpa only [xiSliceHeatTransfer_heat_zero] using
-    And.intro (norm_xiSliceHeatTransfer_le_central 0 t k) (xiSliceHeatTransfer_central_pos
-      le_rfl k)
+  simpa only [kernelSliceMoment_riemannKernel_eq_xiSliceCoeff] using
+    norm_kernelSliceMoment_le_central riemannKernel_superExp 0 t k
+
+/-- **The first Laguerre expression of `Ξ` is maximal at the origin:**
+`|Ξ'(t)² − Ξ(t)Ξ''(t)| ≤ Ξ'(0)² − Ξ(0)Ξ''(0)`, and the right side is positive. -/
+theorem norm_laguerre_XiC_le_central (t : ℝ) :
+    ‖deriv XiC t ^ 2 - XiC t * deriv (deriv XiC) t‖ ≤
+        (deriv XiC 0 ^ 2 - XiC 0 * deriv (deriv XiC) 0).re ∧
+      0 < (deriv XiC 0 ^ 2 - XiC 0 * deriv (deriv XiC) 0).re := by
+  have h := norm_xiSliceCoeff_le_central t 1
+  rw [show 2 * 1 = 2 from rfl, xiSliceCoeff_two_eq_laguerre, xiSliceCoeff_two_eq_laguerre] at h
+  simpa using h
 
 end
 

@@ -33,14 +33,18 @@ Answer.
    `M(x) ≪ x^{1−η}` (Θ < 1), and the cross-scale form carries nothing beyond the long-window
    oscillation. The archimedean constant is linear in `K` (`Q ≤ K d`), so with `K = e^{c√log Q}`
    the two regimes overlap: no modulus between `Q^δ` and `2Q` is uncovered.
-4. Ceiling: the receiver's cross-scale obstruction lives on the band `Q ≤ P^{1+o(1)}`, where it is
-   the zero-free region. Summing the diagonal saving into the receiver at fixed damping `ε < 1/2`
-   needs a power saving there, i.e. Θ < 1 (BVI §3.15), the opening's stated first rung.
+4. Ceiling, now exact: a power saving for the statistic of the Möbius windows on any band
+   `Q^{1−ε} ≤ d ≤ Q^{1+ε}` is equivalent to `Θ < 1` (`balancedStatisticPowerSaving_iff`). The
+   same holds for the centred prime row (`centredPrimeBandPowerSaving_iff`). The
+   Möbius row inverts both kernels (`μ ⋆ 1 = δ`), so the statistic of the tail `n > X` at any
+   modulus `d` is `(π²/24) d² Σ_{n>X} μ(n)/n² + O(d log² d)`; below-diagonal kernels have zero
+   residue mean and cannot see it. Opening A has no rung strictly between the unconditional
+   results and quasi-RH.
 
 ## Gates
 - [x] 0 → 1 in-progress
 - [x] 1 → 2 fully-proven
-- [x] 2 → 3 formalized: all six modules check with `lake --old env lean`, headline `#print axioms`
+- [x] 2 → 3 formalized: all thirteen modules check with `lake --old env lean`, headline `#print axioms`
   = `[propext, Classical.choice, Quot.sound]`, wired into `GaloisForLFunctions.BezoutValuationIncidence`
 - [ ] 3 → 4 publication-ready
 
@@ -80,6 +84,22 @@ Answer.
   `crossScale_allModuli_moebius_and_centredPrime_le_rpow` (dual norm and cross-scale form, all
   moduli), `exists_kernelStatisticAll_moebius_and_centredPrime_le_everyModulus` (headline: uniform
   `C (d²/Q) e^{−c√log Q}` at every `Q^δ ≤ d ≤ 2Q`).
+- `BezoutValuationIncidence/TheMoebiusRowInvertsTheCrossScaleKernel` — `hasSum_moebius_mul_kernelTerm`
+  (`Σ_n μ(n) ℓ_d(n) = (d−1)(d−3)/4 − (6/π²) m_d` at every modulus).
+- `BezoutValuationIncidence/TheMoebiusTailStatisticAtLargeModuli` — `abs_sq_mul_kernelTerm_sub_le`
+  (`|n² ℓ_d(n) − (π²/24) d²| ≤ 5nd(1 + log d)`), `abs_kernelValue_sub_sum_le_of_windows` (the tail as
+  a sum of window statistics).
+- `BezoutValuationIncidence/TheBalancedStatisticForcesAZeroFreeStrip` —
+  `zetaZeroAbscissa_lt_one_of_balancedStatisticPowerSaving`, `zetaZeroAbscissa_le_of_moebiusSqSum`.
+- `BezoutValuationIncidence/TheBalancedStatisticIsTheQuasiRiemannHypothesis` —
+  `balancedStatisticPowerSaving_of_lt_one`, `balancedStatisticPowerSaving_iff` (headline).
+- `BezoutValuationIncidence/TheCentredPrimeBandForcesAZeroFreeStrip` — `abs_primeBlock_le`,
+  `abs_primeBlockStep_le`, `abs_sum_Ioc_sub_tsum_le_of_blocks` (the chain of blocks),
+  `abs_sum_Ioc_sq_mul_le` (Abel), `zetaZeroAbscissa_le_of_psiRemainder_le`.
+- `BezoutValuationIncidence/TheCentredPrimeBandIsTheQuasiRiemannHypothesis` —
+  `zetaZeroAbscissa_lt_one_of_centredPrimeBandPowerSaving`.
+- `BezoutValuationIncidence/TheCentredPrimeBandFromAZeroFreeStrip` —
+  `centredPrimeBandPowerSaving_of_lt_one`, `centredPrimeBandPowerSaving_iff` (headline, prime row).
 
 ## Paper proof
 Minor-arc law (p prime, ζ^p = 1, ζ ≠ 1, 1 ≤ U < p):

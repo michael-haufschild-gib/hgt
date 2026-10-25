@@ -41,15 +41,16 @@ minus one.
   by the moving cofactor sum and pole subtraction.
 - **Status:** Dependency-closed paper proof. The generic existence and uniqueness
   module passed Lean and its transitive axiom audit uses only `propext`,
-  `Classical.choice`, and `Quot.sound`. White-noise specialization, final
-  source checks, and umbrella wiring remain pending. This no-go is not yet closed.
+  `Classical.choice`, and `Quot.sound`. The full white-noise specialization also
+  passed its scratch check and standard-axiom audit. White-noise umbrella wiring
+  is complete; final source checks remain pending. This no-go is not yet closed.
 
 ## Lean declarations
 
 - `HTGeometry.IsPSDKernel.antipodalExtension`
 - `HTGeometry.antipodalKernelExtension_unique`
 - `HTGeometry.existsUnique_antipodalKernelExtension`
-- Draft: `ArithmeticDefectRigidity.whiteNoise_has_unique_antipodal_extension`
+- `ArithmeticDefectRigidity.whiteNoise_has_unique_antipodal_extension`
 
 Files: `HTGeometry/AntipodalKernelExtension.lean` and
 `ArithmeticDefectRigidity/WhiteNoiseAndAntipodalEscapeData.lean`.

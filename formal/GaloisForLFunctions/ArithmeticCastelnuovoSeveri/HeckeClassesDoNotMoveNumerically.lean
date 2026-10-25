@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.NumericalEquivalenceOnTheScalingSurface
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SourceRiemannRochAwayFromTheLowFrequencyDivisor
 
 /-!
 # Scaling and Hecke motion are not principal numerical equivalence
@@ -7,9 +8,13 @@ A compact source cannot be an eigenfunction of a nonzero translation. Scaling ei
 therefore lie in the fibre plane. Nontrivial normalized Adams operations have zero fixed space;
 the unnormalized Hecke operator fixes exactly the vertical fibre line. Nondegeneracy of the
 scaling intersection form makes these also the exact numerically fixed spaces.
+Distinct scaling motions of a nonzero compact source are linearly independent, so no finite
+Adams or Hecke combination supplies a nontrivial principal numerical relation either.
 -/
 
 noncomputable section
+
+open scoped BigOperators
 
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
@@ -20,16 +25,26 @@ theorem scalingAction_eigen_iff {t : ℝ} (ht : t ≠ 0) (c : ℝ) (x : ScalingC
       (Real.exp (-t / 2) - c) * x.2.1 = 0 := by
   constructor
   · intro h
-    obtain ⟨r, hr⟩ :=
-      GaloisForLFunctions.ArithmeticIncidencePositivity.exists_radius_of_hasCompactSupport x.2.2.2.2
-    have hshift : ∀ u : ℝ, x.2.2.1 u = c * x.2.2.1 (u + t) := by
-      intro u
-      have hu := congrArg (fun z : ScalingCycle => z.2.2.1 (u + t)) h
-      change x.2.2.1 (u + t - t) = c * x.2.2.1 (u + t) at hu
-      rw [show u + t - t = u by ring] at hu
-      exact hu
-    have hf : x.2.2 = 0 := Subtype.ext
-      (GaloisForLFunctions.ArithmeticIncidencePositivity.eq_zero_of_eq_const_mul_shift ht hr hshift)
+    have hf : x.2.2 = 0 := by
+      by_contra hne
+      have hfun : x.2.2.1 ≠ 0 := fun hz => hne (Subtype.ext hz)
+      let s : Fin 2 → ℝ := fun i => if i = 0 then 0 else t
+      have hs : Function.Injective s := by
+        intro i j hij
+        fin_cases i <;> fin_cases j <;> simp_all [s, Ne.symm ht]
+      have hli := linearIndependent_real_translate (g := x.2.2.1) hs x.2.2.2.2 hfun
+      let a : Fin 2 → ℝ := fun i => if i = 0 then c else -1
+      have hrel : ∑ i : Fin 2, a i • (fun u : ℝ => x.2.2.1 (u - s i)) = 0 := by
+        rw [Fin.sum_univ_two]
+        funext u
+        have hu := congrArg (fun z : ScalingCycle => z.2.2.1 u) h
+        change x.2.2.1 (u - t) = c * x.2.2.1 u at hu
+        change c * x.2.2.1 (u - 0) + (-1) * x.2.2.1 (u - t) = 0
+        rw [sub_zero, hu]
+        ring
+      have ha := (Fintype.linearIndependent_iff.mp hli) a hrel 1
+      change (-1 : ℝ) = 0 at ha
+      norm_num at ha
     have ha := congrArg Prod.fst h
     have hb := congrArg (fun z : ScalingCycle => z.2.1) h
     change Real.exp (t / 2) * x.1 = c * x.1 at ha
@@ -124,5 +139,71 @@ theorem heckeCorrespondence_numerically_fixed_iff {q : ℝ} (hq : 0 < q) (hq1 : 
     (∀ y : ScalingCycle, scalingSurface.pair (heckeCorrespondence q x) y = scalingSurface.pair x y) ↔
       ∃ b : ℝ, x = b • scalingSurface.V := by
   rw [scalingSurface_numerical_equivalence_iff_eq, heckeCorrespondence_fixed_iff hq hq1]
+
+private def compactSourceProjection : ScalingCycle →ₗ[ℝ] (ℝ → ℝ) where
+  toFun x := x.2.2.1
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+
+/-- Every finite distinct-scale orbit of a class with nonzero compact source is free. -/
+theorem scalingAction_orbit_linearIndependent {N : ℕ} {t : Fin N → ℝ}
+    (ht : Function.Injective t) (x : ScalingCycle) (hx : x.2.2 ≠ 0) :
+    LinearIndependent ℝ (fun i => scalingAction (t i) x) := by
+  have hsource : x.2.2.1 ≠ 0 := fun h => hx (Subtype.ext h)
+  have hli := linearIndependent_real_translate (g := x.2.2.1) ht x.2.2.2.2 hsource
+  rw [Fintype.linearIndependent_iff]
+  intro c hc
+  have hproj (i : Fin N) :
+      compactSourceProjection (scalingAction (t i) x) = fun u => x.2.2.1 (u - t i) := rfl
+  have hs := congrArg compactSourceProjection hc
+  simp only [map_sum, map_smul, map_zero, hproj] at hs
+  exact (Fintype.linearIndependent_iff.mp hli) c hs
+
+/-- A nonzero compact source admits no finite numerical relation among distinct scaling motions. -/
+theorem scalingAction_sum_numerically_trivial_iff {N : ℕ} {t : Fin N → ℝ}
+    (ht : Function.Injective t) (x : ScalingCycle) (hx : x.2.2 ≠ 0) (c : Fin N → ℝ) :
+    (∀ y : ScalingCycle,
+      scalingSurface.pair (∑ i, c i • scalingAction (t i) x) y = 0) ↔ ∀ i, c i = 0 := by
+  rw [scalingSurface_pairing_nondegenerate]
+  constructor
+  · exact (Fintype.linearIndependent_iff.mp (scalingAction_orbit_linearIndependent ht x hx)) c
+  · intro hc
+    simp only [hc, zero_smul, Finset.sum_const_zero]
+
+/-- Distinct positive Adams scales are linearly independent on every nonzero compact source. -/
+theorem adamsOp_orbit_linearIndependent {N : ℕ} {q : Fin N → ℝ}
+    (hq : ∀ i, 0 < q i) (hqi : Function.Injective q)
+    (x : ScalingCycle) (hx : x.2.2 ≠ 0) :
+    LinearIndependent ℝ (fun i => adamsOp (q i) x) := by
+  apply scalingAction_orbit_linearIndependent (x := x) (hx := hx)
+  intro i j hij
+  apply hqi
+  exact (Real.exp_log (hq i)).symm.trans ((congrArg Real.exp hij).trans (Real.exp_log (hq j)))
+
+/-- Unnormalized Hecke scales retain the same finite orbit freedom. -/
+theorem heckeCorrespondence_orbit_linearIndependent {N : ℕ} {q : Fin N → ℝ}
+    (hq : ∀ i, 0 < q i) (hqi : Function.Injective q)
+    (x : ScalingCycle) (hx : x.2.2 ≠ 0) :
+    LinearIndependent ℝ (fun i => heckeCorrespondence (q i) x) := by
+  rw [Fintype.linearIndependent_iff]
+  intro c hc
+  simp only [heckeCorrespondence, LinearMap.smul_apply, smul_smul] at hc
+  have hh := (Fintype.linearIndependent_iff.mp (adamsOp_orbit_linearIndependent hq hqi x hx))
+    (fun i => c i * Real.sqrt (q i)) hc
+  intro i
+  exact (mul_eq_zero.mp (hh i)).resolve_right (Real.sqrt_pos.mpr (hq i)).ne'
+
+/-- No nonzero finite Hecke combination of a nonzero compact source is a principal numerical relation. -/
+theorem heckeCorrespondence_sum_numerically_trivial_iff {N : ℕ} {q : Fin N → ℝ}
+    (hq : ∀ i, 0 < q i) (hqi : Function.Injective q)
+    (x : ScalingCycle) (hx : x.2.2 ≠ 0) (c : Fin N → ℝ) :
+    (∀ y : ScalingCycle,
+      scalingSurface.pair (∑ i, c i • heckeCorrespondence (q i) x) y = 0) ↔ ∀ i, c i = 0 := by
+  rw [scalingSurface_pairing_nondegenerate]
+  constructor
+  · exact (Fintype.linearIndependent_iff.mp
+      (heckeCorrespondence_orbit_linearIndependent hq hqi x hx)) c
+  · intro hc
+    simp only [hc, zero_smul, Finset.sum_const_zero]
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

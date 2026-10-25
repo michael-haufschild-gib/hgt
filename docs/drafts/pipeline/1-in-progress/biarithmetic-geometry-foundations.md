@@ -28,20 +28,20 @@ The `hgtl7` skill is expressly excluded. No numerical experiments or computation
 
 | Source requirement | Required evidence | Status |
 |---|---|---|
-| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; seven verified leaves and clean main-declaration audits |
+| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; thirty-three direct-checked and axiom-audited leaves |
 | Horizon-complete objects; sign visibility | Exact signed finite-horizon laws and quantitative period/prefix comparison | Open |
 | Truncated affine representation theory | Source-defined action, boundary calculus, classification/calibration | Open |
-| A1–A2: paid ideal annihilates escape; hull inclusion | Actual receiver theorem, not an assumed ideal inclusion | Open |
-| A3: regular-variation dilation law | Precise subsequence hypotheses proved for source or exact unconditional classification | Open |
-| A4: moving translations and covariance | Construction at critical scale with controlled boundaries | Open |
-| Golden module and white-noise battery | Actual signed-data checks, not just positivity/dilation checks | Open |
-| B1: payment cohomology and Euler characteristic | Well-posed definition and exact relation to corpus box defect | Literal dimension identity refuted; all-aperture degree/torsion survivor formalized |
+| A1–A2: paid ideal annihilates escape; hull inclusion | Actual receiver theorem, not an assumed ideal inclusion | Proved for every actual common Gram limit; ADR foundations reused, four interfaces directly checked and axiom-audited |
+| A3: regular-variation dilation law | Precise subsequence hypotheses proved for source or exact unconditional classification | Actual source open; scalar logarithmic-chirp tangent family paper-classified, Lean pending |
+| A4: moving translations and covariance | Construction at a corrected scale with controlled boundaries | Proposed square-root scale collapses for actual source; ADR has formalized the stronger source-power collapse, with exact capped costs and uniform budgets; nonzero action at a corrected scale remains open |
+| Golden module and white-noise battery | Actual signed-data checks, not just positivity/dilation checks | Golden inverse-zeta digital-module derivation on a separate in-progress card; antipodality-only white-noise exclusion refuted by ADR's unique positive extension |
+| B1: payment cohomology and Euler characteristic | Well-posed definition and exact relation to corpus box defect | Literal dimension identity refuted; degree/torsion survivor formalized; one-prime graph-norm complex and Fredholm phases paper-proved |
 | B2: Mayer–Vietoris and prime-power jumps | Exact sequence with source-defined restriction maps | Open |
 | B3–B4: duality and certified-window vanishing | Independent duality and source comparison | Open |
 | C1–C2: Stepanov calibration and replacement identity | Finite-field calibration and signed integer source test | Open |
 | Quantitative Class III | New off-diagonal signed estimate, or sharp obstruction plus positive survivor | Open |
 | Infinite-rank coercivity | Precise transfer law or complete countermodel classification | Open |
-| Bounded-conductor amplification | Well-defined operation class; proof or counterexample | Open |
+| Bounded-conductor amplification | Well-defined operation class; proof or counterexample | General question open; exact fixed-determinant cubic trace classification and golden failure paper-proved |
 | Orientation | Ring-selective polarization with independent sign proof | Open |
 | K1 | Curve cohomology dimension `2g`, Serre duality, Weil calibration | Open |
 | K2 | Golden, Beurling, shifted-pair, Estermann, parity, node-4/node-6 tests | Open |
@@ -62,13 +62,37 @@ The `hgtl7` skill is expressly excluded. No numerical experiments or computation
 | `SharedBudgetDescent` | Direct leaf passed | Main declarations clean |
 | `PaidKernelsVanishOnEscape` | Direct leaf passed with reduced imports | Main declarations clean |
 | `ExactPrefixVisibility` | Direct leaf passed, including full covariance-fibre criterion | Main declarations clean |
-| Contractive Wiener synthesis | Reuse concurrently developed AOT `BoundedMultiplicativeSequencesActOnWienerAlgebras`; own duplicate draft removed | Dependency audit pending |
-| Actual Wiener representation and nonempty hull | Reuse new ADR `TheCofactorLimitIsAWienerModule`; duplicate scratch removed | Dependency audit pending |
-| Cyclic diagonal-scaling countermodel | Complete paper proof; `/tmp/BiarithmeticCyclicModel.lean` under verification | Pending |
+| Contractive Wiener synthesis | Reuse concurrently developed AOT `BoundedMultiplicativeSequencesActOnWienerAlgebras`; own duplicate draft removed | Covered by transitive universal-interface audit |
+| Actual Wiener representation and nonempty hull | Reuse ADR `TheCofactorLimitIsAWienerModule`; dependency olean now available; duplicate scratch removed | Covered by transitive universal-interface audit |
+| `DiagonalScalingCountermodel` | Direct leaf passed, including cyclicity and stationary repair | Main declarations clean |
+| `FiniteAffineUnitaryRigidity` | Direct leaf passed for all real expansion factors greater than one | Main declarations clean |
+| `PrimePowerTransitionGroups` | Direct leaf passed, including all-aperture kernel formula | Main declarations clean |
+| `PrimeLogJumpDomain` | Direct repository leaf passed; stage-3 card | Main declarations clean |
+| `FiniteAffineQuotient` | Direct repository leaf passed; stage-3 card | Main declarations clean |
+| `AffineInvariantSubspaces` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
+| `WeightedBaseFiveDigits` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `WeightedDigitMoments` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `WeightedDigitEnumeration` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
+| `DigitPronicBlocks` | Direct repository leaf passed; stage-3 card | Three main declarations clean |
+| `WeightedDigitPronicEnergy` | Direct repository leaf passed; stage-3 card | Three main declarations clean |
+| `DigitCofactorConvolution` | Direct repository leaf passed; stage-3 card | Three main declarations clean |
+| `CofactorPaymentCriterion` | Direct repository leaf passed; stage-3 card | Two main declarations clean |
+| `FiveTowerKernelLift` | Direct repository leaf passed; stage-3 card | Three main declarations clean |
+| `PrimeFivePaymentCriterion` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `FiniteGeometricConvolution` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
+| `GeometricTowerDigitReceiver` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `GoldenInverseSeries` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
+| `GoldenArithmeticSource` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
+| `GoldenSourceAdmission` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `GoldenPrimePayment` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `IntrinsicGoldenSeries` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
+| `CriticalUnpaidSequence` | Direct repository leaf passed; stage-3 card | Seven main declarations clean |
+| `PronicEnergyDomain` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
+| `PaidSourcePerturbations` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `FullWienerAnnihilation` | Consolidated ADR interfaces and direct repository leaf passed | Four chosen and universal declarations clean |
 
-Main-declaration axiom audits for all seven checked leaves report only `propext`,
-`Classical.choice`, and `Quot.sound`. The six later leaves were audited together in an
-isolated source-copy driver; each leaf also passed its direct source check. The literal-B1
+Completed main-declaration axiom audits for thirty-three checked leaves report only `propext`,
+`Classical.choice`, and `Quot.sound`. Audits used isolated source-copy drivers; each leaf also passed its direct source check. The literal-B1
 no-go is closed in `5-failed/biarithmetic-literal-dimension-euler-characteristic.md`; its
 positive survivor and exact prefix visibility now have separate stage-3 cards.
 
@@ -167,7 +191,7 @@ comparison remain separate obligations.
 
 ### Full Wiener representation and annihilation: dependency-closed paper argument
 
-[PROVED HERE, paper; Lean pending] The actual common cofactor Gram limit has a Hilbert
+[PROVED IN ADR/AOT; reused and transitively audited] The actual common cofactor Gram limit has a Hilbert
 realization with total vectors `δ_j`, `||δ_1||=1`, and bounded maps
 `V_p δ_j=δ_(pj)`, `||V_p||≤p^(-1/2)`. These follow from the actual packet contraction,
 complexification, and completion. The developing corpus leaf
@@ -190,6 +214,20 @@ Thus the paid ideal is contained in the operator kernel, with no assertion that 
 truncations exist. Hull inclusion reverses ideal inclusion. The representation kernel is
 proper because the unit fixes the nonzero cyclic vector; the commutative Banach-algebra
 character theorem makes its Bohr hull nonempty.
+
+### Full Wiener bridge through single covariance series
+
+[PROVED IN ADR; programme interfaces directly checked and audited] Double Gram summation is unnecessary for annihilation. Fix one
+cofactor `k`. The normalized pairing of the full repairing action with row `k` tends to zero:
+its first pronic norm is bounded, its second is at most `sqrt(E_T)/sqrt(k)`, and `E_T` escapes.
+At each horizon the pairing is exactly the finite sum `Σ_j g(j) K_T(j,k)`, because rows with
+`j>T` vanish. The bound `|K_T(j,k)|≤1/sqrt(jk)` gives a summable single-series majorant for
+any critical Wiener kernel. Dominated convergence therefore gives `Σ_j g(j)K(j,k)=0`.
+Apply this separately to the paid real and imaginary components of a complex kernel. The
+coefficient series for the actual Wiener representation identifies this sum with the inner
+product of its receiver image against `δ_k`. Density of the cofactor vectors forces that image
+to vanish; commutativity and cyclicity then force the full operator to vanish. This proves the
+same ideal and hull inclusions without asserting that any finite truncation is paid.
 
 ### Distinct meanings of first cohomology
 
@@ -276,7 +314,7 @@ asserting an isometry law inside one member.
 
 ### A finite countermodel to inferring off-diagonal scaling from diagonal scaling
 
-[PROVED HERE, paper; Lean pending] Let `B(x,x)=x₀²+x₁²+x₂²+(2/3)x₀x₁` on `R³`, and let
+[PROVED HERE, paper and Lean; transitive axiom audit clean] Let `B(x,x)=x₀²+x₁²+x₂²+(2/3)x₀x₁` on `R³`, and let
 `P` cyclically permute the three coordinate vectors. Then
 `(2/3)|x|² ≤ B(x,x) ≤ (4/3)|x|²`, so every power of `P` distorts `B` by at most a factor 2.
 Put `u_j=P^(v₂(j))e₀`, `V_p=p⁻¹P^(v₂(p))` and `K(j,k)=B(u_j,u_k)/(jk)`.
@@ -294,8 +332,8 @@ operator contraction also fails.
 This model does not claim realization by the actual receiver or a regularly varying scalar
 row. It isolates exactly the invalid implication from diagonal scaling plus the existing Gram
 constraints to the full A3 identity. Its positive survivor is a complete explicit cyclic
-representation with a uniform distortion bound and exact orbit norms. Formalize the exact
-countermodel and its positive representation before retiring that implication.
+representation with a uniform distortion bound and exact orbit norms. The exact countermodel, positive cyclic representation, and stationary repair are now
+formalized and axiom-audited. The failed-route card retires only this coarse-data implication.
 
 There is also an exact stationary repair of this model. Average the three forms
 `B(P^r x,P^r y)`, `r=0,1,2`. The resulting Gram matrix has diagonal 1 and every off-diagonal
@@ -306,6 +344,16 @@ would still need a separate realization theorem; a convex mixture need not be on
 subsequence limit.
 
 ### Scalar regular variation with a moving covariance phase
+
+The stronger, smooth source `v(n)=n^β cos((log n)²)`, `1/2<β<1`, now has a
+dependency-closed paper proof in
+`../2-fully-proven/biarithmetic-logarithmic-chirp-tangents.md`. It has bounded increments,
+regularly varying pronic energy of index `2β-1`, and an explicit compact family of
+infinite-rank tangents, none individually homogeneous. An exact positive boundary-loss
+identity constructs the cyclic dilation representations. Haar averaging produces a
+homogeneous diagonal kernel which is not an individual tangent. Lean formalization and
+full novelty audit remain open. The discontinuous source below is an earlier, weaker
+candidate, not an additional theorem or source assumption.
 
 [NEW CANDIDATE; paper and novelty audits required before any theorem claim] A stronger test
 than the finite cyclic model is the continuous scalar row `v(x)=x^β q(log x)`, where
@@ -338,7 +386,7 @@ requires information about the actual translation action beyond its existence an
 The moving-translation lower scale from C9 is necessary for survival, not a sufficient
 nontriviality theorem.
 
-There is a sharp finite-dimensional constraint: a continuous unitary real-translation group
+[PROVED HERE, paper and Lean; transitive axiom audit clean] There is a sharp finite-dimensional constraint: a continuous unitary real-translation group
 covariant with an invertible dilation of factor `p>1` is trivial. Conjugacy gives
 `tr(U_t)=tr(U_(t/p))`; iteration and continuity give `tr(U_t)=dim H`. In an orthonormal basis,
 `Σ ||U_t e_i-e_i||²=2 dim H-2 Re tr(U_t)=0`, so `U_t=1`. This proves that a nontrivial unitary
@@ -349,6 +397,28 @@ For a regularly varying scalar power row, translations of order `sqrt(E_T)` can 
 in normalized energy: this scale is `o(T)`, whereas the dominant row mass lies near `T`.
 Any proposed A4 construction must retain this calibration rather than identifying the
 necessary threshold with guaranteed survival.
+
+The concurrent ADR paper card `../2-fully-proven/square-root-energy-translations-still-disappear.md`
+now proves more for the actual source. Its increments lie in an interval of width one, giving
+`|A(n+k)-A(n)-A(k)|<=min(n,k)` and exact pronic envelope `2k-H_k`. Recentered translations
+therefore have a linear budget; sublinearity sharpens it to little-oh linear. Every recentered
+shift with bounded `k/E` disappears, while raw shifts with bounded `k^2/E` disappear. Resetting
+only the origin has a distinct possible boundary component and cannot be conflated with
+recentring. The owning programme has since formalized the source-power strengthening in
+`ArithmeticDefectRigidity/TheSourcePowerSavingControlsMovingSuccessors.lean`.
+Its source statements and proofs were inspected together with the stage-3 card
+`../3-formalized/the-source-power-saving-enlarges-the-invisible-translation-scale.md`.
+The actual Vinogradov--Korobov saving gives `A(n)=o(n^(1-epsilon))`. Exact capped
+pronic costs then give recentered energy `o(k^(1-epsilon))` and raw energy
+`o(k^(2(1-epsilon)))`, uniformly in the observation horizon. Thus bounded ratios of
+these powers to escaping energy still force normalized displacement to zero.
+The owner records direct source checks and standard-axiom audits. This is the
+stronger positive source theorem exposed by the failed scale proposal; it does
+not construct a nonzero translation action at any larger scale.
+The narrow nontrivial-survival proposal is closed with this positive survivor in
+`../5-failed/biarithmetic-square-root-translation-selectivity.md`. Bare A4 existence
+can still be satisfied by the identity action; the failed inference is selectivity
+at that scale, not existence of a trivial covariant family.
 
 ### Infinite positive jump weights: a domain test
 
@@ -386,6 +456,26 @@ representation domain argument is consistent with this condition. The corpus's
 `PrimeBurnolPrimeLevyMeasure` has infinite mass at jumps `1/p→0`, so it is not contradicted
 by a theorem about jumps `log p→∞`.
 
+### Canonical arithmetic transition groups
+
+[PROVED HERE, paper and Lean; transitive axiom audit clean] The period orders `L_N=lcm(1,...,N)` form a divisibility
+filtration. Consequently the reduction maps `Z/L_(N+1)Z → Z/L_N Z` are surjective, with
+cyclic kernel of order `J_N=L_(N+1)/L_N`. The exact logarithmic jump is
+`log J_N=ψ(N+1)-ψ(N)=Λ(N+1)`. Hence the transition kernel is trivial off prime powers
+and has order `p` at `N+1=p^r`, `r≥1`. This is a canonical finite-group filtration on
+the actual integer horizon, distinguishing the nodes 4 and 6.
+
+At a fixed positive horizon `N`, reduction to `Z/NZ` also gives the exact sequence
+`0 → Z/Q_N Z → Z/L_N Z → Z/N Z → 0`, where the injection multiplies by `N`.
+Thus the torsion datum in the Euler formula is a concrete kernel. The quotient `Q_N`
+itself need not form a divisibility filtration, so its transition maps cannot be borrowed
+from those of `L_N` without proof. These elementary cyclic-group sequences calibrate B2;
+they are not asserted to be Mayer–Vietoris for a payment complex. The construction uses
+the actual prime-power divisor, but supplies no orientation or cancellation estimate.
+The period groups can have more than polynomially many elements. Their symbolic group orders
+calibrate the arithmetic charge; they are not horizon-complete observation objects or a
+justification for enumerating a full period.
+
 ## External calibration
 
 - Joachim Cuntz, *C*-algebras associated with the ax+b-semigroup over N*,
@@ -396,8 +486,9 @@ by a theorem about jumps `log p→∞`.
 
 ## No-go closure
 
-The literal ordinary-dimension B1 identity is retired, with its exact all-aperture
-degree/torsion survivor paper-proved and Lean-audited. Its separate failed-route card records
+The literal ordinary-dimension B1 identity and the diagonal-to-mixed homogeneity implication
+are retired. Their all-aperture degree/torsion and stationary-metric survivors are paper-proved
+and Lean-audited. Its separate failed-route card records
 the precise scope. Every further negative result must likewise carry its strongest
 dependency-closed positive survivor and a separate paper and Lean audit.
 
@@ -406,3 +497,296 @@ dependency-closed positive survivor and a separate paper and Lean audit.
 At entry, unrelated edits existed in ADR, AOG, BVI, RHTower and research reports. Preserve them.
 New work is confined to this programme and its own pipeline cards unless a required import is
 added to a shared umbrella.
+
+### Exact natural affine submodule classification
+
+[PROVED HERE, paper and Lean; transitive axiom audit clean] Successor invariance alone forces a subspace of the natural horizon cell module to be a coordinate tail. The minimal nonzero coordinate and descending elimination prove the converse to tail invariance. Consequently there are exactly `N+2` invariant subspaces, all comparable, and the representation is indecomposable. This is a classical single-Jordan-block calibration, not a classification of every module of the finite image algebra. Card: `../3-formalized/biarithmetic-affine-invariant-subspaces.md`; leaf `AffineInvariantSubspaces.lean`.
+
+### Shared Wiener foundation consolidation
+
+`FullWienerAnnihilation.lean` now imports ADR's complete covariance and annihilation
+foundation. Both universal interfaces quantify over every `ActualCofactorLimit`, and the
+chosen-module interfaces are retained. The scratch audit and direct repository check passed;
+all four transitive audits use standard axioms only. The duplicate local implementation was
+removed after verifying that no other Lean leaf imported it. A1–A2 hold for every actual
+common Gram limit, while classification of those kernels and their zero hulls remains open.
+
+### Paid perturbation invariance
+
+The complete arguments in `../3-formalized/biarithmetic-paid-source-perturbations.md`
+and `../2-fully-proven/biarithmetic-paid-perturbations-preserve-escape-grams.md` show that adding
+a paid source preserves its repairing ideal and, up to nonzero scalar normalization, every
+cofactor Gram tangent. `PaidSourcePerturbations.lean` passed its direct repository check
+and all five transitive axiom audits. No Lean Gram comparison is claimed yet.
+`WeightedDigitMoments.lean` passed its direct check and all five axiom audits; the exact
+real pronic norm equivalence is now checked in `WeightedDigitPronicEnergy.lean`.
+The complete source payment criterion remains separate work.
+
+### Spectral and index distinctions exposed by concurrent Q-III work
+
+The formalized weighted-white family `K_sigma(j,k)=1_(j=k)j^(-2sigma)` has exact stronger dilation contraction while its critical-Wiener representation remains faithful. Its annihilator hull is therefore the entire Bohr polydisk. The positive repair is a nonempty operator hull defined by `|bohrEval(a,omega)|<=||pi(a)||`, which satisfies the dilation-radius bound. Closed representation image identifies both hulls, including for every finite-dimensional actual cofactor module. See `../3-formalized/strong-dilation-contraction-does-not-shrink-the-annihilator-hull.md`; all three source modules passed final checks and standard-axiom audits. The failed generic inference is retired with this positive survivor.
+
+The same programme has checked that closed Wiener quotients cannot have countably infinite Hamel dimension. Finite module dimension agrees with finite quotient dimension by cyclicity, density, and closedness. Infinite Hilbert dimension and algebraic quotient dimension must remain distinct. See `../3-formalized/closed-wiener-annihilators-have-no-countable-hamel-index.md`. These results correct proposed generic inferences; actual-source zero-hull containment remains open.
+
+The golden critical source gives an explicit stronger paper calibration:
+`../2-fully-proven/biarithmetic-critical-payment-has-continuum-defect.md` constructs
+a continuum of independent unpaid classes inside the paid ideal's Wiener closure.
+The graph-norm inclusion defines a canonical one-prime payment complex. Its Fredholm
+index is zero below threshold and minus one above; the critical range is nonclosed,
+with one-dimensional reduced cokernel and continuum-dimensional algebraic cokernel.
+See `../2-fully-proven/biarithmetic-one-prime-payment-fredholm-phase.md`. These statements
+remain paper results and do not supply the missing curve comparison or Riemann--Roch.
+
+### Golden source reduction and finite digit foundation
+
+The ordinary-floor golden source is exactly `delta_1-(I_a-I_b)/sqrt(5)`, with `I_t=localFactorInverse 5 t`. Since `b<sqrt(5)`, its secondary tower is critical Wiener. Its paid ideal therefore equals the primary tower's ideal. This source identity, exact rational mean, and ideal equality are formalized and axiom-audited in `GoldenArithmeticSource.lean`. Equality of normalized Gram families after scaling remains a paper result. The finite digit identities are formalized and axiom-audited in `WeightedBaseFiveDigits.lean`, with card `../3-formalized/biarithmetic-weighted-digit-identities.md`. These support the family classification without completing it.
+
+### Exact digital energy and the critical payment domain
+
+The full paper proof in `../2-fully-proven/biarithmetic-digital-energy-and-prime-tower-payment.md` gives finite two-sided pronic norm bounds for arbitrary weighted digit rows, using the exact finite digit second moment. Those real norm bounds and their exact summability criterion are now Lean-checked and axiom-audited. The real source comparison for every nonzero `|a|<5` is directly checked in `PrimeFivePaymentCriterion`: prime-five repairing kernels are characterized by a weighted `ell2` condition on partial pole sums. At critical contact it is ordinary normalized partial-sum square summability. The complex golden transfer is directly checked and audited in `GoldenPrimePayment`, including the exact critical parameter and the fully paid zero endpoint. Strictness over zero evaluation and the explicit unpaid limit remain pending Lean verification. The golden parent also gives a paper circle model for every escaping damping, including exact dilation spectral radii; no blanket zeta nonvanishing on the Fourier progression is assumed.
+
+### Current golden formalization queue
+
+`WeightedBaseFiveDigits`, `WeightedDigitMoments`, and `GoldenInverseSeries` are directly
+checked, axiom-audited, and wired into the umbrella. Their obsolete proof scratch files have
+been removed. `WeightedBaseFiveDigits` now has an olean for the importing tower draft.
+`PaidSourcePerturbations` passed its direct check and all five transitive axiom audits;
+its dependency olean exists and its obsolete audit driver has been removed.
+
+Active drafts:
+- `GeometricTowerDigitReceiver.lean`: direct source check, dependency build, and all five
+  transitive audits passed; stage-3 card present and obsolete audit driver removed.
+- `GoldenArithmeticSource.lean`: actual series lift, exact rational mean, and paid-ideal
+  reduction passed direct check and six audits. Stage-3 card present; obsolete scratch removed.
+  Its dependency olean is now built for the admission and intrinsic-series importers.
+- `FiniteGeometricConvolution.lean`: finite geometric square-sum bound passed its
+  direct source check and all four audits. Stage-3 card and dependency olean present.
+- `/tmp/BiarithmeticDigitRefinement.lean`: exact grid refinement, uniform supremum bound,
+  uniform convergence, integer interpolation, exact base-five scaling, right continuity,
+  and interpolation at every nonnegative base-five rational; all unchecked.
+- `WeightedDigitEnumeration.lean`: natural-index enumeration of complete
+  digit words, exact logarithmic block length, geometric-row comparison, and actual
+  integer block second moment. The missing `WeightedDigitMoments` dependency olean
+  was built successfully. All six transitive audits and the direct source check passed;
+  the production leaf is wired and has a stage-3 card. Its dependency olean is built.
+  The paper proof is the enumeration on the digital-energy card.
+- `DigitPronicBlocks.lean`: exact block mass, variance lower bound, and absolute-digit
+  upper bound passed the direct source check and three clean audits. Stage-3 card
+  and dependency olean present.
+- `WeightedDigitPronicEnergy.lean`: exact complete-block partition,
+  normalized finite energy bounds, and bounded-energy iff weighted square summability;
+  passed all three audits and its direct source check. Production source is wired
+  and has a stage-3 card; its scratch and logs have been removed. Its missing
+  dependency olean is now built for the actual prime-five payment importer.
+- `DigitCofactorConvolution.lean`: exact prime-five packet as a digit
+  readout of causal geometric convolution, followed by partial-pole-sum factorization.
+  Direct repository check and all three audits passed; stage-3 card present.
+  Its missing dependency olean is now built for the actual payment importer.
+- `CofactorPaymentCriterion.lean`: general actual-mean convolution
+  identity and equivalence of payment with bounded full cofactor norm. Reuses the
+  proved critical-Wiener mean-correction bound. Direct check and both audits passed;
+  stage-3 card present and obsolete scratch removed. Its missing dependency
+  olean is built for the prime-five payment criterion.
+- `FiveTowerKernelLift.lean`: arbitrary prime-five coefficient lift,
+  exact critical-Wiener coefficient criterion, and complete finite cofactor reindexing.
+  Uses the inspected `Nat.le_log_of_pow_le` and existing local-factor weight theorem;
+  first check, three audits, and direct source check passed. Production copy is wired,
+  stage-3 card present, and obsolete scratch removed. Read-after-lift recovery for
+  every supported row is included. Its missing dependency olean is now built.
+- `PrimeFivePaymentCriterion.lean`: exact actual geometric-source
+  payment criterion for arbitrary critical prime-five kernels. Reduces full payment
+  to the weighted square sum of partial pole sums through the three preceding
+  interfaces. Scratch verification and all five transitive axiom audits passed
+  after correcting one empty-interval API argument. Production copy is wired;
+  its direct repository source check passed and a stage-3 card is present.
+  Its missing dependency olean is built for the complex golden and isometric
+  Wiener-lift importers; obsolete scratch and logs have been removed.
+  It also normalizes arbitrary `ell1` coefficients and specializes payment at
+  `a=sqrt(5)` to ordinary coefficient partial sums in `ell2`. The general real
+  criterion now covers every nonzero `a` with `|a|<5`; the sign-free paper proof
+  is recorded on the digital-energy card.
+- `GoldenPrimePayment.lean`: complex norm-square assembly of the
+  real prime-five criterion and transfer through the actual golden paid-ideal
+  identity. Tower support is explicit; no extra analytic premise is used.
+  Its real criterion dependency is checked and built. Scratch verification and
+  all five transitive audits passed after supplying explicit real and imaginary
+  rows to the support-recovery lemma. The production leaf is wired, its direct
+  source check passed, and its stage-3 card is present. It includes
+  the exact golden critical parameter and the fully paid zero-parameter endpoint.
+- `/tmp/BiarithmeticGoldenDivisorResponse.lean`: exact valuation reduction of the
+  ordinary divisor response, realization at powers of five, antitonicity in the
+  valuation and source parameter, and upper bound one. Unchecked; the complete
+  positivity phase and divergence remain on their stage-2 card.
+- `/tmp/BiarithmeticGoldenDivisorPositivity.lean`: exact rational limit and
+  greatest lower bound, finite estimate `D_M<=1-M*t` beyond the pole, the
+  complete positivity phase for all `t>=0`, and payment in the positivity
+  chamber. Unchecked. The wider parameter range and finite bound have paper
+  proofs recorded on the positivity card before any Lean claim.
+- `/tmp/BiarithmeticFinitePronicStepEmbedding.lean`: exact finite signed covariance
+  as the existing step-Gram integral of truncated rows. Finite absolute sums
+  discharge the step theorem's boundedness premise for arbitrary source rows.
+  Unchecked; scaling, interval restriction, and limiting-profile comparison remain.
+- `CriticalUnpaidSequence.lean`: exact inverse-square-root-tail
+  coefficient sequence, norm two, zero total sum, divergent partial-sum squares,
+  and corrected finite approximants at exact distance `2/sqrt(N+1)`. Revised
+  scratch check passed all seven axiom audits. Direct repository check passed;
+  stage-3 card and umbrella import present. The paper argument is on the
+  digital-energy and critical-defect cards.
+- `CofactorGraphDomain.lean`: actual finite cofactor coordinate
+  functionals, closed graph in `W_(1/2) x ell2`, inherited completeness, injective
+  input projection, and exact square-summability domain. Initial check passed
+  the first four audits; the domain theorem stopped at missing `ENNReal` notation
+  scope. Revised scratch and all five audits passed; promoted and wired,
+  direct repository check pending.
+  Actual paid-ideal identification and the graph-norm ideal action remain pending.
+- `PronicEnergyDomain.lean`: exact positive-cell reindexing,
+  bounded finite pronic norms iff summable total energy, actual receiver admission,
+  and complex real/imaginary decomposition. Revised scratch check and all four
+  audits passed. Direct repository check passed; stage-3 card and umbrella import
+  present. This is the total-energy bridge for identifying the graph image
+  with the actual paid ideal.
+- `/tmp/BiarithmeticPaidGraphIdentification.lean`: complexifies the actual centered
+  source prefix and identifies the graph's Wiener image with the actual paid ideal.
+  Every paid kernel has a unique square-summable graph output. Unchecked; this
+  draft depends on the two preceding graph and total-energy drafts.
+- `/tmp/BiarithmeticSignedTowerAdmission.lean`: exact admission radius for every
+  real `|a|<5`, invariance under the prime-five sign flip, and the unpaid negative
+  critical endpoint. Unchecked; paper proof has its own stage-2 card.
+- `/tmp/BiarithmeticCriticalPartialSumCore.lean`: corrected finite complex
+  truncations, exact coefficient and square-energy tail errors, zero evaluation
+  forced by payment, and convergence in both parts of the graph norm. First
+  check passed the four algebraic/finite-tail audits. Limit proofs needed the
+  normed infinite-sum import and explicit constant-limit types. The next check
+  also exposed the missing complex completeness instance and an inferred
+  composed limit function; `Complex.Basic` and an explicit partial-sum limit
+  type now fix those two issues. Rerun pending.
+  The exact error equalities strengthen the earlier upper bound and have been
+  paper-audited on the payment-graph card before formal verification.
+- `CriticalWienerLift.lean`: uses AOT's actual `toWiener`
+  embedding, exact normalized tower norm and distance identities, and actual
+  critical paid-ideal membership. Initial check found a support-function beta
+  reduction, a zero-branch simplification, and an obsolete subtraction-application
+  name. The revised check passes the mass, norm, and membership audits; the
+  distance proof needs only the defining reduction of `realFn` at zero.
+  Revised scratch and all four audits passed; promoted and wired, with direct
+  repository check pending. Existing embedding
+  and coefficient/term laws were source-inspected before drafting.
+- `/tmp/BiarithmeticComplexCriticalWienerLift.lean`: assembles real and imaginary
+  lifts into the actual complex one-prime subalgebra, with exact norm and distance,
+  linearity, and the critical golden payment criterion. Unchecked. Corpus search
+  found the general AOT weight isometry; the draft reuses the actual real embedding
+  and the source-inspected `LSeries.norm_term_eq` rather than a new Wiener carrier.
+- `/tmp/BiarithmeticCriticalGoldenPaymentNonclosed.lean`: lifts the explicit
+  unpaid sequence and its finite repairs into the actual Wiener algebra,
+  proves their exact distances, and transfers nonclosedness to the critical
+  golden paid ideal. Unchecked; depends on the witness, lift, and complex
+  golden payment drafts.
+- `/tmp/BiarithmeticNormalizedCubicTrace.lean`: exact integral trace
+  classification for fixed-determinant cubic amplification at every prime,
+  with the four nonzero small-prime survivors and forced square-root trace
+  bound. Unchecked; separate stage-2 paper proof is complete.
+- `/tmp/BiarithmeticGoldenNormalizedCube.lean`: exact actual golden root
+  product and trace after normalized cubing, negative first two transformed
+  counts, and comparison with the original source's nonnegative counts.
+  Unchecked. Fixed determinant is not asserted to be analytic conductor.
+- `GoldenSourceAdmission.lean`: positive tower threshold and actual golden admission
+  phase passed direct check and five audits. Stage-3 card present; obsolete scratch removed.
+- `IntrinsicGoldenSeries.lean`: exact intrinsic counting-pole cancellation
+  using the actual source mean, cumulative-count partial fractions and coefficients, and
+  both damping endpoints. Direct repository check and all six audits passed.
+  Stage-3 card and umbrella import present; obsolete scratch removed.
+- `/tmp/BiarithmeticPronicDilationOperators.lean`: exact completed pronic dilation
+  norms, coordinate formula, multiplicative composition, and contractive Wiener
+  representation, using the existing
+  `HTGeometry.PNatBlock` library and the public pronic fibre-mass identity.
+  Unchecked; both dependency oleans exist. The reuse and specialization proof
+  are recorded on the payment-graph card.
+- `/tmp/BiarithmeticPronicWienerCoordinates.lean`: continuous unnormalized row
+  coordinates, exact floor-dilation intertwining, and equality of the integrated
+  Wiener action with every finite cofactor coordinate. Unchecked; depends on
+  the pronic dilation draft. Operator-series evaluation reuses Mathlib's
+  `ContinuousLinearMap.apply` and `HasSum.mapL`, source-inspected through the
+  corpus's operator-series proofs.
+- `/tmp/BiarithmeticPronicFiniteExtension.lean`: reuses the corpus's exact `lp`
+  coordinate isometry, embeds arbitrary finite source horizons, and derives the
+  full complex formal cofactor composition law from the completed representation.
+  Unchecked. The finite-extension proof is recorded on the payment-graph card;
+  it imposes no growth premise on the original arithmetic row.
+- `/tmp/BiarithmeticPronicGraphAction.lean`: invariant source graph under the
+  actual Wiener product, exact input/output action, unit and composition,
+  and the contractive bound for its inherited complete maximum norm.
+  Injectivity of the graph input map gives the bounded complex-linear action
+  and its contractive unital Wiener representation. Unchecked; depends on the
+  pronic finite-extension draft.
+- `/tmp/BiarithmeticCofactorGraphClosedness.lean`: ambient Wiener closedness
+  iff a uniform output-energy norm bound on the complete graph. Uses the
+  source-inspected Banach injective closed-range theorem, not the corpus's
+  Hilbert-only version. Unchecked; paper argument recorded on the graph card.
+- `/tmp/BiarithmeticGeometricFutureTail.lean`: joint absolute summability of
+  the backward geometric tail, its resolvent recurrence, and explicit `b/(1-b)` coefficient-norm
+  bound, for the strict one-prime Fredholm phase. Unchecked. The product
+  injection and nonnegative-series proof are recorded on that stage-2 card.
+
+The exact source-to-digit recurrence and actual golden source reduction both have stage-3
+cards. The admission threshold also has a stage-3 card, including its unpaid critical endpoint.
+
+The corpus's `HTGeometry/L1PeriodizationFourier.lean` already contains
+`fourierCoeffOn_l1PeriodizationAtScale` for every integrable complex seed. Together with
+`RHTower.integral_Ioi_zero_fract_cpow`, it supplies the full-strip circle coefficient law.
+The paper card is `../2-fully-proven/biarithmetic-digital-circle-fourier.md`; the unverified
+draft is `/tmp/BiarithmeticDigitalCircleFourier.lean`. Both imported oleans exist and cover
+their current source. Its imports were reduced to the actual fractional-part Mellin
+source and periodization foundation. The critical-line seed alone is already in
+`RHTower/ZetaCriticalLineNotSquareIntegrable.lean`; the new draft extends the seed to the
+whole open strip needed by the golden family.
+
+
+### Quantitative digital profile errors
+
+The stage-2 card `biarithmetic-digital-profile-bounded-covariance-error.md` proves that
+geometric digit-grid refinements converge uniformly, with an explicit geometric tail.
+Combining that tail with the power envelope and the exact pronic step embedding improves
+strict-regime covariance asymptotics to a bounded absolute error. Critical block errors are
+summable, giving logarithmic covariance growth with bounded remainder. For positive golden
+damping, both mixed-root covariances are absolutely summable because `a*b/5=t^2<1`.
+These stronger statements are paper results; their Lean proofs and source-module transfer
+remain in progress. They do not discharge the actual Möbius-source classification gate.
+
+The exact annular identity now gives a further dependency-closed paper boundary
+law in `../2-fully-proven/biarithmetic-critical-phase-collapse.md`: every strict
+phase kernel converges to the unique critical table as `a` decreases to
+`sqrt(5)`, uniformly in phase. The explicit phase variation is at most
+`(a^2/5-1)/sqrt(jk)`. Dominated double-series convergence extends this to
+every two fixed critical Wiener kernels. Lean verification remains pending;
+this does not imply continuity or closedness of the actual payment domains.
+
+
+### Further positive structures exposed by the golden boundary
+
+`../2-fully-proven/biarithmetic-signed-tower-admission.md` extends the tower
+admission radius to every real parameter with `|a|<5`: payment holds exactly
+for `|a|<sqrt(5)`. Both critical signs escape. This follows directly from
+the checked signed digit norm criterion and actual receiver identity; Lean
+specialization remains pending.
+
+`../2-fully-proven/biarithmetic-payment-graph-norm.md` proves a canonical complete graph
+norm on the actual paid ideal, even when its Wiener-norm image is not closed. Ambient
+closedness is exactly a uniform total-energy bound on all paid kernels. At the critical
+one-prime boundary, corrected finite kernels form a core in the graph norm.
+
+`../2-fully-proven/biarithmetic-intrinsic-golden-module.md` makes the other ambient action
+explicit: exact cancellation gives intrinsic centered series
+`[t/(5-5t+t^2)] P(u)(1-t^2*u)/[(1-u)^2(1-au)(1-bu)]`.
+A nonzero geometric row plus a paid remainder yields the unique rank-one norm-lattice
+kernel and its weighted partial-sum payment domain. These are paper results with Lean
+construction and source comparisons still pending; they do not replace the ordinary-floor
+infinite-dimensional module classification.
+
+The additional stage-2 card `biarithmetic-golden-divisor-positivity-phase.md`
+classifies a local source constraint of the ordinary-floor lift. Its divisor
+responses lie in `[0,1]` exactly for `0<=t<=1/5`; their exact infimum below
+the primary pole is `(1-t)(1-5t)/[(1-alpha*t)(1-beta*t)]`, and at or beyond
+that pole they tend to negative infinity along powers of five. Thus every
+escaping ordinary golden lift fails actual Möbius divisor-response positivity,
+whereas every positivity-compatible lift is paid. This is a paper theorem,
+not a Lean claim or a refutation of intrinsic Beurling positivity.

@@ -204,7 +204,8 @@ formulations lack: antipodality and the escape exponent.
 - The unification ledger: "ACS's Riemann–Roch is AIP's allocation".
 - AOT's Nyquist–RR: the box Euler characteristic is
   $\text{polar DoF}-\text{prime-node count}=E(s)=e^s+s-1-\psi(e^s)=h^0_{\text{box}}-h^1_{\text{box}}$,
-  with $h^1=0$ below $\log2$. At aperture level,
+  with $h^1=0$ below $\log2$. These box quantities are real weighted charges, not ordinary
+  cohomology dimensions. At aperture level,
   $\text{defect}+h^1\text{-correction}=\text{arch budget}$
   (`aperture_nyquist_riemannRoch_defect_identity`).
 - Prime-blind sections of low spectral height vanish (`finrank_primeBlind_subspace_eq_zero`,
@@ -219,11 +220,15 @@ sheaf* $\mathcal P$ on the aperture line or the scaling site:
 - restriction forgets atoms outside $U$.
 
 AOT's frustration index is the nearest seed: a signed graph is balanced iff its sign cocycle is a
-coboundary. The claim to establish is that RH is equivalent to the vanishing (or square-root
-smallness) of the gluing obstruction at every aperture, and that the Euler characteristic of
-$\mathcal P$ on a box is the Chebyshev defect $E(s)$. AOT already has that Euler characteristic
-as an identity of energies; the step here is to make $h^0,h^1$ dimensions of cohomology rather
-than quadratic quantities.
+coboundary. Relating an actual gluing obstruction to RH remains open. The literal ordinary-dimension
+identity for $E(s)$ is now refuted: at $s=\log(3/2)$ the box defect is strictly between zero and
+one (`BiarithmeticGeometry.no_dimension_model_for_boxDefect`). Its proved replacement is an
+arithmetic degree with a separate integral torsion datum. For $N\ge1$, put
+$Q_N=\operatorname{lcm}(1,\ldots,N)/N$; then
+$E(\log N)=(N-1)-\log Q_N$, with an exact continuous interpolation between integer horizons
+(`boxDefect_eq_degree_sub_log_card`, `boxDefect_all_apertures`). A payment theory must preserve
+this distinction between integer cohomological index and real weighted degree. The identity
+does not itself construct the sheaf, its duality, or a vanishing theorem.
 
 **Why this could matter.** It brings in the *Weil chain* whose missing link the corpus has
 located:
@@ -244,14 +249,18 @@ $$
   dimensions.
 
 **First theorems.**
-- (B1) Define $\mathcal P$ and prove $\chi(\mathcal P|_{[0,s]})=E(s)$, matching
-  `boxH0Supply_sub_boxH1Obstruction`.
+- (B1) Define $\mathcal P$ with a separate integer obstruction index and real arithmetic degree;
+  recover the proved degree-minus-log-torsion formula and its all-aperture interpolation.
 - (B2) A Mayer–Vietoris sequence across two apertures, so that $h^1$ jumps are localized at
   prime-power nodes. This matches node criticality (C5) and the shell-flux decomposition
   (Wall 1.13).
 - (B3) A duality pairing $h^1(D)\simeq h^0(K-D)^\vee$ from the theta functional equation at
   base level.
-- (B4) The certified windows ($r\le3/10$, odd $r\le181/500$) as $h^1=0$ statements.
+- (B4) Recover the certified windows ($r\le3/10$, odd $r\le181/500$) as vanishing of a
+  genuine obstruction. The proved weighted statement is payment by the archimedean budget,
+  not vanishing of `apertureH1ChebyshevCorrection`. On horizon-prime-blind odd tests that
+  correction still equals `poleCharge = 2 * oddPoleMoment²`
+  (`apertureH1ChebyshevCorrection_of_isHorizonPrimeBlind`).
 
 **Kill test.** Over $\mathbb F_q$ the construction must reproduce étale $H^1$ of the curve and its
 dimension $2g$ (the corpus already identifies "the genus is the aperture of the radical"). On the
@@ -351,8 +360,10 @@ entries $G_{ij}$, $i\ne j$, of the 25-entry Vaughan Gram of the signed interior 
 - The VK band is the only selective receiver statement so far, and its extra width is exactly
   Vinogradov's additive input. That is a working proof of concept that selectivity comes from
   additive structure at one ζ.
-- Guth–Maynard is formalized and unused at the band. The analytic face of the question is the
-  short-interval prime variance, equivalently signed prime pairs at gap $h\le\sqrt N$ (TTPC).
+- Guth–Maynard is formalized and already supplies unbalanced centered-prime dispersion in
+  `ShortWindowDispersionAtSeventeenThirtieths`; its range excludes the balanced band.
+  The analytic face of the remaining question is short-interval prime variance,
+  equivalently signed prime pairs at gap $h\le\sqrt N$ (TTPC).
 
 **Milestones.**
 - Any improvement of the VK band exponent proved in receiver coordinates.
@@ -361,6 +372,37 @@ entries $G_{ij}$, $i\ne j$, of the 25-entry Vaughan Gram of the signed interior 
   Vaughan pieces).
 - Or a sharp no-go: "Class III identities as identities cannot control $G_{ij}$", together with
   its positive survivor.
+
+**Formalized Vaughan milestone.** Fixed real superpositions of the five Vaughan pieces are
+now classified for $0<\varepsilon<1/2$. Admission forces the explicit linear mean to vanish
+and, for positive cutoffs, forces equal coefficients on the two convolution pieces.
+After these cancellations, admission is exactly the original receiver problem unless its
+coefficient is zero. The admitted coefficient space has dimension two or three, according
+as the receiver is unpaid or paid, with unique coordinates in two explicit paid directions
+and the receiver direction (`TheAdmittedVaughanCoefficientSpace`).
+The centered fixed-cutoff Gram has an explicit smooth rank-one density
+at scale $T^{1-2\varepsilon}$; the actual interior has zero density at that scale.
+The harmonic factors are nonzero at every positive finite cutoff by an exact terminal-prime
+valuation law. See `FixedVaughanPacketsHaveTwoExplicitObstructions`,
+`VaughanPacketsHaveAnExactResidualEnergyDensity`, and
+`RHTower/FiniteMobiusHarmonicSumsNeverVanish`.
+At product horizons `T=UV`, the entire centered Gram is uniformly `o(T^(1-2ε))`
+over all factorizations, including a fixed smaller cutoff; packets with bounded moving
+coefficients obey the same law (`ProductHorizonVaughanGramsHaveZeroTrivialDensity`).
+For every fixed `0<ε≤1`, a power gain for the normalized square empty-leg energy
+is equivalent to `Θ<1`, through its exact quartic comparison with the signed reciprocal
+tail (`TheEmptyVaughanLegDetectsAFixedStrip`).
+The undamped truncated convolution also satisfies
+`Σ_(d≤n)(μ_≤U*μ_≤V*1)(d)=nH_UH_V+O_q(n/(log n)^q)` for every fixed integer `q≥0`,
+uniformly over all cutoff pairs (`UniformLogarithmicCancellationInTheVaughanConvolution`).
+The generic damped floor transform now preserves all common logarithmic savings
+for divisor-square bounded coefficient families with convergent reciprocal mass
+(`LogarithmicCancellationSurvivesTheDampedFloorTransform`, `0<ε≤1/2`).
+The actual Vaughan coefficient minus `H_UH_V` now satisfies those bounds, and its
+centered convolution row is exactly `-H_UH_V A_(1,ε)-A_(r,ε)`
+(`TheVaughanConvolutionSeparatesItsSmoothMean`). Uniform Gram consequences remain
+under formalization.
+These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?
 
@@ -383,6 +425,59 @@ is unbounded Weil energy in every such reading kernel
 (`exists_realTestAt_in_ker_weilPair_gt_mul_integral_sq`). These results separate unconditional
 RR supply from the still missing independent degree or section mechanism.
 
+Even adjoining exact L² mass to those finite readings does not suffice:
+unit-mass Weil energy remains unbounded in their common kernel. Every nonlinear
+threshold based on these data admits a strict effective negative square
+(`FiniteReadingsAndMassCannotSupplyBezout`). This obstruction concerns the stated
+fibre-threshold source cones, rather than arbitrary source restrictions.
+
+Evenness is unnecessary for the sharp boundary: closed and strict cones only read
+`max(Φ,0)`, and RR together with Bézout forces that positive part to equal the defect
+(`sourceCone_riemannRoch_and_bezout_iff_positivePart_eq_defect`). Compact scaling numerical
+equivalence is equality (`scalingSurface_numerical_equivalence_iff_eq`), so nonzero principal
+representatives require a larger source carrier. The Boolean `sourceH0` encoding cannot
+satisfy the classical dimension form of RR for any canonical class or Euler constant
+(`exists_sourceH0_riemannRoch_dimension_failure`). These statements have clean transitive
+Lean axiom audits; they do not supply the missing positive sheaf theory.
+
+Independent arithmetic Bézout is available on the original pairing once its reserve retains
+the full source energy. At every positive aperture, the explicit Chebyshev majorant
+`criticalDeficitSourceEnergy + 2(10 + 72 exp(r)) integral(f²)` has Bézout and ampleness;
+an effective class of ample degree zero is actually zero. Its strictly positive extra
+reserve makes RR fail (`ArithmeticMajorantsSupplyBezout`). The remaining problem is
+simultaneous RR and Bézout, not independent Bézout alone.
+
+The precise quadratic price is now certified: threshold `δ + κM` has original-pairing
+Bézout exactly when `δ + (κ/2)M` is nonnegative, for a nonnegative fibre-null quadratic
+mass and `κ ≥ 0` (`BezoutCostsTwiceTheNegativeReserve`). Thus changing effectivity
+requires twice the compensation needed when changing the intersection pairing.
+The full prime source also has an aperture-independent estimate
+`primeSum(f) ≤ 2 S integral((exp(|t|)f(t))²)`, where `S = sum Lambda(n)/n^(3/2)`
+(`ExponentialSourceMassControlsTheFullPrimeSum`). These are unconditional source
+bounds; neither removes the extra reserve required by RR.
+
+Linearity also does not settle descent or positivity. On the larger actual Meyer source,
+origin evaluation is a complex-linear degree whose sharp-square value is the strictly
+positive mass `integral exp(t)|g(t)|²`. A nonzero Xi-cap Poisson boundary has positive square
+degree, so this degree cannot descend to genuine cohomology
+(`OriginDegreeDoesNotDescendThroughPoissonBoundaries`). The descended ordinary trace
+degree and the positive origin degree therefore solve different parts of the requested
+degree construction.
+
+This failure persists after arbitrary normalized corrections using both pole values.
+The actual negative Euler operator produces a nonzero boundary with transform
+`s(s−1)xi(s)`; its sharp square gives a pure-source principal cycle with positive
+origin degree and zero pole readings (`PoleBlindPoissonBoundariesHavePositiveOriginDegree`).
+Thus the descent obstruction cannot be repaired by adjusting the two fibre degrees.
+
+The ordinary trace's exact loss of information is now classified
+(`MeyerNumericalRadicalAndMultiplicity`). Its radical consists of sources whose zeroth
+Mellin values vanish at every Xi point; genuine Poisson boundaries require all lower
+jets to vanish. Equality of numerical and principal equivalence is therefore exactly
+simplicity of the Xi divisor. Ordinary sharp-square trace positivity is exactly RH,
+with no simplicity requirement. These are distinct obligations, even on the genuine
+source quotient; a multiple zero supplies an actual nonprincipal square-zero class.
+
 **Why this one.**
 - It is the only formulation in which positivity could be *forced* rather than estimated, which
   is how purity is obtained over $\mathbb F_q$.
@@ -392,12 +487,22 @@ RR supply from the still missing independent degree or section mechanism.
   datum: *how classes move* (linear equivalence, sections).
 - Partial answers produce new certified windows, so progress is measurable.
 
-**Milestones.**
-- RR on a source-defined cone for apertures past $181/500$ by a method that does not degrade
-  with the aperture.
-- An $\mathbb F_q$ specialization recovering Weil's chain.
-- A definition of principal divisors on the scaling surface (Hecke correspondences plus theta
-  sections) with a proved degree-zero law.
+The finite-field calibration now separates these requirements exactly. Every Rosati
+source cone and its Frobenius-mass section presentation has Bézout and ampleness,
+even for nonunitary curve data. RR holds precisely when the Frobenius reflection
+defect vanishes (`RosatiSectionsHaveBezoutWithoutUnitarity`). The golden datum
+satisfies both positivity axioms and fails RR: positive section mass alone does
+not supply purity.
+
+**Milestones after the audit.**
+- All-aperture source RR is already available, including the exact arithmetic source reserve
+  in `ExactArithmeticSourceEffectivity`. Prove its simultaneous Bézout positivity from an
+  independent arithmetic construction.
+- Recover Weil's full chain over $\mathbb F_q$, keeping positive source masses distinct from
+  the purity condition needed for RR.
+- Genuine Poisson principal cycles and their trace-degree-zero law are available on the
+  Meyer carrier. Construct the requested geometric section theory and account for the
+  higher-jet information that ordinary numerical degree discards.
 
 ### Q-III (Wall 3). What are the possible escape states, and is every one generated by a hull point on the Kronecker curve?
 
@@ -423,6 +528,62 @@ RR supply from the still missing independent degree or section mechanism.
 - The golden-datum escape module as a computed counterexample class.
 - A proof that white noise violates antipodality.
 
+**Q-III audit correction.** Several proposed milestones require revision.
+
+- A1–A2 now have unconditional proofs for every actual common Gram limit,
+  including infinite-support paid Wiener kernels. The universal construction
+  and transitive axiom audits passed; the generalized source layers are under
+  leaf verification. See `TheCofactorLimitCarriesACyclicDilationAction`,
+  `TheCofactorLimitIsAWienerModule`, and
+  `PaidWienerKernelsAnnihilateTheCofactorLimit` in `ArithmeticDefectRigidity/`.
+- White noise **does not violate Gram antipodality**. Every positive kernel
+  has a unique extension adjoining the negative receiver vector. The actual
+  source's full fixed signed table is now formalized: receiver, residual, and
+  forcing coordinates are `v_j`, `-v_j`, and zero, respectively. Fixed pole
+  traces normalized by the receiver norm vanish. The existing moving-dilation
+  commutator also vanishes after normalization. The unscaled trace and moving
+  cofactor summation remain additional information.
+- Stronger dilation contraction controls the operator-norm-bounded character
+  locus, not automatically the entire hull of the annihilator. Faithful
+  weighted white kernels have exact stronger contraction and full annihilator
+  hull. Closed representation image suffices to identify the two hulls; in
+  particular this distinction disappears in finite dimension. The family’s
+  faithfulness, full hull, exact power norms, spectral radius, unbounded extra
+  character, and closed-image comparison passed Lean with standard axioms
+  and final source checks. The generic spectral inference is retired with
+  this positive replacement.
+- The suggested nontrivial raw translation scale with bounded `k²/E` collapses
+  for the actual receiver. Recentring, leaving the origin value, and resetting
+  only the origin give different dilation domains. The stronger recentered
+  collapse for bounded `k/E` passed its final Lean source check. The actual
+  Vinogradov–Korobov saving gives still larger invisible translation scales:
+  bounded `k^(1-epsilon)/E` for recentered shifts and bounded
+  `k^(2-2epsilon)/E` for raw shifts. Both passed Lean axiom audits and final
+  source verification.
+- The closed Wiener-annihilator quotient cannot have countably infinite Hamel
+  dimension. Its finite dimension agrees with the cyclic Hilbert module’s
+  dimension. The stronger exact infinite value, continuum Hamel dimension,
+  also passed Lean with standard axioms and final source checks. Thus an
+  infinite zero-count formula must specify its index convention and recover
+  multiplicity separately.
+- Common Gram modules also exist on admission. Every actual admitted module
+  has faithful Wiener action and the full Bohr hull; a nonfaithful actual
+  module therefore forces escape. Complete source pairings and triangular
+  coefficient recovery prove this with standard axioms and final Lean checks.
+  Admission also gives a unique common kernel, infinite Hilbert dimension
+  and continuum annihilator-quotient index. Thus a finite-dimensional actual
+  module forces escape. These refinements passed final Lean source checks.
+  These admitted modules are not counterexamples about escaping receivers.
+- Changing the cyclic vector by a critical Wiener unit gives a unitary
+  comparison intertwining the full Wiener action. It preserves all operator
+  norms, the annihilator, operator hull and dimension. This abstract transport
+  passed final Lean checks; its normalization for actual convolved source
+  rows is a separate verification.
+
+The open classification is still the arithmetic identification of the actual
+module hull with translated zero data, including Kronecker-curve generation
+and multiplicities. The module–ideal inclusion alone does not settle it.
+
 ---
 
 ## 4. Q3 — A field that would supply the tools: *Biarithmetic Geometry*
@@ -433,7 +594,7 @@ RR supply from the still missing independent degree or section mechanism.
 |---|---|---|---|
 | W1 | An identity-level source of square-root cancellation in incomplete signed sums | Gauss/Lefschetz: $\lvert S\rvert^2=q$ from complete sums (SSA) | Only complete-period quadratic data are identities, and they are **exactly sign-blind** (BVI pillar 12); period $e^{\psi(N)}\gg$ horizon $N$ |
 | W3 | Retaining information through limits, observation and shared budgets | Finite horizon $=$ period; $\zeta_C$ determined by $g$ counts | Escape keeps dilation and kills fixed successors (ADR); local payments exist but do not glue (AIP); finite observation is exact but proves nothing |
-| W14 | A structure that orients the obstruction space | Frobenius is a ring endomorphism; Hodge index on $C\times C$ via RR | The scaling surface has Hodge index ⟺ RH; RR missing; golden datum shows positivity and integrality do not orient |
+| W14 | A structure that orients the obstruction space | Frobenius is a ring endomorphism; Hodge index on $C\times C$ via RR | The scaling surface has Hodge index ⟺ RH; all-aperture graded source RR exists, but compatible independent Bézout/ample positivity is missing; golden datum shows positivity and integrality do not orient |
 
 **Thesis.** All three walls are the absence of an arithmetic substitute for the pair *(Frobenius
 as a ring endomorphism, complete sums of polynomial length)*.
@@ -548,8 +709,8 @@ The field's job is to give that coupling a geometry in which estimates follow fr
    *Seed:* BVI pillar 12; `parityPair_separated_on_vinogradovKorobovBand`.
 2. **Escape modules (Mechanism A).** Prove A1–A4, compute the golden-datum module, and test
    white noise against antipodality.
-3. **Payment cohomology (Mechanism B).** Define $\mathcal P$, prove
-   $\chi=E(s)$, Mayer–Vietoris across prime-power nodes, and base duality; restate the
+3. **Payment cohomology (Mechanism B).** Define $\mathcal P$, realize the corrected arithmetic
+   degree and integer obstruction index, prove Mayer–Vietoris across prime-power nodes and base duality; restate the
    certified windows as $h^1=0$.
 4. **Quantitative Class III.** Turn the Bézout-selective identities (zero-diagonal pronic Abel
    summation, Bézout shell midpoint annihilation, least successor-seed resonance) into
@@ -585,8 +746,8 @@ The field's job is to give that coupling a geometry in which estimates follow fr
 
 1. **ADR:** prove (A1) and (A3); compute the white-noise module against antipodality. This is the
    cheapest test of Mechanism A.
-2. **AOT/ACS:** state the payment sheaf on boxes and prove $\chi=E(s)$ as a dimension identity
-   (B1). This is the cheapest test of Mechanism B.
+2. **AOT/ACS:** construct payment cohomology compatible with the proved arithmetic degree and
+   torsion formula (B1). The original ordinary-dimension identity is impossible.
 3. **BVI/THIM:** run the Vaughan off-diagonal entries $G_{ij}$ through the three selectivity
    classes and record which class each existing bound belongs to. This identifies where a Class
    III estimate must enter for Q-I.

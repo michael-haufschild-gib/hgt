@@ -86,6 +86,19 @@ finite horizon does not require replacing the ring relation by an approximate on
 
 Source: `HorizonAffineActions.lean`, `horizonAffine_comp`, `horizon_ring_relation`.
 
+### The faithful finite affine quotient
+
+An affine operator is zero precisely when its origin has escaped. Otherwise its image of
+`e_0` determines the translation, and its image of `e_1` either determines the slope or says
+that every positive cell is absorbed. Thus those two cell images determine the whole operator.
+The canonical states are one zero state and, for every `0<=b<=N`, slopes
+`1<=a<=N-b+1`, with the last slope representing all larger slopes. They are closed under
+composition and give exactly `1+(N+1)(N+2)/2` distinct operators. This is a polynomial-size
+faithful quotient of the positive affine action; no complete period is introduced.
+
+Source: `FiniteAffineQuotient.lean`, `horizonAffine_eq_iff_origin_first`,
+`horizonAffineImageEquiv`, `card_horizonAffine_image`, `horizonCodeAction_comp`.
+
 ### Joint rigidity of successor and dilation
 
 The common commutant of `U` and `D_2` on `{0,...,N}` consists exactly of scalar operators.
@@ -99,6 +112,16 @@ its statement. Scalar common commutant does not imply irreducibility here: every
 `span(e_k,...,e_N)` is invariant under all positive affine maps.
 
 Source: `horizon_double_fixed_iff`, `horizon_joint_commutant`.
+
+In fact these tails are all invariant subspaces. For a nonzero invariant subspace, choose
+its least possible nonzero coordinate `m`. Shifting a vector with that leading coordinate
+and eliminating higher cells recovers every `e_j` for `j>=m`. This gives exactly `N+2`
+invariant subspaces, including zero, all comparable. The natural affine representation is
+therefore indecomposable. This is the classical single-Jordan-block classification in the
+absorbing horizon model; it does not classify every representation of the finite semigroup.
+
+Source: `AffineInvariantSubspaces.lean`, `horizon_affine_submodules`,
+`card_horizonInvariantSubspaces`, `horizon_affine_indecomposable`.
 
 ### Exact signed boundary loss
 
@@ -157,6 +180,18 @@ Within the cell `log N ≤ s < log(N+1)`, the exact extension adds
 logarithmic torsion charge and continuous polar evolution, with no loss at noninteger horizons.
 Source: `boxDefect_cell_interpolation`, `boxDefect_all_apertures`.
 
+The torsion group is also the kernel of the canonical reduction
+`Z/L_N Z → Z/N Z`. Period reductions `Z/L_(N+1) Z → Z/L_N Z` compose exactly and
+are surjective. Their cyclic kernels have order `p` when `N+1` is a power of `p`,
+and order one otherwise; their logarithmic orders are precisely `Λ(N+1)`.
+Thus the charge has a finite-group restriction law. These symbolic period groups can have
+more than polynomially many elements, and do not supply horizon-complete observations or
+a payment Mayer–Vietoris sequence.
+
+Source: `PrimePowerTransitionGroups.lean`, `horizonTorsionKernel_exact`,
+`card_horizonTransition_prime_pow`, `horizonPeriodJump_eq_one_iff`,
+`boxDefect_all_apertures_kernel`.
+
 ### Exact cost of shared-budget descent
 
 Give each singleton in a `k`-atom set access to the same nonnegative resource `B`. Every
@@ -177,10 +212,31 @@ is `P_k(n)=Σ_(j≤n) k(j) A_ε(floor(n/j))`. The exact convolution identity rea
 The critical Wiener bound uniformly pays `A_k`. Whenever `k*c_ε` is paid, `P_k` consequently has
 uniformly bounded pronic norm. Thus either the actual receiver is admitted, or every repairing
 kernel has `‖P_k‖²/E_ε → 0`. The conclusion includes infinite kernels; it does not rely on paid
-truncations. This is the source estimate needed for annihilation in an escape module. Constructing
-and identifying the completed module and its Bohr spectrum are additional steps.
+truncations. This source estimate also passes to the completed escape module.
 
 Source: `PaidKernelsVanishOnEscape.lean`, `admitted_or_paidKernelAction_vanishes`.
+
+### Full Wiener annihilation and the actual obstruction hull
+
+ADR constructs the actual common cofactor limit with cyclic vectors `delta_j` and bounded
+dilations `V_n`; AOT integrates their coefficient series into a contractive unital Wiener
+representation. On escape, every paid kernel lies in this representation's annihilator.
+To prove this for an infinite kernel, pair its full action with one fixed cofactor. The paid
+action has bounded norm, while the cofactor norm is at most `sqrt(E_T)/sqrt(k)`, so the
+normalized pairing tends to zero. The bound `|K_T(j,k)|<=1/sqrt(jk)` permits dominated
+convergence of the single Wiener series. Every cofactor then pairs to zero with the
+represented receiver image. Totality kills that image, and cyclicity kills the operator.
+
+The module annihilator is proper, closed, and has a nonempty Bohr hull. Ideal inclusion
+therefore gives a nonempty module hull contained in the actual source obstruction hull.
+This proves the module–ideal bridge for every actual common Gram limit at every escaping
+subcritical damping. The source-defined class has a constructed member; the universal
+statement covers every other actual realization as well. It does not classify the possible
+kernels or identify their hulls with the translated zero hull. The proof reuses ADR's full
+covariance and cyclic-module comparison.
+
+Source: `FullWienerAnnihilation.lean`, `admits_or_all_actual_annihilators`,
+`admits_or_all_actual_moduleHulls`.
 
 ### Exact visibility within a covariance fibre
 
@@ -204,6 +260,220 @@ Source: `ExactPrefixVisibility.lean`, `prefix_visibility_diameter`,
 `abs_prefix_readout_le_of_covariance_eq`, `prefix_covariance_determines_iff`,
 `prefixVisibility_eq_zero_iff`.
 
+### Diagonal scaling does not determine the metric
+
+There is a cyclic three-dimensional dilation representation with positive kernel `K`,
+`K(j,j)=j⁻²`, the critical cofactor radius bound, and every packet contraction `1/p`, yet
+`K(2,4)=0≠K(1,2)/4=1/24`. Its metric is
+`B(x,y)=x·y+(x₀y₁+x₁y₀)/3`; dilation is `V_p=p⁻¹P^(v₂(p))`, where `P` cyclically
+permutes the coordinates. The vectors at cofactors 1, 2 and 4 span the representation.
+Even the stronger `1/p²` packet contraction fails on a mixed vector.
+
+Averaging `B`, `B(P·,P·)` and `B(P²·,P²·)` produces a positive `P`-invariant metric.
+Its kernel has full mixed homogeneity and exactly the same diagonal as `K`. This identifies
+the missing stationarity information. The example is a multiplicative calibration model;
+no realization by the actual receiver is asserted. A stationary average of source tangents
+would also require proof that it is an admissible source limit.
+
+Source: `DiagonalScalingCountermodel.lean`, `cyclicKernel_packet_dilation_le`,
+`cyclicKernel_not_homogeneous`, `cyclicDilation_two_not_quarter_contractive`,
+`stationaryCyclicKernel_homogeneous`, `stationaryCyclicKernel_diagonal`.
+
+### Finite-dimensional unitary covariance is rigid
+
+Let `U_t` be a continuous family of unitary matrices with `U_0=1`. If an invertible matrix
+`D` satisfies `D U_t=U_(pt) D` for some real `p>1`, then every `U_t=1`. A translation group
+law is unnecessary. Conjugacy preserves trace, so iteration towards zero gives
+`tr(U_t)=tr(1)`. The squared Hilbert–Schmidt norm of `U_t-1` is then zero.
+
+Thus a nontrivial unitary translation limit with invertible expanding dilation needs an
+infinite-dimensional carrier. This classifies the finite-dimensional calibration; it does
+not establish existence, unitarity, or nontriviality of actual moving successor limits.
+
+Source: `FiniteAffineUnitaryRigidity.lean`, `finite_affine_unitary_rigidity`.
+
+### The domain of positive prime-log jump sums
+
+For ordinary real `L²(R)` translations and nonnegative prime weights, the positive series
+`Σ_p w_p ||f-τ_(log p)f||²` is finite exactly when the weights are summable or `f=0`.
+Compact-support approximation proves that every translation correlation tends to zero;
+the jump square therefore tends to `2||f||²`. Summable weights give the explicit bound
+`4(Σ_p w_p)||f||²`. Nonsummable weights leave only the zero vector in the finite-energy domain.
+
+This is a classical regular-representation domain test. It does not classify the signed Weil
+form, a renormalized series, or a Bohr representation with nonvanishing translation coefficients.
+Infinite weights at shifts tending to zero also lie outside this obstruction.
+
+Source: `PrimeLogJumpDomain.lean`, `tendsto_physical_autocorr_zero`,
+`primeJump_summable_iff`, `primeJump_tsum_le`.
+
+### Exact weighted digit laws
+
+The geometric prime-five receiver has a finite digit foundation. Evaluate the ordinary
+base-five digits of `n` at a real parameter `a`, obtaining `D_a(n)`. Euclidean splitting gives
+`D_a(5n+r)=r+a D_a(n)` for `r<5`, and at every depth
+`a^k D_a(floor(n/5^k))=D_a(n)-D_a(n mod5^k)`. These exact signed identities hold before any
+limit; for nonnegative `a`, the leading digit also gives `D_a(n)>=a^k` on the `k`th block.
+The finite identities are proved in `WeightedBaseFiveDigits.lean`.
+
+They identify the actual receiver of the geometric source `I_a(5^r)=a^r`, zero elsewhere.
+For `|a|<5`, its mean converges absolutely to `5/(5-a)` and its centered ordinary-floor
+prefix is exactly `-a/(5-a) D_a(n)`. The Euler-factor convolution identity gives the same
+Euclidean recurrence as the digit row, so strong induction proves equality at every horizon.
+No asymptotic profile is needed for this source comparison. The completed escape module
+still requires its separate asymptotic comparison.
+Source: `GeometricTowerDigitReceiver.lean`, `hasSum_fiveTower_div`,
+`fiveTower_actualPrefix_eq_digitRow`.
+
+For arbitrary signed digit coefficients `x_i`, complete enumeration also gives the exact
+second moment `5^M[2 sum_i x_i^2+4(sum_i x_i)^2]`. On a block with nonzero leading
+coefficient `z`, the second moment is
+`4*5^M[(5/4)z^2+2 sum_i x_i^2+((5/2)z+2 sum_i x_i)^2]`, hence at least
+`5^(M+1)z^2`. Lower-digit signs cannot remove this variance. These classical moment
+identities retain all signed cross terms.
+Source: `WeightedDigitMoments.lean`, `sum_sq_fiveDigitBlock`, `fiveDigitBlock_leading_lower`.
+The base-five word equivalence transfers these formulas to the exact ordinary
+integer intervals `n<5^M` and `5^M<=n<5^(M+1)`. Geometric coefficients recover
+`D_a` at every integer, so the combinatorial lower bound applies directly to
+its receiver indexing. Source: `WeightedDigitEnumeration.lean`,
+`sum_sq_fiveWeightedDigitRow_block`, `fiveWeightedDigitRow_geometric`.
+
+The pronic mass of the same block is exactly `4/(5*5^M)`. Comparing its largest
+denominator with the variance lower bound, and using the pointwise digit bound
+for the upper estimate, gives
+`x_M^2/5^(M+1) <= E_block(W_x) <= (64/5)5^(-M)(sum_(i<=M)|x_i|)^2`.
+Source: `DigitPronicBlocks.lean`, `fiveDigitPronicBlock_lower`,
+`fiveDigitPronicBlock_upper`.
+
+The finite geometric convolution `C_q(u)_M=sum_(l<=M)q^(M-l)u_l` satisfies
+`(1-q)^2 sum_(M<=R) C_q(u)_M^2 <= sum_(M<=R)u_M^2` for every `0<=q<1`.
+Weighted Cauchy--Schwarz and the exact finite mass identity prove this bound,
+including the endpoint remainder. This supplies the upper norm estimate needed
+for digit energy without imposing a summability premise on the coefficients.
+Source: `FiniteGeometricConvolution.lean`, `sum_sq_finiteGeometricConvolution_le`.
+
+Together these finite bounds identify the entire signed digit-energy domain:
+`sup_N E_N(W_x)<infinity` exactly when `sum_l x_l^2/5^l<infinity`.
+At every complete prefix the lower constant is `1/5`, and the upper constant is
+`(64/5)/(1-1/sqrt(5))^2`. Arbitrary cutoffs lie below the next complete block.
+Source: `WeightedDigitPronicEnergy.lean`, `fiveDigitPronicEnergyTo_complete_bounds`,
+`bounded_fiveDigitPronicEnergy_iff`.
+
+Every prime-five cofactor packet has these digit coefficients exactly:
+`sum_(r<=log_5(n)) f_r D_a(floor(n/5^r)) = W_(C_a(f))(n)`, where
+`C_a(f)_l=sum_(r<=l)a^(l-r)f_r`. For nonzero `a`, this is
+`a^l sum_(r<=l)f_r/a^r`. Finite triangular reindexing proves the identity
+for arbitrary signed coefficients, including the zero horizon.
+Source: `DigitCofactorConvolution.lean`, `fiveWeightedDigitRow_convolution`,
+`finiteGeometricConvolution_eq_partialPoleSum`.
+
+For every source with an absolutely convergent mean and every critical Wiener
+kernel, payment is equivalent to bounded norm of the full cofactor action.
+The exact convolution law differs from that action by the source mean times
+the kernel's centered prefix; the critical Wiener bound pays this correction
+uniformly. This equivalence uses actual means and the entire kernel.
+Source: `CofactorPaymentCriterion.lean`,
+`receiverBounded_dirichletConv_iff_cofactorNorm`.
+
+These identities determine actual payment on the prime-five subalgebra.
+For `a!=0`, `|a|<5`, and `sum_r |f_r|/sqrt(5)^r<infinity`, the kernel
+`k(5^r)=f_r`, zero elsewhere, repairs `I_a` exactly when
+`sum_l (a^2/5)^l (sum_(r<=l)f_r/a^r)^2<infinity`.
+At `a=sqrt(5)`, writing `f_r=sqrt(5)^r g_r` turns this into square
+summability of the ordinary partial sums of `g`. This is a source-domain
+classification, obtained before any limiting module or hull comparison.
+Source: `PrimeFivePaymentCriterion.lean`, `receiverBounded_fiveTowerKernelLift_iff`,
+`receiverBounded_critical_fiveTower_iff_partialSums`.
+
+For complex kernels, the real and imaginary energies add to the squared
+complex norm. The same criterion therefore holds with complex partial sums.
+The actual golden ideal identity transfers it to `a=alpha*t`, `0<t<=1`.
+Its exact critical parameter is `tcrit=sqrt(5)/alpha`, strictly between
+zero and one. At that parameter payment is square summability of the
+partial sums of `k(5^r)/sqrt(5)^r`. At `t=0`, every Wiener kernel pays.
+Source: `GoldenPrimePayment.lean`, `mem_paidIdeal_golden_fiveTower_iff`,
+`mem_paidIdeal_golden_critical_fiveTower_iff`, `mem_paidIdeal_golden_zero`.
+
+The boundary has an explicit coefficient obstruction. Set `u_n=1/sqrt(n+1)`,
+`g_0=-1`, and `g_(n+1)=u_n-u_(n+1)`. Its absolute sum is two and its total
+sum is zero, but its partial sums are `-u_n`, whose squares have divergent
+sum. Truncating after `N` and adding `u_N` to the constant coefficient gives
+a finite zero-sum repair, at exact coefficient distance `2u_N` from `g`.
+Thus zero evaluation alone is weaker than the critical energy condition.
+Source: `CriticalUnpaidSequence.lean`, `criticalUnpaidCoeff_partialSum`,
+`not_summable_sq_criticalUnpaidCoeff_partialSum`, `criticalFiniteRepair_distance`.
+
+### Admission and total pronic energy
+
+For any real row `f`, the positive cells have energies
+`e_n=f(n+1)^2/[(n+1)(n+2)]`, and `sum_(n<T)e_n=||f||_T^2` exactly.
+Their positivity makes uniform finite-horizon norm bounds equivalent to
+summability of the full energy. Applied to the actual centered prefix, this
+identifies receiver admission with a total-energy domain. Complex energy
+splits exactly into its real and imaginary parts. These domain identities
+do not supply an admission estimate for an escaping source.
+Source: `PronicEnergyDomain.lean`, `bounded_pronicNorm_iff_summable`,
+`receiverBounded_iff_summable_pronicCellEnergy`, `summable_complex_pronicEnergy_iff`.
+
+### Paid perturbations preserve the complete ideal
+
+For sources with absolutely convergent means, adding a paid source leaves the entire
+complex repairing ideal unchanged. Every critical Wiener kernel sends the added source
+to a paid source; linearity then proves both inclusions by addition and subtraction.
+Critical Wiener sources are themselves paid, so they give a useful application without
+an additional receiver estimate. Nonzero scalar multiplication also preserves the ideal.
+These equalities concern actual payment, including when the ideal is not norm closed.
+
+Source: `PaidSourcePerturbations.lean`, `paidIdeal_add_paid`,
+`paidIdeal_smul_add_criticalWiener`.
+
+### The golden source has exact geometric inverse coefficients
+
+For the actual ACS golden roots `alpha,beta`, let `a=alpha*t`, `b=beta*t`. Rescaling the
+golden zeta variable by any complex `t` gives a formal series with inverse
+`(1-tX)(1-5tX)/[(1-aX)(1-bX)]`. Its constant coefficient is one, and its positive-degree
+coefficient is `-(a^n-b^n)/sqrt(5)`. The proof uses the actual root sum, product, and difference
+and geometric power-series cancellation. At `t=1` the zeta series is exactly
+`goldenDatum.zetaSeries`. No convergence or choice of numerical roots enters this identity.
+
+For real `0<=t<=1`, reading these coefficients at norms `5^r` and extending by zero gives
+the exact arithmetic source `delta_1-I_a/sqrt(5)+I_b/sqrt(5)`. Its mean converges absolutely
+and equals `(5-6t+t^2)/(5-5t+t^2)`. The unit and secondary tower form a critical Wiener
+source because `b<sqrt(5)`. Paid perturbation invariance therefore identifies the complete
+golden repairing ideal with the primary tower's ideal. The limiting module still requires
+the separate norm comparison.
+Source: `GoldenInverseSeries.lean`, `goldenZetaSeriesAt_one`, `goldenInverseSeriesAt_mul`,
+`goldenInverseSeriesAt_coeff`.
+Source comparison: `GoldenArithmeticSource.lean`, `goldenArithmeticSource_mean`,
+`paidIdeal_goldenArithmeticSource`.
+
+The ordinary-floor admission threshold is exact. For `0<=a<5`, the geometric tower is
+paid precisely when `a<sqrt(5)`. The critical tower already escapes; nonnegative digits
+and the increasing factor `a/(5-a)` force every larger tower to escape as well. Thus
+the golden source at `0<=t<=1` is paid precisely when `alpha*t<sqrt(5)`. Equality is
+unpaid. This threshold follows from finite digit monotonicity and the existing critical
+sharpness theorem, before constructing the limiting profile.
+Source: `GoldenSourceAdmission.lean`, `receiverBounded_fiveTower_iff`,
+`receiverBounded_goldenArithmeticSource_iff`.
+
+### Intrinsic counting changes the golden receiver
+
+Using the golden system's own generalized-integer count gives cumulative series
+`B(X)=Z(X)/(1-X)`, with exact coefficients
+`B_M=(5/16)5^M-M/4+11/16` and bounds `0<=B_M<=5^M`.
+Centering its convolution with the damped inverse by the actual arithmetic mean
+cancels the counting pole. For `D=5-5t+t^2`, `a=alpha*t`, `b=beta*t`, the result is
+
+`A_t(X)=(t/D)(1-5X+5X^2)(1-t^2X)/[(1-X)^2(1-aX)(1-bX)]`.
+
+It is zero at `t=0` and `1/(1-X)` at `t=1`. Thus a golden calibration must specify
+its counting kernel and cofactor action: the intrinsic coefficient row at `t=1`
+is constant, whereas the ordinary-floor receiver escapes. The series identities
+do not themselves identify the completed intrinsic tangent module.
+Source: `IntrinsicGoldenSeries.lean`, `goldenIntrinsicCount_eq`,
+`goldenIntrinsicCount_bounds`, `goldenIntrinsicReceiverSeries_factorization`,
+`goldenIntrinsicReceiverSeries_one`.
+
 ## Mechanisms and traps
 
 1. **Affine identities need a normalization.** Multiplying every dilation by a multiplicative
@@ -224,6 +494,9 @@ Source: `ExactPrefixVisibility.lean`, `prefix_visibility_diameter`,
 6. **A finite Gram limit does not control moving tails.** White-noise and power-law kernels are
    calibration models. Passing an unbounded cofactor sum, a pole trace, or a moving translation
    through the limit needs a separate estimate.
+   In particular, the proposed exclusion of white noise by antipodality is false: ADR's
+   `whiteNoise_has_unique_antipodal_extension` constructs its unique positive extension with
+   unit residual mass and antipodal receiver pairing. Additional source relations are essential.
 7. **Structural selectivity is not source selectivity.** A theorem involving integer addition
    and multiplication may still hold after changing Euler weights. It cannot then orient the
    actual source solely by that theorem.
@@ -236,11 +509,17 @@ escape states. The following are open mathematical obligations.
 
 - **Horizon-complete observation.** Quantify sign visibility between a prefix and a full period,
   with polynomial horizon and the complete signed source retained.
-- **Escape representation.** Construct the completed Wiener module from the actual cofactor
-  Gram limit. Prove annihilation by the paid ideal and inclusion of its spectrum in the
-  obstruction hull. Classify the actual families, including the golden calibration.
-- **Critical translations.** Construct moving successor limits at the square-root energy scale,
-  prove their covariance with dilations, and state the order of every limit.
+- **Escape classification.** Classify all actual common-limit Wiener modules, compare their
+  annihilators with the paid ideal, and determine which source information their hulls retain.
+  Annihilation and hull inclusion are proved for every actual common limit; the golden family and the
+  translated zero-hull comparison remain open.
+- **Critical translations.** Determine a scale at which moving successors can retain nontrivial
+  source information, prove their covariance with dilations, and state the order of every limit.
+  For actual damping `epsilon`, ADR proves raw displacement energy is uniformly
+  `o(k^(2(1-epsilon)))` and recentered energy is uniformly `o(k^(1-epsilon))`.
+  A bounded ratio of the corresponding power to escaping energy still forces disappearance.
+  Thus the square-root energy proposal is excluded; a larger scale needs its own existence
+  theorem. Source: `ArithmeticDefectRigidity/TheSourcePowerSavingControlsMovingSuccessors.lean`.
 - **Arithmetic payment theory.** Define an allocation site or complex that retains shared
   capacity. Relate its integer obstruction to the real degree/torsion invariant; prove exact
   sequences, prime-power transition laws and a source-derived duality.
@@ -268,8 +547,8 @@ comparison maps; a shared notation is insufficient.
 
 The affine identities belong to the structural ring-selective class III; their freedom under
 changing scalar characters prevents a source-selective conclusion. The shared-budget theorem is
-a universal capacity calibration. The paid-kernel argument supplies the full-kernel estimate
-needed for the module–ideal bridge; it supplies no new source-selective cancellation estimate.
+a universal capacity calibration. The paid-kernel argument proves the full module–ideal bridge for every actual common limit;
+it supplies no new source-selective cancellation estimate.
 These distinctions prevent a useful foundational tool from being counted as a closing estimate.
 
 ## Success and contribution criteria

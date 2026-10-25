@@ -1,5 +1,5 @@
 import GaloisForLFunctions.ArithmeticOrientationTheory.AnEffectivityFromSectionsThatDoesNotReadTheForm
-import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.GradedSourceConeBoundaryRigidity
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SourceRiemannRochWithoutSymmetry
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SourceConePrimitiveFaithfulness
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.NumericalEquivalenceOnTheScalingSurface
 
@@ -39,6 +39,32 @@ theorem sourceSectionCone_riemannRoch_and_bezout_iff (S : PolarSurface C) {Φ : 
   rw [sourceSectionCone_eq_sourceCone]
   exact S.sourceCone_riemannRoch_and_bezout_iff hnn heven hfib
 
+/-- Signed or asymmetric section reserves have RR exactly when their positive part lies below the defect. -/
+theorem sourceSectionCone_riemannRoch_iff_positivePart_le_defect (S : PolarSurface C)
+    {Φ : C → ℝ}
+    (hfib : ∀ (x : C) (a b : ℝ), Φ (x + a • S.H + b • S.V) = Φ x) :
+    S.RiemannRochAxiom (sourceSectionCone S Φ) ↔
+      ∀ x : C, max (Φ x) 0 ≤ S.defect x x := by
+  rw [sourceSectionCone_eq_sourceCone]
+  exact S.sourceCone_riemannRoch_iff_positivePart_le_defect hfib
+
+/-- The full section boundary classification imposes no initial source sign or symmetry. -/
+theorem sourceSectionCone_riemannRoch_and_bezout_iff_positivePart_eq_defect
+    (S : PolarSurface C) {Φ : C → ℝ}
+    (hfib : ∀ (x : C) (a b : ℝ), Φ (x + a • S.H + b • S.V) = Φ x) :
+    (S.RiemannRochAxiom (sourceSectionCone S Φ) ∧
+      S.BezoutAxiom (sourceSectionCone S Φ)) ↔
+      ∀ x : C, max (Φ x) 0 = S.defect x x := by
+  rw [sourceSectionCone_eq_sourceCone]
+  exact S.sourceCone_riemannRoch_and_bezout_iff_positivePart_eq_defect hfib
+
+theorem sourceSectionCone_bezout_iff_positiveParts (S : PolarSurface C) {Φ : C → ℝ}
+    (hfib : ∀ (x : C) (a b : ℝ), Φ (x + a • S.H + b • S.V) = Φ x) :
+    S.BezoutAxiom (sourceSectionCone S Φ) ↔
+      ∀ x y : C, max (S.defect x y) 0 ^ 2 ≤ max (Φ x) 0 * max (Φ y) 0 := by
+  rw [sourceSectionCone_eq_sourceCone]
+  exact S.sourceCone_bezout_iff_positiveParts hfib
+
 /-- On the full compact scaling surface, ampleness requires a strictly positive reading of every nonzero source. -/
 theorem scalingSourceSectionCone_ample_iff_source_pos {Φ : ScalingCycle → ℝ}
     (hfib : ∀ (x : ScalingCycle) (a b : ℝ),
@@ -62,6 +88,33 @@ theorem sourceH0_le_one (S : PolarSurface C) (Φ : C → ℝ) (x : C) :
     sourceH0 S Φ x ≤ 1 := by
   rw [sourceH0_eq_ite]
   split_ifs <;> omega
+
+/-- A Boolean section count cannot satisfy the dimension form of RR for any canonical class or Euler constant. -/
+theorem exists_sourceH0_riemannRoch_dimension_failure (S : PolarSurface C)
+    (Φ : C → ℝ) (K : C) (χ : ℝ) :
+    ∃ x : C, (sourceH0 S Φ x : ℝ) + (sourceH0 S Φ (K - x) : ℝ) <
+      S.pair x (x - K) / 2 + χ := by
+  let k := S.pair S.ample K
+  let t := |k| + |χ| + 4
+  have ht : 4 ≤ t := by dsimp only [t]; linarith only [abs_nonneg k, abs_nonneg χ]
+  have hk : k ≤ t - 4 := by dsimp only [t]; linarith only [le_abs_self k, abs_nonneg χ]
+  have hχ : -t + 4 ≤ χ := by dsimp only [t]; linarith only [neg_abs_le χ, abs_nonneg k]
+  have hmul := mul_le_mul_of_nonneg_left hk (show 0 ≤ t by linarith only [ht])
+  let x := t • S.ample
+  have hAA : S.pair S.ample S.ample = 2 := by
+    simp only [PolarSurface.ample, map_add, LinearMap.add_apply, S.pair_H_H,
+      S.pair_V_H, S.pair_H_V, S.pair_V_V]
+    norm_num
+  have hxx : S.pair x (x - K) = 2 * t ^ 2 - t * k := by
+    dsimp only [x, k]
+    simp only [map_sub, map_smul, LinearMap.smul_apply, smul_eq_mul, hAA]
+    ring
+  have hx : (sourceH0 S Φ x : ℝ) ≤ 1 := by exact_mod_cast sourceH0_le_one S Φ x
+  have hKx : (sourceH0 S Φ (K - x) : ℝ) ≤ 1 := by
+    exact_mod_cast sourceH0_le_one S Φ (K - x)
+  refine ⟨x, ?_⟩
+  rw [hxx]
+  nlinarith only [hx, hKx, ht, hχ, hmul, sq_nonneg t]
 
 /-- Boolean section counts cannot pay unbounded self-intersection, even along pure fibres. -/
 theorem exists_sourceSectionCone_self_pair_gt_count_add (S : PolarSurface C) {Φ : C → ℝ}

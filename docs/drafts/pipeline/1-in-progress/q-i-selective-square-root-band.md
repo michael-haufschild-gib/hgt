@@ -38,6 +38,25 @@ experiments. Preserve pre-existing worktree changes.
 
 ## Conjecture loop
 
+**Balanced prime-band audit.** The current corpus sources
+`TheCentredPrimeBandIsTheQuasiRiemannHypothesis.lean` and
+`TheCentredPrimeBandFromAZeroFreeStrip.lean` have been read in full. They identify
+`CentredPrimeBandPowerSaving` with `zetaZeroAbscissa < 1`: the converse recovers a
+power rate for the prime reciprocal tail and then `ψ(N)-N`; the forward proof
+uses the fixed strip to supply the prime partial-sum rate. This adds an exact
+bridge to the same target, not an unconditional producer of that target.
+
+
+**Source audit of the Guth–Maynard input.**
+`ShortWindowDispersionAtSeventeenThirtieths` already applies the `30/13`
+zero-density theorem to unbalanced centered-prime dispersion, in the explicit range
+`P^(1+δ)≤Q≤P^(30/17-δ)`. That does not include the balanced band `P≈Q`.
+`MaynardBufferedPhysicalSelectedCellNoGo` proves that the ordinary unpolarized
+Guth–Maynard middle term exceeds the required Route-T receiver exponent throughout
+the physical phase. Its positive survivor identifies a need to retain paired
+cancellation before taking the large-value count. This is an existing, scoped
+obstruction; it neither retires Q-I nor supplies a fixed strip.
+
 1. **Audit the quantitative Class III target.** Determine the unavoidable leading pole part of
    the Vaughan Gram and whether the actual source already forces large negative mixed energy.
    Seek an exact positive decomposition identifying the residual estimate after pole removal.
@@ -105,7 +124,8 @@ The complete leaf check passed. A subsequent extension gives a cutoff-uniform fi
 eventually at every horizon some `j ≠ 4` satisfies `G_4j ≤ -ρ²T/8`. Its olean-producing check
 also passed, needed only because the new fixed-cutoff Gram module imports it. The transitive
 axiom audit passed for the principal declarations, with only `propext`, `Classical.choice`,
-and `Quot.sound`. The pole module is wired into the BVI umbrella; no umbrella was compiled.
+and `Quot.sound`. The final direct no-olean check also passed for the complete pole module.
+It is wired into the BVI umbrella; no umbrella was compiled.
 
 ### Next conjecture after pole calibration
 
@@ -145,7 +165,7 @@ Cesàro lemma. It is a positive structural result, not a proof of the missing re
 `TheFixedVaughanGramHasRankOneLeadingTerm.lean` passed its olean-producing leaf check, needed
 because the atomic-budget module imports it. Its principal declarations passed the
 transitive-axiom audit with only `propext`, `Classical.choice`, and `Quot.sound`; the final
-direct no-olean check remains. Its umbrella import is present. Its proof uses finite
+direct no-olean check passed. Its umbrella import is present. Its proof uses finite
 floor means, the unsigned divisor average, and the exact five-piece identity. No computation
 or analytic estimate beyond absolute convergence enters this first-order classification.
 
@@ -202,9 +222,13 @@ exact small-small extraction, signed-remainder norm bound, upper/lower bounds fo
 mass, squared-budget power bounds, and the explicit no-power-saving corollary. Its first direct
 leaf check left two proof-script errors (addition order and an unreduced composition), both
 corrected. The source audit passed with only `propext`, `Classical.choice`, and `Quot.sound`
-for all ten public theorems. Its umbrella import is present; final direct leaf check remains.
+for all ten public theorems. Its umbrella import is present; final direct leaf check passed.
+Four further corollaries make the positive atomic constant, the literal remainder's trivial
+energy bound, and the no-saving obstruction at horizon `T=N²` explicit. All four additions
+passed the olean-producing leaf check after one cast normalization. All fourteen transitive
+axiom reports passed with only the standard axioms; final direct leaf audit passed.
 Its fixed-Gram dependency is compiled. The paper proof is tracked in
-`../2-fully-proven/vaughan-smooth-remainder-and-absolute-budget.md`.
+`../3-formalized/vaughan-smooth-remainder-and-absolute-budget.md`.
 
 **Moving-cutoff caution.** The existing `sum_moebius_weight_eq_rectangular` already proves
 that the both-large remainder vanishes when `T<(U+1)(V+1)`. In particular, at `T=N²`
@@ -214,11 +238,11 @@ for the growing small-small piece and its signed cross terms. The new fixed-Gram
 also records this exact vanishing, keeping the two limiting regimes distinct.
 
 The dependency-closed structural result and exact restricted no-go are tracked separately in
-`../2-fully-proven/vaughan-pole-mass-and-fixed-cutoff-gram.md`. This Q-I card remains in progress.
+`../3-formalized/vaughan-pole-mass-and-fixed-cutoff-gram.md`. This Q-I card remains in progress.
 
 ### Stronger conjecture: uniform leading Gram law
 
-[PROVED HERE on paper; Lean not started] Absolute convergence gives a uniform extension of
+[PROVED HERE on paper; Lean draft started] Absolute convergence gives a uniform extension of
 the leading matrix approximation: `G_ij(T;U,V)/T-c_i(U,V)c_j(U,V)→0` uniformly over both
 cutoffs. For a coefficient family dominated by `b(d)` with `Σ b(d)/d<∞`, the floor-mean
 error is uniformly bounded by
@@ -232,8 +256,123 @@ the two small legs differ from the full Möbius floor prefix by at most
 `n Σ_(d>N)d^(-1-ε)`, and the five-piece identity determines the small-small leg.
 This predicts `G(N²;N,N)/N²→ρ² vvᵀ`, `v=(1,1,-1,0,-1)`, and diagonal density `4ρ²`.
 It is a further leading-order classification, not a residual saving. The dependency-closed proof
-and internal novelty audit are in `../2-fully-proven/uniform-vaughan-gram-leading-term.md`.
+and internal novelty audit are in `../3-formalized/uniform-vaughan-gram-leading-term.md`.
 No external novelty is claimed for this specialization of uniform dominated convergence.
+
+### Fixed-cutoff classification and finite harmonic rigidity
+
+The normal-form paper proof is now dependency-closed in
+`../3-formalized/vaughan-finite-cutoff-receiver-normal-form.md`. Every fixed packet is
+`w_3 I_ε + L_w n + Q_w n^(1-ε)` plus bounded pronic energy. The existing VK source
+estimate and smooth-power norm asymptotic force both explicit coefficients to vanish
+for an admitted packet; admission then retains exactly the original receiver direction.
+The same proof gives a second rank-one Gram limit after subtracting the linear means.
+Both classification and second-scale limit passed the complete Lean scratch check and
+all nineteen transitive-axiom audits. Repository production passed; the final direct check passed.
+
+The coefficient `Q_w` simplifies at positive cutoffs because finite Möbius harmonic
+sums never vanish. The denominator proof and stronger terminal-prime valuation law are
+in `../3-formalized/finite-mobius-harmonic-sums-never-vanish.md`. All eight p-adic and
+nonvanishing theorems passed their scratch check and transitive-axiom audit, using only
+standard axioms. Their repository leaf is `RHTower/FiniteMobiusHarmonicSumsNeverVanish.lean`,
+wired with its producing check passed; the final direct check passed. This forces
+`w_2=w_3` in the admitted fixed packets. It gives no polynomial lower bound for the
+harmonic sums and no gain for moving cutoffs.
+
+### Product-horizon second scale
+
+A further dependency-closed paper result is in
+`../3-formalized/vaughan-product-horizon-centred-gram-has-zero-trivial-density.md`:
+at `T=UV`, with both cutoffs divergent and arbitrary aspect ratio, subtracting each
+cutoff-dependent linear mean makes every component norm `o(T^(1/2-ε))`, hence every
+centered Gram entry `o(T^(1-2ε))`. Small legs cost only `W_ε(U)` and `W_ε(V)`;
+the exactly vanishing both-large leg leaves the product of two signed reciprocal tails.
+The scaled tail limit follows from the checked mean-zero Möbius theorem and
+`abs_tsum_tail_rpow_le_of_linear`. This contrasts with the nonzero second-scale density
+at fixed cutoffs. It gives no fixed power saving. The eight scaled-tail declarations include the bounded scaled
+tail and the product limit requiring only a divergent product of indices. All eight
+scratch axiom audits passed with standard axioms. The checked source is now
+`SignedVaughanTailsVanishAtTheirAbsoluteScale.lean`; its producing and final direct checks passed.
+The full moving matrix proof, uniform over all factorizations with divergent product,
+passed fifteen scratch axiom audits. Its repository module
+`ProductHorizonVaughanGramsHaveZeroTrivialDensity.lean` passed its producing and final direct checks.
+
+### The empty large leg already detects the missing power rate
+
+The dependency-closed paper equivalence in
+`../3-formalized/vaughan-empty-large-leg-power-gain-and-fixed-strips.md` sharpens the
+moving-cutoff obstruction. At square cutoffs the centered both-large diagonal is exactly
+`Z²(ρ-A_N)^4 ‖n‖_(N²)^2`. A fixed power gain at its trivial scale is equivalent to a
+power rate for the signed reciprocal tail, hence to `zetaZeroAbscissa<1` by finite Abel
+inversion and the checked Mertens-rate equivalence. The literal both-large piece is empty;
+its centering imports the infinite reciprocal density. No power rate has been proved.
+The exact energy identity passed the residual-density audit. Finite Abel inversion,
+the power-increment bound, both directions of the tail-rate equivalence, and the
+explicit Mertens-to-tail rate passed seven standard-axiom audits in
+`VaughanReciprocalTailPowerGainsAreFixedStrips.lean`. Its producing and final direct checks passed.
+All four energy-rate targets in `TheEmptyVaughanLegDetectsAFixedStrip.lean` passed
+their standard-axiom and final direct audits. The exact equivalence holds for every
+fixed `0<ε≤1`, with energy saving measured in `N` and horizon saving half that exponent.
+
+### Verification details
+
+Final direct `lake --old env lean` checks passed for the fixed Gram, absolute budget,
+uniform leading Gram, fixed-packet normal form, harmonic nonvanishing, and residual-density
+leaves. The pole leaf had already passed. Umbrella imports are present. Their completed
+transitive-axiom audits list only the standard axioms. The coefficient-space leaf also
+passed its final direct audit. Eight completed cards, including the normal form and its
+dimension corollaries, are now in stage 3. Two precisely scoped failed-route cards record the pole-cross and absolute-
+budget obstructions with their audited positive survivors.
+
+The residual-density leaf includes all nineteen public statements: source and smooth
+scale limits, packet norms and energies, signed pairing and matrix laws, smooth-mean
+necessity, complete admission equivalence, and the exact empty-large-leg statistic.
+Its olean supports the fully checked coefficient-space importer.
+A further theorem extends the classification across half damping:
+`../2-fully-proven/vaughan-admission-phase-transition-at-half-damping.md`. Its dependency-closed
+paper proof gives dimension three at half damping and four above it, with a uniform
+upper-half centered-component bound. Its upper-half claim is uniform
+in the cutoffs; no additional lower-half source estimate is asserted.
+The coefficient-space, unique-coordinate, and quotient-dimension corollaries are fully
+checked in `TheAdmittedVaughanCoefficientSpace.lean`, with ten standard-axiom reports.
+The product-horizon paper result has a stronger uniform extension in
+`../3-formalized/uniform-product-horizon-vaughan-second-scale.md`: only the product
+must diverge. Uniform mean-zero estimates for all truncated Möbius patterns pay the
+two small centered legs at the trivial scale. The ten uniform-pattern, energy, and exact
+small-leg bridge declarations passed all ten scratch axiom audits with standard axioms.
+Their checked source is `UniformTruncatedMobiusReceiversHaveZeroTrivialDensity.lean`;
+its producing check passed for the product-horizon importer; its final direct audit passed.
+A further scale-contraction conjecture
+is tracked in `vaughan-tail-scale-contraction.md`; no composition estimate is proved.
+The exact zero-cutoff boundary is proved on paper in
+`../2-fully-proven/vaughan-zero-cutoffs-remove-the-smooth-obstruction.md`: the vanished
+small-small piece adds one free coefficient direction, giving admitted dimension three
+or four below half damping, and four at half damping. These dimension corollaries remain
+to formalize.
+The dependency-closed rank-set application is in
+`../2-fully-proven/vaughan-admitted-rank-filtration-reads-the-zero-abscissa.md`:
+for every cutoff pair, the damping set acquiring the extra receiver direction equals
+the existing receiver damping set, with lower accumulation boundary `Θ-1/2`.
+This is a finite coefficient-space realization of the existing analytic index, not a
+finite test for admission. Its Lean proof awaits the dimension and phase extensions.
+
+The uniform second-scale theorem is now proved on paper for all cutoffs independently
+of the horizon: `../2-fully-proven/uniform-second-scale-vaughan-gram-at-all-cutoffs.md`.
+The undamped small-small convolution has mean `H_U H_V` uniformly with every logarithmic
+rate. A generalized finite hyperbola bound transfers this to the damped centered pieces.
+Thus the normalized centered Gram is uniformly asymptotic to its smooth rank-one term;
+if both the horizon and the cutoff product diverge, that entire Gram tends to zero at
+the trivial scale. The error admits every prescribed logarithmic saving. Its Lean
+formalization remains pending; this gives no fixed power saving.
+
+An exact extreme-cutoff invariant sharpens this boundary:
+`../2-fully-proven/uniform-vaughan-residual-power-rates-are-fixed-strips.md`.
+At `U=1,V=T`, the two centered convolution pieces are proportional with factor `ρ-1`.
+After subtracting the smooth Gram model, their corresponding error contrast equals
+`ρ subHalfZetaCoeff(ε)^2 H_T^2/(1-2ε)>0`. A fixed power rate for the uniform residual
+Gram law is therefore equivalent, on paper, to a fixed zero-free strip. Eleven finite
+identity, positivity, cofinal-obstruction, and harmonic-rate theorems are drafted in `/tmp/QIExtremeCutoffTools.lean`;
+their Lean check remains pending.
 
 ## External calibration
 
@@ -247,3 +386,109 @@ in the new pole-calibration proofs.
 
 - 2026-10-25 — Created after reading the attachment and report, checking the worktree, and
   searching the corpus. Full Q-I remains open.
+
+The endpoint has a stronger paper law in
+`../2-fully-proven/uniform-half-damping-vaughan-harmonic-gram.md`: subtracting the explicit
+harmonic rank-one term leaves a uniformly bounded matrix error for all cutoffs and horizons.
+With both cutoffs divergent, the renormalized Gram tends to the finite Gram of the actual
+rows `(A,A,-A,0,P)`, of rank exactly two on paper. At product horizons the harmonic mass vanishes,
+and the centered trace has a uniform endpoint budget. These endpoint refinements remain
+to formalize and provide no fixed strip below half damping.
+
+The pole's positive finite energy has a separate dependency-closed proof in
+`../2-fully-proven/the-centred-vaughan-pole-has-positive-finite-energy.md`.
+For every `ε≥0`, its limit lies between `2^(-2ε)/32` and `1/4`, independently of
+moving cutoffs. The full normalized residual matrix therefore cannot decay with
+power exponent greater than `1-2ε`. Its seven Lean audit targets are drafted but
+unverified. The positive energy also proves the endpoint limiting Gram is nonzero.
+
+The two-cell refinement is proved on paper in
+`../2-fully-proven/the-endpoint-vaughan-limit-has-rank-two.md`: finite Euler factors
+at primes two and three give an explicit positive determinant for the actual prefix
+and pole rows. Their endpoint two-by-two Gram determinant is at least `1/62208`.
+This proves exact rank two; its Lean formalization remains pending.
+
+The exact decay indices are now proved on paper in
+`../2-fully-proven/vaughan-tail-and-energy-decay-indices.md`.
+For every fixed `ε>0`, the supremal signed-tail gain is `1-Θ`, independent of
+damping; the normalized square empty-leg energy has index `4(1-Θ)` in `N`, or
+`2(1-Θ)` in the horizon. The proof combines the checked quartic identity, finite
+Abel inversion, and the read Littlewood and absolute-Mertens-moment exponent laws.
+The compact-interval power-increment bound removes the earlier restriction `ε≤1`
+on paper; its five Lean targets remain unverified. The full rate sets, including
+endpoint attainment, are independent of positive damping. Twenty-six Lean targets
+for the indices, exact rate sets, and horizon formulations are drafted, uncompiled.
+These identities supply no positive lower bound for the width.
+
+## Checked uniform undamped convolution rate
+
+`UniformCancellationInTheUndampedVaughanConvolution.lean` and
+`UniformLogarithmicCancellationInTheVaughanConvolution.lean` passed their scratch,
+producing, and final direct leaf checks. All eleven transitive axiom audits use
+only `propext`, `Classical.choice`, and `Quot.sound`; both modules are wired and
+their temporary audit files are removed. The completed card is
+`../3-formalized/uniform-undamped-vaughan-convolution-cancellation.md`.
+
+The theorem gives `Σ_(d≤n)(μ_≤U*μ_≤V*1)(d)=nH_UH_V+O_q(n/(log n)^q)` for
+every integer `q≥0`, uniformly over all cutoffs. The generic divisor-square
+hyperbola estimate and damped logarithmic transfer have now passed all six
+scratch axiom audits, producing checks, and final direct checks. Their completed
+card is `../3-formalized/divisor-bounded-damped-floor-logarithmic-transfer.md`.
+The actual fluctuation and exact centered-row decomposition also passed all nine
+scratch axiom audits, producing and final direct checks; see
+`../3-formalized/vaughan-convolution-mean-and-logarithmic-fluctuation.md`.
+The prefix-to-energy transfer and full uniform Gram law remain under formalization.
+
+The fresh source `TheCofinalSlopeIsTheOneLineEnergyOfOneOverZeta.lean`
+expresses the cofinal slope as a weighted integral of
+`1/|it ζ(1+it)|²`, with an absolutely convergent Euler-product weight.
+Its boundary-value proof uses convergence from `Re s>0` to `Re s=0`
+for the Laplace transform, hence only the zeta line `Re s=1`.
+This is an exact arithmetic spectral representation, not a bound on a
+line to its left. No fixed-strip input was found there. The concurrent
+leaf was source-audited, not independently compiled in this work.
+
+The rank-three prime-Gram expansion has a second restriction beyond the
+short-window terminal block: its explicit remainder is `(3/4)p³/q²`.
+For comparable primes this has the same order as the trivial kernel scale
+`p²/q`. Thus the expansion's remainder alone does not save a power in the
+balanced band, even if its displayed Kloosterman term is controlled.
+Here “rank three” describes the three separable smooth terms of the Gram;
+the oscillatory sums are classical Kloosterman sums, not an asserted
+rank-three hyper-Kloosterman estimate. The exact reciprocity and Wiener
+identities remain available; this observation does not retire that route.
+
+Four further consequences are dependency-closed on paper; their Lean status follows:
+
+- `../2-fully-proven/uniform-vaughan-convolution-stretched-exponential-rate.md`
+  uses the read harmonic Möbius stretched-exponential source to strengthen the
+  uniform convolution rate and give one threshold for factorial logarithmic bounds.
+- `../2-fully-proven/vaughan-endpoint-rates-and-zero-multiplicity.md` proves that
+  attained positive tail rates force simple zeros on their boundary line, while
+  the maximal tail scale cannot have little-o decay. The quartic comparison gives
+  the corresponding unconditional empty-leg energy oscillation.
+
+- `../2-fully-proven/vaughan-subcritical-gram-limit-classification.md` classifies
+  all subcritical moving-cutoff Gram limits. Their amplitudes form a countably
+  infinite compact set, discrete away from zero. A nonzero limit forces the
+  cutoffs eventually into one fixed finite amplitude fiber. Arithmetic and matrix
+  classification drafts exist but remain unchecked.
+- `../2-fully-proven/positive-vaughan-cutoff-escape-is-zero-gram-limit.md` proves
+  that, for positive cutoffs and a divergent horizon, the zero normalized Gram
+  limit is equivalent to cutoff-product escape. Its converse and the resulting
+  convergence dichotomy are drafted but unchecked.
+
+None of these statements proves a positive fixed-strip width. Full Q-I remains open.
+
+## Prime reciprocity source audit
+
+The current source `ExactParsevalAndRankThreeKloostermanLawOfThePrimeGram`
+isolates a zero-mean periodic reciprocity kernel and proves exact orthogonality
+for two distinct primes over a complete product period. Its terminal-block
+identity leaves the entire sum unchanged when the observation length is below
+that product. Thus complete-period cancellation alone supplies no short-window
+estimate in the balanced prime regime. The source also gives a sharp single-prime
+Fourier-energy lower bound and a linear Fourier `ℓ¹` bound without the extra
+square-root loss. These are concrete inputs for a future signed average over
+primes; no such average or fixed-strip producer follows from the read statements.
+This audit does not certify the concurrently edited leaf or retire that route.

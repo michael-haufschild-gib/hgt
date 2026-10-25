@@ -107,6 +107,16 @@ Mathematics has two ways of making an orientation survive limits: topological in
 algebraic effectivity. Neither exists for a source living on `ℤ × (scale)`. AOT builds the
 finite, exact part of both.
 
+[TheOperatorHullOfAWienerAction](TheOperatorHullOfAWienerAction.lean) separates
+characters bounded in the represented operator norm from the full annihilator
+hull. The former is nonempty and obeys exact dilation-coordinate bounds;
+closed representation image identifies the two.
+[WeightedOrthogonalCofactorsHaveTheFullHull](WeightedOrthogonalCofactorsHaveTheFullHull.lean)
+gives faithful cyclic actions with exact stronger contraction and the full
+annihilator hull, including an explicit character unbounded in operator norm.
+This distinction is essential when applying Wiener index theory to cofactor
+escape modules.
+
 ### 1.3 What an orientation is
 
 Three structures carry it.
@@ -1497,6 +1507,15 @@ be coupled to the Frobenius mass or to the defect `E(s) = e^s + s − 1 − ψ(e
   `primeNodeCorrelationObstruction_lt_shiftedPair`, `chebyshevSectionCone_widthDictionary_tfae`), and
   the convex Hecke-stable `L²`-mass section cone (`l2SourcePairing_le_polar_of_mem_l2MassSectionCone`,
   `l2MassSectionCone_convex_ample_and_primeTwo_riemannRoch`, `sourceSectionEffectivity_synthesis`).
+- `RosatiSectionsHaveBezoutWithoutUnitarity` — every Rosati and Frobenius-mass
+  section cone has Bézout and ampleness; RR is exactly zero reflection defect.
+  The golden datum satisfies both positivity axioms and fails RR.
+- `SourceSectionBoundaryRigidity` — exact signed and asymmetric section-reserve boundaries;
+  the Boolean section reading cannot satisfy a classical dimension RR formula, for any
+  canonical class or Euler constant.
+- `AllApertureChebyshevSourceEffectivity` — the graded archimedean-minus-Chebyshev source cone
+  has RR at every aperture; its Bézout and ampleness axioms are exactly payment of the
+  Chebyshev correction by the archimedean budget.
 - `AnIndexFormulaForTheActualReceiver` — payment-to-ideal-to-hull-to-rank equivalences
   (`paidIdeal_eq_top_iff_receiverBounded`, `obstructionHull_eq_empty_iff_receiverBounded`,
   `rank_quotient_paidIdeal_eq_zero_iff_receiverBounded`), the translated off-line zero hull

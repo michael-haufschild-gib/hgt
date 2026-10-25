@@ -111,5 +111,101 @@ where `H_k=sum_{n=1}^k 1/n`. Hence the uniform remainder budget improves from
 `8k` to `2k-H_k <= 2k`. The envelope is sharp for the class of prefix rows with
 increments in an interval of width one: the hinge prefix `v(n)=max(n-k,0)`
 has additive defect exactly `min(n,k)` for the specified shift `k`.
-This sharp source refinement and the origin-trace classification are the
-strongest positive survivor currently exposed. Lean work remains pending.
+This sharp source refinement and the origin-trace decomposition are positive
+survivors. The sharp envelope and raw square-root-scale collapse now pass
+Lean and standard-axiom audits. Their final source-only checks remain.
+
+## Zero-origin translations and the corrected surviving scale
+
+A translated prefix with the same zero-origin convention is
+`tau_k A(n)=A(n+k)-A(k)`. Its difference from `A` is precisely `r_k`.
+The sharp source bound therefore implies
+
+`||tau_k A-A||_pronic^2 <= 2k-H_k <= 2k`.
+
+Consequently **every recentered translation with `k=o(E)` becomes the identity
+on the normalized actual receiver**, without any sublinearity premise. A
+nontrivial recentered successor scale must reach at least order `E`, stronger
+than the report's order `sqrt(E)` lower bound.
+
+This distinction matters for the dilation action. The raw translated row has
+value `A(k)` at index zero; the sharp cofactor contraction requires zero-origin
+rows. Pronic norm does not see the value at zero, but floor dilation does: it
+copies that value onto the first `j-1` positive cells. Thus the raw origin trace
+cannot be silently inserted into the same contractive Wiener module. Resetting
+the origin preserves the source convention and exposes the linear translation
+budget above. No new bounded translation representation has yet been proved.
+
+## Stronger paper consequence: the recentered budget is little-oh linear
+
+Sublinearity improves the recentered defect budget from `O(k)` to `o(k)`,
+uniformly in the horizon. Here is a finite-sum proof. Fix an integer `q>=1`
+and split at `floor(k/q)` and `q*k`. The head costs at most `k/q` by the
+`min(n,k)` envelope. The tail costs at most `k^2/(q*k+1)<=k/q`.
+For any `a>0`, sublinearity supplies `N` with `|A(m)|<=a*m` for `m>=N`.
+For `k>=q*N`, every index in the middle segment and all three arguments in
+`r_k(n)` exceed `N`. Therefore `|r_k(n)|<=2a(q+1)k`. Its pronic mass is at
+most `1/(floor(k/q)+1)<=q/k`, so the middle costs at most
+`4a^2*q*(q+1)^2*k`. Thus the whole energy divided by `k` is at most
+`2/q+4a^2*q*(q+1)^2`. First choose large `q`, then small `a`.
+This proves the uniform little-oh linear law without a limit exchange.
+
+The same bounded/large-length split used for raw translations now proves that
+every recentered translation with bounded `k/E` disappears on escape.
+This is a dependency-closed paper consequence; Lean verification is pending.
+
+The full proof is drafted in `/tmp/qiii_linear_translation_check.lean`. Its
+general three-region energy estimate passed Lean and a standard-axiom audit.
+The source specialization had two local elaboration errors, now fixed;
+the strengthened conclusion has not yet passed its retry.
+
+## Origin reset and a possible boundary module
+
+Recentring subtracts `A(k)` at every cell. A different operation resets only
+index zero: `B_k(0)=0`, `B_k(n)=A(n+k)` for positive `n`. Define
+`u(0)=0`, `u(n)=1` for positive `n`. Then exactly
+`B_k=A+r_k+A(k)u`. The strengthened recentered estimate makes the remainder
+disappear whenever `k/E` is bounded. Every fixed
+dilation of `u` is the step row `1_{n>=j}`, whose limiting covariance is
+`1/max(j,l)`. Its cross pairing with each normalized actual cofactor row
+tends to zero on escape: fixed cells vanish and the fixed step row has
+summable pronic square mass.
+
+Consequently, if `A(k)/sqrt(E)` converges to a finite scalar `b`, these
+zero-reset moving profiles have Gram limit `K+b^2/max(j,l)` at the original
+receiver scale, or `(K+b^2/max(j,l))/(1+b^2)` at their own scale. This is a
+conditional structural consequence, not an assertion that a nonzero `b`
+occurs for the actual receiver. The step-row module is faithful: applying a
+Wiener kernel to its cyclic vector gives its finite prefix sums, so zero
+action forces every coefficient to vanish. Thus a surviving reset-origin
+component would have the full Bohr hull. It would not preserve the original
+paid-ideal bridge automatically. This distinguishes raw translation,
+recentring, and a reset at one cell; they cannot share an unproved action law.
+These consequences still need source and Lean audits before being used.
+
+The raw, unreset row has a different boundary term: its displacement is
+`r_k+A(k)` including at index zero. Dilation preserves this constant row, so
+its limiting boundary Gram is constant `b^2`, rather than `b^2/max(j,l)`.
+A nonzero constant row violates the sharp zero-origin contraction and cannot
+be inserted into the original critical Wiener action. This pinpoints the
+domain change caused by raw translation.
+
+For the reset-origin kernel, faithfulness survives even if the cyclic Gram
+realization is only a subspace of the ambient orthogonal sum: projecting its
+cyclic orbit to the step-row factor gives the full step-row cyclic orbit.
+An annihilating operator must therefore kill that orbit, forcing every Wiener
+coefficient to be zero. No claim that the cyclic subspace splits as an
+orthogonal direct sum is needed.
+
+## Lean proof route consolidated around the origin trace
+
+The exact decomposition also gives the simpler uniform estimate
+
+`D(k,T) <= 4k + 2 A(k)^2`,
+
+by `(r_k(n)+A(k))^2 <= 2r_k(n)^2+2A(k)^2` and pronic mass at most one.
+Sublinearity now yields the uniform little-oh quadratic budget directly:
+`(4k+2A(k)^2)/k^2 = 4/k+2(A(k)/k)^2 -> 0`.
+This replaces the planned dominated-series implementation for the same theorem.
+The initial dominated-convergence paper proof remains valid, but its temporary
+Lean draft can be superseded by this stronger shared origin-trace argument.

@@ -15,8 +15,9 @@ This lower bound concerns the absolute budget, not the signed remainder itself.
 open Finset Filter ArithmeticFunction RHTower
 open GaloisForLFunctions.TransHorizonIncidenceMechanics
   (subHalfDilationRemainder subHalfZetaCoeff floorSumRate pronicNorm pronicNorm_sum_le
-   pronicNorm_smul pronicNorm_subHalfDilationRemainder_le subHalfRemainder
-   weightCenteredPrefix dampedSignWeight unitSign sum_Icc_sum_divisors_eq_floor)
+   pronicNorm_smul pronicNorm_nonneg pronicNorm_subHalfDilationRemainder_le subHalfRemainder
+   weightCenteredPrefix dampedSignWeight unitSign sum_Icc_sum_divisors_eq_floor
+   abs_subHalfRemainder_le subHalfZetaCoeff_neg)
 open scoped BigOperators Topology
 
 noncomputable section
@@ -38,6 +39,19 @@ def pmVaughanSmoothRemainder (ε : ℝ) (U V n : ℕ) : ℝ :=
 def pmVaughanSmoothRemainderConstant (ε : ℝ) : ℝ :=
   Real.sqrt (1 + 1 / ε) *
     (floorSumRate ((1 - ε : ℝ) : ℂ) + |subHalfZetaCoeff ε|)
+
+/-- The atomic norm constant is strictly positive throughout the smooth-power range. -/
+theorem pmVaughanSmoothRemainderConstant_pos {ε : ℝ} (hε : 0 < ε) (hε1 : ε < 1) :
+    0 < pmVaughanSmoothRemainderConstant ε := by
+  have hrate : 0 ≤ floorSumRate ((1 - ε : ℝ) : ℂ) := by
+    have h : |subHalfRemainder ε 1| ≤ floorSumRate ((1 - ε : ℝ) : ℂ) := by
+      simpa using abs_subHalfRemainder_le hε hε1 1
+    exact (abs_nonneg _).trans h
+  have hcoeff := subHalfZetaCoeff_neg hε hε1
+  unfold pmVaughanSmoothRemainderConstant
+  apply mul_pos (by positivity)
+  rw [abs_of_neg hcoeff]
+  linarith only [hrate, hcoeff]
 
 /-- The remaining floor prefix of the two truncated Möbius factors. -/
 def pmVaughanSmallSmallFloor (ε : ℝ) (U V n : ℕ) : ℝ :=
@@ -249,6 +263,12 @@ private theorem square_budget_power (ε : ℝ) (N : ℕ) :
   norm_num
   ring
 
+private theorem square_horizon_rpow (N : ℕ) (r : ℝ) :
+    ((N ^ 2 : ℕ) : ℝ) ^ r = (N : ℝ) ^ (2 * r) := by
+  rw [Nat.cast_pow, ← Real.rpow_natCast (N : ℝ) 2,
+    ← Real.rpow_mul (Nat.cast_nonneg N)]
+  norm_num
+
 /-- The squared absolute budget at a square-root rectangle has the trivial lower power. -/
 theorem pmVaughan_absolute_square_budget_lower {ε : ℝ} (hε : 0 ≤ ε)
     {N : ℕ} (hN : 1 ≤ N) :
@@ -283,6 +303,29 @@ theorem exists_pmVaughan_absolute_square_budget_upper {ε : ℝ}
   rw [mul_pow, square_budget_power] at h
   nlinarith only [h]
 
+/-- The literal signed remainder inherits the trivial square-root-horizon energy upper bound. -/
+theorem exists_pmVaughanSmoothRemainder_square_energy_le {ε : ℝ}
+    (hε : 0 < ε) (hε2 : ε < 1 / 2) :
+    ∃ C : ℝ, 0 < C ∧ ∀ N : ℕ, 1 ≤ N →
+      pronicNorm (pmVaughanSmoothRemainder ε N N) (N ^ 2) ^ 2 ≤
+        C * ((N ^ 2 : ℕ) : ℝ) ^ (1 - 2 * ε) := by
+  have hε1 : ε < 1 := by linarith
+  obtain ⟨K, hK, hbudget⟩ := exists_pmVaughan_absolute_square_budget_upper hε hε2
+  refine ⟨pmVaughanSmoothRemainderConstant ε ^ 2 * K,
+    mul_pos (pow_pos (pmVaughanSmoothRemainderConstant_pos hε hε1) 2) hK,
+    fun N hN => ?_⟩
+  have hnorm := pow_le_pow_left₀ (pronicNorm_nonneg _ _)
+    (pronicNorm_pmVaughanSmoothRemainder_le hε hε1 N N (N ^ 2)) 2
+  rw [square_horizon_rpow, show 2 * (1 - 2 * ε) = 2 - 4 * ε by ring]
+  calc
+    _ ≤ (pmVaughanSmoothRemainderConstant ε *
+        pmVaughanAtomicAbsoluteMass ε N * pmVaughanAtomicAbsoluteMass ε N) ^ 2 := hnorm
+    _ = pmVaughanSmoothRemainderConstant ε ^ 2 *
+        (pmVaughanAtomicAbsoluteMass ε N * pmVaughanAtomicAbsoluteMass ε N) ^ 2 := by ring
+    _ ≤ pmVaughanSmoothRemainderConstant ε ^ 2 * (K * (N : ℝ) ^ (2 - 4 * ε)) :=
+      mul_le_mul_of_nonneg_left (hbudget N hN) (sq_nonneg _)
+    _ = _ := by ring
+
 /-- No fixed power saving is available in this absolute budget, even eventually. -/
 theorem not_pmVaughan_absolute_square_budget_power_saving {ε δ : ℝ}
     (hε : 0 ≤ ε) (hδ : 0 < δ) :
@@ -306,5 +349,45 @@ theorem not_pmVaughan_absolute_square_budget_power_saving {ε δ : ℝ}
     (Real.rpow_pos_of_pos hNpos (2 - 4 * ε - δ))
   change 256 * C < (N : ℝ) ^ δ at hlarge
   linarith only [hcancel, hlarge]
+
+/-- Multiplication by the actual positive atomic constant preserves the budget obstruction. -/
+theorem not_pmVaughanSmoothRemainder_absolute_budget_power_saving {ε δ : ℝ}
+    (hε : 0 < ε) (hε1 : ε < 1) (hδ : 0 < δ) :
+    ¬ ∃ C : ℝ, ∀ᶠ N : ℕ in atTop,
+      (pmVaughanSmoothRemainderConstant ε *
+        pmVaughanAtomicAbsoluteMass ε N * pmVaughanAtomicAbsoluteMass ε N) ^ 2 ≤
+          C * (N : ℝ) ^ (2 - 4 * ε - δ) := by
+  rintro ⟨C, hC⟩
+  apply not_pmVaughan_absolute_square_budget_power_saving hε.le hδ
+  refine ⟨C / pmVaughanSmoothRemainderConstant ε ^ 2, hC.mono ?_⟩
+  intro N hN
+  have hpos : 0 < pmVaughanSmoothRemainderConstant ε ^ 2 :=
+    pow_pos (pmVaughanSmoothRemainderConstant_pos hε hε1) 2
+  rw [show C / pmVaughanSmoothRemainderConstant ε ^ 2 * (N : ℝ) ^ (2 - 4 * ε - δ) =
+    (C * (N : ℝ) ^ (2 - 4 * ε - δ)) / pmVaughanSmoothRemainderConstant ε ^ 2 by ring]
+  apply (le_div_iff₀ hpos).mpr
+  calc
+    _ = (pmVaughanSmoothRemainderConstant ε *
+        pmVaughanAtomicAbsoluteMass ε N * pmVaughanAtomicAbsoluteMass ε N) ^ 2 := by ring
+    _ ≤ _ := hN
+
+/-- At horizon `T = N²`, the absolute norm budget cannot beat `T^(1 - 2ε)` by any fixed power. -/
+theorem not_pmVaughanSmoothRemainder_square_horizon_power_saving {ε δ : ℝ}
+    (hε : 0 < ε) (hε2 : ε < 1 / 2) (hδ : 0 < δ) :
+    ¬ ∃ C : ℝ, ∀ᶠ N : ℕ in atTop,
+      (pmVaughanSmoothRemainderConstant ε *
+        pmVaughanAtomicAbsoluteMass ε N * pmVaughanAtomicAbsoluteMass ε N) ^ 2 ≤
+          C * ((N ^ 2 : ℕ) : ℝ) ^ (1 - 2 * ε - δ) := by
+  rintro ⟨C, hC⟩
+  apply not_pmVaughanSmoothRemainder_absolute_budget_power_saving hε
+    (by linarith : ε < 1) (by linarith : 0 < 2 * δ)
+  refine ⟨C, hC.mono ?_⟩
+  intro N hN
+  have hpow : ((N ^ 2 : ℕ) : ℝ) ^ (1 - 2 * ε - δ) =
+      (N : ℝ) ^ (2 - 4 * ε - 2 * δ) := by
+    rw [square_horizon_rpow]
+    congr 1
+    ring
+  rwa [hpow] at hN
 
 end GaloisForLFunctions.BezoutValuationIncidence

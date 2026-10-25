@@ -101,38 +101,38 @@ section Window
 variable (Z : ZeroConfig)
 
 /-- The window `{ρ : T₁ < Im ρ ≤ T₂}` of distinct zeros, as a finset. -/
-def windowFinset (T₁ T₂ : ℝ) : Finset ℂ := (Z.finite_window T₁ T₂).toFinset
+def zeroWindowFinset (T₁ T₂ : ℝ) : Finset ℂ := (Z.finite_window T₁ T₂).toFinset
 
-lemma mem_windowFinset {T₁ T₂ : ℝ} {ρ : ℂ} : ρ ∈ windowFinset Z T₁ T₂ ↔ ρ ∈ Z.window T₁ T₂ :=
+lemma mem_zeroWindowFinset {T₁ T₂ : ℝ} {ρ : ℂ} : ρ ∈ zeroWindowFinset Z T₁ T₂ ↔ ρ ∈ Z.window T₁ T₂ :=
   Set.Finite.mem_toFinset _
 
 /-- Off-line zeros of multiplicity at least two in the window, counted with multiplicity. -/
 def offLineMultipleMass (T₁ T₂ : ℝ) : ℕ :=
-  ∑ ρ ∈ (windowFinset Z T₁ T₂).filter (fun ρ => ρ.re ≠ 1 / 2 ∧ 2 ≤ Z.mult ρ), Z.mult ρ
+  ∑ ρ ∈ (zeroWindowFinset Z T₁ T₂).filter (fun ρ => ρ.re ≠ 1 / 2 ∧ 2 ≤ Z.mult ρ), Z.mult ρ
 
 /-- Simple off-line zeros in the window. -/
 def offLineSimpleCount (T₁ T₂ : ℝ) : ℕ :=
-  ((windowFinset Z T₁ T₂).filter (fun ρ => ρ.re ≠ 1 / 2 ∧ Z.mult ρ = 1)).card
+  ((zeroWindowFinset Z T₁ T₂).filter (fun ρ => ρ.re ≠ 1 / 2 ∧ Z.mult ρ = 1)).card
 
-lemma N_eq_sum_windowFinset (T₁ T₂ : ℝ) : Z.N T₁ T₂ = ∑ ρ ∈ windowFinset Z T₁ T₂, Z.mult ρ := by
+lemma N_eq_sum_zeroWindowFinset (T₁ T₂ : ℝ) : Z.N T₁ T₂ = ∑ ρ ∈ zeroWindowFinset Z T₁ T₂, Z.mult ρ := by
   rw [ZeroConfig.N]
   exact finsum_mem_eq_finite_toFinset_sum _ (show (Z.window T₁ T₂).Finite from Z.finite_window T₁ T₂)
 
-lemma N0_eq_sum_windowFinset (T₁ T₂ : ℝ) :
-    Z.N0 T₁ T₂ = ∑ ρ ∈ (windowFinset Z T₁ T₂).filter (fun ρ => ρ.re = 1 / 2), Z.mult ρ := by
+lemma N0_eq_sum_zeroWindowFinset (T₁ T₂ : ℝ) :
+    Z.N0 T₁ T₂ = ∑ ρ ∈ (zeroWindowFinset Z T₁ T₂).filter (fun ρ => ρ.re = 1 / 2), Z.mult ρ := by
   have hset : Z.window T₁ T₂ ∩ ZeroConfig.onLine
-      = ↑((windowFinset Z T₁ T₂).filter (fun ρ => ρ.re = 1 / 2)) := by
+      = ↑((zeroWindowFinset Z T₁ T₂).filter (fun ρ => ρ.re = 1 / 2)) := by
     ext ρ
-    simp [ZeroConfig.onLine, mem_windowFinset]
+    simp [ZeroConfig.onLine, mem_zeroWindowFinset]
   rw [ZeroConfig.N0, hset, finsum_mem_coe_finset]
 
-lemma N0s_eq_card_windowFinset (T₁ T₂ : ℝ) :
-    Z.N0s T₁ T₂ = ((windowFinset Z T₁ T₂).filter (fun ρ => ρ.re = 1 / 2 ∧ Z.mult ρ = 1)).card := by
+lemma N0s_eq_card_zeroWindowFinset (T₁ T₂ : ℝ) :
+    Z.N0s T₁ T₂ = ((zeroWindowFinset Z T₁ T₂).filter (fun ρ => ρ.re = 1 / 2 ∧ Z.mult ρ = 1)).card := by
   have hset : Z.window T₁ T₂ ∩ ZeroConfig.onLine ∩ Z.simple
-      = ↑((windowFinset Z T₁ T₂).filter (fun ρ => ρ.re = 1 / 2 ∧ Z.mult ρ = 1)) := by
+      = ↑((zeroWindowFinset Z T₁ T₂).filter (fun ρ => ρ.re = 1 / 2 ∧ Z.mult ρ = 1)) := by
     ext ρ
     simp only [ZeroConfig.onLine, ZeroConfig.simple, Set.mem_inter_iff, Set.mem_setOf_eq,
-      Finset.coe_filter, mem_windowFinset]
+      Finset.coe_filter, mem_zeroWindowFinset]
     tauto
   rw [ZeroConfig.N0s, hset, Set.ncard_coe_finset]
 
@@ -141,8 +141,8 @@ multiplicity at least two. -/
 theorem N_eq_N0_add_offLineSimple_add_offLineMultiple (T₁ T₂ : ℝ) :
     Z.N T₁ T₂ = Z.N0 T₁ T₂ + offLineSimpleCount Z T₁ T₂ + offLineMultipleMass Z T₁ T₂ := by
   classical
-  set W := windowFinset Z T₁ T₂
-  rw [N_eq_sum_windowFinset, N0_eq_sum_windowFinset, offLineSimpleCount, offLineMultipleMass,
+  set W := zeroWindowFinset Z T₁ T₂
+  rw [N_eq_sum_zeroWindowFinset, N0_eq_sum_zeroWindowFinset, offLineSimpleCount, offLineMultipleMass,
     ← Finset.sum_filter_add_sum_filter_not W (fun ρ => ρ.re = 1 / 2)]
   have hoff : ∑ ρ ∈ W.filter (fun ρ => ¬ ρ.re = 1 / 2), Z.mult ρ
       = (W.filter (fun ρ => ρ.re ≠ 1 / 2 ∧ Z.mult ρ = 1)).card
@@ -158,7 +158,7 @@ theorem N_eq_N0_add_offLineSimple_add_offLineMultiple (T₁ T₂ : ℝ) :
       simp only [Finset.mem_filter, ne_eq]
       constructor
       · rintro ⟨hW, hre, h1⟩
-        have := Z.one_le_mult ρ ((mem_windowFinset Z).mp hW).1
+        have := Z.one_le_mult ρ ((mem_zeroWindowFinset Z).mp hW).1
         exact ⟨hW, hre, by omega⟩
       · rintro ⟨hW, hre, h2⟩
         exact ⟨hW, hre, by omega⟩
@@ -168,12 +168,12 @@ theorem N_eq_N0_add_offLineSimple_add_offLineMultiple (T₁ T₂ : ℝ) :
 /-- Simple critical zeros are critical zero copies. -/
 theorem N0s_le_N0 (T₁ T₂ : ℝ) : Z.N0s T₁ T₂ ≤ Z.N0 T₁ T₂ := by
   classical
-  rw [N0s_eq_card_windowFinset, N0_eq_sum_windowFinset, Finset.card_eq_sum_ones]
-  calc ∑ ρ ∈ (windowFinset Z T₁ T₂).filter (fun ρ => ρ.re = 1 / 2 ∧ Z.mult ρ = 1), 1
-      = ∑ ρ ∈ (windowFinset Z T₁ T₂).filter (fun ρ => ρ.re = 1 / 2 ∧ Z.mult ρ = 1),
+  rw [N0s_eq_card_zeroWindowFinset, N0_eq_sum_zeroWindowFinset, Finset.card_eq_sum_ones]
+  calc ∑ ρ ∈ (zeroWindowFinset Z T₁ T₂).filter (fun ρ => ρ.re = 1 / 2 ∧ Z.mult ρ = 1), 1
+      = ∑ ρ ∈ (zeroWindowFinset Z T₁ T₂).filter (fun ρ => ρ.re = 1 / 2 ∧ Z.mult ρ = 1),
           Z.mult ρ :=
         Finset.sum_congr rfl fun ρ hρ => ((Finset.mem_filter.mp hρ).2.2).symm
-    _ ≤ ∑ ρ ∈ (windowFinset Z T₁ T₂).filter (fun ρ => ρ.re = 1 / 2), Z.mult ρ := by
+    _ ≤ ∑ ρ ∈ (zeroWindowFinset Z T₁ T₂).filter (fun ρ => ρ.re = 1 / 2), Z.mult ρ := by
         refine Finset.sum_le_sum_of_subset_of_nonneg ?_ fun _ _ _ => Nat.zero_le _
         intro ρ hρ
         simp only [Finset.mem_filter] at hρ ⊢
@@ -189,7 +189,7 @@ theorem offLineMultipleMass_mono {T₁ T₂ T₁' T₂' : ℝ} (h₁ : T₁' ≤
   classical
   refine Finset.sum_le_sum_of_subset_of_nonneg ?_ fun _ _ _ => Nat.zero_le _
   intro ρ hρ
-  simp only [Finset.mem_filter, mem_windowFinset, ZeroConfig.window, Set.mem_inter_iff,
+  simp only [Finset.mem_filter, mem_zeroWindowFinset, ZeroConfig.window, Set.mem_inter_iff,
     Set.mem_setOf_eq] at hρ ⊢
   exact ⟨⟨hρ.1.1, by linarith [hρ.1.2.1], by linarith [hρ.1.2.2]⟩, hρ.2⟩
 
@@ -213,7 +213,7 @@ lemma blockOffLineMultipleMass_mkData (Z : ZeroConfig) (hconj : PhiHatConj T P) 
     (fun z => by rw [mkData_σ_eq_iff, mkData_m]) (fun ρ => Z.mult ρ)
   convert h using 2 <;> first
     | rfl
-    | (ext; simp [mem_windowFinset, mem_ZI, ZeroConfig.ZIprime])
+    | (ext; simp [mem_zeroWindowFinset, mem_ZI, ZeroConfig.ZIprime])
 
 /-- **The `c = 2` certificate with the excess retained**:
 `4 tr Â − ‖Â‖_F² − 2N(I′) + M_off(I′) ≤ s₁(I′)`. -/
@@ -266,6 +266,172 @@ theorem seamA_mult2_offLineMultiple (hT : 0 ≤ T) (hconj : PhiHatConj T P)
   linarith [hcore, hpert, hs1]
 
 end Seam
+
+/-! ## The asymptotic certificate -/
+
+section Abstract
+
+variable (Z : ZeroConfig) (H : PaperInputs Z) (P : Params) (hP : P.Valid) (hlam : P.lam < 1)
+  (hTr : ThmTracesHyp P Z)
+
+include H hP hlam hTr in
+/-- **Multiplicity-refined Theorem B at fixed `λ ∈ (0,1)`**:
+`(H(λ) − ε)·N(T,2T) ≤ N₀ˢ(T,2T) − M_off(T,2T)`.  Same moments as `Zeta23.thmBmult_abstract`;
+only the zero-side lower count changes. -/
+theorem thmBmult_offLineMultiple_abstract :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀, (Hfun P.lam - ε) * (Z.N T (2 * T) : ℝ)
+      ≤ (Z.N0s T (2 * T) : ℝ) - (offLineMultipleMass Z T (2 * T) : ℝ) := by
+  have hlam0 := hP.lam_pos
+  have hlam1 : P.lam ≤ 1 := hlam.le
+  obtain ⟨hGzGp, ha, hNII, -⟩ := Zeta23.eventually_side_conditions Z H P hP
+  obtain ⟨θ₀, hTail, Cθ, hθ⟩ := Zeta23.Tail.eventually_tailPackage Z H P hP
+  obtain ⟨htrace, hfrob⟩ := Zeta23.moments_of_traces Z H P hP hlam hTr hGzGp ha
+  have hLtop := Zeta23.Assembly.tendsto_L_atTop P hlam0
+  have hapos : ∀ᶠ T in atTop, 1 / 2 ≤ P.a T := by
+    filter_upwards [ha, hLtop.eventually_ge_atTop (4 * P.w)] with T h hL4
+    have hw := hP.one_le_w
+    have hLpos : 0 < P.L T := by linarith
+    have : 2 * P.w / P.L T ≤ 1 / 2 := by rw [div_le_iff₀ hLpos]; linarith
+    linarith [h.1]
+  have hwL : ∀ᶠ T in atTop, 8 * P.w ≤ P.L T := hLtop.eventually_ge_atTop _
+  have h0 : ∀ᶠ T in atTop, 4 * rtrace (P.hat T (Z.Gz P T)) - frobSq (P.hat T (Z.Gz P T))
+      - 2 * (Z.N T (2 * T) : ℝ) - 3 * (NII Z T : ℝ)
+      - θ₀ T / (P.a T * P.L T)
+          * (4 + 2 * Real.sqrt (frobSq (P.hat T (Z.Gz P T))) + θ₀ T / (P.a T * P.L T))
+      ≤ (Z.N0s T (2 * T) : ℝ) - (offLineMultipleMass Z T (2 * T) : ℝ) := by
+    filter_upwards [hTail, hwL, hapos, eventually_ge_atTop (0:ℝ),
+      Zeta23.Assembly.eventually_l_pos] with T hTl h8 ha2 hT0 hl
+    have hLpos : 0 < P.L T := by simp only [Params.L]; positivity
+    exact seamA_mult2_offLineMultiple hT0 Zeta23.ZeroSide.phiHatConj Zeta23.ZeroSide.phiHatReal
+      (Zeta23.ZeroSide.poissonSq hP h8) hTl (by linarith) hLpos
+  have hB0 : ∀ᶠ T in atTop, 0 ≤ θ₀ T / (P.a T * P.L T) := by
+    filter_upwards [hTail, hapos, Zeta23.Assembly.eventually_l_pos] with T hTl ha2 hl
+    have hLpos : 0 < P.L T := by simp only [Params.L]; positivity
+    exact div_nonneg hTl.theta_nonneg (by positivity)
+  have hBto : Tendsto (fun T => θ₀ T / (P.a T * P.L T)) atTop (𝓝 0) := by
+    have hup : Tendsto (fun T => 2 * |Cθ| * (l T * T ^ (P.lam / 2 - 1) / P.L T)) atTop (𝓝 0) := by
+      simpa using (Zeta23.Assembly.tendsto_theta_over_L P hlam0 hlam1).const_mul (2 * |Cθ|)
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hup hB0 ?_
+    filter_upwards [hTail, hapos, Zeta23.Assembly.eventually_l_pos, hθ, eventually_gt_atTop (0:ℝ)]
+      with T hTl ha2 hl hθT hT0
+    have hLpos : 0 < P.L T := by simp only [Params.L]; positivity
+    have hapos' : 0 < P.a T := by linarith
+    have hq' : 0 ≤ l T * T ^ (P.lam / 2 - 1) / P.L T := by positivity
+    rw [div_le_iff₀ (mul_pos hapos' hLpos)]
+    calc θ₀ T ≤ Cθ * l T * T ^ (P.lam / 2 - 1) := hθT
+      _ ≤ |Cθ| * l T * T ^ (P.lam / 2 - 1) := by gcongr; exact le_abs_self _
+      _ = |Cθ| * (l T * T ^ (P.lam / 2 - 1) / P.L T) * P.L T := by field_simp
+      _ ≤ (2 * |Cθ| * (l T * T ^ (P.lam / 2 - 1) / P.L T)) * (P.a T * P.L T) := by
+          have e : |Cθ| * (l T * T ^ (P.lam / 2 - 1) / P.L T) * P.L T
+              = (2 * |Cθ| * (l T * T ^ (P.lam / 2 - 1) / P.L T)) * (1 / 2 * P.L T) := by ring
+          rw [e]; gcongr
+  have hNII_o : (fun T => (NII Z T : ℝ)) =o[atTop] (fun T => (Z.N T (2 * T) : ℝ)) := by
+    obtain ⟨CII, hII⟩ := hNII
+    have hO : (fun T => (NII Z T : ℝ)) =O[atTop] (fun T => Real.sqrt T * l T) := by
+      refine IsBigO.of_bound CII ?_
+      filter_upwards [hII, Zeta23.Assembly.eventually_l_pos] with T h hl
+      rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (Nat.cast_nonneg _),
+        abs_of_nonneg (by positivity)]
+      simpa [mul_assoc] using h
+    exact hO.trans_isLittleO (Zeta23.Assembly.isLittleO_N_of_isLittleO_Tl Z H.RvM
+      Zeta23.Assembly.isLittleO_sqrt_mul_l_Tl)
+  have hNtop := Zeta23.Assembly.tendsto_N_atTop Z H.RvM
+  have h := Zeta23.Assembly.count_certificate Z P (kfun P.lam)
+    (fun T => (Z.N0s T (2 * T) : ℝ) - (offLineMultipleMass Z T (2 * T) : ℝ)) θ₀ h0 hB0 hBto
+    hNII_o hNtop htrace hfrob
+  simpa only [Hfun_eq_two_sub_kfun] using h
+
+end Abstract
+
+/-! ## ζ: off-line multiple zeros, and the simple off-line core of three quarters -/
+
+section Zeta
+
+/-- Multiplicity-refined Theorem B for `ζ` at fixed `λ ∈ (0,1)`, unconditional. -/
+theorem thmB_mult_offLineMultiple_lam {lam : ℝ} (h0 : 0 < lam) (h1 : lam < 1) :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (Hfun lam - ε) * (Ncount T (2 * T) : ℝ) ≤
+        (N0simple T (2 * T) : ℝ) - (offLineMultipleMass zetaZeroConfig T (2 * T) : ℝ) := by
+  have hP := paramsOf_valid taperProfile_stdProfile h0 h1.le
+  exact thmBmult_offLineMultiple_abstract zetaZeroConfig paperInputs_zeta
+    (paramsOf stdProfile lam) hP h1 (PrimeSide.thm_traces hP paperInputs_zeta)
+
+/-- **Off-line multiple zeros are charged twice by the two-thirds certificate**, unconditional:
+`(2/3 − ε)·N(T,2T) + M_off(T,2T) ≤ N₀ˢ(T,2T)`. -/
+theorem two_thirds_add_offLineMultipleMass_le_N0simple :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (2 / 3 - ε) * (Ncount T (2 * T) : ℝ) + (offLineMultipleMass zetaZeroConfig T (2 * T) : ℝ)
+        ≤ N0simple T (2 * T) := by
+  have h := eps_form_twoThirds (N := fun T => (Ncount T (2 * T) : ℝ))
+    (lower := fun T =>
+      (N0simple T (2 * T) : ℝ) - (offLineMultipleMass zetaZeroConfig T (2 * T) : ℝ))
+    (fun _ => Nat.cast_nonneg _) fun lam hl1 hl2 =>
+      thmB_mult_offLineMultiple_lam (by linarith) hl2
+  intro ε hε
+  obtain ⟨T₀, hT₀⟩ := h ε hε
+  exact ⟨T₀, fun T hT => by have := hT₀ T hT; linarith⟩
+
+/-- The window census of `ζ`: `N = N₀ + S_off + M_off`. -/
+lemma zeta_N_eq_N0_add_offLineSimple_add_offLineMultiple (T₁ T₂ : ℝ) :
+    (Ncount T₁ T₂ : ℝ) = (N0 T₁ T₂ : ℝ) + (offLineSimpleCount zetaZeroConfig T₁ T₂ : ℝ)
+      + (offLineMultipleMass zetaZeroConfig T₁ T₂ : ℝ) := by
+  have h := N_eq_N0_add_offLineSimple_add_offLineMultiple zetaZeroConfig T₁ T₂
+  rw [zetaZeroConfig_N] at h
+  have h0 : zetaZeroConfig.N0 T₁ T₂ = N0 T₁ T₂ := zetaZeros_N0 zetaSeam T₁ T₂
+  rw [h0] at h
+  exact_mod_cast h
+
+/-- `N₀ˢ ≤ N₀` for `ζ`. -/
+lemma zeta_N0simple_le_N0 (T₁ T₂ : ℝ) : N0simple T₁ T₂ ≤ N0 T₁ T₂ :=
+  (trivial_chain₀ T₁ T₂).1.trans (trivial_chain₀ T₁ T₂).2.1
+
+/-- **At most `(1/6 + ε)N` zero copies are off-line and multiple**: at least `(5/6 − ε)N` of the
+zero copies of `ζ` in `(T, 2T]` are simple or lie on the critical line. -/
+theorem offLineMultipleMass_le_one_sixth :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (offLineMultipleMass zetaZeroConfig T (2 * T) : ℝ) ≤ (1 / 6 + ε) * (Ncount T (2 * T) : ℝ) := by
+  intro ε hε
+  obtain ⟨T₀, hT₀⟩ := two_thirds_add_offLineMultipleMass_le_N0simple (2 * ε) (by linarith)
+  refine ⟨T₀, fun T hT => ?_⟩
+  have h := hT₀ T hT
+  have hN := zeta_N_eq_N0_add_offLineSimple_add_offLineMultiple T (2 * T)
+  have hs : (N0simple T (2 * T) : ℝ) ≤ N0 T (2 * T) := by exact_mod_cast zeta_N0simple_le_N0 _ _
+  have hS : (0 : ℝ) ≤ offLineSimpleCount zetaZeroConfig T (2 * T) := Nat.cast_nonneg _
+  linarith
+
+/-- **Simple off-line zeros plus twice the off-line multiple mass are at most `(1/3 + ε)N`**. -/
+theorem offLineSimple_add_two_offLineMultiple_le_one_third :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (offLineSimpleCount zetaZeroConfig T (2 * T) : ℝ)
+          + 2 * (offLineMultipleMass zetaZeroConfig T (2 * T) : ℝ)
+        ≤ (1 / 3 + ε) * (Ncount T (2 * T) : ℝ) := by
+  intro ε hε
+  obtain ⟨T₀, hT₀⟩ := two_thirds_add_offLineMultipleMass_le_N0simple ε hε
+  refine ⟨T₀, fun T hT => ?_⟩
+  have h := hT₀ T hT
+  have hN := zeta_N_eq_N0_add_offLineSimple_add_offLineMultiple T (2 * T)
+  have hs : (N0simple T (2 * T) : ℝ) ≤ N0 T (2 * T) := by exact_mod_cast zeta_N0simple_le_N0 _ _
+  linarith
+
+/-- **The simple off-line core of the three-quarters problem**, unconditional: in every large
+dyadic window either at least three quarters of the zero copies of `ζ` lie on the critical line,
+or at least `(1/6 − ε)N` of them are simple off-line zeros. -/
+theorem three_quarters_or_simple_offLine :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      3 / 4 * (Ncount T (2 * T) : ℝ) ≤ N0 T (2 * T) ∨
+        (1 / 6 - ε) * (Ncount T (2 * T) : ℝ) ≤ offLineSimpleCount zetaZeroConfig T (2 * T) := by
+  intro ε hε
+  obtain ⟨T₀, hT₀⟩ := offLineSimple_add_two_offLineMultiple_le_one_third ε hε
+  refine ⟨T₀, fun T hT => ?_⟩
+  have h := hT₀ T hT
+  have hN := zeta_N_eq_N0_add_offLineSimple_add_offLineMultiple T (2 * T)
+  by_cases h34 : 3 / 4 * (Ncount T (2 * T) : ℝ) ≤ N0 T (2 * T)
+  · exact Or.inl h34
+  · right
+    push Not at h34
+    linarith
+
+end Zeta
 
 end RHTower
 

@@ -1739,6 +1739,12 @@ $|1+R_T^{\mathrm{mix}}/D_T|=O(1/T)$
 (`bounded_pmInteriorPronicEnergy_iff_reciprocal_vaughan_relative_error`), which makes the
 remaining rate requirement precise. At square-root cutoffs the both-large row vanishes
 exactly (`pmPronicVaughanGram_square_large_zero`); the other signed terms remain.
+The complete leading matrix now also holds uniformly over both cutoffs. A single summable
+divisor majorant controls all floor-mean errors, giving
+$\sup_{U,V}|G_{ij}(T)/T-c_i(U,V)c_j(U,V)|\to0$. When both cutoffs diverge the limit is
+$\rho^2vv^\mathsf{T}$, $v=(1,1,-1,0,-1)$, along any divergent horizon
+(`tendsto_pmPronicVaughanGram_div_moving`); at $U=V=N,T=N^2$ the diagonal divided by the
+horizon tends to $4\rho^2$. These BVI laws classify leading cancellation without a residual rate.
 The small-small Vaughan specialization of the smooth-power expansion retains its floor
 prefix, partial pole sum, and signed dilated remainder exactly
 (`pmPronicVaughanPiece_smallSmall_expansion`). Summing the individual remainder norms costs
@@ -1950,10 +1956,11 @@ prime-number-theorem octave count of §3.4 explicit, rather than inspecting hori
 
 The band averages $A(B)$ are exact class averages with radical-invariant jumps; they are negative
 through $B=9$, positive at $B=10$, and the profile $P$ fails concavity along every power of five.
-Open: the sign pattern of $A(B)$ beyond $B=10$, a closed form or arithmetic characterisation of the
-cofinal slope $\kappa=\lim_N\mathrm{Cov}_N(0;\mu)\ge1/288$, and whether the Möbius band calculus
-admits a damped deformation that commutes with the cofinal limit, which none of the period
-observables does.
+The cofinal slope $\kappa=\lim_N\mathrm{Cov}_N(0;\mu)$ is the one-line energy of $1/\zeta$,
+$\kappa=(\rho/2\pi)\int|B(it)|^2\prod_p(1-|p+1-p^{-it}|^{-2})\,|t\zeta(1+it)|^{-2}dt$ (Bézout–Valuation
+Incidence, `cofinalMobiusSlope_eq_integral_eulerProduct`). Open: the sign pattern of $A(B)$ beyond
+$B=10$, and whether the Möbius band calculus admits a damped deformation that commutes with the
+cofinal limit, which none of the period observables does.
 
 ### 7.4 The odd sector
 

@@ -35,6 +35,16 @@ Hence every finite scalar L² reserve, and every reserve obtained by arbitrary p
 of finitely many linear source readings, fails Bézout on the full aperture source space
 (`WeilEnergyIsUnboundedAtEveryAperture`).
 
+The classification also allows signed, asymmetric reserves: closed and strict cones depend
+only on `max(Φ,0)`, and RR plus Bézout forces that positive part to equal the diagonal defect.
+Their asymmetric Bézout condition is `max(defect(x,y),0)² ≤ max(Φ(x),0)max(Φ(y),0)`
+(`SourceRiemannRochWithoutSymmetry`). Ampleness has its own exact condition: every source
+with `Φ≤0` must lie in the mixed-defect radical (`SourceConePrimitiveFaithfulness`). On the
+full compact scaling surface that radical is precisely the fibre plane, while the full
+intersection pairing is nondegenerate. Thus compact numerical equivalence is equality
+(`NumericalEquivalenceOnTheScalingSurface`); genuine nonzero principal representatives need
+a larger source carrier.
+
 ---
 
 ## Place in the research
@@ -820,8 +830,9 @@ dropped on unrestricted tests. See
 ### 6.1 Questions
 
 1. **Which ingredients of Weil's proof exist for `ℤ`?** The pairing, the fibres, Lefschetz,
-   adjunction, Bézout positivity, Adams operations and Hecke graphs: all exact. Riemann–Roch: absent,
-   and its existence with ample degrees is RH.
+   adjunction, Adams operations and Hecke graphs: all exact. Graded source cones have RR at
+   every aperture. What remains is an independent source construction carrying RR together
+   with the full Bézout or ample axiom; existence of such a cone is equivalent to RH.
 2. **What does the failure of the Hodge index measure?** The number of distinct zeros right of the
    line — never depth or multiplicity — filtered by degree, split additively into reflection
    sectors at every degree, and carried by the Hecke orbit of any one spectrally generic test, and
@@ -1000,3 +1011,17 @@ Weil's argument.
 | `SourceDeterminantalSectionsAndArithmeticRiemannRoch` | source section cones, non-vacuous ampleness, Hecke stability, Riemann–Roch ⟺ coercive floor, Riemann–Roch past the first prime, all-aperture Chebyshev and de la Vallée Poussin floors |
 | `SourceRiemannRochAwayFromTheLowFrequencyDivisor` | source effectivity (Riemann–Roch, ampleness, Hodge index) at every degree on the tests blind to the low-frequency divisor, coercivity `E(a)(1 − 1/π)` |
 | `AllApertureSourceRiemannRochAndCoercivityLaws` | universal strict-ampleness rigidity, compensated polar surfaces and all-aperture ample source cones, no-Hardy-weight law, doubly-exponential Gaussian ceiling, closed-aperture polar ground-energy equivalence and strict-monotonicity self-upgrade, Sobolev source cones and zero-width equivalence |
+| `ExactArithmeticSourceEffectivity` | literal Gamma–Lévy–horizon–prime-deficit source reserve, exact RR at every aperture and on the full compact surface, additive closure and one-scale Adams stability iff Hodge index |
+| `FiniteDegreeConesCannotSatisfyBezout`, `ExactSourceEffectivityRequiresInfinitelyManyDegrees` | arbitrarily negative squares in every finite-reading fibre, with both degrees fixed and arbitrarily small L² source change; exact arithmetic effectivity has no finite-dimensional linear reading description |
+| `PoissonPrincipalCyclesOnTheScalingSurface` | nonzero genuine Poisson principal representatives on the larger Meyer carrier, descended linear trace degree, exact compact smooth comparison with both pole moments retained, and rigidity of compact principal sources |
+| `HeckeClassesDoNotMoveNumerically` | scaling eigenvectors lie in the fibre plane; nonidentity Adams fixed space is zero, Hecke fixed space is the vertical fibre line; every finite distinct-scale orbit of a nonzero compact source is linearly independent and has no nonzero numerical relation |
+| `ArithmeticMajorantsSupplyBezout` | an explicit arithmetic quadratic reserve gives Bézout and ampleness on the original pairing at every positive aperture; its positive mass floor forces ample-zero effective classes to vanish, and its extra reserve obstructs Riemann–Roch |
+| `OriginDegreeDoesNotDescendThroughPoissonBoundaries` | origin evaluation of an actual sharp square is strictly positive exponential mass; a genuine Poisson boundary has positive origin degree, so this positive linear source degree cannot descend to cohomology |
+| `MeyerNumericalRadicalAndMultiplicity` | ordinary trace radical is exactly vanishing of Xi values; genuine Poisson boundaries require all lower jets; equality of numerical and principal equivalence, and absence of square-zero quotient classes, are each equivalent to simplicity; trace positivity alone is equivalent to RH |
+| `FiniteReadingsAndMassCannotSupplyBezout` | unit-mass Weil energy is unbounded in every finite linear reading kernel; every nonlinear reserve depending on those readings and exact L² mass admits a strict effective negative square |
+| `PositiveQuadraticSourceCones` | positive quadratic reserves give additive convex source cones closed under nonnegative scaling; every finite fibre-invariant threshold containing the fibre quadrant generates the whole cycle space |
+| `ExponentialSourceMassControlsTheFullPrimeSum` | exponentially decaying source-correlation bound and one full prime-sum bound by exponential position mass, uniformly across all compact supports |
+| `BezoutCostsTwiceTheNegativeReserve` | exact factor-two law: original-pairing Bézout for threshold `δ+2R` iff the compensated defect `δ+R` is nonnegative; both RR criteria and scalar-coefficient corollaries |
+| `PoleBlindPoissonBoundariesHavePositiveOriginDegree` | an explicit nonzero pure-source principal cycle has positive origin degree and vanishing pole and intersection readings; no nonlinear correction using the two pole values repairs origin-degree descent |
+| `MeyerHilbertSchmidtSource` | actual resolvent admission to Hilbert–Schmidt class, factorial bounds for every lower Xi jet, and exact centered character and affine-shear jet transport |
+| `MeyerSharpConvolutionAlgebra` | arithmetic sharp descends as a conjugate-linear convolution involution; positive Hermitian degree null squares annihilate all complex mixed readings |

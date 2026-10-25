@@ -54,6 +54,12 @@ archimedean dominance at small aperture, Frobenius/Hodge index over `𝔽_q`, an
 self-adjointness for Selberg zeta functions (which read `ζ` only on `Re s=1`,
 item 7). A WL producer must be a fourth positivity source.
 
+Item 19 sharpens the selectivity requirement: integer counts more regular than
+`⌊x⌋` coexist with off-line zeros. What `ℕ` has and those systems lack is the
+exact periodic sawtooth `{x}`, i.e. Poisson summation and the functional
+equation. The input must therefore be the Gamma/polar side of WL's explicit
+formula coupled to the primes, not regularity of the integers.
+
 ## Conjecture ledger
 
 1. **Bounded integer counting forces a strip.** Positive prime measure and
@@ -137,8 +143,137 @@ item 7). A WL producer must be a fourth positivity source.
    where `|G|` is huge, and a radius `O(1)` needs bounds on `G(T',t)` for
    `|t| ≤ r`, which are governed by zeros near those heights. Fails: the
    problem is only moved to nearby heights.
+15. **Successor rigidity of multiplicative functions.** Kátai/Wirsing-type
+   rigidity (successor-regular multiplicative ⇒ `n^{it}`) and Halász bounds see
+   `μ` only through `D(μ, n^{it}; x)`, i.e. `ζ` on `Re s = 1`; the best output is
+   `M(x) ≪ x/(log x)^{1−ε}`. Fails: pretentious rigidity is one-line information.
+16. **Integrality of dual lattices.** `lcm(1..2N−1)·H_N` is integral for the
+   Hilbert matrix, so `lcm^N ≥ 1/det H_N`; weighted Gram matrices improve this
+   only to the integer Chebyshev constant (`ψ(x) ≥ 0.86x` at best). Fails:
+   integrality reaches the density scale, never the square-root scale.
+
+17. **Maass–Selberg positivity off the line.** `‖Λ^T E(·,s)‖² ≥ 0` continues to
+   `1/4 < Re s < 1/2`; with `2σ−1 < 0` it yields `|φ(s)|² ≥ T^{4σ−2} − O(T^{2σ−1}/|t|)`,
+   i.e. `|ξ(2s)| ≲ |ξ(2−2s)|`: an upper bound for `ξ` in the strip. Upper bounds
+   cannot exclude zeros, and near `s₀ = ρ/2` the norm blows up consistently.
+18. **Harmonic sign of `Re ξ'/ξ`.** RH iff `u = Re ξ'/ξ > 0` on `Re s > 1/2`;
+   `u = 0` on the line and `u → +∞` to the right, so with no zeros the minimum
+   principle gives `u ≥ 0`. A quadruple makes `u < 0` on `(1/2, β₀) + iγ₀`, which
+   no boundary datum forbids. Fails: the boundary values do not see interior
+   dipoles.
+19. **Over-regular continuous systems.** Sharpening item 1: the density
+   `(e^t − 2e^{βt}cos γt − K e^{−t} + (K+1) e^{−εt})/t` is nonnegative for fixed
+   large `K` and small `ε` (majorant derivative test), with zeta
+   `((s−β)²+γ²)(s+1)^K / ((s−1)(s+ε)^{K+1})`, which tends to `1` at infinity.
+   Perron's residues at `1` and `0` give `N(x) = cx + ζ_B(0) + O(x^{−ε} log^K x)`
+   (paper; smoothing not written out): more regular than `⌊x⌋`, yet with the
+   off-line zero. Not formalized (a
+   no-go strengthening of `regular_integers_do_not_constrain_zeros`).
+
+20. **Krein accelerant comparison.** `Φ = W * e^{−|x|/2}` and
+   `−Φ'' = e^{t/2} − Φ/4 − a(t) − Σ Λ(n) n^{−1/2} δ_{log n}`: the prime atoms enter
+   the accelerant with a fixed sign, so Sturm-type comparison with the
+   prime-free accelerant was tested. Fails: the prime-free form `W₀ = arch +
+   poles` is itself indefinite (its symbol `Re ψ(1/4+it/2) − log π` is negative
+   at low frequency), so comparison moves in the wrong direction and positivity
+   of `Φ|[−A,A]` remains a finite-prime check at every `A`.
+21. **Herglotz representation.** The lag sign is the statement that the boundary
+   measure of `Re ξ'/ξ` on the line, `πΣδ_γ`, is positive, i.e. that `ξ'/ξ` is
+   Herglotz on `Re s > 1/2`. Herglotz/Nevanlinna representation theorems
+   presuppose that sign. Rediscovery of the corpus Herglotz bridges; no producer.
+
+22. **Twist average plus continuity in the twist.** Twisted energies `E_t(T)`
+   (source `Λ(n)n^{−it}`) are bounded on average over `t ∈ [H,2H]` for
+   `x ≤ H^{c}` by density estimates, and `∂_t E_t = O(T E_t)`. A large `E_0(T)`
+   persists only for `|t| ≲ 1/T`, which carries weight `1/(TH)` in the average,
+   so the average forces nothing at `t = 0`. Fails quantitatively: averaged
+   bounds leave the trivial twist free, as for the major arc in item 13.
+
+23. **High-zero localization, sharpened.** With the hybrid exponent
+   `igmDensityExponent σ ≤ 1 − (4/3)(σ − 1/2)` and the folded shell sums of
+   `ZeroDensityFilteredCriticalDeficitLaw`, a dyadic shell `|γ| ≍ U` gives
+   `Σ_shell e^{T(Re ρ−1/2)}/|ρ|² ≪ U^{−1+η}` once `U ≥ e^{(3/4+ε)T}`. So zeros above
+   `x^{3/4+ε}` contribute `O(1)` to `incoming(T)`, improving item 9's `x^{13/30}`
+   reading of the 30/13 bound alone. True, but a reduction of the same kind:
+   the low block needs a strip. Lean:
+   `BiScaleUncertainty/HighZerosCarryABoundedCriticalDeficit.lean` proves, for
+   `0 < α < 2/3`, the uniform bound on the high-zero weight
+   (`exists_highZero_deficitZeroWeight_tsum_le`), the finite low-zero
+   representation of `incoming` up to `O(1)`
+   (`exists_abs_incoming_sub_lowZeroDeficitSum_le`, `lowZeroDeficitSum_eq_sum`)
+   and `E ≤ 2(Re low)² + C`; the same for the Weil lag function
+   (`exists_abs_weilLagFunctionReal_sub_lowZeroLagSum_le`, lag weight ≤ 2× deficit
+   weight). It bounds the high-zero parts of `E` and of the lag only.
+24. **Exponentiated lag as an Euler product.** `e^{tΦ(L)} = e^{tΦ_arch(L)}·
+   Π_{n≤e^{|L|}} exp(2tΛ(n)n^{−1/2} sinh((|L|−log n)/2))`, and RH iff `e^{tΦ}` is
+   positive definite for all `t > 0` (Schoenberg). Each local factor is unbounded
+   and not positive definite, and finite Euler products with the Gamma factor
+   have no zeros to approximate `Φ`. No positive approximants arise.
+
+25. **Effective horocycle equidistribution.** For incomplete Eisenstein series
+   the closed-horocycle average at height `y` is the constant term
+   `(1/2πi)∫ψ̂(s)φ(s)y^{1−s}ds`; shifting to `Re s = 1/2` meets only `s = 1`, giving
+   the unconditional `O(y^{1/2})` that mixing and spectral-gap dynamics reproduce.
+   The zeros enter as poles `s = ρ/2` left of the unitary line, residues
+   `y^{1−ρ/2}`, which RH places at `y^{3/4}`. Fails: dynamical rates are unitary-line
+   information and cannot pass the line where the zero poles sit.
+26. **Low-zero block after localization.** By item 23 the adverse part is a finite
+   sum over `|γ| < x^{3/4+ε}`, but its weights `e^{δT}/|ρ|²` are largest at the
+   lowest heights, where density estimates count `O(1)` zeros with no saving.
+   Any proof must exclude off-line zeros at bounded height without
+   computation; density, VK and the localization give nothing there.
+
+27. **Existence plus rigidity instead of an estimate.** Let `K_N` be the convex
+   set of weights `λ ≥ 0` on `[2,N]` for which the Weil form (arch + poles −
+   prime atoms with weights `λ`) is nonnegative on tests of aperture
+   `(log N)/2`. The sets are nested under restriction and compact, so if every
+   `K_N ≠ ∅` an inverse limit gives `λ_∞` with `WeilPositiveFull λ_∞`; a general
+   rigidity theorem `WeilPositiveFull λ ⇒ λ = Λ` would then give RH with no
+   estimate. By Farkas, `K_N ≠ ∅` iff no test `g = Σ f_j*f̃_j` on the window has
+   negative arch+pole pairing and nonpositive pairing with every atom at
+   `log n`, `n ≤ N`, a statement free of the primes. Status: the corpus proves
+   rigidity only under smallness of `λ − Λ`
+   (`eq_vonMangoldt_of_weilPositiveFull_of_sq_summable_separated`,
+   `…_of_log_square_summable`, harmonic pinning). Without discreteness of the
+   spectral measure, Hamburger's theorem is unavailable and rigidity for
+   arbitrary `λ ≥ 0` is unproved, so `K_N ≠ ∅` alone yields nothing. Open
+   on both halves; no Lean.
+
+28. **Arithmetic Hodge index (Faltings–Hriljac).** The arithmetic Hodge index is
+   proved for arithmetic surfaces `X → Spec O_K` of relative dimension one; Weil's
+   argument needs the self-product of the base, `Spec ℤ × Spec ℤ`, which has no
+   arithmetic-surface model. Fails at the missing surface, the open core of ACS.
+29. **Rankin–Selberg / Shahidi nonvanishing.** Positivity of `L(s,π×π̃)` gives
+   nonvanishing of automorphic `L`-functions on `Re s = 1` only. One-line class.
+30. **Low-zero sum as a smoothed prime count.** By the truncated explicit formula
+   the low-zero sum of item 23 is the WL deficit smoothed at multiplicative
+   resolution `x^{−3/4}`, i.e. primes averaged over windows of length `x^{1/4}`.
+   The WL deficit is already twice integrated, so the smoothing changes nothing
+   at square-root precision. Fails: the reduction is self-dual.
+
+31. **Testing rigidity by an integer-supported Herglotz series.** Item 27's
+   rigidity fails if some `λ ≥ 0` on `ℕ`, `λ ≠ Λ`, has `G − F_λ` Herglotz on
+   `Re s > 1/2`, where `G = 1/(s−1) + 1/s + A(s)` is ζ's archimedean term and
+   `F_λ = Σ λ(n)n^{−s}`. Necessary: residue `1` at `s = 1` and
+   `Re F_λ ≤ ½ log|t| + O(1)` throughout the half-plane. Poisson summation shows
+   that any integer-supported series differs from its integral by a dual sum of
+   the size of `ζ(1−s)`. Constant weights therefore inherit ζ's large values
+   (`≫ exp(c√log t)`), and positivity of `λ` forbids sign cancellation. No
+   construction found; rigidity is neither refuted nor proved.
+
+The ledger now separates three information classes: one-line data (PNT,
+pretentious, Eisenstein, Selberg trace), averaged data (density, large sieve,
+mean values), and pointwise critical data. Items 1–16 all land in the first
+two; every WL target lies in the third.
 
 ## Log
 
 - 2026-10-25 — created; frontier, WL cards and 18 programme READMEs read.
 - 2026-10-25 — items 1–12 attempted on paper; no source estimate, no new Lean.
+- 2026-10-25 — item 23 formalized: direct compile of `HighZerosCarryABoundedCriticalDeficit.lean`
+  exit 0, no output; transitive axioms of its four public results `{propext, Classical.choice,
+  Quot.sound}`; wired into `BiScaleUncertainty.lean`. WL obstacles remain open.
+- 2026-10-25 — lag-function localization added to the same module; direct compile exit 0;
+  axioms of both new results `{propext, Classical.choice, Quot.sound}`.
+- 2026-10-25 — cross-work corollary `exists_neg_coprimeCrossWork_le_lowZeroDeficitSum` added;
+  direct compile exit 0; axioms `{propext, Classical.choice, Quot.sound}`.

@@ -637,8 +637,8 @@ theorem integral_norm_paperFT_depthDiff_sq_le {F₀ : ℝ → ℝ} (hF₀ : Cont
       2 * Real.pi * ∫ u : ℝ, ‖depthDiffProfile F₀ ρ u‖ ^ 2 :=
     (setIntegral_le_integral hint_lhs (Eventually.of_forall fun _ => sq_nonneg _)).trans_eq hwhole
   exact ⟨hint_lhs,
-    hset_le.trans ((mul_le_mul_of_nonneg_left hu_b1 (by positivity)).trans_eq (by ring)),
-    hset_le.trans ((mul_le_mul_of_nonneg_left hu_b2 (by positivity)).trans_eq (by ring))⟩
+    (hset_le.trans (mul_le_mul_of_nonneg_left hu_b1 (by positivity))).trans_eq (by ring),
+    (hset_le.trans (mul_le_mul_of_nonneg_left hu_b2 (by positivity))).trans_eq (by ring)⟩
 
 /-- Symmetric `+γ` orientation of `integral_norm_paperFT_depthDiff_sq_le` via `γ ↦ -γ`. -/
 theorem integral_norm_paperFT_depthDiff_add_sq_le {F₀ : ℝ → ℝ} (hF₀ : Continuous F₀)
@@ -673,8 +673,8 @@ theorem integral_norm_paperFT_depthDiff_add_sq_le {F₀ : ℝ → ℝ} (hF₀ : 
         ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf ρ - (x : ℂ)) -
           paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf ρ) - (x : ℂ))‖ ^ 2) volume)).trans_eq
       hwhole_eq
-  exact ⟨hset_le.trans ((mul_le_mul_of_nonneg_left hu_b1 (by positivity)).trans_eq (by ring)),
-    hset_le.trans ((mul_le_mul_of_nonneg_left hu_b2 (by positivity)).trans_eq (by ring))⟩
+  exact ⟨(hset_le.trans (mul_le_mul_of_nonneg_left hu_b1 (by positivity))).trans_eq (by ring),
+    (hset_le.trans (mul_le_mul_of_nonneg_left hu_b2 (by positivity))).trans_eq (by ring)⟩
 
 /-- Exact multiplicity-preserving `tsum` bridge between `XiZeroCopy` and `zetaZeroConfig.carrier`. -/
 theorem summable_zetaCarrier_of_xiZeroCopy {g : ℂ → ℝ} (hg0 : ∀ z, 0 ≤ g z)
@@ -1032,17 +1032,14 @@ private theorem norm_paperFT_depthDiff_div_four_le_lorentz {F₀ : ℝ → ℝ}
     _ = Real.exp A * envelopeWindowNorm F₀ ^ 2 * (1 / (1 + (z.im - ω) ^ 2) ^ 2) := by
         rw [hexpA]
 
-private theorem conj_paperFT_ofReal_eq {F₀ : ℝ → ℝ} (hF₀ : Continuous F₀)
-    (hF₀c : HasCompactSupport F₀) (w : ℂ) :
+private theorem conj_paperFT_ofReal_eq {F₀ : ℝ → ℝ} (_hF₀ : Continuous F₀)
+    (_hF₀c : HasCompactSupport F₀) (w : ℂ) :
     conj (paperFT (fun u => (F₀ u : ℂ)) w) = paperFT (fun u => (F₀ u : ℂ)) (-conj w) := by
   unfold paperFT
   dsimp only
-  have hint : Integrable fun u : ℝ => (F₀ u : ℂ) * Complex.exp (Complex.I * w * (u : ℂ)) :=
-    ((Complex.continuous_ofReal.comp hF₀).mul
-      (by fun_prop)).integrable_of_hasCompactSupport
-      ((hF₀c.comp_left Complex.ofReal_zero).mul_right)
   rw [← Complex.conjCLE_apply]
-  refine (Complex.conjCLE.integral_comp_comm hint).symm.trans
+  refine (Complex.conjCLE.integral_comp_comm
+    (fun u : ℝ => (F₀ u : ℂ) * Complex.exp (Complex.I * w * (u : ℂ)))).symm.trans
     (integral_congr_ae (Eventually.of_forall fun u => ?_))
   simp only [Complex.conjCLE_apply, map_mul, Complex.conj_ofReal, ← Complex.exp_conj]
   congr 2
@@ -1339,9 +1336,9 @@ theorem integral_Icc_tsum_depthDiff_div_four_le {F₀ : ℝ → ℝ}
       refine setIntegral_congr_fun measurableSet_Icc fun γ _ => ?_
       rw [hcq]
       have hz1 : -conj (gammaOf (conj (q.1 : ℂ)) - (γ : ℂ)) = gammaOf (q.1 : ℂ) + (γ : ℂ) := by
-        simp only [gammaOf, Complex.div_I]; apply Complex.ext <;> simp <;> ring
+        simp only [gammaOf, Complex.div_I]; (apply Complex.ext <;> simp); ring
       have hz2 : -conj (conj (gammaOf (conj (q.1 : ℂ))) - (γ : ℂ)) = conj (gammaOf (q.1 : ℂ)) + (γ : ℂ) := by
-        simp only [gammaOf, Complex.div_I]; apply Complex.ext <;> simp <;> ring
+        simp only [gammaOf, Complex.div_I]; (apply Complex.ext <;> simp); ring
       have hnorm_eq : ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (conj (q.1 : ℂ)) - (γ : ℂ)) -
             paperFT (fun u => (F₀ u : ℂ)) (conj (gammaOf (conj (q.1 : ℂ))) - (γ : ℂ))‖ =
           ‖paperFT (fun u => (F₀ u : ℂ)) (gammaOf (q.1 : ℂ) + (γ : ℂ)) -
@@ -2817,6 +2814,179 @@ private theorem sum_shallow_localZeroWeight_le {ε_target C₂ κ₀ Cg Γ A v�
     _ ≤ (ε_target / 2) * Real.log Γ :=
         mul_le_mul_of_nonneg_right (by linarith) hlogΓ_pos.le
 
+private theorem sum_deep_window_localZeroWeight_le
+    {ε_target A_sel K_sel K_log3 C₂ κ₀ M_rem Γ A v₀ U T₁ T₂ : ℝ}
+    (hε : 0 < ε_target) (hA_sel : 0 < A_sel) (_hK_sel : 0 ≤ K_sel)
+    (_hK_log3_1 : 1 ≤ K_log3)
+    (hK_log3 : ∀ T : ℝ, 1 ≤ T → (1 + Real.log T) ^ 3 ≤ K_log3 * T ^ (1 / 4 : ℝ))
+    (hC₂_4800 : 4800 ≤ C₂) (hC₂_pos : 0 < C₂)
+    (hC₂_sel : 400 * A_sel / ε_target ≤ C₂)
+    (hκ₀_1 : κ₀ ≤ 1 / 38400)
+    (hM_rem_def : M_rem = 160 * (K_sel + 1) * K_log3 / (C₂ * ε_target))
+    (hM_rem_pos : 0 < M_rem)
+    (hΓ64 : 64 ≤ Γ) (hΓ_Mrem : M_rem ^ (4 : ℕ) ≤ Γ)
+    (hlogΓ_pos : 0 < Real.log Γ) (hlogΓ_ge1 : 1 ≤ Real.log Γ)
+    (hA : A ≤ κ₀ * Real.log Γ)
+    (hv₀_def : v₀ = C₂ / Real.log Γ) (hv₀_pos : 0 < v₀) (hv₀_le_quarter : v₀ ≤ 1 / 4)
+    (hU_low : Γ ≤ U) (hU_upper : U ≤ 9 * Γ)
+    (hT₁_pos : 0 < T₁) (hT12 : T₁ ≤ T₂)
+    (hsel_U : ∀ lam v : ℝ, 0 ≤ lam → 2 * lam ≤ 1 / 4800 → 2 / Real.log U ≤ v → v ≤ 1 / 4 →
+      (∑ w ∈ (windowZeros T₁ T₂).filter (fun w => 1 / 2 + v < w.re),
+          RHTower.zeroMult w * Real.exp (lam * (w.re - 1 / 2) * Real.log U)) ≤
+        U * A_sel / (4 * Real.pi * v) * (1 + 4800 / (v * Real.log U)) *
+            Real.exp (-(v * Real.log U / 4800)) +
+          Real.log U * (K_sel * Real.log U / (Real.pi * v) * Real.exp (lam * Real.log U)))
+    (Hk : Finset XiZeroCopy)
+    (hHk : ∀ q ∈ Hk, 1 / 2 + v₀ < foldedRe q ∧ T₁ ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ T₂) :
+    (1 / Γ) * ((Real.pi / 2) * ∑ q ∈ Hk, Real.exp (2 * A * (foldedRe q - 1 / 2))) ≤
+      (ε_target / 10) * Real.log Γ := by
+  have hΓ0 : 0 < Γ := by linarith
+  have hΓ1 : 1 ≤ Γ := by linarith
+  have hU_pos : 0 < U := lt_of_lt_of_le hΓ0 hU_low
+  have hlogU_ge : Real.log Γ ≤ Real.log U := Real.log_le_log hΓ0 hU_low
+  have hlogU_pos : 0 < Real.log U := lt_of_lt_of_le hlogΓ_pos hlogU_ge
+  have hlogU_le : Real.log U ≤ 2 * Real.log Γ := by
+    have hsq : U ≤ Γ ^ 2 :=
+      calc U ≤ 9 * Γ := hU_upper
+        _ ≤ Γ * Γ := mul_le_mul_of_nonneg_right (by linarith) hΓ0.le
+        _ = Γ ^ 2 := (sq Γ).symm
+    calc Real.log U ≤ Real.log (Γ ^ 2) := Real.log_le_log hU_pos hsq
+      _ = 2 * Real.log Γ := by rw [Real.log_pow]; norm_num
+  have hv₀_low : 2 / Real.log U ≤ v₀ := by
+    rw [hv₀_def]
+    exact (div_le_div_of_nonneg_left (by norm_num) hlogΓ_pos hlogU_ge).trans
+      (div_le_div_of_nonneg_right (by linarith) hlogΓ_pos.le)
+  have hexp_le_lam : ∀ q : XiZeroCopy,
+      Real.exp (2 * A * (foldedRe q - 1 / 2)) ≤
+        Real.exp ((1 / 19200) * (foldedRe q - 1 / 2) * Real.log U) := fun q => by
+    apply Real.exp_le_exp.mpr
+    have h2A : 2 * A ≤ (1 / 19200) * Real.log U := by
+      calc 2 * A ≤ 2 * (κ₀ * Real.log Γ) := by linarith
+        _ ≤ 2 * ((1 / 38400) * Real.log Γ) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hκ₀_1 hlogΓ_pos.le) (by norm_num)
+        _ = (1 / 19200) * Real.log Γ := by ring
+        _ ≤ (1 / 19200) * Real.log U := mul_le_mul_of_nonneg_left hlogU_ge (by norm_num)
+    have hnn : 0 ≤ foldedRe q - 1 / 2 := sub_nonneg.mpr (half_le_foldedRe q)
+    exact (mul_le_mul_of_nonneg_right h2A hnn).trans_eq (by ring)
+  have h4fold := sum_foldedRe_le_four_mul_windowZeros
+    (g := fun y => Real.exp ((1 / 19200) * (y - 1 / 2) * Real.log U))
+    (fun _ => (Real.exp_pos _).le) hT₁_pos hT12 hv₀_pos Hk hHk
+  have hsel := hsel_U (1 / 19200) v₀ (by norm_num) (by norm_num) hv₀_low hv₀_le_quarter
+  have hvL_ge : 4800 ≤ v₀ * Real.log U := by
+    have h1 : C₂ ≤ v₀ * Real.log U := by
+      rw [hv₀_def]
+      calc C₂ = C₂ / Real.log Γ * Real.log Γ := by field_simp [hlogΓ_pos.ne']
+        _ ≤ C₂ / Real.log Γ * Real.log U :=
+            mul_le_mul_of_nonneg_left hlogU_ge (by positivity)
+    linarith
+  have hterm1 : U * A_sel / (4 * Real.pi * v₀) * (1 + 4800 / (v₀ * Real.log U)) *
+        Real.exp (-(v₀ * Real.log U / 4800)) ≤
+      (9 * A_sel / (2 * Real.pi * C₂)) * Γ * Real.log Γ := by
+    have hf1 : 1 + 4800 / (v₀ * Real.log U) ≤ 2 := by
+      have : 4800 / (v₀ * Real.log U) ≤ 1 := div_le_one_of_le₀ hvL_ge (by positivity)
+      linarith
+    have hf2 : Real.exp (-(v₀ * Real.log U / 4800)) ≤ 1 :=
+      Real.exp_le_one_iff.mpr (by linarith)
+    have hprod12 : (1 + 4800 / (v₀ * Real.log U)) *
+        Real.exp (-(v₀ * Real.log U / 4800)) ≤ 2 :=
+      (mul_le_mul hf1 hf2 (Real.exp_pos _).le (by norm_num)).trans_eq (by ring)
+    have hmain1 : U * A_sel / (4 * Real.pi * v₀) ≤
+        (9 * A_sel / (4 * Real.pi * C₂)) * Γ * Real.log Γ := by
+      calc U * A_sel / (4 * Real.pi * v₀)
+          ≤ (9 * Γ) * A_sel / (4 * Real.pi * v₀) :=
+            div_le_div_of_nonneg_right
+              (mul_le_mul_of_nonneg_right hU_upper hA_sel.le) (by positivity)
+        _ = (9 * A_sel / (4 * Real.pi * C₂)) * Γ * Real.log Γ := by
+            rw [hv₀_def]
+            field_simp [Real.pi_ne_zero, hC₂_pos.ne', hlogΓ_pos.ne']
+    calc U * A_sel / (4 * Real.pi * v₀) * (1 + 4800 / (v₀ * Real.log U)) *
+          Real.exp (-(v₀ * Real.log U / 4800))
+        = (U * A_sel / (4 * Real.pi * v₀)) *
+            ((1 + 4800 / (v₀ * Real.log U)) *
+              Real.exp (-(v₀ * Real.log U / 4800))) := by ring
+      _ ≤ ((9 * A_sel / (4 * Real.pi * C₂)) * Γ * Real.log Γ) * 2 :=
+          mul_le_mul hmain1 hprod12 (by positivity) (by positivity)
+      _ = (9 * A_sel / (2 * Real.pi * C₂)) * Γ * Real.log Γ := by ring
+  have hterm2 : Real.log U *
+        (K_sel * Real.log U / (Real.pi * v₀) * Real.exp ((1 / 19200) * Real.log U)) ≤
+      (4 * (K_sel + 1) * K_log3 / (Real.pi * C₂)) * Γ ^ (3 / 4 : ℝ) := by
+    have hexpU : Real.exp ((1 / 19200) * Real.log U) ≤ Γ ^ (1 / 2 : ℝ) := by
+      have hle : (1 / 19200) * Real.log U ≤ (1 / 2) * Real.log Γ := by linarith
+      calc Real.exp ((1 / 19200) * Real.log U)
+          ≤ Real.exp ((1 / 2) * Real.log Γ) := Real.exp_le_exp.mpr hle
+        _ = Γ ^ (1 / 2 : ℝ) := by rw [Real.rpow_def_of_pos hΓ0, mul_comm]
+    have hlog3 : Real.log Γ ^ 3 ≤ K_log3 * Γ ^ (1 / 4 : ℝ) :=
+      (pow_le_pow_left₀ hlogΓ_pos.le (by linarith) 3).trans (hK_log3 Γ hΓ1)
+    have hK_le : K_sel ≤ K_sel + 1 := by linarith
+    calc Real.log U *
+          (K_sel * Real.log U / (Real.pi * v₀) * Real.exp ((1 / 19200) * Real.log U))
+        ≤ (2 * Real.log Γ) *
+            ((K_sel + 1) * (2 * Real.log Γ) / (Real.pi * v₀) * Γ ^ (1 / 2 : ℝ)) := by
+          refine mul_le_mul hlogU_le ?_ (by positivity) (by positivity)
+          refine mul_le_mul ?_ hexpU (Real.exp_pos _).le (by positivity)
+          exact div_le_div_of_nonneg_right
+            (mul_le_mul hK_le hlogU_le hlogU_pos.le (by positivity)) (by positivity)
+      _ = (4 * (K_sel + 1) / (Real.pi * C₂)) * Real.log Γ ^ 3 * Γ ^ (1 / 2 : ℝ) := by
+          rw [hv₀_def, show Real.pi * (C₂ / Real.log Γ) = (Real.pi * C₂) / Real.log Γ by ring,
+            div_div_eq_mul_div]
+          ring
+      _ ≤ (4 * (K_sel + 1) / (Real.pi * C₂)) * (K_log3 * Γ ^ (1 / 4 : ℝ)) * Γ ^ (1 / 2 : ℝ) :=
+          mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_left hlog3 (by positivity))
+            (Real.rpow_nonneg hΓ0.le _)
+      _ = (4 * (K_sel + 1) * K_log3 / (Real.pi * C₂)) *
+            (Γ ^ (1 / 4 : ℝ) * Γ ^ (1 / 2 : ℝ)) := by ring
+      _ = (4 * (K_sel + 1) * K_log3 / (Real.pi * C₂)) * Γ ^ (3 / 4 : ℝ) := by
+          rw [← Real.rpow_add hΓ0]; norm_num
+  have hsum_Hk : ∑ q ∈ Hk, Real.exp (2 * A * (foldedRe q - 1 / 2)) ≤
+      4 * ((9 * A_sel / (2 * Real.pi * C₂)) * Γ * Real.log Γ +
+        (4 * (K_sel + 1) * K_log3 / (Real.pi * C₂)) * Γ ^ (3 / 4 : ℝ)) := by
+    have hs1 := Finset.sum_le_sum fun q (_ : q ∈ Hk) => hexp_le_lam q
+    have hs2 := hs1.trans (h4fold.trans (mul_le_mul_of_nonneg_left hsel (by norm_num)))
+    linarith [hterm1, hterm2]
+  have h1_eps : 9 * A_sel / C₂ ≤ ε_target / 20 := by
+    have hmul : 400 * A_sel ≤ C₂ * ε_target := (div_le_iff₀ hε).mp hC₂_sel
+    rw [div_le_div_iff₀ hC₂_pos (by norm_num)]
+    have hcomm : C₂ * ε_target = ε_target * C₂ := mul_comm C₂ ε_target
+    linarith
+  have h2_eps : (8 * (K_sel + 1) * K_log3 / C₂) * Γ ^ (-(1 / 4 : ℝ)) ≤ ε_target / 20 := by
+    have hM_le_rpow : M_rem ≤ Γ ^ (1 / 4 : ℝ) := by
+      calc M_rem = (M_rem ^ (4 : ℕ)) ^ (1 / 4 : ℝ) := by
+            rw [← Real.rpow_natCast M_rem 4, ← Real.rpow_mul hM_rem_pos.le]; norm_num
+        _ ≤ Γ ^ (1 / 4 : ℝ) := Real.rpow_le_rpow (by positivity) hΓ_Mrem (by norm_num)
+    have hinv_rpow : Γ ^ (-(1 / 4 : ℝ)) ≤ 1 / M_rem := by
+      rw [Real.rpow_neg hΓ0.le, ← one_div]
+      exact one_div_le_one_div_of_le hM_rem_pos hM_le_rpow
+    calc (8 * (K_sel + 1) * K_log3 / C₂) * Γ ^ (-(1 / 4 : ℝ))
+        ≤ (8 * (K_sel + 1) * K_log3 / C₂) * (1 / M_rem) :=
+          mul_le_mul_of_nonneg_left hinv_rpow (by positivity)
+      _ = ε_target / 20 := by
+          have hK1_ne : K_sel + 1 ≠ 0 := by positivity
+          have hKl_ne : K_log3 ≠ 0 := by linarith
+          rw [hM_rem_def, one_div_div, div_mul_div_comm,
+            div_eq_div_iff
+              (mul_ne_zero hC₂_pos.ne' (mul_ne_zero (mul_ne_zero (by norm_num) hK1_ne) hKl_ne))
+              (by norm_num)]
+          ring
+  have hrpow_div : (1 / Γ) * Γ ^ (3 / 4 : ℝ) = Γ ^ (-(1 / 4 : ℝ)) := by
+    rw [one_div, ← Real.rpow_neg_one, ← Real.rpow_add hΓ0]; norm_num
+  calc (1 / Γ) * ((Real.pi / 2) * ∑ q ∈ Hk, Real.exp (2 * A * (foldedRe q - 1 / 2)))
+      ≤ (1 / Γ) * ((Real.pi / 2) *
+          (4 * ((9 * A_sel / (2 * Real.pi * C₂)) * Γ * Real.log Γ +
+            (4 * (K_sel + 1) * K_log3 / (Real.pi * C₂)) * Γ ^ (3 / 4 : ℝ)))) :=
+        mul_le_mul_of_nonneg_left
+          (mul_le_mul_of_nonneg_left hsum_Hk (by positivity)) (by positivity)
+    _ = (9 * A_sel / C₂) * Real.log Γ +
+          (8 * (K_sel + 1) * K_log3 / C₂) * ((1 / Γ) * Γ ^ (3 / 4 : ℝ)) := by
+        field_simp [Real.pi_ne_zero, hC₂_pos.ne', hΓ0.ne']; ring
+    _ = (9 * A_sel / C₂) * Real.log Γ +
+          (8 * (K_sel + 1) * K_log3 / C₂) * Γ ^ (-(1 / 4 : ℝ)) := by rw [hrpow_div]
+    _ ≤ (ε_target / 20) * Real.log Γ + (ε_target / 20) * 1 :=
+        add_le_add (mul_le_mul_of_nonneg_right h1_eps hlogΓ_pos.le) (by linarith [h2_eps])
+    _ ≤ (ε_target / 20) * Real.log Γ + (ε_target / 20) * Real.log Γ :=
+        add_le_add le_rfl (mul_le_mul_of_nonneg_left hlogΓ_ge1 (by positivity))
+    _ = (ε_target / 10) * Real.log Γ := by ring
+
 /-- **Logarithmic-Aperture Local Shell Absorption via Selberg Near-Line Density
 (`exists_local_shell_depthDiff_weighted_le`):**
 For every target `ε_target > 0`, there exist `κ₀ > 0` and `Γ₁ ≥ 64` such that for all `Γ ≥ Γ₁`,
@@ -2851,7 +3021,6 @@ theorem exists_local_shell_depthDiff_weighted_le {ε_target : ℝ} (hε : 0 < ε
       (min_le_right _ _).trans (min_le_right _ _)
     exact (pow_le_pow_left₀ hκ₀_pos.le hle 2).trans_eq (Real.sq_sqrt (by positivity))
   clear_value κ₀
-  -- Choose `Γ₁` large enough for Selberg threshold, `v₀ ≤ 1/4`, and `Γ^{-1/4}` term
   set M_rem : ℝ := 160 * (K_sel + 1) * K_log3 / (C₂ * ε_target)
   have hM_rem_def : M_rem = 160 * (K_sel + 1) * K_log3 / (C₂ * ε_target) := rfl
   have hM_rem_pos : 0 < M_rem := by rw [hM_rem_def]; positivity
@@ -2871,7 +3040,6 @@ theorem exists_local_shell_depthDiff_weighted_le {ε_target : ℝ} (hε : 0 < ε
   have hΓ_expC₂ : Real.exp (4 * C₂) ≤ Γ := hΓ₁_expC₂.trans hΓ
   have hΓ_Mrem : M_rem ^ (4 : ℕ) ≤ Γ := hΓ₁_Mrem.trans hΓ
   have hΓ0 : 0 < Γ := by linarith
-  have hΓ1 : 1 ≤ Γ := by linarith
   have hlogΓ_ge : 4 * C₂ ≤ Real.log Γ := by
     have := Real.log_le_log (Real.exp_pos _) hΓ_expC₂
     rwa [Real.log_exp] at this
@@ -2883,7 +3051,6 @@ theorem exists_local_shell_depthDiff_weighted_le {ε_target : ℝ} (hε : 0 < ε
   have hv₀_le_quarter : v₀ ≤ 1 / 4 := by
     rw [hv₀_def, div_le_div_iff₀ hlogΓ_pos (by norm_num)]; linarith
   clear_value v₀
-  -- Split `G` into `G_shallow` (`foldedRe q ≤ 1/2 + v₀`) and `G_deep` (`1/2 + v₀ < foldedRe q`)
   let G_sh := G.filter (fun q => foldedRe q ≤ 1 / 2 + v₀)
   let G_dp := G.filter (fun q => 1 / 2 + v₀ < foldedRe q)
   have hsplit_G : ∑ q ∈ G, localZeroWeight A q =
@@ -2892,13 +3059,17 @@ theorem exists_local_shell_depthDiff_weighted_le {ε_target : ℝ} (hε : 0 < ε
     rw [← Finset.sum_filter_add_sum_filter_not G (fun q => foldedRe q ≤ 1 / 2 + v₀)]
     congr 2; ext q; simp [not_le]
   have hsh_tot : (1 / Γ) * (∑ q ∈ G_sh, localZeroWeight A q) ≤ (ε_target / 2) * Real.log Γ :=
-    sum_shallow_localZeroWeight_le hε hC₂_pos hκ₀_pos hCg hglob hκ₀_2 hκ₀_sq hΓ64 hlogΓ_pos
+    sum_shallow_localZeroWeight_le hε hC₂_pos hκ₀_pos hCg.le hglob hκ₀_2 hκ₀_sq hΓ64 hlogΓ_pos
       hlogΓ_ge1 hA0 hA hv₀_def G hG
-  -- 2. Deep zeros `G_dp` via 5 overlapping Selberg windows `U_k = (16/9) * (3/2)^k * Γ`
   let U_fn : ℕ → ℝ := fun k => (16 / 9 : ℝ) * (3 / 2 : ℝ) ^ k * Γ
   have hU_ge : ∀ k : ℕ, Γ ≤ U_fn k ∧ U_sel ≤ U_fn k ∧ 64 ≤ U_fn k := fun k => by
     have hp : (1 : ℝ) ≤ (3 / 2 : ℝ) ^ k := one_le_pow₀ (by norm_num)
-    have h1 : Γ ≤ U_fn k := by dsimp [U_fn]; nlinarith
+    have h1 : Γ ≤ U_fn k := by
+      dsimp [U_fn]
+      calc Γ = 1 * 1 * Γ := by ring
+        _ ≤ (16 / 9 : ℝ) * (3 / 2 : ℝ) ^ k * Γ :=
+            mul_le_mul_of_nonneg_right
+              (mul_le_mul (by norm_num) hp zero_le_one (by norm_num)) hΓ0.le
     exact ⟨h1, hΓ_Usel.trans h1, hΓ64.trans h1⟩
   choose T₁ hT₁ T₂ hT₂ hsel_win using fun k : ℕ => hU_sel (U_fn k) (hU_ge k).2.1
   have hwin_bounds : ∀ k : ℕ, 0 < T₁ k ∧ T₁ k ≤ T₂ k ∧
@@ -2907,7 +3078,6 @@ theorem exists_local_shell_depthDiff_weighted_le {ε_target : ℝ} (hε : 0 < ε
     have h1 := (hT₁ k).1; have h2 := (hT₁ k).2
     have h3 := (hT₂ k).1; have h4 := (hT₂ k).2
     refine ⟨by linarith, by linarith, by linarith, by linarith⟩
-  -- Cover `[Γ/2, 4Γ]` by `k ∈ Finset.range 5`
   have hcover_5 : ∀ t : ℝ, Γ / 2 ≤ t → t ≤ 4 * Γ →
       ∃ k ∈ Finset.range 5, T₁ k ≤ t ∧ t ≤ T₂ k := fun t ht1 ht2 => by
     by_cases hc0 : t ≤ (5 / 6) * Γ
@@ -2948,12 +3118,14 @@ theorem exists_local_shell_depthDiff_weighted_le {ε_target : ℝ} (hε : 0 < ε
         _ ≤ ∑ k ∈ Finset.range 5,
               if T₁ k ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ T₂ k then
                 (Real.pi / 2) * Real.exp (2 * A * (foldedRe q - 1 / 2)) else 0 :=
-          Finset.single_le_sum (fun k _ => by split_ifs <;> positivity) hk₀
+          Finset.single_le_sum
+            (f := fun k => if T₁ k ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ T₂ k then
+              (Real.pi / 2) * Real.exp (2 * A * (foldedRe q - 1 / 2)) else 0)
+            (fun k _ => by split_ifs <;> positivity) hk₀
     refine (Finset.sum_le_sum hpt_dp).trans ?_
     rw [Finset.sum_comm]
     refine Finset.sum_le_sum fun k _ => ?_
     rw [← Finset.sum_filter, Finset.mul_sum]
-  -- Bound each of the 5 windows via `sum_foldedRe_le_four_mul_windowZeros` + `hsel_win`
   have hwin_k_le : ∀ k ∈ Finset.range 5,
       (1 / Γ) * ((Real.pi / 2) *
         ∑ q ∈ G_dp.filter (fun q => T₁ k ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ T₂ k),
@@ -2962,173 +3134,30 @@ theorem exists_local_shell_depthDiff_weighted_le {ε_target : ℝ} (hε : 0 < ε
     have hk4 : k ≤ 4 := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
     have hU_upper : U_fn k ≤ 9 * Γ := by
       have hp : (3 / 2 : ℝ) ^ k ≤ (3 / 2 : ℝ) ^ 4 := pow_le_pow_right₀ (by norm_num) hk4
-      dsimp [U_fn]; nlinarith
-    have hU_pos : 0 < U_fn k := lt_of_lt_of_le hΓ0 (hU_ge k).1
-    have hlogU_ge : Real.log Γ ≤ Real.log (U_fn k) := Real.log_le_log hΓ0 (hU_ge k).1
-    have hlogU_pos : 0 < Real.log (U_fn k) := lt_of_lt_of_le hlogΓ_pos hlogU_ge
-    have hlogU_le : Real.log (U_fn k) ≤ 2 * Real.log Γ := by
-      have hsq : U_fn k ≤ Γ ^ 2 := by nlinarith
-      calc Real.log (U_fn k) ≤ Real.log (Γ ^ 2) := Real.log_le_log hU_pos hsq
-        _ = 2 * Real.log Γ := by rw [Real.log_pow]; norm_num
-    have hv₀_low : 2 / Real.log (U_fn k) ≤ v₀ := by
-      rw [hv₀_def]
-      calc 2 / Real.log (U_fn k) ≤ 2 / Real.log Γ :=
-            div_le_div_of_nonneg_left (by norm_num) hlogΓ_pos hlogU_ge
-        _ ≤ C₂ / Real.log Γ := div_le_div_of_nonneg_right (by linarith) hlogΓ_pos.le
-    -- Compare `2 * A` with `(1 / 19200) * log (U_fn k)`
-    have hexp_le_lam : ∀ q : XiZeroCopy,
-        Real.exp (2 * A * (foldedRe q - 1 / 2)) ≤
-          Real.exp ((1 / 19200) * (foldedRe q - 1 / 2) * Real.log (U_fn k)) := fun q => by
-      apply Real.exp_le_exp.mpr
-      have h2A : 2 * A ≤ (1 / 19200) * Real.log (U_fn k) := by
-        calc 2 * A ≤ 2 * (κ₀ * Real.log Γ) := by linarith
-          _ ≤ 2 * ((1 / 38400) * Real.log Γ) := by nlinarith
-          _ = (1 / 19200) * Real.log Γ := by ring
-          _ ≤ (1 / 19200) * Real.log (U_fn k) :=
-              mul_le_mul_of_nonneg_left hlogU_ge (by norm_num)
-      have hnn : 0 ≤ foldedRe q - 1 / 2 := sub_nonneg.mpr (half_le_foldedRe q)
-      calc 2 * A * (foldedRe q - 1 / 2)
-          ≤ ((1 / 19200) * Real.log (U_fn k)) * (foldedRe q - 1 / 2) :=
-            mul_le_mul_of_nonneg_right h2A hnn
-        _ = (1 / 19200) * (foldedRe q - 1 / 2) * Real.log (U_fn k) := by ring
-    let Hk := G_dp.filter (fun q => T₁ k ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ T₂ k)
-    have h4fold := sum_foldedRe_le_four_mul_windowZeros
-      (g := fun y => Real.exp ((1 / 19200) * (y - 1 / 2) * Real.log (U_fn k)))
-      (fun _ => (Real.exp_pos _).le)
-      (hwin_bounds k).1 (hwin_bounds k).2.1 hv₀_pos Hk fun q hq => by
+      have hp9 : (16 / 9 : ℝ) * (3 / 2 : ℝ) ^ k ≤ 9 :=
+        (mul_le_mul_of_nonneg_left hp (by norm_num)).trans (by norm_num)
+      dsimp [U_fn]
+      exact mul_le_mul_of_nonneg_right hp9 hΓ0.le
+    exact sum_deep_window_localZeroWeight_le hε hA_sel hK_sel hK_log3_1 hK_log3
+      hC₂_4800 hC₂_pos hC₂_sel hκ₀_1 hM_rem_def hM_rem_pos hΓ64 hΓ_Mrem
+      hlogΓ_pos hlogΓ_ge1 hA hv₀_def hv₀_pos hv₀_le_quarter
+      (hU_ge k).1 hU_upper (hwin_bounds k).1 (hwin_bounds k).2.1 (hsel_win k)
+      (G_dp.filter (fun q => T₁ k ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ T₂ k))
+      fun q hq => by
         have hq1 := Finset.mem_filter.mp hq
         exact ⟨(Finset.mem_filter.mp hq1.1).2, hq1.2.1, hq1.2.2⟩
-    have hsel := hsel_win k (1 / 19200) v₀ (by norm_num) (by norm_num) hv₀_low hv₀_le_quarter
-    -- Bound Term 1 of Selberg
-    have hvL_ge : 4800 ≤ v₀ * Real.log (U_fn k) := by
-      have h1 : C₂ ≤ v₀ * Real.log (U_fn k) := by
-        rw [hv₀_def]
-        calc C₂ = C₂ / Real.log Γ * Real.log Γ := by field_simp [hlogΓ_pos.ne']
-          _ ≤ C₂ / Real.log Γ * Real.log (U_fn k) :=
-              mul_le_mul_of_nonneg_left hlogU_ge (by positivity)
-      linarith
-    have hterm1 : U_fn k * A_sel / (4 * Real.pi * v₀) *
-          (1 + 4800 / (v₀ * Real.log (U_fn k))) *
-          Real.exp (-(v₀ * Real.log (U_fn k) / 4800)) ≤
-        (9 * A_sel / (2 * Real.pi * C₂)) * Γ * Real.log Γ := by
-      have hf1 : 1 + 4800 / (v₀ * Real.log (U_fn k)) ≤ 2 := by
-        have : 4800 / (v₀ * Real.log (U_fn k)) ≤ 1 :=
-          div_le_one_of_le₀ hvL_ge (by positivity)
-        linarith
-      have hf2 : Real.exp (-(v₀ * Real.log (U_fn k) / 4800)) ≤ 1 :=
-        Real.exp_le_one_iff.mpr (by linarith)
-      have hprod12 : (1 + 4800 / (v₀ * Real.log (U_fn k))) *
-          Real.exp (-(v₀ * Real.log (U_fn k) / 4800)) ≤ 2 :=
-        (mul_le_mul hf1 hf2 (Real.exp_pos _).le (by norm_num)).trans_eq (by ring)
-      have hmain1 : U_fn k * A_sel / (4 * Real.pi * v₀) ≤
-          (9 * A_sel / (4 * Real.pi * C₂)) * Γ * Real.log Γ := by
-        calc U_fn k * A_sel / (4 * Real.pi * v₀)
-            ≤ (9 * Γ) * A_sel / (4 * Real.pi * v₀) :=
-              div_le_div_of_nonneg_right
-                (mul_le_mul_of_nonneg_right hU_upper hA_sel.le) (by positivity)
-          _ = (9 * A_sel / (4 * Real.pi * C₂)) * Γ * Real.log Γ := by
-              rw [hv₀_def]
-              field_simp [Real.pi_ne_zero, hC₂_pos.ne', hlogΓ_pos.ne']
-      calc U_fn k * A_sel / (4 * Real.pi * v₀) *
-            (1 + 4800 / (v₀ * Real.log (U_fn k))) *
-            Real.exp (-(v₀ * Real.log (U_fn k) / 4800))
-          = (U_fn k * A_sel / (4 * Real.pi * v₀)) *
-              ((1 + 4800 / (v₀ * Real.log (U_fn k))) *
-                Real.exp (-(v₀ * Real.log (U_fn k) / 4800))) := by ring
-        _ ≤ ((9 * A_sel / (4 * Real.pi * C₂)) * Γ * Real.log Γ) * 2 :=
-            mul_le_mul hmain1 hprod12 (by positivity) (by positivity)
-        _ = (9 * A_sel / (2 * Real.pi * C₂)) * Γ * Real.log Γ := by ring
-    -- Bound Term 2 of Selberg
-    have hterm2 : Real.log (U_fn k) *
-          (K_sel * Real.log (U_fn k) / (Real.pi * v₀) *
-            Real.exp ((1 / 19200) * Real.log (U_fn k))) ≤
-        (4 * (K_sel + 1) * K_log3 / (Real.pi * C₂)) * Γ ^ (3 / 4 : ℝ) := by
-      have hexpU : Real.exp ((1 / 19200) * Real.log (U_fn k)) ≤ Γ ^ (1 / 2 : ℝ) := by
-        have hle : (1 / 19200) * Real.log (U_fn k) ≤ (1 / 2) * Real.log Γ := by linarith
-        calc Real.exp ((1 / 19200) * Real.log (U_fn k))
-            ≤ Real.exp ((1 / 2) * Real.log Γ) := Real.exp_le_exp.mpr hle
-          _ = Γ ^ (1 / 2 : ℝ) := by rw [Real.rpow_def_of_pos hΓ0, mul_comm]
-      have hlog3 : Real.log Γ ^ 3 ≤ K_log3 * Γ ^ (1 / 4 : ℝ) := by
-        have h1 : Real.log Γ ^ 3 ≤ (1 + Real.log Γ) ^ 3 :=
-          pow_le_pow_left₀ hlogΓ_pos.le (by linarith) 3
-        exact h1.trans (hK_log3 Γ hΓ1)
-      have hK_le : K_sel ≤ K_sel + 1 := by linarith
-      calc Real.log (U_fn k) *
-            (K_sel * Real.log (U_fn k) / (Real.pi * v₀) *
-              Real.exp ((1 / 19200) * Real.log (U_fn k)))
-          ≤ (2 * Real.log Γ) *
-              ((K_sel + 1) * (2 * Real.log Γ) / (Real.pi * v₀) * Γ ^ (1 / 2 : ℝ)) := by
-            refine mul_le_mul hlogU_le ?_ (by positivity) (by positivity)
-            refine mul_le_mul ?_ hexpU (Real.exp_pos _).le (by positivity)
-            exact div_le_div_of_nonneg_right
-              (mul_le_mul hK_le hlogU_le hlogU_pos.le (by positivity)) (by positivity)
-        _ = (4 * (K_sel + 1) / (Real.pi * C₂)) * Real.log Γ ^ 3 * Γ ^ (1 / 2 : ℝ) := by
-            rw [hv₀_def, show Real.pi * (C₂ / Real.log Γ) = (Real.pi * C₂) / Real.log Γ by ring,
-              div_div_eq_mul_div]
-            ring
-        _ ≤ (4 * (K_sel + 1) / (Real.pi * C₂)) * (K_log3 * Γ ^ (1 / 4 : ℝ)) * Γ ^ (1 / 2 : ℝ) :=
-            mul_le_mul_of_nonneg_right
-              (mul_le_mul_of_nonneg_left hlog3 (by positivity))
-              (Real.rpow_nonneg hΓ0.le _)
-        _ = (4 * (K_sel + 1) * K_log3 / (Real.pi * C₂)) *
-              (Γ ^ (1 / 4 : ℝ) * Γ ^ (1 / 2 : ℝ)) := by ring
-        _ = (4 * (K_sel + 1) * K_log3 / (Real.pi * C₂)) * Γ ^ (3 / 4 : ℝ) := by
-            rw [← Real.rpow_add hΓ0]; norm_num
-    -- Combine `(1 / Γ) * (π / 2) * 4 * (hterm1 + hterm2) ≤ (ε_target / 10) * log Γ`
-    have hsum_Hk : ∑ q ∈ Hk, Real.exp (2 * A * (foldedRe q - 1 / 2)) ≤
-        4 * ((9 * A_sel / (2 * Real.pi * C₂)) * Γ * Real.log Γ +
-          (4 * (K_sel + 1) * K_log3 / (Real.pi * C₂)) * Γ ^ (3 / 4 : ℝ)) := by
-      have hs1 := Finset.sum_le_sum fun q (_ : q ∈ Hk) => hexp_le_lam q
-      have hs2 := hs1.trans (h4fold.trans (mul_le_mul_of_nonneg_left hsel (by norm_num)))
-      linarith [hterm1, hterm2]
-    have h1_eps : 9 * A_sel / C₂ ≤ ε_target / 20 := by
-      have hmul := (div_le_iff₀ hε).mp hC₂_sel
-      rw [div_le_div_iff₀ hC₂_pos (by norm_num)]
-      nlinarith
-    have h2_eps : (8 * (K_sel + 1) * K_log3 / C₂) * Γ ^ (-(1 / 4 : ℝ)) ≤ ε_target / 20 := by
-      have hM_le_rpow : M_rem ≤ Γ ^ (1 / 4 : ℝ) := by
-        calc M_rem = (M_rem ^ (4 : ℕ)) ^ (1 / 4 : ℝ) := by
-              rw [← Real.rpow_natCast M_rem 4, ← Real.rpow_mul hM_rem_pos.le]; norm_num
-          _ ≤ Γ ^ (1 / 4 : ℝ) := Real.rpow_le_rpow (by positivity) hΓ_Mrem (by norm_num)
-      have hinv_rpow : Γ ^ (-(1 / 4 : ℝ)) ≤ 1 / M_rem := by
-        rw [Real.rpow_neg hΓ0.le, ← one_div]
-        exact one_div_le_one_div_of_le hM_rem_pos hM_le_rpow
-      calc (8 * (K_sel + 1) * K_log3 / C₂) * Γ ^ (-(1 / 4 : ℝ))
-          ≤ (8 * (K_sel + 1) * K_log3 / C₂) * (1 / M_rem) :=
-            mul_le_mul_of_nonneg_left hinv_rpow (by positivity)
-        _ = ε_target / 20 := by
-            have hK1_ne : K_sel + 1 ≠ 0 := by positivity
-            have hKl_ne : K_log3 ≠ 0 := by linarith
-            rw [hM_rem_def, one_div_div, div_mul_div_comm,
-              div_eq_div_iff
-                (mul_ne_zero hC₂_pos.ne' (mul_ne_zero (mul_ne_zero (by norm_num) hK1_ne) hKl_ne))
-                (by norm_num)]
-            ring
-    have hrpow_div : (1 / Γ) * Γ ^ (3 / 4 : ℝ) = Γ ^ (-(1 / 4 : ℝ)) := by
-      rw [one_div, ← Real.rpow_neg_one, ← Real.rpow_add hΓ0]; norm_num
-    calc (1 / Γ) * ((Real.pi / 2) * ∑ q ∈ Hk, Real.exp (2 * A * (foldedRe q - 1 / 2)))
-        ≤ (1 / Γ) * ((Real.pi / 2) *
-            (4 * ((9 * A_sel / (2 * Real.pi * C₂)) * Γ * Real.log Γ +
-              (4 * (K_sel + 1) * K_log3 / (Real.pi * C₂)) * Γ ^ (3 / 4 : ℝ)))) :=
-          mul_le_mul_of_nonneg_left
-            (mul_le_mul_of_nonneg_left hsum_Hk (by positivity)) (by positivity)
-      _ = (9 * A_sel / C₂) * Real.log Γ +
-            (8 * (K_sel + 1) * K_log3 / C₂) * ((1 / Γ) * Γ ^ (3 / 4 : ℝ)) := by
-          field_simp [Real.pi_ne_zero, hC₂_pos.ne', hΓ0.ne']
-      _ = (9 * A_sel / C₂) * Real.log Γ +
-            (8 * (K_sel + 1) * K_log3 / C₂) * Γ ^ (-(1 / 4 : ℝ)) := by rw [hrpow_div]
-      _ ≤ (ε_target / 20) * Real.log Γ + (ε_target / 20) * 1 :=
-          add_le_add (mul_le_mul_of_nonneg_right h1_eps hlogΓ_pos.le)
-            (by linarith [h2_eps])
-      _ ≤ (ε_target / 20) * Real.log Γ + (ε_target / 20) * Real.log Γ :=
-          add_le_add le_rfl (mul_le_mul_of_nonneg_left hlogΓ_ge1 (by positivity))
-      _ = (ε_target / 10) * Real.log Γ := by ring
   have hdp_tot : (1 / Γ) * (∑ q ∈ G_dp, localZeroWeight A q) ≤ (ε_target / 2) * Real.log Γ := by
-    have hmul := mul_le_mul_of_nonneg_left hdp_cov (by positivity : 0 ≤ 1 / Γ)
-    rw [Finset.mul_sum] at hmul
     calc (1 / Γ) * (∑ q ∈ G_dp, localZeroWeight A q)
-        ≤ ∑ k ∈ Finset.range 5, (ε_target / 10) * Real.log Γ :=
-          hmul.trans (Finset.sum_le_sum hwin_k_le)
+        ≤ (1 / Γ) * ∑ k ∈ Finset.range 5,
+            (Real.pi / 2) *
+              ∑ q ∈ G_dp.filter (fun q => T₁ k ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ T₂ k),
+                Real.exp (2 * A * (foldedRe q - 1 / 2)) :=
+          mul_le_mul_of_nonneg_left hdp_cov (by positivity)
+      _ = ∑ k ∈ Finset.range 5,
+            (1 / Γ) * ((Real.pi / 2) *
+              ∑ q ∈ G_dp.filter (fun q => T₁ k ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ T₂ k),
+                Real.exp (2 * A * (foldedRe q - 1 / 2))) := Finset.mul_sum _ _ _
+      _ ≤ ∑ k ∈ Finset.range 5, (ε_target / 10) * Real.log Γ := Finset.sum_le_sum hwin_k_le
       _ = (ε_target / 2) * Real.log Γ := by
           rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; ring
   rw [hsplit_G, mul_add]
@@ -3669,20 +3698,3 @@ theorem exists_positive_measure_frequencies_fullZeroForm_cosineSource_pos :
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
 end
-
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.igmDensityExponent_le_one_sub_four_thirds
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.exists_zeroHeightBox_ncard_le_one_sub_four_thirds_uniform
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.exists_sum_exp_foldedRe_deep_decay_up_to_two_thirds_log
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.exists_sum_exp_foldedRe_threeShells_le_subpower
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.exists_frequencyAverage_abs_cosineFiltered_spectralDeficitSum_le
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.exists_frequencyAverage_abs_cosineFiltered_ccmPrimeDeficitIncoming_le
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.fullZeroForm_cosine_add_sine_eq_gammaBracket_add_criticalDeficit
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.scalingSubsurface_defect_cosine_add_sine_eq
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_frequencyAverage_quadrature_fullZeroForm_ge_subpower
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_frequencyAverage_fullZeroForm_cosineSource_ge_subpower
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_frequencyAverage_fullZeroForm_ge_neg_exp_every_pos_rate
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_volume_bad_frequencies_fullZeroForm_cosineSource_le
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_local_shell_depthDiff_weighted_le
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_logarithmic_aperture_frequencyAverage_fullZeroForm_cosineSource_pos
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_logarithmic_aperture_frequencyAverage_quadrature_pos
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_positive_measure_frequencies_fullZeroForm_cosineSource_pos

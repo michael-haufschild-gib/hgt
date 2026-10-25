@@ -16,7 +16,45 @@ The actual receiver's absolute Mellin trace identifies this subtraction as a lin
 operation. Energy quantiles then retain diffuse receiver mass together with its signed
 renormalized cofactor pairing. These results constrain how an arithmetic defect state can be
 constructed and renormalized. A common subsequence also retains all fixed cofactor
-covariances, finite packet energies and their dilation bounds.
+covariances, finite packet energies and their dilation bounds. Every such actual common limit
+now carries a cyclic critical Wiener representation. On escape, the complete paid ideal
+annihilates this module, including paid kernels with infinite support.
+
+[TheCofactorOperatorHullObeysItsDilationRadii](TheCofactorOperatorHullObeysItsDilationRadii.lean)
+identifies the spectral locus controlled by operator decay: a nonempty subset
+of the module hull whose coordinates obey `|omega(p)| <= sqrt(p)||V_p||`.
+Closed representation image makes it the whole module hull; every finite
+module has this property. A faithful weighted orthogonal family in Arithmetic
+Orientation Theory shows that stronger contraction alone cannot give the same
+bound on the full annihilator hull.
+
+[TheSourcePowerSavingControlsMovingSuccessors](TheSourcePowerSavingControlsMovingSuccessors.lean)
+uses the actual Vinogradov–Korobov bound to enlarge the invisible translation
+scales. Recentered displacement energy is uniformly `o(k^(1-epsilon))`;
+raw displacement energy is uniformly `o(k^(2-2epsilon))`. Bounded ratios of
+these powers to receiver energy therefore still give zero limiting displacement.
+[CompleteWienerPairingsFollowTheCommonCofactorLimit](CompleteWienerPairingsFollowTheCommonCofactorLimit.lean)
+retains both coefficient variables in the common Gram limit and identifies
+their limit with the exact finite-cell source pairing.
+
+[AdmittedCofactorModulesAreFaithful](AdmittedCofactorModulesAreFaithful.lean)
+proves that every actual module on the admitted branch is faithful and has
+the full Bohr hull. Bounded source energy turns a null limiting Wiener vector
+into a zero row; its nonzero first source cell recovers every coefficient.
+Thus a nonfaithful actual module forces escape, while existence of a nonzero
+common Gram module by itself does not. Admission also forces infinite
+Hilbert dimension and continuum Hamel dimension of the annihilator quotient.
+Consequently, every finite-dimensional actual module forces escape.
+[TheAdmittedCofactorKernelIsUnique](TheAdmittedCofactorKernelIsUnique.lean)
+shows that the admitted kernel is independent of the chosen common subsequence.
+
+[WienerUnitsTransportCofactorGrams](WienerUnitsTransportCofactorGrams.lean)
+constructs a unitary comparison after a Wiener unit changes the cyclic vector.
+It intertwines the complete Wiener action and preserves every operator norm,
+the annihilator, operator hull and module dimension.
+[CompleteWienerSourceRowsRespectDilation](CompleteWienerSourceRowsRespectDilation.lean)
+also identifies multiplication by a point mass with exact dilation of the
+complete source row.
 
 **The open core is exclusion.** These constraints do not prove that receiver energy is bounded.
 A source estimate excluding every escaping state for a cofinal family of positive dampings
@@ -270,9 +308,16 @@ Together with the existing admission-or-divergence dichotomy, this proves an unc
 alternative: the receiver is admitted, or every fixed successor displacement divided by
 $E_T$ tends to zero.
 
-The positive quantitative output is the moving translation budget $k^2/E_T$. Translations
-with $k(T)^2/E_T\to0$ cannot retain a nonzero displacement. This is a necessary scale test,
-not a claim that every larger translation detects an arithmetic defect.
+The moving translation budget $k^2/E_T$ gives an initial scale test.
+[TheOriginTraceControlsMovingSuccessors](TheOriginTraceControlsMovingSuccessors.lean)
+strengthens it: even an eventually bounded ratio $k(T)^2/E_T$ gives zero normalized raw
+displacement on escape. Recentring removes the origin value $A_\varepsilon(k)$ and leaves
+an additive defect bounded pointwise by $\min(n,k)$; its sharp total pronic envelope is
+$2k-H_k$. These bounds do not assert that any larger translation detects a defect.
+
+[RecenteredSuccessorsVanishAtTheEnergyScale](RecenteredSuccessorsVanishAtTheEnergyScale.lean)
+improves the recentered energy to uniform $o(k)$. Hence even bounded $k(T)/E_T$
+gives zero normalized recentered displacement on escape.
 
 ### 5. Every finite cofactor-successor word has a boundary budget
 
@@ -644,11 +689,44 @@ The subsequence may depend on `ε`; no simultaneous limit across a cofinal dampi
 family is asserted. They follow from exact
 finite packet energies and the existing sharp pronic dilation law. Compactness is applied to
 all mixed entries together, so signed cross terms cannot disappear through independently
-chosen subsequences. On the finite coefficient space modulo zero-energy packets, the index
-operation $j\mapsto pj$ consequently defines a bounded operator of norm at most $p^{-1/2}$.
-The operators compose by integer multiplication; the contraction inequality makes their
-quotient action well-defined. This last interpretation is a consequence of the displayed
-quadratic inequalities, rather than an additional Hilbert-space construction.
+chosen subsequences.
+
+[TheCofactorLimitCarriesACyclicDilationAction](TheCofactorLimitCarriesACyclicDilationAction.lean)
+constructs the complex Hilbert realization for **every** actual common limit.
+`ActualCofactorLimit` stores only the horizon subsequence and covariance convergence;
+the displayed Gram properties are derived. Its vectors $v_j$ form a total family, and
+$V_pv_j=v_{pj}$ extends to the completion with $\|V_p\|\le p^{-1/2}$.
+The operators multiply exactly according to the integer monoid.
+
+[TheCofactorLimitIsAWienerModule](TheCofactorLimitIsAWienerModule.lean) integrates this action:
+$\pi(a)=\sum_n a_nV_n$ is a contractive unital representation of $\mathcal W_{1/2}$,
+with cyclic vector $v_1$. Its operator kernel equals the vector annihilator, is closed
+and proper, and has nonempty hull. This construction also exists on the admitted branch;
+existence of the normalized module alone is not evidence of energy escape.
+
+[WienerCovariancesFollowTheCommonCofactorLimit](WienerCovariancesFollowTheCommonCofactorLimit.lean)
+passes every critical Wiener coefficient series through the common covariance limit.
+[PaidWienerKernelsAnnihilateTheCofactorLimit](PaidWienerKernelsAnnihilateTheCofactorLimit.lean)
+then proves, on escape,
+
+\[
+P(\mu_\varepsilon)\subseteq\ker\pi,\qquad
+\varnothing\ne h(\ker\pi)\subseteq h(P(\mu_\varepsilon)).
+\]
+
+Infinite-support paid kernels are included; their finite truncations need not themselves
+be paid. Neither equality of these ideals nor identification with translated zero data
+follows from the inclusions.
+
+[WhiteNoiseAndAntipodalEscapeData](WhiteNoiseAndAntipodalEscapeData.lean) also separates
+Gram compatibility from source classification. White noise satisfies the listed compactness
+constraints and admits the unique positive extension adjoining $-v_1$. Antipodality alone
+therefore supplies no exclusion; the source realization of the residual remains essential.
+
+[TheSignedCofactorGramHasNoExtraCoordinates](TheSignedCofactorGramHasNoExtraCoordinates.lean)
+identifies that fixed signed realization along every actual escaping common subsequence:
+residual vectors are $-v_j$, forcing-remainder vectors are zero, and normalized fixed
+pole traces vanish. The unscaled trace and moving cofactor boundary remain separate data.
 
 The normalized receiver is nonzero in this carrier. That repairs the elementary loss of mass
 in a pointwise zero limit, but it does not retain a moving infinite cofactor sum. In particular,

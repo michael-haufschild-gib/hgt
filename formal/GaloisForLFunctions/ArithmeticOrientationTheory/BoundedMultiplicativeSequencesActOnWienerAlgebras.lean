@@ -27,6 +27,7 @@ variable (hV : ∀ n : ℕ, n ≠ 0 → ‖V n‖ ≤ (n : ℝ) ^ (-σ))
 
 include hV0 hV
 
+omit [CompleteSpace B] in
 /-- The Wiener summand norm dominates the operator-series summand norm. -/
 theorem norm_coefficient_smul_le (a : WienerAlgebraAt σ) (n : ℕ) :
     ‖a.toFn n • V n‖ ≤ ‖LSeries.term (⇑a.toFn) σ n‖ := by
@@ -40,10 +41,11 @@ theorem norm_coefficient_smul_le (a : WienerAlgebraAt σ) (n : ℕ) :
         rw [LSeries.norm_term_eq, if_neg hn, Complex.ofReal_re,
           Real.rpow_neg (Nat.cast_nonneg n), div_eq_mul_inv]
 
+omit [CompleteSpace B] in
 /-- The target coefficient series is absolutely summable in norm. -/
 theorem summable_norm_coefficient_smul (a : WienerAlgebraAt σ) :
     Summable (fun n => ‖a.toFn n • V n‖) :=
-  a.summable_norm.of_nonneg_of_le (fun n => norm_nonneg _)
+  a.summable_norm.of_nonneg_of_le (fun _ => norm_nonneg _)
     (norm_coefficient_smul_le V hV0 hV a)
 
 /-- Completeness turns absolute norm summability into convergence. -/
@@ -51,6 +53,7 @@ theorem summable_coefficient_smul (a : WienerAlgebraAt σ) :
     Summable (fun n => a.toFn n • V n) :=
   (summable_norm_coefficient_smul V hV0 hV a).of_norm
 
+omit [CompleteSpace B] in
 /-- The coefficient series is contractive for the Wiener norm. -/
 theorem norm_tsum_coefficient_smul_le (a : WienerAlgebraAt σ) :
     ‖∑' n, a.toFn n • V n‖ ≤ ‖a‖ := by
@@ -68,10 +71,12 @@ def sequenceExtension : WienerAlgebraAt σ →L[ℂ] B :=
         exact (summable_coefficient_smul V hV0 hV a).tsum_add
           (summable_coefficient_smul V hV0 hV b)
       map_smul' := fun z a => by
-        simp only [toFn_smul, ArithmeticFunction.smul_map, smul_smul]
-        exact (HasSum.const_smul z
+        change (∑' n, (z * a.toFn n) • V n) = z • ∑' n, a.toFn n • V n
+        simpa only [smul_smul] using (HasSum.const_smul z
           (summable_coefficient_smul V hV0 hV a).hasSum).tsum_eq } 1
-    (fun a => by simpa only [one_mul] using norm_tsum_coefficient_smul_le V hV0 hV a)
+    (fun a => by
+      change ‖∑' n, a.toFn n • V n‖ ≤ 1 * ‖a‖
+      simpa only [one_mul] using norm_tsum_coefficient_smul_le V hV0 hV a)
 
 theorem sequenceExtension_apply (a : WienerAlgebraAt σ) :
     sequenceExtension V hV0 hV a = ∑' n, a.toFn n • V n := rfl
@@ -82,14 +87,15 @@ theorem sequenceExtension_pointMass (n : ℕ) :
   rw [sequenceExtension_apply, tsum_eq_single n]
   · rcases eq_or_ne n 0 with rfl | hn
     · simp [hV0]
-    · simp only [toFn_pointMass, pointMassFn_apply, if_pos ⟨hn, rfl⟩, one_smul]
+    · simp [toFn_pointMass, pointMassFn_apply, hn]
   · intro m hm
     simp only [toFn_pointMass, pointMassFn_apply]
     rw [if_neg (fun h => hm h.2), zero_smul]
 
 theorem norm_sequenceExtension_le : ‖sequenceExtension V hV0 hV‖ ≤ 1 :=
   ContinuousLinearMap.opNorm_le_bound _ zero_le_one
-    (fun a => by simpa only [one_mul] using norm_tsum_coefficient_smul_le V hV0 hV a)
+    (fun a => by simpa only [one_mul, sequenceExtension_apply] using
+      norm_tsum_coefficient_smul_le V hV0 hV a)
 
 /-- A continuous linear extension is determined by its point-mass values. -/
 theorem sequenceExtension_unique (L : WienerAlgebraAt σ →L[ℂ] B)
@@ -119,10 +125,8 @@ theorem sequenceExtension_mul_pointMass (a : WienerAlgebraAt σ) (n : ℕ) :
   have hright := ((sequenceExtension V hV0 hV).hasSum
     (hasSum_pointMass a)).mul_right (V n)
   apply HasSum.unique hleft
-  convert hright using 1
-  ext m
-  simp only [smul_mul_assoc, map_smul, pointMass_mul, sequenceExtension_pointMass,
-    hVmul]
+  simpa only [smul_mul_assoc, map_smul, pointMass_mul, sequenceExtension_pointMass,
+    hVmul] using hright
 
 /-- Absolute convergence extends multiplicativity from point masses to all kernels. -/
 theorem sequenceExtension_mul (a b : WienerAlgebraAt σ) :
@@ -133,10 +137,8 @@ theorem sequenceExtension_mul (a b : WienerAlgebraAt σ) :
   have hright := ((sequenceExtension V hV0 hV).hasSum
     (hasSum_pointMass b)).mul_left (sequenceExtension V hV0 hV a)
   apply HasSum.unique hleft
-  convert hright using 1
-  ext n
-  simp only [mul_smul_comm, map_smul, sequenceExtension_pointMass,
-    sequenceExtension_mul_pointMass V hV0 hV hVmul]
+  simpa only [mul_smul_comm, map_smul, sequenceExtension_pointMass,
+    sequenceExtension_mul_pointMass V hV0 hV hVmul] using hright
 
 /-- The contractive algebra representation associated with a multiplicative sequence. -/
 def sequenceRepresentation : WienerAlgebraAt σ →ₐ[ℂ] B where

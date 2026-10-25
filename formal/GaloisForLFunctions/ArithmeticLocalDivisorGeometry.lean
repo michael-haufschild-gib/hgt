@@ -21,6 +21,8 @@ import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.HermiteExtremizerFacto
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.EvenPolynomialHeatCone
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.HermiteOptimalHeat
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.SourceDivisorGeometry
+import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.RootRadiusHeatCone
+import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.RadiusHeadHeatPositivity
 
 /-!
 # Arithmetic local divisor geometry

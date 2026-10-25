@@ -23,6 +23,58 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
+namespace PolarSurface
+
+variable {C : Type*} [AddCommGroup C] [Module ℝ C] (S : PolarSurface C)
+
+/-- Additive closure of the full positive cone already forces Hodge index. -/
+theorem positiveCone_add_closed_iff_hodgeIndex :
+    (∀ x ∈ S.positiveCone, ∀ y ∈ S.positiveCone, x + y ∈ S.positiveCone) ↔
+      S.HodgeIndex := by
+  constructor
+  · intro hadd p hpH hpV
+    by_contra hle
+    have hp : 0 < S.pair p p := lt_of_not_ge hle
+    let t := Real.sqrt (S.pair p p / 2)
+    have ht : t ^ 2 = S.pair p p / 2 := Real.sq_sqrt (by positivity)
+    let d := S.H - S.V
+    have hsq (a b : ℝ) :
+        S.pair (a • p + b • d) (a • p + b • d) =
+          a ^ 2 * S.pair p p - 2 * b ^ 2 := by
+      simp only [d, map_add, map_sub, map_smul, LinearMap.add_apply,
+        LinearMap.sub_apply, LinearMap.smul_apply, smul_eq_mul,
+        S.pair_comm S.H p, S.pair_comm S.V p, hpH, hpV,
+        S.pair_H_H, S.pair_V_V, S.pair_H_V, S.pair_V_H]
+      ring
+    have hdegree (a b : ℝ) : S.pair (a • p + b • d) S.ample = 0 := by
+      simp only [S.pair_ample, d, map_add, map_sub, map_smul,
+        LinearMap.add_apply, LinearMap.sub_apply, LinearMap.smul_apply, smul_eq_mul,
+        hpH, hpV, S.pair_H_H, S.pair_V_V, S.pair_H_V, S.pair_V_H]
+      ring
+    have hx (a : ℝ) (ha : a ^ 2 = 1) : a • p + t • d ∈ S.positiveCone := by
+      refine ⟨?_, le_of_eq (hdegree a t).symm⟩
+      rw [hsq, ha, one_mul, ht]
+      linarith
+    have hsum := hadd (1 • p + t • d) (hx 1 (by norm_num))
+      ((-1) • p + t • d) (hx (-1) (by norm_num))
+    have he : (1 : ℝ) • p + t • d + ((-1 : ℝ) • p + t • d) =
+        (0 : ℝ) • p + (2 * t) • d := by
+      rw [one_smul, neg_one_smul, zero_smul, zero_add]
+      module
+    have hnonneg := hsum.1
+    rw [he, hsq, zero_pow (by decide : (2 : ℕ) ≠ 0), zero_mul, zero_sub] at hnonneg
+    nlinarith only [hnonneg, ht, hp]
+  · intro hH x hx y hy
+    have hxy := S.positiveCone_bezout hH x hx y hy
+    refine ⟨?_, ?_⟩
+    · simp only [map_add, LinearMap.add_apply, S.pair_comm y x]
+      linarith only [hx.1, hy.1, hxy]
+    · change 0 ≤ S.pair (x + y) S.ample
+      rw [map_add, LinearMap.add_apply]
+      exact add_nonneg hx.2 hy.2
+
+end PolarSurface
+
 /-- The exact all-parity arithmetic reserve, with no Weil-form or zero-sum reading in its definition. -/
 def criticalDeficitSourceEnergy (r : ℝ) (V : Submodule ℝ realTests) (x : ℝ × ℝ × V) : ℝ :=
   (EF.gammaBracket 0 - 2) * (∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) +
@@ -131,17 +183,16 @@ theorem criticalDeficitSourceEnergy_not_finiteLinearReading {r : ℝ} (hr : 0 < 
 /-- Every compact real test belongs to a positive support aperture. -/
 theorem exists_pos_aperture_of_realTest (f : realTests) :
     ∃ r : ℝ, 0 < r ∧ f ∈ realTestsAt r := by
-  obtain ⟨a, ha⟩ :=
-    GaloisForLFunctions.ArithmeticIncidencePositivity.exists_radius_of_hasCompactSupport f.2.2
+  obtain ⟨a, ha⟩ := f.2.2.isCompact.isBounded.subset_closedBall (0 : ℝ)
   let r := max a 0 + 1
   have hr : 0 < r := by dsimp only [r]; linarith only [le_max_right a 0]
   have har : a ≤ r := by dsimp only [r]; linarith only [le_max_left a 0]
   refine ⟨r, hr, ?_⟩
   change tsupport f.1 ⊆ Icc (-r) r
-  refine closure_minimal (fun u hu => ?_) isClosed_Icc
-  apply abs_le.mp
-  by_contra h
-  exact hu (ha u (har.trans_lt (lt_of_not_ge h)))
+  intro u hu
+  have hab := ha hu
+  rw [Metric.mem_closedBall, Real.dist_eq, sub_zero] at hab
+  exact abs_le.mp (hab.trans har)
 
 /-- Global arithmetic effectivity obtained by admitting each compact source at a support aperture. -/
 def globalExactArithmeticSourceCone : Set ScalingCycle :=
@@ -180,6 +231,21 @@ theorem globalExactArithmeticSourceCone_ample_iff :
   rw [globalExactArithmeticSourceCone_eq_positiveCone,
     scalingSurface.positiveCone_ample_iff_hodgeIndex, scalingSurface_hodgeIndex_iff]
 
+/-- The arithmetic RR set is an additive effective monoid precisely when RH holds. -/
+theorem globalExactArithmeticSourceCone_add_closed_iff :
+    (∀ x ∈ globalExactArithmeticSourceCone, ∀ y ∈ globalExactArithmeticSourceCone,
+      x + y ∈ globalExactArithmeticSourceCone) ↔ RiemannHypothesis := by
+  rw [globalExactArithmeticSourceCone_eq_positiveCone,
+    scalingSurface.positiveCone_add_closed_iff_hodgeIndex, scalingSurface_hodgeIndex_iff]
+
+/-- The same additive obstruction is already exact at each fixed aperture. -/
+theorem exactArithmeticSourceCone_add_closed_iff_hodgeIndex {r : ℝ} (hr : 0 ≤ r)
+    {V : Submodule ℝ realTests} (hV : V ≤ realTestsAt r) :
+    (∀ x ∈ exactArithmeticSourceCone r V, ∀ y ∈ exactArithmeticSourceCone r V,
+      x + y ∈ exactArithmeticSourceCone r V) ↔ (scalingSubsurface V).HodgeIndex := by
+  rw [exactArithmeticSourceCone_eq_positiveCone hr hV]
+  exact (scalingSubsurface V).positiveCone_add_closed_iff_hodgeIndex
+
 /-- Stability under even one expanding Adams scale carries the full missing sign condition. -/
 theorem globalExactArithmeticSourceCone_adams_stable_iff {q : ℝ} (hq : 1 < q) :
     (∀ x ∈ globalExactArithmeticSourceCone, adamsOp q x ∈ globalExactArithmeticSourceCone) ↔
@@ -208,7 +274,8 @@ theorem globalExactArithmeticSourceCone_adams_stable_iff {q : ℝ} (hq : 1 < q) 
     refine ⟨?_, ?_⟩
     · rw [pair_adamsOp]
       exact hx.1
-    · rw [pair_adamsOp_ample (by linarith only [hq])]
+    · have hq0 : 0 < q := lt_trans zero_lt_one hq
+      rw [scalingSurface.pair_ample, pair_adamsOp_H hq0, pair_adamsOp_V hq0]
       positivity
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

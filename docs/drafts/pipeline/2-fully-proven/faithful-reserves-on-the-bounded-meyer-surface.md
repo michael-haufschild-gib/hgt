@@ -1,0 +1,79 @@
+# Faithful reserves on the bounded Meyer surface
+
+- **ID:** faithful-reserves-on-the-bounded-meyer-surface
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper)
+- **Source:** Q-II; bounded full-Hasse source algebra and faithful Hilbert–Schmidt reserve.
+- **Statement:** On the bounded centered-orbit carrier, the faithful Hilbert–Schmidt source cone has RR exactly when every critical Xi zero is simple. Its reserve is flow invariant on that carrier regardless of this condition.
+- **Status:** Dependency-closed paper proof; Lean formalization pending. No critical multiplicity or off-line zero is asserted to exist.
+
+## Carrier and distinction
+
+Let B consist of actual sources whose lower Xi jets vanish off the critical
+line and whose critical jets vanish below the highest local order. The
+bounded-orbit paper identifies B with both bounded and isometric full-Hasse
+centered orbits. B is a source subalgebra preserved by arithmetic sharp.
+
+Restrict the original Meyer surface to both fibres and B. Its ordinary trace
+degree cone has RR, Bézout, and ampleness unconditionally. The faithful reserve
+
+    P(g)=(||T(g)||_HS²+||T(g#)||_HS²)/2
+
+also has Bézout and ampleness there, and is zero precisely on genuine
+boundaries. It is invariant under centered flow on B, since sharp reverses
+that flow and both terms have constant HS norm. This invariance alone does
+not remove a possible nilpotent adjoint defect within B.
+
+## Necessity of critical simplicity
+
+Suppose a critical point rho has multiplicity m>1. Its actual highest-jet
+source e_(rho,m-1) belongs to B and is not principal. All its zeroth Xi values
+are zero, so its ordinary trace square is zero. Faithfulness gives P(g)>0.
+The source-cone RR criterion on the restricted surface would require
+P(g)<=delta(g,g)=0, a contradiction.
+
+Equivalently its source convolution matrix has a nonzero terminal lower
+entry and its arithmetic sharp has the same lower position. The Hilbert
+adjoint occupies the upper position. Their exact squared adjoint defect is
+nonzero even though the source orbit moves only by a unit phase.
+
+## Sufficiency and exact adjoint criterion
+
+Now suppose every critical Xi point is simple. For any g in B, all operator
+rows at off-line points vanish, because every relevant source jet vanishes.
+At a critical point the block has size one, so the actual convolution acts
+by its zeroth Mellin value. Hence T(g) is diagonal, supported at simple critical
+points. Sharp conjugates those values and again vanishes at every other block.
+Thus T(g#)=T(g)* for every g in B.
+
+The exact HS trace-defect identity gives P(g)=delta(g,g). This proves RR for
+the restricted faithful cone, while Bézout and ampleness follow from the
+already proved majorant inequalities. In fact the faithful cone and ordinary
+degree cone coincide in this case. Conversely equality of cones implies RR
+and therefore critical simplicity by the preceding highest-jet witness.
+
+Consequently the following assertions are equivalent:
+
+1. Every critical Xi zero is simple.
+2. Arithmetic sharp equals the Hilbert adjoint on B.
+3. P equals ordinary trace square on B.
+4. The faithful reserve cone on the bounded source surface has RR.
+5. The faithful reserve cone equals its ordinary degree cone.
+
+No assertion concerns jets outside B. On the full source carrier the analogous
+criterion is RH together with simplicity. This domain distinction prevents
+incorrectly transferring the full-carrier equivalence between reserve-flow
+invariance and RR to a restricted carrier.
+
+## Exact dependencies and pending work
+
+- `MeyerBoundedCenteredOrbits`: exact carrier classification; actual candidate unchecked.
+- `MeyerCriticalTopAlgebra`: sharp stability and highest critical source witness; draft unchecked.
+- `BoundedMeyerSourceSurface`: original restricted surface and ordinary cone; draft unchecked.
+- `FaithfulHilbertSchmidtSourceReserves`: actual reserve, exact adjoint defect and faithfulness; candidate unchecked.
+- `MeyerHilbertSchmidtSource` and HT `HilbertSchmidtTraceDefect`: actual-file certified foundations.
+
+The diagonal argument uses actual rows and the existing l2 inner-product sum,
+without a new source realization or infinite norm expansion premise. Lean must
+formalize the five equivalent assertions and preserve the unconditional reserve
+invariance separately. No Lean draft for this leaf yet. External novelty unverified.
