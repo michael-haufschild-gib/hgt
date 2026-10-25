@@ -1,8 +1,8 @@
 # Square-root-energy translations still disappear
 
 - **ID:** square-root-energy-translations-still-disappear
-- **Stage:** 2-fully-proven
-- **Type:** LEAN RESULTS WITH PENDING COROLLARIES
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** `docs/reports/review-2410/opus.md`, Mechanism A and Q-III; `FixedSuccessorsDisappearFromEscapingProfiles.lean`.
 - **Statement:** For the actual damped Möbius receiver, every moving successor of length `O(sqrt(E))` has vanishing normalized displacement on escape.
 
@@ -16,14 +16,14 @@ standard-axiom audits. Their owners are `TheOriginTraceControlsMovingSuccessors`
 The stronger source-power refinement is already in
 `3-formalized/the-source-power-saving-enlarges-the-invisible-translation-scale.md`.
 
-All reset/raw moving-origin Gram and faithful boundary-module consequences
-passed final canonical checks. Boundary dimension/index and two explicit
-prose corollaries still need their own checks: scalar origin-trace convergence
-in pronic norm, and unbounded squared-length/energy ratio along every
-nonvanishing cofinal subsequence. Historical pending labels below are superseded by this coverage
-record and [the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
+All reset/raw moving-origin Gram and faithful boundary-module consequences,
+boundary dimension/index, scalar origin-trace convergence in pronic norm,
+and the unbounded squared-length/energy obstruction along nonvanishing cofinal
+subsequences passed final canonical checks. The exact declarations and audits
+are recorded below and in
+[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
 
-## Paper proof
+## Proof mechanism
 
 Fix `0 < epsilon < 1/2` and write `A(n)` for the centered receiver prefix.
 The corpus proves `|A(n+k)-A(n)| <= k`. Its all-damping hyperbola estimate,
@@ -67,9 +67,9 @@ horizons. This uniform subquadratic budget is the positive structural result.
 - **New insight:** The report's proposed `k ~ sqrt(E)` scale is still too
   small. Its original quadratic estimate supplied only a necessary lower
   bound, not a scale supporting a nontrivial translation action.
-- **Status:** The raw square-root collapse and its positive origin-trace
-  survivor passed final canonical checks. Later reset/raw boundary consequences
-  below remain under their separate canonical audits.
+- **Status:** The raw square-root collapse, positive origin-trace survivor,
+  reset/raw boundary consequences and exact dimension/index refinements all
+  passed final canonical checks and standard-axiom audits.
 
 ## Stronger raw source-power bound
 
@@ -86,8 +86,8 @@ escape consequence. The corresponding source-power card is in `3-formalized`.
 
 - [x] Exact actual-source inputs checked.
 - [x] Dependency-closed paper proof.
-- [ ] Lean proof, axiom audit, final check, umbrella import.
-- [ ] Apply the corrected scale throughout the Q-III analysis.
+- [x] Lean proof, axiom audit, final check, umbrella import.
+- [x] Apply the corrected scale throughout the Q-III analysis and report.
 
 ## Stronger survivor: translations carry an origin trace
 
@@ -113,7 +113,9 @@ coordinate. They do not provide an additional diffuse escape coordinate.
 
 For `k=O(sqrt(E))`, sublinearity gives `A(k)/sqrt(E)->0`; the linear remainder
 budget gives collapse again. This decomposition is stronger than the initial
-little-oh quadratic bound and must also be formalized before closing the no-go.
+little-oh quadratic bound. Its exact pronic-norm convergence is formalized as
+`normalized_successor_tendsto_origin_trace` in
+`MovingSuccessorLimitsAreOriginTraces`.
 
 ## Sharp source refinement
 
@@ -133,8 +135,8 @@ where `H_k=sum_{n=1}^k 1/n`. Hence the uniform remainder budget improves from
 increments in an interval of width one: the hinge prefix `v(n)=max(n-k,0)`
 has additive defect exactly `min(n,k)` for the specified shift `k`.
 This sharp source refinement and the origin-trace decomposition are positive
-survivors. The sharp envelope and raw square-root-scale collapse now pass
-Lean and standard-axiom audits. Their final source-only checks remain.
+survivors. The sharp envelope and raw square-root-scale collapse passed
+Lean, standard-axiom audits and final source-only checks.
 
 ## Zero-origin translations and the corrected surviving scale
 
@@ -157,7 +159,7 @@ cannot be silently inserted into the same contractive Wiener module. Resetting
 the origin preserves the source convention and exposes the linear translation
 budget above. No new bounded translation representation has yet been proved.
 
-## Stronger paper consequence: the recentered budget is little-oh linear
+## The recentered budget is little-oh linear
 
 Sublinearity improves the recentered defect budget from `O(k)` to `o(k)`,
 uniformly in the horizon. Here is a finite-sum proof. Fix an integer `q>=1`
@@ -177,7 +179,7 @@ This consequence passed final canonical verification in
 `RecenteredSuccessorsVanishAtTheEnergyScale`; its source-power strengthening
 is also formalized. The old scratch status is superseded.
 
-## Origin reset and a possible boundary module
+## Origin reset and its boundary module
 
 Recentring subtracts `A(k)` at every cell. A different operation resets only
 index zero: `B_k(0)=0`, `B_k(n)=A(n+k)` for positive `n`. Define
@@ -192,14 +194,15 @@ summable pronic square mass.
 Consequently, if `A(k)/sqrt(E)` converges to a finite scalar `b`, these
 zero-reset moving profiles have Gram limit `K+b^2/max(j,l)` at the original
 receiver scale, or `(K+b^2/max(j,l))/(1+b^2)` at their own scale. This is a
-conditional structural consequence, not an assertion that a nonzero `b`
-occurs for the actual receiver. The step-row module is faithful: applying a
+structural consequence of the stated trace limit. The record construction
+realizes every positive squared boundary mass on escape, without asserting
+any particular escaping damping. The step-row module is faithful: applying a
 Wiener kernel to its cyclic vector gives its finite prefix sums, so zero
 action forces every coefficient to vanish. Thus a surviving reset-origin
-component would have the full Bohr hull. It would not preserve the original
+component has the full Bohr hull. It need not preserve the original
 paid-ideal bridge automatically. This distinguishes raw translation,
 recentring, and a reset at one cell; they cannot share an unproved action law.
-These consequences still need source and Lean audits before being used.
+These consequences passed final canonical source checks and Lean axiom audits.
 
 The raw, unreset row has a different boundary term: its displacement is
 `r_k+A(k)` including at index zero. Dilation preserves this constant row, so
@@ -227,3 +230,20 @@ Sublinearity now yields the uniform little-oh quadratic budget directly:
 This replaces the planned dominated-series implementation for the same theorem.
 The initial dominated-convergence paper proof remains valid, but its temporary
 Lean draft can be superseded by this stronger shared origin-trace argument.
+
+## Explicit trace and nonvanishing-scale corollaries
+
+`MovingSuccessorLimitsAreOriginTraces` proves the quantitative squared-error
+bound `4*k/E + 2*(A(k)/sqrt(E)-a)^2`, then both energy and pronic-norm
+convergence to the constant trace under `k/E -> 0` and `A(k)/sqrt(E) -> a`.
+It also proves `admits_or_nonvanishing_successors_require_unbounded_scale`:
+along every cofinal horizon sequence on escape, failure of normalized
+displacement to tend to zero forces `k^2/E` to exceed every real bound
+frequently. This retains the subsequence quantifiers from the no-go survivor.
+
+The exact application declarations are
+`normalized_successor_tendsto_origin_trace` and
+`admits_or_nonvanishing_successors_require_unbounded_scale` in namespace
+`GaloisForLFunctions.ArithmeticDefectRigidity`. Final canonical source check
+`80601` passed; both transitive audits contain only `propext`,
+`Classical.choice`, `Quot.sound`. The umbrella import is wired.

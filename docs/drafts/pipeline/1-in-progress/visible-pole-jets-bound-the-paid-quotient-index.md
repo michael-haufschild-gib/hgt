@@ -19,14 +19,16 @@ mechanisms. No existing paid-Wiener finite-jet index theorem surfaced.
 
 ## Missing bridge
 
-Prove joint jet evaluation onto the finite jet target from critical Wiener
-Dirichlet polynomials. Do not add surjectivity as a theorem hypothesis.
-One possible route chooses a Dirichlet polynomial a(s) separating all
+Prove joint jet evaluation onto the finite jet target from the full critical
+Wiener algebra. Do not add surjectivity as a theorem hypothesis.
+A proposed finite-polynomial route chooses a Dirichlet polynomial a(s) separating all
 selected points with a'(s) nonzero at each, avoiding finitely many linear
 conditions on coefficients. Polynomial Hermite interpolation in a(s) then
 recovers arbitrary jets by its invertible triangular chain-rule matrix.
 A single integer base can also work if its exponentials separate the points;
-that separation must be constructed, not assumed.
+that separation must be constructed, not assumed. Finite-polynomial witnesses
+were a proposed refinement, not an established finding. The exact construction
+below proves full-Wiener interpolation, which suffices for the paid-index bound.
 
 After surjectivity, the paid ideal lies in the evaluation kernel and quotient
 rank bounds follow. All arithmetic vanishing inputs are proved by the new
@@ -52,9 +54,9 @@ resulting local jet matrix triangular with nonzero diagonal, while every
 other target jet vanishes. `deningerTriangular_solvable` then supplies all
 coefficients. This route still needs exact Lean implementation and audit.
 
-The endpoint distinct-value consequence is separately drafted in
-`/tmp/qiii_visible_pole_point_count_body.lean` and assembled as
-`/tmp/qiii-visible-pole-point-count-check.lean`. It proves closed-half-plane
+The endpoint distinct-value consequence is drafted in
+`/tmp/qiii_visible_pole_point_count_body.lean` and included in
+`/tmp/qiii-visible-mixed-jet-index-check.lean`. It proves closed-half-plane
 character separation, unifies strict-interior and boundary visible pole
 obstructions, and bounds the paid quotient rank by their finite point count.
 UNVERIFIED. This is only the value count; the multiplicity-weighted claim
@@ -63,7 +65,7 @@ above remains open until the full masked jet interpolation passes.
 ## Exact masked interpolation draft
 
 The local analytic bridge and the full strict-interior masked interpolation
-now have Lean drafts: `/tmp/qiii_wiener_jet_evaluation_body.lean` and
+now have Lean drafts: `/tmp/qiii-wiener-jet-evaluation-check.lean` and
 `/tmp/qiii_wiener_masked_interpolation_body.lean`. The former constructs
 linear jet functionals on the full Wiener algebra and proves local product
 and power order laws. The latter constructs a simple dyadic local parameter,
@@ -79,8 +81,8 @@ The strict-interior quotient application is now drafted in
 surjective jet map through an arbitrary ideal imposing the jet conditions,
 then applies the actual paid-kernel visible-order theorem. Its exact target
 is the sum of any finite lower multiplicities of the visible orders, with
-no assumed interpolation or rank bound. The assembled
-`/tmp/qiii-visible-jet-index-check.lean` remains UNVERIFIED.
+no assumed interpolation or rank bound. It is included in the unverified
+`/tmp/qiii-visible-mixed-jet-index-check.lean`.
 
 The mixed endpoint claim also has a complete draft.
 `/tmp/qiii_wiener_mixed_interpolation_body.lean` constructs masks vanishing to

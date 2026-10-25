@@ -574,8 +574,3 @@ theorem twoChannel_width_cap {A B₁ B₂ W L' η : ℝ} {K L : ℕ} (hK : 1 ≤
 
 end GaloisForLFunctions.ArithmeticPositiveDuality
 
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.twoChannel_joint_barrier_attained
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.independentChannel_purchase_le_fejer
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.multiFrequency_purchase_le_fibre_fejer
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.fibre_barrier_attained
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.twoChannel_width_cap

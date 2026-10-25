@@ -106,6 +106,29 @@ theorem exclusion_iff {A B G η : ℝ} (hA : 0 < A) (hB : 0 ≤ B) (hG : 0 < G) 
   · intro h
     exact ⟨_, by positivity, exclusion_at_geometric_mean hA hB hG hη h⟩
 
+/-- **Range-limited inputs.** An input valid only for `0 < δ ≤ δ₁` loses nothing when the optimal
+witness fits, `Aη ≤ G δ₁²`: exclusion on the range holds iff `√A + √(Gη) < √B`. This is the shape
+of the Littlewood and Vinogradov–Korobov steps, whose growth bound holds near `σ = 1` only. -/
+theorem exclusion_iff_restricted {A B G η δ₁ : ℝ} (hA : 0 < A) (hB : 0 ≤ B) (hG : 0 < G)
+    (hη : 0 < η) (hδ₁ : 0 < δ₁) (hfit : A * η ≤ G * δ₁ ^ 2) :
+    (∃ δ, 0 < δ ∧ δ ≤ δ₁ ∧ A / δ + G < B / (δ + η)) ↔
+      Real.sqrt A + Real.sqrt (G * η) < Real.sqrt B := by
+  constructor
+  · rintro ⟨δ, hδ, -, h⟩
+    exact (exclusion_iff hA hB hG hη).mp ⟨δ, hδ, h⟩
+  · intro h
+    refine ⟨_, by positivity, ?_, exclusion_at_geometric_mean hA hB hG hη h⟩
+    -- `δ* = √A √(Gη)/G` and `δ*² = Aη/G ≤ δ₁²`.
+    have hs2 : Real.sqrt A ^ 2 = A := Real.sq_sqrt hA.le
+    have ht2 : Real.sqrt (G * η) ^ 2 = G * η := Real.sq_sqrt (by positivity)
+    have hsq : (Real.sqrt A * Real.sqrt (G * η) / G) ^ 2 ≤ δ₁ ^ 2 := by
+      rw [div_pow, mul_pow, hs2, ht2, div_le_iff₀ (by positivity)]
+      nlinarith
+    have hδ0 : 0 ≤ Real.sqrt A * Real.sqrt (G * η) / G := by positivity
+    by_contra hc
+    push Not at hc
+    nlinarith [mul_pos (sub_pos.mpr hc) (by linarith : 0 < Real.sqrt A * Real.sqrt (G * η) / G + δ₁)]
+
 /-- **The certified width.** Exclusion holds iff `A < B` and `η < (√B − √A)²/G`. -/
 theorem exclusion_iff_lt_width {A B G η : ℝ} (hA : 0 < A) (hB : 0 ≤ B) (hG : 0 < G)
     (hη : 0 < η) :

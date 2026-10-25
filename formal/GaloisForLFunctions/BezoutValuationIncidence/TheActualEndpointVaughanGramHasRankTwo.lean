@@ -75,6 +75,13 @@ theorem pmPronicVaughanHalfLimitGram_pole_lower :
   norm_num only [div_div, show (2 : ℝ) * 32 = 64 by norm_num] at h
   exact h
 
+/-- The positive pole entry makes the actual endpoint Gram nonzero. -/
+theorem pmPronicVaughanHalfLimitGram_ne_zero : pmPronicVaughanHalfLimitGram ≠ 0 := by
+  intro hz
+  have h := pmPronicVaughanHalfLimitGram_pole_lower
+  rw [hz] at h
+  norm_num at h
+
 /-- The actual endpoint limit is a positive semidefinite matrix. -/
 theorem pmPronicVaughanHalfLimitGram_posSemidef :
     Matrix.PosSemidef pmPronicVaughanHalfLimitGram := by
@@ -100,4 +107,5 @@ theorem rank_pmPronicVaughanHalfLimitGram : Matrix.rank pmPronicVaughanHalfLimit
 #print axioms rank_pmPronicVaughanHalfLimitGram_le_two
 #print axioms pmPronicVaughanHalfLimitGram_prefix_pole_minor_lower
 #print axioms pmPronicVaughanHalfLimitGram_pole_lower
+#print axioms pmPronicVaughanHalfLimitGram_ne_zero
 end GaloisForLFunctions.BezoutValuationIncidence

@@ -116,9 +116,11 @@ The inspected literal Fermi Mellin quotient has both numerator and shifted
 denominator zeta factors. Further inspection found the direct paid-receiver
 cleared continuation identity already in AOT
 `TheOffLineZerosObstructTheMoebiusReceiver`. Its existing noncancellation
-criterion can be sharpened on paper to a kernel zero-order lower bound by the
-denominator order minus the numerator order. This extends the paid-ideal
-obstruction, not the hull of each individual actual module.
+criterion now has a checked kernel zero-order lower bound by the denominator
+order minus the numerator order in `PaidKernelsCoverVisibleTranslatedZeroOrders`.
+`CriticalBoundaryPolesObstructPaidKernels` covers the boundary value obstruction.
+These extend the paid-ideal obstruction; identifying the hull of each individual
+actual module remains open.
 
 ## Translation and signed data
 
@@ -156,7 +158,7 @@ exclusion passed canonical Lean checks. Escape records realize every positive
 squared origin mass; this is an admission-or-realization theorem and asserts
 no particular escaping damping. The step and positive-mixture modules also
 have checked infinite dimension and continuum annihilator-quotient index.
-See [origin/translation card](../2-fully-proven/square-root-energy-translations-still-disappear.md).
+See [origin/translation card](../3-formalized/square-root-energy-translations-still-disappear.md).
 
 For receiver A, renormalized residual R, and paid forcing remainder F, R=F-A
 exactly and all three origins vanish. The complete fixed signed limiting table is
@@ -211,21 +213,10 @@ dichotomy: admission makes the paid ideal whole, without making the normalized
 common-limit Hilbert space zero.
 The complete paper proof and its dimension/uniqueness consequences are now on
 [the admitted-module card](../3-formalized/admitted-cofactor-modules-are-faithful.md).
-The further dimension and full-horizon uniqueness consequences are in
-`/tmp/qiii_admitted_dimension_body.lean` and
-`/tmp/qiii_admitted_kernel_unique_check.lean`, both queued for their first check.
-The draft `/tmp/qiii_unit_gram_equivalence_check.lean` uses
-`ContinuousLinearEquiv.unitsEquiv` and the existing total-feature Gram unitary
-to identify every unit-twisted Gram completion with the same Hilbert space.
-Its unitary and dilation-intertwining proofs passed with standard axioms.
-A local nonzero-vector rewrite was fixed for the normalization; the retry
-also checks positive source-energy ratio and normalized unit source Gram
-convergence in `/tmp/qiii_unit_source_gram_body.lean`.
-`/tmp/qiii_wiener_source_dilation_body.lean` proves continuous coefficient
-evaluation and exact complete source dilation by point-mass multiplication;
-its local scalar/conditional rewrites were fixed for the same retry.
-`/tmp/qiii_paid_gram_perturbation_check.lean` is a first-check draft of the
-quantitative paid-correction Gram estimate needed for actual unit convolution.
+The dimension and uniqueness consequences passed canonical checks in
+`AdmittedCofactorModulesAreFaithful` and `TheAdmittedCofactorKernelIsUnique`.
+The unitary transport, full-source dilation and paid-correction Gram estimates
+also passed canonical checks, as recorded on the admitted and unit cards.
 
 ## Scaling and parallel programme evidence
 
@@ -253,7 +244,12 @@ paid-ideal nonclosedness remain unverified. Preserve that work; do not import
 paper conclusions or identify the two ambient actions. Parallel paid-source
 perturbation ideal stability is formalized; full Gram stability is still paper.
 
-## Current verification handoff
+## Historical verification notes — superseded
+
+The notes below preserve the development record only. Their active-session,
+scratch-path, script and pending-status instructions are obsolete. Use the
+[completion ledger](q-iii-existing-findings-lean-completion.md) for current
+state. Do not execute any historical source assembler or compilation script.
 
 **One active sequential Lean command: session `82907`,**
 `/bin/zsh /tmp/qiii-unit-finite-and-core-checks.sh` from `formal/`.

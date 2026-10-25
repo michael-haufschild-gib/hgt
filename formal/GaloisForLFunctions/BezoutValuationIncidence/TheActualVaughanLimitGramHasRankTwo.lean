@@ -86,7 +86,7 @@ theorem pmPronicVaughanLimitGram_eq_two_outer_products (ε : ℝ) :
   fin_cases i <;>
     simp [pmPronicVaughanLimitGram, pmPronicVaughanLimitFrame,
       pmPronicVaughanLimitPrefixDirection, pmPronicVaughanLimitPoleDirection,
-      Matrix.vecMulVec_apply, Matrix.add_apply, neg_mul, tsum_neg]
+      Matrix.add_apply, neg_mul, neg_div, tsum_neg]
 
 /-- The limiting Gram has at most two independent coefficient directions. -/
 theorem rank_pmPronicVaughanLimitGram_le_two (ε : ℝ) :
@@ -111,7 +111,7 @@ theorem pmPronicVaughanLimitGram_prefix_pole_minor_lower
   have hlim := ((tendsto_sum_pmPronicVaughanLimitGram_terms hε 0 0).mul
     (tendsto_sum_pmPronicVaughanLimitGram_terms hε 4 4)).sub
       ((tendsto_sum_pmPronicVaughanLimitGram_terms hε 0 4).pow 2)
-  apply le_of_tendsto hlim
+  apply ge_of_tendsto hlim
   filter_upwards [eventually_ge_atTop 2] with T hT
   have h := pmPowerDampedPrefix_pole_pronic_gram_determinant_lower
     (ε := ε) (by linarith only [hε]) hT
@@ -127,7 +127,7 @@ theorem pmPronicVaughanLimitGram_prefix_pole_minor_lower
 /-- The first pole cell gives a positive lower bound for its infinite energy. -/
 theorem pmPronicVaughanLimitGram_pole_lower {ε : ℝ} (hε : 1 / 2 ≤ ε) :
     ((2 : ℝ) ^ (-ε)) ^ 2 / 32 ≤ pmPronicVaughanLimitGram ε 4 4 := by
-  apply le_of_tendsto (tendsto_sum_pmPronicVaughanLimitGram_terms hε 4 4)
+  apply ge_of_tendsto (tendsto_sum_pmPronicVaughanLimitGram_terms hε 4 4)
   filter_upwards [eventually_ge_atTop 1] with T hT
   have h := pmActivePairPronicEnergy_lower ε hT
   change ((2 : ℝ) ^ (-ε)) ^ 2 / 32 ≤ ∑ n ∈ Icc 1 T,

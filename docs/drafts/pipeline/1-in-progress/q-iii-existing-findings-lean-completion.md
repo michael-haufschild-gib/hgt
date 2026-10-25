@@ -44,8 +44,8 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Reset moving origin, faithful step kernel and every positive boundary mass | All thirteen canonical entries passed final checks, including every positive faithful realization |
 | Raw moving origin, exclusion from actual zero-origin limits | Final canonical audit `46880` passed with standard axioms; no olean needed |
 | Positive boundary modules have infinite dimension and continuum index | Final canonical audit `86587` passed with standard axioms; no olean needed |
-| Scalar origin-trace convergence and nonvanishing successor scale | Scratch `22849` passed; canonical source installed and wired, final check pending |
-| Exact incomplete dilation fibre and mixed C*D/p bound | Combined scratch passed; canonical source installed and wired, individual checks pending |
+| Scalar origin-trace convergence and nonvanishing successor scale | Final canonical audit `80601` passed with standard axioms; no olean needed |
+| Exact incomplete dilation fibre and mixed C*D/p bound | Required olean `69760` and final canonical source check `89066` passed with standard axioms |
 | Actual horizon contraction, principal ideal quotient, full intertwining | Combined scratch passed; canonical sources installed and wired, individual checks pending |
 | Closed dilation range, index loss, matrix/operator horizon order | Combined scratch passed; canonical sources installed and wired, individual checks pending |
 | Rank-one contraction fixes state | Combined scratch passed; canonical source installed and wired, final check pending |
@@ -56,9 +56,9 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Interior Wiener jets, mixed interpolation and paid quotient lower bounds | Base scratch, then full application and canonical checks |
 | Vanishing Gram steps, intermediate kernels, singleton/continuum alternative | Final canonical audit `79971` passed with standard axioms; card moved to `3-formalized` |
 
-The square-root translation card contains completed origin-trace results plus
-later raw/reset-boundary consequences; close it only after the latter are
-checked. The visible-poles card retains its genuinely open identification of
+The square-root translation card is now in `3-formalized`, including its
+origin-trace convergence, raw/reset-boundary consequences and nonvanishing-scale
+obstruction. The visible-poles card retains its genuinely open identification of
 actual module spectra with arithmetic zeros, separate from the paid-ideal
 theorems being completed here. No complete actual escape classification is
 claimed.
@@ -108,6 +108,11 @@ unchanged checks. All required leaves are wired into their programme umbrellas.
 | Every positive faithful origin boundary is realized on escape | `60215` | None needed |
 | Raw-origin Gram limits, every positive mass and actual-kernel exclusion | `46880` | None needed |
 | Step and positive-mixture infinite dimension and continuum quotient rank | `86587` | None needed |
+| Scalar trace convergence and cofinal nonvanishing-scale obstruction | `80601` | None needed |
+| Exact incomplete dilation fibre and mixed C*D/p bound | `89066` | `69760` passed |
+| Actual contracted horizons, admitted self-similarity and mixed limits | `13848` | `45241` passed |
+| Principal ideal quotients localize character hulls | `76726` | `71040` passed |
+| Actual cofactor annihilators and hull inclusions | `61116` | `29837` passed |
 
 Recent final output files:
 `/tmp/qiii-augmentation-canonical-final.log`,
@@ -184,8 +189,23 @@ output `/tmp/qiii-max-kernel-faithfulness-canonical-final.log`.
 Contraction scratch check `12682` passed: all 23 audit targets report only
 standard axioms. Eleven sources were copied directly from the prepared
 staging files into their canonical owners and wired into all three umbrellas.
-No canonical contraction checks or oleans have run yet. All eight required
-contraction oleans were confirmed absent before starting their checks.
+All eight required contraction oleans were confirmed absent before starting
+their checks. Required olean `69760` for the incomplete-fibre module passed
+with standard axioms; final canonical source check `89066` also passed.
+The actual horizon-contraction module's required olean `45241` and final
+canonical source check `13848` passed with standard axioms; output
+`/tmp/qiii-actual-horizon-contraction-canonical-final.log`.
+The principal-ideal character-hull helper passed required olean `71040` and
+final canonical source check `76726` with standard axioms. Its actual
+cofactor-ideal application passed required olean `29837` and final source-only
+check `61116` with standard axioms. Output
+`/tmp/qiii-cofactor-colon-hull-canonical-final.log`. The full contracted-module
+embedding passed required olean `78435` with standard axioms; output
+`/tmp/qiii-contracted-module-required-olean.log`. Its final canonical source
+check remains due. The tied-torus combined scratch is checking next so its
+verified helper extraction can proceed while later contraction sources check.
+All Lean invocations remain sequential; output
+`/tmp/qiii-tied-torus-character-limits-first.log`.
 Successful output: `/tmp/qiii-contracted-horizons-third-retry.log`.
 The failed drafts `84380`, `26409`, `7091` were repaired by explicit finite-sum
 cancellation, casts, principal-ideal coercions, and a named complete-block
@@ -232,9 +252,13 @@ import, whose olean was absent. It now imports its two actual dependencies,
 Retry `22849` passed both final theorem audits with standard axioms; output
 `/tmp/qiii-moving-origin-trace-corollaries-retry.log`. Its source was copied to
 `MovingSuccessorLimitsAreOriginTraces` and umbrella-wired. The canonical
-source-only final check is now active, output
+source-only final check `80601` passed, output
 `/tmp/qiii-moving-origin-trace-corollaries-canonical-final.log`.
-No written importer requires its olean.
+Both audits contain only standard axioms. The trace-corollary scratch was
+removed after the final canonical check; no written importer needs its olean.
+Contraction entry 1, `IncompleteDilationFibresHaveBoundedPairingCost`, generated
+its required olean in session `69760` for the already-written actual horizon
+importer. Output `/tmp/qiii-incomplete-fibres-required-olean.log`.
 The reset-origin card moved to `3-formalized`; the record card's dependency
 link, parent, programme README and report correction now include the completed
 raw-origin and continuum-index results.
@@ -311,8 +335,8 @@ owner, add its umbrella import directly, and run the canonical check directly.
   `matrix-horizon-order-constrains-actual-cofactor-actions.md` and
   `visible-pole-jets-bound-the-paid-quotient-index.md`. Reconcile their exact
   statements and move them only after the relevant canonical audits pass.
-- Raw-origin and boundary-index scratch files remain unchecked. Their exact
-  source statements and canonical dependencies are retained in their Lean files.
+- Raw-origin and boundary-index canonical checks passed. Their completed
+  scratch files were removed; exact statements remain in canonical sources.
 - Tied-torus and finite-hull staging sources now have explicit imports,
   mathematical comments and closed sections. The tied-torus staging file
   includes augmentation; the finite-hull staging file includes the final
@@ -342,7 +366,39 @@ owner, add its umbrella import directly, and run the canonical check directly.
   pronic norm to its scalar origin trace when the recentered error vanishes;
   nonvanishing displacement along cofinal horizons forces squared shift
   length divided by energy to exceed every bound frequently on escape.
-  They now have a complete direct draft in
-  `/tmp/qiii-moving-origin-trace-corollaries-check.lean`, using the checked sharp
-  defect and uniform small-budget lemmas. It still needs a check before closing
-  that card. No new source estimate is needed.
+  Both now passed final canonical audit `80601` in
+  `MovingSuccessorLimitsAreOriginTraces`, using the checked sharp defect and
+  uniform small-budget lemmas. The translation card moved to `3-formalized`.
+  No new source estimate was needed.
+
+Completed translation, signed-Gram, continuum-rank, weighted-white,
+operator-hull, separability, covariance, admitted/unit transport and
+full-source staging files were removed after confirming their canonical
+coverage. Three obsolete temporary paper/queue notes were also removed;
+the parent card now marks its retained history as superseded.
+
+## Remaining canonical placement map
+
+Paths below are relative to `formal/GaloisForLFunctions/`. All edits and
+copies must remain direct; no source-generation or build scripts.
+
+| Prepared source | Canonical owner after successful check |
+|---|---|
+| Tied-torus prime helper | Insert into `ArithmeticOrientationTheory/AKernelBoundedBelowOnTheHalfPlaneIsAUnit.lean` and refactor its existing tied-torus proof to use it |
+| `qiii_tied_torus_character_limits_body.lean` (now includes augmentation) | `ArithmeticOrientationTheory/TiedBohrToriAreLimitsOfVerticalCharacters.lean` |
+| `qiii_eigencharacter_power_body.lean` (generic part only) | `HTGeometry/MonotoneCriticalCharacterNormsArePowers.lean` |
+| `qiii_actual_eigencharacter_power_body.lean` | `ArithmeticDefectRigidity/CofactorEigencharacterMagnitudesArePowers.lean` |
+| `qiii_finite_hull_moduli_body.lean` (now includes half-plane sequence) | `ArithmeticDefectRigidity/FiniteCofactorHullsApproachTheHalfPlaneCurve.lean` |
+| `qiii-wiener-jet-evaluation-check.lean` | `ArithmeticOrientationTheory/InteriorWienerJets.lean` |
+| `qiii_visible_pole_point_count_body.lean` | `ArithmeticOrientationTheory/VisiblePolesImposeIndependentPaidConditions.lean` |
+| `qiii_wiener_masked_interpolation_body.lean` | `ArithmeticOrientationTheory/FiniteWienerJetsCanBePrescribed.lean` |
+| `qiii_visible_jet_quotient_index_body.lean` | `ArithmeticOrientationTheory/VisiblePoleJetsBoundThePaidIndex.lean` |
+| `qiii_wiener_mixed_interpolation_body.lean` | `ArithmeticOrientationTheory/InteriorJetsAndBoundaryValuesCanBePrescribed.lean` |
+| `qiii_visible_mixed_jet_index_body.lean` | `ArithmeticOrientationTheory/VisibleInteriorAndBoundaryPolesBoundThePaidIndex.lean` |
+| `qiii_visible_jet_index_unit_orbit_body.lean` | `ArithmeticOrientationTheory/VisibleJetIndexBoundsPersistOnWienerUnitOrbits.lean` |
+
+All prepared sources are in `/tmp/`. Full combined scratches remain
+`qiii-tied-torus-character-limits-check.lean`,
+`qiii-finite-hull-moduli-check.lean`, and
+`qiii-visible-mixed-jet-index-check.lean`. Keep fixes synchronized manually
+between a combined scratch and its prepared standalone source.

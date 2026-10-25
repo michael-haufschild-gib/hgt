@@ -544,6 +544,17 @@ All eleven upper-half admission targets also passed final direct checks and
 standard-axiom audits. `VaughanAdmissionAboveHalfDamping.lean` is wired:
 every centered piece has a common bound, and admission is the nonzero
 linear-mean kernel with dimension four and quotient dimension one.
+The eight upper-half moving-limit targets also passed final direct checks
+and standard-axiom audits. `UpperHalfVaughanGramsHaveAnActualLimit.lean` is
+wired: full pronic convergence gives the single actual joint Gram limit at
+independently divergent cutoffs and horizons. The three coefficient Wiener
+targets also passed final direct checks and standard-axiom audits, and are
+wired as `TheVaughanFloorCoefficientsConvergeInCriticalWienerNorm.lean`.
+All eleven actual infinite-Gram targets also passed final direct checks and
+standard-axiom audits. For every `ε≥1/2`, the actual Gram is positive semidefinite
+of rank exactly two, with a positive-definite prefix/pole minor and explicit
+determinant lower bound. The complete phase card is
+`../3-formalized/vaughan-admission-phase-transition-at-half-damping.md`.
 The five zero-cutoff scalar targets and fifteen coefficient-space targets
 also passed final direct checks with standard axioms only; both modules are
 wired and the complete zero-cutoff card is in stage 3.

@@ -3,7 +3,7 @@
 - **ID:** the-endpoint-vaughan-limit-has-rank-two
 - **Stage:** 2-fully-proven
 - **Type:** CLAIM (Lean verification pending)
-- **Verification:** All twelve finite Euler, cell, determinant, independence, and row-span targets are Lean-verified. The actual infinite Gram and endpoint rank consequences remain pending.
+- **Verification:** The twelve finite targets and eleven shared infinite-Gram targets are Lean-verified, including exact rank two for every `ε≥1/2`. The eleven explicit endpoint specializations remain under direct verification.
 - **Source:** uniform-half-damping-vaughan-harmonic-gram.md
 - **Statement:** At every positive damping, the first two cells of the actual centered Möbius row and centered pole row have determinant at least `2^(-2ε)/36`. Consequently the endpoint limiting Gram has rank exactly two.
 - **Novelty status:** Corpus search found general prefix observability and Gram laws, but no matching two-row independence theorem. The arithmetic determinant specialization is new within this audit; no external novelty claim.
@@ -99,23 +99,27 @@ and its scratch removed:
 - `span_pmPronicVaughanLimitFrame`
 - `finrank_span_pmPronicVaughanLimitFrame`
 
-The actual infinite endpoint Gram rank still needs a verified Lean proof.
+The shared actual infinite-Gram theorem is now Lean-verified for every `ε≥1/2`;
+all eleven targets in `TheActualVaughanLimitGramHasRankTwo.lean` passed corrected
+producing and final direct checks with standard axioms only. The module is wired
+and its scratch removed. Its exact declarations are listed on
+`../3-formalized/vaughan-admission-phase-transition-at-half-damping.md`.
 
-`TheActualEndpointVaughanGramHasRankTwo.lean` drafts ten infinite-limit
+`TheActualEndpointVaughanGramHasRankTwo.lean` drafts eleven infinite-limit
 consequences, including absolute-series pair limits, symmetry, positivity of
 every quadratic form, the exact two-outer-product representation, and rank at
 most two. Passing the finite arithmetic minor bound to the limit gives
 `1/62208`; its nonsingular two-by-two submatrix gives rank exactly two. The
-pole entry retains its lower bound `1/64`. These ten targets now specialize
-the shared eleven-target draft `TheActualVaughanLimitGramHasRankTwo.lean`.
-That draft derives summability
+pole entry retains its lower bound `1/64`, and explicitly proves the matrix
+nonzero. These eleven targets now specialize
+the checked eleven-target module `TheActualVaughanLimitGramHasRankTwo.lean`.
+It derives summability
 from the actual endpoint and upper-half limits, and proves the same exact
 rank and quantitative minor for every `ε≥1/2`. No analytic summability
-premise is left to assume. All these drafts remain UNPROVED until their
-dependency checks and axiom audits pass.
+premise is left to assume. The endpoint's explicit numerical specializations
+remain under verification.
 
-The explicit positive-definiteness claim above has named drafts
-`pmPronicVaughanLimitGram_prefix_pole_posDef` and
-`pmPronicVaughanHalfLimitGram_prefix_pole_posDef`. Their matrix APIs passed a
-minimal scratch check. These corollaries remain pending until the actual
-Gram leaves and their transitive dependencies pass direct Lean verification.
+The shared positive-definiteness claim is certified as
+`pmPronicVaughanLimitGram_prefix_pole_posDef`. Its explicit endpoint
+specialization `pmPronicVaughanHalfLimitGram_prefix_pole_posDef` is among the
+eleven endpoint targets still being checked.

@@ -17,7 +17,7 @@ admission the common kernel is unique; complete infinite pronic pairing
 scales by 1/p, yielding the same normalized kernel. No choice of an abstract
 positive kernel may replace the required actual subsequence.
 
-## Paper mechanism to audit
+## Proof mechanism
 
 At T, set N=floor(T/p), U=p*(N+1)-1. Complete blocks give
 Q_U(D_p u,D_p v)=Q_N(u,v)/p. The omitted interval (T,U] lies in one quotient
@@ -51,9 +51,9 @@ must account for zero intermediate diagonal values.
 ## Gates
 
 - [x] Corpus search for exact mixed truncated-fibre laws initiated.
-- [ ] Audit and formalize the uniform mixed last-fibre error.
-- [ ] Actual cofinal subsequence construction with horizon shift by one.
-- [ ] Admitted branch from full pairing convergence.
+- [x] Audit and formalize the uniform mixed last-fibre error.
+- [x] Actual cofinal subsequence construction with horizon shift by one.
+- [x] Admitted branch from full pairing convergence.
 - [ ] Exact zero-dilation branch.
 - [ ] Composition, hull and module consequences.
 
@@ -80,31 +80,26 @@ Composition is exact wherever both normalizations are positive:
 (K_p)_q = K_(pq), by cancellation of their diagonal factors. For an actual
 rank-one state in the nonaugmentation branch, every K_p equals K: its
 multiplicative character makes the numerator K(pj,pk) equal K(p,p)K(j,k).
-These are further paper deductions, not yet Lean results.
+These deductions are included in the checked combined Lean source; their
+canonical import boundaries are being audited.
 
-## Draft implementation
+## Canonical verification
 
 The complete combined proof passed direct Lean check `12682`; all 23 printed
 targets have only standard axioms. Eleven canonical sources are installed
 and umbrella-wired. Their separate source checks and required dependency
 oleans remain in [the completion ledger](q-iii-existing-findings-lean-completion.md).
-This supersedes the draft-check statuses below; the card stays open until
-the canonical checks pass.
+The card stays open until those canonical checks pass.
 
-The mixed tail bound, admitted kernel self-similarity, escaping contracted
-pairing limit and explicit actual contracted-subsequence structure are
-drafted in `/tmp/qiii_mixed_horizon_error_body.lean` and
-`/tmp/qiii_actual_horizon_contraction_body.lean`. The final theorem is
-`exists_actual_contracted_kernel`; its only case condition is positivity
-of the selected actual diagonal, with the zero branch handled separately.
-Generic principal-colon character cancellation and actual cofactor vector
-annihilators are drafted in `/tmp/qiii_character_colon_hull_body.lean` and
-`/tmp/qiii_cofactor_colon_hull_body.lean`. All are UNVERIFIED. Their current
-direct Lean scratch is `/tmp/qiii-contracted-horizons-check.lean`; it still
-needs a successful direct check. The first check exposed finite-sum
-cancellation and coercion/rewrite errors. Those have been repaired without
-changing the theorem statements; the retry is recorded in
-[the completion ledger](q-iii-existing-findings-lean-completion.md).
+`IncompleteDilationFibresHaveBoundedPairingCost` contains the exact terminal
+fibre and its mixed bound. `ContractingHorizonsProducesActualCofactorLimits`
+contains admitted self-similarity, escaping mixed convergence and
+`exists_actual_contracted_kernel`. Its positive-diagonal branch has an actual
+contracted subsequence; the zero branch is explicit in
+`actual_cofactor_contraction_alternative` in `ActualCofactorContractionsCompose`.
+`PrincipalIdealQuotientsLocalizeCharacterHulls` and
+`CofactorAnnihilatorsArePrincipalQuotients` contain the generic cancellation
+law, vector annihilator and exact hull inclusions.
 
 A stronger paper consequence is worth a separate audit: the same mixed
 fibre error and positivity show that the entire matrix
@@ -113,30 +108,29 @@ order, not just on its diagonal. This is a finite-packet energy comparison,
 with admitted and escaping branches handled separately. It does not
 select multiplicative phases or force the Kronecker curve.
 
-The module draft `/tmp/qiii_contracted_module_body.lean` now uses the
-corpus one-sided Gram isometry and Wiener point-mass density to prove the
-full cyclic annihilator equality. `/tmp/qiii_contracted_state_laws_body.lean`
-adds the zero-dilation equivalence, unconditional actual contraction
-alternative, and kernel/ideal composition laws. All remain UNVERIFIED.
+`ContractedCofactorModulesEmbedInTheOriginal` uses the one-sided Gram
+isometry and Wiener point-mass density to prove the full cyclic annihilator
+equality. `ActualCofactorContractionsCompose` contains the zero-dilation
+equivalence, unconditional actual contraction alternative, and kernel/ideal
+composition laws.
 
 ## Range and index refinement
 
 The isometry has range exactly closure(range D_p), because both sides
 are the closed span of v_(pj). This has a source-independent proof using
-total feature families and continuous linear images, drafted in
-`/tmp/qiii_feature_closed_range_body.lean`; the application and dimension
-laws are in `/tmp/qiii_contracted_range_body.lean`. In finite dimension,
+total feature families and continuous linear images in
+`ClosedOperatorRangesAreClosedFeatureSpans`; the application and dimension
+laws are in `ContractedCofactorModulesAreClosedDilationRanges` and
+`CofactorContractionIndexDropsByDilationNullity`. In finite dimension,
 `dim H_(L_p) + dim ker D_p = dim H_L`. Thus finite quotient index loses
 exactly the dilation nullity. This is a theorem about actual contracted
-states, once the pending construction is verified; all drafts remain
-UNVERIFIED.
+states, covered by the combined check and pending canonical audits.
 
-The stated rank-one fixed-state corollary is now explicitly drafted in
-`/tmp/qiii_rank_one_contraction_body.lean`: the exact simultaneous-dilation
+`RankOneCofactorStatesAreFixedByContraction` contains the exact simultaneous-dilation
 identity, equality of every positively normalized contracted kernel, and
 invariance of the complete Wiener annihilator. It applies at every nonzero
 cofactor, so the augmentation branch is handled without assuming it away.
-It remains UNVERIFIED and depends on the rank-one and contracted-state leaves.
+Its canonical audit depends on the rank-one and contracted-state leaves.
 
 The exact terminal-fibre correction precedes the uniform bound in the
 current scratch. The bound covers arbitrary nonnegative linear constants C,D,
@@ -144,4 +138,4 @@ with cost C*D/p, not only the actual unit constants. Full operator
 intertwining is explicit in `contractedKernelIsometry_dilation` and
 `contractedKernelIsometry_wiener`; the cyclic-vector formula consumes the
 latter. This makes the claimed comparison a full Wiener-module embedding.
-These additions are UNVERIFIED and included in the same pending scratch.
+These additions passed the combined Lean check and await canonical audits.

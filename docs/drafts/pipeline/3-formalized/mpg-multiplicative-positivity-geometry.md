@@ -81,9 +81,10 @@ Telescoping `2 sin β Σ_j cos(φ + 2jβ)` shows `Σ_j cos kθ_j = 0` for `1 ≤
 `Σ b_j² = N/2` and `Σ b_j b_{j+1} = (N/2)cos α`, so `|Σ b_j e^{ijθ}|²` is attained.
 
 **P10 Growth-to-forcing law** (`exclusion_iff_quadratic`, `exclusion_at_geometric_mean`,
-`exclusion_iff`, `exclusion_iff_lt_width`). `A/δ + G < B/(δ+η)` is equivalent to
+`exclusion_iff`, `exclusion_iff_lt_width`, `exclusion_iff_restricted`). `A/δ + G < B/(δ+η)` is equivalent to
 `Gδ² + (A + Gη − B)δ + Aη < 0`. AM–GM gives `Gδ² + Aη ≥ 2√A√(Gη) δ`. Hence exclusion forces
-`(√A + √(Gη))² < B`. Conversely, `δ* = √A√(Gη)/G` gives the value `δ*((√A + √(Gη))² − B) < 0`.
+`(√A + √(Gη))² < B`. Conversely, `δ* = √A√(Gη)/G` gives the value `δ*((√A + √(Gη))² − B) < 0`. Since
+`δ*² = Aη/G`, an input valid only on `(0, δ₁]` suffices once `Aη ≤ Gδ₁²`.
 
 **P11 Certificate caps** (`fejer_width_cap`, `degree_one_excludes_nothing`,
 `fejer_width_cap_lt_universal`, `multiFrequency_purchase_le_two`, `multiFrequency_width_cap`). With

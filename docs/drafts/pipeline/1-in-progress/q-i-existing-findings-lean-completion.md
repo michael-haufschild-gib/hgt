@@ -36,7 +36,7 @@ Lean module names below are relative to `GaloisForLFunctions/`; BVI denotes
 | `the-centred-vaughan-pole-has-positive-finite-energy.md` | All seven BVI `TheCentredVaughanPoleHasPositiveFiniteEnergy` targets passed final direct checks and standard-axiom audits, including the eventual faster-power obstruction. The stated endpoint product-horizon nonzero limit still needs its actual Gram chain. |
 | `the-endpoint-vaughan-limit-has-rank-two.md` | All twelve BVI `TheVaughanLimitRowsAreIndependentInTwoCells` targets passed final direct checks and standard-axiom audits. `TheActualVaughanLimitGramHasRankTwo` and `TheActualEndpointVaughanGramHasRankTwo` remain pending, including the explicit positive-definite two-by-two prefix/pole Gram corollary; actual summability comes from the moving-limit leaves below. |
 | `uniform-half-damping-vaughan-harmonic-gram.md` | BVI `UniformCriticalPronicPairingsFromLogarithmicCancellation`, `UniformLogarithmicPrefixRemaindersInAllVaughanRows`, `UniformHarmonicVaughanGramsAtHalfDamping`, `PositiveFloorMajorantsControlPronicEnergy`, `MovingVaughanRowsConvergeCellByCell`, `UniformHalfDampingVaughanGramsHaveAnActualLimit`, `UniformHarmonicEnergyLawsForVaughanSuperpositions`, `TheHalfDampingVaughanGramLimitsFormARankThreeRay`, `ProductHorizonVaughanGramsAtHalfDampingHaveFiniteLimits`, `EveryNonnegativeEndpointVaughanLimitIsRealized`; HTGeometry `MovingTruncationsPreserveDominatedLimits`, `VanishingPositiveScalesRealizeHarmonicMasses`. |
-| `vaughan-admission-phase-transition-at-half-damping.md` | BVI `VaughanAdmissionAtHalfDamping`, `VaughanAdmissionAboveHalfDamping`, `UpperHalfVaughanGramsHaveAnActualLimit`; actual upper-half rank two in the shared infinite-Gram leaf. The paper also asserts critical Wiener convergence of the three floor-coefficient families. This coefficient-norm claim needs its own exact formalization; row-norm convergence alone does not discharge it. |
+| [vaughan-admission-phase-transition-at-half-damping.md](../3-formalized/vaughan-admission-phase-transition-at-half-damping.md) — COMPLETE | Admission, both coefficient Wiener limits, strong upper-half row/Gram convergence, and all eleven actual infinite-Gram targets passed final direct checks and standard-axiom audits. Includes the positive-definite prefix/pole minor and exact rank two for every `ε≥1/2`. |
 | [vaughan-zero-cutoffs-remove-the-smooth-obstruction.md](../3-formalized/vaughan-zero-cutoffs-remove-the-smooth-obstruction.md) — COMPLETE | All twenty scalar and coefficient-space targets passed final direct checks and standard-axiom audits. Includes unique coordinate recovery, both exact spans, admitted and quotient dimensions, and unconditional half-damping admission. |
 | [vaughan-admitted-rank-filtration-reads-the-zero-abscissa.md](../3-formalized/vaughan-admitted-rank-filtration-reads-the-zero-abscissa.md) — COMPLETE | All twelve targets in BVI `TheVaughanAdmissionRankReadsTheZeroAbscissa` passed the final direct check and standard-axiom audits. Includes cutoff independence, exact zero-width boundary, all three RH criteria, and first/all damping-column summability equivalences. |
 | `all-positive-vaughan-tail-power-rates.md` | BVI `VaughanTailPowerGainsAtEveryPositiveDamping`. |
@@ -159,6 +159,16 @@ direct checks with standard axioms only. The module is wired and its scratch
 removed. It supplies actual limiting-pairing summability, full pronic convergence,
 and the renormalized Gram limit at independent horizons. Rank and limit-ray
 corollaries remain pending.
+All eight upper-half moving-limit targets passed producing and final direct
+checks with standard axioms only. The module is wired and its scratch removed.
+They certify the common square/pair envelopes, actual infinite-pairing summability,
+the independent joint Gram limit, and both full and finite-horizon pronic convergence.
+All three coefficient Wiener targets also passed the final direct check with
+standard axioms only. Their module is wired and its scratch removed; exact
+finite convolution stabilization and both norm limits are certified. All eleven
+actual infinite-Gram targets also passed corrected producing and final direct
+checks with standard axioms only. Their module is wired and its scratch removed;
+the complete admission/upper-half phase card has moved to stage 3.
 The independent moving-horizon summation theorem passed producing and final
 direct checks with standard axioms only. Its HTGeometry module is wired and
 its scratch removed; see

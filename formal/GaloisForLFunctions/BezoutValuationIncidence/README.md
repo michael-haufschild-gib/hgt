@@ -205,6 +205,15 @@ $G_{ij}$; diagonal $D_T$; mixed remainder $R^{\text{mix}}_T$; $E^{\text{int}}_T=
     At half damping, a [common summable envelope](UniformHalfDampingVaughanGramsHaveAnActualLimit.lean)
     gives full pronic convergence and the actual renormalized infinite Gram
     at independently divergent cutoffs and horizons.
+    [Above half damping](UpperHalfVaughanGramsHaveAnActualLimit.lean), all centered
+    rows converge in full pronic norm, and the centered Gram has a single joint
+    limit at independently divergent cutoffs and horizons.
+    The [three small floor coefficients](TheVaughanFloorCoefficientsConvergeInCriticalWienerNorm.lean)
+    converge in critical Wiener norm to the two damped Möbius copies and their negative;
+    the small-small convolution stabilizes exactly at each covered index.
+    The [actual infinite Gram](TheActualVaughanLimitGramHasRankTwo.lean) is
+    positive semidefinite of rank exactly two for every `ε≥1/2`; its prefix/pole
+    submatrix is positive definite, with determinant at least `2^(-4ε)/15552`.
     [Dominated moving sums](../HTGeometry/MovingTruncationsPreserveDominatedLimits.lean)
     permit independently divergent horizons under a common summable envelope.
     The [uniform stretched-exponential estimate](UniformStretchedExponentialCancellationInTheVaughanConvolution.lean)

@@ -112,7 +112,8 @@ theorem pmPronicVaughanCentredGram_half_limit_forces_harmonic_mass
   have hm : Tendsto (fun t => pmPronicVaughanHalfHarmonicMass (U t) (V t) (H t))
       atTop (𝓝 (L 3 3)) := by
     simpa only [sub_sub_cancel, sub_zero] using (hL 3 3).sub hr
-  refine ⟨le_of_tendsto' hm (fun t => pmPronicVaughanHalfHarmonicMass_nonneg _ _ _), hm, ?_⟩
+  refine ⟨ge_of_tendsto hm (Eventually.of_forall fun t =>
+    pmPronicVaughanHalfHarmonicMass_nonneg _ _ _), hm, ?_⟩
   funext i j
   exact tendsto_nhds_unique (hL i j)
     (tendsto_pmPronicVaughanCentredGram_half_of_harmonic_mass hH hU hV hm i j)

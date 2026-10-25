@@ -1,15 +1,15 @@
 # Vaughan admission across half damping
 
 - **ID:** vaughan-admission-phase-transition-at-half-damping
-- **Stage:** 2-fully-proven
-- **Type:** CLAIM (Lean verification pending)
-- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Verification:** COMPLETE. Admission, coefficient Wiener convergence, actual upper-half row/Gram convergence, and exact infinite rank two passed final direct Lean checks and standard-axiom audits. All supporting modules are wired.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
 - **Statement:** Extend the fixed Vaughan coefficient classification through half damping and prove uniform payment of all centered pieces above half damping.
 
 ## Exact phase law
 
-For positive fixed cutoffs, the lower-half normal form predicts admitted coefficient
+For positive fixed cutoffs, the lower-half normal form gives admitted coefficient
 dimension two or three, according to admission of the actual interior receiver.
 At `ε=1/2`, the actual receiver is already admitted, while the smooth square-root
 sequence has divergent logarithmic energy. Thus admission is exactly
@@ -88,11 +88,11 @@ energies of the limiting rows pay their omitted horizon tails. The two-cell
 determinant theorem on `the-endpoint-vaughan-limit-has-rank-two.md` applies to
 every `ε>0`, so this upper-half limiting Gram has rank exactly two.
 
-At half damping, the separate endpoint card shows the additional possible harmonic
-mass and the complete ray of rank-two or rank-three limits. Above half damping
-there is a single joint limit. The critical Wiener convergence argument and these
-upper-half limit corollaries remain to formalize; they introduce no below-half
-admission estimate.
+Above half damping there is a single joint limit of rank two. The row and Gram
+limits, coefficient Wiener convergence, and rank assertion are all Lean-verified
+below. At half damping, the additional harmonic-mass ray is a separate obligation
+on the endpoint card; it is not needed for this upper-half uniqueness theorem.
+These results introduce no below-half admission estimate.
 
 ## Corpus and novelty audit
 
@@ -107,7 +107,7 @@ admission estimate.
 - The floor-average limit identifies the mean and therefore the exact centered-prefix
   bridge; no uniform interchange of an unbounded family of limits is required.
 
-No new receiver admission below half damping follows. This is a proposed sharp phase
+No new receiver admission below half damping follows. This is an exact phase
 classification of the finite Vaughan family, not a solution to Q-I. The general Wiener
 payment and half-damping boundary are already in the corpus; this is their exact
 five-component specialization, with no external novelty claim.
@@ -131,41 +131,65 @@ The shared four finite packet identities in
 `VaughanPacketGramIdentities.lean` already passed final direct checks and
 standard-axiom audits.
 
-The joint upper-half Gram limit and its rank-two consequence above are separate
-UNPROVED obligations; the admission draft does not establish them.
+The joint upper-half Gram limit and its exact infinite rank-two consequence
+are Lean-verified.
 Their common summable envelope can be obtained from the positive divisor
 majorant's centered floor defect: its critical Wiener bound pays the square
 envelope, and the five-piece identity pays the both-large row. The already
 checked all-positive cell limits and dominated moving-sum transfer then apply.
 Both `MovingVaughanRowsConvergeCellByCell.lean` targets passed final direct
 checks with standard axioms only; the module is wired and its scratch removed.
-`/tmp/QIUpperHalfVaughanMovingLimitTools.lean` now contains eight unchecked targets:
+`UpperHalfVaughanGramsHaveAnActualLimit.lean` passed its producing check and final
+direct audit; all eight targets have only `propext`, `Classical.choice`, and
+`Quot.sound` as transitive axioms. The module is wired and its scratch removed:
 the explicit envelope norm bound, domination of all five actual rows, common
 summable square and pair envelopes, summability of the limiting Gram entries,
 the independent joint Gram limit, full pronic square convergence, and convergence
-at every finite moving horizon. Its planned repository name is
-`UpperHalfVaughanGramsHaveAnActualLimit.lean`. The positive-floor domination and
+at every finite moving horizon. The exact declarations are:
+
+- `pronicNorm_pmPronicVaughanUpperEnvelope_le`
+- `abs_pmPronicVaughanCentredPiece_le_upperEnvelope`
+- `exists_summable_pmPronicVaughanCentredPiece_upper_square_envelope`
+- `exists_summable_pmPronicVaughanCentredPiece_upper_pair_envelope`
+- `summable_pmPronicVaughanLimitGram_terms_of_half_lt`
+- `tendsto_pmPronicVaughanCentredGram_of_half_lt`
+- `tendsto_tsum_pmPronicVaughanCentredPiece_sub_limit_sq_of_half_lt`
+- `tendsto_pronicNorm_pmPronicVaughanCentredPiece_sub_limit_of_half_lt`
+
+The positive-floor domination and
 dominated square-norm transfer are shared with the endpoint through
 `PositiveFloorMajorantsControlPronicEnergy.lean`. All five shared transfer
 targets passed corrected producing and final direct checks with standard
 axioms only; the module is wired and its scratch removed. See
 `../3-formalized/positive-floor-majorants-and-pronic-convergence.md`.
-The actual upper-half specialization remains under verification.
+The actual upper-half specialization is therefore certified.
 The shared moving-horizon dominated-convergence theorem also passed producing
 and final direct checks with standard axioms only. Its module is wired as
 `HTGeometry/MovingTruncationsPreserveDominatedLimits.lean`; see
 `../3-formalized/moving-truncations-preserve-dominated-limits.md`.
-`/tmp/QIVaughanInfiniteGramTools.lean` now drafts the exact rank-two consequence
-uniformly for every `ε≥1/2`, with a positive prefix-pole minor at least
-`2^(-4ε)/15552`. Summability is derived from the endpoint and upper-half
-convergence theorems. The planned shared module is
-`TheActualVaughanLimitGramHasRankTwo.lean`; the endpoint's ten consequences
-specialize it, including positive definiteness of the prefix/pole submatrix.
-These are unchecked proofs, not certified findings.
+All eleven targets in `TheActualVaughanLimitGramHasRankTwo.lean` passed corrected
+producing and final direct checks with standard axioms only. The module is
+wired and its scratch removed. For every `ε≥1/2`, the actual Gram is positive
+semidefinite of rank exactly two; its prefix/pole submatrix is positive definite,
+with determinant at least `2^(-4ε)/15552`. Summability is derived from the actual
+endpoint and upper-half row bounds, without an additional analytic premise:
 
-The paper's separate coefficient-level assertion also remains an explicit
-formalization obligation: as both cutoffs diverge, the first three damped
-floor-coefficient differences tend to zero in critical Wiener norm. The
-current row-limit leaf uses a direct row envelope, so its verification does
-not certify this intermediate coefficient claim. The completion register
-includes a dedicated coefficient-norm proof before this card can close.
+- `summable_pmPronicVaughanLimitGram_terms_of_half_le`
+- `tendsto_sum_pmPronicVaughanLimitGram_terms`
+- `pmPronicVaughanLimitGram_symm`
+- `sum_sum_mul_pmPronicVaughanLimitGram_nonneg`
+- `pmPronicVaughanLimitGram_eq_two_outer_products`
+- `rank_pmPronicVaughanLimitGram_le_two`
+- `pmPronicVaughanLimitGram_prefix_pole_minor_lower`
+- `pmPronicVaughanLimitGram_pole_lower`
+- `pmPronicVaughanLimitGram_posSemidef`
+- `pmPronicVaughanLimitGram_prefix_pole_posDef`
+- `rank_pmPronicVaughanLimitGram`
+
+The paper's separate coefficient-level assertion is now Lean-verified in
+`TheVaughanFloorCoefficientsConvergeInCriticalWienerNorm.lean`. Its three targets
+prove exact finite small-small stabilization and critical Wiener convergence
+of both truncated Möbius legs and the signed small-small coefficient. All
+three passed the final direct check with standard axioms only; the module is
+wired and its scratch removed. See
+`../3-formalized/vaughan-floor-coefficients-converge-in-critical-wiener-norm.md`.

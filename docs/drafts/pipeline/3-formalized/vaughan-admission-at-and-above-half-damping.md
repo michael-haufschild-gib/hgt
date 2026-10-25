@@ -3,7 +3,7 @@
 - **ID:** vaughan-admission-at-and-above-half-damping
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Source:** ../2-fully-proven/vaughan-admission-phase-transition-at-half-damping.md
+- **Source:** vaughan-admission-phase-transition-at-half-damping.md
 - **Verification:** Both repository leaves passed producing and final direct Lean checks. All twenty audit targets depend only on `propext`, `Classical.choice`, and `Quot.sound`; umbrella imports are present.
 
 ## Exact statements

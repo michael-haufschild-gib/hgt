@@ -1,2 +1,11 @@
 import GaloisForLFunctions.ArithmeticPositiveDuality.PositiveMeasureHamburgerRigidity
-import GaloisForLFunctions.ArithmeticPositiveDuality.BeurlingRiemannFunctionalEquationRigidity
+import GaloisForLFunctions.ArithmeticPositiveDuality.TheBarrierOfACertificateIsTheBarrierOfItsFibre
+import GaloisForLFunctions.ArithmeticPositiveDuality.IntegerPositiveDefiniteFunctionsAreSignCharacters
+import GaloisForLFunctions.ArithmeticPositiveDuality.PositiveSelfDualMeasuresWithAGapAreDiracCombs
+
+/-!
+# Arithmetic Positive Duality
+
+Umbrella for the rigidity theory of positive arithmetic Poisson pairs under self-duality and
+integer quantization. See `ArithmeticPositiveDuality/README.md`.
+-/

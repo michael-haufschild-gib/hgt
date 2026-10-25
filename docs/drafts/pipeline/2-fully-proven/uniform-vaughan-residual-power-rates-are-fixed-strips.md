@@ -93,8 +93,10 @@ a fixed power rate for every normalized centered Gram error, uniformly in both c
 
 ## Positive survivor and scope
 
-The exact invariant (1) is unconditional. The uniform logarithmic Gram law is an unconditional target on the source card;
-its complete Lean verification remains pending. The equivalence identifies the precise
+The exact invariant (1) is unconditional on paper and remains under Lean verification.
+The uniform logarithmic Gram law has passed its complete direct Lean checks and
+standard-axiom audits in `UniformVaughanGramsFollowTheirSmoothRankOneTerm.lean`.
+The equivalence identifies the precise
 additional content of replacing its logarithmic rate by a power rate; it proves
 neither a strip nor impossibility of a strip. Full Q-I remains open.
 
@@ -137,7 +139,8 @@ is zero and its centered energy tends to a strictly positive constant. Hence a f
 matrix power exponent cannot exceed `1-2ε`. The separate exponent-one contrast remains
 useful for the convolution block. The positive finite-energy invariant and its complete
 paper proof are recorded in `the-centred-vaughan-pole-has-positive-finite-energy.md`;
-its seven-target Lean draft is unverified.
+all seven targets passed final direct Lean checks and standard-axiom audits in
+`TheCentredVaughanPoleHasPositiveFiniteEnergy.lean`.
 
 ## Quantitative damped transfer awaiting Lean verification
 

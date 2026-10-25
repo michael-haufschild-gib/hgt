@@ -162,6 +162,10 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     (`admits_or_every_positive_unreset_boundary_is_realized`). The step module and every positive
     reset mixture are infinite-dimensional with continuum annihilator-quotient rank
     (`not_finiteDimensional`, `annihilator_quotient_rank` in the two origin-module namespaces).
+    When `k/E → 0` and `A(k)/√E → a`, normalized raw displacement converges in pronic norm to
+    the scalar origin trace (`normalized_successor_tendsto_origin_trace`). On escape, any nonvanishing
+    cofinal displacement forces `k²/E` above every bound frequently
+    (`admits_or_nonvanishing_successors_require_unbounded_scale`).
 
 All origin-boundary leaves, raw-origin convergence, boundary-index corollaries and
 vanishing-relative-energy perturbation passed canonical Lean checks and standard-axiom audits. The

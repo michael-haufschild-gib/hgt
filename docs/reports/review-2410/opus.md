@@ -37,8 +37,9 @@ below was grep-confirmed to exist (§6). No builds, no compiles, no web. Researc
    equals the period and Frobenius is a ring endomorphism, so square-root cancellation becomes an
    identity (Gauss sums, Lefschetz). Over ℤ the multiplicative period of the horizon-$N$ divisor
    structure is $\operatorname{lcm}(1..N)=e^{\psi(N)}$. Complete-period quadratic data are exactly
-   sign-blind. Additive structure is destroyed by every escape limit except at the square-root
-   translation scale. Local payments always exist but do not glue. The field's objects are
+   sign-blind. Fixed translations and moving translations at the square-root energy scale
+   disappear on escape; larger source-controlled scales also disappear. Local payments always
+   exist but do not glue. The field's objects are
    *horizon-truncated ring actions* (the affine semigroup $\mathbb N\rtimes\mathbb N^\times$ cut
    at $N$), a *payment sheaf* and its cohomology, *escape modules* over $\mathcal W_{1/2}$, and a
    built-in *selectivity battery*. §4 gives its questions, principles, criteria and research
@@ -106,7 +107,7 @@ what can still work.
 | C6 | **Deformation-sensitive.** Inequalities that survive deformation give nothing (Estermann single-prime deformation). | killed meta-no-go |
 | C7 | **Quantized.** Continuous functionals miss quanta. | killed meta-no-go |
 | C8 | **Horizon-uniform.** The constant may depend on the damping, never on $T$; limits do not commute. | BVI/THIM traps |
-| C9 | **Escape keeps only multiplicative structure.** Fixed successors vanish after normalization; a moving translation of length $k$ vanishes unless $k^2\gtrsim E$. | ADR |
+| C9 | **Small moving successors disappear.** Raw shifts with bounded $k^2/E$ and recentered shifts with bounded $k/E$ vanish on escape; the checked source-power bounds enlarge both invisible scales. | ADR |
 | C10 | **Non-circular.** Summation by parts returns coefficient 1, never $1-\delta$; rewriting an eigenvalue bound as an inequality proves nothing. | BVI §5, THIM §5 |
 | C11 | **Interaction.** Local payments exist (AIP, AOT towers); everything left is in shared budgets. | AIP, AOT; Wall 3 |
 
@@ -142,7 +143,7 @@ checked and rejected.
 - Liouville and Möbius have the same paid ideal, hull and index
   (`liouville_paidIdeal_obstructionHull_and_index_eq_moebius`).
 
-**New observation (elementary, unformalized).** Let $H_K$ be the GNS space of $K$, with $\delta_j$
+**Formalized module construction.** Let $H_K$ be the GNS space of $K$, with $\delta_j$
 the image of $j$ and $V_n\delta_j=\delta_{nj}$.
 
 - The form inequality gives $\|V_n\|\le n^{-1/2}$ for every $n$. Also $V_mV_n=V_{mn}$ and
@@ -158,32 +159,37 @@ So the escape state is a Hilbert module of exactly the kind on which AOT's index
 1. The white-noise kernel $K_0(j,k)=\delta_{jk}/j$ satisfies every property in
    `exists_cofactorGram_limit` (PSD, $K(1,1)=1$, radius, dilation with equality). Its module is the
    Hardy space of Dirichlet series, where $\ker\pi=0$ and the hull is the whole polydisk. *So the
-   listed properties cannot exclude anything.* An exclusion argument must use antipodality, the
-   pole trace and the forcing split, and it must show that white noise violates them.
-2. If the receiver energy grows like $T^{\alpha}$ along the subsequence (regular variation), pronic
-   self-similarity of `rowDilate` suggests $K(pj,pj)=p^{-1-\alpha}K(j,j)$. Then
-   $\|\sqrt p\,V_p\|\le p^{-\alpha/2}$: **the spectral radius of the dilation module reads the
-   escape exponent.** An off-line zero $\rho$ seen at damping $\varepsilon$ gives
-   $\alpha=2(\Re\rho-\tfrac12-\varepsilon)$, and the module sits on the polydisk of radii
-   $p^{-\alpha/2}$, which is the "translated off-line hull". Exclusion is then equivalent to
-   forcing $\alpha=0$, i.e. a *unitarity/isometry* law for the dilation action.
+   listed properties cannot exclude white noise.* The unique antipodal extension also exists
+   for white noise. The formalized fixed signed table and normalized traces therefore supply
+   no such exclusion; further actual-source information is required.
+2. The checked identity is
+   $pK(p,p)=\lim E(\lfloor(T_m+1)/p\rfloor)/E(T_m+1)$.
+   Regular variation would determine these cyclic-vector diagonals. It does not alone give
+   mixed kernel homogeneity, the norm of the whole dilation operator, or arithmetic zero
+   identification. Independently proved operator bounds constrain the operator-norm-bounded
+   character locus. The checked weighted-white family shows that stronger operator decay can
+   coexist with a faithful action and the full annihilator hull.
 
-**Where C1 and C9 bite, and the new step.** Without more input this module is Beurling-universal:
-Beurling systems also have dilations, and the golden datum escapes. C9 says additive information
-survives only along translations of length $k$ with $k^2\gtrsim E$. With $E\asymp T^{\alpha}$ that
-means $k\asymp T^{\alpha/2}$. The new step is to **build the limit together with translations at
-that scale** and prove a ring-type covariance between them and $V_p$. The model is the relation
+**Where C1 and C9 bite, and the open step.** Without more input this module is Beurling-universal:
+Beurling systems also have dilations, and the golden datum escapes. The proposed square-root
+energy translation scale is ruled out by the checked successor bounds. A nontrivial translation
+limit needs a scale beyond the proved disappearance ranges and explicit control of the moving
+origin. Recentring, resetting only zero and retaining the raw origin produce different
+cofactor domains. A ring-type covariance law on a suitable surviving domain remains open.
+The intended model is the relation
 $s_nu=u^ns_n$ of the affine semigroup $\mathbb N\rtimes\mathbb N^\times$: dilating then translating
 by $n$ equals translating by 1 then dilating. Beurling systems have no such relation, so this is
 where selectivity would enter.
 
-**First theorems.**
-- (A1) Repairing kernels annihilate the escape state: $P(\mu_\varepsilon)\subseteq\ker\pi$,
-  first for finitely supported kernels.
-- (A2) Hence $h(\ker\pi)\subseteq\operatorname{obstructionHull}(\mu_\varepsilon)$.
-- (A3) A regular-variation lemma: along an Abel subsequence of an escaping receiver,
-  $K(p\cdot,p\cdot)=p^{-1-\alpha}K$.
-- (A4) Existence of a $T^{\alpha/2}$-scale translation limit and its commutation law with $V_p$.
+**Theorem status.**
+- (A1) Proved in Lean for the full paid Wiener ideal:
+  $P(\mu_\varepsilon)\subseteq\ker\pi$ on escape.
+- (A2) Proved in Lean:
+  $h(\ker\pi)\subseteq\operatorname{obstructionHull}(\mu_\varepsilon)$ on escape.
+- (A3) Mixed source homogeneity and arithmetic spectral identification remain open; a scalar
+  energy asymptotic is insufficient by itself.
+- (A4) A nontrivial moving-translation action with a proved covariance law remains open.
+  The original square-root energy proposal collapses.
 
 **Kill test.** Build the same module for the golden datum and for a Beurling system with an
 off-line zero. If (A1)–(A4) hold there verbatim, the mechanism cannot exclude. If (A4) fails there
@@ -493,6 +499,18 @@ All six endpoint moving-limit targets are verified: actual pairings are
 absolutely summable; remainders converge in full pronic square norm; subtracting
 the harmonic term gives the actual infinite Gram at independent growing
 horizons (`UniformHalfDampingVaughanGramsHaveAnActualLimit`).
+All eight upper-half moving-limit targets are verified: a common summable
+envelope gives full pronic convergence and a single actual centered Gram
+limit at independently divergent horizons and cutoffs
+(`UpperHalfVaughanGramsHaveAnActualLimit`).
+The separate coefficient argument is verified too: exact finite convolution
+stabilization and dominated convergence give critical Wiener convergence
+for all three small floor coefficients
+(`TheVaughanFloorCoefficientsConvergeInCriticalWienerNorm`).
+All eleven actual infinite-Gram targets are verified for every `ε≥1/2`:
+absolute pairing summability, positive semidefiniteness, a positive-definite
+prefix/pole minor with lower bound `2^(-4ε)/15552`, and exact rank two
+(`TheActualVaughanLimitGramHasRankTwo`).
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?
@@ -767,14 +785,14 @@ not supply purity.
 - It turns an estimate (Wall 1.10: "absolute source control *or exclusion of escape*") into a
   rigidity/classification problem. Such problems are solved by structure, and integer-valued
   answers satisfy C7.
-- The existence of the limit, hull nonemptiness and "codimension = count" on computed families
-  are already proved. What is missing is the module–ideal bridge (A1–A2), the exponent law (A3)
-  and the square-root-scale additive structure (A4).
+- The limit, hull nonemptiness, the full module–ideal inclusion (A1–A2), and index formulas on
+  computed families are proved. Actual spectral identification and a surviving additive action
+  remain open. The proposed square-root energy action is ruled out.
 
 **Milestones.**
-- (A1)–(A3) are self-contained, Lean-sized theorems.
+- (A1)–(A2) have passed canonical Lean checks. Actual mixed spectral identification remains open.
 - The golden-datum escape module as a computed counterexample class.
-- A proof that white noise violates antipodality.
+- An actual-source exclusion beyond the fixed signed Gram laws: white noise satisfies antipodality.
 
 **Q-III audit correction.** Several proposed milestones require revision.
 
@@ -1005,8 +1023,9 @@ The field's job is to give that coupling a geometry in which estimates follow fr
 1. **Horizon-complete sums and sign visibility.** Quantify the loss between prefix data (which
    see signs) and complete-period data (which provably do not) as a function of horizon/period.
    *Seed:* BVI pillar 12; `parityPair_separated_on_vinogradovKorobovBand`.
-2. **Escape modules (Mechanism A).** Prove A1–A4, compute the golden-datum module, and test
-   white noise against antipodality.
+2. **Escape modules (Mechanism A).** Use the proved A1–A2 bridge to study actual spectral
+   identification and a surviving additive action. Compute source-specific calibration modules;
+   white-noise antipodality is already compatible with the fixed Gram laws.
 3. **Payment cohomology (Mechanism B).** Define $\mathcal P$, realize the corrected arithmetic
    degree and integer obstruction index, prove Mayer–Vietoris across prime-power nodes and base duality; restate the
    certified windows as $h^1=0$.
@@ -1042,8 +1061,9 @@ The field's job is to give that coupling a geometry in which estimates follow fr
 
 ## 5. Recommended immediate actions (within existing programmes, read-only suggestions)
 
-1. **ADR:** prove (A1) and (A3); compute the white-noise module against antipodality. This is the
-   cheapest test of Mechanism A.
+1. **ADR:** complete the existing formalization backlog, then pause as requested. The later
+   research frontier is actual spectral identification and source constraints beyond the checked
+   white-noise antipodal extension; A1–A2 are already formalized.
 2. **AOT/ACS:** construct payment cohomology compatible with the proved arithmetic degree and
    torsion formula (B1). The original ordinary-dimension identity is impossible.
 3. **BVI/THIM:** run the Vaughan off-diagonal entries $G_{ij}$ through the three selectivity

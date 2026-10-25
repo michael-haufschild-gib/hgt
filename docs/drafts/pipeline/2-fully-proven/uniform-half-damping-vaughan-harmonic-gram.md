@@ -269,7 +269,8 @@ positive semidefiniteness, positive-definite prefix/pole submatrix, quantitative
 and exact rank two. `/tmp/QIHalfVaughanLimitRayTools.lean` drafts eleven subsequent
 targets: nonnegative harmonic mass, the scalar readout at entry `(3,3)`,
 both directions of finite matrix-limit classification, and exact ranks two
-and three on the nonnegative ray. These twenty-one targets remain UNPROVED.
+and three on the nonnegative ray. Including the explicit nonzero endpoint Gram
+corollary, these twenty-two targets remain under Lean verification.
 Realization of every ray point and the endpoint product-horizon consequences
 still require Lean verification.
 

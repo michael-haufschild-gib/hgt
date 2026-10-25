@@ -461,7 +461,7 @@ in normalized energy: this scale is `o(T)`, whereas the dominant row mass lies n
 Any proposed A4 construction must retain this calibration rather than identifying the
 necessary threshold with guaranteed survival.
 
-The concurrent ADR paper card `../2-fully-proven/square-root-energy-translations-still-disappear.md`
+The concurrent ADR formalized card `../3-formalized/square-root-energy-translations-still-disappear.md`
 now proves more for the actual source. Its increments lie in an interval of width one, giving
 `|A(n+k)-A(n)-A(k)|<=min(n,k)` and exact pronic envelope `2k-H_k`. Recentered translations
 therefore have a linear budget; sublinearity sharpens it to little-oh linear. Every recentered

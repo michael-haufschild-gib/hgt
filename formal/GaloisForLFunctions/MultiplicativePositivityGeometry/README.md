@@ -137,7 +137,7 @@ The language keeps these distinctions explicit:
 | **P7 Completeness and minimality** | (N), (Z), (S), (I) force `D = 1_{0}`. Dropping any one admits a boundary zero, realized by an explicit datum. | `boundary_forcing_law`, `isolation_necessary`, `simplicity_necessary`, `integrality_necessary`, `nonnegativity_necessary` |
 | **P8 Interior invisibility** | Data with bounded mass at the boundary have `D = 0`. `ζ(s) Φ(s + κ)` satisfies all four invariants and vanishes inside the strip. | `isBoundaryDivisor_zero_of_bounded`, `interior_zero_invisible` |
 | **P9 Exact Fejér barrier** | A nonnegative cosine polynomial of degree `K` has `a₁ ≤ 2cos(π/(K+2)) a₀`, and the constant is attained. | `cosinePolynomial_first_le_fejer`, `fejer_barrier_attained`, `fejer_barrier_sharp` |
-| **P10 Growth-to-forcing law** | Exclusion holds iff `√A + √(Gη) < √B`: the certified width is exactly `(√B − √A)²/G`. | `exclusion_iff`, `exclusion_iff_lt_width` |
+| **P10 Growth-to-forcing law** | Exclusion holds iff `√A + √(Gη) < √B`: the certified width is exactly `(√B − √A)²/G`. An input valid only for `δ ≤ δ₁` loses nothing once `Aη ≤ Gδ₁²`. | `exclusion_iff`, `exclusion_iff_lt_width`, `exclusion_iff_restricted` |
 | **P11 Certificate caps** | Degree `K` certifies only `η < (1 − ρ_K^{−1/2})²/L`; degree one certifies nothing. Any finite multi-frequency certificate has `a(γ) ≤ 2a(0)`, so the universal cap `(3 − 2√2)/(2L)` binds them all. | `fejer_width_cap`, `degree_one_excludes_nothing`, `fejer_width_cap_lt_universal`, `multiFrequency_purchase_le_two`, `multiFrequency_width_cap` |
 | **P12 Calibration** | The corpus dlVP input gives `β ≤ 1 − (2 − √3)²/((5/2) log γ + C)`, and no better region follows from it. | `xiZero_re_le_dlvp`, `dlvp_input_consistent` |
 
@@ -219,7 +219,7 @@ Built:
 To build:
 
 - interior data: a positive-definite object attached to the strip;
-- a version of the growth law with `σ`-dependent growth, for the Littlewood and VK inputs;
+- the VK and Littlewood inputs as range-limited inequalities, and a law for `δ`-dependent growth;
 - realization of profiles by integral (Beurling) systems.
 
 ---
@@ -233,8 +233,11 @@ To build:
    test battery.
 3. **Integral realization.** Which positive-definite profiles are boundary profiles of genuine
    generalized-prime systems?
-4. **`σ`-dependent growth.** Extend P10 to inputs `A/δ + G(δ) ≥ B/(δ+η)` and recover the Littlewood
-   and VK regions with their sharp barriers.
+4. **`σ`-dependent growth.** Range-limited inputs are covered by `exclusion_iff_restricted`. The
+   corpus VK step (`vk_dlvp_contradiction`) has the form `4/(δ+η) ≤ 3/δ + G`, but only at one `δ`
+   inside the proof of `exists_riemannZeta_ne_zero_vinogradovKorobov_width`. Stated on a `δ`-range,
+   it would give the VK region with its optimal constant and its barrier. Inputs with genuinely
+   `δ`-dependent `G(δ)` remain open.
 5. **Higher poles.** Classify integer positive-definite functions with `D(0) = k ≥ 2` beyond the
    progression law.
 
