@@ -1,11 +1,11 @@
 # Contracting horizons acts on actual cofactor states
 
 - **ID:** contracting-horizons-acts-on-actual-cofactor-states
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE / ACTUAL-STATE TRANSPORT
-- **Parent:** [Q-III](q-iii-escape-state-classification.md)
+- **Stage:** 3-formalized
+- **Type:** THEOREM / ACTUAL-STATE TRANSPORT
+- **Parent:** [Q-III](../1-in-progress/q-iii-escape-state-classification.md)
 
-## Target
+## Theorem
 
 For every actual common limit L and positive integer p with K(p,p)>0,
 construct an actual common limit L_p with
@@ -43,10 +43,11 @@ algebraic interpretation, not an arbitrary choice of state.
 
 ## Scope
 
-This transports actual state space under horizon contractions. It does not
-claim that a given state is fixed, that its energy ratios are multiplicative,
-or that its hull lies on a Kronecker curve. A subsequent composition law
-must account for zero intermediate diagonal values.
+This transports actual state space under horizon contractions. Positive
+contractions compose; zero diagonals give the finite-dimensional alternative.
+Every defined rank-one contraction fixes its kernel and annihilator.
+No fixed-point statement for arbitrary states, multiplicativity of their
+energy ratios, or Kronecker-curve membership is asserted.
 
 ## Gates
 
@@ -56,9 +57,9 @@ must account for zero intermediate diagonal values.
 - [x] Admitted branch from full pairing convergence.
 - [x] Principal quotient ideal, full Wiener intertwining and hull inclusions.
 - [x] Exact zero-dilation branch and kernel/ideal composition.
-- [ ] Closed range, exact index loss and rank-one invariance.
+- [x] Closed range, exact index loss and rank-one invariance.
 
-## Module and hull consequences to formalize
+## Module and hull consequences
 
 When K(p,p)>0, the feature map
 v_j^(p) -> v_(pj)/sqrt(K(p,p)) identifies the contracted state's Hilbert
@@ -79,22 +80,19 @@ with an unproved equality.
 
 Composition is exact wherever both normalizations are positive:
 (K_p)_q = K_(pq), by cancellation of their diagonal factors. For an actual
-rank-one state in the nonaugmentation branch, every K_p equals K: its
+rank-one state, every defined K_p equals K: its
 multiplicative character makes the numerator K(pj,pk) equal K(p,p)K(j,k).
-These deductions are included in the checked combined Lean source; their
-canonical import boundaries are being audited.
+These deductions passed their canonical Lean checks and axiom audits.
 
 ## Canonical verification
 
-The complete combined proof passed direct Lean check `12682`; all 23 printed
-targets have only standard axioms. Eleven canonical sources are installed
-and umbrella-wired. The incomplete fibre, actual contracted subsequence,
-principal-ideal hull helper, actual cofactor ideal and full Wiener-module
-embedding passed separate canonical checks with standard axioms. Composition
-passed final audit `73435` and numeric operator order passed `42266`.
-Closed range, index loss and rank-one invariance still need their canonical
-checks, tracked in
-[the completion ledger](q-iii-existing-findings-lean-completion.md).
+All eleven canonical sources are installed, umbrella-wired and checked
+individually. Every transitive axiom report contains only `propext`,
+`Classical.choice`, `Quot.sound`. Composition passed final audit `73435`,
+numeric operator order `42266`, generic closed range `78185`, actual closed
+range `83434`, quotient index loss `60486`, and rank-one invariance `84026`.
+The earlier five canonical audits and all output records are in
+[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
 
 `IncompleteDilationFibresHaveBoundedPairingCost` contains the exact terminal
 fibre and its mixed bound. `ContractingHorizonsProducesActualCofactorLimits`
@@ -106,12 +104,12 @@ contracted subsequence; the zero branch is explicit in
 `CofactorAnnihilatorsArePrincipalQuotients` contain the generic cancellation
 law, vector annihilator and exact hull inclusions.
 
-A stronger paper consequence is worth a separate audit: the same mixed
-fibre error and positivity show that the entire matrix
+The same mixed fibre error and positivity also show that the entire matrix
 `p * K(p*j,p*k)` is nonincreasing in numeric p, in positive-semidefinite
 order, not just on its diagonal. This is a finite-packet energy comparison,
 with admitted and escaping branches handled separately. It does not
-select multiplicative phases or force the Kronecker curve.
+select multiplicative phases or force the Kronecker curve. Its complete-module
+form is formalized on [the matrix-order card](matrix-horizon-order-constrains-actual-cofactor-actions.md).
 
 `ContractedCofactorModulesEmbedInTheOriginal` uses the one-sided Gram
 isometry and Wiener point-mass density to prove the full cyclic annihilator
@@ -128,19 +126,20 @@ total feature families and continuous linear images in
 laws are in `ContractedCofactorModulesAreClosedDilationRanges` and
 `CofactorContractionIndexDropsByDilationNullity`. In finite dimension,
 `dim H_(L_p) + dim ker D_p = dim H_L`. Thus finite quotient index loses
-exactly the dilation nullity. This is a theorem about actual contracted
-states, covered by the combined check and pending canonical audits.
+exactly the dilation nullity. These actual-state range and index theorems
+passed final canonical audits `83434` and `60486`.
 
 `RankOneCofactorStatesAreFixedByContraction` contains the exact simultaneous-dilation
 identity, equality of every positively normalized contracted kernel, and
 invariance of the complete Wiener annihilator. It applies at every nonzero
 cofactor, so the augmentation branch is handled without assuming it away.
-Its canonical audit depends on the rank-one and contracted-state leaves.
+Its final canonical audit `84026` passed with standard axioms.
 
-The exact terminal-fibre correction precedes the uniform bound in the
-current scratch. The bound covers arbitrary nonnegative linear constants C,D,
+The exact terminal-fibre correction precedes the uniform bound in
+`IncompleteDilationFibresHaveBoundedPairingCost`. The bound covers arbitrary nonnegative linear constants C,D,
 with cost C*D/p, not only the actual unit constants. Full operator
 intertwining is explicit in `contractedKernelIsometry_dilation` and
 `contractedKernelIsometry_wiener`; the cyclic-vector formula consumes the
 latter. This makes the claimed comparison a full Wiener-module embedding.
-These additions passed the combined Lean check and await canonical audits.
+These statements passed their canonical audits. No theorem on this card
+remains paper-only.

@@ -395,9 +395,10 @@ valuation law. See `FixedVaughanPacketsHaveTwoExplicitObstructions`,
 At product horizons `T=UV`, the entire centered Gram is uniformly `o(T^(1-2ε))`
 over all factorizations, including a fixed smaller cutoff; packets with bounded moving
 coefficients obey the same law (`ProductHorizonVaughanGramsHaveZeroTrivialDensity`).
-For every fixed `0<ε≤1`, a power gain for the normalized square empty-leg energy
+For every fixed `ε>0`, a power gain for the normalized square empty-leg energy
 is equivalent to `Θ<1`, through its exact quartic comparison with the signed reciprocal
-tail (`TheEmptyVaughanLegDetectsAFixedStrip`).
+tail (`VaughanTailPowerGainsAtEveryPositiveDamping`). All five all-positive-damping
+targets passed final direct checks and standard-axiom audits.
 The undamped truncated convolution also satisfies
 `Σ_(d≤n)(μ_≤U*μ_≤V*1)(d)=nH_UH_V+O_q(n/(log n)^q)` for every fixed integer `q≥0`,
 uniformly over all cutoff pairs (`UniformLogarithmicCancellationInTheVaughanConvolution`).
@@ -549,6 +550,11 @@ sources (`FixedStripsControlAllVaughanFluctuationReceivers`).
 All four full Gram-power targets are verified: the complete matrix power-rate
 criterion is equivalent to a fixed strip, with only two extreme-cutoff entries
 needed for the converse (`UniformVaughanResidualPowerRatesAreFixedStrips`).
+The generic factorial criterion and its actual Vaughan specialization passed
+all seven final audits. A common-threshold `C A^q q!` envelope is exactly a
+uniform power saving, hence exactly a fixed strip
+(`FactorialLogarithmicBoundsArePowerBounds`,
+`FactorialOrderOneInTheVaughanConvolutionIsAPowerSaving`).
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?
@@ -905,8 +911,10 @@ not supply purity.
   positive cofactor diagonal yields an actual contracted state with Gram
   `K(p*j,p*k)/K(p,p)`, full Wiener intertwining and annihilator `I:delta_p`.
   Numeric horizon order extends to every complete-module quadratic form
-  `p*||D_p x||^2`. These statements passed canonical Lean checks; the closed
-  range, composition and index refinements still await their separate audits.
+  `p*||D_p x||^2`. The contracted module is exactly the closed dilation range;
+  its finite quotient index drops by the dilation nullity. Positive
+  contractions compose on kernels and principal quotient ideals. All these
+  statements passed final canonical Lean checks with standard axioms.
 - Changing the cyclic vector by a critical Wiener unit gives a unitary
   comparison intertwining the full Wiener action. It preserves all operator
   norms, the annihilator, operator hull and dimension. Actual real unit
@@ -935,6 +943,8 @@ not supply purity.
   multiplicative sign: `chi(p)=eta(p)*p^(-s)`, `s>=1/2`, `eta(p)` in `{−1,1}`.
   The full factorization passed canonical Lean checks with standard axioms.
   It leaves the signs unselected and gives no arithmetic zero identification.
+  Every defined rank-one contraction also preserves its kernel and full
+  Wiener annihilator; both statements passed final canonical audits.
 - Every paid critical Wiener kernel supplies the uncancelled translated zeta
   order in the strict interior, including all corresponding vanishing jets.
   The actual Mellin identity and real/complex order bounds passed canonical

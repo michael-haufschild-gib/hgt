@@ -89,35 +89,44 @@ theorem cosineTrace_apWeight {c₀ : ℝ} {Z : Finset ℝ} {b : ℝ → ℝ} {x 
   · ring
   · exact Finset.sum_congr rfl fun z _ => ap_mode _ _ _ _ _
 
+/-- The twisted traces converge to the almost-periodic divisor, for all coefficients. -/
+theorem tendsto_apTrace (c₀ : ℝ) (Z : Finset ℝ) (b : ℝ → ℝ) (u : ℝ) :
+    Tendsto (fun x => x * cosineTrace (apWeight c₀ Z b x) logFrequency u) (𝓝[>] 0)
+      (𝓝 (apDivisor c₀ Z b u)) := by
+  have h : Tendsto (fun x => c₀ * (x * cosineTrace (zetaBoundaryWeight x) logFrequency u) +
+      ∑ z ∈ Z, b z / 2 * (x * cosineTrace (zetaBoundaryWeight x) logFrequency (u + z) +
+        x * cosineTrace (zetaBoundaryWeight x) logFrequency (u - z))) (𝓝[>] 0)
+      (𝓝 (c₀ * zetaBoundaryDivisor u + ∑ z ∈ Z, b z / 2 *
+        (zetaBoundaryDivisor (u + z) + zetaBoundaryDivisor (u - z)))) :=
+    ((zeta_isBoundaryDivisor.tendsto u).const_mul c₀).add (tendsto_finsetSum _ fun z _ =>
+      ((zeta_isBoundaryDivisor.tendsto _).add (zeta_isBoundaryDivisor.tendsto _)).const_mul _)
+  have heq : c₀ * zetaBoundaryDivisor u + ∑ z ∈ Z, b z / 2 *
+      (zetaBoundaryDivisor (u + z) + zetaBoundaryDivisor (u - z)) = apDivisor c₀ Z b u := by
+    simp only [zetaBoundaryDivisor_eq, apDivisor, diracAt]
+  rw [heq] at h
+  refine h.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with x hx
+  rw [cosineTrace_apWeight (Set.mem_Ioi.mp hx), mul_add, Finset.mul_sum]
+  congr 1
+  · ring
+  · exact Finset.sum_congr rfl fun z _ => by ring
+
+theorem summable_abs_apWeight (c₀ : ℝ) (Z : Finset ℝ) (b : ℝ → ℝ) {x : ℝ} (hx : 0 < x) :
+    Summable fun n => |apWeight c₀ Z b x n| :=
+  Summable.of_nonneg_of_le (fun n => abs_nonneg _)
+    (fun n => by
+      rw [apWeight, abs_mul, abs_of_nonneg (zetaBoundaryWeight_nonneg x n)]
+      exact mul_le_mul_of_nonneg_left (abs_apPoly_le c₀ Z b _) (zetaBoundaryWeight_nonneg x n))
+    ((summable_zetaBoundaryWeight hx).mul_right _)
+
 /-- **Almost-periodic realization.** If `c₀ + Σ_z b(z) cos(zt) ≥ 0`, the twisted von Mangoldt weights
 have boundary divisor `c₀ δ₀ + Σ_z (b(z)/2)(δ_{−z} + δ_z)`. -/
 theorem ap_isBoundaryDivisor {c₀ : ℝ} {Z : Finset ℝ} {b : ℝ → ℝ}
     (hP : ∀ t, 0 ≤ apPoly c₀ Z b t) :
     IsBoundaryDivisor logFrequency (apWeight c₀ Z b) (apDivisor c₀ Z b) where
   nonneg x _ n := mul_nonneg (zetaBoundaryWeight_nonneg x n) (hP _)
-  summable x hx := Summable.of_nonneg_of_le
-    (fun n => mul_nonneg (zetaBoundaryWeight_nonneg x n) (hP _))
-    (fun n => mul_le_mul_of_nonneg_left ((le_abs_self _).trans (abs_apPoly_le c₀ Z b _))
-      (zetaBoundaryWeight_nonneg x n))
-    ((summable_zetaBoundaryWeight hx).mul_right _)
-  tendsto u := by
-    have h : Tendsto (fun x => c₀ * (x * cosineTrace (zetaBoundaryWeight x) logFrequency u) +
-        ∑ z ∈ Z, b z / 2 * (x * cosineTrace (zetaBoundaryWeight x) logFrequency (u + z) +
-          x * cosineTrace (zetaBoundaryWeight x) logFrequency (u - z))) (𝓝[>] 0)
-        (𝓝 (c₀ * zetaBoundaryDivisor u + ∑ z ∈ Z, b z / 2 *
-          (zetaBoundaryDivisor (u + z) + zetaBoundaryDivisor (u - z)))) :=
-      ((zeta_isBoundaryDivisor.tendsto u).const_mul c₀).add (tendsto_finsetSum _ fun z _ =>
-        ((zeta_isBoundaryDivisor.tendsto _).add (zeta_isBoundaryDivisor.tendsto _)).const_mul _)
-    have heq : c₀ * zetaBoundaryDivisor u + ∑ z ∈ Z, b z / 2 *
-        (zetaBoundaryDivisor (u + z) + zetaBoundaryDivisor (u - z)) = apDivisor c₀ Z b u := by
-      simp only [zetaBoundaryDivisor_eq, apDivisor, diracAt]
-    rw [heq] at h
-    refine h.congr' ?_
-    filter_upwards [self_mem_nhdsWithin] with x hx
-    rw [cosineTrace_apWeight (Set.mem_Ioi.mp hx), mul_add, Finset.mul_sum]
-    congr 1
-    · ring
-    · exact Finset.sum_congr rfl fun z _ => by ring
+  summable _ hx := summable_abs_iff.mp (summable_abs_apWeight c₀ Z b hx)
+  tendsto := tendsto_apTrace c₀ Z b
 
 /-! ### Finite configurations and their Bohr polynomials -/
 

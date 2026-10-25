@@ -66,3 +66,41 @@ proof terms for their arithmetic. All six new modules are wired into the RHTower
 kernel reduction. Seed compilation is pending after correcting syntax antiquotation around
 field projections. Next checks: compile the certificate macro module, check the last-cell probe
 `/tmp/hgt_last_cell_probe.lean`, then compile the four cell modules and arithmetic module.
+
+Definition names in generated `rw` steps must use `$name:ident`, without parentheses; parentheses
+make `rw` treat the definition as a value rather than unfold it. This correction is applied in
+both seed and cell macros. Seed compilation is running in tool session 27927 (lake PID 87199,
+Lean child 87299); wait for that owned process before starting another Lean command. Earlier
+failed seed commands exited with code 1 and produced no olean. The minimal macro probe passed,
+with an axiom-free integer equality. The static forbidden-token/raised-limit scan is clean.
+
+That seed command was interrupted and exited 130 after a stack sample exposed repeated subtype
+projection expansion inside `cbv`. Every certified-value rewrite now has an explicit `dsimp only`
+of the referenced certificate before arithmetic normalization. Empty Horner tails use `change []`
+instead of evaluating their unused polynomial argument. The updated seed build is running in
+session 54451; session 27927 is closed. The sample is `/tmp/hgt_seed_sample.txt` (own scratch).
+
+Session 54451 was interrupted cleanly (130) to isolate the first nonzero endpoint transition,
+which the earlier cell-zero prototype did not exercise. `/tmp/hgt_seed_transition_probe.lean`
+is a source copy with the endpoint loop restricted to indices 0 and 1 and axiom-print commands.
+It is running in session 56059. The full source retains all 64 indices; no scope was removed.
+
+The scalar seed normalizer now uses `norm_num` with explicit arithmetic definitions (the earlier
+staged prototype already supported this for scalar operations). This avoids traversing rational
+field-instance projections in `cbv`; polynomial cell operations still use `cbv`. Session 56059
+exited 130 before replacing its scratch source. The updated first-transition probe is running in
+session 44465. Wait for its result; after it passes, build the complete Seeds module, then
+Certificates, the last-cell probe, Cells0/16/32/48, and Arithmetic, one Lean process at a time.
+
+The first-transition probe passed (session 44465, exit 0). Both endpoint directions normalize to
+literal integer bounds and depend only on `propext, Classical.choice, Quot.sound`.
+The complete Seeds olean/ilean build is now running; its session is recorded in the tool transcript.
+
+The complete Seeds build passed with no diagnostics (session 83986, exit 0). Its olean/ilean are
+current. Certificates macro-module compilation is now running. The final five sum comparisons
+use `norm_num [Enclosure.precision]` after rewriting to the certified integer numerators.
+
+Certificates compiled without diagnostics (session 21390, exit 0). The last-cell probe is running
+for all five moment rows at cell 63, including the largest lower and upper polynomial degrees.
+It also checks the finite-sum rewrite names and prints transitive axioms for all five numerators.
+Active Lean tool session: 50931. No other owned Lean process is running.

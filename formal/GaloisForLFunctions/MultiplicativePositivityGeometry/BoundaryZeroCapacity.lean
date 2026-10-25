@@ -121,6 +121,68 @@ theorem capacity_isEvenPosDef_iff {k : ℕ} {Z : Finset ℝ} (hZ : ∀ z ∈ Z, 
   · intro hcap
     exact (capacity_isBoundaryDivisor hcap).isEvenPosDef
 
+/-- An integer-valued even `D ≤ 0` off the origin whose zero masses are bounded on finite sets of
+heights is a capacity configuration. -/
+theorem eq_capacityDivisor_of_mass_le {k : ℕ} {D : ℝ → ℝ} (hint : ∀ u, ∃ n : ℤ, D u = n)
+    (h0 : D 0 = k) (hnp : ∀ u, u ≠ 0 → D u ≤ 0) (heven : ∀ u, D (-u) = D u) {C : ℝ}
+    (hmass : ∀ T : Finset ℝ, (∀ z ∈ T, 0 < z) → ∑ z ∈ T, -D z ≤ C) :
+    ∃ (Z : Finset ℝ) (m : ℝ → ℕ), (∀ z ∈ Z, 0 < z) ∧ D = capacityDivisor k Z m := by
+  classical
+  -- The positive zero heights form a finite set: each carries mass at least `1`.
+  set S := {z : ℝ | 0 < z ∧ D z ≠ 0}
+  have hzero : ∀ z ∈ S, 1 ≤ -D z := by
+    intro z hz
+    obtain ⟨n, hn⟩ := hint z
+    have hlt : D z < 0 := lt_of_le_of_ne (hnp z hz.1.ne') hz.2
+    rw [hn] at hlt ⊢
+    have : n ≤ -1 := by
+      have : n < 0 := by exact_mod_cast hlt
+      omega
+    have : (n : ℝ) ≤ -1 := by exact_mod_cast this
+    linarith
+  have hS : S.Finite := by
+    by_contra hinf
+    obtain ⟨T, hTS, hT⟩ := Set.Infinite.exists_subset_card_eq hinf (⌈C⌉₊ + 1)
+    have h1 := hmass T fun z hz => (hTS hz).1
+    have h2 : (T.card : ℝ) ≤ ∑ z ∈ T, -D z := by
+      rw [Finset.card_eq_sum_ones, Nat.cast_sum, Nat.cast_one]
+      exact Finset.sum_le_sum fun z hz => hzero z (hTS hz)
+    rw [hT] at h2
+    push_cast at h2
+    linarith [Nat.le_ceil C]
+  set Z := hS.toFinset
+  have hZ : ∀ z ∈ Z, 0 < z := fun z hz => ((Set.Finite.mem_toFinset hS).mp hz).1
+  set m : ℝ → ℕ := fun z => (-(Classical.choose (hint z))).toNat
+  have hm : ∀ z, 0 < z → (m z : ℝ) = -D z := by
+    intro z hz
+    simp only [m]
+    have hc := Classical.choose_spec (hint z)
+    set c := Classical.choose (hint z)
+    have hle : c ≤ 0 := by
+      have := hnp z hz.ne'
+      rw [hc] at this
+      exact_mod_cast this
+    have h1 : (((-c).toNat : ℤ)) = -c := Int.toNat_of_nonneg (by omega)
+    have h2 : ((((-c).toNat : ℕ) : ℤ) : ℝ) = ((-c : ℤ) : ℝ) := by rw [h1]
+    push_cast at h2
+    rw [hc, h2]
+  refine ⟨Z, m, hZ, ?_⟩
+  funext u
+  rcases lt_trichotomy u 0 with hu | rfl | hu
+  · rw [← heven u, ← capacityDivisor_neg, capacityDivisor_pos hZ m (by linarith)]
+    split_ifs with hmem
+    · rw [hm _ (by linarith)]
+      ring
+    · by_contra hne
+      exact hmem ((Set.Finite.mem_toFinset hS).mpr ⟨by linarith, hne⟩)
+  · rw [capacityDivisor_zero hZ m, h0]
+  · rw [capacityDivisor_pos hZ m hu]
+    split_ifs with hmem
+    · rw [hm _ hu]
+      ring
+    · by_contra hne
+      exact hmem ((Set.Finite.mem_toFinset hS).mpr ⟨hu, hne⟩)
+
 /-- **Classification of pole-isolated integral boundary divisors.** An integer-valued `D` with
 `D(0) = k` and `D ≤ 0` off the origin is positive definite iff it is a capacity configuration
 `k δ₀ − Σ_{z ∈ Z} m(z)(δ_z + δ_{−z})` with `2 Σ m(z) ≤ k`. In particular a pole of order `k` carries
@@ -129,52 +191,10 @@ theorem isolated_boundary_classification {k : ℕ} {D : ℝ → ℝ} (hint : ∀
     (h0 : D 0 = k) (hnp : ∀ u, u ≠ 0 → D u ≤ 0) :
     IsEvenPosDef D ↔ ∃ (Z : Finset ℝ) (m : ℝ → ℕ), (∀ z ∈ Z, 0 < z) ∧
       2 * ∑ z ∈ Z, m z ≤ k ∧ D = capacityDivisor k Z m := by
-  classical
   constructor
   · intro hpd
-    -- The positive zero heights form a finite set.
-    set S := {z : ℝ | 0 < z ∧ D z ≠ 0}
-    have hzero : ∀ z ∈ S, D z < 0 := fun z hz => lt_of_le_of_ne (hnp z hz.1.ne') hz.2
-    have hS : S.Finite := by
-      by_contra hinf
-      obtain ⟨T, hTS, hT⟩ := Set.Infinite.exists_subset_card_eq hinf (k + 1)
-      have hcard := card_zero_heights_le hpd hnp hint (Z := T) (fun z hz => (hTS hz).1)
-        (fun z hz => hzero z (hTS hz))
-      rw [hT, h0] at hcard
-      push_cast at hcard
-      linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
-    set Z := hS.toFinset
-    have hZ : ∀ z ∈ Z, 0 < z := fun z hz => ((Set.Finite.mem_toFinset hS).mp hz).1
-    set m : ℝ → ℕ := fun z => (-(Classical.choose (hint z))).toNat
-    have hm : ∀ z, 0 < z → (m z : ℝ) = -D z := by
-      intro z hz
-      simp only [m]
-      have hc := Classical.choose_spec (hint z)
-      set c := Classical.choose (hint z)
-      have hle : c ≤ 0 := by
-        have := hnp z hz.ne'
-        rw [hc] at this
-        exact_mod_cast this
-      have h1 : (((-c).toNat : ℤ)) = -c := Int.toNat_of_nonneg (by omega)
-      have h2 : ((((-c).toNat : ℕ) : ℤ) : ℝ) = ((-c : ℤ) : ℝ) := by rw [h1]
-      push_cast at h2
-      rw [hc, h2]
-    have hDeq : D = capacityDivisor k Z m := by
-      funext u
-      rcases lt_trichotomy u 0 with hu | rfl | hu
-      · rw [← hpd.even u, ← capacityDivisor_neg, capacityDivisor_pos hZ m (by linarith)]
-        split_ifs with hmem
-        · rw [hm _ (by linarith)]
-          ring
-        · by_contra hne
-          exact hmem ((Set.Finite.mem_toFinset hS).mpr ⟨by linarith, hne⟩)
-      · rw [capacityDivisor_zero hZ m, h0]
-      · rw [capacityDivisor_pos hZ m hu]
-        split_ifs with hmem
-        · rw [hm _ hu]
-          ring
-        · by_contra hne
-          exact hmem ((Set.Finite.mem_toFinset hS).mpr ⟨hu, hne⟩)
+    obtain ⟨Z, m, hZ, hDeq⟩ := eq_capacityDivisor_of_mass_le hint h0 hnp hpd.even
+      fun T hT => total_zero_mass_le hpd hnp hT
     refine ⟨Z, m, hZ, ?_, hDeq⟩
     have := (capacity_isEvenPosDef_iff hZ m).mp (hDeq ▸ hpd)
     exact_mod_cast this

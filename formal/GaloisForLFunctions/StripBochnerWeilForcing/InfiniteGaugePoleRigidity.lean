@@ -1092,3 +1092,10 @@ theorem simple_pole_nonneg_laplace_refund_rigidity {ν : Measure ℝ} {σ₁ : �
   exact ⟨hnu_zero, hε1, hExi⟩
 
 end GaloisForLFunctions.StripBochnerWeilForcing
+
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.monic_and_natDegree_of_tendsto_eval_div_pow
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.exists_monic_poly_of_completed_gauge
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.exists_monic_poly_of_laplace_exp_gauge
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.sum_rootMultiplicity_le_natDegree
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.completed_gauge_zero_and_quartet_budget
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.simple_pole_nonneg_laplace_refund_rigidity

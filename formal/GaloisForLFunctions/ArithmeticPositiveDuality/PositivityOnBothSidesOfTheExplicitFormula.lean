@@ -1,6 +1,7 @@
 import GaloisForLFunctions.MultiplicativePositivityGeometry.ZetaBoundaryDivisor
 import GaloisForLFunctions.RHTower.AllIntegerPoissonCountertermAndBochnerPBAPBridge
 import GaloisForLFunctions.RHTower.WeilFullConeExposedPoint
+import GaloisForLFunctions.ArithmeticPositiveDuality.TheTwoPrimeSplineOrbitIsABochnerProblemOnTheTorus
 
 /-!
 # Positivity on both sides of the explicit formula
@@ -23,6 +24,12 @@ corpus are the Bochner statements of these two measures.
   statements there.
 
 `positive_duality_of_the_explicit_formula` states the first two items together.
+
+* **The two-prime correlation reads a multiplicative window** (`splineCorr_prime_term_eq_zero`).
+  In the spline correlation `C(s) = W(B(· − s), B)` the `n`-th prime term vanishes unless
+  `|log n − s| ≤ 8` or `|log n + s| ≤ 8`: at `s = k log p + l log q` only the primes and prime
+  powers in `[p^k q^l e^{−8}, p^k q^l e^8]` (and its reciprocal) enter. Positive definiteness on
+  `ℤ²` is a statement about the prime distribution near the `{p, q}`-units.
 -/
 
 open Complex MeasureTheory Set
@@ -145,4 +152,39 @@ theorem weilFullFunctional_of_prime_free (lam : ℕ → ℝ) {k : ℝ → ℂ}
     · rw [if_neg hn, Complex.ofReal_zero, zero_mul]
   simp only [hzero, tsum_zero, sub_zero]
 
+/-! ### The prime side of the two-prime correlation is a window sum -/
+
+open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline cubicSpline_eq_zero)
+
+/-- The autocorrelation of spline translates vanishes at lags more than `8` away from the shift. -/
+theorem weilTest_translate_cubicSpline_eq_zero {s x : ℝ} (h : 8 < |x - s|) :
+    Zeta23.EF.weilTest (ArithmeticCastelnuovoSeveri.translate s (cx cubicSpline))
+      (cx cubicSpline) x = 0 := by
+  rw [RHTower.WeilSpectral.weilTest_apply]
+  refine MeasureTheory.integral_eq_zero_of_ae (Filter.Eventually.of_forall fun u => ?_)
+  simp only [ArithmeticCastelnuovoSeveri.translate, cx, Pi.zero_apply]
+  by_cases hu : 4 < |u - s|
+  · rw [cubicSpline_eq_zero hu, Complex.ofReal_zero, zero_mul]
+  · push Not at hu
+    have hux : 4 < |u - x| := by
+      have := abs_sub_abs_le_abs_sub (x - s) (u - s)
+      rw [show x - s - (u - s) = -(u - x) by ring, abs_neg] at this
+      linarith
+    rw [cubicSpline_eq_zero hux, Complex.ofReal_zero, map_zero, mul_zero]
+
+/-- **The two-prime correlation reads a multiplicative window.** The `n`-th prime term of
+`C(s) = W(B(· − s), B)` vanishes unless `log n` lies within `8` of `s` or of `−s`. -/
+theorem splineCorr_prime_term_eq_zero {s : ℝ} {n : ℕ} (h1 : 8 < |Real.log n - s|)
+    (h2 : 8 < |Real.log n + s|) :
+    Zeta23.EF.weilTest (ArithmeticCastelnuovoSeveri.translate s (cx cubicSpline)) (cx cubicSpline)
+        (Real.log n) +
+      Zeta23.EF.weilTest (ArithmeticCastelnuovoSeveri.translate s (cx cubicSpline))
+        (cx cubicSpline) (-Real.log n) = 0 := by
+  rw [weilTest_translate_cubicSpline_eq_zero h1, weilTest_translate_cubicSpline_eq_zero (by
+    rwa [show -Real.log n - s = -(Real.log n + s) by ring, abs_neg]), add_zero]
+
 end GaloisForLFunctions.ArithmeticPositiveDuality
+
+#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.positive_duality_of_the_explicit_formula
+#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.weilFullFunctional_of_prime_free
+#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.splineCorr_prime_term_eq_zero

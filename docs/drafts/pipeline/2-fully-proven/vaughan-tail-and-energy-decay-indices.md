@@ -32,7 +32,8 @@ The all-positive-damping extension of finite Abel inversion proves that a tail b
 gives `M(N)=O(N^(1-η))`. The read compact-interval power lemma bounds
 the inverse-weight increment by `(1+ε)2^ε n^ε` for every `ε≥0`; this
 removes the earlier upper restriction on damping. See
-[the extension proof](all-positive-vaughan-tail-power-rates.md), whose Lean check is pending.
+[the verified extension](../3-formalized/all-positive-vaughan-tail-power-rates.md),
+whose five targets passed final direct checks and standard-axiom audits.
 A pointwise bound `|M(N)|≤C N^β`, `β≥0`, gives
 `Σ_(k≤X)|M(k)|≤C(X+1)^(1+β)`. The read corpus theorem
 `zetaZeroAbscissa_le_of_sum_norm_mertens_le` therefore gives `Θ≤β`.

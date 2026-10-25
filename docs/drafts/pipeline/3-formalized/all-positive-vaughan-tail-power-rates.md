@@ -1,11 +1,11 @@
 # Vaughan tail powers at every positive damping
 
 - **ID:** all-positive-vaughan-tail-power-rates
-- **Stage:** 2-fully-proven
-- **Type:** CLAIM (Lean verification pending)
-- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Verification:** All five targets passed producing and final direct Lean checks, with standard axioms only and no warnings. The module is wired and its owned scratch removed.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
-- **Statement:** Extend the signed-tail and square empty-leg fixed-strip equivalences from `0<ε≤1` to every `ε>0`.
+- **Statement:** For every `ε>0`, a fixed power gain in the signed reciprocal tail or normalized square empty-leg energy is equivalent to `zetaZeroAbscissa<1`.
 
 ## Source argument
 
@@ -31,6 +31,16 @@ the algebraic quartic comparison remains valid in that range.
 The increment source and existing inverse, forward, and quartic proofs have been
 read. The corpus search found the existing restricted Vaughan equivalence and
 general Abel-tail results, without this all-positive-damping specialization.
-The paper proof is dependency-closed. Five Lean targets are drafted in
-`/tmp/QIAllPositiveTailRateTools.lean`, uncompiled. No power saving or positive
-zero-free width is asserted.
+All five declarations in `VaughanTailPowerGainsAtEveryPositiveDamping.lean`
+passed direct Lean checks. Their transitive axioms are only `propext`,
+`Classical.choice`, and `Quot.sound`:
+
+- `rpow_one_add_increment_le_of_nonneg`
+- `abs_sum_moebiusReal_le_of_reciprocalTail_bound_all_dampings`
+- `zetaZeroAbscissa_lt_one_of_vaughan_reciprocalTail_power_all_dampings`
+- `zetaZeroAbscissa_lt_one_iff_vaughan_reciprocalTail_power_all_dampings`
+- `zetaZeroAbscissa_lt_one_iff_vaughan_square_energy_power_all_dampings`
+
+The module is imported by the programme umbrella. Its exact missing dependency
+`TheEmptyVaughanLegDetectsAFixedStrip.lean` was produced separately; its prior
+final audit remains valid. No power saving or positive zero-free width is asserted.

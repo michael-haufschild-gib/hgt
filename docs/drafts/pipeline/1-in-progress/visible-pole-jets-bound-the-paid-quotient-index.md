@@ -21,14 +21,9 @@ mechanisms. No existing paid-Wiener finite-jet index theorem surfaced.
 
 Joint jet evaluation onto the finite jet target is constructed from the full
 critical Wiener algebra; surjectivity is not a theorem hypothesis.
-A proposed finite-polynomial route chooses a Dirichlet polynomial a(s) separating all
-selected points with a'(s) nonzero at each, avoiding finitely many linear
-conditions on coefficients. Polynomial Hermite interpolation in a(s) then
-recovers arbitrary jets by its invertible triangular chain-rule matrix.
-A single integer base can also work if its exponentials separate the points;
-that separation must be constructed, not assumed. Finite-polynomial witnesses
-were a proposed refinement, not an established finding. The exact construction
-below proves full-Wiener interpolation, which suffices for the paid-index bound.
+Separating masks and a simple local dyadic parameter give the triangular
+construction below. The proved witnesses belong to the full Wiener algebra;
+finite-support witnesses are not asserted.
 
 The paid ideal lies in the evaluation kernel, so quotient rank bounds follow.
 The arithmetic vanishing inputs are the checked order and endpoint theorems.

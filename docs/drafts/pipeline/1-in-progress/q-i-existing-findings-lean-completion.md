@@ -31,7 +31,7 @@ Lean module names below are relative to `GaloisForLFunctions/`; BVI denotes
 | [vaughan-subcritical-gram-limit-classification.md](../3-formalized/vaughan-subcritical-gram-limit-classification.md) — COMPLETE | All 39 targets in the five arithmetic-amplitude, classification, scalar-topology, matrix-rank, and matrix-topology leaves passed final direct checks and standard-axiom audits. Includes exact attainment and damping independence. |
 | [positive-vaughan-cutoff-escape-is-zero-gram-limit.md](../3-formalized/positive-vaughan-cutoff-escape-is-zero-gram-limit.md) — COMPLETE | Exact amplitude and matrix escape equivalences, finite-fiber rigidity, convergence dichotomy, positive-cutoff attainment, and mutually exclusive alternatives. All supporting leaf checks and axiom audits passed. |
 | [vaughan-relative-gram-and-harmonic-denominators.md](../3-formalized/vaughan-relative-gram-and-harmonic-denominators.md) — COMPLETE | All ten arithmetic and relative-Gram targets passed final direct checks and standard-axiom audits. Includes calibrated horizons for every positive cutoff schedule and the simultaneous zero/relative-rank-one corollary. |
-| [uniform-vaughan-convolution-stretched-exponential-rate.md](../3-formalized/uniform-vaughan-convolution-stretched-exponential-rate.md) — COMPLETE; related existing stage-1 [factorial criterion](vaughan-factorial-order-one-is-a-fixed-strip.md) still pending | All three BVI `UniformStretchedExponentialCancellationInTheVaughanConvolution` targets passed final direct checks and standard-axiom audits. The distinct factorial-order-one criterion still needs HTGeometry `FactorialLogarithmicBoundsArePowerBounds` and BVI `FactorialOrderOneInTheVaughanConvolutionIsAPowerSaving`. |
+| [uniform-vaughan-convolution-stretched-exponential-rate.md](../3-formalized/uniform-vaughan-convolution-stretched-exponential-rate.md) and related [factorial criterion](../3-formalized/vaughan-factorial-order-one-is-a-fixed-strip.md) — COMPLETE | All three stretched-exponential, five generic factorial, and two actual factorial-criterion targets passed final direct checks and standard-axiom audits. Common-threshold factorial order one is exactly equivalent to a uniform power saving and a fixed strip. |
 | [uniform-vaughan-residual-power-rates-are-fixed-strips.md](../3-formalized/uniform-vaughan-residual-power-rates-are-fixed-strips.md) — COMPLETE | All twenty-nine extreme-cutoff, Mertens-to-harmonic, undamped-power, damped-transfer, receiver, and full Gram targets passed final direct checks and standard-axiom audits. The complete matrix power-rate criterion is exactly equivalent to a fixed strip. |
 | [the-centred-vaughan-pole-has-positive-finite-energy.md](../3-formalized/the-centred-vaughan-pole-has-positive-finite-energy.md) — COMPLETE | All seven energy/rate targets and the actual nonzero endpoint product-horizon limit passed final direct checks and standard-axiom audits. Both cutoffs diverge for this matrix limit; product divergence alone removes harmonic mass. |
 | [the-endpoint-vaughan-limit-has-rank-two.md](../3-formalized/the-endpoint-vaughan-limit-has-rank-two.md) — COMPLETE | All 34 finite, shared infinite-Gram, and endpoint targets passed final direct checks and standard-axiom audits. Includes actual summability, exact rank two, positive-definite prefix/pole submatrix, endpoint determinant `≥1/62208`, pole energy `≥1/64`, and nonzero actual Gram. |
@@ -39,7 +39,7 @@ Lean module names below are relative to `GaloisForLFunctions/`; BVI denotes
 | [vaughan-admission-phase-transition-at-half-damping.md](../3-formalized/vaughan-admission-phase-transition-at-half-damping.md) — COMPLETE | Admission, both coefficient Wiener limits, strong upper-half row/Gram convergence, and all eleven actual infinite-Gram targets passed final direct checks and standard-axiom audits. Includes the positive-definite prefix/pole minor and exact rank two for every `ε≥1/2`. |
 | [vaughan-zero-cutoffs-remove-the-smooth-obstruction.md](../3-formalized/vaughan-zero-cutoffs-remove-the-smooth-obstruction.md) — COMPLETE | All twenty scalar and coefficient-space targets passed final direct checks and standard-axiom audits. Includes unique coordinate recovery, both exact spans, admitted and quotient dimensions, and unconditional half-damping admission. |
 | [vaughan-admitted-rank-filtration-reads-the-zero-abscissa.md](../3-formalized/vaughan-admitted-rank-filtration-reads-the-zero-abscissa.md) — COMPLETE | All twelve targets in BVI `TheVaughanAdmissionRankReadsTheZeroAbscissa` passed the final direct check and standard-axiom audits. Includes cutoff independence, exact zero-width boundary, all three RH criteria, and first/all damping-column summability equivalences. |
-| `all-positive-vaughan-tail-power-rates.md` | BVI `VaughanTailPowerGainsAtEveryPositiveDamping`. |
+| [all-positive-vaughan-tail-power-rates.md](../3-formalized/all-positive-vaughan-tail-power-rates.md) — COMPLETE | All five increment, inverse Abel, signed-tail, and square-energy targets in BVI `VaughanTailPowerGainsAtEveryPositiveDamping` passed final direct checks and standard-axiom audits. The exact fixed-strip equivalences hold at every positive damping. |
 | `vaughan-tail-and-energy-decay-indices.md` | All 30 targets in BVI `TheVaughanEmptyLegReadsTheZeroAbscissa`, including full rate-set independence, endpoint distinctions, the zero-width singleton classification, and three explicit equivalences with the unrestricted nonnegative bound definitions. |
 | `vaughan-endpoint-rates-and-zero-multiplicity.md` | BVI `VaughanEndpointScalesHaveUnavoidableOscillation`, `VaughanEndpointRatesForceSimpleBoundaryZeros`. |
 
@@ -218,6 +218,17 @@ default limits; the common gain and all finite-head bounds are unchanged.
 All four full Gram-power targets passed the corrected final direct check
 with standard axioms only and no warnings. The module is wired and its scratch
 removed; the complete twenty-nine-target residual-power card is in stage 3.
+All five generic factorial targets passed corrected producing and final direct
+checks with standard axioms only and no warnings. The HTGeometry module is
+wired and its scratch removed. The common-threshold factorial/power equivalence
+and all strict rates below the reciprocal factorial scale are certified.
+Both actual factorial targets passed their final direct check with standard
+axioms only and no warnings. The module is wired and its scratch removed;
+the complete seven-target factorial criterion moved from stage 1 to stage 3.
+All five all-positive-damping targets passed producing and final direct checks
+with standard axioms only and no warnings. The module is wired and its scratch
+removed; the complete card is in stage 3. The earlier upper restriction on
+damping is removed from both exact fixed-strip equivalences.
 All remaining drafts now have their intended repository leaves. They remain
 uncertified until their final direct checks and axiom audits pass. Dependencies and
 live compiler handles are recorded in `/tmp/QIVerificationState.txt`; the

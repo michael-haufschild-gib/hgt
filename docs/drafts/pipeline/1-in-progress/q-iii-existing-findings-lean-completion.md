@@ -47,8 +47,8 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Scalar origin-trace convergence and nonvanishing successor scale | Final canonical audit `80601` passed with standard axioms; no olean needed |
 | Exact incomplete dilation fibre and mixed C*D/p bound | Required olean `69760` and final canonical source check `89066` passed with standard axioms |
 | Actual horizon contraction, principal ideal quotient, full intertwining | Canonical source checks `13848`, `76726`, `61116`, `33454` passed with standard axioms |
-| Closed dilation range, index loss, matrix/operator horizon order | Numeric operator order passed final `42266`; closed-range and index canonical checks pending |
-| Rank-one contraction fixes state | Combined scratch passed; canonical source installed and wired, final check pending |
+| Closed dilation range, index loss, matrix/operator horizon order | Final audits `42266`, `78185`, `83434`, `60486` passed with standard axioms |
+| Rank-one contraction fixes state | Final canonical audit `84026` passed with standard axioms |
 | Arbitrary commuting family has a common eigenvector | Final canonical audit `15948` passed with standard axioms; required olean exists |
 | Finite actual hull magnitudes and half-plane approximation | All three canonical leaves passed final audits `64788`, `82260`, `82346` with standard axioms |
 | Tied-torus and augmentation character limits | Owner final `5652` and leaf final `10781` passed with standard axioms; required oleans complete |
@@ -126,6 +126,11 @@ unchanged checks. All required leaves are wired into their programme umbrellas.
 | Zero-dilation alternative and actual kernel/principal-ideal contraction composition | `73435` | None needed |
 | Closed operator range as closed span of image features; invariance under nonzero scaling | `78185` | `55322` passed |
 | Actual contracted module equals closed dilation range; finite dimension drops by nullity | `83434` | `64753` passed |
+| Finite annihilator-quotient index drops by exact dilation nullity | `60486` | None needed |
+| Rank-one cofactor contractions preserve the Gram and complete Wiener annihilator | `84026` | None needed |
+| Closed-half-plane character separation, visible obstruction and independent point count | `92781` | `82563` passed |
+| Finite interior Wiener jet interpolation and surjectivity | `59279` | `65033` passed |
+| Independent interior jet conditions and visible multiplicity paid-index bound | `7575` | None needed |
 
 The full mixed-jet third check completed without errors, with all fourteen
 standard-axiom reports in `/tmp/qiii-visible-mixed-jet-index-third.log`.
@@ -228,27 +233,41 @@ The actual contracted-range required olean passed in session `64753`, with
 two standard-axiom reports in `/tmp/qiii-contracted-range-required-olean.log`.
 Its final source-only check `83434` passed, with both standard-axiom reports
 in `/tmp/qiii-contracted-range-canonical-final.log`.
-One active Lean process: terminal source-only check of
-`ArithmeticDefectRigidity/CofactorContractionIndexDropsByDilationNullity`, output
-`/tmp/qiii-contraction-index-canonical-final.log`.
+The finite quotient-index final source-only check `60486` passed with a
+standard-axiom report in `/tmp/qiii-contraction-index-canonical-final.log`.
+Rank-one contraction final source-only check `84026` passed, with both
+standard-axiom reports in `/tmp/qiii-rank-one-contraction-canonical-final.log`.
+All eleven contraction leaves are canonically checked and wired. Their card
+moved to `3-formalized/contracting-horizons-acts-on-actual-cofactor-states.md`.
+All completed contraction, tied-torus and finite-hull scratch/staging Lean
+files have been removed; canonical sources and audit logs remain.
+The visible-point required olean passed in session `82563`, with all three
+standard-axiom reports in `/tmp/qiii-visible-point-count-required-olean.log`.
+Its final source-only check `92781` passed, with all three standard-axiom
+reports in `/tmp/qiii-visible-point-count-canonical-final.log`.
+The finite-Wiener-jet required olean `65033` and final source-only check
+`59279` both passed with three standard-axiom reports. Final output:
+`/tmp/qiii-finite-wiener-jets-canonical-final.log`.
+The interior-index source-only check `7575` passed with both standard-axiom
+reports in `/tmp/qiii-visible-interior-jet-index-canonical-final.log`.
+The active required olean is `InteriorJetsAndBoundaryValuesCanBePrescribed`,
+session `61099`, output `/tmp/qiii-mixed-wiener-interpolation-required-olean.log`.
+Its predecessor's completed staging sources and the completed boundary
+placement map have been removed. The seven jet sources contain no proof
+placeholders or raised limits; their only axiom-keyword matches are explicit
+`#print axioms` audit commands.
 
 After it finishes, the pending canonical checks are:
 
-- Contraction: finish terminal source-only `CofactorContractionIndexDropsByDilationNullity` and
-  `RankOneCofactorStatesAreFixedByContraction`. All sources are installed and
-  wired; their combined scratch passed. Numeric horizon order is complete.
-- Jets: required olean and final `VisiblePolesImposeIndependentPaidConditions`,
-  then `FiniteWienerJetsCanBePrescribed`; terminal source-only
-  `VisiblePoleJetsBoundThePaidIndex`; required olean and final
-  `InteriorJetsAndBoundaryValuesCanBePrescribed`, then
+- Jets: required olean and final `InteriorJetsAndBoundaryValuesCanBePrescribed`, then
   `VisibleInteriorAndBoundaryPolesBoundThePaidIndex`; terminal source-only
   `VisibleJetIndexBoundsPersistOnWienerUnitOrbits`. All six sources are
   installed and wired; the combined scratch passed. Base `InteriorWienerJets`
   is complete. All six required finite-hull/jet oleans were confirmed absent.
 
 Reconcile cards, README/report and remaining owned scratch files after these
-checks. The diagonal, finite-hull, matrix and Fermi-divisor cards are in
-`3-formalized`. Contraction and jet cards still await the listed gates. Pause
+checks. The diagonal, finite-hull, matrix, Fermi-divisor and contraction cards
+are in `3-formalized`. Only the jet card still awaits the listed gates. Pause
 after completing this queue; full Q-III classification remains open.
 
 ## Earlier checks (superseded by the current audit table)

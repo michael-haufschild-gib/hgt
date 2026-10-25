@@ -22,6 +22,7 @@ macro "first_atom_cell " j:num : command => do
         certify_first_atom =>
           rw [$sourceFn:ident]
           simp only [← ($power).property]
+          dsimp only [$power:ident]
           cbv))
     let delta := Lean.mkIdent (.mkSimple ("delta" ++ side ++ index))
     let deltaFn := Lean.mkIdent
@@ -31,6 +32,7 @@ macro "first_atom_cell " j:num : command => do
         certify_first_atom =>
           rw [$deltaFn:ident]
           simp only [← ($power).property]
+          dsimp only [$power:ident]
           cbv))
   for side in ["Lo", "Hi"] do
     let count := if side == "Lo" then 6 else 5
@@ -47,7 +49,9 @@ macro "first_atom_cell " j:num : command => do
       let declaration ← if k == count then
         `(command| abbrev $name :
             {v // v = Enclosure.polyComp (($coefficients).val.drop $n) ($deltaFn $j)} := by
-          certify_first_atom => cbv)
+          certify_first_atom =>
+            change ([] : List Enclosure.Bounds)
+            cbv)
       else do
         let next := Lean.Syntax.mkNumLit (toString (k + 1))
         let prev := Lean.mkIdent
@@ -59,7 +63,9 @@ macro "first_atom_cell " j:num : command => do
               (Enclosure.polyMul ($deltaFn $j)
                 (Enclosure.polyComp (($coefficients).val.drop $next) ($deltaFn $j)))
             simp only [← ($prev).property]
+            dsimp only [$prev:ident]
             simp only [← ($delta).property]
+            dsimp only [$delta:ident, $coefficients:ident]
             cbv)
       declarations := declarations.push declaration
     let localValue := Lean.mkIdent (.mkSimple ("local" ++ side ++ index))
@@ -81,7 +87,9 @@ macro "first_atom_cell " j:num : command => do
           [Enclosure.mul (Enclosure.point $density) ($endpointFn $j)] ($localFn $j)} := by
         certify_first_atom =>
           simp only [← ($endpoint).property]
+          dsimp only [$endpoint:ident]
           simp only [← ($localValue).property]
+          dsimp only [$localValue:ident, $stage:ident]
           cbv))
     let orders := if side == "Lo" then [0, 1, 2] else [1, 3]
     for r in orders do
@@ -101,6 +109,7 @@ macro "first_atom_cell " j:num : command => do
                   (Enclosure.polyPoint X)) (2 * $order))) ($sourceFn $j)} := by
           certify_first_atom =>
             simp only [← ($source).property]
+            dsimp only [$source:ident]
             cbv))
       let polynomial := Lean.mkIdent (.mkSimple ("polynomial" ++ suffix))
       let polynomialFn := Lean.mkIdent
@@ -110,7 +119,9 @@ macro "first_atom_cell " j:num : command => do
           certify_first_atom =>
             rw [$polynomialFn:ident]
             simp only [← ($prefactor).property]
+            dsimp only [$prefactor:ident]
             simp only [← ($gibbs).property]
+            dsimp only [$gibbs:ident]
             cbv))
       let mass := Lean.mkIdent (.mkSimple ("mass" ++ suffix))
       let massFn := Lean.mkIdent
@@ -125,6 +136,7 @@ macro "first_atom_cell " j:num : command => do
           certify_first_atom =>
             rw [$massFn:ident]
             simp only [← ($polynomial).property]
+            dsimp only [$polynomial:ident]
             simp only [Enclosure.mass, Nat.reduceAdd, $[$widths],*]
             cbv))
       let raw := Lean.mkIdent (.mkSimple ("raw" ++ suffix))
@@ -134,6 +146,7 @@ macro "first_atom_cell " j:num : command => do
         abbrev $raw : {v // v = $projection ($massFn $order $j)} := by
           certify_first_atom =>
             simp only [← ($mass).property]
+            dsimp only [$mass:ident]
             cbv))
   return ⟨Lean.mkNullNode declarations⟩
 

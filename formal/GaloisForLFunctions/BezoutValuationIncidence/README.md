@@ -214,6 +214,14 @@ $G_{ij}$; diagonal $D_T$; mixed remainder $R^{\text{mix}}_T$; $E^{\text{int}}_T=
     A [uniform residual Gram power rate](UniformVaughanResidualPowerRatesAreFixedStrips.lean)
     is equivalent to a fixed strip. Two entries at the extreme cutoff already
     force the converse; the forward bound controls the full matrix.
+    [Factorial order one](FactorialOrderOneInTheVaughanConvolutionIsAPowerSaving.lean)
+    in the actual undamped error is equivalent to a fixed strip, with one
+    common threshold for every logarithmic order and both cutoffs. The
+    [generic exponential-series argument](../HTGeometry/FactorialLogarithmicBoundsArePowerBounds.lean)
+    gives every strict rate below the reciprocal factorial scale.
+    At [every positive damping](VaughanTailPowerGainsAtEveryPositiveDamping.lean),
+    a signed-tail power gain or a normalized square empty-leg energy power gain
+    is exactly equivalent to a fixed strip, by finite Abel inversion.
     [Two arithmetic cells](TheVaughanLimitRowsAreIndependentInTwoCells.lean)
     separate the actual prefix and pole at every positive damping, with
     determinant at least `2^(-2ε)/36`; their finite pronic Gram determinant is

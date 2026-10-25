@@ -408,6 +408,13 @@ standard-axiom audits in `UniformVaughanResidualPowerRatesAreFixedStrips.lean`.
 They cover all five row rates, the uniform full-matrix implication, the
 two-entry extreme-cutoff converse, and the exact fixed-strip equivalence.
 The complete twenty-nine-target residual-power card is now in stage 3.
+The distinct common-threshold factorial-order-one criterion is also
+Lean-verified in `../3-formalized/vaughan-factorial-order-one-is-a-fixed-strip.md`.
+All five generic and two actual targets passed final direct checks and
+standard-axiom audits: a `C A^q q!` envelope, uniformly in both cutoffs and
+all logarithmic orders at one threshold, is exactly equivalent to a uniform
+power saving and hence to a fixed strip. No such envelope is asserted
+unconditionally.
 
 ## External calibration
 
@@ -470,8 +477,10 @@ For every fixed `ε>0`, the supremal signed-tail gain is `1-Θ`, independent of
 damping; the normalized square empty-leg energy has index `4(1-Θ)` in `N`, or
 `2(1-Θ)` in the horizon. The proof combines the checked quartic identity, finite
 Abel inversion, and the read Littlewood and absolute-Mertens-moment exponent laws.
-The compact-interval power-increment bound removes the earlier restriction `ε≤1`
-in the proposed proof; its five Lean targets remain unverified. The full rate sets, including
+The compact-interval power-increment bound removes the earlier restriction `ε≤1`.
+All five extension targets passed final direct checks and standard-axiom audits;
+see `../3-formalized/all-positive-vaughan-tail-power-rates.md`.
+The full rate sets, including
 endpoint attainment, are independent of positive damping. Thirty Lean targets
 for the indices, exact rate sets, and horizon formulations are drafted, uncompiled.
 They include three explicit equivalences with the unrestricted nonnegative

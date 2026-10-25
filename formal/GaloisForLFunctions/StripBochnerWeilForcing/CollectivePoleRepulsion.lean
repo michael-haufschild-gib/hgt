@@ -76,6 +76,11 @@ structure CompletedPositiveSystem (κ d : ℕ) (F Λ : ℂ → ℂ) : Prop where
   completed_eq : ∀ s : ℂ, 1 < s.re →
     Λ s = (s * (s - 1)) ^ κ * Complex.Gammaℝ s ^ d * F s
 
+private theorem ne_zero_and_sub_one_of_one_lt_re {s : ℂ} (hs : 1 < s.re) :
+    s ≠ 0 ∧ s - 1 ≠ 0 :=
+  ⟨fun h => by rw [h, Complex.zero_re] at hs; linarith,
+    sub_ne_zero.mpr fun h => by rw [h, Complex.one_re] at hs; linarith⟩
+
 namespace CompletedPositiveSystem
 
 /-- Any finite-order entire completion `Λ` whose uncompleted factor `F` is bounded on `{Re s ≥ 2}`
@@ -112,10 +117,10 @@ theorem ofFiniteOrder {κ d : ℕ} {F Λ : ℂ → ℂ}
     refine mul_le_mul ?_ (hFb z hz.ge) (norm_nonneg _) hB₁0
     rw [hz']
     exact hB₁ z.im
-  have hstrip : ∀ z : ℂ, -1 ≤ z.re → z.re ≤ 2 → ‖Λ z‖ ≤ B₁ * S := fun z h1 h2 =>
+  have hstrip : ∀ z : ℂ, 1 - (2 : ℝ) ≤ z.re → z.re ≤ 2 → ‖Λ z‖ ≤ B₁ * S := fun z h1 h2 =>
     PhragmenLindelof.vertical_strip hΛ.diffContOnCl
       (RHTower.CompletionGrowth.isBigO_strip_of_finiteOrder_at hfin' (by norm_num))
-      (fun w hw => by rw [hflip]; exact hline (1 - w) (by simp [hw]; ring)) hline h1 h2
+      (fun w hw => by rw [hflip]; exact hline (1 - w) (by simp [hw])) hline h1 h2
   obtain ⟨C₁, hC₁0, hC₁⟩ := RHTower.CompletionGrowth.le_exp_envelope (A := S) (M := d)
     (Nat.cast_nonneg d) (2 * κ)
   have hright : ∀ s : ℂ, 2 ≤ s.re →
@@ -150,7 +155,7 @@ theorem ofFiniteOrder {κ d : ℕ} {F Λ : ℂ → ℂ}
   rcases le_or_gt (-1) s.re with h1 | h1
   · have h0 := hC₂ ‖s‖ (norm_nonneg s)
     simp only [pow_zero, mul_one, zero_mul, Real.exp_zero] at h0
-    exact ((hstrip s h1 h2.le).trans h0).trans (hmono C₂ (by simp only [C]; linarith))
+    exact ((hstrip s (by linarith) h2.le).trans h0).trans (hmono C₂ (by simp only [C]; linarith))
   · rw [hflip]
     have hre : 2 ≤ (1 - s).re := by simp; linarith
     refine (hright (1 - s) hre).trans ?_
@@ -176,8 +181,7 @@ variable {κ d : ℕ} {F Λ : ℂ → ℂ}
 theorem ne_zero_of_one_lt_re (hS : CompletedPositiveSystem κ d F Λ) {s : ℂ} (hs : 1 < s.re) :
     Λ s ≠ 0 := by
   rw [hS.completed_eq s hs]
-  have hs0 : s ≠ 0 := fun h => by rw [h] at hs; simp at hs
-  have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr fun h => by rw [h] at hs; simp at hs
+  obtain ⟨hs0, hs1⟩ := ne_zero_and_sub_one_of_one_lt_re hs
   have hΓ : Complex.Gammaℝ s ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos (by linarith)
   exact mul_ne_zero (mul_ne_zero (pow_ne_zero κ (mul_ne_zero hs0 hs1)) (pow_ne_zero d hΓ))
     (hS.ne_zero_F s hs)
@@ -245,8 +249,7 @@ theorem neg_logDeriv_F_eq (hS : CompletedPositiveSystem κ d F Λ) {s : ℂ} (hs
   have hΛ_ld : logDeriv Λ s =
       logDeriv (fun w => (w * (w - 1)) ^ κ * Complex.Gammaℝ w ^ d * F w) s := by
     rw [logDeriv_apply, logDeriv_apply, hev.deriv_eq, hev.eq_of_nhds]
-  have hs0 : s ≠ 0 := fun h => by rw [h] at hs; simp at hs
-  have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr fun h => by rw [h] at hs; simp at hs
+  obtain ⟨hs0, hs1⟩ := ne_zero_and_sub_one_of_one_lt_re hs
   have hq0 : s * (s - 1) ≠ 0 := mul_ne_zero hs0 hs1
   have hΓ0 : Complex.Gammaℝ s ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos (by linarith)
   have hF0 : F s ≠ 0 := hS.ne_zero_F s hs
@@ -315,7 +318,7 @@ theorem sum_orbit_resolvent_le_re_logDeriv {κ d : ℕ} {F Λ : ℂ → ℂ}
     have ha : 0 ≤ (1 / (s - (zeroCopyPoint f q + 2))).re :=
       re_one_div_nonneg_of_re_le (h1.trans hs.le)
     have hb : 0 ≤ (1 / (s - (1 - (zeroCopyPoint f q + 2)))).re :=
-      re_one_div_nonneg_of_re_le (by simp; linarith)
+      re_one_div_nonneg_of_re_le (by rw [Complex.sub_re, Complex.one_re]; linarith)
     have hre : ((1 / 2 : ℂ) * (1 / (s - (zeroCopyPoint f q + 2)) +
         1 / (s - (1 - (zeroCopyPoint f q + 2))))).re =
         ((1 / (s - (zeroCopyPoint f q + 2))).re +
@@ -433,9 +436,9 @@ theorem sum_orbit_resolvent_le_re_logDeriv {κ d : ℕ} {F Λ : ℂ → ℂ}
     by_cases hcrit : (ρ ℓ).re = 1 / 2
     · -- Critical zero: `1 - ρ_ℓ = conj ρ_ℓ`, so `orbPts ℓ = {ρ_ℓ, conj ρ_ℓ}`.
       have hc1 : 1 - ρ ℓ = starRingEnd ℂ (ρ ℓ) := by
-        apply Complex.ext <;> simp <;> linarith
+        (apply Complex.ext <;> simp); linarith
       have hc2 : 1 - starRingEnd ℂ (ρ ℓ) = ρ ℓ := by
-        apply Complex.ext <;> simp <;> linarith
+        (apply Complex.ext <;> simp); linarith
       have hset : orbPts ℓ = {ρ ℓ, starRingEnd ℂ (ρ ℓ)} := by
         ext z
         simp only [orbPts, hc1, hc2, Finset.mem_insert, Finset.mem_singleton]
@@ -504,7 +507,8 @@ theorem sum_orbit_resolvent_le_re_logDeriv {κ d : ℕ} {F Λ : ℂ → ℂ}
   calc ∑ ℓ, (m ℓ : ℝ) * ((1 / (s - ρ ℓ)).re + (1 / (s - starRingEnd ℂ (ρ ℓ))).re)
       ≤ ∑ ℓ, ∑ q ∈ orbCopies ℓ, term q := Finset.sum_le_sum fun ℓ _ => horb_le ℓ
     _ = ∑ q ∈ Finset.univ.biUnion orbCopies, term q := htotal
-    _ ≤ (logDeriv Λ s).re := hsum_re.sum_le fun q _ => hterm_nonneg q
+    _ ≤ (logDeriv Λ s).re := sum_le_hasSum (Finset.univ.biUnion orbCopies)
+          (fun q _ => hterm_nonneg q) hsum_re
 
 /-- **Master coupled strip pole–zero forcing law.** Evaluating multiplicative Gram positivity on
 any finite height configuration `x : Fin n → ℝ` with nonnegative channel amplitudes
@@ -560,7 +564,8 @@ theorem coupled_strip_pole_zero_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
     rw [hre_eq] at hdecomp
     linarith
   -- Sum over `(j, k)` and rearrange finite sums.
-  have hsum := Finset.sum_le_sum fun j _ => Finset.sum_le_sum fun k _ => hpt j k
+  have hsum := Finset.sum_le_sum (s := Finset.univ) fun j _ =>
+    Finset.sum_le_sum (s := Finset.univ) fun k _ => hpt j k
   have hlhs : (∑ ℓ, (m ℓ : ℝ) * ∑ j, ∑ k, c j * c k *
         ((1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I - ρ ℓ)).re +
           (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I - starRingEnd ℂ (ρ ℓ))).re)) =
@@ -586,7 +591,7 @@ theorem coupled_strip_pole_zero_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
           (logDeriv Complex.Gammaℝ (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I)).re) -
         ∑ j, ∑ k, c j * c k *
           (-logDeriv F (((1 + δ : ℝ) : ℂ) + ((x j - x k : ℝ) : ℂ) * I)).re := by
-    simp_rw [Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
+    simp_rw [Finset.mul_sum, ← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_
     ring
   rw [hlhs]
@@ -657,7 +662,7 @@ theorem re_logDeriv_Gammaℝ_le_all_heights {σ t : ℝ} (hσ1 : 1 ≤ σ) (hσ2
     exact h.le
   have hG : logDeriv Complex.Gammaℝ s =
       Complex.digamma z / 2 - ((Real.log Real.pi : ℝ) : ℂ) / 2 :=
-    GaloisForLFunctions.logDeriv_Gammaℝ_digamma (by rw [hsre]; linarith)
+    RHTower.logDeriv_Gammaℝ_digamma (by rw [hsre]; linarith)
   rw [hG]
   simp only [Complex.sub_re, Complex.div_ofNat_re, Complex.ofReal_re]
   linarith [hd1, hd2, hinv0, hinv1, hpsi_w, hpi]
@@ -677,7 +682,7 @@ theorem width_ge_of_pole_growth_bound {A B G η : ℝ} (hA : 0 ≤ A) (hAB : A <
   rcases eq_or_lt_of_le hA with rfl | hA_pos
   · -- Case `A = 0`: `B / (δ + η) ≤ G` fails as `δ ↓ 0` since `G η < B`.
     rw [Real.sqrt_zero, sub_zero, Real.sq_sqrt hB0.le] at hηw
-    have hGη : G * η < B := (lt_div_iff₀ hG).mp hηw
+    have hGη : G * η < B := by linarith [(lt_div_iff₀ hG).mp hηw]
     set δ := min 1 ((B - G * η) / (2 * G))
     have hδ0 : 0 < δ := lt_min zero_lt_one (div_pos (by linarith) (by positivity))
     have hδ1 : δ ≤ 1 := min_le_left _ _
@@ -700,7 +705,7 @@ theorem width_ge_of_pole_growth_bound {A B G η : ℝ} (hA : 0 ≤ A) (hAB : A <
       rw [add_zero] at hb
       have hmul : B ≤ A + G * δ := by
         have := mul_le_mul_of_nonneg_right hb hδ0.le
-        rwa [div_mul_cancel₀ _ hδ0.ne', add_mul, div_mul_cancel₀ _ hδ0.ne', mul_comm δ G] at this
+        rwa [div_mul_cancel₀ _ hδ0.ne', add_mul, div_mul_cancel₀ _ hδ0.ne'] at this
       have hGδ : G * δ ≤ (B - A) / 2 := by
         have := mul_le_mul_of_nonneg_left hδ2 hG.le
         have he : G * ((B - A) / (2 * G)) = (B - A) / 2 := by field_simp
@@ -718,15 +723,23 @@ theorem width_ge_of_pole_growth_bound {A B G η : ℝ} (hA : 0 ≤ A) (hAB : A <
       have hδ1 : δ ≤ 1 := by
         have hsq : (Real.sqrt A * Real.sqrt (G * η)) ^ 2 ≤ G ^ 2 := by
           rw [mul_pow, Real.sq_sqrt hA_pos.le, Real.sq_sqrt (by positivity)]
-          nlinarith [hAG, hη1]
+          calc A * (G * η) = (A * η) * G := by ring
+            _ ≤ (G * 1) * G :=
+              mul_le_mul_of_nonneg_right (mul_le_mul hAG hη1.le hη_pos.le hG.le) hG.le
+            _ = G ^ 2 := by ring
         have hle : Real.sqrt A * Real.sqrt (G * η) ≤ G := by
           nlinarith [sq_nonneg (Real.sqrt A * Real.sqrt (G * η) - G),
             mul_pos (Real.sqrt_pos.mpr hA_pos) (Real.sqrt_pos.mpr (mul_pos hG hη_pos)), hG]
         exact (div_le_one hG).mpr hle
       have hexcl := exclusion_at_geometric_mean hA_pos hB0.le hG hη_pos hcond
-      linarith [hbound δ hδ0 hδ1, hexcl]
+      have hb := hbound δ hδ0 hδ1
+      dsimp only [δ] at hb
+      linarith [hb, hexcl]
 
 /-! ### 4. Elementary resolvent estimates on `Re s = 1 + δ` -/
+
+private theorem re_one_div_ofReal (x : ℝ) : (1 / (x : ℂ)).re = 1 / x := by
+  rw [← Complex.ofReal_one, ← Complex.ofReal_div, Complex.ofReal_re]
 
 private theorem re_one_div_le_one {δ u : ℝ} (hδ : 0 < δ) :
     (1 / (((1 + δ : ℝ) : ℂ) + (u : ℂ) * I)).re ≤ 1 := by
@@ -738,13 +751,12 @@ private theorem re_one_div_le_one {δ u : ℝ} (hδ : 0 < δ) :
   rw [div_le_one (by nlinarith)]
   nlinarith
 
-private theorem re_pole_one_eq_of_zero {δ : ℝ} (hδ : 0 < δ) :
+private theorem re_pole_one_eq_of_zero {δ : ℝ} (_hδ : 0 < δ) :
     (1 / (((1 + δ : ℝ) : ℂ) + ((0 : ℝ) : ℂ) * I - 1)).re = 1 / δ := by
   have he : ((1 + δ : ℝ) : ℂ) + ((0 : ℝ) : ℂ) * I - 1 = (δ : ℂ) := by push_cast; ring
-  rw [he, one_div, Complex.inv_re, Complex.ofReal_re, Complex.normSq_ofReal]
-  field_simp
+  rw [he, re_one_div_ofReal]
 
-private theorem re_pole_one_le_inv_sq {δ u : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1) (hu : u ≠ 0) :
+private theorem re_pole_one_le_inv_sq {δ u : ℝ} (_hδ0 : 0 < δ) (_hδ1 : δ ≤ 1) (hu : u ≠ 0) :
     (1 / (((1 + δ : ℝ) : ℂ) + (u : ℂ) * I - 1)).re ≤ 1 / u ^ 2 := by
   have he : ((1 + δ : ℝ) : ℂ) + (u : ℂ) * I - 1 = (δ : ℂ) + (u : ℂ) * I := by push_cast; ring
   have hu2 : 0 < u ^ 2 := sq_pos_of_ne_zero hu
@@ -760,13 +772,9 @@ private theorem re_zero_resonant_ge {δ η : ℝ} (hδ : 0 < δ) {ρ : ℂ}
     1 / (δ + η) ≤
       (1 / (((1 + δ : ℝ) : ℂ) + ((ρ.im : ℝ) : ℂ) * I - ρ)).re := by
   have he : ((1 + δ : ℝ) : ℂ) + ((ρ.im : ℝ) : ℂ) * I - ρ = ((δ + (1 - ρ.re) : ℝ) : ℂ) := by
-    apply Complex.ext <;> simp <;> ring
-  have hpos : 0 < δ + (1 - ρ.re) := by linarith
-  rw [he, one_div, Complex.inv_re, Complex.ofReal_re, Complex.normSq_ofReal]
-  have hd : (δ + (1 - ρ.re)) / ((δ + (1 - ρ.re)) * (δ + (1 - ρ.re))) =
-      1 / (δ + (1 - ρ.re)) := by field_simp
-  rw [hd]
-  exact one_div_le_one_div_of_le hpos (by linarith)
+    (apply Complex.ext <;> simp); ring
+  rw [he, re_one_div_ofReal]
+  exact one_div_le_one_div_of_le (by linarith) (by linarith)
 
 private theorem re_conj_zero_resonant_ge {δ η : ℝ} (hδ : 0 < δ) {ρ : ℂ}
     (hρ1 : ρ.re ≤ 1) (hη : 1 - ρ.re ≤ η) :
@@ -774,47 +782,24 @@ private theorem re_conj_zero_resonant_ge {δ η : ℝ} (hδ : 0 < δ) {ρ : ℂ}
       (1 / (((1 + δ : ℝ) : ℂ) + ((-(ρ.im) : ℝ) : ℂ) * I - starRingEnd ℂ ρ)).re := by
   have he : ((1 + δ : ℝ) : ℂ) + ((-(ρ.im) : ℝ) : ℂ) * I - starRingEnd ℂ ρ =
       ((δ + (1 - ρ.re) : ℝ) : ℂ) := by
-    apply Complex.ext <;> simp <;> ring
-  have hpos : 0 < δ + (1 - ρ.re) := by linarith
-  rw [he, one_div, Complex.inv_re, Complex.ofReal_re, Complex.normSq_ofReal]
-  have hd : (δ + (1 - ρ.re)) / ((δ + (1 - ρ.re)) * (δ + (1 - ρ.re))) =
-      1 / (δ + (1 - ρ.re)) := by field_simp
-  rw [hd]
-  exact one_div_le_one_div_of_le hpos (by linarith)
+    (apply Complex.ext <;> simp); ring
+  rw [he, re_one_div_ofReal]
+  exact one_div_le_one_div_of_le (by linarith) (by linarith)
 
 /-! ### 5. Sharp collective half-pole interior forcing (`κ < 2 * ∑ ℓ, m ℓ`) -/
 
-/-- **Collective half-pole interior forcing law.** Let `(κ, d, F, Λ)` be any completed positive
-system and `ρ₁, …, ρ_r` be upper-half-plane zeros of `Λ` with pairwise distinct positive ordinates
-and positive integer multiplicities `1 ≤ m_ℓ ≤ ord_{ρ_ℓ}(Λ)`. Whenever the collective multiplicity
-beats half the pole order (`κ < 2 * ∑_ℓ m_ℓ`), multi-channel coupling over a slow-doubling Følner
-Finset in the height subgroup generated by `(Im ρ_1, …, Im ρ_r)` forces at least one zero strictly
-into the interior `Re ρ_ℓ ≤ 1 − w` (`w > 0`), with no linear-independence or separation hypothesis
-on the ordinates. -/
-theorem collective_half_pole_interior_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
-    (hS : CompletedPositiveSystem κ d F Λ) {r : ℕ} (ρ : Fin r → ℂ) (m : Fin r → ℕ)
-    (him : ∀ ℓ, 0 < (ρ ℓ).im)
-    (hdist : ∀ ℓ ℓ', ℓ ≠ ℓ' → (ρ ℓ).im ≠ (ρ ℓ').im)
-    (hm_pos : ∀ ℓ, 1 ≤ m ℓ)
-    (hm : ∀ ℓ, m ℓ ≤ (analyticOrderAt Λ (ρ ℓ)).toNat)
-    (hM : κ < 2 * ∑ ℓ, m ℓ) :
-    ∃ w : ℝ, 0 < w ∧ ∃ ℓ : Fin r, (ρ ℓ).re ≤ 1 - w := by
+/-- Slow-doubling Følner Finset in the nonnegative height semigroup generated by `γ : Fin r → ℝ`
+(`γ ℓ > 0`): since `|{0, …, k}^r| = (k + 1)^r` grows polynomially while `(1 + 1/(4M))^k` grows
+exponentially, some scale `k` has shift-overlap `≥ (1 − 1/(4M)) |A|` simultaneously for all `r`
+shifts `γ ℓ`. -/
+private theorem exists_folner_height_finset {r M : ℕ} (hM1 : 1 ≤ M) (γ : Fin r → ℝ)
+    (hγ : ∀ ℓ, 0 < γ ℓ) :
+    ∃ (A : Finset ℝ) (H : ℝ),
+      1 ≤ A.card ∧ 0 ≤ H ∧ (∀ a ∈ A, 0 ≤ a ∧ a ≤ H) ∧
+      ∀ ℓ : Fin r,
+        (1 - 1 / (4 * (M : ℝ))) * (A.card : ℝ) ≤
+          ((A.filter fun y => y + γ ℓ ∈ A).card : ℝ) := by
   classical
-  set M : ℕ := ∑ ℓ, m ℓ with hMdef
-  have hM1 : 1 ≤ M := by omega
-  have hr_pos : 0 < r := by
-    rcases Nat.eq_zero_or_pos r with rfl | hpos
-    · simp [M] at hM1
-    · exact hpos
-  haveI : Nonempty (Fin r) := Fin.pos_iff_nonempty.mp hr_pos
-  have hρ_strip : ∀ ℓ, 0 ≤ (ρ ℓ).re ∧ (ρ ℓ).re ≤ 1 := fun ℓ =>
-    hS.zero_re_mem_Icc (hS.eq_zero_of_one_le_order_toNat ((hm_pos ℓ).trans (hm ℓ)))
-  set η : ℝ := Finset.univ.sup' Finset.univ_nonempty (fun ℓ => 1 - (ρ ℓ).re) with hηdef
-  have hη_ge : ∀ ℓ, 1 - (ρ ℓ).re ≤ η := fun ℓ => Finset.le_sup' (fun i => 1 - (ρ i).re) (mem_univ ℓ)
-  obtain ⟨ℓ_max, _, hη_eq⟩ := Finset.exists_mem_eq_sup' Finset.univ_nonempty (fun ℓ => 1 - (ρ ℓ).re)
-  have hη_nonneg : 0 ≤ η := by linarith [(hρ_strip ℓ_max).2, hη_ge ℓ_max]
-  -- Build Følner Finsets `S k ⊂ ℝ` inside the subgroup generated by `γ ℓ = Im (ρ ℓ)`.
-  let γ : Fin r → ℝ := fun ℓ => (ρ ℓ).im
   let box : ℕ → Finset (Fin r → ℕ) := fun k => Fintype.piFinset fun _ => Finset.range (k + 1)
   let val : (Fin r → ℕ) → ℝ := fun v => ∑ ℓ, (v ℓ : ℝ) * γ ℓ
   let S : ℕ → Finset ℝ := fun k => (box k).image val
@@ -849,7 +834,7 @@ theorem collective_half_pole_interior_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
     · have hdiff : val (Function.update v ℓ (v ℓ + 1)) - val v = γ ℓ := by
         simp only [val, ← Finset.sum_sub_distrib, ← sub_mul]
         rw [Finset.sum_eq_single ℓ]
-        · simp [Function.update_self]; ring
+        · simp [Function.update_self]
         · intro i _ hne; simp [Function.update_of_ne hne]
         · intro hnot; exact absurd (Finset.mem_univ ℓ) hnot
       linarith
@@ -857,15 +842,14 @@ theorem collective_half_pole_interior_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
     intro k x hx
     obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hx
     rw [Fintype.mem_piFinset] at hv
-    refine ⟨Finset.sum_nonneg fun ℓ _ => mul_nonneg (Nat.cast_nonneg _) (him ℓ).le, ?_⟩
+    refine ⟨Finset.sum_nonneg fun ℓ _ => mul_nonneg (Nat.cast_nonneg _) (hγ ℓ).le, ?_⟩
     rw [Finset.mul_sum]
-    refine Finset.sum_le_sum fun ℓ _ => mul_le_mul_of_nonneg_right ?_ (him ℓ).le
+    refine Finset.sum_le_sum fun ℓ _ => mul_le_mul_of_nonneg_right ?_ (hγ ℓ).le
     have hlt := Finset.mem_range.mp (hv ℓ)
     exact_mod_cast Nat.lt_succ_iff.mp hlt
-  -- Find a slow-doubling scale `k` with `|S(k+1)| ≤ (1 + 1/(4M)) |S(k)|`.
   set q : ℝ := 1 + 1 / (4 * (M : ℝ))
   have hM_pos_r : (0 : ℝ) < M := by exact_mod_cast hM1
-  have hq1 : 1 < q := by simp only [q]; positivity
+  have hq1 : 1 < q := lt_add_of_pos_right 1 (by positivity)
   obtain ⟨k, hk_slow⟩ : ∃ k : ℕ, ((S (k + 1)).card : ℝ) ≤ q * ((S k).card : ℝ) := by
     by_contra hall
     push Not at hall
@@ -886,176 +870,258 @@ theorem collective_half_pole_interior_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
       rw [div_le_div_iff₀ (zero_lt_one.trans hq1) hqpos, one_mul, pow_succ]
       exact mul_le_mul_of_nonneg_right h1 (zero_le_one.trans hq1.le)
     linarith [hlt, hge]
-  -- Index `S k` by `e : Fin n ≃ S k` with uniform weights `c j = 1 / √n`.
-  set n : ℕ := (S k).card
-  have hn1 : 1 ≤ n := hS_pos k
+  refine ⟨S k, (k : ℝ) * ∑ ℓ, γ ℓ, hS_pos k,
+    mul_nonneg (Nat.cast_nonneg k) (Finset.sum_nonneg fun ℓ _ => (hγ ℓ).le),
+    fun x hx => hS_bounds k x hx, fun ℓ => ?_⟩
+  set Tℓ : Finset ℝ := (S k).filter fun y => y + γ ℓ ∈ S k
+  have hsub_compl : ((S k \ Tℓ).image fun y => y + γ ℓ) ⊆ S (k + 1) \ S k := by
+    intro z hz
+    obtain ⟨y, hy, rfl⟩ := Finset.mem_image.mp hz
+    rw [Finset.mem_sdiff, Finset.mem_filter] at hy
+    exact Finset.mem_sdiff.mpr ⟨hS_shift k ℓ y hy.1, fun hmem => hy.2 ⟨hy.1, hmem⟩⟩
+  have hinj : Set.InjOn (fun y : ℝ => y + γ ℓ) ↑(S k \ Tℓ) := fun y₁ _ y₂ _ h => by linarith
+  have hcard_le : (S k \ Tℓ).card ≤ (S (k + 1) \ S k).card := by
+    rw [← Finset.card_image_of_injOn hinj]
+    exact Finset.card_le_card hsub_compl
+  have hT_sub : Tℓ ⊆ S k := Finset.filter_subset _ _
+  have hs1 : (S k \ Tℓ).card = (S k).card - Tℓ.card := by
+    rw [Finset.card_sdiff, Finset.inter_eq_left.mpr hT_sub]
+  have hs2 : (S (k + 1) \ S k).card = (S (k + 1)).card - (S k).card := by
+    rw [Finset.card_sdiff, Finset.inter_eq_left.mpr (hS_mono k)]
+  have hle1 : Tℓ.card ≤ (S k).card := Finset.card_le_card hT_sub
+  have hle2 : (S k).card ≤ (S (k + 1)).card := Finset.card_le_card (hS_mono k)
+  have hnat : (S k).card - Tℓ.card ≤ (S (k + 1)).card - (S k).card := by rwa [← hs1, ← hs2]
+  have hreal : ((S k).card : ℝ) - (Tℓ.card : ℝ) ≤ ((S (k + 1)).card : ℝ) - ((S k).card : ℝ) := by
+    have : (S k).card + (S k).card ≤ (S (k + 1)).card + Tℓ.card := by omega
+    have hr : ((S k).card : ℝ) + ((S k).card : ℝ) ≤
+        ((S (k + 1)).card : ℝ) + (Tℓ.card : ℝ) := by exact_mod_cast this
+    linarith
+  dsimp only [q] at hk_slow
+  linarith [hk_slow, hreal]
+
+/-- Indexed channel configuration extracted from `exists_folner_height_finset`, packaging the
+injective height tuple `x : Fin n → ℝ` and the `+γ_ℓ` / `−γ_ℓ` resonant index-pair Finsets so no
+combinatorial definitions unfold during analytic Gram estimates. -/
+private theorem exists_folner_channel_config {r M : ℕ} (hM1 : 1 ≤ M) (γ : Fin r → ℝ)
+    (hγ : ∀ ℓ, 0 < γ ℓ) :
+    ∃ (n : ℕ) (x : Fin n → ℝ) (H : ℝ),
+      1 ≤ n ∧ 0 ≤ H ∧ Function.Injective x ∧ (∀ j, 0 ≤ x j ∧ x j ≤ H) ∧
+      ∀ ℓ : Fin r,
+        (∃ P : Finset (Fin n × Fin n),
+          (1 - 1 / (4 * (M : ℝ))) * (n : ℝ) ≤ (P.card : ℝ) ∧
+          ∀ p ∈ P, x p.1 - x p.2 = γ ℓ) ∧
+        (∃ Q : Finset (Fin n × Fin n),
+          (1 - 1 / (4 * (M : ℝ))) * (n : ℝ) ≤ (Q.card : ℝ) ∧
+          ∀ q ∈ Q, x q.1 - x q.2 = -γ ℓ) := by
+  classical
+  obtain ⟨A, H, hA1, hH0, hAb, hT⟩ := exists_folner_height_finset hM1 γ hγ
+  let e : Fin A.card ≃ A := A.equivFin.symm
+  refine ⟨A.card, fun j => (e j : ℝ), H, hA1, hH0, ?_, fun j => hAb (e j) (e j).2, fun ℓ => ?_⟩
+  · intro j₁ j₂ h
+    exact e.injective (Subtype.ext h)
+  · set Tℓ : Finset ℝ := A.filter fun y => y + γ ℓ ∈ A
+    have hcard_Tℓ : ((Finset.univ : Finset {y : ℝ // y ∈ Tℓ}).card : ℝ) = (Tℓ.card : ℝ) := by
+      rw [Finset.card_univ, Fintype.card_coe]
+    let embPlus : {y : ℝ // y ∈ Tℓ} ↪ Fin A.card × Fin A.card :=
+      ⟨fun y => (e.symm ⟨y.1 + γ ℓ, (Finset.mem_filter.mp y.2).2⟩,
+          e.symm ⟨y.1, (Finset.mem_filter.mp y.2).1⟩),
+        fun y₁ y₂ heq => by
+          have h2 := congrArg (fun p : Fin A.card × Fin A.card => (e p.2 : ℝ)) heq
+          simp only [Equiv.apply_symm_apply] at h2
+          exact Subtype.ext h2⟩
+    let embMinus : {y : ℝ // y ∈ Tℓ} ↪ Fin A.card × Fin A.card :=
+      ⟨fun y => (e.symm ⟨y.1, (Finset.mem_filter.mp y.2).1⟩,
+          e.symm ⟨y.1 + γ ℓ, (Finset.mem_filter.mp y.2).2⟩),
+        fun y₁ y₂ heq => by
+          have h1 := congrArg (fun p : Fin A.card × Fin A.card => (e p.1 : ℝ)) heq
+          simp only [Equiv.apply_symm_apply] at h1
+          exact Subtype.ext h1⟩
+    refine ⟨⟨Finset.univ.map embPlus, ?_, ?_⟩, ⟨Finset.univ.map embMinus, ?_, ?_⟩⟩
+    · rw [Finset.card_map, hcard_Tℓ]; exact hT ℓ
+    · intro p hp
+      obtain ⟨y, _, rfl⟩ := Finset.mem_map.mp hp
+      simp only [embPlus, Equiv.apply_symm_apply, Function.Embedding.coeFn_mk]
+      ring
+    · rw [Finset.card_map, hcard_Tℓ]; exact hT ℓ
+    · intro q hq
+      obtain ⟨y, _, rfl⟩ := Finset.mem_map.mp hq
+      simp only [embMinus, Equiv.apply_symm_apply, Function.Embedding.coeFn_mk]
+      ring
+
+private def uniformChannelWeight (n : ℕ) : Fin n → ℝ := fun _ => 1 / Real.sqrt n
+
+private def folnerOffDiag {n : ℕ} (x : Fin n → ℝ) : ℝ :=
+  ∑ j : Fin n, ∑ j' ∈ Finset.univ.erase j, 1 / (x j - x j') ^ 2
+
+private def folnerGrowth (κ d n : ℕ) (x : Fin n → ℝ) (H : ℝ) : ℝ :=
+  (κ : ℝ) * ((n : ℝ) + folnerOffDiag x / (n : ℝ)) +
+    (n : ℝ) * (d : ℝ) * (Real.log (3 + H) / 2 + 1 / 4)
+
+/-- **Collective half-pole interior forcing law.** Let `(κ, d, F, Λ)` be any completed positive
+system and `ρ₁, …, ρ_r` be upper-half-plane zeros of `Λ` with pairwise distinct positive ordinates
+and positive integer multiplicities `1 ≤ m_ℓ ≤ ord_{ρ_ℓ}(Λ)`. Whenever the collective multiplicity
+beats half the pole order (`κ < 2 * ∑_ℓ m_ℓ`), multi-channel coupling over a slow-doubling Følner
+Finset in the height subgroup generated by `(Im ρ_1, …, Im ρ_r)` forces at least one zero strictly
+into the interior `Re ρ_ℓ ≤ 1 − w` (`w > 0`), with no linear-independence or separation hypothesis
+on the ordinates. -/
+theorem collective_half_pole_interior_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
+    (hS : CompletedPositiveSystem κ d F Λ) {r : ℕ} (ρ : Fin r → ℂ) (m : Fin r → ℕ)
+    (him : ∀ ℓ, 0 < (ρ ℓ).im)
+    (hdist : ∀ ℓ ℓ', ℓ ≠ ℓ' → (ρ ℓ).im ≠ (ρ ℓ').im)
+    (hm_pos : ∀ ℓ, 1 ≤ m ℓ)
+    (hm : ∀ ℓ, m ℓ ≤ (analyticOrderAt Λ (ρ ℓ)).toNat)
+    (hM : κ < 2 * ∑ ℓ, m ℓ) :
+    ∃ w : ℝ, 0 < w ∧ ∃ ℓ : Fin r, (ρ ℓ).re ≤ 1 - w := by
+  classical
+  have hM1 : 1 ≤ ∑ ℓ, m ℓ := by omega
+  have hr_pos : 0 < r := by
+    rcases Nat.eq_zero_or_pos r with rfl | hpos
+    · simp at hM1
+    · exact hpos
+  haveI : Nonempty (Fin r) := Fin.pos_iff_nonempty.mp hr_pos
+  have hρ_strip : ∀ ℓ, 0 ≤ (ρ ℓ).re ∧ (ρ ℓ).re ≤ 1 := fun ℓ =>
+    hS.zero_re_mem_Icc (hS.eq_zero_of_one_le_order_toNat ((hm_pos ℓ).trans (hm ℓ)))
+  set η : ℝ := Finset.univ.sup' Finset.univ_nonempty (fun ℓ => 1 - (ρ ℓ).re)
+  have hη_ge : ∀ ℓ, 1 - (ρ ℓ).re ≤ η := fun ℓ =>
+    Finset.le_sup' (fun i => 1 - (ρ i).re) (mem_univ ℓ)
+  obtain ⟨ℓ_max, _, hη_eq⟩ := Finset.exists_mem_eq_sup' Finset.univ_nonempty (fun ℓ => 1 - (ρ ℓ).re)
+  have hη_nonneg : 0 ≤ η := by linarith [(hρ_strip ℓ_max).2, hη_ge ℓ_max]
+  obtain ⟨n, x, H, hn1, hH_nn, hx_inj, hx_bounds, hres⟩ :=
+    exists_folner_channel_config hM1 (fun ℓ => (ρ ℓ).im) him
   have hn_pos : (0 : ℝ) < n := by exact_mod_cast hn1
-  let e : Fin n ≃ S k := (S k).equivFin.symm
-  let x : Fin n → ℝ := fun j => (e j : ℝ)
-  let c : Fin n → ℝ := fun _ => 1 / Real.sqrt n
-  have hc_nn : ∀ j, 0 ≤ c j := fun _ => by positivity
-  have hcc : ∀ i j, c i * c j = 1 / (n : ℝ) := fun _ _ => by
-    simp only [c, one_div, ← mul_inv, Real.mul_self_sqrt hn_pos.le]
-  -- Overlap sets `T ℓ := {y ∈ S k | y + γ ℓ ∈ S k}` have cardinality `≥ (1 - 1/(4M)) n`.
-  let T : Fin r → Finset ℝ := fun ℓ => (S k).filter fun y => y + γ ℓ ∈ S k
-  have hT_card : ∀ ℓ, (1 - 1 / (4 * (M : ℝ))) * (n : ℝ) ≤ ((T ℓ).card : ℝ) := by
-    intro ℓ
-    have hsub_compl : ((S k \ T ℓ).image fun y => y + γ ℓ) ⊆ S (k + 1) \ S k := by
-      intro z hz
-      obtain ⟨y, hy, rfl⟩ := Finset.mem_image.mp hz
-      rw [Finset.mem_sdiff, Finset.mem_filter] at hy
-      exact Finset.mem_sdiff.mpr ⟨hS_shift k ℓ y hy.1, fun hmem => hy.2 ⟨hy.1, hmem⟩⟩
-    have hinj : Set.InjOn (fun y : ℝ => y + γ ℓ) ↑(S k \ T ℓ) := fun y₁ _ y₂ _ h => by linarith
-    have hcard_le : (S k \ T ℓ).card ≤ (S (k + 1) \ S k).card := by
-      rw [← Finset.card_image_of_injOn hinj]
-      exact Finset.card_le_card hsub_compl
-    have hT_sub : T ℓ ⊆ S k := Finset.filter_subset _ _
-    have hs1 : (S k \ T ℓ).card = n - (T ℓ).card := Finset.card_sdiff hT_sub
-    have hs2 : (S (k + 1) \ S k).card = (S (k + 1)).card - n := Finset.card_sdiff (hS_mono k)
-    have hle1 : (T ℓ).card ≤ n := Finset.card_le_card hT_sub
-    have hle2 : n ≤ (S (k + 1)).card := Finset.card_le_card (hS_mono k)
-    have hnat : n - (T ℓ).card ≤ (S (k + 1)).card - n := by rwa [← hs1, ← hs2]
-    have hreal : (n : ℝ) - ((T ℓ).card : ℝ) ≤ ((S (k + 1)).card : ℝ) - (n : ℝ) := by
-      have : n + n ≤ (S (k + 1)).card + (T ℓ).card := by omega
-      have hr : (n : ℝ) + (n : ℝ) ≤ ((S (k + 1)).card : ℝ) + ((T ℓ).card : ℝ) := by exact_mod_cast this
-      linarith
-    linarith [hk_slow, hreal]
-  -- Define the scale-`k` off-diagonal pole sum and archimedean height cap.
-  let offDiag : ℝ := ∑ j : Fin n, ∑ j' ∈ Finset.univ.erase j, 1 / (x j - x j') ^ 2
-  have hoff_nn : 0 ≤ offDiag := Finset.sum_nonneg fun j _ =>
-    Finset.sum_nonneg fun j' _ => by positivity
-  let H_k : ℝ := (k : ℝ) * ∑ ℓ, γ ℓ
-  have hHk_nn : 0 ≤ H_k := mul_nonneg (Nat.cast_nonneg k)
-    (Finset.sum_nonneg fun ℓ _ => (him ℓ).le)
-  let G_k : ℝ := (κ : ℝ) * ((n : ℝ) + offDiag / (n : ℝ)) +
-      (n : ℝ) * (d : ℝ) * (Real.log (3 + H_k) / 2 + 1 / 4)
-  -- Check positivity and `κ ≤ G_k` for `width_ge_of_pole_growth_bound`.
-  have hlog_nn : 0 ≤ Real.log (3 + H_k) := Real.log_nonneg (by linarith)
-  have hd_pos_r : (1 : ℝ) ≤ d := by exact_mod_cast hS.degree_pos
   have hn_ge1 : (1 : ℝ) ≤ n := by exact_mod_cast hn1
-  have hGk_pos : 0 < G_k := by
-    have h1 : (0 : ℝ) ≤ (κ : ℝ) * ((n : ℝ) + offDiag / (n : ℝ)) := by positivity
-    have h2 : (0 : ℝ) < (n : ℝ) * (d : ℝ) * (Real.log (3 + H_k) / 2 + 1 / 4) := by positivity
-    simp only [G_k]; linarith
-  have hAGk : (κ : ℝ) ≤ G_k := by
-    have h1 : (κ : ℝ) ≤ (κ : ℝ) * ((n : ℝ) + offDiag / (n : ℝ)) :=
+  have hinv_n_nn : (0 : ℝ) ≤ 1 / (n : ℝ) := one_div_nonneg.mpr hn_pos.le
+  have hc_nn : ∀ j, 0 ≤ uniformChannelWeight n j := fun _ =>
+    one_div_nonneg.mpr (Real.sqrt_nonneg _)
+  have hcc : ∀ i j, uniformChannelWeight n i * uniformChannelWeight n j = 1 / (n : ℝ) :=
+    fun _ _ => by
+      simp only [uniformChannelWeight, one_div, ← mul_inv, Real.mul_self_sqrt hn_pos.le]
+  have hoff_nn : 0 ≤ folnerOffDiag x := Finset.sum_nonneg fun j _ =>
+    Finset.sum_nonneg fun j' _ => by positivity
+  have hlog_nn : 0 ≤ Real.log (3 + H) := Real.log_nonneg (by linarith)
+  have hd_ge1 : (1 : ℝ) ≤ d := by exact_mod_cast hS.degree_pos
+  have hG_pos : 0 < folnerGrowth κ d n x H := by
+    unfold folnerGrowth
+    have h1 : (0 : ℝ) ≤ (κ : ℝ) * ((n : ℝ) + folnerOffDiag x / (n : ℝ)) :=
+      mul_nonneg (Nat.cast_nonneg κ) (add_nonneg hn_pos.le (div_nonneg hoff_nn hn_pos.le))
+    have h2 : (0 : ℝ) < (n : ℝ) * (d : ℝ) * (Real.log (3 + H) / 2 + 1 / 4) := by positivity
+    linarith
+  have hAG : (κ : ℝ) ≤ folnerGrowth κ d n x H := by
+    unfold folnerGrowth
+    have h1 : (κ : ℝ) ≤ (κ : ℝ) * ((n : ℝ) + folnerOffDiag x / (n : ℝ)) :=
       le_mul_of_one_le_right (Nat.cast_nonneg κ) (by linarith [div_nonneg hoff_nn hn_pos.le])
-    have h2 : (0 : ℝ) ≤ (n : ℝ) * (d : ℝ) * (Real.log (3 + H_k) / 2 + 1 / 4) := by positivity
-    simp only [G_k]; linarith
-  -- Apply `coupled_strip_pole_zero_forcing` for every `δ ∈ (0, 1]`.
+    have h2 : (0 : ℝ) ≤ (n : ℝ) * (d : ℝ) * (Real.log (3 + H) / 2 + 1 / 4) := by positivity
+    linarith
+  have hM_pos_r : (0 : ℝ) < ((∑ ℓ, m ℓ : ℕ) : ℝ) := by exact_mod_cast hM1
   have hmain_δ : ∀ δ : ℝ, 0 < δ → δ ≤ 1 →
-      (2 * (M : ℝ) - 1 / 2) / (δ + η) ≤ (κ : ℝ) / δ + G_k := by
+      (2 * (((∑ ℓ, m ℓ : ℕ) : ℝ)) - 1 / 2) / (δ + η) ≤
+        (κ : ℝ) / δ + folnerGrowth κ d n x H := by
     intro δ hδ0 hδ1
-    have hforce := coupled_strip_pole_zero_forcing hS ρ m him hdist hm x c hc_nn hδ0
-    -- Lower bound LHS of `hforce` using `T ℓ` resonant pairs.
+    have hforce := coupled_strip_pole_zero_forcing hS ρ m him hdist hm x
+      (uniformChannelWeight n) hc_nn hδ0
     have hlhs_ℓ : ∀ ℓ,
-        2 * (1 - 1 / (4 * (M : ℝ))) / (δ + η) ≤
-          ∑ j, ∑ j', c j * c j' *
+        2 * (1 - 1 / (4 * (((∑ i, m i : ℕ) : ℝ)))) / (δ + η) ≤
+          ∑ j, ∑ j', uniformChannelWeight n j * uniformChannelWeight n j' *
             ((1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - ρ ℓ)).re +
-              (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - starRingEnd ℂ (ρ ℓ))).re) := by
+              (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I -
+                starRingEnd ℂ (ρ ℓ))).re) := by
       intro ℓ
+      obtain ⟨⟨P, hP_card, hP_diff⟩, ⟨Q, hQ_card, hQ_diff⟩⟩ := hres ℓ
       have hterm_nn : ∀ j j' : Fin n,
           0 ≤ (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - ρ ℓ)).re ∧
-            0 ≤ (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - starRingEnd ℂ (ρ ℓ))).re := by
-        intro j j'
-        exact ⟨re_one_div_nonneg_of_re_le (by simp; linarith [(hρ_strip ℓ).2]),
+            0 ≤ (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I -
+              starRingEnd ℂ (ρ ℓ))).re := fun j j' =>
+        ⟨re_one_div_nonneg_of_re_le (by simp; linarith [(hρ_strip ℓ).2]),
           re_one_div_nonneg_of_re_le (by simp; linarith [(hρ_strip ℓ).2])⟩
-      have hsplit : (∑ j, ∑ j', c j * c j' *
+      have hsplit : (∑ j, ∑ j', uniformChannelWeight n j * uniformChannelWeight n j' *
             ((1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - ρ ℓ)).re +
-              (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - starRingEnd ℂ (ρ ℓ))).re)) =
+              (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I -
+                starRingEnd ℂ (ρ ℓ))).re)) =
           (1 / (n : ℝ)) * (∑ p ∈ (Finset.univ ×ˢ Finset.univ : Finset (Fin n × Fin n)),
             (1 / (((1 + δ : ℝ) : ℂ) + ((x p.1 - x p.2 : ℝ) : ℂ) * I - ρ ℓ)).re) +
           (1 / (n : ℝ)) * (∑ p ∈ (Finset.univ ×ˢ Finset.univ : Finset (Fin n × Fin n)),
-            (1 / (((1 + δ : ℝ) : ℂ) + ((x p.1 - x p.2 : ℝ) : ℂ) * I - starRingEnd ℂ (ρ ℓ))).re) := by
-        simp_rw [hcc, mul_add, Finset.sum_add_distrib, ← Finset.mul_sum, Finset.sum_product]
+            (1 / (((1 + δ : ℝ) : ℂ) + ((x p.1 - x p.2 : ℝ) : ℂ) * I -
+              starRingEnd ℂ (ρ ℓ))).re) := by
+        simp_rw [hcc, mul_add, Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.sum_product']
       rw [hsplit]
-      -- Embed `T ℓ` into `Fin n × Fin n` for `+γ ℓ` and `-γ ℓ`.
-      let embPlus : {y : ℝ // y ∈ T ℓ} ↪ Fin n × Fin n :=
-        ⟨fun y => (e.symm ⟨y.1 + γ ℓ, (Finset.mem_filter.mp y.2).2⟩,
-            e.symm ⟨y.1, (Finset.mem_filter.mp y.2).1⟩),
-          fun y₁ y₂ heq => by
-            have h2 := congrArg (fun p : Fin n × Fin n => (e p.2 : ℝ)) heq
-            simp only [Equiv.apply_symm_apply] at h2
-            exact Subtype.ext h2⟩
-      let embMinus : {y : ℝ // y ∈ T ℓ} ↪ Fin n × Fin n :=
-        ⟨fun y => (e.symm ⟨y.1, (Finset.mem_filter.mp y.2).1⟩,
-            e.symm ⟨y.1 + γ ℓ, (Finset.mem_filter.mp y.2).2⟩),
-          fun y₁ y₂ heq => by
-            have h1 := congrArg (fun p : Fin n × Fin n => (e p.1 : ℝ)) heq
-            simp only [Equiv.apply_symm_apply] at h1
-            exact Subtype.ext h1⟩
-      have hsub1 : (Finset.univ.map embPlus).card / (δ + η) ≤
+      have hsub1 : (P.card : ℝ) / (δ + η) ≤
           ∑ p ∈ (Finset.univ ×ˢ Finset.univ : Finset (Fin n × Fin n)),
             (1 / (((1 + δ : ℝ) : ℂ) + ((x p.1 - x p.2 : ℝ) : ℂ) * I - ρ ℓ)).re := by
-        calc ((Finset.univ.map embPlus).card : ℝ) / (δ + η)
-            = ∑ _p ∈ Finset.univ.map embPlus, 1 / (δ + η) := by
-                rw [Finset.sum_const, nsmul_eq_mul, mul_one_div]
-          _ ≤ ∑ p ∈ Finset.univ.map embPlus,
+        calc (P.card : ℝ) / (δ + η)
+            = ∑ _p ∈ P, 1 / (δ + η) := by rw [Finset.sum_const, nsmul_eq_mul, mul_one_div]
+          _ ≤ ∑ p ∈ P,
                 (1 / (((1 + δ : ℝ) : ℂ) + ((x p.1 - x p.2 : ℝ) : ℂ) * I - ρ ℓ)).re := by
               refine Finset.sum_le_sum fun p hp => ?_
-              obtain ⟨y, _, rfl⟩ := Finset.mem_map.mp hp
-              have hdiff : x (embPlus y).1 - x (embPlus y).2 = (ρ ℓ).im := by
-                simp only [x, embPlus, Equiv.apply_symm_apply, Function.Embedding.coeFn_mk]
-                ring
-              rw [hdiff]
+              rw [hP_diff p hp]
               exact re_zero_resonant_ge hδ0 (hρ_strip ℓ).2 (hη_ge ℓ)
           _ ≤ ∑ p ∈ (Finset.univ ×ˢ Finset.univ : Finset (Fin n × Fin n)),
                 (1 / (((1 + δ : ℝ) : ℂ) + ((x p.1 - x p.2 : ℝ) : ℂ) * I - ρ ℓ)).re :=
               Finset.sum_le_sum_of_subset_of_nonneg (fun p _ => by simp)
                 fun p _ _ => (hterm_nn p.1 p.2).1
-      have hsub2 : (Finset.univ.map embMinus).card / (δ + η) ≤
+      have hsub2 : (Q.card : ℝ) / (δ + η) ≤
           ∑ p ∈ (Finset.univ ×ˢ Finset.univ : Finset (Fin n × Fin n)),
-            (1 / (((1 + δ : ℝ) : ℂ) + ((x p.1 - x p.2 : ℝ) : ℂ) * I - starRingEnd ℂ (ρ ℓ))).re := by
-        calc ((Finset.univ.map embMinus).card : ℝ) / (δ + η)
-            = ∑ _p ∈ Finset.univ.map embMinus, 1 / (δ + η) := by
-                rw [Finset.sum_const, nsmul_eq_mul, mul_one_div]
-          _ ≤ ∑ p ∈ Finset.univ.map embMinus,
-                (1 / (((1 + δ : ℝ) : ℂ) + ((x p.1 - x p.2 : ℝ) : ℂ) * I - starRingEnd ℂ (ρ ℓ))).re := by
-              refine Finset.sum_le_sum fun p hp => ?_
-              obtain ⟨y, _, rfl⟩ := Finset.mem_map.mp hp
-              have hdiff : x (embMinus y).1 - x (embMinus y).2 = -((ρ ℓ).im) := by
-                simp only [x, embMinus, Equiv.apply_symm_apply, Function.Embedding.coeFn_mk]
-                ring
-              rw [hdiff]
+            (1 / (((1 + δ : ℝ) : ℂ) + ((x p.1 - x p.2 : ℝ) : ℂ) * I -
+              starRingEnd ℂ (ρ ℓ))).re := by
+        calc (Q.card : ℝ) / (δ + η)
+            = ∑ _q ∈ Q, 1 / (δ + η) := by rw [Finset.sum_const, nsmul_eq_mul, mul_one_div]
+          _ ≤ ∑ q ∈ Q,
+                (1 / (((1 + δ : ℝ) : ℂ) + ((x q.1 - x q.2 : ℝ) : ℂ) * I -
+                  starRingEnd ℂ (ρ ℓ))).re := by
+              refine Finset.sum_le_sum fun q hq => ?_
+              rw [hQ_diff q hq]
               exact re_conj_zero_resonant_ge hδ0 (hρ_strip ℓ).2 (hη_ge ℓ)
           _ ≤ ∑ p ∈ (Finset.univ ×ˢ Finset.univ : Finset (Fin n × Fin n)),
-                (1 / (((1 + δ : ℝ) : ℂ) + ((x p.1 - x p.2 : ℝ) : ℂ) * I - starRingEnd ℂ (ρ ℓ))).re :=
+                (1 / (((1 + δ : ℝ) : ℂ) + ((x p.1 - x p.2 : ℝ) : ℂ) * I -
+                  starRingEnd ℂ (ρ ℓ))).re :=
               Finset.sum_le_sum_of_subset_of_nonneg (fun p _ => by simp)
                 fun p _ _ => (hterm_nn p.1 p.2).2
-      have hcard_plus : ((Finset.univ.map embPlus).card : ℝ) = ((T ℓ).card : ℝ) := by
-        simp [Finset.card_map, Fintype.card_coe]
-      have hcard_minus : ((Finset.univ.map embMinus).card : ℝ) = ((T ℓ).card : ℝ) := by
-        simp [Finset.card_map, Fintype.card_coe]
-      rw [hcard_plus] at hsub1
-      rw [hcard_minus] at hsub2
-      have hT_div : (1 - 1 / (4 * (M : ℝ))) / (δ + η) ≤ (1 / (n : ℝ)) * (((T ℓ).card : ℝ) / (δ + η)) := by
-        have h1 : (1 - 1 / (4 * (M : ℝ))) ≤ (1 / (n : ℝ)) * ((T ℓ).card : ℝ) := by
-          rw [one_div_mul_eq_div, le_div_iff₀ hn_pos]
-          exact hT_card ℓ
-        have h2 := div_le_div_of_nonneg_right h1 (by positivity : (0 : ℝ) ≤ δ + η)
+      have hP_div : (1 - 1 / (4 * (((∑ i, m i : ℕ) : ℝ)))) / (δ + η) ≤
+          (1 / (n : ℝ)) * ((P.card : ℝ) / (δ + η)) := by
+        have h1 : 1 - 1 / (4 * (((∑ i, m i : ℕ) : ℝ))) ≤ (1 / (n : ℝ)) * (P.card : ℝ) := by
+          rw [one_div_mul_eq_div, le_div_iff₀ hn_pos]; exact hP_card
+        have h2 := div_le_div_of_nonneg_right h1 (by linarith : (0 : ℝ) ≤ δ + η)
         rwa [mul_div_assoc] at h2
-      have hm1 := mul_le_mul_of_nonneg_left hsub1 (by positivity : (0 : ℝ) ≤ 1 / (n : ℝ))
-      have hm2 := mul_le_mul_of_nonneg_left hsub2 (by positivity : (0 : ℝ) ≤ 1 / (n : ℝ))
+      have hQ_div : (1 - 1 / (4 * (((∑ i, m i : ℕ) : ℝ)))) / (δ + η) ≤
+          (1 / (n : ℝ)) * ((Q.card : ℝ) / (δ + η)) := by
+        have h1 : 1 - 1 / (4 * (((∑ i, m i : ℕ) : ℝ))) ≤ (1 / (n : ℝ)) * (Q.card : ℝ) := by
+          rw [one_div_mul_eq_div, le_div_iff₀ hn_pos]; exact hQ_card
+        have h2 := div_le_div_of_nonneg_right h1 (by linarith : (0 : ℝ) ≤ δ + η)
+        rwa [mul_div_assoc] at h2
+      have hm1 := mul_le_mul_of_nonneg_left hsub1 hinv_n_nn
+      have hm2 := mul_le_mul_of_nonneg_left hsub2 hinv_n_nn
+      have htwo : 2 * (1 - 1 / (4 * (((∑ i, m i : ℕ) : ℝ)))) / (δ + η) =
+          (1 - 1 / (4 * (((∑ i, m i : ℕ) : ℝ)))) / (δ + η) +
+            (1 - 1 / (4 * (((∑ i, m i : ℕ) : ℝ)))) / (δ + η) := by ring
       linarith
-    have hlhs : (2 * (M : ℝ) - 1 / 2) / (δ + η) ≤
-        ∑ ℓ, (m ℓ : ℝ) * ∑ j, ∑ j', c j * c j' *
+    have hlhs : (2 * (((∑ ℓ, m ℓ : ℕ) : ℝ)) - 1 / 2) / (δ + η) ≤
+        ∑ ℓ, (m ℓ : ℝ) * ∑ j, ∑ j', uniformChannelWeight n j * uniformChannelWeight n j' *
           ((1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - ρ ℓ)).re +
-            (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - starRingEnd ℂ (ρ ℓ))).re) := by
-      have hsum_m : (∑ ℓ, (m ℓ : ℝ)) = (M : ℝ) := by simp [M]
-      have halg : (M : ℝ) * (2 * (1 - 1 / (4 * (M : ℝ))) / (δ + η)) =
-          (2 * (M : ℝ) - 1 / 2) / (δ + η) := by
-        have hMne : (M : ℝ) ≠ 0 := hM_pos_r.ne'
+            (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I -
+              starRingEnd ℂ (ρ ℓ))).re) := by
+      have hsum_m : (∑ ℓ, (m ℓ : ℝ)) = (((∑ ℓ, m ℓ : ℕ) : ℝ)) := by push_cast; rfl
+      have halg : (((∑ ℓ, m ℓ : ℕ) : ℝ)) *
+          (2 * (1 - 1 / (4 * (((∑ i, m i : ℕ) : ℝ)))) / (δ + η)) =
+          (2 * (((∑ ℓ, m ℓ : ℕ) : ℝ)) - 1 / 2) / (δ + η) := by
+        have hMne : (((∑ i, m i : ℕ) : ℝ)) ≠ 0 := hM_pos_r.ne'
         field_simp; ring
-      rw [← halg, ← hsum_m, Finset.sum_mul]
-      exact Finset.sum_le_sum fun ℓ _ => mul_le_mul_of_nonneg_left (hlhs_ℓ ℓ) (Nat.cast_nonneg _)
-    -- Upper bound RHS pole & archimedean terms of `hforce`.
+      calc (2 * (((∑ ℓ, m ℓ : ℕ) : ℝ)) - 1 / 2) / (δ + η)
+          = (∑ ℓ, (m ℓ : ℝ)) *
+              (2 * (1 - 1 / (4 * (((∑ i, m i : ℕ) : ℝ)))) / (δ + η)) := by
+              rw [hsum_m]; exact halg.symm
+        _ = ∑ ℓ, (m ℓ : ℝ) *
+              (2 * (1 - 1 / (4 * (((∑ i, m i : ℕ) : ℝ)))) / (δ + η)) := Finset.sum_mul _ _ _
+        _ ≤ ∑ ℓ, (m ℓ : ℝ) * ∑ j, ∑ j', uniformChannelWeight n j * uniformChannelWeight n j' *
+              ((1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - ρ ℓ)).re +
+                (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I -
+                  starRingEnd ℂ (ρ ℓ))).re) :=
+            Finset.sum_le_sum fun ℓ _ => mul_le_mul_of_nonneg_left (hlhs_ℓ ℓ) (Nat.cast_nonneg _)
     have hpole_bound :
-        ∑ j, ∑ j', c j * c j' *
+        ∑ j, ∑ j', uniformChannelWeight n j * uniformChannelWeight n j' *
           (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I) +
             1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - 1)).re ≤
-        1 / δ + (n : ℝ) + offDiag / (n : ℝ) := by
+        1 / δ + (n : ℝ) + folnerOffDiag x / (n : ℝ) := by
       have hsplit_pole :
-          (∑ j, ∑ j', c j * c j' *
+          (∑ j, ∑ j', uniformChannelWeight n j * uniformChannelWeight n j' *
             (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I) +
               1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - 1)).re) =
           (1 / (n : ℝ)) * (∑ j : Fin n, ∑ j' : Fin n,
@@ -1064,10 +1130,23 @@ theorem collective_half_pole_interior_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
             ((1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j : ℝ) : ℂ) * I - 1)).re +
               ∑ j' ∈ Finset.univ.erase j,
                 (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - 1)).re)) := by
-        simp_rw [hcc, Complex.add_re, mul_add, Finset.sum_add_distrib, ← Finset.mul_sum]
-        congr 2
-        refine Finset.sum_congr rfl fun j _ => ?_
-        rw [← Finset.add_sum_erase _ _ (Finset.mem_univ j)]
+        calc ∑ j, ∑ j', uniformChannelWeight n j * uniformChannelWeight n j' *
+              (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I) +
+                1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - 1)).re
+            = (1 / (n : ℝ)) * (∑ j : Fin n, ∑ j' : Fin n,
+                (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I)).re) +
+              (1 / (n : ℝ)) * (∑ j : Fin n, ∑ j' : Fin n,
+                (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - 1)).re) := by
+              simp_rw [hcc, Complex.add_re, mul_add, Finset.sum_add_distrib, ← Finset.mul_sum]
+          _ = (1 / (n : ℝ)) * (∑ j : Fin n, ∑ j' : Fin n,
+                (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I)).re) +
+              (1 / (n : ℝ)) * (∑ j : Fin n,
+                ((1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j : ℝ) : ℂ) * I - 1)).re +
+                  ∑ j' ∈ Finset.univ.erase j,
+                    (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - 1)).re)) := by
+              congr 2
+              refine Finset.sum_congr rfl fun j _ => ?_
+              rw [← Finset.add_sum_erase _ _ (Finset.mem_univ j)]
       rw [hsplit_pole]
       have h0_pole : (1 / (n : ℝ)) * (∑ j : Fin n, ∑ j' : Fin n,
           (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I)).re) ≤ (n : ℝ) := by
@@ -1078,14 +1157,14 @@ theorem collective_half_pole_interior_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
               ≤ ∑ _j : Fin n, ∑ _j' : Fin n, (1 : ℝ) :=
                 Finset.sum_le_sum fun j _ => Finset.sum_le_sum fun j' _ => re_one_div_le_one hδ0
             _ = (n : ℝ) * (n : ℝ) := by simp
-        have := mul_le_mul_of_nonneg_left hb (by positivity : (0 : ℝ) ≤ 1 / (n : ℝ))
+        have := mul_le_mul_of_nonneg_left hb hinv_n_nn
         have he : (1 / (n : ℝ)) * ((n : ℝ) * (n : ℝ)) = (n : ℝ) := by field_simp
         linarith
       have h1_pole : (1 / (n : ℝ)) * (∑ j : Fin n,
             ((1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j : ℝ) : ℂ) * I - 1)).re +
               ∑ j' ∈ Finset.univ.erase j,
                 (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - 1)).re)) ≤
-          1 / δ + offDiag / (n : ℝ) := by
+          1 / δ + folnerOffDiag x / (n : ℝ) := by
         have hdiag : ∀ j : Fin n,
             (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j : ℝ) : ℂ) * I - 1)).re = 1 / δ := by
           intro j; rw [sub_self]; exact re_pole_one_eq_of_zero hδ0
@@ -1094,68 +1173,67 @@ theorem collective_half_pole_interior_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
               1 / (x j - x j') ^ 2 := by
           intro j j' hj'
           have hne_idx : j' ≠ j := (Finset.mem_erase.mp hj').1
-          have hne_x : x j - x j' ≠ 0 := sub_ne_zero.mpr fun h =>
-            hne_idx.symm (e.injective (Subtype.ext h))
+          have hne_x : x j - x j' ≠ 0 := sub_ne_zero.mpr fun h => hne_idx.symm (hx_inj h)
           exact re_pole_one_le_inv_sq hδ0 hδ1 hne_x
         have hsum_le : ∑ j : Fin n,
             ((1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j : ℝ) : ℂ) * I - 1)).re +
               ∑ j' ∈ Finset.univ.erase j,
                 (1 / (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I - 1)).re) ≤
-            (n : ℝ) * (1 / δ) + offDiag := by
+            (n : ℝ) * (1 / δ) + folnerOffDiag x := by
           rw [Finset.sum_add_distrib]
           refine add_le_add ?_ (Finset.sum_le_sum fun j _ => Finset.sum_le_sum (hoff j))
           simp_rw [hdiag]
           simp
-        have hm' := mul_le_mul_of_nonneg_left hsum_le (by positivity : (0 : ℝ) ≤ 1 / (n : ℝ))
-        have he' : (1 / (n : ℝ)) * ((n : ℝ) * (1 / δ) + offDiag) = 1 / δ + offDiag / (n : ℝ) := by
-          field_simp
+        have hm' := mul_le_mul_of_nonneg_left hsum_le hinv_n_nn
+        have he' : (1 / (n : ℝ)) * ((n : ℝ) * (1 / δ) + folnerOffDiag x) =
+            1 / δ + folnerOffDiag x / (n : ℝ) := by field_simp
         linarith
       linarith
     have harch_bound :
-        ∑ j, ∑ j', c j * c j' *
+        ∑ j, ∑ j', uniformChannelWeight n j * uniformChannelWeight n j' *
           (logDeriv Complex.Gammaℝ (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I)).re ≤
-        (n : ℝ) * (Real.log (3 + H_k) / 2 + 1 / 4) := by
+        (n : ℝ) * (Real.log (3 + H) / 2 + 1 / 4) := by
       have hpt_arch : ∀ j j' : Fin n,
           (logDeriv Complex.Gammaℝ (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I)).re ≤
-            Real.log (3 + H_k) / 2 + 1 / 4 := by
+            Real.log (3 + H) / 2 + 1 / 4 := by
         intro j j'
-        have hb1 := hS_bounds k (x j) (e j).2
-        have hb2 := hS_bounds k (x j') (e j').2
-        have habs : |x j - x j'| ≤ H_k := abs_le.mpr ⟨by linarith, by linarith⟩
-        have hlog_le : Real.log (3 + |x j - x j'|) ≤ Real.log (3 + H_k) :=
+        have hb1 := hx_bounds j
+        have hb2 := hx_bounds j'
+        have habs : |x j - x j'| ≤ H := abs_le.mpr ⟨by linarith, by linarith⟩
+        have hlog_le : Real.log (3 + |x j - x j'|) ≤ Real.log (3 + H) :=
           Real.log_le_log (by positivity) (by linarith)
         have hg := re_logDeriv_Gammaℝ_le_all_heights (σ := 1 + δ) (t := x j - x j')
           (by linarith) (by linarith)
         linarith
-      calc ∑ j, ∑ j', c j * c j' *
+      calc ∑ j, ∑ j', uniformChannelWeight n j * uniformChannelWeight n j' *
             (logDeriv Complex.Gammaℝ (((1 + δ : ℝ) : ℂ) + ((x j - x j' : ℝ) : ℂ) * I)).re
           ≤ ∑ _j : Fin n, ∑ _j' : Fin n,
-              (1 / (n : ℝ)) * (Real.log (3 + H_k) / 2 + 1 / 4) := by
+              (1 / (n : ℝ)) * (Real.log (3 + H) / 2 + 1 / 4) := by
             refine Finset.sum_le_sum fun j _ => Finset.sum_le_sum fun j' _ => ?_
             rw [hcc]
-            exact mul_le_mul_of_nonneg_left (hpt_arch j j') (by positivity)
-        _ = (n : ℝ) * (Real.log (3 + H_k) / 2 + 1 / 4) := by
+            exact mul_le_mul_of_nonneg_left (hpt_arch j j') hinv_n_nn
+        _ = (n : ℝ) * (Real.log (3 + H) / 2 + 1 / 4) := by
             simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
             field_simp
     have hkp := mul_le_mul_of_nonneg_left hpole_bound (Nat.cast_nonneg κ)
     have hda := mul_le_mul_of_nonneg_left harch_bound (Nat.cast_nonneg d)
-    have hGk_expand : (κ : ℝ) * (1 / δ + (n : ℝ) + offDiag / (n : ℝ)) +
-        (d : ℝ) * ((n : ℝ) * (Real.log (3 + H_k) / 2 + 1 / 4)) =
-        (κ : ℝ) / δ + G_k := by simp only [G_k]; ring
-    linarith [hlhs, hforce, hkp, hda, hGk_expand]
-  -- Extract strict interior width via `width_ge_of_pole_growth_bound`.
-  have hAB : (κ : ℝ) < 2 * (M : ℝ) - 1 / 2 := by
-    have hnat : κ + 1 ≤ 2 * M := by omega
-    have hr : (κ : ℝ) + 1 ≤ 2 * (M : ℝ) := by exact_mod_cast hnat
+    have hG_expand : (κ : ℝ) * (1 / δ + (n : ℝ) + folnerOffDiag x / (n : ℝ)) +
+        (d : ℝ) * ((n : ℝ) * (Real.log (3 + H) / 2 + 1 / 4)) =
+        (κ : ℝ) / δ + folnerGrowth κ d n x H := by
+      unfold folnerGrowth
+      ring
+    linarith [hlhs, hforce, hkp, hda, hG_expand]
+  have hAB : (κ : ℝ) < 2 * (((∑ ℓ, m ℓ : ℕ) : ℝ)) - 1 / 2 := by
+    have hnat : κ + 1 ≤ 2 * ∑ ℓ, m ℓ := by omega
+    have hr : (κ : ℝ) + 1 ≤ 2 * (((∑ ℓ, m ℓ : ℕ) : ℝ)) := by exact_mod_cast hnat
     linarith
-  have hw_le := width_ge_of_pole_growth_bound (Nat.cast_nonneg κ) hAB hGk_pos hAGk hη_nonneg hmain_δ
-  set w : ℝ := min 1 ((Real.sqrt (2 * (M : ℝ) - 1 / 2) - Real.sqrt κ) ^ 2 / G_k)
-  have hw_pos : 0 < w := by
-    have hs_lt : Real.sqrt κ < Real.sqrt (2 * (M : ℝ) - 1 / 2) :=
-      Real.sqrt_lt_sqrt (Nat.cast_nonneg κ) hAB
-    have hsub_pos : 0 < Real.sqrt (2 * (M : ℝ) - 1 / 2) - Real.sqrt κ := sub_pos.mpr hs_lt
-    exact lt_min zero_lt_one (div_pos (sq_pos_of_pos hsub_pos) hGk_pos)
-  exact ⟨w, hw_pos, ℓ_max, by linarith [hw_le, hη_eq]⟩
+  have hw_le := width_ge_of_pole_growth_bound (Nat.cast_nonneg κ) hAB hG_pos hAG hη_nonneg hmain_δ
+  have hs_lt : Real.sqrt κ < Real.sqrt (2 * (((∑ ℓ, m ℓ : ℕ) : ℝ)) - 1 / 2) :=
+    Real.sqrt_lt_sqrt (Nat.cast_nonneg κ) hAB
+  have hw_pos : 0 < min 1 ((Real.sqrt (2 * (((∑ ℓ, m ℓ : ℕ) : ℝ)) - 1 / 2) - Real.sqrt κ) ^ 2 /
+      folnerGrowth κ d n x H) :=
+    lt_min zero_lt_one (div_pos (sq_pos_of_pos (sub_pos.mpr hs_lt)) hG_pos)
+  exact ⟨_, hw_pos, ℓ_max, by linarith [hw_le, hη_eq]⟩
 
 /-! ### 6. Uniform `(r + 1)`-channel star collar forcing and `κ²` collar sparsity -/
 
@@ -1238,7 +1316,7 @@ theorem collective_star_collar_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
       intro p hp p' hp' hne
       obtain ⟨ℓ, _, rfl⟩ := Finset.mem_image.mp hp
       obtain ⟨ℓ', _, rfl⟩ := Finset.mem_image.mp hp'
-      exact hsep ℓ ℓ' (fun h => hne (congrArg _ h))
+      exact hsep ℓ ℓ' (fun h => hne (by rw [h]))
     have hP_far : ∀ p ∈ P, Δ ≤ ‖(0 : ℂ) - p‖ := by
       intro p hp
       obtain ⟨ℓ, _, rfl⟩ := Finset.mem_image.mp hp
@@ -1258,7 +1336,7 @@ theorem collective_star_collar_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
       intro p hp p' hp' hne
       obtain ⟨k, _, rfl⟩ := Finset.mem_image.mp hp
       obtain ⟨k', _, rfl⟩ := Finset.mem_image.mp hp'
-      exact hsep k k' (fun h => hne (congrArg _ h))
+      exact hsep k k' (fun h => hne (by rw [h]))
     have hPj_far : ∀ p ∈ Pj, Δ ≤ ‖((ρ j).im : ℂ) - p‖ := by
       intro p hp
       obtain ⟨k, hk, rfl⟩ := Finset.mem_image.mp hp
@@ -1292,7 +1370,7 @@ theorem collective_star_collar_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
         refine mul_nonneg (mul_nonneg (hc_nn j) (hc_nn k)) (add_nonneg ?_ ?_)
         · exact re_one_div_nonneg_of_re_le (by simp; linarith [(hρ_strip ℓ).2])
         · exact re_one_div_nonneg_of_re_le (by simp; linarith [(hρ_strip ℓ).2])
-      rw [Finset.sum_product']
+      rw [← Finset.sum_product']
       have hne_pair : (ℓ.succ, (0 : Fin (r + 1))) ≠ (0, ℓ.succ) := fun h =>
         Fin.succ_ne_zero ℓ (Prod.mk.inj h).1
       have hsub := Finset.sum_le_sum_of_subset_of_nonneg
@@ -1312,7 +1390,7 @@ theorem collective_star_collar_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
         have hr2 : 0 ≤ (1 / (((1 + δ : ℝ) : ℂ) + (((ρ ℓ).im : ℝ) : ℂ) * I -
             starRingEnd ℂ (ρ ℓ))).re :=
           re_one_div_nonneg_of_re_le (by simp; linarith [(hρ_strip ℓ).2])
-        have := mul_le_mul_of_nonneg_left (show 1 / (δ + η) ≤ _ by linarith) hsqr_pos.le
+        have := mul_le_mul_of_nonneg_left (le_add_of_le_of_nonneg hr1 hr2) hsqr_pos.le
         rwa [mul_one_div] at this
       have ht2 : Real.sqrt r / (δ + η) ≤
           c 0 * c ℓ.succ *
@@ -1325,7 +1403,7 @@ theorem collective_star_collar_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
         have hr1 : 0 ≤ (1 / (((1 + δ : ℝ) : ℂ) + ((-((ρ ℓ).im) : ℝ) : ℂ) * I - ρ ℓ)).re :=
           re_one_div_nonneg_of_re_le (by simp; linarith [(hρ_strip ℓ).2])
         have hr2 := re_conj_zero_resonant_ge hδ0 (hρ_strip ℓ).2 (hη_ge ℓ)
-        have := mul_le_mul_of_nonneg_left (show 1 / (δ + η) ≤ _ by linarith) hsqr_pos.le
+        have := mul_le_mul_of_nonneg_left (le_add_of_nonneg_of_le hr1 hr2) hsqr_pos.le
         rwa [mul_one_div] at this
       have he : 2 * Real.sqrt r / (δ + η) = Real.sqrt r / (δ + η) + Real.sqrt r / (δ + η) := by
         ring
@@ -1414,8 +1492,7 @@ theorem collective_star_collar_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
               ≤ ∑ j : Fin r, Real.sqrt r * (1 / ((ρ j).im) ^ 2) := by
                 refine Finset.sum_le_sum fun j _ => ?_
                 simp only [P1, c, x, Fin.cases_zero, Fin.cases_succ, one_mul, sub_zero]
-                rw [mul_comm (Real.sqrt r)]
-                exact mul_le_mul_of_nonneg_right
+                exact mul_le_mul_of_nonneg_left
                   (re_pole_one_le_inv_sq hδ0 hδ1 (him j).ne') hsqr_pos.le
             _ = Real.sqrt r * ∑ j : Fin r, 1 / ((ρ j).im) ^ 2 := (Finset.mul_sum _ _ _).symm
             _ ≤ (r : ℝ) * (packConstant / Δ ^ 2) :=
@@ -1428,7 +1505,7 @@ theorem collective_star_collar_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
             intro j
             rw [← Finset.add_sum_erase _ _ (Finset.mem_univ j)]
             have hdiag : P1 j.succ j.succ = 1 / δ := by
-              simp only [P1, c, x, Fin.cases_succ, mul_one, sub_self,
+              simp only [P1, c, x, Fin.cases_succ, mul_one, one_mul, sub_self,
                 re_pole_one_eq_of_zero hδ0]
             have hoff : ∑ k ∈ Finset.univ.erase j, P1 j.succ k.succ ≤ packConstant / Δ ^ 2 := by
               calc ∑ k ∈ Finset.univ.erase j, P1 j.succ k.succ
@@ -1447,6 +1524,7 @@ theorem collective_star_collar_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
                 simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
                 ring
         linarith
+      have h2r : (r : ℝ) / δ + (r : ℝ) / δ = 2 * (r : ℝ) / δ := by ring
       linarith
     -- Assemble and divide by `2 * r > 0`.
     have hpole_tot : ∑ j, ∑ k, c j * c k *
@@ -1468,9 +1546,13 @@ theorem collective_star_collar_forcing {κ d : ℕ} {F Λ : ℂ → ℂ}
         2 * (r : ℝ) * ((κ : ℝ) / δ + G) := by
       have hlhs_eq : 2 * (r : ℝ) * ((M_r / Real.sqrt r) / (δ + η)) =
           2 * Real.sqrt r * M_r / (δ + η) := by
-        have hsq : (r : ℝ) = Real.sqrt r * Real.sqrt r := (Real.mul_self_sqrt hr_pos.le).symm
-        conv_lhs => rw [hsq]
-        field_simp
+        have h1 : (r : ℝ) * (M_r / Real.sqrt r) = Real.sqrt r * M_r := by
+          calc (r : ℝ) * (M_r / Real.sqrt r)
+              = M_r / Real.sqrt r * (Real.sqrt r * Real.sqrt r) := by
+                  rw [Real.mul_self_sqrt hr_pos.le, mul_comm]
+            _ = M_r * Real.sqrt r := by rw [← mul_assoc, div_mul_cancel₀ _ hsqr_pos.ne']
+            _ = Real.sqrt r * M_r := mul_comm _ _
+        rw [← mul_div_assoc, mul_assoc 2, h1, ← mul_assoc]
       have hrhs_eq : 2 * (r : ℝ) * ((κ : ℝ) / δ + G) =
           (κ : ℝ) * (2 * (r : ℝ) / δ + 3 * (r : ℝ) * (packConstant / Δ ^ 2) + 4 * (r : ℝ) ^ 2) +
             (d : ℝ) * (4 * (r : ℝ) ^ 2 * (Real.log (3 + T) / 2 + 1 / 4)) := by
@@ -1531,11 +1613,13 @@ theorem card_separated_collar_zeros_le_sq_poleOrder {κ d : ℕ} {F Λ : ℂ →
   let m : Fin r₀ → ℕ := fun _ => 1
   have hm_sum : (∑ _i : Fin r₀, (1 : ℝ)) = (r₀ : ℝ) := by simp
   have hM : Real.sqrt r₀ * (κ : ℝ) < ∑ ℓ : Fin r₀, (m ℓ : ℝ) := by
-    simp only [m, hm_sum]
+    simp only [m, Nat.cast_one]
+    rw [hm_sum]
     have hr₀_pos : (0 : ℝ) < r₀ := by positivity
     have hk_lt : (κ : ℝ) < Real.sqrt r₀ := by
       rw [← Real.sqrt_sq (Nat.cast_nonneg κ)]
-      exact Real.sqrt_lt_sqrt (sq_nonneg _) (by simp [r₀]; push_cast; linarith)
+      exact Real.sqrt_lt_sqrt (sq_nonneg _)
+        (show (κ : ℝ) ^ 2 < (((κ ^ 2 + 1 : ℕ) : ℝ)) by push_cast; linarith)
     calc Real.sqrt r₀ * (κ : ℝ) < Real.sqrt r₀ * Real.sqrt r₀ :=
           mul_lt_mul_of_pos_left hk_lt (Real.sqrt_pos.mpr hr₀_pos)
       _ = (r₀ : ℝ) := Real.mul_self_sqrt hr₀_pos.le
@@ -1565,14 +1649,14 @@ theorem completedPositiveSystem_riemannZeta :
     CompletedPositiveSystem 1 1 riemannZeta (fun s => 2 * RHTower.xi s) where
   degree_pos := le_rfl
   diffOn_F s hs := by
-    have hs1 : s ≠ 1 := fun h => by rw [h] at hs; simp at hs
+    have hs1 : s ≠ 1 := sub_ne_zero.mp (ne_zero_and_sub_one_of_one_lt_re hs).2
     exact (differentiableAt_riemannZeta hs1).differentiableWithinAt
   ne_zero_F _ hs := riemannZeta_ne_zero_of_one_lt_re hs
   posDef_neg_logDeriv {σ} hσ := by
     have heq : (fun u : ℝ => (-logDeriv riemannZeta ((σ : ℂ) + (u : ℂ) * I)).re) =
-        fun u : ℝ => zetaRealLogDeriv σ u := by
+        fun u : ℝ => ArithmeticCastelnuovoSeveri.zetaRealLogDeriv σ u := by
       funext u
-      unfold zetaRealLogDeriv
+      unfold ArithmeticCastelnuovoSeveri.zetaRealLogDeriv
       rw [logDeriv_apply, neg_div]
     rw [heq]
     exact zetaRealLogDeriv_isEvenPosDef hσ
@@ -1581,12 +1665,11 @@ theorem completedPositiveSystem_riemannZeta :
   sym_Λ s := by rw [RHTower.xi_one_sub]
   conj_Λ s := by rw [map_mul, map_ofNat, RHTower.xi_conj]
   completed_eq s hs := by
-    have hs0 : s ≠ 0 := fun h => by rw [h] at hs; simp at hs
-    have hs1 : s ≠ 1 := fun h => by rw [h] at hs; simp at hs
+    obtain ⟨hs0, hs1'⟩ := ne_zero_and_sub_one_of_one_lt_re hs
+    have hs1 : s ≠ 1 := sub_ne_zero.mp hs1'
     have hΓ : Complex.Gammaℝ s ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos (by linarith)
     rw [RHTower.xi_eq_half_mul hs0 hs1, riemannZeta_def_of_ne_zero hs0, pow_one, pow_one]
     field_simp
-    ring
 
 private theorem isEvenPosDef_add {φ ψ : ℝ → ℝ} (hφ : IsEvenPosDef φ) (hψ : IsEvenPosDef ψ) :
     IsEvenPosDef (fun u => φ u + ψ u) where
@@ -1609,7 +1692,9 @@ private theorem re_one_div_eq_laplace_cos {a : ℝ} (ha : 0 < a) (b : ℝ) :
     integrableOn_exp_mul_complex_Ioi hw_re 0
   have hval := integral_exp_mul_complex_Ioi hw_re 0
   have hrhs_eq : -Complex.exp (w * (0 : ℝ)) / w = 1 / ((a : ℂ) + (b : ℂ) * I) := by
-    simp only [mul_zero, Complex.exp_zero, w, div_neg, neg_neg]
+    rw [Complex.ofReal_zero, mul_zero, Complex.exp_zero]
+    dsimp only [w]
+    rw [div_neg, neg_div, neg_neg]
   rw [hrhs_eq] at hval
   rw [← hval]
   have hre_int : (∫ t : ℝ in Ioi 0, Complex.exp (w * t)).re =
@@ -1617,8 +1702,8 @@ private theorem re_one_div_eq_laplace_cos {a : ℝ} (ha : 0 < a) (b : ℝ) :
     (Complex.reCLM.integral_comp_comm hint_c).symm
   rw [hre_int]
   refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
-  have hw_t_re : (w * (t : ℂ)).re = -a * t := by simp [w]; ring
-  have hw_t_im : (w * (t : ℂ)).im = -(b * t) := by simp [w]; ring
+  have hw_t_re : (w * (t : ℂ)).re = -a * t := by simp [w]
+  have hw_t_im : (w * (t : ℂ)).im = -(b * t) := by simp [w]
   rw [Complex.exp_re, hw_t_re, hw_t_im, Real.cos_neg]
 
 /-- The real resolvent second difference
@@ -1642,29 +1727,39 @@ private theorem isEvenPosDef_resolventSecondDiff {a : ℝ} (ha : 0 < a) (γ : �
   have hrep : ∀ u : ℝ, resolventSecondDiff a γ u =
       ∫ t : ℝ in Ioi 0, (2 * Real.exp (-a * t) * (1 - Real.cos (γ * t))) * Real.cos (t * u) := by
     intro u
-    unfold resolventSecondDiff
     have h2 : (2 / ((a : ℂ) + (u : ℂ) * I)).re = 2 * (1 / ((a : ℂ) + (u : ℂ) * I)).re := by
       have : (2 : ℂ) / ((a : ℂ) + (u : ℂ) * I) = ((2 : ℝ) : ℂ) * (1 / ((a : ℂ) + (u : ℂ) * I)) := by
         push_cast; ring
       rw [this, Complex.re_ofReal_mul]
-    rw [Complex.sub_re, Complex.sub_re, h2,
-      re_one_div_eq_laplace_cos ha u,
-      re_one_div_eq_laplace_cos ha (u - γ),
-      re_one_div_eq_laplace_cos ha (u + γ),
-      ← integral_const_mul, ← integral_sub (hint_cos u |>.const_mul 2) (hint_cos (u - γ)),
-      ← integral_sub ((hint_cos u |>.const_mul 2).sub (hint_cos (u - γ))) (hint_cos (u + γ))]
-    refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
-    have htrig : 2 * Real.cos (u * t) - Real.cos ((u - γ) * t) - Real.cos ((u + γ) * t) =
-        2 * (1 - Real.cos (γ * t)) * Real.cos (t * u) := by
+    have hker_eq : ∀ t : ℝ,
+        (2 * Real.exp (-a * t) * (1 - Real.cos (γ * t))) * Real.cos (t * u) =
+          (2 * (Real.exp (-a * t) * Real.cos (u * t)) -
+            Real.exp (-a * t) * Real.cos ((u - γ) * t)) -
+            Real.exp (-a * t) * Real.cos ((u + γ) * t) := fun t => by
       rw [sub_mul, add_mul, Real.cos_sub, Real.cos_add, mul_comm t u]
       ring
-    calc 2 * (Real.exp (-a * t) * Real.cos (u * t)) -
-            Real.exp (-a * t) * Real.cos ((u - γ) * t) -
-            Real.exp (-a * t) * Real.cos ((u + γ) * t)
-        = Real.exp (-a * t) *
-            (2 * Real.cos (u * t) - Real.cos ((u - γ) * t) - Real.cos ((u + γ) * t)) := by ring
-      _ = Real.exp (-a * t) * (2 * (1 - Real.cos (γ * t)) * Real.cos (t * u)) := by rw [htrig]
-      _ = (2 * Real.exp (-a * t) * (1 - Real.cos (γ * t))) * Real.cos (t * u) := by ring
+    symm
+    calc ∫ t : ℝ in Ioi 0, (2 * Real.exp (-a * t) * (1 - Real.cos (γ * t))) * Real.cos (t * u)
+        = ∫ t : ℝ in Ioi 0,
+            ((2 * (Real.exp (-a * t) * Real.cos (u * t)) -
+              Real.exp (-a * t) * Real.cos ((u - γ) * t)) -
+              Real.exp (-a * t) * Real.cos ((u + γ) * t)) :=
+          setIntegral_congr_fun measurableSet_Ioi fun t _ => hker_eq t
+      _ = (∫ t : ℝ in Ioi 0,
+            (2 * (Real.exp (-a * t) * Real.cos (u * t)) -
+              Real.exp (-a * t) * Real.cos ((u - γ) * t))) -
+            ∫ t : ℝ in Ioi 0, Real.exp (-a * t) * Real.cos ((u + γ) * t) :=
+          integral_sub ((hint_cos u |>.const_mul 2).sub (hint_cos (u - γ))) (hint_cos (u + γ))
+      _ = (2 * (∫ t : ℝ in Ioi 0, Real.exp (-a * t) * Real.cos (u * t)) -
+            ∫ t : ℝ in Ioi 0, Real.exp (-a * t) * Real.cos ((u - γ) * t)) -
+            ∫ t : ℝ in Ioi 0, Real.exp (-a * t) * Real.cos ((u + γ) * t) := by
+          rw [integral_sub (hint_cos u |>.const_mul 2) (hint_cos (u - γ)), integral_const_mul]
+      _ = resolventSecondDiff a γ u := by
+          unfold resolventSecondDiff
+          rw [Complex.sub_re, Complex.sub_re, h2,
+            re_one_div_eq_laplace_cos ha u,
+            re_one_div_eq_laplace_cos ha (u - γ),
+            re_one_div_eq_laplace_cos ha (u + γ)]
   have hint_ker : ∀ u : ℝ, IntegrableOn
       (fun t : ℝ => (2 * Real.exp (-a * t) * (1 - Real.cos (γ * t))) * Real.cos (t * u)) (Ioi 0) := by
     intro u
@@ -1691,11 +1786,11 @@ private theorem isEvenPosDef_resolventSecondDiff {a : ℝ} (ha : 0 < a) (γ : �
             ((2 * Real.exp (-a * t) * (1 - Real.cos (γ * t))) * Real.cos (t * (x i - x j))) =
           ∫ t : ℝ in Ioi 0, ∑ j : Fin n, c i * c j *
             ((2 * Real.exp (-a * t) * (1 - Real.cos (γ * t))) * Real.cos (t * (x i - x j))) :=
-        fun i => (integral_finset_sum Finset.univ fun j _ =>
+        fun i => (integral_finsetSum Finset.univ fun j _ =>
           (hint_ker (x i - x j)).const_mul (c i * c j)).symm
       simp_rw [h1]
-      rw [← integral_finset_sum Finset.univ fun i _ =>
-        integrable_finset_sum Finset.univ fun j _ =>
+      rw [← integral_finsetSum Finset.univ fun i _ =>
+        integrable_finsetSum Finset.univ fun j _ =>
           (hint_ker (x i - x j)).const_mul (c i * c j)]
       refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
       simp_rw [Finset.mul_sum]
@@ -1769,7 +1864,7 @@ private theorem neg_logDeriv_boundaryTwistFactor_re (γ : ℝ) {σ : ℝ} (hσ :
     funext z
     unfold boundaryTwistFactor
     rw [boundaryTwistPoly_factor, mul_pow]
-    congr 1 <;> ring
+    congr 1; ring
   have hnum_ne : ((s - (1 + (γ : ℂ) * I)) * (s - (1 - (γ : ℂ) * I)) *
       (s - (γ : ℂ) * I) * (s - (-(γ : ℂ) * I))) ≠ 0 := by
     refine mul_ne_zero (mul_ne_zero (mul_ne_zero ?_ ?_) hn3) ?_
@@ -1819,17 +1914,23 @@ private theorem neg_logDeriv_boundaryTwistFactor_re (γ : ℝ) {σ : ℝ} (hσ :
       (2 / ((σ : ℂ) + (u : ℂ) * I) -
         1 / ((σ : ℂ) + ((u - γ : ℝ) : ℂ) * I) -
         1 / ((σ : ℂ) + ((u + γ : ℝ) : ℂ) * I)) := by
-    rw [hf_eq, logDeriv_div s hnum_ne hden_ne (((hd1.mul hd2).mul hd3).mul hd4)
-      ((hds0.fun_pow 2).mul (hds1.fun_pow 2)), hld_num, hld_den]
-    have e1 : s - 1 = ((σ - 1 : ℝ) : ℂ) + (u : ℂ) * I := by simp [s]; push_cast; ring
+    rw [hf_eq,
+      logDeriv_div
+        (f := fun z : ℂ => (z - (1 + (γ : ℂ) * I)) * (z - (1 - (γ : ℂ) * I)) *
+          (z - (γ : ℂ) * I) * (z - (-(γ : ℂ) * I)))
+        (g := fun z : ℂ => z ^ 2 * (z - 1) ^ 2)
+        s hnum_ne hden_ne (((hd1.mul hd2).mul hd3).mul hd4)
+        ((hds0.fun_pow 2).mul (hds1.fun_pow 2)),
+      hld_num, hld_den]
+    have e1 : s - 1 = ((σ - 1 : ℝ) : ℂ) + (u : ℂ) * I := by simp [s]; ring
     have e2 : s - (1 + (γ : ℂ) * I) = ((σ - 1 : ℝ) : ℂ) + ((u - γ : ℝ) : ℂ) * I := by
-      simp [s]; push_cast; ring
+      simp [s]; ring
     have e3 : s - (1 - (γ : ℂ) * I) = ((σ - 1 : ℝ) : ℂ) + ((u + γ : ℝ) : ℂ) * I := by
-      simp [s]; push_cast; ring
+      simp [s]; ring
     have e4 : s - (γ : ℂ) * I = (σ : ℂ) + ((u - γ : ℝ) : ℂ) * I := by
-      simp [s]; push_cast; ring
+      simp [s]; ring
     have e5 : s - (-(γ : ℂ) * I) = (σ : ℂ) + ((u + γ : ℝ) : ℂ) * I := by
-      simp [s]; push_cast; ring
+      simp [s]; ring
     rw [e1, e2, e3, e4, e5]
     simp only [s]
     ring
@@ -1852,8 +1953,7 @@ theorem CompletedPositiveSystem.twistBoundaryZero {κ d : ℕ} {F Λ : ℂ → �
   refine ⟨?_, by rw [hpoly_zero, mul_zero]⟩
   have htf_nz : ∀ s : ℂ, 1 < s.re → boundaryTwistFactor γ s ≠ 0 := by
     intro s hs
-    have hs0 : s ≠ 0 := fun h => by rw [h] at hs; simp at hs
-    have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr fun h => by rw [h] at hs; simp at hs
+    obtain ⟨hs0, hs1⟩ := ne_zero_and_sub_one_of_one_lt_re hs
     have hp_nz : boundaryTwistPoly γ s ≠ 0 := by
       rw [boundaryTwistPoly_factor]
       have n1 : s - 1 - (γ : ℂ) * I ≠ 0 := fun h => by
@@ -1869,8 +1969,7 @@ theorem CompletedPositiveSystem.twistBoundaryZero {κ d : ℕ} {F Λ : ℂ → �
   have htf_diffOn : DifferentiableOn ℂ (boundaryTwistFactor γ) {s : ℂ | 1 < s.re} := by
     intro s hs
     change 1 < s.re at hs
-    have hs0 : s ≠ 0 := fun h => by rw [h] at hs; simp at hs
-    have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr fun h => by rw [h] at hs; simp at hs
+    obtain ⟨hs0, hs1⟩ := ne_zero_and_sub_one_of_one_lt_re hs
     have hden : (s * (s - 1)) ^ 2 ≠ 0 := pow_ne_zero 2 (mul_ne_zero hs0 hs1)
     have hpd : DifferentiableAt ℂ (boundaryTwistPoly γ) s := by unfold boundaryTwistPoly; fun_prop
     have hdd : DifferentiableAt ℂ (fun z : ℂ => (z * (z - 1)) ^ 2) s := by fun_prop
@@ -1893,13 +1992,13 @@ theorem CompletedPositiveSystem.twistBoundaryZero {κ d : ℕ} {F Λ : ℂ → �
         unfold boundaryTwistPoly
         simp only [map_mul, map_add, map_pow, map_sub, map_one, Complex.conj_ofReal]
       completed_eq := fun s hs => by
-        have hs0 : s ≠ 0 := fun h => by rw [h] at hs; simp at hs
-        have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr fun h => by rw [h] at hs; simp at hs
+        obtain ⟨hs0, hs1⟩ := ne_zero_and_sub_one_of_one_lt_re hs
         have hden : (s * (s - 1)) ^ 2 ≠ 0 := pow_ne_zero 2 (mul_ne_zero hs0 hs1)
         unfold boundaryTwistFactor
         rw [hS.completed_eq s hs, pow_add]
         have hmul : (s * (s - 1)) ^ 2 * (boundaryTwistPoly γ s / (s * (s - 1)) ^ 2) =
             boundaryTwistPoly γ s := mul_div_cancel₀ _ hden
+        symm
         calc (s * (s - 1)) ^ κ * (s * (s - 1)) ^ 2 * Complex.Gammaℝ s ^ d *
               (F s * (boundaryTwistPoly γ s / (s * (s - 1)) ^ 2))
             = (s * (s - 1)) ^ κ * Complex.Gammaℝ s ^ d * F s *
@@ -1952,5 +2051,14 @@ theorem exists_completedPositiveSystem_boundary_zeros_at_half_pole (r : ℕ) (γ
 
 end GaloisForLFunctions.StripBochnerWeilForcing
 
-
-
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.CompletedPositiveSystem.ofFiniteOrder
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.sum_orbit_resolvent_le_re_logDeriv
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.coupled_strip_pole_zero_forcing
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.re_logDeriv_Gammaℝ_le_all_heights
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.width_ge_of_pole_growth_bound
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.collective_half_pole_interior_forcing
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.collective_star_collar_forcing
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.card_separated_collar_zeros_le_sq_poleOrder
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.completedPositiveSystem_riemannZeta
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.CompletedPositiveSystem.twistBoundaryZero
+#print axioms GaloisForLFunctions.StripBochnerWeilForcing.exists_completedPositiveSystem_boundary_zeros_at_half_pole

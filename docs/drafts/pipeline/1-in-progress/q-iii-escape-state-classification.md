@@ -128,7 +128,10 @@ cleared continuation identity already in AOT
 criterion now has a checked kernel zero-order lower bound by the denominator
 order minus the numerator order in `PaidKernelsCoverVisibleTranslatedZeroOrders`.
 `CriticalBoundaryPolesObstructPaidKernels` covers the boundary value obstruction.
-These extend the paid-ideal obstruction; identifying the hull of each individual
+Finite Wiener jet interpolation and the independent interior multiplicity bound
+also passed their final canonical checks with standard axioms in
+`FiniteWienerJetsCanBePrescribed` and `VisiblePoleJetsBoundThePaidIndex`.
+These constrain the paid quotient; identifying the hull of each individual
 actual module remains open.
 
 ## Translation and signed data
@@ -228,6 +231,15 @@ The unitary transport, full-source dilation and paid-correction Gram estimates
 also passed canonical checks, as recorded on the admitted and unit cards.
 
 ## Scaling and parallel programme evidence
+
+Every positive cofactor diagonal has an actual contracted state with kernel
+`K(pj,pk)/K(p,p)`. Its module is the closure of the dilation range, with
+full Wiener intertwining and annihilator `I:delta_p`. Contractions compose;
+zero diagonals force finite dimension. Finite quotient index drops by the
+exact dilation nullity, and every defined rank-one contraction fixes its
+kernel and annihilator. All eleven canonical leaves passed direct Lean
+checks and standard-axiom audits; see
+[actual cofactor contractions](../3-formalized/contracting-horizons-acts-on-actual-cofactor-states.md).
 
 Exact pronic fibre dilation at complete blocks compares K_T(pj,pk) with the
 state at T/p. Scalar regular variation can determine diagonal scaling without
@@ -744,7 +756,7 @@ remains new. Boundary and diagonal scratches were reassembled while the
 queue was still checking unit transport.
 
 New actual-state transport lead:
-`1-in-progress/contracting-horizons-acts-on-actual-cofactor-states.md`.
+`3-formalized/contracting-horizons-acts-on-actual-cofactor-states.md`.
 The generic mixed last-fibre error is drafted in
 `/tmp/qiii_mixed_horizon_error_body.lean`, NOT YET IN A CHECK QUEUE. It is
 intended to prove actual contracted-horizon realization

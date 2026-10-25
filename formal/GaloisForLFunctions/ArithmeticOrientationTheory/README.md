@@ -210,7 +210,9 @@ Bohr points annihilating `P(c)`. *Unit*: a coordinate on the width line.
     number ≤ codimension (`card_le_rank_quotient_paidIdeal_moebius`); equality above the width
     (`moebius_reverse_inclusion_and_index_above_zeroWidth`). **Order level:** every repairing kernel vanishes at
     `ρ − ε` to at least `ord ζ(ρ) − ord ζ(ρ−ε)` (`visibleTranslatedZetaOrder_le_paid_kernel_order`), so its jets
-    vanish below that order (`paid_kernel_jets_vanish_below_visible_order`); on the **critical boundary**
+    vanish below that order (`paid_kernel_jets_vanish_below_visible_order`). Finite interior jets can be
+    prescribed jointly (`exists_wiener_with_prescribed_finite_jets`), so their visible multiplicities add
+    in the paid-quotient lower bound (`sum_visible_orders_le_rank_quotient_paidIdeal_moebius`). On the **critical boundary**
     `Re ρ = ½ + ε`, any order loss `ord ζ(ρ−ε) < ord ζ(ρ)` makes `μ d^{−ε}` unpaid
     (`not_receiverBounded_moebius_of_critical_boundary_order_loss`). All persist on the unit orbit, including
     Liouville (`wienerUnitOrbit_moebius_liouville`, `not_receiverBounded_liouville_of_critical_boundary_order_loss`).

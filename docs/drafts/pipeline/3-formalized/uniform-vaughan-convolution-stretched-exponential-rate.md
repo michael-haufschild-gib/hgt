@@ -75,6 +75,6 @@ no written non-umbrella module imports this leaf. Its temporary draft was remove
 The finite convolution and arbitrary logarithmic estimates are certified in
 `uniform-undamped-vaughan-convolution-cancellation.md`.
 No full Q-I answer or positive fixed-strip width is asserted. The distinct
-factorial-order-one criterion remains on
-`../1-in-progress/vaughan-factorial-order-one-is-a-fixed-strip.md` until its own
-Lean verification finishes.
+factorial-order-one criterion is also Lean-verified in
+`vaughan-factorial-order-one-is-a-fixed-strip.md`: all seven generic and actual
+targets passed final direct checks and standard-axiom audits.

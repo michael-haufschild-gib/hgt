@@ -142,6 +142,9 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     Every positive cofactor diagonal yields an actual contracted state
     `K_p(j,k)=K(pj,pk)/K(p,p)` (`exists_actual_contracted_module`), with full Wiener intertwining
     (`contractedKernelIsometry_wiener`) and annihilator `I:δ_p` (`cofactorAnnihilator`).
+    Its module is exactly the closed dilation range (`range_contractedKernelIsometry`);
+    finite quotient index drops by `dim ker D_p` (`cofactor_index_add_dilation_nullity`). Positive
+    contractions compose on kernels and ideals (`contracted_kernel_compose`, `cofactorAnnihilator_compose`).
 14. **Module structure.** Admitted modules are faithful with full Bohr hull, infinite-dimensional, continuum
     quotient (`faithful_or_receiver_escapes`, `receiver_escapes_of_finiteDimensional`): a finite-dimensional or
     non-faithful actual module forces escape. Annihilator quotient is finite or continuum, never countable
@@ -150,6 +153,8 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     (`finiteDimensional_and_finrank_le_of_kernel_diag_eq_zero`). Rank-one modules: augmentation or
     `χ(p) = η(p)p^{−s}`, `s ≥ ½`, `η` multiplicative sign (`rankOneCharacter_eq_augmentation_or_signed_rpow`) —
     magnitudes forced, signs/exponent not tied to zeros. Operator hull obeys dilation radii.
+    Every defined rank-one contraction preserves the kernel and complete annihilator
+    (`contracted_kernel_eq_of_finrank_one`, `cofactorAnnihilator_eq_of_finrank_one`).
     Every hull character of a finite-dimensional actual module has augmentation or radial modulus
     (`finite_moduleHull_modulus_classification`), and one sequence of half-plane evaluations converges
     to it on every Wiener element (`exists_halfPlane_sequence_of_mem_finite_moduleHull`).
@@ -177,7 +182,7 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     (`admits_or_nonvanishing_successors_require_unbounded_scale`).
 
 The origin-boundary leaves, raw-origin convergence, boundary-index corollaries,
-vanishing-relative-energy perturbation, numeric operator order and finite-hull approximation
+vanishing-relative-energy perturbation, complete cofactor contractions, numeric operator order and finite-hull approximation
 passed canonical Lean checks and standard-axiom audits. The
 [completion ledger](../../../docs/drafts/pipeline/1-in-progress/q-iii-existing-findings-lean-completion.md)
 records each completed audit.

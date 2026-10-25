@@ -27,7 +27,7 @@ theorem zetaZeroAbscissa_le_of_moebius_power_bound {C β : ℝ}
         intro k hk
         rw [norm_mobiusMertensPartialSum_eq_abs_sum]
         rcases Nat.eq_zero_or_pos k with rfl | hk1
-        · simp only [Icc_eq_empty (by norm_num), sum_empty, abs_zero]
+        · simp only [Icc_eq_empty (by omega : ¬ (1 : ℕ) ≤ 0), sum_empty, abs_zero]
           positivity
         · have hkX : (k : ℝ) ≤ (X : ℝ) + 1 := by exact_mod_cast (mem_range.mp hk).le
           exact (hM k hk1).trans
@@ -49,7 +49,8 @@ theorem exists_moebius_power_bound_of_abscissa_lt {β : ℝ} (hβ : zetaZeroAbsc
   refine ⟨C * 2 ^ β, by positivity, fun n hn => ?_⟩
   have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have h := hM n
-  rw [norm_mobiusMertensPartialSum_eq_abs_sum, add_sub_cancel] at h
+  rw [norm_mobiusMertensPartialSum_eq_abs_sum,
+    show zetaZeroAbscissa + (β - zetaZeroAbscissa) = β by ring] at h
   calc
     _ ≤ C * ((n : ℝ) + 1) ^ β := h
     _ ≤ C * (2 * (n : ℝ)) ^ β :=

@@ -13,23 +13,40 @@ open Lean.Parser.Tactic.Conv in
 macro "certify_first_atom" " => " s:convSeq : tactic =>
   `(tactic| (refine ⟨?_, ?_⟩; swap; conv_rhs => $s))
 
+private theorem roundDown_eq_floor (x : ℚ) :
+    roundDown x = (⌊x * 1000000000000⌋ : ℚ) / 1000000000000 := rfl
+
+private theorem roundUp_eq_ceil (x : ℚ) :
+    roundUp x = (⌈x * 1000000000000⌉ : ℚ) / 1000000000000 := by
+  rw [roundUp, Rat.ceil_eq_neg_floor_neg]
+  rfl
+
+-- Numerical reflection avoids unfolding the rational field instance during scalar rounding.
+macro "normalize_first_atom_seed" : conv => `(conv|
+  norm_num [Enclosure.expLo, Enclosure.expHi, Enclosure.polyEval, Enclosure.polyPoint,
+    Enclosure.point, Enclosure.add, Enclosure.neg, Enclosure.sub, Enclosure.mul,
+    Enclosure.cornerLo, Enclosure.cornerHi, Enclosure.lower, Enclosure.upper,
+    Enclosure.precision, Enclosure.down, Enclosure.up, roundDown_eq_floor, roundUp_eq_ceil,
+    expNeg, expTwoTaylor, expTwoTaylorUpper, add, neg, sub, scale, mul, pow, C, X,
+    List.ofFn_succ, List.foldr, min_def, max_def])
+
 abbrev expLoData : {v // v = Enclosure.expLo} := by
-  certify_first_atom => cbv
+  certify_first_atom => normalize_first_atom_seed
 
 abbrev expHiData : {v // v = Enclosure.expHi} := by
-  certify_first_atom => cbv
+  certify_first_atom => normalize_first_atom_seed
 
 abbrev coeffData5 : {v // v = Enclosure.polyPoint (expNeg 5)} := by
-  certify_first_atom => cbv
+  certify_first_atom => normalize_first_atom_seed
 
 abbrev coeffData6 : {v // v = Enclosure.polyPoint (expNeg 6)} := by
-  certify_first_atom => cbv
+  certify_first_atom => normalize_first_atom_seed
 
 abbrev coeffData9 : {v // v = Enclosure.polyPoint (expNeg 9)} := by
-  certify_first_atom => cbv
+  certify_first_atom => normalize_first_atom_seed
 
 abbrev coeffData10 : {v // v = Enclosure.polyPoint (expNeg 10)} := by
-  certify_first_atom => cbv
+  certify_first_atom => normalize_first_atom_seed
 
 -- The command expands to ordinary equality certificates, one per power.
 macro "first_atom_widths" : command => do
@@ -39,14 +56,15 @@ macro "first_atom_widths" : command => do
     let n := Lean.Syntax.mkNumLit (toString k)
     let declaration ← if k == 0 then
       `(command| abbrev $name : {v // v = Enclosure.pow (Enclosure.point (1 / 64)) $n} := by
-        certify_first_atom => cbv)
+        certify_first_atom => normalize_first_atom_seed)
     else do
       let prev := Lean.mkIdent (.mkSimple ("widthPower" ++ toString (k - 1)))
       `(command| abbrev $name : {v // v = Enclosure.pow (Enclosure.point (1 / 64)) $n} := by
         certify_first_atom =>
           rw [Enclosure.pow]
           simp only [← ($prev).property]
-          cbv)
+          dsimp only [$prev:ident]
+          normalize_first_atom_seed)
     declarations := declarations.push declaration
   return ⟨Lean.mkNullNode declarations⟩
 
@@ -65,15 +83,17 @@ macro "first_atom_endpoints" : command => do
         `(command| abbrev $name : {v // v = Enclosure.pow $exponential $n} := by
           certify_first_atom =>
             rw [Enclosure.pow]
-            cbv)
+            normalize_first_atom_seed)
       else do
         let prev := Lean.mkIdent (.mkSimple ("power" ++ side ++ toString (j - 1)))
         `(command| abbrev $name : {v // v = Enclosure.pow $exponential $n} := by
           certify_first_atom =>
             rw [Enclosure.pow]
             simp only [← ($prev).property]
+            dsimp only [$prev:ident]
             simp only [← ($data).property]
-            cbv)
+            dsimp only [$data:ident]
+            normalize_first_atom_seed)
       declarations := declarations.push declaration
       let inc := Lean.mkIdent (.mkSimple ("increment" ++ side ++ toString j))
       let increment := Lean.mkIdent
@@ -83,8 +103,10 @@ macro "first_atom_endpoints" : command => do
           certify_first_atom =>
             rw [$increment:ident]
             simp only [← ($name).property]
+            dsimp only [$name:ident]
             simp only [← ($data).property]
-            cbv))
+            dsimp only [$data:ident]
+            normalize_first_atom_seed))
       let ep := Lean.mkIdent (.mkSimple ("endpoint" ++ side ++ toString j))
       let endpoint := Lean.mkIdent
         (if side == "Lo" then ``Enclosure.endpointLo else ``Enclosure.endpointHi)
@@ -92,7 +114,7 @@ macro "first_atom_endpoints" : command => do
         `(command| abbrev $ep : {v // v = $endpoint $n} := by
           certify_first_atom =>
             rw [$endpoint:ident]
-            cbv)
+            normalize_first_atom_seed)
       else do
         let prev := Lean.mkIdent (.mkSimple ("endpoint" ++ side ++ toString (j - 1)))
         let opposite := if side == "Lo" then "Hi" else "Lo"
@@ -103,9 +125,12 @@ macro "first_atom_endpoints" : command => do
           certify_first_atom =>
             rw [$endpoint:ident]
             simp only [← ($prev).property]
+            dsimp only [$prev:ident]
             simp only [← ($increment).property]
+            dsimp only [$increment:ident]
             simp only [← ($coefficients).property]
-            cbv)
+            dsimp only [$coefficients:ident]
+            normalize_first_atom_seed)
       declarations := declarations.push declaration
   return ⟨Lean.mkNullNode declarations⟩
 

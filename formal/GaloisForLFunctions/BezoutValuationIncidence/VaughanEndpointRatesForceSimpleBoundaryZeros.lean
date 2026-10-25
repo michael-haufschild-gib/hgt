@@ -24,7 +24,7 @@ private theorem mertens_subpowers_of_moebius_power {C β : ℝ}
   refine ⟨C, hC, fun n => ?_⟩
   rw [norm_mobiusMertensPartialSum_eq_abs_sum]
   rcases Nat.eq_zero_or_pos n with rfl | hn
-  · simp only [Icc_eq_empty (by norm_num), sum_empty, abs_zero]
+  · simp only [Icc_eq_empty (by omega : ¬ (1 : ℕ) ≤ 0), sum_empty, abs_zero]
     positivity
   · refine (hM n hn).trans (mul_le_mul_of_nonneg_left ?_ hC)
     exact (Real.rpow_le_rpow (Nat.cast_nonneg n)
@@ -39,7 +39,7 @@ private theorem abs_mertensReal_le_of_moebius_power {C β : ℝ}
     {x : ℝ} (hx : 1 ≤ x) : |mertensFunctionReal x| ≤ C * x ^ β := by
   change |∑ d ∈ Icc 1 ⌊x⌋₊, moebiusReal d| ≤ C * x ^ β
   rcases Nat.eq_zero_or_pos ⌊x⌋₊ with hzero | hpos
-  · rw [hzero, Icc_eq_empty (by norm_num), sum_empty, abs_zero]
+  · rw [hzero, Icc_eq_empty (by omega : ¬ (1 : ℕ) ≤ 0), sum_empty, abs_zero]
     exact mul_nonneg hC (Real.rpow_nonneg (zero_le_one.trans hx) β)
   · exact (hM _ hpos).trans (mul_le_mul_of_nonneg_left
       (Real.rpow_le_rpow (Nat.cast_nonneg _) (Nat.floor_le (zero_le_one.trans hx)) hβ) hC)
