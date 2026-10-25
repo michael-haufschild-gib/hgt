@@ -170,6 +170,8 @@ $G_{ij}$; diagonal $D_T$; mixed remainder $R^{\text{mix}}_T$; $E^{\text{int}}_T=
     after division by its actual harmonic amplitude; the error costs $(U!V!)^2$.
     The [complete subcritical classification](../../../docs/drafts/pipeline/3-formalized/vaughan-subcritical-gram-limit-classification.md)
     includes exact ranks, attainment, topology, and normalized damping independence.
+    The [single-floor specialization](UniformLogarithmicCancellationInMobiusFloorSums.lean)
+    has every logarithmic saving uniformly in its cutoff, with an exact omitted-tail identity.
 11. **Dilation profiles and the Bézout seed.** $\Phi_r(p/q)$ = pairing of jump streams of $pr,qr$;
     least seed isolated; dyadic windows reduce consecutive divisor edges to the single pair $(2,3)$.
 12. **Literal Möbius on linear windows.** Uniform first-moment cancellation; finite Euler-product

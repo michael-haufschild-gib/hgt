@@ -41,7 +41,7 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Finite joint spectral multiplicities and normalized Bohr representatives | All three canonical source-only checks passed with standard axioms; card moved to `3-formalized` |
 | Rank-one multiplicative signs | Canonical audit `87736` passed with standard axioms; card in `3-formalized`, augmentation route retired with its checked positive survivors |
 | Visible interior pole orders, paid jets, critical boundary values, unit orbits | Canonical checks after successful combined scratch |
-| Reset moving origin, faithful step kernel and every positive boundary mass | Thirteen canonical leaves after successful combined scratch; prescribed-horizon extraction required olean now checking |
+| Reset moving origin, faithful step kernel and every positive boundary mass | Prescribed-horizon extraction complete; twelve other canonical leaves still need their direct checks |
 | Raw moving origin, exclusion from actual zero-origin limits | Draft scratch after boundary dependencies |
 | Positive boundary modules have infinite dimension and continuum index | Draft scratch after boundary dependencies |
 | Exact incomplete dilation fibre and mixed C*D/p bound | Draft scratch; required by contraction bundle |
@@ -53,7 +53,7 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Tied-torus and augmentation character limits | Draft scratch; refactor existing owner after verification |
 | Conjugation of actual source pairings, annihilator and hull | Draft scratch, then canonical placement/check |
 | Interior Wiener jets, mixed interpolation and paid quotient lower bounds | Base scratch, then full application and canonical checks |
-| Vanishing Gram steps, intermediate kernels, singleton/continuum alternative | Generic crossing and actual Gram-step canonical audits passed; prescribed-horizon extraction checking, application remains |
+| Vanishing Gram steps, intermediate kernels, singleton/continuum alternative | All three dependencies complete; full application scratch `6026` passed, canonical leaf installed/wired, final source audit running |
 
 The square-root translation card contains completed origin-trace results plus
 later raw/reset-boundary consequences; close it only after the latter are
@@ -77,13 +77,15 @@ unchanged checks. All required leaves are wired into their programme umbrellas.
 | Arbitrary commuting-family common eigenvector | `15948` | `19547` passed |
 | Vanishing-step intermediate cluster values | `21506` | `98674` passed |
 | Actual normalized Gram steps | `86889` | `82801` passed |
+| Common limits along prescribed increasing/cofinal horizons | `11914` | `34513` passed |
 
 Recent final output files:
 `/tmp/qiii-augmentation-canonical-final.log`,
 `/tmp/qiii-rank-one-sign-canonical-final.log`,
 `/tmp/qiii-common-family-canonical-final.log`,
 `/tmp/qiii-intermediate-cluster-values-canonical-final.log`,
-`/tmp/qiii-cofactor-gram-steps-canonical-final.log`.
+`/tmp/qiii-cofactor-gram-steps-canonical-final.log`,
+`/tmp/qiii-common-horizons-canonical-final.log`.
 
 The rank-one card is in `3-formalized`; the augmentation no-go is in `5-failed`
 with cutoff and full signed-power survivors checked. README and the Q-III
@@ -92,23 +94,23 @@ transport and exact finite joint multiplicities.
 
 ## Active direct check
 
-Actual Gram-step leaf is complete: final source-only check `86889` passed with
-standard axioms for both the quantitative bound and convergence.
-Prescribed-horizon build `32398` failed because the canonical split omitted the
-defining import for `ActualCofactorLimit`. Corpus search confirmed the structure
-in `TheCofactorLimitCarriesACyclicDilationAction`; that explicit import is now
-added. Source review found the same missing actual-limit dependency in
+Prescribed-horizon final source-only audit `11914` passed with standard axioms
+for both statements. Its canonical split now explicitly imports
+`TheCofactorLimitCarriesACyclicDilationAction`. Source review found the same missing actual-limit dependency in
 `PositiveOriginMixturesAreFaithful`; it now has the same explicit import.
 `TheOriginStepModuleHasTheFullBohrHull` now explicitly imports
 `HTGeometry/RealPositiveKernelComplexification` for its real-to-complex
 positivity and packet comparison lemmas. These later leaves remain unchecked.
-No failed olean was produced. Exactly one
-required olean retry, session `34513`, is active from `formal/`:
-`ArithmeticDefectRigidity/CommonCofactorLimitsExistAlongPrescribedHorizons`.
-Output: `/tmp/qiii-common-horizons-olean-retry.log`. Its combined scratch passed
-previously; its own olean and final source-only check are still needed by the
-written kernel-family application and moving-origin developments.
-After its final audit, check `/tmp/qiii-actual-kernel-interpolation-check.lean`.
+Application scratch `6819` passed the countable-table cardinal bound and
+nonuniqueness-implies-escape with standard axioms. Its interpolation proof
+failed because simplification left a function composition unexpanded under
+`Tendsto`. That equality is now proved pointwise with `Tendsto.congr`.
+Direct retry `6026` passed all five targets with standard axioms, output
+`/tmp/qiii-actual-kernel-interpolation-retry.log`. The checked source is installed
+as `ArithmeticDefectRigidity/ActualCofactorKernelFamiliesAreSingletonOrContinuum`
+and wired into its umbrella. Exactly one final source-only audit is active from
+`formal/`, output `/tmp/qiii-actual-kernel-family-canonical-final.log`.
+No olean is needed because no written leaf imports this application.
 
 ## Direct source work remaining
 
@@ -141,5 +143,5 @@ owner, add its umbrella import directly, and run the canonical check directly.
   source statements and canonical dependencies are retained in their Lean files.
 - `/tmp/qiii-actual-kernel-interpolation-check.lean` now directly combines the
   intermediate-coordinate and singleton/continuum drafts. It is unchecked
-  and needs the prescribed-horizon extraction olean and audit. Its crossing
-  and Gram-step dependencies are complete.
+  and has passed. Its canonical application is in final source-only audit;
+  all three dependency oleans and final source audits are complete.

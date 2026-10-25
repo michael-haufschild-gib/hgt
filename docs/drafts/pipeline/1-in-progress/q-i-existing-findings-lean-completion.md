@@ -98,6 +98,11 @@ All seven targets in `VaughanGramsAtTheirActualHarmonicAmplitude.lean` passed
 their corrected final direct check, with standard axioms only. The module is
 wired and its scratch removed; the complete ten-target relative-Gram card is
 in stage 3.
+All seven floor-sum targets passed their final direct check and standard-axiom
+audits. `UniformLogarithmicCancellationInMobiusFloorSums.lean` is wired; its
+scratch was removed. The rounding, exact omitted-tail identity, common finite
+bound, and full uniform logarithmic rate are certified in
+`../3-formalized/uniform-logarithmic-cancellation-in-mobius-floor-sums.md`.
 All other remaining leaves named in the table are unchecked drafts. Dependencies and
 live compiler handles are recorded in `/tmp/QIVerificationState.txt`; the
 complete module queue is `/tmp/QILeanCompletionQueue.md`.

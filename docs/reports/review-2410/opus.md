@@ -474,6 +474,8 @@ unit-mass Weil energy remains unbounded in their common kernel. Every nonlinear
 threshold based on these data admits a strict effective negative square
 (`FiniteReadingsAndMassCannotSupplyBezout`). This obstruction concerns the stated
 fibre-threshold source cones, rather than arbitrary source restrictions.
+The exact unit-mass witnesses can also be chosen infinitely differentiable
+(`SmoothFiniteReadingKernels`), so they admit the compact Meyer source embedding.
 
 Evenness is unnecessary for the sharp boundary: closed and strict cones only read
 `max(Φ,0)`, and RR together with Bézout forces that positive part to equal the defect
@@ -516,6 +518,12 @@ degree, so this degree cannot descend to genuine cohomology
 (`OriginDegreeDoesNotDescendThroughPoissonBoundaries`). The descended ordinary trace
 degree and the positive origin degree therefore solve different parts of the requested
 degree construction.
+
+This strictly positive origin mass is centered-flow invariant, and its value
+on the compact real Meyer embedding is exactly ordinary L² mass
+(`InvariantOriginMassDoesNotBoundTheWeilTrace`). Weil trace is unbounded
+on its unit sphere at every positive aperture, even for smooth compact sources.
+Consequently no nonlinear function of origin mass bounds the original mixed trace.
 
 This failure persists after arbitrary normalized corrections using both pole values.
 The actual negative Euler operator produces a nonzero boundary with transform

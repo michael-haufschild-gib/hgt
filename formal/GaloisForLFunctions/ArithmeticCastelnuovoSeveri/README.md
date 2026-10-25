@@ -141,9 +141,10 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
     $2\beta$, all $\beta>\sigma$. Exact arithmetic reserve (Gamma + Lévy + horizon + integrated prime deficit) gives
     RR at every aperture, Bézout/ample ⇔ its sign.
 14. **Finite readings cannot supply Bézout.** Weil Rayleigh quotients are unbounded in every
-    finite-reading kernel (smooth unit-mass witnesses), so no reserve from finitely many linear
+    finite-reading kernel (smooth unit-mass witnesses in `SmoothFiniteReadingKernels.lean`), so no reserve from finitely many linear
     readings (plus mass) gives Bézout; exact effectivity needs infinitely many degrees; arithmetic
-    majorants give Bézout + ampleness but their extra reserve breaks RR.
+    majorants give Bézout + ampleness but their extra reserve breaks RR. Their aperture cones are
+    convex, pointed and generating (`ArithmeticMajorantConeGeometry.lean`).
 15. **Hecke–Lefschetz rigidity.** Adams operations and Hecke correspondences are isometries; Lefschetz
     splitting; a single correspondence scaling $(x\cdot H,x\cdot V)$ by $(1,a)$ replaces the ample axiom:
     RR ⇔ open positive cone ⊆ E ∧ defect ≥ 0; RH ⇔ $T_2$ maps the open positive cone into the ample half
@@ -154,12 +155,17 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
 
 ### Meyer source carrier
 17. **Poisson principal cycles.** The all-weight source admits genuine Poisson boundaries; pole-moment
-    compensation gives nonzero principal cycles invisible to every reading; origin degree does not
+    compensation gives nonzero principal cycles invisible to every intersection reading; origin degree does not
     descend through Poisson boundaries (pole-blind boundaries have positive origin degree).
+    This strictly positive source mass is centered-flow invariant, but Weil trace is unbounded on
+    its unit sphere at every positive aperture; no nonlinear function of mass bounds the mixed
+    trace (`InvariantOriginMassDoesNotBoundTheWeilTrace.lean`).
 18. **Meyer source surface.** Linear trace degree on genuine cohomology gives graded RR
     unconditionally; Bézout, ampleness, additive closure ⇔ RH; numerical = principal ⇔ Xi simplicity.
     Bounded-orbit carrier (full-Hasse Hilbert–Schmidt): RR, Bézout, ampleness unconditional;
-    numerical = principal ⇔ simple critical zeros.
+    numerical = principal ⇔ simple critical zeros. Boundedness, norm isometry, and support only in
+    critical highest jets are equivalent; these classes form a nontrivial sharp-stable convolution
+    subspace. Trace-one witnesses exist above every height.
 19. **Maximal blind ideal.** Mixed-trace boundedness along the centred flow defines a pre-divisor
     carrier = sources whose Mellin transform vanishes at every off-line Xi zero; it is the **unique
     maximal sharp-stable convolution ideal with nonnegative trace**, with Hodge, RR, Bézout, ampleness
@@ -171,8 +177,12 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
     harmonic pole isolation) are needed.
 21. **Faithful degrees and adjoints.** Faithful positive linear degree on genuine cohomology ⇔ RH +
     simplicity ⇔ arithmetic sharp = Hilbert adjoint; flow-invariant majorants of the mixed trace ⇔ RH;
-    critical trace degree positive with exact kernel; origin Hilbert space cannot realize faithful
-    cohomology (finite jet graphs dense); quasi-inverse radical vanishes ⇔ simplicity.
+    critical trace degree positive with exact kernel; quasi-inverse radical vanishes ⇔ simplicity.
+    The faithful Hilbert–Schmidt reserve gives Bézout and ampleness; its RR and exact linear-degree
+    representation hold iff RH + simplicity. Reserve boundedness and invariance both select critical
+    highest jets. On that restricted carrier, faithful-reserve RR and linear representation hold iff
+    critical zeros are simple; invariance is unconditional. Origin-Hilbert recovery and finite-jet
+    graph claims are still awaiting their direct Lean checks.
 
 ### Odd ledger, floors, sections
 22. **Odd-sector ledgers** (reflected-prime/polar, Chebyshev $E(s)$): identities. **Degree floor = width:**
@@ -224,6 +234,9 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
 Meyer carrier anchors are module-level: `MeyerSourceIntersectionSurface.lean`, `BoundedMeyerSourceSurface.lean`,
 `MaximalBlindIdealOfTheMeyerSource.lean`, `HarmonicCouplingForcesSourceBlindness.lean`,
 `FaithfulPositiveMeyerDegrees.lean`, `FiniteReadingsAndMassCannotSupplyBezout.lean`.
+Bounded-orbit and reserve results are in `MeyerBoundedCenteredOrbits.lean`,
+`MeyerCriticalTopAlgebra.lean`, `FaithfulHilbertSchmidtSourceReserves.lean`,
+`MeyerHilbertReserveFlowRigidity.lean`, and `BoundedMeyerFaithfulReserve.lean`.
 
 ---
 

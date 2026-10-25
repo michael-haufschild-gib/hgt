@@ -102,11 +102,3 @@ theorem meyerOriginMass_function_not_trace_majorant (F : ℝ → ℝ) :
   nlinarith only [h, hW, abs_nonneg (F 1), sq_abs (F 1)]
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerOriginSquareMass_eq_integral
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerOriginSquareMass_nonneg
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerOriginSquareMass_eq_zero_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerOriginSquareMass_centered_flow
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerOriginSquareMass_compact_real
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_meyer_compact_unit_originMass_trace_gt
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerOriginMass_function_not_trace_majorant

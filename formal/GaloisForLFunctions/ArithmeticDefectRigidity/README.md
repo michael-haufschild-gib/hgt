@@ -1,993 +1,235 @@
-# Arithmetic Defect Rigidity
-
-Lean entry point: [ArithmeticDefectRigidity](../ArithmeticDefectRigidity.lean).
-
-Arithmetic defect rigidity studies which failures of critical arithmetic estimates can survive
-normalization, localization and passage to infinity. Its central question is quantitative:
-**which relations of the actual source restrict an escaping defect, and do those restrictions
-control the signed quantity consumed by an established receiver?**
-
-The first tools concern the centered damped Möbius receiver. They separate its energy from the
-larger positive forcing, retain the receiver as a signed Gram difference, locate the forcing in
-the cofactor tail, and price every finite word of successor translations and floor dilations.
-An explicit power subtraction pays the remaining forcing in the global receiver norm. A
-separate pronic mass estimate pays bounded boundary errors even against the complete forcing.
-The actual receiver's absolute Mellin trace identifies this subtraction as a linear source
-operation. Energy quantiles then retain diffuse receiver mass together with its signed
-renormalized cofactor pairing. These results constrain how an arithmetic defect state can be
-constructed and renormalized. A common subsequence also retains all fixed cofactor
-covariances, finite packet energies and their dilation bounds. Every such actual common limit
-now carries a cyclic critical Wiener representation. On escape, the complete paid ideal
-annihilates this module, including paid kernels with infinite support.
-
-[ActualCofactorDiagonalsAreHorizonEnergyRatios](ActualCofactorDiagonalsAreHorizonEnergyRatios.lean)
-identifies `p*K(p,p)` with the limiting ratio of receiver energy at the
-integer-contracted horizon to its original energy. The profile decreases
-in ordinary integer order, lies in `[0,1]`, and equals one on admission.
-This is an actual-source restriction beyond multiplicative dilation
-contraction. The exact mixed-horizon transport and its module consequences
-remain under Lean verification.
-
-[AZeroCofactorForcesFiniteDimension](AZeroCofactorForcesFiniteDimension.lean)
-proves that a zero cofactor at `p` forces dimension at most `p-1`.
-[CofactorContractionLawsDoNotSelectKroneckerPoints](CofactorContractionLawsDoNotSelectKroneckerPoints.lean)
-gives the augmentation countermodel: its scalar Gram satisfies positivity,
-critical contraction and numeric diagonal order, but its singleton character
-hull is outside every finite half-plane point. This abstract model has no
-asserted actual-source realization.
-
-[RankOneCofactorSignsAreMultiplicative](RankOneCofactorSignsAreMultiplicative.lean)
-classifies every actual rank-one character as augmentation or
-`chi(p)=eta(p)*p^(-s)`, where `s>=1/2` and `eta` is a multiplicative sign.
-The source laws determine the power magnitudes and reality; they do not
-select the signs or identify the exponent with a zeta zero.
-
-[TheCofactorOperatorHullObeysItsDilationRadii](TheCofactorOperatorHullObeysItsDilationRadii.lean)
-identifies the spectral locus controlled by operator decay: a nonempty subset
-of the module hull whose coordinates obey `|omega(p)| <= sqrt(p)||V_p||`.
-Closed representation image makes it the whole module hull; every finite
-module has this property. A faithful weighted orthogonal family in Arithmetic
-Orientation Theory shows that stronger contraction alone cannot give the same
-bound on the full annihilator hull.
-
-[TheSourcePowerSavingControlsMovingSuccessors](TheSourcePowerSavingControlsMovingSuccessors.lean)
-uses the actual Vinogradov–Korobov bound to enlarge the invisible translation
-scales. Recentered displacement energy is uniformly `o(k^(1-epsilon))`;
-raw displacement energy is uniformly `o(k^(2-2epsilon))`. Bounded ratios of
-these powers to receiver energy therefore still give zero limiting displacement.
-[CompleteWienerPairingsFollowTheCommonCofactorLimit](CompleteWienerPairingsFollowTheCommonCofactorLimit.lean)
-retains both coefficient variables in the common Gram limit and identifies
-their limit with the exact finite-cell source pairing.
-
-[AdmittedCofactorModulesAreFaithful](AdmittedCofactorModulesAreFaithful.lean)
-proves that every actual module on the admitted branch is faithful and has
-the full Bohr hull. Bounded source energy turns a null limiting Wiener vector
-into a zero row; its nonzero first source cell recovers every coefficient.
-Thus a nonfaithful actual module forces escape, while existence of a nonzero
-common Gram module by itself does not. Admission also forces infinite
-Hilbert dimension and continuum Hamel dimension of the annihilator quotient.
-Consequently, every finite-dimensional actual module forces escape.
-[TheAdmittedCofactorKernelIsUnique](TheAdmittedCofactorKernelIsUnique.lean)
-shows that the admitted kernel is independent of the chosen common subsequence.
-
-[FiniteCofactorIndexCountsJointMultiplicity](FiniteCofactorIndexCountsJointMultiplicity.lean)
-expresses the finite annihilator-quotient dimension as the sum of the joint
-generalized character-space dimensions. Normalized Bohr representatives index
-these spaces without duplication, and every occurring multiplicity is positive.
-
-[WienerUnitsTransportCofactorGrams](WienerUnitsTransportCofactorGrams.lean)
-constructs a unitary comparison after a Wiener unit changes the cyclic vector.
-It intertwines the complete Wiener action and preserves every operator norm,
-the annihilator, operator hull and module dimension.
-[CompleteWienerSourceRowsRespectDilation](CompleteWienerSourceRowsRespectDilation.lean)
-also identifies multiplication by a point mass with exact dilation of the
-complete source row.
-[RealWienerConvolutionTransportsCofactorGrams](RealWienerConvolutionTransportsCofactorGrams.lean)
-proves the source-level transport: the convolution correction has vanishing
-normalized energy, the new receiver-energy ratio has a positive limit, and
-the transformed Gram is the unit-transported Gram. This preserves escape.
-[TheMoebiusAndLiouvilleCofactorModulesAreUnitEquivalent](TheMoebiusAndLiouvilleCofactorModulesAreUnitEquivalent.lean)
-applies that identity to the actual damped Möbius and Liouville sources.
-
-**The open core is exclusion.** These constraints do not prove that receiver energy is bounded.
-A source estimate excluding every escaping state for a cofinal family of positive dampings
-would imply RH through the existing critical-energy receiver. Such an estimate is not an input
-or an axiom of this programme.
-
-## Motivation
-
-The corpus has exact receivers for the same unresolved arithmetic sign: critical energy,
-continuation, Weil positivity, Hodge index, source effectivity and orientation. An equivalence
-identifies what must be controlled. It does not produce that control.
-
-Arithmetic compensation already constructs normalized receiver profiles and proves that their
-energy escapes every fixed window. The next issue is what survives that escape. A pointwise
-limit can be zero while total energy remains one. A cofactor identity can become homogeneous
-on fixed cells while its complete forcing grows without bound. A successor label can survive
-in the notation while its action becomes the identity in the chosen norm.
-
-The programme therefore keeps three parts together:
-
-1. Actual arithmetic source data and exact finite-horizon identities.
-2. Quantitative costs of the operations used to observe those data.
-3. The signed residual, moving support and normalization required by the receiver.
-
-The purpose is an estimate or a rigorously justified restriction on possible defects. Naming a
-state, reconstructing the source, or adding a positivity field to a structure is insufficient.
-
-Read the forcing/receiver scale separation before choosing a normalization.
-The Gram identity then identifies the small signed distance that must survive.
-The power subtraction and absolute pole trace explain how to remove the large
-forcing without adding an assumption. Finally compare the two extraction tools:
-energy quantiles retain moving mass and signed cofactor work, while a common
-subsequence retains all fixed cofactor covariances. Neither construction alone
-is the complete defect state required for exclusion.
-
-## Objects and language
-
-Fix a damping $0<\varepsilon<1/2$. Write
-
-\[
-c_\varepsilon(n)=\sum_{d\mid n}\mu(d)d^{-\varepsilon},\qquad
-m_\varepsilon=\zeta(1+\varepsilon)^{-1},\qquad
-A_\varepsilon(n)=\sum_{j=1}^n(c_\varepsilon(j)-m_\varepsilon).
-\]
-
-The pronic pairing and energy are
-
-\[
-\langle u,v\rangle_T=\sum_{n=1}^T\frac{u(n)v(n)}{n(n+1)},\qquad
-E_T=\|A_\varepsilon\|_T^2.
-\]
-
-The actual inversion identity is
-
-\[
-\rho_\varepsilon(n)
-=n-m_\varepsilon\sum_{j=1}^n j^{-\varepsilon}\lfloor n/j\rfloor
-=A_\varepsilon(n)+D_\varepsilon(n),
-\quad
-D_\varepsilon(n)=\sum_{j=2}^n j^{-\varepsilon}A_\varepsilon(\lfloor n/j\rfloor).
-\]
-
-| Object | Meaning | Lean source |
-|---|---|---|
-| Subcritical damping | The declared parameter domain $0<\varepsilon<1/2$ | `SubcriticalDamping` |
-| Receiver energy $E_T$ | Actual critical pronic energy | Existing `dampedMobiusEnergy` |
-| Forcing energy $F_T$ | Complete energy $\|\rho_\varepsilon\|_T^2$ | `forcingEnergy` |
-| Forcing floor | Explicit positive coefficient of $T^{1-2\varepsilon}$ | `forcingFloor` |
-| Signed covariance $P_T$ | $\langle A_\varepsilon,\rho_\varepsilon\rangle_T$ | `receiverForcingPairing` |
-| Cofactor Gram coordinates | $G_T=\|D_\varepsilon\|_T^2$, $Q_T=\langle\rho_\varepsilon,D_\varepsilon\rangle_T$ | `cofactorEnergy`, `forcingCofactorPairing` |
-| Gram determinant | $F_TG_T-Q_T^2$ | `forcingGramDefect` |
-| Cofactor head coefficient | $H_{\varepsilon,J}=\sum_{2\le j\le J}j^{-\varepsilon}/\sqrt j$ | `cofactorHeadCoefficient` |
-| Signed cofactor tail | $D_\varepsilon-D_{\varepsilon,\le J}$ | `cofactorTail` |
-| Tail error | Squared distance of that tail from the complete forcing | `cofactorTailErrorEnergy` |
-| Growing source window | $\lfloor\log(F_T/E_T)\rfloor$ | `forcingCofactorWindow` |
-| Forcing power | $c_\varepsilon n^{1-\varepsilon}$ with $c_\varepsilon=-m_\varepsilon\zeta(1-\varepsilon)/(1-\varepsilon)>0$ | `forcingPower` |
-| Paid forcing remainder | $R_\varepsilon=\rho_\varepsilon-c_\varepsilon n^{1-\varepsilon}$ | `forcingRemainder` |
-| Renormalized cofactor residual | $D_\varepsilon-c_\varepsilon n^{1-\varepsilon}$ for the actual source | `renormalizedCofactor` |
-| Pronic forcing mass | $\sum_{n\le T}\rho_\varepsilon(n)/(n(n+1))$ | `forcingPronicMass` |
-| Exact forcing mass | $L_\varepsilon=\sum_n\Lambda(n)n^{-1-\varepsilon}=-\zeta'(1+\varepsilon)/\zeta(1+\varepsilon)$ | `forcingMassLimit` |
-| Absolute pole-trace domain | Zero-origin rows with summable pairing against the Mellin cells at $1-\varepsilon$ | `poleTraceDomain` |
-| Fixed trace-domain dilations | Proved domain endomorphisms with exact damped trace weight $1/j$ | `traceDilation`, `traceCofactorPacket` |
-| Linear cofactor subtraction | Finite cofactor operator minus the row's own trace times $n^{1-\varepsilon}$ | `renormalizedCofactorOperator` |
-| Energy quantile | First crossing of a prescribed fraction of $E_T$ | `receiverEnergyQuantile` |
-| Quantile cofactor work | Signed renormalized cofactor pairing between two energy crossings | `quantileCofactorWork` |
-| Fixed-cofactor Gram table | All signed pairings of floor-dilated receiver rows, divided by receiver energy | `cofactorGram` |
-| Cell word | Finite composition of successor translations and positive integer floor dilations | `CellWord` |
-| Word boundary cost | Total translation length, with division allowed to reduce the displacement | `CellWord.boundaryCost` |
-
-The programme uses *defect state* for a proposed carrier of escaping energy together with its
-arithmetic operations, signed covariances, scales and forcing. No abstract interface asserting
-the desired exclusion is supplied. The finite objects above are constructed directly from the
-source; a complete compactification retaining all required information remains a research task.
-
-The distinctions matter:
-
-- A source observation is data; an estimate controls its size in a specified norm.
-- Reconstruction does not imply a bounded output.
-- A unique arithmetic source need not have a coercive energy estimate.
-- Relative smallness does not imply an absolute energy bound.
-- A limiting Gram matrix need not retain its small signed distance coordinate.
-- Divisor support does not retain multiplicity or local vanishing orders.
-- A finite operation may have a growing boundary cost when its parameters move.
-
-## Foundational results
-
-### 1. The forcing and receiver require different scales
-
-[TheForcingDominatesTheReceiver](TheForcingDominatesTheReceiver.lean) and
-[ForcingScaleSeparation](ForcingScaleSeparation.lean) combine the exact positive majorant
-identity with the actual-source Vinogradov–Korobov estimate. With
-
-\[
-b_\varepsilon=\frac{m_\varepsilon^2}{2}\,2^{-2(1+\varepsilon)}>0,
-\qquad
-\sigma(T)=(\log T)^{3/5}(\log\log T)^{-5/3},
-\]
-
-they give
-
-\[
-F_T\ge b_\varepsilon T^{1-2\varepsilon},\qquad
-E_T\le C_\varepsilon e^{-\kappa\sigma(T)/270}F_T
-\quad\text{for all sufficiently large }T.
-\]
-
-Consequently
-
-\[
-F_T\longrightarrow\infty,\qquad E_T/F_T\longrightarrow0,\qquad
-F_T/E_T\longrightarrow\infty.
-\]
-
-The receiver is nonzero at every positive horizon. These statements hold whether its energy
-is admitted or divergent. No divergent-energy premise is needed.
-
-The strongest normalization consequence is `no_common_scalar_normalization`: there is no
-scalar sequence $a_T$ for which $a_T^2F_T$ is eventually bounded while $a_T^2E_T$ has an
-eventual positive lower bound. A state preserving nonzero receiver energy and finite forcing
-must therefore use more than one scalar scale, a suitable renormalized difference, or another
-explicit way of retaining the large forcing.
-
-This estimate is source-selective. For the unsigned majorant energy $M_T$, the exact identity
-is $F_T=m_\varepsilon^2M_T$, hence
-
-\[
-M_T/F_T=m_\varepsilon^{-2}>0\qquad(T\ge1).
-\]
-
-The majorant fails the actual receiver's vanishing-ratio law. The new comparison uses the
-existing arithmetic VK saving; positivity of the forcing alone does not supply it. Neither
-the comparison nor its source selectivity proves admission: $E_T$ may still diverge more
-slowly than $F_T$.
-
-### 2. The receiver is a signed Gram difference
-
-[TheReceiverIsTheGramTangent](TheReceiverIsTheGramTangent.lean) retains the exact geometry of
-
-\[
-\begin{pmatrix}F_T&Q_T\\Q_T&G_T\end{pmatrix}.
-\]
-
-The identities and bounds are
-
-\[
-G_T=F_T+E_T-2P_T,\qquad Q_T=F_T-P_T,\qquad
-F_T+G_T-2Q_T=E_T,
-\]
-
-\[
-0\le F_TG_T-Q_T^2=E_TF_T-P_T^2\le E_TF_T.
-\]
-
-The determinant divided by $F_T^2$ tends to zero for the actual source. Yet the signed
-distance divided by $E_T$ is exactly one. The small receiver is therefore retained by a
-tangent coordinate of the larger Gram system; positivity or rank of the limiting matrix
-does not recover its size.
-
-In normalized vector notation, let $u_T=A_\varepsilon/\sqrt{E_T}$,
-$f_T=\rho_\varepsilon/\sqrt{F_T}$ and $\eta_T=\sqrt{E_T/F_T}$. Then
-
-\[
-D_\varepsilon/\sqrt{F_T}=f_T-\eta_Tu_T.
-\]
-
-Retaining the bounded covariance $\langle u_T,f_T\rangle_T$ alone does not bound
-
-\[
-P_T/E_T=\langle u_T,f_T\rangle_T/\eta_T.
-\]
-
-The rate $\eta_T\to0$ and the signed covariance must remain attached. The programme has
-not proved a horizon-uniform estimate for this last quantity.
-
-### 3. The signed cofactor tail carries the forcing
-
-[TheCofactorTailCarriesTheForcing](TheCofactorTailCarriesTheForcing.lean) gives, for every
-cutoff and horizon,
-
-\[
-\|D_{\varepsilon,>J}-\rho_\varepsilon\|_T^2
-\le(1+H_{\varepsilon,J})^2E_T.
-\]
-
-The proof uses the existing sharp $1/\sqrt j$ pronic dilation contraction and the exact
-identity $D_{>J}-\rho=-(A+D_{\le J})$. The finite-head norm estimate is the vector form of
-the bound already used in the existing finite-head pairing theorem.
-
-For the actual source the estimate becomes
-
-\[
-\|D_{\varepsilon,>J}-\rho_\varepsilon\|_T^2
-\le C_\varepsilon(1+H_{\varepsilon,J})^2e^{-\kappa\sigma(T)/270}F_T,
-\]
-
-uniformly over $J$ once $T$ is sufficiently large. Every fixed cofactor tail therefore
-converges to the complete forcing in the forcing-energy normalization. The conclusion concerns
-the signed vector tail, including its cross terms.
-
-The same inequality prices a moving cutoff without exchanging limits. Its cost is explicit:
-$(1+H_{\varepsilon,J(T)})^2E_T/F_T$. A fixed-label cofactor limit that discards all large
-indices loses the entire forcing. A useful extraction must retain the moving tail or subtract
-it with a proved error in the receiver norm.
-
-[ForcingEscapesAMovingCofactorWindow](ForcingEscapesAMovingCofactorWindow.lean) supplies a
-concrete growing window. Set $r_T=F_T/E_T$ and $J_T=\lfloor\log r_T\rfloor$. Then
-
-\[
-J_T\longrightarrow\infty,\qquad
-\frac{\|D_{\varepsilon,>J_T}-\rho_\varepsilon\|_T^2}{F_T}
-\le\frac{(1+\log r_T)^2}{r_T}\longrightarrow0
-\]
-
-for sufficiently large $T$. The cutoff is defined by finite source energies. Its proof uses
-$H_{\varepsilon,J}\le J$ and the proved scale separation, so no admission assumption or
-unproved moving-cutoff estimate enters. The complementary cofactor indices grow even when
-receiver energy is admitted; this is a statement about where forcing is represented.
-
-### 4. Fixed successors disappear on an escaping receiver
-
-[FixedSuccessorsDisappearFromEscapingProfiles](FixedSuccessorsDisappearFromEscapingProfiles.lean)
-uses actual arithmetic coefficient bounds $0\le c_\varepsilon(n)\le1$ and
-$0<m_\varepsilon\le1$. They imply
-
-\[
-|A_\varepsilon(n+k)-A_\varepsilon(n)|\le k,\qquad
-\|A_\varepsilon(\cdot+k)-A_\varepsilon\|_T^2\le k^2.
-\]
-
-Together with the existing admission-or-divergence dichotomy, this proves an unconditional
-alternative: the receiver is admitted, or every fixed successor displacement divided by
-$E_T$ tends to zero.
-
-The moving translation budget $k^2/E_T$ gives an initial scale test.
-[TheOriginTraceControlsMovingSuccessors](TheOriginTraceControlsMovingSuccessors.lean)
-strengthens it: even an eventually bounded ratio $k(T)^2/E_T$ gives zero normalized raw
-displacement on escape. Recentring removes the origin value $A_\varepsilon(k)$ and leaves
-an additive defect bounded pointwise by $\min(n,k)$; its sharp total pronic envelope is
-$2k-H_k$. These bounds do not assert that any larger translation detects a defect.
-
-[RecenteredSuccessorsVanishAtTheEnergyScale](RecenteredSuccessorsVanishAtTheEnergyScale.lean)
-improves the recentered energy to uniform $o(k)$. Hence even bounded $k(T)/E_T$
-gives zero normalized recentered displacement on escape.
-
-### 5. Every finite cofactor-successor word has a boundary budget
-
-[CofactorSuccessorWordsHaveABoundaryCost](CofactorSuccessorWordsHaveABoundaryCost.lean) closes
-the preceding estimate under finite compositions. For a word $w$, let $q(w)$ be the product
-of its cofactor denominators and $B(w)$ the sum of its successor translation lengths. Then
-
-\[
-\lfloor n/q(w)\rfloor\le w(n)\le\lfloor n/q(w)\rfloor+B(w),
-\]
-
-and for the actual receiver,
-
-\[
-\|A_\varepsilon(w(\cdot))-A_\varepsilon(\lfloor\cdot/q(w)\rfloor)\|_T^2
-\le B(w)^2.
-\]
-
-Thus the receiver is admitted, or every fixed word reduces to its pure multiplicative dilation
-in normalized energy. Adding finitely many interlaced successor and cofactor labels does not
-repair the loss of successor information. The surviving tool is the explicit budget for moving
-words, $B(w_T)^2/E_T$, together with the exact finite word action.
-
-This result uses bounded arithmetic increments. It does not distinguish the source from every
-sequence with bounded increments and does not prohibit successor methods using moving scales,
-amplified derivatives, raw coefficient observations, or a different justified topology.
-
-If $W_{w,T}$ is the boundary displacement's signed pairing with the complete forcing,
-Cauchy–Schwarz gives
-
-\[
-|W_{w,T}|^2\le B(w)^2F_T,\qquad
-|W_{w,T}/E_T|^2\le B(w)^2F_T/E_T^2.
-\]
-
-This generic estimate alone does not justify dropping the boundary work. The forcing's
-stronger pronic mass bound below supplies the missing control:
-
-\[
-|W_{w,T}|\le B(w)L_\varepsilon,\qquad
-|W_{w,T}|/E_T\le B(w)L_\varepsilon/E_T.
-\]
-
-Thus fixed words lose their boundary work as well as their vector displacement on the escaping
-branch. Moving words have two distinct costs: $B(w_T)^2/E_T$ in squared norm and
-$L_\varepsilon B(w_T)/E_T$ in normalized forcing work. This conclusion uses a proved dual
-estimate; it is not inferred from norm disappearance.
-
-### 6. An explicit power subtraction pays the complete forcing remainder
-
-[TheForcingSplitsIntoAPowerAndAnAdmittedRemainder](TheForcingSplitsIntoAPowerAndAnAdmittedRemainder.lean)
-connects the forcing to the existing smooth-power expansion in Trans-Horizon Incidence
-Mechanics. Put
-
-\[
-Z_\varepsilon=\frac{\zeta(1-\varepsilon)}{1-\varepsilon}<0,\qquad
-c_\varepsilon=-m_\varepsilon Z_\varepsilon>0,\qquad
-M_\varepsilon=K_\varepsilon+|Z_\varepsilon|,
-\]
-
-where $K_\varepsilon$ is the existing `floorSumRate` at $1-\varepsilon$. Then
-
-\[
-\rho_\varepsilon(n)=c_\varepsilon n^{1-\varepsilon}+R_\varepsilon(n),\qquad
-\|R_\varepsilon\|_T
-\le m_\varepsilon\sqrt{1+1/\varepsilon}\,M_\varepsilon
-=:B_\varepsilon
-\]
-
-at every horizon. The hyperbola expansion and its pointwise remainder estimate are existing
-THIM results. The contribution here identifies their exact forcing normalization and carries
-the paid remainder into the actual cofactor identity.
-
-Define $\widetilde D_\varepsilon=D_\varepsilon-c_\varepsilon n^{1-\varepsilon}$. The
-finite-cell relation and its global error are
-
-\[
-A_\varepsilon+\widetilde D_\varepsilon=R_\varepsilon,\qquad
-\|A_\varepsilon+\widetilde D_\varepsilon\|_T^2\le B_\varepsilon^2.
-\]
-
-The receiver is therefore admitted, or
-
-\[
-\frac{\|A_\varepsilon+\widetilde D_\varepsilon\|_T^2}{E_T}\longrightarrow0.
-\]
-
-This is a valid homogeneous relation in the global receiver norm after an explicit paid
-subtraction. It handles moving cells as well as fixed cells. The full forcing itself cannot
-be discarded at that normalization.
-
-This expression specifies an affine residual for the actual source. The absolute
-trace construction below realizes it as a linear operation on a proved domain. Boundedness,
-invertibility, domain invariance and coercivity require additional estimates.
-
-[TheRenormalizedCofactorIsAntipodalOnEscape](TheRenormalizedCofactorIsAntipodalOnEscape.lean)
-retains the signed pairing. If $\widetilde P_T=\langle A_\varepsilon,\widetilde
-D_\varepsilon\rangle_T$, then
-
-\[
-E_T+\widetilde P_T=\langle A_\varepsilon,R_\varepsilon\rangle_T,\qquad
-|E_T+\widetilde P_T|\le B_\varepsilon\sqrt{E_T},\qquad
-\left(\frac{\widetilde P_T}{E_T}+1\right)^2\le\frac{B_\varepsilon^2}{E_T}
-\quad(T\ge1).
-\]
-
-Hence every escaping receiver has renormalized cofactor pairing tending to $-1$. The relation
-is a necessary signed constraint on an escaping state, not a contradiction.
-
-The same paid remainder controls absolute localization. Define
-
-\[
-V_T=\sum_{n\le T}\frac{|A_\varepsilon(n)^2+
-  A_\varepsilon(n)\widetilde D_\varepsilon(n)|}{n(n+1)}.
-\]
-
-Then
-
-\[
-V_T=\sum_{n\le T}\frac{|A_\varepsilon(n)|\,|R_\varepsilon(n)|}{n(n+1)}
-\le B_\varepsilon\sqrt{E_T}.
-\]
-
-On escape, $V_T/E_T\to0$. This is total-variation control of the signed cofactor-density
-error. [MovingLocalizationsRetainTheSignedDensity](MovingLocalizationsRetainTheSignedDensity.lean)
-makes the consequence explicit: any cell multiplier of absolute value at most one, including
-one moving with the horizon, has normalized error at most $V_T/E_T$. The single global remainder budget
-pays every such localization; cancellation of the total pairing is not being substituted for
-absolute control. No analogous estimate has been proved for the unsubtracted forcing pairing.
-
-### 7. Infinite forcing energy coexists with finite forcing mass
-
-[TheForcingHasFinitePronicMass](TheForcingHasFinitePronicMass.lean) uses the same expansion
-to prove
-
-\[
-0\le\rho_\varepsilon(n)
-\le m_\varepsilon M_\varepsilon n^{1-\varepsilon},\qquad
-0\le\sum_{n=1}^T\frac{\rho_\varepsilon(n)}{n(n+1)}
-\le M_\varepsilon.
-\]
-
-The power envelope is summable in pronic $L^1$ for every damping in the declared range,
-although the forcing's pronic $L^2$ energy diverges. The factor $m_\varepsilon$ cancels
-the zeta series in the mass estimate.
-
-The existing THIM first-moment identity supplies the exact mass:
-
-\[
-\sum_{n=1}^{\infty}\frac{\rho_\varepsilon(n)}{n(n+1)}
-=L_\varepsilon
-=\sum_{n=1}^{\infty}\Lambda(n)n^{-1-\varepsilon}
-=-\frac{\zeta'(1+\varepsilon)}{\zeta(1+\varepsilon)}
-\le M_\varepsilon.
-\]
-
-The finite masses converge to $L_\varepsilon$ and are all bounded by it. This identifies the
-optimal constant for pairing the positive forcing with rows bounded by one; the constant
-row itself exhausts that bound.
-
-This pays the forcing pairing of any bounded cell error. In particular, the actual word
-boundary bound gives the uniform work estimate in pillar 5. The estimate does not pay
-$\langle A_\varepsilon,\rho_\varepsilon\rangle_T$: the receiver prefix is not uniformly
-bounded, and inserting such a bound would assume the missing arithmetic control.
-
-[BoundedWordErrorsHaveAnAbsoluteHorizonTail](BoundedWordErrorsHaveAnAbsoluteHorizonTail.lean)
-also prices newly entering cells. With
-$C_\varepsilon^{\mathrm{tail}}=m_\varepsilon M_\varepsilon(1+\varepsilon)/\varepsilon$,
-
-\[
-0\le\sum_{H<n\le T}\frac{\rho_\varepsilon(n)}{n(n+1)}
-\le C_\varepsilon^{\mathrm{tail}}(H+1)^{-\varepsilon},
-\]
-
-\[
-\left|\sum_{H<n\le T}
-\frac{[A_\varepsilon(w(n))-A_\varepsilon(\lfloor n/q(w)\rfloor)]\rho_\varepsilon(n)}
-{n(n+1)}\right|
-\le B(w)C_\varepsilon^{\mathrm{tail}}(H+1)^{-\varepsilon}.
-\]
-
-Both estimates hold uniformly in the final horizon $T$. For every fixed word and positive
-error allowance, one sufficiently large cutoff pays all later final horizons. No receiver
-normalization is used. Moving words carry the displayed boundary-cost factor. This is an
-absolute compensation theorem for bounded word errors; it does not supply the same control
-for the unbounded receiver prefix or the full signed compensation problem.
-
-### 8. The actual source determines its linear boundary subtraction
-
-[TheActualReceiverHasAnAbsolutePoleTrace](TheActualReceiverHasAnAbsolutePoleTrace.lean)
-extends the actual Mellin pairing to its cofactor pole. Put $\alpha=1-\varepsilon$ and
-$\Delta_\alpha(n)=n^{-\alpha}-(n+1)^{-\alpha}$. Then
-
-\[
-\sum_{n\ge1}|A_\varepsilon(n)|n^{\varepsilon-2}<\infty,
-\qquad
-\mathcal L_\varepsilon(A_\varepsilon)
-:=\frac1\alpha\sum_{n\ge1}A_\varepsilon(n)\Delta_\alpha(n)
-=c_\varepsilon>0.
-\]
-
-Absolute convergence comes from the actual VK estimate. Its exponential saving dominates a
-summable envelope proportional to $n^{-1}\exp(-\sqrt{\log n}/120)$. To identify the value,
-approach $\alpha$ from the right in the existing THIM Mellin identity:
-
-\[
-\sum_n A_\varepsilon(n)\Delta_\sigma(n)
-=\zeta(\sigma)\left(\frac1{\zeta(\sigma+\varepsilon)}-m_\varepsilon\right),
-\qquad \alpha<\sigma<1.
-\]
-
-A common summable envelope permits passage to $\sigma=\alpha$, while the reciprocal zeta
-factor tends to zero. This argument does not represent the conditionally convergent
-$\sum\mu(n)/n$ as an absolutely summable series. The Mellin cells and their bounded-energy
-continuity are existing THIM tools; the source endpoint membership and exact value are the
-inputs supplied here.
-
-[ThePoleTraceDefinesALinearCofactorRenormalization](ThePoleTraceDefinesALinearCofactorRenormalization.lean)
-constructs the real vector space
-
-\[
-\mathcal X_\varepsilon
-=\left\{v:v(0)=0,\quad
-\sum_n|v(n)\Delta_\alpha(n)|<\infty\right\}
-\]
-
-and the linear map
-
-\[
-\widetilde{\mathcal D}_\varepsilon v(n)
-=\sum_{j=2}^{n}j^{-\varepsilon}v(\lfloor n/j\rfloor)
--\mathcal L_\varepsilon(v)n^\alpha.
-\]
-
-The actual receiver belongs to $\mathcal X_\varepsilon$ independently of critical-energy
-admission. Its image is exactly $\widetilde D_\varepsilon$, so
-
-\[
-\|A_\varepsilon+\widetilde{\mathcal D}_\varepsilon A_\varepsilon\|_T\le B_\varepsilon.
-\]
-
-The operator is defined with values in all rows. For the actual receiver, its image lies again
-in $\mathcal X_\varepsilon$: the paid remainder has bounded pronic energy, hence an absolute
-Mellin trace, and $\widetilde D_\varepsilon=R_\varepsilon-A_\varepsilon$. General domain
-invariance and boundedness in critical energy remain unproved. They are mathematical
-requirements for any proposed iteration or resolvent argument. An escaping source would give
-an approximate eigenrelation with value $-1$ after normalization; identifying that relation
-is not a proof that it is impossible.
-
-[FixedCofactorsHaveAHarmonicBoundaryTrace](FixedCofactorsHaveAHarmonicBoundaryTrace.lean)
-proves that each fixed floor dilation preserves $\mathcal X_\varepsilon$. The missing
-summability is paid by finite absolute Mellin blocks:
-
-\[
-\sum_{n<Tj}|v(\lfloor n/j\rfloor)|\Delta_\alpha(n)
-=j^{-\alpha}\sum_{m<T}|v(m)|\Delta_\alpha(m).
-\]
-
-Every partial sum is bounded by a complete block, which establishes absolute convergence
-before applying the existing Mellin dilation law. The absolute trace mass
-$\sum_n|v(n)\Delta_\alpha(n)|$ scales by exactly $j^{-\alpha}$ under fixed dilation;
-this prices the operation without relying on signed cancellation. Consequently
-
-\[
-\mathcal L_\varepsilon(v(\lfloor\cdot/j\rfloor))
-=j^{-\alpha}\mathcal L_\varepsilon(v),\qquad
-\mathcal L_\varepsilon(j^{-\varepsilon}v(\lfloor\cdot/j\rfloor))
-=\frac1j\mathcal L_\varepsilon(v).
-\]
-
-For every finite set $S$ of positive cofactor indices,
-
-\[
-\mathcal L_\varepsilon\left(\sum_{j\in S}j^{-\varepsilon}
-  v(\lfloor\cdot/j\rfloor)\right)
-=\left(\sum_{j\in S}\frac1j\right)\mathcal L_\varepsilon(v).
-\]
-
-For the actual source the last factor is the proved positive $c_\varepsilon$. This is an exact
-boundary cost for finite packets. It does not authorize exchanging the complete cofactor sum
-with the trace: its harmonic coefficients are not summable. Fixed-dilation domain stability
-and stability under the full variable-horizon cofactor operator are different obligations.
-
-The same trace pays the dilation commutator in pillar 11, including when the dilation moves
-with the horizon. This compatibility law does not establish boundedness of the full cofactor
-operator or general invariance of its trace domain.
-
-### 9. Energy quantiles retain diffuse mass and signed cofactor work
-
-[EnergyQuantilesRetainDiffuseEscape](EnergyQuantilesRetainDiffuseEscape.lean) uses the actual
-increment bound to give
-
-\[
-|A_\varepsilon(n)|\le n,\qquad
-0\le E_{n+1}-E_n\le1,\qquad E_{n+k}-E_n\le k.
-\]
-
-For $r\in[0,1]$, define $q_T(r)$ as the first integer with $E_{q_T(r)}\ge rE_T$.
-The horizon itself supplies a crossing. The quantile is monotone in $r$, lies at most at $T$,
-and satisfies
-
-\[
-0\le E_{q_T(r)}-rE_T\le1.
-\]
-
-For $0\le r\le s\le1$ and $T\ge1$ this implies
-
-\[
-\left|\frac{E_{q_T(s)}-E_{q_T(r)}}{E_T}-(s-r)\right|\le\frac1{E_T}.
-\]
-
-On the escaping branch, every fixed energy interval therefore retains its prescribed mass.
-No fixed spatial window or finite packet is required. This transport uses bounded increments;
-it does not by itself distinguish arithmetic from other rows with the same increment bound.
-
-[EnergyQuantilesPreserveTheSignedCofactorPairing](EnergyQuantilesPreserveTheSignedCofactorPairing.lean)
-adds the signed actual-source constraint. Let
-
-\[
-W_T(r,s)=\widetilde P_{q_T(s)}-\widetilde P_{q_T(r)}.
-\]
-
-The globally paid remainder and the quantile overshoot give, uniformly in both endpoints,
-
-\[
-|W_T(r,s)+(s-r)E_T|\le2B_\varepsilon\sqrt{E_T}+1,
-\]
-
-\[
-\left(\frac{W_T(r,s)}{E_T}+(s-r)\right)^2
-\le\frac{8B_\varepsilon^2}{E_T}+\frac2{E_T^2}
-\qquad(T\ge1).
-\]
-
-Thus energy-quantile transport preserves both positive energy mass and its antipodal signed
-cofactor work, even under diffuse escape. This is a joint transport theorem for these two
-specific observables. It does not preserve every cofactor/successor covariance, recover the
-original spatial geometry from the quantile labels, or exclude the resulting signed state.
-
-### 10. All fixed cofactor covariances admit one common limit
-
-[CountableCofactorCovariancesHaveACommonLimit](CountableCofactorCovariancesHaveACommonLimit.lean)
-uses the existing countable compactness theorem on the actual signed tables
-
-\[
-K_T(j,k)=\frac{\langle D_jA_\varepsilon,D_kA_\varepsilon\rangle_T}{E_T},
-\qquad D_jv(n)=v(\lfloor n/j\rfloor),\quad j,k\ge1,\quad T\ge1.
-\]
-
-There is one increasing sequence of horizons along which every entry converges to a real
-kernel $K$. The same limit retains
-
-\[
-K(1,1)=1,\qquad K(j,k)=K(k,j),\qquad
-|K(j,k)|\le\frac1{\sqrt j\sqrt k}.
-\]
-
-For every finite cofactor set $S$ and every real coefficient family $a$,
-
-\[
-0\le Q_K(a):=\sum_{j,k\in S}a_ja_kK(j,k),
-\qquad
-\sum_{j,k\in S}a_ja_kK(pj,pk)\le\frac1p Q_K(a)
-\quad(p\ge1).
-\]
-
-These conclusions hold at each fixed `ε`, without an admission or divergence premise.
-The subsequence may depend on `ε`; no simultaneous limit across a cofinal damping
-family is asserted. They follow from exact
-finite packet energies and the existing sharp pronic dilation law. Compactness is applied to
-all mixed entries together, so signed cross terms cannot disappear through independently
-chosen subsequences.
-
-[TheCofactorLimitCarriesACyclicDilationAction](TheCofactorLimitCarriesACyclicDilationAction.lean)
-constructs the complex Hilbert realization for **every** actual common limit.
-`ActualCofactorLimit` stores only the horizon subsequence and covariance convergence;
-the displayed Gram properties are derived. Its vectors $v_j$ form a total family, and
-$V_pv_j=v_{pj}$ extends to the completion with $\|V_p\|\le p^{-1/2}$.
-The operators multiply exactly according to the integer monoid.
-
-[TheCofactorLimitIsAWienerModule](TheCofactorLimitIsAWienerModule.lean) integrates this action:
-$\pi(a)=\sum_n a_nV_n$ is a contractive unital representation of $\mathcal W_{1/2}$,
-with cyclic vector $v_1$. Its operator kernel equals the vector annihilator, is closed
-and proper, and has nonempty hull. This construction also exists on the admitted branch;
-existence of the normalized module alone is not evidence of energy escape.
-
-[WienerCovariancesFollowTheCommonCofactorLimit](WienerCovariancesFollowTheCommonCofactorLimit.lean)
-passes every critical Wiener coefficient series through the common covariance limit.
-[PaidWienerKernelsAnnihilateTheCofactorLimit](PaidWienerKernelsAnnihilateTheCofactorLimit.lean)
-then proves, on escape,
-
-\[
-P(\mu_\varepsilon)\subseteq\ker\pi,\qquad
-\varnothing\ne h(\ker\pi)\subseteq h(P(\mu_\varepsilon)).
-\]
-
-Infinite-support paid kernels are included; their finite truncations need not themselves
-be paid. Neither equality of these ideals nor identification with translated zero data
-follows from the inclusions.
-
-[WhiteNoiseAndAntipodalEscapeData](WhiteNoiseAndAntipodalEscapeData.lean) also separates
-Gram compatibility from source classification. White noise satisfies the listed compactness
-constraints and admits the unique positive extension adjoining $-v_1$. Antipodality alone
-therefore supplies no exclusion; the source realization of the residual remains essential.
-
-[TheSignedCofactorGramHasNoExtraCoordinates](TheSignedCofactorGramHasNoExtraCoordinates.lean)
-identifies that fixed signed realization along every actual escaping common subsequence:
-residual vectors are $-v_j$, forcing-remainder vectors are zero, and normalized fixed
-pole traces vanish. The unscaled trace and moving cofactor boundary remain separate data.
-
-The normalized receiver is nonzero in this carrier. That repairs the elementary loss of mass
-in a pointwise zero limit, but it does not retain a moving infinite cofactor sum. In particular,
-$\sum_jj^{-\varepsilon}K(1,j)$ cannot be substituted for the complete forcing relation without
-a proved tail estimate in the same normalization. Fixed word boundaries can be priced by
-pillar 5; moving successor information still carries its explicit boundary budget. These
-limitations distinguish a fixed-cofactor Gram carrier from the full defect state needed for
-arithmetic exclusion.
-
-### 11. The cofactor commutator has a uniform trace budget
-
-[CofactorRenormalizationHasABoundedDilationCommutator](CofactorRenormalizationHasABoundedDilationCommutator.lean)
-prices the interaction of the linear subtraction and floor dilation on its proved domain.
-The finite cofactor operator commutes with each $D_p$. Its renormalization satisfies the exact
-identity
-
-\[
-(\widetilde{\mathcal D}_\varepsilon D_p-
- D_p\widetilde{\mathcal D}_\varepsilon)v(n)
-=\mathcal L_\varepsilon(v)
- \left(\lfloor n/p\rfloor^\alpha-p^{-\alpha}n^\alpha\right),
-\qquad \alpha=1-\varepsilon.
-\]
-
-The right side is meaningful for every $v\in\mathcal X_\varepsilon$. The left side uses
-$D_p$ on arbitrary rows after applying $\widetilde{\mathcal D}_\varepsilon$; it does not
-assume that the full renormalized operator preserves the trace domain.
-
-Since $0<\alpha<1$, concavity gives
-
-\[
-\left|\lfloor n/p\rfloor^\alpha-p^{-\alpha}n^\alpha\right|\le1.
-\]
-
-Consequently
-
-\[
-\|(\widetilde{\mathcal D}_\varepsilon D_p-
- D_p\widetilde{\mathcal D}_\varepsilon)v\|_T
-\le|\mathcal L_\varepsilon(v)|
-\]
-
-uniformly in both $p$ and $T$. For the actual receiver the bound is $c_\varepsilon$.
-On the escaping branch, the squared commutator norm divided by $E_T$ tends to zero for
-**every horizon-dependent choice $p=p(T)$**. No rate restriction on that integer dilation
-is needed for this estimate.
-
-This is a paid compatibility law, not a source-exclusion theorem. The finite cofactor
-commutation and power rounding hold for general rows; the actual arithmetic input is the
-independently proved trace value. Successor transport on repairing ideals and boundedness
-of the full renormalized operator remain different questions.
-
-### 12. Residual and trace determine the row exactly
-
-[TheResidualAndPoleTraceDetermineTheRow](TheResidualAndPoleTraceDetermineTheRow.lean)
-uses the existing weighted Möbius floor inverse. Put
-
-\[
-\mathcal R_\varepsilon(v)=v+\widetilde{\mathcal D}_\varepsilon v,
-\qquad
-q_\varepsilon(n)=\sum_{d\le n}\mu(d)d^{-\varepsilon}
-  \lfloor n/d\rfloor^{1-\varepsilon}.
-\]
-
-For every $v\in\mathcal X_\varepsilon$, exact reconstruction gives
-
-\[
-v(n)=\sum_{d\le n}\mu(d)d^{-\varepsilon}
-  \mathcal R_\varepsilon(v)(\lfloor n/d\rfloor)
-  +\mathcal L_\varepsilon(v)q_\varepsilon(n).
-\]
-
-Thus $(\mathcal R_\varepsilon,\mathcal L_\varepsilon)$ is injective. Two rows with the same
-residual and the same trace coincide. Every possible residual-kernel row is a scalar multiple
-of the explicit row $q_\varepsilon$, and a kernel row with trace zero vanishes.
-
-This is a containment statement. It does not assert that $q_\varepsilon$ belongs to the trace
-domain, that its trace is one, or that the residual kernel is nonzero. Those analytic questions
-cannot be discharged by floor inversion alone.
-
-For the actual receiver,
-
-\[
-A_\varepsilon(n)=\sum_{d\le n}\mu(d)d^{-\varepsilon}
- R_\varepsilon(\lfloor n/d\rfloor)+c_\varepsilon q_\varepsilon(n).
-\]
-
-The remainder $R_\varepsilon$ is globally paid. Its Möbius floor inverse and the row
-$q_\varepsilon$ have not been proved paid here. The displayed reconstruction therefore
-isolates the two unestimated terms rather than transferring the known remainder bound through
-an unproved bounded inverse. Source uniqueness on a trace slice is exact; coercivity remains
-a separate quantitative question.
-
-## Mechanisms and foundational principles
-
-The programme starts with source identities, establishes the cost of observing them, and only
-then forms a limit or a quotient. The established mechanisms are:
-
-- **Scale separation:** compare actual signed cancellation with positive forcing using a proved
-  arithmetic estimate.
-- **Signed Gram coordinates:** retain small differences and mixed terms before normalization.
-- **Tail accounting:** carry a complete cofactor tail as a vector with an explicit cutoff cost.
-- **Word calculus:** price additive boundaries through finite compositions with multiplicative
-  operations.
-- **Paid renormalization:** subtract an explicit forcing power only after its complete
-  remainder has a uniform critical-norm budget.
-- **Dual mass control:** price bounded cell errors using the forcing's finite pronic mass,
-  with a uniform absolute tail budget for newly entering cells.
-- **Paid commutation:** expose the exact rank-one boundary term and price its norm before
-  interchanging renormalization with a moving arithmetic operation.
-- **Source boundary trace:** determine the linear subtraction from the actual row and prove
-  domain membership independently of energy admission.
-- **Joint covariance extraction:** retain every fixed mixed cofactor entry and every finite
-  packet energy along one subsequence, including its quantitative dilation action.
-- **Energy quantile transport:** retain diffuse energy and its signed cofactor work with a
-  uniform, explicitly vanishing error.
-
-Further mechanisms must satisfy the same principles:
-
-1. Construct objects from actual coefficients, theta data or exact source identities.
-2. Retain signs until any absolute-value loss has a proved budget.
-3. Keep horizon, damping, cutoff, location and scale quantifiers visible.
-4. Preserve the defect being studied; erasing it cannot establish its absence.
-5. Charge overlap, new cells, boundaries and the Gamma/polar reserve exactly once.
-6. Keep multiplicity and local vanishing orders whenever a divisor transfer uses them.
-7. Test source selectivity against the relevant surviving countermodels.
-8. Allow diffuse escape and growing carriers; do not assume a fixed finite bad packet or a
-   positive spectral gap.
-9. Separate exact identities, estimates, extraction and exclusion. Each needs its own proof.
-
-These are requirements on theorem design, not new axioms about arithmetic.
-
-## Research questions and tools to develop
-
-| Topic | Question | Required output |
-|---|---|---|
-| Joint extraction | Fixed cofactor covariances already have a common limit, and quantiles retain moving signed work. How can these coexist with the complete moving cofactor tail in one carrier? | A compatible compactness or decomposition theorem preserving both constructions, the rate and spatial data, without exchanging an uncontrolled infinite sum with a limit. |
-| Quantitative source selectivity | Which actual arithmetic relation excludes the surviving tangent state or its approximate renormalized cofactor eigenrelation? | An independently proved estimate violated by the relevant impure models. |
-| Mixed Bézout/Vaughan covariance | Can additive coprimality and multiplicative factorization give a summable signed gain after correct centering? | A bound for the complete mixed residual with horizon and damping dependence. |
-| Successor dynamics | Which moving words or amplified coefficient operations retain source information at a controlled cost? | A nontrivial action at the escape scale and a proved boundary estimate consumed by a receiver. |
-| Renormalized operator domains | Dilations preserve the trace domain and have a uniformly paid renormalization commutator; the actual renormalized image also belongs to the domain. On which larger source-compatible spaces can the full subtraction be iterated or controlled? | General domain invariance and quantitative critical-norm estimates, including the harmonic boundary cost of growing packets. |
-| Repairing modules | How do these operations act on ideals, hulls and local vanishing orders? | A defined action or transport relation preserving the required local algebra; ideal invariance must be proved. |
-| Absolute compensation | Can the signed tail and its newly entering horizon cells be paid in the receiver norm? | An absolute bound including all cross terms; summable relative errors alone are insufficient. |
-| Shared allocation | Can one certificate control the full signed form across overlapping carriers? | A global allocation including frustration, boundary flux and one Gamma/polar reserve. |
-| Arithmetic anti-collapse | How much local depth mass must an actual divisor packet carry, with multiplicity? | A quantitative lower bound and its width-to-energy transfer; a total zero-count bound does not suffice. |
-| Source effectivity | Can source-defined sections force the required sign independently of that sign? | A section or energy law with a proved landing in the effectivity receiver. |
-| Enumerative certificates | Can a source-defined incidence count bound a quantized defect in the right direction? | An identity such as $D+H=B$, $H\ge0$, together with an independent bound below the defect quantum. |
-
-The extraction problem must accommodate fixed-word collapse, forcing in growing cofactor
-tails, and the impossibility of a common scalar normalization. The paid power subtraction
-offers one concrete response: retain the explicit power separately and carry the residual
-cofactor relation in the receiver norm. The absolute trace supplies a linear operator domain;
-energy quantiles retain diffuse energy and signed antipodal work. The countable Gram limit
-retains every fixed finite packet with its dilation bound. A complete extraction must reconcile
-these observations on moving carriers and retain their spatial and scale data. Neither a
-finite Gram matrix nor a countable table without a tail theorem resolves that requirement.
-
-The exclusion problem is separate. Even a complete extraction theorem would leave the need
-for a source estimate forbidding its nonzero states. The current results give no such universal
-exclusion and no independent all-damping admission producer.
-
-## Traps
-
-- Pointwise disappearance of forcing does not justify discarding its global pairing.
-- Subtracting a power from the actual cofactor residual does not establish a bounded linear
-  operator on arbitrary rows.
-- Finite forcing mass controls bounded cell errors, not arbitrary receiver prefixes.
-- A positive forcing is not a bound for its signed pairing with the receiver.
-- Vanishing $E_T/F_T$ allows $E_T\to\infty$.
-- A positive semidefinite or rank-one limiting Gram matrix can lose the entire critical
-  distance coordinate.
-- Universal floor commutators and multiplicativity identities need not contain Möbius
-  cancellation.
-- Fixed-word observations cannot be assumed to retain successor selectivity under energy
-  normalization.
-- Termwise absolute cofactor control has the known half-damping threshold; a new notation
-  does not change its divergent series.
-- Entrywise convergence of every fixed cofactor covariance does not justify a moving
-  cutoff or an infinite cofactor sum.
-- A finite source certificate must retain its quantitative transfer cost as its carrier grows.
-- A nonnegative count $h=D+R$, with $D,R\ge0$, gives no upper bound forcing $D=0$.
-- A density-one or eventual-height result may leave finitely many off-line zeros.
-- Aperture and damping are different parameters and require an explicit bridge.
-
-## Place among the programmes
+# Arithmetic Defect Rigidity (ADR)
+
+**One question.** Which failures of critical arithmetic estimates survive normalization, localization
+and passage to infinity — and which relations of the actual source restrict an escaping defect strongly
+enough to control the signed quantity an established receiver consumes?
+
+The working receiver is the centered damped Möbius receiver at damping `0 < ε < ½`. ADR separates its
+energy from the much larger positive forcing, keeps the receiver as a signed Gram difference, locates
+the forcing in the cofactor tail, prices successor/dilation words, pays the forcing by an explicit power
+subtraction defined by the source's own pole trace, and extracts limits (energy quantiles; common
+cofactor Gram limits carrying a cyclic critical Wiener module) that retain signed data. Each result
+constrains what an escaping state can be.
+
+**Open core: exclusion.** None of this bounds receiver energy. A source estimate excluding every escaping
+state for a cofinal family of dampings would give RH through the critical-energy receiver; no such
+estimate is an input or axiom here.
+
+Namespace `GaloisForLFunctions.ArithmeticDefectRigidity`; umbrella `ArithmeticDefectRigidity.lean`.
+
+---
+
+## 1. Place in the research
+
+The corpus has exact receivers (critical energy, continuation, Weil positivity, Hodge index, source
+effectivity, orientation). Compensation theory proves normalized receiver profiles escape every fixed
+window. ADR asks what survives that escape: a pointwise limit can be zero with total energy one; a
+cofactor identity can become homogeneous on fixed cells while its forcing grows; a successor label can
+act as the identity in the chosen norm. ADR keeps source data, observation costs, and the signed
+residual with its moving support together.
 
 | Programme | Relationship |
 |---|---|
-| [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Supplies normalized profiles, origin costs and escape. Defect rigidity studies which operations and forcing survive that normalization. |
-| [Arithmetic Continuation and Critical Energy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Supplies the receiver, inversion identity, signed pairings and dilation calculus. Defect rigidity retains their moving residuals and scales. |
-| [Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md) | Supplies actual-source bounds, successor covariance and the VK estimate. Its mixed arithmetic interactions are candidate sources of stronger rigidity. |
-| [Trans-Horizon Incidence Mechanics](../TransHorizonIncidenceMechanics/README.md) | Supplies finite incidence, smooth-power expansions and remainder estimates. Defect rigidity uses these to pay the explicit forcing subtraction on moving horizons. |
-| [Signed Successor Arithmetic](../SignedSuccessorArithmetic/README.md) | Supplies exact successor counts and density-scale rigidity. Their transfer to an escaping receiver must overcome fixed-successor collapse and retain the moving boundary cost. |
-| [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Preserves Möbius signs when passing from source incidence to energy. The same discipline governs the tangent covariance. |
-| [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Provides source-orientation and repairing objects whose quantitative defect dynamics remain to be constructed. |
-| [Arithmetic Orientation Geometry](../ArithmeticOrientationGeometry/README.md) | Places signed compatibility in geometric carriers. Defect rigidity requires the carrier to preserve the adverse mode and its cost. |
-| [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Supplies Hodge defects, source-effectivity questions and finite-field calibration. A source certificate still needs the correct sign and transfer. |
-| [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md) | Supplies the global Weil–Gamma–pole form. Any allocation certificate must pay its complete signed budget. |
-| [Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md) | Supplies incidence decompositions and shared allocation questions. A defect limit must retain their overlap and polar costs. |
-| [Arithmetic Criticality Theory](../ArithmeticCriticalityTheory/README.md) | Supplies ground energies and critical degeneracies; defect rigidity does not assume a forbidden fixed gap. |
-| [Square-Root Threshold](../SquareRootThreshold/README.md) | Supplies width, visibility and threshold transfers. Local mass and multiplicity must accompany these transfers. |
-| [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Studies what bounded observations can detect. The finite-word collapse is another quantitative limit on an observation scheme. |
-| [Bi-Scale Uncertainty](../BiScaleUncertainty/README.md) | Supplies countermodels and uncertainty constraints against which source claims must be tested. |
-| [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Supplies signed surplus mechanisms and proportion results; their strength must be distinguished from all-zero exclusion. |
+| [ArithmeticCompensationTheory](../ArithmeticCompensationTheory/README.md) | Normalized profiles, origin costs, escape; ADR studies what survives normalization |
+| [ArithmeticContinuationAndCriticalEnergy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Receiver, inversion identity, signed pairings, dilation calculus |
+| [BezoutValuationIncidence](../BezoutValuationIncidence/README.md) | Actual-source bounds, VK estimate, successor covariance; mixed interactions as rigidity sources |
+| [TransHorizonIncidenceMechanics](../TransHorizonIncidenceMechanics/README.md) | Smooth-power expansion, remainder estimates, Mellin cells, first-moment identity |
+| [ArithmeticOrientationTheory](../ArithmeticOrientationTheory/README.md) | Critical Wiener algebra, paid ideals, hulls, operator hulls; ADR's cofactor limits are Wiener modules |
+| [SignedSuccessorArithmetic](../SignedSuccessorArithmetic/README.md) | Successor counts; transfer must beat fixed-successor collapse |
+| [SignedArithmeticEnergyIncidence](../SignedArithmeticEnergyIncidence/README.md) | Sign discipline through energies; compact negativity vs escape |
+| [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md), [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | Geometric carriers and source effectivity; must preserve the adverse mode and its cost |
+| APT, AIP, ACT, SRT, SSIC, BSU, TTPC | Global form and allocation; ground energies; width transfers; observation limits; countermodels; proportion results |
 
-The programme does not replace these receivers. It aims to produce quantitative inputs for
-them while preserving the defects their equivalences expose.
+---
 
-## Success and contribution criteria
+## 2. Objects and language
 
-A full arithmetic no-escape theorem must extract a nonzero state from any divergent actual
-receiver, retain the required signed and moving data, and exclude every such state by an
-independently proved source relation for a cofinal damping family. An alternative success is
-a direct absolute energy estimate reaching the same receiver. Either would be substantially
-stronger than the results above.
+At damping `ε`: `c_ε(n) = Σ_{d|n} μ(d)d^{−ε}`, `m_ε = ζ(1+ε)⁻¹`, receiver prefix `A_ε(n) = Σ_{j≤n}(c_ε(j) − m_ε)`,
+pronic pairing `⟨u,v⟩_T = Σ_{n≤T} u(n)v(n)/(n(n+1))`, receiver energy `E_T = ‖A_ε‖²_T`. Inversion identity:
+`ρ_ε(n) = n − m_εΣ_{j≤n}j^{−ε}⌊n/j⌋ = A_ε(n) + D_ε(n)`, `D_ε(n) = Σ_{2≤j≤n} j^{−ε}A_ε(⌊n/j⌋)`.
 
-A contribution need not prove RH. It must supply a new estimate, exact decomposition,
-classification, transport law or obstruction with a nontrivial positive survivor. Its statement
-must specify:
+| Object | Meaning | Lean |
+|---|---|---|
+| Forcing energy / floor | `F_T = ‖ρ_ε‖²_T ≥ b_εT^{1−2ε}` | `forcingEnergy`, `forcingFloor` |
+| Signed covariance; Gram | `P_T = ⟨A,ρ⟩`; `G_T = ‖D‖²`, `Q_T = ⟨ρ,D⟩`; `F_TG_T − Q_T²` | `receiverForcingPairing`, `cofactorEnergy`, `forcingCofactorPairing`, `forcingGramDefect` |
+| Cofactor tail | `D − D_{≤J}`; head coefficient `H_{ε,J} = Σ_{2≤j≤J} j^{−ε}/√j` | `cofactorTail`, `cofactorHeadCoefficient`, `cofactorTailErrorEnergy` |
+| Moving window | `⌊log(F_T/E_T)⌋` | `forcingCofactorWindow` |
+| Forcing power / remainder | `c_εn^{1−ε}`, `c_ε = −m_εζ(1−ε)/(1−ε) > 0`; `R_ε = ρ_ε − c_εn^{1−ε}` | `forcingPower`, `forcingRemainder` |
+| Renormalized cofactor | `D̃_ε = D_ε − c_εn^{1−ε}` | `renormalizedCofactor` |
+| Forcing mass | `Σρ_ε/(n(n+1)) → L_ε = −ζ'/ζ(1+ε)` | `forcingPronicMass`, `forcingMassLimit` |
+| Pole-trace domain / operator | rows with absolute Mellin pairing at `1−ε`; `D̃v = Σ j^{−ε}v(⌊n/j⌋) − 𝓛(v)n^{1−ε}` | `poleTraceDomain`, `renormalizedCofactorOperator`, `traceDilation`, `traceCofactorPacket` |
+| Energy quantile; quantile work | first crossing of `rE_T`; renormalized pairing between crossings | `receiverEnergyQuantile`, `quantileCofactorWork` |
+| Cofactor Gram | `K_T(j,k) = ⟨D_jA, D_kA⟩_T/E_T`, `D_jv(n) = v(⌊n/j⌋)` | `cofactorGram` |
+| Common limit / module | subsequence with all entries converging; Hilbert realization, `V_pv_j = v_{pj}`, Wiener action | `ActualCofactorLimit` |
+| Cell word | successor translations + floor dilations; boundary cost `B(w)` | `CellWord`, `CellWord.boundaryCost` |
 
-- the actual source property used and the countermodels it does or does not exclude;
-- the signed residual controlled, its norm and parameter dependence;
-- the treatment of moving support, overlap, boundary terms and multiplicity;
-- the established receiver or extraction step that consumes its output;
-- the independently proved input, separated from the remaining open estimate.
+**Words.** *Defect state*: a proposed carrier of escaping energy with its operations, signed covariances,
+scales and forcing — no abstract interface asserting exclusion is supplied. *Escape*: `E_T → ∞`;
+*admission*: bounded. Distinctions: data vs estimate; reconstruction vs bounded output; uniqueness vs
+coercivity; relative vs absolute smallness; a limiting Gram can lose its small signed coordinate; divisor
+support loses multiplicity; moving parameters can have growing boundary cost.
 
-Framework-only interfaces, renamed equivalences and hidden analytic assumptions do not meet
-these criteria. The present pillars provide source scale separation, paid forcing subtraction,
-dual boundary control, a source-defined linear subtraction, and joint transport of diffuse
-energy and signed work. Their next use must improve
-the retained signed residual or produce the missing exclusion estimate.
+---
+
+## 3. Foundational results
+
+### Scales and signed geometry
+1. **Forcing dominates the receiver.** `F_T ≥ b_εT^{1−2ε}` and `E_T ≤ C_εe^{−κσ(T)/270}F_T` (VK,
+   `σ = (log T)^{3/5}(log log T)^{−5/3}`) (`exists_receiver_le_vk_mul_forcingEnergy`); `F_T/E_T → ∞`
+   (`tendsto_forcingEnergy_div_receiver_atTop`) whether or not `E_T` diverges. No scalar `a_T` keeps `a_T²F_T`
+   bounded and `a_T²E_T` positive (`no_common_scalar_normalization`). Source-selective: the unsigned majorant
+   has constant ratio (`majorant_div_forcingEnergy_eq`).
+2. **Receiver = Gram tangent.** `G = F + E − 2P`, `Q = F − P`, `F + G − 2Q = E`, `0 ≤ FG − Q² = EF − P² ≤ EF`
+   (`forcingGramDefect_bounds`); determinant/`F²` → 0 while distance/`E` = 1 (`gram_distance_div_receiverEnergy_eq_one`).
+   Rank/positivity of the limiting matrix loses the receiver.
+3. **Cofactor tail carries the forcing.** `‖D_{>J} − ρ‖² ≤ (1+H_J)²E_T` (`cofactorTailErrorEnergy_le`), so fixed
+   tails converge to the forcing in forcing normalization; moving window `J_T = ⌊log(F_T/E_T)⌋ → ∞` with error
+   `→ 0` (`tendsto_movingCofactorTailError_div_forcingEnergy_zero`). Fixed-label limits lose the whole forcing.
+
+### Successors and words
+4. **Fixed successors disappear on escape.** `‖A(·+k) − A‖² ≤ k²` ⇒ admission or normalized displacement → 0
+   (`admits_or_fixed_successors_disappear`). Recentred energy is `o(k)` (`admits_or_energyScale_recentered_successors_disappear`);
+   with VK, recentred `o(k^{1−ε})`, raw `o(k^{2−2ε})` (`admits_or_sourcePower_successors_disappear`).
+5. **Words have boundary budgets.** `⌊n/q(w)⌋ ≤ w(n) ≤ ⌊n/q(w)⌋ + B(w)`; normalized displacement `≤ B(w)²/E_T`;
+   forcing work `|W| ≤ B(w)L_ε` (`abs_wordForcingWork_le`, `admits_or_fixed_word_forcing_work_disappears`); new
+   horizon cells paid uniformly: tail work `≤ B(w)C^{tail}(H+1)^{−ε}` (`abs_wordForcingHorizonTailWork_le`).
+
+### Paid renormalization and the pole trace
+6. **Power subtraction pays the forcing.** `ρ = c_εn^{1−ε} + R`, `‖R‖_T ≤ B_ε` at every horizon
+   (`forcingRemainderEnergy_le`); `A + D̃ = R` (`receiver_add_renormalizedCofactor_eq`); admission or
+   `‖A + D̃‖²/E_T → 0` (`admits_or_renormalized_inversion_is_homogeneous`). Renormalized pairing is **antipodal**:
+   `(P̃/E + 1)² ≤ B²/E` (`renormalizedCofactorVariation_sq_le`); total variation `V_T ≤ B√E` pays every moving
+   localization (`admits_or_all_moving_localizations_retain_density`).
+7. **Finite forcing mass.** `0 ≤ ρ ≤ m_εM_εn^{1−ε}`; pronic mass → `L_ε = −ζ'/ζ(1+ε)`, optimal
+   (`forcingMassLimit_eq_logarithmicDerivative`, `forcingMassLimit_isLUB`). Pays bounded cell errors, not
+   `⟨A, ρ⟩`.
+8. **Absolute pole trace.** `Σ|A(n)|n^{ε−2} < ∞` (VK envelope) and `𝓛(A) = α⁻¹ΣA(n)Δ_α(n) = c_ε > 0`, `α = 1−ε`
+   (`actualPoleTrace_eq_forcingPowerCoefficient`, `actualPoleTrace_pos`). The domain `𝒳_ε` and linear operator
+   `D̃` realize the subtraction; actual image lies in the domain (`actual_renormalizedCofactor_mem_poleTraceDomain`).
+   Fixed dilations preserve `𝒳_ε` with trace weight `j^{−α}`; packets cost `Σ_{j∈S}1/j·𝓛(v)`
+   (`poleTrace_traceCofactorPacket`) — harmonic, not summable.
+9. **Bounded commutator.** `(D̃D_p − D_pD̃)v(n) = 𝓛(v)(⌊n/p⌋^α − p^{−α}n^α)`, norm `≤ |𝓛(v)|` uniformly in `p`, `T`
+   (`pronicNorm_renormalizedCofactorOperator_commutator_le`); vanishes on escape for every moving `p(T)`
+   (`admits_or_moving_cofactor_commutator_vanishes`).
+10. **Residual + trace determine the row.** `v = Σ_dμ(d)d^{−ε}𝓡(v)(⌊n/d⌋) + 𝓛(v)q_ε(n)`
+    (`residual_and_trace_injective`, `actual_receiver_reconstruction`); isolates the unestimated terms
+    (Möbius floor inverse of `R`, and `q_ε`).
+
+### Extraction
+11. **Energy quantiles.** Increments ≤ 1 ⇒ quantile intervals keep mass `(s−r) ± 1/E`
+    (`admits_or_quantile_interval_error_vanishes`) and antipodal work `W/E → −(s−r)`
+    (`admits_or_quantiles_preserve_antipodal_work`); every positive level crossed with unit overshoot
+    (`admits_or_every_positive_level_has_unit_overshoot`).
+12. **Common cofactor limit.** One subsequence makes every `K_T(j,k)` converge (`exists_cofactorGram_limit`, also
+    along any prescribed cofinal family `exists_actualCofactorLimit_along_cofinal`): `K(1,1) = 1`, symmetric,
+    `|K(j,k)| ≤ 1/√(jk)`, PSD, packet contraction `Q(pa) ≤ Q(a)/p` (`cofactorGram_packet_dilation_le`). Normalized
+    Gram steps vanish (`cofactorGram_succ_sub_tendsto_zero`); paid corrections and vanishing-relative-energy
+    perturbations preserve moving Grams (`normalized_moving_gram_perturbation_tendsto_zero`). Diagonal
+    `pK(p,p) = lim E(⌊T/p⌋)/E(T)`, nonincreasing (`contracted_energy_ratio_tendsto`, `scaled_diagonal_antitone`);
+    admission ⇒ unique full-horizon kernel (`kernel_eq_of_admits`).
+13. **Wiener module.** Every actual limit has a cyclic Hilbert realization with `‖V_p‖ ≤ p^{−½}`, integrating to a
+    contractive unital `𝒲_{1/2}` representation; annihilator closed, proper, nonempty hull
+    (`moduleHull_nonempty`). On escape the paid ideal annihilates it, so `∅ ≠ hull ⊆ obstructionHull(μ_ε)`
+    (`admits_or_moduleHull_subset_obstructionHull`); repairing kernels have bounded dilation energy, vanishing
+    after normalization (`admits_or_all_gram_limits_annihilate_repairs`). Signed realization: residual vectors are
+    `−v_j`, remainder vectors 0, normalized fixed traces 0 (`admits_or_signedCofactorGram_tendsto`).
+14. **Module structure.** Admitted modules are faithful with full Bohr hull, infinite-dimensional, continuum
+    quotient (`faithful_or_receiver_escapes`, `receiver_escapes_of_finiteDimensional`): a finite-dimensional or
+    non-faithful actual module forces escape. Annihilator quotient is finite or continuum, never countable
+    (`annihilator_quotient_finite_or_continuum`); finite index = Σ joint character multiplicities
+    (`finrank_quotient_eq_sum_normalizedModuleHull`); a zero diagonal at `p` forces dimension ≤ `p−1`
+    (`finiteDimensional_and_finrank_le_of_kernel_diag_eq_zero`). Rank-one modules: augmentation or
+    `χ(p) = η(p)p^{−s}`, `s ≥ ½`, `η` multiplicative sign (`rankOneCharacter_eq_augmentation_or_signed_rpow`) —
+    magnitudes forced, signs/exponent not tied to zeros. Operator hull obeys dilation radii.
+15. **Unit transport.** Real Wiener unit convolution transports Grams and preserves escape
+    (`admits_or_real_unit_convolution_gram_tendsto`); Möbius and Liouville modules are unit-equivalent
+    (`admits_or_liouville_gram_is_unit_transport`).
+16. **Origin boundaries.** Constant-row dilates reset at zero have the max kernel `1/max(j,k)`
+    (`pronicPairing_originSteps_tendsto`), a faithful module with full Bohr hull; positive max-kernel mixtures of
+    actual Grams are faithful (`representation_injective` in `PositiveOriginMixturesAreFaithful`). Escape records
+    (sublinear square-prefix records, `admits_or_exists_record_horizons`) realize every positive origin mass
+    `c`, giving shifted rows with Gram `K + c/max(j,k)` (`admits_or_every_positive_resetOrigin_boundary_is_realized`,
+    `admits_or_every_positive_faithful_boundary_is_realized`) — shifted, not unshifted limits. A constant
+    origin boundary violates cofactor contraction (`unreset_boundary_ne_actual_kernel`); bounded rows pair
+    boundedly with subcritical cofactors (`exists_uniform_bounded_row_pairing`).
+
+### Countermodels (Gram laws do not classify the source)
+17. White noise satisfies the compactness laws and has a unique antipodal extension
+    (`whiteNoise_has_unique_antipodal_extension`); prime-deleted white noise keeps positivity and packet
+    contraction but violates horizon order (`actual_kernel_ne_oddWhiteNoise`); the augmentation model satisfies
+    positivity, contraction and diagonal order with hull outside every half-plane point
+    (`augmentation_character_hull_eq_singleton`).
+
+---
+
+## 4. Mechanisms and principles
+
+Mechanisms: scale separation via a proved arithmetic estimate; signed Gram coordinates; tail accounting;
+word calculus; paid renormalization; dual mass control; paid commutation; source boundary trace; joint
+covariance extraction; energy-quantile transport; Wiener-module structure of limits.
+
+Principles: construct from actual coefficients/identities; keep signs until a loss has a proved budget;
+keep horizon, damping, cutoff, location and scale quantifiers visible; preserve the defect studied;
+charge overlap, new cells, boundaries and the Gamma/polar reserve once; keep multiplicity; test
+selectivity against countermodels; allow diffuse escape and growing carriers (no fixed bad packet, no
+assumed gap); separate identity, estimate, extraction and exclusion.
+
+---
+
+## 5. Pillar theorems
+
+1. Scale separation (`tendsto_forcingEnergy_div_receiver_atTop`, `no_common_scalar_normalization`).
+2. Gram tangent (`gram_distance_div_receiverEnergy_eq_one`).
+3. Paid renormalization and antipodality (`admits_or_renormalized_inversion_is_homogeneous`, `renormalizedCofactorVariation_sq_le`).
+4. Pole trace (`actualPoleTrace_eq_forcingPowerCoefficient`) and commutator (`admits_or_moving_cofactor_commutator_vanishes`).
+5. Quantile transport (`admits_or_quantiles_preserve_antipodal_work`).
+6. Common limit and Wiener module (`exists_cofactorGram_limit`, `admits_or_moduleHull_subset_obstructionHull`).
+7. Faithfulness dichotomy (`faithful_or_receiver_escapes`, `receiver_escapes_of_finiteDimensional`).
+
+---
+
+## 6. Traps
+
+- Pointwise disappearance of forcing does not justify discarding its global pairing.
+- Power subtraction on the actual row is not a bounded operator on arbitrary rows.
+- Finite forcing mass controls bounded cell errors, not the receiver prefix.
+- Vanishing `E_T/F_T` allows `E_T → ∞`.
+- A PSD or rank-one limiting Gram can lose the critical distance coordinate.
+- Floor commutators and multiplicativity identities need not contain Möbius cancellation.
+- Fixed words lose successor selectivity under energy normalization.
+- Termwise absolute cofactor control has the half-damping threshold.
+- Entrywise convergence does not justify a moving cutoff or infinite cofactor sum.
+- Existence of a nonzero common Gram module is not evidence of escape (it exists when admitted).
+- Antipodality and Gram laws are satisfied by white noise; source realization is essential.
+- Shifted origin-reset rows are not unshifted actual limits.
+- `h = D + R` with `D, R ≥ 0` gives no upper bound forcing `D = 0`.
+- Density-one or eventual-height results may leave finitely many off-line zeros; aperture ≠ damping.
+
+---
+
+## 7. Open problems
+
+| Topic | Required output |
+|---|---|
+| Joint extraction | One carrier holding fixed covariances, quantile signed work and the moving cofactor tail, with rate and spatial data, without exchanging an uncontrolled infinite sum and a limit |
+| Exclusion / source selectivity | An independently proved estimate excluding the tangent state or its approximate eigenrelation `D̃u ≈ −u`, violated by impure models |
+| Module classification | Which Wiener modules occur on escape: is `hull ⊆ obstructionHull` an equality; are signs/exponents of rank-one characters tied to zeros; exclude finite-dimensional escape modules by a source law |
+| Mixed Bézout/Vaughan covariance | Summable signed gain after centering, with horizon and damping dependence |
+| Successor dynamics | Moving words or amplified operations acting nontrivially at the escape scale with proved boundary cost |
+| Operator domains | Domain invariance and critical-norm bounds for the full renormalized operator; harmonic packet costs |
+| Absolute compensation | Signed tail and new horizon cells paid in the receiver norm with cross terms |
+| Shared allocation | One certificate for the full signed form across overlapping carriers and one Gamma/polar reserve |
+| Anti-collapse | Quantitative local depth mass of actual divisor packets, with multiplicity |
+| Enumerative certificates | `D + H = B`, `H ≥ 0`, with an independent bound below the defect quantum |
+
+---
+
+## 8. Contribution criteria
+
+A full no-escape theorem extracts a nonzero state from any divergent receiver, retains the signed and
+moving data, and excludes it by an independent source relation for a cofinal damping family; or proves a
+direct absolute energy estimate. A contribution supplies a new estimate, exact decomposition,
+classification, transport law, or obstruction with a positive survivor, and states the source property
+used and countermodels excluded, the signed residual and its norm, treatment of moving support, overlap,
+boundary and multiplicity, the consuming receiver or extraction step, and the separation between proved
+input and open estimate.

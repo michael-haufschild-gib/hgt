@@ -65,6 +65,8 @@ The directly written application scratch
 `/tmp/qiii-actual-kernel-interpolation-check.lean` contains common-kernel
 interpolation, the interval injection, the countable-table cardinal bound,
 the singleton/continuum alternative, and nonuniqueness implying escape.
-It requires canonical prescribed-horizon extraction, whose direct checks are
-underway. These application statements remain UNVERIFIED; direct checks are tracked
+Prescribed-horizon extraction passed required olean build `34513` and final
+canonical source-only audit `11914`, with standard axioms. All three dependency
+leaves are complete. The combined application is now checking directly; its
+statements remain UNVERIFIED until it passes. Checks are tracked
 in [the completion ledger](q-iii-existing-findings-lean-completion.md).

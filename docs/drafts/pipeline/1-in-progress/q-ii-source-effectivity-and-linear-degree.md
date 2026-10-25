@@ -345,6 +345,23 @@ order coercion and the finite function-sum argument. Actual smooth-kernel
 check **59070** failed only at transport of smoothness through the constructed
 linear map. Its application is now explicitly reduced to the subtype sum before
 the two coercions are simplified. The failed axiom output is not a certificate.
+Direct smooth-kernel recheck **42458** passed with the standard three axioms
+in all three audits. The module is cleaned, wired and documented; its origin-mass
+card remains stage 2 until the dependent origin-mass module passes.
+The older actual-file final check for `WeilEnergyIsUnboundedAtEveryAperture`
+passed directly as **52222**, with only the standard three axioms in all five
+endpoint audits in the actual file. Temporary prints are removed; its existing
+olean is preserved. The smooth-kernel olean was confirmed missing; direct build
+**96271** passed for the actual origin-mass importer. Its olean now exists;
+never rebuild it. Both smooth scratch files are removed after certification.
+Actual origin-mass check **73371** passed with only the standard three axioms
+in all seven endpoint audits. The module is cleaned, wired and documented;
+its card is now stage 3. The certified sharp-algebra olean was confirmed missing;
+direct build **20346** is running for actual `MeyerFiniteJetAlgebra`.
+The shared ACS README was reorganized concurrently. Preserve its new structure;
+the certified cone, smooth-kernel, bounded-carrier and reserve results are now
+recorded within its mechanism summaries and module anchors. Unchecked origin
+and finite-graph assertions are explicitly marked pending there.
 
 ### Remaining verification queue
 
@@ -354,7 +371,7 @@ Rows explicitly marked certified have passed; all other rows remain unverified.
 | Module | State |
 |---|---|
 | `ArithmeticMajorantConeGeometry` | CERTIFIED: direct 44990, four standard audits; cleaned, wired and documented |
-| `SmoothFiniteReadingKernels` | API probe 73466 passed; actual 59070 exposed one linear-map coercion, now explicitly reduced; direct recheck 42458 running with three audits |
+| `SmoothFiniteReadingKernels` | CERTIFIED: direct 42458, three standard audits, missing-olean build 96271 passed; cleaned, wired and documented |
 | `ArithmeticSharpAndTheHilbertAdjoint` | CERTIFIED: direct 96392, three standard axiom audits, missing-olean build 95594 passed |
 | `FaithfulHilbertSchmidtSourceReserves` | CERTIFIED: direct 4030, fifteen standard audits, missing-olean build 80282 passed |
 | `MeyerBoundedCenteredOrbits` | CERTIFIED: direct 20136, six standard audits, missing-olean build 75806 passed |
@@ -368,13 +385,16 @@ Rows explicitly marked certified have passed; all other rows remain unverified.
 | `MeyerAlgebraicCharacters` | Eight endpoints; point-reading normalization corrected |
 | `PoissonBoundariesAreDenseInOriginMass` | Seven endpoints; requires missing HT translation-cyclicity olean |
 | `OriginHilbertCohomologyObstruction` | Four endpoints; closedness instance corrected and verified by API check 91370, awaiting actual-file check |
-| `InvariantOriginMassDoesNotBoundTheWeilTrace` | Seven endpoints; requires smooth-kernel olean |
+| `InvariantOriginMassDoesNotBoundTheWeilTrace` | CERTIFIED: direct 73371, seven standard audits; cleaned, wired, documented; card moved to stage 3 |
 | `MeyerHermitianDegreePart` | Seven endpoints; requires finite positive-degree olean |
 | `EveryFiniteMeyerJetGraphIsDenseInOriginHilbertSpace` | Ten endpoints; requires boundary-density olean |
 | `FiniteMeyerProjectorsSplitPositiveEnergy` | Fourteen endpoints; requires finite-degree, critical-top and projector oleans |
 
-Older actual-file final checks also remain: `SourceConeBoundaryRigidity`,
-`SourceConeBoundaryApplications`, `WeilEnergyIsUnboundedAtEveryAperture`,
+Completed older actual-file final checks: `WeilEnergyIsUnboundedAtEveryAperture`
+(direct **52222**, five standard axiom audits, prints removed).
+
+Older actual-file final checks still remaining: `SourceConeBoundaryRigidity`,
+`SourceConeBoundaryApplications`,
 `GradedSourceConeBoundaryRigidity`, `SourceConePrimitiveFaithfulness`,
 `NumericalEquivalenceOnTheScalingSurface`, `SourceRiemannRochWithoutSymmetry`,
 `ExactArithmeticSourceEffectivity`, `FiniteDegreeConesCannotSatisfyBezout`,
@@ -1299,7 +1319,7 @@ the converse finite nonnegative critical weighting on the whole actual
 quotient and exact prescribed value weights.
 
 A further paper theorem is
-`../2-fully-proven/invariant-origin-mass-does-not-bound-the-weil-trace.md`.
+`../3-formalized/invariant-origin-mass-does-not-bound-the-weil-trace.md`.
 The smooth version of the finite-kernel construction is drafted in
 `/tmp/QIISmoothFiniteReadingKernelsDraft.lean`; the original bump can be chosen
 C-infinity and finite sums preserve that regularity. This supplies actual

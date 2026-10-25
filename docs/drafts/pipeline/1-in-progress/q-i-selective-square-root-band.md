@@ -490,7 +490,10 @@ Seven relative-Gram targets passed corrected final direct checks with standard
 axioms only. `VaughanGramsAtTheirActualHarmonicAmplitude.lean` is wired; the
 complete relative-normalization card is in stage 3, including calibrated
 horizons and simultaneous zero/relative-rank-one limits.
-The remaining floor-sum, stretched-exponential, endpoint, and power-rate consequences
+Seven floor-sum targets passed final direct checks and standard-axiom audits.
+`UniformLogarithmicCancellationInMobiusFloorSums.lean` is wired, including the
+exact omitted-tail identity and every cutoff-uniform logarithmic rate.
+The remaining stretched-exponential, endpoint, and power-rate consequences
 remain under verification. All fifteen existing paper
 cards and their remaining Lean coverage are listed in
 `q-i-existing-findings-lean-completion.md`; completing that register has priority

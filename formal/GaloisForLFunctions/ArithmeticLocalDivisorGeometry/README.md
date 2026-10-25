@@ -1,300 +1,217 @@
-# Arithmetic Local Divisor Geometry
+# Arithmetic Local Divisor Geometry (ALDG)
 
-Arithmetic Local Divisor Geometry studies the finite divisor blocks of the completed zeta function and the arithmetic laws that could constrain their coefficients. Its central question is precise: **what independently proved property of the theta/Euler source forces the local divisor into the coefficient cone?** Equivalent alternatives ask for an arithmetic bound on collision charge, cancellation of the Ward cap, or zeroth-order contact at the Ward heat threshold.
+**One question.** What independently proved property of the theta/Euler source forces the local
+divisor of the completed zeta function into the coefficient cone? Equivalent endpoints ask for an
+arithmetic bound on collision charge, cancellation of the Ward cap, or zeroth-order contact at the
+Ward heat threshold.
 
-The programme preserves local multiplicities, central zeros, moving boundaries and signed interactions. It does not define admissible arithmetic objects by imposing the desired sign. Its local algebra applies to impure configurations too; excluding those configurations for the actual source is the open arithmetic problem.
+ALDG studies the finite divisor blocks of `Ξ` at a real height and the polynomial laws governing their
+coefficients — keeping local multiplicities, central zeros, moving boundaries and signed interactions.
+It never defines admissible objects by imposing the sign. Its local algebra applies to impure
+configurations too; excluding them for the actual source is the open arithmetic problem. The central
+source inequality is unproved; factorization, reconstruction, polynomial positivity criteria and
+model classification do not establish it.
 
-The central source inequality remains unproved. Exact factorization, reconstruction, polynomial positivity criteria and a local model classification do not establish it.
+Namespace `GaloisForLFunctions.ArithmeticLocalDivisorGeometry`; umbrella `ArithmeticLocalDivisorGeometry.lean`.
 
-## Motivation and position
+---
 
-Route WD already has strong receivers. At each real height the horizontal Xi slice factors exactly into a finite head and a complementary tail. A radius-one head suffices, and the exact tail has nonnegative Taylor coefficients. Thus distant-tail approximation is unnecessary for the coefficient question. What remains is the sign of a finite polynomial whose degree and multiplicities vary with height.
+## 1. Place in the research
 
-That localization changes the mathematical object, but does not make it small uniformly. A norm square can have negative coefficients; a coefficient-positive product can contain a coefficient-negative factor; a real zero at the center creates vanishing coefficients that must be retained. These phenomena make local divisor geometry more specific than a theory of positive functions or Hermitian forms.
+Route WD already has strong receivers: at each real height the horizontal Xi slice factors exactly
+into a finite head and a complementary tail; a radius-one head suffices and the exact tail has
+nonnegative Taylor coefficients. What remains is the sign of a finite polynomial whose degree and
+multiplicities vary with height. ALDG is the theory of that polynomial.
 
-| Related programme | Interface |
+| Programme | Interface |
 |---|---|
-| [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Studies source effectivity and the Hodge sign on the scaling surface. Here the unresolved sign is read through local factors and their coefficients. No equivalence of the possible producer constructions is assumed. |
-| [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Distinguishes source identification from orientation and studies repairing ideals. Local divisor geometry retains multiplicity and local factors beyond spectral support. |
-| [Arithmetic Orientation Geometry](../ArithmeticOrientationGeometry/README.md) | Studies scaling correspondences and orbit correlations. Ordered divisor channels provide a different representation of orientation; scalar reflection sums can erase them. |
-| [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Teaches that normalization and relative estimates must retain the signed quantity on its moving support. Here the moving parameters are height, degree, radius and heat. |
-| [Square-Root Threshold](../SquareRootThreshold/README.md) | Prices visibility and separates fixed-depth, eventual-height and global-width conclusions. Those quantifiers also govern heated local factors. |
-| [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Supplies the discipline of a single signed budget, including mixed terms and overlap. A Gram-minor certificate here must obey the same accounting. |
-| `RHTower` | Supplies actual Xi, Ward caps, exact finite-head and heat transfers, collision laws and threshold criteria. These are existing inputs. |
-| `HTGeometry` | Supplies polynomial heat products, contour root multisets, Newton inversion and holomorphic local factors, including multiple roots. |
-
-## Objects and language
-
-Write a spectral zero copy as `z = γ + iδ`, where `δ = 1/2 − Re ρ`. At a real center `t`, put `u = γ − t` and `y = x²`.
-
-| Object | Data retained |
-|---|---|
-| Source germ | The theta definition or completed Euler–Gamma description, its analytic domain and transition identity |
-| Finite local divisor | Every zero copy, its multiplicity, the center and the enclosing boundary |
-| Local factor | A monic polynomial in `y`; central copies contribute exact factors `y` |
-| Coefficient cone | All coefficients nonnegative, including coefficients that vanish |
-| Heated cone | Nonnegative coefficients after forward horizontal polynomial heat; heat normalization is part of the datum |
-| Contour moment | A logarithmic-derivative integral with a specified boundary avoiding zeros |
-| Transition | The exact factor entering or leaving a boundary, with its degree and multiplicity |
-| Source certificate | An independently defined source expression, an established sign, and a proved identity or bound landing on the required coefficient or charge |
-| Collision observable | A specified charge: horizontal collision, global heat collision, or weighted Ward cap |
-
-Three uses of “positive” must stay separate. Real-axis positivity means `P(x²)≥0`. Coefficient positivity means every coefficient of `P(y)` is nonnegative. Positive semidefiniteness concerns a particular matrix or quadratic form and requires a proved connection to `P`.
-
-“Repair” below means multiplication moves a polynomial into the coefficient cone. It does not mean that an arithmetic obstruction has been removed. A chosen model multiplier is not an actual divisor factor until a source theorem identifies it.
-
-## Exact local mechanisms
-
-### Conjugate pairs and real factors
-
-A conjugate pair contributes
-
-\[
-Q_{u,\delta}(y)=y^2+2(u^2-\delta^2)y+(u^2+\delta^2)^2.
-\]
-
-The identity
-
-\[
-Q_{u,\delta}(x^2)=(x^2+u^2-\delta^2)^2+4u^2\delta^2
-\]
-
-proves real-axis nonnegativity without any coefficient sign. Its coefficient cone is exactly `δ²≤u²`. At `u=0`, the factor is `(y−δ²)²`, with a positive root and a negative middle coefficient whenever `δ≠0`.
-
-Adjoining a real divisor factor `y+c`, `c≥0`, gives two genuinely signed conditions:
-
-\[
-2(\delta^2-u^2)\le c,\qquad
-2c(\delta^2-u^2)\le(u^2+\delta^2)^2.
-\]
-
-A choice of `c` exists exactly when `δ²≤3u²`. The choice `c=u²+δ²` works throughout that region. At its boundary the product is `y³+64u⁶`. Thus even one exact factor transition can conceal a coefficient defect in a smaller block. Dividing a positive polynomial by a positive factor is not a valid sign argument.
-
-These laws are developed in [LocalFactors.lean](LocalFactors.lean). They classify a local transition rather than retiring the coefficient route.
-
-### A sharp multiplicity cost
-
-Normalize a nonzero pair by `r=u²+δ²` and `α=(δ²−u²)/r`. Adjoining `n` identical real factors `y+r` reduces to
-
-\[
-B_{\alpha,n}(z)=(1+z)^n(z^2-2\alpha z+1)
- =(1+z)^{n+2}-2(\alpha+1)z(1+z)^n.
-\]
-
-For every interior index `j+1`, its coefficient is
-
-\[
-\binom{n+2}{j+1}-2(\alpha+1)\binom nj.
-\]
-
-For `0≤j≤n`, the coefficient is nonnegative exactly when
-
-\[
-2(\alpha+1)(j+1)(n+1-j)\le(n+2)(n+1).
-\]
-
-The maximum of the quadratic index weight occurs at the middle integer or integers. Consequently the exact coefficient criteria are
-
-\[
-\begin{array}{c|c|c}
- n & \text{normalized criterion} & \text{geometric criterion}\\
- 2m & \alpha(m+1)\le m & \delta^2\le(2m+1)u^2\\
- 2m+1 & \alpha(m+2)\le m+1 & \delta^2\le(2m+3)u^2.
-\end{array}
-\]
-
-The normalized identities and sharp cone criteria are developed in [BinomialMultipliers.lean](BinomialMultipliers.lean); [GeometricMultipliers.lean](GeometricMultipliers.lean) proves the displayed geometric criteria, including the degenerate central case. They retain every order; fixed-order positivity would miss the middle obstruction. The multiplicity needed to mask a pair grows on the scale `δ²/u²` as the center approaches its ordinate. Equal-factor multipliers are a classified family, not an optimization over every possible multiplier.
-
-Positive polynomial multipliers are classical. [Motzkin–Straus, Theorem 2.6](https://msp.org/pjm/1969/29-3/pjm-v29-n3-p13-p.pdf) gives the sufficient bound `α≤n/(n+2)` for this same family. It is sharp for even `n`; the exact odd threshold is `(n+1)/(n+3)`. Their Theorem 2.1 also gives the optimal degree for arbitrary quadratic multiples. The contribution here is the exact parity-sensitive formalization, its local divisor interpretation, and the singular limit at the adverse ordinate. Broader multiplier positivity is treated by [Powers–Reznick](https://www.math.emory.edu/~vicki/pub/polya2.pdf); no worldwide novelty claim is attached to the general principle.
-
-### Central multiplicities and the adverse ordinate
-
-Multiplication by `y^a` shifts coefficient indices and preserves their signs in both directions. Central zeros therefore require no strict margin and no division by the central value.
-
-At an off-real pair's own ordinate, every nonzero polynomial multiple of `(y−δ²)²` retains a positive root. A nonzero polynomial with nonnegative coefficients is strictly positive at every positive argument. Thus adjoining other factors cannot repair that exact centered obstruction. Nearby-center repair and own-ordinate exclusion are compatible; their difference is precisely the centering cost.
-
-The corpus already gives sharper detection-order information for an own-ordinate pair against arbitrary positive real factors in `HTGeometry/OffLinePairDetectionNewtonSharp.lean`. The equal-factor law above concerns off-center repair and does not replace that theorem.
-
-### Which transitions can be reversed?
-
-There is an exact universal classification. Multiplication by a real polynomial `Q` preserves and reflects coefficient nonnegativity for every polynomial precisely when
-
-`Q=c y^a`, with `c>0` and `a` a nonnegative integer.
-
-Every other nonzero coefficient-positive `Q` conceals a negative coefficient in some polynomial `P` that is strictly positive for every `y≥0`. A constructive witness has degree at most `2deg Q`: take the flat polynomial through degree `2deg Q` and lower its middle coefficient by a quantity determined by the sum and largest coefficient of `Q`. In the central convolution band, every coefficient of the flat product equals that sum, leaving enough reserve to hide the defect.
-
-The degree bound is sharp. For `Q=1+y^D`, a defect cannot be hidden below degree `2D`, while
-
-\[
-(1+y^D)(y^{2D}-y^D+1)=1+y^{3D}
-\]
-
-attains the bound. The concealed factor is positive on the entire real axis. Thus real-axis positivity does not rescue universal cancellation. Central multiplicities and positive normalizations are exactly the reversible transitions; removing a nonmonomial shell requires additional signed information. The classification and explicit witnesses are developed in [UniversalReflectors.lean](UniversalReflectors.lean).
-
-### Central multiplicity under heat
-
-Reversibility of central factors is specific to the unheated cone. For the model
-
-\[
-P_m(X)=X^{2m}(X^2-a)^2,\qquad a>0,
-\]
-
-write the forward heat as `exp(sD²)`, and put `t=s/a`, `B=(2m+2)(2m+1)`, `C=(2m+4)(2m+3)`. Every even coefficient has the sign of one of the finite index weights
-
-\[
-F_t(k)=k(k+1)-2B(k+1)t+BCt^2,\qquad 0\le k\le m+1,
-\]
-
-apart from the positive leading coefficient. Index `k` corresponds to degree `2(m+1−k)`. Completing the square gives
-
-\[
-F_t(k)=(k-Bt+\tfrac12)^2+B(8m+10)t^2-Bt-\tfrac14.
-\]
-
-For `0<t<1/(8m+10)`, the explicit index `k=⌊Bt⌋` detects a negative coefficient. For `t≥1/(8m+5)`, every index weight is positive. Consequently the full heat-cone threshold satisfies
-
-\[
-\frac{a}{8m+10}\le\sigma_m\le\frac{a}{8m+5},
-\qquad \sigma_m\sim\frac{a}{8m}.
-\]
-
-The threshold decreases strictly with multiplicity: adjacent rational brackets are disjoint.
-
-The highest adverse coefficient alone detects only heat below `2a/C`, of order `a/m²`. Optimizing over the actual growing set of orders recovers a factor proportional to multiplicity; near threshold the detecting order lies near the middle. This is a polynomial model law. The existing masked-pair Hermite receiver still requires its signed Xi cofactor-deviation estimate. Its Gaussian parameter is `λ=2s`, so the constants must be doubled when crossing that interface.
-
-The controlling order can be identified exactly. Put `h=⌊m/2⌋`. Throughout the whole threshold bracket,
-
-\[
-h<Bt<h+1,
-\]
-
-so `F_t(h)` is the unique smallest integer-index weight. Consequently
-
-\[
-\frac{\sigma_m}{a}
-=\frac{B(h+1)+\sqrt{B(h+1)\bigl(B-(C-B)h\bigr)}}{BC}.
-\]
-
-At this first contact, exactly one even coefficient through the polynomial's degree vanishes: its degree is `m+2+(m mod 2)`. Every other even coefficient is strictly positive, including the constant coefficient. Odd coefficients vanish identically by symmetry. Thus higher-order first contact persists in a growing, explicitly classified family of norm-square models. An arithmetic theorem forcing zeroth-order contact must use information beyond these polynomial properties. [MaskedHeatContactIndex.lean](MaskedHeatContactIndex.lean) and [MaskedPairHeatThreshold.lean](MaskedPairHeatThreshold.lean) prove the contact classification; [MaskedPairHermite.lean](MaskedPairHermite.lean) supplies the exact Gaussian normalization.
-
-### The universal degree boundary and its extremizer
-
-[HermiteHeatRootBarrier.lean](HermiteHeatRootBarrier.lean) proves the sharp
-finite-degree boundary: if `P≥0` on the real axis has degree `2d`,
-`d≥2`, `λ>0`, and `exp((λ/2)D²)P` has nonnegative coefficients, every positive root
-`δ` satisfies
-
-`δ ≤ √λ · h_d`,
-
-where `h_d` is the largest root of the probabilists' Hermite polynomial
-`He_(2d−1)`. Equality forces
-
-`P(X)=c λ^d [He_(2d)(X/√λ)−He_(2d)(h_d)]`, `c>0`.
-
-Evenness is forced at equality rather than assumed. The proof uses the double
-root forced by `P≥0`, heat inversion, positivity of the lower Hermite weights
-at the largest derivative root, and a Sonin identity proving attainment.
-The heated extremizer has only its constant and leading coefficients nonzero.
-Thus generic heat-cone contact need not occur at order zero, even in the sharp
-root-obstruction class.
-
-[HermiteExtremizers.lean](HermiteExtremizers.lean) proves global nonnegativity,
-the exact root pair `±√λ h_d`, and the full admissible heat-time ray `[λ/2,∞)`.
-Each root has multiplicity exactly two. In the monic normalization, removing
-the squared quadratic pair leaves a monic, even cofactor strictly positive everywhere,
-as proved in [HermiteExtremizerFactorization.lean](HermiteExtremizerFactorization.lean).
-
-[HermiteEdgeAsymptotics.lean](HermiteEdgeAsymptotics.lean) proves
-`h_d²/(2d) → 4` by summing the positive Hermite quotient recurrence. Thus four
-is optimal in a uniform squared-root/degree bound even within the even
-nonnegative class. For degree `2m+4` and positive squared depth `a`, the least
-heat time is exactly `a/(2h_(m+2)²)`, attained by the scaled extremizer.
-[HermiteOptimalHeat.lean](HermiteOptimalHeat.lean) proves this minimum and
-`2h_(m+2)²τ_m → 2`: central masking costs asymptotically twice the optimum.
-Every even nonnegative polynomial with a positive root has an attained first
-heat time, by [EvenPolynomialHeatCone.lean](EvenPolynomialHeatCone.lean).
-
-Applying the boundary to the actual Xi head still requires an independently
-proved arithmetic heat-cone estimate. The generic polynomial laws leave that
-source-sign problem open.
-
-## From source to local factor
-
-For a finite copy set closed under spectral conjugation, use the unnormalized real polynomial
-
-\[
-D_{t,S}(y)=\prod_{q\in S_{\mathrm{crit}}}\bigl(y+(\gamma_q-t)^2\bigr)
-\prod_{q\in S_{\mathrm{up}}}Q_{\gamma_q-t,\delta_q}(y).
-\]
-
-At a radius head `S=S(t,R)`, `R≥0`, the exact canonical head is `H_{t,R}(z)=c_{t,R}D_{t,S}(z²)` with `c_{t,R}>0`. Its even Taylor coefficient is therefore `c_{t,R}[y^k]D_{t,S}`, and every odd coefficient vanishes. This description divides by neither `Ξ(t)` nor a vanishing constant coefficient. A split of the copy set gives an exact polynomial product and hence a full coefficient convolution; central factors and signed mixed terms survive the transition. These are the actual-source identities `xiFiniteHead_even_taylor`, `localDivisorPolynomial_split` and `localDivisorPolynomial_split_coeff` in [SourceLocalFactors.lean](SourceLocalFactors.lean), not only a model factorization.
-
-For arbitrary `S`, `D_{t,S}` is monic of degree `card(sliceTrunc S)`; a radius head is already pairing-stable. Its horizontal polynomial `D_{t,S}(X²)` is therefore monic, even and nonnegative, of degree `2N` for a radius head containing `N` copies. At an off-real copy's own ordinate, a radius retaining that copy gives a positive root at its depth `δ` and retains its distinct reflection, so `N≥2`. Coefficient positivity after heat `λ/2`, `λ>0`, then forces `δ²≤λh_N²`, where `h_N` is the largest zero of `He_(2N−1)`. [SourceDivisorGeometry.lean](SourceDivisorGeometry.lean) proves the exact degree and `radiusHead_depth_sq_le_hermite_edge`, with every central copy retained. This is a sharp obstruction under the stated heat-cone premise; the arithmetic sign certificate remains open.
-
-On an admissible contour the logarithmic derivative gives multiplicity-exact power sums:
-
-\[
-p_j(t)=\frac1{2\pi i}\int_\Gamma(z-t)^{2j}\frac{\Xi'(z)}{\Xi(z)}\,dz.
-\]
-
-Newton's identities recover the factor coefficients from these moments. The corpus already proves the relevant finite-contour identities, Newton inversion and holomorphic dependence of root symmetric functions. Multiple roots inside the contour are allowed; a boundary crossing changes the enclosed factor and must be handled by an exact transition.
-
-The missing certificate is a sign theorem for the **signed Newton combinations**. Positivity of separate moments, uniqueness of reconstruction, or an integral representation alone does not supply it. A useful source construction could identify these combinations with Gram minors, a nonnegative count, or a telescoping expression whose full boundary remainder has the correct sign. Each proposed identity must be proved for the actual completed source, with no spectral sign in its premises.
-
-## Heat and charge interfaces
-
-Forward horizontal heat on the original slice and the de Bruijn–Newman evolution are different constructions. Their bridge involves Gaussian height averages; it is not pointwise equality of unaveraged slice moments. Polynomial heat already has an exact product formula and a coefficient-positivity closure theorem in `HTGeometry/PolynomialHeatProduct.lean`.
-
-The existing heated-head transfer consumes the correct radius/heat inequality and the full retained polynomial. The available unconditional producer reaches heat `(17/25)/log|t|` at all sufficiently large heights. The detector for depth `δ` operates at the much smaller constant
-
-\[
-\kappa_0(\delta)=\frac{\delta^2}{200(\log(3/\delta)+1)}.
-\]
-
-Positivity propagates to larger heat. An eventual estimate at detector scale still needs finite-height accounting; allowing every positive rate eventually does not eliminate finite off-line exceptions.
-
-The corpus also contains a stronger receiver for the retained polynomial itself. In [XiWardGlobalCapAndFiniteHeadArithmetic.lean](../RHTower/XiWardGlobalCapAndFiniteHeadArithmetic.lean), positivity at some `0≤λ(t)≤δ₀²/(320 log(180|t|))` for every `|t|≥73/5`, with a fixed head radius `1/2≤R≤1`, implies the global width bound `zetaZeroWidth≤δ₀`. This removes the logarithmic depth loss from that finite-head receiver. Its input still requires an independent producer: coefficient-positive tails cannot generally be canceled. The same module supplies polynomial heat inversion, a general degree-dependent root detector and a Prime–Cesàro identity for the first normalized head coefficient; these are existing tools.
+| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | Source effectivity and Hodge sign; here the sign is read through local factors |
+| [ArithmeticOrientationTheory](../ArithmeticOrientationTheory/README.md) | Repairing ideals; ALDG keeps multiplicity and local factors beyond spectral support |
+| [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md) | Orbit correlations; heat-collision index `2(D+E)` is the dynamical count matching ALDG's collision budgets |
+| [ArithmeticCompensationTheory](../ArithmeticCompensationTheory/README.md) | Normalizations must retain the signed quantity on moving supports (height, degree, radius, heat) |
+| [SquareRootThreshold](../SquareRootThreshold/README.md) | Fixed-depth vs eventual-height vs global-width quantifiers also govern heated local factors |
+| [SignedArithmeticEnergyIncidence](../SignedArithmeticEnergyIncidence/README.md) | Single signed budget discipline for Gram-minor certificates |
+| `RHTower` | Actual Xi, Ward caps, finite-head/heat transfers, collision laws, threshold criteria (`XiWardGlobalCapAndFiniteHeadArithmetic.lean`) |
+| `HTGeometry` | Polynomial heat products, contour root multisets, Newton inversion, holomorphic local factors (`PolynomialHeatProduct.lean`, `OffLinePairDetectionNewtonSharp.lean`) |
+
+---
+
+## 2. Why
+
+Localization changes the object but does not make it uniformly small. A norm square can have negative
+coefficients; a coefficient-positive product can contain a coefficient-negative factor; a central real
+zero creates vanishing coefficients that must be kept. So local divisor geometry is more specific than
+a theory of positive functions or Hermitian forms. Three positivities stay separate: real-axis
+(`P(x²) ≥ 0`), coefficient (all coefficients of `P(y)` ≥ 0), PSD of a matrix (needs a proved link to `P`).
+
+---
+
+## 3. Objects and language
+
+Spectral zero copy `z = γ + iδ`, `δ = ½ − Re ρ`; center `t`, `u = γ − t`, `y = x²`.
+
+| Object | Data | Lean |
+|---|---|---|
+| Pair factor | `Q_{u,δ}(y) = y² + 2(u²−δ²)y + (u²+δ²)² = (y+u²−δ²)² + 4u²δ²` at `y = x²` | `pairFactor` |
+| Local divisor polynomial | `D_{t,S}(y) = Π_crit (y + (γ−t)²) Π_pairs Q`; central copies give `y` | `localDivisorPolynomial`, `horizontalDivisorPolynomial` |
+| Radius head | copies with `|z − t| ≤ R`; degree `N(t,R)` | `RHTower.xiSliceGaussianRadiusHead`, `sliceTrunc` |
+| Coefficient cone | all coefficients ≥ 0 (incl. vanishing ones) | `CoeffNonneg` |
+| Polynomial heat | `exp(sD²)`; forward semigroup | `forwardPolyHeat` |
+| Heated cone | coefficient-nonneg after heat; normalization part of the datum | — |
+| Hermite edge | `h_d` = largest root of `He_{2d−1}` | `hermiteEdge` |
+| Hermite extremizer | `λ^d[He_{2d}(X/√λ) − He_{2d}(h_d)]` | `hermiteExtremizer`, `scaledHermiteExtremizer` |
+| Masked pair | `X^{2m}(X² − a)²` | `centralMaskedPair`, `maskedPairHeatThreshold` |
+| Disc factors | real linear/quadratic factors with roots in `|ρ| ≤ r` | `DiscFactor` |
+| Contour moment | `p_j(t) = (2πi)⁻¹∮(z−t)^{2j}Ξ'/Ξ` | (HTGeometry) |
+| Collision observables | horizontal collision; global heat collision; weighted Ward cap | (RHTower) |
+
+**Words.** *Repair*: multiplication moving a polynomial into the cone (not removal of an arithmetic
+obstruction; a model multiplier is not a divisor factor until a source theorem identifies it).
+*Transition*: exact factor entering/leaving a boundary. *Source certificate*: an independently defined
+source expression with established sign and a proved identity landing on the needed coefficient or charge.
+
+---
+
+## 4. Mechanisms
+
+### Exact local algebra
+1. **One pair, one real factor.** Pair cone exactly `δ² ≤ u²` (`coeffNonneg_pairFactor_iff`); adjoining
+   `y + c` enlarges it to `δ² ≤ 3u²` (`exists_linear_repair_iff`), `c = u² + δ²` works, boundary product
+   `y³ + 64u⁶` (`pairFactor_boundary_repair`). One transition can hide a defect of a smaller block.
+2. **Multiplicity cost.** `n` equal factors: `B_{α,n}(z) = (1+z)^n(z² − 2αz + 1)`; exact criteria
+   `δ² ≤ (2m+1)u²` (`n = 2m`), `δ² ≤ (2m+3)u²` (`n = 2m+1`) (`coeffNonneg_binomialRepair_iff`,
+   `coeffNonneg_geometricRepair_even_iff`, `coeffNonneg_geometricRepair_odd_iff`). The middle coefficient is
+   the obstruction; fixed-order positivity misses it. (Motzkin–Straus bound; exact parity formalized here.)
+3. **Central multiplicities and the adverse ordinate.** `y^a` shifts indices, reflects signs both ways
+   (`coeffNonneg_X_pow_mul_iff`); at a pair's own ordinate every multiple of `(y − δ²)²` keeps a positive root,
+   so no factor repairs it (`coeffNonneg_pairFactor_at_center_mul_iff`).
+4. **Universal reflectors.** Multiplication preserves and reflects the cone for every polynomial iff the
+   multiplier is `c·y^a` (`universal_coefficient_reflector_iff`); every other positive multiplier hides a
+   defect in a strictly positive polynomial of degree ≤ `2 deg Q`, sharp via `(1+y^D)(y^{2D}−y^D+1) = 1+y^{3D}`.
+
+### Heat
+5. **Heat cone evolution.** Forward heat is a semigroup preserving the cone; admissible times form a closed
+   upper set (`coeffNonneg_forwardPolyHeat_mono`, `isClosed_forwardPolyHeat_cone`); dilation rescales heat by the
+   squared scale (`coeffNonneg_heat_dilation_iff`); backward heat at ½ sends monomials to Hermite polynomials
+   (`forwardPolyHeat_half_hermite`); every even nonnegative polynomial with a positive root has an attained
+   positive first heat time (`exists_first_heat_time_of_even_nonnegative_root`).
+6. **Masked pair threshold.** For `X^{2m}(X²−a)²`, coefficient signs reduce to one quadratic in the index;
+   threshold `a/(8m+10) ≤ σ_m ≤ a/(8m+5)` (`maskedPairHeatThreshold_lower`, `maskedPairHeatThreshold_upper`),
+   strictly decreasing; exact closed form (`maskedPairHeatThreshold_eq`); at first contact exactly one even
+   coefficient vanishes, of degree `m + 2 + (m mod 2)` (`centralMaskedPair_heat_contact_iff`) — higher-order
+   contact persists. Gaussian parameter is `λ = 2s` (`maskedPairMoments_nonneg_iff_threshold`).
+7. **Hermite root barrier.** If `P ≥ 0` has degree `2d` and `exp((λ/2)D²)P` is coefficient-positive, every
+   positive root satisfies `δ ≤ √λ·h_d` (`nonnegative_root_le_sqrt_mul_hermiteEdge`); equality forces the scaled
+   Hermite extremizer (`scaled_nonnegative_edge_root_rigidity`), whose heated form has only constant and
+   leading coefficients (`hermiteExtremizer_heat_middle_coeff`) — generic contact need not be at order zero.
+   Extremizer: exact double roots, positive cofactor (`scaledHermiteExtremizer_positive_cofactor`). Edge:
+   strictly increasing (`hermiteEdge_strictMono`), `h_d²/(2d) → 4` (`tendsto_hermiteEdge_sq_div_degree`); optimal
+   fixed-depth heat `a/(2h_{m+2}²)` (`isLeast_fixed_depth_heat`); central masking costs asymptotically twice the
+   optimum (`tendsto_central_to_optimal_heat_ratio`).
+8. **Root-radius heat cone.** Any monic real polynomial of degree `N` with all roots in `|y| ≤ r` (any
+   configuration: clusters, multiple roots, complex pairs) has `exp(s∂²)q(x²)` coefficient-positive once
+   `32r ≤ sN` (`coeffNonneg_forwardPolyHeat_expand_of_discFactors`) — via Gaussian moments of Hasse derivatives.
+   Order `r/N` is sharp: `(y − r)^N` needs it.
+
+### From source to local factor
+9. **Exact source factorization.** The canonical radius head is `c_{t,R}D_{t,S}(z²)`, `c > 0`, without dividing
+   by `Ξ(t)` (`xiFiniteHead_eq_localDivisorPolynomial`, `xiFiniteHead_even_taylor`); splits give exact coefficient
+   convolutions (`localDivisorPolynomial_split_coeff`). `D` is monic of degree = retained copies; the horizontal
+   polynomial is monic, even, nonnegative (`horizontalDivisorPolynomial_nonneg`).
+10. **Source Hermite obstruction.** A retained off-line copy gives a positive root at depth `δ` with its
+    reflection (`N ≥ 2`); heat positivity at `λ/2` forces `δ² ≤ λh_N²` (`radiusHead_depth_sq_le_hermite_edge`).
+11. **Counting repairs every head at large height.** Radius-`R` head roots lie in `|y| ≤ R²`, so heat
+    `32R² ≤ sN(t,R)` suffices whatever the configuration (`coeffNonneg_heat_localDivisorPolynomial_radiusHead`);
+    Riemann–von Mangoldt makes `N(t,R) → ∞` (`exists_le_card_radiusHead`); hence for every `R ≥ R₀` and `λ > 0` the
+    heated head is coefficient-positive at all large heights (`exists_radiusHead_heat_coeffNonneg`), and through
+    the head/tail transfer every heated slice coefficient is ≥ 0 there
+    (`exists_xiSliceHeatTransfer_nonneg_of_head_counting`). This is a finite-head Ki–Kim–Lee from counting alone.
+    **Scale gap:** counting gives heat `≍ R/log t`; the detector needs `≍ δ²/log t`. Configuration-free repair
+    must cover pairs of depth up to `R`, so it cannot reach depth-`δ` resolution — sign information is required.
+12. **Contour moments.** `p_j(t)` are multiplicity-exact power sums; Newton recovers coefficients (corpus).
+    The missing certificate is a sign theorem for the signed Newton combinations.
+
+### Heat and charge interfaces
+Forward horizontal heat on the slice ≠ de Bruijn–Newman evolution (bridge via Gaussian height averages).
+Existing producer: heat `(17/25)/log|t|` at large heights. Detectors: `κ₀(δ) = δ²/(200(log(3/δ)+1))` (older);
+sharper finite-head receiver: positivity at some `λ(t) ≤ δ₀²/(320 log(180|t|))` for `|t| ≥ 73/5` with radius
+`½ ≤ R ≤ 1` implies `zetaZeroWidth ≤ δ₀` (RHTower). Positivity propagates to larger heat; eventual estimates
+need finite-height accounting.
 
 | Endpoint | Required arithmetic output |
 |---|---|
-| Exact local coefficient cone | Radius-one heads have nonnegative coefficients at every real height, at every order up to their actual degree |
-| Horizontal collision | The exact positive-height gross charge is below two on cofinal cutoffs |
-| Global heat collision | Total future collision mass is below four on positive heats approaching zero |
-| Ward cap | Almost-everywhere nonpositivity of the real completed cap at a suitable fixed positive parameter |
-| Threshold contact | The actual source forces a zeroth-order contact at the Ward threshold |
+| Local coefficient cone | Radius-one heads coefficient-positive at every height, every order up to actual degree |
+| Horizontal collision | Exact positive-height gross charge below two on cofinal cutoffs |
+| Global heat collision | Total future collision mass below four on heats → 0 |
+| Ward cap | A.e. nonpositivity of the real completed cap at a fixed positive parameter |
+| Threshold contact | Actual source forces zeroth-order contact at the Ward threshold |
 
-The horizontal charge counts distinct same-height pairs with multiplicity. The heat charge counts disappearing nonreal multiplicity; evenness and nonvanishing at the origin pair its real collision points, producing the four-unit normalization. The Ward cap is a weighted real charge with no universal integer gap. Bounds for one currency cannot be substituted for another.
+Currencies differ: horizontal charge counts same-height pairs with multiplicity; heat charge counts
+disappearing nonreal multiplicity (four-unit normalization); the Ward cap is weighted with no integer gap.
 
-## Research questions and tools still required
+---
 
-1. **Signed source coefficients.** Construct and prove a source-only sign certificate for the Newton combinations. Contour reconstruction is an input, not the answer.
-2. **Sign control across multiple-root transitions.** Exact unnormalized source splitting and coefficient convolution are established. Prove which source certificates survive the addition or removal of a nonmonomial shell. Universal cone reflection fails there; central powers and positive scalars are the classified reversible cases.
-3. **Arithmetic selection.** Identify a law of the actual source that excludes impure configurations accepted by symmetry and norm-square positivity. The repair models show why a cone condition on isolated factors is stronger than one on the total block.
-4. **Ordered curvature.** Preserve the prime/Gamma channel labels through a singularity-sensitive source-to-divisor map. Reflection scalarization can cancel the detector before it is estimated.
-5. **Horizontal collision budgets.** Derive a source expression dominating gross charge and prove a cofinal bound below two, including all mixed and boundary terms.
-6. **Detector-scale production.** Prove the retained-head coefficient certificate at the sharper quadratic-depth scale `δ₀²/(320 log(180|t|))`, with every order and the finite-height range required by its global-width receiver. The older `κ₀(δ)/log t` detector remains a valid weaker interface; neither has an independent producer at the needed scale.
-7. **Degree and clustering.** Replace model multiplicity prices by estimates on actual local divisors. The exact equal-factor cost supplies a calibration any proposed uniform argument must survive.
-8. **Heat collision budgets.** Derive the heat-transformed source current and bound its cumulative collision mass uniformly towards heat zero. Positive-heat finiteness and the known jump law leave this unpaid.
-9. **Contact rigidity.** Explain why actual arithmetic rules out a positive Ward threshold whose contacts all occur at higher orders. The masked middle-order family and the Hermite extremizers show why real-axis positivity, symmetry and sharp root bounds alone do not provide this rigidity.
+## 5. Pillar theorems
 
-## Traps
+1. One-factor and multiplicity repair laws (`exists_linear_repair_iff`, `coeffNonneg_geometricRepair_even_iff`).
+2. Universal reflectors (`universal_coefficient_reflector_iff`).
+3. Masked-pair threshold and contact (`maskedPairHeatThreshold_eq`, `centralMaskedPair_heat_contact_iff`).
+4. Hermite root barrier and extremizers (`nonnegative_root_le_sqrt_mul_hermiteEdge`, `scaled_nonnegative_edge_root_rigidity`, `isLeast_fixed_depth_heat`).
+5. Root-radius heat cone (`coeffNonneg_forwardPolyHeat_expand_of_discFactors`).
+6. Exact source factorization and source barrier (`xiFiniteHead_eq_localDivisorPolynomial`, `radiusHead_depth_sq_le_hermite_edge`).
+7. Large-height head repair from counting (`exists_radiusHead_heat_coeffNonneg`, `exists_xiSliceHeatTransfer_nonneg_of_head_counting`).
+
+---
+
+## 6. Traps
 
 - Real-axis positivity does not imply coefficient positivity.
-- Positive factors cannot be canceled from a coefficient-cone statement.
-- A multiple zero is not a simple zero with negligible error.
-- A changing local degree cannot be replaced by a fixed-order asymptotic.
-- A zero-free boundary exists qualitatively without giving a quantitative separation bound.
-- An ordered orientation sum may vanish by symmetry while the even collision defect remains positive.
+- Positive factors cannot be cancelled from a cone statement (only `c·y^a` reflect).
+- A multiple zero is not a simple zero with negligible error; a changing degree is not a fixed-order asymptotic.
+- A qualitative zero-free boundary gives no quantitative separation.
+- An ordered orientation sum may vanish by symmetry while the even collision defect stays positive.
 - A nonnegative count equal to defect plus another nonnegative term gives no upper bound on the defect.
-- A later zero heat charge does not force an earlier charge to vanish.
-- Separate local certificates may spend the same Gamma/polar reserve more than once.
-- Reflection-oddness is necessary for an odd orientation channel, not for every exclusion argument.
-- A generic sign-preserving representation is not an arithmetic producer until its source identification is proved.
+- A later zero heat charge does not force an earlier one to vanish.
+- Separate local certificates may spend the same Gamma/polar reserve twice.
+- Counting-based heat repair (order `R/N`) is configuration-blind; it cannot reach depth-`δ` detector scale.
+- Polynomial heat at `s` is Gaussian parameter `2s` — double constants at the Hermite interface.
+- A generic sign-preserving representation is not a producer until its source identification is proved.
 
-## Success and contribution criteria
+---
 
-A foundational contribution must prove an exact mechanism, a sharp classification, a quantitative stability law or a faithful source identity that was not already available. It must retain multiplicity and state every dependence on height, radius, degree, separation and heat. If a proposed mechanism fails, its strongest positive survivor must be extracted and proved.
+## 7. Open problems
 
-An arithmetic contribution must additionally identify the actual source input, prove its selective force, account for all mixed and boundary terms, and name the established receiver consuming its output. An RH-equivalent condition is a receiver description until that input is independently established.
+1. **Signed source coefficients**: a source-only sign certificate for the Newton combinations.
+2. **Sign control across nonmonomial transitions**: which source certificates survive adding/removing a shell.
+3. **Arithmetic selection**: a law of the actual source excluding impure configurations accepted by symmetry and
+   norm-square positivity.
+4. **Ordered curvature**: keep prime/Gamma channel labels through a singularity-sensitive source-to-divisor map.
+5. **Horizontal collision budget** below two, with all mixed and boundary terms.
+6. **Detector-scale production**: retained-head coefficient positivity at `δ₀²/(320 log(180|t|))`, every order,
+   with finite-height range. Counting reaches the right `1/log t` order but the wrong constant (`R` vs `δ²`);
+   closing the gap needs configuration-sensitive (sign) input.
+7. **Degree and clustering**: estimates on actual local divisors calibrated by the multiplicity cost.
+8. **Heat collision budget** uniform as heat → 0.
+9. **Contact rigidity**: why actual arithmetic excludes positive Ward thresholds whose contacts are all at higher
+   orders (masked pairs and Hermite extremizers show polynomial properties alone do not).
 
-Full success requires answering the research questions with those tools and closing an arithmetic endpoint at its stated quantifiers. The local laws alone do not complete the programme. Proof and verification records belong in the [programme card](../../../docs/drafts/pipeline/1-in-progress/arithmetic-local-divisor-geometry.md), not in this foundational document.
+---
+
+## 8. Tools
+
+Built: pair/linear/binomial repair laws; central transitions; universal reflectors; heat semigroup, dilation,
+Hermite normalization, first heat times; masked-pair threshold and contact index; Hermite root edge, Sonin
+identity, barrier, extremizers, edge asymptotics, optimal heat; root-radius heat cone; exact source local
+factors and source Hermite obstruction; counting-based large-height head repair.
+To build: a source sign certificate (Newton combinations, collision charge or Ward cap) at detector scale.
+
+---
+
+## 9. Contribution criteria
+
+A foundational contribution proves an exact mechanism, sharp classification, quantitative stability law or
+faithful source identity not already available; retains multiplicity; states every dependence on height,
+radius, degree, separation and heat; extracts the positive survivor of a failed mechanism. An arithmetic
+contribution identifies the actual source input, proves its selective force, accounts for all mixed and
+boundary terms, and names the receiver consuming its output. An RH-equivalent condition is a receiver
+description until its input is independently established.

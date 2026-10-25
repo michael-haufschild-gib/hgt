@@ -156,8 +156,10 @@ its surjectivity, and its one-dimensional annihilator theorem in
 packages square-summable partial sums as a submodule, and drafts its exact
 closure using `CriticalPartialSumCore`. It also drafts the attained minimum
 distance to the zero-evaluation hyperplane and the continuous annihilator
-classification. The file `/tmp/BiarithmeticCriticalCoefficientDomain.lean`
-awaits its first Lean check; five audits are included.
+classification. `BiarithmeticGeometry/CriticalCoefficientDomain.lean`
+passed its direct repository check and all five transitive audits. The
+[formalized card](../3-formalized/biarithmetic-critical-coefficient-domain.md)
+records these exact conclusions. No proof limit was raised.
 
 `/tmp/BiarithmeticCriticalReducedCokernel.lean` drafts the exact quotient norm,
 the quotient's linear isometry with `C`, and its dimension one. Its quotient
@@ -268,3 +270,21 @@ intrinsic source graph itself with its actual mean correction. Its input
 range matches the causal domain on `[0,1)` and is the full coefficient
 space at `t=1`. Six audits are pending. The source-labelled intrinsic
 Fredholm packaging remains separate.
+
+The source-labelled intrinsic packaging is drafted in
+`/tmp/BiarithmeticIntrinsicSourceFredholm.lean`. Its actual filtered graph
+image is the domain, with exact membership tied to filtered-receiver energy.
+Six audits cover the sole non-Fredholm parameter, the two interior indices,
+and the return to index zero at `t=1`. All checks remain pending.
+
+`/tmp/BiarithmeticSourceCriticalCokernels.lean` drafts the final critical
+source identifications: reduced cokernels isometric to `C` with dimension
+one, and unreduced cokernels and closure defects of continuum dimension,
+for both actual ordinary and intrinsic one-prime source domains. Eight
+audits are pending; the ambient space is explicitly the prime-five subspace.
+
+`/tmp/BiarithmeticCriticalContinuousDual.lean` drafts the continuous dual
+of the unreduced coefficient quotient itself, using Mathlib's continuous
+quotient map and lift. It gives an explicit linear equivalence with `C`,
+dimension one, and vanishing on all closure-defect classes. Five audits
+are pending; no closedness assumption is made on the paid submodule.

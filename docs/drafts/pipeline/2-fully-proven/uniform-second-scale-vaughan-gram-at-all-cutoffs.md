@@ -242,11 +242,13 @@ floor-tail swap and divisor-square head bound. Its scratch check passed with onl
 standard axioms; it is migrated and wired as
 `HyperbolaCancellationWithDivisorBoundedCoefficients.lean`. Its producing and final direct repository checks passed. The scratch file was removed.
 
-`/tmp/QIUniformUndampedTools.lean` drafts seven further targets: rounding, the exact
-omitted Möbius floor tail, a common cutoff estimate, its unconditional finite
-logarithmic bound, and the full logarithmic rate through the unit second cutoff.
-The complete uniform Gram theorem is now checked below; the single-floor
-corollaries remain under verification.
+All seven single-floor targets passed their final direct check and standard-axiom
+audits: rounding, the exact omitted Möbius floor tail, a common cutoff estimate,
+its unconditional finite logarithmic bound, and the full logarithmic rate through
+the unit second cutoff. They are wired as
+`UniformLogarithmicCancellationInMobiusFloorSums.lean`; see
+[the complete audit](../3-formalized/uniform-logarithmic-cancellation-in-mobius-floor-sums.md).
+The owned scratch was removed.
 
 The direct finite proof is now drafted as ten audit targets in
 `/tmp/QIDoubleConvolutionTools.lean`: the arithmetic-function and summatory Vaughan

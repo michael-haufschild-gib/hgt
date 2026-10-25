@@ -51,7 +51,7 @@ its parent card. Open programme questions without a proof plan remain open.
 
 | Source requirement | Required evidence | Status |
 |---|---|---|
-| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; sixty direct-checked and axiom-audited leaves |
+| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; sixty-one direct-checked and axiom-audited leaves |
 | Horizon-complete objects; sign visibility | Exact signed finite-horizon laws and quantitative period/prefix comparison | Open |
 | Truncated affine representation theory | Source-defined action, boundary calculus, classification/calibration | Open |
 | A1–A2: paid ideal annihilates escape; hull inclusion | Actual receiver theorem, not an assumed ideal inclusion | Proved for every actual common Gram limit; ADR foundations reused, four interfaces directly checked and axiom-audited |
@@ -121,6 +121,7 @@ its parent card. Open programme questions without a proof plan remain open.
 | `PronicDilationOperators` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
 | `PronicWienerCoordinates` | Direct repository leaf passed; stage-3 card | Both main declarations clean |
 | `CriticalPartialSumCore` | Direct repository leaf passed; stage-3 card | Seven main declarations clean |
+| `CriticalCoefficientDomain` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `GoldenNormalizedCube` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
 | `NormalizedCubicTrace` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `CriticalGoldenPaymentNonclosed` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
@@ -141,7 +142,7 @@ its parent card. Open programme questions without a proof plan remain open.
 | `PaidSourcePerturbations` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `FullWienerAnnihilation` | Consolidated ADR interfaces and direct repository leaf passed | Four chosen and universal declarations clean |
 
-Completed main-declaration axiom audits for sixty checked leaves report only `propext`,
+Completed main-declaration axiom audits for sixty-one checked leaves report only `propext`,
 `Classical.choice`, and `Quot.sound`. Audits used isolated Lean source copies; each leaf also passed its direct source check. The literal-B1
 no-go is closed in `5-failed/biarithmetic-literal-dimension-euler-characteristic.md`; its
 positive survivor and exact prefix visibility now have separate stage-3 cards.
@@ -1187,3 +1188,24 @@ uses actual filtered-receiver coordinates, including the bounded mean
 correction, to construct a complete graph. Six audits cover its source
 energy range, the causal graph equivalence on `[0,1)`, and the full-space
 Banach isomorphism at the undamped endpoint. Dependencies remain unchecked.
+
+Pending source check: `/tmp/BiarithmeticIntrinsicSourceFredholm.lean`
+defines the actual intrinsic payment inclusion from that graph image and
+drafts its unique non-Fredholm damping, both interior indices, and the
+endpoint index zero. Six audits and its dependencies remain unchecked.
+
+Pending source check: `/tmp/BiarithmeticSourceCriticalCokernels.lean`
+identifies both actual critical one-prime source domains with the coefficient
+domain, then transfers the exact reduced quotient isometries and both
+unreduced continuum dimensions. Eight audits and dependencies remain unchecked.
+
+`CriticalCoefficientDomain` passed its direct repository check and all five
+audits after factoring linearity into small lemmas under default limits.
+Its stage-3 card records exact closure, attained distance, and the continuous
+annihilator law. The quotient isometry and actual Wiener identification remain
+in dependent drafts.
+
+Pending source check: `/tmp/BiarithmeticCriticalContinuousDual.lean` uses
+the actual quotient topology, without a closedness instance for payment,
+to construct its continuous scalar evaluation, classify every continuous
+functional, and identify its continuous dual with `C`. Five audits pending.
