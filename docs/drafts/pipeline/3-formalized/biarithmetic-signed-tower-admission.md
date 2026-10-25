@@ -1,10 +1,10 @@
 # Signed geometric towers have the same exact admission radius
 
 - **ID:** biarithmetic-signed-tower-admission
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE (Lean formalization incomplete)
-- **Proof status:** Only statements with completed Lean checks and axiom audits are proved. Paper arguments below are proof plans; every significant claim remains a formalization obligation.
-- **Parent:** [Digital energy and payment](biarithmetic-digital-energy-and-prime-tower-payment.md)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Proof status:** Direct Lean source check and all three transitive axiom audits passed.
+- **Parent:** [Digital energy and payment](../1-in-progress/biarithmetic-digital-energy-and-prime-tower-payment.md)
 - **Statement:** For every real `a` with `|a|<5`, the ordinary receiver of `I_a=localFactorInverse 5 a` is paid exactly when `|a|<sqrt(5)`. This includes both critical signs. Flipping the sign on the prime-five generator preserves admission throughout the full mean-convergence interval.
 
 ## Proof from the actual source
@@ -40,5 +40,12 @@ signed admission classification was returned. This is a reuse audit, with
 no external originality claim.
 
 - [x] Dependency-closed proof plan from checked source and signed digit-energy laws.
-- [ ] Lean signed admission equivalence and both critical endpoints.
-- [ ] Direct source check, transitive axiom audits, and umbrella import.
+- [x] Lean signed admission equivalence and both critical endpoints.
+- [x] Direct source check, transitive axiom audits, and umbrella import.
+
+Lean: `BiarithmeticGeometry/SignedTowerAdmission.lean`. Direct check:
+`lake --old env lean GaloisForLFunctions/BiarithmeticGeometry/SignedTowerAdmission.lean`.
+The audited declarations `receiverBounded_fiveTower_abs_iff`,
+`receiverBounded_fiveTower_neg_iff`, and
+`not_receiverBounded_negative_critical_fiveTower` depend only on
+`propext`, `Classical.choice`, and `Quot.sound`. The umbrella was not compiled.

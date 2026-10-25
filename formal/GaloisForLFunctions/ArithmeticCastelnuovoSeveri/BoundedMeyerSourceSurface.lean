@@ -161,7 +161,10 @@ theorem meyerBoundedSurface_radical_eq_principal_iff :
         apply (meyerSource_boundary_iff_jets_zero _).mpr
         intro rho j
         by_cases hr : (rho : ℂ).re = 1 / 2
-        · have hj : j.val = 0 := by have hlt := j.isLt; rw [hs rho hr] at hlt; omega
+        · have hj : j.val = 0 := by
+            have hlt := j.isLt
+            have hm := hs rho hr
+            omega
           rw [hj]
           exact hv rho
         · exact x.2 rho j (Or.inl hr)

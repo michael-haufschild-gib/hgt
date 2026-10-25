@@ -134,14 +134,15 @@ corollaries, unconditional nontriviality, and the fixed-source/global criteria.
 The core source/jet bounds are drafted in
 `ArithmeticCastelnuovoSeveri/MeyerHilbertSchmidtSource.lean` (actual-file certified); the four-way classification and
 fixed-source/global criteria are drafted in
-`ArithmeticCastelnuovoSeveri/MeyerBoundedCenteredOrbits.lean` (actual candidate; unverified). The source base is now certified; the bounded-orbit leaf remains unverified. The product,
-trace-radical, and nontriviality corollaries still need exact Lean endpoints.
+`ArithmeticCastelnuovoSeveri/MeyerBoundedCenteredOrbits.lean` (actual candidate; unverified). The source base is certified; the bounded-orbit leaf remains unverified. The product,
+trace-radical, and nontriviality endpoints are present in the actual
+`ArithmeticCastelnuovoSeveri/MeyerCriticalTopAlgebra.lean` candidate, also unverified.
 This jet-selected restricted carrier does not supply an independent all-source
 RR/Bézout mechanism on the original scaling surface.
 
-The algebra, positive trace, radical-annihilation, and unconditional nontriviality
-endpoints are now drafted in `/tmp/QIIMeyerCriticalTopAlgebraDraft.lean`, still
-unrun. Its inputs are the exact full-jet algebra and bounded-orbit classification.
+The actual algebra module contains positive trace, radical-annihilation, and
+unconditional nontriviality endpoints. Its inputs are the exact full-jet algebra
+and bounded-orbit classification; its direct check and axiom audit are pending.
 
 ## Exact reserve orbit law
 
@@ -153,6 +154,7 @@ upper bound for the reserve bounds the first squared HS norm by twice that
 constant, hence forces the same critical highest-jet condition. Therefore
 reserve boundedness, reserve invariance, and critical highest-jet support are
 equivalent for each actual source. Global invariance is exactly the faithful
-cone RR condition, both equivalent to simple criticality. Complete unrun
-draft: `/tmp/QIIMeyerHilbertReserveFlowRigidityDraft.lean`; its reserve import
-will be `FaithfulHilbertSchmidtSourceReserves.lean`.
+cone RR condition, both equivalent to simple criticality. Actual candidate:
+`ArithmeticCastelnuovoSeveri/MeyerHilbertReserveFlowRigidity.lean`, importing
+`FaithfulHilbertSchmidtSourceReserves.lean`. Direct verification is pending;
+the old scratch copy does not contain every subsequent correction.

@@ -130,9 +130,10 @@ theorem cexp_mul_primeDensity (μ ν γ : ℝ) (s : ℂ) {t : ℝ} (ht : 0 < t) 
     unfold primeDensity primeNumerator
     push_cast
     ring
-  rw [e1, e2, e3, split, split, split, hdens]
-  field_simp
-  linear_combination (-(Complex.exp (-(s * (t : ℂ))) * Complex.exp ((1 - (μ : ℂ)) * t))) * ecos
+  rw [hdens, mul_div_assoc', ← add_div, ← add_div]
+  congr 1
+  rw [e1, e2, e3, split, split, split]
+  linear_combination (Complex.exp (-(s * (t : ℂ))) * Complex.exp ((1 - (μ : ℂ)) * t)) * ecos
 
 theorem re_sub_pos {s : ℂ} {a : ℝ} (ha : a ≤ 1) (hs : 1 < s.re) : 0 < (s - (a : ℂ)).re := by
   simp only [Complex.sub_re, Complex.ofReal_re]
@@ -143,7 +144,7 @@ theorem re_add_pos {s : ℂ} {a : ℝ} (ha : 0 ≤ a) (hs : 1 < s.re) : 0 < (s +
   linarith
 
 /-- Laplace transform of the prime density: three Frullani integrals. -/
-theorem integral_cexp_mul_primeDensity {μ ν γ : ℝ} (hμ : 0 ≤ μ) (hlow : 0 ≤ 3 * μ - 1 - ν)
+theorem integral_cexp_mul_primeDensity {μ ν γ : ℝ} (hlow : 0 ≤ 3 * μ - 1 - ν)
     (hhigh : 0 ≤ 3 * μ - 1 + ν) (h4 : 0 ≤ 4 * μ - 1) {s : ℂ} (hs : 1 < s.re) :
     (∫ t in Ioi (0 : ℝ), Complex.exp (-(s * t)) * (primeDensity μ ν γ t : ℂ)) =
       (Complex.log (s - (1 - μ) - γ * I) - Complex.log (s - 1)) +
@@ -169,8 +170,13 @@ theorem integral_cexp_mul_primeDensity {μ ν γ : ℝ} (hμ : 0 ≤ μ) (hlow :
             (Complex.exp (-((s + (3 * μ - 1 + ν)) * t)) -
               Complex.exp (-((s + (4 * μ - 1)) * t))) / t)) :=
     setIntegral_congr_fun measurableSet_Ioi fun t ht => cexp_mul_primeDensity μ ν γ s ht
-  rw [hsplit, integral_add (integrableOn_frullani h1 hm)
-      ((integrableOn_frullani hl hp).add (integrableOn_frullani hh hq)),
+  have hint : IntegrableOn
+      (fun t : ℝ => (Complex.exp (-((s + (3 * μ - 1 - ν)) * t)) -
+          Complex.exp (-((s - (1 - μ) + γ * I) * t))) / t +
+        (Complex.exp (-((s + (3 * μ - 1 + ν)) * t)) -
+          Complex.exp (-((s + (4 * μ - 1)) * t))) / t) (Ioi (0 : ℝ)) :=
+    (integrableOn_frullani hl hp).add (integrableOn_frullani hh hq)
+  rw [hsplit, integral_add (integrableOn_frullani h1 hm) hint,
     integral_add (integrableOn_frullani hl hp) (integrableOn_frullani hh hq),
     integral_frullani h1 hm, integral_frullani hl hp, integral_frullani hh hq]
 
@@ -180,7 +186,7 @@ def overRegularZeta (μ ν γ : ℝ) (s : ℂ) : ℂ :=
     ((s - 1) * (s + (3 * μ - 1 - ν)) * (s + (3 * μ - 1 + ν)))
 
 /-- **The zeta function of the positive prime density.** -/
-theorem cexp_integral_primeDensity {μ ν γ : ℝ} (hμ : 0 ≤ μ) (hlow : 0 ≤ 3 * μ - 1 - ν)
+theorem cexp_integral_primeDensity {μ ν γ : ℝ} (hlow : 0 ≤ 3 * μ - 1 - ν)
     (hhigh : 0 ≤ 3 * μ - 1 + ν) (h4 : 0 ≤ 4 * μ - 1) {s : ℂ} (hs : 1 < s.re) :
     Complex.exp (∫ t in Ioi (0 : ℝ), Complex.exp (-(s * t)) * (primeDensity μ ν γ t : ℂ)) =
       overRegularZeta μ ν γ s := by
@@ -196,7 +202,7 @@ theorem cexp_integral_primeDensity {μ ν γ : ℝ} (hμ : 0 ≤ μ) (hlow : 0 �
   have ne : ∀ z : ℂ, 0 < z.re → z ≠ 0 := fun z hz h => by rw [h] at hz; simp at hz
   have nm : s - (1 - μ) - γ * I ≠ 0 := ne _ (by simpa using hb)
   have np : s - (1 - μ) + γ * I ≠ 0 := ne _ (by simpa using hb)
-  rw [integral_cexp_mul_primeDensity hμ hlow hhigh h4 hs, Complex.exp_add, Complex.exp_sub,
+  rw [integral_cexp_mul_primeDensity hlow hhigh h4 hs, Complex.exp_add, Complex.exp_sub,
     Complex.exp_add, Complex.exp_sub, Complex.exp_sub, Complex.exp_log nm, Complex.exp_log (ne _ h1),
     Complex.exp_log np, Complex.exp_log (ne _ hl), Complex.exp_log (ne _ hq),
     Complex.exp_log (ne _ hh), overRegularZeta]
@@ -221,34 +227,83 @@ def integerDensity (μ ν γ t : ℝ) : ℝ :=
   rho μ ν γ * Real.exp t + lowResidue μ ν γ * Real.exp (-((3 * μ - 1 - ν) * t)) +
     highResidue μ ν γ * Real.exp (-((3 * μ - 1 + ν) * t))
 
+theorem rho_mul {μ ν γ : ℝ} (h₁ : 3 * μ - ν ≠ 0) (h₂ : 3 * μ + ν ≠ 0) :
+    rho μ ν γ * ((3 * μ - ν) * (3 * μ + ν)) = 4 * μ * (μ ^ 2 + γ ^ 2) :=
+  div_mul_cancel₀ _ (mul_ne_zero h₁ h₂)
+
+theorem lowResidue_mul {μ ν γ : ℝ} (hν : ν ≠ 0) (h₁ : 3 * μ - ν ≠ 0) :
+    lowResidue μ ν γ * (2 * ν * (3 * μ - ν)) = -(((2 * μ - ν) ^ 2 + γ ^ 2) * (μ + ν)) :=
+  div_mul_cancel₀ _ (mul_ne_zero (mul_ne_zero two_ne_zero hν) h₁)
+
+theorem highResidue_mul {μ ν γ : ℝ} (hν : ν ≠ 0) (h₂ : 3 * μ + ν ≠ 0) :
+    highResidue μ ν γ * (2 * ν * (3 * μ + ν)) = ((2 * μ + ν) ^ 2 + γ ^ 2) * (μ - ν) :=
+  div_mul_cancel₀ _ (mul_ne_zero (mul_ne_zero two_ne_zero hν) h₂)
+
+theorem residue_denom_ne_zero {μ ν : ℝ} (hν : ν ≠ 0) (h₁ : 3 * μ - ν ≠ 0) (h₂ : 3 * μ + ν ≠ 0) :
+    2 * ν * ((3 * μ - ν) * (3 * μ + ν)) ≠ 0 :=
+  mul_ne_zero (mul_ne_zero two_ne_zero hν) (mul_ne_zero h₁ h₂)
+
 /-- The integer density starts at `0`: `ρ + c₁ + c₂ = 0`. -/
 theorem rho_add_residues {μ ν γ : ℝ} (hν : ν ≠ 0) (h₁ : 3 * μ - ν ≠ 0) (h₂ : 3 * μ + ν ≠ 0) :
     rho μ ν γ + lowResidue μ ν γ + highResidue μ ν γ = 0 := by
-  unfold rho lowResidue highResidue
-  field_simp
-  ring
+  have key : (rho μ ν γ + lowResidue μ ν γ + highResidue μ ν γ) *
+      (2 * ν * ((3 * μ - ν) * (3 * μ + ν))) = 0 := by
+    linear_combination (2 * ν) * rho_mul (γ := γ) h₁ h₂ +
+      (3 * μ + ν) * lowResidue_mul (γ := γ) hν h₁ + (3 * μ - ν) * highResidue_mul (γ := γ) hν h₂
+  exact (mul_eq_zero.mp key).resolve_right (residue_denom_ne_zero hν h₁ h₂)
 
 /-- **Slope identity**: `ρ(3μ + ν) + 2νc₁ = γ² + ν²`. -/
 theorem rho_slope {μ ν γ : ℝ} (hν : ν ≠ 0) (h₁ : 3 * μ - ν ≠ 0) (h₂ : 3 * μ + ν ≠ 0) :
     rho μ ν γ * (3 * μ + ν) + 2 * ν * lowResidue μ ν γ = γ ^ 2 + ν ^ 2 := by
-  unfold rho lowResidue
-  field_simp
-  ring
+  have key : (rho μ ν γ * (3 * μ + ν) + 2 * ν * lowResidue μ ν γ - (γ ^ 2 + ν ^ 2)) *
+      (3 * μ - ν) = 0 := by
+    linear_combination rho_mul (γ := γ) h₁ h₂ + lowResidue_mul (γ := γ) hν h₁
+  linarith [(mul_eq_zero.mp key).resolve_right h₁]
+
+/-- The `s¹` coefficient of the partial fraction expansion. -/
+theorem residues_coeff_one {μ ν γ : ℝ} (hν : ν ≠ 0) (h₁ : 3 * μ - ν ≠ 0) (h₂ : 3 * μ + ν ≠ 0) :
+    rho μ ν γ * ((3 * μ - 1 - ν) + (3 * μ - 1 + ν)) + lowResidue μ ν γ * ((3 * μ - 1 + ν) - 1) +
+        highResidue μ ν γ * ((3 * μ - 1 - ν) - 1) =
+      (1 - μ) ^ 2 + γ ^ 2 - 2 * (1 - μ) * (4 * μ - 1) -
+        ((3 * μ - 1 - ν) * (3 * μ - 1 + ν) - (3 * μ - 1 - ν) - (3 * μ - 1 + ν)) := by
+  have key : (rho μ ν γ * ((3 * μ - 1 - ν) + (3 * μ - 1 + ν)) +
+      lowResidue μ ν γ * ((3 * μ - 1 + ν) - 1) + highResidue μ ν γ * ((3 * μ - 1 - ν) - 1) -
+      ((1 - μ) ^ 2 + γ ^ 2 - 2 * (1 - μ) * (4 * μ - 1) -
+        ((3 * μ - 1 - ν) * (3 * μ - 1 + ν) - (3 * μ - 1 - ν) - (3 * μ - 1 + ν)))) *
+      (2 * ν * ((3 * μ - ν) * (3 * μ + ν))) = 0 := by
+    linear_combination (2 * ν * ((3 * μ - 1 - ν) + (3 * μ - 1 + ν))) * rho_mul (γ := γ) h₁ h₂ +
+      (((3 * μ - 1 + ν) - 1) * (3 * μ + ν)) * lowResidue_mul (γ := γ) hν h₁ +
+      (((3 * μ - 1 - ν) - 1) * (3 * μ - ν)) * highResidue_mul (γ := γ) hν h₂
+  linarith [(mul_eq_zero.mp key).resolve_right (residue_denom_ne_zero hν h₁ h₂)]
+
+/-- The `s⁰` coefficient of the partial fraction expansion. -/
+theorem residues_coeff_zero {μ ν γ : ℝ} (hν : ν ≠ 0) (h₁ : 3 * μ - ν ≠ 0) (h₂ : 3 * μ + ν ≠ 0) :
+    rho μ ν γ * ((3 * μ - 1 - ν) * (3 * μ - 1 + ν)) - lowResidue μ ν γ * (3 * μ - 1 + ν) -
+        highResidue μ ν γ * (3 * μ - 1 - ν) =
+      (4 * μ - 1) * ((1 - μ) ^ 2 + γ ^ 2) + (3 * μ - 1 - ν) * (3 * μ - 1 + ν) := by
+  have key : (rho μ ν γ * ((3 * μ - 1 - ν) * (3 * μ - 1 + ν)) -
+      lowResidue μ ν γ * (3 * μ - 1 + ν) - highResidue μ ν γ * (3 * μ - 1 - ν) -
+      ((4 * μ - 1) * ((1 - μ) ^ 2 + γ ^ 2) + (3 * μ - 1 - ν) * (3 * μ - 1 + ν))) *
+      (2 * ν * ((3 * μ - ν) * (3 * μ + ν))) = 0 := by
+    linear_combination (2 * ν * ((3 * μ - 1 - ν) * (3 * μ - 1 + ν))) * rho_mul (γ := γ) h₁ h₂ -
+      ((3 * μ - 1 + ν) * (3 * μ + ν)) * lowResidue_mul (γ := γ) hν h₁ -
+      ((3 * μ - 1 - ν) * (3 * μ - ν)) * highResidue_mul (γ := γ) hν h₂
+  linarith [(mul_eq_zero.mp key).resolve_right (residue_denom_ne_zero hν h₁ h₂)]
 
 /-- Convexity of `exp` between `0` and `pt`: `p(e^{qt} - 1) ≤ q(e^{pt} - 1)` for `0 < q ≤ p`. -/
 theorem mul_exp_sub_one_le {p q t : ℝ} (hq : 0 < q) (hqp : q ≤ p) :
     p * (Real.exp (q * t) - 1) ≤ q * (Real.exp (p * t) - 1) := by
   have hp : 0 < p := lt_of_lt_of_le hq hqp
+  have hc := div_mul_cancel₀ q hp.ne'
   have hconv := convexOn_exp.2 (Set.mem_univ (p * t)) (Set.mem_univ (0 : ℝ))
     (div_nonneg hq.le hp.le) (by rw [sub_nonneg, div_le_one hp]; exact hqp)
     (show q / p + (1 - q / p) = 1 by ring)
   simp only [smul_eq_mul, mul_zero, add_zero, Real.exp_zero, mul_one] at hconv
-  have hqt : q / p * (p * t) = q * t := by field_simp
+  have hqt : q / p * (p * t) = q * t := by linear_combination t * hc
   rw [hqt] at hconv
   have := mul_le_mul_of_nonneg_left hconv hp.le
   have hpq : p * (q / p * Real.exp (p * t) + (1 - q / p)) = q * Real.exp (p * t) + (p - q) := by
-    field_simp
-    ring
+    linear_combination (Real.exp (p * t) - 1) * hc
   rw [hpq] at this
   linarith
 
@@ -306,22 +361,36 @@ theorem overRegularZeta_eq_partialFractions {μ ν γ : ℝ} (hν : ν ≠ 0) (h
     overRegularZeta μ ν γ s = 1 + (rho μ ν γ : ℂ) / (s - 1) +
       (lowResidue μ ν γ : ℂ) / (s + (3 * μ - 1 - ν)) +
         (highResidue μ ν γ : ℂ) / (s + (3 * μ - 1 + ν)) := by
-  have hν' : (ν : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hν
-  have h₁' : (3 * (μ : ℂ) - ν) ≠ 0 := by exact_mod_cast h₁
-  have h₂' : (3 * (μ : ℂ) + ν) ≠ 0 := by exact_mod_cast h₂
-  unfold overRegularZeta rho lowResidue highResidue
-  push_cast
-  field_simp
-  ring
+  have e0 : (rho μ ν γ : ℂ) + lowResidue μ ν γ + highResidue μ ν γ = 0 := by
+    exact_mod_cast rho_add_residues (γ := γ) hν h₁ h₂
+  have e1 := residues_coeff_one (γ := γ) hν h₁ h₂
+  have e2 := residues_coeff_zero (γ := γ) hν h₁ h₂
+  have e1c : (rho μ ν γ : ℂ) * ((3 * μ - 1 - ν) + (3 * μ - 1 + ν)) +
+        (lowResidue μ ν γ : ℂ) * ((3 * μ - 1 + ν) - 1) +
+        (highResidue μ ν γ : ℂ) * ((3 * μ - 1 - ν) - 1) =
+      (1 - μ) ^ 2 + (γ : ℂ) ^ 2 - 2 * (1 - μ) * (4 * μ - 1) -
+        ((3 * μ - 1 - ν) * (3 * μ - 1 + ν) - (3 * μ - 1 - ν) - (3 * μ - 1 + ν)) := by
+    exact_mod_cast e1
+  have e2c : (rho μ ν γ : ℂ) * ((3 * μ - 1 - ν) * (3 * μ - 1 + ν)) -
+        (lowResidue μ ν γ : ℂ) * (3 * μ - 1 + ν) - (highResidue μ ν γ : ℂ) * (3 * μ - 1 - ν) =
+      (4 * μ - 1) * ((1 - μ) ^ 2 + (γ : ℂ) ^ 2) + (3 * μ - 1 - ν) * (3 * μ - 1 + ν) := by
+    exact_mod_cast e2
+  have hu := mul_inv_cancel₀ hs1
+  have hv := mul_inv_cancel₀ hsl
+  have hw := mul_inv_cancel₀ hsh
+  rw [overRegularZeta, eq_comm, eq_div_iff (mul_ne_zero (mul_ne_zero hs1 hsl) hsh)]
+  simp only [div_eq_mul_inv]
+  linear_combination ((rho μ ν γ : ℂ) * (s + (3 * μ - 1 - ν)) * (s + (3 * μ - 1 + ν))) * hu +
+    ((lowResidue μ ν γ : ℂ) * (s - 1) * (s + (3 * μ - 1 + ν))) * hv +
+    ((highResidue μ ν γ : ℂ) * (s - 1) * (s + (3 * μ - 1 - ν))) * hw +
+    s ^ 2 * e0 + s * e1c + e2c
 
 /-- Laplace transform of `e^{-c t}` on `(0, ∞)`. -/
 theorem integral_cexp_neg_mul {c : ℂ} (hc : 0 < c.re) :
     (∫ t in Ioi (0 : ℝ), Complex.exp (-c * t)) = 1 / c := by
   have h := integral_exp_mul_complex_Ioi (a := -c) (by simpa using hc) 0
   simp only [Complex.ofReal_zero, mul_zero, Complex.exp_zero] at h
-  rw [h]
-  have : c ≠ 0 := fun h0 => by rw [h0] at hc; simp at hc
-  field_simp
+  rw [h, neg_div, div_neg, neg_neg]
 
 theorem integrableOn_cexp_neg_mul {c : ℂ} (hc : 0 < c.re) :
     IntegrableOn (fun t : ℝ => Complex.exp (-c * t)) (Ioi (0 : ℝ)) :=
@@ -329,7 +398,7 @@ theorem integrableOn_cexp_neg_mul {c : ℂ} (hc : 0 < c.re) :
 
 /-- **The integers are counted by `dN = δ₁ + m(t) dt`.** For `Re s > 1`,
 `ζ(s) = 1 + ∫_0^∞ e^{-st} m(t) dt`. -/
-theorem overRegularZeta_eq_one_add_integral {μ ν γ : ℝ} (hμ : 0 ≤ μ) (hν : 0 < ν)
+theorem overRegularZeta_eq_one_add_integral {μ ν γ : ℝ} (hν : 0 < ν)
     (hlow : 0 ≤ 3 * μ - 1 - ν) {s : ℂ} (hs : 1 < s.re) :
     overRegularZeta μ ν γ s =
       1 + ∫ t in Ioi (0 : ℝ), Complex.exp (-(s * t)) * (integerDensity μ ν γ t : ℂ) := by
@@ -348,8 +417,6 @@ theorem overRegularZeta_eq_one_add_integral {μ ν γ : ℝ} (hμ : 0 ≤ μ) (h
         ((lowResidue μ ν γ : ℂ) * Complex.exp (-(s + (3 * μ - 1 - ν)) * t) +
           (highResidue μ ν γ : ℂ) * Complex.exp (-(s + (3 * μ - 1 + ν)) * t)) := by
     intro t
-    unfold integerDensity
-    push_cast
     have a1 : Complex.exp (-(s - 1) * t) = Complex.exp (-(s * t)) * Complex.exp (t : ℂ) := by
       rw [← Complex.exp_add]; ring_nf
     have a2 : Complex.exp (-(s + (3 * μ - 1 - ν)) * t) =
@@ -358,15 +425,20 @@ theorem overRegularZeta_eq_one_add_integral {μ ν γ : ℝ} (hμ : 0 ≤ μ) (h
     have a3 : Complex.exp (-(s + (3 * μ - 1 + ν)) * t) =
         Complex.exp (-(s * t)) * Complex.exp (-((3 * (μ : ℂ) - 1 + ν) * t)) := by
       rw [← Complex.exp_add]; ring_nf
-    rw [a1, a2, a3]
+    rw [a1, a2, a3, integerDensity]
+    push_cast
     ring
+  have i1 := (integrableOn_cexp_neg_mul h1).const_mul (rho μ ν γ : ℂ)
+  have i2 := (integrableOn_cexp_neg_mul hl).const_mul (lowResidue μ ν γ : ℂ)
+  have i3 := (integrableOn_cexp_neg_mul hh).const_mul (highResidue μ ν γ : ℂ)
+  have i23 : IntegrableOn (fun t : ℝ =>
+      (lowResidue μ ν γ : ℂ) * Complex.exp (-(s + (3 * μ - 1 - ν)) * t) +
+        (highResidue μ ν γ : ℂ) * Complex.exp (-(s + (3 * μ - 1 + ν)) * t)) (Ioi (0 : ℝ)) :=
+    i2.add i3
   simp_rw [hpt]
-  rw [integral_add ((integrableOn_cexp_neg_mul h1).const_mul _)
-      (((integrableOn_cexp_neg_mul hl).const_mul _).add ((integrableOn_cexp_neg_mul hh).const_mul _)),
-    integral_add ((integrableOn_cexp_neg_mul hl).const_mul _)
-      ((integrableOn_cexp_neg_mul hh).const_mul _),
-    integral_const_mul, integral_const_mul, integral_const_mul, integral_cexp_neg_mul h1,
-    integral_cexp_neg_mul hl, integral_cexp_neg_mul hh,
+  rw [integral_add i1 i23, integral_add i2 i3, integral_const_mul, integral_const_mul,
+    integral_const_mul, integral_cexp_neg_mul h1, integral_cexp_neg_mul hl,
+    integral_cexp_neg_mul hh,
     overRegularZeta_eq_partialFractions hν0 h₁ h₂ (ne _ h1) (ne _ hl) (ne _ hh)]
   ring
 
@@ -388,24 +460,31 @@ theorem countLog_zero (μ ν γ : ℝ) : countLog μ ν γ 0 = 1 := by
   simp only [countLog, countConst, mul_zero, neg_zero, Real.exp_zero, mul_one]
   ring
 
+theorem hasDerivAt_exp_neg_mul (p T : ℝ) :
+    HasDerivAt (fun T : ℝ => Real.exp (-(p * T))) (Real.exp (-(p * T)) * (-p)) T := by
+  have h := (((hasDerivAt_id' T).const_mul p).neg).exp
+  rwa [mul_one] at h
+
 /-- `N(e^T)` has derivative `m(T)`: the count is `1 + ∫_0^T m`. -/
 theorem hasDerivAt_countLog {μ ν γ : ℝ} (hlow : 3 * μ - 1 - ν ≠ 0) (hhigh : 3 * μ - 1 + ν ≠ 0)
     (T : ℝ) : HasDerivAt (countLog μ ν γ) (integerDensity μ ν γ T) T := by
-  have d1 := (Real.hasDerivAt_exp T).const_mul (rho μ ν γ)
-  have dl : HasDerivAt (fun T : ℝ => Real.exp (-((3 * μ - 1 - ν) * T)))
-      (Real.exp (-((3 * μ - 1 - ν) * T)) * (-(3 * μ - 1 - ν))) T := by
-    have := ((hasDerivAt_id T).const_mul (3 * μ - 1 - ν)).neg.exp
-    simpa using this
-  have dh : HasDerivAt (fun T : ℝ => Real.exp (-((3 * μ - 1 + ν) * T)))
-      (Real.exp (-((3 * μ - 1 + ν) * T)) * (-(3 * μ - 1 + ν))) T := by
-    have := ((hasDerivAt_id T).const_mul (3 * μ - 1 + ν)).neg.exp
-    simpa using this
-  have := ((d1.add_const (countConst μ ν γ)).sub (dl.const_mul (lowResidue μ ν γ / (3 * μ - 1 - ν)))).sub
-    (dh.const_mul (highResidue μ ν γ / (3 * μ - 1 + ν)))
-  convert this using 1
-  unfold integerDensity
-  field_simp
-  ring
+  have h := ((((Real.hasDerivAt_exp T).const_mul (rho μ ν γ)).add_const (countConst μ ν γ)).sub
+    ((hasDerivAt_exp_neg_mul (3 * μ - 1 - ν) T).const_mul
+      (lowResidue μ ν γ / (3 * μ - 1 - ν)))).sub
+    ((hasDerivAt_exp_neg_mul (3 * μ - 1 + ν) T).const_mul
+      (highResidue μ ν γ / (3 * μ - 1 + ν)))
+  have hl := div_mul_cancel₀ (lowResidue μ ν γ) hlow
+  have hh := div_mul_cancel₀ (highResidue μ ν γ) hhigh
+  have hval : integerDensity μ ν γ T = rho μ ν γ * Real.exp T -
+      lowResidue μ ν γ / (3 * μ - 1 - ν) *
+        (Real.exp (-((3 * μ - 1 - ν) * T)) * (-(3 * μ - 1 - ν))) -
+      highResidue μ ν γ / (3 * μ - 1 + ν) *
+        (Real.exp (-((3 * μ - 1 + ν) * T)) * (-(3 * μ - 1 + ν))) := by
+    rw [integerDensity]
+    linear_combination (-Real.exp (-((3 * μ - 1 - ν) * T))) * hl -
+      Real.exp (-((3 * μ - 1 + ν) * T)) * hh
+  rw [hval]
+  exact h
 
 /-- The count is nondecreasing on `[0, ∞)`. -/
 theorem monotoneOn_countLog {μ ν γ : ℝ} (hμ : 0 ≤ μ) (hν : 0 < ν) (hlow : 0 < 3 * μ - 1 - ν) :
@@ -413,32 +492,35 @@ theorem monotoneOn_countLog {μ ν γ : ℝ} (hμ : 0 ≤ μ) (hν : 0 < ν) (hl
   have hhigh : 3 * μ - 1 + ν ≠ 0 := by linarith
   refine monotoneOn_of_deriv_nonneg (convex_Ici 0) ?_ ?_ ?_
   · exact fun T _ => (hasDerivAt_countLog hlow.ne' hhigh T).continuousAt.continuousWithinAt
-  · exact fun T _ => (hasDerivAt_countLog hlow.ne' hhigh T).differentiableAt.differentiableWithinAt
+  · exact fun T _ =>
+      (hasDerivAt_countLog hlow.ne' hhigh T).differentiableAt.differentiableWithinAt
   · intro T hT
     rw [interior_Ici] at hT
     rw [(hasDerivAt_countLog hlow.ne' hhigh T).deriv]
     exact integerDensity_nonneg hμ hν (by linarith) (le_of_lt hT)
 
+theorem tendsto_exp_neg_mul {p : ℝ} (hp : 0 < p) :
+    Tendsto (fun T : ℝ => Real.exp (-(p * T))) atTop (𝓝 0) := by
+  have h1 : Tendsto (fun T : ℝ => p * T) atTop atTop := tendsto_id.const_mul_atTop hp
+  exact Real.tendsto_exp_atBot.comp (tendsto_neg_atTop_atBot.comp h1)
+
 /-- **The count is asymptotically exact**: `N(e^T) - ρe^T - C → 0`. -/
 theorem tendsto_countLog_sub {μ ν γ : ℝ} (hlow : 0 < 3 * μ - 1 - ν) (hhigh : 0 < 3 * μ - 1 + ν) :
     Tendsto (fun T => countLog μ ν γ T - rho μ ν γ * Real.exp T - countConst μ ν γ) atTop
       (𝓝 0) := by
-  have tl : Tendsto (fun T : ℝ => Real.exp (-((3 * μ - 1 - ν) * T))) atTop (𝓝 0) :=
-    Real.tendsto_exp_atBot.comp ((tendsto_id.const_mul_atTop hlow).neg_atTop)
-  have th : Tendsto (fun T : ℝ => Real.exp (-((3 * μ - 1 + ν) * T))) atTop (𝓝 0) :=
-    Real.tendsto_exp_atBot.comp ((tendsto_id.const_mul_atTop hhigh).neg_atTop)
-  have := ((tl.const_mul (lowResidue μ ν γ / (3 * μ - 1 - ν))).neg.sub
-    (th.const_mul (highResidue μ ν γ / (3 * μ - 1 + ν))))
+  have := ((tendsto_exp_neg_mul hlow).const_mul (lowResidue μ ν γ / (3 * μ - 1 - ν))).neg.sub
+    ((tendsto_exp_neg_mul hhigh).const_mul (highResidue μ ν γ / (3 * μ - 1 + ν)))
   simp only [mul_zero, neg_zero, sub_zero] at this
   refine this.congr fun T => ?_
   simp only [countLog]
   ring
 
-/-- **In the multiplicative variable**: `N(x) - ρx - C → 0` as `x → ∞`, with `N(x) = countLog (log x)`. -/
+/-- **In the multiplicative variable**: `N(x) - ρx - C → 0` as `x → ∞`, where
+`N(x) = countLog (log x)`. -/
 theorem tendsto_count_sub {μ ν γ : ℝ} (hlow : 0 < 3 * μ - 1 - ν) (hhigh : 0 < 3 * μ - 1 + ν) :
     Tendsto (fun x : ℝ => countLog μ ν γ (Real.log x) - rho μ ν γ * x - countConst μ ν γ) atTop
       (𝓝 0) := by
-  refine ((tendsto_countLog_sub hlow hhigh).comp Real.tendsto_log_atTop).congr' ?_
+  refine ((tendsto_countLog_sub (γ := γ) hlow hhigh).comp Real.tendsto_log_atTop).congr' ?_
   filter_upwards [eventually_gt_atTop 0] with x hx
   simp [Function.comp, Real.exp_log hx]
 
@@ -446,26 +528,18 @@ theorem tendsto_count_sub {μ ν γ : ℝ} (hlow : 0 < 3 * μ - 1 - ν) (hhigh :
 theorem not_tendsto_natFloor_sub (C : ℝ) :
     ¬ Tendsto (fun x : ℝ => (⌊x⌋₊ : ℝ) - x - C) atTop (𝓝 0) := by
   intro h
-  have h1 := h.comp tendsto_natCast_atTop_atTop
-  have h2 := h.comp ((tendsto_natCast_atTop_atTop (R := ℝ)).atTop_add tendsto_const_nhds
-    (b := (1 / 2 : ℝ)))
-  have e1 : (fun n : ℕ => (⌊(n : ℝ)⌋₊ : ℝ) - n - C) = fun _ => -C := by
-    funext n; simp
-  have e2 : (fun n : ℕ => (⌊(n : ℝ) + 1 / 2⌋₊ : ℝ) - ((n : ℝ) + 1 / 2) - C) =
-      fun _ => -(1 / 2) - C := by
-    funext n
+  have h1 : Tendsto (fun _ : ℕ => -C) atTop (𝓝 0) :=
+    (h.comp tendsto_natCast_atTop_atTop).congr fun n => by simp
+  have h2 : Tendsto (fun _ : ℕ => -(1 / 2) - C) atTop (𝓝 0) := by
+    refine (h.comp (tendsto_atTop_add_const_right _ (1 / 2 : ℝ)
+      tendsto_natCast_atTop_atTop)).congr fun n => ?_
     have hfl : ⌊(n : ℝ) + 1 / 2⌋₊ = n := by
       rw [Nat.floor_eq_iff (by positivity)]
       constructor <;> linarith
-    rw [hfl]; ring
-  have c1 : -C = 0 := by
-    have : Tendsto (fun _ : ℕ => -C) atTop (𝓝 0) := by
-      rw [← e1]; exact h1
-    exact tendsto_nhds_unique tendsto_const_nhds this
-  have c2 : -(1 / 2) - C = 0 := by
-    have : Tendsto (fun _ : ℕ => -(1 / 2) - C) atTop (𝓝 0) := by
-      rw [← e2]; exact h2
-    exact tendsto_nhds_unique tendsto_const_nhds this
+    simp only [Function.comp, hfl]
+    ring
+  have c1 := tendsto_nhds_unique tendsto_const_nhds h1
+  have c2 := tendsto_nhds_unique tendsto_const_nhds h2
   linarith
 
 /-! ## The zero -/
@@ -487,7 +561,7 @@ theorem overRegularZeta_denom_ne_zero_at_zero {μ ν γ : ℝ} (hμ : 0 < μ) (h
   refine mul_ne_zero (mul_ne_zero (hre _ ?_) (hre _ ?_)) (hre _ ?_) <;> simp <;> linarith
 
 /-- The only pole with `Re s > -p₁` is `s = 1`. -/
-theorem overRegularZeta_denom_ne_zero {μ ν : ℝ} (hlow : 0 < 3 * μ - 1 - ν) (hν : 0 ≤ ν) {s : ℂ}
+theorem overRegularZeta_denom_ne_zero {μ ν : ℝ} (hν : 0 ≤ ν) {s : ℂ}
     (hs : -(3 * μ - 1 - ν) < s.re) (hne : s ≠ 1) :
     (s - 1) * (s + (3 * μ - 1 - ν)) * (s + (3 * μ - 1 + ν)) ≠ 0 := by
   have hre : ∀ z : ℂ, 0 < z.re → z ≠ 0 := fun z hz h => by rw [h] at hz; simp at hz
@@ -496,18 +570,18 @@ theorem overRegularZeta_denom_ne_zero {μ ν : ℝ} (hlow : 0 < 3 * μ - 1 - ν)
 
 /-! ## Summary -/
 
-/-- **Integer regularity beyond `ℕ` does not constrain the zeros.** For `1/3 < μ < 1/2`,
-`0 < ν < 3μ - 1` and every `γ`, the continuous Beurling system with prime density
+/-- **Integer regularity beyond `ℕ` does not constrain the zeros.** For `μ < 1/2`,
+`0 < ν < 3μ - 1` (so `μ > 1/3`) and every `γ`, the continuous Beurling system with prime density
 `primeDensity μ ν γ` has
 
 * a nonnegative prime density whose exponential Laplace transform is `overRegularZeta`;
 * a nonnegative integer density with `ζ(s) = 1 + ∫_0^∞ e^{-st} m(t) dt` (`Re s > 1`), and an
-  integer count `N(x) = countLog (log x)` with `N(1) = 1` and `N(x) - ρx - C → 0`;
+  nondecreasing integer count `N(x) = countLog (log x)` with `N(1) = 1` and `N(x) - ρx - C → 0`;
 * a zero at `1 - μ + iγ`, of real part in `(1/2, 2/3)`, and no pole but `s = 1` in `Re s > -p₁`.
 
 The rational integers satisfy no such asymptotic (`not_tendsto_natFloor_sub`). -/
-theorem overRegular_integers_do_not_constrain_zeros {μ ν γ : ℝ} (hμ1 : 1 / 3 < μ) (hμ2 : μ < 1 / 2)
-    (hν0 : 0 < ν) (hν1 : ν < 3 * μ - 1) :
+theorem overRegular_integers_do_not_constrain_zeros {μ ν γ : ℝ} (hμ2 : μ < 1 / 2) (hν0 : 0 < ν)
+    (hν1 : ν < 3 * μ - 1) :
     (∀ t : ℝ, 0 < t → 0 ≤ primeDensity μ ν γ t) ∧
     (∀ s : ℂ, 1 < s.re →
       Complex.exp (∫ t in Ioi (0 : ℝ), Complex.exp (-(s * t)) * (primeDensity μ ν γ t : ℂ)) =
@@ -515,7 +589,7 @@ theorem overRegular_integers_do_not_constrain_zeros {μ ν γ : ℝ} (hμ1 : 1 /
     (∀ t : ℝ, 0 ≤ t → 0 ≤ integerDensity μ ν γ t) ∧
     (∀ s : ℂ, 1 < s.re → overRegularZeta μ ν γ s =
       1 + ∫ t in Ioi (0 : ℝ), Complex.exp (-(s * t)) * (integerDensity μ ν γ t : ℂ)) ∧
-    countLog μ ν γ 0 = 1 ∧
+    countLog μ ν γ 0 = 1 ∧ MonotoneOn (countLog μ ν γ) (Ici 0) ∧
     Tendsto (fun x : ℝ => countLog μ ν γ (Real.log x) - rho μ ν γ * x - countConst μ ν γ) atTop
       (𝓝 0) ∧
     overRegularZeta μ ν γ ((1 - μ : ℝ) + γ * I) = 0 ∧ 1 / 2 < 1 - μ ∧
@@ -525,10 +599,10 @@ theorem overRegular_integers_do_not_constrain_zeros {μ ν γ : ℝ} (hμ1 : 1 /
   have hlow : 0 < 3 * μ - 1 - ν := by linarith
   have hhigh : 0 < 3 * μ - 1 + ν := by linarith
   refine ⟨fun t ht => primeDensity_nonneg hμ.le ht,
-    fun s hs => cexp_integral_primeDensity hμ.le hlow.le hhigh.le (by linarith) hs,
+    fun s hs => cexp_integral_primeDensity hlow.le hhigh.le (by linarith) hs,
     fun t ht => integerDensity_nonneg hμ.le hν0 (by linarith) ht,
-    fun s hs => overRegularZeta_eq_one_add_integral hμ.le hν0 hlow.le hs,
-    countLog_zero μ ν γ, tendsto_count_sub hlow hhigh, overRegularZeta_eq_zero μ ν γ,
+    fun s hs => overRegularZeta_eq_one_add_integral hν0 hlow.le hs,
+    countLog_zero μ ν γ, monotoneOn_countLog hμ.le hν0 hlow, tendsto_count_sub hlow hhigh, overRegularZeta_eq_zero μ ν γ,
     by linarith, overRegularZeta_denom_ne_zero_at_zero hμ (by linarith) (by linarith)⟩
 
 end

@@ -458,8 +458,7 @@ theorem integrable_stepSpectralWeight_mul_fourthRoot {r : ℕ} (hr : 1 < r) :
           ≤ stepSpectralWeight hr ξ * (2 * (3 / 2 : ℝ) ^ k) :=
             mul_le_mul_of_nonneg_left (hF_bound k ξ hξ) (stepSpectralWeight_nonneg hr ξ)
         _ = 2 * (3 / 2 : ℝ) ^ k * stepSpectralWeight hr ξ := mul_comm _ _
-    · dsimp only [F]
-      rw [indicator_of_notMem hξ, indicator_of_notMem hξ, mul_zero]
+    · rw [indicator_of_notMem hξ, indicator_of_notMem hξ, mul_zero]
   have hF_summable_pt : ∀ᵐ ξ : ℝ ∂volume, Summable fun k : ℕ => F k ξ := by
     refine Eventually.of_forall fun ξ => ?_
     refine summable_of_ne_finset_zero (s := Finset.range (⌈|ξ|⌉₊ + 1)) fun k hk => ?_
@@ -483,13 +482,13 @@ theorem integrable_stepSpectralWeight_mul_fourthRoot {r : ℕ} (hr : 1 < r) :
       intro ξ
       by_cases hξ : ξ ∈ dyadicFreqShell k
       · dsimp only [F, f]
-        rw [indicator_of_mem hξ]
+        rw [indicator_of_mem hξ, indicator_of_mem hξ]
         calc stepSpectralWeight hr ξ * Real.sqrt (Real.sqrt (1 + |ξ|))
             ≤ stepSpectralWeight hr ξ * (2 * (3 / 2 : ℝ) ^ k) :=
               mul_le_mul_of_nonneg_left (hF_bound k ξ hξ) (stepSpectralWeight_nonneg hr ξ)
           _ = 2 * (3 / 2 : ℝ) ^ k * stepSpectralWeight hr ξ := mul_comm _ _
       · dsimp only [F]
-        rw [indicator_of_notMem hξ, mul_zero]
+        rw [indicator_of_notMem hξ, indicator_of_notMem hξ, mul_zero]
     calc ∫ ξ, F k ξ
         ≤ ∫ ξ, 2 * (3 / 2 : ℝ) ^ k * (dyadicFreqShell k).indicator (stepSpectralWeight hr) ξ :=
           integral_mono (hF_int k)
@@ -1046,7 +1045,7 @@ private theorem exists_upper_bound_zetaEntire_box :
           rw [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Complex.norm_real,
             Real.norm_eq_abs, Real.norm_eq_abs]
       _ ≤ 2 + 1 := by
-          have h1 : |σ| ≤ 2 := abs_of_nonneg (by linarith [hσ.1]) ▸ hσ.2
+          have h1 : |σ| ≤ 2 := by rw [abs_of_nonneg (by linarith [hσ.1])]; exact hσ.2
           have h2 : |u| ≤ 1 := abs_le.mpr hu
           linarith
       _ ≤ 4 := by norm_num

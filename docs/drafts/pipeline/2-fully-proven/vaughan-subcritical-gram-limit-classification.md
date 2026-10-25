@@ -118,3 +118,10 @@ level, isolation of positive amplitudes, and the exact accumulation-point
 classification. Four targets in `/tmp/QIVaughanLimitMatrixRankTools.lean` draft
 the zero matrix, the outer-product rank bound, positive-amplitude rank one, and
 the complete rank dichotomy. These drafts remain uncompiled.
+
+The matrix-family topology stated above still needs exact Lean declarations:
+the existing topology draft treats the scalar amplitude set only. The additional
+leaf `TheTopologyOfSubcriticalVaughanGramLimits` must transfer compactness,
+countability, infinitude, and the unique accumulation point through the actual
+smooth matrix map, whose positive diagonal coefficient makes it injective.
+This is an existing paper obligation, not a newly certified consequence.

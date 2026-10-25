@@ -21,6 +21,19 @@ plans, never a stopping point or a substitute for a checked theorem. Incomplete
 contribution cards remain in `1-in-progress`, including those with complete paper
 arguments; their formalized components have separate `3-formalized` cards.
 
+Current instruction: finish open Lean work and formalize findings with existing
+paper proofs, then pause. Complete this verification and formalization queue;
+do not expand the research frontier before pausing. The full programme remains
+incomplete, and the eventual pause must not be reported as goal completion.
+
+The closeout scope includes the existing proof plans on the digital-energy,
+payment-graph, paid-Gram-stability, normalized-cube, divisor-positivity,
+intrinsic-golden, critical-continuum-defect, one-prime-Fredholm, digit-profile,
+golden-digital-module, circle-Fourier, critical-phase-collapse, and
+logarithmic-chirp cards. Distinguish their exact source claims from their
+abstract sequence or kernel lemmas. Checking a proper subset does not close
+its parent card. Open programme questions without a proof plan remain open.
+
 ## Gates
 
 - [x] 0 → 1: source report read fully; existing ACS/AOG foundations and relevant corpus searched.
@@ -34,7 +47,7 @@ arguments; their formalized components have separate `3-formalized` cards.
 
 | Source requirement | Required evidence | Status |
 |---|---|---|
-| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; forty direct-checked and axiom-audited leaves |
+| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; forty-five direct-checked and axiom-audited leaves |
 | Horizon-complete objects; sign visibility | Exact signed finite-horizon laws and quantitative period/prefix comparison | Open |
 | Truncated affine representation theory | Source-defined action, boundary calculus, classification/calibration | Open |
 | A1–A2: paid ideal annihilates escape; hull inclusion | Actual receiver theorem, not an assumed ideal inclusion | Proved for every actual common Gram limit; ADR foundations reused, four interfaces directly checked and axiom-audited |
@@ -47,7 +60,7 @@ arguments; their formalized components have separate `3-formalized` cards.
 | C1–C2: Stepanov calibration and replacement identity | Finite-field calibration and signed integer source test | Open |
 | Quantitative Class III | New off-diagonal signed estimate, or sharp obstruction plus positive survivor | Open |
 | Infinite-rank coercivity | Precise transfer law or complete countermodel classification | Open |
-| Bounded-conductor amplification | Well-defined operation class; proof or counterexample | General question open; actual golden cubic failure formalized; full integral trace classification awaits its Lean check |
+| Bounded-conductor amplification | Well-defined operation class; proof or counterexample | General question open; actual golden cubic failure formalized; integral trace classification checked; complex-root purity still pending |
 | Orientation | Ring-selective polarization with independent sign proof | Open |
 | K1 | Curve cohomology dimension `2g`, Serre duality, Weil calibration | Open |
 | K2 | Golden, Beurling, shifted-pair, Estermann, parity, node-4/node-6 tests | Open |
@@ -86,10 +99,12 @@ arguments; their formalized components have separate `3-formalized` cards.
 | `FiveTowerKernelLift` | Direct repository leaf passed; stage-3 card | Three main declarations clean |
 | `PrimeFivePaymentCriterion` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `FiniteGeometricConvolution` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
+| `GeometricFutureTail` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
 | `GeometricTowerDigitReceiver` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `GoldenInverseSeries` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
 | `GoldenArithmeticSource` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
 | `GoldenSourceAdmission` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `SignedTowerAdmission` | Direct repository leaf passed; stage-3 card | Three main declarations clean |
 | `GoldenPrimePayment` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `IntrinsicGoldenSeries` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
 | `CriticalUnpaidSequence` | Direct repository leaf passed; stage-3 card | Seven main declarations clean |
@@ -98,13 +113,16 @@ arguments; their formalized components have separate `3-formalized` cards.
 | `CriticalGoldenPaymentQuotients` | Direct repository leaf passed; stage-3 card | Three main declarations clean |
 | `PronicEnergyDomain` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
 | `CofactorGraphDomain` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `PaidGraphIdentification` | Direct repository leaf passed; stage-3 card | Two main declarations clean |
 | `PronicDilationOperators` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
+| `PronicWienerCoordinates` | Direct repository leaf passed; stage-3 card | Both main declarations clean |
 | `CriticalPartialSumCore` | Direct repository leaf passed; stage-3 card | Seven main declarations clean |
 | `GoldenNormalizedCube` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
+| `NormalizedCubicTrace` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `PaidSourcePerturbations` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `FullWienerAnnihilation` | Consolidated ADR interfaces and direct repository leaf passed | Four chosen and universal declarations clean |
 
-Completed main-declaration axiom audits for forty checked leaves report only `propext`,
+Completed main-declaration axiom audits for forty-five checked leaves report only `propext`,
 `Classical.choice`, and `Quot.sound`. Audits used isolated source-copy drivers; each leaf also passed its direct source check. The literal-B1
 no-go is closed in `5-failed/biarithmetic-literal-dimension-euler-characteristic.md`; its
 positive survivor and exact prefix visibility now have separate stage-3 cards.
@@ -574,7 +592,7 @@ Active drafts:
   Its dependency olean is now built for the admission and intrinsic-series importers.
 - `FiniteGeometricConvolution.lean`: finite geometric square-sum bound passed its
   direct source check and all four audits. Stage-3 card and dependency olean present.
-- `/tmp/BiarithmeticDigitRefinement.lean`: exact grid refinement, uniform supremum bound,
+- `DigitRefinement.lean`: exact grid refinement, uniform supremum bound,
   uniform convergence, integer interpolation, exact base-five scaling, right continuity,
   and interpolation at every nonnegative base-five rational. First check passed
   the first five audits, including uniform convergence. Cast normalization,
@@ -659,7 +677,8 @@ Active drafts:
   the first four audits; the domain theorem stopped at missing `ENNReal` notation
   scope. Revised scratch and all five audits passed; direct repository check
   passed. Stage-3 card and umbrella import present.
-  Actual paid-ideal identification and the graph-norm ideal action remain pending.
+  Actual paid-ideal identification is checked in `PaidGraphIdentification`;
+  the graph-norm ideal action remains pending.
 - `PronicEnergyDomain.lean`: exact positive-cell reindexing,
   bounded finite pronic norms iff summable total energy, actual receiver admission,
   and complex real/imaginary decomposition. Revised scratch check and all four
@@ -668,14 +687,13 @@ Active drafts:
   with the actual paid ideal.
 - `PaidGraphIdentification.lean`: complexifies the actual centered
   source prefix and identifies the graph's Wiener image with the actual paid ideal.
-  Every paid kernel has a unique square-summable graph output. Scratch check
-  and both transitive audits passed. Production source is wired; direct
-  repository check remains pending.
+  Every paid kernel has a unique square-summable graph output. Scratch check,
+  both transitive audits, and direct repository check passed. Stage-3 card
+  and umbrella import present; obsolete scratch and logs removed.
 - `SignedTowerAdmission.lean`: exact admission radius for every
   real `|a|<5`, invariance under the prime-five sign flip, and the unpaid negative
-  critical endpoint. Scratch check and all three audits passed; production
-  source is wired, with direct check pending. Its in-progress card retains
-  the full statement until final verification.
+  critical endpoint. Scratch check, all three audits, and direct repository
+  check passed. Umbrella import and stage-3 card present.
 - `CriticalPartialSumCore.lean`: corrected finite complex
   truncations, exact coefficient and square-energy tail errors, zero evaluation
   forced by payment, and convergence in both parts of the graph norm. First
@@ -703,7 +721,7 @@ Active drafts:
   import present; obsolete scratch and logs removed. Corpus search
   found the general AOT weight isometry; the draft reuses the actual real embedding
   and the source-inspected `LSeries.norm_term_eq` rather than a new Wiener carrier.
-- `/tmp/BiarithmeticCriticalGoldenPaymentNonclosed.lean`: lifts the explicit
+- `CriticalGoldenPaymentNonclosed.lean`: lifts the explicit
   unpaid sequence and its finite repairs into the actual Wiener algebra,
   proves their exact distances, and transfers nonclosedness to the critical
   golden paid ideal. First check passed the norm, distance, and convergence
@@ -753,6 +771,11 @@ Active drafts:
 - `/tmp/BiarithmeticCriticalReducedCokernel.lean`: exact quotient norm, linear
   isometry with `C`, and reduced dimension one for the preceding domain.
   Four audits drafted; first check pending.
+- `/tmp/BiarithmeticCriticalCoefficientNonclosed.lean`: the explicit unpaid
+  norm-two boundary vector in actual complex `ell1`, its zero evaluation,
+  finite-core approximation, and nonclosedness of the coefficient payment
+  submodule. Four audits drafted; unchecked. Reuses the checked real
+  inverse-square-root-tail witness rather than a new asymptotic example.
 - `/tmp/BiarithmeticCriticalCoefficientWienerRealization.lean`: actual complex
   coefficient linear isometry, summable inverse coordinates, exact prime-five
   range, and actual paid-domain identification. Six audits drafted; unchecked.
@@ -762,8 +785,8 @@ Active drafts:
   bound. First scratch check found a missing algebra tactic and the unloaded
   prime-number normalization extension. The divisibility equation is now an
   explicit ring calculation, and compositeness of four follows directly from
-  its divisor two. Revised scratch check and all five audits passed. Production
-  source is wired; direct repository check remains pending.
+  its divisor two. Revised scratch check, all five audits, and direct repository
+  check passed. Stage-3 card and umbrella import present.
 - `GoldenNormalizedCube.lean`: exact actual golden root
   product and trace after normalized cubing, negative first two transformed
   counts, and comparison with the original source's nonnegative counts.
@@ -833,8 +856,9 @@ Active drafts:
   proof are recorded on the payment-graph card.
 - `PronicWienerCoordinates.lean`: continuous unnormalized row
   coordinates, exact floor-dilation intertwining, and equality of the integrated
-  Wiener action with every finite cofactor coordinate. Scratch check and both
-  audits passed; production source is wired, with direct check pending.
+  Wiener action with every finite cofactor coordinate. Scratch check, both
+  audits, and direct repository check passed. Stage-3 card and umbrella import
+  present.
   Operator-series evaluation reuses Mathlib's
   `ContinuousLinearMap.apply` and `HasSum.mapL`, source-inspected through the
   corpus's operator-series proofs.
@@ -849,11 +873,12 @@ Active drafts:
   Injectivity of the graph input map gives the bounded complex-linear action
   and its contractive unital Wiener representation. Unchecked; depends on the
   pronic finite-extension draft.
-- `/tmp/BiarithmeticCofactorGraphClosedness.lean`: ambient Wiener closedness
+- `CofactorGraphClosedness.lean`: ambient Wiener closedness
   iff a uniform output-energy norm bound on the complete graph. Uses the
   source-inspected Banach injective closed-range theorem, not the corpus's
   Hilbert-only version. First check found an unloaded nonnegative-real notation;
-  the explicit `NNReal` carrier now replaces it. Revised check pending.
+  the explicit `NNReal` carrier now replaces it. Revised scratch check and both
+  audits passed. Production source is wired; direct check is queued.
 - `GeometricFutureTail.lean`: joint absolute summability of
   the backward geometric tail, its resolvent recurrence, and explicit `b/(1-b)` coefficient-norm
   bound, for the strict one-prime Fredholm phase. First check found an implicit
@@ -862,8 +887,8 @@ Active drafts:
   `Complex.Basic`, and a typed tail identity now address those failures;
   the next check still exposed ambiguous pair-projection inference. Destructured
   pairs and explicit function arguments to `Summable.comp_injective` now remove
-  that inference work. Revised scratch check and all four audits passed;
-  production source is wired, with direct repository check pending.
+  that inference work. Revised scratch check, all four audits, and direct
+  repository check passed. Stage-3 card and umbrella import present.
   The product injection and nonnegative-series proof are recorded
   on that in-progress card.
 - `/tmp/BiarithmeticGeometricCausalDivision.lean`: the strict expanding complex
@@ -887,6 +912,22 @@ Active drafts:
   identity. Six audits drafted; unchecked. The corpus's general
   `LinearPMap.IsFredholm` and hyperplane-index theorem are the intended index
   interfaces; the Hilbert-only bounded Fredholm interface does not fit `ell1`.
+- `/tmp/BiarithmeticGeometricCoefficientFredholm.lean`: the actual
+  coefficient-domain partial inclusion, zero kernel, subcritical index zero,
+  strict index minus one, critical nonclosed-range obstruction, and the exact
+  nonnegative Fredholm parameter locus. Seven audits drafted; unchecked.
+  Uses the existing general partial-map Fredholm theory. Complete graph-norm
+  packaging and the actual-source inclusion comparison remain separate.
+- `/tmp/BiarithmeticGeometricCoefficientGraph.lean`: finite causal
+  coefficient functionals, the closed complete response graph, its bounded
+  injective input, exact domain image, and unique output. Five audits drafted;
+  unchecked. The norm is the product maximum. Quantitative graph/input norm
+  comparisons and ordinary-source graph calibration remain obligations.
+- `/tmp/BiarithmeticGeometricGraphNormBounds.lean`: explicit complete
+  response bounds, coefficient contraction, and the subcritical and strict
+  two-sided graph/input norm comparisons. Reuses the inspected finite-sum
+  `ell1`-to-`ell2` proof mechanism and the drafted causal estimates.
+  Five audits drafted; unchecked. Actual-source graph calibration remains.
 
 The exact source-to-digit recurrence and actual golden source reduction both have stage-3
 cards. The admission threshold also has a stage-3 card, including its unpaid critical endpoint.
@@ -895,7 +936,7 @@ The corpus's `HTGeometry/L1PeriodizationFourier.lean` already contains
 `fourierCoeffOn_l1PeriodizationAtScale` for every integrable complex seed. Together with
 `RHTower.integral_Ioi_zero_fract_cpow`, it supplies the full-strip circle coefficient law.
 The paper card is `../1-in-progress/biarithmetic-digital-circle-fourier.md`; the unverified
-draft is `/tmp/BiarithmeticDigitalCircleFourier.lean`. Its first check exposed
+draft is `DigitalCircleFourier.lean`. Its first check exposed
 ambiguous fractional-part casts and a missing import of the corpus's exponential
 change-of-variables theorem. Explicit real casts and the exact
 `BurnolCoPoissonBerezinFaithful` import repair those issues; its dependency olean
@@ -905,6 +946,27 @@ whole open strip needed by the golden family.
 
 
 ### Quantitative digital profile errors
+
+The covariance-error card now records a direct annular proof plan: fixed
+annulus refinement error `O(a^(-M))` becomes unnormalized block error
+`O((a/5)^M)` after exact source scaling, summable for every `1<a<5`.
+This treats strict and critical asymptotics by the same finite-block
+identity and even gives a cofactor-uniform additive bound. It does not
+justify unweighted summation against infinite critical Wiener kernels.
+Compact profile bounds, exact scaled block embedding, annular integration,
+and the final covariance comparison all remain Lean obligations.
+`/tmp/BiarithmeticDigitProfileCompactBounds.lean` drafts nonnegativity,
+the compact bound, positive annular lower bound, cofactor-uniform product
+error, and the scaled pointwise error with ratio `a/5`. Five audits are
+drafted; this file remains unchecked.
+`/tmp/BiarithmeticDigitProfileAnnularIntegrals.lean` drafts measurable
+profile limits, integrability on every partial fundamental annulus,
+the positive diagonal bound `4/25`, and the integrated error with ratio
+`a/5`. Four audits drafted; unchecked.
+`/tmp/BiarithmeticFinitePronicIntervalEmbedding.lean` drafts exact finite
+prefix and block-difference interval integrals, reusing the corpus's
+frozen-cell integrability and pronic cell formula. Three audits drafted;
+unchecked. The actual scaled digit specialization remains an obligation.
 
 `/tmp/BiarithmeticPaidGramStability.lean` drafts own-energy normalization
 and all-subsequence invariance under paid perturbations, reusing ADR's
@@ -934,11 +996,10 @@ this does not imply continuity or closedness of the actual payment domains.
 
 ### Further positive structures exposed by the golden boundary
 
-`../1-in-progress/biarithmetic-signed-tower-admission.md` extends the tower
+`../3-formalized/biarithmetic-signed-tower-admission.md` extends the tower
 admission radius to every real parameter with `|a|<5`: payment holds exactly
-for `|a|<sqrt(5)`. Both critical signs escape. This follows directly from
-the checked signed digit norm criterion and actual receiver identity; Lean
-specialization remains pending.
+for `|a|<sqrt(5)`. Both critical signs escape. The exact signed digit norm criterion and actual receiver identity prove
+this classification. Direct Lean check and all three axiom audits passed.
 
 `../1-in-progress/biarithmetic-payment-graph-norm.md` develops a canonical complete graph
 norm on the actual paid ideal, even when its Wiener-norm image is not closed. Ambient
@@ -961,3 +1022,18 @@ that pole they tend to negative infinity along powers of five. Thus every
 escaping ordinary golden lift fails actual Möbius divisor-response positivity,
 whereas every positivity-compatible lift is paid. This remains a formalization obligation
 and does not refute intrinsic Beurling positivity.
+
+The repaired `CriticalGoldenPaymentNonclosed` scratch check and all six
+transitive audits passed. Production source is wired; direct check is queued
+in `/tmp/BiarithmeticBatchSeven.direct`. No stage-3 claim yet.
+
+`DigitRefinement` passed its revised scratch check and all nine transitive
+axiom audits. Production source is wired; direct check is queued.
+`PowerTailCoefficients` still failed at the unsaturated tail function in
+the limit statement; an explicit function target now fixes that conversion.
+No proof depending on the failed limit is promoted; the revised scratch
+requires its next check.
+
+`DigitalCircleFourier` passed its repaired scratch check and all three
+transitive audits. The production leaf is wired; direct check is queued.
+The source-profile/cyclic-module comparison is not part of this leaf.

@@ -12,7 +12,7 @@ The literal atom constant is positive. Its squared rectangular budget is therefo
 bounded above and below by positive multiples of `N^(2-4ε)`, exactly the trivial
 exponent `T^(1-2ε)` at `T=N²`. No fixed power gain in this budget is possible.
 
-The strongest audited positive survivor is the exact signed decomposition into
+The first audited positive survivor is the exact signed decomposition into
 floor, smooth-power, and dilated remainder terms, together with the finite norm
 bound and matching explicit budget powers. Individual unsigned atoms are admitted;
 the obstruction lies in their absolute assembly. Retaining the signs is essential
@@ -23,7 +23,18 @@ The dependency-closed paper proof and fourteen Lean statements are recorded in
 axiom reports use only standard axioms, the final direct leaf check passed, and
 the umbrella import is present.
 
-This is a lower bound on an absolute upper-bound budget, not on the actual signed
-remainder or complete receiver. Full Q-I and selective signed cancellation remain
-open. Further positive normal-form and second-scale refinements are tracked on
-their own paper cards and are not included in this completed audit claim.
+A stronger positive survivor is now formalized: every actual centered Vaughan
+row, after subtracting its explicit common smooth-power term, has every
+logarithmic pronic norm saving uniformly in both cutoffs. The convolution row
+retains its signed coefficient fluctuation; the exact five-row identity controls
+the both-large remainder. The precise theorem is
+`exists_uniform_pmPronicVaughanSmoothRemainder_log_rate` in
+`UniformLogarithmicRemaindersInAllVaughanRows.lean`. Its six supporting/public
+targets passed standard-axiom audits, producing and final direct checks; see
+`../3-formalized/uniform-logarithmic-remainders-in-all-vaughan-rows.md`.
+
+The new insight is that the absolute assembly obstruction coexists with every
+uniform logarithmic gain for the actual smooth-subtracted rows. It cannot serve
+as a lower bound for those rows or the complete receiver. No fixed power gain
+has been obtained; full Q-I remains open. Further Gram and classification claims
+remain unproved until their own Lean checks pass.

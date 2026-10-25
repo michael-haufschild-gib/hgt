@@ -201,7 +201,7 @@ private theorem all_criticalTopJets_of_simple_critical (hRH : RiemannHypothesis)
       ((xiBoundaryCharacterNeutral_iff_riemannHypothesis.mpr hRH) rho)
   rcases hj with hoff | hj
   · exact False.elim (hoff hr)
-  · rw [hs rho] at hj
+  · have hm := hs rho
     omega
 
 /-- The existing one fixed Xi-avoiding source detects simplicity as well as criticality. -/

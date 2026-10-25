@@ -452,7 +452,16 @@ The four actual Möbius prefix and interior targets also passed standard-axiom
 audits, producing and final direct checks. They are wired as
 `LogarithmicEnergySavingsForTheMobiusInterior.lean`; see
 `../3-formalized/logarithmic-energy-savings-for-the-mobius-interior.md`.
-The full uniform Gram law remains under verification.
+The six all-row remainder targets also passed their scratch, producing, and final
+direct checks, with standard axioms only. They give every logarithmic pronic norm
+saving uniformly over both cutoffs for all five smooth-subtracted rows, whose
+sum is exactly the Bézout interior. They are wired as
+`UniformLogarithmicRemaindersInAllVaughanRows.lean`; see
+`../3-formalized/uniform-logarithmic-remainders-in-all-vaughan-rows.md`.
+The full uniform Gram law remains under verification. All fifteen existing paper
+cards and their remaining Lean coverage are listed in
+`q-i-existing-findings-lean-completion.md`; completing that register has priority
+over new conjecture work. Paper arguments and unchecked drafts remain unproved.
 
 The two uniform truncated-Möbius logarithmic targets passed their scratch
 axiom audits, producing check, and final direct check. They are wired as

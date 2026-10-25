@@ -78,6 +78,47 @@ summation over arbitrary infinite kernels is made from this entrywise error boun
 
 ## Critical boundary: logarithmic growth with bounded error
 
+The same bounded-error statement has a direct annular formalization route
+which avoids a global power-envelope estimate. On the fixed annulus
+`1<=x<=5`, the profiles `F(x/j)` are bounded by one common compact bound
+for all positive integer cofactors `j`. Uniform refinement gives
+`0<=F_j F_k-H_(M,j)H_(M,k)<=C*a^(-M)`, with `C` depending only on `a`.
+The exact step-cell embedding multiplies this annular error by
+`q^M=(a^2/5)^M`; its unnormalized block cost is therefore at most
+`C*(a/5)^M`. Since `a<5`, the sum of all block costs is finite, uniformly
+in the final partial block and in the two positive cofactors.
+
+For `5^M<=T<5^(M+1)` and `tau=(T+1)/5^M`, the exact main term is
+`J(j,k)*sum_(m<M)q^m+q^M*A_tau(j,k)`. At criticality this is
+`M*J(j,k)+A_tau(j,k)`. In the strict regime it equals
+`q^M*(J(j,k)/(q-1)+A_tau(j,k))-J(j,k)/(q-1)`.
+Thus the same summable annular error proves both advertised asymptotics.
+Identifying the strict expression with the integral from zero still needs
+the separate geometric-annulus integral identity. This derivation is a
+proof plan, not a proved result; each comparison remains a Lean obligation.
+The cofactor-uniform additive error cannot itself be summed against
+arbitrary critical Wiener coefficients, whose unweighted absolute sum
+need not converge.
+
+The current compact-bound formalization draft is
+`/tmp/BiarithmeticDigitProfileCompactBounds.lean`. It proves the proposed
+pointwise bounds directly from the finite zeroth grid and its refinement
+tail; no spatial monotonicity of weighted digits is assumed. The five
+declared audits and all subsequent integral comparisons remain unchecked.
+
+`/tmp/BiarithmeticDigitProfileAnnularIntegrals.lean` drafts measurable
+profile convergence, finite mixed annular integrals, the base diagonal
+lower bound `4/25`, and the cofactor-uniform partial-annulus error with
+ratio `a/5`. It uses the compact-bound draft and the inspected bounded
+integration/pointwise-limit interfaces. Four audits are drafted; unchecked.
+
+`/tmp/BiarithmeticFinitePronicIntervalEmbedding.lean` drafts the finite
+interval bridge using the corpus's frozen-cell integrability theorem and
+exact pronic cell integral. It identifies arbitrary signed finite prefixes
+and differences of prefixes with their real-interval integrals, without a
+source growth assumption. Three audits drafted; unchecked. The scaled
+digit specialization still requires its own equality.
+
 At `a=sqrt(5)`, work on the fixed annulus `1<=x<=5`. The same uniform refinement estimate
 bounds each mixed annular covariance error by `C_(j,k) a^(-M)`. These errors are summable
 in `M`. Since the scale factor `a^2/5` is one, every complete block contributes its fixed
@@ -126,3 +167,7 @@ transfer to the actual golden inverse-zeta coefficients.
 - [ ] Lean refinement limit and quantitative profile comparison.
 - [ ] Lean exact step embedding and covariance estimates.
 - [ ] Lean actual-source transfer, direct checks, axiom audits, and umbrella imports.
+
+The `DigitRefinement` scratch check and all nine transitive axiom audits
+passed. Its production source is wired; the direct repository check is
+queued. Subsequent compact bounds and annular comparisons remain unchecked.

@@ -328,8 +328,10 @@ and the interior. Thus all five share every logarithmic norm saving uniformly in
 both cutoffs. A reserved-token conflict and a rewrite targeting the wrong
 summand were corrected. All six scratch targets now pass Lean with standard
 axioms only. The module is migrated and wired as
-`UniformLogarithmicRemaindersInAllVaughanRows.lean`; its producing check is
-running, with the final direct repository check still required.
+`UniformLogarithmicRemaindersInAllVaughanRows.lean`; its producing check passed
+with the same standard-axiom audits. The final direct repository check passed;
+the scratch was removed. The completed card is
+`../3-formalized/uniform-logarithmic-remainders-in-all-vaughan-rows.md`.
 
 The finite Gram comparison is drafted as three targets in
 `/tmp/QIPronicGramTools.lean`: a bounded smooth-energy error, a smooth norm
@@ -337,7 +339,12 @@ majorant, and the exact three-pairing bound around a rank-one term.
 `/tmp/QIUniformVaughanGramTools.lean` now drafts four targets for the complete
 uniform matrix law: every logarithmic rate, its normalized form, arbitrary moving
 horizon smooth asymptotics, and zero normalized Gram whenever the horizon and
-cutoff product diverge separately. All seven targets remain uncompiled.
+cutoff product diverge separately. The first finite Gram check passed both
+smooth-energy targets but found an unavailable Cauchy–Schwarz reference in the
+private pairing adapter. The adapter now uses finite weighted Cauchy–Schwarz
+directly, avoiding an import that would shadow the norm throughout this branch.
+The corrected three-target check remains required; the four complete matrix
+targets remain uncompiled.
 
 The first logarithmic-transform scratch check found two algebraic Lean issues
 (nested inverse normalization and function composition); both were corrected.

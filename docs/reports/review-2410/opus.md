@@ -409,8 +409,11 @@ in pronic norm below half damping, retaining the common finite-head bound
 fluctuation and all truncated Möbius receivers now satisfy those common norm
 bounds (`UniformLogarithmicEnergyInTheVaughanConvolution`). The actual centered
 Möbius prefix and Bézout interior now have every logarithmic norm saving below
-half damping (`LogarithmicEnergySavingsForTheMobiusInterior`). Uniform Gram
-consequences remain under verification.
+half damping (`LogarithmicEnergySavingsForTheMobiusInterior`). All five actual
+smooth-subtracted rows now share every logarithmic norm saving uniformly in both
+cutoffs; their sum is exactly the Bézout interior
+(`UniformLogarithmicRemaindersInAllVaughanRows`). Uniform Gram consequences
+remain under verification.
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?

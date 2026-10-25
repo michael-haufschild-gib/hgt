@@ -15,8 +15,11 @@ Card template: docs/drafts/pipeline/_card-template.md
 2. In progress → docs/drafts/pipeline/1-in-progress
 3. Fully proven on paper → docs/drafts/pipeline/2-fully-proven
 4. Formalised in Lean 4 → docs/drafts/pipeline/3-formalized
-5. Publication-ready pre-prints → docs/drafts/pipeline/4-publication-ready
-6. Failed/retired → docs/drafts/pipeline/5-failed
+5. Failed/retired → docs/drafts/pipeline/5-failed
+
+Paper proofs do not count as valid proofs if not formalized in Lean. Any proof on paper must be followed up by formalization. 
+
+Whenever you write a proof in docs/drafts/pipeline/2-fully-proven, you must follow it up directly with the lean formalization. 
 
 ## Use the search tool for our lean corpus
 Command: `scripts/formal_tools.py research "<query>"`. Run it directly; do not run `--help` or read

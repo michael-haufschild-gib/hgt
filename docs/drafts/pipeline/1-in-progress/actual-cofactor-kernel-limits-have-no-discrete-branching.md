@@ -60,3 +60,15 @@ and extracts an increasing subsequence. Its standalone check is
 common-proof child queue of session `90975`. The actual Gram increment and
 common-kernel/cardinality applications remain to be written. No result on
 this card is yet proved.
+
+The actual reciprocal-energy step bound and its admission/escape proof are
+now drafted in `/tmp/qiii_cofactor_gram_steps_body.lean`; their standalone
+check is queued after the generic crossing proof in session `90975`.
+`/tmp/qiii_actual_kernel_interpolation_body.lean` applies the crossing
+subsequence followed by common extraction along prescribed horizons.
+`/tmp/qiii_actual_kernel_cardinality_body.lean` injects a nonempty real
+interval into the actual kernel set and encodes all kernels as countable
+real tables, giving the exact singleton/continuum alternative. The combined
+application target `/tmp/qiii-actual-kernel-interpolation-check.lean` is in
+the assembler but not queued: it needs the two pending base leaves and
+canonical prescribed-horizon extraction. Every new statement is UNVERIFIED.

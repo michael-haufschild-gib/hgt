@@ -25,18 +25,12 @@ private theorem bounded_operator_diagonal
   by_cases hr : (q.1 : ℂ).re = 1 / 2
   · have hq : q.2.val = 0 := by
       have hlt := q.2.isLt
-      rw [hs q.1 hr] at hlt
+      have hm := hs q.1 hr
       omega
     rw [deningerMeyerHilbertConvolution_jets, hq]
     simp only [Nat.zero_add, Finset.range_one, Finset.sum_singleton,
       deningerMeyerHasseMoment, Nat.factorial_zero, Nat.cast_one, div_one,
       deningerMeyerStrongLogMellinJetLM_eq_iteratedDeriv, iteratedDeriv_zero]
-    congr 1
-    have hlow : deningerHasseLower q 0 = q := by
-      rcases q with ⟨rho, j⟩
-      rcases j with ⟨j, hj⟩
-      rfl
-    rw [hlow]
   · have hv : deningerMeyerStrongLogMellin g (q.1 : ℂ) = 0 :=
       hg q.1 ⟨0, xiSupportMultiplicity_pos q.1⟩ (Or.inl hr)
     rw [hv, zero_mul, deningerMeyerHilbertConvolution_jets]
@@ -69,7 +63,10 @@ theorem meyerBounded_sharp_eq_adjoint_of_critical_simple
       have h2 : deningerMeyerStrongLogMellin (deningerMeyerSourceSharp g) (q.1 : ℂ) = 0 :=
         meyerCriticalTopJets_sharp hg q.1 ⟨0, xiSupportMultiplicity_pos q.1⟩ (Or.inl hr)
       rw [h1, h2, star_zero]
-  simp only [RCLike.inner_apply, he, star_mul, star_star]
+  simp only [RCLike.inner_apply, he]
+  change y q * star (star (deningerMeyerStrongLogMellin g (q.1 : ℂ)) * x q) =
+    (deningerMeyerStrongLogMellin g (q.1 : ℂ) * y q) * star (x q)
+  rw [star_mul, star_star]
   ring
 
 /-- The faithful reserve agrees with trace on the bounded carrier exactly at critical simplicity. -/

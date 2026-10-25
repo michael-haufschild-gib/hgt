@@ -24,6 +24,16 @@ Answer Q-II in full; formalize the answer and its corollaries without extra anal
 Full Q-II remains open. User requires every significant finding to be formalized;
 paper arguments alone are unverified, not completed results. Prioritize clearing
 the existing Lean candidates before developing further paper-only findings.
+User repeated the instruction: no build scripts; formalize everything still
+only on paper now. Finish the entire existing Q-II candidate queue and the older
+actual-file final audits before pursuing new findings. Each Lean invocation
+gets its own direct `lake --old env lean ...` command, without wrappers, loops,
+or a batch runner.
+
+User then paused the research goal and explicitly requested completion of all
+started Lean work and existing paper-proof formalizations before pausing.
+Finish this verification queue and its older final audits, then stop research.
+Do not open new conjectures or resume the broader Q-II research goal.
 
 User explicitly prohibited scripts for checking Lean. Session **51780** and its
 owned shell/lake/Lean processes were terminated and their exit verified. The
@@ -74,9 +84,9 @@ uses actual `deningerArithmeticXiRangeClosed` as a local closedness instance.
 direct rechecks. The latter now also probes the norm approximation extracted
 from `Metric.mem_closure_iff`; the installed statement confirms the distance
 orientation used in the boundary-density draft, so that draft needs no change.
-After the corpus adjoint search, this probe also includes the adjoint norm,
-adjoint characterization, and coordinate inner-product names used by the
-unverified sharp/adjoint module.
+The adjoint norm, adjoint characterization, and coordinate inner-product names
+are now in a separate `/tmp/QIIAdjointAPIs.lean` probe, following the import
+collision recorded below.
 Corrected actual `SmoothFiniteReadingKernels` also needs a direct
 check. The inverse, global-comparison injectivity, and high
 simple critical-point input axiom audits already passed with standard axioms.
@@ -187,12 +197,75 @@ standard three axioms in all four audits. Prints are removed; it is wired,
 documented in the README and review, and its card is stage 3. Its old scratch
 draft is deleted. No olean build is needed yet. No owned Lean process remains.
 
-Next direct check: the corrected `/tmp/QIIRestrictedSurfaceAPIs.lean` probe,
-then `ArithmeticSharpAndTheHilbertAdjoint.lean`. Before starting the probe,
-inspect the installed quotient Hausdorff API: its current local closedness
-instance may need to use the actual closed-subgroup class rather than a bare
-`IsClosed` proposition. The actual global Xi closed-range theorem is certified
-and was read; no closed-range hypothesis is to be added.
+The installed quotient Hausdorff instance explicitly takes
+`[IsClosed (H : Set G)]`; the prepared local instance matches that API.
+The actual global Xi closed-range theorem is certified and was read. The
+corrected `/tmp/QIIRestrictedSurfaceAPIs.lean` probe is now checking directly;
+next target is `ArithmeticSharpAndTheHilbertAdjoint.lean`.
+
+Combined API check **40471** failed on an import collision:
+`LambdaRingEffectivityAndHeckeLefschetzRigidity` and
+`SectionEffectivityAndTheUniversalFloorLaw` both declare `PolarSurface.polarLift`
+in their actual source files. The AOG `SectionsOnTheOrbitOfACycle` import brings
+in the latter. Existing oleans are preserved.
+
+The bounded-source candidate uses AOG only for `PolarSurface.restrict`.
+Its surface can be constructed directly from the original pairing and the
+proved fibre membership fields, avoiding that unrelated import. The corrected
+restricted API probe removes AOG and checks `LinearMap.compl₁₂`; after that
+probe passes, replace the candidate's restriction definition by those fields.
+No theorem statement or analytic premise changes. The adjoint names are split
+into a separate probe using exactly the actual adjoint module's root import.
+
+Adjoint API check **46670** passed, verifying the norm identity, adjoint
+characterization, and coordinate inner-product declarations.
+Actual adjoint check **3494** failed at four proof steps: rewriting a dependent
+Fin bound, an extra tactic after simplification had closed the goal, conversion
+of the operator norm product to a square, and normalization of `starRingEnd`.
+All four are corrected in the actual file; failed axiom output is not a certificate.
+Direct adjoint recheck **35594** is running; no second owned Lean process may
+start until it exits. The same dependent-index rewrite issue is corrected in
+the actual bounded-orbit, bounded-surface, and bounded-faithful-reserve candidates.
+The bounded adjoint proof also uses the corrected scalar conjugation step and
+removes the redundant lower-coordinate proof. Their scratch copies are stale.
+The corrected restricted API probe
+and direct bounded-surface construction are required before the bounded-surface
+branch is checked.
+
+### Remaining verification queue
+
+All modules below are actual files under `ArithmeticCastelnuovoSeveri/`.
+They remain unverified until their direct checks and endpoint axiom audits pass.
+
+| Module | State |
+|---|---|
+| `ArithmeticMajorantConeGeometry` | Pointedness correction awaits direct recheck |
+| `SmoothFiniteReadingKernels` | Corrected smoothness API probe, then actual recheck |
+| `ArithmeticSharpAndTheHilbertAdjoint` | Corrected actual check running: 35594 |
+| `FaithfulHilbertSchmidtSourceReserves` | Twelve endpoints; requires missing adjoint, HS-source and HT trace-defect oleans |
+| `MeyerBoundedCenteredOrbits` | Six endpoints; requires missing HS-source olean |
+| `MeyerCriticalTopAlgebra` | Eleven endpoints; requires bounded-orbit olean |
+| `BoundedMeyerSourceSurface` | Thirteen endpoints; direct restriction must replace conflicting AOG import |
+| `MeyerHilbertReserveFlowRigidity` | Seven endpoints; requires reserve and critical-top oleans |
+| `BoundedMeyerFaithfulReserve` | Twelve endpoints; includes exact linear-degree representation |
+| `MeyerFiniteJetAlgebra` | Seven endpoints; requires missing sharp-algebra olean |
+| `MeyerFiniteProjectorAlgebra` | Four endpoints; requires finite-jet olean |
+| `PositiveMeyerDegreesSeeReducedCriticalJets` | Six endpoints, including finite-weight converse |
+| `MeyerAlgebraicCharacters` | Eight endpoints; point-reading normalization corrected |
+| `PoissonBoundariesAreDenseInOriginMass` | Seven endpoints; requires missing HT translation-cyclicity olean |
+| `OriginHilbertCohomologyObstruction` | Four endpoints; corrected closedness instance awaits API check |
+| `InvariantOriginMassDoesNotBoundTheWeilTrace` | Seven endpoints; requires smooth-kernel olean |
+| `MeyerHermitianDegreePart` | Seven endpoints; requires finite positive-degree olean |
+| `EveryFiniteMeyerJetGraphIsDenseInOriginHilbertSpace` | Ten endpoints; requires boundary-density olean |
+| `FiniteMeyerProjectorsSplitPositiveEnergy` | Fourteen endpoints; requires finite-degree, critical-top and projector oleans |
+
+Older actual-file final checks also remain: `SourceConeBoundaryRigidity`,
+`SourceConeBoundaryApplications`, `WeilEnergyIsUnboundedAtEveryAperture`,
+`GradedSourceConeBoundaryRigidity`, `SourceConePrimitiveFaithfulness`,
+`NumericalEquivalenceOnTheScalingSurface`, `SourceRiemannRochWithoutSymmetry`,
+`ExactArithmeticSourceEffectivity`, `FiniteDegreeConesCannotSatisfyBezout`,
+`PoissonPrincipalCyclesOnTheScalingSurface`, and AOT
+`SourceSectionBoundaryRigidity`. Their oleans already exist and must not be rebuilt.
 <!-- /qii-live-status -->
 
 ## Current evidence

@@ -42,8 +42,8 @@ on the Kronecker curve. No actual escape instance is assumed or constructed.
 ## Gates
 
 - [x] Corpus novelty audit beyond the existing white-noise models.
-- [ ] Exact odd-kernel structural proofs.
-- [ ] Actual diagonal invariant formally verified.
+- [x] Exact odd-kernel structural proofs in canonical Lean.
+- [x] Actual diagonal invariant formally verified, with standard axioms.
 - [ ] Actual exclusion and finite-dimensional cutoff consequence.
 - [ ] Leaf source checks and transitive axioms.
 
@@ -74,7 +74,7 @@ missing and is the only new dependency build in that prepared queue.
 
 The odd-kernel structure and actual exclusion passed the completed diagonal
 scratch with standard axioms. Their canonical leaf is installed and wired;
-its final source check is in session `90975`. The finite-cutoff survivor had
+its final source check passed in session `90975`, with standard axioms. The finite-cutoff survivor had
 one local cancellation-lemma error. Its repair uses positive multiplication
 cancellation and is in `/tmp/qiii-diagonal-cutoff-augmentation-check.lean`,
 queued after the diagonal foundation audits in the same session. The no-go

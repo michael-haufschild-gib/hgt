@@ -116,7 +116,7 @@ lemma paperFT_landauTest_neg_log {T : ℝ} (hT : 0 < T) {n : ℕ} (hn : n ≠ 0)
   congr 1; congr 1
   have hI : I * gammaOf ρ = ρ - 1 / 2 := by
     unfold gammaOf; field_simp
-  simp only [Complex.natCast_log]
+  rw [ofReal_neg, Complex.natCast_log]
   linear_combination (-(Complex.log n)) * hI
 
 /-- **Dirichlet polynomials over the zeros (smoothed Gonek lemma).**  For coefficients `a_n`,
@@ -162,10 +162,10 @@ theorem exists_zeroSum_dirichletPolynomial_le (hw : ContDiff ℝ 2 w)
   -- split off `n = 1`
   have hsplit : ∀ f : ℕ → ℂ, ∑ n ∈ Finset.Icc 1 Y, f n = f 1 + ∑ n ∈ Finset.Icc 2 Y, f n := by
     intro f
-    rw [← Finset.insert_Icc_add_one_left_eq_Icc hY, Finset.sum_insert (by simp)]
+    rw [← Finset.insert_Icc_add_one_left_eq_Icc hY, Finset.sum_insert (by simp)]; rfl
   have hsplitR : ∀ f : ℕ → ℝ, ∑ n ∈ Finset.Icc 1 Y, f n = f 1 + ∑ n ∈ Finset.Icc 2 Y, f n := by
     intro f
-    rw [← Finset.insert_Icc_add_one_left_eq_Icc hY, Finset.sum_insert (by simp)]
+    rw [← Finset.insert_Icc_add_one_left_eq_Icc hY, Finset.sum_insert (by simp)]; rfl
   -- the `n = 1` term is the smoothed zero count
   have hZ1 : Z 1 = ∑' ρ : zetaZeroConfig.carrier, (zetaZeroConfig.mult ρ : ℂ) *
       paperFT w (gammaOf ρ / T) := by

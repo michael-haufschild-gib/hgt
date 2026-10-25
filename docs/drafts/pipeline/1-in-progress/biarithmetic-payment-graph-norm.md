@@ -112,7 +112,7 @@ nor an arithmetic orientation estimate, and does not make the ambient quotient H
 - [x] Dependency-closed paper construction and source comparison.
 - [x] Paper critical-domain core and quantitative failure of ambient closedness.
 - [ ] Lean universal pronic module, closed graph, and Banach ideal.
-- [ ] Lean source comparison and critical finite-core theorem.
+- [x] Lean source comparison and critical finite-core theorem.
 - [ ] Direct checks, axiom audits, and umbrella imports.
 
 Corpus reuse audit: `ArithmeticOrientationTheory/WienerCoefficientEvaluation.lean`
@@ -125,8 +125,12 @@ general `lp` norm and matrix constructions, not an existing universal pronic
 payment graph. The graph's coordinates can therefore be defined directly in
 `W_(1/2) x lp(C,2)` by the finite cofactor formula divided by the square root
 of the pronic weight; closedness is a countable intersection of coordinate
-equalizers. This graph construction is now formalized; its source comparison
-and Wiener ideal action remain separate pending leaves.
+equalizers. This graph construction and its actual-source comparison are
+now formalized. `PaidGraphIdentification` passed its direct repository
+check and both axiom audits; its
+[stage-3 card](../3-formalized/biarithmetic-actual-paid-graph-identification.md)
+records the exact paid-ideal image and unique output. The Wiener ideal
+action remains a separate pending leaf.
 
 For the critical closure, `HTGeometry/ConstraintMotiveRelativity/PrimeAugmentationCompletion.lean`
 already proves `closure_image_augIdeal_one`: finite zero-sum vectors are dense
@@ -146,9 +150,8 @@ ADR's monotone finite-energy limit theorem, not the general positive-cell
 summability interface needed here. The latter is formalized separately as
 `PronicEnergyDomain`, with its direct source check and four audits passed;
 `PaidGraphIdentification` then uses the checked actual
-cofactor/payment equivalence on both complex components. Its scratch check and
-both transitive audits passed; the wired production source awaits its direct
-repository check. This source identification uses every Wiener coefficient, with
+cofactor/payment equivalence on both complex components. Its scratch check,
+both transitive audits, and direct repository check passed. This source identification uses every Wiener coefficient, with
 no tower-support restriction and no presumed closedness of payment.
 
 The closed graph, completeness, input injectivity, and exact energy-domain
@@ -214,15 +217,14 @@ The subsequent coordinate audit found the existing real identity
 `RHTower.floorTransform_comp` in `RHTower/FloorTransformHarmonicInverse.lean`:
 finite floor transforms compose by Dirichlet convolution for every input row.
 Its proof explicitly identifies the two hyperbola index sets, so no analytic
-interchange is involved. The complex actual-Wiener coordinate bridge remains
-to be checked. `HTGeometry/FramePurificationPartialTrace.lean` and
+interchange is involved. The complex actual-Wiener coordinate bridge is checked below. `HTGeometry/FramePurificationPartialTrace.lean` and
 `RHTower/Deninger/DeningerArithmeticPositiveCalderonKoszul.lean` confirm the
 operator-evaluation interface `ContinuousLinearMap.apply` with `HasSum.mapL`.
 `PronicWienerCoordinates` uses those existing maps: after
 evaluation at cell `n`, every scale `j>n` vanishes because the row's origin is
 zero, leaving exactly the finite cofactor formula.
-Its scratch check and both transitive audits passed. The production source is
-wired and awaits its direct repository check.
+Its scratch check, both transitive audits, and direct repository check passed.
+The umbrella import and [stage-3 card](../3-formalized/biarithmetic-pronic-wiener-coordinates.md) are present.
 
 The two indexing conventions already have an exact corpus isometry:
 `HTGeometry.lpDomCongr` in `HTGeometry/LatticeL2Shift.lean`, specialized to

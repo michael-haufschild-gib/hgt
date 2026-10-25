@@ -30,3 +30,7 @@ In particular this coefficient theorem asserts no zeta nonvanishing on an arithm
 - [x] Dependency-closed proof plan from the corpus's strip Mellin and L1 periodization results.
 - [ ] Lean general-strip seed, integrability, line transform, and circle coefficients.
 - [ ] Direct source check, axiom audit, and umbrella import.
+
+`DigitalCircleFourier.lean` passed its scratch check and all three
+transitive axiom audits. Its production source is wired; the direct
+repository check is queued before moving this card to stage 3.

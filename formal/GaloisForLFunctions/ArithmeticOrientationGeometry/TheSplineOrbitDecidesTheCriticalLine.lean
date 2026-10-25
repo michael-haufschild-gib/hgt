@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticOrientationGeometry.CorrectorsInTheDampingParameter
 import GaloisForLFunctions.ArithmeticOrientationGeometry.TheOrientationIndexOfACycle
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.WhatTheFailureOfTheHodgeIndexMeasures
 import GaloisForLFunctions.SquareRootThreshold.EveryWidthDecidesTheCriticalLine
 
 /-!
@@ -23,7 +24,9 @@ off-line zero has a non-real spectral point. So one explicit orbit decides RH an
 * `zeta_splineOrbit_negIndex_law`: the negative index of the prime-side Weil Gram matrices of
   finitely many translates of `B` reaches `n` iff `ζ` has at least `n` distinct zeros right of the
   line; RH iff all these matrices are positive semidefinite
-  (`riemannHypothesis_iff_splineOrbit_weilGram_negIndex_eq_zero`).
+  (`riemannHypothesis_iff_splineOrbit_weilGram_negIndex_eq_zero`), in particular on the rank-two
+  Hecke orbit `k log p + l log q` of two distinct primes
+  (`riemannHypothesis_iff_splineTwoPrime_negIndex_eq_zero`).
 -/
 
 open Zeta23
@@ -211,5 +214,49 @@ theorem riemannHypothesis_iff_splineOrbit_weilGram_negIndex_eq_zero {D : Set ℝ
       (Set.one_le_encard_iff_nonempty.mpr (Set.nonempty_iff_ne_empty.mpr hne))
     rw [h S hS] at hn
     exact absurd hn (by norm_num)
+
+/-- **RH on the rank-two Hecke orbit of the cubic spline.** For two distinct primes, RH holds iff
+the prime-side Weil Gram matrix of the translates of `B` by every finite set of shifts
+`k log p + l log q` has no negative square. -/
+theorem riemannHypothesis_iff_splineTwoPrime_negIndex_eq_zero {p q : ℕ} (hp : p.Prime)
+    (hq : q.Prime) (hpq : p ≠ q) :
+    RiemannHypothesis ↔ ∀ S : Finset ℝ, ↑S ⊆ twoPrimeShifts p q → hermNegIndex (weilGram
+      (fun k => (ArithmeticFunction.vonMangoldt k : ℝ)) fun s : S =>
+        ArithmeticCastelnuovoSeveri.translate s (cx cubicSpline)) = 0 :=
+  riemannHypothesis_iff_splineOrbit_weilGram_negIndex_eq_zero (denseShifts_twoPrime hp hq hpq)
+
+/-- **RH on the rational Hecke orbit of the cubic spline.** -/
+theorem riemannHypothesis_iff_splineRatHecke_negIndex_eq_zero :
+    RiemannHypothesis ↔ ∀ S : Finset ℝ, ↑S ⊆ ratHeckeShifts → hermNegIndex (weilGram
+      (fun k => (ArithmeticFunction.vonMangoldt k : ℝ)) fun s : S =>
+        ArithmeticCastelnuovoSeveri.translate s (cx cubicSpline)) = 0 :=
+  riemannHypothesis_iff_splineOrbit_weilGram_negIndex_eq_zero denseShifts_ratHecke
+
+/-- **One negative square is never enough.** Right zeros come in conjugate pairs, so RH holds iff
+no finite family of translates of `B` carries two negative squares of the prime-side Weil form. -/
+theorem riemannHypothesis_iff_splineOrbit_negIndex_le_one {D : Set ℝ} (hD : DenseShifts D) :
+    RiemannHypothesis ↔ ∀ S : Finset ℝ, ↑S ⊆ D → hermNegIndex (weilGram
+      (fun k => (ArithmeticFunction.vonMangoldt k : ℝ)) fun s : S =>
+        ArithmeticCastelnuovoSeveri.translate s (cx cubicSpline)) ≤ 1 := by
+  constructor
+  · intro h S hS
+    rw [(riemannHypothesis_iff_splineOrbit_weilGram_negIndex_eq_zero hD).mp h S hS]
+    exact zero_le_one
+  · intro h
+    rw [riemannHypothesis_iff_no_rightZero]
+    by_contra hne
+    have hR : (rightZeros zetaZeroConfig).encard ≠ 0 := by
+      rw [Set.encard_ne_zero]
+      exact Set.nonempty_iff_ne_empty.mpr hne
+    have htwo : ((2 : ℕ) : ℕ∞) ≤ (rightZeros zetaZeroConfig).encard := by
+      rw [zeta_rightZeros_encard_eq_two_mul_sectorZeros 1] at hR ⊢
+      have hk : (sectorZeros zetaZeroConfig 1).encard ≠ 0 := fun h0 => hR (by rw [h0, mul_zero])
+      have h1 : (1 : ℕ∞) ≤ (sectorZeros zetaZeroConfig 1).encard :=
+        ENat.one_le_iff_ne_zero.mpr hk
+      calc ((2 : ℕ) : ℕ∞) = 2 * 1 := by norm_num
+        _ ≤ 2 * (sectorZeros zetaZeroConfig 1).encard := mul_le_mul_left' h1 2
+    obtain ⟨S, hS, h2⟩ := (zeta_splineOrbit_negIndex_law hD 2).mpr htwo
+    have := h S hS
+    omega
 
 end GaloisForLFunctions.ArithmeticOrientationGeometry

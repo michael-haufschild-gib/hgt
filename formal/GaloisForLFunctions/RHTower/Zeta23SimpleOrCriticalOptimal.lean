@@ -90,6 +90,35 @@ lemma kc_le_two_mul_sub_one_mul {c m : ℝ} (hc : 1 ≤ c) (hm : 1 ≤ m) :
   · rw [kc_of_le h]; nlinarith
   · rw [kc_of_ge h]; nlinarith
 
+/-- **Cost table, doubles against pairs**: for `c ≥ 2` a critical double costs `k_c(2)/2 = 2c − 2`
+per copy and an off-line pair `c²/2`, with `c²/2 − k_c(2)/2 = (c − 2)²/2 ≥ 0`.  No level charges a
+near pair less than a double: the certificate form of the continuity barrier. -/
+lemma kc_two_div_two_add_sq {c : ℝ} (hc : 2 ≤ c) : kc c 2 / 2 + (c - 2) ^ 2 / 2 = c ^ 2 / 2 := by
+  rw [kc_of_le hc]; ring
+
+/-- **Cost table, simple zeros against pairs**: for `c ≥ 1` an off-line pair costs more per copy
+than a simple critical zero (`k_c(1) = 2c − 1`) exactly when `c > 2 + √2`. -/
+lemma kc_one_lt_sq_div_two_iff {c : ℝ} (hc : 1 ≤ c) :
+    kc c 1 < c ^ 2 / 2 ↔ 2 + Real.sqrt 2 < c := by
+  have h := Real.sq_sqrt (show (0 : ℝ) ≤ 2 by norm_num)
+  have hs1 : 1 < Real.sqrt 2 := by
+    rw [show (1 : ℝ) = Real.sqrt 1 by simp]
+    exact Real.sqrt_lt_sqrt (by norm_num) (by norm_num)
+  rw [kc_of_le hc]
+  constructor
+  · intro hlt
+    -- `c² − 4c + 2 > 0` with `c ≥ 1` forces `c > 2 + √2`
+    by_contra hle
+    rw [not_lt] at hle
+    nlinarith [mul_nonneg (sub_nonneg.mpr hle) (show (0 : ℝ) ≤ c - (2 - Real.sqrt 2) by linarith)]
+  · intro hlt
+    nlinarith [mul_pos (sub_pos.mpr hlt) (show (0 : ℝ) < c - (2 - Real.sqrt 2) by linarith)]
+
+/-- The simple off-line coefficient `2c − 1 − c²/2` of the level-`c` certificate is at most `1`, with
+equality at `c = 2`: no level improves `S_off + M_off ≤ 1 − HD(1)`. -/
+lemma simpleLevelGap_le (c : ℝ) : 2 * c - 1 - c ^ 2 / 2 ≤ 1 := by
+  nlinarith [sq_nonneg (c - 2)]
+
 /-- The off-line multiple mass of a block, through its pair representatives. -/
 lemma blockOffLineMultipleMass_eq_sum_pairReps (D : ZeroBlockData ι d) (Pr : D.PairReps) :
     blockOffLineMultipleMass D = ∑ z ∈ Pr.R, 2 * (if 2 ≤ D.m z then D.m z else 0) := by

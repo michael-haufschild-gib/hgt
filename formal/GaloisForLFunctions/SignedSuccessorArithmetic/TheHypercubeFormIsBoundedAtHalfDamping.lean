@@ -38,14 +38,13 @@ unconditional phase diagram of `Q_ε(P)` across all `ε ≥ -1/2`.
 3. **Translation-invariant shell `L²` decay and exponential integrability (`§3–§4`):**
    * Partitioning any finite prime set `S` into double-exponential shells
      `S_j = {p ∈ S : ⌊e^{e^j}⌋₊ < p ≤ ⌊e^{e^{j+1}}⌋₊}` (`j ≥ 1`) and majorizing `1_{[a-1, a+1]}` by
-     `(1 + cos(t - a)) / (1 + cos 1)` on `[a - π, a + π]` produces a third-order `O(|ω|^{-3})`
+     `2 (1 + cos(t - a))` on `[a - π, a + π]` produces a third-order `O(|ω|^{-3})`
      Fejér-cosine kernel. Summing unit logarithmic prime windows via `sum_inv_dyadic_window_le` and
      `abs_sum_inv_bigPrimeSet_sub_le` gives `∫_{a-1}^{a+1} (shellTrig S_j t)² dt ≤ C_{L2} e^{-j}`
      uniformly in `a ∈ ℝ` and `S`.
-   * Splitting `S` at `j_* = ⌊(6/5) U⌋₊` gives headroom `(1 - (17/24)(6/5)) U = (3/20) U` against
-     the tail `L²` norm `O(e^{-j_*/2})`, yielding super-level decay
-     `meas({t ∈ [a-1, a+1] : desingLogProd S t ≥ U}) ≤ C_meas e^{-(6/5) U}` (`6/5 > 1`), uniform
-     unit-interval integrability of `exp(desingLogProd S t)`, and summability against
+   * Splitting `S` at `j₀ = ⌊(6/5) n⌋₊` gives headroom `(1 - (17/24)(6/5)) n = (3/20) n` against
+     the tail `L²` norm `O(e^{-j₀/2})`, yielding super-level decay `O(e^{-(6/5) n})` (`6/5 > 1`),
+     uniform unit-interval integrability of `exp(desingLogProd S t)`, and summability against
      `(1 + |ξ|)^{-4/3} (log(|2πξ| + e))^{12} ≪ (1 + |ξ|)^{-7/6}` over `ℝ`.
 -/
 
@@ -218,7 +217,7 @@ theorem stepSpectralWeight_ae_le_inv_rpow {r : ℕ} (hr : 1 < r) :
       (integrable_indicator_iff measurableSet_Ioi).mpr
         ((integrableOn_exp_mul_Ioi (by norm_num : (-(1 / 2) : ℝ) < 0) 0).const_mul _)
     have hmeas : Measurable (halfDensityPullback (pmRamanujanStepSource r)) :=
-      (Complex.measurable_ofReal.comp (Real.measurable_sqrt.comp Real.measurable_exp)).mul
+      (Complex.measurable_ofReal.comp (Real.continuous_sqrt.measurable.comp Real.measurable_exp)).mul
         ((measurable_stepFun _).comp Real.measurable_exp)
     refine hg_int.mono' hmeas.aestronglyMeasurable ?_
     filter_upwards [hae_ne] with x hx0
@@ -279,124 +278,11 @@ theorem stepSpectralWeight_ae_le_inv_rpow {r : ℕ} (hr : 1 < r) :
 
 /-! ## §2. Pole-free subset log-product bound across all `w ≥ 3` and `t : ℝ` -/
 
-private theorem two_squares_cos_majorant' (θ : ℝ) :
-    0 ≤ 17 / 24 - Real.cos θ + 1 / 3 * Real.cos (2 * θ) ∧
-      -2 * Real.cos θ ≤ 17 / 24 - Real.cos θ + 1 / 3 * Real.cos (2 * θ) := by
-  rw [Real.cos_two_mul]
-  exact ⟨by nlinarith [sq_nonneg (Real.cos θ - 3 / 4)],
-    by nlinarith [sq_nonneg (Real.cos θ + 3 / 4)]⟩
-
 private theorem primesLE_subset_primesLE {a b : ℕ} (hab : a ≤ b) :
     Nat.primesLE a ⊆ Nat.primesLE b := by
   intro p hp
   obtain ⟨hpa, hp'⟩ := Nat.mem_primesLE.mp hp
   exact Nat.mem_primesLE.mpr ⟨hpa.trans hab, hp'⟩
-
-private theorem sum_cos_div_prime_le_of_zeta_upper' {z : ℕ} {u B : ℝ} (hz : 3 ≤ z) (hB0 : 0 < B)
-    (hB : ‖riemannZeta ((((1 + 1 / Real.log (z : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I))‖ ≤ B) :
-    ∑ p ∈ Nat.primesLE z, Real.cos (u * Real.log p) / (p : ℝ) ≤
-      Real.log B + Real.pi ^ 2 / 6 +
-        2 * (Real.log 2 + 2 * (2 * RHTower.Sieve.mertensFirstConst + 1 / 2)) / Real.log 2 +
-        (1 + Real.log 4) := by
-  have hz3 : (3 : ℝ) ≤ (z : ℝ) := by exact_mod_cast hz
-  have hlogz : (1 : ℝ) ≤ Real.log (z : ℝ) := by
-    have hexp : Real.exp 1 ≤ (z : ℝ) := by linarith [Real.exp_one_lt_d9]
-    have h := Real.log_le_log (Real.exp_pos 1) hexp
-    rwa [Real.log_exp] at h
-  have hlogz0 : (0 : ℝ) < Real.log (z : ℝ) := by linarith
-  let σ : ℝ := 1 + 1 / Real.log (z : ℝ)
-  have hσ1 : (1 : ℝ) < σ := by
-    dsimp [σ]
-    have : (0 : ℝ) < 1 / Real.log (z : ℝ) := by positivity
-    linarith
-  have hre : (1 : ℝ) < ((σ : ℂ) + (u : ℂ) * Complex.I).re := by simpa using hσ1
-  have hz_ne : riemannZeta ((σ : ℂ) + (u : ℂ) * Complex.I) ≠ 0 :=
-    riemannZeta_ne_zero_of_one_le_re hre.le
-  have hlog_zeta : Real.log ‖riemannZeta ((σ : ℂ) + (u : ℂ) * Complex.I)‖ ≤ Real.log B :=
-    Real.log_le_log (norm_pos_iff.mpr hz_ne) hB
-  have hcomp := abs_le.1 (RHTower.Sieve.abs_log_norm_riemannZeta_sub_tsum_re_le hre)
-  have hsq : (∑' p : Nat.Primes, ‖((p : ℕ) : ℂ) ^ (-((σ : ℂ) + (u : ℂ) * Complex.I))‖ ^ 2) =
-      ∑' p : Nat.Primes, ((p : ℕ) : ℝ) ^ (-(2 * σ)) := by
-    rw [RHTower.Sieve.tsum_norm_sq_eq]
-    congr 1; ext p; congr 2; simp
-  have htail_sq : (∑' p : Nat.Primes, ((p : ℕ) : ℝ) ^ (-(2 * σ))) ≤ Real.pi ^ 2 / 6 :=
-    RHTower.Sieve.tsum_prime_rpow_le hσ1.le
-  rw [hsq] at hcomp
-  have htsum_le : ∑' p : Nat.Primes, (((p : ℕ) : ℂ) ^ (-((σ : ℂ) + (u : ℂ) * Complex.I))).re ≤
-      Real.log B + Real.pi ^ 2 / 6 := by
-    linarith [hcomp.1, hlog_zeta, htail_sq]
-  have hsplit := RHTower.Sieve.tsum_re_prime_cpow_split (z := z) (t := u) hσ1
-  have htail := abs_le.1 (RHTower.Sieve.abs_tsum_prime_tail_re_le (z := z) (t := u) hσ1)
-  have htailC := RHTower.Sieve.tsum_primeTailTerm_le hz
-  change ∑' p : Nat.Primes, RHTower.Sieve.primeTailTerm z σ p ≤ _ at htailC
-  have hshift := abs_le.1 (RHTower.Sieve.abs_sum_weight_shift_le (z := z) (by omega) hσ1.le
-    (w := fun p : ℕ => Real.cos (u * Real.log (p : ℝ))) (fun p => Real.abs_cos_le_one _))
-  have hshiftC : (σ - 1) * (Real.log z + Real.log 4) ≤ 1 + Real.log 4 := by
-    have hlog4 : (0 : ℝ) ≤ Real.log 4 := Real.log_nonneg (by norm_num)
-    have hval : (σ - 1) * (Real.log z + Real.log 4) = 1 + Real.log 4 / Real.log (z : ℝ) := by
-      dsimp [σ]; field_simp; ring
-    have hdiv : Real.log 4 / Real.log (z : ℝ) ≤ Real.log 4 := by
-      rw [div_le_iff₀ hlogz0]; nlinarith
-    linarith
-  have hident : ∑ p ∈ Nat.primesLE z, Real.cos (u * Real.log (p : ℝ)) / (p : ℝ) =
-      (∑ n ∈ Nat.primesLE z, ((n : ℝ)) ^ (-σ) * Real.cos (u * Real.log n)) +
-        ∑ p ∈ Nat.primesLE z, Real.cos (u * Real.log (p : ℝ)) * (1 / (p : ℝ) - ((p : ℝ)) ^ (-σ)) := by
-    rw [← Finset.sum_add_distrib]
-    exact Finset.sum_congr rfl fun p _ => by ring
-  rw [hident]
-  linarith [htsum_le, hsplit, htail.1, htail.2, htailC, hshift.1, hshift.2, hshiftC]
-
-private theorem exists_neg_sum_cos_div_primesLE_le' :
-    ∃ C₁ : ℝ, 0 ≤ C₁ ∧ ∀ z : ℕ, ∀ t : ℝ,
-      -(∑ p ∈ Nat.primesLE z, Real.cos (t * Real.log p) / (p : ℝ)) ≤
-        C₁ + 11 * Real.log (Real.log (|t| + Real.exp 1)) := by
-  obtain ⟨C₀, hev⟩ := RHTower.Sieve.eventually_mulDistSqPair_moebiusC_ge_logPower
-  obtain ⟨Z₀, hZ₀⟩ := Filter.eventually_atTop.mp hev
-  let Z := max Z₀ 2
-  let C₁ : ℝ := |RHTower.Sieve.mertensSecondUpperConst + C₀| + (Z : ℝ) + 1
-  refine ⟨C₁, by dsimp [C₁]; positivity, fun z t => ?_⟩
-  have hL1 : 1 ≤ Real.log (|t| + Real.exp 1) := by
-    have h := Real.log_le_log (Real.exp_pos 1)
-      (show Real.exp 1 ≤ |t| + Real.exp 1 by linarith [abs_nonneg t])
-    rwa [Real.log_exp] at h
-  have hlogL_nn : 0 ≤ Real.log (Real.log (|t| + Real.exp 1)) := Real.log_nonneg hL1
-  by_cases hzZ : Z ≤ z
-  · have hz2 : 2 ≤ z := le_trans (le_max_right Z₀ 2) hzZ
-    have hD := hZ₀ z (le_trans (le_max_left Z₀ 2) hzZ) t
-    have hf : ∀ p ∈ Nat.primesLE z, RHTower.Sieve.moebiusC p = -1 :=
-      fun p hp => RHTower.Sieve.moebiusC_prime (Nat.mem_primesLE.mp hp).2
-    rw [RHTower.Sieve.mulDistSqPair_neg_one_charFn hf t] at hD
-    have hsplit : (∑ p ∈ Nat.primesLE z, (1 + Real.cos (t * Real.log (p : ℝ))) / (p : ℝ)) =
-        (∑ p ∈ Nat.primesLE z, 1 / (p : ℝ)) +
-          ∑ p ∈ Nat.primesLE z, Real.cos (t * Real.log (p : ℝ)) / (p : ℝ) := by
-      rw [← Finset.sum_add_distrib]
-      exact Finset.sum_congr rfl fun p _ => by ring
-    rw [hsplit] at hD
-    have hmert := RHTower.Sieve.mertensS_le hz2
-    have hleC : RHTower.Sieve.mertensSecondUpperConst + C₀ ≤ C₁ := by
-      dsimp [C₁]
-      linarith [le_abs_self (RHTower.Sieve.mertensSecondUpperConst + C₀), Nat.cast_nonneg Z]
-    linarith
-  · have hcard : (Nat.primesLE z).card ≤ z := by
-      calc (Nat.primesLE z).card
-          ≤ (Finset.Icc 2 z).card := Finset.card_le_card fun p hp => by
-              have hp' := Nat.mem_primesLE.mp hp
-              exact Finset.mem_Icc.mpr ⟨hp'.2.two_le, hp'.1⟩
-        _ ≤ z := by simp; omega
-    have habs : |∑ p ∈ Nat.primesLE z, Real.cos (t * Real.log p) / (p : ℝ)| ≤ (Z : ℝ) := by
-      calc |∑ p ∈ Nat.primesLE z, Real.cos (t * Real.log p) / (p : ℝ)|
-          ≤ ∑ p ∈ Nat.primesLE z, |Real.cos (t * Real.log p) / (p : ℝ)| :=
-            Finset.abs_sum_le_sum_abs _ _
-        _ ≤ ∑ _p ∈ Nat.primesLE z, (1 : ℝ) := Finset.sum_le_sum fun p hp => by
-            have hp2 : (1 : ℝ) ≤ p := by exact_mod_cast (Nat.mem_primesLE.mp hp).2.pos
-            rw [abs_div, abs_of_pos (by positivity)]
-            exact div_le_one_of_le₀ ((Real.abs_cos_le_one _).trans hp2) (by positivity)
-        _ = ((Nat.primesLE z).card : ℝ) := by simp
-        _ ≤ (z : ℝ) := by exact_mod_cast hcard
-        _ ≤ (Z : ℝ) := by exact_mod_cast (not_le.mp hzZ).le
-    have hneg := neg_le_abs (∑ p ∈ Nat.primesLE z, Real.cos (t * Real.log p) / (p : ℝ))
-    dsimp [C₁]
-    linarith [abs_nonneg (RHTower.Sieve.mertensSecondUpperConst + C₀)]
 
 private theorem exists_zetaEntire_pole_box_bounds :
     ∃ c_box M_box : ℝ, 0 < c_box ∧ 1 ≤ M_box ∧
@@ -406,20 +292,35 @@ private theorem exists_zetaEntire_pole_box_bounds :
   let K : Set (ℝ × ℝ) := Icc (1 : ℝ) 2 ×ˢ Icc (-1 : ℝ) 1
   have hcompact : IsCompact K := isCompact_Icc.prod isCompact_Icc
   have hne : K.Nonempty := ⟨(1, 0), ⟨le_rfl, by norm_num⟩, ⟨by norm_num, by norm_num⟩⟩
+  have h1 : Continuous (fun q : ℝ × ℝ => ((q.1 : ℂ) + (q.2 : ℂ) * Complex.I)) :=
+    (Complex.continuous_ofReal.comp continuous_fst).add
+      ((Complex.continuous_ofReal.comp continuous_snd).mul continuous_const)
   have hcont : ContinuousOn
-      (fun q : ℝ × ℝ => ‖RHTower.zetaEntire ((q.1 : ℂ) + (q.2 : ℂ) * Complex.I)‖) K := by
-    refine Continuous.continuousOn ?_
-    have h1 : Continuous (fun q : ℝ × ℝ => ((q.1 : ℂ) + (q.2 : ℂ) * Complex.I)) := by fun_prop
-    exact (RHTower.differentiable_zetaEntire.continuous.comp h1).norm
+      (fun q : ℝ × ℝ => ‖RHTower.zetaEntire ((q.1 : ℂ) + (q.2 : ℂ) * Complex.I)‖) K :=
+    (RHTower.differentiable_zetaEntire.continuous.comp h1).norm.continuousOn
   obtain ⟨q_min, hq_min, hmin⟩ := hcompact.exists_isMinOn hne hcont
-  obtain ⟨q_max, _, hmax⟩ := hcompact.exists_isMaxOn hne hcont
+  obtain ⟨K₀, hK₀⟩ := (isCompact_closedBall (0 : ℂ) 4).exists_bound_of_continuousOn
+    (RHTower.differentiable_zetaEntire.continuous.continuousOn (s := Metric.closedBall (0 : ℂ) 4))
   have hc0 : 0 < ‖RHTower.zetaEntire ((q_min.1 : ℂ) + (q_min.2 : ℂ) * Complex.I)‖ := by
     refine norm_pos_iff.mpr (RHTower.Sieve.zetaEntire_ne_zero_of_one_le_re ?_)
-    simpa using hq_min.1.1
+    simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, mul_zero,
+      Complex.ofReal_im, Complex.I_im, mul_one, sub_zero, add_zero]
+    exact hq_min.1.1
   refine ⟨‖RHTower.zetaEntire ((q_min.1 : ℂ) + (q_min.2 : ℂ) * Complex.I)‖,
-    max 1 ‖RHTower.zetaEntire ((q_max.1 : ℂ) + (q_max.2 : ℂ) * Complex.I)‖, hc0,
-    le_max_left _ _, fun σ hσ u hu =>
-      ⟨hmin ⟨hσ, hu⟩, (hmax ⟨hσ, hu⟩).trans (le_max_right _ _)⟩⟩
+    max 1 K₀, hc0, le_max_left _ _, fun σ hσ u hu => ⟨hmin ⟨hσ, hu⟩, ?_⟩⟩
+  have hmem : ((σ : ℂ) + (u : ℂ) * Complex.I) ∈ Metric.closedBall (0 : ℂ) 4 := by
+    rw [Metric.mem_closedBall, dist_zero_right]
+    calc ‖((σ : ℂ) + (u : ℂ) * Complex.I)‖
+        ≤ ‖(σ : ℂ)‖ + ‖(u : ℂ) * Complex.I‖ := norm_add_le _ _
+      _ = |σ| + |u| := by
+          rw [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Complex.norm_real,
+            Real.norm_eq_abs, Real.norm_eq_abs]
+      _ ≤ 2 + 1 := by
+          have h1s : |σ| ≤ 2 := by rw [abs_of_nonneg (by linarith [hσ.1])]; exact hσ.2
+          have h2u : |u| ≤ 1 := abs_le.mpr hu
+          linarith
+      _ ≤ 4 := by norm_num
+  exact (hK₀ _ hmem).trans (le_max_right _ _)
 
 private theorem sum_cos_primesLE_pole_sandwich {c_box M_box : ℝ} (hc0 : 0 < c_box) (hM1 : 1 ≤ M_box)
     (hbox : ∀ σ ∈ Icc (1 : ℝ) 2, ∀ u ∈ Icc (-1 : ℝ) 1,
@@ -444,54 +345,74 @@ private theorem sum_cos_primesLE_pole_sandwich {c_box M_box : ℝ} (hc0 : 0 < c_
     rwa [Real.log_exp] at h
   have hlogy_pos : 0 < Real.log (y : ℝ) := by linarith
   have hσ_mem : 1 + 1 / Real.log (y : ℝ) ∈ Icc (1 : ℝ) 2 :=
-    ⟨by have : (0 : ℝ) < 1 / Real.log (y : ℝ) := by positivity; linarith,
-     by have : 1 / Real.log (y : ℝ) ≤ 1 := div_le_one_of_le₀ hlogy1 hlogy_pos.le; linarith⟩
+    ⟨le_add_of_nonneg_right (by positivity),
+     by
+      have h1 : 1 / Real.log (y : ℝ) ≤ 1 := div_le_one_of_le₀ hlogy1 hlogy_pos.le
+      linarith⟩
   have hu_mem : u ∈ Icc (-1 : ℝ) 1 := abs_le.mp hu1
-  let s : ℂ := ((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I
-  have hs1 : s ≠ 1 := by
+  have hs1 : (((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I) ≠ 1 := by
     intro hcon
-    have him : s.im = u := by simp [s]
-    rw [hcon] at him; simp at him
+    have him := congrArg Complex.im hcon
+    simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
+      Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_add, Complex.one_im] at him
     exact hu0.ne' (by simp [him])
-  have hfac : RHTower.zetaEntire s = (s - 1) * riemannZeta s := RHTower.zetaEntire_eq hs1
-  have hnorm_lo : |u| ≤ ‖s - 1‖ := by
-    have him : (s - 1).im = u := by simp [s]
-    simpa [him] using Complex.abs_im_le_norm (s - 1)
-  have hnorm_hi : ‖s - 1‖ ≤ 3 * |u| := by
-    have hrw : s - 1 = (((1 / Real.log (y : ℝ) : ℝ)) : ℂ) + (u : ℂ) * Complex.I := by
-      dsimp [s]; push_cast; ring
+  have hfac := RHTower.zetaEntire_eq hs1
+  have hnorm_lo : |u| ≤ ‖(((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I) - 1‖ := by
+    have hle := Complex.abs_im_le_norm
+      ((((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I) - 1)
+    have him : ((((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I) - 1).im = u := by
+      simp only [Complex.sub_im, Complex.add_im, Complex.ofReal_im, Complex.mul_im,
+        Complex.ofReal_re, Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_add,
+        Complex.one_im, sub_zero]
+    rwa [him] at hle
+  have hnorm_hi :
+      ‖(((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I) - 1‖ ≤ 3 * |u| := by
+    have hrw : (((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I) - 1 =
+        (((1 / Real.log (y : ℝ) : ℝ)) : ℂ) + (u : ℂ) * Complex.I := by
+      push_cast; ring
     rw [hrw]
     refine (norm_add_le _ _).trans ?_
     rw [Complex.norm_real, Complex.norm_mul, Complex.norm_I, mul_one, Complex.norm_real,
       Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos (by positivity)]
     linarith
   obtain ⟨hent_lo, hent_hi⟩ := hbox (1 + 1 / Real.log (y : ℝ)) hσ_mem u hu_mem
-  change c_box ≤ ‖RHTower.zetaEntire s‖ at hent_lo
-  change ‖RHTower.zetaEntire s‖ ≤ M_box at hent_hi
   rw [hfac, norm_mul] at hent_lo hent_hi
-  have hζ_hi : ‖riemannZeta s‖ ≤ M_box / |u| := by
+  have hζ_hi :
+      ‖riemannZeta (((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I)‖ ≤
+        M_box / |u| := by
     rw [le_div_iff₀ hu0]
-    calc ‖riemannZeta s‖ * |u| = |u| * ‖riemannZeta s‖ := mul_comm _ _
-      _ ≤ ‖s - 1‖ * ‖riemannZeta s‖ := mul_le_mul_of_nonneg_right hnorm_lo (norm_nonneg _)
+    calc ‖riemannZeta (((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I)‖ * |u|
+        = |u| * ‖riemannZeta (((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I)‖ :=
+          mul_comm _ _
+      _ ≤ ‖(((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I) - 1‖ *
+            ‖riemannZeta (((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I)‖ :=
+          mul_le_mul_of_nonneg_right hnorm_lo (norm_nonneg _)
       _ ≤ M_box := hent_hi
-  have hζ_lo : c_box / (3 * |u|) ≤ ‖riemannZeta s‖ := by
+  have hζ_lo :
+      c_box / (3 * |u|) ≤
+        ‖riemannZeta (((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I)‖ := by
     rw [div_le_iff₀ (by positivity)]
-    calc c_box ≤ ‖s - 1‖ * ‖riemannZeta s‖ := hent_lo
-      _ ≤ 3 * |u| * ‖riemannZeta s‖ := mul_le_mul_of_nonneg_right hnorm_hi (norm_nonneg _)
-      _ = ‖riemannZeta s‖ * (3 * |u|) := mul_comm _ _
+    calc c_box
+        ≤ ‖(((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I) - 1‖ *
+            ‖riemannZeta (((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I)‖ := hent_lo
+      _ ≤ 3 * |u| *
+            ‖riemannZeta (((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I)‖ :=
+          mul_le_mul_of_nonneg_right hnorm_hi (norm_nonneg _)
+      _ = ‖riemannZeta (((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I)‖ *
+            (3 * |u|) := mul_comm _ _
   constructor
   · have hσ1 : (1 : ℝ) < 1 + 1 / Real.log (y : ℝ) := by
       have : (0 : ℝ) < 1 / Real.log (y : ℝ) := by positivity
       linarith
-    have hlog_lo : Real.log (c_box / 3) - Real.log |u| ≤ Real.log ‖riemannZeta s‖ := by
+    have hlog_lo : Real.log (c_box / 3) - Real.log |u| ≤
+        Real.log ‖riemannZeta (((1 + 1 / Real.log (y : ℝ) : ℝ) : ℂ) + (u : ℂ) * Complex.I)‖ := by
       have h := Real.log_le_log (by positivity) hζ_lo
       have hdiv : c_box / (3 * |u|) = (c_box / 3) / |u| := by ring
       rwa [hdiv, Real.log_div (by positivity) hu0.ne'] at h
-    have htsum := RHTower.Sieve.le_tsum_re_prime_cpow_of_log_le hσ1 (by simpa [s] using hlog_lo)
+    have htsum := RHTower.Sieve.le_tsum_re_prime_cpow_of_log_le hσ1 hlog_lo
     have hcos := RHTower.Sieve.sum_cos_div_prime_ge_of_le hy htsum
     linarith
-  · have hcos := sum_cos_div_prime_le_of_zeta_upper' hy (div_pos (by linarith) hu0)
-      (by simpa [s] using hζ_hi)
+  · have hcos := sum_cos_div_prime_le_of_zeta_upper (z := y) (u := u) (B := M_box / |u|) hy hζ_hi
     rw [Real.log_div (by linarith) hu0.ne'] at hcos
     linarith
 
@@ -501,7 +422,7 @@ theorem exists_subset_neg_two_cos_le_pole_free :
       ∑ p ∈ S', (-2 * Real.cos (t * Real.log p) / (p : ℝ)) ≤
         C₀ + 12 * Real.log (Real.log (|t| + Real.exp 1)) +
           17 / 24 * Real.log (Real.log (w : ℝ)) := by
-  obtain ⟨C₁, hC₁0, hcos1⟩ := exists_neg_sum_cos_div_primesLE_le'
+  obtain ⟨C₁, hC₁0, hcos1⟩ := exists_neg_sum_cos_div_primesLE_le
   obtain ⟨c_box, M_box, hc0, hM1, hbox⟩ := exists_zetaEntire_pole_box_bounds
   let C_pass : ℝ := Real.pi ^ 2 / 6 +
     2 * (Real.log 2 + 2 * (2 * RHTower.Sieve.mertensFirstConst + 1 / 2)) / Real.log 2 +
@@ -532,25 +453,32 @@ theorem exists_subset_neg_two_cos_le_pole_free :
   have hL_pos : 0 < Real.log (|t| + Real.exp 1) := by linarith
   have hlogL_nn : 0 ≤ Real.log (Real.log (|t| + Real.exp 1)) := Real.log_nonneg hL1
   have hmert := RHTower.Sieve.mertensS_le (by omega : 2 ≤ w)
+  unfold RHTower.Sieve.mertensS RHTower.Sieve.logLog at hmert
   have hmert_abs : 17 / 24 * (∑ p ∈ Nat.primesLE w, 1 / (p : ℝ)) ≤
       17 / 24 * Real.log (Real.log (w : ℝ)) +
         17 / 24 * |RHTower.Sieve.mertensSecondUpperConst| := by
     linarith [hmert, le_abs_self RHTower.Sieve.mertensSecondUpperConst]
   by_cases ht_half : 1 / 2 ≤ |t|
-  · -- Moderate and high frequencies `|t| ≥ 1/2`
-    have hσ_mem : 1 + 1 / Real.log (w : ℝ) ∈ Icc (1 : ℝ) 2 :=
-      ⟨by have : (0 : ℝ) < 1 / Real.log (w : ℝ) := by positivity; linarith,
-       by have : 1 / Real.log (w : ℝ) ≤ 1 := div_le_one_of_le₀ hlogw1 hlogw_pos.le; linarith⟩
-    let zc : ℂ := ((1 + 1 / Real.log (w : ℝ) : ℝ) : ℂ) + (2 * t : ℂ) * Complex.I
-    have hzc_im : 1 ≤ |zc.im| := by
-      have him : zc.im = 2 * t := by simp [zc]
-      rw [him, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)]; linarith
-    have hzeta_hi := RHTower.Sieve.norm_riemannZeta_ge_one_log_le
-      (by simpa [zc] using hσ_mem.1) (by simpa [zc] using hσ_mem.2) hzc_im
-    have him_eq : |zc.im| = 2 * |t| := by
-      have him : zc.im = 2 * t := by simp [zc]
+  · have hσ_mem : 1 + 1 / Real.log (w : ℝ) ∈ Icc (1 : ℝ) 2 :=
+      ⟨le_add_of_nonneg_right (by positivity),
+       by
+        have h1 : 1 / Real.log (w : ℝ) ≤ 1 := div_le_one_of_le₀ hlogw1 hlogw_pos.le
+        linarith⟩
+    have hre : (((1 + 1 / Real.log (w : ℝ) : ℝ) : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I).re =
+        1 + 1 / Real.log (w : ℝ) := by
+      simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, mul_zero,
+        Complex.ofReal_im, Complex.I_im, mul_one, sub_zero, add_zero]
+    have him : (((1 + 1 / Real.log (w : ℝ) : ℝ) : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I).im =
+        2 * t := by
+      simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
+        Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_add]
+    have him_abs :
+        |(((1 + 1 / Real.log (w : ℝ) : ℝ) : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I).im| = 2 * |t| := by
       rw [him, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)]
-    rw [him_eq] at hzeta_hi
+    have hzeta_hi := RHTower.Sieve.norm_riemannZeta_ge_one_log_le
+      (w := ((1 + 1 / Real.log (w : ℝ) : ℝ) : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I)
+      (by rw [hre]; exact hσ_mem.1) (by rw [hre]; exact hσ_mem.2) (by rw [him_abs]; linarith)
+    rw [him_abs] at hzeta_hi
     have hB_le : 3 + Real.log (4 + 2 * |t|) ≤ 4 * Real.log (|t| + Real.exp 1) := by
       have harg : 4 + 2 * |t| ≤ 2 * (|t| + Real.exp 1) := by
         linarith [Real.exp_one_gt_d9]
@@ -562,9 +490,8 @@ theorem exists_subset_neg_two_cos_le_pole_free :
         have h := Real.log_le_log (by norm_num) he1
         rwa [Real.log_exp] at h
       linarith
-    have hcos2 := sum_cos_div_prime_le_of_zeta_upper' hw
-      (by positivity : 0 < 4 * Real.log (|t| + Real.exp 1))
-      (by simpa [zc] using hzeta_hi.trans hB_le)
+    have hcos2 := sum_cos_div_prime_le_of_zeta_upper (z := w) (u := 2 * t)
+      (B := 4 * Real.log (|t| + Real.exp 1)) hw (hzeta_hi.trans hB_le)
     rw [Real.log_mul (by norm_num) hL_pos.ne'] at hcos2
     have hmaj : ∑ p ∈ S', (-2 * Real.cos (t * Real.log p) / (p : ℝ)) ≤
         17 / 24 * (∑ p ∈ Nat.primesLE w, 1 / (p : ℝ)) -
@@ -574,12 +501,12 @@ theorem exists_subset_neg_two_cos_le_pole_free :
           ≤ ∑ p ∈ S', (17 / 24 - Real.cos (t * Real.log p) +
               1 / 3 * Real.cos (2 * (t * Real.log p))) / (p : ℝ) :=
             Finset.sum_le_sum fun p _ =>
-              div_le_div_of_nonneg_right (two_squares_cos_majorant' (t * Real.log p)).2
+              div_le_div_of_nonneg_right (two_squares_cos_majorant (t * Real.log p)).2
                 (Nat.cast_nonneg p)
         _ ≤ ∑ p ∈ Nat.primesLE w, (17 / 24 - Real.cos (t * Real.log p) +
               1 / 3 * Real.cos (2 * (t * Real.log p))) / (p : ℝ) :=
             Finset.sum_le_sum_of_subset_of_nonneg hS' fun p _ _ =>
-              div_nonneg (two_squares_cos_majorant' (t * Real.log p)).1 (Nat.cast_nonneg p)
+              div_nonneg (two_squares_cos_majorant (t * Real.log p)).1 (Nat.cast_nonneg p)
         _ = _ := by
             rw [Finset.mul_sum, Finset.mul_sum, ← sub_eq_add_neg, ← Finset.sum_neg_distrib,
               ← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
@@ -588,11 +515,9 @@ theorem exists_subset_neg_two_cos_le_pole_free :
     have hc1 := hcos1 w t
     dsimp [C₀, C_pass] at hcos2 ⊢
     linarith
-  · -- Near-zero frequencies `|t| < 1/2`
-    have ht_lt : |t| < 1 / 2 := not_le.mp ht_half
+  · have ht_lt : |t| < 1 / 2 := not_le.mp ht_half
     by_cases htw : |t| * Real.log (w : ℝ) ≤ 1
-    · -- Very small frequency `|t| log w ≤ 1` (including `t = 0`): all cosines are nonnegative
-      have hnonpos : ∑ p ∈ S', (-2 * Real.cos (t * Real.log p) / (p : ℝ)) ≤ 0 := by
+    · have hnonpos : ∑ p ∈ S', (-2 * Real.cos (t * Real.log p) / (p : ℝ)) ≤ 0 := by
         refine Finset.sum_nonpos fun p hp => ?_
         obtain ⟨hpw, hp'⟩ := Nat.mem_primesLE.mp (hS' hp)
         have hp_pos : (0 : ℝ) < p := by exact_mod_cast hp'.pos
@@ -610,8 +535,7 @@ theorem exists_subset_neg_two_cos_le_pole_free :
         exact div_nonpos_of_nonpos_of_nonneg (by linarith) hp_pos.le
       have hC0_nn : 0 ≤ C₀ := by dsimp [C₀]; positivity
       linarith
-    · -- Intermediate near-zero frequency `1 < |t| log w` and `|t| < 1/2`
-      have htw_gt : 1 < |t| * Real.log (w : ℝ) := not_le.mp htw
+    · have htw_gt : 1 < |t| * Real.log (w : ℝ) := not_le.mp htw
       have ht_pos : 0 < |t| := by
         by_contra hle
         have ht0 : |t| = 0 := le_antisymm (not_lt.mp hle) (abs_nonneg t)
@@ -629,13 +553,11 @@ theorem exists_subset_neg_two_cos_le_pole_free :
       have hw₀_ge7 : 7 ≤ w₀ := Nat.le_floor hexp_gt7.le
       have hw₀_ge3 : 3 ≤ w₀ := by omega
       have hw₀_le_w : w₀ ≤ w := by
+        have hlt : 1 / |t| < Real.log (w : ℝ) := (div_lt_iff₀ ht_pos).mpr (by linarith)
         have hexp_lt_w : Real.exp (1 / |t|) < (w : ℝ) := by
-          have hlt : 1 / |t| < Real.log (w : ℝ) := (div_lt_iff₀ ht_pos).mpr (by linarith)
           simpa [Real.exp_log (by positivity : (0 : ℝ) < w)] using Real.exp_lt_exp.mpr hlt
-        exact (Nat.floor_le (Real.exp_pos _).le).trans_lt hexp_lt_w |> Nat.lt_iff_add_one_le.mp |>
-          fun h => by exact_mod_cast (Nat.floor_le (Real.exp_pos _).le).trans hexp_lt_w.le
+        exact_mod_cast (Nat.floor_le (Real.exp_pos _).le).trans hexp_lt_w.le
       have hw₀_log_inv : 1 / Real.log (w₀ : ℝ) ≤ 2 * |t| := by
-        have hw₀_pos : (0 : ℝ) < w₀ := by exact_mod_cast (by omega : 0 < w₀)
         have hlt_succ : Real.exp (1 / |t|) < (w₀ : ℝ) + 1 := Nat.lt_floor_add_one _
         have hsucc_le_sq : (w₀ : ℝ) + 1 ≤ (w₀ : ℝ) ^ 2 := by
           have hw₀R : (7 : ℝ) ≤ w₀ := by exact_mod_cast hw₀_ge7
@@ -647,7 +569,6 @@ theorem exists_subset_neg_two_cos_le_pole_free :
         rw [div_le_iff₀ hlogw₀_pos]
         have hmul := (div_lt_iff₀ ht_pos).mp hlog_sq
         linarith
-      -- Split `S'` into `S' ∩ primesLE w₀` (nonpositive) and `S' \ primesLE w₀`
       have hsplit_S' : ∑ p ∈ S', (-2 * Real.cos (t * Real.log p) / (p : ℝ)) =
           (∑ p ∈ S' ∩ Nat.primesLE w₀, (-2 * Real.cos (t * Real.log p) / (p : ℝ))) +
             ∑ p ∈ S' \ Nat.primesLE w₀, (-2 * Real.cos (t * Real.log p) / (p : ℝ)) := by
@@ -688,10 +609,10 @@ theorem exists_subset_neg_two_cos_le_pole_free :
                   (17 / 24 - Real.cos (t * Real.log p) +
                     1 / 3 * Real.cos (2 * (t * Real.log p))) / (p : ℝ) :=
                 Finset.sum_le_sum fun p _ =>
-                  div_le_div_of_nonneg_right (two_squares_cos_majorant' (t * Real.log p)).2
+                  div_le_div_of_nonneg_right (two_squares_cos_majorant (t * Real.log p)).2
                     (Nat.cast_nonneg p)
             _ ≤ _ := Finset.sum_le_sum_of_subset_of_nonneg hsdiff_sub fun p _ _ =>
-                  div_nonneg (two_squares_cos_majorant' (t * Real.log p)).1 (Nat.cast_nonneg p)
+                  div_nonneg (two_squares_cos_majorant (t * Real.log p)).1 (Nat.cast_nonneg p)
         have h2 : ∑ p ∈ Nat.primesLE w \ Nat.primesLE w₀,
             (17 / 24 - Real.cos (t * Real.log p) +
               1 / 3 * Real.cos (2 * (t * Real.log p))) / (p : ℝ) =
@@ -707,7 +628,6 @@ theorem exists_subset_neg_two_cos_le_pole_free :
             ∑ p ∈ Nat.primesLE w, 1 / (p : ℝ) :=
           Finset.sum_le_sum_of_subset_of_nonneg Finset.sdiff_subset fun _ _ _ => by positivity
         linarith
-      -- Pole cancellation on `w₀ < p ≤ w` for both `u = t` and `u = 2t`
       have hw_log_inv : 1 / Real.log (w : ℝ) ≤ 2 * |t| :=
         (div_le_div_of_nonneg_left zero_le_one
           (Real.log_pos (by exact_mod_cast (by omega : 1 < w₀)))
@@ -799,7 +719,13 @@ private theorem log_shell_prime_bounds {S : Finset ℕ} {j p : ℕ} (hp : p ∈ 
 noncomputable def fejerCosKernel (a ω : ℝ) : ℝ :=
   ∫ u in (-Real.pi)..Real.pi, (1 + Real.cos u) * Real.cos ((a + u) * ω)
 
-private theorem abs_fejerCosKernel_le_seven (a ω : ℝ) : |fejerCosKernel a ω| ≤ 7 := by
+private theorem fejerCosKernel_neg (a ω : ℝ) :
+    fejerCosKernel a (-ω) = fejerCosKernel a ω := by
+  unfold fejerCosKernel
+  refine intervalIntegral.integral_congr fun u _ => ?_
+  rw [show (a + u) * (-ω) = -((a + u) * ω) by ring, Real.cos_neg]
+
+private theorem abs_fejerCosKernel_le_eight (a ω : ℝ) : |fejerCosKernel a ω| ≤ 8 := by
   unfold fejerCosKernel
   have hle : (-Real.pi : ℝ) ≤ Real.pi := by linarith [Real.pi_pos]
   have hint1 : IntervalIntegrable (fun u : ℝ => (1 + Real.cos u) * Real.cos ((a + u) * ω))
@@ -823,7 +749,7 @@ private theorem abs_fejerCosKernel_le_seven (a ω : ℝ) : |fejerCosKernel a ω|
         rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg h1]
         exact mul_le_of_le_one_right h1 (Real.abs_cos_le_one _)
     _ = 2 * Real.pi := heval
-    _ ≤ 7 := by linarith [Real.pi_lt_d2]
+    _ ≤ 8 := by linarith [Real.pi_lt_four]
 
 private theorem abs_fejerCosKernel_le_inv_cube (a : ℝ) {ω : ℝ} (hω : 2 ≤ |ω|) :
     |fejerCosKernel a ω| ≤ 3 / |ω| ^ 3 := by
@@ -952,8 +878,6 @@ private theorem sum_inv_primeShell_le {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prim
       simpa [Real.log_exp] using Real.log_le_log (by norm_num) he1
     have hhalf_exp : Real.exp ((j : ℝ) - 1) ≤ Real.exp (j : ℝ) - Real.log 2 := by
       have he1 : (2 : ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
-      have hej : (2 : ℝ) ≤ Real.exp (j : ℝ) :=
-        he1.trans (Real.exp_le_exp.mpr (by exact_mod_cast hj))
       have hprod : Real.exp (j : ℝ) = Real.exp 1 * Real.exp ((j : ℝ) - 1) := by
         rw [← Real.exp_add]; congr 1; ring
       have hle_half : 2 * Real.exp ((j : ℝ) - 1) ≤ Real.exp (j : ℝ) := by
@@ -999,6 +923,10 @@ private theorem sum_inv_unit_log_block_le {S : Finset ℕ} (hS : ∀ p ∈ S, p.
   have hy_ge7 : 7 ≤ y := by dsimp [y]; omega
   have hy2 : 2 ≤ y := by omega
   have h2y2 : 2 ≤ 2 * y := by omega
+  have hy_eq : (⌊Real.exp (m : ℝ) * (q : ℝ)⌋₊ : ℝ) = (y : ℝ) + 1 := by
+    dsimp [y]
+    rw [Nat.cast_sub (by omega : 1 ≤ ⌊Real.exp (m : ℝ) * (q : ℝ)⌋₊), Nat.cast_one]
+    ring
   have hsub : (primeShell S j).filter
       (fun p => q < p ∧ (m : ℝ) ≤ Real.log (p : ℝ) - Real.log (q : ℝ) ∧
         Real.log (p : ℝ) - Real.log (q : ℝ) < (m : ℝ) + 1) ⊆
@@ -1021,13 +949,10 @@ private theorem sum_inv_unit_log_block_le {S : Finset ℕ} (hS : ∀ p ∈ S, p.
         rwa [Real.exp_add, Real.exp_log hp_pos, Real.exp_log hq_pos] at h
       have he1_lt3 : Real.exp 1 < 3 := by linarith [Real.exp_one_lt_d9]
       have hem1 : Real.exp ((m : ℝ) + 1) * (q : ℝ) < 3 * (Real.exp (m : ℝ) * (q : ℝ)) := by
-        rw [Real.exp_add, Real.exp_one_eq_d9 ▸ rfl] at *
-        rw [mul_comm (Real.exp (m : ℝ)) (Real.exp 1), mul_assoc]
+        rw [Real.exp_add, mul_comm (Real.exp (m : ℝ)) (Real.exp 1), mul_assoc]
         exact mul_lt_mul_of_pos_right he1_lt3 (by positivity)
       have hfl_lt : Real.exp (m : ℝ) * (q : ℝ) < (y : ℝ) + 2 := by
         have h1 := Nat.lt_floor_add_one (Real.exp (m : ℝ) * (q : ℝ))
-        have hy_eq : (⌊Real.exp (m : ℝ) * (q : ℝ)⌋₊ : ℝ) = (y : ℝ) + 1 := by
-          dsimp [y]; omega_cast
         linarith
       have hy7R : (7 : ℝ) ≤ y := by exact_mod_cast hy_ge7
       have hp_lt_R : (p : ℝ) < ((2 * (2 * y) : ℕ) : ℝ) := by
@@ -1041,20 +966,16 @@ private theorem sum_inv_unit_log_block_le {S : Finset ℕ} (hS : ∀ p ∈ S, p.
   have hlogy_lo : (1 / 2 : ℝ) * Real.exp (j : ℝ) ≤ Real.log (y : ℝ) := by
     have hy_ge_half : Real.exp (m : ℝ) * (q : ℝ) / 2 ≤ (y : ℝ) := by
       have h1 := Nat.lt_floor_add_one (Real.exp (m : ℝ) * (q : ℝ))
-      have hy_eq : (⌊Real.exp (m : ℝ) * (q : ℝ)⌋₊ : ℝ) = (y : ℝ) + 1 := by
-        dsimp [y]
-        rw [Nat.cast_sub (by omega : 1 ≤ ⌊Real.exp (m : ℝ) * (q : ℝ)⌋₊), Nat.cast_one]
-        ring
       have hy7R : (7 : ℝ) ≤ y := by exact_mod_cast hy_ge7
       linarith
     have hq_half : (q : ℝ) / 2 ≤ Real.exp (m : ℝ) * (q : ℝ) / 2 := by
       have hm1 : (1 : ℝ) ≤ Real.exp (m : ℝ) := Real.one_le_exp (Nat.cast_nonneg m)
       have hq0 : (0 : ℝ) ≤ q := Nat.cast_nonneg q
       nlinarith
+    have hq_pos : (0 : ℝ) < q := by exact_mod_cast (by omega : 0 < q)
     have hlog_ge : Real.log (q : ℝ) - Real.log 2 ≤ Real.log (y : ℝ) := by
-      have h := Real.log_le_log (by exact_mod_cast (by omega : 0 < q) |> half_pos)
-        (hq_half.trans hy_ge_half)
-      rwa [Real.log_div (by exact_mod_cast (by omega : q ≠ 0)) (by norm_num)] at h
+      have h := Real.log_le_log (half_pos hq_pos) (hq_half.trans hy_ge_half)
+      rwa [Real.log_div hq_pos.ne' (by norm_num)] at h
     have hlog2 : Real.log 2 ≤ 1 := by
       have he1 : (2 : ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
       simpa [Real.log_exp] using Real.log_le_log (by norm_num) he1
@@ -1093,6 +1014,50 @@ private theorem sum_inv_unit_log_block_le {S : Finset ℕ} (hS : ∀ p ∈ S, p.
           Real.exp (-(j : ℝ)) := by
         rw [Real.exp_neg]; field_simp; ring
 
+private noncomputable def fejerBlockWeight (m : ℕ) : ℝ :=
+  if m < 2 then 8 else 3 / (m : ℝ) ^ 3
+
+private theorem fejerBlockWeight_nonneg (m : ℕ) : 0 ≤ fejerBlockWeight m := by
+  unfold fejerBlockWeight
+  split_ifs <;> positivity
+
+private theorem sum_fejerBlockWeight_le (M : ℕ) :
+    ∑ m ∈ Finset.range M, fejerBlockWeight m ≤ 19 := by
+  suffices h : ∑ m ∈ Finset.range M, fejerBlockWeight m ≤ 19 - 3 / max (M : ℝ) 1 by
+    have hpos : 0 ≤ 3 / max (M : ℝ) 1 := div_nonneg (by norm_num) (le_max_of_le_right zero_le_one)
+    linarith
+  induction M with
+  | zero => norm_num
+  | succ M ih =>
+    rw [Finset.sum_range_succ]
+    rcases M with _ | _ | k
+    · simp [fejerBlockWeight]; norm_num
+    · simp [fejerBlockWeight, Finset.sum_range_one]; norm_num
+    · have hM2 : ¬ (k + 2 < 2) := by omega
+      have hmax1 : max ((k + 2 : ℕ) : ℝ) 1 = ((k + 2 : ℕ) : ℝ) :=
+        max_eq_left (by exact_mod_cast (by omega : 1 ≤ k + 2))
+      have hmax2 : max ((k + 2 + 1 : ℕ) : ℝ) 1 = ((k + 2 + 1 : ℕ) : ℝ) :=
+        max_eq_left (by exact_mod_cast (by omega : 1 ≤ k + 2 + 1))
+      have hfw : fejerBlockWeight (k + 2) = 3 / ((k + 2 : ℕ) : ℝ) ^ 3 := by
+        simp [fejerBlockWeight, hM2]
+      rw [hmax1] at ih
+      rw [hmax2, hfw]
+      let m : ℝ := ((k + 2 : ℕ) : ℝ)
+      have hm2 : 2 ≤ m := by
+        dsimp [m]
+        have hk0 : (0 : ℝ) ≤ k := Nat.cast_nonneg k
+        push_cast; linarith
+      have hm_pos : 0 < m := by linarith
+      have hm1_pos : 0 < m + 1 := by linarith
+      have hstep : 3 / m ^ 3 ≤ 3 / m - 3 / (m + 1) := by
+        have hdiff : 3 / m - 3 / (m + 1) = 3 / (m * (m + 1)) := by field_simp; ring
+        rw [hdiff]
+        refine div_le_div_of_nonneg_left (by norm_num) (by positivity) ?_
+        nlinarith
+      have hm_succ : (((k + 2 + 1 : ℕ) : ℝ)) = m + 1 := by dsimp [m]; push_cast; ring
+      rw [hm_succ]
+      linarith
+
 /-- **Translation-invariant unit-interval `L²` decay of double-exponential prime shells.** -/
 theorem exists_unit_L2_primeShell_le :
     ∃ C_L2 : ℝ, 0 < C_L2 ∧ ∀ S : Finset ℕ, (∀ p ∈ S, p.Prime) →
@@ -1101,21 +1066,14 @@ theorem exists_unit_L2_primeShell_le :
           C_L2 * Real.exp (-(j : ℝ)) := by
   let C_dyad : ℝ := Real.log 2 + 2 * (2 * RHTower.Sieve.mertensFirstConst + 1 / 2)
   let C_sh : ℝ := 2 + 2 * (2 * RHTower.Sieve.mertensFirstConst + 1 / 2)
-  let C_off : ℝ := 4 * C_dyad * (14 + 3 * (1 + 1 / 2))
-  let C_L2 : ℝ := 2 * C_sh * (7 + 2 * C_off) + 1
+  let C_L2 : ℝ := C_sh ^ 2 + 8 * C_sh + 152 * C_sh * C_dyad + 1
   have hC_dyad_nn : 0 ≤ C_dyad := by
     dsimp [C_dyad]
     linarith [RHTower.Sieve.mertensFirstConst_nonneg, Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 2)]
   have hC_sh_nn : 0 ≤ C_sh := by
     dsimp [C_sh]; linarith [RHTower.Sieve.mertensFirstConst_nonneg]
-  refine ⟨C_L2, by dsimp [C_L2, C_off]; positivity, fun S hS j hj a => ?_⟩
+  refine ⟨C_L2, by dsimp [C_L2]; positivity, fun S hS j hj a => ?_⟩
   let A := primeShell S j
-  -- Step 1: Dominate `1_{[a-1, a+1]}` by `2 (1 + cos(t - a))` on `[a - π, a + π]`
-  have hcos1_ge : (1 / 2 : ℝ) ≤ 1 + Real.cos 1 := by
-    have h1 : (1 : ℝ) ≤ Real.pi / 2 := by linarith [Real.pi_gt_three]
-    have hcos_nn : 0 ≤ Real.cos 1 :=
-      Real.cos_nonneg_of_mem_Icc ⟨by linarith [Real.pi_pos], h1⟩
-    linarith
   have hdom_int : ∫ t in Icc (a - 1) (a + 1), (shellTrig A t) ^ 2 ≤
       2 * ∫ u in (-Real.pi)..Real.pi, (1 + Real.cos u) * (shellTrig A (a + u)) ^ 2 := by
     have hsub_pi : Icc (a - 1) (a + 1) ⊆ Icc (a - Real.pi) (a + Real.pi) :=
@@ -1162,29 +1120,30 @@ theorem exists_unit_L2_primeShell_le :
         show a + Real.pi + -a = Real.pi by ring] at hcomp
       rw [← hcomp]
       refine intervalIntegral.integral_congr fun t _ => ?_
-      ring_nf
+      dsimp only
+      rw [show t + -a = t - a by ring, show a + (t - a) = t by ring]
     exact (hstep1.trans hstep2).trans_eq hshift
-  -- Step 2: Expand `(shellTrig A (a + u))²` into `fejerCosKernel`
-  have hexpand : ∫ u in (-Real.pi)..Real.pi, (1 + Real.cos u) * (shellTrig A (a + u)) ^ 2 ≤
-      ∑ q ∈ A, (1 / (q : ℝ)) *
-        (7 / (q : ℝ) + 2 * ∑ p ∈ A.filter (q < ·),
-          |fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ))| / (p : ℝ)) := by
-    have hpt : ∀ u : ℝ, (1 + Real.cos u) * (shellTrig A (a + u)) ^ 2 ≤
+  have hexact : ∫ u in (-Real.pi)..Real.pi, (1 + Real.cos u) * (shellTrig A (a + u)) ^ 2 =
+      ∑ q ∈ A, ∑ p ∈ A, (1 / ((q : ℝ) * (p : ℝ))) *
+        (1 / 2 * fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ)) +
+          1 / 2 * fejerCosKernel a (Real.log (p : ℝ) + Real.log (q : ℝ))) := by
+    have hpt : ∀ u : ℝ, (1 + Real.cos u) * (shellTrig A (a + u)) ^ 2 =
         ∑ q ∈ A, ∑ p ∈ A, (1 / ((q : ℝ) * (p : ℝ))) *
-          ((1 + Real.cos u) * Real.cos ((a + u) * (Real.log (p : ℝ) - Real.log (q : ℝ)))) := by
+          (1 / 2 * ((1 + Real.cos u) *
+              Real.cos ((a + u) * (Real.log (p : ℝ) - Real.log (q : ℝ)))) +
+            1 / 2 * ((1 + Real.cos u) *
+              Real.cos ((a + u) * (Real.log (p : ℝ) + Real.log (q : ℝ))))) := by
       intro u
-      have h1 : 0 ≤ 1 + Real.cos u := by linarith [Real.neg_one_le_cos u]
-      have hsq_sum : (shellTrig A (a + u)) ^ 2 =
+      have hsq : (shellTrig A (a + u)) ^ 2 =
           ∑ q ∈ A, ∑ p ∈ A, (1 / ((q : ℝ) * (p : ℝ))) *
             (Real.cos ((a + u) * Real.log (p : ℝ)) * Real.cos ((a + u) * Real.log (q : ℝ))) := by
         unfold shellTrig
         rw [sq, Finset.sum_mul_sum]
         exact Finset.sum_congr rfl fun q _ => Finset.sum_congr rfl fun p _ => by ring
-      rw [hsq_sum, Finset.mul_sum]
-      refine Finset.sum_le_sum fun q _ => ?_
+      rw [hsq, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun q _ => ?_
       rw [Finset.mul_sum]
-      refine Finset.sum_le_sum fun p _ => ?_
-      have hqp_nn : 0 ≤ 1 / ((q : ℝ) * (p : ℝ)) := by positivity
+      refine Finset.sum_congr rfl fun p _ => ?_
       have hprod_cos : Real.cos ((a + u) * Real.log (p : ℝ)) *
           Real.cos ((a + u) * Real.log (q : ℝ)) =
           1 / 2 * Real.cos ((a + u) * (Real.log (p : ℝ) - Real.log (q : ℝ))) +
@@ -1195,13 +1154,1115 @@ theorem exists_unit_L2_primeShell_le :
             (a + u) * Real.log (p : ℝ) + (a + u) * Real.log (q : ℝ) by ring,
           Real.cos_sub, Real.cos_add]
         ring
-      -- Wait: `(shellTrig)^2` has `(1/2) cos(diff) + (1/2) cos(sum)`, AND for `p, q ∈ A`,
-      -- `log p + log q > 2 e^j ≥ 2 e > 5 ≥ 2`! Even simpler: sum `(1/2) |K(diff)| + (1/2) |K(sum)|`!
-      -- Actually let's check: why not integrate the exact identity first, giving `(1/2) K(diff) + (1/2) K(sum)`,
-      -- where `|K(sum)| ≤ 3 / (log p + log q)^3 ≤ 3 / (log p - log q)^3` AND `≤ 7`!!
-      linarith [Real.cos_le_one ((a + u) * (Real.log (p : ℝ) + Real.log (q : ℝ))),
-        Real.neg_one_le_cos ((a + u) * (Real.log (p : ℝ) - Real.log (q : ℝ)))]
-    -- Wait: let's check `hpt`! Is `cos α cos β ≤ cos(α - β)`? NO (`cos(π/2) cos(π/2) = 0 > -1` is false when `α = π/2, β = -π/2`: `0 ≤ cos π = -1` FALSE!).
-    -- Glad we caught that! Let's use the EXACT identity `cos α cos β = (1/2) cos(α - β) + (1/2) cos(α + β)`!
-    sorry
-  sorry
+      rw [hprod_cos]; ring
+    simp_rw [hpt]
+    rw [intervalIntegral.integral_finsetSum]
+    · refine Finset.sum_congr rfl fun q _ => ?_
+      rw [intervalIntegral.integral_finsetSum]
+      · refine Finset.sum_congr rfl fun p _ => ?_
+        rw [intervalIntegral.integral_const_mul]
+        congr 1
+        have hi1 : IntervalIntegrable
+            (fun u : ℝ => 1 / 2 * ((1 + Real.cos u) *
+              Real.cos ((a + u) * (Real.log (p : ℝ) - Real.log (q : ℝ)))))
+            volume (-Real.pi) Real.pi :=
+          (by fun_prop : Continuous _).intervalIntegrable _ _
+        have hi2 : IntervalIntegrable
+            (fun u : ℝ => 1 / 2 * ((1 + Real.cos u) *
+              Real.cos ((a + u) * (Real.log (p : ℝ) + Real.log (q : ℝ)))))
+            volume (-Real.pi) Real.pi :=
+          (by fun_prop : Continuous _).intervalIntegrable _ _
+        rw [intervalIntegral.integral_add hi1 hi2,
+          intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
+        rfl
+      · intro p _
+        exact (by fun_prop : Continuous _).intervalIntegrable _ _
+    · intro q _
+      exact (by fun_prop : Continuous _).intervalIntegrable _ _
+  have hsh_sum : ∑ q ∈ A, 1 / (q : ℝ) ≤ C_sh := sum_inv_primeShell_le hS hj
+  have hsh_nn : 0 ≤ ∑ q ∈ A, 1 / (q : ℝ) := Finset.sum_nonneg fun _ _ => by positivity
+  -- Sum-frequency contribution `≤ C_sh^2 * exp(-j)`
+  have hsum_freq : ∑ q ∈ A, ∑ p ∈ A,
+      (1 / ((q : ℝ) * (p : ℝ))) *
+        |fejerCosKernel a (Real.log (p : ℝ) + Real.log (q : ℝ))| ≤
+      C_sh ^ 2 * Real.exp (-(j : ℝ)) := by
+    have hpt_sum : ∀ q ∈ A, ∀ p ∈ A,
+        |fejerCosKernel a (Real.log (p : ℝ) + Real.log (q : ℝ))| ≤ Real.exp (-(j : ℝ)) := by
+      intro q hq p hp
+      have hlogq := (log_shell_prime_bounds hq).1
+      have hlogp := (log_shell_prime_bounds hp).1
+      have hej2 : (2 : ℝ) ≤ Real.exp (j : ℝ) := by
+        calc (2 : ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
+          _ ≤ Real.exp (j : ℝ) := Real.exp_le_exp.mpr (by exact_mod_cast hj)
+      have hω2 : 2 ≤ |Real.log (p : ℝ) + Real.log (q : ℝ)| := by
+        rw [abs_of_pos (by linarith)]
+        linarith
+      have h2ej : 2 * Real.exp (j : ℝ) ≤ |Real.log (p : ℝ) + Real.log (q : ℝ)| := by
+        rw [abs_of_pos (by linarith)]
+        linarith
+      calc |fejerCosKernel a (Real.log (p : ℝ) + Real.log (q : ℝ))|
+          ≤ 3 / |Real.log (p : ℝ) + Real.log (q : ℝ)| ^ 3 :=
+            abs_fejerCosKernel_le_inv_cube a hω2
+        _ ≤ 3 / (2 * Real.exp (j : ℝ)) ^ 3 :=
+            div_le_div_of_nonneg_left (by norm_num) (by positivity)
+              (pow_le_pow_left₀ (by positivity) h2ej 3)
+        _ = (3 / 8 : ℝ) * Real.exp (-3 * (j : ℝ)) := by
+            rw [mul_pow, ← Real.exp_nat_mul, show ((3 : ℕ) : ℝ) * (j : ℝ) = 3 * (j : ℝ) by norm_num,
+              show -3 * (j : ℝ) = -(3 * (j : ℝ)) by ring, Real.exp_neg]
+            ring
+        _ ≤ 1 * Real.exp (-(j : ℝ)) := by
+            refine mul_le_mul (by norm_num) (Real.exp_le_exp.mpr ?_) (Real.exp_pos _).le zero_le_one
+            have hj1 : (1 : ℝ) ≤ j := by exact_mod_cast hj
+            linarith
+        _ = Real.exp (-(j : ℝ)) := one_mul _
+    calc ∑ q ∈ A, ∑ p ∈ A,
+          (1 / ((q : ℝ) * (p : ℝ))) *
+            |fejerCosKernel a (Real.log (p : ℝ) + Real.log (q : ℝ))|
+        ≤ ∑ q ∈ A, ∑ p ∈ A, (1 / ((q : ℝ) * (p : ℝ))) * Real.exp (-(j : ℝ)) :=
+          Finset.sum_le_sum fun q hq => Finset.sum_le_sum fun p hp =>
+            mul_le_mul_of_nonneg_left (hpt_sum q hq p hp) (by positivity)
+      _ = ((∑ q ∈ A, 1 / (q : ℝ)) ^ 2) * Real.exp (-(j : ℝ)) := by
+          rw [← Finset.sum_mul]
+          congr 1
+          rw [sq, Finset.sum_mul_sum]
+          exact Finset.sum_congr rfl fun q _ => Finset.sum_congr rfl fun p _ => by ring
+      _ ≤ C_sh ^ 2 * Real.exp (-(j : ℝ)) :=
+          mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hsh_nn hsh_sum 2) (Real.exp_pos _).le
+  -- Off-diagonal upper-triangular sum for fixed `q ∈ A`
+  have hinner_diff : ∀ q ∈ A,
+      ∑ p ∈ A.filter (q < ·),
+        |fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ))| / (p : ℝ) ≤
+        76 * C_dyad * Real.exp (-(j : ℝ)) := by
+    intro q hq
+    let M : ℕ := ⌈Real.exp ((j : ℝ) + 1)⌉₊ + 1
+    have hlogq_pos : 0 < Real.log (q : ℝ) :=
+      lt_trans (Real.exp_pos _) (log_shell_prime_bounds hq).1
+    have hmaps : ∀ p ∈ A.filter (q < ·),
+        ⌊Real.log (p : ℝ) - Real.log (q : ℝ)⌋₊ ∈ Finset.range M := by
+      intro p hp
+      obtain ⟨hpA, _⟩ := Finset.mem_filter.mp hp
+      have hlogp_hi := (log_shell_prime_bounds hpA).2
+      have hdiff_le : Real.log (p : ℝ) - Real.log (q : ℝ) ≤ Real.exp ((j : ℝ) + 1) := by linarith
+      have hfl_le : ⌊Real.log (p : ℝ) - Real.log (q : ℝ)⌋₊ ≤ ⌈Real.exp ((j : ℝ) + 1)⌉₊ :=
+        Nat.floor_le_of_le (hdiff_le.trans (Nat.le_ceil _))
+      exact Finset.mem_range.mpr (by dsimp [M]; omega)
+    rw [← Finset.sum_fiberwise_of_maps_to hmaps]
+    have hblock : ∀ m ∈ Finset.range M,
+        ∑ p ∈ (A.filter (q < ·)).filter
+            (fun p => ⌊Real.log (p : ℝ) - Real.log (q : ℝ)⌋₊ = m),
+          |fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ))| / (p : ℝ) ≤
+          fejerBlockWeight m * (4 * C_dyad * Real.exp (-(j : ℝ))) := by
+      intro m _
+      let B := A.filter fun p => q < p ∧ (m : ℝ) ≤ Real.log (p : ℝ) - Real.log (q : ℝ) ∧
+        Real.log (p : ℝ) - Real.log (q : ℝ) < (m : ℝ) + 1
+      have hsub_B : (A.filter (q < ·)).filter
+          (fun p => ⌊Real.log (p : ℝ) - Real.log (q : ℝ)⌋₊ = m) ⊆ B := by
+        intro p hp
+        obtain ⟨hp1, hfl⟩ := Finset.mem_filter.mp hp
+        obtain ⟨hpA, hqp⟩ := Finset.mem_filter.mp hp1
+        have hq_pos : (0 : ℝ) < q :=
+          lt_trans (Real.exp_pos _) (by
+            have hmem := (Finset.mem_filter.mp hq).2.1
+            have := seven_le_shellCut hj
+            exact lt_of_lt_of_le (by have := Real.exp_one_lt_d9; norm_num; linarith)
+              (show (7 : ℝ) ≤ q by exact_mod_cast (by omega : 7 ≤ q)))
+        have hdiff_nn : 0 ≤ Real.log (p : ℝ) - Real.log (q : ℝ) :=
+          sub_nonneg.mpr (Real.log_le_log hq_pos (by exact_mod_cast hqp.le))
+        have hlo : (m : ℝ) ≤ Real.log (p : ℝ) - Real.log (q : ℝ) := by
+          rw [← hfl]; exact Nat.floor_le hdiff_nn
+        have hhi : Real.log (p : ℝ) - Real.log (q : ℝ) < (m : ℝ) + 1 := by
+          rw [← hfl]; exact Nat.lt_floor_add_one _
+        exact Finset.mem_filter.mpr ⟨hpA, hqp, hlo, hhi⟩
+      have hker_le : ∀ p ∈ B,
+          |fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ))| ≤ fejerBlockWeight m := by
+        intro p hp
+        obtain ⟨_, _, hlo, _⟩ := Finset.mem_filter.mp hp
+        unfold fejerBlockWeight
+        split_ifs with hm2
+        · exact abs_fejerCosKernel_le_eight a _
+        · have hm2R : (2 : ℝ) ≤ m := by exact_mod_cast (not_lt.mp hm2)
+          have hω2 : 2 ≤ |Real.log (p : ℝ) - Real.log (q : ℝ)| := by
+            rw [abs_of_nonneg (by linarith)]
+            linarith
+          have hm_le_abs : (m : ℝ) ≤ |Real.log (p : ℝ) - Real.log (q : ℝ)| := by
+            rw [abs_of_nonneg (by linarith)]
+            exact hlo
+          exact (abs_fejerCosKernel_le_inv_cube a hω2).trans
+            (div_le_div_of_nonneg_left (by norm_num) (by positivity)
+              (pow_le_pow_left₀ (by positivity) hm_le_abs 3))
+      calc ∑ p ∈ (A.filter (q < ·)).filter
+            (fun p => ⌊Real.log (p : ℝ) - Real.log (q : ℝ)⌋₊ = m),
+          |fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ))| / (p : ℝ)
+          ≤ ∑ p ∈ B, |fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ))| / (p : ℝ) :=
+            Finset.sum_le_sum_of_subset_of_nonneg hsub_B fun _ _ _ => by positivity
+        _ ≤ ∑ p ∈ B, fejerBlockWeight m * (1 / (p : ℝ)) :=
+            Finset.sum_le_sum fun p hp => by
+              rw [div_eq_mul_one_div]
+              exact mul_le_mul_of_nonneg_right (hker_le p hp) (by positivity)
+        _ = fejerBlockWeight m * ∑ p ∈ B, 1 / (p : ℝ) := (Finset.mul_sum _ _ _).symm
+        _ ≤ fejerBlockWeight m * (4 * C_dyad * Real.exp (-(j : ℝ))) :=
+            mul_le_mul_of_nonneg_left (sum_inv_unit_log_block_le hS hj hq m)
+              (fejerBlockWeight_nonneg m)
+    calc ∑ m ∈ Finset.range M,
+          ∑ p ∈ (A.filter (q < ·)).filter
+              (fun p => ⌊Real.log (p : ℝ) - Real.log (q : ℝ)⌋₊ = m),
+            |fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ))| / (p : ℝ)
+        ≤ ∑ m ∈ Finset.range M, fejerBlockWeight m * (4 * C_dyad * Real.exp (-(j : ℝ))) :=
+          Finset.sum_le_sum hblock
+      _ = (∑ m ∈ Finset.range M, fejerBlockWeight m) * (4 * C_dyad * Real.exp (-(j : ℝ))) :=
+          (Finset.sum_mul _ _ _).symm
+      _ ≤ 19 * (4 * C_dyad * Real.exp (-(j : ℝ))) :=
+          mul_le_mul_of_nonneg_right (sum_fejerBlockWeight_le M) (by positivity)
+      _ = 76 * C_dyad * Real.exp (-(j : ℝ)) := by ring
+  -- Difference-frequency contribution `≤ (8 * C_sh + 152 * C_sh * C_dyad) * exp(-j)`
+  have hdiff_freq : ∑ q ∈ A, ∑ p ∈ A,
+      (1 / ((q : ℝ) * (p : ℝ))) *
+        |fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ))| ≤
+      (8 * C_sh + 152 * C_sh * C_dyad) * Real.exp (-(j : ℝ)) := by
+    let g : ℕ → ℕ → ℝ := fun q p =>
+      (1 / ((q : ℝ) * (p : ℝ))) * |fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ))|
+    have hg_nn : ∀ q p, 0 ≤ g q p := fun q p => by dsimp [g]; positivity
+    have hg_symm : ∀ q p, g q p = g p q := fun q p => by
+      dsimp [g]
+      rw [mul_comm (q : ℝ) (p : ℝ),
+        show Real.log (p : ℝ) - Real.log (q : ℝ) = -(Real.log (q : ℝ) - Real.log (p : ℝ)) by ring,
+        fejerCosKernel_neg]
+    have htri_pt : ∀ q ∈ A, ∀ p ∈ A,
+        g q p ≤ (if p = q then g q q else 0) + (if q < p then g q p else 0) +
+          (if p < q then g p q else 0) := by
+      intro q _ p _
+      rcases lt_trichotomy q p with hlt | rfl | hgt
+      · have hne : p ≠ q := hlt.ne'
+        have hnlt : ¬ p < q := not_lt.mpr hlt.le
+        simp [hne, hlt, hnlt]
+      · simp
+      · have hne : p ≠ q := hgt.ne
+        have hnlt : ¬ q < p := not_lt.mpr hgt.le
+        simp [hne, hgt, hnlt, hg_symm q p]
+    have hdiag_le : ∑ q ∈ A, g q q ≤ 8 * C_sh * Real.exp (-(j : ℝ)) := by
+      have hq_inv_le : ∀ q ∈ A, 1 / (q : ℝ) ≤ Real.exp (-(j : ℝ)) := by
+        intro q hq
+        have hlogq := (log_shell_prime_bounds hq).1
+        have hj_lt_ej : (j : ℝ) < Real.exp (j : ℝ) := by
+          linarith [Real.add_one_le_exp (j : ℝ)]
+        have hq_pos : (0 : ℝ) < q := by
+          have := (Finset.mem_filter.mp hq).2.1
+          exact_mod_cast (by omega : 0 < q)
+        have hej_le_q : Real.exp (j : ℝ) ≤ (q : ℝ) := by
+          simpa [Real.exp_log hq_pos] using Real.exp_le_exp.mpr (hj_lt_ej.trans hlogq).le
+        rw [Real.exp_neg, one_div]
+        exact inv_anti₀ (Real.exp_pos _) hej_le_q
+      calc ∑ q ∈ A, g q q
+          ≤ ∑ q ∈ A, (8 * Real.exp (-(j : ℝ))) * (1 / (q : ℝ)) :=
+            Finset.sum_le_sum fun q hq => by
+              dsimp [g]
+              have hk8 := abs_fejerCosKernel_le_eight a (Real.log (q : ℝ) - Real.log (q : ℝ))
+              have hqi := hq_inv_le q hq
+              have hrew : (1 / ((q : ℝ) * (q : ℝ))) *
+                  |fejerCosKernel a (Real.log (q : ℝ) - Real.log (q : ℝ))| =
+                  (|fejerCosKernel a (Real.log (q : ℝ) - Real.log (q : ℝ))| * (1 / (q : ℝ))) *
+                    (1 / (q : ℝ)) := by ring
+              rw [hrew]
+              refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+              exact mul_le_mul hk8 hqi (by positivity) (by norm_num)
+        _ = (8 * Real.exp (-(j : ℝ))) * ∑ q ∈ A, 1 / (q : ℝ) := (Finset.mul_sum _ _ _).symm
+        _ ≤ (8 * Real.exp (-(j : ℝ))) * C_sh :=
+            mul_le_mul_of_nonneg_left hsh_sum (by positivity)
+        _ = 8 * C_sh * Real.exp (-(j : ℝ)) := by ring
+    have hoff_le : ∑ q ∈ A, ∑ p ∈ A, (if q < p then g q p else 0) ≤
+        76 * C_sh * C_dyad * Real.exp (-(j : ℝ)) := by
+      have hrew : ∀ q ∈ A, ∑ p ∈ A, (if q < p then g q p else 0) =
+          (1 / (q : ℝ)) * ∑ p ∈ A.filter (q < ·),
+            |fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ))| / (p : ℝ) := by
+        intro q _
+        rw [← Finset.sum_filter, Finset.mul_sum]
+        refine Finset.sum_congr rfl fun p _ => ?_
+        dsimp [g]; ring
+      calc ∑ q ∈ A, ∑ p ∈ A, (if q < p then g q p else 0)
+          = ∑ q ∈ A, (1 / (q : ℝ)) * ∑ p ∈ A.filter (q < ·),
+              |fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ))| / (p : ℝ) :=
+            Finset.sum_congr rfl hrew
+        _ ≤ ∑ q ∈ A, (1 / (q : ℝ)) * (76 * C_dyad * Real.exp (-(j : ℝ))) :=
+            Finset.sum_le_sum fun q hq =>
+              mul_le_mul_of_nonneg_left (hinner_diff q hq) (by positivity)
+        _ = (∑ q ∈ A, 1 / (q : ℝ)) * (76 * C_dyad * Real.exp (-(j : ℝ))) :=
+            (Finset.sum_mul _ _ _).symm
+        _ ≤ C_sh * (76 * C_dyad * Real.exp (-(j : ℝ))) :=
+            mul_le_mul_of_nonneg_right hsh_sum (by positivity)
+        _ = 76 * C_sh * C_dyad * Real.exp (-(j : ℝ)) := by ring
+    calc ∑ q ∈ A, ∑ p ∈ A, g q p
+        ≤ ∑ q ∈ A, ∑ p ∈ A,
+            ((if p = q then g q q else 0) + (if q < p then g q p else 0) +
+              (if p < q then g p q else 0)) :=
+          Finset.sum_le_sum fun q hq => Finset.sum_le_sum fun p hp => htri_pt q hq p hp
+      _ = (∑ q ∈ A, ∑ p ∈ A, if p = q then g q q else 0) +
+            (∑ q ∈ A, ∑ p ∈ A, if q < p then g q p else 0) +
+            (∑ p ∈ A, ∑ q ∈ A, if p < q then g p q else 0) := by
+          simp_rw [Finset.sum_add_distrib]
+          rw [Finset.sum_comm (s := A) (t := A) (f := fun q p => if p < q then g p q else 0)]
+      _ = (∑ q ∈ A, g q q) + 2 * (∑ q ∈ A, ∑ p ∈ A, if q < p then g q p else 0) := by
+          have hdiag_eq : (∑ q ∈ A, ∑ p ∈ A, if p = q then g q q else 0) = ∑ q ∈ A, g q q :=
+            Finset.sum_congr rfl fun q hq => by simp [hq]
+          rw [hdiag_eq]; ring
+      _ ≤ 8 * C_sh * Real.exp (-(j : ℝ)) +
+            2 * (76 * C_sh * C_dyad * Real.exp (-(j : ℝ))) := by linarith
+      _ = (8 * C_sh + 152 * C_sh * C_dyad) * Real.exp (-(j : ℝ)) := by ring
+  -- Combine `hdom_int`, `hexact`, `hdiff_freq`, and `hsum_freq`
+  have hint_le : ∫ u in (-Real.pi)..Real.pi, (1 + Real.cos u) * (shellTrig A (a + u)) ^ 2 ≤
+      1 / 2 * ((8 * C_sh + 152 * C_sh * C_dyad) * Real.exp (-(j : ℝ))) +
+        1 / 2 * (C_sh ^ 2 * Real.exp (-(j : ℝ))) := by
+    rw [hexact]
+    calc ∑ q ∈ A, ∑ p ∈ A, (1 / ((q : ℝ) * (p : ℝ))) *
+          (1 / 2 * fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ)) +
+            1 / 2 * fejerCosKernel a (Real.log (p : ℝ) + Real.log (q : ℝ)))
+        ≤ ∑ q ∈ A, ∑ p ∈ A,
+            (1 / 2 * ((1 / ((q : ℝ) * (p : ℝ))) *
+                |fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ))|) +
+              1 / 2 * ((1 / ((q : ℝ) * (p : ℝ))) *
+                |fejerCosKernel a (Real.log (p : ℝ) + Real.log (q : ℝ))|)) :=
+          Finset.sum_le_sum fun q _ => Finset.sum_le_sum fun p _ => by
+            have hqp : 0 ≤ 1 / ((q : ℝ) * (p : ℝ)) := by positivity
+            have h1 := le_abs_self (fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ)))
+            have h2 := le_abs_self (fejerCosKernel a (Real.log (p : ℝ) + Real.log (q : ℝ)))
+            nlinarith
+      _ = 1 / 2 * (∑ q ∈ A, ∑ p ∈ A,
+            (1 / ((q : ℝ) * (p : ℝ))) *
+              |fejerCosKernel a (Real.log (p : ℝ) - Real.log (q : ℝ))|) +
+          1 / 2 * (∑ q ∈ A, ∑ p ∈ A,
+            (1 / ((q : ℝ) * (p : ℝ))) *
+              |fejerCosKernel a (Real.log (p : ℝ) + Real.log (q : ℝ))|) := by
+          simp_rw [Finset.sum_add_distrib, ← Finset.mul_sum]
+      _ ≤ 1 / 2 * ((8 * C_sh + 152 * C_sh * C_dyad) * Real.exp (-(j : ℝ))) +
+            1 / 2 * (C_sh ^ 2 * Real.exp (-(j : ℝ))) := by linarith
+  have hexp_pos : 0 < Real.exp (-(j : ℝ)) := Real.exp_pos _
+  dsimp [C_L2]
+  nlinarith
+
+
+/-! ## §4. Tail `L²` summation, exponential integrability, and uniform boundedness of `Q_{1/2}(P)` -/
+
+/-- Desingularized logarithmic Euler product, obtained by subtracting the outer `12 log log(|t| + e)`
+growth envelope from the prime cosine sum. -/
+noncomputable def desingLogProd (S : Finset ℕ) (t : ℝ) : ℝ :=
+  (∑ p ∈ S, (-2 * Real.cos (t * Real.log (p : ℝ)) / (p : ℝ))) -
+    12 * Real.log (Real.log (|t| + Real.exp 1))
+
+private theorem continuous_desingLogProd (S : Finset ℕ) : Continuous (desingLogProd S) := by
+  unfold desingLogProd
+  refine (continuous_finsetSum S fun p _ => ?_).sub (continuous_const.mul ?_)
+  · exact ((continuous_const.mul (Real.continuous_cos.comp
+      (continuous_id.mul continuous_const))).div_const _)
+  · have hc1 : Continuous fun t : ℝ => |t| + Real.exp 1 := continuous_abs.add continuous_const
+    have hc2 : Continuous fun t : ℝ => Real.log (|t| + Real.exp 1) :=
+      hc1.log fun t => by positivity
+    refine hc2.log fun t => ?_
+    have h1 : 1 ≤ Real.log (|t| + Real.exp 1) := by
+      have h := Real.log_le_log (Real.exp_pos 1)
+        (show Real.exp 1 ≤ |t| + Real.exp 1 by linarith [abs_nonneg t])
+      rwa [Real.log_exp] at h
+    linarith
+
+private theorem desingLogProd_le_card {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) (t : ℝ) :
+    desingLogProd S t ≤ (S.card : ℝ) := by
+  unfold desingLogProd
+  have hL1 : 1 ≤ Real.log (|t| + Real.exp 1) := by
+    have h := Real.log_le_log (Real.exp_pos 1)
+      (show Real.exp 1 ≤ |t| + Real.exp 1 by linarith [abs_nonneg t])
+    rwa [Real.log_exp] at h
+  have hlogL_nn : 0 ≤ Real.log (Real.log (|t| + Real.exp 1)) := Real.log_nonneg hL1
+  have hsum : ∑ p ∈ S, (-2 * Real.cos (t * Real.log (p : ℝ)) / (p : ℝ)) ≤ (S.card : ℝ) := by
+    calc ∑ p ∈ S, (-2 * Real.cos (t * Real.log (p : ℝ)) / (p : ℝ))
+        ≤ ∑ _p ∈ S, (1 : ℝ) := Finset.sum_le_sum fun p hp => by
+            have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast (hS p hp).two_le
+            have hc := Real.neg_one_le_cos (t * Real.log (p : ℝ))
+            rw [div_le_one (by positivity)]
+            linarith
+      _ = (S.card : ℝ) := by simp
+  linarith
+
+private theorem eulerProductSq_one_le_desingLogProd {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime)
+    (t : ℝ) :
+    eulerProductSq 1 t S ≤
+      Real.exp (Real.pi ^ 2 / 6) * (Real.log (|t| + Real.exp 1)) ^ 12 *
+        Real.exp (desingLogProd S t) := by
+  let Z : ℕ := S.sup id
+  have hsub_Z : S ⊆ Nat.primesLE Z := fun p hp =>
+    Nat.mem_primesLE.mpr ⟨Finset.le_sup (f := id) hp, hS p hp⟩
+  have hsq_le : ∑ p ∈ S, 1 / (p : ℝ) ^ 2 ≤ Real.pi ^ 2 / 6 :=
+    (Finset.sum_le_sum_of_subset_of_nonneg hsub_Z fun _ _ _ => by positivity).trans
+      (RHTower.Sieve.sum_inv_sq_primesLE_le_pi Z)
+  have hL1 : 1 ≤ Real.log (|t| + Real.exp 1) := by
+    have h := Real.log_le_log (Real.exp_pos 1)
+      (show Real.exp 1 ≤ |t| + Real.exp 1 by linarith [abs_nonneg t])
+    rwa [Real.log_exp] at h
+  have hL_pos : 0 < Real.log (|t| + Real.exp 1) := by linarith
+  have hdecomp : (∑ p ∈ S, 1 / (p : ℝ) ^ 2) +
+      ∑ p ∈ S, (-2 * Real.cos (t * Real.log (p : ℝ)) / (p : ℝ)) ≤
+      Real.pi ^ 2 / 6 + 12 * Real.log (Real.log (|t| + Real.exp 1)) + desingLogProd S t := by
+    unfold desingLogProd
+    linarith
+  calc eulerProductSq 1 t S
+      ≤ Real.exp ((∑ p ∈ S, 1 / (p : ℝ) ^ 2) +
+          ∑ p ∈ S, (-2 * Real.cos (t * Real.log (p : ℝ)) / (p : ℝ))) :=
+        eulerProductSq_one_le_exp t S
+    _ ≤ Real.exp (Real.pi ^ 2 / 6 + 12 * Real.log (Real.log (|t| + Real.exp 1)) +
+          desingLogProd S t) := Real.exp_le_exp.mpr hdecomp
+    _ = Real.exp (Real.pi ^ 2 / 6) * (Real.log (|t| + Real.exp 1)) ^ (12 : ℕ) *
+          Real.exp (desingLogProd S t) := by
+        rw [Real.exp_add, Real.exp_add,
+          show (12 : ℝ) = ((12 : ℕ) : ℝ) by norm_num, Real.exp_nat_mul, Real.exp_log hL_pos]
+
+private theorem j_le_shellCut (j : ℕ) : j ≤ shellCut j := by
+  unfold shellCut
+  have h1 : (j : ℝ) ≤ Real.exp (j : ℝ) := by linarith [Real.add_one_le_exp (j : ℝ)]
+  have h2 : Real.exp (j : ℝ) ≤ Real.exp (Real.exp (j : ℝ)) := by
+    linarith [Real.add_one_le_exp (Real.exp (j : ℝ))]
+  exact Nat.le_floor (h1.trans h2)
+
+private theorem sum_shell_window_eq (S : Finset ℕ) (t : ℝ) (j₀ k : ℕ) :
+    ∑ p ∈ S.filter (fun p => shellCut j₀ < p ∧ p ≤ shellCut (j₀ + k)),
+        (-2 * Real.cos (t * Real.log (p : ℝ)) / (p : ℝ)) =
+      -2 * ∑ j ∈ Finset.Ico j₀ (j₀ + k), shellTrig (primeShell S j) t := by
+  induction k with
+  | zero =>
+    rw [Nat.add_zero, Finset.Ico_self, Finset.sum_empty, mul_zero]
+    refine Finset.sum_eq_zero fun p hp => ?_
+    obtain ⟨_, h1, h2⟩ := Finset.mem_filter.mp hp
+    omega
+  | succ k ih =>
+    let W₁ := S.filter fun p => shellCut j₀ < p ∧ p ≤ shellCut (j₀ + (k + 1))
+    change ∑ p ∈ W₁, (-2 * Real.cos (t * Real.log (p : ℝ)) / (p : ℝ)) = _
+    rw [← Finset.sum_filter_add_sum_filter_not W₁ (fun p => p ≤ shellCut (j₀ + k))]
+    have hleft : W₁.filter (fun p => p ≤ shellCut (j₀ + k)) =
+        S.filter (fun p => shellCut j₀ < p ∧ p ≤ shellCut (j₀ + k)) := by
+      ext p
+      simp only [W₁, Finset.mem_filter]
+      have hmono := shellCut_mono (show j₀ + k ≤ j₀ + (k + 1) by omega)
+      exact ⟨fun ⟨⟨hpS, hgt, _⟩, hle⟩ => ⟨hpS, hgt, hle⟩,
+        fun ⟨hpS, hgt, hle⟩ => ⟨⟨hpS, hgt, hle.trans hmono⟩, hle⟩⟩
+    have hright : W₁.filter (fun p => ¬ p ≤ shellCut (j₀ + k)) = primeShell S (j₀ + k) := by
+      ext p
+      simp only [W₁, primeShell, Finset.mem_filter]
+      have hmono := shellCut_mono (Nat.le_add_right j₀ k)
+      have heq : j₀ + (k + 1) = j₀ + k + 1 := by omega
+      rw [heq]
+      exact ⟨fun ⟨⟨hpS, _, hle⟩, hnle⟩ => ⟨hpS, not_le.mp hnle, hle⟩,
+        fun ⟨hpS, hgt, hle⟩ => ⟨⟨hpS, lt_of_le_of_lt hmono hgt, hle⟩, not_le.mpr hgt⟩⟩
+    rw [hleft, hright, ih, show j₀ + (k + 1) = (j₀ + k) + 1 by omega,
+      Finset.sum_Ico_succ_top (Nat.le_add_right j₀ k), mul_add]
+    congr 1
+    unfold shellTrig
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun p _ => by ring
+
+private theorem desingLogProd_le_head_add_tail {C₀ : ℝ}
+    (hpole : ∀ w : ℕ, 3 ≤ w → ∀ S' : Finset ℕ, S' ⊆ Nat.primesLE w → ∀ t : ℝ,
+      ∑ p ∈ S', (-2 * Real.cos (t * Real.log p) / (p : ℝ)) ≤
+        C₀ + 12 * Real.log (Real.log (|t| + Real.exp 1)) +
+          17 / 24 * Real.log (Real.log (w : ℝ)))
+    {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) {j₀ : ℕ} (hj₀ : 1 ≤ j₀) (t : ℝ) :
+    desingLogProd S t ≤ C₀ + 17 / 24 * (j₀ : ℝ) +
+      2 * ∑ j ∈ Finset.Ico j₀ (j₀ + (S.sup id + 1)), |shellTrig (primeShell S j) t| := by
+  let k : ℕ := S.sup id + 1
+  have hsplit := (Finset.sum_filter_add_sum_filter_not S (fun p => p ≤ shellCut j₀)
+    (fun p => -2 * Real.cos (t * Real.log (p : ℝ)) / (p : ℝ))).symm
+  have hhead_sub : S.filter (fun p => p ≤ shellCut j₀) ⊆ Nat.primesLE (shellCut j₀) := by
+    intro p hp
+    obtain ⟨hpS, hle⟩ := Finset.mem_filter.mp hp
+    exact Nat.mem_primesLE.mpr ⟨hle, hS p hpS⟩
+  have hw3 : 3 ≤ shellCut j₀ := le_trans (by norm_num) (seven_le_shellCut hj₀)
+  have hloglog_le : Real.log (Real.log (shellCut j₀ : ℝ)) ≤ (j₀ : ℝ) := by
+    have hle_exp : (shellCut j₀ : ℝ) ≤ Real.exp (Real.exp (j₀ : ℝ)) :=
+      Nat.floor_le (Real.exp_pos _).le
+    have hpos1 : (0 : ℝ) < shellCut j₀ := by exact_mod_cast (by omega : 0 < shellCut j₀)
+    have hlog1 : Real.log (shellCut j₀ : ℝ) ≤ Real.exp (j₀ : ℝ) := by
+      simpa [Real.log_exp] using Real.log_le_log hpos1 hle_exp
+    have hpos_log1 : 0 < Real.log (shellCut j₀ : ℝ) :=
+      Real.log_pos (by exact_mod_cast (by omega : 1 < shellCut j₀))
+    simpa [Real.log_exp] using Real.log_le_log hpos_log1 hlog1
+  have hhead_bound := hpole (shellCut j₀) hw3 _ hhead_sub t
+  have htail_set : S.filter (fun p => ¬ p ≤ shellCut j₀) =
+      S.filter (fun p => shellCut j₀ < p ∧ p ≤ shellCut (j₀ + k)) := by
+    ext p
+    simp only [Finset.mem_filter]
+    refine ⟨fun ⟨hpS, hnle⟩ => ⟨hpS, not_le.mp hnle, ?_⟩, fun ⟨hpS, hgt, _⟩ => ⟨hpS, not_le.mpr hgt⟩⟩
+    have hp_sup : p ≤ S.sup id := Finset.le_sup (f := id) hpS
+    have hp_jk : p ≤ j₀ + k := by dsimp [k]; omega
+    exact hp_jk.trans (j_le_shellCut (j₀ + k))
+  have htail_eq : ∑ p ∈ S.filter (fun p => ¬ p ≤ shellCut j₀),
+      (-2 * Real.cos (t * Real.log (p : ℝ)) / (p : ℝ)) =
+      -2 * ∑ j ∈ Finset.Ico j₀ (j₀ + k), shellTrig (primeShell S j) t := by
+    rw [htail_set, sum_shell_window_eq]
+  have htail_abs : -2 * ∑ j ∈ Finset.Ico j₀ (j₀ + k), shellTrig (primeShell S j) t ≤
+      2 * ∑ j ∈ Finset.Ico j₀ (j₀ + k), |shellTrig (primeShell S j) t| := by
+    rw [show -2 * ∑ j ∈ Finset.Ico j₀ (j₀ + k), shellTrig (primeShell S j) t =
+      2 * ∑ j ∈ Finset.Ico j₀ (j₀ + k), -shellTrig (primeShell S j) t by
+        rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_neg_distrib]
+        exact Finset.sum_congr rfl fun _ _ => by ring]
+    exact mul_le_mul_of_nonneg_left
+      (Finset.sum_le_sum fun j _ => neg_le_abs _) (by norm_num)
+  unfold desingLogProd
+  rw [hsplit, htail_eq]
+  linarith
+
+private theorem sum_exp_neg_half_Ico_le (j₀ k : ℕ) :
+    ∑ j ∈ Finset.Ico j₀ (j₀ + k), Real.exp (-(j : ℝ) / 2) ≤
+      3 * Real.exp (-(j₀ : ℝ) / 2) := by
+  rw [Finset.sum_Ico_eq_sum_range]
+  have hfactor : ∑ m ∈ Finset.range k, Real.exp (-(((j₀ + m : ℕ) : ℝ)) / 2) =
+      Real.exp (-(j₀ : ℝ) / 2) * ∑ m ∈ Finset.range k, (Real.exp (-1 / 2)) ^ m := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun m _ => ?_
+    rw [← Real.exp_nat_mul, ← Real.exp_add]
+    congr 1
+    push_cast
+    ring
+  rw [hfactor, mul_comm (3 : ℝ)]
+  refine mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le
+  have hr_le : Real.exp (-1 / 2) ≤ 2 / 3 := by
+    have h1 : (3 / 2 : ℝ) ≤ Real.exp (1 / 2) := by linarith [Real.add_one_le_exp (1 / 2 : ℝ)]
+    rw [show (-1 / 2 : ℝ) = -(1 / 2 : ℝ) by ring, Real.exp_neg]
+    exact (inv_anti₀ (by norm_num) h1).trans_eq (by norm_num)
+  suffices hgeom : ∑ m ∈ Finset.range k, (Real.exp (-1 / 2)) ^ m ≤
+      3 - 2 * (Real.exp (-1 / 2)) ^ k by
+    have hp_nn : 0 ≤ (Real.exp (-1 / 2)) ^ k := pow_nonneg (Real.exp_pos _).le k
+    linarith
+  induction k with
+  | zero => norm_num
+  | succ k ih =>
+    rw [Finset.sum_range_succ, pow_succ]
+    have hp_nn : 0 ≤ (Real.exp (-1 / 2)) ^ k := pow_nonneg (Real.exp_pos _).le k
+    nlinarith
+
+private theorem integral_tail_sq_unit_le {C_L2 : ℝ} (hC_L2 : 0 < C_L2)
+    (hL2 : ∀ S : Finset ℕ, (∀ p ∈ S, p.Prime) → ∀ j : ℕ, 1 ≤ j → ∀ a : ℝ,
+      ∫ t in Icc (a - 1) (a + 1), (shellTrig (primeShell S j) t) ^ 2 ≤
+        C_L2 * Real.exp (-(j : ℝ)))
+    {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) {j₀ : ℕ} (hj₀ : 1 ≤ j₀) (k : ℕ) (a : ℝ) :
+    ∫ t in Icc (a - 1) (a + 1),
+        (∑ j ∈ Finset.Ico j₀ (j₀ + k), |shellTrig (primeShell S j) t|) ^ 2 ≤
+      9 * C_L2 * Real.exp (-(j₀ : ℝ)) := by
+  let I := Finset.Ico j₀ (j₀ + k)
+  have hcs_pt : ∀ t : ℝ,
+      (∑ j ∈ I, |shellTrig (primeShell S j) t|) ^ 2 ≤
+        (∑ j ∈ I, Real.exp (-(j : ℝ) / 2)) *
+          ∑ j ∈ I, Real.exp ((j : ℝ) / 2) * (shellTrig (primeShell S j) t) ^ 2 := by
+    intro t
+    have h := Finset.sum_mul_sq_le_sq_mul_sq I
+      (fun j => Real.exp (-(j : ℝ) / 4))
+      (fun j => Real.exp ((j : ℝ) / 4) * |shellTrig (primeShell S j) t|)
+    have e1 : ∀ j, Real.exp (-(j : ℝ) / 4) *
+        (Real.exp ((j : ℝ) / 4) * |shellTrig (primeShell S j) t|) =
+        |shellTrig (primeShell S j) t| := fun j => by
+      rw [← mul_assoc, ← Real.exp_add, show -(j : ℝ) / 4 + (j : ℝ) / 4 = 0 by ring,
+        Real.exp_zero, one_mul]
+    have e2 : ∀ j, (Real.exp (-(j : ℝ) / 4)) ^ 2 = Real.exp (-(j : ℝ) / 2) := fun j => by
+      rw [sq, ← Real.exp_add]; congr 1; ring
+    have e3 : ∀ j, (Real.exp ((j : ℝ) / 4) * |shellTrig (primeShell S j) t|) ^ 2 =
+        Real.exp ((j : ℝ) / 2) * (shellTrig (primeShell S j) t) ^ 2 := fun j => by
+      rw [mul_pow, sq_abs, sq (Real.exp ((j : ℝ) / 4)), ← Real.exp_add]; congr 2; ring
+    simp only [e1, e2, e3] at h
+    exact h
+  have hint_lhs : IntegrableOn
+      (fun t : ℝ => (∑ j ∈ I, |shellTrig (primeShell S j) t|) ^ 2) (Icc (a - 1) (a + 1)) := by
+    refine (Continuous.continuousOn ?_).integrableOn_Icc
+    unfold shellTrig
+    fun_prop
+  have hint_term : ∀ j ∈ I, IntegrableOn
+      (fun t : ℝ => Real.exp ((j : ℝ) / 2) * (shellTrig (primeShell S j) t) ^ 2)
+      (Icc (a - 1) (a + 1)) := fun j _ => by
+    refine (Continuous.continuousOn ?_).integrableOn_Icc
+    unfold shellTrig
+    fun_prop
+  have hint_sum : IntegrableOn
+      (fun t : ℝ => ∑ j ∈ I, Real.exp ((j : ℝ) / 2) * (shellTrig (primeShell S j) t) ^ 2)
+      (Icc (a - 1) (a + 1)) := by
+    refine (Continuous.continuousOn ?_).integrableOn_Icc
+    unfold shellTrig
+    fun_prop
+  have hw_sum := sum_exp_neg_half_Ico_le j₀ k
+  have hw_nn : 0 ≤ ∑ j ∈ I, Real.exp (-(j : ℝ) / 2) :=
+    Finset.sum_nonneg fun _ _ => (Real.exp_pos _).le
+  calc ∫ t in Icc (a - 1) (a + 1), (∑ j ∈ I, |shellTrig (primeShell S j) t|) ^ 2
+      ≤ ∫ t in Icc (a - 1) (a + 1),
+          (∑ j ∈ I, Real.exp (-(j : ℝ) / 2)) *
+            ∑ j ∈ I, Real.exp ((j : ℝ) / 2) * (shellTrig (primeShell S j) t) ^ 2 :=
+        setIntegral_mono_on hint_lhs (hint_sum.const_mul _) measurableSet_Icc fun t _ => hcs_pt t
+    _ = (∑ j ∈ I, Real.exp (-(j : ℝ) / 2)) *
+          ∑ j ∈ I, Real.exp ((j : ℝ) / 2) *
+            ∫ t in Icc (a - 1) (a + 1), (shellTrig (primeShell S j) t) ^ 2 := by
+        rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_finsetSum I hint_term]
+        congr 1
+        exact Finset.sum_congr rfl fun j _ => MeasureTheory.integral_const_mul _ _
+    _ ≤ (3 * Real.exp (-(j₀ : ℝ) / 2)) *
+          ∑ j ∈ I, Real.exp ((j : ℝ) / 2) * (C_L2 * Real.exp (-(j : ℝ))) := by
+        refine mul_le_mul hw_sum (Finset.sum_le_sum fun j hjI => ?_)
+          (Finset.sum_nonneg fun j _ => mul_nonneg (Real.exp_pos _).le
+            (integral_nonneg fun _ => sq_nonneg _)) (by positivity)
+        have hj1 : 1 ≤ j := hj₀.trans (Finset.mem_Ico.mp hjI).1
+        exact mul_le_mul_of_nonneg_left (hL2 S hS j hj1 a) (Real.exp_pos _).le
+    _ = 3 * C_L2 * Real.exp (-(j₀ : ℝ) / 2) * ∑ j ∈ I, Real.exp (-(j : ℝ) / 2) := by
+        have hterm : ∑ j ∈ I, Real.exp ((j : ℝ) / 2) * (C_L2 * Real.exp (-(j : ℝ))) =
+            C_L2 * ∑ j ∈ I, Real.exp (-(j : ℝ) / 2) := by
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl fun j _ => ?_
+          rw [mul_left_comm, ← Real.exp_add, show (j : ℝ) / 2 + -(j : ℝ) = -(j : ℝ) / 2 by ring]
+        rw [hterm]; ring
+    _ ≤ 3 * C_L2 * Real.exp (-(j₀ : ℝ) / 2) * (3 * Real.exp (-(j₀ : ℝ) / 2)) :=
+        mul_le_mul_of_nonneg_left hw_sum (by positivity)
+    _ = 9 * C_L2 * Real.exp (-(j₀ : ℝ)) := by
+        have hexp_sq : Real.exp (-(j₀ : ℝ) / 2) * Real.exp (-(j₀ : ℝ) / 2) =
+            Real.exp (-(j₀ : ℝ)) := by
+          rw [← Real.exp_add]; congr 1; ring
+        calc 3 * C_L2 * Real.exp (-(j₀ : ℝ) / 2) * (3 * Real.exp (-(j₀ : ℝ) / 2))
+            = 9 * C_L2 * (Real.exp (-(j₀ : ℝ) / 2) * Real.exp (-(j₀ : ℝ) / 2)) := by ring
+          _ = 9 * C_L2 * Real.exp (-(j₀ : ℝ)) := by rw [hexp_sq]
+
+private theorem integral_const_Icc_unit (a c : ℝ) :
+    ∫ _t in Icc (a - 1) (a + 1), c = 2 * c := by
+  have hle : a - 1 ≤ a + 1 := by linarith
+  rw [MeasureTheory.integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le hle,
+    intervalIntegral.integral_const, smul_eq_mul]
+  ring
+
+private theorem exists_setIntegral_superlevel_desingLogProd_le :
+    ∃ C_meas : ℝ, 0 < C_meas ∧ ∀ S : Finset ℕ, (∀ p ∈ S, p.Prime) → ∀ a : ℝ, ∀ n : ℕ,
+      ∫ t in Icc (a - 1) (a + 1),
+          {t : ℝ | (n : ℝ) ≤ desingLogProd S t}.indicator (fun _ => (1 : ℝ)) t ≤
+        C_meas * Real.exp (-(6 / 5 : ℝ) * (n : ℝ)) := by
+  obtain ⟨C₀, hC₀, hpole⟩ := exists_subset_neg_two_cos_le_pole_free
+  obtain ⟨C_L2, hC_L2, hL2⟩ := exists_unit_L2_primeShell_le
+  let N₀ : ℕ := ⌈20 * (C₀ + 1)⌉₊ + 20
+  let C_meas : ℝ := max (2 * Real.exp ((6 / 5 : ℝ) * (N₀ : ℝ))) (27 * C_L2) + 1
+  refine ⟨C_meas, by dsimp [C_meas]; positivity, fun S hS a n => ?_⟩
+  let E : Set ℝ := {t : ℝ | (n : ℝ) ≤ desingLogProd S t}
+  have hE_meas : MeasurableSet E :=
+    isClosed_le continuous_const (continuous_desingLogProd S) |>.measurableSet
+  have hint_E : IntegrableOn (E.indicator (fun _ => (1 : ℝ))) (Icc (a - 1) (a + 1)) := by
+    refine ((integrableOn_const (hs := by simp)).mono' ?_ (Eventually.of_forall fun t => ?_))
+    · exact (measurable_const.indicator hE_meas).aestronglyMeasurable
+    · by_cases ht : t ∈ E <;> simp [ht]
+  by_cases hn : n < N₀
+  · have hn_le : (n : ℝ) ≤ N₀ := by exact_mod_cast hn.le
+    have h1_le_exp : (1 : ℝ) ≤ Real.exp ((6 / 5 : ℝ) * (N₀ : ℝ)) *
+        Real.exp (-(6 / 5 : ℝ) * (n : ℝ)) := by
+      rw [← Real.exp_add]
+      exact Real.one_le_exp (by linarith)
+    have hC_lo : 2 * Real.exp ((6 / 5 : ℝ) * (N₀ : ℝ)) ≤ C_meas :=
+      (le_max_left _ _).trans (by dsimp [C_meas]; linarith)
+    calc ∫ t in Icc (a - 1) (a + 1), E.indicator (fun _ => (1 : ℝ)) t
+        ≤ ∫ _t in Icc (a - 1) (a + 1), (1 : ℝ) := by
+          refine setIntegral_mono_on hint_E (integrableOn_const (hs := by simp))
+            measurableSet_Icc fun t _ => ?_
+          by_cases ht : t ∈ E <;> simp [ht]
+      _ = 2 := by rw [integral_const_Icc_unit]; ring
+      _ ≤ 2 * (Real.exp ((6 / 5 : ℝ) * (N₀ : ℝ)) * Real.exp (-(6 / 5 : ℝ) * (n : ℝ))) := by
+          nlinarith
+      _ = (2 * Real.exp ((6 / 5 : ℝ) * (N₀ : ℝ))) * Real.exp (-(6 / 5 : ℝ) * (n : ℝ)) := by ring
+      _ ≤ C_meas * Real.exp (-(6 / 5 : ℝ) * (n : ℝ)) :=
+          mul_le_mul_of_nonneg_right hC_lo (Real.exp_pos _).le
+  · have hn_ge : N₀ ≤ n := not_lt.mp hn
+    have hn20 : (20 : ℝ) * (C₀ + 1) + 20 ≤ (n : ℝ) := by
+      have hceil : 20 * (C₀ + 1) ≤ (⌈20 * (C₀ + 1)⌉₊ : ℝ) := Nat.le_ceil _
+      have hnR : ((⌈20 * (C₀ + 1)⌉₊ + 20 : ℕ) : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn_ge
+      push_cast at hnR
+      linarith
+    let j₀ : ℕ := ⌊(6 / 5 : ℝ) * (n : ℝ)⌋₊
+    have hj₀_ge1 : 1 ≤ j₀ := by
+      refine Nat.le_floor ?_
+      linarith
+    have hj₀_le : (j₀ : ℝ) ≤ (6 / 5 : ℝ) * (n : ℝ) := Nat.floor_le (by positivity)
+    have hj₀_gt : (6 / 5 : ℝ) * (n : ℝ) - 1 < (j₀ : ℝ) := by
+      have h := Nat.lt_floor_add_one ((6 / 5 : ℝ) * (n : ℝ))
+      change (6 / 5 : ℝ) * (n : ℝ) < (j₀ : ℝ) + 1 at h
+      linarith
+    let k : ℕ := S.sup id + 1
+    let tailSum : ℝ → ℝ := fun t =>
+      ∑ j ∈ Finset.Ico j₀ (j₀ + k), |shellTrig (primeShell S j) t|
+    have hint_tail : IntegrableOn (fun t : ℝ => (tailSum t) ^ 2) (Icc (a - 1) (a + 1)) := by
+      refine (Continuous.continuousOn ?_).integrableOn_Icc
+      dsimp [tailSum]; unfold shellTrig; fun_prop
+    have hpt_ind : ∀ t ∈ Icc (a - 1) (a + 1),
+        E.indicator (fun _ => (1 : ℝ)) t ≤ (tailSum t) ^ 2 := by
+      intro t _
+      by_cases htE : t ∈ E
+      · rw [indicator_of_mem htE]
+        have hn_le_des : (n : ℝ) ≤ desingLogProd S t := htE
+        have hdes_le := desingLogProd_le_head_add_tail hpole hS hj₀_ge1 t
+        have h1_le_tail : 1 ≤ tailSum t := by
+          dsimp [tailSum, k] at hdes_le ⊢
+          linarith
+        nlinarith
+      · rw [indicator_of_notMem htE]
+        exact sq_nonneg _
+    have hexp_j₀ : Real.exp (-(j₀ : ℝ)) ≤ 3 * Real.exp (-(6 / 5 : ℝ) * (n : ℝ)) := by
+      have he1_le3 : Real.exp 1 ≤ 3 := by linarith [Real.exp_one_lt_d9]
+      calc Real.exp (-(j₀ : ℝ))
+          ≤ Real.exp (1 + -(6 / 5 : ℝ) * (n : ℝ)) := Real.exp_le_exp.mpr (by linarith)
+        _ = Real.exp 1 * Real.exp (-(6 / 5 : ℝ) * (n : ℝ)) := Real.exp_add _ _
+        _ ≤ 3 * Real.exp (-(6 / 5 : ℝ) * (n : ℝ)) :=
+            mul_le_mul_of_nonneg_right he1_le3 (Real.exp_pos _).le
+    have hC_lo : 27 * C_L2 ≤ C_meas :=
+      (le_max_right _ _).trans (by dsimp [C_meas]; linarith)
+    calc ∫ t in Icc (a - 1) (a + 1), E.indicator (fun _ => (1 : ℝ)) t
+        ≤ ∫ t in Icc (a - 1) (a + 1), (tailSum t) ^ 2 :=
+          setIntegral_mono_on hint_E hint_tail measurableSet_Icc hpt_ind
+      _ ≤ 9 * C_L2 * Real.exp (-(j₀ : ℝ)) :=
+          integral_tail_sq_unit_le hC_L2 hL2 hS hj₀_ge1 k a
+      _ ≤ 9 * C_L2 * (3 * Real.exp (-(6 / 5 : ℝ) * (n : ℝ))) :=
+          mul_le_mul_of_nonneg_left hexp_j₀ (by positivity)
+      _ = (27 * C_L2) * Real.exp (-(6 / 5 : ℝ) * (n : ℝ)) := by ring
+      _ ≤ C_meas * Real.exp (-(6 / 5 : ℝ) * (n : ℝ)) :=
+          mul_le_mul_of_nonneg_right hC_lo (Real.exp_pos _).le
+
+private theorem sum_exp_neg_fifth_le (K : ℕ) :
+    ∑ n ∈ Finset.range K, Real.exp (-(1 / 5 : ℝ) * (n : ℝ)) ≤ 6 := by
+  have hrew : ∑ n ∈ Finset.range K, Real.exp (-(1 / 5 : ℝ) * (n : ℝ)) =
+      ∑ n ∈ Finset.range K, (Real.exp (-1 / 5)) ^ n := by
+    refine Finset.sum_congr rfl fun n _ => ?_
+    rw [← Real.exp_nat_mul]
+    congr 1; ring
+  rw [hrew]
+  have hr_le : Real.exp (-1 / 5) ≤ 5 / 6 := by
+    have h1 : (6 / 5 : ℝ) ≤ Real.exp (1 / 5) := by linarith [Real.add_one_le_exp (1 / 5 : ℝ)]
+    rw [show (-1 / 5 : ℝ) = -(1 / 5 : ℝ) by ring, Real.exp_neg]
+    exact (inv_anti₀ (by norm_num) h1).trans_eq (by norm_num)
+  suffices hgeom : ∑ n ∈ Finset.range K, (Real.exp (-1 / 5)) ^ n ≤
+      6 - 5 * (Real.exp (-1 / 5)) ^ K by
+    have hp_nn : 0 ≤ (Real.exp (-1 / 5)) ^ K := pow_nonneg (Real.exp_pos _).le K
+    linarith
+  induction K with
+  | zero => norm_num
+  | succ K ih =>
+    rw [Finset.sum_range_succ, pow_succ]
+    have hp_nn : 0 ≤ (Real.exp (-1 / 5)) ^ K := pow_nonneg (Real.exp_pos _).le K
+    nlinarith
+
+/-- **Uniform exponential integrability of `desingLogProd S` on every unit-radius interval.** -/
+theorem exists_integral_exp_desingLogProd_unit_le :
+    ∃ C_exp_int : ℝ, 0 < C_exp_int ∧ ∀ S : Finset ℕ, (∀ p ∈ S, p.Prime) → ∀ a : ℝ,
+      ∫ t in Icc (a - 1) (a + 1), Real.exp (desingLogProd S t) ≤ C_exp_int := by
+  obtain ⟨C_meas, hC_meas, hmeas⟩ := exists_setIntegral_superlevel_desingLogProd_le
+  let C_exp_int : ℝ := 2 * Real.exp 1 + 6 * Real.exp 1 * C_meas + 1
+  refine ⟨C_exp_int, by dsimp [C_exp_int]; positivity, fun S hS a => ?_⟩
+  let K : ℕ := S.card + 1
+  let E : ℕ → Set ℝ := fun n => {t : ℝ | (n : ℝ) ≤ desingLogProd S t}
+  have hE_meas : ∀ n : ℕ, MeasurableSet (E n) := fun n =>
+    isClosed_le continuous_const (continuous_desingLogProd S) |>.measurableSet
+  have hint_En : ∀ n : ℕ,
+      IntegrableOn ((E n).indicator (fun _ => (1 : ℝ))) (Icc (a - 1) (a + 1)) := fun n => by
+    refine ((integrableOn_const (hs := by simp)).mono' ?_ (Eventually.of_forall fun t => ?_))
+    · exact (measurable_const.indicator (hE_meas n)).aestronglyMeasurable
+    · by_cases ht : t ∈ E n <;> simp [ht]
+  have hint_lhs : IntegrableOn (fun t : ℝ => Real.exp (desingLogProd S t))
+      (Icc (a - 1) (a + 1)) :=
+    (Real.continuous_exp.comp (continuous_desingLogProd S)).continuousOn.integrableOn_Icc
+  have hint_sum : IntegrableOn
+      (fun t : ℝ => ∑ n ∈ Finset.range K,
+        Real.exp ((n : ℝ) + 1) * (E n).indicator (fun _ => (1 : ℝ)) t)
+      (Icc (a - 1) (a + 1)) :=
+    integrable_finsetSum _ fun n _ => (hint_En n).const_mul _
+  have hpt : ∀ t ∈ Icc (a - 1) (a + 1),
+      Real.exp (desingLogProd S t) ≤ Real.exp 1 +
+        ∑ n ∈ Finset.range K,
+          Real.exp ((n : ℝ) + 1) * (E n).indicator (fun _ => (1 : ℝ)) t := by
+    intro t _
+    have hsum_nn : 0 ≤ ∑ n ∈ Finset.range K,
+        Real.exp ((n : ℝ) + 1) * (E n).indicator (fun _ => (1 : ℝ)) t :=
+      Finset.sum_nonneg fun n _ => mul_nonneg (Real.exp_pos _).le
+        (indicator_nonneg (fun _ _ => zero_le_one) t)
+    by_cases hy1 : desingLogProd S t < 1
+    · have hexp_le : Real.exp (desingLogProd S t) ≤ Real.exp 1 := Real.exp_le_exp.mpr hy1.le
+      linarith
+    · have hy_ge1 : 1 ≤ desingLogProd S t := not_lt.mp hy1
+      let n₀ : ℕ := ⌊desingLogProd S t⌋₊
+      have hn₀_le : (n₀ : ℝ) ≤ desingLogProd S t := Nat.floor_le (by linarith)
+      have hn₀_gt : desingLogProd S t < (n₀ : ℝ) + 1 := Nat.lt_floor_add_one _
+      have hn₀_mem : n₀ ∈ Finset.range K := by
+        have hcard := desingLogProd_le_card hS t
+        have hn₀_card : n₀ ≤ S.card := Nat.floor_le_of_le hcard
+        exact Finset.mem_range.mpr (by dsimp [K]; omega)
+      have ht_En₀ : t ∈ E n₀ := hn₀_le
+      have hsingle : Real.exp ((n₀ : ℝ) + 1) ≤
+          ∑ n ∈ Finset.range K,
+            Real.exp ((n : ℝ) + 1) * (E n).indicator (fun _ => (1 : ℝ)) t := by
+        have hterm : Real.exp ((n₀ : ℝ) + 1) =
+            Real.exp ((n₀ : ℝ) + 1) * (E n₀).indicator (fun _ => (1 : ℝ)) t := by
+          rw [indicator_of_mem ht_En₀, mul_one]
+        rw [hterm]
+        exact Finset.single_le_sum (fun n _ => mul_nonneg (Real.exp_pos _).le
+          (indicator_nonneg (fun _ _ => zero_le_one) t)) hn₀_mem
+      have hexp_le : Real.exp (desingLogProd S t) ≤ Real.exp ((n₀ : ℝ) + 1) :=
+        Real.exp_le_exp.mpr hn₀_gt.le
+      have he1_pos : 0 < Real.exp 1 := Real.exp_pos 1
+      linarith
+  calc ∫ t in Icc (a - 1) (a + 1), Real.exp (desingLogProd S t)
+      ≤ ∫ t in Icc (a - 1) (a + 1),
+          (Real.exp 1 + ∑ n ∈ Finset.range K,
+            Real.exp ((n : ℝ) + 1) * (E n).indicator (fun _ => (1 : ℝ)) t) :=
+        setIntegral_mono_on hint_lhs ((integrableOn_const (hs := by simp)).add hint_sum)
+          measurableSet_Icc hpt
+    _ = 2 * Real.exp 1 + ∑ n ∈ Finset.range K,
+          Real.exp ((n : ℝ) + 1) *
+            ∫ t in Icc (a - 1) (a + 1), (E n).indicator (fun _ => (1 : ℝ)) t := by
+        rw [MeasureTheory.integral_add (integrableOn_const (hs := by simp)) hint_sum,
+          integral_const_Icc_unit,
+          MeasureTheory.integral_finsetSum _ (fun n _ => (hint_En n).const_mul _)]
+        congr 1
+        exact Finset.sum_congr rfl fun n _ => MeasureTheory.integral_const_mul _ _
+    _ ≤ 2 * Real.exp 1 + ∑ n ∈ Finset.range K,
+          Real.exp ((n : ℝ) + 1) * (C_meas * Real.exp (-(6 / 5 : ℝ) * (n : ℝ))) := by
+        refine add_le_add_left (Finset.sum_le_sum fun n _ => ?_) _
+        exact mul_le_mul_of_nonneg_left (hmeas S hS a n) (Real.exp_pos _).le
+    _ = 2 * Real.exp 1 + Real.exp 1 * C_meas *
+          ∑ n ∈ Finset.range K, Real.exp (-(1 / 5 : ℝ) * (n : ℝ)) := by
+        congr 1
+        rw [Finset.mul_sum]
+        refine Finset.sum_congr rfl fun n _ => ?_
+        have hexp_eq : Real.exp ((n : ℝ) + 1) * Real.exp (-(6 / 5 : ℝ) * (n : ℝ)) =
+            Real.exp 1 * Real.exp (-(1 / 5 : ℝ) * (n : ℝ)) := by
+          rw [← Real.exp_add, ← Real.exp_add]; congr 1; ring
+        calc Real.exp ((n : ℝ) + 1) * (C_meas * Real.exp (-(6 / 5 : ℝ) * (n : ℝ)))
+            = C_meas * (Real.exp ((n : ℝ) + 1) * Real.exp (-(6 / 5 : ℝ) * (n : ℝ))) := by ring
+          _ = C_meas * (Real.exp 1 * Real.exp (-(1 / 5 : ℝ) * (n : ℝ))) := by rw [hexp_eq]
+          _ = Real.exp 1 * C_meas * Real.exp (-(1 / 5 : ℝ) * (n : ℝ)) := by ring
+    _ ≤ 2 * Real.exp 1 + Real.exp 1 * C_meas * 6 :=
+        add_le_add_left (mul_le_mul_of_nonneg_left (sum_exp_neg_fifth_le K) (by positivity)) _
+    _ ≤ C_exp_int := by dsimp [C_exp_int]; linarith
+
+private theorem intervalIntegral_exp_desingLogProd_quarter_le {C_exp_int : ℝ}
+    (hunit : ∀ S : Finset ℕ, (∀ p ∈ S, p.Prime) → ∀ a : ℝ,
+      ∫ t in Icc (a - 1) (a + 1), Real.exp (desingLogProd S t) ≤ C_exp_int)
+    {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) (c : ℝ) :
+    ∫ ξ in c..(c + 1 / 4), Real.exp (desingLogProd S (2 * Real.pi * ξ)) ≤
+      C_exp_int / (2 * Real.pi) := by
+  have hpi_pos : 0 < 2 * Real.pi := by positivity
+  rw [intervalIntegral.integral_comp_mul_left
+    (f := fun t : ℝ => Real.exp (desingLogProd S t)) hpi_pos.ne',
+    smul_eq_mul, div_eq_mul_inv, mul_comm C_exp_int]
+  refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+  have hle : 2 * Real.pi * c ≤ 2 * Real.pi * (c + 1 / 4) := by linarith [Real.pi_pos]
+  rw [intervalIntegral.integral_of_le hle, ← MeasureTheory.integral_Icc_eq_integral_Ioc]
+  let a : ℝ := 2 * Real.pi * c + 1
+  have hsub : Icc (2 * Real.pi * c) (2 * Real.pi * (c + 1 / 4)) ⊆ Icc (a - 1) (a + 1) := by
+    refine Icc_subset_Icc (by dsimp [a]; linarith) ?_
+    dsimp [a]
+    linarith [Real.pi_lt_four]
+  have hint_big : IntegrableOn (fun t : ℝ => Real.exp (desingLogProd S t))
+      (Icc (a - 1) (a + 1)) :=
+    (Real.continuous_exp.comp (continuous_desingLogProd S)).continuousOn.integrableOn_Icc
+  exact (setIntegral_mono_set hint_big
+    (Eventually.of_forall fun _ => (Real.exp_pos _).le)
+    (Eventually.of_forall fun _ ht => hsub ht)).trans (hunit S hS a)
+
+private theorem setIntegral_exp_desingLogProd_two_pi_unit_le {C_exp_int : ℝ} (hC : 0 < C_exp_int)
+    (hunit : ∀ S : Finset ℕ, (∀ p ∈ S, p.Prime) → ∀ a : ℝ,
+      ∫ t in Icc (a - 1) (a + 1), Real.exp (desingLogProd S t) ≤ C_exp_int)
+    {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) (b : ℝ) :
+    ∫ ξ in Icc b (b + 1), Real.exp (desingLogProd S (2 * Real.pi * ξ)) ≤ C_exp_int := by
+  let f : ℝ → ℝ := fun ξ => Real.exp (desingLogProd S (2 * Real.pi * ξ))
+  have hf_cont : Continuous f :=
+    Real.continuous_exp.comp ((continuous_desingLogProd S).comp (continuous_const.mul continuous_id))
+  have hle : b ≤ b + 1 := by linarith
+  rw [MeasureTheory.integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le hle]
+  have h1 := intervalIntegral.integral_add_adjacent_intervals
+    (a := b) (b := b + 1 / 4) (c := b + 1 / 2)
+    (hf_cont.intervalIntegrable _ _) (hf_cont.intervalIntegrable _ _)
+  have h2 := intervalIntegral.integral_add_adjacent_intervals
+    (a := b + 1 / 2) (b := b + 3 / 4) (c := b + 1)
+    (hf_cont.intervalIntegrable _ _) (hf_cont.intervalIntegrable _ _)
+  have h3 := intervalIntegral.integral_add_adjacent_intervals
+    (a := b) (b := b + 1 / 2) (c := b + 1)
+    (hf_cont.intervalIntegrable _ _) (hf_cont.intervalIntegrable _ _)
+  have q0 := intervalIntegral_exp_desingLogProd_quarter_le hunit hS b
+  have q1 := intervalIntegral_exp_desingLogProd_quarter_le hunit hS (b + 1 / 4)
+  have q2 := intervalIntegral_exp_desingLogProd_quarter_le hunit hS (b + 1 / 2)
+  have q3 := intervalIntegral_exp_desingLogProd_quarter_le hunit hS (b + 3 / 4)
+  rw [show b + 1 / 4 + 1 / 4 = b + 1 / 2 by ring] at q1
+  rw [show b + 1 / 2 + 1 / 4 = b + 3 / 4 by ring] at q2
+  rw [show b + 3 / 4 + 1 / 4 = b + 1 by ring] at q3
+  change ∫ ξ in b..(b + 1), f ξ ≤ C_exp_int
+  have hsum4 : ∫ ξ in b..(b + 1), f ξ ≤ 4 * (C_exp_int / (2 * Real.pi)) := by
+    linarith [h1, h2, h3, q0, q1, q2, q3]
+  have h4_le : 4 / (2 * Real.pi) ≤ 1 := by
+    rw [div_le_one (by positivity)]
+    linarith [Real.pi_gt_three]
+  calc ∫ ξ in b..(b + 1), f ξ
+      ≤ (4 / (2 * Real.pi)) * C_exp_int := by linarith
+    _ ≤ 1 * C_exp_int := mul_le_mul_of_nonneg_right h4_le hC.le
+    _ = C_exp_int := one_mul _
+
+private theorem rpow_neg_four_thirds_mul_log_pow_twelve_le (ξ : ℝ) :
+    (1 + |ξ|) ^ (-(4 / 3 : ℝ)) * (Real.log (|2 * Real.pi * ξ| + Real.exp 1)) ^ 12 ≤
+      8 * (72 : ℝ) ^ 12 * (1 + |ξ|) ^ (-(7 / 6 : ℝ)) := by
+  let u : ℝ := |2 * Real.pi * ξ| + Real.exp 1
+  have hu_pos : 0 < u := by dsimp [u]; positivity
+  have hL1 : 1 ≤ Real.log u := by
+    have h := Real.log_le_log (Real.exp_pos 1)
+      (show Real.exp 1 ≤ u by dsimp [u]; linarith [abs_nonneg (2 * Real.pi * ξ)])
+    rwa [Real.log_exp] at h
+  have hlog_le : Real.log u ≤ 72 * u ^ (1 / 72 : ℝ) := by
+    have hr := Real.log_le_sub_one_of_pos (Real.rpow_pos_of_pos hu_pos (1 / 72 : ℝ))
+    rw [Real.log_rpow hu_pos] at hr
+    linarith
+  have hpow12 : (Real.log u) ^ 12 ≤ (72 : ℝ) ^ 12 * u ^ (1 / 6 : ℝ) := by
+    calc (Real.log u) ^ 12
+        ≤ (72 * u ^ (1 / 72 : ℝ)) ^ 12 := pow_le_pow_left₀ (by linarith) hlog_le 12
+      _ = (72 : ℝ) ^ 12 * (u ^ (1 / 72 : ℝ)) ^ (12 : ℕ) := mul_pow _ _ 12
+      _ = (72 : ℝ) ^ 12 * u ^ (1 / 6 : ℝ) := by
+          congr 1
+          rw [← Real.rpow_natCast _ 12, ← Real.rpow_mul hu_pos.le]
+          norm_num
+  have hu_le : u ≤ 8 * (1 + |ξ|) := by
+    dsimp [u]
+    rw [abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 * Real.pi)]
+    have hpi : 2 * Real.pi ≤ 8 := by linarith [Real.pi_lt_four]
+    have he1 : Real.exp 1 ≤ 8 := by linarith [Real.exp_one_lt_d9]
+    nlinarith [abs_nonneg ξ]
+  have hu_rpow : u ^ (1 / 6 : ℝ) ≤ 8 * (1 + |ξ|) ^ (1 / 6 : ℝ) := by
+    calc u ^ (1 / 6 : ℝ)
+        ≤ (8 * (1 + |ξ|)) ^ (1 / 6 : ℝ) :=
+          Real.rpow_le_rpow hu_pos.le hu_le (by norm_num)
+      _ = (8 : ℝ) ^ (1 / 6 : ℝ) * (1 + |ξ|) ^ (1 / 6 : ℝ) :=
+          Real.mul_rpow (by norm_num) (by positivity)
+      _ ≤ 8 * (1 + |ξ|) ^ (1 / 6 : ℝ) := by
+          refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+          calc (8 : ℝ) ^ (1 / 6 : ℝ) ≤ (8 : ℝ) ^ (1 : ℝ) :=
+                Real.rpow_le_rpow_of_exponent_le (by norm_num) (by norm_num)
+            _ = 8 := Real.rpow_one 8
+  have h1ξ_pos : 0 < 1 + |ξ| := by positivity
+  calc (1 + |ξ|) ^ (-(4 / 3 : ℝ)) * (Real.log u) ^ 12
+      ≤ (1 + |ξ|) ^ (-(4 / 3 : ℝ)) * ((72 : ℝ) ^ 12 * (8 * (1 + |ξ|) ^ (1 / 6 : ℝ))) :=
+        mul_le_mul_of_nonneg_left
+          (hpow12.trans (mul_le_mul_of_nonneg_left hu_rpow (by positivity))) (by positivity)
+    _ = 8 * (72 : ℝ) ^ 12 * ((1 + |ξ|) ^ (-(4 / 3 : ℝ)) * (1 + |ξ|) ^ (1 / 6 : ℝ)) := by ring
+    _ = 8 * (72 : ℝ) ^ 12 * (1 + |ξ|) ^ (-(7 / 6 : ℝ)) := by
+        congr 1
+        rw [← Real.rpow_add h1ξ_pos]
+        norm_num
+
+private theorem sum_range_succ_rpow_neg_seven_sixths_le (N : ℕ) :
+    ∑ k ∈ Finset.range N, ((k + 1 : ℕ) : ℝ) ^ (-(7 / 6 : ℝ)) ≤ 7 := by
+  have hsum : Summable fun n : ℕ => (n : ℝ) ^ (-(7 / 6 : ℝ)) :=
+    Real.summable_nat_rpow.mpr (by norm_num)
+  have himg : ∑ k ∈ Finset.range N, ((k + 1 : ℕ) : ℝ) ^ (-(7 / 6 : ℝ)) =
+      ∑ n ∈ (Finset.range N).image (· + 1), (n : ℝ) ^ (-(7 / 6 : ℝ)) :=
+    (Finset.sum_image fun _ _ _ _ h => Nat.succ.inj h).symm
+  rw [himg]
+  calc ∑ n ∈ (Finset.range N).image (· + 1), (n : ℝ) ^ (-(7 / 6 : ℝ))
+      ≤ ∑' n : ℕ, (n : ℝ) ^ (-(7 / 6 : ℝ)) :=
+        hsum.sum_le_tsum _ fun n _ => Real.rpow_nonneg (Nat.cast_nonneg n) _
+    _ ≤ 1 + 1 / ((7 / 6 : ℝ) - 1) := RHTower.Sieve.tsum_nat_rpow_neg_le (by norm_num)
+    _ = 7 := by norm_num
+
+private theorem eulerProductSq_one_le_four_pow {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) (t : ℝ) :
+    eulerProductSq 1 t S ≤ (4 : ℝ) ^ S.card := by
+  unfold eulerProductSq
+  calc ∏ p ∈ S, eulerFactorSq 1 t p
+      ≤ ∏ _p ∈ S, (4 : ℝ) := Finset.prod_le_prod
+          (fun p _ => eulerFactorSq_nonneg 1 t p)
+          (fun p hp => by
+            unfold eulerFactorSq
+            have hp1 : (1 : ℝ) ≤ (p : ℝ) ^ (-1 : ℝ) + 1 := by linarith [Real.rpow_nonneg (Nat.cast_nonneg p) (-1 : ℝ)]
+            have hp_inv : (p : ℝ) ^ (-1 : ℝ) ≤ 1 :=
+              Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast (hS p hp).one_lt.le) (by norm_num)
+            have hp2 : (p : ℝ) ^ (-2 : ℝ) ≤ 1 :=
+              Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast (hS p hp).one_lt.le) (by norm_num)
+            rw [show -(2 * (1 : ℝ)) = (-2 : ℝ) by norm_num]
+            have hc := Real.neg_one_le_cos (t * Real.log (p : ℝ))
+            nlinarith [Real.rpow_nonneg (Nat.cast_nonneg p) (-1 : ℝ)])
+    _ = (4 : ℝ) ^ S.card := by simp
+
+/-- **Unconditional uniform boundedness of the prime-divisor Möbius hypercube Dirichlet form at half
+damping (`ε = 1/2`, `σ = 1`).**
+For every Ramanujan modulus `r > 1`, there exists an explicit finite bound `B > 0` depending only on
+`r` such that `hypercubeDilationDirichletForm (1 / 2) P r hr ≤ B` for **every** squarefree integer
+`P : ℕ`. -/
+theorem hypercubeDilationDirichletForm_half_bounded {r : ℕ} (hr : 1 < r) :
+    ∃ B : ℝ, ∀ P : ℕ, Squarefree P → hypercubeDilationDirichletForm (1 / 2) P r hr ≤ B := by
+  obtain ⟨C_W, hC_W, hae_W⟩ := stepSpectralWeight_ae_le_inv_rpow hr
+  obtain ⟨C_exp_int, hC_exp_int, hunit⟩ := exists_integral_exp_desingLogProd_unit_le
+  let K_pref : ℝ := C_W * Real.exp (Real.pi ^ 2 / 6) * (8 * (72 : ℝ) ^ 12)
+  let B : ℝ := 14 * K_pref * C_exp_int
+  have hK_pos : 0 < K_pref := by dsimp [K_pref]; positivity
+  refine ⟨B, fun P hP => ?_⟩
+  let S : Finset ℕ := P.primeFactors
+  have hS : ∀ p ∈ S, p.Prime := fun p hp => Nat.prime_of_mem_primeFactors hp
+  have hP_prod : ∏ p ∈ S, p = P := Nat.prod_primeFactors_of_squarefree hP
+  rw [← hP_prod, hypercubeDilationDirichletForm_eq_integral hr (1 / 2) hS,
+    show (1 / 2 : ℝ) + 1 / 2 = 1 by norm_num]
+  let g : ℝ → ℝ := fun ξ => stepSpectralWeight hr ξ * eulerProductSq 1 (2 * Real.pi * ξ) S
+  have hg_nn : ∀ ξ : ℝ, 0 ≤ g ξ := fun ξ =>
+    mul_nonneg (stepSpectralWeight_nonneg hr ξ) (eulerProductSq_nonneg 1 (2 * Real.pi * ξ) S)
+  have hg_int : Integrable g volume := by
+    have hmeas : AEStronglyMeasurable g volume :=
+      (integrable_stepSpectralWeight hr).aestronglyMeasurable.mul
+        ((continuous_eulerProductSq 1 S).comp
+          (continuous_const.mul continuous_id)).aestronglyMeasurable
+    refine ((integrable_stepSpectralWeight hr).mul_const ((4 : ℝ) ^ S.card)).mono' hmeas
+      (Eventually.of_forall fun ξ => ?_)
+    rw [Real.norm_eq_abs, abs_of_nonneg (hg_nn ξ)]
+    exact mul_le_mul_of_nonneg_left (eulerProductSq_one_le_four_pow hS _)
+      (stepSpectralWeight_nonneg hr ξ)
+  let hmaj : ℝ → ℝ := fun ξ =>
+    K_pref * (1 + |ξ|) ^ (-(7 / 6 : ℝ)) * Real.exp (desingLogProd S (2 * Real.pi * ξ))
+  have hmaj_cont : Continuous hmaj := by
+    dsimp [hmaj]
+    refine ((continuous_const.mul ?_).mul
+      (Real.continuous_exp.comp
+        ((continuous_desingLogProd S).comp (continuous_const.mul continuous_id))))
+    exact (continuous_const.add continuous_abs).rpow_const fun ξ => Or.inl (by positivity)
+  have hae_g_le : ∀ᵐ ξ : ℝ ∂volume, g ξ ≤ hmaj ξ := by
+    filter_upwards [hae_W] with ξ hW
+    have heul := eulerProductSq_one_le_desingLogProd hS (2 * Real.pi * ξ)
+    have hrlog := rpow_neg_four_thirds_mul_log_pow_twelve_le ξ
+    calc g ξ
+        ≤ (C_W * (1 + |ξ|) ^ (-(4 / 3 : ℝ))) *
+            (Real.exp (Real.pi ^ 2 / 6) *
+              (Real.log (|2 * Real.pi * ξ| + Real.exp 1)) ^ 12 *
+              Real.exp (desingLogProd S (2 * Real.pi * ξ))) :=
+          mul_le_mul hW heul (eulerProductSq_nonneg _ _ _) (by positivity)
+      _ = C_W * Real.exp (Real.pi ^ 2 / 6) *
+            ((1 + |ξ|) ^ (-(4 / 3 : ℝ)) *
+              (Real.log (|2 * Real.pi * ξ| + Real.exp 1)) ^ 12) *
+            Real.exp (desingLogProd S (2 * Real.pi * ξ)) := by ring
+      _ ≤ C_W * Real.exp (Real.pi ^ 2 / 6) *
+            (8 * (72 : ℝ) ^ 12 * (1 + |ξ|) ^ (-(7 / 6 : ℝ))) *
+            Real.exp (desingLogProd S (2 * Real.pi * ξ)) :=
+          mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_left hrlog (by positivity)) (Real.exp_pos _).le
+      _ = hmaj ξ := by dsimp [hmaj, K_pref]; ring
+  -- Bound on each unit block `[k, k + 1]` and `[-(k + 1), -k]`
+  have hunit_pos_block : ∀ k : ℕ,
+      ∫ ξ in (k : ℝ)..((k : ℝ) + 1), hmaj ξ ≤
+        K_pref * ((k + 1 : ℕ) : ℝ) ^ (-(7 / 6 : ℝ)) * C_exp_int := by
+    intro k
+    have hle : (k : ℝ) ≤ (k : ℝ) + 1 := by linarith
+    rw [intervalIntegral.integral_of_le hle, ← MeasureTheory.integral_Icc_eq_integral_Ioc]
+    have hpt : ∀ ξ ∈ Icc (k : ℝ) ((k : ℝ) + 1),
+        hmaj ξ ≤ (K_pref * ((k + 1 : ℕ) : ℝ) ^ (-(7 / 6 : ℝ))) *
+          Real.exp (desingLogProd S (2 * Real.pi * ξ)) := by
+      intro ξ hξ
+      dsimp [hmaj]
+      refine mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left ?_ hK_pos.le) (Real.exp_pos _).le
+      have hk_nn : (0 : ℝ) ≤ k := Nat.cast_nonneg k
+      have hk1 : ((k + 1 : ℕ) : ℝ) ≤ 1 + |ξ| := by
+        rw [abs_of_nonneg (by linarith [hξ.1])]
+        push_cast; linarith [hξ.1]
+      exact Real.rpow_le_rpow_of_nonpos (by positivity) hk1 (by norm_num)
+    have hint_exp : IntegrableOn (fun ξ : ℝ => Real.exp (desingLogProd S (2 * Real.pi * ξ)))
+        (Icc (k : ℝ) ((k : ℝ) + 1)) :=
+      (Real.continuous_exp.comp
+        ((continuous_desingLogProd S).comp
+          (continuous_const.mul continuous_id))).continuousOn.integrableOn_Icc
+    calc ∫ ξ in Icc (k : ℝ) ((k : ℝ) + 1), hmaj ξ
+        ≤ ∫ ξ in Icc (k : ℝ) ((k : ℝ) + 1),
+            (K_pref * ((k + 1 : ℕ) : ℝ) ^ (-(7 / 6 : ℝ))) *
+              Real.exp (desingLogProd S (2 * Real.pi * ξ)) :=
+          setIntegral_mono_on hmaj_cont.continuousOn.integrableOn_Icc (hint_exp.const_mul _)
+            measurableSet_Icc hpt
+      _ = (K_pref * ((k + 1 : ℕ) : ℝ) ^ (-(7 / 6 : ℝ))) *
+            ∫ ξ in Icc (k : ℝ) ((k : ℝ) + 1), Real.exp (desingLogProd S (2 * Real.pi * ξ)) :=
+          MeasureTheory.integral_const_mul _ _
+      _ ≤ (K_pref * ((k + 1 : ℕ) : ℝ) ^ (-(7 / 6 : ℝ))) * C_exp_int :=
+          mul_le_mul_of_nonneg_left
+            (setIntegral_exp_desingLogProd_two_pi_unit_le hC_exp_int hunit hS (k : ℝ))
+            (by positivity)
+  have hunit_neg_block : ∀ k : ℕ,
+      ∫ ξ in (-((k : ℝ) + 1))..(-(k : ℝ)), hmaj ξ ≤
+        K_pref * ((k + 1 : ℕ) : ℝ) ^ (-(7 / 6 : ℝ)) * C_exp_int := by
+    intro k
+    have hle : -((k : ℝ) + 1) ≤ -(k : ℝ) := by linarith
+    rw [intervalIntegral.integral_of_le hle, ← MeasureTheory.integral_Icc_eq_integral_Ioc]
+    have hpt : ∀ ξ ∈ Icc (-((k : ℝ) + 1)) (-(k : ℝ)),
+        hmaj ξ ≤ (K_pref * ((k + 1 : ℕ) : ℝ) ^ (-(7 / 6 : ℝ))) *
+          Real.exp (desingLogProd S (2 * Real.pi * ξ)) := by
+      intro ξ hξ
+      dsimp [hmaj]
+      refine mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left ?_ hK_pos.le) (Real.exp_pos _).le
+      have hk_nn : (0 : ℝ) ≤ k := Nat.cast_nonneg k
+      have hk1 : ((k + 1 : ℕ) : ℝ) ≤ 1 + |ξ| := by
+        rw [abs_of_nonpos (by linarith [hξ.2])]
+        push_cast; linarith [hξ.2]
+      exact Real.rpow_le_rpow_of_nonpos (by positivity) hk1 (by norm_num)
+    have hint_exp : IntegrableOn (fun ξ : ℝ => Real.exp (desingLogProd S (2 * Real.pi * ξ)))
+        (Icc (-((k : ℝ) + 1)) (-(k : ℝ))) :=
+      (Real.continuous_exp.comp
+        ((continuous_desingLogProd S).comp
+          (continuous_const.mul continuous_id))).continuousOn.integrableOn_Icc
+    have hb_eq : -((k : ℝ) + 1) + 1 = -(k : ℝ) := by ring
+    calc ∫ ξ in Icc (-((k : ℝ) + 1)) (-(k : ℝ)), hmaj ξ
+        ≤ ∫ ξ in Icc (-((k : ℝ) + 1)) (-(k : ℝ)),
+            (K_pref * ((k + 1 : ℕ) : ℝ) ^ (-(7 / 6 : ℝ))) *
+              Real.exp (desingLogProd S (2 * Real.pi * ξ)) :=
+          setIntegral_mono_on hmaj_cont.continuousOn.integrableOn_Icc (hint_exp.const_mul _)
+            measurableSet_Icc hpt
+      _ = (K_pref * ((k + 1 : ℕ) : ℝ) ^ (-(7 / 6 : ℝ))) *
+            ∫ ξ in Icc (-((k : ℝ) + 1)) (-((k : ℝ) + 1) + 1),
+              Real.exp (desingLogProd S (2 * Real.pi * ξ)) := by
+          rw [hb_eq, MeasureTheory.integral_const_mul]
+      _ ≤ (K_pref * ((k + 1 : ℕ) : ℝ) ^ (-(7 / 6 : ℝ))) * C_exp_int :=
+          mul_le_mul_of_nonneg_left
+            (setIntegral_exp_desingLogProd_two_pi_unit_le hC_exp_int hunit hS (-((k : ℝ) + 1)))
+            (by positivity)
+  -- Sum over `[-N, N]` by induction on `N`
+  have htrunc_maj : ∀ N : ℕ, ∫ ξ in (-(N : ℝ))..(N : ℝ), hmaj ξ ≤ B := by
+    have hind : ∀ N : ℕ, ∫ ξ in (-(N : ℝ))..(N : ℝ), hmaj ξ ≤
+        2 * K_pref * C_exp_int * ∑ k ∈ Finset.range N, ((k + 1 : ℕ) : ℝ) ^ (-(7 / 6 : ℝ)) := by
+      intro N
+      induction N with
+      | zero => simp
+      | succ N ih =>
+        have h1 := intervalIntegral.integral_add_adjacent_intervals
+          (a := -(((N + 1 : ℕ) : ℝ))) (b := -(N : ℝ)) (c := (N : ℝ))
+          (hmaj_cont.intervalIntegrable _ _) (hmaj_cont.intervalIntegrable _ _)
+        have h2 := intervalIntegral.integral_add_adjacent_intervals
+          (a := -(((N + 1 : ℕ) : ℝ))) (b := (N : ℝ)) (c := ((N + 1 : ℕ) : ℝ))
+          (hmaj_cont.intervalIntegrable _ _) (hmaj_cont.intervalIntegrable _ _)
+        have hneg := hunit_neg_block N
+        have hpos := hunit_pos_block N
+        rw [show -((N : ℝ) + 1) = -(((N + 1 : ℕ) : ℝ)) by push_cast; ring] at hneg
+        rw [show (N : ℝ) + 1 = ((N + 1 : ℕ) : ℝ) by push_cast; ring] at hpos
+        rw [Finset.sum_range_succ, mul_add]
+        linarith
+    intro N
+    calc ∫ ξ in (-(N : ℝ))..(N : ℝ), hmaj ξ
+        ≤ 2 * K_pref * C_exp_int *
+            ∑ k ∈ Finset.range N, ((k + 1 : ℕ) : ℝ) ^ (-(7 / 6 : ℝ)) := hind N
+      _ ≤ 2 * K_pref * C_exp_int * 7 :=
+          mul_le_mul_of_nonneg_left (sum_range_succ_rpow_neg_seven_sixths_le N) (by positivity)
+      _ = B := by dsimp [B]; ring
+  have htrunc_g : ∀ N : ℕ, ∫ ξ, (Icc (-(N : ℝ)) (N : ℝ)).indicator g ξ ≤ B := by
+    intro N
+    have hleN : -(N : ℝ) ≤ (N : ℝ) := by
+      have : (0 : ℝ) ≤ N := Nat.cast_nonneg N
+      linarith
+    rw [integral_indicator measurableSet_Icc]
+    calc ∫ ξ in Icc (-(N : ℝ)) (N : ℝ), g ξ
+        ≤ ∫ ξ in Icc (-(N : ℝ)) (N : ℝ), hmaj ξ :=
+          integral_mono_ae hg_int.integrableOn hmaj_cont.continuousOn.integrableOn_Icc
+            (ae_restrict_of_ae hae_g_le)
+      _ = ∫ ξ in (-(N : ℝ))..(N : ℝ), hmaj ξ := by
+          rw [MeasureTheory.integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le hleN]
+      _ ≤ B := htrunc_maj N
+  -- Pass `N → ∞` by dominated convergence
+  have htend : Tendsto (fun N : ℕ => ∫ ξ, (Icc (-(N : ℝ)) (N : ℝ)).indicator g ξ)
+      atTop (𝓝 (∫ ξ, g ξ)) := by
+    refine tendsto_integral_filter_of_dominated_convergence g
+      (Eventually.of_forall fun N => hg_int.aestronglyMeasurable.indicator measurableSet_Icc)
+      (Eventually.of_forall fun N => Eventually.of_forall fun ξ => ?_)
+      hg_int
+      (Eventually.of_forall fun ξ => ?_)
+    · rw [Real.norm_eq_abs]
+      by_cases hmem : ξ ∈ Icc (-(N : ℝ)) (N : ℝ)
+      · rw [indicator_of_mem hmem, abs_of_nonneg (hg_nn ξ)]
+      · rw [indicator_of_notMem hmem, abs_zero]
+        exact hg_nn ξ
+    · refine tendsto_const_nhds.congr' ?_
+      rw [Filter.EventuallyEq, Filter.eventually_atTop]
+      refine ⟨⌈|ξ|⌉₊, fun N hN => ?_⟩
+      have hξN : |ξ| ≤ (N : ℝ) := (Nat.le_ceil |ξ|).trans (by exact_mod_cast hN)
+      exact (indicator_of_mem (abs_le.mp hξN) g).symm
+  exact le_of_tendsto' htend htrunc_g
+
+end GaloisForLFunctions.SignedSuccessorArithmetic

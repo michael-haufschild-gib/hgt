@@ -1,7 +1,7 @@
 # Antipodality alone cannot exclude white noise
 
 - **ID:** antipodality-alone-cannot-exclude-white-noise
-- **Stage:** 1-in-progress
+- **Stage:** 5-failed
 - **Type:** FALSIFIED
 - **Source:** `docs/reports/review-2410/opus.md`, §2.1 and Q-III milestones.
 - **Statement:** The proposed exclusion of white noise by antipodality alone fails; every positive kernel admits a unique antipodal extension.
@@ -39,11 +39,11 @@ minus one.
 - **New insight:** An extra antipodal Gram coordinate carries no independent
   covariance data. A source exclusion must use the realization of that coordinate
   by the moving cofactor sum and pole subtraction.
-- **Status:** Dependency-closed paper proof. The generic existence and uniqueness
-  module passed Lean and its transitive axiom audit uses only `propext`,
-  `Classical.choice`, and `Quot.sound`. The full white-noise specialization also
-  passed its scratch check and standard-axiom audit. White-noise umbrella wiring
-  is complete; final source checks remain pending. This no-go is not yet closed.
+- **Status:** The generic existence/uniqueness survivor and complete white-noise
+  specialization passed canonical source checks in the completed original-core
+  audit. Transitive axioms are only `propext`, `Classical.choice`, and `Quot.sound`.
+  Both modules are umbrella-wired. The negative route and positive survivor are
+  closed; actual Möbius realization remains a separate question.
 
 ## Lean declarations
 
@@ -60,5 +60,5 @@ Files: `HTGeometry/AntipodalKernelExtension.lean` and
 - [x] Precise failed assertion and source distinction recorded.
 - [x] Positive survivor has a complete paper proof.
 - [x] Generic survivor passed Lean.
-- [ ] White-noise application, axiom audit, final checks, and imports complete.
-- [ ] Retire only after all preceding gates pass.
+- [x] White-noise application, axiom audit, final checks, and imports complete.
+- [x] Retire only after all preceding gates pass.

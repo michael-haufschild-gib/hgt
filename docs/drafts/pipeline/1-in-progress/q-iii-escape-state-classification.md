@@ -1008,3 +1008,86 @@ and reuses that helper in the existing tied-torus bound, before installing
 the common-sequence theorem. Its final checks are prepared in
 `/tmp/qiii-tied-torus-canonical-audit.sh`. None may run before the associated
 scratch finishes cleanly with standard axioms.
+
+### Diagonal foundation canonical batch complete
+
+All six leaves in `/tmp/qiii-diagonal-foundations-canonical-audit.sh` passed
+canonical source checks with standard axioms. Session `90975` has advanced
+to `/tmp/qiii-diagonal-cutoff-augmentation-check.lean` (lake PID `20994`).
+No other Lean process is running for this task. The cutoff survivor,
+augmentation and sign corollaries still need their own completion; the
+corresponding cards remain open.
+
+The not-yet-started common-proof child queue now also checks
+`/tmp/qiii-intermediate-cluster-values-check.lean`, a generic late-crossing
+lemma. Its new actual-state target is recorded, without proof claims, in
+`actual-cofactor-kernel-limits-have-no-discrete-branching.md`. Exact actual
+successive-Gram and intermediate-kernel applications are drafted in
+`/tmp/qiii_cofactor_gram_steps_body.lean` and
+`/tmp/qiii_actual_kernel_interpolation_body.lean`; these are UNVERIFIED and
+not in the active queue. Cardinality consequences remain open.
+
+The contracted module draft now proves full Wiener-operator intertwining,
+not only its cyclic-vector identity. Its guarded promoter
+`/tmp/qiii-promote-verified-contracted-horizons.py` is prepared, UNRUN;
+regenerate the contracted scratch after the cutoff dependency is installed.
+
+### Cutoff/augmentation local retry still pending
+
+The cutoff/augmentation stage finished with three local errors, preserved
+in `/tmp/qiii-diagonal-cutoff-augmentation-check.log`. Multiplication
+cancellation resolved to an unrelated namespaced lemma; it now uses the
+direct contradiction between positivity of q*K(q,q) and its nonpositivity.
+The PNat augmentation proof's two natural-number rewrites now use
+`Nat.le_mul_of_pos_right/left` followed by the exact product equality.
+The repaired standalone scratch is
+`/tmp/qiii-diagonal-cutoff-augmentation-retry-check.lean`, NOT RUN.
+Its guarded promoter now reads the corresponding retry log. No proof with
+these reported `sorryAx` dependencies has been promoted.
+
+Session `90975` continues in the common-vector/pole child queue (root child
+PID `26922` at transition). Do not start another Lean process. The next
+independent Lean queue must retry cutoff/augmentation before attempting the
+contracted-state bundle; current unit/finite and later pole/boundary checks
+continue independently.
+
+The obsolete all-eight diagonal promoter and obsolete diagonal canonical
+script have been removed from `/tmp` to prevent reuse. The completed
+foundation audit and guarded two-leaf cutoff promoter are the valid paths.
+
+### USER OVERRIDE: direct Lean calls only; finish existing findings
+
+The user explicitly stopped scripted builds and required formalization of
+all findings currently only on paper. This overrides every historical queue
+instruction above. Do not run or recreate compilation scripts. Every Lean
+invocation must be one direct `lake --old env lean ...` command from
+`formal/`, with at most one owned Lean process active. No `lake build`,
+umbrella build, heartbeat change or whole-tree checker.
+
+The entire owned script process group `83059` was terminated and verified
+absent. Session `90975` exited 143. It had completed all six diagonal
+foundation source audits, failed the three recorded local cutoff/augmentation
+steps, and built the real Wiener convolution olean successfully. Its later
+finite joint-character build was interrupted before any olean was written.
+No unit/finite final source batch, small scratch batch, pole canonical batch
+or boundary canonical batch ran to completion. All obsolete `/tmp/qiii*.sh`
+compilation drivers have been removed.
+
+Current direct Lean session: `73496`, checking
+`/tmp/qiii-diagonal-cutoff-augmentation-retry-check.lean`. No second Lean
+process may start until it exits. Its output is returned directly by the
+tool; preserve the completed output as the retry log before any guarded
+source promotion. The two staged fixes are direct positivity contradiction
+and natural-factor bounds via `Nat.le_mul_of_pos_right/left`.
+
+Formalization now takes precedence over further conjecture generation.
+All already drafted findings remain in scope: cutoff/augmentation and signs;
+actual Wiener unit transport; finite joint multiplicity; pole orders and
+critical boundary; moving/reset/raw origin modules and continuum index;
+contracted horizons, principal ideals, full intertwining, matrix order and
+index loss; finite-hull radial moduli and half-plane approximation; complete
+jet interpolation and paid-index bounds; actual conjugation; and the drafted
+singleton/continuum kernel-family alternative. Every card stays open until
+its exact declarations, canonical source checks and transitive axioms pass.
+Text-only assemblers/promoters do not execute Lean; any later use must still
+be followed by direct per-file Lean calls, never a compilation driver.

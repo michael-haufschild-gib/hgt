@@ -90,9 +90,12 @@ harmonic-amplitude relative law or factorial calibration. Those source
 theorems have already been read and checked in the present work. The new
 claim is this precise refinement; no external novelty claim is made.
 
-Six further targets are drafted in `/tmp/QIRelativeVaughanGramTools.lean`:
+Seven further targets are drafted in `/tmp/QIRelativeVaughanGramTools.lean`:
 the harmonic factorial bridge, reciprocal-amplitude bound, uniform relative
 error, its schedule limit, calibrated horizon existence, and unconditional
-relative-limit realization for every positive cutoff schedule. They remain
+relative-limit realization for every positive cutoff schedule, and the stated
+simultaneous zero/relative-rank-one corollary along the same horizons. They remain
 uncompiled. Their planned imports also justify producing the arithmetic
 lower-bound module when its checks pass.
+The simultaneous corollary also imports the subcritical matrix-rank leaf;
+its rank assertion must pass Lean rather than remain an informal description.

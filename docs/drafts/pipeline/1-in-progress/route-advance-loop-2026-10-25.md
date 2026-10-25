@@ -38,6 +38,11 @@ reformulations do not count.
 | 1 | SRT | The generic-width premise of the lag receiver, rate law and orbit laws can be removed | PROVED (#1) | `EveryWidthDecidesTheCriticalLine`, `TheSplineOrbitDecidesTheCriticalLine` | Only off-line spectral points matter; real-rooted box splines see all of them at every width |
 | 2 | SZ | One shift threshold `ω₀` for all high dyadic scales | NOT PURSUED | — | `ω₀` comes from compactness on a fixed sphere; the first-variation error grows with the scale, so uniformity is likely false (no-go, not counted) |
 | 3 | WL/MC | Discrete Beurling systems with periodic counting error | PARKED | — | Periodic error forces the system to be `ℕ` (elementary rigidity); a selectivity fact, not route progress |
+| 4 | HF/ACS | Generic-test index laws (`cyclic_pontryagin_law`, two-prime and rational Hecke orbits) hold for the cubic spline | PROVED (part of #1) | `zeta_splineOrbit_negIndex_law`, `riemannHypothesis_iff_splineTwoPrime_negIndex_eq_zero`, `riemannHypothesis_iff_splineOrbit_negIndex_le_one` | Only right zeros enter the negative index; RH iff no spline Gram has two negative squares |
+| 5 | SRT/RW | Grid laws without the resonant-step exception | NOT DISCHARGEABLE | — | Resonance involves all zero heights; no explicit step is certifiable without arithmetic of ordinates |
+| 6 | WD | Arithmetic head formula without `Ξ(t) ≠ 0` | NOT A PREMISE | — | The normalized coefficient `Σ Re((z_q − t)⁻²)` has genuine poles at zero ordinates |
+| 7 | HF | S/L>45 without the second-moment premise | NOT PURSUED | — | Premise is dischargeable (`f ∈ C²_c`), but the inequality is auxiliary and does not sign the ground minimum |
+| 8 | SZ | `MangoldtLogHaarCapacity` (`Σ_{d≤n} Λ(d)/d ≤ log n`) | NOT PURSUED | — | Small `n` need explicit Mertens errors or finite checks; feeds a side transport lemma only |
 
 ## Log
 - 2026-10-25 — created.

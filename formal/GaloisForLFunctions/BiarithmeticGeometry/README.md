@@ -432,6 +432,14 @@ of the critical graph norm.
 Source: `CriticalPartialSumCore.lean`, `criticalCorrectedTruncation_norm_error`,
 `criticalCorrectedTruncation_sq_error`, `criticalCorrectedTruncation_graph_errors_tendsto`.
 
+The geometric future tail `B_b g(m)=sum_(s>=0)b^(s+1)g(m+s+1)` has
+absolute coefficient norm at most `b/(1-b)||g||_1` for `0<=b<1`.
+It satisfies `B_b g(m)=b*g(m+1)+b*B_b g(m+1)`. Joint absolute
+summability justifies both the recurrence and the series reordering.
+This supplies the analytic tail estimate for division away from criticality.
+Source: `GeometricFutureTail.lean`, `geometricFutureTail_recurrence`,
+`tsum_norm_geometricFutureTail_le`.
+
 ### Admission and total pronic energy
 
 For any real row `f`, the positive cells have energies
@@ -454,6 +462,15 @@ nonclosed image in the input Wiener norm, so these are distinct properties.
 Source: `CofactorGraphDomain.lean`, `isClosed_cofactorGraphDomain`,
 `cofactorGraphDomain_completeSpace`, `mem_range_cofactorGraphInput_iff`.
 
+For the actual centered prefix of any source with absolutely convergent
+mean, this graph image is exactly its complex paid ideal. Every paid
+kernel has one unique square-summable output. The source convolution law
+and the paid critical-Wiener mean correction prove the identification in
+both real and imaginary parts.
+Source: `PaidGraphIdentification.lean`,
+`mem_range_actualSourceCofactorGraphInput_iff`,
+`paidIdeal_iff_existsUnique_cofactorGraph`.
+
 The ordinary completed pronic space also has exact dilations. In normalized
 positive-cell coordinates, the floor action has weight
 `sqrt(m(m+1))/sqrt(n(n+1))`, where `m=floor(n/j)`. Its block mass is exactly
@@ -462,6 +479,14 @@ and integrate to a unital representation of the critical Wiener algebra with
 `||pi(a)||<=||a||_W`. This ordinary energy module precedes normalization by
 escaping source energy. Source: `PronicDilationOperators.lean`,
 `norm_pronicDilationOp`, `pronicDilationOp_comp`, `pronicWienerRepresentation`.
+
+Undoing the normalization at any integer cell gives a continuous row
+coordinate. It reads dilation as exact floor division and the completed
+Wiener action as the finite sum `sum_(1<=j<=n) a(j) f(floor(n/j))`.
+Terms above the cell vanish, so the full operator series agrees with the
+arithmetic formula at every horizon.
+Source: `PronicWienerCoordinates.lean`, `pronicRowCoordinate_dilation`,
+`pronicRowCoordinate_wiener`.
 
 ### Paid perturbations preserve the complete ideal
 
@@ -504,6 +529,14 @@ sharpness theorem, before constructing the limiting profile.
 Source: `GoldenSourceAdmission.lean`, `receiverBounded_fiveTower_iff`,
 `receiverBounded_goldenArithmeticSource_iff`.
 
+Signed parameters have the same exact radius: for every real `|a|<5`,
+the tower is paid precisely when `|a|<sqrt(5)`. Both critical signs escape,
+and changing the sign of the prime-five generator preserves admission.
+The proof uses signed digit variance and includes the zero parameter.
+Source: `SignedTowerAdmission.lean`, `receiverBounded_fiveTower_abs_iff`,
+`receiverBounded_fiveTower_neg_iff`,
+`not_receiverBounded_negative_critical_fiveTower`.
+
 The actual roots also test normalized amplification. Sending each root
 `z` to `z^3/5` preserves their product five and gives trace ten. The first
 two transformed point counts are exactly `-4` and `-64`, while every
@@ -514,6 +547,14 @@ bounded-conductor question requires a separate formulation and theorem.
 Source: `GoldenNormalizedCube.lean`, `goldenNormalizedCube_product`,
 `goldenNormalizedCubePointCount_two`,
 `golden_pointCount_positive_but_normalizedCube_negative`.
+
+The integral trace obstruction has a complete prime-by-prime classification.
+If `p*U=T^3-3p*T` and both second point-count bounds
+`T^2,U^2<=(p+1)^2` hold, then `p` divides `T`. For `p>=5` only
+`T=U=0` survives; the nonzero cases are `(p,T,U)=(2,2,-2),(2,-2,2),
+(3,3,0),(3,-3,0)`. Every survivor satisfies `T^2<=4p`, and `U` is unique.
+Source: `NormalizedCubicTrace.lean`, `exists_normalizedCubicTrace_iff`,
+`normalizedCubicTrace_pure_bound`, `normalizedCubicTrace_unique`.
 
 ### Intrinsic counting changes the golden receiver
 

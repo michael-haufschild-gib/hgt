@@ -1211,8 +1211,11 @@ Its finite head is controlled explicitly. The actual convolution fluctuation and
 all truncated Möbius receivers now satisfy these uniform logarithmic norm bounds
 (`UniformLogarithmicEnergyInTheVaughanConvolution`). The actual centered Möbius
 prefix and Bézout interior inherit every logarithmic norm saving as well
-(`LogarithmicEnergySavingsForTheMobiusInterior`). The complete uniform Gram law
-remains under verification.
+(`LogarithmicEnergySavingsForTheMobiusInterior`). All five actual centered rows,
+after subtracting $c_\varepsilon H_UH_Vs_i n^{1-\varepsilon}$ with
+$s=(0,0,-1,1,0)$, now share every logarithmic norm saving uniformly in both
+cutoffs (`UniformLogarithmicRemaindersInAllVaughanRows`). Their exact sum is the
+Bézout interior. The complete uniform Gram law remains under verification.
 
 **Finite harmonic rigidity.** Every $H_N$ with $N\ge1$ is nonzero. For every prime
 $N/2<p\le N$, its rational $p$-adic valuation is exactly $-1$; all such distinct primes

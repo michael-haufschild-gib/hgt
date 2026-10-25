@@ -47,7 +47,7 @@ integral/positive trace classification, rather than the bare failure.
 
 - [x] Corpus-first reuse audit and exact candidate operation specified.
 - [x] Dependency-closed proof plan, including small primes and exact source-root identity.
-- [ ] Lean trace classification and actual golden counterexample.
+- [x] Lean trace classification and actual golden counterexample.
 - [ ] Direct source checks, transitive audits, and umbrella import.
 
 No retirement or formal theorem is claimed yet. In particular, most genuine
@@ -82,7 +82,9 @@ new positivity premise enters this calculation.
 
 The arithmetic classification is implemented in
 `BiarithmeticGeometry/NormalizedCubicTrace.lean`. Its scratch check and all
-five audits passed; the wired production source awaits its direct check. The inspected
+five audits and its direct repository check passed; the umbrella is wired.
+The [stage-3 card](../3-formalized/biarithmetic-normalized-cubic-trace.md) records
+the exact scope. The inspected
 Mathlib interface `Int.Prime.dvd_pow'` supplies the integer divisibility
 step. Newton identities and these elementary integral bounds are classical;
 no external originality claim is made.
@@ -93,7 +95,8 @@ check and four clean transitive audits. Its
 [formalized card](../3-formalized/biarithmetic-golden-normalized-cube.md)
 records the preserved determinant, trace ten, transformed counts minus four
 and minus sixty-four, and comparison with every original point count.
-The general integral trace classification awaits its direct repository check.
+The general integral trace classification also passed its direct repository check.
+The complex-root bridge and purity theorem remain pending.
 
 The root-to-trace bridge is drafted in
 `/tmp/BiarithmeticNormalizedCubicRootLaw.lean`. Its field identities retain

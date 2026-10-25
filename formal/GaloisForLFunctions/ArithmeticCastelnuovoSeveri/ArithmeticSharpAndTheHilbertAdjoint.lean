@@ -23,18 +23,12 @@ theorem meyerHilbertConvolution_apply_of_simple
       deningerMeyerStrongLogMellin g (q.1 : ℂ) * x q := by
   have hq : q.2.val = 0 := by
     have hlt := q.2.isLt
-    rw [hs q.1] at hlt
+    have hm := hs q.1
     omega
   rw [deningerMeyerHilbertConvolution_jets, hq]
   simp only [Nat.zero_add, Finset.range_one, Finset.sum_singleton,
     deningerMeyerHasseMoment, Nat.factorial_zero, Nat.cast_one, div_one,
     deningerMeyerStrongLogMellinJetLM_eq_iteratedDeriv, iteratedDeriv_zero]
-  congr 1
-  have hlow : deningerHasseLower q 0 = q := by
-    rcases q with ⟨rho, j⟩
-    rcases j with ⟨j, hj⟩
-    rfl
-  rw [hlow]
 
 /-- Adjoint compatibility forces sharp-square-root closure of the genuine Poisson ideal. -/
 theorem meyerHilbertConvolution_adjoint_forces_sharp_roots
@@ -52,7 +46,7 @@ theorem meyerHilbertConvolution_adjoint_forces_sharp_roots
   have hn := ContinuousLinearMap.norm_adjoint_comp_self (deningerMeyerHilbertConvolution g)
   rw [hz, norm_zero] at hn
   apply (deningerMeyerHilbertConvolution_eq_zero_iff g).mp
-  exact norm_eq_zero.mp (sq_eq_zero_iff.mp hn.symm)
+  exact norm_eq_zero.mp (sq_eq_zero_iff.mp (by simpa only [pow_two] using hn.symm))
 
 /-- At simple critical zeros arithmetic sharp is the actual Hilbert adjoint. -/
 theorem meyerHilbertConvolution_sharp_eq_adjoint_of_simple_critical
@@ -78,7 +72,10 @@ theorem meyerHilbertConvolution_sharp_eq_adjoint_of_simple_critical
   have hsharp : deningerMeyerStrongLogMellin (deningerMeyerSourceSharp g) (q.1 : ℂ) =
       star (deningerMeyerStrongLogMellin g (q.1 : ℂ)) := by
     rw [deningerMeyerSourceSharp_mellin, href]
-  simp only [RCLike.inner_apply, hsharp, star_mul, star_star]
+  simp only [RCLike.inner_apply, hsharp]
+  change y q * star (star (deningerMeyerStrongLogMellin g (q.1 : ℂ)) * x q) =
+    (deningerMeyerStrongLogMellin g (q.1 : ℂ) * y q) * star (x q)
+  rw [star_mul, star_star]
   ring
 
 /-- The exact adjoint criterion includes simplicity in addition to ordinary trace positivity. -/

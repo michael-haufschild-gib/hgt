@@ -119,8 +119,10 @@ series at zero gives `-B_b g(0)=g_0`. The negative tail therefore satisfies
 the same initial value and recurrence as `T_q g`, since `q=1/b`:
 `-B_b g(m+1)=q*(-B_b g(m))+g_(m+1)`. Induction gives the future-tail
 formula without a separate rescaling and reindexing of each infinite tail.
-`GeometricFutureTail` drafts the recurrence together with the norm bound;
-the source comparison and Fredholm conclusion remain pending in Lean.
+`GeometricFutureTail` proves the recurrence together with the norm bound.
+Its direct source check and all four axiom audits passed; the
+[stage-3 card](../3-formalized/biarithmetic-geometric-future-tail.md) records
+the scope. The source comparison and Fredholm conclusion remain pending in Lean.
 
 The dependent `/tmp/BiarithmeticGeometricCausalDivision.lean` now drafts the
 full complex sequence-domain equivalence. For necessity, square summability
@@ -189,3 +191,40 @@ Fredholm interface and index-minus-one theorem in
 The other bounded Fredholm interface requires Hilbert spaces, so it is not
 silently applied to the `ell1` coefficient space. Graph completeness and
 the actual source comparison remain required in addition to the index claim.
+
+`/tmp/BiarithmeticCriticalCoefficientNonclosed.lean` drafts the critical
+nonclosed-range input in actual complex `ell1`. It embeds the checked real
+inverse-square-root-tail differences, preserving their exact norm two and
+zero total evaluation. Their complex partial-sum squares remain the
+divergent harmonic sequence. The checked finite-core mechanism supplies
+convergent paid approximants. Four audits drafted; unchecked.
+
+`/tmp/BiarithmeticGeometricCoefficientFredholm.lean` drafts the index part
+using that existing partial-map interface. The operator is the identity
+restricted to the actual causal square-energy submodule. Its kernel is
+zero and its range is precisely that submodule. Subcritical range is all
+of `ell1`; strict range is the kernel of a surjective continuous scalar
+evaluation; critical range is not closed. These laws yield the proposed
+indices and the exact Fredholm locus `q>=0, q!=1`. Seven audits drafted;
+unchecked. This does not yet assert the full bounded graph-inclusion
+comparison with ordinary or intrinsic source norms.
+
+`/tmp/BiarithmeticGeometricCoefficientGraph.lean` drafts the complete Banach
+domain itself as the coordinate-equality submodule of `ell1 x ell2`. Every
+response coordinate is a finite continuous coefficient functional, so
+the graph is closed. Its input is bounded and injective, with image
+exactly the causal payment domain and a unique square-summable output.
+Five audits drafted; unchecked. The inherited norm is the maximum of
+input and output norms; the paper sum norm is equivalent but is not the
+literal Lean definition. Quantitative comparison and actual-source graph
+calibration still remain to be formalized.
+
+`/tmp/BiarithmeticGeometricGraphNormBounds.lean` drafts the quantitative
+norm comparison. The corpus's `FormationDepthBaireCategoryEscape` proves
+the elementary `ell1`-to-`ell2` norm estimate through finite square sums;
+the same inspected finite-sum argument is applied directly to the actual
+causal output coordinates here. The output bounds are
+`||g||_1/(1-q)` below criticality and `b/(1-b)||g||_1` at ratio `q=1/b>1`.
+Together with the maximum graph norm, these give both norm-comparison
+constants explicitly. Five audits drafted; unchecked. The ordinary and
+intrinsic source graph calibrations remain separate obligations.

@@ -300,9 +300,7 @@ theorem sum_towerOddPrimeSide_ge_neg_activeTowerWeight {q : ℕ → ℝ} {X : �
 private theorem sum_primeFactors_log_le_log {n : ℕ} (hn : 1 ≤ n) :
     ∑ p ∈ n.primeFactors, Real.log p ≤ Real.log n := by
   have hprimes : ∀ p ∈ n.primeFactors, p.Prime := fun _ hp => Nat.prime_of_mem_primeFactors hp
-  have hdvd : (∏ p ∈ n.primeFactors, p) ∣ n :=
-    Finset.prod_primes_dvd n (fun p hp => (hprimes p hp).prime)
-      (fun _ hp => Nat.dvd_of_mem_primeFactors hp)
+  have hdvd : (∏ p ∈ n.primeFactors, p) ∣ n := Nat.prod_primeFactors_dvd n
   have hpos : 0 < ∏ p ∈ n.primeFactors, p :=
     Finset.prod_pos fun p hp => (hprimes p hp).pos
   have hle : ((∏ p ∈ n.primeFactors, p : ℕ) : ℝ) ≤ (n : ℝ) :=
@@ -724,7 +722,9 @@ theorem sum_primes_log_div_sqrt_le_ten_sqrt (M : ℕ) :
       intro p hpj
       obtain ⟨hpP, hlogp⟩ := Finset.mem_filter.mp hpj
       have hpp : p.Prime := (Finset.mem_filter.mp hpP).2
-      have h2j_le : 2 ^ j ≤ p := hlogp ▸ Nat.pow_log_le_self 2 hpp.ne_zero
+      have h2j_le : 2 ^ j ≤ p := by
+        rw [← hlogp]
+        exact Nat.pow_log_le_self 2 hpp.ne_zero
       have hsqrt_le : (Real.sqrt 2) ^ j ≤ Real.sqrt p := by
         rw [hsqrt_pow]
         exact Real.sqrt_le_sqrt (by exact_mod_cast h2j_le)
@@ -735,7 +735,9 @@ theorem sum_primes_log_div_sqrt_le_ten_sqrt (M : ℕ) :
       intro p hpj
       obtain ⟨hpP, hlogp⟩ := Finset.mem_filter.mp hpj
       have hpp : p.Prime := (Finset.mem_filter.mp hpP).2
-      have hp_lt : p < 2 ^ (j + 1) := hlogp ▸ Nat.lt_pow_succ_log_self (by omega : 1 < 2) p
+      have hp_lt : p < 2 ^ (j + 1) := by
+        rw [← hlogp]
+        exact Nat.lt_pow_succ_log_self (by omega : 1 < 2) p
       exact Finset.mem_filter.mpr ⟨Finset.mem_Ioc.mpr ⟨hpp.pos, hp_lt.le⟩, hpp⟩
     have htheta : ∑ p ∈ P.filter (fun p => Nat.log 2 p = j), Real.log p ≤
         (14 / 5 : ℝ) * (2 : ℝ) ^ j := by
@@ -768,7 +770,9 @@ theorem sum_primes_log_div_sqrt_le_ten_sqrt (M : ℕ) :
       rw [Real.sqrt_sq (by norm_num)]]
     exact Real.sqrt_le_sqrt (by norm_num)
   have h2L_le : (Real.sqrt 2) ^ L ≤ Real.sqrt M := by
-    rw [Nat.cast_pow 2 L ▸ Real.sqrt_pow (by norm_num : (0 : ℝ) ≤ 2)]
+    have hsqrt_L : (Real.sqrt 2) ^ L = Real.sqrt ((2 ^ L : ℕ) : ℝ) := by
+      rw [Nat.cast_pow, Nat.cast_ofNat, Real.sqrt_pow (by norm_num)]
+    rw [hsqrt_L]
     exact Real.sqrt_le_sqrt (by exact_mod_cast Nat.pow_log_le_self 2 (by omega : M ≠ 0))
   calc ∑ p ∈ P, Real.log p / Real.sqrt p
       = ∑ j ∈ range (L + 1),
@@ -859,7 +863,7 @@ theorem sum_continuumPrimeTower_ge_neg_twelve_exp {F : ℝ → ℝ} (hF_cont : C
       _ ≤ ∑ p ∈ (Ioc 0 ⌊Real.exp A⌋₊).filter Nat.Prime, Real.log p :=
           Finset.sum_le_sum_of_subset_of_nonneg hsub fun p hp _ =>
             Real.log_nonneg (by exact_mod_cast (Finset.mem_filter.mp hp).2.one_le)
-      _ = Chebyshev.theta (Real.exp A) := rfl
+      _ = Chebyshev.theta (Real.exp A) := by rw [Chebyshev.theta]
       _ ≤ Real.log 4 * Real.exp A := Chebyshev.theta_le_log4_mul_x (Real.exp_pos A).le
       _ ≤ 2 * Real.exp A := mul_le_mul_of_nonneg_right hlog4 (Real.exp_pos A).le
   -- Middle/high primes (`A ≤ log p`) vanish above `2 A` and carry `log p / √p` on `[e^A, e^{2A})`

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.SquareRootThreshold.PolarGroundEnergyAndPoleFreeLagAbscissaBridge
 import GaloisForLFunctions.SquareRootThreshold.GroundEnergyAbscissaAndLagGridAttainmentBridge
+import GaloisForLFunctions.SquareRootThreshold.LagRateBoundsTheDeBruijnNewmanHeatTime
 import GaloisForLFunctions.BiScaleUncertainty.CubicSplineUniversalProbe
 
 /-!
