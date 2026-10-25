@@ -1,8 +1,8 @@
 # Products of spectra are depth-homogeneous: the independence test of Arithmetic Künneth Theory
 
 - **ID:** akt-kunneth-homogeneity
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-2510/opus.md` §4.9 (retirement test of AKT), §2.1(b) (depth homogeneity), walls ledger face 1.15
 - **Statement:** A product receiver on the spectrum of a source sees zero depth only through its total arithmetic length. Its free (unique-factorization) region ends at total length equal to the square-root threshold, whatever the product order. Over `𝔽_q`, Künneth positivity is exactly point-count positivity, which does not imply purity. So products of spectra supply no non-scaling term.
 
@@ -19,8 +19,8 @@ Layer 1 is homogeneous (K1, K2). Over `𝔽_q` its positivity content is exactly
 ## Gates
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, attack idea
-- [ ] 1 → 2 fully-proven: complete paper proof, no open dependency
-- [ ] 2 → 3 formalized: Lean theorems in `ArithmeticKunnethTheory/`, file checks green, no `sorry`/axioms
+- [x] 1 → 2 fully-proven: complete paper proof, no open dependency
+- [x] 2 → 3 formalized: Lean theorems below; each file checked with `lake --old env lean`; `#print axioms` shows only `propext`, `Classical.choice`, `Quot.sound`
 
 ## Theorems
 
@@ -84,19 +84,20 @@ The golden datum `1 − 5X + 5X²` over `𝔽₅` satisfies 1–3 and is not pur
 
 So AKT is not an independent mechanism. Its product layer reduces to F2, its correspondence layer is F3, and its base layer is F1. K1–K3 are its positive survivors and the content of the folder `ArithmeticKunnethTheory/`.
 
-## Approach (Lean)
+## Lean
 
-- `ArithmeticKunnethTheory/ProductReceiversSeeDepthOnlyThroughTotalLength.lean`: K1.
-- `ArithmeticKunnethTheory/ProductMomentsAreDiagonalBelowTheThreshold.lean`: K2, on top of `SquareRootThreshold.WindowedOffDiagonalBeyondThreshold`.
-- `ArithmeticKunnethTheory/KunnethPositivityIsPointCountPositivity.lean`: K3, on top of the ACS curve data and `sigmaSeries`.
-- Umbrella `ArithmeticKunnethTheory.lean`, imported from `MainTheorems.lean`.
+Folder `formal/GaloisForLFunctions/ArithmeticKunnethTheory/`, umbrella `ArithmeticKunnethTheory.lean` (imported from `MainTheorems.lean`).
+
+- **K1** (`ProductReceiversSeeDepthOnlyThroughTotalLength`): `norm_productResponse_le`, `integral_cexp_diag_eq_integral_map`, `ae_abs_le_of_map_sum`, `exp_mul_le_re_integral_cexp_diag`.
+- **K2** (`ProductMomentsAreDiagonalBelowTheThreshold`): `expSum_pow_eq_powSum`, `integral_pairTransform_mul_normSq_pow_eq_diag`, `integral_normSq_pow_eq_diag_add_offDiag_nonneg`.
+- **K3** (`KunnethPositivityIsPointCountPositivity`): `exists_sigmaCoeff_eq_ofReal_nonneg`, `kunneth_positivity_tfae`, `goldenDatum_kunneth_positive_not_pure`.
 
 ## No-go closure
 
 - **Exact killing theorem/mechanism:** K1 (depth enters only through the total length), K2 (the free region ends at total length `T` for every product order) and K3 (Künneth positivity equals `N_n ≥ 0`, which the golden datum satisfies).
 - **Strongest positive survivor:** K1, K2 and K3 themselves. Each is a sharp boundary: K1 is attained on the diagonal, K2 is exact below the threshold with nonnegative off-diagonal above it, and K3 is an equivalence.
 - **New insight:** Products of spectra are where purity statements *land* (Rudnick–Sarnak, function-field correlations via Deligne), not where they come from. The only non-scaling terms are a base loss (F1) and the correspondence budget `τ(0)` (F3).
-- **Status:** paper proofs above; Lean in progress.
+- **Status:** dependency-closed; K1–K3 formalized (see Lean).
 
 ## Log
-- 2026-10-25 — created in 1-in-progress.
+- 2026-10-25 — created; paper proofs; formalized.

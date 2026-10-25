@@ -128,3 +128,16 @@ the last cell. If width reduction does not suffice, split integration into short
 The common-denominator rewrite passed in `/tmp/hgt_sum_div_probe.lean` (48899, exit 0) and is now
 used in Arithmetic before expanding the finite sums. The width-reduction Certificates rebuild
 passed (2662, exit 0). The last-cell probe is now running with that version.
+
+Width reduction alone did not resolve the five integration depth failures (59020, exit 1).
+All polynomial certificates still have clean axiom sets. Integration now certifies descending
+polynomial tails in blocks of at most eight coefficients, with each tail substituted by its
+previously proved integer bounds. This preserves the exact recursive addition and division order.
+Only the changed Certificates artifacts were unlinked; its new build is running in session 44871.
+After it passes, rerun `/tmp/hgt_last_cell_probe.lean`; then compile all four Cells modules and
+Arithmetic, and perform the two requested direct source/axiom audits. Full numerical completion
+and final audits remain pending.
+
+The eight-coefficient-tail Certificates module compiled successfully (44871, exit 0).
+Current last-cell check: session 61016. The probe prints each integration-tail axiom set as well
+as the polynomial and final numerator sets, so any remaining failure can be located precisely.

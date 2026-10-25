@@ -151,21 +151,56 @@ macro "first_atom_cell " j:num : command => do
       let massFn := Lean.mkIdent
         (if side == "Lo" then ``Enclosure.massLo else ``Enclosure.massHi)
       let length := (if side == "Lo" then 54 else 42) + 2 * r
-      let mut widths := #[]
-      let mut widthValues := #[]
-      for k in [1:length + 1] do
-        let width := Lean.mkIdent (.mkSimple ("widthPower" ++ toString k))
-        widths := widths.push (← `(Lean.Parser.Tactic.simpLemma| ← ($width).property))
-        widthValues := widthValues.push (← `(Lean.Parser.Tactic.simpLemma| $width:ident))
+      -- Integration follows polynomial tails of at most eight coefficients.
+      let blocks := (length + 7) / 8
+      for offset in [:blocks + 1] do
+        let k := min length ((blocks - offset) * 8)
+        let degree := Lean.Syntax.mkNumLit (toString k)
+        let tail := Lean.mkIdent (.mkSimple ("integral" ++ suffix ++ "Tail" ++ toString k))
+        let declaration ← if k == length then
+          `(command| abbrev $tail : {v // v = Enclosure.mass
+              (($polynomial).val.drop $degree) $degree (Enclosure.point (1 / 64))} := by
+            certify_first_atom =>
+              change Enclosure.point 0
+              cbv)
+        else do
+          let finish := min length (k + 8)
+          let nextDegree := Lean.Syntax.mkNumLit (toString finish)
+          let nextTail := Lean.mkIdent
+            (.mkSimple ("integral" ++ suffix ++ "Tail" ++ toString finish))
+          let mut expression ← `(term| Enclosure.mass
+            (($polynomial).val.drop $nextDegree) $nextDegree (Enclosure.point (1 / 64)))
+          let mut widths := #[]
+          let mut widthValues := #[]
+          for offset in [:finish - k] do
+            let position := finish - offset - 1
+            let coefficientIndex := Lean.Syntax.mkNumLit (toString position)
+            let exponent := Lean.Syntax.mkNumLit (toString (position + 1))
+            expression ← `(term| Enclosure.add
+              (Enclosure.divNat
+                (Enclosure.mul
+                  ((($polynomial).val[$coefficientIndex]?).getD (Enclosure.point 0))
+                  (Enclosure.pow (Enclosure.point (1 / 64)) $exponent)) $exponent)
+              $expression)
+            let width := Lean.mkIdent (.mkSimple ("widthPower" ++ toString (position + 1)))
+            widths := widths.push (← `(Lean.Parser.Tactic.simpLemma| ← ($width).property))
+            widthValues := widthValues.push (← `(Lean.Parser.Tactic.simpLemma| $width:ident))
+          `(command| abbrev $tail : {v // v = Enclosure.mass
+              (($polynomial).val.drop $degree) $degree (Enclosure.point (1 / 64))} := by
+            certify_first_atom =>
+              change $expression
+              simp only [← ($nextTail).property]
+              dsimp only [$nextTail:ident, $polynomial:ident, $product:ident]
+              simp only [$[$widths],*]
+              dsimp only [$[$widthValues],*]
+              cbv)
+        declarations := declarations.push declaration
+      let integral := Lean.mkIdent (.mkSimple ("integral" ++ suffix ++ "Tail0"))
       declarations := declarations.push (← `(command|
-        abbrev $mass : {v // v = $massFn $order $j} := by
-          certify_first_atom =>
-            rw [$massFn:ident]
-            simp only [← ($polynomial).property]
-            dsimp only [$polynomial:ident, $product:ident]
-            simp only [Enclosure.mass, Nat.reduceAdd, $[$widths],*]
-            dsimp only [$[$widthValues],*]
-            cbv))
+        abbrev $mass : {v // v = $massFn $order $j} :=
+          ⟨($integral).val, ($integral).property.trans
+            (congrArg (fun p => Enclosure.mass p 0 (Enclosure.point (1 / 64)))
+              ($polynomial).property)⟩))
       let raw := Lean.mkIdent (.mkSimple ("raw" ++ suffix))
       let projection := Lean.mkIdent
         (if side == "Lo" then ``Enclosure.Bounds.lo else ``Enclosure.Bounds.hi)
@@ -173,7 +208,7 @@ macro "first_atom_cell " j:num : command => do
         abbrev $raw : {v // v = $projection ($massFn $order $j)} := by
           certify_first_atom =>
             simp only [← ($mass).property]
-            dsimp only [$mass:ident]
+            dsimp only [$mass:ident, $integral:ident]
             cbv))
   return ⟨Lean.mkNullNode declarations⟩
 
