@@ -56,7 +56,8 @@ theorem meyerHalfDensityL2_fourier_ae (g : DeningerMeyerStrongLogTarget) :
     (𝓕 (deningerMeyerHalfDensityL2LM g) : Lp ℂ 2 (volume : Measure ℝ)) =ᵐ[volume]
       fun w : ℝ => deningerMeyerStrongLogMellin g
         (1 / 2 - ((2 * Real.pi * w : ℝ) : ℂ) * I) := by
-  have hcoe := deningerMeyerHalfDensityL2_coeFn g
+  have hcoe : (deningerMeyerHalfDensityL2LM g : ℝ → ℂ) =ᵐ[volume]
+      deningerMeyerHalfDensityL2Function g := deningerMeyerHalfDensityL2_coeFn g
   have hi : Integrable (deningerMeyerHalfDensityL2LM g : ℝ → ℂ) :=
     (integrable_deningerMeyerHalfDensityL2Function g).congr hcoe.symm
   have hf := GaloisForLFunctions.HTGeometry.fourierL2_coeFn_ae_eq_fourier
@@ -65,7 +66,10 @@ theorem meyerHalfDensityL2_fourier_ae (g : DeningerMeyerStrongLogTarget) :
       𝓕 (deningerMeyerHalfDensityL2LM g : ℝ → ℂ) w =
         𝓕 (deningerMeyerHalfDensityL2Function g) w := by
     rw [Real.fourier_real_eq_integral_exp_smul, Real.fourier_real_eq_integral_exp_smul]
-    exact integral_congr_ae (hcoe.mono fun _ h => by rw [h])
+    apply integral_congr_ae
+    filter_upwards [hcoe] with t ht
+    exact congrArg
+      (fun z : ℂ => Complex.exp (((-2 * Real.pi * t * w : ℝ) : ℂ) * I) • z) ht
   filter_upwards [hf] with w hw
   change (GaloisForLFunctions.HTGeometry.fourierL2 ℝ (deningerMeyerHalfDensityL2LM g)) w = _
   rw [hw, hclassic, meyerHalfDensityFunction_fourier]
@@ -77,6 +81,7 @@ theorem meyerHalfDensityL2_norm_sq (g : DeningerMeyerStrongLogTarget) :
   rw [_root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq, meyerOriginDegree_sharp_square, Complex.ofReal_re]
   apply integral_congr_ae
   filter_upwards [deningerMeyerHalfDensityL2_coeFn g] with t ht
+  change ‖(deningerMeyerHalfDensityL2 g : ℝ → ℂ) t‖ ^ 2 = _
   rw [ht, deningerMeyerHalfDensityL2Function, norm_mul, Complex.norm_real,
     Real.norm_eq_abs, abs_of_pos (Real.exp_pos _), mul_pow, ← Complex.normSq_eq_norm_sq]
   have he : Real.exp (t / 2) ^ 2 = Real.exp t := by
@@ -113,8 +118,9 @@ theorem meyerPoissonBoundary_halfDensity_dense :
     have hflow : deningerMeyerStrongLogCenteredFlow (-a)
         (deningerMeyerStrongLogSumLM deningerMeyerXiCapSource) =
           deningerMeyerStrongLogSumLM f := by
+      dsimp only [f]
       rw [deningerMeyerStrongLogCenteredFlow, LinearMap.smul_apply,
-        deningerMeyerStrongLogFlow_boundary, f, map_smul]
+        deningerMeyerStrongLogFlow_boundary, map_smul]
     refine ⟨f, ?_⟩
     change deningerMeyerHalfDensityL2LM (deningerMeyerStrongLogSumLM f) = _
     rw [← hflow, deningerMeyerHalfDensityL2LM_centeredFlow, neg_neg]
@@ -134,6 +140,7 @@ theorem exists_meyer_representative_small_halfDensity_norm
     rw [map_sub, show (LinearMap.range deningerMeyerStrongLogSumLM).mkQ
         (deningerMeyerStrongLogSumLM f) = 0 from
       (Submodule.Quotient.mk_eq_zero _).mpr ⟨f, rfl⟩, sub_zero]
+    rfl
   · rw [map_sub]
     simpa only [dist_eq_norm] using hf
 
@@ -205,12 +212,3 @@ theorem meyerHalfDensity_continuous_class_reading_iff_constant
     exact (hconst _).trans (hconst _).symm
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHalfDensityFunction_fourier
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHalfDensityL2_norm_sq
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerPoissonBoundary_halfDensity_dense
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_meyer_representative_small_origin_square
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHalfDensity_continuous_boundary_reporter_zero
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerHalfDensity_continuous_class_reading_iff_constant
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerOriginSquareMass_class_lower_bound_iff

@@ -80,11 +80,18 @@ theorem pmPronicVaughanHalfLimitGram_posSemidef :
     Matrix.PosSemidef pmPronicVaughanHalfLimitGram := by
   exact pmPronicVaughanLimitGram_posSemidef le_rfl
 
+/-- The actual endpoint prefix and pole have a positive-definite two-by-two Gram. -/
+theorem pmPronicVaughanHalfLimitGram_prefix_pole_posDef :
+    Matrix.PosDef (pmPronicVaughanHalfLimitGram.submatrix
+      (![0, 4] : Fin 2 → Fin 5) (![0, 4] : Fin 2 → Fin 5)) := by
+  exact pmPronicVaughanLimitGram_prefix_pole_posDef le_rfl
+
 /-- The actual infinite endpoint Gram has rank exactly two. -/
 theorem rank_pmPronicVaughanHalfLimitGram : Matrix.rank pmPronicVaughanHalfLimitGram = 2 := by
   exact rank_pmPronicVaughanLimitGram le_rfl
 
 #print axioms pmPronicVaughanHalfLimitGram_posSemidef
+#print axioms pmPronicVaughanHalfLimitGram_prefix_pole_posDef
 #print axioms rank_pmPronicVaughanHalfLimitGram
 #print axioms tendsto_sum_pmPronicVaughanHalfLimitGram_terms
 #print axioms pmPronicVaughanHalfLimitGram_symm

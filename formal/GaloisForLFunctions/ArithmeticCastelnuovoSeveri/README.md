@@ -187,11 +187,30 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
     value weights: off-line blocks and higher jets vanish. Conversely finite nonnegative critical
     weights define positive Hermitian degrees on the whole quotient
     (`PositiveMeyerDegreesSeeReducedCriticalJets.lean`).
+    Every complex degree splits uniquely as `h + I • k` with Hermitian `h,k`; their square
+    readings are exactly the original real and imaginary parts. Real square positivity and its
+    finite critical-value classification therefore depend only on `h` (`MeyerHermitianDegreePart.lean`).
+    Every nonzero algebraic character is a unique Xi evaluation, without continuity; Hermitian
+    and positive characters are exactly critical evaluations. All characters separate classes iff
+    Xi zeros are simple; positive characters separate iff RH + simplicity
+    (`MeyerAlgebraicCharacters.lean`).
+    Every finite Xi packet splits positive degree energy into its exact critical-value weighting
+    and a nonnegative remainder. Critical packets also split the sharp square in genuine
+    cohomology. The supremum of finite projected energies is nonnegative and bounded by full
+    energy (`FiniteMeyerProjectorsSplitPositiveEnergy.lean`); vanishing of the residual remains open.
     The faithful Hilbert–Schmidt reserve gives Bézout and ampleness; its RR and exact linear-degree
     representation hold iff RH + simplicity. Reserve boundedness and invariance both select critical
     highest jets. On that restricted carrier, faithful-reserve RR and linear representation hold iff
-    critical zeros are simple; invariance is unconditional. Origin-Hilbert recovery and finite-jet
-    graph claims are still awaiting their direct Lean checks.
+    critical zeros are simple; invariance is unconditional.
+    Genuine Poisson boundaries are dense in origin half-density L2. Every source class has
+    arbitrarily small origin square mass, and its exact lower bounds are the nonpositive reals
+    (`PoissonBoundariesAreDenseInOriginMass.lean`). Every continuous class reading into a
+    Hausdorff space is constant; neither faithful compact-open Xi comparison nor full-Hasse
+    convolution admits continuous recovery there (`OriginHilbertCohomologyObstruction.lean`).
+    Every cohomological reading with dense normed image has full product graph closure with
+    origin L2. This includes every finite full-Xi-jet packet and the entire faithful operator
+    range; the finite closed graph is single-valued exactly for the empty packet
+    (`EveryFiniteMeyerJetGraphIsDenseInOriginHilbertSpace.lean`).
 
 ### Odd ledger, floors, sections
 22. **Odd-sector ledgers** (reflected-prime/polar, Chebyshev $E(s)$): identities. **Degree floor = width:**

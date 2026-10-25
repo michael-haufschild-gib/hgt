@@ -1,13 +1,13 @@
-# Finite critical projectors split positive Meyer energy
+# Finite Meyer projectors split positive energy
 
 - **ID:** finite-critical-projectors-split-positive-meyer-energy
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean verification pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** Q-II; positive-meyer-degrees-and-the-infinite-source-tail.
-- **Statement:** For every positive Hermitian degree and every finite critical packet, the actual causal projector splits the full sharp-square degree into its exact weighted critical-value contribution and a nonnegative residual.
-- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass; external novelty unverified.
+- **Statement:** For every positive Hermitian degree and every finite Xi packet, the actual causal projector splits full sharp-square degree into its exact weighted critical-value contribution and a nonnegative residual. The supremum of all finite projected energies is bounded by full energy.
+- **Status:** FORMALIZED. Actual-file checks and transitive axiom audits passed; external novelty unverified.
 
-## Complete paper proof
+## Formalized critical-packet proof
 
 The source quotient is separated by its full Xi jets. For any finite set S,
 the existing causal projector P_S retains every lower jet at points in S
@@ -55,8 +55,8 @@ question on `../1-in-progress/positive-meyer-degrees-and-the-infinite-source-tai
 idempotence, exact selected jets, and off-packet vanishing. The finite
 Hasse algebra and positive-degree classification are certified by direct checks
 **48574** and **14494**, with standard transitive axiom audits. The energy
-module still requires its own actual-file check. The stale draft `/tmp/QIIFiniteCriticalProjectorEnergyDraft.lean`
-contains exact block selection, central multiplication, sharp compatibility,
+module is certified by direct check **61957**. Its foundation and main module
+contain exact block selection, central multiplication, sharp compatibility,
 zero mixed product, degree decomposition, residual saturation, and the
 weighted finite energy formula/bound. Its finite sum is indexed by the
 existing full-jet slot type with only order zero retained, equivalently one
@@ -67,9 +67,10 @@ The generic block-selection and central-multiplier proof is certified in
 `propext`, `Classical.choice`, and `Quot.sound` in all four endpoint audits.
 It also proves the complete singleton-block action of the local value
 idempotent. Temporary prints are removed; the module is wired and documented.
-The energy and character importers still await their own direct checks.
+The character importer is certified by direct check **58454**; the energy
+importer is certified by direct check **61957**.
 
-## Stronger survivor: arbitrary finite packets [PROVED HERE, paper]
+## Formalized arbitrary finite packets
 
 Criticality of the whole selected packet is unnecessary for a positive
 Hermitian degree. Let S be any finite set of Xi points and P_S its full causal
@@ -101,9 +102,42 @@ absolute squares. Positivity of the remaining square proves the bound, with
 no continuity or infinite summation step.
 
 Internal novelty search found only unrelated finite Hilbert matrix projection
-bounds. This stronger theorem is not yet Lean-certified. All six general-packet
-endpoints are now in the existing energy draft, including exact finite weights
-and saturation; their actual-file verification remains pending. The critical-packet algebraic
+bounds. All six general-packet endpoints are Lean-certified, including exact
+finite weights and saturation. The critical-packet algebraic
 zero-product statement remains stronger at the class level and is retained.
 
-Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FiniteMeyerProjectorsSplitPositiveEnergy.lean`; unverified and unwired, with seventeen audit endpoints. The paper's literal class-level sharp-square decomposition is explicitly stated as `meyerFiniteCriticalProjector_square_decomposition`, independently of any degree. Its proof takes the sharp of the zero mixed product and expands convolution. The infinite-tail card's existing regular-energy assertion is also explicit: `meyerDegreeRegularEnergy` is the supremum of finite projected energies; `meyerPositiveDegree_regular_energy_bounds` and `meyerPositiveDegree_regular_residual` bound it and give a nonnegative remainder. The generic supremum API passed direct check **27654**. No zero residual or infinite interchange is asserted. These formalize existing paper claims. The older scratch copy lacks these declarations and remains stale until actual-file verification succeeds.
+## Regular energy and residual
+
+`meyerDegreeRegularEnergy` is the supremum of all finite projected energies.
+The displayed finite bound makes this a genuine bounded supremum; positivity
+makes it nonnegative. Thus full energy is its regular energy plus the
+nonnegative difference. These are explicit Lean statements, with no claim
+that the residual vanishes and no interchange of a degree with an infinite sum.
+
+## Lean certificate
+
+Module: `ArithmeticCastelnuovoSeveri/FiniteMeyerProjectorsSplitPositiveEnergy.lean`.
+Direct check **61957** passed with only `propext`, `Classical.choice`, and
+`Quot.sound` in all seventeen endpoint audits:
+
+- `meyerFiniteCriticalProjector_sharp`
+- `meyerFiniteCriticalProjector_complement_product_zero`
+- `meyerFiniteCriticalProjector_square_decomposition`
+- `meyerFiniteCriticalProjector_degree_decomposition`
+- `meyerFiniteCriticalProjector_degree_le`
+- `meyerFiniteCriticalProjector_degree_eq_iff`
+- `meyerFiniteCriticalProjector_square`
+- `meyerFiniteCriticalProjector_degree_formula`
+- `meyerFiniteCriticalWeightedEnergy_le`
+- `meyerPositiveDegree_projector_formula`
+- `meyerFiniteProjector_positive_cross_degree_zero`
+- `meyerFiniteProjector_positive_degree_decomposition`
+- `meyerFiniteProjector_positive_degree_formula`
+- `meyerFiniteProjector_positive_degree_le`
+- `meyerFiniteProjector_positive_degree_eq_iff`
+- `meyerPositiveDegree_regular_energy_bounds`
+- `meyerPositiveDegree_regular_residual`
+
+Temporary prints are removed; the module is wired and documented. The stale
+scratch draft and supremum API probe are deleted. No dependency olean is
+needed for this leaf.

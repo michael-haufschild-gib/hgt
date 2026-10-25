@@ -1,13 +1,13 @@
 # Every finite Meyer jet graph is dense in origin Hilbert space
 
 - **ID:** qii-origin-hilbert-full-jet-graph
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean verification pending)
-- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Status:** Direct actual-file check 4931 passed; all ten endpoint audits use only `propext`, `Classical.choice`, and `Quot.sound`.
 - **Source:** ../1-in-progress/q-ii-source-effectivity-and-linear-degree.md
 - **Statement:** The joint map from actual Meyer sources to half-density L2 and any surjective normed cohomological linear reading has dense image in their product. In particular every finite full-Xi-jet graph has full product closure, including critical value coordinates.
 
-## Proof argument (Lean verification pending)
+## Proof argument
 
 Write iota for the existing half-density source embedding, B for the genuine
 Poisson boundary, and q for the actual quotient map. The boundary-density
@@ -47,19 +47,31 @@ vertical, including critical zeroth values and all higher jets. Strengthening
 the positive ambient norm to an L2 Hilbert setting therefore does not preserve
 the critical cohomological reading. A closed graph cannot restore that loss.
 
-## Scope and certificate obligations
+## Scope and certificate
 
 The theorem concerns the stated origin Hilbert completion and literal full
 source graph. It does not rule out stronger source topologies or restricted
 domains. Its positive survivor is the exact full-product graph closure.
 
 Corpora searched for dense graph/dense kernel mechanisms and the actual
-finite-jet surjection. The source statements were read. Complete unrun draft: `/tmp/QIIMeyerOriginJetGraphDraft.lean`, including
-full product closure and the exact empty-packet single-valuedness criterion. The
-draft also includes full graph closure for the entire faithful operator range
-and its nonzero vertical classes. The
-boundary-density prerequisite has a complete candidate argument and Lean file,
-but remains unverified. External novelty unverified.
+finite-jet surjection. The source statements were read. Direct actual-file
+check **4931** certifies full product closure, the exact empty-packet
+single-valuedness criterion, and full graph closure for the entire faithful
+operator range with its nonzero vertical classes. The boundary-density
+prerequisite passed direct check **34029**. External novelty unverified.
+
+Audited endpoints:
+
+- `meyerOrigin_joint_degree_dense_of_denseRange`
+- `meyerOrigin_joint_degree_dense`
+- `meyerFiniteJetOriginGraph_closure_eq_top`
+- `meyerFiniteJetOriginGraph_full_vertical`
+- `meyerFiniteJetOriginGraph_closed_relation_eq_top`
+- `meyerFiniteJetOriginGraph_singleValuedClosure_iff_empty`
+- `meyerFiniteJetOriginGraph_no_closed_singleValued_extension`
+- `meyerOrigin_joint_operator_dense`
+- `meyerOperatorOriginGraph_closure_eq_top`
+- `meyerOperatorOriginGraph_nonzero_vertical`
 
 ## Dense-image extension
 
@@ -68,9 +80,10 @@ is within epsilon of the desired output, lift that class to an actual source,
 and then change its origin coordinate by a boundary within epsilon of the
 desired Hilbert vector. Both coordinates are within epsilon in the product
 maximum norm. Thus the graph is dense also in any normed completion of the
-reading image. This strengthens the abstract draft and requires no continuity
+reading image. This strengthens the surjective case and requires no continuity
 of the algebraic cohomological reading. The earlier generic Hilbert graph
 annihilator criterion is `HTGeometry/GraphSaturationCore.lean`; here genuine
 boundary density supplies the missing arithmetic annihilator rigidity.
 
-Actual candidate: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/EveryFiniteMeyerJetGraphIsDenseInOriginHilbertSpace.lean`; unverified and unwired. The scratch copy remains until actual-file verification succeeds.
+Formalized in `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/EveryFiniteMeyerJetGraphIsDenseInOriginHilbertSpace.lean`.
+The module is cleaned and wired; its stale draft and API probe are removed.

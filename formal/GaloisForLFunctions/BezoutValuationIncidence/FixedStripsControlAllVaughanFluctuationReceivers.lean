@@ -167,7 +167,9 @@ theorem exists_uniform_vaughan_source_pronicNorm_power_of_fixed_strip
     (ht U T hT).trans (mul_le_mul_of_nonneg_right
       (by linarith only [hA, hE]) hP), ?_⟩
   have hcenter : pronicNorm (pmPowerDampedCenteredDivisorPrefix ε) T ≤ E * P := by
-    simpa only [patternPrefix_moebius_eq_centeredDivisorPrefix hε] using hm () T hT
+    have heq : patternPrefix ε moebiusReal = pmPowerDampedCenteredDivisorPrefix ε :=
+      funext (patternPrefix_moebius_eq_centeredDivisorPrefix hε)
+    simpa only [heq] using hm () T hT
   have hactive : pronicNorm (fun n => -addDiff (pmActiveSawtoothComponent ε) n) T ≤ 1 / 2 :=
     pronicNorm_le_of_abs_le (by norm_num) (fun n => by
       simpa only [abs_neg] using abs_addDiff_pmActiveSawtoothComponent_le_half hε.le n) T

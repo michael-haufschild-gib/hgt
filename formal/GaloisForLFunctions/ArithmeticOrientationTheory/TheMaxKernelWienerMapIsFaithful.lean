@@ -123,5 +123,6 @@ theorem wiener_representation_injective_of_max_gram
 end GaloisForLFunctions.ArithmeticOrientationTheory
 
 #print axioms GaloisForLFunctions.ArithmeticOrientationTheory.wiener_cyclic_map_injective_of_max_gram
+#print axioms GaloisForLFunctions.ArithmeticOrientationTheory.wiener_representation_injective_of_max_gram
 end
 end

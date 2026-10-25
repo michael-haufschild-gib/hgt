@@ -129,7 +129,9 @@ theorem frequent_vaughan_scaled_reciprocalTail_sqrt_lower {ε : ℝ} (hε : 0 < 
     congr 2
     ring
   obtain ⟨C, hC, hM⟩ := exists_eventual_mertens_sqrt_bound_of_vaughan_tail_bound hε.le hδ.le htail
-  have hKδ : K * δ = c / 4 := by dsimp only [δ]; field_simp
+  have hKδ : K * δ = c / 4 := by
+    dsimp only [δ]
+    field_simp [hK.ne']
   have hrootlim : Tendsto (fun N : ℕ => Real.sqrt (N : ℝ)) atTop atTop := by
     simpa only [Function.comp_def, Real.sqrt_eq_rpow] using
       (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 2)).comp tendsto_natCast_atTop_atTop

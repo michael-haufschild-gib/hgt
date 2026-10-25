@@ -41,7 +41,8 @@ theorem exists_uniform_pmUndampedVaughan_power_of_mertens_power {η κ B : ℝ}
   have hopt : a * η = η / (2 + η) := by dsimp only [a]; ring
   have hbalance : 1 - 2 * a = a * η := by
     dsimp only [a]
-    field_simp [(show (2 : ℝ) + η ≠ 0 by positivity)] <;> ring
+    field_simp [(show (2 : ℝ) + η ≠ 0 by positivity)]
+    ring
   have hκtail : 0 < a * η - κ := sub_pos.mpr (by rw [hopt]; exact hκη)
   have hκhead : 2 * a ≤ 1 - κ := by linarith only [hκtail, hbalance]
   have ha1 : a ≤ 1 := by linarith only [hκhead, hκ]

@@ -36,6 +36,12 @@ arbitrary multiplicative phases still satisfies critical equality.
 
 ## Status
 
+Real packet, complex packet and complete-Hilbert operator order passed
+combined direct Lean check `12682` with standard axioms. The canonical owner
+`NumericHorizonOrderControlsTheCofactorAction` is installed and wired, pending
+its separate check and dependency olean. Finite-hull consequences still await
+their own direct verification.
+
 The real finite-packet theorem `scaled_packet_antitone` is now drafted in
 `/tmp/qiii_matrix_horizon_order_body.lean` and included in the pending
 contracted-horizon scratch. It reuses the existing finite-packet Gram identity.
@@ -73,8 +79,8 @@ The modulus bridge and finite actual hull application are now drafted in
 `/tmp/qiii_finite_hull_moduli_body.lean`. The final target is
 `finite_moduleHull_modulus_classification`: every finite actual hull point
 has augmentation modulus or `|omega(p)|=p^(-alpha)` for one alpha>=0.
-No phase claim is included. These parts are not yet in a check queue; the
-operator horizon-order dependency must first pass; the common-family
+No phase claim is included. The operator horizon-order draft is under direct
+verification in the contraction scratch; the common-family
 eigenvector dependency is complete. The modulus conclusions remain OPEN
 until formalized.
 

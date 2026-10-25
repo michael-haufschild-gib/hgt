@@ -33,12 +33,12 @@ Lean module names below are relative to `GaloisForLFunctions/`; BVI denotes
 | [vaughan-relative-gram-and-harmonic-denominators.md](../3-formalized/vaughan-relative-gram-and-harmonic-denominators.md) — COMPLETE | All ten arithmetic and relative-Gram targets passed final direct checks and standard-axiom audits. Includes calibrated horizons for every positive cutoff schedule and the simultaneous zero/relative-rank-one corollary. |
 | [uniform-vaughan-convolution-stretched-exponential-rate.md](../3-formalized/uniform-vaughan-convolution-stretched-exponential-rate.md) — COMPLETE; related existing stage-1 [factorial criterion](vaughan-factorial-order-one-is-a-fixed-strip.md) still pending | All three BVI `UniformStretchedExponentialCancellationInTheVaughanConvolution` targets passed final direct checks and standard-axiom audits. The distinct factorial-order-one criterion still needs HTGeometry `FactorialLogarithmicBoundsArePowerBounds` and BVI `FactorialOrderOneInTheVaughanConvolutionIsAPowerSaving`. |
 | `uniform-vaughan-residual-power-rates-are-fixed-strips.md` | BVI `TheExtremeVaughanCutoffReadsItsHarmonicSum`, `PowerCancellationSurvivesTheDampedFloorTransform`, `FixedStripsControlAllVaughanFluctuationReceivers`, `UniformVaughanResidualPowerRatesAreFixedStrips`, `UniformVaughanPowerBoundsAreFixedStrips`; RHTower `MertensPowerBoundsControlMobiusHarmonicSums`. |
-| `the-centred-vaughan-pole-has-positive-finite-energy.md` | BVI `TheCentredVaughanPoleHasPositiveFiniteEnergy`, including the eventual faster-power obstruction. |
-| `the-endpoint-vaughan-limit-has-rank-two.md` | BVI `TheVaughanLimitRowsAreIndependentInTwoCells`, `TheActualVaughanLimitGramHasRankTwo`, `TheActualEndpointVaughanGramHasRankTwo`; actual summability supplied by the moving-limit leaves below. |
+| `the-centred-vaughan-pole-has-positive-finite-energy.md` | All seven BVI `TheCentredVaughanPoleHasPositiveFiniteEnergy` targets passed final direct checks and standard-axiom audits, including the eventual faster-power obstruction. The stated endpoint product-horizon nonzero limit still needs its actual Gram chain. |
+| `the-endpoint-vaughan-limit-has-rank-two.md` | All twelve BVI `TheVaughanLimitRowsAreIndependentInTwoCells` targets passed final direct checks and standard-axiom audits. `TheActualVaughanLimitGramHasRankTwo` and `TheActualEndpointVaughanGramHasRankTwo` remain pending, including the explicit positive-definite two-by-two prefix/pole Gram corollary; actual summability comes from the moving-limit leaves below. |
 | `uniform-half-damping-vaughan-harmonic-gram.md` | BVI `UniformCriticalPronicPairingsFromLogarithmicCancellation`, `UniformLogarithmicPrefixRemaindersInAllVaughanRows`, `UniformHarmonicVaughanGramsAtHalfDamping`, `PositiveFloorMajorantsControlPronicEnergy`, `MovingVaughanRowsConvergeCellByCell`, `UniformHalfDampingVaughanGramsHaveAnActualLimit`, `UniformHarmonicEnergyLawsForVaughanSuperpositions`, `TheHalfDampingVaughanGramLimitsFormARankThreeRay`, `ProductHorizonVaughanGramsAtHalfDampingHaveFiniteLimits`, `EveryNonnegativeEndpointVaughanLimitIsRealized`; HTGeometry `MovingTruncationsPreserveDominatedLimits`, `VanishingPositiveScalesRealizeHarmonicMasses`. |
 | `vaughan-admission-phase-transition-at-half-damping.md` | BVI `VaughanAdmissionAtHalfDamping`, `VaughanAdmissionAboveHalfDamping`, `UpperHalfVaughanGramsHaveAnActualLimit`; actual upper-half rank two in the shared infinite-Gram leaf. |
-| `vaughan-zero-cutoffs-remove-the-smooth-obstruction.md` | BVI `ZeroVaughanCutoffsRemoveTheSmoothObstruction`, `TheZeroCutoffVaughanCoefficientSpace`. |
-| `vaughan-admitted-rank-filtration-reads-the-zero-abscissa.md` | BVI `TheVaughanAdmissionRankReadsTheZeroAbscissa`, using the checked-to-be endpoint and zero-cutoff classifications. |
+| [vaughan-zero-cutoffs-remove-the-smooth-obstruction.md](../3-formalized/vaughan-zero-cutoffs-remove-the-smooth-obstruction.md) — COMPLETE | All twenty scalar and coefficient-space targets passed final direct checks and standard-axiom audits. Includes unique coordinate recovery, both exact spans, admitted and quotient dimensions, and unconditional half-damping admission. |
+| [vaughan-admitted-rank-filtration-reads-the-zero-abscissa.md](../3-formalized/vaughan-admitted-rank-filtration-reads-the-zero-abscissa.md) — COMPLETE | All twelve targets in BVI `TheVaughanAdmissionRankReadsTheZeroAbscissa` passed the final direct check and standard-axiom audits. Includes cutoff independence, exact zero-width boundary, all three RH criteria, and first/all damping-column summability equivalences. |
 | `all-positive-vaughan-tail-power-rates.md` | BVI `VaughanTailPowerGainsAtEveryPositiveDamping`. |
 | `vaughan-tail-and-energy-decay-indices.md` | BVI `TheVaughanEmptyLegReadsTheZeroAbscissa`, including full rate-set independence and endpoint distinctions. |
 | `vaughan-endpoint-rates-and-zero-multiplicity.md` | BVI `VaughanEndpointScalesHaveUnavoidableOscillation`, `VaughanEndpointRatesForceSimpleBoundaryZeros`. |
@@ -120,6 +120,39 @@ harmonic Gram error are certified. Moving-limit and rank claims remain pending.
 The three endpoint packet targets passed their corrected final direct check
 and standard-axiom audits. The module is wired and its scratch removed; the
 endpoint Gram card now covers all six finite Gram and packet targets.
+The five positive-floor and pronic-convergence targets also passed corrected
+producing and final direct checks with standard axioms only. The module is
+wired and its scratch removed; see
+`../3-formalized/positive-floor-majorants-and-pronic-convergence.md`.
+All nine endpoint-admission targets passed producing and final direct checks
+with standard axioms only. `VaughanAdmissionAtHalfDamping.lean` is wired and
+its scratch removed. The eleven upper-half admission targets also passed
+corrected producing and final direct checks with standard axioms only; that
+module is wired and its scratch removed. The complete admission component is
+`../3-formalized/vaughan-admission-at-and-above-half-damping.md`.
+The separate joint-limit and infinite-rank consequences still require verification.
+The five zero-cutoff scalar targets passed corrected producing and final
+direct checks with standard axioms only; their module is wired and scratch
+removed. All fifteen zero-cutoff coefficient-space targets also passed final
+direct checks with standard axioms only. Their module is wired and scratch
+removed; the complete twenty-target zero-cutoff card is in stage 3.
+All twelve rank-filtration targets passed the corrected final direct check
+with standard axioms only. The module is wired and its scratch removed;
+the complete rank-filtration card is in stage 3.
+All seven centered-pole targets passed corrected producing and final direct
+checks with standard axioms only. The module is wired and its scratch removed;
+the positive finite energy, arbitrary moving-cutoff limit, and eventual power
+cap are certified. The parent card's endpoint product-horizon consequence
+remains pending.
+All twelve finite two-cell independence targets passed corrected producing
+and final direct checks with standard axioms only. The module is wired and
+its scratch removed. Both quantitative determinants, linear independence,
+the exact row span, and its dimension two are certified at every positive
+damping; the infinite Gram consequences remain pending.
+The independent moving-horizon summation theorem passed producing and final
+direct checks with standard axioms only. Its HTGeometry module is wired and
+its scratch removed; see
+`../3-formalized/moving-truncations-preserve-dominated-limits.md`.
 All three stretched-exponential targets passed their corrected final direct
 check, with standard axioms only. The module is wired and its scratch removed;
 the complete card is now in stage 3. This includes the exact stated constant

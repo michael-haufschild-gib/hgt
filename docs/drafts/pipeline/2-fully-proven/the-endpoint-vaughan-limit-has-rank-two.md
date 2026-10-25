@@ -3,7 +3,7 @@
 - **ID:** the-endpoint-vaughan-limit-has-rank-two
 - **Stage:** 2-fully-proven
 - **Type:** CLAIM (Lean verification pending)
-- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
+- **Verification:** All twelve finite Euler, cell, determinant, independence, and row-span targets are Lean-verified. The actual infinite Gram and endpoint rank consequences remain pending.
 - **Source:** uniform-half-damping-vaughan-harmonic-gram.md
 - **Statement:** At every positive damping, the first two cells of the actual centered Möbius row and centered pole row have determinant at least `2^(-2ε)/36`. Consequently the endpoint limiting Gram has rank exactly two.
 - **Novelty status:** Corpus search found general prefix observability and Gram laws, but no matching two-row independence theorem. The arithmetic determinant specialization is new within this audit; no external novelty claim.
@@ -80,20 +80,42 @@ Source statements have been read in `PMPowerDampedMobiusDiscreteEnergy`,
 `RadicalInvariancePrimePowerAbsorptionAndSubHorizonFermiEvaluation`, and
 `PrimeWinningFaceAugmentation`. The real finite-product identity was also checked in
 `PMPowerDampedMobiusPrimeThreshold`. The proof above is dependency-closed on paper.
-No numerical experiment was used. Twelve finite Euler, initial-cell, determinant,
-independence, row-span, and pronic Gram lower-bound targets are drafted in
-`/tmp/QIRankTwoLimitTools.lean`, uncompiled. The infinite endpoint Gram rank still
-needs a verified Lean proof.
+No numerical experiment was used. All twelve finite targets in
+`BezoutValuationIncidence/TheVaughanLimitRowsAreIndependentInTwoCells.lean`
+passed corrected producing and final direct checks, with only `propext`,
+`Classical.choice`, and `Quot.sound` as transitive axioms. The module is wired
+and its scratch removed:
 
-`/tmp/QIHalfVaughanInfiniteGramTools.lean` now drafts nine infinite-limit
+- `pmPowerDampedDivisorDensity_re_le_prime_product`
+- `pmPowerDampedDivisorDensity_re_le_two_three`
+- `pmActiveSawtoothComponent_prime`
+- `pmPowerDampedCenteredDivisorPrefix_two`
+- `addDiff_pmActiveSawtoothComponent_two`
+- `pmPowerDampedPrefix_pole_two_cell_determinant_lower`
+- `pmPowerDampedPrefix_pole_independent_two_cells`
+- `pronic_gram_determinant_lower_two_cells`
+- `pmPowerDampedPrefix_pole_pronic_gram_determinant_lower`
+- `pmPowerDampedPrefix_pole_linearIndependent`
+- `span_pmPronicVaughanLimitFrame`
+- `finrank_span_pmPronicVaughanLimitFrame`
+
+The actual infinite endpoint Gram rank still needs a verified Lean proof.
+
+`TheActualEndpointVaughanGramHasRankTwo.lean` drafts ten infinite-limit
 consequences, including absolute-series pair limits, symmetry, positivity of
 every quadratic form, the exact two-outer-product representation, and rank at
 most two. Passing the finite arithmetic minor bound to the limit gives
 `1/62208`; its nonsingular two-by-two submatrix gives rank exactly two. The
-pole entry retains its lower bound `1/64`. These nine targets now specialize
-the shared ten-target draft `/tmp/QIVaughanInfiniteGramTools.lean`, planned as
-`TheActualVaughanLimitGramHasRankTwo.lean`. That draft derives summability
+pole entry retains its lower bound `1/64`. These ten targets now specialize
+the shared eleven-target draft `TheActualVaughanLimitGramHasRankTwo.lean`.
+That draft derives summability
 from the actual endpoint and upper-half limits, and proves the same exact
 rank and quantitative minor for every `ε≥1/2`. No analytic summability
 premise is left to assume. All these drafts remain UNPROVED until their
 dependency checks and axiom audits pass.
+
+The explicit positive-definiteness claim above has named drafts
+`pmPronicVaughanLimitGram_prefix_pole_posDef` and
+`pmPronicVaughanHalfLimitGram_prefix_pole_posDef`. Their matrix APIs passed a
+minimal scratch check. These corollaries remain pending until the actual
+Gram leaves and their transitive dependencies pass direct Lean verification.

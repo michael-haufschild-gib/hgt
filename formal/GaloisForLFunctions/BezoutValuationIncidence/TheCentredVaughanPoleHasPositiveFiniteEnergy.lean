@@ -86,7 +86,7 @@ theorem exists_tendsto_pmActivePairPronicEnergy {ε : ℝ} (hε : 0 ≤ ε) :
   refine ⟨∑' n, f n, ?_, le_of_tendsto' hlim (fun T => (pmActivePairPronicEnergy_bounds hε T).2), hlim⟩
   have hfirst : pmActivePairPronicEnergy ε 1 ≤ ∑' n, f n := by
     rw [active_energy_eq_sum_range]
-    exact hf.sum_le_tsum _ (fun n _ => by dsimp only [f]; positivity)
+    exact hf.sum_le_tsum _ (fun n _ => by positivity)
   simpa only [pmActivePairPronicEnergy_one] using hfirst
 
 /-- Arbitrary moving cutoffs retain the same nonzero finite pole limit. -/
@@ -114,9 +114,11 @@ theorem not_pmPronicVaughanCentredGram_pole_faster_power {ε δ : ℝ}
     rw [pmPronicVaughanCentredGram_pole_eq_active,
       div_le_iff₀ (Real.rpow_pos_of_pos hT0 (1 - 2 * ε))] at h
     refine h.trans_eq ?_
-    rw [Real.rpow_sub hT0]
-    field_simp [Real.rpow_ne_zero hT0.ne' (1 - 2 * ε),
-      Real.rpow_ne_zero hT0.ne' δ]
+    have hp : (T : ℝ) ^ (δ - (1 - 2 * ε)) =
+        (T : ℝ) ^ δ / (T : ℝ) ^ (1 - 2 * ε) := Real.rpow_sub hT0 _ _
+    rw [hp]
+    field_simp [(Real.rpow_pos_of_pos hT0 δ).ne',
+      (Real.rpow_pos_of_pos hT0 (1 - 2 * ε)).ne']
   have hzero : Tendsto (pmActivePairPronicEnergy ε) atTop (𝓝 0) :=
     squeeze_zero' (Eventually.of_forall fun T => (pmActivePairPronicEnergy_bounds hε T).1)
       hupper (tendsto_const_nhds.div_atTop hpow)

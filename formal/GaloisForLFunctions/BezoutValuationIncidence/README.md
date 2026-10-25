@@ -161,7 +161,8 @@ $G_{ij}$; diagonal $D_T$; mixed remainder $R^{\text{mix}}_T$; $E^{\text{int}}_T=
     scale $T^{1-2\varepsilon}$ with rank-one smooth term $ss^\top$, $s=(0,0,-1,1,0)$; every logarithmic
     saving uniform in cutoffs; amplitudes $H_U^2H_V^2$ and the normalized subcritical matrix-limit
     family are compact, countably infinite, with zero the unique accumulation point and no damping
-    dependence; the admitted packet space has dimension 2 (3 iff the receiver is paid); the absolute
+    dependence; at positive cutoffs below half damping, the admitted coefficient space has dimension
+    2 (3 iff the receiver is paid); the absolute
     remainder budget has exact power $N^{2-4\varepsilon}$; reciprocal-tail power gains = fixed strips.
     Finite harmonic nonvanishing has explicit separation $|H_N|\ge1/N!$ for $N\ge1$:
     [denominator bounds](../RHTower/FiniteMobiusHarmonicSumsHaveExplicitLowerBounds.lean).
@@ -181,6 +182,26 @@ $G_{ij}$; diagonal $D_T$; mixed remainder $R^{\text{mix}}_T$; $E^{\text{int}}_T=
     is bounded uniformly in both cutoffs and the horizon, using one summable remainder envelope.
     The [endpoint packet law](UniformHarmonicEnergyLawsForVaughanSuperpositions.lean)
     has error `C(Σ|w_i|)²`; a zero smooth coefficient gives uniform finite energy.
+    [Positive floor majorants](PositiveFloorMajorantsControlPronicEnergy.lean)
+    control centered prefixes; a common summable square envelope gives full pronic convergence.
+    [Half-damping admission](VaughanAdmissionAtHalfDamping.lean) removes both linear
+    and smooth means; positive cutoffs have admitted dimension three and quotient dimension two.
+    [Above half damping](VaughanAdmissionAboveHalfDamping.lean), one bound controls
+    every centered piece; admission is the linear-mean kernel, of dimension four for all cutoffs.
+    [An empty cutoff](TheZeroCutoffVaughanCoefficientSpace.lean) adds an unused coordinate:
+    dimension three or four according to receiver admission, and four unconditionally at half damping.
+    The [extra-rank damping set](TheVaughanAdmissionRankReadsTheZeroAbscissa.lean)
+    equals the receiver damping set for every cutoff pair; its lower accumulation
+    boundary is exactly `zetaZeroAbscissa-1/2`. It also detects first/all damping-column summability.
+    The [centered pole](TheCentredVaughanPoleHasPositiveFiniteEnergy.lean) has
+    a cutoff-independent energy limit between `2^(-2ε)/32` and `1/4` for `ε≥0`;
+    its normalized energy admits no eventual power exponent above `1-2ε`.
+    [Two arithmetic cells](TheVaughanLimitRowsAreIndependentInTwoCells.lean)
+    separate the actual prefix and pole at every positive damping, with
+    determinant at least `2^(-2ε)/36`; their finite pronic Gram determinant is
+    at least `2^(-4ε)/15552` for horizons containing both cells.
+    [Dominated moving sums](../HTGeometry/MovingTruncationsPreserveDominatedLimits.lean)
+    permit independently divergent horizons under a common summable envelope.
     The [uniform stretched-exponential estimate](UniformStretchedExponentialCancellationInTheVaughanConvolution.lean)
     gives a `(3q)!` logarithmic envelope with one threshold for all orders and cutoffs.
 11. **Dilation profiles and the Bézout seed.** $\Phi_r(p/q)$ = pairing of jump streams of $pr,qr$;

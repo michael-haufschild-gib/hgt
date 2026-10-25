@@ -1,9 +1,9 @@
 # The Vaughan coefficient rank filtration reads the zero abscissa
 
 - **ID:** vaughan-admitted-rank-filtration-reads-the-zero-abscissa
-- **Stage:** 2-fully-proven
-- **Type:** CLAIM (Lean verification pending)
-- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Verification:** All twelve targets passed the final direct Lean check. Transitive axioms: `propext`, `Classical.choice`, `Quot.sound` only.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
 - **Statement:** For every fixed pair of cutoffs, the damping set where the admitted Vaughan coefficient space acquires its receiver direction equals the actual receiver damping set. The lower accumulation boundary is exactly `zetaZeroAbscissa-1/2`.
 - **Novelty status:** Exact finite-family realization of existing receiver index laws; no external novelty claim.
@@ -58,20 +58,26 @@ payment-index viewpoint. It does not turn admission into a finite test: `D_ε(U,
 defined by boundedness over all horizons, and its additional direction is precisely
 the original, unresolved interior receiver.
 
-## Status
+## Lean declarations
 
-The receiver set identity and derived-set boundary have been checked in source. The
-lower-half scalar classification passed all nineteen standard-axiom audits. The
-coefficient-space dimension proofs passed all ten scratch axiom audits and the repository
-olean check and final direct audit. Zero-cutoff and phase extensions remain uncompiled. This application is
-drafted as twelve audit targets in `/tmp/QIRankFiltrationTools.lean`, importing the planned
-`VaughanAdmissionAboveHalfDamping` and `TheZeroCutoffVaughanCoefficientSpace` leaves.
-Its planned repository name is `TheVaughanAdmissionRankReadsTheZeroAbscissa.lean`.
-Its set equality, cutoff independence, exact boundary, strip criterion, and three RH rank
-criteria remain uncompiled. It gives no new receiver admission or fixed strip.
+The extra rank also equals square summability of the actual first centered
+damping-chain column, equivalently every centered column. All statements are
+checked in `BezoutValuationIncidence/TheVaughanAdmissionRankReadsTheZeroAbscissa.lean`:
 
-The existing damping-chain column equivalences also identify the extra rank with square
-summability of its actual first centered column, equivalently all centered columns.
-Both source statements have been read; the two new bridges are included in the twelve
-scratch audit targets. This makes the finite coefficient-space application explicit
-in the corpus's arithmetic damping-chain coordinates, without producing a new budget.
+- `pmPronicVaughan_extra_rank_iff_receiver`
+- `exists_pronicNorm_interior_bound_iff_energy_bound`
+- `pmPronicVaughanRankDampings_eq_interiorReceiverDampings`
+- `pmPronicVaughanRankDampings_eq_receiverDampings`
+- `pmPronicVaughanRankDampings_eq`
+- `sInf_derivedSet_pmPronicVaughanRankDampings`
+- `zetaZeroAbscissa_lt_one_iff_vaughan_rank_boundary`
+- `riemannHypothesis_iff_accPt_zero_vaughan_rank`
+- `riemannHypothesis_iff_cofinal_vaughan_rank`
+- `riemannHypothesis_iff_forall_pos_vaughan_rank`
+- `pmPronicVaughan_extra_rank_iff_first_column_summable`
+- `pmPronicVaughan_extra_rank_iff_all_columns_summable`
+
+The module is imported by its programme umbrella. Its final direct check and
+all twelve `#print axioms` audits passed, including the endpoint, upper-half,
+zero-cutoff, and analytic-index dependencies. These exact equivalences supply
+no new receiver admission or fixed strip; full Q-I remains open.

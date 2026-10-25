@@ -41,13 +41,13 @@ Accepted axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`.
 | Finite joint spectral multiplicities and normalized Bohr representatives | All three canonical source-only checks passed with standard axioms; card moved to `3-formalized` |
 | Rank-one multiplicative signs | Canonical audit `87736` passed with standard axioms; card in `3-formalized`, augmentation route retired with its checked positive survivors |
 | Visible interior pole orders, paid jets, critical boundary values, unit orbits | All six canonical sources passed final audits with standard axioms; both paper cards moved to `3-formalized` |
-| Reset moving origin, faithful step kernel and every positive boundary mass | Prescribed-horizon extraction and exact step Gram complete; eleven canonical leaves remain |
+| Reset moving origin, faithful step kernel and every positive boundary mass | Boundary entries 1–12 complete, including faithful positive mixtures and their full Bohr hulls; final realization leaf is under check |
 | Raw moving origin, exclusion from actual zero-origin limits | Draft scratch after boundary dependencies |
 | Positive boundary modules have infinite dimension and continuum index | Draft scratch after boundary dependencies |
-| Exact incomplete dilation fibre and mixed C*D/p bound | Draft scratch; required by contraction bundle |
-| Actual horizon contraction, principal ideal quotient, full intertwining | Draft scratch after cutoff dependency |
-| Closed dilation range, index loss, matrix/operator horizon order | Draft scratch in contraction bundle |
-| Rank-one contraction fixes state | Draft scratch in contraction bundle |
+| Exact incomplete dilation fibre and mixed C*D/p bound | Combined scratch passed; canonical source installed and wired, individual checks pending |
+| Actual horizon contraction, principal ideal quotient, full intertwining | Combined scratch passed; canonical sources installed and wired, individual checks pending |
+| Closed dilation range, index loss, matrix/operator horizon order | Combined scratch passed; canonical sources installed and wired, individual checks pending |
+| Rank-one contraction fixes state | Combined scratch passed; canonical source installed and wired, final check pending |
 | Arbitrary commuting family has a common eigenvector | Final canonical audit `15948` passed with standard axioms; required olean exists |
 | Finite actual hull magnitudes and half-plane approximation | Draft scratch after operator order and generic eigenvector theorem |
 | Tied-torus and augmentation character limits | Draft scratch; refactor existing owner after verification |
@@ -87,6 +87,16 @@ unchanged checks. All required leaves are wired into their programme umbrellas.
 | Visible constraints on Wiener unit orbits and Liouville | `9109` | `25737` passed |
 | Actual source-pairing and module conjugation | `78866` | None needed |
 | Exact max kernel of origin steps | `34661` | `12398` passed |
+| Escape records and prescribed origin-trace ratios | `54306` | `31582` passed |
+| Uniform bounded-row pairings and trace/energy disappearance | `47478` | `23583` passed |
+| Moving-Gram stability under vanishing relative energy | `90920` | `92963` passed |
+| Reset-origin Gram and every positive reset mass | `34183` | `93933` passed |
+| Constant boundary exclusion from every actual zero-origin kernel | `90310` | `89546` passed |
+| Max-kernel cyclic and representation faithfulness | `4840` | `41917` passed |
+| Bounded kernel comparisons and operator norm bound | `6728` | `89065` passed |
+| Complete critical Wiener action, norm bound and cyclic intertwining | `5961` | `37998` passed |
+| Origin-step cyclic faithfulness and full Bohr hull | `35576` | `56254` passed |
+| Positive-origin cyclic faithfulness and full Bohr hull | `78330` | `5362` passed |
 
 Recent final output files:
 `/tmp/qiii-augmentation-canonical-final.log`,
@@ -138,16 +148,63 @@ Its redundant scratch check file was removed.
 Boundary entry 2, `ArithmeticDefectRigidity/OriginStepsHaveTheMaxKernel`, passed
 required olean `12398` and final source-only check `34661` with standard axioms.
 Final output: `/tmp/qiii-origin-step-kernel-canonical-final.log`.
-Boundary entry 3, `EscapeRecordsControlMovingOriginMass`, is under its required
-olean check; output `/tmp/qiii-origin-records-olean.log`. No other owned Lean
-process is active.
-The eight remaining standalone/combined scratch sources listed below were
-scanned for forbidden placeholders and raised limits: no matches. They still
-require Lean checks; the syntax scan is not a proof audit. The eleven required
+Boundary entry 3, `EscapeRecordsControlMovingOriginMass`, passed required
+olean check `31582` and final source-only audit `54306` with standard axioms
+for all four printed results. Output:
+`/tmp/qiii-origin-records-canonical-final.log`.
+Boundary entry 4, `SubcriticalCofactorsPairBoundedlyWithBoundedRows`, passed
+required olean `23583` and final source-only check `47478` with standard
+axioms. Its trace-ratio helper's docstring now matches its finite-limit
+premise; no proof changed. Output:
+`/tmp/qiii-bounded-row-pairings-canonical-final.log`.
+Boundary entry 5, `VanishingRelativeEnergyPreservesMovingGrams`, passed
+required olean `92963` and final source-only check `90920` with standard
+axioms; output `/tmp/qiii-moving-gram-perturbation-canonical-final.log`.
+Boundary entry 6, `ResettingTheMovingOriginAddsTheMaxKernel`, passed required
+olean `93933` and final source-only check `34183` with standard axioms;
+output `/tmp/qiii-reset-origin-gram-canonical-final.log`.
+Boundary entry 7, `AConstantOriginBoundaryViolatesCofactorContraction`, passed
+required olean `89546` and final source-only check `90310` with standard
+axioms; output `/tmp/qiii-constant-boundary-exclusion-canonical-final.log`.
+Boundary entry 8, `TheMaxKernelWienerMapIsFaithful`, passed required olean
+`41917` and final source-only check `4840` with standard axioms;
+output `/tmp/qiii-max-kernel-faithfulness-canonical-final.log`.
+Contraction scratch check `12682` passed: all 23 audit targets report only
+standard axioms. Eleven sources were copied directly from the prepared
+staging files into their canonical owners and wired into all three umbrellas.
+No canonical contraction checks or oleans have run yet. All eight required
+contraction oleans were confirmed absent before starting their checks.
+Successful output: `/tmp/qiii-contracted-horizons-third-retry.log`.
+The failed drafts `84380`, `26409`, `7091` were repaired by explicit finite-sum
+cancellation, casts, principal-ideal coercions, and a named complete-block
+identity transported through division with `congrArg`. No theorem statement
+changed. The scratch's error-printing options were not copied to canonical
+sources. Canonical syntax audit found no forbidden placeholders or raised limits.
+Boundary entry 9, `DominatedKernelsHaveContractiveComparisons`, passed
+required olean `89065` and final source-only check `6728` with standard axioms;
+output `/tmp/qiii-kernel-comparison-canonical-final.log`.
+Boundary entry 10, `CriticalKernelActionsExtendToTheWienerAlgebra`, passed
+required olean `37998` and final source-only check `5961` with standard axioms;
+output `/tmp/qiii-critical-kernel-action-canonical-final.log`.
+Boundary entry 11, `TheOriginStepModuleHasTheFullBohrHull`, passed required
+olean `56254` and final source-only check `35576` with standard axioms;
+output `/tmp/qiii-origin-step-module-canonical-final.log`.
+Boundary entry 12, `PositiveOriginMixturesAreFaithful`, passed required
+olean `5362` and final source-only check `78330` with standard axioms;
+output `/tmp/qiii-positive-origin-mixtures-canonical-final.log`.
+Boundary entry 13, `EscapeRealizesEveryPositiveOriginBoundary`, is under its
+source-only final check; no importing source requires its olean. Output:
+`/tmp/qiii-faithful-origin-realization-canonical-final.log`.
+No other owned Lean process is active.
+The remaining standalone scratch sources listed below were scanned for
+forbidden placeholders and raised limits: no matches. The contraction scratch
+has now passed; other listed scratches still require Lean checks. The eleven required
 boundary oleans were confirmed absent; existing dependencies must not be
 rebuilt. The completed common-horizon leaf is the first entry in
-`/tmp/qiii-boundary-canonical-modules.txt`; entries 1–2 are complete and only
-entries 3–13 remain.
+`/tmp/qiii-boundary-canonical-modules.txt`; entries 1–12 are complete and only
+entry 13 remains. The max-kernel, comparison and critical-action leaves
+now explicitly print axioms for their representation and norm-bound results
+as well as the application targets.
 
 ## Direct source work remaining
 
@@ -155,11 +212,40 @@ All Python source assemblers and promoters were deleted at the user's request.
 Read and edit Lean sources directly; copy a checked source into its mathematical
 owner, add its umbrella import directly, and run the canonical check directly.
 
-- `/tmp/qiii-contracted-horizons-check.lean` contains the current exact remainder,
-  mixed bound and full operator intertwining drafts. It also explicitly states
+- `/tmp/qiii-contracted-horizons-check.lean` passed with the exact remainder,
+  mixed bound and full operator intertwining. It also explicitly states
   `scaled_diagonal_mem_Icc`, the previously recorded interval bound for the
-  contracted-energy profile. Use this current scratch when splitting canonical
-  leaves; the older part files do not include this last corollary.
+  contracted-energy profile. Its eleven canonical leaves are now installed and
+  wired; their import boundaries still need individual checks.
+  All eleven planned canonical contraction paths were confirmed absent before
+  this check. Eleven complete staging sources now have intended imports,
+  mathematical module comments and closed `noncomputable section`s, edited
+  directly. `qiii_exact_horizon_remainder_body.lean` now includes the mixed
+  bound; `qiii_matrix_horizon_order_body.lean` now includes complex/operator
+  order and `scaled_diagonal_mem_Icc`. Do not append the old mixed-error or
+  operator-order fragments again. Their proof text remains in the combined
+  scratch too. The nine other staging sources are the actual-horizon,
+  character-colon, cofactor-colon, contracted-module, contracted-state-laws,
+  rank-one-contraction, feature-closed-range, contracted-range and
+  contracted-index bodies. All eleven were copied directly. Canonical sources
+  are now authoritative: do not overwrite subsequent standalone repairs from
+  old staging files. All importing source files exist before the required
+  dependency oleans are generated.
+  Planned direct dependency graph (terminal leaves need source checks only):
+  `IncompleteDilationFibresHaveBoundedPairingCost` →
+  `ContractingHorizonsProducesActualCofactorLimits`;
+  `PrincipalIdealQuotientsLocalizeCharacterHulls` →
+  `CofactorAnnihilatorsArePrincipalQuotients`;
+  both actual leaves → `ContractedCofactorModulesEmbedInTheOriginal` →
+  `ActualCofactorContractionsCompose` (terminal).
+  `NumericHorizonOrderControlsTheCofactorAction` imports the horizon-contraction
+  leaf and supplies the written finite-hull scratch.
+  `ClosedOperatorRangesAreClosedFeatureSpans` plus the embedding leaf →
+  `ContractedCofactorModulesAreClosedDilationRanges` →
+  `CofactorContractionIndexDropsByDilationNullity` (terminal).
+  `RankOneCofactorStatesAreFixedByContraction` imports the cofactor-ideal and
+  existing rank-one magnitude leaves and is terminal. Do not generate unused
+  oleans for composition, index or rank-one fixed states.
 - Rank-one sign, augmentation, common-family, crossing and Gram-step scratches
   have all been installed, wired and canonically checked. Their six completed
   scratch check files, including the actual kernel-family application, were
@@ -169,7 +255,7 @@ owner, add its umbrella import directly, and run the canonical check directly.
   It is unchecked and needs numeric-operator-order and tied-torus dependencies;
   the common-family dependency is complete. Its restricted commutation proof
   now omits the same redundant subtype-extensionality step repaired in the
-  generic common-family theorem.
+  generic common-family theorem; the corresponding part file is synchronized.
 - `/tmp/qiii-visible-mixed-jet-index-check.lean` retains point separation,
   masked finite jets, interior rank bounds, mixed interior/boundary
   interpolation and rank bounds, and the unit-orbit/Liouville corollaries.

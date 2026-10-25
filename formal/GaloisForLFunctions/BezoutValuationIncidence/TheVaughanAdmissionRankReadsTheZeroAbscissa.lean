@@ -22,10 +22,14 @@ def pmPronicVaughanRankDampings (U V : ℕ) : Set ℝ :=
 theorem pmPronicVaughan_extra_rank_iff_receiver {ε : ℝ} (hε : 0 < ε) (U V : ℕ) :
     pmPronicVaughanBaselineRank U V + 1 ≤
       Module.finrank ℝ (pmPronicVaughanAdmittedSubmodule ε U V) ↔
-        ∃ B : ℝ, ∀ T : ℕ, pronicNorm (pmBezoutInteriorPrefix ε) T ≤ B := by
+        ∃ B : ℝ, ∀ T : ℕ,
+          GaloisForLFunctions.TransHorizonIncidenceMechanics.pronicNorm
+            (pmBezoutInteriorPrefix ε) T ≤ B := by
   by_cases hUV : U = 0 ∨ V = 0
   · rw [pmPronicVaughanBaselineRank, if_pos hUV]
-    by_cases hI : ∃ B : ℝ, ∀ T : ℕ, pronicNorm (pmBezoutInteriorPrefix ε) T ≤ B
+    by_cases hI : ∃ B : ℝ, ∀ T : ℕ,
+        GaloisForLFunctions.TransHorizonIncidenceMechanics.pronicNorm
+          (pmBezoutInteriorPrefix ε) T ≤ B
     · rw [finrank_pmPronicVaughanAdmittedSubmodule_empty_of_receiver hε hUV hI]
       exact iff_of_true (by norm_num) hI
     · rw [finrank_pmPronicVaughanAdmittedSubmodule_empty_of_not_receiver hε hUV hI]
@@ -34,7 +38,9 @@ theorem pmPronicVaughan_extra_rank_iff_receiver {ε : ℝ} (hε : 0 < ε) (U V :
     have hV : 1 ≤ V := by omega
     rw [pmPronicVaughanBaselineRank, if_neg hUV]
     by_cases hε2 : ε < 1 / 2
-    · by_cases hI : ∃ B : ℝ, ∀ T : ℕ, pronicNorm (pmBezoutInteriorPrefix ε) T ≤ B
+    · by_cases hI : ∃ B : ℝ, ∀ T : ℕ,
+          GaloisForLFunctions.TransHorizonIncidenceMechanics.pronicNorm
+            (pmBezoutInteriorPrefix ε) T ≤ B
       · rw [finrank_pmPronicVaughanAdmittedSubmodule_of_receiver hε hε2 hU hV hI]
         exact iff_of_true (by norm_num) hI
       · rw [finrank_pmPronicVaughanAdmittedSubmodule_of_not_receiver hε hε2 hU hV hI]
@@ -52,16 +58,22 @@ theorem pmPronicVaughan_extra_rank_iff_receiver {ε : ℝ} (hε : 0 < ε) (U V :
 
 /-- Uniform interior norm and energy bounds are equivalent, with no damping restriction. -/
 theorem exists_pronicNorm_interior_bound_iff_energy_bound (ε : ℝ) :
-    (∃ B : ℝ, ∀ T : ℕ, pronicNorm (pmBezoutInteriorPrefix ε) T ≤ B) ↔
+    (∃ B : ℝ, ∀ T : ℕ,
+      GaloisForLFunctions.TransHorizonIncidenceMechanics.pronicNorm
+        (pmBezoutInteriorPrefix ε) T ≤ B) ↔
       ∃ B : ℝ, ∀ T : ℕ, pmBezoutInteriorPronicEnergy ε T ≤ B := by
-  have hnorm (T : ℕ) : pronicNorm (pmBezoutInteriorPrefix ε) T =
+  have hnorm (T : ℕ) :
+      GaloisForLFunctions.TransHorizonIncidenceMechanics.pronicNorm
+        (pmBezoutInteriorPrefix ε) T =
       Real.sqrt (pmBezoutInteriorPronicEnergy ε T) := by
-    simp only [pronicNorm, pmBezoutInteriorPronicEnergy, pronicSeq,
+    simp only [GaloisForLFunctions.TransHorizonIncidenceMechanics.pronicNorm,
+      pmBezoutInteriorPronicEnergy, pronicSeq,
       Nat.cast_mul, Nat.cast_add, Nat.cast_one]
   constructor
   · rintro ⟨B, hB⟩
     refine ⟨B ^ 2, fun T => ?_⟩
-    have h := pow_le_pow_left₀ (pronicNorm_nonneg _ T) (hB T) 2
+    have h := pow_le_pow_left₀
+      (GaloisForLFunctions.TransHorizonIncidenceMechanics.pronicNorm_nonneg _ T) (hB T) 2
     simpa only [hnorm, Real.sq_sqrt (pmBezoutInteriorPronicEnergy_nonneg ε T)] using h
   · rintro ⟨B, hB⟩
     exact ⟨Real.sqrt B, fun T => by rw [hnorm]; exact Real.sqrt_le_sqrt (hB T)⟩

@@ -122,6 +122,13 @@ transitive audits. Its [formalized card](../3-formalized/biarithmetic-critical-g
 records both exact continuum rank equalities. This is a Lean proof chain for the ordinary-floor source only;
 the intrinsic-source comparison still requires its separate module construction.
 
+`CriticalCoefficientContinuumDefect` also passed its direct repository check
+and all four transitive audits. The actual normalized coefficient lift maps
+its quotient classes to the checked golden classes. Both the unreduced
+coefficient quotient and its closure defect therefore have exact complex
+Hamel dimension continuum. This closes the one-prime coefficient comparison,
+without claiming the pending intrinsic receiver comparison.
+
 This proves dimension at least continuum. The ambient `ell1` space injects into
 `C^N`, which has cardinality continuum, so any quotient and any Hamel basis in it
 have cardinality at most continuum. Consequently `dim_C(Z/D)=continuum`.

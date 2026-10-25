@@ -156,11 +156,19 @@ unproved formalization obligations.
 
 ## Lean construction obligations
 
-`/tmp/BiarithmeticFiveShellPronicEnergy.lean` drafts the exact shell/step-prefix
+`ComplexShellShift.lean` passed its direct repository check and all four
+transitive audits. Normalized complex shell coordinates carry exact
+isometric right shifts, with identity and semigroup laws. This supplies
+the bounded shift input; infinite convolution and actual source transfer
+remain separate obligations.
+
+`FiveShellPronicEnergy.lean` proves the exact shell/step-prefix
 bridge. Every signed block pairing has factor `(4/5)5^(-M)`; bounded
 ordinary pronic norms at all cutoffs are equivalent to the weighted shell
 square sum. It reuses the checked block telescope and finite-prefix method.
-Four audits drafted; unchecked. Shift identities and tangent limits remain.
+Direct repository check and all four transitive audits passed; its
+[formalized card](../3-formalized/biarithmetic-five-shell-pronic-energy.md)
+records the exact declarations. Shift identities and tangent limits remain.
 
 `/tmp/BiarithmeticFiveShellShifts.lean` drafts exact power-of-five floor
 dilation, inverse-norm energy scaling, the finite geometric boundary
@@ -219,13 +227,13 @@ escape, split every source coefficient exactly, and prove weighted absolute
 summability of the remainder at radius `1/sqrt(5)`. This draft is also
 unchecked. The `IntrinsicGoldenSeries` dependency olean is available.
 
-`/tmp/BiarithmeticIntrinsicPointKernelEnergy.lean` separately formalizes the
-paper point-kernel estimate from the checked actual counting formula. Its
-exact affine tail, uniform absolute tail bound, square summability, and
-total bound `6*5^(-r)` have four drafted audits; unchecked. The dedicated
-corpus query returned the actual count and its bounds, but no prior
-intrinsic point-kernel payment theorem. Infinite synthesis and the centered
-convolution comparison are still required for the full payment criterion.
+`IntrinsicPointKernelEnergy.lean` proves the exact affine tail, uniform
+absolute tail bound, square summability, and total bound `6*5^(-r)` from
+the actual counting formula. Its direct source check and all four
+transitive audits passed; see the
+[stage-3 component](../3-formalized/biarithmetic-intrinsic-point-kernel-energy.md).
+Infinite synthesis and the centered convolution comparison remain required
+for the full payment criterion.
 
 `/tmp/BiarithmeticIntrinsicWienerSynthesis.lean` drafts the completion step.
 The actual point-response vector has coordinates `P_r(M)/sqrt(5)^M`, so
@@ -261,7 +269,10 @@ golden receiver, proving mean convergence from the already checked
 arithmetic-source theorem. Seven audits drafted; unchecked. The bounded
 shell action and full repairing-domain classification remain obligations.
 
-Pending source check: `/tmp/BiarithmeticComplexShellShift.lean` constructs complex normalized shell shifts with exact isometry and semigroup laws. This is the missing bounded-operator input for the existing intrinsic infinite-kernel convolution proof plan.
+`ComplexShellShift.lean` constructs complex normalized shell shifts with
+exact isometry and semigroup laws. Direct source check and all four audits
+passed; see [stage-3 component](../3-formalized/biarithmetic-complex-shell-shifts.md).
+The infinite-kernel convolution using these operators remains pending.
 
 Pending source check: `/tmp/BiarithmeticIntrinsicShellConvolution.lean` constructs bounded convolution by every actual critical Wiener kernel, identifies its finite Cauchy coordinates, and proves weighted shell-energy stability with operator bound `||k||`. This addresses the infinite-kernel action required by the intrinsic centered-convolution proof plan.
 

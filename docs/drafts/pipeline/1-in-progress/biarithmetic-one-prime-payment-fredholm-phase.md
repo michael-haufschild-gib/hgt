@@ -126,14 +126,16 @@ Its direct source check and all four axiom audits passed; the
 [stage-3 card](../3-formalized/biarithmetic-geometric-future-tail.md) records
 the scope. The source comparison and Fredholm conclusion remain pending in Lean.
 
-The dependent `/tmp/BiarithmeticGeometricCausalDivision.lean` now drafts the
+`GeometricCausalDivision.lean` proves the
 full complex sequence-domain equivalence. For necessity, square summability
 makes the causal response tend to zero, while its product with `b^M` is
 exactly the `M`th partial sum of the reciprocal evaluation. That product
 tends to zero and the absolutely convergent evaluation therefore vanishes.
 For sufficiency, the recurrence identifies the response with the negative
-future tail; its proved paper absolute-sum bound implies square summability.
-The draft includes the explicit norm bound and is unchecked. Actual source
+future tail; its checked absolute-sum bound implies square summability.
+The exact norm bound is included. Direct repository check and all five
+transitive audits passed; its [formalized card](../3-formalized/biarithmetic-geometric-causal-division.md)
+and umbrella import are present. Actual source
 transfer, bounded evaluation maps, and the Fredholm cokernel still need Lean
 construction; the sequence-domain theorem alone does not discharge them.
 
@@ -238,13 +240,15 @@ Together with the maximum graph norm, these give both norm-comparison
 constants explicitly. Five audits drafted; unchecked. The ordinary and
 intrinsic source graph calibrations remain separate obligations.
 
-Pending source check: `/tmp/BiarithmeticCriticalCoefficientContinuumDefect.lean`
+`CriticalCoefficientContinuumDefect.lean`
 constructs both unreduced coefficient quotients in the restricted one-prime
 ambient space. Actual coefficient restriction lifts the power-tail family;
 mapping its classes into the full golden quotient reuses the finite
 independence proof. The coefficient isometry gives the matching cardinality
-upper bound. Four audits are drafted; the coefficient realization and
-ordinary golden quotient dependencies remain unchecked.
+upper bound. Direct repository check and all four transitive audits passed.
+Both coefficient quotients have Hamel dimension exactly continuum; the
+[formalized card](../3-formalized/biarithmetic-critical-coefficient-continuum-defect.md)
+records the independent families and exact rank declarations.
 
 Source graph comparison can use closed-graph uniqueness after proving the
 actual input-range equality. Pull back the complete actual cofactor graph

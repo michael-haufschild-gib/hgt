@@ -137,11 +137,16 @@ van der Geer–Schoof theta dimensions (real-valued analogues stay distinct from
     pays iff exponent > ½ (`powerTailWiener_mem_paidIdeal_iff`); exponents in `(0, ½)` are independent, so both the
     payment quotient and the closure defect have Hamel dimension exactly continuum
     (`rank_criticalGoldenPaymentQuotient_eq_continuum`, `rank_criticalGoldenPaymentClosureDefect_eq_continuum`).
+    Both coefficient quotients have the same exact dimension
+    (`rank_criticalCoefficientPaymentQuotient_eq_continuum`, `rank_criticalCoefficientClosureDefect_eq_continuum`).
 21. **Golden source algebra.** Exact inverse coefficients `−(a^n − b^n)/√5` (`goldenInverseSeriesAt_coeff`); mean
     `(5−6t+t²)/(5−5t+t²)`; golden paid ideal = primary tower's (`paidIdeal_goldenArithmeticSource`). Divisor
     response at valuation `M` decreases with valuation and damping (`goldenDivisorProfile_antitone`). Intrinsic
     golden counting changes the receiver: at `t = 1` the intrinsic row is constant while the ordinary-floor receiver
     escapes (`goldenIntrinsicReceiverSeries_one`) — calibrations must name their counting kernel.
+    Centered intrinsic point kernels have an exact affine tail and total shell square energy
+    at most `6·5^(-r)` (`goldenIntrinsicPointReceiver_tail`,
+    `tsum_goldenIntrinsicPointReceiver_energy_le`).
 22. **Normalized cube test.** `z ↦ z³/5` keeps product 5 but produces negative point counts
     (`golden_pointCount_positive_but_normalizedCube_negative`); integral trace survivors are classified and pure
     (`exists_normalizedCubicTrace_iff`, `normalizedCubicRoot_survivor_pure`).
@@ -149,6 +154,22 @@ van der Geer–Schoof theta dimensions (real-valued analogues stay distinct from
     (`tsum_norm_geometricFutureTail_le`), finite geometric convolution bound
     (`sum_sq_finiteGeometricConvolution_le`), shell completion is a line (`finrank_geometricShellTangentSpace`),
     digital circle seed has Fourier coefficients `−ζ(s)/(Ls)` (`fourierCoeff_digitalCircleProfile`).
+    The step-prefix shell row has block pairing `(4/5)5^(-M)` and finite shell energy exactly when
+    every ordinary pronic norm is bounded (`fiveShell_pronicBlock_pairing`, `bounded_pronicNorm_fiveShellRow_iff`).
+    Complex normalized shell shifts are isometries and obey exact addition of indices
+    (`norm_complexShellShiftVector`, `complexShellShift_comp`).
+    Expanding causal response has finite square energy exactly on the reciprocal evaluation kernel,
+    with absolute-sum bound `b/(1−b)` (`summable_sq_geometricCausalResponse_iff`,
+    `tsum_norm_geometricCausalResponse_le`).
+24. **Chirp rotation rigidity.** A nonzero complex amplitude cannot have equal real parts at three
+    successive nonreal unit rotations (`complex_three_rotation_rigidity`). The prime-two angle
+    `2(log 2)²` lies in `(0,π)` (`logarithmicChirp_two_angle`).
+    The actual logarithmic orbit closure is a compact group, and every phase is completely
+    multiplicative (`logarithmicChirpPhaseGroup_compactSpace`, `logarithmicChirpPhase_mul`).
+    Every finite chirp Cauchy matrix at distinct cofactors is strictly positive
+    (`chirpCauchyKernel_posDef`, `chirpRealKernel_packet_pos`); its diagonal is exactly
+    `j^(-2β)` and every entry is continuous in the phase (`chirpRealKernel_diagonal`,
+    `continuous_chirpRealKernel`).
 
 ---
 

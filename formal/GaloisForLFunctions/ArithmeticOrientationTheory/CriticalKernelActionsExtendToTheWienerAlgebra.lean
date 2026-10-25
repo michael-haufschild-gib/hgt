@@ -138,5 +138,7 @@ theorem intertwines_cyclic_vector
 end GaloisForLFunctions.ArithmeticOrientationTheory.CriticalKernelAction
 
 #print axioms GaloisForLFunctions.ArithmeticOrientationTheory.CriticalKernelAction.intertwines_cyclic_vector
+#print axioms GaloisForLFunctions.ArithmeticOrientationTheory.CriticalKernelAction.representation
+#print axioms GaloisForLFunctions.ArithmeticOrientationTheory.CriticalKernelAction.norm_representation_le
 end
 end

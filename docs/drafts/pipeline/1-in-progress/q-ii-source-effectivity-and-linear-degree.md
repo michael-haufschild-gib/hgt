@@ -464,11 +464,105 @@ its jet data are explicit in the final application. No limits were changed.
 Failed downstream kernel audits are not certificates. Actual Hermitian-part
 check **73508** is now running directly with all eight endpoints, including
 the imaginary-square corollary.
+Hermitian-part check **73508** failed only when normalizing conjugation of
+the scalar `1 / 2`. Decomposition, uniqueness, both square-reading identities
+and real-positive reduction printed standard axiom dependencies, but the full
+file remains unverified. A narrow scalar API probe now uses the previously
+verified `map_div₀` and `map_natCast` rewrites explicitly.
+Scalar API check **62038** passed. Its exact normalization now replaces the
+failed numeric simplification in the actual Hermitian-part file.
+Optimized actual character check **58454** is running directly with eight
+audits. It is the sole owned Lean process; all heartbeat and recursion limits
+remain at their defaults.
+Optimized character check **58454** passed with only the standard three axioms
+in all eight audits. The global classification and separation criteria are
+certified at default limits. The file is cleaned, wired and documented; its
+card moved to stage 3 and its stale scratch draft is deleted. No olean is
+needed. Corrected actual Hermitian-part check **84509** is running directly
+with eight audits.
+Corrected Hermitian-part check **84509** passed with the standard three axioms
+in all eight audits. Both square-reading identities, unique decomposition and
+finite real-positive restriction are certified. The file is cleaned, wired and
+documented; its card moved to stage 3. No olean is needed. Its stale draft and
+scalar API probe are deleted. Actual finite-energy check **85031** is running
+directly with all seventeen audits, including class-level decomposition and
+the existing regular-energy supremum/residual assertions.
+Finite-energy check **85031** failed only at the final definitional equality
+between the local projected/complementary classes and their displayed formulas.
+An explicit `rfl` now closes that equality after the square expansion. Two
+reported unused simplifier arguments are removed in the mixed-degree proof.
+The other sixteen endpoint audits, including both regular-energy assertions,
+were standard; the whole file remains unverified pending direct recheck.
+The certified HT `L2TranslationCyclicity` olean was reconfirmed missing.
+Direct build **24990** is running for the actual boundary-density importer;
+it is the sole owned Lean process. Do not rebuild the artifact once it exists.
+HT translation-cyclicity missing-olean build **24990** passed. Its olean now
+exists; never rebuild it. Corrected actual finite-energy check **61957** is
+running directly with seventeen audits and is the sole owned Lean process.
+Corrected finite-energy check **61957** passed with the standard three axioms
+in all seventeen audits. The file is cleaned, wired and documented; its card
+moved to stage 3 and its stale draft and supremum API probe are deleted.
+The existing regular-energy assertion is now fully formalized; zero residual
+remains an open, paused question. No energy olean is needed. Actual boundary-
+density check **41902** is running directly with seven endpoint audits.
+The terminal output of **41902** was lost during context restoration and its
+process handle is closed. Its result is not treated as a certificate. Recovery
+check **49831** runs the unchanged actual file directly with the same seven
+audits; no concurrent owned Lean process exists.
+Recovery check **49831** failed at four normalization steps: the source L2
+value versus its linear-map wrapper in two pointwise integrals, rewriting a
+local cap value as a definition, and the final quotient-constructor identity.
+The Fourier profile endpoint has standard axioms, but the file is not certified.
+The four density normalization errors are corrected; actual recheck **73389**
+is running with seven audits. Older final check
+`SourceConeBoundaryApplications` **84273** passed all four standard audits;
+its temporary prints are removed and its existing olean is untouched.
+Density recheck **73389** cleared the norm, flow and quotient normalization
+errors, leaving only beta reduction in the Fourier integrand. An explicit
+pointwise `congrArg` proof replaces that rewrite. Actual recheck **34029** is
+running with the same seven audits; no result is certified from the failed run.
+Density recheck **34029** passed all seven transitive audits with only
+`propext`, `Classical.choice`, and `Quot.sound`. Its prints and stale scratch
+draft are removed; the module is wired. Its olean was confirmed absent, and
+direct build **74820** is running for the actual origin-obstruction and graph
+importers. The bundled density card awaits the origin-obstruction certificate.
+Density missing-olean build **74820** passed. Its olean now exists and must
+not be rebuilt. Origin-obstruction actual check **19121** is running with four
+audits; all remaining old final-audit modules already have oleans and need no builds.
+Origin-obstruction check **19121** passed all four standard transitive audits.
+The file is cleaned and wired, its stale draft removed, and the bundled density
+card moved to stage 3. README and review now record both certificates.
+Actual full-graph check **57650** is running with ten endpoint audits; it is
+the last unverified module in the nineteen-module candidate queue.
+Graph check **57650** passed both abstract density endpoints and the full
+finite-packet product closure/vertical endpoints. It failed at two implicit
+submodule-to-set coercions, an obsolete empty-finset lemma name, and the
+implicit normed operator-range target. The sets and target are now explicit;
+empty-packet elimination uses its membership contradiction directly. The
+whole graph file remains unverified pending recheck.
+Older graded-cone final audit **84684** passed both standard axiom audits;
+its prints are removed. Corrected graph actual check **43174** is running
+with ten endpoints.
+Graph recheck **43174** passed the closed-relation and full operator-range
+endpoints. Only empty-packet elimination remains: simplifying the selected
+slot membership produced `True`, so its precise index definition must be
+used explicitly. Failed single-valuedness audits are not certificates.
+Older primitive-faithfulness final check **1003** passed all three standard
+audits and its prints are removed. Corpus then mathlib lookup identified
+`Finset.notMem_empty`; direct scratch API check **63774** passed its exact
+dependent-slot use. The graph now uses this explicit elimination, avoiding
+simplification of the subtype membership itself.
+Corrected graph check **4931** passed all ten standard transitive audits.
+The file is cleaned, wired and documented; its card moved to stage 3 and
+its stale draft and API probe are removed. All nineteen candidate modules
+are now certified. Older numerical-equivalence final check **46883** is
+running with seven audits; six older actual-file final audits remain.
 
-### Remaining verification queue
+### Candidate verification queue
 
 All modules below are actual files under `ArithmeticCastelnuovoSeveri/`.
-Rows explicitly marked certified have passed; all other rows remain unverified.
+Every row is certified by a successful direct actual-file check and standard
+transitive axiom audits.
 
 | Module | State |
 |---|---|
@@ -484,25 +578,38 @@ Rows explicitly marked certified have passed; all other rows remain unverified.
 | `MeyerFiniteJetAlgebra` | CERTIFIED: direct 48574, seven standard audits, missing-olean build 7262 passed; cleaned, wired and documented |
 | `MeyerFiniteProjectorAlgebra` | CERTIFIED: direct 24913, four standard audits, missing-olean build 49711 passed; cleaned, wired and documented |
 | `PositiveMeyerDegreesSeeReducedCriticalJets` | CERTIFIED: direct 14494, six standard audits, missing-olean build 33799 passed; cleaned, wired, documented; card moved to stage 3 |
-| `MeyerAlgebraicCharacters` | Eight endpoints; quotient-coercion and extensionality repairs awaiting recheck |
-| `PoissonBoundariesAreDenseInOriginMass` | Seven endpoints; requires missing HT translation-cyclicity olean |
-| `OriginHilbertCohomologyObstruction` | Four endpoints; closedness instance corrected and verified by API check 91370, awaiting actual-file check |
+| `MeyerAlgebraicCharacters` | CERTIFIED: direct 58454, eight standard audits at default limits; cleaned, wired, documented; card moved to stage 3 |
+| `PoissonBoundariesAreDenseInOriginMass` | CERTIFIED: direct 34029, seven standard audits; missing-olean build 74820 passed; cleaned, wired, documented; bundled card moved to stage 3 |
+| `OriginHilbertCohomologyObstruction` | CERTIFIED: direct 19121, four standard audits; cleaned, wired, documented; bundled card moved to stage 3 |
 | `InvariantOriginMassDoesNotBoundTheWeilTrace` | CERTIFIED: direct 73371, seven standard audits; cleaned, wired, documented; card moved to stage 3 |
-| `MeyerHermitianDegreePart` | Eight endpoints, including the paper's literal imaginary-square reading; requires finite positive-degree olean |
-| `EveryFiniteMeyerJetGraphIsDenseInOriginHilbertSpace` | Ten endpoints; requires boundary-density olean |
-| `FiniteMeyerProjectorsSplitPositiveEnergy` | Seventeen endpoints, including the paper's class-level square decomposition and regular-energy supremum/residual; requires finite-degree and projector oleans |
+| `MeyerHermitianDegreePart` | CERTIFIED: direct 84509, eight standard audits; cleaned, wired, documented; card moved to stage 3 |
+| `EveryFiniteMeyerJetGraphIsDenseInOriginHilbertSpace` | CERTIFIED: direct 4931, ten standard audits; cleaned, wired, documented; card moved to stage 3 |
+| `FiniteMeyerProjectorsSplitPositiveEnergy` | CERTIFIED: direct 61957, seventeen standard audits; cleaned, wired, documented; card moved to stage 3 |
 
-Completed older actual-file final checks: `WeilEnergyIsUnboundedAtEveryAperture`
-(direct **52222**, five standard axiom audits, prints removed), and
-`SourceConeBoundaryRigidity` (direct **9947**, six standard audits, prints removed).
+### Older actual-file final audits
 
-Older actual-file final checks still remaining: `SourceConeBoundaryApplications`,
-`GradedSourceConeBoundaryRigidity`, `SourceConePrimitiveFaithfulness`,
-`NumericalEquivalenceOnTheScalingSurface`, `SourceRiemannRochWithoutSymmetry`,
-`ExactArithmeticSourceEffectivity`, `FiniteDegreeConesCannotSatisfyBezout`,
-`PoissonPrincipalCyclesOnTheScalingSurface`, and AOT
-`SourceSectionBoundaryRigidity`. Their oleans already exist and must not be rebuilt.
+Every module below already has an olean; none is rebuilt. Passed rows include
+successful actual-file exit, standard transitive axioms, and removal of temporary prints.
+
+| Module | Direct check | Audits | State |
+|---|---|---|---|
+| `WeilEnergyIsUnboundedAtEveryAperture` | 52222 | 5 | CERTIFIED |
+| `SourceConeBoundaryRigidity` | 9947 | 6 | CERTIFIED |
+| `SourceConeBoundaryApplications` | 84273 | 4 | CERTIFIED |
+| `GradedSourceConeBoundaryRigidity` | 84684 | 2 | CERTIFIED |
+| `SourceConePrimitiveFaithfulness` | 1003 | 3 | CERTIFIED |
+| `NumericalEquivalenceOnTheScalingSurface` | 46883 | 7 | CERTIFIED |
+| `SourceRiemannRochWithoutSymmetry` | 15508 | 6 | CERTIFIED |
+| `ExactArithmeticSourceEffectivity` | 84144 | 8 | CERTIFIED |
+| `FiniteDegreeConesCannotSatisfyBezout` | 60131 | 6 | CERTIFIED |
+| `PoissonPrincipalCyclesOnTheScalingSurface` | Pending | 5 | Unverified |
+| AOT `SourceSectionBoundaryRigidity` | Pending | 8 | Unverified |
 <!-- /qii-live-status -->
+
+The research record below preserves earlier draft and pending states. Those
+verification labels are historical; the certificate tables above give current
+status. Open mathematical obligations remain open unless a specific Lean
+certificate is recorded.
 
 ## Current evidence
 
@@ -1160,7 +1267,7 @@ summable three-halves von Mangoldt mass. Together with the archimedean Lévy low
 and the exact two pole moments, this gives one global quadratic arithmetic reserve
 dominating both signs of the original defect. Its source cone has global mixed Bézout
 and ampleness and fails RR by a strict positive reserve. Exact formulas and the complete
-paper proof are in `../2-fully-proven/a-global-arithmetic-majorant-for-the-scaling-surface.md`.
+paper proof are in `../3-formalized/a-global-arithmetic-majorant-for-the-scaling-surface.md`.
 The weighted correlation, actual prime-sum landing, and global cone still need Lean proofs.
 
 [PROVED HERE, paper; Lean pending.] The factor two in the majorant has an exact
@@ -1511,7 +1618,7 @@ The active batch has advanced to the missing aperture-majorant olean required
 by the actual factor-two theorem.
 
 The origin-mass boundary-density candidate now has a dependency-closed paper
-proof and has moved to `../2-fully-proven/poisson-boundaries-are-dense-in-origin-mass.md`.
+proof and is now formalized in `../3-formalized/poisson-boundaries-are-dense-in-origin-mass.md`.
 Its actual Xi-cap Fourier profile is nonzero almost everywhere; exact centered
 flow supplies a dense orbit of genuine boundaries. Every genuine class has
 representatives with arbitrarily small origin square mass, and every continuous
@@ -1531,11 +1638,11 @@ of only the real sharp-square degree does not force the original complex
 degree to be Hermitian. The canonical Hermitian part has exactly the same
 real square readings, so the finite critical-value classification applies
 to that part. The complete paper proof is recorded in
-`../2-fully-proven/real-positive-meyer-degrees-are-controlled-by-their-hermitian-part.md`.
+`../3-formalized/real-positive-meyer-degrees-are-controlled-by-their-hermitian-part.md`.
 No infinite-packet classification or automatic continuity is claimed.
 
 Boundary density gives a stronger exact graph theorem, recorded in
-`../2-fully-proven/every-finite-meyer-jet-graph-is-dense-in-origin-hilbert-space.md`.
+`../3-formalized/every-finite-meyer-jet-graph-is-dense-in-origin-hilbert-space.md`.
 Every surjective normed cohomological reading has full product graph closure
 with the origin Hilbert coordinate. In particular all actual finite Xi-jet
 packets become maximally multivalued, even critical value coordinates. This
@@ -1747,7 +1854,7 @@ The next infinite-degree question is now explicit in
 `positive-meyer-degrees-and-the-infinite-source-tail.md`: finite packet
 classification does not justify passing an arbitrary degree through an
 infinite expansion. A complete paper finite-to-global energy decomposition
-is recorded in `../2-fully-proven/finite-critical-projectors-split-positive-meyer-energy.md`.
+is recorded in `../3-formalized/finite-critical-projectors-split-positive-meyer-energy.md`.
 Actual critical causal projectors split every positive degree square into
 its finite weighted-value energy and a nonnegative residual. The residual
 vanishing/automatic-continuity question remains open; no analytic input is

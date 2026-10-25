@@ -1,9 +1,9 @@
 # Zero cutoffs remove the smooth Vaughan obstruction
 
 - **ID:** vaughan-zero-cutoffs-remove-the-smooth-obstruction
-- **Stage:** 2-fully-proven
-- **Type:** CLAIM (Lean verification pending)
-- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Verification:** Both repository leaves passed producing and final direct checks. All twenty audit targets depend only on `propext`, `Classical.choice`, and `Quot.sound`; umbrella imports are present.
 - **Source:** ../1-in-progress/q-i-selective-square-root-band.md
 - **Statement:** When either Vaughan cutoff is zero, the admitted coefficient dimension below half damping is three or four according to admission of the actual receiver. At half damping it is four. This gives the exact boundary of the positive-cutoff dimension law.
 - **Novelty status:** Algebraic corollary of the checked fixed-packet normal form; no external novelty claim.
@@ -53,16 +53,42 @@ dimension four for all cutoffs.
 
 ## Status
 
-The general fixed-cutoff admission equivalence and the explicit mean, packet, and paid
-vectors passed Lean audits. Five zero-cutoff and coefficient-replacement lemmas, including
-the all-positive-damping admission equivalence, are drafted in `/tmp/QIZeroCutoffTools.lean`,
-uncompiled. `/tmp/QIZeroCutoffDimensionsTools.lean` now drafts the four-vector
-representation, independent frames, exact admitted spans, dimensions three/four, and
-the quotient dimension test. Five further targets state the exact quotient
-dimensions in both receiver cases and discharge the endpoint receiver input
-to prove the empty-cutoff half-damping admission, dimension-four, and
-dimension-one quotient corollaries. All fifteen declarations remain uncompiled. Its imports
-name the planned coefficient-space and zero-cutoff repository leaves, which have not
-yet been created, together with `VaughanAdmissionAtHalfDamping.lean`. The endpoint uses the
-dependency-closed half-damping paper theorem. No receiver admission below half damping
-is inferred.
+The five zero-cutoff and coefficient-replacement targets, including the
+all-positive-damping admission equivalence, passed corrected producing and
+final direct checks in `ZeroVaughanCutoffsRemoveTheSmoothObstruction.lean`.
+Their transitive axioms are only `propext`, `Classical.choice`, and `Quot.sound`.
+The module is wired and its scratch removed.
+All fifteen targets in `TheZeroCutoffVaughanCoefficientSpace.lean` passed
+producing and final direct checks with the same standard axioms only. The
+module is wired and its scratch removed. They certify the four-vector
+representation, independent frames, exact admitted spans, dimensions three/four,
+both quotient dimensions, and the unconditional half-damping admission and
+dimension corollaries. No receiver admission below half damping is inferred.
+
+## Lean declarations
+
+`BezoutValuationIncidence/ZeroVaughanCutoffsRemoveTheSmoothObstruction.lean`:
+
+- `pmPronicVaughanPiece_smallSmall_eq_zero_of_zero_cutoff`
+- `pmPronicVaughanMean_smallSmall_eq_zero_of_zero_cutoff`
+- `pmPronicVaughanPacketSmoothMean_eq_zero_of_zero_cutoff`
+- `pmPronicVaughanPacket_replace_smallSmall_of_zero_cutoff`
+- `pmPronicVaughanPacketAdmitted_iff_of_zero_cutoff`
+
+`BezoutValuationIncidence/TheZeroCutoffVaughanCoefficientSpace.lean`:
+
+- `pmPronicVaughanPacketAdmitted_unused`
+- `pmPronicVaughan_coefficients_eq_empty_frame`
+- `pmPronicVaughanEmptyPaidFrame_linearIndependent`
+- `pmPronicVaughanEmptyFullFrame_linearIndependent`
+- `pmPronicVaughanAdmittedSubmodule_eq_empty_paid_span`
+- `pmPronicVaughanAdmittedSubmodule_eq_empty_full_span`
+- `finrank_pmPronicVaughanAdmittedSubmodule_empty_of_not_receiver`
+- `finrank_pmPronicVaughanAdmittedSubmodule_empty_of_receiver`
+- `finrank_pmPronicVaughanAdmittedSubmodule_empty_eq_four_iff`
+- `finrank_pmPronicVaughanAdmittedQuotient_empty_eq_one_iff`
+- `finrank_pmPronicVaughanAdmittedQuotient_empty_of_not_receiver`
+- `finrank_pmPronicVaughanAdmittedQuotient_empty_of_receiver`
+- `pmPronicVaughanPacketAdmitted_half_iff_of_zero_cutoff`
+- `finrank_pmPronicVaughanAdmittedSubmodule_empty_half`
+- `finrank_pmPronicVaughanAdmittedQuotient_empty_half`

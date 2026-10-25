@@ -38,6 +38,7 @@ theorem meyerOrigin_joint_degree_dense_of_denseRange
     rw [map_add, show (LinearMap.range deningerMeyerStrongLogSumLM).mkQ
         (deningerMeyerStrongLogSumLM f) = 0 from
       (Submodule.Quotient.mk_eq_zero _).mpr ⟨f, rfl⟩, add_zero]
+    rfl
   refine ⟨(deningerMeyerHalfDensityL2LM h, E (Submodule.Quotient.mk h)), ⟨h, rfl⟩, ?_⟩
   rw [Prod.dist_eq, hclass, hgE]
   apply max_lt_iff.mpr
@@ -81,7 +82,8 @@ theorem meyerFiniteJetOriginGraph_full_vertical (S : Finset XiDivisorSupport)
 /-- A closed relation retaining the actual finite-jet graph must be the whole product. -/
 theorem meyerFiniteJetOriginGraph_closed_relation_eq_top (S : Finset XiDivisorSupport)
     (R : Submodule ℂ (Lp ℂ 2 (volume : Measure ℝ) × DeningerMeyerFiniteXiJetPacket S))
-    (hR : IsClosed (R : Set _)) (hg : meyerFiniteJetOriginGraph S ≤ R) : R = ⊤ := by
+    (hR : IsClosed (R : Set (Lp ℂ 2 (volume : Measure ℝ) × DeningerMeyerFiniteXiJetPacket S)))
+    (hg : meyerFiniteJetOriginGraph S ≤ R) : R = ⊤ := by
   have hc := Submodule.topologicalClosure_minimal _ hg hR
   rw [meyerFiniteJetOriginGraph_closure_eq_top] at hc
   exact top_unique hc
@@ -103,13 +105,14 @@ theorem meyerFiniteJetOriginGraph_singleValuedClosure_iff_empty (S : Finset XiDi
     exact one_ne_zero hbad
   · rintro rfl y _
     funext q
-    exact False.elim (Finset.not_mem_empty q.1.1 q.1.2)
+    exact False.elim (Finset.notMem_empty q.1.1 q.1.2)
 
 /-- No nonempty actual finite-jet graph has a single-valued closed extension in origin Hilbert space. -/
 theorem meyerFiniteJetOriginGraph_no_closed_singleValued_extension
     (S : Finset XiDivisorSupport) (hS : S.Nonempty) :
     ¬ ∃ R : Submodule ℂ (Lp ℂ 2 (volume : Measure ℝ) × DeningerMeyerFiniteXiJetPacket S),
-      IsClosed (R : Set _) ∧ meyerFiniteJetOriginGraph S ≤ R ∧
+      IsClosed (R : Set (Lp ℂ 2 (volume : Measure ℝ) × DeningerMeyerFiniteXiJetPacket S)) ∧
+        meyerFiniteJetOriginGraph S ≤ R ∧
         ∀ y, ((0 : Lp ℂ 2 (volume : Measure ℝ)), y) ∈ R → y = 0 := by
   rintro ⟨R, hR, hg, hsingle⟩
   have hc := Submodule.topologicalClosure_minimal _ hg hR
@@ -122,7 +125,9 @@ theorem meyerOrigin_joint_operator_dense :
     DenseRange (fun g : DeningerMeyerStrongLogTarget =>
       (deningerMeyerHalfDensityL2LM g,
         deningerMeyerConvolutionRepresentationLM.rangeRestrict (Submodule.Quotient.mk g))) :=
-  meyerOrigin_joint_degree_dense deningerMeyerConvolutionRepresentationLM.rangeRestrict
+  meyerOrigin_joint_degree_dense
+    (Y := LinearMap.range deningerMeyerConvolutionRepresentationLM)
+    deningerMeyerConvolutionRepresentationLM.rangeRestrict
     deningerMeyerConvolutionRepresentationLM.surjective_rangeRestrict
 
 /-- The actual convolution graph, with the operator norm on its genuine image. -/
@@ -154,14 +159,3 @@ theorem meyerOperatorOriginGraph_nonzero_vertical
     exact Submodule.mem_top
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerOrigin_joint_degree_dense_of_denseRange
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerOrigin_joint_degree_dense
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteJetOriginGraph_closure_eq_top
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteJetOriginGraph_full_vertical
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteJetOriginGraph_closed_relation_eq_top
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteJetOriginGraph_singleValuedClosure_iff_empty
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteJetOriginGraph_no_closed_singleValued_extension
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerOrigin_joint_operator_dense
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerOperatorOriginGraph_closure_eq_top
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerOperatorOriginGraph_nonzero_vertical

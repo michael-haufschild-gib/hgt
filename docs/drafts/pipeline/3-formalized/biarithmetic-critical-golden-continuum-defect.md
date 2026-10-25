@@ -25,5 +25,6 @@ Audited declarations: `criticalGoldenPowerClass_linearIndependent`,
 - [x] All four transitive audits contain only `propext`, `Classical.choice`, `Quot.sound`.
 - [x] Umbrella import wired; umbrella not compiled.
 
-This is the ordinary-floor golden source. The intrinsic receiver transfer
-and the separate coefficient-space quotient comparison remain obligations.
+This is the ordinary-floor golden source. The coefficient-space quotient
+comparison is formalized in `CriticalCoefficientContinuumDefect`.
+The intrinsic receiver transfer remains an obligation.

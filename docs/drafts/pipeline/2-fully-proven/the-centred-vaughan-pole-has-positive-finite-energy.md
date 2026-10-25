@@ -3,7 +3,7 @@
 - **ID:** the-centred-vaughan-pole-has-positive-finite-energy
 - **Stage:** 2-fully-proven
 - **Type:** CLAIM (Lean verification pending)
-- **Verification:** UNPROVED. The argument below is not a certified result until its Lean proof and transitive axiom audit pass; checked component lemmas are identified separately.
+- **Verification:** The seven centered-pole energy and rate-obstruction targets are Lean-verified. The endpoint product-horizon consequence below remains pending its actual Gram-limit chain.
 - **Source:** uniform-vaughan-residual-power-rates-are-fixed-strips.md
 - **Statement:** For every `ε≥0`, the centered pole energy has a cutoff-independent limit `L_ε` with `2^(-2ε)/32≤L_ε≤1/4`. Consequently its normalization by `T^(1-2ε)` cannot decay with a larger power exponent.
 - **Novelty status:** Exact positive first-cell refinement of the existing active-pair energy bound. No external novelty claim.
@@ -54,7 +54,20 @@ The obstruction preserves a concrete invariant: a positive finite source energy,
 with an explicit lower bound and a cutoff-independent limiting value. It does not
 exclude positive power savings below the stated cap and does not answer full Q-I.
 
-The source statements for the prime coefficient, active value at one, forward
-difference, and active energy bounds have been read. The dependency-closed proof
-is drafted as seven audit targets in `/tmp/QIPoleCentredEnergyTools.lean`.
-Lean verification remains pending; no route is retired on this draft.
+All seven targets in
+`BezoutValuationIncidence/TheCentredVaughanPoleHasPositiveFiniteEnergy.lean`
+passed corrected producing and final direct checks. Each transitive axiom audit
+contains only `propext`, `Classical.choice`, and `Quot.sound`. The module is
+wired and its scratch removed:
+
+- `addDiff_pmActiveSawtoothComponent_one`
+- `pmActivePairPronicEnergy_one`
+- `pmActivePairPronicEnergy_lower`
+- `pmPronicVaughanCentredGram_pole_eq_active`
+- `exists_tendsto_pmActivePairPronicEnergy`
+- `exists_positive_tendsto_pmPronicVaughanCentredGram_pole`
+- `not_pmPronicVaughanCentredGram_pole_faster_power`
+
+The final theorem rules out eventual faster-power bounds, including arbitrary
+moving cutoffs. The original card remains here until the stated nonzero
+endpoint product-horizon Gram consequence is also verified. No route is retired.

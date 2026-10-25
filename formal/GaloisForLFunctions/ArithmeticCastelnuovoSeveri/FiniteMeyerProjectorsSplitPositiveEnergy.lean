@@ -105,6 +105,7 @@ theorem meyerFiniteCriticalProjector_square_decomposition (S : Finset XiDivisorS
       rw [← hu]
     _ = _ := by
       simp only [map_add, LinearMap.add_apply, hpr, hrp, add_zero, zero_add]
+      rfl
 
 /-- Every Hermitian degree has an exact orthogonal finite-packet energy decomposition. -/
 theorem meyerFiniteCriticalProjector_degree_decomposition
@@ -287,7 +288,7 @@ theorem meyerFiniteProjector_positive_cross_degree_zero
       deningerMeyerFiniteXiCausalProjector_idempotent]
   · intro rho hr hfix
     simp only [meyerPointDegree_product, point_degree_sharp_fixed rho hfix,
-      map_sub, point_degree_projector, if_pos hr, sub_self, map_zero, mul_zero]
+      map_sub, point_degree_projector, if_pos hr, sub_self]
 
 /-- Positive degree energy splits along every finite packet, including off-line blocks. -/
 theorem meyerFiniteProjector_positive_degree_decomposition
@@ -422,20 +423,3 @@ theorem meyerPositiveDegree_regular_residual
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalProjector_sharp
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalProjector_complement_product_zero
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalProjector_square_decomposition
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalProjector_degree_decomposition
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalProjector_degree_le
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalProjector_degree_eq_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalProjector_square
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalProjector_degree_formula
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteCriticalWeightedEnergy_le
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerPositiveDegree_projector_formula
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteProjector_positive_cross_degree_zero
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteProjector_positive_degree_decomposition
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteProjector_positive_degree_formula
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteProjector_positive_degree_le
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerFiniteProjector_positive_degree_eq_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerPositiveDegree_regular_energy_bounds
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerPositiveDegree_regular_residual

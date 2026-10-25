@@ -88,8 +88,24 @@ Combining both phases and the discrete error proves
 `Σ_(n≤T) v(floor(n/j))v(floor(n/k))/(n(n+1))`
 `= (jk)^(-β) Re[exp(ib) T^(α-2ia)/(2(α-2ia))] + O_(j,k)(T^α/log T+1)`.
 
+`/tmp/BiarithmeticChirpCovarianceErrorBound.lean` drafts an explicit eventual
+inequality `|error| ≤ C₀ + C₁ N^α/log N` with nonnegative constants.
+It retains the exact linear lower endpoint, quadratic integral bound, and
+full discrete correction. Two audits and its dependencies remain unchecked.
+
 The case `j=k=1` gives the stated energy asymptotic. Division by it proves the normalized
 kernel formula and regular variation of index `α`, including horizons `floor(T/p)`.
+
+`/tmp/BiarithmeticChirpRegularVariation.lean` drafts the actual real-horizon
+extension using the natural floor ratio, energy escape, and all positive
+dilation ratios. Four audits and its source covariance dependency remain
+unchecked; no regular-variation premise is assumed.
+
+`/tmp/BiarithmeticChirpMovingPhaseAsymptotic.lean` drafts the full moving-phase
+formula for the actual normalized covariance and `normalizedSourceGram`.
+The leading term is uniformly bounded; the inverse normalized energy tends
+to `2α`. This controls their product without assuming phase convergence.
+Two audits and its source dependencies remain unchecked.
 
 ## Complete tangent family
 
@@ -124,6 +140,13 @@ exponentials on every nonempty interval: differentiating a vanishing finite expo
 polynomial yields an invertible Vandermonde system. Thus every finite Gram matrix on distinct
 cofactors is positive definite, and every tangent has infinite rank.
 
+`ChirpCauchyKernel.lean` now proves strict finite-matrix positivity,
+strict real-packet positivity, the exact diagonal, and phase continuity.
+Its direct source check and all eight transitive audits passed; see
+[checked kernel component](../3-formalized/biarithmetic-chirp-cauchy-kernel.md).
+The half-line integral identity and infinite-dimensional completion still
+require their own checks.
+
 Dilation of cofactor indices is represented on these functions by
 
 `V_p F(u)=p^(-β) z_p exp(i(log p)²) exp(2iu log p) F(u+log p)`.
@@ -134,15 +157,43 @@ the exact positive boundary law
 `Q_z(c with indices dilated by p)`
 `=p^-1 [Q_z(c)-∫₀^(log p) α exp(-αu)|F_(z,c)(u)|² du]`.
 
+`/tmp/BiarithmeticChirpDilationAlgebra.lean` drafts the mode identity,
+operator composition, unit action, actual packet-label action, and exact
+pointwise squared norm. Five audits and dependencies remain unchecked.
+`/tmp/BiarithmeticChirpBoundaryLaw.lean` drafts the translated-tail integral,
+exact lost boundary mass, and both contraction inequalities. Four audits
+and its packet dependencies remain unchecked.
+
 Consequently the usual critical packet contraction holds for every tangent. It is strict on
 every nonzero finite packet when `p>1`. This formula identifies the precise lost boundary mass;
 it is stronger than merely exhibiting nonhomogeneity. Taking the closure of the explicitly
 spanned packet functions supplies a cyclic real Hilbert representation with these bounded
 operators. No representation or norm estimate is postulated.
 
+`/tmp/BiarithmeticChirpHilbertModule.lean` drafts the canonical closed real
+Gram carrier, its bounded multiplicative action, cyclicity, and infinite
+dimension from strict finite-packet positivity. Seven audits and its
+finite-packet dependency remain unchecked. Identification with the explicit
+weighted half-line packet closure remains a separate obligation.
+
+`/tmp/BiarithmeticChirpHalfLineAtoms.lean` drafts the explicit weighted
+atoms in half-line L² and proves their candidate Hermitian and real Gram
+identities. Four audits and its packet dependency remain unchecked. The
+onto identification of the two closed real spans remains outstanding.
+
+`/tmp/BiarithmeticChirpHalfLineCompletion.lean` now drafts that onto
+identification, exact correspondence of named source modes, and bounded
+cofactor dilation on the actual function-space closure. Its five audits
+and both source-realization dependencies remain unchecked.
+
 The exact family transport is
 
 `K_z(pj,pk)=p^(-2β) K_(z χ(-log p))(j,k)`.
+
+`/tmp/BiarithmeticChirpKernelTransport.lean` drafts both complex and real
+family transport. The common cofactor amplitude cancels to its squared
+norm; the difference-frequency denominator is unchanged. Three audits and
+its algebra dependencies remain unchecked.
 
 The diagonal remains `K_z(j,j)=j^(-2β)`. For the three pairs `(1,2),(2,4),(4,8)`, the
 normalized off-diagonal values form `Re(A exp(-2ir(log 2)²))`, `r=0,1,2`, with `A≠0`.
@@ -162,6 +213,16 @@ Haar invariance makes its integral zero. Therefore
 This average is homogeneous and positive. It cannot be one source tangent, since every
 individual tangent fails homogeneity. Thus stationary averaging and subsequence extraction
 are provably different operations even for this smooth scalar source with bounded increments.
+
+`/tmp/BiarithmeticChirpNonhomogeneousTangents.lean` drafts the actual
+three-pair nonhomogeneity bridge, the signed two-coordinate violation of
+the stronger `2^(-2β)` bound, and exclusion of the Haar average from actual
+source tangents. Five audits and the source/kernel dependencies remain unchecked.
+
+`/tmp/BiarithmeticChirpFinitePackets.lean` drafts symmetry, strict positivity,
+and critical dilation bounds on arbitrary finite cofactor sets. This supplies
+the coefficient input for the canonical Gram completion; five audits and
+the packet dependency chain remain unchecked.
 
 ## Verification and novelty
 
@@ -186,12 +247,19 @@ Möbius or absolutely summable-mean divisor-source realization is claimed. The p
 refutes only the inference from scalar regular variation and the coarse cofactor constraints
 to individual stationary homogeneity. Lean results must not use it before formalization.
 
-Pending source check: `/tmp/BiarithmeticChirpPhaseRigidity.lean` contains the three-rotation rigidity argument and the exact nondegenerate prime-two angle. It does not yet identify these three samples with actual source tangents; the discrete asymptotics, tangent realization, and boundary-loss representation remain outstanding.
+`ChirpPhaseRigidity.lean` proves three-rotation rigidity and the exact
+nondegenerate prime-two angle. Direct repository check and all four
+transitive audits passed; its [formalized card](../3-formalized/biarithmetic-chirp-phase-rigidity.md)
+records the declarations. Identification with actual tangent-kernel entries,
+source asymptotics, and boundary-loss verification remain pending.
 
-Pending source check: `/tmp/BiarithmeticChirpPhaseGroup.lean` constructs the
+`ChirpPhaseGroup.lean` constructs the
 compact closure group of the actual logarithmic phase flow and derives its
 cofactor multiplicativity by closedness. Realization along diverging integer
 horizons remains a separate obligation.
+Direct repository check and all four transitive audits passed; the
+[formalized card](../3-formalized/biarithmetic-chirp-phase-group.md) and
+umbrella import are present.
 
 Pending source check: `/tmp/BiarithmeticChirpCauchyKernel.lean` identifies
 the explicit kernel as a diagonal congruence of the corpus's strict Cauchy

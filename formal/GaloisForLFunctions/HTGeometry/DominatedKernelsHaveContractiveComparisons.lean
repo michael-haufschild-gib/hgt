@@ -91,5 +91,6 @@ end KernelHilbert
 end GaloisForLFunctions.HTGeometry
 
 #print axioms GaloisForLFunctions.HTGeometry.KernelHilbert.comparison_vector
+#print axioms GaloisForLFunctions.HTGeometry.KernelHilbert.norm_comparison_le
 end
 end

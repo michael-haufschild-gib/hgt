@@ -66,16 +66,20 @@ horizons. This uniform subquadratic budget is the positive structural result.
 - **New insight:** The report's proposed `k ~ sqrt(E)` scale is still too
   small. Its original quadratic estimate supplied only a necessary lower
   bound, not a scale supporting a nontrivial translation action.
-- **Status:** Dependency-closed paper proof above. Lean formalization and
-  transitive axiom audit pending. The no-go is not closed.
+- **Status:** The raw square-root collapse and its positive origin-trace
+  survivor passed final canonical checks. Later reset/raw boundary consequences
+  below remain under their separate canonical audits.
 
-## Next conjecture
+## Stronger raw source-power bound
 
 The same power bound, splitting the pronic sum at `n=k`, suggests
-`D(k,T) <= C_epsilon k^(2-2epsilon)` uniformly in `T` for `k>=1`:
-use the power bound on `n<=k` and the increment bound on the tail, whose
-pronic mass is at most `1/k`. This quantitative refinement is separate
-from the proved qualitative argument above and remains to be formalized.
+`D(k,T) <= C_epsilon k^(2-2epsilon)` uniformly in `T` for `k>=1`.
+The stronger result is already formalized in
+`TheSourcePowerSavingControlsMovingSuccessors`:
+`successorPowerRatioBudget_tendsto_zero` and
+`exists_uniform_subpower_successor_budget` give a uniform little-oh bound
+at this power, and `admits_or_sourcePower_successors_disappear` gives its
+escape consequence. The corresponding source-power card is in `3-formalized`.
 
 ## Gates
 
@@ -168,12 +172,9 @@ This proves the uniform little-oh linear law without a limit exchange.
 
 The same bounded/large-length split used for raw translations now proves that
 every recentered translation with bounded `k/E` disappears on escape.
-This is a dependency-closed paper consequence; Lean verification is pending.
-
-The full proof is drafted in `/tmp/qiii_linear_translation_check.lean`. Its
-general three-region energy estimate passed Lean and a standard-axiom audit.
-The source specialization had two local elaboration errors, now fixed;
-the strengthened conclusion has not yet passed its retry.
+This consequence passed final canonical verification in
+`RecenteredSuccessorsVanishAtTheEnergyScale`; its source-power strengthening
+is also formalized. The old scratch status is superseded.
 
 ## Origin reset and a possible boundary module
 

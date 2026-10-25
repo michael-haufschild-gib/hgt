@@ -52,5 +52,6 @@ theorem mixedOrigin_kernel_zero {ε : SubcriticalDamping} (L : ActualCofactorLim
 end GaloisForLFunctions.ArithmeticDefectRigidity
 
 #print axioms GaloisForLFunctions.ArithmeticDefectRigidity.admits_or_every_positive_faithful_boundary_is_realized
+#print axioms GaloisForLFunctions.ArithmeticDefectRigidity.mixedOrigin_kernel_zero
 end
 end

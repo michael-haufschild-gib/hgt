@@ -1,9 +1,9 @@
 # Poisson boundaries and the origin-mass completion
 
 - **ID:** qii-origin-mass-boundary-density
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean verification pending)
-- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Status:** Direct actual-file checks 34029 and 19121 passed; all eleven endpoint audits use only `propext`, `Classical.choice`, and `Quot.sound`.
 - **Source:** ../1-in-progress/q-ii-source-effectivity-and-linear-degree.md
 - **Statement:** Genuine Poisson boundaries are dense in the canonical half-density L2 completion of the all-weight Meyer source; every genuine class therefore has representatives with arbitrarily small origin square mass.
 
@@ -18,12 +18,12 @@ transform Xi. `XiThetaL2Cyclicity` proves the ordinary L2 translation
 cyclicity mechanism using Fourier uniqueness and almost-everywhere
 nonvanishing of Xi on the critical line.
 
-The intended proof embeds the actual Xi-cap boundary into the half-density
+The proof embeds the actual Xi-cap boundary into the half-density
 space, identifies its Fourier transform with Xi on the critical line, and
 uses cyclicity. Its translates remain genuine boundaries. Density then gives
 small origin-mass representatives in each actual source coset.
 
-## Proof argument (Lean verification pending)
+## Proof argument
 
 Let B be the actual cap-to-Poisson-boundary map and let iota(g)(t)=exp(t/2)g(t)
 be the existing injective map into ordinary complex L2. Exact norm integration
@@ -72,15 +72,35 @@ evaluations can remain continuous, from ordinary half-density L2.
 ## Lean status
 
 The reusable L2 cyclicity module passed its actual-file check and both standard
-axiom audits. The arithmetic density proof is still unverified:
+axiom audits. The arithmetic density module passed direct check **34029** and
+seven transitive audits using only `propext`, `Classical.choice`, and `Quot.sound`:
 
 - `HTGeometry/L2TranslationCyclicity.lean`: certified general cyclicity step.
 - `ArithmeticCastelnuovoSeveri/PoissonBoundariesAreDenseInOriginMass.lean`: exact Fourier profile, origin
   norm identity, actual boundary density, small representatives, and vanishing
   of every continuous linear boundary-annihilating reporter.
 
-No theorem from these drafts is cited as Lean-certified. External novelty
-unverified. No all-weight source closure or RH conclusion is claimed.
+The faithful comparison module passed direct check **19121** and all four
+standard axiom audits. Both files are cleaned and wired; stale drafts are
+removed. External novelty unverified. No all-weight source closure or RH
+conclusion is claimed.
+
+Audited density endpoints:
+
+- `meyerHalfDensityFunction_fourier`
+- `meyerHalfDensityL2_norm_sq`
+- `meyerPoissonBoundary_halfDensity_dense`
+- `exists_meyer_representative_small_origin_square`
+- `meyerHalfDensity_continuous_boundary_reporter_zero`
+- `meyerHalfDensity_continuous_class_reading_iff_constant`
+- `meyerOriginSquareMass_class_lower_bound_iff`
+
+Audited faithful-comparison endpoints:
+
+- `no_continuous_faithful_meyer_class_reading`
+- `meyerCompactOpenXiCohomology_t2Space`
+- `no_continuous_origin_compactOpenXi_realization`
+- `no_continuous_origin_convolution_realization`
 
 ## Continuous nonlinear readings
 
@@ -91,7 +111,7 @@ equals F(0) on the dense boundary image; continuity gives equality everywhere.
 Conversely a constant reading is class invariant. This does not assume linearity
 or a norm on the target. The linear zero-reporter corollary therefore also
 extends to arbitrary Hausdorff topological complex vector targets. These
-endpoints are now in the unverified boundary-density draft.
+endpoints are certified in the boundary-density module.
 
 ## Faithful comparison consequences
 
@@ -104,12 +124,12 @@ continuous recovery of the faithful full-Hasse convolution operator, even by
 a nonlinear map. Nontriviality is unconditional: Hardy supplies a Xi point,
 and its actual point source has value one there. This applies the result to
 the existing compact-open and operator completions without assuming a positive
-Gelfand interface. Actual candidate:
-`ArithmeticCastelnuovoSeveri/OriginHilbertCohomologyObstruction.lean`, unverified.
+Gelfand interface. Formalized in
+`ArithmeticCastelnuovoSeveri/OriginHilbertCohomologyObstruction.lean`.
 
-The actual candidate now states the quotient-infimum conclusion without implicit
+The formal theorem states the quotient-infimum conclusion without implicit
 limit interchange: `meyerOriginSquareMass_class_lower_bound_iff` says a real b
 bounds the origin square mass of every representative of a fixed genuine class
 exactly when b<=0. Nonnegativity supplies all such bounds; a positive b is
 contradicted by the proved small representative with epsilon=b. This endpoint
-is unchecked together with the arithmetic density leaf.
+passed with the arithmetic density leaf in direct check **34029**.

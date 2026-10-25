@@ -114,8 +114,10 @@ The recentered error and its fixed dilates vanish by the verified uniform
 source-power budget with `a=1-epsilon`. This closes the paper construction
 of the stated mixed kernel for every `c>0` on the escape branch.
 
-The construction has a dependency-closed paper proof. Canonical source verification remains unfinished; the combined Lean proof
-and transitive axiom audit passed. The general record/first-crossing device is not
-claimed as a new general analysis theorem; its target is the exact actual
-Möbius moving-origin boundary. The original unshifted classification remains
-open.
+Record extraction, first crossings, prescribed-horizon extraction, bounded-row
+pairings and realization of every positive reset-origin Gram mass passed their
+final canonical checks with standard axioms. The complete Wiener-action and
+faithfulness consequences still need their individual canonical audits. The
+general record/first-crossing device is not claimed as a new general analysis
+theorem; its target is the exact actual Möbius moving-origin boundary. The
+original unshifted classification remains open.

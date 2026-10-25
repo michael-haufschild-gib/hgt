@@ -163,7 +163,8 @@ theorem tendsto_pmPronicVaughanCentredGram_half_sub_harmonic
               a j t * Real.sqrt (n : ℝ) * r i t n + r i t n * r j t n := by ring
         _ = _ := by rw [Real.sq_sqrt hn0.le]
     rw [hprod]
-    field_simp [hn0.ne', (show (n : ℝ) + 1 ≠ 0 by positivity)] <;> ring
+    field_simp [hn0.ne', (show (n : ℝ) + 1 ≠ 0 by positivity)]
+    ring
   have hlim := ((hproduct i j).add (hproduct j i)).add
     (tendsto_pmPronicVaughanSmoothRemainder_half_pairing hH hU hV i j)
   simpa only [zero_add, ← heq] using hlim

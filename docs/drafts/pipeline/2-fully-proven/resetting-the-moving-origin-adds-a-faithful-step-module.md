@@ -84,13 +84,13 @@ zero-origin actual cofactor diagonal is at most `1/j`. Arbitrarily large
 
 ## Audit and Lean status
 
-The exact source-power disappearance theorem is already formalized. The
-uniform absolute-pronic cofactor bound, step-module realization and
-faithfulness, and reset-source Gram convergence passed their combined Lean
-scratch; canonical checks remain. Raw-source convergence and the dimension
-corollaries remain unchecked. The separate record-horizon paper proof constructs shifts
-with nonzero origin trace on escape. Neither result identifies the unshifted
-actual escape spectrum.
+The exact source-power disappearance theorem, uniform bounded-row pairing,
+moving-Gram perturbation, reset-source Gram convergence, positive-mass
+realization and exclusion of constant boundary mass passed final canonical
+Lean checks with standard axioms. Complete step-module and positive-mixture
+faithfulness still need their individual canonical checks. Raw-source
+convergence and dimension corollaries remain unchecked. These shifted-source
+results do not identify the unshifted actual escape spectrum.
 
 ## Consequence for moving-source repair transport
 

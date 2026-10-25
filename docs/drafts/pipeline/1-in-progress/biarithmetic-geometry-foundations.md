@@ -51,7 +51,7 @@ its parent card. Open programme questions without a proof plan remain open.
 
 | Source requirement | Required evidence | Status |
 |---|---|---|
-| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; sixty-five direct-checked and axiom-audited leaves |
+| Own folder, umbrella, foundational README | Current files, verified imports, mathematical exposition | Present; seventy-three direct-checked and axiom-audited leaves |
 | Horizon-complete objects; sign visibility | Exact signed finite-horizon laws and quantitative period/prefix comparison | Open |
 | Truncated affine representation theory | Source-defined action, boundary calculus, classification/calibration | Open |
 | A1–A2: paid ideal annihilates escape; hull inclusion | Actual receiver theorem, not an assumed ideal inclusion | Proved for every actual common Gram limit; ADR foundations reused, four interfaces directly checked and axiom-audited |
@@ -126,6 +126,14 @@ its parent card. Open programme questions without a proof plan remain open.
 | `CriticalCoefficientWienerRealization` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
 | `CriticalReducedCokernel` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
 | `CriticalContinuousDual` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `CriticalCoefficientContinuumDefect` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
+| `FiveShellPronicEnergy` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
+| `ChirpPhaseRigidity` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
+| `ComplexShellShift` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
+| `ChirpPhaseGroup` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
+| `GeometricCausalDivision` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
+| `ChirpCauchyKernel` | Direct repository leaf passed; stage-3 card | Eight main declarations clean |
+| `IntrinsicPointKernelEnergy` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
 | `GoldenNormalizedCube` | Direct repository leaf passed; stage-3 card | Four main declarations clean |
 | `NormalizedCubicTrace` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `CriticalGoldenPaymentNonclosed` | Direct repository leaf passed; stage-3 card | Six main declarations clean |
@@ -146,7 +154,7 @@ its parent card. Open programme questions without a proof plan remain open.
 | `PaidSourcePerturbations` | Direct repository leaf passed; stage-3 card | Five main declarations clean |
 | `FullWienerAnnihilation` | Consolidated ADR interfaces and direct repository leaf passed | Four chosen and universal declarations clean |
 
-Completed main-declaration axiom audits for sixty-five checked leaves report only `propext`,
+Completed main-declaration axiom audits for seventy-three checked leaves report only `propext`,
 `Classical.choice`, and `Quot.sound`. Audits used isolated Lean source copies; each leaf also passed its direct source check. The literal-B1
 no-go is closed in `5-failed/biarithmetic-literal-dimension-euler-characteristic.md`; its
 positive survivor and exact prefix visibility now have separate stage-3 cards.
@@ -842,9 +850,10 @@ Active drafts:
   numerator, exact coefficient decomposition, and critically weighted absolute
   summability. Eight audits drafted; first check pending. Neither the intrinsic
   tangent classification nor its payment criterion is yet proved.
-- `/tmp/BiarithmeticFiveShellPronicEnergy.lean`: exact signed shell pairing,
+- `FiveShellPronicEnergy.lean`: exact signed shell pairing,
   complete-prefix weight, and equivalence of finite shell square energy with
-  all-cutoff pronic bounds. Four audits drafted; unchecked.
+  all-cutoff pronic bounds. Direct repository check and four transitive audits
+  passed. Stage-3 card and umbrella import present.
 - `/tmp/BiarithmeticFiveShellShifts.lean`: exact norm-lattice floor shifts,
   weighted energy scaling, finite geometric boundary defect, and the precise
   geometric shell convergence radius. Five audits drafted; unchecked.
@@ -930,12 +939,11 @@ Active drafts:
   repository check passed. Stage-3 card and umbrella import present.
   The product injection and nonnegative-series proof are recorded
   on that in-progress card.
-- `/tmp/BiarithmeticGeometricCausalDivision.lean`: the strict expanding complex
+- `GeometricCausalDivision.lean`: the strict expanding complex
   response has finite square energy iff its reciprocal evaluation vanishes;
-  exact negative-future-tail formula and explicit absolute-sum bound. First
-  check found one redundant tactic after field normalization; removed, with
-  recheck pending. Its future-tail dependency is checked and built. This
-  addresses the sequence domain, with
+  exact negative-future-tail formula and explicit absolute-sum bound. Direct
+  repository check and all five transitive audits passed. Stage-3 card and
+  umbrella import present. This addresses the sequence domain, with
   transfer to the actual one-prime payment complex still separate.
 - `/tmp/BiarithmeticStrictPrimePayment.lean`: exact normalization of the actual
   complex tower criterion as a geometric causal-response domain, then the
@@ -1116,11 +1124,16 @@ gives the exact balanced annular quotient, its phase-variation estimate,
 and uniform critical collapse. Four audits are drafted; the strict actual
 source-limit comparison and full fixed-kernel covariance extension remain.
 
-Pending source check: `/tmp/BiarithmeticChirpPhaseRigidity.lean` contains the three-rotation rigidity argument and the exact nondegenerate prime-two angle. It does not yet identify these three samples with actual source tangents; the discrete asymptotics, tangent realization, and boundary-loss representation remain outstanding.
+`ChirpPhaseRigidity.lean` proves three-rotation rigidity and the exact
+nondegenerate prime-two angle. Direct repository check and all four
+transitive audits passed; stage-3 card and umbrella import are present.
+The identification with actual tangent-kernel entries remains pending.
 
-Pending source check: `/tmp/BiarithmeticChirpPhaseGroup.lean` constructs the
+`ChirpPhaseGroup.lean` constructs the
 compact closure group of the actual logarithmic phase flow and derives its
-cofactor multiplicativity by closedness. Integer-horizon realization is pending.
+cofactor multiplicativity by closedness. Direct repository check and all four
+transitive audits passed; stage-3 card and umbrella import present.
+Integer-horizon realization remains pending.
 
 Pending source check: `/tmp/BiarithmeticChirpCauchyKernel.lean` drafts strict
 finite-packet positivity of the explicit chirp kernel by an invertible
@@ -1147,7 +1160,10 @@ actual chirp's uniform floor error and absolute summability of each fixed
 pronic cofactor covariance correction. It uses the power `n^(β-2)` and
 depends on the regularity draft. Five audits are pending.
 
-Pending source check: `/tmp/BiarithmeticComplexShellShift.lean` constructs complex normalized shell shifts with exact isometry and semigroup laws. This is the missing bounded-operator input for the existing intrinsic infinite-kernel convolution proof plan.
+`ComplexShellShift.lean` constructs complex normalized shell shifts with
+exact isometry and semigroup laws. Direct repository check and all four
+transitive audits passed; stage-3 card and umbrella import are present.
+The dependent intrinsic infinite-kernel convolution remains unchecked.
 
 Pending source check: `/tmp/BiarithmeticIntrinsicShellConvolution.lean` constructs bounded convolution by every actual critical Wiener kernel, identifies its finite Cauchy coordinates, and proves weighted shell-energy stability with operator bound `||k||`. This addresses the infinite-kernel action required by the intrinsic centered-convolution proof plan.
 
@@ -1158,10 +1174,11 @@ the actual intrinsic source admission phase, both damping endpoints, and
 payment of every filtered Wiener kernel in the paid regimes. Seven audits
 are drafted; its source-comparison dependencies remain unchecked.
 
-Pending source check: `/tmp/BiarithmeticCriticalCoefficientContinuumDefect.lean`
+`CriticalCoefficientContinuumDefect.lean`
 transfers actual power-tail class independence to the normalized one-prime
 coefficient quotient and closure defect, with matching continuum upper
-bounds. Four audits are drafted; both source dependencies remain unchecked.
+bounds. Direct repository check and all four transitive audits passed;
+its stage-3 card and umbrella import are present.
 
 Pending source check: `/tmp/BiarithmeticDigitStrictPhaseComparison.lean`
 normalizes the bounded balanced error by the expanding geometric power,
@@ -1293,3 +1310,60 @@ Pending source boundary proof: `/tmp/BiarithmeticChirpBoundaryPositivity.lean`
 uses the explicit entire packet extension and the inspected corpus
 almost-everywhere identity theorem to prove strictly positive boundary
 mass on every nonempty positive interval. Its packet dependencies remain unchecked.
+
+Pending source limit: `/tmp/BiarithmeticChirpRegularVariation.lean`
+extends the actual energy asymptotic to real floored horizons, proves energy
+escape, and gives every positive dilation ratio, including divided horizons.
+Four audits and its covariance dependency remain unchecked.
+
+Pending full-horizon formula: `/tmp/BiarithmeticChirpMovingPhaseAsymptotic.lean`
+uses a uniform leading-term bound and the positive source energy asymptotic
+to control own-energy normalization without convergent phases. Two audits
+and the actual source dependencies remain unchecked.
+
+Pending packet algebra: `/tmp/BiarithmeticChirpDilationAlgebra.lean`
+drafts exact mode multiplication, the multiplicative dilation law,
+source-label dilation of finite packets, and exact pointwise squared norms.
+Five audits and its phase/kernel dependencies remain unchecked.
+
+Pending boundary identity: `/tmp/BiarithmeticChirpBoundaryLaw.lean`
+drafts the exact translated-tail integral, lost boundary mass, critical
+packet contraction, and strict contraction on every nonzero finite packet
+at cofactor greater than one. Four audits and dependencies remain unchecked.
+
+Pending quantitative asymptotic: `/tmp/BiarithmeticChirpCovarianceErrorBound.lean`
+drafts the actual continuous inverse-height bound and the complete discrete
+error `C₀ + C₁ N^(2β-1)/log N`. Two audits and its source dependencies remain
+unchecked; the bound includes all initial cells and floor corrections.
+
+Pending family transport: `/tmp/BiarithmeticChirpKernelTransport.lean`
+drafts exact complex cofactor dilation and transport of real kernels by
+the actual negative-logarithmic orbit point. Three audits and dependencies
+remain unchecked.
+
+Pending actual nonhomogeneity: `/tmp/BiarithmeticChirpNonhomogeneousTangents.lean`
+drafts the exact three-pair comparison, signed two-coordinate stronger
+contraction failure, and exclusion of the stationary Haar average from the
+actual source tangent family. Five audits and dependencies remain unchecked.
+
+Pending finite-set bridge: `/tmp/BiarithmeticChirpFinitePackets.lean`
+drafts symmetry, strict finite-set positivity, and both dilation bounds in
+the coefficient language used by the corpus Gram completion. Five audits
+and its packet dependencies remain unchecked.
+
+Pending Hilbert completion: `/tmp/BiarithmeticChirpHilbertModule.lean`
+drafts the closed real Gram carrier, bounded multiplicative dilation,
+cyclicity, exact finite packet norms, linear independence, and infinite
+dimension. Seven audits and its finite-packet dependency remain unchecked.
+Identification with the explicit weighted half-line packet closure remains
+a separate source-realization obligation.
+
+Pending actual L² realization: `/tmp/BiarithmeticChirpHalfLineAtoms.lean`
+drafts the explicit exponentially damped modes, their actual `MemLp` proofs,
+and exact complex and real L² Grams. Four audits and its packet dependency
+remain unchecked. The onto isometry between the two closed real spans has
+been drafted separately in `/tmp/BiarithmeticChirpHalfLineCompletion.lean`.
+That draft constructs the actual closed real packet carrier, its onto
+isometry with the Gram completion, exact generator correspondence, and
+bounded extension of cofactor dilation. All five audits and dependencies
+remain unchecked.

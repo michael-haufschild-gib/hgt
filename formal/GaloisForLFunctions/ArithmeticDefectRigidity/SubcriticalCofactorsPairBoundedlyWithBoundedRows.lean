@@ -92,7 +92,7 @@ theorem exists_uniform_bounded_row_pairing (ε : SubcriticalDamping) :
           ((n : ℝ) * ((n : ℝ) + 1))) * D := (sum_mul _ _ _).symm
     _ ≤ C * D := mul_le_mul_of_nonneg_right (hbound j T) hD
 
-/-- A bounded origin-trace energy ratio makes the trace divided by energy vanish. -/
+/-- A finite origin-trace energy-ratio limit makes the trace divided by energy vanish. -/
 theorem origin_div_energy_tendsto_zero (M E : ℕ → ℝ)
     (hE : Tendsto E atTop atTop) {c : ℝ}
     (hM : Tendsto (fun m => M m ^ 2 / E m) atTop (𝓝 c)) :

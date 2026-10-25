@@ -48,7 +48,7 @@ theorem abs_cosinePolynomial_le (a : ℕ → ℝ) (K : ℕ) (θ : ℝ) :
   exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _)
 
 /-- Product-to-sum for one twisted mode. -/
-private theorem twist_mode (w L u t₀ ak : ℝ) (k : ℕ) :
+theorem twist_mode (w L u t₀ ak : ℝ) (k : ℕ) :
     w * (ak * Real.cos (k * (t₀ * L))) * Real.cos (L * u) =
       ak / 2 * (w * Real.cos (L * (u + k * t₀)) + w * Real.cos (L * (u - k * t₀))) := by
   have h1 : L * (u + k * t₀) = L * u + k * (t₀ * L) := by ring
@@ -79,6 +79,27 @@ theorem cosineTrace_twistedWeight {a : ℕ → ℝ} {K : ℕ} {t₀ x : ℝ} (hx
   rw [Finset.mul_sum, Finset.sum_mul]
   exact Finset.sum_congr rfl fun k _ => twist_mode _ _ _ _ _ _
 
+/-- The twisted traces converge to the twisted divisor, for every coefficient sequence. -/
+theorem tendsto_twistedTrace (a : ℕ → ℝ) (K : ℕ) (t₀ u : ℝ) :
+    Tendsto (fun x => x * cosineTrace (twistedWeight a K t₀ x) logFrequency u) (𝓝[>] 0)
+      (𝓝 (twistedDivisor a K t₀ u)) := by
+  have hlim : Tendsto (fun x => ∑ k ∈ range (K + 1), a k / 2 *
+        (x * cosineTrace (zetaBoundaryWeight x) logFrequency (u + k * t₀) +
+          x * cosineTrace (zetaBoundaryWeight x) logFrequency (u - k * t₀)))
+      (𝓝[>] 0) (𝓝 (twistedDivisor a K t₀ u)) := by
+    have h : Tendsto (fun x => ∑ k ∈ range (K + 1), a k / 2 *
+          (x * cosineTrace (zetaBoundaryWeight x) logFrequency (u + k * t₀) +
+            x * cosineTrace (zetaBoundaryWeight x) logFrequency (u - k * t₀)))
+        (𝓝[>] 0) (𝓝 (∑ k ∈ range (K + 1), a k / 2 *
+          (zetaBoundaryDivisor (u + k * t₀) + zetaBoundaryDivisor (u - k * t₀)))) :=
+      tendsto_finsetSum _ fun k _ =>
+        ((zeta_isBoundaryDivisor.tendsto _).add (zeta_isBoundaryDivisor.tendsto _)).const_mul _
+    simpa only [zetaBoundaryDivisor_eq, twistedDivisor, diracAt] using h
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with x hx
+  rw [cosineTrace_twistedWeight (Set.mem_Ioi.mp hx), Finset.mul_sum]
+  exact Finset.sum_congr rfl fun k _ => by ring
+
 /-- **Arithmetic realization.** For a nonnegative cosine polynomial, the twisted von Mangoldt
 weights form a boundary datum whose divisor is the shifted combination of point masses. -/
 theorem twisted_isBoundaryDivisor {a : ℕ → ℝ} {K : ℕ}
@@ -90,23 +111,7 @@ theorem twisted_isBoundaryDivisor {a : ℕ → ℝ} {K : ℕ}
       (fun n => ?_) ((summable_zetaBoundaryWeight hx).mul_right (∑ k ∈ range (K + 1), |a k|))
     exact mul_le_mul_of_nonneg_left ((le_abs_self _).trans (abs_cosinePolynomial_le a K _))
       (zetaBoundaryWeight_nonneg x n)
-  tendsto u := by
-    have hlim : Tendsto (fun x => ∑ k ∈ range (K + 1), a k / 2 *
-          (x * cosineTrace (zetaBoundaryWeight x) logFrequency (u + k * t₀) +
-            x * cosineTrace (zetaBoundaryWeight x) logFrequency (u - k * t₀)))
-        (𝓝[>] 0) (𝓝 (twistedDivisor a K t₀ u)) := by
-      have h : Tendsto (fun x => ∑ k ∈ range (K + 1), a k / 2 *
-            (x * cosineTrace (zetaBoundaryWeight x) logFrequency (u + k * t₀) +
-              x * cosineTrace (zetaBoundaryWeight x) logFrequency (u - k * t₀)))
-          (𝓝[>] 0) (𝓝 (∑ k ∈ range (K + 1), a k / 2 *
-            (zetaBoundaryDivisor (u + k * t₀) + zetaBoundaryDivisor (u - k * t₀)))) :=
-        tendsto_finsetSum _ fun k _ =>
-          ((zeta_isBoundaryDivisor.tendsto _).add (zeta_isBoundaryDivisor.tendsto _)).const_mul _
-      simpa only [zetaBoundaryDivisor_eq, twistedDivisor, diracAt] using h
-    refine hlim.congr' ?_
-    filter_upwards [self_mem_nhdsWithin] with x hx
-    rw [cosineTrace_twistedWeight (Set.mem_Ioi.mp hx), Finset.mul_sum]
-    exact Finset.sum_congr rfl fun k _ => by ring
+  tendsto := tendsto_twistedTrace a K t₀
 
 theorem twistedDivisor_isEvenPosDef {a : ℕ → ℝ} {K : ℕ}
     (hP : ∀ θ, 0 ≤ HTGeometry.cosinePolynomial a K θ) (t₀ : ℝ) :

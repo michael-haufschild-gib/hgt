@@ -462,6 +462,30 @@ The three endpoint packet laws are also verified: error at most `C(Σ|w_i|)²`
 after subtracting the harmonic energy, with a common finite energy bound
 when the smooth coefficient vanishes
 (`UniformHarmonicEnergyLawsForVaughanSuperpositions`).
+The nine half-damping admission targets also passed final direct checks:
+admission removes both linear and smooth means; positive cutoffs have
+admitted dimension three and quotient dimension two
+(`VaughanAdmissionAtHalfDamping`).
+Above half damping, all centered pieces and packets have common cutoff-uniform
+norm bounds. Admission is exactly the nonzero linear-mean kernel, with dimension
+four and quotient dimension one for every cutoff pair
+(`VaughanAdmissionAboveHalfDamping`); all eleven targets passed final direct checks.
+The twenty zero-cutoff scalar and coefficient-space targets are verified as
+well: the unused small-small coordinate raises the admitted dimension to
+three without receiver admission and four with it; at half damping it is
+four unconditionally. Exact independent frames give both quotient dimensions
+(`ZeroVaughanCutoffsRemoveTheSmoothObstruction`, `TheZeroCutoffVaughanCoefficientSpace`).
+The twelve rank-filtration targets are also verified: every cutoff pair's
+extra-rank damping set equals the receiver damping set, with accumulation
+boundary Θ−1/2 and exact RH and damping-column summability criteria
+(`TheVaughanAdmissionRankReadsTheZeroAbscissa`).
+All seven centered-pole targets are verified: a positive finite energy limit
+survives arbitrary moving cutoffs, and rules out eventual normalized powers
+above `1-2ε` (`TheCentredVaughanPoleHasPositiveFiniteEnergy`).
+All twelve finite two-cell targets are verified: Euler factors at two and
+three give a positive arithmetic determinant and a quantitative pronic Gram
+minor at every positive damping. The five limiting rows span exactly the
+actual prefix and pole (`TheVaughanLimitRowsAreIndependentInTwoCells`).
 These checked restricted-family results do not supply a fixed strip; full Q-I remains open.
 
 ### Q-II (Wall 14, U2/U3). Riemann–Roch for the scaling surface: which source-defined effective cone has the RR axiom, and is its Bézout positivity a linear degree statement?
@@ -593,6 +617,47 @@ weighting gives a positive Hermitian degree on the whole genuine quotient
 (`PositiveMeyerDegreesSeeReducedCriticalJets`). This classifies finite
 restrictions and supplies whole-quotient examples; it does not classify arbitrary
 infinite source readings.
+
+Real square positivity need not make the original complex degree Hermitian.
+`MeyerHermitianDegreePart` gives its unique decomposition `d = h + I • k`
+into two Hermitian degrees; their square readings are exactly the real and
+imaginary parts of the original reading. Real positivity is exactly positivity
+of `h`, whose finite causal restriction has the certified critical-value formula.
+
+For multiplicative degrees the full classification is exact: every nonzero
+complex-linear algebraic character is evaluation at a unique Xi point
+(`MeyerAlgebraicCharacters`). The original-source repaired convolution inverse
+forces detection of a finite packet; its value idempotent then determines the
+character globally. Hermitian compatibility and sharp-square positivity each
+select precisely critical evaluations. The common character kernel is the
+ordinary trace radical, so all characters separate genuine classes iff Xi zeros
+are simple; positive characters separate iff RH and simplicity. These results
+assume no continuity and do not classify general positive linear degrees.
+
+Every finite Xi projector gives an exact energy decomposition for any positive
+Hermitian degree (`FiniteMeyerProjectorsSplitPositiveEnergy`). Selected energy
+is its finite critical-value weighting, with nonnegative complementary energy;
+equality in the bound is exactly a null complement. For critical packets the
+sharp-square decomposition already holds in genuine cohomology, independently
+of the degree. The regular energy, defined as the supremum over all finite
+projected energies, lies between zero and full energy and leaves a nonnegative
+residual. Whether this residual always vanishes remains open; no infinite
+interchange or continuity premise is used.
+
+The positive origin metric has a separate exact obstruction: genuine Poisson
+boundaries are dense in half-density L2 (`PoissonBoundariesAreDenseInOriginMass`).
+Every genuine class has representatives with arbitrarily small origin square
+mass; its classwise lower bounds are exactly the nonpositive reals. Every
+continuous class-invariant reading into a Hausdorff space is constant. Hence
+neither the faithful compact-open Xi comparison nor the full-Hasse convolution
+operator can be recovered continuously from this Hilbert completion, even by
+a nonlinear map (`OriginHilbertCohomologyObstruction`). These statements do not
+assert boundary density in the stronger all-weight source topology.
+More precisely, every cohomological reading with dense image in a normed
+complex space has full product graph closure with origin L2. This includes
+all finite full-Xi-jet packets, even critical values, and the whole faithful
+operator range. The finite closed graph is single-valued exactly for the
+empty packet (`EveryFiniteMeyerJetGraphIsDenseInOriginHilbertSpace`).
 
 The actual faithful full-Hasse convolution representation respects arithmetic
 sharp as Hilbert adjoint exactly under the same RH-and-simplicity condition

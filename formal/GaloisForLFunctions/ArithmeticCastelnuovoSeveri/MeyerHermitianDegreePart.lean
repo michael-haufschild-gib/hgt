@@ -41,7 +41,8 @@ theorem meyerDegreeHermitianPart_hermitian
       conj (d (meyerCohomologySharp (meyerCohomologySharp u)))) =
     conj ((1 / 2 : ℂ) * (d u + conj (d (meyerCohomologySharp u))))
   rw [meyerCohomologySharp_sq, map_mul, map_add, Complex.conj_conj,
-    show conj (1 / 2 : ℂ) = 1 / 2 by norm_num]
+    show conj (1 / 2 : ℂ) = 1 / 2 by
+      rw [map_div₀, map_one, show conj (2 : ℂ) = 2 from map_natCast _ 2]]
   ring
 
 theorem meyerDegreeImaginaryPart_hermitian
@@ -136,11 +137,3 @@ theorem meyerRealPositiveDegree_finite_causal_hermitian_formula
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerDegreeHermitianPart_hermitian
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerDegreeImaginaryPart_hermitian
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerDegree_hermitian_decomposition
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerDegree_hermitian_decomposition_unique
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerDegreeHermitianPart_square
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerDegreeImaginaryPart_square
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerDegree_real_positive_iff_hermitianPart_positive
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.meyerRealPositiveDegree_finite_causal_hermitian_formula

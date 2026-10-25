@@ -62,9 +62,12 @@ theorem pmPowerDampedDivisorDensity_re_le_two_three {ε : ℝ} (hε : 0 < ε) :
   let p₂ : Nat.Primes := ⟨2, Nat.prime_two⟩
   let p₃ : Nat.Primes := ⟨3, by norm_num⟩
   have hp : p₂ ≠ p₃ := by intro h; have := congrArg Subtype.val h; norm_num [p₂, p₃] at this
+  have hmem : p₂ ∉ ({p₃} : Finset Nat.Primes) := by
+    simpa only [mem_singleton] using hp
   have h := pmPowerDampedDivisorDensity_re_le_prime_product hε {p₂, p₃}
-  simp only [prod_insert (by simpa using hp), prod_singleton, p₂, p₃] at h
-  norm_num only [Nat.cast_ofNat] at h
+  rw [prod_insert hmem, prod_singleton] at h
+  change (pmPowerDampedDivisorDensity ε).re ≤
+    (1 - (2 : ℝ) ^ (-(1 + ε))) * (1 - (3 : ℝ) ^ (-(1 + ε))) at h
   rw [show -(1 + ε) = -ε - 1 by ring,
     Real.rpow_sub_one (by norm_num : (2 : ℝ) ≠ 0),
     Real.rpow_sub_one (by norm_num : (3 : ℝ) ≠ 0)] at h
@@ -131,7 +134,8 @@ theorem pmPowerDampedPrefix_pole_two_cell_determinant_lower {ε : ℝ} (hε : 0 
     pmPowerDampedDivisorCoeff_one, pmPowerDampedCenteredDivisorPrefix_two,
     addDiff_pmActiveSawtoothComponent_one, addDiff_pmActiveSawtoothComponent_two]
   change a ^ 2 / 36 ≤ (1 - ρ) * (-(b / 3 - a / 4)) - (2 - a - 2 * ρ) * (-(a / 4))
-  convert hpoly using 1 <;> ring
+  convert hpoly using 1
+  ring
 
 /-- No nonzero combination of the actual prefix and centered pole vanishes even on their first two cells. -/
 theorem pmPowerDampedPrefix_pole_independent_two_cells {ε x y : ℝ} (hε : 0 < ε)
@@ -151,7 +155,7 @@ theorem pmPowerDampedPrefix_pole_independent_two_cells {ε x y : ℝ} (hε : 0 <
       (-addDiff (pmActiveSawtoothComponent ε) 1) * h2
   have hx : x = 0 := (mul_eq_zero.mp hxmul).resolve_right hdet.ne'
   rw [hx, zero_mul, zero_add, addDiff_pmActiveSawtoothComponent_one] at h1
-  exact ⟨hx, (mul_eq_zero.mp h1).resolve_right (by positivity)⟩
+  exact ⟨hx, (mul_eq_zero.mp h1).resolve_right (neg_ne_zero.mpr (by positivity))⟩
 
 private theorem weighted_pair_minor_identity (s : Finset ℕ) (w f g : ℕ → ℝ) :
     (∑ m ∈ s, ∑ n ∈ s, w m * w n * (f m * g n - g m * f n) ^ 2) =
@@ -159,9 +163,9 @@ private theorem weighted_pair_minor_identity (s : Finset ℕ) (w f g : ℕ → �
         (∑ n ∈ s, w n * f n * g n) ^ 2) := by
   calc
     _ = ∑ m ∈ s, ∑ n ∈ s,
-        (w m * f m ^ 2) * (w n * g n ^ 2) +
+        ((w m * f m ^ 2) * (w n * g n ^ 2) +
           (w m * g m ^ 2) * (w n * f n ^ 2) -
-            2 * (w m * f m * g m) * (w n * f n * g n) := by
+            2 * (w m * f m * g m) * (w n * f n * g n)) := by
       apply sum_congr rfl
       intro m _
       apply sum_congr rfl
@@ -206,7 +210,7 @@ theorem pronic_gram_determinant_lower_two_cells (f g : ℕ → ℝ) {T : ℕ} (h
       2 * ((∑ n ∈ Icc 1 T, f n ^ 2 / (pronicSeq n : ℝ)) *
         (∑ n ∈ Icc 1 T, g n ^ 2 / (pronicSeq n : ℝ)) -
           (∑ n ∈ Icc 1 T, f n * g n / (pronicSeq n : ℝ)) ^ 2) := by
-    simpa only [w, one_div, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using
+    simpa only [w, one_div, div_eq_mul_inv, one_mul, mul_comm, mul_left_comm, mul_assoc] using
       weighted_pair_minor_identity (Icc 1 T) w f g
   rw [hsmall, hlarge] at hrestrict
   linarith only [hrestrict]

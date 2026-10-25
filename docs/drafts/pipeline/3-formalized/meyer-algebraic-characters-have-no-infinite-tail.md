@@ -1,9 +1,9 @@
 # Meyer algebraic characters have no infinite tail
 
 - **ID:** meyer-algebraic-characters-have-no-infinite-tail
-- **Stage:** 2-fully-proven
-- **Type:** CONJECTURE (Lean verification pending)
-- **Status:** UNVERIFIED until the actual Lean module and its transitive axiom audit pass.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Status:** FORMALIZED. Actual-file check and all transitive axiom audits passed at default limits.
 - **Source:** Q-II; positive degree classification and source-class inversion.
 - **Statement:** Every nonzero complex-linear multiplicative functional on genuine Meyer cohomology is evaluation at one Xi divisor point, without any continuity assumption. It respects arithmetic sharp exactly at critical points.
 
@@ -40,7 +40,7 @@ No algebraic character at infinity can be inferred merely from that residual.
 The exact original repair/inverse and finite causal expansion statements were
 read. Internal searches found finite-packet surjections and original-source
 inversion, but no full algebraic character classification. External novelty
-unverified. No Lean certificate is claimed.
+unverified. The Lean certificate appears below.
 
 ## Explicit local and global steps
 
@@ -86,19 +86,30 @@ possibility, with no assumption of continuity or exchange of infinite sums.
 `MeyerFiniteProjectorAlgebra.lean` certifies the reused finite projector algebra,
 including the local idempotent identity. Direct check **24913** passed with only
 `propext`, `Classical.choice`, and `Quot.sound` in all four endpoint audits.
-The module is cleaned, wired and documented. Its character and energy importers
-remain unverified until their individual checks pass.
+The module is cleaned, wired and documented. The character importer is also
+certified; the energy importer still awaits its own check.
 
-`ArithmeticCastelnuovoSeveri/MeyerAlgebraicCharacters.lean` now contains unverified proofs of
+`ArithmeticCastelnuovoSeveri/MeyerAlgebraicCharacters.lean` contains certified proofs of
 finite detection by the actual repaired inverse, zero higher character jets,
 selection of a value idempotent, unique global Xi evaluation, and exact
-Hermitian/positive critical-point classification. The planned actual module
-is `ArithmeticCastelnuovoSeveri/MeyerAlgebraicCharacters.lean`.
+Hermitian/positive critical-point classification. Direct check **58454** passed
+with only `propext`, `Classical.choice`, and `Quot.sound` in all eight endpoint audits:
 
-Actual candidate file exists with endpoint axiom prints; its actual-file
-verification is pending. It is not wired into the umbrella.
+- `meyerMultiplicativeDegree_detects_finite_jet`
+- `meyerMultiplicativeDegree_iff_point`
+- `meyerPointDegree_hermitian_iff`
+- `meyerPointDegree_positive_iff`
+- `meyerPositiveMultiplicativeDegree_iff_critical_point`
+- `meyerCharacterKernel_source_iff_trace_radical`
+- `meyerCharacters_separate_iff_simple`
+- `meyerPositiveCharacters_separate_iff`
 
-## Separation corollaries [PROVED HERE, paper]
+The local Hasse and finite causal arguments use small named lemmas, with
+explicit packet arguments. No heartbeat or recursion limit was raised.
+Temporary prints are removed; the module is wired and documented, and its
+stale scratch draft is deleted. No dependency olean is needed for this leaf.
+
+## Formalized separation corollaries
 
 The intersection of all complex algebraic character kernels is exactly the
 ordinary trace radical: both mean vanishing of every Xi value. Characters
@@ -114,6 +125,6 @@ makes that source principal. The proved sharp-square-root criterion gives
 RH and simplicity. Conversely these two conditions make every Xi value a
 positive character and make values detect all required jets.
 
-All common-kernel and separation endpoints are present in the unverified
-actual character candidate. This distinguishes algebraic character separation
+All common-kernel and separation endpoints are certified in the
+actual character module. This distinguishes algebraic character separation
 from positive character separation without assuming either.

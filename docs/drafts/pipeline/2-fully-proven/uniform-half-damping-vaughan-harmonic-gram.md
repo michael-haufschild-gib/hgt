@@ -204,47 +204,59 @@ the exact limiting matrices; it supplies no fixed-strip power estimate.
 
 ## Moving-cell proof obligations
 
-`/tmp/QIVaughanMovingRowTools.lean` drafts the centered and smooth-remainder
-cell limits, importing the finite row frame from the twelve-target independence
-draft. For each fixed cell, the finite floor sums stabilize once both cutoffs
+`MovingVaughanRowsConvergeCellByCell.lean` drafts the centered and smooth-remainder
+cell limits, importing the checked finite row frame from the twelve-target
+independence module. For each fixed cell, the finite floor sums stabilize once both cutoffs
 cover it; the checked moving-mean theorem supplies their centered limits. The
 five-piece identity supplies the convolution limit without exchanging an
 infinite convolution and a limit. This argument works for every `ε>0`, a
 stronger pointwise statement than the endpoint application. The source hypotheses
 were checked at every positive damping; no energy conclusion follows from this
-pointwise extension alone. Both Lean drafts remain unproved pending verification.
+pointwise extension alone. The two moving-cell targets remain under verification.
 
-The independence module's planned name is
-`TheVaughanLimitRowsAreIndependentInTwoCells.lean`; the moving-cell module's is
-`MovingVaughanRowsConvergeCellByCell.lean`. Dominated moving pairings, endpoint
+All twelve targets in `TheVaughanLimitRowsAreIndependentInTwoCells.lean`
+passed final direct checks with standard axioms only. Dominated moving pairings, endpoint
 Gram ranks, the exact limit ray and its realization remain unfinished.
 
-`/tmp/QIMovingDominatedTools.lean` drafts the reusable passage from a common
-summable envelope and cellwise convergence to sums at independently growing
-horizons. `/tmp/QIHalfVaughanMovingLimitTools.lean` drafts six actual endpoint
+The five shared majorant and pronic-convergence targets are certified in
+`PositiveFloorMajorantsControlPronicEnergy.lean`. Positive reciprocal majorants
+dominate centered floor prefixes; one summable square envelope gives full
+pronic convergence and convergence at any moving finite horizon. Corrected
+producing and final direct checks passed with standard axioms only; the module
+is wired and its scratch removed. See
+[the transfer audit](../3-formalized/positive-floor-majorants-and-pronic-convergence.md).
+
+The reusable passage from a common summable envelope and cellwise convergence
+to sums at independently growing horizons passed producing and final direct
+checks with standard axioms only in
+`HTGeometry/MovingTruncationsPreserveDominatedLimits.lean`. The module is wired
+and its scratch removed; see
+[the moving-sum audit](../3-formalized/moving-truncations-preserve-dominated-limits.md).
+`/tmp/QIHalfVaughanMovingLimitTools.lean` drafts six actual endpoint
 applications: one common absolute pairing envelope, summability of the limiting
 Gram, convergence of the moving remainder pairings, convergence in the full
 infinite pronic square norm, convergence at any finite moving horizon, and the
 renormalized moving Gram limit above. The final step uses the common absolute
-mixed-pairing bound and the vanishing harmonic amplitude. All seven targets are
+mixed-pairing bound and the vanishing harmonic amplitude. These six targets are
 UNPROVED pending Lean verification and axiom audits. The infinite Gram ranks,
-limit ray, realization, endpoint packet bound, and product-horizon consequences
+limit ray, realization, and product-horizon consequences
 remain unfinished.
 
-The endpoint packet consequence is drafted in `/tmp/QIHalfVaughanPacketTools.lean`:
+The endpoint packet consequence is certified in `UniformHarmonicEnergyLawsForVaughanSuperpositions.lean`:
 the harmonic energy error is bounded by one constant times the square of the
 absolute coefficient sum. Two further targets give common energy bounds when
 the smooth coefficient vanishes, in particular when the two convolution
-coefficients agree. All three are UNPROVED pending Lean verification.
+coefficients agree. All three passed their final direct check and standard-axiom
+audits; their declarations are listed in the endpoint Gram audit linked above.
 
-`/tmp/QIHalfVaughanInfiniteGramTools.lean` drafts the actual infinite Gram's
-positive semidefiniteness, quantitative positive minor, positive pole entry,
-and exact rank two. `/tmp/QIHalfVaughanLimitRayTools.lean` drafts nine subsequent
+`TheActualEndpointVaughanGramHasRankTwo.lean` drafts the actual infinite Gram's
+positive semidefiniteness, positive-definite prefix/pole submatrix, quantitative positive minor, positive pole entry,
+and exact rank two. `/tmp/QIHalfVaughanLimitRayTools.lean` drafts eleven subsequent
 targets: nonnegative harmonic mass, the scalar readout at entry `(3,3)`,
 both directions of finite matrix-limit classification, and exact ranks two
-and three on the nonnegative ray. These eighteen targets remain UNPROVED.
+and three on the nonnegative ray. These twenty-one targets remain UNPROVED.
 Realization of every ray point and the endpoint product-horizon consequences
-still require Lean drafts and verification.
+still require Lean verification.
 
 Those remaining constructions are now drafted. `/tmp/QIHalfVaughanProductTools.lean`
 has six targets: the separated logarithmic horizon bound, vanishing product

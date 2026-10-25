@@ -5,7 +5,7 @@
 - **Type:** CONJECTURE
 - **Source:** Q-II; exact positive finite-jet degree classification.
 - **Statement:** Does positivity on the full actual sharp-convolution algebra force a degree to be determined by its nonnegative critical-value weights, without a continuity premise?
-- **Status:** OPEN; broader research paused. Finite-degree classification, projector algebra, critical trace and quasi-inverse radical are certified. Character, Hermitian-part and energy modules still await direct Lean checks and transitive axiom audits.
+- **Status:** OPEN; broader research paused. All existing finite-degree, projector, character, Hermitian-part and energy assertions below are Lean-certified, as are the critical trace and quasi-inverse radical. Vanishing of the infinite residual remains unproved.
 
 ## Certified finite classification
 
@@ -15,9 +15,9 @@ classifies the restriction to every actual finite jet packet: off-line blocks
 and higher critical jets have zero degree; critical value weights are real
 and nonnegative. It does not determine an arbitrary degree on infinite
 source classes. The real-positive case reduces to the Hermitian part, by
-`real-positive-meyer-degrees-are-controlled-by-their-hermitian-part.md`.
+`../3-formalized/real-positive-meyer-degrees-are-controlled-by-their-hermitian-part.md`.
 
-## Exact finite-to-global bound candidate
+## Certified finite-to-global bound
 
 Let d be a positive Hermitian degree and E_d(u)=Re d(u sharp(u)). For a finite
 set S of critical Xi points, the existing actual causal projector P_S cuts
@@ -40,11 +40,13 @@ by E_d(u), for each actual class u. This bound needs no continuity of d.
 
 These bounded finite sums give a well-defined regular square energy. They
 do not by themselves show that the remaining nonnegative energy is zero.
-A precise candidate definition is the supremum of all finite projected
+A precise definition is the supremum of all finite projected
 energies, `meyerDegreeRegularEnergy`. Its finite lower bounds, nonnegativity,
 full-energy upper bound and nonnegative residual are now explicit endpoints in
-`FiniteMeyerProjectorsSplitPositiveEnergy.lean`, still awaiting actual-file
-verification. This uses real order completeness and no infinite interchange.
+`FiniteMeyerProjectorsSplitPositiveEnergy.lean`, certified by direct check
+**61957** and seventeen standard axiom audits. This uses real order completeness
+and no infinite interchange. Certificate:
+`../3-formalized/finite-critical-projectors-split-positive-meyer-energy.md`.
 A degree might, a priori, vanish on every finite packet while retaining
 infinite-class energy. No interchange of an infinite packet expansion with
 an arbitrary algebraic functional is authorized.
@@ -68,16 +70,16 @@ be passed through an arbitrary discontinuous degree.
    continuity of positive functionals in an existing source topology.
 2. Or classify a residual positive form annihilating every finite packet and
    determine whether it can be nonzero on the literal quotient.
-3. First formalize the exact finite-projector product law and square-energy
-   decomposition above; these are the dependency-closed positive result.
+3. Completed: exact finite-projector product law, square-energy decomposition,
+   regular-energy supremum and nonnegative residual are formalized.
 
 No infinite classification, continuity, or zero tail is assumed. Broader
 research is paused at the user's request while the existing formalizations
 finish. This route has not been declared false or retired. No numerical experiment.
 
-A distinct multiplicative subproblem has an unverified Lean candidate,
+A distinct multiplicative subproblem has a certified Lean classification,
 `MeyerAlgebraicCharacters.lean`, described in
-`../2-fully-proven/meyer-algebraic-characters-have-no-infinite-tail.md`:
+`../3-formalized/meyer-algebraic-characters-have-no-infinite-tail.md`:
 original source-class Fredholm inversion forces every nonzero algebraic
 character to detect a finite resonant packet, hence a unique zeroth Xi value.
 Its positive/Hermitian characters are exactly the critical evaluations. This

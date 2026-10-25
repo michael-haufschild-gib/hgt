@@ -84,6 +84,13 @@ These are further paper deductions, not yet Lean results.
 
 ## Draft implementation
 
+The complete combined proof passed direct Lean check `12682`; all 23 printed
+targets have only standard axioms. Eleven canonical sources are installed
+and umbrella-wired. Their separate source checks and required dependency
+oleans remain in [the completion ledger](q-iii-existing-findings-lean-completion.md).
+This supersedes the draft-check statuses below; the card stays open until
+the canonical checks pass.
+
 The mixed tail bound, admitted kernel self-similarity, escaping contracted
 pairing limit and explicit actual contracted-subsequence structure are
 drafted in `/tmp/qiii_mixed_horizon_error_body.lean` and
@@ -94,7 +101,10 @@ Generic principal-colon character cancellation and actual cofactor vector
 annihilators are drafted in `/tmp/qiii_character_colon_hull_body.lean` and
 `/tmp/qiii_cofactor_colon_hull_body.lean`. All are UNVERIFIED. Their current
 direct Lean scratch is `/tmp/qiii-contracted-horizons-check.lean`; it still
-needs its first direct check.
+needs a successful direct check. The first check exposed finite-sum
+cancellation and coercion/rewrite errors. Those have been repaired without
+changing the theorem statements; the retry is recorded in
+[the completion ledger](q-iii-existing-findings-lean-completion.md).
 
 A stronger paper consequence is worth a separate audit: the same mixed
 fibre error and positivity show that the entire matrix

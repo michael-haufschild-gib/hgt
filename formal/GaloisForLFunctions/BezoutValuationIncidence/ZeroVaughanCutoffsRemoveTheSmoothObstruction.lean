@@ -42,13 +42,21 @@ theorem pmPronicVaughanPacket_replace_smallSmall_of_zero_cutoff (ε : ℝ) {U V 
     change w 0 * pmPronicVaughanPiece ε U V n 0 +
       (w 1 * pmPronicVaughanPiece ε U V n 1 +
         (w 3 * pmPronicVaughanPiece ε U V n 2 +
-          (w 3 * pmPronicVaughanPiece ε U V n 3 + w 4 * pmPronicVaughanPiece ε U V n 4))) = _
+          (w 3 * pmPronicVaughanPiece ε U V n 3 + w 4 * pmPronicVaughanPiece ε U V n 4))) =
+      w 0 * pmPronicVaughanPiece ε U V n 0 +
+        (w 1 * pmPronicVaughanPiece ε U V n 1 +
+          (w 2 * pmPronicVaughanPiece ε U V n 2 +
+            (w 3 * pmPronicVaughanPiece ε U V n 3 + w 4 * pmPronicVaughanPiece ε U V n 4)))
     simp only [pmPronicVaughanPiece_smallSmall_eq_zero_of_zero_cutoff ε hUV n, mul_zero]
   · simp only [pmPronicVaughanPacketLinearMean, Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero]
     change w 0 * pmPronicVaughanMean ε U V 0 +
       (w 1 * pmPronicVaughanMean ε U V 1 +
         (w 3 * pmPronicVaughanMean ε U V 2 +
-          (w 3 * pmPronicVaughanMean ε U V 3 + w 4 * pmPronicVaughanMean ε U V 4))) = _
+          (w 3 * pmPronicVaughanMean ε U V 3 + w 4 * pmPronicVaughanMean ε U V 4))) =
+      w 0 * pmPronicVaughanMean ε U V 0 +
+        (w 1 * pmPronicVaughanMean ε U V 1 +
+          (w 2 * pmPronicVaughanMean ε U V 2 +
+            (w 3 * pmPronicVaughanMean ε U V 3 + w 4 * pmPronicVaughanMean ε U V 4)))
     simp only [pmPronicVaughanMean_smallSmall_eq_zero_of_zero_cutoff ε hUV, mul_zero]
 
 /-- At an empty cutoff the original receiver is the sole obstruction after linear centering. -/
@@ -63,6 +71,8 @@ theorem pmPronicVaughanPacketAdmitted_iff_of_zero_cutoff {ε : ℝ} (hε : 0 < �
         w 3 = 0 ∨ ∃ B : ℝ, ∀ T : ℕ, pronicNorm (pmBezoutInteriorPrefix ε) T ≤ B := by
     have h := pmPronicVaughanPacketAdmitted_iff_of_equal_convolution_coefficients hε.le U V
       ![w 0, w 1, w 3, w 3, w 4] rfl (heq.2.trans hL)
+    change pmPronicVaughanPacketAdmitted ε U V ![w 0, w 1, w 3, w 3, w 4] ↔
+      w 3 = 0 ∨ ∃ B : ℝ, ∀ T : ℕ, pronicNorm (pmBezoutInteriorPrefix ε) T ≤ B at h
     simpa only [pmPronicVaughanPacketAdmitted, heq.1] using h
   constructor
   · intro hw

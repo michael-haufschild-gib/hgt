@@ -197,7 +197,10 @@ theorem pmPronicVaughanPacketAdmitted_iff_of_half_lt {ε : ℝ} (hε : 1 / 2 < �
   · intro hmean
     obtain ⟨B, hB⟩ := exists_uniform_pronicNorm_pmPronicVaughanCentredPacket_bound_of_half_lt hε
     refine ⟨B * ∑ i : Fin 5, |w i|, fun T => ?_⟩
-    simpa only [pmPronicVaughanCentredPacket, hmean, zero_mul, sub_zero] using hB U V w T
+    have heq : pmPronicVaughanCentredPacket ε U V w = pmPronicVaughanPacket ε U V w := by
+      funext n
+      simp only [pmPronicVaughanCentredPacket, hmean, zero_mul, sub_zero]
+    simpa only [heq] using hB U V w T
 
 /-- The linear mean is a functional on the five coefficient coordinates. -/
 def pmPronicVaughanLinearMeanMap (ε : ℝ) (U V : ℕ) : Module.Dual ℝ (Fin 5 → ℝ) where
@@ -207,7 +210,9 @@ def pmPronicVaughanLinearMeanMap (ε : ℝ) (U V : ℕ) : Module.Dual ℝ (Fin 5
     simp only [pmPronicVaughanPacketLinearMean, Pi.add_apply, add_mul, sum_add_distrib]
   map_smul' := by
     intro a w
-    simp only [pmPronicVaughanPacketLinearMean, Pi.smul_apply, smul_eq_mul, mul_assoc, mul_sum]
+    change pmPronicVaughanPacketLinearMean ε U V (fun i => a * w i) =
+      a * pmPronicVaughanPacketLinearMean ε U V w
+    simp only [pmPronicVaughanPacketLinearMean, mul_assoc, mul_sum]
 
 /-- The pole coordinate evaluates the mean functional to a nonzero reciprocal density. -/
 theorem pmPronicVaughanLinearMeanMap_ne_zero {ε : ℝ} (hε : 0 < ε) (U V : ℕ) :

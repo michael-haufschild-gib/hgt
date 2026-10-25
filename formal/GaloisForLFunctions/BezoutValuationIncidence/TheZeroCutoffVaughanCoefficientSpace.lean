@@ -52,7 +52,7 @@ theorem pmPronicVaughan_coefficients_eq_empty_frame {ε : ℝ} (hε : 0 < ε)
     (pmPronicVaughanPacket_replace_smallSmall_of_zero_cutoff ε hUV w).2.trans hL
   have hz := pmPronicVaughan_coefficients_eq_paid_add_receiver hε U V z rfl hzL i
   have heq : w i = z i + (w 2 - w 3) * pmPronicVaughanUnusedCoefficients i := by
-    fin_cases i <;> simp [z, pmPronicVaughanUnusedCoefficients] <;> ring
+    fin_cases i <;> simp [z, pmPronicVaughanUnusedCoefficients]
   rw [heq, hz]
   change (w 0 - w 3) * pmPronicVaughanFirstPaidCoefficients ε U i +
     (w 1 - w 3) * pmPronicVaughanSecondPaidCoefficients ε V i + w 3 +

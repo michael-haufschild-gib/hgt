@@ -1,6 +1,7 @@
 import GaloisForLFunctions.BezoutValuationIncidence.UniformHalfDampingVaughanGramsHaveAnActualLimit
 import GaloisForLFunctions.BezoutValuationIncidence.UpperHalfVaughanGramsHaveAnActualLimit
 import GaloisForLFunctions.HTGeometry.MatrixRankSubadditive
+import Mathlib.Analysis.Matrix.Order
 
 /-!
 At and above half damping, summable actual Vaughan rows define a positive
@@ -147,9 +148,10 @@ theorem pmPronicVaughanLimitGram_posSemidef {ε : ℝ} (hε : 1 / 2 ≤ ε) :
       mul_assoc, mul_left_comm, mul_comm] using
       sum_sum_mul_pmPronicVaughanLimitGram_nonneg hε x
 
-/-- The actual infinite limiting Gram has rank exactly two at and above half damping. -/
-theorem rank_pmPronicVaughanLimitGram {ε : ℝ} (hε : 1 / 2 ≤ ε) :
-    Matrix.rank (pmPronicVaughanLimitGram ε) = 2 := by
+/-- The actual prefix and pole have a positive-definite two-by-two infinite Gram. -/
+theorem pmPronicVaughanLimitGram_prefix_pole_posDef {ε : ℝ} (hε : 1 / 2 ≤ ε) :
+    Matrix.PosDef ((pmPronicVaughanLimitGram ε).submatrix
+      (![0, 4] : Fin 2 → Fin 5) (![0, 4] : Fin 2 → Fin 5)) := by
   let e : Fin 2 → Fin 5 := ![0, 4]
   have hdet : (Matrix.submatrix (pmPronicVaughanLimitGram ε) e e).det =
       pmPronicVaughanLimitGram ε 0 0 * pmPronicVaughanLimitGram ε 4 4 -
@@ -162,8 +164,15 @@ theorem rank_pmPronicVaughanLimitGram {ε : ℝ} (hε : 1 / 2 ≤ ε) :
     rw [hdet]
     exact (by positivity : 0 < ((2 : ℝ) ^ (-ε)) ^ 4 / 15552).trans_le
       (pmPronicVaughanLimitGram_prefix_pole_minor_lower hε)
+  exact ((pmPronicVaughanLimitGram_posSemidef hε).submatrix e).posDef_iff_det_ne_zero.mpr
+    hdet0.ne'
+
+/-- The actual infinite limiting Gram has rank exactly two at and above half damping. -/
+theorem rank_pmPronicVaughanLimitGram {ε : ℝ} (hε : 1 / 2 ≤ ε) :
+    Matrix.rank (pmPronicVaughanLimitGram ε) = 2 := by
+  let e : Fin 2 → Fin 5 := ![0, 4]
   have hu : IsUnit (Matrix.submatrix (pmPronicVaughanLimitGram ε) e e) :=
-    (Matrix.isUnit_iff_isUnit_det _).mpr (isUnit_iff_ne_zero.mpr hdet0.ne')
+    (pmPronicVaughanLimitGram_prefix_pole_posDef hε).isUnit
   have hr := Matrix.rank_of_isUnit _ hu
   have hle := Matrix.rank_submatrix_le (pmPronicVaughanLimitGram ε) e e
   have hupper := rank_pmPronicVaughanLimitGram_le_two ε
@@ -179,5 +188,6 @@ theorem rank_pmPronicVaughanLimitGram {ε : ℝ} (hε : 1 / 2 ≤ ε) :
 #print axioms pmPronicVaughanLimitGram_prefix_pole_minor_lower
 #print axioms pmPronicVaughanLimitGram_pole_lower
 #print axioms pmPronicVaughanLimitGram_posSemidef
+#print axioms pmPronicVaughanLimitGram_prefix_pole_posDef
 #print axioms rank_pmPronicVaughanLimitGram
 end GaloisForLFunctions.BezoutValuationIncidence

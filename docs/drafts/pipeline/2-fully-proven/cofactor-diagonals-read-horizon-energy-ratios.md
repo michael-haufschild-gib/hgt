@@ -120,6 +120,12 @@ Energy jumps likewise use the existing `receiverEnergy_succ_le` from
 
 ## Current verification status
 
+The exact terminal-fibre correction, general C*D/p bound, diagonal interval
+bound and mixed horizon consequences passed combined direct check `12682`
+with standard axioms. Their canonical modules are installed and wired;
+individual source checks remain in
+[the completion ledger](../1-in-progress/q-iii-existing-findings-lean-completion.md).
+
 The complete-block and actual diagonal leaves passed canonical builds,
 final source-only checks and standard transitive axiom audits in session
 `90975`. Their imports are wired. The card remains open because its exact

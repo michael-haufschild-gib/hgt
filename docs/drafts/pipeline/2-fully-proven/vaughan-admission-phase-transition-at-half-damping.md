@@ -114,20 +114,22 @@ five-component specialization, with no external novelty claim.
 
 ## Status
 
-`/tmp/QIHalfDampingTools.lean` now contains nine audit targets: interior admission,
-the smooth endpoint obstruction, complete scalar classification, exact admitted span,
-dimension three, and quotient dimension two at positive cutoffs. Planned repository
-name: `VaughanAdmissionAtHalfDamping.lean`.
-`/tmp/QIUpperHalfCriticalTools.lean` contains eleven audit targets, including the common
+All nine targets in `VaughanAdmissionAtHalfDamping.lean` passed producing and
+final direct checks. Their transitive axioms are only `propext`,
+`Classical.choice`, and `Quot.sound`. The module is wired and its scratch removed.
+This certifies interior admission, the smooth endpoint obstruction, complete
+scalar classification, exact admitted span, dimension three, and quotient
+dimension two at positive cutoffs.
+All eleven targets in `VaughanAdmissionAboveHalfDamping.lean` also passed
+corrected producing and final direct checks with standard axioms only,
+including the common
 critical Wiener bound, uniform admission of every centered piece and packet, the exact
-linear-mean kernel, dimension four, and quotient dimension one. It imports that planned
-endpoint leaf; its planned name is `VaughanAdmissionAboveHalfDamping.lean`.
-The finite packet-centering identity is now shared through
-`/tmp/QIVaughanPacketGramIdentityTools.lean`, planned as `VaughanPacketGramIdentities.lean`.
-Its four exact finite identities also support the logarithmic packet module,
-avoiding duplicate declarations when both branches are imported.
-These drafts remain uncompiled. Lower-half residual and coefficient-space audits passed;
-no endpoint or upper-half formal verification is yet claimed.
+linear-mean kernel, dimension four, and quotient dimension one. The module is
+wired and its scratch removed. The twenty admission targets are recorded in
+`../3-formalized/vaughan-admission-at-and-above-half-damping.md`.
+The shared four finite packet identities in
+`VaughanPacketGramIdentities.lean` already passed final direct checks and
+standard-axiom audits.
 
 The joint upper-half Gram limit and its rank-two consequence above are separate
 UNPROVED obligations; the admission draft does not establish them.
@@ -142,7 +144,15 @@ the independent joint Gram limit, full pronic square convergence, and convergenc
 at every finite moving horizon. Its planned repository name is
 `UpperHalfVaughanGramsHaveAnActualLimit.lean`. The positive-floor domination and
 dominated square-norm transfer are shared with the endpoint through
-`PositiveFloorMajorantsControlPronicEnergy.lean`. Verification remains pending.
+`PositiveFloorMajorantsControlPronicEnergy.lean`. All five shared transfer
+targets passed corrected producing and final direct checks with standard
+axioms only; the module is wired and its scratch removed. See
+`../3-formalized/positive-floor-majorants-and-pronic-convergence.md`.
+The actual upper-half specialization remains under verification.
+The shared moving-horizon dominated-convergence theorem also passed producing
+and final direct checks with standard axioms only. Its module is wired as
+`HTGeometry/MovingTruncationsPreserveDominatedLimits.lean`; see
+`../3-formalized/moving-truncations-preserve-dominated-limits.md`.
 `/tmp/QIVaughanInfiniteGramTools.lean` now drafts the exact rank-two consequence
 uniformly for every `ε≥1/2`, with a positive prefix-pole minor at least
 `2^(-4ε)/15552`. Summability is derived from the endpoint and upper-half
