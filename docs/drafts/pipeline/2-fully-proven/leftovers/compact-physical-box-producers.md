@@ -3,7 +3,7 @@
 - **ID:** compact-physical-box-producers
 - **Stage:** 2-fully-proven; historical-report completion in progress
 - **Type:** THEOREM (paper; main construction and limits Lean-verified)
-- **Status:** Recovered-report supplements now have clean transitive axiom audits: 134 public declarations across seven leaves, plus the reused finite-form theorem. TailBounds and Quantitative passed final direct checks. FormBounds and the comment-edited original producer still need final direct checks before promotion.
+- **Status:** Recovered-report supplements now have clean transitive axiom audits: 134 public declarations across seven leaves, plus the reused finite-form theorem. All three supplements passed final direct checks and are wired. The comment-edited original producer still needs its final direct check before promotion.
 - **Source:** continuum-coprime-shear; physical-box-average-affine-regularity
 - **Statement:** Construct compact logarithmic primitive states from arbitrary physical velocities using interval truncation, explicit zero-integral compensation and box smoothing, with quantitative errors and compact-source form convergence.
 
@@ -101,45 +101,59 @@ The physical declarations use namespace
 finiteness premise, extra regularity assumption on `q`, or replacement sequence is
 introduced. Compact `ψ` and the constructed mixture supply the finite coefficients.
 
+## Recovered original report
+
+The full report is retained at commit `727dc15d1`, path
+`docs/reports/BiScaleUncertainty/CompactLogarithmicPhysicalProducers.md`; deletion
+from the current tree occurred in `80971df8c`. Its displayed claims (1)–(23)
+have been matched to the declarations above. The exact primitive box formula
+(9) is the existing `primitive_physicalBoxAverage`; the producer's two support
+proofs use it with the vanishing `physicalSecondPrimitive` at the smoothing
+step. The regularity statements in Quantitative reuse the actual box-profile
+regularity and derivative results. No statement or constant was weakened.
+
 ## Verification certificate
 
-- Both new source leaves passed direct `lake --old env lean -j 1 <file>` checks
-  with exit 0 and no diagnostics. The convergence olean was produced only because
-  the form-limit leaf imports it. No full build or umbrella check was run.
-- All 110 public declarations were audited: 16 restriction, 67 construction,
-  21 convergence and 6 form-limit declarations. Every transitive axiom list is
-  contained in `{propext, Classical.choice, Quot.sound}`. No admissions, custom
-  axioms, trusted computation or raised limits occur in these leaves.
-- Both new modules are imported once by `BiScaleUncertainty.lean`. Corpus search
-  returns the new convergence, form-error and energy-limit declarations.
-- Global lint exits 1: 19 unrelated structural errors and 416 existing size
-  warnings. Errors comprise one unreachable ArithmeticPositivityTheory module,
-  17 research leaves at package root, and `formal/CLAUDE.md`/`formal/AGENTS.md`
-  drift. Neither new leaf has a lint diagnostic. No repository-wide green claim.
-- Evidence: `/tmp/leftovers-physical-public-names.json`,
-  `/tmp/leftovers_physical_axioms.lean`, `/tmp/leftovers-physical-axioms.log`,
-  `/tmp/leftovers-physical-form-limits-final.log`, `/tmp/leftovers-physical-index.json`,
-  `/tmp/leftovers-physical-lint.log`. The axiom audit compiled the exact downstream
-  source and checked every listed declaration, with no diagnostics.
+- 134 public declarations across seven leaves, plus the reused
+  `PathCongestion.compact_formEnergy_ne_top`, passed transitive axiom audits.
+  Every list is contained in `{propext, Classical.choice, Quot.sound}`.
+  The complete exact-name manifest is
+  `/tmp/leftovers-physical-complete-public-names.json`.
+- Convergence, FormLimits, TailBounds, Quantitative and FormBounds passed final
+  direct `lake --old env lean -j 1 <file>` checks with exit 0 and empty logs.
+  The original producer's mathematical source is unchanged; its module comment
+  was clarified and its final direct check remains pending. Restriction retains
+  its earlier source/axiom certificate and unchanged hash.
+- The convergence olean was produced only for the downstream FormLimits import.
+  No supplement olean was needed or produced; no existing olean was rebuilt.
+  No full build or umbrella check was run.
+- All seven modules are imported exactly once by `BiScaleUncertainty.lean`.
+  Corpus search returns the new smoothed-integral declaration; prior searches
+  returned convergence and energy limits. No proof shortcuts or raised limits
+  occur in these sources.
+- A prior global lint run reported unrelated structural errors; no
+  repository-wide green claim is made. Final scoped whitespace/placement check
+  remains part of closure.
+- Successful axiom logs: `/tmp/leftovers-physical-axioms.log`,
+  `/tmp/leftovers-physical-supplements-audit-r2.log`, and
+  `/tmp/leftovers-physical-smoothed-integral-audit.log`. The last log contained
+  one no-op-tactic warning; that tactic was removed before the clean final
+  Quantitative check. The failed first supplement log is not a certificate.
+- Convergence final check is recorded as successful tool session `43673`.
+  Remaining final logs: `/tmp/leftovers-physical-form-limits-final.log`,
+  `/tmp/leftovers-physical-tail-bounds-final.log`,
+  `/tmp/leftovers-physical-quantitative-final.log`, and
+  `/tmp/leftovers-physical-form-bounds-final.log`.
+  Index evidence: `/tmp/leftovers-physical-smoothed-index.json`.
 
 Source SHA256 values:
 
 | Leaf | SHA256 |
 |---|---|
 | `PhysicalIntervalRestriction.lean` | `4938cd172ffc68c118e4eed48f8b8f5617986182a17d8e334cd20efe1a7fb1c7` |
-| `CompensatedPhysicalLogarithmicProducer.lean` | `3a44be85c202519aab0b38bcf3d8bffa291d5cf7992da5873afb1bad215137e2` |
+| `CompensatedPhysicalLogarithmicProducer.lean` | `0ee3aaf100f4e26f9fbbe7744c3d22799fe820cd37b8d9718ddd9ac7030e3322` |
 | `CompensatedPhysicalProducerConvergence.lean` | `43491978b37a82426238a50f613cad5f9c41668c49c0c275c688d94888bd7e4b` |
 | `CompensatedPhysicalProducerFormLimits.lean` | `1c6395c813ef8bef632af5da336298646e933ac0aa3702bc3d736a809d509742` |
-
-## Recovered original report
-
-The full report is retained at commit `727dc15d1`, path
-`docs/reports/BiScaleUncertainty/CompactLogarithmicPhysicalProducers.md`; deletion
-from the current tree occurred in `80971df8c`. Its displayed claims are now being
-checked individually. The previous certificate covers the main construction and
-convergence but did not explicitly expose equation (14), separate tail limits,
-all square-root norm bounds, physical-interval uniform traces, or the combined
-compact-form bounds with the report's exact coefficient. Existing generic box
-regularity theorems may already supply parts of (8) and its derivative bound;
-those dependencies must be named and audited. All these report claims remain
-required. This reopening changes no theorem or constant.
+| `CompensatedPhysicalProducerTailBounds.lean` | `f9173370526c3974a9fe276803e207c96a7407ef2cd6922d7a5ac76411d63179` |
+| `CompensatedPhysicalProducerQuantitative.lean` | `a1c74ac5998d9c930330d03dc65380cf43c632b04a853d7c3e8763dc4b2dff2a` |
+| `CompensatedPhysicalProducerFormBounds.lean` | `bc50af499e6bc2ee98264bd7f15de8a206e1b87086d33e4c50e43c8d1904c86d` |

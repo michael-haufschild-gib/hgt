@@ -133,7 +133,11 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
    vanishes on the component of the origin off the closed folded spectrum `{β_τ⁻¹}`; its residues
    are class sums. A fixed test sees every visible `b` with `b⁻¹` accessible from `0`, so Wolff
    blindness needs the folded zeros to wall `b⁻¹` off; countable folded spectra never blind
-   (`WolffBlindnessRequiresSeparation.lean`). **Weights never cancel for probes:** the class weight
+   (`WolffBlindnessRequiresSeparation.lean`). **Blindness needs a wall:** the `∂̄`-equation of the
+   Cauchy kernel replaces residues, so no isolation is needed; a fixed test is blind to `b` only if
+   the closed folded spectrum meets every disc about `b⁻¹` in positive area or walls part of it off
+   from `0`. For countable folded spectra one probe carries the whole tower defect, whatever the
+   order type of the real parts (`WolffBlindnessNeedsAWall.lean`). **Weights never cancel for probes:** the class weight
    of `φe^{isu}` continues to an entire function of `s`, equal to `Σ m_τ|φ̂|² > 0` at `s = t+iδ`;
    one probe sees every outer eigenvalue at every prime of every tempered configuration, and its
    tower carries all distinct eigenvalues when real parts are well-founded
@@ -358,8 +362,9 @@ Bounded-orbit and reserve results are in `MeyerBoundedCenteredOrbits.lean`,
 4. **Beyond 2/3 and HD(1)**: spectral slack $\ge N/12$ near $\lambda=1$, or coalescent surplus $\beta\le1/18$, or
    $F\le B$, $B\le2954/1035$ (owned by TTPC).
 5. **One prime against two** — resolved: for every tempered configuration and scale the towers of
-   tests carry every distinct outer eigenvalue (`tower_law`). Open: one test carrying an infinite
-   defect without deep sparseness or well-founded real parts.
+   tests carry every distinct outer eigenvalue (`tower_law`); one test carries an infinite defect
+   when the closed folded spectrum is countable (`exists_test_tower_law_of_countable_folded`).
+   Open: one test carrying an infinite defect across an uncountable folded spectrum (a wall).
 6. **Clustering branch** of the visibility/defect-rate dichotomy (unrestricted $L^2$, not Sobolev).
 7. **Lattice → continuum**: carry finite-Euler lattice positivity to Weil's form with collar and signed
    coefficients.

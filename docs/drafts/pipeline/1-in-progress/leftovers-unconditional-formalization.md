@@ -53,12 +53,14 @@ or further auxiliary claims. Frozen completion scope:
   integrability and zero-integral lemmas passed scratch audit `15644`, with
   standard axioms only; one no-op tactic removed and proofs merged into
   Quantitative. Final Quantitative check `89863` passed with an empty log.
-  FormBounds check `51999` is active; the comment-edited original producer
-  still needs its final direct check.
+  FormBounds check `51999` also passed with an empty log; the comment-edited
+  original producer still needs its final direct check. Verified identical
+  supplement scratch mirrors and the obsolete API probe were removed.
   Complete manifest: `/tmp/leftovers-physical-complete-public-names.json`
   (134 public declarations across seven leaves, plus one reused parent).
-- PM: four unchecked `/tmp/leftovers_pm_*.lean` drafts in dependency order:
-  integrable producer, sampling, exact decomposition, short energy.
+- PM: four `/tmp/leftovers_pm_*.lean` drafts in dependency order: integrable
+  producer, sampling, exact decomposition, short energy. Combined 20-name
+  audit `16131` active, log `/tmp/leftovers-pm-complete-audit-r1.log`.
 - Dyadic: unchecked tent, integer variance, finite sieve realization,
   finite-window minimum, and tent-variance/best-constant drafts. Exact tree
   comparison is already edited in FiniteHorizonPositiveCoercivity, with
@@ -77,8 +79,8 @@ or further auxiliary claims. Frozen completion scope:
   `MTDeshouillersIwaniecBound` and `MTWattBound`; inspected short-block
   reductions retain their short versions as hypotheses. Full original 1.55
   claims remain required. No unconditional completion or absence claim.
-- Active Lean: FormBounds final check `51999`; log
-  `/tmp/leftovers-physical-form-bounds-final.log`. All searches terminal.
+- Active Lean: PM combined initial audit `16131`; log
+  `/tmp/leftovers-pm-complete-audit-r1.log`. All searches terminal.
 - Closure order: physical supplements → PM → dyadic/perturbed/cycle, then
   pause. Other original cards remain unfinished and paused. Preserve unrelated edits.
 

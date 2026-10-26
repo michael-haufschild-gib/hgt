@@ -104,6 +104,13 @@ tool, or exposes a mechanism, calibrated over `𝔽_q`.
   `ArithmeticOrientationGeometry.scaleStable_index_law` (`L(tests)` is scale-stable; joint
   blindness = symbol zero); only the complex/asymmetric extension would be new, not significant.
 
+- **W1 (Wolff blindness needs a wall).** `∂̄`-uniqueness replaces residues: blindness to `b` needs
+  the closed folded spectrum to meet every disc about `b⁻¹` in positive area or wall it off; for
+  countable folded spectra one probe carries the whole tower defect. Status: DONE (Lean,
+  contribution 16).
+- **W2 (light Blaschke walls are permeable).** Blaschke poles with masses `Σ|ν|/(1 − |a|) < ∞`
+  cannot hide behind the circle. Status: in Lean (`HTGeometry/LightBlaschkeWallsArePermeable.lean`).
+
 ## Avoid (other agents active 2026-10-25)
 Q-II Meyer source modules; `MaximalBlindIdealOfTheMeyerSource.lean` (another agent); biarithmetic; rh-closing-producer Stepanov tracks (HTGeometry Stepanov).
 
@@ -121,3 +128,4 @@ Q-II Meyer source modules; `MaximalBlindIdealOfTheMeyerSource.lean` (another age
 - 2026-10-26 — C13 done.
 - 2026-10-26 — C14 done.
 - 2026-10-26 — C15 done.
+- 2026-10-26 — W1 done; W2 in Lean; no new items started (user request).

@@ -82,12 +82,11 @@ theorem tendsto_successor_of_continuousAt_dilation
   have hb' : (b : ℝ) ≠ 0 := by exact_mod_cast hb
   -- eventually `c n ≠ 0`; write `c n = r_n b` with `r_n → 1`
   have hev : ∀ᶠ n in atTop, c n ≠ 0 := by
-    have := hc.eventually (isOpen_ne.mem_nhds hb')
-    exact this.mono fun n hn h => hn (by rw [h, Rat.cast_zero])
+    exact (hc.eventually_ne hb').mono fun n hn h => hn (by rw [h, Rat.cast_zero])
   set r : ℕ → ℚˣ := fun n => if h : c n = 0 then 1 else Units.mk0 (c n / b) (div_ne_zero h hb)
   have hr : ∀ᶠ n in atTop, ((r n : ℚˣ) : ℚ) * b = c n := hev.mono fun n hn => by
     simp only [r, dif_neg hn, Units.val_mk0]; field_simp
-  have hrlim : Tendsto (fun n => (((r n)⁻¹ : ℚˣ) : ℚ) : ℝ) atTop (𝓝 1) := by
+  have hrlim : Tendsto (fun n => ((((r n)⁻¹ : ℚˣ) : ℚ) : ℝ)) atTop (𝓝 1) := by
     have h1 : Tendsto (fun n => (b : ℝ) / (c n : ℝ)) atTop (𝓝 1) := by
       simpa [div_self hb'] using (tendsto_const_nhds (x := (b : ℝ))).div hc hb'
     refine h1.congr' (hev.mono fun n hn => ?_)
@@ -110,9 +109,12 @@ theorem tendsto_successor_of_continuousAt_dilation
     exact (hcont u hupos hulim).congr' (hueq.mono fun n hn => by rw [hn])
   have hbound : Tendsto (fun n => 2 * Real.sqrt (φ 1).re *
       Real.sqrt (2 * (φ 1 - φ (dilation (r n)⁻¹)).re)) atTop (𝓝 0) := by
-    have h := ((continuous_const.mul (Real.continuous_sqrt.comp (continuous_const.mul
-      (Complex.continuous_re.comp (continuous_const.sub continuous_id))))).tendsto (φ 1)).comp hdil
-    simpa using h
+    have hf : Continuous fun z : ℂ => 2 * Real.sqrt (φ 1).re * Real.sqrt (2 * (φ 1 - z).re) :=
+      continuous_const.mul (Real.continuous_sqrt.comp (continuous_const.mul
+        (Complex.continuous_re.comp (continuous_const.sub continuous_id))))
+    have h := (hf.tendsto (φ 1)).comp hdil
+    simp only [sub_self, Complex.zero_re, mul_zero, Real.sqrt_zero] at h
+    exact h
   rw [tendsto_iff_norm_sub_tendsto_zero]
   refine squeeze_zero' (Eventually.of_forall fun n => norm_nonneg _) ?_ hbound
   filter_upwards [hr] with n hn

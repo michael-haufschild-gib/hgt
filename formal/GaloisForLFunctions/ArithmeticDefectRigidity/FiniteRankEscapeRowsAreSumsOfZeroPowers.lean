@@ -361,8 +361,9 @@ theorem exists_finiteRank_zeroPower_decomposition {ε : ℝ} (hε0 : 0 < ε) (h�
   have hW0 : ∀ st, W st 0 = 0 := fun st =>
     aeval_dilOp_apply_zero _ (aeval_dilOp_apply_zero _ hw0)
   have hlawA : Adm fun n => cTotalCofactorSum ε w n - c' * (n : ℂ) ^ a :=
-    ⟨by simp [cTotalCofactorSum, Complex.zero_cpow (fun h => by
-      rw [h, Complex.zero_re] at ha0; exact lt_irrefl 0 ha0)], hlaw⟩
+    ⟨by
+      have ha : a ≠ 0 := fun h => by rw [h, Complex.zero_re] at ha0; exact lt_irrefl 0 ha0
+      simp [cTotalCofactorSum, Complex.zero_cpow ha], hlaw⟩
   have hcomp : ∀ st : ℂ × ℂ, ∃ c z : ℂ, st ∈ F ×ˢ F →
       ((z.re = σ ∧ (c ≠ 0 → (2 : ℂ) ^ z = 2 ^ st.1 ∧ (3 : ℂ) ^ z = 3 ^ st.2 ∧
         riemannZeta (z + ε) = 0)) ∧ cPronicEnergy (fun n => W st n - c * (n : ℂ) ^ z) ≠ ⊤) := by
