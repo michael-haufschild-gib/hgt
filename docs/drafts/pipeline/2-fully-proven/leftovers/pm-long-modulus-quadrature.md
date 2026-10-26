@@ -43,9 +43,9 @@ All domain assumptions concern only positive damping and natural cutoffs.
 ## Gates
 
 - [x] Dependency-closed paper proofs.
-- [ ] Exact identities and short-modulus bound formalized.
+- [x] Exact identities and short-modulus bound formalized.
 - [ ] Foreground leaf audit with `lake --old env lean`.
-- [ ] Transitive axiom audit.
+- [x] Transitive axiom audit.
 - [ ] Umbrella import added without compiling the umbrella.
 
 No external novelty claim or check. The short-modulus estimate uses the
@@ -63,10 +63,27 @@ diagnostics, and no Lean module or umbrella import was added.
 
 ## Current formalization
 
-The current request to formalize every leftover card supersedes that deferral.
-Four unchecked prototypes now cover the actual integrable producer, integer
-sampling, exact centered-prefix decomposition and square-root-head pronic bound.
-They reuse the existing hyperbola swap, countable-series integrability and
-pronic comparison. Verification and promotion remain outstanding; the gates
-above are unchanged. Progress is recorded in
+The current request supersedes that deferral. All 20 public declarations passed
+the combined source and transitive axiom audit, with only `propext`,
+`Classical.choice` and `Quot.sound`, and no diagnostics. Four canonical leaves
+now reside in `formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/`.
+Their final direct checks, required dependency oleans and wiring remain pending.
+
+| Exact claim | Leaf and public declaration |
+|---|---|
+| Actual Möbius floor-cutoff function, pointwise indicator series, integrability and full signed harmonic-tail integral | `LongModulusIntegrableProducer.lean`: `pmLongModulusFunction_eq_tsum`, `integrable_pmLongModulusFunction`, `integral_pmLongModulusFunction` |
+| Exact integer sampling and literal sum-minus-integral quadrature | `LongModulusQuadratureSampling.lean`: `pmLongModulusFunction_natCast`, `tsum_pmLongModulusFunction_natCast_succ`, `pmLongModulusQuadrature_eq` |
+| Every-cutoff centered-prefix decomposition and retained signed tail | `LongModulusExactDecomposition.lean`: `pmPowerDampedCenteredDivisorPrefix_eq_short_add_quadrature`, `pmLongModulusQuadrature_eq_longSawtooth_sub_full_tail`, `pmLongModulusQuadrature_eq_longSawtooth_sub_tail_max` |
+| Exact square-root head bound, including `n=0`, and the stated pronic-energy constant | `LongModulusShortEnergy.lean`: `abs_pmShortModulusSawtooth_sqrt_le`, `sum_pmShortModulusSawtooth_sqrt_pronic_le` |
+
+All names use namespace `GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy`.
+For `D≤n`, quadrature is the long sawtooth minus the full tail past `n`.
+For arbitrary cutoffs it retains the tail past `max n D`; no endpoint is omitted.
+The weights are the actual `μ(d)d^(-ε)`. Existing hyperbola interchange,
+countable-series integrability and pronic comparison supply the reused mechanisms.
+No bound on the full remainder or new cancellation theorem is claimed.
+
+Evidence: `/tmp/leftovers_pm_complete_audit.lean`,
+`/tmp/leftovers-pm-public-names.json`, `/tmp/leftovers-pm-complete-audit-r2.log`.
+The first failed audit is not a certificate. Progress is recorded in
 [the formalization tracker](../../1-in-progress/leftovers-unconditional-formalization.md).

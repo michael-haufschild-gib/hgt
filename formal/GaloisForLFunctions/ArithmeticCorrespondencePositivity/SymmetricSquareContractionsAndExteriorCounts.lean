@@ -88,7 +88,7 @@ theorem exteriorDetDeg_mul (k : ℕ) (P Q : ℝ[X]) :
 
 theorem exteriorEigenvalue_map_conjPerm (S : Finset ι) :
     exteriorEigenvalue D (S.map D.conjPerm.toEmbedding) = conj (exteriorEigenvalue D S) := by
-  rw [exteriorEigenvalue, Finset.prod_map, map_prod]
+  simp only [exteriorEigenvalue, Finset.prod_map, map_prod]
   exact Finset.prod_congr rfl fun i _ => eigenvalue_conjPerm D i
 
 theorem exteriorEigenvalue_map_conjPerm_symm (S : Finset ι) :
@@ -99,7 +99,8 @@ theorem exteriorEigenvalue_map_conjPerm_symm (S : Finset ι) :
   have h1 := exteriorEigenvalue_map_conjPerm D (S.map D.conjPerm.symm.toEmbedding)
   rw [h] at h1
   have h2 := congrArg conj h1
-  rwa [Complex.conj_conj] at h2
+  rw [Complex.conj_conj] at h2
+  exact h2.symm
 
 /-- Every exterior determinant degree of a real polynomial is real. -/
 theorem conj_exteriorDetDeg (k : ℕ) (P : ℝ[X]) :
@@ -142,7 +143,8 @@ private theorem exteriorDetDeg_eq_normSq_mul_real [DecidableEq ι] (k : ℕ) (P 
     exact this
   set Anonreal := A.filter fun S => (exteriorEigenvalue D S).im ≠ 0
   have hsplit2 : ∏ S ∈ Anonreal, F S =
-      (∏ S ∈ Apos, F S) * ∏ S ∈ Anonreal.filter (fun S => ¬ 0 < (exteriorEigenvalue D S).im), F S :=
+      (∏ S ∈ Anonreal.filter (fun S => 0 < (exteriorEigenvalue D S).im), F S) *
+        ∏ S ∈ Anonreal.filter (fun S => ¬ 0 < (exteriorEigenvalue D S).im), F S :=
     (Finset.prod_filter_mul_prod_filter_not Anonreal (fun S => 0 < (exteriorEigenvalue D S).im) F).symm
   have hpos_eq : Anonreal.filter (fun S => 0 < (exteriorEigenvalue D S).im) = Apos := by
     ext S
@@ -168,7 +170,7 @@ private theorem exteriorDetDeg_eq_normSq_mul_real [DecidableEq ι] (k : ℕ) (P 
     · ext i; simp
     · ext i; simp
     · dsimp only [F]
-      rw [← aeval_conj, ← exteriorEigenvalue_map_conjPerm_symm]
+      rw [← aeval_conj, exteriorEigenvalue_map_conjPerm_symm, Complex.conj_conj]
   change ∏ S ∈ A, F S = _
   rw [hsplit1, hsplit2, hneg, ← map_prod, Complex.mul_conj]
 
@@ -201,7 +203,8 @@ theorem exteriorDetDeg_linear_nonneg_of_unitary (hU : ∀ i : ι, ‖D.β i‖ =
       have him : (exteriorEigenvalue D S).im = 0 := (Finset.mem_filter.mp hS).2
       have hre : exteriorEigenvalue D S = ((exteriorEigenvalue D S).re : ℂ) :=
         Complex.ext rfl (by simp [him])
-      simp only [map_add, map_mul, aeval_C, aeval_X, hre]
+      simp only [map_add, map_mul, aeval_C, aeval_X, Complex.coe_algebraMap]
+      rw [hre, Complex.ofReal_re]
       push_cast; ring
     rw [hreal_prod, ← Complex.ofReal_mul, Complex.ofReal_re]
     refine mul_nonneg (Complex.normSq_nonneg _) (Finset.prod_nonneg fun S hS => ?_)
@@ -210,7 +213,7 @@ theorem exteriorDetDeg_linear_nonneg_of_unitary (hU : ∀ i : ι, ‖D.β i‖ =
       (Complex.abs_re_le_norm _).trans ((hnorm S hSA).le.trans hc)
     rw [abs_le] at habs
     rcases hsgn with rfl | rfl <;> linarith
-  have hm : (C c - X : ℝ[X]) = C c + C (-1 : ℝ) * X := by simp
+  have hm : (C c - X : ℝ[X]) = C c + C (-1 : ℝ) * X := by simp [sub_eq_add_neg]
   have hp : (C c + X : ℝ[X]) = C c + C (1 : ℝ) * X := by simp
   rw [hm, hp]
   exact ⟨hsign (-1) (Or.inl rfl), hsign 1 (Or.inr rfl)⟩
@@ -244,7 +247,8 @@ theorem unitary_of_exteriorDetDeg_nonneg
       exact hi₀ (mul_left_cancel₀ D.sqrtq_pos.ne' (by linarith))
     rcases lt_or_gt_of_ne hne_sq with hlt | hgt
     · have hgt' : D.sqrtq < ‖eigenvalue D (D.fePerm i₀)‖ := by
-        nlinarith [D.sqrtq_sq, D.sqrtq_pos]
+        nlinarith [D.sqrtq_sq, D.sqrtq_pos, heig_pos (D.fePerm i₀),
+          mul_lt_mul_of_pos_right hlt (heig_pos (D.fePerm i₀))]
       exact hgt'.trans_le (hR_ge _)
     · exact hgt.trans_le (hR_ge _)
   have hR_pos : 0 < R := D.sqrtq_pos.trans hR_gt
@@ -303,9 +307,7 @@ theorem unitary_of_exteriorDetDeg_nonneg
     have hpos_erase : 0 < ∏ i ∈ S.erase j, ‖eigenvalue D i‖ :=
       Finset.prod_pos fun i _ => heig_pos i
     have hRk : R * R ^ (k - 1) = R ^ k := by
-      cases k with
-      | zero => omega
-      | succ n => simp [pow_succ']
+      rw [← pow_succ', Nat.sub_add_cancel hk1]
     calc ‖eigenvalue D j‖ * ∏ i ∈ S.erase j, ‖eigenvalue D i‖
         < R * ∏ i ∈ S.erase j, ‖eigenvalue D i‖ := mul_lt_mul_of_pos_right hj_lt hpos_erase
       _ ≤ R * R ^ (k - 1) := mul_le_mul_of_nonneg_left herase_le hR_pos.le
@@ -349,7 +351,8 @@ theorem unitary_of_exteriorDetDeg_nonneg
       have him : (exteriorEigenvalue D S).im = 0 := (Finset.mem_filter.mp hS).2
       have hre : exteriorEigenvalue D S = ((exteriorEigenvalue D S).re : ℂ) :=
         Complex.ext rfl (by simp [him])
-      simp only [map_add, map_mul, aeval_C, aeval_X, hre]
+      simp only [map_add, map_mul, aeval_C, aeval_X, Complex.coe_algebraMap]
+      rw [hre, Complex.ofReal_re]
       push_cast; ring
     rw [hreal_prod, ← Complex.ofReal_mul, Complex.ofReal_re]
     have hnormSq_pos : 0 < Complex.normSq
@@ -358,9 +361,11 @@ theorem unitary_of_exteriorDetDeg_nonneg
       intro S hS
       have him_pos : 0 < (exteriorEigenvalue D S).im := (Finset.mem_filter.mp hS).2
       intro hz
-      have him0 := congrArg Complex.im hz
-      simp only [map_add, map_mul, aeval_C, aeval_X, Complex.add_im, Complex.mul_im,
-        Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero, Complex.zero_im] at him0
+      have hz' : (c : ℂ) + (sgn : ℂ) * exteriorEigenvalue D S = 0 := by
+        simpa [map_add, map_mul, aeval_C, aeval_X] using hz
+      have him0 := congrArg Complex.im hz'
+      simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+        zero_mul, add_zero, Complex.zero_im] at him0
       rcases hsgn with rfl | rfl <;> linarith
     have hM_real : M ∈ Areal := Finset.mem_filter.mpr ⟨hM_mem, hM_im⟩
     rw [← Finset.mul_prod_erase Areal _ hM_real]
@@ -374,11 +379,12 @@ theorem unitary_of_exteriorDetDeg_nonneg
       rcases hsgn with rfl | rfl <;> linarith
     exact mul_neg_of_pos_of_neg hnormSq_pos (mul_neg_of_neg_of_pos hM_neg herase_pos)
   have hM_re_abs : |(exteriorEigenvalue D M).re| = R ^ k := by
-    have hre : exteriorEigenvalue D M = ((exteriorEigenvalue D M).re : ℂ) :=
-      Complex.ext rfl (by simp [hM_im])
-    rw [← hM_norm, hre, Complex.norm_real, Real.norm_eq_abs]
+    have hn := congrArg norm
+      (Complex.ext rfl (by simp [hM_im]) : exteriorEigenvalue D M = ((exteriorEigenvalue D M).re : ℂ))
+    rw [hM_norm, Complex.norm_real, Real.norm_eq_abs] at hn
+    exact hn.symm
   obtain ⟨hminus, hplus⟩ := h k hk1 hk_half c hc_gt
-  have hm_poly : (C c - X : ℝ[X]) = C c + C (-1 : ℝ) * X := by simp
+  have hm_poly : (C c - X : ℝ[X]) = C c + C (-1 : ℝ) * X := by simp [sub_eq_add_neg]
   have hp_poly : (C c + X : ℝ[X]) = C c + C (1 : ℝ) * X := by simp
   rcases eq_or_eq_neg_of_abs_eq hM_re_abs with hpos_re | hneg_re
   · have hlt := hneg_sign (-1) (Or.inl rfl) (by rw [hpos_re]; linarith)
@@ -403,10 +409,10 @@ theorem complexFake_exteriorDetDeg_two_seventeen :
   rw [Finset.prod_pair (by decide), Finset.prod_pair (by decide),
       Finset.prod_pair (by decide), Finset.prod_pair (by decide),
       Finset.prod_pair (by decide), Finset.prod_pair (by decide)]
-  simp only [complexFake_eigenvalue, map_sub, aeval_C, aeval_X,
+  simp only [complexFake_eigenvalue, map_sub, aeval_C, aeval_X, Complex.coe_algebraMap,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three]
-  ring_nf
-  simp only [Complex.I_sq]
+  rw [Complex.ext_iff]
+  simp
   norm_num
 
 end ExteriorCounts
@@ -469,9 +475,8 @@ theorem symSquareShift_cos (t h c u : ℝ) :
     have hexp : Complex.exp (-((t * h : ℝ) : ℂ) * I) =
         ((Real.cos (t * h) : ℝ) : ℂ) - ((Real.sin (t * h) : ℝ) : ℂ) * I := by
       have : -((t * h : ℝ) : ℂ) * I = ((-(t * h) : ℝ) : ℂ) * I := by push_cast; ring
-      rw [this, Complex.exp_mul_I]
-      push_cast
-      rw [Real.cos_neg, Real.sin_neg]
+      rw [this, Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin,
+        Real.cos_neg, Real.sin_neg]
       push_cast; ring
     rw [hexp, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, Complex.ofReal_im,
@@ -640,7 +645,7 @@ private theorem re_one_div_laplace_cos (a b : ℝ) (ha : 0 < a) :
 
 private theorem integrableOn_exp_cos_Ioi (a b : ℝ) (ha : 0 < a) :
     IntegrableOn (fun t : ℝ => Real.exp (-a * t) * Real.cos (b * t)) (Ioi 0) := by
-  refine Integrable.mono' (integrableOn_exp_mul_Ioi (by linarith) 0)
+  refine Integrable.mono' (integrableOn_exp_mul_Ioi (show -a < 0 by linarith) 0)
     ((Continuous.aestronglyMeasurable (by fun_prop)).restrict)
     (Eventually.of_forall fun t => ?_)
   rw [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)]
@@ -653,7 +658,7 @@ private theorem isEvenPosDef_laplace_cos {w φ : ℝ → ℝ} {C a : ℝ}
     (hφ : ∀ u : ℝ, φ u = ∫ t : ℝ in Ioi 0, w t * Real.cos (t * u)) :
     IsEvenPosDef φ := by
   have hint_dom : IntegrableOn (fun t : ℝ => C * Real.exp (-a * t)) (Ioi 0) :=
-    (integrableOn_exp_mul_Ioi (by linarith) 0).const_mul C
+    (integrableOn_exp_mul_Ioi (show -a < 0 by linarith) 0).const_mul C
   have hint_ker : ∀ u : ℝ,
       IntegrableOn (fun t : ℝ => w t * Real.cos (t * u)) (Ioi 0) := by
     intro u
@@ -742,7 +747,7 @@ private theorem re_neg_logDeriv_midpointSymSquare_eq {β σ : ℝ}
         2 * (1 / (s - 1 / 2)).re := by
     rw [hld]
     have h2 : (2 * (1 / (s - 1 / 2))).re = 2 * (1 / (s - 1 / 2)).re := by
-      simpa using Complex.re_ofReal_mul 2 (1 / (s - 1 / 2))
+      simp [Complex.mul_re]
     rw [Complex.sub_re, Complex.add_re, h2]
   rw [hre, e1, e2, e3,
       re_one_div_laplace_cos (σ - β) u (by linarith),
@@ -750,19 +755,33 @@ private theorem re_neg_logDeriv_midpointSymSquare_eq {β σ : ℝ}
       re_one_div_laplace_cos (σ - 1 / 2) u (by linarith)]
   have hi1 := integrableOn_exp_cos_Ioi (σ - β) u (by linarith)
   have hi2 := integrableOn_exp_cos_Ioi (σ - (1 - β)) u (by linarith)
-  have hi3 := (integrableOn_exp_cos_Ioi (σ - 1 / 2) u (by linarith)).const_mul 2
-  rw [← integral_const_mul, ← integral_add hi1 hi2, ← integral_sub (hi1.add hi2) hi3]
-  refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
-  have hexp1 : Real.exp (-(σ - β) * t) = Real.exp (-σ * t) * Real.exp (β * t / 2) ^ 2 := by
-    rw [sq, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
-  have hexp2 : Real.exp (-(σ - (1 - β)) * t) =
-      Real.exp (-σ * t) * Real.exp ((1 - β) * t / 2) ^ 2 := by
-    rw [sq, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
-  have hexp3 : Real.exp (-(σ - 1 / 2) * t) =
-      Real.exp (-σ * t) * (Real.exp (β * t / 2) * Real.exp ((1 - β) * t / 2)) := by
-    rw [← Real.exp_add, ← Real.exp_add]; congr 1; ring
-  rw [hexp1, hexp2, hexp3, mul_comm u t]
-  ring
+  have hi3_base := integrableOn_exp_cos_Ioi (σ - 1 / 2) u (by linarith)
+  have hi12 : IntegrableOn (fun t : ℝ =>
+      Real.exp (-(σ - β) * t) * Real.cos (u * t) +
+        Real.exp (-(σ - (1 - β)) * t) * Real.cos (u * t)) (Ioi 0) := hi1.add hi2
+  have hi3 : IntegrableOn (fun t : ℝ =>
+      2 * (Real.exp (-(σ - 1 / 2) * t) * Real.cos (u * t))) (Ioi 0) := hi3_base.const_mul 2
+  symm
+  calc ∫ t : ℝ in Ioi 0,
+        Real.exp (-σ * t) * (Real.exp (β * t / 2) - Real.exp ((1 - β) * t / 2)) ^ 2 *
+          Real.cos (t * u)
+      = ∫ t : ℝ in Ioi 0,
+          ((Real.exp (-(σ - β) * t) * Real.cos (u * t) +
+              Real.exp (-(σ - (1 - β)) * t) * Real.cos (u * t)) -
+            2 * (Real.exp (-(σ - 1 / 2) * t) * Real.cos (u * t))) := by
+        refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
+        have hexp1 : Real.exp (-(σ - β) * t) = Real.exp (-σ * t) * Real.exp (β * t / 2) ^ 2 := by
+          rw [sq, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
+        have hexp2 : Real.exp (-(σ - (1 - β)) * t) =
+            Real.exp (-σ * t) * Real.exp ((1 - β) * t / 2) ^ 2 := by
+          rw [sq, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
+        have hexp3 : Real.exp (-(σ - 1 / 2) * t) =
+            Real.exp (-σ * t) * (Real.exp (β * t / 2) * Real.exp ((1 - β) * t / 2)) := by
+          rw [← Real.exp_add, ← Real.exp_add]; congr 1; ring
+        rw [hexp1, hexp2, hexp3, mul_comm u t]
+        ring
+    _ = _ := by
+        rw [integral_sub hi12 hi3, integral_add hi1 hi2, integral_const_mul]
 
 /-- **Bochner positivity of the midpoint symmetric-square multiplier.** For every `β ∈ [0, 1]` and
 `σ > 1`, `u ↦ Re(−logDeriv M_β(σ + iu))` is even positive definite. -/
@@ -823,11 +842,11 @@ private theorem dslope_entire_and_orderOne {f : ℂ → ℂ} {z₀ : ℂ}
       (Real.exp_le_exp.mpr (orderOneWeight_mono (by linarith : C ≤ C + D) z)))
 
 private theorem exists_quotient_prod_linear :
-    ∀ (L : List ℂ) {f : ℂ → ℂ}, L.Nodup → Differentiable ℂ f → OrderOneEnvelope f →
+    ∀ (L : List ℂ) (f : ℂ → ℂ), L.Nodup → Differentiable ℂ f → OrderOneEnvelope f →
       (∀ r ∈ L, f r = 0) →
       ∃ Q : ℂ → ℂ, Differentiable ℂ Q ∧ OrderOneEnvelope Q ∧
         ∀ s : ℂ, (L.map (fun r => s - r)).prod * Q s = f s
-  | [], _, _, hdf, hof, _ => ⟨f, hdf, hof, fun s => by simp⟩
+  | [], f, _, hdf, hof, _ => ⟨f, hdf, hof, fun s => by simp⟩
   | r :: rs, f, hnd, hdf, hof, hzero => by
       rw [List.nodup_cons] at hnd
       obtain ⟨hdg, hog, hg_eq⟩ := dslope_entire_and_orderOne hdf hof (hzero r (by simp))
@@ -838,7 +857,7 @@ private theorem exists_quotient_prod_linear :
         rw [hzero w (by simp [hw])] at hmul
         exact (mul_eq_zero.mp hmul).resolve_left hne
       obtain ⟨Q, hdQ, hoQ, hQ_eq⟩ :=
-        exists_quotient_prod_linear rs hnd.2 hdg hog hg_zero
+        exists_quotient_prod_linear rs (dslope f r) hnd.2 hdg hog hg_zero
       refine ⟨Q, hdQ, hoQ, fun s => ?_⟩
       simp only [List.map_cons, List.prod_cons]
       rw [mul_assoc, hQ_eq s, hg_eq s]
@@ -864,11 +883,11 @@ private theorem continuous_eq_of_mul_eq_off_finset {g₁ g₂ P : ℂ → ℂ} (
 at `1/2` by `2`. -/
 theorem CompletedPositiveSystem.contractRealPair {κ d : ℕ} {F Λ : ℂ → ℂ}
     (hS : CompletedPositiveSystem κ d F Λ) {β : ℝ} (hβ : β ≠ 1 / 2) (hzero : Λ (β : ℂ) = 0) :
-    ∃ Λ_♯ : ℂ → ℂ,
-      CompletedPositiveSystem κ d (fun s => F s * midpointSymSquare β s) Λ_♯ ∧
-      (∀ s : ℂ, Λ_♯ s * realPairPoly β s = Λ s * (s - 1 / 2) ^ 2) ∧
-      Λ_♯ (1 / 2) = 0 ∧
-      (analyticOrderAt Λ_♯ (1 / 2)).toNat = (analyticOrderAt Λ (1 / 2)).toNat + 2 := by
+    ∃ Λc : ℂ → ℂ,
+      CompletedPositiveSystem κ d (fun s => F s * midpointSymSquare β s) Λc ∧
+      (∀ s : ℂ, Λc s * realPairPoly β s = Λ s * (s - 1 / 2) ^ 2) ∧
+      Λc (1 / 2) = 0 ∧
+      (analyticOrderAt Λc (1 / 2)).toNat = (analyticOrderAt Λ (1 / 2)).toNat + 2 := by
   classical
   obtain ⟨hβ0, hβ1⟩ := hS.zero_re_mem_Icc hzero
   simp only [Complex.ofReal_re] at hβ0 hβ1
@@ -880,23 +899,24 @@ theorem CompletedPositiveSystem.contractRealPair {κ d : ℕ} {F Λ : ℂ → �
     simp at this
     exact hβ (by linarith)
   have hnd : ([(β : ℂ), ((1 - β : ℝ) : ℂ)] : List ℂ).Nodup := by
-    simp [hne_pair]
+    rw [List.nodup_cons, List.mem_singleton]
+    exact ⟨hne_pair, List.nodup_singleton _⟩
   obtain ⟨Q, hdQ, hoQ, hQ_eq⟩ := exists_quotient_prod_linear
-    [(β : ℂ), ((1 - β : ℝ) : ℂ)] hnd hS.entire_Λ hS.orderOne_Λ
+    [(β : ℂ), ((1 - β : ℝ) : ℂ)] Λ hnd hS.entire_Λ hS.orderOne_Λ
     (fun r hr => by
       simp only [List.mem_cons, List.not_mem_nil, or_false] at hr
       rcases hr with rfl | rfl <;> assumption)
   have hQ_poly : ∀ s : ℂ, realPairPoly β s * Q s = Λ s := fun s => by
     have h := hQ_eq s
     simpa [realPairPoly, mul_assoc] using h
-  let Λ_♯ : ℂ → ℂ := fun s => Q s * (s - 1 / 2) ^ 2
-  have hdΛ_♯ : Differentiable ℂ Λ_♯ := hdQ.mul (by fun_prop)
+  let Λc : ℂ → ℂ := fun s => Q s * (s - 1 / 2) ^ 2
+  have hdΛc : Differentiable ℂ Λc := hdQ.mul (by fun_prop)
   have ho_sq : OrderOneEnvelope (fun s : ℂ => (s - 1 / 2) ^ 2) :=
     ((orderOneEnvelope_sub_const (1 / 2)).mul (orderOneEnvelope_sub_const (1 / 2))).congr
       fun s => by ring
-  have hoΛ_♯ : OrderOneEnvelope Λ_♯ := hoQ.mul ho_sq
-  have hrel : ∀ s : ℂ, Λ_♯ s * realPairPoly β s = Λ s * (s - 1 / 2) ^ 2 := fun s => by
-    dsimp [Λ_♯]
+  have hoΛc : OrderOneEnvelope Λc := hoQ.mul ho_sq
+  have hrel : ∀ s : ℂ, Λc s * realPairPoly β s = Λ s * (s - 1 / 2) ^ 2 := fun s => by
+    dsimp [Λc]
     rw [← hQ_poly s]
     ring
   have hP_nz_off : ∀ z : ℂ, z ∉ ({(β : ℂ), ((1 - β : ℝ) : ℂ)} : Finset ℂ) →
@@ -904,30 +924,31 @@ theorem CompletedPositiveSystem.contractRealPair {κ d : ℕ} {F Λ : ℂ → �
     intro z hz
     simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hz
     exact mul_ne_zero (sub_ne_zero.mpr hz.1) (sub_ne_zero.mpr hz.2)
-  have hsym_♯ : ∀ s : ℂ, Λ_♯ (1 - s) = Λ_♯ s := by
+  have hsym_c : ∀ s : ℂ, Λc (1 - s) = Λc s := by
     refine continuous_eq_of_mul_eq_off_finset {(β : ℂ), ((1 - β : ℝ) : ℂ)}
-      (hdΛ_♯.continuous.comp (by fun_prop)) hdΛ_♯.continuous hP_nz_off fun z => ?_
+      (hdΛc.continuous.comp (by fun_prop)) hdΛc.continuous hP_nz_off fun z => ?_
     have hP_sym : realPairPoly β z = realPairPoly β (1 - z) := by
       unfold realPairPoly; push_cast; ring
     have hC_sym : ((1 - z) - 1 / 2) ^ 2 = (z - 1 / 2) ^ 2 := by ring
     rw [hP_sym, hrel (1 - z), hS.sym_Λ z, hC_sym, ← hP_sym, ← hrel z]
-  have hconj_♯ : ∀ s : ℂ, Λ_♯ (starRingEnd ℂ s) = starRingEnd ℂ (Λ_♯ s) := by
+  have hconj_c : ∀ s : ℂ, Λc (starRingEnd ℂ s) = starRingEnd ℂ (Λc s) := by
     have hinv := continuous_eq_of_mul_eq_off_finset {(β : ℂ), ((1 - β : ℝ) : ℂ)}
-      (Complex.continuous_conj.comp (hdΛ_♯.continuous.comp Complex.continuous_conj))
-      hdΛ_♯.continuous hP_nz_off fun z => by
+      (Complex.continuous_conj.comp (hdΛc.continuous.comp Complex.continuous_conj))
+      hdΛc.continuous hP_nz_off fun z => by
         have hP_conj : starRingEnd ℂ (realPairPoly β (starRingEnd ℂ z)) = realPairPoly β z := by
           unfold realPairPoly
           simp only [map_mul, map_sub, Complex.conj_ofReal, RingHomCompTriple.comp_apply,
             RingHom.id_apply]
         have hC_conj : starRingEnd ℂ ((starRingEnd ℂ z - 1 / 2) ^ 2) = (z - 1 / 2) ^ 2 := by
-          simp
+          simp [map_ofNat]
         have h1 := congrArg (starRingEnd ℂ) (hrel (starRingEnd ℂ z))
-        rw [map_mul, map_mul, hP_conj, hC_conj, hS.conj_Λ (starRingEnd ℂ z),
-          Complex.conj_conj, ← hrel z] at h1
-        exact h1
+        rw [map_mul (starRingEnd ℂ) (Λc (starRingEnd ℂ z)),
+          map_mul (starRingEnd ℂ) (Λ (starRingEnd ℂ z)),
+          hP_conj, hC_conj, hS.conj_Λ z, Complex.conj_conj, ← hrel z] at h1
+        simpa only [Function.comp_apply] using h1
     intro s
     have hs := congrArg (starRingEnd ℂ) (hinv s)
-    simpa using hs
+    simpa [Function.comp_apply] using hs
   have hP_nz_re : ∀ s : ℂ, 1 < s.re → realPairPoly β s ≠ 0 := by
     intro s hs
     refine mul_ne_zero (fun h => ?_) (fun h => ?_)
@@ -943,7 +964,7 @@ theorem CompletedPositiveSystem.contractRealPair {κ d : ℕ} {F Λ : ℂ → �
     change 1 < s.re at hs
     exact (((by fun_prop : DifferentiableAt ℂ (fun z : ℂ => (z - 1 / 2) ^ 2) s).div
       (by unfold realPairPoly; fun_prop) (hP_nz_re s hs))).differentiableWithinAt
-  have hS_♯ : CompletedPositiveSystem κ d (fun s => F s * midpointSymSquare β s) Λ_♯ :=
+  have hSc : CompletedPositiveSystem κ d (fun s => F s * midpointSymSquare β s) Λc :=
     { degree_pos := hS.degree_pos
       diffOn_F := hS.diffOn_F.mul hM_diffOn
       ne_zero_F := fun s hs => mul_ne_zero (hS.ne_zero_F s hs) (hM_nz s hs)
@@ -963,24 +984,24 @@ theorem CompletedPositiveSystem.contractRealPair {κ d : ℕ} {F Λ : ℂ → �
               neg_add, Complex.add_re]
         rw [heq]
         exact isEvenPosDef_add (hS.posDef_neg_logDeriv hσ) (isEvenPosDef_midpointSymSquare hβ0 hβ1 hσ)
-      entire_Λ := hdΛ_♯
-      orderOne_Λ := hoΛ_♯
-      sym_Λ := hsym_♯
-      conj_Λ := hconj_♯
+      entire_Λ := hdΛc
+      orderOne_Λ := hoΛc
+      sym_Λ := hsym_c
+      conj_Λ := hconj_c
       completed_eq := fun s hs => by
         have hP_nz := hP_nz_re s hs
         apply mul_right_cancel₀ hP_nz
         have hdiv : midpointSymSquare β s * realPairPoly β s = (s - 1 / 2) ^ 2 :=
           div_mul_cancel₀ _ hP_nz
-        calc Λ_♯ s * realPairPoly β s
+        calc Λc s * realPairPoly β s
             = Λ s * (s - 1 / 2) ^ 2 := hrel s
           _ = ((s * (s - 1)) ^ κ * Complex.Gammaℝ s ^ d * F s) *
                 (midpointSymSquare β s * realPairPoly β s) := by
               rw [hS.completed_eq s hs, hdiv]
           _ = (s * (s - 1)) ^ κ * Complex.Gammaℝ s ^ d * (F s * midpointSymSquare β s) *
                 realPairPoly β s := by ring }
-  have hord : (analyticOrderAt Λ_♯ (1 / 2)).toNat = (analyticOrderAt Λ (1 / 2)).toNat + 2 := by
-    have hfun : Λ_♯ * realPairPoly β = Λ * ((· - (1 / 2 : ℂ)) ^ 2) := funext hrel
+  have hord : (analyticOrderAt Λc (1 / 2)).toNat = (analyticOrderAt Λ (1 / 2)).toNat + 2 := by
+    have hfun : Λc * realPairPoly β = Λ * ((· - (1 / 2 : ℂ)) ^ 2) := funext hrel
     have hP_half_nz : realPairPoly β (1 / 2) ≠ 0 := by
       unfold realPairPoly
       refine mul_ne_zero (fun h => ?_) (fun h => ?_)
@@ -989,29 +1010,31 @@ theorem CompletedPositiveSystem.contractRealPair {κ d : ℕ} {F Λ : ℂ → �
     have hdP : Differentiable ℂ (realPairPoly β) := by unfold realPairPoly; fun_prop
     have hord_P : analyticOrderAt (realPairPoly β) (1 / 2) = 0 :=
       (hdP.analyticAt (1 / 2)).analyticOrderAt_eq_zero.mpr hP_half_nz
-    have hord_L : analyticOrderAt (Λ_♯ * realPairPoly β) (1 / 2) = analyticOrderAt Λ_♯ (1 / 2) := by
-      rw [analyticOrderAt_mul (hdΛ_♯.analyticAt _) (hdP.analyticAt _), hord_P, add_zero]
+    have hord_L : analyticOrderAt (Λc * realPairPoly β) (1 / 2) = analyticOrderAt Λc (1 / 2) := by
+      rw [analyticOrderAt_mul (hdΛc.analyticAt _) (hdP.analyticAt _), hord_P, add_zero]
     have hord_R : analyticOrderAt (Λ * ((· - (1 / 2 : ℂ)) ^ 2)) (1 / 2) =
         analyticOrderAt Λ (1 / 2) + (2 : ℕ) := by
-      rw [analyticOrderAt_mul (hS.entire_Λ.analyticAt _) (by fun_prop),
+      have han_mon : AnalyticAt ℂ ((· - (1 / 2 : ℂ)) ^ 2) (1 / 2) :=
+        ((differentiable_id.sub_const (1 / 2 : ℂ)).pow 2).analyticAt (1 / 2)
+      rw [analyticOrderAt_mul (hS.entire_Λ.analyticAt _) han_mon,
           analyticOrderAt_centeredMonomial]
-    have heq_ord : analyticOrderAt Λ_♯ (1 / 2) = analyticOrderAt Λ (1 / 2) + (2 : ℕ) := by
+    have heq_ord : analyticOrderAt Λc (1 / 2) = analyticOrderAt Λ (1 / 2) + (2 : ℕ) := by
       rw [← hord_L, hfun, hord_R]
     rw [heq_ord, ENat.toNat_add (hS.orderAt_ne_top (1 / 2)) (ENat.coe_ne_top 2), ENat.toNat_coe]
-  exact ⟨Λ_♯, hS_♯, hrel, by dsimp [Λ_♯]; simp, hord⟩
+  exact ⟨Λc, hSc, hrel, by dsimp [Λc]; simp, hord⟩
 
 /-- **Finite-step elimination of all real off-critical zeros.** Repeated midpoint symmetric-square
 contraction transforms every `CompletedPositiveSystem κ d F Λ` into a `CompletedPositiveSystem κ d`
-at the same `(κ, d)` with no real off-critical zeros (`∀ β ≠ 1/2, Λ_♯(β) ≠ 0`). -/
+at the same `(κ, d)` with no real off-critical zeros (`∀ β ≠ 1/2, Λc(β) ≠ 0`). -/
 theorem CompletedPositiveSystem.exists_real_offCritical_free {κ d : ℕ} {F Λ : ℂ → ℂ}
     (hS : CompletedPositiveSystem κ d F Λ) :
-    ∃ F_♯ Λ_♯ : ℂ → ℂ,
-      CompletedPositiveSystem κ d F_♯ Λ_♯ ∧
-      ∀ β : ℝ, β ≠ 1 / 2 → Λ_♯ (β : ℂ) ≠ 0 := by
+    ∃ Fc Λc : ℂ → ℂ,
+      CompletedPositiveSystem κ d Fc Λc ∧
+      ∀ β : ℝ, β ≠ 1 / 2 → Λc (β : ℂ) ≠ 0 := by
   suffices haux : ∀ (N : ℕ) {F' Λ' : ℂ → ℂ}, CompletedPositiveSystem κ d F' Λ' →
       9 * κ - (analyticOrderAt Λ' (1 / 2)).toNat ≤ N →
-      ∃ F_♯ Λ_♯ : ℂ → ℂ,
-        CompletedPositiveSystem κ d F_♯ Λ_♯ ∧ ∀ β : ℝ, β ≠ 1 / 2 → Λ_♯ (β : ℂ) ≠ 0 from
+      ∃ Fc Λc : ℂ → ℂ,
+        CompletedPositiveSystem κ d Fc Λc ∧ ∀ β : ℝ, β ≠ 1 / 2 → Λc (β : ℂ) ≠ 0 from
     haux (9 * κ - (analyticOrderAt Λ (1 / 2)).toNat) hS le_rfl
   intro N
   induction N with
@@ -1027,7 +1050,7 @@ theorem CompletedPositiveSystem.exists_real_offCritical_free {κ d : ℕ} {F Λ 
       · exact ⟨F', Λ', hS', hfree⟩
       · push Not at hfree
         obtain ⟨β, hβ, hzero⟩ := hfree
-        obtain ⟨Λ₁, hS₁, -, -, hord₁⟩ := hS'.contractRealPair hβ hzero
+        obtain ⟨Λ₁, hS₁, -, -, hord₁⟩ := CompletedPositiveSystem.contractRealPair hS' hβ hzero
         have hbud := real_zero_archimedean_budget hS₁ ∅
           (fun _ hx => absurd hx (Finset.notMem_empty _))
         simp only [Finset.sum_empty, mul_zero, add_zero] at hbud
@@ -1044,9 +1067,9 @@ theorem completedPositiveSystem_one_ne_zero_of_midpoint_contraction {d : ℕ} {F
   intro hzero
   obtain ⟨hβ0, hβ1⟩ := hS.zero_re_mem_Icc hzero
   simp only [Complex.ofReal_re] at hβ0 hβ1
-  obtain ⟨Λ_♯, hS_♯, -, -, -⟩ := hS.contractRealPair hβ hzero
+  obtain ⟨Λc, hSc, -, -, -⟩ := CompletedPositiveSystem.contractRealPair hS hβ hzero
   obtain ⟨-, K₁, hK₁, hF₁⟩ := completedPositiveSystem_one_iff hS
-  obtain ⟨-, K₂, -, hF₂⟩ := completedPositiveSystem_one_iff hS_♯
+  obtain ⟨-, K₂, -, hF₂⟩ := completedPositiveSystem_one_iff hSc
   have hZ := completedPositiveSystem_riemannZeta
   have hZ2 : riemannZeta 2 ≠ 0 := hZ.ne_zero_F 2 (by norm_num)
   have hZ3 : riemannZeta 3 ≠ 0 := hZ.ne_zero_F 3 (by norm_num)
@@ -1189,7 +1212,7 @@ private theorem re_neg_logDeriv_quartetPureRatio_eq {a γ σ : ℝ}
         2 * (logDeriv (qAt (1 / 2)) s).re := by
     rw [hld]
     have h2 : (2 * logDeriv (qAt (1 / 2)) s).re = 2 * (logDeriv (qAt (1 / 2)) s).re := by
-      simpa using Complex.re_ofReal_mul 2 (logDeriv (qAt (1 / 2)) s)
+      simp [Complex.mul_re]
     rw [Complex.sub_re, Complex.add_re, h2]
   rw [hre]
   dsimp [qAt]
@@ -1217,21 +1240,39 @@ private theorem re_neg_logDeriv_quartetPureRatio_eq {a γ σ : ℝ}
       _ = 2 * Real.exp (-(σ - x) * t) := mul_one _
   have hip := hint (1 / 2 + a) (by linarith)
   have him := hint (1 / 2 - a) (by linarith)
-  have hic := (hint (1 / 2) (by linarith)).const_mul 2
-  rw [← integral_const_mul, ← integral_add hip him, ← integral_sub (hip.add him) hic]
-  refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
-  have he_p : Real.exp (-(σ - (1 / 2 + a)) * t) =
-      Real.exp (-σ * t) * Real.exp (t / 2) * Real.exp (a * t / 2) ^ 2 := by
-    rw [sq, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
-  have he_m : Real.exp (-(σ - (1 / 2 - a)) * t) =
-      Real.exp (-σ * t) * Real.exp (t / 2) * Real.exp (-(a * t / 2)) ^ 2 := by
-    rw [sq, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
-  have he_c : Real.exp (-(σ - 1 / 2) * t) =
-      Real.exp (-σ * t) * Real.exp (t / 2) *
-        (Real.exp (a * t / 2) * Real.exp (-(a * t / 2))) := by
-    rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
-  rw [he_p, he_m, he_c]
-  ring
+  have hic_base := hint (1 / 2) (by linarith)
+  have hipm : IntegrableOn (fun t : ℝ =>
+      2 * Real.exp (-(σ - (1 / 2 + a)) * t) * Real.cos (γ * t) * Real.cos (t * u) +
+        2 * Real.exp (-(σ - (1 / 2 - a)) * t) * Real.cos (γ * t) * Real.cos (t * u)) (Ioi 0) :=
+    hip.add him
+  have hic : IntegrableOn (fun t : ℝ =>
+      2 * (2 * Real.exp (-(σ - 1 / 2) * t) * Real.cos (γ * t) * Real.cos (t * u))) (Ioi 0) :=
+    hic_base.const_mul 2
+  symm
+  calc ∫ t : ℝ in Ioi 0,
+        Real.exp (-σ * t) *
+          (2 * Real.exp (t / 2) * Real.cos (γ * t) *
+            (Real.exp (a * t / 2) - Real.exp (-(a * t / 2))) ^ 2) *
+          Real.cos (t * u)
+      = ∫ t : ℝ in Ioi 0,
+          ((2 * Real.exp (-(σ - (1 / 2 + a)) * t) * Real.cos (γ * t) * Real.cos (t * u) +
+              2 * Real.exp (-(σ - (1 / 2 - a)) * t) * Real.cos (γ * t) * Real.cos (t * u)) -
+            2 * (2 * Real.exp (-(σ - 1 / 2) * t) * Real.cos (γ * t) * Real.cos (t * u))) := by
+        refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
+        have he_p : Real.exp (-(σ - (1 / 2 + a)) * t) =
+            Real.exp (-σ * t) * Real.exp (t / 2) * Real.exp (a * t / 2) ^ 2 := by
+          rw [sq, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
+        have he_m : Real.exp (-(σ - (1 / 2 - a)) * t) =
+            Real.exp (-σ * t) * Real.exp (t / 2) * Real.exp (-(a * t / 2)) ^ 2 := by
+          rw [sq, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
+        have he_c : Real.exp (-(σ - 1 / 2) * t) =
+            Real.exp (-σ * t) * Real.exp (t / 2) *
+              (Real.exp (a * t / 2) * Real.exp (-(a * t / 2))) := by
+          rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
+        rw [he_p, he_m, he_c]
+        ring
+    _ = _ := by
+        rw [integral_sub hipm hic, integral_add hip him, integral_const_mul]
 
 private theorem re_neg_logDeriv_quartetPower_eq (m : ℕ) {a γ σ : ℝ}
     (ha0 : 0 < a) (ha1 : a < 1 / 2) (hσ : 1 < σ) (u : ℝ) :
@@ -1338,7 +1379,8 @@ private theorem re_neg_logDeriv_quartetPower_eq (m : ℕ) {a γ σ : ℝ}
     have hmid_le : |2 * Real.exp (t / 2) * Real.cos (γ * t) *
         (Real.exp (a * t / 2) - Real.exp (-(a * t / 2))) ^ 2| ≤ 4 * Real.exp t := by
       rw [abs_mul, abs_mul, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2),
-          abs_of_pos (Real.exp_pos _), abs_of_nonneg (sq_nonneg _)]
+          abs_of_pos (Real.exp_pos _),
+          abs_of_nonneg (sq_nonneg (Real.exp (a * t / 2) - Real.exp (-(a * t / 2))))]
       have hprod : |Real.cos (γ * t)| *
           (Real.exp (a * t / 2) - Real.exp (-(a * t / 2))) ^ 2 ≤ Real.exp (t / 2) := by
         calc |Real.cos (γ * t)| * (Real.exp (a * t / 2) - Real.exp (-(a * t / 2))) ^ 2
@@ -1362,32 +1404,51 @@ private theorem re_neg_logDeriv_quartetPower_eq (m : ℕ) {a γ σ : ℝ}
             (abs_nonneg _) (by positivity)
       _ = 4 * (Real.exp (-σ * t) * Real.exp t) := by ring
       _ = 4 * Real.exp (-(σ - 1) * t) := by rw [← Real.exp_add]; congr 2; ring
-  rw [← integral_const_mul, ← integral_add (hi1.const_mul (m : ℝ)) hi2]
-  refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
-  have h0_id : (Real.exp ((0 : ℝ) * t / 2) - Real.exp ((1 - (0 : ℝ)) * t / 2)) ^ 2 =
-      Real.exp (t / 2) * (Real.exp (t / 4) - Real.exp (-(t / 4))) ^ 2 := by
-    simp only [zero_mul, zero_div, Real.exp_zero, sub_zero, one_mul]
-    have hq1 : Real.exp (t / 2) * Real.exp (t / 4) ^ 2 = Real.exp t := by
-      rw [sq, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
-    have hq2 : Real.exp (t / 2) * Real.exp (-(t / 4)) ^ 2 = 1 := by
-      rw [sq, ← Real.exp_add, ← Real.exp_add]
-      ring_nf
-      exact Real.exp_zero
-    have hq3 : Real.exp (t / 4) * Real.exp (-(t / 4)) = 1 := by
-      rw [← Real.exp_add]
-      ring_nf
-      exact Real.exp_zero
-    have hq4 : Real.exp (t / 2) ^ 2 = Real.exp t := by
-      rw [sq, ← Real.exp_add]; congr 1; ring
-    calc (1 - Real.exp (t / 2)) ^ 2
-        = 1 - 2 * Real.exp (t / 2) + Real.exp (t / 2) ^ 2 := by ring
-      _ = Real.exp (t / 2) * Real.exp (-(t / 4)) ^ 2 -
-            2 * Real.exp (t / 2) * (Real.exp (t / 4) * Real.exp (-(t / 4))) +
-            Real.exp (t / 2) * Real.exp (t / 4) ^ 2 := by
-          rw [hq2, hq3, hq1, hq4]; ring
-      _ = Real.exp (t / 2) * (Real.exp (t / 4) - Real.exp (-(t / 4))) ^ 2 := by ring
-  rw [h0_id]
-  ring
+  have hi1m : IntegrableOn
+      (fun t : ℝ => (m : ℝ) * (Real.exp (-σ * t) *
+        (Real.exp ((0 : ℝ) * t / 2) - Real.exp ((1 - (0 : ℝ)) * t / 2)) ^ 2 *
+        Real.cos (t * u))) (Ioi 0) := hi1.const_mul (m : ℝ)
+  symm
+  calc ∫ t : ℝ in Ioi 0,
+        Real.exp (-σ * t) * Real.exp (t / 2) *
+          ((m : ℝ) * (Real.exp (t / 4) - Real.exp (-(t / 4))) ^ 2 +
+            2 * Real.cos (γ * t) * (Real.exp (a * t / 2) - Real.exp (-(a * t / 2))) ^ 2) *
+          Real.cos (t * u)
+      = ∫ t : ℝ in Ioi 0,
+          ((m : ℝ) * (Real.exp (-σ * t) *
+              (Real.exp ((0 : ℝ) * t / 2) - Real.exp ((1 - (0 : ℝ)) * t / 2)) ^ 2 *
+              Real.cos (t * u)) +
+            Real.exp (-σ * t) *
+              (2 * Real.exp (t / 2) * Real.cos (γ * t) *
+                (Real.exp (a * t / 2) - Real.exp (-(a * t / 2))) ^ 2) *
+              Real.cos (t * u)) := by
+        refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
+        have h0_id : (Real.exp ((0 : ℝ) * t / 2) - Real.exp ((1 - (0 : ℝ)) * t / 2)) ^ 2 =
+            Real.exp (t / 2) * (Real.exp (t / 4) - Real.exp (-(t / 4))) ^ 2 := by
+          simp only [zero_mul, zero_div, Real.exp_zero, sub_zero, one_mul]
+          have hq1 : Real.exp (t / 2) * Real.exp (t / 4) ^ 2 = Real.exp t := by
+            rw [sq, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
+          have hq2 : Real.exp (t / 2) * Real.exp (-(t / 4)) ^ 2 = 1 := by
+            rw [sq, ← Real.exp_add, ← Real.exp_add]
+            ring_nf
+            exact Real.exp_zero
+          have hq3 : Real.exp (t / 4) * Real.exp (-(t / 4)) = 1 := by
+            rw [← Real.exp_add]
+            ring_nf
+            exact Real.exp_zero
+          have hq4 : Real.exp (t / 2) ^ 2 = Real.exp t := by
+            rw [sq, ← Real.exp_add]; congr 1; ring
+          calc (1 - Real.exp (t / 2)) ^ 2
+              = 1 - 2 * Real.exp (t / 2) + Real.exp (t / 2) ^ 2 := by ring
+            _ = Real.exp (t / 2) * Real.exp (-(t / 4)) ^ 2 -
+                  2 * Real.exp (t / 2) * (Real.exp (t / 4) * Real.exp (-(t / 4))) +
+                  Real.exp (t / 2) * Real.exp (t / 4) ^ 2 := by
+                rw [hq2, hq3, hq1, hq4]; ring
+            _ = Real.exp (t / 2) * (Real.exp (t / 4) - Real.exp (-(t / 4))) ^ 2 := by ring
+        rw [h0_id]
+        ring
+    _ = _ := by
+        rw [integral_add hi1m hi2, integral_const_mul]
 
 private theorem isEvenPosDef_quartetSymSquareOne {a γ σ : ℝ}
     (ha0 : 0 < a) (ha_q : a ≤ 1 / 4) (hσ : 1 < σ) :
@@ -1396,7 +1457,8 @@ private theorem isEvenPosDef_quartetSymSquareOne {a γ σ : ℝ}
       fun s => midpointSymSquare 0 s ^ 1 * quartetPureRatio a γ s := by
     funext s
     unfold quartetSymSquareOne midpointSymSquare realPairPoly quartetPureRatio
-    push_cast; ring
+    simp only [pow_one, Complex.ofReal_zero, sub_zero, Complex.ofReal_one]
+    rw [div_mul_div_comm]
   rw [hfun]
   refine isEvenPosDef_laplace_cos (C := 3) (a := σ - 1) (by linarith) (by fun_prop)
     (fun t ht => ?_) (fun t ht => ?_)
@@ -1483,7 +1545,8 @@ private theorem isEvenPosDef_quartetSymSquareTwo {a γ σ : ℝ}
       fun s => midpointSymSquare 0 s ^ 2 * quartetPureRatio a γ s := by
     funext s
     unfold quartetSymSquareTwo midpointSymSquare realPairPoly quartetPureRatio
-    push_cast; ring
+    simp only [Complex.ofReal_zero, sub_zero, Complex.ofReal_one, div_pow, ← pow_mul]
+    rw [div_mul_div_comm]
   rw [hfun]
   refine isEvenPosDef_laplace_cos (C := 4) (a := σ - 1) (by linarith) (by fun_prop)
     (fun t ht => ?_) (fun t ht => ?_)
@@ -1557,13 +1620,13 @@ private theorem contractComplexQuartet_of_posDef {κ d : ℕ} {F Λ : ℂ → �
     (hposDef : ∀ {σ : ℝ}, 1 < σ →
       IsEvenPosDef (fun u : ℝ => (-logDeriv W ((σ : ℂ) + (u : ℂ) * I)).re))
     (hzero : Λ (1 / 2 + (a : ℂ) + (γ : ℂ) * I) = 0) :
-    ∃ Λ_♯ : ℂ → ℂ,
-      CompletedPositiveSystem (κ + m) d (fun s => F s * W s) Λ_♯ ∧
-      (∀ s : ℂ, Λ_♯ s * quartetOffPoly a γ s =
+    ∃ Λc : ℂ → ℂ,
+      CompletedPositiveSystem (κ + m) d (fun s => F s * W s) Λc ∧
+      (∀ s : ℂ, Λc s * quartetOffPoly a γ s =
         Λ s * ((s - 1 / 2) ^ (2 * m) * quartetCritPoly γ s)) ∧
-      Λ_♯ (1 / 2) = 0 ∧
-      Λ_♯ (1 / 2 + (γ : ℂ) * I) = 0 ∧
-      Λ_♯ (1 / 2 - (γ : ℂ) * I) = 0 := by
+      Λc (1 / 2) = 0 ∧
+      Λc (1 / 2 + (γ : ℂ) * I) = 0 ∧
+      Λc (1 / 2 - (γ : ℂ) * I) = 0 := by
   classical
   set r₁ : ℂ := ((1 / 2 + a : ℝ) : ℂ) + (γ : ℂ) * I
   set r₂ : ℂ := ((1 / 2 + a : ℝ) : ℂ) - (γ : ℂ) * I
@@ -1573,7 +1636,7 @@ private theorem contractComplexQuartet_of_posDef {κ d : ℕ} {F Λ : ℂ → �
     have he : r₁ = 1 / 2 + (a : ℂ) + (γ : ℂ) * I := by dsimp [r₁]; push_cast; ring
     rwa [he]
   have hr₂ : Λ r₂ = 0 := by
-    have he : r₂ = starRingEnd ℂ r₁ := by dsimp [r₁, r₂]; simp
+    have he : r₂ = starRingEnd ℂ r₁ := by dsimp [r₁, r₂]; simp [map_ofNat]; ring
     rw [he, hS.conj_Λ, hr₁, map_zero]
   have hr₄ : Λ r₄ = 0 := by
     have he : r₄ = 1 - r₁ := by dsimp [r₁, r₄]; push_cast; ring
@@ -1589,7 +1652,7 @@ private theorem contractComplexQuartet_of_posDef {κ d : ℕ} {F Λ : ℂ → �
   have h34 : r₃ ≠ r₄ := fun h => hγ (by have := congrArg Complex.im h; simp [r₃, r₄] at this; linarith)
   have hnd : ([r₁, r₂, r₃, r₄] : List ℂ).Nodup := by
     simp [h12, h13, h14, h23, h24, h34]
-  obtain ⟨Q, hdQ, hoQ, hQ_eq⟩ := exists_quotient_prod_linear [r₁, r₂, r₃, r₄] hnd
+  obtain ⟨Q, hdQ, hoQ, hQ_eq⟩ := exists_quotient_prod_linear [r₁, r₂, r₃, r₄] Λ hnd
     hS.entire_Λ hS.orderOne_Λ (fun r hr => by
       simp only [List.mem_cons, List.not_mem_nil, or_false] at hr
       rcases hr with rfl | rfl | rfl | rfl <;> assumption)
@@ -1604,9 +1667,9 @@ private theorem contractComplexQuartet_of_posDef {κ d : ℕ} {F Λ : ℂ → �
     rw [hOff_fac s]
     linear_combination h
   let C_num : ℂ → ℂ := fun s => (s - 1 / 2) ^ (2 * m) * quartetCritPoly γ s
-  let Λ_♯ : ℂ → ℂ := fun s => Q s * C_num s
+  let Λc : ℂ → ℂ := fun s => Q s * C_num s
   have hdC : Differentiable ℂ C_num := by unfold C_num quartetCritPoly; fun_prop
-  have hdΛ_♯ : Differentiable ℂ Λ_♯ := hdQ.mul hdC
+  have hdΛc : Differentiable ℂ Λc := hdQ.mul hdC
   have ho_crit : OrderOneEnvelope (quartetCritPoly γ) := by
     let p₁ := orderOneEnvelope_sub_const (1 / 2 + (γ : ℂ) * I)
     let p₂ := orderOneEnvelope_sub_const (1 / 2 - (γ : ℂ) * I)
@@ -1617,10 +1680,10 @@ private theorem contractComplexQuartet_of_posDef {κ d : ℕ} {F Λ : ℂ → �
     rw [hc] at hf
     rw [hf]
     ring
-  have hoΛ_♯ : OrderOneEnvelope Λ_♯ :=
+  have hoΛc : OrderOneEnvelope Λc :=
     hoQ.mul ((orderOneEnvelope_pow_sub_half (2 * m)).mul ho_crit)
-  have hrel : ∀ s : ℂ, Λ_♯ s * quartetOffPoly a γ s = Λ s * C_num s := fun s => by
-    dsimp [Λ_♯]
+  have hrel : ∀ s : ℂ, Λc s * quartetOffPoly a γ s = Λ s * C_num s := fun s => by
+    dsimp [Λc]
     rw [← hQ_poly s]
     ring
   have hOff_nz_off : ∀ z : ℂ, z ∉ ({r₁, r₂, r₃, r₄} : Finset ℂ) → quartetOffPoly a γ z ≠ 0 := by
@@ -1629,9 +1692,9 @@ private theorem contractComplexQuartet_of_posDef {κ d : ℕ} {F Λ : ℂ → �
     rw [hOff_fac z]
     exact mul_ne_zero (mul_ne_zero (mul_ne_zero (sub_ne_zero.mpr hz.1)
       (sub_ne_zero.mpr hz.2.1)) (sub_ne_zero.mpr hz.2.2.1)) (sub_ne_zero.mpr hz.2.2.2)
-  have hsym_♯ : ∀ s : ℂ, Λ_♯ (1 - s) = Λ_♯ s := by
+  have hsym_c : ∀ s : ℂ, Λc (1 - s) = Λc s := by
     refine continuous_eq_of_mul_eq_off_finset {r₁, r₂, r₃, r₄}
-      (hdΛ_♯.continuous.comp (by fun_prop)) hdΛ_♯.continuous hOff_nz_off fun z => ?_
+      (hdΛc.continuous.comp (by fun_prop)) hdΛc.continuous hOff_nz_off fun z => ?_
     have hP_sym : quartetOffPoly a γ z = quartetOffPoly a γ (1 - z) := by
       unfold quartetOffPoly; push_cast; ring
     have hC_sym : C_num (1 - z) = C_num z := by
@@ -1643,10 +1706,10 @@ private theorem contractComplexQuartet_of_posDef {κ d : ℕ} {F Λ : ℂ → �
       have h2 : ((1 - z) - 1 / 2) ^ 2 = (z - 1 / 2) ^ 2 := by ring
       rw [h1, h2]
     rw [hP_sym, hrel (1 - z), hS.sym_Λ z, hC_sym, ← hP_sym, ← hrel z]
-  have hconj_♯ : ∀ s : ℂ, Λ_♯ (starRingEnd ℂ s) = starRingEnd ℂ (Λ_♯ s) := by
+  have hconj_c : ∀ s : ℂ, Λc (starRingEnd ℂ s) = starRingEnd ℂ (Λc s) := by
     have hinv := continuous_eq_of_mul_eq_off_finset {r₁, r₂, r₃, r₄}
-      (Complex.continuous_conj.comp (hdΛ_♯.continuous.comp Complex.continuous_conj))
-      hdΛ_♯.continuous hOff_nz_off fun z => by
+      (Complex.continuous_conj.comp (hdΛc.continuous.comp Complex.continuous_conj))
+      hdΛc.continuous hOff_nz_off fun z => by
         have hP_conj : starRingEnd ℂ (quartetOffPoly a γ (starRingEnd ℂ z)) =
             quartetOffPoly a γ z := by
           unfold quartetOffPoly
@@ -1655,14 +1718,15 @@ private theorem contractComplexQuartet_of_posDef {κ d : ℕ} {F Λ : ℂ → �
         have hC_conj : starRingEnd ℂ (C_num (starRingEnd ℂ z)) = C_num z := by
           dsimp [C_num]
           unfold quartetCritPoly
-          simp
+          simp [map_ofNat]
         have h1 := congrArg (starRingEnd ℂ) (hrel (starRingEnd ℂ z))
-        rw [map_mul, map_mul, hP_conj, hC_conj, hS.conj_Λ (starRingEnd ℂ z),
-          Complex.conj_conj, ← hrel z] at h1
-        exact h1
+        rw [map_mul (starRingEnd ℂ) (Λc (starRingEnd ℂ z)),
+          map_mul (starRingEnd ℂ) (Λ (starRingEnd ℂ z)),
+          hP_conj, hC_conj, hS.conj_Λ z, Complex.conj_conj, ← hrel z] at h1
+        simpa only [Function.comp_apply] using h1
     intro s
     have hs := congrArg (starRingEnd ℂ) (hinv s)
-    simpa using hs
+    simpa [Function.comp_apply] using hs
   have hDen_nz : ∀ s : ℂ, 1 < s.re → (s * (s - 1)) ^ m * quartetOffPoly a γ s ≠ 0 := by
     intro s hs
     have hs0 : s ≠ 0 := fun h => by rw [h, Complex.zero_re] at hs; linarith
@@ -1695,9 +1759,10 @@ private theorem contractComplexQuartet_of_posDef {κ d : ℕ} {F Λ : ℂ → �
     rw [funext hW_eq]
     intro s hs
     change 1 < s.re at hs
-    exact (DifferentiableAt.div (by unfold quartetCritPoly; fun_prop)
-      (by unfold quartetOffPoly; fun_prop) (hDen_nz s hs)).differentiableWithinAt
-  have hS_♯ : CompletedPositiveSystem (κ + m) d (fun s => F s * W s) Λ_♯ :=
+    have hdDen : DifferentiableAt ℂ (fun x : ℂ => (x * (x - 1)) ^ m * quartetOffPoly a γ x) s := by
+      unfold quartetOffPoly; fun_prop
+    exact ((hdC s).div hdDen (hDen_nz s hs)).differentiableWithinAt
+  have hSc : CompletedPositiveSystem (κ + m) d (fun s => F s * W s) Λc :=
     { degree_pos := hS.degree_pos
       diffOn_F := hS.diffOn_F.mul hW_diffOn
       ne_zero_F := fun s hs => mul_ne_zero (hS.ne_zero_F s hs) (hW_nz s hs)
@@ -1716,10 +1781,10 @@ private theorem contractComplexQuartet_of_posDef {κ d : ℕ} {F Λ : ℂ → �
               neg_add, Complex.add_re]
         rw [heq]
         exact isEvenPosDef_add (hS.posDef_neg_logDeriv hσ) (hposDef hσ)
-      entire_Λ := hdΛ_♯
-      orderOne_Λ := hoΛ_♯
-      sym_Λ := hsym_♯
-      conj_Λ := hconj_♯
+      entire_Λ := hdΛc
+      orderOne_Λ := hoΛc
+      sym_Λ := hsym_c
+      conj_Λ := hconj_c
       completed_eq := fun s hs => by
         have hden := hDen_nz s hs
         have hOff_nz : quartetOffPoly a γ s ≠ 0 := right_ne_zero_of_mul hden
@@ -1727,7 +1792,7 @@ private theorem contractComplexQuartet_of_posDef {κ d : ℕ} {F Λ : ℂ → �
         have hdiv : W s * ((s * (s - 1)) ^ m * quartetOffPoly a γ s) = C_num s := by
           rw [hW_eq s]
           exact div_mul_cancel₀ _ hden
-        calc Λ_♯ s * quartetOffPoly a γ s
+        calc Λc s * quartetOffPoly a γ s
             = Λ s * C_num s := hrel s
           _ = ((s * (s - 1)) ^ κ * Complex.Gammaℝ s ^ d * F s) *
                 (W s * ((s * (s - 1)) ^ m * quartetOffPoly a γ s)) := by
@@ -1735,8 +1800,8 @@ private theorem contractComplexQuartet_of_posDef {κ d : ℕ} {F Λ : ℂ → �
           _ = (s * (s - 1)) ^ (κ + m) * Complex.Gammaℝ s ^ d * (F s * W s) *
                 quartetOffPoly a γ s := by
               rw [pow_add]; ring }
-  have hzero_half : Λ_♯ (1 / 2) = 0 := by
-    dsimp [Λ_♯, C_num]
+  have hzero_half : Λc (1 / 2) = 0 := by
+    dsimp [Λc, C_num]
     rw [sub_self, zero_pow (by omega), zero_mul, mul_zero]
   have hcrit_plus : quartetCritPoly γ (1 / 2 + (γ : ℂ) * I) = 0 := by
     unfold quartetCritPoly
@@ -1752,9 +1817,9 @@ private theorem contractComplexQuartet_of_posDef {κ d : ℕ} {F Λ : ℂ → �
           = (γ : ℂ) ^ 2 * I ^ 2 + (γ : ℂ) ^ 2 := by ring
         _ = 0 := by rw [Complex.I_sq]; ring
     rw [this, zero_pow two_ne_zero]
-  exact ⟨Λ_♯, hS_♯, hrel, hzero_half,
-    by dsimp [Λ_♯, C_num]; rw [hcrit_plus, mul_zero, mul_zero],
-    by dsimp [Λ_♯, C_num]; rw [hcrit_minus, mul_zero, mul_zero]⟩
+  exact ⟨Λc, hSc, hrel, hzero_half,
+    by dsimp [Λc, C_num]; rw [hcrit_plus, mul_zero, mul_zero],
+    by dsimp [Λc, C_num]; rw [hcrit_minus, mul_zero, mul_zero]⟩
 
 /-- **Single-pole complex quartet contraction (`0 < a ≤ 1/4`, `Δκ = 1`).** Any complex off-critical
 zero `1/2 + a + iγ` (`0 < a ≤ 1/4`, `γ ≠ 0`) of a `CompletedPositiveSystem κ d` together with its
@@ -1763,13 +1828,13 @@ theorem CompletedPositiveSystem.contractComplexQuartet_of_le_quarter {κ d : ℕ
     (hS : CompletedPositiveSystem κ d F Λ)
     {a γ : ℝ} (ha0 : 0 < a) (ha_q : a ≤ 1 / 4) (hγ : γ ≠ 0)
     (hzero : Λ (1 / 2 + (a : ℂ) + (γ : ℂ) * I) = 0) :
-    ∃ Λ_♯ : ℂ → ℂ,
-      CompletedPositiveSystem (κ + 1) d (fun s => F s * quartetSymSquareOne a γ s) Λ_♯ ∧
-      (∀ s : ℂ, Λ_♯ s * quartetOffPoly a γ s =
+    ∃ Λc : ℂ → ℂ,
+      CompletedPositiveSystem (κ + 1) d (fun s => F s * quartetSymSquareOne a γ s) Λc ∧
+      (∀ s : ℂ, Λc s * quartetOffPoly a γ s =
         Λ s * ((s - 1 / 2) ^ 2 * quartetCritPoly γ s)) ∧
-      Λ_♯ (1 / 2) = 0 ∧
-      Λ_♯ (1 / 2 + (γ : ℂ) * I) = 0 ∧
-      Λ_♯ (1 / 2 - (γ : ℂ) * I) = 0 :=
+      Λc (1 / 2) = 0 ∧
+      Λc (1 / 2 + (γ : ℂ) * I) = 0 ∧
+      Λc (1 / 2 - (γ : ℂ) * I) = 0 :=
   contractComplexQuartet_of_posDef hS ha0 (by linarith) hγ 1 le_rfl
     (fun s => by simp [quartetSymSquareOne])
     (fun {σ} hσ => isEvenPosDef_quartetSymSquareOne ha0 ha_q hσ)
@@ -1783,13 +1848,13 @@ theorem CompletedPositiveSystem.contractComplexQuartet {κ d : ℕ} {F Λ : ℂ 
     (hS : CompletedPositiveSystem κ d F Λ)
     {a γ : ℝ} (ha0 : 0 < a) (ha1 : a < 1 / 2) (hγ : γ ≠ 0)
     (hzero : Λ (1 / 2 + (a : ℂ) + (γ : ℂ) * I) = 0) :
-    ∃ Λ_♯ : ℂ → ℂ,
-      CompletedPositiveSystem (κ + 2) d (fun s => F s * quartetSymSquareTwo a γ s) Λ_♯ ∧
-      (∀ s : ℂ, Λ_♯ s * quartetOffPoly a γ s =
+    ∃ Λc : ℂ → ℂ,
+      CompletedPositiveSystem (κ + 2) d (fun s => F s * quartetSymSquareTwo a γ s) Λc ∧
+      (∀ s : ℂ, Λc s * quartetOffPoly a γ s =
         Λ s * ((s - 1 / 2) ^ 4 * quartetCritPoly γ s)) ∧
-      Λ_♯ (1 / 2) = 0 ∧
-      Λ_♯ (1 / 2 + (γ : ℂ) * I) = 0 ∧
-      Λ_♯ (1 / 2 - (γ : ℂ) * I) = 0 :=
+      Λc (1 / 2) = 0 ∧
+      Λc (1 / 2 + (γ : ℂ) * I) = 0 ∧
+      Λc (1 / 2 - (γ : ℂ) * I) = 0 :=
   contractComplexQuartet_of_posDef hS ha0 ha1 hγ 2 (by omega)
     (fun s => by rfl)
     (fun {σ} hσ => isEvenPosDef_quartetSymSquareTwo ha0 ha1 hσ)

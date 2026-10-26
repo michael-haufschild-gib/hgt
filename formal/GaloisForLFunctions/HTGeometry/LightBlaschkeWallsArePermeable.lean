@@ -194,7 +194,7 @@ theorem continuousOn_cauchy_outside (ha : ∀ n, ‖a n‖ < 1)
 `(1 − |a_n|)/2` from every pole. -/
 theorem eventually_radial_far (ha : ∀ n, ‖a n‖ < 1) {θ : ℝ}
     (hθ : ∀ᶠ n in atTop, θ ∉ radialShadow (a n)) :
-    ∀ᶠ r in 𝓝[<] (1 : ℝ), 0 ≤ r ∧ ∀ n, (1 - ‖a n‖) / 2 ≤ ‖(r : ℂ) * cexp (θ * I) - a n‖ := by
+    ∀ᶠ (r : ℝ) in 𝓝[<] (1 : ℝ), 0 ≤ r ∧ ∀ n, (1 - ‖a n‖) / 2 ≤ ‖(r : ℂ) * cexp (θ * I) - a n‖ := by
   obtain ⟨N, hN⟩ := eventually_atTop.mp hθ
   have hd : ∀ n, 0 < 1 - ‖a n‖ := fun n => by linarith [ha n]
   -- the finitely many poles before `N` are passed once `r > 1 − (1 − |a_n|)/2`
@@ -232,7 +232,7 @@ theorem tendsto_cauchy_radial (ha : ∀ n, ‖a n‖ < 1)
       rw [h0, norm_zero] at this
       linarith [hd n]
     simpa using hcont.tendsto.mono_left nhdsWithin_le_nhds
-  · filter_upwards [eventually_radial_far ha hθ] with r ⟨-, hfar⟩ n
+  · filter_upwards [eventually_radial_far ha hθ] with r ⟨_, hfar⟩ n
     rw [norm_div]
     calc ‖ν n‖ / ‖(r : ℂ) * cexp (θ * I) - a n‖ ≤ ‖ν n‖ / ((1 - ‖a n‖) / 2) :=
           div_le_div_of_nonneg_left (norm_nonneg _) (by linarith [hd n]) (hfar n)
@@ -285,11 +285,6 @@ theorem summable_update_zero (hbl : Summable fun n => 1 - ‖a n‖) (n : ℕ) :
   rw [this]
   exact hbl.update n 1
 
-theorem multipliable_blaschke (ha : ∀ n, ‖a n‖ < 1) (hbl : Summable fun n => 1 - ‖a n‖) {z : ℂ}
-    (hz : ‖z‖ < 1) : Multipliable fun m => normalizedBlaschkeFactor (a m) z :=
-  ((infiniteBlaschkeProduct_hasProdLocallyUniformlyOn a ha hbl).hasProd
-    (mem_ball_zero_iff.mpr hz)).multipliable
-
 /-- The Blaschke product with the zero `a_n` moved to the origin. -/
 def blaschkeDeleted (a : ℕ → ℂ) (n : ℕ) : ℂ → ℂ := infiniteBlaschkeProduct (Function.update a n 0)
 
@@ -297,18 +292,24 @@ def blaschkeDeleted (a : ℕ → ℂ) (n : ℕ) : ℂ → ℂ := infiniteBlaschk
 theorem mul_infiniteBlaschkeProduct_eq (ha : ∀ n, ‖a n‖ < 1) (hbl : Summable fun n => 1 - ‖a n‖)
     {z : ℂ} (hz : ‖z‖ < 1) (n : ℕ) :
     z * infiniteBlaschkeProduct a z = normalizedBlaschkeFactor (a n) z * blaschkeDeleted a n z := by
-  have h1 := (multipliable_blaschke ha hbl hz).tprod_eq_mul_tprod_ite n
-  have h2 := (multipliable_blaschke (norm_update_zero_lt_one ha n) (summable_update_zero hbl n)
-    hz).tprod_eq_mul_tprod_ite n
-  have hrest : (∏' m, if m = n then 1 else normalizedBlaschkeFactor (Function.update a n 0 m) z) =
-      ∏' m, if m = n then 1 else normalizedBlaschkeFactor (a m) z := by
-    refine tprod_congr fun m => ?_
-    split_ifs with hmn
-    · rfl
-    · rw [Function.update_of_ne hmn]
-  unfold blaschkeDeleted infiniteBlaschkeProduct
-  rw [h1, h2, hrest, Function.update_self, normalizedBlaschkeFactor_zero_left]
-  ring
+  have hzmem : z ∈ ball (0 : ℂ) 1 := mem_ball_zero_iff.mpr hz
+  have hf := ((infiniteBlaschkeProduct_hasProdLocallyUniformlyOn a ha hbl).hasProd
+    hzmem).tendsto_prod_nat
+  have hg := ((infiniteBlaschkeProduct_hasProdLocallyUniformlyOn _ (norm_update_zero_lt_one ha n)
+    (summable_update_zero hbl n)).hasProd hzmem).tendsto_prod_nat
+  -- the partial products differ only in the `n`-th factor, `b_{a_n}(z)` against `z`
+  have hpart : ∀ N, n < N → normalizedBlaschkeFactor (a n) z *
+      ∏ m ∈ Finset.range N, normalizedBlaschkeFactor (Function.update a n 0 m) z =
+        z * ∏ m ∈ Finset.range N, normalizedBlaschkeFactor (a m) z := by
+    intro N hN
+    have hmem : n ∈ Finset.range N := Finset.mem_range.mpr hN
+    rw [← Finset.mul_prod_erase _ _ hmem, ← Finset.mul_prod_erase _ (fun m =>
+      normalizedBlaschkeFactor (a m) z) hmem, Function.update_self,
+      normalizedBlaschkeFactor_zero_left,
+      Finset.prod_congr rfl fun m hm => by rw [Function.update_of_ne (Finset.ne_of_mem_erase hm)]]
+    ring
+  exact tendsto_nhds_unique (hf.const_mul z) ((hg.const_mul _).congr'
+    ((eventually_gt_atTop n).mono hpart))
 
 /-- The **pole quotient** `B(z)/(z − a_n)`, written so that it is holomorphic across `a_n`. -/
 def poleQuotient (a : ℕ → ℂ) (n : ℕ) (z : ℂ) : ℂ :=
@@ -324,7 +325,6 @@ theorem sub_mul_poleQuotient (ha : ∀ n, ‖a n‖ < 1) (hbl : Summable fun n =
   apply mul_left_cancel₀ hz0
   rw [h]
   field_simp
-  ring
 
 theorem norm_poleQuotient_le (ha : ∀ n, ‖a n‖ < 1) (hbl : Summable fun n => 1 - ‖a n‖) {ρ : ℝ}
     (hρ : 0 < ρ) {z : ℂ} (hzρ : ρ ≤ ‖z‖) (hz : ‖z‖ < 1) (n : ℕ) :
@@ -350,7 +350,7 @@ theorem differentiableOn_poleQuotient (ha : ∀ n, ‖a n‖ < 1) (hbl : Summabl
       infiniteBlaschkeProduct (Function.update a n 0) z / (z * (1 - (starRingEnd ℂ) (a n) * z)) :=
     rfl
   rw [hQ]
-  refine ((hB.const_mul _).mono diff_subset).div (by fun_prop) fun z hz => ?_
+  refine ((hB.const_mul _).mono Set.sdiff_subset).div (by fun_prop) fun z hz => ?_
   exact mul_ne_zero hz.2 (one_sub_conj_mul_ne_zero (ha n) (mem_ball_zero_iff.mp hz.1).le)
 
 /-- The deleted product does not vanish at the deleted zero. -/
@@ -411,7 +411,7 @@ theorem tendsto_circleIntegral_of_radial {f w : ℂ → ℂ} {s₀ M W : ℝ} (h
     (hs₀1 : s₀ < 1) (hf : ContinuousOn f (annulusAt 0 s₀ 1))
     (hw : ContinuousOn w (annulusAt 0 s₀ 1)) (hfM : ∀ z ∈ annulusAt 0 s₀ 1, ‖f z‖ ≤ M)
     (hwW : ∀ z ∈ annulusAt 0 s₀ 1, ‖w z‖ ≤ W)
-    (hrad : ∀ᵐ θ ∂(volume.restrict (Ioc 0 (2 * π))),
+    (hrad : ∀ᵐ (θ : ℝ) ∂(volume.restrict (Ioc 0 (2 * π))),
       Tendsto (fun r : ℝ => f ((r : ℂ) * cexp (θ * I))) (𝓝[<] 1) (𝓝 0)) :
     Tendsto (fun s : ℝ => ∮ z in C(0, s), w z * f z) (𝓝[<] 1) (𝓝 0) := by
   have hcm : ∀ s θ : ℝ, circleMap 0 s θ = (s : ℂ) * cexp (θ * I) := fun s θ => by
@@ -493,7 +493,7 @@ on `t₀ < |z| < 1` and bounded near the circle. -/
 theorem circleIntegral_mul_eq_zero_of_radial {Φ w : ℂ → ℂ} {ρ s₀ t₀ t₁ M W : ℝ} (hρ : 0 < ρ)
     (hs₀ : ρ ≤ s₀) (hs₀1 : s₀ < 1) (hΦ : DifferentiableOn ℂ Φ (annulusAt 0 ρ 1))
     (hM : ∀ z ∈ annulusAt 0 s₀ 1, ‖Φ z‖ ≤ M)
-    (hrad : ∀ᵐ θ ∂(volume.restrict (Ioc 0 (2 * π))),
+    (hrad : ∀ᵐ (θ : ℝ) ∂(volume.restrict (Ioc 0 (2 * π))),
       Tendsto (fun r : ℝ => Φ ((r : ℂ) * cexp (θ * I))) (𝓝[<] 1) (𝓝 0))
     (ht₀ : ρ ≤ t₀) (ht₁ : t₀ ≤ t₁) (ht₁1 : t₁ < 1) (hw : DifferentiableOn ℂ w (annulusAt 0 t₀ 1))
     (hW : ∀ z ∈ annulusAt 0 t₁ 1, ‖w z‖ ≤ W) {s : ℝ} (hs0 : t₀ < s) (hs1 : s < 1) :
@@ -516,15 +516,15 @@ radius-independent circle integrals tending to `0`. -/
 theorem eqOn_zero_of_radial_tendsto_zero {Φ : ℂ → ℂ} {ρ s₀ M : ℝ} (hρ : 0 < ρ) (hs₀ : ρ ≤ s₀)
     (hs₀1 : s₀ < 1) (hΦ : DifferentiableOn ℂ Φ (annulusAt 0 ρ 1))
     (hM : ∀ z ∈ annulusAt 0 s₀ 1, ‖Φ z‖ ≤ M)
-    (hrad : ∀ᵐ θ ∂(volume.restrict (Ioc 0 (2 * π))),
+    (hrad : ∀ᵐ (θ : ℝ) ∂(volume.restrict (Ioc 0 (2 * π))),
       Tendsto (fun r : ℝ => Φ ((r : ℂ) * cexp (θ * I))) (𝓝[<] 1) (𝓝 0)) :
     EqOn Φ 0 (annulusAt 0 ρ 1) := by
   intro z hz
   have hz' := hz
   rw [mem_annulusAt, sub_zero] at hz'
   obtain ⟨hz0, hz1⟩ := hz'
-  set r := (ρ + ‖z‖) / 2
-  set R := (‖z‖ + 1) / 2
+  set r := (ρ + ‖z‖) / 2 with hr
+  set R := (‖z‖ + 1) / 2 with hR
   have hρr : ρ < r := by linarith
   have hrz : r < ‖z - 0‖ := by rw [sub_zero]; linarith
   have hzR : ‖z - 0‖ < R := by rw [sub_zero]; linarith
@@ -602,7 +602,7 @@ theorem masses_eq_zero_of_cauchy_eq_outside {a ν : ℕ → ℂ} {E : ℂ → �
     intro ζ hζ
     have hpath : Tendsto (fun t : ℝ => ((1 + t : ℝ) : ℂ) * ζ) (𝓝[>] 0) (𝓝 ζ) := by
       have h := ((by fun_prop : Continuous fun t : ℝ => ((1 + t : ℝ) : ℂ) * ζ).tendsto 0).mono_left
-        nhdsWithin_le_nhds
+        (nhdsWithin_le_nhds (s := Ioi 0))
       simpa using h
     have hin : ∀ᶠ t in 𝓝[>] (0 : ℝ),
         1 < ‖((1 + t : ℝ) : ℂ) * ζ‖ ∧ ‖((1 + t : ℝ) : ℂ) * ζ‖ < R := by
@@ -614,21 +614,20 @@ theorem masses_eq_zero_of_cauchy_eq_outside {a ν : ℕ → ℂ} {E : ℂ → �
       (tendsto_nhdsWithin_iff.mpr ⟨hpath, hin.mono fun t ht => ht.1.le⟩)
     exact tendsto_nhds_unique hG
       (((hEcont ζ hζ).tendsto.comp hpath).congr' (hin.mono fun t ht => (heq _ ht.1 ht.2).symm))
-  set B := infiniteBlaschkeProduct a
-  set Q := poleQuotient a
-  set Φ : ℂ → ℂ := fun z => ∑' m, ν m * Q m z - B z * E z with hΦdef
+  set Φ : ℂ → ℂ := fun z => ∑' m, ν m * poleQuotient a m z - infiniteBlaschkeProduct a z * E z
+    with hΦdef
   have hsub1 : annulusAt (0 : ℂ) ρ 1 ⊆ ball 0 1 \ {0} := fun z hz => by
     rw [mem_annulusAt, sub_zero] at hz
     refine ⟨mem_ball_zero_iff.mpr hz.2, fun h => ?_⟩
     rw [mem_singleton_iff] at h
     rw [h, norm_zero] at hz
     linarith [hz.1]
-  have hQb : ∀ m, ∀ z ∈ annulusAt (0 : ℂ) ρ 1, ‖ν m * Q m z‖ ≤ ‖ν m‖ / (1 - ‖a m‖) / ρ := by
+  have hQb : ∀ m, ∀ z ∈ annulusAt (0 : ℂ) ρ 1, ‖ν m * poleQuotient a m z‖ ≤ ‖ν m‖ / (1 - ‖a m‖) / ρ := by
     intro m z hz
     rw [mem_annulusAt, sub_zero] at hz
     have hd : 0 < 1 - ‖a m‖ := sub_pos.mpr (ha m)
     rw [norm_mul]
-    calc ‖ν m‖ * ‖Q m z‖ ≤ ‖ν m‖ * (1 / (ρ * (1 - ‖a m‖))) :=
+    calc ‖ν m‖ * ‖poleQuotient a m z‖ ≤ ‖ν m‖ * (1 / (ρ * (1 - ‖a m‖))) :=
           mul_le_mul_of_nonneg_left (norm_poleQuotient_le ha hbl hρ hz.1.le hz.2 m) (norm_nonneg _)
       _ = ‖ν m‖ / (1 - ‖a m‖) / ρ := by field_simp
   have hΦd : DifferentiableOn ℂ Φ (annulusAt 0 ρ 1) := by
@@ -636,9 +635,9 @@ theorem masses_eq_zero_of_cauchy_eq_outside {a ν : ℕ → ℂ} {E : ℂ → �
       (fun m => ((differentiableOn_poleQuotient ha hbl m).mono hsub1).const_mul (ν m))
       (isOpen_annulusAt 0 ρ 1) hQb).sub
       (((differentiableOn_infiniteBlaschkeProduct a ha hbl).mono
-        (hsub1.trans diff_subset)).mul (hE.mono fun z hz => ⟨hz.1, hz.2.trans hR⟩))
+        (hsub1.trans Set.sdiff_subset)).mul (hE.mono fun z hz => ⟨hz.1, hz.2.trans hR⟩))
   -- boundedness near the circle
-  set s₀ := (ρ + 1) / 2
+  set s₀ := (ρ + 1) / 2 with hs₀def
   have hcpt : closedBall (0 : ℂ) 1 \ ball 0 s₀ ⊆ annulusAt 0 ρ R :=
     closedAnnulus_subset (by linarith) hR
   obtain ⟨ME, hME⟩ := ((isCompact_closedBall 0 1).diff isOpen_ball).exists_bound_of_continuousOn
@@ -652,27 +651,32 @@ theorem masses_eq_zero_of_cauchy_eq_outside {a ν : ℕ → ℂ} {E : ℂ → �
       ⟨mem_closedBall_zero_iff.mpr hz'.2.le, fun h => by
         rw [mem_ball_zero_iff] at h
         linarith [hz'.1]⟩
-    have h1 : ‖∑' m, ν m * Q m z‖ ≤ ∑' m, ‖ν m‖ / (1 - ‖a m‖) / ρ :=
+    have h1 : ‖∑' m, ν m * poleQuotient a m z‖ ≤ ∑' m, ‖ν m‖ / (1 - ‖a m‖) / ρ :=
       tsum_of_norm_bounded (hlight.div_const ρ).hasSum fun m => hQb m z hzA
-    have h2 : ‖B z * E z‖ ≤ ME := by
+    have h2 : ‖infiniteBlaschkeProduct a z * E z‖ ≤ ME := by
       rw [norm_mul]
-      exact mul_le_of_le_one_of_le' (norm_infiniteBlaschkeProduct_le_one a ha hbl hz'.2)
-        (hME z hzK) (norm_nonneg _) ((norm_nonneg _).trans (hME z hzK))
+      calc ‖infiniteBlaschkeProduct a z‖ * ‖E z‖ ≤ 1 * ME :=
+            mul_le_mul (norm_infiniteBlaschkeProduct_le_one a ha hbl hz'.2) (hME z hzK)
+              (norm_nonneg _) zero_le_one
+        _ = ME := one_mul _
     exact (norm_sub_le _ _).trans (add_le_add h1 h2)
   -- zero radial limits
-  have hrad : ∀ᵐ θ ∂(volume.restrict (Ioc 0 (2 * π))),
+  have hrad : ∀ᵐ (θ : ℝ) ∂(volume.restrict (Ioc 0 (2 * π))),
       Tendsto (fun r : ℝ => Φ ((r : ℂ) * cexp (θ * I))) (𝓝[<] 1) (𝓝 0) := by
     filter_upwards [ae_eventually_notMem_radialShadow ha hbl hρ hρa] with θ hθ
     have he : ‖cexp (θ * I)‖ = 1 := Complex.norm_exp_ofReal_mul_I θ
     have hpath : Tendsto (fun r : ℝ => (r : ℂ) * cexp (θ * I)) (𝓝[<] 1) (𝓝 (cexp (θ * I))) := by
       have h := ((by fun_prop : Continuous fun r : ℝ => (r : ℂ) * cexp (θ * I)).tendsto
-        1).mono_left nhdsWithin_le_nhds
+        1).mono_left (nhdsWithin_le_nhds (s := Iio 1))
       simpa using h
     have hdiff : Tendsto (fun r : ℝ => ∑' m, ν m / ((r : ℂ) * cexp (θ * I) - a m) -
         E ((r : ℂ) * cexp (θ * I))) (𝓝[<] 1) (𝓝 0) := by
       have h := (tendsto_cauchy_radial ha hlight hθ).sub ((hEcont _ he).tendsto.comp hpath)
       rwa [hbd _ he, sub_self] at h
-    refine squeeze_zero_norm' ?_ (by simpa using hdiff.norm)
+    have hnorm : Tendsto (fun r : ℝ => ‖∑' m, ν m / ((r : ℂ) * cexp (θ * I) - a m) -
+        E ((r : ℂ) * cexp (θ * I))‖) (𝓝[<] 1) (𝓝 0) := by
+      simpa using hdiff.norm
+    refine squeeze_zero_norm' ?_ hnorm
     filter_upwards [eventually_radial_far ha hθ, eventually_nhdsWithin_of_eventually_nhds
       (Ioi_mem_nhds hρ1), self_mem_nhdsWithin] with r ⟨hr0, hfar⟩ (hrρ : ρ < r) (hr1 : r < 1)
     set z := (r : ℂ) * cexp (θ * I)
@@ -685,16 +689,15 @@ theorem masses_eq_zero_of_cauchy_eq_outside {a ν : ℕ → ℂ} {E : ℂ → �
       have := hfar m
       rw [h, norm_zero] at this
       linarith [ha m]
-    have hQz : ∀ m, Q m z = B z / (z - a m) := fun m =>
+    have hQz : ∀ m, poleQuotient a m z = infiniteBlaschkeProduct a z / (z - a m) := fun m =>
       (eq_div_iff (hne m)).mpr (by
         rw [mul_comm]
         exact sub_mul_poleQuotient ha hbl hz0 (by rw [hz]; exact hr1) (ha0 m))
-    have hΦz : Φ z = B z * (∑' m, ν m / (z - a m) - E z) := by
+    have hΦz : Φ z = infiniteBlaschkeProduct a z * (∑' m, ν m / (z - a m) - E z) := by
       simp only [hΦdef, hQz]
       rw [mul_sub, ← tsum_mul_left]
-      congr 2
-      funext m
-      ring
+      congr 1
+      exact tsum_congr fun m => by ring
     rw [hΦz, norm_mul]
     exact mul_le_of_le_one_left (norm_nonneg _)
       (norm_infiniteBlaschkeProduct_le_one a ha hbl (by rw [hz]; exact hr1))
@@ -704,7 +707,7 @@ theorem masses_eq_zero_of_cauchy_eq_outside {a ν : ℕ → ℂ} {E : ℂ → �
   have han : a n ∈ annulusAt (0 : ℂ) ρ 1 := by
     rw [mem_annulusAt, sub_zero]
     exact ⟨hρa n, ha n⟩
-  have hΦn : Φ (a n) = ν n * Q n (a n) := by
+  have hΦn : Φ (a n) = ν n * poleQuotient a n (a n) := by
     simp only [hΦdef]
     rw [infiniteBlaschkeProduct_self_eq_zero ha hbl (ha0 n), zero_mul, sub_zero,
       tsum_eq_single n fun m hm => by

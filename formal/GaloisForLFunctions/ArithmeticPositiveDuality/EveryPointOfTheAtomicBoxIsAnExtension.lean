@@ -129,7 +129,7 @@ end Box
 
 /-! ### Weil's extensions -/
 
-variable (hW : RHTower.WeilSpectral.WeilPositiveFull fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
+variable (hW : RHTower.WeilPositiveFull fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
 
 /-- The atoms of `ν_W` and their weights. -/
 abbrev weilAtoms : Type := {x : ℝ // 0 < weilMeasure hW {x}}
@@ -165,6 +165,7 @@ theorem hasSum_ratCorr (u : posUnits) :
       rw [norm_mul, Complex.norm_real, norm_archChar, mul_one, Real.norm_of_nonneg measureReal_nonneg]
   have key : ratCorr u = ∑' a : A, ν.real {(a : ℝ)} • archChar a ((u : ℚˣ) : ℚ) := by
     rw [ratCorr_eq_integral_weilMeasure hW]
+    change ∫ x, archChar x ((u : ℚˣ) : ℚ) ∂ν = _
     conv_lhs => rw [← hrestrict]
     exact setIntegral_countable _ hA hint.integrableOn
   rw [key]

@@ -1,9 +1,9 @@
 # Compact logarithmic states from compensated physical producers
 
 - **ID:** compact-physical-box-producers
-- **Stage:** 2-fully-proven; historical-report completion in progress
-- **Type:** THEOREM (paper; main construction and limits Lean-verified)
-- **Status:** Recovered-report supplements now have clean transitive axiom audits: 134 public declarations across seven leaves, plus the reused finite-form theorem. All three supplements passed final direct checks and are wired. The comment-edited original producer still needs its final direct check before promotion.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-verified)
+- **Status:** Complete, including the recovered original report. All 134 public declarations across seven leaves and the reused finite-form theorem passed clean transitive axiom audits. Final source checks and umbrella wiring are complete.
 - **Source:** continuum-coprime-shear; physical-box-average-affine-regularity
 - **Statement:** Construct compact logarithmic primitive states from arbitrary physical velocities using interval truncation, explicit zero-integral compensation and box smoothing, with quantitative errors and compact-source form convergence.
 
@@ -119,10 +119,10 @@ regularity and derivative results. No statement or constant was weakened.
   Every list is contained in `{propext, Classical.choice, Quot.sound}`.
   The complete exact-name manifest is
   `/tmp/leftovers-physical-complete-public-names.json`.
-- Convergence, FormLimits, TailBounds, Quantitative and FormBounds passed final
+- Convergence, FormLimits, TailBounds, Quantitative, FormBounds and the original producer passed final
   direct `lake --old env lean -j 1 <file>` checks with exit 0 and empty logs.
   The original producer's mathematical source is unchanged; its module comment
-  was clarified and its final direct check remains pending. Restriction retains
+  was clarified. Restriction retains
   its earlier source/axiom certificate and unchanged hash.
 - The convergence olean was produced only for the downstream FormLimits import.
   No supplement olean was needed or produced; no existing olean was rebuilt.
@@ -131,9 +131,9 @@ regularity and derivative results. No statement or constant was weakened.
   Corpus search returns the new smoothed-integral declaration; prior searches
   returned convergence and energy limits. No proof shortcuts or raised limits
   occur in these sources.
-- A prior global lint run reported unrelated structural errors; no
-  repository-wide green claim is made. Final scoped whitespace/placement check
-  remains part of closure.
+- Scoped whitespace, owner placement and unique imports were checked. A prior
+  global lint run reported unrelated structural errors; no repository-wide
+  green claim is made.
 - Successful axiom logs: `/tmp/leftovers-physical-axioms.log`,
   `/tmp/leftovers-physical-supplements-audit-r2.log`, and
   `/tmp/leftovers-physical-smoothed-integral-audit.log`. The last log contained
@@ -143,8 +143,11 @@ regularity and derivative results. No statement or constant was weakened.
   Remaining final logs: `/tmp/leftovers-physical-form-limits-final.log`,
   `/tmp/leftovers-physical-tail-bounds-final.log`,
   `/tmp/leftovers-physical-quantitative-final.log`, and
-  `/tmp/leftovers-physical-form-bounds-final.log`.
-  Index evidence: `/tmp/leftovers-physical-smoothed-index.json`.
+  `/tmp/leftovers-physical-form-bounds-final.log`; original-producer check:
+  `/tmp/leftovers-physical-producer-final.log`.
+  Index evidence: `/tmp/leftovers-physical-smoothed-index.json`,
+  `/tmp/leftovers-physical-tail-final-index.json`,
+  `/tmp/leftovers-physical-form-final-index.json`.
 
 Source SHA256 values:
 

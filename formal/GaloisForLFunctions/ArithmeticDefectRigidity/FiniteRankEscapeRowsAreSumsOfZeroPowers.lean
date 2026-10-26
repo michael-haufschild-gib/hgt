@@ -14,12 +14,16 @@ energy. If moreover it satisfies the renormalized inversion law, then
 
 and every `z_{st}` with `c_{st} ≠ 0` is tied (`2^{z} = 2^s`, `3^{z} = 3^t`) and is a translated zero,
 `ζ(z_{st} + ε) = 0`. In particular, if `ζ` has no zero on `Re = σ + ε`, every such row has finite
-energy (`cPronicEnergy_ne_top_of_finiteRank_of_zeroFree`). Real rows are the case `F = {s, s̄}`.
+energy (`cPronicEnergy_ne_top_of_finiteRank_of_zeroFree`). A real row with real laws at a
+non-real exponent `s` is the case `F = {s, s̄}`.
 
 The proof is algebraic over the rank-one theorems. The Lagrange basis `ℓ_s` of the nodes `2^{−s}`
-gives `Σ_s ℓ_s(D₂) = I` and `(D₂ − 2^{−s}) ℓ_s(D₂) ∈ ℂ · ∏(D₂ − 2^{−u})`; with the same at `3` the
-components `w_{st} = m_t(D₃) ℓ_s(D₂) w` sum to `w`, are joint approximate eigenrows of `D₂` and `D₃`
-(exponents `s`, `t`), and inherit the inversion law because `S_ε` commutes with floor dilations.
+gives `Σ_s ℓ_s(D₂) = I` and `(D₂ − 2^{−s}) ℓ_s(D₂) ∈ ℂ · ∏(D₂ − 2^{−u})`; with the basis `ℓ'_t` of
+the nodes `3^{−t}`, the components `w_{st} = ℓ'_t(D₃) ℓ_s(D₂) w` sum to `w`, are joint approximate
+eigenrows of `D₂` and `D₃` (exponents `s`, `t`), and inherit the inversion law because `S_ε`
+commutes with floor dilations. Each component is then a single tied power plus finite energy
+(`exists_cPronicEnergy_sub_cpow_ne_top`), and its Mellin residue forces the zero
+(`riemannZeta_add_eq_zero_of_powerLike_solution`).
 -/
 
 open Finset Polynomial Complex
@@ -275,7 +279,7 @@ theorem prod_euler_eq_C_mul_nodal {p : ℕ} (hp : p ≠ 0) (F : Finset ℂ) :
   refine Finset.prod_congr rfl fun s _ => ?_
   rw [one_sub_C_mul_X_eq (natCast_cpow_ne_zero hp s), Complex.cpow_neg]
 
-/-- `(X − v_s) ℓ_s = w_s · nodal`. -/
+/-- `(X − v_s) ℓ_s` is the nodal weight at `s` times the nodal polynomial. -/
 theorem X_sub_C_mul_basis {F : Finset ℂ} {v : ℂ → ℂ} {s : ℂ} (hs : s ∈ F) :
     (X - C (v s)) * Lagrange.basis F v s = C (Lagrange.nodalWeight F v s) * Lagrange.nodal F v := by
   classical
@@ -307,7 +311,10 @@ theorem adm_euler_component {p : ℕ} (hp : 1 ≤ p) {F : Finset ℂ} {s : ℂ} 
 
 /-! ### The decomposition -/
 
-/-- **Finite-rank escape rows are sums of translated-zero powers.** -/
+/-- **Finite-rank escape rows are sums of translated-zero powers.** A row obeying the product
+Euler laws over `F` at `2` and `3` and the renormalized inversion law is, up to finite energy, a
+sum of powers `n^{z_{st}}` on the line `Re = σ`, each tied to `(s, t) ∈ F × F` and each with
+`ζ(z_{st} + ε) = 0`. -/
 theorem exists_finiteRank_zeroPower_decomposition {ε : ℝ} (hε0 : 0 < ε) (hε : ε < 1 / 2)
     {σ : ℝ} (hσ : 1 / 2 < σ) (hσ1 : σ < 1 - ε) (F : Finset ℂ) (hFre : ∀ s ∈ F, s.re = σ)
     (h2inj : Set.InjOn (fun s : ℂ => (2 : ℂ) ^ (-s)) F)

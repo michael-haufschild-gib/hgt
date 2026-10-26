@@ -439,11 +439,10 @@ catalog locations verified. Global lint fails only for seven unrelated
 unreachable modules, listed on the stage3 card; no own/proof-debt/index error.
 Paper preceded Lean. README remains unchanged. Certified19/100; the goal was subsequently cleared by the user.
 
-## Inactive paper-proved continuation
+## Formalized continuation; research paused
 
-../../../2-fully-proven/compact-physical-box-producers.md contains the completed
-paper proof for compensated compact logarithmic producers. The restriction
-foundation is fully formalized, checked, wired and indexed; broader formal
-producer construction was not started. Supporting lemmas do not increment
-certified19/100. The user cleared the goal and requested closure. No further
-research is active or authorized without a new request.
+[Compensated compact logarithmic producers](../../../3-formalized/leftovers/compact-physical-box-producers.md)
+now contains the complete paper-to-Lean certificate, including the recovered
+original report. Seven supporting leaves are checked, audited and wired;
+134 public declarations and one reused parent have only standard axioms.
+This formalization does not increment certified19/100. Further research remains paused.

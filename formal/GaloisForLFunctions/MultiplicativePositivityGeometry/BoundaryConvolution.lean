@@ -174,16 +174,19 @@ variable {q : ℕ} [NeZero q] {a : ZMod q}
 noncomputable def classWeight (q : ℕ) (a : ZMod q) (x : ℝ) (n : ℕ) : ℝ :=
   q.totient * residueClass a n * (n : ℝ) ^ (-(1 + x))
 
+omit [NeZero q] in
 theorem classWeight_nonneg (x : ℝ) (n : ℕ) : 0 ≤ classWeight q a x n :=
   mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (residueClass_nonneg a n))
     (Real.rpow_nonneg (Nat.cast_nonneg n) _)
 
+omit [NeZero q] in
 theorem classWeight_le (x : ℝ) (n : ℕ) : classWeight q a x n ≤ q.totient * zetaBoundaryWeight x n := by
   unfold classWeight zetaBoundaryWeight
   rw [mul_assoc]
   exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right (residueClass_le a n)
     (Real.rpow_nonneg (Nat.cast_nonneg n) _)) (Nat.cast_nonneg _)
 
+omit [NeZero q] in
 theorem re_term_residueClass (σ u : ℝ) (n : ℕ) :
     (LSeries.term (fun n => (residueClass a n : ℂ)) ((σ : ℂ) + (u : ℂ) * I) n).re =
       residueClass a n * (n : ℝ) ^ (-σ) * Real.cos (logFrequency n * u) := by
@@ -208,9 +211,13 @@ theorem class_isBoundaryDivisor (ha : IsUnit a) :
         q.totient * (x * (LFunctionResidueClassAux a (s x)).re) + x * x / (x ^ 2 + u ^ 2) := by
       intro x hx
       have hre : 1 < (s x).re := by simp [s]; linarith
-      have hS : LSeriesSummable (fun n => (residueClass a n : ℂ)) (s x) :=
-        LSeriesSummable_of_abscissaOfAbsConv_lt_re
-          ((abscissaOfAbsConv_residueClass_le_one a).trans_lt (by simpa using hre))
+      have hS : LSeriesSummable (fun n => (residueClass a n : ℂ)) (s x) := by
+        refine Summable.of_norm_bounded
+          (summable_norm_iff.mpr (ArithmeticFunction.LSeriesSummable_vonMangoldt hre))
+          fun n => LSeries.norm_term_le _ ?_
+        rw [Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
+          abs_of_nonneg (residueClass_nonneg a n), abs_of_nonneg ArithmeticFunction.vonMangoldt_nonneg]
+        exact residueClass_le a n
       have hL := eqOn_LFunctionResidueClassAux ha (show s x ∈ {s : ℂ | 1 < s.re} from hre)
       have hcos : cosineTrace (classWeight q a x) logFrequency u =
           q.totient * (LSeries (fun n => (residueClass a n : ℂ)) (s x)).re := by
@@ -228,11 +235,14 @@ theorem class_isBoundaryDivisor (ha : IsUnit a) :
         have := congrArg Complex.re h0
         simp at this
         linarith
-      rw [show ((q.totient : ℂ)⁻¹ / ((x : ℂ) + (u : ℂ) * I)).re =
-          (q.totient : ℝ)⁻¹ * (x / (x ^ 2 + u ^ 2)) by
-        rw [div_eq_mul_inv, Complex.mul_re, Complex.inv_re, Complex.inv_im]
-        simp [Complex.normSq_apply]
-        ring]
+      have hre2 : ((q.totient : ℂ)⁻¹ / ((x : ℂ) + (u : ℂ) * I)).re =
+          (q.totient : ℝ)⁻¹ * (x / (x ^ 2 + u ^ 2)) := by
+        have e1 : ((q.totient : ℂ))⁻¹ = (((q.totient : ℝ)⁻¹ : ℝ) : ℂ) := by push_cast; rfl
+        rw [e1, div_eq_mul_inv, Complex.re_ofReal_mul, Complex.inv_re, Complex.normSq_apply]
+        simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, Complex.I_im,
+          Complex.ofReal_im, Complex.add_im, Complex.mul_im]
+        ring
+      rw [hre2]
       field_simp
       ring
     -- The continuous part vanishes after multiplying by `x`; the pole gives `δ₀`.
@@ -255,11 +265,11 @@ theorem class_isBoundaryDivisor (ha : IsUnit a) :
     have hpole : Tendsto (fun x : ℝ => x * x / (x ^ 2 + u ^ 2)) (𝓝[>] 0)
         (𝓝 (if u = 0 then 1 else 0)) := by
       split_ifs with hu
-      · subst hu
-        refine tendsto_const_nhds.congr' ?_
+      · refine tendsto_const_nhds.congr' ?_
         filter_upwards [self_mem_nhdsWithin] with x hx
-        have : x ≠ 0 := (Set.mem_Ioi.mp hx).ne'
-        field_simp
+        have hx0 : 0 < x := hx
+        rw [hu, eq_comm, div_eq_one_iff_eq (ne_of_gt (by simpa using pow_pos hx0 2))]
+        ring
       · have hc : ContinuousAt (fun x : ℝ => x * x / (x ^ 2 + u ^ 2)) 0 :=
           (continuous_id.mul continuous_id).continuousAt.div (by fun_prop)
             (by positivity)

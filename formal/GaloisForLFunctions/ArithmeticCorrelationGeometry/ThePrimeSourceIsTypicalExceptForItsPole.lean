@@ -131,6 +131,7 @@ theorem ae_norm_twistedPsi_le :
     push_cast
     have hfrac : ((N : ℝ) + 2) / ((N : ℝ) + 1) - 1 ≤ 1 := by
       rw [div_sub_one hpos.ne', div_le_one hpos]; linarith
+    rw [show (N : ℝ) + 1 + 1 = (N : ℝ) + 2 by ring]
     linarith
   have hB0 : 0 ≤ B := by positivity
   have hl : 0 ≤ 1 + Real.log ((N : ℝ) + 1) := by
@@ -160,6 +161,7 @@ theorem tendsto_twistedPsi_zero_div :
   have hI : Icc 1 N = Ioc 0 N := by ext n; simp only [mem_Icc, mem_Ioc]; omega
   rw [hI]
   push_cast
+  norm_cast
 
 /-- **RH is the typicality of the point `0` modulo its pole** (von Koch). -/
 theorem riemannHypothesis_iff_twistedPsi_zero_sub :

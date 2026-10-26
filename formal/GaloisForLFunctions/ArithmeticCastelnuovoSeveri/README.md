@@ -364,7 +364,9 @@ Bounded-orbit and reserve results are in `MeyerBoundedCenteredOrbits.lean`,
 5. **One prime against two** — resolved: for every tempered configuration and scale the towers of
    tests carry every distinct outer eigenvalue (`tower_law`); one test carries an infinite defect
    when the closed folded spectrum is countable (`exists_test_tower_law_of_countable_folded`).
-   Open: one test carrying an infinite defect across an uncountable folded spectrum (a wall).
+   Open: one test carrying an infinite defect across an uncountable folded spectrum (a wall). Tool:
+   light Blaschke walls are permeable — Blaschke poles with `Σ|ν|/(1 − |a|) < ∞` cannot cancel
+   behind the circle (`HTGeometry/LightBlaschkeWallsArePermeable.lean`).
 6. **Clustering branch** of the visibility/defect-rate dichotomy (unrestricted $L^2$, not Sobolev).
 7. **Lattice → continuum**: carry finite-Euler lattice positivity to Weil's form with collar and signed
    coefficients.

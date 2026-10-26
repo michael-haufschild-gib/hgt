@@ -171,6 +171,7 @@ The language keeps these distinctions explicit:
 | **P32 Family Bochner** | For a family over a finite abelian `G`, an absolutely summable configuration on `G × ℝ` is a joint boundary divisor iff it is even and positive definite; realized by `Λ(n) n^{−1−x} B(ψ, log n)/|G|` with the family Bohr series `B(ψ, t) = Σ_p 𝒟(p) Re(ψ(−p₁) e^{−itp₂}) ≥ 0`. | `family_summable_bochner`, `familyBohr_nonneg`, `tsum_nonneg_of_gram` |
 | **P33 Locally finite family Bochner** | A locally finite configuration on `G × ℝ` is a joint boundary divisor iff it is even and positive definite. Fejér truncation along the height keeps positive definiteness; the family cosine polynomials with coefficients `B_N(ψ, k/n)/(n²|G|)` are, by orthogonality, the truncations smoothed fibrewise by the Dirichlet mean, and converge pointwise. | `family_locallyFinite_bochner`, `sum_familyBohr_mul_jointMode`, `isJointBoundaryDivisor_of_tendsto_famPosCosPoly` |
 | **P34 Family regularity** | An integer configuration on `G × ℝ` with `𝒟(0) = 1` is a joint boundary divisor iff it is positive definite and either locally finite or constant along every fibre (`𝒟(g, u) = 𝒟(g, 0)`), with no isolation assumed: the origin fibre is a boundary divisor of the same weights (P27 applies), every fibre is a coset of it, and both kinds are realized. | `joint_integer_classification`, `joint_locallyFinite_or_fibreConstant`, `originFibre_isBoundaryDivisor` |
+| **P35 Twisting is convolution** | Twisting the weights of any boundary datum with divisor `D` by the Bohr series of an absolutely summable even positive-definite `φ` gives the divisor `Σ_γ φ(γ) D(u − h(γ))`; a base with divisor `δ₀` realizes the whole summable cone. The weights `φ(q) Λ(n) 1_{n ≡ a} n^{−1−x}` of one prime residue class form such a base, so the primes of a single progression realize every absolutely summable positive-definite configuration. | `IsBoundaryDivisor.twist_bohr`, `delta_base_realizes`, `class_isBoundaryDivisor`, `progression_realizes` |
 
 ---
 
@@ -353,3 +354,4 @@ A contribution must:
 | `FamilyBochner` | Summable family configurations are exactly the positive-definite ones |
 | `FamilyLocallyFinite` | Locally finite family configurations are exactly the positive-definite ones |
 | `FamilyRegularity` | The integer simple-pole classification for families, without isolation |
+| `BoundaryConvolution` | Bohr twisting is convolution of divisors; primes in one progression form a `δ₀` base |

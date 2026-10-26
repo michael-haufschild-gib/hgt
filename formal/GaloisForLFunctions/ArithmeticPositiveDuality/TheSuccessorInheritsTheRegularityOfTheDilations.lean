@@ -88,7 +88,9 @@ theorem tendsto_successor_of_continuousAt_dilation
     simp only [r, dif_neg hn, Units.val_mk0]; field_simp
   have hrlim : Tendsto (fun n => ((((r n)⁻¹ : ℚˣ) : ℚ) : ℝ)) atTop (𝓝 1) := by
     have h1 : Tendsto (fun n => (b : ℝ) / (c n : ℝ)) atTop (𝓝 1) := by
-      simpa [div_self hb'] using (tendsto_const_nhds (x := (b : ℝ))).div hc hb'
+      have h := (tendsto_const_nhds (x := (b : ℝ))).div hc hb'
+      rw [div_self hb'] at h
+      exact h
     refine h1.congr' (hev.mono fun n hn => ?_)
     simp only [r, dif_neg hn, Units.val_inv_eq_inv_val, Units.val_mk0]
     push_cast
@@ -105,8 +107,8 @@ theorem tendsto_successor_of_continuousAt_dilation
       · simp
     have hueq : ∀ᶠ n in atTop, u n = (r n)⁻¹ := hrpos.mono fun n hn => by simp only [u, if_pos hn]
     have hulim : Tendsto (fun n => ((u n : ℚ) : ℝ)) atTop (𝓝 1) :=
-      hrlim.congr' (hueq.mono fun n hn => by rw [hn])
-    exact (hcont u hupos hulim).congr' (hueq.mono fun n hn => by rw [hn])
+      hrlim.congr' (hueq.mono fun n hn => by beta_reduce; rw [hn])
+    exact (hcont u hupos hulim).congr' (hueq.mono fun n hn => by beta_reduce; rw [hn])
   have hbound : Tendsto (fun n => 2 * Real.sqrt (φ 1).re *
       Real.sqrt (2 * (φ 1 - φ (dilation (r n)⁻¹)).re)) atTop (𝓝 0) := by
     have hf : Continuous fun z : ℂ => 2 * Real.sqrt (φ 1).re * Real.sqrt (2 * (φ 1 - z).re) :=

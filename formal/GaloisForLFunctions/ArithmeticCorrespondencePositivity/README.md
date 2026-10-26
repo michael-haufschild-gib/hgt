@@ -86,7 +86,9 @@ which on every span `{x, T x}` is the positivity of the two normalized graphs of
 (Hasse). From genus two on they separate: the complex fake (`q = 16`, roots `±8i, ±2i` of
 `X⁴ + 68X² + 256`) has nonnegative point counts at every level and a nonnegative kernel count for
 every ring element, and violates Hasse–Weil. The off-line candidates of `ζ` are non-real, so a
-kernel-count effectivity would be blind to all of them. The sign is of trace type.
+kernel-count effectivity on `H¹` would be blind to all of them. Exterior powers repair this over
+`𝔽_q`: kernel counts on `Λ^k H¹` collide a complex quartet into a real off-line eigenvalue and force
+unitarity in every genus (P17).
 
 **Local types.** The Rosati trace of a cycle splits over the reflection pairs of its spectrum. At an
 off-line pair the local form `2 Re(u v̄)` in the coordinates `(ĝ(ρ), ĝ(ρ*))` has signature `(1, 1)`.
@@ -304,7 +306,7 @@ reformulated as spectral synthesis for the cofactor symbol, open.
 | The theorem of the square is the missing algebraic precondition | It is an identity of normalized graphs and holds on the golden datum (P1) |
 | Hecke scales failing the parallelogram law means no theorem of the square | Scale addition is not ring addition (F4 vs P1) |
 | A fixed budget is what `ℤ` lacks | The budget is fixed by the similitude law; its sufficiency is RH (P2) |
-| Effectivity by counting kernels gives the sign | Only in genus one; the complex fake passes every kernel count (P3) |
+| Counting kernels on `H¹` gives the sign | Only in genus one; the complex fake passes every `H¹` kernel count (P3); exterior-power counts force unitarity (P17) |
 | Positive point counts are a weak form of Weil | The golden datum and the complex fake have them (AKT, P3) |
 | Isotropy is a defect of the carriers studied so far | It is forced by any hyperbolic local symmetry, and every multiplicative correspondence is hyperbolic off the line (P4, P5) |
 | An elliptic symmetry could localize at one point of a pair | Local isometries separate the two points only as boosts (P13) |
@@ -376,7 +378,7 @@ Stepanov method.
 ACP succeeds when it produces a positivity theorem of a type the corpus does not contain — a
 completeness law, a charged positivity on a localizing carrier, a budget law, a coupling law — or a
 sharp no-go naming the missing layer. Its no-gos: the theorem of the square and the budget are
-free (P1, P2); kernel counts are blind (P3); multiplicative symmetry is hyperbolic and the successor
+free (P1, P2); degree-one kernel counts are blind to complex quartets (P3); multiplicative symmetry is hyperbolic and the successor
 unipotent (P4, P5); separation is hyperbolic (P13); non-localizing positivity is source-blind (P6);
 positivity on nonnegative tests is shared by every dominated twin (P7); tensor powers need
 sublinear loss (P8); affine maps have genus zero (P9); kernel counts of symmetric squares are squares

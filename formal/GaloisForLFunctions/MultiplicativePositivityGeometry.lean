@@ -35,6 +35,7 @@ import GaloisForLFunctions.MultiplicativePositivityGeometry.SummableBochner
 import GaloisForLFunctions.MultiplicativePositivityGeometry.FamilyBochner
 import GaloisForLFunctions.MultiplicativePositivityGeometry.FamilyLocallyFinite
 import GaloisForLFunctions.MultiplicativePositivityGeometry.FamilyRegularity
+import GaloisForLFunctions.MultiplicativePositivityGeometry.BoundaryConvolution
 
 /-!
 # Multiplicative Positivity Geometry

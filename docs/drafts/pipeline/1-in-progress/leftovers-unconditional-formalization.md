@@ -41,46 +41,64 @@ or further auxiliary claims. Frozen completion scope:
 
 ## Current checkpoint (authoritative over chronological notes)
 
-- One of 14 original cards complete: Nyquist, promoted to
+- Two of 14 original cards complete: Nyquist and physical producers. Nyquist is
   `3-formalized/leftovers/nyquist-critical-finite-part-2026-10-18.md`.
   All eight direct final source checks passed with empty logs; all 96 public
   declarations audit with only `propext`, `Classical.choice`, `Quot.sound`.
   Source hashes and unique umbrella imports verified. Existing oleans must
   not be rebuilt; PrimitiveTail and SignedWitnesses have none.
-- Physical: 110 prior valid axiom audits; 20 supplemental declarations plus
-  one reused parent passed combined audit `67801`. Three supplements migrated
-  and wired. TailBounds final check `94906` passed. Four additional support,
-  integrability and zero-integral lemmas passed scratch audit `15644`, with
-  standard axioms only; one no-op tactic removed and proofs merged into
-  Quantitative. Final Quantitative check `89863` passed with an empty log.
-  FormBounds check `51999` also passed with an empty log; the comment-edited
-  original producer still needs its final direct check. Verified identical
-  supplement scratch mirrors and the obsolete API probe were removed.
-  Complete manifest: `/tmp/leftovers-physical-complete-public-names.json`
-  (134 public declarations across seven leaves, plus one reused parent).
+- Physical complete and promoted to
+  `3-formalized/leftovers/compact-physical-box-producers.md`. All recovered
+  report claims (1)–(23) covered. Final TailBounds `94906`, Quantitative `89863`,
+  FormBounds `51999` and original producer `91926` passed with empty logs;
+  previous Convergence/FormLimits checks remain valid. Complete manifest:
+  `/tmp/leftovers-physical-complete-public-names.json` (134 public declarations
+  across seven leaves plus one reused parent), standard axioms only. Seven
+  hashes, unique imports, index hits and scoped whitespace verified. Identical
+  supplement scratch mirrors and obsolete API probe removed; backreferences fixed.
 - PM: four `/tmp/leftovers_pm_*.lean` drafts in dependency order: integrable
-  producer, sampling, exact decomposition, short energy. Combined 20-name
-  audit `16131` active, log `/tmp/leftovers-pm-complete-audit-r1.log`.
-- Dyadic: unchecked tent, integer variance, finite sieve realization,
-  finite-window minimum, and tent-variance/best-constant drafts. Exact tree
+  producer, sampling, exact decomposition, short energy. Combined initial
+  audit `16131` exited 1: unknown `tsum_eq_zero`/`Finset.notMem_range`,
+  zero-function type inference, and an absolute-value rewrite. Short-energy
+  proofs passed. R1 axiom log is invalid. All four repairs are in component
+  drafts; combined r2 audit `33592` passed with no diagnostics and all 20
+  standard-axiom lists. Four plain components migrated to canonical leaves;
+  direct checks, three required missing internal oleans and wiring remain.
+- Dyadic: tent, integer variance, finite sieve realization, finite-window
+  minimum, and tent-variance/best-constant drafts. Combined initial audit
+  `11351` exited 1 with local rewrite, cast, lambda and API errors. Integer
+  variance, Möbius realization and finite-window mean/infimum proofs passed.
+  All reported repairs applied; combined 62-name r2 source regenerated. Exact tree
   comparison is already edited in FiniteHorizonPositiveCoercivity, with
   `/tmp/leftovers_binary_tree_exact_audit.lean` awaiting check. Original further
   auxiliary level-count claims are outside the frozen completion scope.
 - Perturbed: unchecked weighted all-pairs incidence and quadratic-node
   geometry drafts. Exact-incidence and arithmetic transport consequences
   remain to connect.
-- Finite cycle: ten unchecked drafts cover exact first-order collar, arbitrary
+- Finite cycle: ten drafts cover exact first-order collar, arbitrary
   positive-collar scalar/family recovery, actual compact-source derivative
   energy, normalized derivative correlation bounds, controlled finite meshes,
   grid recovery, fixed-energy sharp copies, derivative conditioning, measured
-  array residuals, and unit-mass compact-source construction. No canonical
-  files or oleans yet. Exact parameter-selection/card coverage still to audit.
+  array residuals, and unit-mass compact-source construction. Initial audit
+  `11461` exited 1: obsolete API names, inferred functions/coercions, absent
+  copy-energy import and redundant tactics. Repairs applied to plain drafts;
+  80-name combined r2 source regenerated. All nine external oleans present.
+  No canonical files or new oleans yet. Card coverage still to audit.
 - Both complete Route-E historical cards now read. Current assemblers retain
   `MTDeshouillersIwaniecBound` and `MTWattBound`; inspected short-block
   reductions retain their short versions as hypotheses. Full original 1.55
   claims remain required. No unconditional completion or absence claim.
-- Active Lean: PM combined initial audit `16131`; log
-  `/tmp/leftovers-pm-complete-audit-r1.log`. All searches terminal.
+- External variance-owner build `92254` passed with empty log
+  `/tmp/leftovers-dyadic-mean-owner-build.log`; its previously missing olean
+  now exists and must not be rebuilt. No source edit was required.
+- Active Lean: cycle combined r2 audit `57675`, log
+  `/tmp/leftovers-cycle-complete-audit-r2.log`. All searches terminal.
+- Frozen manifest: `/tmp/leftovers-frozen-module-manifest.json` contains the
+  24 module paths and exact import dependencies. WeightedDoublingIncidence
+  now imports Tent and FiniteWindowVariance directly; the independent
+  DyadicMantissaVariance leaf needs no olean. Audit assembly/validation helpers
+  in `/tmp/leftovers_assemble_audit.py` and `/tmp/leftovers_verify_axioms.py`
+  only manipulate/check text; they never compile or batch-build anything.
 - Closure order: physical supplements → PM → dyadic/perturbed/cycle, then
   pause. Other original cards remain unfinished and paused. Preserve unrelated edits.
 
@@ -91,7 +109,7 @@ or further auxiliary claims. Frozen completion scope:
 | `biscale-dyadic-joint-coercivity-1810` | Exact integer-window upper/lower bounds, tent and additive-only witnesses, realization, and stated perturbation gate. Paper read; Lean coverage not yet audited. |
 | `biscale-finite-cycle-recovery-1810` | Arbitrary positive collar recovery, mesh count, actual derivative controls, distant-copy controlled-class obstruction; audit existing singular-energy recovery. Paper read. |
 | `biscale-perturbed-incidence-1810` | Exact-incidence exclusion, log gaps, weighted comparison, sharpness, common-model realization, continuum distinction. Paper read. |
-| `compact-physical-box-producers` | **REOPENED after recovered-report audit.** Main construction and limits retain 110 clean axiom audits; card returned to `2-fully-proven/leftovers`. Exact two-tail identity and additional quantitative corollaries from the original report still require completion. |
+| `compact-physical-box-producers` | **Complete, promoted to stage 3.** Recovered report (1)–(23), seven leaves, 134 public declarations plus one reused parent, clean axiom and final source checks, unique imports and indexed names. |
 | `nonvacuous-independence-and-polarization-import-law` | Audit small-eigenvalue witness, complete actual Selberg-zeta dictionary and nonvacuous clauses. Historical log reports witness complete; current source audit pending. Import table explicitly an observation. |
 | `nyquist-critical-finite-part-2026-10-18` | Finite part, signed broad-test expansion, actual-source classification and witnesses. Existing 591-line parent inspected. Primitive, signed cell bounds, exact broad tests and source classification pass Lean. Primitive-tail leaf passes its final direct check. Quantitative source and signed witness claims are complete; all 96 public declarations have clean axiom audits. All eight final direct checks passed; complete card promoted to stage 3 after source/hash/index/import audit. |
 | `pm-long-modulus-quadrature` | Four complete unchecked prototypes: actual integrable Möbius producer, exact integer sampling, all-cutoff long/tail decomposition, exact square-root-head pronic bound. Endpoint formula retains tail past max(n,D). |

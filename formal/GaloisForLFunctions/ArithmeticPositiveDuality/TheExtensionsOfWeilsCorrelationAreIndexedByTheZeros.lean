@@ -35,7 +35,7 @@ def weilMeasure : Measure ℝ :=
   Measure.sum fun x : criticalOrdinates => ENNReal.ofReal (weilWeight hW x) • Measure.dirac (-(x : ℝ))
 
 theorem summable_ofReal_weilWeight :
-    Summable fun x : criticalOrdinates => (ENNReal.ofReal (weilWeight hW x)).toReal := by
+    Summable fun x : criticalOrdinates => (ENNReal.ofReal (weilWeight hW x)).toReal :=
   (summable_weilWeight hW).congr fun x => (ENNReal.toReal_ofReal (weilWeight_nonneg hW x)).symm
 
 instance : IsFiniteMeasure (weilMeasure hW) := by
@@ -48,11 +48,16 @@ instance : IsFiniteMeasure (weilMeasure hW) := by
 /-- Weil's correlation is the characteristic function of `ν_W`. -/
 theorem ratCorr_eq_integral_weilMeasure (u : posUnits) :
     ratCorr u = ∫ x, archChar x ((u : ℚˣ) : ℚ) ∂weilMeasure hW := by
-  rw [weilMeasure, integral_sum_dirac_eq_tsum (f := fun x : ℝ => archChar x ((u : ℚˣ) : ℚ))
-    (fun _ => ENNReal.ofReal_ne_top) ?_, ratCorr_eq_tsum hW u]
-  · refine tsum_congr fun x => ?_
-    rw [ENNReal.toReal_ofReal (weilWeight_nonneg hW x), Complex.real_smul]
-  · simpa [norm_archChar] using summable_ofReal_weilWeight hW
+  haveI := (RHTower.WeilConditional.countable_criticalOrdinates).to_subtype
+  have hsum : Summable fun i : criticalOrdinates => (ENNReal.ofReal (weilWeight hW i)).toReal *
+      ‖archChar (-(i : ℝ)) ((u : ℚˣ) : ℚ)‖ := by
+    simpa [norm_archChar] using summable_ofReal_weilWeight hW
+  rw [weilMeasure, integral_sum_dirac_eq_tsum (f := fun y : ℝ => archChar y ((u : ℚˣ) : ℚ))
+    (x := fun i : criticalOrdinates => -(i : ℝ))
+    (c := fun i : criticalOrdinates => ENNReal.ofReal (weilWeight hW i))
+    (fun _ => ENNReal.ofReal_ne_top) hsum, ratCorr_eq_tsum hW u]
+  refine tsum_congr fun x => ?_
+  rw [ENNReal.toReal_ofReal (weilWeight_nonneg hW x), Complex.real_smul]
 
 theorem weilMeasure_singleton_ge (x : criticalOrdinates) :
     ENNReal.ofReal (weilWeight hW x) ≤ weilMeasure hW {-(x : ℝ)} := by
@@ -74,12 +79,13 @@ theorem weilMeasure_real_singleton_neg (x : criticalOrdinates) :
 
 /-- `ν_W` is purely atomic. -/
 theorem weilMeasure_nonatomic_null : weilMeasure hW {x | weilMeasure hW {x} = 0} = 0 := by
-  have hB : MeasurableSet {x : ℝ | weilMeasure hW {x} = 0} := by
+  set B : Set ℝ := {x | weilMeasure hW {x} = 0} with hBdef
+  have hB : MeasurableSet B := by
     have hA : {x : ℝ | 0 < weilMeasure hW {x}}.Countable :=
       Measure.countable_meas_pos_of_disjoint_iUnion (As := fun x : ℝ => ({x} : Set ℝ))
         (fun x => measurableSet_singleton x) (fun x y hxy => Set.disjoint_singleton.mpr hxy)
-    have : {x : ℝ | weilMeasure hW {x} = 0} = {x : ℝ | 0 < weilMeasure hW {x}}ᶜ := by
-      ext x; simp [pos_iff_ne_zero]
+    have : B = {x : ℝ | 0 < weilMeasure hW {x}}ᶜ := by
+      ext x; simp [B, pos_iff_ne_zero]
     rw [this]
     exact hA.measurableSet.compl
   rw [weilMeasure, Measure.sum_apply _ hB]
@@ -87,11 +93,11 @@ theorem weilMeasure_nonatomic_null : weilMeasure hW {x | weilMeasure hW {x} = 0}
   simp only [Measure.smul_apply, smul_eq_mul]
   by_cases hx : weilWeight hW x = 0
   · rw [hx, ENNReal.ofReal_zero, zero_mul]
-  · have hnot : -(x : ℝ) ∉ {y : ℝ | weilMeasure hW {y} = 0} := by
+  · have hnot : -(x : ℝ) ∉ B := by
       intro hmem
+      have h0 : weilMeasure hW {-(x : ℝ)} = 0 := hmem
       have h1 := weilMeasure_singleton_ge hW x
-      rw [show weilMeasure hW {-(x : ℝ)} = 0 from hmem, nonpos_iff_eq_zero,
-        ENNReal.ofReal_eq_zero] at h1
+      rw [h0, nonpos_iff_eq_zero, ENNReal.ofReal_eq_zero] at h1
       exact hx (le_antisymm h1 (weilWeight_nonneg hW x))
     rw [Measure.dirac_apply, Set.indicator_of_notMem hnot, mul_zero]
 

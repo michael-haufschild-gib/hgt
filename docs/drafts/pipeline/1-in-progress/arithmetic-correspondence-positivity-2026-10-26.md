@@ -16,7 +16,8 @@ sharp no-gos with positive survivors); build the §4.5 tools; foundational READM
 ## Gates
 - [x] 0 → 1  report read; sibling programmes surveyed (ACS, AOG, APD, ACG, MPG, SBWF, AKT)
 - [x] 1 → 2  paper proofs of pillars P1–P8 (in module docstrings)
-- [ ] 2 → 3  Lean modules checked with `lake --old env lean`, umbrella wired, README final, axiom audit
+- [x] 2 → 3  16 modules (P1–P16) checked with `lake --old env lean`, wired into the umbrella and
+  `MainTheorems`; axiom audit of 37 key theorems: only `propext`, `Classical.choice`, `Quot.sound`
 
 ## Approach (pillars, in order)
 1. Normalized graphs on polar surfaces / scaling data: `N(y) = y + (1 − y·V)H + β(y)V`,
@@ -40,8 +41,8 @@ sharp no-gos with positive survivors); build the §4.5 tools; foundational READM
 - 2026-10-26 — created; survey of ACS/AOG/APD/ACG done; another agent is extending APD
   (`AContinuousArchimedeanSpectrumIsSeenByTheSuccessor`), so archimedean–finite coupling is cited,
   not duplicated.
-- 2026-10-26 — 15 modules (P1–P15) written; all but OnNonnegativeTestsZetaIsTheWorstTwin checked
-  clean. Escape states are developed by ACG/ADR agents
+- 2026-10-26 — P1–P16 checked clean; a parallel agent added P17
+  (`SymmetricSquareContractionsAndExteriorCounts`: exterior-power kernel counts force unitarity). Escape states are developed by ACG/ADR agents
   (EscapeStatesAreSpectralMeasuresOnTheGaugeTorus) — cite, do not duplicate.
 - Open: first gauge-charged window (odd 181/500 vs the 2-flipped twin); localizing carrier with
   elliptic local symmetry; Rosati-type effectivity from counts; W8 / escape completeness.
