@@ -78,21 +78,24 @@ theorem sq_le_index_nearUnit (N a b : ℕ) (hab : a ≠ b) :
   -- `(n − d)B = (A − B)d`
   have hdiff : ((q.num.natAbs : ℝ) - q.den) * B = ((A : ℝ) - B) * q.den := by
     linarith [hcross]
-  have hAB : ((A : ℝ) - B) = (b : ℝ) - a := by simp [A, B]; ring
+  have hAB : ((A : ℝ) - B) = (b : ℝ) - a := by simp only [A, B]; push_cast; ring
   have hdpos : (0 : ℝ) < q.den := by exact_mod_cast q.den_pos
   have hBpos : (0 : ℝ) < B := by exact_mod_cast hB
   have hApos : (0 : ℝ) < A := by positivity
   have hBd : (B : ℝ) ≤ |(a : ℝ) - b| * q.den := by
     have := congrArg abs hdiff
-    rw [abs_mul, abs_mul, abs_of_pos hBpos, abs_of_pos hdpos, hAB, abs_sub_comm] at this
-    nlinarith [hgap]
+    rw [abs_mul, abs_mul, abs_of_pos hBpos, abs_of_pos hdpos, hAB] at this
+    rw [abs_sub_comm (a : ℝ) b]
+    nlinarith [hgap, this]
   have hAn : (A : ℝ) ≤ |(a : ℝ) - b| * q.num.natAbs := by
     have : (A : ℝ) * q.den ≤ |(a : ℝ) - b| * q.num.natAbs * q.den := by
       have h := mul_le_mul_of_nonneg_left hBd (Nat.cast_nonneg (q.num.natAbs) : (0 : ℝ) ≤ _)
       nlinarith [hcross]
     exact le_of_mul_le_mul_right this hdpos
-  have hNA : (N : ℝ) + 1 ≤ A := by simp [A]; linarith [(Nat.cast_nonneg b : (0 : ℝ) ≤ b)]
-  have hNB : (N : ℝ) + 1 ≤ B := by simp [B]; linarith [(Nat.cast_nonneg a : (0 : ℝ) ≤ a)]
+  have hNA : (N : ℝ) + 1 ≤ A := by
+    simp only [A]; push_cast; linarith [(Nat.cast_nonneg b : (0 : ℝ) ≤ b)]
+  have hNB : (N : ℝ) + 1 ≤ B := by
+    simp only [B]; push_cast; linarith [(Nat.cast_nonneg a : (0 : ℝ) ≤ a)]
   have hsq : ((a : ℝ) - b) ^ 2 = |(a : ℝ) - b| ^ 2 := (sq_abs _).symm
   rw [hsq]
   calc ((N : ℝ) + 1) ^ 2 ≤ (A : ℝ) * B := by nlinarith
@@ -161,11 +164,13 @@ theorem tendsto_log_nearPoint (j : ℕ) :
     fun N => by
       rw [nearPoint, val_nearUnit]
       push_cast
+      simp only [add_zero]
       field_simp
   simp_rw [hval]
   have h0 : Tendsto (fun N : ℕ => (1 : ℝ) + j / ((N : ℝ) + 1)) atTop (𝓝 1) := by
-    have := (tendsto_one_div_add_atTop_nhds_zero_nat).const_mul (j : ℝ)
-    simpa [div_eq_mul_one_div] using this.const_add (1 : ℝ)
+    have h1 := ((tendsto_one_div_add_atTop_nhds_zero_nat).const_mul (j : ℝ)).const_add (1 : ℝ)
+    rw [mul_zero, add_zero] at h1
+    exact h1.congr fun N => by ring
   have := ((Real.continuousAt_log one_ne_zero).tendsto).comp h0
   rwa [Real.log_one] at this
 
@@ -189,9 +194,9 @@ theorem spectralMeasure_range_archPoint_eq_zero {f : posUnits → ℂ} {μ : Mea
       Complex.normSq (∑ b : Fin M, c b * ratChar ((nearPoint N b : ℚˣ) : ℚ) x) with hΦ
     set G : ℕ → ℂ := fun N => ∑ a : Fin M, ∑ b : Fin M,
       star (c a) * f ((nearPoint N a)⁻¹ * nearPoint N b) * c b with hG
-    set I : ℕ → ℝ := fun N => ∫ t, Φ N (archPoint t) ∂ν with hI
+    set Ival : ℕ → ℝ := fun N => ∫ t, Φ N (archPoint t) ∂ν with hIval
     -- the Gram value dominates its part on the line
-    have hGI : ∀ N, I N ≤ (G N).re := by
+    have hGI : ∀ N, Ival N ≤ (G N).re := by
       intro N
       have hg := gram_integral_ratChar μ (fun b : Fin M => nearPoint N b) c
       have hGe : G N = ((∫ x, Φ N x ∂μ : ℝ) : ℂ) := by
@@ -199,10 +204,10 @@ theorem spectralMeasure_range_archPoint_eq_zero {f : posUnits → ℂ} {μ : Mea
         simp only [hG, hμ]
       rw [hGe, Complex.ofReal_re]
       have hcont : Continuous (Φ N) := Complex.continuous_normSq.comp
-        (continuous_finset_sum _ fun b _ => continuous_const.mul (continuous_ratChar _))
+        (continuous_finsetSum _ fun b _ => continuous_const.mul (continuous_ratChar _))
       have hint : Integrable (Φ N) μ :=
         hcont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
-      calc I N = ∫ x in range archPoint, Φ N x ∂μ := by
+      calc Ival N = ∫ x in range archPoint, Φ N x ∂μ := by
             rw [← measurableEmbedding_archPoint.map_comap μ,
               measurableEmbedding_archPoint.integral_map]
         _ ≤ ∫ x, Φ N x ∂μ :=
@@ -228,7 +233,7 @@ theorem spectralMeasure_range_archPoint_eq_zero {f : posUnits → ℂ} {μ : Mea
         star_natCast, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
       field_simp
     -- the part on the line tends to `ν(ℝ)`
-    have hIlim : Tendsto I atTop (𝓝 (ν.real univ)) := by
+    have hIlim : Tendsto Ival atTop (𝓝 (ν.real univ)) := by
       have hpt : ∀ t, Tendsto (fun N => Φ N (archPoint t)) atTop (𝓝 1) := by
         intro t
         have hterm : ∀ b : Fin M, Tendsto (fun N => c b *
@@ -239,7 +244,8 @@ theorem spectralMeasure_range_archPoint_eq_zero {f : posUnits → ℂ} {μ : Mea
           have h0 := tendsto_log_nearPoint b
           have := (Complex.continuous_exp.tendsto _).comp
             ((((Complex.continuous_ofReal.tendsto _).comp h0).mul_const (t : ℂ)).mul_const I)
-          simpa using this
+          simp only [Complex.ofReal_zero, zero_mul, Complex.exp_zero] at this
+          exact this
         have hsum := tendsto_finsetSum (Finset.univ : Finset (Fin M)) fun b _ => hterm b
         have hone : ∑ b : Fin M, c b * 1 = 1 := by
           simp only [hc, mul_one, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
@@ -247,10 +253,11 @@ theorem spectralMeasure_range_archPoint_eq_zero {f : posUnits → ℂ} {μ : Mea
           field_simp
         rw [hone] at hsum
         have := (Complex.continuous_normSq.tendsto _).comp hsum
-        simpa [hΦ] using this
+        rw [Complex.normSq_one] at this
+        exact this
       have hdom : ∀ N, ∀ᵐ t ∂ν, ‖Φ N (archPoint t)‖ ≤ 1 := fun N =>
         Eventually.of_forall fun t => by
-          rw [Real.norm_of_nonneg (Complex.normSq_nonneg _), hΦ, Complex.normSq_eq_norm_sq]
+          rw [Real.norm_of_nonneg (Complex.normSq_nonneg _), Complex.normSq_eq_norm_sq]
           have hle : ‖∑ b : Fin M, c b *
               ratChar (((nearPoint N b : posUnits) : ℚˣ) : ℚ) (archPoint t)‖ ≤ 1 := by
             calc _ ≤ ∑ b : Fin M,
@@ -265,20 +272,22 @@ theorem spectralMeasure_range_archPoint_eq_zero {f : posUnits → ℂ} {μ : Mea
                 field_simp
           have := pow_le_pow_left₀ (norm_nonneg _) hle 2
           simpa using this
-      have := tendsto_integral_of_dominated_convergence (fun _ => (1 : ℝ))
-        (fun N => ((Complex.continuous_normSq.comp (continuous_finset_sum _ fun b _ =>
+      have h := tendsto_integral_of_dominated_convergence (fun _ => (1 : ℝ))
+        (fun N => ((Complex.continuous_normSq.comp (continuous_finsetSum _ fun b _ =>
           continuous_const.mul (continuous_ratChar _))).comp continuous_archPoint).aestronglyMeasurable)
         (integrable_const 1) hdom (Eventually.of_forall hpt)
-      simpa [integral_const] using this
+      rw [integral_const, smul_eq_mul, mul_one] at h
+      exact h
     have hre : Tendsto (fun N => (G N).re) atTop (𝓝 ((f 1).re / M)) := by
       have := (Complex.continuous_re.tendsto _).comp hGlim
-      simpa [Complex.div_ofNat_re, Complex.div_natCast_re] using this
+      simp only [Complex.div_natCast_re] at this
+      exact this
     exact le_of_tendsto_of_tendsto' hIlim hre hGI
   -- conclude
   have hzero : ν.real univ = 0 := by
     refine le_antisymm ?_ measureReal_nonneg
     by_contra hpos
-    push_neg at hpos
+    push Not at hpos
     obtain ⟨M, hM'⟩ := exists_nat_gt ((f 1).re / ν.real univ)
     have hM1 : 0 < M + 1 := Nat.succ_pos M
     have h := hM (M + 1) hM1
@@ -350,7 +359,7 @@ theorem eq_zero_of_archimedean_le_integer_successor {φ : AffineGroupQ → ℂ}
     have h : μg (range archPoint) ≤ (μg + μh) (range archPoint) := by
       rw [Measure.add_apply]; exact le_self_add
     rw [hnull] at h
-    exact le_antisymm h (zero_le _)
+    exact le_antisymm h zero_le
   have hg_off := spectralMeasure_compl_range_archPoint hg hG hgG hgμ
   have h0 : μg = 0 := by
     rw [← Measure.measure_univ_eq_zero, ← Set.union_compl_self (range archPoint)]

@@ -13,9 +13,10 @@ positive-definite function.** De la Vallée Poussin, Mertens and Fejér inequali
 this one function. Forcing questions become questions about integer-valued positive-definite
 functions, and those can be answered completely.
 
-The boundary has three forcing mechanisms: positive definiteness of `D` (Bochner), Bessel's
-inequality for the Rankin–Selberg square of a signed datum, and the decay-exponent law, which uses
-growth rates of `log |Z|` instead of boundary limits. For families over a finite abelian group the
+The boundary has four forcing mechanisms: positive definiteness of `D` (Bochner), Baire regularity
+of boundary limits (which excludes dense supports), Bessel's inequality for the Rankin–Selberg square
+of a signed datum, and the decay-exponent law, which uses growth rates of `log |Z|` instead of
+boundary limits. For families over a finite abelian group the
 same theory lives on `G × ℝ`, and its only unforced configuration is a two-torsion exception.
 
 Namespace `GaloisForLFunctions.MultiplicativePositivityGeometry`; umbrella
@@ -162,6 +163,7 @@ The language keeps these distinctions explicit:
 | **P24 Lattice realization** | The lattice of simple poles and the alternating character are boundary divisors of `Π_p (1 − p^{−s})^{−m(p)}`, `m(p) ∈ ℕ`: primes in windows `(e^{hk+a}, e^{hk+a}(1 + (k+1)^{−2})]` with exponent `⌊h/S_k⌋` reproduce the one-prime factor at the boundary (PNT with de la Vallée Poussin error). Every type of the trichotomy is realized by integral data. | `latticeRound_isBoundaryDivisor`, `integral_lattice`, `integral_alternating` |
 | **P25 Family capacity** | For a family over a finite abelian `G`, an even configuration with pole order `k` at the origin, no other pole and finite symmetric support `S` is a joint boundary divisor iff `Σ_{p ∈ S} m(p) ≤ k`; realized by character-twisted ζ weights. A self-conjugate point (`2p = 0`) can carry the whole capacity `k`, a pair `±p` at most `k/2` each. | `family_isolated_iff`, `capFamily_isJointBoundaryDivisor` |
 | **P26 Locally finite Bochner** | A locally finite `D` (finitely many points in every bounded set; poles and zeros anywhere, infinitely many) is a boundary divisor iff it is even and positive definite. Fejér truncations `D(v)(1 − |v|/N)⁺` stay positive definite (overlap of intervals), and their convolutions with `n^{−2}Σ_{k ≤ n²} cos(ku/n)` are positive cosine polynomials converging to `D` pointwise. | `locallyFinite_boundary_divisor_iff`, `IsEvenPosDef.mul_fejerFactor`, `tendsto_fejerPoly` |
+| **P27 Regularity** | An integer boundary divisor with `D(0) = 1` is `δ₀`, a lattice indicator, an alternating lattice character or the constant `1`, without assuming local finiteness: a boundary divisor is a pointwise limit of continuous functions, so by Baire it cannot be `±1` on a dense subgroup and `0` on its dense translate. | `boundary_tetrachotomy`, `boundary_locallyFinite`, `not_tendsto_continuous_of_dense` |
 
 ---
 
@@ -232,7 +234,7 @@ multiplicative positivity. They belong to other programmes.
 | Higher degree approaches the cap | Only in the limit: `2cos(π/(K+2)) < 2` at every degree (P9) |
 | Boundary completeness reaches the interior | Boundary data cannot see interior zeros (P8) |
 | Positive definiteness alone forces vanishing | Needs integrality: the `1 − cos θ` twist has half zeros (P7) |
-| The trichotomy follows from positivity | Needs local finiteness; dense subgroups are not excluded by positive definiteness |
+| The trichotomy follows from positivity | Positive definiteness permits every subgroup indicator; regularity of boundary limits excludes dense ones, so the trichotomy plus the constant `1` holds for every boundary divisor (P27) |
 | Twisted products are Beurling systems | Their prime weights are not integral; they calibrate positivity, not integrality |
 | A better constant is a better method | The constant is fixed by the input `(A, B, G)` (P10); only a better input helps |
 | Function-field positivity proves Hasse | The golden datum `1 − 5X + 5X²` has nonnegative counts and fails RH |
@@ -333,3 +335,4 @@ A contribution must:
 | `IntegralLatticeRealization` | Lattice and alternating divisors from integer exponents at prime windows |
 | `FamilyCapacity` | Exact capacity classification of isolated family configurations |
 | `LocallyFiniteBochner` | Locally finite boundary divisors are exactly the positive-definite ones |
+| `BoundaryRegularity` | Baire regularity of boundary limits; the simple-pole classification without local finiteness |

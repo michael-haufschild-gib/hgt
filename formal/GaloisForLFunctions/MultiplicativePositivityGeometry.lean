@@ -27,6 +27,7 @@ import GaloisForLFunctions.MultiplicativePositivityGeometry.SiegelException
 import GaloisForLFunctions.MultiplicativePositivityGeometry.IntegralLatticeRealization
 import GaloisForLFunctions.MultiplicativePositivityGeometry.FamilyCapacity
 import GaloisForLFunctions.MultiplicativePositivityGeometry.LocallyFiniteBochner
+import GaloisForLFunctions.MultiplicativePositivityGeometry.BoundaryRegularity
 
 /-!
 # Multiplicative Positivity Geometry
@@ -41,7 +42,8 @@ Umbrella for the positive-definite geometry of Euler log-coefficients.
   purchase cap and the de la Vallée Poussin calibration.
 * Realization and range: integral Euler products (finite configurations and the lattice divisors
   over the rational primes), Bochner's theorem for finite and for locally finite configurations,
-  the zero capacity of a pole of order `k`, the positivity margin, the range of the boundary map.
+  the zero capacity of a pole of order `k`, the positivity margin, the range of the boundary map
+  and its Baire regularity (the simple-pole classification without local finiteness).
 * Further mechanisms: families over finite abelian groups, the two-torsion exception, protected
   points and the exact family capacity; Rankin–Selberg Bessel forcing, the zero-mass law on abelian
   groups, the decay-exponent law and Beurling's threshold.

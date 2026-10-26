@@ -461,9 +461,12 @@ To build:
     every divisor-order ideal is the closure of its jet sources plus the Poisson boundary; the
     critical jet sources synthesize the full-jet blind ideal, which is the blind ideal iff every
     off-line zero is simple, and is everything iff RH.
-11. **Spectral readings of the limits.** Averaged Weil positivity on short height windows
-    `[Γ, Γ + H]` as positivity of the spectral measure against height windows; the escape states of
-    cofactor modules as horizon Grams of the profile `G(s) = ζ(s)(1/ζ(s+ε) − 1/ζ(1+ε))/s`.
+11. **Spectral readings of the limits.** Short height windows are answered for `H ≥ Γ^{99/100}`
+    (ACS `ShortWindowAveragedWeilPositivity`); the negative part at one height is read by the off-line
+    field `Φ(γ) = Σ_q (Re q − 1/2)²/(1 + (Im q − γ)²)²`, small at almost every height and almost every
+    zero ordinate of such windows (`AlmostEveryHeightIsNearlyWeilPositive`,
+    `AlmostEveryZeroOrdinateIsNearlyWeilPositive`). Open: the escape states of cofactor modules as
+    horizon Grams of the profile `G(s) = ζ(s)(1/ζ(s+ε) − 1/ζ(1+ε))/s`.
 12. **Signed additive prime correlations** at the square-root threshold as the analytic face of the
     duality (TTPC), in particular signed near-coincidence cancellation at one height.
 

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArithmeticPositiveDuality.ArithmeticCorrelationGeometry.MultiplicativeObservationIsGaugeInvariant
+import GaloisForLFunctions.ArithmeticCorrelationGeometry.MultiplicativeObservationIsGaugeInvariant
 import Mathlib.Algebra.Category.Grp.Injective
 
 /-!

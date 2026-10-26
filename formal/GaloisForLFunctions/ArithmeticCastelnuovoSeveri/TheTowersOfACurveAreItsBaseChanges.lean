@@ -9,8 +9,8 @@ height with period `2π/log q`. Its zeros of a fixed depth have convergence expo
 deep-sparse one-prime law of `OnePrimeSeesTheWholeDefectOfZeta` does not apply; but its real parts
 take finitely many values, and one probe sees every tower at every scale
 (`curve_exists_probe_tower_law`, via `exists_probe_tower_law_of_wellFounded_at`). What a tower of
-scale `ℓ` sees depends only on the folding `ρ_{i,k} ↦ e^{ℓ(ρ_{i,k} − ½)} = e^{(ℓ/log q)(log β_i + 2πik)}`
-(`frobEig_zetaZero`).
+scale `ℓ` sees depends only on the folding
+`ρ_{i,k} ↦ e^{ℓ(ρ_{i,k} − ½)} = e^{(ℓ/log q)(log β_i + 2πik)}` (`frobEig_zetaZero`).
 
 * **Arithmetic scales** (`outerEig_curveConfig_rat`). At `ℓ = (a/b) log q`, `a, b` coprime, the
   outer eigenvalues are the `b`-th roots of the `β_i^a` outside the unit circle; finitely many.
@@ -142,11 +142,12 @@ theorem outerEig_curveConfig_infinite {ℓ : ℝ} (hirr : Irrational (ℓ / Real
     simp only [D.frobEig_zetaZero] at h
     obtain ⟨n, hn⟩ := Complex.exp_eq_exp_iff_exists_int.mp h
     by_contra hne
-    have h2 : ((ℓ / Real.log D.q * ((k - k' : ℤ) : ℝ) - n : ℝ) : ℂ) * (2 * π * I) = 0 := by
+    set c : ℝ := ℓ / Real.log D.q with hc
+    have h2 : ((c * ((k - k' : ℤ) : ℝ) - n : ℝ) : ℂ) * (2 * π * I) = 0 := by
       push_cast
       linear_combination hn
     rcases mul_eq_zero.mp h2 with h3 | h3
-    · have h4 : ℓ / Real.log D.q * ((k - k' : ℤ) : ℝ) = n := by
+    · have h4 : c * ((k - k' : ℤ) : ℝ) = n := by
         have := Complex.ofReal_eq_zero.mp h3
         linarith
       exact (hirr.mul_intCast (sub_ne_zero.mpr hne)).ne_int n h4
@@ -246,7 +247,9 @@ theorem coe_outerSpectrum_pow {a : ℕ} (ha : 0 < a) :
   constructor
   · rintro ⟨⟨i, hi⟩, hw⟩
     refine ⟨i, ?_, hi.symm⟩
-    rw [← hi, norm_pow] at hw
+    rw [← hi] at hw
+    change 1 < ‖D.β i ^ a‖ at hw
+    rw [norm_pow] at hw
     exact (one_lt_pow_iff_of_nonneg (norm_nonneg _) ha.ne').mp hw
   · rintro ⟨i, hi, hw⟩
     refine ⟨⟨i, hw.symm⟩, ?_⟩
@@ -260,8 +263,8 @@ theorem curve_tower_law_baseChange {a : ℕ} (ha : 0 < a) :
     ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧ ∀ n : ℕ,
       (∃ K : Finset ℤ, n ≤ hermNegIndex (towerGram (D.curveConfig hD) g (a * Real.log D.q) K)) ↔
         n ≤ hermNegIndex ((D.pow a ha).spanGram (Fintype.card ι)) := by
-  obtain ⟨g, hg, hgc, hlaw⟩ :=
-    D.curve_exists_probe_tower_law hD (mul_pos (by exact_mod_cast ha) D.log_q_pos)
+  obtain ⟨g, hg, hgc, hlaw⟩ := D.curve_exists_probe_tower_law hD
+    (show (0 : ℝ) < a * Real.log D.q from mul_pos (by exact_mod_cast ha) D.log_q_pos)
   refine ⟨g, hg, hgc, fun n => ?_⟩
   rw [hlaw n, (D.pow a ha).pontryagin_law_curve.2 _ le_rfl, ← D.coe_outerSpectrum_pow hD ha,
     Set.encard_coe_eq_coe_finsetCard, ENat.coe_le_coe]

@@ -16,8 +16,7 @@ subgroups and the boundary of finite presentations locate it, and what each of t
 see.
 
 Namespace `GaloisForLFunctions.ArithmeticCorrelationGeometry`; umbrella
-`ArithmeticPositiveDuality/ArithmeticCorrelationGeometry.lean`, imported by the
-`ArithmeticPositiveDuality` umbrella. Everything is unconditional. Hypotheses of the form
+`ArithmeticCorrelationGeometry.lean`. Everything is unconditional. Hypotheses of the form
 "`CoalescentSurplusAtMost β`" or RH appear only inside equivalences owned by other programmes.
 
 ---
@@ -34,16 +33,16 @@ that is specific to `ζ` must be gauge charged.
 
 | Programme | Interface |
 |---|---|
-| [TransThresholdPairCorrelation](../../TransThresholdPairCorrelation/README.md) | The coalescent prime-pair surplus at bandwidth `4/3` is pure gauge charge: mean zero, variance `o(N(T,2T)²)`; every budget holds for Haar-almost every twist of the primes. The open problem is a statement about the gauge point `0`. |
-| [SquareRootThreshold](../../SquareRootThreshold/README.md), [ArithmeticKunnethTheory](../../ArithmeticKunnethTheory/README.md) | Windowed mean values and product moments. The archimedean family is a line in `G`; below the threshold it computes the gauge moments exactly, beyond it the excess is the near-incidence form. Gauge Jensen turns the AKT homogeneity into a linear loss law. |
-| [SignedSuccessorArithmetic](../../SignedSuccessorArithmetic/README.md) | The dilation cocycle is the gauge-covariance law of completely multiplicative signs. The sign gauge (`2`-torsion of `G`) sees a successor pair only when `j(j+h)` is a square. |
-| [BiarithmeticGeometry](../../BiarithmeticGeometry/README.md) | The finite horizon, its affine action and escaped cells. ACG adds the boundary cocycle, the incidence formula for mixed Grams, and the critical weight at which dilation boundaries are horizon uniform. |
-| [ArithmeticDefectRigidity](../../ArithmeticDefectRigidity/README.md) | Escape states, origin traces, moving successors. ACG fixes the normalisation (`σ = ½`) at which the boundary of a dilation is a finite nonzero invariant, `log a`. |
-| [BiScaleUncertainty](../../BiScaleUncertainty/README.md) | Twist invariance of window extremes (`PrimeWindowTwistInvariance`) is a case of gauge invariance. |
-| [ArithmeticPositiveDuality](../../ArithmeticPositiveDuality/README.md) | Affine positivity is induced from the dilations: free successor coordinates impose nothing. ACG explains why: free successor coordinates range over gauge-charged data; prescribed ones are a gauge point. |
-| [ArithmeticCastelnuovoSeveri](../../ArithmeticCastelnuovoSeveri/README.md), [ArithmeticOrientationGeometry](../../ArithmeticOrientationGeometry/README.md) | The `𝔽_q` calibration and the one known sublinear loss law: eventual Hasse–Weil is Hasse–Weil (a correspondence with a fixed budget). Golden datum. |
-| [MultiplicativePositivityGeometry](../../MultiplicativePositivityGeometry/README.md) | Boundary forcing by positivity of a multiplicative (gauge-invariant) divisor; it reaches `Re s = 1` and stops — gauge-invariant positivity is blind in the strip. |
-| [ArithmeticContinuationAndCriticalEnergy](../../ArithmeticContinuationAndCriticalEnergy/README.md) | Signed continuation. The Möbius boundary is the model of a signed horizon-uniform law whose positive part diverges. |
+| [TransThresholdPairCorrelation](../TransThresholdPairCorrelation/README.md) | The coalescent prime-pair surplus at bandwidth `4/3` is pure gauge charge: mean zero, variance `o(N(T,2T)²)`; every budget holds for Haar-almost every twist of the primes. The open problem is a statement about the gauge point `0`. |
+| [SquareRootThreshold](../SquareRootThreshold/README.md), [ArithmeticKunnethTheory](../ArithmeticKunnethTheory/README.md) | Windowed mean values and product moments. The archimedean family is a line in `G`; below the threshold it computes the gauge moments exactly, beyond it the excess is the near-incidence form. Gauge Jensen turns the AKT homogeneity into a linear loss law. |
+| [SignedSuccessorArithmetic](../SignedSuccessorArithmetic/README.md) | The dilation cocycle is the gauge-covariance law of completely multiplicative signs. The sign gauge (`2`-torsion of `G`) sees a successor pair only when `j(j+h)` is a square. |
+| [BiarithmeticGeometry](../BiarithmeticGeometry/README.md) | The finite horizon, its affine action and escaped cells. ACG adds the boundary cocycle, the incidence formula for mixed Grams, and the critical weight at which dilation boundaries are horizon uniform. |
+| [ArithmeticDefectRigidity](../ArithmeticDefectRigidity/README.md) | Escape states, origin traces, moving successors. ACG fixes the normalisation (`σ = ½`) at which the boundary of a dilation is a finite nonzero invariant, `log a`. |
+| [BiScaleUncertainty](../BiScaleUncertainty/README.md) | Twist invariance of window extremes (`PrimeWindowTwistInvariance`) is a case of gauge invariance. |
+| [ArithmeticPositiveDuality](../ArithmeticPositiveDuality/README.md) | Affine positivity is induced from the dilations: free successor coordinates impose nothing. ACG explains why: free successor coordinates range over gauge-charged data; prescribed ones are a gauge point. |
+| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md), [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md) | The `𝔽_q` calibration and the one known sublinear loss law: eventual Hasse–Weil is Hasse–Weil (a correspondence with a fixed budget). Golden datum. |
+| [MultiplicativePositivityGeometry](../MultiplicativePositivityGeometry/README.md) | Boundary forcing by positivity of a multiplicative (gauge-invariant) divisor; it reaches `Re s = 1` and stops — gauge-invariant positivity is blind in the strip. |
+| [ArithmeticContinuationAndCriticalEnergy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Signed continuation. The Möbius boundary is the model of a signed horizon-uniform law whose positive part diverges. |
 | RHTower | Prime number theorem (`tendsto_sum_range_succ_moebius_div`), squarefree density (`card_filter_squarefree_Ioc_ge`), Gram and certificate infrastructure. |
 
 ---

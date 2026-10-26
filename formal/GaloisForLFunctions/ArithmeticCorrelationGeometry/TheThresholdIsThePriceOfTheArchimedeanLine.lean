@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArithmeticPositiveDuality.ArithmeticCorrelationGeometry.SuccessorCorrelationsArePureGaugeCharge
+import GaloisForLFunctions.ArithmeticCorrelationGeometry.SuccessorCorrelationsArePureGaugeCharge
 
 /-!
 # The threshold is the price of the archimedean line

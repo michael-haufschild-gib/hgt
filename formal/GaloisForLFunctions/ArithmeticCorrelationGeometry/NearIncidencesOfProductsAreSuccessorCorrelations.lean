@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArithmeticPositiveDuality.ArithmeticCorrelationGeometry.TheThresholdIsThePriceOfTheArchimedeanLine
+import GaloisForLFunctions.ArithmeticCorrelationGeometry.TheThresholdIsThePriceOfTheArchimedeanLine
 
 /-!
 # Near-incidences of products are successor correlations

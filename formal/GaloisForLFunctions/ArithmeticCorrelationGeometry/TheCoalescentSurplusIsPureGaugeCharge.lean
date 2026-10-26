@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArithmeticPositiveDuality.ArithmeticCorrelationGeometry.SuccessorCorrelationsArePureGaugeCharge
+import GaloisForLFunctions.ArithmeticCorrelationGeometry.SuccessorCorrelationsArePureGaugeCharge
 import GaloisForLFunctions.TransThresholdPairCorrelation.CoalescentPrimeReductionAndParitySieve
 
 /-!

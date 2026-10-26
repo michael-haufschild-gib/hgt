@@ -40,3 +40,4 @@ import GaloisForLFunctions.FullyProvenNewTargets
 import GaloisForLFunctions.KummerRootApplications
 import GaloisForLFunctions.HTGeometry.NevanlinnaCharacteristicLowerBound
 import GaloisForLFunctions.StripBochnerWeilForcing
+import GaloisForLFunctions.ArithmeticCorrelationGeometry

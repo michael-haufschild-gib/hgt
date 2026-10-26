@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArithmeticPositiveDuality.ArithmeticCorrelationGeometry.MultiplicativeObservationIsGaugeInvariant
+import GaloisForLFunctions.ArithmeticCorrelationGeometry.MultiplicativeObservationIsGaugeInvariant
 
 /-!
 # Successor correlations are pure gauge charge
