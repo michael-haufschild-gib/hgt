@@ -27,6 +27,7 @@ import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheEscapeCompleten
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheEscapeAlternative
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.ASectionCountIsTheSign
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheStepanovCountIsTheSign
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheSuccessorDefectInTheStrip
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.ExteriorAndHeightCoupledQuartetContractions
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.IntrinsicExteriorAndMinimumAnchorCost
 
@@ -42,6 +43,6 @@ horizons along orbits; sparse annihilators; the cofactor Gram as a translation G
 Laplace symbol; the family loss law; escape states of dominant configurations, their rank, their
 horizon averages and the coupling of dilations with the archimedean flow on them; power rows of
 the zeros as dominant configurations; completeness of infinite summable configurations; the escape
-completeness criterion; the escape alternative; section counts and Stepanov counts as the sign. See
+completeness criterion; the escape alternative; section counts and Stepanov counts as the sign; the successor defect in the strip. See
 `ArithmeticCorrespondencePositivity/README.md`.
 -/
