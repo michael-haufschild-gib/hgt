@@ -15,7 +15,7 @@ open scoped CompactlySupported
 namespace GaloisForLFunctions.BiScaleUncertainty.EnergyCycle
 set_option autoImplicit false
 
-/-- The exact derivative order condition bounds each inner value and its entire power below one half. -/
+/-- The derivative order condition gives a one-half lower bound for the inner value and its power. -/
 theorem derivative_inner_power_ge_half (f : C_c(ℝ, ℝ))
     (hf : ContDiff ℝ 2 (f : ℝ → ℝ)) (hne : f ≠ 0) {B R x : ℝ}
     (hB : normalizedDirichletEnergy f ≤ B) (hx : |x| ≤ R) (n : ℕ)

@@ -72,21 +72,24 @@ Source ingredients inspected: `InfiniteGridUniformTail.lean` contains the global
 - Corpus query `closed cycle positive collar quantitative recovery finite order noise` returned all-orders cycle recovery and collar-energy results, without this finite sampling estimate among returned candidates. Coverage was a source snapshot, semantic completeness unmeasured.
 - [x] Finite-cycle factorization and elementary conditional noise estimate proved symbolically.
 - [ ] Lean finite-cycle and sampling identities, including zero-radius and endpoint cases.
-- [ ] Actual smooth-source derivative bounds, explicit normalization and nonempty controlled classes; no assumed convergence or assumed recovery.
-- [ ] Existing distant-copy obstruction transported into the controlled class with quantified parameters.
+- [x] Actual smooth-source derivative bounds, explicit normalization and nonempty controlled classes; no assumed convergence or assumed recovery.
+- [x] Existing distant-copy obstruction transported into the controlled class with quantified parameters.
 - [x] Formalize the singular-energy collar and the grid/energy finite-accuracy theorem above by reusing the existing modulus and tail estimates; inspect the exact corpus query before claiming any extension absent.
-- [ ] Named-source/axiom audits, umbrella wiring, index and lint.
+- [x] Named-source/axiom audits, umbrella wiring, index and scoped lint. Global unrelated failures are recorded below.
 
 This component does not close item 9.
 
 ## Frozen Lean completion
 
-All ten started leaves passed the combined source and transitive axiom audit:
-80 public declarations, using only `propext`, `Classical.choice`, `Quot.sound`.
-Canonical direct checks remain pending. Unique umbrella imports and indexed
-names are verified; global lint has no diagnostic for these leaves. One redundant
-tactic-composition warning was removed before migration; the final leaf check
-will verify that source. The other audit messages were informational ring output.
+All ten started leaves passed their final direct source checks with no errors
+or warnings. Nine logs are empty; `DerivativeCycleConditioning` emits two
+informational ring notices, matching the axiom audit. Its redundant tactic
+composition warning was removed and the final source checked. All 80 public
+declarations have transitive audits using only `propext`, `Classical.choice`,
+`Quot.sound`. Only five dependency leaves required new oleans; all five builds
+passed. Unique umbrella imports, indexed names and source hashes are verified.
+Global lint has no diagnostic for these leaves (20 unrelated structural errors
+and 417 size warnings). No umbrella or existing olean was rebuilt.
 
 | Exact claim | Canonical leaf and declaration |
 |---|---|
@@ -119,3 +122,24 @@ Evidence: `/tmp/leftovers-cycle-public-names.json`,
 [the frozen-scope tracker](../../1-in-progress/leftovers-unconditional-formalization.md).
 
 2026-10-18 checkpoint: `EnergyControlledClosedCycleRecovery.lean` now proves the energy-derived κ=1/2 reconstruction protocol, with explicit mesh size/order and signed trace error retained. `EnergyCycle.global_recovery` and `fixed_integer_grid_recovery` passed a direct named-source Lean check with no warnings and are wired into the field umbrella. The modulus-based collar is exp(-(1+32 max(K,0)/exp(-1/2))); no derivative bound is assumed. The arbitrary-κ statement and the other unchecked gates above remain separate. This formalizes existing paper work and is not counted as a new contribution in the 100-contribution programme; its associated exact-order obstruction is tracked in `../../3-formalized/biscale-energy-controlled-cycle-observability-2026-10-18.md`.
+
+## Final source checks for the started scope
+
+Every row passed a direct `lake --old env lean -j 1` check from `formal/`,
+without writing an olean. The first five leaves supplied the only new oleans
+needed by the remaining started modules. The source statements retain the
+exact paper constants; remaining unstarted parameter-selection work stays
+paused and this partially covered card is not promoted.
+
+| Leaf | SHA-256 | Final direct-check log |
+|---|---|---|
+| `FirstOrderEnergyCollar` | `d96b38f6be1733f17fb4178235a3a9349aa91f1e7221920aa2e133cde1849170` | `/tmp/leftovers-cycle-collar-final.log` |
+| `ClosedCycleScalarRecovery` | `6dd9cb09d8c4164977a4606d57edb6dc86cecb66f6a0a16d9d781eb199349ef2` | `/tmp/leftovers-cycle-scalar-final.log` |
+| `CompactSourceDerivativeEnergy` | `d68db0038dcdfccb63ca5ae375a5b027d5004543affc8e009f613ac2653fd427` | `/tmp/leftovers-cycle-source-derivative-final.log` |
+| `CompactCorrelationDerivativeBounds` | `c7c1b6f0e218e24f717f105da2c6560535b9da20d105a55a7ef616db5b1ed989` | `/tmp/leftovers-cycle-correlation-derivative-final.log` |
+| `ControlledClosedCycleRecovery` | `5bef47bf1618886765dda55f48368c3001e2336f6f42aaa2653617c41c33d66c` | `/tmp/leftovers-cycle-controlled-final.log` |
+| `GridFiniteCycleRecovery` | `860048b5293a00b1aa3bdcea19d636ecf6008cf30f5f044f8611a3f6d3981141` | `/tmp/leftovers-cycle-grid-final.log` |
+| `ControlledSharpCycleSources` | `59bd4dde72fff6960ba69987df9aaa0041bde8a45a1d362c0821286bb2720aac` | `/tmp/leftovers-cycle-sharp-final.log` |
+| `DerivativeCycleConditioning` | `a636c585ded88d88feb2cefb216c8254b412e4fbb63b016a8a3ca769a9c878e4` | `/tmp/leftovers-cycle-conditioning-final.log` |
+| `ClosedCycleDataResiduals` | `2c6240f3264fa3d0268ee73e742d2d4041b7198a57d6674026967585d7b674aa` | `/tmp/leftovers-cycle-residuals-final.log` |
+| `UnitMassCompactSources` | `e25513b2ddf29de14278ed9edaba87a3cac69cd4dc1bca461af8e902d307a38a` | `/tmp/leftovers-cycle-unit-mass-final.log` |

@@ -23,6 +23,9 @@ Shifting a source `a` by one replaces its Dirichlet series `Σ a_{n+1}(n+1)^{−
   Dirichlet series of the shifted primes `Σ Λ(n)(n+1)^{−s}` equals `−ζ′/ζ(s) − D_Λ(s)` on `Re s > 1`,
   with `D_Λ` holomorphic on the whole half-plane `Re s > 0`. So the shifted prime source has exactly
   the poles of `−ζ′/ζ` in the critical strip, with the same principal parts.
+* **Size of the defect** (`norm_succShiftDefect_le`, `norm_succShiftDefect_vonMangoldt_le`).
+  `|D_a(s)| ≤ |s| Σ |a_{n+1}|(n+1)^{−σ−1}`; for the primes `|D_Λ(s)| ≤ |s| |ζ′/ζ(1 + σ)|`, which is
+  `≍ |s|/σ` as `σ ↓ 0`: the regular part of the successor grows at most linearly in the height.
 
 The successor is therefore **unipotent** on the polar fibres: it acts as the identity on the
 singular part of every zero. Closure of a carrier under the successor imposes no condition on the
@@ -188,5 +191,49 @@ theorem succShift_vonMangoldt_eq {s : ℂ} (hs : 1 < s.re) :
       -deriv riemannZeta s / riemannZeta s - succShiftDefect vonMangoldtC s := by
   rw [tsum_succShift_eq vonMangoldtC (fun _ hσ => summable_vonMangoldt_shift hσ) hs,
     tsum_vonMangoldt_eq hs]
+
+/-! ### The size of the defect -/
+
+/-- **The defect grows at most linearly in `|s|`**:
+`|D_a(s)| ≤ |s| Σ |a_{n+1}| (n+1)^{−Re s − 1}` on `Re s > 0`. -/
+theorem norm_succShiftDefect_le (a : ℕ → ℂ)
+    (hsum : ∀ σ : ℝ, 0 < σ → Summable fun n : ℕ => ‖a (n + 1)‖ * ((n : ℝ) + 1) ^ (-σ - 1))
+    {s : ℂ} (hs : 0 < s.re) :
+    ‖succShiftDefect a s‖ ≤ ‖s‖ * ∑' n : ℕ, ‖a (n + 1)‖ * ((n : ℝ) + 1) ^ (-s.re - 1) := by
+  have hb : Summable fun n : ℕ => ‖a (n + 1)‖ * (‖s‖ * ((n : ℝ) + 1) ^ (-s.re - 1)) :=
+    ((hsum s.re hs).mul_left ‖s‖).congr fun n => by ring
+  calc ‖succShiftDefect a s‖ ≤ ∑' n : ℕ, ‖a (n + 1)‖ * (‖s‖ * ((n : ℝ) + 1) ^ (-s.re - 1)) :=
+        tsum_of_norm_bounded hb.hasSum fun n => norm_succShiftTerm_le a n hs
+    _ = ‖s‖ * ∑' n : ℕ, ‖a (n + 1)‖ * ((n : ℝ) + 1) ^ (-s.re - 1) := by
+        rw [← tsum_mul_left]
+        exact tsum_congr fun n => by ring
+
+/-- The prime weights at `1 + σ`: `Σ Λ(n+1)(n+1)^{−σ−1} = −ζ′/ζ(1 + σ)`. -/
+theorem tsum_vonMangoldt_shift_eq {σ : ℝ} (hσ : 0 < σ) :
+    ((∑' n : ℕ, ‖vonMangoldtC (n + 1)‖ * ((n : ℝ) + 1) ^ (-σ - 1) : ℝ) : ℂ) =
+      -deriv riemannZeta (1 + σ) / riemannZeta (1 + σ) := by
+  have hs : 1 < ((1 + σ : ℝ) : ℂ).re := by simp; linarith
+  have h1 : (1 : ℂ) + (σ : ℂ) = ((1 + σ : ℝ) : ℂ) := by push_cast; ring
+  rw [Complex.ofReal_tsum, h1, ← tsum_vonMangoldt_eq hs]
+  refine tsum_congr fun n => ?_
+  have hn : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+  rw [vonMangoldtC, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg ArithmeticFunction.vonMangoldt_nonneg, Complex.ofReal_mul,
+    Complex.ofReal_cpow hn.le]
+  push_cast
+  congr 2
+  ring
+
+/-- **The regular part of the successor is small**: on `Re s = σ > 0` the defect of the prime
+source is at most `|s|` times `|ζ′/ζ(1 + σ)|`. Near a zero `ρ` the shifted prime source is
+`−ζ′/ζ` plus a term of size `≤ |ρ| |ζ′/ζ(1 + Re ρ)|`. -/
+theorem norm_succShiftDefect_vonMangoldt_le {s : ℂ} (hs : 0 < s.re) :
+    ‖succShiftDefect vonMangoldtC s‖ ≤
+      ‖s‖ * ‖deriv riemannZeta (1 + s.re) / riemannZeta (1 + s.re)‖ := by
+  refine (norm_succShiftDefect_le vonMangoldtC (fun _ hσ => summable_vonMangoldt_shift hσ) hs).trans
+    (le_of_eq ?_)
+  congr 1
+  rw [← norm_neg, ← neg_div, ← tsum_vonMangoldt_shift_eq hs, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (tsum_nonneg fun n => by positivity)]
 
 end GaloisForLFunctions.ArithmeticCorrespondencePositivity

@@ -18,6 +18,8 @@ sharp no-gos with positive survivors); build the §4.5 tools; foundational READM
 - [x] 1 → 2  paper proofs of pillars P1–P8 (in module docstrings)
 - [x] 2 → 3  16 modules (P1–P16) checked with `lake --old env lean`, wired into the umbrella and
   `MainTheorems`; axiom audit of 37 key theorems: only `propext`, `Classical.choice`, `Quot.sound`
+- [x] 2 → 3  W8 / Q1 and the remaining §4.5 tools: 7 modules (P18–P24) checked, wired; axiom audit
+  of 22 headline theorems: only `propext`, `Classical.choice`, `Quot.sound`
 
 ## Approach (pillars, in order)
 1. Normalized graphs on polar surfaces / scaling data: `N(y) = y + (1 − y·V)H + β(y)V`,
@@ -44,5 +46,11 @@ sharp no-gos with positive survivors); build the §4.5 tools; foundational READM
 - 2026-10-26 — P1–P16 checked clean; a parallel agent added P17
   (`SymmetricSquareContractionsAndExteriorCounts`: exterior-power kernel counts force unitarity). Escape states are developed by ACG/ADR agents
   (EscapeStatesAreSpectralMeasuresOnTheGaugeTorus) — cite, do not duplicate.
+- 2026-10-26 — W8 done (P18 translation Gram, P19 Laplace symbol `G`); Q1 answered for dominant
+  configurations (P20 phase kernels of rank = number of zeros, P24 transfer to power rows), with
+  P21 (horizon averages select zeros), P22 (dilation = archimedean flow on escape states),
+  P23 (family averages lose linearly). Q1 residual for `ζ`: the explicit-formula split of the
+  profile with symbol `G` (growth of `1/ζ(s+ε)` between zeros).
 - Open: first gauge-charged window (odd 181/500 vs the 2-flipped twin); localizing carrier with
-  elliptic local symmetry; Rosati-type effectivity from counts; W8 / escape completeness.
+  elliptic local symmetry; Rosati-type effectivity from counts; the explicit-formula split;
+  infinite (almost periodic) dominant configurations; the non-attained abscissa.

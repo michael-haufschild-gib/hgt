@@ -44,10 +44,10 @@ The original dyadic tent still has `D_w=0`, bounded `A`, and variance proportion
 - Corpus query `perturbed integer logarithmic grid doubling exact incidence approximate energy` returned grid-trace and multiplier-collision identities, without this finite graph perturbation law among returned statements. Coverage was a source snapshot with unmeasured semantic completeness.
 - The survivor uses elementary energy comparison and a classical graph mechanism. No external originality claim is made.
 - [x] Exact perturbed grids, complete incidence exclusion, gap bounds and weighted survivor proved symbolically.
-- [ ] Lean arithmetic/gap/weight proofs and transfer of the joint-coercivity constants.
+- [x] Lean arithmetic/gap/weight proofs and transfer of the joint-coercivity constants.
 - [ ] Instantiate the common finite arithmetic model and its divisor-sieve realization.
 - [ ] Determine the corresponding statement for actual continuum correlation constraints; do not substitute the graph example for that question.
-- [ ] Named-source/axiom audits, wiring, index and lint.
+- [x] Named-source/axiom audits, wiring, index and scoped lint. Global unrelated failures are recorded below.
 
 This component alone does not close item 12.
 
@@ -55,8 +55,10 @@ This component alone does not close item 12.
 
 The two started leaves passed the combined source and transitive axiom audit:
 24 public declarations, using only `propext`, `Classical.choice`, `Quot.sound`.
-Canonical direct checks remain pending. Unique umbrella imports and indexed
-names are verified; global lint has no diagnostic for these leaves.
+Both final direct checks passed without diagnostics. Neither leaf needs an
+olean for another started module. Unique umbrella imports and indexed names
+are verified; global lint has no diagnostic for these leaves (20 unrelated
+errors and 417 size warnings).
 
 | Exact claim | Canonical leaf and declaration |
 |---|---|
@@ -78,3 +80,14 @@ No graph statement is asserted to settle the continuum question.
 
 Evidence: `/tmp/leftovers-dyadic-perturbed-public-names.json` and
 `/tmp/leftovers-dyadic-perturbed-audit-r2.log` (62 declarations across both cards).
+
+## Final source checks for the started scope
+
+Both leaves passed direct `lake --old env lean -j 1` checks from `formal/`,
+without writing oleans. Their 24 public declarations have standard-axiom
+certificates in the shared 62-name audit. No umbrella was compiled.
+
+| Leaf | SHA-256 | Final direct-check log |
+|---|---|---|
+| `WeightedDoublingIncidence` | `f5431b77daf6edf45efeba4a681be25bc9874910f71d16413a97a586915cee03` | `/tmp/leftovers-weighted-incidence-final.log` |
+| `QuadraticPerturbedNodes` | `ace2e3553f44f6af64eae9d1bc136f7c203009a0952389138fe8682cd0125a49` | `/tmp/leftovers-quadratic-nodes-final.log` |

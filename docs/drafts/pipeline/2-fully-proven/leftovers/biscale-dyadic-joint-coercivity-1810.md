@@ -61,8 +61,8 @@ For the additive-only test `g(n)=n`, the exact variance is `N(N²−1)/12` and `
 - Binary-tree inverse spectral gaps of order `N` are classical: [Molitierno–Neumann–Shader, *Tight bounds on the algebraic connectivity of a balanced binary tree*](https://www2.math.ethz.ch/EMIS/journals/ELA/ela-articles/articles/vol6_pp62-71.pdf). The proof above is a direct weighted-path argument and does not treat the tree estimate as a novel principle.
 - [x] Symbolic upper bound, explicit lower witness and single-scale comparisons.
 - [ ] Formal exact integer-window models, all finite-sum/counting identities and unconditional conclusions for every `h`.
-- [ ] Explicit divisor-sieve realization of window vectors where required by the common-model theorem.
-- [ ] Named-source and axiom audits, wiring, index and lint.
+- [x] Explicit divisor-sieve realization of every finite window vector. Energy transport in the common model remains separate below.
+- [x] Named-source and axiom audits, wiring, index and scoped lint. Global unrelated lint failures are recorded below.
 - [ ] Perturbed-incidence theorem. Keeping adjacent-node energy is different from keeping the literal translation-by-one action on perturbed nodes.
 
 This card does not yet close item 7 or item 12.
@@ -87,8 +87,10 @@ a separate novelty claim.
 
 The five started leaves passed the combined source and transitive axiom audit:
 38 public declarations, using only `propext`, `Classical.choice`, `Quot.sound`.
-Canonical direct checks remain pending. Unique umbrella imports and indexed
-names are verified; global lint has no diagnostic for these leaves.
+All five final direct checks passed without diagnostics. Only Tent and
+FiniteWindowVariance required new oleans, and both builds passed. Unique
+umbrella imports and indexed names are verified; global lint has no diagnostic
+for these leaves (20 unrelated errors and 417 size warnings).
 
 | Exact claim | Canonical leaf and declaration |
 |---|---|
@@ -115,3 +117,18 @@ no additional draft is started to close these remaining gates.
 
 Evidence: `/tmp/leftovers-dyadic-perturbed-public-names.json` and
 `/tmp/leftovers-dyadic-perturbed-audit-r2.log` (62 declarations across both cards).
+
+## Final source checks for the started scope
+
+Every row passed a direct `lake --old env lean -j 1` source check from `formal/`.
+The exact tree comparison and both downstream coercivity statements additionally
+passed their three-name axiom audit. No existing olean or umbrella was rebuilt.
+
+| Leaf | SHA-256 | Final direct-check log |
+|---|---|---|
+| `DyadicMantissaTent` | `acd4ef93ae199c3bfdc4e6540eed9ebe32769291c998de416af1b8439ffe818d` | `/tmp/leftovers-dyadic-tent-final.log` |
+| `IntegerLinearVariance` | `0dccb554cd2563d43ee770a701736e7586811a933fbdb2e79f016b3dcf2ede7f` | `/tmp/leftovers-integer-variance-final.log` |
+| `FiniteSieveRealization` | `c85efe0fc79eaf2434177cbae0b675d37fec3f57fd5ff2dfed9824148003eb63` | `/tmp/leftovers-sieve-realization-final.log` |
+| `FiniteWindowVariance` | `ba0f8560596f92637b3e65800bf17b0d66efe28917622790dd31b64ca25d4584` | `/tmp/leftovers-window-variance-final.log` |
+| `DyadicMantissaVariance` | `49d335546715ac9f0d11e1eb737e667d7e8e6f4880f795fa209375beb97f4d7a` | `/tmp/leftovers-dyadic-variance-final.log` |
+| `FiniteHorizonPositiveCoercivity` | `847fc32a9a136cc3409d44fcb46256aec6cbd53dff642eec224837ef21be2dc6` | `/tmp/leftovers-tree-owner-final.log` |

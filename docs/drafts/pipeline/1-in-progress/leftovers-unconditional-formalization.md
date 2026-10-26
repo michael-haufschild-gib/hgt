@@ -2,6 +2,7 @@
 
 - **ID:** leftovers-unconditional-formalization
 - **Stage:** 1-in-progress
+- **Execution:** PAUSED at the user's request; started Lean work finished and wired.
 - **Type:** FORMALIZATION PROGRAMME
 - **Source:** user attachment `7b8e0d61-b048-4085-aa55-1ca6d2ead9d1/pasted-text-1.txt`
 - **Scope:** Every proven theorem in all 14 cards initially in
@@ -20,117 +21,80 @@ Existing unrelated worktree changes must be preserved.
 
 ## User steering: finish started Lean work, then pause
 
-The user has paused the larger programme and requested completion and wiring
-of already-started Lean work before pausing. Do not begin new research routes
-or further auxiliary claims. Frozen completion scope:
+The requested closure is complete. All already-started Lean work is checked,
+audited, wired and recorded. No Lean process or search job remains active.
+Do not start another route, conjecture, auxiliary draft or proof to close the
+remaining paper gaps. Resume only on a new user instruction.
 
-- Physical: finish canonical TailBounds/FormBounds checks; check four drafted
-  smoothed-support/integrability/zero-integral lemmas and merge into Quantitative;
-  audit final sources, wire and certify the recovered report if fully covered.
-- PM: finish four existing prototypes in dependency order.
-- Dyadic: finish existing five prototypes (tent, integer variance, finite sieve,
-  finite-window variance, tent variance) and the already-edited exact binary-tree
-  estimate in FiniteHorizonPositiveCoercivity. Original further auxiliary claims
-  stay outstanding unless already implied by these completed declarations.
-- Perturbed: finish two existing prototypes (weighted incidence, quadratic nodes).
-- Finite cycle: finish ten existing prototypes listed in the checkpoint below.
-- Audit exact statements/dependencies, direct-check canonical leaves, build only
-  missing oleans needed by another written file, wire imports, clean own obsolete
-  scratch mirrors, update cards honestly, then pause. Do not promote partially
-  covered cards. No new routes, conjectures, or unstarted drafts.
+The frozen work comprised physical-producer supplements, four PM leaves,
+five dyadic leaves and the edited tree owner, two perturbed-incidence leaves,
+and ten finite-cycle leaves. All are complete within that frozen scope.
 
 ## Current checkpoint (authoritative over chronological notes)
 
-- Three of 14 original cards complete: Nyquist, physical producers and PM. Nyquist is
-  `3-formalized/leftovers/nyquist-critical-finite-part-2026-10-18.md`.
-  All eight direct final source checks passed with empty logs; all 96 public
-  declarations audit with only `propext`, `Classical.choice`, `Quot.sound`.
-  Source hashes and unique umbrella imports verified. Existing oleans must
-  not be rebuilt; PrimitiveTail and SignedWitnesses have none.
-- Physical complete and promoted to
-  `3-formalized/leftovers/compact-physical-box-producers.md`. All recovered
-  report claims (1)–(23) covered. Final TailBounds `94906`, Quantitative `89863`,
-  FormBounds `51999` and original producer `91926` passed with empty logs;
-  previous Convergence/FormLimits checks remain valid. Complete manifest:
-  `/tmp/leftovers-physical-complete-public-names.json` (134 public declarations
-  across seven leaves plus one reused parent), standard axioms only. Seven
-  hashes, unique imports, index hits and scoped whitespace verified. Identical
-  supplement scratch mirrors and obsolete API probe removed; backreferences fixed.
-- PM complete and promoted to `3-formalized/leftovers/pm-long-modulus-quadrature.md`.
-  Four final canonical source checks and three required internal-olean builds
-  passed with empty logs. The exact 20 public declarations have standard-axiom
-  audits; four hashes, unique imports, indexed names and card coverage verified.
-  Final-check ledger records each log. Four identical plain scratch mirrors
-  were removed; the retained complete audit source remains available.
-- Dyadic: tent, integer variance, finite sieve realization, finite-window
-  minimum, and tent-variance/best-constant drafts. Combined initial audit
-  `11351` exited 1 with local rewrite, cast, lambda and API errors. Integer
-  variance, Möbius realization and finite-window mean/infimum proofs passed.
-  All reported repairs applied; combined r2 passed all 62 exact axiom lists,
-  standard axioms only and no warnings. All seven dyadic/perturbed components
-  are canonical and wired. Direct checks and two required internal oleans remain. Exact tree
-  comparison in FiniteHorizonPositiveCoercivity passed its three-name axiom
-  audit and final direct check `15427`, both without diagnostics. Original further
-  auxiliary level-count claims are outside the frozen completion scope.
-- Perturbed: weighted all-pairs incidence and quadratic-node geometry passed
-  the combined audit and are canonical. Exact-incidence energy and arithmetic
-  transport consequences remain outside the frozen completion scope.
-- Finite cycle: ten drafts cover exact first-order collar, arbitrary
-  positive-collar scalar/family recovery, actual compact-source derivative
-  energy, normalized derivative correlation bounds, controlled finite meshes,
-  grid recovery, fixed-energy sharp copies, derivative conditioning, measured
-  array residuals, and unit-mass compact-source construction. Initial audit
-  `11461` exited 1: obsolete API names, inferred functions/coercions, absent
-  copy-energy import and redundant tactics. R2 `57675` passed: all 80 exact
-  axiom lists standard; one unnecessary tactic-composition warning and two
-  informational ring notices. The warning was removed in the plain derivative
-  component before migration. All ten plain components are now canonical;
-  their direct checks and five required missing internal oleans remain. All ten
-  imports are wired.
-  All nine external oleans are present. Card coverage still to audit.
-- Both complete Route-E historical cards now read. Current assemblers retain
+- Three of the 14 original cards are fully formalized and promoted:
+  [Nyquist](../3-formalized/leftovers/nyquist-critical-finite-part-2026-10-18.md),
+  [physical producers](../3-formalized/leftovers/compact-physical-box-producers.md),
+  and [PM quadrature](../3-formalized/leftovers/pm-long-modulus-quadrature.md).
+  Their complete statements, source hashes and verification evidence are on
+  those cards. Nyquist has eight checked leaves and 96 audited declarations.
+  Physical covers the recovered report's claims (1)–(23), with seven checked
+  leaves and 134 public declarations plus one reused parent. PM has four
+  checked leaves and 20 audited public declarations.
+- The five dyadic leaves and edited `FiniteHorizonPositiveCoercivity` owner
+  passed final checks. Their 38 public declarations and three changed owner
+  declarations use only standard axioms. Exact tree comparison, original tent,
+  linear variance, finite Möbius realization, mean/infimum characterization,
+  and the exact `N/4096≤C_N≤24N` bounds are certified. The stage-2 card retains
+  separate unstarted path/counting and common-model energy-transport gaps.
+- Both perturbation leaves passed final checks; all 24 public declarations
+  have standard-axiom audits. Actual quadratic nodes, exact incidence
+  exclusion, log gaps, all-pairs weighted comparison and the stated weighted
+  coercivity constant are certified. The stage-2 card retains exact-incidence
+  energy, arithmetic transport and continuum-correlation gaps.
+- All ten cycle leaves passed final checks; all 80 public declarations have
+  standard-axiom audits. Source derivative bounds, actual unit-mass sources,
+  arbitrary-collar recovery, literal finite observations, measured residuals,
+  exact grid recovery, derivative conditioning and controlled sharp copies
+  are certified. Ancillary parameter-selection coverage remains on the
+  stage-2 card; item 9 and the entire paper card are not declared closed.
+- Final closure ledger `/tmp/leftovers-final-check-ledger.json` records 22
+  canonical source checks: the 21 new PM/dyadic/perturbation/cycle leaves and
+  the edited tree owner. Every check exited 0, with no errors or warnings.
+  Twenty-one logs are empty; `DerivativeCycleConditioning` emits two
+  informational ring notices, matching its clean axiom audit. Its tactic
+  composition warning was removed and its final source checked.
+- Ten missing internal oleans were built solely for imports by already-started
+  modules: three PM, two dyadic and five cycle dependencies. Every build passed.
+  The one missing external variance-owner olean also built successfully;
+  `/tmp/leftovers-dyadic-mean-owner-build.log` records it. No existing olean was
+  rebuilt, and no umbrella or full project build was run.
+- All 21 new leaves have exactly one import in their owning umbrellas: four
+  arithmetic-continuation and seventeen bi-scale. The tree owner's existing
+  import is unique. Final hashes, exact indexed module paths and proof-integrity
+  scan passed for all 22 checked sources. Physical and Nyquist certificates
+  retain their earlier successful import/hash/index checks.
+- Global lint `/tmp/leftovers-frozen-final-lint.log` reported 20 unrelated
+  structural errors and 417 size warnings, with no frozen-scope diagnostic.
+  This is not a claim that global repository lint passes.
+- Identical plain scratch mirrors for every finished group were removed.
+  Valid combined source/axiom audits, declaration manifests and logs remain
+  in `/tmp`. The frozen module manifest is
+  `/tmp/leftovers-frozen-module-manifest.json`; it contains 24 new module paths,
+  including the three physical supplements already certified separately.
+- Both Route-E historical cards were read. Existing assemblers retain
   `MTDeshouillersIwaniecBound` and `MTWattBound`; inspected short-block
-  reductions retain their short versions as hypotheses. Full original 1.55
-  claims remain required. No unconditional completion or absence claim.
-- External variance-owner build `92254` passed with empty log
-  `/tmp/leftovers-dyadic-mean-owner-build.log`; its previously missing olean
-  now exists and must not be rebuilt. No source edit was required.
-- Exact tree-owner audit `25791` and final check `15427` passed. All three
-  changed public declarations use standard axioms only; no warnings. Existing
-  olean is preserved; exact name indexed and its existing import is unique.
-- Dyadic tent final check `25115` and required olean `14025` passed with empty logs.
-  Integer variance `62247`, finite sieve `7170`, and finite-window variance
-  `53119` also passed their final canonical checks with empty logs.
-- Active Lean: finite-window-variance required olean `5923`, log
-  `/tmp/leftovers-window-variance-build.log`. Combined dyadic/perturbed r2
-  `82128` is terminal and all 62 exact axiom lists validate. All searches terminal.
-- Final-check ledger: `/tmp/leftovers-final-check-ledger.json` records hashes,
-  source checks and the ten required internal oleans for the 21 new leaves,
-  plus the checked existing tree owner. PM and tree final checks are complete.
-  All three partially covered cards now map exact claims to the started leaves
-  and explicitly retain the unstarted gaps. All 21 chosen declaration names
-  are indexed; source integrity scan has zero prohibited-token flags.
-- Frozen manifest: `/tmp/leftovers-frozen-module-manifest.json` contains the
-  24 module paths and exact import dependencies. WeightedDoublingIncidence
-  now imports Tent and FiniteWindowVariance directly; the independent
-  DyadicMantissaVariance leaf needs no olean. Audit assembly/validation helpers
-  in `/tmp/leftovers_assemble_audit.py` and `/tmp/leftovers_verify_axioms.py`
-  only manipulate/check text; they never compile or batch-build anything.
-- All 21 new canonical leaves now have exactly one import in their owning
-  umbrellas (four arithmetic-continuation, seventeen bi-scale). Umbrellas were
-  not compiled. Global lint `/tmp/leftovers-frozen-final-lint.log` exited 1:
-  20 unrelated structural errors, 417 size warnings, no frozen-scope diagnostic.
-  All 21 selected public names are indexed. Individual final checks remain.
-- Closure order: physical supplements → PM → dyadic/perturbed/cycle, then
-  pause. Other original cards remain unfinished and paused. Preserve unrelated edits.
+  reductions retain their short forms as hypotheses. No unconditional
+  completion or absence claim was made. These and all other unstarted cards
+  remain paused. No contribution count or RH claim was advanced.
 
 ## Inventory and current evidence
 
 | Card | Required completion / current evidence |
 |---|---|
-| `biscale-dyadic-joint-coercivity-1810` | Exact integer-window upper/lower bounds, tent and additive-only witnesses, realization, and stated perturbation gate. Paper read; Lean coverage not yet audited. |
-| `biscale-finite-cycle-recovery-1810` | Arbitrary positive collar recovery, mesh count, actual derivative controls, distant-copy controlled-class obstruction; audit existing singular-energy recovery. Paper read. |
-| `biscale-perturbed-incidence-1810` | Exact-incidence exclusion, log gaps, weighted comparison, sharpness, common-model realization, continuum distinction. Paper read. |
+| `biscale-dyadic-joint-coercivity-1810` | **Started Lean scope complete and wired.** Five leaves plus edited tree owner checked; 38+3 standard-axiom declarations. Remaining unstarted path/counting/transport gates recorded; card not promoted. |
+| `biscale-finite-cycle-recovery-1810` | **Started Lean scope complete and wired.** Ten checked leaves, 80 standard-axiom declarations, exact recovery/source controls/sharpness. Ancillary parameter-selection coverage remains; card not promoted. |
+| `biscale-perturbed-incidence-1810` | **Started Lean scope complete and wired.** Two checked leaves, 24 standard-axiom declarations. Exact-incidence energy, arithmetic transport and continuum questions remain; card not promoted. |
 | `compact-physical-box-producers` | **Complete, promoted to stage 3.** Recovered report (1)–(23), seven leaves, 134 public declarations plus one reused parent, clean axiom and final source checks, unique imports and indexed names. |
 | `nonvacuous-independence-and-polarization-import-law` | Audit small-eigenvalue witness, complete actual Selberg-zeta dictionary and nonvacuous clauses. Historical log reports witness complete; current source audit pending. Import table explicitly an observation. |
 | `nyquist-critical-finite-part-2026-10-18` | Finite part, signed broad-test expansion, actual-source classification and witnesses. Existing 591-line parent inspected. Primitive, signed cell bounds, exact broad tests and source classification pass Lean. Primitive-tail leaf passes its final direct check. Quantitative source and signed witness claims are complete; all 96 public declarations have clean axiom audits. All eight final direct checks passed; complete card promoted to stage 3 after source/hash/index/import audit. |
@@ -764,3 +728,38 @@ or further auxiliary claims. Frozen completion scope:
 - Physical TailBounds final direct check94906 exited0 with empty log.
   Smoothed-integral four-lemma scratch check started next. PM combined initial
   audit prepared with20 public declarations; all six external oleans present.
+
+## Paused closure: final source ledger
+
+All rows passed direct source checks from `formal/` with `lake --old env lean -j 1`.
+Only the ten marked dependency leaves produced new oleans in separate permitted
+commands. Source hashes and unique imports were verified after the last check.
+The cards above retain exact mathematical coverage and unstarted gaps.
+
+| Module | SHA-256 | Required new olean | Final direct-check log |
+|---|---|---|---|
+| `GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.LongModulusIntegrableProducer` | `362193d428b878cc4c5ae1ab1d04a1e122461d9762a16b483c73f08748b1f1f8` | yes | `/tmp/leftovers-pm-integrable-final.log` |
+| `GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.LongModulusQuadratureSampling` | `dd2f9abe6a6b07615bcd653b73d4f6999ff30e09d3f70eff26a182363520640d` | yes | `/tmp/leftovers-pm-sampling-final.log` |
+| `GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.LongModulusExactDecomposition` | `ddfa3dd0aa31cf7ac53cfcfa901d3f7f5ef918bf861bc56fd4afe5814ed34b8d` | yes | `/tmp/leftovers-pm-decomposition-final.log` |
+| `GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.LongModulusShortEnergy` | `90c3ceeb202d6834f4b4fdc097d5355044ad87745939ec84050d92e716802e84` | no | `/tmp/leftovers-pm-short-energy-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.DyadicMantissaTent` | `acd4ef93ae199c3bfdc4e6540eed9ebe32769291c998de416af1b8439ffe818d` | yes | `/tmp/leftovers-dyadic-tent-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.IntegerLinearVariance` | `0dccb554cd2563d43ee770a701736e7586811a933fbdb2e79f016b3dcf2ede7f` | no | `/tmp/leftovers-integer-variance-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.FiniteSieveRealization` | `c85efe0fc79eaf2434177cbae0b675d37fec3f57fd5ff2dfed9824148003eb63` | no | `/tmp/leftovers-sieve-realization-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.FiniteWindowVariance` | `ba0f8560596f92637b3e65800bf17b0d66efe28917622790dd31b64ca25d4584` | yes | `/tmp/leftovers-window-variance-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.DyadicMantissaVariance` | `49d335546715ac9f0d11e1eb737e667d7e8e6f4880f795fa209375beb97f4d7a` | no | `/tmp/leftovers-dyadic-variance-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.WeightedDoublingIncidence` | `f5431b77daf6edf45efeba4a681be25bc9874910f71d16413a97a586915cee03` | no | `/tmp/leftovers-weighted-incidence-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.QuadraticPerturbedNodes` | `ace2e3553f44f6af64eae9d1bc136f7c203009a0952389138fe8682cd0125a49` | no | `/tmp/leftovers-quadratic-nodes-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.FirstOrderEnergyCollar` | `d96b38f6be1733f17fb4178235a3a9349aa91f1e7221920aa2e133cde1849170` | yes | `/tmp/leftovers-cycle-collar-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.ClosedCycleScalarRecovery` | `6dd9cb09d8c4164977a4606d57edb6dc86cecb66f6a0a16d9d781eb199349ef2` | yes | `/tmp/leftovers-cycle-scalar-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.CompactSourceDerivativeEnergy` | `d68db0038dcdfccb63ca5ae375a5b027d5004543affc8e009f613ac2653fd427` | yes | `/tmp/leftovers-cycle-source-derivative-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.CompactCorrelationDerivativeBounds` | `c7c1b6f0e218e24f717f105da2c6560535b9da20d105a55a7ef616db5b1ed989` | yes | `/tmp/leftovers-cycle-correlation-derivative-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.ControlledClosedCycleRecovery` | `5bef47bf1618886765dda55f48368c3001e2336f6f42aaa2653617c41c33d66c` | yes | `/tmp/leftovers-cycle-controlled-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.GridFiniteCycleRecovery` | `860048b5293a00b1aa3bdcea19d636ecf6008cf30f5f044f8611a3f6d3981141` | no | `/tmp/leftovers-cycle-grid-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.ControlledSharpCycleSources` | `59bd4dde72fff6960ba69987df9aaa0041bde8a45a1d362c0821286bb2720aac` | no | `/tmp/leftovers-cycle-sharp-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.DerivativeCycleConditioning` | `a636c585ded88d88feb2cefb216c8254b412e4fbb63b016a8a3ca769a9c878e4` | no | `/tmp/leftovers-cycle-conditioning-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.ClosedCycleDataResiduals` | `2c6240f3264fa3d0268ee73e742d2d4041b7198a57d6674026967585d7b674aa` | no | `/tmp/leftovers-cycle-residuals-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.UnitMassCompactSources` | `e25513b2ddf29de14278ed9edaba87a3cac69cd4dc1bca461af8e902d307a38a` | no | `/tmp/leftovers-cycle-unit-mass-final.log` |
+| `GaloisForLFunctions.BiScaleUncertainty.FiniteHorizonPositiveCoercivity` | `847fc32a9a136cc3409d44fcb46256aec6cbd53dff642eec224837ef21be2dc6` | no | `/tmp/leftovers-tree-owner-final.log` |
+
+Paused after finishing the authorized started work. No further mathematical
+route or formalization is scheduled or started by this batch.
