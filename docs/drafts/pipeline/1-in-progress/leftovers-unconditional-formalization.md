@@ -93,18 +93,18 @@ Existing unrelated worktree changes must be preserved.
   `BiScaleUncertainty/NyquistCriticalPrimitive.lean`.
   First olean attempt (`76728`) found a line-broken field-notation elaboration
   issue in the local-integrability helper. Replaced it with typed local facts.
-  Recheck/build is active (record the latest tool session after launch), log
-  `/tmp/leftovers-nyquist-primitive-build.log`, because the cell-bound prototype
-  imports it. Final direct source check and axiom audit remain.
+  Recheck/build (`98466`) exited 0 with no diagnostics; primitive olean now exists
+  for the cell-bound import. Log `/tmp/leftovers-nyquist-primitive-build.log`.
+  Final direct source check and axiom audit remain.
   Cell-error and summable-majorant prototype: `/tmp/leftovers_nyquist_cell_bounds.lean`
-  (not checked; imports `NyquistCriticalPrimitive`). Intended module name:
+  (scratch check now active; imports `NyquistCriticalPrimitive`). Intended module name:
   `NyquistCriticalTestCellBounds`.
   Signed expansion prototype: `/tmp/leftovers_nyquist_broad_tests.lean` (not checked;
   imports planned `NyquistCriticalTestCellBounds`), intended module name
   `NyquistCriticalBroadTests`. Covers arbitrary compact Lipschitz tests and all
   positive scales, both half-line and full-line residual integrals.
-  Separate probe inventory `/tmp/leftovers_nyquist_api.lean` has not been run and
-  need not be compiled wholesale; it includes unused guessed names.
+  Unused guessed-name probe inventory and obsolete physical draft were removed;
+  the actual primitive scratch proof checked the relevant APIs directly.
   Existing Nyquist parent olean is present. No new Nyquist umbrella import yet.
 - Source-classification reuse leads: `RHTower.LogWindowPrimeNumberTheorem`
   has `RHTower.WeilOneSided.exists_autoCorr_constants` and `abs_autoCorr_sub_le`,
@@ -118,4 +118,27 @@ Existing unrelated worktree changes must be preserved.
   `NyquistCriticalSourceClassification`. It includes normalized correlation,
   source-derived Lipschitz constant, exact mean-square slope, actual rescaled-source
   residual, full quantitative expansion, finite-part and slope limits, both mean
-  alternatives and vanishing normalized energy. Actual signed witnesses remain to add.
+  alternatives and vanishing normalized energy.
+  Actual signed-witness prototype `/tmp/leftovers_nyquist_witnesses.lean` is now
+  written (not checked), intended module `NyquistCriticalSignedWitnesses`. It proves
+  smoothness for every `r : ℕ∞` (not analytic order), nonzero source values, positive
+  bump mean, normalized lag-four value `-1/2`, and the connected two-source dichotomy.
+- Once primitive olean succeeds: check `/tmp/leftovers_nyquist_cell_bounds.lean`,
+  repair and migrate to `NyquistCriticalTestCellBounds.lean`; build its missing
+  olean for the broad-test prototype. Continue in dependency order through broad
+  tests, source classification and witnesses. Every final project leaf still
+  requires direct source check, axiom audit and umbrella wiring before promotion.
+
+## Later-card read-only preparation
+
+- PM corpus search: `/tmp/leftovers-mobius-quadrature-search.json` and
+  `/tmp/leftovers-pm-centered-prefix-search.json`. Actual centered prefix is
+  `RHTower.pmPowerDampedCenteredDivisorPrefix` in `PMPowerDampedMobiusDiscreteEnergy`.
+  Its exact floor identity is in
+  `ArithmeticContinuationAndCriticalEnergy/TheEscapeIsATailPhenomenon.lean`.
+  `SignedArithmeticEnergyIncidence/ShortIntervalSumsOfTheDampedDivisorCoefficients.lean`
+  defines the exact harmonic `moebiusTail` and proves a related centered-prefix
+  decomposition, with `density_re_eq_tsum` and the existing `sum_rpow_neg_head_le`
+  mechanism. Read the first 240 lines of that leaf and the escape leaf.
+  These do not yet certify the requested long-modulus integrable producer.
+  No PM source edits or new paper theorem have been made.

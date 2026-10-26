@@ -112,9 +112,9 @@ theorem norm_sum_Ioc_mul_rpow_neg_le {c : ℕ → ℂ} {C α s : ℝ} (hC : 0 �
       _ = C * ((n : ℝ) + 1) ^ (α - s) := by
           rw [mul_assoc, ← Real.rpow_add hn1, sub_eq_add_neg]
       _ ≤ C * ((M : ℝ) + 1) ^ (α - s) := by
-          gcongr
           have hMn : (M : ℝ) ≤ n := by exact_mod_cast hn
-          exact Real.rpow_le_rpow_of_nonpos hM1 (by linarith) (by linarith)
+          exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_nonpos (x := (M : ℝ) + 1)
+            (y := (n : ℝ) + 1) (z := α - s) hM1 (by linarith) (by linarith)) hC
   -- the Abel sum
   have hdiff : ∀ j : ℕ, 1 ≤ j → 0 ≤ w j - w (j + 1) ∧ w j - w (j + 1) ≤
       s * 2 ^ (s + 1) * ((j : ℝ) + 1) ^ (-(s + 1)) := by
@@ -208,6 +208,7 @@ theorem norm_chargedBoundary_le_of_halfPowerLaw {a : ℕ → ℂ} {x : GaugeToru
   obtain ⟨C, hC, hS⟩ := h (2 * σ - θ - 1 / 2) (by linarith)
   refine ⟨C * (2 + (2 * σ) * 2 ^ (2 * σ + 1) / (2 * σ - (2 * σ - θ))), by
     have : 0 < 2 * σ := by linarith
+    have : 0 < 2 * σ - (2 * σ - θ) := by linarith
     positivity, fun M N => ?_⟩
   have hb := norm_sum_Ioc_mul_rpow_neg_le (c := fun j => a j * twist x j) hC (by linarith)
     (show 2 * σ - θ < 2 * σ by linarith)
@@ -240,7 +241,7 @@ theorem chargedBoundary_moebius_zero {M N : ℕ} (hMN : M ≤ N) :
       ∑ j ∈ Ioc M N, ((μ j : ℤ) : ℝ) / j := by
     simp only [RHTower.deningerHarmonicPartial]
     rw [range_eq_Ico, range_eq_Ico, ← sum_Ico_consecutive _ (Nat.zero_le (M + 1))
-      (Nat.succ_le_succ hMN), Ico_add_one_add_one_eq_Ioc]
+      (show M + 1 ≤ N + 1 by omega), Ico_add_one_add_one_eq_Ioc]
     ring
   rw [hsplit, chargedBoundary]
   push_cast
@@ -280,18 +281,20 @@ theorem gaugeBoundaryLaw_moebius_zero_iff :
       positivity
     refine ⟨C * (2 + 1 / (1 - θ)), hK, fun N => ?_⟩
     rcases Nat.eq_zero_or_pos N with rfl | hN
-    · simp [RHTower.mobiusMertensPartialSum, RHTower.mobiusComplexCoefficient]
-      positivity
+    · have h0 : RHTower.mobiusMertensPartialSum 0 = 0 := by
+        simp [RHTower.mobiusMertensPartialSum, RHTower.mobiusComplexCoefficient]
+      rw [h0, norm_zero]
+      exact mul_nonneg hK (Real.rpow_nonneg (by norm_num) _)
     have hM := BezoutValuationIncidence.abs_sum_moebiusReal_le_of_harmonic_power hθ0 (by linarith)
       hC hH hN
     have hsum : RHTower.mobiusMertensPartialSum N =
         ((∑ n ∈ Icc 1 N, BezoutValuationIncidence.moebiusReal n : ℝ) : ℂ) := by
       simp only [RHTower.mobiusMertensPartialSum, RHTower.mobiusComplexCoefficient,
         BezoutValuationIncidence.moebiusReal]
-      rw [range_eq_Ico, sum_eq_sum_Ico_succ_bot (Nat.succ_pos N)]
+      have hIcc : Icc 1 N = Ico 1 (N + 1) := by ext n; simp only [mem_Icc, mem_Ico]; omega
+      rw [range_eq_Ico, sum_eq_sum_Ico_succ_bot (Nat.succ_pos N), hIcc]
       push_cast
-      simp only [ArithmeticFunction.moebius_apply_zero, Int.cast_zero, zero_add]
-      rfl
+      simp only [ArithmeticFunction.map_zero, Int.cast_zero, zero_add]
     rw [hsum, Complex.norm_real, Real.norm_eq_abs]
     refine hM.trans (mul_le_mul_of_nonneg_left ?_ hK)
     calc (N : ℝ) ^ (1 - θ) ≤ ((N : ℝ) + 1) ^ (1 - θ) :=

@@ -34,7 +34,7 @@ theorem IsPosCosPoly.add {P Q : ℝ → ℝ} (hP : IsPosCosPoly P) (hQ : IsPosCo
   have h := isPosCosPoly_finset_sum ((range N).disjSum (range M)) (Sum.elim c d) (Sum.elim lam mu)
     fun i _ => by cases i <;> simp [hc, hd]
   convert h using 2 with u
-  rw [Finset.sum_disj_sum, hP, hQ]
+  rw [Finset.sum_disjSum, hP, hQ]
   rfl
 
 theorem isPosCosPoly_sum {P : ℕ → ℝ → ℝ} (hP : ∀ k, IsPosCosPoly (P k)) (s : Finset ℕ) :
@@ -87,26 +87,29 @@ theorem isBoundaryDivisor_tsum {D : ℕ → ℝ → ℝ}
     · exact ((hP k n).abs_le u).trans (hn₀ k n h)
     · simpa using add_nonneg (hD0 k) (by positivity : (0 : ℝ) ≤ (1 / 2) ^ k)
   set Q : ℕ → ℝ → ℝ := fun n u => ∑ k ∈ range (n + 1), P' k n u
-  refine isBoundaryDivisor_of_tendsto_posCosPoly (P := Q) (fun n => isPosCosPoly_sum (hP' · n) _)
-    fun u => ?_ |> fun ⟨lam, w, h⟩ => ⟨_, lam, w, h⟩
-  -- Tannery's theorem for `Σ_k [k ≤ n] P'_{k,n}(u)`.
-  have hT := tendsto_tsum_of_dominated_convergence (𝓕 := atTop)
-    (f := fun n k => if k ≤ n then P' k n u else 0) (g := fun k => D k u)
-    (bound := fun k => D k 0 + (1 / 2) ^ k) (hs.add summable_geometric_two)
-    (fun k => by
-      refine (hlim k u).congr' ?_
-      filter_upwards [eventually_ge_atTop (max k (n₀ k))] with n hn
-      simp only [P', if_pos (le_of_max_le_left hn), if_pos (le_of_max_le_right hn)])
-    (Eventually.of_forall fun n k => by
-      rw [Real.norm_eq_abs]
-      split_ifs
-      · exact hb k n u
-      · simpa using add_nonneg (hD0 k) (by positivity : (0 : ℝ) ≤ (1 / 2) ^ k))
-  refine hT.congr fun n => ?_
-  rw [tsum_eq_sum (s := range (n + 1)) fun k hk => by
-    rw [Finset.mem_range, not_lt] at hk
-    rw [if_neg (by omega)]]
-  exact Finset.sum_congr rfl fun k hk => by rw [if_pos (by simpa [Nat.lt_succ_iff] using hk)]
+  have hlimQ : ∀ u, Tendsto (fun n => Q n u) atTop (𝓝 (∑' k, D k u)) := by
+    intro u
+    -- Tannery's theorem for `Σ_k [k ≤ n] P'_{k,n}(u)`.
+    have hT := tendsto_tsum_of_dominated_convergence (𝓕 := atTop)
+      (f := fun n k => if k ≤ n then P' k n u else 0) (g := fun k => D k u)
+      (bound := fun k => D k 0 + (1 / 2) ^ k) (hs.add summable_geometric_two)
+      (fun k => by
+        refine (hlim k u).congr' ?_
+        filter_upwards [eventually_ge_atTop (max k (n₀ k))] with n hn
+        simp only [P', if_pos (le_of_max_le_left hn), if_pos (le_of_max_le_right hn)])
+      (Eventually.of_forall fun n k => by
+        rw [Real.norm_eq_abs]
+        split_ifs
+        · exact hb k n u
+        · simpa using add_nonneg (hD0 k) (by positivity : (0 : ℝ) ≤ (1 / 2) ^ k))
+    refine hT.congr fun n => ?_
+    rw [tsum_eq_sum (s := range (n + 1)) fun k hk => by
+      rw [Finset.mem_range, not_lt] at hk
+      rw [if_neg (by omega)]]
+    exact Finset.sum_congr rfl fun k hk => by rw [if_pos (by simpa [Nat.lt_succ_iff] using hk)]
+  obtain ⟨lam, w, h⟩ := isBoundaryDivisor_of_tendsto_posCosPoly (P := Q)
+    (fun n => isPosCosPoly_sum (hP' · n) _) hlimQ
+  exact ⟨_, lam, w, h⟩
 
 /-! ### A boundary divisor supported on `2πℚ` -/
 

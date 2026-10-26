@@ -8,15 +8,16 @@ orbit correlations of the diagonal alone, its Frobenius weight is fixed, and `Re
 sign when `β > 0`. Rotating the cycle removes the exception. Over `ℤ` the two-term test
 `g + c T_v g` (`twoTermTest`) multiplies the transform by `1 + c e^{izv}`,
 keeps every zero that `g` kills killed, and multiplies the weight `X_ρ conj X_{1−ρ̄}` of a kept zero
-by `(1 + c e^{iγv}) conj(1 + c e^{iγ̄v})` (`weight_twoTermTest`); with `c = u e^{−i Im ρ}`, `v = 1`
-this factor is `(1 + u e^δ)(1 + ū e^{−δ})`, `δ = Re ρ − ½` (`rotation_factor`), which is `1`,
-negative, or `2 ± i(e^δ − e^{−δ})` for `u = 0, −1, ±i`. So every nonzero weight is rotated into
+by `(1 + c e^{iγv}) conj(1 + c e^{iγ̄v})` (`weight_twoTermTest`); with `c = u e^{−iv Im ρ}` this
+factor is `(1 + u e^{δv})(1 + ū e^{−δv})`, `δ = Re ρ − ½` (`rotation_factor`), which is `1`,
+negative, or `2 ± i(e^{δv} − e^{−δv})` for `u = 0, −1, ±i`. So every nonzero weight is rotated into
 the right half-plane (`exists_rotation_re_pos`).
 
-* **One prime** (`deepSparse_exists_test_oneSided`). For a deep-sparse configuration, a right zero
-  `ρ` and a sign `ε = ±1`, one test has `ε Re c_m > C R^m` for some `m`, for every `C` and
-  `R < |β_ρ|`: if `β_ρ` is not real its phase rotates (`exists_lt_re_of_tendsto_div_pow`); if it is
-  real, the rotated weight has `Re(εW) > 0` and the even `m` grow (`exists_lt_re_of_real`).
+* **One prime** (`exists_twoTermTest_oneSided`, `deepSparse_exists_test_oneSided`). For a
+  deep-sparse configuration, a right zero `ρ` and a sign `ε = ±1`, one test has `ε Re c_m > C R^m`
+  for some `m`, for every `C` and `R < |β_ρ|`: if `β_ρ` is not real its phase rotates
+  (`exists_lt_re_of_tendsto_div_pow`); if it is real, the rotated weight has `Re(εW) > 0` and the
+  even `m` grow (`exists_lt_re_of_real`). Any shift `v > 0` works.
 * **One-sided law** (`deepSparse_oneSided_iff`). Every test has `ε Re c_m = O(R^m)`, `R ≥ 1`, iff
   every outer eigenvalue has modulus at most `R`.
 * **For `ζ`** (`zeta_width_le_iff_oneSided_onePrime`,
@@ -83,21 +84,22 @@ theorem weight_twoTermTest (Z : ZeroConfig) {g : ℝ → ℂ} (hg : Continuous g
   rw [e, map_mul]
   ring
 
-/-- With `c = u e^{−i Im ρ}` and `v = 1` the factor is `(1 + u e^δ)(1 + ū e^{−δ})`. -/
-theorem rotation_factor (ρ u : ℂ) :
-    (1 + u * cexp (-(I * ρ.im)) * cexp (I * gammaOf ρ * (1 : ℝ))) *
-        conj (1 + u * cexp (-(I * ρ.im)) * cexp (I * conj (gammaOf ρ) * (1 : ℝ))) =
-      (1 + u * Real.exp (ρ.re - 1 / 2)) * (1 + conj u * Real.exp (-(ρ.re - 1 / 2))) := by
-  have h1 : cexp (-(I * ρ.im)) * cexp (I * gammaOf ρ * (1 : ℝ)) =
-      ((Real.exp (ρ.re - 1 / 2) : ℝ) : ℂ) := by
+/-- With `c = u e^{−iv Im ρ}` the factor is `(1 + u e^{δv})(1 + ū e^{−δv})`, `δ = Re ρ − ½`. -/
+theorem rotation_factor (ρ u : ℂ) (v : ℝ) :
+    (1 + u * cexp (-(I * ρ.im * v)) * cexp (I * gammaOf ρ * v)) *
+        conj (1 + u * cexp (-(I * ρ.im * v)) * cexp (I * conj (gammaOf ρ) * v)) =
+      (1 + u * Real.exp ((ρ.re - 1 / 2) * v)) *
+        (1 + conj u * Real.exp (-((ρ.re - 1 / 2) * v))) := by
+  have h1 : cexp (-(I * ρ.im * v)) * cexp (I * gammaOf ρ * v) =
+      ((Real.exp ((ρ.re - 1 / 2) * v) : ℝ) : ℂ) := by
     rw [← Complex.exp_add, Complex.ofReal_exp]
     congr 1
     apply Complex.ext <;> simp [gammaOf_eq, Complex.mul_re, Complex.mul_im]
-  have h2 : cexp (-(I * ρ.im)) * cexp (I * conj (gammaOf ρ) * (1 : ℝ)) =
-      ((Real.exp (-(ρ.re - 1 / 2)) : ℝ) : ℂ) := by
+  have h2 : cexp (-(I * ρ.im * v)) * cexp (I * conj (gammaOf ρ) * v) =
+      ((Real.exp (-((ρ.re - 1 / 2) * v)) : ℝ) : ℂ) := by
     rw [← Complex.exp_add, Complex.ofReal_exp]
     congr 1
-    apply Complex.ext <;> simp [gammaOf_eq, Complex.mul_re, Complex.mul_im]
+    apply Complex.ext <;> simp [gammaOf_eq, Complex.mul_re, Complex.mul_im] <;> ring
   rw [mul_assoc u, h1, mul_assoc u, h2, map_add, map_one, map_mul, Complex.conj_ofReal]
 
 /-- **Every nonzero weight rotates into the right half-plane.** For `W ≠ 0` and `δ > 0` some `u`
@@ -188,28 +190,29 @@ theorem exists_lt_re_of_real {c : ℕ → ℂ} {b W : ℂ} (hb0 : b ≠ 0)
 
 /-! ### 3. One prime -/
 
-/-- **One test breaks a one-sided bound at one scale.** For a deep-sparse configuration, a right
-zero `ρ`, a scale `ℓ > 0` and a sign `ε = ±1`, one test has `ε Re c_m > C R^m` for some `m`, for
-every `C` and `0 ≤ R < |β_ρ|`. -/
-theorem deepSparse_exists_test_oneSided (Z : ZeroConfig) (hZ : TemperedConfig Z)
-    (hsp : DeepSparse Z) {ρ : ℂ} (hρ : ρ ∈ rightZeros Z) {ℓ : ℝ} (hℓ : 0 < ℓ) {ε : ℝ}
-    (hε : ε = 1 ∨ ε = -1) :
-    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧ ∀ C R : ℝ, 0 ≤ R →
-      R < ‖frobEig ℓ ρ‖ → ∃ m : ℕ, C * R ^ m < ε * (towerMoment Z g ℓ m).re := by
+/-- **A rotated two-term test breaks a one-sided bound.** Let `g` see the right zero `ρ` and kill
+every other right zero of at least half its depth. For a sign `ε = ±1` and `v > 0` some `u` makes
+`G = g + u e^{−iv Im ρ} T_v g` satisfy `ε Re c_m(G) > C R^m` for some `m`, for every `C` and
+`0 ≤ R < |β_ρ|`: `u = 0` when `β_ρ` is not real, a rotation of the weight when it is. -/
+theorem exists_twoTermTest_oneSided (Z : ZeroConfig) (hZ : TemperedConfig Z) {ρ : ℂ}
+    (hρ : ρ ∈ rightZeros Z) {ℓ : ℝ} (hℓ : 0 < ℓ) {ε : ℝ} (hε : ε = 1 ∨ ε = -1) {g : ℝ → ℂ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
+    (hkill : ∀ τ ∈ rightZeros Z, 1 / 2 + (ρ.re - 1 / 2) / 2 ≤ τ.re → τ ∉ ({ρ} : Set ℂ) →
+      paperFT g (gammaOf τ) = 0 ∧ paperFT g (gammaOf (reflect τ)) = 0)
+    (hkeep : ∀ τ ∈ ({ρ} : Set ℂ),
+      paperFT g (gammaOf τ) ≠ 0 ∧ paperFT g (gammaOf (reflect τ)) ≠ 0)
+    {v : ℝ} (hv : 0 < v) :
+    ∃ u : ℂ, ∀ C R : ℝ, 0 ≤ R → R < ‖frobEig ℓ ρ‖ → ∃ m : ℕ, C * R ^ m <
+      ε * (towerMoment Z (twoTermTest g (u * cexp (-(I * ρ.im * v))) v) ℓ m).re := by
   set δ : ℝ := ρ.re - 1 / 2 with hδdef
   have hδ : 0 < δ := by rw [hδdef]; linarith [hρ.2]
-  have hσ : 1 / 2 < 1 / 2 + δ / 2 := by linarith
-  obtain ⟨g, hg, hgc, hkill, hkeep⟩ :=
-    exists_test_killing_deep_zeros Z hsp hσ {ρ} fun τ hτ => by
-      rw [Set.mem_singleton_iff.mp hτ]; exact hρ
   set b := frobEig ℓ ρ with hb
   have hb0 : b ≠ 0 := frobEig_ne_zero ℓ ρ
   have hε0 : (ε : ℂ) ≠ 0 := by rcases hε with rfl | rfl <;> norm_num
   have hrb : Real.exp (ℓ * (δ / 2)) < ‖b‖ := by
     rw [hb, norm_frobEig, Real.exp_lt_exp, ← hδdef]
     exact mul_lt_mul_of_pos_left (half_lt_self hδ) hℓ
-  -- every zero killed by `g` stays killed; the asymptotics hold for every test whose transform is
-  -- a multiple of that of `g`
+  -- the asymptotics hold for every test whose transform is a multiple of that of `g`
   have hsepOf : ∀ G : ℝ → ℂ, ContDiff ℝ 2 G → HasCompactSupport G →
       (∀ τ : Z.carrier, paperFT G (gammaOf τ) ≠ 0 → paperFT g (gammaOf τ) ≠ 0) →
       Tendsto (fun m : ℕ => towerMoment Z G ℓ m / b ^ m) atTop (𝓝 (frobWeight Z G ℓ b)) := by
@@ -245,34 +248,56 @@ theorem deepSparse_exists_test_oneSided (Z : ZeroConfig) (hZ : TemperedConfig Z)
       fun τ hτ hne he => ?_
     have hre : τ.re = ρ.re := re_eq_of_norm_frobEig_eq hℓ (congrArg norm he)
     exact (hkill τ ⟨hτ, by rw [hre]; exact hρ.2⟩ (by rw [hre]; linarith) hne).1
+  -- the rotated tests and their weights
+  have hGg : ∀ u : ℂ, ∀ τ : Z.carrier,
+      paperFT (twoTermTest g (u * cexp (-(I * ρ.im * v))) v) (gammaOf τ) ≠ 0 →
+        paperFT g (gammaOf τ) ≠ 0 :=
+    fun u τ hne h0 => hne (by rw [paperFT_twoTermTest hg.continuous hgc, h0, mul_zero])
+  have hWG : ∀ u : ℂ, frobWeight Z (twoTermTest g (u * cexp (-(I * ρ.im * v))) v) ℓ b =
+      frobWeight Z g ℓ b * ((1 + u * Real.exp (δ * v)) * (1 + conj u * Real.exp (-(δ * v)))) := by
+    intro u
+    rw [hsingle _ (hGg u), hsingle g fun τ h => h, weight_twoTermTest Z hg.continuous hgc]
+    congr 1
+    exact rotation_factor ρ u v
+  have hlimG : ∀ u : ℂ, Tendsto (fun m : ℕ => (ε : ℂ) *
+      towerMoment Z (twoTermTest g (u * cexp (-(I * ρ.im * v))) v) ℓ m / b ^ m) atTop
+      (𝓝 ((ε : ℂ) * frobWeight Z (twoTermTest g (u * cexp (-(I * ρ.im * v))) v) ℓ b)) := by
+    intro u
+    simpa only [mul_div_assoc] using (hsepOf _ (twoTermTest_contDiff hg _ v)
+      (twoTermTest_hasCompactSupport hgc _ v) (hGg u)).const_mul (ε : ℂ)
   by_cases hphase : (b / (‖b‖ : ℂ)) ^ 2 = 1
   · -- a real eigenvalue: rotate the weight
-    obtain ⟨u, hu⟩ := exists_rotation_re_pos (mul_ne_zero hε0 hW) hδ
-    set G := twoTermTest g (u * cexp (-(I * ρ.im))) 1 with hGdef
-    have hG := twoTermTest_contDiff hg (u * cexp (-(I * ρ.im))) 1
-    have hGc := twoTermTest_hasCompactSupport hgc (u * cexp (-(I * ρ.im))) 1
-    have hGg : ∀ τ : Z.carrier, paperFT G (gammaOf τ) ≠ 0 → paperFT g (gammaOf τ) ≠ 0 :=
-      fun τ hne h0 => hne (by rw [hGdef, paperFT_twoTermTest hg.continuous hgc, h0, mul_zero])
-    have hWG : frobWeight Z G ℓ b =
-        frobWeight Z g ℓ b * ((1 + u * Real.exp δ) * (1 + conj u * Real.exp (-δ))) := by
-      rw [hsingle G hGg, hsingle g fun τ h => h, hGdef, weight_twoTermTest Z hg.continuous hgc]
-      congr 1
-      exact rotation_factor ρ u
-    refine ⟨G, hG, hGc, fun C R hR hRb => ?_⟩
-    have hlim : Tendsto (fun m : ℕ => (ε : ℂ) * towerMoment Z G ℓ m / b ^ m) atTop
-        (𝓝 ((ε : ℂ) * frobWeight Z G ℓ b)) := by
-      simpa only [mul_div_assoc] using (hsepOf G hG hGc hGg).const_mul (ε : ℂ)
-    have hpos : 0 < ((ε : ℂ) * frobWeight Z G ℓ b).re := by rw [hWG, ← mul_assoc]; exact hu
-    obtain ⟨m, hm⟩ := exists_lt_re_of_real hb0 hlim hpos hphase hR hRb C
+    obtain ⟨u, hu⟩ := exists_rotation_re_pos (mul_ne_zero hε0 hW) (mul_pos hδ hv)
+    refine ⟨u, fun C R hR hRb => ?_⟩
+    have hpos : 0 < ((ε : ℂ) *
+        frobWeight Z (twoTermTest g (u * cexp (-(I * ρ.im * v))) v) ℓ b).re := by
+      rw [hWG, ← mul_assoc]; exact hu
+    obtain ⟨m, hm⟩ := exists_lt_re_of_real hb0 (hlimG u) hpos hphase hR hRb C
     exact ⟨m, by rwa [Complex.re_ofReal_mul] at hm⟩
-  · -- a non-real eigenvalue: its phase rotates
-    refine ⟨g, hg, hgc, fun C R hR hRb => ?_⟩
-    have hlim : Tendsto (fun m : ℕ => (ε : ℂ) * towerMoment Z g ℓ m / b ^ m) atTop
-        (𝓝 ((ε : ℂ) * frobWeight Z g ℓ b)) := by
-      simpa only [mul_div_assoc] using (hsepOf g hg hgc fun τ h => h).const_mul (ε : ℂ)
-    obtain ⟨m, hm⟩ := exists_lt_re_of_tendsto_div_pow hb0 hlim (mul_ne_zero hε0 hW) hphase hR
-      hRb C
+  · -- a non-real eigenvalue: its phase rotates; no rotation of the weight is needed
+    refine ⟨0, fun C R hR hRb => ?_⟩
+    have hW0 : (ε : ℂ) *
+        frobWeight Z (twoTermTest g (0 * cexp (-(I * ρ.im * v))) v) ℓ b ≠ 0 := by
+      rw [hWG]
+      simp only [zero_mul, add_zero, map_zero, mul_one]
+      exact mul_ne_zero hε0 hW
+    obtain ⟨m, hm⟩ := exists_lt_re_of_tendsto_div_pow hb0 (hlimG 0) hW0 hphase hR hRb C
     exact ⟨m, by rwa [Complex.re_ofReal_mul] at hm⟩
+
+/-- **One test breaks a one-sided bound at one scale.** For a deep-sparse configuration, a right
+zero `ρ`, a scale `ℓ > 0` and a sign `ε = ±1`, one test has `ε Re c_m > C R^m` for some `m`, for
+every `C` and `0 ≤ R < |β_ρ|`. -/
+theorem deepSparse_exists_test_oneSided (Z : ZeroConfig) (hZ : TemperedConfig Z)
+    (hsp : DeepSparse Z) {ρ : ℂ} (hρ : ρ ∈ rightZeros Z) {ℓ : ℝ} (hℓ : 0 < ℓ) {ε : ℝ}
+    (hε : ε = 1 ∨ ε = -1) :
+    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧ ∀ C R : ℝ, 0 ≤ R →
+      R < ‖frobEig ℓ ρ‖ → ∃ m : ℕ, C * R ^ m < ε * (towerMoment Z g ℓ m).re := by
+  have hσ : 1 / 2 < 1 / 2 + (ρ.re - 1 / 2) / 2 := by linarith [hρ.2]
+  obtain ⟨g, hg, hgc, hkill, hkeep⟩ :=
+    exists_test_killing_deep_zeros Z hsp hσ {ρ} fun τ hτ => by
+      rw [Set.mem_singleton_iff.mp hτ]; exact hρ
+  obtain ⟨u, hu⟩ := exists_twoTermTest_oneSided Z hZ hρ hℓ hε hg hgc hkill hkeep one_pos
+  exact ⟨_, twoTermTest_contDiff hg _ 1, twoTermTest_hasCompactSupport hgc _ 1, hu⟩
 
 /-- **The one-sided law at one scale.** For a deep-sparse configuration, `ℓ > 0`, a sign `ε = ±1`
 and `R ≥ 1`: every test has `ε Re c_m = O(R^m)` iff every outer eigenvalue has modulus at most

@@ -33,3 +33,9 @@ Axioms: `propext`, `Classical.choice`, `Quot.sound`. Wired into `ArithmeticCaste
    `K log Γ` ordinates (`N(γ+1) − N(γ−2) ≤ (3/2π + 2C) log(γ+1)`), so
    `2r #Z = ∫ Σ_q 1_{I_q} ≤ K log Γ |U|`: `|U| ≥ H/(8πK(A+1))`.
 3. `S = U ∖ {Φ > η}`; `|{Φ > η} ∩ [Γ,Γ+H]| ≤ CH/(η log Γ)` (`exists_volume_offLineField_gt_le`).
+
+## Subsumed
+In the only aperture range where this bound yields positivity, `(A + 1)² e^A ≪ log Γ`, the
+single-height law `zetaZeroConfig_re_W_heightShift_nonneg_of_sharp_horizon` already gives
+`Q_γ(F₀) ≥ 0` at every height `log(1 + γ/8) ≥ C + (4 + ε)e^A + 2` for every test (tail conditions
+aside). Not a contribution to the selection obstacle, which lives at logarithmic aperture.

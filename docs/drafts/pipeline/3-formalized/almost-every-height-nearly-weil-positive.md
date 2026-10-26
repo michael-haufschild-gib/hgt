@@ -47,3 +47,9 @@ Axioms: `propext`, `Classical.choice`, `Quot.sound`. Wired into `ArithmeticCaste
 Near-positivity, not positivity: a lower bound `Q_γ ≥ 0` at a selected height needs the critical mass
 near `γ`, which depends on how zero ordinates sit relative to `|F̂₀|²`. The exceptional set is
 independent of the aperture and of the test.
+
+## Subsumed
+In the only aperture range where this bound yields positivity, `(A + 1)² e^A ≪ log Γ`, the
+single-height law `zetaZeroConfig_re_W_heightShift_nonneg_of_sharp_horizon` already gives
+`Q_γ(F₀) ≥ 0` at every height `log(1 + γ/8) ≥ C + (4 + ε)e^A + 2` for every test (tail conditions
+aside). Not a contribution to the selection obstacle, which lives at logarithmic aperture.

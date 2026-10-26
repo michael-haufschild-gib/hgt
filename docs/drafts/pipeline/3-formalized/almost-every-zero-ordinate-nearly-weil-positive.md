@@ -33,3 +33,9 @@
 4. Markov over `Z`: `η·#{Φ > η} ≤ Σ_Z Φ ≤ C H`. The core count `#Z ≥ H log Γ/(16π)` is
    `exists_window_core_count`. Near-positivity at the good ordinates is
    `neg_offLineField_le_fullZeroForm`.
+
+## Subsumed
+In the only aperture range where this bound yields positivity, `(A + 1)² e^A ≪ log Γ`, the
+single-height law `zetaZeroConfig_re_W_heightShift_nonneg_of_sharp_horizon` already gives
+`Q_γ(F₀) ≥ 0` at every height `log(1 + γ/8) ≥ C + (4 + ε)e^A + 2` for every test (tail conditions
+aside). Not a contribution to the selection obstacle, which lives at logarithmic aperture.

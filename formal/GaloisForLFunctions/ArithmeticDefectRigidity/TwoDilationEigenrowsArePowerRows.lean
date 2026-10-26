@@ -11,7 +11,9 @@ A complex row `w` is an approximate eigenrow of the dilation `D_p w(n) = w(⌊n/
   `s₂` and of `D₃` with exponent `s₃`, `Re s₂ = Re s₃ ∈ (1/2, 1]`, then `w − c n^s` has finite pronic
   energy, and unless `c = 0` the exponent is tied: `2^s = 2^{s₂}` and `3^s = 3^{s₃}`.
 * `cPronicEnergy_ne_top_of_untied`: if no exponent is tied to both, `w` itself has finite energy.
-* `exists_cPronicEnergy_sub_cpow_ne_top_same`: with `s₂ = s₃ = s` the power is `n^s` itself.
+* `exists_cPronicEnergy_sub_cpow_ne_top_same`: with `s₂ = s₃ = s` the power is `n^s` itself, and
+  conversely `w − c n^s` of finite energy satisfies every law of exponent `s`
+  (`cPronicEnergy_cEulerLaw_ne_top`).
 
 So at the level of rows, rank-one escape is power-like and its exponent is tied across primes.
 The proof runs on the log scale `g(u) = e^{-u/2} w(⌊e^u⌋)`, where the law at `p` is the twisted

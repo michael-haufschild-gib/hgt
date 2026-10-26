@@ -46,11 +46,12 @@ namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 /-! ### 1. Annihilating tests for countable families -/
 
 /-- **Annihilating tests for sparse countable families.** If `a i ≠ 0` and `Σ_i |a_i|^{-s} < ∞`
-for some `0 < s < 1`, a `C²` compactly supported test has transform vanishing at every `a i` and
+for some `0 < s < 1`, a `C²` test supported in `[−ε, ε]` has transform vanishing at every `a i` and
 at no other non-real point. The family is padded by the real points `2^{n+1}` and enumerated. -/
-theorem exists_annihilating_test_of_countable {ι : Type*} [Countable ι] {s : ℝ} (hs0 : 0 < s)
-    (hs1 : s < 1) {a : ι → ℂ} (ha : ∀ i, a i ≠ 0) (hsum : Summable fun i => ‖a i‖⁻¹ ^ s) :
-    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧ (∀ i, paperFT g (a i) = 0) ∧
+theorem exists_annihilating_test_of_countable_small {ι : Type*} [Countable ι] {s : ℝ} (hs0 : 0 < s)
+    (hs1 : s < 1) {a : ι → ℂ} (ha : ∀ i, a i ≠ 0) (hsum : Summable fun i => ‖a i‖⁻¹ ^ s) {ε : ℝ}
+    (hε : 0 < ε) :
+    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ tsupport g ⊆ Set.Icc (-ε) ε ∧ (∀ i, paperFT g (a i) = 0) ∧
       ∀ w : ℂ, w.im ≠ 0 → (∀ i, w ≠ a i) → paperFT g w ≠ 0 := by
   set c : ℕ → ℂ := fun n => (((2 : ℝ) ^ (n + 1) : ℝ) : ℂ)
   set a' : ι ⊕ ℕ → ℂ := Sum.elim a c
@@ -73,8 +74,8 @@ theorem exists_annihilating_test_of_countable {ι : Type*} [Countable ι] {s : �
   obtain ⟨hden⟩ := nonempty_denumerable (ι ⊕ ℕ)
   set e : ι ⊕ ℕ ≃ ℕ := Denumerable.eqv (ι ⊕ ℕ)
   have hb := (e.symm.summable_iff (f := fun j => ‖a' j‖⁻¹ ^ s)).mpr hsum'
-  obtain ⟨g, hg, hgc, hz, hnz⟩ := exists_annihilating_test hs0 hs1 (a := fun k => a' (e.symm k))
-    (fun k => ha' _) hb
+  obtain ⟨g, hg, hgc, hz, hnz⟩ := exists_annihilating_test_small hs0 hs1
+    (a := fun k => a' (e.symm k)) (fun k => ha' _) hb hε
   refine ⟨g, hg, hgc, fun i => ?_, fun w hw hwa => hnz w hw fun k => ?_⟩
   · simpa [a'] using hz (e (Sum.inl i))
   · show w ≠ a' (e.symm k)
@@ -83,6 +84,15 @@ theorem exists_annihilating_test_of_countable {ι : Type*} [Countable ι] {s : �
     · exact hwa i
     · rintro rfl
       exact hw (Complex.ofReal_im _)
+
+/-- The countable annihilator with compact support. -/
+theorem exists_annihilating_test_of_countable {ι : Type*} [Countable ι] {s : ℝ} (hs0 : 0 < s)
+    (hs1 : s < 1) {a : ι → ℂ} (ha : ∀ i, a i ≠ 0) (hsum : Summable fun i => ‖a i‖⁻¹ ^ s) :
+    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧ (∀ i, paperFT g (a i) = 0) ∧
+      ∀ w : ℂ, w.im ≠ 0 → (∀ i, w ≠ a i) → paperFT g w ≠ 0 := by
+  obtain ⟨g, hg, hgs, hz, hnz⟩ :=
+    exists_annihilating_test_of_countable_small hs0 hs1 ha hsum one_pos
+  exact ⟨g, hg, isCompact_Icc.of_isClosed_subset (isClosed_tsupport g) hgs, hz, hnz⟩
 
 /-! ### 2. Extraction on the support of the weights -/
 
@@ -206,11 +216,12 @@ theorem gammaOf_ne_zero_of_re_ne {τ : ℂ} (h : τ.re ≠ 1 / 2) : gammaOf τ �
   h (by linarith [SquareRootThreshold.im_gammaOf τ, congrArg Complex.im h0, Complex.zero_im])
 
 /-- **Killing a sparse set of right zeros.** If `A` is a set of points right of the line with
-`Σ_{τ ∈ A} |γ_τ|^{-s} < ∞` for some `0 < s < 1`, a `C²` compactly supported test vanishes at `γ_τ`
-and `γ_{1−τ̄}` for every `τ ∈ A`, and at no other non-real point. -/
-theorem exists_test_killing (A : Set ℂ) (hA : ∀ τ ∈ A, 1 / 2 < τ.re) (hAc : A.Countable)
-    {s : ℝ} (hs0 : 0 < s) (hs1 : s < 1) (hsum : Summable fun τ : A => ‖gammaOf (τ : ℂ)‖⁻¹ ^ s) :
-    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧
+`Σ_{τ ∈ A} |γ_τ|^{-s} < ∞` for some `0 < s < 1`, a `C²` test supported in `[−ε, ε]` vanishes at
+`γ_τ` and `γ_{1−τ̄}` for every `τ ∈ A`, and at no other non-real point. -/
+theorem exists_test_killing_small (A : Set ℂ) (hA : ∀ τ ∈ A, 1 / 2 < τ.re) (hAc : A.Countable)
+    {s : ℝ} (hs0 : 0 < s) (hs1 : s < 1) (hsum : Summable fun τ : A => ‖gammaOf (τ : ℂ)‖⁻¹ ^ s)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ tsupport g ⊆ Set.Icc (-ε) ε ∧
       (∀ τ ∈ A, paperFT g (gammaOf τ) = 0 ∧ paperFT g (gammaOf (reflect τ)) = 0) ∧
       ∀ w : ℂ, w.im ≠ 0 → (∀ τ ∈ A, w ≠ gammaOf τ ∧ w ≠ gammaOf (reflect τ)) →
         paperFT g w ≠ 0 := by
@@ -225,19 +236,29 @@ theorem exists_test_killing (A : Set ℂ) (hA : ∀ τ ∈ A, 1 / 2 < τ.re) (hA
   have hsum' : Summable fun τ : A => ‖gammaOf (reflect (τ : ℂ))‖⁻¹ ^ s := by
     simpa only [norm_gammaOf_reflect] using hsum
   have hsa : Summable fun i => ‖a i‖⁻¹ ^ s := Summable.sum _ hsum hsum'
-  obtain ⟨g, hg, hgc, hz, hnz⟩ := exists_annihilating_test_of_countable hs0 hs1 ha hsa
+  obtain ⟨g, hg, hgc, hz, hnz⟩ := exists_annihilating_test_of_countable_small hs0 hs1 ha hsa hε
   refine ⟨g, hg, hgc, fun τ hτ => ⟨hz (Sum.inl ⟨τ, hτ⟩), hz (Sum.inr ⟨τ, hτ⟩)⟩,
     fun w hw hwA => hnz w hw ?_⟩
   rintro (τ | τ)
   · exact (hwA τ τ.2).1
   · exact (hwA τ τ.2).2
 
-/-- **A test killing the deep zeros of a deep-sparse configuration.** Given a set `F` of right
-zeros and a depth `σ₀ > ½`, a `C²` compactly supported test vanishes at `γ_τ` and `γ_{1−τ̄}` for
-every right zero `τ ∉ F` with `Re τ ≥ σ₀`, and at neither point for `τ ∈ F`. -/
-theorem exists_test_killing_deep_zeros (Z : ZeroConfig) (hsp : DeepSparse Z) {σ₀ : ℝ}
-    (hσ₀ : 1 / 2 < σ₀) (F : Set ℂ) (hF : ∀ τ ∈ F, τ ∈ rightZeros Z) :
+/-- The killing test with compact support. -/
+theorem exists_test_killing (A : Set ℂ) (hA : ∀ τ ∈ A, 1 / 2 < τ.re) (hAc : A.Countable)
+    {s : ℝ} (hs0 : 0 < s) (hs1 : s < 1) (hsum : Summable fun τ : A => ‖gammaOf (τ : ℂ)‖⁻¹ ^ s) :
     ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧
+      (∀ τ ∈ A, paperFT g (gammaOf τ) = 0 ∧ paperFT g (gammaOf (reflect τ)) = 0) ∧
+      ∀ w : ℂ, w.im ≠ 0 → (∀ τ ∈ A, w ≠ gammaOf τ ∧ w ≠ gammaOf (reflect τ)) →
+        paperFT g w ≠ 0 := by
+  obtain ⟨g, hg, hgs, hz, hnz⟩ := exists_test_killing_small A hA hAc hs0 hs1 hsum one_pos
+  exact ⟨g, hg, isCompact_Icc.of_isClosed_subset (isClosed_tsupport g) hgs, hz, hnz⟩
+
+/-- **A test killing the deep zeros of a deep-sparse configuration.** Given a set `F` of right
+zeros, a depth `σ₀ > ½` and `ε > 0`, a `C²` test supported in `[−ε, ε]` vanishes at `γ_τ` and
+`γ_{1−τ̄}` for every right zero `τ ∉ F` with `Re τ ≥ σ₀`, and at neither point for `τ ∈ F`. -/
+theorem exists_test_killing_deep_zeros_small (Z : ZeroConfig) (hsp : DeepSparse Z) {σ₀ : ℝ}
+    (hσ₀ : 1 / 2 < σ₀) (F : Set ℂ) (hF : ∀ τ ∈ F, τ ∈ rightZeros Z) {ε : ℝ} (hε : 0 < ε) :
+    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ tsupport g ⊆ Set.Icc (-ε) ε ∧
       (∀ τ ∈ rightZeros Z, σ₀ ≤ τ.re → τ ∉ F →
         paperFT g (gammaOf τ) = 0 ∧ paperFT g (gammaOf (reflect τ)) = 0) ∧
       ∀ τ ∈ F, paperFT g (gammaOf τ) ≠ 0 ∧ paperFT g (gammaOf (reflect τ)) ≠ 0 := by
@@ -252,7 +273,7 @@ theorem exists_test_killing_deep_zeros (Z : ZeroConfig) (hsp : DeepSparse Z) {σ
     simpa only [Function.comp_def, Set.coe_inclusion] using
       hsum.comp_injective (Set.inclusion_injective hAS)
   obtain ⟨g, hg, hgc, hz, hnz⟩ :=
-    exists_test_killing A (fun τ hτ => (hAr τ hτ).2) hAc hs0 hs1 hsumA
+    exists_test_killing_small A (fun τ hτ => (hAr τ hτ).2) hAc hs0 hs1 hsumA hε
   have hmemA : ∀ τ ∈ rightZeros Z, σ₀ ≤ τ.re → τ ∉ F → τ ∈ A := fun τ hτ hle hτF =>
     ⟨⟨hτ, hle⟩, hτF⟩
   have hAF : ∀ τ ∈ A, τ ∉ F := fun τ hτ => hτ.2
@@ -275,6 +296,16 @@ theorem exists_test_killing_deep_zeros (Z : ZeroConfig) (hsp : DeepSparse Z) {σ
     · have h'' : τ₀ = τ := by
         rw [← reflect_reflect τ₀, gammaOf_injective h, reflect_reflect]
       rw [← h'']; exact hτ₀
+
+/-- The deep-zero killing test with compact support. -/
+theorem exists_test_killing_deep_zeros (Z : ZeroConfig) (hsp : DeepSparse Z) {σ₀ : ℝ}
+    (hσ₀ : 1 / 2 < σ₀) (F : Set ℂ) (hF : ∀ τ ∈ F, τ ∈ rightZeros Z) :
+    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧
+      (∀ τ ∈ rightZeros Z, σ₀ ≤ τ.re → τ ∉ F →
+        paperFT g (gammaOf τ) = 0 ∧ paperFT g (gammaOf (reflect τ)) = 0) ∧
+      ∀ τ ∈ F, paperFT g (gammaOf τ) ≠ 0 ∧ paperFT g (gammaOf (reflect τ)) ≠ 0 := by
+  obtain ⟨g, hg, hgs, hz, hnz⟩ := exists_test_killing_deep_zeros_small Z hsp hσ₀ F hF one_pos
+  exact ⟨g, hg, isCompact_Icc.of_isClosed_subset (isClosed_tsupport g) hgs, hz, hnz⟩
 
 /-- **A single surviving term.** If `g` is nonzero at `γ_ρ` and `γ_{1−ρ̄}` for a right zero `ρ` and
 vanishes at `γ_τ` for every other zero `τ` with the same eigenvalue, the weight of `p^{ρ−½}` is the

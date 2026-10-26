@@ -167,7 +167,10 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     (`finrank_quotient_eq_sum_normalizedModuleHull`); a zero diagonal at `p` forces dimension ≤ `p−1`
     (`finiteDimensional_and_finrank_le_of_kernel_diag_eq_zero`). Rank-one modules: augmentation or
     `χ(p) = η(p)p^{−s}`, `s ≥ ½`, `η` multiplicative sign (`rankOneCharacter_eq_augmentation_or_signed_rpow`) —
-    magnitudes forced, signs/exponent not tied to zeros. Operator hull obeys dilation radii.
+    magnitudes forced, signs/exponent not tied to zeros. At the row level tiedness is automatic: a row
+    with `w − 2^{s₂}D₂w`, `w − 3^{s₃}D₃w` admitted, `Re s₂ = Re s₃ ∈ (½,1]`, is `cn^s` + admitted with
+    `2^s = 2^{s₂}`, `3^s = 3^{s₃}`, or admitted (`exists_cPronicEnergy_sub_cpow_ne_top`); untied pairs
+    allow no escaping row. Operator hull obeys dilation radii.
     Every defined rank-one contraction preserves the kernel and complete annihilator
     (`contracted_kernel_eq_of_finrank_one`, `cofactorAnnihilator_eq_of_finrank_one`).
     Every hull character of a finite-dimensional actual module has augmentation or radial modulus

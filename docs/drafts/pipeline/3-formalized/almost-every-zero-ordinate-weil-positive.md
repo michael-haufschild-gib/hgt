@@ -30,3 +30,9 @@ Axioms: `propext`, `Classical.choice`, `Quot.sound`. Wired into `ArithmeticCaste
 3. `Σ_ρ m_ρ d_ρ(γ) ≤ 4(A+1)² e^A N² Φ(γ)` (depth-difference law of
    `AlmostEveryHeightIsNearlyWeilPositive`).
 4. The count of exceptional ordinates is `exists_shortWindow_almostEvery_zeroOrdinate_nearly_positive`.
+
+## Subsumed
+In the only aperture range where this bound yields positivity, `(A + 1)² e^A ≪ log Γ`, the
+single-height law `zetaZeroConfig_re_W_heightShift_nonneg_of_sharp_horizon` already gives
+`Q_γ(F₀) ≥ 0` at every height `log(1 + γ/8) ≥ C + (4 + ε)e^A + 2` for every test (tail conditions
+aside). Not a contribution to the selection obstacle, which lives at logarithmic aperture.
