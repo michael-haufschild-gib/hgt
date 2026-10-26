@@ -94,7 +94,7 @@ theorem fourier_one_half : fourier 1 (((1 / 2 : ℝ)) : UnitAddCircle) = -1 := b
 
 /-- At a prime the twist is the first Fourier mode of the prime coordinate. -/
 theorem twist_prime (x : GaugeTorus) {p : ℕ} (hp : p.Prime) : twist x p = fourier 1 (x p) := by
-  rw [twist, torusCharacter_apply]
+  rw [twist, HTGeometry.torusCharacter_apply]
   have hsupp : (expVec p).support = {p} := by
     rw [support_expVec, Nat.support_factorization, hp.primeFactors]
   rw [hsupp, prod_singleton, expVec_apply, hp.factorization_self]
@@ -164,7 +164,7 @@ theorem coprimeSquarefreeCount_eq_card (Q M : ℕ) :
       push_cast; rw [← pow_mul, mul_comm, pow_mul]; norm_num
     · rw [if_pos hc, if_neg (fun h => hs h.2), ArithmeticFunction.moebius_eq_zero_of_not_squarefree hs]
       simp
-  · rw [if_neg hc, if_neg (fun h => hc h.1)]; rfl
+  · rw [if_neg hc, if_neg (fun h => hc h.1)]
 
 /-- **Divisors with a prescribed gcd.** The squarefree `n ≤ N` with `gcd(n, Q) = d` are `d·m` with
 `m ≤ N/d` squarefree and coprime to `Q`. -/
@@ -233,6 +233,7 @@ theorem moebiusGaugeSum_twinTail (I : Finset ℕ) (x₀ : GaugeTorus) (N : ℕ) 
     intro n _
     by_cases h1 : Nat.gcd n Q = d <;> by_cases h2 : Squarefree n <;> simp [h1, h2]
   rw [sum_congr rfl this, ← sum_filter, sum_const, nsmul_eq_mul, mul_comm]
+  norm_cast
 
 /-! ### Linear growth of twin tails -/
 
@@ -251,15 +252,15 @@ theorem sum_divisors_eq_sum_powerset {M : Type*} [AddCommMonoid M] {Q : ℕ} (hQ
   rw [← sum_image hinj]
   congr 1
   ext d
-  simp only [mem_image, mem_powerset, Nat.mem_divisors]
+  rw [mem_image, Nat.mem_divisors]
   constructor
+  · intro hd
+    refine ⟨d.primeFactors, mem_powerset.mpr (Nat.primeFactors_mono hd.1 hQ.ne_zero),
+      Nat.prod_primeFactors_of_squarefree (hQ.squarefree_of_dvd hd.1)⟩
   · rintro ⟨t, ht, rfl⟩
     refine ⟨?_, hQ.ne_zero⟩
-    calc ∏ p ∈ t, p ∣ ∏ p ∈ Q.primeFactors, p := prod_dvd_prod_of_subset _ _ _ ht
+    calc ∏ p ∈ t, p ∣ ∏ p ∈ Q.primeFactors, p := prod_dvd_prod_of_subset _ _ _ (mem_powerset.mp ht)
       _ = Q := Nat.prod_primeFactors_of_squarefree hQ
-  · rintro ⟨hdQ, -⟩
-    exact ⟨d.primeFactors, Nat.primeFactors_mono hdQ hQ.ne_zero,
-      Nat.prod_primeFactors_of_squarefree (hQ.squarefree_of_dvd hdQ)⟩
 
 /-- The limit constant `Σ_{d | Q} ψ(d)/d = ∏_{p | Q} (1 − e(x_p)/p)` is nonzero. -/
 theorem sum_tailWeight_div_ne_zero (I : Finset ℕ) (x₀ : GaugeTorus) :
@@ -351,7 +352,8 @@ theorem eventually_mul_rpow_lt (K : ℝ) {c : ℝ} (hc : 0 < c) :
         mul_le_mul_of_nonneg_right (le_abs_self K) h34.le
     _ < c * ((N : ℝ) + 1) ^ (1 / 4 : ℝ) / 2 * ((N : ℝ) + 1) ^ (3 / 4 : ℝ) :=
         mul_lt_mul_of_pos_right hK h34
-    _ = c * ((N : ℝ) + 1) / 2 := by rw [← hsplit]; ring
+    _ = c / 2 * (((N : ℝ) + 1) ^ (3 / 4 : ℝ) * ((N : ℝ) + 1) ^ (1 / 4 : ℝ)) := by ring
+    _ = c * ((N : ℝ) + 1) / 2 := by rw [hsplit]; ring
     _ ≤ c * N := by nlinarith
 
 /-- **Every twin tail is strongly exceptional.** -/
@@ -361,8 +363,9 @@ theorem twinTail_mem_strongExceptional (I : Finset ℕ) (x₀ : GaugeTorus) :
     ∑ d ∈ (tailModulus I).divisors, tailWeight x₀ d / (d : ℂ)
   have hdens : 0 < BezoutValuationIncidence.coprimeSquarefreeDensity (tailModulus I) := by
     rw [BezoutValuationIncidence.coprimeSquarefreeDensity]
-    exact mul_pos RHTower.Sieve.squarefreeDensity_pos
-      (prod_pos fun p _ => div_pos (by positivity) (by positivity))
+    refine mul_pos (by rw [RHTower.Sieve.squarefreeDensity_eq]; positivity)
+      (prod_pos fun p hp => div_pos (by exact_mod_cast (Nat.prime_of_mem_primeFactors hp).pos)
+        (by positivity))
   have hL : L ≠ 0 := mul_ne_zero (by exact_mod_cast hdens.ne') (sum_tailWeight_div_ne_zero I x₀)
   have hLpos : 0 < ‖L‖ := norm_pos_iff.mpr hL
   have hlim := tendsto_moebiusGaugeSum_twinTail_div I x₀
@@ -371,7 +374,7 @@ theorem twinTail_mem_strongExceptional (I : Finset ℕ) (x₀ : GaugeTorus) :
     ((eventually_mul_rpow_lt (K : ℝ) (half_pos hLpos)).and (eventually_ge_atTop 1))).exists
   refine ⟨N, hN2.trans_le ?_⟩
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN3
-  rw [Metric.mem_ball, dist_eq_norm] at hN1
+  rw [dist_eq_norm] at hN1
   have hq : ‖moebiusGaugeSum N (twinTail I x₀) / (N : ℂ)‖ ≥ ‖L‖ / 2 := by
     have h := norm_sub_norm_le L (moebiusGaugeSum N (twinTail I x₀) / (N : ℂ))
     rw [norm_sub_rev] at h

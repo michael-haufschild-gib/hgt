@@ -55,7 +55,7 @@ theorem exists_abs_re_ge_half (w : ℂ) {γ : ℝ} (hγ : γ ≠ 0) (t₀ : ℝ)
   refine ⟨t₀ + Real.pi / (2 * |γ|), by linarith, ?_⟩
   have hturn : w * Complex.exp (γ * ((t₀ + Real.pi / (2 * |γ|) : ℝ) : ℂ) * I) =
       z * Complex.exp (((γ * (Real.pi / (2 * |γ|)) : ℝ) : ℂ) * I) := by
-    rw [hzdef, mul_assoc, ← Complex.exp_add]; congr 2; push_cast; ring
+    rw [hzdef, mul_assoc w, ← Complex.exp_add]; congr 2; push_cast; ring
   rw [hturn]
   rcases lt_or_gt_of_ne hγ with h | h
   · have hang : γ * (Real.pi / (2 * |γ|)) = -(Real.pi / 2) := by
@@ -103,7 +103,7 @@ theorem exists_gt_abs_of_hyperbolic {E : ℝ → ℝ} {B : ℝ} (hE : ∀ t, 0 �
   have hEt := hE t ht0
   set H := 2 * (w * Complex.exp ((δ + γ * I) * t)).re with hH
   have htri : |H| ≤ |E t + H| + |E t| := by
-    have h := abs_add (E t + H) (-(E t))
+    have h := abs_add_le (E t + H) (-(E t))
     rwa [abs_neg, show E t + H + -(E t) = H by ring] at h
   linarith [le_abs_self K, le_abs_self B]
 

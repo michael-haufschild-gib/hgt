@@ -14,7 +14,7 @@ The finite-horizon symbol calculus cannot see this: `S_ε` is unbounded on rows 
 and nothing excludes `S_ε r` cancelling the power terms at every horizon. The Mellin transform does.
 With `𝓜v(w) = Σ v(n)(n^{-w} − (n+1)^{-w})`:
 
-* `𝓜(S_ε v)(w) = ζ(w + ε) 𝓜v(w)` for `Re w > 2` (`rowMellin_cTotalCofactorSum`);
+* `𝓜(S_ε v)(w) = ζ(w + ε) 𝓜v(w)` for `Re w > 2` (`hasSum_cTotalCofactorSum_mul_cell`);
 * `𝓜(n^s)(w) = s ζ(w − s + 1) + E_s(w)` with `E_s` holomorphic on `Re w > Re s − 1`
   (`rowMellin_cpow_eq`, `differentiableOn_powerCorrection`);
 * `𝓜r` is holomorphic on `Re w > 1/2` for `r` of bounded energy (`differentiableOn_rowMellin`).

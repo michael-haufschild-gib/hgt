@@ -76,15 +76,16 @@ theorem antidiagonal_isometry_iff (l m : ℂ) :
   constructor
   · intro h X
     have := h 1 X
-    simp only [localForm, map_one, mul_one, one_mul] at this
+    simp only [localForm, mul_one, one_mul] at this
     -- `2 Re(l X m̄) = 2 Re(conj X)` and `Re(conj X) = Re X`
     have e : l * X * conj m = l * conj m * X := by ring
     rw [e, Complex.conj_re] at this
     linarith
   · intro h u v
     simp only [localForm, map_mul]
-    rw [show l * v * (conj m * conj u) = l * conj m * (v * conj u) by ring, h, one_mul,
-      ← Complex.conj_re, map_mul, Complex.conj_conj, mul_comm]
+    rw [show l * v * (conj m * conj u) = l * conj m * (v * conj u) by ring, h]
+    congr 1
+    rw [show v * conj u = conj (u * conj v) by simp [mul_comm], Complex.conj_re]
 
 /-- **An antidiagonal isometry is elliptic**: its square is the scalar `λ μ = λ/λ̄`, of modulus one. -/
 theorem antidiagonal_isometry_sq {l m : ℂ} (h : l * conj m = 1) (u v : ℂ) :

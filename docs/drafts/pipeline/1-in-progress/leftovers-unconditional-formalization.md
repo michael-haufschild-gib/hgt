@@ -20,7 +20,8 @@ Existing unrelated worktree changes must be preserved.
 
 ## Current checkpoint (authoritative over chronological notes)
 
-- No full card certified complete after recovered-report scope audit.
+- One of the original 14 cards is complete: Nyquist, promoted to
+  `3-formalized/leftovers/nyquist-critical-finite-part-2026-10-18.md`.
 - Nyquist: all 96 public declarations have clean transitive axiom audits
   (only `propext`, `Classical.choice`, `Quot.sound`). Exact constants and
   recovered-report claims mapped to eight leaves. PrimitiveTail and
@@ -28,11 +29,12 @@ Existing unrelated worktree changes must be preserved.
 - Original Nyquist parent final check `86965` passed, empty log.
   Primitive final check `28954` also passed with empty log.
   TestCellBounds final check `90003` passed with empty log.
-  Pending final direct checks: BroadTests, SourceClassification, SourceQuantitative.
+  All eight final direct checks passed with empty logs, including
+  SourceQuantitative (`54703`).
   Their oleans exist and must not be rebuilt. All eight imports are wired.
 - Physical retains 110 audited declarations. Three supplementary drafts have
   21 public declarations, combined in `/tmp/leftovers_physical_supplements_audit.lean`.
-  This scratch has not yet run; afterward migrate its three original component
+  This scratch is active (`10797`); afterward migrate its three original component
   files, never the combined audit, and perform final canonical source checks.
 - PM: four unchecked `/tmp/leftovers_pm_*.lean` drafts, no canonical files yet.
 - Dyadic: unchecked tent, linear variance, finite sieve realization,
@@ -44,8 +46,8 @@ Existing unrelated worktree changes must be preserved.
   and explicit arithmetic-model transport remain.
 - Finite cycle: unchecked exact first-order collar draft
   `/tmp/leftovers_energy_collar_exact.lean`; original exponent 8 retained.
-- Current searches: source derivative/velocity bridge `23888`; exact joint
-  kernel query just launched. Results under `/tmp/leftovers-*-search.json`.
+- Active Lean: physical 21-supplement audit `10797`. All searches terminal.
+  Results under `/tmp/leftovers-*-search.json`.
 - Next closure order: complete Nyquist final checks and card certificate →
   physical supplements → PM → dyadic/perturbed/cycle, retaining all 14 cards.
 
@@ -58,7 +60,7 @@ Existing unrelated worktree changes must be preserved.
 | `biscale-perturbed-incidence-1810` | Exact-incidence exclusion, log gaps, weighted comparison, sharpness, common-model realization, continuum distinction. Paper read. |
 | `compact-physical-box-producers` | **REOPENED after recovered-report audit.** Main construction and limits retain 110 clean axiom audits; card returned to `2-fully-proven/leftovers`. Exact two-tail identity and additional quantitative corollaries from the original report still require completion. |
 | `nonvacuous-independence-and-polarization-import-law` | Audit small-eigenvalue witness, complete actual Selberg-zeta dictionary and nonvacuous clauses. Historical log reports witness complete; current source audit pending. Import table explicitly an observation. |
-| `nyquist-critical-finite-part-2026-10-18` | Finite part, signed broad-test expansion, actual-source classification and witnesses. Existing 591-line parent inspected. Primitive, signed cell bounds, exact broad tests and source classification pass Lean. Primitive-tail leaf passes its final direct check. Quantitative source and signed witness claims are complete; all 96 public declarations have clean axiom audits. Final direct checks remain for six leaves. No complete-card certificate yet. |
+| `nyquist-critical-finite-part-2026-10-18` | Finite part, signed broad-test expansion, actual-source classification and witnesses. Existing 591-line parent inspected. Primitive, signed cell bounds, exact broad tests and source classification pass Lean. Primitive-tail leaf passes its final direct check. Quantitative source and signed witness claims are complete; all 96 public declarations have clean axiom audits. All eight final direct checks passed; complete card promoted to stage 3 after source/hash/index/import audit. |
 | `pm-long-modulus-quadrature` | Four complete unchecked prototypes: actual integrable Möbius producer, exact integer sampling, all-cutoff long/tail decomposition, exact square-root-head pronic bound. Endpoint formula retains tail past max(n,D). |
 | `route-e-cofactor-amplified-e3-token-supply` | Exact all-interval supply with all elementary bounds; shared Matomäki–Teräväinen/DI analytic input. Full historical-log and current-source audit pending. |
 | `route-e-forbidden-support-e3-stability` | Exact forbidden-support all-interval count with shared analytic input. Full historical-log and current-source audit pending. |
@@ -574,3 +576,93 @@ Existing unrelated worktree changes must be preserved.
   the already checked public `nyquistSourceMass_pos`; do not duplicate it.
 - Active Lean is BroadTests final check `65625`.
   Support-diameter corpus search just launched; other searches terminal.
+
+- BroadTests final canonical check `65625` exited 0, empty log.
+  SourceClassification final check `75617` is active; Quantitative remains.
+  Exact index query returns witness, primitive-tail, and quantitative energy
+  declarations (`/tmp/leftovers-nyquist-final-index.json`).
+- New unchecked derivative-correlation draft:
+  `/tmp/leftovers_compact_correlation_derivative_bounds.lean`. It imports
+  the planned CompactSourceDerivativeEnergy and checked Nyquist quantitative
+  source leaf, defines actual normalized Dirichlet energy, and derives exact
+  quadratic collar, sqrt-energy Lipschitz coefficient, and interval-diameter
+  correlation support. No added regularity or convergence premise.
+  Current corpus derivative query completed and supplied existing Krein/
+  source-mass parents; no direct derivative-energy result among its leads.
+  Source-interval proof follows the same literal-support mechanism as the
+  existing radius lemma. All searches now terminal.
+
+- SourceClassification final check `75617` exited 0, empty log. The final
+  quantitative check is `54703`. All eight Nyquist hashes still match the
+  certificate; 96-name audit log remains clean, scoped whitespace check passed.
+- Added unchecked `/tmp/leftovers_cycle_controlled_recovery.lean`: literal
+  separate pair/spoke error maxima, exact mesh and global modulus bounds,
+  actual uniform norm bound, and a constructed common Levy-energy class
+  for any two nonzero compact smooth sources. No energy ceiling is assumed
+  when connecting to the original source domain. Arbitrary noisy-data
+  residual transfer and derivative-conditioned recovery still remain.
+
+- Extended exact-collar draft with the closed-radius logarithmic modulus
+  and closed continuity-radius estimate. New unchecked
+  `/tmp/leftovers_grid_cycle_exact_recovery.lean` connects these to exact
+  grid tail radius 32E/(cε²), mesh exp(-1-128E/(cε²)), and the stated global
+  max(ε, 2^n(δC+nδ2)+ε/2) bound in pointwise and uniform norms.
+  Spoke indexing uses n+1 inner edges, so the paper's positive integer order
+  parameter is represented by n+1.
+- Removed the verified byte-identical plain Nyquist witness scratch mirror.
+  Combined 96-name audit remains at `/tmp/leftovers_nyquist_witnesses_audit.lean`.
+
+- Exact-order corpus refinement found the actual owner
+  `SharpCycleDetectionOrder.lean` (not DistantCopySharpness). Read it,
+  StrictCopyCycleCharge, UnitCorrelationBump and DistantCopyEnergyTopology.
+  New unchecked `/tmp/leftovers_controlled_sharp_cycle_sources.lean` puts
+  every separated copy into the existing fixed constructed energy ceiling,
+  preserves seed correlation on |x|<1, proves support radius T+1 including
+  endpoints, and transfers exact floor(T)+1 order to normalized literal
+  closed values. Nonempty arbitrary-order witnesses use T=m+3, amplitude1.
+  All these are actual smooth sources; no abstract source-admission premise.
+
+- Nyquist final quantitative check `54703` exited 0 with no diagnostics.
+  Revalidated all eight exact source hashes and unique imports, all 96 exact
+  axiom lists, index query and scoped whitespace. Card promoted to
+  `3-formalized/leftovers/nyquist-critical-finite-part-2026-10-18.md`;
+  one of 14 original cards complete. No new contribution counted.
+- Active Lean is physical combined supplement audit `10797`, log
+  `/tmp/leftovers-physical-supplements-audit.log`. No olean produced.
+- Added unchecked `/tmp/leftovers_derivative_cycle_conditioning.lean`: actual
+  B R²≤n conditioning, Bernoulli power floor1/2 using existing Nyquist parent
+  lemma, exact scalar2δC+2nδ2 bound, and its actual-source pair/spoke version.
+  Still connect this to finite mesh/global sqrt(B) modulus and noisy-array
+  residuals; actual normalized unit-source packaging also remains.
+
+- Finite-cycle drafting now includes:
+  `/tmp/leftovers_cycle_data_residuals.lean` (arbitrary measured arrays,
+  exact sum-of-two-fitting-residuals bound, actual uniform recovery);
+  `/tmp/leftovers_derivative_cycle_conditioning.lean` now also has the full
+  finite-mesh and global uniform2δC+2nδ2+2sqrt(B)η estimate.
+  ControlledClosedCycleRecovery draft gained one shared mesh-interpolation
+  helper; arbitrary-collar and derivative cases reuse it. All remain unchecked.
+- Exact unit-mass compact-source normalization corpus search is active
+  (`83439`); no normalization code yet. Physical supplement audit remains
+  `10797`, without diagnostics so far.
+
+- Physical supplement audit `10797` exited1. Four elaboration issues:
+  unreduced lambda applications in two tail squeeze inequalities, reversed
+  add_le_add_right orientation, and NNReal coercion hiding the positive-
+  primitive rewrite. Repaired explicitly. The fifth error was duplicate
+  compact_formEnergy_ne_top; search located the existing stronger all-anchor
+  theorem in CompactSourceGraphAdmission:159. Deleted duplicate proof and
+  retained the existing parent in the audit. New supplement count is20,
+  plus that one reused parent (131 total unique names including prior110).
+  Old r1 axiom log has elaboration-generated sorryAx and is invalid.
+  Combined exact source/audit regenerated; r2 check just started with -j1.
+- Added unchecked `/tmp/leftovers_unit_mass_compact_sources.lean`: actual
+  inverse-square-root amplitude normalization, mass1, preserved correlation
+  and derivative energy, and literal smooth nonempty derivative-controlled
+  class from SharpCycle.seed with exact source-derived collar parameters.
+- Route-E audit resumed: read both long cards through line720. Original1.55
+  statements remain required; historical1.557 retuning is not a substitute.
+  Current corpus contains final cofactor/forbidden assemblers but they still
+  take MTDeshouillersIwaniecBound and MTWattBound. These inputs require proof;
+  no wrapper counts as unconditional completion. Search evidence under
+  `/tmp/leftovers-route-e-{supply,forbidden}-search.json`.

@@ -259,12 +259,11 @@ theorem IsBlindFamily.norm_sq_sum {t : ℚ → E} {s α : ℝ} (ht : IsBlindFami
     have e2 : ∑ j ∈ S, conj (a j) * a j * ((s : ℂ) - α) =
         ((s - α : ℝ) : ℂ) * ∑ j ∈ S, conj (a j) * a j := by
       rw [mul_sum]
-      exact sum_congr rfl fun j _ => by ring
+      exact sum_congr rfl fun j _ => by push_cast; ring
     rw [e1, e2]
   rw [← inner_self_eq_norm_sq (𝕜 := ℂ), hsum]
   simp only [RCLike.re_to_complex, Complex.add_re, Complex.re_ofReal_mul, Complex.conj_mul',
     Complex.re_sum]
-  push_cast
   simp only [← Complex.ofReal_pow, Complex.ofReal_re]
 
 /-- Two Cesàro sums of a blind family along injective sequences:

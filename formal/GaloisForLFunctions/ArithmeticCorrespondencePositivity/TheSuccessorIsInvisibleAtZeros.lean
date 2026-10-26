@@ -159,10 +159,9 @@ theorem summable_vonMangoldt_shift {σ : ℝ} (hσ : 0 < σ) :
   refine h.congr fun n => ?_
   rw [LSeries.term_of_ne_zero (Nat.succ_ne_zero n), norm_div,
     Complex.norm_natCast_cpow_of_pos (Nat.succ_pos n), vonMangoldtC]
-  simp only [Complex.ofReal_re]
+  simp only [Complex.ofReal_re, Nat.succ_eq_add_one]
   push_cast
-  rw [Real.rpow_neg (by positivity), div_eq_mul_inv, show -σ - 1 = -(1 + σ) by ring,
-    Real.rpow_neg (by positivity)]
+  rw [show -σ - 1 = -(1 + σ) by ring, Real.rpow_neg (by positivity), div_eq_mul_inv]
 
 /-- **The successor defect of the prime source is holomorphic on `Re s > 0`.** -/
 theorem differentiableOn_succShiftDefect_vonMangoldt :
@@ -174,7 +173,7 @@ theorem tsum_vonMangoldt_eq {s : ℂ} (hs : 1 < s.re) :
     ∑' n : ℕ, vonMangoldtC (n + 1) * (((n : ℝ) + 1 : ℝ) : ℂ) ^ (-s) =
       -deriv riemannZeta s / riemannZeta s := by
   rw [← ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div hs, LSeries,
-    tsum_eq_zero_add (ArithmeticFunction.LSeriesSummable_vonMangoldt hs), LSeries.term_zero,
+    (ArithmeticFunction.LSeriesSummable_vonMangoldt hs).tsum_eq_zero_add, LSeries.term_zero,
     zero_add]
   refine tsum_congr fun n => ?_
   rw [LSeries.term_of_ne_zero (Nat.succ_ne_zero n), vonMangoldtC, Complex.cpow_neg, div_eq_mul_inv]

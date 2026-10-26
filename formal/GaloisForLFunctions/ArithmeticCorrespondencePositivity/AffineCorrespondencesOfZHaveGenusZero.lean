@@ -52,11 +52,12 @@ theorem affineIter_fixed_iff {a : ℤ} (ha : 2 ≤ a) (b : ℤ) {m : ℕ} (hm : 
   have h := affineIter_mul a b m n
   have ha1 : a - 1 ≠ 0 := by omega
   have ham : a ^ m - 1 ≠ 0 := by
-    have : 2 ^ m ≤ a ^ m := pow_le_pow_left₀ (by norm_num) ha m
-    have : 2 ≤ 2 ^ m := by
+    have h1 : (2 : ℤ) ^ m ≤ a ^ m := pow_le_pow_left₀ (by norm_num) ha m
+    have h2 : (2 : ℤ) ≤ 2 ^ m := by
       calc (2 : ℤ) = 2 ^ 1 := by norm_num
         _ ≤ 2 ^ m := pow_le_pow_right₀ (by norm_num) hm
-    omega
+    intro h
+    linarith
   constructor
   · intro hf
     rw [hf, sub_self, mul_zero] at h

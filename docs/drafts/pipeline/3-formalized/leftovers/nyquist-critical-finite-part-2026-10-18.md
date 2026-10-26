@@ -1,15 +1,15 @@
 # Critical Nyquist finite part and signed broad-source classification
 
 - **ID:** nyquist-critical-finite-part-2026-10-18
-- **Stage:** 2-fully-proven; final Lean source audits in progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Scope:** Independent BiScaleUncertainty; infinite-grid tail rigidity beyond Trap 5.
-- **Parent:** `../1-in-progress/infinite-grid-tail-rigidity-2026-10-17.md`
-- **Predecessor:** `../3-formalized/nyquist-weight-order-threshold-2026-10-17.md`
-- **Count:** Full card certificate pending final direct source checks. All 96 public declarations pass transitive axiom audit.
+- **Parent:** `../../1-in-progress/infinite-grid-tail-rigidity-2026-10-17.md`
+- **Predecessor:** `../nyquist-weight-order-threshold-2026-10-17.md`
+- **Count:** Complete existing paper result formalized; no new contribution count. All 96 public declarations pass transitive axiom audit.
 - **Field guide:** `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`.
 - **Paper:** `docs/reports/BiScaleUncertainty/NyquistCriticalFinitePart.md`
-- **Current source audit:** Eight leaves now cover the complete recovered report, including exact continuous primitive and broad-test constants, actual-source classification, quantitative energy, local uniform convergence, and both smooth witnesses. All 96 public declarations have clean transitive axiom lists. Final direct source checks remain for three leaves; no promotion yet.
+- **Current source audit:** Eight leaves now cover the complete recovered report, including exact continuous primitive and broad-test constants, actual-source classification, quantitative energy, local uniform convergence, and both smooth witnesses. All 96 public declarations have clean transitive axiom lists. All eight final direct source checks passed without diagnostics; complete card promoted to stage 3.
 
 ## Proven paper statement
 
@@ -45,8 +45,8 @@ must be derived from the fixed smooth source, not inferred from energy alone.
 
 - [x] Well-posed source-pure candidate and attack mechanism.
 - [x] Complete paper proof and internal novelty audit; no global priority claim.
-- [ ] Exact Lean statements checked and axiom-audited.
-- [ ] Counted significant contribution.
+- [x] Exact Lean statements checked and axiom-audited.
+- [x] Complete source, dependency, index and import certificate recorded; no contribution-count change.
 
 ## Corpus evidence
 
@@ -81,9 +81,9 @@ the latter has normalized correlation -1/2 at the separating lag. The cases n=1,
 m=0, all L>0 and zero test H were checked. No absolute integrability of e-c is
 claimed, and no conditional infinite integral is hidden in B's definition.
 
-The exact formalization is now present in eight leaves. The card remains at stage 2
-until all final direct source checks and the complete certificate are recorded.
-No contribution count or global novelty claim is changed by this checkpoint.
+The exact formalization is complete in eight leaves. Final direct source checks
+and the complete dependency certificate passed. No contribution count or global
+novelty claim is changed by this formalization.
 
 ## Completion proof for the missing analytic statements
 
@@ -164,7 +164,7 @@ the final source-check status is recorded below.
 - 2026-10-18 — Completed and audited paper proof; moved to fully proven paper stage
   during user-requested closeout after the goal was cleared.
 
-## Exact formalization and current audit
+## Exact formalization and verification certificate
 
 The complete original report was recovered at commit `727dc15d1`, path
 `docs/reports/BiScaleUncertainty/NyquistCriticalFinitePart.md`; it was deleted
@@ -194,20 +194,22 @@ proof token or raised proof limit in these eight leaves. No mathematical
 assumption was added to any report statement. The domains of compact
 Lipschitz tests and nonzero compact C² sources are retained exactly.
 
-Final direct checks passed for `NyquistCriticalPrimitiveTail`,
-`NyquistCriticalSignedWitnesses`, `NyquistCriticalPrimitive`,
-`NyquistCriticalTestCellBounds`, and the original
-`NyquistCriticalFinitePartAndBroadClassification`, all without diagnostics.
-The remaining three leaves are undergoing the required final direct checks.
-Their successful import builds do not substitute for these final checks.
+All eight leaves passed final direct source checks, each using
+`lake --old env lean GaloisForLFunctions/BiScaleUncertainty/<leaf>.lean`
+from `formal/`, with exit 0 and no diagnostics. These checks write no olean.
+The last check, SourceQuantitative (`54703`), also passed. Source hashes
+still match the exact 96-declaration audit.
 All eight imports occur once in the owning umbrella; no umbrella was compiled.
+A completed corpus query returns the signed witness, primitive-tail and
+quantitative energy declarations. Scoped whitespace checks passed.
 Global lint currently reports 21 unrelated errors and 416 size warnings,
 with no Nyquist diagnostic. No repository-wide green result is claimed.
 
 Evidence: `/tmp/leftovers-nyquist-complete-public-names.json`,
 `/tmp/leftovers_nyquist_witnesses_audit.lean`,
 `/tmp/leftovers-nyquist-witnesses-audit.log`, and the individual
-`/tmp/leftovers-nyquist-*-final.log` files.
+`/tmp/leftovers-nyquist-*-final.log` files, plus
+`/tmp/leftovers-nyquist-final-index.json` and `/tmp/leftovers-nyquist-lint.log`.
 
 | Leaf | Public declarations | Source SHA256 |
 |---|---:|---|

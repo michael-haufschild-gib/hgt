@@ -1,5 +1,5 @@
+import Mathlib.Tactic
 import Mathlib.Analysis.Complex.Basic
-import Mathlib.Algebra.BigOperators.Ring.Finset
 
 /-!
 # The Rankin–Selberg square sees the field of the other zeros
@@ -53,12 +53,14 @@ theorem sq_sum_eq_partial_fractions (m z : ι → ℂ) (hz : Function.Injective 
     refine sum_congr rfl fun j _ => ?_
     rw [← add_sum_erase _ _ (mem_univ j)]
     congr 1
-    ring
+    rw [div_mul_div_comm, ← sq, ← sq]
   -- each off-diagonal product is a difference of simple fractions
   have hpair : ∀ j k, j ≠ k → m j / (s - z j) * (m k / (s - z k)) =
       m j * m k / (z j - z k) * (1 / (s - z j)) - m j * m k / (z j - z k) * (1 / (s - z k)) := by
     intro j k hjk
     have hd : z j - z k ≠ 0 := sub_ne_zero.mpr fun h => hjk (hz h)
+    have h1 := hsz j
+    have h2 := hsz k
     field_simp
     ring
   have hoff : ∑ j, ∑ k ∈ univ.erase j, m j / (s - z j) * (m k / (s - z k)) =
@@ -108,7 +110,7 @@ theorem re_fieldAt_eq_zero_of_critical (m z : ι → ℂ) (hm : ∀ k, (m k).im 
 /-- **The deepest off-line point feels a positive field.** If `z_j` has maximal real part
 `½ + δ`, `δ > 0`, all multiplicities are nonnegative reals and the reflection `1 − z̄_j` occurs with
 positive multiplicity, then `Re E_j > 0`. -/
-theorem re_fieldAt_pos_of_deepest (m z : ι → ℂ) (hz : Function.Injective z)
+theorem re_fieldAt_pos_of_deepest (m z : ι → ℂ)
     (hm : ∀ k, 0 ≤ (m k).re ∧ (m k).im = 0) (j : ι) (hδ : 1 / 2 < (z j).re)
     (hmax : ∀ k, (z k).re ≤ (z j).re) (j' : ι) (hj' : z j' = 1 - conj (z j)) (hmj' : 0 < (m j').re) :
     0 < (fieldAt m z j).re := by
@@ -126,7 +128,7 @@ theorem re_fieldAt_pos_of_deepest (m z : ι → ℂ) (hz : Function.Injective z)
   refine lt_of_lt_of_le ?_ (single_le_sum hterm (mem_erase.mpr ⟨hjj', mem_univ j'⟩))
   -- the reflection contributes `m/(2δ)`
   have hd : z j - z j' = ((2 * (z j).re - 1 : ℝ) : ℂ) := by
-    rw [hj']; apply Complex.ext <;> simp <;> ring
+    rw [hj']; apply Complex.ext <;> simp; ring
   rw [hd, Complex.div_re, (hm j').2, zero_mul, zero_div, add_zero, Complex.ofReal_re,
     Complex.normSq_ofReal]
   have h2 : 0 < 2 * (z j).re - 1 := by linarith

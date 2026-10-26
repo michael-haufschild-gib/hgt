@@ -129,6 +129,9 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     `s` has dimension `ord_{s+ε}ζ` (`powerLogRows_renormalizedInversion_iff_order`), and over any
     finite exponent set it is the direct sum of the zero blocks, dimension `Σ ord`
     (`powerLogRows_global_renormalizedInversion_iff_order`; exponents separated by `D_2`, `D_3`).
+    **Mellin residues:** `v = Σc_sn^s + r`, `S_εv = c'n^{1−ε} + r'` (`r, r'` finite energy) forces
+    `ζ(s+ε) = 0` whenever `c_s ≠ 0` (`riemannZeta_add_eq_zero_of_powerLike_solution`): `𝓜(S_εv) = ζ(·+ε)𝓜v`,
+    `𝓜r` continues to `Re w > ½`, `𝓜(n^s)` has its pole at `s`.
 
 ### Extraction
 12. **Energy quantiles.** Increments ≤ 1 ⇒ quantile intervals keep mass `(s−r) ± 1/E`
@@ -264,7 +267,7 @@ assumed gap); separate identity, estimate, extraction and exclusion.
 | Topic | Required output |
 |---|---|
 | Joint extraction | One carrier holding fixed covariances, quantile signed work and the moving cofactor tail, with rate and spatial data, without exchanging an uncontrolled infinite sum and a limit; via `H_ε` the tail is bounded by consecutive dilation differences `‖D_jA − D_{j+1}A‖` (`pronicNorm_etaCofactorTail_le`), so this is a dilation-regularity question |
-| Exclusion / source selectivity | An independently proved estimate excluding the tangent state or its approximate eigenrelation `D̃u ≈ −u`, violated by impure models; on power rows the eigenrelation is exactly `ζ(s+ε) = 0`, so the gap is power-likeness of escape states |
+| Exclusion / source selectivity | An independently proved estimate excluding the tangent state or its approximate eigenrelation `D̃u ≈ −u`, violated by impure models; rows with two dilation laws (`O(1)` errors) satisfying the inversion law exist at `s` iff `ζ(s+ε) = 0` (`riemannZeta_add_eq_zero_iff_exists_rankOneEscapeRow`), so the gap is that escape states need not be joint `D₂,D₃` eigenrows with absolute errors |
 | Module classification | Which Wiener modules occur on escape: is `hull ⊆ obstructionHull` an equality; are signs/exponents of rank-one characters tied to zeros; exclude finite-dimensional escape modules by a source law |
 | Mixed Bézout/Vaughan covariance | Summable signed gain after centering, with horizon and damping dependence |
 | Successor dynamics | Moving words or amplified operations acting nontrivially at the escape scale with proved boundary cost |

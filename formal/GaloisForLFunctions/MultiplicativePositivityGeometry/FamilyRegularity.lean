@@ -32,7 +32,8 @@ omit [DecidableEq G] in
 /-- At `g = 0` a joint mode is a cosine. -/
 theorem jointMode_origin (ψ : AddChar G ℂ) (lam u : ℝ) :
     jointMode ψ lam (0, u) = Real.cos (lam * u) := by
-  simp [jointMode, jointPhase, Complex.exp_ofReal_mul_I_re]
+  simp only [jointMode, jointPhase, AddChar.map_zero_eq_one, one_mul]
+  exact Complex.exp_ofReal_mul_I_re (lam * u)
 
 omit [DecidableEq G] in
 /-- **The origin fibre of a joint divisor is a boundary divisor of the same weights.** -/
@@ -56,7 +57,8 @@ theorem joint_locallyFinite_or_fibreConstant {ι : Type*} {ψ : ι → AddChar G
   classical
   have hD := hw.isEvenPosDef
   have hfib := originFibre_isBoundaryDivisor hw
-  rcases boundary_locallyFinite hfib (by simpa using h0) (fun u => hint (0, u)) with hfin | hone
+  rcases boundary_locallyFinite hfib (show 𝒟 ((0 : G), (0 : ℝ)) = 1 from h0) (fun u => hint (0, u))
+    with hfin | hone
   · left
     intro R
     -- Each fibre lies in a translate of the origin fibre's support.
@@ -69,10 +71,10 @@ theorem joint_locallyFinite_or_fibreConstant {ι : Type*} {ψ : ι → AddChar G
         · have hmem1 : (g, u) ∈ nonvanishingSubgroup hD h0 hint := hu.1
           have hmem2 : (g, u₀) ∈ nonvanishingSubgroup hD h0 hint := hu₀
           have := (nonvanishingSubgroup hD h0 hint).sub_mem hmem1 hmem2
-          rw [mem_nonvanishingSubgroup] at this
-          simpa [Prod.mk_sub_mk] using this
+          rw [mem_nonvanishingSubgroup, Prod.mk_sub_mk, sub_self] at this
+          exact this
         · have := abs_sub u u₀
-          linarith [hu.2]
+          linarith [hu.2, hu₀R]
       · push Not at hne
         refine Set.finite_empty.subset fun u hu => ?_
         exact absurd hu.2 (not_le.mpr (hne u hu.1))

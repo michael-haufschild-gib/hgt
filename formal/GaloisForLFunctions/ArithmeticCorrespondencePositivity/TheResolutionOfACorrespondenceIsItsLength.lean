@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheLocalGeometryOfAReflectionPair
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 import Mathlib.Analysis.Calculus.MeanValue
+import Mathlib.Analysis.Calculus.Deriv.Polynomial
 
 /-!
 # The resolution of a correspondence is its length
@@ -78,11 +79,13 @@ theorem mellinAt_mul_cos {g : ℝ → ℝ} (hg : Continuous g) (hgc : HasCompact
   rw [mellinAt, mellinAt, mellinAt, ← integral_add (integrable_mellinAt hg hgc _)
     (integrable_mellinAt hg hgc _), ← integral_div]
   refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
-  push_cast
-  rw [Complex.cos, show s + γ * I - 1 / 2 = (s - 1 / 2) + γ * I by ring,
-    show s - γ * I - 1 / 2 = (s - 1 / 2) - γ * I by ring, add_mul, sub_mul, Complex.exp_add,
-    Complex.exp_sub]
-  field_simp
-  ring_nf
+  have ecos : ((Real.cos (γ * u) : ℝ) : ℂ) =
+      (Complex.exp (γ * u * I) + Complex.exp (-(γ * u * I))) / 2 := by
+    rw [Complex.ofReal_cos, Complex.cos]; push_cast; ring_nf
+  have e1 : (s + γ * I - 1 / 2) * (u : ℂ) = (s - 1 / 2) * u + γ * u * I := by ring
+  have e2 : (s - γ * I - 1 / 2) * (u : ℂ) = (s - 1 / 2) * u + -(γ * u * I) := by ring
+  beta_reduce
+  rw [Complex.ofReal_mul, ecos, e1, e2, Complex.exp_add, Complex.exp_add]
+  ring
 
 end GaloisForLFunctions.ArithmeticCorrespondencePositivity

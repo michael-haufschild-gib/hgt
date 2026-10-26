@@ -58,6 +58,8 @@ to `PrimeArchThetaFirstAtomQuadratureEnclosures`. The original rational-bounds t
   (37941, exit 0); its current olean/ilean are valid.
 - [x] `PrimeArchThetaFirstAtomQuadratureCells44` (cells 44–47) built successfully
   (58045, exit 0); its current olean/ilean are valid.
+- [x] `PrimeArchThetaFirstAtomQuadratureCells48` (cells 48–51) built successfully
+  (45160, exit 0); its current olean/ilean are valid.
 - [x] All twenty production helpers are imported by the RHTower umbrella. Do not compile umbrellas.
 - [x] Production-source scans find no native decision tactic, placeholders, added axioms, raised
   limits, or temporary diagnostics. `git diff --check` passes.
@@ -67,8 +69,8 @@ to `PrimeArchThetaFirstAtomQuadratureEnclosures`. The original rational-bounds t
 
 ## Current process and remaining work
 
-**Active owned Lean session: 45160**, building
-`RHTower/PrimeArchThetaFirstAtomQuadratureCells48.lean` (cells 48–51).
+**Active owned Lean session: 55080**, building
+`RHTower/PrimeArchThetaFirstAtomQuadratureCells52.lean` (cells 52–55).
 Wait for this session before starting another Lean process.
 
 The isolated `reduce` replacement probe failed at the default recursion limit (57280, exit 1),
@@ -79,13 +81,13 @@ and any probe artifacts have been removed. Continue the validated `cbv` certific
 Then build, separately and in the foreground:
 
 1. The remaining `PrimeArchThetaFirstAtomQuadratureCells<N>` modules, with
-   `N = 52, 56, 60`.
+   `N = 56, 60`.
    Each certifies exactly four cells, from `N` through `N + 3`.
 2. `PrimeArchThetaFirstAtomQuadratureArithmetic` (all five sums).
 
 Use `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/<Module>.olean -i .lake/build/lib/lean/GaloisForLFunctions/RHTower/<Module>.ilean GaloisForLFunctions/RHTower/<Module>.lean`
 from `formal/`, one process at a time. These oleans are required by the next source file being
-written. Only the cells 0–47 tables have passed; do not mistake the last-cell probe for all-cell validation.
+written. Only the cells 0–51 tables have passed; do not mistake the last-cell probe for all-cell validation.
 
 Finally check the actual PA target directly with
 `lake --old env lean GaloisForLFunctions/RHTower/PrimeArchThetaFirstAtomHighOrderMomentBounds.lean`.

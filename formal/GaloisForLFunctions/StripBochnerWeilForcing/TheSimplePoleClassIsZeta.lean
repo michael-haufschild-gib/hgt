@@ -1,4 +1,5 @@
 import GaloisForLFunctions.StripBochnerWeilForcing.PositiveDefiniteSectionsAreCompletelyMonotone
+import GaloisForLFunctions.StripBochnerWeilForcing.StripReflectionRigidity
 import GaloisForLFunctions.ArithmeticPositiveDuality.PositiveMeasureRigidityFromTheBareFunctionalEquation
 import GaloisForLFunctions.RHTower.DigammaLeLog
 import GaloisForLFunctions.RHTower.WeilDilationCriticalLineShift
@@ -71,7 +72,6 @@ theorem gammaℝReg_eq {s : ℂ} (hs : s ≠ 0) : gammaℝReg s = Complex.Gamma�
   have hs2 : s / 2 ≠ 0 := div_ne_zero hs two_ne_zero
   rw [add_comm (1 : ℂ) (s / 2), Complex.Gamma_add_one _ hs2]
   field_simp
-  ring
 
 /-! ## 2. Bounds on the strip -/
 
@@ -103,10 +103,10 @@ theorem exists_bound_gammaℝReg :
     have hk : ‖gammaℝNum s‖ ≤ Real.pi ^ (3 / 4 : ℝ) * max B₂ 0 := by
       unfold gammaℝNum
       rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hpi]
-      have hre : (-s / 2).re = -s.re / 2 := by simp [Complex.div_re]
-      have hz : 0 < (1 + s / 2).re := by simp [Complex.div_re]; linarith
+      have hre : (-s / 2).re = -s.re / 2 := by simp
+      have hz : 0 < (1 + s / 2).re := by simp; linarith
       have hΓ := norm_Gamma_le_Gamma_re hz
-      have hzre : (1 + s / 2).re = 1 + s.re / 2 := by simp [Complex.div_re]
+      have hzre : (1 + s / 2).re = 1 + s.re / 2 := by simp
       rw [hzre] at hΓ
       have hmem : 1 + s.re / 2 ∈ Icc (1 / 4 : ℝ) (7 / 4) := ⟨by linarith, by linarith⟩
       have hb := (hB₂ _ hmem)
@@ -138,7 +138,7 @@ theorem orderOne_le_cube {C : ℝ} (hC : 0 < C) :
     mul_le_mul_of_nonneg_left hlog (by positivity)
   have h2 : 2 * C * x ^ 2 ≤ x ^ 3 + 8 * C ^ 3 := by
     rcases le_or_gt (2 * C) x with h | h
-    · nlinarith [sq_nonneg x]
+    · nlinarith [mul_nonneg (sq_nonneg x) (sub_nonneg.mpr h)]
     · have : x ^ 2 ≤ 4 * C ^ 2 := by nlinarith
       nlinarith
   nlinarith [sq_nonneg (1 - x)]
@@ -191,7 +191,7 @@ theorem re_neg_logDeriv_le_sqrt (hS : CompletedPositiveSystem 1 1 F Λ) {x : ℝ
     (-logDeriv F (x : ℂ)).re ≤ 4 * Real.sqrt x := by
   have hx1 : 1 < (x : ℂ).re := by simp; linarith
   have hΛ : 0 ≤ (logDeriv Λ (x : ℂ)).re := by
-    have h := hS.sum_orbit_resolvent_le_re_logDeriv (r := 0) Fin.elim0 Fin.elim0
+    have h := sum_orbit_resolvent_le_re_logDeriv hS (r := 0) Fin.elim0 Fin.elim0
       (fun ℓ => Fin.elim0 ℓ) (fun ℓ => Fin.elim0 ℓ) (fun ℓ => Fin.elim0 ℓ) hx1
     simpa using h
   have hΓ : (logDeriv Complex.Gammaℝ (x : ℂ)).re ≤ Real.log x := by
@@ -252,7 +252,7 @@ theorem completedPositiveSystem_one_one_eq_zeta {F Λ : ℂ → ℂ}
   have h2 : (1 : ℝ) < 2 := by norm_num
   set c : ℝ := (F ((2 : ℝ) : ℂ)).re with hcdef
   have hF2 : F ((2 : ℝ) : ℂ) = (c : ℂ) :=
-    Complex.ext (by simp [hcdef]) (by simp [hS.im_F_ofReal h2])
+    Complex.ext (by simp [hcdef]) (by rw [Complex.ofReal_im]; exact hS.im_F_ofReal h2)
   have hc : c ≠ 0 := by
     intro h0
     apply hS.ne_zero_F ((2 : ℝ) : ℂ) (by simp)
@@ -278,9 +278,10 @@ theorem completedPositiveSystem_one_one_eq_zeta {F Λ : ℂ → ℂ}
         · rw [uIcc_of_le h] at hy; linarith [hy.1]
         · rw [uIcc_of_ge h] at hy; linarith [hy.1]
       have hyU : (y : ℂ) ∈ U := by simpa [hUdef] using hy1
-      exact (Complex.continuous_re.continuousAt.comp ((hF₁d _ hyU).differentiableAt
-        (hU.mem_nhds hyU)).continuousAt.comp Complex.continuous_ofReal.continuousAt)
-        |>.continuousWithinAt
+      have hFy : ContinuousAt F₁ (y : ℂ) :=
+        ((hF₁d _ hyU).differentiableAt (hU.mem_nhds hyU)).continuousAt
+      exact (Complex.continuous_re.continuousAt.comp
+        (hFy.comp Complex.continuous_ofReal.continuousAt)).continuousWithinAt
     have hmem : (0 : ℝ) ∈ uIcc ((F₁ ((2 : ℝ) : ℂ)).re) ((F₁ x).re) := by
       rw [hF₁two]; exact ⟨min_le_of_right_le hneg, le_max_of_le_left zero_le_one⟩
     obtain ⟨y, hy, hy0⟩ := intermediate_value_uIcc hcont hmem
@@ -349,9 +350,9 @@ theorem completedPositiveSystem_one_one_eq_zeta {F Λ : ℂ → ℂ}
     linear_combination -e1
   -- The holomorphic remainder `E`.
   set E : ℂ → ℂ := fun s => P s + c₀ / 2 * (gammaℝReg s - gammaℝReg (s - 1)) with hEdef
-  have hstrip : ∀ s ∈ verticalStrip (-1 / 2) (3 / 2), -1 / 2 ≤ s.re ∧ s.re ≤ 3 / 2 :=
+  have hstrip : ∀ s ∈ GaloisForLFunctions.HTGeometry.verticalStrip (-1 / 2) (3 / 2), -1 / 2 ≤ s.re ∧ s.re ≤ 3 / 2 :=
     fun s hs => hs
-  have hEd : DifferentiableOn ℂ E (verticalStrip (-1 / 2) (3 / 2)) := by
+  have hEd : DifferentiableOn ℂ E (GaloisForLFunctions.HTGeometry.verticalStrip (-1 / 2) (3 / 2)) := by
     intro s hs
     obtain ⟨h1, h2⟩ := hstrip s hs
     have hg1 : DifferentiableAt ℂ gammaℝReg s :=
@@ -379,7 +380,7 @@ theorem completedPositiveSystem_one_one_eq_zeta {F Λ : ℂ → ℂ}
   obtain ⟨BP, hBP⟩ := (isCompact_closedBall (0 : ℂ) 2).exists_bound_of_continuousOn
     hPd.continuous.continuousOn
   set C₀ : ℝ := max BP 0 + ‖c₀‖ + Real.exp K₁ / |c| + ‖c₀‖ * Bh with hC₀
-  have hfin : ∀ s ∈ verticalStrip (-1 / 2) (3 / 2), ‖E s‖ ≤ C₀ * Real.exp (‖s‖ ^ (3 : ℝ)) := by
+  have hfin : ∀ s ∈ GaloisForLFunctions.HTGeometry.verticalStrip (-1 / 2) (3 / 2), ‖E s‖ ≤ C₀ * Real.exp (‖s‖ ^ (3 : ℝ)) := by
     intro s hs
     obtain ⟨h1, h2⟩ := hstrip s hs
     have hexp1 : 1 ≤ Real.exp (‖s‖ ^ (3 : ℝ)) := Real.one_le_exp (by positivity)
@@ -499,5 +500,86 @@ theorem completedPositiveSystem_one_one_eq_zeta {F Λ : ℂ → ℂ}
     (eventually_nhdsWithin_of_eventually_nhds hev).frequently
   intro s hs
   exact heq hs
+
+/-- Real nonzero multiples of `ζ`, completed by `K · 2ξ`, are completed positive systems of pole
+budget `1` and degree `1`. -/
+theorem completedPositiveSystem_real_mul_zeta {K : ℝ} (hK : K ≠ 0) :
+    CompletedPositiveSystem 1 1 (fun s => (K : ℂ) * riemannZeta s)
+      (fun s => (K : ℂ) * (2 * RHTower.xi s)) := by
+  have hZ := completedPositiveSystem_riemannZeta
+  have hKC : (K : ℂ) ≠ 0 := by exact_mod_cast hK
+  have hlog : ∀ s : ℂ, logDeriv (fun s => (K : ℂ) * riemannZeta s) s = logDeriv riemannZeta s := by
+    intro s
+    rw [logDeriv_apply, logDeriv_apply, deriv_const_mul_field']
+    by_cases h : riemannZeta s = 0
+    · simp [h]
+    · field_simp
+  exact
+    { degree_pos := le_rfl
+      diffOn_F := hZ.diffOn_F.const_mul _
+      ne_zero_F := fun s hs => mul_ne_zero hKC (hZ.ne_zero_F s hs)
+      posDef_neg_logDeriv := fun {σ} hσ => by
+        simp only [hlog]
+        exact hZ.posDef_neg_logDeriv hσ
+      entire_Λ := hZ.entire_Λ.const_mul _
+      orderOne_Λ := OrderOneEnvelope.const_mul _ hZ.orderOne_Λ
+      sym_Λ := fun s => by simp only [hZ.sym_Λ s]
+      conj_Λ := fun s => by
+        simp only
+        rw [map_mul, Complex.conj_ofReal, hZ.conj_Λ s]
+      completed_eq := fun s hs => by
+        simp only
+        rw [hZ.completed_eq s hs]
+        ring }
+
+/-- **The pole-budget-one class is `ℝ^× · ζ`.** A completed positive system of pole budget `1` has
+degree `1` (`5d < 9κ`) and `F = Kζ` on `Re s > 1` with `K` real and nonzero; conversely every such
+`Kζ` is one. -/
+theorem completedPositiveSystem_one_iff {d : ℕ} {F Λ : ℂ → ℂ} :
+    CompletedPositiveSystem 1 d F Λ →
+      d = 1 ∧ ∃ K : ℝ, K ≠ 0 ∧ ∀ s : ℂ, 1 < s.re → F s = K * riemannZeta s := by
+  intro hS
+  have h1 := hS.degree_pos
+  have h2 := five_mul_degree_lt_nine_mul_poleOrder hS
+  have hd : d = 1 := by omega
+  subst hd
+  exact ⟨rfl, completedPositiveSystem_one_one_eq_zeta hS⟩
+
+/-- The completion of a pole-budget-one system is `K · 2ξ` on all of `ℂ`. -/
+theorem completedPositiveSystem_one_Λ_eq {d : ℕ} {F Λ : ℂ → ℂ}
+    (hS : CompletedPositiveSystem 1 d F Λ) :
+    ∃ K : ℝ, K ≠ 0 ∧ ∀ s : ℂ, Λ s = K * (2 * RHTower.xi s) := by
+  obtain ⟨hd, K, hK, hF⟩ := completedPositiveSystem_one_iff hS
+  subst hd
+  refine ⟨K, hK, fun s => ?_⟩
+  have hZ := completedPositiveSystem_riemannZeta
+  have hopen : IsOpen {z : ℂ | 1 < z.re} := isOpen_lt continuous_const Complex.continuous_re
+  have h2 : (2 : ℂ) ∈ {z : ℂ | 1 < z.re} := by simp; norm_num
+  have hev : Λ =ᶠ[𝓝 (2 : ℂ)] fun z => (K : ℂ) * (2 * RHTower.xi z) := by
+    filter_upwards [hopen.mem_nhds h2] with z hz
+    rw [hS.completed_eq z hz, hF z hz, hZ.completed_eq z hz]
+    ring
+  have heq := (hS.entire_Λ.analyticOnNhd univ).eqOn_of_preconnected_of_eventuallyEq
+    ((hZ.entire_Λ.const_mul (K : ℂ)).analyticOnNhd univ) isPreconnected_univ (mem_univ _) hev
+  exact heq (mem_univ s)
+
+/-- **No pole-budget-one system is zero-free.** Every completed positive system of pole budget `1`
+vanishes at critical points `1/2 + it` of arbitrarily large height (Hardy). -/
+theorem completedPositiveSystem_one_critical_zeros {d : ℕ} {F Λ : ℂ → ℂ}
+    (hS : CompletedPositiveSystem 1 d F Λ) (T : ℝ) :
+    ∃ t : ℝ, T < t ∧ Λ (1 / 2 + (t : ℂ) * I) = 0 := by
+  obtain ⟨K, -, hΛ⟩ := completedPositiveSystem_one_Λ_eq hS
+  obtain ⟨t, ht, hXi⟩ := RHTower.exists_Xi_zero_gt T
+  refine ⟨t, ht, ?_⟩
+  set s : ℂ := 1 / 2 + (t : ℂ) * I
+  have hs0 : s ≠ 0 := fun h => by
+    have := congrArg Complex.re h
+    simp [s] at this
+  have hs1 : s ≠ 1 := fun h => by
+    have := congrArg Complex.re h
+    simp [s] at this
+    norm_num at this
+  rw [hΛ, RHTower.xi_eq_half_mul hs0 hs1, RHTower.completedRiemannZeta_critical_eq_Xi, hXi]
+  simp
 
 end GaloisForLFunctions.StripBochnerWeilForcing
