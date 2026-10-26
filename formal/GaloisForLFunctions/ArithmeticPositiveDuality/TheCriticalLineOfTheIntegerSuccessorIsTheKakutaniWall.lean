@@ -41,14 +41,14 @@ theorem circlePoissonFourierMoment_prime (σ t : ℝ) (hσ : 0 < σ) (p : Nat.Pr
     congr 1
     have : |((Int.ofNat n : ℤ) : ℝ)| = n := by simp
     rw [this]
-    simp only [Int.ofNat_eq_coe, Int.cast_natCast]
+    simp only [Int.ofNat_eq_natCast, Int.cast_natCast]
     push_cast
     ring
   · simp only [circlePoissonFourierMoment, coe_primePoissonParameter, primePoissonParameterValue,
       ← Complex.exp_conj, ← Complex.exp_nat_mul]
     congr 1
     have : |((Int.negSucc n : ℤ) : ℝ)| = n + 1 := by
-      rw [Int.cast_negSucc, abs_neg]; exact abs_of_nonneg (by positivity : (0 : ℝ) ≤ (n : ℝ) + 1)
+      rw [Int.cast_negSucc, abs_neg, Nat.abs_cast]; push_cast; ring
     rw [this, Int.cast_negSucc]
     simp only [map_mul, map_add, Complex.conj_ofReal, Complex.conj_I]
     push_cast

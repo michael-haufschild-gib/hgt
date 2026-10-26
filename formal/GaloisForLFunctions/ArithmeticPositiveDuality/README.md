@@ -350,7 +350,11 @@ proved in the programmes that own their objects.
    Weil's included, are carried by the Kronecker line (P24), while every dilation part forced by the
    integer or Bost–Connes successor gives it mass zero (P25).
    Conversely an atomic archimedean dilation part admits only the two trivial extensions,
-   translation-invariant and induced (P26): Weil-shaped correlations carry no successor information.
+   translation-invariant and induced (P26), and Weil's own correlation admits only blind
+   successors (`weil_successor_blind`). Every dilation correlation splits canonically into its
+   archimedean and Kronecker-null parts (`kronecker_decomposition`), and the critical exponent of
+   the integer successor is the Kakutani wall of the prime-Poisson laws
+   (`heckeState_kakutani_wall`).
 7. **Topology.** *Which completion keeps every critical jet and closes the blind ideal?* The natural
    Fréchet topology of the Meyer source does both, unconditionally. No topology built from critical
    data alone closes it unless RH (P14): closedness of the blind ideal is information about the
@@ -380,6 +384,7 @@ proved in the programmes that own their objects.
 | Rank two decides RH, so rank-two positivity is progress | The two-prime Bochner problem is a receiver (P12) |
 | A non-commutative carrier adds positivity | Affine positivity is induced from the dilations (P13) |
 | Prescribing the successor from `ℤ` constrains Weil's dilation correlation | It excludes it: the integer successor forces `p`-adic Hecke decay, incompatible with any dilation part continuous at `1` (P18) |
+| Some successor prescription carries Weil's correlation | Only blind successors do (`weil_successor_blind`); arithmetic successors force Kronecker-null dilation spectra (P25) |
 | Closedness of the blind ideal is a critical property | Critical data make it dense (P14) |
 | Parity rescues quantization at the critical line | Not for `L ≥ 1` (P15) |
 | Integer values force vanishing | Only with unit mass and positive definiteness, and isolation needs no 2-torsion (P8) |
@@ -553,3 +558,6 @@ rate needs a term that does not scale; calibrate over `𝔽_q`.
 | `GramSpaceOfAPositiveDefiniteFunction` | The pre-Hilbert space of a positive-definite function on a group; translations as isometries |
 | `AFiniteArchimedeanSpectrumBlindsTheSuccessor` | Archimedean characters; Lagrange eigenvectors; covariance and block doubling; vanishing cross coefficients; the extensions of a finite archimedean correlation |
 | `AnAtomicArchimedeanSpectrumBlindsTheSuccessor` | Two-prime box averages; dilation combinations and their spectral weights; limit states; blindness for summable spectra |
+| `TheKroneckerDecompositionOfPositiveDefiniteFunctionsOnQ` | Archimedean and Kronecker-null parts of spectral measures; uniqueness; the largest archimedean minorant |
+| `TheCriticalLineOfTheIntegerSuccessorIsTheKakutaniWall` | Local Poisson moments at primes; spectral measures of Hecke weights; the Kakutani wall of Hecke states |
+| `WeilsCorrelationCarriesNoSuccessor` | Countable reindexing of atoms; the atomic expansion of Weil's correlation; blindness of its extensions |

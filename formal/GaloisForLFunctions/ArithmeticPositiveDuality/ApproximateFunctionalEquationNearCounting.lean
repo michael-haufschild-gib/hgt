@@ -199,49 +199,49 @@ theorem windowPoisson_le_of_two_le {ε v : ℝ} (hε0 : 0 < ε) (hε1 : ε ≤ 1
 /-! ## 3. Kernels on `t = ε + i(n + s)` -/
 
 /-- Window-weighted real part `(1 - |s|) Re[t/(π(u² + t²))]` at `t = ε + i(n + s)`. -/
-def tentSeriesKernel (n ε s u : ℝ) : ℝ :=
+def shiftedTentSeriesKernel (n ε s u : ℝ) : ℝ :=
   (1 - |s|) * ((((ε : ℂ) + ((n + s : ℝ) : ℂ) * I) /
     ((Real.pi : ℂ) * ((u : ℂ) ^ 2 + ((ε : ℂ) + ((n + s : ℝ) : ℂ) * I) ^ 2)))).re
 
 /-- Window-weighted real part `(1 - |s|) Re e^{-2πut}` at `t = ε + i(n + s)`. -/
-def tentDualKernel (n ε s u : ℝ) : ℝ :=
+def shiftedTentDualKernel (n ε s u : ℝ) : ℝ :=
   (1 - |s|) * (cexp (-(2 * Real.pi * (u : ℂ) * ((ε : ℂ) + ((n + s : ℝ) : ℂ) * I)))).re
 
 /-- Window-weighted real part `(1 - |s|) Re(-β/(πt) + β)` at `t = ε + i(n + s)`. -/
-def tentPolarKernel (β : ℂ) (n ε s : ℝ) : ℝ :=
+def shiftedTentPolarKernel (β : ℂ) (n ε s : ℝ) : ℝ :=
   (1 - |s|) * (-β / ((Real.pi : ℂ) * ((ε : ℂ) + ((n + s : ℝ) : ℂ) * I)) + β).re
 
 /-- Window-weighted real part `(1 - |s|) Re J(t)` at `t = ε + i(n + s)`. -/
-def tentDefectKernel (g : ℝ → ℂ) (n ε s : ℝ) : ℝ :=
+def shiftedTentDefectKernel (g : ℝ → ℂ) (n ε s : ℝ) : ℝ :=
   (1 - |s|) * (RHTower.HamburgerStability.defectLaplace g
     ((ε : ℂ) + ((n + s : ℝ) : ℂ) * I)).re
 
 /-- The series kernel is a window-weighted pair of Poisson kernels centred at `s = u - n` and
 `s = -u - n`. -/
-theorem tentSeriesKernel_eq {ε : ℝ} (hε : 0 < ε) (n s u : ℝ) :
-    tentSeriesKernel n ε s u = (1 / 2) * ((1 / Real.pi) * ((1 - |s|) *
+theorem shiftedTentSeriesKernel_eq {ε : ℝ} (hε : 0 < ε) (n s u : ℝ) :
+    shiftedTentSeriesKernel n ε s u = (1 / 2) * ((1 / Real.pi) * ((1 - |s|) *
       (ε / (ε ^ 2 + (s - (u - n)) ^ 2))) + (1 / Real.pi) * ((1 - |s|) *
         (ε / (ε ^ 2 + (s - (-u - n)) ^ 2)))) := by
   have h := two_re_series_term_eq (u := u) (τ := n + s) hε
   have e1 : n + s - u = s - (u - n) := by ring
   have e2 : n + s + u = s - (-u - n) := by ring
   rw [e1, e2] at h
-  unfold tentSeriesKernel
+  unfold shiftedTentSeriesKernel
   linear_combination (1 - |s|) / 2 * h
 
-theorem tentSeriesKernel_nonneg {ε : ℝ} (hε : 0 < ε) (n : ℝ) {s : ℝ} (hs : |s| ≤ 1) (u : ℝ) :
-    0 ≤ tentSeriesKernel n ε s u := by
-  rw [tentSeriesKernel_eq hε]
+theorem shiftedTentSeriesKernel_nonneg {ε : ℝ} (hε : 0 < ε) (n : ℝ) {s : ℝ} (hs : |s| ≤ 1) (u : ℝ) :
+    0 ≤ shiftedTentSeriesKernel n ε s u := by
+  rw [shiftedTentSeriesKernel_eq hε]
   have : 0 ≤ 1 - |s| := by linarith
   positivity
 
-theorem intervalIntegral_tentSeriesKernel {ε : ℝ} (hε : 0 < ε) (n u : ℝ) :
-    ∫ s in (-1 : ℝ)..1, tentSeriesKernel n ε s u =
+theorem intervalIntegral_shiftedTentSeriesKernel {ε : ℝ} (hε : 0 < ε) (n u : ℝ) :
+    ∫ s in (-1 : ℝ)..1, shiftedTentSeriesKernel n ε s u =
       (1 / 2) * (windowPoisson ε (u - n) + windowPoisson ε (-u - n)) := by
   have hi : ∀ v, IntervalIntegrable
       (fun s : ℝ => (1 / Real.pi) * ((1 - |s|) * (ε / (ε ^ 2 + (s - v) ^ 2)))) volume (-1) 1 :=
     fun v => ((continuous_window_poisson hε v).intervalIntegrable _ _).const_mul _
-  rw [intervalIntegral.integral_congr fun s _ => tentSeriesKernel_eq hε n s u,
+  rw [intervalIntegral.integral_congr fun s _ => shiftedTentSeriesKernel_eq hε n s u,
     intervalIntegral.integral_const_mul, intervalIntegral.integral_add (hi _) (hi _),
     intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
   rfl
@@ -252,12 +252,12 @@ private theorem poisson_le_inv_sq {ε x c : ℝ} (hε0 : 0 < ε) (hε1 : ε ≤ 
   nlinarith [mul_le_mul_of_nonneg_right hε1 hc.le, sq_nonneg ε]
 
 /-- Uniform-in-`ε` domination: `∫_{-1}^{1}` of the series kernel is at most `(n + 2)²/u²`. -/
-theorem intervalIntegral_tentSeriesKernel_le {n ε u : ℝ} (hn : 1 ≤ n) (hε0 : 0 < ε)
+theorem intervalIntegral_shiftedTentSeriesKernel_le {n ε u : ℝ} (hn : 1 ≤ n) (hε0 : 0 < ε)
     (hε1 : ε ≤ 1) (hu : 1 ≤ u) :
-    ∫ s in (-1 : ℝ)..1, tentSeriesKernel n ε s u ≤ (n + 2) ^ 2 * (1 / u ^ 2) := by
+    ∫ s in (-1 : ℝ)..1, shiftedTentSeriesKernel n ε s u ≤ (n + 2) ^ 2 * (1 / u ^ 2) := by
   have hu0 : 0 < u := by linarith
   have hu2 : 0 < u ^ 2 := by positivity
-  rw [intervalIntegral_tentSeriesKernel hε0]
+  rw [intervalIntegral_shiftedTentSeriesKernel hε0]
   have h1 : windowPoisson ε (u - n) ≤ (n + 2) ^ 2 * (1 / u ^ 2) := by
     rcases lt_or_ge u (n + 2) with hlt | hge
     · refine (windowPoisson_le_one hε0 _).trans ?_
@@ -302,11 +302,11 @@ private theorem poisson_le_window {n ε s u : ℝ} (hn : 1 ≤ n) (hε0 : 0 < ε
     refine (poisson_le_inv_sq hε0 hε1 hu2 hsq).trans ?_
     linarith [show 0 ≤ 1 / u ^ 2 by positivity]
 
-theorem abs_tentSeriesKernel_le {n ε s u : ℝ} (hn : 1 ≤ n) (hε0 : 0 < ε) (hε1 : ε ≤ 1)
+theorem abs_shiftedTentSeriesKernel_le {n ε s u : ℝ} (hn : 1 ≤ n) (hε0 : 0 < ε) (hε1 : ε ≤ 1)
     (hs : |s| ≤ 1) (hu : 1 ≤ u) :
-    |tentSeriesKernel n ε s u| ≤ 4 * (n + 1) ^ 2 / (Real.pi * ε) * (1 / u ^ 2) := by
+    |shiftedTentSeriesKernel n ε s u| ≤ 4 * (n + 1) ^ 2 / (Real.pi * ε) * (1 / u ^ 2) := by
   have hpi := Real.pi_pos
-  rw [abs_of_nonneg (tentSeriesKernel_nonneg hε0 n hs u), tentSeriesKernel_eq hε0]
+  rw [abs_of_nonneg (shiftedTentSeriesKernel_nonneg hε0 n hs u), shiftedTentSeriesKernel_eq hε0]
   have hw0 : 0 ≤ 1 - |s| := by linarith
   have hw1 : 1 - |s| ≤ 1 := by linarith [abs_nonneg s]
   have h1 := poisson_le_window hn hε0 hε1 hs hu (v := u - n) (Or.inl rfl)
@@ -323,33 +323,33 @@ theorem abs_tentSeriesKernel_le {n ε s u : ℝ} (hn : 1 ≤ n) (hε0 : 0 < ε) 
   rw [e]
   gcongr
 
-theorem measurable_uncurry_tentSeriesKernel (n ε : ℝ) :
-    Measurable (uncurry (tentSeriesKernel n ε)) := by
+theorem measurable_uncurry_shiftedTentSeriesKernel (n ε : ℝ) :
+    Measurable (uncurry (shiftedTentSeriesKernel n ε)) := by
   show Measurable fun p : ℝ × ℝ => (1 - |p.1|) * ((((ε : ℂ) + ((n + p.1 : ℝ) : ℂ) * I) /
     ((Real.pi : ℂ) * ((p.2 : ℂ) ^ 2 + ((ε : ℂ) + ((n + p.1 : ℝ) : ℂ) * I) ^ 2)))).re
   fun_prop
 
-theorem continuous_uncurry_tentDualKernel (n ε : ℝ) :
-    Continuous (uncurry (tentDualKernel n ε)) := by
+theorem continuous_uncurry_shiftedTentDualKernel (n ε : ℝ) :
+    Continuous (uncurry (shiftedTentDualKernel n ε)) := by
   show Continuous fun p : ℝ × ℝ =>
     (1 - |p.1|) * (cexp (-(2 * Real.pi * (p.2 : ℂ) * ((ε : ℂ) + ((n + p.1 : ℝ) : ℂ) * I)))).re
   fun_prop
 
 /-- The dual kernel is a damped window-weighted cosine. -/
-theorem tentDualKernel_eq (n ε s u : ℝ) :
-    tentDualKernel n ε s u = Real.exp (-2 * Real.pi * u * ε) *
+theorem shiftedTentDualKernel_eq (n ε s u : ℝ) :
+    shiftedTentDualKernel n ε s u = Real.exp (-2 * Real.pi * u * ε) *
       ((1 - |s|) * Real.cos (2 * Real.pi * u * (n + s))) := by
   have hexp : -(2 * (Real.pi : ℂ) * (u : ℂ) * ((ε : ℂ) + ((n + s : ℝ) : ℂ) * I)) =
       ((-2 * Real.pi * u * ε : ℝ) : ℂ) + ((-(2 * Real.pi * u * (n + s)) : ℝ) : ℂ) * I := by
     push_cast; ring
-  rw [tentDualKernel, hexp, Complex.exp_add_mul_I, ← Complex.ofReal_exp, ← Complex.ofReal_cos,
+  rw [shiftedTentDualKernel, hexp, Complex.exp_add_mul_I, ← Complex.ofReal_exp, ← Complex.ofReal_cos,
     ← Complex.ofReal_sin, Complex.re_ofReal_mul, add_re, ofReal_re, mul_re, ofReal_re, ofReal_im,
     I_re, I_im, Real.cos_neg]
   ring
 
-theorem abs_tentDualKernel_le {n ε s u : ℝ} (hε : 0 < ε) (hs : |s| ≤ 1) (hu : 0 < u) :
-    |tentDualKernel n ε s u| ≤ (1 / (2 * Real.pi ^ 2 * ε ^ 2)) * (1 / u ^ 2) := by
-  rw [tentDualKernel_eq, abs_mul, abs_of_pos (Real.exp_pos _), abs_mul,
+theorem abs_shiftedTentDualKernel_le {n ε s u : ℝ} (hε : 0 < ε) (hs : |s| ≤ 1) (hu : 0 < u) :
+    |shiftedTentDualKernel n ε s u| ≤ (1 / (2 * Real.pi ^ 2 * ε ^ 2)) * (1 / u ^ 2) := by
+  rw [shiftedTentDualKernel_eq, abs_mul, abs_of_pos (Real.exp_pos _), abs_mul,
     abs_of_nonneg (by linarith : (0 : ℝ) ≤ 1 - |s|)]
   have hy : 0 < 2 * Real.pi * u * ε := by positivity
   have hexp : Real.exp (-2 * Real.pi * u * ε) ≤ 2 / (2 * Real.pi * u * ε) ^ 2 := by
@@ -364,39 +364,39 @@ theorem abs_tentDualKernel_le {n ε s u : ℝ} (hε : 0 < ε) (hs : |s| ≤ 1) (
         mul_le_mul hexp hcos (by positivity) (by positivity)
     _ = (1 / (2 * Real.pi ^ 2 * ε ^ 2)) * (1 / u ^ 2) := by field_simp
 
-theorem integrable_tentSeriesKernel {ν : Measure ℝ} [SFinite ν] (hsupp : ν (Iio 1) = 0)
+theorem integrable_shiftedTentSeriesKernel {ν : Measure ℝ} [SFinite ν] (hsupp : ν (Iio 1) = 0)
     (hmom : Integrable (fun u : ℝ => 1 / u ^ 2) ν) {n ε : ℝ} (hn : 1 ≤ n) (hε0 : 0 < ε)
     (hε1 : ε ≤ 1) :
-    Integrable (uncurry (tentSeriesKernel n ε))
+    Integrable (uncurry (shiftedTentSeriesKernel n ε))
       ((volume.restrict (uIoc (-1 : ℝ) 1)).prod ν) := by
-  refine integrable_prod_uIoc_of_inv_sq_bound hmom (measurable_uncurry_tentSeriesKernel n ε)
+  refine integrable_prod_uIoc_of_inv_sq_bound hmom (measurable_uncurry_shiftedTentSeriesKernel n ε)
     (C := 4 * (n + 1) ^ 2 / (Real.pi * ε)) fun s hs => ?_
   rw [uIoc_of_le (by norm_num)] at hs
   have hs1 : |s| ≤ 1 := abs_le.mpr ⟨hs.1.le, hs.2⟩
   filter_upwards [ae_one_le_of_measure_Iio_one_eq_zero hsupp] with u hu
   rw [Real.norm_eq_abs]
-  exact abs_tentSeriesKernel_le hn hε0 hε1 hs1 hu
+  exact abs_shiftedTentSeriesKernel_le hn hε0 hε1 hs1 hu
 
-theorem integrable_tentDualKernel {ν : Measure ℝ} [SFinite ν] (hsupp : ν (Iio 1) = 0)
+theorem integrable_shiftedTentDualKernel {ν : Measure ℝ} [SFinite ν] (hsupp : ν (Iio 1) = 0)
     (hmom : Integrable (fun u : ℝ => 1 / u ^ 2) ν) (n : ℝ) {ε : ℝ} (hε0 : 0 < ε) :
-    Integrable (uncurry (tentDualKernel n ε)) ((volume.restrict (uIoc (-1 : ℝ) 1)).prod ν) := by
+    Integrable (uncurry (shiftedTentDualKernel n ε)) ((volume.restrict (uIoc (-1 : ℝ) 1)).prod ν) := by
   refine integrable_prod_uIoc_of_inv_sq_bound hmom
-    (continuous_uncurry_tentDualKernel n ε).measurable
+    (continuous_uncurry_shiftedTentDualKernel n ε).measurable
     (C := 1 / (2 * Real.pi ^ 2 * ε ^ 2)) fun s hs => ?_
   rw [uIoc_of_le (by norm_num)] at hs
   have hs1 : |s| ≤ 1 := abs_le.mpr ⟨hs.1.le, hs.2⟩
   filter_upwards [ae_one_le_of_measure_Iio_one_eq_zero hsupp] with u hu
   rw [Real.norm_eq_abs]
-  exact abs_tentDualKernel_le hε0 hs1 (lt_of_lt_of_le zero_lt_one hu)
+  exact abs_shiftedTentDualKernel_le hε0 hs1 (lt_of_lt_of_le zero_lt_one hu)
 
-theorem integrable_intervalIntegral_tentSeriesKernel {ν : Measure ℝ} [SFinite ν]
+theorem integrable_intervalIntegral_shiftedTentSeriesKernel {ν : Measure ℝ} [SFinite ν]
     (hsupp : ν (Iio 1) = 0) (hmom : Integrable (fun u : ℝ => 1 / u ^ 2) ν) {n ε : ℝ}
     (hn : 1 ≤ n) (hε0 : 0 < ε) (hε1 : ε ≤ 1) :
-    Integrable (fun u : ℝ => ∫ s in (-1 : ℝ)..1, tentSeriesKernel n ε s u) ν := by
-  refine (integrable_tentSeriesKernel hsupp hmom hn hε0 hε1).integral_prod_right.congr
+    Integrable (fun u : ℝ => ∫ s in (-1 : ℝ)..1, shiftedTentSeriesKernel n ε s u) ν := by
+  refine (integrable_shiftedTentSeriesKernel hsupp hmom hn hε0 hε1).integral_prod_right.congr
     (Eventually.of_forall fun u => ?_)
-  show (∫ s in uIoc (-1 : ℝ) 1, tentSeriesKernel n ε s u) =
-    ∫ s in (-1 : ℝ)..1, tentSeriesKernel n ε s u
+  show (∫ s in uIoc (-1 : ℝ) 1, shiftedTentSeriesKernel n ε s u) =
+    ∫ s in (-1 : ℝ)..1, shiftedTentSeriesKernel n ε s u
   rw [uIoc_of_le (by norm_num : (-1 : ℝ) ≤ 1),
     intervalIntegral.integral_of_le (by norm_num : (-1 : ℝ) ≤ 1)]
 
@@ -425,10 +425,10 @@ theorem integral_window_cos_shift {u : ℝ} (hu : u ≠ 0) (n : ℝ) :
     intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul,
     fejer_cos_integral hu, hodd, mul_zero, sub_zero]
 
-theorem intervalIntegral_tentDualKernel {u : ℝ} (hu : u ≠ 0) (n ε : ℝ) :
-    ∫ s in (-1 : ℝ)..1, tentDualKernel n ε s u = Real.exp (-2 * Real.pi * u * ε) *
+theorem intervalIntegral_shiftedTentDualKernel {u : ℝ} (hu : u ≠ 0) (n ε : ℝ) :
+    ∫ s in (-1 : ℝ)..1, shiftedTentDualKernel n ε s u = Real.exp (-2 * Real.pi * u * ε) *
       (Real.cos (2 * Real.pi * u * n) * (Real.sin (Real.pi * u) / (Real.pi * u)) ^ 2) := by
-  rw [intervalIntegral.integral_congr fun s _ => tentDualKernel_eq n ε s u,
+  rw [intervalIntegral.integral_congr fun s _ => shiftedTentDualKernel_eq n ε s u,
     intervalIntegral.integral_const_mul, integral_window_cos_shift hu]
 
 /-- `Re(α/(πt) + β)` at `t = ε + iτ` in real coordinates. -/
@@ -448,16 +448,16 @@ theorem re_polar_eq (α β : ℂ) {ε : ℝ} (hε : 0 < ε) (τ : ℝ) :
   field_simp
 
 /-- The window weight of the imaginary polar part, `∫_{-1}^{1} (1 - |s|)(n+s)/(ε² + (n+s)²) ds`. -/
-def tentPolarOdd (n ε : ℝ) : ℝ :=
+def shiftedTentPolarOdd (n ε : ℝ) : ℝ :=
   ∫ s in (-1 : ℝ)..1, (1 - |s|) * ((n + s) / (ε ^ 2 + (n + s) ^ 2))
 
-theorem continuous_tentPolarOdd_integrand {ε : ℝ} (hε : 0 < ε) (n : ℝ) :
+theorem continuous_shiftedTentPolarOdd_integrand {ε : ℝ} (hε : 0 < ε) (n : ℝ) :
     Continuous fun s : ℝ => (1 - |s|) * ((n + s) / (ε ^ 2 + (n + s) ^ 2)) :=
   (continuous_const.sub continuous_abs).mul
     ((continuous_const.add continuous_id).div (by fun_prop) fun s => by positivity)
 
-theorem tentPolarOdd_mem_Icc {n ε : ℝ} (hn : 1 ≤ n) (hε : 0 < ε) :
-    0 ≤ tentPolarOdd n ε ∧ tentPolarOdd n ε ≤ 2 := by
+theorem shiftedTentPolarOdd_mem_Icc {n ε : ℝ} (hn : 1 ≤ n) (hε : 0 < ε) :
+    0 ≤ shiftedTentPolarOdd n ε ∧ shiftedTentPolarOdd n ε ≤ 2 := by
   have hpt : ∀ s ∈ Icc (-1 : ℝ) 1,
       0 ≤ (1 - |s|) * ((n + s) / (ε ^ 2 + (n + s) ^ 2)) ∧
         (1 - |s|) * ((n + s) / (ε ^ 2 + (n + s) ^ 2)) ≤ 1 := by
@@ -470,7 +470,7 @@ theorem tentPolarOdd_mem_Icc {n ε : ℝ} (hn : 1 ≤ n) (hε : 0 < ε) :
     refine ⟨by positivity, ?_⟩
     rw [mul_div_assoc', div_le_one hd]
     nlinarith [sq_nonneg ε]
-  have hc := continuous_tentPolarOdd_integrand hε n
+  have hc := continuous_shiftedTentPolarOdd_integrand hε n
   refine ⟨intervalIntegral.integral_nonneg (by norm_num) fun s hs => (hpt s hs).1, ?_⟩
   have h := intervalIntegral.integral_mono_on (by norm_num : (-1 : ℝ) ≤ 1)
     (hc.intervalIntegrable _ _)
@@ -478,20 +478,20 @@ theorem tentPolarOdd_mem_Icc {n ε : ℝ} (hn : 1 ≤ n) (hε : 0 < ε) :
       IntervalIntegrable (fun _ : ℝ => (1 : ℝ)) volume (-1) 1)
     fun s hs => (hpt s hs).2
   rw [intervalIntegral.integral_const, smul_eq_mul] at h
-  unfold tentPolarOdd
+  unfold shiftedTentPolarOdd
   linarith
 
 /-- **The polar side.** `∫_{-1}^{1} (1 - |s|) Re(-β/(πt) + β) = Re β - Re β · P_ε(-n) - (Im β/π) q_ε`. -/
-theorem intervalIntegral_tentPolarKernel (β : ℂ) {ε : ℝ} (hε : 0 < ε) (n : ℝ) :
-    ∫ s in (-1 : ℝ)..1, tentPolarKernel β n ε s =
-      β.re - β.re * windowPoisson ε (-n) - β.im / Real.pi * tentPolarOdd n ε := by
+theorem intervalIntegral_shiftedTentPolarKernel (β : ℂ) {ε : ℝ} (hε : 0 < ε) (n : ℝ) :
+    ∫ s in (-1 : ℝ)..1, shiftedTentPolarKernel β n ε s =
+      β.re - β.re * windowPoisson ε (-n) - β.im / Real.pi * shiftedTentPolarOdd n ε := by
   have hpi := Real.pi_pos
-  have hpt : ∀ s : ℝ, tentPolarKernel β n ε s = β.re * (1 - |s|) -
+  have hpt : ∀ s : ℝ, shiftedTentPolarKernel β n ε s = β.re * (1 - |s|) -
       β.re * ((1 / Real.pi) * ((1 - |s|) * (ε / (ε ^ 2 + (s - -n) ^ 2)))) -
         β.im / Real.pi * ((1 - |s|) * ((n + s) / (ε ^ 2 + (n + s) ^ 2))) := by
     intro s
     have hd : 0 < ε ^ 2 + (n + s) ^ 2 := by positivity
-    rw [tentPolarKernel, re_polar_eq _ _ hε, show s - -n = n + s by ring]
+    rw [shiftedTentPolarKernel, re_polar_eq _ _ hε, show s - -n = n + s by ring]
     simp only [Complex.neg_re, Complex.neg_im]
     field_simp
     ring
@@ -502,7 +502,7 @@ theorem intervalIntegral_tentPolarKernel (β : ℂ) {ε : ℝ} (hε : 0 < ε) (n
     (((continuous_window_poisson hε (-n)).intervalIntegrable _ _).const_mul _).const_mul _
   have ho : IntervalIntegrable (fun s : ℝ => β.im / Real.pi *
       ((1 - |s|) * ((n + s) / (ε ^ 2 + (n + s) ^ 2)))) volume (-1) 1 :=
-    ((continuous_tentPolarOdd_integrand hε n).intervalIntegrable _ _).const_mul _
+    ((continuous_shiftedTentPolarOdd_integrand hε n).intervalIntegrable _ _).const_mul _
   rw [intervalIntegral.integral_congr fun s _ => hpt s,
     intervalIntegral.integral_sub (hw.sub hp) ho, intervalIntegral.integral_sub hw hp,
     intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul,
@@ -511,13 +511,13 @@ theorem intervalIntegral_tentPolarKernel (β : ℂ) {ε : ℝ} (hε : 0 < ε) (n
   rfl
 
 /-- **The defect side.** `|∫_{-1}^{1} (1 - |s|) Re J(ε + i(n + s)) ds| ≤ (3/π) ‖g‖₁`. -/
-theorem abs_intervalIntegral_tentDefectKernel_le {g : ℝ → ℂ} {Cg : ℝ} {N : ℕ}
+theorem abs_intervalIntegral_shiftedTentDefectKernel_le {g : ℝ → ℂ} {Cg : ℝ} {N : ℕ}
     (hgm : Measurable g) (hgb : ∀ t, ‖g t‖ ≤ Cg * (1 + |t|) ^ N) (hgi : Integrable g)
     {n ε : ℝ} (hn : 1 ≤ n) (hε : 0 < ε) :
-    |∫ s in (-1 : ℝ)..1, tentDefectKernel g n ε s| ≤ 3 / Real.pi * ∫ t, ‖g t‖ := by
+    |∫ s in (-1 : ℝ)..1, shiftedTentDefectKernel g n ε s| ≤ 3 / Real.pi * ∫ t, ‖g t‖ := by
   have hpi := Real.pi_pos
   set M : ℝ := ∫ t, ‖g t‖ with hM
-  have hpt : ∀ s : ℝ, |s| ≤ 1 → ‖tentDefectKernel g n ε s‖ ≤ 3 / (2 * Real.pi) * M := by
+  have hpt : ∀ s : ℝ, |s| ≤ 1 → ‖shiftedTentDefectKernel g n ε s‖ ≤ 3 / (2 * Real.pi) * M := by
     intro s hs
     set t : ℂ := (ε : ℂ) + ((n + s : ℝ) : ℂ) * I with ht
     have hre : 0 < t.re := by simp [ht, hε]
@@ -550,7 +550,7 @@ theorem abs_intervalIntegral_tentDefectKernel_le {g : ℝ → ℂ} {Cg : ℝ} {N
     have hJ' : ‖RHTower.HamburgerStability.defectLaplace g t‖ ≤
         3 / (2 * Real.pi) * ‖t‖ ^ (-(1 / 2 : ℝ)) * M :=
       hJ.trans (mul_le_mul_of_nonneg_left habel (by positivity))
-    rw [Real.norm_eq_abs, tentDefectKernel, abs_mul, abs_of_nonneg hw0]
+    rw [Real.norm_eq_abs, shiftedTentDefectKernel, abs_mul, abs_of_nonneg hw0]
     calc (1 - |s|) * |(RHTower.HamburgerStability.defectLaplace g t).re|
         ≤ (1 - |s|) * (3 / (2 * Real.pi) * ‖t‖ ^ (-(1 / 2 : ℝ)) * M) :=
           mul_le_mul_of_nonneg_left ((Complex.abs_re_le_norm _).trans hJ') hw0
@@ -560,7 +560,7 @@ theorem abs_intervalIntegral_tentDefectKernel_le {g : ℝ → ℂ} {Cg : ℝ} {N
             (mul_nonneg (by positivity) (integral_nonneg fun _ => norm_nonneg _))
       _ = 3 / (2 * Real.pi) * M := mul_one _
   have h := intervalIntegral.norm_integral_le_of_norm_le_const (a := -1) (b := 1)
-    (f := tentDefectKernel g n ε) fun s hs => by
+    (f := shiftedTentDefectKernel g n ε) fun s hs => by
       rw [uIoc_of_le (by norm_num)] at hs
       exact hpt s (abs_le.mpr ⟨hs.1.le, hs.2⟩)
   rw [Real.norm_eq_abs] at h
@@ -570,19 +570,19 @@ theorem abs_intervalIntegral_tentDefectKernel_le {g : ℝ → ℂ} {Cg : ℝ} {N
 
 /-! ## 5. The tent pairing -/
 
-theorem continuous_tentDefectKernel {g : ℝ → ℂ} {Cg : ℝ} {N : ℕ}
+theorem continuous_shiftedTentDefectKernel {g : ℝ → ℂ} {Cg : ℝ} {N : ℕ}
     (hgm : AEStronglyMeasurable g volume) (hgb : ∀ t, ‖g t‖ ≤ Cg * (1 + |t|) ^ N)
-    (n : ℝ) {ε : ℝ} (hε : 0 < ε) : Continuous (tentDefectKernel g n ε) :=
+    (n : ℝ) {ε : ℝ} (hε : 0 < ε) : Continuous (shiftedTentDefectKernel g n ε) :=
   (continuous_const.sub continuous_abs).mul (Complex.continuous_re.comp
     ((continuous_defectLaplace_line hgm hgb hε).comp (continuous_const.add continuous_id)))
 
-theorem continuous_tentPolarKernel (β : ℂ) (n : ℝ) {ε : ℝ} (hε : 0 < ε) :
-    Continuous (tentPolarKernel β n ε) := by
+theorem continuous_shiftedTentPolarKernel (β : ℂ) (n : ℝ) {ε : ℝ} (hε : 0 < ε) :
+    Continuous (shiftedTentPolarKernel β n ε) := by
   have hpi := Real.pi_pos
-  have h : tentPolarKernel β n ε = fun s => (1 - |s|) *
+  have h : shiftedTentPolarKernel β n ε = fun s => (1 - |s|) *
       ((-β.re * ε + -β.im * (n + s)) / (Real.pi * (ε ^ 2 + (n + s) ^ 2)) + β.re) := by
     funext s
-    rw [tentPolarKernel, re_polar_eq _ _ hε]
+    rw [shiftedTentPolarKernel, re_polar_eq _ _ hε]
     simp only [Complex.neg_re, Complex.neg_im]
   rw [h]
   exact (continuous_const.sub continuous_abs).mul
@@ -590,7 +590,7 @@ theorem continuous_tentPolarKernel (β : ℂ) (n : ℝ) {ε : ℝ} (hε : 0 < ε
       (by fun_prop) fun s => by positivity).add continuous_const)
 
 /-- The real, window-weighted form of the defective Laplace identity on `t = ε + i(n + s)`. -/
-theorem integral_tentSeriesKernel_eq_of_theta_defect {ν : Measure ℝ}
+theorem integral_shiftedTentSeriesKernel_eq_of_theta_defect {ν : Measure ℝ}
     (hsupp : ν (Iio 1) = 0) (hmom : Integrable (fun u : ℝ => 1 / u ^ 2) ν)
     {β : ℂ} {g : ℝ → ℂ} {Cg : ℝ} {N : ℕ} (hgm : Measurable g)
     (hgb : ∀ t, ‖g t‖ ≤ Cg * (1 + |t|) ^ N)
@@ -598,10 +598,10 @@ theorem integral_tentSeriesKernel_eq_of_theta_defect {ν : Measure ℝ}
       (x : ℂ) ^ (-(1 / 2 : ℂ)) * measureTheta ν x⁻¹ + -β + β * (x : ℂ) ^ (-(1 / 2 : ℂ)) +
         RHTower.HamburgerStability.defectKernel g x)
     {ε : ℝ} (hε : 0 < ε) (n s : ℝ) :
-    ∫ u, tentSeriesKernel n ε s u ∂ν =
-      ∫ u, tentDualKernel n ε s u ∂ν + tentPolarKernel β n ε s + tentDefectKernel g n ε s := by
+    ∫ u, shiftedTentSeriesKernel n ε s u ∂ν =
+      ∫ u, shiftedTentDualKernel n ε s u ∂ν + shiftedTentPolarKernel β n ε s + shiftedTentDefectKernel g n ε s := by
   have ht : 0 < ((ε : ℂ) + ((n + s : ℝ) : ℂ) * I).re := by simp [hε]
-  have hser : ∫ u, tentSeriesKernel n ε s u ∂ν =
+  have hser : ∫ u, shiftedTentSeriesKernel n ε s u ∂ν =
       (1 - |s|) * (measureSeries ν ((ε : ℂ) + ((n + s : ℝ) : ℂ) * I)).re := by
     have h : ∫ u : ℝ, ((((ε : ℂ) + ((n + s : ℝ) : ℂ) * I)) /
         ((Real.pi : ℂ) * ((u : ℂ) ^ 2 + ((ε : ℂ) + ((n + s : ℝ) : ℂ) * I) ^ 2))).re ∂ν =
@@ -609,7 +609,7 @@ theorem integral_tentSeriesKernel_eq_of_theta_defect {ν : Measure ℝ}
       integral_re (integrable_measureSeries_integrand hsupp hmom ht)
     rw [← h, ← integral_const_mul]
     rfl
-  have hdual : ∫ u, tentDualKernel n ε s u ∂ν =
+  have hdual : ∫ u, shiftedTentDualKernel n ε s u ∂ν =
       (1 - |s|) * (measureDual ν ((ε : ℂ) + ((n + s : ℝ) : ℂ) * I)).re := by
     have h : ∫ u : ℝ, (cexp (-(2 * Real.pi * (u : ℂ) *
         ((ε : ℂ) + ((n + s : ℝ) : ℂ) * I)))).re ∂ν =
@@ -618,7 +618,7 @@ theorem integral_tentSeriesKernel_eq_of_theta_defect {ν : Measure ℝ}
     rw [← h, ← integral_const_mul]
     rfl
   rw [hser, hdual, measureSeries_eq_of_theta_defect hsupp hmom hgm hgb htheta ht,
-    tentPolarKernel, tentDefectKernel]
+    shiftedTentPolarKernel, shiftedTentDefectKernel]
   simp only [add_re]
   ring
 
@@ -631,30 +631,30 @@ theorem tent_pairing_identity_of_theta_defect {ν : Measure ℝ}
       (x : ℂ) ^ (-(1 / 2 : ℂ)) * measureTheta ν x⁻¹ + -β + β * (x : ℂ) ^ (-(1 / 2 : ℂ)) +
         RHTower.HamburgerStability.defectKernel g x)
     {n ε : ℝ} (hn : 1 ≤ n) (hε0 : 0 < ε) (hε1 : ε ≤ 1) :
-    ∫ u, (∫ s in (-1 : ℝ)..1, tentSeriesKernel n ε s u) ∂ν =
-      ∫ u, (∫ s in (-1 : ℝ)..1, tentDualKernel n ε s u) ∂ν +
-        (∫ s in (-1 : ℝ)..1, tentPolarKernel β n ε s) +
-          ∫ s in (-1 : ℝ)..1, tentDefectKernel g n ε s := by
+    ∫ u, (∫ s in (-1 : ℝ)..1, shiftedTentSeriesKernel n ε s u) ∂ν =
+      ∫ u, (∫ s in (-1 : ℝ)..1, shiftedTentDualKernel n ε s u) ∂ν +
+        (∫ s in (-1 : ℝ)..1, shiftedTentPolarKernel β n ε s) +
+          ∫ s in (-1 : ℝ)..1, shiftedTentDefectKernel g n ε s := by
   haveI : SigmaFinite ν := sigmaFinite_of_measure_Iio_one_eq_zero hsupp hmom
-  have hL := integrable_tentSeriesKernel hsupp hmom hn hε0 hε1
-  have hD := integrable_tentDualKernel hsupp hmom n hε0
-  have hD_ii : IntervalIntegrable (fun s : ℝ => ∫ u, tentDualKernel n ε s u ∂ν) volume (-1) 1 :=
+  have hL := integrable_shiftedTentSeriesKernel hsupp hmom hn hε0 hε1
+  have hD := integrable_shiftedTentDualKernel hsupp hmom n hε0
+  have hD_ii : IntervalIntegrable (fun s : ℝ => ∫ u, shiftedTentDualKernel n ε s u ∂ν) volume (-1) 1 :=
     intervalIntegrable_iff.mpr hD.integral_prod_left
-  have hP_ii : IntervalIntegrable (tentPolarKernel β n ε) volume (-1) 1 :=
-    (continuous_tentPolarKernel β n hε0).intervalIntegrable _ _
-  have hJ_ii : IntervalIntegrable (tentDefectKernel g n ε) volume (-1) 1 :=
-    (continuous_tentDefectKernel hgm.aestronglyMeasurable hgb n hε0).intervalIntegrable _ _
-  have hint : ∫ s in (-1 : ℝ)..1, ∫ u, tentSeriesKernel n ε s u ∂ν =
-      (∫ s in (-1 : ℝ)..1, ∫ u, tentDualKernel n ε s u ∂ν) +
-        (∫ s in (-1 : ℝ)..1, tentPolarKernel β n ε s) +
-          ∫ s in (-1 : ℝ)..1, tentDefectKernel g n ε s := by
-    calc ∫ s in (-1 : ℝ)..1, ∫ u, tentSeriesKernel n ε s u ∂ν
-        = ∫ s in (-1 : ℝ)..1, ((∫ u, tentDualKernel n ε s u ∂ν) + tentPolarKernel β n ε s +
-            tentDefectKernel g n ε s) :=
+  have hP_ii : IntervalIntegrable (shiftedTentPolarKernel β n ε) volume (-1) 1 :=
+    (continuous_shiftedTentPolarKernel β n hε0).intervalIntegrable _ _
+  have hJ_ii : IntervalIntegrable (shiftedTentDefectKernel g n ε) volume (-1) 1 :=
+    (continuous_shiftedTentDefectKernel hgm.aestronglyMeasurable hgb n hε0).intervalIntegrable _ _
+  have hint : ∫ s in (-1 : ℝ)..1, ∫ u, shiftedTentSeriesKernel n ε s u ∂ν =
+      (∫ s in (-1 : ℝ)..1, ∫ u, shiftedTentDualKernel n ε s u ∂ν) +
+        (∫ s in (-1 : ℝ)..1, shiftedTentPolarKernel β n ε s) +
+          ∫ s in (-1 : ℝ)..1, shiftedTentDefectKernel g n ε s := by
+    calc ∫ s in (-1 : ℝ)..1, ∫ u, shiftedTentSeriesKernel n ε s u ∂ν
+        = ∫ s in (-1 : ℝ)..1, ((∫ u, shiftedTentDualKernel n ε s u ∂ν) + shiftedTentPolarKernel β n ε s +
+            shiftedTentDefectKernel g n ε s) :=
           intervalIntegral.integral_congr fun s _ =>
-            integral_tentSeriesKernel_eq_of_theta_defect hsupp hmom hgm hgb htheta hε0 n s
-      _ = (∫ s in (-1 : ℝ)..1, ((∫ u, tentDualKernel n ε s u ∂ν) +
-            tentPolarKernel β n ε s)) + ∫ s in (-1 : ℝ)..1, tentDefectKernel g n ε s :=
+            integral_shiftedTentSeriesKernel_eq_of_theta_defect hsupp hmom hgm hgb htheta hε0 n s
+      _ = (∫ s in (-1 : ℝ)..1, ((∫ u, shiftedTentDualKernel n ε s u ∂ν) +
+            shiftedTentPolarKernel β n ε s)) + ∫ s in (-1 : ℝ)..1, shiftedTentDefectKernel g n ε s :=
           intervalIntegral.integral_add (hD_ii.add hP_ii) hJ_ii
       _ = _ := by rw [intervalIntegral.integral_add hD_ii hP_ii]
   rwa [intervalIntegral_integral_swap hL, intervalIntegral_integral_swap hD] at hint
@@ -678,17 +678,17 @@ theorem abs_half_integral_unitTent_sub_le_of_theta_defect {ν : Measure ℝ}
   haveI : SigmaFinite ν := sigmaFinite_of_measure_Iio_one_eq_zero hsupp hmom
   have hev : ∀ᶠ ε in 𝓝[>] (0 : ℝ), ε ∈ Ioo 0 1 := Ioo_mem_nhdsGT one_pos
   -- Series side: dominated convergence to `(1/2) ∫ tent_n dν`.
-  have hlimA : Tendsto (fun ε => ∫ u, (∫ s in (-1 : ℝ)..1, tentSeriesKernel n ε s u) ∂ν)
+  have hlimA : Tendsto (fun ε => ∫ u, (∫ s in (-1 : ℝ)..1, shiftedTentSeriesKernel n ε s u) ∂ν)
       (𝓝[>] 0) (𝓝 ((1 / 2) * ∫ u, unitTent n u ∂ν)) := by
     rw [← integral_const_mul]
     refine tendsto_integral_filter_of_dominated_convergence (fun u => (n + 2) ^ 2 * (1 / u ^ 2))
       (hev.mono fun ε hε =>
-        (integrable_intervalIntegral_tentSeriesKernel hsupp hmom hn hε.1 hε.2.le).1)
+        (integrable_intervalIntegral_shiftedTentSeriesKernel hsupp hmom hn hε.1 hε.2.le).1)
       (hev.mono fun ε hε => ?_) (hmom.const_mul _) ?_
     · filter_upwards [ae_one_le_of_measure_Iio_one_eq_zero hsupp] with u hu
       rw [Real.norm_eq_abs, abs_of_nonneg (intervalIntegral.integral_nonneg (by norm_num)
-        fun s hs => tentSeriesKernel_nonneg hε.1 n (abs_le.mpr hs) u)]
-      exact intervalIntegral_tentSeriesKernel_le hn hε.1 hε.2.le hu
+        fun s hs => shiftedTentSeriesKernel_nonneg hε.1 n (abs_le.mpr hs) u)]
+      exact intervalIntegral_shiftedTentSeriesKernel_le hn hε.1 hε.2.le hu
     · filter_upwards [ae_one_le_of_measure_Iio_one_eq_zero hsupp] with u hu
       have h0 : unitTent 0 (-u - n) = 0 :=
         unitTent_eq_zero (by rw [sub_zero, abs_of_neg (by linarith)]; linarith)
@@ -696,7 +696,7 @@ theorem abs_half_integral_unitTent_sub_le_of_theta_defect {ν : Measure ℝ}
         (1 / 2 : ℝ)
       rw [h0, add_zero, unitTent_zero_sub] at hlim
       exact hlim.congr' (eventually_nhdsWithin_of_forall fun ε hε =>
-        (intervalIntegral_tentSeriesKernel hε n u).symm)
+        (intervalIntegral_shiftedTentSeriesKernel hε n u).symm)
   -- Polar side: the real Poisson mass at `-n` vanishes in the limit.
   have hlimP : Tendsto (fun ε => windowPoisson ε (-n)) (𝓝[>] 0) (𝓝 0) := by
     have h := tendsto_windowPoisson (-n)
@@ -711,18 +711,18 @@ theorem abs_half_integral_unitTent_sub_le_of_theta_defect {ν : Measure ℝ}
     exact div_le_div_of_nonneg_right (Real.sin_sq_le_one _) (by positivity)
   -- Uniform bound on `(0, 1)`.
   have hbound : ∀ᶠ ε in 𝓝[>] (0 : ℝ),
-      |(∫ u, (∫ s in (-1 : ℝ)..1, tentSeriesKernel n ε s u) ∂ν) - β.re +
+      |(∫ u, (∫ s in (-1 : ℝ)..1, shiftedTentSeriesKernel n ε s u) ∂ν) - β.re +
         β.re * windowPoisson ε (-n)| ≤ S + 3 / Real.pi * (∫ t, ‖g t‖) + 2 / Real.pi * |β.im| := by
     filter_upwards [hev] with ε hε
     have hε0 := hε.1
     rw [tent_pairing_identity_of_theta_defect hsupp hmom hgm hgb htheta hn hε0 hε.2.le,
-      intervalIntegral_tentPolarKernel β hε0 n]
-    have hB : |∫ u, (∫ s in (-1 : ℝ)..1, tentDualKernel n ε s u) ∂ν| ≤ S := by
+      intervalIntegral_shiftedTentPolarKernel β hε0 n]
+    have hB : |∫ u, (∫ s in (-1 : ℝ)..1, shiftedTentDualKernel n ε s u) ∂ν| ≤ S := by
       rw [← Real.norm_eq_abs]
       refine (norm_integral_le_of_norm_le hsinc ?_).trans hS
       filter_upwards [ae_one_le_of_measure_Iio_one_eq_zero hsupp] with u hu
       have hu0 : u ≠ 0 := (lt_of_lt_of_le zero_lt_one hu).ne'
-      rw [intervalIntegral_tentDualKernel hu0, Real.norm_eq_abs, abs_mul, abs_mul,
+      rw [intervalIntegral_shiftedTentDualKernel hu0, Real.norm_eq_abs, abs_mul, abs_mul,
         abs_of_pos (Real.exp_pos _),
         abs_of_nonneg (sq_nonneg (Real.sin (Real.pi * u) / (Real.pi * u)))]
       have he : Real.exp (-2 * Real.pi * u * ε) ≤ 1 := by
@@ -737,23 +737,23 @@ theorem abs_half_integral_unitTent_sub_le_of_theta_defect {ν : Measure ℝ}
             mul_le_mul he (mul_le_mul_of_nonneg_right hc (sq_nonneg _)) (by positivity)
               zero_le_one
         _ = (Real.sin (Real.pi * u) / (Real.pi * u)) ^ 2 := by ring
-    have hD := abs_intervalIntegral_tentDefectKernel_le hgm hgb hgi hn hε0
-    have hq := tentPolarOdd_mem_Icc hn hε0
-    have hQ : |β.im / Real.pi * tentPolarOdd n ε| ≤ 2 / Real.pi * |β.im| := by
+    have hD := abs_intervalIntegral_shiftedTentDefectKernel_le hgm hgb hgi hn hε0
+    have hq := shiftedTentPolarOdd_mem_Icc hn hε0
+    have hQ : |β.im / Real.pi * shiftedTentPolarOdd n ε| ≤ 2 / Real.pi * |β.im| := by
       rw [abs_mul, abs_div, abs_of_pos hpi, abs_of_nonneg hq.1]
-      calc |β.im| / Real.pi * tentPolarOdd n ε ≤ |β.im| / Real.pi * 2 :=
+      calc |β.im| / Real.pi * shiftedTentPolarOdd n ε ≤ |β.im| / Real.pi * 2 :=
             mul_le_mul_of_nonneg_left hq.2 (by positivity)
         _ = 2 / Real.pi * |β.im| := by ring
-    have e : (∫ u, (∫ s in (-1 : ℝ)..1, tentDualKernel n ε s u) ∂ν) +
-        (β.re - β.re * windowPoisson ε (-n) - β.im / Real.pi * tentPolarOdd n ε) +
-          (∫ s in (-1 : ℝ)..1, tentDefectKernel g n ε s) - β.re + β.re * windowPoisson ε (-n) =
-        (∫ u, (∫ s in (-1 : ℝ)..1, tentDualKernel n ε s u) ∂ν) +
-          (∫ s in (-1 : ℝ)..1, tentDefectKernel g n ε s) -
-            β.im / Real.pi * tentPolarOdd n ε := by ring
+    have e : (∫ u, (∫ s in (-1 : ℝ)..1, shiftedTentDualKernel n ε s u) ∂ν) +
+        (β.re - β.re * windowPoisson ε (-n) - β.im / Real.pi * shiftedTentPolarOdd n ε) +
+          (∫ s in (-1 : ℝ)..1, shiftedTentDefectKernel g n ε s) - β.re + β.re * windowPoisson ε (-n) =
+        (∫ u, (∫ s in (-1 : ℝ)..1, shiftedTentDualKernel n ε s u) ∂ν) +
+          (∫ s in (-1 : ℝ)..1, shiftedTentDefectKernel g n ε s) -
+            β.im / Real.pi * shiftedTentPolarOdd n ε := by ring
     rw [e]
     refine (abs_sub _ _).trans ?_
-    linarith [abs_add_le (∫ u, (∫ s in (-1 : ℝ)..1, tentDualKernel n ε s u) ∂ν)
-      (∫ s in (-1 : ℝ)..1, tentDefectKernel g n ε s)]
+    linarith [abs_add_le (∫ u, (∫ s in (-1 : ℝ)..1, shiftedTentDualKernel n ε s u) ∂ν)
+      (∫ s in (-1 : ℝ)..1, shiftedTentDefectKernel g n ε s)]
   have hlim := ((hlimA.sub_const β.re).add (hlimP.const_mul β.re)).abs
   rw [mul_zero, add_zero] at hlim
   exact le_of_tendsto hlim hbound

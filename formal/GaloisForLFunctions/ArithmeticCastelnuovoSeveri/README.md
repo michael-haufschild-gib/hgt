@@ -152,7 +152,14 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
    (`OffLineZerosAreLefschetzRatios.lean`). **Resonant scales** (towers merging right zeros) are
    countable; off them one tower carries the Hodge defect; for `ζ` all but finitely many primes are
    non-resonant (all but one if right zeros are infinite); a curve resonates at every arithmetic
-   scale (`TheResonantScalesOfAConfiguration.lean`).
+   scale (`TheResonantScalesOfAConfiguration.lean`). **One-sided bounds suffice at two primes:** the
+   width is `≤ θ` iff every test has `±Re c_m^{(p)} = O(p^{θm})` at two distinct primes; RH iff the
+   upper (or the lower) one-sided Weil inequalities hold there — the `𝔽_q` real-zero exception of
+   one-sided Lefschetz bounds disappears because prime logarithms are independent and `ζ` has no
+   real zeros (`OneSidedLefschetzBoundsAtTwoPrimesAreTheStrip.lean`). **One prime suffices:** two-term
+   tests `g + c T_v g` rotate the Frobenius weight of a kept zero into any half-plane, so at one prime
+   the width is `≤ θ` iff every test has `ε Re c_m = O(p^{θm})`, and RH iff the upper (or lower)
+   one-sided Weil inequality holds for every test (`OneSidedLefschetzBoundsAtOnePrimeAreTheStrip.lean`).
 
 ### Effectivity, Bézout, Riemann–Roch
 10. **Hodge index ⇔ effectivity with RR + ample** (`exists_effectivity_iff_hodgeIndex`); positivity is

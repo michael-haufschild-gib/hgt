@@ -83,6 +83,13 @@ tool, or exposes a mechanism, calibrated over `𝔽_q`.
   Hodge defect; ζ: finitely many resonant primes; curves: arithmetic scales resonant.
   Status: DONE (Lean, contribution 11).
 
+- **C12 (one-sided bounds at two primes).** Rotating-phase Cesàro lemma + isolating tests: width
+  `≤ θ` ⟺ one-sided `O(p^{θm})`, `O(q^{θm})` for every test; RH ⟺ upper (or lower) one-sided Weil
+  inequalities at two primes. Status: DONE (Lean, contribution 12).
+
+- **C13 (one-sided bounds at one prime).** Two-term tests rotate the weight of a kept zero; real
+  eigenvalues handled along even exponents. Status: DONE (Lean, contribution 13).
+
 ## Avoid (other agents active 2026-10-25)
 Q-II Meyer source modules; `MaximalBlindIdealOfTheMeyerSource.lean` (another agent); biarithmetic; rh-closing-producer Stepanov tracks (HTGeometry Stepanov).
 
@@ -96,3 +103,5 @@ Q-II Meyer source modules; `MaximalBlindIdealOfTheMeyerSource.lean` (another age
 - 2026-10-26 — C9 done.
 - 2026-10-26 — C10 done.
 - 2026-10-26 — C11 done.
+- 2026-10-26 — C12 done.
+- 2026-10-26 — C13 done.

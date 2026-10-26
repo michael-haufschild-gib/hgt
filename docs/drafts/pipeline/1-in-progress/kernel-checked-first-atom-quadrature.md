@@ -26,6 +26,8 @@ to `PrimeArchThetaFirstAtomQuadratureEnclosures`. The original rational-bounds t
   `milnorKTwoToFin4SteinbergKTwoCenter_surjective`, and
   `milnorKTwoQuotientKerEquivFin4SteinbergKTwoCenter` have only
   `propext, Classical.choice, Quot.sound`.
+- [x] The stale HT target olean/ilean from October 23 were removed after rechecking their exact
+  timestamps and sizes. No HT target rebuild is needed unless a file being written imports it.
 - [x] Enclosures, Seeds, and Certificates have current valid olean/ilean artifacts.
 - [x] Width certificates are literal integers: the zero case explicitly unfolds `Enclosure.pow`;
   width 57 is `[0,1]` over `10^30` with standard axioms (Seeds session 79079, exit 0).
@@ -44,16 +46,19 @@ to `PrimeArchThetaFirstAtomQuadratureEnclosures`. The original rational-bounds t
   (9111, exit 0); its current olean/ilean are valid.
 - [x] `PrimeArchThetaFirstAtomQuadratureCells20` (cells 20–23) built successfully
   (36728, exit 0); its current olean/ilean are valid.
+- [x] `PrimeArchThetaFirstAtomQuadratureCells24` (cells 24–27) built successfully
+  (5304, exit 0); its current olean/ilean are valid.
 - [x] All twenty production helpers are imported by the RHTower umbrella. Do not compile umbrellas.
 - [x] Production-source scans find no native decision tactic, placeholders, added axioms, raised
   limits, or temporary diagnostics. `git diff --check` passes.
 - [x] All standalone probes, including `HgtFirstAtomPolynomialProbe` and
   `HgtFirstAtomCompactProbe`, and their sources/audit files/olean/ilean artifacts are removed.
+  A source-wide check found no remaining Lean references to either probe.
 
 ## Current process and remaining work
 
-**Active owned Lean session: 5304**, building
-`RHTower/PrimeArchThetaFirstAtomQuadratureCells24.lean` (cells 24–27).
+**Active owned Lean session: 86031**, building
+`RHTower/PrimeArchThetaFirstAtomQuadratureCells28.lean` (cells 28–31).
 Wait for this session before starting another Lean process.
 
 The isolated `reduce` replacement probe failed at the default recursion limit (57280, exit 1),
@@ -64,13 +69,13 @@ and any probe artifacts have been removed. Continue the validated `cbv` certific
 Then build, separately and in the foreground:
 
 1. The remaining `PrimeArchThetaFirstAtomQuadratureCells<N>` modules, with
-   `N = 28, 32, 36, 40, 44, 48, 52, 56, 60`.
+   `N = 32, 36, 40, 44, 48, 52, 56, 60`.
    Each certifies exactly four cells, from `N` through `N + 3`.
 2. `PrimeArchThetaFirstAtomQuadratureArithmetic` (all five sums).
 
 Use `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/<Module>.olean -i .lake/build/lib/lean/GaloisForLFunctions/RHTower/<Module>.ilean GaloisForLFunctions/RHTower/<Module>.lean`
 from `formal/`, one process at a time. These oleans are required by the next source file being
-written. Only the cells 0–23 tables have passed; do not mistake the last-cell probe for all-cell validation.
+written. Only the cells 0–27 tables have passed; do not mistake the last-cell probe for all-cell validation.
 
 Finally check the actual PA target directly with
 `lake --old env lean GaloisForLFunctions/RHTower/PrimeArchThetaFirstAtomHighOrderMomentBounds.lean`.
@@ -80,9 +85,10 @@ Temporarily append axiom-print commands for
 `RHTower.thetaCuspFirstAtom_highOrder_five_bounds`; remove only those diagnostics afterward.
 The HT target already passed its final direct check and needs no repetition absent changes.
 
-After success, remove the stale original-target olean/ilean pairs: PA artifacts date October 22,
-HT artifacts October 23, both predating this task and still containing the old native proofs.
-Do not rebuild targets unless another file being written imports them. Preserve unrelated work.
+After the PA audit succeeds, remove its stale original-target olean/ilean pair. Both still date
+October 22, with mtime `1792702343` and sizes `1813872` / `130207`, respectively. They predate this
+task and contain the old native proof. The HT stale pair is already removed. Do not rebuild targets
+unless another file being written imports them. Preserve unrelated work.
 Rewrite this card as a concise formalized record and move it to `3-formalized` only after all
 remaining checks pass.
 

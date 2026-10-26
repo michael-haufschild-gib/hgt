@@ -35,7 +35,7 @@ proofs must be unconditional without hypotheses or otherwise unproven premises.
 /goal
 
 formalize UNCONDITIONALLY in lean all proven theorem for every single card in: 
-- docs/drafts/pipeline/2-fully-proven/sharp-even-heat-root-barrier.md
+- docs/drafts/pipeline/2-fully-proven/leftovers
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -269,7 +269,6 @@ goal is met when paper is written and passes a hostile review that confirms that
 ## Open Research - New field of mathematics 
 
 
-
 do not use the hgtl7 skill. 
 
 our current research programmes:
@@ -294,11 +293,19 @@ our current research programmes:
 - formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
 - formal/GaloisForLFunctions/ArithmeticPositiveDuality/README.md
 - formal/GaloisForLFunctions/StripBochnerWeilForcing/README.md
+- formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/README.md
+- formal/GaloisForLFunctions/ArithmeticKunnethTheory/README.md
+ 
+research, derive, formalize a significant contribution to either:
+- overcome an open hard obstacle in a route docs/reports/review-2510/hard-obstacles.md
+- finds a solution for removing a wall in docs/reports/review-2510/walls-ledger.md
+
+Not valid are improvements of numbers, nogos, redressing existing knowledge in new language, or anything that does not clearly count as significant progress.
 
 do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
 
 read fully:
-formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md
+formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/README.md
 
 on every turn: 
 research, derive, formalize a significant contribution to the field that significantly helps to either:
@@ -306,7 +313,7 @@ research, derive, formalize a significant contribution to the field that signifi
 - gain one of the mathematical tools a research programme is missing
 - gain a deeper insight about the problem the field is exploring and the nature of the field itself 
 - prove a significant theorem that significantly advances our research about the RH as a whole 
-  
+
 Not valid are improvements of numbers, nogos, redressing existing knowledge in new language, anything that does not clearly count as significant progress, or that is not something that needs to exist in this field and couldnt exist otherwise.
 
 **Tools to use:**
@@ -371,7 +378,7 @@ and these new research results:
 - formal/GaloisForLFunctions/StripBochnerWeilForcing/README.md
 - formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
     
-create updated versions of the reviews to reflect the current status quo and frontier of our research:
+create new versions of the reviews to reflect the current status quo and frontier of our research:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
 2. then create a summary document that combines all the information and:
    2.1 lists all tasks / obstacles that we can solve and are "just work"
@@ -387,7 +394,7 @@ do not rely only on these markdown files which are partly outdated. use the sear
 
 the reports are not diaries or history log, but status quo reports.
 
-update the existing reports in folder docs/reports/review-2510/
+put the new reports into folder docs/reports/review-2610/
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -415,7 +422,10 @@ go one by one through the following research programmes and update their README.
 - formal/GaloisForLFunctions/BiarithmeticGeometry/README.md
 - formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
 - formal/GaloisForLFunctions/ArithmeticPositiveDuality/README.md
-  
+- formal/GaloisForLFunctions/StripBochnerWeilForcing/README.md
+- formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/README.md
+- formal/GaloisForLFunctions/ArithmeticKunnethTheory/README.md
+ 
 important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics, the questions it aims to answer, the tools it aims to create, its foundational pillar theorems, where it sits in the context of our whole research, how it relates to other research programmes.
 
 where needed use the search tool for the lean corpus to confirm:
@@ -462,7 +472,9 @@ and read the current research programmes:
 - formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
 - formal/GaloisForLFunctions/ArithmeticPositiveDuality/README.md
 - formal/GaloisForLFunctions/StripBochnerWeilForcing/README.md
-- formal/GaloisForLFunctions/ArithmeticKunnethTheory/
+- formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
+- formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/README.md
+- formal/GaloisForLFunctions/ArithmeticKunnethTheory/README.md
         
 Only read these documents, no other markdown files.
 
@@ -475,7 +487,7 @@ The questions for you to answer:
 2. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
 3. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-2510/astra.md
+Write a report in docs docs/reports/review-2610/fable.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 

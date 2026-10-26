@@ -17,26 +17,25 @@ battery behaviour (README §10).
 - [ ] 2 → 3  (per conjecture)
 
 ## Current conjecture
-**C6–C8 (Fourier analysis on `ℚ_{>0}`, Kronecker dichotomy).**
-- C6: `f` positive definite on `ℚ_{>0}` ⇔ `f(u) = ∫ χ_x(u) dμ(x)`, `μ` finite on the prime torus,
-  unique. Proof: finite-rank Herglotz–Bochner on the primes below `k`, eventually constant
-  coefficients, Fourier–Lévy on the prime torus.
-- C7: `f(u) = F(log u)`, `F` continuous ⇒ `μ = ν ∘ z⁻¹`, `z_x = (x log p/2π)_p` (Kronecker line).
-  Proof: `F` positive definite on `ℝ` by density of `log ℚ_{>0}`; Bochner on `ℝ`; uniqueness.
-- C8: decay `f((N+b)/(N+a)) → 0` ⇒ `μ(line) = 0`; Gram form at `(N+j)/N`, `j < M`, is
-  `f(1)/M + o(1)` and dominates `∫|M⁻¹Σ_j ((N+j)/N)^{ix}|² dν → ν(ℝ)`. Integer and Bost–Connes
-  successors decay (height of `(N+b)/(N+a)` is `≥ N²/(a−b)²`), hence no nonzero archimedean
-  positive-definite `g` with `f − g` positive definite.
+**C13–C16 (what the successor sees of the dilation spectrum).**
+- C13: the autocorrelation of any nonzero `H ∈ C_c(ℝ)` is the dilation part of a positive-definite
+  state on `Aff(ℚ)` with non-constant successor (vector state of the real `ax + b` group).
+- C14: in every unitary representation of `Aff(ℚ)`, translates of an archimedean dilation
+  eigenvector form a blind family; distinct frequencies never mix; vectors orthogonal to a
+  frequency with continuous dilation orbit never mix with it.
+- C15: the GNS Hilbert space (completion of the pre-Hilbert space) and its representation.
+- C16: `|φ(x ↦ x + b) − φ(x ↦ x + b')| ≤ 2ν_c(ℝ)`, `ν_c` the continuous part of the dilation
+  spectral measure; box averages give the atoms as eigenvectors.
 
 ## Done
-- C1 `TheIntegerSuccessorForcesTheHeckeWeight` (P18); C2 `TheCriticalLineIsThePositivityThresholdOfTheIntegerSuccessor` (P19);
-  C3 `TheBostConnesTemperatureIsTheHeckeExponent` (P20); C4 `TheExtremalsOfTheHeckeLawAreTwistedHaarStates` (P21);
-  C5 `AMautnerPhenomenonForTheAffineGroupOfQ`.
+- C1–C5 (P18–P22), C6–C8 (P23–P25), C9 atomic blindness (P26), C10 Kronecker decomposition,
+  C11 Kakutani wall, C12 Weil's correlation carries no successor.
 
 ## Next
-- Kronecker decomposition `f = f_arch + f_null` (unique); successors compatible with archimedean
-  dilation parts (conjecture: continuous on `ℝ` plus `c·δ₀`).
+- Classification of the extensions of Weil's correlation, indexed by the critical zeros.
+- Singular continuous dilation spectra: seen or blind?
 
 ## Log
 - 2026-10-25 — created; C1 opened.
 - 2026-10-26 — C1–C5 formalized; C6–C8 drafted.
+- 2026-10-26 — C6–C12 formalized; C13–C16 opened.

@@ -30,7 +30,10 @@ theorem nonprime_div_le_logSq (n : ℕ) :
     have hΛ : 0 ≤ (ArithmeticFunction.vonMangoldt n : ℝ) / n :=
       div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg n)
     rw [mul_div_assoc, mul_div_assoc]
-    exact mul_le_mul_of_nonneg_right (by nlinarith) hΛ
+    have hsq : 1 + Real.log n ≤ (1 + Real.log n) ^ 2 := by
+      have := mul_nonneg (by linarith : (0 : ℝ) ≤ 1 + Real.log n) hl
+      linarith [sq (1 + Real.log n)]
+    exact mul_le_mul_of_nonneg_right hsq hΛ
 
 /-- **Rounding a logarithmically growing profile preserves the boundary divisor.** If the weights
 `g(n) Λ(n) n^{−1−x}` with `0 ≤ g(n) ≤ M(1 + log n)` have boundary divisor `D`, so does the Euler
@@ -72,8 +75,11 @@ theorem IsBoundaryDivisor.round_log {g : ℕ → ℝ} (hg : ∀ n, 0 ≤ g n) {M
           have hmn := hmin n hΛ
           have hgn := hgM n
           unfold logFrequency at hmm hmn hgn hl
+          have hML := mul_le_mul_of_nonneg_left hmn hM0
+          have hML0 := mul_nonneg hM0 hl
+          have hm0 : (0 : ℝ) ≤ roundMult g n.minFac := Nat.cast_nonneg _
           rw [abs_le]
-          constructor <;> nlinarith [hg n, (Nat.cast_nonneg _ : (0 : ℝ) ≤ roundMult g n.minFac)]
+          constructor <;> linarith [hg n]
         calc zetaBoundaryWeight x n * |(roundMult g n.minFac : ℝ) - g n|
             ≤ ArithmeticFunction.vonMangoldt n / n * ((2 * M + 1) * (1 + Real.log n)) :=
               mul_le_mul (zetaBoundaryWeight_le_div hx.le n) h1 (abs_nonneg _)
@@ -92,7 +98,11 @@ theorem IsBoundaryDivisor.round_log {g : ℕ → ℝ} (hg : ∀ n, 0 ≤ g n) {M
     · have h := mul_le_mul_of_nonneg_right (hm n.minFac) (zetaBoundaryWeight_nonneg x n)
       have h2 := mul_le_mul_of_nonneg_left (hmin n hΛ)
         (mul_nonneg hM0 (zetaBoundaryWeight_nonneg x n))
-      nlinarith
+      have e : (M * (1 + logFrequency n.minFac) + 1) * zetaBoundaryWeight x n =
+          M * zetaBoundaryWeight x n + M * zetaBoundaryWeight x n * logFrequency n.minFac +
+            zetaBoundaryWeight x n := by ring
+      rw [e] at h
+      linarith
   refine ⟨fun x _ n => mul_nonneg (Nat.cast_nonneg _) (zetaBoundaryWeight_nonneg x n),
     fun x hx => Summable.of_nonneg_of_le
       (fun n => mul_nonneg (Nat.cast_nonneg _) (zetaBoundaryWeight_nonneg x n)) (hmw x hx)
@@ -169,7 +179,7 @@ theorem IsBoundaryDivisor.round_log {g : ℕ → ℝ} (hg : ∀ n, 0 ≤ g n) {M
     calc |T x| = ‖T x‖ := (Real.norm_eq_abs _).symm
       _ ≤ ∑' n, ‖powerDefect (roundMult g) g x n * Real.cos (logFrequency n * u)‖ :=
         norm_tsum_le_tsum_norm hCs
-      _ ≤ ∑' n, (2 * M + 1) * (if n.Prime then 0 else
+      _ ≤ ∑' n : ℕ, (2 * M + 1) * (if n.Prime then 0 else
             (1 + Real.log n) ^ 2 * (ArithmeticFunction.vonMangoldt n : ℝ) / n) := by
         refine Summable.tsum_le_tsum (fun n => ?_) hCs (hR.mul_left _)
         rw [Real.norm_eq_abs, abs_mul]
@@ -203,10 +213,14 @@ theorem integral_bochner (hloc : ∀ R : ℝ, {v : ℝ | D v ≠ 0 ∧ |v| ≤ R
     (fun n => arithProfile_nonneg hpd hloc (Real.log_natCast_nonneg n))
     (M := 2 * D 0 * blockSize hloc 0) (fun n => ?_) (arithmetic_isBoundaryDivisor hpd hloc)⟩,
     fun ⟨_, hm⟩ => hm.isEvenPosDef⟩
-  have h := arithProfile_le hpd hloc (Real.log_natCast_nonneg n)
+  have h : arithProfile hloc (logFrequency n) ≤ 2 * D 0 * (blockSize hloc 0 + logFrequency n) :=
+    arithProfile_le hpd hloc (Real.log_natCast_nonneg n)
   have hS := one_le_blockSize hloc 0
   have hl : 0 ≤ logFrequency n := Real.log_natCast_nonneg n
   have hD0 := hpd.apply_zero_nonneg
-  nlinarith [mul_nonneg hD0 hl]
+  have h3 := mul_nonneg (mul_nonneg hD0 hl) (sub_nonneg.mpr hS)
+  have e : 2 * D 0 * blockSize hloc 0 * (1 + logFrequency n) - 2 * D 0 * (blockSize hloc 0 + logFrequency n) =
+      2 * (D 0 * logFrequency n * (blockSize hloc 0 - 1)) := by ring
+  linarith
 
 end GaloisForLFunctions.MultiplicativePositivityGeometry

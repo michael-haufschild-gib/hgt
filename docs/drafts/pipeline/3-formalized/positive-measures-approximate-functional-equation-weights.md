@@ -19,8 +19,8 @@
 `GaloisForLFunctions.ArithmeticPositiveDuality.abs_integral_unitTent_sub_le_of_critical_line_defect`
 (`formal/GaloisForLFunctions/ArithmeticPositiveDuality/ApproximateFunctionalEquationNearCounting.lean`),
 with `abs_half_integral_unitTent_sub_le_of_theta_defect`, `tent_pairing_identity_of_theta_defect`,
-`tendsto_poissonSmoothing`, `intervalIntegral_tentPolarKernel`,
-`abs_intervalIntegral_tentDefectKernel_le`, `im_eq_of_theta_defect`, `norm_defectKernel_four_le`.
+`tendsto_poissonSmoothing`, `intervalIntegral_shiftedTentPolarKernel`,
+`abs_intervalIntegral_shiftedTentDefectKernel_le`, `im_eq_of_theta_defect`, `norm_defectKernel_four_le`.
 Axioms: `propext`, `Classical.choice`, `Quot.sound`. Wired into `ArithmeticPositiveDuality.lean`.
 
 ## Gates

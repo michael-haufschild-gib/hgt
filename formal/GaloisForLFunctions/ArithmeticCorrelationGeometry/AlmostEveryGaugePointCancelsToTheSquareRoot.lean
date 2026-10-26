@@ -36,18 +36,22 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticCorrelationGeometry
 
-/-! ### Dyadic decomposition -/
+/-! ### Dyadic decomposition for an orthonormal system -/
 
-/-- The twisted partial sum `S_N(x) = Σ_{1 ≤ n ≤ N} a_n χ_x(n)`. -/
-def gaugePartialSum (a : ℕ → ℂ) (N : ℕ) (x : GaugeTorus) : ℂ := twistSum (Ioc 0 N) a x
+section Orthonormal
 
-/-- The dyadic block `Σ_{2^j i < n ≤ 2^j (i+1)} a_n χ_x(n)`. -/
-def dyadicBlock (a : ℕ → ℂ) (j i : ℕ) (x : GaugeTorus) : ℂ :=
-  twistSum (Ioc (2 ^ j * i) (2 ^ j * (i + 1))) a x
+variable {α : Type*}
+
+/-- The partial sum `Σ_{n ∈ s} a_n e_n(ω)` of a system `e`. -/
+def orthoSum (e : ℕ → α → ℂ) (a : ℕ → ℂ) (s : Finset ℕ) (ω : α) : ℂ := ∑ n ∈ s, a n * e n ω
+
+/-- The dyadic block `Σ_{2^j i < n ≤ 2^j (i+1)} a_n e_n`. -/
+def orthoBlock (e : ℕ → α → ℂ) (a : ℕ → ℂ) (j i : ℕ) (ω : α) : ℂ :=
+  orthoSum e a (Ioc (2 ^ j * i) (2 ^ j * (i + 1))) ω
 
 /-- The dyadic energy at depth `K`: the squared blocks of all levels `j ≤ K` below `2^{K+1}`. -/
-def dyadicEnergy (a : ℕ → ℂ) (K : ℕ) (x : GaugeTorus) : ℝ :=
-  ∑ j ∈ range (K + 1), ∑ i ∈ range (2 ^ (K + 1 - j)), ‖dyadicBlock a j i x‖ ^ 2
+def dyadicEnergy (e : ℕ → α → ℂ) (a : ℕ → ℂ) (K : ℕ) (ω : α) : ℝ :=
+  ∑ j ∈ range (K + 1), ∑ i ∈ range (2 ^ (K + 1 - j)), ‖orthoBlock e a j i ω‖ ^ 2
 
 /-- Consecutive intervals with increasing endpoints tile. -/
 theorem sum_Ioc_tile_mono {M : Type*} [AddCommMonoid M] (f : ℕ → M) {e : ℕ → ℕ} (he : Monotone e)
@@ -55,7 +59,7 @@ theorem sum_Ioc_tile_mono {M : Type*} [AddCommMonoid M] (f : ℕ → M) {e : ℕ
   induction k with
   | zero => simp
   | succ k ih =>
-    rw [sum_range_succ, ih, sum_Ioc_consecutive f (he (Nat.zero_le k)) (he (Nat.le_succ k))]
+    rw [Finset.sum_range_succ, ih, sum_Ioc_consecutive f (he (Nat.zero_le k)) (he (Nat.le_succ k))]
 
 /-- Consecutive intervals with decreasing endpoints tile. -/
 theorem sum_Ioc_tile_anti {M : Type*} [AddCommMonoid M] (f : ℕ → M) {e : ℕ → ℕ} (he : Antitone e)
@@ -63,7 +67,7 @@ theorem sum_Ioc_tile_anti {M : Type*} [AddCommMonoid M] (f : ℕ → M) {e : ℕ
   induction k with
   | zero => simp
   | succ k ih =>
-    rw [sum_range_succ, ih, add_comm,
+    rw [Finset.sum_range_succ, ih, add_comm,
       sum_Ioc_consecutive f (he (Nat.le_succ k)) (he (Nat.zero_le k))]
 
 /-- The dyadic truncation `2^j ⌊n / 2^j⌋`. -/
@@ -84,139 +88,201 @@ theorem dyadicFloor_eq_zero {n K : ℕ} (hn : n < 2 ^ K) : dyadicFloor n K = 0 :
   simp [dyadicFloor, Nat.div_eq_of_lt hn]
 
 /-- The partial sum is the telescoping sum of its dyadic pieces. -/
-theorem gaugePartialSum_eq_sum_pieces (a : ℕ → ℂ) {K n : ℕ} (hn : n < 2 ^ (K + 1))
-    (x : GaugeTorus) :
-    gaugePartialSum a n x =
-      ∑ j ∈ range (K + 1), twistSum (Ioc (dyadicFloor n (j + 1)) (dyadicFloor n j)) a x := by
-  simp only [twistSum, gaugePartialSum]
-  rw [sum_Ioc_tile_anti (fun m => a m * twist x m) (antitone_dyadicFloor n),
+theorem orthoSum_eq_sum_pieces (e : ℕ → α → ℂ) (a : ℕ → ℂ) {K n : ℕ} (hn : n < 2 ^ (K + 1))
+    (ω : α) :
+    orthoSum e a (Ioc 0 n) ω =
+      ∑ j ∈ range (K + 1), orthoSum e a (Ioc (dyadicFloor n (j + 1)) (dyadicFloor n j)) ω := by
+  simp only [orthoSum]
+  rw [sum_Ioc_tile_anti (fun m => a m * e m ω) (antitone_dyadicFloor n),
     dyadicFloor_eq_zero hn, dyadicFloor_zero]
 
 /-- Each dyadic piece is empty or a single block of its level. -/
-theorem sq_norm_piece_le (a : ℕ → ℂ) {K n j : ℕ} (hn : n < 2 ^ (K + 1)) (hj : j ≤ K)
-    (x : GaugeTorus) :
-    ‖twistSum (Ioc (dyadicFloor n (j + 1)) (dyadicFloor n j)) a x‖ ^ 2 ≤
-      ∑ i ∈ range (2 ^ (K + 1 - j)), ‖dyadicBlock a j i x‖ ^ 2 := by
+theorem sq_norm_piece_le (e : ℕ → α → ℂ) (a : ℕ → ℂ) {K n j : ℕ} (hn : n < 2 ^ (K + 1))
+    (hj : j ≤ K) (ω : α) :
+    ‖orthoSum e a (Ioc (dyadicFloor n (j + 1)) (dyadicFloor n j)) ω‖ ^ 2 ≤
+      ∑ i ∈ range (2 ^ (K + 1 - j)), ‖orthoBlock e a j i ω‖ ^ 2 := by
   set m := n / 2 ^ j with hm
   have hmlt : m < 2 ^ (K + 1 - j) := by
     rw [hm, Nat.div_lt_iff_lt_mul (by positivity), ← pow_add, Nat.sub_add_cancel (by omega)]
     exact hn
   rw [dyadicFloor_succ, dyadicFloor, ← hm]
   rcases Nat.even_or_odd m with hev | hodd
-  · rw [Nat.two_mul_div_two_of_even hev, Ioc_self, twistSum, sum_empty, norm_zero]
+  · rw [Nat.two_mul_div_two_of_even hev, Ioc_self, orthoSum, sum_empty, norm_zero]
     simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow]
     exact sum_nonneg fun _ _ => by positivity
   · have hm1 : 1 ≤ m := hodd.pos
-    have h2 : 2 * (m / 2) = (m - 1) := by
-      have := Nat.two_mul_odd_div_two hodd
-      omega
-    have hblock : twistSum (Ioc (2 ^ j * (2 * (m / 2))) (2 ^ j * m)) a x =
-        dyadicBlock a j (m - 1) x := by
-      rw [dyadicBlock, h2, Nat.sub_add_cancel hm1]
+    have h2 : 2 * (m / 2) = m - 1 := Nat.two_mul_odd_div_two (Nat.odd_iff.mp hodd)
+    have hblock : orthoSum e a (Ioc (2 ^ j * (2 * (m / 2))) (2 ^ j * m)) ω =
+        orthoBlock e a j (m - 1) ω := by
+      rw [orthoBlock, h2, Nat.sub_add_cancel hm1]
     rw [hblock]
-    exact single_le_sum (f := fun i => ‖dyadicBlock a j i x‖ ^ 2) (fun _ _ => by positivity)
+    exact single_le_sum (f := fun i => ‖orthoBlock e a j i ω‖ ^ 2) (fun _ _ => by positivity)
       (mem_range.mpr (by omega))
 
 /-- **Dyadic maximal inequality.** Every partial sum below `2^{K+1}` is controlled by the dyadic
 energy: `|S_n|² ≤ (K+1) W_K`. -/
-theorem sq_norm_gaugePartialSum_le (a : ℕ → ℂ) {K n : ℕ} (hn : n < 2 ^ (K + 1)) (x : GaugeTorus) :
-    ‖gaugePartialSum a n x‖ ^ 2 ≤ ((K : ℝ) + 1) * dyadicEnergy a K x := by
-  rw [gaugePartialSum_eq_sum_pieces a hn]
-  calc ‖∑ j ∈ range (K + 1), twistSum (Ioc (dyadicFloor n (j + 1)) (dyadicFloor n j)) a x‖ ^ 2
+theorem sq_norm_orthoSum_le (e : ℕ → α → ℂ) (a : ℕ → ℂ) {K n : ℕ} (hn : n < 2 ^ (K + 1)) (ω : α) :
+    ‖orthoSum e a (Ioc 0 n) ω‖ ^ 2 ≤ ((K : ℝ) + 1) * dyadicEnergy e a K ω := by
+  rw [orthoSum_eq_sum_pieces e a hn]
+  calc ‖∑ j ∈ range (K + 1), orthoSum e a (Ioc (dyadicFloor n (j + 1)) (dyadicFloor n j)) ω‖ ^ 2
       ≤ (∑ j ∈ range (K + 1),
-          ‖twistSum (Ioc (dyadicFloor n (j + 1)) (dyadicFloor n j)) a x‖) ^ 2 :=
+          ‖orthoSum e a (Ioc (dyadicFloor n (j + 1)) (dyadicFloor n j)) ω‖) ^ 2 :=
         pow_le_pow_left₀ (norm_nonneg _) (norm_sum_le _ _) 2
     _ ≤ #(range (K + 1)) * ∑ j ∈ range (K + 1),
-          ‖twistSum (Ioc (dyadicFloor n (j + 1)) (dyadicFloor n j)) a x‖ ^ 2 :=
+          ‖orthoSum e a (Ioc (dyadicFloor n (j + 1)) (dyadicFloor n j)) ω‖ ^ 2 :=
         sq_sum_le_card_mul_sum_sq
-    _ ≤ ((K : ℝ) + 1) * dyadicEnergy a K x := by
+    _ ≤ ((K : ℝ) + 1) * dyadicEnergy e a K ω := by
         rw [card_range, dyadicEnergy]
         push_cast
         gcongr with j hj
-        exact sq_norm_piece_le a hn (Nat.lt_succ_iff.mp (mem_range.mp hj)) x
+        exact sq_norm_piece_le e a hn (Nat.lt_succ_iff.mp (mem_range.mp hj)) ω
 
-/-! ### The gauge mean of the dyadic energy -/
+/-! ### Mean square of a block -/
 
-theorem continuous_dyadicEnergy (a : ℕ → ℂ) (K : ℕ) : Continuous (dyadicEnergy a K) :=
-  continuous_finset_sum _ fun _ _ => continuous_finset_sum _ fun _ _ =>
-    ((continuous_twistSum _ _).norm).pow 2
+variable [MeasurableSpace α] {P : Measure α} [IsProbabilityMeasure P] {e : ℕ → α → ℂ}
 
-theorem integrable_dyadicEnergy (a : ℕ → ℂ) (K : ℕ) : Integrable (dyadicEnergy a K) gaugeHaar :=
-  (continuous_dyadicEnergy a K).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+theorem measurable_orthoSum (he : ∀ n, Measurable (e n)) (a : ℕ → ℂ) (s : Finset ℕ) :
+    Measurable (orthoSum e a s) :=
+  Finset.measurable_sum _ fun n _ => measurable_const.mul (he n)
 
-/-- **The dyadic energy has gauge mean `(K+1) Σ_{n ≤ 2^{K+1}} |a_n|²`**: each level tiles
-`(0, 2^{K+1}]`, and each block has the coefficient energy as gauge mean square. -/
-theorem integral_dyadicEnergy (a : ℕ → ℂ) (K : ℕ) :
-    ∫ x, dyadicEnergy a K x ∂gaugeHaar = ((K : ℝ) + 1) * ∑ n ∈ Ioc 0 (2 ^ (K + 1)), ‖a n‖ ^ 2 := by
-  have hint : ∀ j i, Integrable (fun x => ‖dyadicBlock a j i x‖ ^ 2) gaugeHaar := fun j i =>
-    (((continuous_twistSum _ _).norm).pow 2).integrable_of_hasCompactSupport
-      (HasCompactSupport.of_compactSpace _)
-  have hblock : ∀ j i, ∫ x, ‖dyadicBlock a j i x‖ ^ 2 ∂gaugeHaar =
+theorem integrable_mul_conj (he : ∀ n, Measurable (e n)) (hb : ∀ n ω, ‖e n ω‖ ≤ 1) (m n : ℕ) :
+    Integrable (fun ω => e m ω * conj (e n ω)) P := by
+  refine Integrable.of_bound ((he m).mul (Complex.continuous_conj.measurable.comp (he n))).aestronglyMeasurable
+    1 (Filter.Eventually.of_forall fun ω => ?_)
+  rw [norm_mul, Complex.norm_conj]
+  exact mul_le_one₀ (hb m ω) (norm_nonneg _) (hb n ω)
+
+/-- **Orthonormal mean square.** A block of an orthonormal system on the positive integers has mean
+square equal to its coefficient energy. -/
+theorem integral_sq_norm_orthoSum (he : ∀ n, Measurable (e n)) (hb : ∀ n ω, ‖e n ω‖ ≤ 1)
+    (horth : ∀ m n, m ≠ 0 → n ≠ 0 → ∫ ω, e m ω * conj (e n ω) ∂P = if m = n then 1 else 0)
+    (a : ℕ → ℂ) {s : Finset ℕ} (hs : ∀ n ∈ s, n ≠ 0) :
+    ∫ ω, ‖orthoSum e a s ω‖ ^ 2 ∂P = ∑ n ∈ s, ‖a n‖ ^ 2 := by
+  classical
+  have hexp : ∀ ω, ((‖orthoSum e a s ω‖ ^ 2 : ℝ) : ℂ) =
+      ∑ m ∈ s, ∑ n ∈ s, a m * conj (a n) * (e m ω * conj (e n ω)) := by
+    intro ω
+    rw [← Complex.normSq_eq_norm_sq, ← Complex.mul_conj, orthoSum, map_sum, Finset.sum_mul_sum]
+    refine sum_congr rfl fun m _ => sum_congr rfl fun n _ => ?_
+    rw [map_mul]
+    ring
+  have hC : ∫ ω, ((‖orthoSum e a s ω‖ ^ 2 : ℝ) : ℂ) ∂P = ∑ n ∈ s, ((‖a n‖ ^ 2 : ℝ) : ℂ) := by
+    simp_rw [hexp]
+    rw [integral_finsetSum _ fun m _ => integrable_finsetSum _ fun n _ =>
+      (integrable_mul_conj (P := P) he hb m n).const_mul _]
+    refine sum_congr rfl fun m hm => ?_
+    rw [integral_finsetSum _ fun n _ => (integrable_mul_conj (P := P) he hb m n).const_mul _]
+    simp_rw [integral_const_mul]
+    rw [sum_eq_single m]
+    · rw [horth m m (hs m hm) (hs m hm), if_pos rfl, mul_one, Complex.mul_conj,
+        Complex.normSq_eq_norm_sq]
+    · intro n hn hnm
+      rw [horth m n (hs m hm) (hs n hn), if_neg (Ne.symm hnm), mul_zero]
+    · exact fun h => absurd hm h
+  rw [integral_complex_ofReal] at hC
+  rw [← Complex.ofReal_sum] at hC
+  exact_mod_cast hC
+
+theorem measurable_dyadicEnergy (he : ∀ n, Measurable (e n)) (a : ℕ → ℂ) (K : ℕ) :
+    Measurable (dyadicEnergy e a K) :=
+  Finset.measurable_sum _ fun _ _ => Finset.measurable_sum _ fun _ _ =>
+    ((measurable_orthoSum he a _).norm).pow_const 2
+
+theorem integrable_sq_norm_orthoSum (he : ∀ n, Measurable (e n)) (hb : ∀ n ω, ‖e n ω‖ ≤ 1)
+    (a : ℕ → ℂ) (s : Finset ℕ) : Integrable (fun ω => ‖orthoSum e a s ω‖ ^ 2) P := by
+  refine Integrable.of_bound (((measurable_orthoSum he a s).norm).pow_const 2).aestronglyMeasurable
+    ((∑ n ∈ s, ‖a n‖) ^ 2) (Filter.Eventually.of_forall fun ω => ?_)
+  rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  refine pow_le_pow_left₀ (norm_nonneg _) ((norm_sum_le _ _).trans (sum_le_sum fun n _ => ?_)) 2
+  rw [norm_mul]
+  exact mul_le_of_le_one_right (norm_nonneg _) (hb n ω)
+
+/-- **The dyadic energy has mean `(K+1) Σ_{n ≤ 2^{K+1}} |a_n|²`**: each level tiles
+`(0, 2^{K+1}]`, and each block has the coefficient energy as mean square. -/
+theorem integral_dyadicEnergy (he : ∀ n, Measurable (e n)) (hb : ∀ n ω, ‖e n ω‖ ≤ 1)
+    (horth : ∀ m n, m ≠ 0 → n ≠ 0 → ∫ ω, e m ω * conj (e n ω) ∂P = if m = n then 1 else 0)
+    (a : ℕ → ℂ) (K : ℕ) :
+    ∫ ω, dyadicEnergy e a K ω ∂P = ((K : ℝ) + 1) * ∑ n ∈ Ioc 0 (2 ^ (K + 1)), ‖a n‖ ^ 2 := by
+  have hint : ∀ j i, Integrable (fun ω => ‖orthoBlock e a j i ω‖ ^ 2) P := fun j i =>
+    integrable_sq_norm_orthoSum he hb a _
+  have hblock : ∀ j i, ∫ ω, ‖orthoBlock e a j i ω‖ ^ 2 ∂P =
       ∑ n ∈ Ioc (2 ^ j * i) (2 ^ j * (i + 1)), ‖a n‖ ^ 2 := fun j i =>
-    integral_normSq_twistSum (fun n hn => by have := (mem_Ioc.mp hn).1; omega) a
+    integral_sq_norm_orthoSum he hb horth a (fun n hn => by have := (mem_Ioc.mp hn).1; omega)
   have hlevel : ∀ j ∈ range (K + 1), ∑ i ∈ range (2 ^ (K + 1 - j)),
       ∑ n ∈ Ioc (2 ^ j * i) (2 ^ j * (i + 1)), ‖a n‖ ^ 2 = ∑ n ∈ Ioc 0 (2 ^ (K + 1)), ‖a n‖ ^ 2 := by
     intro j hj
     have hj' : j ≤ K + 1 := by have := mem_range.mp hj; omega
     rw [sum_Ioc_tile_mono (fun n => ‖a n‖ ^ 2) (e := fun i => 2 ^ j * i)
       (fun _ _ h => Nat.mul_le_mul_left _ h), mul_zero, ← pow_add, Nat.add_sub_cancel' hj']
-  rw [dyadicEnergy, integral_finset_sum _ fun j _ => integrable_finset_sum _ fun i _ => hint j i]
-  simp_rw [integral_finset_sum _ fun i _ => hint _ i, hblock]
+  unfold dyadicEnergy
+  rw [integral_finsetSum _ fun j _ => integrable_finsetSum _ fun i _ => hint j i]
+  simp_rw [integral_finsetSum _ fun i _ => hint _ i, hblock]
   rw [sum_congr rfl hlevel, sum_const, card_range, nsmul_eq_mul]
   push_cast
   ring
 
-/-! ### Borel–Cantelli on the gauge torus -/
+/-! ### Borel–Cantelli -/
 
 /-- The exceptional event at depth `K`: dyadic energy at least `2^{K+1} (K+1)³`. -/
-def dyadicExceptional (a : ℕ → ℂ) (K : ℕ) : Set GaugeTorus :=
-  {x | (2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1) ^ 3 ≤ dyadicEnergy a K x}
+def dyadicExceptional (e : ℕ → α → ℂ) (a : ℕ → ℂ) (K : ℕ) : Set α :=
+  {ω | (2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1) ^ 3 ≤ dyadicEnergy e a K ω}
 
-theorem measureReal_dyadicExceptional_le (a : ℕ → ℂ) (ha : ∀ n, ‖a n‖ ≤ 1) (K : ℕ) :
-    gaugeHaar.real (dyadicExceptional a K) ≤ 1 / ((K : ℝ) + 1) ^ 2 := by
+theorem measureReal_dyadicExceptional_le (he : ∀ n, Measurable (e n)) (hb : ∀ n ω, ‖e n ω‖ ≤ 1)
+    (horth : ∀ m n, m ≠ 0 → n ≠ 0 → ∫ ω, e m ω * conj (e n ω) ∂P = if m = n then 1 else 0)
+    (a : ℕ → ℂ) (ha : ∀ n, ‖a n‖ ≤ 1) (K : ℕ) :
+    P.real (dyadicExceptional e a K) ≤ 1 / ((K : ℝ) + 1) ^ 2 := by
   have hK : (0 : ℝ) < (K : ℝ) + 1 := by positivity
-  have hP : (0 : ℝ) < (2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1) ^ 3 := by positivity
+  have hint : Integrable (dyadicEnergy e a K) P :=
+    integrable_finsetSum _ fun _ _ => integrable_finsetSum _ fun _ _ =>
+      integrable_sq_norm_orthoSum he hb a _
   have hmarkov := mul_meas_ge_le_integral_of_nonneg
-    (Filter.Eventually.of_forall fun x => (show 0 ≤ dyadicEnergy a K x from
+    (Filter.Eventually.of_forall fun ω => (show 0 ≤ dyadicEnergy e a K ω from
       sum_nonneg fun _ _ => sum_nonneg fun _ _ => by positivity))
-    (integrable_dyadicEnergy a K) ((2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1) ^ 3)
+    hint ((2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1) ^ 3)
   have henergy : ∑ n ∈ Ioc 0 (2 ^ (K + 1)), ‖a n‖ ^ 2 ≤ (2 : ℝ) ^ (K + 1) := by
     calc ∑ n ∈ Ioc 0 (2 ^ (K + 1)), ‖a n‖ ^ 2 ≤ ∑ _n ∈ Ioc 0 (2 ^ (K + 1)), (1 : ℝ) :=
           sum_le_sum fun n _ => by
             have := ha n
             nlinarith [norm_nonneg (a n)]
       _ = (2 : ℝ) ^ (K + 1) := by simp
-  rw [integral_dyadicEnergy] at hmarkov
+  rw [integral_dyadicEnergy he hb horth] at hmarkov
   rw [le_div_iff₀ (by positivity)]
-  have h1 : gaugeHaar.real (dyadicExceptional a K) * ((2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1) ^ 3) ≤
+  have h1 : P.real (dyadicExceptional e a K) * ((2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1) ^ 3) ≤
       ((K : ℝ) + 1) * (2 : ℝ) ^ (K + 1) := by
     rw [mul_comm]
     exact hmarkov.trans (mul_le_mul_of_nonneg_left henergy hK.le)
-  have h2 : gaugeHaar.real (dyadicExceptional a K) * ((K : ℝ) + 1) ^ 2 * ((2 : ℝ) ^ (K + 1) *
+  have h2 : P.real (dyadicExceptional e a K) * ((K : ℝ) + 1) ^ 2 * ((2 : ℝ) ^ (K + 1) *
       ((K : ℝ) + 1)) ≤ 1 * ((2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1)) := by nlinarith
   exact le_of_mul_le_mul_right h2 (by positivity)
 
-theorem tsum_measure_dyadicExceptional_ne_top (a : ℕ → ℂ) (ha : ∀ n, ‖a n‖ ≤ 1) :
-    ∑' K, gaugeHaar (dyadicExceptional a K) ≠ ⊤ := by
+theorem tsum_measure_dyadicExceptional_ne_top (he : ∀ n, Measurable (e n))
+    (hb : ∀ n ω, ‖e n ω‖ ≤ 1)
+    (horth : ∀ m n, m ≠ 0 → n ≠ 0 → ∫ ω, e m ω * conj (e n ω) ∂P = if m = n then 1 else 0)
+    (a : ℕ → ℂ) (ha : ∀ n, ‖a n‖ ≤ 1) :
+    ∑' K, P (dyadicExceptional e a K) ≠ ⊤ := by
   have hsum : Summable fun K : ℕ => 1 / ((K : ℝ) + 1) ^ 2 := by
     have := (summable_nat_add_iff 1).mpr (Real.summable_one_div_nat_pow.mpr one_lt_two)
     simpa using this
   refine ne_top_of_le_ne_top (ENNReal.ofReal_ne_top (r := ∑' K : ℕ, 1 / ((K : ℝ) + 1) ^ 2)) ?_
   rw [ENNReal.ofReal_tsum_of_nonneg (fun _ => by positivity) hsum]
   refine ENNReal.tsum_le_tsum fun K => ?_
-  rw [← ENNReal.ofReal_toReal (measure_ne_top gaugeHaar (dyadicExceptional a K)), ← measureReal_def]
-  exact ENNReal.ofReal_le_ofReal (measureReal_dyadicExceptional_le a ha K)
+  rw [← ENNReal.ofReal_toReal (measure_ne_top P (dyadicExceptional e a K)), ← measureReal_def]
+  exact ENNReal.ofReal_le_ofReal (measureReal_dyadicExceptional_le he hb horth a ha K)
 
-/-- **Almost-sure dyadic square-root law.** For a source bounded by one, at Haar-almost every gauge
-point, eventually in `K`, every partial sum below `2^{K+1}` satisfies `|S_n|² ≤ 2^{K+1} (K+1)⁴`. -/
-theorem ae_eventually_sq_norm_gaugePartialSum_le (a : ℕ → ℂ) (ha : ∀ n, ‖a n‖ ≤ 1) :
-    ∀ᵐ x ∂gaugeHaar, ∀ᶠ K in atTop, ∀ n < 2 ^ (K + 1),
-      ‖gaugePartialSum a n x‖ ^ 2 ≤ (2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1) ^ 4 := by
-  filter_upwards [ae_eventually_notMem (tsum_measure_dyadicExceptional_ne_top a ha)] with x hx
-  filter_upwards [hx] with K hK n hn
-  have hE : dyadicEnergy a K x < (2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1) ^ 3 := not_le.mp hK
-  calc ‖gaugePartialSum a n x‖ ^ 2 ≤ ((K : ℝ) + 1) * dyadicEnergy a K x :=
-        sq_norm_gaugePartialSum_le a hn x
+/-- **Almost-sure dyadic square-root law.** For a bounded orthonormal system and coefficients
+bounded by one, almost surely, eventually in `K`, every partial sum below `2^{K+1}` satisfies
+`|S_n|² ≤ 2^{K+1} (K+1)⁴`. -/
+theorem ae_eventually_sq_norm_orthoSum_le (he : ∀ n, Measurable (e n)) (hb : ∀ n ω, ‖e n ω‖ ≤ 1)
+    (horth : ∀ m n, m ≠ 0 → n ≠ 0 → ∫ ω, e m ω * conj (e n ω) ∂P = if m = n then 1 else 0)
+    (a : ℕ → ℂ) (ha : ∀ n, ‖a n‖ ≤ 1) :
+    ∀ᵐ ω ∂P, ∀ᶠ K : ℕ in atTop, ∀ n < 2 ^ (K + 1),
+      ‖orthoSum e a (Ioc 0 n) ω‖ ^ 2 ≤ (2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1) ^ 4 := by
+  filter_upwards [ae_eventually_notMem (tsum_measure_dyadicExceptional_ne_top he hb horth a ha)]
+    with ω hω
+  filter_upwards [hω] with K hK n hn
+  have hE : dyadicEnergy e a K ω < (2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1) ^ 3 := not_le.mp hK
+  calc ‖orthoSum e a (Ioc 0 n) ω‖ ^ 2 ≤ ((K : ℝ) + 1) * dyadicEnergy e a K ω :=
+        sq_norm_orthoSum_le e a hn ω
     _ ≤ ((K : ℝ) + 1) * ((2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1) ^ 3) :=
         mul_le_mul_of_nonneg_left hE.le (by positivity)
     _ = (2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1) ^ 4 := by ring
@@ -225,7 +291,6 @@ theorem ae_eventually_sq_norm_gaugePartialSum_le (a : ℕ → ℂ) (ha : ∀ n, 
 theorem nat_log_add_one_le (N : ℕ) : ((Nat.log 2 N : ℕ) : ℝ) + 1 ≤ 2 * (1 + Real.log (N + 1)) := by
   rcases Nat.eq_zero_or_pos N with rfl | hN
   · simp
-    positivity
   have hpow : ((2 : ℝ) ^ Nat.log 2 N) ≤ (N : ℝ) + 1 := by
     have := Nat.pow_log_le_self 2 hN.ne'
     exact_mod_cast this.trans (Nat.le_succ N)
@@ -233,32 +298,38 @@ theorem nat_log_add_one_le (N : ℕ) : ((Nat.log 2 N : ℕ) : ℝ) + 1 ≤ 2 * (
     rw [← Real.log_pow]
     exact Real.log_le_log (by positivity) hpow
   have hl2 := Real.log_two_gt_d9
-  have hlogN : 0 ≤ Real.log ((N : ℝ) + 1) := Real.log_nonneg (by linarith [(N.cast_nonneg : (0 : ℝ) ≤ N)])
+  have hlogN : 0 ≤ Real.log ((N : ℝ) + 1) :=
+    Real.log_nonneg (by linarith [(N.cast_nonneg : (0 : ℝ) ≤ N)])
   nlinarith [(Nat.log 2 N).cast_nonneg (α := ℝ)]
 
-/-- **Almost every gauge point cancels to the square root.** For a source bounded by one, at
-Haar-almost every gauge point, `|S_N(x)| ≤ C_x √(N+1) (1 + log (N+1))²` for every `N`. -/
-theorem ae_exists_norm_gaugePartialSum_le (a : ℕ → ℂ) (ha : ∀ n, ‖a n‖ ≤ 1) :
-    ∀ᵐ x ∂gaugeHaar, ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ,
-      ‖gaugePartialSum a N x‖ ≤ C * Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2 := by
-  filter_upwards [ae_eventually_sq_norm_gaugePartialSum_le a ha] with x hx
-  obtain ⟨K₀, hK₀⟩ := eventually_atTop.mp hx
-  set C₀ := ∑ n ∈ range (2 ^ (K₀ + 1)), ‖gaugePartialSum a n x‖
+/-- **Almost-sure square-root law with logarithmic loss.** For a bounded orthonormal system and
+coefficients bounded by one, almost surely `|S_N| ≤ C_ω √(N+1) (1 + log (N+1))²` for every `N`. -/
+theorem ae_exists_norm_orthoSum_le (he : ∀ n, Measurable (e n)) (hb : ∀ n ω, ‖e n ω‖ ≤ 1)
+    (horth : ∀ m n, m ≠ 0 → n ≠ 0 → ∫ ω, e m ω * conj (e n ω) ∂P = if m = n then 1 else 0)
+    (a : ℕ → ℂ) (ha : ∀ n, ‖a n‖ ≤ 1) :
+    ∀ᵐ ω ∂P, ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ,
+      ‖orthoSum e a (Ioc 0 N) ω‖ ≤
+        C * Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2 := by
+  filter_upwards [ae_eventually_sq_norm_orthoSum_le he hb horth a ha] with ω hω
+  obtain ⟨K₀, hK₀⟩ := eventually_atTop.mp hω
+  set C₀ := ∑ n ∈ range (2 ^ (K₀ + 1)), ‖orthoSum e a (Ioc 0 n) ω‖
+  have hC0 : 0 ≤ C₀ := sum_nonneg fun _ _ => norm_nonneg _
   refine ⟨C₀ + 6, by positivity, fun N => ?_⟩
-  have hsqrt : 1 ≤ Real.sqrt ((N : ℝ) + 1) := Real.one_le_sqrt.mpr (by linarith [N.cast_nonneg (α := ℝ)])
+  have hsqrt : 1 ≤ Real.sqrt ((N : ℝ) + 1) :=
+    Real.one_le_sqrt.mpr (by linarith [N.cast_nonneg (α := ℝ)])
   have hlog0 : 0 ≤ Real.log ((N : ℝ) + 1) := Real.log_nonneg (by linarith [N.cast_nonneg (α := ℝ)])
   have hfac : 1 ≤ Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2 :=
     one_le_mul_of_one_le_of_one_le hsqrt (one_le_pow₀ (by linarith))
   by_cases hsmall : N < 2 ^ (K₀ + 1)
-  · have hC₀ : ‖gaugePartialSum a N x‖ ≤ C₀ :=
-      single_le_sum (f := fun n => ‖gaugePartialSum a n x‖) (fun _ _ => norm_nonneg _)
+  · have hC₀ : ‖orthoSum e a (Ioc 0 N) ω‖ ≤ C₀ :=
+      single_le_sum (f := fun n => ‖orthoSum e a (Ioc 0 n) ω‖) (fun _ _ => norm_nonneg _)
         (mem_range.mpr hsmall)
-    calc ‖gaugePartialSum a N x‖ ≤ C₀ := hC₀
+    calc ‖orthoSum e a (Ioc 0 N) ω‖ ≤ C₀ := hC₀
       _ ≤ (C₀ + 6) * 1 := by linarith
       _ ≤ (C₀ + 6) * (Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2) :=
           mul_le_mul_of_nonneg_left hfac (by positivity)
       _ = _ := by ring
-  · push_neg at hsmall
+  · rw [not_lt] at hsmall
     have hN : N ≠ 0 := by
       intro h
       rw [h] at hsmall
@@ -277,13 +348,13 @@ theorem ae_exists_norm_gaugePartialSum_le (a : ℕ → ℂ) (ha : ∀ n, ‖a n�
       linarith
     have hKlog := nat_log_add_one_le N
     have hK1 : (0 : ℝ) ≤ (K : ℝ) + 1 := by positivity
-    have hsq : ‖gaugePartialSum a N x‖ ^ 2 ≤
+    have hsq : ‖orthoSum e a (Ioc 0 N) ω‖ ^ 2 ≤
         (6 * Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2) ^ 2 := by
       have hs : Real.sqrt ((N : ℝ) + 1) ^ 2 = (N : ℝ) + 1 :=
         Real.sq_sqrt (by linarith [N.cast_nonneg (α := ℝ)])
       have h4 : ((K : ℝ) + 1) ^ 4 ≤ (2 * (1 + Real.log ((N : ℝ) + 1))) ^ 4 :=
         pow_le_pow_left₀ hK1 hKlog 4
-      calc ‖gaugePartialSum a N x‖ ^ 2 ≤ (2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1) ^ 4 := hbound
+      calc ‖orthoSum e a (Ioc 0 N) ω‖ ^ 2 ≤ (2 : ℝ) ^ (K + 1) * ((K : ℝ) + 1) ^ 4 := hbound
         _ ≤ (2 * ((N : ℝ) + 1)) * (2 * (1 + Real.log ((N : ℝ) + 1))) ^ 4 :=
             mul_le_mul h2K h4 (by positivity) (by positivity)
         _ = 32 * ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 4 := by ring
@@ -293,13 +364,31 @@ theorem ae_exists_norm_gaugePartialSum_le (a : ℕ → ℂ) (ha : ∀ n, ‖a n�
         _ = (6 * Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2) ^ 2 := by
             rw [mul_pow, mul_pow, hs]
             ring
-    have h6 : ‖gaugePartialSum a N x‖ ≤ 6 * Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2 :=
+    have h6 : ‖orthoSum e a (Ioc 0 N) ω‖ ≤
+        6 * Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2 :=
       (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).mp hsq
-    calc ‖gaugePartialSum a N x‖ ≤ 6 * Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2 := h6
-      _ ≤ (C₀ + 6) * Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2 := by
-          have : 0 ≤ Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2 := by positivity
-          have hC0 : 0 ≤ C₀ := sum_nonneg fun _ _ => norm_nonneg _
-          nlinarith
+    have : 0 ≤ Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2 := by positivity
+    calc ‖orthoSum e a (Ioc 0 N) ω‖ ≤
+          6 * Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2 := h6
+      _ ≤ (C₀ + 6) * Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2 := by nlinarith
+
+end Orthonormal
+
+/-! ### The gauge torus -/
+
+/-- The twisted partial sum `S_N(x) = Σ_{1 ≤ n ≤ N} a_n χ_x(n)`. -/
+def gaugePartialSum (a : ℕ → ℂ) (N : ℕ) (x : GaugeTorus) : ℂ := twistSum (Ioc 0 N) a x
+
+theorem gaugePartialSum_eq_orthoSum (a : ℕ → ℂ) (N : ℕ) (x : GaugeTorus) :
+    gaugePartialSum a N x = orthoSum (fun n x => twist x n) a (Ioc 0 N) x := rfl
+
+/-- **Almost every gauge point cancels to the square root.** For a source bounded by one, at
+Haar-almost every gauge point, `|S_N(x)| ≤ C_x √(N+1) (1 + log (N+1))²` for every `N`. -/
+theorem ae_exists_norm_gaugePartialSum_le (a : ℕ → ℂ) (ha : ∀ n, ‖a n‖ ≤ 1) :
+    ∀ᵐ x ∂gaugeHaar, ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ,
+      ‖gaugePartialSum a N x‖ ≤ C * Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2 :=
+  ae_exists_norm_orthoSum_le (fun n => (continuous_twist n).measurable)
+    (fun n x => (norm_twist x n).le) (fun _ _ hm hn => integral_twist_mul_conj hm hn) a ha
 
 /-! ### The half-power law on the Möbius orbit -/
 
@@ -346,13 +435,14 @@ theorem ae_gaugeHalfPowerLaw (a : ℕ → ℂ) (ha : ∀ n, ‖a n‖ ≤ 1) :
   have hX : (1 : ℝ) ≤ (N : ℝ) + 1 := by linarith [N.cast_nonneg (α := ℝ)]
   have hpow : 1 ≤ ((N : ℝ) + 1) ^ ((1 / 2 : ℝ) + δ) := Real.one_le_rpow hX (by positivity)
   have hsplit : ∑ n ∈ range (N + 1), a n * twist x n = a 0 * twist x 0 + gaugePartialSum a N x := by
-    rw [range_eq_Ico, ← Ico_insert_succ_left (Nat.succ_pos N), sum_insert (by simp),
-      gaugePartialSum, twistSum, Nat.Ico_succ_right_eq_Ioc]
+    rw [range_eq_Ico, sum_eq_sum_Ico_succ_bot (Nat.succ_pos N), gaugePartialSum, twistSum]
+    rfl
   rw [hsplit]
   have h0 : ‖a 0 * twist x 0‖ ≤ 1 := by rw [norm_mul, norm_twist, mul_one]; exact ha 0
-  have hS := (hbound N).trans (by
+  have hS : ‖gaugePartialSum a N x‖ ≤ C * ((1 + 4 / δ) ^ 2 * ((N : ℝ) + 1) ^ ((1 / 2 : ℝ) + δ)) := by
+    refine (hbound N).trans ?_
     rw [mul_assoc]
-    exact mul_le_mul_of_nonneg_left (sqrt_mul_one_add_log_sq_le hX hδ) hC)
+    exact mul_le_mul_of_nonneg_left (sqrt_mul_one_add_log_sq_le hX hδ) hC
   calc ‖a 0 * twist x 0 + gaugePartialSum a N x‖ ≤ 1 + C * ((1 + 4 / δ) ^ 2 *
         ((N : ℝ) + 1) ^ ((1 / 2 : ℝ) + δ)) := (norm_add_le _ _).trans (add_le_add h0 hS)
     _ ≤ (1 + C * (1 + 4 / δ) ^ 2) * ((N : ℝ) + 1) ^ ((1 / 2 : ℝ) + δ) := by nlinarith
@@ -379,8 +469,7 @@ theorem gaugeHalfPowerLaw_moebius_zero_iff :
 theorem exists_liouville_gaugePoint :
     ∃ x : GaugeTorus, ∀ n, n ≠ 0 → twist x n = (-1 : ℂ) ^ Ω n := by
   refine exists_twist_eq (fun n => (-1 : ℂ) ^ Ω n) (by simp) (fun m n hm hn => ?_) (fun p _ => ?_)
-  · simp only
-    rw [ArithmeticFunction.cardFactors_mul hm hn, pow_add]
+  · rw [ArithmeticFunction.cardFactors_mul hm hn, pow_add]
   · simp
 
 /-- On squarefree support the Liouville twist of `μ` is `μ²`. -/
@@ -389,8 +478,7 @@ theorem moebius_mul_neg_one_pow_cardFactors (n : ℕ) :
   by_cases hsq : Squarefree n
   · rw [ArithmeticFunction.moebius_apply_of_squarefree hsq]
     push_cast
-    rw [← pow_mul, ← pow_mul, mul_comm (Ω n) 2, pow_mul, pow_mul]
-    norm_num
+    ring
   · rw [ArithmeticFunction.moebius_eq_zero_of_not_squarefree hsq]
     simp
 
@@ -434,7 +522,7 @@ theorem not_gaugeHalfPowerLaw_moebius_liouville {x : GaugeTorus}
     ⟨⌈(150 * C + 1) ^ 4⌉₊ + 1, by
       constructor <;> push_cast <;> linarith [Nat.le_ceil ((150 * C + 1) ^ 4),
         (show (0 : ℝ) ≤ (150 * C + 1) ^ 4 by positivity)]⟩
-  have hlow := (card_filter_squarefree_Ioc_ge N).trans (hcount N)
+  have hlow := (RHTower.card_filter_squarefree_Ioc_ge N).trans (hcount N)
   have hup := hbound (2 * N)
   have hN0 : (0 : ℝ) < N := by linarith
   have hX : ((2 * N : ℕ) : ℝ) + 1 ≤ 3 * (N : ℝ) := by push_cast; linarith
@@ -444,8 +532,10 @@ theorem not_gaugeHalfPowerLaw_moebius_liouville {x : GaugeTorus}
   -- `N^{1/4} ≥ 150 C + 1`
   have hquart : 150 * C + 1 ≤ (N : ℝ) ^ ((1 / 4 : ℝ)) := by
     have := Real.rpow_le_rpow (by positivity) hN.1 (show (0 : ℝ) ≤ 1 / 4 by norm_num)
-    rwa [← Real.rpow_natCast, ← Real.rpow_mul (by positivity)] at this
-    |>.trans_eq' (by norm_num)
+    have hbase : ((150 * C + 1) ^ 4 : ℝ) ^ ((1 / 4 : ℝ)) = 150 * C + 1 := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul (by linarith)]
+      norm_num
+    rwa [hbase] at this
   have hsplitN : (N : ℝ) = (N : ℝ) ^ ((3 / 4 : ℝ)) * (N : ℝ) ^ ((1 / 4 : ℝ)) := by
     rw [← Real.rpow_add hN0]
     norm_num
@@ -459,7 +549,7 @@ theorem not_gaugeHalfPowerLaw_moebius_liouville {x : GaugeTorus}
   have : (N : ℝ) / 50 ≤ C * (3 * (N : ℝ) ^ ((3 / 4 : ℝ))) :=
     hlow.trans (hup.trans (mul_le_mul_of_nonneg_left (hrpow.trans h3) hC))
   rw [hsplitN] at this
-  nlinarith
+  nlinarith [mul_le_mul_of_nonneg_left hquart hN34.le]
 
 /-- **The Möbius gauge orbit.** The half-power law for `μ` holds at Haar-almost every gauge point,
 fails at the Liouville twin, and holds at the gauge point `0` exactly under the Riemann

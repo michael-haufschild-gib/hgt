@@ -1,15 +1,15 @@
 # Critical Nyquist finite part and signed broad-source classification
 
 - **ID:** nyquist-critical-finite-part-2026-10-18
-- **Stage:** 3-formalized
-- **Type:** THEOREM (Lean)
+- **Stage:** 2-fully-proven; partial Lean coverage
+- **Type:** THEOREM (paper)
 - **Scope:** Independent BiScaleUncertainty; infinite-grid tail rigidity beyond Trap 5.
 - **Parent:** `../1-in-progress/infinite-grid-tail-rigidity-2026-10-17.md`
 - **Predecessor:** `../3-formalized/nyquist-weight-order-threshold-2026-10-17.md`
-- **Count:** Certified in `formal/GaloisForLFunctions/BiScaleUncertainty/NyquistCriticalFinitePartAndBroadClassification.lean`.
+- **Count:** Full theorem not yet certified; existing leaf covers only the components listed below.
 - **Field guide:** `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`.
 - **Paper:** `docs/reports/BiScaleUncertainty/NyquistCriticalFinitePart.md`
-- **Closeout:** Formalized in `NyquistCriticalFinitePartAndBroadClassification.lean` (`abs_nyquistCriticalCellDiscrepancy_le_inv_sq`, `abs_nyquistCriticalPrefixPrimitive_sub_finitePart_le`, `integral_autocorr_eq_sq_integral`, `nyquistZeroMeanWitness_integral_and_autocorr_mass_eq_zero`) and wired into `BiScaleUncertainty.lean`.
+- **Current source audit:** `NyquistCriticalFinitePartAndBroadClassification.lean` contains the cell discrepancy bound, summable finite part, nodal prefix convergence, autocorrelation mass identity and zero-mean witness. It does not contain the continuous primitive estimate, signed broad-test expansion or complete signed-source escape/cancellation classification. Its umbrella import does not discharge those missing statements.
 
 ## Proven paper statement
 
@@ -83,6 +83,77 @@ claimed, and no conditional infinite integral is hidden in B's definition.
 
 Formalization remains a future task, not an unfinished Lean branch. The certificate
 count stays 15. This paper is not presented as Lean-verified.
+
+## Completion proof for the missing analytic statements
+
+Write `t_k=log(k+1)`, `δ_k=t_(k+1)-t_k`, `e=e_m`,
+`α_k=∫_(t_k,t_(k+1)] e`, `d_k=α_k-cδ_k`, and `B=Σ d_k`.
+The existing kernel is nonnegative, locally integrable, zero on `(-∞,0]`,
+and has precisely these cell integrals. Existing estimates give
+`|d_k|≤Dδ_k/(k+1)≤D/(k+1)²`, `δ_k≤1/(k+1)`, and
+`|Σ_(k≥N)d_k|≤2D/(N+1)`.
+
+Define the actual continuous primitive
+`P(T)=∫_0^T e(x)dx-cT`, for `T≥0`. At nodes it equals `Σ_(k<N)d_k`.
+For `T∈(t_k,t_(k+1)]`, positivity gives
+
+`|P(T)-P(t_k)|≤α_k+cδ_k≤(D+2c)/(k+1)`.
+
+Adding the nodal tail bound gives `|P(T)-B|≤(3D+2c)/(k+1)`.
+Since `exp(T)≤k+2≤2(k+1)`, this is at most
+`2(3D+2c)exp(-T)`. At `T=0`, use `|B|≤2D` directly.
+Local integrability makes `P` continuous, and the bound proves `P(T)→B`.
+
+For a compact Lipschitz test `H` with Lipschitz constant `A` and any `L>0`,
+put `G(x)=H(x/L)`. On each cell, subtract its continuous counterterm and
+freeze `G` at the left endpoint:
+
+`∫cell (e-c)G = d_k G(t_k) + E_k`,
+
+where
+`|E_k|≤(A/L)δ_k(α_k+cδ_k)≤(A/L)(D+2c)/(k+1)²`.
+All integrals with `G` are integrable by compact support and local integrability;
+the displayed bounds justify every series rearrangement. The power-tail estimate
+`Σ_(n≥1)n^-p≤1+1/(p-1)` for `p>1` yields
+`Σ|E_k|≤(A/L)(2D+4c)`.
+
+Moreover `|G(t_k)-H(0)|≤(A/L)t_k`. For `n≥1`,
+`log n≤2 sqrt(n)` follows from `log(sqrt(n))≤sqrt(n)-1`.
+Hence
+
+`Σ|d_k|t_k≤D Σ_(n≥1)(log n)/n²≤2D Σ_(n≥1)n^(-3/2)≤6D`.
+
+Summing the cell identity and using `Σd_k=B` therefore proves, for signed `H`,
+
+`|∫_0^∞ e(x)H(x/L)dx - cL∫_0^∞ H(x)dx - BH(0)|`
+`≤(8D+4c)A/L`.
+
+This argument requires no derivative of `H`, no sign condition on `H`, and no
+absolute integrability claim for `e-c`. Zero tests and every positive scale are
+included. The continuous counterterm is integrated after the exact cell producer.
+
+For a nonzero compact C² source `f`, let `Q=∫f²>0` and
+`H(x)=autocorr(f,x)/Q`. Compactness of `f` and its derivative gives an actual
+finite global Lipschitz constant for `H`: bound its increments by
+`‖f'‖∞ (∫|f|)|x-y|/Q`. The correlation is even, compactly supported, and
+`H(0)=1`. Fubini gives `∫_ℝ H=(∫f)²/Q`, so the half-line integral is
+`(∫f)²/(2Q)`. Apply the signed expansion to obtain
+
+`residual_L = c(∫f)² L/(2Q) + B + O(1/L)`.
+
+Thus zero mean gives convergence to `B`; nonzero mean gives positive linear
+escape with exactly the stated slope. For the actual rescaled source `f(x/L)`,
+the existing source-rescaling identity yields normalized correlation `H(x/L)`;
+the C² compact-source increment estimate bounds its normalized archimedean
+energy by a constant times `1/L`. The normalization uses its actual squared
+source norm `LQ`. Normalized energy therefore tends to zero. These constants
+are derived from `f` itself.
+
+Finally the existing bump `p` has support in `[-1,1]` and positive squared norm.
+For `g=p-p(·-4)`, disjoint support gives `∫g=0`, `∫g²=2∫p²`,
+`autocorr(g,4)=-∫p²`, hence normalized correlation exactly `-1/2` at lag 4.
+Both `p` and `g` remain compact and smooth, realizing the two alternatives.
+These statements still require the corresponding exact Lean declarations and audits.
 
 ## Log
 
