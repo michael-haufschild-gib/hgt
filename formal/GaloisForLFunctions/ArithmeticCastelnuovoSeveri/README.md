@@ -93,7 +93,10 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
    bound: realizability ⇔ PSD defect Gram; only $\Gamma^2\ge q(2-2g)$ is used; free $\Gamma^2$ bounds nothing.
 2. **Span defect = Toeplitz form** in power sums; span Hodge index = unitarity; Pontryagin law over
    $\mathbb F_q$ (defect = #outer eigenvalues, reached at window $2g$); span = period quotient of the scaling
-   surface (Poisson along tilted lattices); contact law; window law.
+   surface (Poisson along tilted lattices); contact law; window law. **Towers of a curve at every
+   scale:** one probe sees each; the defect is finite exactly at arithmetic scales $\ell\in\mathbb Q_{>0}\log q$
+   (at $a\log q$ the Frobenius span over $\mathbb F_{q^a}$, at $(a/b)\log q$ the $b$-th roots of the
+   $\beta_i^a$) and infinite at every other scale (`TheTowersOfACurveAreItsBaseChanges.lean`).
 3. **Fake curves.** Golden datum: integral counts, rational zeta, functional equation, Witt
    integrality, Beurling structure — Hodge defect exactly 1. A rank-one Beurling system satisfies
    every listed constraint and fails Hodge index.
@@ -140,7 +143,16 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
    (`OneTestCarriesTheDefectOfZetaAtEachPrime.lean`). **Weil's two-element windows suffice:** the
    Lefschetz sequence `c_m = W(T_{p^m}g, g)` of one test is `O(R^m)` (`R ≥ 1`) iff `R ≥ p^w`, `w` the
    zero width; RH ⇔ `|c_m| ≤ c_0` for all `m`, and `c_m = O(p^{θm})` ⇔ the strip `|Re ρ−½| ≤ θ`
-   (`OneLefschetzSequenceGrowsAtTheZeroWidth.lean`).
+   (`OneLefschetzSequenceGrowsAtTheZeroWidth.lean`). **One cycle for every prime:** a single test reads
+   `p^w` at every prime; attained tops are read by any test with nonzero top weight (Cesàro, no
+   isolation), non-attained ones by a subsequence convergent in `∏_p ℂ`; curves at every scale
+   (`OneCycleReadsTheWidthAtEveryPrime.lean`). **Off-line zeros are Lefschetz ratios:** for each right
+   zero `ρ` of `ζ` one test has `c_m ~ W p^{m(ρ−½)}` at every prime, so `c_{m+1}/c_m → p^{ρ−½}`,
+   Weil's inequality fails at every large `m`, and two primes determine `ρ` (no period over `ℤ`)
+   (`OffLineZerosAreLefschetzRatios.lean`). **Resonant scales** (towers merging right zeros) are
+   countable; off them one tower carries the Hodge defect; for `ζ` all but finitely many primes are
+   non-resonant (all but one if right zeros are infinite); a curve resonates at every arithmetic
+   scale (`TheResonantScalesOfAConfiguration.lean`).
 
 ### Effectivity, Bézout, Riemann–Roch
 10. **Hodge index ⇔ effectivity with RR + ample** (`exists_effectivity_iff_hodgeIndex`); positivity is
@@ -269,7 +281,7 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
    `almost_every_prime_tower_sees_every_right_zero`, `one_prime_vs_two_primes_complete_law`,
    `exists_symmetric_wolff_toeplitz_blind_configuration`, `zeta_one_prime_tower_law`,
    `riemannHypothesis_iff_onePrime_towers`, `zeta_exists_test_riemannHypothesis_iff`,
-   `zeta_lefschetz_growth_law`, `zeta_riemannHypothesis_iff_lefschetz_minors`).
+   `zeta_lefschetz_growth_law`, `zeta_riemannHypothesis_iff_universal_minors`).
 6. Effectivity and Bézout (`exists_effectivity_iff_hodgeIndex`, `exists_bezout_effectivity_iff_hodgeIndex`,
    `localPair_nonneg`, `riemannHypothesis_iff_exists_effectivity`).
 7. Source-cone laws (`gradedSourceCone_riemannRoch_iff_le_defect`, `gradedL2SourceCone_realTestsAt_all_apertures_riemannRoch`,
@@ -304,7 +316,7 @@ Bounded-orbit and reserve results are in `MeyerBoundedCenteredOrbits.lean`,
 | Subexponential floor is a reduction | It is equivalent to RH; power savings are strips |
 | Odd ledger is a positivity mechanism | It is the explicit formula rewritten |
 | Cyclic law bounds the defect | It localises it |
-| One prime always sees everything | For $\zeta$ it sees every distinct $p^{\rho-1/2}$ (zero density kills Wolff accumulation); resonances merge eigenvalues; fakes may need two primes |
+| One prime always sees everything | For $\zeta$ it sees every distinct $p^{\rho-1/2}$ (zero density kills Wolff accumulation) and all right zeros at all but finitely many primes; resonances merge eigenvalues; fakes may need two primes |
 | Multiplicities count | The defect counts distinct right zeros |
 | A finite degree certifies positivity | Over $\mathbb Q$ no degree works for all configurations |
 | Finitely many readings plus mass give Bézout | Rayleigh quotients unbounded in every finite kernel |
@@ -326,8 +338,9 @@ Bounded-orbit and reserve results are in `MeyerBoundedCenteredOrbits.lean`,
 3. **Degree floor below rate ½** (= strip): which effectivity input lowers the rate before the sign?
 4. **Beyond 2/3 and HD(1)**: spectral slack $\ge N/12$ near $\lambda=1$, or coalescent surplus $\beta\le1/18$, or
    $F\le B$, $B\le2954/1035$ (owned by TTPC).
-5. **One prime against two** — resolved for $\zeta$ and every deep-sparse configuration. Open: a
-   tempered configuration with deep convergence exponent $\ge1$ blind on the towers of every test.
+5. **One prime against two** — resolved for $\zeta$ and every deep-sparse configuration, and for
+   well-founded real parts (curves, exponent $1$, at every scale). Open: a tempered configuration
+   with deep convergence exponent $\ge1$ and increasing real parts blind on the towers of every test.
 6. **Clustering branch** of the visibility/defect-rate dichotomy (unrestricted $L^2$, not Sobolev).
 7. **Lattice → continuum**: carry finite-Euler lattice positivity to Weil's form with collar and signed
    coefficients.

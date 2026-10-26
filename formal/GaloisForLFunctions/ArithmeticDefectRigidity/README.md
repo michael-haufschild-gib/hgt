@@ -102,7 +102,10 @@ support loses multiplicity; moving parameters can have growing boundary cost.
    localization (`admits_or_all_moving_localizations_retain_density`). **Trace-free form:** the alternating
    sum `H_εv = Σ_{j≤n}(−1)^{j+1}j^{−ε}v(⌊n/j⌋) = (I − 2^{1−ε}D₂)Sv` kills the pole exactly, `‖H_εA‖_T ≤ B` at every
    horizon with no domain or trace (`exists_pronicNorm_etaCofactorSum_actual_le`); its power-row symbol is
-   `(1 − 2^{1−ε−s})ζ(s+ε)` (`exists_pronicNorm_etaCofactorSum_powerRow_le`).
+   `(1 − 2^{1−ε−s})ζ(s+ε)` (`exists_pronicNorm_etaCofactorSum_powerRow_le`). One Euler law `w − p^αD_pw` admitted
+   leaves the ghosts `n^αΠ({log_p n})` (`one_euler_factor_leaves_a_ghost`); the laws at `2` and `3` together ⟺
+   `w − cn^α` admitted with unique `c` (`exists_pronicEnergy_sub_pole_ne_top`), so for `Sv` the eta and 3-adic
+   laws are the renormalized inversion law on every row (`cofactor_two_euler_laws_iff`).
 7. **Finite forcing mass.** `0 ≤ ρ ≤ m_εM_εn^{1−ε}`; pronic mass → `L_ε = −ζ'/ζ(1+ε)`, optimal
    (`forcingMassLimit_eq_logarithmicDerivative`, `forcingMassLimit_isLUB`). Pays bounded cell errors, not
    `⟨A, ρ⟩`.

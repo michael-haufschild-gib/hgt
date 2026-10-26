@@ -164,6 +164,7 @@ The language keeps these distinctions explicit:
 | **P25 Family capacity** | For a family over a finite abelian `G`, an even configuration with pole order `k` at the origin, no other pole and finite symmetric support `S` is a joint boundary divisor iff `Σ_{p ∈ S} m(p) ≤ k`; realized by character-twisted ζ weights. A self-conjugate point (`2p = 0`) can carry the whole capacity `k`, a pair `±p` at most `k/2` each. | `family_isolated_iff`, `capFamily_isJointBoundaryDivisor` |
 | **P26 Locally finite Bochner** | A locally finite `D` (finitely many points in every bounded set; poles and zeros anywhere, infinitely many) is a boundary divisor iff it is even and positive definite. Fejér truncations `D(v)(1 − |v|/N)⁺` stay positive definite (overlap of intervals), and their convolutions with `n^{−2}Σ_{k ≤ n²} cos(ku/n)` are positive cosine polynomials converging to `D` pointwise. | `locallyFinite_boundary_divisor_iff`, `IsEvenPosDef.mul_fejerFactor`, `tendsto_fejerPoly` |
 | **P27 Regularity** | An integer boundary divisor with `D(0) = 1` is `δ₀`, a lattice indicator, an alternating lattice character or the constant `1`, without assuming local finiteness: a boundary divisor is a pointwise limit of continuous functions, so by Baire it cannot be `±1` on a dense subgroup and `0` on its dense translate. | `boundary_tetrachotomy`, `boundary_locallyFinite`, `not_tendsto_continuous_of_dense` |
+| **P28 Arithmetic Bochner** | A locally finite even positive-definite `D` is the boundary divisor of one Dirichlet series `Σ Λ(n) g(log n) n^{−s}` with fixed `g ≥ 0`. The profile `g = Σ_N (e^{−a_N t} − e^{−a_{N−1} t}) P_N(t)` glues the Bohr polynomials of the Fejér truncations; each block is a difference of ζ-traces at two dampings, the diagonal is a Toeplitz average, and uniform continuity of `ζ'/ζ` on compacta of `Re s ≥ 1` minus `1` kills the rest. | `arithmetic_bochner`, `arithmetic_isBoundaryDivisor`, `tsum_block_eq`, `tendsto_toeplitz` |
 
 ---
 
@@ -271,7 +272,9 @@ To build:
    masses only `ζ` remains (`HTGeometry.eq_integers_of_riemannThetaRelation`), so with the
    functional equation Q2 is RH itself.
 3. **Integral realization.** Answered for finite configurations (P14) and for the lattice
-   divisors (P24). Open: general infinite locally finite configurations over the rational primes.
+   divisors (P24). Every locally finite configuration is the divisor of one Dirichlet series over
+   the integers with nonnegative real exponents (P28). Open: integer exponents for general locally
+   finite configurations.
 4. **`σ`-dependent growth.** Range-limited inputs are covered by `exclusion_iff_restricted`. The
    corpus VK step (`vk_dlvp_contradiction`) has the form `4/(δ+η) ≤ 3/δ + G`, but only at one `δ`
    inside the proof of `exists_riemannZeta_ne_zero_vinogradovKorobov_width`. Stated on a `δ`-range,
@@ -336,3 +339,4 @@ A contribution must:
 | `FamilyCapacity` | Exact capacity classification of isolated family configurations |
 | `LocallyFiniteBochner` | Locally finite boundary divisors are exactly the positive-definite ones |
 | `BoundaryRegularity` | Baire regularity of boundary limits; the simple-pole classification without local finiteness |
+| `ArithmeticBochner` | Locally finite divisors of a single Dirichlet series `Σ Λ(n) g(log n) n^{−s}` |

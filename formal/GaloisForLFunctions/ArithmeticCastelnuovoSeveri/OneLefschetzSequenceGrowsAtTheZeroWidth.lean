@@ -436,14 +436,13 @@ theorem exists_test_growth_of_top (Z : ZeroConfig) (hZ : TemperedConfig Z) (hsp 
   exact not_towerMoment_isBigO_of_isolated Z hZ hg hgc hℓ hvis (Set.countable_singleton _) hbr₀
     hsub one_pos (fun z hz _ => Set.mem_singleton_iff.mp hz) hR hRb
 
-/-- **A non-attained top is reached by one test.** If the real parts of the right zeros have no
-largest element, the test keeping a sequence of zeros whose real parts increase to the top and
-whose folded points converge has `c_m ≠ O(R^m)` for every `0 < R < |β_ρ|`, `ρ` any right zero. -/
-theorem exists_test_growth_of_no_top (Z : ZeroConfig) (hZ : TemperedConfig Z)
-    (hsp : DeepSparse Z) {ℓ : ℝ} (hℓ : 0 < ℓ) (hne : (rightZeros Z).Nonempty)
+/-- **A cofinal increasing sequence.** If the real parts of the right zeros have no largest
+element, some sequence of right zeros has strictly increasing real parts, eventually above the real
+part of every right zero. -/
+theorem exists_strictMono_cofinal_seq (Z : ZeroConfig) (hne : (rightZeros Z).Nonempty)
     (hnotop : ∀ ρ ∈ rightZeros Z, ∃ ρ' ∈ rightZeros Z, ρ.re < ρ'.re) :
-    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧ ∀ ρ ∈ rightZeros Z, ∀ R : ℝ, 0 < R →
-      R < ‖frobEig ℓ ρ‖ → ¬ ∃ C, ∀ k : ℕ, ‖towerMoment Z g ℓ k‖ ≤ C * R ^ k := by
+    ∃ ρs : ℕ → ℂ, (∀ n, ρs n ∈ rightZeros Z) ∧ StrictMono (fun n => (ρs n).re) ∧
+      ∀ ρ ∈ rightZeros Z, ∃ n, ρ.re < (ρs n).re := by
   -- the top `s` of the real parts is not attained
   set A : Set ℝ := Complex.re '' rightZeros Z with hA
   have hAne : A.Nonempty := hne.image _
@@ -456,7 +455,6 @@ theorem exists_test_growth_of_no_top (Z : ZeroConfig) (hZ : TemperedConfig Z)
     obtain ⟨_, ⟨ρ, hρ, rfl⟩, h⟩ := exists_lt_of_lt_csSup hAne ht
     exact ⟨ρ, hρ, h⟩
   choose! pick hpickR hpickre using hex
-  -- a strictly increasing sequence of right zeros, cofinal in real part
   set ρs : ℕ → ℂ := fun n => Nat.rec (motive := fun _ => ℂ) (pick (s - 1))
     (fun n ρ => pick (max ρ.re (s - 1 / ((n : ℝ) + 2)))) n with hρs
   have hρs0 : ρs 0 = pick (s - 1) := rfl
@@ -477,29 +475,34 @@ theorem exists_test_growth_of_no_top (Z : ZeroConfig) (hZ : TemperedConfig Z)
       (max_lt (hlt _ (hmem n)) (by linarith [hpos n]))
     rw [← hρsS] at h
     exact ⟨(le_max_left _ _).trans_lt h, (le_max_right _ _).trans_lt h⟩
-  have hmono : StrictMono fun n => (ρs n).re := strictMono_nat_of_lt_succ fun n => (hstep n).1
-  have hcof : ∀ ρ ∈ rightZeros Z, ∃ n, ρ.re < (ρs n).re := by
-    intro ρ hρ
-    obtain ⟨n, hn⟩ := exists_nat_one_div_lt (sub_pos.mpr (hlt ρ hρ))
-    refine ⟨n + 1, lt_trans ?_ (hstep n).2⟩
-    have : 1 / ((n : ℝ) + 2) ≤ 1 / ((n : ℝ) + 1) :=
-      one_div_le_one_div_of_le (by positivity) (by linarith)
-    linarith
-  -- folded points and a convergent subsequence
-  set u : ℕ → ℂ := fun n => (frobEig ℓ (ρs n))⁻¹ with hu
-  have hu1 : ∀ n, u n ∈ closedBall (0 : ℂ) 1 := fun n => by
-    rw [mem_closedBall_zero_iff]
-    show ‖(frobEig ℓ (ρs n))⁻¹‖ ≤ 1
-    rw [norm_inv]
-    exact (inv_lt_one_of_one_lt₀ ((one_lt_norm_frobEig_iff hℓ _).mpr (hmem n).2)).le
-  obtain ⟨x, -, φ, hφ, hlim⟩ := (isCompact_closedBall (0 : ℂ) 1).tendsto_subseq hu1
-  set v : ℕ → ℂ := u ∘ φ with hv
-  have hvn : ∀ n, v n = (frobEig ℓ (ρs (φ n)))⁻¹ := fun n => rfl
-  have hmono' : StrictMono fun n => (ρs (φ n)).re := hmono.comp hφ
+  refine ⟨ρs, hmem, strictMono_nat_of_lt_succ fun n => (hstep n).1, fun ρ hρ => ?_⟩
+  obtain ⟨n, hn⟩ := exists_nat_one_div_lt (sub_pos.mpr (hlt ρ hρ))
+  refine ⟨n + 1, lt_trans ?_ (hstep n).2⟩
+  have : 1 / ((n : ℝ) + 2) ≤ 1 / ((n : ℝ) + 1) :=
+    one_div_le_one_div_of_le (by positivity) (by linarith)
+  linarith
+
+/-- **A kept sequence with convergent folded points reaches its top.** Let `ρ'` be right zeros with
+strictly increasing real parts and `g` a test that sees every `ρ' n` and kills every other right
+zero of depth at least half that of `ρ' 0`. If the folded points `β_{ρ' n}⁻¹` converge at scale `ℓ`,
+each is isolated in the sequence and its limit, and `c_m ≠ O(R^m)` for every
+`0 < R < |β_{ρ' n}|`. -/
+theorem not_towerMoment_isBigO_of_kept_seq (Z : ZeroConfig) (hZ : TemperedConfig Z)
+    {ρ' : ℕ → ℂ} (hmem : ∀ n, ρ' n ∈ rightZeros Z) (hmono : StrictMono fun n => (ρ' n).re)
+    {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
+    (hkill : ∀ τ ∈ rightZeros Z, 1 / 2 + ((ρ' 0).re - 1 / 2) / 2 ≤ τ.re → τ ∉ Set.range ρ' →
+      paperFT g (gammaOf τ) = 0 ∧ paperFT g (gammaOf (reflect τ)) = 0)
+    (hkeep : ∀ τ ∈ Set.range ρ',
+      paperFT g (gammaOf τ) ≠ 0 ∧ paperFT g (gammaOf (reflect τ)) ≠ 0)
+    {ℓ : ℝ} (hℓ : 0 < ℓ) {x : ℂ} (hlim : Tendsto (fun n => (frobEig ℓ (ρ' n))⁻¹) atTop (𝓝 x))
+    (n : ℕ) {R : ℝ} (hR : 0 < R) (hRb : R < ‖frobEig ℓ (ρ' n)‖) :
+    ¬ ∃ C, ∀ k : ℕ, ‖towerMoment Z g ℓ k‖ ≤ C * R ^ k := by
+  set v : ℕ → ℂ := fun n => (frobEig ℓ (ρ' n))⁻¹ with hv
+  have hvn : ∀ n, v n = (frobEig ℓ (ρ' n))⁻¹ := fun n => rfl
   have hanti : StrictAnti fun n => ‖v n‖ := fun a b hab => by
     simp only [hvn, norm_inv]
     exact (inv_lt_inv₀ (norm_pos_iff.mpr (frobEig_ne_zero _ _))
-      (norm_pos_iff.mpr (frobEig_ne_zero _ _))).mpr (norm_frobEig_lt_norm_frobEig hℓ (hmono' hab))
+      (norm_pos_iff.mpr (frobEig_ne_zero _ _))).mpr (norm_frobEig_lt_norm_frobEig hℓ (hmono hab))
   have hx : ∀ n, ‖x‖ < ‖v n‖ := fun n => by
     have hlimn : Tendsto (fun m => ‖v m‖) atTop (𝓝 ‖x‖) := (continuous_norm.tendsto x).comp hlim
     have h1 : ‖x‖ ≤ ‖v (n + 1)‖ :=
@@ -531,30 +534,21 @@ theorem exists_test_growth_of_no_top (Z : ZeroConfig) (hZ : TemperedConfig Z)
       · exfalso
         have hm : ‖v m‖ ≤ ‖v (n + 1)‖ := hanti.antitone h
         linarith
-  -- the test keeping the representatives `ρs (φ n)`
-  set δ₀ : ℝ := (ρs (φ 0)).re - 1 / 2 with hδ₀
-  have hδ₀pos : 0 < δ₀ := by rw [hδ₀]; linarith [(hmem (φ 0)).2]
-  have hdeep : ∀ n, δ₀ ≤ (ρs (φ n)).re - 1 / 2 := fun n => by
-    have h : (ρs (φ 0)).re ≤ (ρs (φ n)).re := hmono'.monotone (Nat.zero_le n)
+  set δ₀ : ℝ := (ρ' 0).re - 1 / 2 with hδ₀
+  have hδ₀pos : 0 < δ₀ := by rw [hδ₀]; linarith [(hmem 0).2]
+  have hdeep : ∀ n, δ₀ ≤ (ρ' n).re - 1 / 2 := fun n => by
+    have h : (ρ' 0).re ≤ (ρ' n).re := hmono.monotone (Nat.zero_le n)
     rw [hδ₀]; linarith
-  have hσ : 1 / 2 < 1 / 2 + δ₀ / 2 := by linarith
-  set F : Set ℂ := Set.range fun n => ρs (φ n) with hF
-  obtain ⟨g, hg, hgc, hkill, hkeep⟩ :=
-    exists_test_killing_deep_zeros Z hsp hσ F fun τ ⟨n, hn⟩ => by
-      rw [← show ρs (φ n) = τ from hn]; exact hmem (φ n)
-  refine ⟨g, hg, hgc, fun ρ hρ R hR hRρ => ?_⟩
-  -- every representative is visible
-  have hvis : ∀ n, frobEig ℓ (ρs (φ n)) ∈ visibleSet Z g ℓ := by
-    intro n
-    refine ⟨⟨_, hmem (φ n), rfl⟩, frobWeight_ne_zero_of_single Z (hmem (φ n)) rfl
+  -- the kept zero `ρ' n` is visible
+  have hvis : frobEig ℓ (ρ' n) ∈ visibleSet Z g ℓ := by
+    refine ⟨⟨_, hmem n, rfl⟩, frobWeight_ne_zero_of_single Z (hmem n) rfl
       (hkeep _ ⟨n, rfl⟩) fun τ hτ hne he => ?_⟩
-    have hre : τ.re = (ρs (φ n)).re := re_eq_of_norm_frobEig_eq hℓ (congrArg norm he)
-    have hτF : τ ∉ F := by
+    have hre : τ.re = (ρ' n).re := re_eq_of_norm_frobEig_eq hℓ (congrArg norm he)
+    have hτF : τ ∉ Set.range ρ' := by
       rintro ⟨k, hk⟩
-      have hk2 : ρs (φ k) = τ := hk
-      have hk' : (ρs (φ k)).re = (ρs (φ n)).re := by rw [hk2, hre]
-      have hkn : k = n := hmono'.injective hk'
-      exact hne (by rw [← hk2, hkn])
+      have hk' : (ρ' k).re = (ρ' n).re := by rw [hk, hre]
+      have hkn : k = n := hmono.injective hk'
+      exact hne (by rw [← hk, hkn])
     exact (hkill τ ⟨hτ, by rw [hre]; exact (hmem _).2⟩
       (by rw [hre]; linarith [hdeep n]) hτF).1
   -- near the origin the folded spectrum lies in the sequence and its limit
@@ -565,10 +559,9 @@ theorem exists_test_growth_of_no_top (Z : ZeroConfig) (hZ : TemperedConfig Z)
     have hτre : 1 / 2 + δ₀ / 2 < τ.re := by
       have := lt_of_mul_lt_mul_left (show ℓ * (δ₀ / 2) < ℓ * (τ.re - 1 / 2) by linarith) hℓ.le
       linarith
-    by_cases hτF : τ ∈ F
+    by_cases hτF : τ ∈ Set.range ρ'
     · obtain ⟨k, hk⟩ := hτF
-      have hk2 : ρs (φ k) = τ := hk
-      exact ⟨k, by rw [hvn, hk2]⟩
+      exact ⟨k, by rw [hvn, hk]⟩
     · exfalso
       have h0 := hkill τ ⟨hτ, by linarith⟩ hτre.le hτF
       rw [gammaOf_reflect] at h0
@@ -578,19 +571,40 @@ theorem exists_test_growth_of_no_top (Z : ZeroConfig) (hZ : TemperedConfig Z)
   have hsub : ball (0 : ℂ) r₀ ∩ closure (activeFoldedSpectrum Z g ℓ) ⊆ insert x (Set.range v) :=
     isOpen_ball.inter_closure.trans ((closure_mono hsub').trans
       (closure_minimal (Set.subset_insert _ _) hlim.isCompact_insert_range.isClosed))
-  -- a representative above `ρ`
-  obtain ⟨n, hn⟩ := hcof ρ hρ
-  have hφn : (ρs n).re ≤ (ρs (φ n)).re := hmono.monotone (hφ.id_le n)
-  have hρn : ρ.re < (ρs (φ n)).re := hn.trans_le hφn
-  have hRb : R < ‖frobEig ℓ (ρs (φ n))‖ := hRρ.trans (norm_frobEig_lt_norm_frobEig hℓ hρn)
-  have hbr₀ : ‖(frobEig ℓ (ρs (φ n)))⁻¹‖ < r₀ := by
+  have hbr₀ : ‖(frobEig ℓ (ρ' n))⁻¹‖ < r₀ := by
     rw [norm_inv, norm_frobEig, ← Real.exp_neg, hr₀, Real.exp_lt_exp]
     have h1 := mul_le_mul_of_nonneg_left (hdeep n) hℓ.le
     have h2 := mul_lt_mul_of_pos_left (half_lt_self hδ₀pos) hℓ
     linarith
   obtain ⟨ε, hε, hisoε⟩ := hiso n
-  exact not_towerMoment_isBigO_of_isolated Z hZ hg hgc hℓ (hvis n)
+  exact not_towerMoment_isBigO_of_isolated Z hZ hg hgc hℓ hvis
     ((Set.countable_range v).insert x) hbr₀ hsub hε (fun z hz hzn => hisoε z hz hzn) hR hRb
+
+/-- **A non-attained top is reached by one test.** If the real parts of the right zeros have no
+largest element, the test keeping a sequence of zeros whose real parts increase to the top and
+whose folded points converge has `c_m ≠ O(R^m)` for every `0 < R < |β_ρ|`, `ρ` any right zero. -/
+theorem exists_test_growth_of_no_top (Z : ZeroConfig) (hZ : TemperedConfig Z)
+    (hsp : DeepSparse Z) {ℓ : ℝ} (hℓ : 0 < ℓ) (hne : (rightZeros Z).Nonempty)
+    (hnotop : ∀ ρ ∈ rightZeros Z, ∃ ρ' ∈ rightZeros Z, ρ.re < ρ'.re) :
+    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧ ∀ ρ ∈ rightZeros Z, ∀ R : ℝ, 0 < R →
+      R < ‖frobEig ℓ ρ‖ → ¬ ∃ C, ∀ k : ℕ, ‖towerMoment Z g ℓ k‖ ≤ C * R ^ k := by
+  obtain ⟨ρs, hmem, hmono, hcof⟩ := exists_strictMono_cofinal_seq Z hne hnotop
+  -- folded points and a convergent subsequence
+  have hu1 : ∀ n, (frobEig ℓ (ρs n))⁻¹ ∈ closedBall (0 : ℂ) 1 := fun n => by
+    rw [mem_closedBall_zero_iff, norm_inv]
+    exact (inv_lt_one_of_one_lt₀ ((one_lt_norm_frobEig_iff hℓ _).mpr (hmem n).2)).le
+  obtain ⟨x, -, φ, hφ, hlim⟩ := (isCompact_closedBall (0 : ℂ) 1).tendsto_subseq hu1
+  have hmono' : StrictMono fun n => (ρs (φ n)).re := hmono.comp hφ
+  have hσ : 1 / 2 < 1 / 2 + ((ρs (φ 0)).re - 1 / 2) / 2 := by linarith [(hmem (φ 0)).2]
+  obtain ⟨g, hg, hgc, hkill, hkeep⟩ :=
+    exists_test_killing_deep_zeros Z hsp hσ (Set.range fun n => ρs (φ n)) fun τ ⟨n, hn⟩ => by
+      rw [← show ρs (φ n) = τ from hn]; exact hmem (φ n)
+  refine ⟨g, hg, hgc, fun ρ hρ R hR hRρ => ?_⟩
+  obtain ⟨n, hn⟩ := hcof ρ hρ
+  have hφn : (ρs n).re ≤ (ρs (φ n)).re := hmono.monotone (hφ.id_le n)
+  exact not_towerMoment_isBigO_of_kept_seq Z hZ (ρ' := fun n => ρs (φ n)) (fun n => hmem (φ n))
+    hmono' hg hgc hkill hkeep hℓ hlim n hR
+    (hRρ.trans (norm_frobEig_lt_norm_frobEig hℓ (hn.trans_le hφn)))
 
 /-- **One Lefschetz sequence carries the top.** For a deep-sparse configuration and every `ℓ > 0`
 one `C²` compactly supported test has `c_m = O(R^m)`, `R ≥ 1`, iff `R ≥ |β_ρ|` for every right
@@ -621,17 +635,12 @@ theorem deepSparse_exists_test_lefschetz_growth (Z : ZeroConfig) (hZ : TemperedC
 
 /-! ### 5. `ζ` -/
 
-/-- **The Lefschetz sequence of one test grows at the zero width.** For every prime `p` one test `g`
-has `|W(T_{p^m} g, g)| = O(R^m)`, `R ≥ 1`, iff `R ≥ p^w`, `w = sup |Re ρ − ½|` the zero width of
-`ζ`. A bound `O(p^{θm})` is the zero-free strip `|Re ρ − ½| ≤ θ`. -/
-theorem zeta_lefschetz_growth_law {p : ℕ} (hp : p.Prime) :
-    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧ ∀ R : ℝ, 1 ≤ R →
-      ((∃ C, ∀ k : ℕ, ‖towerMoment zetaZeroConfig g (Real.log p) k‖ ≤ C * R ^ k) ↔
-        (p : ℝ) ^ zetaZeroWidth ≤ R) := by
+/-- For `R ≥ 1` the outer eigenvalues `p^{ρ−½}` of `ζ` are bounded by `R` iff `p^w ≤ R`, `w` the
+zero width. -/
+theorem zeta_forall_norm_frobEig_le_iff {p : ℕ} (hp : p.Prime) {R : ℝ} (hR : 1 ≤ R) :
+    (∀ ρ ∈ rightZeros zetaZeroConfig, ‖frobEig (Real.log p) ρ‖ ≤ R) ↔
+      (p : ℝ) ^ zetaZeroWidth ≤ R := by
   have hℓ : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
-  obtain ⟨g, hg, hgc, hlaw⟩ := deepSparse_exists_test_lefschetz_growth _
-    temperedConfig_zetaZeroConfig deepSparse_zeta hℓ
-  refine ⟨g, hg, hgc, fun R hR => (hlaw R hR).trans ?_⟩
   have hR0 : 0 < R := by linarith
   rw [Real.rpow_def_of_pos (by exact_mod_cast hp.pos)]
   constructor
@@ -663,6 +672,18 @@ theorem zeta_lefschetz_growth_law {p : ℕ} (hp : p.Prime) :
     refine le_trans (Real.exp_le_exp.mpr ?_) hpw
     exact mul_le_mul_of_nonneg_left
       ((le_abs_self _).trans (abs_re_sub_half_le_zetaZeroWidth hρ.1)) hℓ.le
+
+/-- **The Lefschetz sequence of one test grows at the zero width.** For every prime `p` one test `g`
+has `|W(T_{p^m} g, g)| = O(R^m)`, `R ≥ 1`, iff `R ≥ p^w`, `w = sup |Re ρ − ½|` the zero width of
+`ζ`. A bound `O(p^{θm})` is the zero-free strip `|Re ρ − ½| ≤ θ`. -/
+theorem zeta_lefschetz_growth_law {p : ℕ} (hp : p.Prime) :
+    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧ ∀ R : ℝ, 1 ≤ R →
+      ((∃ C, ∀ k : ℕ, ‖towerMoment zetaZeroConfig g (Real.log p) k‖ ≤ C * R ^ k) ↔
+        (p : ℝ) ^ zetaZeroWidth ≤ R) := by
+  have hℓ : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
+  obtain ⟨g, hg, hgc, hlaw⟩ := deepSparse_exists_test_lefschetz_growth _
+    temperedConfig_zetaZeroConfig deepSparse_zeta hℓ
+  exact ⟨g, hg, hgc, fun R hR => (hlaw R hR).trans (zeta_forall_norm_frobEig_le_iff hp hR)⟩
 
 /-- **Weil's two-element windows decide RH at one prime.** For every prime `p` one test `g` has: RH
 holds iff `|W(T_{p^m} g, g)| ≤ W(g, g)` for every `m ≥ 0`, the Castelnuovo–Severi inequality on

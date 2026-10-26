@@ -38,6 +38,12 @@ to `PrimeArchThetaFirstAtomQuadratureEnclosures`. The original rational-bounds t
   (19298, exit 0); its current olean/ilean are valid.
 - [x] `PrimeArchThetaFirstAtomQuadratureCells8` (cells 8–11) built successfully
   (67465, exit 0); its current olean/ilean are valid.
+- [x] `PrimeArchThetaFirstAtomQuadratureCells12` (cells 12–15) built successfully
+  (29417, exit 0); its current olean/ilean are valid.
+- [x] `PrimeArchThetaFirstAtomQuadratureCells16` (cells 16–19) built successfully
+  (9111, exit 0); its current olean/ilean are valid.
+- [x] `PrimeArchThetaFirstAtomQuadratureCells20` (cells 20–23) built successfully
+  (36728, exit 0); its current olean/ilean are valid.
 - [x] All twenty production helpers are imported by the RHTower umbrella. Do not compile umbrellas.
 - [x] Production-source scans find no native decision tactic, placeholders, added axioms, raised
   limits, or temporary diagnostics. `git diff --check` passes.
@@ -46,8 +52,8 @@ to `PrimeArchThetaFirstAtomQuadratureEnclosures`. The original rational-bounds t
 
 ## Current process and remaining work
 
-**Active owned Lean session: 29417**, building
-`RHTower/PrimeArchThetaFirstAtomQuadratureCells12.lean` (cells 12–15).
+**Active owned Lean session: 5304**, building
+`RHTower/PrimeArchThetaFirstAtomQuadratureCells24.lean` (cells 24–27).
 Wait for this session before starting another Lean process.
 
 The isolated `reduce` replacement probe failed at the default recursion limit (57280, exit 1),
@@ -58,13 +64,13 @@ and any probe artifacts have been removed. Continue the validated `cbv` certific
 Then build, separately and in the foreground:
 
 1. The remaining `PrimeArchThetaFirstAtomQuadratureCells<N>` modules, with
-   `N = 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60`.
+   `N = 28, 32, 36, 40, 44, 48, 52, 56, 60`.
    Each certifies exactly four cells, from `N` through `N + 3`.
 2. `PrimeArchThetaFirstAtomQuadratureArithmetic` (all five sums).
 
 Use `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/<Module>.olean -i .lake/build/lib/lean/GaloisForLFunctions/RHTower/<Module>.ilean GaloisForLFunctions/RHTower/<Module>.lean`
 from `formal/`, one process at a time. These oleans are required by the next source file being
-written. Only the cells 0–11 tables have passed; do not mistake the last-cell probe for all-cell validation.
+written. Only the cells 0–23 tables have passed; do not mistake the last-cell probe for all-cell validation.
 
 Finally check the actual PA target directly with
 `lake --old env lean GaloisForLFunctions/RHTower/PrimeArchThetaFirstAtomHighOrderMomentBounds.lean`.

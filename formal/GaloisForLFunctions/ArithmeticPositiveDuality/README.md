@@ -272,6 +272,10 @@ arithmetic cost of the amplification producing it.
 | **P20 The Bost–Connes temperature is the Hecke exponent** | For any positive-definite `φ` on `Aff(ℚ)` with `ℤ`-periodic successor `ψ`, `‖φ(x ↦ ux)‖² ≤ A_ψ(n)A_ψ(d)`, where `A_ψ(q)` is the mass of `qẐ` under the spectral measure of `ψ`. The Bost–Connes successor `ψ_β = Z_β⁻¹Σ m^{−β}e(m·)`, `β > 1`, has `A(q) = q^{−β}`, so it forces `(nd)^{−β/2}`; the ground state of `ℓ²(ℚ)` attains it. At `β = 1` the law is P18. | `normSq_dilation_le_successorDensity`, `bcDensity`, `isPosDefOnGroup_bcState`, `bc_successor_hecke_exponent` |
 | **P21 The extremals of the Hecke law are twisted Haar states** | A positive-definite `φ` on `Aff(ℚ)` with integer successor attains `nd‖φ(x ↦ ux)‖² = 1` at every dilation iff `φ(g) = φ_*(g)χ(slope g)` with `φ_*` the adelic Haar state and `χ` a unitary character of `ℚ^×`; equality forces the two-scale relation `[x ↦ x/m] = m⁻¹λ_m Σ_{j<m}[x ↦ x + j/m]` in the GNS space, which makes the normalized dilation coefficients multiplicative. | `heckeExtremal_iff`, `twistedHaar_posDef`, `IsPosDefOnGroup.null_orth` |
 | **P22 A Mautner phenomenon for `Aff(ℚ)`** | If `φ` is positive definite on `Aff(ℚ)`, its successor has one nonzero period (`φ(x ↦ x + h) = φ(1)`) and its dilation part on `ℚ_{>0}` is continuous at `1`, then the successor is constant. For an integer-periodic successor the densities decrease along multiples, `A(kq) ≤ A(q) ≤ φ(1)`, and the successor law along `u = (kq+1)/(kq) → 1` forces `A(q) = φ(1)`. | `translation_eq_of_continuousAt_dilation`, `translation_eq_of_period`, `successorDensity_mul_le` |
+| **P23 Herglotz–Bochner on `ℚ_{>0}`** | A function on `ℚ_{>0}` is positive definite iff it is `u ↦ ∫ χ_x(u) dμ(x)` for a finite positive measure on the prime torus `Π_p ℝ/ℤ`, `χ_x(u) = Π_p e^{2πi v_p(u)x_p}`; the measure is unique. | `isPosDefOnGroup_posUnits_iff`, `exists_measure_ratChar`, `finiteMeasure_ext_of_ratChar` |
+| **P24 Archimedean positive-definite functions live on the Kronecker line** | If `f(u) = F(log u)` is positive definite on `ℚ_{>0}` with `F` continuous, its spectral measure is the image of a finite measure `ν` on `ℝ` under `x ↦ (x log p/2π)_p`, an injection of `ℝ` (`log 2/log 3 ∉ ℚ`), and `f(u) = ∫ u^{ix} dν(x)`. | `spectralMeasure_eq_map_archPoint`, `spectralMeasure_compl_range_archPoint`, `injective_archPoint` |
+| **P25 The integer successor forces a Kronecker-null dilation spectrum** | If `f((N+b)/(N+a)) → 0` for all `a ≠ b`, every spectral measure of `f` gives the Kronecker line mass zero. The integer and Bost–Connes successors force this decay, so the dilation part of such a state dominates no nonzero archimedean positive-definite function. | `spectralMeasure_range_archPoint_eq_zero`, `integer_successor_kronecker_null`, `bc_successor_kronecker_null`, `eq_zero_of_archimedean_le_integer_successor` |
+| **P26 Atomic archimedean spectra blind the successor** | If `φ` is positive definite on `Aff(ℚ)` with dilation part `Σ_k c_k u^{iγ_k}` on `u > 0` (`c_k ≥ 0`, distinct `γ_k`, finitely many), then `φ(ux + b) = Σ_k u^{iγ_k}·(c_k if b = 0, α_k if b ≠ 0)` with `0 ≤ α_k ≤ c_k`: a translation-invariant state plus a state induced from the dilations, and every such choice occurs. For a summable countable spectrum, the shape of Weil's correlation under RH, the successor is `α + (φ(1) − α)δ₀`. | `extension_of_finite_archimedean`, `isPosDefOnGroup_archExtension`, `successor_blind_of_finite_archimedean`, `successor_blind_of_atomic_archimedean` |
 
 The Hamburger input of P1, P4, P5 is part of the statement: the remainder `E` is holomorphic on the
 strip `(−½, 3/2)` with `O(1/(1 + t²))` decay. Cite it as "FE in Hamburger's form".
@@ -342,6 +346,11 @@ proved in the programmes that own their objects.
    characters of `ℚ^×` (P21).
    No periodic successor meets an archimedean dilation part: a single period and continuity at `1`
    make the successor constant (P22).
+   On the prime torus the two worlds are mutually singular: archimedean dilation correlations,
+   Weil's included, are carried by the Kronecker line (P24), while every dilation part forced by the
+   integer or Bost–Connes successor gives it mass zero (P25).
+   Conversely an atomic archimedean dilation part admits only the two trivial extensions,
+   translation-invariant and induced (P26): Weil-shaped correlations carry no successor information.
 7. **Topology.** *Which completion keeps every critical jet and closes the blind ideal?* The natural
    Fréchet topology of the Meyer source does both, unconditionally. No topology built from critical
    data alone closes it unless RH (P14): closedness of the blind ideal is information about the
@@ -402,6 +411,8 @@ Built:
 - the prime measure and the Bochner form of Weil's criterion;
 - the critical-jet topology of the Meyer source and critical interpolation;
 - the trace sequence of a curve datum;
+- Fourier analysis on `ℚ_{>0}`: Herglotz–Bochner on the prime torus and the Kronecker line;
+- the pre-Hilbert space of a positive-definite function on a group;
 - in sibling programmes: Følner capacity, completed positive systems and their Hadamard pairing,
   gauge collapse, refund rigidity, deformation bookkeeping.
 
@@ -417,7 +428,6 @@ To build:
   spectral measure; escape states of cofactor modules as spectral profiles;
 - rank-`r` arithmetic realization of boundary profiles by `ζ`-twists and by Beurling systems;
 - Bochner–Schwartz for the Weil distribution beyond characteristic functions;
-- Fourier analysis on the full group `ℚ_{>0}` (infinite rank).
 
 ---
 
@@ -447,9 +457,10 @@ To build:
    family averages over `χ mod q`, absolute tensor powers), a theorem that its gain on depth scales
    with its arithmetic cost, with the positive survivor of each.
 6. **Prescribed successor coordinates.** For the integer successor the forced positivity is the
-   Hecke weight (P18). Open: the classification of the dilation parts compatible with `1_ℤ` (they
-   are not the Hecke weight times positive-definite functions), and an adelic successor
-   prescription compatible with Weil's archimedean correlation.
+   Hecke weight (P18); its dilation spectra are Kronecker-null (P25), and atomic archimedean
+   dilation parts admit only blind successors (P26), so no successor prescription couples the two.
+   Open: the classification of the dilation parts compatible with `1_ℤ` (they are not the Hecke
+   weight times positive-definite functions); the extensions of continuous archimedean spectra.
 7. **Rank-`r` realization.** Which positive-definite profiles on `ℤ^r` are boundary profiles of
    integral (Beurling) systems.
 8. **Positive crystalline measures beyond degree one.** Self-dual positive pairs with gaps under
@@ -536,3 +547,9 @@ rate needs a term that does not scale; calibrate over `𝔽_q`.
 | `TheBostConnesTemperatureIsTheHeckeExponent` | Successor densities and the general successor law; Bost–Connes successors; the ground state on `ℓ²(ℚ)` |
 | `TheExtremalsOfTheHeckeLawAreTwistedHaarStates` | Null vectors of Gram forms; Hecke-extremal states; the two-scale relation; Hecke characters; twisted Haar states |
 | `AMautnerPhenomenonForTheAffineGroupOfQ` | Boundedness of positive-definite functions; monotone successor densities; Mautner rigidity for one period |
+| `HerglotzBochnerOnThePositiveRationals` | Valuation vectors and characters of `ℚ_{>0}`; finite-rank stages; Herglotz–Bochner on the prime torus; uniqueness |
+| `ArchimedeanPositiveDefiniteFunctionsLiveOnTheKroneckerLine` | The Kronecker line; positive definiteness on `ℝ` by density; spectral measures of archimedean functions |
+| `TheIntegerSuccessorForcesAKroneckerNullDilationSpectrum` | Heights of near-identity rationals; decay detects the Kronecker line; integer and Bost–Connes successors; the archimedean dichotomy |
+| `GramSpaceOfAPositiveDefiniteFunction` | The pre-Hilbert space of a positive-definite function on a group; translations as isometries |
+| `AFiniteArchimedeanSpectrumBlindsTheSuccessor` | Archimedean characters; Lagrange eigenvectors; covariance and block doubling; vanishing cross coefficients; the extensions of a finite archimedean correlation |
+| `AnAtomicArchimedeanSpectrumBlindsTheSuccessor` | Two-prime box averages; dilation combinations and their spectral weights; limit states; blindness for summable spectra |

@@ -31,17 +31,23 @@ variable (Φ : PosDefFn G)
 instance : AddCommGroup (PreGNS Φ) := inferInstanceAs (AddCommGroup (G →₀ ℂ))
 instance : Module ℂ (PreGNS Φ) := inferInstanceAs (Module ℂ (G →₀ ℂ))
 
+/-- The underlying finitely supported function. -/
+def toF (x : PreGNS Φ) : G →₀ ℂ := x
+
+theorem toF_add (x y : PreGNS Φ) : toF Φ (x + y) = toF Φ x + toF Φ y := rfl
+theorem toF_smul (r : ℂ) (x : PreGNS Φ) : toF Φ (r • x) = r • toF Φ x := rfl
+
 /-- The vector `δ_g`. -/
 def gnsVec (g : G) : PreGNS Φ := Finsupp.single g 1
 
 /-- The φ-inner product `⟪x, y⟫ = Σ conj(x_g) y_h φ(g⁻¹h)`. -/
 def gnsInner (x y : PreGNS Φ) : ℂ :=
-  Finsupp.sum (M := ℂ) x fun g a => Finsupp.sum (M := ℂ) y fun h b => star a * Φ.toFun (g⁻¹ * h) * b
+  (toF Φ x).sum fun g a => (toF Φ y).sum fun h b => star a * Φ.toFun (g⁻¹ * h) * b
 
 theorem gnsInner_add_left (x y z : PreGNS Φ) :
     gnsInner Φ (x + y) z = gnsInner Φ x z + gnsInner Φ y z := by
   unfold gnsInner
-  rw [Finsupp.sum_add_index']
+  rw [toF_add, Finsupp.sum_add_index']
   · intro g; simp
   · intro g a b
     rw [← Finsupp.sum_add]
@@ -51,7 +57,7 @@ theorem gnsInner_add_left (x y z : PreGNS Φ) :
 theorem gnsInner_smul_left (x y : PreGNS Φ) (r : ℂ) :
     gnsInner Φ (r • x) y = star r * gnsInner Φ x y := by
   unfold gnsInner
-  rw [Finsupp.sum_smul_index']
+  rw [toF_smul, Finsupp.sum_smul_index']
   · rw [Finsupp.mul_sum]
     refine Finsupp.sum_congr fun g _ => ?_
     rw [Finsupp.mul_sum]
@@ -64,7 +70,7 @@ theorem gnsInner_add_right (x y z : PreGNS Φ) :
   unfold gnsInner
   rw [← Finsupp.sum_add]
   refine Finsupp.sum_congr fun g _ => ?_
-  rw [Finsupp.sum_add_index']
+  rw [toF_add, Finsupp.sum_add_index']
   · intro h; simp
   · intro h a b; ring
 
@@ -73,24 +79,22 @@ theorem gnsInner_smul_right (x y : PreGNS Φ) (r : ℂ) :
   unfold gnsInner
   rw [Finsupp.mul_sum]
   refine Finsupp.sum_congr fun g _ => ?_
-  rw [Finsupp.sum_smul_index', Finsupp.mul_sum]
+  rw [toF_smul, Finsupp.sum_smul_index', Finsupp.mul_sum]
   · refine Finsupp.sum_congr fun h _ => ?_
     rw [smul_eq_mul]; ring
   · intro h; simp
 
-theorem gnsInner_single_single (g h : G) (a b : ℂ) :
-    gnsInner Φ (Finsupp.single g a) (Finsupp.single h b) = star a * Φ.toFun (g⁻¹ * h) * b := by
-  unfold gnsInner
-  rw [Finsupp.sum_single_index (by simp), Finsupp.sum_single_index (by simp)]
-
 theorem gnsInner_gnsVec (g h : G) : gnsInner Φ (gnsVec Φ g) (gnsVec Φ h) = Φ.toFun (g⁻¹ * h) := by
-  rw [gnsVec, gnsVec, gnsInner_single_single]; simp
+  show (Finsupp.single g (1 : ℂ)).sum (fun g a => (Finsupp.single h (1 : ℂ)).sum
+    fun h b => star a * Φ.toFun (g⁻¹ * h) * b) = _
+  rw [Finsupp.sum_single_index (by simp), Finsupp.sum_single_index (by simp)]
+  simp
 
 /-- The self-pairing is a Gram form. -/
 theorem gnsInner_self_eq (x : PreGNS Φ) :
     ∃ r : ℝ, 0 ≤ r ∧ gnsInner Φ x x = r := by
-  obtain ⟨r, hr, h⟩ := Φ.posDef.form (fun i : (x : G →₀ ℂ).support => (i : G))
-    (fun i => (x : G →₀ ℂ) i)
+  obtain ⟨r, hr, h⟩ := Φ.posDef.form (fun i : (toF Φ x).support => (i : G))
+    (fun i => toF Φ x i)
   refine ⟨r, hr, ?_⟩
   rw [← h]
   unfold gnsInner
@@ -117,8 +121,8 @@ instance preGNSCore : PreInnerProductSpace.Core ℂ (PreGNS Φ) where
   add_left x y z := gnsInner_add_left Φ x y z
   smul_left x y r := gnsInner_smul_left Φ x y r
 
-instance : SeminormedAddCommGroup (PreGNS Φ) :=
-  (preGNSCore Φ).toSeminormedAddCommGroup
+instance instSeminormedAddCommGroupPreGNS : SeminormedAddCommGroup (PreGNS Φ) :=
+  InnerProductSpace.Core.toSeminormedAddCommGroup (𝕜 := ℂ)
 
 instance : InnerProductSpace ℂ (PreGNS Φ) := InnerProductSpace.ofCore (preGNSCore Φ)
 
@@ -133,31 +137,44 @@ theorem inner_gnsVec (g h : G) : inner ℂ (gnsVec Φ g) (gnsVec Φ h) = Φ.toFu
 def gnsTranslate (a : G) : PreGNS Φ →ₗ[ℂ] PreGNS Φ :=
   Finsupp.lmapDomain ℂ ℂ (a * ·)
 
+theorem toF_gnsTranslate (a : G) (x : PreGNS Φ) :
+    toF Φ (gnsTranslate Φ a x) = Finsupp.mapDomain (a * ·) (toF Φ x) := rfl
+
 theorem gnsTranslate_gnsVec (a g : G) : gnsTranslate Φ a (gnsVec Φ g) = gnsVec Φ (a * g) := by
-  simp [gnsTranslate, gnsVec]
+  show Finsupp.mapDomain (a * ·) (Finsupp.single g (1 : ℂ)) = Finsupp.single (a * g) 1
+  exact Finsupp.mapDomain_single
 
 /-- Translations are isometric. -/
 theorem inner_gnsTranslate (a : G) (x y : PreGNS Φ) :
     inner ℂ (gnsTranslate Φ a x) (gnsTranslate Φ a y) = inner ℂ x y := by
   rw [inner_eq_gnsInner, inner_eq_gnsInner]
-  unfold gnsInner gnsTranslate
-  simp only [Finsupp.lmapDomain_apply]
-  rw [Finsupp.sum_mapDomain_index (by simp) (by intro g a b; rw [← Finsupp.sum_add]; refine
-    Finsupp.sum_congr fun h _ => ?_; rw [star_add]; ring)]
+  unfold gnsInner
+  rw [toF_gnsTranslate, toF_gnsTranslate]
+  have hadd : ∀ (g : G) (u v : ℂ), (Finsupp.mapDomain (a * ·) (toF Φ y)).sum
+      (fun h b => star (u + v) * Φ.toFun (g⁻¹ * h) * b) =
+      (Finsupp.mapDomain (a * ·) (toF Φ y)).sum (fun h b => star u * Φ.toFun (g⁻¹ * h) * b) +
+      (Finsupp.mapDomain (a * ·) (toF Φ y)).sum (fun h b => star v * Φ.toFun (g⁻¹ * h) * b) := by
+    intro g u v
+    rw [← Finsupp.sum_add]
+    refine Finsupp.sum_congr fun h _ => ?_
+    rw [star_add]; ring
+  rw [Finsupp.sum_mapDomain_index (by simp) hadd]
   refine Finsupp.sum_congr fun g _ => ?_
-  rw [Finsupp.sum_mapDomain_index (by simp) (by intro h a b; ring)]
+  rw [Finsupp.sum_mapDomain_index (by simp) (by intro h u v; ring)]
   refine Finsupp.sum_congr fun h _ => ?_
-  rw [mul_inv_rev, mul_assoc, inv_mul_cancel_left]
+  rw [mul_inv_rev, show g⁻¹ * a⁻¹ * (a * h) = g⁻¹ * h by group]
 
 theorem gnsTranslate_mul (a b : G) (x : PreGNS Φ) :
     gnsTranslate Φ (a * b) x = gnsTranslate Φ a (gnsTranslate Φ b x) := by
-  simp only [gnsTranslate, Finsupp.lmapDomain_apply, ← Finsupp.mapDomain_comp]
+  show Finsupp.mapDomain ((a * b) * ·) (toF Φ x) =
+    Finsupp.mapDomain (a * ·) (Finsupp.mapDomain (b * ·) (toF Φ x))
+  rw [← Finsupp.mapDomain_comp]
   congr 1
   funext g
   simp [mul_assoc]
 
 theorem gnsTranslate_one (x : PreGNS Φ) : gnsTranslate Φ 1 x = x := by
-  show Finsupp.mapDomain (fun g => 1 * g) (x : G →₀ ℂ) = x
+  show Finsupp.mapDomain (fun g => 1 * g) (toF Φ x) = x
   simp only [one_mul]
   exact Finsupp.mapDomain_id
 

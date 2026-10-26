@@ -68,6 +68,21 @@ tool, or exposes a mechanism, calibrated over `𝔽_q`.
   sequence increasing to the top with convergent folded points) makes the top pole accessible.
   Status: DONE (Lean, contribution 7).
 
+- **C8 (towers of a curve at every scale).** Curves have exponent-1 deep zeros but finitely many
+  real parts: one probe sees every tower. Defect finite ⟺ `ℓ/log q ∈ ℚ`; at `a log q` it is the
+  Frobenius span of the base change. Status: DONE (Lean, contribution 8).
+
+- **C9 (one cycle for every prime).** One test reads `p^w` at every prime: attained tops via Cesàro
+  growth extraction with a probe (no isolation), non-attained via a diagonal (product-space)
+  subsequence and a prime-free killing test. Status: DONE (Lean, contribution 9).
+- **C10 (candidate: Frobenius eigenvalues are Lefschetz ratio limits).** For each right zero `ρ`
+  of ζ, the test keeping `ρ` alone among zeros of depth ≥ δ_ρ/2 has `c_{m+1}/c_m → p^{ρ−½}` at
+  every prime; two primes determine `ρ` (no period over ℤ). Status: DONE (Lean, contribution 10).
+
+- **C11 (resonant scales).** Countable for every configuration; off them one tower carries the
+  Hodge defect; ζ: finitely many resonant primes; curves: arithmetic scales resonant.
+  Status: DONE (Lean, contribution 11).
+
 ## Avoid (other agents active 2026-10-25)
 Q-II Meyer source modules; `MaximalBlindIdealOfTheMeyerSource.lean` (another agent); biarithmetic; rh-closing-producer Stepanov tracks (HTGeometry Stepanov).
 
@@ -77,3 +92,7 @@ Q-II Meyer source modules; `MaximalBlindIdealOfTheMeyerSource.lean` (another age
 - 2026-10-26 — C4 done; C5 scoped.
 - 2026-10-26 — C6 (probe tool) and C5 done.
 - 2026-10-26 — C7 done.
+- 2026-10-26 — C8 done.
+- 2026-10-26 — C9 done.
+- 2026-10-26 — C10 done.
+- 2026-10-26 — C11 done.

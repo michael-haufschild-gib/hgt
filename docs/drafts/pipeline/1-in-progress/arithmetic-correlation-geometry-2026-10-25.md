@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE (programme card)
 - **Source:** ../../../reports/review-2510/astra.md §3–§5
-- **Statement:** Found the programme `formal/GaloisForLFunctions/ArithmeticPositiveDuality/ArithmeticCorrelationGeometry/`:
+- **Statement:** Found the programme `formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/`:
   how additive relations constrain signed multiplicative correlations, and how those constraints
   reach spectral receivers with their boundary terms intact.
 
@@ -18,7 +18,7 @@ the foundational README.
   AKT, ACS, APD, MPG, ADR, SquareRootThreshold, BSU)
 - [x] 1 → 2  paper proofs of each pillar (below)
 - [x] 2 → 3  16 Lean modules checked with `lake --old env lean`, umbrella wired, README written;
-  axiom audit of 52 key theorems at the final path: only `propext`, `Classical.choice`, `Quot.sound`
+  axiom audit of key theorems at the final path: only `propext`, `Classical.choice`, `Quot.sound`
 
 ## Approach (pillars)
 1. Gauge group of multiplicative observation: twists `χ_x(n) = ∏ e(x_p v_p(n))` on the torus
@@ -65,4 +65,4 @@ the foundational README.
 - 2026-10-26 — all 14 modules check clean; README final; umbrella + MainTheorems wired.
 - 2026-10-26 — stabilizer decomposition of the actual coalescent statistic added; all oleans built; axiom audit clean.
 - 2026-10-26 — Q3 first milestone formalized (relative square: gauge, trace, support, boundary, pole, golden test).
-- 2026-10-26 — moved under `ArithmeticPositiveDuality/` (sub-umbrella imported by the APD umbrella); all 16 oleans rebuilt there, old artifacts removed.
+- 2026-10-26 — final location `formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/`, umbrella imported by `MainTheorems`; all 16 oleans rebuilt there.

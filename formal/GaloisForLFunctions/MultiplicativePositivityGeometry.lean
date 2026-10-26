@@ -28,6 +28,7 @@ import GaloisForLFunctions.MultiplicativePositivityGeometry.IntegralLatticeReali
 import GaloisForLFunctions.MultiplicativePositivityGeometry.FamilyCapacity
 import GaloisForLFunctions.MultiplicativePositivityGeometry.LocallyFiniteBochner
 import GaloisForLFunctions.MultiplicativePositivityGeometry.BoundaryRegularity
+import GaloisForLFunctions.MultiplicativePositivityGeometry.ArithmeticBochner
 
 /-!
 # Multiplicative Positivity Geometry
@@ -41,7 +42,8 @@ Umbrella for the positive-definite geometry of Euler log-coefficients.
 * Interior: the exact Fejér barrier, the two-sided growth-to-forcing law, the multi-frequency
   purchase cap and the de la Vallée Poussin calibration.
 * Realization and range: integral Euler products (finite configurations and the lattice divisors
-  over the rational primes), Bochner's theorem for finite and for locally finite configurations,
+  over the rational primes), Bochner's theorem for finite and for locally finite configurations
+  and its arithmetic form (one Dirichlet series over the integers),
   the zero capacity of a pole of order `k`, the positivity margin, the range of the boundary map
   and its Baire regularity (the simple-pole classification without local finiteness).
 * Further mechanisms: families over finite abelian groups, the two-torsion exception, protected
