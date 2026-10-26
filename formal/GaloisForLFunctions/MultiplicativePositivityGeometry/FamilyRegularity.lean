@@ -28,14 +28,14 @@ universe u
 
 variable {G : Type u} [AddCommGroup G] [Fintype G] [DecidableEq G]
 
-omit [DecidableEq G] in
+omit [Fintype G] [DecidableEq G] in
 /-- At `g = 0` a joint mode is a cosine. -/
 theorem jointMode_origin (ψ : AddChar G ℂ) (lam u : ℝ) :
     jointMode ψ lam (0, u) = Real.cos (lam * u) := by
   simp only [jointMode, jointPhase, AddChar.map_zero_eq_one, one_mul]
   exact Complex.exp_ofReal_mul_I_re (lam * u)
 
-omit [DecidableEq G] in
+omit [Fintype G] [DecidableEq G] in
 /-- **The origin fibre of a joint divisor is a boundary divisor of the same weights.** -/
 theorem originFibre_isBoundaryDivisor {ι : Type*} {ψ : ι → AddChar G ℂ} {lam : ι → ℝ}
     {w : ℝ → ι → ℝ} {𝒟 : G × ℝ → ℝ} (hw : IsJointBoundaryDivisor ψ lam w 𝒟) :
@@ -68,13 +68,13 @@ theorem joint_locallyFinite_or_fibreConstant {ι : Type*} {ψ : ι → AddChar G
       · obtain ⟨u₀, hu₀, hu₀R⟩ := hne
         refine ((hfin (2 * R)).image fun v => v + u₀).subset fun u hu => ?_
         refine ⟨u - u₀, ⟨?_, ?_⟩, by ring⟩
+        · have := abs_sub u u₀
+          linarith [hu.2, hu₀R]
         · have hmem1 : (g, u) ∈ nonvanishingSubgroup hD h0 hint := hu.1
           have hmem2 : (g, u₀) ∈ nonvanishingSubgroup hD h0 hint := hu₀
           have := (nonvanishingSubgroup hD h0 hint).sub_mem hmem1 hmem2
           rw [mem_nonvanishingSubgroup, Prod.mk_sub_mk, sub_self] at this
           exact this
-        · have := abs_sub u u₀
-          linarith [hu.2, hu₀R]
       · push Not at hne
         refine Set.finite_empty.subset fun u hu => ?_
         exact absurd hu.2 (not_le.mpr (hne u hu.1))
@@ -104,11 +104,10 @@ theorem IsEvenPosDef.restrict_zero {𝒟 : G × ℝ → ℝ} (h𝒟 : IsEvenPosD
     have hind : ∀ i j, (if (x i - x j).2 = 0 then (1 : ℝ) else 0) =
         ∑ v ∈ V, (if (x i).2 = v then 1 else 0) * (if (x j).2 = v then 1 else 0) := fun i j => by
       have hi : (x i).2 ∈ V := Finset.mem_image_of_mem _ (Finset.mem_univ i)
-      rw [Finset.sum_congr rfl fun v _ => boole_mul _ _, Finset.sum_ite_eq, if_pos hi,
-        Prod.snd_sub, sub_eq_zero]
+      rw [Finset.sum_congr rfl fun v _ => boole_mul _ _, Finset.sum_ite_eq, if_pos hi]
       by_cases h : (x i).2 = (x j).2
-      · rw [if_pos h, if_pos h.symm]
-      · rw [if_neg h, if_neg (Ne.symm h)]
+      · rw [if_pos (by rw [Prod.snd_sub, h, sub_self]), if_pos h.symm]
+      · rw [if_neg (by rw [Prod.snd_sub, sub_eq_zero]; exact h), if_neg (Ne.symm h)]
     have e2 : ∀ i j, c i * c j * (if (x i - x j).2 = 0 then 𝒟 (x i - x j) else 0) =
         ∑ v ∈ V, c i * (if (x i).2 = v then 1 else 0) * (c j * (if (x j).2 = v then 1 else 0)) *
           𝒟 (x i - x j) := fun i j => by
@@ -158,7 +157,9 @@ theorem fibreConstant_isJointBoundaryDivisor {𝒟 : G × ℝ → ℝ} (h𝒟 : 
       (if q.1 = g then 𝒟 (g, 0) / 2 else 0) + (if -q.1 = g then 𝒟 (g, 0) / 2 else 0) :=
     fun g => by
       have e3 : (q.1 = -g) ↔ (-q.1 = g) := by
-        constructor <;> intro h <;> rw [← h, neg_neg]
+        constructor
+        · intro h; rw [h, neg_neg]
+        · intro h; rw [← h, neg_neg]
       simp only [e3]
       split_ifs <;> ring
   rw [Finset.sum_congr rfl fun g _ => hsplit g, Finset.sum_add_distrib, Finset.sum_ite_eq,
@@ -169,6 +170,7 @@ theorem fibreConstant_isJointBoundaryDivisor {𝒟 : G × ℝ → ℝ} (h𝒟 : 
   rw [hev, hc q.1 q.2]
   ring
 
+omit [Fintype G] [DecidableEq G] in
 /-- Reindexing a joint datum by an equivalence. -/
 theorem IsJointBoundaryDivisor.comp_equiv {ι ι' : Type*} {ψ : ι → AddChar G ℂ}
     {lam : ι → ℝ} {w : ℝ → ι → ℝ} {𝒟 : G × ℝ → ℝ} (e : ι' ≃ ι)

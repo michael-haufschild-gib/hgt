@@ -62,12 +62,13 @@ theorem IsArchEigen.re_inner_translation_nonneg {γ : ℝ} {v : E} (hv : IsArchE
     0 ≤ (⟪v, π (translation 1) v⟫_ℂ).re := by
   obtain ⟨α, -, ht⟩ := hv.isBlindFamily
   have h := ht 0 1
-  rw [if_neg zero_ne_one, rep_translation_zero] at h
+  rw [if_neg zero_ne_one] at h
+  beta_reduce at h
+  rw [rep_translation_zero] at h
   rw [h, Complex.ofReal_re]
   exact ht.nonneg
 
-theorem IsArchEigen.re_inner_translation_le {γ : ℝ} {v : E} (hv : IsArchEigen π γ v) :
-    (⟪v, π (translation 1) v⟫_ℂ).re ≤ ‖v‖ ^ 2 := by
+theorem re_inner_rep_le (v : E) (g : AffineGroupQ) : (⟪v, π g v⟫_ℂ).re ≤ ‖v‖ ^ 2 := by
   refine (Complex.re_le_norm _).trans ((norm_inner_le_norm _ _).trans ?_)
   rw [LinearIsometryEquiv.norm_map, sq]
 
@@ -83,7 +84,8 @@ theorem finsetEnum_injective (F : Finset ℝ) : Function.Injective (finsetEnum F
 
 theorem sum_finsetEnum {M : Type*} [AddCommMonoid M] (F : Finset ℝ) (g : ℝ → M) :
     ∑ k, g (finsetEnum F k) = ∑ x ∈ F, g x := by
-  rw [finsetEnum, F.equivFin.symm.sum_comp (fun x : F => g (x : ℝ)), F.sum_coe_sort g]
+  unfold finsetEnum
+  rw [F.equivFin.symm.sum_comp (fun x : F => g (x : ℝ)), F.sum_coe_sort g]
 
 section Ext
 
@@ -99,8 +101,9 @@ include hφ hν
 theorem atomAlpha_nonneg (x : ℝ) : 0 ≤ atomAlpha hφ x :=
   (isArchEigen_atomVec hφ hν x).re_inner_translation_nonneg
 
-theorem atomAlpha_le (x : ℝ) : atomAlpha hφ x ≤ ν.real {x} :=
-  (norm_sq_atomVec hφ hν x) ▸ (isArchEigen_atomVec hφ hν x).re_inner_translation_le
+theorem atomAlpha_le (x : ℝ) : atomAlpha hφ x ≤ ν.real {x} := by
+  rw [atomAlpha, ← norm_sq_atomVec hφ hν x]
+  exact re_inner_rep_le _ _
 
 theorem inner_atomVec_translation (x : ℝ) {b : ℚ} (hb : b ≠ 0) :
     ⟪atomVec hφ x, affRep hφ (translation b) (atomVec hφ x)⟫_ℂ = atomAlpha hφ x :=
@@ -174,6 +177,7 @@ theorem hasSum_affine_of_atomic (hat : ν {x | ν {x} = 0} = 0) {u : ℚˣ} (hu 
     set F := s.map (Function.Embedding.subtype _)
     have h := affine_eq_atoms_add_rem hφ hν F hu hb
     rw [Finset.sum_map] at h
+    simp only [Function.Embedding.coe_subtype] at h
     rw [h, add_sub_cancel_left]
     refine (norm_inner_le_norm _ _).trans ?_
     rw [LinearIsometryEquiv.norm_map, ← sq, norm_sq_remVec hφ hν (finsetEnum_injective F),
@@ -205,10 +209,11 @@ theorem hasSum_affine_of_atomic (hat : ν {x | ν {x} = 0} = 0) {u : ℚˣ} (hu 
   obtain ⟨N, hN⟩ := Metric.tendsto_atTop.mp hGlim ε hε
   refine ⟨G N, fun s hs => ?_⟩
   have h1 := hrem s
-  have h2 : ν.real ((G N).map (Function.Embedding.subtype _) : Set ℝ) ≤
-      ν.real (s.map (Function.Embedding.subtype _) : Set ℝ) :=
+  have h2 : ν.real ((G N).map (Function.Embedding.subtype fun x => x ∈ A) : Set ℝ) ≤
+      ν.real (s.map (Function.Embedding.subtype fun x => x ∈ A) : Set ℝ) :=
     measureReal_mono (Finset.coe_subset.mpr (Finset.map_subset_map.mpr hs))
   have h3 := hN N le_rfl
+  beta_reduce at h3
   rw [Real.dist_eq, abs_lt] at h3
   rw [dist_eq_norm, norm_sub_rev]
   linarith

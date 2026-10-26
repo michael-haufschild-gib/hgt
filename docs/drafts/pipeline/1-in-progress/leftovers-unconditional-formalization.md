@@ -20,36 +20,40 @@ Existing unrelated worktree changes must be preserved.
 
 ## Current checkpoint (authoritative over chronological notes)
 
-- One of the original 14 cards is complete: Nyquist, promoted to
+- One of 14 original cards complete: Nyquist, promoted to
   `3-formalized/leftovers/nyquist-critical-finite-part-2026-10-18.md`.
-- Nyquist: all 96 public declarations have clean transitive axiom audits
-  (only `propext`, `Classical.choice`, `Quot.sound`). Exact constants and
-  recovered-report claims mapped to eight leaves. PrimitiveTail and
-  SignedWitnesses passed final direct source checks; no oleans created for them.
-- Original Nyquist parent final check `86965` passed, empty log.
-  Primitive final check `28954` also passed with empty log.
-  TestCellBounds final check `90003` passed with empty log.
-  All eight final direct checks passed with empty logs, including
-  SourceQuantitative (`54703`).
-  Their oleans exist and must not be rebuilt. All eight imports are wired.
-- Physical retains 110 audited declarations. Three supplementary drafts have
-  21 public declarations, combined in `/tmp/leftovers_physical_supplements_audit.lean`.
-  This scratch is active (`10797`); afterward migrate its three original component
-  files, never the combined audit, and perform final canonical source checks.
-- PM: four unchecked `/tmp/leftovers_pm_*.lean` drafts, no canonical files yet.
-- Dyadic: unchecked tent, linear variance, finite sieve realization,
-  finite-window minimum/attainment, exact tent variance/best constant drafts.
-  The finite-window draft reuses an existing mean-minimization theorem whose
-  owner olean is absent; build exactly the missing owner/dependencies when needed.
-- Perturbed incidence: unchecked weighted all-pairs comparison draft,
-  `/tmp/leftovers_weighted_doubling_incidence.lean`. Quadratic-node geometry
-  and explicit arithmetic-model transport remain.
-- Finite cycle: unchecked exact first-order collar draft
-  `/tmp/leftovers_energy_collar_exact.lean`; original exponent 8 retained.
-- Active Lean: physical 21-supplement audit `10797`. All searches terminal.
-  Results under `/tmp/leftovers-*-search.json`.
-- Next closure order: complete Nyquist final checks and card certificate →
-  physical supplements → PM → dyadic/perturbed/cycle, retaining all 14 cards.
+  All eight direct final source checks passed with empty logs; all 96 public
+  declarations audit with only `propext`, `Classical.choice`, `Quot.sound`.
+  Source hashes and unique umbrella imports verified. Existing oleans must
+  not be rebuilt; PrimitiveTail and SignedWitnesses have none.
+- Physical: 110 prior valid axiom audits. Three supplemental drafts contain
+  20 new public declarations, plus one reused parent declaration in the
+  21-name combined audit. First audit failed elaboration; its axiom log is
+  invalid. Explicit repairs applied; r2 session `67801` passed with exit 0,
+  log `/tmp/leftovers-physical-supplements-audit-r2.log`. After success,
+  migrate the three plain components, never the combined audit, and perform
+  final direct source checks before certifying the complete recovered report.
+- PM: four unchecked `/tmp/leftovers_pm_*.lean` drafts in dependency order:
+  integrable producer, sampling, exact decomposition, short energy.
+- Dyadic: unchecked tent, integer variance, finite sieve realization,
+  finite-window minimum, and tent-variance/best-constant drafts. The exact
+  tree comparison and original auxiliary level-count claims remain to cover.
+- Perturbed: unchecked weighted all-pairs incidence and quadratic-node
+  geometry drafts. Exact-incidence and arithmetic transport consequences
+  remain to connect.
+- Finite cycle: ten unchecked drafts cover exact first-order collar, arbitrary
+  positive-collar scalar/family recovery, actual compact-source derivative
+  energy, normalized derivative correlation bounds, controlled finite meshes,
+  grid recovery, fixed-energy sharp copies, derivative conditioning, measured
+  array residuals, and unit-mass compact-source construction. No canonical
+  files or oleans yet. Exact parameter-selection/card coverage still to audit.
+- Both complete Route-E historical cards now read. Current assemblers retain
+  `MTDeshouillersIwaniecBound` and `MTWattBound`; inspected short-block
+  reductions retain their short versions as hypotheses. Full original 1.55
+  claims remain required. No unconditional completion or absence claim.
+- Active Lean: none at this checkpoint; next canonical TailBounds final check. All searches terminal.
+- Closure order: physical supplements → PM → dyadic/perturbed/cycle; all
+  other original cards remain in scope. Existing unrelated edits preserved.
 
 ## Inventory and current evidence
 
@@ -666,3 +670,9 @@ Existing unrelated worktree changes must be preserved.
   take MTDeshouillersIwaniecBound and MTWattBound. These inputs require proof;
   no wrapper counts as unconditional completion. Search evidence under
   `/tmp/leftovers-route-e-{supply,forbidden}-search.json`.
+
+- Physical r2 supplement audit `67801` exited0. All21 exact query names
+  verified; every list uses only the standard three axioms, no diagnostics.
+  Migrated the three byte-identical plain component files to TailBounds,
+  Quantitative and FormBounds; wired each once. No oleans produced.
+  Canonical direct checks and complete report certificate remain.

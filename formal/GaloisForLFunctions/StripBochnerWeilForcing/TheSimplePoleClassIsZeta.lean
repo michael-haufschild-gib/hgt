@@ -138,7 +138,7 @@ theorem orderOne_le_cube {C : ℝ} (hC : 0 < C) :
     mul_le_mul_of_nonneg_left hlog (by positivity)
   have h2 : 2 * C * x ^ 2 ≤ x ^ 3 + 8 * C ^ 3 := by
     rcases le_or_gt (2 * C) x with h | h
-    · nlinarith [mul_nonneg (sq_nonneg x) (sub_nonneg.mpr h)]
+    · nlinarith [mul_nonneg (sq_nonneg x) (sub_nonneg.mpr h), pow_pos hC 3]
     · have : x ^ 2 ≤ 4 * C ^ 2 := by nlinarith
       nlinarith
   nlinarith [sq_nonneg (1 - x)]
@@ -370,7 +370,8 @@ theorem completedPositiveSystem_one_one_eq_zeta {F Λ : ℂ → ℂ}
         Λ₁ s / (s * (s - 1)) := by
     intro s hs0 hs1
     have hs1' : s - 1 ≠ 0 := sub_ne_zero.mpr hs1
-    rw [hEdef, gammaℝReg_eq hs0, gammaℝReg_eq hs1', hΛP s]
+    simp only [hEdef]
+    rw [gammaℝReg_eq hs0, gammaℝReg_eq hs1', hΛP s]
     field_simp
     ring
   -- Finite order on the strip.
@@ -525,10 +526,8 @@ theorem completedPositiveSystem_real_mul_zeta {K : ℝ} (hK : K ≠ 0) :
       orderOne_Λ := OrderOneEnvelope.const_mul _ hZ.orderOne_Λ
       sym_Λ := fun s => by simp only [hZ.sym_Λ s]
       conj_Λ := fun s => by
-        simp only
         rw [map_mul, Complex.conj_ofReal, hZ.conj_Λ s]
       completed_eq := fun s hs => by
-        simp only
         rw [hZ.completed_eq s hs]
         ring }
 
@@ -554,13 +553,14 @@ theorem completedPositiveSystem_one_Λ_eq {d : ℕ} {F Λ : ℂ → ℂ}
   refine ⟨K, hK, fun s => ?_⟩
   have hZ := completedPositiveSystem_riemannZeta
   have hopen : IsOpen {z : ℂ | 1 < z.re} := isOpen_lt continuous_const Complex.continuous_re
-  have h2 : (2 : ℂ) ∈ {z : ℂ | 1 < z.re} := by simp; norm_num
+  have h2 : (2 : ℂ) ∈ {z : ℂ | 1 < z.re} := by norm_num
   have hev : Λ =ᶠ[𝓝 (2 : ℂ)] fun z => (K : ℂ) * (2 * RHTower.xi z) := by
     filter_upwards [hopen.mem_nhds h2] with z hz
     rw [hS.completed_eq z hz, hF z hz, hZ.completed_eq z hz]
     ring
-  have heq := (hS.entire_Λ.analyticOnNhd univ).eqOn_of_preconnected_of_eventuallyEq
-    ((hZ.entire_Λ.const_mul (K : ℂ)).analyticOnNhd univ) isPreconnected_univ (mem_univ _) hev
+  have heq := (hS.entire_Λ.differentiableOn.analyticOnNhd isOpen_univ).eqOn_of_preconnected_of_eventuallyEq
+    ((hZ.entire_Λ.const_mul (K : ℂ)).differentiableOn.analyticOnNhd isOpen_univ)
+    isPreconnected_univ (mem_univ _) hev
   exact heq (mem_univ s)
 
 /-- **No pole-budget-one system is zero-free.** Every completed positive system of pole budget `1`
@@ -578,7 +578,6 @@ theorem completedPositiveSystem_one_critical_zeros {d : ℕ} {F Λ : ℂ → ℂ
   have hs1 : s ≠ 1 := fun h => by
     have := congrArg Complex.re h
     simp [s] at this
-    norm_num at this
   rw [hΛ, RHTower.xi_eq_half_mul hs0 hs1, RHTower.completedRiemannZeta_critical_eq_Xi, hXi]
   simp
 

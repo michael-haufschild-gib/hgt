@@ -69,7 +69,9 @@ theorem normSq_eq_of_symSquare_nonneg {α α' : ℂ} {q : ℝ} (hq : 0 < q) (hpr
     obtain ⟨r, hr, hrv⟩ := h ((α.re + α'.re) / 2)
     have hval : (α - (((α.re + α'.re) / 2 : ℝ) : ℂ)) * (α' - (((α.re + α'.re) / 2 : ℝ) : ℂ)) =
         ((-(α.re - α'.re) ^ 2 / 4 : ℝ) : ℂ) := by
-      apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im, hy, hy'] <;> ring
+      apply Complex.ext <;>
+        simp only [Complex.mul_re, Complex.mul_im, Complex.sub_re, Complex.sub_im,
+          Complex.ofReal_re, Complex.ofReal_im, hy, hy'] <;> ring
     rw [hval] at hrv
     have h2 := Complex.ofReal_injective hrv
     have heq : α.re = α'.re := by nlinarith [sq_nonneg (α.re - α'.re)]

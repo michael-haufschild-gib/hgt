@@ -43,7 +43,7 @@ def dilOp (p : ℕ) : Module.End ℂ (ℕ → ℂ) where
 theorem dilOp_apply (p : ℕ) (v : ℕ → ℂ) (n : ℕ) : dilOp p v n = v (n / p) := rfl
 
 theorem dilOp_pow_apply (p i : ℕ) (v : ℕ → ℂ) (n : ℕ) : ((dilOp p) ^ i) v n = v (n / p ^ i) := by
-  induction i generalizing n with
+  induction i generalizing v with
   | zero => simp
   | succ i ih => rw [pow_succ, Module.End.mul_apply, ih, dilOp_apply, Nat.div_div_eq_div_mul,
       pow_succ]
@@ -51,7 +51,7 @@ theorem dilOp_pow_apply (p i : ℕ) (v : ℕ → ℂ) (n : ℕ) : ((dilOp p) ^ i
 /-- `Q(D_p) v(n) = Σ_i q_i v(⌊n/p^i⌋)`. -/
 theorem aeval_dilOp_apply (p : ℕ) (Q : ℂ[X]) (v : ℕ → ℂ) (n : ℕ) :
     aeval (dilOp p) Q v n = ∑ i ∈ range (Q.natDegree + 1), Q.coeff i * v (n / p ^ i) := by
-  rw [aeval_eq_sum_range, LinearMap.coeFn_sum, Finset.sum_apply, Finset.sum_apply]
+  rw [aeval_eq_sum_range, LinearMap.coe_sum, Finset.sum_apply, Finset.sum_apply]
   refine sum_congr rfl fun i _ => ?_
   rw [LinearMap.smul_apply, Pi.smul_apply, dilOp_pow_apply, smul_eq_mul]
 
@@ -96,7 +96,7 @@ theorem Adm.smul {v : ℕ → ℂ} (a : ℂ) (hv : Adm v) : Adm (a • v) := by
   rw [cPronicEnergy, pronicEnergy_ne_top_iff]
   refine ⟨‖a‖ * B, fun T => ?_⟩
   have h : (fun n => ‖(a • v) n‖) = fun n => ‖a‖ * ‖v n‖ := funext fun n => by
-    simp [norm_mul]
+    simp
   rw [h, pronicNorm_const_mul (norm_nonneg a)]
   exact mul_le_mul_of_nonneg_left (hB T) (norm_nonneg a)
 
@@ -119,9 +119,9 @@ theorem Adm.dil {v : ℕ → ℂ} {p : ℕ} (hp : 1 ≤ p) (hv : Adm v) : Adm (d
   have h := pronicNorm_rowDilate_le hp T (fun n => ‖v n‖) (by simp [hv.1])
   exact h.trans (mul_le_mul_of_nonneg_left (hB T) (Real.sqrt_nonneg _))
 
-theorem Adm.aeval {v : ℕ → ℂ} {p : ℕ} (hp : 1 ≤ p) (Q : ℂ[X]) (hv : Adm v) :
-    Adm (aeval (dilOp p) Q v) := by
-  have h : aeval (dilOp p) Q v = ∑ i ∈ range (Q.natDegree + 1), Q.coeff i • dilOp (p ^ i) v := by
+theorem Adm.polyDil {v : ℕ → ℂ} {p : ℕ} (hp : 1 ≤ p) (Q : ℂ[X]) (hv : Adm v) :
+    Adm (Polynomial.aeval (dilOp p) Q v) := by
+  have h : Polynomial.aeval (dilOp p) Q v = ∑ i ∈ range (Q.natDegree + 1), Q.coeff i • dilOp (p ^ i) v := by
     funext n
     rw [aeval_dilOp_apply, Finset.sum_apply]
     rfl

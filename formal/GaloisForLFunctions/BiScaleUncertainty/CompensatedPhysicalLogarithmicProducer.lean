@@ -4,40 +4,12 @@ import GaloisForLFunctions.BiScaleUncertainty.PhysicalBoxGraphControl
 import GaloisForLFunctions.BiScaleUncertainty.RoughModulusGraphDecomposition
 
 /-!
-# Compensated Physical Logarithmic Producers and Compact $C^1$ States
+# Compensated physical velocities and compact logarithmic states
 
-This module formalizes the complete **Compensated Physical Logarithmic Producer Theorem**
-(`docs/reports/BiScaleUncertainty/CompactLogarithmicPhysicalProducers.md`), closing the gap
-between rough physical velocities $q \in L^2(\mathbb{R}, dt)$ and compactly supported $C^1$
-logarithmic states $g_n(q) = F_{w_n} \circ \exp$:
-
-1. **Exact Invisibility of the Negative Physical Half-Line (§1):**
-   For every velocity $q \in L^2(\mathbb{R})$, the positive-half-line projection
-   $P_+ q = \mathbf{1}_{(0, \infty)} q$ has the exact same logarithmic primitive
-   $f_{P_+ q} = f_q$, hence identical edge jumps $\operatorname{jump}(P_+ q, e) = \operatorname{jump}(q, e)$,
-   identical mixed graph energy $\operatorname{jumpEnergy}(D, P_+ q) = \operatorname{jumpEnergy}(D, q)$,
-   and identical compact source mass $\operatorname{sourceMass}(\psi, P_+ q, c) = \operatorname{sourceMass}(\psi, q, c)$.
-2. **Explicit Zero-Integral Compensator and Orthogonal Energy Identity (§2):**
-   At scale $n \in \mathbb{N}$ with $r = n + 1$, $\alpha_n = e^{-r}$, $\beta_n = e^r$,
-   $L_n = e^{2r}$, $h_n = e^{-2r}$, and $B_n = \beta_n + L_n$, the truncated velocity
-   $q_n = R_{(\alpha_n, \beta_n)} q$ and explicit constant-tail compensator
-   $c_n = (m_n / L_n) \mathbf{1}_{(\beta_n, B_n]}$ (where $m_n = \int_{\alpha_n}^{\beta_n} q$)
-   have disjoint supports and satisfy the exact orthogonal energy identity
-   $$\|c_n\|^2 = \frac{m_n^2}{L_n}, \qquad
-     \|v_n\|^2 = \|q_n - c_n\|^2 = \|q_n\|^2 + \frac{m_n^2}{L_n} \le (1 + e^{-r}) \|q\|^2,$$
-   together with exact zero total integral $\int_{\mathbb{R}} v_n = 0$ and vanishing primitive
-   $F_{v_n}(t) = 0$ for all $t \le \alpha_n$ and all $t \ge B_n$.
-3. **Actual Compactly Supported $C^1$ Logarithmic State (§3):**
-   The box-smoothed velocity $w_n = M_{-2r} v_n$ has continuous representative $p_n$ vanishing
-   outside $(\alpha_n - h_n, B_n)$, primitive $F_{w_n}(t) = 0$ for $t \le \alpha_n - h_n$ and
-   $t \ge B_n$, and $C^1$ logarithmic state $g_n(q)(x) = F_{w_n}(e^x)$ supported inside the compact
-   interval $[\log(\alpha_n - h_n), \log B_n]$ with exact weighted Dirichlet energy
-   $$\int_a^b e^{-x} |g_n(q)'(x)|^2 \, dx = \int_{e^a}^{e^b} |w_n(t)|^2 \, dt.$$
-4. **Explicit Affine Commutator and Compact Source-Graph Error Control (§4–§6):**
-   Establishes the quantitative error decomposition for $\|v_n - P_+ q\|$ and
-   $\|w_n - P_+ q\|$, explicit affine commutator energy bounds for $w_n$, and compact source-graph
-   jump-energy stability $\operatorname{jumpEnergy}(\psi, \text{weights}, w_n - q) \le
-   R(\psi, \text{weights}) \|w_n - P_+ q\|^2$.
+Positive-half-line restriction preserves every logarithmic primitive and graph
+jump. A constant tail compensates the truncated integral with exact orthogonal
+energy cost. Box smoothing then yields a compact C¹ logarithmic state, with
+explicit physical, affine-commutator and compact graph-form bounds.
 -/
 
 noncomputable section
