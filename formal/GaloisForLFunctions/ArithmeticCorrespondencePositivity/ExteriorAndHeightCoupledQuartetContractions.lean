@@ -2883,10 +2883,9 @@ theorem CompletedPositiveSystem.heightCouple {κ d : ℕ} {F Λ : ℂ → ℂ}
         dsimp [s]; push_cast; ring
       rw [ep, em]
       dsimp [symSquareShift, φ, s]
-      have h2 : (((2 : ℕ) : ℂ) * logDeriv F ((σ : ℂ) + (u : ℂ) * I)).re =
+      have h2 : ((2 : ℂ) * logDeriv F ((σ : ℂ) + (u : ℂ) * I)).re =
           2 * (logDeriv F ((σ : ℂ) + (u : ℂ) * I)).re := by
-        rw [Nat.cast_ofNat]
-        simpa using Complex.re_ofReal_mul 2 (logDeriv F ((σ : ℂ) + (u : ℂ) * I))
+        simp [Complex.mul_re]
       rw [h2]
       ring
     rwa [heq]
@@ -2895,9 +2894,9 @@ theorem CompletedPositiveSystem.heightCouple {κ d : ℕ} {F Λ : ℂ → ℂ}
       (hS.entire_Λ.comp (by fun_prop))
   orderOne_Λ := by
     have hop : OrderOneEnvelope (fun s : ℂ => Λ (s + (γ : ℂ) * I)) :=
-      (hS.orderOne_Λ.comp_affine 1 ((γ : ℂ) * I)).congr fun s => by ring
+      (hS.orderOne_Λ.comp_affine 1 ((γ : ℂ) * I)).congr fun s => congrArg Λ (by ring)
     have hom : OrderOneEnvelope (fun s : ℂ => Λ (s - (γ : ℂ) * I)) :=
-      (hS.orderOne_Λ.comp_affine 1 (-((γ : ℂ) * I))).congr fun s => by ring
+      (hS.orderOne_Λ.comp_affine 1 (-((γ : ℂ) * I))).congr fun s => congrArg Λ (by ring)
     exact (((hS.orderOne_Λ.mul hS.orderOne_Λ).mul hop).mul hom).congr fun s => by
       dsimp [heightCoupledΛ]; ring
   sym_Λ := fun s => by
@@ -3709,32 +3708,5 @@ theorem HeightCoupledSystem.exists_real_offCritical_free {κ₀ κγ d : ℕ} {�
         obtain ⟨β, hβ, hzero⟩ := hfree
         obtain ⟨Λ₁, hHC₁, _, hord₁⟩ := hHC'.contractRealPair hβ hzero
         exact ih hHC₁ (by omega)
-
-#print axioms posDef_polarSum_laplaceWeight_nonneg
-#print axioms real_anchor_of_posDef_polarSum
-#print axioms two_mul_le_real_anchor_of_single_ordinate
-#print axioms not_isEvenPosDef_quartetPureRatio
-#print axioms CurveDatum.sqrtq_exterior
-#print axioms eigenvalue_exterior
-#print axioms detDeg_exterior_eq_exteriorDetDeg
-#print axioms quartetCurveDatum_detDeg_linear_pos
-#print axioms quartetCurveDatum_exterior_two_spectrum
-#print axioms exteriorTwoScaleTrace_eq_newton
-#print axioms exteriorTwoDivisorPoly_quartet
-#print axioms exteriorTwoDivisorPoly_quartet_contract
-#print axioms isEvenPosDef_coupledQuartetSymSquare
-#print axioms isEvenPosDef_deepRealQuartetSymSquare
-#print axioms CompletedPositiveSystem.contractComplexQuartet_of_doubleRealAnchor
-#print axioms CompletedPositiveSystem.contractComplexQuartet_of_singleDeepRealAnchor
-#print axioms CompletedPositiveSystem.heightCouple
-#print axioms CompletedPositiveSystem.orderAt_heightCoupledΛ
-#print axioms CompletedPositiveSystem.orderAt_heightCoupledΛ_real
-#print axioms HeightCoupledSystem.contractRealPair
-#print axioms HeightCoupledSystem.contractCollidedQuartet
-#print axioms CompletedPositiveSystem.contractComplexQuartet_heightCoupled
-#print axioms HeightCoupledSystem.archimedean_budget
-#print axioms CompletedPositiveSystem.contractOrdinateQuartets_heightCoupled
-#print axioms CompletedPositiveSystem.ordinateQuartet_multiplicity_archimedean_bound
-#print axioms HeightCoupledSystem.exists_real_offCritical_free
 
 end GaloisForLFunctions.ArithmeticCorrespondencePositivity

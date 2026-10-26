@@ -22,6 +22,9 @@ import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheEscapeRankCount
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.HorizonAveragesSelectTheZeros
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.OnEscapeStatesDilationIsTheArchimedeanFlow
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.ThePowerRowsOfTheZerosAreDominantConfigurations
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.InfiniteDominantConfigurationsAreComplete
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheEscapeCompletenessCriterion
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.ExteriorAndHeightCoupledQuartetContractions
 
 /-!
 # Arithmetic Correspondence Positivity
@@ -34,5 +37,7 @@ the unipotent successor; genus zero of affine maps; non-localizing and source-bl
 horizons along orbits; sparse annihilators; the cofactor Gram as a translation Gram with its
 Laplace symbol; the family loss law; escape states of dominant configurations, their rank, their
 horizon averages and the coupling of dilations with the archimedean flow on them; power rows of
-the zeros as dominant configurations. See `ArithmeticCorrespondencePositivity/README.md`.
+the zeros as dominant configurations; completeness of infinite summable configurations; the escape
+completeness criterion. See
+`ArithmeticCorrespondencePositivity/README.md`.
 -/

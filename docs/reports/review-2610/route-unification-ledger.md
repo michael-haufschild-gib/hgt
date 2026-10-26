@@ -1,6 +1,6 @@
 # Route-unification ledger
 
-**Status 2026-10-26, corpus `8b9038260` with the working tree of that day.** The 31 live routes, 17 candidates and PW-B are faces of three construction problems:
+**Status 2026-10-26, corpus `8765b382d` with the working tree of that day.** The 31 live routes, 17 candidates and PW-B are faces of three construction problems:
 
 - **U1 — critical arithmetic cancellation**: the *rate* reading.
 - **U2 — complete signed positivity**: the *sign* reading.
@@ -10,14 +10,14 @@ All three ask one question in different currencies: **what forces the actual ari
 
 - **U1.** A generic orbit's growth rate equals the depth of the deepest zero it sees; one test's Lefschetz sequence at one prime grows exactly like `p^{Δm}`; power growth of the damped receiver energy translates zeros.
 - **U2.** Orbit Hodge positivity holds iff the orbit is blind; Weil positivity is positivity of the spectral side of the explicit formula; on two-element spans `{g, T_{p^m} g}` of short tests it is Weil's Castelnuovo–Severi inequality, and its local part holds.
-- **U3.** The maximal sharp-stable positive Meyer ideal is the off-line-blind ideal and equals the whole source iff RH. The degree-one invariants determine ζ; the pole-budget-one completed class is `ℝ^× · ζ`. Pole order accounts exactly for inserted zeros.
+- **U3.** The maximal sharp-stable positive Meyer ideal is the off-line-blind ideal and equals the whole source iff RH. The degree-one invariants determine ζ; the pole-budget-one completed class is `ℝ^× · ζ`. Pole order accounts exactly for inserted zeros; a complex quartet contracts only against a real anchor.
 
 **Two readings cut across the families.**
 
 - **The local type.** At an off-line reflection pair every multiplicative correspondence acts by a boost; on the line it acts by a rotation; the successor is unipotent; the functional equation is the reflection swap. In U1 the boost is the growth `p^{Δm}` of Lefschetz sequences and the hyperbolic pair that exhausts every fixed budget on a finite segment. In U2 boost-invariance turns positivity into isotropy, and the RH-equivalent positivity is the positivity of a boost-invariant span. In U3 every invariant carrier is isotropic, and a forcing carrier must localize without being boost-invariant, or carry a polarization. RH says the zero spectrum is elliptic.
 - **The gauge point.** Multiplicative data determine a source up to its orbit under the gauge torus `(ℝ/ℤ)^{primes}`. In U1 the actual source is the gauge point `0`; the Möbius half-power law holds almost surely on the orbit, and the prime source is typical at `0` except for its pole. In U2 positivity on prime-free windows and on nonnegative tests is gauge blind, and the first certificate through a prime reads only the atom `2`. In U3 every carrier built from multiplicative data is gauge invariant. The three construction problems are three ways of breaking the gauge symmetry at the point `0`.
 
-The invariant sub-reading of U3 is settled: pole order is a complete invariant for relative deformations and silent about ζ's own zeros; real off-line pairs contract for free, complex quartets cost pole budget. **The budget question of U3 is a U1 question**, and **the correspondence layers of U3 are settled up to the sign**: the theorem of the square and the budget are free over `ℤ`, their sufficiency is the U2 sign. Identical receivers still do not mean identical producers: each family keeps its own missing construction.
+The invariant sub-reading of U3 is settled up to one rigidity question: pole order is a complete invariant for relative deformations and silent about ζ's own zeros; real off-line pairs contract for free; a complex quartet contracts only against a real anchor (a boundary pole, a real zero, or a collision bought with conductor), and the one-variable collisions reach only the classical local zero count. Whether a height-coupled class is rigid (B1.10) is the open remainder. **The budget question of U3 is a U1 question**, and **the correspondence layers of U3 are settled up to the sign**: the theorem of the square and the budget are free over `ℤ`, their sufficiency is the U2 sign. Identical receivers still do not mean identical producers: each family keeps its own missing construction.
 
 Companions: [complete report](hard-obstacles.md), [summary](hard-obstacles-summary.md), [walls ledger](walls-ledger.md). Evidence: corpus search and Lean statement reading (`logs/review-2610/working-log-v2.md`). `[S]`, `[R]` as in the walls ledger.
 
@@ -33,6 +33,7 @@ Companions: [complete report](hard-obstacles.md), [summary](hard-obstacles-summa
 | **Layer equivalence** | Two mechanisms realize the same layer of Weil's argument (identity, square theorem, budget, kernel count, Rosati sign, base). | That a lower layer forces a higher one. |
 | **Maximality / isotropy** | Every member of a class lies in one extremal object, or has isotropic off-line fibres. | That the actual source reaches it. |
 | **Rigidity** | A set of invariants has exactly one solution. | That the solution's zeros are located. |
+| **Classical reduction** | A mechanism's strongest output equals a classical estimate (the height-coupled budget is the Hadamard count at `2 + iγ`; boundary forcing is dlVP). | That a refinement of the mechanism stays classical. |
 | **Conservation** | An exact balance between two invariants on a whole deformation class. | An absolute bound for the base point of the class. |
 | **Directional transfer** | A proved bound implies another under hypotheses. | The converse. |
 | **Shared construction problem** | The same missing estimate, sign or object. | That one producer yields the others. |
@@ -49,11 +50,11 @@ Companions: [complete report](hard-obstacles.md), [summary](hard-obstacles-summa
 **Proved unifications:**
 
 - The width functor makes the spectral, abscissa, damped Möbius and Liouville, ξ half-plane and Suzuki formation receivers isomorphic.
-- **First-rung coincidence.** The first gain beyond Vinogradov–Korobov of each graded receiver is a fixed strip, including every Vaughan power improvement, admission at fixed damping, power growth of the damped energy [S] and one-sided Lefschetz bounds at one prime.
-- **Vaughan phase transition at half damping.** Admission at and above `ε = 1/2`; below, leading order classified and every power gain a strip; the open part is the signed long-modulus quadrature [S].
-- **Escape structure.** Record-minimum limits; singleton-or-continuum; contraction calculus; eigencharacter moduli; escape rows of rank one and of finite rank are translated zeros; the cofactor Gram is a translation Gram of one profile with Laplace form `G(s)` [S]; completeness is an energy split of that profile.
+- **First-rung coincidence.** The first gain beyond Vinogradov–Korobov of each graded receiver is a fixed strip, including every Vaughan power improvement, admission at fixed damping, power growth of the damped energy and one-sided Lefschetz bounds at one prime.
+- **Vaughan phase transition at half damping.** Admission at and above `ε = 1/2`; below, leading order classified and every power gain a strip; the open part is the signed long-modulus quadrature.
+- **Escape structure.** Record-minimum limits; singleton-or-continuum; contraction calculus; eigencharacter moduli; escape rows of rank one and of finite rank are translated zeros; the cofactor Gram is a translation Gram of one profile with Laplace form `G(s)`. Escape states of finite, power-row and summable [S] dominant configurations are phase kernels of rank the number of zeros; horizon averages separate the zeros; dilation acts as the archimedean flow. For ζ completeness is the explicit-formula split of the profile. RH ⇔ every escape state has positive gauge mass; energy that is not subpower yields a zero-mass escape state.
 - **Gauge form.** The Möbius half-power law at the gauge point `0` is RH, holds at Haar-almost every twist and fails at the Liouville twin; the prime source is typical at `0` modulo its pole.
-- **Loss law.** Moments, family averages [S], tensor products and relative powers lose at least linearly; a rate needs a fixed tensor loss.
+- **Loss law.** Moments, family averages, tensor products and relative powers lose at least linearly; a rate needs a fixed tensor loss.
 - **Hyperbolic payment.** A fixed budget pays a hyperbolic pair only on a finite segment.
 
 **Subfamilies:**
@@ -62,7 +63,7 @@ Companions: [complete report](hard-obstacles.md), [summary](hard-obstacles-summa
 - **Critical energy:** PM, CTF, with the BVI, ACCE, ADR, SAEI, SSA and THIM machinery.
 - **Oscillatory payment:** the residue of the U3 budget reading.
 
-**Separate currencies:** LI (reciprocal depth) and RB (extremal inequality); BAG through local recurrence. U1's non-graded handles are frequency averaging and the escape alternative, now reduced to the energy split of the cofactor profile.
+**Separate currencies:** LI (reciprocal depth) and RB (extremal inequality); BAG through local recurrence. U1's non-graded handles are frequency averaging and the escape alternative; escape is classified up to the explicit-formula split, and its exclusion is the gauge-mass statement.
 
 ### U2 — Complete signed positivity (sign reading)
 
@@ -109,15 +110,16 @@ Companions: [complete report](hard-obstacles.md), [summary](hard-obstacles-summa
 - **Detectors.** The HJ residual, SEC seam, CDC confluence, BSH mate gain, IRK noninvertibility and W1C Clifford energy all read `Re ρ = 1/2` with exact depth laws: they read whether a Hecke symbol is elliptic.
 - **Faithful branch.** Operator-norm faithful positivity is RH plus simple zeros.
 - **Invariant rigidity.** Coefficient positivity, the FE, the simple pole and finite order determine ζ, stably; the κ = 1 completed class is `ℝ^× · ζ`.
-- **Pole capacity and contraction.** Boundary: `⌊k/2⌋` per pole of order `k`. Completed systems: `2Σ ord ≤ κ` on finite-height collars; κ = 1 collar zero-free; `5d < 9κ`. Relative deformations: conservation identity. Contractions: real pairs at `Δκ = 0`, complex quartets at `Δκ ≥ 1` in every construction.
+- **Pole capacity and contraction.** Boundary: `⌊k/2⌋` per pole of order `k`. Completed systems: `2Σ ord ≤ κ` on finite-height collars; κ = 1 collar zero-free; `5d < 9κ`. Relative deformations: conservation identity. Contractions: real pairs at `Δκ = 0`; a complex quartet only against a real anchor of twice its weight at its depth (the real-anchor law, Landau's theorem for polar sums [R]), so `Δκ ≥ 1` in the κ = 1 class.
+- **Collision.** Height coupling `F² F(s+iγ) F(s−iγ)` supplies the anchor at one ordinate, at the price of shifted poles and Gamma factors; it is the Rankin–Selberg square of an Eisenstein series, Fejér-limited to half of each lifted quartet, with the classical local zero count as budget [S, R]. A collision of all conjugate pairs has no meromorphic carrier [R].
 - **Successor.** Affine positivity is induced from the dilations; prescribed arithmetic successors force Kronecker-null spectra; the successor sees continuous archimedean spectra and never atoms; Weil's extensions are a box over the critical zeros.
 - **Weil's layers.** Identities, the theorem of the square for normalized graphs and the budget are free over `ℤ`; kernel counts are blind to complex quartets; Künneth, Adams and symmetric-power count positivity is point-count positivity; affine correspondences of `ℤ` have genus zero.
 
-**Common missing object:** a pre-divisor source with a **forcing law** that places it in the maximal blind ideal, with gauge-charged input outside every mapped class, a localizer that is not hyperbolic or a polarization, and a term that does not scale with amplification. Where it would act: a section count on the correspondence surface; ACS effectivity; the HJ/SEC weld; the TG sub-unit residual; the RN boundary orientation.
+**Common missing object:** a pre-divisor source with a **forcing law** that places it in the maximal blind ideal, with gauge-charged input outside every mapped class, a localizer that is not hyperbolic or a polarization, a term that does not scale with amplification, and, for complex quartets, an anchor that costs neither pole budget nor conductor. Where it would act: a section count on the correspondence surface; ACS effectivity; the HJ/SEC weld; the TG sub-unit residual; the RN boundary orientation.
 
 ### The forcing currency: where the families meet
 
-Eleven mechanisms are mapped. Each sits between families and stops at a computed boundary.
+Twelve mechanisms are mapped. Each sits between families and stops at a computed boundary.
 
 | Mechanism | Family of origin | What it forces | Where it stops |
 |---|---|---|---|
@@ -127,7 +129,8 @@ Eleven mechanisms are mapped. Each sits between families and stops at a computed
 | Non-localizing carrier positivity | U2/U3 | Coercive positivity with full fibres at bounded aperture | Holds for every prime weight; no localization. |
 | Positivity on nonnegative tests | U2 | Upper-bound statements on the source | Shared by every dominated twin. |
 | Linear rigidity (Fejér-tent squeeze on the theta law) | U3 | The coefficient measure is ζ's, stably | Zeros are nonlinear in the measure. |
-| Pole order on relative deformations; positive contraction | U3 | Index increment = pole increment `+ R_crit − I_crit`; real pairs contract for free | Pays inserted zeros only; complex quartets cost pole budget. |
+| Pole order on relative deformations; positive contraction | U3 | Index increment = pole increment `+ R_crit − I_crit`; real pairs contract for free; complex quartets contract against a real anchor | Pays inserted zeros only; ζ's class has no real anchors, so complex quartets cost pole budget. |
+| Collision by harmonic (height) coupling | U3/U1 | Zero-tax contraction of the quartets at one ordinate; real-zero elimination in the coupled class; ordinate multiplicity `< (3/8) log γ + O(1)` | Half of each lifted quartet (Fejér); conductor `log γ`; the budget is the classical Hadamard count (U1); exclusion only through coupled-class rigidity (B1.10). |
 | Successor prescription on `Aff(ℚ)` | U2/U3 | Hecke weight `(nd)^{−1/2}`; threshold `s ≥ 1/2`; Kronecker-null spectrum | Never reaches atomic (zero) spectra. |
 | Multiplicative (gauge-invariant) data | U1/U3 | Statements true on the whole gauge orbit | The gauge point `0`. |
 | Correspondence identities (theorem of the square, budget) | U3 | Normalized graphs, degrees `δ/2`, similitude law | Hold on the golden datum; sufficiency is the U2 sign. |
@@ -143,13 +146,13 @@ Their invariants run in parallel. Rows pair invariants with the same role where 
 | Pole isolation (I) | Holomorphy of the completion in the strip (H) |
 | N + Z + S + I ⇒ no boundary zeros; each necessary | N + FE + S + finite order ⇒ the system is ζ; dropping S or H admits off-line zeros |
 | A pole of order `k` carries `≤ ⌊k/2⌋` boundary zeros, every placement realized | Completed systems: `≤ ⌊κ/2⌋` collar zeros at finite height; κ = 1 class `ℝ^× · ζ`; κ = 2 admits every off-line type |
-| Family over a finite group: only the two-torsion exception | Real axis: no real zeros at `κ = 1`; real pairs contract for free; complex quartets cost pole budget |
+| Family over a finite group: only the two-torsion exception | Real axis: no real zeros at `κ = 1`; real pairs contract for free; complex quartets need a real anchor (pole budget, real zero or collision) |
 
 On the boundary the invariants force the conclusion and compute the capacity. In the interior they force the identity of the source, the collar capacity and the exact accounting of inserted zeros; the zero conclusion for ζ itself is not a capacity statement.
 
 ## 3. Every route and candidate
 
-Abbreviations in the last column: *Rate* = graded rate `σ` (first rung quasi-RH). *Aperture* = pointwise aperture or averaged window. *Carrier* = carrier, height, heat or order exhaustion. *Escape* = energy split of the cofactor profile. *Lefschetz* = the Lefschetz part on short cycles at one prime. *Gauge* = gauge-charged positivity at bounded aperture.
+Abbreviations in the last column: *Rate* = graded rate `σ` (first rung quasi-RH). *Aperture* = pointwise aperture or averaged window. *Carrier* = carrier, height, heat or order exhaustion. *Escape* = explicit-formula split of the cofactor profile. *Lefschetz* = the Lefschetz part on short cycles at one prime. *Gauge* = gauge-charged positivity at bounded aperture.
 
 ### Live routes
 
@@ -171,7 +174,7 @@ Abbreviations in the last column: *Rate* = graded rate `σ` (first rung quasi-RH
 | **WD** | U3/U2 | Ward cap; collisions; heated head | Cap vanishing; residual heat region | Carrier (heat × height) |
 | **LI** | U1 | Reciprocal-depth clock | Subexponential floor | Rate (separate currency) |
 | **SZ** | U2 | First variation = Weil energy | Same sign as RW | Aperture |
-| **PM** | U1 | Admission; Vaughan Gram; cofactor module and profile; translated-zero escape rows | Signed small-damping energy; long-modulus quadrature; energy split | Rate (damping); escape |
+| **PM** | U1 | Admission; Vaughan Gram; cofactor module and profile; translated-zero escape rows; phase kernels; gauge mass | Signed small-damping energy; long-modulus quadrature; positive gauge mass; explicit-formula split | Rate (damping); escape |
 | **JAS** | U1 | Level-one budget ⇔ strip | Half-power budget | Rate |
 | **CTF** | U1/U3 | Báez–Duarte residual | Readout → 1 and energy → 0 together | Rate (damping) |
 | **HCF** | U2 | Two literal heat grids | Both grids at all degrees | Carrier (degree) |
@@ -185,11 +188,11 @@ Abbreviations in the last column: *Rate* = graded rate `σ` (first rung quasi-RH
 | **SRT** | U1/U2 | One-parameter lag family; detector; one-prime Lefschetz sequence | Lag sign; selection; Lefschetz part | Aperture; selection; Lefschetz |
 | **ACT** | U2 | One-shift variation | All-profile reflected collar | Aperture |
 | **AIP** | U2 | Shared incidence allocation | One shared budget | Aperture |
-| **ACS** | U2/U3 | Hodge index; RR; maximal blind ideal; isotropy; multiplicative forcing; rigidity; pole and collar capacity; Lefschetz spans; Weil's layers | Forcing input outside the mapped classes; a polarization or an elliptic localizer | Carrier; aperture; Lefschetz; gauge |
+| **ACS** | U2/U3 | Hodge index; RR; maximal blind ideal; isotropy; multiplicative and harmonic forcing; rigidity; pole and collar capacity; contraction and collision; Lefschetz spans; Weil's layers | Forcing input outside the mapped classes; a polarization or an elliptic localizer; coupled-class rigidity | Carrier; aperture; Lefschetz; gauge |
 
 ### Candidates and PW-B
 
-All are U3 unless noted. Each lacks the forcing law of §2. Invariant positivity gives only isotropy, non-localizing positivity holds for every prime weight, coupled height positivity reaches only the boundary and the collar, every candidate must separate ζ from the relaxation models at pole order two, a candidate fed only by multiplicative data cannot separate ζ from its gauge twins, and a candidate whose effectivity is a kernel count is blind to complex quartets.
+All are U3 unless noted. Each lacks the forcing law of §2. Invariant positivity gives only isotropy, non-localizing positivity holds for every prime weight, coupled height positivity reaches only the boundary, the collar and the classical local count, every candidate must separate ζ from the relaxation models at pole order two, a candidate fed only by multiplicative data cannot separate ζ from its gauge twins, and a candidate whose effectivity is a kernel count is blind to complex quartets.
 
 | Candidate | Family | Common face | Missing construction |
 |---|---|---|---|
@@ -216,7 +219,7 @@ All are U3 unless noted. Each lacks the forcing law of §2. Invariant positivity
 
 ### 4.1 Width (U1 and multiplicative forcing)
 
-For `σ ≥ 0`, `Δ ≤ σ` is equivalent to each of: graded lag, spline, deficit-primitive, band and regularized-series bounds; admission of every damping above `σ`; the ξ half-plane bound; the Suzuki formation exponent `1+2σ`; the JAS budget; balanced, centred-prime and short-window savings (for `σ < 1/2`); the Vaughan empty-leg and tail-rate statements; one test's Lefschetz growth `c_m^{(p)} = O(p^{σm})` at every prime; all-test one-sided Lefschetz bounds at one prime, on tests of arbitrarily small support; linear tensor loss `L_k = kσ`. VK is the strongest unconditional point. Sources include `TheWidthFunctor`, `balancedStatisticPowerSaving_iff`, `centredPrimeBandPowerSaving_iff`, `xiZeroHalfPlaneBound_iff_logZetaRegCoeff_converges`, `TheVaughanEmptyLegReadsTheZeroAbscissa`, `zeta_exists_universal_lefschetz_growth`, `zeta_width_le_iff_oneSided_onePrime`, `zeta_width_le_iff_oneSided_short`, `zetaZeroWidth_le_iff_linear_tensor_loss`. Energy growth of the damped receiver reads the width through translation of zeros [S].
+For `σ ≥ 0`, `Δ ≤ σ` is equivalent to each of: graded lag, spline, deficit-primitive, band and regularized-series bounds; admission of every damping above `σ`; the ξ half-plane bound; the Suzuki formation exponent `1+2σ`; the JAS budget; balanced, centred-prime and short-window savings (for `σ < 1/2`); the Vaughan empty-leg and tail-rate statements; one test's Lefschetz growth `c_m^{(p)} = O(p^{σm})` at every prime; all-test one-sided Lefschetz bounds at one prime, on tests of arbitrarily small support; linear tensor loss `L_k = kσ`. VK is the strongest unconditional point. Sources include `TheWidthFunctor`, `balancedStatisticPowerSaving_iff`, `centredPrimeBandPowerSaving_iff`, `xiZeroHalfPlaneBound_iff_logZetaRegCoeff_converges`, `TheVaughanEmptyLegReadsTheZeroAbscissa`, `zeta_exists_universal_lefschetz_growth`, `zeta_width_le_iff_oneSided_onePrime`, `zeta_width_le_iff_oneSided_short`, `zetaZeroWidth_le_iff_linear_tensor_loss`. Energy growth of the damped receiver reads the width through translation of zeros.
 
 ### 4.2 The common Weil form (U2)
 
@@ -267,7 +270,8 @@ The first-prime seam charge `√2·log 2·sinh(δ log 2)`, the mate gain `2δ lo
 - **Rigidity.** N + FE + S + finite order ⇒ ζ; discrete Beurling systems ⇒ rational primes; `L¹` FE defects give off-lattice and tent-mass bounds; `CompletedPositiveSystem 1 d = ℝ^× · ζ`.
 - **Relaxations.** Pole order 2 ⇒ real pair, or complex quartet with one critical refund, both completed positive systems; pole order 3 ⇒ quartet; strip poles ⇒ quartet; no FE ⇒ over-regular zeros; no positivity ⇒ non-uniqueness; boundary invariants alone ⇒ the Siegel datum.
 - **Capacity.** One number throughout: boundary `2Σm ≤ k`; finite-height collar `2Σ ord ≤ κ`; gauge `2Σm ≤ κ`; family `Σm ≤ k` with self-conjugate points counted once. Relative interior: index increment = pole increment `+ R_crit − I_crit`; `κ = 1` rigid; `5d < 9κ`.
-- **Contraction.** Real off-critical pairs contract to `1/2` at `Δκ = 0`; complex quartets at `Δκ = 1` (`a ≤ 1/4`) and `Δκ = 2` (`a < 1/2`); a cost-free complex contraction would contradict the κ = 1 class unless RH.
+- **Contraction.** Real off-critical pairs contract to `1/2` at `Δκ = 0`. A complex quartet contracts only against a real anchor at its depth of at least twice its weight; the anchor is a boundary pole (`Δκ = 1` for `a ≤ 1/4`, `Δκ = 2` for `a < 1/2`), a double real zero at depth `b ≥ a`, a simple one at `b ≥ 2a`, or a collision [S].
+- **Collision.** `HeightCoupledSystem (2κ) κ d γ` collides the quartets at height `γ`; the coupled class contracts them at no marginal pole cost and has budget `8N + 4m_{1/2} + 4m_{1/2+iγ} < 18κ + 3d log(3+|γ|) − 7d/2` [S]. Its rigidity (`= ℝ^× · ζ_γ` at `κ = d = 1`) would exclude the zeros at height `γ` (B1.10); its neighbour `HeightCoupledSystem 1 0 1 γ` contains Rankin–Selberg L-functions of Maass forms [R].
 
 Every forcing proposal is tested here (summary W1): it must use all invariants, fail on the pole-order-2 models, and see more than pole order.
 
@@ -318,20 +322,20 @@ U1 reads the boost as growth; U2 reads the boost-invariant positivity as RH; U3 
 | Interface | Proved | Missing |
 |---|---|---|
 | WL ↔ PA | Exact trace identity | Source sign |
-| MC ↔ PM ↔ BVI | Energy = interior bracket `+ O(1)`; Möbius ≅ Liouville; bands ⇔ `Θ<1`; Vaughan transition; long-modulus decomposition [S] | Signed long-modulus quadrature |
-| PM ↔ ADR ↔ ACP ↔ ACG | Admission ⇔ faithful infinite module; record minima; contraction calculus; translated-zero eigenstates and rank-one escape rows; translation-Gram and Laplace forms [S]; prime-torus spectral reading; gauge mass; energy-growth translation [S] | Energy split of the profile (B3.2) |
+| MC ↔ PM ↔ BVI | Energy = interior bracket `+ O(1)`; Möbius ≅ Liouville; bands ⇔ `Θ<1`; Vaughan transition; long-modulus decomposition | Signed long-modulus quadrature |
+| PM ↔ ADR ↔ ACP ↔ ACG | Admission ⇔ faithful infinite module; record minima; contraction calculus; translated-zero eigenstates and rank-one escape rows; translation-Gram and Laplace forms; phase kernels of dominant configurations; horizon selection; dilation as archimedean flow; prime-torus spectral reading; gauge-mass criterion; energy-growth translation | Explicit-formula split (B3.2); positive gauge mass (B1.2) |
 | PM ↔ SSA ↔ THIM | Half-damping endpoint bounded for all squarefree `P`; integer local exponents below half | Sub-half signed interior |
 | PM ↔ CTF | Residual = readout² + energy | One row family doing both |
 | RW ↔ SZ ↔ CHMD | Sign transfer; first variation; domains | Sign |
 | RW ↔ SRT ↔ ACS | One rate currency; cluster dichotomy | `polarRate = Δ` |
 | HF → AIP ↔ ACS | Ceiling ⇒ allocation ⇔ strict RR | The inequality |
 | HF ↔ SRT ↔ ACS (Lefschetz) | One test, one prime; one-sided at one prime; short cycles with the local part; one shift | The Lefschetz part (B1.3) |
-| HF ↔ ACS ↔ ACP (correspondences) | Normalized graphs; free theorem of the square and budget; RH ⇔ graph effectivity; determinant versus Rosati; exterior counts over `𝔽_q` | A polarization (B3.5, B3.27) |
+| HF ↔ ACS ↔ ACP (correspondences) | Normalized graphs; free theorem of the square and budget; RH ⇔ graph effectivity; determinant versus Rosati; exterior counts and the exterior functor over `𝔽_q` | A polarization with an exterior part on the surface (B3.5, B3.27) |
 | HF ↔ APD | Two-prime orbit ⇔ Bochner problem on `T²`; affine positivity induced; successors see only the Kronecker-null part and continuous spectra; Weil's extensions a box over critical zeros | Construction of the torus measure |
 | ACS ↔ Meyer ↔ curves | Meyer Hodge ⇔ RH; maximal blind ideal, topology, synthesis; Rosati and genus-one calibration | Forcing input; exhaustion |
 | ACS ↔ APD ↔ ACP (carriers) | Isotropy on point-stable carriers; half-blind and left-blind ideals; boost law; non-localizing positivity | A localizing carrier without boost-induced positivity (B3.25) |
-| ACS ↔ MPG ↔ SBWF ↔ U1 | Boundary forced with capacity `⌊k/2⌋`; finite-height `⌊κ/2⌋` collar; κ = 1 collar zero-free; κ = 1 class `ℝ^× · ζ`; growth gives dlVP/VK; certificates capped | Better growth input or a non-multiplicative mechanism |
-| ACS/HF ↔ APD ↔ RHTower ↔ ACP deformations | Positive-measure rigidity and stability; relaxation models; conservation; `κ = 1` rigidity; `5d < 9κ`; real-pair contraction; pole-paid quartet contraction | Optimal complex cost (W11) |
+| ACS ↔ MPG ↔ SBWF ↔ U1 | Boundary forced with capacity `⌊k/2⌋`; finite-height `⌊κ/2⌋` collar; κ = 1 collar zero-free; κ = 1 class `ℝ^× · ζ`; growth gives dlVP/VK; certificates capped by the Fejér barrier; height-coupled budget = Hadamard count at `2 + iγ` | Better growth input or a non-multiplicative mechanism |
+| ACS/HF ↔ APD ↔ RHTower ↔ ACP deformations | Positive-measure rigidity and stability; relaxation models; conservation; `κ = 1` rigidity; `5d < 9κ`; real-pair contraction; real-anchor law; pole-paid, anchor-paid and height-coupled quartet contraction | Coupled-class rigidity (B1.10, B3.31) |
 | ACG ↔ MC ↔ TTPC ↔ SSA | Gauge invariance; a.e. square-root law; comeager-null exceptions; prime pole; surplus and successor correlations are gauge charge | A gauge-charged estimate at the point `0` (B3.24) |
 | ACG ↔ AKT ↔ AOG ↔ ACP | Linear loss of moments and family averages; total-length law for products; Künneth collapse; tensor-loss receiver | Fixed tensor loss (B1.9) |
 | OWU ↔ SquareRootThreshold ↔ ACP | First prime window; atom-`2` weight selectivity; worst twin on nonnegative tests | Gauge-charged positivity (W8, B3.26) |
@@ -354,11 +358,11 @@ U1 reads the boost as growth; U2 reads the boost-invariant positivity as RH; U3 
    - a forcing law into the maximal blind ideal: TG, RN, ACS and all candidates;
    - a gauge-charged estimate at the point `0`: MC, PM, BVI, TTPC, SSA;
    - a gauge-charged positivity at bounded aperture: OWU, EWU, ACS.
-2. **Reformulation, carrier maximality and isotropy, invariant completeness, the relative budget, successor coupling and the correspondence layers below the sign are finished.** New equivalent endpoints add nothing; new invariant (boost-invariant) positive carriers add nothing; new non-localizing positive carriers add nothing; new finite or height-coupled multiplicative certificates add nothing; new countermodels with a proper subset of the invariants add nothing; new pole-order bookkeeping adds nothing; new statements from multiplicative data alone, or from nonnegative tests alone, add nothing at the point `0`; new identities, square theorems or budgets for correspondences add nothing.
+2. **Reformulation, carrier maximality and isotropy, invariant completeness, the relative budget, the contraction calculus, successor coupling, escape in model configurations and the correspondence layers below the sign are finished.** New equivalent endpoints add nothing; new invariant (boost-invariant) positive carriers add nothing; new non-localizing positive carriers add nothing; new finite or height-coupled multiplicative certificates add nothing; new one-variable contractions or harmonic couplings add nothing beyond the classical local count unless they come with a rigidity theorem; new countermodels with a proper subset of the invariants add nothing; new pole-order bookkeeping adds nothing; new statements from multiplicative data alone, or from nonnegative tests alone, add nothing at the point `0`; new identities, square theorems or budgets for correspondences add nothing.
 3. **The three families reduce to three constructions and one law.**
-   - **U1 — the energy split.** Escape rows of rank one and finite rank are translated zeros; completeness of the actual module is the energy split of one profile; with it U1 is a pure rate problem.
+   - **U1 — positive gauge mass.** Escape states are classified for every summable dominant configuration; completeness for ζ is the explicit-formula split of one profile, a classification; exclusion is the positivity of the gauge mass of every escape state, a pure rate problem.
    - **U2 — the Lefschetz part, or its gauge-charged approximations.** The Weil sign is the one-sided inequality for `T_{p^m}` on short cycles at one prime; the first place where unconditional positivity can carry arithmetic is the window through the first prime (Q2).
-   - **U3 — a positive structure that is not boost-induced.** Either an elliptic localizer (Q1) or a polarization with a section count (Q3), with gauge-charged input and a term that does not scale.
+   - **U3 — a positive structure that is not boost-induced and not one-variable.** Either an elliptic localizer (Q1) or a polarization with a section count on the correspondence surface (Q3), with gauge-charged input, a term that does not scale, and an exterior part that collides conjugate zeros without conductor.
    - **The common law:** arithmetic forces the zero spectrum to be elliptic. It would appear as rate zero in U1, as the Lefschetz part in U2, as exhaustion of the maximal blind ideal or Rosati positivity in U3, as zero oscillatory capacity for ζ's own zeros, and as typicality of the gauge point `0`.
 4. **Where the families meet.**
    - **U1 and U2** meet at the square-root threshold, at selection and at the Lefschetz sequence, which is a U1 growth rate and a U2 sign at once; a fixed budget pays a hyperbolic pair only on a finite segment.
@@ -367,7 +371,7 @@ U1 reads the boost as growth; U2 reads the boost-invariant positivity as RH; U3 
 5. **Partial progress is family-specific.**
    - U1's rate axis is blocked at quasi-RH, and so are multiplicative forcing, its completed-system collar, one-sided Lefschetz bounds and energy-growth translation.
    - U2 has aperture windows, the local part on short cycles, short-window averages, zero-ordinate positivity for nonnegative tests, finite-level feasibility and the first prime window.
-   - U3 has blind, half-blind and isotropic sub-carriers, non-localizing positivity, the boundary forcing law and capacity, the `⌊κ/2⌋` collar, rigidity and the κ = 1 class, real-pair contraction, the exact relative budget and the free correspondence layers.
+   - U3 has blind, half-blind and isotropic sub-carriers, non-localizing positivity, the boundary forcing law and capacity, the `⌊κ/2⌋` collar, rigidity and the κ = 1 class, real-pair contraction, the real-anchor law, height-coupled contraction, the exact relative budget and the free correspondence layers.
 
    A result that converts one family's partial progress into another's would itself be a new mechanism: for example, a gauge-charged window margin (U2) that survives aperture growth because of a source estimate (U1), or a section count (U3) whose Riemann–Roch yields the Lefschetz part (U2).
-6. **Three obstructions are common to every amplification, every multiplicative argument and every invariant carrier.** Depth homogeneity: every way of enlarging the data over `ℤ` tested gains on a zero's depth as fast as it pays. Gauge invariance: every argument from multiplicative data proves its conclusion for the whole orbit. Hyperbolicity: every positivity induced by invariance under multiplicative correspondences is isotropic at off-line pairs. Over `𝔽_q` a polarization of `C × C` escapes all three; over `ℤ` none is known. The [summary](hard-obstacles-summary.md#4-would-the-b-tier-obstacles-require-a-new-field-of-mathematics) explains why the known mechanisms are exhausted below RH strength and what a further one must satisfy.
+6. **Four obstructions are common to every amplification, every multiplicative argument, every invariant carrier and every one-variable positive object.** Depth homogeneity: every way of enlarging the data over `ℤ` tested gains on a zero's depth as fast as it pays. Gauge invariance: every argument from multiplicative data proves its conclusion for the whole orbit. Hyperbolicity: every positivity induced by invariance under multiplicative correspondences is isotropic at off-line pairs. Landau–Fejér: one-variable positivity sees off-line quartets only through real anchors, collides them only ordinate by ordinate at conductor `log γ`, and counts them at classical strength. Over `𝔽_q` a polarization of `C × C` escapes all four; over `ℤ` none is known. The [summary](hard-obstacles-summary.md#4-would-the-b-tier-obstacles-require-a-new-field-of-mathematics) explains why the known mechanisms are exhausted below RH strength and what a further one must satisfy.
