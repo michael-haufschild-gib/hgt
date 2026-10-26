@@ -27,6 +27,7 @@ universe u
 
 variable {G : Type u} [AddCommGroup G] [Fintype G] [DecidableEq G]
 
+omit [DecidableEq G] in
 /-- A joint mode at a difference is the real Gram kernel of the phases. -/
 theorem jointMode_sub (ψ : AddChar G ℂ) (t : ℝ) (p q : G × ℝ) :
     jointMode ψ t (p - q) = (jointPhase ψ t p).re * (jointPhase ψ t q).re +
@@ -112,7 +113,7 @@ theorem jointTrace_familyWeight {𝒟 : G × ℝ → ℝ} (h𝒟 : IsEvenPosDef 
       (tsum_nonneg fun p => abs_nonneg _) (by exact_mod_cast Fintype.card_pos))
   have hsw : Summable fun r : ℕ × AddChar G ℂ =>
       familyWeight 𝒟 x r * jointMode r.2 (logFrequency r.1) q := by
-    refine Summable.of_norm_bounded (f := fun r : ℕ × AddChar G ℂ => zetaBoundaryWeight x r.1 * A)
+    refine Summable.of_norm_bounded (g := fun r : ℕ × AddChar G ℂ => zetaBoundaryWeight x r.1 * A)
       ?_ fun r => ?_
     · exact (summable_prod_of_nonneg fun r => mul_nonneg (hz0 _)
         (tsum_nonneg fun p => abs_nonneg _)).mpr ⟨fun _ => Summable.of_finite, by
@@ -135,16 +136,19 @@ theorem jointTrace_familyWeight {𝒟 : G × ℝ → ℝ} (h𝒟 : IsEvenPosDef 
         ∑' p, zetaBoundaryWeight x n / Fintype.card G *
           (𝒟 p * (jointMode ψ (logFrequency n) (-p) * jointMode ψ (logFrequency n) q)) := by
       intro ψ
-      rw [tsum_mul_left, ← tsum_mul_right]
-      field_simp
+      have e : ∀ S : ℝ, zetaBoundaryWeight x n * (S / Fintype.card G) *
+          jointMode ψ (logFrequency n) q =
+          zetaBoundaryWeight x n / Fintype.card G * (S * jointMode ψ (logFrequency n) q) :=
+        fun S => by ring
+      rw [e, ← tsum_mul_right, ← tsum_mul_left]
       exact tsum_congr fun p => by ring
     rw [Finset.sum_congr rfl fun ψ _ => hstep ψ, ← Summable.tsum_finsetSum fun ψ _ =>
       ((summable_mul_jointMode hs ψ (logFrequency n) Neg.neg).mul_right
-        (jointMode ψ (logFrequency n) q)).mul_left _ |>.congr fun p => by ring]
+        (jointMode ψ (logFrequency n) q)).mul_left (zetaBoundaryWeight x n / Fintype.card G)
+          |>.congr fun p => by ring]
     refine tsum_congr fun p => ?_
     rw [← Finset.mul_sum, ← Finset.mul_sum, sum_jointMode_mul]
     field_simp
-    ring
   -- Swap the integers and the points.
   set f : ℕ → G × ℝ → ℝ := fun n p => 𝒟 p / 2 * ((if q.1 = p.1 then 1 else 0) *
       (zetaBoundaryWeight x n * Real.cos (logFrequency n * (q.2 - p.2))) +
@@ -261,7 +265,7 @@ theorem familyWeight_isJointBoundaryDivisor {𝒟 : G × ℝ → ℝ} (h𝒟 : I
             (if q.1 = -p.1 then 1 else 0) *
               (x * cosineTrace (zetaBoundaryWeight x) logFrequency (q.2 + p.2))| ≤ 4 := by
           refine (abs_add_le _ _).trans ?_
-          rw [abs_mul, abs_mul]
+          rw [abs_mul (if q.1 = p.1 then (1 : ℝ) else 0), abs_mul (if q.1 = -p.1 then (1 : ℝ) else 0)]
           have := mul_le_mul hi1 h1 (abs_nonneg _) zero_le_one
           have := mul_le_mul hi2 h2 (abs_nonneg _) zero_le_one
           linarith
@@ -289,7 +293,7 @@ theorem familyWeight_isJointBoundaryDivisor {𝒟 : G × ℝ → ℝ} (h𝒟 : I
       · subst h; simp
       · rw [if_neg h]
         by_cases h1 : q.1 = -p.1
-        · rw [if_pos h1, if_neg (fun h2 => h (Prod.ext (by rw [h1, neg_neg])
+        · rw [if_pos h1, if_neg (fun h2 => h (Prod.ext (by rw [Prod.fst_neg, h1, neg_neg])
             (by simp only [Prod.snd_neg]; linarith [add_eq_zero_iff_eq_neg.mp h2]))), mul_zero]
         · rw [if_neg h1, zero_mul]
     have hlimval : ∑' p, 𝒟 p / 2 * ((if q.1 = p.1 then 1 else 0) * diracAt (q.2 - p.2) +

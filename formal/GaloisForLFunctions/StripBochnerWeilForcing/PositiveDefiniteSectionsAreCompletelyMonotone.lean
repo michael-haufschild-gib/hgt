@@ -280,4 +280,209 @@ theorem re_iterate_deriv_two_mul_nonneg {G : ℂ → ℂ} {a : ℝ}
   have h := isPosDef_apply_zero_nonneg (isPosDef_re_iterate_deriv_two_mul hG hpd k σ hσ)
   simpa using h
 
+/-! ## 4. Real derivatives on the real axis -/
+
+/-- A holomorphic function real on a real ray has real derivatives there. -/
+theorem im_deriv_eq_zero_of_real {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+    (hf : DifferentiableOn ℂ f U) {a : ℝ} (hsub : ∀ x : ℝ, a < x → (x : ℂ) ∈ U)
+    (hreal : ∀ x : ℝ, a < x → (f x).im = 0) {x : ℝ} (hx : a < x) : (deriv f x).im = 0 := by
+  have hd : HasDerivAt f (deriv f x) (x : ℂ) :=
+    ((hf _ (hsub x hx)).differentiableAt (hU.mem_nhds (hsub x hx))).hasDerivAt
+  have h1 : HasDerivAt (fun y : ℝ => (f y).im) (deriv f x).im x :=
+    Complex.imCLM.hasFDerivAt.comp_hasDerivAt x hd.comp_ofReal
+  have h2 : HasDerivAt (fun y : ℝ => (f y).im) 0 x := by
+    refine (hasDerivAt_const x (0 : ℝ)).congr_of_eventuallyEq ?_
+    filter_upwards [Ioi_mem_nhds hx] with y hy using hreal y hy
+  exact h1.unique h2
+
+theorem im_iterate_deriv_eq_zero_of_real {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+    (hf : DifferentiableOn ℂ f U) {a : ℝ} (hsub : ∀ x : ℝ, a < x → (x : ℂ) ∈ U)
+    (hreal : ∀ x : ℝ, a < x → (f x).im = 0) (k : ℕ) {x : ℝ} (hx : a < x) :
+    ((deriv^[k] f) x).im = 0 := by
+  induction k generalizing x with
+  | zero => simpa using hreal x hx
+  | succ k ih =>
+    rw [Function.iterate_succ_apply']
+    exact im_deriv_eq_zero_of_real hU (differentiableOn_iterate_deriv hU hf k) hsub
+      (fun y hy => ih hy) hx
+
+/-- The real tower of a holomorphic function along the real axis. -/
+theorem hasDerivAt_re_iterate_deriv {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+    (hf : DifferentiableOn ℂ f U) (k : ℕ) {x : ℝ} (hx : (x : ℂ) ∈ U) :
+    HasDerivAt (fun y : ℝ => ((deriv^[k] f) y).re) ((deriv^[k + 1] f) x).re x := by
+  have hd := ((differentiableOn_iterate_deriv hU hf k _ hx).differentiableAt
+    (hU.mem_nhds hx)).hasDerivAt
+  rw [Function.iterate_succ_apply']
+  exact hd.real_of_complex
+
+/-! ## 5. Odd derivatives from convexity and growth -/
+
+private theorem le_sub_of_deriv_ge {g g' : ℝ → ℝ} {a x₁ m : ℝ} (hx₁ : a < x₁)
+    (hder : ∀ x, a < x → HasDerivAt g (g' x) x) (hm : ∀ x, x₁ ≤ x → m ≤ g' x) :
+    ∀ x, x₁ ≤ x → g x₁ + m * (x - x₁) ≤ g x := by
+  intro x hx
+  have hcont : ContinuousOn g (Ici x₁) := fun y hy =>
+    (hder y (lt_of_lt_of_le hx₁ hy)).continuousAt.continuousWithinAt
+  have hdiff : DifferentiableOn ℝ g (interior (Ici x₁)) := by
+    rw [interior_Ici]
+    exact fun y hy => (hder y (lt_trans hx₁ hy)).differentiableAt.differentiableWithinAt
+  have h := (convex_Ici x₁).mul_sub_le_image_sub_of_le_deriv hcont hdiff (C := m)
+    (fun y hy => by
+      rw [interior_Ici] at hy
+      rw [(hder y (lt_trans hx₁ hy)).deriv]
+      exact hm y hy.le) x₁ self_mem_Ici x hx hx
+  linarith
+
+private theorem monotone_of_deriv_nonneg {g g' : ℝ → ℝ} {a : ℝ}
+    (hder : ∀ x, a < x → HasDerivAt g (g' x) x) (hnn : ∀ x, a < x → 0 ≤ g' x) {x y : ℝ}
+    (hx : a < x) (hxy : x ≤ y) : g x ≤ g y := by
+  have h := le_sub_of_deriv_ge (m := 0) hx hder (fun z hz => hnn z (lt_of_lt_of_le hx hz)) y hxy
+  linarith
+
+/-- Linear growth beats square-root growth. -/
+private theorem exists_lin_gt_sqrt {m : ℝ} (hm : 0 < m) (b C L : ℝ) :
+    ∃ X : ℝ, L ≤ X ∧ C * Real.sqrt X < m * X + b := by
+  set s : ℝ := max (max 1 L) ((|C| + |b| + 1) / m)
+  have hs1 : 1 ≤ s := (le_max_left _ _).trans (le_max_left _ _)
+  have hsL : L ≤ s := (le_max_right _ _).trans (le_max_left _ _)
+  have hsm : (|C| + |b| + 1) / m ≤ s := le_max_right _ _
+  have hs0 : 0 ≤ s := by linarith
+  refine ⟨s ^ 2, by nlinarith, ?_⟩
+  rw [Real.sqrt_sq hs0]
+  have h1 : |C| + |b| + 1 ≤ m * s := by rwa [div_le_iff₀ hm, mul_comm] at hsm
+  have h2 : (|C| + |b| + 1) * s ≤ m * s ^ 2 := by nlinarith
+  nlinarith [le_abs_self C, neg_abs_le b, abs_nonneg b, abs_nonneg C]
+
+/-- **Odd derivatives are nonpositive.** A real tower on `(a, ∞)` whose even members are
+nonnegative and whose base grows at most like `√x` has nonpositive odd members: a positive odd
+derivative would make the even derivative below it grow linearly. -/
+theorem tower_odd_nonpos {T : ℕ → ℝ → ℝ} {a : ℝ}
+    (hder : ∀ k x, a < x → HasDerivAt (T k) (T (k + 1) x) x)
+    (heven : ∀ j x, a < x → 0 ≤ T (2 * j) x)
+    {C x₀ : ℝ} (hgrowth : ∀ x, x₀ ≤ x → T 0 x ≤ C * Real.sqrt x) :
+    ∀ j x, a < x → T (2 * j + 1) x ≤ 0 := by
+  intro j
+  induction j with
+  | zero =>
+    intro x₁ hx₁
+    by_contra hpos
+    push Not at hpos
+    have hmono : ∀ y, x₁ ≤ y → T 1 x₁ ≤ T 1 y := fun y hy =>
+      monotone_of_deriv_nonneg (hder 1) (fun z hz => heven 1 z hz) hx₁ hy
+    have hlin := le_sub_of_deriv_ge hx₁ (hder 0) (m := T 1 x₁) (fun y hy => hmono y hy)
+    obtain ⟨X, hXL, hX⟩ := exists_lin_gt_sqrt hpos (T 0 x₁ - T 1 x₁ * x₁) C (max x₀ x₁)
+    have h1 := hlin X ((le_max_right _ _).trans hXL)
+    have h2 := hgrowth X ((le_max_left _ _).trans hXL)
+    linarith
+  | succ j ih =>
+    intro x₁ hx₁
+    by_contra hpos
+    push Not at hpos
+    have e1 : 2 * (j + 1) + 1 = 2 * j + 3 := by ring
+    rw [e1] at hpos
+    set m := T (2 * j + 3) x₁ with hm
+    have hmono : ∀ y, x₁ ≤ y → m ≤ T (2 * j + 3) y := fun y hy =>
+      monotone_of_deriv_nonneg (hder (2 * j + 3))
+        (fun z hz => by simpa [show 2 * j + 3 + 1 = 2 * (j + 2) by ring] using heven (j + 2) z hz)
+        hx₁ hy
+    have hlin := le_sub_of_deriv_ge hx₁ (hder (2 * j + 2)) (m := m) hmono
+    have hev : 0 ≤ T (2 * j + 2) x₁ := by
+      simpa [show 2 * j + 2 = 2 * (j + 1) by ring] using heven (j + 1) x₁ hx₁
+    set x₂ := x₁ + 1 / m
+    have hx₂ : x₁ ≤ x₂ := by have : 0 < 1 / m := by positivity
+                             linarith
+    have hge1 : ∀ y, x₂ ≤ y → 1 ≤ T (2 * j + 2) y := by
+      intro y hy
+      have := hlin y (hx₂.trans hy)
+      have hmy : 1 ≤ m * (y - x₁) := by
+        have : 1 / m ≤ y - x₁ := by linarith
+        rwa [div_le_iff₀ hpos, mul_comm] at this
+      linarith
+    have hx₂a : a < x₂ := lt_of_lt_of_le hx₁ hx₂
+    have hlin2 := le_sub_of_deriv_ge hx₂a (hder (2 * j + 1)) (m := 1) hge1
+    set y := x₂ + |T (2 * j + 1) x₂| + 1
+    have hy : x₂ ≤ y := by have := abs_nonneg (T (2 * j + 1) x₂); linarith
+    have h1 := hlin2 y hy
+    have h2 := ih y (lt_of_lt_of_le hx₂a hy)
+    have h3 := neg_abs_le (T (2 * j + 1) x₂)
+    have : y - x₂ = |T (2 * j + 1) x₂| + 1 := by ring
+    nlinarith
+
+/-! ## 6. From the logarithmic derivative to the function -/
+
+theorem differentiableOn_neg_logDeriv {F : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+    (hF : DifferentiableOn ℂ F U) (hF0 : ∀ s ∈ U, F s ≠ 0) :
+    DifferentiableOn ℂ (fun s => -logDeriv F s) U := by
+  have h := ((hF.deriv hU).div hF fun s hs => hF0 s hs).neg
+  refine h.congr fun s _ => ?_
+  simp [logDeriv_apply]
+
+/-- **Leibniz for `F' = −G F`.** `F^{(k+1)} = −Σ_i C(k,i) G^{(i)} F^{(k−i)}` on `U`. -/
+theorem iterate_deriv_succ_eq {F : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+    (hF : DifferentiableOn ℂ F U) (hF0 : ∀ s ∈ U, F s ≠ 0) (k : ℕ) {z : ℂ} (hz : z ∈ U) :
+    (deriv^[k + 1] F) z = -∑ i ∈ Finset.range (k + 1),
+      (k.choose i : ℂ) * (deriv^[i] (fun s => -logDeriv F s)) z * (deriv^[k - i] F) z := by
+  set G : ℂ → ℂ := fun s => -logDeriv F s
+  have hGd : DifferentiableOn ℂ G U := differentiableOn_neg_logDeriv hU hF hF0
+  have heq : deriv F =ᶠ[𝓝 z] (fun w => -(G w * F w)) := by
+    filter_upwards [hU.mem_nhds hz] with w hw
+    simp only [G, logDeriv_apply]
+    field_simp [hF0 w hw]
+  rw [Function.iterate_succ_apply, ← iteratedDeriv_eq_iterate, heq.iteratedDeriv_eq,
+    iteratedDeriv_fun_neg,
+    iteratedDeriv_fun_mul ((hGd.contDiffOn hU).contDiffAt (hU.mem_nhds hz))
+      ((hF.contDiffOn hU).contDiffAt (hU.mem_nhds hz))]
+  simp only [iteratedDeriv_eq_iterate]
+
+/-- **Complete monotonicity transfers from `−F'/F` to `F`.** If `F` is holomorphic, nonvanishing,
+real and positive on `(a, ∞)` and `(−1)^k (−F'/F)^{(k)} ≥ 0` there, then `(−1)^k F^{(k)} ≥ 0`
+there: each derivative of `F` is a positive combination of products of the two towers. -/
+theorem alternating_iterate_deriv_nonneg {F : ℂ → ℂ} {a : ℝ}
+    (hF : DifferentiableOn ℂ F {s : ℂ | a < s.re}) (hF0 : ∀ s : ℂ, a < s.re → F s ≠ 0)
+    (hreal : ∀ x : ℝ, a < x → (F x).im = 0) (hpos : ∀ x : ℝ, a < x → 0 < (F x).re)
+    (hG : ∀ (k : ℕ) (x : ℝ), a < x →
+      0 ≤ (-1) ^ k * ((deriv^[k] (fun s => -logDeriv F s)) x).re) :
+    ∀ (k : ℕ) (x : ℝ), a < x → 0 ≤ (-1) ^ k * ((deriv^[k] F) x).re := by
+  set U : Set ℂ := {s : ℂ | a < s.re}
+  have hU : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
+  set G : ℂ → ℂ := fun s => -logDeriv F s
+  have hGd : DifferentiableOn ℂ G U := differentiableOn_neg_logDeriv hU hF fun s hs => hF0 s hs
+  have hsub : ∀ x : ℝ, a < x → (x : ℂ) ∈ U := fun x hx => by simpa [U] using hx
+  have hFr := im_iterate_deriv_eq_zero_of_real hU hF hsub hreal
+  have hGreal : ∀ x : ℝ, a < x → (G x).im = 0 := by
+    intro x hx
+    have h1 := hFr 1 hx
+    simp only [Function.iterate_one] at h1
+    simp only [G, logDeriv_apply, Complex.neg_im, Complex.div_im, h1, hreal x hx]
+    ring
+  have hGr := im_iterate_deriv_eq_zero_of_real hU hGd hsub hGreal
+  intro k
+  induction k using Nat.strong_induction_on with
+  | _ k ih =>
+    intro x hx
+    rcases k with _ | k
+    · simpa using (hpos x hx).le
+    · rw [iterate_deriv_succ_eq hU hF (fun s hs => hF0 s hs) k (hsub x hx), Complex.neg_re,
+        Complex.re_sum]
+      have hterm : ∀ i ∈ Finset.range (k + 1),
+          ((k.choose i : ℂ) * (deriv^[i] G) x * (deriv^[k - i] F) x).re =
+            (k.choose i : ℝ) * ((deriv^[i] G) x).re * ((deriv^[k - i] F) x).re := by
+        intro i _
+        rw [Complex.mul_re, Complex.mul_re, hGr i hx, hFr (k - i) hx]
+        simp
+      rw [Finset.sum_congr rfl hterm, mul_neg, ← neg_mul, Finset.mul_sum]
+      refine Finset.sum_nonneg fun i hi => ?_
+      have hik : i ≤ k := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
+      have hsign : -(-1 : ℝ) ^ (k + 1) = (-1) ^ i * (-1) ^ (k - i) := by
+        rw [← pow_add, Nat.add_sub_cancel' hik, pow_succ]
+        ring
+      have h1 := hG i x hx
+      have h2 := ih (k - i) (by omega) x hx
+      have hc : (0 : ℝ) ≤ k.choose i := Nat.cast_nonneg _
+      calc (0 : ℝ) ≤ (k.choose i : ℝ) * (((-1) ^ i * ((deriv^[i] G) x).re) *
+            ((-1) ^ (k - i) * ((deriv^[k - i] F) x).re)) :=
+            mul_nonneg hc (mul_nonneg h1 h2)
+        _ = -(-1 : ℝ) ^ (k + 1) * ((k.choose i : ℝ) * ((deriv^[i] G) x).re *
+            ((deriv^[k - i] F) x).re) := by rw [hsign]; ring
+
 end GaloisForLFunctions.StripBochnerWeilForcing

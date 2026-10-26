@@ -365,7 +365,7 @@ theorem sum_range_complexMellinCell_block (w : ℂ) (d m : ℕ) :
     | zero => simp
     | succ k ih =>
       rw [Finset.sum_range_succ, ih, complexMellinCell]
-      push_cast; ring
+      push_cast; ring_nf
   rw [htel d, complexMellinCell]
   have h1 : (((m * d : ℕ) : ℝ) : ℂ) ^ (-w) = ((m : ℝ) : ℂ) ^ (-w) * ((d : ℝ) : ℂ) ^ (-w) := by
     push_cast
@@ -460,6 +460,147 @@ theorem hasSum_cTotalCofactorSum_mul_cell {ε : ℝ} (hε : 0 < ε) {v : ℕ →
               rw [h]
     · rw [hvanish n j hjn, norm_zero]
       positivity
+  have hsj : Summable fun j : ℕ => (j : ℝ) ^ (-1 - ε) := Real.summable_nat_rpow.mpr (by linarith)
+  have hsn : Summable fun n : ℕ => (n : ℝ) ^ (-w.re) := Real.summable_nat_rpow.mpr (by linarith)
+  have hprod : Summable fun x : ℕ × ℕ =>
+      (2 * C * ‖w‖) * ((x.1 : ℝ) ^ (-1 - ε) * (x.2 : ℝ) ^ (-w.re)) :=
+    (hsj.mul_of_nonneg hsn (fun j => by positivity) (fun n => by positivity)).mul_left _
+  have hS : Summable (Function.uncurry F) := hprod.of_norm_bounded fun x => hbound x.1 x.2
+  -- column sums: dilated Mellin transforms
+  set col : ℕ → ℂ := fun j =>
+    (((j : ℝ) ^ (-ε) : ℝ) : ℂ) * (((j : ℝ) : ℂ) ^ (-w) * rowMellin v w) with hcoldef
+  have hcol : ∀ j, HasSum (fun n => F j n) (col j) := by
+    intro j
+    rcases Nat.eq_zero_or_pos j with rfl | hj
+    · have h0 : ((((0 : ℕ) : ℝ) ^ (-ε) : ℝ) : ℂ) = 0 := by
+        simp [Real.zero_rpow (by linarith : -ε ≠ 0)]
+      simp only [hF, hcoldef, h0, zero_mul]
+      exact hasSum_zero
+    · have h := (hasSum_dil_mul_complexMellinCell hv0 hC (by linarith : 1 < w.re) hj).mul_left
+        ((((j : ℝ) ^ (-ε) : ℝ) : ℂ))
+      simp only [hF, hcoldef, mul_assoc]
+      exact h
+  -- row sums: the cofactor sum
+  have hrow : ∀ n, HasSum (fun j => F j n) (cTotalCofactorSum ε v n * complexMellinCell w n) := by
+    intro n
+    rw [cTotalCofactorSum, sum_mul]
+    exact hasSum_sum_of_ne_finset_zero fun j hj => hvanish n j hj
+  have h1 := hS.hasSum.prod_fiberwise hcol
+  have hS' : HasSum (Function.uncurry F ∘ Equiv.prodComm ℕ ℕ) (∑' x, Function.uncurry F x) :=
+    (Equiv.hasSum_iff (Equiv.prodComm ℕ ℕ)).mpr hS.hasSum
+  have h2 := hS'.prod_fiberwise fun n => hrow n
+  have hval : ∑' j, col j = riemannZeta (w + ε) * rowMellin v w := by
+    have hz : riemannZeta (w + ε) = ∑' j : ℕ, 1 / (j : ℂ) ^ (w + ε) :=
+      zeta_eq_tsum_one_div_nat_cpow (by simp; linarith)
+    rw [hz, ← tsum_mul_right]
+    refine tsum_congr fun j => ?_
+    simp only [hcoldef]
+    rcases Nat.eq_zero_or_pos j with rfl | hj
+    · have hwe : w + (ε : ℂ) ≠ 0 := fun h => by
+        have := congrArg Complex.re h; simp at this; linarith
+      simp [Real.zero_rpow (by linarith : -ε ≠ 0), Complex.zero_cpow hwe]
+    · have hj0 : (0 : ℝ) < j := by exact_mod_cast hj
+      have hjne : ((j : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hj0.ne'
+      rw [Complex.ofReal_cpow hj0.le, ← mul_assoc, ← Complex.cpow_add _ _ hjne, one_div,
+        ← Complex.cpow_neg, Complex.ofReal_natCast]
+      congr 2
+      push_cast; ring
+  rw [← hval, h1.tsum_eq]
+  exact h2
+
+/-! ### Residues -/
+
+theorem meromorphicAt_riemannZeta_comp {g : ℂ → ℂ} {u : ℂ} (hg : AnalyticAt ℂ g u) :
+    MeromorphicAt (fun z => riemannZeta (g z)) u :=
+  (HTGeometry.meromorphicOn_riemannZeta (g u) (Set.mem_univ _)).comp_analyticAt hg
+
+theorem continuousAt_riemannZeta_comp {g : ℂ → ℂ} {u : ℂ} (hg : ContinuousAt g u)
+    (h1 : g u ≠ 1) : ContinuousAt (fun z => riemannZeta (g z)) u :=
+  (differentiableAt_riemannZeta h1).continuousAt.comp hg
+
+/-- `(w − s₀) ζ(w − s₀ + 1) → 1` as `w → s₀`. -/
+theorem tendsto_sub_mul_riemannZeta_shift (s₀ : ℂ) :
+    Tendsto (fun w => (w - s₀) * riemannZeta (w - s₀ + 1)) (𝓝[≠] s₀) (𝓝 1) := by
+  have hmap : Tendsto (fun w : ℂ => w - s₀ + 1) (𝓝[≠] s₀) (𝓝[≠] 1) := by
+    refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
+    · have h : Tendsto (fun w : ℂ => w - s₀ + 1) (𝓝 s₀) (𝓝 (s₀ - s₀ + 1)) :=
+        ((continuous_id.sub continuous_const).add continuous_const).tendsto s₀
+      rw [sub_self, zero_add] at h
+      exact tendsto_nhdsWithin_of_tendsto_nhds h
+    · filter_upwards [self_mem_nhdsWithin] with w hw
+      intro h
+      apply hw
+      simpa using congrArg (· - 1) h
+  refine (riemannZeta_residue_one.comp hmap).congr fun w => ?_
+  simp only [Function.comp]
+  ring_nf
+
+theorem norm_cpow_le_add_one {s : ℂ} (hs : s ≠ 0) (hs1 : s.re ≤ 1) (hs0 : 0 ≤ s.re) (n : ℕ) :
+    ‖((n : ℝ) : ℂ) ^ s‖ ≤ 1 * ((n : ℝ) + 1) := by
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · simp [Complex.zero_cpow hs]
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  rw [Complex.norm_cpow_eq_rpow_re_of_pos hn0, one_mul]
+  calc (n : ℝ) ^ s.re ≤ (n : ℝ) ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hn1 hs1
+    _ = n := Real.rpow_one _
+    _ ≤ (n : ℝ) + 1 := by linarith
+
+theorem linearGrowth_of_energy {r : ℕ → ℂ} (hr0 : r 0 = 0) {E : ℝ}
+    (hE : ∀ T : ℕ, ∑ n ∈ Icc 1 T, ‖r n‖ ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) ≤ E) (n : ℕ) :
+    ‖r n‖ ≤ Real.sqrt E * ((n : ℝ) + 1) := by
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · simp [hr0]; positivity
+  · exact norm_le_of_energyBounded hE hn
+
+/-- **Mellin residues pin power-like solutions to the translated zeros.** Let `0 < ε < 1/2` and
+`v = Σ_{s∈F} c_s n^s + r` with `1/2 < Re s ≤ 1`, `s ≠ 1 − ε`, and `r` of bounded pronic energy. If
+`S_ε v = c' n^{1−ε} + r'` with `r'` of bounded pronic energy, then `ζ(s + ε) = 0` whenever
+`c_s ≠ 0`. -/
+theorem riemannZeta_add_eq_zero_of_powerLike_solution {ε : ℝ} (hε0 : 0 < ε) (hε : ε < 1 / 2)
+    (F : Finset ℂ) (hF : ∀ s ∈ F, 1 / 2 < s.re ∧ s.re ≤ 1 ∧ s ≠ ((1 - ε : ℝ) : ℂ))
+    (c : ℂ → ℂ) {r r' : ℕ → ℂ} (hr0 : r 0 = 0) (hr : EnergyBounded r) (hr'0 : r' 0 = 0)
+    (hr' : EnergyBounded r') (c' : ℂ)
+    (hlaw : ∀ n, cTotalCofactorSum ε (fun m => ∑ s ∈ F, c s * ((m : ℝ) : ℂ) ^ s + r m) n =
+      c' * ((n : ℝ) : ℂ) ^ ((1 - ε : ℝ) : ℂ) + r' n) :
+    ∀ s ∈ F, c s ≠ 0 → riemannZeta (s + ε) = 0 := by
+  intro s₀ hs₀ hc₀
+  obtain ⟨E, hE⟩ := hr
+  obtain ⟨E', hE'⟩ := hr'
+  set α : ℂ := ((1 - ε : ℝ) : ℂ) with hαdef
+  have hαre : α.re = 1 - ε := by simp [hαdef]
+  have hα0 : α ≠ 0 := fun h => by
+    have := congrArg Complex.re h; rw [hαre] at this; simp at this; linarith
+  have hsne : ∀ s ∈ F, s ≠ 0 := fun s hs h => by
+    have := (hF s hs).1; rw [h] at this; simp at this; linarith
+  set v : ℕ → ℂ := fun m => ∑ s ∈ F, c s * ((m : ℝ) : ℂ) ^ s + r m with hvdef
+  have hv0 : v 0 = 0 := by
+    simp only [hvdef, hr0, add_zero, Nat.cast_zero, Complex.ofReal_zero]
+    exact Finset.sum_eq_zero fun s hs => by rw [Complex.zero_cpow (hsne s hs), mul_zero]
+  set Cv := ∑ s ∈ F, ‖c s‖ + Real.sqrt E
+  have hCv : ∀ n : ℕ, ‖v n‖ ≤ Cv * ((n : ℝ) + 1) := by
+    intro n
+    have h1 : ‖∑ s ∈ F, c s * ((n : ℝ) : ℂ) ^ s‖ ≤ (∑ s ∈ F, ‖c s‖) * ((n : ℝ) + 1) := by
+      refine (norm_sum_le _ _).trans ?_
+      rw [Finset.sum_mul]
+      refine Finset.sum_le_sum fun s hs => ?_
+      rw [norm_mul]
+      have := norm_cpow_le_add_one (hsne s hs) (hF s hs).2.1 (by linarith [(hF s hs).1]) n
+      rw [one_mul] at this
+      exact mul_le_mul_of_nonneg_left this (norm_nonneg _)
+    have h2 := linearGrowth_of_energy hr0 hE n
+    calc ‖v n‖ ≤ ‖∑ s ∈ F, c s * ((n : ℝ) : ℂ) ^ s‖ + ‖r n‖ := norm_add_le _ _
+      _ ≤ _ := by simp only [Cv]; nlinarith
+  have hCr : ∀ n : ℕ, ‖r n‖ ≤ Real.sqrt E * ((n : ℝ) + 1) := linearGrowth_of_energy hr0 hE
+  have hCr' : ∀ n : ℕ, ‖r' n‖ ≤ Real.sqrt E' * ((n : ℝ) + 1) := linearGrowth_of_energy hr'0 hE'
+  -- the meromorphic comparison function
+  set G : ℂ → ℂ := fun w => riemannZeta (w + ε) *
+      (∑ s ∈ F, c s * (s * riemannZeta (w - s + 1) + powerCorrection s w) + rowMellin r w) -
+      (c' * (α * riemannZeta (w - α + 1) + powerCorrection α w) + rowMellin r' w) with hGdef
+  -- it vanishes on `Re w > 2`
+  have hGzero : ∀ w : ℂ, 2 < w.re → G w = 0 := by
+    intro w hw
+    sorry
   sorry
 
 end GaloisForLFunctions.ArithmeticDefectRigidity

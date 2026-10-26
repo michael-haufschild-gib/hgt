@@ -149,7 +149,7 @@ theorem abs_nyquistCriticalSource_error_le (m : ℕ) (f : C_c(ℝ, ℝ))
     ring
   rwa [hs] at hb
 
-/-- Every source Lipschitz constant yields the paper's exact `M K ∫|f|/(R L)` error. -/
+/-- Every source Lipschitz constant yields the exact `M K ∫|f|/(R L)` error. -/
 theorem abs_nyquistCriticalSource_error_le_of_source_lipschitz (m : ℕ) (f : C_c(ℝ, ℝ))
     (hne : f ≠ 0) {K : ℝ≥0} (hK : LipschitzWith K (f : ℝ → ℝ)) {L : ℝ} (hL : 0 < L) :
     |nyquistCriticalSourceResidual m f L - nyquistCriticalSourceSlope m f * L -

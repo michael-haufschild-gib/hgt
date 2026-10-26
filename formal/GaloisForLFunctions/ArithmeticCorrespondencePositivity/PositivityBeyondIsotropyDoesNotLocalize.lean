@@ -71,14 +71,16 @@ theorem re_mellinAt_apertureProbe_pos {a : ℝ} (ha : 0 < a) (s : ℂ) :
     0 < (mellinAt (apertureProbe ha s.im) s).re := by
   have hint := integrable_mellinAt (contDiff_apertureProbe ha s.im).continuous
     (hasCompactSupport_apertureProbe ha s.im) s
-  rw [mellinAt, ← integral_re hint]
+  have hre' := integral_re hint
+  simp only [RCLike.re_to_complex] at hre'
+  rw [mellinAt, ← hre']
   have hre : ∀ u : ℝ, ((apertureProbe ha s.im u : ℂ) * Complex.exp ((s - 1 / 2) * u)).re =
       apertureBump ha u * Real.exp ((s.re - 1 / 2) * u) * Real.cos (s.im * u) ^ 2 := by
     intro u
-    rw [Complex.re_ofReal_mul, Complex.exp_re]
-    simp only [apertureProbe, Complex.mul_re, Complex.mul_im, Complex.sub_re, Complex.sub_im,
-      Complex.ofReal_re, Complex.ofReal_im, Complex.one_re, Complex.one_im, Complex.div_ofNat_re,
-      Complex.div_ofNat_im, mul_zero, sub_zero, zero_div]
+    have h1 : ((s - 1 / 2) * (u : ℂ)).re = (s.re - 1 / 2) * u := by simp [Complex.mul_re]
+    have h2 : ((s - 1 / 2) * (u : ℂ)).im = s.im * u := by simp [Complex.mul_im]
+    rw [Complex.re_ofReal_mul, Complex.exp_re, h1, h2]
+    simp only [apertureProbe]
     ring
   simp_rw [hre]
   have hcont : Continuous fun u : ℝ =>
@@ -92,7 +94,7 @@ theorem re_mellinAt_apertureProbe_pos {a : ℝ} (ha : 0 < a) (s : ℂ) :
   refine hcont.integral_pos_of_hasCompactSupport_nonneg_nonzero hcs
     (fun u => mul_nonneg (mul_nonneg (apertureBump ha).nonneg (Real.exp_pos _).le) (sq_nonneg _))
     (x := 0) ?_
-  rw [(apertureBump ha).one_of_mem_closedBall (by simp [(half_pos ha).le])]
+  rw [(apertureBump ha).one_of_mem_closedBall (by simp [(apertureBump ha).rIn_pos.le])]
   simp
 
 /-- The transform is additive on `realTestsAt a`. -/

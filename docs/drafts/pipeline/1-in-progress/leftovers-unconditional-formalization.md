@@ -18,6 +18,24 @@ with `#print axioms`. Wire leaves into their owning umbrellas without compiling 
 Move each card to stage 3 only after every theorem on that card is covered and audited.
 Existing unrelated worktree changes must be preserved.
 
+## Current checkpoint (authoritative over chronological notes)
+
+- No full card is certified complete after recovered-report scope audit.
+- Active Lean: `87480`, quantitative Nyquist scratch plus 79 axiom queries;
+  `/tmp/leftovers-nyquist-quantitative-check.log`.
+- Nyquist canonical successful oleans: Primitive, TestCellBounds, BroadTests,
+  SourceClassification. Do not rebuild these. PrimitiveTail has a successful
+  final source check and no olean. All five are wired into the umbrella.
+- Physical retains 110 audited declarations; three supplementary unchecked
+  drafts in `/tmp/leftovers_physical_{tail_identity,quantitative,form_bounds}.lean`.
+- PM has four unchecked drafts in `/tmp/leftovers_pm_*.lean` (producer, sampling,
+  decomposition, short energy). No canonical PM files yet.
+- Next dependency order: quantitative Nyquist check/fix → its canonical olean
+  for witness → signed witnesses and remaining exact-source/axiom audits.
+  Finish physical supplements and PM, then remaining eleven cards.
+- Superseded Nyquist source-classification and primitive-tail scratch copies
+  removed; canonical sources are authoritative. Existing pending drafts retained.
+
 ## Inventory and current evidence
 
 | Card | Required completion / current evidence |
@@ -27,8 +45,8 @@ Existing unrelated worktree changes must be preserved.
 | `biscale-perturbed-incidence-1810` | Exact-incidence exclusion, log gaps, weighted comparison, sharpness, common-model realization, continuum distinction. Paper read. |
 | `compact-physical-box-producers` | **REOPENED after recovered-report audit.** Main construction and limits retain 110 clean axiom audits; card returned to `2-fully-proven/leftovers`. Exact two-tail identity and additional quantitative corollaries from the original report still require completion. |
 | `nonvacuous-independence-and-polarization-import-law` | Audit small-eigenvalue witness, complete actual Selberg-zeta dictionary and nonvacuous clauses. Historical log reports witness complete; current source audit pending. Import table explicitly an observation. |
-| `nyquist-critical-finite-part-2026-10-18` | Finite part, signed broad-test expansion, actual-source classification and witnesses. Existing 591-line parent inspected. New continuous primitive and signed cell estimates pass Lean; broad-test leaf is building. Source classification and witnesses remain unchecked. Header's completion claim was corrected. |
-| `pm-long-modulus-quadrature` | Actual integrable Möbius producer, exact long/tail quadrature identity and bounded short-head pronic energy. Paper read. |
+| `nyquist-critical-finite-part-2026-10-18` | Finite part, signed broad-test expansion, actual-source classification and witnesses. Existing 591-line parent inspected. Primitive, signed cell bounds, exact broad tests and source classification pass Lean. Primitive-tail leaf passes its final direct check. Quantitative energy/local-uniform source draft is checking with 79 axiom queries; signed witness is drafted. No complete-card certificate yet. |
+| `pm-long-modulus-quadrature` | Four complete unchecked prototypes: actual integrable Möbius producer, exact integer sampling, all-cutoff long/tail decomposition, exact square-root-head pronic bound. Endpoint formula retains tail past max(n,D). |
 | `route-e-cofactor-amplified-e3-token-supply` | Exact all-interval supply with all elementary bounds; shared Matomäki–Teräväinen/DI analytic input. Full historical-log and current-source audit pending. |
 | `route-e-forbidden-support-e3-stability` | Exact forbidden-support all-interval count with shared analytic input. Full historical-log and current-source audit pending. |
 | `route-tt-structural-theorems-2026-10-14` | All actual theorem statements, corrected T3, T5, L7, exact T2 exponent and later proven addenda. Historical coverage list is evidence to investigate, not completion. Explicit conjectures/gapped sketches must stay labelled. |
@@ -292,3 +310,82 @@ Existing unrelated worktree changes must be preserved.
   `/tmp/leftovers_physical_tail_identity.lean` now contains the general interval
   identity, specified exponential truncation identity, separate squared/norm
   tail limits and complete separate-tail producer error. Unchecked.
+
+- Source-classification canonical build `57154` exited 0, empty log; olean now
+  exists and must not be rebuilt. Quantitative draft may import it. Current
+  owned Lean check is primitive-tail scratch `57108`, log
+  `/tmp/leftovers-nyquist-primitive-tail-check.log` (empty so far).
+- Physical unchecked drafts now also include `/tmp/leftovers_physical_quantitative.lean`
+  (exact square-root norm, continuous/a.e./L²/local-AC profile regularity,
+  derivative norm, all-real affine norm, physical trace bound and uniform
+  convergence including zero) and `/tmp/leftovers_physical_form_bounds.lean`
+  (general exact combined coefficient, finiteness, explicit three-term
+  approximation cost, affine cost and separate error-form limits). Both import
+  checked convergence; no new olean needed unless a downstream source requires it.
+
+- Read the complete finite-cycle recovery leaf (478 lines) and reread its card.
+  Existing `EnergyCycle` uses actual signed products, a floor mesh (including
+  zero radius), and source-independent recovery; its elementary scalar and
+  power-difference lemmas are private. Exact card coverage still needs arbitrary
+  κ, explicit observation count, derivative-energy source controls and distant
+  copies. The marked singular-energy gate is not an exact-constant certificate:
+  existing collar exponent is `32 max(K,0)/c`, while the card states `8E/c`.
+  Prove the latter from the first-order deficit bound; do not silently substitute
+  the former. Existing finite mesh can be reused; no new finite-cycle code yet.
+- Refreshed nonvacuous-dictionary search found spectral-parameter arithmetic and
+  Selberg-conjecture status, not the actual cofinite Selberg-zeta zero dictionary.
+  This ranked search is only a lead, not an absence proof. Card's residual
+  eigenvalue symmetry caveat remains material; full dictionary audit required.
+
+- PM endpoint audit added the all-cutoff exact formula to its decomposition
+  prototype: quadrature equals the long sawtooth minus the full harmonic tail
+  past `max n D`. This reduces to the usual tail past `n` for `D≤n`; for `D>n`
+  the floor sum is empty and the tail begins at `D`. The centered-prefix
+  decomposition already covered every natural `D`. This makes the domain
+  boundary explicit without adding an analytic premise.
+- Primitive-tail scratch `57108` exited 1 with two local elaboration errors
+  (newline field notation parsed at the wrong argument; pointwise function
+  subtraction not reduced before `linarith`). Repaired and migrated to
+  `NyquistCriticalPrimitiveTail.lean`; final direct check `86169` active,
+  log `/tmp/leftovers-nyquist-primitive-tail-final.log`. No tail olean created.
+- Source quantitative scratch now includes a trailing axiom audit for 78 public
+  declarations across the existing Nyquist parent and five expansion/source
+  leaves. Manifest `/tmp/leftovers-nyquist-public-names.json`; strip its marked
+  audit suffix when migrating the canonical quantitative source.
+
+- Removed superseded `/tmp/leftovers_nyquist_sources.lean`; canonical checked
+  source is authoritative. A mathematical-comment wording cleanup was made
+  afterward (no proof change and no olean rebuild). Final direct audit remains.
+- Quantitative source draft now also states local uniform convergence for the
+  literal normalized autocorrelations of `sourceRescale`, not only the equal
+  scaled test `H(x/L)`. Its pending axiom manifest now has 79 declarations.
+- Later finite-cycle derivative-control leads: vendor Sobolev translation bound
+  `DifferentialGeometry.Analysis.Sobolev.eLpNorm_translate_sub_le_smul_eLpNorm_fderiv`
+  (smooth Euclidean source, `Tools/Translation.lean:392`, proof inspected near
+  lines 340–430); main-corpus `ArithmeticIncidencePositivity.hasDerivAt_autoCorrelation`
+  in `LagChebyshevAbelSummation.lean:1292` (not yet inspected). A direct physical
+  box-difference argument could reuse the already certified box contraction,
+  but check these precise existing inputs before writing a new translation bound.
+
+- Finite-cycle source derivative lead inspected: the main-corpus
+  `ArithmeticIncidencePositivity.hasDerivAt_autoCorrelation` is for arbitrary
+  real compact C¹ functions and gives exactly `∫ F(x) F'(x+t)`; its underlying
+  correlation convention matches `autocorr`. Vendor translation theorem is
+  specialized to `EuclideanSpace ℝ (Fin d)`, so it needs a transport to ℝ and
+  is not a drop-in real-source lemma. Prefer reuse of the existing real
+  derivative/cross-correlation inputs if they close the exact energy constants.
+- Dyadic planning refinement, not a certificate: the exact mantissa tent can be
+  represented on each closed dyadic level `q≤n≤2q` by `min(n-q,2q-n)/q`,
+  with both endpoint representations zero. This handles the level boundary in
+  the adjacent difference bound. For variance, pairing `q+j` and `3q/2+j`
+  for `0≤j<q/8` gives value separation at least `1/4`, hence a uniform
+  two-point squared-error lower bound. Summing these disjoint pairs would
+  imply the required conservative `N/2048` bound without weakening the actual
+  specified tent. Formal level identities and counting still required.
+
+- Primitive-tail canonical final check `86169` exited 0, empty log. Wired its
+  import into the field umbrella without compiling the umbrella. No olean
+  generated. Its five public declarations still need the axiom audit.
+- Current owned Lean check: quantitative source scratch `87480`. Command logs to
+  `/tmp/leftovers-nyquist-quantitative-check.log` and includes the 79-declaration
+  transitive axiom audit. Only one owned Lean process runs.
