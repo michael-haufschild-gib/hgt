@@ -32,6 +32,8 @@ import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheFirstGaugeCharg
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.EllipticLocalizationIsResonance
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.ExteriorAndHeightCoupledQuartetContractions
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.IntrinsicExteriorAndMinimumAnchorCost
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheAbelEscapeStateIsTheBoundaryMeasureOfTheSymbol
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheAbelEscapeAtomsOfZetaAreItsDominantZeros
 
 /-!
 # Arithmetic Correspondence Positivity
@@ -45,6 +47,7 @@ horizons along orbits; sparse annihilators; the cofactor Gram as a translation G
 Laplace symbol; the family loss law; escape states of dominant configurations, their rank, their
 horizon averages and the coupling of dilations with the archimedean flow on them; power rows of
 the zeros as dominant configurations; completeness of infinite summable configurations; the escape
-completeness criterion; the escape alternative; section counts and Stepanov counts as the sign; the successor defect in the strip; the gauge-charged window off the edge; elliptic localization as resonance. See
+completeness criterion; the escape alternative; section counts and Stepanov counts as the sign; the successor defect in the strip; the gauge-charged window off the edge; elliptic localization as resonance; Abel escape states as
+boundary spectral measures of the symbol, with the dominant zeros of `ζ` as their atoms. See
 `ArithmeticCorrespondencePositivity/README.md`.
 -/

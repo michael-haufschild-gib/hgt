@@ -43,7 +43,6 @@ theorem count_mul_count_ge_sq {ι : Type*} (s : Finset ι) {w : ι → ℝ} (hw 
         rw [mul_pow, ← Real.exp_nat_mul, mul_mul_mul_comm, ← Real.exp_add]; ring_nf,
       Real.sqrt_sq (mul_nonneg (hw i) (Real.exp_pos _).le)]
   simp_rw [key]
-  have := inner_mul_le_norm_mul_norm (𝕜 := ℝ)
   have hcs := Finset.sum_mul_sq_le_sq_mul_sq s (fun i => Real.sqrt (w i * Real.exp (a i * (J + J'))))
     (fun i => Real.sqrt (w i * Real.exp (a i * (J - J'))))
   simp only [Real.sq_sqrt (mul_nonneg (hw _) (Real.exp_pos _).le)] at hcs
@@ -55,8 +54,10 @@ theorem logCount_midpoint_convex {ι : Type*} (s : Finset ι) {w : ι → ℝ} (
     2 * Real.log (∑ i ∈ s, w i * Real.exp (a i * J)) ≤
       Real.log (∑ i ∈ s, w i * Real.exp (a i * (J + J'))) +
         Real.log (∑ i ∈ s, w i * Real.exp (a i * (J - J'))) := by
-  rw [← Real.log_mul (hpos _).ne' (hpos _).ne', ← Real.log_pow]
-  · exact Real.log_le_log (pow_pos (hpos J) 2) (count_mul_count_ge_sq s hw a J J')
+  have h := Real.log_le_log (pow_pos (hpos J) 2) (count_mul_count_ge_sq s hw a J J')
+  rw [Real.log_pow, Real.log_mul (hpos _).ne' (hpos _).ne'] at h
+  push_cast at h
+  exact h
 
 section Convexity
 

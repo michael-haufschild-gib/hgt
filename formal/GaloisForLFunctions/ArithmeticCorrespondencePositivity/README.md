@@ -154,6 +154,7 @@ question but an energy split of the profile with symbol `G`.
 | — | log profile and translation Gram of a row | `g(u) = e^{−u/2} v(⌊e^u⌋)`; `⟨D_j v, D_k v⟩` | `logProfile` (ADR), `pronicPairing_rowDilate_eq_translationGram` |
 | — | dominant configuration, phase kernel, Cauchy form | `Σ c_k e^{(x+iy_k)u}`; `K_θ`; `Σ v_k v̄_l/(2x + i(y_k − y_l))` | `domProfile`, `escapeKernel`, `cauchyDensity`, `domSeries`, `escapeKernelSeries` |
 | — | power row of a translated zero | `Re(c n^{ρ−ε})` | `powerRow`, `powerProfile` |
+| — | Abel Gram and line symbol | `A_c(a,b) = ∫ e^{−2cu} g(u−a) g(u−b)`; `G(c + iy)` | `abelGram`, `lineSymbol`, `dampedProfile` |
 
 **Words.** *Correspondence surface*: polar surface with a ring acting by similitudes that preserve
 the fibre plane. *Normalized graph*: the isotropic class of unit vertical degree in `y + ⟨H, V⟩`.
@@ -267,6 +268,8 @@ and gauge Jensen (ACG); Künneth collapse (AKT); the window certificate for ever
 | **P32 The successor defect in the strip** | `q(x+1)^{q−1} ≤ (x+1)^q − x^q` for `0 < q ≤ 1` (concave Bernoulli); `Σ_{n<M}(n+1)^{−β} ≤ M^{1−β}/(1−β)`; each defect term is at most `2Λ(n+1)(n+1)^{−σ}` and at most `|s|Λ(n+1)(n+1)^{−σ−1}`; splitting at `M ≈ |s|` with `Λ(n) ≤ n^η/η` gives, for `0 < η < σ < 1` and `Re s = σ`, `|D_Λ(s)| ≤ (4/(η(1+η−σ)) + 2/(η(σ−η)))(|s| + 1)^{1−σ+η}`: growth of exponent `1 − σ + η` in the height, not linear. | `mul_rpow_sub_one_le_rpow_sub`, `sum_range_rpow_neg_le`, `norm_succShiftTerm_le_two`, `norm_vonMangoldtC_le`, `norm_succShiftDefect_vonMangoldt_le_rpow` |
 | **P33 The first gauge-charged window off the edge** | For odd `C²` tests supported in `[−181/500, 181/500]`, the atom `Re(k(log 2) + k(−log 2))` only sees the edge strips `E = {log 2 − 181/500 ≤ |x|}` (width `≈ 0.031`): `|atom| ≤ 2∫_E F²`; hence the Liouville twin (Λ(2) flipped) satisfies `W_λ(F) ≥ (1/1000)∫F² − 2√2 log 2 ∫_E F²` and is Weil-positive on every test with `1961 ∫_E F² ≤ ∫F²`. | `abs_mul_le_edge`, `abs_integral_shift_le_edge`, `abs_atom_le_edge`, `re_weilFullFunctional_liouvilleTwist_ge_sub_edge`, `re_weilFullFunctional_liouvilleTwist_nonneg_of_edge_le` |
 | **P34 Elliptic localization is resonance** | At an off-line point the symmetric dilation by `a > 1` is elliptic iff `γ log a ∈ πℤ`, i.e. `a ∈ exp((π/γ)ℤ)`; one non-resonant scale makes a real even carrier blind there; carriers closed under the archimedean flow (all `a > 1`) are blind at every non-real off-line point; if every closure scale is resonant, the fibre `z = 1` survives as a positive non-isotropic fibre. | `symHeckeSymbol_im_ne_zero_iff`, `sin_mul_log_eq_zero_iff`, `eq_zero_of_nonresonant_scale`, `exists_nonresonant_scale`, `eq_zero_of_archimedean_closed`, `resonant_survivor` |
+| **P35 The Abel escape state is the boundary measure of the symbol** | Wiener–Khinchin for real `L¹ ∩ L²` profiles; the Abel Gram is `A_c(a,b) = e^{−c(a+b)}(2π)⁻¹∫‖G(c+iy)‖² cos(y(a−b)) dy` and `A_c(a+t, b+t) = e^{−2ct}A_c(a,b)` (dilation is a scalar on Abel Grams); a simple pole `r/(s − θ − iy₀)` of the symbol on the abscissa line carries the scaled atom `π‖r‖²δ_{y₀}`, a window where the symbol stays bounded carries nothing; with finitely many poles and outside mass `o(1/ε)`, `ε A_{θ+ε}(a,b) → e^{−θ(a+b)}Σ_k (‖r_k‖²/2) cos(y_k(a−b))` and the normalized Abel Grams converge to the diagonal kernel of the poles; if the Abel energy diverges and the symbol is bounded on a window, the window's share of the spectral measure tends to zero. | `integral_translate_mul_translate`, `abelGram_spectral`, `abelGram_add_add`, `integral_norm_sq_lineSymbol`, `tendsto_window_atom`, `tendsto_window_regular`, `tendsto_abelGram_of_poles`, `tendsto_abelGram_div_of_poles`, `tendsto_window_mass_div_zero`, `tendsto_lineSymbol_window_share_zero` |
+| **P36 The Abel escape atoms of `ζ` are its dominant zeros** | For the damped Möbius receiver: `∫ e^{−su}f(⌊e^u⌋) = Φ_f(s)/s` on cells; energy `O((T+1)^κ)` puts `e^{−cu}g_ε` in `L¹ ∩ L²` for `c > κ/2` with symbol `Φ_ε(s)/s`, `s = c + ½ + iy`, and `Φ_ε(s) = ζ(s)/ζ(s+ε) − m_ε ζ(s)` on `(1+κ)/2 < Re s < 1`; at a translated simple zero the symbol is `r/(s − ρ + ε)` plus a bounded function, `r = ζ(ρ−ε)/(ζ′(ρ)(ρ−ε))`. A dominant simple zero (energy `O(T^κ)` for every `κ > 2(Re ρ − ε) − 1`, the least exponent by P28) carries the atom `π‖r‖²δ_{Im ρ}` at `θ = Re ρ − ε − ½`, zero exactly when `ρ` is cancelled, and if uncancelled forces Abel escape at rate `1/e`; a segment of the abscissa line without translated zeros carries a vanishing share of the escape. | `integral_stepLaplaceIntegrand`, `integrable_and_memLp_dampedProfile_receiver`, `lineSymbol_receiver_eq`, `complexMellinPairing_receiver_eq`, `exists_cofactor_pole_bound`, `tendsto_receiver_window_atom`, `tendsto_receiver_abelGram_atTop`, `tendsto_receiver_window_share_zero` |
 
 ---
 
@@ -380,7 +383,11 @@ dominant configuration and a subdominant remainder: an explicit formula for the 
 prefix, i.e. a contour shift of `G(s)e^{su}` past the translated zeros, which needs growth bounds
 for `1/ζ(s + ε)` on horizontal segments between zeros. That input is analytic and of the type the
 explicit formula for `M(x)` needs; it is not a positivity statement, and no further correspondence
-structure decides it.
+structure decides it. In the Abel normalization the split is not needed for the finite-height
+part: the Abel Gram is the cosine transform of `‖G(c + iy)‖²` (P35), and its finite-height atoms
+are exactly the dominant translated zeros, each with mass `π‖ζ(ρ−ε)/(ζ′(ρ)(ρ−ε))‖²`, read from the
+local pole of `G` alone (P36). What the explicit formula would add is only the absence of mass at
+infinite height.
 
 **The report's mechanisms and milestones (§4.6).**
 
@@ -426,6 +433,7 @@ structure decides it.
 | A non-commutative (affine) carrier adds positivity | Induced from the dilations unless the successor is prescribed (APD) |
 | Rosati positivity at one cycle is weaker than RH | For the spline it is RH (P1) |
 | Escape completeness needs a new positivity | It is an energy split: remainders of subdominant energy are invisible (P18), and dominant configurations are complete with rank the number of zeros (P20) |
+| The escape states of `ζ` need an explicit formula | Only with a sharp horizon; Abel escape states are read from the symbol on vertical lines, and their finite-height atoms are the dominant zeros (P35, P36) |
 | An escape state is a positive-definite function on `ℚ_{>0}` | It carries the weight `(jk)^{−x}` and a phase; dilation acts on it as the archimedean flow (P22) |
 | Averaging over horizons blurs the zeros | It separates them: the horizon average of escape states is diagonal, one term per zero (P21) |
 | Averaging a family of twists is a base | Family averages lose linearly; only flat (pure) families lose nothing (P23) |
@@ -448,7 +456,7 @@ The tools the report asks for (§4.5), with what ACP has built for each:
 | Loss-law calculus | root extraction and the loss of tensor powers; the family Jensen law with its flatness case | P8, P23 |
 | Oscillatory capacity | the escape rank: an integer read from a positive semidefinite kernel that counts the dominant zeros phase-independently, with dominated (subdominant) payment excluded; the budget horizon of a hyperbolic pair | P12, P18, P20, P24, P26 |
 | Base constructions | the base as a fixed loss; vertical sections, midpoint contractions, height-coupled zero-tax quartet contractions (`HeightCoupledSystem`), boundary-twist pole absorption (`absorbShiftedPoles`), single-system real-anchor planters (`plantDoubleRealAnchor`), and degree-`K` Fejér height-coupled systems (`FejerCoupledSystem`, halving central pole cost to `(9/2)κ`) against sharp Hadamard and Fejér–Egerváry–Szász converse floors; family averages are not a base | P8, P17, P23, P25, P31 |
-| Escape-state classification | the translation-Gram form of the cofactor Gram and its Laplace symbol `G`; the subdominance law; the horizon law, phase kernels, the Cauchy form and its positivity, the null space of escape states, independence of power characters; the transfer from power rows to exponential profiles; Bohr uniqueness and the summable case; the completeness criterion in ADR's normalization | P18, P19, P20, P24, P26, P27 |
+| Escape-state classification | the translation-Gram form of the cofactor Gram and its Laplace symbol `G`; the subdominance law; the horizon law, phase kernels, the Cauchy form and its positivity, the null space of escape states, independence of power characters; the transfer from power rows to exponential profiles; Bohr uniqueness and the summable case; the completeness criterion in ADR's normalization; Abel Grams as boundary spectral measures, the atom law, the symbol of the receiver and its poles at translated zeros | P18, P19, P20, P24, P26, P27, P35, P36 |
 | Archimedean–finite coupling | on escape states dilation by `p` is the archimedean flow by `log p` | P22 |
 | Selection lemmas at the zero spacing | the resolution of a correspondence is its length; horizon averages select the zeros within `(2/T) Σ |D_{kl}|/|y_k − y_l|` | P11, P21 |
 | Arithmetic Stepanov | sparse annihilators need a lattice and never kill an off-line symbol; the Stepanov output (a one-sided prime-power count) is equivalent to RH | P14, P30 |
@@ -506,10 +514,14 @@ what ACP has proved about it.
    completeness with rank the number of dominant zeros, for finitely many dominant zeros (P20, P24,
    P27) and for absolutely summable infinite configurations (P26). Open, off RH: the split itself,
    i.e. a contour shift of `G(s)e^{su}` past the translated zeros, which needs growth bounds for
-   `1/ζ(s + ε)` between zeros. Its remaining cases are non-summable residues
-   `ζ(ρ − ε)/(ζ′(ρ)(ρ − ε))` along a line of zeros, and real parts that accumulate at their
-   supremum without attaining it, where the escape states concentrate at infinite height on the
-   gauge torus (ACG).
+   `1/ζ(s + ε)` between zeros. In the Abel normalization the finite-height part is settled without
+   it: Abel escape states are boundary spectral measures of the symbol (P35), their atoms are the
+   dominant translated zeros with residue masses, an uncancelled dominant zero forces Abel escape
+   at rate `1/e`, and zero-free segments of the abscissa line carry no escape (P36). Open: the mass
+   at infinite height, i.e. whether `e ∫_{|y|>Y} ‖G(θ + e + iy)‖² dy → 0` uniformly as `Y → ∞` — a
+   vertical mean-square statement for `ζ(s)/ζ(s+ε)` near the abscissa line; it fails when the
+   residues along a line of zeros are not summable or when real parts accumulate at the abscissa
+   without attaining it, where the escape concentrates at infinite height on the gauge torus (ACG).
 
 ---
 
@@ -590,6 +602,8 @@ reduction.
 | `TheSuccessorDefectInTheStrip` | The concave unit step; the head of a power sum; the strip bound `|D_Λ(s)| ≪ (|s|+1)^{1−σ+η}` |
 | `TheFirstGaugeChargedWindowOffTheEdge` | The atom at `2` lives on the edge strips; the Liouville twin is positive off the edge |
 | `EllipticLocalizationIsResonance` | Resonant scales; one non-resonant scale is blindness; the archimedean flow is blind; resonant survivors |
+| `TheAbelEscapeStateIsTheBoundaryMeasureOfTheSymbol` | Wiener–Khinchin; the Abel Gram and its spectral form; dilation covariance; the atom law; the Abel escape law and its normalized form; escape at infinite height |
+| `TheAbelEscapeAtomsOfZetaAreItsDominantZeros` | Log cells and step profiles; integrability from energy growth; the receiver symbol and its continuation; translated simple zeros as simple poles; the atom law for `ζ`; escape rate; zero-free segments |
 | `MomentAmplificationOfAnyFamilyLosesLinearly` | Family Jensen; the loss law of family averages; flatness; calibration over `𝔽_q` |
 | `ExteriorAndHeightCoupledQuartetContractions` | Post–Widder polar scale-weight positivity and the real-anchor law (`c(σ_max) ≥ c(σ_max + iγ₁)`, `≥ 2c` single-ordinate); functorial `CurveDatum.exterior` and complete quartet phase elimination on `Λ²`; archimedean `exteriorTwoDivisorPoly` (`2 Λ²z_ρ(t) = z_ρ(t)² − z_ρ(2t)`) and `Δκ = 0` contraction (`a < 1/4`); full-strip `coupledQuartetSymSquare` (`0 < a ≤ b < 1/2`, `Δκ = 0`) and `HeightCoupledSystem (2κ) κ d γ` (`F(s)² F(s+iγ) F(s−iγ)`) with zero-tax collided quartet contraction, Hadamard–digamma budget, ordinate-`γ` quartet multiplicity bound, and finite-step real-zero elimination |
 | `IntrinsicExteriorAndMinimumAnchorCost` | Local degree-`1` Adams `Λ²` vanishing, isobaric shift-packet `Λ²` dichotomy (`m₀ ≥ 5`, ratio `≥ 11/5`), and scale-space cross-singularity (`Re = 1 + a > 1`); unconditional `κ_γ ↦ 0` boundary-twist absorption (`absorbShiftedPoles`), `total_zero_mass_le` origin-capacity floor, exact `s = 2` pole defect, and `(9 + 12/(4+γ²) + 6/(1+γ²))κ → 9κ` ordinate pole decay; single-system `plantDoubleRealAnchor` (`Δκ = 2`) and functor-independent Hadamard minimum pole law (`16M + 144M/(9+4γ²) + 5d < 9κ`, `κ ≥ 3`); discrete Fejér–Egerváry–Szász multiplier converse (`c₁ ≤ 2c₀ cos(π/(K+2))`), all-height two-sided shifted-Gamma sandwich, and `FejerCoupledSystem K` central pole halving (`9(K+1)/(2K) κ ↘ (9/2)κ`, `27/4 · κ < 8κ` at `K = 2`) |

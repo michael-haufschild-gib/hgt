@@ -208,9 +208,13 @@ each property of the other form is RH.
    global collision has no analytic carrier near `[−½, 3/2]` (Π10). Couplings collide evenly and are
    blind to kernel counts, exterior squares collide oddly and count (Π11): the height-coupled lifts
    are couplings.
-6. **Is a coupled class rigid?** Unknown; but rigidity of `HeightCoupledSystem 2 1 1 γ` at `γ`
-   excludes every off-line zero at ordinate `γ`, and at all ordinates it is RH (Π14). A
-   Hamburger-type theorem for the coupled class would have to avoid the zeros at its ordinate.
+6. **Is a coupled class rigid?** No: rigidity of `HeightCoupledSystem 2 1 1 γ` at `γ` would
+   exclude every off-line zero at ordinate `γ` (Π14), but at every critical ordinate the outward
+   splitting `((s − ½)² + β²)/(s − ½)²` is Bochner-positive and produces non-proportional members
+   ([BiarithmeticGaugeGeometry](../BiarithmeticGaugeGeometry/README.md),
+   `not_coupledRigid_of_xi_critical_zero`). The surviving form of the question is one-sided: the
+   central vanishing ceiling `ord_{½}(Λ) ≤ ord_{½}(Λ_γ)` across the class, which the outward
+   deformations respect, the inward collapses violate, and which at every ordinate is RH.
 7. **What pays `ζ`'s own zeros?** The off-line defect `Δ = D − Re W` (Π2): each off-line pair pays
    `m|f̂(ρ) − f̂(ρ*)|²` whatever its depth, critical zeros pay nothing, and `Δ ≡ 0` iff RH (Π3). This
    is the depth-uniform capacity; it is computable exactly when the collided form is.
@@ -289,8 +293,8 @@ formula, height shifts and single-height detection, window certificates, escape 
 3. **Odd collisions over `ℤ`.** A two-variable structure whose collided points appear with odd
    multiplicity at every ordinate at once; couplings collide evenly, the global exterior square has
    no analytic carrier.
-4. **Rigidity of the coupled class at zero-free ordinates** (B3.31): a Hamburger-type theorem for
-   `HeightCoupledSystem 2 1 1 γ` using the shifted poles.
+4. **The central ceiling of the coupled class**: `ord_{½}(Λ) ≤ ord_{½}(Λ_γ)` for every member of
+   `HeightCoupledSystem 2 1 1 γ`, first at zero-free ordinates, from the shifted poles.
 5. **A two-variable section count** with rank growing in the class and Riemann–Roch whose quadratic
    term is Weil's form.
 6. **The separating aperture of the first twin** (W8): compare `W_ζ(f)` and

@@ -10,6 +10,8 @@ import GaloisForLFunctions.ArithmeticEffectivityTheory.TheBaseAxioms
 import GaloisForLFunctions.ArithmeticEffectivityTheory.NaiveHeightsAreTraces
 import GaloisForLFunctions.ArithmeticEffectivityTheory.ThePolarBoxCount
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheCompletionLaw
+import GaloisForLFunctions.ArithmeticEffectivityTheory.TheConvexityOfCounts
+import GaloisForLFunctions.ArithmeticEffectivityTheory.TheArchimedeanComputationOfTheLogTorsion
 
 /-!
 # Arithmetic Effectivity Theory
