@@ -166,6 +166,7 @@ The language keeps these distinctions explicit:
 | **P27 Regularity** | An integer boundary divisor with `D(0) = 1` is `δ₀`, a lattice indicator, an alternating lattice character or the constant `1`, without assuming local finiteness: a boundary divisor is a pointwise limit of continuous functions, so by Baire it cannot be `±1` on a dense subgroup and `0` on its dense translate. | `boundary_tetrachotomy`, `boundary_locallyFinite`, `not_tendsto_continuous_of_dense` |
 | **P28 Arithmetic Bochner** | A locally finite even positive-definite `D` is the boundary divisor of one Dirichlet series `Σ Λ(n) g(log n) n^{−s}` with fixed `g ≥ 0`. The profile `g = Σ_N (e^{−a_N t} − e^{−a_{N−1} t}) P_N(t)` glues the Bohr polynomials of the Fejér truncations; each block is a difference of ζ-traces at two dampings, the diagonal is a Toeplitz average, and uniform continuity of `ζ'/ζ` on compacta of `Re s ≥ 1` minus `1` kills the rest. | `arithmetic_bochner`, `arithmetic_isBoundaryDivisor`, `tsum_block_eq`, `tendsto_toeplitz` |
 | **P29 Integral Bochner** | A locally finite `D` is the boundary divisor of an Euler product `Π_p (1 − p^{−s})^{−m(p)}` with `m(p) ∈ ℕ` iff it is even and positive definite. Greedy rounding keeps the prime error below `log(n + 1)` for every profile; logarithmic growth of the P28 profile is absorbed by `Σ_{n not prime} (1 + log n)² Λ(n)/n < ∞`. | `integral_bochner`, `IsBoundaryDivisor.round_log` |
+| **P30 σ-additivity and dense supports** | Countable sums of boundary divisors with summable pole orders `Σ_k D_k(0) < ∞` are boundary divisors. `Σ_n 2^{−n} 1_{(2π/(n+1)!)ℤ}` is a boundary divisor positive exactly on the dense subgroup `2πℚ`: boundary divisors need not be locally finite, but by P27 such supports never carry integer values with a simple pole. | `isBoundaryDivisor_tsum`, `ratLattice_isBoundaryDivisor`, `ratLattice_ne_zero_iff` |
 
 ---
 
@@ -281,8 +282,10 @@ To build:
    it would give the VK region with its optimal constant and its barrier. Inputs with genuinely
    `δ`-dependent `G(δ)` remain open.
 5. **Higher poles.** Answered: on locally finite configurations the boundary divisors are exactly
-   the even positive-definite functions (P26; P13 and P15 are the finite cases). Open: the range
-   beyond local finiteness, where positive definiteness is not enough (P17).
+   the even positive-definite functions (P26; P13 and P15 are the finite cases). Beyond local
+   finiteness the range is a cone closed under summable countable sums and contains dense supports
+   (P30), while positive definiteness alone is not enough (P17). Open: an intrinsic description of
+   the full range.
 
 ---
 
@@ -341,3 +344,4 @@ A contribution must:
 | `BoundaryRegularity` | Baire regularity of boundary limits; the simple-pole classification without local finiteness |
 | `ArithmeticBochner` | Locally finite divisors of a single Dirichlet series `Σ Λ(n) g(log n) n^{−s}` |
 | `IntegralLocallyFinite` | Integral Euler products realize every locally finite positive-definite divisor |
+| `BoundarySummation` | Countable sums of boundary divisors; a boundary divisor supported on `2πℚ` |

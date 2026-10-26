@@ -160,6 +160,10 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
    tests `g + c T_v g` rotate the Frobenius weight of a kept zero into any half-plane, so at one prime
    the width is `≤ θ` iff every test has `ε Re c_m = O(p^{θm})`, and RH iff the upper (or lower)
    one-sided Weil inequality holds for every test (`OneSidedLefschetzBoundsAtOnePrimeAreTheStrip.lean`).
+   **Short cycles suffice:** the same laws hold on tests supported in `[−η, η]` for every `η > 0`;
+   RH iff `Re W(g − T_{p^m} g) ≥ 0` for every such `g` and `m`, while for `η ≤ 3/10` each window is
+   Weil positive — Hodge index splits into local positivity (a theorem) and the one-prime Lefschetz
+   bound on short cycles (all of RH) (`TheStripLivesOnShortCycles.lean`).
 
 ### Effectivity, Bézout, Riemann–Roch
 10. **Hodge index ⇔ effectivity with RR + ample** (`exists_effectivity_iff_hodgeIndex`); positivity is

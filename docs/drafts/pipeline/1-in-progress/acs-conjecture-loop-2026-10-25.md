@@ -90,6 +90,10 @@ tool, or exposes a mechanism, calibrated over `𝔽_q`.
 - **C13 (one-sided bounds at one prime).** Two-term tests rotate the weight of a kept zero; real
   eigenvalues handled along even exponents. Status: DONE (Lean, contribution 13).
 
+- **C14 (short cycles).** Dilated annihilators give killing tests of support `ε`; RH ⟺
+  `Re W(g − T_{p^m} g) ≥ 0` on tests of support `≤ η`, each window Weil positive for `η ≤ 3/10`.
+  Status: DONE (Lean, contribution 14).
+
 ## Avoid (other agents active 2026-10-25)
 Q-II Meyer source modules; `MaximalBlindIdealOfTheMeyerSource.lean` (another agent); biarithmetic; rh-closing-producer Stepanov tracks (HTGeometry Stepanov).
 
@@ -105,3 +109,4 @@ Q-II Meyer source modules; `MaximalBlindIdealOfTheMeyerSource.lean` (another age
 - 2026-10-26 — C11 done.
 - 2026-10-26 — C12 done.
 - 2026-10-26 — C13 done.
+- 2026-10-26 — C14 done.

@@ -52,7 +52,7 @@ No external novelty claim or check. The short-modulus estimate uses the
 existing corpus mechanism; the quadrature identity is not counted as a
 solution of the outstanding signed covariance inequality.
 
-## Significance gate
+## Historical significance gate
 
 The subsequent user instruction requires a theorem or discharged premise
 that significantly advances a hard PM obstacle. This exact rewrite alone
@@ -60,3 +60,13 @@ does not meet that gate. Its paper proof is retained, but its standalone
 formalization is deferred; no admission theorem or new cancellation estimate
 is claimed. The preliminary Lean API probe was terminated before producing
 diagnostics, and no Lean module or umbrella import was added.
+
+## Current formalization
+
+The current request to formalize every leftover card supersedes that deferral.
+Four unchecked prototypes now cover the actual integrable producer, integer
+sampling, exact centered-prefix decomposition and square-root-head pronic bound.
+They reuse the existing hyperbola swap, countable-series integrability and
+pronic comparison. Verification and promotion remain outstanding; the gates
+above are unchanged. Progress is recorded in
+[the formalization tracker](../../1-in-progress/leftovers-unconditional-formalization.md).

@@ -142,7 +142,9 @@ theorem norm_powerDefect_le {s : ℂ} (hs : s.re ≤ 2) {k : ℕ} (hk : 1 ≤ k)
     have h2 : HasDerivAt (fun y : ℝ => s * (((k : ℝ) + 1 : ℝ) : ℂ) ^ (s - 1) * (y : ℂ))
         (s * (((k : ℝ) + 1 : ℝ) : ℂ) ^ (s - 1) * 1) x :=
       (Complex.ofRealCLM.hasDerivAt.const_mul _)
-    simpa using (h1.sub h2).hasDerivWithinAt
+    have h3 := (h1.sub h2).hasDerivWithinAt (s := Set.Icc (k : ℝ) ((k : ℝ) + 1))
+    rw [mul_one] at h3
+    exact h3
   have hbound : ∀ x ∈ Set.Ico (k : ℝ) ((k : ℝ) + 1),
       ‖s * ((x : ℝ) : ℂ) ^ (s - 1) - s * (((k : ℝ) + 1 : ℝ) : ℂ) ^ (s - 1)‖ ≤
         ‖s‖ * ‖s - 1‖ * (k : ℝ) ^ (s.re - 2) := by
@@ -165,5 +167,296 @@ theorem norm_powerDefect_le {s : ℂ} (hs : s.re ≤ 2) {k : ℕ} (hk : 1 ≤ k)
     ring
   rw [← hid]
   exact h
+
+/-- A uniform form: `‖e_s(k)‖ ≤ (4‖s‖‖s − 1‖ + ‖s − 1‖)(k + 1)^{Re s − 2}` for `0 ≤ Re s ≤ 2`. -/
+theorem norm_powerDefect_le_uniform {s : ℂ} (hs0 : 0 ≤ s.re) (hs : s.re ≤ 2) (k : ℕ) :
+    ‖powerDefect s k‖ ≤ (4 * ‖s‖ * ‖s - 1‖ + ‖s - 1‖) * ((k : ℝ) + 1) ^ (s.re - 2) := by
+  rcases Nat.eq_zero_or_pos k with rfl | hk
+  · have h0 : ‖powerDefect s 0‖ ≤ ‖s - 1‖ := by
+      by_cases hs' : s = 0
+      · subst hs'; simp [powerDefect]
+      · simp only [powerDefect, Nat.cast_zero, zero_add, Complex.ofReal_one, Complex.one_cpow,
+          Complex.ofReal_zero, Complex.zero_cpow hs', sub_zero, mul_one]
+        rw [norm_sub_rev]
+    simp only [Nat.cast_zero, zero_add, Real.one_rpow, mul_one]
+    nlinarith [norm_nonneg s, norm_nonneg (s - 1)]
+  · have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
+    have hk0 : (0 : ℝ) < k := by linarith
+    have hpow : (k : ℝ) ^ (s.re - 2) ≤ 4 * ((k : ℝ) + 1) ^ (s.re - 2) := by
+      have h2k : (k : ℝ) + 1 ≤ 2 * k := by linarith
+      have h1 : (2 * (k : ℝ)) ^ (s.re - 2) ≤ ((k : ℝ) + 1) ^ (s.re - 2) :=
+        Real.rpow_le_rpow_of_nonpos (by positivity) h2k (by linarith)
+      rw [Real.mul_rpow (by norm_num) hk0.le] at h1
+      have h22 : (2 : ℝ) ^ (s.re - 2) * 4 ≥ 1 := by
+        have : (2 : ℝ) ^ (s.re - 2) ≥ (2 : ℝ) ^ (-2 : ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
+        have h4 : (2 : ℝ) ^ (-2 : ℝ) = 1 / 4 := by
+          rw [Real.rpow_neg (by norm_num)]; norm_num
+        rw [h4] at this; linarith
+      have hkpos : 0 < (k : ℝ) ^ (s.re - 2) := Real.rpow_pos_of_pos hk0 _
+      nlinarith
+    calc ‖powerDefect s k‖ ≤ ‖s‖ * ‖s - 1‖ * (k : ℝ) ^ (s.re - 2) := norm_powerDefect_le hs hk
+      _ ≤ ‖s‖ * ‖s - 1‖ * (4 * ((k : ℝ) + 1) ^ (s.re - 2)) :=
+          mul_le_mul_of_nonneg_left hpow (by positivity)
+      _ ≤ (4 * ‖s‖ * ‖s - 1‖ + ‖s - 1‖) * ((k : ℝ) + 1) ^ (s.re - 2) := by
+          have : 0 ≤ ‖s - 1‖ * ((k : ℝ) + 1) ^ (s.re - 2) := by positivity
+          nlinarith
+
+/-- The holomorphic correction `E_s(w) = Σ_k e_s(k) (k+1)^{-w}`. -/
+def powerCorrection (s w : ℂ) : ℂ :=
+  ∑' k : ℕ, powerDefect s k * (((k : ℝ) + 1 : ℝ) : ℂ) ^ (-w)
+
+theorem norm_powerDefect_mul_le {s w : ℂ} (hs0 : 0 ≤ s.re) (hs : s.re ≤ 2) {b : ℝ}
+    (hb : b ≤ w.re) (k : ℕ) :
+    ‖powerDefect s k * (((k : ℝ) + 1 : ℝ) : ℂ) ^ (-w)‖ ≤
+      (4 * ‖s‖ * ‖s - 1‖ + ‖s - 1‖) * ((k : ℝ) + 1) ^ (s.re - 2 - b) := by
+  have hk : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+  rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hk, Complex.neg_re]
+  calc ‖powerDefect s k‖ * ((k : ℝ) + 1) ^ (-w.re)
+      ≤ (4 * ‖s‖ * ‖s - 1‖ + ‖s - 1‖) * ((k : ℝ) + 1) ^ (s.re - 2) * ((k : ℝ) + 1) ^ (-b) := by
+        refine mul_le_mul (norm_powerDefect_le_uniform hs0 hs k)
+          (Real.rpow_le_rpow_of_exponent_le (by linarith [Nat.cast_nonneg (α := ℝ) k]) (by linarith))
+          (by positivity) (by positivity)
+    _ = _ := by rw [mul_assoc, ← Real.rpow_add hk]; ring_nf
+
+/-- **The correction is holomorphic on `Re w > Re s − 1`.** -/
+theorem differentiableOn_powerCorrection {s : ℂ} (hs0 : 0 ≤ s.re) (hs : s.re ≤ 2) :
+    DifferentiableOn ℂ (powerCorrection s) {w : ℂ | s.re - 1 < w.re} := by
+  intro w₀ hw₀
+  have hw₀' : s.re - 1 < w₀.re := hw₀
+  obtain ⟨b, hb, hbw⟩ : ∃ b : ℝ, s.re - 1 < b ∧ b < w₀.re :=
+    ⟨(s.re - 1 + w₀.re) / 2, by linarith, by linarith⟩
+  set U : Set ℂ := {w | b < w.re}
+  have hU : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
+  have hsum : Summable fun k : ℕ =>
+      (4 * ‖s‖ * ‖s - 1‖ + ‖s - 1‖) * ((k : ℝ) + 1) ^ (s.re - 2 - b) := by
+    refine Summable.mul_left _ ?_
+    have := (Real.summable_nat_rpow.mpr (by linarith : s.re - 2 - b < -1))
+    exact_mod_cast (summable_nat_add_iff 1).mpr this
+  have hdiff : DifferentiableOn ℂ (fun w => ∑' k : ℕ, powerDefect s k *
+      (((k : ℝ) + 1 : ℝ) : ℂ) ^ (-w)) U := by
+    refine Complex.differentiableOn_tsum_of_summable_norm hsum (fun k w _ => ?_) hU
+      (fun k w hw => norm_powerDefect_mul_le hs0 hs (le_of_lt hw) k)
+    have hbase : (((k : ℝ) + 1 : ℝ) : ℂ) ≠ 0 := by
+      exact_mod_cast (show ((k : ℝ) + 1) ≠ 0 by positivity)
+    exact ((differentiableAt_const _).mul
+      (differentiableAt_id.neg.const_cpow (Or.inl hbase))).differentiableWithinAt
+  exact (hdiff.differentiableAt (hU.mem_nhds hbw)).differentiableWithinAt
+
+/-- **The Mellin transform of `n^s`.** For `Re w > Re s + 1`:
+`𝓜(n^s)(w) = s ζ(w − s + 1) + E_s(w)`. -/
+theorem rowMellin_cpow_eq {s w : ℂ} (hs : s ≠ 0) (hs0 : 0 ≤ s.re) (hs2 : s.re ≤ 2)
+    (hsw : s.re + 1 < w.re) :
+    rowMellin (fun n => ((n : ℝ) : ℂ) ^ s) w = s * riemannZeta (w - s + 1) + powerCorrection s w := by
+  have hw0 : 0 < w.re := by linarith
+  set a : ℕ → ℂ := fun n => ((n : ℝ) : ℂ) ^ s * ((n : ℝ) : ℂ) ^ (-w) with ha
+  set b : ℕ → ℂ := fun n => ((n : ℝ) : ℂ) ^ s * (((n : ℝ) + 1 : ℝ) : ℂ) ^ (-w) with hb
+  have ha0 : a 0 = 0 := by simp [ha, Complex.zero_cpow hs]
+  have hsa : Summable fun k : ℕ => a (k + 1) := by
+    refine Summable.of_norm_bounded (g := fun k : ℕ => ((k : ℝ) + 1) ^ (s.re - w.re)) ?_
+      fun k => ?_
+    · have := Real.summable_nat_rpow.mpr (by linarith : s.re - w.re < -1)
+      exact_mod_cast (summable_nat_add_iff 1).mpr this
+    · have hk : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+      simp only [ha, Nat.cast_add, Nat.cast_one]
+      rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hk,
+        Complex.norm_cpow_eq_rpow_re_of_pos hk, Complex.neg_re, ← Real.rpow_add hk]
+      exact le_of_eq (by ring_nf)
+  have hsa' : Summable a := (summable_nat_add_iff 1).mp hsa
+  have hsb : Summable b := by
+    refine Summable.of_norm_bounded (g := fun k : ℕ => ((k : ℝ) + 1) ^ (s.re - w.re)) ?_
+      fun k => ?_
+    · have := Real.summable_nat_rpow.mpr (by linarith : s.re - w.re < -1)
+      exact_mod_cast (summable_nat_add_iff 1).mpr this
+    · have hk : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+      simp only [hb]
+      rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hk, Complex.neg_re]
+      rcases Nat.eq_zero_or_pos k with rfl | hkpos
+      · simp [Complex.zero_cpow hs]
+      · have hk0 : (0 : ℝ) < k := by exact_mod_cast hkpos
+        rw [Complex.norm_cpow_eq_rpow_re_of_pos hk0]
+        calc (k : ℝ) ^ s.re * ((k : ℝ) + 1) ^ (-w.re)
+            ≤ ((k : ℝ) + 1) ^ s.re * ((k : ℝ) + 1) ^ (-w.re) :=
+              mul_le_mul_of_nonneg_right (Real.rpow_le_rpow hk0.le (by linarith) hs0)
+                (by positivity)
+          _ = ((k : ℝ) + 1) ^ (s.re - w.re) := by rw [← Real.rpow_add hk]; ring_nf
+  set x : ℕ → ℂ := fun k => s * (1 / ((k : ℂ) + 1) ^ (w - s + 1)) with hx
+  set y : ℕ → ℂ := fun k => powerDefect s k * (((k : ℝ) + 1 : ℝ) : ℂ) ^ (-w) with hy
+  have hzeta : riemannZeta (w - s + 1) = ∑' k : ℕ, 1 / ((k : ℂ) + 1) ^ (w - s + 1) :=
+    zeta_eq_tsum_one_div_nat_add_one_cpow (by simp; linarith)
+  have hsx : Summable x := by
+    refine Summable.mul_left _ ?_
+    have h1 : Summable fun n : ℕ => 1 / (n : ℂ) ^ (w - s + 1) :=
+      Complex.summable_one_div_nat_cpow.mpr (by simp; linarith)
+    have h2 := (summable_nat_add_iff 1).mpr h1
+    refine h2.congr fun k => ?_
+    push_cast
+    rfl
+  have hsy : Summable y := by
+    have hg : Summable fun k : ℕ =>
+        (4 * ‖s‖ * ‖s - 1‖ + ‖s - 1‖) * ((k : ℝ) + 1) ^ (s.re - 2 - w.re) := by
+      refine Summable.mul_left _ ?_
+      have := Real.summable_nat_rpow.mpr (by linarith : s.re - 2 - w.re < -1)
+      exact_mod_cast (summable_nat_add_iff 1).mpr this
+    exact Summable.of_norm_bounded hg fun k => norm_powerDefect_mul_le hs0 hs2 le_rfl k
+  have hstep : ∀ k : ℕ, a (k + 1) - b k = x k + y k := by
+    intro k
+    have hk : (((k : ℝ) + 1 : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (show ((k : ℝ) + 1) ≠ 0 by positivity)
+    have hpow : (((k : ℝ) + 1 : ℝ) : ℂ) ^ (s - 1) * (((k : ℝ) + 1 : ℝ) : ℂ) ^ (-w) =
+        1 / ((k : ℂ) + 1) ^ (w - s + 1) := by
+      rw [← Complex.cpow_add _ _ hk, one_div, ← Complex.cpow_neg]
+      push_cast; ring_nf
+    simp only [ha, hb, hx, hy, powerDefect]
+    push_cast
+    rw [← hpow]
+    push_cast
+    ring
+  have hmain : rowMellin (fun n => ((n : ℝ) : ℂ) ^ s) w = ∑' n, (a n - b n) := by
+    refine tsum_congr fun n => ?_
+    simp only [ha, hb, complexMellinCell]
+    ring
+  rw [hmain, hsa'.tsum_sub hsb, hsa'.tsum_eq_zero_add, ha0, zero_add, ← hsa.tsum_sub hsb]
+  rw [tsum_congr hstep, hsx.tsum_add hsy, hzeta, ← tsum_mul_left]
+  rfl
+
+/-! ### The cofactor sum is multiplication by `ζ(w + ε)` -/
+
+/-- The complex total cofactor sum `S_ε v(n) = Σ_{j≤n} j^{-ε} v(⌊n/j⌋)`. -/
+def cTotalCofactorSum (ε : ℝ) (v : ℕ → ℂ) (n : ℕ) : ℂ :=
+  ∑ j ∈ Icc 1 n, (((j : ℝ) ^ (-ε) : ℝ) : ℂ) * v (n / j)
+
+/-- Rows of at most linear growth. -/
+def LinearGrowth (v : ℕ → ℂ) : Prop := ∃ C : ℝ, ∀ n : ℕ, ‖v n‖ ≤ C * ((n : ℝ) + 1)
+
+theorem norm_mul_cell_le {v : ℕ → ℂ} (hv0 : v 0 = 0) {C : ℝ} (hC : ∀ n : ℕ, ‖v n‖ ≤ C * ((n : ℝ) + 1))
+    {w : ℂ} (hw : 0 < w.re) (n : ℕ) :
+    ‖v n * complexMellinCell w n‖ ≤ 2 * C * ‖w‖ * (n : ℝ) ^ (-w.re) := by
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · simp [hv0, Real.zero_rpow (by linarith : -w.re ≠ 0)]
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hC0 : 0 ≤ C := by
+    have := (norm_nonneg _).trans (hC 0); simp at this; linarith
+  rw [norm_mul]
+  calc ‖v n‖ * ‖complexMellinCell w n‖ ≤ (C * ((n : ℝ) + 1)) * (‖w‖ * (n : ℝ) ^ (-w.re - 1)) :=
+        mul_le_mul (hC n) (norm_complexMellinCell_le hw hn) (norm_nonneg _) (by positivity)
+    _ ≤ (C * (2 * n)) * (‖w‖ * (n : ℝ) ^ (-w.re - 1)) := by
+        gcongr; linarith
+    _ = 2 * C * ‖w‖ * ((n : ℝ) * (n : ℝ) ^ (-w.re - 1)) := by ring
+    _ = 2 * C * ‖w‖ * (n : ℝ) ^ (-w.re) := by
+        rw [show (-w.re) = 1 + (-w.re - 1) by ring, Real.rpow_add hn0, Real.rpow_one]
+
+theorem summable_rowMellin {v : ℕ → ℂ} (hv0 : v 0 = 0) {C : ℝ}
+    (hC : ∀ n : ℕ, ‖v n‖ ≤ C * ((n : ℝ) + 1)) {w : ℂ} (hw : 1 < w.re) :
+    Summable fun n => v n * complexMellinCell w n :=
+  Summable.of_norm_bounded ((Real.summable_nat_rpow.mpr (by linarith : -w.re < -1)).mul_left
+    (2 * C * ‖w‖)) fun n => norm_mul_cell_le hv0 hC (by linarith) n
+
+/-- Block telescoping: `Σ_{t<d} Δ_{md+t}(w) = d^{-w} Δ_m(w)`. -/
+theorem sum_range_complexMellinCell_block (w : ℂ) (d m : ℕ) :
+    ∑ t ∈ range d, complexMellinCell w (m * d + t) =
+      ((d : ℝ) : ℂ) ^ (-w) * complexMellinCell w m := by
+  have htel : ∀ k, ∑ t ∈ range k, complexMellinCell w (m * d + t) =
+      (((m * d : ℕ) : ℝ) : ℂ) ^ (-w) - (((m * d + k : ℕ) : ℝ) : ℂ) ^ (-w) := by
+    intro k
+    induction k with
+    | zero => simp
+    | succ k ih =>
+      rw [Finset.sum_range_succ, ih, complexMellinCell]
+      push_cast; ring
+  rw [htel d, complexMellinCell]
+  have h1 : (((m * d : ℕ) : ℝ) : ℂ) ^ (-w) = ((m : ℝ) : ℂ) ^ (-w) * ((d : ℝ) : ℂ) ^ (-w) := by
+    push_cast
+    exact Complex.mul_cpow_ofReal_nonneg (Nat.cast_nonneg m) (Nat.cast_nonneg d) (-w)
+  have h2 : (((m * d + d : ℕ) : ℝ) : ℂ) ^ (-w) =
+      (((m : ℝ) + 1 : ℝ) : ℂ) ^ (-w) * ((d : ℝ) : ℂ) ^ (-w) := by
+    rw [show ((m * d + d : ℕ) : ℝ) = ((m : ℝ) + 1) * (d : ℝ) by push_cast; ring, Complex.ofReal_mul]
+    exact Complex.mul_cpow_ofReal_nonneg (by positivity) (Nat.cast_nonneg d) (-w)
+  rw [h1, h2]
+  ring
+
+/-- **Mellin intertwining of floor dilations.** -/
+theorem hasSum_dil_mul_complexMellinCell {v : ℕ → ℂ} (hv0 : v 0 = 0) {C : ℝ}
+    (hC : ∀ n : ℕ, ‖v n‖ ≤ C * ((n : ℝ) + 1)) {w : ℂ} (hw : 1 < w.re) {d : ℕ} (hd : 1 ≤ d) :
+    HasSum (fun n => v (n / d) * complexMellinCell w n) (((d : ℝ) : ℂ) ^ (-w) * rowMellin v w) := by
+  have hCd : ∀ n : ℕ, ‖v (n / d)‖ ≤ C * ((n : ℝ) + 1) := by
+    intro n
+    have hC0 : 0 ≤ C := by
+      have := (norm_nonneg _).trans (hC 0); simp at this; linarith
+    refine (hC (n / d)).trans (mul_le_mul_of_nonneg_left ?_ hC0)
+    have : ((n / d : ℕ) : ℝ) ≤ n := by exact_mod_cast Nat.div_le_self n d
+    linarith
+  have hsumm := summable_rowMellin (v := fun n => v (n / d)) (by simp [hv0]) hCd hw
+  have hpart : ∀ N : ℕ, ∑ n ∈ range (N * d), v (n / d) * complexMellinCell w n =
+      ((d : ℝ) : ℂ) ^ (-w) * ∑ m ∈ range N, v m * complexMellinCell w m := by
+    intro N
+    induction N with
+    | zero => simp
+    | succ N ih =>
+      rw [show (N + 1) * d = N * d + d by ring, Finset.sum_range_add, ih, Finset.sum_range_succ,
+        mul_add]
+      congr 1
+      have hdiv : ∀ t ∈ range d, (N * d + t) / d = N := fun t ht => by
+        rw [Nat.add_comm, Nat.add_mul_div_right _ _ (by omega), Nat.div_eq_of_lt (mem_range.mp ht),
+          zero_add]
+      rw [sum_congr rfl fun t ht => by rw [hdiv t ht], ← mul_sum,
+        sum_range_complexMellinCell_block]
+      ring
+  have hmul : Tendsto (fun N : ℕ => N * d) atTop atTop :=
+    tendsto_atTop_atTop.mpr fun b => ⟨b, fun a ha => ha.trans (Nat.le_mul_of_pos_right a hd)⟩
+  have hlim1 := hsumm.hasSum.tendsto_sum_nat.comp hmul
+  have hlim2 : Tendsto (fun N => ∑ n ∈ range (N * d), v (n / d) * complexMellinCell w n) atTop
+      (𝓝 (((d : ℝ) : ℂ) ^ (-w) * rowMellin v w)) := by
+    simp_rw [hpart]
+    exact (summable_rowMellin hv0 hC hw).hasSum.tendsto_sum_nat.const_mul _
+  rw [← tendsto_nhds_unique hlim1 hlim2]
+  exact hsumm.hasSum
+
+/-- **`𝓜(S_ε v)(w) = ζ(w + ε) 𝓜v(w)` for `Re w > 2`.** -/
+theorem hasSum_cTotalCofactorSum_mul_cell {ε : ℝ} (hε : 0 < ε) {v : ℕ → ℂ} (hv0 : v 0 = 0) {C : ℝ}
+    (hC : ∀ n : ℕ, ‖v n‖ ≤ C * ((n : ℝ) + 1)) {w : ℂ} (hw : 2 < w.re) :
+    HasSum (fun n => cTotalCofactorSum ε v n * complexMellinCell w n)
+      (riemannZeta (w + ε) * rowMellin v w) := by
+  have hC0 : 0 ≤ C := by
+    have := (norm_nonneg _).trans (hC 0); simp at this; linarith
+  set F : ℕ → ℕ → ℂ := fun j n => (((j : ℝ) ^ (-ε) : ℝ) : ℂ) * v (n / j) * complexMellinCell w n
+    with hF
+  have hvanish : ∀ n j, j ∉ Icc 1 n → F j n = 0 := by
+    intro n j hj
+    simp only [Finset.mem_Icc, not_and_or, not_le] at hj
+    rcases hj with hj | hj
+    · have : j = 0 := by omega
+      subst this; simp [hF, Real.zero_rpow (by linarith : -ε ≠ 0)]
+    · simp [hF, Nat.div_eq_of_lt hj, hv0]
+  -- absolute summability on pairs
+  have hbound : ∀ j n, ‖F j n‖ ≤ (2 * C * ‖w‖) * ((j : ℝ) ^ (-1 - ε) * (n : ℝ) ^ (-w.re + 1)) := by
+    intro j n
+    by_cases hjn : j ∈ Icc 1 n
+    · obtain ⟨hj1, hjn⟩ := Finset.mem_Icc.mp hjn
+      have hj0 : (0 : ℝ) < j := by exact_mod_cast hj1
+      have hn0 : (0 : ℝ) < n := by exact_mod_cast (lt_of_lt_of_le hj1 hjn)
+      have hn1 : 1 ≤ n := le_trans hj1 hjn
+      have hvj : ‖v (n / j)‖ ≤ C * (2 * n / j) := by
+        refine (hC _).trans (mul_le_mul_of_nonneg_left ?_ hC0)
+        have h1 : ((n / j : ℕ) : ℝ) ≤ n / j := Nat.cast_div_le
+        have h2 : (1 : ℝ) ≤ n / j := by rw [le_div_iff₀ hj0]; exact_mod_cast hjn
+        have h3 : (n : ℝ) / j + n / j = 2 * n / j := by ring
+        linarith
+      rw [hF, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_pos (Real.rpow_pos_of_pos hj0 _)]
+      calc (j : ℝ) ^ (-ε) * ‖v (n / j)‖ * ‖complexMellinCell w n‖
+          ≤ (j : ℝ) ^ (-ε) * (C * (2 * n / j)) * (‖w‖ * (n : ℝ) ^ (-w.re - 1)) := by
+            gcongr
+            · exact norm_complexMellinCell_le (by linarith) hn1
+        _ = (2 * C * ‖w‖) * (((j : ℝ) ^ (-ε) / j) * ((n : ℝ) * (n : ℝ) ^ (-w.re - 1))) := by
+            ring
+        _ = _ := by
+            congr 2
+            · rw [Real.rpow_sub hj0, Real.rpow_neg_one]
+              sorry
+            · rw [show (-w.re + 1) = 1 + (-w.re - 1) by ring, Real.rpow_add hn0, Real.rpow_one]
+    · rw [hvanish n j hjn, norm_zero]
+      positivity
+  sorry
 
 end GaloisForLFunctions.ArithmeticDefectRigidity

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.MultiplicativePositivityGeometry.AbelianZeroMass
+import GaloisForLFunctions.MultiplicativePositivityGeometry.FiniteBoundaryDivisors
 import GaloisForLFunctions.MultiplicativePositivityGeometry.BoundaryRegularity
 import GaloisForLFunctions.MultiplicativePositivityGeometry.IntegralRealization
 import Mathlib.Analysis.Real.Cardinality
@@ -91,7 +92,8 @@ theorem IsEvenPosDef.tsum_mul_cos_nonneg {φ : Γ → ℝ} (hφ : IsEvenPosDef �
   have hF0 : (0 : ℝ) < F.card := by
     exact_mod_cast Finset.card_pos.mpr ⟨0, zero_mem_abFolnerSet S hN1⟩
   set c : Γ → ℝ := fun p => ((F.filter fun y => y + p ∈ F).card : ℝ)
-  have hc_le : ∀ p, c p ≤ F.card := fun p => by exact_mod_cast Finset.card_filter_le _ _
+  have hc_le : ∀ p, c p ≤ F.card := fun p => by
+    simp only [c]; exact_mod_cast Finset.card_filter_le _ _
   have hc_nonneg : ∀ p, 0 ≤ c p := fun p => Nat.cast_nonneg _
   have hc_S : ∀ p ∈ S, (1 - ε') * F.card ≤ c p := fun p hp => by
     have := card_abShift_mem_ge (N := N) hp
@@ -112,15 +114,18 @@ theorem IsEvenPosDef.tsum_mul_cos_nonneg {φ : Γ → ℝ} (hφ : IsEvenPosDef �
     rw [← h, hall]
     exact hφ.sum_sum_cos_nonneg θ F
   -- Compare with `|F| Σ ψ`.
-  have hψc : Summable fun p => ψ p * c p := Summable.of_norm_bounded (habs.mul_right F.card)
-    fun p => by
-      rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_nonneg (hc_nonneg p)]
-      exact mul_le_mul (mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _))
-        (hc_le p) (hc_nonneg p) (abs_nonneg _)
+  have hψc : Summable fun p => ψ p * c p :=
+    Summable.of_norm_bounded (habs.mul_right (F.card : ℝ)) fun p => by
+      rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hc_nonneg p)]
+      have h1 : |ψ p| ≤ |φ p| := by
+        simp only [ψ]
+        rw [abs_mul]
+        exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _)
+      exact mul_le_mul h1 (hc_le p) (hc_nonneg p) (abs_nonneg _)
   have hdef : Summable fun p => |φ p| * (F.card - c p) :=
     Summable.of_nonneg_of_le (fun p => mul_nonneg (abs_nonneg _) (by linarith [hc_le p]))
       (fun p => mul_le_mul_of_nonneg_left (by linarith [hc_nonneg p]) (abs_nonneg _))
-      (habs.mul_right F.card)
+      (habs.mul_right (F.card : ℝ))
   have hbound : ∀ p, |φ p| * (F.card - c p) ≤
       ε' * F.card * |φ p| + F.card * (|φ p| * (if p ∈ S then 0 else 1)) := fun p => by
     by_cases hp : p ∈ S
@@ -234,8 +239,9 @@ theorem trace_bohrWeight {φ : Γ → ℝ} (hs : Summable φ) (h : Γ →+ ℝ) 
     have h2 := Real.abs_cos_le_one (logFrequency n * u)
     have h3 := abs_nonneg (φ γ)
     calc zetaBoundaryWeight x n * (|φ γ| * |Real.cos (logFrequency n * h γ)|) *
-          |Real.cos (logFrequency n * u)| ≤ zetaBoundaryWeight x n * (|φ γ| * 1) * 1 := by
-          gcongr
+          |Real.cos (logFrequency n * u)| ≤ zetaBoundaryWeight x n * (|φ γ| * 1) * 1 :=
+          mul_le_mul (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left h1 h3) (hz0 n)) h2
+            (abs_nonneg _) (mul_nonneg (hz0 n) (by linarith))
       _ = _ := by ring
   have hrow : ∀ n, HasSum (f n) (zetaBoundaryWeight x n * bohrSeries φ h (logFrequency n) *
       Real.cos (logFrequency n * u)) := fun n => by
@@ -280,7 +286,8 @@ theorem summable_isBoundaryDivisor {φ : Γ → ℝ} (hφ : IsEvenPosDef φ) (hs
       rwa [zetaBoundaryDivisor_eq] at this
     -- Near `0`, `x · tr(x, w) ≤ x · tr(x, 0) ≤ 2`.
     have hev : ∀ᶠ x in 𝓝[>] 0, 0 < x ∧ x * cosineTrace (zetaBoundaryWeight x) logFrequency 0 ≤ 2 :=
-      self_mem_nhdsWithin.and ((hz 0).eventually (ge_mem_nhds (by simp [diracAt]; norm_num)))
+      (eventually_mem_nhdsWithin.mono fun x (hx : x ∈ Set.Ioi (0 : ℝ)) => (hx : 0 < x)).and
+        ((hz 0).eventually (ge_mem_nhds (by simp [diracAt])))
     have hbd : ∀ x, 0 < x → x * cosineTrace (zetaBoundaryWeight x) logFrequency 0 ≤ 2 →
         ∀ v, |x * cosineTrace (zetaBoundaryWeight x) logFrequency v| ≤ 2 := by
       intro x hx h2 v
@@ -346,8 +353,8 @@ theorem summable_isBoundaryDivisor {φ : Γ → ℝ} (hφ : IsEvenPosDef φ) (hs
 theorem summable_integral {φ : Γ → ℝ} (hφ : IsEvenPosDef φ) (hs : Summable φ) (h : Γ →+ ℝ) :
     ∃ m : ℕ → ℕ, IsBoundaryDivisor logFrequency (intWeight m) (pushDivisor φ h) :=
   ⟨_, IsBoundaryDivisor.round (g := fun n => bohrSeries φ h (logFrequency n))
-    (fun n => bohrSeries_nonneg hφ hs h _)
-    (fun n => (le_abs_self _).trans (abs_bohrSeries_le hs h _))
+    (fun _ => bohrSeries_nonneg hφ hs h _)
+    (fun _ => (le_abs_self _).trans (abs_bohrSeries_le hs h _))
     (summable_isBoundaryDivisor hφ hs h)⟩
 
 /-- **Every absolutely summable even positive-definite function on `ℝ` is the boundary divisor of
@@ -403,10 +410,9 @@ theorem rank_profile_collapse {t : Fin r → ℝ} (ht : Function.Injective (heig
     (hw : IsBoundaryDivisor lam w (pushDivisor d (heightHom t))) (h0 : d 0 = 1)
     (hint : ∀ k, ∃ n : ℤ, d k = n) {k k' : Fin r → ℤ} (hk : d k ≠ 0) (hk' : d k' ≠ 0) :
     ∃ m m' : ℤ, (m ≠ 0 ∨ m' ≠ 0) ∧ m • k = m' • k' := by
-  set D := pushDivisor d (heightHom t)
-  have hD0 : D 0 = 1 := by
+  have hD0 : pushDivisor d (heightHom t) 0 = 1 := by
     rw [show (0 : ℝ) = heightHom t 0 from (map_zero _).symm, pushDivisor_height ht, h0]
-  have hDint : ∀ u, ∃ n : ℤ, D u = n := fun u => by
+  have hDint : ∀ u, ∃ n : ℤ, pushDivisor d (heightHom t) u = n := fun u => by
     by_cases hu : u ∈ Set.range (heightHom t)
     · obtain ⟨j, rfl⟩ := hu
       rw [pushDivisor_height ht]

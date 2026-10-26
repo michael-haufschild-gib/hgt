@@ -41,3 +41,4 @@ import GaloisForLFunctions.KummerRootApplications
 import GaloisForLFunctions.HTGeometry.NevanlinnaCharacteristicLowerBound
 import GaloisForLFunctions.StripBochnerWeilForcing
 import GaloisForLFunctions.ArithmeticCorrelationGeometry
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity

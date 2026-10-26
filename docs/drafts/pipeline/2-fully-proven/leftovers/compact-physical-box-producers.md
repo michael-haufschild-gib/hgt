@@ -1,9 +1,9 @@
 # Compact logarithmic states from compensated physical producers
 
 - **ID:** compact-physical-box-producers
-- **Stage:** 3-formalized
-- **Type:** THEOREM (Lean-verified)
-- **Status:** Complete. Exact construction, quantitative bounds, compact C¹ states, L² and uniform-trace convergence, compact form errors and actual source/jump energy limits are formalized. All 110 public declarations in the four supporting leaves passed transitive axiom audit.
+- **Stage:** 2-fully-proven; historical-report completion in progress
+- **Type:** THEOREM (paper; main construction and limits Lean-verified)
+- **Status:** Reopened after recovering the full referenced report from Git history. Main construction and limits remain verified: all 110 public declarations in four supporting leaves passed transitive axiom audit. Exact two-tail identity, separate tail limits and remaining explicit norm/form corollaries require completion before promotion.
 - **Source:** continuum-coprime-shear; physical-box-average-affine-regularity
 - **Statement:** Construct compact logarithmic primitive states from arbitrary physical velocities using interval truncation, explicit zero-integral compensation and box smoothing, with quantitative errors and compact-source form convergence.
 
@@ -127,3 +127,16 @@ Source SHA256 values:
 | `CompensatedPhysicalLogarithmicProducer.lean` | `3a44be85c202519aab0b38bcf3d8bffa291d5cf7992da5873afb1bad215137e2` |
 | `CompensatedPhysicalProducerConvergence.lean` | `43491978b37a82426238a50f613cad5f9c41668c49c0c275c688d94888bd7e4b` |
 | `CompensatedPhysicalProducerFormLimits.lean` | `1c6395c813ef8bef632af5da336298646e933ac0aa3702bc3d736a809d509742` |
+
+## Recovered original report
+
+The full report is retained at commit `727dc15d1`, path
+`docs/reports/BiScaleUncertainty/CompactLogarithmicPhysicalProducers.md`; deletion
+from the current tree occurred in `80971df8c`. Its displayed claims are now being
+checked individually. The previous certificate covers the main construction and
+convergence but did not explicitly expose equation (14), separate tail limits,
+all square-root norm bounds, physical-interval uniform traces, or the combined
+compact-form bounds with the report's exact coefficient. Existing generic box
+regularity theorems may already supply parts of (8) and its derivative bound;
+those dependencies must be named and audited. All these report claims remain
+required. This reopening changes no theorem or constant.

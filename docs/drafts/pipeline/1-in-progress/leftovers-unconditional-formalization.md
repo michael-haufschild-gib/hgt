@@ -25,9 +25,9 @@ Existing unrelated worktree changes must be preserved.
 | `biscale-dyadic-joint-coercivity-1810` | Exact integer-window upper/lower bounds, tent and additive-only witnesses, realization, and stated perturbation gate. Paper read; Lean coverage not yet audited. |
 | `biscale-finite-cycle-recovery-1810` | Arbitrary positive collar recovery, mesh count, actual derivative controls, distant-copy controlled-class obstruction; audit existing singular-energy recovery. Paper read. |
 | `biscale-perturbed-incidence-1810` | Exact-incidence exclusion, log gaps, weighted comparison, sharpness, common-model realization, continuum distinction. Paper read. |
-| `compact-physical-box-producers` | **DONE, moved to `3-formalized/compact-physical-box-producers.md`.** Exact construction and all limits retained; two new leaves checked, 110 public axiom audits passed, umbrella wired. Referenced report absent; complete convergence proof supplied on card. |
+| `compact-physical-box-producers` | **REOPENED after recovered-report audit.** Main construction and limits retain 110 clean axiom audits; card returned to `2-fully-proven/leftovers`. Exact two-tail identity and additional quantitative corollaries from the original report still require completion. |
 | `nonvacuous-independence-and-polarization-import-law` | Audit small-eigenvalue witness, complete actual Selberg-zeta dictionary and nonvacuous clauses. Historical log reports witness complete; current source audit pending. Import table explicitly an observation. |
-| `nyquist-critical-finite-part-2026-10-18` | Finite part, signed broad-test expansion, actual-source classification and witnesses. Existing 591-line leaf inspected: cell discrepancy, nodal finite part, source mass and zero-mean witness are present; continuous primitive and signed broad-test expansion are absent. Header's completion claim is premature. |
+| `nyquist-critical-finite-part-2026-10-18` | Finite part, signed broad-test expansion, actual-source classification and witnesses. Existing 591-line parent inspected. New continuous primitive and signed cell estimates pass Lean; broad-test leaf is building. Source classification and witnesses remain unchecked. Header's completion claim was corrected. |
 | `pm-long-modulus-quadrature` | Actual integrable Möbius producer, exact long/tail quadrature identity and bounded short-head pronic energy. Paper read. |
 | `route-e-cofactor-amplified-e3-token-supply` | Exact all-interval supply with all elementary bounds; shared Matomäki–Teräväinen/DI analytic input. Full historical-log and current-source audit pending. |
 | `route-e-forbidden-support-e3-stability` | Exact forbidden-support all-interval count with shared analytic input. Full historical-log and current-source audit pending. |
@@ -154,3 +154,122 @@ Existing unrelated worktree changes must be preserved.
   Actual PM producer prototype `/tmp/leftovers_pm_integrable_producer.lean` written,
   not compiled: exact floor cutoff, pointwise indicator series, integrability,
   and full signed harmonic-tail integral. PM card remains unfinished.
+
+- Cell check `34323` reached all declarations. Numeric bounds passed; repaired
+  integral function elaboration with typed sum/difference integrability facts,
+  supplied width positivity explicitly, and used `abs_add_le`. Canonical leaf
+  is now `BiScaleUncertainty/NyquistCriticalTestCellBounds.lean`; missing olean
+  build `48915` active for its downstream broad-test import.
+- PM sampling prototype `/tmp/leftovers_pm_sampling.lean` written, not compiled;
+  uses the existing exact hyperbola-swap theorem, retains every positive integer
+  sample and the entire harmonic tail. Intended imports are the producer leaf
+  `ArithmeticContinuationAndCriticalEnergy/LongModulusIntegrableProducer` and
+  the existing hyperbola-cancellation leaf. No PM olean built or source promoted.
+
+- PM exact-decomposition prototype `/tmp/leftovers_pm_exact_decomposition.lean`
+  written, not compiled. It supplies the unconditional all-cutoff prefix identity
+  and the long-sawtooth/full-tail identity when the natural cutoff lies below `n`.
+  The first prototype now exposes `pmLongModulusIndicatorTerm` publicly, so its
+  exact series statement does not leak a private definition. All PM drafts remain
+  `/tmp` prototypes; no completion claim.
+
+- Nyquist cell-bound olean build `48915` exited 0, empty log. The exact
+  summable majorant and signed cell bound are kernel checked. Broad-test scratch
+  `/tmp/leftovers_nyquist_broad_tests.lean` is now checking.
+- PM short-head search found `abs_oscillatingShortSawtooth_le` and
+  `pronicNorm_oscillatingShortSawtooth_le`; these use `oscillatingSmoothPower`,
+  whose coefficient definition must be checked before reuse for actual Möbius.
+  Their public generic bound `sum_sq_le_of_abs_le_sqrt_rpow` may discharge the
+  exact pronic constant even when the oscillating coefficient is different.
+
+- PM oscillating coefficient is `d^(-ε) cos(t log d)`, not Möbius; do not
+  identify it with the actual source. Reuse only the public generic
+  `sum_sq_le_of_abs_le_sqrt_rpow`, whose exact pronic constant was inspected.
+  `/tmp/leftovers_pm_short_energy.lean` now supplies the actual Möbius finite-head
+  bound, exact floor-square-root exponent (including `n=0`) and all-horizon
+  energy. Uncompiled. It imports the existing generic majorant leaf (olean
+  present), not the large oscillating-source leaf (olean absent).
+  Four PM prototypes cover the complete paper statement; they remain unchecked.
+
+- Broad-test scratch check `57515` failed only two local elaboration details:
+  explicitly typed `G`'s integrability with Lebesgue measure and reduced the
+  function application before the zero-kernel rewrite. Canonical leaf now
+  `BiScaleUncertainty/NyquistCriticalBroadTests.lean`; missing olean build `11180`
+  active for source classification. Source-classification and witness drafts
+  remain uncompiled. Superseded primitive/cell scratch files removed safely.
+- Later dyadic-card audit: `FiniteHorizonPositiveCoercivity.doubling_window_coercivity`
+  supplies the stronger upper bound `6N` on all integer windows. Read its
+  statement and relevant path/native-edge arguments, plus the entire
+  `FiniteHorizonCoercivityClassification` leaf. Its cosine witness only supplies
+  lower constant `N/6144` for `N≥1024`, so it does not discharge the paper's
+  exact dyadic tent or `N/4096` bound on all `N=2^(h+4)-1`. No dyadic source edits.
+
+- Dyadic read-only follow-up: native energies and `biScaleJointEnergy_eq_zero_iff_const`
+  inspected in `UniversalRamanujanCovarianceAndBiScaleRigidity` (lines 575–680).
+  Two long semantic queries returned partial results with semantic deadline errors;
+  short rephrasings completed. Returned tent hits do not establish the requested
+  integer-mantissa tent. Scoped lexical energy and variance searches are saved
+  under `/tmp/leftovers-*-lexical.json`. No absence claim.
+- Possible later tent proof mechanism (not yet implemented): define the normalized
+  triangle on each dyadic level; prove increment bound `1/q` for `q≤n<2q`.
+  Since `n(n+1)<4q²`, its squared increments are at most `4/(n(n+1))`.
+  The root increment is zero; telescoping from `n=2` gives the paper's strict
+  additive energy bound `<2` without reindexing every complete level. Exact
+  high/low last-level counts still required for `N/4096`. This is a planning
+  observation, not a new theorem certificate or replacement of the requested witness.
+
+- The next Nyquist source prototype's half-line integral now explicitly types
+  Lebesgue integrability, avoiding the same elaboration error just found in
+  broad tests. `exists_autoCorr_constants` was rechecked: its constant is
+  source Lipschitz bound times `∫|f|`, then normalization divides by `∫f²`.
+- Dyadic common-model lead `ArithmeticEdgeSieveFamily.signal_realization` was
+  inspected, but concerns prescribed arithmetic edge coordinates rather than
+  arbitrary integer window values; it is not yet accepted as the requested
+  common-window realization. Further inversion searches pending.
+
+- Broad-test olean build `11180` exited 0, empty log. Exact signed expansion
+  holds for every compact Lipschitz test and all positive scales, in half-line
+  and full-line forms. Source prototype corrected two visible issues before
+  checking: target the lag variables in `abs_sub_comm`, and supply nonzero
+  squared value (rather than positivity) to the compact-integral positivity API.
+  Canonical broad source and olean retained; final direct audit remains.
+
+- Current owned Lean command: source-classification scratch check `59754`,
+  log `/tmp/leftovers-nyquist-sources-check.log`; it imports the successfully
+  built broad-test leaf. All search sessions from this batch have completed.
+  Three checked Nyquist leaves are now wired into `BiScaleUncertainty.lean`;
+  no umbrella compilation. Broad scratch removed after byte comparison with
+  the canonical checked source. Final direct checks and axiom audit remain.
+- PM card now labels its old significance deferral as historical and records
+  current authorization and unverified prototypes. No mathematical statement
+  or gate was weakened or marked complete.
+
+## Recovered report audit
+
+- Missing current-tree reports exist in Git history. Both were deleted by
+  `80971df8c`; their latest retained text is at `727dc15d1`. Read the full
+  Nyquist report there. It additionally states: primitive error is absolutely
+  integrable with exponential tails; every source Lipschitz constant gives the
+  explicit normalized constant `K_f ∫|f|/∫f²`; exact first-moment energy bound;
+  locally uniform normalized correlation convergence; `|H|≤1`; and the signed
+  witness's negative lag occurs at `4L`. Existing drafts do not yet expose all
+  these statements, so Nyquist promotion remains blocked on their formalization.
+  This is additional required coverage, not a weakened theorem.
+- The physical report at the same commit is being re-audited against its
+  completed certificate. Its stage-3 status must be reconsidered if that
+  report contains an uncovered theorem. No claim of exhaustive historical
+  report coverage should be made until this comparison is complete.
+
+- Full physical report read at `727dc15d1`. Its additional explicit claims are
+  not all covered by the 110 audited declarations: equation (14), separate tail
+  limits, square-root norm and derivative bounds, physical-interval uniform
+  convergence and combined exact-coefficient form bounds. Card moved back to
+  stage 2 and status corrected. Existing checked proofs and umbrella imports
+  retained. No card is now certified complete for the recovered full-report
+  scope; finish these corollaries before restoring physical promotion.
+- Source scratch `59754` exited 1: only missing `integral_div_const`, a lower
+  neighborhood orientation and one redundant `ring`. Repaired, then expanded
+  the source leaf with exact source-derived Lipschitz constants, pointwise
+  normalized scaling and every-source-Lipschitz-constant error bound. Canonical
+  `NyquistCriticalSourceClassification.lean` (250 lines) is building in `27290`;
+  log `/tmp/leftovers-nyquist-sources-build.log`. No other Lean process owned.
