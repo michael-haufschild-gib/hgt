@@ -1,8 +1,8 @@
 # RH ⇔ every escape state has positive gauge mass
 
 - **ID:** acg-gauge-mass-criterion-2026-10-26
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** ArithmeticCorrelationGeometry README §9 topic 6; cards acg-escape-spectral, acg-gauge-mass
 - **Statement:** RH holds iff for every damping `0 < ε < 1/2` every actual common cofactor limit `L`
   of the damped Möbius receiver has positive gauge mass `inf_d d·K_L(d,d)` (then it equals one).
@@ -25,5 +25,14 @@
    `d·K_L(d,d) ≤ lim E(⌊(R+1)/d⌋)/E(R) ≤ ((⌊(R+1)/d⌋+1)/(R+1))^κ ≤ (2/d)^κ`, so the mass is `0`.
 
 ## Lean
-To formalize: `ArithmeticCorrelationGeometry/SubpowerReceiverEnergyTranslatesZeros.lean` (steps 1–2),
-`ArithmeticCorrelationGeometry/RHIsTheVisibilityOfEveryEscapeState.lean` (steps 3–4, equivalence).
+`formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/SubpowerReceiverEnergyTranslatesZeros.lean`:
+`summable_abs_mul_rpow_of_energy_growth`, `differentiableOn_complexMellinPairing_of_energy_growth`,
+`riemannZeta_sub_eq_zero_of_energy_growth`, `riemannHypothesis_of_subpower_energy`.
+`formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/RHIsTheVisibilityOfEveryEscapeState.lean`:
+`exists_record_horizons`, `exists_actualCofactorLimit_gaugeMass_eq_zero`,
+`gaugeMass_eq_one_of_riemannHypothesis`, `riemannHypothesis_iff_forall_gaugeMass_pos`.
+Axioms: propext, Classical.choice, Quot.sound.
+
+## Insight
+An off-line zero cannot hide in the scale-invariant part of the receiver: it forces an escape state
+with zero spectral measure on the gauge torus. RH is the visibility of every escape state.

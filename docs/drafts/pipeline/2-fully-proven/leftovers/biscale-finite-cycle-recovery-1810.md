@@ -1,9 +1,9 @@
 # Finite closed-cycle recovery on controlled correlations
 
 - **ID:** biscale-finite-cycle-recovery-1810
-- **Stage:** 2-fully-proven for the elementary recovery estimate; source-bound and sharpness gates below remain open
+- **Stage:** 2-fully-proven; recovery, source controls and sharpness in Lean, ancillary coverage audit pending
 - **Type:** BRIDGE; quantitative extension of existing cycle completeness
-- **Parent:** [field programme](../1-in-progress/biscale-field-development-1810.md), item 9
+- **Parent:** [field programme](../../1-in-progress/rh/bi-scale-uncertainty/biscale-field-development-1810.md), item 9
 
 ## Controlled class and finite observations
 
@@ -79,4 +79,43 @@ Source ingredients inspected: `InfiniteGridUniformTail.lean` contains the global
 
 This component does not close item 9.
 
-2026-10-18 checkpoint: `EnergyControlledClosedCycleRecovery.lean` now proves the energy-derived κ=1/2 reconstruction protocol, with explicit mesh size/order and signed trace error retained. `EnergyCycle.global_recovery` and `fixed_integer_grid_recovery` passed a direct named-source Lean check with no warnings and are wired into the field umbrella. The modulus-based collar is exp(-(1+32 max(K,0)/exp(-1/2))); no derivative bound is assumed. The arbitrary-κ statement and the other unchecked gates above remain separate. This formalizes existing paper work and is not counted as a new contribution in the 100-contribution programme; its associated exact-order obstruction is tracked in `../3-formalized/biscale-energy-controlled-cycle-observability-2026-10-18.md`.
+## Frozen Lean completion
+
+All ten started leaves passed the combined source and transitive axiom audit:
+80 public declarations, using only `propext`, `Classical.choice`, `Quot.sound`.
+Canonical direct checks remain pending. Unique umbrella imports and indexed
+names are verified; global lint has no diagnostic for these leaves. One redundant
+tactic-composition warning was removed before migration; the final leaf check
+will verify that source. The other audit messages were informational ring output.
+
+| Exact claim | Canonical leaf and declaration |
+|---|---|
+| Exact first-order collar `exp(−1−8E/c)`, logarithmic modulus and quarter-accuracy radius | `FirstOrderEnergyCollar.lean`: `correlation_firstOrderCollar`, `correlation_logarithmic_modulus`, `continuityRadius_quarter_eq` |
+| Arbitrary positive `κ`, scalar recovery, literal closed observations, mesh count and maximum order | `ClosedCycleScalarRecovery.lean`: `scalar_cycle_recovery`, `literalObservationCycle_sum`, `literalObservationCycle_count_le`, `literalObservationCycle_length_le` |
+| Actual compact derivative in L², primitive identity, exact all-lag translation bound | `CompactSourceDerivativeEnergy.lean`: `primitive_compactDerivativeVelocity`, `integral_compactSource_translation_sq_le` |
+| Source-derived correlation collar, Lipschitz modulus and interval support bound | `CompactCorrelationDerivativeBounds.lean`: `nyquistNormalizedCorrelation_ge_one_sub_dirichlet`, `lipschitzWith_nyquistNormalizedCorrelation_sqrt_dirichlet`, `nyquistNormalizedCorrelation_eq_zero_of_source_interval` |
+| Separate finite pair/spoke errors and exact window/global reconstruction | `ControlledClosedCycleRecovery.lean`: `controlled_global_recovery_norm`, `exists_common_levyEnergySource` |
+| Exact grid-tail recovery with the stated `32` and `128` constants | `GridFiniteCycleRecovery.lean`: `grid_finite_cycle_recovery_norm_exact` |
+| Actual fixed-energy distant copies, uniform collar/modulus and unbounded distinguishing order | `ControlledSharpCycleSources.lean`: `controlledSource_uniform_collar`, `controlledSource_detects_iff`, `exists_controlled_sources_above_order` |
+| Derivative-energy conditioning and exact `2δ_C+2nδ₂+2√Bη` bound | `DerivativeCycleConditioning.lean`: `derivative_inner_power_ge_half`, `derivative_global_recovery_norm` |
+| Arbitrary measured arrays, actual fitting residuals and reconstruction coefficient | `ClosedCycleDataResiduals.lean`: `controlled_recovery_from_measured_array` |
+| Actual unit-mass compact sources, preserved correlation/normalized derivative energy and a nonempty controlled class | `UnitMassCompactSources.lean`: `autocorr_unitMassCompactSource_zero`, `normalizedDirichletEnergy_unitMassCompactSource`, `exists_unit_mass_derivative_controlled_source` |
+
+Leaves reside in `formal/GaloisForLFunctions/BiScaleUncertainty/`.
+The literal spoke implementation uses a natural index `k` for the positive
+paper order `n=k+1`; its total cycle order is `k+2`. Accordingly the displayed
+`n` coefficients are preserved exactly, including the grid estimate's `2^n`.
+Actual source construction discharges source regularity and normalization;
+the recovery theorems retain only the stated domain/control conditions.
+
+The card remains at stage 2 pending a complete audit of its ancillary claims,
+including explicit automatic selection of all recovery parameters and noise
+thresholds from `E,ε`. The finished drafts give exact bounds at supplied
+admissible parameters. No additional parameter-selection draft is started
+under the user's pause instruction, and item 9 is not declared closed.
+
+Evidence: `/tmp/leftovers-cycle-public-names.json`,
+`/tmp/leftovers-cycle-complete-audit-r2.log`, and
+[the frozen-scope tracker](../../1-in-progress/leftovers-unconditional-formalization.md).
+
+2026-10-18 checkpoint: `EnergyControlledClosedCycleRecovery.lean` now proves the energy-derived κ=1/2 reconstruction protocol, with explicit mesh size/order and signed trace error retained. `EnergyCycle.global_recovery` and `fixed_integer_grid_recovery` passed a direct named-source Lean check with no warnings and are wired into the field umbrella. The modulus-based collar is exp(-(1+32 max(K,0)/exp(-1/2))); no derivative bound is assumed. The arbitrary-κ statement and the other unchecked gates above remain separate. This formalizes existing paper work and is not counted as a new contribution in the 100-contribution programme; its associated exact-order obstruction is tracked in `../../3-formalized/biscale-energy-controlled-cycle-observability-2026-10-18.md`.

@@ -64,6 +64,8 @@ to `PrimeArchThetaFirstAtomQuadratureEnclosures`. The original rational-bounds t
   (55080, exit 0); its current olean/ilean are valid.
 - [x] `PrimeArchThetaFirstAtomQuadratureCells56` (cells 56–59) built successfully
   (43400, exit 0); its current olean/ilean are valid.
+- [x] `PrimeArchThetaFirstAtomQuadratureCells60` (cells 60–63) built successfully
+  (93283, exit 0). All sixteen four-cell tables now have valid olean/ilean artifacts.
 - [x] All twenty production helpers are imported by the RHTower umbrella. Do not compile umbrellas.
 - [x] Production-source scans find no native decision tactic, placeholders, added axioms, raised
   limits, or temporary diagnostics. `git diff --check` passes.
@@ -73,22 +75,30 @@ to `PrimeArchThetaFirstAtomQuadratureEnclosures`. The original rational-bounds t
 
 ## Current process and remaining work
 
-**Active owned Lean session: 93283**, building
-`RHTower/PrimeArchThetaFirstAtomQuadratureCells60.lean` (cells 60–63).
+**Active owned Lean session: 99852**, building
+`RHTower/PrimeArchThetaFirstAtomQuadratureArithmetic.lean` (the five global inequalities).
 Wait for this session before starting another Lean process.
+
+The first Arithmetic check (34713, exit 1) found a layout error in the tactic macro quotation;
+it is fixed with a parenthesized, newline-separated tactic sequence. The next check (58838, exit 1)
+showed that `simp only` had already reduced the integer witnesses, so the subsequent `dsimp` made
+no progress. That redundant step and its unused syntax array are removed. The final assembly also
+hit the default heartbeat limit. Its two sum comparisons now apply `Finset.sum_le_sum` against
+explicit goals before introducing summands, avoiding inference of heavy implicit functions.
+Check 77319 passed all five integer comparisons but still timed out at the final assembly theorem.
+The assembly now uses five explicit `calc` chains, naming every intermediate sum and tail instead
+of relying on chained dot notation to infer them. No limits were changed. Await this check before
+further diagnosis; if it still fails, isolate the two generic sum comparisons in a scratch file
+importing only Enclosures to locate the costly inference.
 
 The isolated `reduce` replacement probe failed at the default recursion limit (57280, exit 1),
 with downstream incomplete-value errors. No limits were changed. Production Certificates
 was never modified; all existing table checks remain valid. The probe source, audit file,
 and any probe artifacts have been removed. Continue the validated `cbv` certificates.
 
-Then build, separately and in the foreground:
-
-1. `PrimeArchThetaFirstAtomQuadratureArithmetic` (all five sums).
-
 Use `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/<Module>.olean -i .lake/build/lib/lean/GaloisForLFunctions/RHTower/<Module>.ilean GaloisForLFunctions/RHTower/<Module>.lean`
 from `formal/`, one process at a time. These oleans are required by the next source file being
-written. Only the cells 0–59 tables have passed; do not mistake the last-cell probe for all-cell validation.
+written. All 64 cells have passed; the global inequalities and final analytic source audit remain.
 
 Finally check the actual PA target directly with
 `lake --old env lean GaloisForLFunctions/RHTower/PrimeArchThetaFirstAtomHighOrderMomentBounds.lean`.

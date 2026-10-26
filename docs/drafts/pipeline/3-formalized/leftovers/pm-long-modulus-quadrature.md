@@ -1,9 +1,9 @@
 # The actual Möbius long-modulus remainder is a quadrature error
 
 - **ID:** pm-long-modulus-quadrature
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Source:** `../1-in-progress/pm-signed-damping-covariance.md`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean checked)
+- **Source:** `../../1-in-progress/pm-signed-damping-covariance.md`
 - **Statement:** The long-modulus sawtooth and full harmonic tail equal one integrable quadrature error; the complementary square-root head has bounded pronic energy.
 
 ## Scope
@@ -44,9 +44,9 @@ All domain assumptions concern only positive damping and natural cutoffs.
 
 - [x] Dependency-closed paper proofs.
 - [x] Exact identities and short-modulus bound formalized.
-- [ ] Foreground leaf audit with `lake --old env lean`.
+- [x] Foreground leaf audit with `lake --old env lean`.
 - [x] Transitive axiom audit.
-- [ ] Umbrella import added without compiling the umbrella.
+- [x] Umbrella import added without compiling the umbrella.
 
 No external novelty claim or check. The short-modulus estimate uses the
 existing corpus mechanism; the quadrature identity is not counted as a
@@ -67,7 +67,10 @@ The current request supersedes that deferral. All 20 public declarations passed
 the combined source and transitive axiom audit, with only `propext`,
 `Classical.choice` and `Quot.sound`, and no diagnostics. Four canonical leaves
 now reside in `formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/`.
-Their final direct checks, required dependency oleans and wiring remain pending.
+All four final direct source checks and the three required dependency-olean
+builds passed with no diagnostics. Existing oleans were not rebuilt. Unique
+umbrella imports and indexed names are verified; global lint has no diagnostic
+for these leaves (20 unrelated structural errors and 417 size warnings).
 
 | Exact claim | Leaf and public declaration |
 |---|---|
@@ -87,3 +90,21 @@ Evidence: `/tmp/leftovers_pm_complete_audit.lean`,
 `/tmp/leftovers-pm-public-names.json`, `/tmp/leftovers-pm-complete-audit-r2.log`.
 The first failed audit is not a certificate. Progress is recorded in
 [the formalization tracker](../../1-in-progress/leftovers-unconditional-formalization.md).
+
+## Final source certificate
+
+Every leaf was checked directly from `formal/` using `lake --old env lean -j 1`
+without writing an olean. Only the first three leaves needed new oleans for
+downstream imports. No umbrella was compiled. The 20-declaration axiom audit
+contains only standard Lean axioms; no premise replaces a missing analytic input.
+
+| Leaf | SHA-256 | Final direct-check log |
+|---|---|---|
+| `LongModulusIntegrableProducer` | `362193d428b878cc4c5ae1ab1d04a1e122461d9762a16b483c73f08748b1f1f8` | `/tmp/leftovers-pm-integrable-final.log` |
+| `LongModulusQuadratureSampling` | `dd2f9abe6a6b07615bcd653b73d4f6999ff30e09d3f70eff26a182363520640d` | `/tmp/leftovers-pm-sampling-final.log` |
+| `LongModulusExactDecomposition` | `ddfa3dd0aa31cf7ac53cfcfa901d3f7f5ef918bf861bc56fd4afe5814ed34b8d` | `/tmp/leftovers-pm-decomposition-final.log` |
+| `LongModulusShortEnergy` | `90c3ceeb202d6834f4b4fdc097d5355044ad87745939ec84050d92e716802e84` | `/tmp/leftovers-pm-short-energy-final.log` |
+
+This completes the stated quadrature and short-head card. The signed long-remainder
+estimate remains outside its conclusion. The larger programme is paused after
+completion of the already-started Lean modules.

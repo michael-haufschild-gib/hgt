@@ -1,9 +1,9 @@
 # Exact doubling incidence is discontinuous; weighted incidence is stable
 
 - **ID:** biscale-perturbed-incidence-1810
-- **Stage:** 2-fully-proven for the finite graph comparison; Lean and common-model realization pending
+- **Stage:** 2-fully-proven; node and weighted-incidence Lean coverage, common-model gates pending
 - **Type:** BRIDGE; incidence obstruction and quantitative survivor
-- **Parent:** [field programme](../1-in-progress/biscale-field-development-1810.md), items 7 and 12
+- **Parent:** [field programme](../../1-in-progress/rh/bi-scale-uncertainty/biscale-field-development-1810.md), items 7 and 12
 
 ## Explicit comparable-spacing counterexample
 
@@ -50,3 +50,31 @@ The original dyadic tent still has `D_w=0`, bounded `A`, and variance proportion
 - [ ] Named-source/axiom audits, wiring, index and lint.
 
 This component alone does not close item 12.
+
+## Frozen Lean completion
+
+The two started leaves passed the combined source and transitive axiom audit:
+24 public declarations, using only `propext`, `Classical.choice`, `Quot.sound`.
+Canonical direct checks remain pending. Unique umbrella imports and indexed
+names are verified; global lint has no diagnostic for these leaves.
+
+| Exact claim | Canonical leaf and declaration |
+|---|---|
+| Actual all-pairs triangular weights, exclusion of off-doubling pairs, exact weighted sum and `(1−6δ)D≤D_w≤D` | `WeightedDoublingIncidence.lean`: `softDoublingWeight_eq_zero_of_ne`, `softDoublingEnergy_eq_doubling_sum`, `softDoublingEnergy_comparison` |
+| Original tent remains null; exact `24N/(1−6δ)` window bound | `WeightedDoublingIncidence.lean`: `softDoublingEnergy_dyadicMantissaTent`, `softDoubling_window_coercivity` |
+| Actual quadratic nodes, displacement, strict order, exact physical gaps and doubling exclusion | `QuadraticPerturbedNodes.lean`: `strictMono_quadraticPerturbedNode`, `quadraticPerturbedNode_succ_sub`, `quadraticPerturbedNode_ne_double` |
+| Log displacement, exact two-sided relative gap bounds and exclusion of a `log 2` difference | `QuadraticPerturbedNodes.lean`: `quadraticPerturbedLogNode_displacement`, `quadraticPerturbedLogNode_gap_bounds`, `quadraticPerturbedLogNode_sub_ne_log_two` |
+
+All names use `GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon`.
+The positive survivor uses actual node locations and all ordered pairs;
+matching is proved from the weights, not assumed. The companion dyadic leaves
+prove the original tent's variance and its finite divisor-sieve realization.
+
+This remains a partial card. A dedicated exact-incidence energy and its
+vanishing/coercivity consequence, transport of energies into the common
+arithmetic model, and a statement for actual continuum correlation constraints
+are not formalized here. The user paused further work; these gaps remain open.
+No graph statement is asserted to settle the continuum question.
+
+Evidence: `/tmp/leftovers-dyadic-perturbed-public-names.json` and
+`/tmp/leftovers-dyadic-perturbed-audit-r2.log` (62 declarations across both cards).

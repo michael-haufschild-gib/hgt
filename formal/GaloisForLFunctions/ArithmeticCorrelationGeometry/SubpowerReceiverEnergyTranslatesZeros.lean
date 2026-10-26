@@ -318,6 +318,7 @@ theorem riemannHypothesis_of_subpower_energy
     have hne : ρ - (ε : ℂ) ≠ 1 := by
       intro h1'; have := congrArg Complex.re h1'; simp at this; linarith [hε.1]
     rw [zetaResidueUnit_of_ne' hne, htrans ε hε.1 hε.2, mul_zero]
-  obtain ⟨z, hz1, hz2⟩ := ((hmap.frequently hfreq).and_eventually hev).exists
+  obtain ⟨z, hz1, hz2⟩ :=
+    ((hmap.frequently (p := fun z => RHTower.zetaResidueUnit z = 0) hfreq).and_eventually hev).exists
   exact hz2 hz1
 end GaloisForLFunctions.ArithmeticCorrelationGeometry

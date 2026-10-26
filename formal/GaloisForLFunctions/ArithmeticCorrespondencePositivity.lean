@@ -15,6 +15,9 @@ import GaloisForLFunctions.ArithmeticCorrespondencePositivity.SparseAnnihilators
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheRankinSelbergSquareSeesTheFieldOfTheOtherZeros
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheSelectivityBatteryOfCorrespondencePositivity
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.SymmetricSquareContractionsAndExteriorCounts
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheCofactorGramIsATranslationGram
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheLaplaceFormOfTheCofactorProfile
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.MomentAmplificationOfAnyFamilyLosesLinearly
 
 /-!
 # Arithmetic Correspondence Positivity
@@ -24,5 +27,6 @@ theorem of the square; budgets and their sufficiency; determinant, Rosati and sp
 the complex fake; the local geometry of reflection pairs (boosts, rotations, resonance, isometries);
 the unipotent successor; genus zero of affine maps; non-localizing and source-blind positivity;
 `ζ` as the worst twin on nonnegative tests; the loss law of tensor powers; resolution and budget
-horizons along orbits; sparse annihilators. See `ArithmeticCorrespondencePositivity/README.md`.
+horizons along orbits; sparse annihilators; the cofactor Gram as a translation Gram with its
+Laplace symbol; the family loss law. See `ArithmeticCorrespondencePositivity/README.md`.
 -/

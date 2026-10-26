@@ -30,7 +30,6 @@ namespace RHTower.ThetaRationalQuadrature
 -- Replace each enclosure by its separately checked integer numerator before summation.
 macro "normalize_first_atom_cells " side:ident r:num : tactic => do
   let mut numerators := #[]
-  let mut values := #[]
   let bound := Lean.mkIdent
     (if side.getId == `Lo then ``Enclosure.lower else ``Enclosure.upper)
   for j in [:64] do
@@ -39,10 +38,10 @@ macro "normalize_first_atom_cells " side:ident r:num : tactic => do
         .mkSimple ("raw" ++ side.getId.toString ++ toString r.getNat ++
         "_" ++ toString j))
     numerators := numerators.push (← `(Lean.Parser.Tactic.simpLemma| ← ($name).property))
-    values := values.push (← `(Lean.Parser.Tactic.simpLemma| $name:ident))
-  `(tactic| (simp only [$bound:ident]; rw [← Finset.sum_div];
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, $[$numerators],*];
-    dsimp only [$[$values],*]))
+  `(tactic| (
+    simp only [$bound:ident]
+    rw [← Finset.sum_div]
+    simp only [Finset.sum_range_succ, Finset.sum_range_zero, $[$numerators],*]))
 
 private theorem lower_zero_certificate :
     (0.4969488 : ℚ) < ∑ j ∈ Finset.range 64, Enclosure.lower (Enclosure.massLo 0 j) := by
@@ -80,15 +79,38 @@ theorem firstAtom_bounds :
     ((∑ j ∈ Finset.range 64, upperMass 3 j) + 1 / 40000000 < (0.00059935 : ℚ)) := by
   have hlo (r : ℕ) :
       (∑ j ∈ Finset.range 64, Enclosure.lower (Enclosure.massLo r j)) ≤
-        ∑ j ∈ Finset.range 64, lowerMass r j :=
-    Finset.sum_le_sum fun j _ => (Enclosure.contains_massLo r j).1
+        ∑ j ∈ Finset.range 64, lowerMass r j := by
+    apply Finset.sum_le_sum
+    intro j _
+    exact (Enclosure.contains_massLo r j).1
   have hhi (r : ℕ) :
       (∑ j ∈ Finset.range 64, upperMass r j) ≤
-        ∑ j ∈ Finset.range 64, Enclosure.upper (Enclosure.massHi r j) :=
-    Finset.sum_le_sum fun j _ => (Enclosure.contains_massHi r j).2
-  exact ⟨lower_zero_certificate.trans_le (hlo 0),
-    lower_one_certificate.trans_le (hlo 1), lower_two_certificate.trans_le (hlo 2),
-    (add_le_add_right (hhi 1) _).trans_lt upper_one_certificate,
-    (add_le_add_right (hhi 3) _).trans_lt upper_three_certificate⟩
+        ∑ j ∈ Finset.range 64, Enclosure.upper (Enclosure.massHi r j) := by
+    apply Finset.sum_le_sum
+    intro j _
+    exact (Enclosure.contains_massHi r j).2
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · calc
+      (0.4969488 : ℚ) < ∑ j ∈ Finset.range 64,
+          Enclosure.lower (Enclosure.massLo 0 j) := lower_zero_certificate
+      _ ≤ ∑ j ∈ Finset.range 64, lowerMass 0 j := hlo 0
+  · calc
+      (0.02297 : ℚ) < ∑ j ∈ Finset.range 64,
+          Enclosure.lower (Enclosure.massLo 1 j) := lower_one_certificate
+      _ ≤ ∑ j ∈ Finset.range 64, lowerMass 1 j := hlo 1
+  · calc
+      (0.0029627 : ℚ) < ∑ j ∈ Finset.range 64,
+          Enclosure.lower (Enclosure.massLo 2 j) := lower_two_certificate
+      _ ≤ ∑ j ∈ Finset.range 64, lowerMass 2 j := hlo 2
+  · calc
+      (∑ j ∈ Finset.range 64, upperMass 1 j) + 1 / 40000000 ≤
+          (∑ j ∈ Finset.range 64, Enclosure.upper (Enclosure.massHi 1 j)) + 1 / 40000000 :=
+        add_le_add_right (hhi 1) (1 / 40000000)
+      _ < (0.0229718 : ℚ) := upper_one_certificate
+  · calc
+      (∑ j ∈ Finset.range 64, upperMass 3 j) + 1 / 40000000 ≤
+          (∑ j ∈ Finset.range 64, Enclosure.upper (Enclosure.massHi 3 j)) + 1 / 40000000 :=
+        add_le_add_right (hhi 3) (1 / 40000000)
+      _ < (0.00059935 : ℚ) := upper_three_certificate
 
 end RHTower.ThetaRationalQuadrature

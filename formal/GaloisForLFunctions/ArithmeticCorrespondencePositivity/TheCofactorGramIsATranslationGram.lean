@@ -150,7 +150,6 @@ theorem translationGram_exp (lam mu a b L₀ L : ℝ) :
       Real.exp (-(lam * a)) * Real.exp (-(mu * b)) * ∫ u in L₀..L, Real.exp ((lam + mu) * u) := by
   rw [← intervalIntegral.integral_const_mul]
   refine intervalIntegral.integral_congr fun u _ => ?_
-  simp only
   rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
   congr 1
   ring
@@ -185,7 +184,7 @@ theorem abs_pairing_rowDilate_sub_le {h r : ℕ → ℝ} (hh0 : h 0 = 0) (hr0 : 
   have e1 := abs_pronicPairing_le T (rowDilate j r) (rowDilate k (fun n => h n + r n))
   have e2 := abs_pronicPairing_le T (rowDilate j h) (rowDilate k r)
   have n1 := pronicNorm_rowDilate_le hj T hr0
-  have n2 := pronicNorm_rowDilate_le hk T hv0
+  have n2 := pronicNorm_rowDilate_le (v := fun n => h n + r n) hk T hv0
   have n3 := pronicNorm_rowDilate_le hj T hh0
   have n4 := pronicNorm_rowDilate_le hk T hr0
   have p1 := pronicNorm_nonneg T (rowDilate j r)
@@ -222,6 +221,7 @@ theorem tendsto_normGram_sub_of_subdominant {h r : ℕ → ℝ} (hh0 : h 0 = 0) 
     set R := pronicNorm (Ts m) r
     set H := pronicNorm (Ts m) h
     have hN := hpos m
+    have hN' : N ≠ 0 := (hpos m).ne'
     have hR := pronicNorm_nonneg (Ts m) r
     have hH : H ≤ N + R := by
       have := pronicNorm_add_le (Ts m) (fun n => h n + r n) (fun n => -r n)
@@ -232,13 +232,13 @@ theorem tendsto_normGram_sub_of_subdominant {h r : ℕ → ℝ} (hh0 : h 0 = 0) 
     rw [normGram, ← sub_div, abs_div, abs_of_pos (pow_pos hN 2)]
     rw [div_le_iff₀ (pow_pos hN 2)]
     have : R * (N + H) ≤ R / N * (2 + R / N) * N ^ 2 := by
-      have e : R / N * (2 + R / N) * N ^ 2 = R * (2 * N + R) := by field_simp; ring
+      have e : R / N * (2 + R / N) * N ^ 2 = R * (2 * N + R) := by field_simp
       rw [e]
       nlinarith
     linarith
   have hlim : Tendsto (fun m => pronicNorm (Ts m) r / pronicNorm (Ts m) (fun n => h n + r n) *
       (2 + pronicNorm (Ts m) r / pronicNorm (Ts m) (fun n => h n + r n))) atTop (𝓝 0) := by
-    have := hsub.mul (tendsto_const_nhds.add hsub)
+    have := hsub.mul ((tendsto_const_nhds (x := (2 : ℝ))).add hsub)
     simpa using this
   exact squeeze_zero_norm (fun m => hbound m) hlim
 
@@ -248,12 +248,9 @@ theorem pronicPairing_rowDilate_sum {ι : Type*} (s : Finset ι) (c : ι → ℝ
     pronicPairing T (rowDilate j (fun n => ∑ i ∈ s, c i * w i n))
         (rowDilate k (fun n => ∑ i ∈ s, c i * w i n)) =
       ∑ i ∈ s, ∑ i' ∈ s, c i * c i' * pronicPairing T (rowDilate j (w i)) (rowDilate k (w i')) := by
-  simp only [pronicPairing, rowDilate, sum_mul_sum, sum_div, mul_sum]
-  rw [sum_comm]
-  refine sum_congr rfl fun i _ => ?_
-  rw [sum_comm]
-  refine sum_congr rfl fun i' _ => ?_
-  refine sum_congr rfl fun n _ => ?_
-  ring
+  simp only [pronicPairing, rowDilate]
+  simp_rw [sum_mul_sum, sum_div, mul_sum]
+  exact sum_comm.trans (sum_congr rfl fun i _ => sum_comm.trans
+    (sum_congr rfl fun i' _ => sum_congr rfl fun n _ => by ring))
 
 end GaloisForLFunctions.ArithmeticCorrespondencePositivity

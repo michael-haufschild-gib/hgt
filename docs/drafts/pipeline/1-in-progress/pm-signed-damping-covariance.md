@@ -407,7 +407,7 @@ do not restart the already-failed separate-tail or absolute-variation bound.
 The user requested formalization of noteworthy paper proofs, then reiterated
 that the result must significantly advance a hard PM obstacle. The completed
 quadrature identity and short-head bound were separated into
-`../2-fully-proven/pm-long-modulus-quadrature.md`, with their complete paper
+`../3-formalized/leftovers/pm-long-modulus-quadrature.md`, with their complete paper
 proof and explicit scope. They do not prove the signed remainder estimate.
 Standalone formalization was therefore deferred at the significance gate;
 it must not be presented as the requested hard mathematical advance.
@@ -1241,3 +1241,13 @@ but did not move the RH frontier. There were no web searches, novelty
 checks, numerical experiments, subagents, added assumptions, or axioms.
 All owned searches terminated before scratch cleanup. Goal remains
 active; unresolved mathematics is not an external-state blocker.
+
+## Existing quadrature proof formalized
+
+The later completion request formalized the retained quadrature and short-head
+proofs in four arithmetic-continuation leaves. Their direct source checks,
+20-declaration standard-axiom audit, unique umbrella imports and indexed names
+are complete; the certificate is on
+[the formalized card](../3-formalized/leftovers/pm-long-modulus-quadrature.md).
+No new signed-covariance estimate or contribution is claimed. Further research
+is paused under the user's instruction.

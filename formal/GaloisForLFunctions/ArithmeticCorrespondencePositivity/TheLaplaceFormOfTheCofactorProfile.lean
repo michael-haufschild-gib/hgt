@@ -51,7 +51,7 @@ theorem sum_prefix_diff (a : ℕ → ℝ) (f : ℕ → ℂ) (N : ℕ) :
   induction N with
   | zero => simp [prefixSum_zero]
   | succ N ih =>
-    rw [sum_range_succ, ih, sum_Icc_succ_top (by omega), prefixSum_succ,
+    rw [Finset.sum_range_succ, ih, Finset.sum_Icc_succ_top (by omega), prefixSum_succ,
       show N + 1 + 1 = N + 2 from rfl]
     push_cast
     ring
@@ -92,10 +92,11 @@ theorem integral_prefix_exp_eq (a : ℕ → ℝ) {s : ℂ} (hs : s ≠ 0) (N : �
   have hsplit := intervalIntegral.sum_integral_adjacent_intervals
     (f := fun u : ℝ => (prefixSum a ⌊Real.exp u⌋₊ : ℂ) * Complex.exp (-s * u))
     (a := fun n : ℕ => Real.log ((n : ℝ) + 1)) (n := N) fun n _ => by
-      simp only [hcast]
-      exact (((Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal)
-        ).intervalIntegrable _ _).const_mul _).congr_uIoo fun u hu =>
+      have h := (((Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal)
+        ).intervalIntegrable (μ := volume) (Real.log ((n : ℝ) + 1)) (Real.log ((n : ℝ) + 2))
+        ).const_mul (prefixSum a (n + 1) : ℂ)).congr_uIoo fun u hu =>
           (prefix_cell_eqOn a s n hu).symm
+      simpa [add_assoc, show (1 : ℝ) + 1 = 2 by norm_num] using h
   simp only [Nat.cast_zero, zero_add, Real.log_one] at hsplit
   rw [← hsplit]
   have hcell : ∀ n : ℕ, ∫ u in Real.log ((n : ℝ) + 1)..Real.log (((n + 1 : ℕ) : ℝ) + 1),
@@ -106,7 +107,6 @@ theorem integral_prefix_exp_eq (a : ℕ → ℝ) {s : ℂ} (hs : s ≠ 0) (N : �
       intervalIntegral.integral_const_mul, integral_cell_cexp hs]
   simp_rw [hcell]
   have habel := sum_prefix_diff a (fun n : ℕ => (n : ℂ) ^ (-s)) N
-  simp only at habel
   rw [← habel, sum_div]
   refine sum_congr rfl fun n _ => ?_
   ring
@@ -160,7 +160,7 @@ theorem tendsto_laplace_cofactorProfile {ε : ℝ} (hε : 0 ≤ ε) {s : ℂ} (h
         (prefixSum (RHTower.pmPowerDampedCenteredDivisorCoeff ε) N : ℂ) *
           ((N + 1 : ℕ) : ℂ) ^ (-s) / s)
       atTop (𝓝 (cofactorG ε s)) := by
-  have hs0 : s ≠ 0 := by intro h; rw [h] at hs; simp at hs
+  have hs0 : s ≠ 0 := by intro h; rw [h] at hs; norm_num at hs
   set a := RHTower.pmPowerDampedCenteredDivisorCoeff ε
   have hrw : ∀ N : ℕ, (∫ u in (0 : ℝ)..Real.log ((N : ℝ) + 1),
       (prefixSum a ⌊Real.exp u⌋₊ : ℂ) * Complex.exp (-s * u)) +

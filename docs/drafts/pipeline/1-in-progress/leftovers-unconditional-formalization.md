@@ -41,7 +41,7 @@ or further auxiliary claims. Frozen completion scope:
 
 ## Current checkpoint (authoritative over chronological notes)
 
-- Two of 14 original cards complete: Nyquist and physical producers. Nyquist is
+- Three of 14 original cards complete: Nyquist, physical producers and PM. Nyquist is
   `3-formalized/leftovers/nyquist-critical-finite-part-2026-10-18.md`.
   All eight direct final source checks passed with empty logs; all 96 public
   declarations audit with only `propext`, `Classical.choice`, `Quot.sound`.
@@ -56,25 +56,25 @@ or further auxiliary claims. Frozen completion scope:
   across seven leaves plus one reused parent), standard axioms only. Seven
   hashes, unique imports, index hits and scoped whitespace verified. Identical
   supplement scratch mirrors and obsolete API probe removed; backreferences fixed.
-- PM: four `/tmp/leftovers_pm_*.lean` drafts in dependency order: integrable
-  producer, sampling, exact decomposition, short energy. Combined initial
-  audit `16131` exited 1: unknown `tsum_eq_zero`/`Finset.notMem_range`,
-  zero-function type inference, and an absolute-value rewrite. Short-energy
-  proofs passed. R1 axiom log is invalid. All four repairs are in component
-  drafts; combined r2 audit `33592` passed with no diagnostics and all 20
-  standard-axiom lists. Four plain components migrated to canonical leaves;
-  direct checks, three required missing internal oleans and wiring remain.
+- PM complete and promoted to `3-formalized/leftovers/pm-long-modulus-quadrature.md`.
+  Four final canonical source checks and three required internal-olean builds
+  passed with empty logs. The exact 20 public declarations have standard-axiom
+  audits; four hashes, unique imports, indexed names and card coverage verified.
+  Final-check ledger records each log. Four identical plain scratch mirrors
+  were removed; the retained complete audit source remains available.
 - Dyadic: tent, integer variance, finite sieve realization, finite-window
   minimum, and tent-variance/best-constant drafts. Combined initial audit
   `11351` exited 1 with local rewrite, cast, lambda and API errors. Integer
   variance, Möbius realization and finite-window mean/infimum proofs passed.
-  All reported repairs applied; combined 62-name r2 source regenerated. Exact tree
+  All reported repairs applied; combined r2 passed all 62 exact axiom lists,
+  standard axioms only and no warnings. All seven dyadic/perturbed components
+  are canonical and wired. Direct checks and two required internal oleans remain. Exact tree
   comparison is already edited in FiniteHorizonPositiveCoercivity, with
   `/tmp/leftovers_binary_tree_exact_audit.lean` awaiting check. Original further
   auxiliary level-count claims are outside the frozen completion scope.
-- Perturbed: unchecked weighted all-pairs incidence and quadratic-node
-  geometry drafts. Exact-incidence and arithmetic transport consequences
-  remain to connect.
+- Perturbed: weighted all-pairs incidence and quadratic-node geometry passed
+  the combined audit and are canonical. Exact-incidence energy and arithmetic
+  transport consequences remain outside the frozen completion scope.
 - Finite cycle: ten drafts cover exact first-order collar, arbitrary
   positive-collar scalar/family recovery, actual compact-source derivative
   energy, normalized derivative correlation bounds, controlled finite meshes,
@@ -85,7 +85,8 @@ or further auxiliary claims. Frozen completion scope:
   axiom lists standard; one unnecessary tactic-composition warning and two
   informational ring notices. The warning was removed in the plain derivative
   component before migration. All ten plain components are now canonical;
-  their direct checks, five required missing internal oleans and wiring remain.
+  their direct checks and five required missing internal oleans remain. All ten
+  imports are wired.
   All nine external oleans are present. Card coverage still to audit.
 - Both complete Route-E historical cards now read. Current assemblers retain
   `MTDeshouillersIwaniecBound` and `MTWattBound`; inspected short-block
@@ -94,14 +95,28 @@ or further auxiliary claims. Frozen completion scope:
 - External variance-owner build `92254` passed with empty log
   `/tmp/leftovers-dyadic-mean-owner-build.log`; its previously missing olean
   now exists and must not be rebuilt. No source edit was required.
-- Active Lean: dyadic/perturbed combined r2 audit `82128`, log
-  `/tmp/leftovers-dyadic-perturbed-audit-r2.log`. All searches terminal.
+- Exact tree-owner audit `25791` passed all three changed public declarations
+  with standard axioms only and zero warnings. Existing olean is preserved.
+- Active Lean: tree-owner final canonical check `15427`, log
+  `/tmp/leftovers-tree-owner-final.log`. Combined dyadic/perturbed r2
+  `82128` is terminal and all 62 exact axiom lists validate. All searches terminal.
+- Final-check ledger: `/tmp/leftovers-final-check-ledger.json` records hashes,
+  source checks and the ten required internal oleans for the 21 pending leaves.
+  The exact tree owner additionally needs its source and axiom checks.
+  All three partially covered cards now map exact claims to the started leaves
+  and explicitly retain the unstarted gaps. All 21 chosen declaration names
+  are indexed; source integrity scan has zero prohibited-token flags.
 - Frozen manifest: `/tmp/leftovers-frozen-module-manifest.json` contains the
   24 module paths and exact import dependencies. WeightedDoublingIncidence
   now imports Tent and FiniteWindowVariance directly; the independent
   DyadicMantissaVariance leaf needs no olean. Audit assembly/validation helpers
   in `/tmp/leftovers_assemble_audit.py` and `/tmp/leftovers_verify_axioms.py`
   only manipulate/check text; they never compile or batch-build anything.
+- All 21 new canonical leaves now have exactly one import in their owning
+  umbrellas (four arithmetic-continuation, seventeen bi-scale). Umbrellas were
+  not compiled. Global lint `/tmp/leftovers-frozen-final-lint.log` exited 1:
+  20 unrelated structural errors, 417 size warnings, no frozen-scope diagnostic.
+  All 21 selected public names are indexed. Individual final checks remain.
 - Closure order: physical supplements → PM → dyadic/perturbed/cycle, then
   pause. Other original cards remain unfinished and paused. Preserve unrelated edits.
 
@@ -115,7 +130,7 @@ or further auxiliary claims. Frozen completion scope:
 | `compact-physical-box-producers` | **Complete, promoted to stage 3.** Recovered report (1)–(23), seven leaves, 134 public declarations plus one reused parent, clean axiom and final source checks, unique imports and indexed names. |
 | `nonvacuous-independence-and-polarization-import-law` | Audit small-eigenvalue witness, complete actual Selberg-zeta dictionary and nonvacuous clauses. Historical log reports witness complete; current source audit pending. Import table explicitly an observation. |
 | `nyquist-critical-finite-part-2026-10-18` | Finite part, signed broad-test expansion, actual-source classification and witnesses. Existing 591-line parent inspected. Primitive, signed cell bounds, exact broad tests and source classification pass Lean. Primitive-tail leaf passes its final direct check. Quantitative source and signed witness claims are complete; all 96 public declarations have clean axiom audits. All eight final direct checks passed; complete card promoted to stage 3 after source/hash/index/import audit. |
-| `pm-long-modulus-quadrature` | Four complete unchecked prototypes: actual integrable Möbius producer, exact integer sampling, all-cutoff long/tail decomposition, exact square-root-head pronic bound. Endpoint formula retains tail past max(n,D). |
+| `pm-long-modulus-quadrature` | **Complete, promoted to stage 3.** Four checked and wired leaves, 20 standard-axiom declarations, exact Möbius quadrature and square-root-head pronic bound; full tail retained past max(n,D). |
 | `route-e-cofactor-amplified-e3-token-supply` | Exact all-interval supply with all elementary bounds; shared Matomäki–Teräväinen/DI analytic input. Full historical-log and current-source audit pending. |
 | `route-e-forbidden-support-e3-stability` | Exact forbidden-support all-interval count with shared analytic input. Full historical-log and current-source audit pending. |
 | `route-tt-structural-theorems-2026-10-14` | All actual theorem statements, corrected T3, T5, L7, exact T2 exponent and later proven addenda. Historical coverage list is evidence to investigate, not completion. Explicit conjectures/gapped sketches must stay labelled. |

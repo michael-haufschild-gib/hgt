@@ -1,9 +1,9 @@
 # Adjacent and doubling differences: sharp linear deterioration
 
 - **ID:** biscale-dyadic-joint-coercivity-1810
-- **Stage:** 2-fully-proven; symbolic proof below, Lean pending
+- **Stage:** 2-fully-proven; partial Lean coverage, remaining gates below
 - **Type:** BRIDGE; elementary graph-energy comparison
-- **Parent:** [field programme](../1-in-progress/biscale-field-development-1810.md), items 7 and 12
+- **Parent:** [field programme](../../1-in-progress/rh/bi-scale-uncertainty/biscale-field-development-1810.md), items 7 and 12
 
 ## Exact family and conclusion
 
@@ -87,7 +87,8 @@ a separate novelty claim.
 
 The five started leaves passed the combined source and transitive axiom audit:
 38 public declarations, using only `propext`, `Classical.choice`, `Quot.sound`.
-Canonical direct checks and umbrella wiring remain pending.
+Canonical direct checks remain pending. Unique umbrella imports and indexed
+names are verified; global lint has no diagnostic for these leaves.
 
 | Exact claim | Canonical leaf and declaration |
 |---|---|
