@@ -18,6 +18,7 @@ import GaloisForLFunctions.ArithmeticCorrespondencePositivity.SymmetricSquareCon
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheCofactorGramIsATranslationGram
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheLaplaceFormOfTheCofactorProfile
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.MomentAmplificationOfAnyFamilyLosesLinearly
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheEscapeRankCountsTheDominantZeros
 
 /-!
 # Arithmetic Correspondence Positivity
@@ -28,5 +29,6 @@ the complex fake; the local geometry of reflection pairs (boosts, rotations, res
 the unipotent successor; genus zero of affine maps; non-localizing and source-blind positivity;
 `ζ` as the worst twin on nonnegative tests; the loss law of tensor powers; resolution and budget
 horizons along orbits; sparse annihilators; the cofactor Gram as a translation Gram with its
-Laplace symbol; the family loss law. See `ArithmeticCorrespondencePositivity/README.md`.
+Laplace symbol; the family loss law; escape states of dominant configurations, their rank and their
+horizon averages. See `ArithmeticCorrespondencePositivity/README.md`.
 -/

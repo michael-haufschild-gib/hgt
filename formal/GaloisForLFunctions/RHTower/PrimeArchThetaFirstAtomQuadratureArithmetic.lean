@@ -105,12 +105,12 @@ theorem firstAtom_bounds :
   · calc
       (∑ j ∈ Finset.range 64, upperMass 1 j) + 1 / 40000000 ≤
           (∑ j ∈ Finset.range 64, Enclosure.upper (Enclosure.massHi 1 j)) + 1 / 40000000 :=
-        add_le_add_right (hhi 1) (1 / 40000000)
+        _root_.add_le_add (hhi 1) (le_refl (1 / 40000000 : ℚ))
       _ < (0.0229718 : ℚ) := upper_one_certificate
   · calc
       (∑ j ∈ Finset.range 64, upperMass 3 j) + 1 / 40000000 ≤
           (∑ j ∈ Finset.range 64, Enclosure.upper (Enclosure.massHi 3 j)) + 1 / 40000000 :=
-        add_le_add_right (hhi 3) (1 / 40000000)
+        _root_.add_le_add (hhi 3) (le_refl (1 / 40000000 : ℚ))
       _ < (0.00059935 : ℚ) := upper_three_certificate
 
 end RHTower.ThetaRationalQuadrature

@@ -103,7 +103,7 @@ private theorem polarSum_iterate_deriv_eqOn {S : Finset ℂ} {c : ℂ → ℝ} {
         have hpow2 : (s - z) ^ (n + 2) ≠ 0 := pow_ne_zero _ hsz
         field_simp [hpow1, hpow2]
         ring
-      have hsum_d := (HasDerivAt.sum hterm).const_mul ((-1 : ℂ) ^ n * (n.factorial : ℂ))
+      have hsum_d := (HasDerivAt.fun_sum hterm).const_mul ((-1 : ℂ) ^ n * (n.factorial : ℂ))
       rw [hsum_d.deriv]
       rw [Nat.factorial_succ, pow_succ]
       push_cast
@@ -153,11 +153,12 @@ theorem posDef_polarSum_laplaceWeight_nonneg {S : Finset ℂ} {c : ℂ → ℝ} 
   have hG_diff : DifferentiableOn ℂ (polarSum S c) U := by
     intro s hs
     change a < s.re at hs
-    refine DifferentiableWithinAt.sum fun z hz => ?_
+    unfold polarSum
+    refine DifferentiableWithinAt.fun_sum fun z hz => ?_
     have hsz : s - z ≠ 0 := fun h0 => by
       have := congrArg Complex.re h0; simp at this; linarith [hSa z hz]
     exact ((differentiableAt_const (c z : ℂ)).div
-      (differentiableAt_id.sub_const z) hsz).differentiableWithinAt
+      (by fun_prop) hsz).differentiableWithinAt
   have hG_real : ∀ x : ℝ, a < x → (polarSum S c (x : ℂ)).im = 0 := by
     intro x _
     refine Complex.conj_eq_iff_im.mp ?_
@@ -206,7 +207,7 @@ theorem posDef_polarSum_laplaceWeight_nonneg {S : Finset ℂ} {c : ℂ → ℝ} 
     have hc_lim : Tendsto
         (fun n : ℕ => ∑ z ∈ S, (c z : ℂ) * ((1 - z * (t : ℂ) / (n : ℂ))⁻¹) ^ (n + 1))
         atTop (𝓝 (∑ z ∈ S, (c z : ℂ) * Complex.exp (z * (t : ℂ)))) :=
-      tendsto_finset_sum S fun z _ =>
+      tendsto_finsetSum S fun z _ =>
         (tendsto_inv_one_sub_div_pow_succ (z * (t : ℂ))).const_mul (c z : ℂ)
     have hre_lim := (Complex.continuous_re.tendsto _).comp hc_lim
     have htarget : (∑ z ∈ S, (c z : ℂ) * Complex.exp (z * (t : ℂ))).re =
@@ -277,7 +278,7 @@ theorem posDef_polarSum_laplaceWeight_nonneg {S : Finset ℂ} {c : ℂ → ℝ} 
       rw [hderiv_eq, Complex.re_ofReal_mul]
       ring
     rw [← hcast, hre_lhs]
-  rwa [← hident]
+  rwa [hident] at hnonneg
 
 private theorem tendsto_avg_cos_zero {ω : ℝ} (hω : ω ≠ 0) :
     Tendsto (fun T : ℝ => T⁻¹ * ∫ t in T..(2 * T), Real.cos (ω * t)) atTop (𝓝 0) := by
@@ -287,9 +288,12 @@ private theorem tendsto_avg_cos_zero {ω : ℝ} (hω : ω ≠ 0) :
     refine intervalIntegral.integral_eq_sub_of_hasDerivAt
       (f := fun x : ℝ => Real.sin (ω * x) / ω)
       (fun x _ => ?_) (Continuous.intervalIntegrable (by fun_prop) T (2 * T))
-    exact (((hasDerivAt_id x).const_mul ω).sin.div_const ω).congr_deriv (by field_simp [hω])
-  refine squeeze_zero_norm' ?_
-    ((tendsto_inv_atTop_zero.const_mul (2 / |ω|)).congr fun T => by ring)
+    exact (((hasDerivAt_id x).const_mul ω).sin.div_const ω).congr_deriv
+      (by dsimp only [id]; field_simp [hω])
+  have hzero_lim : Tendsto (fun T : ℝ => T⁻¹ * (2 / |ω|)) atTop (𝓝 0) :=
+    ((by simpa [mul_zero] using tendsto_inv_atTop_zero.const_mul (2 / |ω|) :
+      Tendsto (fun T : ℝ => 2 / |ω| * T⁻¹) atTop (𝓝 0)).congr fun T => by ring)
+  refine squeeze_zero_norm' ?_ hzero_lim
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT
   rw [hint_eq T, Real.norm_eq_abs, abs_mul, abs_of_pos (inv_pos.mpr hT)]
   have h1 : |Real.sin (ω * (2 * T)) / ω - Real.sin (ω * T) / ω| ≤ 2 / |ω| := by
@@ -318,13 +322,13 @@ theorem real_anchor_of_posDef_polarSum {S : Finset ℂ} {c : ℂ → ℝ} {σ₁
   classical
   set z₁ : ℂ := (σ_max : ℂ) + (γ₁ : ℂ) * I
   have hconj_z₁ : conj z₁ = (σ_max : ℂ) - (γ₁ : ℂ) * I := by
-    simp [z₁]
+    simp [z₁]; ring
   have hz₁_conj_mem : conj z₁ ∈ S := hS_conj z₁ hz₁_mem
   have hz₁_ne_conj : z₁ ≠ conj z₁ := by
     intro h
     have := congrArg Complex.im h
     simp [z₁] at this
-    exact hγ₁ this
+    exact hγ₁ (by linarith)
   have hw_nn : ∀ t : ℝ, 0 < t → 0 ≤ polarScaleWeight S c t :=
     fun t ht => posDef_polarSum_laplaceWeight_nonneg hS_conj hc_conj hS_re₁ hpd ht
   let termVal : ℂ → ℝ := fun z =>
@@ -339,7 +343,7 @@ theorem real_anchor_of_posDef_polarSum {S : Finset ℂ} {c : ℂ → ℝ} {σ₁
     by_cases hcz : c z = 0
     · have htv : termVal z = 0 := by simp [termVal, hcz]
       rw [htv]
-      simpa [hcz] using (tendsto_const_nhds : Tendsto (fun _ : ℝ => (0 : ℝ)) atTop (𝓝 0))
+      simp [hcz]
     have hz_le : z.re ≤ σ_max := hmax z hz hcz
     rcases lt_or_eq_of_le hz_le with hz_lt | hz_eq
     · have hne_real : z ≠ (σ_max : ℂ) := fun h => by subst h; simp at hz_lt
@@ -350,7 +354,8 @@ theorem real_anchor_of_posDef_polarSum {S : Finset ℂ} {c : ℂ → ℝ} {σ₁
       have hdec : Tendsto (fun T : ℝ => 2 * |c z| * Real.exp ((z.re - σ_max) * T))
           atTop (𝓝 0) := by
         simpa [mul_zero] using
-          (tendsto_exp_atTop_nhds_zero_of_lt_zero (by linarith : z.re - σ_max < 0)).const_mul
+          (Real.tendsto_exp_atBot.comp
+            (tendsto_id.const_mul_atTop_of_neg (by linarith : z.re - σ_max < 0))).const_mul
             (2 * |c z|)
       refine squeeze_zero_norm' ?_ hdec
       filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT
@@ -358,15 +363,17 @@ theorem real_anchor_of_posDef_polarSum {S : Finset ℂ} {c : ℂ → ℝ} {σ₁
       have hint_le : |∫ t in T..(2 * T),
           c z * Real.exp ((z.re - σ_max) * t) * Real.cos (z.im * t) * (1 - Real.cos (γ₁ * t))| ≤
           (2 * |c z| * Real.exp ((z.re - σ_max) * T)) * (2 * T - T) := by
-        rw [intervalIntegral.integral_of_le (by linarith)]
-        refine le_trans (norm_setIntegral_le_of_norm_le_const (s := Ioc T (2 * T))
-          (C := 2 * |c z| * Real.exp ((z.re - σ_max) * T))
-          (by rw [Real.volume_Ioc]; exact ENNReal.ofReal_lt_top) ?_) ?_
-        · intro t ht
-          rw [mem_Ioc] at ht
-          rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_mul, abs_of_pos (Real.exp_pos _)]
+        set M : ℝ := 2 * |c z| * Real.exp ((z.re - σ_max) * T)
+        have hcont_f : Continuous (fun t : ℝ =>
+            c z * Real.exp ((z.re - σ_max) * t) * Real.cos (z.im * t) * (1 - Real.cos (γ₁ * t))) :=
+          by fun_prop
+        have hf_abs : ∀ t ∈ Icc T (2 * T),
+            |c z * Real.exp ((z.re - σ_max) * t) * Real.cos (z.im * t) * (1 - Real.cos (γ₁ * t))| ≤
+              M := by
+          intro t ht
+          rw [abs_mul, abs_mul, abs_mul, abs_of_pos (Real.exp_pos _)]
           have hexp : Real.exp ((z.re - σ_max) * t) ≤ Real.exp ((z.re - σ_max) * T) :=
-            Real.exp_le_exp.mpr (mul_le_mul_of_nonpos_left ht.1.le (by linarith))
+            Real.exp_le_exp.mpr (mul_le_mul_of_nonpos_left ht.1 (by linarith))
           have h1cos : |1 - Real.cos (γ₁ * t)| ≤ 2 := by
             have := Real.abs_cos_le_one (γ₁ * t)
             rw [abs_le] at this ⊢
@@ -376,8 +383,19 @@ theorem real_anchor_of_posDef_polarSum {S : Finset ℂ} {c : ℂ → ℝ} {σ₁
               ≤ |c z| * Real.exp ((z.re - σ_max) * T) * 1 * 2 := by
                 gcongr
                 exact Real.abs_cos_le_one _
-            _ = 2 * |c z| * Real.exp ((z.re - σ_max) * T) := by ring
-        · rw [Real.volume_Ioc, ENNReal.toReal_ofReal (by linarith)]; ring_nf; exact le_rfl
+            _ = M := by dsimp [M]; ring
+        rw [abs_le]
+        constructor
+        · have hlow := intervalIntegral.integral_mono_on (by linarith : T ≤ 2 * T)
+            intervalIntegrable_const (hcont_f.intervalIntegrable T (2 * T))
+            (fun t ht => (abs_le.mp (hf_abs t ht)).1)
+          rw [intervalIntegral.integral_const, smul_eq_mul] at hlow
+          linarith
+        · have hhigh := intervalIntegral.integral_mono_on (by linarith : T ≤ 2 * T)
+            (hcont_f.intervalIntegrable T (2 * T)) intervalIntegrable_const
+            (fun t ht => (abs_le.mp (hf_abs t ht)).2)
+          rw [intervalIntegral.integral_const, smul_eq_mul] at hhigh
+          linarith
       calc T⁻¹ * |∫ t in T..(2 * T),
             c z * Real.exp ((z.re - σ_max) * t) * Real.cos (z.im * t) * (1 - Real.cos (γ₁ * t))|
           ≤ T⁻¹ * ((2 * |c z| * Real.exp ((z.re - σ_max) * T)) * T) := by
@@ -425,7 +443,7 @@ theorem real_anchor_of_posDef_polarSum {S : Finset ℂ} {c : ℂ → ℝ} {σ₁
             rw [hz_eq, sub_self, zero_mul, Real.exp_zero, mul_one, hcos_eq t]
             have hc2 := Real.cos_two_mul (γ₁ * t)
             rw [show 2 * (γ₁ * t) = (2 * γ₁) * t by ring] at hc2
-            linarith
+            rw [hc2]; ring
           have hl1 := (tendsto_avg_cos_zero hγ₁).const_mul (c z)
           have hl2 := (tendsto_avg_cos_zero (mul_ne_zero two_ne_zero hγ₁)).const_mul (c z / 2)
           have hcomb : Tendsto (fun T : ℝ => -(c z / 2) +
@@ -473,17 +491,25 @@ theorem real_anchor_of_posDef_polarSum {S : Finset ℂ} {c : ℂ → ℝ} {σ₁
             have hca := Real.cos_add (z.im * t) (γ₁ * t)
             rw [show z.im * t - γ₁ * t = (z.im - γ₁) * t by ring] at hcs
             rw [show z.im * t + γ₁ * t = (z.im + γ₁) * t by ring] at hca
-            linarith
-          have hl0 := (tendsto_avg_cos_zero hz_im0).const_mul (c z)
-          have hl1 := (tendsto_avg_cos_zero him_ne_p).const_mul (c z / 2)
-          have hl2 := (tendsto_avg_cos_zero him_ne_m).const_mul (c z / 2)
+            linear_combination -(c z / 2) * hcs - (c z / 2) * hca
+          have hl0 : Tendsto
+              (fun T : ℝ => c z * (T⁻¹ * ∫ t in T..(2 * T), Real.cos (z.im * t)))
+              atTop (𝓝 0) :=
+            by simpa [mul_zero] using (tendsto_avg_cos_zero hz_im0).const_mul (c z)
+          have hl1 : Tendsto
+              (fun T : ℝ => (c z / 2) * (T⁻¹ * ∫ t in T..(2 * T), Real.cos ((z.im - γ₁) * t)))
+              atTop (𝓝 0) :=
+            by simpa [mul_zero] using (tendsto_avg_cos_zero him_ne_p).const_mul (c z / 2)
+          have hl2 : Tendsto
+              (fun T : ℝ => (c z / 2) * (T⁻¹ * ∫ t in T..(2 * T), Real.cos ((z.im + γ₁) * t)))
+              atTop (𝓝 0) :=
+            by simpa [mul_zero] using (tendsto_avg_cos_zero him_ne_m).const_mul (c z / 2)
           have hcomb : Tendsto (fun T : ℝ =>
               c z * (T⁻¹ * ∫ t in T..(2 * T), Real.cos (z.im * t)) -
               (c z / 2) * (T⁻¹ * ∫ t in T..(2 * T), Real.cos ((z.im - γ₁) * t)) -
               (c z / 2) * (T⁻¹ * ∫ t in T..(2 * T), Real.cos ((z.im + γ₁) * t)))
               atTop (𝓝 (0 - 0 - 0)) :=
-            ((by simpa [mul_zero] using hl0 : Tendsto _ _ (𝓝 0)).sub
-              (by simpa [mul_zero] using hl1)).sub (by simpa [mul_zero] using hl2)
+            (hl0.sub hl1).sub hl2
           simp only [sub_zero] at hcomb
           refine hcomb.congr' ?_
           filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT
@@ -505,11 +531,11 @@ theorem real_anchor_of_posDef_polarSum {S : Finset ℂ} {c : ℂ → ℝ} {σ₁
       (fun T : ℝ => ∑ z ∈ S, T⁻¹ * ∫ t in T..(2 * T),
         c z * Real.exp ((z.re - σ_max) * t) * Real.cos (z.im * t) * (1 - Real.cos (γ₁ * t)))
       atTop (𝓝 (∑ z ∈ S, termVal z)) :=
-    tendsto_finset_sum S hterm_lim
+    tendsto_finsetSum S hterm_lim
   have hsum_nn : 0 ≤ ∑ z ∈ S, termVal z := by
     refine ge_of_tendsto hsum_lim ?_
     filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT
-    rw [← Finset.mul_sum, ← intervalIntegral.integral_finset_sum
+    rw [← Finset.mul_sum, ← intervalIntegral.integral_finsetSum
       (fun z _ => Continuous.intervalIntegrable (by fun_prop) T (2 * T))]
     refine mul_nonneg (inv_pos.mpr hT).le ?_
     refine intervalIntegral.integral_nonneg (by linarith) fun t ht => ?_
@@ -553,7 +579,7 @@ theorem real_anchor_of_posDef_polarSum {S : Finset ℂ} {c : ℂ → ℝ} {σ₁
       · rw [if_neg hmem]
         refine Finset.sum_eq_zero fun z hz => ?_
         simp only [Finset.mem_erase] at hz
-        have hzr : z ≠ (σ_max : ℂ) := fun h => hmem (h ▸ hz.2.2.2)
+        have hzr : z ≠ (σ_max : ℂ) := fun h => hmem (h ▸ hz.2.2)
         simp [termVal, hzr, hz.2.1, hz.1]
     rw [htv_z1, htv_cz1, hrest]
     ring
@@ -582,7 +608,7 @@ theorem two_mul_le_real_anchor_of_single_ordinate {S : Finset ℂ} {c : ℂ → 
   set z₁ : ℂ := (σ_max : ℂ) + (γ₁ : ℂ) * I
   have hz₁_conj_mem : conj z₁ ∈ S := hS_conj z₁ hz₁_mem
   have hz₁_ne_conj : z₁ ≠ conj z₁ := fun h =>
-    hγ₁ (by have := congrArg Complex.im h; simp [z₁] at this; exact this)
+    hγ₁ (by have := congrArg Complex.im h; simp [z₁] at this; linarith)
   have hw_nn : ∀ t : ℝ, 0 < t → 0 ≤ polarScaleWeight S c t :=
     fun t ht => posDef_polarSum_laplaceWeight_nonneg hS_conj hc_conj hS_re₁ hpd ht
   let tk : ℕ → ℝ := fun k => ((2 * (k : ℝ) + 1) * Real.pi) / |γ₁|
@@ -617,7 +643,7 @@ theorem two_mul_le_real_anchor_of_single_ordinate {S : Finset ℂ} {c : ℂ → 
     intro z hz
     by_cases hcz : c z = 0
     · have hlv : limVal z = 0 := by simp [limVal, hcz]
-      rw [hlv]; simpa [hcz] using (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 0))
+      rw [hlv]; simp [hcz]
     rcases lt_or_eq_of_le (hmax z hz hcz) with hz_lt | hz_eq
     · have hnr : z ≠ (σ_max : ℂ) := fun h => by subst h; simp at hz_lt
       have hnz1 : z ≠ z₁ := fun h => by subst h; simp [z₁] at hz_lt
@@ -627,7 +653,8 @@ theorem two_mul_le_real_anchor_of_single_ordinate {S : Finset ℂ} {c : ℂ → 
       have hdec : Tendsto (fun k : ℕ => |c z| * Real.exp ((z.re - σ_max) * tk k))
           atTop (𝓝 0) := by
         simpa [mul_zero] using
-          ((tendsto_exp_atTop_nhds_zero_of_lt_zero (by linarith : z.re - σ_max < 0)).comp
+          ((Real.tendsto_exp_atBot.comp
+            (tendsto_id.const_mul_atTop_of_neg (by linarith : z.re - σ_max < 0))).comp
             htk_top).const_mul |c z|
       refine squeeze_zero_norm (fun k => ?_) hdec
       rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_pos (Real.exp_pos _)]
@@ -656,7 +683,7 @@ theorem two_mul_le_real_anchor_of_single_ordinate {S : Finset ℂ} {c : ℂ → 
         rw [hre, sub_self, zero_mul, Real.exp_zero, mul_one, him, neg_mul, Real.cos_neg, hcos_tk k]
         ring
   have hsum_nn : 0 ≤ ∑ z ∈ S, limVal z := by
-    refine ge_of_tendsto (tendsto_finset_sum S hterm_lim) (Eventually.of_forall fun k => ?_)
+    refine ge_of_tendsto (tendsto_finsetSum S hterm_lim) (Eventually.of_forall fun k => ?_)
     have heq : (∑ z ∈ S, c z * Real.exp ((z.re - σ_max) * tk k) * Real.cos (z.im * tk k)) =
         Real.exp (-σ_max * tk k) * polarScaleWeight S c (tk k) := by
       unfold polarScaleWeight
@@ -690,7 +717,7 @@ theorem two_mul_le_real_anchor_of_single_ordinate {S : Finset ℂ} {c : ℂ → 
       · rw [if_neg hmem]
         refine Finset.sum_eq_zero fun z hz => ?_
         simp only [Finset.mem_erase] at hz
-        have hzr : z ≠ (σ_max : ℂ) := fun h => hmem (h ▸ hz.2.2.2)
+        have hzr : z ≠ (σ_max : ℂ) := fun h => hmem (h ▸ hz.2.2)
         simp [limVal, hzr, hz.2.1, hz.1]
     rw [hlv1, hlv2, hrest]; ring
   rw [hsum_eval] at hsum_nn

@@ -100,9 +100,10 @@ names are verified; global lint has no diagnostic for these leaves.
 
 These names use `GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon`.
 The existing owner `FiniteHorizonPositiveCoercivity.lean` also contains the
-started exact comparison `binary_energy_le_doubling_additive`; its final
-source and axiom checks remain pending. Its existing unconditional window
-bound supplies the upper estimate.
+exact comparison `binary_energy_le_doubling_additive`; its final source check
+and the axiom audit of it and both downstream coercivity theorems passed
+without diagnostics. Its existing olean was preserved. The existing
+unconditional window bound supplies the upper estimate.
 
 This remains a partial card: the paper's separate weighted-path and descendant
 counts, explicit high/low level counts, standalone doubling-only failure

@@ -69,8 +69,8 @@ or further auxiliary claims. Frozen completion scope:
   All reported repairs applied; combined r2 passed all 62 exact axiom lists,
   standard axioms only and no warnings. All seven dyadic/perturbed components
   are canonical and wired. Direct checks and two required internal oleans remain. Exact tree
-  comparison is already edited in FiniteHorizonPositiveCoercivity, with
-  `/tmp/leftovers_binary_tree_exact_audit.lean` awaiting check. Original further
+  comparison in FiniteHorizonPositiveCoercivity passed its three-name axiom
+  audit and final direct check `15427`, both without diagnostics. Original further
   auxiliary level-count claims are outside the frozen completion scope.
 - Perturbed: weighted all-pairs incidence and quadratic-node geometry passed
   the combined audit and are canonical. Exact-incidence energy and arithmetic
@@ -95,14 +95,18 @@ or further auxiliary claims. Frozen completion scope:
 - External variance-owner build `92254` passed with empty log
   `/tmp/leftovers-dyadic-mean-owner-build.log`; its previously missing olean
   now exists and must not be rebuilt. No source edit was required.
-- Exact tree-owner audit `25791` passed all three changed public declarations
-  with standard axioms only and zero warnings. Existing olean is preserved.
-- Active Lean: tree-owner final canonical check `15427`, log
-  `/tmp/leftovers-tree-owner-final.log`. Combined dyadic/perturbed r2
+- Exact tree-owner audit `25791` and final check `15427` passed. All three
+  changed public declarations use standard axioms only; no warnings. Existing
+  olean is preserved; exact name indexed and its existing import is unique.
+- Dyadic tent final check `25115` and required olean `14025` passed with empty logs.
+  Integer variance `62247`, finite sieve `7170`, and finite-window variance
+  `53119` also passed their final canonical checks with empty logs.
+- Active Lean: finite-window-variance required olean `5923`, log
+  `/tmp/leftovers-window-variance-build.log`. Combined dyadic/perturbed r2
   `82128` is terminal and all 62 exact axiom lists validate. All searches terminal.
 - Final-check ledger: `/tmp/leftovers-final-check-ledger.json` records hashes,
-  source checks and the ten required internal oleans for the 21 pending leaves.
-  The exact tree owner additionally needs its source and axiom checks.
+  source checks and the ten required internal oleans for the 21 new leaves,
+  plus the checked existing tree owner. PM and tree final checks are complete.
   All three partially covered cards now map exact claims to the started leaves
   and explicitly retain the unstarted gaps. All 21 chosen declaration names
   are indexed; source integrity scan has zero prohibited-token flags.
