@@ -113,7 +113,7 @@ theorem riemannHypothesis_iff_forall_admits :
       have hsub : Ioo 0 (RHTower.zetaZeroAbscissa - 1 / 2) ⊆ cancellingDampings :=
         fun ε hε => by_contra fun hn => hall ⟨ε, hε, hn⟩
       have := (countable_cancellingDampings.mono hsub)
-      rw [Real.Ioo_countable_iff] at this
+      rw [Cardinal.Real.Ioo_countable_iff] at this
       linarith
     exact not_admits_of_mem_Ioo_of_not_mem hεI hεc (hadm ε hεI.1)
 

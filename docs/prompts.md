@@ -364,10 +364,10 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 previously we had created these documentss:
-- docs/reports/review-2510/walls-ledger.md
-- docs/reports/review-2510/hard-obstacles.md
-- docs/reports/review-2510/hard-obstacles-summary.md
-- docs/reports/review-2510/route-unification-ledger.md
+- docs/reports/review-2610/walls-ledger.md
+- docs/reports/review-2610/hard-obstacles.md
+- docs/reports/review-2610/hard-obstacles-summary.md
+- docs/reports/review-2610/route-unification-ledger.md
 
 also we have:
 - docs/reports/rh-current-frontier-map.md
@@ -375,8 +375,8 @@ also we have:
 
 and these new research results:
 - formal/GaloisForLFunctions/ArithmeticPositiveDuality/README.md
+- formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity
 - formal/GaloisForLFunctions/StripBochnerWeilForcing/README.md
-- formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
     
 create new versions of the reviews to reflect the current status quo and frontier of our research:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
@@ -394,7 +394,7 @@ do not rely only on these markdown files which are partly outdated. use the sear
 
 the reports are not diaries or history log, but status quo reports.
 
-put the new reports into folder docs/reports/review-2610/
+replace the existing reports in folder docs/reports/review-2610/
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -425,7 +425,8 @@ go one by one through the following research programmes and update their README.
 - formal/GaloisForLFunctions/StripBochnerWeilForcing/README.md
 - formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/README.md
 - formal/GaloisForLFunctions/ArithmeticKunnethTheory/README.md
- 
+- formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/README.md
+
 important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics, the questions it aims to answer, the tools it aims to create, its foundational pillar theorems, where it sits in the context of our whole research, how it relates to other research programmes.
 
 where needed use the search tool for the lean corpus to confirm:
@@ -443,10 +444,10 @@ do not run any builds. do not read anything outside the formal/ folder. do not r
 Read the following documents:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
-3. Unification of the routes: docs/reports/review-2510/route-unification-ledger.md
-4. Hard obstacles: docs/reports/review-2510/hard-obstacles.md
-5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2510/walls-ledger.md
-6. docs/reports/review-2510/what-forces-blindness.md
+3. Unification of the routes: docs/reports/review-2610/route-unification-ledger.md
+4. Hard obstacles: docs/reports/review-2610/hard-obstacles.md
+5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2610/walls-ledger.md
+
 
 and read the current research programmes:
 - formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
@@ -475,7 +476,9 @@ and read the current research programmes:
 - formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
 - formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/README.md
 - formal/GaloisForLFunctions/ArithmeticKunnethTheory/README.md
-        
+- formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/README.md
+- formal/GaloisForLFunctions/ArithmeticPolarization/README.md
+           
 Only read these documents, no other markdown files.
 
 Use the search tool for our lean corpus to research what we have proven and not proven. Do not assume, our research is far ahead of your training data. Take the time to search and understand. 
@@ -487,7 +490,7 @@ The questions for you to answer:
 2. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
 3. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-2610/fable.md
+Write a report in docs docs/reports/review-2610/argon.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 
@@ -495,15 +498,11 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-Read fully the report docs/reports/review-2510/astra.md
+Read fully the report docs/reports/review-2610/hard-obstacles-summary.md
 
-In section "## 4. The field these questions suggest" the document describes a new field/research programme - naming it "Arithmetic Correlation Geometry"
+In section "## 5. Question 3 — the field that would supply the missing tools" the document describes a new field/research programme - naming it "Arithmetic effectivity theory"
 
 Your task: develop this new field / programme.
-
-The folder and umbrella are already created: formal/GaloisForLFunctions/ArithmeticPositiveDuality and formal/GaloisForLFunctions/ArithmeticPositiveDuality.lean
-
-Two modules are also already added: PositiveMeasureHamburgerRigidity.lean and formal/GaloisForLFunctions/ArithmeticPositiveDuality/BeurlingRiemannFunctionalEquationRigidity.lean - they relate to formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/ArithmeticForcesBlindness.lean
 
 Follow the example of other research programmes: formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri or formal/GaloisForLFunctions/ArithmeticOrientationGeometry
 

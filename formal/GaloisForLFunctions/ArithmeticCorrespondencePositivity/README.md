@@ -237,7 +237,7 @@ and gauge Jensen (ACG); Künneth collapse (AKT); the window certificate for ever
 | **P2 The budget is free, its sufficiency is not** | Similitude law for normalized Hecke graphs; Weil's inequality at a scale ⇔ `deg N(x ± ψ_g x) ≥ 0`; the budget of the diagonal of a curve is `2g`; sufficiency at every level ⇔ unitarity; golden (budget `2`) and complex fake (budget `4`) insufficient; RH ⇔ sufficiency of the spline budget at every scale. | `normGraph_degree_heckeGraph`, `normGraph_degree_act`, `hasseWeilAt_iff_normGraph_degree_nonneg`, `CurveDatum.diagonal_defect`, `budget_sufficient_iff_unitary`, `goldenDatum_budget_insufficient`, `complexFake_budget_insufficient`, `riemannHypothesis_iff_spline_graphs_one_add_sub_nonneg` |
 | **P3 Kernel counts are blind to complex quartets** | The determinant degree is multiplicative, real, and nonnegative on every datum without real eigenvalues; the Rosati degree is the Toeplitz form of the power sums and is nonnegative on `ℝ[F]` iff the datum is unitary; golden `deg(2 − F) = −1`; the complex fake has nonnegative point counts and kernel counts, violates Hasse–Weil, and has Rosati degree `−2304` at `F² + q`; zeros of `ζ` in the strip are non-real. | `detDeg_mul`, `conj_detDeg`, `detDeg_nonneg_of_im_ne_zero`, `rosatiDeg_sum_monomials`, `rosatiDeg_nonneg_iff_unitary`, `goldenDatum_detDeg_two_sub_X`, `complexFake_eigenvalue_root`, `complexFake_pointCount_nonneg`, `complexFake_not_hasseWeil`, `complexFake_rosatiDeg_neg`, `counts_do_not_force_purity`, `zeta_strip_zero_im_ne_zero` |
 | **P4 Off-line fibres are hyperbolic** | Boosts are isometries of the local form; cyclic positivity under a boost forces `u v̄ = 0`, under a rotation only `Re(u v̄) ≥ 0`; the Hecke symbol is a boost iff off the line; finite configurations: cyclic positivity under a separating symbol ⇔ half-blindness at every off-line pair; real even fibres: a non-real symbol forces `ĝ(ρ) = 0`, a real one only `Re ĝ(ρ)² ≥ 0`; resonance iff `γ log p ∈ πℤ`; a non-real point resonates at no more than one prime, a real point at every prime; two primes force blindness; the symmetric Hecke operator acts on transforms by its symbol, and the law holds for actual real even tests. | `localForm_boost`, `mul_conj_eq_zero_of_cyclic_nonneg`, `cyclic_nonneg_iff_of_norm_eq_one`, `norm_heckeSymbol_eq_one_iff`, `mul_conj_eq_zero_of_heckeCyclic_nonneg`, `halfBlind_iff_cyclicForm_nonneg`, `eq_zero_of_symCyclic_nonneg`, `symCyclic_nonneg_iff_of_im_eq_zero`, `symHeckeSymbol_im_eq_zero_iff`, `not_resonant_at_two_primes`, `eq_zero_of_two_prime_symCyclic_nonneg`, `mellinAt_reflect_of_even`, `mellinAt_symHecke`, `mellinAt_eq_zero_of_symHecke_local_nonneg` |
-| **P5 The successor is unipotent** | Gauge twists and the archimedean flow keep the modulus `p^{σ−½}` of a symbol; the successor defect `D_a` is holomorphic on `Re s > 0` for every source with `Σ |a_{n+1}| n^{−σ−1} < ∞`; `Σ Λ(n)(n+1)^{−s} = −ζ′/ζ(s) − D_Λ(s)`: the shifted prime source has the poles of `−ζ′/ζ` in the strip with the same principal parts; the defect is at most `|s| Σ|a_{n+1}|(n+1)^{−σ−1}`, for the primes `|D_Λ(s)| ≤ |s| |ζ′/ζ(1 + σ)|`. | `norm_twisted_heckeSymbol`, `norm_archimedeanSymbol`, `differentiableOn_succShiftDefect`, `succShift_vonMangoldt_eq`, `differentiableOn_succShiftDefect_vonMangoldt`, `norm_succShiftDefect_le`, `norm_succShiftDefect_vonMangoldt_le` |
+| **P5 The successor is unipotent** | Gauge twists and the archimedean flow keep the modulus `p^{σ−½}` of a symbol; the successor defect `D_a` is holomorphic on `Re s > 0` for every source with `Σ |a_{n+1}| n^{−σ−1} < ∞`; `Σ Λ(n)(n+1)^{−s} = −ζ′/ζ(s) − D_Λ(s)`: the shifted prime source has the poles of `−ζ′/ζ` in the strip with the same principal parts; the defect is at most `|s| Σ|a_{n+1}|(n+1)^{−σ−1}`, for the primes `|D_Λ(s)| ≤ |s| |ζ′/ζ(1 + σ)|`, sharp on the real axis up to `2^{1+σ}`: `D_Λ(σ) ≥ σ 2^{−1−σ}|ζ′/ζ(1 + σ)|`. | `norm_twisted_heckeSymbol`, `norm_archimedeanSymbol`, `differentiableOn_succShiftDefect`, `succShift_vonMangoldt_eq`, `differentiableOn_succShiftDefect_vonMangoldt`, `norm_succShiftDefect_le`, `norm_succShiftDefect_vonMangoldt_le`, `le_re_succShiftDefect_vonMangoldt` |
 | **P6 Positivity beyond isotropy does not localize** | For `0 < a ≤ 3/10` the carrier `realTestsAt a` is coercively Weil-positive, sees both points of every pair, and is positive for every prime weight. | `positivity_beyond_isotropy_at_finite_aperture`, `exists_mem_realTestsAt_mellinAt_ne_zero`, `re_mellinAt_apertureProbe_pos` |
 | **P7 On nonnegative tests `ζ` is the worst twin** | The full Weil functional is affine in the prime weights; on nonnegative atoms it is antitone; for `f ≥ 0` and every `w ≤ Λ` (sign twins, the Liouville twin, truncations, the prime-free weight) `Re W_Λ(f ⋆ f̃) ≤ Re W_w(f ⋆ f̃)`, so positivity there transfers to all of them; a negative atom at `n₀` makes the flipped twin strictly worse. | `weilFullFunctional_sub_eq`, `re_weilFullFunctional_le_of_le`, `re_weilTest_nonneg`, `re_weilFullFunctional_vonMangoldt_le_of_nonneg`, `liouvilleTwin_le`, `weilPositive_nonneg_transfers`, `flipTwin_lt` |
 | **P8 The base is a fixed loss** | `|c(t)|^k ≤ Ce^{Lt}` gives width `≤ L/k`; bounds with linear loss `kσ` hold iff width `≤ σ`; sublinear loss gives RH; RH ⇔ one exponent bounds every tensor power of the spline correlation; the golden datum's tensor powers lose `k log φ`. | `zetaZeroWidth_le_of_tensor_bound`, `zetaZeroWidth_le_iff_linear_tensor_loss`, `riemannHypothesis_of_sublinear_tensor_loss`, `riemannHypothesis_iff_fixed_tensor_loss`, `goldenDatum_tensor_loss_ge` |
@@ -260,6 +260,9 @@ and gauge Jensen (ACG); Künneth collapse (AKT); the window certificate for ever
 | **P25 Exterior and height-coupled zero-tax quartet contractions** | Post–Widder scale-weight positivity on finite conjugation-symmetric polar sums forces the **real-anchor law**: any `Δκ = 0` cancellation of a rightmost non-real pole `σ_max + iγ₁` must simultaneously cancel a real pole at `σ_max` of weight `c(σ_max) ≥ c(σ_max + iγ₁)` (`≥ 2 c(σ_max + iγ₁)` for a single ordinate), ruling out pure quartet ratios at `Δκ = 0`. Two phase-colliding couplings achieve `Δκ = 0`: (i) the functorial exterior power `CurveDatum.exterior D 2` and archimedean exterior-square divisor `exteriorTwoDivisorPoly` (`2 Λ²z_ρ(t) = z_ρ(t)² − z_ρ(2t)`) send `{1/2 ± a ± iγ}` to `realPairPoly(1/2 + 2a) · (s − 1/2)²((s − 1/2)² + 4γ²)`, contracting at `Δκ = 0` for `0 < a < 1/4`; (ii) `coupledQuartetSymSquare b a γ` attains the sharp `2 : 1` real-anchor bound with Laplace density `2e^{t/2}((e^{bt/2} − e^{−bt/2})² + cos(γt)(e^{at/2} − e^{−at/2})²) ≥ 0` across all `0 < a ≤ b < 1/2`, and lifting any `CompletedPositiveSystem κ d` to `HeightCoupledSystem (2κ) κ d γ` (`F_γ(s) = F(s)² F(s+iγ) F(s−iγ)`) collides `(±iγ) ↦ 0` onto `1/2 + a ∈ ℝ` with multiplicity `2`, contracts arbitrarily many ordinate-`γ` quartets at `Δκ₀ = 0, Δκ_γ = 0` under a fixed Hadamard–digamma budget (`8 ∑_{a ∈ A} ord_{1/2+a+iγ}(Λ) + 4 ord_{1/2}(Λ) + 4 ord_{1/2+iγ}(Λ) < 18κ + 3d log(3+|γ|) − (7/2)d`), and terminates in finitely many steps. | `posDef_polarSum_laplaceWeight_nonneg`, `real_anchor_of_posDef_polarSum`, `two_mul_le_real_anchor_of_single_ordinate`, `not_isEvenPosDef_quartetPureRatio`, `CurveDatum.exterior`, `detDeg_exterior_eq_exteriorDetDeg`, `quartetCurveDatum_exterior_two_spectrum`, `exteriorTwoScaleTrace_eq_newton`, `exteriorTwoDivisorPoly_quartet_contract`, `isEvenPosDef_coupledQuartetSymSquare`, `CompletedPositiveSystem.contractComplexQuartet_of_doubleRealAnchor`, `CompletedPositiveSystem.contractComplexQuartet_of_singleDeepRealAnchor`, `CompletedPositiveSystem.heightCouple`, `HeightCoupledSystem.contractCollidedQuartet`, `CompletedPositiveSystem.contractComplexQuartet_heightCoupled`, `HeightCoupledSystem.archimedean_budget`, `CompletedPositiveSystem.contractOrdinateQuartets_heightCoupled`, `CompletedPositiveSystem.ordinateQuartet_multiplicity_archimedean_bound`, `HeightCoupledSystem.exists_real_offCritical_free` |
 | **P26 Infinite dominant configurations are complete** | For `v ∈ ℓ¹` and distinct `y_k`, an exponential series `Σ v_k e^{−iy_kt}` vanishing on `t > 0` has `v = 0` (Bohr uniqueness: means over `[0,T]` by dominated convergence of the series); the Cauchy form `Σ_{k,l} v_k v̄_l/(2x + i(y_k − y_l))` is `∫_0^∞ e^{−2xt}|S(t)|²`, positive for `v ≠ 0`; for `F = Σ_k c_k e^{(x+iy_k)u}`, `c ∈ ℓ¹`, the horizon law holds, every escape state is a phase kernel over the compact torus `(S¹)^ℕ`, and its null space is the annihilator of all the characters `ψ_k`. | `eq_zero_of_expSeries_eq_zero`, `cauchyFormSeries_eq_integral`, `integral_cauchyDensitySeries_pos`, `exp_mul_hermGram_series_eq`, `exists_tendsto_escapeKernelSeries`, `escapeFormSeries_eq_zero_iff` |
 | **P27 The escape completeness criterion** | For `v = Σ_k Re(c_k n^{z_k}) + r`, `Re z_k = ½ + x`, distinct `±Im z_k`, `c ≠ 0`, `‖r‖_T/‖v‖_T → 0`: along a subsequence of any horizons the normalized cofactor Grams `⟨D_j v, D_k v⟩_T/‖v‖_T²` converge, for all `j, k`, to `K_θ(log j, log k)/(√j √k K_θ(0,0))`; phase kernels are bounded uniformly in the phase and `K_θ(a + t, b + t) → 0`, so their critical (gauge-torus) kernel vanishes. | `exists_tendsto_normGram_of_dominant_split`, `tendsto_norm_ratio_of_subdominant`, `norm_escapeKernel_le`, `tendsto_escapeKernel_shift_zero` |
+| **P28 The escape alternative** | An uncancelled zero (`ζ(ρ) = 0`, `½ + ε < Re ρ < 1`, `ζ(ρ − ε) ≠ 0`) makes the energy `O(T^κ)` for no `κ < 2(Re ρ − ε) − 1`, in particular unbounded; an escaping damping has `ε ≤ Θ − ½`; the cancelling dampings form a countable set; every `ε ∈ (0, Θ − ½)` outside it escapes; RH ⇔ the receiver admits at every `ε > 0`. | `not_energy_le_rpow_of_uncancelled_zero`, `not_admits_of_uncancelled_zero`, `le_of_not_admits`, `countable_cancellingDampings`, `not_admits_of_mem_Ioo_of_not_mem`, `riemannHypothesis_iff_forall_admits` |
+| **P29 A section count is the sign** | For a count `h⁰` with effective classes `{h⁰ > 0}`: Riemann–Roch (`x² > 0 ⇒ h⁰(x) > 0 ∨ h⁰(−x) > 0`) alone is satisfied by `h⁰ ≡ 1` and Bézout (effective classes meet nonnegatively) alone by `h⁰ ≡ 0`; sections at `x` and `−x` with `x² > 0` violate Bézout; both together hold for some count iff the Hodge index holds, on every polar surface; over `ℤ` this is RH, over `𝔽_q` purity, and the golden datum has no such count on some window. | `sectionRR_const`, `sectionBezout_zero`, `not_sectionBezout_of_symm`, `hodgeIndex_iff_exists_sectionCount`, `riemannHypothesis_iff_exists_sectionCount`, `forall_window_exists_sectionCount_iff_unitary`, `goldenDatum_not_forall_window_exists_sectionCount` |
+| **P30 The Stepanov count is the sign** | RH iff the prime-power count obeys the one-sided bound `ψ(x) − x ≤ C √x log²x` for large `x` (Bombieri's one-sided principle over `ℤ`, from the corpus von Koch theorems); an auxiliary `1 − T_p^N` kills the symbol of `ρ` only if `Re ρ = ½` and `N Im ρ log p ∈ 2πℤ`. | `riemannHypothesis_iff_one_sided_count`, `hecke_auxiliary_kills_only_critical` |
 
 ---
 
@@ -276,7 +279,8 @@ and gauge Jensen (ACG); Künneth collapse (AKT); the window certificate for ever
    carries no budget: the golden datum has it and a graph of degree `−1`.
 3. **What is the budget?** The self-defect `δ(x, x)` of a cycle: `2g` for the diagonal of a curve,
    the Weil norm of a test over `ℤ`; constant along every orbit by the similitude law (P2), and every
-   finite budget self-improves to it (F7). It is neither a section count nor a torsion order. Its
+   finite budget self-improves to it (F7). It is neither a section count nor a torsion order: a
+   section count with Riemann–Roch and Bézout exists exactly when the sign holds (P29). Its
    sufficiency at one scale is the positivity of the graphs of `1 ± T`; at every level of a curve it
    is unitarity, and for `ζ` it is RH.
 4. **Which positivity is gauge charged and not isotropic?** Isotropy is forced by hyperbolic local
@@ -349,8 +353,12 @@ and gauge Jensen (ACG); Künneth collapse (AKT); the window certificate for ever
 **The report's three questions.** Q3 (a theorem of the square over `Spec ℤ`): answered by P1, with
 the conclusion that it carries no budget. Q2 (positivity beyond isotropy): answered in sharp form by
 P4, P5, P6 and P7 — it exists only without localization or without source; localizing
-multiplicative carriers are isotropic, additive closure is unipotent. Q1 (escape completeness):
-answered for dominant configurations and reduced, for `ζ`, to an analytic input. The cofactor Gram
+multiplicative carriers are isotropic, additive closure is unipotent. Q1 (escape completeness) has
+two halves. *Escape at `ε` is exactly the presence of zeros right of `½ + ε`* (P28): an uncancelled
+zero there forces escape, escape forces `ε ≤ Θ − ½`, every damping below `Θ − ½` outside a
+countable set escapes, and RH holds iff no damping escapes — so under RH completeness is empty.
+*The escape states are generated by translated zeros* for every dominant configuration, and for
+`ζ` exactly when its profile splits. The cofactor Gram
 is a translation Gram of the log profile (P18), whose Laplace symbol is `G` (P19); escape states do
 not see remainders of subdominant energy (P18); the escape states of a dominant configuration are
 phase kernels of rank exactly the number of its frequencies, generated by the characters
@@ -374,7 +382,7 @@ structure decides it.
 
 | Mechanism | Outcome in ACP |
 |---|---|
-| Budget law | the theorem of the square is free and the self-defect is constant along every orbit (P1, P2): the budget exists; its sufficiency is RH; a section count on normalized graphs is open (§9) |
+| Budget law | the theorem of the square is free and the self-defect is constant along every orbit (P1, P2): the budget exists; its sufficiency is RH; a section count with Riemann–Roch and Bézout is the Hodge index, RH over `ℤ` and purity over `𝔽_q` (P29) |
 | Charged positivity law | sharp no-go: localizing multiplicative carriers are hyperbolic, hence isotropic (P4, P13); the successor is unipotent (P5); non-localizing positivity is source-blind (P6); positivity on nonnegative tests is shared by every dominated twin (P7) |
 | Coupling law | positivity on `ℚ_{>0}` splits the places (APD); on escape states dilation is the archimedean flow (P22) |
 | Capacity law for oscillation | the escape rank is the number of dominant zeros (P20, P24); a fixed budget pays a hyperbolic pair only on a finite segment (P12) |
@@ -434,12 +442,12 @@ The tools the report asks for (§4.5), with what ACP has built for each:
 | Correspondence intersection theory over `ℤ` | normalized graphs, their degree calculus and the free theorem of the square; the similitude law and budgets on Weil planes; determinant, Rosati, spectral and exterior degrees of curve data; affine graphs, their periodic points and intersections | P1, P2, P3, P9, P10, P17 |
 | Gauge-charged positivity | the local form with boosts, rotations and its isometries; Hecke, symmetric Hecke, twisted and archimedean symbols; the resonance law; the transform `mellinAt` of real tests; aperture probes; the successor defect; the Weil functional affine in the source, dominated and flipped twins; the Rankin–Selberg field | P4, P5, P6, P7, P13, P15, P16 |
 | Loss-law calculus | root extraction and the loss of tensor powers; the family Jensen law with its flatness case | P8, P23 |
-| Oscillatory capacity | the budget horizon of a hyperbolic pair; the escape rank, which counts the dominant zeros phase-independently | P12, P20 |
+| Oscillatory capacity | the escape rank: an integer read from a positive semidefinite kernel that counts the dominant zeros phase-independently, with dominated (subdominant) payment excluded; the budget horizon of a hyperbolic pair | P12, P18, P20, P24, P26 |
 | Base constructions | the base as a fixed loss; vertical sections, midpoint contractions, and height-coupled zero-tax quartet contractions (`HeightCoupledSystem`) as positive structures outside `CompletedPositiveSystem 1 d`; family averages are not a base | P8, P17, P23, P25 |
 | Escape-state classification | the translation-Gram form of the cofactor Gram and its Laplace symbol `G`; the subdominance law; the horizon law, phase kernels, the Cauchy form and its positivity, the null space of escape states, independence of power characters; the transfer from power rows to exponential profiles; Bohr uniqueness and the summable case; the completeness criterion in ADR's normalization | P18, P19, P20, P24, P26, P27 |
 | Archimedean–finite coupling | on escape states dilation by `p` is the archimedean flow by `log p` | P22 |
 | Selection lemmas at the zero spacing | the resolution of a correspondence is its length; horizon averages select the zeros within `(2/T) Σ |D_{kl}|/|y_k − y_l|` | P11, P21 |
-| Arithmetic Stepanov | sparse annihilators need a lattice and never kill an off-line symbol | P14 |
+| Arithmetic Stepanov | sparse annihilators need a lattice and never kill an off-line symbol; the Stepanov output (a one-sided prime-power count) is equivalent to RH | P14, P30 |
 
 Each tool is built to the point where its first sharp statement holds for `ζ` or is reduced to a
 named input; what lies beyond is in §9.
@@ -448,37 +456,50 @@ named input; what lies beyond is in §9.
 
 ## 9. Open research topics
 
-1. **A localizing carrier with an elliptic local symmetry.** Local isometries separate the two
-   points of an off-line pair only hyperbolically (P13), so such a carrier must isolate the pair by
-   a non-isometric arithmetic operation and carry a reflection-type symmetry; build one on which
-   Weil's form is positive, or prove that every localizing arithmetic carrier is multiplicative.
+The report's questions are answered in §6. What remains are frontier problems; each is stated with
+what ACP has proved about it.
+
+1. **A localizing carrier with an elliptic local symmetry (B3.25).** Proved: separating local
+   isometries are boosts (P13); at a non-real off-line point — the only kind `ζ` can have (P3) —
+   real even carriers closed under the symmetric Hecke operators of two primes are blind, and the
+   fibre is elliptic exactly when the point is resonant for the prime, `γ log p ∈ πℤ`, which happens
+   for one prime at most (P4). So within correspondence-closed carriers elliptic localization exists
+   only on the resonant lattice of a single prime. Open: a carrier that
+   localizes by a non-isometric operation and is unconditionally positive; separating `ζ` from its
+   twins on it would be a forcing input of RH strength (B1.6).
 2. **The first gauge-charged window.** The odd-sector positivity on `[−181/500, 181/500]` is the first
-   window theorem that meets a prime (`2`). Does it hold for the twin with `Λ(2)` flipped? A failure
-   would make it the first unconditional positivity theorem that separates the gauge point `0` from a
-   twin (P7 shows on which tests this can happen: those with a negative atom at `log 2`).
+   window theorem that meets a prime (`2`). Does it hold for the twin with `Λ(2)` flipped? P7 shows
+   that it can fail only on tests with a negative atom at `log 2`; the rest is a finite-aperture
+   eigenvalue certificate (the report's W8), a computation outside this programme.
 3. **Intrinsic exterior square over `ℤ` without shifted poles.** In a single `CompletedPositiveSystem`, Post–Widder scale-weight positivity forces any `Δκ = 0` quartet contraction to carry a simultaneous real anchor at `σ_max`, while `HeightCoupledSystem (2κ) κ d γ` (`F(s)² F(s + iγ) F(s − iγ)`) supplies that `2 : 1` real anchor by colliding `(±iγ) ↦ 0` at a one-time lift cost `(κ₀, κ_γ) = (2κ, κ)` and then contracts arbitrarily many ordinate-`γ` quartets at `Δκ₀ = 0, Δκ_γ = 0` (P25). Over `𝔽_q`, `CurveDatum.exterior D 2` collides `(±iγ) ↦ 0` at `κ = 1` with no shifted poles at `±iγ` because `Λ² H¹` is an intrinsic cohomology space of the curve. Construct an intrinsic archimedean `Λ²` functor over `ℤ` that produces `exteriorTwoDivisorPoly` directly at `(κ₀, κ_γ) = (1, 0)` without paying the `3 d log(3 + |γ|)` shifted-Gamma ceiling, or prove that every positive lift realizing `(±iγ) ↦ 0` over `ℤ` carries shifted poles/Gamma factors at `±iγ`.
-4. **Sections on correspondence surfaces.** A section count on normalized graphs (B3.5) whose
-   Riemann–Roch is proved without the sign.
-5. **Arithmetic Stepanov.** Auxiliary sections over `ℤ` whose forced vanishing bounds a spectral
-   count. Stepanov's sparse annihilators need a lattice in the spectrum and never kill an off-line
-   symbol (P14); the auxiliary sections must come from another source.
-6. **The regular part of the successor.** The successor is unipotent on polar fibres; its defect
-   `D_Λ` carries the near-incidence information and grows at most like `|s| |ζ′/ζ(1 + σ)|` (P5).
-   Find its true size in the strip and the part of it that a positivity can read.
-7. **A base from a non-multiplicative structure** with loss independent of the tensor power.
-8. **The explicit-formula split of the cofactor profile.** Escape completeness for `ζ` is the split
-   of the profile with Laplace symbol `G` into a dominant configuration of translated zeros and a
-   remainder of subdominant energy (P18, P20). Prove it at some `ε`, or show that the remainder can
-   carry energy comparable to the zeros' (the mass that escapes to infinite height in the spectral
-   measures `|G(σ + iτ)|² dτ`).
-9. **Non-summable dominant configurations.** P26 settles absolutely summable configurations. The
-   residues of `G` at the translated zeros are `ζ(ρ − ε)/(ζ′(ρ)(ρ − ε))`; whether they are summable
-   along a line of zeros is a question about `1/ζ′(ρ)`. For square-summable residues the escape
-   states are still Gram limits, but the Cauchy form is no longer absolutely convergent.
-10. **The non-attained abscissa.** When the real parts of the uncancelled zeros accumulate at their
-    supremum without attaining it, the escape states concentrate on characters at infinite height:
-    describe them as measures on the gauge torus (ACG) and decide whether they are limits of
-    translated-zero characters.
+4. **Sections on correspondence surfaces (B3.5).** Settled as a strength statement (P29): a section
+   count with Riemann–Roch alone or Bézout alone is free and carries nothing; with both it exists
+   iff the Hodge index holds — RH over `ℤ`, purity over `𝔽_q`. Every class has a normalized graph
+   (P1), so the same holds on normalized graphs. A section count is therefore not an input weaker
+   than the sign; what remains is to construct one with both axioms, which is RH.
+5. **Arithmetic Stepanov (B3.30).** Settled as a strength statement (P30): the natural output of a
+   Stepanov method over `ℤ`, a one-sided square-root bound on the prime-power count, is equivalent
+   to RH, as over `𝔽_q` the one-sided point count is purity. Hecke auxiliaries kill only critical
+   lattice symbols and vanish to order `< K` with `K` monomials (P14, P30), so they cannot supply
+   it; an arithmetic Stepanov method needs auxiliary sections outside the Hecke algebra of a single
+   prime and, if it works, proves RH.
+6. **The regular part of the successor (B3.29).** Proved: `D_Λ` is holomorphic on `Re s > 0`,
+   `|D_Λ(s)| ≤ |s||ζ′/ζ(1 + σ)|`, and on the real axis `D_Λ(σ) ≥ σ 2^{−1−σ}|ζ′/ζ(1 + σ)|` (P5).
+   Open: its size off the real axis and the part of it that a positivity can read.
+7. **A base from a non-multiplicative structure.** Proved: a fixed tensor loss is RH and a linear
+   loss is the strip (P8); tensor powers, family averages, gauge moments and products all lose
+   linearly, and zero loss is flatness, which over `𝔽_q` is purity (P8, P23, ACG, AKT). Open: a
+   non-multiplicative structure with loss independent of the power; by P8 it would prove RH.
+8. **The explicit-formula split of the cofactor profile (B3.2).** Proved: under RH no damping
+   escapes, so completeness holds (P28); escape at `ε` is the presence of zeros right of `½ + ε` up
+   to a countable set (P28); a split into a dominant configuration and a subdominant remainder gives
+   completeness with rank the number of dominant zeros, for finitely many dominant zeros (P20, P24,
+   P27) and for absolutely summable infinite configurations (P26). Open, off RH: the split itself,
+   i.e. a contour shift of `G(s)e^{su}` past the translated zeros, which needs growth bounds for
+   `1/ζ(s + ε)` between zeros. Its remaining cases are non-summable residues
+   `ζ(ρ − ε)/(ζ′(ρ)(ρ − ε))` along a line of zeros, and real parts that accumulate at their
+   supremum without attaining it, where the escape states concentrate at infinite height on the
+   gauge torus (ACG).
 
 ---
 
@@ -553,5 +574,8 @@ reduction.
 | `ThePowerRowsOfTheZerosAreDominantConfigurations` | The floor estimate; profiles of power rows; comparison of scaled Grams; the real profile as a configuration with frequencies `±Im z`; escape states of power rows |
 | `InfiniteDominantConfigurationsAreComplete` | Exponential series; Bohr uniqueness; the Cauchy form of a summable configuration and its positivity; the horizon law; escape states over `(S¹)^ℕ`; the null space |
 | `TheEscapeCompletenessCriterion` | Escape states of rows with a dominant split in the normalization of ADR; the vanishing critical kernel of phase kernels |
+| `TheEscapeAlternative` | Uncancelled zeros force escape with a lower energy exponent; escape below the zero width; countable cancellation; the escape set; RH as the absence of escape |
+| `ASectionCountIsTheSign` | Riemann–Roch and Bézout for section counts; each alone is free; together they are the Hodge index, RH over `ℤ`, purity over `𝔽_q`; golden calibration |
+| `TheStepanovCountIsTheSign` | The one-sided prime-power count is RH; Hecke auxiliaries kill only critical symbols |
 | `MomentAmplificationOfAnyFamilyLosesLinearly` | Family Jensen; the loss law of family averages; flatness; calibration over `𝔽_q` |
 | `ExteriorAndHeightCoupledQuartetContractions` | Post–Widder polar scale-weight positivity and the real-anchor law (`c(σ_max) ≥ c(σ_max + iγ₁)`, `≥ 2c` single-ordinate); functorial `CurveDatum.exterior` and complete quartet phase elimination on `Λ²`; archimedean `exteriorTwoDivisorPoly` (`2 Λ²z_ρ(t) = z_ρ(t)² − z_ρ(2t)`) and `Δκ = 0` contraction (`a < 1/4`); full-strip `coupledQuartetSymSquare` (`0 < a ≤ b < 1/2`, `Δκ = 0`) and `HeightCoupledSystem (2κ) κ d γ` (`F(s)² F(s+iγ) F(s−iγ)`) with zero-tax collided quartet contraction, Hadamard–digamma budget, ordinate-`γ` quartet multiplicity bound, and finite-step real-zero elimination |

@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.DirichletFirstDifference
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheLocalGeometryOfAReflectionPair
 import Mathlib.NumberTheory.LSeries.Dirichlet
 import Mathlib.Analysis.Complex.LocallyUniformLimit
+import GaloisForLFunctions.HTGeometry.RpowHarmonicTailAsymptotic
 
 /-!
 # The successor is invisible at zeros
@@ -24,8 +25,9 @@ Shifting a source `a` by one replaces its Dirichlet series `Σ a_{n+1}(n+1)^{−
   with `D_Λ` holomorphic on the whole half-plane `Re s > 0`. So the shifted prime source has exactly
   the poles of `−ζ′/ζ` in the critical strip, with the same principal parts.
 * **Size of the defect** (`norm_succShiftDefect_le`, `norm_succShiftDefect_vonMangoldt_le`).
-  `|D_a(s)| ≤ |s| Σ |a_{n+1}|(n+1)^{−σ−1}`; for the primes `|D_Λ(s)| ≤ |s| |ζ′/ζ(1 + σ)|`, which is
-  `≍ |s|/σ` as `σ ↓ 0`: the regular part of the successor grows at most linearly in the height.
+  `|D_a(s)| ≤ |s| Σ |a_{n+1}|(n+1)^{−σ−1}`; for the primes `|D_Λ(s)| ≤ |s| |ζ′/ζ(1 + σ)|`: the
+  regular part of the successor grows at most linearly in the height. On the real axis the bound is
+  sharp up to `2^{1+σ}`: `D_Λ(σ) ≥ σ 2^{−1−σ} |ζ′/ζ(1 + σ)|` (`le_re_succShiftDefect_vonMangoldt`).
 
 The successor is therefore **unipotent** on the polar fibres: it acts as the identity on the
 singular part of every zero. Closure of a carrier under the successor imposes no condition on the
@@ -235,5 +237,61 @@ theorem norm_succShiftDefect_vonMangoldt_le {s : ℂ} (hs : 0 < s.re) :
   congr 1
   rw [← norm_neg, ← neg_div, ← tsum_vonMangoldt_shift_eq hs, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (tsum_nonneg fun n => by positivity)]
+
+/-- **The bound is sharp on the real axis**: for real `σ > 0`,
+`D_Λ(σ) ≥ σ 2^{−1−σ} Σ Λ(n+1)(n+1)^{−σ−1} = σ 2^{−1−σ} |ζ′/ζ(1 + σ)|`, from
+`x^{−σ} − (x+1)^{−σ} ≥ σ (x+1)^{−σ−1}` and `n + 2 ≤ 2(n + 1)`. -/
+theorem le_re_succShiftDefect_vonMangoldt {σ : ℝ} (hσ : 0 < σ) :
+    σ / 2 ^ (1 + σ) * ∑' n : ℕ, ‖vonMangoldtC (n + 1)‖ * ((n : ℝ) + 1) ^ (-σ - 1) ≤
+      (succShiftDefect vonMangoldtC σ).re := by
+  -- the defect at a real point is the real series of its terms
+  set t : ℕ → ℝ := fun n => ‖vonMangoldtC (n + 1)‖ *
+    (((n : ℝ) + 1) ^ (-σ) - (((n : ℝ) + 1) + 1) ^ (-σ))
+  have hterm : ∀ n : ℕ, succShiftTerm vonMangoldtC n σ = (t n : ℂ) := by
+    intro n
+    have h1 : (0 : ℝ) ≤ (n : ℝ) + 1 := by positivity
+    have h2 : (0 : ℝ) ≤ (n : ℝ) + 1 + 1 := by positivity
+    rw [succShiftTerm, show -(σ : ℂ) = ((-σ : ℝ) : ℂ) by push_cast; ring,
+      ← Complex.ofReal_cpow h1, ← Complex.ofReal_cpow h2]
+    simp only [t, vonMangoldtC, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg ArithmeticFunction.vonMangoldt_nonneg]
+    push_cast
+    ring
+  have hlow : ∀ n : ℕ, σ / 2 ^ (1 + σ) * (‖vonMangoldtC (n + 1)‖ * ((n : ℝ) + 1) ^ (-σ - 1)) ≤
+      t n := by
+    intro n
+    have hx : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+    have hstep := (HTGeometry.rpow_unit_step_bounds (q := -σ) (by linarith) hx).1
+    -- `(n+2)^{−σ−1} ≥ 2^{−σ−1}(n+1)^{−σ−1}`
+    have h2 : (2 : ℝ) ^ (-σ - 1) * ((n : ℝ) + 1) ^ (-σ - 1) ≤ ((n : ℝ) + 1 + 1) ^ (-σ - 1) := by
+      rw [← Real.mul_rpow (by norm_num) hx.le]
+      exact Real.rpow_le_rpow_of_nonpos (by positivity) (by linarith) (by linarith)
+    have h2' : (2 : ℝ) ^ (-σ - 1) = 1 / 2 ^ (1 + σ) := by
+      rw [show -σ - 1 = -(1 + σ) by ring, Real.rpow_neg (by norm_num), one_div]
+    have hΛ := norm_nonneg (vonMangoldtC (n + 1))
+    simp only [t]
+    rw [neg_neg, show -σ - 1 = -σ - 1 by ring] at hstep
+    have hp : 0 ≤ ((n : ℝ) + 1) ^ (-σ - 1) := (Real.rpow_pos_of_pos hx _).le
+    calc σ / 2 ^ (1 + σ) * (‖vonMangoldtC (n + 1)‖ * ((n : ℝ) + 1) ^ (-σ - 1))
+        = ‖vonMangoldtC (n + 1)‖ * (σ * (2 ^ (-σ - 1) * ((n : ℝ) + 1) ^ (-σ - 1))) := by
+          rw [h2']; ring
+      _ ≤ ‖vonMangoldtC (n + 1)‖ * (σ * ((n : ℝ) + 1 + 1) ^ (-σ - 1)) :=
+          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left h2 hσ.le) hΛ
+      _ ≤ ‖vonMangoldtC (n + 1)‖ * (((n : ℝ) + 1) ^ (-σ) - ((n : ℝ) + 1 + 1) ^ (-σ)) :=
+          mul_le_mul_of_nonneg_left (by simpa using hstep) hΛ
+  have hsumL := (summable_vonMangoldt_shift hσ).mul_left (σ / 2 ^ (1 + σ))
+  have hsumT : Summable t := by
+    refine Summable.of_nonneg_of_le (fun n => le_trans (by positivity) (hlow n)) (fun n => ?_)
+      ((summable_vonMangoldt_shift hσ).mul_left σ)
+    have h := norm_succShiftTerm_le vonMangoldtC n (s := σ) (by simpa using hσ)
+    rw [hterm, Complex.norm_real, Real.norm_eq_abs] at h
+    have := (le_abs_self (t n)).trans h
+    simp only [Complex.ofReal_re, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hσ] at this
+    linarith
+  have hD : succShiftDefect vonMangoldtC σ = ((∑' n, t n : ℝ) : ℂ) := by
+    rw [succShiftDefect, Complex.ofReal_tsum]
+    exact tsum_congr hterm
+  rw [hD, Complex.ofReal_re, ← tsum_mul_left]
+  exact hsumL.tsum_le_tsum hlow hsumT
 
 end GaloisForLFunctions.ArithmeticCorrespondencePositivity
