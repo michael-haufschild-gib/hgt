@@ -414,11 +414,12 @@ To build:
 2. **Oscillatory capacity.** A positive structure that measures the oscillatory payment of `ζ`'s own
    zeros and carries a capacity. Its calibration: zero capacity for `ζ` would be RH; the battery's
    inserted charge must be visible to it with the conservation identity as its relative case.
-3. **Coupled scale positivity.** An unconditional positivity theorem for the Weil or Meyer form on
-   a carrier coupling several dilation channels (two dilated copies, `ζ(s)ζ(s+iτ)`, Rankin–Selberg
-   sources `Λ ⋆ Λ`, cones that are not `♯`-stable) whose carrier is not off-line blind; or a
-   maximality theorem for all such carriers. Rank helps on the zero side: this is where it must
-   help.
+3. **Coupled scale positivity.** Answered for point-stable carriers coupled by divisor multipliers
+   (`CoupledPositivityIsIsotropy`): positivity forces the fibres at `ρ` and `ρ*` to be orthogonal
+   for the coupling matrix, not to vanish. Positive convolution ideals without `♯`-stability are
+   half-blind; the left-blind ideal (bounded backward flow) is positive and not blind; exhaustion of
+   every such carrier is RH. Open: carriers that are not point-stable (Rankin–Selberg sources,
+   cones without convolution closure).
 4. **A base over `Spec ℤ`.** A base `B` with a simple pole and no zeros; a self-dual system `F` whose
    even tensor powers have nonnegative log-coefficients; a computable pole part of
    `L(B, F^{⊗2k})`; `ζ`'s zeros among those of `L(B, F)`. Then `Re ρ ≤ ½ + O(1/k)` for every `k`.
@@ -437,8 +438,10 @@ To build:
    of degree `d` as the class.
 9. **Equality case of completed capacity.** Whether a completed positive system with even `κ`
    carries boundary zeros of total multiplicity `κ/2`.
-10. **Spectral synthesis in the blind ideal.** Is the span of critical jet sources dense in the
-    blind ideal for the natural topology? (Its closure is a limit statement of exhaustion.)
+10. **Spectral synthesis in the blind ideal.** Answered (`SpectralSynthesisInTheBlindIdeal`):
+    every divisor-order ideal is the closure of its jet sources plus the Poisson boundary; the
+    critical jet sources synthesize the full-jet blind ideal, which is the blind ideal iff every
+    off-line zero is simple, and is everything iff RH.
 11. **Spectral readings of the limits.** Averaged Weil positivity on short height windows
     `[Γ, Γ + H]` as positivity of the spectral measure against height windows; the escape states of
     cofactor modules as horizon Grams of the profile `G(s) = ζ(s)(1/ζ(s+ε) − 1/ζ(1+ε))/s`.

@@ -1,6 +1,6 @@
 # Strip Bochner–Weil Forcing (SBWF)
 
-**One structure, three shadows, three unconditional forcing laws.** Single-channel quadratic
+**One structure, three shadows, five unconditional forcing laws.** Single-channel quadratic
 positivity on the scaling surface is exhausted by source blindness
 (`isGreatest_meyerSharpPositiveIdeal`), while single-zero harmonic certificates in the critical
 strip hit the universal purchase cap `B < 2` (`MultiFrequencyCap`), certifying **zero** interior
@@ -75,3 +75,39 @@ and simple-pole (`κ = 1`) critical-zero refunds unconditionally:
 | `exists_monic_poly_of_completed_gauge` | Any entire function `E` of finite order with `E(1 − s) = ε E(s)` (`‖ε‖ = 1`) and `E(s) = (s(s − 1))^κ G(s)` on `Re s > σ₀`, where `G` is bounded on `Re s ≥ σ₀` and `G(σ) → 1` as `σ → +∞`, collapses to `ε = 1` and `E(s) = P.eval s` for a **monic polynomial `P` of exact degree `2 κ`** (specialized to `exp(−∫_0^∞ e^{−su} f(u) du)` in `exists_monic_poly_of_laplace_exp_gauge`). |
 | `completed_gauge_zero_and_quartet_budget` | Every collapsed gauge has total global zero multiplicity `≤ 2 κ`, and under `E(s̄) = conj(E(s))` at most `⌊κ / 2⌋` upper-half-plane off-critical quartets (`2 * ∑_i m_i ≤ κ`) across the entire plane. |
 | `simple_pole_nonneg_laplace_refund_rigidity` | **Unconditional `κ = 1` refund rigidity:** if `ν` is ANY nonnegative Borel measure on `ℝ` converging at some `σ₁`, and `E` is ANY non-identically-zero entire function with `E(1 − s) = ε E(s)` (`ε ≠ 0`, allowing arbitrary critical-zero deletions/refunds from `ξ`) such that `−(E'/E)(σ) + (ξ'/ξ)(σ) = ∫ e^{−σu} dν(u)` for `σ > σ₁`, then `ν` has infinite abscissa `−∞` via Landau's real-axis continuation + linear-ODE nonvanishing, `ν|_{(0, ∞)} = 0` via `σ ↦ 1 − σ` reflection at `σ = 1/4, 3/4`, and `E = c₀ · ξ` globally. |
+
+---
+
+## 4. Reference-free strip reflection & the `κ = 1` phase transition (`StripReflectionRigidity.lean`)
+
+Coupling vertical positivity directly with `Λ(1 − s) = Λ(s)` inside `0 < Re s < 1` **without**
+subtracting a reference `ξ'/ξ` cancels both the `κ`-polar rational term and `logDeriv Λ`, leaving
+pure archimedean reflection and exposing an exact pole-order phase transition between `κ = 1` and
+`κ ≥ 2`:
+
+| Theorem | Mathematical statement |
+|---|---|
+| `completedPositiveSystem_strip_reflection` / `completedPositiveSystem_strip_reflection_digamma` | For `extFactor κ d Λ s = Λ(s) / ((s(s − 1))^κ Γ_ℝ(s)^d)` on `0 < Re s < 1` (`Λ(s) ≠ 0`), `(−logDeriv extFactor(s)) + (−logDeriv extFactor(1 − s)) = d(logDeriv Γ_ℝ(s) + logDeriv Γ_ℝ(1 − s)) = (d/2)(ψ(s/2) + ψ((1 − s)/2) − 2 log π)`. |
+| `exists_completedPositiveSystem_two_real_offCritical` | For every `β ∈ (0, 1) \ {1/2}`, twisting `ζ` by `(s − β)(s − (1 − β))/(s(s − 1))` produces a `CompletedPositiveSystem 2 1` vanishing at `β` and `1 − β`. |
+| `exists_completedPositiveSystem_two_complex_offCritical` | For every `a ∈ (0, 1/4]`, cancelling Hardy's first critical zero pair `1/2 ± i γ₀` of `ξ` (`γ₀ > 0`) via `dslope` and inserting `refundQuartic a γ₀` produces a `CompletedPositiveSystem 2 1` with a nonreal off-critical zero `1/2 + a + i γ₀`. Thus `κ = 1` is the **unique** pole order where critical-line forcing is not false. |
+| `no_entire_laplace_completed_system` | Archimedean reflection negativity `Re(logDeriv Γ_ℝ(1/2)) < 0` (`re_logDeriv_Gammaℝ_half_neg`) + Landau continuation along `(0, ∞)` rules out every nonzero entire `Λ(1 − s) = ε Λ(s)` (`ε ≠ 0`) with `−logDeriv Λ + d logDeriv Γ_ℝ = laplaceReal ν` on `(σ₁, ∞)` (`d ≥ 1`), with no finite-order assumption on `Λ`. |
+| `real_zero_archimedean_budget` | Positivity at `s = 2` against `Re(logDeriv Γ_ℝ(2)) = (−γ − log π)/2 < −5/6` (`re_logDeriv_Gammaℝ_two_lt`) forces `4 ord_{1/2}(Λ) + 8 ∑_{x ∈ X} ord_x(Λ) + 5 d < 9 κ` for every finite `X ⊂ (1/2, 1]`. |
+| `five_mul_degree_lt_nine_mul_poleOrder` / `not_completedPositiveSystem_zero` / `degree_eq_one_of_completedPositiveSystem_one` | Every `CompletedPositiveSystem κ d F Λ` satisfies `5 d < 9 κ`, forcing `κ ≥ 1` and `κ = 1 → d = 1`. |
+| `ne_zero_ofReal_of_completedPositiveSystem_one` | In every simple-pole `CompletedPositiveSystem 1 d F Λ`, `Λ(x) ≠ 0` for all `x ∈ ℝ` (ruling out both Siegel-type zeros on `(0, 1) \ {1/2}` and central vanishing at `s = 1/2`). |
+
+---
+
+## 5. Iterated box wavepackets & sharp `⌊κ / 2⌋` collar sparsity (`SharpHalfPoleCollar.lean`)
+
+Replacing the `(r + 1)`-channel star by polynomial-scale iterated discrete box convolutions
+(`boxConv`, `iterBoxConv`) of step length `K = 16 M` smoothed over a unit-step window of length
+`N = 512 M² L` eliminates both the `√r` Cauchy–Schwarz star loss (`κ² → ⌊κ/2⌋`) and all
+`Δ`-separation / low-ordinate hypotheses:
+
+| Theorem | Mathematical statement |
+|---|---|
+| `sum_right_half_orbit_resolvent_le_re_logDeriv` | Strict fundamental-domain disjointness of `{ρ_ℓ, ρ̄_ℓ, 1 − ρ_ℓ, 1 − ρ̄_ℓ}` on `{Re z > 1/2, Im z > 0}` gives `∑_ℓ m_ℓ (Re 1/(s − ρ_ℓ) + Re 1/(s − ρ̄_ℓ)) ≤ Re(Λ'/Λ)(s)` (`Re s > 1`) for **any** injective tuple `ρ`, with zero distinct-ordinate or `Δ`-separation assumptions. |
+| `collective_half_pole_collar_forcing` | Whenever `κ < 2 * ∑_ℓ m_ℓ` up to height `T`, smoothed additive-cube wavepackets force `∃ ℓ, 1 ≤ m_ℓ ∧ Re ρ_ℓ ≤ 1 − collarDepth κ d r (∑_ℓ m_ℓ) T`. |
+| `sharpCollarWidth_ge` | At `M₀ = κ / 2 + 1`, `sharpCollarWidth κ d T := collarDepth κ d M₀ M₀ T` is independent of the zero set `Z` and satisfies `sharpCollarConst κ / (d log(3 + max T 0)) ≤ sharpCollarWidth κ d T` (`sharpCollarConst κ > 0`). |
+| `two_mul_sum_order_collar_zeros_le_poleOrder` / `sum_order_collar_zeros_le_half_poleOrder` / `card_collar_zeros_le_half_poleOrder` | **Exact `⌊κ / 2⌋` collar sparsity:** for **every** finite set `Z ⊂ {0 < Im z ≤ T, Re z > 1 − sharpCollarWidth κ d T}`, `2 * ∑_{z ∈ Z} ord_z(Λ) ≤ κ` (`∑ ord ≤ κ / 2`, `Z.card ≤ κ / 2`), matching the boundary-zero capacity `exists_completedPositiveSystem_boundary_zeros_at_half_pole`. |
+| `ne_zero_of_mem_sharpCollar_one` | **Exception-free `κ = 1` zero-free collar:** combining `card_collar_zeros_le_half_poleOrder` at `κ = 1` with `ne_zero_ofReal_of_completedPositiveSystem_one` proves `Λ(z) ≠ 0` across all `|Im z| ≤ T`, `Re z > 1 − sharpCollarWidth 1 d T` with no Siegel-zero exception and no low-ordinate gap. |

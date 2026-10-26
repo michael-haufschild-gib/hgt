@@ -114,13 +114,17 @@ support loses multiplicity; moving parameters can have growing boundary cost.
 10. **Residual + trace determine the row.** `v = Σ_dμ(d)d^{−ε}𝓡(v)(⌊n/d⌋) + 𝓛(v)q_ε(n)`
     (`residual_and_trace_injective`, `actual_receiver_reconstruction`); isolates the unestimated terms
     (Möbius floor inverse of `R`, and `q_ε`).
+11. **Symbol of `D̃`.** On power rows, `0 < Re s < 1−ε`: `Σ_{j≤n} j^{−ε}⌊n/j⌋^s = ζ(s+ε)n^s + 𝓛_s n^{1−ε} +
+    O(n^{(Re s−ε)/2})` (`norm_powerRowCofactorSum_sub_le`), so `(I + D̃)n^s = ζ(s+ε)n^s` modulo admitted rows.
+    For `Re s ≥ ½` a power row satisfies `D̃v ≈ −v` iff `ζ(s+ε) = 0`
+    (`powerRow_renormalizedInversion_bounded_iff`); real exponents never do.
 
 ### Extraction
-11. **Energy quantiles.** Increments ≤ 1 ⇒ quantile intervals keep mass `(s−r) ± 1/E`
+12. **Energy quantiles.** Increments ≤ 1 ⇒ quantile intervals keep mass `(s−r) ± 1/E`
     (`admits_or_quantile_interval_error_vanishes`) and antipodal work `W/E → −(s−r)`
     (`admits_or_quantiles_preserve_antipodal_work`); every positive level crossed with unit overshoot
     (`admits_or_every_positive_level_has_unit_overshoot`).
-12. **Common cofactor limit.** One subsequence makes every `K_T(j,k)` converge (`exists_cofactorGram_limit`, also
+13. **Common cofactor limit.** One subsequence makes every `K_T(j,k)` converge (`exists_cofactorGram_limit`, also
     along any prescribed cofinal family `exists_actualCofactorLimit_along_cofinal`): `K(1,1) = 1`, symmetric,
     `|K(j,k)| ≤ 1/√(jk)`, PSD, packet contraction `Q(pa) ≤ Q(a)/p` (`cofactorGram_packet_dilation_le`). Normalized
     Gram steps vanish (`cofactorGram_succ_sub_tendsto_zero`); paid corrections and vanishing-relative-energy
@@ -133,7 +137,7 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     occurs in another actual kernel (`exists_kernel_with_intermediate_coordinate`); the kernel family is
     a singleton or has exactly continuum cardinality (`actualCofactorKernelSet_singleton_or_continuum`).
     Nonuniqueness forces escape (`not_admits_of_kernel_ne`). Module isomorphism classes remain unclassified.
-13. **Wiener module.** Every actual limit has a cyclic Hilbert realization with `‖V_p‖ ≤ p^{−½}`, integrating to a
+14. **Wiener module.** Every actual limit has a cyclic Hilbert realization with `‖V_p‖ ≤ p^{−½}`, integrating to a
     contractive unital `𝒲_{1/2}` representation; annihilator closed, proper, nonempty hull
     (`moduleHull_nonempty`). On escape the paid ideal annihilates it, so `∅ ≠ hull ⊆ obstructionHull(μ_ε)`
     (`admits_or_moduleHull_subset_obstructionHull`); repairing kernels have bounded dilation energy, vanishing
@@ -145,7 +149,7 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     Its module is exactly the closed dilation range (`range_contractedKernelIsometry`);
     finite quotient index drops by `dim ker D_p` (`cofactor_index_add_dilation_nullity`). Positive
     contractions compose on kernels and ideals (`contracted_kernel_compose`, `cofactorAnnihilator_compose`).
-14. **Module structure.** Admitted modules are faithful with full Bohr hull, infinite-dimensional, continuum
+15. **Module structure.** Admitted modules are faithful with full Bohr hull, infinite-dimensional, continuum
     quotient (`faithful_or_receiver_escapes`, `receiver_escapes_of_finiteDimensional`): a finite-dimensional or
     non-faithful actual module forces escape. Annihilator quotient is finite or continuum, never countable
     (`annihilator_quotient_finite_or_continuum`); finite index = Σ joint character multiplicities
@@ -161,10 +165,10 @@ support loses multiplicity; moving parameters can have growing boundary cost.
     Complete source pairings respect conjugation; cyclic norms are unchanged,
     the annihilator is conjugation-invariant (`conjW_mem_annihilator_iff`),
     and every actual module hull is conjugation-symmetric (`conj_mem_moduleHull`).
-15. **Unit transport.** Real Wiener unit convolution transports Grams and preserves escape
+16. **Unit transport.** Real Wiener unit convolution transports Grams and preserves escape
     (`admits_or_real_unit_convolution_gram_tendsto`); Möbius and Liouville modules are unit-equivalent
     (`admits_or_liouville_gram_is_unit_transport`).
-16. **Origin boundaries.** Constant-row dilates reset at zero have the max kernel `1/max(j,k)`
+17. **Origin boundaries.** Constant-row dilates reset at zero have the max kernel `1/max(j,k)`
     (`pronicPairing_originSteps_tendsto`), a faithful module with full Bohr hull; positive max-kernel mixtures of
     actual Grams are faithful (`representation_injective` in `PositiveOriginMixturesAreFaithful`). Escape records
     (sublinear square-prefix records, `admits_or_exists_record_horizons`) realize every positive origin mass
@@ -188,7 +192,7 @@ passed canonical Lean checks and standard-axiom audits. The
 records each completed audit.
 
 ### Countermodels (Gram laws do not classify the source)
-17. White noise satisfies the compactness laws and has a unique antipodal extension
+18. White noise satisfies the compactness laws and has a unique antipodal extension
     (`whiteNoise_has_unique_antipodal_extension`); prime-deleted white noise keeps positivity and packet
     contraction but violates horizon order (`actual_kernel_ne_oddWhiteNoise`); the augmentation model satisfies
     positivity, contraction and diagonal order with hull outside every half-plane point
@@ -246,7 +250,7 @@ assumed gap); separate identity, estimate, extraction and exclusion.
 | Topic | Required output |
 |---|---|
 | Joint extraction | One carrier holding fixed covariances, quantile signed work and the moving cofactor tail, with rate and spatial data, without exchanging an uncontrolled infinite sum and a limit |
-| Exclusion / source selectivity | An independently proved estimate excluding the tangent state or its approximate eigenrelation `D̃u ≈ −u`, violated by impure models |
+| Exclusion / source selectivity | An independently proved estimate excluding the tangent state or its approximate eigenrelation `D̃u ≈ −u`, violated by impure models; on power rows the eigenrelation is exactly `ζ(s+ε) = 0`, so the gap is power-likeness of escape states |
 | Module classification | Which Wiener modules occur on escape: is `hull ⊆ obstructionHull` an equality; are signs/exponents of rank-one characters tied to zeros; exclude finite-dimensional escape modules by a source law |
 | Mixed Bézout/Vaughan covariance | Summable signed gain after centering, with horizon and damping dependence |
 | Successor dynamics | Moving words or amplified operations acting nontrivially at the escape scale with proved boundary cost |

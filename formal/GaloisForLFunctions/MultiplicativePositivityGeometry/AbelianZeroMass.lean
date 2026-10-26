@@ -272,4 +272,24 @@ theorem family_capacity {G : Type*} [AddCommGroup G] {𝒟 : G × ℝ → ℝ} (
     ∑ p ∈ S, -𝒟 p ≤ 𝒟 0 :=
   total_offOrigin_mass_le hD hnp hS
 
+/-- **Paired versus self-conjugate zeros.** Under the hypotheses of the zero-mass law, a zero at a
+point `p` with `p ≠ −p` has order at most `φ(0)/2`, while a zero at a point of order two has order
+at most `φ(0)`. -/
+theorem zero_order_le_of_pair {φ : Γ → ℝ} (hφ : IsEvenPosDef φ) (hnp : ∀ q, q ≠ 0 → φ q ≤ 0)
+    {p : Γ} (hp : p ≠ 0) :
+    (p + p ≠ 0 → 2 * -φ p ≤ φ 0) ∧ (p + p = 0 → -φ p ≤ φ 0) := by
+  classical
+  constructor
+  · intro h2
+    have hpn : p ≠ -p := fun h => h2 (by nth_rewrite 2 [h]; exact add_neg_cancel p)
+    have hS : (0 : Γ) ∉ ({p, -p} : Finset Γ) := by
+      simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
+      exact ⟨Ne.symm hp, fun h => hp (neg_eq_zero.mp h.symm)⟩
+    have h := total_offOrigin_mass_le hφ hnp hS
+    rw [Finset.sum_pair hpn, hφ.even] at h
+    linarith
+  · intro _
+    have hS : (0 : Γ) ∉ ({p} : Finset Γ) := by simpa using Ne.symm hp
+    simpa using total_offOrigin_mass_le hφ hnp hS
+
 end GaloisForLFunctions.MultiplicativePositivityGeometry

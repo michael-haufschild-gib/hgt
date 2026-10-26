@@ -13,6 +13,11 @@ positive-definite function.** De la Vallée Poussin, Mertens and Fejér inequali
 this one function. Forcing questions become questions about integer-valued positive-definite
 functions, and those can be answered completely.
 
+The boundary has three forcing mechanisms: positive definiteness of `D` (Bochner), Bessel's
+inequality for the Rankin–Selberg square of a signed datum, and the decay-exponent law, which uses
+growth rates of `log |Z|` instead of boundary limits. For families over a finite abelian group the
+same theory lives on `G × ℝ`, and its only unforced configuration is a two-torsion exception.
+
 Namespace `GaloisForLFunctions.MultiplicativePositivityGeometry`; umbrella
 `MultiplicativePositivityGeometry.lean`. Everything is unconditional.
 
@@ -143,6 +148,15 @@ The language keeps these distinctions explicit:
 | **P10 Growth-to-forcing law** | Exclusion holds iff `√A + √(Gη) < √B`: the certified width is exactly `(√B − √A)²/G`. An input valid only for `δ ≤ δ₁` loses nothing once `Aη ≤ Gδ₁²`. | `exclusion_iff`, `exclusion_iff_lt_width`, `exclusion_iff_restricted` |
 | **P11 Certificate caps** | Degree `K` certifies only `η < (1 − ρ_K^{−1/2})²/L`; degree one certifies nothing. Any finite multi-frequency certificate has `a(γ) ≤ 2a(0)`, so the universal cap `(3 − 2√2)/(2L)` binds them all. | `fejer_width_cap`, `degree_one_excludes_nothing`, `fejer_width_cap_lt_universal`, `multiFrequency_purchase_le_two`, `multiFrequency_width_cap` |
 | **P12 Calibration** | The corpus dlVP input gives `β ≤ 1 − (2 − √3)²/((5/2) log γ + C)`, and no better region follows from it. | `xiZero_re_le_dlvp`, `dlvp_input_consistent` |
+| **P13 Finite Bochner** | A finite configuration (heights arbitrary, poles allowed off the origin) is a boundary divisor iff it is positive definite iff its Bohr polynomial `D(0) + 2Σ D(z) cos(zt)` is `≥ 0`; it is realized by `Π_v ζ(s + iv)^{D(v)}`. | `finite_boundary_divisor_iff`, `finiteConfig_isEvenPosDef_iff`, `bohr_isBoundaryDivisor` |
+| **P14 Integral realization** | Greedy rounding of the exponents preserves the boundary divisor, so every finite positive-definite configuration is the divisor of `Π_p (1 − p^{−s})^{−m(p)}`, `m(p) ∈ ℕ`. Exponents in `{0, 1, 2}` give half zeros: (Z) is a meromorphy condition, not integrality of the prime data. | `IsBoundaryDivisor.round`, `integral_boundary_profile_iff`, `integral_half_zero` |
+| **P15 Zero capacity** | Integer `D`, pole order `k`, no off-origin pole: `D = kδ₀ − Σ m(z)(δ_z + δ_{−z})` with `2Σ m ≤ k`, each realized by `ζ^{k−2M} Π (ζ(s)²/(ζ(s+iz)ζ(s−iz)))^{m(z)}`. | `isolated_boundary_classification`, `capacity_isBoundaryDivisor` |
+| **P16 Positivity margin** | Signed weights `≥ −εΛ`: the same classification with `2Σ m ≤ k + ε`; a simple pole forces `D = δ₀` iff `ε < 1`. | `margin_classification`, `simple_pole_margin_threshold` |
+| **P17 Range** | `D` is a boundary divisor iff it is a pointwise limit of positive cosine polynomials. `1_ℚ` is positive definite and is not one. | `isBoundaryDivisor_iff_tendsto_posCosPoly`, `rationalIndicator_not_boundaryDivisor` |
+| **P18 Families** | For a family over a finite abelian `G` the joint divisor is positive definite on `G × ℝ`; with (Z), (S), (I) it is `δ₀` or `δ₀ − δ_{(h,0)}` with `2h = 0`, and both occur. | `joint_boundary_classification`, `exceptional_isJointBoundaryDivisor` |
+| **P19 Rankin–Selberg** | For signed log-coefficients `Λg`: `D_f(0)² + 2Σ_{u ∈ U} D_f(u)² ≤` pole order of `f ⊗ f`; simple poles of `f` and `f ⊗ f` force `D_f = δ₀`; equality for `ζ(s)/(ζ(s+i)ζ(s−i))`. | `rankinSelberg_bessel`, `rankinSelberg_forcing`, `rankinSelberg_bessel_sharp` |
+| **P20 Abelian mass law** | On every abelian group a positive-definite `φ ≤ 0` off the origin has off-origin mass `≤ φ(0)`; zeros with `p ≠ −p` have order `≤ φ(0)/2`, self-conjugate ones `≤ φ(0)`. | `total_offOrigin_mass_le`, `zero_order_le_of_pair` |
+| **P21 Decay law** | If `log |Z|` has growth exponent `≤ k` at the pole, `≤ 0` elsewhere and decay exponents `α_z` at the heights `z`, then `Σ α_z ≤ k/2`; no boundary limits are needed. A simple pole admits no decay faster than `x^{1/2}`. | `decay_mass_law`, `holder_barrier` |
 
 ---
 
@@ -188,6 +202,17 @@ not a boundary datum.
 form `A/δ + G ≥ B/(δ + η)` forces exactly `η ≥ (√B − √A)²/G`. Its sharp barrier is P10 read
 backwards (`dlvp_input_consistent`). dlVP is the instance `(3, 4, (5/2) log γ + C)` (P12).
 
+**What does integrality of the prime data permit?** Everything positivity permits (P14). An Euler
+product with nonnegative integer exponents over the rational primes realizes every finite
+positive-definite configuration, including half zeros. The invariant (Z) is meromorphy at the
+boundary.
+
+**Is positivity the only boundary forcing mechanism?** No. A signed datum whose Rankin–Selberg
+square has a simple pole has no boundary zeros or poles (P19): the square bounds the `ℓ²`-norm of the
+divisor. For families, positive definiteness on `G × ℝ` forces everything except one zero at the
+pole on a member of order two (P18); this is the exceptional real character, and excluding it
+needs the real axis inside the strip.
+
 Questions about flows, completions, selection, correspondences and shared budgets do not live in
 multiplicative positivity. They belong to other programmes.
 
@@ -225,7 +250,7 @@ To build:
 
 - interior data: a positive-definite object attached to the strip;
 - the VK and Littlewood inputs as range-limited inequalities, and a law for `δ`-dependent growth;
-- realization of profiles by integral (Beurling) systems.
+- integral realization of infinite (lattice) configurations over the rational primes.
 
 ---
 
@@ -236,16 +261,15 @@ To build:
 2. **Interior invariants.** Does pole-freeness of the continuation, with (N), (Z), (S) and the
    functional equation, exclude interior zeros (Q2)? Over-regular and golden Beurling systems are the
    test battery.
-3. **Integral realization.** Which positive-definite profiles are boundary profiles of genuine
-   generalized-prime systems?
+3. **Integral realization.** Answered for finite configurations (P14). Open: lattice and other
+   infinite locally finite configurations over the rational primes.
 4. **`σ`-dependent growth.** Range-limited inputs are covered by `exclusion_iff_restricted`. The
    corpus VK step (`vk_dlvp_contradiction`) has the form `4/(δ+η) ≤ 3/δ + G`, but only at one `δ`
    inside the proof of `exists_riemannZeta_ne_zero_vinogradovKorobov_width`. Stated on a `δ`-range,
    it would give the VK region with its optimal constant and its barrier. Inputs with genuinely
    `δ`-dependent `G(δ)` remain open.
-5. **Higher poles.** The total mass law bounds the zeros of a pole of order `k`. Classify the
-   extremal configurations, those with total mass exactly `k/2`, and the case with off-origin
-   poles.
+5. **Higher poles.** Answered without off-origin poles (P15) and for finite configurations with
+   them (P13). Open: locally finite infinite configurations with poles off the origin.
 
 ---
 
@@ -287,3 +311,12 @@ A contribution must:
 | `GrowthToForcing` | Interior positivity; the exact exclusion law; degree-`K` width caps |
 | `MultiFrequencyCap` | `a(γ) ≤ 2a(0)` for every finite real spectrum; universal width cap |
 | `ZeroFreeRegionCalibration` | The dlVP region as an instance of the law, with its barrier |
+| `IntegralRealization` | Greedy rounding; integral Euler products realize every profile; half zeros |
+| `FiniteBoundaryDivisors` | Bochner's theorem for finite configurations; almost-periodic twists |
+| `BoundaryZeroCapacity` | Capacity `⌊k/2⌋`; classification of pole-isolated integer divisors |
+| `PositivityMargin` | Signed data with `w ≥ −εΛ`; the threshold `ε < 1` |
+| `BoundaryDivisorRange` | Range of the boundary map; `1_ℚ` is positive definite and not a divisor |
+| `CharacterFamilies` | Joint divisors on `G × ℝ`; the two-torsion exception and its realization |
+| `RankinSelbergBessel` | Bessel's inequality for the square; Rankin–Selberg forcing |
+| `AbelianZeroMass` | The zero-mass law on every abelian group; paired and self-conjugate zeros |
+| `DecayMassLaw` | The decay-exponent mass law; Hölder barrier |

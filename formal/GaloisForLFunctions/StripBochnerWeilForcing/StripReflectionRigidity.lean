@@ -244,6 +244,29 @@ private theorem isEvenPosDef_realPairFactor {β σ : ℝ}
       (-logDeriv (realPairFactor β) ((σ : ℂ) + (u : ℂ) * I)).re) := by
   let w : ℝ → ℝ := fun t =>
     Real.exp (-σ * t) * (Real.exp (β * t) - 1) * (Real.exp ((1 - β) * t) - 1)
+  have hexp_expand : ∀ t : ℝ, w t =
+      Real.exp (-(σ - 1) * t) + Real.exp (-σ * t) -
+        Real.exp (-(σ - β) * t) - Real.exp (-(σ - (1 - β)) * t) := by
+    intro t
+    dsimp only [w]
+    have p1 : Real.exp (-σ * t) * Real.exp (β * t) * Real.exp ((1 - β) * t) =
+        Real.exp (-(σ - 1) * t) := by
+      rw [← Real.exp_add, ← Real.exp_add]
+      congr 1; ring
+    have p2 : Real.exp (-σ * t) * Real.exp (β * t) = Real.exp (-(σ - β) * t) := by
+      rw [← Real.exp_add]
+      congr 1; ring
+    have p3 : Real.exp (-σ * t) * Real.exp ((1 - β) * t) = Real.exp (-(σ - (1 - β)) * t) := by
+      rw [← Real.exp_add]
+      congr 1; ring
+    calc Real.exp (-σ * t) * (Real.exp (β * t) - 1) * (Real.exp ((1 - β) * t) - 1)
+        = Real.exp (-σ * t) * Real.exp (β * t) * Real.exp ((1 - β) * t) +
+            Real.exp (-σ * t) -
+            Real.exp (-σ * t) * Real.exp (β * t) -
+            Real.exp (-σ * t) * Real.exp ((1 - β) * t) := by ring
+      _ = Real.exp (-(σ - 1) * t) + Real.exp (-σ * t) -
+            Real.exp (-(σ - β) * t) - Real.exp (-(σ - (1 - β)) * t) := by
+          rw [p1, p2, p3]
   refine isEvenPosDef_of_laplace_cos_nonneg (w := w) (a := σ - 1) (C := 2)
     (by linarith) (by norm_num) (by dsimp only [w]; fun_prop)
     (fun t ht => ?_) (fun t ht => ?_) (fun u => ?_)
@@ -252,22 +275,7 @@ private theorem isEvenPosDef_realPairFactor {β σ : ℝ}
     have h2 : 0 ≤ Real.exp ((1 - β) * t) - 1 :=
       sub_nonneg.mpr (Real.one_le_exp (by nlinarith))
     exact mul_nonneg (mul_nonneg (Real.exp_pos _).le h1) h2
-  · have hexp_expand : w t =
-        Real.exp (-(σ - 1) * t) + Real.exp (-σ * t) -
-          Real.exp (-(σ - β) * t) - Real.exp (-(σ - (1 - β)) * t) := by
-      dsimp only [w]
-      have e1 : -σ * t + β * t + (1 - β) * t = -(σ - 1) * t := by ring
-      have e2 : -σ * t + β * t = -(σ - β) * t := by ring
-      have e3 : -σ * t + (1 - β) * t = -(σ - (1 - β)) * t := by ring
-      calc Real.exp (-σ * t) * (Real.exp (β * t) - 1) * (Real.exp ((1 - β) * t) - 1)
-          = Real.exp (-σ * t) * Real.exp (β * t) * Real.exp ((1 - β) * t) +
-              Real.exp (-σ * t) -
-              Real.exp (-σ * t) * Real.exp (β * t) -
-              Real.exp (-σ * t) * Real.exp ((1 - β) * t) := by ring
-        _ = Real.exp (-(σ - 1) * t) + Real.exp (-σ * t) -
-              Real.exp (-(σ - β) * t) - Real.exp (-(σ - (1 - β)) * t) := by
-            rw [← Real.exp_add, ← Real.exp_add, e1, ← Real.exp_add, e2, ← Real.exp_add, e3]
-    rw [hexp_expand]
+  · rw [hexp_expand t]
     have hle_exp : Real.exp (-σ * t) ≤ Real.exp (-(σ - 1) * t) :=
       Real.exp_le_exp.mpr (by nlinarith)
     linarith [Real.exp_pos (-(σ - β) * t), Real.exp_pos (-(σ - (1 - β)) * t)]
@@ -310,7 +318,12 @@ private theorem isEvenPosDef_realPairFactor {β σ : ℝ}
     have e2 : s - (β : ℂ) = (((σ - β : ℝ) : ℂ) + (u : ℂ) * I) := by rw [hs_def]; push_cast; ring
     have e3 : s - ((1 - β : ℝ) : ℂ) = (((σ - (1 - β) : ℝ) : ℂ) + (u : ℂ) * I) := by
       rw [hs_def]; push_cast; ring
-    rw [hld, e1, e2, e3, hs_def, Complex.sub_re, Complex.sub_re, Complex.add_re,
+    have hld_re : (-logDeriv (realPairFactor β) s).re =
+        ((1 / s).re + (1 / (s - 1)).re - (1 / (s - (β : ℂ))).re) -
+          (1 / (s - ((1 - β : ℝ) : ℂ))).re := by
+      rw [hld]
+      simp only [Complex.sub_re, Complex.add_re]
+    rw [hld_re, e1, e2, e3, hs_def,
         re_one_div_eq_laplace_cos' σ u (by linarith),
         re_one_div_eq_laplace_cos' (σ - 1) u (by linarith),
         re_one_div_eq_laplace_cos' (σ - β) u (by linarith),
@@ -318,7 +331,9 @@ private theorem isEvenPosDef_realPairFactor {β σ : ℝ}
     have hint : ∀ a' : ℝ, 0 < a' →
         IntegrableOn (fun t : ℝ => Real.exp (-a' * t) * Real.cos (u * t)) (Ioi 0) := by
       intro a' ha'
-      refine Integrable.mono' (integrableOn_exp_mul_Ioi (by linarith) 0)
+      have hexp_int : IntegrableOn (fun t : ℝ => Real.exp (-a' * t)) (Ioi 0) :=
+        integrableOn_exp_mul_Ioi (by linarith) 0
+      refine Integrable.mono' hexp_int
         ((Continuous.aestronglyMeasurable (by fun_prop)).restrict)
         (Eventually.of_forall fun t => ?_)
       rw [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)]
@@ -327,27 +342,25 @@ private theorem isEvenPosDef_realPairFactor {β σ : ℝ}
     have hi1 := hint (σ - 1) (by linarith)
     have hi2 := hint (σ - β) (by linarith)
     have hi3 := hint (σ - (1 - β)) (by linarith)
-    rw [← integral_add hi0 hi1, ← integral_sub (hi0.add hi1) hi2,
-        ← integral_sub ((hi0.add hi1).sub hi2) hi3]
-    refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
-    dsimp only [w]
-    have c1 : -σ * t + β * t + (1 - β) * t = -(σ - 1) * t := by ring
-    have c2 : -σ * t + β * t = -(σ - β) * t := by ring
-    have c3 : -σ * t + (1 - β) * t = -(σ - (1 - β)) * t := by ring
-    have hexp : Real.exp (-σ * t) * (Real.exp (β * t) - 1) * (Real.exp ((1 - β) * t) - 1) =
-        Real.exp (-σ * t) + Real.exp (-(σ - 1) * t) -
-          Real.exp (-(σ - β) * t) - Real.exp (-(σ - (1 - β)) * t) := by
-      calc Real.exp (-σ * t) * (Real.exp (β * t) - 1) * (Real.exp ((1 - β) * t) - 1)
-          = Real.exp (-σ * t) * Real.exp (β * t) * Real.exp ((1 - β) * t) +
-              Real.exp (-σ * t) -
-              Real.exp (-σ * t) * Real.exp (β * t) -
-              Real.exp (-σ * t) * Real.exp ((1 - β) * t) := by ring
-        _ = Real.exp (-σ * t) + Real.exp (-(σ - 1) * t) -
-              Real.exp (-(σ - β) * t) - Real.exp (-(σ - (1 - β)) * t) := by
-            rw [← Real.exp_add, ← Real.exp_add, c1, ← Real.exp_add, c2, ← Real.exp_add, c3]
+    have hi01 : IntegrableOn (fun t : ℝ =>
+        Real.exp (-σ * t) * Real.cos (u * t) +
+          Real.exp (-(σ - 1) * t) * Real.cos (u * t)) (Ioi 0) := hi0.add hi1
+    have hi012 : IntegrableOn (fun t : ℝ =>
+        (Real.exp (-σ * t) * Real.cos (u * t) +
+          Real.exp (-(σ - 1) * t) * Real.cos (u * t)) -
+          Real.exp (-(σ - β) * t) * Real.cos (u * t)) (Ioi 0) := hi01.sub hi2
+    symm
+    calc ∫ t : ℝ in Ioi 0, w t * Real.cos (t * u)
+        = ∫ t : ℝ in Ioi 0,
+            (((Real.exp (-σ * t) * Real.cos (u * t) +
+                Real.exp (-(σ - 1) * t) * Real.cos (u * t)) -
+              Real.exp (-(σ - β) * t) * Real.cos (u * t)) -
+              Real.exp (-(σ - (1 - β)) * t) * Real.cos (u * t)) := by
+            refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
+            rw [hexp_expand t, mul_comm t u]
             ring
-    rw [hexp, mul_comm t u]
-    ring
+      _ = _ := by
+            rw [integral_sub hi012 hi3, integral_sub hi01 hi2, integral_add hi0 hi1]
 
 /-- **Exact `κ = 2` obstruction (real off-critical pairs).** For every `β ∈ (0, 1)` with `β ≠ 1/2`,
 twisting `ζ` by `(s − β)(s − (1 − β)) / (s(s − 1))` yields a genuine `CompletedPositiveSystem 2 1`
@@ -409,14 +422,13 @@ theorem exists_completedPositiveSystem_two_real_offCritical {β : ℝ}
           have hs0 : s ≠ 0 := fun h => by rw [h, Complex.zero_re] at hs; linarith
           have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr fun h => by rw [h, Complex.one_re] at hs; linarith
           dsimp only [Λ, F]
-          unfold realPairFactor
-          have hmul : (s * (s - 1)) * (realPairPoly β s / (s * (s - 1))) = realPairPoly β s :=
+          have hmul : (s * (s - 1)) * realPairFactor β s = realPairPoly β s :=
             mul_div_cancel₀ _ (mul_ne_zero hs0 hs1)
           calc 2 * RHTower.xi s * realPairPoly β s =
                 (s * (s - 1)) ^ 1 * Complex.Gammaℝ s ^ 1 * riemannZeta s * realPairPoly β s := by
                   rw [hζ.completed_eq s hs]
             _ = (s * (s - 1)) ^ 2 * Complex.Gammaℝ s ^ 1 *
-                  (riemannZeta s * (realPairPoly β s / (s * (s - 1)))) := by
+                  (riemannZeta s * realPairFactor β s) := by
                 rw [← hmul]; ring }
     intro σ hσ
     have hopen : IsOpen {w : ℂ | 1 < w.re} := isOpen_lt continuous_const Complex.continuous_re
@@ -609,19 +621,27 @@ private theorem isEvenPosDef_complexQuartetTwist {a γ σ : ℝ}
           ∫ t : ℝ in Ioi 0,
             (2 * Real.exp (-α * t) * Real.cos (γ * t)) * Real.cos (t * u) := by
       intro α hα
+      have hexp_int : IntegrableOn (fun t : ℝ => Real.exp (-α * t)) (Ioi 0) :=
+        integrableOn_exp_mul_Ioi (by linarith) 0
       have hi : ∀ b : ℝ,
           IntegrableOn (fun t : ℝ => Real.exp (-α * t) * Real.cos (b * t)) (Ioi 0) := by
         intro b
-        refine Integrable.mono' (integrableOn_exp_mul_Ioi (by linarith) 0)
+        refine Integrable.mono' hexp_int
           ((Continuous.aestronglyMeasurable (by fun_prop)).restrict)
           (Eventually.of_forall fun t => ?_)
         rw [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)]
         exact mul_le_of_le_one_right (Real.exp_pos _).le (Real.abs_cos_le_one _)
       rw [Complex.add_re, re_one_div_eq_laplace_cos' α (u - γ) hα,
-          re_one_div_eq_laplace_cos' α (u + γ) hα, ← integral_add (hi (u - γ)) (hi (u + γ))]
-      refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
-      rw [sub_mul, add_mul, Real.cos_sub, Real.cos_add, mul_comm t u]
-      ring
+          re_one_div_eq_laplace_cos' α (u + γ) hα]
+      symm
+      calc ∫ t : ℝ in Ioi 0, (2 * Real.exp (-α * t) * Real.cos (γ * t)) * Real.cos (t * u)
+          = ∫ t : ℝ in Ioi 0,
+              (Real.exp (-α * t) * Real.cos ((u - γ) * t) +
+                Real.exp (-α * t) * Real.cos ((u + γ) * t)) := by
+              refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
+              rw [sub_mul, add_mul, Real.cos_sub, Real.cos_add, mul_comm t u]
+              ring
+        _ = _ := integral_add (hi (u - γ)) (hi (u + γ))
     have es1 : s - 1 = (((σ - 1 : ℝ) : ℂ) + (u : ℂ) * I) := by rw [hs_def]; push_cast; ring
     have ezp : s - zPlus = (((σ - 1 / 2 : ℝ) : ℂ) + ((u - γ : ℝ) : ℂ) * I) := by
       rw [hs_def]; dsimp only [zPlus]; push_cast; ring
@@ -635,8 +655,14 @@ private theorem isEvenPosDef_complexQuartetTwist {a γ σ : ℝ}
       rw [hs_def]; dsimp only [r4]; push_cast; ring
     have er2 : s - r2 = (((σ - (1 / 2 - a) : ℝ) : ℂ) + ((u + γ : ℝ) : ℂ) * I) := by
       rw [hs_def]; dsimp only [r2]; push_cast; ring
-    rw [hld, es1, ezp, ezm, er1, er3, er4, er2, hs_def,
-        Complex.sub_re, Complex.add_re, Complex.add_re, Complex.add_re,
+    have hld_re : (-logDeriv (complexQuartetTwist a γ) s).re =
+        ((1 / s).re + (1 / (s - 1)).re +
+          (1 / (s - zPlus) + 1 / (s - zMinus)).re) -
+          ((1 / (s - r1) + 1 / (s - r3)).re +
+            (1 / (s - r4) + 1 / (s - r2)).re) := by
+      rw [hld]
+      simp only [Complex.sub_re, Complex.add_re]
+    rw [hld_re, es1, ezp, ezm, er1, er3, er4, er2, hs_def,
         re_one_div_eq_laplace_cos' σ u (by linarith),
         re_one_div_eq_laplace_cos' (σ - 1) u (by linarith),
         hpair_int (σ - 1 / 2) (by linarith),
@@ -645,7 +671,9 @@ private theorem isEvenPosDef_complexQuartetTwist {a γ σ : ℝ}
     have hi_single : ∀ α : ℝ, 0 < α →
         IntegrableOn (fun t : ℝ => Real.exp (-α * t) * Real.cos (u * t)) (Ioi 0) := by
       intro α hα
-      refine Integrable.mono' (integrableOn_exp_mul_Ioi (by linarith) 0)
+      have hexp_int : IntegrableOn (fun t : ℝ => Real.exp (-α * t)) (Ioi 0) :=
+        integrableOn_exp_mul_Ioi (by linarith) 0
+      refine Integrable.mono' hexp_int
         ((Continuous.aestronglyMeasurable (by fun_prop)).restrict)
         (Eventually.of_forall fun t => ?_)
       rw [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)]
@@ -653,7 +681,9 @@ private theorem isEvenPosDef_complexQuartetTwist {a γ σ : ℝ}
     have hi_pair : ∀ α : ℝ, 0 < α → IntegrableOn
         (fun t : ℝ => (2 * Real.exp (-α * t) * Real.cos (γ * t)) * Real.cos (t * u)) (Ioi 0) := by
       intro α hα
-      refine Integrable.mono' ((integrableOn_exp_mul_Ioi (by linarith) 0).const_mul 2)
+      have hexp_int : IntegrableOn (fun t : ℝ => 2 * Real.exp (-α * t)) (Ioi 0) :=
+        (integrableOn_exp_mul_Ioi (by linarith) 0).const_mul 2
+      refine Integrable.mono' hexp_int
         ((Continuous.aestronglyMeasurable (by fun_prop)).restrict)
         (Eventually.of_forall fun t => ?_)
       rw [Real.norm_eq_abs, abs_mul, abs_mul]
@@ -668,36 +698,62 @@ private theorem isEvenPosDef_complexQuartetTwist {a γ σ : ℝ}
     have ip0 := hi_pair (σ - 1 / 2) (by linarith)
     have ip1 := hi_pair (σ - (1 / 2 + a)) (by linarith)
     have ip2 := hi_pair (σ - (1 / 2 - a)) (by linarith)
-    rw [← integral_add i0 i1, ← integral_add (i0.add i1) ip0,
-        ← integral_add ip1 ip2, ← integral_sub ((i0.add i1).add ip0) (ip1.add ip2)]
-    refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
-    dsimp only [w]
-    unfold RHTower.refundDensity
-    have c1 : -σ * t + t = -(σ - 1) * t := by ring
-    have c2 : -σ * t + t / 2 = -(σ - 1 / 2) * t := by ring
-    have c3 : -σ * t + (1 / 2 + a) * t = -(σ - (1 / 2 + a)) * t := by ring
-    have c4 : -σ * t + (1 / 2 - a) * t = -(σ - (1 / 2 - a)) * t := by ring
-    have hexp : Real.exp (-σ * t) *
-          ((Real.exp t + 1) + 2 * Real.exp (t / 2) * Real.cos (γ * t) -
-            2 * Real.cos (γ * t) *
-              (Real.exp ((1 / 2 + a) * t) + Real.exp ((1 / 2 - a) * t))) =
-        Real.exp (-σ * t) + Real.exp (-(σ - 1) * t) +
-          2 * Real.exp (-(σ - 1 / 2) * t) * Real.cos (γ * t) -
-          (2 * Real.exp (-(σ - (1 / 2 + a)) * t) * Real.cos (γ * t) +
-            2 * Real.exp (-(σ - (1 / 2 - a)) * t) * Real.cos (γ * t)) := by
-      calc Real.exp (-σ * t) *
-            ((Real.exp t + 1) + 2 * Real.exp (t / 2) * Real.cos (γ * t) -
-              2 * Real.cos (γ * t) *
-                (Real.exp ((1 / 2 + a) * t) + Real.exp ((1 / 2 - a) * t)))
-          = Real.exp (-σ * t) + (Real.exp (-σ * t) * Real.exp t) +
-              2 * (Real.exp (-σ * t) * Real.exp (t / 2)) * Real.cos (γ * t) -
-              (2 * (Real.exp (-σ * t) * Real.exp ((1 / 2 + a) * t)) * Real.cos (γ * t) +
-                2 * (Real.exp (-σ * t) * Real.exp ((1 / 2 - a) * t)) * Real.cos (γ * t)) := by
+    have i01 : IntegrableOn (fun t : ℝ =>
+        Real.exp (-σ * t) * Real.cos (u * t) +
+          Real.exp (-(σ - 1) * t) * Real.cos (u * t)) (Ioi 0) := i0.add i1
+    have i01p0 : IntegrableOn (fun t : ℝ =>
+        (Real.exp (-σ * t) * Real.cos (u * t) +
+          Real.exp (-(σ - 1) * t) * Real.cos (u * t)) +
+          (2 * Real.exp (-(σ - 1 / 2) * t) * Real.cos (γ * t)) * Real.cos (t * u)) (Ioi 0) :=
+      i01.add ip0
+    have ip12 : IntegrableOn (fun t : ℝ =>
+        (2 * Real.exp (-(σ - (1 / 2 + a)) * t) * Real.cos (γ * t)) * Real.cos (t * u) +
+          (2 * Real.exp (-(σ - (1 / 2 - a)) * t) * Real.cos (γ * t)) * Real.cos (t * u)) (Ioi 0) :=
+      ip1.add ip2
+    symm
+    calc ∫ t : ℝ in Ioi 0, w t * Real.cos (t * u)
+        = ∫ t : ℝ in Ioi 0,
+            (((Real.exp (-σ * t) * Real.cos (u * t) +
+                Real.exp (-(σ - 1) * t) * Real.cos (u * t)) +
+              (2 * Real.exp (-(σ - 1 / 2) * t) * Real.cos (γ * t)) * Real.cos (t * u)) -
+            ((2 * Real.exp (-(σ - (1 / 2 + a)) * t) * Real.cos (γ * t)) * Real.cos (t * u) +
+              (2 * Real.exp (-(σ - (1 / 2 - a)) * t) * Real.cos (γ * t)) * Real.cos (t * u))) := by
+            refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
+            dsimp only [w]
+            unfold RHTower.refundDensity
+            have e_c1 : Real.exp (-σ * t) * Real.exp t = Real.exp (-(σ - 1) * t) := by
+              rw [← Real.exp_add]; congr 1; ring
+            have e_c2 : Real.exp (-σ * t) * Real.exp (t / 2) = Real.exp (-(σ - 1 / 2) * t) := by
+              rw [← Real.exp_add]; congr 1; ring
+            have e_c3 : Real.exp (-σ * t) * Real.exp ((1 / 2 + a) * t) =
+                Real.exp (-(σ - (1 / 2 + a)) * t) := by
+              rw [← Real.exp_add]; congr 1; ring
+            have e_c4 : Real.exp (-σ * t) * Real.exp ((1 / 2 - a) * t) =
+                Real.exp (-(σ - (1 / 2 - a)) * t) := by
+              rw [← Real.exp_add]; congr 1; ring
+            have hexp : Real.exp (-σ * t) *
+                  ((Real.exp t + 1) + 2 * Real.exp (t / 2) * Real.cos (γ * t) -
+                    2 * Real.cos (γ * t) *
+                      (Real.exp ((1 / 2 + a) * t) + Real.exp ((1 / 2 - a) * t))) =
+                Real.exp (-σ * t) + Real.exp (-(σ - 1) * t) +
+                  2 * Real.exp (-(σ - 1 / 2) * t) * Real.cos (γ * t) -
+                  (2 * Real.exp (-(σ - (1 / 2 + a)) * t) * Real.cos (γ * t) +
+                    2 * Real.exp (-(σ - (1 / 2 - a)) * t) * Real.cos (γ * t)) := by
+              calc Real.exp (-σ * t) *
+                    ((Real.exp t + 1) + 2 * Real.exp (t / 2) * Real.cos (γ * t) -
+                      2 * Real.cos (γ * t) *
+                        (Real.exp ((1 / 2 + a) * t) + Real.exp ((1 / 2 - a) * t)))
+                  = Real.exp (-σ * t) + (Real.exp (-σ * t) * Real.exp t) +
+                      2 * (Real.exp (-σ * t) * Real.exp (t / 2)) * Real.cos (γ * t) -
+                      (2 * (Real.exp (-σ * t) * Real.exp ((1 / 2 + a) * t)) * Real.cos (γ * t) +
+                        2 * (Real.exp (-σ * t) * Real.exp ((1 / 2 - a) * t)) * Real.cos (γ * t)) := by
+                    ring
+                _ = _ := by rw [e_c1, e_c2, e_c3, e_c4]
+            rw [hexp, mul_comm t u]
             ring
-        _ = _ := by
-            rw [← Real.exp_add, c1, ← Real.exp_add, c2, ← Real.exp_add, c3, ← Real.exp_add, c4]
-    rw [hexp, mul_comm t u]
-    ring
+      _ = _ := by
+            rw [integral_sub i01p0 ip12, integral_add i01 ip0, integral_add i0 i1,
+                integral_add ip1 ip2]
 
 /-- **Exact `κ = 2` obstruction (genuinely complex off-critical quartets).** For every
 `a ∈ (0, 1/4]`, cancelling an unconditional critical zero pair `1/2 ± i γ₀` of `ξ` (`γ₀ > 0` from
@@ -1466,7 +1522,7 @@ theorem real_zero_archimedean_budget {κ d : ℕ} {F Λ : ℂ → ℂ}
       obtain ⟨hx_gt, _⟩ := hX x hx
       obtain ⟨hy_gt, _⟩ := hX y hy
       simp only [pairCopies, Finset.disjoint_union_left, Finset.disjoint_union_right]
-      refine ⟨⟨hall_disj _ _ (Complex.ofReal_ne_ofReal.mpr hxy), hall_disj _ _ (fun h => ?_)⟩,
+      refine ⟨⟨hall_disj _ _ (fun h => hxy (Complex.ofReal_inj.mp h)), hall_disj _ _ (fun h => ?_)⟩,
               ⟨hall_disj _ _ (fun h => ?_), hall_disj _ _ (fun h => ?_)⟩⟩
       · have := congrArg Complex.re h; simp at this; linarith
       · have := congrArg Complex.re h; simp at this; linarith
@@ -1513,7 +1569,7 @@ theorem real_zero_archimedean_budget {κ d : ℕ} {F Λ : ℂ → ℂ}
         rw [e1, e2, ec, Complex.ofReal_re]
       rw [Finset.sum_congr rfl hval1, Finset.sum_congr rfl hval2,
           Finset.sum_const, Finset.sum_const, hall_card, hall_card,
-          hS.orderAt_one_sub (x : ℂ), nsmul_eq_mul, nsmul_eq_mul]
+          hS.orderAt_one_sub (x : ℂ), nsmul_eq_mul]
       have hge43 : (4 / 3 : ℝ) ≤ 1 / (2 - x) + 1 / (1 + x) := by
         have hp1 : 0 < 2 - x := by linarith
         have hp2 : 0 < 1 + x := by linarith
@@ -1522,8 +1578,9 @@ theorem real_zero_archimedean_budget {κ d : ℕ} {F Λ : ℂ → ℂ}
       have hord_nn : (0 : ℝ) ≤ ((analyticOrderAt Λ (x : ℂ)).toNat : ℝ) := Nat.cast_nonneg _
       nlinarith
     refine ⟨allCopiesAt (1 / 2 : ℂ) ∪ X.biUnion pairCopies, ?_⟩
-    have hdisj_tot : Disjoint (allCopiesAt (1 / 2 : ℂ)) (X.biUnion pairCopies) :=
-      Finset.disjoint_biUnion_right.mpr fun x hx => hhalf_disj_pair x hx
+    have hdisj_tot : Disjoint (allCopiesAt (1 / 2 : ℂ)) (X.biUnion pairCopies) := by
+      rw [Finset.disjoint_biUnion_right]
+      exact hhalf_disj_pair
     rw [Finset.sum_union hdisj_tot,
         Finset.sum_biUnion (fun x hx y hy hxy => hpair_disj x hx y hy hxy)]
     have hX_sum_le : (4 / 3 : ℝ) * (∑ x ∈ X, ((analyticOrderAt Λ (x : ℂ)).toNat : ℝ)) ≤

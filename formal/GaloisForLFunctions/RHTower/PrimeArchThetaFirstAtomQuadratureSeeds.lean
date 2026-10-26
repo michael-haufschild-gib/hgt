@@ -139,11 +139,3 @@ macro "first_atom_endpoints" : command => do
 first_atom_endpoints
 
 end RHTower.ThetaRationalQuadrature.Certificates
-
-set_option pp.proofs false in
-#print RHTower.ThetaRationalQuadrature.Certificates.widthPower0
-set_option pp.proofs false in
-#print RHTower.ThetaRationalQuadrature.Certificates.widthPower1
-set_option pp.proofs false in
-#print RHTower.ThetaRationalQuadrature.Certificates.widthPower57
-#print axioms RHTower.ThetaRationalQuadrature.Certificates.widthPower57

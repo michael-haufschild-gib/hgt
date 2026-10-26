@@ -45,3 +45,9 @@ the foundational README.
 
 ## Log
 - 2026-10-25 — created; pillar list fixed after corpus survey.
+- 2026-10-25 — Lean: gauge torus + orthogonality + all-order gauge moments; successor gauge charge;
+  archimedean line vs gauge (threshold); coalescent surplus gauge variance o(N²); boundary = log a
+  iff σ = ½; mixed Gram incidence + dilation covariance; sign gauge sees only square successor
+  pairs; written: Möbius boundary vs Liouville twin, persistence law, amplification loss law,
+  phase reconstruction (Baer extension). Pillars 7 (prime rank) dropped: content is the prime-value
+  parametrisation already in SSA.

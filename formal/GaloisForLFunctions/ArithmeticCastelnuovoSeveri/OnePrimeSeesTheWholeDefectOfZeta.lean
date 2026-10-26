@@ -28,13 +28,16 @@ well-foundedness or separation hypothesis:
 `ζ` is deep-sparse by the Ingham–Huxley zero-density estimate, summed over dyadic height boxes
 (`deepSparse_zeta`). Hence at **every** prime `p` the `p`-tower of `ζ` carries one negative square
 for each distinct `p^{ρ−½}` (`zeta_one_prime_tower_law`), and RH is equivalent to positivity of
-the Weil form on all `p`-towers for one fixed prime (`riemannHypothesis_iff_onePrime_towers`).
+the Weil form on all `p`-towers for one fixed prime (`riemannHypothesis_iff_onePrime_towers`). At all but finitely many primes
+the eigenvalues are distinct and one tower carries the whole Hodge defect, finite or infinite
+(`zeta_almost_every_prime_tower_law`).
 -/
 
 open Complex Finset Filter Topology
 open scoped ComplexConjugate Classical lp
 open Zeta23 GaloisForLFunctions.HTGeometry
-open GaloisForLFunctions.SquareRootThreshold (TemperedConfig temperedConfig_zetaZeroConfig carrierCopy carrierCopy_val)
+open GaloisForLFunctions.SquareRootThreshold (TemperedConfig temperedConfig_zetaZeroConfig carrierCopy
+  carrierCopy_val)
 
 noncomputable section
 
@@ -196,19 +199,11 @@ def DeepSparse (Z : ZeroConfig) : Prop :=
   ∀ σ : ℝ, 1 / 2 < σ → ∃ s : ℝ, 0 < s ∧ s < 1 ∧
     Summable fun τ : ↥{τ : ℂ | τ ∈ rightZeros Z ∧ σ ≤ τ.re} => ‖gammaOf (τ : ℂ)‖⁻¹ ^ s
 
-theorem im_gammaOf' (τ : ℂ) : (gammaOf τ).im = 1 / 2 - τ.re := by simp [gammaOf]
-
 theorem norm_gammaOf_reflect (τ : ℂ) : ‖gammaOf (reflect τ)‖ = ‖gammaOf τ‖ := by
   rw [gammaOf_reflect, Complex.norm_conj]
 
 theorem gammaOf_ne_zero_of_re_ne {τ : ℂ} (h : τ.re ≠ 1 / 2) : gammaOf τ ≠ 0 := fun h0 =>
-  h (by linarith [im_gammaOf' τ, congrArg Complex.im h0, Complex.zero_im])
-
-theorem countable_carrier (Z : ZeroConfig) : Z.carrier.Countable := by
-  refine (Set.countable_iUnion fun n : ℕ => (Z.finite_window (-(n : ℝ)) n).countable).mono ?_
-  intro τ hτ
-  obtain ⟨n, hn⟩ := exists_nat_gt |τ.im|
-  exact Set.mem_iUnion.mpr ⟨n, hτ, by linarith [neg_abs_le τ.im], by linarith [le_abs_self τ.im]⟩
+  h (by linarith [SquareRootThreshold.im_gammaOf τ, congrArg Complex.im h0, Complex.zero_im])
 
 /-- **Killing a sparse set of right zeros.** If `A` is a set of points right of the line with
 `Σ_{τ ∈ A} |γ_τ|^{-s} < ∞` for some `0 < s < 1`, a `C²` compactly supported test vanishes at `γ_τ`
@@ -251,9 +246,11 @@ theorem exists_test_killing_deep_zeros (Z : ZeroConfig) (hsp : DeepSparse Z) {σ
   set A : Set ℂ := S \ ↑F with hA
   have hAS : A ⊆ S := Set.sdiff_subset
   have hAr : ∀ τ ∈ A, τ ∈ rightZeros Z := fun τ hτ => (hAS hτ).1
-  have hAc : A.Countable := (countable_carrier Z).mono fun τ hτ => (hAr τ hτ).1
-  have hsumA : Summable fun τ : A => ‖gammaOf (τ : ℂ)‖⁻¹ ^ s :=
-    hsum.comp_injective (Set.inclusion_injective hAS)
+  have hAc : A.Countable :=
+    (SquareRootThreshold.countable_carrier Z).mono fun τ hτ => (hAr τ hτ).1
+  have hsumA : Summable fun τ : A => ‖gammaOf (τ : ℂ)‖⁻¹ ^ s := by
+    simpa only [Function.comp_def, Set.coe_inclusion] using
+      hsum.comp_injective (Set.inclusion_injective hAS)
   obtain ⟨g, hg, hgc, hz, hnz⟩ :=
     exists_test_killing A (fun τ hτ => (hAr τ hτ).2) hAc hs0 hs1 hsumA
   have hmemA : ∀ τ ∈ rightZeros Z, σ₀ ≤ τ.re → τ ∉ F → τ ∈ A := fun τ hτ hle hτF =>
@@ -262,15 +259,18 @@ theorem exists_test_killing_deep_zeros (Z : ZeroConfig) (hsp : DeepSparse Z) {σ
   refine ⟨g, hg, hgc, fun τ hτ hle hτF => hz τ (hmemA τ hτ hle hτF), fun τ₀ hτ₀ => ?_⟩
   have hre := (hF τ₀ hτ₀).2
   constructor
-  · refine hnz _ (by rw [im_gammaOf']; exact (by linarith : 1 / 2 - τ₀.re < 0).ne)
+  · refine hnz _
+      (by rw [SquareRootThreshold.im_gammaOf]; exact (by linarith : 1 / 2 - τ₀.re < 0).ne)
       fun τ hτ => ⟨fun h => hAF τ hτ (by rw [← gammaOf_injective h]; exact hτ₀), fun h => ?_⟩
     have h' := congrArg Complex.im h
-    rw [im_gammaOf', im_gammaOf', re_reflect] at h'
+    rw [SquareRootThreshold.im_gammaOf, SquareRootThreshold.im_gammaOf, re_reflect] at h'
     linarith [(hAr τ hτ).2]
-  · refine hnz _ (by rw [im_gammaOf', re_reflect]; exact (by linarith : 0 < 1 / 2 - (1 - τ₀.re)).ne')
+  · refine hnz _ (by
+        rw [SquareRootThreshold.im_gammaOf, re_reflect]
+        exact (by linarith : 0 < 1 / 2 - (1 - τ₀.re)).ne')
       fun τ hτ => ⟨fun h => ?_, fun h => hAF τ hτ ?_⟩
     · have h' := congrArg Complex.im h
-      rw [im_gammaOf', im_gammaOf', re_reflect] at h'
+      rw [SquareRootThreshold.im_gammaOf, SquareRootThreshold.im_gammaOf, re_reflect] at h'
       linarith [(hAr τ hτ).2]
     · have h'' : τ₀ = τ := by
         rw [← reflect_reflect τ₀, gammaOf_injective h, reflect_reflect]
@@ -588,17 +588,41 @@ theorem riemannHypothesis_iff_onePrime_towers {p : ℕ} (hp : p.Prime) :
     rw [hw g hg hgc K] at h
     omega
 
-/-- **If `ζ` has finitely many right zeros, almost every prime tower carries all of them.** At all
-but finitely many primes the outer eigenvalues are distinct, so the one-prime law counts the right
-zeros themselves. -/
-theorem zeta_almost_every_prime_tower_law (hfin : (rightZeros zetaZeroConfig).Finite) :
+/-- **At most one prime fails to separate an infinite set.** If `S` is infinite, at most one prime
+`p` has finitely many eigenvalues `p^{ρ−½}` on `S`: for two such primes the pairs of eigenvalues
+take finitely many values, so two distinct points of `S` would collide at both primes. -/
+theorem subsingleton_finite_frobEig_image {S : Set ℂ} (hS : S.Infinite) :
+    {p : ℕ | p.Prime ∧ (frobEig (Real.log p) '' S).Finite}.Subsingleton := by
+  rintro p ⟨hp, hpf⟩ q ⟨hq, hqf⟩
+  by_contra hpq
+  obtain ⟨x, hx, y, hy, hxy, he⟩ := hS.exists_ne_map_eq_of_mapsTo
+    (f := fun τ => (frobEig (Real.log p) τ, frobEig (Real.log q) τ))
+    (fun τ hτ => Set.mk_mem_prod (Set.mem_image_of_mem _ hτ) (Set.mem_image_of_mem _ hτ))
+    (hpf.prod hqf)
+  exact hpq (subsingleton_resonantPrimes hxy ⟨hp, congrArg Prod.fst he⟩ ⟨hq, congrArg Prod.snd he⟩)
+
+/-- **Almost every prime tower carries the whole Hodge defect of `ζ`.** For all but finitely many
+primes `p`, some window of the `p`-tower of some test has `n` negative squares iff `ζ` has at least
+`n` right zeros, finitely or infinitely many. With infinitely many right zeros at most one prime is
+exceptional (`subsingleton_finite_frobEig_image`). -/
+theorem zeta_almost_every_prime_tower_law :
     {p : ℕ | p.Prime ∧ ¬ ∀ n : ℕ,
       ((∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧
         ∃ K : Finset ℤ, n ≤ hermNegIndex (towerGram zetaZeroConfig g (Real.log p) K)) ↔
         (n : ℕ∞) ≤ (rightZeros zetaZeroConfig).encard)}.Finite := by
-  refine (finite_resonantPrimes_of_finite hfin).subset fun p ⟨hp, hne⟩ => ⟨hp, fun hinj => hne ?_⟩
-  intro n
-  rw [zeta_one_prime_tower_law hp n, outerEig, hinj.encard_image]
+  have hlaw : ∀ p : ℕ, p.Prime → (outerEig zetaZeroConfig (Real.log p)).encard =
+      (rightZeros zetaZeroConfig).encard → ∀ n : ℕ,
+      ((∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧
+        ∃ K : Finset ℤ, n ≤ hermNegIndex (towerGram zetaZeroConfig g (Real.log p) K)) ↔
+        (n : ℕ∞) ≤ (rightZeros zetaZeroConfig).encard) := fun p hp he n => by
+    rw [zeta_one_prime_tower_law hp n, he]
+  by_cases hfin : (rightZeros zetaZeroConfig).Finite
+  · refine (finite_resonantPrimes_of_finite hfin).subset fun p ⟨hp, hne⟩ =>
+      ⟨hp, fun hinj => hne (hlaw p hp (by rw [outerEig, hinj.encard_image]))⟩
+  · refine (subsingleton_finite_frobEig_image hfin).finite.subset fun p ⟨hp, hne⟩ => ⟨hp, ?_⟩
+    by_contra hinf
+    have hinf' : (outerEig zetaZeroConfig (Real.log p)).Infinite := hinf
+    exact hne (hlaw p hp (by rw [hinf'.encard_eq, Set.Infinite.encard_eq hfin]))
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 

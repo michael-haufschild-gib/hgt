@@ -20,6 +20,8 @@ import GaloisForLFunctions.MultiplicativePositivityGeometry.PositivityMargin
 import GaloisForLFunctions.MultiplicativePositivityGeometry.BoundaryDivisorRange
 import GaloisForLFunctions.MultiplicativePositivityGeometry.CharacterFamilies
 import GaloisForLFunctions.MultiplicativePositivityGeometry.RankinSelbergBessel
+import GaloisForLFunctions.MultiplicativePositivityGeometry.AbelianZeroMass
+import GaloisForLFunctions.MultiplicativePositivityGeometry.DecayMassLaw
 
 /-!
 # Multiplicative Positivity Geometry
@@ -32,6 +34,10 @@ Umbrella for the positive-definite geometry of Euler log-coefficients.
   mass law; the calculus of boundary data and the invisibility of the interior.
 * Interior: the exact Fejér barrier, the two-sided growth-to-forcing law, the multi-frequency
   purchase cap and the de la Vallée Poussin calibration.
+* Realization and range: integral Euler products, Bochner's theorem for finite configurations, the
+  zero capacity of a pole of order `k`, the positivity margin, the range of the boundary map.
+* Further mechanisms: families over finite abelian groups and the two-torsion exception,
+  Rankin–Selberg Bessel forcing, the zero-mass law on abelian groups, the decay-exponent law.
 
 See `MultiplicativePositivityGeometry/README.md`.
 -/

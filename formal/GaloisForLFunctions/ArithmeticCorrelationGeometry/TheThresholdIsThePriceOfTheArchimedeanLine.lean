@@ -29,7 +29,7 @@ line; gauge mean values are averages over the whole torus. This file compares th
 -/
 
 open MeasureTheory Complex Finset
-open scoped Real ComplexConjugate
+open scoped Real ComplexConjugate ComplexOrder
 
 noncomputable section
 
@@ -88,11 +88,11 @@ theorem windowed_pow_eq_gauge_add_nearIncidence {η : ℝ → ℂ} (hη : ContDi
     (hηc : HasCompactSupport η) {s : Finset ℕ} (hs : ∀ n ∈ s, n ≠ 0) (c : ℕ → ℂ) (k : ℕ) :
     ∫ ξ : ℝ, pairTransform η ξ * (expSum s c logFreq ξ * conj (expSum s c logFreq ξ)) ^ k =
       ((∫ t, ‖η t‖ ^ 2 : ℝ) : ℂ) * ((∫ x, ‖twistSum s c x‖ ^ (2 * k) ∂gaugeHaar : ℝ) : ℂ) +
-        nearIncidence η (powSupport s k) (powCoeff s c k) := by
+        nearIncidence η (ArithmeticKunnethTheory.powSupport s k) (powCoeff s c k) := by
   have hs1 : ∀ n ∈ s, 1 ≤ n := fun n hn => Nat.one_le_iff_ne_zero.mpr (hs n hn)
   have hpow : ∀ ξ : ℝ, (expSum s c logFreq ξ * conj (expSum s c logFreq ξ)) ^ k =
-      expSum (powSupport s k) (powCoeff s c k) logFreq ξ *
-        conj (expSum (powSupport s k) (powCoeff s c k) logFreq ξ) := by
+      expSum (ArithmeticKunnethTheory.powSupport s k) (powCoeff s c k) logFreq ξ *
+        conj (expSum (ArithmeticKunnethTheory.powSupport s k) (powCoeff s c k) logFreq ξ) := by
     intro ξ
     rw [mul_pow, ← map_pow, expSum_pow_eq_powSum hs1]
   simp_rw [hpow]
@@ -145,7 +145,7 @@ theorem integral_nearIncidence_twisted (η : ℝ → ℂ) {s : Finset ℕ} (hs :
 /-- **Near-incidence of every product order has gauge mean zero.** -/
 theorem integral_nearIncidence_pow_twisted (η : ℝ → ℂ) {s : Finset ℕ} (hs : ∀ n ∈ s, n ≠ 0)
     (c : ℕ → ℂ) (k : ℕ) :
-    ∫ y, nearIncidence η (powSupport s k) (powCoeff s (twisted y c) k) ∂gaugeHaar = 0 := by
+    ∫ y, nearIncidence η (ArithmeticKunnethTheory.powSupport s k) (powCoeff s (twisted y c) k) ∂gaugeHaar = 0 := by
   have h : ∀ y, powCoeff s (twisted y c) k = twisted y (powCoeff s c k) := fun y =>
     funext fun N => powCoeff_twisted hs y c k N
   simp_rw [h]

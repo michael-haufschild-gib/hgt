@@ -1,7 +1,7 @@
 # Spectral synthesis for divisor-order ideals of the Meyer source (B3.4)
 
 - **ID:** blind-ideal-spectral-synthesis
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Source:** `docs/reports/review-2510/hard-obstacles-summary.md` B3.4; APD README §9 topic 10.
 - **Statement:** In the natural Fréchet topology of the Meyer source `S`, every ideal defined by
@@ -16,8 +16,8 @@ Fréchet topology?"
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  fully-proven
-- [ ] 2 → 3  formalized
+- [x] 1 → 2  fully-proven
+- [x] 2 → 3  formalized
 
 ## Setting
 `ĝ(s) = ∫ e^{st} g(t) dt`; `jet_j(ρ, g) = ĝ^{(j)}(ρ)`; `m(ρ)` the multiplicity; jet sources
@@ -67,5 +67,12 @@ For `k : support → ℕ`, `I_k = {g : jet_j(ρ, g) = 0 for j < k(ρ)}` and
 - RH ⇔ `closure(critical jet span ⊔ R) = ⊤` (if an off-line zero exists, `e_{ρ,0}` is outside).
 
 ## Lean
-- `HTGeometry/TailCanonicalProducts.lean` (step 2).
-- `ArithmeticPositiveDuality/SpectralSynthesisInTheBlindIdeal.lean` (steps 1, 3–5, corollaries).
+All checked with `lake --old env lean`; axioms `[propext, Classical.choice, Quot.sound]`.
+- `HTGeometry/TailCanonicalProducts.lean` (step 2): `canonicalProductE1Tail`,
+  `le_analyticOrderAt_canonicalProductE1Tail`, `exists_norm_canonicalProductE1Tail_le`,
+  `tendsto_canonicalProductE1Tail_one`.
+- `ArithmeticPositiveDuality/SpectralSynthesisInTheBlindIdeal.lean`:
+  `closure_orderJetSpan_sup_poissonBoundary` (theorem),
+  `closure_criticalJetSpan_sup_poissonBoundary`, `closure_valueBlindJetSpan_sup_poissonBoundary`,
+  `closure_criticalJetSpan_sup_eq_meyerTraceBoundedIdeal_iff`,
+  `closure_criticalJetSpan_sup_poissonBoundary_eq_univ_iff` (corollaries).

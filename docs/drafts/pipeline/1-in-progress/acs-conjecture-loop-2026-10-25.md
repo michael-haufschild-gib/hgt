@@ -40,9 +40,30 @@ tool, or exposes a mechanism, calibrated over `𝔽_q`.
   defined from all right zeros of `Z`, so the killed zeros must be removed from the
   configuration (`Z'`, with `W_Z = W_{Z'}` on tests vanishing there) before applying
   `mem_wfVisibleSet_of_finite_above`.
+  Status: DONE (Lean, contribution 3, `OnePrimeSeesTheWholeDefectOfZeta.lean`). No restricted
+  configuration was needed: the extraction was generalised to levels where the test is nonzero.
+
+- **C4 (fixed-seed towers: Wolff blindness is separation).** Replace the top-down Cesàro
+  extraction (needs no increasing real parts above the level) by complex analysis: the discrete
+  Cauchy transform `Σ q_τ/(1 − c_τ z)` of a vector orthogonal to the tower vanishes near 0 (moments),
+  hence on the component of the complement of its closed poles containing 0; at an accessible
+  isolated pole its residue (the class sum) vanishes. Tower law: every visible `b` with `b⁻¹`
+  accessible from 0 off the closed active folded spectrum `{β_τ⁻¹}` is seen; blindness forces
+  separation; countable folded spectra in the unit disc do not blind a fixed test.
+  Status: Lean written (`WolffBlindnessRequiresSeparation.lean`), compiling.
+- **C5 (one test, one prime carries the whole defect of ζ).** Cases: (i) finitely many outer
+  eigenvalues: C3's test with `O = outerEig`; (ii) infinitely many classes of depth `≥ δ` for some
+  `δ > 0`: kill depth `≥ δ/2` except an infinite set `F` of representatives whose folded points
+  converge (Bolzano–Weierstrass); inside the disc of radius `p^{−δ/2}` the active spectrum is
+  `F` ∪ {limit}, countable with isolated points ⇒ C4 sees all of `F`; (iii) depths of classes → 0
+  with finitely many classes per depth: every disc of radius `< 1` meets finitely many folded points,
+  so C4 applies to every test; need one test with infinitely many nonzero class weights (genericity:
+  Baire on an ℓ¹ family of single-class killers, or probes with nonvanishing class transforms).
+  Status: open; (iii) needs a genericity tool.
 
 ## Avoid (other agents active 2026-10-25)
 Q-II Meyer source modules; `MaximalBlindIdealOfTheMeyerSource.lean` (another agent); biarithmetic; rh-closing-producer Stepanov tracks (HTGeometry Stepanov).
 
 ## Log
 - 2026-10-25 — created; C1, C2 done; C3 step (iii) done; paused on user request.
+- 2026-10-25 — C3 done.

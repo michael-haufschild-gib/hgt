@@ -120,7 +120,12 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
    well-founded; resonances at most one prime per pair; almost every prime sees every right zero
    (finite case); attained tops always seen. **Wolff obstruction:** at a non-attained top with
    increasing real parts, symmetric Wolff configurations are Toeplitz-blind on every window; two
-   primes recover the full defect.
+   primes recover the full defect. **Deep sparseness defeats Wolff:** the extraction reads only
+   levels where the test is nonzero, and when the zeros of depth $\ge\sigma$ have convergence
+   exponent $<1$ (every $\sigma>\tfrac12$) an Ingham annihilator kills all but chosen
+   representatives; then one prime sees every distinct outer eigenvalue. $\zeta$ is deep-sparse
+   (Ingham–Huxley), so at **every** prime $\sup$ tower defect $=\#\{\text{distinct }p^{\rho-1/2}\}$
+   and RH ⇔ Weil positivity on the towers of one prime (`OnePrimeSeesTheWholeDefectOfZeta.lean`).
 
 ### Effectivity, Bézout, Riemann–Roch
 10. **Hodge index ⇔ effectivity with RR + ample** (`exists_effectivity_iff_hodgeIndex`); positivity is
@@ -247,7 +252,8 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
 4. Degree filtration, finiteness for $\zeta$ (`iSup_hodgeDefectAt`, `hodgeDefectAt_zeta_le_shannon`, `re_W_zeta_nonneg_of_lowGrid`).
 5. Cyclic and tower laws (`cyclic_pontryagin_law`, `riemannHypothesis_iff_twoPrime_negIndex_eq_zero`,
    `almost_every_prime_tower_sees_every_right_zero`, `one_prime_vs_two_primes_complete_law`,
-   `exists_symmetric_wolff_toeplitz_blind_configuration`).
+   `exists_symmetric_wolff_toeplitz_blind_configuration`, `zeta_one_prime_tower_law`,
+   `riemannHypothesis_iff_onePrime_towers`).
 6. Effectivity and Bézout (`exists_effectivity_iff_hodgeIndex`, `exists_bezout_effectivity_iff_hodgeIndex`,
    `localPair_nonneg`, `riemannHypothesis_iff_exists_effectivity`).
 7. Source-cone laws (`gradedSourceCone_riemannRoch_iff_le_defect`, `gradedL2SourceCone_realTestsAt_all_apertures_riemannRoch`,
@@ -282,7 +288,7 @@ Bounded-orbit and reserve results are in `MeyerBoundedCenteredOrbits.lean`,
 | Subexponential floor is a reduction | It is equivalent to RH; power savings are strips |
 | Odd ledger is a positivity mechanism | It is the explicit formula rewritten |
 | Cyclic law bounds the defect | It localises it |
-| One prime always sees everything | Resonances and Wolff accumulation; two primes needed in general |
+| One prime always sees everything | For $\zeta$ it sees every distinct $p^{\rho-1/2}$ (zero density kills Wolff accumulation); resonances merge eigenvalues; fakes may need two primes |
 | Multiplicities count | The defect counts distinct right zeros |
 | A finite degree certifies positivity | Over $\mathbb Q$ no degree works for all configurations |
 | Finitely many readings plus mass give Bézout | Rayleigh quotients unbounded in every finite kernel |
@@ -304,8 +310,8 @@ Bounded-orbit and reserve results are in `MeyerBoundedCenteredOrbits.lean`,
 3. **Degree floor below rate ½** (= strip): which effectivity input lowers the rate before the sign?
 4. **Beyond 2/3 and HD(1)**: spectral slack $\ge N/12$ near $\lambda=1$, or coalescent surplus $\beta\le1/18$, or
    $F\le B$, $B\le2954/1035$ (owned by TTPC).
-5. **One prime against two**: rule out vertical Wolff accumulation on a single tower (route: annihilating
-   tests for sparse deep zeros via zero density — not yet formalized).
+5. **One prime against two** — resolved for $\zeta$ and every deep-sparse configuration. Open: a
+   tempered configuration with deep convergence exponent $\ge1$ blind on the towers of every test.
 6. **Clustering branch** of the visibility/defect-rate dichotomy (unrestricted $L^2$, not Sobolev).
 7. **Lattice → continuum**: carry finite-Euler lattice positivity to Weil's form with collar and signed
    coefficients.
