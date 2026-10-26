@@ -173,7 +173,7 @@ theorem reflectedDiag_add_offDiagPolar_eq_neg_levy (q : ℕ → ℝ) (X : ℕ)
       congr 1
       · ring
       · refine Finset.sum_congr rfl fun b _ => by ring
-    rw [← Finset.sum_div, Finset.sum_congr rfl hsplit, Finset.sum_add_distrib]
+    rw [Finset.sum_div, Finset.sum_congr rfl hsplit, Finset.sum_add_distrib]
   have h0 : (∑ n ∈ Icc 2 X, (polarCrossingAmplitude n ^ 2 / 2) * q n ^ 2) +
       offDiagPolarForm q X = 0 := by
     rw [← hsq_exp, hneutral]; norm_num
@@ -227,7 +227,10 @@ theorem exists_nonzero_polarNeutral_profile {X : ℕ} (hX : 3 ≤ X) :
       rw [hq2]
       have hc : (0 : ℝ) < ((2 : ℕ) : ℝ) ^ 3 / (((2 : ℕ) : ℝ) ^ 4 - 1) := by norm_num
       exact mul_pos hc (sq_pos_of_pos hamp3_pos)
-    refine lt_of_lt_of_le h2_term (Finset.single_le_sum (fun n hn => ?_) h2mem)
+    refine lt_of_lt_of_le h2_term
+      (Finset.single_le_sum
+        (f := fun n : ℕ => ((n : ℝ) ^ 3 / ((n : ℝ) ^ 4 - 1)) * q n ^ 2)
+        (fun n hn => ?_) h2mem)
     have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast (mem_Icc.mp hn).1
     have hn4 : 0 < (n : ℝ) ^ 4 - 1 := by
       have : (16 : ℝ) ≤ (n : ℝ) ^ 4 := by
@@ -375,7 +378,7 @@ private theorem sub_mul_add_sq_le_block (c : ℕ → ℝ) {a m r : ℕ}
   rw [sub_add_eq_sum_range_diff c (a * m) r]
   have hcs := sq_sum_mul_le_bgg (range r) (fun _ => (1 : ℝ))
     (fun j => c (a * m + j + 1) - c (a * m + j))
-  simp only [one_mul, one_pow, Finset.sum_const, Finset.card_range, nsmul_eq_mul] at hcs
+  simp only [one_mul, one_pow, Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one] at hcs
   have ha_pos : (0 : ℝ) < a := Nat.cast_pos.mpr (by omega)
   have hrm : (r : ℝ) ≤ m := by exact_mod_cast hr.le
   calc (∑ j ∈ range r, (c (a * m + j + 1) - c (a * m + j))) ^ 2
@@ -414,7 +417,8 @@ private theorem sum_euclidean_blocks_le_sobolev (c : ℕ → ℝ) (X : ℕ) {m :
     simp only [P, mem_coe, mem_product, mem_Icc, mem_range] at h₁ h₂
     dsimp [φ] at heq
     have hdiv := congrArg (· / m) heq
-    rw [Nat.mul_add_div (by omega : 0 < m), Nat.mul_add_div (by omega : 0 < m),
+    rw [Nat.mul_comm a₁ m, Nat.mul_comm a₂ m,
+        Nat.mul_add_div (by omega : 0 < m), Nat.mul_add_div (by omega : 0 < m),
         Nat.div_eq_of_lt h₁.2, Nat.div_eq_of_lt h₂.2, add_zero, add_zero] at hdiv
     subst hdiv
     exact Prod.ext rfl (Nat.add_left_cancel heq)
@@ -429,7 +433,8 @@ private theorem sum_euclidean_blocks_le_sobolev (c : ℕ → ℝ) (X : ℕ) {m :
     · have : a * m ≤ X * m := Nat.mul_le_mul_right m hp.1.2
       omega
   calc (∑ a ∈ Icc 1 X, ∑ j ∈ range m, term (a * m + j))
-      = ∑ p ∈ P, term (φ p) := (Finset.sum_product _ _ _).symm
+      = ∑ p ∈ P, term (φ p) :=
+        (Finset.sum_product (Icc 1 X) (range m) (fun p => term (φ p))).symm
     _ = ∑ k ∈ P.image φ, term k := (Finset.sum_image hinj).symm
     _ ≤ ∑ k ∈ Icc 1 (X * m + m), term k :=
         Finset.sum_le_sum_of_subset_of_nonneg hsub fun k _ _ => hterm_nn k

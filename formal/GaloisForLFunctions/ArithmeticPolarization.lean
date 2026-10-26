@@ -12,6 +12,7 @@ import GaloisForLFunctions.ArithmeticPolarization.TwistsAreRateNeutral
 import GaloisForLFunctions.ArithmeticPolarization.TheOscillatoryCapacity
 import GaloisForLFunctions.ArithmeticPolarization.CouplingCollidesEvenly
 import GaloisForLFunctions.ArithmeticPolarization.EscapeKernelsAreCollidedForms
+import GaloisForLFunctions.ArithmeticPolarization.HeckeInvarianceOfTheCollidedPolarizationIsRH
 
 /-!
 # Arithmetic Polarization
@@ -23,6 +24,7 @@ price of elliptic localization (shifted poles, charged weights, conductor horizo
 law and the Fejér barrier for coupled contraction; the collision law; the first gauge charge as a
 twist; the forcing half of elliptic localization; rigidity of the coupled class; the diagonal
 collapse of lattice counts; rate neutrality of twists; the oscillatory capacity `W = D − Δ`; the
-parity of couplings and exterior squares; escape kernels as collided forms.
+parity of couplings and exterior squares; escape kernels as collided forms; Hecke invariance of
+the collided polarization.
 See `ArithmeticPolarization/README.md`.
 -/

@@ -98,123 +98,180 @@ arithmetic reason and at bounded distance from the Rosati trace form.
 **One variable is a base.** The theta `h⁰` of `Spec ℤ` has an exact Riemann–Roch, and its Mellin
 transform is `Λ(s)`; it gives the functional equation and holds for every datum with one. Its
 Euler characteristic is linear in the degree. A surface needs an Euler characteristic quadratic in
-the class, hence growth quadratic along the ample ray (Hilbert–Samuel). AET proves that no function
-of the degree with subquadratic growth satisfies a quadratic Riemann inequality on any polar surface:
-the base `h⁰` is never the restriction of a surface `h⁰`.
+the class, hence growth quadratic along the ample ray (Hilbert–Samuel). No function of the degree
+with subquadratic growth satisfies a quadratic Riemann inequality on any polar surface: the base
+`h⁰` is never the restriction of a surface `h⁰`. The scale is visible on the box class `√N · A`:
+its Euler characteristic is `N`, the number of degrees of freedom of the polar box of length `N`.
+A surface `h⁰` has the size of a dimension of Dirichlet polynomials of length `N`; the base `h⁰`
+has the size of the degree `log N`. Arithmetic surfaces over `ℤ` show the same pattern: the rank of
+the lattice of sections grows with the class and its log-volume grows quadratically.
 
 ---
 
 ## 3. Objects and language
 
-| Over `𝔽_q` | AET object | Over `ℤ` | Owner |
+| Over `𝔽_q` | AET object | Over `ℤ` | Lean |
 |---|---|---|---|
-| `C × C`, intersection form | polar surface `(E, ·, H, V)`, ample class `A = H + V` | scaling surface: pole plane `⟨H, V⟩` ⊕ tests, pairing = explicit formula | ACS |
-| `h⁰(D) = dim H⁰` | effectivity function `h : E → ℝ` | theta `h⁰`, log-volumes of node lattices, log-volume counts | AET |
-| `χ(D) = ½ D·(D − K) + χ(𝒪)` | Euler characteristic `χ_κ,χ₀(x) = ½ x·(x − κ) + χ₀` | canonical class `κ` in the pole plane | AET |
-| Riemann–Roch, `h¹ ≥ 0` dropped | Riemann inequality `h(x) + h(κ − x) ≥ χ(x)` | — | AET |
-| `h⁰(nA) ~ n² A²/2` | Hilbert–Samuel growth along the ample ray | — | AET |
-| `h⁰` bounded in degree zero | degree-zero growth `h(nx) + h(κ − nx) = o(n²)` on `x·A = 0` | — | AET |
-| Néron–Tate height | naive height: `h ≥ −C`, `|h(x+y) + h(x−y) − 2h(x) − 2h(y)| ≤ B`; Tate limit `q = lim 4^{−n} h(2^n x)` | on the integral correspondence ring `ℤ[ℚ_{>0}]` | AET |
-| `#ker(m − nF)` | degree of a correspondence as the order of a finite group | log-torsion `Λ(n) = log |ker(ℤ/lcm(1..n) → ℤ/lcm(1..n−1))|` | BAG, AET |
-| principal divisors have degree 0 | Arakelov divisors of `Spec ℤ`; Bézout = product formula, `|n| ≥ 1` | — | AET |
-| theta divisor on the Jacobian | theta surface: `Θ(a, u) = Σ_n e^{−π(n + a)² u}`, characteristic `a ∈ ℝ/ℤ`, degree `d = −½ log u` | Mathlib `HurwitzZeta.evenKernel`, `cosKernel` | AET |
-| auxiliary polynomial (Stepanov) | Stepanov section: Siegel abundance + forced vanishing + integrality floor + analytic ceiling | `lcm(1..n+1) ∫₀¹ P ∈ ℤ`, zero detectors, Jensen counts | AET, RHTower |
-| — | base datum: axioms of a base over which `ζ`'s zeros are local data | pole plane | AET, ACP |
-| fake curves | battery: golden datum, complex fake, shifted pair, Beurling systems, Liouville twin, `CompletedPositiveSystem 2 1` | — | ACS, ACP |
+| `C × C`, intersection form | polar surface `(E, ·, H, V)`, ample class `A = H + V` | scaling surface (ACS) | `PolarSurface`, `scalingSurface` |
+| `χ(D) = ½ D·(D − K) + χ(𝒪)` | Euler characteristic `χ(x) = ½ x·(x − κ) + χ₀`, Serre symmetric | canonical class in the pole plane | `eulerChar`, `eulerChar_serre` |
+| `h⁰ + h² ≥ χ` | Riemann inequality `χ(x) ≤ h(x) + h(κ − x)` | — | `RiemannInequality` |
+| `h⁰` bounded in degree zero | `DegreeBounded`, `DegreeZeroSubquadratic` | — | — |
+| `D` with `D² > 0`, `D·A = 0` | abundant class; abundance rate `max(0, ½ x²)` | an off-line zero | `Abundant`, `optimalEffectivity` |
+| `h⁰(nA) ~ n² A²/2` | Hilbert–Samuel along the ample ray | box class `√N · A`, `χ = N` | `hilbertSamuel_of_riemannInequality`, `boxClass` |
+| theta `h⁰` of the base | function of the degree | `h⁰(d) = log Σ e^{−π n² e^{−2d}}` | `thetaEffectivity`, `arithH0` |
+| Néron–Tate height | naive height: bounded below, at bounded distance from a quadratic form; Tate limit | integral correspondence ring `ℤ[G]`, integral Rosati form | `tateLimit`, `intRosatiForm` |
+| `#ker(m − nF)` | the degree form on `ℤ²` | — | `intEndDeg` |
+| `#C(𝔽_{q^m})` | log-torsion of the horizon `log |ℤ/lcm(1..N)ℤ|`; transition kernels of log-order `Λ(N+1)` | `ψ(N)` | `logTorsion` |
+| principal divisors have degree `0` | product formula `log n = log |ℤ/nℤ| = Σ v_p(n) log p` | Bézout of `Spec ℤ` | `log_eq_logTorsion` |
+| theta divisor, characteristics | theta surface `h⁰(a, d)`, dual `h⁰∨(a, d)`, exponential characteristic `ϑ(J, t)` | even Hurwitz kernels | `thetaH0`, `thetaH0Dual`, `thetaChar` |
+| `ℓ`-adic torsion | torsion characteristics `j/N`, finite Fourier transform, Gauss sums, root numbers | Dirichlet L-functions | Mathlib `ZMod.completedLFunction` |
+| Stepanov's auxiliary polynomial | auxiliary integer polynomial; integrality floor; analytic ceiling | `lcm(1..n+1) ∫₀¹ P ∈ ℤ` | `nairPoly` |
+| `ℙ¹ × ℙ¹` | hyperbolic plane with `h⁰ = (a+1)⁺(b+1)⁺` | — | `hyperbolicPlane`, `p1SquareH0` |
+| fake curves | battery: golden datum, complex fake, Beurling systems, shifted pair, twins | — | ACS, ACP |
 
 **Words.**
 
 - *Effectivity function*: a real function `h` on classes. *Linear* or *quadratic Riemann
   inequality*: according to whether its Euler characteristic is affine or quadratic.
-- *Hilbert–Samuel*: `h(nA)` grows like `n²`. *Degree-zero subquadratic*: `h(nx) + h(κ − nx) = o(n²)`
-  for every `x` with `x·A = 0`.
-- *Abundant class*: a degree-zero class along which every function with the Riemann inequality grows
-  quadratically. *Abundance cone*: the abundant classes.
+- *Hilbert–Samuel*: `h(nA)` grows like `n²`. *Subquadratic in degree zero*:
+  `h(nx) + h(κ − nx) = o(n²)` along every class with `x·A = 0`.
+- *Abundant class*: a degree-zero class along which every function with the Riemann inequality
+  grows quadratically. *Abundance rate*: the least such growth rate.
 - *Naive height*, *Tate limit*, *Northcott*: as for heights on abelian varieties.
-- *Log-torsion*: the logarithm of the order of a finite group. *Log-volume*: the logarithm of a
-  covolume or of a theta series. *Degree*: pairing with the ample class, or Arakelov degree.
-- *Characteristic*: the translation parameter `a` of a theta series. *Charged section*: a section
-  that depends on the characteristic.
-- *Stepanov section*: an auxiliary object whose nonvanishing is forced by integrality and whose
-  size is bounded analytically. *Integrality floor*: `|nonzero integer| ≥ 1`. *Ceiling*: the
-  analytic bound.
-- *Base datum*, *Beurling model*: as in §4.7.
+- *Log-torsion*: the logarithm of the order of a finite group. *Box class*: `√N · A`.
+- *Characteristic*: the translation parameter of a theta series; *torsion characteristic*: `j/N`.
+- *Soft*: holding on every datum of a family, hence carrying none of its arithmetic.
+- *Integrality floor*: `|nonzero integer| ≥ 1`. *Ceiling*: the analytic bound it is compared with.
 
-Parameters: the class `x`, its degree `x·A`, the scaling `n`, the characteristic `a`, the degree
-`d` of an Arakelov divisor, the horizon `N`. Every theorem states which are fixed and which grow.
+Parameters: the class `x`, its degree `x·A`, the scaling `n`, the characteristic, the degree `d`,
+the horizon `N`. Every theorem states which are fixed and which grow.
 
 ---
 
 ## 4. Mechanisms
 
-1. **The effectivity calculus.** On every polar surface: a function satisfying the quadratic
-   Riemann inequality and degree-zero subquadratic growth forces the Hodge index; values bounded on
-   each degree level suffice. Conversely, under the Hodge index and with `κ` in the pole plane,
-   `h = max(0, χ)` satisfies both. A degree-zero class with `x² > 0` is abundant at rate `½ x²`. On
-   the scaling surface the existence of such a function is RH; over curve data it is unitarity; the
-   golden datum has none.
-2. **Linear Riemann–Roch is free; the base does not extend.** On every polar surface `x ↦ h⁰(x·A)`
-   (theta `h⁰` of the degree) is positive, increasing, tends to `0` in negative degree and satisfies
-   the linear Riemann–Roch `h(x) − h(−x) = x·A` — on fake data as on curves. A function of the degree
-   with `o(t²)` growth violates the quadratic Riemann inequality on every polar surface, because the
-   Euler characteristic of `nA` is `n² − O(n)`.
-3. **Tate's limit.** An approximately quadratic function has a unique quadratic function at bounded
-   distance; if it is bounded below that quadratic function is positive semidefinite; with Northcott
-   it vanishes only on torsion. On the integral correspondence ring the Rosati trace form is positive
-   iff it has a naive height. Calibration: genus one, where the degree `deg(m − nF)` is a kernel
-   order, and the golden datum, where `deg(2 − F) = −1` is not.
-4. **Log-torsion and the Bézout of `Spec ℤ`.** Node lattices, their indices and log-indices; the
-   Lefschetz numbers of `ℤ` as log-orders; Arakelov divisors with the product formula; the
-   integrality floor as the only Bézout inequality of the base.
-5. **The theta surface.** Theta series with characteristic satisfy Riemann–Roch with the
-   characteristic exchanged for a modulation (Poisson). Completing the square gives the free
-   polarization `π J² / u`, quadratic in the characteristic, positive at every characteristic. The
-   Mellin transform in the degree is the completed even Hurwitz zeta function; `ζ` is the fibre at
-   characteristic `0`.
-6. **The Stepanov method over `ℤ`.** Siegel's lemma supplies auxiliary sections; vanishing is forced
-   by integrality; the integrality floor and an analytic ceiling bound a count. Instances: the
-   integrality `lcm(1..n+1) ∫₀¹ P ∈ ℤ` and Chebyshev's lower bound for log-torsion; the coefficient
-   `a₁ = 1` of zero detectors; the Jensen count of zeros in a unit window; Bombieri's one-sided
-   principle (ACP P30). Each reaches the base's effectivity or the local density, not the sign.
-7. **The base.** Axioms for a base datum over which `ζ`'s zeros would be local data with a fixed
-   loss, and the test of whether multiplicatively definable axioms admit Beurling models.
+1. **Weil's argument as a growth law** (`TheEffectivityCalculus`). On every polar surface the
+   quadratic Riemann inequality and subquadratic growth in degree zero force the Hodge index
+   (`hodgeIndex_of_riemannInequality`); bounded values on degree levels suffice
+   (`degreeZeroSubquadratic_of_degreeBounded`). Conversely, under the Hodge index and with `κ` in
+   the pole plane, `max(0, χ)` is such a function (`exists_effectivity_of_hodgeIndex`, via the
+   level bound `eulerChar_le_levelBound`). A degree-zero class is abundant iff `x² > 0`
+   (`abundant_iff`); the least growth rate along any class is exactly `max(0, ½ x²)`
+   (`pair_self_le_two_mul_rate`, `eventually_optimalEffectivity_le`). On primitive classes
+   `x² = −δ(x, x)`, so on the scaling surface the negative part of Weil's form is twice the least
+   abundance rate. Four equivalent forms: `hodgeIndex_tfae`.
+2. **The base does not extend** (`TheBaseDoesNotExtend`). The Riemann inequality forces
+   Hilbert–Samuel along `nA` at every rate `< 1` (`hilbertSamuel_of_riemannInequality`); a function
+   with affine growth in the degree has no Riemann inequality
+   (`not_riemannInequality_of_affine_bound`). The theta `h⁰` of the degree obeys every linear law —
+   positivity, `h(x) − h(−x) = x·A`, constancy on degree levels, vanishing in negative degree — on
+   every polar surface (`thetaEffectivity_linear_laws`) and the quadratic one on none
+   (`thetaEffectivity_not_riemannInequality`). Functions of the degree are effectivity functions
+   exactly under the Hodge index, and then they grow quadratically
+   (`exists_degree_effectivity_iff_hodgeIndex`, `degree_effectivity_quadratic`).
+3. **Tate's limit** (`TatesLimitLaw`). Approximate doubling gives a unique homogeneous limit at
+   distance `C/3` (`tendsto_tateSeq`, `abs_tateLimit_sub_le`, `tateLimit_two_nsmul`,
+   `eq_of_two_nsmul_of_bounded`); an approximate parallelogram law gives an exact one
+   (`tateLimit_parallelogram`, `parallelogram_nsmul`); boundedness below gives positivity
+   (`tateLimit_nonneg`), Northcott gives definiteness modulo torsion
+   (`isOfFinAddOrder_of_tateLimit_eq_zero`). A function homogeneous of degree two is nonnegative
+   iff it has a naive height (`exists_naiveHeight_iff_nonneg`). Rosati positivity at a cycle is
+   decided on integral correspondences, by rounding `⌊nc⌋/n → c` (`sum_sum_nonneg_of_int`,
+   `orbitHodgeIndex_iff_int`), and is the existence of a naive height there
+   (`orbitHodgeIndex_iff_exists_naiveHeight`).
+4. **Naive heights are traces** (`NaiveHeightsAreTraces`). On a curve datum of any genus the
+   integral Rosati form on `ℤ[F]` has a naive height iff the datum is unitary
+   (`exists_naiveHeight_iff_unitary`). Kernel counts do not supply one: on the complex fake every
+   kernel count is nonnegative while the Rosati form is `−2304` at `F² + 16`
+   (`complexFake_kernelCounts_nonneg_no_naiveHeight`). The positive example is the theta count:
+   its Tate limit is exactly `πJ²/t` (`tateLimit_log_thetaChar`).
+5. **The horizon torsion** (`TheHorizonTorsion`). `log |ℤ/lcm(1..N)ℤ| = ψ(N)`
+   (`logTorsion_eq_psi`), and each new point adds the log-order of a cyclic kernel, `Λ(N + 1)`
+   (`logTorsion_succ_sub`). The product formula is the Bézout of the base (`log_eq_logTorsion`,
+   `log_eq_sum_factorization_logs`). The box class has `χ = N` (`eulerChar_boxClass`).
+6. **The theta surface** (`TheThetaSurface`). Poisson summation exchanges translation for
+   modulation: `h⁰(a, d) − h⁰∨(a, −d) = d` (`thetaH0_riemannRoch`), with the dual count positive
+   (`cosKernel_pos`) and the fibre at `0` maximal (`evenKernel_le_evenKernel_zero`). Completing the
+   square: `ϑ(J, t) = e^{πJ²/t} · (shifted count)` (`hasSum_thetaChar`), so `log ϑ` is a
+   nonnegative naive height for `πJ²/t` (`abs_log_thetaChar_sub_le`, `log_thetaChar_nonneg`) with
+   exact quasi-periodicity (`thetaChar_add_period`). The quadratic term is the same on every
+   translate of the lattice (`hasSum_shifted_thetaChar`): the polarization is soft. The fibre at
+   characteristic `0` is `Λ(s)` (`completedHurwitzZetaEven_zero`).
+7. **Torsion characteristics** (`TheTorsionCharacteristics`). For a nontrivial character of a
+   finite field, `|τ(χ, ψ)|² = |F|` by orthogonality (`normSq_gaussSum_eq_card`,
+   `norm_gaussSum_eq_sqrt_card`); the root number of a nontrivial character modulo a prime is a
+   unit (`norm_rootNumber_eq_one`). Square-root cancellation is a count at every finite level.
+8. **The Stepanov method** (`TheStepanovMethodOverZ`). Integrality
+   `lcm(1..n+1) ∫₀¹ P ∈ ℤ` (`exists_int_eq_lcmUpto_mul_integral`); the integrality floor bounds the
+   log-torsion by the auxiliary section, `log(1/∫₀¹ P) ≤ ψ(n + 1)` (`log_inv_integral_le_psi`);
+   with `P = X^m(1 − X)^m` the ceiling `∫₀¹ P ≤ 4^{−m}` gives `lcm(1..2m+1) ≥ 4^m`
+   (`nair_four_pow_le_lcmUpto`, `nair_psi_ge`). With `θ(x) ≤ x log 4` the log-torsion and the
+   degree are comparable (`horizon_logTorsion_comparable`): the effectivity of the base.
+9. **Calibration on `ℙ¹ × ℙ¹`** (`TheProjectiveSquareCalibration`). `h⁰ = (a+1)⁺(b+1)⁺` satisfies
+   the Riemann inequality as `h¹ ≥ 0`, with equality on the effective and anti-effective quadrants
+   (`p1SquareH1_nonneg`, `riemannInequality_p1SquareH0`), vanishes in negative degree and is bounded
+   on degree levels (`p1SquareH0_degreeBounded`); the calculus returns the Hodge index
+   (`hyperbolicPlane_hodgeIndex`).
+10. **The base axioms** (`TheBaseAxioms`). The golden datum is a Beurling system with integral zeta
+    series and functional equation, has an abundant class and no naive height
+    (`goldenDatum_multiplicative_axioms_not_effective`). For `ζ` the currencies of effectivity are
+    one statement (`riemannHypothesis_effectivity_tfae`).
 
 ---
 
 ## 5. Pillar theorems
 
-| Pillar | Statement | Status |
+| Pillar | Statement | Lean |
 |---|---|---|
-| **E1 The effectivity calculus** | quadratic Riemann inequality + degree-zero subquadratic growth ⇔ Hodge index, on every polar surface; abundance at rate `½ x²`; RH ⇔ existence on the scaling surface | planned |
-| **E2 The base does not extend** | linear Riemann–Roch is free on every datum; no function of the degree with subquadratic growth has the quadratic Riemann inequality | planned |
-| **E3 Tate's limit law** | approximately quadratic + bounded below ⇒ positive semidefinite quadratic part; Northcott ⇒ definite; Rosati positivity ⇔ a naive height on the integral correspondence ring | planned |
-| **E4 Log-torsion and Bézout** | node lattices and log-indices; the product formula as Bézout of `Spec ℤ` | planned |
-| **E5 The theta surface** | Riemann–Roch with characteristic; the free polarization; the Hurwitz fibres; `ζ` at characteristic `0` | planned |
-| **E6 The Stepanov method** | integrality of `lcm · ∫ P`; Chebyshev's lower bound from the integrality floor; the method reaches base effectivity | planned |
-| **E7 The base axioms** | base data and Beurling models | planned |
+| **E1 The effectivity calculus** | quadratic Riemann inequality + subquadratic growth in degree zero ⇔ Hodge index on every polar surface; abundance ⇔ `x² > 0`; least abundance rate `max(0, ½ x²)` | `hodgeIndex_tfae`, `abundant_iff`, `pair_self_le_two_mul_rate`, `eventually_optimalEffectivity_le` |
+| **E2 The base does not extend** | Hilbert–Samuel is forced; the theta `h⁰` of the degree satisfies every linear law and no quadratic Riemann inequality, on every surface | `hilbertSamuel_of_riemannInequality`, `thetaEffectivity_linear_laws`, `thetaEffectivity_not_riemannInequality`, `exists_degree_effectivity_iff_hodgeIndex` |
+| **E3 Tate's limit law** | naive heights produce positive quadratic parts; Rosati positivity is decided on `ℤ[G]` and is a naive height there; a naive height must be a trace, not a kernel order | `tateLimit_parallelogram`, `tateLimit_nonneg`, `isOfFinAddOrder_of_tateLimit_eq_zero`, `orbitHodgeIndex_iff_exists_naiveHeight`, `exists_naiveHeight_iff_unitary`, `complexFake_kernelCounts_nonneg_no_naiveHeight` |
+| **E4 The integer of the sign** | RH ⇔ `log |ℤ/lcm(1..N)ℤ| = χ(√N A) + O(√N log² N)` on every polar surface | `riemannHypothesis_iff_logTorsion_sub_eulerChar` |
+| **E5 The theta surface** | Riemann–Roch with characteristic; a nonnegative naive height whose Tate limit is `πJ²/t`; the polarization is soft | `thetaH0_riemannRoch`, `abs_log_thetaChar_sub_le`, `tateLimit_log_thetaChar`, `hasSum_shifted_thetaChar` |
+| **E6 Counting gives square roots at each level** | `|τ(χ, ψ)|² = |F|`; unit root numbers | `normSq_gaussSum_eq_card`, `norm_rootNumber_eq_one` |
+| **E7 The Stepanov method reaches the base** | integrality floor `log(1/∫P) ≤ ψ(n+1)`; Nair `ψ(2m+1) ≥ m log 4` | `log_inv_integral_le_psi`, `nair_psi_ge`, `horizon_logTorsion_comparable` |
+| **E8 Calibration** | `ℙ¹ × ℙ¹` satisfies the calculus with dimensions; genus one: naive height ⇔ Hasse; golden datum: abundant, no naive height | `hyperbolicPlane_hodgeIndex`, `genusOne_exists_naiveHeight_iff`, `goldenDatum_multiplicative_axioms_not_effective` |
+| **E9 One statement in five currencies** | RH ⇔ effectivity function ⇔ no abundant class ⇔ naive heights ⇔ fixed tensor loss ⇔ log-torsion law | `riemannHypothesis_effectivity_tfae` |
 
 ---
 
-## 6. The questions
-
-The five questions of the walls, read in AET's language, with the form an answer must take.
+## 6. The questions and their answers
 
 1. **Which integer, attached to the integers themselves and not to the zeros, bounds the
-   oscillation of the zero sum?** The candidate is the horizon period `lcm(1..N)`: its log-order is
-   `ψ(N)`, and RH says it equals the degree `N` up to `O(√N log² N)`, one-sidedly (ACP P30). Answer
-   form: the positive structure — a section count with Riemann–Roch, or a naive height — whose
-   effectivity bounds `log lcm(1..N) − N`.
+   oscillation of the zero sum?** The order of the finite group `ℤ/lcm(1..N)ℤ`. Its log-order is
+   `ψ(N)`, it grows by the log-order of a cyclic kernel at each prime power, and RH says it equals
+   the Euler characteristic `N` of the box class `√N · A` to `O(√N log² N)` (E4). The integrality
+   floor gives `log |ℤ/lcm(1..N)ℤ| ≥ (N − 1) log 2`, the product formula an upper bound of the same
+   order (E7): integrality alone fixes the size of the torsion, not its deviation from the degree.
 2. **What is a section on `Spec ℤ × Spec ℤ`, and when do sections exist in quadratic abundance?**
-   Answer form: the effectivity calculus (E1) fixes what `h⁰` must do; E2 rules out the base; each
-   candidate construction is classified by its Euler characteristic and its growth.
+   Whatever a section is, its count must be a function `h` with the quadratic Riemann inequality and
+   subquadratic growth in degree zero, and this is exactly the Hodge index (E1). The count must grow
+   like a dimension of Dirichlet polynomials (`χ(√N A) = N`), not like a degree: the base `h⁰` is
+   excluded on every surface (E2). Sections in quadratic abundance exist on the theta surface in
+   the characteristic direction (E5), but there the abundance is the free polarization `πJ²/t`,
+   identical on every fibre. On the scaling surface the abundant classes are exactly the classes of
+   positive square in degree zero, and their abundance rate is half the negative part of Weil's form
+   (E1).
 3. **What couples `+` and `×` strongly enough to separate the arithmetic point from its gauge
-   twins?** Answer form: the characteristic of the theta surface, the additive variable that
-   multiplicative data cannot see; its fibres are the Hurwitz functions.
+   twins?** At each finite level the finite Fourier transform of `ℤ/Nℤ`: additive characteristics
+   `j/N` of the theta surface and multiplicative characters are exchanged by Gauss sums, whose
+   modulus `√p` is a count (E6), and the sign of each functional equation is a unit. Square-root
+   cancellation from counting holds at every level; the walls ask for it at the arithmetic point,
+   uniformly in the level, where no finite group computes it.
 4. **How does a positivity proved on average over heights localize at one height below the zero
-   spacing?** Answer form: a growth law that is pointwise in the class, as Hilbert–Samuel is; a
-   positivity on average is a statement about a family of classes, not about one.
-5. **What is the base?** Answer form: the axioms of a base datum and the test against Beurling
-   models (E7).
+   spacing?** In AET the sign is pointwise in the class: each class carries its own abundance rate
+   `max(0, ½ x²)` (E1). Averaged positivity is a statement about a family of classes and controls no
+   single rate; localizing it is the selection problem of the averaged theorems (ACS, SRT), and AET
+   supplies the pointwise invariant it would have to bound.
+5. **What is the base?** At receiver level a fixed tensor loss, equivalent to RH (ACP). It cannot be
+   axiomatized by multiplicative data: the golden datum satisfies the Beurling, integrality and
+   functional-equation axioms and has an abundant class and no naive height (E8, E9). The base
+   `h⁰` of `Spec ℤ` is a linear theory valid on every datum (E2).
+
+The field-level question — *which positive structure supplies the sign* — has the following answer
+form in AET: a naive height on `ℤ[G]` (E3), equivalently an effectivity function (E1), equivalently
+a count of a finite group at square-root precision (E4). Each is RH; each has been reduced to the
+others; none has been constructed.
 
 ---
 
@@ -223,12 +280,16 @@ The five questions of the walls, read in AET's language, with the form an answer
 | Trap | Truth |
 |---|---|
 | An effective cone with Riemann–Roch is an effectivity | Its Riemann–Roch is the defect floor (universal floor law); a Boolean count with RR and Bézout is the sign (ACP P29) |
-| The theta `h⁰` of `Spec ℤ` is half of Weil's argument | Its Riemann–Roch is linear in the degree; it gives the functional equation and holds on every datum |
-| Integrality of point counts constrains the sign | The golden datum has integral counts; integrality must enter as the order of a group attached to every element of the correspondence ring |
-| A positive polarization on a surface over `ℤ` is Weil's | The theta surface carries one at every characteristic, including fibres with zeros off the line |
-| Siegel's lemma supplies a surface `h⁰` | It is abundance on the base: log-volume linear in the degree |
-| The Stepanov method over `ℤ` is a new route | Its instances reach Chebyshev's bounds and local densities; the obstruction is the absence of a ring endomorphism |
-| A naive height exists because the theorem of the square is free | Freeness of the quadratic part says nothing about a nonnegative function at bounded distance |
+| The theta `h⁰` of `Spec ℤ` is half of Weil's argument | Its Riemann–Roch is linear in the degree; it holds on every surface and satisfies the quadratic inequality on none (E2) |
+| A surface `h⁰` should be a log-volume of the degree | It must grow like `χ`, i.e. like the square of the class coefficient: a dimension of sections of the box, not its degree |
+| Integrality of point counts constrains the sign | The golden datum has integral counts, integral zeta and the functional equation, and an abundant class (E9) |
+| A positive polarization on a surface over `ℤ` is Weil's | The theta surface carries one at every characteristic; it is soft (E5) |
+| The integrality floor reaches the sign | It reaches Chebyshev's bounds (E7); the deviation of log-torsion from degree is invisible to it |
+| Square-root cancellation needs analysis | At each finite level it is a count (E6); the open part is uniformity at the arithmetic point |
+| A naive height exists because the theorem of the square is free | Freeness of the quadratic part says nothing about a nonnegative function at bounded distance (E3) |
+| Orders of finite kernels give a naive height | They are determinants; the complex fake has nonnegative kernel counts and no naive height (E3) |
+| Positivity on integral correspondences is weaker than on real ones | They are equivalent: rounding transports positivity (E3) |
+| Abundance is a property of a family | It is pointwise: each class has the rate `max(0, ½ x²)` (E1) |
 
 ---
 
@@ -236,28 +297,45 @@ The five questions of the walls, read in AET's language, with the form an answer
 
 **From sibling programmes:** polar surfaces, the scaling surface and its Hodge index, curve data and
 fakes, the theta `h⁰` of `Spec ℤ`, the box Euler characteristic and transition groups, the
-correspondence ring with Rosati and normalized graphs, gauge charge, zero detection and density,
-the von Koch and Bombieri one-sided theorems; from Mathlib: Gaussian Poisson summation, the even
-Hurwitz kernels and their functional equation, Chebyshev's functions and `lcmUpto`, heights with the
-product formula, Northcott, Siegel's lemma.
+correspondence algebra with Rosati and orbit Hodge index, the fixed-loss criterion, the golden
+Beurling system, von Koch; from Mathlib: Gaussian Poisson summation, even Hurwitz kernels and their
+functional equation, `ZMod` L-functions, Gauss sums, root numbers, Chebyshev's functions and
+`lcmUpto`.
 
-**Built here:** see §5.
+**Built here:** the effectivity calculus (Riemann inequality, degree control, abundance and its
+rate, optimal effectivity); Hilbert–Samuel and the non-extension of degree functions; Tate's limit
+machine on abelian groups; integral Rosati forms and the rounding principle; the horizon log-torsion
+and the box class; the theta surface with characteristic, its free polarization and its softness;
+Gauss-sum moduli and unit root numbers; the integrality floor for auxiliary integer polynomials and
+Nair's bound; the `ℙ¹ × ℙ¹` calibration; the golden base countermodel; the five-currency
+equivalence for `ζ`.
+
+**To build:** a section count on the scaling surface defined without the sign; a naive height on
+`ℤ[G]` from arithmetic; the limit of the Stepanov method (integer Chebyshev constant); charged
+sections at torsion characteristics with selectivity at characteristic `0`.
 
 ---
 
 ## 9. Open research topics
 
 1. **A section count on the scaling surface with a quadratic Euler characteristic**, defined from
-   arithmetic, with growth laws proved from its definition.
-2. **A naive height on the integral correspondence ring**, nonnegative for an arithmetic reason, at
-   bounded distance from the Rosati trace form.
-3. **Charged sections**: theta sections at rational characteristics, their Dirichlet decomposition,
-   and whether a positivity on them separates the characteristic `0` from its neighbours.
-4. **The limit of the Stepanov method over `ℤ`**: the integer Chebyshev problem bounds what
-   auxiliary integer polynomials give for log-torsion.
-5. **The base axioms** and the minimal additive input a base must contain.
-6. **Emptiness tests**: whether every section count with Riemann–Roch on `S` is bounded by the
-   large-sieve count; whether the collision charge admits a finite source bound.
+   arithmetic, of the size of a dimension of Dirichlet polynomials on box classes, with its growth
+   laws proved from its definition. By E1 this is RH; partial forms are growth bounds in degree
+   zero, each of which bounds the negative part of Weil's form.
+2. **A naive height on `ℤ[G]`**: a function nonnegative for an arithmetic reason (a cardinality, a
+   product formula) at bounded distance from the integral Rosati form. Kernel orders are
+   determinants and are excluded (E3); the height must be of trace type, as the theta count is,
+   but not soft.
+3. **Selective sections at torsion characteristics**: positivity on the theta surface that
+   separates characteristic `0` from its neighbours, i.e. a non-soft polarization.
+4. **The limit of the Stepanov method over `ℤ`**: how close `log(1/∫₀¹ P)` can come to `ψ(n+1)`
+   is the integer Chebyshev problem; a proof that it stays below `n` would show that the
+   integrality floor cannot reach the prime number theorem.
+5. **Uniform square-root cancellation from counting**: a family of finite groups, one per level,
+   whose orders compute `ψ(N) − N` at the arithmetic point.
+6. **Emptiness tests**: whether every section count with the Riemann inequality on box classes is
+   bounded by a large-sieve count in degree zero; whether a source bound for the collision charge
+   exists (AOG, APol).
 
 ---
 
@@ -269,10 +347,11 @@ constructions cannot be one, with its positive survivor.
 
 | Criterion | Test |
 |---|---|
-| Calibration | reproduces Weil for curves (budget `2g`), Hasse in genus one by kernel orders, the theta Riemann–Roch of the base |
+| Calibration | reproduces `ℙ¹ × ℙ¹` with dimensions, Hasse in genus one by naive heights, unitarity of curve data, the theta Riemann–Roch of the base |
 | Fakes | fails on the golden datum and the complex fake, for a reason the construction names |
 | Selectivity | separates `ζ` from the shifted pair, Beurling systems, the Liouville twin and pole-order-two models |
 | Quadratic Euler characteristic | its Riemann–Roch is quadratic in the class; linear Riemann–Roch is free |
+| Scale | its count on the box class has the size of `χ(√N A) = N` |
 | Counting origin | its positivity is a cardinality, a log-order of a finite group or a log-volume |
 | Growth | Hilbert–Samuel along the ample class and a pointwise bound in degree zero, each proved |
 | Non-circularity | defined before its sign; no interface field carries the conclusion |
@@ -282,12 +361,12 @@ A contribution must:
 1. be an unconditional Lean theorem about an object of §3;
 2. state its Euler characteristic and whether it is linear or quadratic;
 3. state which effectivity law it proves (Riemann inequality, Hilbert–Samuel, degree-zero growth,
-   Bézout, Northcott) and from what;
+   naive height, Northcott) and from what;
 4. say what it gives on the golden datum, the complex fake, curves and the battery;
 5. keep identities apart from signs and name the integer or log-volume that carries any sign;
 6. record the positive survivor of every no-go.
 
 Principles: effectivity is a growth law; integers over `ℤ` are log-torsions; the product formula is
 the Bézout of the base; Riemann–Roch on the base is linear and free; a polarization from counting
-needs a quadratic Euler characteristic; identities first, sign last; a reformulation is not a
-reduction.
+needs a quadratic Euler characteristic and must not be soft; identities first, sign last; a
+reformulation is not a reduction.

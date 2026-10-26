@@ -14,15 +14,14 @@ These are the data a base over `Spec ℤ` would be built from if it were multipl
 datum has an abundant class on a Frobenius window and its degree form `deg(m − nF)` has no naive
 height. A base must contain data these axioms do not see.
 
-**For `ζ` effectivity has five equivalent currencies** (`riemannHypothesis_effectivity_tfae`):
+**For `ζ` RH has five equivalent forms in effectivity terms** (`riemannHypothesis_effectivity_tfae`):
 
-1. RH;
-2. an effectivity function on the scaling surface with the Riemann inequality, bounded on degree
+1. an effectivity function on the scaling surface with the Riemann inequality, bounded on degree
    levels (the effectivity calculus);
-3. no abundant class of degree zero;
-4. a naive height for the integral Rosati form of every cycle (Tate's limit law);
-5. a fixed loss for the tensor powers of the spline orbit correlation (the base, ACP);
-6. the log-torsion of the horizon equals the Euler characteristic of the box class up to
+2. no abundant class of degree zero;
+3. a naive height for the integral Rosati form of every cycle (Tate's limit law);
+4. a fixed loss for the tensor powers of the spline orbit correlation (the base, ACP);
+5. the log-torsion of the horizon equals the Euler characteristic of the box class up to
    `O(√N log² N)` (the horizon torsion).
 
 Each is a theorem of a sibling module; the content here is that they are one statement — a growth

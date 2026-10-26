@@ -18,6 +18,11 @@ Weil's step from a polarization to purity, isolated from everything else.
   polarization iff every point of `S` is unitary (`rosatiForm_nonneg_iff_unitary`), and the
   eigenvector `δ_β` of an off-circle point is isotropic (`rosatiForm_single`): positivity is the
   whole content, and it fails exactly where eigenvectors become isotropic.
+* **The two forms of the spectral model.** The Rosati form is the collided form
+  `D(x) = Σ m_β |x(β)|²` minus the off-circle defect `Σ (m_β/2)|x(β) − x(1/β̄)|²`
+  (`re_rosatiForm_eq_collided_sub_defect`); `D` is positive and the Frobenius preserves it iff the
+  spectrum is unitary (`collided_frob_invariant_iff_unitary`), while the Rosati form is always
+  Frobenius invariant: the calibration of `HeckeInvarianceOfTheCollidedPolarizationIsRH`.
 -/
 
 open Complex Finset
@@ -191,6 +196,63 @@ theorem rosatiForm_single {β₀ : ℂ} (hβ₀ : β₀ ∈ R.S) :
       simp [hr, hu]
   · intro z _ hz; simp [hz]
   · intro h; exact absurd hβ₀ h
+
+/-- The **collided form** `D(x) = Σ_β m_β |x(β)|²` of the spectral model. -/
+def collided (x : ℂ → ℂ) : ℝ := ∑ β ∈ R.S, R.m β * Complex.normSq (x β)
+
+/-- The **off-circle defect** `Σ_β (m_β/2) |x(β) − x(1/β̄)|²`. -/
+def defect (x : ℂ → ℂ) : ℝ := ∑ β ∈ R.S, R.m β / 2 * Complex.normSq (x β - x (refl β))
+
+/-- **The Rosati form is the collided form minus the off-circle defect.** -/
+theorem re_rosatiForm_eq_collided_sub_defect (x : ℂ → ℂ) :
+    (R.rosatiForm x).re = R.collided x - R.defect x := by
+  have hre : ∀ u v : ℂ, (conj u * v).re =
+      (Complex.normSq u + Complex.normSq v - Complex.normSq (v - u)) / 2 := by
+    intro u v
+    simp only [Complex.normSq_apply, Complex.mul_re, Complex.conj_re, Complex.conj_im,
+      Complex.sub_re, Complex.sub_im]
+    ring
+  have hrefl : ∑ β ∈ R.S, R.m β * Complex.normSq (x (refl β)) =
+      ∑ β ∈ R.S, R.m β * Complex.normSq (x β) := by
+    refine Finset.sum_nbij' refl refl (fun β hβ => R.refl_mem β hβ) (fun β hβ => R.refl_mem β hβ)
+      (fun β _ => refl_refl β) (fun β _ => refl_refl β) (fun β hβ => ?_)
+    rw [R.m_refl β hβ]
+  rw [rosatiForm, Complex.re_sum]
+  simp only [mul_assoc, Complex.re_ofReal_mul, hre]
+  rw [collided, defect]
+  have : ∑ β ∈ R.S, R.m β * ((Complex.normSq (x (refl β)) + Complex.normSq (x β) -
+      Complex.normSq (x β - x (refl β))) / 2) =
+      (∑ β ∈ R.S, R.m β * Complex.normSq (x (refl β)) + ∑ β ∈ R.S, R.m β * Complex.normSq (x β)) / 2
+        - ∑ β ∈ R.S, R.m β / 2 * Complex.normSq (x β - x (refl β)) := by
+    rw [← Finset.sum_add_distrib, Finset.sum_div, ← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun β _ => ?_
+    ring
+  rw [this, hrefl]
+  ring
+
+/-- **The Frobenius preserves the collided form iff the spectrum is unitary**; it preserves the
+Rosati form always (`frob_star_mul_frob`). -/
+theorem collided_frob_invariant_iff_unitary :
+    (∀ x : ℂ → ℂ, R.collided (fun β => β * x β) = R.collided x) ↔ ∀ β ∈ R.S, ‖β‖ = 1 := by
+  classical
+  constructor
+  · intro h β₀ hβ₀
+    have := h (fun z => if z = β₀ then 1 else 0)
+    rw [collided, collided, Finset.sum_eq_single β₀, Finset.sum_eq_single β₀] at this
+    · simp only [if_true, mul_one, Complex.normSq_one] at this
+      have hm := R.m_pos β₀ hβ₀
+      have h1 : Complex.normSq β₀ = 1 := mul_left_cancel₀ hm.ne' (this.trans (mul_one _).symm)
+      rw [Complex.normSq_eq_norm_sq] at h1
+      have := norm_nonneg β₀
+      nlinarith
+    all_goals first
+      | (intro z _ hz; simp [hz])
+      | (intro h'; exact absurd hβ₀ h')
+  · intro hu x
+    rw [collided, collided]
+    refine Finset.sum_congr rfl fun β hβ => ?_
+    rw [Complex.normSq_mul, Complex.normSq_eq_norm_sq β, hu β hβ]
+    ring
 
 end ReflSpectrum
 

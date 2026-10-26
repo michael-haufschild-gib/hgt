@@ -24,7 +24,8 @@ ring of a scaling datum.
 * **The integral correspondence ring** (`orbitHodgeIndex_iff_int`,
   `orbitHodgeIndex_iff_exists_naiveHeight`). On a scaling datum, Rosati positivity at a cycle `x`
   holds on real correspondences iff it holds on integral ones `ξ ∈ ℤ[G]`, iff the integral Rosati
-  form `ξ ↦ τ_x(ξ ξ′)` has a naive height. For `ℤ`: RH iff every cycle's integral Rosati form has a
+  form `ξ ↦ τ_x(ξ ξ′)` has a naive height. The transfer from integers to reals is the rounding
+  principle (`sum_sum_nonneg_of_int`). For `ℤ`: RH iff every cycle's integral Rosati form has a
   naive height (`riemannHypothesis_iff_forall_exists_naiveHeight`).
 * **Calibration** (`genusOne_exists_naiveHeight_iff`, `goldenDatum_no_naiveHeight`). In
   genus one the degree `deg(m − nF)` on `ℤ²` has a naive height iff the Hasse bound holds — over a
@@ -302,46 +303,54 @@ theorem intRosatiForm_intCorr [DecidableEq G] (x : E) (S : Finset G) (m : G → 
   refine sum_congr rfl fun g hg => sum_congr rfl fun h hh => ?_
   simp [intCorr, Finsupp.onFinset_apply, hg, hh]
 
-/-- **Rosati positivity is decided on integral correspondences.** Rounding `⌊n c⌋ / n → c`
-transports positivity from `ℤ[G]` to real coefficients. -/
+/-- **The rounding principle.** A finite quadratic form `Σ_{i,j ∈ S} c_i c_j w_{ij}` that is
+nonnegative at every integer vector is nonnegative at every real vector: `⌊n c⌋ / n → c` and the
+form is homogeneous of degree two. -/
+theorem sum_sum_nonneg_of_int {ι : Type*} (S : Finset ι) (w : ι → ι → ℝ)
+    (hI : ∀ m : ι → ℤ, 0 ≤ ∑ i ∈ S, ∑ j ∈ S, (m i : ℝ) * m j * w i j) (c : ι → ℝ) :
+    0 ≤ ∑ i ∈ S, ∑ j ∈ S, c i * c j * w i j := by
+  set Q : (ι → ℝ) → ℝ := fun a => ∑ i ∈ S, ∑ j ∈ S, a i * a j * w i j
+  have hround : ∀ i, Tendsto (fun n : ℕ => (⌊(n : ℝ) * c i⌋ : ℝ) / n) atTop (𝓝 (c i)) := by
+    intro i
+    have hlow : Tendsto (fun n : ℕ => c i - 1 / (n : ℝ)) atTop (𝓝 (c i)) := by
+      have := (tendsto_const_nhds (x := c i)).sub (tendsto_one_div_atTop_nhds_zero_nat (𝕜 := ℝ))
+      simpa only [sub_zero] using this
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hlow tendsto_const_nhds ?_ ?_
+    · filter_upwards [eventually_gt_atTop 0] with n hn
+      have hn' : (0 : ℝ) < n := by exact_mod_cast hn
+      rw [le_div_iff₀ hn', sub_mul, one_div, inv_mul_cancel₀ hn'.ne']
+      have := Int.sub_one_lt_floor ((n : ℝ) * c i)
+      linarith
+    · filter_upwards [eventually_gt_atTop 0] with n hn
+      have hn' : (0 : ℝ) < n := by exact_mod_cast hn
+      rw [div_le_iff₀ hn']
+      have := Int.floor_le ((n : ℝ) * c i)
+      linarith
+  have hQ : Tendsto (fun n : ℕ => Q fun i => (⌊(n : ℝ) * c i⌋ : ℝ) / n) atTop (𝓝 (Q c)) :=
+    tendsto_finsetSum _ fun i _ => tendsto_finsetSum _ fun j _ =>
+      ((hround i).mul (hround j)).mul_const _
+  refine ge_of_tendsto hQ ?_
+  filter_upwards [eventually_gt_atTop 0] with n hn
+  have hn' : (0 : ℝ) < n := by exact_mod_cast hn
+  have hint := hI fun i => ⌊(n : ℝ) * c i⌋
+  have hscale : ∑ i ∈ S, ∑ j ∈ S, ((⌊(n : ℝ) * c i⌋ : ℤ) : ℝ) * ((⌊(n : ℝ) * c j⌋ : ℤ) : ℝ) *
+      w i j = (n : ℝ) ^ 2 * Q fun i => (⌊(n : ℝ) * c i⌋ : ℝ) / n := by
+    simp only [Q, mul_sum]
+    refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
+    field_simp
+  rw [hscale] at hint
+  exact nonneg_of_mul_nonneg_right (by linarith) (by positivity : (0 : ℝ) < (n : ℝ) ^ 2)
+
+/-- **Rosati positivity is decided on integral correspondences** (the rounding principle). -/
 theorem orbitHodgeIndex_iff_int (x : E) : D.OrbitHodgeIndex x ↔ IntOrbitHodgeIndex D x := by
   classical
   constructor
   · intro hH ξ
     simpa [intRosatiForm] using hH ξ.support (fun g => (ξ g : ℝ))
   · intro hI S c
-    set Q : (G → ℝ) → ℝ := fun a => ∑ g ∈ S, ∑ h ∈ S, a g * a h * D.orbitCorr x (g - h)
-    have hround : ∀ g, Tendsto (fun n : ℕ => (⌊(n : ℝ) * c g⌋ : ℝ) / n) atTop (𝓝 (c g)) := by
-      intro g
-      have hlow : Tendsto (fun n : ℕ => c g - 1 / (n : ℝ)) atTop (𝓝 (c g)) := by
-        have := (tendsto_const_nhds (x := c g)).sub (tendsto_one_div_atTop_nhds_zero_nat (𝕜 := ℝ))
-        simpa only [sub_zero] using this
-      refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hlow tendsto_const_nhds ?_ ?_
-      · filter_upwards [eventually_gt_atTop 0] with n hn
-        have hn' : (0 : ℝ) < n := by exact_mod_cast hn
-        rw [le_div_iff₀ hn', sub_mul, one_div, inv_mul_cancel₀ hn'.ne']
-        have := Int.sub_one_lt_floor ((n : ℝ) * c g)
-        linarith
-      · filter_upwards [eventually_gt_atTop 0] with n hn
-        have hn' : (0 : ℝ) < n := by exact_mod_cast hn
-        rw [div_le_iff₀ hn']
-        have := Int.floor_le ((n : ℝ) * c g)
-        linarith
-    have hQ : Tendsto (fun n : ℕ => Q fun g => (⌊(n : ℝ) * c g⌋ : ℝ) / n) atTop (𝓝 (Q c)) :=
-      tendsto_finsetSum _ fun g _ => tendsto_finsetSum _ fun h _ =>
-        ((hround g).mul (hround h)).mul_const _
-    refine ge_of_tendsto hQ ?_
-    filter_upwards [eventually_gt_atTop 0] with n hn
-    have hn' : (0 : ℝ) < n := by exact_mod_cast hn
-    have hint := hI (intCorr S fun g => ⌊(n : ℝ) * c g⌋)
-    rw [intRosatiForm_intCorr] at hint
-    have hscale : ∑ g ∈ S, ∑ h ∈ S, ((⌊(n : ℝ) * c g⌋ : ℤ) : ℝ) * ((⌊(n : ℝ) * c h⌋ : ℤ) : ℝ) *
-        D.orbitCorr x (g - h) = (n : ℝ) ^ 2 * Q fun g => (⌊(n : ℝ) * c g⌋ : ℝ) / n := by
-      simp only [Q, mul_sum]
-      refine sum_congr rfl fun g _ => sum_congr rfl fun h _ => ?_
-      field_simp
-    rw [hscale] at hint
-    exact nonneg_of_mul_nonneg_right (by linarith) (by positivity : (0 : ℝ) < (n : ℝ) ^ 2)
+    refine sum_sum_nonneg_of_int S (fun g h => D.orbitCorr x (g - h)) (fun m => ?_) c
+    rw [← intRosatiForm_intCorr]
+    exact hI _
 
 /-- **Rosati positivity is the existence of a naive height** on the integral correspondence ring:
 a function bounded below at bounded distance from the integral Rosati form. -/

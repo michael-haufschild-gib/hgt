@@ -258,6 +258,14 @@ theorem re_neg_logDeriv_criticalSplitMultiplier_eq (β : ℝ) {σ : ℝ} (hσ : 
   have hi₀ := integrableOn_exp_cos_Ioi (σ - 1 / 2) u (by linarith)
   have hi₁ := integrableOn_exp_cos_Ioi (σ - 1 / 2) (u - β) (by linarith)
   have hi₂ := integrableOn_exp_cos_Ioi (σ - 1 / 2) (u + β) (by linarith)
+  have hi₀₂ : IntegrableOn
+      (fun t : ℝ => 2 * (Real.exp (-(σ - 1 / 2) * t) * Real.cos (u * t))) (Ioi 0) :=
+    hi₀.const_mul 2
+  have hi₁₂ : IntegrableOn
+      (fun t : ℝ =>
+        Real.exp (-(σ - 1 / 2) * t) * Real.cos ((u - β) * t) +
+        Real.exp (-(σ - 1 / 2) * t) * Real.cos ((u + β) * t)) (Ioi 0) :=
+    hi₁.add hi₂
   symm
   calc ∫ t : ℝ in Ioi 0,
         (2 * Real.exp (-(σ - 1 / 2) * t) * (1 - Real.cos (β * t))) * Real.cos (t * u)
@@ -277,7 +285,7 @@ theorem re_neg_logDeriv_criticalSplitMultiplier_eq (β : ℝ) {σ : ℝ} (hσ : 
     _ = 2 * (∫ t : ℝ in Ioi 0, Real.exp (-(σ - 1 / 2) * t) * Real.cos (u * t)) -
           ((∫ t : ℝ in Ioi 0, Real.exp (-(σ - 1 / 2) * t) * Real.cos ((u - β) * t)) +
            (∫ t : ℝ in Ioi 0, Real.exp (-(σ - 1 / 2) * t) * Real.cos ((u + β) * t))) := by
-        rw [integral_sub (hi₀.const_mul 2) (hi₁.add hi₂), integral_const_mul, integral_add hi₁ hi₂]
+        rw [integral_sub hi₀₂ hi₁₂, integral_const_mul, integral_add hi₁ hi₂]
 
 /-- **Bochner Positivity of Outward Critical Splitting (`isEvenPosDef_criticalSplitMultiplier`).**
 For every `β ∈ ℝ` and `σ > 1`, `u ↦ Re(−W_β'/W_β)(σ + iu)` is even and positive definite. -/
@@ -449,7 +457,7 @@ theorem exists_criticalSplit_deformation_of_xi_zero {γ β : ℝ}
         dsimp only [Function.comp_apply]
         calc starRingEnd ℂ (Λβ (starRingEnd ℂ z)) * (z - 1 / 2) ^ 2
             = starRingEnd ℂ (Λβ (starRingEnd ℂ z) * (starRingEnd ℂ z - 1 / 2) ^ 2) := by
-                rw [map_mul, hsq_conj]
+                rw [← hsq_conj, ← map_mul]
           _ = starRingEnd ℂ (Λγ (starRingEnd ℂ z) *
                 ((starRingEnd ℂ z - 1 / 2) ^ 2 + (β : ℂ) ^ 2)) := by
                 rw [hrel (starRingEnd ℂ z)]
@@ -675,7 +683,7 @@ theorem not_isEvenPosDef_inwardCollapseMultiplier {β : ℝ} (hβ : β ≠ 0) :
           fun w : ℂ => (w - z₀) ^ 2 / ((w - z₁) * (w - z₂)) := by
         funext w
         unfold inwardCollapseMultiplier
-        rw [congrFun hnum_eq w, congrFun hden_eq w]
+        rw [congrFun hden_eq w, congrFun hnum_eq w]
       have hd_sub : ∀ c₀ : ℂ, DifferentiableAt ℂ (fun w : ℂ => w - c₀) s := fun _ => by fun_prop
       have hd_lin : ∀ c₀ : ℂ, logDeriv (fun w : ℂ => w - c₀) s = 1 / (s - c₀) := fun c₀ => by
         rw [logDeriv_apply, deriv_sub_const, deriv_id'', one_div]
@@ -782,10 +790,10 @@ theorem re_neg_logDeriv_criticalSplit_real (β : ℝ) {σ : ℝ} (hσ : 1 / 2 < 
   have hd_num : HasDerivAt (fun w : ℂ => (w - 1 / 2) ^ 2 + (β : ℂ) ^ 2)
       (2 * ((σ : ℂ) - 1 / 2)) (σ : ℂ) :=
     ((((hasDerivAt_id (σ : ℂ)).sub_const (1 / 2 : ℂ)).pow 2).add_const
-      ((β : ℂ) ^ 2)).congr_deriv (by ring)
+      ((β : ℂ) ^ 2)).congr_deriv (by dsimp; ring)
   have hd_den : HasDerivAt (fun w : ℂ => (w - 1 / 2) ^ 2)
       (2 * ((σ : ℂ) - 1 / 2)) (σ : ℂ) :=
-    (((hasDerivAt_id (σ : ℂ)).sub_const (1 / 2 : ℂ)).pow 2).congr_deriv (by ring)
+    (((hasDerivAt_id (σ : ℂ)).sub_const (1 / 2 : ℂ)).pow 2).congr_deriv (by dsimp; ring)
   unfold criticalSplitMultiplier
   rw [logDeriv_div (f := fun w => (w - 1 / 2) ^ 2 + (β : ℂ) ^ 2)
         (g := fun w => (w - 1 / 2) ^ 2) (σ : ℂ) hnum_nz (pow_ne_zero 2 hs0)
@@ -822,8 +830,9 @@ theorem tendsto_cube_mul_neg_logDeriv_criticalSplit (β : ℝ) :
     simpa using hinv1.mul hinv2
   have hrat : Tendsto (fun σ : ℝ =>
       2 * β ^ 2 / ((1 - (1 / 2 : ℝ) * σ⁻¹) * ((1 - (1 / 2 : ℝ) * σ⁻¹) ^ 2 + β ^ 2 * (σ⁻¹) ^ 2)))
-      atTop (𝓝 (2 * β ^ 2)) :=
-    (tendsto_const_nhds.div hden one_ne_zero).congr fun _ => rfl
+      atTop (𝓝 (2 * β ^ 2)) := by
+    simpa only [Pi.div_def, div_one] using
+      (tendsto_const_nhds (x := 2 * β ^ 2)).div hden one_ne_zero
   refine hrat.congr' ?_
   filter_upwards [eventually_gt_atTop (1 : ℝ)] with σ hσ
   have hσ0 : σ ≠ 0 := by linarith
@@ -954,6 +963,18 @@ theorem re_neg_logDeriv_coupledQuartetSymSquare_real {b a γ σ : ℝ}
     push_cast; ring
   rw [htot, Complex.ofReal_re]
 
+private theorem quartet_rational_comb {u a γ : ℝ}
+    (h1 : (u - a) ^ 2 + γ ^ 2 ≠ 0)
+    (h2 : (u + a) ^ 2 + γ ^ 2 ≠ 0)
+    (h0 : u ^ 2 + γ ^ 2 ≠ 0) :
+    2 * (u - a) / ((u - a) ^ 2 + γ ^ 2) +
+      2 * (u + a) / ((u + a) ^ 2 + γ ^ 2) -
+      4 * u / (u ^ 2 + γ ^ 2) =
+      4 * a ^ 2 * u * (u ^ 2 - (a ^ 2 + 3 * γ ^ 2)) /
+        (((u - a) ^ 2 + γ ^ 2) * ((u + a) ^ 2 + γ ^ 2) * (u ^ 2 + γ ^ 2)) := by
+  field_simp [h1, h2, h0]
+  ring
+
 /-- **Algebraic `Θ(σ^{-3})` Asymptotics of Quartet Contraction (`coupledQuartetSymSquare`):**
 For `|b| < 1/2` and `|a| < 1/2`,
 `lim_{σ → +∞} σ³ Re(−(coupledQuartetSymSquare b a γ)' / coupledQuartetSymSquare b a γ)(σ) = 4 b² + 4 a²`. -/
@@ -973,7 +994,8 @@ theorem tendsto_cube_mul_neg_logDeriv_coupledQuartetSymSquare {b a : ℝ} (γ : 
       have h0 : Tendsto (fun σ : ℝ => b ^ 2 * (σ⁻¹) ^ 2) atTop (𝓝 0) := by
         simpa using (ht0.pow 2).const_mul (b ^ 2)
       simpa using huHat.mul ((huHat.pow 2).sub h0)
-    exact (tendsto_const_nhds.div hden one_ne_zero).congr fun _ => rfl
+    simpa only [Pi.div_def, div_one] using
+      (tendsto_const_nhds (x := 4 * b ^ 2)).div hden one_ne_zero
   have hterm2 : Tendsto (fun σ : ℝ =>
       4 * a ^ 2 * uHat σ⁻¹ * (uHat σ⁻¹ ^ 2 - (a ^ 2 + 3 * γ ^ 2) * (σ⁻¹) ^ 2) /
         (((uHat σ⁻¹ - a * σ⁻¹) ^ 2 + γ ^ 2 * (σ⁻¹) ^ 2) *
@@ -1008,7 +1030,7 @@ theorem tendsto_cube_mul_neg_logDeriv_coupledQuartetSymSquare {b a : ℝ} (γ : 
         ((uHat σ⁻¹ + a * σ⁻¹) ^ 2 + γ ^ 2 * (σ⁻¹) ^ 2) *
         (uHat σ⁻¹ ^ 2 + γ ^ 2 * (σ⁻¹) ^ 2)) atTop (𝓝 1) := by
       simpa using (hd1.mul hd2).mul hd3
-    exact (hnum.div hden one_ne_zero).congr fun _ => rfl
+    simpa only [Pi.div_def, div_one] using hnum.div hden one_ne_zero
   refine (hterm1.add hterm2).congr' ?_
   filter_upwards [eventually_gt_atTop (1 : ℝ)] with σ hσ
   obtain ⟨hb_lo, hb_hi⟩ := abs_lt.mp hb
@@ -1040,15 +1062,7 @@ theorem tendsto_cube_mul_neg_logDeriv_coupledQuartetSymSquare {b a : ℝ} (γ : 
         (((uHat σ⁻¹ - a * σ⁻¹) ^ 2 + γ ^ 2 * (σ⁻¹) ^ 2) *
          ((uHat σ⁻¹ + a * σ⁻¹) ^ 2 + γ ^ 2 * (σ⁻¹) ^ 2) *
          (uHat σ⁻¹ ^ 2 + γ ^ 2 * (σ⁻¹) ^ 2)) := by
-    have hrat_q : 2 * (σ - 1 / 2 - a) / ((σ - 1 / 2 - a) ^ 2 + γ ^ 2) +
-        2 * (σ - 1 / 2 + a) / ((σ - 1 / 2 + a) ^ 2 + γ ^ 2) -
-        4 * (σ - 1 / 2) / ((σ - 1 / 2) ^ 2 + γ ^ 2) =
-        4 * a ^ 2 * (σ - 1 / 2) * ((σ - 1 / 2) ^ 2 - (a ^ 2 + 3 * γ ^ 2)) /
-          (((σ - 1 / 2 - a) ^ 2 + γ ^ 2) *
-           ((σ - 1 / 2 + a) ^ 2 + γ ^ 2) *
-           ((σ - 1 / 2) ^ 2 + γ ^ 2)) := by
-      field_simp [hq1_nz, hq2_nz, hq0_nz]
-      ring
+    have hrat_q := quartet_rational_comb (u := σ - 1 / 2) hq1_nz hq2_nz hq0_nz
     have hnum_eq : σ ^ 3 * (4 * a ^ 2 * (σ - 1 / 2) * ((σ - 1 / 2) ^ 2 - (a ^ 2 + 3 * γ ^ 2))) =
         σ ^ 6 * (4 * a ^ 2 * uHat σ⁻¹ * (uHat σ⁻¹ ^ 2 - (a ^ 2 + 3 * γ ^ 2) * (σ⁻¹) ^ 2)) := by
       rw [hu_eq]; field_simp [hσ0]

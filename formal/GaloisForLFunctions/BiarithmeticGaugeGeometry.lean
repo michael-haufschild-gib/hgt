@@ -1,0 +1,20 @@
+import GaloisForLFunctions.BiarithmeticGaugeGeometry.PrimeGaugeTorusAndVacuumIntertwiners
+import GaloisForLFunctions.BiarithmeticGaugeGeometry.QuantitativeCatalanDiophantineRepulsion
+import GaloisForLFunctions.BiarithmeticGaugeGeometry.ChiralDeformationAndNonRigidityOfHeightCoupledSystems
+import GaloisForLFunctions.BiarithmeticGaugeGeometry.EuclideanCellRemainderAndPolarNeutralCollapse
+import GaloisForLFunctions.BiarithmeticGaugeGeometry.RamanujanTorsionStabilizersAndMonomialCollapse
+import GaloisForLFunctions.BiarithmeticGaugeGeometry.MasterBiarithmeticGaugeGeometryTheorem
+
+/-!
+# Biarithmetic Gauge Geometry
+
+Umbrella for the gauge theory of the non-commuting `( +1, ×p )` arithmetic semigroup: the infinite
+prime gauge torus `Ω_𝒫` and unitary lattice intertwiners, Catalan–Bézout `{1, 2, 3, 4}` successor
+holonomy and Baker-free all-height Diophantine twist repulsion, chiral Bochner deformations of
+height-coupled systems (refuting two-sided `CoupledRigid` at Hardy critical ordinates while
+establishing the one-sided `CentralVanishingCeiling` and cubic `Θ(σ^{-3})` vs. `O(2^{-σ})`
+Dirichlet-lattice separation), polar-neutral rank-one collapse and exact logarithmic continuum cell
+subdivision with `m`-uniform biarithmetic Sobolev remainder bounds, and fixed-point-free dyadic
+rational-torsion rotation with pole-cancelled bi-torsion Ramanujan contrasts.
+See `BiarithmeticGaugeGeometry/README.md`.
+-/

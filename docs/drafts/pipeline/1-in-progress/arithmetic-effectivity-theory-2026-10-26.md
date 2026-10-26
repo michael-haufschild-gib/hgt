@@ -29,13 +29,16 @@ the Stepanov method over `ℤ` (Siegel abundance + integrality floor), the base 
 
 | Pillar | Module | Status |
 |---|---|---|
-| E1 effectivity calculus (real-valued Weil argument) | `TheEffectivityCalculus` | planned |
-| E2 Tate limits and naive heights | `TatesLimitLaw` | planned |
-| E3 log-torsion and the product formula as Bézout | `LogTorsionAndTheBezoutOfSpecZ` | planned |
-| E4 the theta surface and its free polarization | `TheThetaSurface` | planned |
-| E5 the Stepanov method over `ℤ` | `TheStepanovMethodOverZ` | planned |
-| E6 base axioms and Beurling models | — | planned |
-| E7 emptiness tests | — | planned |
+| E1 effectivity calculus, abundance rate | `TheEffectivityCalculus` | Lean |
+| E2 the base does not extend | `TheBaseDoesNotExtend` | Lean |
+| E3 Tate limits, naive heights, rounding | `TatesLimitLaw`, `NaiveHeightsAreTraces` | Lean |
+| E4 horizon log-torsion, Q1 | `TheHorizonTorsion` | Lean |
+| E5 theta surface, soft polarization | `TheThetaSurface` | Lean |
+| E6 torsion characteristics, Gauss sums | `TheTorsionCharacteristics` | Lean |
+| E7 Stepanov / Nair | `TheStepanovMethodOverZ` | Lean |
+| E8 `ℙ¹ × ℙ¹` calibration | `TheProjectiveSquareCalibration` | Lean |
+| E9 golden base countermodel, five currencies | `TheBaseAxioms` | Lean |
+| open: selective (non-soft) polarization; naive height of trace type on `ℤ[G]`; integer Chebyshev limit | — | open |
 
 ## Key paper facts
 - Riemann inequality `h(x) + h(κ − x) ≥ ½ x·(x − κ) + χ₀` + values of `h` bounded on degree
@@ -48,4 +51,4 @@ the Stepanov method over `ℤ` (Siegel abundance + integrality floor), the base 
 - Nair/Chebyshev: `P ∈ ℤ[X]`, `deg P ≤ n` ⇒ `lcm(1..n+1) ∫₀¹ P ∈ ℤ`.
 
 ## Log
-- 2026-10-26 — created; README first draft.
+- 2026-10-26 — created; README first draft; E1–E9 formalized, README updated with pillars and answers.
