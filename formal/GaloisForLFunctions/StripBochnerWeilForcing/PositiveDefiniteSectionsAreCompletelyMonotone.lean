@@ -73,7 +73,7 @@ theorem isPosDef_of_tendsto {φ : ℝ → ℝ} {ψ : ℝ → ℝ → ℝ} {l : F
     tendsto_finsetSum _ fun i _ => tendsto_finsetSum _ fun j _ => (hlim _).const_mul _
   exact ge_of_tendsto hT (hψ.mono fun h hh => hh n x c)
 
-theorem IsPosDef.apply_zero_nonneg {φ : ℝ → ℝ} (hφ : IsPosDef φ) : 0 ≤ φ 0 := by
+theorem isPosDef_apply_zero_nonneg {φ : ℝ → ℝ} (hφ : IsPosDef φ) : 0 ≤ φ 0 := by
   have h := hφ 1 (fun _ => 0) (fun _ => 1)
   simpa using h
 
@@ -277,7 +277,7 @@ theorem re_iterate_deriv_two_mul_nonneg {G : ℂ → ℂ} {a : ℝ}
     (hG : DifferentiableOn ℂ G {s : ℂ | a < s.re})
     (hpd : ∀ σ : ℝ, a < σ → IsPosDef fun u : ℝ => (G ((σ : ℂ) + (u : ℂ) * I)).re) (k : ℕ)
     {σ : ℝ} (hσ : a < σ) : 0 ≤ ((deriv^[2 * k] G) (σ : ℂ)).re := by
-  have h := (isPosDef_re_iterate_deriv_two_mul hG hpd k σ hσ).apply_zero_nonneg
+  have h := isPosDef_apply_zero_nonneg (isPosDef_re_iterate_deriv_two_mul hG hpd k σ hσ)
   simpa using h
 
 end GaloisForLFunctions.StripBochnerWeilForcing

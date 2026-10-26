@@ -273,3 +273,22 @@ Existing unrelated worktree changes must be preserved.
   normalized scaling and every-source-Lipschitz-constant error bound. Canonical
   `NyquistCriticalSourceClassification.lean` (250 lines) is building in `27290`;
   log `/tmp/leftovers-nyquist-sources-build.log`. No other Lean process owned.
+
+- Source build `27290` exited 1 with two elaboration errors: continuous-map
+  coercion prevented the autocorrelation bridge rewrite, and a beta-redex
+  prevented the normalized-scaling rewrite. Both repaired by explicit `change`;
+  redundant sequential tactic removed. Retry `57154` is running, log still empty.
+- New unchecked Nyquist drafts: `/tmp/leftovers_nyquist_primitive_tail.lean`
+  (absolute tail admission, exponential absolute-integral bound, uniqueness,
+  exact width-dependent cell variation), `/tmp/leftovers_nyquist_source_quantitative.lean`
+  (absolute normalized bound, exact energy identity/ceiling for every source
+  Lipschitz constant, bounded-interval uniform convergence, mean-zero iff).
+  Witness draft extended with support-boundary vanishing, exact mass/lag, and
+  normalized negative lag `4L`; now imports planned quantitative leaf.
+- Physical historical-report follow-up: existing `PhysicalBoxProfile` directly
+  proves local absolute continuity, a.e. derivative, and L² membership;
+  `PhysicalBoxAverage.physicalBoxDerivative_norm_le` supplies the derivative norm.
+  Reuse these, do not re-prove generic box regularity. Exact two-tail draft
+  `/tmp/leftovers_physical_tail_identity.lean` now contains the general interval
+  identity, specified exponential truncation identity, separate squared/norm
+  tail limits and complete separate-tail producer error. Unchecked.

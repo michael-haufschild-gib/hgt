@@ -7,11 +7,11 @@ import Mathlib.Analysis.Real.Cardinality
 /-!
 # Summable positive-definite configurations and rank-`r` boundary profiles
 
-* **Bochner positivity in `ℓ¹`** (`IsEvenPosDef.tsum_mul_cos_nonneg`). On any abelian group `Γ`, an
-  absolutely summable even positive-definite `φ` has `Σ_γ φ(γ) cos θ(γ) ≥ 0` for every additive
-  `θ : Γ →+ ℝ`. The Gram forms with coefficients `cos θ`, `sin θ` over a Følner set `F` give
-  `Σ_p φ(p) cos θ(p) · #{y ∈ F : y + p ∈ F} ≥ 0`; the counts are `≥ (1 − ε)|F|` on a finite set
-  carrying all but `ε` of the mass.
+* **Bochner positivity in `ℓ¹`** (`tsum_nonneg_of_gram`, `IsEvenPosDef.tsum_mul_cos_nonneg`). On any
+  abelian group `Γ`, an absolutely summable even positive-definite `φ` has `Σ_γ φ(γ) cos θ(γ) ≥ 0`
+  for every additive `θ : Γ →+ ℝ`. The Gram forms with coefficients `cos θ`, `sin θ` over a Følner
+  set `F` give `Σ_p φ(p) cos θ(p) · #{y ∈ F : y + p ∈ F} ≥ 0`; the counts are `≥ (1 − ε)|F|` on a
+  finite set carrying all but `ε` of the mass.
 * **Realization** (`summable_isBoundaryDivisor`, `summable_integral`). For such `φ` and additive
   heights `h : Γ →+ ℝ` the pushforward `D_h(u) = Σ_{h(γ) = u} φ(γ)` is the boundary divisor of the
   von Mangoldt weights twisted by `B(t) = Σ_γ φ(γ) cos(t h(γ)) ≥ 0`, and, `B` being bounded, of an
@@ -52,15 +52,15 @@ theorem IsEvenPosDef.sum_sum_cos_nonneg {φ : Γ → ℝ} (hφ : IsEvenPosDef φ
   rw [e]
   exact add_nonneg h1 h2
 
-/-- **Bochner positivity in `ℓ¹`.** -/
-theorem IsEvenPosDef.tsum_mul_cos_nonneg {φ : Γ → ℝ} (hφ : IsEvenPosDef φ) (hs : Summable φ)
-    (θ : Γ →+ ℝ) : 0 ≤ ∑' γ, φ γ * Real.cos (θ γ) := by
+/-- **Bochner positivity in `ℓ¹`, abstract form.** If `|ψ| ≤ |φ|` with `φ` absolutely summable and
+every Gram sum `Σ_{x,y ∈ F} ψ(x − y)` over a finite set is nonnegative, then `Σ ψ ≥ 0`: a Følner set
+of a finite set carrying all but `ε` of the mass sees each of its points with weight `≥ (1 − ε)|F|`. -/
+theorem tsum_nonneg_of_gram {φ ψ : Γ → ℝ} (hs : Summable φ) (hψφ : ∀ γ, |ψ γ| ≤ |φ γ|)
+    (hgram : ∀ F : Finset Γ, 0 ≤ ∑ x ∈ F, ∑ y ∈ F, ψ (x - y)) : 0 ≤ ∑' γ, ψ γ := by
   classical
-  set ψ : Γ → ℝ := fun γ => φ γ * Real.cos (θ γ)
   have habs : Summable fun γ => |φ γ| := hs.abs
   have hψ : Summable ψ := Summable.of_norm_bounded habs fun γ => by
-    rw [Real.norm_eq_abs, abs_mul]
-    exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _)
+    rw [Real.norm_eq_abs]; exact hψφ γ
   set A := ∑' γ, |φ γ|
   have hA : 0 ≤ A := tsum_nonneg fun γ => abs_nonneg _
   refine le_of_forall_pos_lt_add fun ε hε => ?_
@@ -112,16 +112,12 @@ theorem IsEvenPosDef.tsum_mul_cos_nonneg {φ : Γ → ℝ} (hφ : IsEvenPosDef �
       Finset.sum_congr rfl fun x hx => Finset.sum_congr rfl fun y hy => by
         rw [if_pos (Finset.mem_image.mpr ⟨(x, y), Finset.mem_product.mpr ⟨hx, hy⟩, rfl⟩)]
     rw [← h, hall]
-    exact hφ.sum_sum_cos_nonneg θ F
+    exact hgram F
   -- Compare with `|F| Σ ψ`.
   have hψc : Summable fun p => ψ p * c p :=
     Summable.of_norm_bounded (habs.mul_right (F.card : ℝ)) fun p => by
       rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hc_nonneg p)]
-      have h1 : |ψ p| ≤ |φ p| := by
-        simp only [ψ]
-        rw [abs_mul]
-        exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _)
-      exact mul_le_mul h1 (hc_le p) (hc_nonneg p) (abs_nonneg _)
+      exact mul_le_mul (hψφ p) (hc_le p) (hc_nonneg p) (abs_nonneg _)
   have hdef : Summable fun p => |φ p| * (F.card - c p) :=
     Summable.of_nonneg_of_le (fun p => mul_nonneg (abs_nonneg _) (by linarith [hc_le p]))
       (fun p => mul_le_mul_of_nonneg_left (by linarith [hc_nonneg p]) (abs_nonneg _))
@@ -156,15 +152,11 @@ theorem IsEvenPosDef.tsum_mul_cos_nonneg {φ : Γ → ℝ} (hφ : IsEvenPosDef �
     have hs3 : Summable fun p => ψ p * (F.card - c p) :=
       Summable.of_norm_bounded hdef fun p => by
         rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (by linarith [hc_le p] : (0 : ℝ) ≤ F.card - c p)]
-        exact mul_le_mul_of_nonneg_right (by
-          rw [abs_mul]; exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _))
-          (by linarith [hc_le p])
+        exact mul_le_mul_of_nonneg_right (hψφ p) (by linarith [hc_le p])
     rw [← Real.norm_eq_abs]
     refine (norm_tsum_le_tsum_norm hs3.norm).trans (Summable.tsum_le_tsum (fun p => ?_) hs3.norm hdef)
     rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (by linarith [hc_le p] : (0 : ℝ) ≤ F.card - c p)]
-    exact mul_le_mul_of_nonneg_right (by
-      rw [abs_mul]; exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _))
-      (by linarith [hc_le p])
+    exact mul_le_mul_of_nonneg_right (hψφ p) (by linarith [hc_le p])
   -- Conclude `Σ ψ ≥ −(ε' A + ε/4) > −ε`.
   have hmain : F.card * ∑' p, ψ p ≥ -(ε' * F.card * A + F.card * (ε / 4)) := by
     have := (abs_le.mp (hdiffle.trans hdefle)).1
@@ -179,8 +171,14 @@ theorem IsEvenPosDef.tsum_mul_cos_nonneg {φ : Γ → ℝ} (hφ : IsEvenPosDef �
     rw [ge_iff_le, show -(ε' * F.card * A + F.card * (ε / 4)) =
       F.card * (-(ε' * A + ε / 4)) by ring] at h
     exact le_of_mul_le_mul_left h hF0
-  show 0 < ∑' γ, φ γ * Real.cos (θ γ) + ε
   linarith
+
+/-- **Bochner positivity in `ℓ¹`.** -/
+theorem IsEvenPosDef.tsum_mul_cos_nonneg {φ : Γ → ℝ} (hφ : IsEvenPosDef φ) (hs : Summable φ)
+    (θ : Γ →+ ℝ) : 0 ≤ ∑' γ, φ γ * Real.cos (θ γ) :=
+  tsum_nonneg_of_gram hs (fun γ => by
+    rw [abs_mul]; exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _))
+    (hφ.sum_sum_cos_nonneg θ)
 
 end Positivity
 

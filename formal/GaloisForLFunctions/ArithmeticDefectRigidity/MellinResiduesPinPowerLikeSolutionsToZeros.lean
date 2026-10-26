@@ -344,7 +344,9 @@ theorem norm_mul_cell_le {v : ℕ → ℂ} (hv0 : v 0 = 0) {C : ℝ} (hC : ∀ n
         gcongr; linarith
     _ = 2 * C * ‖w‖ * ((n : ℝ) * (n : ℝ) ^ (-w.re - 1)) := by ring
     _ = 2 * C * ‖w‖ * (n : ℝ) ^ (-w.re) := by
-        rw [show (-w.re) = 1 + (-w.re - 1) by ring, Real.rpow_add hn0, Real.rpow_one]
+        have h := Real.rpow_add hn0 1 (-w.re - 1)
+        rw [Real.rpow_one, show (1 : ℝ) + (-w.re - 1) = -w.re by ring] at h
+        rw [h]
 
 theorem summable_rowMellin {v : ℕ → ℂ} (hv0 : v 0 = 0) {C : ℝ}
     (hC : ∀ n : ℕ, ‖v n‖ ≤ C * ((n : ℝ) + 1)) {w : ℂ} (hw : 1 < w.re) :
@@ -429,7 +431,7 @@ theorem hasSum_cTotalCofactorSum_mul_cell {ε : ℝ} (hε : 0 < ε) {v : ℕ →
       subst this; simp [hF, Real.zero_rpow (by linarith : -ε ≠ 0)]
     · simp [hF, Nat.div_eq_of_lt hj, hv0]
   -- absolute summability on pairs
-  have hbound : ∀ j n, ‖F j n‖ ≤ (2 * C * ‖w‖) * ((j : ℝ) ^ (-1 - ε) * (n : ℝ) ^ (-w.re + 1)) := by
+  have hbound : ∀ j n, ‖F j n‖ ≤ (2 * C * ‖w‖) * ((j : ℝ) ^ (-1 - ε) * (n : ℝ) ^ (-w.re)) := by
     intro j n
     by_cases hjn : j ∈ Icc 1 n
     · obtain ⟨hj1, hjn⟩ := Finset.mem_Icc.mp hjn
@@ -439,7 +441,7 @@ theorem hasSum_cTotalCofactorSum_mul_cell {ε : ℝ} (hε : 0 < ε) {v : ℕ →
       have hvj : ‖v (n / j)‖ ≤ C * (2 * n / j) := by
         refine (hC _).trans (mul_le_mul_of_nonneg_left ?_ hC0)
         have h1 : ((n / j : ℕ) : ℝ) ≤ n / j := Nat.cast_div_le
-        have h2 : (1 : ℝ) ≤ n / j := by rw [le_div_iff₀ hj0]; exact_mod_cast hjn
+        have h2 : (1 : ℝ) ≤ n / j := by rw [le_div_iff₀ hj0, one_mul]; exact_mod_cast hjn
         have h3 : (n : ℝ) / j + n / j = 2 * n / j := by ring
         linarith
       rw [hF, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
@@ -452,9 +454,10 @@ theorem hasSum_cTotalCofactorSum_mul_cell {ε : ℝ} (hε : 0 < ε) {v : ℕ →
             ring
         _ = _ := by
             congr 2
-            · rw [Real.rpow_sub hj0, Real.rpow_neg_one]
-              sorry
-            · rw [show (-w.re + 1) = 1 + (-w.re - 1) by ring, Real.rpow_add hn0, Real.rpow_one]
+            · rw [show (-1 - ε) = -ε + -1 by ring, Real.rpow_add hj0, Real.rpow_neg_one, div_eq_mul_inv]
+            · have h := Real.rpow_add hn0 1 (-w.re - 1)
+              rw [Real.rpow_one, show (1 : ℝ) + (-w.re - 1) = -w.re by ring] at h
+              rw [h]
     · rw [hvanish n j hjn, norm_zero]
       positivity
   sorry
