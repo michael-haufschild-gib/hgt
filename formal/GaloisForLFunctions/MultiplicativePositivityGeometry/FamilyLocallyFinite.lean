@@ -158,31 +158,35 @@ theorem famPoly_isFamPosCosPoly {E : G × ℝ → ℝ} (hE : IsEvenPosDef E) (hs
   convert h using 2 with q
   rw [famPoly, Finset.sum_product]
 
+/-- **Character orthogonality at one frequency.** For a configuration supported in a finite set `S`,
+`Σ_ψ B(ψ, t) Re(ψ(g) e^{itu})/|G| = Σ_{p ∈ S} (E(p)/2)([g = p₁] cos t(u − p₂) + [g = −p₁] cos t(u + p₂))`. -/
+theorem sum_familyBohr_mul_jointMode {E : G × ℝ → ℝ} {S : Finset (G × ℝ)}
+    (hS : ∀ p ∉ S, E p = 0) (t : ℝ) (q : G × ℝ) :
+    ∑ ψ : AddChar G ℂ, 1 / (Fintype.card G : ℝ) * familyBohr E ψ t * jointMode ψ t q =
+      ∑ p ∈ S, E p / 2 * ((if q.1 = p.1 then 1 else 0) * Real.cos (t * (q.2 - p.2)) +
+        (if q.1 = -p.1 then 1 else 0) * Real.cos (t * (q.2 + p.2))) := by
+  have hG : (Fintype.card G : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+  have hbohr : ∀ ψ, familyBohr E ψ t = ∑ p ∈ S, E p * jointMode ψ t (-p) := fun ψ => by
+    unfold familyBohr
+    exact tsum_eq_sum fun p hp => by rw [hS p hp, zero_mul]
+  simp only [hbohr]
+  have e : ∀ ψ : AddChar G ℂ, 1 / (Fintype.card G : ℝ) *
+      (∑ p ∈ S, E p * jointMode ψ t (-p)) * jointMode ψ t q =
+      ∑ p ∈ S, E p / Fintype.card G * (jointMode ψ t (-p) * jointMode ψ t q) := fun ψ => by
+    rw [Finset.mul_sum, Finset.sum_mul]
+    exact Finset.sum_congr rfl fun p _ => by ring
+  rw [Finset.sum_congr rfl fun ψ _ => e ψ, Finset.sum_comm]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  rw [← Finset.mul_sum, sum_jointMode_mul]
+  field_simp
+
 /-- **Smoothing by character orthogonality.** For a configuration supported in a finite set `S`,
 the family polynomial is the fibrewise convolution with the Dirichlet mean. -/
 theorem famPoly_eq {E : G × ℝ → ℝ} {S : Finset (G × ℝ)} (hS : ∀ p ∉ S, E p = 0) (n : ℕ)
     (q : G × ℝ) :
     famPoly E n q = ∑ p ∈ S, E p / 2 * ((if q.1 = p.1 then 1 else 0) *
         dirichletMean n (q.2 - p.2) + (if q.1 = -p.1 then 1 else 0) * dirichletMean n (q.2 + p.2)) := by
-  have hG : (Fintype.card G : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
-  have hbohr : ∀ ψ t, familyBohr E ψ t = ∑ p ∈ S, E p * jointMode ψ t (-p) := fun ψ t => by
-    unfold familyBohr
-    exact tsum_eq_sum fun p hp => by rw [hS p hp, zero_mul]
-  -- One frequency: orthogonality over the characters.
-  have hone : ∀ t : ℝ, ∑ ψ : AddChar G ℂ, 1 / (Fintype.card G : ℝ) * familyBohr E ψ t *
-      jointMode ψ t q = ∑ p ∈ S, E p / 2 * ((if q.1 = p.1 then 1 else 0) *
-        Real.cos (t * (q.2 - p.2)) + (if q.1 = -p.1 then 1 else 0) * Real.cos (t * (q.2 + p.2))) := by
-    intro t
-    simp only [hbohr]
-    have e : ∀ ψ : AddChar G ℂ, 1 / (Fintype.card G : ℝ) *
-        (∑ p ∈ S, E p * jointMode ψ t (-p)) * jointMode ψ t q =
-        ∑ p ∈ S, E p / Fintype.card G * (jointMode ψ t (-p) * jointMode ψ t q) := fun ψ => by
-      rw [Finset.mul_sum, Finset.sum_mul]
-      exact Finset.sum_congr rfl fun p _ => by ring
-    rw [Finset.sum_congr rfl fun ψ _ => e ψ, Finset.sum_comm]
-    refine Finset.sum_congr rfl fun p _ => ?_
-    rw [← Finset.mul_sum, sum_jointMode_mul]
-    field_simp
+  have hone := sum_familyBohr_mul_jointMode hS (q := q)
   unfold dirichletMean
   have e2 : ∀ k : ℕ, ∑ ψ : AddChar G ℂ, 1 / ((n : ℝ) ^ 2 * Fintype.card G) *
       familyBohr E ψ ((k : ℝ) / n) * jointMode ψ ((k : ℝ) / n) q =
@@ -206,7 +210,7 @@ theorem famPoly_eq {E : G × ℝ → ℝ} {S : Finset (G × ℝ)} (hS : ∀ p �
 
 variable {𝒟 : G × ℝ → ℝ}
 
-omit [Fintype G] [DecidableEq G] in
+omit [AddCommGroup G] [Fintype G] [DecidableEq G] in
 /-- Around a height `u`, the nonzero shifts `u ∓ p₂` by points of a locally finite configuration stay
 at a positive distance from `0`. -/
 theorem exists_famGap (hloc : ∀ R : ℝ, {p : G × ℝ | 𝒟 p ≠ 0 ∧ |p.2| ≤ R}.Finite) (u : ℝ) :
@@ -251,7 +255,7 @@ noncomputable def famSupport (hloc : ∀ R : ℝ, {p : G × ℝ | 𝒟 p ≠ 0 �
 noncomputable def famConfig (𝒟 : G × ℝ → ℝ) (N : ℕ) (p : G × ℝ) : ℝ :=
   𝒟 p * fejerFactor ((N : ℝ) + 1) p.2
 
-omit [Fintype G] [DecidableEq G] in
+omit [AddCommGroup G] [Fintype G] [DecidableEq G] in
 theorem famConfig_eq_zero (hloc : ∀ R : ℝ, {p : G × ℝ | 𝒟 p ≠ 0 ∧ |p.2| ≤ R}.Finite) (N : ℕ)
     {p : G × ℝ} (hp : p ∉ famSupport hloc N) : famConfig 𝒟 N p = 0 := by
   unfold famConfig
@@ -397,11 +401,15 @@ theorem abs_famApprox_sub_le (h𝒟 : IsEvenPosDef 𝒟)
         ≤ 𝒟 0 / 2 * (2 * B) :=
           mul_le_mul (by linarith [abs_famConfig_le h𝒟 N p]) hin (abs_nonneg _) (by positivity)
       _ = 𝒟 0 * B := by ring
-  refine (Finset.abs_sum_le_sum_abs _ _).trans ((Finset.sum_le_sum hterm).trans (le_of_eq ?_))
+  refine (Finset.abs_sum_le_sum_abs _ _).trans ((Finset.sum_le_sum hterm).trans ?_)
   rw [Finset.sum_const, nsmul_eq_mul]
-  simp only [B]
-  rw [hnR]
-  field_simp
+  have hle : (S.card : ℝ) ≤ 1 + S.card := by linarith
+  calc (S.card : ℝ) * (𝒟 0 * B) ≤ (1 + S.card) * (𝒟 0 * B) :=
+        mul_le_mul_of_nonneg_right hle (by positivity)
+    _ = 𝒟 0 * Real.pi / (((N : ℝ) + 1) * δ) := by
+        simp only [B]
+        rw [hnR]
+        field_simp
 
 /-- **The family polynomials converge to `𝒟` at every point.** -/
 theorem tendsto_famApprox (h𝒟 : IsEvenPosDef 𝒟)

@@ -129,8 +129,7 @@ theorem moebius_mul_twist_twinTail (I : Finset ℕ) (x₀ : GaugeTorus) {n : ℕ
   have hμ : ((μ n : ℤ) : ℂ) = ∏ p ∈ n.primeFactors, ((μ p : ℤ) : ℂ) := by
     conv_lhs => rw [← Nat.prod_primeFactors_of_squarefree hn]
     rw [ArithmeticFunction.IsMultiplicative.map_prod_of_prime
-      ArithmeticFunction.isMultiplicative_moebius _ hprimes]
-    push_cast; rfl
+      ArithmeticFunction.isMultiplicative_moebius _ hprimes, Int.cast_prod]
   have htw : twist (twinTail I x₀) n = ∏ p ∈ n.primeFactors, twist (twinTail I x₀) p := by
     conv_lhs => rw [← Nat.prod_primeFactors_of_squarefree hn]
     exact twist_prod _ _ _ fun p hp => (hprimes p hp).ne_zero
@@ -145,10 +144,10 @@ theorem moebius_mul_twist_twinTail (I : Finset ℕ) (x₀ : GaugeTorus) {n : ℕ
   rw [hfilter, prod_filter]
   refine prod_congr rfl fun p hp => ?_
   have hpr := hprimes p hp
-  rw [ArithmeticFunction.moebius_apply_prime hpr, twist_prime _ hpr, twinTail]
-  split_ifs with hI
-  · rw [tailFactor]; push_cast; ring
-  · rw [if_pos hpr, fourier_one_half]; push_cast; ring
+  rw [ArithmeticFunction.moebius_apply_prime hpr, twist_prime _ hpr]
+  by_cases hI : p ∈ I
+  · simp only [twinTail, if_pos hI, tailFactor]; push_cast; ring
+  · simp only [twinTail, if_neg hI, if_pos hpr, fourier_one_half]; push_cast; ring
 
 /-- The coprime squarefree count is a cardinality. -/
 theorem coprimeSquarefreeCount_eq_card (Q M : ℕ) :
@@ -183,7 +182,7 @@ theorem card_gcd_eq (N : ℕ) {Q d : ℕ} (hQ : Squarefree Q) (hd : d ∈ Q.divi
     simp only [coe_filter, mem_Icc, Set.mem_setOf_eq] at hm ⊢
     obtain ⟨⟨hm1, hmN⟩, hcop, hsq⟩ := hm
     refine ⟨⟨Nat.one_le_iff_ne_zero.mpr (Nat.mul_ne_zero hd0.ne' (by omega)),
-      (Nat.le_div_iff_mul_le hd0).mp hmN |>.trans_eq' (mul_comm _ _)⟩, ?_, ?_⟩
+      by rw [mul_comm]; exact (Nat.le_div_iff_mul_le hd0).mp hmN⟩, ?_, ?_⟩
     · rw [Nat.Coprime.gcd_mul_right_cancel d hcop.symm, Nat.gcd_eq_left hdQ]
     · exact Nat.squarefree_mul_iff.mpr ⟨Nat.Coprime.coprime_dvd_left hdQ hcop, hdsq, hsq⟩
   · intro n hn
@@ -281,8 +280,8 @@ theorem sum_tailWeight_div_ne_zero (I : Finset ℕ) (x₀ : GaugeTorus) :
   have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hpr.two_le
   intro h0
   have hnorm : ‖tailFactor x₀ p / (p : ℂ)‖ ≤ 1 / 2 := by
-    rw [norm_div, tailFactor, norm_neg, fourier_apply, Circle.norm_coe, Complex.norm_natCast]
-    rw [div_le_div_iff₀ (by linarith) (by norm_num)]
+    rw [norm_div, tailFactor, norm_neg, ← twist_prime _ hpr, norm_twist, Complex.norm_natCast,
+      div_le_div_iff₀ (by linarith) (by norm_num)]
     linarith
   have : tailFactor x₀ p / (p : ℂ) = -1 := by linear_combination h0
   rw [this, norm_neg, norm_one] at hnorm

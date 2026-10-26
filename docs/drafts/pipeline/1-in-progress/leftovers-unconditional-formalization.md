@@ -20,23 +20,34 @@ Existing unrelated worktree changes must be preserved.
 
 ## Current checkpoint (authoritative over chronological notes)
 
-- No full card is certified complete after recovered-report scope audit.
-- Nyquist witness audit `84590` finished with three reducible-coercion rewrite errors.
-  Explicit `change` reductions added; audit `7737` exited 0 with all 96 exact
-  names audited and only the standard three axioms. No diagnostics.
-  Witness migrated to `NyquistCriticalSignedWitnesses.lean` and wired; final source checks remain.
-- Nyquist canonical successful oleans: Primitive, TestCellBounds, BroadTests,
-  SourceClassification, SourceQuantitative. Do not rebuild these. PrimitiveTail has a successful
-  final source check and no olean. All six are wired into the umbrella.
-- Physical retains 110 audited declarations; three supplementary unchecked
-  drafts in `/tmp/leftovers_physical_{tail_identity,quantitative,form_bounds}.lean`.
-- PM has four unchecked drafts in `/tmp/leftovers_pm_*.lean` (producer, sampling,
-  decomposition, short energy). No canonical PM files yet.
-- Next dependency order: signed-witness/tail audit → canonical witness and
-  remaining exact-source audits (including the original Nyquist parent).
-  Finish physical supplements and PM, then remaining eleven cards.
-- Superseded Nyquist source-classification and primitive-tail scratch copies
-  removed; canonical sources are authoritative. Existing pending drafts retained.
+- No full card certified complete after recovered-report scope audit.
+- Nyquist: all 96 public declarations have clean transitive axiom audits
+  (only `propext`, `Classical.choice`, `Quot.sound`). Exact constants and
+  recovered-report claims mapped to eight leaves. PrimitiveTail and
+  SignedWitnesses passed final direct source checks; no oleans created for them.
+- Original Nyquist parent final check `86965` passed, empty log.
+  Primitive final check `28954` also passed with empty log.
+  TestCellBounds final check `90003` passed with empty log.
+  Pending final direct checks: BroadTests, SourceClassification, SourceQuantitative.
+  Their oleans exist and must not be rebuilt. All eight imports are wired.
+- Physical retains 110 audited declarations. Three supplementary drafts have
+  21 public declarations, combined in `/tmp/leftovers_physical_supplements_audit.lean`.
+  This scratch has not yet run; afterward migrate its three original component
+  files, never the combined audit, and perform final canonical source checks.
+- PM: four unchecked `/tmp/leftovers_pm_*.lean` drafts, no canonical files yet.
+- Dyadic: unchecked tent, linear variance, finite sieve realization,
+  finite-window minimum/attainment, exact tent variance/best constant drafts.
+  The finite-window draft reuses an existing mean-minimization theorem whose
+  owner olean is absent; build exactly the missing owner/dependencies when needed.
+- Perturbed incidence: unchecked weighted all-pairs comparison draft,
+  `/tmp/leftovers_weighted_doubling_incidence.lean`. Quadratic-node geometry
+  and explicit arithmetic-model transport remain.
+- Finite cycle: unchecked exact first-order collar draft
+  `/tmp/leftovers_energy_collar_exact.lean`; original exponent 8 retained.
+- Current searches: source derivative/velocity bridge `23888`; exact joint
+  kernel query just launched. Results under `/tmp/leftovers-*-search.json`.
+- Next closure order: complete Nyquist final checks and card certificate →
+  physical supplements → PM → dyadic/perturbed/cycle, retaining all 14 cards.
 
 ## Inventory and current evidence
 
@@ -47,7 +58,7 @@ Existing unrelated worktree changes must be preserved.
 | `biscale-perturbed-incidence-1810` | Exact-incidence exclusion, log gaps, weighted comparison, sharpness, common-model realization, continuum distinction. Paper read. |
 | `compact-physical-box-producers` | **REOPENED after recovered-report audit.** Main construction and limits retain 110 clean axiom audits; card returned to `2-fully-proven/leftovers`. Exact two-tail identity and additional quantitative corollaries from the original report still require completion. |
 | `nonvacuous-independence-and-polarization-import-law` | Audit small-eigenvalue witness, complete actual Selberg-zeta dictionary and nonvacuous clauses. Historical log reports witness complete; current source audit pending. Import table explicitly an observation. |
-| `nyquist-critical-finite-part-2026-10-18` | Finite part, signed broad-test expansion, actual-source classification and witnesses. Existing 591-line parent inspected. Primitive, signed cell bounds, exact broad tests and source classification pass Lean. Primitive-tail leaf passes its final direct check. Quantitative energy/local-uniform source draft is checking with 79 axiom queries; signed witness is drafted. No complete-card certificate yet. |
+| `nyquist-critical-finite-part-2026-10-18` | Finite part, signed broad-test expansion, actual-source classification and witnesses. Existing 591-line parent inspected. Primitive, signed cell bounds, exact broad tests and source classification pass Lean. Primitive-tail leaf passes its final direct check. Quantitative source and signed witness claims are complete; all 96 public declarations have clean axiom audits. Final direct checks remain for six leaves. No complete-card certificate yet. |
 | `pm-long-modulus-quadrature` | Four complete unchecked prototypes: actual integrable Möbius producer, exact integer sampling, all-cutoff long/tail decomposition, exact square-root-head pronic bound. Endpoint formula retains tail past max(n,D). |
 | `route-e-cofactor-amplified-e3-token-supply` | Exact all-interval supply with all elementary bounds; shared Matomäki–Teräväinen/DI analytic input. Full historical-log and current-source audit pending. |
 | `route-e-forbidden-support-e3-stability` | Exact forbidden-support all-interval count with shared analytic input. Full historical-log and current-source audit pending. |
@@ -499,3 +510,67 @@ Existing unrelated worktree changes must be preserved.
   and exponent 32; this draft retains the required exact constant 8. Unchecked.
 - Active Lean remains original Nyquist parent final source audit `86965`.
   All newly launched corpus searches have completed; no active search handle.
+
+- Original Nyquist parent final check `86965` exited 0 without diagnostics.
+  No parent source edits or olean rebuilds.
+
+- Added exact quadratic-node prototype `/tmp/leftovers_quadratic_perturbed_nodes.lean`:
+  actual positions/logs, strict ordering, physical gaps, displacements,
+  2δ mismatch bound, exclusion of physical doubling and log-two separation,
+  and the precise `(1+δ/N)` logarithmic gap comparison. Unchecked.
+- Native joint-kernel theorem verified in source:
+  `BiScaleUncertainty.biScaleJointEnergy_eq_zero_iff_const`,
+  `UniversalRamanujanCovarianceAndBiScaleRigidity.lean:615`.
+- Source-derivative bridge searches completed. They locate existing physical
+  primitive/box infrastructure but no direct real-source derivative L²
+  translation bound among returned statements. No absence inference.
+  Proposed reuse: pack compact derivative into Velocity, use its FTC
+  primitive identity and physical-box contraction for the exact Bt² bound.
+- Active Lean is Nyquist Primitive final check `28954`.
+
+- Dyadic scope audit additionally retains the original card's auxiliary
+  assertions: exact tree comparison T≤3D+2A (existing private helper only
+  exports T≤3(A+D)), original high/low level-group counts, weighted-path
+  and depth-descendant statements. The paired-block proof certifies the
+  desired lower constant but must not silently discard these stated
+  finite-sum/counting claims. No full dyadic certificate yet.
+
+- Nyquist card now records all exact claim-to-declaration mappings, 96-name
+  axiom audit, current source hashes, and final-check status. Stage remains 2.
+  Do not append a duplicate certificate section when finishing; update it.
+- Current corpus searches: compact-source MemLp and FTC reuse, launched after
+  the derivative-velocity bridge query. Arbitrary-collar search completed
+  partial=false; it surfaced the existing half-collar scalar/recovery proof,
+  whose source has been inspected. No arbitrary-kappa declaration among
+  returned statements; no global absence claim.
+
+- Primitive final canonical source check `28954` exited 0 without diagnostics.
+- New unchecked finite-cycle scalar/family prototype:
+  `/tmp/leftovers_cycle_scalar_recovery.lean`. Exact arbitrary positive κ,
+  literal pair/spoke products, closedness, ceiling observation count and
+  maximum-order bound. Whole-window/noisy-array transfer and actual
+  derivative-controlled source classes remain to connect.
+
+- Drafted `/tmp/leftovers_compact_source_derivative_energy.lean` (unchecked).
+  Actual compact source and derivative are packed into physical L²; FTC
+  identifies the derivative primitive, and existing box contraction proves
+  the exact translation estimate ∫(f(u+t)-f(u))²≤t²∫(f′)² for every real t.
+  This reuses the constructed physical operators instead of adding an
+  assumed derivative-energy admission or redoing translation integration.
+  Mathlib MemLp/FTC/derivative-support signatures were inspected; their
+  actual usage still needs the scratch compile.
+- All launched searches are terminal. Active Lean is TestCellBounds final
+  source check `90003`, log `/tmp/leftovers-nyquist-cells-final.log`.
+
+- TestCellBounds final source check `90003` exited 0 without diagnostics.
+
+- Derivative-correlation continuation mechanism: use the existing exact
+  `RHTower.ArchimedeanAnomaly.integral_sub_shift_sq` (source inspected at
+  `ArchimedeanAnomalyConstantLaws.lean:228`) with the new translation draft,
+  then existing `autocorr_krein_increment_sq_le` (source inspected at
+  `KreinIncrementAndChordCascade.lean:381`). This gives exact normalized
+  quadratic deficit and Lipschitz constant sqrt(∫(f′)² / ∫f²), with no
+  separate Cauchy/translation construction. Source-mass positivity can reuse
+  the already checked public `nyquistSourceMass_pos`; do not duplicate it.
+- Active Lean is BroadTests final check `65625`.
+  Support-diameter corpus search just launched; other searches terminal.

@@ -35,7 +35,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticCorrespondencePositivity
 
-open ArithmeticCastelnuovoSeveri RHTower
+open ArithmeticCastelnuovoSeveri _root_.RHTower Zeta23
 
 /-- The prime atom `n^{−1/2}(k(log n) + k(−log n))` weight of a source, as it enters the functional. -/
 def primeCoeff (w : ℕ → ℝ) (n : ℕ) : ℝ := if 2 ≤ n then w n / Real.sqrt n else 0

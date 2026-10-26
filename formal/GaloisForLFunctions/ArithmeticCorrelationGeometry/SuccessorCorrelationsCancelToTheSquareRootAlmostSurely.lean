@@ -163,6 +163,8 @@ theorem moebius_chowla_at_zero (h N : ℕ) :
       ((∑ n ∈ Ioc 0 N, (μ n * μ (n + h) : ℤ) : ℤ) : ℂ) := by
   push_cast
   refine sum_congr rfl fun n _ => ?_
-  rw [twist_zero, twist_zero, mul_one, mul_one, Complex.conj_intCast]
+  have hc : (starRingEnd ℂ) ((μ (n + h) : ℤ) : ℂ) = ((μ (n + h) : ℤ) : ℂ) := by
+    rw [← Complex.ofReal_intCast, Complex.conj_ofReal]
+  rw [twist_zero, twist_zero, mul_one, mul_one, hc]
 
 end GaloisForLFunctions.ArithmeticCorrelationGeometry

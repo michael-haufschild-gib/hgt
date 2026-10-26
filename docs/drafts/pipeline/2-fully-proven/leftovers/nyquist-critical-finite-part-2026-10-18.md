@@ -1,15 +1,15 @@
 # Critical Nyquist finite part and signed broad-source classification
 
 - **ID:** nyquist-critical-finite-part-2026-10-18
-- **Stage:** 2-fully-proven; partial Lean coverage
+- **Stage:** 2-fully-proven; final Lean source audits in progress
 - **Type:** THEOREM (paper)
 - **Scope:** Independent BiScaleUncertainty; infinite-grid tail rigidity beyond Trap 5.
 - **Parent:** `../1-in-progress/infinite-grid-tail-rigidity-2026-10-17.md`
 - **Predecessor:** `../3-formalized/nyquist-weight-order-threshold-2026-10-17.md`
-- **Count:** Full theorem not yet certified; existing leaf covers only the components listed below.
+- **Count:** Full card certificate pending final direct source checks. All 96 public declarations pass transitive axiom audit.
 - **Field guide:** `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`.
 - **Paper:** `docs/reports/BiScaleUncertainty/NyquistCriticalFinitePart.md`
-- **Current source audit:** `NyquistCriticalFinitePartAndBroadClassification.lean` contains the cell discrepancy bound, summable finite part, nodal prefix convergence, autocorrelation mass identity and zero-mean witness. It does not contain the continuous primitive estimate, signed broad-test expansion or complete signed-source escape/cancellation classification. Its umbrella import does not discharge those missing statements.
+- **Current source audit:** Eight leaves now cover the complete recovered report, including exact continuous primitive and broad-test constants, actual-source classification, quantitative energy, local uniform convergence, and both smooth witnesses. All 96 public declarations have clean transitive axiom lists. Final direct source checks remain for three leaves; no promotion yet.
 
 ## Proven paper statement
 
@@ -81,8 +81,9 @@ the latter has normalized correlation -1/2 at the separating lag. The cases n=1,
 m=0, all L>0 and zero test H were checked. No absolute integrability of e-c is
 claimed, and no conditional infinite integral is hidden in B's definition.
 
-Formalization remains a future task, not an unfinished Lean branch. The certificate
-count stays 15. This paper is not presented as Lean-verified.
+The exact formalization is now present in eight leaves. The card remains at stage 2
+until all final direct source checks and the complete certificate are recorded.
+No contribution count or global novelty claim is changed by this checkpoint.
 
 ## Completion proof for the missing analytic statements
 
@@ -153,7 +154,8 @@ Finally the existing bump `p` has support in `[-1,1]` and positive squared norm.
 For `g=p-p(·-4)`, disjoint support gives `∫g=0`, `∫g²=2∫p²`,
 `autocorr(g,4)=-∫p²`, hence normalized correlation exactly `-1/2` at lag 4.
 Both `p` and `g` remain compact and smooth, realizing the two alternatives.
-These statements still require the corresponding exact Lean declarations and audits.
+These statements now have exact Lean declarations and clean transitive axiom audits;
+the final source-check status is recorded below.
 
 ## Log
 
@@ -161,3 +163,59 @@ These statements still require the corresponding exact Lean declarations and aud
   completed; no new Lean written and no result counted.
 - 2026-10-18 — Completed and audited paper proof; moved to fully proven paper stage
   during user-requested closeout after the goal was cleared.
+
+## Exact formalization and current audit
+
+The complete original report was recovered at commit `727dc15d1`, path
+`docs/reports/BiScaleUncertainty/NyquistCriticalFinitePart.md`; it was deleted
+from the current tree in `80971df8c`. The scope includes every displayed
+claim in that report, including the absolute primitive tail, exact source
+Lipschitz and energy constants, local uniform convergence, and the negative
+normalized lag of the actual stretched cancellation witness.
+
+All paths below lie in `formal/GaloisForLFunctions/BiScaleUncertainty/`.
+All listed declarations use namespace `GaloisForLFunctions.BiScaleUncertainty`.
+
+| Claim | Exact Lean declarations |
+|---|---|
+| Critical cell discrepancy and absolutely convergent finite part, including every tail | `nyquistCriticalCellDiscrepancy_bounds`, `abs_nyquistCriticalCellDiscrepancy_le_inv_sq`, `summable_abs_nyquistCriticalCellDiscrepancy`, `abs_nyquistCriticalFinitePartTail_le`, `abs_nyquistCriticalFinitePart_le` |
+| Continuous primitive, nodal identity, exact exponential error, unique limit and integrable absolute tail | `nyquistCriticalPrimitive_node`, `abs_nyquistCriticalPrimitive_sub_finitePart_le`, `tendsto_nyquistCriticalPrimitive_iff`, `integrableOn_nyquistCriticalPrimitive_sub_finitePart`, `integral_abs_nyquistCriticalPrimitive_tail_le` |
+| Exact centered-cell width bound and summable signed test errors | `integral_abs_nyquistCriticalCell_centered_le`, `abs_nyquistCriticalCellTestError_le`, `tsum_nyquistCriticalTestCellMajorant_le` |
+| Signed compact Lipschitz expansion, coefficient `8D+4c`, all positive scales | `abs_nyquistCriticalBroadTest_error_le`, `abs_nyquistCriticalBroadTest_full_error_le` |
+| Actual source correlation, positivity, signed Fubini mass, derived Lipschitz constants and normalized scaling | `nyquistSourceMass_pos`, `integral_autocorr_eq_sq_integral`, `integral_Ioi_nyquistNormalizedCorrelation`, `lipschitzWith_nyquistNormalizedCorrelation_of_source`, `normalized_sourceRescale_eq_nyquistNormalizedCorrelation` |
+| Exact source slope and error, both mean alternatives and the if-and-only-if classification | `abs_nyquistCriticalSource_error_le_of_source_lipschitz`, `tendsto_nyquistCriticalSourceResidual_div_scale`, `tendsto_nyquistCriticalSourceResidual_atTop_of_mean_ne_zero`, `tendsto_nyquistCriticalSourceResidual_iff_mean_zero` |
+| Exact normalized energy integral and first-moment bound, vanishing energy, locally uniform actual correlations | `normalizedArchEnergy_broadSource_eq`, `normalizedArchEnergy_broadSource_bounds`, `normalizedArchEnergy_broadSource_le_of_source_lipschitz`, `tendsto_normalizedArchEnergy_broadSource`, `tendstoUniformlyOn_normalized_broadSource` |
+| Actual smooth positive-mean and zero-mean sources, disjoint-support identities and lag `4L` | `contDiff_nyquistPositiveMeanWitness`, `contDiff_nyquistZeroMeanWitness`, `nyquistPositiveMeanWitness_integral_pos`, `nyquistZeroMeanWitness_mass_and_lag`, `nyquistZeroMeanWitness_broad_normalized_at_four_mul`, `nyquistCritical_fixedSource_mean_dichotomy` |
+
+Axiom audit `7737` exited 0 without diagnostics. All 96 exact declaration
+names were checked; every dependency list is contained in
+`{propext, Classical.choice, Quot.sound}`. Source scan found no forbidden
+proof token or raised proof limit in these eight leaves. No mathematical
+assumption was added to any report statement. The domains of compact
+Lipschitz tests and nonzero compact C² sources are retained exactly.
+
+Final direct checks passed for `NyquistCriticalPrimitiveTail`,
+`NyquistCriticalSignedWitnesses`, `NyquistCriticalPrimitive`,
+`NyquistCriticalTestCellBounds`, and the original
+`NyquistCriticalFinitePartAndBroadClassification`, all without diagnostics.
+The remaining three leaves are undergoing the required final direct checks.
+Their successful import builds do not substitute for these final checks.
+All eight imports occur once in the owning umbrella; no umbrella was compiled.
+Global lint currently reports 21 unrelated errors and 416 size warnings,
+with no Nyquist diagnostic. No repository-wide green result is claimed.
+
+Evidence: `/tmp/leftovers-nyquist-complete-public-names.json`,
+`/tmp/leftovers_nyquist_witnesses_audit.lean`,
+`/tmp/leftovers-nyquist-witnesses-audit.log`, and the individual
+`/tmp/leftovers-nyquist-*-final.log` files.
+
+| Leaf | Public declarations | Source SHA256 |
+|---|---:|---|
+| `NyquistCriticalFinitePartAndBroadClassification.lean` | 33 | `3a2c670c2a498fcd6b0d2997922bac4d9cdf2da587d619afd924849ae6110ed7` |
+| `NyquistCriticalPrimitive.lean` | 7 | `a61e3fd530ad270f16b110d3444268e490212d9fa77295a3c3976ca8b52273f0` |
+| `NyquistCriticalTestCellBounds.lean` | 6 | `89e65fda98b2c060f4d48f40d5e0d919e01f29f4e41fc91223e6d83f03a76cdb` |
+| `NyquistCriticalBroadTests.lean` | 4 | `e566034bb5c38472077f815d427d81e607455601cef9240e32c4628ef523f0ca` |
+| `NyquistCriticalSourceClassification.lean` | 20 | `01b41de56acffe2680cf870fa022ddbfd3dd95e01e46d7d0ba6773a06cf4572a` |
+| `NyquistCriticalSourceQuantitative.lean` | 9 | `17347a8c27936b6fdf7238dfa8819aeff5d807bbad91685b850828dd1b2003a3` |
+| `NyquistCriticalSignedWitnesses.lean` | 12 | `deba589422deb8e01a227c153ee32fb76d0a1270be994bac7c78de7bb4bd4158` |
+| `NyquistCriticalPrimitiveTail.lean` | 5 | `8686208c7a0af286da6614e2c92160754be35e3d6c5e87d0306f48fb21b67d87` |
