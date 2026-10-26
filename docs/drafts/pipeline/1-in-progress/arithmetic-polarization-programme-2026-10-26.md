@@ -20,15 +20,14 @@ build the tools of §4.5.
 
 | Pillar | Module | Status |
 |---|---|---|
-| Π1 polarization law | `ThePolarizationLaw` | planned |
-| Π2 local sign principle, Π6 dihedral dilemma | `TheLocalSignPrinciple` | planned |
-| Π3 elliptic localizers | `TheEllipticLocalizers` | planned |
-| Π4 twist and collision identities | `TwistedSectorsCollideQuartets` | planned |
-| Π5 price of elliptic localization | `ThePriceOfEllipticLocalization` | planned |
-| Π7 Fejér barrier for coupled contraction | `TheFejerBarrierForCoupledContraction` | planned |
-| Π8 collision law | `TheCollisionLaw` | planned |
+| Π1 polarization law | `ThePolarizationLaw` | Lean, checked |
+| Π2/Π3/Π6 local signs, elliptic localizers, dihedral dilemma | `TheEllipticLocalizers` | Lean, checked |
+| Π4 twist and collision identities | `TwistedSectorsCollideQuartets` | Lean, checked |
+| Π5 price of elliptic localization | `ThePriceOfEllipticLocalization` | Lean, checked |
+| Π7 Fejér barrier for coupled contraction | `TheFejerBarrierForCoupledContraction` | Lean, checked |
+| Π8 collision law | `TheCollisionLaw` | Lean, checked |
 | Π9 diagonal collapse | `TheDiagonalCollapse` | planned |
-| Π10 first gauge charge | `TheFirstGaugeChargeIsATwist` | planned |
+| Π10 first gauge charge | `TheFirstGaugeChargeIsATwist` | Lean, checked |
 | Q6 rigidity probe | — | planned |
 | Q7 oscillatory capacity | — | planned |
 | Q11 loss laws | — | planned |

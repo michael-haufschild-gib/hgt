@@ -1,0 +1,13 @@
+import GaloisForLFunctions.ArithmeticEffectivityTheory.TheEffectivityCalculus
+import GaloisForLFunctions.ArithmeticEffectivityTheory.TheBaseDoesNotExtend
+import GaloisForLFunctions.ArithmeticEffectivityTheory.TatesLimitLaw
+import GaloisForLFunctions.ArithmeticEffectivityTheory.TheStepanovMethodOverZ
+
+/-!
+# Arithmetic Effectivity Theory
+
+Umbrella for the theory of real-valued effectivity over `Spec ℤ`: the effectivity calculus (Weil's
+argument with `h⁰` a real function), the failure of the base `h⁰` to extend to the surface, Tate
+limits and naive heights, log-torsion and the product formula, the theta surface, and the Stepanov
+method over `ℤ`. See `ArithmeticEffectivityTheory/README.md`.
+-/

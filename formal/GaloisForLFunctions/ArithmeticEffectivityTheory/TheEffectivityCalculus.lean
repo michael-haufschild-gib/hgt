@@ -142,24 +142,33 @@ theorem degreeZeroSubquadratic_of_degreeBounded {κ : E} {h : E → ℝ} (hb : D
     rw [map_sub, LinearMap.sub_apply, pair_smul_ample, hx, mul_zero, sub_zero])
   linarith
 
+/-- The **level bound** of the Euler characteristic: the maximum of `χ` on the degree level
+`x · A = t` under the Hodge index, for `κ = aH + bV`. -/
+def levelBound (a b χ₀ t : ℝ) : ℝ := (t - (a - b) / 2) ^ 2 / 4 - b * t / 2 + χ₀
+
+/-- Under the Hodge index the Euler characteristic is bounded on each degree level by the level
+bound: `x² ≤ 2(x·H)(x·V)` and `(x·H) + (x·V) = t` leave a concave quadratic in `x·H`. -/
+theorem eulerChar_le_levelBound (hH : S.HodgeIndex) (a b χ₀ : ℝ) {x : E} {t : ℝ}
+    (hx : S.pair x S.ample = t) : eulerChar S (a • S.H + b • S.V) χ₀ x ≤ levelBound a b χ₀ t := by
+  have hCS := (S.hodgeIndex_iff_castelnuovoSeveri.mp hH) x
+  have hdeg : S.pair x S.H + S.pair x S.V = t := by rw [← S.pair_ample, hx]
+  have hκx : S.pair x (a • S.H + b • S.V) = a * S.pair x S.H + b * S.pair x S.V := by
+    simp only [map_add, map_smul, smul_eq_mul]
+  simp only [eulerChar, levelBound, map_sub]
+  rw [hκx]
+  have hv : S.pair x S.V = t - S.pair x S.H := by linarith
+  rw [hv] at hCS ⊢
+  nlinarith [sq_nonneg (S.pair x S.H - (t - (a - b) / 2) / 2)]
+
 /-- **The converse.** Under the Hodge index, with `κ = aH + bV` in the pole plane, `max(0, χ)` is a
 nonnegative function with the Riemann inequality, bounded on every degree level. -/
 theorem exists_effectivity_of_hodgeIndex (hH : S.HodgeIndex) (a b χ₀ : ℝ) :
     ∃ h : E → ℝ, (∀ x, 0 ≤ h x) ∧ RiemannInequality S (a • S.H + b • S.V) χ₀ h ∧
       DegreeBounded S h := by
-  set κ := a • S.H + b • S.V
-  refine ⟨fun x => max 0 (eulerChar S κ χ₀ x), fun x => le_max_left _ _, fun x => ?_, fun t => ?_⟩
-  · exact (le_max_right _ _).trans (le_add_of_nonneg_right (le_max_left _ _))
-  · refine ⟨max 0 ((t - (a - b) / 2) ^ 2 / 4 - b * t / 2 + χ₀), fun x hx => max_le_max le_rfl ?_⟩
-    have hCS := (S.hodgeIndex_iff_castelnuovoSeveri.mp hH) x
-    have hdeg : S.pair x S.H + S.pair x S.V = t := by rw [← S.pair_ample, hx]
-    have hκx : S.pair x κ = a * S.pair x S.H + b * S.pair x S.V := by
-      simp only [κ, map_add, map_smul, smul_eq_mul]
-    simp only [eulerChar, map_sub]
-    rw [hκx]
-    have hv : S.pair x S.V = t - S.pair x S.H := by linarith
-    rw [hv] at hCS ⊢
-    nlinarith [sq_nonneg (S.pair x S.H - (t - (a - b) / 2) / 2)]
+  refine ⟨fun x => max 0 (eulerChar S (a • S.H + b • S.V) χ₀ x), fun x => le_max_left _ _,
+    fun x => ?_, fun t => ⟨max 0 (levelBound a b χ₀ t), fun x hx =>
+      max_le_max le_rfl (eulerChar_le_levelBound S hH a b χ₀ hx)⟩⟩
+  exact (le_max_right _ _).trans (le_add_of_nonneg_right (le_max_left _ _))
 
 /-- **Abundance is positivity.** A class is abundant iff it has degree zero and positive
 self-intersection. The witness against abundance for `x² ≤ 0` is `max(0, χ)`, which grows at most

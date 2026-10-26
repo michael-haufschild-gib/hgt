@@ -95,7 +95,7 @@ theorem eqOn_zero_of_vanishes_on_collision {Z : Zeta23.ZeroConfig} (hZ : Z.carri
   -- every collided point is a zero of `F`
   have hzero : ∀ ρ ∈ Z.carrier, F (col ρ) = 0 := by
     intro ρ hρ
-    have h1 := hvan (col ρ) {ρ} (by simpa using fun _ => ⟨hρ, rfl⟩)
+    have h1 := hvan (col ρ) {ρ} (by intro x hx; rw [Finset.mem_singleton.mp hx]; exact ⟨hρ, rfl⟩)
     have hne : analyticOrderAt F (col ρ) ≠ 0 := by
       intro h0; rw [h0] at h1; simp at h1
     by_contra hF0
