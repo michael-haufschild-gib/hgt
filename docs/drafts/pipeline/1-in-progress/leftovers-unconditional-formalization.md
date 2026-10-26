@@ -81,9 +81,12 @@ or further auxiliary claims. Frozen completion scope:
   grid recovery, fixed-energy sharp copies, derivative conditioning, measured
   array residuals, and unit-mass compact-source construction. Initial audit
   `11461` exited 1: obsolete API names, inferred functions/coercions, absent
-  copy-energy import and redundant tactics. Repairs applied to plain drafts;
-  80-name combined r2 source regenerated. All nine external oleans present.
-  No canonical files or new oleans yet. Card coverage still to audit.
+  copy-energy import and redundant tactics. R2 `57675` passed: all 80 exact
+  axiom lists standard; one unnecessary tactic-composition warning and two
+  informational ring notices. The warning was removed in the plain derivative
+  component before migration. All ten plain components are now canonical;
+  their direct checks, five required missing internal oleans and wiring remain.
+  All nine external oleans are present. Card coverage still to audit.
 - Both complete Route-E historical cards now read. Current assemblers retain
   `MTDeshouillersIwaniecBound` and `MTWattBound`; inspected short-block
   reductions retain their short versions as hypotheses. Full original 1.55
@@ -91,8 +94,8 @@ or further auxiliary claims. Frozen completion scope:
 - External variance-owner build `92254` passed with empty log
   `/tmp/leftovers-dyadic-mean-owner-build.log`; its previously missing olean
   now exists and must not be rebuilt. No source edit was required.
-- Active Lean: cycle combined r2 audit `57675`, log
-  `/tmp/leftovers-cycle-complete-audit-r2.log`. All searches terminal.
+- Active Lean: dyadic/perturbed combined r2 audit `82128`, log
+  `/tmp/leftovers-dyadic-perturbed-audit-r2.log`. All searches terminal.
 - Frozen manifest: `/tmp/leftovers-frozen-module-manifest.json` contains the
   24 module paths and exact import dependencies. WeightedDoublingIncidence
   now imports Tent and FiniteWindowVariance directly; the independent

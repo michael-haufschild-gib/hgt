@@ -184,11 +184,11 @@ theorem weil_extension_exists (α : ℝ → ℝ)
   have hα' : ∀ a : weilAtoms hW, 0 ≤ α a ∧ α a ≤ c a := fun a => hα a
   refine ⟨boxExtension x c (fun a => α a), isPosDefOnGroup_boxExtension hα' (summable_weilAtomWeight hW),
     fun u => ?_, fun u hu b hb => ?_⟩
-  · have h1 := hasSum_boxExtension_affine hα' (summable_weilAtomWeight hW) 0
+  · have h1 := hasSum_boxExtension_affine (x := x) hα' (summable_weilAtomWeight hW) 0
       (u := (u : ℚˣ)) u.2
-    simp only [if_pos (rfl : (0 : ℚ) = 0), translation_zero, one_mul] at h1
+    simp only [translation_zero, one_mul] at h1
     exact h1.unique (hasSum_ratCorr hW u)
-  · have h1 := hasSum_boxExtension_affine hα' (summable_weilAtomWeight hW) b hu
+  · have h1 := hasSum_boxExtension_affine (x := x) hα' (summable_weilAtomWeight hW) b hu
     simp only [if_neg hb] at h1
     exact h1
 

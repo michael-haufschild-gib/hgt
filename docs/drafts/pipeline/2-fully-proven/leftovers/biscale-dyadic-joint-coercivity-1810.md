@@ -81,4 +81,35 @@ Summing these disjoint pairs gives total variance at least `r/32`, hence
 at least `N/2048`. This proves the exact stated bound without any lower
 restriction on `h`; it uses the original tent, not a substituted witness.
 The stronger intermediate estimate is a finite algebraic consequence, not
-a separate novelty claim. Lean verification remains pending.
+a separate novelty claim.
+
+## Frozen Lean completion
+
+The five started leaves passed the combined source and transitive axiom audit:
+38 public declarations, using only `propext`, `Classical.choice`, `Quot.sound`.
+Canonical direct checks and umbrella wiring remain pending.
+
+| Exact claim | Canonical leaf and declaration |
+|---|---|
+| Original mantissa tent, doubling nullity, exact level increments and energy, `A<2` | `DyadicMantissaTent.lean`: `dyadicMantissaTent_two_mul`, `dyadicMantissaTent_full_level_energy`, `additiveStepEnergy_dyadicMantissaTent_lt_two` |
+| Exact linear variance and additive-only lower constant | `IntegerLinearVariance.lean`: `sum_Icc_linear_centered_sq`, `additive_coercivity_constant_linear_lower_bound` |
+| Actual finitely supported Möbius coefficients realizing every finite window | `FiniteSieveRealization.lean`: `exists_finite_sieveSeq_realization` |
+| Mean minimizes centered energy; the infimum coercivity constant is attained | `FiniteWindowVariance.lean`: `integerWindowVariance_le_centered`, `windowCoercivityBound_sInf` |
+| Original tent variance, `N/4096≤C_N≤24N`, and validity of the best constant | `DyadicMantissaVariance.lean`: `dyadicMantissaTent_variance_lower`, `dyadicWindowBestConstant_bounds`, `dyadicWindowBestConstant_valid` |
+
+These names use `GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon`.
+The existing owner `FiniteHorizonPositiveCoercivity.lean` also contains the
+started exact comparison `binary_energy_le_doubling_additive`; its final
+source and axiom checks remain pending. Its existing unconditional window
+bound supplies the upper estimate.
+
+This remains a partial card: the paper's separate weighted-path and descendant
+counts, explicit high/low level counts, standalone doubling-only failure
+statement, and transport of all energies through the common arithmetic model
+are not claimed as separately formalized. The paired-block proof above
+formalizes the exact advertised lower conclusion. Perturbed weights and node
+geometry are recorded on the companion card. The user paused further work;
+no additional draft is started to close these remaining gates.
+
+Evidence: `/tmp/leftovers-dyadic-perturbed-public-names.json` and
+`/tmp/leftovers-dyadic-perturbed-audit-r2.log` (62 declarations across both cards).

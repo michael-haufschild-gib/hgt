@@ -355,6 +355,21 @@ proved in the programmes that own their objects.
    archimedean and Kronecker-null parts (`kronecker_decomposition`), and the critical exponent of
    the integer successor is the Kakutani wall of the prime-Poisson laws
    (`heckeState_kakutani_wall`).
+   The successor reads exactly the continuous part of an archimedean dilation spectrum. In every
+   unitary representation of `Aff(ℚ)` translations act on the archimedean dilation eigenvectors
+   by one real constant per frequency and mix neither distinct frequencies nor eigenvectors with
+   the continuous part (`IsArchEigen.inner_translation_eq_zero`,
+   `IsArchEigen.inner_translation_eq_zero_of_continuous`). Hence the successor is a blind
+   constant plus the successor of a state carrying the continuous part, and oscillates by at most
+   twice the continuous mass (`successor_eq_blind_add_continuous`,
+   `norm_successor_sub_le_nonatomic`); every autocorrelation of a compactly supported profile is
+   seen (`successor_sees_autocorrelation`). For an atomic dilation part the extensions are
+   parametrized by one interval `[0, ν{x}]` per atom (`hasSum_affine_of_atomic`,
+   `isPosDefOnGroup_boxExtension`), and for Weil's correlation by one interval per critical zero
+   (`weil_extension_classification`, `weil_extension_exists`): zeros, being atoms, are invisible
+   to the successor. The successor also inherits the archimedean regularity of the dilations
+   (`norm_successor_dilate_sub_le`): an archimedean dilation part forces a successor continuous on
+   `ℚ ∖ {0}`, so arithmetic successors never meet archimedean dilation correlations.
 7. **Topology.** *Which completion keeps every critical jet and closes the blind ideal?* The natural
    Fréchet topology of the Meyer source does both, unconditionally. No topology built from critical
    data alone closes it unless RH (P14): closedness of the blind ideal is information about the
@@ -417,7 +432,9 @@ Built:
 - the critical-jet topology of the Meyer source and critical interpolation;
 - the trace sequence of a curve datum;
 - Fourier analysis on `ℚ_{>0}`: Herglotz–Bochner on the prime torus and the Kronecker line;
-- the pre-Hilbert space of a positive-definite function on a group;
+- the pre-Hilbert space of a positive-definite function on a group and its GNS Hilbert space;
+- the eigenvector calculus of unitary representations of `Aff(ℚ)`: blind families, Cesàro limits,
+  two-prime box averages as atom projections;
 - in sibling programmes: Følner capacity, completed positive systems and their Hadamard pairing,
   gauge collapse, refund rigidity, deformation bookkeeping.
 
@@ -464,8 +481,9 @@ To build:
 6. **Prescribed successor coordinates.** For the integer successor the forced positivity is the
    Hecke weight (P18); its dilation spectra are Kronecker-null (P25), and atomic archimedean
    dilation parts admit only blind successors (P26), so no successor prescription couples the two.
-   Open: the classification of the dilation parts compatible with `1_ℤ` (they are not the Hecke
-   weight times positive-definite functions); the extensions of continuous archimedean spectra.
+   The successor reads exactly the continuous archimedean dilation spectrum (§6, Q6). Open: the
+   classification of the dilation parts compatible with `1_ℤ` (they are not the Hecke weight times
+   positive-definite functions); whether singular continuous dilation spectra are seen.
 7. **Rank-`r` realization.** Which positive-definite profiles on `ℤ^r` are boundary profiles of
    integral (Beurling) systems.
 8. **Positive crystalline measures beyond degree one.** Self-dual positive pairs with gaps under
@@ -558,3 +576,12 @@ rate needs a term that does not scale; calibrate over `𝔽_q`.
 | `TheKroneckerDecompositionOfPositiveDefiniteFunctionsOnQ` | Archimedean and Kronecker-null parts of spectral measures; uniqueness; the largest archimedean minorant |
 | `TheCriticalLineOfTheIntegerSuccessorIsTheKakutaniWall` | Local Poisson moments at primes; spectral measures of Hecke weights; the Kakutani wall of Hecke states |
 | `WeilsCorrelationCarriesNoSuccessor` | Countable reindexing of atoms; the atomic expansion of Weil's correlation; blindness of its extensions |
+| `AContinuousArchimedeanSpectrumIsSeenByTheSuccessor` | Vector states of the real `ax + b` group on `Aff(ℚ)`; non-blind successors of autocorrelations |
+| `ArchimedeanEigenvectorsAreInvisibleToTranslations` | Archimedean eigenvectors of unitary representations; blind families and their Cesàro means; no mixing of frequencies or of the continuous part |
+| `TheHilbertSpaceOfAPositiveDefiniteFunction` | Completion of linear isometries; the GNS Hilbert space, representation and cyclic vector |
+| `TheSuccessorSeesOnlyTheContinuousDilationSpectrum` | Dilation combinations and their spectral transforms; atom vectors from box averages; the blind-plus-continuous decomposition |
+| `TheSuccessorOscillationIsBoundedByTheContinuousDilationMass` | Exhaustion of atoms; the continuous-mass bound; blindness for purely atomic spectra |
+| `TheExtensionsOfAnAtomicArchimedeanCorrelation` | Nonnegative blind constants; affine values over finite atom sets; the atomic extension classification |
+| `TheExtensionsOfWeilsCorrelationAreIndexedByTheZeros` | Weil's spectral measure over the critical ordinates; its atoms; the classification of Weil's extensions |
+| `EveryPointOfTheAtomicBoxIsAnExtension` | Positive definiteness under pointwise limits; box extensions; every point of the box over the zeros extends Weil's correlation |
+| `TheSuccessorInheritsTheRegularityOfTheDilations` | The successor modulus of continuity bounded by the dilation modulus; continuity on `ℚ ∖ {0}` |

@@ -60,7 +60,7 @@ theorem logProfile_sub_log (v : ℕ → ℝ) {j : ℕ} (hj : 1 ≤ j) (u : ℝ) 
       Real.sqrt j * Real.exp (-(u / 2)) * v (⌊Real.exp u⌋₊ / j) := by
   have hj0 : (0 : ℝ) < j := by exact_mod_cast hj
   rw [logProfile, exp_neg_half_sub_log hj0, Real.exp_sub, Real.exp_log hj0,
-    Nat.floor_div_eq_div (Real.exp u) j]
+    Nat.floor_div_natCast (Real.exp u) j]
 
 /-- The integrand of the translation Gram on the cell where `⌊e^u⌋ = m`. -/
 theorem translationGram_integrand (v : ℕ → ℝ) {j k : ℕ} (hj : 1 ≤ j) (hk : 1 ≤ k) {u : ℝ} {m : ℕ}
@@ -81,41 +81,30 @@ theorem integral_cell_exp_neg (n : ℕ) :
   field_simp
   ring
 
+/-- On the open cell `(log(n+1), log(n+2))` the Gram integrand is `c e^{−u}`. -/
+theorem cell_eqOn (v : ℕ → ℝ) {j k : ℕ} (hj : 1 ≤ j) (hk : 1 ≤ k) (n : ℕ) :
+    EqOn (fun u => logProfile v (u - Real.log j) * logProfile v (u - Real.log k))
+      (fun u => Real.sqrt j * Real.sqrt k * (v ((n + 1) / j) * v ((n + 1) / k)) * Real.exp (-u))
+      (uIoo (Real.log ((n : ℝ) + 1)) (Real.log ((n : ℝ) + 2))) := by
+  intro u hu
+  rw [uIoo_of_le (Real.log_le_log (by positivity) (by linarith))] at hu
+  exact translationGram_integrand v hj hk ((mem_Ico_log_iff n).mp ⟨hu.1.le, hu.2⟩)
+
 /-- The integral of the Gram integrand over one cell. -/
 theorem integral_cell_translationGram (v : ℕ → ℝ) {j k : ℕ} (hj : 1 ≤ j) (hk : 1 ≤ k) (n : ℕ) :
     ∫ u in Real.log ((n : ℝ) + 1)..Real.log ((n : ℝ) + 2),
         logProfile v (u - Real.log j) * logProfile v (u - Real.log k) =
       Real.sqrt j * Real.sqrt k * (v ((n + 1) / j) * v ((n + 1) / k)) /
         (((n : ℝ) + 1) * ((n : ℝ) + 2)) := by
-  set c := Real.sqrt j * Real.sqrt k * (v ((n + 1) / j) * v ((n + 1) / k))
-  have hab : Real.log ((n : ℝ) + 1) ≤ Real.log ((n : ℝ) + 2) :=
-    Real.log_le_log (by positivity) (by linarith)
-  have hae : ∀ᵐ u ∂volume, u ∈ Ι (Real.log ((n : ℝ) + 1)) (Real.log ((n : ℝ) + 2)) →
-      logProfile v (u - Real.log j) * logProfile v (u - Real.log k) = c * Real.exp (-u) := by
-    have hb : ∀ᵐ u ∂volume, u ≠ Real.log ((n : ℝ) + 2) := by
-      simpa using (measure_singleton (μ := volume) (Real.log ((n : ℝ) + 2)))
-    filter_upwards [hb] with u hu hmem
-    rw [uIoc_of_le hab] at hmem
-    exact translationGram_integrand v hj hk
-      ((mem_Ico_log_iff n).mp ⟨hmem.1.le, lt_of_le_of_ne hmem.2 hu⟩)
-  rw [intervalIntegral.integral_congr_ae hae, intervalIntegral.integral_const_mul,
-    integral_cell_exp_neg, mul_one_div]
+  rw [intervalIntegral.integral_congr_uIoo (cell_eqOn v hj hk n),
+    intervalIntegral.integral_const_mul, integral_cell_exp_neg, mul_one_div]
 
 theorem intervalIntegrable_cell_translationGram (v : ℕ → ℝ) {j k : ℕ} (hj : 1 ≤ j) (hk : 1 ≤ k)
     (n : ℕ) :
     IntervalIntegrable (fun u => logProfile v (u - Real.log j) * logProfile v (u - Real.log k))
       volume (Real.log ((n : ℝ) + 1)) (Real.log ((n : ℝ) + 2)) := by
-  set c := Real.sqrt j * Real.sqrt k * (v ((n + 1) / j) * v ((n + 1) / k))
-  have hab : Real.log ((n : ℝ) + 1) ≤ Real.log ((n : ℝ) + 2) :=
-    Real.log_le_log (by positivity) (by linarith)
-  refine ((Real.continuous_exp.comp continuous_neg).intervalIntegrable _ _).const_mul c |>.congr ?_
-  rw [uIoc_of_le hab]
-  have hb : ∀ᵐ u ∂volume.restrict (Ioc (Real.log ((n : ℝ) + 1)) (Real.log ((n : ℝ) + 2))),
-      u ≠ Real.log ((n : ℝ) + 2) :=
-    ae_restrict_of_ae (by simpa using (measure_singleton (μ := volume) (Real.log ((n : ℝ) + 2))))
-  filter_upwards [hb, ae_restrict_mem measurableSet_Ioc] with u hu hmem
-  exact (translationGram_integrand v hj hk
-    ((mem_Ico_log_iff n).mp ⟨hmem.1.le, lt_of_le_of_ne hmem.2 hu⟩)).symm
+  exact (((Real.continuous_exp.comp continuous_neg).intervalIntegrable _ _).const_mul _
+    ).congr_uIoo fun u hu => (cell_eqOn v hj hk n hu).symm
 
 /-- **The cofactor Gram is a truncated translation Gram of the log profile.** -/
 theorem pronicPairing_rowDilate_eq_translationGram (v : ℕ → ℝ) {j k : ℕ} (hj : 1 ≤ j)
@@ -144,7 +133,8 @@ theorem pronicPairing_rowDilate_eq_translationGram (v : ℕ → ℝ) {j k : ℕ}
     exact integral_cell_translationGram v hj hk n
   simp_rw [hcell]
   rw [mul_sum, pronicPairing]
-  rw [show Icc 1 T = Ico 1 (T + 1) from rfl, sum_Ico_eq_sum_range, Nat.add_sub_cancel]
+  rw [show Finset.Icc 1 T = Finset.Ico 1 (T + 1) from rfl, sum_Ico_eq_sum_range,
+    Nat.add_sub_cancel]
   refine sum_congr rfl fun n _ => ?_
   simp only [rowDilate]
   rw [add_comm 1 n]

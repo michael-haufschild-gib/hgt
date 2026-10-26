@@ -29,7 +29,7 @@ contributes the exponential `e^{(ρ − ε − ½)u}` to the profile and the pow
 exponentials are removed, the remaining profile has subdominant energy.
 -/
 
-open Complex MeasureTheory Set Finset Filter Topology
+open Complex MeasureTheory Finset Filter Topology
 open GaloisForLFunctions.ArithmeticDefectRigidity (mem_Ico_log_iff)
 
 noncomputable section
@@ -42,18 +42,17 @@ def prefixSum (a : ℕ → ℝ) (n : ℕ) : ℝ := ∑ m ∈ Icc 1 n, a m
 theorem prefixSum_zero (a : ℕ → ℝ) : prefixSum a 0 = 0 := by simp [prefixSum]
 
 theorem prefixSum_succ (a : ℕ → ℝ) (n : ℕ) : prefixSum a (n + 1) = prefixSum a n + a (n + 1) := by
-  rw [prefixSum, prefixSum, ← Nat.Icc_insert_succ_right (by omega), sum_insert (by simp), add_comm]
+  rw [prefixSum, prefixSum, sum_Icc_succ_top (by omega)]
 
-/-- **Abel summation.** `Σ_{n < N} A(n+1)((n+1)^{−s} − (n+2)^{−s}) = Σ_{n ≤ N} a(n) n^{−s} − A(N)(N+1)^{−s}`. -/
-theorem sum_prefix_cpow_diff (a : ℕ → ℝ) (s : ℂ) (N : ℕ) :
-    ∑ n ∈ range N, (prefixSum a (n + 1) : ℂ) *
-        (((n + 1 : ℕ) : ℂ) ^ (-s) - ((n + 2 : ℕ) : ℂ) ^ (-s)) =
-      ∑ n ∈ Icc 1 N, (a n : ℂ) * (n : ℂ) ^ (-s) - (prefixSum a N : ℂ) * ((N + 1 : ℕ) : ℂ) ^ (-s) := by
+/-- **Abel summation.** `Σ_{n < N} A(n+1)(f(n+1) − f(n+2)) = Σ_{n ≤ N} a(n) f(n) − A(N) f(N+1)`. -/
+theorem sum_prefix_diff (a : ℕ → ℝ) (f : ℕ → ℂ) (N : ℕ) :
+    ∑ n ∈ range N, (prefixSum a (n + 1) : ℂ) * (f (n + 1) - f (n + 2)) =
+      ∑ n ∈ Icc 1 N, (a n : ℂ) * f n - (prefixSum a N : ℂ) * f (N + 1) := by
   induction N with
   | zero => simp [prefixSum_zero]
   | succ N ih =>
-    rw [sum_range_succ, ih, ← Nat.Icc_insert_succ_right (by omega), sum_insert (by simp),
-      prefixSum_succ]
+    rw [sum_range_succ, ih, sum_Icc_succ_top (by omega), prefixSum_succ,
+      show N + 1 + 1 = N + 2 from rfl]
     push_cast
     ring
 
@@ -62,15 +61,25 @@ theorem integral_cell_cexp {s : ℂ} (hs : s ≠ 0) (n : ℕ) :
     ∫ u in Real.log ((n : ℝ) + 1)..Real.log ((n : ℝ) + 2), Complex.exp (-s * u) =
       (((n + 1 : ℕ) : ℂ) ^ (-s) - ((n + 2 : ℕ) : ℂ) ^ (-s)) / s := by
   have hc : -s ≠ 0 := neg_ne_zero.mpr hs
-  rw [integral_exp_mul_complex hc]
   have e : ∀ x : ℝ, 0 < x → Complex.exp (-s * (Real.log x : ℂ)) = (x : ℂ) ^ (-s) := by
     intro x hx
     rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast hx.ne'), ← Complex.ofReal_log hx.le,
       mul_comm]
-  rw [e _ (by positivity), e _ (by positivity)]
+  rw [integral_exp_mul_complex hc, e ((n : ℝ) + 2) (by positivity),
+    e ((n : ℝ) + 1) (by positivity)]
   push_cast
   field_simp
   ring
+
+/-- On the open cell `(log(n+1), log(n+2))` the prefix profile is `A(n+1)`. -/
+theorem prefix_cell_eqOn (a : ℕ → ℝ) (s : ℂ) (n : ℕ) :
+    Set.EqOn (fun u : ℝ => (prefixSum a ⌊Real.exp u⌋₊ : ℂ) * Complex.exp (-s * u))
+      (fun u : ℝ => (prefixSum a (n + 1) : ℂ) * Complex.exp (-s * u))
+      (Set.uIoo (Real.log ((n : ℝ) + 1)) (Real.log ((n : ℝ) + 2))) := by
+  intro u hu
+  rw [Set.uIoo_of_le (Real.log_le_log (by positivity) (by linarith))] at hu
+  simp only
+  rw [(mem_Ico_log_iff n).mp ⟨hu.1.le, hu.2⟩]
 
 /-- **The Laplace transform at every horizon.** -/
 theorem integral_prefix_exp_eq (a : ℕ → ℝ) {s : ℂ} (hs : s ≠ 0) (N : ℕ) :
@@ -78,52 +87,27 @@ theorem integral_prefix_exp_eq (a : ℕ → ℝ) {s : ℂ} (hs : s ≠ 0) (N : �
         (prefixSum a ⌊Real.exp u⌋₊ : ℂ) * Complex.exp (-s * u) =
       (∑ n ∈ Icc 1 N, (a n : ℂ) * (n : ℂ) ^ (-s) -
         (prefixSum a N : ℂ) * ((N + 1 : ℕ) : ℂ) ^ (-s)) / s := by
-  -- on each cell the prefix is constant
-  have hcell : ∀ n : ℕ, ∫ u in Real.log ((n : ℝ) + 1)..Real.log ((n : ℝ) + 2),
-      (prefixSum a ⌊Real.exp u⌋₊ : ℂ) * Complex.exp (-s * u) =
-      (prefixSum a (n + 1) : ℂ) * ((((n + 1 : ℕ) : ℂ) ^ (-s) - ((n + 2 : ℕ) : ℂ) ^ (-s)) / s) := by
-    intro n
-    have hab : Real.log ((n : ℝ) + 1) ≤ Real.log ((n : ℝ) + 2) :=
-      Real.log_le_log (by positivity) (by linarith)
-    have hae : ∀ᵐ u ∂volume, u ∈ Ι (Real.log ((n : ℝ) + 1)) (Real.log ((n : ℝ) + 2)) →
-        (prefixSum a ⌊Real.exp u⌋₊ : ℂ) * Complex.exp (-s * u) =
-          (prefixSum a (n + 1) : ℂ) * Complex.exp (-s * u) := by
-      have hb : ∀ᵐ u ∂volume, u ≠ Real.log ((n : ℝ) + 2) := by
-        simpa using (measure_singleton (μ := volume) (Real.log ((n : ℝ) + 2)))
-      filter_upwards [hb] with u hu hmem
-      rw [uIoc_of_le hab] at hmem
-      rw [(mem_Ico_log_iff n).mp ⟨hmem.1.le, lt_of_le_of_ne hmem.2 hu⟩]
-    rw [intervalIntegral.integral_congr_ae hae, intervalIntegral.integral_const_mul,
-      integral_cell_cexp hs]
-  have hint : ∀ n < N, IntervalIntegrable
-      (fun u : ℝ => (prefixSum a ⌊Real.exp u⌋₊ : ℂ) * Complex.exp (-s * u)) volume
-      (Real.log ((n : ℝ) + 1)) (Real.log (((n + 1 : ℕ) : ℝ) + 1)) := by
-    intro n _
-    rw [show (((n + 1 : ℕ) : ℝ) + 1) = (n : ℝ) + 2 by push_cast; ring]
-    have hab : Real.log ((n : ℝ) + 1) ≤ Real.log ((n : ℝ) + 2) :=
-      Real.log_le_log (by positivity) (by linarith)
-    refine ((Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal)
-      ).intervalIntegrable _ _ |>.const_mul (prefixSum a (n + 1) : ℂ)).congr ?_
-    rw [uIoc_of_le hab]
-    have hb : ∀ᵐ u ∂volume.restrict (Ioc (Real.log ((n : ℝ) + 1)) (Real.log ((n : ℝ) + 2))),
-        u ≠ Real.log ((n : ℝ) + 2) :=
-      ae_restrict_of_ae (by simpa using (measure_singleton (μ := volume) (Real.log ((n : ℝ) + 2))))
-    filter_upwards [hb, ae_restrict_mem measurableSet_Ioc] with u hu hmem
-    simp only
-    rw [(mem_Ico_log_iff n).mp ⟨hmem.1.le, lt_of_le_of_ne hmem.2 hu⟩]
+  have hcast : ∀ n : ℕ, (((n + 1 : ℕ) : ℝ) + 1) = (n : ℝ) + 2 := fun n => by push_cast; ring
+  -- split `[0, log(N+1)]` into the cells `[log(n+1), log(n+2)]`, `n < N`
   have hsplit := intervalIntegral.sum_integral_adjacent_intervals
     (f := fun u : ℝ => (prefixSum a ⌊Real.exp u⌋₊ : ℂ) * Complex.exp (-s * u))
-    (a := fun n : ℕ => Real.log ((n : ℝ) + 1)) (n := N) hint
+    (a := fun n : ℕ => Real.log ((n : ℝ) + 1)) (n := N) fun n _ => by
+      simp only [hcast]
+      exact (((Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal)
+        ).intervalIntegrable _ _).const_mul _).congr_uIoo fun u hu =>
+          (prefix_cell_eqOn a s n hu).symm
   simp only [Nat.cast_zero, zero_add, Real.log_one] at hsplit
   rw [← hsplit]
-  have hcell' : ∀ n : ℕ, ∫ u in Real.log ((n : ℝ) + 1)..Real.log (((n + 1 : ℕ) : ℝ) + 1),
+  have hcell : ∀ n : ℕ, ∫ u in Real.log ((n : ℝ) + 1)..Real.log (((n + 1 : ℕ) : ℝ) + 1),
       (prefixSum a ⌊Real.exp u⌋₊ : ℂ) * Complex.exp (-s * u) =
       (prefixSum a (n + 1) : ℂ) * ((((n + 1 : ℕ) : ℂ) ^ (-s) - ((n + 2 : ℕ) : ℂ) ^ (-s)) / s) := by
     intro n
-    rw [show (((n + 1 : ℕ) : ℝ) + 1) = (n : ℝ) + 2 by push_cast; ring]
-    exact hcell n
-  simp_rw [hcell']
-  rw [← sum_prefix_cpow_diff a s N, sum_div]
+    rw [hcast, intervalIntegral.integral_congr_uIoo (prefix_cell_eqOn a s n),
+      intervalIntegral.integral_const_mul, integral_cell_cexp hs]
+  simp_rw [hcell]
+  have habel := sum_prefix_diff a (fun n : ℕ => (n : ℂ) ^ (-s)) N
+  simp only at habel
+  rw [← habel, sum_div]
   refine sum_congr rfl fun n _ => ?_
   ring
 
@@ -135,8 +119,9 @@ theorem divisorCoeff_eq_convolution (ε : ℝ) :
       LSeries.convolution (RHTower.pmPowerDampedMobiusCoeff ε) 1 := by
   rw [LSeries.convolution_def]
   funext n
-  rw [RHTower.pmPowerDampedDivisorCoeff, Nat.sum_divisorsAntidiagonal
-    (fun d _ => RHTower.pmPowerDampedMobiusCoeff ε d * (1 : ℕ → ℂ) _)]
+  rw [Nat.sum_divisorsAntidiagonal
+    (fun x y => RHTower.pmPowerDampedMobiusCoeff ε x * (1 : ℕ → ℂ) y),
+    RHTower.pmPowerDampedDivisorCoeff]
   simp [RHTower.pmPowerDampedMobiusCoeff]
 
 /-- **The cofactor symbol**: `Σ c̃_ε(n) n^{−s} = ζ(s)/ζ(s+ε) − Re(1/ζ(1+ε)) ζ(s)` on `Re s > 1`. -/
@@ -184,11 +169,10 @@ theorem tendsto_laplace_cofactorProfile {ε : ℝ} (hε : 0 ≤ ε) {s : ℂ} (h
     intro N
     rw [integral_prefix_exp_eq a hs0 N, ← add_div, sub_add_cancel]
     congr 1
-    rw [range_eq_Ico, sum_eq_sum_Ico_succ_bot (by omega), LSeries.term_zero, zero_add,
-      ← Nat.Ico_succ_right]
-    refine sum_congr rfl fun n hn => ?_
-    have hn0 : n ≠ 0 := by rw [mem_Ico] at hn; omega
-    rw [LSeries.term_of_ne_zero hn0, Complex.cpow_neg, div_eq_mul_inv]
+    rw [← Finset.Ico_add_one_right_eq_Icc, sum_Ico_eq_sum_range, Nat.add_sub_cancel,
+      sum_range_succ', LSeries.term_zero, add_zero]
+    refine sum_congr rfl fun n _ => ?_
+    rw [LSeries.term_of_ne_zero (by omega), add_comm 1 n, Complex.cpow_neg, div_eq_mul_inv]
   simp_rw [hrw]
   rw [cofactorG, ← LSeries_centeredDivisorCoeff hε hs]
   have hsum : LSeriesSummable (fun n => (a n : ℂ)) s := by

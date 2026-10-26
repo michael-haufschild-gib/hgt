@@ -17,25 +17,23 @@ battery behaviour (README §10).
 - [ ] 2 → 3  (per conjecture)
 
 ## Current conjecture
-**C13–C16 (what the successor sees of the dilation spectrum).**
-- C13: the autocorrelation of any nonzero `H ∈ C_c(ℝ)` is the dilation part of a positive-definite
-  state on `Aff(ℚ)` with non-constant successor (vector state of the real `ax + b` group).
-- C14: in every unitary representation of `Aff(ℚ)`, translates of an archimedean dilation
-  eigenvector form a blind family; distinct frequencies never mix; vectors orthogonal to a
-  frequency with continuous dilation orbit never mix with it.
-- C15: the GNS Hilbert space (completion of the pre-Hilbert space) and its representation.
-- C16: `|φ(x ↦ x + b) − φ(x ↦ x + b')| ≤ 2ν_c(ℝ)`, `ν_c` the continuous part of the dilation
-  spectral measure; box averages give the atoms as eigenvectors.
+None open (paused at the user's request after C19).
 
 ## Done
 - C1–C5 (P18–P22), C6–C8 (P23–P25), C9 atomic blindness (P26), C10 Kronecker decomposition,
   C11 Kakutani wall, C12 Weil's correlation carries no successor.
+- C13 continuous spectra are seen; C14 eigenvector calculus of unitary representations; C15 the
+  blind-plus-continuous decomposition (GNS Hilbert space, atom vectors); C16 the continuous-mass
+  bound; C17 the atomic extension box; C18 Weil's extensions indexed by the zeros; C19 regularity
+  transfer from the dilations to the successor.
 
 ## Next
-- Classification of the extensions of Weil's correlation, indexed by the critical zeros.
-- Singular continuous dilation spectra: seen or blind?
+- Singular continuous dilation spectra: seen or blind? (Reduces to rigidity of measures on the
+  solenoid `𝔸/ℚ` that are norm-continuous under real-convergent dilations.)
+- Classification of the dilation parts compatible with `1_ℤ`.
 
 ## Log
 - 2026-10-25 — created; C1 opened.
 - 2026-10-26 — C1–C5 formalized; C6–C8 drafted.
 - 2026-10-26 — C6–C12 formalized; C13–C16 opened.
+- 2026-10-26 — C13–C19 formalized; loop paused.

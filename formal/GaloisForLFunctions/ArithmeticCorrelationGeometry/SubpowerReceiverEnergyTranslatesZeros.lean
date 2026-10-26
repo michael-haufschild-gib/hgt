@@ -251,6 +251,7 @@ theorem riemannZeta_sub_eq_zero_of_energy_growth {ε : ℝ} (hε : 0 < ε) {C κ
       intro h; have := congrArg Complex.re h; simp at this; linarith
     have hζne : riemannZeta ((σ : ℂ) + ε) ≠ 0 :=
       riemannZeta_ne_zero_of_one_lt_re (by simp; linarith)
+    rw [← hm_def] at hΦσ
     simp only [hH]
     rw [zetaResidueUnit_of_ne' hne1, hΦσ]
     push_cast at hC ⊢
@@ -277,10 +278,10 @@ theorem riemannZeta_sub_eq_zero_of_energy_growth {ε : ℝ} (hε : 0 < ε) {C κ
     constructor <;> linarith
   have hval := hEq hs₀U
   have hρ1 : ρ ≠ 1 := by intro h; rw [h, Complex.one_re] at hre1; exact lt_irrefl _ hre1
-  simp only [hH, Pi.zero_apply, sub_add_cancel] at hval
-  rw [zetaResidueUnit_of_ne' hρ1, hρ, mul_zero, zero_mul, zero_sub, neg_eq_zero] at hval
-  have hne : ρ - ε + ε - 1 ≠ 0 := by rw [sub_add_cancel]; exact sub_ne_zero.mpr hρ1
-  exact (mul_eq_zero.mp hval).resolve_left hne
+  simp only [hH, Pi.zero_apply] at hval
+  rw [sub_add_cancel, zetaResidueUnit_of_ne' hρ1, hρ, mul_zero, zero_mul, zero_sub,
+    neg_eq_zero] at hval
+  exact (mul_eq_zero.mp hval).resolve_left (sub_ne_zero.mpr hρ1)
 
 /-- **Subpower energy at every damping is RH.** -/
 theorem riemannHypothesis_of_subpower_energy
@@ -308,8 +309,8 @@ theorem riemannHypothesis_of_subpower_energy
       fun ε hε => ?_
     simp only [Set.mem_compl_iff, Set.mem_singleton_iff] at hε ⊢
     intro h
-    exact hε (by simpa using sub_right_injective h)
-  have hfreq : ∃ᶠ ε in 𝓝[≠] (η / 2), RHTower.zetaResidueUnit (ρ - ε) = 0 := by
+    exact hε (by exact_mod_cast sub_right_injective h)
+  have hfreq : ∃ᶠ ε : ℝ in 𝓝[≠] (η / 2), RHTower.zetaResidueUnit (ρ - (ε : ℂ)) = 0 := by
     have h1 : ∀ᶠ ε in 𝓝 (η / 2), 0 < ε ∧ ε < η :=
       (lt_mem_nhds (by linarith)).and (gt_mem_nhds (by linarith))
     refine (Eventually.frequently ?_)
