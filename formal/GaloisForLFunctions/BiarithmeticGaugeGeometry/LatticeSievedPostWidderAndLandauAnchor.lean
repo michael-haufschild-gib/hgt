@@ -82,7 +82,7 @@ theorem postWidderKernel_le (k : ℕ) {t L : ℝ} (ht : 0 < t) (hL : 0 ≤ L) :
   exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hfac hk) hA
 
 /-- The profile `r e^{1−r}` is strictly below `1` away from `r = 1`. -/
-theorem mul_exp_one_sub_lt_one {r : ℝ} (hr : 0 ≤ r) (hr1 : r ≠ 1) :
+theorem mul_exp_one_sub_lt_one {r : ℝ} (hr1 : r ≠ 1) :
     r * Real.exp (1 - r) < 1 := by
   have h := Real.add_one_lt_exp (x := r - 1) (sub_ne_zero.mpr hr1)
   have he : Real.exp (1 - r) = (Real.exp (r - 1))⁻¹ := by
@@ -127,12 +127,12 @@ theorem tendsto_postWidder_lattice {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n) {σ
   set N : ℕ := ⌈Real.exp (4 * t)⌉₊ + 1
   set g : ℕ → ℝ := fun n => (Real.log n / t) * Real.exp (1 - Real.log n / t)
   set q : ℝ := 2 * Real.exp (-2)
-  set C : ℝ := Real.exp (4 * (σ₀ * t)) * ∑' n : ℕ, b n * (n : ℝ) ^ (-σ₀)
+  set C : ℝ := Real.exp (4 * (σ₀ * t)) * ∑' n : ℕ, b n * (n : ℝ) ^ (-σ₀) with hCdef
   have hlog_nn : ∀ n : ℕ, 0 ≤ Real.log n := fun n => Real.log_natCast_nonneg n
   have hg_nn : ∀ n, 0 ≤ g n := fun n =>
     mul_nonneg (div_nonneg (hlog_nn n) ht.le) (Real.exp_pos _).le
   have hg_lt : ∀ n, g n < 1 := fun n =>
-    mul_exp_one_sub_lt_one (div_nonneg (hlog_nn n) ht.le) fun h => hlat n (by
+    mul_exp_one_sub_lt_one fun h => hlat n (by
       field_simp at h; linarith)
   have hq_nn : 0 ≤ q := by positivity
   have hq_lt : q < 1 := two_mul_exp_neg_two_lt_one
@@ -141,7 +141,7 @@ theorem tendsto_postWidder_lattice {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n) {σ
   -- termwise domination for `2 σ₀ t ≤ k`
   set B : ℕ → ℕ → ℝ := fun k n =>
     (k / t) * ((if n < N then b n * g n ^ k else 0) +
-      q ^ k * Real.exp (4 * (σ₀ * t)) * (b n * (n : ℝ) ^ (-σ₀)))
+      q ^ k * Real.exp (4 * (σ₀ * t)) * (b n * (n : ℝ) ^ (-σ₀))) with hBdef
   have hdom : ∀ k : ℕ, 2 * (σ₀ * t) ≤ k → ∀ n : ℕ,
       b n * postWidderKernel k t (Real.log n) ≤ B k n := by
     intro k hk n
@@ -151,14 +151,14 @@ theorem tendsto_postWidder_lattice {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n) {σ
       mul_nonneg (mul_nonneg (pow_nonneg hq_nn k) (Real.exp_pos _).le)
         (mul_nonneg (hb n) (Real.rpow_nonneg (Nat.cast_nonneg n) _))
     by_cases hn : n < N
-    · simp only [B, if_pos hn]
+    · simp only [hBdef, if_pos hn]
       calc b n * postWidderKernel k t (Real.log n) ≤ b n * ((k / t) * g n ^ k) :=
             mul_le_mul_of_nonneg_left hK (hb n)
         _ = (k / t) * (b n * g n ^ k) := by ring
         _ ≤ (k / t) * (b n * g n ^ k + q ^ k * Real.exp (4 * (σ₀ * t)) *
               (b n * (n : ℝ) ^ (-σ₀))) := by
             apply mul_le_mul_of_nonneg_left _ hkt; linarith
-    · simp only [B, if_neg hn, zero_add]
+    · simp only [hBdef, if_neg hn, zero_add]
       have hnN : N ≤ n := Nat.le_of_not_lt hn
       have hn1 : (1 : ℝ) ≤ n := by
         have : 1 ≤ n := le_trans (Nat.le_add_left 1 _) hnN; exact_mod_cast this
@@ -203,9 +203,9 @@ theorem tendsto_postWidder_lattice {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n) {σ
     have hs1 : Summable fun n : ℕ => (if n < N then b n * g n ^ k else 0) :=
       summable_of_ne_finset_zero (s := Finset.range N) fun n hn => by
         rw [Finset.mem_range] at hn; exact if_neg hn
-    simp only [B]
-    rw [tsum_mul_left, Summable.tsum_add hs1 (hsum.mul_left _), hfin, tsum_mul_left]
-    simp only [C]; ring
+    simp only [hBdef]
+    rw [tsum_mul_left, Summable.tsum_add hs1 (hsum.mul_left _), hfin, tsum_mul_left, hCdef]
+    ring
   have hlimU : Tendsto (fun k : ℕ => (k / t) * (∑ n ∈ Finset.range N, b n * g n ^ k) +
       (k / t) * q ^ k * C) atTop (𝓝 0) := by
     have h1 : Tendsto (fun k : ℕ => ∑ n ∈ Finset.range N, (b n / t) * ((k : ℝ) * g n ^ k))
@@ -219,7 +219,6 @@ theorem tendsto_postWidder_lattice {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n) {σ
     rw [add_zero] at h12
     refine h12.congr fun k => ?_
     rw [Finset.mul_sum]
-    simp only [add_zero]
     congr 1
     · exact Finset.sum_congr rfl fun n _ => by ring
     · ring
@@ -399,7 +398,7 @@ theorem iterate_deriv_add_eqOn {f g : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
 
 /-- `(−1)^k` times the `k`-th derivative of a real lattice series at a real point beyond its
 abscissa is `Σ b(n) (log n)^k n^{−x}`. -/
-theorem neg_one_pow_mul_re_iterate_deriv_LSeries {b : ℕ → ℝ} (k : ℕ) {x : ℝ}
+theorem neg_one_pow_mul_re_iterate_deriv_LSeries {b : ℕ → ℝ} (k : ℕ) {x : ℝ} (hx0 : x ≠ 0)
     (hx : LSeries.abscissaOfAbsConv (fun n => (b n : ℂ)) < x) :
     (-1 : ℝ) ^ k * ((deriv^[k] (LSeries fun n => (b n : ℂ))) (x : ℂ)).re =
       ∑' n : ℕ, b n * Real.log n ^ k * (n : ℝ) ^ (-x) := by
@@ -417,7 +416,7 @@ theorem neg_one_pow_mul_re_iterate_deriv_LSeries {b : ℕ → ℝ} (k : ℕ) {x 
     rw [LSeries, Complex.ofReal_tsum]
     refine tsum_congr fun n => ?_
     rcases eq_or_ne n 0 with rfl | hn
-    · simp
+    · simp [Real.zero_rpow (neg_ne_zero.mpr hx0)]
     · rw [LSeries.term_of_ne_zero hn, hlog n]
       have hnpos : (0 : ℝ) < n := by exact_mod_cast Nat.pos_of_ne_zero hn
       have hcp : ((n : ℂ)) ^ (x : ℂ) = (((n : ℝ) ^ x : ℝ) : ℂ) := by
@@ -518,8 +517,11 @@ theorem polarScaleWeight_nonneg_of_lattice_posDef_of_ne_log {b : ℕ → ℝ} (h
     simp only [hTdef, hHdef] at hadd ⊢
     rw [hadd, Complex.add_re, mul_add, mul_add]
     congr 1
-    rw [neg_one_pow_mul_re_iterate_deriv_LSeries k (habs' _ (by simpa using hx)),
-      ← tsum_mul_left]
+    have hxpos : 0 < (k : ℝ) / t := div_pos (by exact_mod_cast hk) ht
+    have hLk := neg_one_pow_mul_re_iterate_deriv_LSeries (b := b) k (x := (k : ℝ) / t)
+      hxpos.ne' (by simpa using habs' (((k : ℝ) / t : ℝ) : ℂ) (by simpa using hx))
+    rw [← hfdef] at hLk
+    rw [hLk, ← tsum_mul_left]
     refine tsum_congr fun n => ?_
     unfold postWidderKernel
     rcases eq_or_ne n 0 with rfl | hn
@@ -541,17 +543,20 @@ theorem polarScaleWeight_nonneg_of_lattice_posDef_of_ne_log {b : ℕ → ℝ} (h
     rw [← hsplit k hk1 hx]
     exact mul_nonneg (div_nonneg (pow_nonneg (div_nonneg (Nat.cast_nonneg k) ht.le) _)
       (Nat.cast_nonneg _)) (hcm k _ hx)
-  have hσ : Summable fun n : ℕ => b n * (n : ℝ) ^ (-a) := by
-    refine hsumm.norm.congr fun n => ?_
+  have hσ : Summable fun n : ℕ => b n * (n : ℝ) ^ (-max a 1) := by
+    have hsumm' : LSeriesSummable f (max a 1 : ℝ) :=
+      LSeriesSummable_of_abscissaOfAbsConv_lt_re
+        (lt_of_lt_of_le habs (by simp))
+    refine hsumm'.norm.congr fun n => ?_
     rcases eq_or_ne n 0 with rfl | hn
-    · simp [Real.zero_rpow_def]
-      sorry
+    · have h1 : (max a 1 : ℝ) ≠ 0 := (lt_of_lt_of_le one_pos (le_max_right a 1)).ne'
+      simp [Real.zero_rpow (neg_ne_zero.mpr h1)]
     · rw [LSeries.term_of_ne_zero hn, norm_div, Complex.norm_real, Real.norm_eq_abs,
         abs_of_nonneg (hb n)]
       have hnpos : (0 : ℝ) < n := by exact_mod_cast Nat.pos_of_ne_zero hn
       rw [Complex.norm_natCast_cpow_of_pos (Nat.pos_of_ne_zero hn), Real.rpow_neg hnpos.le]
       simp [div_eq_mul_inv]
-  have hlim := (tendsto_postWidder_lattice hb hσ ht hlat).add (tendsto_postWidder_polarSum hSa ht)
+  have hlim := (tendsto_postWidder_lattice hb hσ ht hlat).add (tendsto_postWidder_polarSum (c := c) hSa ht)
   rw [zero_add] at hlim
   exact ge_of_tendsto hlim hPW
 
@@ -570,7 +575,7 @@ theorem polarScaleWeight_nonneg_of_lattice_posDef {b : ℕ → ℝ} (hb : ∀ n,
     (Set.countable_range _).dense_compl ℝ
   have hex : ∀ j : ℕ, ∃ s ∈ (Set.range fun n : ℕ => Real.log n)ᶜ,
       s ∈ Ioo t (t + 1 / ((j : ℝ) + 1)) := fun j =>
-    hD.exists_between (by have : (0 : ℝ) < 1 / ((j : ℝ) + 1) := by positivity; linarith)
+    hD.exists_between (by have : (0 : ℝ) < 1 / ((j : ℝ) + 1) := (by positivity); linarith)
   choose s hsD hsI using hex
   have hs_lim : Tendsto s atTop (𝓝 t) := by
     have hup : Tendsto (fun j : ℕ => t + 1 / ((j : ℝ) + 1)) atTop (𝓝 t) := by
@@ -582,5 +587,343 @@ theorem polarScaleWeight_nonneg_of_lattice_posDef {b : ℕ → ℝ} (hb : ∀ n,
   refine ge_of_tendsto ((hcont.tendsto t).comp hs_lim) (Eventually.of_forall fun j => ?_)
   exact polarScaleWeight_nonneg_of_lattice_posDef_of_ne_log hb hSa habs hpd
     (by linarith [(hsI j).1]) fun n h => hsD j ⟨n, h⟩
+
+/-! ## §4. Evenness forces conjugation symmetry -/
+
+/-- **Cauchy–Riemann.** A holomorphic function with vanishing real part has vanishing derivative. -/
+theorem deriv_eq_zero_of_re_eq_zero {H : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+    (hH : DifferentiableOn ℂ H U) (hre : ∀ s ∈ U, (H s).re = 0) {s : ℂ} (hs : s ∈ U) :
+    deriv H s = 0 := by
+  have hd : HasDerivAt H (deriv H s) s :=
+    ((hH s hs).differentiableAt (hU.mem_nhds hs)).hasDerivAt
+  have hev : ∀ v : ℂ, (fun x : ℝ => (H (s + (x : ℂ) * v)).re) =ᶠ[𝓝 0] fun _ => 0 := by
+    intro v
+    have hc : Continuous fun x : ℝ => s + (x : ℂ) * v := by fun_prop
+    have hmem : (fun x : ℝ => s + (x : ℂ) * v) ⁻¹' U ∈ 𝓝 (0 : ℝ) :=
+      hc.continuousAt.preimage_mem_nhds (by simpa using hU.mem_nhds hs)
+    filter_upwards [hmem] with x hx using hre _ hx
+  have hdir : ∀ v : ℂ, (deriv H s * v).re = 0 := by
+    intro v
+    have hlin : HasDerivAt (fun w : ℂ => s + w * v) v ((0 : ℝ) : ℂ) := by
+      simpa using ((hasDerivAt_id ((0 : ℝ) : ℂ)).mul_const v).const_add s
+    have hd' : HasDerivAt H (deriv H s) (s + ((0 : ℝ) : ℂ) * v) := by simpa using hd
+    have hcomp : HasDerivAt (fun w : ℂ => H (s + w * v)) (deriv H s * v) ((0 : ℝ) : ℂ) :=
+      hd'.comp _ hlin
+    exact hcomp.real_of_complex.unique
+      ((hasDerivAt_const (0 : ℝ) (0 : ℝ)).congr_of_eventuallyEq (hev v))
+  have h1 := hdir 1
+  have h2 := hdir I
+  simp only [mul_one, Complex.mul_re, Complex.I_re, Complex.I_im, mul_zero, mul_one,
+    zero_sub, neg_eq_zero] at h1 h2
+  exact Complex.ext h1 h2
+
+/-- Conjugate reflection of a polar sum: `conj (G (conj s)) = Σ c(z)/(s − conj z)`. -/
+theorem conj_polarSum_conj (S : Finset ℂ) (c : ℂ → ℝ) (s : ℂ) :
+    conj (polarSum S c (conj s)) = ∑ z ∈ S, (c z : ℂ) / (s - conj z) := by
+  unfold polarSum
+  rw [map_sum]
+  refine Finset.sum_congr rfl fun z _ => ?_
+  rw [map_div₀, Complex.conj_ofReal, map_sub, Complex.conj_conj]
+
+theorem tendsto_div_ofReal_sub_atTop (w z : ℂ) :
+    Tendsto (fun x : ℝ => w / ((x : ℂ) - z)) atTop (𝓝 0) := by
+  have h : Tendsto (fun x : ℝ => ‖w‖ / (x - z.re)) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop (tendsto_atTop_add_const_right _ (-z.re) tendsto_id)
+  refine squeeze_zero_norm' ?_ h
+  filter_upwards [eventually_gt_atTop z.re] with x hx
+  rw [norm_div]
+  refine div_le_div_of_nonneg_left (norm_nonneg _) (by linarith) ?_
+  calc x - z.re = ((x : ℂ) - z).re := by simp
+    _ ≤ ‖(x : ℂ) - z‖ := Complex.re_le_norm _
+
+theorem differentiableOn_polarSum_of_re_le {S : Finset ℂ} {c : ℂ → ℝ} {σ : ℝ}
+    (hσ : ∀ z ∈ S, c z ≠ 0 → z.re ≤ σ) :
+    DifferentiableOn ℂ (polarSum S c) {s : ℂ | σ < s.re} := by
+  intro s hs
+  change σ < s.re at hs
+  unfold polarSum
+  refine DifferentiableWithinAt.fun_sum fun z hz => ?_
+  by_cases hcz : c z = 0
+  · simp only [hcz, Complex.ofReal_zero, zero_div]
+    exact differentiableWithinAt_const _
+  have hsz : s - z ≠ 0 := fun h0 => by
+    have := congrArg Complex.re h0; simp at this; linarith [hσ z hz hcz]
+  exact ((differentiableAt_const (c z : ℂ)).div
+    (by fun_prop : DifferentiableAt ℂ (fun w : ℂ => w - z) s) hsz).differentiableWithinAt
+
+theorem differentiableOn_reflectedPolarSum_of_re_le {S : Finset ℂ} {c : ℂ → ℝ} {σ : ℝ}
+    (hσ : ∀ z ∈ S, c z ≠ 0 → z.re ≤ σ) :
+    DifferentiableOn ℂ (fun s => ∑ z ∈ S, (c z : ℂ) / (s - conj z)) {s : ℂ | σ < s.re} := by
+  intro s hs
+  change σ < s.re at hs
+  refine DifferentiableWithinAt.fun_sum fun z hz => ?_
+  by_cases hcz : c z = 0
+  · simp only [hcz, Complex.ofReal_zero, zero_div]
+    exact differentiableWithinAt_const _
+  have hsz : s - conj z ≠ 0 := fun h0 => by
+    have := congrArg Complex.re h0; simp at this; linarith [hσ z hz hcz]
+  exact ((differentiableAt_const (c z : ℂ)).div
+    (by fun_prop : DifferentiableAt ℂ (fun w : ℂ => w - conj z) s) hsz).differentiableWithinAt
+
+/-- **Evenness forces conjugation symmetry.** If `u ↦ Re G(σ + iu)` is even for every `σ > a`,
+then `G(s) = Σ c(z)/(s − conj z)` on the whole half-plane to the right of the weighted poles. -/
+theorem polarSum_eq_reflected_of_even {S : Finset ℂ} {c : ℂ → ℝ} {a σ : ℝ}
+    (hSa : ∀ z ∈ S, z.re ≤ a) (hσ : ∀ z ∈ S, c z ≠ 0 → z.re ≤ σ)
+    (heven : ∀ σ' : ℝ, a < σ' → ∀ u : ℝ,
+      (polarSum S c ((σ' : ℂ) + ((-u : ℝ) : ℂ) * I)).re =
+        (polarSum S c ((σ' : ℂ) + (u : ℂ) * I)).re)
+    {s : ℂ} (hs : σ < s.re) :
+    polarSum S c s = ∑ z ∈ S, (c z : ℂ) / (s - conj z) := by
+  set Gs : ℂ → ℂ := fun s => ∑ z ∈ S, (c z : ℂ) / (s - conj z) with hGs
+  set D : ℂ → ℂ := fun s => polarSum S c s - Gs s with hDdef
+  set U : Set ℂ := {s : ℂ | a < s.re} with hUdef
+  have hU : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
+  have hσa : ∀ z ∈ S, c z ≠ 0 → z.re ≤ a := fun z hz _ => hSa z hz
+  have hDU : DifferentiableOn ℂ D U :=
+    (differentiableOn_polarSum_of_re_le hσa).sub (differentiableOn_reflectedPolarSum_of_re_le hσa)
+  have hDre : ∀ w ∈ U, (D w).re = 0 := by
+    intro w hw
+    have h := heven w.re hw w.im
+    have hw_eq : (w.re : ℂ) + (w.im : ℂ) * I = w := Complex.re_add_im w
+    have hcw_eq : (w.re : ℂ) + ((-w.im : ℝ) : ℂ) * I = conj w := by
+      apply Complex.ext <;> simp
+    rw [hw_eq, hcw_eq] at h
+    simp only [hDdef, hGs, Complex.sub_re]
+    rw [← conj_polarSum_conj, Complex.conj_re, h, sub_self]
+  have hderiv : EqOn (deriv D) 0 U := fun w hw => deriv_eq_zero_of_re_eq_zero hU hDU hDre hw
+  have hconst : ∀ x y : ℂ, x ∈ U → y ∈ U → D x = D y := fun x y hx hy =>
+    hU.is_const_of_deriv_eq_zero (convex_halfSpace_re_gt a).isPreconnected hDU hderiv hx hy
+  have hlim : Tendsto (fun x : ℝ => D x) atTop (𝓝 0) := by
+    have h1 : Tendsto (fun x : ℝ => polarSum S c x) atTop (𝓝 (∑ z ∈ S, (0 : ℂ))) := by
+      unfold polarSum
+      exact tendsto_finsetSum _ fun z _ => tendsto_div_ofReal_sub_atTop _ _
+    have h2 : Tendsto (fun x : ℝ => Gs x) atTop (𝓝 (∑ z ∈ S, (0 : ℂ))) :=
+      tendsto_finsetSum _ fun z _ => tendsto_div_ofReal_sub_atTop _ _
+    simpa [hDdef] using h1.sub h2
+  -- `D` vanishes on `Re s > a`
+  have hzeroU : ∀ w ∈ U, D w = 0 := by
+    intro w hw
+    have hc : Tendsto (fun x : ℝ => D x) atTop (𝓝 (D w)) := by
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [eventually_gt_atTop a] with x hx
+      exact hconst w x hw (by simpa [hUdef] using hx)
+    exact tendsto_nhds_unique hc hlim
+  -- identity theorem on `Re s > σ`
+  set V : Set ℂ := {s : ℂ | σ < s.re} with hVdef
+  have hV : IsOpen V := isOpen_lt continuous_const Complex.continuous_re
+  have hDV : DifferentiableOn ℂ D V :=
+    (differentiableOn_polarSum_of_re_le hσ).sub (differentiableOn_reflectedPolarSum_of_re_le hσ)
+  set p : ℂ := ((max a σ + 1 : ℝ) : ℂ)
+  have hpV : p ∈ V := by simp [hVdef, p]; linarith [le_max_right a σ]
+  have hpU : p ∈ U := by simp [hUdef, p]; linarith [le_max_left a σ]
+  have hev : D =ᶠ[𝓝 p] fun _ => 0 :=
+    Filter.eventually_of_mem (hU.mem_nhds hpU) hzeroU
+  have heq := (hDV.analyticOnNhd hV).eqOn_of_preconnected_of_eventuallyEq analyticOnNhd_const
+    (convex_halfSpace_re_gt σ).isPreconnected hpV hev
+  have h0 : D s = 0 := heq (show s ∈ V from hs)
+  simpa [hDdef, sub_eq_zero] using h0
+
+/-! ## §5. The Landau real anchor -/
+
+/-- **Laplace representation of the polar scale weight.** To the right of every weighted pole,
+`∫₀^∞ w(t) e^{−st} dt = (G(s) + Σ c(z)/(s − conj z))/2`. -/
+theorem integral_polarScaleWeight_mul_exp {S : Finset ℂ} {c : ℂ → ℝ} {σ : ℝ}
+    (hσ : ∀ z ∈ S, c z ≠ 0 → z.re ≤ σ) {s : ℂ} (hs : σ < s.re) :
+    ∫ t in Ioi (0 : ℝ), (polarScaleWeight S c t : ℂ) * cexp (-s * t) =
+      (polarSum S c s + ∑ z ∈ S, (c z : ℂ) / (s - conj z)) / 2 := by
+  have hpt : ∀ t : ℝ, (polarScaleWeight S c t : ℂ) * cexp (-s * t) =
+      ∑ z ∈ S, (c z : ℂ) / 2 * (cexp ((z - s) * t) + cexp ((conj z - s) * t)) := by
+    intro t
+    unfold polarScaleWeight
+    push_cast
+    rw [Finset.sum_mul]
+    refine Finset.sum_congr rfl fun z _ => ?_
+    have hre : ((Real.exp (z.re * t) * Real.cos (z.im * t) : ℝ) : ℂ) =
+        (cexp (z * t) + cexp (conj z * t)) / 2 := by
+      have hc : conj (cexp (z * t)) = cexp (conj z * t) := by
+        rw [← Complex.exp_conj, map_mul, Complex.conj_ofReal]
+      rw [← hc, Complex.add_conj, Complex.exp_re]
+      simp [Complex.mul_re, Complex.mul_im]
+      ring
+    rw [mul_assoc, ← Complex.ofReal_mul, hre]
+    rw [show (z - s) * (t : ℂ) = z * t + (-s * t) by ring,
+      show (conj z - s) * (t : ℂ) = conj z * t + (-s * t) by ring, Complex.exp_add,
+      Complex.exp_add]
+    ring
+  have hint : ∀ z ∈ S, Integrable (fun t : ℝ =>
+      (c z : ℂ) / 2 * (cexp ((z - s) * t) + cexp ((conj z - s) * t))) (volume.restrict (Ioi 0)) := by
+    intro z hz
+    by_cases hcz : c z = 0
+    · simp [hcz]
+    have h1 : ((z - s)).re < 0 := by simp; linarith [hσ z hz hcz]
+    have h2 : ((conj z - s)).re < 0 := by simp; linarith [hσ z hz hcz]
+    exact ((integrableOn_exp_mul_complex_Ioi h1 0).add
+      (integrableOn_exp_mul_complex_Ioi h2 0)).const_mul _
+  simp_rw [hpt]
+  rw [integral_finsetSum _ hint, polarSum, Finset.sum_div, ← Finset.sum_add_distrib, Finset.sum_div]
+  refine Finset.sum_congr rfl fun z hz => ?_
+  by_cases hcz : c z = 0
+  · simp [hcz]
+  have h1 : ((z - s)).re < 0 := by simp; linarith [hσ z hz hcz]
+  have h2 : ((conj z - s)).re < 0 := by simp; linarith [hσ z hz hcz]
+  rw [integral_const_mul, integral_add (integrableOn_exp_mul_complex_Ioi h1 0)
+    (integrableOn_exp_mul_complex_Ioi h2 0), integral_exp_mul_complex_Ioi h1 0,
+    integral_exp_mul_complex_Ioi h2 0]
+  have hzs : z - s ≠ 0 := fun h => by simp [h] at h1
+  have hzs' : conj z - s ≠ 0 := fun h => by simp [h] at h2
+  have hsz : s - z ≠ 0 := fun h => hzs (by rw [← neg_sub, h, neg_zero])
+  have hsz' : s - conj z ≠ 0 := fun h => hzs' (by rw [← neg_sub, h, neg_zero])
+  simp only [Complex.ofReal_zero, mul_zero, Complex.exp_zero]
+  field_simp
+  ring
+
+/-- **Landau inequality.** For a nonnegative scale weight, `|G(x + ib)| ≤ G(x)` to the right of
+the weighted poles. -/
+theorem norm_polarSum_le_of_scaleWeight_nonneg {S : Finset ℂ} {c : ℂ → ℝ} {σ : ℝ}
+    (hσ : ∀ z ∈ S, c z ≠ 0 → z.re ≤ σ)
+    (hsym : ∀ s : ℂ, σ < s.re → polarSum S c s = ∑ z ∈ S, (c z : ℂ) / (s - conj z))
+    (hw : ∀ t : ℝ, 0 < t → 0 ≤ polarScaleWeight S c t) {x : ℝ} (hx : σ < x) (b : ℝ) :
+    ‖polarSum S c ((x : ℂ) + (b : ℂ) * I)‖ ≤ (polarSum S c x).re := by
+  have hrep : ∀ s : ℂ, σ < s.re →
+      polarSum S c s = ∫ t in Ioi (0 : ℝ), (polarScaleWeight S c t : ℂ) * cexp (-s * t) := by
+    intro s hs
+    rw [integral_polarScaleWeight_mul_exp hσ hs, ← hsym s hs]
+    ring
+  have hxb : σ < ((x : ℂ) + (b : ℂ) * I).re := by simpa using hx
+  have hxr : σ < (x : ℂ).re := by simpa using hx
+  have hreal : ∫ t in Ioi (0 : ℝ), (polarScaleWeight S c t : ℂ) * cexp (-(x : ℂ) * t) =
+      ((∫ t in Ioi (0 : ℝ), polarScaleWeight S c t * Real.exp (-x * t) : ℝ) : ℂ) := by
+    rw [← integral_ofReal]
+    refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+    simp only
+    push_cast
+    rw [← Complex.ofReal_neg, ← Complex.ofReal_mul, Complex.ofReal_exp]
+  rw [hrep _ hxb, hrep _ hxr, hreal, Complex.ofReal_re]
+  refine (norm_integral_le_integral_norm _).trans (le_of_eq ?_)
+  refine setIntegral_congr_fun measurableSet_Ioi fun t ht => ?_
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (hw t ht), Complex.norm_exp]
+  congr 2
+  simp [Complex.mul_re]
+
+/-- Residue extraction: `(x − σ) G(x + ib) → c(σ + ib)` as `x ↓ σ` (zero if `σ + ib ∉ S`). -/
+theorem tendsto_sub_mul_polarSum (S : Finset ℂ) (c : ℂ → ℝ) (σ b : ℝ) :
+    Tendsto (fun x : ℝ => ((x - σ : ℝ) : ℂ) * polarSum S c ((x : ℂ) + (b : ℂ) * I)) (𝓝[>] σ)
+      (𝓝 (∑ z ∈ S, if z = (σ : ℂ) + (b : ℂ) * I then (c z : ℂ) else 0)) := by
+  unfold polarSum
+  simp_rw [Finset.mul_sum]
+  refine tendsto_finsetSum _ fun z _ => ?_
+  by_cases hz : z = (σ : ℂ) + (b : ℂ) * I
+  · rw [if_pos hz]
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with x hx
+    have hx' : ((x - σ : ℝ) : ℂ) ≠ 0 := by
+      have : x - σ ≠ 0 := sub_ne_zero.mpr (ne_of_gt hx); exact_mod_cast this
+    rw [hz, show (x : ℂ) + (b : ℂ) * I - ((σ : ℂ) + (b : ℂ) * I) = ((x - σ : ℝ) : ℂ) by
+      push_cast; ring]
+    field_simp
+  · rw [if_neg hz]
+    have hden : (σ : ℂ) + (b : ℂ) * I - z ≠ 0 := fun h => hz (sub_eq_zero.mp h).symm
+    have hcont : ContinuousAt (fun x : ℝ => ((x - σ : ℝ) : ℂ) *
+        ((c z : ℂ) / ((x : ℂ) + (b : ℂ) * I - z))) σ := by
+      refine ContinuousAt.mul (by fun_prop) (ContinuousAt.div continuousAt_const
+        (by fun_prop) hden)
+    have h := hcont.tendsto
+    simp only [sub_self, Complex.ofReal_zero, zero_mul] at h
+    exact h.mono_left nhdsWithin_le_nhds
+
+/-- **Landau real anchor.** Let the polar data have even vertical sections on `σ > a` and a
+nonnegative scale weight. If `z₀` is a weighted point of maximal real part, the real point
+`Re z₀` carries strictly positive weight dominating every weight on the line `Re s = Re z₀`. -/
+theorem landau_real_anchor {S : Finset ℂ} {c : ℂ → ℝ} {a : ℝ}
+    (hSa : ∀ z ∈ S, z.re ≤ a)
+    (heven : ∀ σ' : ℝ, a < σ' → ∀ u : ℝ,
+      (polarSum S c ((σ' : ℂ) + ((-u : ℝ) : ℂ) * I)).re =
+        (polarSum S c ((σ' : ℂ) + (u : ℂ) * I)).re)
+    (hw : ∀ t : ℝ, 0 < t → 0 ≤ polarScaleWeight S c t)
+    {z₀ : ℂ} (hz₀ : z₀ ∈ S) (hc₀ : c z₀ ≠ 0) (htop : ∀ z ∈ S, c z ≠ 0 → z.re ≤ z₀.re) :
+    (z₀.re : ℂ) ∈ S ∧ 0 < c z₀.re ∧
+      ∀ b : ℝ, ((z₀.re : ℂ) + (b : ℂ) * I) ∈ S →
+        |c ((z₀.re : ℂ) + (b : ℂ) * I)| ≤ c z₀.re := by
+  classical
+  set σ : ℝ := z₀.re
+  have hsym : ∀ s : ℂ, σ < s.re → polarSum S c s = ∑ z ∈ S, (c z : ℂ) / (s - conj z) :=
+    fun s hs => polarSum_eq_reflected_of_even hSa htop heven hs
+  set r : ℝ → ℂ := fun b => ∑ z ∈ S, if z = (σ : ℂ) + (b : ℂ) * I then (c z : ℂ) else 0
+  have hr_eq : ∀ b : ℝ, r b = if (σ : ℂ) + (b : ℂ) * I ∈ S then (c ((σ : ℂ) + (b : ℂ) * I) : ℂ)
+      else 0 := fun b => Finset.sum_ite_eq' S _ _
+  have hkey : ∀ b : ℝ, ‖r b‖ ≤ (r 0).re := by
+    intro b
+    have hL := (tendsto_sub_mul_polarSum S c σ b).norm
+    have hR := (Complex.continuous_re.tendsto _).comp (tendsto_sub_mul_polarSum S c σ 0)
+    refine le_of_tendsto_of_tendsto hL hR ?_
+    filter_upwards [self_mem_nhdsWithin] with x hx
+    have hx' : σ < x := hx
+    have hle := norm_polarSum_le_of_scaleWeight_nonneg htop hsym hw hx' b
+    simp only [Function.comp_apply, Complex.ofReal_zero, zero_mul, add_zero]
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (sub_pos.mpr hx'),
+      Complex.re_ofReal_mul]
+    exact mul_le_mul_of_nonneg_left hle (sub_pos.mpr hx').le
+  have hr0 : r 0 = if (σ : ℂ) ∈ S then (c σ : ℂ) else 0 := by
+    rw [hr_eq]; simp
+  have hz₀eq : (σ : ℂ) + (z₀.im : ℂ) * I = z₀ := Complex.re_add_im z₀
+  have hrz : r z₀.im = (c z₀ : ℂ) := by rw [hr_eq, hz₀eq, if_pos hz₀]
+  have hpos : 0 < (r 0).re := by
+    have := hkey z₀.im
+    rw [hrz, Complex.norm_real, Real.norm_eq_abs] at this
+    exact lt_of_lt_of_le (abs_pos.mpr hc₀) this
+  have hmem : (σ : ℂ) ∈ S := by
+    by_contra h
+    rw [hr0, if_neg h] at hpos
+    simp at hpos
+  rw [hr0, if_pos hmem, Complex.ofReal_re] at hpos
+  refine ⟨hmem, hpos, fun b hb => ?_⟩
+  have := hkey b
+  rw [hr_eq, if_pos hb, Complex.norm_real, Real.norm_eq_abs, hr0, if_pos hmem,
+    Complex.ofReal_re] at this
+  exact this
+
+/-! ## §6. The lattice real anchor -/
+
+/-- A real-coefficient Dirichlet series commutes with conjugation. -/
+theorem LSeries_ofReal_conj (b : ℕ → ℝ) (s : ℂ) :
+    LSeries (fun n => (b n : ℂ)) (conj s) = conj (LSeries (fun n => (b n : ℂ)) s) := by
+  rw [LSeries, LSeries, Complex.conj_tsum]
+  refine tsum_congr fun n => ?_
+  rcases eq_or_ne n 0 with rfl | hn
+  · simp
+  rw [LSeries.term_of_ne_zero hn, LSeries.term_of_ne_zero hn, map_div₀, Complex.conj_ofReal]
+  congr 1
+  have harg : (n : ℂ).arg ≠ Real.pi := by
+    rw [Complex.natCast_arg]; exact Real.pi_pos.ne
+  rw [Complex.cpow_conj _ _ harg, Complex.conj_natCast]
+
+/-- **The lattice real anchor.** Let a nonnegative lattice series plus a finite polar sum have
+even positive-definite vertical sections on `σ > a`. Then the rightmost polar singularity of nonzero
+weight is anchored on the real axis: `Re z₀ ∈ S` with `c(Re z₀) > 0`, and `c(Re z₀)` dominates
+`|c|` along the whole line `Re s = Re z₀`. -/
+theorem lattice_real_anchor {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n)
+    {S : Finset ℂ} {c : ℂ → ℝ} {a : ℝ} (hSa : ∀ z ∈ S, z.re ≤ a)
+    (habs : LSeries.abscissaOfAbsConv (fun n => (b n : ℂ)) < a)
+    (hpd : ∀ σ : ℝ, a < σ → IsEvenPosDef fun u : ℝ =>
+      (LSeries (fun n => (b n : ℂ)) ((σ : ℂ) + (u : ℂ) * I) +
+        polarSum S c ((σ : ℂ) + (u : ℂ) * I)).re)
+    {z₀ : ℂ} (hz₀ : z₀ ∈ S) (hc₀ : c z₀ ≠ 0) (htop : ∀ z ∈ S, c z ≠ 0 → z.re ≤ z₀.re) :
+    (z₀.re : ℂ) ∈ S ∧ 0 < c z₀.re ∧
+      ∀ β : ℝ, ((z₀.re : ℂ) + (β : ℂ) * I) ∈ S →
+        |c ((z₀.re : ℂ) + (β : ℂ) * I)| ≤ c z₀.re := by
+  have hw : ∀ t : ℝ, 0 < t → 0 ≤ polarScaleWeight S c t := fun t ht =>
+    polarScaleWeight_nonneg_of_lattice_posDef hb hSa habs (fun σ hσ => (hpd σ hσ).posDef) ht
+  have heven : ∀ σ' : ℝ, a < σ' → ∀ u : ℝ,
+      (polarSum S c ((σ' : ℂ) + ((-u : ℝ) : ℂ) * I)).re =
+        (polarSum S c ((σ' : ℂ) + (u : ℂ) * I)).re := by
+    intro σ' hσ' u
+    have h := (hpd σ' hσ').even u
+    have hc : (σ' : ℂ) + ((-u : ℝ) : ℂ) * I = conj ((σ' : ℂ) + (u : ℂ) * I) := by
+      apply Complex.ext <;> simp
+    simp only [Complex.add_re] at h
+    rw [hc, LSeries_ofReal_conj, Complex.conj_re] at h
+    rw [hc]
+    linarith
+  exact landau_real_anchor hSa heven hw hz₀ hc₀ htop
 
 end GaloisForLFunctions.BiarithmeticGaugeGeometry

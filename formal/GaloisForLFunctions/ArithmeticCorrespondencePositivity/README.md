@@ -270,6 +270,7 @@ and gauge Jensen (ACG); Künneth collapse (AKT); the window certificate for ever
 | **P34 Elliptic localization is resonance** | At an off-line point the symmetric dilation by `a > 1` is elliptic iff `γ log a ∈ πℤ`, i.e. `a ∈ exp((π/γ)ℤ)`; one non-resonant scale makes a real even carrier blind there; carriers closed under the archimedean flow (all `a > 1`) are blind at every non-real off-line point; if every closure scale is resonant, the fibre `z = 1` survives as a positive non-isotropic fibre. | `symHeckeSymbol_im_ne_zero_iff`, `sin_mul_log_eq_zero_iff`, `eq_zero_of_nonresonant_scale`, `exists_nonresonant_scale`, `eq_zero_of_archimedean_closed`, `resonant_survivor` |
 | **P35 The Abel escape state is the boundary measure of the symbol** | Wiener–Khinchin for real `L¹ ∩ L²` profiles; the Abel Gram is `A_c(a,b) = e^{−c(a+b)}(2π)⁻¹∫‖G(c+iy)‖² cos(y(a−b)) dy` and `A_c(a+t, b+t) = e^{−2ct}A_c(a,b)` (dilation is a scalar on Abel Grams); a simple pole `r/(s − θ − iy₀)` of the symbol on the abscissa line carries the scaled atom `π‖r‖²δ_{y₀}`, a window where the symbol stays bounded carries nothing; with finitely many poles and outside mass `o(1/ε)`, `ε A_{θ+ε}(a,b) → e^{−θ(a+b)}Σ_k (‖r_k‖²/2) cos(y_k(a−b))` and the normalized Abel Grams converge to the diagonal kernel of the poles; if the Abel energy diverges and the symbol is bounded on a window, the window's share of the spectral measure tends to zero. | `integral_translate_mul_translate`, `abelGram_spectral`, `abelGram_add_add`, `integral_norm_sq_lineSymbol`, `tendsto_window_atom`, `tendsto_window_regular`, `tendsto_abelGram_of_poles`, `tendsto_abelGram_div_of_poles`, `tendsto_window_mass_div_zero`, `tendsto_lineSymbol_window_share_zero` |
 | **P36 The Abel escape atoms of `ζ` are its dominant zeros** | For the damped Möbius receiver: `∫ e^{−su}f(⌊e^u⌋) = Φ_f(s)/s` on cells; energy `O((T+1)^κ)` puts `e^{−cu}g_ε` in `L¹ ∩ L²` for `c > κ/2` with symbol `Φ_ε(s)/s`, `s = c + ½ + iy`, and `Φ_ε(s) = ζ(s)/ζ(s+ε) − m_ε ζ(s)` on `(1+κ)/2 < Re s < 1`; at a translated simple zero the symbol is `r/(s − ρ + ε)` plus a bounded function, `r = ζ(ρ−ε)/(ζ′(ρ)(ρ−ε))`. A dominant simple zero (energy `O(T^κ)` for every `κ > 2(Re ρ − ε) − 1`, the least exponent by P28) carries the atom `π‖r‖²δ_{Im ρ}` at `θ = Re ρ − ε − ½`, zero exactly when `ρ` is cancelled, and if uncancelled forces Abel escape at rate `1/e`; a segment of the abscissa line without translated zeros carries a vanishing share of the escape. | `integral_stepLaplaceIntegrand`, `integrable_and_memLp_dampedProfile_receiver`, `lineSymbol_receiver_eq`, `complexMellinPairing_receiver_eq`, `exists_cofactor_pole_bound`, `tendsto_receiver_window_atom`, `tendsto_receiver_abelGram_atTop`, `tendsto_receiver_window_share_zero` |
+| **P37 The Abel escape capacity of the dominant zeros** | For every finite set of dominant simple zeros on the abscissa line and every `M < π Σ‖r_ρ‖²`, eventually `M ≤ e ∫‖G_ε(θ+e+iy)‖² dy = 2π e A_{θ+e}(0,0)`: the escape rate pays the residue masses, the defect being the mass at infinite height; non-summable residue masses force `e A_{θ+e}(0,0) → ∞` and every window's normalized share → 0; an unattained abscissa (no zero on `Re s = θ + ½ + ε`) sends every compact window's share to 0. | `receiverResidue`, `eventually_le_mul_integral_lineSymbol`, `eventually_le_mul_abelGram_receiver`, `tendsto_mul_abelGram_receiver_atTop_of_not_summable`, `tendsto_receiver_atom_share_zero_of_not_summable`, `tendsto_receiver_window_share_zero_of_unattained` |
 
 ---
 
@@ -386,8 +387,9 @@ explicit formula for `M(x)` needs; it is not a positivity statement, and no furt
 structure decides it. In the Abel normalization the split is not needed for the finite-height
 part: the Abel Gram is the cosine transform of `‖G(c + iy)‖²` (P35), and its finite-height atoms
 are exactly the dominant translated zeros, each with mass `π‖ζ(ρ−ε)/(ζ′(ρ)(ρ−ε))‖²`, read from the
-local pole of `G` alone (P36). What the explicit formula would add is only the absence of mass at
-infinite height.
+local pole of `G` alone (P36). The escape rate is their capacity, and the two degenerate cases —
+non-summable residues and an unattained abscissa — escape to infinite height (P37). What the
+explicit formula would add is only the absence of mass at infinite height.
 
 **The report's mechanisms and milestones (§4.6).**
 
@@ -396,7 +398,7 @@ infinite height.
 | Budget law | the theorem of the square is free and the self-defect is constant along every orbit (P1, P2): the budget exists; its sufficiency is RH; a section count with Riemann–Roch and Bézout is the Hodge index, RH over `ℤ` and purity over `𝔽_q` (P29) |
 | Charged positivity law | sharp no-go: localizing multiplicative carriers are hyperbolic, hence isotropic (P4, P13); the successor is unipotent (P5); non-localizing positivity is source-blind (P6); positivity on nonnegative tests is shared by every dominated twin (P7) |
 | Coupling law | positivity on `ℚ_{>0}` splits the places (APD); on escape states dilation is the archimedean flow (P22) |
-| Capacity law for oscillation | the escape rank is the number of dominant zeros (P20, P24); a fixed budget pays a hyperbolic pair only on a finite segment (P12) |
+| Capacity law for oscillation | the escape rank is the number of dominant zeros (P20, P24); a fixed budget pays a hyperbolic pair only on a finite segment (P12); the Abel escape rate bounds the residue masses of the dominant zeros (P37) |
 | Completeness law for escape | complete for dominant configurations, their power rows and summable infinite configurations (P20, P24, P26); for `ζ` reduced to the explicit-formula split of the profile with symbol `G` (P18, P19) |
 | Base law | the base is a fixed loss; linear loss is the strip (P8); family averages lose linearly, flat families are pure (P23) |
 
@@ -456,7 +458,7 @@ The tools the report asks for (§4.5), with what ACP has built for each:
 | Loss-law calculus | root extraction and the loss of tensor powers; the family Jensen law with its flatness case | P8, P23 |
 | Oscillatory capacity | the escape rank: an integer read from a positive semidefinite kernel that counts the dominant zeros phase-independently, with dominated (subdominant) payment excluded; the budget horizon of a hyperbolic pair | P12, P18, P20, P24, P26 |
 | Base constructions | the base as a fixed loss; vertical sections, midpoint contractions, height-coupled zero-tax quartet contractions (`HeightCoupledSystem`), boundary-twist pole absorption (`absorbShiftedPoles`), single-system real-anchor planters (`plantDoubleRealAnchor`), and degree-`K` Fejér height-coupled systems (`FejerCoupledSystem`, halving central pole cost to `(9/2)κ`) against sharp Hadamard and Fejér–Egerváry–Szász converse floors; family averages are not a base | P8, P17, P23, P25, P31 |
-| Escape-state classification | the translation-Gram form of the cofactor Gram and its Laplace symbol `G`; the subdominance law; the horizon law, phase kernels, the Cauchy form and its positivity, the null space of escape states, independence of power characters; the transfer from power rows to exponential profiles; Bohr uniqueness and the summable case; the completeness criterion in ADR's normalization; Abel Grams as boundary spectral measures, the atom law, the symbol of the receiver and its poles at translated zeros | P18, P19, P20, P24, P26, P27, P35, P36 |
+| Escape-state classification | the translation-Gram form of the cofactor Gram and its Laplace symbol `G`; the subdominance law; the horizon law, phase kernels, the Cauchy form and its positivity, the null space of escape states, independence of power characters; the transfer from power rows to exponential profiles; Bohr uniqueness and the summable case; the completeness criterion in ADR's normalization; Abel Grams as boundary spectral measures, the atom law, the symbol of the receiver and its poles at translated zeros, the escape capacity | P18, P19, P20, P24, P26, P27, P35, P36, P37 |
 | Archimedean–finite coupling | on escape states dilation by `p` is the archimedean flow by `log p` | P22 |
 | Selection lemmas at the zero spacing | the resolution of a correspondence is its length; horizon averages select the zeros within `(2/T) Σ |D_{kl}|/|y_k − y_l|` | P11, P21 |
 | Arithmetic Stepanov | sparse annihilators need a lattice and never kill an off-line symbol; the Stepanov output (a one-sided prime-power count) is equivalent to RH | P14, P30 |
@@ -517,11 +519,11 @@ what ACP has proved about it.
    `1/ζ(s + ε)` between zeros. In the Abel normalization the finite-height part is settled without
    it: Abel escape states are boundary spectral measures of the symbol (P35), their atoms are the
    dominant translated zeros with residue masses, an uncancelled dominant zero forces Abel escape
-   at rate `1/e`, and zero-free segments of the abscissa line carry no escape (P36). Open: the mass
-   at infinite height, i.e. whether `e ∫_{|y|>Y} ‖G(θ + e + iy)‖² dy → 0` uniformly as `Y → ∞` — a
-   vertical mean-square statement for `ζ(s)/ζ(s+ε)` near the abscissa line; it fails when the
-   residues along a line of zeros are not summable or when real parts accumulate at the abscissa
-   without attaining it, where the escape concentrates at infinite height on the gauge torus (ACG).
+   at rate `1/e`, and zero-free segments of the abscissa line carry no escape (P36). The escape rate
+   is a capacity for the residue masses; non-summable residues along a line of zeros and an
+   unattained abscissa both send the normalized escape to infinite height (P37). Open: the mass at
+   infinite height `lim 2π e A − π Σ‖r_ρ‖²` when the residues are summable and the abscissa is
+   attained — a vertical mean-square statement for `ζ(s)/ζ(s+ε)` near the abscissa line.
 
 ---
 
@@ -604,6 +606,7 @@ reduction.
 | `EllipticLocalizationIsResonance` | Resonant scales; one non-resonant scale is blindness; the archimedean flow is blind; resonant survivors |
 | `TheAbelEscapeStateIsTheBoundaryMeasureOfTheSymbol` | Wiener–Khinchin; the Abel Gram and its spectral form; dilation covariance; the atom law; the Abel escape law and its normalized form; escape at infinite height |
 | `TheAbelEscapeAtomsOfZetaAreItsDominantZeros` | Log cells and step profiles; integrability from energy growth; the receiver symbol and its continuation; translated simple zeros as simple poles; the atom law for `ζ`; escape rate; zero-free segments |
+| `TheAbelEscapeCapacityOfTheDominantZeros` | The residue of a translated zero; the capacity law; non-summable residues and unattained abscissas escape to infinite height |
 | `MomentAmplificationOfAnyFamilyLosesLinearly` | Family Jensen; the loss law of family averages; flatness; calibration over `𝔽_q` |
 | `ExteriorAndHeightCoupledQuartetContractions` | Post–Widder polar scale-weight positivity and the real-anchor law (`c(σ_max) ≥ c(σ_max + iγ₁)`, `≥ 2c` single-ordinate); functorial `CurveDatum.exterior` and complete quartet phase elimination on `Λ²`; archimedean `exteriorTwoDivisorPoly` (`2 Λ²z_ρ(t) = z_ρ(t)² − z_ρ(2t)`) and `Δκ = 0` contraction (`a < 1/4`); full-strip `coupledQuartetSymSquare` (`0 < a ≤ b < 1/2`, `Δκ = 0`) and `HeightCoupledSystem (2κ) κ d γ` (`F(s)² F(s+iγ) F(s−iγ)`) with zero-tax collided quartet contraction, Hadamard–digamma budget, ordinate-`γ` quartet multiplicity bound, and finite-step real-zero elimination |
 | `IntrinsicExteriorAndMinimumAnchorCost` | Local degree-`1` Adams `Λ²` vanishing, isobaric shift-packet `Λ²` dichotomy (`m₀ ≥ 5`, ratio `≥ 11/5`), and scale-space cross-singularity (`Re = 1 + a > 1`); unconditional `κ_γ ↦ 0` boundary-twist absorption (`absorbShiftedPoles`), `total_zero_mass_le` origin-capacity floor, exact `s = 2` pole defect, and `(9 + 12/(4+γ²) + 6/(1+γ²))κ → 9κ` ordinate pole decay; single-system `plantDoubleRealAnchor` (`Δκ = 2`) and functor-independent Hadamard minimum pole law (`16M + 144M/(9+4γ²) + 5d < 9κ`, `κ ≥ 3`); discrete Fejér–Egerváry–Szász multiplier converse (`c₁ ≤ 2c₀ cos(π/(K+2))`), all-height two-sided shifted-Gamma sandwich, and `FejerCoupledSystem K` central pole halving (`9(K+1)/(2K) κ ↘ (9/2)κ`, `27/4 · κ < 8κ` at `K = 2`) |

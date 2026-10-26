@@ -34,6 +34,7 @@ import GaloisForLFunctions.ArithmeticCorrespondencePositivity.ExteriorAndHeightC
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.IntrinsicExteriorAndMinimumAnchorCost
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheAbelEscapeStateIsTheBoundaryMeasureOfTheSymbol
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheAbelEscapeAtomsOfZetaAreItsDominantZeros
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheAbelEscapeCapacityOfTheDominantZeros
 
 /-!
 # Arithmetic Correspondence Positivity
@@ -48,6 +49,7 @@ Laplace symbol; the family loss law; escape states of dominant configurations, t
 horizon averages and the coupling of dilations with the archimedean flow on them; power rows of
 the zeros as dominant configurations; completeness of infinite summable configurations; the escape
 completeness criterion; the escape alternative; section counts and Stepanov counts as the sign; the successor defect in the strip; the gauge-charged window off the edge; elliptic localization as resonance; Abel escape states as
-boundary spectral measures of the symbol, with the dominant zeros of `ζ` as their atoms. See
+boundary spectral measures of the symbol, with the dominant zeros of `ζ` as their atoms and the
+escape rate as their capacity. See
 `ArithmeticCorrespondencePositivity/README.md`.
 -/

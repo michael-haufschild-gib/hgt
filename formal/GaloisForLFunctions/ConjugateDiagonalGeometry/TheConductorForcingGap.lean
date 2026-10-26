@@ -73,11 +73,14 @@ theorem two_mul_deepZeroEnergy_sq_le {a δ w : ℝ} (ha : 0 < a) (hδ : 0 ≤ δ
       deepZeroNormBound a δ ^ 2 / 2 * Real.exp (2 * δ * a) := by
   have hE : 0 ≤ deepZeroEnergyBound a δ w := by unfold deepZeroEnergyBound; positivity
   have hs := pow_le_pow_left₀ hE (deepZeroEnergy_le_norm_exp ha hδ hw hwa) 2
+  have hexp : Real.exp (δ * a) ^ 2 = Real.exp (2 * δ * a) := by
+    rw [← Real.exp_nat_mul]
+    congr 1
+    ring
   have he : (deepZeroNormBound a δ / 2 * Real.exp (δ * a)) ^ 2 =
       deepZeroNormBound a δ ^ 2 / 4 * Real.exp (2 * δ * a) := by
-    rw [mul_pow, div_pow, ← Real.exp_nat_mul]
+    rw [mul_pow, div_pow, hexp]
     norm_num
-    ring
   rw [he] at hs
   linarith only [hs]
 
@@ -101,7 +104,8 @@ theorem forcing_requires_exponential_aperture {a δ w R γ A : ℝ}
   have hbound := lt_of_le_of_lt hcost hforce
   have hsignal := two_mul_deepZeroEnergy_sq_le ha hδ hw hwa
   have hN2 := sq_pos_of_pos hN
-  nlinarith only [hbound, hsignal, hN2]
+  apply (mul_lt_mul_right hN2).mp
+  linarith only [hbound, hsignal]
 
 /-- The conductor horizon and the exact sufficient forcing criterion have no common aperture. -/
 theorem conductor_forcing_disjoint {a δ w R γ A C ε : ℝ}

@@ -85,23 +85,27 @@ theorem sum_log_cyclotomic_eq_mertens {q : ℝ} (hq : 0 < q) (N : ℕ) :
   have hleft : ∑ n ∈ Icc 2 N, Real.log (eval q (cyclotomic n ℝ)) = ∑ n ∈ Icc 1 N, cycloLog q n := by
     rcases Nat.eq_zero_or_pos N with rfl | hN
     · simp
-    rw [← Icc_insert_succ_left (by omega : 1 ≤ N), sum_insert (by simp)]
+    rw [← Finset.insert_Icc_add_one_left_eq_Icc (by omega : 1 ≤ N), sum_insert (by simp)]
     simp only [cycloLog, if_pos, zero_add]
     exact (sum_congr rfl fun n hn => if_neg (by simp at hn; omega)).symm
+  simp only [mertens]
   rw [hleft, ← ArithmeticContinuationAndCriticalEnergy.sum_Icc_divisor_convolution_eq_dilation]
   refine sum_congr rfl fun k hk => ?_
   rw [← hinv k (by simp at hk; omega), Nat.sum_divisorsAntidiagonal' (fun a b =>
     (ArithmeticFunction.moebius a : ℝ) * Real.log (qInt b q))]
   exact sum_congr rfl fun j _ => mul_comm _ _
 
+/-- Real and complex evaluations of `Φ_n` at real points agree. -/
+theorem eval_cyclotomic_complex_ofReal (n : ℕ) (q : ℝ) :
+    eval (q : ℂ) (cyclotomic n ℂ) = ((eval q (cyclotomic n ℝ) : ℝ) : ℂ) := by
+  rw [← map_cyclotomic n (algebraMap ℝ ℂ), eval_map, ← Complex.coe_algebraMap, eval₂_hom]
+
 /-- `log Φ_n(1) = Λ(n)` over `ℝ`, for `n ≥ 2`. -/
 theorem log_eval_one_cyclotomic_real {n : ℕ} (hn : 2 ≤ n) :
     Real.log (eval 1 (cyclotomic n ℝ)) = ArithmeticFunction.vonMangoldt n := by
-  rw [← log_norm_eval_one_cyclotomic hn]
-  congr 1
-  rw [← map_cyclotomic n (algebraMap ℝ ℂ), eval_map, eval₂_at_one, Complex.norm_real,
+  rw [← log_norm_eval_one_cyclotomic hn, show (1 : ℂ) = ((1 : ℝ) : ℂ) by simp,
+    eval_cyclotomic_complex_ofReal, Complex.norm_real,
     Real.norm_of_nonneg (eval_cyclotomic_pos hn one_pos).le]
-  simp
 
 /-- **The arithmetic point**: `ψ(N) = Σ_{d ≤ N} M(⌊N/d⌋) log d`. -/
 theorem psi_eq_sum_mertens_log (N : ℕ) :
@@ -113,27 +117,48 @@ theorem psi_eq_sum_mertens_log (N : ℕ) :
   refine sum_congr rfl fun n hn => ?_
   rw [log_eval_one_cyclotomic_real (mem_Icc.mp hn).1, vonMangoldt_eq_torsionLogSum (mem_Icc.mp hn).1]
 
+/-- `Σ_{d ∣ k} μ(d) = [k = 1]`. -/
+theorem sum_antidiagonal_moebius {k : ℕ} (hk : 0 < k) :
+    ∑ x ∈ k.divisorsAntidiagonal, (ArithmeticFunction.moebius x.1 : ℝ) * 1 =
+      if k = 1 then 1 else 0 :=
+  (ArithmeticFunction.sum_eq_iff_sum_mul_moebius_eq (f := fun i => if i = 1 then (1 : ℝ) else 0)
+    (g := fun _ => 1)).mp (fun n hn => by
+    rw [sum_ite_eq', if_pos (Nat.one_mem_divisors.mpr hn.ne')]) k hk
+
 /-- The Möbius coefficients of the deformation sum to one. -/
 theorem sum_mertens_floor_eq_one {N : ℕ} (hN : 1 ≤ N) :
     ∑ d ∈ Icc 1 N, mertens (N / d) = 1 := by
   have h := ArithmeticContinuationAndCriticalEnergy.sum_Icc_divisor_convolution_eq_dilation
     (fun _ => (1 : ℝ)) (fun m => (ArithmeticFunction.moebius m : ℝ)) N
   simp only [one_mul] at h
-  rw [mertens] at *
   simp only [mertens]
   rw [← h]
-  have hcoe : ∀ k ∈ Icc 1 N, ∑ j ∈ k.divisors, (ArithmeticFunction.moebius (k / j) : ℝ) =
-      if k = 1 then 1 else 0 := by
-    intro k hk
-    have hk0 : 0 < k := by simp at hk; omega
-    rw [← Nat.sum_divisorsAntidiagonal' (fun a _ => (ArithmeticFunction.moebius a : ℝ))]
-    rw [← Nat.sum_divisorsAntidiagonal (fun a _ => (ArithmeticFunction.moebius a : ℝ))]
-    have := ArithmeticFunction.sum_moebius_divisors (n := k)
-    sorry
-  sorry
+  rw [sum_congr rfl fun k hk => by
+    rw [← Nat.sum_divisorsAntidiagonal' (fun a _ => (ArithmeticFunction.moebius a : ℝ)),
+      show ∑ x ∈ k.divisorsAntidiagonal, (ArithmeticFunction.moebius x.1 : ℝ) =
+        ∑ x ∈ k.divisorsAntidiagonal, (ArithmeticFunction.moebius x.1 : ℝ) * 1 by simp,
+      sum_antidiagonal_moebius (by simp at hk; omega)]]
+  rw [sum_ite_eq', if_pos (by simp; omega)]
 
 /-- **The horizon period is the value of the horizon polynomial at the arithmetic point.** -/
 theorem horizonPoly_eval_one (N : ℕ) : (horizonPoly N).eval 1 = Nat.lcmUpto N := by
-  sorry
+  have hR : (((horizonPoly N).eval 1 : ℤ) : ℝ) = ∏ n ∈ Icc 2 N, eval 1 (cyclotomic n ℝ) := by
+    rw [horizonPoly, eval_prod, Int.cast_prod]
+    refine prod_congr rfl fun n _ => ?_
+    rw [← map_cyclotomic_int n ℝ, eval_map, eval₂_at_one]
+    rfl
+  have hpos : 0 < ∏ n ∈ Icc 2 N, eval 1 (cyclotomic n ℝ) :=
+    prod_pos fun n hn => eval_cyclotomic_pos (mem_Icc.mp hn).1 one_pos
+  have hlog : Real.log (∏ n ∈ Icc 2 N, eval 1 (cyclotomic n ℝ)) = Real.log (Nat.lcmUpto N) := by
+    rw [Real.log_prod fun n hn => (eval_cyclotomic_pos (mem_Icc.mp hn).1 one_pos).ne',
+      ← Chebyshev.psi_eq_log_lcmUpto, psi_eq_fareySum]
+    exact sum_congr rfl fun n hn => by
+      rw [log_eval_one_cyclotomic_real (mem_Icc.mp hn).1,
+        vonMangoldt_eq_torsionLogSum (mem_Icc.mp hn).1]
+  have hreal : (((horizonPoly N).eval 1 : ℤ) : ℝ) = (Nat.lcmUpto N : ℝ) := by
+    rw [hR]
+    exact Real.log_injOn_pos (Set.mem_Ioi.mpr hpos)
+      (Set.mem_Ioi.mpr (by exact_mod_cast Nat.lcmUpto_pos N)) hlog
+  exact_mod_cast hreal
 
 end GaloisForLFunctions.ArithmeticEffectivityTheory

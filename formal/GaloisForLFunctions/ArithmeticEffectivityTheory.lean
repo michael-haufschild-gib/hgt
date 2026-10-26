@@ -12,6 +12,7 @@ import GaloisForLFunctions.ArithmeticEffectivityTheory.ThePolarBoxCount
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheCompletionLaw
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheConvexityOfCounts
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheArchimedeanComputationOfTheLogTorsion
+import GaloisForLFunctions.ArithmeticEffectivityTheory.TheQDeformationOfTheHorizonPeriod
 
 /-!
 # Arithmetic Effectivity Theory

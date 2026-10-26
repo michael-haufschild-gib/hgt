@@ -199,3 +199,24 @@ Existing inputs inspected: `EntirePoincareLelong`,
 `EvenSectorFullPositivity.differentiable_paperFT_of_compact`,
 `CompletedPrimeFluxFittingAttachment.xi_analyticOrderAt_eq_riemannZeta_of_mem_strip`,
 and `ZetaXiZeroCorrespondence`. Construction and Lean verification remain pending.
+
+## A faithful two-scale rigidity criterion: paper argument
+
+The existing explicit probe `splineProbe(u)=exp(u) U_1^{*4}(u)` is compact `C²`
+and its transform vanishes at no zeta zero. This is already proved in
+`BiScaleUncertainty/CubicSplineUniversalProbe`; its construction must be reused.
+Hence all its collided weights are strictly positive. The two-scale equality
+forces every zeta zero to have the same absolute depth. Hardy's theorem supplies
+a critical-line zero, so that common depth is zero. Conversely RH makes every
+kernel weight vanish. Thus, for this fixed explicitly constructed test,
+
+```
+RH ↔ D(E(2)−4E(1))−E(1)^2 = 0.
+```
+
+The invariant is always nonnegative; its strict positivity is equivalent to an
+off-line zero. This removes the nonzero-shell ambiguity for the actual zeta
+divisor and a faithful source. It is a new finite-scale spectral rigidity
+criterion, not a proof that its value vanishes and not an arithmetic upper bound.
+The necessary Hardy input must be an existing analytic theorem, with its
+dependencies audited; no numerical zero certificate is needed.

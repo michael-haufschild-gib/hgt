@@ -25,7 +25,9 @@ theorem summable_depthDispersion (f : CompactTest) (L : ℝ) :
     Summable fun p : zetaZeroConfig.carrier × zetaZeroConfig.carrier =>
       zetaWeight f p.1 * zetaWeight f p.2 *
         (depthKernel L (zetaDepth p.1) - depthKernel L (zetaDepth p.2)) ^ 2 :=
-  HTGeometry.summable_pairwise_dispersion (summable_zetaWeight f)
+  HTGeometry.summable_pairwise_dispersion
+    (a := zetaWeight f) (τ := fun ρ => depthKernel L (zetaDepth ρ))
+    (summable_zetaWeight f)
     (summable_heckeDefect f L) (summable_zeta_kernel_pow f L 2) (zetaWeight_nonneg f)
 
 /-- Exact pairwise identity for the full zeta divisor, with convergence discharged. -/
@@ -34,7 +36,9 @@ theorem pairwise_depth_eq_two_mul_dispersion (f : CompactTest) (L : ℝ) :
       zetaWeight f p.1 * zetaWeight f p.2 *
         (depthKernel L (zetaDepth p.1) - depthKernel L (zetaDepth p.2)) ^ 2) =
       2 * depthDispersion f L := by
-  rw [HTGeometry.tsum_pairwise_dispersion (summable_zetaWeight f)
+  rw [HTGeometry.tsum_pairwise_dispersion
+    (a := zetaWeight f) (τ := fun ρ => depthKernel L (zetaDepth ρ))
+    (summable_zetaWeight f)
     (summable_heckeDefect f L) (summable_zeta_kernel_pow f L 2) (zetaWeight_nonneg f)]
   unfold depthDispersion
   rw [heckeDefect_double]
