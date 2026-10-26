@@ -99,7 +99,8 @@ theorem rotation_factor (ρ u : ℂ) (v : ℝ) :
       ((Real.exp (-((ρ.re - 1 / 2) * v)) : ℝ) : ℂ) := by
     rw [← Complex.exp_add, Complex.ofReal_exp]
     congr 1
-    apply Complex.ext <;> simp [gammaOf_eq, Complex.mul_re, Complex.mul_im] <;> ring
+    apply Complex.ext <;> simp [gammaOf_eq, Complex.mul_re, Complex.mul_im]
+    ring
   rw [mul_assoc u, h1, mul_assoc u, h2, map_add, map_one, map_mul, Complex.conj_ofReal]
 
 /-- **Every nonzero weight rotates into the right half-plane.** For `W ≠ 0` and `δ > 0` some `u`

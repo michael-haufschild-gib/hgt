@@ -142,3 +142,15 @@ Existing unrelated worktree changes must be preserved.
   mechanism. Read the first 240 lines of that leaf and the escape leaf.
   These do not yet certify the requested long-modulus integrable producer.
   No PM source edits or new paper theorem have been made.
+
+- Nyquist cell-bound check `2836` failed only elaboration: missing `NNReal` scope,
+  partially applied majorant definition, numeric tail simplification, `0+k`,
+  and unspecified integral measures. Repaired in scratch; check `34323` running.
+- Further PM reuse: exact `sum_Ioc_mul_natDiv_eq_sum_Icc_Ioc` in
+  `BezoutValuationIncidence/HyperbolaCancellationWithDivisorBoundedCoefficients`;
+  generic `HTGeometry.integrable_tsum_of_summable_integral_norm` in
+  `HTGeometry/L1PeriodizationFourier`. Both statements and proofs inspected;
+  existing oleans present. No duplicate generic integration lemma needed.
+  Actual PM producer prototype `/tmp/leftovers_pm_integrable_producer.lean` written,
+  not compiled: exact floor cutoff, pointwise indicator series, integrability,
+  and full signed harmonic-tail integral. PM card remains unfinished.
