@@ -168,6 +168,7 @@ The language keeps these distinctions explicit:
 | **P29 Integral Bochner** | A locally finite `D` is the boundary divisor of an Euler product `Π_p (1 − p^{−s})^{−m(p)}` with `m(p) ∈ ℕ` iff it is even and positive definite. Greedy rounding keeps the prime error below `log(n + 1)` for every profile; logarithmic growth of the P28 profile is absorbed by `Σ_{n not prime} (1 + log n)² Λ(n)/n < ∞`. | `integral_bochner`, `IsBoundaryDivisor.round_log` |
 | **P30 σ-additivity and dense supports** | Countable sums of boundary divisors with summable pole orders `Σ_k D_k(0) < ∞` are boundary divisors. `Σ_n 2^{−n} 1_{(2π/(n+1)!)ℤ}` is a boundary divisor positive exactly on the dense subgroup `2πℚ`: boundary divisors need not be locally finite, but by P27 such supports never carry integer values with a simple pole. | `isBoundaryDivisor_tsum`, `ratLattice_isBoundaryDivisor`, `ratLattice_ne_zero_iff` |
 | **P31 Summable Bochner and rank `r`** | On any abelian group an absolutely summable even positive-definite `φ` has `Σ φ(γ) cos θ(γ) ≥ 0` for every additive `θ` (Følner Gram forms). Hence every absolutely summable even positive-definite function on `ℝ`, dense supports included, is the boundary divisor of an integral Euler product; for heights `t ∈ ℝ^r` independent over `ℤ`, every summable positive-definite profile on `ℤ^r` is an integral boundary profile, while an integer profile with a unit pole is one only if its support has rank `≤ 1`. | `IsEvenPosDef.tsum_mul_cos_nonneg`, `summable_real_integral`, `rank_profile_integral`, `rank_profile_collapse` |
+| **P32 Family Bochner** | For a family over a finite abelian `G`, an absolutely summable configuration on `G × ℝ` is a joint boundary divisor iff it is even and positive definite; realized by `Λ(n) n^{−1−x} B(ψ, log n)/|G|` with the family Bohr series `B(ψ, t) = Σ_p 𝒟(p) Re(ψ(−p₁) e^{−itp₂}) ≥ 0`. | `family_summable_bochner`, `familyBohr_nonneg`, `tsum_nonneg_of_gram` |
 
 ---
 
@@ -347,3 +348,4 @@ A contribution must:
 | `IntegralLocallyFinite` | Integral Euler products realize every locally finite positive-definite divisor |
 | `BoundarySummation` | Countable sums of boundary divisors; a boundary divisor supported on `2πℚ` |
 | `SummableBochner` | Bochner positivity in `ℓ¹`; integral realization of summable configurations; rank-`r` profiles |
+| `FamilyBochner` | Summable family configurations are exactly the positive-definite ones |

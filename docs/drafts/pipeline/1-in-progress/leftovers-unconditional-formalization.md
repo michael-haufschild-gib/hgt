@@ -21,8 +21,10 @@ Existing unrelated worktree changes must be preserved.
 ## Current checkpoint (authoritative over chronological notes)
 
 - No full card is certified complete after recovered-report scope audit.
-- Active Lean: `84590`, combined Nyquist witness/tail scratch and 96 axiom queries;
-  `/tmp/leftovers-nyquist-witnesses-audit.log`.
+- Nyquist witness audit `84590` finished with three reducible-coercion rewrite errors.
+  Explicit `change` reductions added; audit `7737` exited 0 with all 96 exact
+  names audited and only the standard three axioms. No diagnostics.
+  Witness migrated to `NyquistCriticalSignedWitnesses.lean` and wired; final source checks remain.
 - Nyquist canonical successful oleans: Primitive, TestCellBounds, BroadTests,
   SourceClassification, SourceQuantitative. Do not rebuild these. PrimitiveTail has a successful
   final source check and no olean. All six are wired into the umbrella.
@@ -450,3 +452,50 @@ Existing unrelated worktree changes must be preserved.
   adjacent-energy bound `A(N)≤2−4/N<2` for every `N≥2`. All this remains
   unchecked. It imports the existing positive-coercivity olean (present);
   no extra dependency build is currently needed for its eventual check.
+
+- Dyadic tent draft now also contains exact non-root level increment and full-level energy
+  identities, including the transition to the next level. Still unchecked.
+  Physical supplements combined for one scratch audit of their 21 public declarations:
+  `/tmp/leftovers_physical_supplements_audit.lean`; not started.
+  Pair-variance corpus search running as `73739`; result file
+  `/tmp/leftovers-paired-variance-search.json`.
+
+- Dyadic exact variance and best-constant draft written:
+  `/tmp/leftovers_dyadic_variance.lean`, not checked. Uses original tent and
+  disjoint paired blocks, proving the exact requested N/2048 and N/4096 constants.
+  Finite-mean minimum/attainment corpus search running as `54595`.
+
+- Existing finite-block arithmetic-mean minimization located and its full proof read:
+  `TransHorizonIncidenceMechanics.sum_range_sq_sub_mean_le` in
+  `MultiGapFermiSchedulesPAdicTracesAndOriginBulkTightness.lean:290`.
+  Its olean is absent. Checking existing mathlib equivalents before adding
+  a cross-programme import. Needed to certify attainment of the best constant,
+  not only bounds on its infimum.
+
+- Added `/tmp/leftovers_finite_window_variance.lean` using the existing finite-mean
+  minimization theorem, with explicit reindexing to Icc 1 N. Dyadic variance
+  draft now proves the infimum constant is itself valid and controls the
+  literal minimum variance. All these drafts remain unchecked. The generic
+  infimum helper needs only existence of one valid constant; no boundedness
+  premise is smuggled into the dyadic theorem.
+- Nyquist global lint exited 1: 21 unrelated errors, 416 size warnings;
+  no Nyquist diagnostic. Log `/tmp/leftovers-nyquist-lint.log`. The current
+  final witness check is `89531`; all 96 axiom lists are already clean.
+
+- Final canonical witness check `89531` exited 0, empty log. Six Nyquist
+  source checks remain including the original parent (PrimitiveTail already
+  passed earlier); the 96-name axiom audit covers all eight leaves.
+- Weighted-incidence searches completed (both partial=false). Reused the
+  surfaced binary-parent coercivity; other returned weighted continuum
+  results do not give the finite all-pairs matching claim. New unchecked
+  draft `/tmp/leftovers_weighted_doubling_incidence.lean` proves explicit
+  weights, off-pair exclusion, exact all-pairs reduction, energy comparison,
+  tent nullity, and the exact 24N/(1-6δ) coefficient.
+
+- Finite-cycle exact-collar draft added: `/tmp/leftovers_energy_collar_exact.lean`.
+  It derives the paper radius exp(-1-8E/exp(-1/2)) from the existing first-order
+  deficit theorem, including the closed collar endpoint, and the exact mesh
+  exponent 128 at accuracy ε/4. The previous radius used squared increments
+  and exponent 32; this draft retains the required exact constant 8. Unchecked.
+- Active Lean remains original Nyquist parent final source audit `86965`.
+  All newly launched corpus searches have completed; no active search handle.

@@ -74,7 +74,7 @@ def IsFamPosCosPoly (P : G × ℝ → ℝ) : Prop :=
   ∃ (N : ℕ) (c lam : ℕ → ℝ) (ψ : ℕ → AddChar G ℂ), (∀ i, 0 ≤ c i) ∧
     ∀ q, P q = ∑ i ∈ range N, c i * jointMode (ψ i) (lam i) q
 
-omit [DecidableEq G] in
+omit [Fintype G] [DecidableEq G] in
 theorem isFamPosCosPoly_finset_sum {ι : Type*} (s : Finset ι) (c lam : ι → ℝ)
     (ψ : ι → AddChar G ℂ) (hc : ∀ i ∈ s, 0 ≤ c i) :
     IsFamPosCosPoly fun q => ∑ i ∈ s, c i * jointMode (ψ i) (lam i) q := by
@@ -90,14 +90,16 @@ theorem isFamPosCosPoly_finset_sum {ι : Type*} (s : Finset ι) (c lam : ι → 
       · exact hc a (Finset.mem_insert_self a s)
       · exact hc' j
     · beta_reduce
-      rw [Finset.sum_insert ha, hrep q, Finset.sum_range_succ, if_pos rfl, if_pos rfl, if_pos rfl,
+      have hr := hrep q
+      beta_reduce at hr
+      rw [Finset.sum_insert ha, hr, Finset.sum_range_succ, if_pos rfl, if_pos rfl, if_pos rfl,
         add_comm]
       congr 1
       refine Finset.sum_congr rfl fun j hj => ?_
       have : j ≠ N := (Finset.mem_range.mp hj).ne
       rw [if_neg this, if_neg this, if_neg this]
 
-omit [DecidableEq G] in
+omit [Fintype G] [DecidableEq G] in
 /-- **Range.** A pointwise limit of family cosine polynomials is a joint boundary divisor. -/
 theorem isJointBoundaryDivisor_of_tendsto_famPosCosPoly {P : ℕ → G × ℝ → ℝ} {𝒟 : G × ℝ → ℝ}
     (hP : ∀ n, IsFamPosCosPoly (P n)) (hlim : ∀ q, Tendsto (fun n => P n q) atTop (𝓝 (𝒟 q))) :
@@ -181,28 +183,30 @@ theorem famPoly_eq {E : G × ℝ → ℝ} {S : Finset (G × ℝ)} (hS : ∀ p �
     refine Finset.sum_congr rfl fun p _ => ?_
     rw [← Finset.mul_sum, sum_jointMode_mul]
     field_simp
-  unfold famPoly dirichletMean
+  unfold dirichletMean
   have e2 : ∀ k : ℕ, ∑ ψ : AddChar G ℂ, 1 / ((n : ℝ) ^ 2 * Fintype.card G) *
       familyBohr E ψ ((k : ℝ) / n) * jointMode ψ ((k : ℝ) / n) q =
       1 / (n : ℝ) ^ 2 * ∑ ψ : AddChar G ℂ, 1 / (Fintype.card G : ℝ) *
         familyBohr E ψ ((k : ℝ) / n) * jointMode ψ ((k : ℝ) / n) q := fun k => by
     rw [Finset.mul_sum]
-    refine Finset.sum_congr rfl fun ψ _ => ?_
-    rw [one_div_mul_one_div]
-    ring
-  simp only [e2, hone, Finset.mul_sum, Finset.sum_mul]
-  rw [Finset.sum_comm]
+    exact Finset.sum_congr rfl fun ψ _ => by ring
+  have hL : famPoly E n q = ∑ k ∈ Icc 1 (n ^ 2), ∑ p ∈ S, E p / 2 *
+      ((if q.1 = p.1 then 1 else 0) * (1 / (n : ℝ) ^ 2 * Real.cos ((k : ℝ) / n * (q.2 - p.2))) +
+        (if q.1 = -p.1 then 1 else 0) *
+          (1 / (n : ℝ) ^ 2 * Real.cos ((k : ℝ) / n * (q.2 + p.2)))) := by
+    unfold famPoly
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [e2, hone, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun p _ => by ring
+  rw [hL, Finset.sum_comm]
   refine Finset.sum_congr rfl fun p _ => ?_
-  rw [← Finset.mul_sum, ← Finset.sum_add_distrib, ← Finset.sum_mul, ← Finset.sum_mul,
-    Finset.mul_sum, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun k _ => ?_
-  ring
+  rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib, Finset.mul_sum]
 
 /-! ### Locally finite family configurations -/
 
 variable {𝒟 : G × ℝ → ℝ}
 
-omit [DecidableEq G] in
+omit [Fintype G] [DecidableEq G] in
 /-- Around a height `u`, the nonzero shifts `u ∓ p₂` by points of a locally finite configuration stay
 at a positive distance from `0`. -/
 theorem exists_famGap (hloc : ∀ R : ℝ, {p : G × ℝ | 𝒟 p ≠ 0 ∧ |p.2| ≤ R}.Finite) (u : ℝ) :
@@ -247,7 +251,7 @@ noncomputable def famSupport (hloc : ∀ R : ℝ, {p : G × ℝ | 𝒟 p ≠ 0 �
 noncomputable def famConfig (𝒟 : G × ℝ → ℝ) (N : ℕ) (p : G × ℝ) : ℝ :=
   𝒟 p * fejerFactor ((N : ℝ) + 1) p.2
 
-omit [DecidableEq G] in
+omit [Fintype G] [DecidableEq G] in
 theorem famConfig_eq_zero (hloc : ∀ R : ℝ, {p : G × ℝ | 𝒟 p ≠ 0 ∧ |p.2| ≤ R}.Finite) (N : ℕ)
     {p : G × ℝ} (hp : p ∉ famSupport hloc N) : famConfig 𝒟 N p = 0 := by
   unfold famConfig
@@ -281,8 +285,8 @@ noncomputable def famApprox (hloc : ∀ R : ℝ, {p : G × ℝ | 𝒟 p ≠ 0 �
 omit [Fintype G] in
 /-- The point masses at `q` and `−q` through the fibre indicators. -/
 theorem fibre_dirac (q p : G × ℝ) :
-    (if q.1 = p.1 then (1 : ℝ) else 0) * diracAt (q.2 - p.2) = if p = q then 1 else 0 ∧
-    (if q.1 = -p.1 then (1 : ℝ) else 0) * diracAt (q.2 + p.2) = if p = -q then 1 else 0 := by
+    ((if q.1 = p.1 then (1 : ℝ) else 0) * diracAt (q.2 - p.2) = if p = q then 1 else 0) ∧
+    ((if q.1 = -p.1 then (1 : ℝ) else 0) * diracAt (q.2 + p.2) = if p = -q then 1 else 0) := by
   constructor
   · unfold diracAt
     by_cases h : p = q
@@ -322,11 +326,22 @@ theorem abs_famApprox_sub_le (h𝒟 : IsEvenPosDef 𝒟)
   -- `E(q)` as a sum of point masses over `S`.
   have hEq : E q = ∑ p ∈ S, E p / 2 * ((if q.1 = p.1 then 1 else 0) * diracAt (q.2 - p.2) +
       (if q.1 = -p.1 then 1 else 0) * diracAt (q.2 + p.2)) := by
-    simp only [fun p => (fibre_dirac q p).1, fun p => (fibre_dirac q p).2, mul_add,
-      Finset.sum_add_distrib, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq']
     have hEven : E (-q) = E q := (famConfig_isEvenPosDef' h𝒟 N).even q
-    by_cases hq : q ∈ S <;> by_cases hq' : -q ∈ S <;> simp only [hq, hq', if_true, if_false] <;>
-      simp only [hS q, hS (-q), hEven, *] <;> ring
+    have e : ∀ p, E p / 2 * ((if q.1 = p.1 then 1 else 0) * diracAt (q.2 - p.2) +
+        (if q.1 = -p.1 then 1 else 0) * diracAt (q.2 + p.2)) =
+        (if p = q then E p / 2 else 0) + (if p = -q then E p / 2 else 0) := fun p => by
+      rw [(fibre_dirac q p).1, (fibre_dirac q p).2]
+      split_ifs <;> ring
+    rw [Finset.sum_congr rfl fun p _ => e p, Finset.sum_add_distrib, Finset.sum_ite_eq',
+      Finset.sum_ite_eq']
+    by_cases hq : q ∈ S <;> by_cases hq' : -q ∈ S
+    · rw [if_pos hq, if_pos hq', hEven]; ring
+    · have h1 := hS _ hq'
+      rw [hEven] at h1
+      rw [if_pos hq, if_neg hq', h1]; ring
+    · have h1 := hS _ hq
+      rw [if_neg hq, if_pos hq', hEven, h1]; ring
+    · rw [if_neg hq, if_neg hq', hS _ hq]; ring
   -- The kernel error at each relevant shift.
   have hY : ∀ p ∈ S, ∀ w, (w = q.2 - p.2 ∨ w = q.2 + p.2) →
       |dirichletMean n w - diracAt w| ≤ B := by

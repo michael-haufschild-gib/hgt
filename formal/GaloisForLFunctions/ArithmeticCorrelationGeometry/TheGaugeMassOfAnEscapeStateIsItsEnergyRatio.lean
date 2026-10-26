@@ -105,7 +105,7 @@ theorem pronicNorm_rowDilate_sq_eq {j : ℕ} (hj : 1 ≤ j) (v : ℕ → ℝ) (h
         ∑ n ∈ Icc 1 K, v n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) +
           v (K + 1) ^ 2 / (((K + 1 : ℕ) : ℝ) * (((K + 1 : ℕ) : ℝ) + 1)) := by
       rw [hIoc, hIoc, sum_Ioc_succ_top (Nat.zero_le K)]
-    rw [hL, hR, ih, mul_add]
+    rw [hL, hR, ih, mul_add (1 / (j : ℝ))]
     congr 1
     have hval : ∀ n ∈ Icc (j * (K + 1)) (j * (K + 1) + j - 1),
         rowDilate j v n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) =
@@ -244,7 +244,7 @@ theorem tendsto_subsequence_atTop : Tendsto L.subsequence atTop atTop :=
 theorem tendsto_div_atTop (d : ℕ+) (k : ℕ) :
     Tendsto (fun m => (L.subsequence m + 1 + 1) / (d : ℕ) - k) atTop atTop := by
   refine tendsto_atTop_atTop.mpr fun b => ?_
-  obtain ⟨m₀, hm₀⟩ := tendsto_atTop_atTop.mp tendsto_subsequence_atTop L ((b + k) * d)
+  obtain ⟨m₀, hm₀⟩ := tendsto_atTop_atTop.mp (tendsto_subsequence_atTop L) ((b + k) * d)
   refine ⟨m₀, fun m hm => ?_⟩
   have h1 := hm₀ m hm
   have h2 : b + k ≤ (L.subsequence m + 1 + 1) / (d : ℕ) := by
@@ -260,7 +260,7 @@ theorem gaugeMass_eq_one_of_admits (hadm : Admits dampedMobiusEnergy ε) :
   have hdiag : ∀ d : ℕ+, (d : ℝ) * L.kernel d d = 1 := by
     intro d
     have hden : Tendsto (fun m => dampedMobiusEnergy ε (L.subsequence m + 1)) atTop (𝓝 e) :=
-      hlim.comp ((tendsto_add_atTop_nat 1).comp tendsto_subsequence_atTop L)
+      hlim.comp ((tendsto_add_atTop_nat 1).comp (tendsto_subsequence_atTop L))
     have hup : Tendsto (fun m => dampedMobiusEnergy ε ((L.subsequence m + 1 + 1) / d) /
         dampedMobiusEnergy ε (L.subsequence m + 1)) atTop (𝓝 1) := by
       have := (hlim.comp (by simpa using tendsto_div_atTop L d 0)).div hden he.ne'
@@ -302,7 +302,7 @@ theorem gaugeMass_eq_zero_of_powerGrowth {κ c C : ℝ} (hκ : 0 < κ) (hc : 0 <
     intro d
     refine le_of_forall_pos_le_add fun δ hδ => ?_
     have hev1 := (tendsto_div_atTop L d 0).eventually hpow
-    have hev2 := ((tendsto_add_atTop_nat 1).comp tendsto_subsequence_atTop L).eventually hpow
+    have hev2 := ((tendsto_add_atTop_nat 1).comp (tendsto_subsequence_atTop L)).eventually hpow
     obtain ⟨m, hm, h1, h2⟩ := ((mul_kernel_le_energyRatio L d hδ).and (hev1.and hev2)).exists
     simp only [Function.comp_apply, Nat.sub_zero] at h1 h2
     set T := L.subsequence m
@@ -336,16 +336,15 @@ theorem gaugeMass_eq_zero_of_powerGrowth {κ c C : ℝ} (hκ : 0 < κ) (hc : 0 <
     have h0 : Tendsto (fun n : ℕ => 2 / ((n + 1 : ℕ) : ℝ)) atTop (𝓝 0) := by
       have := tendsto_const_div_atTop_nhds_zero_nat (2 : ℝ)
       exact this.comp (tendsto_add_atTop_nat 1) |>.congr fun n => by simp
-    have := ((Real.continuousAt_rpow_const 0 κ (Or.inr hκ)).tendsto.comp h0).const_mul (C / c)
+    have := ((Real.continuousAt_rpow_const 0 κ (Or.inr hκ.le)).tendsto.comp h0).const_mul (C / c)
     simpa [Real.zero_rpow hκ.ne'] using this
   obtain ⟨n, hn⟩ := (hlim.eventually (gt_mem_nhds hδ)).exists
   rw [gaugeMass_eq L]
   have hbdd : BddBelow (Set.range fun d : ℕ+ => (d : ℝ) * L.kernel d d) := by
     refine ⟨0, ?_⟩
     rintro _ ⟨d, rfl⟩
-    have := asymKernel_psd hsymm hpsd hcontr {1} fun _ => 1
     have hd := L.packet_nonneg {d} fun _ => 1
-    simp only [sum_singleton, mul_one] at hd
+    simp only [sum_singleton, mul_one, one_mul] at hd
     exact mul_nonneg (by positivity) hd
   calc (⨅ d : ℕ+, (d : ℝ) * L.kernel d d) ≤ ((n.succPNat : ℕ+) : ℝ) * L.kernel n.succPNat n.succPNat :=
         ciInf_le hbdd _

@@ -92,12 +92,13 @@ theorem differentiableOn_succShiftDefect (a : ℕ → ℂ)
     (hsum : ∀ σ : ℝ, 0 < σ → Summable fun n : ℕ => ‖a (n + 1)‖ * ((n : ℝ) + 1) ^ (-σ - 1)) :
     DifferentiableOn ℂ (succShiftDefect a) {s | 0 < s.re} := by
   intro s hs
+  have hs' : 0 < s.re := hs
   set σ₀ := s.re / 2
   set R := ‖s‖ + 1
   have hσ₀ : 0 < σ₀ := half_pos hs
   set V : Set ℂ := {w | σ₀ < w.re} ∩ Metric.ball 0 R
   have hV : IsOpen V := (isOpen_lt continuous_const Complex.continuous_re).inter Metric.isOpen_ball
-  have hsV : s ∈ V := ⟨by show σ₀ < s.re; linarith, by simp [R]⟩
+  have hsV : s ∈ V := ⟨by show σ₀ < s.re; simp only [σ₀]; linarith, by simp [R]⟩
   have hdiff : DifferentiableOn ℂ (fun w => ∑' n : ℕ, succShiftTerm a n w) V := by
     refine differentiableOn_tsum_of_summable_norm (u := fun n => ‖a (n + 1)‖ *
       (R * ((n : ℝ) + 1) ^ (-σ₀ - 1))) ?_ (fun n => (fun w _ =>
@@ -146,21 +147,22 @@ theorem tsum_succShift_eq (a : ℕ → ℂ)
 
 /-! ### The prime source -/
 
+/-- The prime source as a complex sequence. -/
+def vonMangoldtC (n : ℕ) : ℂ := (ArithmeticFunction.vonMangoldt n : ℂ)
+
 /-- `Σ Λ(n+1)(n+1)^{−σ−1}` converges for every `σ > 0`. -/
 theorem summable_vonMangoldt_shift {σ : ℝ} (hσ : 0 < σ) :
-    Summable fun n : ℕ => ‖(ArithmeticFunction.vonMangoldt (n + 1) : ℂ)‖ * ((n : ℝ) + 1) ^ (-σ - 1) := by
+    Summable fun n : ℕ => ‖vonMangoldtC (n + 1)‖ * ((n : ℝ) + 1) ^ (-σ - 1) := by
   have hs : 1 < ((1 + σ : ℝ) : ℂ).re := by simp; linarith
-  have h := (summable_nat_add_iff 1).mpr ((summable_norm_iff).mpr (LSeriesSummable_vonMangoldt hs))
+  have h := (summable_nat_add_iff 1).mpr
+    ((summable_norm_iff).mpr (ArithmeticFunction.LSeriesSummable_vonMangoldt hs))
   refine h.congr fun n => ?_
   rw [LSeries.term_of_ne_zero (Nat.succ_ne_zero n), norm_div,
-    Complex.norm_natCast_cpow_of_pos (Nat.succ_pos n)]
+    Complex.norm_natCast_cpow_of_pos (Nat.succ_pos n), vonMangoldtC]
   simp only [Complex.ofReal_re]
   push_cast
   rw [Real.rpow_neg (by positivity), div_eq_mul_inv, show -σ - 1 = -(1 + σ) by ring,
     Real.rpow_neg (by positivity)]
-
-/-- The prime source as a complex sequence. -/
-def vonMangoldtC (n : ℕ) : ℂ := (ArithmeticFunction.vonMangoldt n : ℂ)
 
 /-- **The successor defect of the prime source is holomorphic on `Re s > 0`.** -/
 theorem differentiableOn_succShiftDefect_vonMangoldt :
@@ -171,8 +173,9 @@ theorem differentiableOn_succShiftDefect_vonMangoldt :
 theorem tsum_vonMangoldt_eq {s : ℂ} (hs : 1 < s.re) :
     ∑' n : ℕ, vonMangoldtC (n + 1) * (((n : ℝ) + 1 : ℝ) : ℂ) ^ (-s) =
       -deriv riemannZeta s / riemannZeta s := by
-  rw [← LSeries_vonMangoldt_eq_deriv_riemannZeta_div hs, LSeries,
-    tsum_eq_zero_add (LSeriesSummable_vonMangoldt hs), LSeries.term_zero, zero_add]
+  rw [← ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div hs, LSeries,
+    tsum_eq_zero_add (ArithmeticFunction.LSeriesSummable_vonMangoldt hs), LSeries.term_zero,
+    zero_add]
   refine tsum_congr fun n => ?_
   rw [LSeries.term_of_ne_zero (Nat.succ_ne_zero n), vonMangoldtC, Complex.cpow_neg, div_eq_mul_inv]
   push_cast
@@ -184,6 +187,7 @@ leaves every principal part of `−ζ′/ζ` in the critical strip unchanged. -/
 theorem succShift_vonMangoldt_eq {s : ℂ} (hs : 1 < s.re) :
     ∑' n : ℕ, vonMangoldtC (n + 1) * ((((n : ℝ) + 1) + 1 : ℝ) : ℂ) ^ (-s) =
       -deriv riemannZeta s / riemannZeta s - succShiftDefect vonMangoldtC s := by
-  rw [tsum_succShift_eq _ (fun _ hσ => summable_vonMangoldt_shift hσ) hs, tsum_vonMangoldt_eq hs]
+  rw [tsum_succShift_eq vonMangoldtC (fun _ hσ => summable_vonMangoldt_shift hσ) hs,
+    tsum_vonMangoldt_eq hs]
 
 end GaloisForLFunctions.ArithmeticCorrespondencePositivity

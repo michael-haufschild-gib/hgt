@@ -288,4 +288,125 @@ theorem sum_tailWeight_div_ne_zero (I : Finset ℕ) (x₀ : GaugeTorus) :
   rw [this, norm_neg, norm_one] at hnorm
   norm_num at hnorm
 
+
+/-- **Twin tails grow linearly**: `N⁻¹ Σ_{n ≤ N} μ(n)χ_x(n)` converges to
+`δ_Q Σ_{d | Q} ψ(d)/d`, `δ_Q` the density of squarefree integers coprime to `Q`. -/
+theorem tendsto_moebiusGaugeSum_twinTail_div (I : Finset ℕ) (x₀ : GaugeTorus) :
+    Tendsto (fun N : ℕ => moebiusGaugeSum N (twinTail I x₀) / (N : ℂ)) atTop
+      (𝓝 ((BezoutValuationIncidence.coprimeSquarefreeDensity (tailModulus I) : ℂ) *
+        ∑ d ∈ (tailModulus I).divisors, tailWeight x₀ d / (d : ℂ))) := by
+  set Q := tailModulus I
+  have hQ := squarefree_tailModulus I
+  have hd : ∀ d ∈ Q.divisors, Tendsto (fun N : ℕ =>
+      BezoutValuationIncidence.coprimeSquarefreeCount Q (N / d) / (N : ℝ)) atTop
+      (𝓝 (BezoutValuationIncidence.coprimeSquarefreeDensity Q / d)) := by
+    intro d hdm
+    have hd0 : (0 : ℝ) < d := by exact_mod_cast Nat.pos_of_mem_divisors hdm
+    have hx : Tendsto (fun N : ℕ => (N : ℝ) / d) atTop atTop :=
+      tendsto_natCast_atTop_atTop.atTop_div_const hd0
+    have hlim := ((BezoutValuationIncidence.tendsto_coprimeSquarefreeMean_of_squarefree Q hQ).comp
+      hx).div_const (d : ℝ)
+    refine hlim.congr' ?_
+    filter_upwards [eventually_ge_atTop 1] with N hN
+    have hN0 : (N : ℝ) ≠ 0 := by positivity
+    simp only [Function.comp_apply, BezoutValuationIncidence.coprimeSquarefreeMean,
+      Nat.floor_div_eq_div]
+    field_simp
+  have hsum := tendsto_finsetSum (s := Q.divisors) fun d hdm =>
+    (Complex.continuous_ofReal.tendsto _).comp (hd d hdm) |>.const_mul (tailWeight x₀ d)
+  have heq : ∀ N : ℕ, moebiusGaugeSum N (twinTail I x₀) / (N : ℂ) = ∑ d ∈ Q.divisors,
+      tailWeight x₀ d * (((BezoutValuationIncidence.coprimeSquarefreeCount Q (N / d) / (N : ℝ) :
+        ℝ)) : ℂ) := by
+    intro N
+    rw [moebiusGaugeSum_twinTail, sum_div]
+    refine sum_congr rfl fun d _ => ?_
+    push_cast
+    ring
+  have hval : (BezoutValuationIncidence.coprimeSquarefreeDensity Q : ℂ) *
+      ∑ d ∈ Q.divisors, tailWeight x₀ d / (d : ℂ) = ∑ d ∈ Q.divisors,
+        tailWeight x₀ d * (((BezoutValuationIncidence.coprimeSquarefreeDensity Q / d : ℝ)) : ℂ) := by
+    rw [mul_sum]
+    refine sum_congr rfl fun d _ => ?_
+    push_cast
+    ring
+  rw [hval]
+  simp_rw [heq]
+  exact hsum
+
+/-- Eventually `K (N+1)^{3/4} < c N` for every `K` and `c > 0`. -/
+theorem eventually_mul_rpow_lt (K : ℝ) {c : ℝ} (hc : 0 < c) :
+    ∀ᶠ N : ℕ in atTop, K * ((N : ℝ) + 1) ^ (3 / 4 : ℝ) < c * N := by
+  have h1 : Tendsto (fun N : ℕ => ((N : ℝ) + 1) ^ (1 / 4 : ℝ)) atTop atTop :=
+    (tendsto_rpow_atTop (by norm_num)).comp
+      (tendsto_atTop_add_const_right _ 1 tendsto_natCast_atTop_atTop)
+  filter_upwards [h1.eventually_gt_atTop (2 * |K| / c), eventually_ge_atTop 1] with N hN hN1
+  have hN1' : (1 : ℝ) ≤ N := by exact_mod_cast hN1
+  have hpos : (0 : ℝ) < (N : ℝ) + 1 := by positivity
+  have hsplit : ((N : ℝ) + 1) ^ (3 / 4 : ℝ) * ((N : ℝ) + 1) ^ (1 / 4 : ℝ) = (N : ℝ) + 1 := by
+    rw [← Real.rpow_add hpos]; norm_num
+  have h34 : 0 < ((N : ℝ) + 1) ^ (3 / 4 : ℝ) := Real.rpow_pos_of_pos hpos _
+  have hK : |K| < c * ((N : ℝ) + 1) ^ (1 / 4 : ℝ) / 2 := by
+    rw [div_lt_iff₀ hc] at hN
+    linarith
+  calc K * ((N : ℝ) + 1) ^ (3 / 4 : ℝ) ≤ |K| * ((N : ℝ) + 1) ^ (3 / 4 : ℝ) :=
+        mul_le_mul_of_nonneg_right (le_abs_self K) h34.le
+    _ < c * ((N : ℝ) + 1) ^ (1 / 4 : ℝ) / 2 * ((N : ℝ) + 1) ^ (3 / 4 : ℝ) :=
+        mul_lt_mul_of_pos_right hK h34
+    _ = c * ((N : ℝ) + 1) / 2 := by rw [← hsplit]; ring
+    _ ≤ c * N := by nlinarith
+
+/-- **Every twin tail is strongly exceptional.** -/
+theorem twinTail_mem_strongExceptional (I : Finset ℕ) (x₀ : GaugeTorus) :
+    twinTail I x₀ ∈ strongExceptional := by
+  set L := (BezoutValuationIncidence.coprimeSquarefreeDensity (tailModulus I) : ℂ) *
+    ∑ d ∈ (tailModulus I).divisors, tailWeight x₀ d / (d : ℂ)
+  have hdens : 0 < BezoutValuationIncidence.coprimeSquarefreeDensity (tailModulus I) := by
+    rw [BezoutValuationIncidence.coprimeSquarefreeDensity]
+    exact mul_pos RHTower.Sieve.squarefreeDensity_pos
+      (prod_pos fun p _ => div_pos (by positivity) (by positivity))
+  have hL : L ≠ 0 := mul_ne_zero (by exact_mod_cast hdens.ne') (sum_tailWeight_div_ne_zero I x₀)
+  have hLpos : 0 < ‖L‖ := norm_pos_iff.mpr hL
+  have hlim := tendsto_moebiusGaugeSum_twinTail_div I x₀
+  intro K
+  obtain ⟨N, hN1, hN2, hN3⟩ := ((hlim.eventually (Metric.ball_mem_nhds L (half_pos hLpos))).and
+    ((eventually_mul_rpow_lt (K : ℝ) (half_pos hLpos)).and (eventually_ge_atTop 1))).exists
+  refine ⟨N, hN2.trans_le ?_⟩
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN3
+  rw [Metric.mem_ball, dist_eq_norm] at hN1
+  have hq : ‖moebiusGaugeSum N (twinTail I x₀) / (N : ℂ)‖ ≥ ‖L‖ / 2 := by
+    have h := norm_sub_norm_le L (moebiusGaugeSum N (twinTail I x₀) / (N : ℂ))
+    rw [norm_sub_rev] at h
+    linarith
+  rw [norm_div, Complex.norm_natCast, ge_iff_le, le_div_iff₀ hN0] at hq
+  linarith
+
+/-- **Strongly exceptional points are dense**: every open set contains a twin tail. -/
+theorem dense_strongExceptional : Dense strongExceptional := by
+  rw [dense_iff_inter_open]
+  rintro U hU ⟨x₀, hx₀⟩
+  obtain ⟨I, u, hu, hsub⟩ := isOpen_pi_iff.mp hU x₀ hx₀
+  refine ⟨twinTail I x₀, hsub fun i hi => ?_, twinTail_mem_strongExceptional I x₀⟩
+  simp only [twinTail, if_pos (mem_coe.mp hi)]
+  exact (hu i (mem_coe.mp hi)).2
+
+/-- **The Möbius exceptional set is comeager and Haar-null.** The gauge points where the
+half-power law fails form a residual set — it contains the dense `G_δ` of strongly exceptional
+points — while their Haar measure is zero. -/
+theorem moebius_exceptional_residual_and_null :
+    {x : GaugeTorus | ¬ GaugeHalfPowerLaw (fun n => ((μ n : ℤ) : ℂ)) x} ∈ residual GaugeTorus ∧
+      gaugeHaar {x : GaugeTorus | ¬ GaugeHalfPowerLaw (fun n => ((μ n : ℤ) : ℂ)) x} = 0 := by
+  refine ⟨mem_of_superset (residual_of_dense_Gδ isGδ_strongExceptional dense_strongExceptional)
+    fun x hx => not_gaugeHalfPowerLaw_of_mem_strongExceptional hx, ?_⟩
+  have h := ae_gaugeHalfPowerLaw (fun n => ((μ n : ℤ) : ℂ)) fun n => by
+    rw [← Complex.ofReal_intCast, Complex.norm_real, Real.norm_eq_abs]
+    exact_mod_cast ArithmeticFunction.abs_moebius_le_one
+  rwa [ae_iff] at h
+
+/-- **Every neighbourhood of the gauge point `0` contains exceptional points.** -/
+theorem zero_mem_closure_exceptional :
+    (0 : GaugeTorus) ∈ closure {x : GaugeTorus | ¬ GaugeHalfPowerLaw (fun n => ((μ n : ℤ) : ℂ)) x} := by
+  have hd : Dense {x : GaugeTorus | ¬ GaugeHalfPowerLaw (fun n => ((μ n : ℤ) : ℂ)) x} :=
+    dense_strongExceptional.mono fun x hx => not_gaugeHalfPowerLaw_of_mem_strongExceptional hx
+  rw [hd.closure_eq]
+  trivial
 end GaloisForLFunctions.ArithmeticCorrelationGeometry

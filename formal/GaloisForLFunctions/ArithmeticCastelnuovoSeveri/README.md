@@ -163,7 +163,14 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
    **Short cycles suffice:** the same laws hold on tests supported in `[−η, η]` for every `η > 0`;
    RH iff `Re W(g − T_{p^m} g) ≥ 0` for every such `g` and `m`, while for `η ≤ 3/10` each window is
    Weil positive — Hodge index splits into local positivity (a theorem) and the one-prime Lefschetz
-   bound on short cycles (all of RH) (`TheStripLivesOnShortCycles.lean`).
+   bound on short cycles (all of RH) (`TheStripLivesOnShortCycles.lean`). **Density settles one
+   prime for every configuration:** a window's negative squares depend continuously on `X(g)` and
+   the zero map has dense range, so Lagrange interpolation at `b, b̄⁻¹` on one finitely supported
+   vector gives `sup_{g,K}` tower defect `= #`distinct outer eigenvalues for every tempered
+   configuration at every scale — no deep sparseness, no Ingham–Huxley; Wolff blindness is a
+   property of a fixed test. For any `v > 0`, no right zeros iff `W(g − T_v g) ≥ 0` for all complex
+   tests; RH iff `Re W(T_v g, g) ≤ W(g, g)` — the complex-test form of the orientation of the
+   scale-stable family `(1 − T_v)(tests)` (`OnePrimeSeesTheDefectOfEveryConfiguration.lean`).
 
 ### Effectivity, Bézout, Riemann–Roch
 10. **Hodge index ⇔ effectivity with RR + ample** (`exists_effectivity_iff_hodgeIndex`); positivity is
@@ -292,7 +299,8 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
    `almost_every_prime_tower_sees_every_right_zero`, `one_prime_vs_two_primes_complete_law`,
    `exists_symmetric_wolff_toeplitz_blind_configuration`, `zeta_one_prime_tower_law`,
    `riemannHypothesis_iff_onePrime_towers`, `zeta_exists_test_riemannHypothesis_iff`,
-   `zeta_lefschetz_growth_law`, `zeta_riemannHypothesis_iff_universal_minors`).
+   `zeta_lefschetz_growth_law`, `zeta_riemannHypothesis_iff_universal_minors`, `tower_law`,
+   `rightZeros_eq_empty_iff_twoWindow`).
 6. Effectivity and Bézout (`exists_effectivity_iff_hodgeIndex`, `exists_bezout_effectivity_iff_hodgeIndex`,
    `localPair_nonneg`, `riemannHypothesis_iff_exists_effectivity`).
 7. Source-cone laws (`gradedSourceCone_riemannRoch_iff_le_defect`, `gradedL2SourceCone_realTestsAt_all_apertures_riemannRoch`,
@@ -327,7 +335,7 @@ Bounded-orbit and reserve results are in `MeyerBoundedCenteredOrbits.lean`,
 | Subexponential floor is a reduction | It is equivalent to RH; power savings are strips |
 | Odd ledger is a positivity mechanism | It is the explicit formula rewritten |
 | Cyclic law bounds the defect | It localises it |
-| One prime always sees everything | For $\zeta$ it sees every distinct $p^{\rho-1/2}$ (zero density kills Wolff accumulation) and all right zeros at all but finitely many primes; resonances merge eigenvalues; fakes may need two primes |
+| One prime always sees everything | Over all tests yes, for every tempered configuration (density); one fixed test can be Wolff-blind, and resonances merge eigenvalues |
 | Multiplicities count | The defect counts distinct right zeros |
 | A finite degree certifies positivity | Over $\mathbb Q$ no degree works for all configurations |
 | Finitely many readings plus mass give Bézout | Rayleigh quotients unbounded in every finite kernel |
@@ -349,9 +357,9 @@ Bounded-orbit and reserve results are in `MeyerBoundedCenteredOrbits.lean`,
 3. **Degree floor below rate ½** (= strip): which effectivity input lowers the rate before the sign?
 4. **Beyond 2/3 and HD(1)**: spectral slack $\ge N/12$ near $\lambda=1$, or coalescent surplus $\beta\le1/18$, or
    $F\le B$, $B\le2954/1035$ (owned by TTPC).
-5. **One prime against two** — resolved for $\zeta$ and every deep-sparse configuration, and for
-   well-founded real parts (curves, exponent $1$, at every scale). Open: a tempered configuration
-   with deep convergence exponent $\ge1$ and increasing real parts blind on the towers of every test.
+5. **One prime against two** — resolved: for every tempered configuration and scale the towers of
+   tests carry every distinct outer eigenvalue (`tower_law`). Open: one test carrying an infinite
+   defect without deep sparseness or well-founded real parts.
 6. **Clustering branch** of the visibility/defect-rate dichotomy (unrestricted $L^2$, not Sobolev).
 7. **Lattice → continuum**: carry finite-Euler lattice positivity to Weil's form with collar and signed
    coefficients.

@@ -1,13 +1,26 @@
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheTheoremOfTheSquareIsFree
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheBudgetIsFreeItsSufficiencyIsNot
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.KernelCountsAreBlindToComplexQuartets
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheSpectrumOfSymmetricSquaresIsTheSign
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheLocalGeometryOfAReflectionPair
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheIsometriesOfAReflectionPair
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheSuccessorIsInvisibleAtZeros
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.AffineCorrespondencesOfZHaveGenusZero
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.PositivityBeyondIsotropyDoesNotLocalize
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.OnNonnegativeTestsZetaIsTheWorstTwin
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheBaseIsAFixedLoss
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheResolutionOfACorrespondenceIsItsLength
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.ABudgetPaysAHyperbolicPairOnlyOnAFiniteSegment
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.SparseAnnihilatorsAndTheStepanovMechanism
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheRankinSelbergSquareSeesTheFieldOfTheOtherZeros
 
 /-!
 # Arithmetic Correspondence Positivity
 
 Umbrella for the positivity theory of arithmetic correspondences: normalized graphs and the free
-theorem of the square, determinant versus Rosati degrees and the complex fake, the local hyperbolic
-geometry of reflection pairs and the resonance law. See
-`ArithmeticCorrespondencePositivity/README.md`.
+theorem of the square; budgets and their sufficiency; determinant, Rosati and spectral degrees and
+the complex fake; the local geometry of reflection pairs (boosts, rotations, resonance, isometries);
+the unipotent successor; genus zero of affine maps; non-localizing and source-blind positivity;
+`ζ` as the worst twin on nonnegative tests; the loss law of tensor powers; resolution and budget
+horizons along orbits; sparse annihilators. See `ArithmeticCorrespondencePositivity/README.md`.
 -/

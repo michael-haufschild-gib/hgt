@@ -522,7 +522,7 @@ theorem differentiableOn_laplaceC {τ : Measure ℝ} [IsFiniteMeasure τ]
     filter_upwards [hae] with r hr
     rw [hnorm, Real.exp_le_one_iff]
     nlinarith
-  have hbound : ∀ᵐ r ∂τ, ∀ z ∈ Metric.ball z₀ ε,
+  have hbound : ∀ᵐ (r : ℝ) ∂τ, ∀ z ∈ Metric.ball z₀ ε,
       ‖cexp (-z * r) * (-(r : ℂ))‖ ≤ 1 / ε := by
     filter_upwards [hae] with r hr z hz
     rw [norm_mul, hnorm, norm_neg, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr]
@@ -538,12 +538,14 @@ theorem differentiableOn_laplaceC {τ : Measure ℝ} [IsFiniteMeasure τ]
     calc Real.exp (-(z.re * r)) * r ≤ Real.exp (-(ε * r)) * r :=
           mul_le_mul_of_nonneg_right h1 hr
       _ ≤ 1 / ε := h3
-  have hderiv : ∀ᵐ r ∂τ, ∀ z ∈ Metric.ball z₀ ε,
+  have hderiv : ∀ᵐ (r : ℝ) ∂τ, ∀ z ∈ Metric.ball z₀ ε,
       HasDerivAt (fun z : ℂ => cexp (-z * r)) (cexp (-z * r) * (-(r : ℂ))) z := by
     refine Eventually.of_forall fun r z _ => ?_
     have h := ((hasDerivAt_id z).neg.mul_const (r : ℂ)).cexp
     simpa using h
   have := hasDerivAt_integral_of_dominated_loc_of_deriv_le (Metric.ball_mem_nhds z₀ hε)
+    (F := fun (z : ℂ) (r : ℝ) => cexp (-z * r))
+    (F' := fun (z : ℂ) (r : ℝ) => cexp (-z * r) * (-(r : ℂ)))
     (Eventually.of_forall hmeas) hint
     ((by fun_prop : Continuous fun r : ℝ => cexp (-z₀ * r) * (-(r : ℂ))).aestronglyMeasurable)
     hbound (integrable_const _) hderiv
@@ -582,20 +584,18 @@ theorem exists_dirichletMeasure_of_posDef_sections {F : ℂ → ℂ} {a b : ℝ}
   have hGcm : ∀ (k : ℕ) (x : ℝ), a < x → 0 ≤ (-1) ^ k * ((deriv^[k] G) x).re := by
     intro k x hx
     obtain ⟨j, rfl | rfl⟩ := Nat.even_or_odd' k
-    · rw [pow_mul]; simpa using heven j x hx
-    · rw [pow_succ, pow_mul]
+    · rw [pow_mul, neg_one_sq, one_pow, one_mul]
+      exact heven j x hx
+    · rw [pow_succ, pow_mul, neg_one_sq, one_pow, one_mul]
       have := hodd j x hx
       simp only [T] at this
-      norm_num
       linarith
   have hFcm := alternating_iterate_deriv_nonneg hF hF0 hreal hpos hGcm
   -- The shifted tower of `F` is a completely monotone tower on `(0, ∞)`.
   set TF : ℕ → ℝ → ℝ := fun k t => ((deriv^[k] F) ((b + t : ℝ) : ℂ)).re
   have hTFder : ∀ k (t : ℝ), a < b + t → HasDerivAt (TF k) (TF (k + 1) t) t := by
     intro k t ht
-    have h := hasDerivAt_re_iterate_deriv hU hF k (hsub (b + t) ht)
-    have h2 := h.comp t ((hasDerivAt_id t).const_add b)
-    simpa [TF] using h2
+    exact (hasDerivAt_re_iterate_deriv hU hF k (hsub (b + t) ht)).comp_const_add b t
   have htower : HTGeometry.CompletelyMonotoneTower TF :=
     ⟨fun k t ht => hTFder k t (by linarith), fun k t ht => hFcm k (b + t) (by linarith)⟩
   have hCM : HTGeometry.CompletelyMonotoneOn (TF 0) :=
@@ -621,7 +621,7 @@ theorem exists_dirichletMeasure_of_posDef_sections {F : ℂ → ℂ} {a b : ℝ}
       withDensity_apply _ (Real.measurable_exp measurableSet_Iio)]
     refine setLIntegral_measure_zero _ _ ?_
     refine measure_mono_null (fun r hr => ?_) hτsupp
-    simp only [Set.mem_preimage, Set.mem_Iio, Real.exp_lt_one] at hr
+    simp only [Set.mem_preimage, Set.mem_Iio, Real.exp_lt_one_iff] at hr
     simp only [Set.mem_compl_iff, Set.mem_Ici, not_le]
     exact hr
   · intro s hs
@@ -642,7 +642,7 @@ theorem exists_dirichletMeasure_of_posDef_sections {F : ℂ → ℂ} {a b : ℝ}
       refine (integrable_const (1 : ℝ)).mono' (by fun_prop) ?_
       filter_upwards [hae] with r hr
       rw [Complex.norm_exp, Real.exp_le_one_iff]
-      have : (-(s - b) * (r : ℂ)).re = -((s - b).re * r) := by simp [Complex.mul_re]
+      have : (-(s - b) * (r : ℂ)).re = -((s - b).re * r) := by simp [Complex.mul_re]; ring
       rw [this]
       nlinarith
     have hint : Integrable (fun u : ℝ => (u : ℂ) ^ (-s)) μ := by

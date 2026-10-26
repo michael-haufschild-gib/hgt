@@ -66,3 +66,19 @@ For the additive-only test `g(n)=n`, the exact variance is `N(N²−1)/12` and `
 - [ ] Perturbed-incidence theorem. Keeping adjacent-node energy is different from keeping the literal translation-by-one action on perturbed nodes.
 
 This card does not yet close item 7 or item 12.
+
+## Exact lower-bound formalization argument
+
+Put `r=2^h`, so the last level starts at `8r` and `N=16r−1`.
+For each `0≤j<r`, pair the distinct indices `8r+j` and `12r+j`.
+Both blocks lie in `1,…,N` and are disjoint. The specified tent has values
+`j/(8r)` and `(4r−j)/(8r)`, respectively. Their difference is at least
+`1/4`. For every center `c`,
+
+`(f(8r+j)−c)²+(f(12r+j)−c)² ≥ (f(12r+j)−f(8r+j))²/2 ≥ 1/32`.
+
+Summing these disjoint pairs gives total variance at least `r/32`, hence
+at least `N/2048`. This proves the exact stated bound without any lower
+restriction on `h`; it uses the original tent, not a substituted witness.
+The stronger intermediate estimate is a finite algebraic consequence, not
+a separate novelty claim. Lean verification remains pending.

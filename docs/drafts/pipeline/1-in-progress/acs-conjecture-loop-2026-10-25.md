@@ -94,6 +94,16 @@ tool, or exposes a mechanism, calibrated over `𝔽_q`.
   `Re W(g − T_{p^m} g) ≥ 0` on tests of support `≤ η`, each window Weil positive for `η ≤ 3/10`.
   Status: DONE (Lean, contribution 14).
 
+- **C15 (density: one prime for every configuration).** Tower defect is lower semicontinuous in
+  `X(g)`; zero map dense; interpolation at `b, b̄⁻¹` ⇒ tower law for every tempered configuration;
+  one shift `1 − T_v` decides Hodge index. Status: DONE (Lean, contribution 15).
+
+- **C16 (Hodge defect through a correspondence).** Exact negative index on `L(tests)` = #right
+  zeros seen by the symbol; `L` carries Hodge index iff its symbol is zero-free on
+  `0 < |Im z| ≤ ½`. Status: RETIRED (not counted) — a specialization of
+  `ArithmeticOrientationGeometry.scaleStable_index_law` (`L(tests)` is scale-stable; joint
+  blindness = symbol zero); only the complex/asymmetric extension would be new, not significant.
+
 ## Avoid (other agents active 2026-10-25)
 Q-II Meyer source modules; `MaximalBlindIdealOfTheMeyerSource.lean` (another agent); biarithmetic; rh-closing-producer Stepanov tracks (HTGeometry Stepanov).
 
@@ -110,3 +120,4 @@ Q-II Meyer source modules; `MaximalBlindIdealOfTheMeyerSource.lean` (another age
 - 2026-10-26 — C12 done.
 - 2026-10-26 — C13 done.
 - 2026-10-26 — C14 done.
+- 2026-10-26 — C15 done.

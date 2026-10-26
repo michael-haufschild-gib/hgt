@@ -116,7 +116,7 @@ all `j` forces `L ≥ k log φ`. -/
 theorem goldenDatum_tensor_loss_ge {k : ℕ} {L C : ℝ}
     (h : ∀ j : ℕ, goldenDatum.trace j ^ k ≤ C * Real.exp (L * j)) : k * Real.log goldenRatio ≤ L := by
   by_contra hlt
-  push_neg at hlt
+  push Not at hlt
   set a := k * Real.log goldenRatio - L with ha
   have hapos : 0 < a := by linarith
   -- `φ^{kj} = e^{(k log φ) j} ≤ trace(j)^k ≤ C e^{Lj}`, so `e^{a j} ≤ C` for all `j`

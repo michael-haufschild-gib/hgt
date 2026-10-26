@@ -510,6 +510,10 @@ theorem hasSum_cTotalCofactorSum_mul_cell {ε : ℝ} (hε : 0 < ε) {v : ℕ →
 
 /-! ### Residues -/
 
+theorem isConnected_halfPlane (x : ℝ) : IsConnected {s : ℂ | x < s.re} :=
+  ⟨⟨((x + 1 : ℝ) : ℂ), by simp⟩,
+    (convex_halfSpace_gt ⟨fun _ _ => rfl, fun _ _ => by simp⟩ x).isPreconnected⟩
+
 theorem meromorphicAt_riemannZeta_comp {g : ℂ → ℂ} {u : ℂ} (hg : AnalyticAt ℂ g u) :
     MeromorphicAt (fun z => riemannZeta (g z)) u :=
   (HTGeometry.meromorphicOn_riemannZeta (g u) (Set.mem_univ _)).comp_analyticAt hg
@@ -530,8 +534,8 @@ theorem tendsto_sub_mul_riemannZeta_shift (s₀ : ℂ) :
     · filter_upwards [self_mem_nhdsWithin] with w hw
       intro h
       apply hw
-      have h' : w - s₀ = 0 := by linear_combination h
-      exact sub_eq_zero.mp h'
+      have h1 : w - s₀ + 1 = 1 := h
+      exact (by linear_combination h1 : w = s₀)
   refine (riemannZeta_residue_one.comp hmap).congr fun w => ?_
   simp only [Function.comp]
   ring_nf
@@ -614,7 +618,7 @@ theorem riemannZeta_add_eq_zero_of_powerLike_solution {ε : ℝ} (hε0 : 0 < ε)
       fun s hs => (hpow s (hsne s hs) (hF s hs).2.1).mul_left (c s)
     have hMv : rowMellin v w =
         ∑ s ∈ F, c s * (s * riemannZeta (w - s + 1) + powerCorrection s w) + rowMellin r w := by
-      have hexp : (fun n => v n * complexMellinCell w n) = fun n =>
+      have hexp : (fun n => v n * complexMellinCell w n) = fun n : ℕ =>
           (∑ s ∈ F, c s * (((n : ℝ) : ℂ) ^ s * complexMellinCell w n)) +
             r n * complexMellinCell w n := by
         funext n
@@ -633,7 +637,7 @@ theorem riemannZeta_add_eq_zero_of_powerLike_solution {ε : ℝ} (hε0 : 0 < ε)
       exact h
     have hMS : rowMellin (cTotalCofactorSum ε v) w =
         c' * (α * riemannZeta (w - α + 1) + powerCorrection α w) + rowMellin r' w := by
-      have hexp : (fun n => cTotalCofactorSum ε v n * complexMellinCell w n) = fun n =>
+      have hexp : (fun n => cTotalCofactorSum ε v n * complexMellinCell w n) = fun n : ℕ =>
           c' * (((n : ℝ) : ℂ) ^ α * complexMellinCell w n) + r' n * complexMellinCell w n := by
         funext n
         rw [hlaw n]
@@ -645,8 +649,8 @@ theorem riemannZeta_add_eq_zero_of_powerLike_solution {ε : ℝ} (hε0 : 0 < ε)
     have hfub := (hasSum_cTotalCofactorSum_mul_cell hε0 hv0 hCv hw).tsum_eq
     simp only [hGdef]
     rw [← hMv, ← hMS]
-    show riemannZeta (w + ε) * rowMellin v w - rowMellin (cTotalCofactorSum ε v) w = 0
-    rw [rowMellin, hfub, sub_self]
+    have hfub' : rowMellin (cTotalCofactorSum ε v) w = riemannZeta (w + ε) * rowMellin v w := hfub
+    rw [hfub', sub_self]
   -- `G` is meromorphic on `Re w > 1/2`
   set U : Set ℂ := {w : ℂ | 1 / 2 < w.re} with hUdef
   have hDr := differentiableOn_rowMellin hr0 hE
@@ -688,7 +692,7 @@ theorem riemannZeta_add_eq_zero_of_powerLike_solution {ε : ℝ} (hε0 : 0 < ε)
   have hs₀top : meromorphicOrderAt G s₀ = ⊤ := by
     by_contra hne
     exact ((hmero.exists_meromorphicOrderAt_ne_top_iff_forall_mem
-      (HTGeometry.isConnected_halfPlane_re_gt _)).mp ⟨s₀, hs₀U, hne⟩ 3 h3U) hG3
+      (isConnected_halfPlane _)).mp ⟨s₀, hs₀U, hne⟩ 3 h3U) hG3
   have hev := meromorphicOrderAt_eq_top_iff.mp hs₀top
   -- the residue at `s₀`
   have hs₀α : s₀ ≠ α := (hF s₀ hs₀).2.2
