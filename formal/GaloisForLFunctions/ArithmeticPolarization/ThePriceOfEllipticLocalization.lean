@@ -1,5 +1,5 @@
 import Zeta23.WeilEF.Main
-import GaloisForLFunctions.SquareRootThreshold.HeightWindowAverageRepresentation
+import GaloisForLFunctions.«arithmetic-positivity-theory».SingleHeightPhaseSelectiveApertureAndPowerSaving
 import GaloisForLFunctions.ArithmeticPolarization.TwistedSectorsCollideQuartets
 
 /-!
@@ -20,6 +20,13 @@ What the elliptic localizer `σ_γ` costs on the arithmetic side. Since its sect
 * **Charge** (`twisted_atoms_of_real_even`, `exists_vonMangoldt_pos_cos_neg`): on real even kernels
   the phased atoms are `2 cos(γ log n) K(log n)`, and for every `γ ≠ 0` some prime power `n` has
   `cos(γ log n) < 0`: every elliptic localizer off the real axis is gauge charged.
+* **The conductor horizon** (`elliptic_sector_nonneg_below_conductor_horizon`): the shifted digamma
+  density grows like `log γ` and pays the whole prime sum of a test of aperture `a` once
+  `(4 + ε) e^a ≲ log γ`; below this horizon positivity of `ζ`'s form on twisted tests is a theorem,
+  and it is source-blind (the bound uses only `|Λ|`). The single-height laws of
+  `SingleHeightPhaseSelectiveApertureAndPowerSaving` show that the coefficient `4` cannot be
+  lowered eventually in height. Localizing a pair at ordinate `γ` needs aperture `≍ log γ`, far
+  beyond the horizon `a ≈ log log γ`.
 -/
 
 open Complex MeasureTheory
@@ -131,7 +138,7 @@ theorem twisted_atoms_of_real_even {K : ℝ → ℝ} (hK : ∀ t, K (-t) = K t) 
   have e2 : Complex.exp (γ * I * t) = Complex.exp ((γ * t : ℝ) * I) := by
     congr 1; push_cast; ring
   have h1 : Complex.exp (-(γ * I * t)) + Complex.exp (γ * I * t) = 2 * (Real.cos (γ * t) : ℂ) := by
-    rw [e1, e2, Complex.ofReal_cos, Complex.cos]; ring
+    rw [e1, e2, Complex.ofReal_cos, Complex.cos]; ring_nf
   have h2 : ((2 * Real.cos (γ * t) * K t : ℝ) : ℂ) = 2 * (Real.cos (γ * t) : ℂ) * (K t : ℂ) := by
     norm_cast
   rw [h2]
@@ -248,7 +255,7 @@ theorem exists_vonMangoldt_pos_cos_neg {γ : ℝ} (hγ : γ ≠ 0) :
         rcases hsgn with ⟨h1, h1'⟩ | ⟨h1, h1'⟩
         · rw [Nat.cast_natAbs, Nat.cast_natAbs, abs_of_pos (by exact_mod_cast h1'),
             abs_of_pos (by exact_mod_cast h1)]
-          push_cast; linarith
+          linarith
         · rw [Nat.cast_natAbs, Nat.cast_natAbs, abs_of_neg (by exact_mod_cast h1'),
             abs_of_neg (by exact_mod_cast h1)]
           push_cast; linarith
@@ -261,5 +268,30 @@ theorem exists_vonMangoldt_pos_cos_neg {γ : ℝ} (hγ : γ ≠ 0) :
     obtain ⟨hv, hl⟩ := hpp 3 k Nat.prime_three hk
     refine ⟨3 ^ k, hv ▸ hl, ?_⟩
     rw [hlog]; push_cast; rwa [show γ * (k * Real.log 3) = k * (γ * Real.log 3) by ring]
+
+/-! ### 4. The conductor horizon -/
+
+/-- **Below the conductor horizon the twisted form of `ζ` is positive.** For every `ε > 0` there is
+`C` such that `Re W_ζ(e^{−iγu} f, e^{−iγu} f) ≥ 0` for every `C²` test `f` of aperture `a` once
+`C + (4 + ε) e^a + 2 ≤ log(1 + |γ|/8)` and the two high-height tail terms are below `‖f‖₂²`. -/
+theorem elliptic_sector_nonneg_below_conductor_horizon {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {a : ℝ}, 0 ≤ a → ∀ {f : ℝ → ℂ}, ContDiff ℝ 2 f →
+      tsupport f ⊆ Set.Icc (-a) a → ∀ γ : ℝ,
+        C + (4 + ε) * Real.exp a + 2 ≤ Real.log (1 + |γ| / 8) →
+        (4 * ((∫ u, ‖f u‖) + ∫ u, ‖deriv (deriv f) u‖)) ^ 2 / (8 * (1 + |γ| / 2)) ≤
+          ∫ t, ‖f t‖ ^ 2 →
+        2 * Real.exp a * (4 * ((∫ u, ‖f u‖) + ∫ u, ‖deriv (deriv f) u‖)) ^ 2 / (1 + |γ|) ^ 4 ≤
+          ∫ t, ‖f t‖ ^ 2 →
+        0 ≤ (zetaZeroConfig.W (twist γ f) (twist γ f)).re := by
+  obtain ⟨C, hC0, hC⟩ :=
+    ArithmeticPositivityTheory.zetaZeroConfig_re_W_heightShift_nonneg_of_sharp_horizon hε
+  refine ⟨C, hC0, fun {a} ha {f} hf hfs γ hlog htail hpole => ?_⟩
+  have hξ : Real.pi * |(-γ / (2 * Real.pi))| = |γ| / 2 := by
+    rw [abs_div, abs_neg, abs_of_pos Real.two_pi_pos]; field_simp
+  rw [twist_eq_heightShift]
+  refine hC ha hf hfs _ ?_ ?_ ?_
+  · rwa [show Real.pi * |(-γ / (2 * Real.pi))| / 4 = |γ| / 8 by rw [hξ]; ring]
+  · rwa [hξ]
+  · rwa [show 2 * Real.pi * |(-γ / (2 * Real.pi))| = |γ| by rw [mul_assoc, hξ]; ring]
 
 end GaloisForLFunctions.ArithmeticPolarization

@@ -3363,48 +3363,4 @@ theorem tendsto_fejer_central_pole_coeff :
   push_cast
   field_simp [hKne]
 
-#print axioms degreeOne_exteriorTwo_eq_zero
-#print axioms isobaricExteriorTwoPoly_eq
-#print axioms isobaricExteriorTwoPoly_zero_central
-#print axioms isobaricExteriorTwoPoly_pi_neg
-#print axioms isobaricExteriorTwoPoly_nonneg_of_five_le
-#print axioms isobaricExteriorTwoPoly_ratio_ge
-#print axioms centeredScaleCross_re_gt_one
-#print axioms re_logDeriv_two_ge_of_entire_sym
-#print axioms shiftedPolePoly_eq_boundaryTwistPoly
-#print axioms isEvenPosDef_boundaryTwistFactor
-#print axioms HeightCoupledSystem.absorbShiftedPoles
-#print axioms two_mul_le_origin_of_poleCancelling_posDef
-#print axioms re_logDeriv_shiftedPolePoly_two_eq
-#print axioms re_neg_logDeriv_boundaryTwistFactor_two_eq
-#print axioms HeightCoupledSystem.archimedean_budget_exact
-#print axioms CompletedPositiveSystem.ordinateQuartet_multiplicity_ordinate_decay_bound
-#print axioms isEvenPosDef_realPairPlanter
-#print axioms CompletedPositiveSystem.plantRealPair
-#print axioms CompletedPositiveSystem.plantDoubleRealAnchor
-#print axioms polarSum_sum_weights_nonneg
-#print axioms two_le_pole_cost_of_doubleRealAnchor_polarSum
-#print axioms CompletedPositiveSystem.anchored_quartet_pole_lower_bound
-#print axioms CompletedPositiveSystem.three_le_pole_of_anchored_quartet
-#print axioms fejer_egervary_szasz_first_harmonic_le
-#print axioms cosine_multiplier_anchor_cost_lower
-#print axioms re_logDeriv_Gammaℝ_two_shift_ge
-#print axioms re_logDeriv_Gammaℝ_pair_two_sandwich
-#print axioms IsEvenPosDef.fejerShift
-#print axioms FejerCoupledSystem.ne_zero_of_one_lt_re
-#print axioms FejerCoupledSystem.two_ne_zero
-#print axioms FejerCoupledSystem.zero_re_mem_Icc
-#print axioms FejerCoupledSystem.analyticOnNhd_univ
-#print axioms FejerCoupledSystem.orderAt_ne_top
-#print axioms FejerCoupledSystem.eq_zero_of_one_le_order_toNat
-#print axioms FejerCoupledSystem.neg_logDeriv_F_eq
-#print axioms CompletedPositiveSystem.fejerCouple
-#print axioms CompletedPositiveSystem.orderAt_fejerCoupledΛ
-#print axioms CompletedPositiveSystem.orderAt_fejerCoupledΛ_real
-#print axioms FejerCoupledSystem.contractCollidedQuartet
-#print axioms FejerCoupledSystem.archimedean_budget
-#print axioms CompletedPositiveSystem.fejerOrdinateQuartet_bound
-#print axioms CompletedPositiveSystem.fejerTwo_ordinateQuartet_bound
-#print axioms tendsto_fejer_central_pole_coeff
-
 end GaloisForLFunctions.ArithmeticCorrespondencePositivity
