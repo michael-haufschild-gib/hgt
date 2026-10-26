@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **Status:** RH open. **31 live routes; 17 standalone candidates; PW-B candidate sub-branch.**
-**Corpus checkpoint:** `7cf43d4209c96ac56961161590c2b5b54e2f270c` — committed corpus coverage; uncommitted evidence remains [S].
+**Corpus checkpoint:** `6a01ec8be0768deda628b2c71df23b2fca2995f3` — committed corpus coverage; uncommitted evidence remains [S].
 
 **Evidence:** [L] integrated Lean source at checkpoint, not a fresh kernel audit; [S] unintegrated/working source, not certified closure; [P] paper only. Statements retain their mathematical scope. An RH-equivalent receiver does not prove its arithmetic input.
 **Classification:** live = source observable + proved RH-sufficient receiver + explicit open estimate; candidate = incomplete independent source mechanism/landing; support = tools feeding existing routes.
@@ -50,9 +50,9 @@ chronology, work packages or progress notes. Scoped obstructions belong in rh-ki
 ### WL — Weil lag function
 
 - **Path:** Actual prime lag/deficit → one-sided bound or subexponential critical energy → RH.
-- **Proved [L]:** RH iff critical energy bounded iff coprime cross-work bounded below iff cumulative energy O(T); exact width-rate endpoints, O(1) high-zero tail. Eventual ψ(x)−x≤C√x(log x)² iff RH. Polynomial integrality gives Nair's lower bound ψ(2m+1)≥m log4. Horizon log-torsion=ψ(N), box χ=N; square-root discrepancy iff RH [S].
+- **Proved [L]:** RH iff critical energy bounded iff coprime cross-work bounded below iff cumulative energy O(T); exact width-rate endpoints, O(1) high-zero tail. Eventual ψ(x)−x≤C√x(log x)² iff RH. Polynomial integrality gives Nair's lower bound ψ(2m+1)≥m log4. Horizon log-torsion=ψ(N), box χ=N; square-root discrepancy iff RH.
 - **Open:** Bound actual adverse correlations or growing finite zero head. Coarse ψ bounds, VK savings and frequency averages do not give bounded critical energy/zero rate.
-- **Sources:** B:WeilLagCriticalDeficitEndpointAndLimitLaw; B:HighZerosCarryABoundedCriticalDeficit; CP:TheStepanovCountIsTheSign; AE:TheStepanovMethodOverZ; AE:TheHorizonTorsion [S].
+- **Sources:** B:WeilLagCriticalDeficitEndpointAndLimitLaw; B:HighZerosCarryABoundedCriticalDeficit; CP:TheStepanovCountIsTheSign; AE:TheStepanovMethodOverZ; AE:TheHorizonTorsion.
 
 <a id="rw"></a>
 ### RW — Restricted Weil ground energy
@@ -122,9 +122,9 @@ chronology, work packages or progress notes. Scoped obstructions belong in rh-ki
 ### HF — Positive Hodge form on arithmetic cohomology
 
 - **Path:** Source-faithful full Weil/cohomological positivity, full-positive weight or defect D<2 → RH.
-- **Proved [L]:** Prime-blind/odd receivers; zero/source surfaces agree. D counts distinct right zeros; finite D even, RH iff D<2. Effectivity criterion; RH iff every cycle's integral Rosati form has a bounded-below height at bounded distance. Actual C²-test capacity decomposition Re W=collided mass−off-line defect, RH iff all defects vanish [S].
+- **Proved [L]:** Prime-blind/odd receivers; zero/source surfaces agree. D counts distinct right zeros; finite D even, RH iff D<2. Effectivity/Tate-height criteria; RI plus arbitrarily-late paired growth≤rn² forces x²≤2r. Actual C²-test capacity decomposition Re W=collided mass−off-line defect; RH iff all defects vanish.
 - **Open:** Independent full signed positivity/D<2, or arithmetic heights h_x with lower/closeness bounds uniform over integral correspondences (bounds may depend on x). Tate stabilization supplies no such height; capacity still needs off-line defect≤collided mass on every test.
-- **Sources:** R:WeilPositivityPrimeBlindDuality; J:TheScalingDatumOfAConfiguration; J:TheIndexExit; AE:TatesLimitLaw; PL:TheOscillatoryCapacity [S]; [ACS](#acs), [APD](#apd), [effectivity support](#arithmetic-effectivity).
+- **Sources:** R:WeilPositivityPrimeBlindDuality; J:TheScalingDatumOfAConfiguration; J:TheIndexExit; AE:TatesLimitLaw; AE:TheEffectivityCalculus; PL:TheOscillatoryCapacity; [ACS](#acs), [APD](#apd).
 
 <a id="chmd"></a>
 ### CHMD — Causal Hyperbolic–Modular Duality
@@ -178,9 +178,9 @@ chronology, work packages or progress notes. Scoped obstructions belong in rh-ki
 ### PM — Physical-model Haar approximation (FZZ-P)
 
 - **Path:** Global dyadic Haar approximation or cofinal signed-damping admission at ε↓0 → RH; alternatively positive gauge mass for every actual subcritical cofactor limit. [PW-B](#pw-b) remains a candidate sub-branch.
-- **Proved [L]:** Exact complete-energy/approximation and gauge-mass receivers; half-damping admission, residue synthesis, compact tails and endpoint continuity. Actual zero-translation/escape alternative; finite/countable model Gram laws and normalized finite-profile transfer under a supplied negligible remainder. Natural size-cutoff form reduces to receiver head plus nonnegative tail.
-- **Open:** Complete signed energy bounded cofinally near zero, or positive mass for every actual limit. Forward-interior payment below half damping; actual translated-zero expansion, residue summability and negligible relative-energy remainder; non-attained dominant abscissa; paid-cofactor spectral synthesis and coercivity modulo exact residual kernel. Relative decay, model completeness and moving-origin faithfulness do not prove admission.
-- **Sources:** R:FermiNymanHaarApproximationEquivalence; CP:TheEscapeAlternative; CP:TheEscapeCompletenessCriterion; ACG:RHIsTheVisibilityOfEveryEscapeState; SSA:TheForwardDilatedHypercubeForm; [ADR](#adr), [BVI](#bvi).
+- **Proved [L]:** Complete-energy/gauge-mass receivers; half-damping admission, residue synthesis and endpoint continuity. Actual zero-translation/escape alternative; finite/countable model Gram laws and finite-profile transfer with negligible remainder. Size-cutoff form=head+nonnegative tail. Abel Gram=symbol spectral measure [S]; finite simple-pole limit with L¹∩L² admission, bounded local remainders and negligible exterior mass.
+- **Open:** Cofinal complete-energy bound or positive mass for every actual limit. Actual translated-zero expansion, pole multiplicities/residue summability and negligible relative remainder; non-attained abscissa/infinite-height escape. Abel identities do not supply actual near-boundary admission or exterior spectral-mass control. Paid-cofactor synthesis/coercivity remains open.
+- **Sources:** R:FermiNymanHaarApproximationEquivalence; CP:TheEscapeAlternative; CP:TheEscapeCompletenessCriterion; CP:TheAbelEscapeStateIsTheBoundaryMeasureOfTheSymbol [S]; ACG:RHIsTheVisibilityOfEveryEscapeState; SSA:TheForwardDilatedHypercubeForm; [ADR](#adr), [BVI](#bvi).
 
 <a id="jas"></a>
 ### JAS — Joint ancestry
@@ -242,9 +242,9 @@ chronology, work packages or progress notes. Scoped obstructions belong in rh-ki
 ### OWU — Odd Weil-weight uniqueness
 
 - **Path:** Actual-Λ odd positivity, or odd-positive weight plus all-scale dilation-ray sign → RH.
-- **Proved [L]:** Odd/polar-hyperplane criteria, local floors and twisted full EF transport. At A=181/500, real odd C² twin tests with edge mass≤‖F‖₂²/1961 are nonnegative; edge={log2−A≤|x|≤A}. First-prime twin=height twist+Gamma/pole corrections. Single-detector positivity+count/signal bounds forces an off-line companion [S].
+- **Proved [L]:** Odd/polar-hyperplane criteria, local floors and twisted full EF transport. At A=181/500, real odd C² twin tests with edge mass≤‖F‖₂²/1961 are nonnegative; edge={log2−A≤|x|≤A}. First-prime twin=height twist+Gamma/pole corrections. Detector sign+count/signal bounds force an off-line companion. Two-prime twist discrepancy≥e^(−|γ|)/50 [S].
 - **Open:** All-aperture odd sign or full reflected-prime/polar payment. No separating negative twin test constructed. Companion forcing is conditional on the detector sign and quantitative dominance; neither sign nor exclusion of companion clusters follows. Support-dependent payment does not give one shift for every profile.
-- **Sources:** B:OddSectorPolarHyperplaneAndPoleWeightSynthesis; R:WeilMarkovOddPositivity; R:WeilDilationRayCriterion; R:OddSectorBlindVariationalAttainment; CP:TheFirstGaugeChargedWindowOffTheEdge; PL:TheForcingHalfOfEllipticLocalization [S]; [polarization support](#arithmetic-polarization).
+- **Sources:** B:OddSectorPolarHyperplaneAndPoleWeightSynthesis; R:WeilMarkovOddPositivity; R:WeilDilationRayCriterion; R:OddSectorBlindVariationalAttainment; CP:TheFirstGaugeChargedWindowOffTheEdge; PL:TheForcingHalfOfEllipticLocalization; BGG:QuantitativeCatalanDiophantineRepulsion [S].
 
 <a id="pbm"></a>
 ### PBM — Regularized prime/log-ζ abscissa
@@ -282,17 +282,17 @@ chronology, work packages or progress notes. Scoped obstructions belong in rh-ki
 ### AIP — Arithmetic incidence positivity
 
 - **Path:** Actual prime incidence + plateau gauge → all-aperture GlobalIncidenceAllocation → odd positivity ↔ RH.
-- **Proved [L]:** Complete pool/crossing/even-gain/odd-cost/remainder/pole identity; allocation iff RH. Tower squares, finite frustration/shared-resource laws, horizon-uniform lattice Schur reduction to finite head and odd floor through 181/500.
-- **Open:** Joint full-continuum prime/pole payment with favorable gains and signed remainder retained. Local budgets cannot reuse one reserve; lattice head reduction and VK floors do not give arithmetic rate zero.
-- **Sources:** I:GlobalIncidenceAllocationCondition; I:GlobalSharedSurplusAllocation; S:TheIncidenceLedgerGradedByTheZeroWidth; M:TheCompensatedRemainderOfTheFullLedger.
+- **Proved [L]:** Full incidence identity; allocation iff RH; shared-resource laws, lattice Schur reduction and odd floor through 181/500. Finite sign-gauge conjugacy and successor phase selection [S]. Log-cell correlation=divisibility spine+remainder, |R|≤‖c‖w(Σk|Δcₖ|²)¹/² uniformly in multiplier for horizon-supported c [S].
+- **Open:** Joint full-continuum prime/pole payment with signed remainder. Polar-neutral off-diagonal terms cancel the apparent linear diagonal reserve [S]; no reserve reuse. Finite gauge-equivalent positivity does not select actual Λ; the cell bound supplies neither a prime-summed remainder budget nor smooth-test/full-form transfer.
+- **Sources:** I:GlobalIncidenceAllocationCondition; I:GlobalSharedSurplusAllocation; S:TheIncidenceLedgerGradedByTheZeroWidth; M:TheCompensatedRemainderOfTheFullLedger; BGG:PrimeGaugeTorusAndVacuumIntertwiners [S]; BGG:EuclideanCellRemainderAndPolarNeutralCollapse [S].
 
 <a id="acs"></a>
 ### ACS — Arithmetic Castelnuovo–Severi effectivity
 
-- **Path:** Arithmetic effectivity/bounded-error Rosati heights → Hodge → RH; alternatively height-coupled class rigidity at every nonzero ordinate → RH [S].
-- **Proved [L]:** Full-source RR; restricted Meyer RR+Bézout, exhaustion iff RH; faithful degree requires RH+simple zeros. Quantitative effectivity and Tate-height criteria. Fejér lifts retain pole/Gamma costs and cannot remove the whole deepest quartet via finite nonnegative harmonic coupling. Coupled-rigidity implication [S]: contraction raises central vanishing order by four, contradicting proportionality.
-- **Open:** Arithmetic h⁰ with quadratic RI+degree-zero growth control, or heights uniformly close to actual Rosati forms. Coupled branch: prove every HeightCoupledSystem 2 1 1 γ is proportional to ζ(s)²ζ(s+iγ)ζ(s−iγ), γ≠0; no rigidity or converse supplied. Exterior count positivity, actual signed prime surplus and full-cone zero-ordinate control remain open.
-- **Sources:** G:ExactArithmeticSourceEffectivity; G:MaximalBlindIdealOfTheMeyerSource; CP:IntrinsicExteriorAndMinimumAnchorCost; AE:TatesLimitLaw; PL:RigidityOfTheCoupledClassExcludesItsZeros [S]; [effectivity support](#arithmetic-effectivity), [SBWF](#sbwf).
+- **Path:** Arithmetic effectivity/bounded-error Rosati heights → Hodge → RH; alternatively an all-ordinate central-vanishing ceiling on HeightCoupledSystem 2 1 1 γ → RH [S].
+- **Proved [L]:** Source RR, restricted Meyer RR+Bézout, exhaustion iff RH; faithful degree requires RH+simple zeros. Effectivity growth-rate/Tate-height criteria; anchor-paid contraction raises central order by four. Coupled scalar rigidity is refuted at unbounded Hardy ordinates [S]; outward splitting lowers central order by two. Coupled determinant counts are modulus squares even for impure models [S].
+- **Open:** Actual arithmetic h⁰ with quadratic RI+degree-zero subquadratic growth, or bounded-below heights uniformly close to Rosati forms. Coupled survivor [S]: prove ord₁/₂Λ≤ord₁/₂Λγ for every member, every γ≠0; no ceiling or converse proved. Adding Dirichlet-lattice decay also excludes the present quartet contraction. Actual exterior positivity, signed prime surplus and full-cone control remain open.
+- **Sources:** G:ExactArithmeticSourceEffectivity; G:MaximalBlindIdealOfTheMeyerSource; CP:IntrinsicExteriorAndMinimumAnchorCost; AE:TheEffectivityCalculus; AE:TatesLimitLaw; BGG:ChiralDeformationAndNonRigidityOfHeightCoupledSystems [S]; PL:CouplingCollidesEvenly [S]; [SBWF](#sbwf).
 
 ## Route candidates
 
@@ -333,11 +333,12 @@ Not routes/candidates. Entries identify tools and unresolved transfer; route-spe
 | <a id="aog"></a>**ArithmeticOrientationGeometry (AOG)** [L] | HF, ACS, WD, SRT, PM | Source/configuration equality, orbit/index/rate laws, theta h⁰ and finite-Euler invariance; source sign open. | J:TheScalingDatumOfAConfiguration; J:TheOrientationOfACycle; J:TheIndexExit |
 | <a id="adr"></a>**ArithmeticDefectRigidity (ADR)** [L] | PM, MC | ζ/η symbols, exact residual kernel, bounded-energy Mellin holomorphy and translated-zero escape classifications in their stated finite-rank/nonresonant classes. Actual escape completeness and inverse coercivity open. | [corpus](../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/) |
 | <a id="biarithmetic"></a>**BiarithmeticGeometry** [L/S] | WL, HF, ACS, AIP, PM, MC | Degree-minus-log-torsion identity, affine/source-domain calibration and exact escaped-boundary accounting. Finite affine rigidity and normalization freedom do not produce arithmetic sign. | BG:ArithmeticEulerCharacteristic; BG:HorizonBoundaryCalculus; BG:SharedBudgetDescent |
+| <a id="biarithmetic-gauge"></a>**BiarithmeticGaugeGeometry (BGG)** [S/P] | AIP, OWU, ACS, HF | Finite gauge conjugacy, successor-flatness selection and 2→3→4 reconstruction; two-prime discrepancy≥e^(−|γ|)/50; coupled nonrigidity/central-ceiling receiver; polar-neutral rank-one cancellation and uniform cell-remainder bound [S]. Torsion-transfer claims [P]. No full sign/ceiling producer. | BGG:PrimeGaugeTorusAndVacuumIntertwiners; BGG:QuantitativeCatalanDiophantineRepulsion; BGG:ChiralDeformationAndNonRigidityOfHeightCoupledSystems; BGG:EuclideanCellRemainderAndPolarNeutralCollapse; [paper](../drafts/pipeline/2-fully-proven/biarithmetic-gauge-geometry-foundations.md) |
 | <a id="mpg"></a>**MPG — Multiplicative positivity geometry** [L] | ACS | Boundary capacity/profile realization and integer-family classifications; sharp finite-cosine forcing limits. Boundary positive weights are not a completed Euler/FE system or RH-strength interior estimate. | [corpus](../../formal/GaloisForLFunctions/MultiplicativePositivityGeometry/); MPG:ExactFejerBarrier; MPG:GrowthToForcing |
 | <a id="apd"></a>**APD — Arithmetic positive duality** [L] | ACS, HF | Positive-measure theta/FE rigidity in its moment/analytic class; prime recovery, Bochner/GNS and affine spectral classification. Prime-side positivity does not construct positive Weil spectral measure. Actual mixed positivity/exhaustion open. | APD:PositiveMeasureHamburgerRigidity; APD:PositivityOnBothSidesOfTheExplicitFormula; APD:SpectralSynthesisInTheBlindIdeal |
-| <a id="acp"></a>**ACP — ArithmeticCorrespondencePositivity** [L] | ACS, HF, WL, PM, OWU | Count/escape receivers; exterior calibration and anchor-paid Fejér lifts. Central coefficient→9/2, full Gamma/pole costs retained. Successor defect O((|s|+1)^(1−σ+η)), 0<η<σ<1, preserves ζ principal parts. Twin edge bound and elliptic resonance classification; no global sign or κ=1 complex-zero exclusion. | CP:TheEscapeAlternative; CP:IntrinsicExteriorAndMinimumAnchorCost; CP:TheSuccessorDefectInTheStrip; CP:TheFirstGaugeChargedWindowOffTheEdge; CP:EllipticLocalizationIsResonance |
-| <a id="arithmetic-polarization"></a>**ArithmeticPolarization** [L/S] | ACS, HF, OWU | Local polarization, full twisted EF, restricted conductor horizon; harmonic/collision obstructions; one-prime twin=π/log2 twist+Gamma/pole corrections, no simultaneous 2,3 flip [L]. Coupled-rigidity receiver, odd companion forcing, twist rate-neutrality and two model lattice collapses [S]. Full-source sign/rigidity open. | PL:ThePolarizationLaw; PL:ThePriceOfEllipticLocalization; PL:TheFejerBarrierForCoupledContraction; PL:TheCollisionLaw; PL:TheFirstGaugeChargeIsATwist; PL:RigidityOfTheCoupledClassExcludesItsZeros [S]; PL:TheForcingHalfOfEllipticLocalization [S]; PL:TwistsAreRateNeutral [S]; PL:TheDiagonalCollapse [S] |
-| <a id="arithmetic-effectivity"></a>**ArithmeticEffectivityTheory** [L/S] | ACS, HF, WL | Hodge ⇔ ∃h with quadratic RI+degree-zero subquadratic growth (κ=aH+bV; each c>0, arbitrarily large n). Abundant iff degree-zero positive square. Tate stabilization/height criterion; polynomial integrality/Nair bound [L]. Theta RR with fibre-independent quadratic term πJ²/t; horizon-torsion/box discrepancy criterion [S]. Actual arithmetic surface h⁰/height missing. | AE:TheEffectivityCalculus; AE:TheBaseDoesNotExtend; AE:TatesLimitLaw; AE:TheStepanovMethodOverZ; AE:TheThetaSurface [S]; AE:TheHorizonTorsion [S] |
+| <a id="acp"></a>**ACP — ArithmeticCorrespondencePositivity** [L/S] | ACS, HF, WL, PM, OWU | Count/escape receivers, anchor-paid Fejér lifts, successor-defect principal-part preservation, twin edge bounds and elliptic resonance [L]. Abel spectral identity/simple-pole atoms [S]; actual admission/exterior mass unsupplied. No global sign or κ=1 complex-zero exclusion. | CP:TheEscapeAlternative; CP:IntrinsicExteriorAndMinimumAnchorCost; CP:TheSuccessorDefectInTheStrip; CP:TheFirstGaugeChargedWindowOffTheEdge; CP:EllipticLocalizationIsResonance; CP:TheAbelEscapeStateIsTheBoundaryMeasureOfTheSymbol [S] |
+| <a id="arithmetic-polarization"></a>**ArithmeticPolarization** [L/S] | ACS, HF, OWU | Full twisted EF, conductor horizon, harmonic/collision obstructions, conditional companion forcing, twist rate-neutrality, two model lattice factorizations and capacity identity [L]. Coupled counts nonselective [S]; scalar-rigidity target refuted [S], not an open input. Source sign/central ceiling open. | PL:ThePolarizationLaw; PL:ThePriceOfEllipticLocalization; PL:TheFejerBarrierForCoupledContraction; PL:TheCollisionLaw; PL:TheFirstGaugeChargeIsATwist; PL:TheForcingHalfOfEllipticLocalization; PL:TwistsAreRateNeutral; PL:TheDiagonalCollapse; PL:TheOscillatoryCapacity; PL:CouplingCollidesEvenly [S] |
+| <a id="arithmetic-effectivity"></a>**ArithmeticEffectivityTheory** [L/S] | ACS, HF, WL | Hodge ⇔ RI+degree-zero subquadratic growth, κ=aH+bV; RI growth≤rn² arbitrarily late forces x²≤2r. Model h=½max(0,χ) has paired asymptotic rate max(0,x²/2), not an independent arithmetic section count. Tate, theta RR and horizon-torsion criteria [L]; ℙ¹×ℙ¹ numerical-model RI/degree bounds [S]. Actual arithmetic h⁰/height missing. | AE:TheEffectivityCalculus; AE:TheBaseDoesNotExtend; AE:TatesLimitLaw; AE:TheStepanovMethodOverZ; AE:TheThetaSurface; AE:TheHorizonTorsion; AE:TheProjectiveSquareCalibration [S] |
 | <a id="sbwf"></a>**StripBochnerWeilForcing (SBWF)** [L] | ACS, MPG | Completed-system shrinking collars and real-zero budgets. Simple-pole class exactly real nonzero multiples of ζ, d=1; κ=2 admits off-critical models. Source identification and real-zero contraction do not exclude nonreal interior zeros at κ=1. | SB:SharpHalfPoleCollar; SB:StripReflectionRigidity; SB:TheSimplePoleClassIsZeta |
 | <a id="arithmetic-kunneth"></a>**ArithmeticKunnethTheory** [L] | HF, ACS | Total-support depth bound, diagonal product moments and Künneth–Adams count positivity. Golden impure datum satisfies the entire positive-count hierarchy. Actual signed product/trace mechanism missing. | AK:ProductReceiversSeeDepthOnlyThroughTotalLength; AK:KunnethPositivityIsPointCountPositivity |
 | <a id="arithmetic-correlation"></a>**ArithmeticCorrelationGeometry** [L] | MC, PM, HF, ACS | Gauge classification/averaging, a.e. square-root and successor cancellation, Pell moments and escape spectral measures. μ exceptions are comeager/Haar-null; actual gauge point not selected. Positive mass/actual signed estimates remain open. | ACG:AlmostEveryGaugePointCancelsToTheSquareRoot; ACG:TheMoebiusExceptionalSetIsComeagerAndNull; ACG:RHIsTheVisibilityOfEveryEscapeState |
@@ -386,6 +387,7 @@ Not routes/candidates. Entries identify tools and unresolved transfer; route-spe
 | BG | BiarithmeticGeometry | SB | StripBochnerWeilForcing |
 | AK | ArithmeticKunnethTheory | SSA | SignedSuccessorArithmetic |
 | SAEI | SignedArithmeticEnergyIncidence | AE | ArithmeticEffectivityTheory |
+| BGG | BiarithmeticGaugeGeometry | | |
 
 ## Alias lookup
 

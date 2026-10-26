@@ -4,6 +4,8 @@ import GaloisForLFunctions.ArithmeticEffectivityTheory.TatesLimitLaw
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheStepanovMethodOverZ
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheThetaSurface
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheHorizonTorsion
+import GaloisForLFunctions.ArithmeticEffectivityTheory.TheProjectiveSquareCalibration
+import GaloisForLFunctions.ArithmeticEffectivityTheory.TheTorsionCharacteristics
 
 /-!
 # Arithmetic Effectivity Theory

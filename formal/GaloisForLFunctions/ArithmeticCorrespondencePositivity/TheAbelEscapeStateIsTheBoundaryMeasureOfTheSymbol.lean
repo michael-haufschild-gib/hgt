@@ -564,7 +564,7 @@ theorem tendsto_abelGram_of_poles {g : ℝ → ℝ} {θ δ M : ℝ} {ι : Type*}
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [integral_Icc_eq_integral_Ioc, intervalIntegral.integral_of_le (by linarith)]
   have hfe : (∫ y, ‖lineSymbol g (θ + ε) y‖ ^ 2 * Real.cos (y * (a - b))) = ∫ y, f ε y := rfl
-  rw [abelGram_spectral (h1 ε hε) (h2 ε hε), hfe, hsplit, Finset.mul_sum]
+  rw [abelGram_spectral (h1 ε hε) (h2 ε hε), hfe, hsplit, ← Finset.mul_sum]
   ring
 
 /-- **The normalized Abel escape state.** Under the hypotheses of the escape law, with some
@@ -597,13 +597,11 @@ theorem tendsto_abelGram_div_of_poles {g : ℝ → ℝ} {θ δ M : ℝ} {ι : Ty
     have h2s : ∑ k ∈ s, ‖r k‖ ^ 2 / 2 * Real.cos (y₀ k * (a - b)) =
         (∑ k ∈ s, ‖r k‖ ^ 2 * Real.cos (y₀ k * (a - b))) / 2 := by
       rw [Finset.sum_div]; refine Finset.sum_congr rfl fun k _ => by ring
-    rw [h2s]
-    field_simp
+    rw [h2s, mul_div_assoc, div_div_div_cancel_right₀ two_ne_zero, mul_div_assoc]
   rw [hval] at hq
   refine hq.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with ε hε
-  have hε0 : (ε : ℝ) ≠ 0 := (ne_of_gt hε)
-  field_simp
+  exact mul_div_mul_left _ _ (ne_of_gt hε)
 
 /-- **Escape at infinite height.** If the symbol stays bounded on a compact window uniformly near
 the abscissa line while the total spectral mass diverges, the normalized spectral mass of the

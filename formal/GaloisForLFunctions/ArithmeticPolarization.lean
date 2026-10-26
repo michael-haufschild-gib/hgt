@@ -10,6 +10,8 @@ import GaloisForLFunctions.ArithmeticPolarization.RigidityOfTheCoupledClassExclu
 import GaloisForLFunctions.ArithmeticPolarization.TheDiagonalCollapse
 import GaloisForLFunctions.ArithmeticPolarization.TwistsAreRateNeutral
 import GaloisForLFunctions.ArithmeticPolarization.TheOscillatoryCapacity
+import GaloisForLFunctions.ArithmeticPolarization.CouplingCollidesEvenly
+import GaloisForLFunctions.ArithmeticPolarization.EscapeKernelsAreCollidedForms
 
 /-!
 # Arithmetic Polarization
@@ -20,5 +22,7 @@ twisted sectors, the shifted configuration and the collision of quartets into re
 price of elliptic localization (shifted poles, charged weights, conductor horizon); the leading-line
 law and the Fejér barrier for coupled contraction; the collision law; the first gauge charge as a
 twist; the forcing half of elliptic localization; rigidity of the coupled class; the diagonal
-collapse of lattice counts; rate neutrality of twists; the oscillatory capacity `W = D − Δ`. See `ArithmeticPolarization/README.md`.
+collapse of lattice counts; rate neutrality of twists; the oscillatory capacity `W = D − Δ`; the
+parity of couplings and exterior squares; escape kernels as collided forms.
+See `ArithmeticPolarization/README.md`.
 -/

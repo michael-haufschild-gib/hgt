@@ -8,7 +8,7 @@ Two ways to collide a conjugate pair of Frobenius eigenvalues into the real axis
 `F(s)² F(s + iγ) F(s − iγ)`, and the **exterior square** `Λ²D`. They differ by the parity of the
 collision.
 
-* **The coupled datum** (`CurveDatum.couple`): for every curve datum and phase `θ`, the eigenvalues
+* **The coupled datum** (`coupleDatum`): for every curve datum and phase `θ`, the eigenvalues
   `e^{±iθ} β_i` form a curve datum of twice the genus; the phase `θ = −arg β` turns the impure
   eigenvalue `β` into the real eigenvalue `|β|` (`complexFake_couple_collides`).
 * **Couplings are blind to kernel counts** (`couple_detDeg_eq_normSq`, `couple_detDeg_nonneg`):
@@ -47,7 +47,7 @@ theorem swap_bool (b : Bool) : Equiv.swap true false b = !b := by
   cases b <;> simp [Equiv.swap_apply_left, Equiv.swap_apply_right]
 
 /-- **The coupled datum** `D ⊗ (e^{iθ} ⊕ e^{−iθ})`. -/
-def CurveDatum.couple {ι : Type*} [Fintype ι] (D : CurveDatum ι) (θ : ℝ) :
+def coupleDatum {ι : Type*} [Fintype ι] (D : CurveDatum ι) (θ : ℝ) :
     CurveDatum (ι × Bool) where
   q := D.q
   one_lt_q := D.one_lt_q
@@ -66,9 +66,9 @@ variable {ι : Type*} [Fintype ι] (D : CurveDatum ι)
 
 /-- **Every kernel count of a coupled datum is a modulus square.** -/
 theorem couple_detDeg_eq_normSq (θ : ℝ) (P : ℝ[X]) :
-    detDeg (D.couple θ) P =
+    detDeg (coupleDatum D θ) P =
       (Complex.normSq (∏ i, aeval ((D.sqrtq : ℂ) * (phase θ true * D.β i)) P) : ℂ) := by
-  have hsq : (D.couple θ).sqrtq = D.sqrtq := rfl
+  have hsq : (coupleDatum D θ).sqrtq = D.sqrtq := rfl
   rw [detDeg, Fintype.prod_prod_type]
   simp only [eigenvalue, hsq, Fintype.prod_bool]
   rw [Finset.prod_mul_distrib, ← Complex.mul_conj]
@@ -76,21 +76,22 @@ theorem couple_detDeg_eq_normSq (θ : ℝ) (P : ℝ[X]) :
   -- the `false` phases are the conjugates of the `true` phases at the conjugate index
   rw [map_prod, ← Equiv.prod_comp D.conjPerm]
   refine Finset.prod_congr rfl fun i _ => ?_
-  rw [← aeval_conj, map_mul, Complex.conj_ofReal, map_mul, conj_phase, D.β_conjPerm,
-    Complex.conj_conj]
+  rw [← aeval_conj, map_mul, Complex.conj_ofReal, map_mul, conj_phase]
+  show aeval ((D.sqrtq : ℂ) * (phase θ false * D.β (D.conjPerm i))) P = _
+  rw [D.β_conjPerm]
   rfl
 
 /-- Kernel counts of a coupled datum are nonnegative reals, for every datum. -/
 theorem couple_detDeg_nonneg (θ : ℝ) (P : ℝ[X]) :
-    ∃ r : ℝ, 0 ≤ r ∧ detDeg (D.couple θ) P = r :=
+    ∃ r : ℝ, 0 ≤ r ∧ detDeg (coupleDatum D θ) P = r :=
   ⟨_, Complex.normSq_nonneg _, couple_detDeg_eq_normSq D θ P⟩
 
 /-- **The coupling collides the complex fake.** At `θ = −π/2` the impure eigenvalue `2i` of the
 complex fake becomes the real eigenvalue `2`, off the unit circle; yet every kernel count of the
 coupled datum is nonnegative. -/
 theorem complexFake_couple_collides :
-    (complexFake.couple (-(Real.pi / 2))).β (0, true) = 2 ∧
-      (∀ P : ℝ[X], ∃ r : ℝ, 0 ≤ r ∧ detDeg (complexFake.couple (-(Real.pi / 2))) P = r) := by
+    (coupleDatum complexFake (-(Real.pi / 2))).β (0, true) = 2 ∧
+      (∀ P : ℝ[X], ∃ r : ℝ, 0 ≤ r ∧ detDeg (coupleDatum complexFake (-(Real.pi / 2))) P = r) := by
   refine ⟨?_, couple_detDeg_nonneg complexFake _⟩
   show phase (-(Real.pi / 2)) true * complexFake.β 0 = 2
   have hβ : complexFake.β 0 = 2 * I := rfl
