@@ -948,12 +948,15 @@ theorem integrable_moment_exp_rpow {K c s q : ℝ} (hs : 0 ≤ s) (hsq : s < q) 
   refine h.congr (Eventually.of_forall fun x => ?_)
   simp only [Complex.norm_real, Real.norm_of_nonneg (Real.exp_pos _).le]
 
-/-- **Annihilating tests for sparse spectra.** Let `0 < s < 1` and `a : ℕ → ℂ` with `a k ≠ 0` and
-`Σ_k |a_k|^{-s} < ∞`. There is a `C²` compactly supported test `g` whose transform vanishes at
-every `a k` and at no non-real point outside `{a k}`. -/
-theorem exists_annihilating_test {s : ℝ} (hs0 : 0 < s) (hs1 : s < 1) {a : ℕ → ℂ}
+/-- **Annihilating tests for sparse spectra, with their support.** Let `0 < s < 1` and
+`a : ℕ → ℂ` with `a k ≠ 0` and `Σ_k |a_k|^{-s} < ∞`. There is a `C²` test `g` supported in
+`[−R, R]`, `R = Σ_k (k + 1)^{−p}`, `p = (1 + 1/s)/2`, whose transform vanishes at every `a k` and at
+no non-real point outside `{a k}`. The radius depends on `s` only. -/
+theorem exists_annihilating_test_tsupport {s : ℝ} (hs0 : 0 < s) (hs1 : s < 1) {a : ℕ → ℂ}
     (ha : ∀ k, a k ≠ 0) (hsum : Summable fun k => ‖a k‖⁻¹ ^ s) :
-    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧ (∀ k, paperFT g (a k) = 0) ∧
+    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧
+      tsupport g ⊆ Icc (-inghamTotalRadius ((1 + 1 / s) / 2))
+        (inghamTotalRadius ((1 + 1 / s) / 2)) ∧ (∀ k, paperFT g (a k) = 0) ∧
       ∀ w : ℂ, w.im ≠ 0 → (∀ k, w ≠ a k) → paperFT g w ≠ 0 := by
   -- the Ingham exponent `p ∈ (1, 1/s)`
   set p : ℝ := (1 + 1 / s) / 2 with hp_def
@@ -1084,9 +1087,74 @@ theorem exists_annihilating_test {s : ℝ} (hs0 : 0 < s) (hs1 : s < 1) {a : ℕ 
     have hprod : Tendsto (fun N => paperFT (gN N) z) atTop (𝓝 (annProd a z * inghamFT p z)) := by
       simp_rw [hFTN]; exact (tendsto_prod_annProd hsI z).mul_const _
     exact tendsto_nhds_unique hlim hprod
-  refine ⟨g, hgs, hgc, fun k => ?_, fun w hw hwa => ?_⟩
+  refine ⟨g, hgs, hgsupp, fun k => ?_, fun w hw hwa => ?_⟩
   · rw [hFTg, annProd_apply_eq_zero hsI ha k, zero_mul]
   · rw [hFTg]
     exact mul_ne_zero (annProd_ne_zero hsI hwa ha) (inghamFT_ne_zero (by linarith) hw)
+
+/-- **Annihilating tests for sparse spectra.** Let `0 < s < 1` and `a : ℕ → ℂ` with `a k ≠ 0` and
+`Σ_k |a_k|^{-s} < ∞`. There is a `C²` compactly supported test `g` whose transform vanishes at
+every `a k` and at no non-real point outside `{a k}`. -/
+theorem exists_annihilating_test {s : ℝ} (hs0 : 0 < s) (hs1 : s < 1) {a : ℕ → ℂ}
+    (ha : ∀ k, a k ≠ 0) (hsum : Summable fun k => ‖a k‖⁻¹ ^ s) :
+    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧ (∀ k, paperFT g (a k) = 0) ∧
+      ∀ w : ℂ, w.im ≠ 0 → (∀ k, w ≠ a k) → paperFT g w ≠ 0 := by
+  obtain ⟨g, hg, hgs, hz, hnz⟩ := exists_annihilating_test_tsupport hs0 hs1 ha hsum
+  exact ⟨g, hg, isCompact_Icc.of_isClosed_subset (isClosed_tsupport g) hgs, hz, hnz⟩
+
+/-- Dilation `u ↦ g(μu)` divides the frequency: `h_{g(μ·)}(z) = μ⁻¹ h_g(z/μ)`. -/
+theorem paperFT_dilate (g : ℝ → ℂ) {μ : ℝ} (hμ : 0 < μ) (z : ℂ) :
+    paperFT (fun u => g (μ * u)) z = (μ⁻¹ : ℝ) * paperFT g (z / μ) := by
+  have hμc : (μ : ℂ) ≠ 0 := by exact_mod_cast hμ.ne'
+  have h := MeasureTheory.Measure.integral_comp_mul_left
+    (fun t : ℝ => g t * cexp (I * (z / μ) * t)) μ
+  simp only [paperFT]
+  have e : (fun u : ℝ => g (μ * u) * cexp (I * z * u)) =
+      fun u : ℝ => g (μ * u) * cexp (I * (z / μ) * ((μ * u : ℝ) : ℂ)) := by
+    funext u
+    congr 2
+    push_cast
+    field_simp
+  rw [e, h, abs_of_pos (inv_pos.mpr hμ), Complex.real_smul]
+
+/-- **Annihilating tests of small support.** Under the hypotheses of `exists_annihilating_test`,
+for every `ε > 0` the test can be taken with support in `[−ε, ε]`: kill `a_k/μ` and dilate by
+`μ`. -/
+theorem exists_annihilating_test_small {s : ℝ} (hs0 : 0 < s) (hs1 : s < 1) {a : ℕ → ℂ}
+    (ha : ∀ k, a k ≠ 0) (hsum : Summable fun k => ‖a k‖⁻¹ ^ s) {ε : ℝ} (hε : 0 < ε) :
+    ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ tsupport g ⊆ Icc (-ε) ε ∧ (∀ k, paperFT g (a k) = 0) ∧
+      ∀ w : ℂ, w.im ≠ 0 → (∀ k, w ≠ a k) → paperFT g w ≠ 0 := by
+  set R := inghamTotalRadius ((1 + 1 / s) / 2) with hRdef
+  have hR : 0 ≤ R := tsum_nonneg fun k => (inghamWidth_pos _ k).le
+  set μ : ℝ := (R + 1) / ε with hμdef
+  have hμ : 0 < μ := div_pos (by linarith) hε
+  have hμc : (μ : ℂ) ≠ 0 := by exact_mod_cast hμ.ne'
+  have ha' : ∀ k, a k / μ ≠ 0 := fun k => div_ne_zero (ha k) hμc
+  have hsum' : Summable fun k => ‖a k / μ‖⁻¹ ^ s := by
+    have e : ∀ k, ‖a k / μ‖⁻¹ ^ s = μ ^ s * ‖a k‖⁻¹ ^ s := fun k => by
+      rw [norm_div, Complex.norm_real, Real.norm_of_nonneg hμ.le, inv_div, div_eq_mul_inv,
+        Real.mul_rpow hμ.le (inv_nonneg.mpr (norm_nonneg _))]
+    simp_rw [e]
+    exact hsum.mul_left _
+  obtain ⟨g, hg, hgs, hz, hnz⟩ := exists_annihilating_test_tsupport hs0 hs1 ha' hsum'
+  refine ⟨fun u => g (μ * u), hg.comp (contDiff_const.mul contDiff_id), ?_, fun k => ?_,
+    fun w hw hwa => ?_⟩
+  · refine closure_minimal (fun u hu => ?_) isClosed_Icc
+    have hmem : μ * u ∈ Icc (-R) R := hgs (subset_tsupport _ hu)
+    have hRε : R / μ ≤ ε := by
+      rw [hμdef, div_div_eq_mul_div, div_le_iff₀ (by linarith)]
+      nlinarith
+    have habs : |u| ≤ ε := by
+      have h1 : |μ * u| ≤ R := abs_le.mpr ⟨hmem.1, hmem.2⟩
+      rw [abs_mul, abs_of_pos hμ] at h1
+      have h2 : |u| ≤ R / μ := by rw [le_div_iff₀ hμ]; linarith
+      linarith
+    exact ⟨by linarith [neg_abs_le u], by linarith [le_abs_self u]⟩
+  · rw [paperFT_dilate g hμ, hz k, mul_zero]
+  · rw [paperFT_dilate g hμ]
+    refine mul_ne_zero (by exact_mod_cast (inv_pos.mpr hμ).ne') (hnz _ ?_ fun k h => ?_)
+    · rw [Complex.div_ofReal_im]
+      exact div_ne_zero hw hμ.ne'
+    · exact hwa k (by rw [div_left_inj' hμc] at h; exact h)
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

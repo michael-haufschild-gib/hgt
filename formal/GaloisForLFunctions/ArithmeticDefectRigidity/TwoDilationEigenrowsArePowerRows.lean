@@ -20,6 +20,9 @@ one-prime law with period `log p` (`twistedDefect_cLogProfile`), and applies
 -/
 
 open MeasureTheory Filter Topology Set Complex
+open GaloisForLFunctions.BezoutValuationIncidence (pronicNorm pronicNorm_nonneg pronicNorm_sq
+  pronicNorm_add_le)
+open GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy
 open scoped Real
 
 noncomputable section
@@ -243,7 +246,7 @@ theorem eq_of_two_three_cpow_eq {s s' : ℂ} (h2 : (2 : ℂ) ^ s' = 2 ^ s) (h3 :
   have hcross : ((m : ℝ) * Real.log 2 : ℂ) = ((n : ℝ) * Real.log 3 : ℂ) := by
     have hI : (2 * π * I : ℂ) ≠ 0 := by simp [Real.pi_ne_zero]
     apply mul_left_cancel₀ hI
-    linear_combination (Real.log 2 : ℂ) * hm - (Real.log 3 : ℂ) * hn
+    linear_combination (Real.log 3 : ℂ) * hn - (Real.log 2 : ℂ) * hm
   have hreal : (m : ℝ) * Real.log 2 = (n : ℝ) * Real.log 3 := by exact_mod_cast hcross
   have hm0 := int_eq_zero_of_two_zpow_eq_three_zpow hreal
   rw [hm0, Int.cast_zero, zero_mul, add_zero] at hm
@@ -262,5 +265,101 @@ theorem exists_cPronicEnergy_sub_cpow_ne_top_same {s : ℂ} (h12 : 1 / 2 < s.re)
   · obtain ⟨t2, t3⟩ := htied hc
     rw [eq_of_two_three_cpow_eq t2 t3] at hfin
     exact ⟨c, hfin⟩
+
+/-! ### The converse -/
+
+theorem pronicNorm_le_of_abs_le_abs {T : ℕ} {a b : ℕ → ℝ} (h : ∀ n, |a n| ≤ |b n|) :
+    pronicNorm T a ≤ pronicNorm T b := by
+  rw [← Real.sqrt_sq (pronicNorm_nonneg T a), ← Real.sqrt_sq (pronicNorm_nonneg T b),
+    pronicNorm_sq, pronicNorm_sq]
+  refine Real.sqrt_le_sqrt (Finset.sum_le_sum fun n hn => ?_)
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast (Finset.mem_Icc.mp hn).1
+  refine div_le_div_of_nonneg_right ?_ (by positivity)
+  rw [← sq_abs (a n), ← sq_abs (b n)]
+  exact pow_le_pow_left₀ (abs_nonneg _) (h n) 2
+
+/-- The power `n^s` passes the law at `p`: `‖n^s − p^s⌊n/p⌋^s‖ ≤ (‖s‖ + 1) p` for `0 < Re s ≤ 1`. -/
+theorem norm_cpow_sub_dilate_le {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re ≤ 1) {p : ℕ} (hp : 1 ≤ p)
+    (n : ℕ) : ‖(n : ℂ) ^ s - (p : ℂ) ^ s * ((n / p : ℕ) : ℂ) ^ s‖ ≤ (‖s‖ + 1) * p := by
+  have hs : s ≠ 0 := fun h => by rw [h, Complex.zero_re] at hs0; exact lt_irrefl 0 hs0
+  have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast hp
+  rw [← Complex.natCast_mul_natCast_cpow, ← Nat.cast_mul]
+  set m := p * (n / p) with hmdef
+  rcases Nat.eq_zero_or_pos (n / p) with hq | hq
+  · have hm0 : m = 0 := by rw [hmdef, hq, mul_zero]
+    rw [hm0, Nat.cast_zero, Complex.zero_cpow hs, sub_zero]
+    have hnp : n < p := by
+      by_contra hge; push Not at hge
+      exact absurd (Nat.div_pos hge (by omega)) (by omega)
+    rcases Nat.eq_zero_or_pos n with hn | hn
+    · rw [hn, Nat.cast_zero, Complex.zero_cpow hs, norm_zero]; positivity
+    · rw [Complex.norm_natCast_cpow_of_pos hn]
+      have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+      calc (n : ℝ) ^ s.re ≤ (n : ℝ) ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hn1 hs1
+        _ = n := Real.rpow_one _
+        _ ≤ p := by exact_mod_cast hnp.le
+        _ ≤ (‖s‖ + 1) * p := by nlinarith [norm_nonneg s]
+  · have hm1 : (1 : ℝ) ≤ m := by
+      have : 1 ≤ m := by rw [hmdef]; nlinarith
+      exact_mod_cast this
+    have hmn : (m : ℝ) ≤ n := by exact_mod_cast Nat.mul_div_le n p
+    have hgap : (n : ℝ) - m ≤ p := by
+      have hlt : n < p * (n / p + 1) := Nat.lt_mul_div_succ n (by omega)
+      have : (n : ℝ) < ((p * (n / p + 1) : ℕ) : ℝ) := by exact_mod_cast hlt
+      push_cast at this; rw [hmdef]; push_cast; linarith
+    have hmv := norm_ofReal_cpow_sub_le hs1 (by linarith : (0 : ℝ) < m) le_rfl hmn
+    rw [Complex.ofReal_natCast, Complex.ofReal_natCast] at hmv
+    have hpow : (m : ℝ) ^ (s.re - 1) ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos hm1 (by linarith)
+    calc ‖(n : ℂ) ^ s - (m : ℂ) ^ s‖ ≤ ‖s‖ * (m : ℝ) ^ (s.re - 1) * ((n : ℝ) - m) := hmv
+      _ ≤ ‖s‖ * 1 * p := by
+          have h0 : 0 ≤ (n : ℝ) - m := by linarith
+          exact mul_le_mul (mul_le_mul_of_nonneg_left hpow (norm_nonneg _)) hgap h0 (by positivity)
+      _ ≤ (‖s‖ + 1) * p := by nlinarith
+
+/-- **Converse.** If `w − c n^s` has finite pronic energy, `0 < Re s ≤ 1`, every law
+`w − p^s D_p w` does. -/
+theorem cPronicEnergy_cEulerLaw_ne_top {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re ≤ 1) {w : ℕ → ℂ}
+    (hw0 : w 0 = 0) {c : ℂ} (h : cPronicEnergy (fun n => w n - c * (n : ℂ) ^ s) ≠ ⊤) {p : ℕ}
+    (hp : 1 ≤ p) : cPronicEnergy (cEulerLaw p s w) ≠ ⊤ := by
+  have hs : s ≠ 0 := fun h => by rw [h, Complex.zero_re] at hs0; exact lt_irrefl 0 hs0
+  set u : ℕ → ℂ := fun n => w n - c * (n : ℂ) ^ s with hu
+  have hu0 : (fun n => ‖u n‖) 0 = 0 := by
+    simp only [hu, Nat.cast_zero, Complex.zero_cpow hs, mul_zero, sub_zero, hw0, norm_zero]
+  obtain ⟨B, hB⟩ := (pronicEnergy_ne_top_iff fun n => ‖u n‖).mp h
+  have hp0 : 0 < p := by omega
+  set P := (p : ℝ) ^ s.re
+  set K := ‖c‖ * ((‖s‖ + 1) * p)
+  rw [cPronicEnergy, pronicEnergy_ne_top_iff]
+  refine ⟨B + P * (Real.sqrt (2 / (p : ℝ)) * B) + K, fun T => ?_⟩
+  have hpt : ∀ n, |‖cEulerLaw p s w n‖| ≤
+      |‖u n‖ + (P * rowDilate p (fun n => ‖u n‖) n + K)| := by
+    intro n
+    have hrow : cEulerLaw p s w n = u n - (p : ℂ) ^ s * u (n / p) +
+        c * ((n : ℂ) ^ s - (p : ℂ) ^ s * ((n / p : ℕ) : ℂ) ^ s) := by
+      simp only [cEulerLaw, hu]; ring
+    have hb := norm_cpow_sub_dilate_le hs0 hs1 hp n
+    rw [abs_of_nonneg (norm_nonneg _), hrow]
+    have hK0 : 0 ≤ K := by positivity
+    rw [abs_of_nonneg (by simp only [rowDilate]; positivity)]
+    calc ‖u n - (p : ℂ) ^ s * u (n / p) + c * ((n : ℂ) ^ s - (p : ℂ) ^ s * ((n / p : ℕ) : ℂ) ^ s)‖
+        ≤ ‖u n‖ + ‖(p : ℂ) ^ s‖ * ‖u (n / p)‖ + ‖c‖ * ((‖s‖ + 1) * p) := by
+          refine (norm_add_le _ _).trans (add_le_add ((norm_sub_le _ _).trans ?_) ?_)
+          · rw [norm_mul]
+          · rw [norm_mul]; exact mul_le_mul_of_nonneg_left hb (norm_nonneg _)
+      _ = ‖u n‖ + (P * rowDilate p (fun n => ‖u n‖) n + K) := by
+          rw [Complex.norm_natCast_cpow_of_pos hp0, rowDilate]; ring
+  refine (pronicNorm_le_of_abs_le_abs hpt).trans ?_
+  have h1 := pronicNorm_add_le T (fun n => ‖u n‖)
+    (fun n => P * rowDilate p (fun n => ‖u n‖) n + K)
+  have h2 := pronicNorm_add_le T (fun n => P * rowDilate p (fun n => ‖u n‖) n) (fun _ => K)
+  have h3 : pronicNorm T (fun n => P * rowDilate p (fun n => ‖u n‖) n) =
+      P * pronicNorm T (rowDilate p fun n => ‖u n‖) := pronicNorm_const_mul (by positivity) _
+  have h4 := pronicNorm_rowDilate_le hp T (fun n => ‖u n‖) hu0
+  have h5 : pronicNorm T (fun _ => K) ≤ K :=
+    pronicNorm_le_of_abs_le (by positivity) (fun _ => by rw [abs_of_nonneg (by positivity)]) T
+  have h6 : P * pronicNorm T (rowDilate p fun n => ‖u n‖) ≤ P * (Real.sqrt (2 / (p : ℝ)) * B) :=
+    mul_le_mul_of_nonneg_left (h4.trans (mul_le_mul_of_nonneg_left (hB T) (Real.sqrt_nonneg _)))
+      (by positivity)
+  linarith [hB T]
 
 end GaloisForLFunctions.ArithmeticDefectRigidity

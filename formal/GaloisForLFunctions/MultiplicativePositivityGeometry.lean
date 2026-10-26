@@ -29,6 +29,7 @@ import GaloisForLFunctions.MultiplicativePositivityGeometry.FamilyCapacity
 import GaloisForLFunctions.MultiplicativePositivityGeometry.LocallyFiniteBochner
 import GaloisForLFunctions.MultiplicativePositivityGeometry.BoundaryRegularity
 import GaloisForLFunctions.MultiplicativePositivityGeometry.ArithmeticBochner
+import GaloisForLFunctions.MultiplicativePositivityGeometry.IntegralLocallyFinite
 
 /-!
 # Multiplicative Positivity Geometry

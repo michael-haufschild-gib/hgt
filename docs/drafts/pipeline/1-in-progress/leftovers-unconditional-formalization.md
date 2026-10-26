@@ -87,11 +87,35 @@ Existing unrelated worktree changes must be preserved.
   on the card; formalization still pending, no completion or novelty claim.
 - Nyquist completion proof now recorded on its stage-2 card, including continuous
   primitive, exact broad-test constant, source classification and witnesses.
-  Primitive proof prototype: `/tmp/leftovers_nyquist_primitive.lean` is checking
-  in owned foreground session `89244`, log `/tmp/leftovers-nyquist-primitive-check.log`.
-  It verifies the mathlib APIs in scratch before migration into the project.
+  Primitive scratch check (`89244`) reached all declarations, exposing two `0+k`
+  reductions, one explicit set-membership elaboration and one rational-expression
+  normalization issue. All repaired. Source is now
+  `BiScaleUncertainty/NyquistCriticalPrimitive.lean`.
+  First olean attempt (`76728`) found a line-broken field-notation elaboration
+  issue in the local-integrability helper. Replaced it with typed local facts.
+  Recheck/build is active (record the latest tool session after launch), log
+  `/tmp/leftovers-nyquist-primitive-build.log`, because the cell-bound prototype
+  imports it. Final direct source check and axiom audit remain.
   Cell-error and summable-majorant prototype: `/tmp/leftovers_nyquist_cell_bounds.lean`
-  (not checked; imports planned `NyquistCriticalPrimitive`).
+  (not checked; imports `NyquistCriticalPrimitive`). Intended module name:
+  `NyquistCriticalTestCellBounds`.
+  Signed expansion prototype: `/tmp/leftovers_nyquist_broad_tests.lean` (not checked;
+  imports planned `NyquistCriticalTestCellBounds`), intended module name
+  `NyquistCriticalBroadTests`. Covers arbitrary compact Lipschitz tests and all
+  positive scales, both half-line and full-line residual integrals.
   Separate probe inventory `/tmp/leftovers_nyquist_api.lean` has not been run and
   need not be compiled wholesale; it includes unused guessed names.
-  No Nyquist repository leaf has been added yet. Existing parent olean is present.
+  Existing Nyquist parent olean is present. No new Nyquist umbrella import yet.
+- Source-classification reuse leads: `RHTower.LogWindowPrimeNumberTheorem`
+  has `RHTower.WeilOneSided.exists_autoCorr_constants` and `abs_autoCorr_sub_le`,
+  proved from source Lipschitz control, with the minus-lag autocorrelation convention.
+  Use `autocorr f x = WeilOneSided.autoCorr f (-x)` to transport it, rather than
+  duplicate the proof. `ArithmeticCriticalityTheory.ShiftAveragedKernel` has
+  `integral_Ioi_eq_half_of_even`. `UnitEnergySmallSources` has
+  `autocorr_eq_zero_of_source_radius`, useful for the actual lag-4 witness.
+  All three existing oleans were checked present. Source-classification prototype
+  is now `/tmp/leftovers_nyquist_sources.lean` (not checked), intended module
+  `NyquistCriticalSourceClassification`. It includes normalized correlation,
+  source-derived Lipschitz constant, exact mean-square slope, actual rescaled-source
+  residual, full quantitative expansion, finite-part and slope limits, both mean
+  alternatives and vanishing normalized energy. Actual signed witnesses remain to add.

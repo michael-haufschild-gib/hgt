@@ -165,6 +165,7 @@ The language keeps these distinctions explicit:
 | **P26 Locally finite Bochner** | A locally finite `D` (finitely many points in every bounded set; poles and zeros anywhere, infinitely many) is a boundary divisor iff it is even and positive definite. Fejér truncations `D(v)(1 − |v|/N)⁺` stay positive definite (overlap of intervals), and their convolutions with `n^{−2}Σ_{k ≤ n²} cos(ku/n)` are positive cosine polynomials converging to `D` pointwise. | `locallyFinite_boundary_divisor_iff`, `IsEvenPosDef.mul_fejerFactor`, `tendsto_fejerPoly` |
 | **P27 Regularity** | An integer boundary divisor with `D(0) = 1` is `δ₀`, a lattice indicator, an alternating lattice character or the constant `1`, without assuming local finiteness: a boundary divisor is a pointwise limit of continuous functions, so by Baire it cannot be `±1` on a dense subgroup and `0` on its dense translate. | `boundary_tetrachotomy`, `boundary_locallyFinite`, `not_tendsto_continuous_of_dense` |
 | **P28 Arithmetic Bochner** | A locally finite even positive-definite `D` is the boundary divisor of one Dirichlet series `Σ Λ(n) g(log n) n^{−s}` with fixed `g ≥ 0`. The profile `g = Σ_N (e^{−a_N t} − e^{−a_{N−1} t}) P_N(t)` glues the Bohr polynomials of the Fejér truncations; each block is a difference of ζ-traces at two dampings, the diagonal is a Toeplitz average, and uniform continuity of `ζ'/ζ` on compacta of `Re s ≥ 1` minus `1` kills the rest. | `arithmetic_bochner`, `arithmetic_isBoundaryDivisor`, `tsum_block_eq`, `tendsto_toeplitz` |
+| **P29 Integral Bochner** | A locally finite `D` is the boundary divisor of an Euler product `Π_p (1 − p^{−s})^{−m(p)}` with `m(p) ∈ ℕ` iff it is even and positive definite. Greedy rounding keeps the prime error below `log(n + 1)` for every profile; logarithmic growth of the P28 profile is absorbed by `Σ_{n not prime} (1 + log n)² Λ(n)/n < ∞`. | `integral_bochner`, `IsBoundaryDivisor.round_log` |
 
 ---
 
@@ -210,7 +211,7 @@ not a boundary datum.
 form `A/δ + G ≥ B/(δ + η)` forces exactly `η ≥ (√B − √A)²/G`. Its sharp barrier is P10 read
 backwards (`dlvp_input_consistent`). dlVP is the instance `(3, 4, (5/2) log γ + C)` (P12).
 
-**What does integrality of the prime data permit?** Everything positivity permits (P14). An Euler
+**What does integrality of the prime data permit?** Everything positivity permits (P14, P29). An Euler
 product with nonnegative integer exponents over the rational primes realizes every finite
 positive-definite configuration, including half zeros. The invariant (Z) is meromorphy at the
 boundary.
@@ -271,10 +272,9 @@ To build:
    boundary invariants with a real zero at `β` (P23). With Riemann's theta relation and integral
    masses only `ζ` remains (`HTGeometry.eq_integers_of_riemannThetaRelation`), so with the
    functional equation Q2 is RH itself.
-3. **Integral realization.** Answered for finite configurations (P14) and for the lattice
-   divisors (P24). Every locally finite configuration is the divisor of one Dirichlet series over
-   the integers with nonnegative real exponents (P28). Open: integer exponents for general locally
-   finite configurations.
+3. **Integral realization.** Answered for locally finite configurations: an integral Euler product
+   over the rational primes realizes exactly the even positive-definite ones (P29; P14 and P24 are
+   special cases). Open: configurations that are not locally finite.
 4. **`σ`-dependent growth.** Range-limited inputs are covered by `exclusion_iff_restricted`. The
    corpus VK step (`vk_dlvp_contradiction`) has the form `4/(δ+η) ≤ 3/δ + G`, but only at one `δ`
    inside the proof of `exists_riemannZeta_ne_zero_vinogradovKorobov_width`. Stated on a `δ`-range,
@@ -340,3 +340,4 @@ A contribution must:
 | `LocallyFiniteBochner` | Locally finite boundary divisors are exactly the positive-definite ones |
 | `BoundaryRegularity` | Baire regularity of boundary limits; the simple-pole classification without local finiteness |
 | `ArithmeticBochner` | Locally finite divisors of a single Dirichlet series `Σ Λ(n) g(log n) n^{−s}` |
+| `IntegralLocallyFinite` | Integral Euler products realize every locally finite positive-definite divisor |

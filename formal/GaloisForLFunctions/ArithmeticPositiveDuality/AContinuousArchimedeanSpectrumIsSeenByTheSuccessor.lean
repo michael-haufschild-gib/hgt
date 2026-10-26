@@ -114,10 +114,11 @@ theorem isPosDefOnGroup_realAffState (hH : Continuous H) (hHc : HasCompactSuppor
         rw [integral_mul_const, integral_const_mul, Subgroup.coe_mul, Subgroup.coe_inv,
           realAffState_inv_mul (x a).2 (x b).2]
     _ = ∫ t, ∑ a, ∑ b, star (c a) * (conj (realAffVec H (x a) t) * realAffVec H (x b) t) * c b := by
-        rw [integral_finset_sum _ fun a _ => integrable_finset_sum _ fun b _ => hint a b]
-        exact Finset.sum_congr rfl fun a _ => (integral_finset_sum _ fun b _ => hint a b).symm
+        rw [integral_finsetSum _ fun a _ => integrable_finsetSum _ fun b _ => hint a b]
+        exact Finset.sum_congr rfl fun a _ => (integral_finsetSum _ fun b _ => hint a b).symm
     _ = ∫ t, ((‖V t‖ ^ 2 : ℝ) : ℂ) := by
         refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+        dsimp only
         rw [← Complex.normSq_eq_norm_sq, Complex.normSq_eq_conj_mul_self]
         simp only [V, map_sum, Finset.sum_mul_sum]
         refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
@@ -201,7 +202,7 @@ theorem successor_sees_autocorrelation (hH : Continuous H) (hHc : HasCompactSupp
     refine tendsto_nhds_unique hlim (tendsto_const_nhds.congr fun n => ?_)
     have hb : ((1 : ℚ) / ((n : ℚ) + 1)) ≠ 0 := by positivity
     rw [← hSb _ hb]
-    norm_cast
+    exact congrArg S (by simp)
   -- Real parts: `∫ (1 − cos(b eˣ)) w = 0` for rational `b ≠ 0`.
   have hcos : ∀ b : ℚ, b ≠ 0 → Real.cos ((b : ℝ) * Real.exp x₀) = 1 := by
     intro b hb
@@ -220,6 +221,7 @@ theorem successor_sees_autocorrelation (hH : Continuous H) (hHc : HasCompactSupp
       show (∫ x, cexp (I * (β : ℂ) * (Real.exp x : ℂ)) * (w x : ℂ)).re = _
       rw [← RCLike.re_eq_complex_re, ← integral_re (hSi β)]
       refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+      dsimp only
       rw [RCLike.re_eq_complex_re, show I * (β : ℂ) * (Real.exp x : ℂ) =
         ((β * Real.exp x : ℝ) : ℂ) * I by push_cast; ring, Complex.re_mul_ofReal,
         Complex.exp_ofReal_mul_I_re]

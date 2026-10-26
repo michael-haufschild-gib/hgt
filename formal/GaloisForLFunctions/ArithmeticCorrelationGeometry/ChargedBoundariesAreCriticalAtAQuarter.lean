@@ -42,9 +42,11 @@ weight `2σ`. -/
 theorem integral_normSq_twistedFlatBoundary (N a b : ℕ) (σ : ℝ) :
     ∫ x, ‖twistSum (Ioc ((N - b) / a) N) (fun j => (((j : ℝ) ^ (-(2 * σ)) : ℝ) : ℂ)) x‖ ^ 2
       ∂gaugeHaar = escapedMass N a b (2 * σ) := by
-  rw [integral_normSq_twistSum (fun n hn => by have := (mem_Ioc.mp hn).1; omega), escapedMass]
+  rw [integral_normSq_twistSum (fun n hn => Nat.ne_of_gt (lt_of_le_of_lt (Nat.zero_le _)
+    (mem_Ioc.mp hn).1)), escapedMass]
   refine sum_congr rfl fun j hj => ?_
-  have hj : (0 : ℝ) < j := by have := (mem_Ioc.mp hj).1; exact_mod_cast (by omega : 0 < j)
+  have hj : (0 : ℝ) < j := by
+    exact_mod_cast lt_of_le_of_lt (Nat.zero_le _) (mem_Ioc.mp hj).1
   rw [Complex.norm_real, Real.norm_eq_abs, sq_abs, ← Real.rpow_natCast, ← Real.rpow_mul hj.le,
     ← Real.rpow_neg hj.le]
   norm_num
@@ -69,7 +71,7 @@ theorem sum_Ioc_mul_eq_abel (c : ℕ → ℂ) (w : ℕ → ℂ) {M N : ℕ} (hMN
   induction N, hMN using Nat.le_induction with
   | base => simp
   | succ N hMN ih =>
-    rw [sum_Ioc_succ_top (by omega), sum_Ioc_succ_top (by omega), ih, sum_range_succ (n := N + 1)]
+    rw [sum_Ioc_succ_top (by omega), sum_Ioc_succ_top (by omega), ih, Finset.sum_range_succ c (N + 1)]
     ring
 
 /-- Telescoping on `(M, N]`. -/
@@ -111,7 +113,8 @@ theorem norm_sum_Ioc_mul_rpow_neg_le {c : ℕ → ℂ} {C α s : ℝ} (hC : 0 �
           rw [mul_assoc, ← Real.rpow_add hn1, sub_eq_add_neg]
       _ ≤ C * ((M : ℝ) + 1) ^ (α - s) := by
           gcongr
-          exact Real.rpow_le_rpow_of_nonpos hM1 (by exact_mod_cast Nat.succ_le_succ hn) (by linarith)
+          have hMn : (M : ℝ) ≤ n := by exact_mod_cast hn
+          exact Real.rpow_le_rpow_of_nonpos hM1 (by linarith) (by linarith)
   -- the Abel sum
   have hdiff : ∀ j : ℕ, 1 ≤ j → 0 ≤ w j - w (j + 1) ∧ w j - w (j + 1) ≤
       s * 2 ^ (s + 1) * ((j : ℝ) + 1) ^ (-(s + 1)) := by
@@ -164,8 +167,9 @@ theorem norm_sum_Ioc_mul_rpow_neg_le {c : ℕ → ℂ} {C α s : ℝ} (hC : 0 �
             gcongr
             exact htel j hj1
     refine (sum_le_sum hterm).trans ?_
-    rw [← mul_sum, ← sum_div, sum_Ioc_sub_succ (fun j : ℕ => (j : ℝ) ^ (-(s - α))) hMN]
-    push_cast
+    have htele := sum_Ioc_sub_succ (fun j : ℕ => (j : ℝ) ^ (-(s - α))) hMN
+    push_cast at htele
+    rw [← mul_sum, ← sum_div, htele]
     have hN1 : 0 ≤ ((N : ℝ) + 1) ^ (-(s - α)) := Real.rpow_nonneg (by positivity) _
     have hkey : (((M : ℝ) + 1) ^ (-(s - α)) - ((N : ℝ) + 1) ^ (-(s - α))) / (s - α) ≤
         ((M : ℝ) + 1) ^ (α - s) / (s - α) := by
@@ -178,7 +182,7 @@ theorem norm_sum_Ioc_mul_rpow_neg_le {c : ℕ → ℂ} {C α s : ℝ} (hC : 0 �
       _ = C * (s * 2 ^ (s + 1) / (s - α)) * ((M : ℝ) + 1) ^ (α - s) := by ring
   have hwN : (((w (N + 1) : ℝ)) : ℂ) = (((((N + 1 : ℕ) : ℝ) ^ (-s)) : ℝ) : ℂ) := rfl
   have hwM : (((w (M + 1) : ℝ)) : ℂ) = (((((M + 1 : ℕ) : ℝ) ^ (-s)) : ℝ) : ℂ) := rfl
-  have hsplit : ∀ j, ((((j : ℝ) ^ (-s)) : ℝ) : ℂ) - ((((j + 1 : ℕ) : ℝ) ^ (-s) : ℝ) : ℂ) =
+  have hsplit : ∀ j : ℕ, ((((j : ℝ) ^ (-s)) : ℝ) : ℂ) - ((((j + 1 : ℕ) : ℝ) ^ (-s) : ℝ) : ℂ) =
       ((w j : ℝ) : ℂ) - ((w (j + 1) : ℝ) : ℂ) := fun j => rfl
   simp_rw [hsplit]
   calc ‖(∑ i ∈ range (N + 1), c i) * ((((N + 1 : ℕ) : ℝ) ^ (-s) : ℝ) : ℂ) -
