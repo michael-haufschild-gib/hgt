@@ -157,6 +157,11 @@ The language keeps these distinctions explicit:
 | **P19 Rankin–Selberg** | For signed log-coefficients `Λg`: `D_f(0)² + 2Σ_{u ∈ U} D_f(u)² ≤` pole order of `f ⊗ f`; simple poles of `f` and `f ⊗ f` force `D_f = δ₀`; equality for `ζ(s)/(ζ(s+i)ζ(s−i))`. | `rankinSelberg_bessel`, `rankinSelberg_forcing`, `rankinSelberg_bessel_sharp` |
 | **P20 Abelian mass law** | On every abelian group a positive-definite `φ ≤ 0` off the origin has off-origin mass `≤ φ(0)`; zeros with `p ≠ −p` have order `≤ φ(0)/2`, self-conjugate ones `≤ φ(0)`. | `total_offOrigin_mass_le`, `zero_order_le_of_pair` |
 | **P21 Decay law** | If `log |Z|` has growth exponent `≤ k` at the pole, `≤ 0` elsewhere and decay exponents `α_z` at the heights `z`, then `Σ α_z ≤ k/2`; no boundary limits are needed. A simple pole admits no decay faster than `x^{1/2}`. | `decay_mass_law`, `holder_barrier` |
+| **P22 Beurling threshold** | A Beurling-type zeta `A(1+w)/w + (1+w)∫ r(v)e^{−wv}dv` with nonnegative log-coefficients and `∫|r|(1+v)^θ < ∞` has `nθ ≤ 1/2` for `n` boundary zero heights; a count error `O(t/log^γ t)` gives every `θ < γ − 1`, so `γ > 3/2` leaves no zero: `3/2 = 1 + ` half capacity. | `beurling_zero_count`, `moment_of_power_decay`, `norm_beurlingZetaModel_sub_le` |
+| **P23 Protected points** | A zero at a point `p` of the family group `G × ℝ` gets a certified zero-free interval iff `2p ≠ 0`: order-two fibres have purchase ratio `1`, cyclic fibres of order `≥ 3` ratio `2`. `Z_0 = ζ`, `Z_h = 1/ζ(s + 1 − β)` (and `ζ(s)/ζ(s+1−β)` for `h = 0`) satisfy every boundary invariant with a real zero at any `β < 1`. | `siegel_isJointBoundaryDivisor`, `siegel_member_zero`, `cyclic_fibre_sum_nonneg`, `unpaired_real_zero_unexcluded` |
+| **P24 Lattice realization** | The lattice of simple poles and the alternating character are boundary divisors of `Π_p (1 − p^{−s})^{−m(p)}`, `m(p) ∈ ℕ`: primes in windows `(e^{hk+a}, e^{hk+a}(1 + (k+1)^{−2})]` with exponent `⌊h/S_k⌋` reproduce the one-prime factor at the boundary (PNT with de la Vallée Poussin error). Every type of the trichotomy is realized by integral data. | `latticeRound_isBoundaryDivisor`, `integral_lattice`, `integral_alternating` |
+| **P25 Family capacity** | For a family over a finite abelian `G`, an even configuration with pole order `k` at the origin, no other pole and finite symmetric support `S` is a joint boundary divisor iff `Σ_{p ∈ S} m(p) ≤ k`; realized by character-twisted ζ weights. A self-conjugate point (`2p = 0`) can carry the whole capacity `k`, a pair `±p` at most `k/2` each. | `family_isolated_iff`, `capFamily_isJointBoundaryDivisor` |
+| **P26 Locally finite Bochner** | A locally finite `D` (finitely many points in every bounded set; poles and zeros anywhere, infinitely many) is a boundary divisor iff it is even and positive definite. Fejér truncations `D(v)(1 − |v|/N)⁺` stay positive definite (overlap of intervals), and their convolutions with `n^{−2}Σ_{k ≤ n²} cos(ku/n)` are positive cosine polynomials converging to `D` pointwise. | `locallyFinite_boundary_divisor_iff`, `IsEvenPosDef.mul_fejerFactor`, `tendsto_fejerPoly` |
 
 ---
 
@@ -249,8 +254,7 @@ Built:
 To build:
 
 - interior data: a positive-definite object attached to the strip;
-- the VK and Littlewood inputs as range-limited inequalities, and a law for `δ`-dependent growth;
-- integral realization of infinite (lattice) configurations over the rational primes.
+- the VK and Littlewood inputs as range-limited inequalities, and a law for `δ`-dependent growth.
 
 ---
 
@@ -258,18 +262,22 @@ To build:
 
 1. **Interior positivity.** Which positive-definite structure survives analytic continuation into
    `1/2 < σ < 1`? P8 shows it cannot be a boundary datum.
-2. **Interior invariants.** Does pole-freeness of the continuation, with (N), (Z), (S) and the
-   functional equation, exclude interior zeros (Q2)? Over-regular and golden Beurling systems are the
-   test battery.
-3. **Integral realization.** Answered for finite configurations (P14). Open: lattice and other
-   infinite locally finite configurations over the rational primes.
+2. **Interior invariants.** Without the functional equation the answer is no: over-regular
+   continuous Beurling systems keep (N) and (S) and have off-line zeros
+   (`RHTower.overRegular_integers_do_not_constrain_zeros`), and `ζ(s)/ζ(s + 1 − β)` keeps all four
+   boundary invariants with a real zero at `β` (P23). With Riemann's theta relation and integral
+   masses only `ζ` remains (`HTGeometry.eq_integers_of_riemannThetaRelation`), so with the
+   functional equation Q2 is RH itself.
+3. **Integral realization.** Answered for finite configurations (P14) and for the lattice
+   divisors (P24). Open: general infinite locally finite configurations over the rational primes.
 4. **`σ`-dependent growth.** Range-limited inputs are covered by `exclusion_iff_restricted`. The
    corpus VK step (`vk_dlvp_contradiction`) has the form `4/(δ+η) ≤ 3/δ + G`, but only at one `δ`
    inside the proof of `exists_riemannZeta_ne_zero_vinogradovKorobov_width`. Stated on a `δ`-range,
    it would give the VK region with its optimal constant and its barrier. Inputs with genuinely
    `δ`-dependent `G(δ)` remain open.
-5. **Higher poles.** Answered without off-origin poles (P15) and for finite configurations with
-   them (P13). Open: locally finite infinite configurations with poles off the origin.
+5. **Higher poles.** Answered: on locally finite configurations the boundary divisors are exactly
+   the even positive-definite functions (P26; P13 and P15 are the finite cases). Open: the range
+   beyond local finiteness, where positive definiteness is not enough (P17).
 
 ---
 
@@ -320,3 +328,8 @@ A contribution must:
 | `RankinSelbergBessel` | Bessel's inequality for the square; Rankin–Selberg forcing |
 | `AbelianZeroMass` | The zero-mass law on every abelian group; paired and self-conjugate zeros |
 | `DecayMassLaw` | The decay-exponent mass law; Hölder barrier |
+| `BeurlingThreshold` | Count regularity gives boundary decay; Beurling's threshold and zero count |
+| `SiegelException` | Protected points of the family group; the Siegel family at every depth |
+| `IntegralLatticeRealization` | Lattice and alternating divisors from integer exponents at prime windows |
+| `FamilyCapacity` | Exact capacity classification of isolated family configurations |
+| `LocallyFiniteBochner` | Locally finite boundary divisors are exactly the positive-definite ones |

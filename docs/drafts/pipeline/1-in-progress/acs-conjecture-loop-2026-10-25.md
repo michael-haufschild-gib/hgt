@@ -50,7 +50,7 @@ tool, or exposes a mechanism, calibrated over `𝔽_q`.
   isolated pole its residue (the class sum) vanishes. Tower law: every visible `b` with `b⁻¹`
   accessible from 0 off the closed active folded spectrum `{β_τ⁻¹}` is seen; blindness forces
   separation; countable folded spectra in the unit disc do not blind a fixed test.
-  Status: Lean written (`WolffBlindnessRequiresSeparation.lean`), compiling.
+  Status: DONE (Lean, contribution 4).
 - **C5 (one test, one prime carries the whole defect of ζ).** Cases: (i) finitely many outer
   eigenvalues: C3's test with `O = outerEig`; (ii) infinitely many classes of depth `≥ δ` for some
   `δ > 0`: kill depth `≥ δ/2` except an infinite set `F` of representatives whose folded points
@@ -59,7 +59,14 @@ tool, or exposes a mechanism, calibrated over `𝔽_q`.
   with finitely many classes per depth: every disc of radius `< 1` meets finitely many folded points,
   so C4 applies to every test; need one test with infinitely many nonzero class weights (genericity:
   Baire on an ℓ¹ family of single-class killers, or probes with nonvanishing class transforms).
-  Status: open; (iii) needs a genericity tool.
+  Status: DONE (Lean, contributions 5–6): the genericity tool is the probe class weight, an
+  entire function positive on `Im s = δ` (`OneProbeSeesEveryOuterEigenvalue.lean`).
+
+- **C7 (Weil's two-element windows at one prime).** The Lefschetz sequence `c_m = W(T_{p^m}g, g)`
+  of one test grows exactly like `p^{wm}` (`w` = zero width); RH ⟺ `|c_m| ≤ c_0` ∀ m. Mechanism:
+  `O(R^m)` moments continue the Cauchy transform to `|z| < 1/R`; a test keeping a top zero (or a
+  sequence increasing to the top with convergent folded points) makes the top pole accessible.
+  Status: DONE (Lean, contribution 7).
 
 ## Avoid (other agents active 2026-10-25)
 Q-II Meyer source modules; `MaximalBlindIdealOfTheMeyerSource.lean` (another agent); biarithmetic; rh-closing-producer Stepanov tracks (HTGeometry Stepanov).
@@ -67,3 +74,6 @@ Q-II Meyer source modules; `MaximalBlindIdealOfTheMeyerSource.lean` (another age
 ## Log
 - 2026-10-25 — created; C1, C2 done; C3 step (iii) done; paused on user request.
 - 2026-10-25 — C3 done.
+- 2026-10-26 — C4 done; C5 scoped.
+- 2026-10-26 — C6 (probe tool) and C5 done.
+- 2026-10-26 — C7 done.

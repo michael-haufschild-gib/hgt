@@ -16,7 +16,8 @@ subgroups and the boundary of finite presentations locate it, and what each of t
 see.
 
 Namespace `GaloisForLFunctions.ArithmeticCorrelationGeometry`; umbrella
-`ArithmeticCorrelationGeometry.lean`. Everything is unconditional. Hypotheses of the form
+`ArithmeticPositiveDuality/ArithmeticCorrelationGeometry.lean`, imported by the
+`ArithmeticPositiveDuality` umbrella. Everything is unconditional. Hypotheses of the form
 "`CoalescentSurplusAtMost β`" or RH appear only inside equivalences owned by other programmes.
 
 ---
@@ -33,16 +34,16 @@ that is specific to `ζ` must be gauge charged.
 
 | Programme | Interface |
 |---|---|
-| [TransThresholdPairCorrelation](../TransThresholdPairCorrelation/README.md) | The coalescent prime-pair surplus at bandwidth `4/3` is pure gauge charge: mean zero, variance `o(N(T,2T)²)`; every budget holds for Haar-almost every twist of the primes. The open problem is a statement about the gauge point `0`. |
-| [SquareRootThreshold](../SquareRootThreshold/README.md), [ArithmeticKunnethTheory](../ArithmeticKunnethTheory/README.md) | Windowed mean values and product moments. The archimedean family is a line in `G`; below the threshold it computes the gauge moments exactly, beyond it the excess is the near-incidence form. Gauge Jensen turns the AKT homogeneity into a linear loss law. |
-| [SignedSuccessorArithmetic](../SignedSuccessorArithmetic/README.md) | The dilation cocycle is the gauge-covariance law of completely multiplicative signs. The sign gauge (`2`-torsion of `G`) sees a successor pair only when `j(j+h)` is a square. |
-| [BiarithmeticGeometry](../BiarithmeticGeometry/README.md) | The finite horizon, its affine action and escaped cells. ACG adds the boundary cocycle, the incidence formula for mixed Grams, and the critical weight at which dilation boundaries are horizon uniform. |
-| [ArithmeticDefectRigidity](../ArithmeticDefectRigidity/README.md) | Escape states, origin traces, moving successors. ACG fixes the normalisation (`σ = ½`) at which the boundary of a dilation is a finite nonzero invariant, `log a`. |
-| [BiScaleUncertainty](../BiScaleUncertainty/README.md) | Twist invariance of window extremes (`PrimeWindowTwistInvariance`) is a case of gauge invariance. |
-| [ArithmeticPositiveDuality](../ArithmeticPositiveDuality/README.md) | Affine positivity is induced from the dilations: free successor coordinates impose nothing. ACG explains why: free successor coordinates range over gauge-charged data; prescribed ones are a gauge point. |
-| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md), [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md) | The `𝔽_q` calibration and the one known sublinear loss law: eventual Hasse–Weil is Hasse–Weil (a correspondence with a fixed budget). Golden datum. |
-| [MultiplicativePositivityGeometry](../MultiplicativePositivityGeometry/README.md) | Boundary forcing by positivity of a multiplicative (gauge-invariant) divisor; it reaches `Re s = 1` and stops — gauge-invariant positivity is blind in the strip. |
-| [ArithmeticContinuationAndCriticalEnergy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Signed continuation. The Möbius boundary is the model of a signed horizon-uniform law whose positive part diverges. |
+| [TransThresholdPairCorrelation](../../TransThresholdPairCorrelation/README.md) | The coalescent prime-pair surplus at bandwidth `4/3` is pure gauge charge: mean zero, variance `o(N(T,2T)²)`; every budget holds for Haar-almost every twist of the primes. The open problem is a statement about the gauge point `0`. |
+| [SquareRootThreshold](../../SquareRootThreshold/README.md), [ArithmeticKunnethTheory](../../ArithmeticKunnethTheory/README.md) | Windowed mean values and product moments. The archimedean family is a line in `G`; below the threshold it computes the gauge moments exactly, beyond it the excess is the near-incidence form. Gauge Jensen turns the AKT homogeneity into a linear loss law. |
+| [SignedSuccessorArithmetic](../../SignedSuccessorArithmetic/README.md) | The dilation cocycle is the gauge-covariance law of completely multiplicative signs. The sign gauge (`2`-torsion of `G`) sees a successor pair only when `j(j+h)` is a square. |
+| [BiarithmeticGeometry](../../BiarithmeticGeometry/README.md) | The finite horizon, its affine action and escaped cells. ACG adds the boundary cocycle, the incidence formula for mixed Grams, and the critical weight at which dilation boundaries are horizon uniform. |
+| [ArithmeticDefectRigidity](../../ArithmeticDefectRigidity/README.md) | Escape states, origin traces, moving successors. ACG fixes the normalisation (`σ = ½`) at which the boundary of a dilation is a finite nonzero invariant, `log a`. |
+| [BiScaleUncertainty](../../BiScaleUncertainty/README.md) | Twist invariance of window extremes (`PrimeWindowTwistInvariance`) is a case of gauge invariance. |
+| [ArithmeticPositiveDuality](../../ArithmeticPositiveDuality/README.md) | Affine positivity is induced from the dilations: free successor coordinates impose nothing. ACG explains why: free successor coordinates range over gauge-charged data; prescribed ones are a gauge point. |
+| [ArithmeticCastelnuovoSeveri](../../ArithmeticCastelnuovoSeveri/README.md), [ArithmeticOrientationGeometry](../../ArithmeticOrientationGeometry/README.md) | The `𝔽_q` calibration and the one known sublinear loss law: eventual Hasse–Weil is Hasse–Weil (a correspondence with a fixed budget). Golden datum. |
+| [MultiplicativePositivityGeometry](../../MultiplicativePositivityGeometry/README.md) | Boundary forcing by positivity of a multiplicative (gauge-invariant) divisor; it reaches `Re s = 1` and stops — gauge-invariant positivity is blind in the strip. |
+| [ArithmeticContinuationAndCriticalEnergy](../../ArithmeticContinuationAndCriticalEnergy/README.md) | Signed continuation. The Möbius boundary is the model of a signed horizon-uniform law whose positive part diverges. |
 | RHTower | Prime number theorem (`tendsto_sum_range_succ_moebius_div`), squarefree density (`card_filter_squarefree_Ioc_ge`), Gram and certificate infrastructure. |
 
 ---
@@ -171,6 +172,8 @@ and **order** `k`. Every theorem states which are fixed and which grow.
 | **P14 Multiplicative amplification loses linearly** | `kδ ≤ b_k` at fixed order, `δ ≤ 0` under a sublinear loss law; gauge Jensen `(Σ|a|²)^k ≤ Σ_N|a^{*k}(N)|²`, sharp on atoms, inherited by windowed moments below the threshold; relative powers move the gauge point (`χ_x^k = χ_{kx}`, `ζ` fixed); external products commute with twists. | `mul_le_of_frequently_of_eventually`, `nonpos_of_sublinear_loss`, `pow_sum_normSq_le_sum_normSq_powCoeff`, `sum_normSq_powCoeff_single`, `windowed_pow_ge_of_threshold`, `twist_nsmul`, `twist_nsmul_zero`, `twisted_dirichletConv` |
 | **P15 Near-incidences of products are successor correlations** | `Σ_{ab = cd + h} α_aα_b\overline{α_cα_d}` over a box is the shift-`h` successor correlation of `r = α * α`; multiplicative energy at `h = 0`; gauge mean zero and variance `Σ|r(N)|²|r(N+h)|²` for `h ≠ 0`. | `fourfoldIncidence_eq`, `fourfoldIncidence_zero`, `integral_fourfoldIncidence_twisted`, `integral_normSq_fourfoldIncidence_twisted` |
 | **P16 Fixed budgets over `𝔽_q`** | Bounded power sums at every order force a curve datum to be unitary; the golden datum has power sums `≥ φ^j` and no fixed budget. | `unitary_of_bounded_powerSum`, `goldenRatio_pow_le_goldenDatum_trace`, `goldenDatum_no_fixed_budget` |
+| **P17 The coalescent surplus decomposes over its stabilizers** | Both primes of a coalescent pair exceed every `q` with `2qθ₀ < 1`; for each such level the Dirichlet average of the twisted statistic is `φ(q)` times the sum over prime pairs congruent mod `q`; the actual statistic is that congruent part plus a discrepancy with zero level-`q` average. | `lt_of_coalWeight_ne_zero`, `sum_twistedPrimeCoalSum_dirichletGauge`, `primeCoalSum_eq_stabilizer_add_discrepancy`, `sum_discrepancy_dirichletGauge_eq_zero` |
+| **P18 The relative square sees only the original counts** | The relative product adds gauge points and its square with the conjugate is `|a|²`; it keeps the support and has no boundary, while the external square of the flat critical source loses at least `(r/2)²` to the boundary once `4^r ≤ N`; `ζ ⊗ ζ = ζ`; over `𝔽_q` the relative square's power sums are `(Σβ^j)² ≥ 0` for every datum, it has a fixed budget iff the datum does, and the golden relative square grows like `φ^{2j}`. | `relProd_twisted`, `relProd_twisted_conj`, `relProd_one_one`, `ofNat_div_four_sq_le_externalEscape`, `tendsto_externalEscape`, `relSquarePowerSum_eq`, `relSquarePowerSum_nonneg`, `bounded_relSquare_iff`, `goldenDatum_relSquare_ge` |
 
 **Foundations from sibling programmes.**
 
@@ -190,8 +193,9 @@ and **order** `k`. Every theorem states which are fixed and which grow.
 
 ### Q1. Can the actual signed coalescent prime-pair surplus be bounded beyond the diagonal threshold?
 
-*Answer: the surplus is pure gauge charge; any bound must come from information that distinguishes
-the primes from their twists.* The statistic is a pair form over distinct primes. Twisted by `χ_x`
+*Answer: the surplus is pure gauge charge, and it splits exactly over the finite stabilizers;
+any bound must come from information that distinguishes the primes from their twists — their
+distribution in residue classes.* The statistic is a pair form over distinct primes. Twisted by `χ_x`
 it has gauge mean zero and gauge variance equal to the sum of its squared weights, which at
 bandwidth `4/3` and aperture `T^{−1+η}` is `o(N(T,2T)²)` for every `η < 1` (P8). So the budget
 `β = 0 < 1/18` — strong enough for the `3/4` proportion — holds outside a set of twists whose Haar
@@ -205,10 +209,20 @@ case and cannot see repulsion.
 *Where the information is.* The archimedean line freezes coalescent pairs (P7): a pair with
 `|log(n/m)| ≤ T^{−1+η}` moves by `≤ 2πT^η` radians over heights up to `T`. The finite Dirichlet
 subgroups resolve them: averaging over level `q` keeps exactly the pairs congruent mod `q`, and a
-pair at shift `h` survives exactly at the levels `q ∣ h`. The singular series is an average over
-these stabilizers. The concrete target is therefore the **discrepancy between the prime pairs and
-the stabilizer average**, integrated against the signed coalescent kernel, in the normalisation
-`N(T,2T)`, with the profile and aperture fixed before `T → ∞`.
+pair at shift `h` survives exactly at the levels `q ∣ h`. For the actual statistic this is exact at
+every level `q < 1/(2θ₀)` — at bandwidth `4/3`, every `q < T^{1−η}/2` — because coalescent primes
+exceed such `q` (P17): the statistic is its congruent part at level `q` plus a discrepancy that
+the level-`q` subgroup cannot see. The singular series is an average over these stabilizers. The
+remaining target is therefore the **discrepancy between the prime pairs and their residue-class
+distribution**, integrated against the signed coalescent kernel, in the normalisation `N(T,2T)`,
+with the profile and aperture fixed before `T → ∞`.
+
+*What is and is not settled.* Settled: the obstruction (multiplicative and positive-kernel methods
+bound the whole orbit), the location of the main term (the stabilizers), and the exact
+decomposition of the actual statistic. Open: the numerical budget for the actual primes. Through
+the certificate F1 any `β < 5/36` gives a proportion of distinct critical-line zeros above `2/3`,
+well beyond the present unconditional record, so the budget is a genuine open problem of the
+subject, not a missing step of this programme.
 
 *Localization.* A density or averaged bound becomes an individual-defect theorem only if the
 exceptional set is smaller than the persistence scale of the witness. That scale is `≍ 1/A`,
@@ -242,8 +256,19 @@ The open step is a mixed boundary law of the same shape at **square-root scale**
 
 ### Q3. Is there a genuinely relative arithmetic amplification with sublinear loss?
 
-*Answer: not inside multiplicative structure.* The amplification specification reduces to the loss
-law `b_k = o(k)`, with the limit `R → ∞` taken at fixed `k` (P14). Every observable whose arithmetic
+*Answer: not inside multiplicative structure, and not by a relative product of the source with
+itself.* The amplification specification reduces to the loss law `b_k = o(k)`, with the limit
+`R → ∞` taken at fixed `k` (P14).
+
+*The first milestone, computed* (P18). The two-factor relative operation over the one base is the
+coefficientwise product. Its gauge charge is the sum of the factors' charges, and with the conjugate
+it is the gauge-invariant `|a|²`, so its trace is the coefficient energy. Its support is the
+original support and it has no boundary. For `ζ` it returns `ζ` with one simple pole. The external
+square instead loses an unbounded mass to the boundary at the critical weight. Over `𝔽_q` its power
+sums are the squares of the original ones, so positivity is automatic for every datum, and a fixed
+budget for it holds exactly when the datum has one; on the golden datum it grows like `φ^{2j}`. Its
+useful estimate is therefore determined by the original counts — the report's failure criterion
+"an external product in disguise, positive point counts alone" applies to it. Every observable whose arithmetic
 size is controlled by gauge moments — multiplicative energies, product moments, archimedean moments
 below the threshold — has loss at least linear: `(Σ|a|²)^k ≤ Σ_N|a^{*k}(N)|²`, sharp on atoms
 (P14). Relative (Euler-factor-wise) powers act on `G` by `x ↦ kx`; the coefficient system of `ζ` is
@@ -261,11 +286,12 @@ correspondence whose budget is independent of `k`.
 
 | Topic | Status in ACG |
 |---|---|
-| A. Signed near-incidence | `ab − cd = h` is a successor correlation of the product source (P15); near-incidence = archimedean minus gauge (P6); stabilizers of pairs (P7); the coalescent statistic is pure charge (P8). Open: the stabilizer discrepancy estimate. |
+| A. Signed near-incidence | `ab − cd = h` is a successor correlation of the product source (P15); near-incidence = archimedean minus gauge (P6); stabilizers of pairs (P7); the coalescent statistic is pure charge (P8) and splits exactly over its stabilizers (P17). Open: the residue-class discrepancy estimate. |
 | B. Compatibility of mixed moments | Multiplicative data = gauge orbit (P3); successor data are charge (P4); dilation faces covariant (P11); real data see only square pairs (P5). |
 | C. Boundary and escape | Boundary cocycle (P9); horizon-uniform only at `σ = ½` with value `log a` (P10); the boundary separates gauge twins (P12). |
+| Signed defect and index objects (§4.2 of the founding report) | The negative index of a positive form plus a correction is at most the rank of the correction (`HTGeometry.hermNegIndex_le_add_rank`, `RHTower.hermNegIndex_le_finrank_correctionRange_of_add_posSemidef`). In ACG coordinates a signed-kernel pair form is its diagonal (gauge invariant, positive for a positive kernel at zero lag) plus its near-incidence part (gauge charged), so its negative index is at most the rank of the near-incidence matrix: sign, integer index and the near-incidence estimate are linked by that one inequality. |
 | D. Sections with metric and torsion | The critical boundary of `j ↦ aj` is `log a = Σ_p v_p(a) log p`: the metric (archimedean) part of the degree, invisible to integer section counts (`N − ⌊(N−b)/a⌋ ≈ N(1−1/a)` is not horizon uniform). Bézout on the source cone stays with ACS. |
-| E. Relative tensor calculus | Gauge weights of external, relative and correspondence products; linear loss (P14). |
+| E. Relative tensor calculus | Gauge weights of external, relative and correspondence products; linear loss (P14); the relative square is determined by the original counts, the external square pays an unbounded boundary (P18). |
 | F. Defect-sensitive localization | Persistence scale `≍ 1/A`, independent of depth; exclusion below it (P13). |
 | G. Signed continuation | The Möbius boundary is signed and horizon uniform while its positive part (the twin `μ²`) grows with `log a` (P12): positive-part control is strictly stronger than necessary. |
 
@@ -309,8 +335,8 @@ Built:
 
 To build:
 
-- **stabilizer discrepancy calculus**: the coalescent statistic minus its average over the
-  stabilizer subgroups, with explicit major-arc/minor-arc decomposition on `G`;
+- **residue-class discrepancy calculus**: estimates for the discrepancy part of P17, uniform in the
+  level, with the singular-series weights `μ(q)²/φ(q)²` attached to the congruent parts;
 - **boundary laws at square-root scale**: escaped pairings of signed sources at weights `σ < ½ +
   o(1)` and their horizon uniformity;
 - **order-`k` near-incidence forms beyond the threshold** with signed kernels;
@@ -321,9 +347,9 @@ To build:
 
 ## 9. Open research topics
 
-1. **Stabilizer discrepancy at `4/3`.** Bound the signed coalescent statistic of the primes minus its
-   average over the Dirichlet stabilizers `q ∣ h`, in the normalisation `N(T,2T)`. Any saving that
-   lands below `5/36` is a new proportion theorem; below `1/18` it gives `3/4`.
+1. **Residue-class discrepancy at `4/3`.** Bound the discrepancy part of P17 for the actual primes,
+   in the normalisation `N(T,2T)`, uniformly over the admissible levels. Any resulting budget below
+   `5/36` is a new proportion theorem; below `1/18` it gives `3/4`.
 2. **Square-root boundary law.** A signed source whose escaped pairing against the flat critical
    source is `O(N^{−θ})`-small uniformly in the multiplier, for some `θ > 0`. For `μ` this is a
    zero-free strip; the boundary formulation keeps the affine structure that the multiplicative
@@ -350,7 +376,7 @@ existing receiver. The report's tests, with their present status:
 
 | Test | Status |
 |---|---|
-| A new inequality for the actual source | Boundary of `μ` vs its twin (P12); Haar-almost-every twist meets every coalescent budget (P8). The actual-primes coalescent budget is open (§9.1). |
+| A new inequality for the actual source | Boundary of `μ` vs its twin (P12); Haar-almost-every twist meets every coalescent budget (P8); exact stabilizer decomposition of the actual statistic (P17). The actual-primes coalescent budget is open (§9.1). |
 | Correct Gamma/pole terms and all prime powers | The archimedean place appears as the boundary `log a` (P10); prime powers in the coalescent band are eliminated by TTPC before twisting. |
 | Why the golden datum fails | Golden has positive Künneth counts and no fixed budget: its power sums grow like `φ^j` (P16). |
 | Phase/parity distinctions | Gauge projection and reconstruction (P1, P3); sign gauge and square pairs (P5); `μ` vs `μ²` (P12). |
@@ -388,6 +414,7 @@ the boundary's normalisation; amplification must earn a sublinear loss; localiza
 | `TheThresholdIsThePriceOfTheArchimedeanLine` | Archimedean line, near-incidence forms, threshold, gauge-orbit diagonal, alignment of nonnegative sources |
 | `FiniteGaugeSubgroupsResolveWhatTheArchimedeanLineCannot` | Coalescence on the line, Dirichlet gauge points, congruence projection of pairs and pair forms, stabilizers of successor pairs |
 | `TheCoalescentSurplusIsPureGaugeCharge` | Twisted coalescent statistic, variance, bandwidth-`4/3` size, Haar-almost-every budget |
+| `TheCoalescentSurplusDecomposesOverItsStabilizers` | Coalescent primes exceed the level; Dirichlet stabilizer average; congruent part plus invisible discrepancy |
 | `MultiplicativeDataDetermineASourceUpToGauge` | Phase reconstruction by character extension |
 | `RealMultiplicativeDataSeeOnlySquareSuccessorPairs` | Sign gauge, sign orthogonality, square pairs |
 | `TheBoundaryOfADilationIsTheArchimedeanPlace` | Escaped pairings, cocycle, ring relation, the three weight regimes |
@@ -396,4 +423,5 @@ the boundary's normalisation; amplification must earn a sublinear loss; localiza
 | `TheWitnessOfAZeroPersistsForTheReciprocalAperture` | Persistence, zero terms, localization threshold |
 | `MultiplicativeAmplificationLosesLinearly` | Amplification comparison, gauge Jensen, relative and external powers |
 | `TheGoldenDatumHasNoFixedBudget` | Fixed budget forces purity over `𝔽_q`; the golden datum loses linearly |
+| `TheRelativeSquareSeesOnlyTheOriginalCounts` | Relative product: gauge, trace, support, boundary, pole; external-square boundary; relative square over `𝔽_q` and the golden test |
 | `NearIncidencesOfProductsAreSuccessorCorrelations` | `ab − cd = h` as a successor correlation of the product source; its gauge charge |

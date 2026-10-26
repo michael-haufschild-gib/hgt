@@ -267,6 +267,11 @@ arithmetic cost of the amplification producing it.
 | **P15 Quantum budget** | Admissible zero orders are exactly `m ≤ (√A + √(Gη))²/B`; forcing iff budget `< 1` (`< 2` for even invariants); boundary budget `A/B > ½`; at `η = ½` the budget of every Fejér certificate is `≥ 1` once `L ≥ 2(1 − 2^{−1/2})²` and `≥ 2` once `L ≥ 1`. | `admissible_iff_le_quantumBudget`, `forces_zero_iff_quantumBudget_lt_one`, `forces_even_zero_iff_quantumBudget_lt_two`, `fejer_quantumBudget_half` |
 | **P16 Weil over `𝔽_q` is positive definiteness on `ℤ`** | For a curve datum: RH ⇔ the trace sequence is positive definite on `ℤ` ⇔ `|τ| ≤ 2g` ⇔ Hasse–Weil ⇔ span Hodge index; the golden datum fails, on every group. | `curve_rh_tfae`, `not_isEvenPosDef_goldenDatum_traceSeq`, `not_exists_posDef_golden` |
 | **P17 Positivity on both sides** | The damped prime measure `½ Σ Λ(n) n^{−1−x}(δ_{log n} + δ_{−log n})` is finite positive with characteristic function `Re(−ζ'/ζ)(1+x+iu)`, unconditionally; RH ⇔ every scale function `y ↦ W(τ_y(f ⋆ f̃))` is the characteristic function of a finite positive measure; on prime-free tests Weil's functional has no prime term; the two-prime correlation at `s` reads only `n` with `|log n ∓ s| ≤ 8`. | `positive_duality_of_the_explicit_formula`, `charFun_primeMeasure`, `weilFullFunctional_of_prime_free`, `splineCorr_prime_term_eq_zero` |
+| **P18 The integer successor forces the Hecke weight** | A positive-definite `φ` on `Aff(ℚ)` with successor part `1_ℤ` satisfies `nd Σ_b ‖φ(x ↦ ux + b)‖² ≤ 1` at `u = ±n/d`, over classes `b` of `ℚ/(1/d)ℤ`; the adelic Haar state `(nd)^{−1/2}·1[db ∈ ℤ]` is positive definite and attains it. A successor part `c·1_ℤ` with a dilation part continuous at `1` forces `c = 0`; the spline correlation never meets the integer successor. | `heckeBessel`, `integer_successor_hecke_weight`, `successor_scale_eq_zero_of_continuousAt`, `splineCorr_zero_of_integer_successor` |
+| **P19 The critical line is the positivity threshold of the integer successor** | The Hecke state `(nd)^{−s}·1[db ∈ ℤ]` on `Aff(ℚ)` is positive definite iff `s ≥ 1/2`, while the dilation weights `(nd)^{−s}` alone are positive definite for every `s ≥ 0`; the slope weights `(nd)^{−t}`, `t ≥ 0`, multiply positive definiteness, through `gcd^{2t} = Σ_{d∣L} J_{2t}(d)1[d∣A]1[d∣A']` with the Jordan totient `J_α ≥ 0`. | `isPosDefOnGroup_heckeState_iff`, `isPosDefOnGroup_dilation_powerWeight`, `IsPosDefOnGroup.mul_slopeWeight`, `jordan_nonneg` |
+| **P20 The Bost–Connes temperature is the Hecke exponent** | For any positive-definite `φ` on `Aff(ℚ)` with `ℤ`-periodic successor `ψ`, `‖φ(x ↦ ux)‖² ≤ A_ψ(n)A_ψ(d)`, where `A_ψ(q)` is the mass of `qẐ` under the spectral measure of `ψ`. The Bost–Connes successor `ψ_β = Z_β⁻¹Σ m^{−β}e(m·)`, `β > 1`, has `A(q) = q^{−β}`, so it forces `(nd)^{−β/2}`; the ground state of `ℓ²(ℚ)` attains it. At `β = 1` the law is P18. | `normSq_dilation_le_successorDensity`, `bcDensity`, `isPosDefOnGroup_bcState`, `bc_successor_hecke_exponent` |
+| **P21 The extremals of the Hecke law are twisted Haar states** | A positive-definite `φ` on `Aff(ℚ)` with integer successor attains `nd‖φ(x ↦ ux)‖² = 1` at every dilation iff `φ(g) = φ_*(g)χ(slope g)` with `φ_*` the adelic Haar state and `χ` a unitary character of `ℚ^×`; equality forces the two-scale relation `[x ↦ x/m] = m⁻¹λ_m Σ_{j<m}[x ↦ x + j/m]` in the GNS space, which makes the normalized dilation coefficients multiplicative. | `heckeExtremal_iff`, `twistedHaar_posDef`, `IsPosDefOnGroup.null_orth` |
+| **P22 A Mautner phenomenon for `Aff(ℚ)`** | If `φ` is positive definite on `Aff(ℚ)`, its successor has one nonzero period (`φ(x ↦ x + h) = φ(1)`) and its dilation part on `ℚ_{>0}` is continuous at `1`, then the successor is constant. For an integer-periodic successor the densities decrease along multiples, `A(kq) ≤ A(q) ≤ φ(1)`, and the successor law along `u = (kq+1)/(kq) → 1` forces `A(q) = φ(1)`. | `translation_eq_of_continuousAt_dilation`, `translation_eq_of_period`, `successorDensity_mul_le` |
 
 The Hamburger input of P1, P4, P5 is part of the statement: the remainder `E` is holomorphic on the
 strip `(−½, 3/2)` with `O(1/(1 + t²))` decay. Cite it as "FE in Hamburger's form".
@@ -325,6 +330,18 @@ proved in the programmes that own their objects.
    dilation restriction extends iff it is positive definite, and the successor part can be set to
    zero (P13). The opening closes as a source of positivity; a forcing law there must prescribe the
    successor coordinates from the arithmetic source.
+   Prescribing the successor by the integers forces exactly the Hecke weight `(nd)^{−1/2}` on the
+   dilations (P18): the integer successor sees the dilations only `p`-adically, with the critical
+   weight `p^{−|k|/2}`, and no archimedean dilation correlation, Weil's included, is compatible
+   with it.
+   The coupling costs exactly half a unit of exponent: with the integer successor the power weights
+   `(nd)^{−s}` survive exactly for `s ≥ 1/2` (P19).
+   For the Bost–Connes successor at inverse temperature `β > 1` the forced weight is `(nd)^{−β/2}`
+   (P20): the critical temperature `β = 1` of the Bost–Connes system is the critical line.
+   Equality in the Hecke law is rigid: its states are the adelic Haar state twisted by unitary
+   characters of `ℚ^×` (P21).
+   No periodic successor meets an archimedean dilation part: a single period and continuity at `1`
+   make the successor constant (P22).
 7. **Topology.** *Which completion keeps every critical jet and closes the blind ideal?* The natural
    Fréchet topology of the Meyer source does both, unconditionally. No topology built from critical
    data alone closes it unless RH (P14): closedness of the blind ideal is information about the
@@ -353,6 +370,7 @@ proved in the programmes that own their objects.
 | Independent channels share one barrier | Their barriers add: the joint barrier is the product (P11) |
 | Rank two decides RH, so rank-two positivity is progress | The two-prime Bochner problem is a receiver (P12) |
 | A non-commutative carrier adds positivity | Affine positivity is induced from the dilations (P13) |
+| Prescribing the successor from `ℤ` constrains Weil's dilation correlation | It excludes it: the integer successor forces `p`-adic Hecke decay, incompatible with any dilation part continuous at `1` (P18) |
 | Closedness of the blind ideal is a critical property | Critical data make it dense (P14) |
 | Parity rescues quantization at the critical line | Not for `L ≥ 1` (P15) |
 | Integer values force vanishing | Only with unit mass and positive definiteness, and isolation needs no 2-torsion (P8) |
@@ -428,9 +446,10 @@ To build:
 5. **Depth homogeneity as a law.** For each amplification class (harmonic twists, Følner coupling,
    family averages over `χ mod q`, absolute tensor powers), a theorem that its gain on depth scales
    with its arithmetic cost, with the positive survivor of each.
-6. **Prescribed successor coordinates.** A positive functional on the affine group whose successor
-   part is fixed by the arithmetic source (a Hecke or Bost–Connes state), and the positivity it
-   forces on the dilations.
+6. **Prescribed successor coordinates.** For the integer successor the forced positivity is the
+   Hecke weight (P18). Open: the classification of the dilation parts compatible with `1_ℤ` (they
+   are not the Hecke weight times positive-definite functions), and an adelic successor
+   prescription compatible with Weil's archimedean correlation.
 7. **Rank-`r` realization.** Which positive-definite profiles on `ℤ^r` are boundary profiles of
    integral (Beurling) systems.
 8. **Positive crystalline measures beyond degree one.** Self-dual positive pairs with gaps under
@@ -509,3 +528,8 @@ rate needs a term that does not scale; calibrate over `𝔽_q`.
 | `TheQuantumBudgetOfMultiplicativePositivity` | Quantum budget, parity, boundary and critical-line budgets |
 | `WeilsTheoremForCurvesIsPositiveDefinitenessOnZ` | The `𝔽_q` calibration with budget `2g` |
 | `PositivityOnBothSidesOfTheExplicitFormula` | The prime measure and its characteristic function; Weil's criterion in Bochner form; the prime-free gap; the two-prime window |
+| `TheIntegerSuccessorForcesTheHeckeWeight` | Hermitian symmetry and bi-invariance of positive-definite functions; affine coordinates; the Hecke–Bessel law; the adelic Haar state; incompatibility with archimedean dilation parts |
+| `TheCriticalLineIsThePositivityThresholdOfTheIntegerSuccessor` | Jordan totients and GCD-power kernels; slope weights as multipliers; Hecke states and their threshold `s = 1/2` |
+| `TheBostConnesTemperatureIsTheHeckeExponent` | Successor densities and the general successor law; Bost–Connes successors; the ground state on `ℓ²(ℚ)` |
+| `TheExtremalsOfTheHeckeLawAreTwistedHaarStates` | Null vectors of Gram forms; Hecke-extremal states; the two-scale relation; Hecke characters; twisted Haar states |
+| `AMautnerPhenomenonForTheAffineGroupOfQ` | Boundedness of positive-definite functions; monotone successor densities; Mautner rigidity for one period |

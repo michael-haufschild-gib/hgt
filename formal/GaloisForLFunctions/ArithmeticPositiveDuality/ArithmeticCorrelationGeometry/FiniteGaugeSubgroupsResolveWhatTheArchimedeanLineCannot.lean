@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArithmeticCorrelationGeometry.TheThresholdIsThePriceOfTheArchimedeanLine
+import GaloisForLFunctions.ArithmeticPositiveDuality.ArithmeticCorrelationGeometry.TheThresholdIsThePriceOfTheArchimedeanLine
 import Mathlib.NumberTheory.DirichletCharacter.Orthogonality
 
 /-!
@@ -31,7 +31,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticCorrelationGeometry
 
-open HTGeometry
+open HTGeometry ArithmeticKunnethTheory
 
 /-! ### The archimedean line freezes coalescent pairs -/
 
@@ -47,7 +47,7 @@ theorem norm_archPair_sub_one_le (ξ : ℝ) (m n : ℕ) :
   rw [twist_archPoint, twist_archPoint, ← Complex.exp_conj, ← Complex.exp_add]
   have harg : 2 * π * Complex.I * ξ * logFreq m + conj (2 * π * Complex.I * ξ * logFreq n) =
       ((2 * π * ξ * (Real.log m - Real.log n) : ℝ) : ℂ) * Complex.I := by
-    simp only [map_mul, Complex.conj_I, Complex.conj_ofReal, logFreq, Complex.conj_ofNat]
+    simp only [logFreq, map_mul, map_ofNat, Complex.conj_ofReal, Complex.conj_I]
     push_cast
     ring
   rw [harg]
@@ -62,11 +62,13 @@ variable {q : ℕ} [NeZero q]
 def dirichletGauge (χ : DirichletCharacter ℂ q) : GaugeTorus := fun p =>
   if Nat.Coprime p q then ((Complex.arg (χ p) / (2 * π) : ℝ) : UnitAddCircle) else 0
 
+omit [NeZero q] in
 theorem norm_dirichletCharacter_coprime (χ : DirichletCharacter ℂ q) {n : ℕ} (hn : Nat.Coprime n q) :
     ‖χ n‖ = 1 := by
   have h := χ.unit_norm_eq_one (ZMod.unitOfCoprime n hn)
   rwa [ZMod.coe_unitOfCoprime] at h
 
+omit [NeZero q] in
 /-- A Dirichlet character is completely multiplicative on finite products of naturals. -/
 theorem prod_dirichletCharacter_pow (χ : DirichletCharacter ℂ q) (s : Finset ℕ) (e : ℕ → ℕ) :
     ∏ p ∈ s, χ p ^ e p = χ ((∏ p ∈ s, p ^ e p : ℕ) : ZMod q) := by
@@ -77,6 +79,7 @@ theorem prod_dirichletCharacter_pow (χ : DirichletCharacter ℂ q) (s : Finset 
     rw [Finset.prod_insert hp, Finset.prod_insert hp, Nat.cast_mul, map_mul, ih, Nat.cast_pow,
       map_pow]
 
+omit [NeZero q] in
 /-- **A Dirichlet character is a twist on the integers prime to its modulus.** -/
 theorem twist_dirichletGauge (χ : DirichletCharacter ℂ q) {n : ℕ} (hn : n ≠ 0)
     (hcop : Nat.Coprime n q) : twist (dirichletGauge χ) n = χ n := by

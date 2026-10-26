@@ -36,15 +36,21 @@ def powerLogReRow (s : ℂ) (K : ℕ) (c : ℕ → ℂ) (n : ℕ) : ℝ := (powe
 theorem powerLogRow_zero {s : ℂ} (hs : s ≠ 0) (K : ℕ) (c : ℕ → ℂ) : powerLogRow s K c 0 = 0 := by
   simp [powerLogRow, Complex.zero_cpow hs]
 
+/-- `Re(Σ_k (−i c_k) f_k) = Im(Σ_k c_k f_k)`. -/
+theorem re_sum_neg_I_mul (K : ℕ) (c f : ℕ → ℂ) :
+    (∑ k ∈ range (K + 1), (-I * c k) * f k).re = (∑ k ∈ range (K + 1), c k * f k).im := by
+  have h : ∑ k ∈ range (K + 1), (-I * c k) * f k = -I * ∑ k ∈ range (K + 1), c k * f k := by
+    rw [mul_sum]; exact sum_congr rfl fun _ _ => by ring
+  rw [h]; simp [Complex.mul_re]
+
 theorem powerLogReRow_neg_I_mul (s : ℂ) (K : ℕ) (c : ℕ → ℂ) (n : ℕ) :
-    powerLogReRow s K (fun k => -I * c k) n = (powerLogRow s K c n).im := by
-  simp only [powerLogReRow, powerLogRow, mul_assoc, ← mul_sum, neg_mul, Complex.neg_re,
-    Complex.I_mul_re, neg_neg]
+    powerLogReRow s K (fun k => -I * c k) n = (powerLogRow s K c n).im :=
+  re_sum_neg_I_mul K c _
 
 /-! ### The trace domain and the pole trace -/
 
 /-- The Mellin trace series of a power-log row. -/
-theorem hasSum_powerLogRow_mul_mellinCell {ε : ℝ} (hε1 : ε < 1) {s : ℂ} (hs0 : 0 < s.re)
+theorem hasSum_powerLogRow_mul_mellinCell {ε : ℝ} {s : ℂ} (hs0 : 0 < s.re)
     (hs1 : s.re < 1 - ε) (K : ℕ) (c : ℕ → ℂ) :
     HasSum (fun n => powerLogRow s K c n * ((mellinCell (1 - ε) n : ℝ) : ℂ))
       (∑ k ∈ range (K + 1), c k * ∑' m, poleTerm (1 - ε) k m s) := by
@@ -63,17 +69,20 @@ theorem hasSum_powerLogRow_mul_mellinCell {ε : ℝ} (hε1 : ε < 1) {s : ℂ} (
   have hsum : ∀ k, Summable fun m => poleTerm (1 - ε) k m s := fun k =>
     Summable.of_norm_bounded (summable_poleTerm_bound (1 - ε) δ hδ k)
       fun m => norm_poleTerm_le hα hδ k m hsδ
-  have h := hasSum_sum (s := range (K + 1)) fun k _ => ((hsum k).mul_left (c k)).hasSum
-  refine (h.congr_fun fun n => ?_)
-  rw [powerLogRow, sum_mul]
-  refine sum_congr rfl fun k _ => ?_
-  simp only [poleTerm]; ring
+  have h := hasSum_sum (s := range (K + 1)) fun k _ => (hsum k).hasSum.mul_left (c k)
+  have e : (fun n => powerLogRow s K c n * ((mellinCell (1 - ε) n : ℝ) : ℂ)) =
+      fun n => ∑ k ∈ range (K + 1), c k * poleTerm (1 - ε) k n s := by
+    funext n
+    rw [powerLogRow, sum_mul]
+    refine sum_congr rfl fun k _ => ?_
+    simp only [poleTerm]; ring
+  rw [e]; exact h
 
 theorem powerLogReRow_mem_poleTraceDomain (ε : SubcriticalDamping) {s : ℂ} (hs0 : 0 < s.re)
     (hs1 : s.re < 1 - ε) (K : ℕ) (c : ℕ → ℂ) : powerLogReRow s K c ∈ poleTraceDomain ε := by
   have hs : s ≠ 0 := fun h => by rw [h, Complex.zero_re] at hs0; exact lt_irrefl 0 hs0
   refine ⟨by simp [powerLogReRow, powerLogRow_zero hs], ?_⟩
-  have h := Complex.hasSum_re (hasSum_powerLogRow_mul_mellinCell (by linarith [ε.property.2])
+  have h := Complex.hasSum_re (hasSum_powerLogRow_mul_mellinCell
     hs0 hs1 K c)
   refine h.summable.congr fun n => ?_
   simp only [powerLogReRow, Complex.re_mul_ofReal]
@@ -87,7 +96,7 @@ theorem poleTrace_powerLogTraceVector (ε : SubcriticalDamping) {s : ℂ} (hs0 :
     (hs1 : s.re < 1 - ε) (K : ℕ) (c : ℕ → ℂ) :
     poleTrace ε (powerLogTraceVector ε hs0 hs1 K c) =
       (∑ k ∈ range (K + 1), c k * logPowerPoleTrace ε s k).re := by
-  have h := Complex.hasSum_re (hasSum_powerLogRow_mul_mellinCell (by linarith [ε.property.2])
+  have h := Complex.hasSum_re (hasSum_powerLogRow_mul_mellinCell
     hs0 hs1 K c)
   change (∑' n, powerLogReRow s K c n * mellinCell (1 - (ε : ℝ)) n) / (1 - (ε : ℝ)) = _
   have hcongr : (fun n => powerLogReRow s K c n * mellinCell (1 - (ε : ℝ)) n) =
@@ -111,8 +120,8 @@ theorem powerLogReRow_add_renormalizedCofactorOperator (ε : SubcriticalDamping)
   rw [poleTrace_powerLogTraceVector]
   have hpow : (((n : ℝ)) : ℂ) ^ ((1 - (ε : ℝ) : ℝ) : ℂ) = (((n : ℝ) ^ (1 - (ε : ℝ)) : ℝ) : ℂ) :=
     (Complex.ofReal_cpow (Nat.cast_nonneg n) _).symm
-  have hterm : ∀ j : ℕ, (j : ℝ) ^ (-(ε : ℝ)) * powerLogReRow s K c (n / j) =
-      ((((j : ℝ)) : ℂ) ^ (-((ε : ℝ) : ℂ)) * powerLogRow s K c (n / j)).re := by
+  have hterm : ∀ j : ℕ, ((((j : ℝ)) : ℂ) ^ (-((ε : ℝ) : ℂ)) * powerLogRow s K c (n / j)).re =
+      (j : ℝ) ^ (-(ε : ℝ)) * powerLogReRow s K c (n / j) := by
     intro j
     rw [show (-((ε : ℝ) : ℂ)) = (((-(ε : ℝ)) : ℝ) : ℂ) by push_cast; ring,
       ← Complex.ofReal_cpow (Nat.cast_nonneg j), Complex.re_ofReal_mul, powerLogReRow]
@@ -121,15 +130,20 @@ theorem powerLogReRow_add_renormalizedCofactorOperator (ε : SubcriticalDamping)
     simp only [powerLogRow, logPowerCofactorSum, mul_sum]
     rw [sum_comm]
     refine sum_congr rfl fun k _ => sum_congr rfl fun j _ => by ring
+  have hR : ∑ k ∈ range (K + 1), c k * (logPowerCofactorSum ε s k n -
+      logPowerPoleTrace ε s k * (((n : ℝ)) : ℂ) ^ ((1 - (ε : ℝ) : ℝ) : ℂ)) =
+      ∑ j ∈ Icc 1 n, (((j : ℝ)) : ℂ) ^ (-((ε : ℝ) : ℂ)) * powerLogRow s K c (n / j) -
+        (∑ k ∈ range (K + 1), c k * logPowerPoleTrace ε s k) *
+          (((n : ℝ) ^ (1 - (ε : ℝ)) : ℝ) : ℂ) := by
+    rw [hsplit, hpow, sum_mul, ← sum_sub_distrib]
+    exact sum_congr rfl fun k _ => by ring
   have hIcc : (Icc 1 n : Finset ℕ) = insert 1 (Icc 2 n) := by
     ext j; simp only [mem_insert, mem_Icc]; omega
   have h1 : (1 : ℕ) ∉ Icc 2 n := by simp
-  rw [hpow]
-  simp only [mul_sub, sum_sub_distrib, Complex.sub_re, ← hsplit, hIcc, sum_insert h1,
-    Complex.add_re, hterm]
-  simp only [Nat.cast_one, Complex.ofReal_one, Complex.one_cpow, one_mul, Nat.div_one,
-    powerLogReRow, ← Complex.re_sum]
-  rw [← sum_mul, Complex.re_mul_ofReal]
+  have hone : (((((1 : ℕ) : ℝ)) : ℂ) ^ (-((ε : ℝ) : ℂ)) * powerLogRow s K c (n / 1)) =
+      powerLogRow s K c n := by simp
+  rw [hR, Complex.sub_re, Complex.re_mul_ofReal, hIcc, sum_insert h1, hone, Complex.add_re,
+    Complex.re_sum (Icc 2 n), sum_congr rfl fun j _ => hterm j, powerLogReRow]
   ring
 
 /-- **The power-log symbol law in pronic energy.** Modulo a row of bounded energy,
@@ -207,7 +221,7 @@ theorem leibnizCoeff_eq_zero_iff {ε : ℝ} {s : ℂ} {m : ℕ}
           · rw [show k - (k - m) = m by omega]
           · intro k' hk' hne
             simp only [mem_Icc] at hk'
-            omega
+            rw [hm0 (k' - (k - m)) (by omega), mul_zero, mul_zero]
           · intro h; exact absurd (mem_Icc.mpr ⟨by omega, le_rfl⟩) h
         rw [hsplit] at h
         have hch : (k.choose m : ℂ) ≠ 0 := by exact_mod_cast (Nat.choose_pos hmk).ne'
@@ -254,7 +268,7 @@ theorem powerLogRow_coeff_eq_zero_of_bounded {s : ℂ} (hs : 1 / 2 ≤ s.re) (K 
     (him : ∀ T : ℕ, pronicNorm T (fun n => (powerLogRow s K b n).im) ≤ B) :
     ∀ d ≤ K, b d = 0 := by
   by_contra hne
-  push_neg at hne
+  push Not at hne
   -- the top nonzero coefficient
   classical
   set S := (range (K + 1)).filter (fun d => b d ≠ 0) with hS
@@ -284,45 +298,48 @@ theorem powerLogRow_coeff_eq_zero_of_bounded {s : ℂ} (hs : 1 / 2 ≤ s.re) (K 
       exact hN₀.le.trans (by exact_mod_cast hn)
     have hlog1 : 1 ≤ Real.log n := (le_max_left _ _).trans hlogL
     have hlog2 : 2 * L / ‖b D‖ ≤ Real.log n := (le_max_right _ _).trans hlogL
-    set λ' := Real.log n with hλ
-    have hλ0 : 0 ≤ λ' := by linarith
+    set lg := Real.log n with hlg
+    have hlg0 : 0 ≤ lg := by linarith
     have hnpow : ‖(((n : ℝ)) : ℂ) ^ s‖ = (n : ℝ) ^ s.re := Complex.norm_cpow_eq_rpow_re_of_pos hn0 s
-    have hrow : powerLogRow s K b n = (b D * (λ' : ℂ) ^ D +
-        ∑ d ∈ range D, b d * (λ' : ℂ) ^ d) * (((n : ℝ)) : ℂ) ^ s := by
+    have hrow : powerLogRow s K b n = (b D * (lg : ℂ) ^ D +
+        ∑ d ∈ range D, b d * (lg : ℂ) ^ d) * (((n : ℝ)) : ℂ) ^ s := by
       rw [powerLogRow]
       have hsplitK : range (K + 1) = range (D + 1) ∪ Ico (D + 1) (K + 1) := by
         ext d; simp only [mem_union, mem_range, mem_Ico]; omega
       rw [hsplitK, sum_union (disjoint_left.mpr fun d h1 h2 => by
         simp only [mem_range, mem_Ico] at h1 h2; omega)]
-      have hzero : ∑ d ∈ Ico (D + 1) (K + 1), b d * ((λ' : ℂ) ^ d * (((n : ℝ)) : ℂ) ^ s) = 0 :=
+      have hzero : ∑ d ∈ Ico (D + 1) (K + 1), b d * ((lg : ℂ) ^ d * (((n : ℝ)) : ℂ) ^ s) = 0 :=
         sum_eq_zero fun d hd => by
           simp only [mem_Ico] at hd
           rw [htop d (by omega) (by omega), zero_mul]
-      rw [hzero, add_zero, sum_range_succ, add_mul, sum_mul]
-      ring_nf
-    have hsmall : ‖∑ d ∈ range D, b d * (λ' : ℂ) ^ d‖ ≤ L * λ' ^ D / λ' := by
+      rw [hzero, add_zero, Finset.sum_range_succ, add_mul, sum_mul,
+        show ((lg : ℝ) : ℂ) = (Real.log n : ℂ) from rfl,
+        sum_congr rfl fun d _ => (show b d * ((Real.log n : ℂ) ^ d * (((n : ℝ)) : ℂ) ^ s) =
+          b d * (Real.log n : ℂ) ^ d * (((n : ℝ)) : ℂ) ^ s by ring)]
+      ring
+    have hsmall : ‖∑ d ∈ range D, b d * (lg : ℂ) ^ d‖ ≤ L * lg ^ D / lg := by
       refine (norm_sum_le _ _).trans ?_
       rw [hL, sum_mul, sum_div]
       refine sum_le_sum fun d hd => ?_
       have hdD : d + 1 ≤ D := mem_range.mp hd
-      rw [norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hλ0]
-      have hpow : λ' ^ d ≤ λ' ^ D / λ' := by
+      rw [norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hlg0]
+      have hpow : lg ^ d ≤ lg ^ D / lg := by
         rw [le_div_iff₀ (by linarith), ← pow_succ]
         exact pow_le_pow_right₀ hlog1 hdD
-      calc ‖b d‖ * λ' ^ d ≤ ‖b d‖ * (λ' ^ D / λ') := mul_le_mul_of_nonneg_left hpow (norm_nonneg _)
-        _ = ‖b d‖ * λ' ^ D / λ' := by ring
-    have hLλ : L * λ' ^ D / λ' ≤ ‖b D‖ / 2 * λ' ^ D := by
+      calc ‖b d‖ * lg ^ d ≤ ‖b d‖ * (lg ^ D / lg) := mul_le_mul_of_nonneg_left hpow (norm_nonneg _)
+        _ = ‖b d‖ * lg ^ D / lg := by ring
+    have hLlg : L * lg ^ D / lg ≤ ‖b D‖ / 2 * lg ^ D := by
       rw [div_le_iff₀ (by linarith)]
-      have h2 : 2 * L ≤ ‖b D‖ * λ' := by
+      have h2 : 2 * L ≤ ‖b D‖ * lg := by
         have := (div_le_iff₀ hbD0).mp hlog2; linarith
-      have hD0 : 0 ≤ λ' ^ D := pow_nonneg hλ0 D
+      have hD0 : 0 ≤ lg ^ D := pow_nonneg hlg0 D
       nlinarith
-    have htopn : ‖b D * (λ' : ℂ) ^ D‖ = ‖b D‖ * λ' ^ D := by
-      rw [norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hλ0]
-    have hλD : 1 ≤ λ' ^ D := one_le_pow₀ hlog1
+    have htopn : ‖b D * (lg : ℂ) ^ D‖ = ‖b D‖ * lg ^ D := by
+      rw [norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hlg0]
+    have hlgD : 1 ≤ lg ^ D := one_le_pow₀ hlog1
     rw [hrow, norm_mul, hnpow]
     refine mul_le_mul_of_nonneg_right ?_ (Real.rpow_nonneg hn0.le _)
-    have := norm_sub_norm_le (b D * (λ' : ℂ) ^ D) (-(∑ d ∈ range D, b d * (λ' : ℂ) ^ d))
+    have := norm_sub_norm_le (b D * (lg : ℂ) ^ D) (-(∑ d ∈ range D, b d * (lg : ℂ) ^ d))
     rw [sub_neg_eq_add, norm_neg] at this
     nlinarith
   -- energy lower bound
@@ -372,7 +389,7 @@ theorem powerLogRow_coeff_eq_zero_of_bounded {s : ℂ} (hs : 1 / 2 ≤ s.re) (K 
   have hharm : ∑ n ∈ Icc 1 T, 1 / (n : ℝ) ≤ ∑ n ∈ Icc 1 N₀, 1 / (n : ℝ) +
       ∑ n ∈ (Icc 1 T).filter (fun n => N₀ < n), 1 / (n : ℝ) := by
     rw [← sum_filter_add_sum_filter_not (Icc 1 T) (fun n => N₀ < n), add_comm]
-    refine add_le_add_right (sum_le_sum_of_subset_of_nonneg (fun n hn => ?_) fun n _ _ => by
+    refine add_le_add_left (sum_le_sum_of_subset_of_nonneg (fun n hn => ?_) fun n _ _ => by
       positivity) _
     simp only [mem_filter, mem_Icc, not_lt] at hn ⊢
     omega
@@ -406,9 +423,11 @@ theorem powerLogRows_renormalizedInversion_iff (ε : SubcriticalDamping) {s : �
   obtain ⟨B₁, hB₁⟩ := exists_pronicNorm_powerLogRow_symbol_le ε hs0' hs1 K c
   obtain ⟨B₂, hB₂⟩ := exists_pronicNorm_powerLogRow_symbol_le ε hs0' hs1 K (fun k => -I * c k)
   have hleib : ∀ n, (∑ k ∈ range (K + 1), (-I * c k) * zetaLeibnizRow ε s k n).re =
-      (∑ k ∈ range (K + 1), c k * zetaLeibnizRow ε s k n).im := by
-    intro n
-    simp only [mul_assoc, ← mul_sum, neg_mul, Complex.neg_re, Complex.I_mul_re, neg_neg]
+      (∑ k ∈ range (K + 1), c k * zetaLeibnizRow ε s k n).im := fun n =>
+    re_sum_neg_I_mul K c _
+  have hleib' : ∀ n, (powerLogRow s K (leibnizCoeff ε s K (fun k => -I * c k)) n).re =
+      (powerLogRow s K (leibnizCoeff ε s K c) n).im := by
+    intro n; rw [← sum_mul_zetaLeibnizRow, ← sum_mul_zetaLeibnizRow]; exact hleib n
   -- difference of two bounded rows is bounded
   have hdiff : ∀ (f g : ℕ → ℝ) (Bf Bg : ℝ), (∀ T, pronicNorm T f ≤ Bf) →
       (∀ T, pronicNorm T (fun n => f n - g n) ≤ Bg) → ∀ T, pronicNorm T g ≤ Bf + Bg := by
@@ -424,7 +443,8 @@ theorem powerLogRows_renormalizedInversion_iff (ε : SubcriticalDamping) {s : �
   · rintro ⟨⟨B, hB⟩, ⟨B', hB'⟩⟩
     have hre := hdiff _ _ B B₁ hB hB₁
     have him := hdiff _ _ B' B₂ hB' hB₂
-    simp only [hleib, sum_mul_zetaLeibnizRow] at hre him
+    simp only [sum_mul_zetaLeibnizRow] at hre him
+    simp only [hleib'] at him
     exact powerLogRow_coeff_eq_zero_of_bounded hs0 K _ (B := max (B + B₁) (B' + B₂))
       (fun T => (hre T).trans (le_max_left _ _)) (fun T => (him T).trans (le_max_right _ _))
   · intro hb
@@ -437,7 +457,7 @@ theorem powerLogRows_renormalizedInversion_iff (ε : SubcriticalDamping) {s : �
       simp only [sum_mul_zetaLeibnizRow, hzero, Complex.zero_re, sub_zero] at h
       exact h
     · have h := hB₂ T
-      simp only [hleib, sum_mul_zetaLeibnizRow, hzero, Complex.zero_im, sub_zero] at h
+      simp only [sum_mul_zetaLeibnizRow, hleib', hzero, Complex.zero_im, sub_zero] at h
       exact h
 
 /-- The order of `ζ` at a point of the open critical strip is finite. -/
@@ -462,10 +482,9 @@ theorem powerLogRows_renormalizedInversion_iff_order (ε : SubcriticalDamping) {
   have hne1 : s + (ε : ℝ) ≠ 1 := fun h => by
     have := congrArg Complex.re h; simp at this; linarith
   have hfin := analyticOrderAt_riemannZeta_ne_top_of_strip hz0 hz1
-  have han : AnalyticAt ℂ riemannZeta (s + (ε : ℝ)) :=
-    (fun z (hz : z ∈ {w : ℂ | w ≠ 1}) =>
-      (differentiableAt_riemannZeta hz).differentiableWithinAt : DifferentiableOn ℂ riemannZeta
-        {w : ℂ | w ≠ 1}).analyticAt (isOpen_ne.mem_nhds hne1)
+  have hd : DifferentiableOn ℂ riemannZeta {w : ℂ | w ≠ 1} := fun z hz =>
+    (differentiableAt_riemannZeta hz).differentiableWithinAt
+  have han : AnalyticAt ℂ riemannZeta (s + (ε : ℝ)) := hd.analyticAt (isOpen_ne.mem_nhds hne1)
   have hord : analyticOrderAt riemannZeta (s + (ε : ℝ)) =
       ((analyticOrderAt riemannZeta (s + (ε : ℝ))).toNat : ℕ∞) := (ENat.coe_toNat hfin).symm
   obtain ⟨hm0, hm1⟩ := (analyticOrderAt_eq_nat_iff_iteratedDeriv_eq_zero han).mp hord

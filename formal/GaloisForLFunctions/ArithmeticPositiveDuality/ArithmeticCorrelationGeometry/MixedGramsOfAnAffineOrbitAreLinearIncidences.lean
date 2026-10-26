@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArithmeticCorrelationGeometry.TheBoundaryOfADilationIsTheArchimedeanPlace
+import GaloisForLFunctions.ArithmeticPositiveDuality.ArithmeticCorrelationGeometry.TheBoundaryOfADilationIsTheArchimedeanPlace
 import GaloisForLFunctions.SignedSuccessorArithmetic.TheSuccessorDilationCocycle
 
 /-!

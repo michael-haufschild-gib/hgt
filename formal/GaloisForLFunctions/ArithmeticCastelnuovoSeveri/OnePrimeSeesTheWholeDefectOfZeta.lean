@@ -28,16 +28,16 @@ well-foundedness or separation hypothesis:
 `ζ` is deep-sparse by the Ingham–Huxley zero-density estimate, summed over dyadic height boxes
 (`deepSparse_zeta`). Hence at **every** prime `p` the `p`-tower of `ζ` carries one negative square
 for each distinct `p^{ρ−½}` (`zeta_one_prime_tower_law`), and RH is equivalent to positivity of
-the Weil form on all `p`-towers for one fixed prime (`riemannHypothesis_iff_onePrime_towers`). At all but finitely many primes
-the eigenvalues are distinct and one tower carries the whole Hodge defect, finite or infinite
-(`zeta_almost_every_prime_tower_law`).
+the Weil form on all `p`-towers for one fixed prime (`riemannHypothesis_iff_onePrime_towers`).
+At all but finitely many primes the eigenvalues are distinct and one tower carries the whole Hodge
+defect, finite or infinite (`zeta_almost_every_prime_tower_law`).
 -/
 
 open Complex Finset Filter Topology
 open scoped ComplexConjugate Classical lp
 open Zeta23 GaloisForLFunctions.HTGeometry
-open GaloisForLFunctions.SquareRootThreshold (TemperedConfig temperedConfig_zetaZeroConfig carrierCopy
-  carrierCopy_val)
+open GaloisForLFunctions.SquareRootThreshold
+  (TemperedConfig temperedConfig_zetaZeroConfig carrierCopy carrierCopy_val)
 
 noncomputable section
 
@@ -232,18 +232,18 @@ theorem exists_test_killing (A : Set ℂ) (hA : ∀ τ ∈ A, 1 / 2 < τ.re) (hA
   · exact (hwA τ τ.2).1
   · exact (hwA τ τ.2).2
 
-/-- **A test killing the deep zeros of a deep-sparse configuration.** Given finitely many right
-zeros `F` and a depth `σ₀ > ½`, a `C²` compactly supported test vanishes at `γ_τ` and `γ_{1−τ̄}` for
+/-- **A test killing the deep zeros of a deep-sparse configuration.** Given a set `F` of right
+zeros and a depth `σ₀ > ½`, a `C²` compactly supported test vanishes at `γ_τ` and `γ_{1−τ̄}` for
 every right zero `τ ∉ F` with `Re τ ≥ σ₀`, and at neither point for `τ ∈ F`. -/
 theorem exists_test_killing_deep_zeros (Z : ZeroConfig) (hsp : DeepSparse Z) {σ₀ : ℝ}
-    (hσ₀ : 1 / 2 < σ₀) (F : Finset ℂ) (hF : ∀ τ ∈ F, τ ∈ rightZeros Z) :
+    (hσ₀ : 1 / 2 < σ₀) (F : Set ℂ) (hF : ∀ τ ∈ F, τ ∈ rightZeros Z) :
     ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧
       (∀ τ ∈ rightZeros Z, σ₀ ≤ τ.re → τ ∉ F →
         paperFT g (gammaOf τ) = 0 ∧ paperFT g (gammaOf (reflect τ)) = 0) ∧
       ∀ τ ∈ F, paperFT g (gammaOf τ) ≠ 0 ∧ paperFT g (gammaOf (reflect τ)) ≠ 0 := by
   obtain ⟨s, hs0, hs1, hsum⟩ := hsp σ₀ hσ₀
   set S : Set ℂ := {τ : ℂ | τ ∈ rightZeros Z ∧ σ₀ ≤ τ.re} with hS
-  set A : Set ℂ := S \ ↑F with hA
+  set A : Set ℂ := S \ F with hA
   have hAS : A ⊆ S := Set.sdiff_subset
   have hAr : ∀ τ ∈ A, τ ∈ rightZeros Z := fun τ hτ => (hAS hτ).1
   have hAc : A.Countable :=
@@ -334,7 +334,7 @@ theorem exists_test_card_le_towerDefect (Z : ZeroConfig) (hZ : TemperedConfig Z)
   have hFr : ∀ τ ∈ F, τ ∈ rightZeros Z := fun τ hτ => by
     obtain ⟨b, hb, rfl⟩ := Finset.mem_image.mp hτ
     exact hr b hb
-  obtain ⟨g, hg, hgc, hkill, hkeep⟩ := exists_test_killing_deep_zeros Z hsp hσ₀ F hFr
+  obtain ⟨g, hg, hgc, hkill, hkeep⟩ := exists_test_killing_deep_zeros Z hsp hσ₀ ↑F hFr
   have hrF : ∀ b ∈ O, r b ∈ F := fun b hb => Finset.mem_image_of_mem r hb
   refine ⟨g, hg, hgc, card_le_towerDefect_of_activeWellFounded Z hZ hg hgc hℓ O
     (fun b hb => ⟨⟨r b, hr b hb, hrb b hb⟩, ?_⟩)

@@ -17,19 +17,26 @@ battery behaviour (README §10).
 - [ ] 2 → 3  (per conjecture)
 
 ## Current conjecture
-**C1 (topic 6, prescribed successor).** If `φ` is positive definite on `Aff(ℚ)` and
-`φ(x ↦ x + b) = 1_ℤ(b)`, then for `u = ±n/d` in lowest terms
-`Σ_{b mod (1/d)ℤ} |φ(x ↦ ux + b)|² ≤ 1/(nd)`; equality for the adelic Haar state
-`φ_*(ux + b) = (nd)^{−1/2}·1[db ∈ ℤ]`. Corollary: no positive-definite `φ` with successor part
-`c·1_ℤ`, `c ≠ 0`, has a dilation part continuous at `1`.
+**C6–C8 (Fourier analysis on `ℚ_{>0}`, Kronecker dichotomy).**
+- C6: `f` positive definite on `ℚ_{>0}` ⇔ `f(u) = ∫ χ_x(u) dμ(x)`, `μ` finite on the prime torus,
+  unique. Proof: finite-rank Herglotz–Bochner on the primes below `k`, eventually constant
+  coefficients, Fourier–Lévy on the prime torus.
+- C7: `f(u) = F(log u)`, `F` continuous ⇒ `μ = ν ∘ z⁻¹`, `z_x = (x log p/2π)_p` (Kronecker line).
+  Proof: `F` positive definite on `ℝ` by density of `log ℚ_{>0}`; Bochner on `ℝ`; uniqueness.
+- C8: decay `f((N+b)/(N+a)) → 0` ⇒ `μ(line) = 0`; Gram form at `(N+j)/N`, `j < M`, is
+  `f(1)/M + o(1)` and dominates `∫|M⁻¹Σ_j ((N+j)/N)^{ix}|² dν → ν(ℝ)`. Integer and Bost–Connes
+  successors decay (height of `(N+b)/(N+a)` is `≥ N²/(a−b)²`), hence no nonzero archimedean
+  positive-definite `g` with `f − g` positive definite.
 
-Paper proof. Write `X = d⁻¹Σ_{j<d} π(j/d)ξ`, `Y_b = n⁻¹Σ_{k<n} π(b + k/d)π(u)ξ` in the GNS space.
-`φ` is `ℤ`-bi-invariant (three-point Gram), so `φ(u, ·)` is `(ℤ + uℤ) = (1/d)ℤ`-periodic. Gram
-entries: `⟨X, X⟩ = 1/d`, `⟨Y_b, Y_{b'}⟩ = n⁻¹[b ≡ b' mod (1/d)ℤ]`, `⟨Y_b, X⟩ = φ(u, b)`. Bessel
-(the Gram form with coefficients `1, −n φ(u,b)`) gives `1/d − n Σ|φ(u,b)|² ≥ 0`. Sharpness: the
-finite-level model `ℂ^{(1/M)ℤ/Mℤ}` of `L²(𝔸_f)` with `v_g(x) = |a|_f^{1/2} e(bx) 1[ax ∈ ℤ]`;
-Gram `= M⁻¹ V V^*`, entries evaluated by a geometric sum over the cyclic group
-`a_g⁻¹ℤ ∩ a_h⁻¹ℤ`.
+## Done
+- C1 `TheIntegerSuccessorForcesTheHeckeWeight` (P18); C2 `TheCriticalLineIsThePositivityThresholdOfTheIntegerSuccessor` (P19);
+  C3 `TheBostConnesTemperatureIsTheHeckeExponent` (P20); C4 `TheExtremalsOfTheHeckeLawAreTwistedHaarStates` (P21);
+  C5 `AMautnerPhenomenonForTheAffineGroupOfQ`.
+
+## Next
+- Kronecker decomposition `f = f_arch + f_null` (unique); successors compatible with archimedean
+  dilation parts (conjecture: continuous on `ℝ` plus `c·δ₀`).
 
 ## Log
 - 2026-10-25 — created; C1 opened.
+- 2026-10-26 — C1–C5 formalized; C6–C8 drafted.

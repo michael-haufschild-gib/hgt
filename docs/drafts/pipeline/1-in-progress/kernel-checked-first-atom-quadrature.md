@@ -32,28 +32,55 @@ to `PrimeArchThetaFirstAtomQuadratureEnclosures`. The original rational-bounds t
 - [x] Two- and eight-coefficient integration tails pass (56556, exit 0).
 - [x] All five rows at cell 63 pass, including every integration tail and final numerator axiom
   audit (26748, exit 0). Every audit has only the three standard axioms above.
-- [x] All eight production helpers are imported by the RHTower umbrella. Do not compile umbrellas.
+- [x] `PrimeArchThetaFirstAtomQuadratureCells0` (cells 0–3) built successfully
+  (53008, exit 0); its current olean/ilean are valid. Olean size is 617 MB.
+- [x] `PrimeArchThetaFirstAtomQuadratureCells4` (cells 4–7) built successfully
+  (19298, exit 0); its current olean/ilean are valid.
+- [x] All twenty production helpers are imported by the RHTower umbrella. Do not compile umbrellas.
 - [x] Production-source scans find no native decision tactic, placeholders, added axioms, raised
   limits, or temporary diagnostics. `git diff --check` passes.
-- [x] All standalone probes and the temporary `HgtFirstAtomPolynomialProbe` source/olean/ilean
-  have been removed. No scratch file is needed to continue.
+- [x] Earlier standalone probes and the temporary `HgtFirstAtomPolynomialProbe` source/olean/ilean
+  have been removed. The new, uncompiled reduction probe is listed below and still needs cleanup.
 
 ## Current process and remaining work
 
-**Active owned Lean session: 31851**, building
-`RHTower/PrimeArchThetaFirstAtomQuadratureCells0.lean` (cells 0–15). No errors have been emitted.
+**Active owned Lean session: 67465**, building
+`RHTower/PrimeArchThetaFirstAtomQuadratureCells8.lean` (cells 8–11). No errors have been emitted.
 Wait for this session before starting another Lean process.
+
+Before building further tables, check the prepared smaller-proof experiment below. The large
+olean size warrants checking whether definitional reduction can avoid explicit reduction traces.
+Production Certificates is unchanged; the existing table checks remain valid.
+
+### Prepared reduction probe
+
+- Corpus searches for kernel normalization and `conv reduce` found no relevant project precedent.
+  Mathlib search was performed afterward. Lean's `Lean/Elab/Tactic/Conv/Basic.lean:95` confirms
+  `reduce` calls `changeLhs (reduce lhs)`, so it uses definitional equality without new axioms.
+- `formal/HgtFirstAtomCompactProbe.lean` is a copy of Certificates with the command renamed to
+  `first_atom_cell_reduce`, every terminal `cbv` replaced by `reduce`, and one complete cell 63
+  appended. It has NOT been compiled yet. No limits are changed.
+- `/tmp/hgt_first_atom_reduce_audit.lean` imports that probe and audits all five raw numerators.
+  Thus an olean for the probe is needed by an actual file being checked.
+- After session 67465 exits, build the probe explicitly with `lake --old env lean -o
+  .lake/build/lib/lean/HgtFirstAtomCompactProbe.olean -i
+  .lake/build/lib/lean/HgtFirstAtomCompactProbe.ilean HgtFirstAtomCompactProbe.lean`, from `formal/`.
+  If it succeeds, check `/tmp/hgt_first_atom_reduce_audit.lean` with the same foreground Lean
+  command and inspect the probe artifact size. Adopt the change only if the full cell and axiom
+  audits pass without limit changes. Remove probe source/audit/artifacts afterward.
+- If `reduce` fails at default limits, preserve the checked production method and resume tables.
+  Do not confuse failures in this isolated probe with production failures.
 
 Then build, separately and in the foreground:
 
-1. `PrimeArchThetaFirstAtomQuadratureCells16` (cells 16–31).
-2. `PrimeArchThetaFirstAtomQuadratureCells32` (cells 32–47).
-3. `PrimeArchThetaFirstAtomQuadratureCells48` (cells 48–63).
-4. `PrimeArchThetaFirstAtomQuadratureArithmetic` (all five sums).
+1. The remaining `PrimeArchThetaFirstAtomQuadratureCells<N>` modules, with
+   `N = 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60`.
+   Each certifies exactly four cells, from `N` through `N + 3`.
+2. `PrimeArchThetaFirstAtomQuadratureArithmetic` (all five sums).
 
 Use `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/<Module>.olean -i .lake/build/lib/lean/GaloisForLFunctions/RHTower/<Module>.ilean GaloisForLFunctions/RHTower/<Module>.lean`
 from `formal/`, one process at a time. These oleans are required by the next source file being
-written. No table olean has passed yet; do not mistake the last-cell probe for all-cell validation.
+written. Only the cells 0–7 tables have passed; do not mistake the last-cell probe for all-cell validation.
 
 Finally check the actual PA target directly with
 `lake --old env lean GaloisForLFunctions/RHTower/PrimeArchThetaFirstAtomHighOrderMomentBounds.lean`.
@@ -79,3 +106,7 @@ remaining checks pass.
   at most eight coefficients. All five cell-63 rows now validate this exact implementation.
 - Automatic repository snapshots have sometimes committed intermediate work. Preserve others'
   changes; `git diff` alone does not enumerate everything done by this task.
+- The original sixteen-cell batch occupied 18 GB, including 17 GB of compressed memory. Its owned
+  process was terminated and exit 143 confirmed before restarting. Tables now contain four cells
+  each; certificate mathematics and the cell generator are unchanged. No artifact from that
+  interrupted batch remains.

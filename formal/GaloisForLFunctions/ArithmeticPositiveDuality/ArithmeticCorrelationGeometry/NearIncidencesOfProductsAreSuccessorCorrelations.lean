@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArithmeticCorrelationGeometry.TheThresholdIsThePriceOfTheArchimedeanLine
+import GaloisForLFunctions.ArithmeticPositiveDuality.ArithmeticCorrelationGeometry.TheThresholdIsThePriceOfTheArchimedeanLine
 
 /-!
 # Near-incidences of products are successor correlations
@@ -67,7 +67,8 @@ theorem fourfoldIncidence_eq (s : Finset ℕ) (α : ℕ → ℂ) (h : ℕ) :
     · rw [if_pos rfl]
       split_ifs <;> simp
     · intro N _ hN
-      rw [if_neg (fun e => hN e.symm), map_zero, mul_zero]
+      rw [show (if u 0 * u 1 = N then α (u 0) * α (u 1) else 0) = 0 from
+        if_neg (fun e => hN e.symm), map_zero, mul_zero]
     · exact fun h' => absurd hmem h'
   rw [fourfoldIncidence]
   simp_rw [powCoeff_two_eq, map_sum, Finset.sum_mul_sum]
@@ -84,8 +85,6 @@ theorem fourfoldIncidence_zero (s : Finset ℕ) (α : ℕ → ℂ) :
   rw [fourfoldIncidence_eq]
   refine Finset.sum_congr rfl fun N _ => ?_
   rw [add_zero, Complex.mul_conj, Complex.normSq_eq_norm_sq]
-  push_cast
-  rfl
 
 /-- The fourfold incidence written as a conjugated successor correlation. -/
 theorem fourfoldIncidence_eq_conj_succCorr (s : Finset ℕ) (α : ℕ → ℂ) (h : ℕ) :

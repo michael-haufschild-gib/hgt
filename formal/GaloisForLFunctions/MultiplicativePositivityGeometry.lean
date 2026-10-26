@@ -22,6 +22,11 @@ import GaloisForLFunctions.MultiplicativePositivityGeometry.CharacterFamilies
 import GaloisForLFunctions.MultiplicativePositivityGeometry.RankinSelbergBessel
 import GaloisForLFunctions.MultiplicativePositivityGeometry.AbelianZeroMass
 import GaloisForLFunctions.MultiplicativePositivityGeometry.DecayMassLaw
+import GaloisForLFunctions.MultiplicativePositivityGeometry.BeurlingThreshold
+import GaloisForLFunctions.MultiplicativePositivityGeometry.SiegelException
+import GaloisForLFunctions.MultiplicativePositivityGeometry.IntegralLatticeRealization
+import GaloisForLFunctions.MultiplicativePositivityGeometry.FamilyCapacity
+import GaloisForLFunctions.MultiplicativePositivityGeometry.LocallyFiniteBochner
 
 /-!
 # Multiplicative Positivity Geometry
@@ -34,10 +39,12 @@ Umbrella for the positive-definite geometry of Euler log-coefficients.
   mass law; the calculus of boundary data and the invisibility of the interior.
 * Interior: the exact Fejér barrier, the two-sided growth-to-forcing law, the multi-frequency
   purchase cap and the de la Vallée Poussin calibration.
-* Realization and range: integral Euler products, Bochner's theorem for finite configurations, the
-  zero capacity of a pole of order `k`, the positivity margin, the range of the boundary map.
-* Further mechanisms: families over finite abelian groups and the two-torsion exception,
-  Rankin–Selberg Bessel forcing, the zero-mass law on abelian groups, the decay-exponent law.
+* Realization and range: integral Euler products (finite configurations and the lattice divisors
+  over the rational primes), Bochner's theorem for finite and for locally finite configurations,
+  the zero capacity of a pole of order `k`, the positivity margin, the range of the boundary map.
+* Further mechanisms: families over finite abelian groups, the two-torsion exception, protected
+  points and the exact family capacity; Rankin–Selberg Bessel forcing, the zero-mass law on abelian
+  groups, the decay-exponent law and Beurling's threshold.
 
 See `MultiplicativePositivityGeometry/README.md`.
 -/

@@ -99,7 +99,10 @@ support loses multiplicity; moving parameters can have growing boundary cost.
    (`forcingRemainderEnergy_le`); `A + D̃ = R` (`receiver_add_renormalizedCofactor_eq`); admission or
    `‖A + D̃‖²/E_T → 0` (`admits_or_renormalized_inversion_is_homogeneous`). Renormalized pairing is **antipodal**:
    `(P̃/E + 1)² ≤ B²/E` (`renormalizedCofactorVariation_sq_le`); total variation `V_T ≤ B√E` pays every moving
-   localization (`admits_or_all_moving_localizations_retain_density`).
+   localization (`admits_or_all_moving_localizations_retain_density`). **Trace-free form:** the alternating
+   sum `H_εv = Σ_{j≤n}(−1)^{j+1}j^{−ε}v(⌊n/j⌋) = (I − 2^{1−ε}D₂)Sv` kills the pole exactly, `‖H_εA‖_T ≤ B` at every
+   horizon with no domain or trace (`exists_pronicNorm_etaCofactorSum_actual_le`); its power-row symbol is
+   `(1 − 2^{1−ε−s})ζ(s+ε)` (`exists_pronicNorm_etaCofactorSum_powerRow_le`).
 7. **Finite forcing mass.** `0 ≤ ρ ≤ m_εM_εn^{1−ε}`; pronic mass → `L_ε = −ζ'/ζ(1+ε)`, optimal
    (`forcingMassLimit_eq_logarithmicDerivative`, `forcingMassLimit_isLUB`). Pays bounded cell errors, not
    `⟨A, ρ⟩`.
@@ -112,12 +115,17 @@ support loses multiplicity; moving parameters can have growing boundary cost.
    (`pronicNorm_renormalizedCofactorOperator_commutator_le`); vanishes on escape for every moving `p(T)`
    (`admits_or_moving_cofactor_commutator_vanishes`).
 10. **Residual + trace determine the row.** `v = Σ_dμ(d)d^{−ε}𝓡(v)(⌊n/d⌋) + 𝓛(v)q_ε(n)`
-    (`residual_and_trace_injective`, `actual_receiver_reconstruction`); isolates the unestimated terms
-    (Möbius floor inverse of `R`, and `q_ε`).
+    (`residual_and_trace_injective`, `actual_receiver_reconstruction`). `q_ε ∈ 𝒳_ε` with `𝓛(q_ε) = 1` (PNT with
+    rate), so `ker(I + D̃) = ℝq_ε` exactly (`ker_renormalizedResidualOperator`); the unestimated term is the
+    Möbius floor inverse of `R`.
 11. **Symbol of `D̃`.** On power rows, `0 < Re s < 1−ε`: `Σ_{j≤n} j^{−ε}⌊n/j⌋^s = ζ(s+ε)n^s + 𝓛_s n^{1−ε} +
     O(n^{(Re s−ε)/2})` (`norm_powerRowCofactorSum_sub_le`), so `(I + D̃)n^s = ζ(s+ε)n^s` modulo admitted rows.
     For `Re s ≥ ½` a power row satisfies `D̃v ≈ −v` iff `ζ(s+ε) = 0`
-    (`powerRow_renormalizedInversion_bounded_iff`); real exponents never do.
+    (`powerRow_renormalizedInversion_bounded_iff`); real exponents never do. **Index:** on
+    `log^k n·n^s` rows `I + D̃` is the Leibniz matrix of `ζ^{(i)}(s+ε)`; the power-log eigenspace at
+    `s` has dimension `ord_{s+ε}ζ` (`powerLogRows_renormalizedInversion_iff_order`), and over any
+    finite exponent set it is the direct sum of the zero blocks, dimension `Σ ord`
+    (`powerLogRows_global_renormalizedInversion_iff_order`; exponents separated by `D_2`, `D_3`).
 
 ### Extraction
 12. **Energy quantiles.** Increments ≤ 1 ⇒ quantile intervals keep mass `(s−r) ± 1/E`
@@ -249,7 +257,7 @@ assumed gap); separate identity, estimate, extraction and exclusion.
 
 | Topic | Required output |
 |---|---|
-| Joint extraction | One carrier holding fixed covariances, quantile signed work and the moving cofactor tail, with rate and spatial data, without exchanging an uncontrolled infinite sum and a limit |
+| Joint extraction | One carrier holding fixed covariances, quantile signed work and the moving cofactor tail, with rate and spatial data, without exchanging an uncontrolled infinite sum and a limit; via `H_ε` the tail is bounded by consecutive dilation differences `‖D_jA − D_{j+1}A‖` (`pronicNorm_etaCofactorTail_le`), so this is a dilation-regularity question |
 | Exclusion / source selectivity | An independently proved estimate excluding the tangent state or its approximate eigenrelation `D̃u ≈ −u`, violated by impure models; on power rows the eigenrelation is exactly `ζ(s+ε) = 0`, so the gap is power-likeness of escape states |
 | Module classification | Which Wiener modules occur on escape: is `hull ⊆ obstructionHull` an equality; are signs/exponents of rank-one characters tied to zeros; exclude finite-dimensional escape modules by a source law |
 | Mixed Bézout/Vaughan covariance | Summable signed gain after centering, with horizon and damping dependence |

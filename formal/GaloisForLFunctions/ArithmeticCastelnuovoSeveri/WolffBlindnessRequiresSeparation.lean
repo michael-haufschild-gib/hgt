@@ -281,40 +281,55 @@ theorem AccessibleOff.conj {F : Set ℂ} {w : ℂ} (h : AccessibleOff F w) :
     apply hne
     rw [← h', Complex.conj_conj]
 
-/-- **Countable obstacles.** If a closed set `F` missing the origin meets the unit disc in a
+/-- **Countable obstacles.** If a closed set `F` missing the origin meets the disc `‖z‖ < ρ` in a
 countable set, every point of the disc isolated from `F` is accessible off `F`: the disc minus a
 countable set is path-connected. -/
-theorem accessibleOff_of_countable {F : Set ℂ} (hFc : IsClosed F)
-    (hcount : (F ∩ ball (0 : ℂ) 1).Countable) (h0 : (0 : ℂ) ∉ F) {w : ℂ} (hw : ‖w‖ < 1)
+theorem accessibleOff_of_countable {F : Set ℂ} (hFc : IsClosed F) {ρ : ℝ} (hρ : 0 < ρ)
+    (hcount : (F ∩ ball (0 : ℂ) ρ).Countable) (h0 : (0 : ℂ) ∉ F) {w : ℂ} (hw : ‖w‖ < ρ)
     {ε : ℝ} (hε : 0 < ε) (hiso : ∀ z ∈ F, ‖z - w‖ < ε → z = w) : AccessibleOff F w := by
   set e : ℂ ≃ₜ ball (0 : ℂ) 1 := Homeomorph.unitBall
-  set f : ℂ → ℂ := fun x => (e x : ℂ)
-  have hf : Continuous f := continuous_subtype_val.comp e.continuous
-  have hfinj : Function.Injective f := fun x y h => e.injective (Subtype.ext h)
-  have hsub : f ⁻¹' F ⊆ f ⁻¹' (F ∩ ball (0 : ℂ) 1) := fun x hx =>
-    show f x ∈ F ∩ ball (0 : ℂ) 1 from ⟨hx, (e x).2⟩
+  set f : ℂ → ℂ := fun x => (ρ : ℂ) * (e x : ℂ)
+  have hρ0 : (ρ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hρ.ne'
+  have hf : Continuous f := continuous_const.mul (continuous_subtype_val.comp e.continuous)
+  have hfinj : Function.Injective f := fun x y h =>
+    e.injective (Subtype.ext (mul_left_cancel₀ hρ0 h))
+  have hfball : ∀ x, f x ∈ ball (0 : ℂ) ρ := fun x => by
+    have h1 : ‖(e x : ℂ)‖ < 1 := mem_ball_zero_iff.mp (e x).2
+    rw [mem_ball_zero_iff, norm_mul, Complex.norm_real, Real.norm_of_nonneg hρ.le]
+    nlinarith [norm_nonneg (e x : ℂ)]
+  have hsub : f ⁻¹' F ⊆ f ⁻¹' (F ∩ ball (0 : ℂ) ρ) := fun x hx =>
+    show f x ∈ F ∩ ball (0 : ℂ) ρ from ⟨hx, hfball x⟩
   have hA : (f ⁻¹' F).Countable := (hcount.preimage hfinj).mono hsub
   have hpc : IsPathConnected (f '' (f ⁻¹' F)ᶜ) :=
     (hA.isPathConnected_compl_of_one_lt_rank
       (by simp only [rank_real_complex, Nat.one_lt_ofNat])).image hf
-  have himg : f '' (f ⁻¹' F)ᶜ = ball (0 : ℂ) 1 \ F := by
+  have himg : f '' (f ⁻¹' F)ᶜ = ball (0 : ℂ) ρ \ F := by
     ext z
     constructor
     · rintro ⟨x, hx, rfl⟩
-      exact ⟨(e x).2, hx⟩
+      exact ⟨hfball x, hx⟩
     · rintro ⟨hz, hzF⟩
-      refine ⟨e.symm ⟨z, hz⟩, ?_, by simp [f]⟩
-      simpa [f] using hzF
-  have h0U : (0 : ℂ) ∈ ball (0 : ℂ) 1 \ F := ⟨by simp, h0⟩
-  refine ⟨ball (0 : ℂ) 1 \ F, isOpen_ball.sdiff hFc, ?_, h0U, fun z hz => hz.2,
-    min ε (1 - ‖w‖), lt_min hε (by linarith), fun z hz hne => ⟨?_, fun hzF => hne ?_⟩⟩
+      have hz' : z / ρ ∈ ball (0 : ℂ) 1 := by
+        rw [mem_ball_zero_iff, norm_div, Complex.norm_real, Real.norm_of_nonneg hρ.le,
+          div_lt_one hρ]
+        exact mem_ball_zero_iff.mp hz
+      have hfz : f (e.symm ⟨z / ρ, hz'⟩) = z := by
+        simp only [f, Homeomorph.apply_symm_apply]
+        field_simp
+      refine ⟨e.symm ⟨z / ρ, hz'⟩, ?_, hfz⟩
+      show f (e.symm ⟨z / ρ, hz'⟩) ∉ F
+      rw [hfz]
+      exact hzF
+  have h0U : (0 : ℂ) ∈ ball (0 : ℂ) ρ \ F := ⟨by simpa using hρ, h0⟩
+  refine ⟨ball (0 : ℂ) ρ \ F, isOpen_ball.sdiff hFc, ?_, h0U, fun z hz => hz.2,
+    min ε (ρ - ‖w‖), lt_min hε (by linarith), fun z hz hne => ⟨?_, fun hzF => hne ?_⟩⟩
   · rw [← himg]
     exact hpc.isConnected.isPreconnected
   · rw [mem_ball_zero_iff]
     calc ‖z‖ = ‖(z - w) + w‖ := by rw [sub_add_cancel]
       _ ≤ ‖z - w‖ + ‖w‖ := norm_add_le _ _
-      _ < (1 - ‖w‖) + ‖w‖ := by linarith [hz.trans_le (min_le_right _ _)]
-      _ = 1 := by ring
+      _ < (ρ - ‖w‖) + ‖w‖ := by linarith [hz.trans_le (min_le_right _ _)]
+      _ = ρ := by ring
   · exact hiso z hzF (hz.trans_le (min_le_left _ _))
 
 /-! ### 3. Towers -/
@@ -436,7 +451,7 @@ theorem card_le_towerDefect_of_countable (Z : ZeroConfig) (hZ : TemperedConfig Z
   refine card_le_towerDefect_of_accessibleOff Z hZ hg hgc hℓ O hO fun b hb => ?_
   obtain ⟨ε, hε, hisoε⟩ := hiso b hb
   obtain ⟨⟨ρ, hρ, rfl⟩, -⟩ := hO b hb
-  refine accessibleOff_of_countable isClosed_closure hcount (fun h0 => ?_) ?_ hε hisoε
+  refine accessibleOff_of_countable isClosed_closure one_pos hcount (fun h0 => ?_) ?_ hε hisoε
   · have := hlow h0
     simp only [Set.mem_setOf_eq, norm_zero] at this
     exact absurd this (not_le.mpr (Real.exp_pos _))

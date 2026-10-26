@@ -17,15 +17,19 @@ members `±g` at `β = 1 − η` enters the Gram forms of `T_δ` on the cyclic g
   ratio `1`, the degree-one barrier, which excludes nothing (`unpaired_real_zero_unexcluded`).
 
 **The exception occurs at every depth** (`siegel_isJointBoundaryDivisor`, `siegel_member_zero`).
-For `h ≠ 0` with `2h = 0` and every `β ≤ 1`, the weights `Λ(n) n^{−1−x}(1 − ψ(h) n^{β−1})/|G|` on the
+For `h` with `2h = 0` and every `β < 1`, the weights `Λ(n) n^{−1−x}(1 − ψ(h) n^{β−1})/|G|` on the
 frequencies `(ψ, log n)` are nonnegative and have joint boundary divisor `δ_{(0,0)}`; so all four
 boundary invariants hold. The family is `Z_0 = ζ`, `Z_h(s) = 1/ζ(s + 1 − β)`, trivial elsewhere,
 and `Z_h` vanishes at the real point `β`.
 
-So multiplicative positivity of a family certifies a real zero-free interval for every member
-except those of order two, and for those it certifies nothing at all: an exceptional (Siegel)
-zero may sit at any distance from `1`. This is the interior form of the two-torsion exception of
-`joint_boundary_classification`.
+The case `h = 0` is allowed: the single Euler product `ζ(s)/ζ(s + 1 − β)`, with log-coefficients
+`Λ(n)(1 − n^{β−1}) ≥ 0`, satisfies all four boundary invariants and vanishes at the real point `β`.
+
+So a zero at a point `p` of `G × ℝ` receives a certified zero-free interval from multiplicative
+positivity exactly when `2p ≠ 0`. Real zeros of the trivial member and zeros of order-two members at
+height `0` receive none: an exceptional (Siegel) zero may sit at any distance from `1`, and excluding
+real zeros of `ζ` itself needs information that is not positivity (the sign of `ζ` on `(0, 1)`).
+This is the interior form of the two-torsion exception of `joint_boundary_classification`.
 -/
 
 open Finset Filter Topology Complex
@@ -43,9 +47,13 @@ theorem cyclic_fibre_sum_nonneg {Γ : Type*} [AddCommGroup Γ] {T : Γ → ℝ} 
   have hpd := hT.comp_addMonoidHom f
   have h := finite_group_mass_sum hpd
   refine h.trans_eq (Finset.sum_congr rfl fun k _ => ?_)
-  simp only [Function.comp_apply, f]
-  rw [← ZMod.natCast_zmod_val k, map_natCast]
-  simp [zmultiplesHom]
+  have h1 : f 1 = g := by
+    show ZMod.lift m ⟨zmultiplesHom Γ g, _⟩ 1 = g
+    rw [← Int.cast_one, ZMod.lift_coe]
+    simp
+  have hk : f k = (k.val : ℕ) • g := by
+    conv_lhs => rw [← ZMod.natCast_zmod_val k, ← nsmul_one, map_nsmul, h1]
+  simp only [Function.comp_apply, hk]
 
 /-- **Two-torsion: purchase ratio one.** At a point of order two the positive-definite trace only
 satisfies `|T(h)| ≤ T(0)`. -/
@@ -136,11 +144,11 @@ theorem summable_shiftedWeight {β : ℝ} (hβ : β ≤ 1) {x : ℝ} (hx : 0 < x
 for `β < 1`. -/
 theorem abs_shiftedTrace_le {β : ℝ} (hβ : β < 1) {x : ℝ} (hx : 0 < x) (u : ℝ) :
     |∑' n : ℕ, zetaBoundaryWeight x n * (n : ℝ) ^ (β - 1) * Real.cos (logFrequency n * u)| ≤
-      ∑' n : ℕ, (ArithmeticFunction.vonMangoldt n : ℝ) * (n : ℝ) ^ (-(2 - β)) := by
-  have hs : Summable fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℝ) * (n : ℝ) ^ (-(2 - β)) :=
-    RHTower.summable_vonMangoldt_rpow_real (by linarith)
+      ∑' n : ℕ, zetaBoundaryWeight (1 - β) n := by
+  have hs : Summable fun n : ℕ => zetaBoundaryWeight (1 - β) n :=
+    summable_zetaBoundaryWeight (by linarith)
   have hle : ∀ n : ℕ, |zetaBoundaryWeight x n * (n : ℝ) ^ (β - 1) * Real.cos (logFrequency n * u)| ≤
-      (ArithmeticFunction.vonMangoldt n : ℝ) * (n : ℝ) ^ (-(2 - β)) := by
+      zetaBoundaryWeight (1 - β) n := by
     intro n
     rw [abs_mul, abs_of_nonneg (mul_nonneg (zetaBoundaryWeight_nonneg x n)
       (Real.rpow_nonneg (Nat.cast_nonneg _) _))]
@@ -190,7 +198,10 @@ theorem sum_siegel_mode [DecidableEq G] {h : G} (hh : h + h = 0) (g : G) (θ c :
     · intro e; rw [← hneg]; exact eq_neg_of_add_eq_zero_left e
     · intro e; rw [e, hh]
   simp only [hgh]
-  split_ifs <;> simp [Complex.exp_ofReal_mul_I_re] <;> ring
+  split_ifs <;> simp only [Complex.mul_re, Complex.sub_re, Complex.sub_im, Complex.mul_im,
+    Complex.ofReal_re, Complex.ofReal_im, Complex.natCast_re, Complex.natCast_im,
+    Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im, Complex.zero_re,
+    Complex.zero_im] <;> ring
 
 /-- The Siegel joint trace: `[g = 0]` times the trace of `ζ` minus `[g = h]` times the trace of
 `ζ(s + 1 − β)`. -/
@@ -228,7 +239,6 @@ theorem jointTrace_siegel [DecidableEq G] (h : G) (hh : h + h = 0) {β : ℝ} (h
       rw [Finset.mul_sum]
       exact Finset.sum_congr rfl fun ψ _ => by ring, key]
   field_simp
-  ring
 
 /-- **The Siegel family satisfies every boundary invariant.** For `h` of order two and `β < 1` the
 Siegel weights are a joint boundary datum with joint divisor `δ_{(0,0)}`. -/
@@ -239,7 +249,7 @@ theorem siegel_isJointBoundaryDivisor [DecidableEq G] (h : G) (hh : h + h = 0) {
   nonneg x _ p := siegelWeight_nonneg h hβ.le x p
   summable x hx := summable_siegelWeight h hβ.le hx
   tendsto p := by
-    set B := ∑' n : ℕ, (ArithmeticFunction.vonMangoldt n : ℝ) * (n : ℝ) ^ (-(2 - β))
+    set B := ∑' n : ℕ, zetaBoundaryWeight (1 - β) n
     have hz := (zeta_isBoundaryDivisor.tendsto p.2).const_mul ((if p.1 = 0 then 1 else 0) : ℝ)
     -- `x` times the bounded shifted trace tends to `0`.
     have hsh : Tendsto (fun x : ℝ => x * ∑' n : ℕ, zetaBoundaryWeight x n * (n : ℝ) ^ (β - 1) *

@@ -126,6 +126,21 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
    representatives; then one prime sees every distinct outer eigenvalue. $\zeta$ is deep-sparse
    (Ingham–Huxley), so at **every** prime $\sup$ tower defect $=\#\{\text{distinct }p^{\rho-1/2}\}$
    and RH ⇔ Weil positivity on the towers of one prime (`OnePrimeSeesTheWholeDefectOfZeta.lean`).
+   **Fixed tests: blindness is separation.** The Cauchy transform of a vector orthogonal to a tower
+   vanishes on the component of the origin off the closed folded spectrum `{β_τ⁻¹}`; its residues
+   are class sums. A fixed test sees every visible `b` with `b⁻¹` accessible from `0`, so Wolff
+   blindness needs the folded zeros to wall `b⁻¹` off; countable folded spectra never blind
+   (`WolffBlindnessRequiresSeparation.lean`). **Weights never cancel for probes:** the class weight
+   of `φe^{isu}` continues to an entire function of `s`, equal to `Σ m_τ|φ̂|² > 0` at `s = t+iδ`;
+   one probe sees every outer eigenvalue at every prime of every tempered configuration, and its
+   tower carries all distinct eigenvalues when real parts are well-founded
+   (`OneProbeSeesEveryOuterEigenvalue.lean`). **One test suffices for `ζ`:** at every prime a single
+   test's tower carries every distinct `p^{ρ−½}` and decides RH — a killing test when infinitely many
+   eigenvalues share a depth (separated subsequence), a probe otherwise
+   (`OneTestCarriesTheDefectOfZetaAtEachPrime.lean`). **Weil's two-element windows suffice:** the
+   Lefschetz sequence `c_m = W(T_{p^m}g, g)` of one test is `O(R^m)` (`R ≥ 1`) iff `R ≥ p^w`, `w` the
+   zero width; RH ⇔ `|c_m| ≤ c_0` for all `m`, and `c_m = O(p^{θm})` ⇔ the strip `|Re ρ−½| ≤ θ`
+   (`OneLefschetzSequenceGrowsAtTheZeroWidth.lean`).
 
 ### Effectivity, Bézout, Riemann–Roch
 10. **Hodge index ⇔ effectivity with RR + ample** (`exists_effectivity_iff_hodgeIndex`); positivity is
@@ -253,7 +268,8 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
 5. Cyclic and tower laws (`cyclic_pontryagin_law`, `riemannHypothesis_iff_twoPrime_negIndex_eq_zero`,
    `almost_every_prime_tower_sees_every_right_zero`, `one_prime_vs_two_primes_complete_law`,
    `exists_symmetric_wolff_toeplitz_blind_configuration`, `zeta_one_prime_tower_law`,
-   `riemannHypothesis_iff_onePrime_towers`).
+   `riemannHypothesis_iff_onePrime_towers`, `zeta_exists_test_riemannHypothesis_iff`,
+   `zeta_lefschetz_growth_law`, `zeta_riemannHypothesis_iff_lefschetz_minors`).
 6. Effectivity and Bézout (`exists_effectivity_iff_hodgeIndex`, `exists_bezout_effectivity_iff_hodgeIndex`,
    `localPair_nonneg`, `riemannHypothesis_iff_exists_effectivity`).
 7. Source-cone laws (`gradedSourceCone_riemannRoch_iff_le_defect`, `gradedL2SourceCone_realTestsAt_all_apertures_riemannRoch`,

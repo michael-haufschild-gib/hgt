@@ -144,14 +144,18 @@ theorem powerLogRow_dilCoeff {p : ℕ} (hp : 1 ≤ p) (s : ℂ) (K : ℕ) (b : �
   have hpow : (((n : ℝ) / p : ℝ) : ℂ) ^ s = (p : ℂ) ^ (-s) * (((n : ℝ)) : ℂ) ^ s := by
     rw [TransHorizonIncidenceMechanics.ofReal_div_cpow hn0 hp0]
     push_cast; ring
-  simp only [hlog, hpow, add_pow, powerLogRow, dilCoeff, sum_mul, mul_sum]
-  rw [sum_comm' (t' := range (K + 1)) (s' := fun i => Icc i K)]
-  · refine sum_congr rfl fun d hd => sum_congr rfl fun i hi => ?_
-    have hid : i ≤ d := (mem_range.mp hi).le.trans (Nat.lt_succ_iff.mp (mem_range.mp hd)) |>.trans le_rfl
-    ring
-  · intro i d
-    simp only [mem_range, mem_Icc]
-    omega
+  have hR : ∀ d, b d * ((Real.log ((n : ℝ) / p) : ℂ) ^ d * (((n : ℝ) / p : ℝ) : ℂ) ^ s) =
+      ∑ i ∈ range (d + 1), b d * (((d.choose i : ℂ) * (-(Real.log p : ℂ)) ^ (d - i)) *
+        ((p : ℂ) ^ (-s) * ((Real.log n : ℂ) ^ i * (((n : ℝ)) : ℂ) ^ s))) := by
+    intro d
+    rw [hlog, hpow, add_pow, sum_mul, mul_sum]
+    exact sum_congr rfl fun i _ => by ring
+  rw [sum_congr rfl fun d _ => hR d, powerLogRow]
+  rw [sum_comm' (s' := fun i => Icc i K) (t' := range (K + 1)) (fun d i => by
+    simp only [mem_range, mem_Icc]; omega)]
+  refine sum_congr rfl fun i _ => ?_
+  rw [dilCoeff, mul_sum, sum_mul]
+  exact sum_congr rfl fun d _ => by ring
 
 theorem hasDerivAt_logPowCpow (k : ℕ) (s : ℂ) {y : ℝ} (hy : 0 < y) :
     HasDerivAt (fun x : ℝ => (Real.log x : ℂ) ^ k * ((x : ℝ) : ℂ) ^ s)
@@ -162,7 +166,7 @@ theorem hasDerivAt_logPowCpow (k : ℕ) (s : ℂ) {y : ℝ} (hy : 0 < y) :
   exact (h1.pow k).mul (hasDerivAt_ofReal_cpow' s hy)
 
 /-- Rounding the argument of `log^k x · x^s` costs at most `(k + ‖s‖)(1 + log x)^k` on `[1, ∞)`. -/
-theorem norm_logPowCpow_floor_sub_le (k : ℕ) {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re ≤ 1) {a x : ℝ}
+theorem norm_logPowCpow_floor_sub_le (k : ℕ) {s : ℂ} (hs1 : s.re ≤ 1) {a x : ℝ}
     (ha : 1 ≤ a) (hax : a ≤ x) (hx : x ≤ a + 1) :
     ‖(Real.log a : ℂ) ^ k * ((a : ℝ) : ℂ) ^ s - (Real.log x : ℂ) ^ k * ((x : ℝ) : ℂ) ^ s‖ ≤
       (k + ‖s‖) * (1 + Real.log x) ^ k := by
@@ -224,10 +228,10 @@ theorem one_add_log_pow_le (k : ℕ) {n : ℝ} (hn : 1 ≤ n) :
   have hlog := Real.log_le_rpow_div hn0.le ha
   have hna : 1 ≤ n ^ (1 / (4 * (k + 1) : ℝ)) := Real.one_le_rpow hn (by positivity)
   have h1 : 1 + Real.log n ≤ (1 + 4 * (k + 1)) * n ^ (1 / (4 * (k + 1) : ℝ)) := by
-    rw [div_div_eq_mul_div, one_mul] at hlog
-    have : n ^ (1 / (4 * (k + 1) : ℝ)) * (4 * (k + 1)) / 1 =
-        4 * (k + 1) * n ^ (1 / (4 * (k + 1) : ℝ)) := by ring
-    nlinarith
+    rw [div_div_eq_mul_div, div_one] at hlog
+    calc 1 + Real.log n ≤ n ^ (1 / (4 * (k + 1) : ℝ)) +
+          n ^ (1 / (4 * (k + 1) : ℝ)) * (4 * (k + 1)) := by linarith
+      _ = (1 + 4 * (k + 1)) * n ^ (1 / (4 * (k + 1) : ℝ)) := by ring
   have hsq : Real.sqrt n ^ (1 / 2 : ℝ) = n ^ (1 / 4 : ℝ) := by
     rw [Real.sqrt_eq_rpow, ← Real.rpow_mul hn0.le]; norm_num
   rw [hsq]
@@ -294,7 +298,7 @@ theorem cAdmitted_dil_powerLogRow_sub {p : ℕ} (hp : 1 ≤ p) {s : ℂ} (hs0 : 
       have hlt : (n : ℝ) / p ≤ ((n / p : ℕ) : ℝ) + 1 := by
         have := (abs_le.mp (RHTower.Sieve.abs_natDiv_sub_div_le (N := n) hp)).1
         linarith
-      have h := norm_logPowCpow_floor_sub_le d hs0 hs1 (by exact_mod_cast hq1) hle hlt
+      have h := norm_logPowCpow_floor_sub_le d hs1 (by exact_mod_cast hq1) hle hlt
       have hlogx : Real.log ((n : ℝ) / p) ≤ Real.log n := by
         rw [Real.log_div hn0.ne' hp0.ne']
         linarith [Real.log_nonneg (by exact_mod_cast hp : (1 : ℝ) ≤ p)]
@@ -500,12 +504,13 @@ theorem int_eq_zero_of_two_zpow_eq_three_zpow {a b : ℤ}
   have hpow : ((2 : ℝ) ^ a) = (3 : ℝ) ^ b := by
     have h1 : Real.log ((2 : ℝ) ^ a) = Real.log ((3 : ℝ) ^ b) := by
       rw [Real.log_zpow, Real.log_zpow, h]
-    exact Real.log_injOn_pos (zpow_pos (by norm_num) a) (zpow_pos (by norm_num) b) h1
+    exact Real.log_injOn_pos (zpow_pos (by norm_num : (0 : ℝ) < 2) a)
+      (zpow_pos (by norm_num : (0 : ℝ) < 3) b) h1
   by_contra ha
   -- `a` and `b` have the same sign
   rcases lt_or_gt_of_ne ha with ha | ha
   · have hb : b < 0 := by
-      by_contra hb; push_neg at hb
+      by_contra hb; push Not at hb
       have : (a : ℝ) * Real.log 2 < 0 := mul_neg_of_neg_of_pos (by exact_mod_cast ha) hl2
       have : 0 ≤ (b : ℝ) * Real.log 3 := mul_nonneg (by exact_mod_cast hb) hl3.le
       linarith
@@ -519,7 +524,7 @@ theorem int_eq_zero_of_two_zpow_eq_three_zpow {a b : ℤ}
     have := (Nat.Prime.dvd_of_dvd_pow Nat.prime_two h2)
     omega
   · have hb : 0 < b := by
-      by_contra hb; push_neg at hb
+      by_contra hb; push Not at hb
       have : 0 < (a : ℝ) * Real.log 2 := mul_pos (by exact_mod_cast ha) hl2
       have : (b : ℝ) * Real.log 3 ≤ 0 := mul_nonpos_of_nonpos_of_nonneg (by exact_mod_cast hb) hl3.le
       linarith
@@ -536,7 +541,7 @@ theorem int_eq_zero_of_two_zpow_eq_three_zpow {a b : ℤ}
 theorem exists_separating_prime {s s₀ : ℂ} (hne : s ≠ s₀) :
     ∃ p ∈ ({2, 3} : Finset ℕ), ((p : ℕ) : ℂ) ^ (-s₀) ≠ ((p : ℕ) : ℂ) ^ (-s) := by
   by_contra hall
-  push_neg at hall
+  push Not at hall
   have h2 := hall 2 (by simp)
   have h3 := hall 3 (by simp)
   -- `p^{s − s₀} = 1` for `p = 2, 3`
@@ -625,7 +630,6 @@ theorem coeff_eq_zero_of_cAdmitted_sum {F : Finset ℂ} (hF : ∀ s ∈ F, 1 / 2
     exact hPs s (mem_toList.mp hs)
   -- eliminate the full sum
   have hsum := h.rowElim hL1
-  have hsplitF : F = insert s₀ (F.erase s₀) := (insert_erase hs₀).symm
   -- every other block is killed
   have hother : ∀ s ∈ F.erase s₀, CAdmitted (rowElim L (powerLogRow s K (b s))) := by
     intro s hs
@@ -645,7 +649,7 @@ theorem coeff_eq_zero_of_cAdmitted_sum {F : Finset ℂ} (hF : ∀ s ∈ F, 1 / 2
   have hrest := CAdmitted.sum (F.erase s₀) _ hother
   have hblock : CAdmitted (rowElim L (powerLogRow s₀ K (b s₀))) := by
     refine (hsum.sub hrest).congr fun n => ?_
-    rw [rowElim_sum, hsplitF, sum_insert (not_mem_erase s₀ F)]
+    rw [rowElim_sum, ← Finset.add_sum_erase F _ hs₀]
     ring
   have hs₀re := hF s₀ hs₀
   have hrow₀ := cAdmitted_rowElim_powerLogRow_sub hL1 (by linarith [hs₀re.1]) hs₀re.2 K (b s₀)
@@ -701,9 +705,8 @@ theorem exists_pronicNorm_global_symbol_le (ε : SubcriticalDamping) (F : Finset
   rw [globalPowerLogTraceVector_apply, globalPowerLogTraceVector, map_sum, Finset.sum_apply,
     sum_sub_distrib, sum_add_distrib]
   simp only [sum_mul_zetaLeibnizRow, powerLogReRow]
-  rw [← Complex.re_sum, ← Complex.re_sum, ← Complex.re_sum,
-    sum_attach F (fun s => powerLogRow s K (c s) n),
-    sum_attach F (fun s => powerLogRow s K (leibnizCoeff ε s K (c s)) n)]
+  rw [Complex.re_sum, Complex.re_sum, sum_attach F (fun s => (powerLogRow s K (c s) n).re),
+    sum_attach F (fun s => (powerLogRow s K (leibnizCoeff ε s K (c s)) n).re)]
 
 /-- **Global index theorem.** For a finite set `F` of exponents with `1/2 ≤ Re s < 1 − ε`, the real
 and imaginary parts of `Σ_{s∈F} Σ_{k≤K} c_{s,k} log^k n · n^s` both satisfy the renormalized
@@ -734,7 +737,8 @@ theorem powerLogRows_global_renormalizedInversion_iff_order (ε : SubcriticalDam
   have himZ : ∀ n, (∑ s ∈ F, powerLogRow s K (leibnizCoeff ε s K (fun k => -I * c s k)) n).re =
       (∑ s ∈ F, powerLogRow s K (leibnizCoeff ε s K (c s)) n).im := by
     intro n
-    simp only [hleibI, ← mul_sum, neg_mul, Complex.neg_re, Complex.I_mul_re, neg_neg]
+    simp only [hleibI]
+    rw [← mul_sum]; simp [Complex.mul_re]
   -- the order data at each exponent
   have horder : ∀ s ∈ F, (∀ i < (analyticOrderAt riemannZeta (s + (ε : ℝ))).toNat,
       iteratedDeriv i riemannZeta (s + (ε : ℝ)) = 0) ∧
@@ -745,10 +749,9 @@ theorem powerLogRows_global_renormalizedInversion_iff_order (ε : SubcriticalDam
     have hz1 : (s + (ε : ℝ)).re < 1 := by simp; linarith [(hF s hs).2]
     have hne1 : s + (ε : ℝ) ≠ 1 := fun h => by
       have := congrArg Complex.re h; simp at this; linarith [(hF s hs).2]
-    have han : AnalyticAt ℂ riemannZeta (s + (ε : ℝ)) :=
-      (fun z (hz : z ∈ {w : ℂ | w ≠ 1}) =>
-        (differentiableAt_riemannZeta hz).differentiableWithinAt : DifferentiableOn ℂ riemannZeta
-          {w : ℂ | w ≠ 1}).analyticAt (isOpen_ne.mem_nhds hne1)
+    have hd : DifferentiableOn ℂ riemannZeta {w : ℂ | w ≠ 1} := fun z hz =>
+      (differentiableAt_riemannZeta hz).differentiableWithinAt
+    have han : AnalyticAt ℂ riemannZeta (s + (ε : ℝ)) := hd.analyticAt (isOpen_ne.mem_nhds hne1)
     exact (analyticOrderAt_eq_nat_iff_iteratedDeriv_eq_zero han).mp
       (ENat.coe_toNat (analyticOrderAt_riemannZeta_ne_top_of_strip hz0 hz1)).symm
   have hdiff : ∀ (f g : ℕ → ℝ) (Bf Bg : ℝ), (∀ T, pronicNorm T f ≤ Bf) →
