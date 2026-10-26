@@ -36,29 +36,30 @@ def weilMeasure : Measure ℝ :=
 
 theorem summable_ofReal_weilWeight :
     Summable fun x : criticalOrdinates => (ENNReal.ofReal (weilWeight hW x)).toReal := by
-  simpa [ENNReal.toReal_ofReal (weilWeight_nonneg hW _)] using summable_weilWeight hW
+  (summable_weilWeight hW).congr fun x => (ENNReal.toReal_ofReal (weilWeight_nonneg hW x)).symm
 
 instance : IsFiniteMeasure (weilMeasure hW) := by
   refine ⟨?_⟩
   rw [weilMeasure, Measure.sum_apply _ MeasurableSet.univ]
-  simp only [Measure.smul_apply, Measure.dirac_apply_of_mem (Set.mem_univ _), smul_eq_mul, mul_one]
+  simp only [Measure.smul_apply, measure_univ, smul_eq_mul, mul_one]
   rw [← ENNReal.ofReal_tsum_of_nonneg (weilWeight_nonneg hW) (summable_weilWeight hW)]
   exact ENNReal.ofReal_lt_top
 
 /-- Weil's correlation is the characteristic function of `ν_W`. -/
 theorem ratCorr_eq_integral_weilMeasure (u : posUnits) :
     ratCorr u = ∫ x, archChar x ((u : ℚˣ) : ℚ) ∂weilMeasure hW := by
-  rw [weilMeasure, integral_sum_dirac_eq_tsum (fun _ => ENNReal.ofReal_ne_top)
-    (by simpa [norm_archChar] using summable_ofReal_weilWeight hW), ratCorr_eq_tsum hW u]
-  refine tsum_congr fun x => ?_
-  rw [ENNReal.toReal_ofReal (weilWeight_nonneg hW x), Complex.real_smul]
+  rw [weilMeasure, integral_sum_dirac_eq_tsum (f := fun x : ℝ => archChar x ((u : ℚˣ) : ℚ))
+    (fun _ => ENNReal.ofReal_ne_top) ?_, ratCorr_eq_tsum hW u]
+  · refine tsum_congr fun x => ?_
+    rw [ENNReal.toReal_ofReal (weilWeight_nonneg hW x), Complex.real_smul]
+  · simpa [norm_archChar] using summable_ofReal_weilWeight hW
 
 theorem weilMeasure_singleton_ge (x : criticalOrdinates) :
     ENNReal.ofReal (weilWeight hW x) ≤ weilMeasure hW {-(x : ℝ)} := by
   have h := Measure.le_sum (fun x : criticalOrdinates =>
     ENNReal.ofReal (weilWeight hW x) • Measure.dirac (-(x : ℝ))) x
-  refine le_trans ?_ (h {-(x : ℝ)})
-  simp
+  refine le_trans ?_ (Measure.le_iff'.1 h {-(x : ℝ)})
+  rw [Measure.smul_apply, Measure.dirac_apply_of_mem (Set.mem_singleton _), smul_eq_mul, mul_one]
 
 /-- The atoms of `ν_W` are the negated critical ordinates, with weights `w_γ`. -/
 theorem weilMeasure_real_singleton_neg (x : criticalOrdinates) :
@@ -66,9 +67,10 @@ theorem weilMeasure_real_singleton_neg (x : criticalOrdinates) :
   rw [measureReal_def, weilMeasure, Measure.sum_apply _ (measurableSet_singleton _)]
   rw [tsum_eq_single x fun y hyx => by
     simp only [Measure.smul_apply, smul_eq_mul]
-    rw [Measure.dirac_apply_of_notMem (fun h => hyx (Subtype.ext (neg_injective
+    rw [Measure.dirac_apply, Set.indicator_of_notMem (fun h => hyx (Subtype.ext (neg_injective
       (Set.mem_singleton_iff.mp h)))), mul_zero]]
-  simp [ENNReal.toReal_ofReal (weilWeight_nonneg hW x)]
+  rw [Measure.smul_apply, Measure.dirac_apply_of_mem (Set.mem_singleton _), smul_eq_mul, mul_one,
+    ENNReal.toReal_ofReal (weilWeight_nonneg hW x)]
 
 /-- `ν_W` is purely atomic. -/
 theorem weilMeasure_nonatomic_null : weilMeasure hW {x | weilMeasure hW {x} = 0} = 0 := by
@@ -85,12 +87,13 @@ theorem weilMeasure_nonatomic_null : weilMeasure hW {x | weilMeasure hW {x} = 0}
   simp only [Measure.smul_apply, smul_eq_mul]
   by_cases hx : weilWeight hW x = 0
   · rw [hx, ENNReal.ofReal_zero, zero_mul]
-  · rw [Measure.dirac_apply_of_notMem, mul_zero]
-    intro hmem
-    have h1 := weilMeasure_singleton_ge hW x
-    rw [show weilMeasure hW {-(x : ℝ)} = 0 from hmem, nonpos_iff_eq_zero,
-      ENNReal.ofReal_eq_zero] at h1
-    exact hx (le_antisymm h1 (weilWeight_nonneg hW x))
+  · have hnot : -(x : ℝ) ∉ {y : ℝ | weilMeasure hW {y} = 0} := by
+      intro hmem
+      have h1 := weilMeasure_singleton_ge hW x
+      rw [show weilMeasure hW {-(x : ℝ)} = 0 from hmem, nonpos_iff_eq_zero,
+        ENNReal.ofReal_eq_zero] at h1
+      exact hx (le_antisymm h1 (weilWeight_nonneg hW x))
+    rw [Measure.dirac_apply, Set.indicator_of_notMem hnot, mul_zero]
 
 /-- **The extensions of Weil's correlation are indexed by the critical zeros.** -/
 theorem weil_extension_classification {φ : AffineGroupQ → ℂ} (hφ : IsPosDefOnGroup φ)

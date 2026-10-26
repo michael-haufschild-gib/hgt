@@ -5,14 +5,18 @@
 - **Type:** THEOREM
 - **Source:** `docs/reports/review-2610/hard-obstacles-summary.md` W11 and first milestone (5)
   ("`CompletedPositiveSystem 1 1 = {cζ}` [R]"); B3.19 boundary ("the κ = 1 class is expected to be
-  `{ζ}`; a base must leave conductor-one completed positive systems").
-- **Statement.** If `CompletedPositiveSystem 1 1 F Λ` (`F` holomorphic and nonvanishing on
+  `{ζ}`; a base must leave conductor-one completed positive systems"); `review-2510/walls-ledger.md`
+  wall 14.14 ("the class of positive completed systems at pole order one is `{ζ}` [R]").
+- **Statement.** If `CompletedPositiveSystem 1 d F Λ` then `d = 1` (by `5d < 9κ`), and if `CompletedPositiveSystem 1 1 F Λ` (`F` holomorphic and nonvanishing on
   `Re s > 1` with positive-definite vertical sections of `Re(−F'/F)`, and
   `Λ = s(s − 1)Γ_ℝ(s)F` entire of order one, `Λ(1 − s) = Λ(s)`, `Λ(s̄) = conj Λ(s)`), then
-  `F = Kζ` on `Re s > 1` for some real `K ≠ 0`.
+  `F = Kζ` on `Re s > 1` for some real `K ≠ 0`, `Λ = K · 2ξ` on `ℂ`, and `Λ` vanishes at
+  critical points of arbitrarily large height. Conversely every `Kζ`, `K ∈ ℝ^×`, is such a system.
 
 ## Lean
-`GaloisForLFunctions.StripBochnerWeilForcing.completedPositiveSystem_one_one_eq_zeta`
+`GaloisForLFunctions.StripBochnerWeilForcing.completedPositiveSystem_one_one_eq_zeta`,
+`completedPositiveSystem_one_iff`, `completedPositiveSystem_real_mul_zeta`,
+`completedPositiveSystem_one_Λ_eq`, `completedPositiveSystem_one_critical_zeros`
 (`formal/GaloisForLFunctions/StripBochnerWeilForcing/TheSimplePoleClassIsZeta.lean`), with the
 general analytic step `exists_dirichletMeasure_of_posDef_sections`
 (`formal/GaloisForLFunctions/StripBochnerWeilForcing/PositiveDefiniteSectionsAreCompletelyMonotone.lean`:

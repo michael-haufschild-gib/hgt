@@ -18,6 +18,27 @@ with `#print axioms`. Wire leaves into their owning umbrellas without compiling 
 Move each card to stage 3 only after every theorem on that card is covered and audited.
 Existing unrelated worktree changes must be preserved.
 
+## User steering: finish started Lean work, then pause
+
+The user has paused the larger programme and requested completion and wiring
+of already-started Lean work before pausing. Do not begin new research routes
+or further auxiliary claims. Frozen completion scope:
+
+- Physical: finish canonical TailBounds/FormBounds checks; check four drafted
+  smoothed-support/integrability/zero-integral lemmas and merge into Quantitative;
+  audit final sources, wire and certify the recovered report if fully covered.
+- PM: finish four existing prototypes in dependency order.
+- Dyadic: finish existing five prototypes (tent, integer variance, finite sieve,
+  finite-window variance, tent variance) and the already-edited exact binary-tree
+  estimate in FiniteHorizonPositiveCoercivity. Original further auxiliary claims
+  stay outstanding unless already implied by these completed declarations.
+- Perturbed: finish two existing prototypes (weighted incidence, quadratic nodes).
+- Finite cycle: finish ten existing prototypes listed in the checkpoint below.
+- Audit exact statements/dependencies, direct-check canonical leaves, build only
+  missing oleans needed by another written file, wire imports, clean own obsolete
+  scratch mirrors, update cards honestly, then pause. Do not promote partially
+  covered cards. No new routes, conjectures, or unstarted drafts.
+
 ## Current checkpoint (authoritative over chronological notes)
 
 - One of 14 original cards complete: Nyquist, promoted to
@@ -26,18 +47,23 @@ Existing unrelated worktree changes must be preserved.
   declarations audit with only `propext`, `Classical.choice`, `Quot.sound`.
   Source hashes and unique umbrella imports verified. Existing oleans must
   not be rebuilt; PrimitiveTail and SignedWitnesses have none.
-- Physical: 110 prior valid axiom audits. Three supplemental drafts contain
-  20 new public declarations, plus one reused parent declaration in the
-  21-name combined audit. First audit failed elaboration; its axiom log is
-  invalid. Explicit repairs applied; r2 session `67801` passed with exit 0,
-  log `/tmp/leftovers-physical-supplements-audit-r2.log`. After success,
-  migrate the three plain components, never the combined audit, and perform
-  final direct source checks before certifying the complete recovered report.
+- Physical: 110 prior valid axiom audits; 20 supplemental declarations plus
+  one reused parent passed combined audit `67801`. Three supplements migrated
+  and wired. TailBounds final check `94906` passed. Four additional support,
+  integrability and zero-integral lemmas passed scratch audit `15644`, with
+  standard axioms only; one no-op tactic removed and proofs merged into
+  Quantitative. Final Quantitative check `89863` passed with an empty log.
+  FormBounds check `51999` is active; the comment-edited original producer
+  still needs its final direct check.
+  Complete manifest: `/tmp/leftovers-physical-complete-public-names.json`
+  (134 public declarations across seven leaves, plus one reused parent).
 - PM: four unchecked `/tmp/leftovers_pm_*.lean` drafts in dependency order:
   integrable producer, sampling, exact decomposition, short energy.
 - Dyadic: unchecked tent, integer variance, finite sieve realization,
-  finite-window minimum, and tent-variance/best-constant drafts. The exact
-  tree comparison and original auxiliary level-count claims remain to cover.
+  finite-window minimum, and tent-variance/best-constant drafts. Exact tree
+  comparison is already edited in FiniteHorizonPositiveCoercivity, with
+  `/tmp/leftovers_binary_tree_exact_audit.lean` awaiting check. Original further
+  auxiliary level-count claims are outside the frozen completion scope.
 - Perturbed: unchecked weighted all-pairs incidence and quadratic-node
   geometry drafts. Exact-incidence and arithmetic transport consequences
   remain to connect.
@@ -51,9 +77,10 @@ Existing unrelated worktree changes must be preserved.
   `MTDeshouillersIwaniecBound` and `MTWattBound`; inspected short-block
   reductions retain their short versions as hypotheses. Full original 1.55
   claims remain required. No unconditional completion or absence claim.
-- Active Lean: none at this checkpoint; next canonical TailBounds final check. All searches terminal.
-- Closure order: physical supplements → PM → dyadic/perturbed/cycle; all
-  other original cards remain in scope. Existing unrelated edits preserved.
+- Active Lean: FormBounds final check `51999`; log
+  `/tmp/leftovers-physical-form-bounds-final.log`. All searches terminal.
+- Closure order: physical supplements → PM → dyadic/perturbed/cycle, then
+  pause. Other original cards remain unfinished and paused. Preserve unrelated edits.
 
 ## Inventory and current evidence
 
@@ -676,3 +703,22 @@ Existing unrelated worktree changes must be preserved.
   Migrated the three byte-identical plain component files to TailBounds,
   Quantitative and FormBounds; wired each once. No oleans produced.
   Canonical direct checks and complete report certificate remain.
+
+- User requested finish-and-wire of already-started Lean work, then pause.
+  Frozen scope above supersedes the previous continue-all-cards instruction.
+  Physical TailBounds final check remains94906; all searches terminal.
+- Additional physical scratch `/tmp/leftovers_physical_smoothed_integral.lean`
+  contains four unchecked report consequences: actual compact profile, finite
+  restriction identity, full-line integrability and zero smoothed integral.
+- FiniteHorizonPositiveCoercivity now exposes its existing exact estimate
+  `binary_energy_le_doubling_additive` and reuses it in the old private joint
+  wrapper. Scratch `/tmp/leftovers_binary_tree_exact_audit.lean` pending.
+  Existing olean unchanged and must not be rebuilt. No dependent draft needs
+  this new public name; they use the already-existing public coercivity.
+- Route-E read-only search found `KuznetsovLargeSieveTheorem.large_sieve_gamma0`,
+  whose entire source was inspected; actual spectral-to-short-moment connection
+  remains unresolved. No new Route-E Lean work was started.
+
+- Physical TailBounds final direct check94906 exited0 with empty log.
+  Smoothed-integral four-lemma scratch check started next. PM combined initial
+  audit prepared with20 public declarations; all six external oleans present.

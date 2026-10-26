@@ -105,16 +105,20 @@ theorem ae_norm_twistedPsi_le :
     have h3 : 0 ≤ Real.log ((n : ℝ) + 1) := Real.log_nonneg (by linarith [n.cast_nonneg (α := ℝ)])
     have h4 : (1 + Real.log ((n : ℝ) + 1)) ^ 2 ≤ (1 + Real.log ((N : ℝ) + 1)) ^ 2 :=
       pow_le_pow_left₀ (by linarith) (by linarith) 2
-    calc C * Real.sqrt ((n : ℝ) + 1) * (1 + Real.log ((n : ℝ) + 1)) ^ 2
-        ≤ C * Real.sqrt ((N : ℝ) + 1) * (1 + Real.log ((N : ℝ) + 1)) ^ 2 := by
-          gcongr
-  have hw : Monotone fun n : ℕ => Real.log ((n : ℝ) + 1) := fun m n h =>
-    Real.log_le_log (by positivity) (by have : (m : ℝ) ≤ n := by exact_mod_cast h; linarith)
+    exact mul_le_mul (mul_le_mul_of_nonneg_left h1 hC) h4 (by positivity) (by positivity)
+  have hw : Monotone (fun n : ℕ => Real.log ((n : ℝ) + 1)) := by
+    intro m n hmn
+    have hmn' : (m : ℝ) ≤ n := by exact_mod_cast hmn
+    exact Real.log_le_log (by positivity) (by linarith)
   have habel := norm_sum_Ioc_mul_le_of_monotone hc0 hw (by simp) hB
   have heq : twistedPsi N x = ∑ n ∈ Ioc 0 N, c n * ((Real.log ((n : ℝ) + 1) : ℝ) : ℂ) := by
     refine sum_congr rfl fun n hn => ?_
-    have hlog : Real.log ((n : ℝ) + 1) ≠ 0 :=
-      (Real.log_pos (by have := (mem_Ioc.mp hn).1; norm_cast; omega)).ne'
+    have hn1 : (1 : ℝ) < (n : ℝ) + 1 := by
+      have h1 := (mem_Ioc.mp hn).1
+      have : (1 : ℝ) ≤ n := by exact_mod_cast h1
+      linarith
+    have hlog : Real.log ((n : ℝ) + 1) ≠ 0 := (Real.log_pos hn1).ne'
+    have hlogC : ((Real.log ((n : ℝ) + 1) : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hlog
     simp only [c, normalizedPrimeSource]
     push_cast
     field_simp
@@ -153,9 +157,9 @@ theorem tendsto_twistedPsi_zero_div :
   simp only [Function.comp_apply, twistedPsi_zero]
   rw [RHTower.chebyshevPsiReal_eq_sum_range, Nat.floor_natCast,
     RHTower.sum_range_succ_vonMangoldt_eq_sum_Icc, Chebyshev.psi, Nat.floor_natCast]
+  have hI : Icc 1 N = Ioc 0 N := by ext n; simp only [mem_Icc, mem_Ioc]; omega
+  rw [hI]
   push_cast
-  congr 2
-  ext n; simp only [mem_Icc, mem_Ioc]; omega
 
 /-- **RH is the typicality of the point `0` modulo its pole** (von Koch). -/
 theorem riemannHypothesis_iff_twistedPsi_zero_sub :

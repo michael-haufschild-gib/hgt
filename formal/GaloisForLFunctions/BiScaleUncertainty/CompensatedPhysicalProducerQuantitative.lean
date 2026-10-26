@@ -139,4 +139,58 @@ theorem primitive_smoothedCompensatedVelocity_tendstoUniformlyOn (q : Velocity) 
     sq_abs (primitive (smoothedCompensatedVelocity n q) t - primitive q t),
     abs_nonneg (primitive (smoothedCompensatedVelocity n q) t - primitive q t)]
 
+/-- The continuous physical profile has compact support bounded away from zero. -/
+theorem hasCompactSupport_smoothedCompensatedProfile (n : ℕ) (q : Velocity) :
+    HasCompactSupport (smoothedCompensatedProfile n q) := by
+  apply HasCompactSupport.of_support_subset_isCompact
+    (isCompact_Icc (a := producerAlpha n - producerStep n) (b := producerUpper n))
+  intro t ht
+  have hn := Function.mem_support.mp ht
+  constructor
+  · by_contra h
+    exact hn (smoothedCompensatedProfile_eq_zero_of_le n q (le_of_not_ge h))
+  · by_contra h
+    exact hn (smoothedCompensatedProfile_eq_zero_of_upper_le n q (le_of_not_ge h))
+
+/-- The smoothed velocity is unchanged by restriction to its finite positive support interval. -/
+theorem physicalIntervalRestriction_smoothedCompensatedVelocity (n : ℕ) (q : Velocity) :
+    physicalIntervalRestriction 0 (producerUpper n) (smoothedCompensatedVelocity n q) =
+      smoothedCompensatedVelocity n q := by
+  apply Lp.ext
+  filter_upwards [ae_physicalIntervalRestriction 0 (producerUpper n)
+      (smoothedCompensatedVelocity n q),
+    ae_physicalBoxAverage (-2 * producerScale n) (compensatedVelocity n q)] with t hr hp
+  rw [hr]
+  by_cases hm : t ∈ Ioc (0 : ℝ) (producerUpper n)
+  · exact indicator_of_mem hm _
+  · rw [indicator_of_notMem hm]
+    change smoothedCompensatedVelocity n q t = smoothedCompensatedProfile n q t at hp
+    rw [hp]
+    symm
+    by_cases ht : 0 < t
+    · exact smoothedCompensatedProfile_eq_zero_of_upper_le n q
+        (le_of_not_ge (fun h => hm ⟨ht, h⟩))
+    · exact smoothedCompensatedProfile_eq_zero_of_le n q
+        ((le_of_not_gt ht).trans (producerAlpha_sub_producerStep_pos n).le)
+
+/-- The actual smoothed L² velocity is also integrable on the full physical line. -/
+theorem integrable_smoothedCompensatedVelocity (n : ℕ) (q : Velocity) :
+    Integrable (smoothedCompensatedVelocity n q : ℝ → ℝ) := by
+  rw [← physicalIntervalRestriction_smoothedCompensatedVelocity n q]
+  exact integrable_physicalIntervalRestriction _ _ _
+
+/-- Box smoothing preserves the compensator's zero total integral. -/
+theorem integral_smoothedCompensatedVelocity_eq_zero (n : ℕ) (q : Velocity) :
+    (∫ t, smoothedCompensatedVelocity n q t) = 0 := by
+  calc
+    _ = ∫ t, physicalIntervalRestriction 0 (producerUpper n)
+        (smoothedCompensatedVelocity n q) t := by
+      rw [physicalIntervalRestriction_smoothedCompensatedVelocity]
+    _ = ∫ t in Ioc (0 : ℝ) (producerUpper n), smoothedCompensatedVelocity n q t :=
+      integral_physicalIntervalRestriction _ _ _
+    _ = primitive (smoothedCompensatedVelocity n q) (producerUpper n) := by
+      rw [primitive, intervalIntegral.integral_of_le
+        ((producerBeta_pos n).le.trans (producerBeta_le_producerUpper n))]
+    _ = 0 := primitive_smoothedCompensatedVelocity_eq_zero_of_upper_le n q le_rfl
+
 end GaloisForLFunctions.BiScaleUncertainty.SobolevShear

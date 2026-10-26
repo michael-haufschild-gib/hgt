@@ -1,6 +1,6 @@
 # Strip Bochner–Weil Forcing (SBWF)
 
-**One structure, three shadows, five unconditional forcing laws.** Single-channel quadratic
+**One structure, three shadows, six unconditional forcing laws.** Single-channel quadratic
 positivity on the scaling surface is exhausted by source blindness
 (`isGreatest_meyerSharpPositiveIdeal`), while single-zero harmonic certificates in the critical
 strip hit the universal purchase cap `B < 2` (`MultiFrequencyCap`), certifying **zero** interior
@@ -111,3 +111,17 @@ Replacing the `(r + 1)`-channel star by polynomial-scale iterated discrete box c
 | `sharpCollarWidth_ge` | At `M₀ = κ / 2 + 1`, `sharpCollarWidth κ d T := collarDepth κ d M₀ M₀ T` is independent of the zero set `Z` and satisfies `sharpCollarConst κ / (d log(3 + max T 0)) ≤ sharpCollarWidth κ d T` (`sharpCollarConst κ > 0`). |
 | `two_mul_sum_order_collar_zeros_le_poleOrder` / `sum_order_collar_zeros_le_half_poleOrder` / `card_collar_zeros_le_half_poleOrder` | **Exact `⌊κ / 2⌋` collar sparsity:** for **every** finite set `Z ⊂ {0 < Im z ≤ T, Re z > 1 − sharpCollarWidth κ d T}`, `2 * ∑_{z ∈ Z} ord_z(Λ) ≤ κ` (`∑ ord ≤ κ / 2`, `Z.card ≤ κ / 2`), matching the boundary-zero capacity `exists_completedPositiveSystem_boundary_zeros_at_half_pole`. |
 | `ne_zero_of_mem_sharpCollar_one` | **Exception-free `κ = 1` zero-free collar:** combining `card_collar_zeros_le_half_poleOrder` at `κ = 1` with `ne_zero_ofReal_of_completedPositiveSystem_one` proves `Λ(z) ≠ 0` across all `|Im z| ≤ T`, `Re z > 1 − sharpCollarWidth 1 d T` with no Siegel-zero exception and no low-ordinate gap. |
+
+---
+
+## 6. The pole-budget-one class is `ℝ^× · ζ` (`PositiveDefiniteSectionsAreCompletelyMonotone.lean`, `TheSimplePoleClassIsZeta.lean`)
+
+Positive-definite vertical sections make the uncompleted factor completely monotone; with the
+completed functional equation, positive-measure rigidity then identifies the whole `κ = 1` class.
+
+| Theorem | Mathematical statement |
+|---|---|
+| `isPosDef_re_iterate_deriv_two_mul` | If `u ↦ Re H(σ + iu)` is positive definite for every `σ` in an interval (`H` holomorphic), so is `u ↦ Re H^{(2k)}(σ + iu)` (second differences of positive-definite functions are positive definite). |
+| `exists_dirichletMeasure_of_posDef_sections` | `F` holomorphic, nonvanishing and real-positive on `(a, ∞)`, with positive-definite sections of `Re(−F'/F)` and `Re(−F'/F)(x) ≤ C√x`, is `∫ u^{−s} dμ(u)` on `Re s > b` (any `b > a`) for a positive measure `μ` on `[1, ∞)`: even derivatives of `−F'/F` are `≥ 0`, the growth bound forces odd ones `≤ 0`, Leibniz makes `F` completely monotone, Bernstein–Widder gives `μ`. |
+| `completedPositiveSystem_one_one_eq_zeta` / `completedPositiveSystem_one_iff` | Every `CompletedPositiveSystem 1 d F Λ` has `d = 1` and `F = Kζ` on `Re s > 1` with `K ∈ ℝ^×`; conversely every `Kζ` is one (`completedPositiveSystem_real_mul_zeta`). |
+| `completedPositiveSystem_one_Λ_eq` / `completedPositiveSystem_one_critical_zeros` | Its completion is `K · 2ξ` on `ℂ`, so it vanishes at critical points `1/2 + it` of arbitrarily large height: no pole-budget-one completed positive system is zero-free. |

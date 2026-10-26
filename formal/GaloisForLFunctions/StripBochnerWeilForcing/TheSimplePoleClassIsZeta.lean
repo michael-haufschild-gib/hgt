@@ -9,6 +9,10 @@ import GaloisForLFunctions.RHTower.WeilDilationCriticalLineShift
 
 **Theorem** (`completedPositiveSystem_one_one_eq_zeta`). Every completed positive system of pole
 budget `κ = 1` and degree `d = 1` is a real multiple of `ζ`: `F = Kζ` on `Re s > 1`, `K ≠ 0`.
+Since `5d < 9κ`, pole budget `1` forces `d = 1`, and every `Kζ` (`K ∈ ℝ^×`) is such a system
+(`completedPositiveSystem_one_iff`, `completedPositiveSystem_real_mul_zeta`): the pole-budget-one
+class is `ℝ^× · ζ`. Its completions are `K · 2ξ`, so each has critical zeros of arbitrarily large
+height (`completedPositiveSystem_one_critical_zeros`).
 
 **Proof.**
 * `G = −F'/F` has positive-definite vertical sections, so its even derivatives are nonnegative on

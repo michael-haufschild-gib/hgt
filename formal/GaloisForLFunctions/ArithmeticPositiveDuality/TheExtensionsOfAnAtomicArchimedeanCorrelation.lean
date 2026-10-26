@@ -216,7 +216,8 @@ theorem hasSum_affine_of_atomic (hat : ν {x | ν {x} = 0} = 0) {u : ℚˣ} (hu 
   beta_reduce at h3
   rw [Real.dist_eq, abs_lt] at h3
   rw [dist_eq_norm, norm_sub_rev]
-  linarith
+  refine lt_of_le_of_lt h1 ?_
+  linarith [h2, h3.1]
 
 end Ext
 

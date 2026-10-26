@@ -40,11 +40,8 @@ sharp no-gos with positive survivors); build the §4.5 tools; foundational READM
 - 2026-10-26 — created; survey of ACS/AOG/APD/ACG done; another agent is extending APD
   (`AContinuousArchimedeanSpectrumIsSeenByTheSuccessor`), so archimedean–finite coupling is cited,
   not duplicated.
-- 2026-10-26 — Lean checked: TheTheoremOfTheSquareIsFree, KernelCountsAreBlindToComplexQuartets,
-  TheLocalGeometryOfAReflectionPair, PositivityBeyondIsotropyDoesNotLocalize,
-  TheBudgetIsFreeItsSufficiencyIsNot, TheBaseIsAFixedLoss. Pending check: TheSuccessorIsInvisibleAtZeros,
-  OnNonnegativeTestsZetaIsTheWorstTwin, AffineCorrespondencesOfZHaveGenusZero,
-  TheSpectrumOfSymmetricSquaresIsTheSign. Escape states are being developed by ACG/ADR agents
+- 2026-10-26 — 15 modules (P1–P15) written; all but OnNonnegativeTestsZetaIsTheWorstTwin checked
+  clean. Escape states are developed by ACG/ADR agents
   (EscapeStatesAreSpectralMeasuresOnTheGaugeTorus) — cite, do not duplicate.
 - Open: first gauge-charged window (odd 181/500 vs the 2-flipped twin); localizing carrier with
   elliptic local symmetry; Rosati-type effectivity from counts; W8 / escape completeness.

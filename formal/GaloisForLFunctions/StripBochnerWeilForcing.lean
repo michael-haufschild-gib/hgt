@@ -3,11 +3,13 @@ import GaloisForLFunctions.StripBochnerWeilForcing.CollectivePoleRepulsion
 import GaloisForLFunctions.StripBochnerWeilForcing.InfiniteGaugePoleRigidity
 import GaloisForLFunctions.StripBochnerWeilForcing.StripReflectionRigidity
 import GaloisForLFunctions.StripBochnerWeilForcing.SharpHalfPoleCollar
+import GaloisForLFunctions.StripBochnerWeilForcing.PositiveDefiniteSectionsAreCompletelyMonotone
+import GaloisForLFunctions.StripBochnerWeilForcing.TheSimplePoleClassIsZeta
 
 /-!
 # Strip Bochner–Weil Forcing
 
-Umbrella for the coupled strip Bochner–Weil form and its five unconditional pole-budget forcing
+Umbrella for the coupled strip Bochner–Weil form and its six unconditional pole-budget forcing
 laws:
 
 * **Strip shadows (`StripBochnerShadows`):** the multi-channel scale-height Bochner–Weil form
@@ -36,6 +38,11 @@ laws:
   and all `Δ`-separation / low-ordinate cutoffs, establishing `2 * ∑_{z ∈ Z} ord_z(Λ) ≤ κ` across all
   `0 < Im z ≤ T`, `Re z > 1 − sharpCollarWidth κ d T` (`≍_κ 1 / (d log(3 + T))`), and an exception-free
   zero-free collar across all `|Im z| ≤ T` at `κ = 1`.
+* **The pole-budget-one class is `ℝ^× · ζ` (`PositiveDefiniteSectionsAreCompletelyMonotone`,
+  `TheSimplePoleClassIsZeta`):** positive-definite vertical sections of `Re(−F'/F)` with `√x` growth
+  make `F` completely monotone, hence the Dirichlet transform of a positive measure on `[1, ∞)`;
+  with the completed functional equation and positive-measure rigidity, every
+  `CompletedPositiveSystem 1 d F Λ` has `d = 1`, `F = Kζ` and `Λ = K · 2ξ`.
 
 See `StripBochnerWeilForcing/README.md`.
 -/

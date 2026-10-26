@@ -214,8 +214,10 @@ theorem binary_parent_window_bound (N : ℕ) (f : ℕ → ℝ) :
     _ ≤ ∑ k ∈ Icc 2 N, 2 * (N : ℝ) * (f k - f (k / 2)) ^ 2 := sum_le_sum hinner
     _ = _ := by rw [mul_sum]
 
-private theorem binary_energy_le_joint (N : ℕ) (f : ℕ → ℝ) :
-    (∑ n ∈ Icc 2 N, (f n - f (n / 2)) ^ 2) ≤ 3 * biScaleJointEnergy 2 N f := by
+/-- Each odd child uses one adjacent and one doubling edge, with their exact square costs. -/
+theorem binary_energy_le_doubling_additive (N : ℕ) (f : ℕ → ℝ) :
+    (∑ n ∈ Icc 2 N, (f n - f (n / 2)) ^ 2) ≤
+      3 * multiplicativeScaleEnergy 2 N f + 2 * additiveStepEnergy N f := by
   let b := fun n : ℕ => (f n - f (n / 2)) ^ 2
   let h := fun n : ℕ => (f (n + 1) - f n) ^ 2
   have hfib := sum_fiberwise_eq_sum_filter (Icc 2 N) (Icc 1 (N / 2)) (fun n => n / 2) b
@@ -272,9 +274,14 @@ private theorem binary_energy_le_joint (N : ℕ) (f : ℕ → ℝ) :
   have hdil : multiplicativeScaleEnergy 2 N f =
       ∑ m ∈ Icc 1 (N / 2), (f (2 * m) - f m) ^ 2 := by simp [multiplicativeScaleEnergy]
   rw [← hdil] at hsum
-  change (∑ n ∈ Icc 2 N, b n) ≤ 3 * biScaleJointEnergy 2 N f
+  exact hsum.trans (add_le_add le_rfl
+    (mul_le_mul_of_nonneg_left hodd (by norm_num : (0 : ℝ) ≤ 2)))
+
+private theorem binary_energy_le_joint (N : ℕ) (f : ℕ → ℝ) :
+    (∑ n ∈ Icc 2 N, (f n - f (n / 2)) ^ 2) ≤ 3 * biScaleJointEnergy 2 N f := by
+  have h := binary_energy_le_doubling_additive N f
   rw [biScaleJointEnergy]
-  nlinarith [additiveStepEnergy_nonneg N f]
+  nlinarith only [h, additiveStepEnergy_nonneg N f]
 
 /-- The exact positive bound uses only native edges inside the requested window. -/
 theorem doubling_window_coercivity (N : ℕ) (f : ℕ → ℝ) :

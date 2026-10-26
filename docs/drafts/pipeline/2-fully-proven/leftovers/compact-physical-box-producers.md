@@ -3,7 +3,7 @@
 - **ID:** compact-physical-box-producers
 - **Stage:** 2-fully-proven; historical-report completion in progress
 - **Type:** THEOREM (paper; main construction and limits Lean-verified)
-- **Status:** Reopened after recovering the full referenced report from Git history. Main construction and limits remain verified: all 110 public declarations in four supporting leaves passed transitive axiom audit. Exact two-tail identity, separate tail limits and remaining explicit norm/form corollaries require completion before promotion.
+- **Status:** Recovered-report supplements now have clean transitive axiom audits: 134 public declarations across seven leaves, plus the reused finite-form theorem. TailBounds and Quantitative passed final direct checks. FormBounds and the comment-edited original producer still need final direct checks before promotion.
 - **Source:** continuum-coprime-shear; physical-box-average-affine-regularity
 - **Statement:** Construct compact logarithmic primitive states from arbitrary physical velocities using interval truncation, explicit zero-integral compensation and box smoothing, with quantitative errors and compact-source form convergence.
 
@@ -91,6 +91,9 @@ All paths below are relative to `formal/GaloisForLFunctions/BiScaleUncertainty/`
 | Compact C¹ packaging and uniform traces on every left half-line | `CompensatedPhysicalProducerConvergence.lean`: `contDiff_smoothedLogarithmicState`, `hasCompactSupport_smoothedLogarithmicState`, `compactSmoothedLogarithmicState`, `abs_logPrimitive_sub_le`, `smoothedLogarithmicState_tendstoUniformlyOn` |
 | Exact source coefficient and compact source-plus-jump error convergence | `CompensatedPhysicalProducerConvergence.lean`: `sourceTraceCoefficient`, `sourceMass_smoothedCompensatedVelocity_sub_le`, `compact_formError_smoothedCompensatedVelocity_tendsto` |
 | Actual source, jump and combined energy convergence, for every fixed additive constant | `CompensatedPhysicalProducerFormLimits.lean`: `sourceMass_smoothedCompensatedVelocity_tendsto`, `compact_jumpEnergy_smoothedCompensatedVelocity_tendsto`, `compact_formEnergy_smoothedCompensatedVelocity_tendsto` |
+| Exact two-tail identity (14), separate integral and norm limits, explicit separate-tail producer bound | `CompensatedPhysicalProducerTailBounds.lean`: `norm_sq_truncatedVelocity_sub_positive_eq_tails`, `producer_physical_tail_integrals_tendsto`, `producer_physical_tail_norms_tendsto`, `norm_smoothedCompensatedVelocity_sub_positive_le_tail_norms` |
+| Square-root norm bounds (6), full physical regularity (8), derivative and affine norm costs (19), compact support and zero smoothed integral, uniform physical traces including zero | `CompensatedPhysicalProducerQuantitative.lean`: `norm_compensatedVelocity_le_sqrt`, `norm_compensatedVelocity_le_one_add_decay`, `smoothedCompensatedProfile_regular`, `absolutelyContinuous_smoothedCompensatedProfile`, `ae_deriv_smoothedCompensatedProfile`, `norm_smoothedCompensatedProfile_derivative_le`, `smoothedCompensatedVelocity_affine_norm_le`, `hasCompactSupport_smoothedCompensatedProfile`, `integrable_smoothedCompensatedVelocity`, `integral_smoothedCompensatedVelocity_eq_zero`, `primitive_smoothedCompensatedVelocity_tendstoUniformlyOn` |
+| Exact combined coefficient (22), explicit three-term error and affine form bounds, individual limits in (23) | `CompensatedPhysicalProducerFormBounds.lean`: `compact_formEnergy_le_traceCoefficient_add_resistance`, `compact_formError_smoothedCompensatedVelocity_le_explicit`, `compact_formEnergy_affine_smoothedCompensatedVelocity_le`, `compact_formError_components_smoothedCompensatedVelocity_tendsto` |
 
 The physical declarations use namespace
 `GaloisForLFunctions.BiScaleUncertainty.SobolevShear`; source and form limits use

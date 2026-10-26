@@ -82,7 +82,7 @@ theorem re_weilTest_nonneg {f : ℝ → ℝ} (hf : ∀ u, 0 ≤ f u) (x : ℝ) :
   rw [WeilSpectral.weilTest_apply]
   have : (fun u => cx f u * conj (cx f (u - x))) = fun u => ((f u * f (u - x) : ℝ) : ℂ) := by
     funext u; simp [cx]
-  rw [this, integral_ofReal, Complex.ofReal_re]
+  rw [this, integral_complex_ofReal, Complex.ofReal_re]
   exact integral_nonneg fun u => mul_nonneg (hf u) (hf _)
 
 /-- **`ζ` is the worst twin on nonnegative tests.** For a nonnegative compactly supported test `f`
@@ -145,7 +145,7 @@ theorem flipTwin_lt {n₀ : ℕ} (hn₀ : 2 ≤ n₀) (hΛ : 0 < ArithmeticFunct
       2 * ArithmeticFunction.vonMangoldt n₀ / Real.sqrt n₀ *
         (k (Real.log n₀) + k (-Real.log n₀)).re := by
     rw [Complex.re_ofReal_mul]
-    simp only [primeCoeff, flipTwin, if_pos hn₀, if_pos rfl]
+    simp only [primeCoeff, flipTwin, if_pos hn₀, ↓reduceIte]
     ring
   rw [hval] at h
   have hpos : 0 < 2 * ArithmeticFunction.vonMangoldt n₀ / Real.sqrt n₀ :=

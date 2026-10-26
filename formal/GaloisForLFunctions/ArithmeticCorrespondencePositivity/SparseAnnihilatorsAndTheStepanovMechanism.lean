@@ -57,12 +57,12 @@ theorem heckeSymbol_pow_eq_one_iff {p : ℝ} (hp : 1 < p) {N : ℕ} (hN : 1 ≤ 
     have him := congrArg Complex.im hk
     simp [Complex.mul_re, Complex.mul_im] at hre him
     refine ⟨?_, k, ?_⟩
-    · have : (N : ℝ) * ((ρ.re - 1 / 2) * Real.log p) = 0 := by linarith
-      rcases mul_eq_zero.mp this with h | h
-      · exact absurd h hN0.ne'
-      · rcases mul_eq_zero.mp h with h' | h'
-        · linarith
-        · exact absurd h' hl.ne'
+    · rcases hre with h | h | h | h | h
+      · omega
+      · norm_num at h ⊢; linarith
+      · linarith
+      · linarith
+      · linarith
     · linarith
   · rintro ⟨hre, k, hk⟩
     refine ⟨k, ?_⟩
