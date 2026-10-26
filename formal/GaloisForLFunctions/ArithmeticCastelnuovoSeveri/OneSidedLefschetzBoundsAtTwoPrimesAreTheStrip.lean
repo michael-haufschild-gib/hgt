@@ -16,8 +16,8 @@ zeros has Lefschetz sequence `c_m = W(T_{p^m} g, g) ~ W b^m`, `b = p^{ρ−½}`
 * **One-sided growth** (`exists_lt_re_of_tendsto_div_pow`). Hence if `c_m/b^m → W ≠ 0` and
   `b ∉ ℝ`, `Re c_m > C R^m` for some `m`, for every `C` and `R < |b|`.
 * **Two primes** (`exists_prime_frobEig_phase_sq_ne`). The phase of `p^{ρ−½}` is `e^{i Im ρ log p}`,
-  real iff `Im ρ log p ∈ πℤ`; at two distinct primes this forces `Im ρ = 0`, because `log q/log p` is
-  irrational, and `ζ` has no real zeros in the strip.
+  real iff `Im ρ log p ∈ πℤ`; at two distinct primes this forces `Im ρ = 0`, because
+  `log q/log p` is irrational, and `ζ` has no real zeros in the strip.
 * **For `ζ`** (`zeta_width_le_iff_oneSided`, `zeta_riemannHypothesis_iff_oneSided_upper`,
   `zeta_riemannHypothesis_iff_oneSided_lower`). For distinct primes `p, q`, a sign `ε = ±1` and
   `θ ≥ 0`, the zero width is at most `θ` iff every test has `ε Re c_m^{(p)} = O(p^{θm})` and
@@ -67,7 +67,7 @@ theorem not_eventually_re_mul_pow_le {W ω : ℂ} (hW : W ≠ 0) (hω : ‖ω‖
     have habs : |(W' * ω ^ m).re| ≤ ‖W‖ := (Complex.abs_re_le_norm _).trans_eq (hnorm m)
     have hsη := hs m
     have hη0 : 0 ≤ ‖W‖ / 8 := by positivity
-    rcases le_or_lt 0 (W' * ω ^ m).re with h0 | h0
+    rcases le_or_gt 0 (W' * ω ^ m).re with h0 | h0
     · nlinarith [mul_le_mul_of_nonneg_left hsη h0,
         mul_le_mul_of_nonneg_right ((le_abs_self _).trans habs) hη0,
         mul_le_mul_of_nonneg_left hsη (norm_nonneg W)]
@@ -88,12 +88,14 @@ theorem not_eventually_re_mul_pow_le {W ω : ℂ} (hW : W ≠ 0) (hω : ‖ω‖
   have hA : Tendsto (fun N : ℕ => (W' * cesaro N ω).re) atTop (𝓝 0) := by
     have h := (tendsto_cesaro (le_of_eq hω)).const_mul W'
     rw [if_neg hω1, mul_zero] at h
-    simpa using (Complex.continuous_re.tendsto _).comp h
+    have h' := (Complex.continuous_re.tendsto _).comp h
+    rwa [Complex.zero_re] at h'
   have hB : Tendsto (fun N : ℕ => (W' ^ 2 * cesaro N (ω ^ 2)).re) atTop (𝓝 0) := by
     have hn : ‖ω ^ 2‖ ≤ 1 := by rw [norm_pow, hω, one_pow]
     have h := (tendsto_cesaro hn).const_mul (W' ^ 2)
     rw [if_neg hω2, mul_zero] at h
-    simpa using (Complex.continuous_re.tendsto _).comp h
+    have h' := (Complex.continuous_re.tendsto _).comp h
+    rwa [Complex.zero_re] at h'
   have havg : ∀ N : ℕ, 1 ≤ N → ‖W‖ ^ 2 / 2 + (W' ^ 2 * cesaro N (ω ^ 2)).re / 2 ≤
       2 * ‖W‖ * (‖W‖ / 8) - ‖W‖ * (W' * cesaro N ω).re := by
     intro N hN
@@ -139,7 +141,7 @@ theorem frequently_lt_re_mul_pow {u : ℕ → ℂ} {W ω : ℂ} (hu : Tendsto u 
   filter_upwards [hnot, hclose] with m h1 h2
   push Not at h1
   have h3 := Complex.re_le_norm ((W - u m) * ω ^ m)
-  rw [sub_mul, Complex.sub_re, norm_mul, norm_pow, hω, one_pow, mul_one, norm_sub_rev] at h3
+  rw [norm_mul, norm_pow, hω, one_pow, mul_one, norm_sub_rev, sub_mul, Complex.sub_re] at h3
   linarith
 
 /-- **One-sided growth.** If `c_m/b^m → W ≠ 0` and `b` is not real (`(b/|b|)² ≠ 1`), then for every
@@ -232,6 +234,7 @@ theorem exists_rightZero_of_lt_zetaZeroWidth {θ : ℝ} (hθ : 0 ≤ θ) (h : θ
         from rfl, he, Real.sSup_empty]
     linarith
   obtain ⟨_, ⟨ρ, hρ, rfl⟩, hlt⟩ := exists_lt_of_lt_csSup hne h
+  replace hlt : θ < |ρ.re - 1 / 2| := hlt
   rcases lt_or_ge (1 / 2) ρ.re with hr | hr
   · exact ⟨ρ, ⟨hρ, hr⟩, by rwa [abs_of_pos (by linarith)] at hlt⟩
   · rw [abs_of_nonpos (by linarith)] at hlt
@@ -345,8 +348,8 @@ theorem zeta_riemannHypothesis_iff_oneSided_upper {p q : ℕ} (hp : p.Prime) (hq
     simpa only [one_mul] using h g hg hgc m
 
 /-- **The lower one-sided Weil inequalities at two primes decide RH.** For distinct primes `p, q`:
-RH holds iff every test satisfies `−Re W(T_{p^m} g, g) ≤ W(g, g)` and `−Re W(T_{q^m} g, g) ≤ W(g, g)`
-for all `m`. -/
+RH holds iff every test satisfies `−Re W(T_{p^m} g, g) ≤ W(g, g)` and
+`−Re W(T_{q^m} g, g) ≤ W(g, g)` for all `m`. -/
 theorem zeta_riemannHypothesis_iff_oneSided_lower {p q : ℕ} (hp : p.Prime) (hq : q.Prime)
     (hpq : p ≠ q) :
     RiemannHypothesis ↔ ∀ g : ℝ → ℂ, ContDiff ℝ 2 g → HasCompactSupport g → ∀ m : ℕ,
