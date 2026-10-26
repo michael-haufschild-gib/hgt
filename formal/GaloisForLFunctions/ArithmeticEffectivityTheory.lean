@@ -2,6 +2,8 @@ import GaloisForLFunctions.ArithmeticEffectivityTheory.TheEffectivityCalculus
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheBaseDoesNotExtend
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TatesLimitLaw
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheStepanovMethodOverZ
+import GaloisForLFunctions.ArithmeticEffectivityTheory.TheThetaSurface
+import GaloisForLFunctions.ArithmeticEffectivityTheory.TheHorizonTorsion
 
 /-!
 # Arithmetic Effectivity Theory

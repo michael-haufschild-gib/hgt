@@ -23,6 +23,11 @@ inequality** if `χ(x) ≤ h(x) + h(κ − x)`: Riemann–Roch with `h¹ ≥ 0` 
   Riemann inequality grows quadratically along it — iff its self-intersection is positive, and then
   the rate is every `c < ½ x²` (`eventually_le_of_riemannInequality`). The Hodge index is the
   absence of abundant classes.
+* **The abundance rate** (`pair_self_le_two_mul_rate`, `eventually_optimalEffectivity_le`). Along
+  any class the least growth rate of `h(nx) + h(κ − nx)` over functions with the Riemann inequality
+  is exactly `max(0, ½ x²)`, attained by `½ max(0, χ)`. On a primitive class the self-intersection
+  is minus the defect, so on the scaling surface the negative part of Weil's form is twice the
+  least abundance rate of sections.
 * **Calibration.** On the scaling surface of `ℤ` an effectivity function exists iff RH
   (`riemannHypothesis_iff_exists_effectivity`), and an off-line zero is an abundant class
   (`riemannHypothesis_iff_no_abundant_class`). On the Frobenius windows of a curve datum it exists
@@ -195,6 +200,49 @@ theorem abundant_iff (κ : E) (χ₀ : ℝ) (x : E) :
   · rintro ⟨hx, hpos⟩
     exact ⟨hx, fun h hRI => ⟨S.pair x x / 4, by linarith,
       eventually_le_of_riemannInequality S hRI (by linarith)⟩⟩
+
+/-- **The abundance rate bounds the form.** If a function with the Riemann inequality grows along
+`x` at rate at most `r` for arbitrarily large `n`, then `x² ≤ 2r`. -/
+theorem pair_self_le_two_mul_rate {κ : E} {χ₀ : ℝ} {h : E → ℝ} (hRI : RiemannInequality S κ χ₀ h)
+    {x : E} {r : ℝ} (hr : ∃ᶠ n : ℕ in atTop, h ((n : ℝ) • x) + h (κ - (n : ℝ) • x) ≤ r * (n : ℝ) ^ 2) :
+    S.pair x x ≤ 2 * r := by
+  by_contra hlt
+  have hlt := not_le.mp hlt
+  have hc : (r + S.pair x x / 2) / 2 < S.pair x x / 2 := by linarith
+  obtain ⟨n, hn1, hn2⟩ := ((hr.and_eventually (eventually_le_of_riemannInequality S hRI hc)).and_eventually
+    (eventually_gt_atTop 0)).exists
+  have hn : (0 : ℝ) < (n : ℝ) ^ 2 := pow_pos (by exact_mod_cast hn2) 2
+  nlinarith [hn1.1, hn1.2]
+
+/-- The **optimal effectivity function** `½ max(0, χ)`: by Serre symmetry
+`h(x) + h(κ − x) = max(0, χ(x))`. -/
+def optimalEffectivity (κ : E) (χ₀ : ℝ) (x : E) : ℝ := max 0 (eulerChar S κ χ₀ x) / 2
+
+theorem optimalEffectivity_add (κ : E) (χ₀ : ℝ) (x : E) :
+    optimalEffectivity S κ χ₀ x + optimalEffectivity S κ χ₀ (κ - x) = max 0 (eulerChar S κ χ₀ x) := by
+  rw [optimalEffectivity, optimalEffectivity, eulerChar_serre]; ring
+
+theorem riemannInequality_optimalEffectivity (κ : E) (χ₀ : ℝ) :
+    RiemannInequality S κ χ₀ (optimalEffectivity S κ χ₀) := fun x => by
+  rw [optimalEffectivity_add]; exact le_max_right _ _
+
+/-- **The abundance rate is attained**: along every class the optimal effectivity function grows at
+rate at most `max(0, x²/2) + ε`. Together with `pair_self_le_two_mul_rate`, the least growth rate
+of sections along `x` is exactly the positive part of `½ x²`. -/
+theorem eventually_optimalEffectivity_le (κ : E) (χ₀ : ℝ) (x : E) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ n : ℕ in atTop, optimalEffectivity S κ χ₀ ((n : ℝ) • x) +
+      optimalEffectivity S κ χ₀ (κ - (n : ℝ) • x) ≤ (max 0 (S.pair x x / 2) + ε) * (n : ℝ) ^ 2 := by
+  filter_upwards [eventually_affine_lt_quadratic hε (|S.pair x κ| / 2) |χ₀|] with n hn
+  rw [optimalEffectivity_add]
+  have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+  have hbound : eulerChar S κ χ₀ ((n : ℝ) • x) ≤ (max 0 (S.pair x x / 2) + ε) * (n : ℝ) ^ 2 := by
+    rw [eulerChar_smul]
+    have h1 : (n : ℝ) ^ 2 * S.pair x x / 2 ≤ max 0 (S.pair x x / 2) * (n : ℝ) ^ 2 := by
+      have := mul_le_mul_of_nonneg_left (le_max_right 0 (S.pair x x / 2)) (sq_nonneg (n : ℝ))
+      linarith
+    nlinarith [neg_abs_le (S.pair x κ), le_abs_self χ₀,
+      mul_le_mul_of_nonneg_left (neg_abs_le (S.pair x κ)) hn0]
+  exact max_le (mul_nonneg (by linarith [le_max_left 0 (S.pair x x / 2)]) (sq_nonneg _)) hbound
 
 /-- The ample Hodge index is the absence of abundant classes. -/
 theorem ampleHodgeIndex_iff_not_abundant (κ : E) (χ₀ : ℝ) :
