@@ -530,12 +530,13 @@ theorem tendsto_sub_mul_riemannZeta_shift (s₀ : ℂ) :
     · filter_upwards [self_mem_nhdsWithin] with w hw
       intro h
       apply hw
-      simpa using congrArg (· - 1) h
+      have h' : w - s₀ = 0 := by linear_combination h
+      exact sub_eq_zero.mp h'
   refine (riemannZeta_residue_one.comp hmap).congr fun w => ?_
   simp only [Function.comp]
   ring_nf
 
-theorem norm_cpow_le_add_one {s : ℂ} (hs : s ≠ 0) (hs1 : s.re ≤ 1) (hs0 : 0 ≤ s.re) (n : ℕ) :
+theorem norm_cpow_le_add_one {s : ℂ} (hs : s ≠ 0) (hs1 : s.re ≤ 1) (n : ℕ) :
     ‖((n : ℝ) : ℂ) ^ s‖ ≤ 1 * ((n : ℝ) + 1) := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp [Complex.zero_cpow hs]
@@ -550,7 +551,7 @@ theorem linearGrowth_of_energy {r : ℕ → ℂ} (hr0 : r 0 = 0) {E : ℝ}
     (hE : ∀ T : ℕ, ∑ n ∈ Icc 1 T, ‖r n‖ ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) ≤ E) (n : ℕ) :
     ‖r n‖ ≤ Real.sqrt E * ((n : ℝ) + 1) := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
-  · simp [hr0]; positivity
+  · simp [hr0]
   · exact norm_le_of_energyBounded hE hn
 
 /-- **Mellin residues pin power-like solutions to the translated zeros.** Let `0 < ε < 1/2` and
@@ -585,7 +586,7 @@ theorem riemannZeta_add_eq_zero_of_powerLike_solution {ε : ℝ} (hε0 : 0 < ε)
       rw [Finset.sum_mul]
       refine Finset.sum_le_sum fun s hs => ?_
       rw [norm_mul]
-      have := norm_cpow_le_add_one (hsne s hs) (hF s hs).2.1 (by linarith [(hF s hs).1]) n
+      have := norm_cpow_le_add_one (hsne s hs) (hF s hs).2.1 n
       rw [one_mul] at this
       exact mul_le_mul_of_nonneg_left this (norm_nonneg _)
     have h2 := linearGrowth_of_energy hr0 hE n
@@ -598,9 +599,156 @@ theorem riemannZeta_add_eq_zero_of_powerLike_solution {ε : ℝ} (hε0 : 0 < ε)
       (∑ s ∈ F, c s * (s * riemannZeta (w - s + 1) + powerCorrection s w) + rowMellin r w) -
       (c' * (α * riemannZeta (w - α + 1) + powerCorrection α w) + rowMellin r' w) with hGdef
   -- it vanishes on `Re w > 2`
+  have hαle : α.re ≤ 1 := by rw [hαre]; linarith
+  have hαge : 0 ≤ α.re := by rw [hαre]; linarith
   have hGzero : ∀ w : ℂ, 2 < w.re → G w = 0 := by
     intro w hw
-    sorry
-  sorry
+    have hw1 : 1 < w.re := by linarith
+    have hpow : ∀ s : ℂ, s ≠ 0 → s.re ≤ 1 →
+        Summable fun n : ℕ => ((n : ℝ) : ℂ) ^ s * complexMellinCell w n := fun s hs hs1 =>
+      summable_rowMellin (v := fun n : ℕ => ((n : ℝ) : ℂ) ^ s) (by simp [Complex.zero_cpow hs])
+        (C := 1) (norm_cpow_le_add_one hs hs1) hw1
+    have hSr : Summable fun n => r n * complexMellinCell w n := summable_rowMellin hr0 hCr hw1
+    have hSr' : Summable fun n => r' n * complexMellinCell w n := summable_rowMellin hr'0 hCr' hw1
+    have hsF : ∀ s ∈ F, Summable fun n : ℕ => c s * (((n : ℝ) : ℂ) ^ s * complexMellinCell w n) :=
+      fun s hs => (hpow s (hsne s hs) (hF s hs).2.1).mul_left (c s)
+    have hMv : rowMellin v w =
+        ∑ s ∈ F, c s * (s * riemannZeta (w - s + 1) + powerCorrection s w) + rowMellin r w := by
+      have hexp : (fun n => v n * complexMellinCell w n) = fun n =>
+          (∑ s ∈ F, c s * (((n : ℝ) : ℂ) ^ s * complexMellinCell w n)) +
+            r n * complexMellinCell w n := by
+        funext n
+        simp only [hvdef]
+        rw [add_mul, Finset.sum_mul]
+        congr 1
+        exact Finset.sum_congr rfl fun s _ => by ring
+      rw [rowMellin, hexp, (summable_sum hsF).tsum_add hSr, Summable.tsum_finsetSum hsF]
+      congr 1
+      refine Finset.sum_congr rfl fun s hs => ?_
+      rw [tsum_mul_left]
+      congr 1
+      have h := rowMellin_cpow_eq (hsne s hs) (by linarith [(hF s hs).1]) (by linarith [(hF s hs).2.1])
+        (by linarith [(hF s hs).2.1] : s.re + 1 < w.re)
+      rw [rowMellin] at h
+      exact h
+    have hMS : rowMellin (cTotalCofactorSum ε v) w =
+        c' * (α * riemannZeta (w - α + 1) + powerCorrection α w) + rowMellin r' w := by
+      have hexp : (fun n => cTotalCofactorSum ε v n * complexMellinCell w n) = fun n =>
+          c' * (((n : ℝ) : ℂ) ^ α * complexMellinCell w n) + r' n * complexMellinCell w n := by
+        funext n
+        rw [hlaw n]
+        ring
+      have h := rowMellin_cpow_eq hα0 hαge (by linarith) (by linarith : α.re + 1 < w.re)
+      rw [rowMellin] at h
+      rw [rowMellin, hexp, ((hpow α hα0 hαle).mul_left c').tsum_add hSr', tsum_mul_left, h]
+      rfl
+    have hfub := (hasSum_cTotalCofactorSum_mul_cell hε0 hv0 hCv hw).tsum_eq
+    simp only [hGdef]
+    rw [← hMv, ← hMS]
+    show riemannZeta (w + ε) * rowMellin v w - rowMellin (cTotalCofactorSum ε v) w = 0
+    rw [rowMellin, hfub, sub_self]
+  -- `G` is meromorphic on `Re w > 1/2`
+  set U : Set ℂ := {w : ℂ | 1 / 2 < w.re} with hUdef
+  have hDr := differentiableOn_rowMellin hr0 hE
+  have hDr' := differentiableOn_rowMellin hr'0 hE'
+  have hUo : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
+  have hcorr : ∀ s : ℂ, 0 ≤ s.re → s.re ≤ 1 → ∀ u ∈ U, AnalyticAt ℂ (powerCorrection s) u := by
+    intro s hs0 hs1 u hu
+    refine (differentiableOn_powerCorrection hs0 (by linarith)).analyticAt ?_
+    have hu' : (1 : ℝ) / 2 < u.re := hu
+    exact (isOpen_lt continuous_const Complex.continuous_re).mem_nhds (show s.re - 1 < u.re by linarith)
+  have hanR : ∀ u ∈ U, AnalyticAt ℂ (rowMellin r) u := fun u hu => hDr.analyticAt (hUo.mem_nhds hu)
+  have hanR' : ∀ u ∈ U, AnalyticAt ℂ (rowMellin r') u := fun u hu =>
+    hDr'.analyticAt (hUo.mem_nhds hu)
+  have hmero : MeromorphicOn G U := by
+    intro u hu
+    have hzs : ∀ a : ℂ, MeromorphicAt (fun z => riemannZeta (z - a + 1)) u := fun a =>
+      meromorphicAt_riemannZeta_comp ((analyticAt_id.sub analyticAt_const).add analyticAt_const)
+    have hz1 : MeromorphicAt (fun z => riemannZeta (z + ε)) u :=
+      meromorphicAt_riemannZeta_comp (analyticAt_id.add analyticAt_const)
+    have hsum : MeromorphicAt (fun z => ∑ s ∈ F, c s * (s * riemannZeta (z - s + 1) +
+        powerCorrection s z)) u :=
+      MeromorphicAt.fun_sum fun s hs => (MeromorphicAt.const (c s) u).mul
+        (((MeromorphicAt.const s u).mul (hzs s)).add
+          (hcorr s (by linarith [(hF s hs).1]) (hF s hs).2.1 u hu).meromorphicAt)
+    have hP : MeromorphicAt (fun z => c' * (α * riemannZeta (z - α + 1) + powerCorrection α z) +
+        rowMellin r' z) u :=
+      ((MeromorphicAt.const c' u).mul (((MeromorphicAt.const α u).mul (hzs α)).add
+        (hcorr α hαge hαle u hu).meromorphicAt)).add (hanR' u hu).meromorphicAt
+    exact (hz1.mul (hsum.add (hanR u hu).meromorphicAt)).sub hP
+  -- the identity theorem: `G` vanishes near every point of `Re w > 1/2`
+  have h3U : (3 : ℂ) ∈ U := by simp only [hUdef, Set.mem_setOf_eq]; norm_num
+  have hG3 : meromorphicOrderAt G 3 = ⊤ := by
+    rw [meromorphicOrderAt_eq_top_iff]
+    have hnbhd : {w : ℂ | 2 < w.re} ∈ 𝓝 (3 : ℂ) :=
+      (isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by simp only [Set.mem_setOf_eq]; norm_num)
+    filter_upwards [nhdsWithin_le_nhds hnbhd] with w hw
+    exact hGzero w hw
+  have hs₀U : s₀ ∈ U := (hF s₀ hs₀).1
+  have hs₀top : meromorphicOrderAt G s₀ = ⊤ := by
+    by_contra hne
+    exact ((hmero.exists_meromorphicOrderAt_ne_top_iff_forall_mem
+      (HTGeometry.isConnected_halfPlane_re_gt _)).mp ⟨s₀, hs₀U, hne⟩ 3 h3U) hG3
+  have hev := meromorphicOrderAt_eq_top_iff.mp hs₀top
+  -- the residue at `s₀`
+  have hs₀α : s₀ ≠ α := (hF s₀ hs₀).2.2
+  set R : ℂ → ℂ := fun w => ∑ s ∈ F.erase s₀, c s * (s * riemannZeta (w - s + 1) +
+      powerCorrection s w) + c s₀ * powerCorrection s₀ w + rowMellin r w with hRdef
+  set P : ℂ → ℂ := fun w => c' * (α * riemannZeta (w - α + 1) + powerCorrection α w) +
+      rowMellin r' w with hPdef
+  have hid : ∀ w, (w - s₀) * G w = riemannZeta (w + ε) *
+      (c s₀ * s₀ * ((w - s₀) * riemannZeta (w - s₀ + 1)) + (w - s₀) * R w) - (w - s₀) * P w := by
+    intro w
+    simp only [hGdef, hRdef, hPdef]
+    rw [← Finset.add_sum_erase F _ hs₀]
+    ring
+  have hcz : ∀ a : ℂ, s₀ - a + 1 ≠ 1 → ContinuousAt (fun z => riemannZeta (z - a + 1)) s₀ :=
+    fun a ha => continuousAt_riemannZeta_comp
+      ((continuous_id.sub continuous_const).add continuous_const).continuousAt ha
+  have hRc : ContinuousAt R s₀ := by
+    have h1 : ContinuousAt (fun w => ∑ s ∈ F.erase s₀, c s * (s * riemannZeta (w - s + 1) +
+        powerCorrection s w)) s₀ := by
+      refine tendsto_finsetSum _ fun s hs => ?_
+      have hss : s ≠ s₀ := Finset.ne_of_mem_erase hs
+      have hsF : s ∈ F := Finset.mem_of_mem_erase hs
+      have hne : s₀ - s + 1 ≠ 1 := fun h => hss (by linear_combination -h)
+      exact (continuousAt_const.mul (continuousAt_const.mul (hcz s hne) |>.add
+        (hcorr s (by linarith [(hF s hsF).1]) (hF s hsF).2.1 s₀ hs₀U).continuousAt)).tendsto
+    exact (h1.add (continuousAt_const.mul
+      (hcorr s₀ (by linarith [(hF s₀ hs₀).1]) (hF s₀ hs₀).2.1 s₀ hs₀U).continuousAt)).add
+      (hanR s₀ hs₀U).continuousAt
+  have hPc : ContinuousAt P s₀ := by
+    have hne : s₀ - α + 1 ≠ 1 := fun h => hs₀α (by linear_combination h)
+    exact (continuousAt_const.mul ((continuousAt_const.mul (hcz α hne)).add
+      (hcorr α hαge hαle s₀ hs₀U).continuousAt)).add (hanR' s₀ hs₀U).continuousAt
+  have hε1 : s₀ + (ε : ℂ) ≠ 1 := fun h => hs₀α (by
+    rw [hαdef]; push_cast; linear_combination h)
+  have hT1 : Tendsto (fun w => riemannZeta (w + ε)) (𝓝[≠] s₀) (𝓝 (riemannZeta (s₀ + ε))) :=
+    (continuousAt_riemannZeta_comp (continuous_id.add continuous_const).continuousAt hε1).tendsto.mono_left
+      nhdsWithin_le_nhds
+  have hlin : Tendsto (fun w : ℂ => w - s₀) (𝓝[≠] s₀) (𝓝 0) := by
+    have h : Tendsto (fun w : ℂ => w - s₀) (𝓝 s₀) (𝓝 (s₀ - s₀)) :=
+      (continuous_id.sub continuous_const).tendsto s₀
+    rw [sub_self] at h
+    exact h.mono_left nhdsWithin_le_nhds
+  have hT3 : Tendsto (fun w => (w - s₀) * R w) (𝓝[≠] s₀) (𝓝 0) := by
+    have := hlin.mul (hRc.tendsto.mono_left nhdsWithin_le_nhds)
+    rwa [zero_mul] at this
+  have hT4 : Tendsto (fun w => (w - s₀) * P w) (𝓝[≠] s₀) (𝓝 0) := by
+    have := hlin.mul (hPc.tendsto.mono_left nhdsWithin_le_nhds)
+    rwa [zero_mul] at this
+  have hlim : Tendsto (fun w => (w - s₀) * G w) (𝓝[≠] s₀)
+      (𝓝 (riemannZeta (s₀ + ε) * (c s₀ * s₀ * 1 + 0) - 0)) := by
+    refine Tendsto.congr (fun w => (hid w).symm) ?_
+    exact (hT1.mul (((tendsto_sub_mul_riemannZeta_shift s₀).const_mul (c s₀ * s₀)).add hT3)).sub hT4
+  have hzero : Tendsto (fun w => (w - s₀) * G w) (𝓝[≠] s₀) (𝓝 0) := by
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [hev] with w hw
+    rw [hw, mul_zero]
+  have heq := tendsto_nhds_unique hlim hzero
+  simp only [mul_one, add_zero, sub_zero] at heq
+  rcases mul_eq_zero.mp heq with h | h
+  · exact h
+  · exact absurd h (mul_ne_zero hc₀ (hsne s₀ hs₀))
 
 end GaloisForLFunctions.ArithmeticDefectRigidity

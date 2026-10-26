@@ -180,7 +180,7 @@ theorem IsArchEigen.inner_translation_eq {γ : ℝ} {v : E} (hv : IsArchEigen π
         have h2 : (k : ℚ) < N := by exact_mod_cast mem_range.mp hk
         have h3 : (0 : ℚ) ≤ j := Nat.cast_nonneg j
         have h4 : (0 : ℚ) ≤ k := Nat.cast_nonneg k
-        push_cast; linarith)]]
+        linarith)]]
     simp only [sum_const, card_range, nsmul_eq_mul]
     ring
   have hcs : ∀ N : ℕ, (N : ℝ) ^ 2 * ‖c‖ ≤ N * s + N * (N - 1) * c.re := by
@@ -259,8 +259,7 @@ theorem IsBlindFamily.norm_sq_sum {t : ℚ → E} {s α : ℝ} (ht : IsBlindFami
     have e2 : ∑ j ∈ S, conj (a j) * a j * ((s : ℂ) - α) =
         ((s - α : ℝ) : ℂ) * ∑ j ∈ S, conj (a j) * a j := by
       rw [mul_sum]
-      push_cast
-      exact sum_congr rfl fun j _ => by ring
+      exact sum_congr rfl fun j _ => by push_cast; ring
     rw [e1, e2]
   rw [← inner_self_eq_norm_sq (𝕜 := ℂ), hsum]
   simp only [RCLike.re_to_complex, Complex.add_re, Complex.re_ofReal_mul, Complex.conj_mul',

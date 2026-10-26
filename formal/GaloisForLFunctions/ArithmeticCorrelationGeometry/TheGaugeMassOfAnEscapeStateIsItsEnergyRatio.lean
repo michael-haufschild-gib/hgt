@@ -91,17 +91,22 @@ theorem pronicNorm_rowDilate_sq_eq {j : ℕ} (hj : 1 ≤ j) (v : ℕ → ℝ) (h
     rw [sum_congr rfl h0]
     simp
   | succ K ih =>
-    rw [pronicNorm_sq] at ih ⊢
-    rw [pronicNorm_sq]
+    simp only [pronicNorm_sq] at ih ⊢
     have hsplit : j * (K + 1) + (j - 1) = (j * K + (j - 1)) + j := by rw [mul_add, mul_one]; omega
-    rw [hsplit, hIoc, ← sum_Ioc_consecutive _ (Nat.zero_le _) (Nat.le_add_right _ j), ← hIoc, ih,
-      hIoc (K + 1), sum_Ioc_succ_top (Nat.zero_le K), ← hIoc, mul_add]
-    congr 1
-    -- the block `(jK + j − 1, jK + 2j − 1]` is the fibre of `K + 1`
     have hblock : Ioc (j * K + (j - 1)) (j * K + (j - 1) + j) =
         Icc (j * (K + 1)) (j * (K + 1) + j - 1) := by
       ext n; simp only [mem_Ioc, mem_Icc, mul_add, mul_one]; omega
-    rw [hblock]
+    have hL : ∑ n ∈ Icc 1 (j * (K + 1) + (j - 1)), rowDilate j v n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) =
+        ∑ n ∈ Icc 1 (j * K + (j - 1)), rowDilate j v n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) +
+          ∑ n ∈ Icc (j * (K + 1)) (j * (K + 1) + j - 1),
+            rowDilate j v n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) := by
+      rw [hsplit, hIoc, hIoc, ← sum_Ioc_consecutive _ (Nat.zero_le _) (Nat.le_add_right _ j), hblock]
+    have hR : ∑ n ∈ Icc 1 (K + 1), v n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) =
+        ∑ n ∈ Icc 1 K, v n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) +
+          v (K + 1) ^ 2 / (((K + 1 : ℕ) : ℝ) * (((K + 1 : ℕ) : ℝ) + 1)) := by
+      rw [hIoc, hIoc, sum_Ioc_succ_top (Nat.zero_le K)]
+    rw [hL, hR, ih, mul_add]
+    congr 1
     have hval : ∀ n ∈ Icc (j * (K + 1)) (j * (K + 1) + j - 1),
         rowDilate j v n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) =
           v (K + 1) ^ 2 * (1 / ((n : ℝ) * ((n : ℝ) + 1))) := by
@@ -128,18 +133,20 @@ theorem pronicNorm_rowDilate_sq_ge {j : ℕ} (hj : 1 ≤ j) (T : ℕ) (v : ℕ �
   refine pronicNorm_sq_mono ?_ _
   have hle : j * ((T + 1) / j) ≤ T + 1 := Nat.mul_div_le (T + 1) j
   have hsub : j * ((T + 1) / j - 1) + j = j * ((T + 1) / j) := by
-    rw [← mul_add_one, Nat.sub_add_cancel hpos]
+    have h1 : (T + 1) / j - 1 + 1 = (T + 1) / j := Nat.sub_add_cancel hpos
+    calc j * ((T + 1) / j - 1) + j = j * ((T + 1) / j - 1 + 1) := by ring
+      _ = j * ((T + 1) / j) := by rw [h1]
   omega
 
 /-! ### The diagonal of an escape state is an energy ratio -/
 
 /-- The receiver energy is the pronic mass of the receiver prefix. -/
 theorem dampedMobiusEnergy_eq_pronicNorm_sq (ε : ℝ) (N : ℕ) :
-    dampedMobiusEnergy ε N = pronicNorm N (pmPowerDampedCenteredDivisorPrefix ε) ^ 2 := by
+    dampedMobiusEnergy ε N = pronicNorm N (RHTower.pmPowerDampedCenteredDivisorPrefix ε) ^ 2 := by
   rw [pronicNorm_centeredPrefix, Real.sq_sqrt (dampedMobiusEnergy_nonneg ε N)]
 
 theorem cofactorGram_self (ε : SubcriticalDamping) (T : ℕ) (d : ℕ+) :
-    cofactorGram ε T d d = pronicNorm (T + 1) (rowDilate d (pmPowerDampedCenteredDivisorPrefix ε)) ^ 2 /
+    cofactorGram ε T d d = pronicNorm (T + 1) (rowDilate d (RHTower.pmPowerDampedCenteredDivisorPrefix ε)) ^ 2 /
       dampedMobiusEnergy ε (T + 1) := by
   rw [cofactorGram, pronicNorm_sq]
   congr 1
@@ -155,10 +162,10 @@ theorem mul_cofactorGram_le_energyRatio (ε : SubcriticalDamping) (T : ℕ) (d :
   rw [cofactorGram_self, ← mul_div_assoc, div_le_div_iff_of_pos_right hE,
     dampedMobiusEnergy_eq_pronicNorm_sq]
   have := pronicNorm_rowDilate_sq_le d.pos (T + 1) _
-    (pmPowerDampedCenteredDivisorPrefix_zero (ε : ℝ))
-  calc (d : ℝ) * pronicNorm (T + 1) (rowDilate d (pmPowerDampedCenteredDivisorPrefix ε)) ^ 2
+    (ArithmeticContinuationAndCriticalEnergy.pmPowerDampedCenteredDivisorPrefix_zero (ε : ℝ))
+  calc (d : ℝ) * pronicNorm (T + 1) (rowDilate d (RHTower.pmPowerDampedCenteredDivisorPrefix ε)) ^ 2
       ≤ (d : ℝ) * ((1 / (d : ℝ)) * pronicNorm ((T + 1 + 1) / d)
-          (pmPowerDampedCenteredDivisorPrefix ε) ^ 2) := mul_le_mul_of_nonneg_left this hd.le
+          (RHTower.pmPowerDampedCenteredDivisorPrefix ε) ^ 2) := mul_le_mul_of_nonneg_left this hd.le
     _ = _ := by field_simp
 
 /-- **Lower energy ratio.** `E(⌊(T+2)/d⌋ − 1)/E(T+1) ≤ d·K_T(d,d)`. -/
@@ -170,10 +177,10 @@ theorem energyRatio_sub_one_le_mul_cofactorGram (ε : SubcriticalDamping) (T : �
   rw [cofactorGram_self, ← mul_div_assoc, div_le_div_iff_of_pos_right hE,
     dampedMobiusEnergy_eq_pronicNorm_sq]
   have := pronicNorm_rowDilate_sq_ge d.pos (T + 1) _
-    (pmPowerDampedCenteredDivisorPrefix_zero (ε : ℝ))
-  calc pronicNorm ((T + 1 + 1) / d - 1) (pmPowerDampedCenteredDivisorPrefix ε) ^ 2
+    (ArithmeticContinuationAndCriticalEnergy.pmPowerDampedCenteredDivisorPrefix_zero (ε : ℝ))
+  calc pronicNorm ((T + 1 + 1) / d - 1) (RHTower.pmPowerDampedCenteredDivisorPrefix ε) ^ 2
       = (d : ℝ) * ((1 / (d : ℝ)) * pronicNorm ((T + 1 + 1) / d - 1)
-          (pmPowerDampedCenteredDivisorPrefix ε) ^ 2) := by field_simp
+          (RHTower.pmPowerDampedCenteredDivisorPrefix ε) ^ 2) := by field_simp
     _ ≤ _ := mul_le_mul_of_nonneg_left this hd.le
 
 /-! ### Gauge mass -/
@@ -216,7 +223,7 @@ theorem mul_kernel_le_energyRatio (d : ℕ+) {δ : ℝ} (hδ : 0 < δ) :
     ∀ᶠ m in atTop, (d : ℝ) * L.kernel d d ≤
       dampedMobiusEnergy ε ((L.subsequence m + 1 + 1) / d) /
         dampedMobiusEnergy ε (L.subsequence m + 1) + δ := by
-  filter_upwards [(tendsto_order.mp (L.tendsto_mul_cofactorGram d)).1 _
+  filter_upwards [(tendsto_order.mp (tendsto_mul_cofactorGram L d)).1 _
     (sub_lt_self _ hδ)] with m hm
   have := mul_cofactorGram_le_energyRatio ε (L.subsequence m) d
   linarith
@@ -226,7 +233,7 @@ theorem mul_kernel_le_energyRatio (d : ℕ+) {δ : ℝ} (hδ : 0 < δ) :
 theorem energyRatio_le_mul_kernel (d : ℕ+) {δ : ℝ} (hδ : 0 < δ) :
     ∀ᶠ m in atTop, dampedMobiusEnergy ε ((L.subsequence m + 1 + 1) / d - 1) /
         dampedMobiusEnergy ε (L.subsequence m + 1) ≤ (d : ℝ) * L.kernel d d + δ := by
-  filter_upwards [(tendsto_order.mp (L.tendsto_mul_cofactorGram d)).2 _
+  filter_upwards [(tendsto_order.mp (tendsto_mul_cofactorGram L d)).2 _
     (lt_add_of_pos_right _ hδ)] with m hm
   have := energyRatio_sub_one_le_mul_cofactorGram ε (L.subsequence m) d
   linarith
@@ -237,7 +244,7 @@ theorem tendsto_subsequence_atTop : Tendsto L.subsequence atTop atTop :=
 theorem tendsto_div_atTop (d : ℕ+) (k : ℕ) :
     Tendsto (fun m => (L.subsequence m + 1 + 1) / (d : ℕ) - k) atTop atTop := by
   refine tendsto_atTop_atTop.mpr fun b => ?_
-  obtain ⟨m₀, hm₀⟩ := tendsto_atTop_atTop.mp L.tendsto_subsequence_atTop ((b + k) * d)
+  obtain ⟨m₀, hm₀⟩ := tendsto_atTop_atTop.mp tendsto_subsequence_atTop L ((b + k) * d)
   refine ⟨m₀, fun m hm => ?_⟩
   have h1 := hm₀ m hm
   have h2 : b + k ≤ (L.subsequence m + 1 + 1) / (d : ℕ) := by
@@ -253,24 +260,24 @@ theorem gaugeMass_eq_one_of_admits (hadm : Admits dampedMobiusEnergy ε) :
   have hdiag : ∀ d : ℕ+, (d : ℝ) * L.kernel d d = 1 := by
     intro d
     have hden : Tendsto (fun m => dampedMobiusEnergy ε (L.subsequence m + 1)) atTop (𝓝 e) :=
-      hlim.comp ((tendsto_add_atTop_nat 1).comp L.tendsto_subsequence_atTop)
+      hlim.comp ((tendsto_add_atTop_nat 1).comp tendsto_subsequence_atTop L)
     have hup : Tendsto (fun m => dampedMobiusEnergy ε ((L.subsequence m + 1 + 1) / d) /
         dampedMobiusEnergy ε (L.subsequence m + 1)) atTop (𝓝 1) := by
-      have := (hlim.comp (by simpa using L.tendsto_div_atTop d 0)).div hden he.ne'
+      have := (hlim.comp (by simpa using tendsto_div_atTop L d 0)).div hden he.ne'
       rwa [div_self he.ne'] at this
     have hlo : Tendsto (fun m => dampedMobiusEnergy ε ((L.subsequence m + 1 + 1) / d - 1) /
         dampedMobiusEnergy ε (L.subsequence m + 1)) atTop (𝓝 1) := by
-      have := (hlim.comp (L.tendsto_div_atTop d 1)).div hden he.ne'
+      have := (hlim.comp (tendsto_div_atTop L d 1)).div hden he.ne'
       rwa [div_self he.ne'] at this
     refine le_antisymm (le_of_forall_pos_le_add fun δ hδ => ?_)
       (le_of_forall_pos_le_add fun δ hδ => ?_)
-    · obtain ⟨m, hm1, hm2⟩ := ((L.mul_kernel_le_energyRatio d (half_pos hδ)).and
+    · obtain ⟨m, hm1, hm2⟩ := ((mul_kernel_le_energyRatio L d (half_pos hδ)).and
         ((tendsto_order.mp hup).2 _ (lt_add_of_pos_right 1 (half_pos hδ)))).exists
       linarith
-    · obtain ⟨m, hm1, hm2⟩ := ((L.energyRatio_le_mul_kernel d (half_pos hδ)).and
+    · obtain ⟨m, hm1, hm2⟩ := ((energyRatio_le_mul_kernel L d (half_pos hδ)).and
         ((tendsto_order.mp hlo).1 _ (sub_lt_self 1 (half_pos hδ)))).exists
       linarith
-  rw [L.gaugeMass_eq]
+  rw [gaugeMass_eq L]
   simp_rw [hdiag]
   exact ciInf_const
 
@@ -294,9 +301,9 @@ theorem gaugeMass_eq_zero_of_powerGrowth {κ c C : ℝ} (hκ : 0 < κ) (hc : 0 <
   have hdiag : ∀ d : ℕ+, (d : ℝ) * L.kernel d d ≤ C / c * (2 / (d : ℝ)) ^ κ := by
     intro d
     refine le_of_forall_pos_le_add fun δ hδ => ?_
-    have hev1 := (L.tendsto_div_atTop d 0).eventually hpow
-    have hev2 := ((tendsto_add_atTop_nat 1).comp L.tendsto_subsequence_atTop).eventually hpow
-    obtain ⟨m, hm, h1, h2⟩ := ((L.mul_kernel_le_energyRatio d hδ).and (hev1.and hev2)).exists
+    have hev1 := (tendsto_div_atTop L d 0).eventually hpow
+    have hev2 := ((tendsto_add_atTop_nat 1).comp tendsto_subsequence_atTop L).eventually hpow
+    obtain ⟨m, hm, h1, h2⟩ := ((mul_kernel_le_energyRatio L d hδ).and (hev1.and hev2)).exists
     simp only [Function.comp_apply, Nat.sub_zero] at h1 h2
     set T := L.subsequence m
     set M := (T + 1 + 1) / (d : ℕ)
@@ -332,7 +339,7 @@ theorem gaugeMass_eq_zero_of_powerGrowth {κ c C : ℝ} (hκ : 0 < κ) (hc : 0 <
     have := ((Real.continuousAt_rpow_const 0 κ (Or.inr hκ)).tendsto.comp h0).const_mul (C / c)
     simpa [Real.zero_rpow hκ.ne'] using this
   obtain ⟨n, hn⟩ := (hlim.eventually (gt_mem_nhds hδ)).exists
-  rw [L.gaugeMass_eq]
+  rw [gaugeMass_eq L]
   have hbdd : BddBelow (Set.range fun d : ℕ+ => (d : ℝ) * L.kernel d d) := by
     refine ⟨0, ?_⟩
     rintro _ ⟨d, rfl⟩

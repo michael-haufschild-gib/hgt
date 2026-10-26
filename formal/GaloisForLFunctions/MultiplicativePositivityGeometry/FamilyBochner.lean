@@ -90,7 +90,7 @@ noncomputable def familyWeight (𝒟 : G × ℝ → ℝ) (x : ℝ) (r : ℕ × A
   zetaBoundaryWeight x r.1 * (familyBohr 𝒟 r.2 (logFrequency r.1) / Fintype.card G)
 
 /-- The joint trace of the family weights through shifted ζ-traces. -/
-theorem jointTrace_familyWeight {𝒟 : G × ℝ → ℝ} (h𝒟 : IsEvenPosDef 𝒟) (hs : Summable 𝒟)
+theorem jointTrace_familyWeight {𝒟 : G × ℝ → ℝ} (hs : Summable 𝒟)
     {x : ℝ} (hx : 0 < x) (q : G × ℝ) :
     jointTrace (familyWeight 𝒟 x) Prod.snd (fun r => logFrequency r.1) q =
       ∑' p, 𝒟 p / 2 * ((if q.1 = p.1 then 1 else 0) *
@@ -311,7 +311,7 @@ theorem familyWeight_isJointBoundaryDivisor {𝒟 : G × ℝ → ℝ} (h𝒟 : I
     rw [hlimval] at hT
     refine hT.congr' ?_
     filter_upwards [self_mem_nhdsWithin] with x hx
-    rw [jointTrace_familyWeight h𝒟 hs hx q, ← tsum_mul_left]
+    rw [jointTrace_familyWeight hs hx q, ← tsum_mul_left]
     exact tsum_congr fun p => by ring
 
 /-- **Bochner's theorem for families.** An absolutely summable configuration on `G × ℝ` is a joint

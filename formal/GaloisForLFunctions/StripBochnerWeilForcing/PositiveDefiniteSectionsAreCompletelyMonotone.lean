@@ -1,4 +1,6 @@
 import GaloisForLFunctions.StripBochnerWeilForcing.CollectivePoleRepulsion
+import GaloisForLFunctions.HTGeometry.BernsteinWidder
+import GaloisForLFunctions.HTGeometry.CompletelyMonotoneTower
 
 /-!
 # Positive-definite vertical sections and complete monotonicity
@@ -18,7 +20,8 @@ vertical sections, so `G^{(2k)}(σ) ≥ 0` at every real point `σ > a`.
   vertical sections (`isPosDef_re_iterate_deriv_two_mul`).
 -/
 
-open Complex Filter Topology Set
+open Complex Filter Topology Set MeasureTheory
+open scoped ENNReal NNReal
 
 noncomputable section
 
@@ -484,5 +487,227 @@ theorem alternating_iterate_deriv_nonneg {F : ℂ → ℂ} {a : ℝ}
             mul_nonneg hc (mul_nonneg h1 h2)
         _ = -(-1 : ℝ) ^ (k + 1) * ((k.choose i : ℝ) * ((deriv^[i] G) x).re *
             ((deriv^[k - i] F) x).re) := by rw [hsign]; ring
+
+/-! ## 7. Bernstein–Widder: a Dirichlet transform of a positive measure -/
+
+/-- The complex Laplace transform of a finite measure on `[0, ∞)` is holomorphic on `Re z > 0`. -/
+theorem differentiableOn_laplaceC {τ : Measure ℝ} [IsFiniteMeasure τ]
+    (hτ : τ (Ici (0 : ℝ))ᶜ = 0) :
+    DifferentiableOn ℂ (fun z : ℂ => ∫ r, cexp (-z * r) ∂τ) {z : ℂ | 0 < z.re} := by
+  intro z₀ hz₀
+  have hz₀' : 0 < z₀.re := hz₀
+  set ε : ℝ := z₀.re / 2 with hεdef
+  have hε : 0 < ε := by positivity
+  have hae : ∀ᵐ r ∂τ, 0 ≤ r := by
+    rw [ae_iff]
+    convert hτ using 2
+    ext r
+    simp
+  have hre : ∀ z ∈ Metric.ball z₀ ε, ε < z.re := by
+    intro z hz
+    have h1 := Complex.abs_re_le_norm (z - z₀)
+    rw [Metric.mem_ball, dist_eq_norm] at hz
+    rw [Complex.sub_re] at h1
+    have := (abs_lt.mp (lt_of_le_of_lt h1 hz)).1
+    linarith
+  have hnorm : ∀ (z : ℂ) (r : ℝ), ‖cexp (-z * r)‖ = Real.exp (-(z.re * r)) := by
+    intro z r
+    rw [Complex.norm_exp]
+    congr 1
+    simp [Complex.mul_re]
+  have hmeas : ∀ z : ℂ, AEStronglyMeasurable (fun r : ℝ => cexp (-z * r)) τ := fun z =>
+    (by fun_prop : Continuous fun r : ℝ => cexp (-z * r)).aestronglyMeasurable
+  have hint : Integrable (fun r : ℝ => cexp (-z₀ * r)) τ := by
+    refine (integrable_const (1 : ℝ)).mono' (hmeas z₀) ?_
+    filter_upwards [hae] with r hr
+    rw [hnorm, Real.exp_le_one_iff]
+    nlinarith
+  have hbound : ∀ᵐ r ∂τ, ∀ z ∈ Metric.ball z₀ ε,
+      ‖cexp (-z * r) * (-(r : ℂ))‖ ≤ 1 / ε := by
+    filter_upwards [hae] with r hr z hz
+    rw [norm_mul, hnorm, norm_neg, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr]
+    have hz' := hre z hz
+    have h1 : Real.exp (-(z.re * r)) ≤ Real.exp (-(ε * r)) :=
+      Real.exp_le_exp.mpr (by nlinarith)
+    have h2 : ε * r ≤ Real.exp (ε * r) := by linarith [Real.add_one_le_exp (ε * r)]
+    have h3 : Real.exp (-(ε * r)) * r ≤ 1 / ε := by
+      rw [Real.exp_neg, le_div_iff₀ hε]
+      have := Real.exp_pos (ε * r)
+      calc (Real.exp (ε * r))⁻¹ * r * ε = (ε * r) / Real.exp (ε * r) := by field_simp
+        _ ≤ 1 := by rw [div_le_one (Real.exp_pos _)]; exact h2
+    calc Real.exp (-(z.re * r)) * r ≤ Real.exp (-(ε * r)) * r :=
+          mul_le_mul_of_nonneg_right h1 hr
+      _ ≤ 1 / ε := h3
+  have hderiv : ∀ᵐ r ∂τ, ∀ z ∈ Metric.ball z₀ ε,
+      HasDerivAt (fun z : ℂ => cexp (-z * r)) (cexp (-z * r) * (-(r : ℂ))) z := by
+    refine Eventually.of_forall fun r z _ => ?_
+    have h := ((hasDerivAt_id z).neg.mul_const (r : ℂ)).cexp
+    simpa using h
+  have := hasDerivAt_integral_of_dominated_loc_of_deriv_le (Metric.ball_mem_nhds z₀ hε)
+    (Eventually.of_forall hmeas) hint
+    ((by fun_prop : Continuous fun r : ℝ => cexp (-z₀ * r) * (-(r : ℂ))).aestronglyMeasurable)
+    hbound (integrable_const _) hderiv
+  exact this.2.differentiableAt.differentiableWithinAt
+
+theorem ofReal_exp_cpow_neg (r : ℝ) (s : ℂ) :
+    ((Real.exp r : ℝ) : ℂ) ^ (-s) = cexp (-s * r) := by
+  rw [Complex.ofReal_exp, Complex.cpow_def_of_ne_zero (Complex.exp_ne_zero _),
+    Complex.log_exp (by simp [Real.pi_pos]) (by simp [Real.pi_pos.le])]
+  ring_nf
+
+/-- **Positive-definite sections give a Dirichlet transform of a positive measure.** Let `F` be
+holomorphic, nonvanishing, real and positive on `(a, ∞)`, with `u ↦ Re(−F'/F)(σ + iu)` positive
+definite for every `σ > a` and `Re(−F'/F)(x) ≤ C √x` for large `x`. Then for every `b > a` there is
+a positive measure `μ` carried by `[1, ∞)` with `F(s) = ∫ u^{−s} dμ(u)` on `Re s > b`. -/
+theorem exists_dirichletMeasure_of_posDef_sections {F : ℂ → ℂ} {a b : ℝ} (hab : a < b)
+    (hF : DifferentiableOn ℂ F {s : ℂ | a < s.re}) (hF0 : ∀ s : ℂ, a < s.re → F s ≠ 0)
+    (hreal : ∀ x : ℝ, a < x → (F x).im = 0) (hpos : ∀ x : ℝ, a < x → 0 < (F x).re)
+    (hpd : ∀ σ : ℝ, a < σ → IsPosDef fun u : ℝ => (-logDeriv F ((σ : ℂ) + (u : ℂ) * I)).re)
+    {C x₀ : ℝ} (hgrowth : ∀ x : ℝ, x₀ ≤ x → (-logDeriv F (x : ℂ)).re ≤ C * Real.sqrt x) :
+    ∃ μ : Measure ℝ, μ (Iio 1) = 0 ∧ ∀ s : ℂ, b < s.re →
+      Integrable (fun u : ℝ => (u : ℂ) ^ (-s)) μ ∧ F s = ∫ u : ℝ, (u : ℂ) ^ (-s) ∂μ := by
+  set U : Set ℂ := {s : ℂ | a < s.re} with hUdef
+  have hU : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
+  set G : ℂ → ℂ := fun s => -logDeriv F s with hGdef
+  have hGd : DifferentiableOn ℂ G U := differentiableOn_neg_logDeriv hU hF fun s hs => hF0 s hs
+  have hsub : ∀ x : ℝ, a < x → (x : ℂ) ∈ U := fun x hx => by simpa [hUdef] using hx
+  -- The tower of `G` along the real axis is completely monotone.
+  set T : ℕ → ℝ → ℝ := fun k x => ((deriv^[k] G) x).re
+  have hder : ∀ k x, a < x → HasDerivAt (T k) (T (k + 1) x) x := fun k x hx =>
+    hasDerivAt_re_iterate_deriv hU hGd k (hsub x hx)
+  have heven : ∀ j x, a < x → 0 ≤ T (2 * j) x := fun j x hx =>
+    re_iterate_deriv_two_mul_nonneg hGd hpd j hx
+  have hodd := tower_odd_nonpos hder heven (C := C) (x₀ := x₀) fun x hx => by
+    simpa [T, G] using hgrowth x hx
+  have hGcm : ∀ (k : ℕ) (x : ℝ), a < x → 0 ≤ (-1) ^ k * ((deriv^[k] G) x).re := by
+    intro k x hx
+    obtain ⟨j, rfl | rfl⟩ := Nat.even_or_odd' k
+    · rw [pow_mul]; simpa using heven j x hx
+    · rw [pow_succ, pow_mul]
+      have := hodd j x hx
+      simp only [T] at this
+      norm_num
+      linarith
+  have hFcm := alternating_iterate_deriv_nonneg hF hF0 hreal hpos hGcm
+  -- The shifted tower of `F` is a completely monotone tower on `(0, ∞)`.
+  set TF : ℕ → ℝ → ℝ := fun k t => ((deriv^[k] F) ((b + t : ℝ) : ℂ)).re
+  have hTFder : ∀ k (t : ℝ), a < b + t → HasDerivAt (TF k) (TF (k + 1) t) t := by
+    intro k t ht
+    have h := hasDerivAt_re_iterate_deriv hU hF k (hsub (b + t) ht)
+    have h2 := h.comp t ((hasDerivAt_id t).const_add b)
+    simpa [TF] using h2
+  have htower : HTGeometry.CompletelyMonotoneTower TF :=
+    ⟨fun k t ht => hTFder k t (by linarith), fun k t ht => hFcm k (b + t) (by linarith)⟩
+  have hCM : HTGeometry.CompletelyMonotoneOn (TF 0) :=
+    ⟨fun k δ hδ t ht => HTGeometry.fwdDiff_iterate_alternating hδ k htower ht,
+      fun t ht => (hTFder 0 t (by linarith [show (0 : ℝ) < t from ht])).continuousAt
+        |>.continuousWithinAt⟩
+  have hlim : Tendsto (TF 0) (𝓝[>] 0) (𝓝 (TF 0 0)) :=
+    (hTFder 0 0 (by linarith)).continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+  obtain ⟨τ, hτfin, hτsupp, hτrep⟩ :=
+    HTGeometry.exists_finiteLaplaceMeasure_of_completelyMonotoneOn hCM hlim
+  -- The coefficient measure.
+  set d : ℝ → ℝ≥0 := fun r => Real.toNNReal (Real.exp (b * r)) with hddef
+  have hdm : Measurable d := by fun_prop
+  set ν : Measure ℝ := τ.withDensity fun r => (d r : ℝ≥0∞) with hνdef
+  set μ : Measure ℝ := ν.map Real.exp with hμdef
+  have hae : ∀ᵐ r ∂τ, 0 ≤ r := by
+    rw [ae_iff]
+    convert hτsupp using 2
+    ext r
+    simp
+  refine ⟨μ, ?_, ?_⟩
+  · rw [hμdef, Measure.map_apply Real.measurable_exp measurableSet_Iio, hνdef,
+      withDensity_apply _ (Real.measurable_exp measurableSet_Iio)]
+    refine setLIntegral_measure_zero _ _ ?_
+    refine measure_mono_null (fun r hr => ?_) hτsupp
+    simp only [Set.mem_preimage, Set.mem_Iio, Real.exp_lt_one] at hr
+    simp only [Set.mem_compl_iff, Set.mem_Ici, not_le]
+    exact hr
+  · intro s hs
+    have hsb : 0 < (s - b).re := by simp; linarith
+    have hpt : ∀ r : ℝ, (d r : ℝ) • ((Real.exp r : ℝ) : ℂ) ^ (-s) = cexp (-(s - b) * r) := by
+      intro r
+      rw [ofReal_exp_cpow_neg, hddef]
+      simp only [Real.coe_toNNReal _ (Real.exp_pos _).le, Complex.real_smul,
+        Complex.ofReal_exp]
+      rw [← Complex.exp_add]
+      congr 1
+      push_cast
+      ring
+    have hmeasg : AEStronglyMeasurable (fun u : ℝ => (u : ℂ) ^ (-s)) μ := by
+      refine (Measurable.aestronglyMeasurable ?_)
+      fun_prop
+    have hint_tau : Integrable (fun r : ℝ => cexp (-(s - b) * r)) τ := by
+      refine (integrable_const (1 : ℝ)).mono' (by fun_prop) ?_
+      filter_upwards [hae] with r hr
+      rw [Complex.norm_exp, Real.exp_le_one_iff]
+      have : (-(s - b) * (r : ℂ)).re = -((s - b).re * r) := by simp [Complex.mul_re]
+      rw [this]
+      nlinarith
+    have hint : Integrable (fun u : ℝ => (u : ℂ) ^ (-s)) μ := by
+      rw [hμdef, integrable_map_measure hmeasg Real.measurable_exp.aemeasurable, hνdef,
+        integrable_withDensity_iff_integrable_smul hdm]
+      refine hint_tau.congr (Eventually.of_forall fun r => ?_)
+      simp only [Function.comp_apply]
+      exact (hpt r).symm
+    refine ⟨hint, ?_⟩
+    have hval : ∫ u : ℝ, (u : ℂ) ^ (-s) ∂μ = ∫ r : ℝ, cexp (-(s - b) * r) ∂τ := by
+      rw [hμdef, integral_map Real.measurable_exp.aemeasurable hmeasg, hνdef,
+        integral_withDensity_eq_integral_smul hdm]
+      exact integral_congr_ae (Eventually.of_forall fun r => hpt r)
+    rw [hval]
+    -- Identity theorem on `Re z > 0` for `z ↦ F(b + z)` and the Laplace transform of `τ`.
+    set V : Set ℂ := {z : ℂ | 0 < z.re}
+    have hV : IsOpen V := isOpen_lt continuous_const Complex.continuous_re
+    have hf₁ : AnalyticOnNhd ℂ (fun z : ℂ => F ((b : ℂ) + z)) V := by
+      refine DifferentiableOn.analyticOnNhd ?_ hV
+      intro z hz
+      have hz' : 0 < z.re := hz
+      have hbz : (b : ℂ) + z ∈ U := by simp [hUdef]; linarith
+      exact ((hF _ hbz).differentiableAt (hU.mem_nhds hbz)).comp z
+        ((differentiableAt_id).const_add (b : ℂ)) |>.differentiableWithinAt
+    have hf₂ : AnalyticOnNhd ℂ (fun z : ℂ => ∫ r, cexp (-z * r) ∂τ) V :=
+      (differentiableOn_laplaceC hτsupp).analyticOnNhd hV
+    have hreal_eq : ∀ t : ℝ, 0 < t → F ((b : ℂ) + t) = ∫ r, cexp (-(t : ℂ) * r) ∂τ := by
+      intro t ht
+      have h1 := hτrep t ht
+      have hFt : F ((b : ℂ) + t) = (((F ((b : ℂ) + t)).re : ℝ) : ℂ) := by
+        apply Complex.ext
+        · simp
+        · have := hreal (b + t) (by linarith)
+          push_cast at this
+          simp [this]
+      rw [hFt]
+      have h2 : (F ((b : ℂ) + t)).re = TF 0 t := by simp [TF]
+      rw [h2, h1, ← integral_complex_ofReal]
+      refine integral_congr_ae (Eventually.of_forall fun r => ?_)
+      simp only [Complex.ofReal_exp]
+      congr 1
+      push_cast
+      ring
+    have h1V : (1 : ℂ) ∈ V := by simp [V]
+    have hfreq : ∃ᶠ z in 𝓝[≠] (1 : ℂ),
+        F ((b : ℂ) + z) = ∫ r, cexp (-z * r) ∂τ := by
+      let r : ℕ → ℝ := fun k => 1 + 1 / ((k : ℝ) + 1)
+      have hr : ∀ k, 1 < r k := fun k => by
+        have : (0 : ℝ) < 1 / ((k : ℝ) + 1) := by positivity
+        simp only [r]; linarith
+      have hlimr : Tendsto (fun k => ((r k : ℝ) : ℂ)) atTop (𝓝[≠] (1 : ℂ)) := by
+        refine tendsto_nhdsWithin_iff.mpr ⟨?_, Eventually.of_forall fun k => ?_⟩
+        · have h := tendsto_one_div_add_atTop_nhds_zero_nat.const_add (1 : ℝ)
+          rw [add_zero] at h
+          have h' := (Complex.continuous_ofReal.tendsto 1).comp h
+          rw [Complex.ofReal_one] at h'
+          exact h'
+        · exact fun h => (hr k).ne' (Complex.ofReal_eq_one.mp h)
+      exact hlimr.frequently <| Frequently.of_forall fun k =>
+        hreal_eq (r k) (lt_trans zero_lt_one (hr k))
+    have heq := hf₁.eqOn_of_preconnected_of_frequently_eq hf₂ (convex_halfSpace_re_gt 0).isPreconnected
+      h1V hfreq
+    have hsV : s - b ∈ V := hsb
+    have := heq hsV
+    simp only [add_sub_cancel] at this
+    exact this
 
 end GaloisForLFunctions.StripBochnerWeilForcing

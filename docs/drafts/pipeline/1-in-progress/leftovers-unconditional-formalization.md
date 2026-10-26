@@ -21,17 +21,17 @@ Existing unrelated worktree changes must be preserved.
 ## Current checkpoint (authoritative over chronological notes)
 
 - No full card is certified complete after recovered-report scope audit.
-- Active Lean: `87480`, quantitative Nyquist scratch plus 79 axiom queries;
-  `/tmp/leftovers-nyquist-quantitative-check.log`.
+- Active Lean: `84590`, combined Nyquist witness/tail scratch and 96 axiom queries;
+  `/tmp/leftovers-nyquist-witnesses-audit.log`.
 - Nyquist canonical successful oleans: Primitive, TestCellBounds, BroadTests,
-  SourceClassification. Do not rebuild these. PrimitiveTail has a successful
-  final source check and no olean. All five are wired into the umbrella.
+  SourceClassification, SourceQuantitative. Do not rebuild these. PrimitiveTail has a successful
+  final source check and no olean. All six are wired into the umbrella.
 - Physical retains 110 audited declarations; three supplementary unchecked
   drafts in `/tmp/leftovers_physical_{tail_identity,quantitative,form_bounds}.lean`.
 - PM has four unchecked drafts in `/tmp/leftovers_pm_*.lean` (producer, sampling,
   decomposition, short energy). No canonical PM files yet.
-- Next dependency order: quantitative Nyquist check/fix → its canonical olean
-  for witness → signed witnesses and remaining exact-source/axiom audits.
+- Next dependency order: signed-witness/tail audit → canonical witness and
+  remaining exact-source audits (including the original Nyquist parent).
   Finish physical supplements and PM, then remaining eleven cards.
 - Superseded Nyquist source-classification and primitive-tail scratch copies
   removed; canonical sources are authoritative. Existing pending drafts retained.
@@ -389,3 +389,64 @@ Existing unrelated worktree changes must be preserved.
 - Current owned Lean check: quantitative source scratch `87480`. Command logs to
   `/tmp/leftovers-nyquist-quantitative-check.log` and includes the 79-declaration
   transitive axiom audit. Only one owned Lean process runs.
+
+- Quantitative scratch `87480` exited 1 with exactly two local errors and one
+  unused tactic: typed positive `x` was needed in an absolute-value rewrite,
+  and a newline before `.trans_lt` parsed as function application. Fixed with
+  an explicit typed fact and named bound; unused `change` removed. The 79 axiom
+  lists were emitted: 75 only standard axioms; four depend on the two failed
+  proof terms and are NOT certified. No placeholder occurs in source.
+- Canonical `NyquistCriticalSourceQuantitative.lean` is now building (`66611`)
+  solely for the witness import. No prior olean existed. After success, do not
+  rebuild it. Source quantitative scratch retains its fixed proof plus audit
+  suffix; canonical source excludes the suffix.
+- Combined next audit `/tmp/leftovers_nyquist_witnesses_audit.lean` checks the
+  witness and exact canonical primitive-tail source, and prints 96 public
+  axiom lists (all 79 previous names plus witness/tail names). It is a no-olean
+  audit source. Canonical witness must be migrated ONLY from the separate
+  `/tmp/leftovers_nyquist_witnesses.lean`, not this combined audit source.
+  The witness's obsolete UnitEnergySmallSources import was removed.
+- New unchecked dyadic draft `/tmp/leftovers_dyadic_tent.lean`: actual
+  Nat.log-based mantissa tent, zero at powers of two, exact closed-level
+  formula, bounds `[0,1/2]`, and exact doubling invariance. No energy/variance
+  proof or canonical dyadic source yet. Nat.log API statements were read
+  from surfaced mathlib source; their verification awaits this scratch check.
+
+- Dyadic tentative leaf now also bounds adjacent increments by reciprocal
+  level width and squared increments by `4/(n(n+1))`. Reuses the surfaced
+  mathlib `abs_min_sub_min_le_max`, instead of duplicating the minimum
+  Lipschitz estimate. Still unchecked; no canonical file or certificate.
+  Exact-level and energy/variance consequences remain to finish.
+- Common-model read: `BezoutValuationIncidence.sieveSeq` is the actual
+  truncated sum over divisors in `[1,N]`. Refreshed searches did not yet find
+  a general arbitrary-window realization. Möbius inversion can supply it,
+  after checking the project leads and mathlib APIs; no generic realization
+  proof written yet. `FiniteHorizonIntegerVariance` concerns logarithmic
+  cosine windows, not the required linear sequence's exact variance formula.
+
+- `/tmp/leftovers_finite_sieve_realization.lean` now gives explicit finite
+  Möbius-antidiagonal coefficients and the actual `sieveSeq` window identity,
+  using mathlib's `sum_eq_iff_sum_mul_moebius_eq` (statement and proof inspected
+  in `ArithmeticFunction/Moebius.lean`). It is unchecked, not an abstract
+  realization interface. Supports both graph cards' common-model gate.
+- `/tmp/leftovers_integer_linear_variance.lean` now contains the exact
+  `N(N²−1)/12` variance decomposition, its minimizing mean, adjacent energy
+  `N−1`, and the necessary additive coercivity coefficient `N(N+1)/12`.
+  Unchecked. Generated additive interval-sum APIs were located through their
+  `@[to_additive]` product declarations in `BigOperators/Intervals.lean`.
+
+- Canonical quantitative build `66611` exited 0, empty log. Exact energy and
+  local-uniform/iff statements now pass Lean. Olean exists for witness; do not
+  rebuild. Wired umbrella import. Superseded quantitative scratch (same proof
+  plus obsolete 79-name audit suffix) removed after byte comparison.
+- Current check `84590` runs the combined witness/tail audit and 96-name axiom
+  manifest. No canonical signed-witness source yet. If it fails, update both
+  the plain witness draft and its combined audit copy before retrying; only
+  migrate plain witness to the repository. Final direct checks remain for
+  Primitive, TestCellBounds, BroadTests, SourceClassification, SourceQuantitative
+  and final witness. PrimitiveTail's exact final source check already passed.
+
+- Tent scratch now includes native doubling energy zero and telescoping
+  adjacent-energy bound `A(N)≤2−4/N<2` for every `N≥2`. All this remains
+  unchecked. It imports the existing positive-coercivity olean (present);
+  no extra dependency build is currently needed for its eventual check.

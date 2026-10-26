@@ -461,9 +461,10 @@ theorem rightZeros_eq_empty_iff_twoWindow (Z : ZeroConfig) (hZ : TemperedConfig 
               mul_inv_cancel₀ hμ₂]
           · rw [if_neg h1, if_neg h2]
             ring
-      rw [he_def, lp.coeFn_sub, Pi.sub_apply, zeroMap_apply, Submodule.coe_mk,
-        zeroCoord_sub_translate Z f.2.1.continuous f.2.2 v τ, htY, ← mul_sub, norm_mul,
-        lp.coeFn_sub, Pi.sub_apply, zeroMap_apply]
+      have hcoe : ((zeroMap Z hZ f - Y : ℓ²(Z.carrier, ℂ)) : Z.carrier → ℂ) τ =
+          zeroCoord Z f τ - Y τ := rfl
+      rw [he_def, lp.coeFn_sub, Pi.sub_apply, zeroMap_apply,
+        zeroCoord_sub_translate Z f.2.1.continuous f.2.2 v τ, htY, ← mul_sub, norm_mul, hcoe]
       exact mul_le_mul_of_nonneg_right (hμle τ) (norm_nonneg _)
     have he : ‖e‖ < 1 / 4 := by
       calc ‖e‖ ≤ B * ‖zeroMap Z hZ f - Y‖ := lp_norm_le_of_pointwise hB.le hpt
