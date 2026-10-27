@@ -362,7 +362,8 @@ kernel (AET).
    conjugation is the power map of degree `−1`, fixes every torsion cycle, and identifies the
    Hermitian (collided) and bilinear (reflection) torsion pairings (ES10); the Hecke correspondences
    are computed similitudes of the regularized Hermitian structure, with the cutoff rescaled by the
-   degree (ES13). On the divisor, conjugation composed with reflection is the Hermitian reflection `ρ ↦ 1 − ρ̄`, trivial iff RH
+   degree (ES13). On the divisor, conjugation composed with reflection is the Hermitian
+   reflection `ρ ↦ 1 − ρ̄`, trivial iff RH
    (`riemannHypothesis_iff_supportPartner_eq_id`); its pairing is `D`, whose Hecke equivariance is
    RH (APol). The disagreement of the two involutions is counted by the transverse energy (ES3).
    *Answer:* algebraic on the base; on the divisor its realization by a correspondence is RH.

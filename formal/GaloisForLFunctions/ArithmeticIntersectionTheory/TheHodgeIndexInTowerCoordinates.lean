@@ -54,7 +54,7 @@ def archKernel (φ : ℝ → ℝ) (c : ℝ) : ℝ := ∫ y in Ioi 0, autocorr φ
 
 theorem continuousOn_jumpWeight : ContinuousOn jumpWeight (Ioi 0) :=
   (Real.continuous_exp.comp (continuous_id.div_const 2)).continuousOn.div
-    Real.continuous_sinh.continuousOn fun y hy => (Real.sinh_pos_iff.mpr hy).ne'
+    Real.continuous_sinh.continuousOn fun _ hy => (Real.sinh_pos_iff.mpr hy).ne'
 
 /-- The jump integrand of a `C²_c` test is integrable on `(0, ∞)`. -/
 theorem integrableOn_jump {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) :
@@ -66,7 +66,7 @@ theorem integrableOn_jump {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : HasCo
     have h0 : 0 ≤ ∫ u, (g u - g (u + y)) ^ 2 := integral_nonneg fun u => sq_nonneg _
     exact mul_nonneg (by linarith) (div_nonneg (Real.exp_pos _).le
       (Real.sinh_pos_iff.mpr hy).le)
-  have hlev : (∫⁻ y in Ioi 0, ENNReal.ofReal (archLevyDensity y * ∫ u, (g u - g (u + y)) ^ 2)) =
+  have hlev : (∫⁻ y in Ioi 0, ENNReal.ofReal (RHTower.archLevyDensity y * ∫ u, (g u - g (u + y)) ^ 2)) =
       ∫⁻ y in Ioi 0, ENNReal.ofReal ((autocorr g 0 - autocorr g y) * jumpWeight y) := by
     apply setLIntegral_congr_fun measurableSet_Ioi
     intro y hy
@@ -92,7 +92,7 @@ theorem autocorr_eq_zero_of_lt (hφs : ∀ u, δ / 2 < |u| → φ u = 0) {z : �
   have : (fun u => φ u * φ (u + z)) = fun _ => 0 := by
     funext u
     have h := RHTower.SeparatedBump.mul_translate_eq_zero hφs (p := 0) (q := -z)
-      (by rw [zero_sub, abs_neg]; exact hz) u
+      (by rw [zero_sub, neg_neg]; exact hz) u
     simpa [sub_neg_eq_add] using h
   rw [this, integral_zero]
 
@@ -105,13 +105,13 @@ theorem integrableOn_coupling (hφ : ContDiff ℝ 2 φ) (hφs : ∀ u, δ / 2 < 
     refine ContinuousOn.integrableOn_Icc ((hcont.comp (continuous_id.sub continuous_const)).continuousOn.mul
       (continuousOn_jumpWeight.mono fun y hy => ?_))
     exact lt_of_lt_of_le (by linarith) hy.1
-  refine hIcc.of_forall_diff_eq_zero measurableSet_Ioi fun y hy => ?_
+  refine hIcc.of_forall_sdiff_eq_zero measurableSet_Ioi fun y hy => ?_
   have hy' : δ < |y - c| := by
     rcases hy with ⟨-, hy⟩
-    simp only [mem_Icc, not_and_or, not_le] at hy
+    simp only [Set.mem_Icc, not_and_or, not_le] at hy
     rcases hy with h | h
-    · rw [abs_of_neg (by linarith)]; linarith
-    · rw [abs_of_pos (by linarith)]; linarith
+    · exact lt_of_lt_of_le (by linarith) (neg_le_abs (y - c))
+    · exact lt_of_lt_of_le (by linarith) (le_abs_self (y - c))
   rw [autocorr_eq_zero_of_lt hφs hy', zero_mul]
 
 /-- **The autocorrelation of a log-atom test**: `h(y) = Σ_{m,n} x_m x_n Φ(y + log m − log n)`. -/
@@ -173,10 +173,12 @@ theorem autocorr_logAtom_pos {S : Finset ℕ} {M : ℕ} (hd : LogAtomData φ δ 
         else 0) := by
   rw [autocorr_logAtom hd.contDiff hd.support, mul_sum, ← sum_add_distrib]
   refine sum_congr rfl fun m hm => ?_
-  rw [← add_sum_erase _ _ hm, ← add_sum_erase (S) (fun n => if m < n then _ else 0) hm,
-    if_neg (lt_irrefl m)]
-  simp only [add_sub_cancel_right, add_zero]
-  rw [show x m * x m * autocorr φ y = autocorr φ y * x m ^ 2 by ring]
+  rw [← add_sum_erase S (fun n => if m < n then
+    x m * x n * autocorr φ (y - (Real.log n - Real.log m)) else 0) hm, if_neg (lt_irrefl m),
+    zero_add]
+  conv_lhs => rw [← add_sum_erase S _ hm]
+  rw [show y + Real.log m - Real.log m = y by ring,
+    show x m * x m * autocorr φ y = autocorr φ y * x m ^ 2 by ring]
   congr 1
   refine sum_congr rfl fun n hn => ?_
   have hn' := mem_of_mem_erase hn
@@ -186,9 +188,10 @@ theorem autocorr_logAtom_pos {S : Finset ℕ} {M : ℕ} (hd : LogAtomData φ δ 
   · have hgt : n < m := lt_of_le_of_ne (not_lt.mp hlt) hne
     have hlog : Real.log n < Real.log m :=
       Real.log_lt_log (by exact_mod_cast hd.pos n hn') (by exact_mod_cast hgt)
-    have hsep := lt_abs_log_sub_log hd hm hn' hne.symm
-    rw [abs_of_pos (by linarith)] at hsep
-    rw [autocorr_eq_zero_of_lt hd.support (by rw [abs_of_pos (by linarith)]; linarith), mul_zero]
+    rw [autocorr_eq_zero_of_lt hd.support (by
+      have hsep := lt_abs_log_sub_log hd hm hn' hne.symm
+      rw [abs_of_pos (by linarith)] at hsep
+      rw [abs_of_pos (by linarith)]; linarith), mul_zero]
 
 /-- Each archimedean coupling term of a log-atom test is integrable on `(0, ∞)`. -/
 theorem integrableOn_pairTerm {S : Finset ℕ} {M : ℕ} (hd : LogAtomData φ δ S M) (x : ℕ → ℝ)
@@ -219,7 +222,8 @@ theorem weilArchRe_logAtom {S : Finset ℕ} {M : ℕ} (hd : LogAtomData φ δ S 
   have hφc : HasCompactSupport φ := RHTower.SeparatedBump.hasCompactSupport_of_abs hd.support
   rw [RHTower.ArchimedeanExactForm.weilArchRe_eq_exactForm hf hfc]
   -- split the integral into the jump and the pole
-  have hJ := integrableOn_jump hf hfc
+  have hJ : IntegrableOn (fun y => (autocorr f 0 - autocorr f y) *
+      (Real.exp (y / 2) / Real.sinh y)) (Ioi 0) := integrableOn_jump hf hfc
   have hcf : Continuous (autocorr f) := RHTower.ArchimedeanExactForm.continuous_autocorr hf hfc
   have hcsf : HasCompactSupport (autocorr f) :=
     RHTower.ArchimedeanExactForm.hasCompactSupport_autocorr hfc
@@ -257,11 +261,11 @@ theorem weilArchRe_logAtom {S : Finset ℕ} {M : ℕ} (hd : LogAtomData φ δ S 
         2 * (2 * ∫ y in Ioi 0, autocorr f y * Real.cosh (y / 2)) := by
       rw [← integral_const_mul, ← integral_const_mul]
       congr 1; funext y; ring
-    rw [this, ← hfull]
+    rw [this, hfull]
     ring
   -- the jump, pair by pair
   have hjump : ∫ y in Ioi 0, (autocorr f 0 - autocorr f y) * (Real.exp (y / 2) / Real.sinh y) =
-      (∑ n ∈ S, x n ^ 2) * ∫ y in Ioi 0, (autocorr φ 0 - autocorr φ y) * jumpWeight y -
+      (∑ n ∈ S, x n ^ 2) * (∫ y in Ioi 0, (autocorr φ 0 - autocorr φ y) * jumpWeight y) -
         ∑ m ∈ S, ∑ n ∈ S, (if m < n then x m * x n * archKernel φ (Real.log n - Real.log m)
           else 0) := by
     have hpt : ∀ y ∈ Ioi (0 : ℝ), (autocorr f 0 - autocorr f y) * (Real.exp (y / 2) / Real.sinh y) =
@@ -294,7 +298,27 @@ theorem weilArchRe_logAtom {S : Finset ℕ} {M : ℕ} (hd : LogAtomData φ δ S 
     split_ifs
     · rw [integral_const_mul, archKernel]
     · simp
-  rw [autocorr_logAtom_zero hd, hjump, hpole, atomSelfEnergy]
+  rw [hjump, hpole, autocorr_logAtom_zero hd, atomSelfEnergy]
   ring
+
+/-- **RH in tower coordinates.** Under RH, for every log-atom cycle the finite intersection plus the
+archimedean coupling of distinct atoms is dominated by the self-energy of the atoms plus the polar
+pairing of the pole direction:
+`‖φ‖² Σ_p Q_p(x) + Σ_{m<n} x_m x_n K_φ(log(n/m)) ≤ E_φ |x|² + 2αβ (Σ x_n n^{−1/2})(Σ x_n n^{1/2})`. -/
+theorem riemannHypothesis_tower_inequality (hRH : RiemannHypothesis) {S : Finset ℕ} {M : ℕ}
+    (hd : LogAtomData φ δ S M) (x : ℕ → ℝ) :
+    (∫ u, φ u ^ 2) * ∑ p ∈ (∏ n ∈ S, n).primeFactors, localForm S x p +
+        ∑ m ∈ S, ∑ n ∈ S, (if m < n then x m * x n * archKernel φ (Real.log n - Real.log m)
+          else 0) ≤
+      atomSelfEnergy φ * ∑ n ∈ S, x n ^ 2 +
+        2 * (∫ v, φ v * Real.exp (-1 / 2 * v)) * (∫ v, φ v * Real.exp (1 / 2 * v)) *
+          (∑ n ∈ S, x n / Real.sqrt n) * (∑ n ∈ S, x n * Real.sqrt n) := by
+  have h := riemannHypothesis_archPolar_ge_towers hRH hd x
+  have e : (archPolarPart (Zeta23.EF.weilTest (fun u => (logAtomTest φ S x u : ℂ))
+      (fun u => (logAtomTest φ S x u : ℂ)))).re =
+      RHTower.WeilOneSided.weilArchRe (Zeta23.EF.weilTest (fun u => (logAtomTest φ S x u : ℂ))
+        (fun u => (logAtomTest φ S x u : ℂ))) := rfl
+  rw [e, weilArchRe_logAtom hd x] at h
+  linarith
 
 end GaloisForLFunctions.ArithmeticIntersectionTheory

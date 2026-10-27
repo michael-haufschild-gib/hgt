@@ -43,11 +43,16 @@ damped source-work modules (`ReflectedTransverseWork`, `TheSelbergWorkExhaustsTh
 | ES13 power maps are similitudes of the Abel energy | `PowerMapsAreSimilitudesOfTheAbelEnergy` | Lean |
 | ES14 Fekete stability of the circle | `TheTorsionIsTheStableEquilibriumOfTheCircle` | Lean |
 | ES15 affine invariance; gauge twists of the source | `QuantizationTurnsWindowsIntoPoints` | Lean |
+| ES16 energy of a zero `O(log γ)` | `TheEnergyOfAZeroIsLogarithmic` | Lean |
+| ES17 large values / alignment law at zero ordinates | `LargeValuesAtZeroOrdinates` | Lean |
+| ES18 stability law at atomic resolution | `TheStabilityLawAtAtomicResolution` | Lean |
+| ES19 gauge margin of the source | `TheGaugeMarginOfTheRenormalizedSource` | Lean |
+| ES11 (prime side) atomic Weil prime form `Θ(log N)` | `TheWeilPrimeFormOnAtomsIsLogarithmic` | Lean |
 
 ## Open (RH-strength or beyond the present inputs)
 - Field law: arithmetic upper bound for the field below `max(1, √(2c log γ))`.
-- Stability law (Hodge index with adjunction): identify the `Θ(log N)` counterterm with the
-  archimedean self-energy of atoms at width `1/N`, constants included.
+- Stability law at the spacing scale `w ≍ 1/N` (proved below `N^{−O(1)}`, ES18): RH in adjunction form.
+- Power saving for aligned zero ordinates: coefficient mass of convolution powers of prime polynomials.
 - Alignment inside the strip (Q1 of the frontier); coupled class at the centre; fibre selection.
 
 ## Key paper facts
@@ -61,3 +66,4 @@ damped source-work modules (`ReflectedTransverseWork`, `TheSelbergWorkExhaustsTh
 ## Log
 - 2026-10-27 — created; README first draft; ES1–ES3, ES7, ES9–ES11 formalized.
 - 2026-10-27 — ES5, ES6, ES8, ES12–ES15 formalized; README rewritten with answers to the twelve questions.
+- 2026-10-27 — ES16–ES19 and the atomic Weil prime form formalized; README updated.

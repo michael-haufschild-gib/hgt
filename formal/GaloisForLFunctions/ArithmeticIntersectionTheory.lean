@@ -14,14 +14,17 @@ import GaloisForLFunctions.ArithmeticIntersectionTheory.TheSpacingRegulatorRemov
 import GaloisForLFunctions.ArithmeticIntersectionTheory.TheSelfIntersectionDominatesTheTower
 import GaloisForLFunctions.ArithmeticIntersectionTheory.ThePolarPartPairsThePoleDirection
 import GaloisForLFunctions.ArithmeticIntersectionTheory.TheSquareRootPriceOfSeparateTowers
+import GaloisForLFunctions.ArithmeticIntersectionTheory.TheHodgeIndexInTowerCoordinates
 
 /-!
 # Arithmetic Intersection Theory
 
 Umbrella for the intersection theory of the characteristic circle and its transfer to Weil's
-pairing: the projection formula of the power maps and the regulator anomaly; the different of a
-torsion orbit and the Hecke cocycle of renormalization; intersection numbers as log-orders of finite
-rings; the tower form of a prime, the local Hodge index, and the decomposition of Weil's prime
-kernel into transverse towers; Fourier duality between the torsion energy and the archimedean
-digamma. See `ArithmeticIntersectionTheory/README.md`.
+pairing: the projection formula of the power maps and the regulator anomaly; intersection numbers as
+log-orders of cyclotomic rings and the discriminant as self-intersection; the different, the Hecke
+cocycle and the spacing regulator; the tower form of a prime, the transverse decomposition of Weil's
+prime kernel, gauge blindness, the index bound on ladders, and the failure of local bounds to sum;
+Fourier duality with the archimedean digamma and the rotation spectrum of `μ_N`; the transfer to
+log-atom tests, the polar part, and RH as one inequality in tower coordinates; zero moments as Rosati
+pairings. See `ArithmeticIntersectionTheory/README.md`.
 -/

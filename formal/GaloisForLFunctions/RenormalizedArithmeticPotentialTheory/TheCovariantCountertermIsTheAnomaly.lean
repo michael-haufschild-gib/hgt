@@ -226,7 +226,7 @@ theorem atomicWeilForm_le_log (N : ℕ) (x : ℕ → ℝ) :
 /-- The **pole vector** `u_n = n^{−1/2}`: the coefficients of the partial sums of `ζ` at the centre. -/
 def poleVector (n : ℕ) : ℝ := 1 / Real.sqrt n
 
-theorem poleVector_sq {n : ℕ} (hn : 0 < n) : poleVector n ^ 2 = 1 / n := by
+theorem poleVector_sq (n : ℕ) : poleVector n ^ 2 = 1 / n := by
   rw [poleVector, div_pow, one_pow, Real.sq_sqrt (Nat.cast_nonneg n)]
 
 /-- `(P u)_m = (A(⌊N/m⌋) + log m) u_m`: the pole vector against Weil's kernel. -/
@@ -242,7 +242,6 @@ theorem sum_weilPrimeKernel_poleVector {m N : ℕ} (hm : 0 < m) (hmN : m ≤ N) 
   have hsm : Real.sqrt m ≠ 0 := (Real.sqrt_pos.mpr hm0).ne'
   have hsn : Real.sqrt n ≠ 0 := (Real.sqrt_pos.mpr hn0).ne'
   field_simp
-  rw [Real.sq_sqrt hm0.le]
 
 /-- **The pole vector is an approximate eigenvector of `P` with eigenvalue `log N`**:
 `(log N − log 8 − 4) u_m ≤ (P u)_m ≤ (log N + log 4 + 4) u_m` for every `m ≤ N`. -/
@@ -281,7 +280,7 @@ theorem log_sub_le_of_atomicWeilForm_le {N : ℕ} (hN : 1 ≤ N) {κ : ℝ}
     Real.log N - (Real.log 8 + 4) ≤ κ := by
   have hmass : 0 < ∑ n ∈ Icc 1 N, poleVector n ^ 2 := by
     refine sum_pos (fun n hn => ?_) ⟨1, mem_Icc.mpr ⟨le_rfl, hN⟩⟩
-    rw [poleVector_sq (mem_Icc.mp hn).1]
+    rw [poleVector_sq]
     have : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
     positivity
   have h := (atomicWeilForm_poleVector_ge N).trans (hκ poleVector)

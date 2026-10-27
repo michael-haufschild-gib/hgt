@@ -21,22 +21,33 @@ correspondences, anomaly, cocycle, towers, Fourier duality, transfer.
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  paper proofs per pillar
-- [ ] 2 → 3  each pillar in Lean, audited with `lake --old env lean`
+- [x] 1 → 2  paper proofs per pillar
+- [x] 2 → 3  each pillar in Lean, audited with `lake --old env lean`
 
 ## Pillars and modules
 
 | Pillar | Module | Status |
 |---|---|---|
-| I–II projection formula, regulator anomaly | `TheProjectionFormulaAndTheRegulatorAnomaly` | Lean, compiles |
-| I' orbit pushforward (Galois fibres) | `TheCorrespondencesOfTheCharacteristicCircle` | planned |
-| III Λ(n) = log #(𝓞/(ζ_n − 1)) | `IntersectionNumbersAreLogOrders` | planned |
-| IV different c(n) | `TheDifferentOfATorsionOrbit` | Lean, compiles |
-| V Hecke cocycle | `TheHeckeCocycleOfRenormalization` | Lean, compiles |
-| VI towers, KMS, ladder bounds | `TheTowerFormOfAPrime` | Lean, compiles |
-| VI' P = Σ_p log p (K_p − 1), transverse ladders | `ThePrimeKernelIsASumOfTransverseTowers` | in progress |
-| VII Fourier duality, Gauss digamma | `GaussDigammaIsTheFourierTransformOfTheTorsionEnergy` | Lean, compiles |
-| VIII transfer, RH in tower form | `TheHodgeIndexInTowerForm` | planned |
+| I–II projection formula, regulator anomaly | `TheProjectionFormulaAndTheRegulatorAnomaly` | Lean |
+| III log-orders; IV' discriminant = self-intersection (prime powers) | `TheArchimedeanIntersectionIsALogOrder` | Lean |
+| IV different c(n) | `TheDifferentOfATorsionOrbit` | Lean |
+| V Hecke cocycle | `TheHeckeCocycleOfRenormalization` | Lean |
+| VI tower form, KMS, ladder bounds | `TheTowerFormOfAPrime` | Lean |
+| VII transverse decomposition, tensor form, local bounds | `ThePrimeKernelIsASumOfTransverseTowers` | Lean |
+| VIII local forms do not sum | `TheLocalFormsDoNotSum` | Lean |
+| IX gauge blindness (sign twins, Liouville) | `TheFiniteIntersectionIsGaugeBlind` | Lean |
+| X Gauss digamma = Fourier of torsion energy | `GaussDigammaIsTheFourierTransformOfTheTorsionEnergy` | Lean |
+| X' rotation spectrum on μ_N | `TheEllipticCorrespondencesOfTheCircle` | Lean |
+| XI transfer to log-atom tests; RH ⇒ arch+polar ≥ towers | `WeilsPrimeFunctionalIsTheFiniteIntersection` | Lean |
+| XII spacing regulator | `TheSpacingRegulatorRemovesTheAnomaly` | Lean |
+| XIII Rosati moments | `ZeroMomentsAreRosatiPairings` | Lean |
+| XIV adjunction beats the tower (index ≤ 2 per ladder) | `TheSelfIntersectionDominatesTheTower` | Lean |
+| XV polar part on log-atom tests | `ThePolarPartPairsThePoleDirection` | Lean |
+| XVI square-root price of separate towers | `TheSquareRootPriceOfSeparateTowers` | Lean |
+| XVII RH in tower coordinates | `TheHodgeIndexInTowerCoordinates` | Lean |
+
+Open (README §9): covariant regulator with nontrivial null cone; asymptotics of E_φ, K_φ;
+arithmetic RR on torsion orbits; discriminant for all n; indices on boxes; weight filtration.
 
 ## Paper proofs (key facts)
 - Projection: z^t − u = ∏_{w^t=u}(z − w); 1 − r^t z^t = ∏_{ω∈μ_t}(1 − rωz).

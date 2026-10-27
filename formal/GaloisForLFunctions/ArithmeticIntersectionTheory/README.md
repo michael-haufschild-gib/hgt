@@ -173,6 +173,11 @@ hyperbolic Hecke correspondences that glue the levels.
     the second level on the renormalized torsion form is negative definite.
 15. **The polar part** (`paperFT_logAtom_half`, `weilPoleTerm_logAtom`). On log-atom tests
     `k̂(i/2) + k̂(−i/2) = 2αβ (Σ x_n n^{−1/2})(Σ x_n n^{1/2})`: the pole pairs the pole direction with its dual.
+16. **The square-root price** (`localForm_le`, `primeForm_le_sqrt`). Paying each tower separately bounds the
+    prime form on orders `≤ M` by `238 √M |x|²`, against `≍ log M` along the pole direction.
+17. **Tower coordinates** (`autocorr_logAtom`, `weilArchRe_logAtom`). The exact archimedean form turns the
+    archimedean and polar part of a log-atom test into `E_φ|x|² + 2αβ(Σ x_n n^{−1/2})(Σ x_n n^{1/2}) −
+    Σ_{m<n} x_m x_n K_φ(log(n/m))`, with the self-energy `E_φ` and the archimedean kernel `K_φ` of the atom.
 
 ---
 
@@ -195,6 +200,8 @@ hyperbolic Hecke correspondences that glue the levels.
 | XIII. Rosati moments | zero moments collided on the line, Rosati off it; real on reflection-closed configurations | `ZeroMomentsAreRosatiPairings` |
 | XIV. Adjunction beats the tower | renormalized torsion form `≤ −((1−q)/(1+q)) log p |x|²` above the second level of every ladder; positive index `≤ 2` per ladder | `TheSelfIntersectionDominatesTheTower` |
 | XV. The polar part | rank-two pairing of `Σ x_n n^{−1/2}` with `Σ x_n n^{1/2}`; under RH, on the polar hyperplane the `Γ`-part alone dominates `‖φ‖² Σ_p Q_p` | `ThePolarPartPairsThePoleDirection` |
+| XVI. The square-root price | summing the local tower bounds costs `238 √M`; the joint structure costs `log M` | `TheSquareRootPriceOfSeparateTowers` |
+| XVII. RH in tower coordinates | `Re(archimedean + polar) = E_φ|x|² + 2αβ(Σ x/√n)(Σ x√n) − Σ_{m<n} x_m x_n K_φ`; under RH, `‖φ‖² Σ_p Q_p + Σ_{m<n} x_m x_n K_φ ≤ E_φ|x|² + 2αβ(Σ x/√n)(Σ x√n)` | `TheHodgeIndexInTowerCoordinates` |
 
 ---
 
@@ -228,7 +235,9 @@ hyperbolic Hecke correspondences that glue the levels.
    functional on log-atom tests equals that sum (Pillar XI), and RH is the statement that the
    archimedean and polar parts dominate it. The polar part is rank two and pairs exactly the pole
    direction, along which the sum of towers is unbounded (Pillar XV); on the polar hyperplane the
-   `Γ`-factor pays alone. The archimedean self-energy of an atom of width `δ` grows like `log(1/δ)`
+   `Γ`-factor pays alone. All three parts are explicit forms on the cycle (Pillar XVII): RH implies
+   `‖φ‖² Σ_p Q_p(x) + Σ_{m<n} x_m x_n K_φ(log(n/m)) ≤ E_φ|x|² + 2αβ(Σ x_n n^{−1/2})(Σ x_n n^{1/2})` for
+   every log-atom cycle — the Hodge index of the explicit formula, read in tower coordinates. The archimedean self-energy of an atom of width `δ` grows like `log(1/δ)`
    (RHTower separated bumps): at fixed orders narrow atoms are always positive, and the content of RH
    is the regime `δ ≍ 1/M` of the widest admissible atoms. On the torsion side the diagonal is
    already decisive one prime at a time: the self-intersection makes the renormalized form negative
@@ -272,7 +281,9 @@ cocycle and the Hecke variation law; the Kac–Murdock–Szegő tower calculus (
 ladder kernels and the transverse decomposition of Weil's prime kernel; the pole-direction lower
 bound; sign gauges; the rotation diagonalization of point cycles and the folding of frequencies on
 `μ_N`; Gauss's digamma theorem; log-atom tests, the transfer identity and their Mellin values at
-`±½`; the polar part on log-atom tests; the spacing regulator; Rosati moments; the ladder index bound.
+`±½`; the polar part on log-atom tests; the square-root price of separate towers; the autocorrelation
+of log-atom tests and the archimedean part in tower coordinates; the spacing regulator; Rosati
+moments; the ladder index bound.
 
 ---
 
@@ -281,10 +292,10 @@ bound; sign gauges; the rotation diagonalization of point cycles and the folding
 1. **A covariant regulator with a nontrivial null cone.** A family of positive pairings on torsion
    cycles, Hecke covariant up to tame ramification, whose counterterm is not a multiple of the
    identity. By the survival law this is exactly what a sign through the limit requires.
-2. **The `Γ`-part in tower coordinates.** The polar part is computed (Pillar XV). Compute the
-   `Γ`-part on log-atom tests as an explicit form on `ℓ²(⊕_p ℕ)` — diagonal `log(1/δ)` plus the
-   archimedean kernel at the lags `log(m/n)` — so that RH on log-atom tests becomes one inequality
-   between explicit forms on the polar hyperplane.
+2. **Asymptotics of the archimedean constants.** Pillar XVII is exact. Prove
+   `E_φ = ‖φ‖² log(1/δ) + O(‖φ‖²)` (the jump weight is `≍ 1/y` near `0` and `Φ` vanishes beyond `δ`) and
+   `K_φ(c) = (∫φ)² e^{c/2}/sinh c + O(δ)`; then the tower inequality on the polar hyperplane at the widest
+   admissible atoms `δ ≍ 1/M` is the sharp form of the question.
 3. **Arithmetic Riemann–Roch on torsion orbits.** The lattice `𝓞_{ℚ(ζ_n)}` with its trace form has a
    theta `h⁰` whose Riemann–Roch defect is `½ log|d|`, the self-intersection of Pillar IV; a section
    functor on the scaling surface with this defect is the `F3` question of the review.
@@ -292,9 +303,9 @@ bound; sign gauges; the rotation diagonalization of point cycles and the folding
 5. **Indices on boxes.** Pillar XIV bounds the positive index by `2` on each ladder; the positive
    index of the renormalized torsion form on the box `[1, N]`, where the ladders of different primes
    interact.
-6. **Thresholds as weights.** The ratio `log(1/δ)/log M` of log-atom width to largest order as a
-   weight variable; the square-root threshold as the weight where the polar hyperplane must be paid by
-   the `Γ`-factor alone.
+6. **Thresholds as weights.** Pillar XVI puts the square-root threshold at the cost of paying the
+   towers separately. A weight filtration of log-atom cycles by `log(1/δ)/log M`, with the self-energy on
+   one side and the tower sum on the other.
 
 ---
 

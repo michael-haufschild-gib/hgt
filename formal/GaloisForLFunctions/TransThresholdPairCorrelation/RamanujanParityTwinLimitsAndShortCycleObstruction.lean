@@ -71,12 +71,14 @@ noncomputable section
 
 namespace GaloisForLFunctions.TransThresholdPairCorrelation
 
-open Zeta23 RHTower
+open Zeta23 RHTower RHTower.Sieve
+open GaloisForLFunctions.BezoutValuationIncidence
 open GaloisForLFunctions.RenormalizedBiarithmeticGeometry
 open GaloisForLFunctions.ArithmeticEffectivityTheory
 open GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 open GaloisForLFunctions.ArithmeticIncidencePositivity
 open GaloisForLFunctions.ArithmeticCriticalityTheory
+open GaloisForLFunctions.SquareRootThreshold (temperedConfig_zetaZeroConfig)
 
 /-! ## §1. Closed-Form Cesàro Gram and Scheme-Independent `{q, 2q}` Survival Cone -/
 
@@ -88,7 +90,7 @@ theorem cesaroGram_ramanujanMode_eq {N : ℕ} (ord : Fin N → ℕ) (hord : ∀ 
   simp only [cesaroGram, Matrix.of_apply, periodMean]
   rw [sum_ramanujanMode_mul (hord α) (hord β) (dvd_twinPeriod ord α) (dvd_twinPeriod ord β)]
   split_ifs with h
-  · subst h
+  · rw [h]
     have hq : (0 : ℝ) < twinPeriod ord := by exact_mod_cast prod_pos fun γ _ => hord γ
     exact mul_div_cancel_left₀ _ hq.ne'
   · simp
@@ -98,17 +100,16 @@ theorem cesaroGram_torsionAligned_ramanujanMode_eq {N : ℕ} (ord : Fin N → �
     (hord : ∀ α, 0 < ord α) (α β : Fin N) :
     cesaroGram (fun γ k => ramanujanMode (ord γ) (k + 1)) (twinPeriod ord) α β =
       if ord α = ord β then (Nat.totient (ord α) : ℝ) else 0 := by
-  have hper : ∀ k, ramanujanMode (ord α) k * ramanujanMode (ord β) k =
-      (fun j => ramanujanMode (ord α) j * ramanujanMode (ord β) j) k := fun _ => rfl
-  have hp_prod : ∀ k,
-      ramanujanMode (ord α) (k + twinPeriod ord) * ramanujanMode (ord β) (k + twinPeriod ord) =
-        ramanujanMode (ord α) k * ramanujanMode (ord β) k := by
+  let f : ℕ → ℝ := fun j => ramanujanMode (ord α) j * ramanujanMode (ord β) j
+  have hp_prod : Function.Periodic f (twinPeriod ord) := by
     intro k
+    dsimp only [f]
     rw [ramanujanMode_twinPeriodic ord hord α k, ramanujanMode_twinPeriodic ord hord β k]
   have hshift := sum_range_shift_of_periodic hp_prod 1
   have h1 : (∑ k ∈ range (twinPeriod ord),
       ramanujanMode (ord α) (k + 1) * ramanujanMode (ord β) (k + 1)) =
       ∑ k ∈ range (twinPeriod ord), ramanujanMode (ord α) k * ramanujanMode (ord β) k := by
+    dsimp only [f] at hshift
     rw [← hshift]
     exact sum_congr rfl fun k _ => by rw [Nat.add_comm 1 k]
   rw [← cesaroGram_ramanujanMode_eq ord hord α β]
@@ -173,7 +174,8 @@ theorem parityTwinPair_unrestricted_vs_evenShift_survivalCone {q : ℕ} (hq_odd 
   have hcore0 : oddCore q = q := by simp [oddCore, hq_odd]
   have hcore1 : oddCore (2 * q) = q := by
     have hev : ¬ ((2 * q) % 2 = 1) := by omega
-    simp [oddCore, hev]
+    rw [oddCore, if_neg hev]
+    omega
   refine ⟨fun hC => ramanujan_survivalCone_eq_zero_of_injective ![q, 2 * q] hord hinj two_pos hx hC,
     fun hC => ?_⟩
   rw [evenShift_ramanujanParityTwin_survivalCone_eq ![q, 2 * q] hord hn4 two_pos hx hC]
@@ -198,7 +200,7 @@ theorem tendsto_log_one_sub_pow_sub_log {L : ℕ} (hL : 0 < L) :
     Tendsto (fun r : ℝ => Real.log (1 - r ^ L) - Real.log (1 - r)) (𝓝[<] 1)
       (𝓝 (Real.log (L : ℝ))) := by
   have hsum_cont : Continuous fun r : ℝ => ∑ i ∈ range L, r ^ i :=
-    continuous_finset_sum _ fun i _ => continuous_pow i
+    continuous_finsetSum _ fun i _ => continuous_pow i
   have hsum_one : (∑ i ∈ range L, (1 : ℝ) ^ i) = (L : ℝ) := by simp
   have hL_ne : (L : ℝ) ≠ 0 := by exact_mod_cast hL.ne'
   have hlim : Tendsto (fun r : ℝ => Real.log (∑ i ∈ range L, r ^ i)) (𝓝[<] 1)
@@ -264,7 +266,7 @@ theorem tendsto_divisibilityGerm_add_log {L : ℕ} (hL : 0 < L) {w : ℝ} (hw : 
   rw [latticeGermLimit_eq hwL] at h1
   have h2 := (tendsto_log_one_sub_pow_sub_log hL).div_const (L : ℝ)
   have hsub := h1.sub h2
-  rw [sub_div] at hsub
+  rw [← sub_div] at hsub
   refine hsub.congr' ?_
   filter_upwards [Ioo_mem_nhdsLT zero_lt_one] with r hr
   rw [(hasSum_divisibilityGerm hL hr.1.le hr.2 hw).tsum_eq]
@@ -291,13 +293,13 @@ theorem hasSum_shiftedDivisibilityGerm {L : ℕ} (hL : 0 < L) {r u : ℝ}
   · intro k hk
     have hnd : ¬ L ∣ k + 1 := by
       rintro ⟨m, hm⟩
-      have hm1 : 1 ≤ m := by omega
-      apply hk
-      refine ⟨m - 1, ?_⟩
-      have hmul : L * (m - 1) + L = L * m := by
-        rcases Nat.exists_eq_succ_of_ne_zero (by omega : m ≠ 0) with ⟨j, rfl⟩
-        simp [Nat.mul_succ]
-      omega
+      rcases m with _ | j
+      · simp at hm
+      · apply hk
+        refine ⟨j, ?_⟩
+        have hidx : (L * j + (L - 1)) + 1 = L * (j + 1) := by
+          rw [Nat.add_assoc, Nat.sub_add_cancel hL, Nat.mul_succ]
+        exact Nat.add_right_cancel (hidx.trans hm.symm)
     simp [hnd]
   · refine hlat.congr_fun fun j => ?_
     change r ^ (L * j + (L - 1)) * (if L ∣ (L * j + (L - 1)) + 1 then (1 : ℝ) else 0) /
@@ -337,7 +339,7 @@ theorem tendsto_shiftedDivisibilityGerm_add_log {L : ℕ} (hL : 0 < L) {u : ℝ}
   have hgeom_cont : Tendsto (fun r : ℝ => (∑ i ∈ range (L - 1), r ^ i) / (L : ℝ))
       (𝓝[<] 1) (𝓝 (((L - 1 : ℕ) : ℝ) / (L : ℝ))) := by
     have hc : Continuous fun r : ℝ => (∑ i ∈ range (L - 1), r ^ i) / (L : ℝ) :=
-      (continuous_finset_sum _ fun i _ => continuous_pow i).div_const _
+      (continuous_finsetSum _ fun i _ => continuous_pow i).div_const _
     simpa using (hc.tendsto 1).mono_left nhdsWithin_le_nhds
   have hterm3 := hgeom_cont.mul hmullog
   have hcomb := (hterm1.sub hterm2).add hterm3
@@ -403,21 +405,22 @@ theorem doubleMoebius_gcd_eq {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
     fun a _ => sum_moebius_mul_gcd a hn
   rw [sum_congr rfl fun a ha => congrArg ((μ (m / a) : ℝ) * ·) (h1 a ha),
     sum_moebius_ite_dvd hm (fun _ => (Nat.totient n : ℝ))]
-  split_ifs with hnm hmn
+  by_cases hmn : m = n
   · subst hmn
-    rw [Nat.div_self hm]
-    simp [ArithmeticFunction.moebius_apply_one]
-  · have hgt : 1 < m / n := by
-      rcases hnm with ⟨k, rfl⟩
-      have hk0 : 0 < k := Nat.pos_of_ne_zero (by rintro rfl; simp at hm)
-      have hk1 : k ≠ 1 := fun hk1 => hmn (by simp [hk1])
-      rw [Nat.mul_div_cancel_left k hn]
-      omega
-    have hsum := sum_divisors_moebius (Nat.zero_lt_of_lt hgt)
-    rw [if_neg hgt.ne'] at hsum
-    rw [← sum_mul, hsum, zero_mul]
-  · exact absurd (hmn ▸ dvd_refl m) hnm
-  · rfl
+    rw [if_pos (dvd_refl m), if_pos rfl, Nat.div_self hm]
+    simp
+  · rw [if_neg hmn]
+    split_ifs with hnm
+    · have hgt : 1 < m / n := by
+        rcases hnm with ⟨k, rfl⟩
+        have hk0 : 0 < k := Nat.pos_of_ne_zero (by rintro rfl; simp at hm)
+        have hk1 : k ≠ 1 := fun hk1 => hmn (by simp [hk1])
+        rw [Nat.mul_div_cancel_left k hn]
+        omega
+      have hsum := sum_divisors_moebius (Nat.zero_lt_of_lt hgt)
+      rw [if_neg hgt.ne'] at hsum
+      rw [← sum_mul, hsum, zero_mul]
+    · rfl
 
 /-- Product of two Ramanujan modes as a `doubleMoebius` transform of `[lcm(a, b) ∣ t] a b`. -/
 theorem ramanujanMode_mul_eq_doubleMoebius {m n : ℕ} (hm : 0 < m) (hn : 0 < n) (t : ℕ) :
@@ -438,14 +441,55 @@ theorem ramanujanMode_mul_eq_doubleMoebius {m n : ℕ} (hm : 0 < m) (hn : 0 < n)
   refine sum_congr rfl fun a _ => ?_
   rw [mul_sum]
   refine sum_congr rfl fun b _ => ?_
-  rw [Nat.lcm_dvd_iff]
-  by_cases ha : a ∣ t <;> by_cases hb : b ∣ t <;> simp [ha, hb] <;> ring
+  by_cases ha : a ∣ t <;> by_cases hb : b ∣ t
+  · have hlcm : Nat.lcm a b ∣ t := Nat.lcm_dvd ha hb
+    simp [ha, hb, hlcm]
+    ring
+  · have hlcm : ¬ Nat.lcm a b ∣ t := fun h => hb (dvd_trans (Nat.dvd_lcm_right a b) h)
+    simp [ha, hb, hlcm]
+  · have hlcm : ¬ Nat.lcm a b ∣ t := fun h => ha (dvd_trans (Nat.dvd_lcm_left a b) h)
+    simp [ha, hb, hlcm]
+  · have hlcm : ¬ Nat.lcm a b ∣ t := fun h => ha (dvd_trans (Nat.dvd_lcm_left a b) h)
+    simp [ha, hb, hlcm]
 
 private theorem mul_div_lcm_eq_gcd {a b : ℕ} (ha : 0 < a) (hb : 0 < b) :
     (a : ℝ) * b / (Nat.lcm a b : ℝ) = (Nat.gcd a b : ℝ) := by
   have hlcm_pos : (0 : ℝ) < Nat.lcm a b := by exact_mod_cast Nat.lcm_pos ha hb
   rw [div_eq_iff hlcm_pos.ne']
   exact_mod_cast (Nat.gcd_mul_lcm a b).symm
+
+private theorem doubleMoebius_neg_sub (m n : ℕ) (X Y : ℕ → ℕ → ℝ) :
+    (∑ b ∈ n.divisors, (μ (n / b) : ℝ) * ∑ a ∈ m.divisors, (μ (m / a) : ℝ) * (-X a b - Y a b)) =
+      -doubleMoebius m n X - doubleMoebius m n Y := by
+  unfold doubleMoebius
+  have h1 : ∀ b ∈ n.divisors,
+      (μ (n / b) : ℝ) * ∑ a ∈ m.divisors, (μ (m / a) : ℝ) * (-X a b - Y a b) =
+        -((μ (n / b) : ℝ) * ∑ a ∈ m.divisors, (μ (m / a) : ℝ) * X a b) -
+          ((μ (n / b) : ℝ) * ∑ a ∈ m.divisors, (μ (m / a) : ℝ) * Y a b) := by
+    intro b _
+    have ha : (∑ a ∈ m.divisors, (μ (m / a) : ℝ) * (-X a b - Y a b)) =
+        -(∑ a ∈ m.divisors, (μ (m / a) : ℝ) * X a b) -
+          (∑ a ∈ m.divisors, (μ (m / a) : ℝ) * Y a b) := by
+      rw [← sum_neg_distrib, ← sum_sub_distrib]
+      exact sum_congr rfl fun a _ => by ring
+    rw [ha]
+    ring
+  rw [sum_congr rfl h1, sum_sub_distrib, sum_neg_distrib]
+
+private theorem doubleMoebius_sub_neg_mul (m n : ℕ) (A B : ℕ → ℕ → ℝ) (L : ℝ) :
+    (∑ b ∈ n.divisors, (μ (n / b) : ℝ) * ∑ a ∈ m.divisors, (μ (m / a) : ℝ) * A a b) -
+        (-L) * doubleMoebius m n B =
+      ∑ b ∈ n.divisors, (μ (n / b) : ℝ) * ∑ a ∈ m.divisors, (μ (m / a) : ℝ) *
+        (A a b + B a b * L) := by
+  unfold doubleMoebius
+  rw [neg_neg, mul_sum, ← sum_add_distrib]
+  refine sum_congr rfl fun b _ => ?_
+  have h1 : L * ((μ (n / b) : ℝ) * ∑ a ∈ m.divisors, (μ (m / a) : ℝ) * B a b) =
+      (μ (n / b) : ℝ) * ∑ a ∈ m.divisors, (μ (m / a) : ℝ) * (B a b * L) := by
+    rw [mul_left_comm L, mul_sum]
+    refine congrArg ((μ (n / b) : ℝ) * ·) (sum_congr rfl fun a _ => by ring)
+  rw [h1, ← mul_add, ← sum_add_distrib]
+  exact congrArg ((μ (n / b) : ℝ) * ·) (sum_congr rfl fun a _ => by ring)
 
 /-- **Closed-Form Limit Matrix of `evenShift_ramanujanParityTwin`:**
 For any `ord : Fin N → ℕ` with `0 < ord α` and `¬ 4 ∣ ord α`, let `q α := oddCore (ord α)`.
@@ -513,8 +557,8 @@ theorem tendsto_evenShift_ramanujanGerm_closedForm {N : ℕ} (ord : Fin N → �
           (Nat.gcd a b : ℝ) * Real.log (1 - r)))
       (𝓝[<] 1)
       (𝓝 (-orbitIntersection m n - cyclotomicDigamma m n w)) := by
-    have h := tendsto_finset_sum n.divisors fun b hb =>
-      (tendsto_finset_sum m.divisors fun a ha =>
+    have h := tendsto_finsetSum n.divisors fun b hb =>
+      (tendsto_finsetSum m.divisors fun a ha =>
         (hlim_ab b hb a ha).const_mul (μ (m / a) : ℝ)).const_mul (μ (n / b) : ℝ)
     have htarget : (∑ b ∈ n.divisors, (μ (n / b) : ℝ) * ∑ a ∈ m.divisors, (μ (m / a) : ℝ) *
         (-logEnergy a b -
@@ -522,10 +566,7 @@ theorem tendsto_evenShift_ramanujanGerm_closedForm {N : ℕ} (ord : Fin N → �
             ((Complex.digamma ((w / (Nat.lcm a b : ℝ) : ℝ) : ℂ)).re +
               Real.eulerMascheroniConstant))) =
         -orbitIntersection m n - cyclotomicDigamma m n w := by
-      rw [orbitIntersection_eq_doubleMoebius hm hn]
-      simp only [cyclotomicDigamma, doubleMoebius, mul_sub, sum_sub_distrib, mul_neg,
-        sum_neg_distrib, neg_sub_left]
-      ring
+      rw [doubleMoebius_neg_sub, ← orbitIntersection_eq_doubleMoebius hm hn, ← cyclotomicDigamma]
     rwa [htarget] at h
   refine hsum_lim.congr' ?_
   filter_upwards [Ioo_mem_nhdsLT zero_lt_one] with r hr
@@ -546,7 +587,9 @@ theorem tendsto_evenShift_ramanujanGerm_closedForm {N : ℕ} (ord : Fin N → �
       rw [hs.tsum_eq]
       refine ((hs.mul_left ((a : ℝ) * b)).mul_left (μ (m / a) : ℝ) |>.mul_left (μ (n / b) : ℝ)).congr_fun
         fun k => ?_
-      by_cases hd : Nat.lcm a b ∣ k <;> simp [hd] <;> ring
+      by_cases hd : Nat.lcm a b ∣ k
+      · rw [if_pos hd, if_pos hd]; ring
+      · rw [if_neg hd, if_neg hd]; ring
     have h2 := hasSum_sum fun b hb => hasSum_sum fun a ha => hinner b hb a ha
     simp_rw [← mul_sum] at h2
     refine h2.congr_fun fun k => ?_
@@ -555,23 +598,16 @@ theorem tendsto_evenShift_ramanujanGerm_closedForm {N : ℕ} (ord : Fin N → �
     exact sum_congr rfl fun b _ => sum_congr rfl fun a _ => by ring
   have hpg : periodicGerm (fun γ k => ramanujanMode (ord γ) (2 * k)) x r α β =
       ∑' k : ℕ, r ^ k * (ramanujanMode m k * ramanujanMode n k) / ((k : ℝ) + w) := by
+    dsimp only [m, n, w]
     simp only [periodicGerm, Matrix.of_apply, twistedGerm]
     refine tsum_congr fun k => ?_
     rw [ramanujanMode_evenShift_eq_oddCore (hord α) (hn4 α) k,
       ramanujanMode_evenShift_eq_oddCore (hord β) (hn4 β) k]
-  rw [hpg, hhas.tsum_eq, hces]
-  simp only [doubleMoebius, mul_add, sum_add_distrib, mul_sum]
-  refine Eq.trans ?_ (by ring)
-  congr 1
-  · exact sum_congr rfl fun b _ => sum_congr rfl fun a _ => by ring
-  · rw [neg_neg, mul_comm (Real.log (1 - r)), mul_sum]
-    exact sum_congr rfl fun b _ => by
-      rw [mul_sum]
-      exact sum_congr rfl fun a _ => by ring
+  rw [hpg, hhas.tsum_eq, hces, ← doubleMoebius_sub_neg_mul]
 
 /-- **Closed-Form Limit Matrix of Torsion-Aligned Ramanujan Germs (`k + 1`):**
 For any `ord : Fin N → ℕ` (`0 < ord α`) and `x : Fin N → ℝ` (`0 ≤ x α`), the torsion-aligned
-periodic germ `k ↦ ramanujanMode (ord α) (k + 1)` renormalizes as `r → 1⁻` to
+periodic germ `k ↦ ramanujanMode (ord γ) (k + 1)` renormalizes as `r → 1⁻` to
 `-orbitIntersection (ord α) (ord β) - cyclotomicHarmonic (ord α) (ord β) (x α + x β)`.
 At the pole nodes `x α = x β = 0`, this limit equals `-orbitIntersection (ord α) (ord β)`. -/
 theorem tendsto_torsionAligned_ramanujanGerm_closedForm {N : ℕ} (ord : Fin N → ℕ)
@@ -629,16 +665,13 @@ theorem tendsto_torsionAligned_ramanujanGerm_closedForm {N : ℕ} (ord : Fin N �
           (Nat.gcd a b : ℝ) * Real.log (1 - r)))
       (𝓝[<] 1)
       (𝓝 (-orbitIntersection m n - cyclotomicHarmonic m n u)) := by
-    have h := tendsto_finset_sum n.divisors fun b hb =>
-      (tendsto_finset_sum m.divisors fun a ha =>
+    have h := tendsto_finsetSum n.divisors fun b hb =>
+      (tendsto_finsetSum m.divisors fun a ha =>
         (hlim_ab b hb a ha).const_mul (μ (m / a) : ℝ)).const_mul (μ (n / b) : ℝ)
     have htarget : (∑ b ∈ n.divisors, (μ (n / b) : ℝ) * ∑ a ∈ m.divisors, (μ (m / a) : ℝ) *
         (-logEnergy a b - (Nat.gcd a b : ℝ) * harmonicFn (u / (Nat.lcm a b : ℝ)))) =
         -orbitIntersection m n - cyclotomicHarmonic m n u := by
-      rw [orbitIntersection_eq_doubleMoebius hm hn]
-      simp only [cyclotomicHarmonic, doubleMoebius, mul_sub, sum_sub_distrib, mul_neg,
-        sum_neg_distrib, neg_sub_left]
-      ring
+      rw [doubleMoebius_neg_sub, ← orbitIntersection_eq_doubleMoebius hm hn, ← cyclotomicHarmonic]
     rwa [htarget] at h
   refine hsum_lim.congr' ?_
   filter_upwards [Ioo_mem_nhdsLT zero_lt_one] with r hr
@@ -663,7 +696,9 @@ theorem tendsto_torsionAligned_ramanujanGerm_closedForm {N : ℕ} (ord : Fin N �
       refine ((hs.mul_left ((a : ℝ) * b)).mul_left (μ (m / a) : ℝ) |>.mul_left (μ (n / b) : ℝ)).congr_fun
         fun k => ?_
       rw [show (k : ℝ) + (1 + u) = (k : ℝ) + 1 + u by ring]
-      by_cases hd : Nat.lcm a b ∣ k + 1 <;> simp [hd] <;> ring
+      by_cases hd : Nat.lcm a b ∣ k + 1
+      · rw [if_pos hd, if_pos hd]; ring
+      · rw [if_neg hd, if_neg hd]; ring
     have h2 := hasSum_sum fun b hb => hasSum_sum fun a ha => hinner b hb a ha
     simp_rw [← mul_sum] at h2
     refine h2.congr_fun fun k => ?_
@@ -672,16 +707,10 @@ theorem tendsto_torsionAligned_ramanujanGerm_closedForm {N : ℕ} (ord : Fin N �
     exact sum_congr rfl fun b _ => sum_congr rfl fun a _ => by ring
   have hpg : periodicGerm (fun γ k => ramanujanMode (ord γ) (k + 1)) x r α β =
       ∑' k : ℕ, r ^ k * (ramanujanMode m (k + 1) * ramanujanMode n (k + 1)) / ((k : ℝ) + (1 + u)) := by
-    simp only [periodicGerm, Matrix.of_apply, twistedGerm, u, add_assoc]
-  rw [hpg, hhas.tsum_eq, hces]
-  simp only [doubleMoebius, mul_add, sum_add_distrib, mul_sum]
-  refine Eq.trans ?_ (by ring)
-  congr 1
-  · exact sum_congr rfl fun b _ => sum_congr rfl fun a _ => by ring
-  · rw [neg_neg, mul_comm (Real.log (1 - r)), mul_sum]
-    exact sum_congr rfl fun b _ => by
-      rw [mul_sum]
-      exact sum_congr rfl fun a _ => by ring
+    dsimp only [m, n, u]
+    simp only [periodicGerm, Matrix.of_apply, twistedGerm]
+    exact tsum_congr fun k => by rw [show (k : ℝ) + 1 + x α + x β = (k : ℝ) + (1 + (x α + x β)) by ring]
+  rw [hpg, hhas.tsum_eq, hces, ← doubleMoebius_sub_neg_mul]
 
 /-! ## §4. Exact Obstruction (`RBG` Open Topic #1): Pole-Node Erasure of `orbitIntersection` -/
 
@@ -772,11 +801,13 @@ theorem cyclotomicHarmonicKernel_nonneg {N : ℕ} {ord : Fin N → ℕ} (hord : 
   let x2 : Fin (N + N) → ℝ := Fin.addCases x (fun _ => 0)
   let C2 : Fin (N + N) → ℝ := Fin.addCases c (fun i => -c i)
   have hord2 : ∀ α, 0 < ord2 α := fun α => by
-    refine Fin.addCases (fun i => ?_) (fun i => ?_) α <;> simp [ord2, hord i]
+    dsimp only [ord2, Fin.addCases]
+    split_ifs <;> exact hord _
   have hx2 : ∀ α, 0 ≤ x2 α := fun α => by
-    refine Fin.addCases (fun i => ?_) (fun i => ?_) α
-    · simp [x2, hx i]
-    · simp [x2]
+    dsimp only [x2, Fin.addCases]
+    split_ifs
+    · exact hx _
+    · exact le_rfl
   have hq : 0 < twinPeriod ord2 := prod_pos fun γ _ => hord2 γ
   have hper : ∀ α, Function.Periodic (fun k => ramanujanMode (ord2 α) (k + 1)) (twinPeriod ord2) :=
     fun α k => by
@@ -860,6 +891,37 @@ theorem ramanujanMode_two_mul_odd_oddShift {q : ℕ} (hq : q % 2 = 1) (j : ℕ) 
 def oddTorsionEnergy (r : ℝ) (m n : ℕ) : ℝ :=
   (torsionEnergy r m n - torsionEnergy (-r) m n) / 2
 
+private theorem hasSum_torsionEnergy_neg {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (m n : ℕ) :
+    HasSum (fun k : ℕ => (-r) ^ k / k *
+      (ArithmeticEffectivityTheory.ramanujanSum m k *
+        conj (ArithmeticEffectivityTheory.ramanujanSum n k)).re)
+      (torsionEnergy (-r) m n) := by
+  have hterm : ∀ ζ ∈ primitiveRoots m ℂ, ∀ η ∈ primitiveRoots n ℂ,
+      HasSum (fun k : ℕ => (-r) ^ k / k * ((ζ * conj η) ^ k).re)
+        (-Real.log ‖1 - ((-r : ℝ) : ℂ) * (ζ * conj η)‖) := by
+    intro ζ hζ η hη
+    have hnr : ‖((-r : ℝ) : ℂ) * (ζ * conj η)‖ < 1 := by
+      rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_neg, abs_of_nonneg hr0,
+        norm_mul, Complex.norm_conj, norm_of_mem_primitiveRoots hζ,
+        norm_of_mem_primitiveRoots hη]
+      linarith
+    have ht := Complex.reCLM.hasSum (Complex.hasSum_taylorSeries_neg_log hnr)
+    simp only [Complex.reCLM_apply, Complex.neg_re, Complex.log_re] at ht
+    exact ht.congr_fun fun k => by
+      rw [mul_pow, ← Complex.ofReal_pow, ← Complex.ofReal_natCast, Complex.div_ofReal_re,
+        Complex.re_ofReal_mul]
+      ring
+  have h := hasSum_sum fun ζ (hζ : ζ ∈ primitiveRoots m ℂ) =>
+    hasSum_sum fun η (hη : η ∈ primitiveRoots n ℂ) => hterm ζ hζ η hη
+  rw [torsionEnergy]
+  refine h.congr_fun fun k => ?_
+  rw [ArithmeticEffectivityTheory.ramanujanSum, ArithmeticEffectivityTheory.ramanujanSum,
+    map_sum, sum_mul_sum, Complex.re_sum, mul_sum]
+  refine sum_congr rfl fun ζ _ => ?_
+  rw [Complex.re_sum, mul_sum]
+  refine sum_congr rfl fun η _ => ?_
+  rw [mul_pow, map_pow]
+
 /-- `oddTorsionEnergy r m n` is positive semidefinite for `0 ≤ r < 1`. -/
 theorem sum_sum_oddTorsionEnergy_nonneg {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
     (S : Finset ℕ) (y : ℕ → ℝ) :
@@ -869,61 +931,38 @@ theorem sum_sum_oddTorsionEnergy_nonneg {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
         (ramanujanMode m (2 * j + 1) * ramanujanMode n (2 * j + 1)))
       (oddTorsionEnergy r m n) := by
     intro m n
-    have h1 : ∀ z : ℂ, ‖z‖ ≤ 1 →
-        HasSum (fun j : ℕ => r ^ (2 * j + 1) / ((2 * j + 1 : ℕ) : ℝ) * (z ^ (2 * j + 1)).re)
-          ((-Real.log ‖1 - (r : ℂ) * z‖ - -Real.log ‖1 - ((-r : ℝ) : ℂ) * z‖) / 2) := by
-      intro z hz
-      have hp := hasSum_neg_log_norm_one_sub hr0 hr1 hz
-      have hnr : ‖((-r : ℝ) : ℂ) * z‖ < 1 := by
-        rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_neg, abs_of_nonneg hr0]
-        nlinarith [norm_nonneg z]
-      have hm_tay := Complex.reCLM.hasSum (Complex.hasSum_taylorSeries_neg_log hnr)
-      simp only [Complex.reCLM_apply, Complex.neg_re, Complex.log_re] at hm_tay
-      have hm : HasSum (fun k : ℕ => (-r) ^ k / k * (z ^ k).re)
-          (-Real.log ‖1 - ((-r : ℝ) : ℂ) * z‖) := by
-        refine hm_tay.congr_fun fun k => ?_
-        rw [mul_pow, ← Complex.ofReal_pow, ← Complex.ofReal_natCast, Complex.div_ofReal_re,
-          Complex.re_ofReal_mul]
-        ring
-      have hdiff := (hp.sub hm).div_const 2
-      have hinj : Function.Injective (fun j : ℕ => 2 * j + 1) := fun a b h => by omega
-      refine (Function.Injective.hasSum_iff hinj ?_).mp ?_
-      · intro k hk
-        have hev : Even k := by
-          rcases Nat.even_or_odd k with he | ⟨j, rfl⟩
-          · exact he
-          · exact absurd ⟨j, rfl⟩ hk
-        rcases hev with ⟨j, rfl⟩
-        have hpow : (-r) ^ (j + j) = r ^ (j + j) := by
+    have hp := hasSum_torsionEnergy hr0 hr1 m n
+    have hm := hasSum_torsionEnergy_neg hr0 hr1 m n
+    have hdiff : HasSum (fun k : ℕ =>
+        (r ^ k / k *
+            (ArithmeticEffectivityTheory.ramanujanSum m k *
+              conj (ArithmeticEffectivityTheory.ramanujanSum n k)).re -
+          (-r) ^ k / k *
+            (ArithmeticEffectivityTheory.ramanujanSum m k *
+              conj (ArithmeticEffectivityTheory.ramanujanSum n k)).re) / 2)
+        (oddTorsionEnergy r m n) := by
+      unfold oddTorsionEnergy
+      exact (hp.sub hm).div_const 2
+    have hinj : Function.Injective (fun j : ℕ => 2 * j + 1) := fun a b h => by
+      dsimp only at h
+      omega
+    have hcomp := (Function.Injective.hasSum_iff hinj ?_).mpr hdiff
+    · refine hcomp.congr_fun fun j => ?_
+      dsimp only [Function.comp_def]
+      have hpow : (-r) ^ (2 * j + 1) = -(r ^ (2 * j + 1)) := Odd.neg_pow ⟨j, rfl⟩ r
+      have hprod : ramanujanMode m (2 * j + 1) * ramanujanMode n (2 * j + 1) =
+          (ArithmeticEffectivityTheory.ramanujanSum m (2 * j + 1) *
+            conj (ArithmeticEffectivityTheory.ramanujanSum n (2 * j + 1))).re := by
+        rw [ramanujanSum_eq_ofReal, ramanujanSum_eq_ofReal, Complex.conj_ofReal,
+          ← Complex.ofReal_mul, Complex.ofReal_re]
+      rw [hpow, hprod]
+      ring
+    · intro k hk
+      rcases Nat.even_or_odd k with ⟨j, rfl⟩ | ⟨j, rfl⟩
+      · have hpow : (-r) ^ (j + j) = r ^ (j + j) := by
           rw [show j + j = 2 * j by ring, pow_mul, pow_mul, neg_sq]
-        simp [hpow]
-      · refine hdiff.congr_fun fun j => ?_
-        dsimp only [Function.comp_def]
-        have hpow : (-r) ^ (2 * j + 1) = -(r ^ (2 * j + 1)) :=
-           Odd.neg_pow ⟨j, rfl⟩ r
-        rw [hpow]
-        ring
-    have hsum := hasSum_sum fun ζ (hζ : ζ ∈ primitiveRoots m ℂ) => hasSum_sum
-      fun η (hη : η ∈ primitiveRoots n ℂ) => h1 (ζ * conj η) (by
-        rw [norm_mul, Complex.norm_conj, norm_of_mem_primitiveRoots hζ,
-          norm_of_mem_primitiveRoots hη, one_mul])
-    have hval : (∑ ζ ∈ primitiveRoots m ℂ, ∑ η ∈ primitiveRoots n ℂ,
-        (-Real.log ‖1 - (r : ℂ) * (ζ * conj η)‖ -
-          -Real.log ‖1 - ((-r : ℝ) : ℂ) * (ζ * conj η)‖) / 2) =
-        oddTorsionEnergy r m n := by
-      simp only [oddTorsionEnergy, torsionEnergy, ← sum_div, ← sum_sub_distrib]
-    rw [hval] at hsum
-    refine hsum.congr_fun fun j => ?_
-    simp only [ramanujanMode, ramanujanSum_eq_ofReal, Complex.ofReal_re]
-    have hprod : ramanujanMode m (2 * j + 1) * ramanujanMode n (2 * j + 1) =
-        (ramanujanSum m (2 * j + 1) * conj (ramanujanSum n (2 * j + 1))).re := by
-      rw [ramanujanSum_eq_ofReal, ramanujanSum_eq_ofReal, Complex.conj_ofReal,
-        ← Complex.ofReal_mul, Complex.ofReal_re]
-    rw [hprod, ramanujanSum, ramanujanSum, map_sum, sum_mul_sum, Complex.re_sum, mul_sum]
-    refine sum_congr rfl fun ζ _ => ?_
-    rw [Complex.re_sum, mul_sum]
-    refine sum_congr rfl fun η _ => ?_
-    rw [mul_pow, map_pow]
+        rw [hpow, sub_self, zero_div]
+      · exact absurd ⟨j, rfl⟩ hk
   have htot := hasSum_sum fun m (_ : m ∈ S) => hasSum_sum fun n (_ : n ∈ S) =>
     (hhas m n).mul_left (y m * y n)
   refine htot.nonneg fun j => ?_
@@ -949,40 +988,22 @@ theorem torsionEnergy_dyadic_parity_split {q : ℕ} (hq : q % 2 = 1) {r : ℝ}
   have hq0 : 0 < q := by omega
   have h2q0 : 0 < 2 * q := by omega
   have hp := hasSum_torsionEnergy hr0 hr1 q (2 * q)
-  -- Also compute `(torsionEnergy r q q + torsionEnergy (-r) q q) / 2 = (1/2) * torsionEnergy (r^2) q q`.
   have heven_qq : (torsionEnergy r q q + torsionEnergy (-r) q q) / 2 =
       (1 / 2) * torsionEnergy (r ^ 2) q q := by
     have hr2_lt : r ^ 2 < 1 := pow_lt_one₀ hr0 hr1 (by norm_num)
     have h_r2 := (hasSum_torsionEnergy (sq_nonneg r) hr2_lt q q).mul_left (1 / 2 : ℝ)
     have h_avg : HasSum (fun k : ℕ =>
-        ((r ^ k + (-r) ^ k) / 2) / k * (ramanujanSum q k * conj (ramanujanSum q k)).re)
+        ((r ^ k + (-r) ^ k) / 2) / k *
+          (ArithmeticEffectivityTheory.ramanujanSum q k *
+            conj (ArithmeticEffectivityTheory.ramanujanSum q k)).re)
         ((torsionEnergy r q q + torsionEnergy (-r) q q) / 2) := by
       have hp_qq := hasSum_torsionEnergy hr0 hr1 q q
-      have hm_qq : HasSum (fun k : ℕ => (-r) ^ k / k * (ramanujanSum q k * conj (ramanujanSum q k)).re)
-          (torsionEnergy (-r) q q) := by
-        have h := hasSum_sum fun ζ (hζ : ζ ∈ primitiveRoots q ℂ) => hasSum_sum
-          fun η (hη : η ∈ primitiveRoots q ℂ) => by
-            have hnr : ‖((-r : ℝ) : ℂ) * (ζ * conj η)‖ < 1 := by
-              rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_neg, abs_of_nonneg hr0,
-                norm_mul, Complex.norm_conj, norm_of_mem_primitiveRoots hζ,
-                norm_of_mem_primitiveRoots hη]
-              linarith
-            have ht := Complex.reCLM.hasSum (Complex.hasSum_taylorSeries_neg_log hnr)
-            simp only [Complex.reCLM_apply, Complex.neg_re, Complex.log_re] at ht
-            exact ht.congr_fun fun k => by
-              rw [mul_pow, ← Complex.ofReal_pow, ← Complex.ofReal_natCast, Complex.div_ofReal_re,
-                Complex.re_ofReal_mul]
-              ring
-        rw [torsionEnergy]
-        refine h.congr_fun fun k => ?_
-        rw [ramanujanSum, ramanujanSum, map_sum, sum_mul_sum, Complex.re_sum, mul_sum]
-        refine sum_congr rfl fun ζ _ => ?_
-        rw [Complex.re_sum, mul_sum]
-        refine sum_congr rfl fun η _ => ?_
-        rw [mul_pow, map_pow]
+      have hm_qq := hasSum_torsionEnergy_neg hr0 hr1 q q
       exact ((hp_qq.add hm_qq).div_const 2).congr_fun fun k => by ring
     have h_even_inj : HasSum (fun k : ℕ =>
-        ((r ^ k + (-r) ^ k) / 2) / k * (ramanujanSum q k * conj (ramanujanSum q k)).re)
+        ((r ^ k + (-r) ^ k) / 2) / k *
+          (ArithmeticEffectivityTheory.ramanujanSum q k *
+            conj (ArithmeticEffectivityTheory.ramanujanSum q k)).re)
         ((1 / 2) * torsionEnergy (r ^ 2) q q) := by
       refine (Function.Injective.hasSum_iff (mul_right_injective₀ (by norm_num : (2 : ℕ) ≠ 0)) ?_).mp ?_
       · intro k hk
@@ -993,7 +1014,8 @@ theorem torsionEnergy_dyadic_parity_split {q : ℕ} (hq : q % 2 = 1) {r : ℝ}
         dsimp only [Function.comp_def]
         have hpow1 : (-r) ^ (2 * j) = (r ^ 2) ^ j := by rw [pow_mul, neg_sq]
         have hpow2 : r ^ (2 * j) = (r ^ 2) ^ j := pow_mul r 2 j
-        have hc : ramanujanSum q (2 * j) = ramanujanSum q j := by
+        have hc : ArithmeticEffectivityTheory.ramanujanSum q (2 * j) =
+            ArithmeticEffectivityTheory.ramanujanSum q j := by
           rw [ramanujanSum_eq_ofReal, ramanujanSum_eq_ofReal,
             ramanujanMode_eq_ramanujanLagCoefficient hq0 (2 * j),
             ramanujanMode_eq_ramanujanLagCoefficient hq0 j,
@@ -1005,30 +1027,8 @@ theorem torsionEnergy_dyadic_parity_split {q : ℕ} (hq : q % 2 = 1) {r : ℝ}
           field_simp [hj']
           ring
     exact h_avg.unique h_even_inj
-  -- Similarly `torsionEnergy r q (2 * q) = torsionEnergy (-r) q q`!
   have h_neg : torsionEnergy r q (2 * q) = torsionEnergy (-r) q q := by
-    have hm_qq : HasSum (fun k : ℕ => (-r) ^ k / k * (ramanujanSum q k * conj (ramanujanSum q k)).re)
-        (torsionEnergy (-r) q q) := by
-      have h := hasSum_sum fun ζ (hζ : ζ ∈ primitiveRoots q ℂ) => hasSum_sum
-        fun η (hη : η ∈ primitiveRoots q ℂ) => by
-          have hnr : ‖((-r : ℝ) : ℂ) * (ζ * conj η)‖ < 1 := by
-            rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_neg, abs_of_nonneg hr0,
-              norm_mul, Complex.norm_conj, norm_of_mem_primitiveRoots hζ,
-              norm_of_mem_primitiveRoots hη]
-            linarith
-          have ht := Complex.reCLM.hasSum (Complex.hasSum_taylorSeries_neg_log hnr)
-          simp only [Complex.reCLM_apply, Complex.neg_re, Complex.log_re] at ht
-          exact ht.congr_fun fun k => by
-            rw [mul_pow, ← Complex.ofReal_pow, ← Complex.ofReal_natCast, Complex.div_ofReal_re,
-              Complex.re_ofReal_mul]
-            ring
-      rw [torsionEnergy]
-      refine h.congr_fun fun k => ?_
-      rw [ramanujanSum, ramanujanSum, map_sum, sum_mul_sum, Complex.re_sum, mul_sum]
-      refine sum_congr rfl fun ζ _ => ?_
-      rw [Complex.re_sum, mul_sum]
-      refine sum_congr rfl fun η _ => ?_
-      rw [mul_pow, map_pow]
+    have hm_qq := hasSum_torsionEnergy_neg hr0 hr1 q q
     refine hp.unique (hm_qq.congr_fun fun k => ?_)
     rcases Nat.eq_zero_or_pos k with rfl | hk
     · simp
@@ -1061,7 +1061,9 @@ theorem tendsto_oddTorsionEnergy_add_half_log {q : ℕ} (hq : q % 2 = 1) :
   have hne : q ≠ 2 * q := by omega
   have ht_q2q : Tendsto (fun r : ℝ => torsionEnergy r q (2 * q)) (𝓝[<] 1)
       (𝓝 (-((Nat.totient q : ℝ) * Real.log 2))) := by
-    have h := (tendsto_torsionEnergy_of_ne hne).mono_left nhdsWithin_le_nhds
+    have h : Tendsto (fun r : ℝ => torsionEnergy r q (2 * q)) (𝓝[<] 1)
+        (𝓝 (-orbitIntersection q (2 * q))) :=
+      (tendsto_torsionEnergy_of_ne hne).mono_left (nhdsWithin_le_nhds (s := Iio 1))
     have hI : orbitIntersection q (2 * q) = (Nat.totient q : ℝ) * Real.log 2 := by
       have hh := orbitIntersection_hecke hq0 (t := 2) (by norm_num)
       rw [Nat.mul_comm q 2, ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two] at hh
@@ -1070,9 +1072,9 @@ theorem tendsto_oddTorsionEnergy_add_half_log {q : ℕ} (hq : q % 2 = 1) :
   have ht_r2 : Tendsto (fun r : ℝ =>
       (1 / 2 : ℝ) * (torsionEnergy (r ^ 2) q q + (Nat.totient q : ℝ) * Real.log |1 - r ^ 2|))
       (𝓝[<] 1) (𝓝 ((1 / 2 : ℝ) * (-orbitIntersection q q))) := by
-    have hcomp := (tendsto_torsionEnergy_self_add_log q).comp
-      (((continuous_pow 2).tendsto (1 : ℝ)).mono_left nhdsWithin_le_nhds)
-    simpa [one_pow] using hcomp.const_mul (1 / 2 : ℝ)
+    have hpow2 : Tendsto (fun r : ℝ => r ^ 2) (𝓝[<] 1) (𝓝 1) := by
+      simpa using ((continuous_pow 2).tendsto (1 : ℝ)).mono_left (nhdsWithin_le_nhds (s := Iio 1))
+    exact ((tendsto_torsionEnergy_self_add_log q).comp hpow2).const_mul (1 / 2 : ℝ)
   have ht_log1r : Tendsto (fun r : ℝ => ((Nat.totient q : ℝ) / 2) * Real.log (1 + r))
       (𝓝[<] 1) (𝓝 (((Nat.totient q : ℝ) / 2) * Real.log 2)) := by
     have hc : ContinuousAt (fun r : ℝ => ((Nat.totient q : ℝ) / 2) * Real.log (1 + r)) 1 :=
@@ -1090,7 +1092,7 @@ theorem tendsto_oddTorsionEnergy_add_half_log {q : ℕ} (hq : q % 2 = 1) :
   have habs : |1 - r ^ 2| = (1 - r) * (1 + r) := by
     rw [abs_of_pos (sub_pos.mpr hr2_lt)]
     ring
-  rw [habs, Real.log_mul (sub_pos.mpr hr.2).ne' (by linarith : (1 + r) ≠ 0)]
+  rw [habs, Real.log_mul (sub_pos.mpr hr.2).ne' (by linarith [hr.1] : (1 + r) ≠ 0)]
   ring
 
 /-! ## §7. Positive Survivor 3: Midpoint Parity-Transposition & Coercive `m = 1` Short-Cycle Positivity -/
@@ -1122,17 +1124,28 @@ private theorem contDiff_oddPartComplex {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g
 private theorem hasCompactSupport_evenPartComplex {g : ℝ → ℂ} (hgc : HasCompactSupport g) :
     HasCompactSupport (evenPartComplex g) := by
   have hneg : HasCompactSupport (fun x => g (-x)) := hgc.comp_homeomorph (Homeomorph.neg ℝ)
-  exact (hgc.add hneg).smul_left
+  have hsum : HasCompactSupport (fun x => g x + g (-x)) := hgc.add hneg
+  refine HasCompactSupport.of_support_subset_isCompact hsum.isCompact fun x hx => ?_
+  refine subset_tsupport _ ?_
+  intro h0
+  apply hx
+  simp [evenPartComplex, h0]
 
 private theorem hasCompactSupport_oddPartComplex {g : ℝ → ℂ} (hgc : HasCompactSupport g) :
     HasCompactSupport (oddPartComplex g) := by
   have hneg : HasCompactSupport (fun x => g (-x)) := hgc.comp_homeomorph (Homeomorph.neg ℝ)
-  exact (hgc.sub hneg).smul_left
+  have hsub : HasCompactSupport (fun x => g x - g (-x)) := hgc.sub hneg
+  refine HasCompactSupport.of_support_subset_isCompact hsub.isCompact fun x hx => ?_
+  refine subset_tsupport _ ?_
+  intro h0
+  apply hx
+  simp [oddPartComplex, h0]
 
 /-- Translation isometry of `zetaZeroConfig.W`: `W(T_v f, T_v f) = W(f, f)`. -/
 theorem zetaZeroConfig_W_translate_self {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
     (hfc : HasCompactSupport f) (v : ℝ) :
-    zetaZeroConfig.W (translate v f) (translate v f) = zetaZeroConfig.W f f := by
+    zetaZeroConfig.W (ArithmeticCastelnuovoSeveri.translate v f)
+      (ArithmeticCastelnuovoSeveri.translate v f) = zetaZeroConfig.W f f := by
   rw [W_self_eq_towerMoment_zero _ temperedConfig_zetaZeroConfig (translate_contDiff hf v)
     (translate_hasCompactSupport hfc v) 1, towerMoment_translate_zero,
     ← W_self_eq_towerMoment_zero _ temperedConfig_zetaZeroConfig hf hfc 1]
@@ -1143,32 +1156,36 @@ to strictly odd tests and odd tests to strictly even tests, so `Re W_ζ(g - T_v 
 splits orthogonally without cross-term into its even-profile and odd-profile short-cycle parts. -/
 theorem shortCycle_re_W_eq_even_add_odd {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g)
     (hgc : HasCompactSupport g) (v : ℝ) :
-    (zetaZeroConfig.W (g - translate v g) (g - translate v g)).re =
-      (zetaZeroConfig.W (evenPartComplex g - translate v (evenPartComplex g))
-        (evenPartComplex g - translate v (evenPartComplex g))).re +
-      (zetaZeroConfig.W (oddPartComplex g - translate v (oddPartComplex g))
-        (oddPartComplex g - translate v (oddPartComplex g))).re := by
+    (zetaZeroConfig.W (g - ArithmeticCastelnuovoSeveri.translate v g)
+      (g - ArithmeticCastelnuovoSeveri.translate v g)).re =
+      (zetaZeroConfig.W (evenPartComplex g - ArithmeticCastelnuovoSeveri.translate v (evenPartComplex g))
+        (evenPartComplex g - ArithmeticCastelnuovoSeveri.translate v (evenPartComplex g))).re +
+      (zetaZeroConfig.W (oddPartComplex g - ArithmeticCastelnuovoSeveri.translate v (oddPartComplex g))
+        (oddPartComplex g - ArithmeticCastelnuovoSeveri.translate v (oddPartComplex g))).re := by
   set ge := evenPartComplex g
   set go := oddPartComplex g
   have hge : ContDiff ℝ 2 ge := contDiff_evenPartComplex hg
   have hgo : ContDiff ℝ 2 go := contDiff_oddPartComplex hg
   have hgec : HasCompactSupport ge := hasCompactSupport_evenPartComplex hgc
   have hgoc : HasCompactSupport go := hasCompactSupport_oddPartComplex hgc
-  set h : ℝ → ℂ := translate (-(v / 2)) (g - translate v g)
-  set h1 : ℝ → ℂ := translate (-(v / 2)) (ge - translate v ge)
-  set h2 : ℝ → ℂ := translate (-(v / 2)) (go - translate v go)
-  have hh_d : ContDiff ℝ 2 h := translate_contDiff (hg.sub (translate_contDiff hg v)) _
+  set h : ℝ → ℂ :=
+    ArithmeticCastelnuovoSeveri.translate (-(v / 2)) (g - ArithmeticCastelnuovoSeveri.translate v g)
+  set h1 : ℝ → ℂ :=
+    ArithmeticCastelnuovoSeveri.translate (-(v / 2)) (ge - ArithmeticCastelnuovoSeveri.translate v ge)
+  set h2 : ℝ → ℂ :=
+    ArithmeticCastelnuovoSeveri.translate (-(v / 2)) (go - ArithmeticCastelnuovoSeveri.translate v go)
+  have hh_d : ContDiff ℝ 2 h := translate_contDiff (hg.sub (translate_contDiff hg v)) (-(v / 2))
   have hh_c : HasCompactSupport h :=
-    translate_hasCompactSupport (hgc.sub (translate_hasCompactSupport hgc v)) _
-  have hh1_d : ContDiff ℝ 2 h1 := translate_contDiff (hge.sub (translate_contDiff hge v)) _
+    translate_hasCompactSupport (hgc.sub (translate_hasCompactSupport hgc v)) (-(v / 2))
+  have hh1_d : ContDiff ℝ 2 h1 := translate_contDiff (hge.sub (translate_contDiff hge v)) (-(v / 2))
   have hh1_c : HasCompactSupport h1 :=
-    translate_hasCompactSupport (hgec.sub (translate_hasCompactSupport hgec v)) _
-  have hh2_d : ContDiff ℝ 2 h2 := translate_contDiff (hgo.sub (translate_contDiff hgo v)) _
+    translate_hasCompactSupport (hgec.sub (translate_hasCompactSupport hgec v)) (-(v / 2))
+  have hh2_d : ContDiff ℝ 2 h2 := translate_contDiff (hgo.sub (translate_contDiff hgo v)) (-(v / 2))
   have hh2_c : HasCompactSupport h2 :=
-    translate_hasCompactSupport (hgoc.sub (translate_hasCompactSupport hgoc v)) _
+    translate_hasCompactSupport (hgoc.sub (translate_hasCompactSupport hgoc v)) (-(v / 2))
   have hh1_odd : ∀ x, h1 (-x) = -h1 x := by
     intro x
-    simp only [h1, translate, Pi.sub_apply]
+    simp only [h1, ArithmeticCastelnuovoSeveri.translate, Pi.sub_apply]
     have e1 : -x - -(v / 2) = -(x - v / 2) := by ring
     have e2 : -x - -(v / 2) - v = -(x + v / 2) := by ring
     have e3 : x - -(v / 2) = x + v / 2 := by ring
@@ -1177,7 +1194,7 @@ theorem shortCycle_re_W_eq_even_add_odd {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g
     ring
   have hh2_ev : ∀ x, h2 (-x) = h2 x := by
     intro x
-    simp only [h2, translate, Pi.sub_apply]
+    simp only [h2, ArithmeticCastelnuovoSeveri.translate, Pi.sub_apply]
     have e1 : -x - -(v / 2) = -(x - v / 2) := by ring
     have e2 : -x - -(v / 2) - v = -(x + v / 2) := by ring
     have e3 : x - -(v / 2) = x + v / 2 := by ring
@@ -1186,7 +1203,8 @@ theorem shortCycle_re_W_eq_even_add_odd {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g
     ring
   have hh_sum : ∀ x, h x = h1 x + h2 x := by
     intro x
-    simp only [h, h1, h2, translate, Pi.sub_apply, ge, go, evenPartComplex, oddPartComplex]
+    simp only [h, h1, h2, ArithmeticCastelnuovoSeveri.translate, Pi.sub_apply, ge, go,
+      evenPartComplex, oddPartComplex]
     ring
   have hev_re : evenPartReal (fun x => (h x).re) = fun x => (h2 x).re := by
     funext x
@@ -1239,20 +1257,21 @@ theorem even_shortCycle_m_one_re_W_ge {g : ℝ → ℂ} {η : ℝ}
     (hη_hi : η ≤ 181 / 500 - Real.log 2 / 2)
     (hg : ContDiff ℝ 2 g) (hgs : tsupport g ⊆ Icc (-η) η)
     (hev : ∀ x, g (-x) = g x) :
-    1 / 1000 * ∫ x, ‖(g - translate (Real.log 2) g) x‖ ^ 2 ≤
-      (zetaZeroConfig.W (g - translate (Real.log 2) g) (g - translate (Real.log 2) g)).re := by
+    1 / 1000 * ∫ x, ‖(g - ArithmeticCastelnuovoSeveri.translate (Real.log 2) g) x‖ ^ 2 ≤
+      (zetaZeroConfig.W (g - ArithmeticCastelnuovoSeveri.translate (Real.log 2) g)
+        (g - ArithmeticCastelnuovoSeveri.translate (Real.log 2) g)).re := by
   have hgc : HasCompactSupport g := isCompact_Icc.of_isClosed_subset (isClosed_tsupport g) hgs
   set v := Real.log 2
   have hv0 : 0 ≤ v := (Real.log_pos one_lt_two).le
-  set f := g - translate v g
+  set f : ℝ → ℂ := g - ArithmeticCastelnuovoSeveri.translate v g
   have hf_d : ContDiff ℝ 2 f := hg.sub (translate_contDiff hg v)
   have hf_c : HasCompactSupport f := hgc.sub (translate_hasCompactSupport hgc v)
-  set h := translate (-(v / 2)) f
-  have hh_d : ContDiff ℝ 2 h := translate_contDiff hf_d _
-  have hh_c : HasCompactSupport h := translate_hasCompactSupport hf_c _
+  set h : ℝ → ℂ := ArithmeticCastelnuovoSeveri.translate (-(v / 2)) f
+  have hh_d : ContDiff ℝ 2 h := translate_contDiff hf_d (-(v / 2))
+  have hh_c : HasCompactSupport h := translate_hasCompactSupport hf_c (-(v / 2))
   have hh_odd : ∀ x, h (-x) = -h x := by
     intro x
-    simp only [h, f, translate, Pi.sub_apply]
+    simp only [h, f, ArithmeticCastelnuovoSeveri.translate, Pi.sub_apply]
     have e1 : -x - -(v / 2) = -(x - v / 2) := by ring
     have e2 : -x - -(v / 2) - v = -(x + v / 2) := by ring
     have e3 : x - -(v / 2) = x + v / 2 := by ring
@@ -1261,15 +1280,13 @@ theorem even_shortCycle_m_one_re_W_ge {g : ℝ → ℂ} {η : ℝ}
     ring
   have hh_zero : ∀ x, 181 / 500 < |x| → h x = 0 := by
     intro x hx
-    simp only [h, f, translate, Pi.sub_apply]
+    simp only [h, f, ArithmeticCastelnuovoSeveri.translate, Pi.sub_apply]
     have hnot1 : x - -(v / 2) ∉ tsupport g := by
       intro hm
       have := mem_Icc.mp (hgs hm)
-      rcases lt_or_gt_of_ne (by linarith [abs_nonneg x] : |x| ≠ 0) with hlt | hgt
-      · linarith [abs_nonneg x]
-      · rcases le_or_gt 0 x with hx0 | hx0
-        · rw [abs_of_nonneg hx0] at hx; linarith
-        · rw [abs_of_neg hx0] at hx; linarith
+      rcases le_or_gt 0 x with hx0 | hx0
+      · rw [abs_of_nonneg hx0] at hx; linarith
+      · rw [abs_of_neg hx0] at hx; linarith
     have hnot2 : x - -(v / 2) - v ∉ tsupport g := by
       intro hm
       have := mem_Icc.mp (hgs hm)
@@ -1297,7 +1314,7 @@ theorem even_shortCycle_m_one_re_W_ge {g : ℝ → ℂ} {η : ℝ}
     simp only [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
     ring
   have hnorm_eq : ∫ x, ‖h x‖ ^ 2 = ∫ x, ‖f x‖ ^ 2 := by
-    simp only [h, translate]
+    simp only [h, ArithmeticCastelnuovoSeveri.translate]
     exact integral_sub_right_eq_self (fun x => ‖f x‖ ^ 2) (-(v / 2))
   rw [← zetaZeroConfig_W_translate_self hf_d hf_c (-(v / 2))]
   change _ ≤ (zetaZeroConfig.W h h).re
