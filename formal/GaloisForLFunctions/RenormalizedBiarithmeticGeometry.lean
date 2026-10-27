@@ -13,7 +13,7 @@ import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheTerminalCeilingAn
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheGaugeChargeOfACoupling
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.LogCellsFixTheGauge
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheCellHolonomyDefectCountsChargedCells
-import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheLiouvilleCellDefectGrowsLogarithmically
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheLiouvilleCellDefectGrowsPolynomially
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.CriticalDiscsAndTheTerminalLens
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.HarnackOnTheCaratheodoryRegion
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.PositivityIsIrreversible
@@ -32,8 +32,8 @@ orthogonality and twins, the primes in the twins' pole-node block and the twiste
 digamma sums; dyadic amplification of the Hecke defect, the Hecke moment problem, its reading from
 integer theta prefixes, and the one-scale bound and terminal ceiling as zero-free strips; gauge
 charge of couplings, gauge fixing by logarithmic cells, the quantitative cell holonomy and its
-logarithmic growth at the Liouville gauge; critical discs, the Carathéodory region of `ξ′/ξ`, the
+fourth-root growth at the Liouville gauge; critical discs, the Carathéodory region of `ξ′/ξ`, the
 terminal lens and Harnack estimates on it; irreversibility of positive deformations; Kronecker
-dilution, the height laws and finite purchase of collective packets; the selectivity battery and
+dilution, the height laws, difference packets and finite purchase of collective packets; the selectivity battery and
 the laws in one statement. See `RenormalizedBiarithmeticGeometry/README.md`.
 -/

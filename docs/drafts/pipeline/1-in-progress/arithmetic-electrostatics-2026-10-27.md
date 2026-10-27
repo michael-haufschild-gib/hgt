@@ -51,6 +51,7 @@ damped source-work modules (`ReflectedTransverseWork`, `TheSelbergWorkExhaustsTh
 | ES20 power saving for aligned zero ordinates (higher moments) | `HigherMomentsAtZeroOrdinates` | Lean |
 | ES21 gauge invisibility of the atomic prime form; stability law for every sign twin; positive-cone margin; archimedean margin `M_ω(f_x) = M(f_{ωx}) + A(f⁺+f⁻) − A(f⁺−f⁻)` | `TheGaugeIsInvisibleAtAtomicResolution` | Lean |
 | ES22 coupled renormalization with the pole at atomic resolution: `Re W + 2S² ≥ 0` | `TheWeilFormAtAtomicResolution` | Lean |
+| ES23 stability on the sharp counterterm `log N + O(1)` (RAPT bounds), width `≍ δ_N N^{−e^{1/2}}` | `TheStabilityLawWithTheSharpCounterterm` | Lean |
 
 ## Open (RH-strength or beyond the present inputs)
 - Field law: arithmetic upper bound for the field below `max(1, √(2c log γ))`.
@@ -60,6 +61,10 @@ damped source-work modules (`ReflectedTransverseWork`, `TheSelbergWorkExhaustsTh
   archimedean polarization across the charge is dominated by the Lévy gain there (ES21).
 - Forcing law for Q1: every zero of depth `δ` forces a short prime detector to be large at its
   ordinate (not in the corpus; the zero-density theorem there goes through Littlewood's lemma).
+  Threshold: a reserve reads as anti-alignment `V` at `σ > 1` iff it exceeds the background
+  `Re(arch′/arch) = ½ log γ + O(1)` by `V` (ES8 identity). ACP's terminal reserve
+  `m/h + m/(2δ+h) + cδ log γ` lives on `h < ½ − δ` and its log part is below the background:
+  needed is `(½ + c′δ) log γ` past `Re s = 1`. Positive survivor: the exact dictionary at `σ > 1` (ES8).
 - Alignment inside the strip (Q1 of the frontier); coupled class at the centre; fibre selection.
 
 ## Key paper facts

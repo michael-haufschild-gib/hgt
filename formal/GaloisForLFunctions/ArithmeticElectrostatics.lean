@@ -21,6 +21,7 @@ import GaloisForLFunctions.ArithmeticElectrostatics.TheEnergyOfAZeroIsLogarithmi
 import GaloisForLFunctions.ArithmeticElectrostatics.HigherMomentsAtZeroOrdinates
 import GaloisForLFunctions.ArithmeticElectrostatics.TheGaugeIsInvisibleAtAtomicResolution
 import GaloisForLFunctions.ArithmeticElectrostatics.TheWeilFormAtAtomicResolution
+import GaloisForLFunctions.ArithmeticElectrostatics.TheStabilityLawWithTheSharpCounterterm
 
 /-!
 # Arithmetic Electrostatics of the Zero Divisor
@@ -36,7 +37,7 @@ characteristic circle:
   aligned ordinates;
 * the diagonal: Selberg's renormalized source, self-intersections and adjunction of torsion orbits,
   power maps as similitudes of the Abel energy, logarithmic counterterms on the circle and on the
-  atomic Weil prime form, the arithmetic point, the stability law at atomic resolution, Weil's form
+  atomic Weil prime form, the arithmetic point, the stability law at atomic resolution and with the sharp counterterm `log N + O(1)`, Weil's form
   with the pole and its rank-one counterterm on atomic tests;
 * the base and gauge: Fekete stability of the circle, affine invariance, gauge margins of the
   renormalized source, gauge invisibility of the atomic prime form and the archimedean margin.

@@ -12,7 +12,7 @@ import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheCellHolonomyDefec
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.HarnackOnTheCaratheodoryRegion
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheTerminalCeilingAndTheOneScaleBoundAreZeroFreeStrips
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheTwistedEntriesAreDigammaSums
-import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheLiouvilleCellDefectGrowsLogarithmically
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheLiouvilleCellDefectGrowsPolynomially
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.EveryLatticeCloudHasAFinitePurchaseBound
 
 /-!
@@ -44,10 +44,9 @@ One statement collecting the laws proved in the programme:
     with angle `ϑ` are each equivalent to a zero-free strip.
 11. **Primes as digamma sums.** `φ(m)Λ(t)` is a sum of digamma values at rational points, read off
     the pole-node block of the twins.
-12. **Logarithmic gauge charge.** The Liouville cell defect is at least `2(K + 1)` on
-    `[1, 4^{K+2}]`.
+12. **Fourth-root gauge charge.** The Liouville cell defect is at least `2J` on `[1, 8J⁴]`.
 13. **Finite purchase.** Every finite cloud of nonzero lattice ordinates has a finite purchase
-    bound.
+    bound; difference packets of `N` points buy `N − 1` times their pole share.
 -/
 
 noncomputable section
@@ -137,13 +136,15 @@ theorem renormalized_biarithmetic_geometry_laws :
         -((1 / (m * (m * t) : ℕ)) * ∑ j ∈ range (m * (m * t)),
           shiftedMode m j * shiftedMode (m * t) j *
             latticeGermLimit ((j + 1) / (m * (m * t) : ℕ)))) ∧
-    -- Logarithmic gauge charge at the Liouville gauge
-    (∀ (K : ℕ) (c : ℝ), 2 * ((K : ℝ) + 1) ≤ hsDefect PrimeGauge.liouvilleGauge (4 ^ (K + 2)) c) ∧
+    -- Fourth-root gauge charge at the Liouville gauge
+    (∀ (J : ℕ) (c : ℝ), 2 * (J : ℝ) ≤ hsDefect PrimeGauge.liouvilleGauge (8 * J ^ 4) c) ∧
     -- Finite purchase for lattice clouds
     (∀ {d : ℕ} {κ : Type} [Fintype κ] {g : Fin d → ℝ}, LinearIndependent ℚ g →
       ∀ n : κ → Fin d → ℤ, (∀ j, n j ≠ 0) → ∃ M : ℕ, ∀ (a₀ : ℝ) (a : κ → ℝ),
         (∀ t : ℝ, 0 ≤ a₀ + ∑ j, a j * Real.cos ((∑ i, (n j i : ℝ) * g i) * t)) →
-          ∑ j, a j ≤ M * a₀) :=
+          ∑ j, a j ≤ M * a₀) ∧
+    (∀ {N : ℕ} (x : Fin N → ℝ) (t : ℝ),
+      0 ≤ (N : ℝ) + ∑ i, ∑ j ∈ univ.erase i, Real.cos ((x i - x j) * t)) :=
   ⟨fun _ a _ hq hper _ hx => periodicGerm_survival a hq hper hx,
     fun _ hS hne _ _ _ hC => torsion_survivalCone_eq hS hne hC,
     fun _ hq => torsionLimitForm_neg hq,
@@ -164,7 +165,8 @@ theorem renormalized_biarithmetic_geometry_laws :
     fun ha => zeroFreeStrip_iff_terminal_ceiling ha,
     fun hϑ => zeroFreeStrip_iff_heckeDefect_bound hϑ,
     fun hm ht => totient_mul_vonMangoldt_eq_digamma_sum hm ht,
-    hsDefect_liouville_ge_log,
-    fun hind n hn => exists_purchase_bound hind n hn⟩
+    hsDefect_liouville_ge,
+    fun hind n hn => exists_purchase_bound hind n hn,
+    fun x t => difference_packet_nonneg x t⟩
 
 end GaloisForLFunctions.RenormalizedBiarithmeticGeometry

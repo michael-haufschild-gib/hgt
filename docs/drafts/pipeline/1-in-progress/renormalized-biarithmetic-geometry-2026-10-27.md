@@ -49,8 +49,8 @@ RBG owns the survival law and the rank comparison; imports AET/BGG/CDG/ACP/MPG/H
 | selectivity battery | `TheSelectivityBatteryOfRenormalizedBiarithmeticGeometry` | `config_dyadic_ge`, `liouville_not_cell_covariant` |
 | terminal ceiling and one-scale bound = zero-free strips | `TheTerminalCeilingAndTheOneScaleBoundAreZeroFreeStrips` | `zeroFreeStrip_iff_terminal_ceiling`, `zeroFreeStrip_iff_heckeDefect_bound` |
 | twisted entries as digamma sums; `φ(m)Λ(t)` as digamma sum | `TheTwistedEntriesAreDigammaSums` | `totient_mul_vonMangoldt_eq_digamma_sum` |
-| Liouville cell defect grows logarithmically | `TheLiouvilleCellDefectGrowsLogarithmically` | `hsDefect_liouville_ge_log` |
-| finite purchase for lattice clouds | `EveryLatticeCloudHasAFinitePurchaseBound` | `exists_purchase_bound` |
+| Liouville cell defect: even sign changes, fourth-root growth | `TheLiouvilleCellDefectGrowsPolynomially` | `mem_liouvilleAgreements_iff`, `hsDefect_liouville_ge` |
+| finite purchase for lattice clouds; difference packets | `EveryLatticeCloudHasAFinitePurchaseBound` | `exists_purchase_bound`, `difference_packet_nonneg` |
 | capstone | `TheLawsOfRenormalizedBiarithmeticGeometry` | `renormalized_biarithmetic_geometry_laws` |
 
 ## No-go closure

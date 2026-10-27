@@ -62,7 +62,7 @@ them.
 
 ---
 
-## 2. Why
+## 2. Motivation
 
 **One pairing, four properties.** On `C × C` the intersection pairing is positive by Hodge index, the
 Frobenius graph is a correspondence, Lefschetz counts actual points, and the diagonal has finite
@@ -116,7 +116,8 @@ BGG).
    covariant only at the Euler point, and on the horizon `[1, X]` it pins every prime up to `2X + 1`.
    Quantitatively, the covariance defect counts charged cells: at the Liouville gauge it lies
    between `2N₊` and `4N₊`, `N₊ = #{a ≤ X : λ(a) = λ(2a + 1)}` — a correlation of `λ` along
-   `(+1, ×2)`.
+   `(+1, ×2)`. The charged cells are the sign changes `λ(2a) ≠ λ(2a + 1)`, and squares against
+   twice-squares give at least `J` of them below `8J⁴`.
 4. *Terminal geometry.* A reflected zero pair pulls `Re ξ′/ξ` negative exactly inside its critical
    disc; terminals are the zeros outside every disc, and each terminal carries a zero-free lens on
    which `Re ξ′/ξ ≥ 0`. Harnack's inequality holds for `Re ξ′/ξ` on every disc strictly outside the
@@ -124,8 +125,10 @@ BGG).
 5. *Chirality.* Positive deformations form a monoid without nontrivial units.
 6. *Dilution and height.* A positive packet on `ℚ`-independent ordinates buys in total at most its
    pole share; on harmonic progressions of length `≤ M` along independent generators it buys at
-   most `M` times the pole share, and one progression attains it. Collective amortization is
-   measured by the arithmetic of the cloud, not by its size.
+   most `M` times the pole share, and one progression attains it. Every finite lattice cloud has a
+   finite purchase constant, between (largest difference set in the cloud) − 1 and its minimal
+   weighted height. Collective amortization is measured by the arithmetic of the cloud, not by its
+   size.
 7. *Soft versus selective.* Dyadic amplification holds on every positive depth configuration and is
    soft; cells and the successor are selective (they reject the Liouville twin); square-class
    criteria are blind.
@@ -299,12 +302,14 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
     (`exists_hsDefect_eq_zero_iff`). At the Liouville gauge the charged cells are the agreements
     `λ(a) = λ(2a + 1)`, and the minimal defect is between `2N₊` and `4N₊`
     (`hsDefect_liouville_sandwich`), with `N₊ ≥ 1` from `λ(2)λ(5) = 1` (`one_le_liouvilleAgreements`).
-16. **Logarithmic gauge charge** (`TheLiouvilleCellDefectGrowsLogarithmically`). A successor sign
-    change `λ(u) ≠ λ(u + 1)` makes `a = 2u(u + 1)` charged, since `2a + 1 = (2u + 1)²`
-    (`mem_liouvilleAgreements_of_sign_change`); `λ(2^{k+1}) = −λ(2^k)` forces a sign change in every
-    dyadic block (`exists_sign_change_dyadic`). Hence at least `K + 1` charged cells lie below
-    `4^{K+2}` (`card_liouvilleAgreements_ge`) and the Liouville defect is at least `2(K + 1)` there
-    (`hsDefect_liouville_ge_log`).
+16. **Fourth-root gauge charge** (`TheLiouvilleCellDefectGrowsPolynomially`). Since
+    `λ(2a) = −λ(a)`, the charged cells are the even sign changes `λ(2a) ≠ λ(2a + 1)`
+    (`mem_liouvilleAgreements_iff`). A successor sign change `λ(u) ≠ λ(u + 1)` makes
+    `a = 2u(u + 1)` charged, since `2a + 1 = (2u + 1)²` (`mem_liouvilleAgreements_of_sign_change`).
+    Squares and twice-squares force sign changes in disjoint windows
+    (`exists_sign_change_below_twice_square`, `twice_sq_lt_sqrt_sq`). At least `J` charged cells
+    lie below `8J⁴` (`card_liouvilleAgreements_ge`); the defect is at least `2J` there for every
+    real scalar (`hsDefect_liouville_ge`).
 17. **Critical discs and the lens** (`CriticalDiscsAndTheTerminalLens`). The pair contribution has the
     sign of `x(x² + (y − γ)² − b²)` (`xiLinePairRe_nonneg_of_not_inCriticalDisc`,
     `xiLinePairRe_neg_of_inCriticalDisc`); off all discs `Re ξ′/ξ ≥ 0`
@@ -340,7 +345,10 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
     `h_j = Σ_i n_{ji} m_i` with `1 ≤ |h_j| ≤ M` give `Σ a_j ≤ M a_0`
     (`sum_le_height_mul_of_weighted_packet`, via `norm_zpow_sub_zpow_le`); weights `m_i = t^i` with
     all heights nonzero exist (`exists_weight_heights_ne_zero`), so every finite cloud of nonzero
-    lattice ordinates has a finite purchase bound (`exists_purchase_bound`).
+    lattice ordinates has a finite purchase bound (`exists_purchase_bound`). Conversely
+    `N + Σ_{i≠j} cos((x_i − x_j)t) = |Σ_i e^{i x_i t}|² ≥ 0` (`difference_packet_nonneg`) buys
+    `N − 1` times its pole share (`difference_packet_purchase`): the purchase constant is at least
+    (largest difference set in the cloud) − 1.
 22. **The battery** (`TheSelectivityBatteryOfRenormalizedBiarithmeticGeometry`). Two-scale rigidity
     and dyadic amplification hold for every finite positive depth configuration
     (`configDefect_sq_le`, `config_dyadic_ge`): they are soft. Cells reject the Liouville twin
@@ -358,9 +366,9 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
 | I. Split polarization and lossless amplification | `Re W = D − Δ`; `E(L)² ≤ D(E(2L) − 4E(L))`; dyadic amplification with loss `D`; RH ⇔ sub-doubly-exponential dyadic growth; the uniform one-scale bound with angle `ϑ` ⇔ the zero-free strip of width `ϑ`; Hankel positivity and shell rigidity of the depth moments | CDG, APol; `heckeDefect_dyadic_ge`, `heckeDefect_le_of_dyadic_le`, `riemannHypothesis_iff_dyadic_subexp`, `zeroFreeStrip_iff_heckeDefect_bound`, `hankelForm_nonneg`, `ncard_seenLevels_lt_of_hankel_null` |
 | II. Local trichotomy | reflection-commuting affine actions are boosts, unipotent or elliptic | APol `TheEllipticLocalizers`, ACP |
 | III. Gauge blindness = square class | blind ⇔ `nab` square; square-class criteria accept `Λ` iff `λΛ`; successor charged | `realSignBlind_iff_isSquare`, `sourceForm_nonneg_twist_iff`, `successor_coupling_charged` |
-| IV. Interior–boundary duality | global states decouple `+1` and `×p` (APD); cells couple them and fix the gauge, with reach `2X + 1` on horizon `X`; the covariance defect counts charged cells and grows at least logarithmically at the Liouville gauge | APD; `cellDilate_two_covariant_iff`, `cellDilate_two_covariant_on_horizon_iff`, `hsDefect_ge_charged`, `hsDefect_liouville_sandwich`, `hsDefect_liouville_ge_log` |
+| IV. Interior–boundary duality | global states decouple `+1` and `×p` (APD); cells couple them and fix the gauge, with reach `2X + 1` on horizon `X`; the covariance defect counts charged cells; at the Liouville gauge they are the even sign changes of `λ` and the defect has fourth-root growth | APD; `cellDilate_two_covariant_iff`, `cellDilate_two_covariant_on_horizon_iff`, `hsDefect_ge_charged`, `hsDefect_liouville_sandwich`, `hsDefect_liouville_ge` |
 | V. Self-energy survival | positivity passes a scale limit exactly on the survival cone, independent of scheme; for periodic germs the cone is the module of relations among the modes; prime place: `{0}`, indefinite limit; archimedean place: polar-neutral hyperplane; the pole node completes it; Ramanujan twins survive exactly on per-order relations and carry `−φ(m)Λ(t)` in their pole-node block; all entries are digamma sums at rational points | `quad_nonneg_on_survivalCone_iff`, `survivalCone_eq_of_regularized`, `periodicGerm_survivalCone_eq`, `counterterm_rank_dichotomy`, `harmonicKernel_nonneg`, `ramanujanTwin_survivalCone_eq`, `ramanujanTwin_carries_primes`, `tendsto_twistedGerm_add_mean_log_eq`, `totient_mul_vonMangoldt_eq_digamma_sum` |
-| VI. Chirality, quantization and dilution | positive deformations form a monoid with trivial units; central excess quantized in `2ℕ`; collective packets buy at most (weighted height) × (pole share), finite for every lattice cloud | `PositiveDeformation.antisymm`, `not_positiveDeformation_of_ne`, `sum_abs_le_of_packet_nonneg`, `sum_le_height_mul_of_weighted_packet`, `exists_purchase_bound`; BGG G19 |
+| VI. Chirality, quantization and dilution | positive deformations form a monoid with trivial units; central excess quantized in `2ℕ`; collective packets buy at most (weighted height) × (pole share), finite for every lattice cloud, and difference packets attain (largest difference set − 1) × (pole share) | `PositiveDeformation.antisymm`, `not_positiveDeformation_of_ne`, `sum_abs_le_of_packet_nonneg`, `sum_le_height_mul_of_weighted_packet`, `exists_purchase_bound`, `difference_packet_nonneg`; BGG G19 |
 | VII. Surface effectivity vs base non-extension | Hodge index ⇔ Serre-dual real effectivity with quadratic growth; the base theta count does not extend | AET |
 | VIII. Terminal replacement of extrema | every off-line zero ascends to a terminal; terminals = zeros outside every critical disc; each carries a zero-free lens with `Re ξ′/ξ ≥ 0`; Harnack holds there and the outward floor spreads; the terminal ceiling at depth `a` ⇔ the zero-free strip of width `a`; RH ⇔ no right terminal | ACP; `isTerminal_iff_outside_discs`, `xi_ne_zero_of_mem_terminalLens`, `harnack_re_logDeriv_xi`, `exists_terminal_floor_spreads`, `zeroFreeStrip_iff_terminal_ceiling`, `riemannHypothesis_iff_no_right_terminal` |
 
@@ -373,10 +381,10 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
    dyadic scale bounds it at every smaller scale with no loss, and finite integer theta prefixes
    supply such a bound as a finite computation (`heckeDefect_le_of_readings`). RH is exactly
    sub-doubly-exponential dyadic growth, and a uniform bound with angle `ϑ` at every scale is
-   exactly the zero-free strip of width `ϑ` (`zeroFreeStrip_iff_heckeDefect_bound`): the source-side
-   input the field needs is a zero-free strip, nothing weaker and nothing stronger. The full information is the Hecke moment problem, whose
-   Hankel forms are read from integer prefixes. What remains is an arithmetic upper bound for the
-   readings at one scale `L ≍ log n`.
+   exactly the zero-free strip of width `ϑ` (`zeroFreeStrip_iff_heckeDefect_bound`): the
+   source-side input is a zero-free strip, nothing weaker and nothing stronger. The full
+   information is the Hecke moment problem, whose Hankel forms are read from integer prefixes, so an
+   arithmetic bound on the readings at angle `ϑ` is the same statement as the strip of width `ϑ`.
 2. **Matched self-energy.** *How does one cancel `−log(1 − r)` inside the positive cone?* Exactly on
    the survival cone of the counterterm, a scheme-independent invariant, which for a periodic germ is
    the module of linear relations among its modes. A twin cancels a divergence iff it shares the
@@ -394,8 +402,9 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
    lattice dilation is covariant at every gauge. On cell profiles all of it: dyadic cell dilation is
    covariant only at the Euler point, and on the horizon `[1, X]` it detects every prime up to
    `2X + 1`. Every successor coupling is charged. Quantitatively the covariance defect counts the
-   charged cells; at the Liouville gauge it is pinned between `2N₊` and `4N₊`, and it grows at
-   least logarithmically along the horizon because every dyadic block contains a sign change of `λ`.
+   charged cells; at the Liouville gauge it is pinned between `2N₊` and `4N₊`, the charged cells are
+   the even sign changes `λ(2a) ≠ λ(2a + 1)`, and the defect is at least `2J` on `[1, 8J⁴]`, because
+   between every square and the next twice-square `λ` changes sign.
 4. **Chiral moduli.** *What is the geometry of one-way positive deformations?* A monoid without
    nontrivial units: positivity orders deformations and cannot be undone. With BGG's Landau–Wronskian
    principle a positive deformation can only lower the order at its abscissa, and the central excess
@@ -404,7 +413,8 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
    progressions of length `≤ M` along independent generators — more generally over any cloud of
    nonnegative integer combinations of heights `≤ M` — at most `M` times it, attained by a single
    Fejér packet; every finite lattice cloud, with relations of any sign, has a finite purchase
-   bound given by a weighted height.
+   constant, at most its minimal weighted height and at least its largest difference set minus
+   one.
 5. **Zero-cone potential.** *How do `F(p) = 0` and an empty cone constrain the outward ray?* The empty
    cone of a terminal is the statement that `p` lies outside every critical disc. That condition
    extends from the ray to a two-dimensional lens bounded by two circles of radius `½` through `p`;
@@ -439,6 +449,7 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
 | Dyadic amplification is selective | It holds on every finite positive depth configuration (`config_dyadic_ge`); its content is the transfer of a source bound |
 | A twin with any continuum modes cancels a torsion divergence | Ramanujan modes are orthogonal; only the same mode creates relations (`ramanujanTwin_survivalCone_eq`) |
 | Cell gauge fixing is all-or-nothing | The defect counts charged cells; at Liouville it is a `λ`-correlation along `a ↦ 2a + 1` |
+| The Liouville cell defect could stay bounded along the horizon | It is at least `2J` on `[1, 8J⁴]` (`hsDefect_liouville_ge`) |
 | The terminal ray is special | It lies in a two-dimensional zero-free lens |
 | Positive deformations can be undone | Units are trivial |
 | Collective packets amortize pole cost | Over `ℚ`-independent ordinates the whole packet buys at most the pole share (`sum_abs_le_of_packet_nonneg`); in general at most the longest harmonic length times it (`sum_le_height_mul_of_packet_nonneg`) |
@@ -466,8 +477,8 @@ gauge fixing and the cell-holonomy defect; critical discs, the Carathéodory reg
 lens and Harnack estimates on it; the positive deformation monoid; Kronecker dilution, the height
 law and harmonic concentration of positive packets, weighted heights and finite purchase for
 lattice clouds; digamma closed forms of periodic germs; the zero-free-strip equivalences of the
-terminal ceiling and of the one-scale bound; logarithmic growth of the Liouville cell defect; the
-selectivity battery.
+terminal ceiling and of the one-scale bound; fourth-root growth of the Liouville cell defect;
+difference packets; the selectivity battery.
 
 **Escape modules** are classified in ADR: an admitted cofactor limit `ActualCofactorLimit` is a
 faithful, infinite-dimensional `𝒲_{1/2}`-module, and a nonfaithful or finite-dimensional one forces
@@ -478,22 +489,40 @@ RBG reads them as the boundary objects of the interior–boundary duality (Law I
 
 ## 9. Open research topics
 
-The field reduces its targets to statements whose strength is known exactly; what remains are those
-statements.
+The blueprint names six research topics. Each is developed in RBG to theorems that fix its exact
+strength; the research frontier of the field is what lies beyond them.
 
-1. **Zero-free strips.** By the equivalences of Laws I and VIII, a terminal ceiling at depth `a`, a
-   uniform one-scale Hecke bound with angle `a`, and the zero-free strip of width `a` are the same
-   problem. Any `a < ½` is a new theorem; RH is `a = 0`. The tools available toward it in RBG are
-   the lossless transfer from integer prefix readings, the Hecke moment problem, Harnack on the
-   Carathéodory region and Borel–Carathéodory (Mathlib).
-2. **Linear gauge charge.** The Liouville cell defect is at least logarithmic; linear growth
-   `N₊ ≥ cX` is a binary correlation statement for `λ(a)λ(2a + 1)` of Chowla type.
-3. **Sign content of the twin inequality.** The twin inequality is now explicit (prime kernel
-   against digamma values at rationals). Determine its optimal coefficient choices and whether the
-   resulting bound on the prime form reaches the short-cycle differences `g − T_{2^m} g`.
-4. **Optimal purchase constants.** The minimal purchase bound of a lattice cloud is a
-   Delsarte-type extremal problem; the weighted height is an upper bound, sharp for harmonic
-   progressions.
+1. **Matched torsion–continuum renormalization.** *Developed*: the survival law, periodic germs and
+   the relations law, Ramanujan twins surviving exactly on per-order relations, the pole-node block
+   as the torsion energy, every entry as a digamma sum, `φ(m)Λ(t)` as a digamma sum. *Frontier*:
+   choose twin coefficients on the per-order relations so that the explicit twin inequality bounds
+   the short-cycle differences `W(g − T_{2^m} g)` of the prime form.
+2. **Potential theory on terminal cones.** *Developed*: critical discs, terminals as the zeros
+   outside every disc, the zero-free lens, Harnack on the Carathéodory region, spreading of the
+   outward floor; the terminal ceiling at depth `a` is the zero-free strip of width `a`, and RH is
+   the absence of right terminals. *Frontier*: a ceiling at some depth `a < ½`; by the
+   equivalence this is a zero-free strip and nothing weaker.
+3. **Two-scale shell exclusion.** *Developed*: dyadic amplification with fixed loss, the Hecke
+   moment problem with Hankel positivity and shell rigidity, lossless integer-prefix transfer, RH as
+   sub-doubly-exponential dyadic growth, the uniform one-scale bound as a zero-free strip.
+   *Frontier*: an arithmetic bound for the prefix readings at one scale `L ≍ log n`, which by the
+   equivalence is again a zero-free strip.
+4. **Cell holonomy.** *Developed*: the square-class classification, gauge fixing by cells on every
+   finite horizon, the defect as a count of charged cells, charged cells as even sign changes of
+   `λ`, the defect at least `2J` on `[1, 8J⁴]`. *Frontier*: linear growth, i.e. positive lower
+   density of `λ(2a) ≠ λ(2a + 1)`; its logarithmic-density form is the two-point case of the
+   logarithmically averaged Chowla conjecture. The multi-modulus Kloosterman dispersion of cell
+   remainders is owned by BVI, ACCC and SPTL.
+5. **Chiral ceilings and collective packets.** *Developed*: the positive deformation monoid with
+   trivial units, Kronecker dilution, the height and weighted height laws, finite purchase for every
+   lattice cloud, difference packets; on harmonic progressions the purchase constant is exactly the
+   length. Central ceilings transfer to factors in BGG (`centralOrder_factor_le_of_ceiling`).
+   *Frontier*: the exact purchase constant of a general cloud — a Delsarte-type linear programme
+   between the two proved bounds — and its use against clustered companion clouds of
+   `ord_{½} L(s, sym² u)`.
+6. **Escape modules.** *Developed* in ADR: admitted cofactor limits are faithful,
+   infinite-dimensional `𝒲_{1/2}`-modules, and a nonfaithful or finite-dimensional one forces its
+   receiver to escape. RBG reads them as the boundary objects of Law IV.
 
 ---
 
@@ -536,11 +565,11 @@ state mathematics only.
 - [`TheGaugeChargeOfACoupling.lean`](TheGaugeChargeOfACoupling.lean) — square-class classification, Liouville blindness of square-class criteria, charged successor.
 - [`LogCellsFixTheGauge.lean`](LogCellsFixTheGauge.lean) — cell and lattice dilation, Baumslag–Solitar, gauge fixing, finite horizons.
 - [`TheCellHolonomyDefectCountsChargedCells.lean`](TheCellHolonomyDefectCountsChargedCells.lean) — the covariance defect, charged cells, the Liouville sandwich.
-- [`TheLiouvilleCellDefectGrowsLogarithmically.lean`](TheLiouvilleCellDefectGrowsLogarithmically.lean) — sign changes give charged cells; logarithmic growth.
+- [`TheLiouvilleCellDefectGrowsPolynomially.lean`](TheLiouvilleCellDefectGrowsPolynomially.lean) — charged cells as even sign changes; fourth-root growth.
 - [`CriticalDiscsAndTheTerminalLens.lean`](CriticalDiscsAndTheTerminalLens.lean) — pair sign law, Carathéodory region, terminals, the lens.
 - [`HarnackOnTheCaratheodoryRegion.lean`](HarnackOnTheCaratheodoryRegion.lean) — Harnack for `Re ξ′/ξ`, ray discs, spreading of the outward floor.
 - [`PositivityIsIrreversible.lean`](PositivityIsIrreversible.lean) — the positive deformation monoid.
 - [`CollectivePacketsDiluteOverIndependentOrdinates.lean`](CollectivePacketsDiluteOverIndependentOrdinates.lean) — Kronecker dilution, the height law, harmonic concentration.
-- [`EveryLatticeCloudHasAFinitePurchaseBound.lean`](EveryLatticeCloudHasAFinitePurchaseBound.lean) — weighted heights, admissible weights, finite purchase.
+- [`EveryLatticeCloudHasAFinitePurchaseBound.lean`](EveryLatticeCloudHasAFinitePurchaseBound.lean) — weighted heights, admissible weights, finite purchase, difference packets.
 - [`TheSelectivityBatteryOfRenormalizedBiarithmeticGeometry.lean`](TheSelectivityBatteryOfRenormalizedBiarithmeticGeometry.lean) — soft and selective laws on the battery.
 - [`TheLawsOfRenormalizedBiarithmeticGeometry.lean`](TheLawsOfRenormalizedBiarithmeticGeometry.lean) — the laws in one statement.
