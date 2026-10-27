@@ -4,47 +4,60 @@
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (Lean) programme
 - **Source:** docs/reports/review-2710/obstacles-summary.md §4 ("arithmetic electrostatics of the zero divisor")
-- **Statement:** Develop the potential theory of the zero divisor of `ξ` and of the torsion of the
-  characteristic circle: energy, field, renormalized self-energy and reflection pairing of one
-  logarithmic potential; equilibrium laws, quantization, adjunction (renormalization of the
-  diagonal), stability, and the inequalities that would turn detection into exclusion.
+- **Statement:** Potential theory of the zero divisor of `ξ` and of the torsion of the characteristic
+  circle: energy, field, renormalized self-energy and reflection pairing of one logarithmic
+  potential; equilibrium, quantization, adjunction, stability, and the inequalities that would turn
+  detection into exclusion.
 
 ## Goal
 Lean folder `formal/GaloisForLFunctions/ArithmeticElectrostatics/`, umbrella
-`ArithmeticElectrostatics.lean`, foundational README. Answer the twelve questions of §4.4 by
-theorems or sharp no-gos with survivors; build the tools of §4.5 ("not yet built").
+`ArithmeticElectrostatics.lean` (wired into `MainTheorems.lean`), foundational README. Answer the
+twelve questions of §4.4 by theorems, sharp equivalences or located gaps; build the tools of §4.5.
 
-Territory: RHTower owns the transverse-equilibrium chain (`TransverseEquilibrium`,
-`ZeroNetworkConductance`, `TransverseMaximumPrinciple`, `TransverseAttainment`,
-`AngularEnergyQuantization`, `CalogeroVirialCollapse`); ACP owns terminals, outward rays and the
-Rankin–Selberg field (`fieldAt`, `xiTransverseField`); AET owns torsion orbits and torsion energies;
-APol owns `W`, `D`, `Δ`. AES imports them and adds: finite-configuration virial laws, the transverse
-energy of the divisor, renormalized squares (Selberg `Λ₂`), torsion self-intersections and
-adjunction, counterterm rates, the arithmetic point, stability.
+Territory: RHTower owns the transverse chain; ACP owns terminals, outward rays, `fieldAt`,
+`xiTransverseField`, the source field; AET owns torsion orbits and energies; APol owns `W`, `D`, `Δ`;
+CDG owns `heckeDefect`, `depthSecondMoment`. AES imports them. A second agent contributes the global
+damped source-work modules (`ReflectedTransverseWork`, `TheSelbergWorkExhaustsTheTransverseEnergy`).
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  paper proofs for each pillar
-- [ ] 2 → 3  each pillar in Lean, audited with `lake --old env lean`
+- [x] 1 → 2  paper proofs for the pillars below
+- [x] 2 → 3  pillars ES1–ES15 in Lean, each module audited with `lake --old env lean`
 
 ## Pillars and modules
 
 | Pillar | Module | Status |
 |---|---|---|
-| ES1 field dictionary, Newton, Stieltjes and transverse virial | `TheVirialLawsOfAFiniteConfiguration` | planned |
-| ES2 equilibrium is the critical line; quantized work; gap | `TransverseEquilibriumIsTheCriticalLine` | planned |
-| ES3 transverse energy of the ξ divisor | `TheTransverseEnergyOfTheZeroDivisor` | planned |
-| ES4 renormalized square = Selberg `Λ₂`; Laurent self-terms | `TheRenormalizedSquareIsSelbergsSource` | planned |
-| ES5 torsion self-intersection, adjunction on Hecke orbits, conjugation on cycles | `TheSelfIntersectionOfATorsionOrbit` | planned |
-| ES6 minimal counterterm on orders `≤ N` is `Θ(log N)` | `TheTorsionCountertermIsLogarithmic` | planned |
-| ES7 the arithmetic point | `TheArithmeticPoint` | planned |
+| ES1 virial laws | `TheVirialLawsOfAFiniteConfiguration` | Lean |
+| ES2 equilibrium = critical line, quanta, gap, maximum principle | `TransverseEquilibriumIsTheCriticalLine` | Lean |
+| ES3 energy of the divisor: `0` ⇔ RH ⇔ `< 1`; finite ⇔ finite off-line index; work = energy | `TheTransverseEnergyOfTheZeroDivisor` | Lean |
+| ES4 global damped source work exhausts the energy | `ReflectedTransverseWork`, `TheSelbergWorkExhaustsTheTransverseEnergy` | Lean (other agent) |
+| ES5 window selection | `QuantizationTurnsWindowsIntoPoints` | Lean |
+| ES6 Hecke defect = moment of inertia | `TheHeckeDefectIsTheMomentOfInertia` | Lean |
+| ES7 field threshold `1`, `√(2c log γ)` | `TheFieldLawHasAThreshold` | Lean |
+| ES8 external field = prime sum; anti-alignment at zero ordinates | `TheExternalFieldIsAPrimeSum` | Lean |
+| ES9 renormalized square, Selberg `Λ₂`, `L(Λ₂) = ζ″/ζ` | `TheRenormalizedSquareIsSelbergsSource` | Lean |
+| ES10 torsion self-intersection, Leibniz, cover formula, conjugation | `TheSelfIntersectionOfATorsionOrbit` | Lean |
+| ES11 counterterm `Θ(log N)` | `TheTorsionCountertermIsLogarithmic` | Lean |
+| ES12 arithmetic point carries the divergence | `TheArithmeticPointCarriesTheDivergence` | Lean |
+| ES13 power maps are similitudes of the Abel energy | `PowerMapsAreSimilitudesOfTheAbelEnergy` | Lean |
+| ES14 Fekete stability of the circle | `TheTorsionIsTheStableEquilibriumOfTheCircle` | Lean |
+| ES15 affine invariance; gauge twists of the source | `QuantizationTurnsWindowsIntoPoints` | Lean |
+
+## Open (RH-strength or beyond the present inputs)
+- Field law: arithmetic upper bound for the field below `max(1, √(2c log γ))`.
+- Stability law (Hodge index with adjunction): identify the `Θ(log N)` counterterm with the
+  archimedean self-energy of atoms at width `1/N`, constants included.
+- Alignment inside the strip (Q1 of the frontier); coupled class at the centre; fibre selection.
 
 ## Key paper facts
-- `Σ_j m_j (Re z_j − c) Re E_j = ½ Σ_{j≠k} m_j m_k (Re z_j − Re z_k)²/|z_j − z_k|²` (symmetrize).
-- `Σ_j m_j z_j E_j = ½((Σ m)² − Σ m²)`; transverse + vertical energy = that number.
-- `f''/f = (f'/f)² + (f'/f)'`; at a zero of order `m`: double pole `m(m − 1)`, residue `2m R(ρ)`.
-- `I(n, n) = φ(n) log n − (φ ⋆ Λ)(n)`, so `I(n,n)/φ(n) = log n − Σ_{p∣n} log p/(p − 1)`.
-- Schur test with weights `n^{−1/2}`: `λ_max(P + diag ℓ |_{[1,N]}) ≤ 2 log N + O(1)`.
+- Transverse virial: `Σ_j m_j (Re z_j − c) Re E_j = ½ Σ_{j≠k} m_j m_k (Re z_j − Re z_k)²/|z_j − z_k|²`.
+- `f″/f = (f′/f)² + (f′/f)′`; at a zero of order `m`: double pole `m(m − 1)`, residue `2m R(ρ)`.
+- `I(n, n) = φ(n) log n − (φ ⋆ Λ)(n)`; `φ ⋆ Λ = (φ ⋆ μ) ⋆ log` obeys the Leibniz rule on coprime orders.
+- `T_r(μ_A, μ_B) = gcd(A, B) log 1/(1 − r^{lcm(A,B)})` (orthogonality of roots of unity).
+- Fekete: `|det V(z)| ≤ N^{N/2}` by Hadamard for unimodular entries.
+- `2cosh(ax) − 2 ≤ a²(2cosh x − 2)` for `a² ≤ 1` (termwise in the series).
 
 ## Log
-- 2026-10-27 — created; README first draft.
+- 2026-10-27 — created; README first draft; ES1–ES3, ES7, ES9–ES11 formalized.
+- 2026-10-27 — ES5, ES6, ES8, ES12–ES15 formalized; README rewritten with answers to the twelve questions.

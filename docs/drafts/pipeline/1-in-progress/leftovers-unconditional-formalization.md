@@ -214,11 +214,15 @@ The identical canonical `ExactDoublingEnergy.lean` is wired and passed
 its final direct source check (session 89274, exit 0, empty
 `/tmp/leftovers-exact-doubling-final.log`). Source hash:
 `6911de68ae9da0a97ae843072c5c5b756c1282366eb0d611211f3002c94f66ce`.
-Its missing olean is now being built solely for the arithmetic-transport
-import (session 87152, `/tmp/leftovers-exact-doubling-build.log`).
-`FiniteSieveRealization`, `WeightedDoublingIncidence`, and
-`DyadicMantissaVariance` still need their missing oleans for the transport
-draft. No second Lean process is started while a check is live.
+Its missing olean was built solely for the arithmetic-transport import
+(session 87152, empty `/tmp/leftovers-exact-doubling-build.log`; completed
+olean present).
+The missing `DyadicMantissaVariance` olean build passed (session 24032,
+exit 0, empty `/tmp/leftovers-dyadic-variance-build.log`), for the level-count
+and transport imports. The missing `FiniteSieveRealization` olean also built successfully
+(session 92187, exit 0, empty `/tmp/leftovers-sieve-realization-build.log`).
+Only `WeightedDoublingIncidence` still needs its missing olean for the
+transport draft. No second Lean process is started while a check is live.
 
 ### Original dyadic ancillary statements
 
@@ -240,10 +244,39 @@ Source hash: `191737d6df3292e4828c6fdcbc53e6df5f4d27de6b633163bef0d714f91e3ddc`.
 The eight
 previous dyadic/perturbation source hashes and clean canonical final logs
 were reverified in `/tmp/leftovers-dyadic-perturb-current-source-evidence.json`.
-`/tmp/leftovers_dyadic_level_counts.lean` counts explicit last-level blocks:
+
+The abstract geometric sum also needs an explicit identification with actual
+parent-path depths. For `n≥2`, `log₂(n/2)=log₂(n)−1`, the parent ancestors
+exclude `n`, and adjoining `n` adds exactly the final depth. Induction gives,
+for every weight function `w`,
+`Σ_(k∈binaryAncestors n) w(log₂k)=Σ_(j<log₂n) w(j+1)`.
+Thus the actual path has `log₂n` edges and reciprocal geometric sum
+`3(1−(3/4)^(log₂n))≤4`. Parent increments telescope to `f(n)−f(1)`.
+Weighted Cauchy--Schwarz now gives the literal path bound with weights
+`4(4/3)^(log₂k)`, linking the already certified sequence inequality and
+descendant charges to the same actual tree. This source-faithfulness extension
+is certified as `BinaryPathWeights.lean`. Its revised four-declaration
+audit passed with only standard axioms and no diagnostics (session 35313,
+`/tmp/leftovers-binary-path-weights-audit-r2.log`). The initial check found
+one renamed empty-membership identifier; the existing owner simplification
+resolved it. The identical canonical leaf is wired and passed its direct
+final check (session 18237, exit 0, empty
+`/tmp/leftovers-binary-path-weights-final.log`). Source hash:
+`242066169074414632fe4dd411e4620a85684441c1ed43965e30985394c2fb6c`.
+The missing `BinaryDepthCoercivity` olean build passed (session 37400, exit 0,
+empty `/tmp/leftovers-binary-depth-build.log`). The original six-declaration
+`BinaryDepthCoercivity` leaf remains unchanged and certified.
+`DyadicTentLevelCounts.lean` counts explicit last-level blocks:
 `[10r,14r)` is high, `[8r,9r) ∪ [15r,16r)` is low, where `r=2^h`.
 Their counts are `4r=q/2` and `2r=q/4`, respectively. The original tent
 also disproves doubling-only coercivity on every stated dyadic window.
+All six declarations passed the first source/axiom audit (session 39019,
+exit 0, `/tmp/leftovers-dyadic-level-counts-audit.log`), with only standard
+axioms and no diagnostics. The identical canonical leaf is wired and
+passed its final direct source check (session 58598, exit 0, empty
+`/tmp/leftovers-dyadic-level-counts-final.log`). Source hash:
+`a291633785b914aabed2f29b8a04392ac4f4a51c148a84e21248da519f551bdc`.
+The matching plain scratch mirror was removed.
 
 ### Continuum comparison argument
 
@@ -308,6 +341,18 @@ Riemannian, geodesic and exponential-map infrastructure in the vendored
 `DifferentialGeometry` library; this must be inspected before rebuilding
 geometric prerequisites. The original dimension and Bohr-rank conclusions
 remain unchanged.
+
+### Twisted minimum principle: false ancillary estimate
+
+Direct inspection exposed a false clause in the original (C1): smooth
+even boundary data need not give flux `O(r^(1/2))` at the corner. The
+bounded periodic harmonic mode `K₀(4πy)cos(4πu)` has continuous radial
+flux with strictly nonzero endpoint value. The main construction instead
+needs the homogeneous corner estimate for `J-D_g`, whose trace is zero.
+[The corner-flux card](leftovers-twisted-corner-flux.md) records the exact
+counterexample, a finite-mode boundary-jet classification, and the actual
+source obligations for formalization. No false statement will be hidden
+in a hypothesis or reported as proved. The main card remains active.
 
 ## Historical user steering: finish started Lean work, then pause (superseded)
 

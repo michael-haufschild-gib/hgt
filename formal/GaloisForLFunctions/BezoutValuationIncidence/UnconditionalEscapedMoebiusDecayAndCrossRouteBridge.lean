@@ -4,6 +4,11 @@ import GaloisForLFunctions.BezoutValuationIncidence.ShortWindowPrimeSavingIsTheQ
 import GaloisForLFunctions.BezoutValuationIncidence.LittlewoodAdmitsTheReceiverAboveHalfTheZeroAbscissa
 import GaloisForLFunctions.BezoutValuationIncidence.TheCentredPrimeBandFromAZeroFreeStrip
 import GaloisForLFunctions.RHTower.AdmissionBelowHalfDampingAboveTheZeroWidth
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheDyadicAmplificationOfTheHeckeDefect
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.CriticalDiscsAndTheTerminalLens
+import GaloisForLFunctions.HTGeometry.LogarithmicResidueQuantization
+import GaloisForLFunctions.RHTower.CrossRouteReceiverBridges
+import GaloisForLFunctions.RHTower.XiLogDerivNonholonomic
 
 /-!
 # Unconditional Escaped Möbius Decay, Vinogradov–Korobov Rate, and the Cross-Route Bridge to `RH`
@@ -17,7 +22,8 @@ equivalent to `RiemannHypothesis`.
 This module establishes the **unconditional quantitative decay laws** on the escaped Möbius
 boundary and completes the **cross-route unification** linking the escaped biarithmetic boundary,
 the coupled damped Möbius receiver, the centred prime band, short-window prime/Möbius dispersion,
-and the coalescent pair-correlation threshold `θ(λ) = (λ - 1) / (2λ)`:
+`RenormalizedBiarithmeticGeometry`'s dyadic Hecke-defect RG amplification and Carathéodory
+half-plane, and the coalescent pair-correlation threshold `θ(λ) = (λ - 1) / (2λ)`:
 
 1. **Unconditional Uniform Growing-Endpoint Vanishing vs. Flat Trans-Horizon Persistence
    (`escapedPairing_moebiusSource_uniform_tendsto_zero`, `escapedPairing_flatSource_dyadic_ge_half`):**
@@ -48,6 +54,15 @@ and the coalescent pair-correlation threshold `θ(λ) = (λ - 1) / (2λ)`:
    criteria across the corpus, and parameterizes the full path to `RiemannHypothesis` along the
    coalescent resonance family `θ(λ) = (λ - 1) / (2λ) → 1 / 2⁻` (`λ → ∞`), with First-Blood
    landmark `θ(4 / 3) = 1 / 8` (`zetaZeroAbscissa ≤ 7 / 8`, `receiverDampingRate ≤ 3 / 8`).
+
+4. **Lossless RG Hecke-Defect Transfer and Seven-Way `RBG` Pointwise Unification
+   (`heckeDefect_le_depthKernel_of_dyadic_exp_rate`, `escapedMoebius_rbg_seven_way_tfae`):**
+   For every single `CompactTest` `f`, asymptotic dyadic growth `O_ε(exp((2φ + ε) 2^k L))` transfers
+   losslessly via `RBG.heckeDefect_dyadic_ge` to the exact finite-scale strip cap
+   `heckeDefect f L ≤ depthKernel L φ * mass f`; for every `θ ∈ (0, 1 / 2]`, this closes a 7-way
+   pointwise equivalence uniting `GrowingEndpointEscapedMoebiusLaw θ` with the exact `heckeDefect`
+   strip cap, the dyadic RG growth rate `O_ε(exp((1 - 2θ + ε) 2^k))`, and the Carathéodory
+   half-plane positivity `∀ s, 1 - θ < s.re → 0 ≤ (logDeriv xi s).re`.
 -/
 
 open Finset Filter Topology RHTower RHTower.Sieve
@@ -454,5 +469,414 @@ theorem riemannHypothesis_iff_forall_coalescent_escapedMoebiusLaw :
       field_simp [hden.ne']
       ring
     exact heq ▸ hcoal lam hlam1
+
+/-! ## §4. Lossless RG Hecke-Defect Transfer and Seven-Way `RBG` Pointwise Unification -/
+
+section RBGBridge
+
+open Zeta23
+open GaloisForLFunctions.ConjugateDiagonalGeometry
+open GaloisForLFunctions.RenormalizedBiarithmeticGeometry
+
+/-- **Lossless Asymptotic-to-Exact RG Transfer for `heckeDefect`:**
+For any single `CompactTest` `f`, nonnegative depth `φ ≥ 0`, and nonnegative scale `L ≥ 0`, if the
+dyadic Hecke defects satisfy `heckeDefect f (2^k L) = O_ε(exp((2φ + ε) 2^k L))` for every `ε > 0`,
+then iterated nonlinear amplification (`RBG.heckeDefect_dyadic_ge`) forces the exact finite-scale
+strip cap `heckeDefect f L ≤ depthKernel L φ * mass f` with unit leading constant and zero `ε`-loss.
+At `φ = 0`, this recovers `RBG.heckeDefect_eq_zero_of_dyadic_subexp`. -/
+theorem heckeDefect_le_depthKernel_of_dyadic_exp_rate
+    (f : CompactTest) {φ L : ℝ} (hφ : 0 ≤ φ) (hL : 0 ≤ L)
+    (hrate : ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, ∀ k : ℕ,
+      heckeDefect f (2 ^ k * L) ≤ C * Real.exp ((2 * φ + ε) * (2 ^ k * L))) :
+    heckeDefect f L ≤ depthKernel L φ * mass f := by
+  by_contra hlt
+  rw [not_le] at hlt
+  have hdk_nn : 0 ≤ depthKernel L φ * mass f := mul_nonneg (depthKernel_nonneg L φ) (mass_nonneg f)
+  have hE_pos : 0 < heckeDefect f L := lt_of_le_of_lt hdk_nn hlt
+  have hL_pos : 0 < L := by
+    rcases hL.lt_or_eq with hpos | rfl
+    · exact hpos
+    · have h0 := heckeDefect_le_mass_cosh f 0
+      rw [Real.cosh_zero, show (2 : ℝ) * 1 - 2 = 0 by norm_num, mul_zero] at h0
+      linarith
+  have hD : 0 < mass f := mass_pos_of_heckeDefect_pos hE_pos
+  set ψ₀ : ℝ := 2 * φ * L
+  have hψ₀_nn : 0 ≤ ψ₀ := by positivity
+  have hlt_cosh : mass f * (2 * Real.cosh ψ₀ - 2) < heckeDefect f L := by
+    have heq : depthKernel L φ * mass f = mass f * (2 * Real.cosh ψ₀ - 2) := by
+      unfold depthKernel ψ₀; ring
+    linarith
+  have hc : Tendsto (fun ψ : ℝ => mass f * (2 * Real.cosh ψ - 2)) (𝓝[>] ψ₀)
+      (𝓝 (mass f * (2 * Real.cosh ψ₀ - 2))) :=
+    ((continuous_const.mul ((continuous_const.mul Real.continuous_cosh).sub
+      continuous_const)).tendsto ψ₀).mono_left nhdsWithin_le_nhds
+  obtain ⟨ψ, hψ_lt, hψ_gt⟩ := ((hc.eventually (gt_mem_nhds hlt_cosh)).and self_mem_nhdsWithin).exists
+  have hψ_gt' : ψ₀ < ψ := hψ_gt
+  set δ : ℝ := ψ - ψ₀
+  have hδ : 0 < δ := by dsimp [δ]; linarith
+  set ε : ℝ := δ / (2 * L)
+  have hε : 0 < ε := div_pos hδ (by positivity)
+  obtain ⟨C, hC⟩ := hrate ε hε
+  set M : ℝ := (|C| + 2 * mass f) / mass f + 1
+  obtain ⟨k, hk⟩ := exists_nat_gt (2 * M / δ)
+  have hk2 : (k : ℝ) ≤ 2 ^ k := by exact_mod_cast Nat.lt_two_pow_self.le
+  have hyM : M < Real.exp (δ / 2 * 2 ^ k) := by
+    have h1 : M < δ / 2 * 2 ^ k := by
+      rw [div_lt_iff₀ hδ] at hk
+      nlinarith
+    linarith [Real.add_one_le_exp (δ / 2 * 2 ^ k)]
+  set E₀ : ℝ := Real.exp ((ψ₀ + δ / 2) * 2 ^ k)
+  have hE₀_pos : 0 < E₀ := Real.exp_pos _
+  have hE₀_ge1 : 1 ≤ E₀ := Real.one_le_exp (by positivity)
+  have hexp_arg : (2 * φ + ε) * (2 ^ k * L) = (ψ₀ + δ / 2) * 2 ^ k := by
+    dsimp [ψ₀, ε, δ]
+    field_simp [hL_pos.ne']
+    ring
+  have hup : heckeDefect f (2 ^ k * L) ≤ |C| * E₀ := by
+    have hk_up := hC k
+    rw [hexp_arg] at hk_up
+    exact hk_up.trans (mul_le_mul_of_nonneg_right (le_abs_self C) hE₀_pos.le)
+  have hlow := heckeDefect_dyadic_ge f L ψ hψ_lt.le k
+  have hcosh : E₀ * Real.exp (δ / 2 * 2 ^ k) ≤ 2 * Real.cosh (2 ^ k * ψ) := by
+    have hsplit : 2 ^ k * ψ = (ψ₀ + δ / 2) * 2 ^ k + δ / 2 * 2 ^ k := by dsimp [δ]; ring
+    have heq : E₀ * Real.exp (δ / 2 * 2 ^ k) = Real.exp (2 ^ k * ψ) := by
+      dsimp [E₀]; rw [← Real.exp_add, hsplit]
+    rw [heq, Real.cosh_eq]
+    linarith [Real.exp_pos (-(2 ^ k * ψ))]
+  have hcomb : mass f * (E₀ * Real.exp (δ / 2 * 2 ^ k) - 2) ≤ |C| * E₀ :=
+    (mul_le_mul_of_nonneg_left (by linarith) hD.le).trans (hlow.trans hup)
+  have hM_mul : (|C| + 2 * mass f + mass f) * E₀ < mass f * E₀ * Real.exp (δ / 2 * 2 ^ k) := by
+    have hM' : |C| + 2 * mass f + mass f < mass f * Real.exp (δ / 2 * 2 ^ k) := by
+      dsimp [M] at hyM
+      rw [← div_lt_iff₀ hD]
+      have : (|C| + 2 * mass f + mass f) / mass f = (|C| + 2 * mass f) / mass f + 1 := by
+        field_simp [hD.ne']
+      linarith
+    nlinarith
+  nlinarith [abs_nonneg C]
+
+/-- Under `zetaZeroAbscissa ≤ 1 - θ` (`0 < θ ≤ 1 / 2`), every nontrivial zero `ρ` satisfies
+`|zetaDepth ρ| ≤ 1 / 2 - θ`. -/
+theorem abs_zetaDepth_le_of_zetaZeroAbscissa_le {θ : ℝ} (_hθ0 : 0 < θ) (hθ2 : θ ≤ 1 / 2)
+    (habs : zetaZeroAbscissa ≤ 1 - θ) (ρ : zetaZeroConfig.carrier) :
+    |zetaDepth ρ| ≤ 1 / 2 - θ := by
+  have hρ : IsNontrivialZero (ρ : ℂ) := ρ.2
+  have hre_hi : (ρ : ℂ).re ≤ 1 - θ := (RHTower.re_le_zetaZeroAbscissa hρ.1).trans habs
+  have hrefl : riemannZeta (1 - (ρ : ℂ)) = 0 :=
+    RHTower.riemannZeta_one_sub_eq_zero_of_mem_openStrip hρ.1 hρ.2.1 hρ.2.2
+  have hre_lo : 1 - (ρ : ℂ).re ≤ 1 - θ := by
+    have h := (RHTower.re_le_zetaZeroAbscissa hrefl).trans habs
+    simpa using h
+  rw [zetaDepth, abs_le]
+  constructor <;> linarith
+
+/-- **Zero-Abscissa Strip Cap on `heckeDefect`:**
+If `zetaZeroAbscissa ≤ 1 - θ` (`0 < θ ≤ 1 / 2`), then for every `f : CompactTest` and `L : ℝ`,
+`heckeDefect f L ≤ depthKernel L (1 / 2 - θ) * mass f`. -/
+theorem heckeDefect_le_of_zetaZeroAbscissa_le {θ : ℝ} (hθ0 : 0 < θ) (hθ2 : θ ≤ 1 / 2)
+    (habs : zetaZeroAbscissa ≤ 1 - θ) (f : CompactTest) (L : ℝ) :
+    heckeDefect f L ≤ depthKernel L (1 / 2 - θ) * mass f := by
+  rw [mass, collidedForm, ← tsum_mul_left]
+  refine (summable_heckeDefect f L).tsum_le_tsum (fun ρ => ?_)
+    ((summable_zetaWeight f).mul_left (depthKernel L (1 / 2 - θ)))
+  change zetaWeight f ρ * depthKernel L (zetaDepth ρ) ≤
+    depthKernel L (1 / 2 - θ) * zetaWeight f ρ
+  rw [mul_comm (depthKernel L (1 / 2 - θ))]
+  have hbd : |zetaDepth ρ| ≤ |1 / 2 - θ| := by
+    rw [abs_of_nonneg (by linarith)]
+    exact abs_zetaDepth_le_of_zetaZeroAbscissa_le hθ0 hθ2 habs ρ
+  exact mul_le_mul_of_nonneg_left (depthKernel_mono_depth L hbd) (zetaWeight_nonneg f ρ)
+
+/-- An exact finite-scale strip cap `heckeDefect f L ≤ depthKernel L (1 / 2 - θ) * mass f` implies
+the dyadic exponential rate `O_ε(exp((1 - 2θ + ε) 2^k))`. -/
+theorem dyadic_heckeDefect_rate_of_heckeDefect_le {θ : ℝ} (_hθ0 : 0 < θ) (hθ2 : θ ≤ 1 / 2)
+    (hcap : ∀ (f : CompactTest) (L : ℝ), heckeDefect f L ≤ depthKernel L (1 / 2 - θ) * mass f)
+    (f : CompactTest) (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, ∀ k : ℕ, heckeDefect f (2 ^ k) ≤ C * Real.exp ((1 - 2 * θ + ε) * 2 ^ k) := by
+  refine ⟨2 * mass f, fun k => ?_⟩
+  have h1 := hcap f (2 ^ k)
+  set x : ℝ := 2 * (1 / 2 - θ) * (2 ^ k : ℝ)
+  have hx0 : 0 ≤ x := by dsimp [x]; positivity
+  have hdk : depthKernel (2 ^ k) (1 / 2 - θ) ≤ 2 * Real.exp x := by
+    unfold depthKernel
+    change 2 * Real.cosh x - 2 ≤ 2 * Real.exp x
+    rw [Real.cosh_eq]
+    have hneg : Real.exp (-x) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+    have hpos : 0 < Real.exp x := Real.exp_pos x
+    linarith
+  have hexp_le : Real.exp x ≤ Real.exp ((1 - 2 * θ + ε) * 2 ^ k) := by
+    apply Real.exp_le_exp.mpr
+    dsimp [x]
+    have hk0 : (0 : ℝ) < 2 ^ k := by positivity
+    nlinarith
+  calc heckeDefect f (2 ^ k)
+      ≤ depthKernel (2 ^ k) (1 / 2 - θ) * mass f := h1
+    _ ≤ (2 * Real.exp x) * mass f := mul_le_mul_of_nonneg_right hdk (mass_nonneg f)
+    _ ≤ (2 * Real.exp ((1 - 2 * θ + ε) * 2 ^ k)) * mass f :=
+        mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hexp_le (by norm_num)) (mass_nonneg f)
+    _ = (2 * mass f) * Real.exp ((1 - 2 * θ + ε) * 2 ^ k) := by ring
+
+/-- **Converse Zero-Abscissa Extraction from `heckeDefect`:**
+If `heckeDefect f L ≤ depthKernel L (1 / 2 - θ) * mass f` holds across compact `C²` tests and scales
+`L`, then `zetaZeroAbscissa ≤ 1 - θ`. -/
+theorem zetaZeroAbscissa_le_of_heckeDefect_le {θ : ℝ} (_hθ0 : 0 < θ) (hθ2 : θ ≤ 1 / 2)
+    (hcap : ∀ (f : CompactTest) (L : ℝ), heckeDefect f L ≤ depthKernel L (1 / 2 - θ) * mass f) :
+    zetaZeroAbscissa ≤ 1 - θ := by
+  by_contra hlt
+  rw [not_le] at hlt
+  obtain ⟨s, hs0, hs1, hsre⟩ := RHTower.exists_zetaZero_mem_openStrip_lt_re hlt
+  have hs_pos : 0 < s.re := by linarith
+  have hmem : s ∈ zetaZeroConfig.carrier := ⟨hs0, hs_pos, hs1⟩
+  obtain ⟨⟨⟨g, hgreal⟩, _⟩, hg0, -⟩ :=
+    GaloisForLFunctions.ArithmeticCorrespondencePositivity.exists_mem_realTestsAt_mellinAt_ne_zero
+      one_pos s s
+  let f : CompactTest := ⟨fun u => (g u : ℂ),
+    Complex.ofRealCLM.contDiff.comp hgreal.1, hgreal.2.comp_left Complex.ofReal_zero⟩
+  let ρ₀ : zetaZeroConfig.carrier := ⟨s, hmem⟩
+  have htr : GaloisForLFunctions.ArithmeticPolarization.tr f.1 s ≠ 0 := by
+    rw [GaloisForLFunctions.ArithmeticPolarization.tr_cx_eq_mellinAt]
+    exact hg0
+  have hm1 : (1 : ℝ) ≤ zetaZeroConfig.mult s := by
+    exact_mod_cast zetaZeroConfig.one_le_mult s hmem
+  have hw_pos : 0 < zetaWeight f ρ₀ :=
+    mul_pos (by linarith) (Complex.normSq_pos.mpr htr)
+  set b : ℝ := s.re - 1 / 2
+  have hb_gt : 1 / 2 - θ < b := by dsimp [b]; linarith
+  have hb_pos : 0 < b := by linarith
+  have htail_ge : zetaWeight f ρ₀ ≤ depthTail f b := by
+    have hterm : (if |b| ≤ |zetaDepth ρ₀| then zetaWeight f ρ₀ else 0) = zetaWeight f ρ₀ :=
+      if_pos (le_of_eq (rfl : |b| = |zetaDepth ρ₀|))
+    rw [depthTail, ← hterm]
+    exact (summable_depthTail f b).le_tsum ρ₀ fun ρ _ => by
+      split_ifs
+      · exact zetaWeight_nonneg f ρ
+      · exact le_rfl
+  set δ : ℝ := 2 * b - (1 - 2 * θ)
+  have hδ : 0 < δ := by dsimp [δ]; linarith
+  set M : ℝ := (2 * mass f + 2 * zetaWeight f ρ₀) / zetaWeight f ρ₀ + 1
+  obtain ⟨k, hk⟩ := exists_nat_gt (M / δ + 1)
+  set L : ℝ := k
+  have hL_pos : 0 < L := by
+    have : 0 ≤ M / δ := div_nonneg (by dsimp [M]; positivity) hδ.le
+    dsimp [L]; linarith
+  have hexpM : M < Real.exp (δ * L) := by
+    have h1 : M < δ * L := by
+      have hk' : M / δ < L := by dsimp [L]; linarith
+      rwa [div_lt_iff₀ hδ] at hk'
+    linarith [Real.add_one_le_exp (δ * L)]
+  have hlow1 : depthKernel L b * zetaWeight f ρ₀ ≤ heckeDefect f L :=
+    (mul_le_mul_of_nonneg_left htail_ge (depthKernel_nonneg L b)).trans
+      (depthKernel_mul_tail_le f L b)
+  have hdk_lo : Real.exp (2 * b * L) - 2 ≤ depthKernel L b := by
+    unfold depthKernel
+    rw [Real.cosh_eq]
+    linarith [Real.exp_pos (-(2 * b * L))]
+  have hdk_hi : depthKernel L (1 / 2 - θ) ≤ 2 * Real.exp ((1 - 2 * θ) * L) := by
+    unfold depthKernel
+    rw [show 2 * (1 / 2 - θ) * L = (1 - 2 * θ) * L by ring, Real.cosh_eq]
+    have hneg : Real.exp (-((1 - 2 * θ) * L)) ≤ 1 := Real.exp_le_one_iff.mpr (by nlinarith)
+    linarith [Real.exp_pos ((1 - 2 * θ) * L)]
+  set E₀ : ℝ := Real.exp ((1 - 2 * θ) * L)
+  have hE₀_ge1 : 1 ≤ E₀ := Real.one_le_exp (by nlinarith)
+  have hprod : Real.exp (2 * b * L) = E₀ * Real.exp (δ * L) := by
+    dsimp [E₀, δ]
+    rw [← Real.exp_add]
+    congr 1; ring
+  have hineq : (E₀ * Real.exp (δ * L) - 2) * zetaWeight f ρ₀ ≤ 2 * E₀ * mass f := by
+    calc (E₀ * Real.exp (δ * L) - 2) * zetaWeight f ρ₀
+        = (Real.exp (2 * b * L) - 2) * zetaWeight f ρ₀ := by rw [hprod]
+      _ ≤ depthKernel L b * zetaWeight f ρ₀ := mul_le_mul_of_nonneg_right hdk_lo hw_pos.le
+      _ ≤ heckeDefect f L := hlow1
+      _ ≤ depthKernel L (1 / 2 - θ) * mass f := hcap f L
+      _ ≤ (2 * E₀) * mass f := mul_le_mul_of_nonneg_right hdk_hi (mass_nonneg f)
+      _ = 2 * E₀ * mass f := by ring
+  have hM_mul : 2 * mass f + 2 * zetaWeight f ρ₀ + zetaWeight f ρ₀ <
+      zetaWeight f ρ₀ * Real.exp (δ * L) := by
+    dsimp [M] at hexpM
+    rw [← div_lt_iff₀ hw_pos]
+    have : (2 * mass f + 2 * zetaWeight f ρ₀ + zetaWeight f ρ₀) / zetaWeight f ρ₀ =
+        (2 * mass f + 2 * zetaWeight f ρ₀) / zetaWeight f ρ₀ + 1 := by
+      field_simp [hw_pos.ne']
+    linarith
+  nlinarith [mass_nonneg f]
+
+/-- **Forward `RBG` Carathéodory Half-Plane Law:**
+Under `zetaZeroAbscissa ≤ 1 - θ` (`0 < θ ≤ 1 / 2`), every `s : ℂ` in the open half-plane
+`1 - θ < s.re` lies strictly right of `1 / 2`, avoids all zeros of `xi`, and lies outside every
+`RBG` critical disc `InCriticalDisc q s`, hence satisfies `0 ≤ (logDeriv xi s).re`. -/
+theorem re_logDeriv_xi_nonneg_of_zetaZeroAbscissa_le {θ : ℝ} (hθ0 : 0 < θ) (hθ2 : θ ≤ 1 / 2)
+    (habs : zetaZeroAbscissa ≤ 1 - θ) {s : ℂ} (hs : 1 - θ < s.re) :
+    0 ≤ (logDeriv RHTower.xi s).re := by
+  have hs_half : 1 / 2 < s.re := by linarith
+  have hxi : RHTower.xi s ≠ 0 := by
+    intro hz
+    have hmem := RHTower.CrossRouteReceiverBridges.mem_zetaZeroConfig_carrier_of_xi_eq_zero hz
+    have hle := (RHTower.re_le_zetaZeroAbscissa hmem.1).trans habs
+    linarith
+  refine re_logDeriv_xi_nonneg_of_outside_discs hs_half hxi fun q hdisc => ?_
+  unfold InCriticalDisc at hdisc
+  have hq_mem := RHTower.CrossRouteReceiverBridges.xiZeroCopy_mem_zetaZeroConfig_carrier q
+  have hq_abs : |(q.1 : ℂ).re - 1 / 2| ≤ 1 / 2 - θ :=
+    abs_zetaDepth_le_of_zetaZeroAbscissa_le hθ0 hθ2 habs ⟨(q.1 : ℂ), hq_mem⟩
+  have hq_sq : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ (1 / 2 - θ) ^ 2 := by
+    rw [← sq_abs ((q.1 : ℂ).re - 1 / 2)]
+    exact pow_le_pow_left₀ (abs_nonneg _) hq_abs 2
+  have hs_gt : 1 / 2 - θ < s.re - 1 / 2 := by linarith
+  have hs_sq : (1 / 2 - θ) ^ 2 < (s.re - 1 / 2) ^ 2 :=
+    pow_lt_pow_left₀ hs_gt (by linarith) (by norm_num)
+  nlinarith [sq_nonneg (s.im - (q.1 : ℂ).im)]
+
+/-- **Converse `RBG` Carathéodory Half-Plane Law via Residue Quantization:**
+If `0 ≤ (logDeriv xi s).re` throughout the open half-plane `1 - θ < s.re` (`0 < θ ≤ 1 / 2`), then
+`zetaZeroAbscissa ≤ 1 - θ`: any zero `ρ` of `xi` with `1 - θ < ρ.re` has positive integer
+meromorphic order `m ≥ 1`, so approaching `ρ` from the left along `s = ρ - r` (`r → 0⁺`) forces
+`(s - ρ) * logDeriv xi s → m` and hence `(logDeriv xi (ρ - r)).re < 0` inside `1 - θ < Re s`. -/
+theorem zetaZeroAbscissa_le_of_re_logDeriv_xi_nonneg {θ : ℝ} (_hθ0 : 0 < θ) (hθ2 : θ ≤ 1 / 2)
+    (hcar : ∀ s : ℂ, 1 - θ < s.re → 0 ≤ (logDeriv RHTower.xi s).re) :
+    zetaZeroAbscissa ≤ 1 - θ := by
+  by_contra hlt
+  rw [not_le] at hlt
+  obtain ⟨ρ, hρ0, hρ1, hρre⟩ := RHTower.exists_zetaZero_mem_openStrip_lt_re hlt
+  have hρ_pos : 0 < ρ.re := by linarith
+  have hxi0 : RHTower.xi ρ = 0 :=
+    (RHTower.CrossRouteReceiverBridges.mem_zetaZeroConfig_carrier_iff_xi_eq_zero_and_strip.mp
+      ⟨hρ0, hρ_pos, hρ1⟩).1
+  have hana : AnalyticAt ℂ RHTower.xi ρ := RHTower.xi_analyticOnNhd_univ ρ (Set.mem_univ ρ)
+  set m : ℕ := (analyticOrderAt RHTower.xi ρ).toNat
+  have hm_ne : m ≠ 0 := RHTower.xi_order_toNat_ne_zero hxi0
+  have hm_pos : (0 : ℝ) < m := by exact_mod_cast Nat.pos_of_ne_zero hm_ne
+  have ha_ord : analyticOrderAt RHTower.xi ρ = (m : ℕ∞) :=
+    (ENat.coe_toNat (RHTower.xi_orderAt_ne_top ρ)).symm
+  have hm_ord : meromorphicOrderAt RHTower.xi ρ = ((m : ℤ) : WithTop ℤ) := by
+    rw [hana.meromorphicOrderAt_eq, ha_ord]
+    rfl
+  have hres := GaloisForLFunctions.HTGeometry.logDeriv_residue_of_meromorphicOrder
+    hana.meromorphicAt hm_ord
+  have hray : Tendsto (fun r : ℝ => ρ - (r : ℂ)) (𝓝[>] 0) (𝓝[≠] ρ) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have hc : Continuous (fun r : ℝ => ρ - (r : ℂ)) :=
+        continuous_const.sub Complex.continuous_ofReal
+      simpa using (hc.tendsto 0).mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      have hr0 : (r : ℝ) ≠ 0 := (Set.mem_Ioi.mp hr).ne'
+      intro heq
+      have : (r : ℂ) = 0 := by linear_combination -heq
+      exact hr0 (Complex.ofReal_eq_zero.mp this)
+  have hlim_re : Tendsto (fun r : ℝ => (((ρ - (r : ℂ)) - ρ) * logDeriv RHTower.xi (ρ - (r : ℂ))).re)
+      (𝓝[>] 0) (𝓝 (m : ℝ)) := by
+    have hcomp := (Complex.continuous_re.tendsto ((m : ℤ) : ℂ)).comp (hres.comp hray)
+    simpa using hcomp
+  have hev_pos := hlim_re.eventually (gt_mem_nhds hm_pos)
+  have hev_small : ∀ᶠ r : ℝ in 𝓝[>] 0, r < ρ.re - (1 - θ) :=
+    (tendsto_id.mono_left nhdsWithin_le_nhds).eventually
+      (lt_mem_nhds (by linarith : (0 : ℝ) < ρ.re - (1 - θ)))
+  obtain ⟨r, ⟨hr_res, hr_small⟩, hr_gt0⟩ :=
+    ((hev_pos.and hev_small).and self_mem_nhdsWithin).exists
+  have hr0 : 0 < r := hr_gt0
+  have hs_re : 1 - θ < (ρ - (r : ℂ)).re := by
+    simp only [Complex.sub_re, Complex.ofReal_re]
+    linarith
+  have hnonneg := hcar (ρ - (r : ℂ)) hs_re
+  have hval : (((ρ - (r : ℂ)) - ρ) * logDeriv RHTower.xi (ρ - (r : ℂ))).re =
+      -r * (logDeriv RHTower.xi (ρ - (r : ℂ))).re := by
+    have hsub : (ρ - (r : ℂ)) - ρ = -(r : ℂ) := by ring
+    rw [hsub, neg_mul, Complex.neg_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+      zero_mul, sub_zero, neg_mul]
+  rw [hval] at hr_res
+  nlinarith
+
+/-- **Seven-Way Cross-Programme Pointwise Unification (`SPTL` / `ACG` / `BVI` / `RHTower` / `CDG` / `RBG`):**
+For every `θ ∈ (0, 1 / 2]`, the following seven statements are unconditionally equivalent:
+1. `GrowingEndpointEscapedMoebiusLaw θ` (`SPTL` uniform biarithmetic escaped Möbius power saving);
+2. `DyadicEscapedMoebiusLaw θ` (`ACG` / `BVI` dyadic escaped Möbius power saving);
+3. `receiverDampingRate ≤ 1 / 2 - θ` (`THIM` / `SPTL` coupled damped Möbius receiver rate);
+4. `zetaZeroAbscissa ≤ 1 - θ` (`RHTower` zero-free half-plane);
+5. `∀ f L, heckeDefect f L ≤ depthKernel L (1 / 2 - θ) * mass f` (`CDG` / `RBG` exact strip cap);
+6. `∀ f ε > 0, ∃ C, ∀ k, heckeDefect f (2^k) ≤ C exp((1 - 2θ + ε) 2^k)` (`RBG` dyadic RG rate);
+7. `∀ s, 1 - θ < s.re → 0 ≤ (logDeriv xi s).re` (`RBG` Carathéodory half-plane positivity). -/
+theorem escapedMoebius_rbg_seven_way_tfae {θ : ℝ} (hθ0 : 0 < θ) (hθ2 : θ ≤ 1 / 2) :
+    List.TFAE [GrowingEndpointEscapedMoebiusLaw θ,
+      DyadicEscapedMoebiusLaw θ,
+      receiverDampingRate ≤ 1 / 2 - θ,
+      zetaZeroAbscissa ≤ 1 - θ,
+      ∀ (f : CompactTest) (L : ℝ), heckeDefect f L ≤ depthKernel L (1 / 2 - θ) * mass f,
+      ∀ (f : CompactTest) (ε : ℝ), 0 < ε → ∃ C : ℝ, ∀ k : ℕ,
+        heckeDefect f (2 ^ k) ≤ C * Real.exp ((1 - 2 * θ + ε) * 2 ^ k),
+      ∀ s : ℂ, 1 - θ < s.re → 0 ≤ (logDeriv RHTower.xi s).re] := by
+  have h4 := escapedMoebius_receiver_abscissa_tfae hθ0 hθ2
+  tfae_have 1 ↔ 2 := h4.out 0 1
+  tfae_have 2 ↔ 4 := h4.out 1 3
+  tfae_have 3 ↔ 4 := h4.out 2 3
+  tfae_have 4 → 5 := fun habs f L => heckeDefect_le_of_zetaZeroAbscissa_le hθ0 hθ2 habs f L
+  tfae_have 5 → 6 := fun hcap f ε hε => dyadic_heckeDefect_rate_of_heckeDefect_le hθ0 hθ2 hcap f ε hε
+  tfae_have 6 → 4 := by
+    intro hdyad
+    by_contra hlt
+    rw [not_le] at hlt
+    obtain ⟨s, hs0, hs1, hsre⟩ := RHTower.exists_zetaZero_mem_openStrip_lt_re hlt
+    have hs_pos : 0 < s.re := by linarith
+    have hmem : s ∈ zetaZeroConfig.carrier := ⟨hs0, hs_pos, hs1⟩
+    obtain ⟨⟨⟨g, hgreal⟩, _⟩, hg0, -⟩ :=
+      GaloisForLFunctions.ArithmeticCorrespondencePositivity.exists_mem_realTestsAt_mellinAt_ne_zero
+        one_pos s s
+    let f : CompactTest := ⟨fun u => (g u : ℂ),
+      Complex.ofRealCLM.contDiff.comp hgreal.1, hgreal.2.comp_left Complex.ofReal_zero⟩
+    let ρ₀ : zetaZeroConfig.carrier := ⟨s, hmem⟩
+    have htr : GaloisForLFunctions.ArithmeticPolarization.tr f.1 s ≠ 0 := by
+      rw [GaloisForLFunctions.ArithmeticPolarization.tr_cx_eq_mellinAt]
+      exact hg0
+    have hm1 : (1 : ℝ) ≤ zetaZeroConfig.mult s := by
+      exact_mod_cast zetaZeroConfig.one_le_mult s hmem
+    have hw_pos : 0 < zetaWeight f ρ₀ := mul_pos (by linarith) (Complex.normSq_pos.mpr htr)
+    set b : ℝ := s.re - 1 / 2
+    have hb_gt : 1 / 2 - θ < b := by dsimp [b]; linarith
+    set ε : ℝ := b - (1 / 2 - θ)
+    have hε : 0 < ε := by dsimp [ε]; linarith
+    obtain ⟨C, hC⟩ := hdyad f ε hε
+    have htail_ge : zetaWeight f ρ₀ ≤ depthTail f b := by
+      have hterm : (if |b| ≤ |zetaDepth ρ₀| then zetaWeight f ρ₀ else 0) = zetaWeight f ρ₀ :=
+        if_pos (le_of_eq (rfl : |b| = |zetaDepth ρ₀|))
+      rw [depthTail, ← hterm]
+      exact (summable_depthTail f b).le_tsum ρ₀ fun ρ _ => by
+        split_ifs
+        · exact zetaWeight_nonneg f ρ
+        · exact le_rfl
+    set M : ℝ := (|C| + 2 * zetaWeight f ρ₀) / zetaWeight f ρ₀ + 1
+    obtain ⟨k, hk⟩ := exists_nat_gt (M / ε)
+    have hk2 : (k : ℝ) ≤ 2 ^ k := by exact_mod_cast Nat.lt_two_pow_self.le
+    have hexpM : M < Real.exp (ε * 2 ^ k) := by
+      have h1 : M < ε * 2 ^ k := by
+        rw [div_lt_iff₀ hε] at hk
+        nlinarith
+      linarith [Real.add_one_le_exp (ε * 2 ^ k)]
+    have hlow : (Real.exp (2 * b * 2 ^ k) - 2) * zetaWeight f ρ₀ ≤ heckeDefect f (2 ^ k) := by
+      have hdk : Real.exp (2 * b * 2 ^ k) - 2 ≤ depthKernel (2 ^ k) b := by
+        unfold depthKernel; rw [Real.cosh_eq]; linarith [Real.exp_pos (-(2 * b * 2 ^ k))]
+      exact (mul_le_mul_of_nonneg_right hdk hw_pos.le).trans
+        ((mul_le_mul_of_nonneg_left htail_ge (depthKernel_nonneg _ _)).trans
+          (depthKernel_mul_tail_le f (2 ^ k) b))
+    set E₀ : ℝ := Real.exp ((1 - 2 * θ + ε) * 2 ^ k)
+    have hE₀_pos : 0 < E₀ := Real.exp_pos _
+    have hE₀_ge1 : 1 ≤ E₀ := Real.one_le_exp (by dsimp [ε]; nlinarith [show (0 : ℝ) < 2 ^ k by positivity])
+    have hup : heckeDefect f (2 ^ k) ≤ |C| * E₀ :=
+      (hC k).trans (mul_le_mul_of_nonneg_right (le_abs_self C) hE₀_pos.le)
+    have hprod : Real.exp (2 * b * 2 ^ k) = E₀ * Real.exp (ε * 2 ^ k) := by
+      dsimp [E₀, ε]; rw [← Real.exp_add]; congr 1; ring
+    have hcomb : (E₀ * Real.exp (ε * 2 ^ k) - 2) * zetaWeight f ρ₀ ≤ |C| * E₀ := by
+      rw [← hprod]; exact hlow.trans hup
+    have hM_mul : |C| + 2 * zetaWeight f ρ₀ + zetaWeight f ρ₀ <
+        zetaWeight f ρ₀ * Real.exp (ε * 2 ^ k) := by
+      dsimp [M] at hexpM
+      rw [← div_lt_iff₀ hw_pos]
+      have : (|C| + 2 * zetaWeight f ρ₀ + zetaWeight f ρ₀) / zetaWeight f ρ₀ =
+          (|C| + 2 * zetaWeight f ρ₀) / zetaWeight f ρ₀ + 1 := by
+        field_simp [hw_pos.ne']
+      linarith
+    nlinarith [abs_nonneg C]
+  tfae_have 4 → 7 := fun habs s hs => re_logDeriv_xi_nonneg_of_zetaZeroAbscissa_le hθ0 hθ2 habs hs
+  tfae_have 7 → 4 := fun hcar => zetaZeroAbscissa_le_of_re_logDeriv_xi_nonneg hθ0 hθ2 hcar
+  tfae_finish
+
+end RBGBridge
 
 end GaloisForLFunctions.BezoutValuationIncidence

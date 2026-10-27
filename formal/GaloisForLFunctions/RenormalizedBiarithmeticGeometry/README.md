@@ -95,12 +95,16 @@ BGG).
 
 **What RBG found.**
 
-1. *The counterterm rank dichotomy.* The prime-side torsion germ has counterterm `I`; under every
-   renormalization nothing survives and the renormalized limit (Weil's prime kernel with the
-   log-discriminant diagonal) is indefinite at every prime power. The archimedean lattice germ has
-   counterterm `𝟙𝟙ᵀ`; the polar-neutral hyperplane survives and there the digamma Hankel form is
-   positive. Adjoining the pole node — the order-one torsion orbit, the arithmetic point — completes
-   the archimedean germ to a positive kernel on all vectors.
+1. *The survival cone is the module of relations.* For a periodic Abel germ — modes `a_α`, nodes
+   `x_α` — the counterterm is the Cesàro Gram of the modes, and positivity survives the scale limit
+   exactly on the linear relations among the modes. The archimedean germ has all modes equal to `1`:
+   its relations are the polar hyperplane, where the digamma Hankel form is positive. The torsion
+   germ has the identity as counterterm: under every renormalization nothing survives, and the
+   renormalized limit (Weil's prime kernel with the log-discriminant diagonal) is indefinite at
+   every prime power.
+   Adjoining the pole node — the order-one torsion orbit, the arithmetic point — completes the
+   archimedean germ to a positive kernel on all vectors, and placing a torsion orbit at several
+   nodes (a Ramanujan twin) creates the relations it lacks.
 2. *Lossless amplification.* The collided mass `D(f)` is a non-scaling invariant: dyadic Hecke
    amplification `E(2^k L) ≥ D(2cosh(2^k θ) − 2)` has loss exactly `D(f)`, independent of `k`. One
    upper bound at a large dyadic scale bounds every smaller scale, finite integer theta prefixes
@@ -127,6 +131,7 @@ BGG).
 | Regularized family, counterterm, survival cone | forms `Q_r` with `Q_r − s_r B → A`, `s_r → ∞`; the cone `{x : B(x, x) = 0}` | `quad`, `survivalCone` |
 | Torsion germ (prime place) | gcd-twisted Abel energy of primitive roots of unity | `torsionGerm`, `torsionLimit`, `torsionLimitForm` |
 | Lattice germ (archimedean place) | `G_r(z) = Σ_{k≥0} r^k/(k + z)`, Hankel family `G_r(x_i + x_j)` | `latticeGerm`, `latticeHankel`, `latticeCounterterm`, `latticeGermLimit` |
+| Periodic germ | modes `a_α` (common period `q`), nodes `x_α`: `Σ_k r^k a_α(k)a_β(k)/(k + 1 + x_α + x_β)`; Cesàro Gram `mean(a_α a_β)` | `twistedGerm`, `periodicGerm`, `cesaroGram`, `ramanujanMode` |
 | Pole node | the node `x = 0` of the shifted germ, the order-one torsion orbit | `harmonicFn`, `harmonicKernel_nonneg` |
 | Depth moments | `m_j(L) = Σ_ρ w_ρ k_ρ^j`, `k_ρ = 2cosh(2δ_ρ L) − 2` | `depthMoment`, `hankelForm`, `seenLevels` |
 | Amplification map | `a_D(e) = 4e + e²/D` | `amplify`, `mass` |
@@ -196,11 +201,21 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
    (`torsionLimitForm_neg`). Every renormalization of the lattice germ has the polar-neutral
    hyperplane as survival cone (`lattice_survivalCone_eq`). The conjunction is
    `counterterm_rank_dichotomy`.
-4. **The pole node** (`ThePoleNodeCompletesTheArchimedeanGerm`). Spending the hyperplane constraint
+4. **Periodic germs** (`TheSurvivalConeOfAPeriodicGermIsItsModuleOfRelations`). Every level of a
+   periodic germ is a Cauchy form in `C_α a_α(k)` (`periodicGerm_quad_nonneg`). For periodic `p`
+   with mean `μ`, `Σ_k r^k p(k)/(k + w) + μ log(1 − r)` converges: the mean part is the lattice
+   germ, the mean-zero part converges by Dirichlet's test and Abel's theorem
+   (`tendsto_twistedGerm_add_mean_log`). The Cesàro Gram form is the mean square of `Σ_α C_α a_α`,
+   so its null cone is the module of relations (`mem_survivalCone_cesaroGram_iff`); the renormalized
+   limit is nonnegative there (`periodicGerm_survival`), and every renormalization has this survival
+   cone (`periodicGerm_survivalCone_eq`). Constant modes give the polar hyperplane
+   (`relations_const_iff`); Ramanujan modes repeated over nodes survive on coefficients summing to
+   zero over each order (`ramanujanTwin_survival`).
+5. **The pole node** (`ThePoleNodeCompletesTheArchimedeanGerm`). Spending the hyperplane constraint
    on the node `x = 0` — the order-one torsion orbit, whose self-energy is the archimedean divergence
    — turns conditional positivity into positivity of `H(x) + H(y) − H(x + y)`, `H = ψ(1 + ·) + γ`
    (`harmonicKernel_nonneg`). This is the matched cancellation between the two germs.
-5. **Dyadic amplification** (`TheDyadicAmplificationOfTheHeckeDefect`). Two-scale rigidity reads
+6. **Dyadic amplification** (`TheDyadicAmplificationOfTheHeckeDefect`). Two-scale rigidity reads
    `E(2L) ≥ a_D(E(L))` (`amplify_heckeDefect_le`), and `a_D` doubles the angle
    (`amplify_cosh`, `iterate_amplify_cosh`). Hence `E(2^k L) ≥ D(2cosh(2^k θ) − 2)` whenever
    `E(L) ≥ D(2cosh θ − 2)` (`heckeDefect_dyadic_ge`), with the strip bound as ceiling
@@ -208,30 +223,30 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
    (`heckeDefect_le_of_dyadic_le`); sub-doubly-exponential growth forces `E(L) = 0`
    (`heckeDefect_eq_zero_of_dyadic_subexp`); and RH holds iff every test has sub-doubly-exponential
    dyadic growth (`riemannHypothesis_iff_dyadic_subexp`).
-6. **The Hecke moment problem** (`TheHeckeMomentProblem`). `m_0 = D`, `m_1 = E(L)`,
+7. **The Hecke moment problem** (`TheHeckeMomentProblem`). `m_0 = D`, `m_1 = E(L)`,
    `m_2 = E(2L) − 4E(L)`. Every shifted Hankel form is a trace `Σ_ρ w_ρ k_ρ^s P_c(k_ρ)²`
    (`hankelForm_eq_tsum`, `hankelForm_nonneg`); its null vectors are the polynomials vanishing on
    the seen levels (`hankelForm_eq_zero_iff`); a null vector of size `n` forces fewer than `n` seen
    levels (`ncard_seenLevels_lt_of_hankel_null`); the moments are log-convex (`depthMoment_sq_le`).
-7. **Integer theta prefixes** (`IntegerThetaPrefixesReadTheDefectWithoutLoss`). Finite prefixes read
+8. **Integer theta prefixes** (`IntegerThetaPrefixesReadTheDefectWithoutLoss`). Finite prefixes read
    the moments, the mass, the defect and every Hankel form (`reading_depthMoment`, `reading_mass`,
    `reading_heckeDefect`, `reading_hankelForm`). One pair of readings at a single dyadic scale bounds
    the defect at the base scale (`heckeDefect_le_of_readings`), and depth is always visible in the
    readings (`reading_ge_of_heckeDefect_ge`).
-8. **Gauge charge** (`TheGaugeChargeOfACoupling`). A coupling `(n; a, b)` is blind under every real
+9. **Gauge charge** (`TheGaugeChargeOfACoupling`). A coupling `(n; a, b)` is blind under every real
    sign gauge iff `nab` is a square (`realSignBlind_iff_isSquare`, via prime-flip gauges and
    `isSquare_iff_even_factorization`); kernels transform by conjugation iff their support is of
    square class (`sourceKernel_twist_iff`); for such kernels the twist is the sign change of the
    modes, so positivity for `Λ` and for `λΛ` coincide (`sourceForm_nonneg_twist_iff`). Diagonal,
    ratio and product couplings are square class; successor couplings never are
    (`successor_coupling_charged`).
-9. **Cells fix the gauge** (`LogCellsFixTheGauge`). Cell and lattice dilation both satisfy the
+10. **Cells fix the gauge** (`LogCellsFixTheGauge`). Cell and lattice dilation both satisfy the
    Baumslag–Solitar relation `M_m S = S^m M_m` (`cellDilate_succShift`, `latticeDilate_succShift`);
    cell dilation is lattice dilation spread over the successor orbit (`cellDilate_eq_sum_succShift`).
    Lattice dilation is covariant at every gauge (`gaugeTwist_latticeDilate`); dyadic cell dilation
    only at the Euler gauge (`cellDilate_two_covariant_iff`), and on the horizon `[1, X]`, `X ≥ 4`,
    exactly when every prime `≤ 2X + 1` has phase `1` (`cellDilate_two_covariant_on_horizon_iff`).
-10. **Critical discs and the lens** (`CriticalDiscsAndTheTerminalLens`). The pair contribution has the
+11. **Critical discs and the lens** (`CriticalDiscsAndTheTerminalLens`). The pair contribution has the
     sign of `x(x² + (y − γ)² − b²)` (`xiLinePairRe_nonneg_of_not_inCriticalDisc`,
     `xiLinePairRe_neg_of_inCriticalDisc`); off all discs `Re ξ′/ξ ≥ 0`
     (`re_logDeriv_xi_nonneg_of_outside_discs`); terminals are the zeros outside every disc
@@ -239,17 +254,17 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
     (`outside_discs_of_mem_terminalLens`), is zero-free off `p` (`xi_ne_zero_of_mem_terminalLens`),
     carries `Re ξ′/ξ ≥ 0` (`re_logDeriv_xi_nonneg_of_mem_terminalLens`) and contains the outward ray
     (`mem_terminalLens_of_ray`).
-11. **Irreversibility** (`PositivityIsIrreversible`). Positive deformations compose
+12. **Irreversibility** (`PositivityIsIrreversible`). Positive deformations compose
     (`PositiveDeformation.trans`); mutual positive deformations have equal logarithmic derivatives on
     a ray (`PositiveDeformation.antisymm`); a nontrivial one cannot be undone
     (`not_positiveDeformation_of_ne`).
-12. **Kronecker dilution** (`CollectivePacketsDiluteOverIndependentOrdinates`). Kronecker's theorem
+13. **Kronecker dilution** (`CollectivePacketsDiluteOverIndependentOrdinates`). Kronecker's theorem
     puts every `cos(ω_j t)` near `−sign(a_j)` at one time, so a nonnegative packet on independent
     ordinates satisfies `Σ_j |a_j| ≤ a_0` (`sum_abs_le_of_packet_nonneg`), sharply
     (`packet_nonneg_of_sum_abs_le`), and its peak is at most twice its pole share
     (`packet_peak_le_two_mul`). The Fejér packet on `γ, …, Mγ` buys `M` times its pole share
     (`exists_harmonic_packet`, `harmonic_purchase_eq`).
-13. **The laws** (`TheLawsOfRenormalizedBiarithmeticGeometry`): one conjunction of the laws above,
+14. **The laws** (`TheLawsOfRenormalizedBiarithmeticGeometry`): one conjunction of the laws above,
     `renormalized_biarithmetic_geometry_laws`.
 
 ---
@@ -262,7 +277,7 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
 | II. Local trichotomy | reflection-commuting affine actions are boosts, unipotent or elliptic | APol `TheEllipticLocalizers`, ACP |
 | III. Gauge blindness = square class | blind ⇔ `nab` square; square-class criteria accept `Λ` iff `λΛ`; successor charged | `realSignBlind_iff_isSquare`, `sourceForm_nonneg_twist_iff`, `successor_coupling_charged` |
 | IV. Interior–boundary duality | global states decouple `+1` and `×p` (APD); cells couple them and fix the gauge, with reach `2X + 1` on horizon `X` | APD; `cellDilate_two_covariant_iff`, `cellDilate_two_covariant_on_horizon_iff` |
-| V. Self-energy survival | positivity passes a scale limit exactly on the survival cone, independent of scheme; prime place: `{0}`, indefinite limit; archimedean place: polar-neutral hyperplane; pole node completes it | `quad_nonneg_on_survivalCone_iff`, `survivalCone_eq_of_regularized`, `counterterm_rank_dichotomy`, `harmonicKernel_nonneg` |
+| V. Self-energy survival | positivity passes a scale limit exactly on the survival cone, independent of scheme; for periodic germs the cone is the module of relations among the modes; prime place: `{0}`, indefinite limit; archimedean place: polar-neutral hyperplane; pole node and Ramanujan twins create relations | `quad_nonneg_on_survivalCone_iff`, `survivalCone_eq_of_regularized`, `periodicGerm_survival`, `periodicGerm_survivalCone_eq`, `counterterm_rank_dichotomy`, `harmonicKernel_nonneg`, `ramanujanTwin_survival` |
 | VI. Chirality, quantization and dilution | positive deformations form a monoid with trivial units; central excess quantized in `2ℕ`; collective packets on independent ordinates buy at most the pole share | `PositiveDeformation.antisymm`, `not_positiveDeformation_of_ne`, `sum_abs_le_of_packet_nonneg`; BGG G19 |
 | VII. Surface effectivity vs base non-extension | Hodge index ⇔ Serre-dual real effectivity with quadratic growth; the base theta count does not extend | AET |
 | VIII. Terminal replacement of extrema | every off-line zero ascends to a terminal; terminals = zeros outside every critical disc; each carries a zero-free lens with `Re ξ′/ξ ≥ 0` | ACP; `isTerminal_iff_outside_discs`, `xi_ne_zero_of_mem_terminalLens`, `re_logDeriv_xi_nonneg_of_mem_terminalLens` |
@@ -279,12 +294,14 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
    Hankel forms are read from integer prefixes. What remains is an arithmetic upper bound for the
    readings at one scale `L ≍ log n`.
 2. **Matched self-energy.** *How does one cancel `−log(1 − r)` inside the positive cone?* Exactly on
-   the survival cone of the counterterm, a scheme-independent invariant. For the prime place the
-   cone is `{0}` and the limit is indefinite: no renormalization of the torsion germ alone keeps
-   positivity. For the archimedean place the cone is the polar-neutral hyperplane, and the pole node
-   — the order-one torsion orbit — cancels the polar divergence and completes the archimedean germ to
-   a positive kernel. Matching higher torsion orbits requires a twin whose counterterm has the same
-   Cesàro statistics; none is supplied by the lattice germ.
+   the survival cone of the counterterm, a scheme-independent invariant, which for a periodic germ is
+   the module of linear relations among its modes. A twin cancels a divergence iff it shares the
+   mode that carries it. For the prime place alone the modes are independent, the cone is `{0}` and
+   the limit is indefinite. For the archimedean place the cone is the polar-neutral hyperplane, and
+   the pole node — the order-one torsion orbit — cancels the polar divergence and completes the germ
+   to a positive kernel. For higher orbits the canonical twin is the Ramanujan-twisted lattice germ:
+   placing `c_n` at several nodes makes `Σ_x C_{n,x} = 0` a relation, and positivity survives there.
+   What this positivity says about Weil's prime kernel is the open part.
 3. **Finite-horizon holonomy.** *How much `(+1, ×p)` curvature survives?* On lattice profiles none:
    lattice dilation is covariant at every gauge. On cell profiles all of it: dyadic cell dilation is
    covariant only at the Euler point, and on the horizon `[1, X]` it detects every prime up to
@@ -316,6 +333,7 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
 |---|---|
 | Positivity of `T_r` for `r < 1` bounds Weil's prime form | The torsion counterterm is the identity; every form is a renormalized limit of positive forms with scalar counterterm (`regularized_one_realizes`) |
 | A better renormalization scheme for the torsion germ keeps positivity | The survival cone is scheme independent and equal to `{0}` (`torsion_survivalCone_eq`) |
+| Any continuum twin cancels the torsion divergence | Only modes shared with the torsion orbit create relations (`periodicGerm_survivalCone_eq`) |
 | Subtracting `−log(1 − r) I` leaves something positive | The limit is negative along `(1, t)` on `{1, q}` (`torsionLimitForm_neg`) |
 | The archimedean place is positive | Only on the polar-neutral hyperplane; at `z = 2` the limit is `−1` |
 | A cleverer multiplicative weight separates `ζ` from Liouville | Square-class criteria accept `Λ` iff `λΛ` (`sourceForm_nonneg_twist_iff`) |
@@ -337,13 +355,14 @@ formula for `Re ξ′/ξ` (ACP, RHTower); Gauss series for digamma and the Cauch
 RHTower).
 
 **Built in RBG**: the survival law with scheme independence and the Finsler–Debreu converse; the
-lattice germ and its digamma limit; counterterm rank of both places; pole-node completion; dyadic
+lattice germ and its digamma limit; periodic germs, their Cesàro counterterm and the
+relations law; Ramanujan twins; counterterm rank of both places; pole-node completion; dyadic
 amplification and the effective angle; the Hecke moment problem; integer-prefix transfer; gauge
 charge of couplings and the square-class criterion; cell and lattice dilation with finite-horizon
 gauge fixing; critical discs, the Carathéodory region and the terminal lens; the positive
 deformation monoid; Kronecker dilution and harmonic concentration of positive packets.
 
-**To build**: a twin for higher torsion orbits; arithmetic upper bounds for prefix readings at one
+**To build**: the explicit twisted limits of the Ramanujan twins; arithmetic upper bounds for prefix readings at one
 dyadic scale; Harnack and harmonic-measure estimates on the lens; quantitative cell holonomy at the
 Liouville gauge; Wiener escape modules as boundary objects.
 
@@ -351,14 +370,13 @@ Liouville gauge; Wiener escape modules as boundary objects.
 
 ## 9. Open research topics
 
-1. **Twins for higher torsion orbits.** Candidate: the Ramanujan-twisted lattice germs
-   `Σ_{k≥1} r^k c_m(k) c_n(k)/(k + x + y)`, Gram matrices of `c_n(k) t^x` in
-   `L²(ℕ × [0, 1], r^k t^{k−1})`. At `x = y = 0` they are the torsion energies `T_r(m, n)`; their
-   counterterm is expected to be block-diagonal with blocks `φ(n) 𝟙𝟙ᵀ` (the Cesàro means of
-   `c_m c_n`). Base-point completion at every pole node would then give a positive kernel in which
-   the orbit intersections `I(m, mt) = φ(m)Λ(t)` enter through the `x = 0` entries, against twisted
-   Lerch values. Prove the counterterm, compute the twisted limits, and decide whether the resulting
-   bound on the prime form reaches the short-cycle differences `g − T_{2^m} g`.
+1. **What the Ramanujan twins say about the prime kernel.** The twin germs survive on per-order
+   relations (`ramanujanTwin_survival`). At nodes `x = y = 0` their entries are the torsion energies
+   `T_r(m, n)`, whose limits are the orbit intersections `I(m, mt) = φ(m)Λ(t)`; base-point completion
+   at the pole node of every order turns the survival into a positive kernel in which these
+   intersections stand against twisted Lerch values. Compute the twisted limits, identify the
+   Cesàro Gram (`φ(n)δ_{mn}`), and decide whether the resulting bound on the prime form reaches the
+   short-cycle differences `g − T_{2^m} g`.
 2. **One-scale arithmetic bounds.** An upper bound for `R_n(f, 2^k L, 1)` at `2^k L ≍ log n` from
    integer arithmetic; by lossless transfer it bounds `E_f(L)`. Any bound `E ≪ e^{2ϑ L} D` at one
    scale gives zero-density control.
@@ -402,6 +420,7 @@ state mathematics only.
 - [`TheArchimedeanGermSurvivesOnItsPolarHyperplane.lean`](TheArchimedeanGermSurvivesOnItsPolarHyperplane.lean) — the lattice germ, its digamma limit, survival on `Σc = 0`.
 - [`TheCountertermRankDichotomy.lean`](TheCountertermRankDichotomy.lean) — the torsion germ as a regularized family; full rank versus rank one.
 - [`ThePoleNodeCompletesTheArchimedeanGerm.lean`](ThePoleNodeCompletesTheArchimedeanGerm.lean) — the harmonic-number kernel.
+- [`TheSurvivalConeOfAPeriodicGermIsItsModuleOfRelations.lean`](TheSurvivalConeOfAPeriodicGermIsItsModuleOfRelations.lean) — periodic germs, Cesàro counterterm, the relations law, Ramanujan twins.
 - [`TheDyadicAmplificationOfTheHeckeDefect.lean`](TheDyadicAmplificationOfTheHeckeDefect.lean) — amplification map, lossless transfer, RH as a growth rate.
 - [`TheHeckeMomentProblem.lean`](TheHeckeMomentProblem.lean) — depth moments, Hankel positivity, shell rigidity, log-convexity.
 - [`IntegerThetaPrefixesReadTheDefectWithoutLoss.lean`](IntegerThetaPrefixesReadTheDefectWithoutLoss.lean) — finite readings of the moment problem and source-side transfer.

@@ -32,6 +32,7 @@ RBG owns the survival law and the rank comparison; imports AET/BGG/CDG/ACP/MPG/H
 | archimedean germ → digamma, CPD on `Σc = 0` | `TheArchimedeanGermSurvivesOnItsPolarHyperplane` | `neg_digamma_hankel_nonneg` |
 | torsion counterterm full rank, indefinite limit | `TheCountertermRankDichotomy` | `counterterm_rank_dichotomy` |
 | pole-node completion | `ThePoleNodeCompletesTheArchimedeanGerm` | `harmonicKernel_nonneg` |
+| periodic germs: survival cone = relations; Ramanujan twins | `TheSurvivalConeOfAPeriodicGermIsItsModuleOfRelations` | `periodicGerm_survivalCone_eq`, `ramanujanTwin_survival` |
 | dyadic amplification, RH ⇔ growth rate | `TheDyadicAmplificationOfTheHeckeDefect` | `riemannHypothesis_iff_dyadic_subexp` |
 | Hecke moment problem, shell rigidity | `TheHeckeMomentProblem` | `ncard_seenLevels_lt_of_hankel_null` |
 | integer-prefix lossless transfer | `IntegerThetaPrefixesReadTheDefectWithoutLoss` | `heckeDefect_le_of_readings` |

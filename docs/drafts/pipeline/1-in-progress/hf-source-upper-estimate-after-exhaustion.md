@@ -110,6 +110,88 @@ further implementation; check its first unproved sign on paper. Do not count
 another equivalent criterion, a positive collided form, an exterior field
 identity, or a smaller constant as discharging the open core.
 
+## Composite-node and continuation checks
+
+The next batch again did not prove a closing estimate or discharge a significant
+premise. The previous goal turn is classified as **no mathematical progress**.
+
+- Read the current `ThePrimeKernelIsASumOfTransverseTowers`: its tensor
+  decomposition retains `K_p - 1`. Summing the local upper bounds diverges;
+  transversality of prime ladders supplies no completed diagonal cancellation.
+- Investigated the open whole-tower problem in
+  `BiScaleUncertainty/PrimeTowerDeletionCompositeCharge`. Its full-grid cone is
+  blind at integer products `p^i q^j`, not at rational ratios `p^i/q^j`.
+  Therefore an additive decomposition of the joint spectral measure into
+  independent prime marginals cannot be inferred from the stated constraints.
+  Such a decomposition was not asserted or formalized. Pairwise moment
+  inequalities were considered, but no proof linking them to the required
+  aperture-uniform prime--Gamma--polar bound was obtained. Merely sharpening
+  a finite tower price would not meet the user's requested progress.
+- Read `TheHeckeDefectIsTheMomentOfInertia`: its upper comparison is with the
+  actual nonnegative depth second moment, whose vanishing remains unproved.
+  It cannot be used as an independent upper estimate for the defect.
+- Read `CCMSharpPrimeWindowCancellation`: multiplying by pole-filled zeta
+  produces a holomorphic source and lowers the zero order. This is analytic
+  cancellation, not a sign for the completed source.
+- Rechecked the naive/convex-height and ACCE transport frontiers. The former
+  retain the bounded-error height construction; the latter retain a
+  horizon-independent signed budget. The exact derivative and shell-flux
+  identities do not prove either budget.
+- A stress-tensor formulation of the squared logarithmic derivative was
+  considered as a possible direct source attack. No signed integral bound was
+  proved. A divergence identity alone would be another representation of the
+  same work and must not be reported as a closing estimate.
+
+No Lean changes or compilations were made in this batch. No paper theorem or
+new no-go is claimed. HF remains active, with the original objective unchanged.
+
+## Laguerre, cut-profile and radical-span checks
+
+This continuation also produced **no mathematical progress**: no source upper
+bound, new theorem, or discharged premise. The following distinctions prevent
+the next continuation from repeating these searches as attempted proofs.
+
+- **First Laguerre sign.** The corpus has
+  `XiLaguerreWindowPositivity.laguerre_Xi_pos_of_abs_le_four`, positive-measure
+  height results, the exact inverse-square zero sum, and central domination in
+  `XiSliceHeatHeightPositiveDefinite`. None proves the first Laguerre inequality
+  at every real height. `xi-laguerre-identity-and-kernel-no-go-lean` already
+  excludes inferring that sign from positive, even, log-concave theta kernels.
+  Bochner positivity of the coefficient as a function of height is not its
+  pointwise nonnegativity.
+- **Retaining the same-side energy.** Read the exact light-cone identity and
+  the monotone fold-domination proof. For a fixed shift, writing a decreasing
+  profile as a positive superposition of half-line cuts suggests estimating
+  mixed cut energies. That is only a proposed attack: no sign of the mixed
+  energies or positive-semidefinite cut kernel was established. The existing
+  weight criterion still assumes the unpaid fold-excess bound. In particular,
+  positive continuum conductance does not order the signed prime atoms.
+- **Monotonicity is not a producer by itself.** The corpus card
+  `weil-profile-monotone-cone` gives an RH receiver even for a specific
+  non-polar monotone cone, through Fejer triangles and Landau. Its test profile
+  differs from ACT's multiplicative profile; no equivalence between these
+  cones was inferred. This does rule out treating the word “monotone” as
+  sufficient reason that a full arithmetic sign should follow.
+- **Truncated theta derivatives.**
+  `RiemannKernelTruncationWeilPositive.eventually_re_W_truncKernel_pos` already
+  proves the scalar truncation positive. Its paper card leaves positivity on
+  finite derivative spans open because signed coefficients can cancel the
+  leading edge profile. A finite-rank extension was considered, but fixed-rank
+  positivity approaching the theta radical supplies no upper bound on HF's
+  nonzero defect. No rank-uniform estimate or transfer was proved, so this
+  extension was not substituted for the requested source estimate.
+- **Finite prime matrices.** Rechecked the actual Gibbs Schur diagonal
+  `log k + mertensPartial (N / k)` and AIT's local tower subtraction. No
+  identification with the complete Gamma--polar compensation was found.
+  Changing the constant in the finite matrix bound would leave this missing
+  identification and the signed inequality unresolved.
+
+No mathematical impossibility or new no-go is claimed by these checks. The
+next task remains an actual signed arithmetic estimate, with all prime, Gamma
+and polar terms retained. Do not repeat a restricted-height sign, a radical
+identity, a finite-rank positive cone, or a finite-matrix norm bound as closure.
+No Lean file was changed or compiled; no new hypotheses were introduced.
+
 ## Log
 
 - 2026-10-27 — revalidated the previous source exhaustion theorem and current HF

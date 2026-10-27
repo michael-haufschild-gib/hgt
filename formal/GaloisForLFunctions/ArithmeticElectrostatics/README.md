@@ -183,7 +183,6 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
    with an off-line zero has energy at least `2` (`two_le_windowEnergy`); a window of energy below `2`
    is critical at any scale (`critical_of_windowEnergy_lt_two`); RH ⇔ every unit window has energy
    below `2` (`riemannHypothesis_iff_windowEnergy_lt_two`).
-
 6. **The Hecke defect is the moment of inertia** (`TheHeckeDefectIsTheMomentOfInertia`). On the
     strip `2cosh(2δL) − 2 ≤ 4δ²(2cosh L − 2)` (`depthKernel_le_mul_half`), so the symmetric
     equivariance defect of `D` and the transverse moment of inertia `M_f = Σ m δ²|f̂(ρ)|²` satisfy
@@ -203,7 +202,6 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
    (`exists_riemannHypothesis_iff_transverseField_lt_sqrt_log`). The terminal reserve
    `1/(2δ) + cδ log γ` is minimized at `δ = (2c log γ)^{−1/2}`. The field law that would exclude
    off-line zeros is an upper bound of size `max(1, √(2c log γ))`, not an exact equilibrium.
-
 9. **The external field is a prime sum** (`TheExternalFieldIsAPrimeSum`). For `Re s > 1` the field
     of the divisor is a sum of positive Coulomb terms, `Re ξ′/ξ(s) = Σ_ρ Re 1/(s − ρ)`
     (`re_logDeriv_xi_eq_tsum_of_one_lt_re`, `re_reciprocal_pos_of_one_lt_re`), and the explicit
@@ -243,6 +241,12 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
     (`half_log_le_of_renormalizesAt`, `torsionCounterterm_rate`). No finite renormalization keeps the
     torsion pairing positive uniformly in the order; the divergence is exactly logarithmic, the
     rate of the archimedean self-energy `log(1/ε)` of an atom of width `ε ≍ 1/N`.
+    The prime side has the same rate (`TheWeilPrimeFormOnAtomsIsLogarithmic`): Weil's prime form on
+    the atoms `log n`, `n ≤ N`, is at most `(2 log N + log 4 + 4) Σ x_n²` (`atomicWeilForm_le`, Schur
+    with weights `n^{−1/2}`), and any bound `κ` satisfies `κ² ≥ Σ_{2≤n≤N} Λ(n)²/n ≥ log 2 (log N − log 4 − 4)`
+    (`sqrt_le_of_atomicWeilForm_le`, `log_two_mul_le_sq_of_atomicWeilForm_le`), forced again by the atom
+    at the arithmetic point `log 1 = 0`. The counterterm the archimedean place must supply at atomic
+    resolution `N` is logarithmic on both carriers.
 
 ### E. The base and the arithmetic point
 
@@ -255,7 +259,6 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
     and `J(At, Bt) = t (J(A, B) + gcd(A, B) log t)` (`logEnergy_mul`): the adjunction term is the shift
     of the self-energy under the rescaled cutoff. On the base the Hecke correspondences are computed
     similitudes of a positive Hermitian structure.
-
 14. **The torsion is the stable equilibrium of the circle** (`TheTorsionIsTheStableEquilibriumOfTheCircle`).
     `N` distinct points of the unit circle satisfy `Σ_{i≠j} log |z_i − z_j| ≤ N log N`
     (`sum_sum_log_norm_sub_le`: Vandermonde and Hadamard), and the `N`-th roots of unity attain it
@@ -296,7 +299,7 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
 | **ES8 External field and alignment** | `Re L(Λ, s) + Σ_F Re 1/(s − ρ) ≤ Re arch′/arch`; anti-alignment `m/(σ − β)` at zero ordinates | `re_LSeries_vonMangoldt_add_sum_le`, `re_LSeries_vonMangoldt_eq`, `re_LSeries_vonMangoldt_le_at_zero_ordinate` |
 | **ES9 The renormalized square** | self-term `m² → m(m − 1)`, residue `2mR`; `Λ₂ = μ ⋆ log² ≥ 0`, `L(Λ₂) = ζ″/ζ` | `selfTerm_and_residue_of_analyticOrderAt`, `selbergSource_nonneg`, `selbergSource_prime_pow`, `LSeries_selbergSource` |
 | **ES10 Torsion adjunction** | `I(n,n) = φ log n − φ ⋆ Λ`; additivity; cover formula; conjugation on cycles | `orbitIntersection_self_eq`, `orbitIntersection_self_mul_of_coprime`, `orbitIntersection_self_prime_pow_succ`, `torsionEnergy_eq_bilinear` |
-| **ES11 Logarithmic counterterm** | minimal constant counterterm on orders `≤ N` in `[½ log(N/2), 4 log N + O(1)]` | `torsionCounterterm_rate` |
+| **ES11 Logarithmic counterterm** | minimal constant counterterm on orders `≤ N` in `[½ log(N/2), 4 log N + O(1)]`; the atomic Weil prime form has norm in `[√(log 2 (log N − C)), 2 log N + C]` | `torsionCounterterm_rate`, `atomicWeilForm_le`, `log_two_mul_le_sq_of_atomicWeilForm_le` |
 | **ES12 The arithmetic point** | `I(1, n) = Λ(n)`; `c(1) ≥ Σ Λ²/(cφ)` | `orbitIntersection_one_left`, `le_counterterm_one` |
 | **ES13 Similitudes on the base** | `T_r(A,B) = gcd log 1/(1 − r^{lcm})`, PSD; `T_r(At, Bt) = t T_{r^t}(A, B)`; renormalized limit `−J` | `fullTorsionEnergy_eq`, `sum_sum_fullTorsionEnergy_nonneg`, `fullTorsionEnergy_mul`, `tendsto_fullTorsionEnergy_sub_log`, `logEnergy_mul` |
 | **ES14 Stability of the base** | Fekete bound `N log N`, attained by the torsion | `sum_sum_log_norm_sub_le`, `logEnergy_self_eq` |
@@ -317,8 +320,7 @@ kernel (AET).
    conjugation is the power map of degree `−1`, fixes every torsion cycle, and identifies the
    Hermitian (collided) and bilinear (reflection) torsion pairings (ES10); the Hecke correspondences
    are computed similitudes of the regularized Hermitian structure, with the cutoff rescaled by the
-   degree (ES13). On the divisor,
-   conjugation composed with reflection is the Hermitian reflection `ρ ↦ 1 − ρ̄`, trivial iff RH
+   degree (ES13). On the divisor, conjugation composed with reflection is the Hermitian reflection `ρ ↦ 1 − ρ̄`, trivial iff RH
    (`riemannHypothesis_iff_supportPartner_eq_id`); its pairing is `D`, whose Hecke equivariance is
    RH (APol). The disagreement of the two involutions is counted by the transverse energy (ES3).
    *Answer:* algebraic on the base; on the divisor its realization by a correspondence is RH.
@@ -357,15 +359,22 @@ kernel (AET).
    reflection-commuting affine group, hence blind to every archimedean twist (ES15); the gauge enters
    through the arithmetic source, `Λ₂^ω = ωΛ₂`, prime by prime. *Answer:* located in the source;
    margin laws on growing prime windows remain open (Q3 of the report).
-8. **Is the coupled class bounded at the centre?** Not answered by AES (BGG).
+8. **Is the coupled class bounded at the centre?** Owned by BGG. Electrostatically the central
+   order of a member is the charge it places at `½`: contracting an off-critical quartet at
+   ordinate `γ` moves four charges — two reflection pairs, two quanta of transverse energy — onto
+   the centre (`Δ ord = +4`), while outward critical splitting removes two (`Δ ord = −2`). The ceiling
+   `ord_{1/2}(Λ) ≤ ord_{1/2}(Λ_γ)` is thus a bound on central charge; on the positive and rational
+   subclasses it is equivalent to the absence of off-critical zeros at `γ` (BGG
+   `positiveCentralVanishingCeiling_iff`, `rationalCentralVanishingCeiling_iff`). *Answer:* the full
+   class is open (B3.34); AES contributes the quantization of what the ceiling must exclude.
 9. **What selects the fibre?** The finite laws (ES1, ES2) hold on every reflection-closed
    configuration, fake ones included, and the circle laws (ES10–ES14) on every torsion cycle:
    electrostatic geometry is soft. *Answer:* selection must come from the arithmetic computation of
    the source or the counterterm, never from the geometry of the charges.
 10. **What are the escape states of `ζ` at infinite height?** Infinite transverse energy is exactly
-    an infinite off-line set (ES3); finite energy forces attainment of the depth supremum, and then the
-    marginality identity gives RH (`riemannHypothesis_of_transverseForce_zero_of_energy_lt_top`). The arithmetic work exhausts the energy without any
-    finiteness premise (ES4). *Answer:* escape is the infinite-energy regime; its exclusion is open.
+    an infinite off-line set (ES3); finite energy forces attainment of the depth supremum, and then
+    the marginality identity gives RH (`riemannHypothesis_of_transverseForce_zero_of_energy_lt_top`).
+    The arithmetic work exhausts the energy without any finiteness premise (ES4). *Answer:* escape is the infinite-energy regime; its exclusion is open.
 11. **How does an average become a point?** By quantization: the energy of a window of any size
     counts its off-line zeros, and a window of energy below `2` is critical (ES5). *Answer:* for a
     quantized quantity selection below the zero spacing is free; the difficulty moves entirely into
@@ -373,8 +382,9 @@ kernel (AET).
 12. **What is the base?** The characteristic circle with its torsion: discrete energy bounded below
     and attained by the roots of unity (ES14), a positive Hermitian structure on which the power maps
     act as similitudes up to rescaling of the cutoff (ES13), the torsion pairing positive before
-    renormalization and Hecke equivariant after (AET, ES10). *Answer:* the base carries stability for free; the
-    divisor must inherit it through an adjunction that matches the logarithmic counterterm.
+    renormalization and Hecke equivariant after (AET, ES10). *Answer:* the base carries stability for
+    free; the divisor must inherit it through an adjunction that matches the logarithmic
+    counterterm (ES11).
 
 ---
 
@@ -425,8 +435,9 @@ side (on the circle it is ES13).
 2. **The stability law (Hodge index with adjunction).** On torsion cycles supported on orders `≤ N`,
    the renormalized pairing plus the archimedean self-energy of the atoms `log n` at width `1/N` is
    nonnegative, the renormalization being the one that turns the double pole of `Λ ⋆ Λ` into the
-   field. ES11 and ES12 give the size of the counterterm and its location; the open step is the
-   identification with the archimedean term, constants included.
+   field. ES11 and ES12 give the size of the counterterm on both carriers (torsion pairing and
+   atomic Weil prime form) and its location at the arithmetic point; the open step is the
+   identification with the archimedean self-energy of the atoms, constants included.
 3. **Matched renormalization of the square.** Compare the torsion counterterm with the zero-side
    counterterm `Λ log` through the explicit formula for `ζ″/ζ`.
 4. **Electrostatics of the twins.** Fields and energies of the divisors of sign twins (signed
@@ -434,8 +445,13 @@ side (on the circle it is ES13).
    charge at the level of forms rather than coefficients.
 5. **Attainment.** Exclusion of infinite transverse energy for the actual divisor, or an energy
    criterion for attainment of the depth supremum with infinitely many off-line zeros.
-6. **Alignment.** The outward reserve as a short prime sum at the terminal ordinate (W18), and
-   moments of short prime polynomials at zero ordinates (W15): the Diophantine face of the field law.
+6. **Alignment inside the strip.** The outward reserve as a short prime sum at the terminal ordinate
+   (W18), and moments of short prime polynomials at zero ordinates (W15): the Diophantine face of the
+   field law. First moments over the zeros are in the corpus
+   (`exists_zeroSum_dirichletPolynomial_le`: the zero average of `Σ a_n n^{−(ρ−½)}` is
+   `−T w(0) Σ a_n Λ(n)/√n` plus the count term — zero ordinates anti-align on average, as they do
+   pointwise outside the strip, ES8); second moments need the Landau formula at rational points
+   `m/n`, which the corpus has only at integers.
 
 ---
 
@@ -481,6 +497,7 @@ selects for free; identities first, sign last; a reformulation is not a reductio
 | `TheRenormalizedSquareIsSelbergsSource` | counterterm identity, Laurent self-terms, Selberg's source and its L-series |
 | `TheSelfIntersectionOfATorsionOrbit` | `I(n, n)`, local correction, Leibniz rule, cover formula, conjugation on cycles |
 | `TheTorsionCountertermIsLogarithmic` | renormalized torsion pairing; upper and lower counterterm bounds |
+| `TheWeilPrimeFormOnAtomsIsLogarithmic` | Schur bound and arithmetic-point lower bound for Weil's prime form on the first `N` atoms |
 | `TheArithmeticPointCarriesTheDivergence` | the arithmetic point; nonnegative self-intersections; the bound at `z = 1` |
 | `TheTorsionIsTheStableEquilibriumOfTheCircle` | Fekete's bound on the circle, attained by the torsion |
 | `QuantizationTurnsWindowsIntoPoints` | window energies; affine invariance; gauge twists of the source |

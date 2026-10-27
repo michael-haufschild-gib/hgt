@@ -1,7 +1,16 @@
 # The twisted minimum principle on the modular bottom arc
 
-**Status:** fully proven on paper. The only external inputs are the classical potential-theory facts (C1)–(C4). The 1D core
-is in Lean. Producer for (N1) of route HF.
+**Status:** main TMP theorem formalized by the dual route. The primal construction and corrected
+potential-theory inputs (C1)–(C4) remain under formalization. Producer for (N1) of route HF.
+
+**Correction under formalization:** the general smooth-data flux estimate
+in (C1), as written below, is false. The bounded mode
+`K₀(4πy)cos(4πu)` has smooth even trace and nonzero corner normal flux.
+The needed estimate applies to the zero-boundary remainder `J-D_g` through
+(C3). The main theorem remains active; the original ancillary assertion
+cannot be certified unchanged. Exact counterexample, positive boundary-jet
+identity and pending Lean obligations are recorded in
+[the corner-flux audit](../../1-in-progress/leftovers-twisted-corner-flux.md).
 
 ## Statement
 Let A = {e^{iα} : π/3 ≤ α ≤ 2π/3}. For u = cos α ∈ [−½, ½], let M_n(u) = ∫ g_u(x) cos(2π(n+2)x) dx be the

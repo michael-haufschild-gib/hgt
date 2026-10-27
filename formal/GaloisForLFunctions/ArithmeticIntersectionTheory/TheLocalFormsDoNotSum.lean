@@ -92,7 +92,7 @@ theorem primeForm_poleVector_ge (M : ℕ) :
     have h1 : 0 < Real.sqrt q.1 := Real.sqrt_pos.mpr hm
     have h2 : 0 < Real.sqrt q.2 := Real.sqrt_pos.mpr ht
     field_simp
-    rw [← hsm, ← hst]
+    simp only [hsm, hst]
     ring
   calc (harmonic M : ℝ) * ∑ t ∈ Icc 1 M, Λ t / (t : ℝ)
       = ∑ q ∈ Icc 1 M ×ˢ Icc 2 M, Λ q.2 / (q.2 : ℝ) * (1 / (q.1 : ℝ)) := by
@@ -100,12 +100,12 @@ theorem primeForm_poleVector_ge (M : ℕ) :
         push_cast
         rw [sum_mul]
         refine sum_congr rfl fun m _ => ?_
-        rw [mul_comm, mul_sum]
+        rw [mul_comm, sum_mul]
         rcases Nat.eq_zero_or_pos M with rfl | hM
         · simp
-        rw [← Icc_insert_succ_left (by omega : 1 ≤ M), sum_insert (by simp)]
-        simp only [ArithmeticFunction.vonMangoldt_apply_one, zero_div, mul_zero, zero_add]
-        refine sum_congr rfl fun t _ => by ring
+        rw [← insert_Icc_add_one_left_eq_Icc (by omega : 1 ≤ M), sum_insert (by simp)]
+        simp only [ArithmeticFunction.vonMangoldt_apply_one, zero_div, zero_mul, zero_add, one_div]
+        rfl
     _ = ∑ q ∈ Icc 1 M ×ˢ Icc 2 M, f (g q) := (sum_congr rfl hterm).symm
     _ = ∑ p ∈ (Icc 1 M ×ˢ Icc 2 M).image g, f p := (sum_image hg).symm
     _ ≤ ∑ p ∈ S ×ˢ S, f p := sum_le_sum_of_subset_of_nonneg hsub fun p _ _ => hf p
@@ -124,19 +124,22 @@ theorem not_exists_primeForm_le :
       Real.log M - γ - 1 ≤ ∑ t ∈ Icc 1 M, Λ t / (t : ℝ) := by
     have h := RHTower.tendsto_sum_vonMangoldt_div_sub_log
     filter_upwards [(h.eventually (Ioi_mem_nhds (show -γ - 1 < -γ by linarith)))] with M hM
-    simp only [Set.mem_Ioi] at hM
+    have hM' : -γ - 1 < (∑ n ∈ Icc 1 M, (ArithmeticFunction.vonMangoldt n : ℝ) / (n : ℝ)) -
+        Real.log M := hM
     linarith
   have hlog : ∀ᶠ M : ℕ in atTop, max C' (γ + 2 + 2 * C') + 1 < Real.log M :=
     (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_gt_atTop _
   obtain ⟨M, hM1, hM2⟩ := (hmert.and hlog).exists
+  have hC'0 : 0 ≤ C' := le_max_right _ _
+  have hM0 : 0 < M := by
+    rcases Nat.eq_zero_or_pos M with h | h
+    · exfalso
+      rw [h, Nat.cast_zero, Real.log_zero] at hM2
+      linarith [le_max_left C' (γ + 2 + 2 * C')]
+    · exact h
   set L := Real.log M
   have hL1 : C' < L := by linarith [le_max_left C' (γ + 2 + 2 * C')]
   have hL2 : γ + 2 + 2 * C' < L := by linarith [le_max_right C' (γ + 2 + 2 * C')]
-  have hC'0 : 0 ≤ C' := le_max_right _ _
-  have hM0 : 0 < M := by
-    rcases Nat.eq_zero_or_pos M with rfl | h
-    · simp [L] at hL1; linarith
-    · exact h
   have hH : L ≤ (harmonic M : ℝ) := by
     calc L ≤ Real.log ((M + 1 : ℕ) : ℝ) :=
           Real.log_le_log (by exact_mod_cast hM0) (by push_cast; linarith)
@@ -147,7 +150,8 @@ theorem not_exists_primeForm_le :
   have hlow := primeForm_poleVector_ge M
   have hup := hC (Icc 1 (M ^ 2)) poleVector (fun n hn => by simp at hn; omega)
   rw [sum_poleVector_sq] at hup
-  have hS : (0 : ℝ) ≤ harmonic (M ^ 2) := by positivity
+  have hS : (0 : ℝ) ≤ harmonic (M ^ 2) := by
+    rw [harmonic_eq_sum_Icc]; push_cast; exact sum_nonneg fun i _ => by positivity
   have hmass : C * (harmonic (M ^ 2) : ℝ) ≤ C' * (1 + 2 * L) :=
     (mul_le_mul_of_nonneg_right (le_max_left C 0) hS).trans
       (mul_le_mul_of_nonneg_left hH2 hC'0)

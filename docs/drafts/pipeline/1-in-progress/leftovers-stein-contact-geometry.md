@@ -72,6 +72,29 @@ being assumed as an interface field.
 
 ## Local maximum arguments
 
+The Stein input can be modeled by its original three defining conditions,
+not by an assumed strict-plurisubharmonic exhaustion. In addition to
+holomorphic convexity and point separation, the definition asks for global
+holomorphic functions forming local coordinates at each point; see
+B. Malgrange, [*Lectures on the Theory of Functions of Several Complex
+Variables*, §15.3, p.119](https://mathweb.tifr.res.in/Documents/Publications/Lectures/tifr13.pdf).
+This is a standard definition, also stated in
+[Forstnerič, ICM 2026, §2](https://epubs.siam.org/doi/10.1137/25M1802808).
+No proper embedding or Levi-problem theorem needs to be assumed.
+
+For the compact hull, finitely many of these coordinate neighborhoods
+cover it. Collect their actual global coordinate functions as
+`f₁,…,f_m` and put `ρ=Σ|f_j|²`. At every point near the hull, at least
+one coordinate block has injective differential. With `dᶜρ=-dρ∘J`,
+
+`ddᶜρ(v,Jv)=4 Σ_j |df_j(v)|² > 0` for `v≠0`.
+
+This constructs the needed smooth strictly plurisubharmonic function by
+a finite sum directly from a faithful Stein definition. Its existence
+must be proved from those coordinate functions in Lean; it is not a
+structure field replacing the construction. The defining coordinate
+property must use actual holomorphic charts and maps.
+
 There are also direct calculus routes for the other branches. At a maximum
 of a strictly plurisubharmonic function restricted to a Levi-flat hull,
 choose a local nonzero section `V` of `H`. The identity
@@ -89,8 +112,8 @@ substitute assumptions.
 ## Open formal dependencies
 
 - Faithful complex-surface and Stein definitions; derive the required strict
-  plurisubharmonic function from the chosen Stein model, without assuming the
-  desired maximum obstruction.
+  plurisubharmonic function by the finite-coordinate construction above,
+  without assuming the desired maximum obstruction.
 - Smooth tangent/CR bundles, Levi tensor, pullbacks and exterior derivative;
   local vector fields and the maximum identities above.
 - Smooth compact Riemannian isometry-group theorem, closed Lie subgroups,
@@ -114,3 +137,13 @@ substitute assumptions.
 No new Lean declaration is claimed for this route. The original theorem card
 remains at stage 2. Bi-scale source checks continue independently under the
 same full formalization programme.
+
+Further source inspection located `HTGeometry/MinimalFlowJetVanishing.lean`:
+`eq_empty_of_isClosed_of_invariant` already proves the needed closed
+invariant-set dichotomy from actual dense orbits. The vendored
+`Geometry/Metric/Distance/Basic.lean` defines the genuine Riemannian
+path distance, and `Geometry/Exponential/LocalDiffeomorphism.lean`
+constructs an exponential-map neighborhood inverse. These are source
+leads; their transitive axiom audits and applicability checks remain
+required. No smooth compact-isometry-group theorem was returned by the
+targeted vendor search.

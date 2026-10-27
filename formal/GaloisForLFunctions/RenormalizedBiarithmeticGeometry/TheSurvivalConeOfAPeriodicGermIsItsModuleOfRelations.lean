@@ -19,7 +19,11 @@ Abel germ is the family
 * **Survival cone = relations** (`mem_survivalCone_cesaroGram_iff`). `C^T M C` is the mean square of
   `Σ_α C_α a_α`, which vanishes iff `Σ_α C_α a_α ≡ 0`.
 * **The law** (`periodicGerm_survival`). The renormalized limit is nonnegative on every linear
-  relation among the modes.
+  relation among the modes; when the Cesàro Gram is nonzero, every renormalization has exactly the
+  relations as survival cone (`periodicGerm_survivalCone_eq`).
+* **Ramanujan twins** (`ramanujanTwin_survival`). With the Ramanujan modes `Re c_n` of torsion
+  orbits placed at nodes, coefficients summing to zero over each order are relations, so positivity
+  survives on them.
 
 For the archimedean germ all modes are `1` and the relations are the polar hyperplane `Σ C_α = 0`;
 for the torsion orbits the modes are Ramanujan sums, which carry no relations. A twin keeps
@@ -169,8 +173,9 @@ theorem periodicGerm_quad_nonneg (a : Fin n → ℕ → ℝ) {q : ℕ} (hq : 0 <
   have hB : ∀ α β k, |a α k * a β k| ≤ ∑ i ∈ range q, |a α i * a β i| :=
     fun α β => abs_le_of_periodic hq (hprod α β)
   have hw : ∀ α β, 0 < 1 + x α + x β := fun α β => by linarith [hx α, hx β]
-  have h := hasSum_sum fun (α : Fin n) (_ : α ∈ univ) => hasSum_sum fun (β : Fin n) (_ : β ∈ univ) =>
-    ((summable_twistedGerm (hB α β) hr0 hr1 (hw α β)).hasSum).mul_left (C α * C β)
+  have h := hasSum_sum fun (α : Fin n) (_ : α ∈ univ) =>
+    hasSum_sum fun (β : Fin n) (_ : β ∈ univ) =>
+      ((summable_twistedGerm (hB α β) hr0 hr1 (hw α β)).hasSum).mul_left (C α * C β)
   have hquad : quad (periodicGerm a x r) C = ∑ α, ∑ β, C α * C β * twistedGerm
       (fun k => a α k * a β k) r (1 + x α + x β) := by
     simp only [quad, periodicGerm, Matrix.of_apply]
@@ -181,7 +186,8 @@ theorem periodicGerm_quad_nonneg (a : Fin n → ℕ → ℝ) {q : ℕ} (hq : 0 <
   have hy : ∀ α, 0 < 1 / 2 + x α := fun α => by linarith [hx α]
   have hlev := cauchy_level_nonneg hy (fun α => C α * a α k) k
   have heq : ∑ α, ∑ β, C α * C β * (r ^ k * (a α k * a β k) / ((k : ℝ) + (1 + x α + x β))) =
-      r ^ k * ∑ α, ∑ β, C α * a α k * (C β * a β k) * (1 / ((k : ℝ) + (1 / 2 + x α + (1 / 2 + x β)))) := by
+      r ^ k * ∑ α, ∑ β, C α * a α k * (C β * a β k) *
+        (1 / ((k : ℝ) + (1 / 2 + x α + (1 / 2 + x β)))) := by
     rw [mul_sum]
     refine sum_congr rfl fun α _ => ?_
     rw [mul_sum]

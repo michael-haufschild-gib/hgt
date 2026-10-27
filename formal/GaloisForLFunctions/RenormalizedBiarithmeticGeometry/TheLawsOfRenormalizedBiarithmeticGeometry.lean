@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheCountertermRankDichotomy
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.ThePoleNodeCompletesTheArchimedeanGerm
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheSurvivalConeOfAPeriodicGermIsItsModuleOfRelations
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.IntegerThetaPrefixesReadTheDefectWithoutLoss
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheGaugeChargeOfACoupling
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.LogCellsFixTheGauge
@@ -12,7 +13,8 @@ import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.CollectivePacketsDil
 
 One statement collecting the laws proved in the programme:
 
-1. **Self-energy survival.** Every renormalization of the prime-place torsion germ has trivial
+1. **Self-energy survival.** A periodic Abel germ keeps positivity exactly on the linear relations
+   among its modes. Every renormalization of the prime-place torsion germ has trivial
    survival cone and the renormalized limit is indefinite at every prime power; every
    renormalization of the archimedean lattice germ has the polar-neutral hyperplane as survival
    cone, where the digamma Hankel form is positive; the pole node completes it to the positive
@@ -38,6 +40,13 @@ open Zeta23 GaloisForLFunctions.ConjugateDiagonalGeometry GaloisForLFunctions.Ar
 
 /-- **The laws of Renormalized Biarithmetic Geometry.** -/
 theorem renormalized_biarithmetic_geometry_laws :
+    -- Self-energy survival: periodic germs keep positivity on the relations among their modes
+    (∀ (n : ℕ) (a : Fin n → ℕ → ℝ) (q : ℕ), 0 < q → (∀ α, Function.Periodic (a α) q) →
+      ∀ (x : Fin n → ℝ), (∀ α, 0 ≤ x α) →
+        ∃ A : Matrix (Fin n) (Fin n) ℝ,
+          (∀ α β, Tendsto (fun r => periodicGerm a x r α β -
+            (-Real.log (1 - r)) * cesaroGram a q α β) (𝓝[<] 1) (𝓝 (A α β))) ∧
+          ∀ C : Fin n → ℝ, (∀ k, ∑ α, C α * a α k = 0) → 0 ≤ quad A C) ∧
     -- Self-energy survival: prime place
     (∀ (S : Finset ℕ), (∀ n ∈ S, 0 < n) → S.Nonempty →
       ∀ (t : ℝ → ℝ) (C A' : Matrix S S ℝ),
@@ -75,7 +84,8 @@ theorem renormalized_biarithmetic_geometry_laws :
     (∀ {ι : Type} [Fintype ι] [DecidableEq ι] {ω : ι → ℝ}, LinearIndependent ℚ ω →
       ∀ (a₀ : ℝ) (a : ι → ℝ), (∀ t : ℝ, 0 ≤ a₀ + ∑ j, a j * Real.cos (ω j * t)) →
         ∑ j, |a j| ≤ a₀) :=
-  ⟨fun _ hS hne _ _ _ hC => torsion_survivalCone_eq hS hne hC,
+  ⟨fun _ a _ hq hper _ hx => periodicGerm_survival a hq hper hx,
+    fun _ hS hne _ _ _ hC => torsion_survivalCone_eq hS hne hC,
     fun _ hq => torsionLimitForm_neg hq,
     fun _ _ hx _ hc => neg_digamma_hankel_nonneg hx hc,
     fun _ _ hx c => harmonicKernel_nonneg hx c,
