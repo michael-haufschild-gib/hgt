@@ -127,9 +127,7 @@ theorem terminalRayBall_subset {p : XiZeroCopy} (hp : IsTerminal p) (hright : 1 
   have hTsq : T ^ 2 = 1 / 4 - a ^ 2 := by
     rw [show T = Real.sqrt (1 / 4 - a ^ 2) from rfl, Real.sq_sqrt (by linarith)]
   have hT0 : 0 ≤ T := Real.sqrt_nonneg _
-  have hTa : 1 / 2 - a ≤ T := by
-    rw [show T = Real.sqrt (1 / 4 - a ^ 2) from rfl, Real.le_sqrt (by linarith)]
-    nlinarith
+  have hTa : 1 / 2 - a ≤ T := by nlinarith
   have hρdef : rayRadius a = a / (2 * (a + T)) := rfl
   set ρ := rayRadius a
   have haT : 0 < a + T := by linarith
@@ -157,16 +155,26 @@ theorem terminalRayBall_subset {p : XiZeroCopy} (hp : IsTerminal p) (hright : 1 
   have hxlow : a + (1 - ρ) * h < x := by
     have := (abs_lt.mp hxre).1; linarith
   have hx0 : 0 < x := by nlinarith
+  have hxdef : x = s.re - 1 / 2 := rfl
   refine ⟨by linarith, fun r => ?_⟩
   -- The strict lens inequality `x² − a² + d² > 2T|d|`.
+  have hρh : ρ * h ≤ 1 / 2 * h := mul_le_mul_of_nonneg_right hρ1 hh.le
   have hkey : 2 * T * |d| < x ^ 2 - a ^ 2 + d ^ 2 := by
-    have hxa : 2 * a * ((1 - ρ) * h) < x ^ 2 - a ^ 2 := by nlinarith
-    have hTd : 2 * T * |d| ≤ 2 * T * (ρ * h) := by
-      have := mul_le_mul_of_nonneg_left hdim.le (by positivity : (0 : ℝ) ≤ 2 * T); linarith
+    have h1 : 0 < x - a - (1 - ρ) * h := by linarith
+    have h2 : 0 < x + a := by linarith
+    have h3 : 0 < (1 - ρ) * h := mul_pos (by linarith) hh
+    have h4 : 0 < x - a := by linarith
+    have hxa : 2 * a * ((1 - ρ) * h) < x ^ 2 - a ^ 2 := by
+      nlinarith [mul_pos h1 h2, mul_pos h3 h4]
+    have hTd : 2 * T * |d| ≤ 2 * T * (ρ * h) :=
+      mul_le_mul_of_nonneg_left hdim.le (by positivity)
+    have hTρ : T * ρ ≤ a * (1 - ρ) := by nlinarith [hρ]
     have hcmp : 2 * T * (ρ * h) ≤ 2 * a * ((1 - ρ) * h) := by
-      have : T * ρ ≤ a * (1 - ρ) := by nlinarith
-      nlinarith
-    nlinarith [sq_nonneg d]
+      have := mul_le_mul_of_nonneg_right hTρ (by positivity : (0 : ℝ) ≤ 2 * h)
+      calc 2 * T * (ρ * h) = T * ρ * (2 * h) := by ring
+        _ ≤ a * (1 - ρ) * (2 * h) := this
+        _ = 2 * a * ((1 - ρ) * h) := by ring
+    linarith [sq_nonneg d]
   set t := xiZeroHeight r - xiZeroHeight p
   set b := (r.1 : ℂ).re - 1 / 2
   have hcone : b ^ 2 ≤ a ^ 2 + t ^ 2 := by
@@ -182,18 +190,23 @@ theorem terminalRayBall_subset {p : XiZeroCopy} (hp : IsTerminal p) (hright : 1 
   change b ^ 2 < (s.re - 1 / 2) ^ 2 + (s.im - (r.1 : ℂ).im) ^ 2
   rw [hsd]
   change b ^ 2 < x ^ 2 + (d - t) ^ 2
+  have hexp : (d - t) ^ 2 = d ^ 2 - 2 * (d * t) + t ^ 2 := by ring
   rcases le_or_gt |t| T with htT | htT
   · have hdt : d * t ≤ |d| * T := by
       calc d * t ≤ |d * t| := le_abs_self _
         _ = |d| * |t| := abs_mul d t
         _ ≤ |d| * T := mul_le_mul_of_nonneg_left htT (abs_nonneg d)
-    nlinarith
-  · have hdT : |d| < T := by nlinarith
+    have : 2 * (d * t) ≤ 2 * T * |d| := by linarith
+    linarith
+  · have hdT : |d| < T := by linarith
     have h3 : (T - |d|) ^ 2 ≤ (d - t) ^ 2 := by
       have h4 := abs_sub_abs_le_abs_sub t d
       have h5 : |t - d| = |d - t| := abs_sub_comm t d
-      nlinarith [sq_abs (d - t), abs_nonneg (d - t)]
-    nlinarith [sq_abs d]
+      have h6 : T - |d| ≤ |d - t| := by linarith
+      have h7 := pow_le_pow_left₀ (by linarith : (0 : ℝ) ≤ T - |d|) h6 2
+      rwa [sq_abs] at h7
+    have e : (T - |d|) ^ 2 = T ^ 2 - 2 * T * |d| + d ^ 2 := by rw [sub_sq, sq_abs]
+    linarith
 
 /-- **The outward floor spreads.** On the disc of radius `ρh/2` about each point `p + h` of the
 outward ray of a terminal, `Re ξ′/ξ` is at least a third of ACP's floor. -/

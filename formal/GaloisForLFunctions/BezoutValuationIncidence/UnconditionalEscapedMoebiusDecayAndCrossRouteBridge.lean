@@ -583,7 +583,7 @@ theorem heckeDefect_le_of_zetaZeroAbscissa_le {θ : ℝ} (hθ0 : 0 < θ) (hθ2 :
     depthKernel L (1 / 2 - θ) * zetaWeight f ρ
   rw [mul_comm (depthKernel L (1 / 2 - θ))]
   have hbd : |zetaDepth ρ| ≤ |1 / 2 - θ| := by
-    rw [abs_of_nonneg (by linarith)]
+    rw [abs_of_nonneg (by linarith : 0 ≤ 1 / 2 - θ)]
     exact abs_zetaDepth_le_of_zetaZeroAbscissa_le hθ0 hθ2 habs ρ
   exact mul_le_mul_of_nonneg_left (depthKernel_mono_depth L hbd) (zetaWeight_nonneg f ρ)
 
@@ -657,12 +657,15 @@ theorem zetaZeroAbscissa_le_of_heckeDefect_le {θ : ℝ} (_hθ0 : 0 < θ) (hθ2 
   obtain ⟨k, hk⟩ := exists_nat_gt (M / δ + 1)
   set L : ℝ := (k : ℝ)
   have hL_pos : 0 < L := by
-    have : 0 ≤ M / δ := div_nonneg (by dsimp [M]; positivity) hδ.le
+    have hmf : 0 ≤ mass f := mass_nonneg f
+    have hM0 : 0 ≤ M := by dsimp [M]; positivity
+    have : 0 ≤ M / δ := div_nonneg hM0 hδ.le
     dsimp [L]; linarith
   have hexpM : M < Real.exp (δ * L) := by
     have h1 : M < δ * L := by
       have hk' : M / δ < L := by dsimp [L]; linarith
-      rwa [div_lt_iff₀ hδ] at hk'
+      rw [div_lt_iff₀ hδ] at hk'
+      linarith
     linarith [Real.add_one_le_exp (δ * L)]
   have hlow1 : depthKernel L b * zetaWeight f ρ₀ ≤ heckeDefect f L :=
     (mul_le_mul_of_nonneg_left htail_ge (depthKernel_nonneg L b)).trans

@@ -85,7 +85,8 @@ theorem summable_selbergSource_rpow {σ : ℝ} (hσ : 1 < σ) :
           (sum_nonneg fun x _ => mul_nonneg vonMangoldt_nonneg vonMangoldt_nonneg))
       (Real.rpow_nonneg (Nat.cast_nonneg n) _)) (fun n => ?_) hg
   rcases Nat.eq_zero_or_pos n with rfl | hn
-  · simp
+  · rw [ArithmeticFunction.map_zero, zero_mul]
+    exact mul_nonneg (div_nonneg (by norm_num) (sq_nonneg _)) (Real.rpow_nonneg (Nat.cast_nonneg 0) _)
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
   have hlog := RHTower.Mertens.log_le_rpow hn0 hα
   have hl : 0 ≤ Real.log n := Real.log_natCast_nonneg n

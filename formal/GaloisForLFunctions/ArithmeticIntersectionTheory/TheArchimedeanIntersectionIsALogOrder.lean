@@ -2,6 +2,7 @@ import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
 import Mathlib.NumberTheory.NumberField.Norm
 import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheWeilPrimeKernelIsARenormalizedTorsionEnergy
+import GaloisForLFunctions.ArithmeticIntersectionTheory.TheDifferentOfATorsionOrbit
 
 /-!
 # The archimedean intersection is a log-order
@@ -23,6 +24,13 @@ With the arithmetic point `O_1 = {1}` (`log_card_quotient_zeta_sub_one`):
 
 the von Mangoldt function is the log-order of the residue ring of `1 − ζ_n`: `p` when `n` is a power
 of `p`, and `1` (a unit) otherwise.
+
+The diagonal is the discriminant (`orbitIntersection_self_eq_log_discr`): for a prime power,
+
+    I(p^k, p^k) = log |d_{ℚ(ζ_{p^k})}|,
+
+the arithmetic degree of the relative dualizing sheaf of `𝓞_{ℚ(ζ_{p^k})}` over `ℤ`. The self-intersection
+of a torsion orbit is the canonical degree of its cyclotomic field: adjunction on the circle.
 -/
 
 noncomputable section
@@ -124,5 +132,37 @@ theorem log_card_quotient_zeta_sub_one (hn : 2 ≤ n) :
   rw [log_card_quotient_cyclotomicValue n one_pos (by omega), orbitIntersection_comm]
   have h := orbitIntersection_hecke (m := 1) one_pos (show 1 < n by omega)
   simpa using h
+
+/-! ### The diagonal is the discriminant -/
+
+/-- **Adjunction on the circle**: the self-intersection of `O_{p^k}` is the logarithm of the absolute
+discriminant of `ℚ(ζ_{p^k})`. -/
+theorem orbitIntersection_self_eq_log_discr (p k : ℕ) [hp : Fact p.Prime] (hk : 0 < k) :
+    orbitIntersection (p ^ k) (p ^ k) =
+      Real.log |(NumberField.discr (CyclotomicField (p ^ k) ℚ) : ℝ)| := by
+  have hpp := hp.out
+  have : NeZero (p ^ k) := ⟨pow_ne_zero k hpp.ne_zero⟩
+  have hdisc := IsCyclotomicExtension.Rat.discr_prime_pow p k (CyclotomicField (p ^ k) ℚ)
+  have hpk : 0 < p ^ k := pow_pos hpp.pos k
+  have hφ : (0 : ℝ) < Nat.totient (p ^ k) := by exact_mod_cast Nat.totient_pos.mpr hpk
+  -- the left side: `φ(p^k) · (k log p − log p/(p − 1))`
+  have hL : orbitIntersection (p ^ k) (p ^ k) = Nat.totient (p ^ k) * selfIntersection (p ^ k) := by
+    rw [selfIntersection]; field_simp
+  rw [hL, selfIntersection_eq hpk, tameDifferent_prime_pow hpp hk.ne', Nat.cast_pow,
+    Real.log_pow, Nat.totient_prime_pow hpp hk]
+  -- the right side: `p^{k−1}((p − 1)k − 1) log p`
+  rw [hdisc]
+  push_cast
+  rw [abs_mul, abs_pow, abs_neg, abs_one, one_pow, one_mul, abs_pow, Nat.abs_cast, Real.log_pow]
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast hpp.one_lt
+  have hk1 : 1 ≤ (p - 1) * k := Nat.one_le_iff_ne_zero.mpr
+    (Nat.mul_ne_zero (by have := hpp.two_le; omega) hk.ne')
+  have hcast : ((p ^ (k - 1) * ((p - 1) * k - 1) : ℕ) : ℝ) =
+      (p : ℝ) ^ (k - 1) * (((p : ℝ) - 1) * k - 1) := by
+    rw [Nat.cast_mul, Nat.cast_pow, Nat.cast_sub hk1, Nat.cast_mul, Nat.cast_sub hpp.one_le]
+    push_cast; ring
+  rw [hcast, Nat.cast_sub hpp.one_le, Nat.cast_one]
+  have hne : (p : ℝ) - 1 ≠ 0 := by linarith
+  field_simp
 
 end GaloisForLFunctions.ArithmeticIntersectionTheory

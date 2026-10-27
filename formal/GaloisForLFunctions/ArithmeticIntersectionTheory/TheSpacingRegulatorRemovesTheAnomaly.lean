@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticIntersectionTheory.TheHeckeCocycleOfRenormalization
+import GaloisForLFunctions.ArithmeticIntersectionTheory.ThePrimeKernelIsASumOfTransverseTowers
 
 /-!
 # The spacing regulator removes the anomaly
@@ -49,7 +50,7 @@ theorem spacingRadius_nonneg (ε : ℝ) (m n : ℕ) : 0 ≤ spacingRadius ε m n
 
 theorem spacingRadius_lt_one {ε : ℝ} (hε : 0 < ε) {m n : ℕ} (hm : 0 < m) :
     spacingRadius ε m n < 1 := by
-  rw [spacingRadius, Real.exp_lt_one]
+  rw [spacingRadius, Real.exp_lt_one_iff]
   have : (0 : ℝ) < (m : ℝ)⁻¹ := by positivity
   have : (0 : ℝ) ≤ (n : ℝ)⁻¹ := by positivity
   nlinarith
@@ -133,7 +134,7 @@ theorem spacingForm_nonneg {ε : ℝ} (hε : 0 < ε) {S : Finset ℕ} (hS : ∀ 
 theorem tendsto_spacingRadius (m n : ℕ) :
     Tendsto (fun ε : ℝ => spacingRadius ε m n) (𝓝[>] 0) (𝓝 1) := by
   have hc : Continuous fun ε : ℝ => spacingRadius ε m n := by unfold spacingRadius; fun_prop
-  have := (hc.tendsto 0).mono_left nhdsWithin_le_nhds
+  have := (hc.tendsto 0).mono_left (nhdsWithin_le_nhds (s := Set.Ioi 0))
   simpa [spacingRadius] using this
 
 /-- `log(1 − e^{−u}) − log u → 0` as `u → 0⁺`. -/
@@ -156,7 +157,7 @@ theorem tendsto_log_one_sub_exp_neg_sub_log :
     have hu : (0 : ℝ) < u := hu
     have h1 : 1 - Real.exp (-u) ≤ u := by linarith [Real.add_one_le_exp (-u)]
     have hpos : 0 < 1 - Real.exp (-u) := by
-      have := Real.exp_lt_one.mpr (show -u < 0 by linarith); linarith
+      have := Real.exp_lt_one_iff.mpr (show -u < 0 by linarith); linarith
     have := Real.log_le_log hpos h1
     linarith
 
@@ -197,8 +198,7 @@ theorem tendsto_spacing_diagonal {n : ℕ} (hn : 0 < n) :
     have := spacingRadius_lt_one hε hn (n := n); linarith
   simp only [Function.comp_def, hdiag, hr]
   rw [abs_of_pos (by rw [← hr]; exact h1r), Real.log_div (by positivity) hnr.ne',
-    Real.log_mul two_ne_zero hε.ne'] at *
-  rw [Real.log_div (by positivity) hnr.ne', Real.log_mul two_ne_zero hε.ne']
+    Real.log_mul two_ne_zero hε.ne']
   field_simp
   ring
 
@@ -225,11 +225,9 @@ theorem tendsto_spacingForm {S : Finset ℕ} (hS : ∀ n ∈ S, 0 < n) (x : ℕ 
     rw [spacingLimit, primeForm, sum_add_distrib, add_comm, ← sum_neg_distrib]
     congr 1
     refine sum_congr rfl fun m hm => ?_
-    rw [← add_sum_erase _ _ hm, ← sum_neg_distrib]
-    simp only [weilPrimeKernel, ne_eq, not_true_eq_false, and_false, if_false, mul_zero, neg_zero,
-      zero_add]
-    refine sum_congr rfl fun n _ => ?_
-    ring
+    rw [← add_sum_erase _ _ hm, show weilPrimeKernel m m = 0 by simp [weilPrimeKernel], mul_zero,
+      zero_add, ← sum_neg_distrib]
+    exact sum_congr rfl fun n _ => by ring
   simp_rw [hsplit]
   rw [hlim]
   refine tendsto_finsetSum _ fun m hm => ?_
