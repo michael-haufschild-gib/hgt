@@ -84,7 +84,7 @@ theorem pPowerMertensSum_ge (hp : p.Prime) {K y : ℕ} (hK : p ^ K ≤ y) :
     induction K' with
     | zero => simp
     | succ K' ih =>
-      rw [Finset.sum_range_succ, ih]
+      rw [Finset.sum_range_succ, ih, one_div_pow, one_div_pow]
       have hp1' : (p : ℝ) - 1 ≠ 0 := by linarith
       field_simp
       ring
@@ -526,7 +526,7 @@ theorem exists_abs_classGram_self_finitePart_le (hp : p.Prime) (j : ℕ) {η : �
             have h2 : ((⌈4 / η⌉₊ + 1 : ℕ) : ℝ) ≤ ((M / n : ℕ) : ℝ) := by exact_mod_cast hqY
             push_cast at h2
             linarith
-          rw [div_le_iff₀ (by positivity)]
+          rw [div_le_iff₀ ((by positivity : (0 : ℝ) < 4 / η).trans h1)]
           rw [div_lt_iff₀ hη] at h1
           linarith
         have hel : |e (M / n) - r n| ≤ η / 2 := by

@@ -25,7 +25,8 @@ sentence:
 > scalar the archimedean place must supply at atomic resolution `N` is `log N + O(1)`, with
 > constant one: the anomaly of `[N]`. The anomalous torsion renormalization costs at least half a
 > logarithm more. What remains after the polar counterterm is the scalar `−2γ`: the constant term
-> of `−ζ′/ζ` at its pole, once for each Hecke direction. Polar matching selects the Euler gauge: the
+> of `−ζ′/ζ` at its pole, once for each Hecke direction. On the `p`-adic classes what remains is the
+> tower form of `p`, the local Hodge index structure. Polar matching selects the Euler gauge: the
 > Liouville twin diverges with the opposite sign.*
 
 Namespace `GaloisForLFunctions.RenormalizedArithmeticPotentialTheory`; umbrella
@@ -112,7 +113,9 @@ survival cone containing the degree-zero cycles.
    renormalization, costs at least `½ log N` more.
 5. *What is the finite part?* On the polar hyperplane of uniform profiles, the renormalized prime
    form is the scalar `−2γ`, up to `o(1)` per unit mass. In Weil's form, where `P` enters with a
-   minus sign, the renormalized prime place is positive there.
+   minus sign, the renormalized prime place is positive there. On the `p`-adic classes the finite
+   part is `−2γ_p · 1 + log p (K_{p^{−1/2}} − 1)`, with `γ_p = γ + log p/(p − 1)`: the tower form of `p`
+   (AIT), the local Hodge index, now as the finite part of a renormalization.
 6. *Is the matching of the places gauge blind?* No. Each place's counterterm is gauge blind, but
    their matching is not: the prime place of `ζ` diverges along the archimedean polar direction
    with coefficient `+1`, the Liouville twin with coefficient `−1`.
@@ -262,20 +265,29 @@ the place that pays.
     and `H_M = log M + γ + o(1)`, the pole Gram is `H_M H_{M'} − 2γ H_{min} + o(H_{min})`. Hence
     `P_N = ℓ² − 2γ |x|² + o(|c|-mass)` on step profiles.
 
+15. **The tower form** (`tendsto_pPowerMertensSum`, `tendsto_unitMertensSum_sub_log`,
+    `tendsto_unitHarmonic_sub`, `tendsto_classMass_sub`, `sum_divisors_dvd_vonMangoldt_eq`,
+    `classRow_self_eq`, `classRow_of_lt`, `primeBilinear_classPole_cross_eq`,
+    `exists_abs_classGram_self_finitePart_le`,
+    `exists_abs_atomicWeilForm_classCombination_finitePart_le`). Inside a class the row is exactly
+    `A_{p'}(⌊M/m⌋) + log m − j log p`, with `A_{p'}(y) = log y − γ_p + o(1)`. Across classes it is exactly
+    one prime power, `log p`. The finite part on class combinations is `−2γ_p Σ a_j² |w_j|²` plus
+    `log p Σ_{j ≠ j'} a_j a_{j'} |w_{max}|²`; normalized, the coupling is `log p · p^{−|j−j'|/2}`.
+
 ### F. Gauge
 
-15. **The twisted Mertens sum** (`sum_one_add_liouville_le`, `liouvilleMertensSum_le`,
+16. **The twisted Mertens sum** (`sum_one_add_liouville_le`, `liouvilleMertensSum_le`,
     `neg_le_liouvilleMertensSum`). `Σ_{t ≤ y} λ(t)Λ(t)/t = −log y + O(1)`: the even prime powers are
     summable.
-16. **Dirichlet's hyperbola identity** (`sum_divisors_div_swap`). The divisor part of a row averages
+17. **Dirichlet's hyperbola identity** (`sum_divisors_div_swap`). The divisor part of a row averages
     to its Mertens part.
-17. **The spectral ends** (`abs_atomicWeilForm_le`, `atomicWeilForm_liouvillePole_le`,
+18. **The spectral ends** (`abs_atomicWeilForm_le`, `atomicWeilForm_liouvillePole_le`,
     `atomicWeilForm_spectrum_ends`). `|P_N| ≤ log N + O(1)`. The pole vector reaches the top and the
     Liouville pole vector the bottom, `−log N + O(1)`.
-18. **The polar divergence flips** (`primeBilinear_liouvilleTrunc_eq`,
+19. **The polar divergence flips** (`primeBilinear_liouvilleTrunc_eq`,
     `abs_primeBilinear_liouvilleTrunc_add_le`, `abs_liouvilleForm_stepProfile_add_le`). On uniform
     profiles `P(λx) = −ℓ(x)² + O(|c|-mass)`.
-19. **The matching law** (`IsSignGauge`, `sum_weilPrimeKernel_gauge`, `primeBilinear_gaugeTrunc_eq`,
+20. **The matching law** (`IsSignGauge`, `sum_weilPrimeKernel_gauge`, `primeBilinear_gaugeTrunc_eq`,
     `abs_primeBilinear_gaugeTrunc_sub_le`, `abs_gaugeForm_stepProfile_sub_le`, `euler_matching`,
     `liouville_matching`, `finiteFlip_matching`). If `A_ε(y) = κ log y + O(1)`, then
     `P(εx) = κ ℓ(x)² + O(|c|-mass)` on uniform profiles. The Euler gauge has `κ = 1`, Liouville
@@ -298,6 +310,7 @@ the place that pays.
 | **RP9 No anomaly at the horizon** | `[p]` shifts the classes and scales the orbit densities by the degree; the tensor counterterm and the finite part are invariant | `tensorCounterterm_heckeShift`, `finitePart_heckeShift`, `heckeShift_classPole` |
 | **RP10 The finite part is Euler's constant** | `P_N = ℓ² − 2γ|x|² + o(|c|-mass)` on step profiles; `P_N = −2γ|x|² + o(·)` on the polar hyperplane | `exists_abs_atomicWeilForm_stepProfile_finitePart_le`, `exists_abs_atomicWeilForm_stepProfile_add_le_of_polar` |
 | **RP11 Matching reads the density of the gauge** | the polar matching coefficient `κ` of a sign gauge, read off `A_ε(y) = κ log y + O(1)`, governs its horizon divergence; finitely many flips leave `κ = 1` | `abs_gaugeForm_stepProfile_sub_le`, `finiteFlip_matching`, `liouville_matching` |
+| **RP12 The finite part is the tower form** | on class combinations `P_M = Σ_j δ_j^{−1} ℓ_j² − 2γ_p Σ_j a_j²|w_j|² + log p Σ_{j≠j'} a_j a_{j'} |w_{max}|² + o(·)`; the cross-class Gram is exact | `exists_abs_atomicWeilForm_classCombination_finitePart_le`, `primeBilinear_classPole_cross_eq`, `classRow_self_eq` |
 
 ---
 
@@ -313,9 +326,10 @@ The twelve questions of the report (§4.4), in RAPT's terms.
    condition (i) of the central conjecture (bounded rank on Hecke orbits) is false for every
    regulator in the corpus (RP1, RP6). What replaces it is the tensor law. Condition (ii) holds:
    the finite part is covariant under `[p]` (RP9). Condition (iii) is the sign of the finite part on
-   the degree-zero classes. Its prime component is the positive scalar `+2γ` in Weil's form on
-   uniform profiles (RP10); the archimedean and polar components are open (§9.1). *Answer:* the
-   admissible regulator is the horizon, and its metric is the tensor counterterm.
+   the degree-zero classes. Its prime component is computed: the positive scalar `+2γ` in Weil's
+   form on uniform profiles (RP10), and minus the tower form of `p` on the classes (RP12). The
+   archimedean and polar components are open (§9.1). *Answer:* the admissible regulator is the
+   horizon, its metric is the tensor counterterm, and its prime finite part is the local tower form.
 2. **Does the anomaly cancel?** Yes, in two ways. Removing the self-intersection, as Weil's prime
    sum does, gives a covariant renormalized form. Covariance then forces a scalar counterterm,
    `log N + O(1)` with constant one (RP3), and keeping the anomaly costs at least `½ log N` (RP4).
@@ -373,7 +387,8 @@ The twelve questions of the report (§4.4), in RAPT's terms.
 | A twin flipping one prime is separated by the coupled renormalization | Its polar matching coefficient is `1`, as for `ζ`; only finite parts see individual primes |
 | The Hecke anomaly `log t` is intrinsic to the prime place | It belongs to the Abel radius; at the horizon `[p]` scales the orbit densities by `1/p` and the anomaly cancels |
 | A matched counterterm proves the sign | It removes the divergence; the sign lives in the finite part |
-| The finite part of the prime place hides the zeros | On uniform profiles it is the scalar `−2γ`; the zeros are invisible at log-scale resolution, and the sign is decided by the archimedean place and the pole |
+| The finite part of the prime place hides the zeros | On uniform profiles it is the scalar `−2γ`, on the classes the tower form; the zeros are invisible at log-scale resolution, and the sign is decided by the archimedean place and the pole |
+| The local Hodge index at `p` and the renormalization at the horizon are separate topics | The tower form of `p` is the finite part of the horizon renormalization on the `p`-adic classes |
 
 ---
 
@@ -391,7 +406,7 @@ vectors, prime-power sums, class masses and the class Gram; the tensor law; Liou
 twisted Mertens sum and Dirichlet's hyperbola identity; telescoping bounds for `Σ log n/n`.
 
 **To build.** The archimedean self-energy of an atom with constant one at width `ε ≍ 1/N`; Mertens'
-theorem for characters; the class-wise finite part.
+theorem for characters; the tensor law for several primes at once.
 
 ---
 
@@ -403,9 +418,10 @@ theorem for characters; the class-wise finite part.
    the statement concerns `O(1)` finite parts. AES proves the Markov form nonnegative at widths
    `N^{−O(1)}` with an archimedean gain `e^{−1/2} log(1/w)`. Closing the gap needs the constant-one
    self-energy.
-2. **The finite part on the class-wise survival cone.** On uniform profiles it is `−2γ` (RP10). On
-   class-wise profiles the class Gram should carry the same constant per class, corrected by the
-   local Euler factor at `p`: compute it, and identify the finite part as a function on the orbits.
+2. **The sign of the prime finite part on the classes.** The prime finite part on the classes is
+   `−2γ_p + log p (K_q − 1)` (RP12). Weil's form contains its negative,
+   `2γ_p + log p (1 − K_q) ≥ 2γ_p − 2q log p/(1 − q)` by the local tower bounds (AIT). Decide for which
+   `p` this is positive, and what the archimedean place must add for the others.
 3. **Characters at the horizon.** Profiles twisted by a non-principal character should have bounded
    prime form, with finite part `−L′/L(1, χ)`. This needs Mertens' theorem for characters, and would
    identify the survival cone on residue classes mod `q` with the character space.
@@ -435,7 +451,8 @@ its present state:
   survivor; covariance ⇒ scalar with constant one; the cost of the anomaly; the tensor law and its
   covariance without anomaly. Of the three conditions of the central conjecture, (i) is false for
   every regulator, (ii) holds at the horizon, and (iii) is the open sign of the finite part.
-* The prime finite part is computed: `−2γ` on the uniform survival cone (RP10).
+* The prime finite part is computed: `−2γ` on the uniform survival cone (RP10), the tower form of
+  `p` with the local Euler constant on the classes (RP12).
 * Q8 has a theorem-level answer: the matching law for every sign gauge, `κ = −1` for Liouville,
   `κ = 1` for finitely many flips.
 * Q6 is answered through RP2, RP3 and RP5.
@@ -465,6 +482,7 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `TheHorizonCountertermIsATensorProduct` | class densities and orbit sizes; class masses; the class Gram at two horizons; the tensor law |
 | `TheHorizonCountertermIsHeckeCovariant` | Hecke shifts; invariance of the prime form; class shift by `[p]`; orbit densities scale by the degree; no anomaly |
 | `TheFinitePartIsEulersConstant` | Mertens with Euler's constant; roundoff; the finite part of the pole Gram; `−2γ` on step profiles and on the polar hyperplane |
+| `TheFinitePartIsTheTowerForm` | the local Mertens theorem and local Euler constant; class masses; exact rows inside and across classes; the finite part on the classes is the tower form |
 | `TheLiouvilleGaugeFlipsThePolarDivergence` | Liouville signs; the twisted Mertens sum; Dirichlet's hyperbola; spectral ends; the polar flip |
 | `PolarMatchingReadsTheDensityOfTheGauge` | sign gauges; gauged rows and pole Gram; the matching law; Euler, Liouville and finite-flip instances |
 | `TheLawsOfRenormalizedArithmeticPotentialTheory` | the laws in one statement, `renormalized_arithmetic_potential_theory_laws` |
