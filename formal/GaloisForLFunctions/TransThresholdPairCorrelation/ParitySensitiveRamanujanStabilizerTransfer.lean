@@ -410,7 +410,6 @@ theorem abs_poisson_evenShift_cosTransform_add_le
         show τ * (((2 * R : ℕ) : ℝ) / m) = ((2 * R : ℕ) : ℝ) * (τ / m) by ring]
       ring
     · intro τ hτ
-      dsimp only
       rw [hsupp τ hτ]
       simp
   -- On `[a, b]`, rewrite the Dirichlet sum via `cot(τ / m) = (cot(τ / m) - m / τ) + m / τ`
@@ -515,7 +514,8 @@ theorem abs_poisson_evenShift_cosTransform_add_le
       have hτ0 : τ ≠ 0 := (ha.trans_le hτ.1).ne'
       have hdΩ : HasDerivAt Ω (deriv Ω τ) τ :=
         ((hΩ1.differentiable one_ne_zero).differentiableAt).hasDerivAt
-      simpa [u_fn, u'_fn] using hdΩ.div (hasDerivAt_id τ) hτ0
+      exact (hdΩ.div (hasDerivAt_id τ) hτ0).congr_of_eventuallyEq
+        (Eventually.of_forall fun _ => rfl) |>.congr_deriv (by dsimp [u'_fn]; ring)
     have hv_deriv : ∀ τ ∈ Set.uIcc a b, HasDerivAt v_fn (v'_fn τ) τ := by
       intro τ _
       have h1 : HasDerivAt (fun x : ℝ => (2 * (R : ℝ) / m) * x) (2 * (R : ℝ) / m) τ := by
@@ -524,7 +524,6 @@ theorem abs_poisson_evenShift_cosTransform_add_le
       dsimp [v'_fn]
       have hR0 : (R : ℝ) ≠ 0 := hR_pos.ne'
       field_simp [hm.ne', hR0]
-      ring
     have hu'_int : IntervalIntegrable u'_fn volume a b := by
       refine ContinuousOn.intervalIntegrable ?_
       rw [Set.uIcc_of_le hab]
@@ -586,7 +585,6 @@ theorem abs_poisson_evenShift_cosTransform_add_le
       _ = (m ^ 2 / (2 * (R : ℝ) * a ^ 2)) * ∫ τ in a..b, (a * |deriv Ω τ| + Ω τ) := by
           rw [hdiv_out]
           field_simp [hR_pos.ne', ha.ne']
-          ring
 
 /-- **Parity-Sensitive Odd-Modulus Singular-Series Coalescent Transfer on Even Shifts (`2r`).**
 For any non-negative integrable window `Ω` supported in `[a, b]` (`0 ≤ a ≤ b`, `0 < b`), any scale
@@ -689,7 +687,6 @@ theorem abs_sum_odd_singularSeries_evenShift_cosTransform_add_le
             ((RHTower.Sieve.sqfreeTotientInv q / (q.totient : ℝ)) *
               (∑ d ∈ q.divisors, (d : ℝ) ^ 2)) := by
           field_simp [hφ0, hm.ne']
-          ring
   refine (Finset.sum_le_sum hterm).trans (le_of_eq ?_)
   rw [Finset.sum_add_distrib, ← Finset.mul_sum]
 

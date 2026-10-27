@@ -32,7 +32,7 @@ This file computes it and finds an adjunction law.
 
 noncomputable section
 
-open Finset Complex
+open Finset
 open scoped ArithmeticFunction.Moebius ArithmeticFunction.vonMangoldt ComplexConjugate
 
 namespace GaloisForLFunctions.ArithmeticElectrostatics
@@ -51,7 +51,7 @@ theorem isMultiplicative_totientR : IsMultiplicative totientR := by
   simp only [totientR_apply, Nat.totient_mul hmn, Nat.cast_mul]
 
 /-- The **local correction** `D = φ ⋆ Λ`, `D(n) = Σ_{d ∣ n} φ(d) Λ(n/d)`. -/
-def localCorrection : ArithmeticFunction ℝ := totientR * Λ
+def localCorrection : ArithmeticFunction ℝ := totientR * vonMangoldt
 
 theorem localCorrection_nonneg (n : ℕ) : 0 ≤ localCorrection n := by
   rw [localCorrection, mul_apply]
@@ -61,12 +61,12 @@ theorem localCorrection_nonneg (n : ℕ) : 0 ≤ localCorrection n := by
 theorem sum_divisors_totient_log_add_localCorrection {k : ℕ} (hk : 0 < k) :
     ∑ i ∈ k.divisors, ((Nat.totient i : ℝ) * Real.log i + localCorrection i) =
       (k : ℝ) * Real.log k := by
-  have hD : ∑ i ∈ k.divisors, localCorrection i = (totientR * log) k := by
+  have hD : ∑ i ∈ k.divisors, localCorrection i = (totientR * ArithmeticFunction.log) k := by
     rw [← coe_mul_zeta_apply, localCorrection, mul_assoc, vonMangoldt_mul_zeta]
   rw [sum_add_distrib, hD, mul_apply,
     ← Nat.sum_divisorsAntidiagonal (fun a _ => (Nat.totient a : ℝ) * Real.log a), ← sum_add_distrib]
   have hpt : ∀ x ∈ k.divisorsAntidiagonal,
-      (Nat.totient x.1 : ℝ) * Real.log x.1 + totientR x.1 * log x.2 =
+      (Nat.totient x.1 : ℝ) * Real.log x.1 + totientR x.1 * ArithmeticFunction.log x.2 =
         (Nat.totient x.1 : ℝ) * Real.log k := by
     intro x hx
     obtain ⟨hmul, -⟩ := Nat.mem_divisorsAntidiagonal.mp hx
@@ -85,7 +85,6 @@ theorem kLogKernel_eq {n : ℕ} (hn : 0 < n) :
     (fun k hk => sum_divisors_totient_log_add_localCorrection hk) n hn
   rw [← h, kLogKernel, ← Nat.sum_divisorsAntidiagonal' (fun a b =>
     (μ a : ℝ) * ((b : ℝ) * Real.log b))]
-  simp
 
 /-- **The self-intersection of a torsion orbit**: `I(n, n) = φ(n) log n − (φ ⋆ Λ)(n)`. -/
 theorem orbitIntersection_self_eq {n : ℕ} (hn : 0 < n) :
@@ -111,8 +110,8 @@ theorem sum_range_totient_prime_pow {p : ℕ} (hp : p.Prime) (a : ℕ) :
 /-- **The local correction at a prime power**: `D(p^a) = p^{a−1} log p`. -/
 theorem localCorrection_prime_pow {p : ℕ} (hp : p.Prime) (a : ℕ) :
     localCorrection (p ^ (a + 1)) = (p : ℝ) ^ a * Real.log p := by
-  rw [localCorrection, mul_apply, Nat.sum_divisorsAntidiagonal (fun x y => totientR x * Λ y),
-    Nat.sum_divisors_prime_pow hp, sum_range_succ, Nat.div_self (pow_pos hp.pos _),
+  rw [localCorrection, mul_apply, Nat.sum_divisorsAntidiagonal (fun x y => totientR x * vonMangoldt y),
+    Nat.sum_divisors_prime_pow hp, Finset.sum_range_succ, Nat.div_self (pow_pos hp.pos _),
     vonMangoldt_apply_one, mul_zero, add_zero, ← sum_range_totient_prime_pow hp a, sum_mul]
   refine sum_congr rfl fun j hj => ?_
   have hja : j < a + 1 := mem_range.mp hj
@@ -152,7 +151,6 @@ theorem selfIntersection_per_point_prime_pow_succ {p : ℕ} (hp : p.Prime) (a : 
     push_cast; ring
   rw [orbitIntersection_self_prime_pow_succ hp a, hφ2]
   field_simp
-  ring
 
 /-! ### Additivity over coprime orders -/
 
@@ -164,8 +162,9 @@ theorem sum_divisors_mul_of_coprime {M : Type*} [AddCommMonoid M] {a b : ℕ} (h
 
 /-- `D = (φ ⋆ μ) ⋆ log`. -/
 theorem localCorrection_eq_mul_log :
-    localCorrection = (totientR * (μ : ArithmeticFunction ℝ)) * log := by
-  rw [localCorrection, ← log_mul_moebius_eq_vonMangoldt, mul_assoc, mul_comm log]
+    localCorrection = (totientR * (μ : ArithmeticFunction ℝ)) * ArithmeticFunction.log := by
+  rw [localCorrection, ← log_mul_moebius_eq_vonMangoldt, mul_assoc,
+    mul_comm ArithmeticFunction.log]
 
 /-- **The Leibniz rule**: on coprime orders `D(ab) = φ(a) D(b) + φ(b) D(a)`. -/
 theorem localCorrection_mul_of_coprime {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (hab : a.Coprime b) :
@@ -181,7 +180,7 @@ theorem localCorrection_mul_of_coprime {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (ha
   have hD : ∀ n, localCorrection n = ∑ d ∈ n.divisors, g d * Real.log ((n / d : ℕ) : ℝ) := by
     intro n
     rw [localCorrection_eq_mul_log, mul_apply,
-      Nat.sum_divisorsAntidiagonal (fun x y => g x * log y)]
+      Nat.sum_divisorsAntidiagonal (fun x y => g x * ArithmeticFunction.log y)]
     simp only [log_apply]
   rw [hD, hD, hD, sum_divisors_mul_of_coprime hab]
   have hpt : ∀ d₁ ∈ a.divisors, ∀ d₂ ∈ b.divisors,
@@ -200,8 +199,6 @@ theorem localCorrection_mul_of_coprime {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (ha
   rw [sum_congr rfl fun d₁ hd₁ => sum_congr rfl (hpt d₁ hd₁)]
   simp only [sum_add_distrib, ← mul_sum, ← sum_mul]
   rw [hgz, hgz]
-  ring_nf
-  simp only [mul_sum]
   ring_nf
 
 /-- **Additivity of the self-intersection**: on coprime orders
@@ -230,7 +227,8 @@ theorem conj_mem_primitiveRoots {n : ℕ} {η : ℂ} (h : η ∈ primitiveRoots 
 theorem sum_primitiveRoots_conj {M : Type*} [AddCommMonoid M] (n : ℕ) (F : ℂ → M) :
     ∑ η ∈ primitiveRoots n ℂ, F (conj η) = ∑ η ∈ primitiveRoots n ℂ, F η :=
   sum_nbij' (starRingEnd ℂ) (starRingEnd ℂ) (fun _ h => conj_mem_primitiveRoots h)
-    (fun _ h => conj_mem_primitiveRoots h) (fun _ _ => conj_conj _) (fun _ _ => conj_conj _)
+    (fun _ h => conj_mem_primitiveRoots h) (fun _ _ => Complex.conj_conj _)
+    (fun _ _ => Complex.conj_conj _)
     (fun _ _ => rfl)
 
 /-- **The collided and reflection pairings agree on torsion cycles.** -/
@@ -253,9 +251,7 @@ theorem conj_eq_pow_of_mem_primitiveRoots {n : ℕ} {η : ℂ} (h : η ∈ primi
   have hη := (mem_primitiveRoots hn).mp h
   have hnorm : ‖η‖ = 1 := norm_of_mem_primitiveRoots h
   have hne : η ≠ 0 := by intro h0; rw [h0, norm_zero] at hnorm; exact zero_ne_one hnorm
-  have hinv : conj η = η⁻¹ := by
-    rw [inv_def, ← Complex.normSq_eq_norm_sq] at *
-    rw [Complex.inv_def, Complex.normSq_eq_norm_sq, hnorm]; simp
+  have hinv : conj η = η⁻¹ := (Complex.inv_eq_conj hnorm).symm
   rw [hinv, eq_comm, ← mul_eq_one_iff_eq_inv₀ hne, ← pow_succ, Nat.sub_add_cancel hn,
     hη.pow_eq_one]
 
