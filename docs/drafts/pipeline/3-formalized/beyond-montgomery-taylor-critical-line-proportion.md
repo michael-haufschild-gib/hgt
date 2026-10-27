@@ -1,10 +1,15 @@
 # Strictly Beyond the Montgomery–Taylor `67.25%` Critical-Line Zero Proportion via Disjoint-Pair Schur–Jensen Pinching and Non-Lattice Gabor Kernel Incommensurability
 
 - **ID:** beyond-montgomery-taylor-critical-line-proportion
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Source:** `RHTower` · `Zeta23` Theorem D zero-side Schur–Jensen seam
-- **Statement:** Unconditionally for `ζ(s)` (`Mathlib.riemannZeta`), for every `ε > 0` there exists `T₀` such that for all `T ≥ T₀`, `(HD(1) + 1/10^8 - ε) N(T, 2T) ≤ N₀^simple(T, 2T)` and `(HD(1) + 1/10^8 - ε) N(0, T) ≤ N₀^simple(0, T)` (and a fortiori for `N₀*(0, T)` and `N₀(0, T)`), and `(GD(1) + 1/(2·10^8) - ε) N(0, T) ≤ N_d(0, T)`, where `HD(1) = 3/2 - cot(1/√2)/√2 = 0.6725007036…` and `GD(1) = (HD(1) + 1)/2 = 0.8362503518…`.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4 formalized)
+- **Source:** `IncommensurableGaborPinching` · `RHTower` · `Zeta23` Theorem D zero-side Schur–Jensen seam
+- **Statement:** Unconditionally for `ζ(s)` (`Mathlib.riemannZeta`), for every `ε > 0` there exists `T₀` such that for all `T ≥ T₀`, `(HD(1) + 1/10^8 - ε) N(T, 2T) ≤ N₀^simple(T, 2T)` and `(HD(1) + 1/10^8 - ε) N(0, T) ≤ N₀^simple(0, T)` (`≥ 67250071 / 100000000 - ε`, and a fortiori for `N₀*(0, T)` and `N₀(0, T)`), and `(GD(1) + 1/(2·10^8) - ε) N(0, T) ≤ N_d(0, T)`, where `HD(1) = 3/2 - cot(1/√2)/√2 = 0.6725007036…` and `GD(1) = (HD(1) + 1)/2 = 0.8362503518…`.
+- **Lean Modules:**
+  - `formal/GaloisForLFunctions/IncommensurableGaborPinching/DisjointPairSchurSlack.lean`
+  - `formal/GaloisForLFunctions/IncommensurableGaborPinching/CosineKernelNonLatticeFloor.lean`
+  - `formal/GaloisForLFunctions/IncommensurableGaborPinching/CriticalLineZeroProportion.lean`
+  - Umbrella: `formal/GaloisForLFunctions/IncommensurableGaborPinching.lean` (wired into `MainTheorems.lean`)
 
 ## Goal
 Break the unconditional `HD(1) = 0.6725007036…` world-record simple-critical-line zero proportion of Alpöge–Furman (`arXiv:2609.02882`, formalized in `Zeta23.ThmD.thmD₀_simple_mult`) and the `GD(1) = 0.8362503518…` distinct-zero proportion (`Zeta23.ThmD.thmD₀_dist_mult`) **strictly below the pair-correlation barrier (`λ < 1`)**, requiring zero new prime-side off-diagonal estimates.
@@ -12,7 +17,7 @@ Break the unconditional `HD(1) = 0.6725007036…` world-record simple-critical-l
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, hostile Phase-4 audit (`SURVIVES PRELIMINARY ATTACK`)
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorems `RHTower.beyond_HD_one_simple_critical_dyadic`, `RHTower.beyond_HD_one_simple_critical_cumulative`, `RHTower.beyond_HD_one_critical_cumulative`, `RHTower.beyond_GD_one_distinct_cumulative`, `RHTower.HD_one_add_pos_le_liminf_xiSimpleCriticalRatio`
+- [x] 2 → 3  formalized: Lean theorems `GaloisForLFunctions.IncommensurableGaborPinching.beyond_HD_one_simple_critical_dyadic`, `beyond_HD_one_simple_critical_cumulative`, `beyond_HD_one_critical_cumulative`, `beyond_GD_one_distinct_cumulative`, `simple_critical_proportion_ge_67250071`, `HD_one_add_pos_le_liminf_xiSimpleCriticalRatio` (`lake --old env lean` exit 0, zero warnings, `#print axioms` = `[propext, Classical.choice, Quot.sound]`)
 
 ## Approach
 In `Zeta23.ZeroSide.RankTraceMult`, Lemma R bounds the eigenvalues `μ_i(M)` of the on-line Gram matrix `M = Wᴴ W` along the piecewise-quadratic convex function `g_c(t) = t² - c t - ((t - c)_+)²` (`k_c(t) = c t - g_c(t) = c² - ((c - t)_+)²`) by dropping the Schur–Jensen pinching slack `∑_i g_c(μ_i(M)) - ∑_z g_c(M_{zz}) ≥ 0`. Crucially:
@@ -154,13 +159,13 @@ Let `λ ∈ [999/1000, 1]`, and define `I₁ := (26/25, 43/40) = (1.040, 1.075)`
    Let `(Z, H)` satisfy `PaperInputs Z` (specialized to `zetaZeroConfig` and `paperInputs_zeta`), and let `λ ∈ [999999/1000000, 1)` with `P := paramsOf stdProfile λ` (`w = 1`, `P.Valid`).
    - By `cStar_lipschitzOn` and `cStar_ge_lb` (`Limit.lean` lines 196–228), `HD 1 - HD λ ≤ 56 π² (1 - λ) ≤ 56 · 10 · 10⁻⁶ = 0.00056`. Combined with `RHTower.HD_one_ge : 1681/2500 ≤ HD 1` (`0.6724`), we obtain `HD λ ≥ 0.67184`.
    - Applying `Zeta23.ThmD.thmD_mult_lam_abstract` at `ε_0 = 0.0001` gives, for all large `T`, `Z.N0s T (2T) ≥ 0.67174 N(T, 2T)`.
-   - Let `S_{1, bulk} := {z ∈ (blockData Z T (P.atD T) hconj).S₁ | T + √T < Im z ∧ Im z ≤ 2T - √T}`. Every simple critical zero of `Z` in `(T, 2T]` either lies in `S_{1, bulk}` or lies in `(T, T + √T] ∪ (2T - √T, 2T]`. For `T ≥ 9`, `(T, T + √T] ⊆ (U₀ - √U₀, U₀]` (`U₀ = T + √T`) and `(2T - √T, 2T] ⊆ (2U₁, 2U₁ + √U₁] ∪ (2U₂, 2U₂ + √U₂]` (`U₁ = T - (2/3)√T`, `U₂ = T - (1/3)√T`), so the missing count is bounded by `NII Z U₀ + NII Z U₁ + NII Z U₂ = O(√T l(T)) = o(N(T, 2T))` (`Tail.eventually_NII_le`). Thus eventually `m := #S_{1, bulk} ≥ 0.6716 N(T, 2T) + 2`.
+   - Let `S_{1, bulk} := {z ∈ (blockData Z T (P.atD T) hconj).S₁ | T + √T < Im z ∧ Im z ≤ 2T - √T}`. By `Zeta23.Assembly.N0s_add` (`N0s_le_card_S₁Bulk_add_boundary`), every simple critical zero of `Z` in `(T, 2T]` either lies in `S_{1, bulk}` or lies in `(T, T + √T] ∪ (2T - √T, 2T]`. Covering each `√T` boundary strip by `k = ⌈√T⌉₊` unit windows via `Zeta23.Assembly.N_add` and bounding each unit window by `A₀ log(|t| + 3) ≤ 2 A₀ l(T)` (`H.RvM.local_count`, `Tail.log_four_mul_le_two_mul_l`) gives `N(T, T + √T) + N(2T - √T, 2T) = O(√T l(T)) = o(N(T, 2T))` (`isLittleO_boundary_N`). Thus eventually `m := #S_{1, bulk} ≥ 0.6716 N(T, 2T)`, and `m - 2 ≥ 0.6715 N(T, 2T)`.
    - Distinct points of `S_{1, bulk}` have `Re z = 1/2`, hence `Im : S_{1, bulk} → ℝ` is injective (`Complex.ext`). Ordering `S_{1, bulk}` by `Im` via `Finset.orderEmbOfFin` gives `γ_0 < \dots < γ_{m-1}` in `[T + √T, 2T - √T] ⊆ [T, 2T]`.
    - With `α = L / (2π)`, `α (2T - T) = λ T l(T) / (2π) < T l(T) / (2π)`. By `H.RvM.main` (`N(T, 2T) = T ell1(T) / (2π) + O(log T)` with `ell1(T) = l(T) + 2 log 2 - 1 > l(T)` since `e < 4`), eventually `α T ≤ N(T, 2T)`.
-   - Hence `#G ≥ (m - 2) - (2/3) α T ≥ (0.6716 - 2/3) N(T, 2T) > (1 / 250) N(T, 2T)`, and mod-3 Pigeonhole yields `K := #G_r ≥ (1 / 750) N(T, 2T)` pairwise disjoint index triples `C_j = {x_j, x_{j+1}, x_{j+2}} ⊆ S_{1, bulk}` of scaled span `s_j ≤ 3`.
+   - Hence `9 #G_r ≥ 3 #G ≥ 3(m - 2) - 2 α T ≥ (3 · 0.6715 - 2) N(T, 2T) = 0.0145 N(T, 2T)`, so mod-3 Pigeonhole yields `K := #G_r ≥ (0.0145 / 9) N(T, 2T) ≥ (1 / 625) N(T, 2T)` pairwise disjoint index triples `C_j = {x_j, x_{j+1}, x_{j+2}} ⊆ S_{1, bulk}` of scaled span `s_j ≤ 3`.
    - By Lemma 3(2), each `C_j` (`j ∈ G_r`) contains a pair `(u_j, v_j)` (`u_j ≠ v_j`) with `|K_λ(Δ)| ≥ 1/250`. By Lemma 2, for all large `T` the uniform approximation error is `≤ 1/500`, so `|ρ(u_j, v_j)| ≥ 1/250 - 1/500 = 1/500`, giving `2 ρ(u_j, v_j)² ≥ 2 / 250000 = 1 / 125000`.
    - Since `{u_j, v_j} ⊆ C_j` and the triples `C_j` (`j ∈ G_r`) are pairwise disjoint, the pairs `(u_j, v_j)` (`j ∈ G_r`) are pairwise disjoint in `S₁`, and their total Schur–Jensen contribution satisfies:
-     $$2 \sum_{j \in G_r} \rho(u_j, v_j)^2 \ge \frac{1}{750} \cdot \frac{1}{125000} N(T, 2T) = \frac{1}{93{,}750{,}000} N(T, 2T) \ge \frac{1}{10^8} N(T, 2T).$$
+     $$2 \sum_{j \in G_r} \rho(u_j, v_j)^2 \ge \frac{1}{625} \cdot \frac{1}{125000} N(T, 2T) = \frac{1}{78{,}125{,}000} N(T, 2T) \ge \frac{1}{10^8} N(T, 2T).$$
 
 3. **Seam Assembly, `λ → 1⁻`, and Dyadic-to-Cumulative Lift:**
    - **(`c = 2`):** Subtracting `(1 / 10^8) N(T, 2T)` from both sides of the `c = 2` corollary of Lemma 1 shows that `Cnt(T) := N₀^simple(T, 2T) - (1 / 10^8) N(T, 2T)` eventually dominates the unmodified `Zeta23` multiplicity-aware seam! Feeding `Cnt` directly into `RHTower.thmD_count_of_seam` (`HorizontallyIsolatedSimpleZeros.lean` line 236) yields, for every `λ ∈ [999999/1000000, 1)` and `ε > 0`, `(HD(λ) + 1/10^8 - ε) N(T, 2T) ≤ N₀^simple(T, 2T)` eventually.
@@ -170,3 +175,4 @@ Let `λ ∈ [999/1000, 1]`, and define `I₁ := (26/25, 43/40) = (1.040, 1.075)`
 
 ## Log
 - 2026-10-27 — Phase 1–4 contextualization, hostile audit (`SURVIVES PRELIMINARY ATTACK`), and complete dependency-closed paper proof written in `2-fully-proven`. Proceeding immediately to Lean 4 formalization.
+- 2026-10-27 — Formalized unconditionally in `formal/GaloisForLFunctions/IncommensurableGaborPinching/{DisjointPairSchurSlack,CosineKernelNonLatticeFloor,CriticalLineZeroProportion}.lean` (`lake --old env lean` exit 0, zero warnings, zero `sorry`, `#print axioms` verified `[propext, Classical.choice, Quot.sound]`, wired into `IncommensurableGaborPinching.lean` and `MainTheorems.lean`); moved to `3-formalized/`.

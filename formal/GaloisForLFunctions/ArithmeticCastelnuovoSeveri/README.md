@@ -194,6 +194,12 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
     decrease self-upgrades all-aperture Hodge to strict; Sobolev cones: width $\le\sigma$ ⇔ graded RR at rate
     $2\beta$, all $\beta>\sigma$. Exact arithmetic reserve (Gamma + Lévy + horizon + integrated prime deficit) gives
     RR at every aperture, Bézout/ample ⇔ its sign.
+    **Independent arithmetic sections:** for an explicit constant $c>0$, every
+    $f(u)=\sum_{1\le n\le N}g_n(u-\log n)$ with independently varying real $C^2$ profiles supported
+    in $[0,w]$, $0<w\le c\log(1+1/N)$, satisfies $M(f)\ge\int f^2$. Their linear kernel of
+    $\int f(u)\sinh(u/2)\,du$ is nonzero and its $L^2$ source cone has RR and ampleness on the original
+    subsurface (`ArithmeticSectionSpace.lean`). The support restriction remains; no unrestricted
+    section-count or Hodge theorem follows.
 14. **Finite readings cannot supply Bézout.** Weil Rayleigh quotients are unbounded in every
     finite-reading kernel (smooth unit-mass witnesses in `SmoothFiniteReadingKernels.lean`), so no reserve from finitely many linear
     readings (plus mass) gives Bézout; exact effectivity needs infinitely many degrees; arithmetic

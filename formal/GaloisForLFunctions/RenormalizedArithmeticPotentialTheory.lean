@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheCoupledSurvivalLaw
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheArchimedeanPlacePaysTheArithmeticPoint
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.GardingIsAFiniteRankSurvival
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheCovariantCountertermIsTheAnomaly
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheAnomalyCostsHalfALogarithm
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheHorizonCountertermIsPolar
@@ -18,6 +19,7 @@ import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheLawsOfRenorm
 
 Umbrella for the theory of the renormalization data of the explicit formula: coupled counterterms
 and the partner-rank law; the matched coupling of the archimedean place to the arithmetic point;
+Gårding inequalities as finite-rank survivals;
 covariance, the covariant counterterm `log N + O(1)` and the cost of the anomaly; the horizon
 regulator, its polar divergence on uniform profiles, its unbounded rank on the torsion orbits, the
 tensor law joining the two and its Hecke covariance without anomaly; the finite part `−2γ` on

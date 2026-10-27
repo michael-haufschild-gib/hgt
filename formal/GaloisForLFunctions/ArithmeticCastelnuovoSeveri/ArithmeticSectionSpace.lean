@@ -8,6 +8,12 @@ An arithmetic section is a sum `Σ g_n(u − log n)` of independently varying sm
 supported in a common short interval. Below the integer-log spacing, prime lags read precisely
 the Hecke incidence pairing of the profiles. Mixed archimedean correlations are controlled by
 their separate square masses, so the source estimates apply to the whole linear section space.
+
+For the explicit positive constant `arithmeticSectionRatio`, every such section of width
+`w ≤ arithmeticSectionRatio * log(1 + 1/N)` has Markov energy at least its square mass.
+The kernel of the sinh pole moment is a nonzero source-defined subspace; its `L²` source cone
+has Riemann–Roch and ampleness on the original scaling subsurface, with no spectral assumptions.
+The support restriction is part of the theorem: this does not assert Hodge index on all tests.
 -/
 
 noncomputable section
@@ -542,7 +548,11 @@ theorem integral_sq_le_markovEnergy_arithmeticSection (hg : ∀ n, ContDiff ℝ 
   have hfloor := markovEnergy_arithmeticSection_ge hg hs hN hw0 hw'
   have hgain := arithmeticSectionGain_ge_one hN hw0 hw
   have hmass : 0 ≤ ∫ u, arithmeticSection N G u ^ 2 := integral_nonneg fun _ => sq_nonneg _
-  exact (by simpa only [one_mul] using mul_le_mul_of_nonneg_right hgain hmass).trans hfloor
+  have hstep : (∫ u, arithmeticSection N G u ^ 2) ≤
+      (2 * gammaHardyPhaseRate 0 + Real.log (1 / w) - Real.log N - spacingConstant) *
+        ∫ u, arithmeticSection N G u ^ 2 := by
+    simpa only [one_mul] using mul_le_mul_of_nonneg_right hgain hmass
+  exact hstep.trans hfloor
 
 /-- Real linear sections, with no condition involving the Weil form or its zeros. -/
 def arithmeticSectionTests (N : ℕ) (w : ℝ) : Submodule ℝ realTests where
@@ -556,6 +566,7 @@ def arithmeticSectionTests (N : ℕ) (w : ℝ) : Submodule ℝ realTests where
     rintro f h ⟨G, hG, hsG, heG⟩ ⟨H, hH, hsH, heH⟩
     refine ⟨fun n u => G n u + H n u, fun n => (hG n).add (hH n), ?_, ?_⟩
     · intro n u hu
+      change G n u + H n u = 0
       rw [hsG n u hu, hsH n u hu, add_zero]
     · funext u
       simp only [Submodule.coe_add, Pi.add_apply, heG, heH, arithmeticSection, sum_add_distrib]
@@ -563,6 +574,7 @@ def arithmeticSectionTests (N : ℕ) (w : ℝ) : Submodule ℝ realTests where
     rintro r f ⟨G, hG, hsG, heG⟩
     refine ⟨fun n u => r * G n u, fun n => (hG n).const_smul r, ?_, ?_⟩
     · intro n u hu
+      change r * G n u = 0
       rw [hsG n u hu, mul_zero]
     · funext u
       simp only [Submodule.coe_smul, Pi.smul_apply, smul_eq_mul, heG, arithmeticSection, mul_sum]
@@ -571,21 +583,22 @@ def arithmeticSectionTests (N : ℕ) (w : ℝ) : Submodule ℝ realTests where
 def sectionSinhMoment : realTests →ₗ[ℝ] ℝ where
   toFun f := sinhHalfMoment f.1
   map_add' f g := by
-    simpa only [Submodule.coe_add, Pi.add_apply, one_mul] using
+    change sinhHalfMoment (fun u => f.1 u + g.1 u) = sinhHalfMoment f.1 + sinhHalfMoment g.1
+    simpa only [one_mul] using
       sinhHalfMoment_linear_comb f.2.1.continuous f.2.2 g.2.1.continuous g.2.2 1 1
   map_smul' r f := by
-    simpa only [Submodule.coe_smul, Pi.smul_apply, smul_eq_mul, RingHom.id_apply,
-      zero_mul, add_zero] using
+    change sinhHalfMoment (fun u => r * f.1 u) = r * sinhHalfMoment f.1
+    simpa only [zero_mul, add_zero] using
       sinhHalfMoment_linear_comb f.2.1.continuous f.2.2 f.2.1.continuous f.2.2 r 0
 
 /-- Arithmetic sections with the single adverse pole reading removed. -/
-def arithmeticPrimitiveSections (N : ℕ) (w : ℝ) : Submodule ℝ realTests :=
+def sinhNeutralArithmeticSections (N : ℕ) (w : ℝ) : Submodule ℝ realTests :=
   arithmeticSectionTests N w ⊓ sectionSinhMoment.ker
 
 /-- The full Weil floor includes the Gamma, prime, and both pole terms. -/
-theorem integral_sq_le_weilPair_arithmeticPrimitiveSection {N : ℕ} (hN : 1 ≤ N)
+theorem integral_sq_le_weilPair_sinhNeutralArithmeticSection {N : ℕ} (hN : 1 ≤ N)
     {w : ℝ} (hw0 : 0 < w) (hw : w ≤ arithmeticSectionRatio * atomSpacing N)
-    (f : arithmeticPrimitiveSections N w) :
+    (f : sinhNeutralArithmeticSections N w) :
     (∫ u, f.1.1 u ^ 2) ≤ weilPair f.1.1 f.1.1 := by
   obtain ⟨G, hG, hsG, heG⟩ := f.2.1
   have hsin : sinhHalfMoment f.1.1 = 0 := f.2.2
@@ -595,9 +608,11 @@ theorem integral_sq_le_weilPair_arithmeticPrimitiveSection {N : ℕ} (hN : 1 ≤
   have hcd := cx_contDiff f.1.2.1
   have hcs := cx_hasCompactSupport f.1.2.2
   have he := markovEnergy_eq_W_sub hcd hcs
-  rw [re_weilPoleTerm_ofReal_eq_two_mul_cosh_sq_sub_sinh_sq
-    f.1.2.1.continuous f.1.2.2, hsin, zero_pow (by decide : (2 : ℕ) ≠ 0),
-    mul_zero, sub_zero] at he
+  have hpole : (weilPoleTerm (Zeta23.EF.weilTest (cx f.1.1) (cx f.1.1))).re =
+      2 * coshHalfMoment f.1.1 ^ 2 - 2 * sinhHalfMoment f.1.1 ^ 2 := by
+    exact re_weilPoleTerm_ofReal_eq_two_mul_cosh_sq_sub_sinh_sq
+      f.1.2.1.continuous f.1.2.2
+  rw [hpole, hsin, zero_pow (by decide : (2 : ℕ) ≠ 0), mul_zero, sub_zero] at he
   have hW : (Zeta23.zetaZeroConfig.W (cx f.1.1) (cx f.1.1)).re =
       weilPair f.1.1 f.1.1 := by
     rw [weilPair, zeta_W_eq_weilFullFunctional_mixed hcd hcs hcd hcs]
@@ -605,20 +620,102 @@ theorem integral_sq_le_weilPair_arithmeticPrimitiveSection {N : ℕ} (hN : 1 ≤
   nlinarith only [hM, he, sq_nonneg (coshHalfMoment f.1.1)]
 
 /-- Arithmetic source sections supply Riemann–Roch and ampleness on the same subsurface. -/
-theorem arithmeticPrimitiveSections_effectivity {N : ℕ} (hN : 1 ≤ N)
+theorem sinhNeutralArithmeticSections_effectivity {N : ℕ} (hN : 1 ≤ N)
     {w : ℝ} (hw0 : 0 < w) (hw : w ≤ arithmeticSectionRatio * atomSpacing N) :
-    (scalingSubsurface (arithmeticPrimitiveSections N w)).RiemannRochAxiom
-        (l2SourceCone 1 (arithmeticPrimitiveSections N w)) ∧
-      (scalingSubsurface (arithmeticPrimitiveSections N w)).AmpleAxiom
-        (l2SourceCone 1 (arithmeticPrimitiveSections N w)) ∧
-      (scalingSubsurface (arithmeticPrimitiveSections N w)).HodgeIndex := by
+    (scalingSubsurface (sinhNeutralArithmeticSections N w)).RiemannRochAxiom
+        (l2SourceCone 1 (sinhNeutralArithmeticSections N w)) ∧
+      (scalingSubsurface (sinhNeutralArithmeticSections N w)).AmpleAxiom
+        (l2SourceCone 1 (sinhNeutralArithmeticSections N w)) ∧
+      (scalingSubsurface (sinhNeutralArithmeticSections N w)).HodgeIndex := by
   have hc : (0 : ℝ) < 1 := zero_lt_one
-  have hf := integral_sq_le_weilPair_arithmeticPrimitiveSection hN hw0 hw
+  have hf := integral_sq_le_weilPair_sinhNeutralArithmeticSection hN hw0 hw
   refine ⟨(l2SourceCone_riemannRoch_iff_weilPair_ge hc _).mpr ?_,
     l2SourceCone_ample hc _, (scalingSubsurface_hodgeIndex_iff_weilPair_nonneg _).mpr ?_⟩
   · intro f
     simpa only [one_mul] using hf f
   · intro f
     exact (integral_nonneg fun _ => sq_nonneg _).trans (hf f)
+
+
+/-- A local section at the arithmetic point is part of every nonempty arithmetic section space. -/
+theorem mem_arithmeticSectionTests_of_support {N : ℕ} (hN : 1 ≤ N) {w : ℝ}
+    (f : realTests) (hs : ∀ u, u ∉ Set.Icc 0 w → f.1 u = 0) :
+    f ∈ arithmeticSectionTests N w := by
+  let G : ℕ → ℝ → ℝ := fun n u => if n = 1 then f.1 u else 0
+  refine ⟨G, ?_, ?_, ?_⟩
+  · intro n
+    by_cases hn : n = 1
+    · simpa only [G, if_pos hn] using f.2.1
+    · simpa only [G, if_neg hn] using (contDiff_const : ContDiff ℝ 2 (fun _ : ℝ => (0 : ℝ)))
+  · intro n u hu
+    dsimp only [G]
+    split_ifs
+    · exact hs u hu
+    · rfl
+  · funext u
+    unfold arithmeticSection
+    rw [sum_eq_single 1]
+    · simp only [G, if_pos rfl, Nat.cast_one, Real.log_one, sub_zero]
+    · intro n hn hne
+      simp only [G, if_neg hne]
+    · intro h
+      exact (h (mem_Icc.mpr ⟨le_rfl, hN⟩)).elim
+
+/-- The pole-neutral arithmetic section carrier is nontrivial at every positive local width. -/
+theorem exists_nonzero_sinhNeutralArithmeticSection {N : ℕ} (hN : 1 ≤ N)
+    {w : ℝ} (hw : 0 < w) :
+    ∃ f : sinhNeutralArithmeticSections N w, (f : realTests) ≠ 0 := by
+  have hleft : Set.Ioo 0 (w / 2) ∈ nhds (w / 4) :=
+    Ioo_mem_nhds (by linarith only [hw]) (by linarith only [hw])
+  have hright : Set.Ioo (w / 2) w ∈ nhds (3 * w / 4) :=
+    Ioo_mem_nhds (by linarith only [hw]) (by linarith only [hw])
+  obtain ⟨b₁, hs₁, hc₁, hd₁, -, hv₁⟩ := exists_contDiff_tsupport_subset (n := 2) hleft
+  obtain ⟨b₂, hs₂, hc₂, hd₂, -, hv₂⟩ := exists_contDiff_tsupport_subset (n := 2) hright
+  let f₁ : realTests := ⟨b₁, hd₁, hc₁⟩
+  let f₂ : realTests := ⟨b₂, hd₂, hc₂⟩
+  have hz₁₂ : b₁ (3 * w / 4) = 0 :=
+    image_eq_zero_of_notMem_tsupport fun h => by
+      have hh := (hs₁ h).2
+      linarith only [hh, hw]
+  have hm₁ : f₁ ∈ arithmeticSectionTests N w := by
+    apply mem_arithmeticSectionTests_of_support hN
+    intro u hu
+    apply image_eq_zero_of_notMem_tsupport
+    intro ht
+    have hh := hs₁ ht
+    exact hu ⟨hh.1.le, by linarith only [hh.2, hw]⟩
+  have hm₂ : f₂ ∈ arithmeticSectionTests N w := by
+    apply mem_arithmeticSectionTests_of_support hN
+    intro u hu
+    apply image_eq_zero_of_notMem_tsupport
+    intro ht
+    have hh := hs₂ ht
+    exact hu ⟨by linarith only [hh.1, hw], hh.2.le⟩
+  by_cases hzero : sectionSinhMoment f₁ = 0
+  · refine ⟨⟨f₁, hm₁, hzero⟩, ?_⟩
+    intro hz
+    have hh := congrArg (fun f : realTests => f.1 (w / 4)) hz
+    change b₁ (w / 4) = 0 at hh
+    rw [hv₁] at hh
+    exact one_ne_zero hh
+  · let f : realTests := sectionSinhMoment f₂ • f₁ - sectionSinhMoment f₁ • f₂
+    have hm : f ∈ arithmeticSectionTests N w :=
+      (arithmeticSectionTests N w).sub_mem
+        ((arithmeticSectionTests N w).smul_mem _ hm₁)
+        ((arithmeticSectionTests N w).smul_mem _ hm₂)
+    have hz : sectionSinhMoment f = 0 := by
+      simp only [f, map_sub, map_smul, smul_eq_mul]
+      ring
+    refine ⟨⟨f, hm, hz⟩, ?_⟩
+    intro hf0
+    have hh := congrArg (fun q : realTests => q.1 (3 * w / 4)) hf0
+    change sectionSinhMoment f₂ * b₁ (3 * w / 4) -
+      sectionSinhMoment f₁ * b₂ (3 * w / 4) = 0 at hh
+    rw [hz₁₂, hv₂, mul_zero, mul_one, zero_sub] at hh
+    exact hzero (neg_eq_zero.mp hh)
+
+#print axioms integral_sq_le_markovEnergy_arithmeticSection
+#print axioms sinhNeutralArithmeticSections_effectivity
+#print axioms exists_nonzero_sinhNeutralArithmeticSection
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

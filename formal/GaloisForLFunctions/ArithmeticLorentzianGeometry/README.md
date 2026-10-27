@@ -17,6 +17,27 @@ to Lorentzian objects. Everything is unconditional; RH appears only inside equiv
 
 Namespace `GaloisForLFunctions.ArithmeticLorentzianGeometry`; umbrella `ArithmeticLorentzianGeometry.lean`.
 
+## Foundational contract
+
+The arithmetic target is a signature theorem for the **specified Weil intersection form**,
+including its archimedean term, pole plane and limiting test space. A Lorentzian form constructed
+from prime data is useful only together with an exact identification, a valid pullback, or a
+proved domination of that target. Positivity of coefficients, a scale substitution and a
+Frobenius-shaped symmetry do not supply this bridge by themselves.
+
+Three logically separate problems govern the programme: construct elementary forms and closure
+operations; identify the arithmetic form they produce; preserve the resulting inequality in the
+critical limit. A theorem solving the first problem must not be advertised as solving the other
+two. In particular, lifting a quadratic form to higher degree helps only when the lift's local
+signature is established independently of the desired global signature.
+
+Gauge selection is likewise distinct from positivity. A fixed successor or archimedean kernel
+can select a common nonnegative gauge, but uniqueness of that gauge does not establish a Hodge
+index. Periodic Dirichlet characters with zeros at nonunits are not unit-valued points of the
+full prime torus; any character comparison must specify its domain and local factors. The
+relation between height-averaged pair correlation and a uniform inequality for all tests is a
+research question, not an identification assumed by the programme.
+
 ---
 
 ## 1. Place in the research

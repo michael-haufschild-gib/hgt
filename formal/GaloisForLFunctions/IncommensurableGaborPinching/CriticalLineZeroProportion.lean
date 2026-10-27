@@ -202,16 +202,18 @@ def S₁Bulk (Z : ZeroConfig) (P : Params) (T : ℝ)
   ((blockData Z T (P.atD T) hconj).S₁).filter
     (fun z => T + Real.sqrt T < (z : ℂ).im ∧ (z : ℂ).im ≤ 2 * T - Real.sqrt T)
 
-private lemma N_add_nat_le (Z : ZeroConfig) (t C : ℝ) (hC : 0 ≤ C) (k : ℕ)
+private lemma N_add_nat_le (Z : ZeroConfig) (t C : ℝ) (_ : 0 ≤ C) (k : ℕ)
     (hunit : ∀ j < k, (Z.N (t + j) (t + j + 1) : ℝ) ≤ C) :
     (Z.N t (t + k) : ℝ) ≤ k * C := by
   induction k with
   | zero =>
     simp only [Nat.cast_zero, add_zero, zero_mul, N_self]
+    exact le_rfl
   | succ n ih =>
+    have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
     have hsplit : Z.N t (t + ((n + 1 : ℕ) : ℝ))
         = Z.N t (t + n) + Z.N (t + n) (t + ((n + 1 : ℕ) : ℝ)) :=
-      N_add Z (by positivity) (by push_cast; linarith)
+      N_add Z (by linarith) (by push_cast; linarith)
     have hcast : ((Z.N t (t + ((n + 1 : ℕ) : ℝ)) : ℕ) : ℝ)
         = (Z.N t (t + n) : ℝ) + (Z.N (t + n) (t + n + 1) : ℝ) := by
       rw [hsplit]
@@ -347,11 +349,12 @@ lemma eventually_L_mul_T_div_two_pi_le_N (Z : ZeroConfig) (hRvM : RiemannVonMang
   have hℓ : l T ≤ ell1 T := by rw [ell1_eq]; linarith
   have h3 : T / (2 * Real.pi) * l T ≤ T / (2 * Real.pi) * ell1 T :=
     mul_le_mul_of_nonneg_left hℓ (by positivity)
-  have hlog_bd : C * Real.log T ≤ 2 * |C| * l T :=
-    (mul_le_mul_of_nonneg_right (le_abs_self C) hlog0).trans
-      (mul_le_mul_of_nonneg_left hlog (abs_nonneg C))
+  have hlog_bd : C * Real.log T ≤ 2 * |C| * l T := by
+    calc C * Real.log T ≤ |C| * Real.log T := mul_le_mul_of_nonneg_right (le_abs_self C) hlog0
+      _ ≤ |C| * (2 * l T) := mul_le_mul_of_nonneg_left hlog (abs_nonneg C)
+      _ = 2 * |C| * l T := by ring
   have hδT : 4 * Real.pi * |C| ≤ δ * T := by
-    have := (le_div_iff₀ hδ).mp hTδ
+    have := (div_le_iff₀ hδ).mp hTδ
     linarith
   have hgap : 2 * |C| * l T ≤ δ * (T / (2 * Real.pi) * l T) := by
     have hdiv : 2 * |C| ≤ δ * (T / (2 * Real.pi)) := by
@@ -387,7 +390,7 @@ lemma HD_one_sub_HD_le {lam : ℝ} (hl05 : 1 / 2 ≤ lam) (hl1 : lam ≤ 1) :
   rw [heq, div_le_iff₀ (mul_pos hc0 hc1)]
   have hprod : 1 / (4 * Real.pi ^ 2) ≤ cStar lam * cStar 1 := by
     calc 1 / (4 * Real.pi ^ 2) = (1 / (2 * Real.pi)) * (1 / (2 * Real.pi)) := by field_simp; ring
-      _ ≤ cStar lam * cStar 1 := mul_le_mul hclb hclb1 (by positivity) hc1.le
+      _ ≤ cStar lam * cStar 1 := mul_le_mul hclb hclb1 (by positivity) hc0.le
   calc cStar 1 - cStar lam ≤ 14 * (1 - lam) := hnum
     _ = (56 * Real.pi ^ 2 * (1 - lam)) * (1 / (4 * Real.pi ^ 2)) := by field_simp; ring
     _ ≤ (56 * Real.pi ^ 2 * (1 - lam)) * (cStar lam * cStar 1) :=
@@ -479,9 +482,10 @@ theorem eventually_exists_disjointPairs_slack (Z : ZeroConfig) (H : PaperInputs 
   have hΓ_card : Γ.card = SB.card := Finset.card_image_of_injOn him_injOn
   set m : ℕ := Γ.card
   have hm_ge3 : 3 ≤ m := hΓ_card ▸ hm3
-  set g : Fin m → ℝ := Γ.orderEmbOfFin rfl
-  have hg_mono : StrictMono g := (Γ.orderEmbOfFin rfl).strictMono
-  have hg_mem : ∀ i : Fin m, g i ∈ Γ := fun i => Γ.orderEmbOfFin_mem rfl i
+  let e := Γ.orderEmbOfFin (rfl : Γ.card = m)
+  set g : Fin m → ℝ := fun i => e i
+  have hg_mono : StrictMono g := e.strictMono
+  have hg_mem : ∀ i : Fin m, g i ∈ Γ := fun i => Γ.orderEmbOfFin_mem (rfl : Γ.card = m) i
   -- Lift each `g i ∈ Γ` back to its unique point `zOf i ∈ SB`
   let zOf : Fin m → ZI Z T := fun i => Classical.choose (Finset.mem_image.mp (hg_mem i))
   have hzOf_mem : ∀ i : Fin m, zOf i ∈ SB := fun i =>
@@ -526,14 +530,14 @@ theorem eventually_exists_disjointPairs_slack (Z : ZeroConfig) (H : PaperInputs 
     rw [hm_eq] at hR_card
     linarith
   -- Step 7: In each short triple `j ∈ R`, select a pair with `|mtKernel| ≥ 1 / 250`
-  have hex_pair : ∀ j : ℕ, j ∈ R →
+  have hex_pair : ∀ (j : ℕ) (hj : j ∈ R),
       ∃ u v : ZI Z T,
-        u ∈ ({zOf ⟨j, by have := hR_lt j ‹_›; omega⟩,
-              zOf ⟨j + 1, by have := hR_lt j ‹_›; omega⟩,
-              zOf ⟨j + 2, hR_lt j ‹_›⟩} : Finset (ZI Z T)) ∧
-        v ∈ ({zOf ⟨j, by have := hR_lt j ‹_›; omega⟩,
-              zOf ⟨j + 1, by have := hR_lt j ‹_›; omega⟩,
-              zOf ⟨j + 2, hR_lt j ‹_›⟩} : Finset (ZI Z T)) ∧
+        u ∈ ({zOf ⟨j, by have := hR_lt j hj; omega⟩,
+              zOf ⟨j + 1, by have := hR_lt j hj; omega⟩,
+              zOf ⟨j + 2, hR_lt j hj⟩} : Finset (ZI Z T)) ∧
+        v ∈ ({zOf ⟨j, by have := hR_lt j hj; omega⟩,
+              zOf ⟨j + 1, by have := hR_lt j hj; omega⟩,
+              zOf ⟨j + 2, hR_lt j hj⟩} : Finset (ZI Z T)) ∧
         u ≠ v ∧
         1 / 250 ≤ |mtKernel P.lam (α * |(u : ℂ).im - (v : ℂ).im|)| := by
     intro j hj
@@ -571,12 +575,12 @@ theorem eventually_exists_disjointPairs_slack (Z : ZeroConfig) (H : PaperInputs 
     intro j hj
     have hmem := (hxy_spec j hj).1
     simp only [Finset.mem_insert, Finset.mem_singleton] at hmem
-    rcases hmem with rfl | rfl | rfl <;> exact hzOf_mem _
+    rcases hmem with h | h | h <;> (rw [h]; exact hzOf_mem _)
   have hy_SB : ∀ j ∈ R, y j ∈ SB := by
     intro j hj
     have hmem := (hxy_spec j hj).2.1
     simp only [Finset.mem_insert, Finset.mem_singleton] at hmem
-    rcases hmem with rfl | rfl | rfl <;> exact hzOf_mem _
+    rcases hmem with h | h | h <;> (rw [h]; exact hzOf_mem _)
   refine ⟨R, x, y, ?_, ?_, ?_, ?_, ?_⟩
   · intro j hj; exact (Finset.mem_filter.mp (hx_SB j hj)).1
   · intro j hj; exact (Finset.mem_filter.mp (hy_SB j hj)).1
@@ -624,7 +628,7 @@ theorem eventually_exists_disjointPairs_slack (Z : ZeroConfig) (H : PaperInputs 
         have htri := abs_sub_abs_le_abs_sub
           (mtKernel P.lam (α * |(x j : ℂ).im - (y j : ℂ).im|))
           (pairGridOverlap Z (P.atD T) T (x j) (y j))
-        rw [abs_sub_comm] at htri
+        rw [abs_sub_comm (mtKernel P.lam (α * |(x j : ℂ).im - (y j : ℂ).im|))] at htri
         linarith
       have hsq := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 1 / 500) habs_ge 2
       rw [sq_abs] at hsq
@@ -1091,13 +1095,5 @@ theorem HD_one_add_pos_le_liminf_xiSimpleCriticalRatio :
     rwa [show Zeta23.ThmD.HD 1 + 1 / 10 ^ 8 - ε = c - (c - b) from rfl, heq] at hbound
   have hb_liminf : b ≤ Filter.liminf RHTower.xiSimpleCriticalRatio atTop := le_liminf_of_le hcob hev
   linarith
-
-#print axioms beyond_HD_one_simple_critical_dyadic
-#print axioms beyond_HD_one_simple_critical_cumulative
-#print axioms beyond_HD_one_critical_cumulative
-#print axioms beyond_GD_one_distinct_cumulative
-#print axioms simple_critical_proportion_ge_67250071
-#print axioms HD_one_add_pos_le_liminf_xiSimpleCriticalRatio
-#print axioms beyond_montgomeryTaylor_xiDistinct_epsilon
 
 end GaloisForLFunctions.IncommensurableGaborPinching

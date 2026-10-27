@@ -109,8 +109,9 @@ survival cone containing the degree-zero cycles.
 4. *What does covariance cost?* A Hecke-covariant renormalized prime form has a scalar diagonal. Its
    least positive counterterm on orders `≤ N` is `log N + O(1)`: the anomaly `log #ker[N]` of `[N]`,
    with constant one. This is the size of the archimedean self-energy `log(1/ε)` of an atom at the
-   atomic spacing `ε ≍ 1/N` (§9.1). Keeping the self-intersection, the anomalous torsion
-   renormalization, costs at least `½ log N` more.
+   atomic spacing `ε ≍ 1/N` (§9.1). With it the archimedean Lévy gain pays the prime place at widths
+   `δ_N N^{−e^{1/2}}`. Keeping the self-intersection, the anomalous torsion renormalization, costs
+   at least `½ log N` more.
 5. *What is the finite part?* On the polar hyperplane of uniform profiles, the renormalized prime
    form is the scalar `−2γ`, up to `o(1)` per unit mass. In Weil's form, where `P` enters with a
    minus sign, the renormalized prime place is positive there. On the `p`-adic classes the finite
@@ -213,36 +214,43 @@ the place that pays.
    Ramanujan orthogonality makes the joint counterterm the matched rank-one coupling with `b = e₁`.
    The mode of `O_n`, `n ≥ 2`, has mean zero, while `c_1 ≡ 1` is the archimedean mode itself.
 
+6. **Gårding is a finite-rank survival** (`survival_of_functionals`, `functionals_of_survival`,
+   `garding_iff_survival`, `garding_iff_regularized`, `finrank_le_of_garding`). A form is nonnegative
+   on a subspace of codimension `≤ k` iff it is nonnegative on the survival cone of a positive
+   counterterm of rank `≤ k`, iff `A + sB + εI` is eventually positive. Then it has at most `k`
+   negative directions. The finite negative index of Weil's form at every aperture (APol, ACS) is
+   survival with a finite-rank counterterm, and RH is the statement that the counterterm vanishes.
+
 ### B. Covariance and the anomaly
 
-6. **Covariance forces a scalar** (`renormalizedPrimeForm_transport`,
+7. **Covariance forces a scalar** (`renormalizedPrimeForm_transport`,
    `renormalizedPrimeForm_covariant_iff`, `heckeCovariant_iff_const`). Transport moves the diagonal
    from `h(n)` to `h(tn)`; covariance holds iff `h` is constant. A scalar counterterm has survival
    cone `{0}`, so covariance and survival exclude each other for diagonal counterterms.
-7. **The exact rows** (`sum_up_eq`, `sum_down_eq`, `row_eq`). The Schur-weighted row of `P` at `m` on
+8. **The exact rows** (`sum_up_eq`, `sum_down_eq`, `row_eq`). The Schur-weighted row of `P` at `m` on
    orders `≤ N` is `A(⌊N/m⌋) + log m`, with `A(y) = Σ_{t ≤ y} Λ(t)/t`.
-8. **The covariant counterterm is `log N + O(1)`** (`row_le`, `row_ge`, `poleVector_eigen`,
+9. **The covariant counterterm is `log N + O(1)`** (`row_le`, `row_ge`, `poleVector_eigen`,
    `atomicWeilForm_le_log`, `atomicWeilForm_poleVector_ge`, `log_sub_le_of_atomicWeilForm_le`,
    `covariantCounterterm_sandwich`). The pole vector is an approximate eigenvector with eigenvalue
    `log N`, coordinatewise.
-9. **The anomaly costs half a logarithm** (`totient_mul_le`, `poleVector_mul_kernel_le`,
+10. **The anomaly costs half a logarithm** (`totient_mul_le`, `poleVector_mul_kernel_le`,
    `torsionPairing_torsionTest_ge`, `sum_log_div_ge`, `sum_tameDifferent_div_le`,
    `torsionCounterterm_ge`, `anomaly_cost`). By `φ(mt) ≤ t φ(m)` the torsion pairing dominates `P`
    entrywise. Its diagonal adds `Σ c(n)/n ≈ ½ log² N`, and the tame part averages to `O(H_N)`.
 
 ### C. The horizon
 
-10. **Polarity on uniform profiles** (`primeBilinear_truncPole_eq`,
+11. **Polarity on uniform profiles** (`primeBilinear_truncPole_eq`,
     `abs_primeBilinear_truncPole_sub_le`, `abs_atomicWeilForm_stepProfile_sub_le`,
     `abs_atomicWeilForm_stepProfile_le_of_polar`). The pole Gram is `H_M H_{M'} + O(H_{min})`. So
     `P_N = ℓ² + O(|c|-mass)` on step profiles, with no divergence on `ℓ = 0`.
-11. **Orbital divergence** (`sum_dvd_vonMangoldt_div_le`, `sum_divisors_dvd_vonMangoldt_le`,
+12. **Orbital divergence** (`sum_dvd_vonMangoldt_div_le`, `sum_divisors_dvd_vonMangoldt_le`,
     `offClassRow_le`, `classRow_self_ge`, `primeBilinear_classPole_self_ge`,
     `primeBilinear_classPole_le`, `atomicWeilForm_classCombination_ge`,
     `horizonCounterterm_rank_unbounded`). Leaving a valuation class costs one prime power of `p`.
     Each class is an approximate eigenvector with eigenvalue `log M`, and classes decouple. So no
     counterterm of rank `≤ J` plus a bounded scalar renormalizes the prime place.
-12. **The tensor law** (`classDensity_eq_orbit`, `abs_unitHarmonic_sub_le`, `abs_classMass_sub_le`,
+13. **The tensor law** (`classDensity_eq_orbit`, `abs_unitHarmonic_sub_le`, `abs_classMass_sub_le`,
     `primeBilinear_classPole_two_eq`, `abs_classGram_self_sub_le`, `classGram_cross_le`,
     `abs_atomicWeilForm_classProfile_sub_le`, `abs_atomicWeilForm_classProfile_le_of_polar`).
     On class-wise profiles the horizon counterterm is `Σ_j δ_j^{−1} ℓ_j²`, the class polar squares
@@ -250,7 +258,7 @@ the place that pays.
 
 ### D. Covariance at the horizon
 
-13. **No anomaly** (`atomicWeilForm_heckeShift`, `heckeShift_classPole`, `classDensity_succ`,
+14. **No anomaly** (`atomicWeilForm_heckeShift`, `heckeShift_classPole`, `classDensity_succ`,
     `classPolar_heckeShift_succ`, `classPolar_heckeShift_zero`, `tensorCounterterm_heckeShift`,
     `finitePart_heckeShift`). `P_{pN}(T_p x) = P_N(x)`; `T_p w_j^{(M)} = √p w_{j+1}^{(pM)}`;
     `ℓ_{j+1}(T_p x) = ℓ_j(x)/√p` and `δ_{j+1} = δ_j/p`. Hence `C(T_p x) = C(x)`, and the finite part
@@ -258,14 +266,14 @@ the place that pays.
 
 ### E. The finite part
 
-14. **Euler's constant** (`tendsto_mertensSum_sub_log`, `tendsto_harmonicSum_sub_log`, `roundoff_le`,
+15. **Euler's constant** (`tendsto_mertensSum_sub_log`, `tendsto_harmonicSum_sub_log`, `roundoff_le`,
     `exists_abs_primeBilinear_truncPole_finitePart_le`,
     `exists_abs_atomicWeilForm_stepProfile_finitePart_le`,
     `exists_abs_atomicWeilForm_stepProfile_add_le_of_polar`). With `Σ_{t ≤ y} Λ(t)/t = log y − γ + o(1)`
     and `H_M = log M + γ + o(1)`, the pole Gram is `H_M H_{M'} − 2γ H_{min} + o(H_{min})`. Hence
     `P_N = ℓ² − 2γ |x|² + o(|c|-mass)` on step profiles.
 
-15. **The tower form** (`tendsto_pPowerMertensSum`, `tendsto_unitMertensSum_sub_log`,
+16. **The tower form** (`tendsto_pPowerMertensSum`, `tendsto_unitMertensSum_sub_log`,
     `tendsto_unitHarmonic_sub`, `tendsto_classMass_sub`, `sum_divisors_dvd_vonMangoldt_eq`,
     `classRow_self_eq`, `classRow_of_lt`, `primeBilinear_classPole_cross_eq`,
     `exists_abs_classGram_self_finitePart_le`,
@@ -276,7 +284,7 @@ the place that pays.
 
 ### F. Stability
 
-16. **The matched stability law** (`markovEnergy_atomicTest_ge_matched`, `matchedAtomicGain_nonneg`,
+17. **The matched stability law** (`markovEnergy_atomicTest_ge_matched`, `matchedAtomicGain_nonneg`,
     `atomicWidth_le_matchedAtomicWidth`, `markovEnergy_atomicTest_nonneg_matched`). The archimedean
     Lévy gain `e^{−1/2} log(δ_N/(2w))` of an atomic test pays the covariant counterterm
     `log N + O(1)`. So the Markov form (archimedean minus prime) is nonnegative at every width
@@ -284,18 +292,18 @@ the place that pays.
 
 ### G. Gauge
 
-17. **The twisted Mertens sum** (`sum_one_add_liouville_le`, `liouvilleMertensSum_le`,
+18. **The twisted Mertens sum** (`sum_one_add_liouville_le`, `liouvilleMertensSum_le`,
     `neg_le_liouvilleMertensSum`). `Σ_{t ≤ y} λ(t)Λ(t)/t = −log y + O(1)`: the even prime powers are
     summable.
-18. **Dirichlet's hyperbola identity** (`sum_divisors_div_swap`). The divisor part of a row averages
+19. **Dirichlet's hyperbola identity** (`sum_divisors_div_swap`). The divisor part of a row averages
     to its Mertens part.
-19. **The spectral ends** (`abs_atomicWeilForm_le`, `atomicWeilForm_liouvillePole_le`,
+20. **The spectral ends** (`abs_atomicWeilForm_le`, `atomicWeilForm_liouvillePole_le`,
     `atomicWeilForm_spectrum_ends`). `|P_N| ≤ log N + O(1)`. The pole vector reaches the top and the
     Liouville pole vector the bottom, `−log N + O(1)`.
-20. **The polar divergence flips** (`primeBilinear_liouvilleTrunc_eq`,
+21. **The polar divergence flips** (`primeBilinear_liouvilleTrunc_eq`,
     `abs_primeBilinear_liouvilleTrunc_add_le`, `abs_liouvilleForm_stepProfile_add_le`). On uniform
     profiles `P(λx) = −ℓ(x)² + O(|c|-mass)`.
-21. **The matching law** (`IsSignGauge`, `sum_weilPrimeKernel_gauge`, `primeBilinear_gaugeTrunc_eq`,
+22. **The matching law** (`IsSignGauge`, `sum_weilPrimeKernel_gauge`, `primeBilinear_gaugeTrunc_eq`,
     `abs_primeBilinear_gaugeTrunc_sub_le`, `abs_gaugeForm_stepProfile_sub_le`, `euler_matching`,
     `liouville_matching`, `finiteFlip_matching`). If `A_ε(y) = κ log y + O(1)`, then
     `P(εx) = κ ℓ(x)² + O(|c|-mass)` on uniform profiles. The Euler gauge has `κ = 1`, Liouville
@@ -320,6 +328,7 @@ the place that pays.
 | **RP11 Matching reads the density of the gauge** | the polar matching coefficient `κ` of a sign gauge, read off `A_ε(y) = κ log y + O(1)`, governs its horizon divergence; finitely many flips leave `κ = 1` | `abs_gaugeForm_stepProfile_sub_le`, `finiteFlip_matching`, `liouville_matching` |
 | **RP12 The finite part is the tower form** | on class combinations `P_M = Σ_j δ_j^{−1} ℓ_j² − 2γ_p Σ_j a_j²|w_j|² + log p Σ_{j≠j'} a_j a_{j'} |w_{max}|² + o(·)`; the cross-class Gram is exact | `exists_abs_atomicWeilForm_classCombination_finitePart_le`, `primeBilinear_classPole_cross_eq`, `classRow_self_eq` |
 | **RP13 The matched stability law** | the Markov form of every atomic test of width `≤ (δ_N/4) N^{−e^{1/2}} e^{−C}` is nonnegative | `markovEnergy_atomicTest_nonneg_matched`, `markovEnergy_atomicTest_ge_matched` |
+| **RP14 Gårding is a finite-rank survival** | nonnegative on codimension `≤ k` ⇔ survival with a positive counterterm of rank `≤ k` ⇔ renormalized limit of positive forms; at most `k` negative directions | `garding_iff_survival`, `garding_iff_regularized`, `finrank_le_of_garding` |
 
 ---
 
@@ -485,6 +494,7 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | Module | Content |
 |---|---|
 | `TheCoupledSurvivalLaw` | coupled counterterms; partner kernel; survival equations; rank and dimension bounds; rank-one partners; the torsion germ coupled to any partner |
+| `GardingIsAFiniteRankSurvival` | functional counterterms; Gårding ⇔ finite-rank survival ⇔ renormalized limit; negative index |
 | `TheArchimedeanPlacePaysTheArithmeticPoint` | Ramanujan orthogonality; the joint counterterm; prime survival `ℝ e₁`; the joint germ as a positive regularized family; matched survival |
 | `TheCovariantCountertermIsTheAnomaly` | covariance of diagonal renormalizations; exact Schur rows; the pole vector as approximate eigenvector; `κ_cov = log N + O(1)` |
 | `TheAnomalyCostsHalfALogarithm` | `φ(mt) ≤ t φ(m)`; torsion pairing on the pole charges; averages of `log n/n` and of the tame different; `κ_tor ≥ (3/2) log N − C` |

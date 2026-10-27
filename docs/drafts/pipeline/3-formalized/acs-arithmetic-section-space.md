@@ -1,8 +1,8 @@
 # Arithmetic section spaces on the scaling surface
 
 - **ID:** acs-arithmetic-section-space
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean); restricted source construction
 - **Route:** ACS: arithmetic sections → Riemann–Roch and ampleness → Hodge index → RH.
 - **Statement:** Independently varying smooth sections on short neighbourhoods of the integer logarithms admit a positive source floor, uniformly in the number of arithmetic points.
 
@@ -28,7 +28,7 @@ On the kernel of the sinh pole moment this gives a positive Weil floor and hence
 4. Match the tilted prime saving to the cross row. Choose the width constant with a unit coercivity margin.
 5. Construct the linear section carrier and prove its source-cone properties on the original scaling surface.
 
-**[OPEN CORE: full ACS]** There is no proved extension from this sparse support carrier to arbitrary sources. That extension, including the mixed pairing with omitted directions, remains required. The restricted statement below has a complete paper argument but is not yet Lean-certified.
+**[OPEN CORE: full ACS]** There is no proved extension from this sparse support carrier to arbitrary sources. That extension, including the mixed pairing with omitted directions, remains required. The restricted statement below has a complete paper proof and Lean certification.
 
 ## Paper proof of the restricted statement
 
@@ -58,13 +58,15 @@ Take `c=spacingRatio·exp(−(spacingConstant+2|gammaHardyPhaseRate(0)|+1))`. Si
 
 The section sums form a real linear space: add profiles pointwise and multiply them by scalars. On its linear kernel `S(f)=∫f(u)sinh(u/2)du=0`, the exact full-form identity is `Re W(f,f)=M(f)+2C(f)²≥∫f²`. The existing source-cone theorem with reserve `∫f²` gives Riemann–Roch and ampleness on this scaling subsurface. No new analytic sign assumption enters.
 
+The carrier is nonzero for every `N≥1,w>0`. Choose smooth bumps `b₁,b₂` supported respectively in `(0,w/2)` and `(w/2,w)`, with values one at `w/4` and `3w/4`. Each is a section supported at the arithmetic point `n=1`. If `S(b₁)=0`, use `b₁`; otherwise `S(b₂)b₁−S(b₁)b₂` has zero sinh moment and value `−S(b₁)≠0` at `3w/4`.
+
 ## Gates
 
 - [x] Exact candidate and source-only definitions.
 - [x] Complete dependency-closed paper proof for the restricted section space.
-- [ ] Lean leaf check with `lake --old env lean`.
-- [ ] Transitive axiom audit; umbrella wiring.
-- [ ] Assess whether the construction materially advances arithmetic section supply; do not count routine transport as closure.
+- [x] Lean leaf check with `lake --old env lean`; exit 0.
+- [x] Transitive axiom audit; umbrella wiring.
+- [x] Scope assessed: independent-profile source floor and restricted RR/ampleness; full ACS remains open.
 
 ## Evidence and constraints
 
@@ -73,3 +75,32 @@ Read the ACS README, ACS/HF frontier entries, relevant killed mechanisms, and th
 The report's spacing-scale gap is superseded by existing source. Its common-profile theorem is not a new contribution here. The SSHA README's advertised `TheCriticalWidthLaw.lean` is absent; no claim from that advertised theorem is used.
 
 External search and novelty checks are excluded by the user. No claim of literature novelty is made. Existing unrelated worktree edits are preserved.
+
+## Scope assessment
+
+The positive result controls cross terms between independently chosen profiles; it strengthens the existing common-profile family to a linear source carrier. It is not a construction of unrestricted arithmetic `h⁰`, a subquadratic height, or full-source ampleness. Those remain the ACS closing obligations. The original route goal is therefore still active.
+
+The existing constant-one self-energy, tilted prime rows, and source-cone calculus are reused rather than presented as new discoveries. No numerical experiment, external search, or novelty check was used. The source-only support and pole-moment restrictions are explicit, and no RH input is added.
+
+## Verification state
+
+Final exact-file check completed with exit 0:
+
+```text
+cd formal
+lake --old env lean GaloisForLFunctions/ArithmeticCastelnuovoSeveri/ArithmeticSectionSpace.lean
+```
+
+All three principal declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`. No unresolved Lean process remains. No extra axioms, placeholders, trusted-computation shortcut, or heartbeat increase was used.
+
+Final declaration names:
+
+- `integral_sq_le_markovEnergy_arithmeticSection`
+- `sinhNeutralArithmeticSections_effectivity`
+- `exists_nonzero_sinhNeutralArithmeticSection`
+
+Umbrella import and ACS README integration are present. The umbrella must not be compiled.
+
+## Remaining route work
+
+Full ACS closure is unproved. The construction restricts support to short arithmetic neighbourhoods and removes one explicit pole moment. It gives no unrestricted arithmetic section-count law, bounded-error Rosati height, or source estimate controlling the omitted directions and their mixed pairings. Further work must attack those obligations; improving this width constant or repackaging the restricted cone would not meet the requested goal.
