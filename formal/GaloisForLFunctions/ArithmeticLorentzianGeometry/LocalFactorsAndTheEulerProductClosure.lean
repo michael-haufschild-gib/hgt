@@ -203,7 +203,8 @@ theorem isLorentzian_esymm2Form {M : κ → ι → ℝ} (hM : ∀ p i, 0 ≤ M p
     have := isHyperbolic_rankOne_add hN S hneg
     rwa [show vecMulVec S S + N = esymm2Form M by rw [e]; simp [N, sub_eq_add_neg]] at this
 
-/-- The Hessian of `y ↦ ∏_p ⟨L_p, y⟩` (product rule): `Σ_{p≠q} (∏_{r≠p,q} ⟨L_r, y⟩) L_p L_qᵀ`. -/
+/-- The form `Σ_{p≠q} (∏_{r≠p,q} ⟨L_r, y⟩) L_p L_qᵀ`; it is the Hessian at `y` of the Euler product
+polynomial `∏_p ⟨L_p, X⟩` (`eval_pderiv_pderiv_eulerProduct`). -/
 def eulerHessian (L : κ → ι → ℝ) (y : ι → ℝ) : Matrix ι ι ℝ :=
   ∑ p, ∑ q, if p = q then 0 else
     (∏ r ∈ (univ.erase p).erase q, (L r ⬝ᵥ y)) • vecMulVec (L p) (L q)
@@ -251,5 +252,58 @@ theorem isLorentzian_eulerHessian {L : κ → ι → ℝ} (hL : ∀ p i, 0 ≤ L
   have := hh x z hx'
   simp only [qf] at this
   nlinarith [mul_le_mul_of_nonneg_left this (sq_nonneg C)]
+
+/-! ### The Hessian identity -/
+
+open MvPolynomial in
+/-- The local linear factor `ℓ_p = Σ_i L_{p,i} X_i`. -/
+def localLinear (L : κ → ι → ℝ) (p : κ) : MvPolynomial ι ℝ := ∑ i, C (L p i) * X i
+
+open MvPolynomial in
+/-- The Euler product polynomial `∏_p ℓ_p`. -/
+def eulerProduct (L : κ → ι → ℝ) : MvPolynomial ι ℝ := ∏ p, localLinear L p
+
+open MvPolynomial in
+/-- **The product rule** for a finite product: `∂_i ∏_{p ∈ s} f_p = Σ_{p ∈ s} (∏_{r ∈ s ∖ p} f_r) ∂_i f_p`. -/
+theorem pderiv_finsetProd {α : Type*} [DecidableEq α] (s : Finset α) (f : α → MvPolynomial ι ℝ)
+    (i : ι) : pderiv i (∏ p ∈ s, f p) = ∑ p ∈ s, (∏ r ∈ s.erase p, f r) * pderiv i (f p) := by
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+    rw [prod_insert ha, pderiv_mul, ih, sum_insert ha, erase_insert ha, mul_sum]
+    rw [add_comm]
+    congr 1
+    · exact sum_congr rfl fun p hp => by
+        rw [erase_insert_of_ne (fun h => ha (h ▸ hp)), prod_insert (fun h => ha (mem_of_mem_erase h))]
+        ring
+    · ring
+
+open MvPolynomial in
+theorem pderiv_localLinear [DecidableEq ι] (L : κ → ι → ℝ) (p : κ) (i : ι) :
+    pderiv i (localLinear L p) = C (L p i) := by
+  simp only [localLinear, map_sum, pderiv_C_mul, pderiv_X, Pi.single_apply]
+  simp [mul_ite]
+
+open MvPolynomial in
+theorem eval_localLinear (L : κ → ι → ℝ) (p : κ) (y : ι → ℝ) :
+    eval y (localLinear L p) = L p ⬝ᵥ y := by
+  simp [localLinear, dotProduct]
+
+open MvPolynomial in
+/-- **The Hessian identity**: the second partial derivatives of the Euler product polynomial at `y`
+are the entries of `eulerHessian L y`. -/
+theorem eval_pderiv_pderiv_eulerProduct [DecidableEq ι] (L : κ → ι → ℝ) (y : ι → ℝ) (i j : ι) :
+    eval y (pderiv j (pderiv i (eulerProduct L))) = eulerHessian L y i j := by
+  rw [eulerProduct, pderiv_finsetProd]
+  simp only [pderiv_localLinear, map_sum, pderiv_mul, pderiv_C, mul_zero, add_zero,
+    pderiv_finsetProd, sum_mul, map_mul, eval_C, eval_prod, eval_localLinear]
+  simp only [eulerHessian, Matrix.sum_apply]
+  refine sum_congr rfl fun p _ => ?_
+  have e : ∀ q, (if p = q then (0 : Matrix ι ι ℝ) else
+      (∏ r ∈ (univ.erase p).erase q, (L r ⬝ᵥ y)) • vecMulVec (L p) (L q)) i j =
+      if p = q then 0 else (∏ r ∈ (univ.erase p).erase q, (L r ⬝ᵥ y)) * L q j * L p i := fun q => by
+    split_ifs <;> simp [vecMulVec_apply]; ring
+  simp only [e, sum_ite_eq_zero_else]
+  rw [← Finset.sum_erase_add _ _ (mem_univ p), add_sub_cancel_right]
 
 end GaloisForLFunctions.ArithmeticLorentzianGeometry

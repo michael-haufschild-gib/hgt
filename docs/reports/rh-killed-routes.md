@@ -141,9 +141,9 @@
 
 - **Path:** Theta equilibrium + maximum principle → confinement.
 - **Obstruction:** Xi ODE mechanism unavailable; cutset condition vacuous.
-- **Survivor:** Equilibrium plus attained maximum ⇒ RH. Finite positive reflection-closed configurations: transverse work=energy, equilibrium iff criticality; multiplicities≥1 give gap 1 [L]. Actual distinct-zero energy ℰ: RH iff ℰ<1; ℰ finite iff off-line support finite, then work=ℰ [L]. ℰ≤ℰ_copy; copied energy finite ⇔ finitely many off-line zeros ⇔ eventually bounded damped source work ⇔ uniformly bounded integer-log spline index [S].
-- **Needs:** Arithmetic field/work bound below the off-line quantum; even finiteness is not proved, and finiteness would leave possible exceptions. The energy comparison does not equate distinct-zero and multiplicity-weighted fields; LA/HF remain live.
-- **E:** R:TransverseEquilibrium; R:TransverseMaximumPrinciple; AES:TransverseEquilibriumIsTheCriticalLine [L]; AES:TheTransverseEnergyOfTheZeroDivisor [L]; AID:TheArithmeticSourcePaysTheIndex; AID:BoundedSourceWork; AID:TheWorkAndIndexHaveTheSameFiniteStratum [S].
+- **Survivor:** Equilibrium plus attained maximum ⇒ RH. Finite positive reflection-closed configurations: transverse work=energy, equilibrium iff criticality; multiplicities≥1 give gap 1 [L]. Actual distinct-zero energy ℰ: RH iff ℰ<1; ℰ finite iff off-line support finite, then work=ℰ [L]. ℰ≤ℰ_copy; both energies≤2 iff RH iff damped source work≤2 cofinally [S]. Every off-line quartet forces ℰ>2; positive finite Weil index k forces iterated source work>k. Copied energy finite ⇔ finitely many off-line zeros ⇔ eventually bounded damped work ⇔ uniformly bounded integer-log spline index [S].
+- **Needs:** Arithmetic field bound or cofinal damped work≤2; neither is proved. An unspecified finite work bound would leave possible exceptions. The energy comparison does not equate distinct-zero and multiplicity-weighted fields; LA/HF remain live.
+- **E:** R:TransverseEquilibrium; R:TransverseMaximumPrinciple; AES:TransverseEquilibriumIsTheCriticalLine [L]; AES:TheTransverseEnergyOfTheZeroDivisor [L]; AID:TheSourceWorkHasAClosedQuantumThreshold; AID:TheEnergyStrictlyExceedsTheIndex; AID:BoundedSourceWork; AID:TheWorkAndIndexHaveTheSameFiniteStratum [S].
 
 <a id="kr-cal"></a>
 ### KR-CAL — Pair heat / collision monotonicity
