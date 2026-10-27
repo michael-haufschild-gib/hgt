@@ -102,7 +102,8 @@ theorem paperFT_logAtom_neg_half (hφ : ContDiff ℝ 2 φ) (hφs : ∀ u, δ / 2
     {S : Finset ℕ} (hS : ∀ n ∈ S, 0 < n) (x : ℕ → ℝ) :
     Zeta23.paperFT (fun u => (logAtomTest φ S x u : ℂ)) (-I / 2) =
       (((∑ n ∈ S, x n * Real.sqrt n) * ∫ v, φ v * Real.exp (1 / 2 * v) : ℝ) : ℂ) := by
-  rw [paperFT_ofReal_eq _ _ (1 / 2) (by rw [neg_div, mul_neg, ← mul_div_assoc, I_mul_I]; push_cast; ring),
+  rw [paperFT_ofReal_eq _ _ (1 / 2)
+      (by rw [neg_div, mul_neg, ← mul_div_assoc, I_mul_I]; push_cast; ring),
     integral_logAtom_mul_exp hφ hφs]
   congr 2
   exact sum_congr rfl fun n hn => by rw [exp_half_log (hS n hn)]

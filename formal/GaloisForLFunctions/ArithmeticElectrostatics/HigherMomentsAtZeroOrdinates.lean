@@ -213,7 +213,10 @@ theorem expSum_pow {P : Finset ℕ} {c : ℕ → ℂ} {X : ℕ} (hX : 1 ≤ X) (
     simp [phase]
   | succ k ih =>
     rw [pow_succ', ih]
-    set E := expSum (a ^ k) (X ^ k) t
+    set E := expSum (a ^ k) (X ^ k) t with hEdef
+    have hE : E = ∑ m ∈ Ioc 0 (X ^ k), ((a ^ k).pmul (phase t)) m := by
+      rw [hEdef, expSum, Icc_one_eq_Ioc]
+      exact sum_congr rfl fun m _ => pmul_apply.symm
     have hmul := pmul_mul_pmul_complex (ω := phase t) (f := a) (g := a ^ k) (phase_mul t)
     have hXX : X ≤ X ^ (k + 1) :=
       calc X = X ^ 1 := (pow_one X).symm
@@ -226,8 +229,7 @@ theorem expSum_pow {P : Finset ℕ} {c : ℕ → ℂ} {X : ℕ} (hX : 1 ≤ X) (
       have hcov : X ^ k ≤ X ^ (k + 1) / n := by
         rw [Nat.le_div_iff_mul_le hn0, pow_succ]
         exact Nat.mul_le_mul_left _ (mem_Ioc.mp hn).2
-      rw [show E = ∑ m ∈ Ioc 0 (X ^ k), ((a ^ k).pmul (phase t)) m by
-        rw [expSum, Icc_one_eq_Ioc]; exact sum_congr rfl fun m _ => (pmul_apply _ _ _).symm]
+      rw [hE]
       symm
       refine sum_subset (Ioc_subset_Ioc_right hcov) fun m hm hmk => ?_
       rw [pmul_apply]
@@ -247,7 +249,7 @@ theorem expSum_pow {P : Finset ℕ} {c : ℕ → ℂ} {X : ℕ} (hX : 1 ≤ X) (
     calc expSum (a ^ (k + 1)) (X ^ (k + 1)) t
         = ∑ n ∈ Ioc 0 (X ^ (k + 1)), ((a.pmul (phase t)) * ((a ^ k).pmul (phase t))) n := by
           rw [expSum, Icc_one_eq_Ioc, hmul, pow_succ' a k]
-          exact sum_congr rfl fun n _ => (pmul_apply _ _ _).symm
+          exact sum_congr rfl fun n _ => pmul_apply.symm
       _ = ∑ n ∈ Ioc 0 (X ^ (k + 1)), (a.pmul (phase t)) n *
             ∑ m ∈ Ioc 0 (X ^ (k + 1) / n), ((a ^ k).pmul (phase t)) m :=
           sum_Ioc_mul_eq_sum_sum _ _ _
@@ -258,7 +260,7 @@ theorem expSum_pow {P : Finset ℕ} {c : ℕ → ℂ} {X : ℕ} (hX : 1 ≤ X) (
           sum_congr rfl fun n hn => by rw [hinner n hn]
       _ = expSum a X t * E := by
           rw [← sum_mul, expSum, Icc_one_eq_Ioc]
-          exact congrArg (· * E) (sum_congr rfl fun n _ => pmul_apply _ _ _)
+          exact congrArg (· * E) (sum_congr rfl fun n _ => pmul_apply)
 
 /-- **Higher-moment large values at zero ordinates.** -/
 theorem exists_card_largeValues_pow_le :
@@ -324,5 +326,157 @@ theorem exists_card_largeValues_pow_le :
     _ ≤ _ := hmain
     _ ≤ _ := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left
         (mul_le_mul_of_nonneg_left hmass h2) hR) (mul_nonneg hK.le hlog)
+
+/-- Reindexing `Σ_{0 < n ≤ X} f(n) = Σ_{m < X} f(m + 1)`. -/
+theorem sum_Ioc_eq_sum_fin (f : ℕ → ℝ) (X : ℕ) :
+    ∑ n ∈ Ioc 0 X, f n = ∑ m : Fin X, f ((m : ℕ) + 1) := by
+  rw [Fin.sum_univ_eq_sum_range (fun m => f (m + 1)) X, Finset.range_eq_Ico, ← Icc_one_eq_Ioc,
+    Finset.sum_Ico_add' f 0 X 1]
+  rfl
+
+/-- The **prime detector** `c_p = w_p log p/√p`. -/
+def detector (w : ℕ → ℂ) : ℕ → ℂ := fun n => w n * ((Real.log n / Real.sqrt n : ℝ) : ℂ)
+
+/-- **The detector's mass**: `Σ_{p ∈ P, p ≤ X} |w_p|² log² p/p ≤ log X (log X + log 4 + 4)`. -/
+theorem sum_normSq_detector_le (P : Finset ℕ) {X : ℕ} (hX : 1 ≤ X) {w : ℕ → ℂ}
+    (hw : ∀ n, ‖w n‖ ≤ 1) :
+    ∑ n ∈ Ioc 0 X, ‖primeSupported P (detector w) n‖ ^ 2 ≤
+      Real.log X * (Real.log X + (Real.log 4 + 4)) := by
+  -- the detector is the prime polynomial with the weights `w` cut to the primes of `P`
+  set w' : Fin X → ℂ := fun m =>
+    if ((m : ℕ) + 1).Prime ∧ (m : ℕ) + 1 ∈ P then w ((m : ℕ) + 1) else 0
+  have hw' : ∀ m, ‖w' m‖ ≤ 1 := fun m => by
+    simp only [w']
+    split_ifs
+    · exact hw _
+    · simp
+  refine le_of_eq_of_le ?_ (coeffMass_primeCoeff_le hX w' hw')
+  rw [sum_Ioc_eq_sum_fin (fun n => ‖primeSupported P (detector w) n‖ ^ 2), coeffMass]
+  refine sum_congr rfl fun m _ => ?_
+  simp only [primeSupported_apply, primeCoeff, w', detector]
+  split_ifs with h
+  · rw [ArithmeticFunction.vonMangoldt_apply_prime h.1]
+    push_cast
+    rfl
+  · simp
+
+/-- **Aligned zero ordinates are power-sparse.** If `X^k ≤ R` and `k S ≤ θ V²` for the coefficient
+mass `S`, the zero copies in `(A, A + R]` with `|F(γ)| ≥ V` number at most
+`K log(A + R + 1) R (1 + log R)(2 + log² R) θ^k`: the moment of order `2k` saves `θ^k`. -/
+theorem exists_card_largeValues_le_theta_pow :
+    ∃ K T₀ : ℝ, 0 < K ∧ 4 ≤ T₀ ∧ ∀ A : ℝ, T₀ ≤ A → ∀ R : ℕ, ∀ G : Finset RHTower.XiZeroCopy,
+      (∀ q ∈ G, A < (q.1 : ℂ).im ∧ (q.1 : ℂ).im ≤ A + R) →
+      ∀ (X : ℕ), 1 ≤ X → ∀ (P : Finset ℕ), (∀ p ∈ P, p ≤ X) → ∀ (c : ℕ → ℂ) (k : ℕ),
+      X ^ k ≤ R → ∀ (V θ : ℝ), 0 < V → 0 ≤ θ →
+      k * (∑ n ∈ Ioc 0 X, ‖primeSupported P c n‖ ^ 2) ≤ θ * V ^ 2 →
+      ((G.filter fun q => V ≤ ‖expSum (primeSupported P c) X (q.1 : ℂ).im‖).card : ℝ) ≤
+        K * Real.log (A + R + 1) * (R * (1 + Real.log R) * (2 + Real.log R ^ 2)) * θ ^ k := by
+  obtain ⟨K, T₀, hK, hT₀, h⟩ := exists_card_largeValues_pow_le
+  refine ⟨9 * K, T₀, by positivity, hT₀, fun A hA R G hG X hX P hP c k hXR V θ hV hθ hkS => ?_⟩
+  set S := ∑ n ∈ Ioc 0 X, ‖primeSupported P c n‖ ^ 2
+  set C := ((G.filter fun q => V ≤ ‖expSum (primeSupported P c) X (q.1 : ℂ).im‖).card : ℝ)
+  have hmain := h A hA R G hG X hX P hP c k V hV.le
+  have hS : 0 ≤ S := sum_nonneg fun _ _ => by positivity
+  have hXk1 : 1 ≤ X ^ k := Nat.one_le_pow _ _ (by omega)
+  have hY1 : (1 : ℝ) ≤ (X ^ k : ℕ) := by exact_mod_cast hXk1
+  have hYR : ((X ^ k : ℕ) : ℝ) ≤ R := by exact_mod_cast hXR
+  have hR1 : (1 : ℝ) ≤ R := hY1.trans hYR
+  have hlY : 0 ≤ Real.log (X ^ k : ℕ) := Real.log_nonneg hY1
+  have hlYR : Real.log (X ^ k : ℕ) ≤ Real.log R := Real.log_le_log (by linarith) hYR
+  have hlR : 0 ≤ Real.log R := Real.log_nonneg hR1
+  have hlog : 0 ≤ Real.log (A + R + 1) := Real.log_nonneg (by linarith)
+  -- the window factors at length `X^k ≤ R`
+  have hwin : (R : ℝ) + 8 * (X ^ k : ℕ) * (1 + Real.log (X ^ k : ℕ)) ≤ 9 * (R * (1 + Real.log R)) := by
+    have : ((X ^ k : ℕ) : ℝ) * (1 + Real.log (X ^ k : ℕ)) ≤ R * (1 + Real.log R) :=
+      mul_le_mul hYR (by linarith) (by linarith) (by linarith)
+    nlinarith
+  have hsob : 2 + Real.log (X ^ k : ℕ) ^ 2 ≤ 2 + Real.log R ^ 2 := by
+    have := pow_le_pow_left₀ hlY hlYR 2
+    linarith
+  -- `k! S^k ≤ (k S)^k ≤ θ^k (V^k)²`
+  have hfac : (k.factorial : ℝ) * S ^ k ≤ θ ^ k * (V ^ k) ^ 2 := by
+    calc (k.factorial : ℝ) * S ^ k ≤ (k : ℝ) ^ k * S ^ k := by
+          gcongr; exact_mod_cast Nat.factorial_le_pow k
+      _ = ((k : ℝ) * S) ^ k := (mul_pow _ _ _).symm
+      _ ≤ (θ * V ^ 2) ^ k := pow_le_pow_left₀ (by positivity) hkS k
+      _ = θ ^ k * (V ^ k) ^ 2 := by ring
+  have hVk : 0 < (V ^ k) ^ 2 := by positivity
+  have hbound : C * (V ^ k) ^ 2 ≤
+      (9 * K * Real.log (A + R + 1) * (R * (1 + Real.log R) * (2 + Real.log R ^ 2)) * θ ^ k) *
+        (V ^ k) ^ 2 := by
+    calc C * (V ^ k) ^ 2 ≤ _ := hmain
+      _ ≤ K * Real.log (A + R + 1) * ((9 * (R * (1 + Real.log R))) *
+            ((2 + Real.log R ^ 2) * (θ ^ k * (V ^ k) ^ 2))) := by
+          gcongr
+          · have := Real.log_natCast_nonneg (X ^ k); positivity
+          · nlinarith
+      _ = _ := by ring
+  exact le_of_mul_le_mul_right hbound hVk
+
+/-- **The power saving for the prime detector.** For `X ≥ 2`, `0 < θ ≤ 1` and
+`log R (log X + 7) ≤ θ V²`, the zero copies in `(A, A + R]` at which the prime detector
+`Σ_{p ∈ P} w_p log p · p^{−1/2 + iγ}` (with `|w_p| ≤ 1`, primes `p ≤ X`) reaches `V` number at most
+`K log(A + R + 1) R (1 + log R)(2 + log² R) θ^{−1} R^{log θ/log X}`.
+
+The exponent `log θ/log X` is negative: against the `≍ R log A` zeros of the window this is a
+saving of `R^{−log(1/θ)/log X}`. For `V = η log T`, `X = (log T)^C`, `R ≍ T` one may take
+`θ ≍ log log T/(η² log T)`, and the saving is `T^{−1/C + o(1)}`. -/
+theorem exists_card_aligned_power_saving :
+    ∃ K T₀ : ℝ, 0 < K ∧ 4 ≤ T₀ ∧ ∀ A : ℝ, T₀ ≤ A → ∀ R : ℕ, 1 ≤ R →
+      ∀ G : Finset RHTower.XiZeroCopy,
+      (∀ q ∈ G, A < (q.1 : ℂ).im ∧ (q.1 : ℂ).im ≤ A + R) →
+      ∀ (X : ℕ), 2 ≤ X → ∀ (P : Finset ℕ), (∀ p ∈ P, p ≤ X) → ∀ (w : ℕ → ℂ),
+      (∀ n, ‖w n‖ ≤ 1) → ∀ (V θ : ℝ), 0 < V → 0 < θ → θ ≤ 1 →
+      Real.log R * (Real.log X + 7) ≤ θ * V ^ 2 →
+      ((G.filter fun q =>
+          V ≤ ‖expSum (primeSupported P (detector w)) X (q.1 : ℂ).im‖).card : ℝ) ≤
+        K * Real.log (A + R + 1) * (R * (1 + Real.log R) * (2 + Real.log R ^ 2)) *
+          (θ⁻¹ * (R : ℝ) ^ (Real.log θ / Real.log X)) := by
+  obtain ⟨K, T₀, hK, hT₀, h⟩ := exists_card_largeValues_le_theta_pow
+  refine ⟨K, T₀, hK, hT₀, fun A hA R hR G hG X hX P hP w hw V θ hV hθ hθ1 hcond => ?_⟩
+  have hX0 : (0 : ℝ) < X := by exact_mod_cast (by omega : 0 < X)
+  have hlX : 0 < Real.log X := Real.log_pos (by exact_mod_cast (by omega : 1 < X))
+  have hR0 : (0 : ℝ) < R := by exact_mod_cast hR
+  have hlR : 0 ≤ Real.log R := Real.log_nonneg (by exact_mod_cast hR)
+  -- the order `k = ⌊log R/log X⌋` of the moment
+  set q := Real.log R / Real.log X
+  have hq : 0 ≤ q := div_nonneg hlR hlX.le
+  set k := ⌊q⌋₊
+  have hkq : (k : ℝ) ≤ q := Nat.floor_le hq
+  have hqk : q < k + 1 := Nat.lt_floor_add_one q
+  have hXR : X ^ k ≤ R := by
+    have hk : (k : ℝ) * Real.log X ≤ Real.log R := by
+      rw [← le_div_iff₀ hlX]; exact hkq
+    have : ((X : ℝ) ^ k) ≤ R := by
+      rw [← Real.log_le_log_iff (by positivity) hR0, Real.log_pow]; exact hk
+    exact_mod_cast this
+  -- `k S ≤ q · log X (log X + 7) = log R (log X + 7) ≤ θ V²`
+  have hmass := sum_normSq_detector_le P (by omega : 1 ≤ X) hw
+  have hl4 : Real.log 4 ≤ 3 := by
+    have := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 4); linarith
+  have hkS : (k : ℝ) * (∑ n ∈ Ioc 0 X, ‖primeSupported P (detector w) n‖ ^ 2) ≤ θ * V ^ 2 := by
+    have hS0 : 0 ≤ ∑ n ∈ Ioc 0 X, ‖primeSupported P (detector w) n‖ ^ 2 :=
+      sum_nonneg fun _ _ => by positivity
+    calc (k : ℝ) * (∑ n ∈ Ioc 0 X, ‖primeSupported P (detector w) n‖ ^ 2)
+        ≤ q * (Real.log X * (Real.log X + 7)) := by
+          refine mul_le_mul hkq (hmass.trans ?_) hS0 hq
+          exact mul_le_mul_of_nonneg_left (by linarith) hlX.le
+      _ = Real.log R * (Real.log X + 7) := by
+          simp only [q]; field_simp
+      _ ≤ θ * V ^ 2 := hcond
+  have hmain := h A hA R G hG X (by omega) P hP (detector w) k hXR V θ hV hθ.le hkS
+  -- `θ^k ≤ θ^{q − 1} = θ^{−1} R^{log θ/log X}`
+  have hpow : θ ^ k ≤ θ⁻¹ * (R : ℝ) ^ (Real.log θ / Real.log X) := by
+    rw [← Real.rpow_natCast]
+    calc θ ^ (k : ℝ) ≤ θ ^ (q - 1) := Real.rpow_le_rpow_of_exponent_ge hθ hθ1 (by linarith)
+      _ = θ⁻¹ * (R : ℝ) ^ (Real.log θ / Real.log X) := by
+          rw [Real.rpow_sub hθ, Real.rpow_one, Real.rpow_def_of_pos hθ,
+            Real.rpow_def_of_pos hR0, div_eq_inv_mul θ]
+          congr 2
+          simp only [q]; ring
+  have hfront : 0 ≤ K * Real.log (A + R + 1) * (R * (1 + Real.log R) * (2 + Real.log R ^ 2)) := by
+    have : 0 ≤ Real.log (A + R + 1) := Real.log_nonneg (by linarith)
+    positivity
+  exact hmain.trans (mul_le_mul_of_nonneg_left hpow hfront)
 
 end GaloisForLFunctions.ArithmeticElectrostatics

@@ -21,8 +21,8 @@ RBG owns the survival law and the rank comparison; imports AET/BGG/CDG/ACP/MPG/H
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  paper proofs for each pillar below
 - [x] 2 → 3  each pillar below in Lean, audited with `lake --old env lean`
-- [ ] open topics (README §9): higher-torsion twins, one-scale arithmetic bounds, lens harmonic
-  measure, quantitative cell holonomy, mixed clouds, escape modules
+- [ ] frontier (README §9): twisted Lerch entries of the twins, one-scale arithmetic bounds,
+  terminal ceiling, `λ`-correlation along `a ↦ 2a + 1`, mixed-sign clouds, escape modules
 
 ## Pillars (all in Lean)
 
@@ -33,14 +33,19 @@ RBG owns the survival law and the rank comparison; imports AET/BGG/CDG/ACP/MPG/H
 | torsion counterterm full rank, indefinite limit | `TheCountertermRankDichotomy` | `counterterm_rank_dichotomy` |
 | pole-node completion | `ThePoleNodeCompletesTheArchimedeanGerm` | `harmonicKernel_nonneg` |
 | periodic germs: survival cone = relations; Ramanujan twins | `TheSurvivalConeOfAPeriodicGermIsItsModuleOfRelations` | `periodicGerm_survivalCone_eq`, `ramanujanTwin_survival` |
+| Ramanujan orthogonality, exact twin law | `TheRamanujanTwinsSurviveExactlyOnPerOrderRelations` | `ramanujanTwin_survivalCone_eq` |
+| twins carry `−φ(m)Λ(t)` in the pole-node block | `TheRamanujanTwinsCarryThePrimes` | `ramanujanTwin_carries_primes` |
 | dyadic amplification, RH ⇔ growth rate | `TheDyadicAmplificationOfTheHeckeDefect` | `riemannHypothesis_iff_dyadic_subexp` |
 | Hecke moment problem, shell rigidity | `TheHeckeMomentProblem` | `ncard_seenLevels_lt_of_hankel_null` |
 | integer-prefix lossless transfer | `IntegerThetaPrefixesReadTheDefectWithoutLoss` | `heckeDefect_le_of_readings` |
 | gauge charge = square class, Liouville blindness | `TheGaugeChargeOfACoupling` | `realSignBlind_iff_isSquare`, `sourceForm_nonneg_twist_iff` |
 | cells fix the gauge, finite horizons | `LogCellsFixTheGauge` | `cellDilate_two_covariant_iff`, `cellDilate_two_covariant_on_horizon_iff` |
+| cell-holonomy defect, Liouville sandwich | `TheCellHolonomyDefectCountsChargedCells` | `hsDefect_liouville_sandwich` |
 | critical discs, terminal lens | `CriticalDiscsAndTheTerminalLens` | `xi_ne_zero_of_mem_terminalLens` |
+| Harnack on the Carathéodory region, floor spreading | `HarnackOnTheCaratheodoryRegion` | `exists_terminal_floor_spreads` |
 | irreversibility | `PositivityIsIrreversible` | `not_positiveDeformation_of_ne` |
-| Kronecker dilution vs harmonic concentration | `CollectivePacketsDiluteOverIndependentOrdinates` | `sum_abs_le_of_packet_nonneg` |
+| Kronecker dilution, height law, harmonic concentration | `CollectivePacketsDiluteOverIndependentOrdinates` | `sum_abs_le_of_packet_nonneg`, `sum_le_height_mul_of_generated_packet` |
+| selectivity battery | `TheSelectivityBatteryOfRenormalizedBiarithmeticGeometry` | `config_dyadic_ge`, `liouville_not_cell_covariant` |
 | capstone | `TheLawsOfRenormalizedBiarithmeticGeometry` | `renormalized_biarithmetic_geometry_laws` |
 
 ## No-go closure

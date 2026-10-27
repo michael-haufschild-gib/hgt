@@ -28,6 +28,10 @@ The left side is the finite intersection (the transverse towers) plus the archim
 distinct atoms; the right side is the self-energy of the atoms plus the polar pairing of the pole
 direction. This is the Hodge index of the explicit formula written as one inequality between
 explicit forms on `ℓ²(⊕_p ℕ)`.
+
+* **The self-energy grows with the narrowness** (`atomSelfEnergy_ge`): for `0 < δ < ½`,
+  `E_φ ≥ ‖φ‖² (γ₀ + e^{−1/2} log((1 − δ)/δ))`. Beyond its own width the atom does not see itself, and the
+  jump weight `e^{y/2}/sinh y ≍ 1/y` integrates to `log(1/δ)`.
 -/
 
 noncomputable section
@@ -66,7 +70,8 @@ theorem integrableOn_jump {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : HasCo
     have h0 : 0 ≤ ∫ u, (g u - g (u + y)) ^ 2 := integral_nonneg fun u => sq_nonneg _
     exact mul_nonneg (by linarith) (div_nonneg (Real.exp_pos _).le
       (Real.sinh_pos_iff.mpr hy).le)
-  have hlev : (∫⁻ y in Ioi 0, ENNReal.ofReal (RHTower.archLevyDensity y * ∫ u, (g u - g (u + y)) ^ 2)) =
+  have hlev : (∫⁻ y in Ioi 0,
+      ENNReal.ofReal (RHTower.archLevyDensity y * ∫ u, (g u - g (u + y)) ^ 2)) =
       ∫⁻ y in Ioi 0, ENNReal.ofReal ((autocorr g 0 - autocorr g y) * jumpWeight y) := by
     apply setLIntegral_congr_fun measurableSet_Ioi
     intro y hy
@@ -102,7 +107,8 @@ theorem integrableOn_coupling (hφ : ContDiff ℝ 2 φ) (hφs : ∀ u, δ / 2 < 
     IntegrableOn (fun y => autocorr φ (y - c) * jumpWeight y) (Ioi 0) := by
   have hcont : Continuous (autocorr φ) := RHTower.ArchimedeanExactForm.continuous_autocorr hφ hφc
   have hIcc : IntegrableOn (fun y => autocorr φ (y - c) * jumpWeight y) (Icc (c - δ) (c + δ)) := by
-    refine ContinuousOn.integrableOn_Icc ((hcont.comp (continuous_id.sub continuous_const)).continuousOn.mul
+    refine ContinuousOn.integrableOn_Icc
+      ((hcont.comp (continuous_id.sub continuous_const)).continuousOn.mul
       (continuousOn_jumpWeight.mono fun y hy => ?_))
     exact lt_of_lt_of_le (by linarith) hy.1
   refine hIcc.of_forall_sdiff_eq_zero measurableSet_Ioi fun y hy => ?_
@@ -300,6 +306,52 @@ theorem weilArchRe_logAtom {S : Finset ℕ} {M : ℕ} (hd : LogAtomData φ δ S 
     · simp
   rw [hjump, hpole, autocorr_logAtom_zero hd, atomSelfEnergy]
   ring
+
+/-- `Φ(0) = ‖φ‖²`. -/
+theorem autocorr_zero_eq (φ : ℝ → ℝ) : autocorr φ 0 = ∫ u, φ u ^ 2 := by
+  unfold autocorr; simp [sq]
+
+/-- **The self-energy of an atom grows like `log(1/δ)`**:
+`E_φ ≥ ‖φ‖² (γ₀ + e^{−1/2} log((1 − δ)/δ))`. -/
+theorem atomSelfEnergy_ge (hφ : ContDiff ℝ 2 φ) (hφs : ∀ u, δ / 2 < |u| → φ u = 0) (hδ : 0 < δ)
+    (hδ1 : 2 * δ < 1) :
+    autocorr φ 0 * (Zeta23.EF.gammaBracket 0 + Real.exp (-1 / 2) * Real.log ((1 - δ) / δ)) ≤
+      atomSelfEnergy φ := by
+  have hφc : HasCompactSupport φ := RHTower.SeparatedBump.hasCompactSupport_of_abs hφs
+  have hΦ0 : 0 ≤ autocorr φ 0 := by rw [autocorr_zero_eq]; exact integral_nonneg fun u => sq_nonneg _
+  have hJ := integrableOn_jump hφ hφc
+  have hc : Continuous (autocorr φ) := RHTower.ArchimedeanExactForm.continuous_autocorr hφ hφc
+  -- the jump integrand is nonnegative
+  have hnn : ∀ y ∈ Ioi (0 : ℝ), 0 ≤ (autocorr φ 0 - autocorr φ y) * jumpWeight y := by
+    intro y hy
+    have hsq := integral_sub_shift_sq hφc hφ.continuous y
+    have h0 : 0 ≤ ∫ u, (φ u - φ (u + y)) ^ 2 := integral_nonneg fun u => sq_nonneg _
+    exact mul_nonneg (by linarith) (div_nonneg (Real.exp_pos _).le (Real.sinh_pos_iff.mpr hy).le)
+  -- restrict to the window `(δ, 1 − δ)`, where `Φ` vanishes
+  have hsub : ∫ y in Ioo δ (1 - δ), (autocorr φ 0 - autocorr φ y) * jumpWeight y ≤
+      ∫ y in Ioi 0, (autocorr φ 0 - autocorr φ y) * jumpWeight y :=
+    setIntegral_mono_set hJ ((ae_restrict_iff' measurableSet_Ioi).mpr
+      (Filter.Eventually.of_forall hnn)) (Filter.Eventually.of_forall fun y hy =>
+        (lt_trans hδ hy.1 : (0 : ℝ) < y))
+  have hwin : ∫ y in Ioo δ (1 - δ), (autocorr φ 0 - autocorr φ y) * jumpWeight y =
+      2 * autocorr φ 0 * ∫ y in δ..(1 - δ), RHTower.archLevyDensity y := by
+    rw [intervalIntegral.integral_of_le (by linarith), integral_Ioc_eq_integral_Ioo,
+      ← integral_const_mul]
+    refine setIntegral_congr_fun measurableSet_Ioo fun y hy => ?_
+    have hy0 : 0 < y := lt_trans hδ hy.1
+    rw [autocorr_eq_zero_of_lt hφs (z := y) (by rw [abs_of_pos hy0]; exact hy.1), sub_zero, jumpWeight,
+      exp_half_div_sinh_eq hy0]
+    ring
+  have hlev := RHTower.SeparatedBump.integral_archLevyDensity_ge hδ (show 2 * δ < 1 by linarith)
+  rw [hwin] at hsub
+  unfold atomSelfEnergy
+  have : autocorr φ 0 * (Real.exp (-1 / 2) * Real.log ((1 - δ) / δ)) ≤
+      2 * autocorr φ 0 * ∫ y in δ..(1 - δ), RHTower.archLevyDensity y := by
+    have := mul_le_mul_of_nonneg_left hlev (by linarith : (0 : ℝ) ≤ 2 * autocorr φ 0)
+    calc autocorr φ 0 * (Real.exp (-1 / 2) * Real.log ((1 - δ) / δ))
+        = 2 * autocorr φ 0 * (Real.exp (-1 / 2) / 2 * Real.log ((1 - δ) / δ)) := by ring
+      _ ≤ _ := this
+  nlinarith
 
 /-- **RH in tower coordinates.** Under RH, for every log-atom cycle the finite intersection plus the
 archimedean coupling of distinct atoms is dominated by the self-energy of the atoms plus the polar

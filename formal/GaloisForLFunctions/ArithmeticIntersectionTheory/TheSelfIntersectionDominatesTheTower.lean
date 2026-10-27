@@ -51,7 +51,8 @@ theorem selfIntersection_ladder_ge {p c j : ℕ} (hp : p.Prime) (hc : 0 < c) (hj
   exact mul_le_mul_of_nonneg_right (by linarith) (Real.log_nonneg (by exact_mod_cast hp.one_lt.le))
 
 /-- **The self-intersection dominates the tower above the second level.** On a `p`-ladder, for cycles
-vanishing at levels `0` and `1`, the renormalized torsion form is at most `−((1 − q)/(1 + q)) log p |x|²`. -/
+vanishing at levels `0` and `1`, the renormalized torsion form is at most
+`−((1 − q)/(1 + q)) log p |x|²`. -/
 theorem renormalized_ladder_le {p c : ℕ} (hp : p.Prime) (hc : 0 < c) (N : ℕ) (x : ℕ → ℝ)
     (hx0 : x 0 = 0) (hx1 : x 1 = 0) :
     (1 + 1 / Real.sqrt p) * (-ladderForm p c N x -

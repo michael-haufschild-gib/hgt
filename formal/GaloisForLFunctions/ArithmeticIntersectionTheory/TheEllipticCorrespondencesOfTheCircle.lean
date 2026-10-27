@@ -149,7 +149,8 @@ theorem hasSum_residue {N c : ℕ} (hc : 0 < c) (hcN : c < N) {r : ℝ} (hr0 : 0
     nlinarith [this, hsub]
   · rintro ⟨d, hd⟩
     have h1 : (j + (N - c)) % N = 0 := by rw [hd, Nat.mul_mod_right]
-    have h2 : (j + (N - c)) % N = (j % N + (N - c)) % N := by rw [Nat.add_mod, Nat.mod_eq_of_lt (by omega : N - c < N)]
+    have h2 : (j + (N - c)) % N = (j % N + (N - c)) % N := by
+      rw [Nat.add_mod, Nat.mod_eq_of_lt (by omega : N - c < N)]
     rw [h2] at h1
     have hj : j % N < N := Nat.mod_lt j hN
     rcases Nat.lt_or_ge (j % N + (N - c)) N with hlt | hge

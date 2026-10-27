@@ -99,18 +99,17 @@ theorem inv_sqrt_le_normalizedIntersection {m t : ℕ} (hm : 0 < m) (ht : 0 < t)
   have hφmt : (0 : ℝ) < Nat.totient (m * t) := by
     exact_mod_cast Nat.totient_pos.mpr (Nat.mul_pos hm ht)
   have ht' : (0 : ℝ) < t := by exact_mod_cast ht
-  rw [div_sqrt_mul_eq hφm hφmt, ← Real.sqrt_one, ← Real.sqrt_div' _ ht'.le, Real.sqrt_one]
+  rw [div_sqrt_mul_eq hφm hφmt, ← Real.sqrt_one, ← Real.sqrt_div' _ ht'.le]
   refine Real.sqrt_le_sqrt ?_
   rw [div_le_div_iff₀ ht' hφmt, one_mul]
-  have := totient_mul_le m t
-  exact_mod_cast (by linarith [show (Nat.totient (m * t) : ℝ) ≤ t * Nat.totient m by
-    exact_mod_cast this] : (Nat.totient (m * t) : ℝ) ≤ Nat.totient m * t)
+  have h1 : (Nat.totient (m * t) : ℝ) ≤ t * Nat.totient m := by exact_mod_cast totient_mul_le m t
+  linarith
 
 /-- The **torsion test charges** `y_n = (n φ(n))^{−1/2}`: the pole vector `u_n = n^{−1/2}` spread over
 the `φ(n)` points of `O_n`. -/
 def torsionTest (n : ℕ) : ℝ := 1 / Real.sqrt ((n : ℝ) * Nat.totient n)
 
-theorem torsionTest_eq {n : ℕ} (hn : 0 < n) :
+theorem torsionTest_eq (n : ℕ) :
     torsionTest n = poleVector n * (1 / Real.sqrt (Nat.totient n)) := by
   rw [torsionTest, poleVector, Real.sqrt_mul (Nat.cast_nonneg n)]
   ring
@@ -130,7 +129,7 @@ theorem poleVector_mul_kernel_le_of_dvd {m n : ℕ} (hm : 0 < m) (hn : 0 < n) (h
   have hnm : ¬ m * t ∣ m := fun h => hmn (Nat.dvd_antisymm (dvd_mul_right m t) h)
   rw [orbitIntersection_eq hm hn hmn, if_neg hnm, if_pos (dvd_mul_right m t),
     Nat.mul_div_cancel_left t hm, weilPrimeKernel, if_pos ⟨dvd_mul_right m t, hmn⟩,
-    Nat.mul_div_cancel_left t hm, torsionTest_eq hm, torsionTest_eq hn]
+    Nat.mul_div_cancel_left t hm, torsionTest_eq m, torsionTest_eq (m * t)]
   have hu : 0 ≤ poleVector m * poleVector (m * t) := by unfold poleVector; positivity
   have hΛ : 0 ≤ Λ t := vonMangoldt_nonneg
   have hφm : (0 : ℝ) < Nat.totient m := by exact_mod_cast Nat.totient_pos.mpr hm
@@ -159,7 +158,7 @@ theorem poleVector_mul_kernel_le {m n : ℕ} (hm : 0 < m) (hn : 0 < n) (hmn : m 
   · exact poleVector_mul_kernel_le_of_dvd hm hn hmn h1
   · by_cases h2 : n ∣ m
     · have := poleVector_mul_kernel_le_of_dvd hn hm (Ne.symm hmn) h2
-      rw [weilPrimeKernel_comm, orbitIntersection_comm]
+      rw [weilPrimeKernel_comm, ArithmeticElectrostatics.orbitIntersection_comm]
       linarith [this]
     · rw [weilPrimeKernel, if_neg (fun h => h1 h.1), if_neg (fun h => h2 h.1),
         orbitIntersection_eq hm hn hmn, if_neg h2, if_neg h1]
@@ -229,12 +228,13 @@ theorem log_sq_succ_sub_le {n : ℕ} (hn : 0 < n) :
 
 /-- `Σ_{n ≤ N} 1/n² ≤ 2 − 1/N`. -/
 theorem sum_inv_sq_le {N : ℕ} (hN : 1 ≤ N) :
-    ∑ n ∈ Icc 1 N, 1 / (n : ℝ) ^ 2 ≤ 2 - 1 / N := by
+    ∑ n ∈ Icc 1 N, 1 / (n : ℝ) ^ 2 ≤ 2 - 1 / (N : ℝ) := by
   induction N with
   | zero => omega
   | succ k ih =>
     rcases Nat.eq_zero_or_pos k with rfl | hk
-    · norm_num
+    · simp only [zero_add, Icc_self, sum_singleton, Nat.cast_one]
+      norm_num
     · rw [sum_Icc_succ_top (by omega), Nat.cast_succ]
       have hk' : (0 : ℝ) < k := by exact_mod_cast hk
       have h := ih hk
@@ -302,7 +302,12 @@ theorem sum_tameDifferent_div_le (N : ℕ) :
   have hswap : ∑ n ∈ Icc 1 N, tameDifferent n / n =
       ∑ p ∈ (Icc 1 N).filter Nat.Prime,
         Real.log p / ((p : ℝ) - 1) * ∑ n ∈ (Icc 1 N).filter (p ∣ ·), 1 / (n : ℝ) := by
-    simp only [tameDifferent, sum_div, mul_sum]
+    have h1 : ∑ n ∈ Icc 1 N, tameDifferent n / n = ∑ n ∈ Icc 1 N, ∑ p ∈ n.primeFactors,
+        Real.log p / ((p : ℝ) - 1) * (1 / (n : ℝ)) := by
+      refine sum_congr rfl fun n _ => ?_
+      rw [tameDifferent, sum_div]
+      exact sum_congr rfl fun p _ => by ring
+    simp only [h1, mul_sum]
     refine sum_comm' fun n p => ?_
     simp only [mem_Icc, mem_filter, Nat.mem_primeFactors]
     constructor

@@ -82,7 +82,8 @@ theorem two_cos_mul_cos_rootAngle {N k : ℕ} (hk : k ≤ N) (a j : ℕ) :
   rw [hshift, Real.cos_add_nat_mul_two_pi, Nat.cast_add, add_mul, Real.cos_add, Real.cos_sub]
   ring
 
-/-- The Fourier coefficient of a frequency `j`: `Σ_a cos(jθ_a) cos(kθ_a) = (N/2)([N ∣ j+k] + [N ∣ j+N−k])`. -/
+/-- The Fourier coefficient of a frequency `j`:
+`Σ_a cos(jθ_a) cos(kθ_a) = (N/2)([N ∣ j+k] + [N ∣ j+N−k])`. -/
 theorem sum_cos_mul_cos_rootAngle {N k : ℕ} (hN : 0 < N) (hk : k ≤ N) (j : ℕ) :
     ∑ a ∈ range N, Real.cos (j * rootAngle N a) * Real.cos (k * rootAngle N a) =
       (N : ℝ) / 2 * ((if N ∣ j + k then 1 else 0) + (if N ∣ j + (N - k) then 1 else 0)) := by

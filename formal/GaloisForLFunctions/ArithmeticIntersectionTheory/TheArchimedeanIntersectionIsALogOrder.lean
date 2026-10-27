@@ -87,7 +87,8 @@ theorem log_card_quotient_cyclotomicValue {m : ℕ} (hm : 0 < m) (hmn : m ≠ n)
   have hn : 0 < n := Nat.pos_of_ne_zero (NeZero.ne n)
   have hirr : Irreducible (cyclotomic n ℚ) := cyclotomic.irreducible_rat hn
   -- the order of the quotient is the absolute norm
-  have hcard : (Nat.card (𝓞 L ⧸ Ideal.span {cyclotomicValue n m}) : ℝ) = |((Algebra.norm ℚ (cyclotomicValue n m : L) : ℚ) : ℝ)| := by
+  have hcard : (Nat.card (𝓞 L ⧸ Ideal.span {cyclotomicValue n m}) : ℝ) =
+      |((Algebra.norm ℚ (cyclotomicValue n m : L) : ℚ) : ℝ)| := by
     rw [← Submodule.cardQuot_apply, ← Ideal.absNorm_apply, Ideal.absNorm_span_singleton,
       Nat.cast_natAbs, ← Algebra.coe_norm_int]
     push_cast
@@ -109,7 +110,8 @@ theorem log_card_quotient_cyclotomicValue {m : ℕ} (hm : 0 < m) (hmn : m ≠ n)
     rw [norm_eq_zero, sub_eq_zero] at h0
     subst h0
     exact hmn (((mem_primitiveRoots hm).mp hξ).unique ((mem_primitiveRoots hn).mp hη))
-  have habs : |((Algebra.norm ℚ (cyclotomicValue n m : L) : ℚ) : ℝ)| = ‖((Algebra.norm ℚ (cyclotomicValue n m : L) : ℚ) : ℂ)‖ := by
+  have habs : |((Algebra.norm ℚ (cyclotomicValue n m : L) : ℚ) : ℝ)| =
+      ‖((Algebra.norm ℚ (cyclotomicValue n m : L) : ℚ) : ℂ)‖ := by
     rw [← Complex.ofReal_ratCast, Complex.norm_real, Real.norm_eq_abs]
   rw [hcard, habs, hprod, norm_prod]
   simp_rw [norm_prod]

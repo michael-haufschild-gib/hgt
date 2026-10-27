@@ -36,6 +36,7 @@ open scoped ArithmeticFunction.vonMangoldt
 namespace GaloisForLFunctions.ArithmeticIntersectionTheory
 
 open ArithmeticEffectivityTheory
+open BiScaleUncertainty.ChebyshevGauge (literatureRHS_weilTest_eq_criticalWeilEnergy_of_riemannHypothesis)
 
 variable {φ : ℝ → ℝ} {δ : ℝ}
 
@@ -310,8 +311,7 @@ theorem riemannHypothesis_archPolar_ge_towers (hRH : RiemannHypothesis) {S : Fin
     (∫ u, φ u ^ 2) * ∑ p ∈ (∏ n ∈ S, n).primeFactors, localForm S x p ≤
       (archPolarPart (Zeta23.EF.weilTest (fun u => (logAtomTest φ S x u : ℂ))
         (fun u => (logAtomTest φ S x u : ℂ)))).re := by
-  have hW := (GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.literatureRHS_weilTest_eq_criticalWeilEnergy_of_riemannHypothesis
-    hRH (contDiff_logAtomTest hd.contDiff S x)
+  have hW := (literatureRHS_weilTest_eq_criticalWeilEnergy_of_riemannHypothesis hRH (contDiff_logAtomTest hd.contDiff S x)
     (hasCompactSupport_logAtomTest hd.support S x)).2
   rw [literatureRHS_eq_archPolar_sub_prime, sub_re] at hW
   have hprime : (∑' n : ℕ, ((Λ n / Real.sqrt n : ℝ) : ℂ) *

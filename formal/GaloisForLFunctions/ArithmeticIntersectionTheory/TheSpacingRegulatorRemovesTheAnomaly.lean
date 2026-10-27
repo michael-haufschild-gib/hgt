@@ -60,7 +60,8 @@ theorem spacingRadius_pow (ε : ℝ) (m n k : ℕ) :
   rw [spacingRadius, ← mul_pow, ← Real.exp_add]
   ring_nf
 
-/-- **Gram positivity with spacing radii**: `Σ y_m y_n T_{ρ_mρ_n}(m,n) = Σ_k (1/k)|Σ y_m ρ_m^k c_m(k)|²`. -/
+/-- **Gram positivity with spacing radii**:
+`Σ y_m y_n T_{ρ_mρ_n}(m,n) = Σ_k (1/k)|Σ y_m ρ_m^k c_m(k)|²`. -/
 theorem sum_sum_spacingEnergy_nonneg {ε : ℝ} (hε : 0 < ε) {S : Finset ℕ} (hS : ∀ n ∈ S, 0 < n)
     (y : ℕ → ℝ) : 0 ≤ ∑ m ∈ S, ∑ n ∈ S, y m * y n * spacingEnergy ε m n := by
   have h := hasSum_sum fun m (hm : m ∈ S) => hasSum_sum fun n (_ : n ∈ S) =>

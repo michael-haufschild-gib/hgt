@@ -218,7 +218,8 @@ theorem sum_sq_ite (E : Finset ℕ) (y : ℕ → ℝ) {N : ℕ} (hE : E ⊆ rang
     intro a _; split_ifs <;> simp
   rw [sum_congr rfl this, ← sum_filter, filter_mem_eq_inter, inter_eq_right.mpr hE]
 
-/-- The diagonal-free tower form on a set of orders: `Σ_{m,n ∈ S, same ladder} x_m x_n q^{|v_p m − v_p n|}`. -/
+/-- The tower form on a set of orders:
+`Σ_{m,n ∈ S, same ladder} x_m x_n q^{|v_p m − v_p n|}`. -/
 def towerOnSet (p : ℕ) : ℝ :=
   ∑ m ∈ S, ∑ n ∈ S, if ordCompl[p] m = ordCompl[p] n then
     x m * x n * kmsEntry (1 / Real.sqrt p) (m.factorization p) (n.factorization p) else 0

@@ -4,6 +4,7 @@ import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheCountertermRankDi
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.ThePoleNodeCompletesTheArchimedeanGerm
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheSurvivalConeOfAPeriodicGermIsItsModuleOfRelations
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheRamanujanTwinsSurviveExactlyOnPerOrderRelations
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheRamanujanTwinsCarryThePrimes
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheDyadicAmplificationOfTheHeckeDefect
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheHeckeMomentProblem
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.IntegerThetaPrefixesReadTheDefectWithoutLoss
@@ -23,10 +24,10 @@ import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheLawsOfRenormalize
 Umbrella for the geometry of the renormalized coupled triple: survival of positivity through
 renormalization, the counterterm rank of the two places of the explicit formula, the pole-node
 completion of the archimedean germ, periodic germs and their module of relations, Ramanujan
-orthogonality and twins; dyadic amplification of the Hecke defect, the Hecke moment problem and its
-reading from integer theta prefixes; gauge charge of couplings, gauge fixing by logarithmic cells
-and the quantitative cell holonomy; critical discs, the Carathéodory region of `ξ′/ξ`, the terminal
-lens and Harnack estimates on it; irreversibility of positive deformations; Kronecker dilution and
-the height law of collective packets; the selectivity battery and the laws in one statement. See
-`RenormalizedBiarithmeticGeometry/README.md`.
+orthogonality and twins, and the primes in the twins' pole-node block; dyadic amplification of the
+Hecke defect, the Hecke moment problem and its reading from integer theta prefixes; gauge charge of
+couplings, gauge fixing by logarithmic cells and the quantitative cell holonomy; critical discs, the
+Carathéodory region of `ξ′/ξ`, the terminal lens and Harnack estimates on it; irreversibility of
+positive deformations; Kronecker dilution and the height law of collective packets; the selectivity
+battery and the laws in one statement. See `RenormalizedBiarithmeticGeometry/README.md`.
 -/
