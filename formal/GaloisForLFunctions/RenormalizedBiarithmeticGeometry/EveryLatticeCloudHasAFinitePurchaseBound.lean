@@ -20,8 +20,14 @@ A cloud of ordinates in the lattice of `ℚ`-independent generators `g_1, …, g
 * **Finite purchase** (`exists_purchase_bound`). Every finite cloud of nonzero lattice ordinates has
   a constant `M` with `Σ_j a_j ≤ M a₀` for every nonnegative packet on it.
 
-Positive packets therefore never amortize without bound; the bound is the minimal maximal height
-over admissible weightings.
+* **Difference packets** (`difference_packet_nonneg`, `difference_packet_purchase`). For points
+  `x_1, …, x_N`, `|Σ_i e^{i x_i t}|² = N + Σ_{i ≠ j} cos((x_i − x_j)t)` is a nonnegative packet
+  that buys `N − 1` times its pole share. A cloud containing all differences of `N` points has
+  purchase constant at least `N − 1`.
+
+Positive packets therefore never amortize without bound. The purchase constant of a cloud lies
+between (largest difference set in the cloud) − 1 and the minimal maximal weighted height; for
+harmonic progressions both equal the length.
 -/
 
 noncomputable section
@@ -241,5 +247,33 @@ theorem exists_purchase_bound {d : ℕ} {κ : Type*} [Fintype κ] {g : Fin d →
   · have : 0 < (∑ i, n j i * m i).natAbs := Int.natAbs_pos.mpr hne
     omega
   · exact_mod_cast hle
+
+/-- **Difference packets are nonnegative**:
+`N + Σ_{i ≠ j} cos((x_i − x_j)t) = |Σ_i e^{i x_i t}|²`. -/
+theorem difference_packet_nonneg {N : ℕ} (x : Fin N → ℝ) (t : ℝ) :
+    0 ≤ (N : ℝ) + ∑ i, ∑ j ∈ univ.erase i, Real.cos ((x i - x j) * t) := by
+  have hsq : ∑ i, ∑ j, Real.cos ((x i - x j) * t) =
+      (∑ i, Real.cos (x i * t)) ^ 2 + (∑ i, Real.sin (x i * t)) ^ 2 := by
+    rw [sq, sq, sum_mul_sum, sum_mul_sum, ← sum_add_distrib]
+    refine sum_congr rfl fun i _ => ?_
+    rw [← sum_add_distrib]
+    refine sum_congr rfl fun j _ => ?_
+    rw [sub_mul, Real.cos_sub]
+  have hsplit : ∑ i, ∑ j, Real.cos ((x i - x j) * t) =
+      (N : ℝ) + ∑ i, ∑ j ∈ univ.erase i, Real.cos ((x i - x j) * t) := by
+    rw [show (N : ℝ) = ∑ i : Fin N, Real.cos ((x i - x i) * t) by simp, ← sum_add_distrib]
+    exact sum_congr rfl fun i _ => (add_sum_erase _ _ (mem_univ i)).symm
+  rw [← hsplit, hsq]
+  positivity
+
+/-- **Difference packets buy `N − 1` times the pole share**: there are `N(N − 1)` unit
+coefficients against the pole share `N`. -/
+theorem difference_packet_purchase (N : ℕ) :
+    ∑ i : Fin N, ((univ.erase i).card : ℝ) = ((N : ℝ) - 1) * N := by
+  simp only [card_erase_of_mem (mem_univ _), card_univ, Fintype.card_fin, sum_const,
+    nsmul_eq_mul]
+  rcases N with _ | N
+  · simp
+  · push_cast; ring
 
 end GaloisForLFunctions.RenormalizedBiarithmeticGeometry

@@ -49,14 +49,17 @@ damped source-work modules (`ReflectedTransverseWork`, `TheSelbergWorkExhaustsTh
 | ES19 gauge margin of the source | `TheGaugeMarginOfTheRenormalizedSource` | Lean |
 | ES11 (prime side) atomic Weil prime form `Θ(log N)` | `TheWeilPrimeFormOnAtomsIsLogarithmic` | Lean |
 | ES20 power saving for aligned zero ordinates (higher moments) | `HigherMomentsAtZeroOrdinates` | Lean |
-| ES21 gauge invisibility at atomic resolution; stability law for every sign twin; positive-cone margin | `TheGaugeIsInvisibleAtAtomicResolution` | Lean |
+| ES21 gauge invisibility of the atomic prime form; stability law for every sign twin; positive-cone margin; archimedean margin `M_ω(f_x) = M(f_{ωx}) + A(f⁺+f⁻) − A(f⁺−f⁻)` | `TheGaugeIsInvisibleAtAtomicResolution` | Lean |
 | ES22 coupled renormalization with the pole at atomic resolution: `Re W + 2S² ≥ 0` | `TheWeilFormAtAtomicResolution` | Lean |
 
 ## Open (RH-strength or beyond the present inputs)
 - Field law: arithmetic upper bound for the field below `max(1, √(2c log γ))`.
 - Stability law at the spacing scale `w ≍ 1/N` (proved below `N^{−O(1)}`, ES18): RH in adjunction form.
 - Aligned ordinates (power-sparse, ES20) against zero density at depth `δ`: the report's Q1 proper.
-- Form-level gauge margins on spacing-scale tests (zero at atomic resolution, ES21).
+- Form-level gauge margins that exclude twins: the prime side has none at atomic resolution, the
+  archimedean polarization across the charge is dominated by the Lévy gain there (ES21).
+- Forcing law for Q1: every zero of depth `δ` forces a short prime detector to be large at its
+  ordinate (not in the corpus; the zero-density theorem there goes through Littlewood's lemma).
 - Alignment inside the strip (Q1 of the frontier); coupled class at the centre; fibre selection.
 
 ## Key paper facts

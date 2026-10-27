@@ -60,6 +60,13 @@ terms, the diagonal of Wall 14 and the polarization face of Wall 1.
 AES does not re-prove what these programmes own; it imports them and builds the laws that relate
 them.
 
+The frontier's current assessment (obstacles summary, §4) counts the tools of AES among those
+built and places what remains — inequalities at the spacing scale `cδ_N`, the calculus of
+overlapping atoms and non-ratio lags, the transfer of gauge margins from coefficients to signed
+tests, the interior anti-alignment law — in a proposed arithmetic harmonic analysis at the spacing
+scale. AES supplies its atomic stability law and coupled form (ES18, ES22), gauge invisibility of the
+prime form (ES21) and the mean values at zero ordinates (ES17, ES20).
+
 ---
 
 ## 2. Why

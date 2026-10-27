@@ -39,7 +39,7 @@ characteristic circle:
   atomic Weil prime form, the arithmetic point, the stability law at atomic resolution, Weil's form
   with the pole and its rank-one counterterm on atomic tests;
 * the base and gauge: Fekete stability of the circle, affine invariance, gauge margins of the
-  renormalized source, gauge invisibility of atomic tests.
+  renormalized source, gauge invisibility of the atomic prime form and the archimedean margin.
 
 See `ArithmeticElectrostatics/README.md`.
 -/
