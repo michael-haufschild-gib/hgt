@@ -135,7 +135,7 @@ theorem exists_local_outward_field_witness :
       ((xiZeroCopyFiber p.1).card : ℝ) ^ 2 / xiZeroDepth p +
         2 * ((xiZeroCopyFiber p.1).card : ℝ) * c * xiZeroDepth p *
           Real.log (|xiZeroHeight p| + 4) := by
-    field_simp [ne_of_gt ha] <;> ring
+    field_simp [ne_of_gt ha]
   have hright : 2 * ((xiZeroCopyFiber p.1).card : ℝ) * xiTransverseField p =
       (GaloisForLFunctions.HTGeometry.laurentCoeff
         (fun z => (logDeriv riemannZeta z) ^ 2) (p.1 : ℂ) (-1)).re +
@@ -147,3 +147,7 @@ theorem exists_local_outward_field_witness :
     hfield, hrayZeta, hB, hprincipal, hfieldEq, hcoeff, hscaled⟩
 
 end GaloisForLFunctions.ArithmeticCorrespondencePositivity
+
+#print axioms GaloisForLFunctions.ArithmeticCorrespondencePositivity.xiRealAwayReciprocal_tsum_tendsto
+#print axioms GaloisForLFunctions.ArithmeticCorrespondencePositivity.xiZero_exists_zeta_regular_part
+#print axioms GaloisForLFunctions.ArithmeticCorrespondencePositivity.exists_local_outward_field_witness

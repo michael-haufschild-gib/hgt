@@ -30,3 +30,25 @@ pole-preserving Hodge interpretation, not a restatement of the lower bound.
 Scope: this is a spectral calibration and sharp repair law, not an arithmetic producer of
 positivity for the unmodified Weil form. The correction uses the given spectrum and changes
 the pairing. No RH or purity conclusion may be inferred from positivity of the repaired form.
+
+Dependency-closed argument being formalized:
+1. Reflection permutes the eigenvalue list, so the two cross sums agree. Expanding the
+   even and odd squares gives W+C=P with C=O*O and P=E*E, both positive semidefinite.
+2. The odd evaluation matrix factors through pairValue(z,beta_j), z in the distinct outer
+   spectrum. Inner rows are negatives of reflected outer rows; unit-circle rows vanish.
+   Hence rank C <= number of outer points, on every window, coherently under restriction.
+3. On a spectrum-complete window, ACS gives negative index(W)=number of outer points.
+   The existing finite-rank perturbation bound forces every positivity-producing correction
+   to have at least that rank. Our C attains the bound.
+4. Interpolation realizes each antisymmetric pair-value function. Its even evaluation
+   vanishes, while its odd energy is strictly positive. On this vector W+tC=(t-1)C;
+   therefore t<1 fails for every nonunitary datum. For t>=1 positivity follows by adding
+   (t-1)C to P. For unitary data C=0.
+5. Completing G by [[J,B],[B*,B*JB-G]] makes its positive index 1+negative index(G).
+   Thus the same correction, subtracted only from the graph block, restores Hodge index
+   without changing either pole coupling. Its scalar threshold is independent of B.
+
+Further corpus comparison: RHTower/PaperRestrictedWeilInertia already gives abstract
+minimum-rank negative-part corrections for restricted-Weil aperture operators. Our theorem
+must not claim generic minimum-rank repair as new. Its content is the explicit coherent
+reflection correction, half the existing Frobenius defect, and its exact Hodge threshold.

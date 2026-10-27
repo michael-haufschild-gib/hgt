@@ -83,10 +83,10 @@ theorem frobeniusPullback_conformal (D : CurveDatum ι) (K : ℕ) :
       simp [realPolePlane, mul_apply, Fin.sum_univ_two]
   · rw [Matrix.mul_assoc, hR]
     ext a k
-    fin_cases a <;> simp [frobeniusPoleRow, mul_apply, Fin.sum_univ_two, pow_succ] <;> ring
+    fin_cases a <;> simp [frobeniusPoleRow, mul_apply, Fin.sum_univ_two, pow_succ, mul_comm]
   · rw [hL, ← transpose_transpose (Matrix.of fun k b => _)]
     ext k a
-    fin_cases a <;> simp [frobeniusPoleRow, mul_apply, Fin.sum_univ_two, pow_succ] <;> ring
+    fin_cases a <;> simp [frobeniusPoleRow, mul_apply, Fin.sum_univ_two, pow_succ, mul_comm]
   · rw [hL, hR]
     ext k l
     simp only [Matrix.of_apply, Matrix.smul_apply, smul_eq_mul, frobeniusGraphBlock,
@@ -157,15 +157,13 @@ theorem not_conformal_powerMap {k : ℕ} (hk : 2 ≤ k) :
   have hpos : 0 < X := by positivity
   have h2k : (2 : ℝ) ^ (2 * k) = X ^ 2 := by rw [hX, ← pow_mul, mul_comm]
   rw [h2k] at h16
-  have e4 : Real.log 2 * 2 = c * Real.log 2 * X := by
+  have e4 : X * c = 2 := by
     field_simp at h4; linarith
-  have e16 : Real.log 2 * 4 = c * Real.log 2 * X ^ 2 := by
-    field_simp at h16; linarith
-  have hX2 : Real.log 2 * (X - 2) = 0 := by nlinarith
+  have e16 : X ^ 2 * c = 4 := by
+    field_simp at h16; norm_num at h16; linarith
   have hX2' : X = 2 := by
-    rcases mul_eq_zero.mp hX2 with h | h
-    · linarith
-    · linarith
+    have : X * (X * c) = 4 := by rw [← e16]; ring
+    rw [e4] at this; linarith
   have : (2 : ℝ) ^ 2 ≤ X := by rw [hX]; exact pow_le_pow_right₀ (by norm_num) hk
   norm_num at this
   linarith

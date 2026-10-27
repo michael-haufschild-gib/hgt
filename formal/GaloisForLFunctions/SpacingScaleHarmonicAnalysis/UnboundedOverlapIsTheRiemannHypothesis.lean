@@ -170,7 +170,7 @@ theorem upow_mem_realTests {w : ℝ} (hw : 0 < w) : upow w 3 ∈ realTests :=
 theorem seenRightZeros_upow (Z : ZeroConfig) {w : ℝ} (hw : 0 < w) :
     seenRightZeros Z (upow w 3) = {ρ ∈ Z.carrier | 1 / 2 < ρ.re} := by
   have hne : ∀ z : ℂ, z.im ≠ 0 → paperFT (cx (upow w 3)) z ≠ 0 := fun z hz => by
-    simp only [cx]
+    show paperFT (fun x => (upow w 3 x : ℂ)) z ≠ 0
     rw [paperFT_upow]
     exact pow_ne_zero _ (paperFT_unif_ne_zero hw hz)
   ext ρ
