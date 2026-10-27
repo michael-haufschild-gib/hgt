@@ -18,6 +18,8 @@ import GaloisForLFunctions.ArithmeticElectrostatics.LargeValuesAtZeroOrdinates
 import GaloisForLFunctions.ArithmeticElectrostatics.TheGaugeMarginOfTheRenormalizedSource
 import GaloisForLFunctions.ArithmeticElectrostatics.TheStabilityLawAtAtomicResolution
 import GaloisForLFunctions.ArithmeticElectrostatics.TheEnergyOfAZeroIsLogarithmic
+import GaloisForLFunctions.ArithmeticElectrostatics.HigherMomentsAtZeroOrdinates
+import GaloisForLFunctions.ArithmeticElectrostatics.TheGaugeIsInvisibleAtAtomicResolution
 
 /-!
 # Arithmetic Electrostatics of the Zero Divisor
@@ -29,12 +31,13 @@ characteristic circle:
 * the divisor: transverse energy and its unconditional logarithmic bound, damped arithmetic source
   work, window selection, the Hecke defect as transverse moment of inertia;
 * the field: Laurent self-terms, threshold forms of the field law, the external field as a prime
-  sum, large values of Dirichlet polynomials at zero ordinates;
+  sum, large values and higher moments of Dirichlet polynomials at zero ordinates, power saving for
+  aligned ordinates;
 * the diagonal: Selberg's renormalized source, self-intersections and adjunction of torsion orbits,
   power maps as similitudes of the Abel energy, logarithmic counterterms on the circle and on the
   atomic Weil prime form, the arithmetic point, the stability law at atomic resolution;
 * the base and gauge: Fekete stability of the circle, affine invariance, gauge margins of the
-  renormalized source.
+  renormalized source, gauge invisibility of atomic tests.
 
 See `ArithmeticElectrostatics/README.md`.
 -/

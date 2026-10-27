@@ -94,9 +94,9 @@ theorem primeBilinear_truncPole_eq {M M' N : ℕ} (hMM' : M ≤ M') (hM'N : M' �
         rw [mul_sum, ← sum_truncate hM'N]
         refine sum_congr rfl fun n _ => ?_
         split_ifs <;> ring
-      rw [hinner, sum_weilPrimeKernel_poleVector hm0 (hmM.trans hMM'), ← mul_assoc, mul_comm,
-        mul_assoc, ← sq, poleVector_sq]
-      field_simp
+      rw [hinner, sum_weilPrimeKernel_poleVector hm0 (hmM.trans hMM')]
+      have h2 : poleVector m * poleVector m = 1 / m := by rw [← sq, poleVector_sq]
+      linear_combination (mertensSum (M' / m) + Real.log m) * h2
     · simp
   rw [sum_congr rfl hrow, sum_truncate (hMM'.trans hM'N)]
 
@@ -176,21 +176,29 @@ theorem primeBilinear_sum_left {k : ℕ} (N : ℕ) (c : Fin k → ℝ) (x : Fin 
     (y : ℕ → ℝ) :
     primeBilinear N (fun n => ∑ i, c i * x i n) y = ∑ i, c i * primeBilinear N (x i) y := by
   unfold primeBilinear
-  simp only [sum_mul, mul_sum]
-  rw [sum_comm]
-  refine sum_congr rfl fun i _ => ?_
-  rw [sum_comm]
-  exact sum_congr rfl fun m _ => sum_congr rfl fun n _ => by ring
+  calc ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (∑ i, c i * x i m) * y n * weilPrimeKernel m n
+      = ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, ∑ i, c i * (x i m * y n * weilPrimeKernel m n) := by
+        refine sum_congr rfl fun m _ => sum_congr rfl fun n _ => ?_
+        rw [sum_mul, sum_mul]
+        exact sum_congr rfl fun i _ => by ring
+    _ = ∑ m ∈ Icc 1 N, ∑ i, ∑ n ∈ Icc 1 N, c i * (x i m * y n * weilPrimeKernel m n) :=
+        sum_congr rfl fun m _ => sum_comm
+    _ = ∑ i, ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, c i * (x i m * y n * weilPrimeKernel m n) := sum_comm
+    _ = ∑ i, c i * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, x i m * y n * weilPrimeKernel m n := by
+        refine sum_congr rfl fun i _ => ?_
+        rw [mul_sum]
+        exact sum_congr rfl fun m _ => by rw [mul_sum]
 
 /-- The prime form of a step profile expands into the pole Gram. -/
 theorem atomicWeilForm_stepProfile {k : ℕ} (N : ℕ) (c : Fin k → ℝ) (M : Fin k → ℕ) :
     atomicWeilForm N (stepProfile c M) =
       ∑ i, ∑ j, c i * c j * primeBilinear N (truncPole (M i)) (truncPole (M j)) := by
-  rw [atomicWeilForm_eq_primeBilinear, stepProfile]
-  rw [show (fun n => ∑ i, c i * truncPole (M i) n) = fun n => ∑ i, c i * (fun i n =>
-    truncPole (M i) n) i n from rfl, primeBilinear_sum_left]
+  have hL : ∀ y, primeBilinear N (stepProfile c M) y =
+      ∑ i, c i * primeBilinear N (truncPole (M i)) y := fun y =>
+    primeBilinear_sum_left N c (fun i => truncPole (M i)) y
+  rw [atomicWeilForm_eq_primeBilinear, hL]
   refine sum_congr rfl fun i _ => ?_
-  rw [primeBilinear_comm, primeBilinear_sum_left, mul_sum]
+  rw [primeBilinear_comm, hL, mul_sum]
   refine sum_congr rfl fun j _ => ?_
   rw [primeBilinear_comm]
   ring
@@ -199,20 +207,22 @@ theorem polarFunctional_stepProfile {k : ℕ} {N : ℕ} (c : Fin k → ℝ) (M :
     (hM : ∀ i, M i ≤ N) :
     polarFunctional N (stepProfile c M) = ∑ i, c i * harmonicSum (M i) := by
   unfold polarFunctional stepProfile
-  simp only [sum_mul, mul_assoc]
-  rw [sum_comm]
+  have h : ∀ n ∈ Icc 1 N, (∑ i, c i * truncPole (M i) n) * poleVector n =
+      ∑ i, c i * (truncPole (M i) n * poleVector n) := fun n _ => by
+    rw [sum_mul]; exact sum_congr rfl fun i _ => by ring
+  rw [sum_congr rfl h, sum_comm]
   refine sum_congr rfl fun i _ => ?_
   rw [← mul_sum, ← polarFunctional_truncPole (hM i)]
   rfl
 
 /-- `Σ_n u^{(M)}_n u^{(M')}_n = H_{min(M, M')}`. -/
-theorem sum_truncPole_mul {M M' N : ℕ} (hMN : M ≤ N) (hM'N : M' ≤ N) :
+theorem sum_truncPole_mul {M N : ℕ} (M' : ℕ) (hMN : M ≤ N) :
     ∑ n ∈ Icc 1 N, truncPole M n * truncPole M' n = harmonicSum (min M M') := by
   unfold truncPole harmonicSum
   have : ∀ n ∈ Icc 1 N, (if n ≤ M then poleVector n else 0) * (if n ≤ M' then poleVector n else 0)
       = if n ≤ min M M' then 1 / (n : ℝ) else 0 := fun n _ => by
     by_cases h1 : n ≤ M <;> by_cases h2 : n ≤ M' <;>
-      simp [h1, h2, le_min_iff, ← sq, poleVector_sq]
+      simp [h1, h2, ← sq, poleVector_sq]
   rw [sum_congr rfl this, sum_truncate ((min_le_left _ _).trans hMN)]
 
 /-- **The mass of a step profile**: `|x|² = Σ_{i,j} c_i c_j H_{min(M_i, M_j)}`. -/
@@ -226,7 +236,7 @@ theorem sum_stepProfile_sq {k : ℕ} {N : ℕ} (c : Fin k → ℝ) (M : Fin k �
   refine sum_congr rfl fun i _ => ?_
   rw [sum_comm]
   refine sum_congr rfl fun j _ => ?_
-  rw [← sum_truncPole_mul (hM i) (hM j), mul_sum]
+  rw [← sum_truncPole_mul (M j) (hM i), mul_sum]
   exact sum_congr rfl fun n _ => by ring
 
 /-- **Polarity of the horizon divergence.** For every step profile on the orders `≤ N`,

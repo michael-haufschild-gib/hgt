@@ -450,12 +450,10 @@ def atomicWidth (N : ℕ) : ℝ :=
 theorem atomicWidth_pos {N : ℕ} (hN : 1 ≤ N) : 0 < atomicWidth N :=
   mul_pos (by linarith [atomSpacing_pos hN]) (Real.exp_pos _)
 
-/-- **The stability law at atomic resolution**: every atomic test of width at most
-`atomicWidth N` at the points `log n`, `n ≤ N`, has nonnegative Markov form. -/
-theorem markovEnergy_atomicTest_nonneg (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
-    (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w)
-    (hw : w ≤ atomicWidth N) (x : ℕ → ℝ) :
-    0 ≤ markovEnergy (fun u => (atomicTest N x g u : ℂ)) := by
+/-- **The Lévy gain beats the prime counterterm** at every width `0 < w ≤ atomicWidth N`. -/
+theorem atomicGain_nonneg {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w) (hw : w ≤ atomicWidth N) :
+    w ≤ atomSpacing N / 4 ∧ 0 ≤ 2 * gammaHardyPhaseRate 0 + Real.exp (-(1 / 2)) *
+      Real.log (atomSpacing N / 2 / w) - (2 * Real.log N + (Real.log 4 + 4)) := by
   have hδ := atomSpacing_pos hN
   set X := Real.exp (1 / 2) * (2 * Real.log N + (Real.log 4 + 4) + 2 * |gammaHardyPhaseRate 0|)
   have hX : 0 ≤ X := by
@@ -463,10 +461,7 @@ theorem markovEnergy_atomicTest_nonneg (hg : ContDiff ℝ 2 g) (hgc : HasCompact
     have : (0 : ℝ) ≤ Real.log 4 := Real.log_nonneg (by norm_num)
     positivity
   have hexp : Real.exp (-X) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
-  have hw4 : w ≤ atomSpacing N / 4 :=
-    hw.trans (by rw [atomicWidth]; nlinarith [Real.exp_pos (-X)])
-  have h := markovEnergy_atomicTest_ge hg hgc hgsupp hN hw0 hw4 x
-  -- the Lévy gain beats the prime counterterm
+  refine ⟨hw.trans (by rw [atomicWidth]; nlinarith [Real.exp_pos (-X)]), ?_⟩
   have hlog : X ≤ Real.log (atomSpacing N / 2 / w) := by
     have hle : atomSpacing N / 2 / atomicWidth N ≤ atomSpacing N / 2 / w :=
       div_le_div_of_nonneg_left (by positivity) hw0 hw
@@ -478,16 +473,23 @@ theorem markovEnergy_atomicTest_nonneg (hg : ContDiff ℝ 2 g) (hgc : HasCompact
       rw [Real.log_mul (by norm_num) (Real.exp_pos X).ne', Real.log_exp]
       linarith [Real.log_nonneg (show (1 : ℝ) ≤ 2 by norm_num)]
     exact h2.trans (Real.log_le_log (by positivity) (hval ▸ hle))
-  have hcoef : 0 ≤ 2 * gammaHardyPhaseRate 0 + Real.exp (-(1 / 2)) *
-      Real.log (atomSpacing N / 2 / w) - (2 * Real.log N + (Real.log 4 + 4)) := by
-    have he : Real.exp (-(1 / 2)) * Real.exp (1 / 2) = 1 := by
-      rw [← Real.exp_add]; simp
-    have h3 : Real.exp (-(1 / 2)) * X ≤ Real.exp (-(1 / 2)) * Real.log (atomSpacing N / 2 / w) :=
-      mul_le_mul_of_nonneg_left hlog (Real.exp_pos _).le
-    have h4 : Real.exp (-(1 / 2)) * X =
-        2 * Real.log N + (Real.log 4 + 4) + 2 * |gammaHardyPhaseRate 0| := by
-      simp only [X]; rw [← mul_assoc, he, one_mul]
-    linarith [neg_abs_le (gammaHardyPhaseRate 0)]
+  have he : Real.exp (-(1 / 2)) * Real.exp (1 / 2) = 1 := by
+    rw [← Real.exp_add]; simp
+  have h3 : Real.exp (-(1 / 2)) * X ≤ Real.exp (-(1 / 2)) * Real.log (atomSpacing N / 2 / w) :=
+    mul_le_mul_of_nonneg_left hlog (Real.exp_pos _).le
+  have h4 : Real.exp (-(1 / 2)) * X =
+      2 * Real.log N + (Real.log 4 + 4) + 2 * |gammaHardyPhaseRate 0| := by
+    simp only [X]; rw [← mul_assoc, he, one_mul]
+  linarith [neg_abs_le (gammaHardyPhaseRate 0)]
+
+/-- **The stability law at atomic resolution**: every atomic test of width at most
+`atomicWidth N` at the points `log n`, `n ≤ N`, has nonnegative Markov form. -/
+theorem markovEnergy_atomicTest_nonneg (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
+    (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w)
+    (hw : w ≤ atomicWidth N) (x : ℕ → ℝ) :
+    0 ≤ markovEnergy (fun u => (atomicTest N x g u : ℂ)) := by
+  obtain ⟨hw4, hcoef⟩ := atomicGain_nonneg hN hw0 hw
+  have h := markovEnergy_atomicTest_ge hg hgc hgsupp hN hw0 hw4 x
   have hint : 0 ≤ ∫ u, atomicTest N x g u ^ 2 := integral_nonneg fun u => sq_nonneg _
   exact le_trans (mul_nonneg hcoef hint) h
 

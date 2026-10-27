@@ -48,11 +48,14 @@ damped source-work modules (`ReflectedTransverseWork`, `TheSelbergWorkExhaustsTh
 | ES18 stability law at atomic resolution | `TheStabilityLawAtAtomicResolution` | Lean |
 | ES19 gauge margin of the source | `TheGaugeMarginOfTheRenormalizedSource` | Lean |
 | ES11 (prime side) atomic Weil prime form `Θ(log N)` | `TheWeilPrimeFormOnAtomsIsLogarithmic` | Lean |
+| ES20 power saving for aligned zero ordinates (higher moments) | `HigherMomentsAtZeroOrdinates` | Lean |
+| ES21 gauge invisibility at atomic resolution; stability law for every sign twin | `TheGaugeIsInvisibleAtAtomicResolution` | Lean |
 
 ## Open (RH-strength or beyond the present inputs)
 - Field law: arithmetic upper bound for the field below `max(1, √(2c log γ))`.
 - Stability law at the spacing scale `w ≍ 1/N` (proved below `N^{−O(1)}`, ES18): RH in adjunction form.
-- Power saving for aligned zero ordinates: coefficient mass of convolution powers of prime polynomials.
+- Aligned ordinates (power-sparse, ES20) against zero density at depth `δ`: the report's Q1 proper.
+- Form-level gauge margins on spacing-scale tests (zero at atomic resolution, ES21).
 - Alignment inside the strip (Q1 of the frontier); coupled class at the centre; fibre selection.
 
 ## Key paper facts
@@ -67,3 +70,4 @@ damped source-work modules (`ReflectedTransverseWork`, `TheSelbergWorkExhaustsTh
 - 2026-10-27 — created; README first draft; ES1–ES3, ES7, ES9–ES11 formalized.
 - 2026-10-27 — ES5, ES6, ES8, ES12–ES15 formalized; README rewritten with answers to the twelve questions.
 - 2026-10-27 — ES16–ES19 and the atomic Weil prime form formalized; README updated.
+- 2026-10-27 — ES20, ES21 formalized; README updated.

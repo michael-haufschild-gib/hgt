@@ -1,5 +1,5 @@
 import GaloisForLFunctions.TransThresholdPairCorrelation.ParitySensitiveRamanujanStabilizerTransfer
-import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheRamanujanTwinsSurviveExactlyOnPerOrderRelations
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheRamanujanTwinsCarryThePrimes
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.ThePoleNodeCompletesTheArchimedeanGerm
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheWeilPrimeKernelIsARenormalizedTorsionEnergy
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheStripLivesOnShortCycles
@@ -7,14 +7,14 @@ import GaloisForLFunctions.ArithmeticIncidencePositivity.SchurLendingOddWindowTh
 import GaloisForLFunctions.ArithmeticCriticalityTheory.ParityFoldedCurvedGaugeWeilPositivity
 
 /-!
-# Closed-Form Ramanujan Parity-Twin Limits, Pole-Node Erasure, and Short-Cycle Positivity
+# Closed-Form Ramanujan Parity-Twin Limits, Ultraviolet-to-Infrared Relocation, and Short-Cycle Positivity
 
-This module resolves Open Topic #1 of `RenormalizedBiarithmeticGeometry` unconditionally by
-evaluating in closed form the Cesàro Gram matrices, scheme-independent survival cones, and
-renormalized `r → 1⁻` limit matrices of both even-shifted (`2k`) and torsion-aligned (`k + 1`,
-`2(k + 1)`) Ramanujan periodic germs, proving the exact **Pole-Node Erasure Law** that explains why
-periodic-germ survival erases the prime-side torsion intersection `Λ(t)` on general short cycles,
-and establishing three unconditional positive survivors:
+This module extends `TheRamanujanTwinsCarryThePrimes` and resolves Open Topic #1 of
+`RenormalizedBiarithmeticGeometry` unconditionally by evaluating in closed form the Cesàro Gram
+matrices, scheme-independent survival cones, and renormalized `r → 1⁻` limit matrices of both
+even-shifted (`2k`) and torsion-aligned (`shiftedMode`, `k + 1`) Ramanujan periodic germs, proving
+the **Ultraviolet Pole-Node Cancellation vs. Infrared Relocation Law** for `-φ(m) Λ(t)`, and
+establishing three unconditional positive survivors:
 
 1. **Closed-Form Cesàro Gram and Scheme-Independent `{q, 2q}` Survival Cone
    (`cesaroGram_evenShift_ramanujanMode_eq`, `evenShift_ramanujanParityTwin_survivalCone_eq`,
@@ -26,29 +26,32 @@ and establishing three unconditional positive survivors:
    parity-twin pair `![q, 2 * q]` (`q` odd), unrestricted shifts have survival cone `{0}`, whereas
    even shifts have the rank-1 survival line `{C | C 0 + C 1 = 0}`.
 
-2. **Closed-Form Twisted Digamma and Cyclotomic-Harmonic Limit Matrices
-   (`tendsto_divisibilityGerm_add_log`, `tendsto_shiftedDivisibilityGerm_add_log`,
-   `tendsto_evenShift_ramanujanGerm_closedForm`, `tendsto_torsionAligned_ramanujanGerm_closedForm`):**
+2. **Closed-Form Limit of `RBG.shiftedMode` and `evenShift` Germs
+   (`tendsto_evenShift_ramanujanGerm_closedForm`, `tendsto_shiftedMode_ramanujanGerm_closedForm`,
+   `shiftedMode_ramanujanTwin_limit_eq`):**
    Evaluates the `r → 1⁻` renormalized limits in closed form via double Möbius inversion:
    * Unshifted / `evenShift_ramanujanParityTwin`:
      `-orbitIntersection q_α q_β - cyclotomicDigamma q_α q_β (1 + x α + x β)`;
-   * Torsion-aligned (`k + 1` or `2(k + 1)`):
-     `-orbitIntersection q_α q_β - cyclotomicHarmonic q_α q_β (x α + x β)`, which reduces at the
-     pole nodes `x α = x β = 0` to `-orbitIntersection q_α q_β` (`= -φ(q_α) Λ(t)` on `q_β = q_α t`).
+   * Torsion-aligned (`RBG.shiftedMode`): the unique limit matrix `A` in
+     `RBG.ramanujanTwin_carries_primes` equals
+     `-orbitIntersection (ord α) (ord β) - cyclotomicHarmonic (ord α) (ord β) (x α + x β)`
+     across **all** pairs `(α, β)` (reducing at `x α = x β = 0` to `-orbitIntersection`).
 
-3. **Pole-Node Erasure Law (`poleNode_erasure_of_nodeIndependent_kernel`,
-   `quad_torsionAlignedLimit_eq_neg_cyclotomicHarmonic_on_cone`):**
-   Because `-orbitIntersection q_α q_β` depends only on the discrete orders `(q_α, q_β)` and is
-   independent of the continuous nodes `(x α, x β)`, it vanishes identically on the entire survival
-   cone `∀ m, ∑_{q_α = m} C α = 0` — including under pole-node completion (`x = 0`). Thus periodic
-   germ survival erases `Λ(t)` completely and leaves a source-independent cyclotomic-archimedean
-   kernel.
+3. **Ultraviolet Cancellation vs. Infrared Relocation of `-φ(m) Λ(t)`
+   (`poleNode_erasure_of_nodeIndependent_kernel`, `tendsto_cyclotomicHarmonic_sub_totient_log_atTop`,
+   `tendsto_completedTwinKernel_offDiag_atTop`, `tendsto_completedTwinKernel_diag_sub_log_atTop`,
+   `completedTwinKernel_infrared_survivalCone_eq_zero`):**
+   * At any fixed node vector `x`, `-orbitIntersection (ord α) (ord β)` is independent of `(x α, x β)`
+     and cancels identically on `∀ m, ∑_{ord α = m} C α = 0`, leaving the PSD kernel
+     `K_twin((m, x), (n, y)) = cyclotomicHarmonic m n x + cyclotomicHarmonic m n y - cyclotomicHarmonic m n (x + y)`.
+   * As `u → +∞`, `K_twin((m, u), (n, u))` recovers `-orbitIntersection m n` (`= -φ(m) Λ(t)`) off the
+     diagonal (`m ≠ n`), while on the diagonal (`m = n`) it regenerates a full-rank infrared
+     counterterm `φ(m) log u` whose survival cone is `{0}`. Pole-node completion relocates the
+     full-rank counterterm `diag(φ(m))` from `-log(1 - r)` (`r → 1⁻`) to `log u` (`u → +∞`).
 
-4. **Three Unconditional Positive Survivors:**
+4. **Unconditional Positive Survivors:**
    * **Unconstrained PSD Cyclotomic-Harmonic Kernel (`cyclotomicHarmonicKernel_nonneg`):**
-     Pole-node completion (`x = 0` per order) makes
-     `cyclotomicHarmonic m_i m_j (x_i) + cyclotomicHarmonic m_i m_j (x_j) - cyclotomicHarmonic m_i m_j (x_i + x_j)`
-     positive semidefinite on arbitrary `(m_i, x_i) ∈ ℕ_+ × ℝ_{≥0}`, generalizing
+     `K_twin` is positive semidefinite on all `(m_i, x_i) ∈ ℕ_+ × ℝ_{≥0}`, generalizing
      `RBG.harmonicKernel_nonneg` (`m_i ≡ 1`).
    * **Dyadic Parity-Split Scale Anomaly (`torsionEnergy_dyadic_parity_split`,
      `tendsto_oddTorsionEnergy_add_half_log`):**
@@ -71,7 +74,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.TransThresholdPairCorrelation
 
-open Zeta23 RHTower RHTower.Sieve
+open Zeta23 _root_.RHTower _root_.RHTower.Sieve
 open GaloisForLFunctions.BezoutValuationIncidence
 open GaloisForLFunctions.RenormalizedBiarithmeticGeometry
 open GaloisForLFunctions.ArithmeticEffectivityTheory
@@ -482,7 +485,7 @@ private theorem doubleMoebius_sub_neg_mul (m n : ℕ) (A B : ℕ → ℕ → ℝ
       ∑ b ∈ n.divisors, (μ (n / b) : ℝ) * ∑ a ∈ m.divisors, (μ (m / a) : ℝ) *
         (A a b + B a b * L) := by
   unfold doubleMoebius
-  rw [neg_neg, mul_sum, ← sum_add_distrib]
+  rw [neg_mul, sub_neg_eq_add, mul_sum, ← sum_add_distrib]
   refine sum_congr rfl fun b _ => ?_
   have h1 : L * ((μ (n / b) : ℝ) * ∑ a ∈ m.divisors, (μ (m / a) : ℝ) * B a b) =
       (μ (n / b) : ℝ) * ∑ a ∈ m.divisors, (μ (m / a) : ℝ) * (B a b * L) := by
@@ -709,8 +712,39 @@ theorem tendsto_torsionAligned_ramanujanGerm_closedForm {N : ℕ} (ord : Fin N �
       ∑' k : ℕ, r ^ k * (ramanujanMode m (k + 1) * ramanujanMode n (k + 1)) / ((k : ℝ) + (1 + u)) := by
     dsimp only [m, n, u]
     simp only [periodicGerm, Matrix.of_apply, twistedGerm]
-    exact tsum_congr fun k => by rw [show (k : ℝ) + 1 + x α + x β = (k : ℝ) + (1 + (x α + x β)) by ring]
+    exact tsum_congr fun k => by congr 1; ring
   rw [hpg, hhas.tsum_eq, hces, ← doubleMoebius_sub_neg_mul]
+
+/-- **Closed-Form Limit Matrix of `RBG.shiftedMode` (`TheRamanujanTwinsCarryThePrimes`):**
+For `shiftedMode n k = ramanujanMode n (k + 1)`, the renormalized twin germ converges on **all**
+pairs `(α, β)` (both equal and distinct orders, both pole and non-pole nodes) to
+`-orbitIntersection (ord α) (ord β) - cyclotomicHarmonic (ord α) (ord β) (x α + x β)`. -/
+theorem tendsto_shiftedMode_ramanujanGerm_closedForm {N : ℕ} (ord : Fin N → ℕ)
+    (hord : ∀ α, 0 < ord α) {x : Fin N → ℝ} (hx : ∀ α, 0 ≤ x α) (α β : Fin N) :
+    Tendsto (fun r =>
+      periodicGerm (fun γ => shiftedMode (ord γ)) x r α β -
+        (-Real.log (1 - r)) *
+          cesaroGram (fun γ => shiftedMode (ord γ)) (twinPeriod ord) α β)
+      (𝓝[<] 1)
+      (𝓝 (-orbitIntersection (ord α) (ord β) -
+        cyclotomicHarmonic (ord α) (ord β) (x α + x β))) :=
+  tendsto_torsionAligned_ramanujanGerm_closedForm ord hord hx α β
+
+/-- **Uniqueness and Complete Identification of `A` in `RBG.ramanujanTwin_carries_primes`:**
+Every renormalized limit matrix `A` of `shiftedMode (ord α)` equals
+`-orbitIntersection (ord α) (ord β) - cyclotomicHarmonic (ord α) (ord β) (x α + x β)` entrywise. -/
+theorem shiftedMode_ramanujanTwin_limit_eq {N : ℕ} (ord : Fin N → ℕ)
+    (hord : ∀ α, 0 < ord α) {x : Fin N → ℝ} (hx : ∀ α, 0 ≤ x α)
+    {A : Matrix (Fin N) (Fin N) ℝ}
+    (hA : ∀ α β, Tendsto (fun r =>
+      periodicGerm (fun γ => shiftedMode (ord γ)) x r α β -
+        (-Real.log (1 - r)) *
+          cesaroGram (fun γ => shiftedMode (ord γ)) (twinPeriod ord) α β)
+      (𝓝[<] 1) (𝓝 (A α β)))
+    (α β : Fin N) :
+    A α β = -orbitIntersection (ord α) (ord β) -
+      cyclotomicHarmonic (ord α) (ord β) (x α + x β) :=
+  tendsto_nhds_unique (hA α β) (tendsto_shiftedMode_ramanujanGerm_closedForm ord hord hx α β)
 
 /-! ## §4. Exact Obstruction (`RBG` Open Topic #1): Pole-Node Erasure of `orbitIntersection` -/
 
@@ -797,14 +831,31 @@ theorem cyclotomicHarmonicKernel_nonneg {N : ℕ} {ord : Fin N → ℕ} (hord : 
       (cyclotomicHarmonic (ord i) (ord j) (x i) +
         cyclotomicHarmonic (ord i) (ord j) (x j) -
         cyclotomicHarmonic (ord i) (ord j) (x i + x j)) := by
-  let ord2 : Fin (N + N) → ℕ := Fin.addCases ord ord
-  let x2 : Fin (N + N) → ℝ := Fin.addCases x (fun _ => 0)
-  let C2 : Fin (N + N) → ℝ := Fin.addCases c (fun i => -c i)
+  let ord2 : Fin (N + N) → ℕ := fun α =>
+    if h : α.1 < N then ord ⟨α.1, h⟩ else ord ⟨α.1 - N, by omega⟩
+  let x2 : Fin (N + N) → ℝ := fun α =>
+    if h : α.1 < N then x ⟨α.1, h⟩ else 0
+  let C2 : Fin (N + N) → ℝ := fun α =>
+    if h : α.1 < N then c ⟨α.1, h⟩ else -c ⟨α.1 - N, by omega⟩
+  have hord2_L : ∀ i : Fin N, ord2 (Fin.castAdd N i) = ord i := fun i => dif_pos i.2
+  have hord2_R : ∀ i : Fin N, ord2 (Fin.natAdd N i) = ord i := fun i => by
+    dsimp only [ord2, Fin.val_natAdd]
+    rw [dif_neg (by omega)]
+    exact congrArg ord (Fin.ext (by dsimp only; omega))
+  have hx2_L : ∀ i : Fin N, x2 (Fin.castAdd N i) = x i := fun i => dif_pos i.2
+  have hx2_R : ∀ i : Fin N, x2 (Fin.natAdd N i) = 0 := fun i => by
+    dsimp only [x2, Fin.val_natAdd]
+    exact dif_neg (by omega)
+  have hC2_L : ∀ i : Fin N, C2 (Fin.castAdd N i) = c i := fun i => dif_pos i.2
+  have hC2_R : ∀ i : Fin N, C2 (Fin.natAdd N i) = -c i := fun i => by
+    dsimp only [C2, Fin.val_natAdd]
+    rw [dif_neg (by omega)]
+    exact congrArg Neg.neg (congrArg c (Fin.ext (by dsimp only; omega)))
   have hord2 : ∀ α, 0 < ord2 α := fun α => by
-    dsimp only [ord2, Fin.addCases]
+    dsimp only [ord2]
     split_ifs <;> exact hord _
   have hx2 : ∀ α, 0 ≤ x2 α := fun α => by
-    dsimp only [x2, Fin.addCases]
+    dsimp only [x2]
     split_ifs
     · exact hx _
     · exact le_rfl
@@ -816,12 +867,7 @@ theorem cyclotomicHarmonicKernel_nonneg {N : ℕ} {ord : Fin N → ℕ} (hord : 
   have hrel : ∀ k, ∑ α : Fin (N + N), C2 α * ramanujanMode (ord2 α) (k + 1) = 0 := by
     intro k
     rw [Fin.sum_univ_add]
-    simp only [C2, ord2, Fin.addCases_left, Fin.addCases_right, neg_mul, sum_neg_distrib,
-      add_neg_cancel]
-  have hQ : ∀ᶠ r in 𝓝[<] (1 : ℝ),
-      0 ≤ quad (periodicGerm (fun α k => ramanujanMode (ord2 α) (k + 1)) x2 r) C2 := by
-    filter_upwards [Ioo_mem_nhdsLT zero_lt_one] with r hr
-    exact periodicGerm_quad_nonneg _ hq hper hx2 hr.1.le hr.2 C2
+    simp only [hC2_L, hC2_R, hord2_L, hord2_R, neg_mul, sum_neg_distrib, add_neg_cancel]
   let Alim : Matrix (Fin (N + N)) (Fin (N + N)) ℝ := Matrix.of fun α β =>
     -orbitIntersection (ord2 α) (ord2 β) - cyclotomicHarmonic (ord2 α) (ord2 β) (x2 α + x2 β)
   have hlim := fun α β => tendsto_torsionAligned_ramanujanGerm_closedForm ord2 hord2 hx2 α β
@@ -838,11 +884,249 @@ theorem cyclotomicHarmonicKernel_nonneg {N : ℕ} {ord : Fin N → ℕ} (hord : 
     simp only [quad, Alim, Matrix.of_apply]
     rw [Fin.sum_univ_add]
     simp_rw [Fin.sum_univ_add]
-    simp only [ord2, x2, C2, Fin.addCases_left, Fin.addCases_right, add_zero, zero_add,
+    simp only [hord2_L, hord2_R, hx2_L, hx2_R, hC2_L, hC2_R, add_zero, zero_add,
       cyclotomicHarmonic_zero, sub_zero, ← sum_add_distrib]
     refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
     ring
   rwa [hexpand] at hnonneg
+
+/-! ### Infrared Relocation of `-φ(m) Λ(t)` (`u → +∞`) -/
+
+/-- At nonnegative integers, `harmonicFn N` is the standard rational harmonic number `H_N`. -/
+theorem harmonicFn_natCast (N : ℕ) : harmonicFn (N : ℝ) = ((harmonic N : ℚ) : ℝ) := by
+  induction N with
+  | zero => simp [harmonicFn, Complex.digamma_one]
+  | succ n ih =>
+    have hpole : ∀ m : ℕ, ((1 + (n : ℝ) : ℝ) : ℂ) ≠ -(m : ℂ) := by
+      intro m hm
+      have hre := congrArg Complex.re hm
+      simp only [Complex.ofReal_re, Complex.neg_re, Complex.natCast_re] at hre
+      linarith [n.cast_nonneg (α := ℝ), m.cast_nonneg (α := ℝ)]
+    have hstep := congrArg Complex.re (Complex.digamma_apply_add_one ((1 + (n : ℝ) : ℝ) : ℂ) hpole)
+    have hcast : ((1 + ((n + 1 : ℕ) : ℝ) : ℝ) : ℂ) = ((1 + (n : ℝ) : ℝ) : ℂ) + 1 := by
+      push_cast; ring
+    have hinv : ((((1 + (n : ℝ) : ℝ) : ℂ))⁻¹).re = (1 + (n : ℝ))⁻¹ := by
+      rw [← Complex.ofReal_inv, Complex.ofReal_re]
+    unfold harmonicFn at ih ⊢
+    rw [hcast, hstep, Complex.add_re, hinv, harmonic_succ]
+    push_cast at ih ⊢
+    linarith [show (1 + (n : ℝ))⁻¹ = ((n : ℝ) + 1)⁻¹ by rw [add_comm]]
+
+/-- `harmonicFn` is monotone nondecreasing on `(-1, +∞)`. -/
+theorem harmonicFn_mono {x y : ℝ} (hx : -1 < x) (hxy : x ≤ y) :
+    harmonicFn x ≤ harmonicFn y := by
+  have hx1 : 0 < 1 + x := by linarith
+  have hy1 : 0 < 1 + y := by linarith
+  have heqx : harmonicFn x = -latticeGermLimit (1 + x) := by
+    rw [latticeGermLimit_eq hx1, neg_neg, harmonicFn]
+  have heqy : harmonicFn y = -latticeGermLimit (1 + y) := by
+    rw [latticeGermLimit_eq hy1, neg_neg, harmonicFn]
+  rw [heqx, heqy, neg_le_neg_iff]
+  have hsx := (summable_abs_latticeGermLimit hx1).of_abs.hasSum
+  have hsy := (summable_abs_latticeGermLimit hy1).of_abs.hasSum
+  have hdiff := (hsx.sub hsy).nonneg fun k => by
+    have hkx : 0 < (k : ℝ) + (1 + x) := by linarith [k.cast_nonneg (α := ℝ)]
+    have hkle : (k : ℝ) + (1 + x) ≤ (k : ℝ) + (1 + y) := by linarith
+    have hdiv : 1 / ((k : ℝ) + (1 + y)) ≤ 1 / ((k : ℝ) + (1 + x)) :=
+      one_div_le_one_div_of_le hkx hkle
+    linarith
+  unfold latticeGermLimit
+  linarith
+
+/-- **Continuous Euler–Mascheroni Asymptotic for `harmonicFn`:**
+`harmonicFn u - Real.log u → γ` as `u → +∞` along `ℝ`. -/
+theorem tendsto_harmonicFn_sub_log_atTop :
+    Tendsto (fun u : ℝ => harmonicFn u - Real.log u) atTop
+      (𝓝 Real.eulerMascheroniConstant) := by
+  have hlo_seq : Tendsto (fun n : ℕ => ((harmonic n : ℚ) : ℝ) - Real.log ((n : ℝ) + 1))
+      atTop (𝓝 Real.eulerMascheroniConstant) :=
+    Real.tendsto_harmonic_sub_log_add_one
+  have hhi_seq : Tendsto (fun n : ℕ => ((harmonic (n + 1) : ℚ) : ℝ) - Real.log (n : ℝ))
+      atTop (𝓝 Real.eulerMascheroniConstant) := by
+    have h1 := Real.tendsto_harmonic_sub_log
+    have h2 : Tendsto (fun n : ℕ => (((n : ℝ) + 1)⁻¹)) atTop (𝓝 0) :=
+      tendsto_inv_atTop_zero.comp (tendsto_atTop_add_const_right atTop 1 tendsto_natCast_atTop_atTop)
+    have h3 := h1.add h2
+    rw [add_zero] at h3
+    refine h3.congr fun n => ?_
+    rw [harmonic_succ]
+    push_cast
+    ring
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    (hlo_seq.comp tendsto_nat_floor_atTop)
+    (hhi_seq.comp tendsto_nat_floor_atTop) ?_ ?_
+  · filter_upwards [eventually_ge_atTop (1 : ℝ)] with u hu
+    dsimp only [Function.comp_def]
+    set n := ⌊u⌋₊
+    have hn_le : (n : ℝ) ≤ u := Nat.floor_le (by linarith)
+    have hu_lt : u ≤ (n : ℝ) + 1 := (Nat.lt_floor_add_one u).le
+    have h1 : harmonicFn (n : ℝ) ≤ harmonicFn u :=
+      harmonicFn_mono (by linarith [n.cast_nonneg (α := ℝ)]) hn_le
+    have h2 : Real.log u ≤ Real.log ((n : ℝ) + 1) :=
+      Real.log_le_log (by linarith) hu_lt
+    rw [← harmonicFn_natCast]
+    linarith
+  · filter_upwards [eventually_ge_atTop (1 : ℝ)] with u hu
+    dsimp only [Function.comp_def]
+    set n := ⌊u⌋₊
+    have hn_pos : 1 ≤ n := Nat.one_le_iff_ne_zero.mpr (Nat.floor_pos.mpr hu).ne'
+    have hn_posR : (0 : ℝ) < n := by exact_mod_cast hn_pos
+    have hn_le : (n : ℝ) ≤ u := Nat.floor_le (by linarith)
+    have hu_le : u ≤ ((n + 1 : ℕ) : ℝ) := by push_cast; exact (Nat.lt_floor_add_one u).le
+    have h1 : harmonicFn u ≤ harmonicFn ((n + 1 : ℕ) : ℝ) :=
+      harmonicFn_mono (by linarith) hu_le
+    have h2 : Real.log (n : ℝ) ≤ Real.log u :=
+      Real.log_le_log hn_posR hn_le
+    rw [← harmonicFn_natCast]
+    linarith
+
+/-- **Infrared Asymptotic of `cyclotomicHarmonic` (`u → +∞`):**
+For any `0 < m` and `0 < n`, as `u → +∞`,
+`cyclotomicHarmonic m n u - (if m = n then φ(m) else 0) * log u → (if m = n then φ(m) else 0) * γ - orbitIntersection m n`.
+In particular, for `m ≠ n`, `cyclotomicHarmonic m n u → -orbitIntersection m n` (`= -φ(m) Λ(t)`). -/
+theorem tendsto_cyclotomicHarmonic_sub_totient_log_atTop {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    Tendsto (fun u : ℝ =>
+      cyclotomicHarmonic m n u - (if m = n then (m.totient : ℝ) else 0) * Real.log u)
+      atTop
+      (𝓝 ((if m = n then (m.totient : ℝ) else 0) * Real.eulerMascheroniConstant -
+        orbitIntersection m n)) := by
+  have hterm : ∀ b ∈ n.divisors, ∀ a ∈ m.divisors,
+      Tendsto (fun u : ℝ =>
+        (Nat.gcd a b : ℝ) * harmonicFn (u / (Nat.lcm a b : ℝ)) -
+          (Nat.gcd a b : ℝ) * Real.log u)
+        atTop
+        (𝓝 ((Nat.gcd a b : ℝ) * Real.eulerMascheroniConstant - logEnergy a b)) := by
+    intro b hb a ha
+    have ha0 : 0 < a := Nat.pos_of_mem_divisors ha
+    have hb0 : 0 < b := Nat.pos_of_mem_divisors hb
+    have hL : 0 < (Nat.lcm a b : ℝ) := by exact_mod_cast Nat.lcm_pos ha0 hb0
+    have hdiv : Tendsto (fun u : ℝ => u / (Nat.lcm a b : ℝ)) atTop atTop :=
+      tendsto_id.atTop_div_const hL
+    have hh := ((tendsto_harmonicFn_sub_log_atTop.comp hdiv).const_mul (Nat.gcd a b : ℝ)).sub_const
+      (logEnergy a b)
+    refine hh.congr' ?_
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with u hu
+    dsimp only [Function.comp_def]
+    rw [Real.log_div hu.ne' hL.ne', logEnergy_eq ha0 hb0]
+    ring
+  have hsum := tendsto_finsetSum n.divisors fun b hb =>
+    (tendsto_finsetSum m.divisors fun a ha =>
+      (hterm b hb a ha).const_mul (μ (m / a) : ℝ)).const_mul (μ (n / b) : ℝ)
+  have hlim_eq : (∑ b ∈ n.divisors, (μ (n / b) : ℝ) * ∑ a ∈ m.divisors, (μ (m / a) : ℝ) *
+      ((Nat.gcd a b : ℝ) * Real.eulerMascheroniConstant - logEnergy a b)) =
+      (if m = n then (m.totient : ℝ) else 0) * Real.eulerMascheroniConstant -
+        orbitIntersection m n := by
+    have h1 : (∑ b ∈ n.divisors, (μ (n / b) : ℝ) * ∑ a ∈ m.divisors, (μ (m / a) : ℝ) *
+        ((Nat.gcd a b : ℝ) * Real.eulerMascheroniConstant - logEnergy a b)) =
+        doubleMoebius m n (fun a b => (Nat.gcd a b : ℝ)) * Real.eulerMascheroniConstant -
+          doubleMoebius m n logEnergy := by
+      unfold doubleMoebius
+      rw [sum_mul, ← sum_sub_distrib]
+      refine sum_congr rfl fun b _ => ?_
+      rw [mul_assoc, sum_mul, ← mul_sub, ← sum_sub_distrib]
+      exact congrArg ((μ (n / b) : ℝ) * ·) (sum_congr rfl fun a _ => by ring)
+    rw [h1, doubleMoebius_gcd_eq hm hn, orbitIntersection_eq_doubleMoebius hm hn]
+  rw [hlim_eq] at hsum
+  refine hsum.congr fun u => ?_
+  rw [← doubleMoebius_gcd_eq hm hn]
+  unfold cyclotomicHarmonic doubleMoebius
+  rw [sum_mul, ← sum_sub_distrib]
+  refine sum_congr rfl fun b _ => ?_
+  rw [mul_assoc, sum_mul, ← mul_sub, ← sum_sub_distrib]
+  exact congrArg ((μ (n / b) : ℝ) * ·) (sum_congr rfl fun a _ => by ring)
+
+/-- **Off-Diagonal Infrared Recovery of `-orbitIntersection` (`-φ(m) Λ(t)`):**
+For `m ≠ n`, the pole-node-completed twin kernel at uniform height `u` satisfies
+`2 * cyclotomicHarmonic m n u - cyclotomicHarmonic m n (2 * u) → -orbitIntersection m n` as `u → +∞`. -/
+theorem tendsto_completedTwinKernel_offDiag_atTop {m n : ℕ} (hm : 0 < m) (hn : 0 < n)
+    (hne : m ≠ n) :
+    Tendsto (fun u : ℝ => 2 * cyclotomicHarmonic m n u - cyclotomicHarmonic m n (2 * u))
+      atTop (𝓝 (-orbitIntersection m n)) := by
+  have h1 := tendsto_cyclotomicHarmonic_sub_totient_log_atTop hm hn
+  simp only [if_neg hne, zero_mul, sub_zero, zero_sub] at h1
+  have h2 : Tendsto (fun u : ℝ => cyclotomicHarmonic m n (2 * u)) atTop
+      (𝓝 (-orbitIntersection m n)) :=
+    h1.comp (tendsto_id.const_mul_atTop two_pos)
+  have h := (h1.const_mul 2).sub h2
+  rwa [show 2 * -orbitIntersection m n - -orbitIntersection m n = -orbitIntersection m n by ring]
+    at h
+
+/-- **Diagonal Infrared Counterterm Relocation Law:**
+On the diagonal `m = n`, the pole-node-completed twin kernel regenerates the logarithmic counterterm
+`φ(m) log u`:
+`(2 * cyclotomicHarmonic m m u - cyclotomicHarmonic m m (2 * u)) - φ(m) * log u → -orbitIntersection m m + φ(m) * (γ - log 2)`. -/
+theorem tendsto_completedTwinKernel_diag_sub_log_atTop {m : ℕ} (hm : 0 < m) :
+    Tendsto (fun u : ℝ =>
+      (2 * cyclotomicHarmonic m m u - cyclotomicHarmonic m m (2 * u)) -
+        (m.totient : ℝ) * Real.log u)
+      atTop
+      (𝓝 (-orbitIntersection m m +
+        (m.totient : ℝ) * (Real.eulerMascheroniConstant - Real.log 2))) := by
+  have h1 := tendsto_cyclotomicHarmonic_sub_totient_log_atTop hm hm
+  simp only [if_true] at h1
+  have h2 := h1.comp (tendsto_id.const_mul_atTop two_pos)
+  have h := ((h1.const_mul 2).sub h2).sub_const ((m.totient : ℝ) * Real.log 2)
+  have hlim : 2 * ((m.totient : ℝ) * Real.eulerMascheroniConstant - orbitIntersection m m) -
+      ((m.totient : ℝ) * Real.eulerMascheroniConstant - orbitIntersection m m) -
+      (m.totient : ℝ) * Real.log 2 =
+      -orbitIntersection m m + (m.totient : ℝ) * (Real.eulerMascheroniConstant - Real.log 2) := by
+    ring
+  rw [hlim] at h
+  refine h.congr' ?_
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with u hu
+  dsimp only [Function.comp_def, id]
+  rw [Real.log_mul two_pos.ne' hu.ne']
+  ring
+
+/-- **Full-Rank Infrared Survival Cone Collapse (`completedTwinKernel_infrared_survivalCone_eq_zero`):**
+For any pairwise distinct positive orders `m : Fin K → ℕ`, the pole-node-completed twin kernel
+`B u i j := 2 * cyclotomicHarmonic (m i) (m j) u - cyclotomicHarmonic (m i) (m j) (2 * u)` is
+positive semidefinite for `u ≥ 0`, renormalizes against `(Real.log u) • diag(φ(m_i))` as `u → +∞`
+to `-orbitIntersection (m_i) (m_j)` off the diagonal, and its infrared counterterm
+`M₀ i j = if i = j then φ(m_i) else 0` has trivial survival cone `{c | quad M₀ c ≤ 0} = {0}`. -/
+theorem completedTwinKernel_infrared_survivalCone_eq_zero {K : ℕ} {m : Fin K → ℕ}
+    (hm : ∀ i, 0 < m i) (hinj : Function.Injective m) :
+    (∀ u : ℝ, 0 ≤ u → ∀ c : Fin K → ℝ,
+      0 ≤ quad (Matrix.of fun i j =>
+        2 * cyclotomicHarmonic (m i) (m j) u - cyclotomicHarmonic (m i) (m j) (2 * u)) c) ∧
+    (∀ i j : Fin K, i ≠ j →
+      Tendsto (fun u : ℝ =>
+        2 * cyclotomicHarmonic (m i) (m j) u - cyclotomicHarmonic (m i) (m j) (2 * u))
+        atTop (𝓝 (-orbitIntersection (m i) (m j)))) ∧
+    {c : Fin K → ℝ |
+      quad (Matrix.of fun i j : Fin K => if i = j then ((m i).totient : ℝ) else 0) c ≤ 0} =
+      {(0 : Fin K → ℝ)} := by
+  refine ⟨fun u hu c => ?_, fun i j hij =>
+    tendsto_completedTwinKernel_offDiag_atTop (hm i) (hm j) (hinj.ne hij), ?_⟩
+  · have hpsd := cyclotomicHarmonicKernel_nonneg hm (x := fun _ => u) (fun _ => hu) c
+    simp only [quad, Matrix.of_apply]
+    refine hpsd.trans_eq (sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_)
+    rw [show u + u = 2 * u by ring]
+    ring
+  · ext c
+    simp only [Set.mem_setOf_eq, Set.mem_singleton_iff, quad, Matrix.of_apply]
+    constructor
+    · intro hc
+      have hdiag : (∑ i : Fin K, ∑ j : Fin K,
+          c i * (if i = j then ((m i).totient : ℝ) else 0) * c j) =
+          ∑ i : Fin K, ((m i).totient : ℝ) * c i ^ 2 := by
+        refine sum_congr rfl fun i _ => ?_
+        rw [sum_eq_single i]
+        · rw [if_pos rfl]; ring
+        · intro j _ hji; rw [if_neg hji.symm]; ring
+        · intro hi; exact absurd (Finset.mem_univ i) hi
+      rw [hdiag] at hc
+      funext i
+      have hnonneg : ∀ j ∈ (univ : Finset (Fin K)), 0 ≤ ((m j).totient : ℝ) * c j ^ 2 :=
+        fun j _ => mul_nonneg (Nat.cast_nonneg _) (sq_nonneg _)
+      have hsum0 : ∑ j : Fin K, ((m j).totient : ℝ) * c j ^ 2 = 0 :=
+        le_antisymm hc (sum_nonneg hnonneg)
+      have hi0 : ((m i).totient : ℝ) * c i ^ 2 = 0 :=
+        (sum_eq_zero_iff_of_nonneg hnonneg).mp hsum0 i (Finset.mem_univ i)
+      have hφ : ((m i).totient : ℝ) ≠ 0 := by exact_mod_cast (Nat.totient_pos.mpr (hm i)).ne'
+      exact sq_eq_zero_iff.mp ((mul_eq_zero.mp hi0).resolve_left hφ)
+    · rintro rfl
+      simp
 
 /-! ## §6. Positive Survivor 2: Dyadic Parity-Split Scale Anomaly (`I(q, 2q) = φ(q) log 2`) -/
 
@@ -868,12 +1152,12 @@ theorem ramanujanMode_two_mul_odd_oddShift {q : ℕ} (hq : q % 2 = 1) (j : ℕ) 
     omega
   have hquot : 2 * q / g = 2 * (q / g) := Nat.mul_div_assoc 2 hg_dvd
   have hq_div_odd : (q / g) % 2 = 1 := by
-    have hmul := Nat.div_mul_cancel hg_dvd
-    by_contra hev
-    have : 2 ∣ q := ⟨(q / g) / 2 * g, by omega⟩
+    have hmod : ((q / g) * g) % 2 = 1 := by rw [Nat.div_mul_cancel hg_dvd]; exact hq
+    rw [Nat.mul_mod, hg_odd] at hmod
     omega
   have hcop_qg : Nat.Coprime 2 (q / g) := coprime_two_of_odd hq_div_odd
-  have hμ : (μ (2 * (q / g)) : ℝ) = -(μ (q / g) : ℝ) := by
+  have hμ : moebiusReal (2 * (q / g)) = -moebiusReal (q / g) := by
+    unfold moebiusReal
     have hm := ArithmeticFunction.isMultiplicative_moebius.map_mul_of_coprime hcop_qg
     rw [ArithmeticFunction.moebius_apply_prime Nat.prime_two] at hm
     exact_mod_cast (by linarith : μ (2 * (q / g)) = -μ (q / g))
@@ -883,7 +1167,7 @@ theorem ramanujanMode_two_mul_odd_oddShift {q : ℕ} (hq : q % 2 = 1) (j : ℕ) 
     rw [hs1, hs2, hgcd, hquot, hμ, hφ_quot]
     ring
   unfold sieveLagMultiplier at hs_neg
-  rw [totient_two_mul_of_odd hq, neg_div] at hs_neg
+  rw [totient_two_mul_of_odd hq, ← neg_div] at hs_neg
   exact (div_left_inj' hφq).mp hs_neg
 
 /-- The odd-frequency Abel torsion energy:
@@ -908,9 +1192,10 @@ private theorem hasSum_torsionEnergy_neg {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
     have ht := Complex.reCLM.hasSum (Complex.hasSum_taylorSeries_neg_log hnr)
     simp only [Complex.reCLM_apply, Complex.neg_re, Complex.log_re] at ht
     exact ht.congr_fun fun k => by
-      rw [mul_pow, ← Complex.ofReal_pow, ← Complex.ofReal_natCast, Complex.div_ofReal_re,
+      symm
+      have hc : ((-r : ℝ) : ℂ) ^ k = (((-r) ^ k : ℝ) : ℂ) := (Complex.ofReal_pow (-r) k).symm
+      rw [mul_pow, hc, mul_div_right_comm, ← Complex.ofReal_natCast, ← Complex.ofReal_div,
         Complex.re_ofReal_mul]
-      ring
   have h := hasSum_sum fun ζ (hζ : ζ ∈ primitiveRoots m ℂ) =>
     hasSum_sum fun η (hη : η ∈ primitiveRoots n ℂ) => hterm ζ hζ η hη
   rw [torsionEnergy]
@@ -1185,21 +1470,21 @@ theorem shortCycle_re_W_eq_even_add_odd {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g
     translate_hasCompactSupport (hgoc.sub (translate_hasCompactSupport hgoc v)) (-(v / 2))
   have hh1_odd : ∀ x, h1 (-x) = -h1 x := by
     intro x
-    simp only [h1, ArithmeticCastelnuovoSeveri.translate, Pi.sub_apply]
+    dsimp only [h1, ge, ArithmeticCastelnuovoSeveri.translate, Pi.sub_apply]
     have e1 : -x - -(v / 2) = -(x - v / 2) := by ring
     have e2 : -x - -(v / 2) - v = -(x + v / 2) := by ring
     have e3 : x - -(v / 2) = x + v / 2 := by ring
     have e4 : x - -(v / 2) - v = x - v / 2 := by ring
-    rw [e1, e2, e3, e4, evenPartComplex_neg g (x - v / 2), evenPartComplex_neg g (x + v / 2)]
+    rw [e2, e1, e4, e3, evenPartComplex_neg g (x - v / 2), evenPartComplex_neg g (x + v / 2)]
     ring
   have hh2_ev : ∀ x, h2 (-x) = h2 x := by
     intro x
-    simp only [h2, ArithmeticCastelnuovoSeveri.translate, Pi.sub_apply]
+    dsimp only [h2, go, ArithmeticCastelnuovoSeveri.translate, Pi.sub_apply]
     have e1 : -x - -(v / 2) = -(x - v / 2) := by ring
     have e2 : -x - -(v / 2) - v = -(x + v / 2) := by ring
     have e3 : x - -(v / 2) = x + v / 2 := by ring
     have e4 : x - -(v / 2) - v = x - v / 2 := by ring
-    rw [e1, e2, e3, e4, oddPartComplex_neg g (x - v / 2), oddPartComplex_neg g (x + v / 2)]
+    rw [e2, e1, e4, e3, oddPartComplex_neg g (x - v / 2), oddPartComplex_neg g (x + v / 2)]
     ring
   have hh_sum : ∀ x, h x = h1 x + h2 x := by
     intro x
@@ -1208,42 +1493,45 @@ theorem shortCycle_re_W_eq_even_add_odd {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g
     ring
   have hev_re : evenPartReal (fun x => (h x).re) = fun x => (h2 x).re := by
     funext x
-    unfold evenPartReal
+    unfold evenPartReal; dsimp only
     rw [hh_sum x, hh_sum (-x), hh1_odd x, hh2_ev x]
     simp only [Complex.add_re, Complex.neg_re]
     ring
   have hodd_re : oddPartReal (fun x => (h x).re) = fun x => (h1 x).re := by
     funext x
-    unfold oddPartReal
+    unfold oddPartReal; dsimp only
     rw [hh_sum x, hh_sum (-x), hh1_odd x, hh2_ev x]
     simp only [Complex.add_re, Complex.neg_re]
     ring
   have hev_im : evenPartReal (fun x => (h x).im) = fun x => (h2 x).im := by
     funext x
-    unfold evenPartReal
+    unfold evenPartReal; dsimp only
     rw [hh_sum x, hh_sum (-x), hh1_odd x, hh2_ev x]
     simp only [Complex.add_im, Complex.neg_im]
     ring
   have hodd_im : oddPartReal (fun x => (h x).im) = fun x => (h1 x).im := by
     funext x
-    unfold oddPartReal
+    unfold oddPartReal; dsimp only
     rw [hh_sum x, hh_sum (-x), hh1_odd x, hh2_ev x]
     simp only [Complex.add_im, Complex.neg_im]
     ring
-  rw [← zetaZeroConfig_W_translate_self (hg.sub (translate_contDiff hg v))
+  rw [← zetaZeroConfig_W_translate_self (f := g - ArithmeticCastelnuovoSeveri.translate v g)
+      (hg.sub (translate_contDiff hg v))
       (hgc.sub (translate_hasCompactSupport hgc v)) (-(v / 2)),
-    ← zetaZeroConfig_W_translate_self (hge.sub (translate_contDiff hge v))
+    ← zetaZeroConfig_W_translate_self (f := ge - ArithmeticCastelnuovoSeveri.translate v ge)
+      (hge.sub (translate_contDiff hge v))
       (hgec.sub (translate_hasCompactSupport hgec v)) (-(v / 2)),
-    ← zetaZeroConfig_W_translate_self (hgo.sub (translate_contDiff hgo v))
+    ← zetaZeroConfig_W_translate_self (f := go - ArithmeticCastelnuovoSeveri.translate v go)
+      (hgo.sub (translate_contDiff hgo v))
       (hgoc.sub (translate_hasCompactSupport hgoc v)) (-(v / 2))]
   change (zetaZeroConfig.W h h).re = (zetaZeroConfig.W h1 h1).re + (zetaZeroConfig.W h2 h2).re
   rw [GaloisForLFunctions.ArithmeticPositivityTheory.zeta_W_re_eq_fullZeroForm_re_add_im hh_d hh_c,
     GaloisForLFunctions.ArithmeticPositivityTheory.zeta_W_re_eq_fullZeroForm_re_add_im hh1_d hh1_c,
     GaloisForLFunctions.ArithmeticPositivityTheory.zeta_W_re_eq_fullZeroForm_re_add_im hh2_d hh2_c,
-    fullZeroForm_eq_even_add_odd (Complex.reCLM.contDiff.comp hh_d)
-      (hh_c.comp_left Complex.zero_re),
-    fullZeroForm_eq_even_add_odd (Complex.imCLM.contDiff.comp hh_d)
-      (hh_c.comp_left Complex.zero_im),
+    fullZeroForm_eq_even_add_odd (F := fun u => (h u).re)
+      (Complex.reCLM.contDiff.comp hh_d) (hh_c.comp_left Complex.zero_re),
+    fullZeroForm_eq_even_add_odd (F := fun u => (h u).im)
+      (Complex.imCLM.contDiff.comp hh_d) (hh_c.comp_left Complex.zero_im),
     hev_re, hodd_re, hev_im, hodd_im]
   ring
 
@@ -1271,16 +1559,16 @@ theorem even_shortCycle_m_one_re_W_ge {g : ℝ → ℂ} {η : ℝ}
   have hh_c : HasCompactSupport h := translate_hasCompactSupport hf_c (-(v / 2))
   have hh_odd : ∀ x, h (-x) = -h x := by
     intro x
-    simp only [h, f, ArithmeticCastelnuovoSeveri.translate, Pi.sub_apply]
+    dsimp only [h, f, ArithmeticCastelnuovoSeveri.translate, Pi.sub_apply]
     have e1 : -x - -(v / 2) = -(x - v / 2) := by ring
     have e2 : -x - -(v / 2) - v = -(x + v / 2) := by ring
     have e3 : x - -(v / 2) = x + v / 2 := by ring
     have e4 : x - -(v / 2) - v = x - v / 2 := by ring
-    rw [e1, e2, e3, e4, hev (x - v / 2), hev (x + v / 2)]
+    rw [e2, e1, e4, e3, hev (x - v / 2), hev (x + v / 2)]
     ring
   have hh_zero : ∀ x, 181 / 500 < |x| → h x = 0 := by
     intro x hx
-    simp only [h, f, ArithmeticCastelnuovoSeveri.translate, Pi.sub_apply]
+    dsimp only [h, f, ArithmeticCastelnuovoSeveri.translate, Pi.sub_apply]
     have hnot1 : x - -(v / 2) ∉ tsupport g := by
       intro hm
       have := mem_Icc.mp (hgs hm)
@@ -1316,7 +1604,7 @@ theorem even_shortCycle_m_one_re_W_ge {g : ℝ → ℂ} {η : ℝ}
   have hnorm_eq : ∫ x, ‖h x‖ ^ 2 = ∫ x, ‖f x‖ ^ 2 := by
     simp only [h, ArithmeticCastelnuovoSeveri.translate]
     exact integral_sub_right_eq_self (fun x => ‖f x‖ ^ 2) (-(v / 2))
-  rw [← zetaZeroConfig_W_translate_self hf_d hf_c (-(v / 2))]
+  rw [← zetaZeroConfig_W_translate_self (f := f) hf_d hf_c (-(v / 2))]
   change _ ≤ (zetaZeroConfig.W h h).re
   rw [GaloisForLFunctions.ArithmeticPositivityTheory.zeta_W_re_eq_fullZeroForm_re_add_im hh_d hh_c,
     ← hnorm_eq, hnorm_h]

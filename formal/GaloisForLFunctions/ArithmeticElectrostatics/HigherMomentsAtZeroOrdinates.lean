@@ -16,11 +16,15 @@ the `2k`-th moment, and the number of aligned zero ordinates falls by the factor
 * **Higher-moment large values** (`exists_card_largeValues_pow_le`): the zero copies with ordinates
   in `(A, A + R]` at which `|F(γ)| ≥ V` number at most
   `K log(A + R + 1)(R + 8X^k(1 + log X^k))(2 + log² X^k) k! (Σ|c_p|²)^k / V^{2k}`.
+* **The saving of order `k`** (`exists_card_largeValues_le_theta_pow`): if `X^k ≤ R` and
+  `k Σ|c_p|² ≤ θ V²`, the count is `O(log(A + R) R log³ R · θ^k)`, since `k! ≤ k^k`.
+* **Power saving for the prime detector** (`sum_normSq_detector_le`,
+  `exists_card_aligned_power_saving`): for `c_p = w_p log p/√p`, `|w_p| ≤ 1`, the mass is at most
+  `log X (log X + log 4 + 4)`; with `k = ⌊log R/log X⌋` and `log R (log X + 7) ≤ θ V²` the count is
+  `O(log(A + R) R log³ R · θ^{−1} R^{log θ/log X})`.
 
-For the detector `c_p = w_p log p/√p` with `X = (log T)^C`, the mass is `O(log² X)`, and the choice
-`k ≍ log T/(C log log T)` (so that `X^k ≤ T`) makes the ratio `k!(Σ|c_p|²)^k/V^{2k}` at `V ≍ log T` a
-negative power of `T`: aligned zero ordinates are power-sparse, the input the report's Q1 asks to
-compare with zero density.
+At `V = η log T`, `X = (log T)^C`, `R ≍ T` one may take `θ ≍ log log T/(η² log T)`: the aligned zero
+ordinates number `T^{1 − 1/C + o(1)}`, a power saving against the `≍ T log T` zeros of the window.
 -/
 
 noncomputable section
@@ -408,8 +412,6 @@ theorem exists_card_largeValues_le_theta_pow :
       _ ≤ K * Real.log (A + R + 1) * ((9 * (R * (1 + Real.log R))) *
             ((2 + Real.log R ^ 2) * (θ ^ k * (V ^ k) ^ 2))) := by
           gcongr
-          · have := Real.log_natCast_nonneg (X ^ k); positivity
-          · nlinarith
       _ = _ := by ring
   exact le_of_mul_le_mul_right hbound hVk
 
@@ -471,7 +473,7 @@ theorem exists_card_aligned_power_saving :
     calc θ ^ (k : ℝ) ≤ θ ^ (q - 1) := Real.rpow_le_rpow_of_exponent_ge hθ hθ1 (by linarith)
       _ = θ⁻¹ * (R : ℝ) ^ (Real.log θ / Real.log X) := by
           rw [Real.rpow_sub hθ, Real.rpow_one, Real.rpow_def_of_pos hθ,
-            Real.rpow_def_of_pos hR0, div_eq_inv_mul θ]
+            Real.rpow_def_of_pos hR0, div_eq_inv_mul]
           congr 2
           simp only [q]; ring
   have hfront : 0 ≤ K * Real.log (A + R + 1) * (R * (1 + Real.log R) * (2 + Real.log R ^ 2)) := by
