@@ -45,3 +45,41 @@ Each contribution has a source-defined statement, paper argument, Lean proof, di
 umbrella import and README explanation. The full programme stays open while its producer,
 exhaustion, surplus or extinction questions remain unresolved. Every no-go retains its strongest
 positive survivor and formalizes it when ready.
+
+## Contributions under development
+
+- `TheIndexIsPaidByTransverseEnergy.lean`: the distinct transverse energy bounds every finite
+  smooth Weil Gram's negative index; the pole plane adds one to the corresponding intersection
+  positive index. The module has passed its dependency-producing Lean check; a final direct audit
+  remains.
+- `TheArithmeticSourcePaysTheIndex.lean`: select one multiplicity copy per support point to compare
+  distinct and copied energy. Ordered damping/taper limits turn each finite index witness into a
+  finite arithmetic source-work witness. Draft, not yet checked.
+- `BoundedSourceWork.lean`: the angular kernel is bounded rowwise by the summable Cauchy height
+  weight. Finite off-line support therefore gives finite copied energy; the reverse follows from
+  the distinct-energy bound. Draft, not yet checked.
+- `TheWorkAndIndexHaveTheSameFiniteStratum.lean`: the fixed spline integer-log index is uniformly
+  bounded iff damped source work is eventually bounded. Both are exactly finite off-line support.
+  Draft, not yet checked. This is a finiteness classification, not an extinction theorem.
+- `SingularRefinement.lean`: for a mixed block `B=A X`, triangular congruence gives all three
+  inertia additivity laws without inverting `A`; the Schur complement is independent of the lift
+  `X`. Draft, not yet checked. Arithmetic range compatibility and payment remain separate duties.
+
+## Strict energy margin: proposed proof
+
+Let `rho=beta+i gamma` be an off-line Xi support. Its horizontal partner `1-conj(rho)` contributes
+one to its angular row. The second zero `1-rho` is distinct from that partner because Xi has no
+real zeros. Its contribution is
+
+`(2 beta-1)^2 / ((2 beta-1)^2 + (2 gamma)^2) > 0`.
+
+Thus every off-line angular row exceeds one. A nonempty finite right packet together with its
+reflected packet has twice as many members, so its global transverse-energy cost strictly exceeds
+its cardinality. Extracting a packet of size equal to a positive finite Weil negative index gives
+`index < distinct energy <= copied energy`. Source work should then eventually exceed the index
+itself. Conjugation supplies two right zeros when RH fails, hence a strict global gap above two.
+There is no claimed uniform extra margin: the displayed surplus can tend to zero.
+
+This proof must be formalized before it is recorded as a theorem. The central arithmetic upper
+estimate, signed-overlap payment, exhaustive descent, signed prime surplus, terminal exclusion and
+finite-field realization remain open programme tasks.

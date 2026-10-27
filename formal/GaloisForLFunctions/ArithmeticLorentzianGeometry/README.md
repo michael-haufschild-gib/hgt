@@ -11,6 +11,9 @@ Its scope includes both constructing individual signature certificates and contr
 compatibility. Anchors, Schur reserves and polar dispersion quantify that compatibility;
 corrected gluing, grouping and linear restriction supply a composition calculus. The arithmetic
 question is which source energy pays these costs while retaining the specified pairing.
+Its scope also includes sharp repair laws: explicit coherent corrections, their least possible
+rank, and exact coefficient thresholds calibrate the signature information an arithmetic
+construction must supply.
 
 The guiding analogy with combinatorial Hodge theory is an inductively closed class of objects:
 elementary objects have a proved signature; restriction, links and composition preserve it;
@@ -39,6 +42,12 @@ The reserve–dispersion identity makes this failure quantitative: a global sign
 local reserves to pay the disagreement. This gives the programme a concrete construction
 problem—derive that payment from arithmetic—and a way to test proposed local-to-global routes
 before passing to an infinite family.
+
+Reflection splitting supplies a second calibration. In a complete Frobenius window, the odd
+reflection sector counts the exact rank cost of restoring Hodge index. A coherent repair can
+be constructed unconditionally, but proving the original form has Hodge index requires an
+arithmetic reason for that sector to vanish. This separates a repair mechanism from a producer
+of the original sign.
 
 Three problems must remain separate:
 
@@ -81,6 +90,10 @@ The programme uses the following objects.
 | Schur reserve `R_Q(x)=B_Q(e,x)²/Q[e]−Q[x]` | Measures the negative energy left after the positive direction is removed |
 | Polar dispersion `V_e` and its positive semidefinite matrix `C_e` | Measure the exact incompatibility of local polar rows |
 | Corrected assembly `Glue_e(Q_i)=Σ_i Q_i−C_e(Q_i)` | Combines local reserves while preserving the total anchor row |
+| Even and odd reflected Frobenius evaluation | Split the actual span Gram into a difference of positive Grams |
+| Half-defect correction `C_n=E_-^*E_-` | Gives a positive repair coherent under window restriction and preserving the diagonal graph |
+| Distinct outer spectrum and repair rank | Quantify the exact unavoidable cost on spectrum-complete windows |
+| Hodge completion `[[J,B],[B*,B*JB−G]]` | Converts positivity repair of a defect into a repair preserving the pole plane and its couplings |
 | Links and symmetric incidence tensors | Encode a local-to-global construction with independently proved local signs |
 | Prime ladders, successor maps and logarithmic cells | Supply arithmetic operations and their compatibility relations |
 | Gauges with a fixed infinite-place and pole structure | Distinguish changing coordinates from changing the completed arithmetic source |
@@ -213,6 +226,63 @@ The reusable tools expose each part of this mechanism:
 | `polarGluingCorrection_group`, `qf_polarGlue_group` | Compose corrections and assemblies consistently across a hierarchy |
 | `qf_polarGluingCorrection_pullback`, `qf_polarGlue_pullback` | Transport the construction through finite linear restrictions |
 
+### Reflection splitting and the optimal Frobenius repair
+
+[TheHalfDefectIsTheOptimalHodgeRepair](TheHalfDefectIsTheOptimalHodgeRepair.lean) connects
+ArithmeticPolarization's reflection defect, ACS's exact Frobenius negative index, and ALG's
+Hodge completion. For any curve datum, let `r(z)=1/conj(z)` and split evaluation into
+
+\[
+ E_\pm(x)_j=\frac{E_x(\beta_j)\pm E_x(r\beta_j)}2,\qquad
+ C_n=E_-^*E_-,\quad P_n=E_+^*E_+.
+\]
+
+The actual normalized Frobenius span Gram satisfies
+
+\[
+ G_n+C_n=P_n\succeq0,\qquad
+ C_n[x]=\frac14\sum_j|E_x(\beta_j)-E_x(r\beta_j)|^2
+       =\frac12\Delta_n[x].
+\]
+
+On real classes, `Δ_n` is the existing Frobenius reflection defect; the square sum gives its
+Hermitian extension. Thus half that defect already repairs the form. The correction commutes with initial-window restriction and vanishes on the entire
+row and column of the diagonal graph. In the original graph coordinates it gives
+`spanDefect(d)+Δ(d_k q^(k/2))/2 ≥ 0` for every signed real graph class.
+
+Write `κ=#{distinct β: |β|>1}`. Once `n≥#spectrum`,
+
+* `rank C_n=κ`, and every matrix `R` with `G_n+R⪰0` has `rank R≥κ`, even when `R` itself is not
+  positive semidefinite;
+* `G_n+t C_n⪰0` holds exactly when the datum is unitary or `t≥1`;
+* for every prescribed pole row `B`, replacing the graph block in
+  `[[J,B],[B*,B*JB−G_n]]` by `B*JB−G_n−C_n` restores Hodge index, with the same exact threshold.
+
+The proof factors odd evaluation through the distinct outer spectrum. ACS's Pontryagin law
+then proves rank optimality; antisymmetric Lagrange interpolants prove the coefficient
+threshold. The combined unconditional theorem is `optimal_frobenius_hodge_repair`.
+No purity, point-count positivity or Hodge inequality is assumed for the datum.
+
+| Tool | Role |
+|---|---|
+| `spanGram_add_halfDefectRepair` | Exact even–odd Gram decomposition |
+| `halfDefectRepair_eq_half_frobReflectionDefect` | Identification with the existing arithmetic defect |
+| `halfDefectRepair_submatrix` | Coherent restriction through the window filtration |
+| `rank_halfDefectRepair`, `exists_positive_repair_iff` | Exact minimum rank and admissible rank budgets |
+| `spanGram_scaled_halfDefectRepair_posSemidef_iff` | Sharp coefficient threshold |
+| `halfDefectRepair_hodgeIndex_iff` | Transfer of that threshold while preserving pole couplings |
+
+This is optimality in rank and along the specified reflection-defect ray. It does not assert a
+least correction in the positive-semidefinite order. Rank optimality requires a window holding
+the spectrum, while positivity and restriction compatibility hold on every window. Abstract
+negative-part repairs already exist in HTGeometry and the restricted-Weil theory; the result
+here supplies this explicit coherent construction and its exact arithmetic calibration.
+
+The repaired pairing differs from the original one. At a complete window an outer spectral
+pair supplies a class with zero even evaluation and strictly positive odd energy. Consequently
+an arithmetic proof of the original Hodge index must eliminate this odd sector through a
+proved property of the source. Positivity of the repaired form cannot replace that step.
+
 ### Links and trickle-down
 
 [TheHodgeIndexTricklesDown](TheHodgeIndexTricklesDown.lean) proves a local-to-global signature
@@ -296,6 +366,15 @@ correction remains necessary after available local reserves are allocated. Assoc
 pullback compatibility settle the finite algebra; uniform payment and passage to the limiting
 arithmetic form remain research questions.
 
+**Arithmetic elimination of reflection-odd classes.** The optimal Frobenius repair identifies
+the obstruction exactly: each distinct outer eigenvalue contributes one unavoidable rank,
+and antisymmetric interpolation defeats every smaller coefficient along the reflection-defect
+ray. Seek section, incidence or effectivity identities that exclude these classes for actual
+arithmetic objects without assuming purity. Relate the coherent finite-window repair to
+source-defined quantities and determine what survives in infinite-spectrum limits. An
+arbitrary windowwise negative-part correction supplies neither coherence nor such a source
+identity by itself.
+
 **An inductive arithmetic class.** Construct sections or incidence objects whose links remain
 in the same class. Prove the local signature from counting or another independent arithmetic
 operation. Over finite fields, this construction must reject the golden and complex fake data
@@ -360,7 +439,7 @@ law contradicting a global budget, could exclude an off-line zero. Average rarit
 | ArithmeticIntersectionTheory | Prime ladders, transfers and renormalization cocycles |
 | ArithmeticEffectivityTheory | Counting, Riemann–Roch growth and the distinction between a constructed cone and assumed effectivity |
 | BiarithmeticGaugeGeometry; ArithmeticCorrelationGeometry | Prime gauge torus, successor connection and source selection |
-| ArithmeticPolarization; ConjugateDiagonalGeometry | Positive versus equivariant pairings and their exact defect |
+| ArithmeticPolarization; ConjugateDiagonalGeometry | Reflected pairing, even–odd splitting, and the sharp half-defect repair of Frobenius windows |
 | ArithmeticElectrostatics | Currents, transverse energy, quantization and source work |
 | RenormalizedArithmeticPotentialTheory; RenormalizedBiarithmeticGeometry | Counterterm rank, finite parts and surviving domains |
 | SpacingScaleHarmonicAnalysis | Joint analytic payment, overlap kernels and exhaustive test criteria |
@@ -375,8 +454,9 @@ explicit.
 
 The foundation rests on the degree-two equivalences and domination theorem; the finite-Gram
 bridge to the actual scaling surface; the trickle-down theorem and its Metzler boundary; common
-gauge rigidity; the bivariate Lorentzian–Turán equivalence; and the reserve–dispersion gluing
-law with its matrix correction, composition rules and sharp calibration. These pillars
+gauge rigidity; the bivariate Lorentzian–Turán equivalence; the reserve–dispersion gluing
+law with its matrix correction, composition rules and sharp calibration; and the coherent
+half-defect repair, its optimal rank and exact pole-preserving Hodge threshold. These pillars
 describe valid mechanisms and their limits. They do not assert the
 unproved arithmetic input needed to reach the full Weil form.
 
@@ -389,7 +469,10 @@ A contribution toward RH must identify the producer or transfer step it improves
 to distinguish the arithmetic source, it must explain its behavior on the relevant sign twin or
 fake datum. If it retires a mechanism, it must retain its strongest positive boundary,
 classification or replacement construction. New vocabulary or another RH-equivalent endpoint
-alone is not enough.
+alone is not enough. A repair classification must specify its optimum, admissible corrections,
+window domain and compatibility under restriction. Its identified arithmetic form and sharp
+survivor are contributions; positivity of a modified form must remain distinct from positivity
+of the target.
 
 Full success means a source-defined signature construction for the actual Weil intersection
 form on an exhaustive signed family. Intermediate successes include a new arithmetic section

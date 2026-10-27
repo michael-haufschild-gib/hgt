@@ -289,10 +289,18 @@ the place that pays.
     `A_{p'}(⌊M/m⌋) + log m − j log p`, with `A_{p'}(y) = log y − γ_p + o(1)`. Across classes it is exactly
     one prime power, `log p`. The finite part on class combinations is `−2γ_p Σ a_j² |w_j|²` plus
     `log p Σ_{j ≠ j'} a_j a_{j'} |w_{max}|²`; normalized, the coupling is `log p · p^{−|j−j'|/2}`.
+18. **The sign of the tower finite part** (`localEuler_sub_eq`, `towerFinitePart_ge`, `kmsForm_one`,
+    `towerFinitePart_one`, `towerFinitePart_add_nonneg_iff`, `towerFinitePart_nonneg_iff`,
+    `towerDeficit_two_pos`, `towerDeficit_nonpos`). In Weil's form the tower finite part is
+    `F_p = 2γ_p + log p (1 − K_q)`. The Kac–Murdock–Szegő bound gives `F_p ≥ −2d_p`, with the
+    **tower deficit** `d_p = √p log p/(p − 1) − γ`. The uniform class profile attains it:
+    `F_p(1_N) = −2N d_p + O(1)`. So `F_p + c ≥ 0` on every depth iff `c ≥ 2d_p`: the prime finite
+    part is nonnegative on the classes of `p` iff `√p log p ≤ γ(p − 1)`. This fails at `p = 2` and
+    holds for `p ≥ 2^16` (numerically exactly for `p ≥ 47`).
 
 ### F. Stability
 
-18. **The matched stability law** (`markovEnergy_atomicTest_ge_matched`, `matchedAtomicGain_nonneg`,
+19. **The matched stability law** (`markovEnergy_atomicTest_ge_matched`, `matchedAtomicGain_nonneg`,
     `atomicWidth_le_matchedAtomicWidth`, `markovEnergy_atomicTest_nonneg_matched`). The archimedean
     Lévy gain `e^{−1/2} log(δ_N/(2w))` of an atomic test pays the covariant counterterm
     `log N + O(1)`. So the Markov form (archimedean minus prime) is nonnegative at every width
@@ -300,18 +308,18 @@ the place that pays.
 
 ### G. Gauge
 
-19. **The twisted Mertens sum** (`sum_one_add_liouville_le`, `liouvilleMertensSum_le`,
+20. **The twisted Mertens sum** (`sum_one_add_liouville_le`, `liouvilleMertensSum_le`,
     `neg_le_liouvilleMertensSum`). `Σ_{t ≤ y} λ(t)Λ(t)/t = −log y + O(1)`: the even prime powers are
     summable.
-20. **Dirichlet's hyperbola identity** (`sum_divisors_div_swap`). The divisor part of a row averages
+21. **Dirichlet's hyperbola identity** (`sum_divisors_div_swap`). The divisor part of a row averages
     to its Mertens part.
-21. **The spectral ends** (`abs_atomicWeilForm_le`, `atomicWeilForm_liouvillePole_le`,
+22. **The spectral ends** (`abs_atomicWeilForm_le`, `atomicWeilForm_liouvillePole_le`,
     `atomicWeilForm_spectrum_ends`). `|P_N| ≤ log N + O(1)`. The pole vector reaches the top and the
     Liouville pole vector the bottom, `−log N + O(1)`.
-22. **The polar divergence flips** (`primeBilinear_liouvilleTrunc_eq`,
+23. **The polar divergence flips** (`primeBilinear_liouvilleTrunc_eq`,
     `abs_primeBilinear_liouvilleTrunc_add_le`, `abs_liouvilleForm_stepProfile_add_le`). On uniform
     profiles `P(λx) = −ℓ(x)² + O(|c|-mass)`.
-23. **The matching law** (`IsSignGauge`, `sum_weilPrimeKernel_gauge`, `primeBilinear_gaugeTrunc_eq`,
+24. **The matching law** (`IsSignGauge`, `sum_weilPrimeKernel_gauge`, `primeBilinear_gaugeTrunc_eq`,
     `abs_primeBilinear_gaugeTrunc_sub_le`, `abs_gaugeForm_stepProfile_sub_le`, `euler_matching`,
     `liouville_matching`, `finiteFlip_matching`). If `A_ε(y) = κ log y + O(1)`, then
     `P(εx) = κ ℓ(x)² + O(|c|-mass)` on uniform profiles. The Euler gauge has `κ = 1`, Liouville
@@ -338,6 +346,7 @@ the place that pays.
 | **RP13 The matched stability law** | the Markov form of every atomic test of width `≤ (δ_N/4) N^{−e^{1/2}} e^{−C}` is nonnegative | `markovEnergy_atomicTest_nonneg_matched`, `markovEnergy_atomicTest_ge_matched` |
 | **RP14 Gårding is a finite-rank survival** | nonnegative on codimension `≤ k` ⇔ survival with a positive counterterm of rank `≤ k` ⇔ renormalized limit of positive forms; at most `k` negative directions | `garding_iff_survival`, `garding_iff_regularized`, `finrank_le_of_garding` |
 | **RP15 The anomaly costs at most one logarithm** | `κ_tor(N) ≤ 2 log N + log 4 + 4 + 2C_e`; the window `[(3/2) log N − C₁, 2 log N + C₂]` | `renormalizesAt_two_log`, `torsionCounterterm_window`, `anomaly_cost_window` |
+| **RP16 The sign of the tower finite part** | `F_p + c|·|² ≥ 0` on every depth iff `c ≥ 2d_p`, `d_p = √p log p/(p − 1) − γ`; `d_2 > 0`, `d_p ≤ 0` for `p ≥ 2^16` | `towerFinitePart_add_nonneg_iff`, `towerFinitePart_nonneg_iff`, `towerDeficit_two_pos`, `towerDeficit_nonpos` |
 
 ---
 
@@ -354,8 +363,10 @@ The twelve questions of the report (§4.4), in RAPT's terms.
    regulator in the corpus (RP1, RP6). What replaces it is the tensor law. Condition (ii) holds:
    the finite part is covariant under `[p]` (RP9). Condition (iii) is the sign of the finite part on
    the degree-zero classes. Its prime component is computed: the positive scalar `+2γ` in Weil's
-   form on uniform profiles (RP10), and minus the tower form of `p` on the classes (RP12). The
-   archimedean and polar components are open (§9.1). *Answer:* the admissible regulator is the
+   form on uniform profiles (RP10), and minus the tower form of `p` on the classes (RP12). Its sign
+   is decided prime by prime (RP16): nonnegative on the classes of `p` iff `√p log p ≤ γ(p − 1)`,
+   with the exact deficit `2d_p` at the small primes. The archimedean and polar components are
+   open (§9.1). *Answer:* the admissible regulator is the
    horizon, its metric is the tensor counterterm, and its prime finite part is the local tower form.
 2. **Does the anomaly cancel?** Yes, in two ways. Removing the self-intersection, as Weil's prime
    sum does, gives a covariant renormalized form. Covariance then forces a scalar counterterm,
@@ -447,10 +458,11 @@ theorem for characters; the tensor law for several primes at once.
    matched law (RP13) holds at widths `δ_N N^{−e^{1/2}}`. The remaining gap is the constant
    `e^{−1/2}` of the Lévy gain, together with the shifts beyond the atomic spacing, where the atoms
    interact through the archimedean kernel and the pole.
-2. **The sign of the prime finite part on the classes.** The prime finite part on the classes is
-   `−2γ_p + log p (K_q − 1)` (RP12). Weil's form contains its negative,
-   `2γ_p + log p (1 − K_q) ≥ 2γ_p − 2q log p/(1 − q)` by the local tower bounds (AIT). Decide for which
-   `p` this is positive, and what the archimedean place must add for the others.
+2. **Who pays the tower deficit.** The sign of the prime finite part on the classes is decided
+   (RP16): it is nonnegative on the classes of `p` iff `d_p = √p log p/(p − 1) − γ ≤ 0`, and
+   otherwise exactly `2d_p` is missing on the uniform class profile. The small primes (`p ≤ 43`)
+   carry a deficit. Compute the archimedean and polar finite parts on the classes of `p` and decide
+   whether they cover `2d_p`.
 3. **Characters at the horizon.** Profiles twisted by a non-principal character should have bounded
    prime form, with finite part `−L′/L(1, χ)`. This needs Mertens' theorem for characters, and would
    identify the survival cone on residue classes mod `q` with the character space.
@@ -517,6 +529,7 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `TheFinitePartIsEulersConstant` | Mertens with Euler's constant; roundoff; the finite part of the pole Gram; `−2γ` on step profiles and on the polar hyperplane |
 | `TheFinitePartIsTheTowerForm` | the local Mertens theorem and local Euler constant; class masses; exact rows inside and across classes; the finite part on the classes is the tower form |
 | `TheMatchedStabilityLaw` | AES's stability law at atomic resolution with the covariant counterterm; the matched width `δ_N N^{−e^{1/2}}` |
+| `TheSignOfTheTowerFinitePart` | the tower deficit; the KMS bound and the uniform class profile; the sign law; `p = 2` and large `p` |
 | `TheLiouvilleGaugeFlipsThePolarDivergence` | Liouville signs; the twisted Mertens sum; Dirichlet's hyperbola; spectral ends; the polar flip |
 | `PolarMatchingReadsTheDensityOfTheGauge` | sign gauges; gauged rows and pole Gram; the matching law; Euler, Liouville and finite-flip instances |
 | `TheLawsOfRenormalizedArithmeticPotentialTheory` | the laws in one statement, `renormalized_arithmetic_potential_theory_laws` |

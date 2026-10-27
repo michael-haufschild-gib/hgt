@@ -86,7 +86,7 @@ theorem towerFinitePart_ge (hp : p.Prime) (N : ℕ) (b : ℕ → ℝ) :
     have h : -2 * (q / (1 - q)) * S = S - (1 + q) / (1 - q) * S := by
       field_simp [(by linarith : (1 : ℝ) - q ≠ 0)]
       ring
-    rw [h, ge_iff_le, sub_le_sub_iff_left, div_mul_eq_mul_div, div_le_iff₀ (by linarith)]
+    rw [h, ge_iff_le, sub_le_sub_iff_left, div_mul_eq_mul_div, le_div_iff₀ (by linarith)]
     linarith
   have h1 := mul_le_mul_of_nonneg_left hK' hL
   have hd : towerDeficit p = -(localEuler p - Real.log p * (q / (1 - q))) := by rw [hE]; ring
@@ -104,7 +104,7 @@ theorem sum_range_pow_sub {q : ℝ} (hq : q ≠ 1) (N : ℕ) :
       rw [mul_sum]
       exact sum_congr rfl fun i hi => by
         rw [show N + 1 - i = N - i + 1 by have := mem_range.mp hi; omega, pow_succ]; ring
-    rw [sum_range_succ, hshift, ih, Nat.add_sub_cancel_left, pow_one]
+    rw [Finset.sum_range_succ, hshift, ih, Nat.add_sub_cancel_left, pow_one]
     field_simp
     ring
 
@@ -121,7 +121,7 @@ theorem kmsForm_one_succ (q : ℝ) (N : ℕ) :
       have h := (mem_range.mp hj).le
       simp [kmsEntry, max_eq_left h, min_eq_right h]
   unfold kmsForm
-  simp only [sum_range_succ, sum_add_distrib, one_mul, mul_one, e1, e2, kmsEntry_self]
+  simp only [Finset.sum_range_succ, sum_add_distrib, one_mul, mul_one, e1, e2, kmsEntry_self]
   ring
 
 /-- **The tower form on the uniform profile**:
@@ -162,7 +162,7 @@ theorem towerFinitePart_add_nonneg_iff (hp : p.Prime) (c : ℝ) :
   constructor
   · intro h
     by_contra hlt
-    push_neg at hlt
+    rw [not_le] at hlt
     have hq0 : 0 ≤ 1 / Real.sqrt p := inv_sqrt_prime_nonneg p
     have hq1 : 1 / Real.sqrt p < 1 := inv_sqrt_prime_lt_one hp
     have hL : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hp.one_lt.le)

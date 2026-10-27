@@ -41,7 +41,8 @@ private theorem spanGram_entry (n : ℕ) (k l : Fin n) :
     D.spanGram n k l = ∑ j, conj (D.β j ^ (k : ℕ)) *
       circleReflect (D.β j) ^ (l : ℕ) := by
   simpa [dotProduct, mulVec, windowEval_apply] using
-    D.spanGram_sesq n (Pi.single k 1) (Pi.single l 1)
+    D.spanGram_sesq n (fun a => if a = k then 1 else 0)
+      (fun a => if a = l then 1 else 0)
 
 /-- The reflected Gram splits into positive even and negative odd evaluation Grams. -/
 theorem spanGram_add_halfDefectRepair (n : ℕ) :
@@ -64,7 +65,7 @@ theorem spanGram_add_halfDefectRepair (n : ℕ) :
         intro j _
         ring
       _ = D.spanGram n k l := by
-        rw [Finset.sum_div, Finset.sum_add_distrib, hflip, spanGram_entry]
+        rw [← Finset.sum_div, Finset.sum_add_distrib, hflip, spanGram_entry]
         ring
   exact (sub_eq_iff_eq_add.mp hdiff).symm
 
@@ -101,7 +102,7 @@ theorem frobeniusOdd_mulVec (n : ℕ) (x : Fin n → ℂ) (j : ι) :
       (windowEval n (D.β j) x - windowEval n (circleReflect (D.β j)) x) / 2 := by
   simp only [mulVec, dotProduct, frobeniusOdd, windowEval_apply,
     ← Finset.sum_sub_distrib]
-  rw [← Finset.sum_div]
+  rw [Finset.sum_div]
   apply Finset.sum_congr rfl
   intro k _
   ring
@@ -112,7 +113,7 @@ theorem frobeniusEven_mulVec (n : ℕ) (x : Fin n → ℂ) (j : ι) :
       (windowEval n (D.β j) x + windowEval n (circleReflect (D.β j)) x) / 2 := by
   simp only [mulVec, dotProduct, frobeniusEven, windowEval_apply,
     ← Finset.sum_add_distrib]
-  rw [← Finset.sum_div]
+  rw [Finset.sum_div]
   apply Finset.sum_congr rfl
   intro k _
   ring
@@ -130,23 +131,26 @@ theorem halfDefectRepair_eq_half_frobReflectionDefect (n : ℕ) (e : ℕ → ℝ
     hermQuad (halfDefectRepair D n) (fun k => (e k : ℂ)) =
       D.frobReflectionDefect (Finset.range n) e / 2 := by
   have heval : ∀ z : ℂ, windowEval n z (fun k => (e k : ℂ)) =
-      CurveDatum.frobPoly (Finset.range n) e z := by
+      frobPoly (Finset.range n) e z := by
     intro z
     exact Fin.sum_univ_eq_sum_range (fun k => (e k : ℂ) * z ^ k) n
   rw [halfDefectRepair_energy, CurveDatum.frobReflectionDefect]
   simp_rw [heval, ← D.β_reflPerm, Complex.normSq_div, Complex.normSq_eq_norm_sq]
   norm_num only [norm_ofNat, show (2 : ℝ) ^ 2 = 4 by norm_num]
-  rw [Finset.sum_div]
+  rw [← Finset.sum_div]
   ring
+
+/-- Signed reflection coordinates indexed by the distinct outer spectrum. -/
+def outerReflectionCoordinates : Matrix ι D.outerSpectrum ℂ :=
+  fun j z => CurveDatum.pairValue z (D.β j)
+
+/-- One odd evaluation row for each distinct outer eigenvalue. -/
+def outerFrobeniusOdd (n : ℕ) : Matrix D.outerSpectrum (Fin n) ℂ :=
+  fun z k => ((z : ℂ) ^ (k : ℕ) - circleReflect z ^ (k : ℕ)) / 2
 
 /-- The odd evaluation factors through one coordinate per distinct outer eigenvalue. -/
 theorem frobeniusOdd_factor (n : ℕ) :
-    frobeniusOdd D n =
-      (fun (j : ι) (z : D.outerSpectrum) => CurveDatum.pairValue z (D.β j) :
-        Matrix ι D.outerSpectrum ℂ) *
-      (fun (z : D.outerSpectrum) (k : Fin n) =>
-        ((z : ℂ) ^ (k : ℕ) - circleReflect z ^ (k : ℕ)) / 2 :
-        Matrix D.outerSpectrum (Fin n) ℂ) := by
+    frobeniusOdd D n = outerReflectionCoordinates D * outerFrobeniusOdd D n := by
   classical
   ext j k
   change (D.β j ^ (k : ℕ) - circleReflect (D.β j) ^ (k : ℕ)) / 2 =
@@ -166,8 +170,8 @@ theorem frobeniusOdd_factor (n : ℕ) :
         have := hout z
         rw [← h] at this
         linarith
-      simp only [CurveDatum.pairValue, if_neg hne, hz, circleReflect_circleReflect,
-        if_true]
+      rw [hz] at hne
+      simp only [CurveDatum.pairValue, hz, circleReflect_circleReflect, if_neg hne, if_true]
       ring
     · intro w _ hw
       have h1 : D.β j ≠ (w : ℂ) := by
@@ -227,8 +231,7 @@ theorem rank_halfDefectRepair_le (n : ℕ) :
     _ ≤ D.outerSpectrum.card := by
       rw [frobeniusOdd_factor]
       refine (Matrix.rank_mul_le_left _ _).trans ?_
-      simpa using Matrix.rank_le_card_width
-        (fun (j : ι) (z : D.outerSpectrum) => CurveDatum.pairValue z (D.β j))
+      simpa using Matrix.rank_le_card_width (outerReflectionCoordinates D)
 
 private theorem hermQuad_nonneg_of_psd {n : ℕ} {H : Matrix (Fin n) (Fin n) ℂ}
     (hH : H.PosSemidef) (x : Fin n → ℂ) : 0 ≤ hermQuad H x :=
@@ -439,5 +442,26 @@ theorem halfDefectRepair_zero_row (n : ℕ) (k : Fin (n + 1)) :
 theorem halfDefectRepair_zero_column (n : ℕ) (k : Fin (n + 1)) :
     halfDefectRepair D (n + 1) k 0 = 0 := by
   simp [halfDefectRepair, Matrix.mul_apply, Matrix.conjTranspose_apply, frobeniusOdd]
+
+/-- The raw Frobenius span defect is repaired by half the reflection defect in its normalized
+coordinates. This includes arbitrary signed real graph coefficients. -/
+theorem spanDefect_add_half_reflectionDefect_nonneg (n : ℕ) (d : ℕ → ℝ) :
+    0 ≤ D.spanDefect (Finset.range n) d +
+      D.frobReflectionDefect (Finset.range n) (fun k => d k * D.sqrtq ^ k) / 2 := by
+  have h := hermQuad_nonneg_of_psd (spanGram_halfDefectRepair_posSemidef D n)
+    (fun k => ((d k * D.sqrtq ^ (k : ℕ) : ℝ) : ℂ))
+  rw [hermQuad_add,
+    D.hermQuad_spanGram_ofReal n (fun k => d k * D.sqrtq ^ k),
+    halfDefectRepair_eq_half_frobReflectionDefect D n (fun k => d k * D.sqrtq ^ k),
+    ← D.spanDefect_eq_toeplitz] at h
+  exact h
+
+#print axioms spanGram_add_halfDefectRepair
+#print axioms halfDefectRepair_submatrix
+#print axioms halfDefectRepair_eq_half_frobReflectionDefect
+#print axioms rank_halfDefectRepair
+#print axioms spanGram_scaled_halfDefectRepair_posSemidef_iff
+#print axioms optimal_frobenius_hodge_repair
+#print axioms spanDefect_add_half_reflectionDefect_nonneg
 
 end GaloisForLFunctions.ArithmeticLorentzianGeometry

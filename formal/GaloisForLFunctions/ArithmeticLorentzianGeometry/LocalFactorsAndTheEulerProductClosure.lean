@@ -50,55 +50,73 @@ theorem weilPrimeKernel_pow_pow {p : ℕ} (hp : p.Prime) {i j : ℕ} (hij : i < 
     ArithmeticFunction.vonMangoldt_apply_pow (by omega), ArithmeticFunction.vonMangoldt_apply_prime hp]
   push_cast; rfl
 
-/-- **Every prime ladder has two positive squares.** -/
+theorem bil_single_single {ι : Type*} [Fintype ι] [DecidableEq ι] (Q : Matrix ι ι ℝ) (a b : ι) :
+    bil Q (Pi.single a 1) (Pi.single b 1) = Q a b := by
+  simp [bil, mulVec, dotProduct, Pi.single_apply]
+
+theorem bil_pair_pair {ι : Type*} [Fintype ι] [DecidableEq ι] (Q : Matrix ι ι ℝ) (a b c d : ι) :
+    bil Q (Pi.single a 1 + Pi.single b 1) (Pi.single c 1 + Pi.single d 1) =
+      Q a c + Q a d + Q b c + Q b d := by
+  rw [bil_add_left, bil_add_right, bil_add_right, bil_single_single, bil_single_single,
+    bil_single_single, bil_single_single]
+  ring
+
+/-- The arithmetic core: with `t = p^{−1/2} ≤ 2^{−1/2}`, `4 ≤ t⁴(1 + t)⁴` is impossible. -/
+theorem ladder_revCS_fails {L t : ℝ} (hL : 0 < L) (ht : 0 < t) (ht2 : t ^ 2 ≤ 1 / 2)
+    (h : 2 * (L * t) * (2 * (L * t)) ≤ (L * t ^ 4 + L * t ^ 5 + L * t ^ 3 + L * t ^ 4) ^ 2) :
+    False := by
+  have e : (L * t ^ 4 + L * t ^ 5 + L * t ^ 3 + L * t ^ 4) ^ 2 =
+      (L ^ 2 * t ^ 2) * (t ^ 4 * (1 + t) ^ 4) := by ring
+  have e' : 2 * (L * t) * (2 * (L * t)) = (L ^ 2 * t ^ 2) * 4 := by ring
+  rw [e, e'] at h
+  have h4 : 4 ≤ t ^ 4 * (1 + t) ^ 4 := le_of_mul_le_mul_left h (by positivity)
+  have ht34 : t ≤ 3 / 4 := by nlinarith
+  have hu : t ^ 2 * (1 + t) ^ 2 ≤ 1 / 2 * (49 / 16) := by
+    have h1 : (1 + t) ^ 2 ≤ 49 / 16 := by nlinarith
+    exact mul_le_mul ht2 h1 (by positivity) (by norm_num)
+  have hu' : t ^ 4 * (1 + t) ^ 4 = (t ^ 2 * (1 + t) ^ 2) ^ 2 := by ring
+  rw [hu'] at h4
+  have hu0 : 0 ≤ t ^ 2 * (1 + t) ^ 2 := by positivity
+  nlinarith
+
+/-- **Every prime ladder has two positive squares**: `δ_1 + δ_p` and `δ_{p⁴} + δ_{p⁵}` violate the
+reverse Cauchy–Schwarz inequality. -/
 theorem not_isHyperbolic_ladderGram {p : ℕ} (hp : p.Prime) : ¬ IsHyperbolic (ladderGram p 5) := by
   intro h
-  set L := Real.log p
-  set s := Real.sqrt (p : ℝ)
-  have hL : 0 < L := Real.log_pos (by exact_mod_cast hp.one_lt)
+  have hL : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
   have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
-  have hs : 0 < s := Real.sqrt_pos.mpr hp0
-  have hs2 : s ^ 2 = p := Real.sq_sqrt hp0.le
-  have hsq : ∀ k : ℕ, Real.sqrt ((p : ℝ) ^ k) = s ^ k := fun k => by
-    rw [← Real.sqrt_pow hp0.le]  -- `√(p^k) = (√p)^k`
-  have k : ∀ i j : ℕ, i < j → weilPrimeKernel (p ^ i) (p ^ j) = L / s ^ (j - i) := fun i j hij => by
-    rw [weilPrimeKernel_pow_pow hp hij, hsq]
-  have kc : ∀ i j : ℕ, weilPrimeKernel (p ^ i) (p ^ j) = weilPrimeKernel (p ^ j) (p ^ i) :=
-    fun i j => weilPrimeKernel_comm _ _
-  have k0 : ∀ i : ℕ, weilPrimeKernel (p ^ i) (p ^ i) = 0 := fun i => weilPrimeKernel_self _
-  set x : Fin 6 → ℝ := Pi.single 0 1 + Pi.single 1 1
-  set y : Fin 6 → ℝ := Pi.single 4 1 + Pi.single 5 1
-  have hx : qf (ladderGram p 5) x = 2 * (L / s) := by
-    simp [qf, bil, x, ladderGram, dotProduct, mulVec, Fin.sum_univ_succ, k0, kc 1 0, k 0 1 one_pos]
-    ring
-  have hy : qf (ladderGram p 5) y = 2 * (L / s) := by
-    simp [qf, bil, y, ladderGram, dotProduct, mulVec, Fin.sum_univ_succ, k0, kc 5 4,
-      k 4 5 (by norm_num)]
-    ring
-  have hb : bil (ladderGram p 5) x y = L / s ^ 4 + L / s ^ 5 + L / s ^ 3 + L / s ^ 4 := by
-    simp [bil, x, y, ladderGram, dotProduct, mulVec, Fin.sum_univ_succ, k 0 4 (by norm_num),
-      k 0 5 (by norm_num), k 1 4 (by norm_num), k 1 5 (by norm_num)]
-    ring
-  have hcs := h x y (by rw [hx]; positivity)
-  rw [hx, hy, hb] at hcs
-  -- `4/s² ≤ (s + 1)⁴/s¹⁰` contradicts `√2 s² > s + 1`, i.e. `2 s⁴ > (s + 1)²`, for `s² = p ≥ 2`
-  have hp2 : (2 : ℝ) ≤ s ^ 2 := by rw [hs2]; exact_mod_cast hp.two_le
-  have key : 2 * s ^ 4 > (s + 1) ^ 2 := by nlinarith
-  have e : (L / s ^ 4 + L / s ^ 5 + L / s ^ 3 + L / s ^ 4) = L * (s + 1) ^ 2 / s ^ 5 := by
-    field_simp; ring
-  rw [e] at hcs
-  have : 2 * (L / s) * (2 * (L / s)) * s ^ 10 ≤ (L * (s + 1) ^ 2 / s ^ 5) ^ 2 * s ^ 10 :=
-    mul_le_mul_of_nonneg_right hcs (by positivity)
-  have e1 : 2 * (L / s) * (2 * (L / s)) * s ^ 10 = 4 * L ^ 2 * s ^ 8 := by field_simp; ring
-  have e2 : (L * (s + 1) ^ 2 / s ^ 5) ^ 2 * s ^ 10 = L ^ 2 * ((s + 1) ^ 2) ^ 2 := by
-    field_simp
-  rw [e1, e2] at this
-  have hL2 : 0 < L ^ 2 := by positivity
-  have h4 : 4 * s ^ 8 ≤ ((s + 1) ^ 2) ^ 2 := le_of_mul_le_mul_left (by nlinarith) hL2
-  have h5 : ((s + 1) ^ 2) ^ 2 < (2 * s ^ 4) ^ 2 := by
-    have : 0 ≤ (s + 1) ^ 2 := sq_nonneg _
-    nlinarith
-  nlinarith
+  have hs : 0 < Real.sqrt p := Real.sqrt_pos.mpr hp0
+  have hs2 : Real.sqrt p ^ 2 = p := Real.sq_sqrt hp0.le
+  have hsq : ∀ k : ℕ, Real.sqrt ((p : ℝ) ^ k) = Real.sqrt p ^ k := fun k => by
+    rw [show (p : ℝ) ^ k = (Real.sqrt p ^ k) ^ 2 by rw [← pow_mul, mul_comm, pow_mul, hs2]]
+    exact Real.sqrt_sq (by positivity)
+  -- the entries in terms of `t = p^{−1/2}`
+  have k : ∀ i j : ℕ, (hij : i < j) → (hj : j < 6) →
+      ladderGram p 5 ⟨i, by omega⟩ ⟨j, hj⟩ = Real.log p * (Real.sqrt p)⁻¹ ^ (j - i) := by
+    intro i j hij hj
+    simp only [ladderGram, Matrix.of_apply]
+    rw [weilPrimeKernel_pow_pow hp hij, hsq, div_eq_mul_inv, inv_pow]
+  have kc : ∀ i j : Fin 6, ladderGram p 5 i j = ladderGram p 5 j i := fun i j => by
+    simp only [ladderGram, Matrix.of_apply]; exact weilPrimeKernel_comm _ _
+  have k0 : ∀ i : Fin 6, ladderGram p 5 i i = 0 := fun i => by
+    simp only [ladderGram, Matrix.of_apply]; exact weilPrimeKernel_self _
+  have hx := bil_pair_pair (ladderGram p 5) 0 1 0 1
+  have hy := bil_pair_pair (ladderGram p 5) 4 5 4 5
+  have hb := bil_pair_pair (ladderGram p 5) 0 1 4 5
+  rw [k0, k0, kc 1 0, k 0 1 (by norm_num) (by norm_num)] at hx
+  rw [k0, k0, kc 5 4, k 4 5 (by norm_num) (by norm_num)] at hy
+  rw [k 0 4 (by norm_num) (by norm_num), k 0 5 (by norm_num) (by norm_num),
+    k 1 4 (by norm_num) (by norm_num), k 1 5 (by norm_num) (by norm_num)] at hb
+  have hcs := h _ (Pi.single 4 1 + Pi.single 5 1) (show 0 < qf (ladderGram p 5) _ by
+    rw [qf, hx]; positivity)
+  rw [qf, qf, hx, hy, hb] at hcs
+  have ht2 : (Real.sqrt p)⁻¹ ^ 2 ≤ 1 / 2 := by
+    rw [inv_pow, hs2, one_div]
+    exact inv_anti₀ (by norm_num) (by exact_mod_cast hp.two_le)
+  exact ladder_revCS_fails hL (inv_pos.mpr hs) ht2 (by
+    simp only [Nat.sub_zero, show 5 - 4 = 1 from rfl, show 4 - 1 = 3 from rfl,
+      show 5 - 1 = 4 from rfl, show 1 - 0 = 1 from rfl, pow_one] at hcs
+    linarith)
 
 /-! ### The archimedean jump form is a Laplacian -/
 
@@ -110,8 +128,9 @@ theorem qf_jumpForm_nonpos [DecidableEq ι] {A : Matrix ι ι ℝ} (hA : A.IsSym
     (v : ι → ℝ) : qf (A - diagonal (rowSum A)) v ≤ 0 := by
   have h := qf_le_sum_rowSum_mul_sq hA hM v
   have e : qf (A - diagonal (rowSum A)) v = qf A v - ∑ j, rowSum A j * v j ^ 2 := by
-    simp only [qf, bil, sub_mulVec, dotProduct_sub, mulVec_diagonal, dotProduct]
+    rw [qf, bil, sub_mulVec, dotProduct_sub]
     congr 1
+    simp only [mulVec_diagonal, dotProduct]
     exact sum_congr rfl fun j _ => by ring
   rw [e]; linarith
 
@@ -123,18 +142,27 @@ variable {κ : Type*} [Fintype κ] [DecidableEq κ]
 def esymm2Form (M : κ → ι → ℝ) : Matrix ι ι ℝ :=
   ∑ p, ∑ q, if p = q then 0 else vecMulVec (M p) (M q)
 
+theorem sum_ite_eq_zero_else {κ : Type*} [Fintype κ] [DecidableEq κ] (p : κ) (f : κ → ℝ) :
+    ∑ q, (if p = q then 0 else f q) = ∑ q, f q - f p := by
+  rw [← Finset.add_sum_erase _ _ (mem_univ p), ← Finset.add_sum_erase _ f (mem_univ p), if_pos rfl,
+    zero_add, add_sub_cancel_left]
+  exact sum_congr rfl fun q hq => if_neg (Ne.symm (ne_of_mem_erase hq))
+
+theorem esymm2Form_apply (M : κ → ι → ℝ) (i j : ι) :
+    esymm2Form M i j = (∑ p, M p i) * (∑ q, M q j) - ∑ p, M p i * M p j := by
+  have e : ∀ p q, (if p = q then (0 : Matrix ι ι ℝ) else vecMulVec (M p) (M q)) i j =
+      if p = q then 0 else M p i * M q j := fun p q => by
+    split_ifs <;> simp [vecMulVec_apply]
+  simp only [esymm2Form, Matrix.sum_apply, e, sum_ite_eq_zero_else, sum_sub_distrib, sum_mul,
+    mul_sum]
+  congr 1
+  exact Finset.sum_comm
+
 theorem esymm2Form_eq (M : κ → ι → ℝ) :
     esymm2Form M = vecMulVec (∑ p, M p) (∑ p, M p) - ∑ p, vecMulVec (M p) (M p) := by
   ext i j
-  simp only [esymm2Form, Matrix.sum_apply, Matrix.sub_apply, vecMulVec_apply, Finset.sum_apply,
-    sum_mul, mul_sum]
-  rw [← sum_sub_distrib]
-  refine sum_congr rfl fun p _ => ?_
-  rw [← Finset.sum_erase_add _ _ (mem_univ p)]
-  simp only [apply_ite (fun A : Matrix ι ι ℝ => A i j), Matrix.zero_apply, vecMulVec_apply,
-    if_pos rfl, add_zero]
-  rw [← Finset.sum_erase_add _ _ (mem_univ p), if_pos rfl, add_zero, add_sub_cancel_right]
-  exact sum_congr rfl fun q hq => by rw [if_neg (Ne.symm (ne_of_mem_erase hq))]
+  rw [esymm2Form_apply]
+  simp [Matrix.sum_apply, vecMulVec_apply, Finset.sum_apply]
 
 /-- **The second elementary symmetric form of nonnegative linear forms is Lorentzian**: rank one
 minus positive semidefinite. -/
@@ -181,7 +209,7 @@ every local factor is positive, the Hessian of `∏_p ⟨L_p, y⟩` is
 theorem isLorentzian_eulerHessian {L : κ → ι → ℝ} (hL : ∀ p i, 0 ≤ L p i) {y : ι → ℝ}
     (hy : ∀ p, 0 < L p ⬝ᵥ y) : IsLorentzian (eulerHessian L y) := by
   set c : κ → ℝ := fun r => L r ⬝ᵥ y
-  set C := ∏ r, c r
+  set C := ∏ r, c r with hCdef
   have hC : 0 < C := prod_pos fun r _ => hy r
   have hprod : ∀ p q, p ≠ q → ∏ r ∈ (univ.erase p).erase q, c r = C / (c p * c q) := by
     intro p q hpq
@@ -190,8 +218,8 @@ theorem isLorentzian_eulerHessian {L : κ → ι → ℝ} (hL : ∀ p i, 0 ≤ L
     have e2 := Finset.mul_prod_erase univ c (mem_univ p)
     have hcp := (hy p).ne'
     have hcq := (hy q).ne'
-    rw [eq_div_iff (mul_ne_zero hcp hcq)]
-    rw [← e2, ← e1]; ring
+    rw [eq_div_iff (mul_ne_zero hcp hcq), hCdef, ← e2, ← e1]
+    ring
   have e : eulerHessian L y = C • esymm2Form (fun p => (c p)⁻¹ • L p) := by
     simp only [eulerHessian, esymm2Form, smul_sum]
     refine sum_congr rfl fun p _ => sum_congr rfl fun q _ => ?_

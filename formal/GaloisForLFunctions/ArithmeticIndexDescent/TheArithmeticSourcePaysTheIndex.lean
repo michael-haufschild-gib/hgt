@@ -66,7 +66,7 @@ theorem divisorTransverseEnergy_le_xiCopyTransverseEnergy :
   rw [divisorTransverseEnergy, xiCopyTransverseEnergy_eq_half_tsum]
   simp_rw [hrow]
   rw [← ENNReal.tsum_prod]
-  exact div_le_div_right hsum
+  exact mul_le_mul_left hsum (2 : ℝ≥0∞)⁻¹
 
 /-- Every negative square is paid in the full multiplicity-weighted source energy. -/
 theorem negIndex_weilGram_le_xiCopyTransverseEnergy {ι : Type*} [Fintype ι]
@@ -97,8 +97,12 @@ theorem eventually_eventually_lt_sourceWork_of_lt_negIndex {ι : Type*} [Fintype
     ∀ᶠ n : ℕ in atTop, ∀ᶠ N : ℕ in atTop,
       b < ENNReal.ofReal (xiTaperedSourceWork ((n : ℝ) + 4) N) := by
   filter_upwards [eventually_lt_dampedSourceWork_of_lt_negIndex f hf hfc hb] with n hn
-  have hR : (4 : ℝ) ≤ (n : ℝ) + 4 := by positivity
+  have hR : (4 : ℝ) ≤ (n : ℝ) + 4 := by
+    linarith only [Nat.cast_nonneg (R := ℝ) n]
   exact ((ENNReal.continuous_ofReal.tendsto _).comp
     (xiTaperedSourceWork_tendsto hR)).eventually (lt_mem_nhds hn)
 
 end GaloisForLFunctions.ArithmeticIndexDescent
+
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.negIndex_weilGram_le_xiCopyTransverseEnergy
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.eventually_eventually_lt_sourceWork_of_lt_negIndex

@@ -151,7 +151,7 @@ theorem eventually_bounded_dampedSourceWork_iff :
     filter_upwards [xiDampedSourceWork_tendsto_energy.eventually (gt_mem_nhds hB)] with n hn
     have h := ENNReal.toReal_mono (by simp : (B : ℝ≥0∞) ≠ ⊤) hn.le
     have hnonneg : 0 ≤ xiDampedSourceWork ((n : ℝ) + 4) :=
-      xiDampedSourceWork_nonneg (by positivity)
+      xiDampedSourceWork_nonneg (by linarith only [Nat.cast_nonneg (R := ℝ) n])
     simpa only [ENNReal.toReal_ofReal hnonneg, ENNReal.toReal_natCast] using h
 
 /-- Infinite off-line support is exactly divergence of the damped source work to infinity. -/

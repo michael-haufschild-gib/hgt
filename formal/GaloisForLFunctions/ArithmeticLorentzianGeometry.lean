@@ -9,6 +9,8 @@ import GaloisForLFunctions.ArithmeticLorentzianGeometry.LorentzianPolynomialsAnd
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.FrobeniusIsConformalHeckeIsABoost
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.PolarGluingAndDispersion
 
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheHalfDefectIsTheOptimalHodgeRepair
+
 /-!
 # Arithmetic Lorentzian Geometry
 
@@ -16,6 +18,7 @@ Umbrella for the combinatorial Hodge theory of the affine monoid of the integers
 Lorentzian forms at degree two, domination and closure; the Hodge index of the scaling surface as
 reverse Cauchy–Schwarz and the nef shift; the trickle-down theorem and the Metzler Hodge index
 theorem; common gauge fixing by the archimedean place along the successor; and polar gluing,
-its dispersion cost, associative assembly and compatibility with linear restriction.
+its dispersion cost, associative assembly and compatibility with linear restriction; the coherent
+half-defect Frobenius repair with optimal rank and exact pole-preserving Hodge threshold.
 See `ArithmeticLorentzianGeometry/README.md`.
 -/
