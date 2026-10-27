@@ -14,8 +14,8 @@ Status: 2026-10-27, corpus `6046e5478` with working tree. This summary covers th
 8. **Coupling cannot lower the torsion counterterm.** A partner pays at most as many prime directions as the rank of its own counterterm; the archimedean place, coupled through constant modes, pays exactly the arithmetic point; pole-node completion relocates a full-rank divergence to infinite node height [L/S].
 9. **Covariance and survival exclude each other for diagonal counterterms.** A diagonal renormalization of the prime form is Hecke covariant iff it is scalar; the covariant counterterm is `log N + O(1)`; keeping the self-intersection costs at least another `½ log N` [S].
 10. **The archimedean place pays the prime place at atomic resolution.** For log-atom tests of width `≤ N^{−O(1)}`, `arch − prime ≥ 0`, and with a rank-one pole counterterm `Re W + 2S² ≥ 0`; `Re W ≥ 0` on `|S| ≤ |C|` [L/S]. The leading constants match: covariant prime counterterm `log N` against archimedean self-energy `log(1/w)` at `w ≍ 1/N`.
-11. **Below the spacing everything is gauge blind.** The finite intersection and every atomic-resolution form are unitarily conjugate under each sign twin [L]; selectivity can enter only through the pole term and the archimedean place where atoms overlap.
-12. **The gauge charge of the source never collapses.** At a flipped prime the renormalized source gap is `2 log² p`, fixed by the smallest flipped prime [L]; it is a coefficient margin, not a margin on signed tests. Cell-holonomy defects grow at least like `X^{1/4}` for every sign gauge flipping `2` [S].
+11. **Below the spacing the gauge cannot favour `ζ`.** The finite intersection of every sign twin is `ζ`'s in the gauge `x ↦ ωx`, and every twin satisfies the atomic stability law [L]. The twins' Weil forms differ only through the archimedean interaction of the charged and neutral parts of a test, `M_ω(f_x) = M(f_{ωx}) + A(f⁺ + f⁻) − A(f⁺ − f⁻)`; on nonnegative atomic tests `ζ` is the minimum of its gauge orbit, by `2Λ(p)/√p` per unit mass at a flipped prime [L]. Selectivity in `ζ`'s favour must come from the pole term and from the archimedean cross kernel where it stops being dominated, at and beyond the spacing.
+12. **The gauge charge of the source never collapses.** At a flipped prime the renormalized source gap is `2 log² p`, fixed by the smallest flipped prime [L]; it is a coefficient margin, not a margin on signed tests. Cell-holonomy defects grow at least like `X^{1/4}` for every sign gauge flipping `2` [L].
 13. **Over `ℤ` there is no base.** Over `𝔽_q` all places act on one Frobenius ladder; over `ℤ` the ladders of distinct primes never share a pair of orders, the successor is transverse to all of them, and additive information is visible only across ladders [S]. Summing local Hodge indices in absolute value costs the square root [L].
 14. **Local Hodge index holds at every prime and the self-intersection dominates each tower.** Each tower form is two-sided bounded; the renormalized torsion form is negative definite above the second level of each ladder [L].
 15. **Counting is the sign over `ℤ` and proves the sign over `𝔽_q`.** Every counting currency is RH; hyperelliptic RH is proved by counting [L].
@@ -109,7 +109,7 @@ No solution is known, and none is proved RH-equivalent.
 | **B3.13** | Equality case of collar capacity at even `κ`. | Odd `κ` sharp. |
 | **B3.14** | Signed near-coincidence beyond aperture `½ log Γ`. | Single-height law. |
 | **B3.15** | A gauge-charged estimate for `μ` or `Λ` at `0` beyond the square-root threshold. | Haar-typical twists meet every budget. |
-| **B3.16** | **Gauge form-margin.** Positivity of `ζ` separating it from every sign twin on signed tests reading growing prime windows, with a margin bounded below. | Coefficient margin `2 log² p` permanent [L]; atomic forms gauge blind [L]; cell defects `≥ X^{1/4}` [L]; Liouville separated from `23/40` on [L]. |
+| **B3.16** | **Gauge form-margin.** Positivity of `ζ` separating it from every sign twin on signed tests reading growing prime windows, with a margin bounded below. | Coefficient margin `2 log² p` permanent [L]; atomic prime forms conjugate, and on nonnegative atomic tests `ζ` is the minimum of its orbit [L]; cell defects `≥ X^{1/4}` [L]; Liouville separated from `23/40` on [L]. |
 | **B3.17** | Form positivity of the renormalized Rankin–Selberg source beyond isotropy. | Coefficient positivity only. |
 | **B3.18** | Lower bounds or arithmetic use of the successor defect. | Mean square exact. |
 | **B3.19** | Stepanov auxiliaries over `ℤ`. | Need a lattice spectrum; the arithmetic point has no period. |
@@ -130,7 +130,7 @@ No solution is known, and none is proved RH-equivalent.
 - Electrostatic forms of RH; energy of one zero `O(log γ)`; finite equilibrium ⇔ criticality.
 - Visibility of off-line zeros at their height; rarity of alignment at zero ordinates; zero moments are Rosati pairings.
 - Torsion-side renormalization (survival `{0}`); spacing regulator (covariant up to tame, indefinite); horizon divergence (polar, unbounded rank on torsion orbits); coupled survival law; periodic coupling pays only the arithmetic point; pole-node completion relocates the divergence; covariant diagonal counterterms are scalar; covariant counterterm `log N + O(1)`; anomaly cost `½ log N`.
-- The archimedean place pays the prime place at atomic resolution, with a rank-one pole counterterm, gauge blind.
+- The archimedean place pays the prime place at atomic resolution, with a rank-one pole counterterm, for every sign twin; on nonnegative atomic tests `ζ` is the minimum of its gauge orbit.
 - Local Hodge index sums only at the square-root price; no common ladder; self-intersection dominates each tower.
 - Gauge-charged couplings; gauge margin of the source; first gauge windows; elliptic rotations of the circle are archimedean.
 - Forcing gap; escape; deformations; statistics; counting over `𝔽_q`; the width currency.
@@ -163,15 +163,16 @@ No solution is known, and none is proved RH-equivalent.
   - *Yes in the overlap regime at some `θ < 1`:* a positivity that is not atomic and may be gauge selective; the critical exponent becomes the new graded currency.
   - *No at the spacing:* the archimedean place cannot pay the prime place at its own resolution; a structure beyond the two places (a base, B3.29) is necessary, and the failing vectors name it.
 
-### Q2. Gauge selectivity at the overlap: does the source's margin become a form margin?
+### Q2. Gauge selectivity at the spacing and beyond: does the source's margin become a form margin?
 
-> *The renormalized source of every sign twin differs from `ζ`'s by `2 log² p` at its smallest flipped prime, permanently; every Weil form at atomic resolution is gauge blind. At widths where atoms overlap, the prime sum reads non-ratio lags `log k` and the twins' forms differ from `ζ`'s. Is there, for every sign gauge flipping a prime `≤ p_N`, an overlap test on which `ζ`'s form is positive and the twin's negative, with a margin bounded below as `N` grows — and can it be built from charged data (successor couplings, cells) rather than certified numerics?*
+> *The renormalized source of every sign twin differs from `ζ`'s by `2 log² p` at its smallest flipped prime, permanently. At atomic resolution the twins' prime forms are `ζ`'s in the gauge `x ↦ ωx`, every twin satisfies the stability law, and the Weil forms differ only by the archimedean interaction `A(f⁺ + f⁻) − A(f⁺ − f⁻)` of the charged and neutral parts — on nonnegative tests in the twin's favour. At the spacing this interaction is no longer dominated by the self-energy, and beyond it the prime sum reads non-ratio lags `log k`. Is there, for every sign gauge flipping a prime `≤ p_N`, a signed test at or beyond the spacing on which `ζ`'s form is positive and the twin's negative, with a margin bounded below as `N` grows — and can it be built from charged data (successor couplings, cells) rather than certified numerics?*
 
 - **Why.**
-  - Selectivity must come from the pole term and the archimedean place (the finite intersection is gauge blind) and only at overlapping widths [L].
-  - The coefficient margin exists and does not collapse [L]; the cell defect is unbounded for every gauge flipping `2` [S], and logarithmic density of charged cells follows from Tao's theorem [R].
+  - Selectivity must come from the pole term and the archimedean place (the finite intersection is gauge blind) [L]; the archimedean cross term between charged and neutral atoms is the term that carries the gauge, and it is the same cross kernel that decides Q1 [L/R].
+  - The coefficient margin exists and does not collapse [L]; the atomic margin on nonnegative tests is on the wrong side: `ζ` is the orbit minimum there [L]; signed tests are required.
+  - The cell defect is unbounded for every gauge flipping `2` [L], and logarithmic density of charged cells follows from Tao's theorem [R].
   - Separation exists and persists on certified windows: Liouville fails at every aperture `≥ 23/40` [L].
-- **Route.** W5, W6 (the `23/40` floor and margin tables); W12 (twins' non-ratio lag terms); W20 (charged-cell density); compare the twin's overlap form with `ζ`'s through the gauge-moved terms only.
+- **Route.** W5, W6 (the `23/40` floor and margin tables); W12 (the archimedean charged–neutral cross term at widths `cδ_N` and the twins' non-ratio lag terms beyond); W20 (charged-cell density); compare the twin's form with `ζ`'s through the gauge-moved terms only, on signed tests whose charged part is supported on cells.
 - **Outcomes.**
   - *Margin survives:* the first unconditional positivity reading non-archimedean arithmetic at every scale.
   - *Margin collapses at a measured rate:* a threshold where positivity stops seeing arithmetic.
@@ -216,7 +217,7 @@ No theorem shows a new field is necessary. The previous proposal — a renormali
 | One Frobenius ladder (base) | transverse ladders, successor transverse to all | missing [S] |
 | Tensor amplification with non-scaling loss | dyadic amplification, loss `D(f)`, soft | exists, converts rates only [L] |
 | Frobenius spectrum on a lattice | none at the arithmetic point | missing [L] |
-| Frobenius fixes the base point | cells fix the gauge; source margin `2 log² p`; forms gauge blind below the spacing | exists structurally and on coefficients, not on forms |
+| Frobenius fixes the base point | cells fix the gauge; source margin `2 log² p`; below the spacing prime forms are conjugate and `ζ` is the orbit minimum on nonnegative tests | exists structurally and on coefficients, not on forms |
 
 A new field is likely required [R]: an **arithmetic harmonic analysis at the spacing scale**, joining the renormalization theory of the explicit formula with the mean-value theory of Dirichlet polynomials at `T ≍ N`. Arakelov theory supplies the template (an archimedean Green function regularizing the diagonal at each point); the corpus shows that over `ℤ` the regularization must be resolved at the log-spacing of the integers, uniformly in `n` (widths proportional to `1/n` reproduce the anomalous torsion diagonal, which costs `½ log N` on the pole vector [R]), and that this is exactly where the arithmetic gauge becomes visible.
 

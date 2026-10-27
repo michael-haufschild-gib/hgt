@@ -10,7 +10,7 @@ Status: 2026-10-27, corpus `6046e5478` with working tree. Every obstacle in the 
 
 **Twenty-four exhaustion laws** bound every mechanism tested:
 
-- **Gauge.** Multiplicative data determine a source up to its gauge orbit; a coupling is gauge blind iff it is of square class; the finite intersection and every atomic-resolution Weil form are unitarily conjugate under each sign twin (1.18, 3.1).
+- **Gauge.** Multiplicative data determine a source up to its gauge orbit; a coupling is gauge blind iff it is of square class; the finite intersection of each sign twin is ζ's in the gauge `x ↦ ωx`; at atomic resolution twins' Weil forms differ only by the archimedean charged–neutral cross term, and on nonnegative tests `ζ` is the orbit minimum (1.18, 3.1).
 - **Hyperbolicity.** Positivity invariant under a boost at an off-line pair forces isotropy (14.10, 14.17).
 - **Resonance.** Elliptic localization in correspondence-closed carriers is resonance; `σ_γ` is the only reflection-compatible affine localizer; rotations of the circle localize in `ℚ/ℤ`, not at zero ordinates (3.18, 14.17).
 - **Conductor.** Twisted positivity is a theorem only below `e^a ≲ log γ/4`, where it is source blind; the companion certificate needs `e^{2δa} > 768A log γ`; the two never meet (3.19).
@@ -27,7 +27,7 @@ Status: 2026-10-27, corpus `6046e5478` with working tree. Every obstacle in the 
 - **Partner rank.** A coupled partner pays at most as many prime directions as the rank of its own counterterm; the archimedean place pays only the arithmetic point (14.27).
 - **Covariance.** A diagonal renormalization is Hecke covariant iff scalar; covariance and survival exclude each other (14.28).
 - **Local to global.** Each prime's tower form has a local Hodge index; the sum has no `ℓ²` ceiling; summing in absolute value is the square-root threshold; there is no common ladder (3.23, 14.29).
-- **Atomic.** Below the spacing the archimedean self-energy pays the prime form with a rank-one pole counterterm, and the result is gauge blind (3.25).
+- **Atomic.** Below the spacing the archimedean self-energy pays the prime form with a rank-one pole counterterm, for every sign twin alike (3.25).
 - **Completion.** Counting reaches incomplete sums only through a period; the arithmetic point has none (1.20).
 - **Detection.** Zero-side objects see each off-line zero at its own height and bound nothing (1.21, 3.22, 14.26).
 - **Strip.** Uniform ceilings on terminals and on Hecke defects, and every graded reading, are zero-free strips (1.0, 1.16, 1.21).
@@ -39,7 +39,7 @@ Over `𝔽_q` one structure escapes all of them: a polarization of `C × C` with
 
 Companions: [complete report](route-obstacles.md), [summary](obstacles-summary.md), [route unification](route-unification-ledger.md). Evidence: `logs/review-2710-v4-research-log.md`. No compilation. A countermodel excludes the mechanism it was built against, not every route that touches its wall.
 
-**Markers.** `[S]`: working or unintegrated source. `[R]`: reading or model calculation of the review. Q1–Q3 are the summary's next questions: Q1 the spacing scale (B3.25, B3.26), Q2 gauge selectivity at the overlap (B3.16), Q3 the interior anti-alignment law (B3.24, B3.27).
+**Markers.** `[S]`: working or unintegrated source. `[R]`: reading or model calculation of the review. Q1–Q3 are the summary's next questions: Q1 the spacing scale (B3.25, B3.26), Q2 gauge selectivity at and beyond the spacing (B3.16), Q3 the interior anti-alignment law (B3.24, B3.27).
 
 **Status column.** *Open*: no answer. *Sharpened*: open, with an exact boundary or survivor. *Resolved*: answered; no open task. *New*: isolated since the previous ledger.
 
@@ -50,7 +50,7 @@ Companions: [complete report](route-obstacles.md), [summary](obstacles-summary.m
 | 1.0 | Sharpened | One width currency: escaped Möbius `θ`-decay ⇔ receiver rate ⇔ `Θ ≤ 1 − θ` ⇔ Hecke strip cap ⇔ dyadic rate ⇔ `Re ξ′/ξ ≥ 0` on `Re s > 1 − θ`; VK decay uniform in `N, a, b` [L]; prefix reading rates [S]. |
 | 1.3 | Sharpened | Tower-coordinate Hodge index [L]; short-cycle positivity at lag `log 2` [L]; `Re W + 2S² ≥ 0` at atomic resolution [S]. |
 | 1.16 | Sharpened | One-scale Hecke cap ⇔ strip [S]; energy of a zero `≤ 16(C + log γ)` [L]. |
-| 1.18 | Sharpened | Source gauge margin `2 log² p`, permanent [L]; atomic forms and finite intersection gauge blind [L]; cell defect `≥ X^{1/4}` [L]; logarithmic density of charged cells via Tao [R]. |
+| 1.18 | Sharpened | Source gauge margin `2 log² p`, permanent [L]; finite intersection gauge blind; at atomic resolution twins differ only by the archimedean charged–neutral cross term and `ζ` is the orbit minimum on nonnegative tests [L]; cell defect `≥ X^{1/4}` [L]; logarithmic density of charged cells via Tao [R]. |
 | 1.21 | Sharpened | Terminal ceiling ⇔ strip [S]; Harnack spreads the floor [S]; alignment counts at zero ordinates [L]. |
 | 3.14 | Sharpened | Power-saving alignment counts [L]. |
 | 3.24 | New, Resolved | The horizon regulator: polar on uniform profiles, unbounded rank on torsion orbits [S]. |
@@ -83,7 +83,7 @@ Companions: [complete report](route-obstacles.md), [summary](obstacles-summary.m
 | **1.15 Depth homogeneity** | Sharpened | Every amplification gains on depth as fast as it pays. | Linear loss; twists neutral. | W15; a non-scaling term. |
 | **1.16 Payment of ζ's own zeros** | Sharpened | Pole order pays inserted zeros only. | `Re W = D − Δ`; `E_f ≍ M_f`; one-scale cap ⇔ strip [S]; energy of a zero `O(log γ)` [L]; Selberg's source. | A non-uniform bound on `M_f`, the field or `Δ` (B3.21, B1.13). |
 | **1.17 Loss law** | Sharpened | A rate needs sublinear loss. | Fixed tensor loss ⇔ RH. | B1.9. |
-| **1.18 Gauge selection** | Sharpened | The source is one point of its orbit; square-class kernels, the finite intersection and atomic forms are blind. | Blind ⇔ square class; successor couplings and cells charged [S]; cell defect `≥ X^{1/4}` [L]; source margin `2 log² p` on every window [L]; twins fail at `181/500`, `23/40` and Liouville from `23/40` on [L]; Tao's two-point logarithmic Chowla gives charged-cell density [R]. | A form margin at overlapping widths (B3.16, Q2); a charged estimate at `0` (B3.15). |
+| **1.18 Gauge selection** | Sharpened | The source is one point of its orbit; square-class kernels and the finite intersection are blind; atomic positivity holds for every twin. | Blind ⇔ square class; successor couplings and cells charged [S]; cell defect `≥ X^{1/4}` [L]; source margin `2 log² p` on every window [L]; twins fail at `181/500`, `23/40` and Liouville from `23/40` on [L]; Tao's two-point logarithmic Chowla gives charged-cell density [R]. | A form margin at overlapping widths (B3.16, Q2); a charged estimate at `0` (B3.15). |
 | **1.19 Budget currencies** | Sharpened | A budget offered as weaker than the sign. | Prime-error budget ⇔ RH; Abel slope ⇔ RH + simple. | B1.10. |
 | **1.20 Completion and the arithmetic point** | Sharpened | Finite-level counts transported to the arithmetic point. | `\|τ\|² = q`; Burgess; least non-residue; no period. | B3.19. |
 | **1.21 The zero-side reserve** | Sharpened | An off-line zero must be excluded by a bound at its own height. | Terminal, outward ray, lens [L]; terminal ceiling ⇔ strip; RH ⇔ no right terminal [S]; Harnack [S]; field threshold [L]; exterior anti-alignment at `σ > 1` [L]; alignment counts `T^{1 − 1/C + o(1)}` [L]. | Interior anti-alignment and exceptional-set extinction (B3.24, B3.27, Q3). |
@@ -176,7 +176,7 @@ Sources: [coupled survival](../../../formal/GaloisForLFunctions/RenormalizedArit
 | Torsion-side renormalization; spacing regulator; horizon regulator | Survival `{0}`; covariant and indefinite; polar with unbounded rank on torsion orbits. | 14.24, 3.24 |
 | Coupling the torsion germ to a partner | Partner-rank law; only the arithmetic point survives. | 14.27 |
 | Covariant diagonal counterterms | Scalar, survival `{0}`; covariant constant `log N + O(1)`. | 14.28 |
-| Archimedean payment below the spacing | Proved, gauge blind. | 3.25 |
+| Archimedean payment below the spacing | Proved, for every sign twin alike. | 3.25 |
 | Local prime forms as a global bound | No; square-root price. | 3.23 |
 | Gauge-charged couplings; source gauge margin; first windows | Classified; `2 log² p`; separated. | 1.18 |
 | Elliptic localization; rotations | Resonance; archimedean spectrum. | 14.17, 3.18 |

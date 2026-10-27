@@ -21,12 +21,12 @@ The readings are equivalent at their endpoints:
 **Twelve readings cut across the families.**
 
 - **The local type.** Multiplicative correspondences boost, the successor is unipotent, `σ_γ` swaps, torsion rotations are elliptic in the additive dual.
-- **The gauge point.** Square-class couplings, the finite intersection and every atomic-resolution form are gauge blind; successor couplings and cells are charged; the source's margin `2 log² p` never collapses; Liouville is separated from `23/40` on.
+- **The gauge point.** Square-class couplings and the finite intersection are gauge blind; at atomic resolution twins' Weil forms differ only by the archimedean charged–neutral cross term, and `ζ` is the orbit minimum on nonnegative tests; successor couplings and cells are charged; the source's margin `2 log² p` never collapses; Liouville is separated from `23/40` on.
 - **The pairing.** Collided objects pair `ρ` with `ρ̄`, Rosati objects pair `ρ` with `1 − ρ̄`; zero-ordinate moments are Rosati.
 - **The regulator.** The rank of a counterterm is a property of the regulator: identity (Abel), scalar (spacing), identity ⊗ polar (horizon), rank one (archimedean lattice germ, pole at atomic resolution).
 - **The partner.** A coupled partner pays at most its own counterterm's rank; the archimedean place pays the arithmetic point.
 - **The local–global passage.** The prime kernel is a sum of transverse tower forms; summing their bounds costs the square root; there is no common ladder; the archimedean self-energy pays the sum below the spacing.
-- **The spacing scale.** At width `≍ 1/N` the covariant prime counterterm `log N` meets the archimedean self-energy `log(1/w)`; the gauge becomes visible when atoms overlap; tests begin to see zeros up to height `≍ N`; Dirichlet polynomials of length `N` sit in the Montgomery–Vaughan regime `T ≍ N` [R].
+- **The spacing scale.** At width `≍ 1/N` the covariant prime counterterm `log N` meets the archimedean self-energy `log(1/w)`; the archimedean cross term between charged and neutral atoms, the only term in which twins' Weil forms differ, stops being dominated; tests begin to see zeros up to height `≍ N`; Dirichlet polynomials of length `N` sit in the Montgomery–Vaughan regime `T ≍ N` [R].
 - **The field and the energy.** Computed, quantized, outward at terminals; uniform ceilings are strips.
 - **The moment of inertia.** The Hecke defect of `D`; dyadic amplification is soft.
 - **The alignment.** Beyond the conductor, at terminals and at the field threshold an off-line zero is a large value of a short prime polynomial at a zero ordinate; such values are rare; the implication from zero to alignment is proved only at `σ > 1`.
@@ -105,7 +105,7 @@ Companions: [complete report](route-obstacles.md), [summary](obstacles-summary.m
 - Lefschetz and local–global: one or two primes; symmetric squares; local Hodge index; no global ceiling; square-root price.
 - Two forms: `Re W = D − Δ`; RH ⇔ `M_f ≡ 0`.
 - Elliptic sectors: below the horizon positive; forcing gap.
-- **Atomic resolution**: prime functional = finite intersection; tower-coordinate Hodge index; stability law; `Re W + 2S² ≥ 0`; gauge blind.
+- **Atomic resolution**: prime functional = finite intersection; tower-coordinate Hodge index; stability law; `Re W + 2S² ≥ 0`; shared by every sign twin.
 - Gauge windows: twins separated at `181/500`, `23/40`, Liouville permanently.
 - Short cycles: lag `log 2` positivity on even profiles.
 
@@ -150,7 +150,7 @@ Companions: [complete report](route-obstacles.md), [summary](obstacles-summary.m
 | Collided positivity | U1/U3 | Faithful positivity; `E_f ≍ M_f` | Equivariance is RH. |
 | Torsion energies; spacing regulator; horizon | U3/U1 | Positivity before the limit; covariance up to tame | Survival `{0}`; indefinite; unbounded rank. |
 | Coupled germs | U3 | The arithmetic point survives | Partner rank. |
-| Archimedean self-energy at atomic resolution | U2/U3 | `arch − prime ≥ 0`; `Re W + 2S² ≥ 0` | Width `N^{−O(1)}`; gauge blind. |
+| Archimedean self-energy at atomic resolution | U2/U3 | `arch − prime ≥ 0`; `Re W + 2S² ≥ 0` | Width `N^{−O(1)}`; shared by every twin. |
 | Local tower forms | U2/U3 | Local Hodge index | No ceiling; no base. |
 | Electrostatics | U3/U2 | Quantized energy; thresholds | Computed, not bounded. |
 | Statistics | U2 | `3/4` within `4/log T` | No individual zero. |
@@ -248,7 +248,7 @@ For `0 < θ ≤ 1/2`, `Θ ≤ 1 − θ` is equivalent to each of [L/S]: escaped 
 | Lefschetz | One or two primes; one shift; symmetric squares | Local part positive. |
 | Local–global | `P = Σ_p L_p`, each bounded | No ceiling; square-root price. |
 | Tower coordinates | `Re W = E_φ\|x\|² + polar − ΣK_φ − ‖φ‖²Σ_pQ_p` | Log-atom tests below the spacing. |
-| Atomic resolution | `arch − prime ≥ 0`; `Re W + 2S² ≥ 0` | Width `≤ N^{−O(1)}`; gauge blind. |
+| Atomic resolution | `arch − prime ≥ 0`; `Re W + 2S² ≥ 0` | Width `≤ N^{−O(1)}`; shared by every twin. |
 | Elliptic sectors | Twisted positivity below the horizon | Forcing gap. |
 | Gauge windows | Twins negative at `181/500`, `23/40` | Liouville permanently. |
 | Short cycles | `Re W(g − T_{log 2}g) ≥ ‖·‖²/1000` | Even `g`, support `≤ 181/500 − (log 2)/2`. |
@@ -277,7 +277,7 @@ Rigidity `CompletedPositiveSystem 1 d = ℝ^× · ζ`; capacities (boundary, col
 | Multiplicative moments, family averages | Invariant | Source up to its orbit. |
 | Square-class couplings | Blind | Cannot separate `ζ` from `λ`. |
 | Finite intersection of torsion orbits | Unitarily conjugate under `x ↦ ωx` | Every local or global bound shared by twins. |
-| Atomic-resolution Weil forms | Conjugate below the spacing | Stability law holds for every twin. |
+| Atomic-resolution Weil forms | Prime parts conjugate; forms differ by `A(f⁺ + f⁻) − A(f⁺ − f⁻)`; on nonnegative tests `ζ` is the orbit minimum (`2Λ(p)/√p` at a flipped prime) | Stability law holds for every twin; the margin is on the wrong side. |
 | Successor couplings; successor connection | Charged | Reconstruct `ω(2), ω(3)`. |
 | Cell dilations | Covariant only at Euler; defect `≥ 2·#charged cells`, `≥ X^{1/4}` | Gauge fixing, not positivity. |
 | Renormalized source `ωΛ₂` | Gap `2 log² p` at the smallest flipped prime, on every window | Coefficient margin, not form margin. |
@@ -426,6 +426,6 @@ Rigidity `CompletedPositiveSystem 1 d = ℝ^× · ζ`; capacities (boundary, col
    - **U2 — the positivity of `W` at every width**, approached from below through the spacing scale and the overlap regime, with a gauge-selective margin.
    - **U3 — a form positive and equivariant at once**: archimedean payment beyond the spacing, a base across the ladders, or a non-uniform field bound.
    - **The common law:** arithmetic forces the zero spectrum to be elliptic — conjugation and the functional-equation reflection agree on the zeros. It appears as rate zero (U1), positivity of `W` (U2), `M_f = 0`, zero transverse energy, no right terminal (U3), and — in tower coordinates — as the archimedean place paying the prime place at every width.
-4. **Where the families meet: one scale.** Below the spacing of the atoms the archimedean self-energy pays the finite intersection (U2/U3), the gauge is invisible (U1/U3), and tests see no zeros; at the spacing the leading constants match; beyond it the atoms overlap, non-ratio lags carry the gauge, and tests see zeros up to height `≍ N` — the regime of mean values of Dirichlet polynomials at `T ≍ N`, where the alignment counts of U1 also live [R]. The conductor horizon and the square-root threshold are the same phenomenon in the aperture and moment variables.
+4. **Where the families meet: one scale.** Below the spacing of the atoms the archimedean self-energy pays the finite intersection (U2/U3), the gauge cannot favour `ζ` (U1/U3), and tests see no zeros; at the spacing the leading constants match; beyond it the atoms overlap, non-ratio lags carry the gauge, and tests see zeros up to height `≍ N` — the regime of mean values of Dirichlet polynomials at `T ≍ N`, where the alignment counts of U1 also live [R]. The conductor horizon and the square-root threshold are the same phenomenon in the aperture and moment variables.
 5. **Partial progress is family-specific.** U1 is blocked at quasi-RH and has frequency bounds at zero ordinates; U2 has windows, short cycles, local parts, averages, the census, twisted positivity, the forcing half, permanent separation from Liouville, and atomic positivity; U3 has computed positive forms, quantized electrostatics, the full regulator table and its no-gos, the source margin, and the classification of charged couplings. A result converting one family's progress into another's would be a mechanism: atomic positivity pushed through the spacing (U2 → U3), a gauge margin carried by an overlap form (U1 → U2), or alignment counts turned into exclusion by an interior law (U1 → U3).
-6. **Fourteen obstructions are common to every mechanism tested.** Depth homogeneity; gauge invariance (square class, finite intersection, atomic forms); hyperbolicity; Landau–Fejér positivity and dilution; deformation rigidity; the counting law; the survival law; the regulator law; the partner-rank law; the covariance law; the local–global law; the detection law; the strip law (uniform ceilings are strips); and the statistics law. Collided positivity escapes the first seven and sees nothing; Rosati positivity sees everything and is RH; the archimedean self-energy at atomic resolution comes closest — positive, covariant, coupled through a rank-one pole counterterm, and blind only because it stops below the spacing. Over `𝔽_q` a polarization of `C × C` with one Frobenius ladder makes positivity and equivariance one; over `ℤ` none is known. The [summary](obstacles-summary.md#4-would-the-b-tier-obstacles-require-a-new-field-of-mathematics) describes what such a structure must satisfy.
+6. **Fourteen obstructions are common to every mechanism tested.** Depth homogeneity; gauge invariance (square class, finite intersection, atomic positivity shared by every twin); hyperbolicity; Landau–Fejér positivity and dilution; deformation rigidity; the counting law; the survival law; the regulator law; the partner-rank law; the covariance law; the local–global law; the detection law; the strip law (uniform ceilings are strips); and the statistics law. Collided positivity escapes the first seven and sees nothing; Rosati positivity sees everything and is RH; the archimedean self-energy at atomic resolution comes closest — positive, covariant, coupled through a rank-one pole counterterm, and unselective only because it stops below the spacing. Over `𝔽_q` a polarization of `C × C` with one Frobenius ladder makes positivity and equivariance one; over `ℤ` none is known. The [summary](obstacles-summary.md#4-would-the-b-tier-obstacles-require-a-new-field-of-mathematics) describes what such a structure must satisfy.
