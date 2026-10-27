@@ -206,9 +206,16 @@ oleans built individually, with exit 0 and empty logs
 `/tmp/leftovers-integer-variance-build.log` (session 32559). The exact-doubling
 draft's first eight-declaration source/axiom audit found two explicit
 simplification issues: a true incidence conditional and unfolding the mean
-variance. Both have been made explicit. The revised audit is running
-(session 23429, `/tmp/leftovers-exact-doubling-audit-r2.log`), with a diagnostic
-print of the imported variance definition to verify the interface.
+variance. Both were made explicit. The revised audit passed all eight
+declarations with only standard axioms and no diagnostics (session 23429,
+exit 0, `/tmp/leftovers-exact-doubling-audit-r2.log`). Its diagnostic print
+confirms that the imported variance is exactly the sum about the mean.
+The identical canonical `ExactDoublingEnergy.lean` is wired and passed
+its final direct source check (session 89274, exit 0, empty
+`/tmp/leftovers-exact-doubling-final.log`). Source hash:
+`6911de68ae9da0a97ae843072c5c5b756c1282366eb0d611211f3002c94f66ce`.
+Its missing olean is now being built solely for the arithmetic-transport
+import (session 87152, `/tmp/leftovers-exact-doubling-build.log`).
 `FiniteSieveRealization`, `WeightedDoublingIncidence`, and
 `DyadicMantissaVariance` still need their missing oleans for the transport
 draft. No second Lean process is started while a check is live.

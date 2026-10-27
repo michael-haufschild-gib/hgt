@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheArchimedeanGermSurvivesOnItsPolarHyperplane
+import GaloisForLFunctions.ArithmeticEffectivityTheory.TheFourierCoefficientsOfTheTorsionMeasure
 
 /-!
 # The survival cone of a periodic germ is its module of relations
@@ -46,8 +47,8 @@ theorem sum_range_shift_of_periodic {p : ℕ → ℝ} {q : ℕ} (hper : ∀ k, p
     rw [← ih]
     rcases Nat.eq_zero_or_pos q with rfl | hq
     · simp
-    · have h1 := sum_range_succ (fun i => p (j + i)) q
-      have h2 := sum_range_succ' (fun i => p (j + i)) q
+    · have h1 := Finset.sum_range_succ (fun i => p (j + i)) q
+      have h2 := Finset.sum_range_succ' (fun i => p (j + i)) q
       have h3 : ∑ i ∈ range q, p (j + 1 + i) = ∑ i ∈ range q, p (j + (i + 1)) :=
         sum_congr rfl fun i _ => by rw [show j + 1 + i = j + (i + 1) by ring]
       rw [h3]
@@ -251,5 +252,76 @@ theorem periodicGerm_survival (a : Fin n → ℕ → ℝ) {q : ℕ} (hq : 0 < q)
     exact periodicGerm_quad_nonneg a hq hper hx hr.1.le hr.2 C
   exact quad_nonneg_of_regularized hQ (fun α β => hA α β)
     ((mem_survivalCone_cesaroGram_iff a hq hper C).mpr hC)
+
+theorem tendsto_neg_log_one_sub : Tendsto (fun r : ℝ => -Real.log (1 - r)) (𝓝[<] 1) atTop := by
+  have h : Tendsto (fun r : ℝ => 1 - r) (𝓝[<] 1) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have := ((continuous_sub_left (1 : ℝ)).tendsto (1 : ℝ)).mono_left
+        (nhdsWithin_le_nhds (s := Set.Iio (1 : ℝ)))
+      simpa using this
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact sub_pos.mpr (Set.mem_Iio.mp hr)
+  exact tendsto_neg_atBot_atTop.comp (Real.tendsto_log_nhdsGT_zero.comp h)
+
+/-- **Scheme independence for periodic germs.** If the Cesàro Gram is nonzero, every
+renormalization of the periodic germ has the module of relations as survival cone. -/
+theorem periodicGerm_survivalCone_eq (a : Fin n → ℕ → ℝ) {q : ℕ} (hq : 0 < q)
+    (hper : ∀ α, Function.Periodic (a α) q) {x : Fin n → ℝ} (hx : ∀ α, 0 ≤ x α)
+    (hM : cesaroGram a q ≠ 0) {t : ℝ → ℝ} {C' A' : Matrix (Fin n) (Fin n) ℝ}
+    (hC : ∀ α β, Tendsto (fun r => periodicGerm a x r α β - t r * C' α β) (𝓝[<] 1)
+      (𝓝 (A' α β))) :
+    survivalCone C' = {C | ∀ k, ∑ α, C α * a α k = 0} := by
+  obtain ⟨A, hA, -⟩ := periodicGerm_survival a hq hper hx
+  rw [survivalCone_eq_of_regularized hA hC tendsto_neg_log_one_sub hM]
+  ext C
+  exact mem_survivalCone_cesaroGram_iff a hq hper C
+
+/-- For constant modes (the archimedean germ) the relations are the polar hyperplane. -/
+theorem relations_const_iff (C : Fin n → ℝ) :
+    (∀ k : ℕ, ∑ α, C α * (fun (_ : Fin n) (_ : ℕ) => (1 : ℝ)) α k = 0) ↔ ∑ α, C α = 0 := by
+  simp
+
+/-! ### Ramanujan twins -/
+
+/-- The Ramanujan mode `k ↦ Re c_n(k)` of the torsion orbit of order `n`. -/
+def ramanujanMode (n k : ℕ) : ℝ := (ArithmeticEffectivityTheory.ramanujanSum n k).re
+
+theorem ramanujanMode_periodic {n : ℕ} (hn : 0 < n) : Function.Periodic (ramanujanMode n) n := by
+  intro k
+  simp only [ramanujanMode, ArithmeticEffectivityTheory.ramanujanSum]
+  congr 1
+  refine sum_congr rfl fun ζ hζ => ?_
+  rw [pow_add, ((mem_primitiveRoots hn).mp hζ).pow_eq_one, mul_one]
+
+/-- **Ramanujan twins survive on per-order relations.** Place torsion modes of orders `ord α` at
+nodes `x α`. Any coefficients whose sum over each order vanishes form a relation, so the
+renormalized limit of the twisted germ is nonnegative on them: repeating an orbit at two nodes
+creates exactly the relation that a single orbit lacks. -/
+theorem ramanujanTwin_survival {N : ℕ} (ord : Fin N → ℕ) (hord : ∀ α, 0 < ord α)
+    {x : Fin N → ℝ} (hx : ∀ α, 0 ≤ x α) :
+    ∃ A : Matrix (Fin N) (Fin N) ℝ,
+      (∀ α β, Tendsto (fun r => periodicGerm (fun α => ramanujanMode (ord α)) x r α β -
+        (-Real.log (1 - r)) * cesaroGram (fun α => ramanujanMode (ord α)) (∏ γ, ord γ) α β)
+          (𝓝[<] 1) (𝓝 (A α β))) ∧
+      ∀ C : Fin N → ℝ, (∀ m : ℕ, ∑ α ∈ univ.filter (fun α => ord α = m), C α = 0) →
+        0 ≤ quad A C := by
+  classical
+  have hq : 0 < ∏ γ, ord γ := prod_pos fun γ _ => hord γ
+  have hper : ∀ α, Function.Periodic (ramanujanMode (ord α)) (∏ γ, ord γ) := by
+    intro α
+    have hdvd : ord α ∣ ∏ γ, ord γ := dvd_prod_of_mem _ (mem_univ α)
+    have h := (ramanujanMode_periodic (hord α)).nat_mul ((∏ γ, ord γ) / ord α)
+    rwa [Nat.cast_id, Nat.div_mul_cancel hdvd] at h
+  obtain ⟨A, hA, hpos⟩ := periodicGerm_survival (fun α => ramanujanMode (ord α)) hq hper hx
+  refine ⟨A, hA, fun C hC => hpos C fun k => ?_⟩
+  rw [← sum_fiberwise_of_maps_to (s := univ) (t := univ.image ord) (g := ord)
+    (fun α _ => mem_image_of_mem ord (mem_univ α))]
+  refine sum_eq_zero fun m _ => ?_
+  have hfib : ∑ α ∈ univ.filter (fun α => ord α = m), C α * ramanujanMode (ord α) k =
+      (∑ α ∈ univ.filter (fun α => ord α = m), C α) * ramanujanMode m k := by
+    rw [sum_mul]
+    refine sum_congr rfl fun α hα => ?_
+    rw [(mem_filter.mp hα).2]
+  rw [hfib, hC m, zero_mul]
 
 end GaloisForLFunctions.RenormalizedBiarithmeticGeometry

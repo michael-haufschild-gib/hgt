@@ -88,7 +88,7 @@ theorem cosh_sub_one_le (L : ℝ) : Real.cosh L - 1 ≤ L ^ 2 / 2 * Real.exp (L 
   have hpos := Real.exp_pos (L ^ 2 / 2)
   nlinarith
 
-theorem pow_pos_of_ne_zero_sq {L : ℝ} (hL : L ∈ ({0} : Set ℝ)ᶜ) : 0 < L ^ 2 := by
+theorem sq_pos_of_mem_compl_zero {L : ℝ} (hL : L ∈ ({0} : Set ℝ)ᶜ) : 0 < L ^ 2 := by
   have : L ≠ 0 := hL
   positivity
 
@@ -107,11 +107,11 @@ theorem tendsto_heckeDefect_div_sq (f : CompactTest) :
     exact this.mono_left nhdsWithin_le_nhds
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hup ?_ ?_
   · filter_upwards [self_mem_nhdsWithin] with L hL
-    have hL2 : 0 < L ^ 2 := pow_pos_of_ne_zero_sq hL
+    have hL2 : 0 < L ^ 2 := sq_pos_of_mem_compl_zero hL
     rw [le_div_iff₀ hL2]
     linarith [moment_le_heckeDefect f L]
   · filter_upwards [self_mem_nhdsWithin] with L hL
-    have hL2 : 0 < L ^ 2 := pow_pos_of_ne_zero_sq hL
+    have hL2 : 0 < L ^ 2 := sq_pos_of_mem_compl_zero hL
     rw [div_le_iff₀ hL2]
     have h1 := heckeDefect_le_moment f L
     have h2 := cosh_sub_one_le L

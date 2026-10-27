@@ -1,0 +1,18 @@
+import GaloisForLFunctions.ArithmeticIntersectionTheory.TheProjectionFormulaAndTheRegulatorAnomaly
+import GaloisForLFunctions.ArithmeticIntersectionTheory.TheDifferentOfATorsionOrbit
+import GaloisForLFunctions.ArithmeticIntersectionTheory.TheHeckeCocycleOfRenormalization
+import GaloisForLFunctions.ArithmeticIntersectionTheory.TheArchimedeanIntersectionIsALogOrder
+import GaloisForLFunctions.ArithmeticIntersectionTheory.TheTowerFormOfAPrime
+import GaloisForLFunctions.ArithmeticIntersectionTheory.ThePrimeKernelIsASumOfTransverseTowers
+import GaloisForLFunctions.ArithmeticIntersectionTheory.GaussDigammaIsTheFourierTransformOfTheTorsionEnergy
+
+/-!
+# Arithmetic Intersection Theory
+
+Umbrella for the intersection theory of the characteristic circle and its transfer to Weil's
+pairing: the projection formula of the power maps and the regulator anomaly; the different of a
+torsion orbit and the Hecke cocycle of renormalization; intersection numbers as log-orders of finite
+rings; the tower form of a prime, the local Hodge index, and the decomposition of Weil's prime
+kernel into transverse towers; Fourier duality between the torsion energy and the archimedean
+digamma. See `ArithmeticIntersectionTheory/README.md`.
+-/

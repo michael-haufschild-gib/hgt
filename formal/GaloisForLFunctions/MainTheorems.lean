@@ -46,3 +46,4 @@ import GaloisForLFunctions.ArithmeticCorrespondencePositivity
 import GaloisForLFunctions.BiarithmeticGaugeGeometry
 import GaloisForLFunctions.SelectivePositivityAndThresholdLaws
 import GaloisForLFunctions.ArithmeticElectrostatics
+import GaloisForLFunctions.ArithmeticIntersectionTheory

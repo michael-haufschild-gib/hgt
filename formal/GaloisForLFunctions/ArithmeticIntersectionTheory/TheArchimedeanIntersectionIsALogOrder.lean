@@ -54,10 +54,12 @@ def cyclotomicValue (m : ℕ) : 𝓞 (CyclotomicField n ℚ) :=
 
 theorem coe_cyclotomicValue (m : ℕ) :
     (cyclotomicValue n m : CyclotomicField n ℚ) = aeval (zetaN n) (cyclotomic m ℚ) := by
-  rw [← map_cyclotomic m (algebraMap ℤ ℚ), aeval_map_algebraMap]
-  have hz : zetaN n = algebraMap (𝓞 (CyclotomicField n ℚ)) (CyclotomicField n ℚ)
+  rw [← map_cyclotomic_int m ℚ, aeval_def, eval₂_map,
+    show (algebraMap ℚ (CyclotomicField n ℚ)).comp (Int.castRingHom ℚ) =
+      algebraMap ℤ (CyclotomicField n ℚ) from RingHom.ext_int _ _, ← aeval_def]
+  have hz : zetaN n = (algebraMap (𝓞 (CyclotomicField n ℚ)) (CyclotomicField n ℚ)).toIntAlgHom
       (zetaN_spec n).toInteger := rfl
-  rw [hz, aeval_algebraMap_apply]
+  rw [hz, aeval_algHom_apply]
   rfl
 
 /-- Under a complex embedding `σ`, `σ(Φ_m(ζ_n)) = ∏_{ξ ∈ O_m} (σ ζ_n − ξ)`. -/
@@ -76,17 +78,16 @@ theorem log_card_quotient_cyclotomicValue {m : ℕ} (hm : 0 < m) (hmn : m ≠ n)
   set L := CyclotomicField n ℚ
   have hn : 0 < n := Nat.pos_of_ne_zero (NeZero.ne n)
   have hirr : Irreducible (cyclotomic n ℚ) := cyclotomic.irreducible_rat hn
-  set x := cyclotomicValue n m
   -- the order of the quotient is the absolute norm
-  have hcard : (Nat.card (𝓞 L ⧸ Ideal.span {x}) : ℝ) = |((Algebra.norm ℚ (x : L) : ℚ) : ℝ)| := by
+  have hcard : (Nat.card (𝓞 L ⧸ Ideal.span {cyclotomicValue n m}) : ℝ) = |((Algebra.norm ℚ (cyclotomicValue n m : L) : ℚ) : ℝ)| := by
     rw [← Submodule.cardQuot_apply, ← Ideal.absNorm_apply, Ideal.absNorm_span_singleton,
       Nat.cast_natAbs, ← Algebra.coe_norm_int]
     push_cast
     rfl
   -- the norm is the product over the complex embeddings, i.e. over `O_n`
-  have hprod : ((Algebra.norm ℚ (x : L) : ℚ) : ℂ) =
+  have hprod : ((Algebra.norm ℚ (cyclotomicValue n m : L) : ℚ) : ℂ) =
       ∏ η ∈ primitiveRoots n ℂ, ∏ ξ ∈ primitiveRoots m ℂ, (η - ξ) := by
-    have h := Algebra.norm_eq_prod_embeddings ℚ ℂ (x : L)
+    have h := Algebra.norm_eq_prod_embeddings ℚ ℂ (cyclotomicValue n m : L)
     rw [eq_ratCast] at h
     rw [h]
     simp only [embedding_cyclotomicValue n hm]
@@ -100,14 +101,14 @@ theorem log_card_quotient_cyclotomicValue {m : ℕ} (hm : 0 < m) (hmn : m ≠ n)
     rw [norm_eq_zero, sub_eq_zero] at h0
     subst h0
     exact hmn (((mem_primitiveRoots hm).mp hξ).unique ((mem_primitiveRoots hn).mp hη))
-  have habs : |((Algebra.norm ℚ (x : L) : ℚ) : ℝ)| = ‖((Algebra.norm ℚ (x : L) : ℚ) : ℂ)‖ := by
+  have habs : |((Algebra.norm ℚ (cyclotomicValue n m : L) : ℚ) : ℝ)| = ‖((Algebra.norm ℚ (cyclotomicValue n m : L) : ℚ) : ℂ)‖ := by
     rw [← Complex.ofReal_ratCast, Complex.norm_real, Real.norm_eq_abs]
-  rw [hcard, habs, hprod, norm_prod,
-    Real.log_prod fun η hη => (prod_pos fun ξ hξ => (norm_nonneg _).lt_of_ne
-      (hne η hη ξ hξ).symm).ne']
-  rw [orbitIntersection]
+  rw [hcard, habs, hprod, norm_prod]
+  simp_rw [norm_prod]
+  rw [Real.log_prod fun η hη => (prod_pos fun ξ hξ => (norm_nonneg _).lt_of_ne
+    (hne η hη ξ hξ).symm).ne', orbitIntersection]
   refine sum_congr rfl fun η hη => ?_
-  rw [norm_prod, Real.log_prod fun ξ hξ => hne η hη ξ hξ]
+  rw [Real.log_prod fun ξ hξ => hne η hη ξ hξ]
 
 /-- `Φ_1(ζ_n) = ζ_n − 1`. -/
 theorem coe_cyclotomicValue_one :

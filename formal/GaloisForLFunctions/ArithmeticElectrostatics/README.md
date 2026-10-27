@@ -184,21 +184,27 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
    is critical at any scale (`critical_of_windowEnergy_lt_two`); RH ⇔ every unit window has energy
    below `2` (`riemannHypothesis_iff_windowEnergy_lt_two`).
 
+6. **The Hecke defect is the moment of inertia** (`TheHeckeDefectIsTheMomentOfInertia`). On the
+    strip `2cosh(2δL) − 2 ≤ 4δ²(2cosh L − 2)` (`depthKernel_le_mul_half`), so the symmetric
+    equivariance defect of `D` and the transverse moment of inertia `M_f = Σ m δ²|f̂(ρ)|²` satisfy
+    `4L² M_f ≤ E_f(L) ≤ 8(cosh L − 1) M_f` (`moment_le_heckeDefect`, `heckeDefect_le_moment`) and
+    `E_f(L)/L² → 4 M_f` (`tendsto_heckeDefect_div_sq`).
+
 ### C. The field
 
-6. **The field is computed** (`TheRenormalizedSquareIsSelbergsSource`; ACP `EveryXiZeroHasASourceField`).
+7. **The field is computed** (`TheRenormalizedSquareIsSelbergsSource`; ACP `EveryXiZeroHasASourceField`).
    At a zero of order `m` of an analytic `F`, the regular part `R` of `F′/F` is analytic, the
    double-pole coefficient of `(F′/F)²` is `m²` and that of `F″/F` is `m(m − 1)`, and both residues are
    `2m R(ρ)` (`selfTerm_and_residue_of_analyticOrderAt`). For `ξ` the regular part is the field of the
    other zeros at every zero.
-7. **The field law has a threshold** (`TheFieldLawHasAThreshold`). RH ⇔ every zero right of the
+8. **The field law has a threshold** (`TheFieldLawHasAThreshold`). RH ⇔ every zero right of the
    line feels a transverse field at most `1` (`riemannHypothesis_iff_forall_transverseField_le_one`);
    for an explicit `c > 0`, RH ⇔ every such zero feels a field below `√(2c log(|γ| + 4))`
    (`exists_riemannHypothesis_iff_transverseField_lt_sqrt_log`). The terminal reserve
    `1/(2δ) + cδ log γ` is minimized at `δ = (2c log γ)^{−1/2}`. The field law that would exclude
    off-line zeros is an upper bound of size `max(1, √(2c log γ))`, not an exact equilibrium.
 
-7a. **The external field is a prime sum** (`TheExternalFieldIsAPrimeSum`). For `Re s > 1` the field
+9. **The external field is a prime sum** (`TheExternalFieldIsAPrimeSum`). For `Re s > 1` the field
     of the divisor is a sum of positive Coulomb terms, `Re ξ′/ξ(s) = Σ_ρ Re 1/(s − ρ)`
     (`re_logDeriv_xi_eq_tsum_of_one_lt_re`, `re_reciprocal_pos_of_one_lt_re`), and the explicit
     formula computes it from the primes: `Re L(Λ, s) + Σ_{ρ∈F} Re 1/(s − ρ) ≤ Re (archFactor′/archFactor)(s)`
@@ -212,13 +218,13 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
 
 ### D. Renormalization of the diagonal
 
-8. **The zero side** (`TheRenormalizedSquareIsSelbergsSource`). The counterterm identity
+10. **The zero side** (`TheRenormalizedSquareIsSelbergsSource`). The counterterm identity
    `F″/F = (F′/F)² + (F′/F)′` (`deriv_deriv_div_eq`); Selberg's source `Λ₂ = Λ log + Λ ⋆ Λ = μ ⋆ log²`
    (`selbergSource_eq`), nonnegative (`selbergSource_nonneg`), `Λ₂(p^k) = (2k − 1) log² p`
    (`selbergSource_prime_pow`), with `L(Λ₂, s) = ζ″(s)/ζ(s)` on `Re s > 1` (`LSeries_selbergSource`).
    The degree counterterm `Λ log` removes the self-term at simple zeros, keeps the source
    nonnegative, and leaves the field as residue.
-9. **The circle** (`TheSelfIntersectionOfATorsionOrbit`). `I(n, n) = φ(n) log n − (φ ⋆ Λ)(n)`
+11. **The circle** (`TheSelfIntersectionOfATorsionOrbit`). `I(n, n) = φ(n) log n − (φ ⋆ Λ)(n)`
    (`orbitIntersection_self_eq`), `0 ≤ I(n, n) ≤ φ(n) log n` (`orbitIntersection_self_le`,
    `orbitIntersection_self_nonneg`); `(φ ⋆ Λ)(p^{a+1}) = p^a log p` (`localCorrection_prime_pow`), so
    per point `ℓ_{p^a} = a log p − log p/(p − 1)`; the Leibniz rule `D(ab) = φ(a)D(b) + φ(b)D(a)` on
@@ -229,7 +235,7 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
    Conjugation maps every orbit onto itself and is the power map of degree `−1`
    (`conj_mem_primitiveRoots`, `conj_eq_pow_of_mem_primitiveRoots`); the Hermitian and bilinear Abel
    energies agree on torsion cycles (`sum_sum_conj_eq`, `torsionEnergy_eq_bilinear`).
-10. **The counterterm rate** (`TheTorsionCountertermIsLogarithmic`). A constant counterterm `κ` per
+12. **The counterterm rate** (`TheTorsionCountertermIsLogarithmic`). A constant counterterm `κ` per
     point renormalizes the orders `≤ N` (`RenormalizesAt`) for `κ = 4 log N + log 4 + 4`
     (`renormalizesAt_log`: diagonal `I(n, n) ≤ φ(n) log n`, Schur test with weights `1/n`, the Hecke
     law, Mertens, super-multiplicativity of `φ`) and only if `κ ≥ ((p − 2)/(p − 1)) log p` for every
@@ -240,7 +246,7 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
 
 ### E. The base and the arithmetic point
 
-11. **Power maps are similitudes** (`PowerMapsAreSimilitudesOfTheAbelEnergy`). The Abel energy of
+13. **Power maps are similitudes** (`PowerMapsAreSimilitudesOfTheAbelEnergy`). The Abel energy of
     the torsion groups `μ_A`, `μ_B` has the closed form `T_r(A, B) = gcd(A, B) log(1/(1 − r^{lcm(A,B)}))`
     (`fullTorsionEnergy_eq`); the matrix is positive semidefinite (`sum_sum_fullTorsionEnergy_nonneg`);
     pulling back by `z ↦ z^t` multiplies it by the degree and rescales the cutoff,
@@ -250,11 +256,11 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
     of the self-energy under the rescaled cutoff. On the base the Hecke correspondences are computed
     similitudes of a positive Hermitian structure.
 
-12. **The torsion is the stable equilibrium of the circle** (`TheTorsionIsTheStableEquilibriumOfTheCircle`).
+14. **The torsion is the stable equilibrium of the circle** (`TheTorsionIsTheStableEquilibriumOfTheCircle`).
     `N` distinct points of the unit circle satisfy `Σ_{i≠j} log |z_i − z_j| ≤ N log N`
     (`sum_sum_log_norm_sub_le`: Vandermonde and Hadamard), and the `N`-th roots of unity attain it
     (`logEnergy_self_eq`). Discrete energy on the circle is bounded below; the torsion is a minimizer.
-13. **The arithmetic point carries the divergence** (`TheArithmeticPointCarriesTheDivergence`).
+15. **The arithmetic point carries the divergence** (`TheArithmeticPointCarriesTheDivergence`).
     `1` is the only point of the circle fixed by the power maps (`eq_one_of_forall_pow_eq_self`),
     `O_1 = {1}` (`primitiveRoots_one`), `I(1, n) = Λ(n)` (`orbitIntersection_one_left`). Every
     counterterm `c(n)` renormalizing the orders `≤ N` satisfies `c(1) ≥ Σ_{2≤n≤N} Λ(n)²/(c(n)φ(n))`
@@ -265,11 +271,11 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
 
 ### F. Gauge
 
-14. **Blindness to the archimedean place** (`QuantizationTurnsWindowsIntoPoints`). The
+16. **Blindness to the archimedean place** (`QuantizationTurnsWindowsIntoPoints`). The
     reflection-commuting affine maps `s ↦ ½ + λ(s − ½) + iκ` preserve the transverse energy
     (`transverseEnergy_affine`) and scale the field by `λ⁻¹` (`fieldAt_affine`): dilations and the
     archimedean twist — hence the first gauge charge — are invisible to electrostatic quantities.
-15. **Gauge charge of the source**. For a completely multiplicative gauge `ω`, the renormalized
+17. **Gauge charge of the source**. For a completely multiplicative gauge `ω`, the renormalized
     source of the twin `ωΛ` is `ωΛ₂` (`pmul_mul_pmul`, `selbergSource_twist`); its nonnegativity at a
     prime forces `ω(p) = 1` for sign gauges (`eq_one_of_twisted_selbergSource_nonneg`). The charge
     enters through the arithmetic computation, prime by prime.
@@ -285,15 +291,16 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
 | **ES3 The energy of the divisor** | `= 0` ⇔ RH ⇔ `< 1`; finite ⇔ finite off-line index; work = energy | `divisorTransverseEnergy_eq_zero_iff`, `riemannHypothesis_iff_divisorTransverseEnergy_lt_one`, `divisorTransverseEnergy_lt_top_iff`, `riemannHypothesis_iff_work_lt_one` |
 | **ES4 Global source-work exhaustion** | damped tapered Laurent-residue work exhausts the multiplicity-weighted energy, finite or infinite | `xiTaperedSourceWork_tendsto`, `xiDampedSourceWork_tendsto_energy` |
 | **ES5 Window selection** | window energy counts off-line zeros; `< 2` ⇒ critical | `card_offLine_le_windowEnergy`, `critical_of_windowEnergy_lt_two`, `riemannHypothesis_iff_windowEnergy_lt_two` |
-| **ES6 Field threshold** | RH ⇔ field `≤ 1` ⇔ field `< √(2c log γ)` at right zeros | `riemannHypothesis_iff_forall_transverseField_le_one`, `exists_riemannHypothesis_iff_transverseField_lt_sqrt_log` |
-| **ES6a External field and alignment** | `Re L(Λ, s) + Σ_F Re 1/(s − ρ) ≤ Re arch′/arch`; anti-alignment `m/(σ − β)` at zero ordinates | `re_LSeries_vonMangoldt_add_sum_le`, `re_LSeries_vonMangoldt_eq`, `re_LSeries_vonMangoldt_le_at_zero_ordinate` |
-| **ES7 The renormalized square** | self-term `m² → m(m − 1)`, residue `2mR`; `Λ₂ = μ ⋆ log² ≥ 0`, `L(Λ₂) = ζ″/ζ` | `selfTerm_and_residue_of_analyticOrderAt`, `selbergSource_nonneg`, `selbergSource_prime_pow`, `LSeries_selbergSource` |
-| **ES8 Torsion adjunction** | `I(n,n) = φ log n − φ ⋆ Λ`; additivity; cover formula; conjugation on cycles | `orbitIntersection_self_eq`, `orbitIntersection_self_mul_of_coprime`, `orbitIntersection_self_prime_pow_succ`, `torsionEnergy_eq_bilinear` |
-| **ES9 Logarithmic counterterm** | minimal constant counterterm on orders `≤ N` in `[½ log(N/2), 4 log N + O(1)]` | `torsionCounterterm_rate` |
-| **ES10 The arithmetic point** | `I(1, n) = Λ(n)`; `c(1) ≥ Σ Λ²/(cφ)` | `orbitIntersection_one_left`, `le_counterterm_one` |
-| **ES11 Similitudes on the base** | `T_r(A,B) = gcd log 1/(1 − r^{lcm})`, PSD; `T_r(At, Bt) = t T_{r^t}(A, B)`; renormalized limit `−J` | `fullTorsionEnergy_eq`, `sum_sum_fullTorsionEnergy_nonneg`, `fullTorsionEnergy_mul`, `tendsto_fullTorsionEnergy_sub_log`, `logEnergy_mul` |
-| **ES12 Stability of the base** | Fekete bound `N log N`, attained by the torsion | `sum_sum_log_norm_sub_le`, `logEnergy_self_eq` |
-| **ES13 Gauge** | affine invariance; `Λ₂^ω = ωΛ₂` | `transverseEnergy_affine`, `selbergSource_twist`, `eq_one_of_twisted_selbergSource_nonneg` |
+| **ES6 Defect = moment of inertia** | `4L² M_f ≤ E_f(L) ≤ 8(cosh L − 1) M_f`; `E_f(L)/L² → 4M_f` | `heckeDefect_le_moment`, `moment_le_heckeDefect`, `tendsto_heckeDefect_div_sq` |
+| **ES7 Field threshold** | RH ⇔ field `≤ 1` ⇔ field `< √(2c log γ)` at right zeros | `riemannHypothesis_iff_forall_transverseField_le_one`, `exists_riemannHypothesis_iff_transverseField_lt_sqrt_log` |
+| **ES8 External field and alignment** | `Re L(Λ, s) + Σ_F Re 1/(s − ρ) ≤ Re arch′/arch`; anti-alignment `m/(σ − β)` at zero ordinates | `re_LSeries_vonMangoldt_add_sum_le`, `re_LSeries_vonMangoldt_eq`, `re_LSeries_vonMangoldt_le_at_zero_ordinate` |
+| **ES9 The renormalized square** | self-term `m² → m(m − 1)`, residue `2mR`; `Λ₂ = μ ⋆ log² ≥ 0`, `L(Λ₂) = ζ″/ζ` | `selfTerm_and_residue_of_analyticOrderAt`, `selbergSource_nonneg`, `selbergSource_prime_pow`, `LSeries_selbergSource` |
+| **ES10 Torsion adjunction** | `I(n,n) = φ log n − φ ⋆ Λ`; additivity; cover formula; conjugation on cycles | `orbitIntersection_self_eq`, `orbitIntersection_self_mul_of_coprime`, `orbitIntersection_self_prime_pow_succ`, `torsionEnergy_eq_bilinear` |
+| **ES11 Logarithmic counterterm** | minimal constant counterterm on orders `≤ N` in `[½ log(N/2), 4 log N + O(1)]` | `torsionCounterterm_rate` |
+| **ES12 The arithmetic point** | `I(1, n) = Λ(n)`; `c(1) ≥ Σ Λ²/(cφ)` | `orbitIntersection_one_left`, `le_counterterm_one` |
+| **ES13 Similitudes on the base** | `T_r(A,B) = gcd log 1/(1 − r^{lcm})`, PSD; `T_r(At, Bt) = t T_{r^t}(A, B)`; renormalized limit `−J` | `fullTorsionEnergy_eq`, `sum_sum_fullTorsionEnergy_nonneg`, `fullTorsionEnergy_mul`, `tendsto_fullTorsionEnergy_sub_log`, `logEnergy_mul` |
+| **ES14 Stability of the base** | Fekete bound `N log N`, attained by the torsion | `sum_sum_log_norm_sub_le`, `logEnergy_self_eq` |
+| **ES15 Gauge** | affine invariance; `Λ₂^ω = ωΛ₂` | `transverseEnergy_affine`, `selbergSource_twist`, `eq_one_of_twisted_selbergSource_nonneg` |
 
 Inherited and used throughout: `Re W = D − Δ`, `D` faithful, coercive and log-Sobolev (APol); the
 transverse force and its marginality identity, the maximum principle, the attainment dichotomy,
@@ -308,50 +315,51 @@ kernel (AET).
 
 1. **What is the Frobenius at infinity as a correspondence?** On the circle it is algebraic:
    conjugation is the power map of degree `−1`, fixes every torsion cycle, and identifies the
-   Hermitian (collided) and bilinear (reflection) torsion pairings (ES8); the Hecke correspondences
+   Hermitian (collided) and bilinear (reflection) torsion pairings (ES10); the Hecke correspondences
    are computed similitudes of the regularized Hermitian structure, with the cutoff rescaled by the
-   degree (ES11). On the divisor,
+   degree (ES13). On the divisor,
    conjugation composed with reflection is the Hermitian reflection `ρ ↦ 1 − ρ̄`, trivial iff RH
    (`riemannHypothesis_iff_supportPartner_eq_id`); its pairing is `D`, whose Hecke equivariance is
    RH (APol). The disagreement of the two involutions is counted by the transverse energy (ES3).
    *Answer:* algebraic on the base; on the divisor its realization by a correspondence is RH.
 2. **What is the self-intersection of the diagonal?** Renormalization by the degree on both sides:
    on the zero side the self-term drops from `m²` to `m(m − 1)`, the source becomes `Λ₂ ≥ 0`, the
-   field is the residue (ES7); on the circle `I(n, n) = log |disc Φ_n| = φ(n) log n − (φ ⋆ Λ)(n)`,
-   additive over coprime orders and growing by `log p` per point along the tower of `p` (ES8).
+   field is the residue (ES9); on the circle `I(n, n) = log |disc Φ_n| = φ(n) log n − (φ ⋆ Λ)(n)`,
+   additive over coprime orders and growing by `log p` per point along the tower of `p` (ES10).
    *Answer:* Hecke-compatible renormalizations exist and preserve positivity of coefficients; on the
    circle they preserve positivity of the pairing only with a counterterm of size `Θ(log N)`
-   (ES9), concentrated at the arithmetic point (ES10). Whether this counterterm equals the
+   (ES11), concentrated at the arithmetic point (ES12). Whether this counterterm equals the
    archimedean self-energy at matched scale is open (§9.2).
 3. **What bounds the field?** No unconditional upper bound is known; the needed one is now sharp:
-   at right zeros, any bound `≤ 1`, or `< √(2c log γ)`, is RH (ES6); equivalently total energy `< 1`
+   at right zeros, any bound `≤ 1`, or `< √(2c log γ)`, is RH (ES7); equivalently total energy `< 1`
    (ES3), unit-window energy `< 2` (ES5). *Answer:* the field law is an upper bound of definite size,
    RH-strength; its weaker-than-RH forms are finite energy (finite off-line index) and window
    bounds.
 4. **What bounds the equivariance defect of `D`?** Hecke translation by `L` reweights the charges by
-   `e^{2δL}`; the defect `E_f(L) = Σ m(2cosh(2δL) − 2)|f̂(ρ)|²` vanishes exactly on critical
-   configurations. *Answer:* open (B3.33); electrostatically it is the curvature of the depth
-   reweighting, bounded below by `4L² Σ m δ² |f̂|²`.
+   `e^{2δL}`, and the defect is the transverse moment of inertia `M_f = Σ m δ² |f̂(ρ)|²` of the
+   weighted divisor at every scale: `4L² M_f ≤ E_f(L) ≤ 8(cosh L − 1) M_f`, `E_f(L)/L² → 4M_f`
+   (ES6). *Answer:* the defect question is equivalent, with explicit constants, to bounding the
+   moment of inertia of the charges seen by the test; an arithmetic bound for it is open (B3.33).
 5. **What is the arithmetic point, and what is its period?** The unique common fixed point of the
    power maps, the orbit `O_1`; `Λ(n) = I(1, n)` is the potential of `O_n` there; the divergence of
-   every positivity-preserving renormalization sits there (ES10); `ψ(N)` is the Farey potential there
+   every positivity-preserving renormalization sits there (ES12); `ψ(N)` is the Farey potential there
    and RH is its square-root bound (AET). It is fixed, not periodic, under every power map; the
    Frobenius-flat structure that gives Stepanov's method its period over `𝔽_q` has no analogue there
    (AET).
 6. **How does `σ_γ` localize beyond the conductor; are zero ordinates aligned with small primes?**
    Right of the strip, alignment is controlled: at the ordinate of a zero of real part `β` the
    prime cosine sum `Σ Λ(n) n^{−σ} cos(γ log n)` is at most the archimedean field minus `m/(σ − β)`
-   (ES6a) — zero ordinates are anti-aligned by their own Coulomb term. Inside the strip, between the
+   (ES8) — zero ordinates are anti-aligned by their own Coulomb term. Inside the strip, between the
    conductor horizon and the forcing threshold, the outward reserve needs the opposite inequality
    for a short prime polynomial (§9.6). *Answer:* the external regime is settled by positivity of the
    field; the interior regime, where Q1 lives, is open.
 7. **What is the non-archimedean gauge charge?** Electrostatic quantities are invariant under the
-   reflection-commuting affine group, hence blind to every archimedean twist (ES13); the gauge enters
+   reflection-commuting affine group, hence blind to every archimedean twist (ES15); the gauge enters
    through the arithmetic source, `Λ₂^ω = ωΛ₂`, prime by prime. *Answer:* located in the source;
    margin laws on growing prime windows remain open (Q3 of the report).
 8. **Is the coupled class bounded at the centre?** Not answered by AES (BGG).
 9. **What selects the fibre?** The finite laws (ES1, ES2) hold on every reflection-closed
-   configuration, fake ones included, and the circle laws (ES8–ES12) on every torsion cycle:
+   configuration, fake ones included, and the circle laws (ES10–ES14) on every torsion cycle:
    electrostatic geometry is soft. *Answer:* selection must come from the arithmetic computation of
    the source or the counterterm, never from the geometry of the charges.
 10. **What are the escape states of `ζ` at infinite height?** Infinite transverse energy is exactly
@@ -363,9 +371,9 @@ kernel (AET).
     quantized quantity selection below the zero spacing is free; the difficulty moves entirely into
     bounding the quantity.
 12. **What is the base?** The characteristic circle with its torsion: discrete energy bounded below
-    and attained by the roots of unity (ES12), a positive Hermitian structure on which the power maps
-    act as similitudes up to rescaling of the cutoff (ES11), the torsion pairing positive before
-    renormalization and Hecke equivariant after (AET, ES8). *Answer:* the base carries stability for free; the
+    and attained by the roots of unity (ES14), a positive Hermitian structure on which the power maps
+    act as similitudes up to rescaling of the cutoff (ES13), the torsion pairing positive before
+    renormalization and Hecke equivariant after (AET, ES10). *Answer:* the base carries stability for free; the
     divisor must inherit it through an adjunction that matches the logarithmic counterterm.
 
 ---
@@ -405,7 +413,7 @@ and counterterm rates; the arithmetic-point bound; Fekete's bound on the circle;
 **Not yet built anywhere:** an arithmetic upper bound for the field or the energy; a matched
 renormalization (torsion counterterm = archimedean self-energy); Diophantine control of zero
 ordinates; gauge margin laws; a Hermitian structure with computed Hecke similitudes on the zero
-side (on the circle it is ES11).
+side (on the circle it is ES13).
 
 ---
 
@@ -417,7 +425,7 @@ side (on the circle it is ES11).
 2. **The stability law (Hodge index with adjunction).** On torsion cycles supported on orders `≤ N`,
    the renormalized pairing plus the archimedean self-energy of the atoms `log n` at width `1/N` is
    nonnegative, the renormalization being the one that turns the double pole of `Λ ⋆ Λ` into the
-   field. ES9 and ES10 give the size of the counterterm and its location; the open step is the
+   field. ES11 and ES12 give the size of the counterterm and its location; the open step is the
    identification with the archimedean term, constants included.
 3. **Matched renormalization of the square.** Compare the torsion counterterm with the zero-side
    counterterm `Λ log` through the explicit formula for `ζ″/ζ`.
@@ -476,5 +484,6 @@ selects for free; identities first, sign last; a reformulation is not a reductio
 | `TheArithmeticPointCarriesTheDivergence` | the arithmetic point; nonnegative self-intersections; the bound at `z = 1` |
 | `TheTorsionIsTheStableEquilibriumOfTheCircle` | Fekete's bound on the circle, attained by the torsion |
 | `QuantizationTurnsWindowsIntoPoints` | window energies; affine invariance; gauge twists of the source |
+| `TheHeckeDefectIsTheMomentOfInertia` | the equivariance defect of `D` against the transverse moment of inertia, at every scale and infinitesimally |
 | `TheExternalFieldIsAPrimeSum` | the external field as Coulomb sum and prime sum; anti-alignment at zero ordinates; escape as infinite energy |
 | `PowerMapsAreSimilitudesOfTheAbelEnergy` | closed form and positivity of torsion Abel energies; power maps as similitudes; renormalized limit; adjunction for full torsion |

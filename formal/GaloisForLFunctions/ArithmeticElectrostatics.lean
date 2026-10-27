@@ -10,6 +10,7 @@ import GaloisForLFunctions.ArithmeticElectrostatics.TheTorsionIsTheStableEquilib
 import GaloisForLFunctions.ArithmeticElectrostatics.QuantizationTurnsWindowsIntoPoints
 import GaloisForLFunctions.ArithmeticElectrostatics.PowerMapsAreSimilitudesOfTheAbelEnergy
 import GaloisForLFunctions.ArithmeticElectrostatics.TheExternalFieldIsAPrimeSum
+import GaloisForLFunctions.ArithmeticElectrostatics.TheHeckeDefectIsTheMomentOfInertia
 import GaloisForLFunctions.ArithmeticElectrostatics.ReflectedTransverseWork
 import GaloisForLFunctions.ArithmeticElectrostatics.TheSelbergWorkExhaustsTheTransverseEnergy
 
@@ -23,6 +24,6 @@ of the field law, the renormalized Rankin–Selberg square
 (Selberg's source), self-intersections and adjunction of torsion orbits, conjugation on torsion
 cycles, power maps as similitudes of the Abel energy, the logarithmic rate of the torsion counterterm and its concentration at the arithmetic
 point, the torsion as the stable (Fekete) equilibrium of the circle, window selection by
-quantization, the external field as a prime sum and the anti-alignment law at zero ordinates, and the gauge behaviour of electrostatic quantities. See
+quantization, the external field as a prime sum and the anti-alignment law at zero ordinates, the Hecke defect as transverse moment of inertia, and the gauge behaviour of electrostatic quantities. See
 `ArithmeticElectrostatics/README.md`.
 -/
