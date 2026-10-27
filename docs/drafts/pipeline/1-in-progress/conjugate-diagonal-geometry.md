@@ -386,3 +386,18 @@ for one fixed source; uniformity over a changing source has not been proved.
 Changing theta characteristic changes the literal source and requires its own
 completion identity. None of these calibrations asserts capacity payment,
 Hecke invariance or an RH conclusion.
+
+
+## Checked prescribed-regulator endpoint
+
+The historical unchecked-source notes above are superseded for the C² joint
+window by [the prescribed theta regulator and arithmetic certificate](../3-formalized/explicit-theta-source-regulator.md).
+One closed regulator recovers the full moving collided moments, norm, and
+Hecke defect, with an arithmetic logarithm-over-radius tail bound. The final
+error-certificate source check and all endpoint axiom audits pass. This is
+formalized infrastructure with novelty/significance still unaccepted; count
+remains 0/250. [Finite integer theta readings](../3-formalized/finite-theta-collided-readings.md)
+and their [uniform growing-test-family extension](../3-formalized/logarithmic-aperture-finite-theta-metric.md)
+now pass individual Lean checks and standard-only transitive axiom audits.
+The active strengthening is [a polynomial-size theta prefix](polynomial-prefix-collided-metric.md);
+its dependency-closed paper proof is written and its exact Lean chain is under verification.

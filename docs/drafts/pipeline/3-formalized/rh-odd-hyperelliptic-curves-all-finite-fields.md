@@ -1,8 +1,8 @@
 # RH for odd-degree hyperelliptic curves over every finite field of odd characteristic
 
 - **ID:** aet-rh-odd-hyperelliptic-general
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** card `3-formalized/rh-split-hyperelliptic-by-counting.md` (split case over `𝔽_p`)
 - **Statement:** `F` finite, `q = |F|` odd, `f ∈ F[X]` squarefree of odd degree `m`. The `m − 1`
   reciprocal roots `ω_i` of the L-function of `w(P) = χ(Res(P, f))` satisfy `|ω_i| = √q`, and
@@ -25,12 +25,18 @@
    multiset (`multiset_eq_of_powerSum_eq_le`): `{ω_i^r} = {ω'_j}`, `|ω'_j| = |L|^{1/2} = q^{r/2}`,
    so `|ω_i| = √q`.
 
-## Lean plan
-- `RHTower/HyperellipticLFunction.lean`: step 1 without `hsplit`.
-- `RHTower/HyperellipticDegreeSums.lean`: step 2 (`degSumW_eq_zero_of_odd`).
-- `RHTower/HyperellipticRiemannHypothesis.lean`: steps 3–4 over any finite `F`.
-- `RHTower/HyperellipticDescent.lean`: step 5; Hasse–Weil for all extensions.
-- `ArithmeticEffectivityTheory/TheHyperellipticCalibration.lean`: datum over any `F`, any odd `f`.
+## Lean
+- `RHTower/HyperellipticLFunction.lean`: step 1 (`norm_aeval_gen_eq_resultant`,
+  `norm_aeval_eq_resultant_pow`, `extHyp_eq_powerSumW`), no splitting.
+- `RHTower/HyperellipticDegreeSums.lean`: step 2 (`twist_modByMonic`, `resultant_twist`,
+  `degSumW_eq_zero_of_odd`).
+- `RHTower/HyperellipticRiemannHypothesis.lean`: steps 3–4 over any finite `F`
+  (`extHyp_eq_neg_sum_pow`, `norm_rootEnum_le`, `riemannHypothesis_splitHyperelliptic`).
+- `RHTower/HyperellipticDescent.lean`: step 5 (`map_pow_lRoots_eq`,
+  `riemannHypothesis_oddHyperelliptic`, `abs_card_points_sub_le_oddHyperelliptic`).
+- `ArithmeticEffectivityTheory/TheHyperellipticCalibration.lean`: the datum over any `F`, any
+  squarefree odd-degree `f`.
 
 ## Log
 - 2026-10-27 — created.
+- 2026-10-27 — formalized (steps 1–5); calibration generalized.

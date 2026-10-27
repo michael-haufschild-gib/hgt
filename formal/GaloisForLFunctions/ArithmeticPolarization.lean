@@ -23,6 +23,9 @@ import GaloisForLFunctions.ArithmeticPolarization.PositiveLatticeLinesAreCouplin
 import GaloisForLFunctions.ArithmeticPolarization.TheSelectivityBatteryOfPolarization
 import GaloisForLFunctions.ArithmeticPolarization.OneVerticalSectionDecidesPositivity
 import GaloisForLFunctions.ArithmeticPolarization.PositivityDescendsThroughTheZerosOfHigherLines
+import GaloisForLFunctions.ArithmeticPolarization.TheCollidedFormSamplesHighFrequencies
+import GaloisForLFunctions.ArithmeticPolarization.TheCollidedFormIsCoerciveAtEveryAperture
+import GaloisForLFunctions.ArithmeticPolarization.WeilsFormHasFinitelyManyNegativeDirectionsAtEveryAperture
 
 /-!
 # Arithmetic Polarization
@@ -39,6 +42,8 @@ the collided polarization; faithfulness and sampling of the collided form; the d
 its rate law; the local Weyl law of the collided form; positivity of the leading line and its
 inheritance; the classification of positive polar configurations by their exponential polynomial;
 positive lattice lines as couplings (Fejér–Riesz); the selectivity battery on fake spectra;
-the decision of positivity by one vertical section; the line hierarchy of lattice configurations.
+the decision of positivity by one vertical section; the line hierarchy of lattice configurations; the Gårding inequality and
+coercivity of the collided form at every aperture; finitely many negative directions of Weil's
+form at every aperture.
 See `ArithmeticPolarization/README.md`.
 -/

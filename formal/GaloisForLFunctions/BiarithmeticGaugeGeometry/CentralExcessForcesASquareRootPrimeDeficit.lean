@@ -84,52 +84,63 @@ theorem laplace_latticeMeasure {s : ℕ → ℝ} (hs : ∀ n, 0 ≤ s n) {σ : �
   change (laplaceMass (latticeMeasure s) σ).toReal = _
   rw [hmass, ENNReal.toReal_ofReal (tsum_nonneg (latticeLaplaceTerm_nonneg hs σ))]
 
-/-! ## §2. Surplus and deficit against the height-coupled lattice -/
+/-! ## §2. Surplus and deficit against a comparison lattice -/
 
-/-- Surplus of the coefficients `b` over the height-coupled lattice `b_γ` (`n ≥ 2`). -/
-def latticeSurplus (γ : ℝ) (b : ℕ → ℝ) (n : ℕ) : ℝ :=
-  if 2 ≤ n then max (b n - heightCoupledVonMangoldt γ n) 0 else 0
+/-- Surplus of the coefficients `b` over a comparison sequence `a` (`n ≥ 2`). -/
+def relSurplus (a b : ℕ → ℝ) (n : ℕ) : ℝ :=
+  if 2 ≤ n then max (b n - a n) 0 else 0
 
-/-- Deficit of the coefficients `b` below the height-coupled lattice `b_γ` (`n ≥ 2`). -/
-def latticeDeficit (γ : ℝ) (b : ℕ → ℝ) (n : ℕ) : ℝ :=
-  if 2 ≤ n then max (heightCoupledVonMangoldt γ n - b n) 0 else 0
+/-- Deficit of the coefficients `b` below a comparison sequence `a` (`n ≥ 2`). -/
+def relDeficit (a b : ℕ → ℝ) (n : ℕ) : ℝ :=
+  if 2 ≤ n then max (a n - b n) 0 else 0
 
-theorem latticeSurplus_nonneg (γ : ℝ) (b : ℕ → ℝ) (n : ℕ) : 0 ≤ latticeSurplus γ b n := by
-  unfold latticeSurplus; split_ifs <;> simp
+/-- Surplus over the height-coupled lattice `b_γ`. -/
+def latticeSurplus (γ : ℝ) (b : ℕ → ℝ) : ℕ → ℝ := relSurplus (heightCoupledVonMangoldt γ) b
 
-theorem latticeDeficit_nonneg (γ : ℝ) (b : ℕ → ℝ) (n : ℕ) : 0 ≤ latticeDeficit γ b n := by
-  unfold latticeDeficit; split_ifs <;> simp
+/-- Deficit below the height-coupled lattice `b_γ`. -/
+def latticeDeficit (γ : ℝ) (b : ℕ → ℝ) : ℕ → ℝ := relDeficit (heightCoupledVonMangoldt γ) b
+
+theorem relSurplus_nonneg (a b : ℕ → ℝ) (n : ℕ) : 0 ≤ relSurplus a b n := by
+  unfold relSurplus; split_ifs <;> simp
+
+theorem relDeficit_nonneg (a b : ℕ → ℝ) (n : ℕ) : 0 ≤ relDeficit a b n := by
+  unfold relDeficit; split_ifs <;> simp
+
+theorem latticeSurplus_nonneg (γ : ℝ) (b : ℕ → ℝ) (n : ℕ) : 0 ≤ latticeSurplus γ b n :=
+  relSurplus_nonneg _ _ n
+
+theorem latticeDeficit_nonneg (γ : ℝ) (b : ℕ → ℝ) (n : ℕ) : 0 ≤ latticeDeficit γ b n :=
+  relDeficit_nonneg _ _ n
 
 theorem heightCoupledVonMangoldt_one (γ : ℝ) : heightCoupledVonMangoldt γ 1 = 0 := by
   simp [heightCoupledVonMangoldt]
 
-/-- Termwise splitting `b − b_γ = [n = 1] b(1) + s − d`. -/
-theorem sub_eq_surplus_sub_deficit (γ : ℝ) (b : ℕ → ℝ) (n : ℕ) (hn : n ≠ 0) :
-    b n - heightCoupledVonMangoldt γ n =
-      (if n = 1 then b 1 else 0) + latticeSurplus γ b n - latticeDeficit γ b n := by
-  unfold latticeSurplus latticeDeficit
+/-- Termwise splitting `b − a = [n = 1](b(1) − a(1)) + s − d`. -/
+theorem sub_eq_relSurplus_sub_relDeficit (a b : ℕ → ℝ) (n : ℕ) (hn : n ≠ 0) :
+    b n - a n = (if n = 1 then b 1 - a 1 else 0) + relSurplus a b n - relDeficit a b n := by
+  unfold relSurplus relDeficit
   rcases Nat.lt_or_ge n 2 with h | h
   · have h1 : n = 1 := by omega
     subst h1
-    simp [heightCoupledVonMangoldt_one]
+    simp
   · rw [if_neg (by omega), if_pos h, if_pos h]
-    rcases le_total (b n) (heightCoupledVonMangoldt γ n) with h' | h'
+    rcases le_total (b n) (a n) with h' | h'
     · rw [max_eq_right (by linarith), max_eq_left (by linarith)]; ring
     · rw [max_eq_left (by linarith), max_eq_right (by linarith)]; ring
 
-theorem latticeSurplus_le (γ : ℝ) {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n) (n : ℕ) :
-    latticeSurplus γ b n ≤ b n := by
-  unfold latticeSurplus
+theorem relSurplus_le {a b : ℕ → ℝ} (ha : ∀ n, 0 ≤ a n) (hb : ∀ n, 0 ≤ b n) (n : ℕ) :
+    relSurplus a b n ≤ b n := by
+  unfold relSurplus
   split_ifs
-  · exact max_le (by linarith [heightCoupledVonMangoldt_nonneg γ n]) (hb n)
+  · exact max_le (by linarith [ha n]) (hb n)
   · exact hb n
 
-theorem latticeDeficit_le (γ : ℝ) {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n) (n : ℕ) :
-    latticeDeficit γ b n ≤ heightCoupledVonMangoldt γ n := by
-  unfold latticeDeficit
+theorem relDeficit_le {a b : ℕ → ℝ} (ha : ∀ n, 0 ≤ a n) (hb : ∀ n, 0 ≤ b n) (n : ℕ) :
+    relDeficit a b n ≤ a n := by
+  unfold relDeficit
   split_ifs
-  · exact max_le (by linarith [hb n]) (heightCoupledVonMangoldt_nonneg γ n)
-  · exact heightCoupledVonMangoldt_nonneg γ n
+  · exact max_le (by linarith [hb n]) (ha n)
+  · exact ha n
 
 theorem summable_norm_term_of_le {f g : ℕ → ℝ} (hf : ∀ n, 0 ≤ f n) (hfg : ∀ n, f n ≤ g n)
     {s : ℂ} (hg : LSeriesSummable (fun n => (g n : ℂ)) s) :
@@ -144,10 +155,86 @@ theorem summable_norm_term_of_le {f g : ℕ → ℝ} (hf : ∀ n, 0 ≤ f n) (hf
 
 /-! ## §3. The square-root deficit law -/
 
-/-- **Prime-mass split of an arithmetic member.** If `−F'/F = Σ b(n) n^{−s}` (`b ≥ 0`, abscissa
-`≤ 1`), then on the real ray `σ > 2`, `−F'/F + ζ_γ'/ζ_γ` is the Laplace transform of the surplus
-measure `Σ s(n) δ_{log n}` plus `b(1) − Σ d(n) n^{−σ}`, and the surplus measure has finite Laplace
-mass at `2`. -/
+/-- **Prime-mass split against a comparison lattice.** If `−F'/F = Σ b(n) n^{−s}` and
+`−F₀'/F₀ = Σ a(n) n^{−s}` (`a, b ≥ 0`, abscissae `≤ 1`), then on the real ray `σ > 2`,
+`−F'/F + F₀'/F₀` is the Laplace transform of the surplus measure `Σ s(n) δ_{log n}` plus
+`b(1) − a(1) − Σ d(n) n^{−σ}`, and the surplus measure has finite Laplace mass at `2`. -/
+theorem relMember_primeMass_split {a b : ℕ → ℝ} (ha : ∀ n, 0 ≤ a n) (hb : ∀ n, 0 ≤ b n)
+    (habsa : LSeries.abscissaOfAbsConv (fun n => (a n : ℂ)) ≤ 1)
+    (habs : LSeries.abscissaOfAbsConv (fun n => (b n : ℂ)) ≤ 1) {F F₀ : ℂ → ℂ}
+    (hL : ∀ s : ℂ, 1 < s.re → -logDeriv F s = LSeries (fun n => (b n : ℂ)) s)
+    (hL₀ : ∀ s : ℂ, 1 < s.re → -logDeriv F₀ s = LSeries (fun n => (a n : ℂ)) s) :
+    laplaceMass (latticeMeasure (relSurplus a b)) 2 ≠ ⊤ ∧
+      ∀ σ : ℝ, 2 < σ →
+        -logDeriv F (σ : ℂ) + logDeriv F₀ (σ : ℂ) =
+          ((laplaceReal (latticeMeasure (relSurplus a b)) σ : ℝ) : ℂ) +
+            ((((b 1 - a 1 : ℝ)) : ℂ) - LSeries (fun n => (relDeficit a b n : ℂ)) σ) := by
+  set d : ℕ → ℂ := fun n => (relDeficit a b n : ℂ)
+  have hsumm : ∀ σ : ℝ, 1 < σ → Summable (latticeLaplaceTerm (relSurplus a b) σ) := by
+    intro σ hσ
+    have hbs : LSeriesSummable (fun n => (b n : ℂ)) (σ : ℂ) :=
+      LSeriesSummable_of_abscissaOfAbsConv_lt_re (lt_of_le_of_lt habs (by exact_mod_cast hσ))
+    refine Summable.of_nonneg_of_le (latticeLaplaceTerm_nonneg (relSurplus_nonneg a b) σ)
+      (fun n => ?_) hbs.norm
+    unfold latticeLaplaceTerm
+    split_ifs with hn
+    · rw [LSeries.norm_term_eq, if_neg (by omega), Complex.norm_real, Real.norm_eq_abs,
+        abs_of_nonneg (hb n), Complex.ofReal_re, Real.rpow_neg (Nat.cast_nonneg n), ← div_eq_mul_inv]
+      exact div_le_div_of_nonneg_right (relSurplus_le ha hb n)
+        (Real.rpow_nonneg (Nat.cast_nonneg n) _)
+    · exact norm_nonneg _
+  refine ⟨(laplace_latticeMeasure (relSurplus_nonneg a b) (hsumm 2 (by norm_num))).1,
+    fun σ hσ => ?_⟩
+  have hσ1 : 1 < σ := by linarith
+  have hσre : 1 < (σ : ℂ).re := by simpa using hσ1
+  rw [hL _ hσre, show logDeriv F₀ (σ : ℂ) = -(-logDeriv F₀ (σ : ℂ)) by ring, hL₀ _ hσre,
+    (laplace_latticeMeasure (relSurplus_nonneg a b) (hsumm σ hσ1)).2]
+  -- termwise: `b − a = [n = 1](b(1) − a(1)) + s − d`
+  have hb' : LSeriesSummable (fun n => (b n : ℂ)) (σ : ℂ) :=
+    LSeriesSummable_of_abscissaOfAbsConv_lt_re (lt_of_le_of_lt habs (by exact_mod_cast hσ1))
+  have ha' : LSeriesSummable (fun n => (a n : ℂ)) (σ : ℂ) :=
+    LSeriesSummable_of_abscissaOfAbsConv_lt_re (lt_of_le_of_lt habsa (by exact_mod_cast hσ1))
+  have hd' : LSeriesSummable d (σ : ℂ) :=
+    summable_norm_term_of_le (relDeficit_nonneg a b) (relDeficit_le ha hb) ha'
+  have hs' : Summable fun n : ℕ => ((latticeLaplaceTerm (relSurplus a b) σ n : ℝ) : ℂ) :=
+    Complex.ofRealCLM.summable (hsumm σ hσ1)
+  have hterm : ∀ n : ℕ, LSeries.term (fun n => (b n : ℂ)) (σ : ℂ) n -
+      LSeries.term (fun n => (a n : ℂ)) (σ : ℂ) n =
+      (if n = 1 then (((b 1 - a 1 : ℝ)) : ℂ) else 0) +
+        ((latticeLaplaceTerm (relSurplus a b) σ n : ℝ) : ℂ) - LSeries.term d (σ : ℂ) n := by
+    intro n
+    rcases eq_or_ne n 0 with rfl | hn
+    · simp [latticeLaplaceTerm]
+    have hnpos : (0 : ℝ) < n := by exact_mod_cast Nat.pos_of_ne_zero hn
+    have hcp : ((n : ℂ)) ^ (σ : ℂ) = (((n : ℝ) ^ σ : ℝ) : ℂ) := by
+      rw [Complex.ofReal_cpow hnpos.le]; simp
+    rw [LSeries.term_of_ne_zero hn, LSeries.term_of_ne_zero hn, LSeries.term_of_ne_zero hn, hcp]
+    have hsplit := sub_eq_relSurplus_sub_relDeficit a b n hn
+    unfold latticeLaplaceTerm
+    rcases eq_or_ne n 1 with rfl | hn1
+    · have hd1 : d 1 = 0 := by simp [d, relDeficit]
+      simp [hd1]
+    · rw [if_neg hn1, zero_add] at hsplit ⊢
+      have h2 : 2 ≤ n := by omega
+      have hsplitC : (b n : ℂ) - (a n : ℂ) =
+          (relSurplus a b n : ℂ) - (relDeficit a b n : ℂ) := by exact_mod_cast hsplit
+      rw [if_pos h2, Real.rpow_neg hnpos.le, Complex.ofReal_mul, Complex.ofReal_inv,
+        ← div_eq_mul_inv, div_sub_div_same, div_sub_div_same, hsplitC]
+  have h1 : Summable fun n : ℕ => if n = 1 then (((b 1 - a 1 : ℝ)) : ℂ) else 0 :=
+    summable_of_ne_finset_zero (s := {1}) fun n hn => by
+      simp only [Finset.mem_singleton] at hn; exact if_neg hn
+  have key : LSeries (fun n => (b n : ℂ)) (σ : ℂ) - LSeries (fun n => (a n : ℂ)) (σ : ℂ) =
+      ((∑' n : ℕ, latticeLaplaceTerm (relSurplus a b) σ n : ℝ) : ℂ) +
+        ((((b 1 - a 1 : ℝ)) : ℂ) - LSeries d σ) := by
+    rw [LSeries, LSeries, ← hb'.tsum_sub ha', tsum_congr hterm,
+      (h1.add hs').tsum_sub hd', h1.tsum_add hs', tsum_ite_eq, ← Complex.ofReal_tsum, LSeries]
+    ring_nf
+  linear_combination key
+
+/-- **Prime-mass split of an arithmetic member of the height-coupled class.** If
+`−F'/F = Σ b(n) n^{−s}` (`b ≥ 0`, abscissa `≤ 1`), then on the real ray `σ > 2`, `−F'/F + ζ_γ'/ζ_γ`
+is the Laplace transform of the surplus measure `Σ s(n) δ_{log n}` plus `b(1) − Σ d(n) n^{−σ}`, and
+the surplus measure has finite Laplace mass at `2`. -/
 theorem latticeMember_primeMass_split {γ : ℝ} {F : ℂ → ℂ} {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n)
     (habs : LSeries.abscissaOfAbsConv (fun n => (b n : ℂ)) ≤ 1)
     (hL : ∀ s : ℂ, 1 < s.re → -logDeriv F s = LSeries (fun n => (b n : ℂ)) s) :
@@ -156,72 +243,12 @@ theorem latticeMember_primeMass_split {γ : ℝ} {F : ℂ → ℂ} {b : ℕ → 
         -logDeriv F (σ : ℂ) + logDeriv (heightCoupledF riemannZeta γ) (σ : ℂ) =
           ((laplaceReal (latticeMeasure (latticeSurplus γ b)) σ : ℝ) : ℂ) +
             ((b 1 : ℂ) - LSeries (fun n => (latticeDeficit γ b n : ℂ)) σ) := by
-  set d : ℕ → ℂ := fun n => (latticeDeficit γ b n : ℂ)
-  have hsumm : ∀ σ : ℝ, 1 < σ → Summable (latticeLaplaceTerm (latticeSurplus γ b) σ) := by
-    intro σ hσ
-    have hbs : LSeriesSummable (fun n => (b n : ℂ)) (σ : ℂ) :=
-      LSeriesSummable_of_abscissaOfAbsConv_lt_re (lt_of_le_of_lt habs (by exact_mod_cast hσ))
-    refine Summable.of_nonneg_of_le (latticeLaplaceTerm_nonneg (latticeSurplus_nonneg γ b) σ)
-      (fun n => ?_) hbs.norm
-    unfold latticeLaplaceTerm
-    split_ifs with hn
-    · rw [LSeries.norm_term_eq, if_neg (by omega), Complex.norm_real, Real.norm_eq_abs,
-        abs_of_nonneg (hb n), Complex.ofReal_re, Real.rpow_neg (Nat.cast_nonneg n), ← div_eq_mul_inv]
-      exact div_le_div_of_nonneg_right (latticeSurplus_le γ hb n)
-        (Real.rpow_nonneg (Nat.cast_nonneg n) _)
-    · exact norm_nonneg _
-  refine ⟨(laplace_latticeMeasure (latticeSurplus_nonneg γ b) (hsumm 2 (by norm_num))).1,
-    fun σ hσ => ?_⟩
-  have hσ1 : 1 < σ := by linarith
-  have hσre : 1 < (σ : ℂ).re := by simpa using hσ1
-  rw [hL _ hσre, show logDeriv (heightCoupledF riemannZeta γ) (σ : ℂ) =
-      -(-logDeriv (heightCoupledF riemannZeta γ) (σ : ℂ)) by ring,
-    neg_logDeriv_heightCoupledF_eq_LSeries γ hσre,
-    (laplace_latticeMeasure (latticeSurplus_nonneg γ b) (hsumm σ hσ1)).2]
-  -- termwise: `b − b_γ = [n = 1] b(1) + s − d`
-  have hb' : LSeriesSummable (fun n => (b n : ℂ)) (σ : ℂ) :=
-    LSeriesSummable_of_abscissaOfAbsConv_lt_re (lt_of_le_of_lt habs (by exact_mod_cast hσ1))
-  have hγ' : LSeriesSummable (fun n => (heightCoupledVonMangoldt γ n : ℂ)) (σ : ℂ) :=
-    LSeriesSummable_of_abscissaOfAbsConv_lt_re
-      (lt_of_le_of_lt (abscissaOfAbsConv_heightCoupledVonMangoldt_le_one γ) (by exact_mod_cast hσ1))
-  have hd' : LSeriesSummable d (σ : ℂ) :=
-    summable_norm_term_of_le (latticeDeficit_nonneg γ b) (latticeDeficit_le γ hb) hγ'
-  have hs' : Summable fun n : ℕ => ((latticeLaplaceTerm (latticeSurplus γ b) σ n : ℝ) : ℂ) :=
-    Complex.ofRealCLM.summable (hsumm σ hσ1)
-  have hterm : ∀ n : ℕ, LSeries.term (fun n => (b n : ℂ)) (σ : ℂ) n -
-      LSeries.term (fun n => (heightCoupledVonMangoldt γ n : ℂ)) (σ : ℂ) n =
-      (if n = 1 then (b 1 : ℂ) else 0) +
-        ((latticeLaplaceTerm (latticeSurplus γ b) σ n : ℝ) : ℂ) - LSeries.term d (σ : ℂ) n := by
-    intro n
-    rcases eq_or_ne n 0 with rfl | hn
-    · simp [latticeLaplaceTerm]
-    have hnpos : (0 : ℝ) < n := by exact_mod_cast Nat.pos_of_ne_zero hn
-    have hcp : ((n : ℂ)) ^ (σ : ℂ) = (((n : ℝ) ^ σ : ℝ) : ℂ) := by
-      rw [Complex.ofReal_cpow hnpos.le]; simp
-    have hpow : (n : ℝ) ^ σ ≠ 0 := (Real.rpow_pos_of_pos hnpos σ).ne'
-    rw [LSeries.term_of_ne_zero hn, LSeries.term_of_ne_zero hn, LSeries.term_of_ne_zero hn, hcp]
-    have hsplit := sub_eq_surplus_sub_deficit γ b n hn
-    unfold latticeLaplaceTerm
-    rcases eq_or_ne n 1 with rfl | hn1
-    · have hd1 : d 1 = 0 := by simp [d, latticeDeficit]
-      simp [hd1, heightCoupledVonMangoldt_one]
-    · rw [if_neg hn1, zero_add] at hsplit ⊢
-      have h2 : 2 ≤ n := by omega
-      have hsplitC : (b n : ℂ) - (heightCoupledVonMangoldt γ n : ℂ) =
-          (latticeSurplus γ b n : ℂ) - (latticeDeficit γ b n : ℂ) := by exact_mod_cast hsplit
-      rw [if_pos h2, Real.rpow_neg hnpos.le, Complex.ofReal_mul, Complex.ofReal_inv,
-        ← div_eq_mul_inv, div_sub_div_same, div_sub_div_same, hsplitC]
-  have h1 : Summable fun n : ℕ => if n = 1 then (b 1 : ℂ) else 0 :=
-    summable_of_ne_finset_zero (s := {1}) fun n hn => by
-      simp only [Finset.mem_singleton] at hn; exact if_neg hn
-  have key : LSeries (fun n => (b n : ℂ)) (σ : ℂ) -
-      LSeries (fun n => (heightCoupledVonMangoldt γ n : ℂ)) (σ : ℂ) =
-      ((∑' n : ℕ, latticeLaplaceTerm (latticeSurplus γ b) σ n : ℝ) : ℂ) +
-        ((b 1 : ℂ) - LSeries d σ) := by
-    rw [LSeries, LSeries, ← hb'.tsum_sub hγ', tsum_congr hterm,
-      (h1.add hs').tsum_sub hd', h1.tsum_add hs', tsum_ite_eq, ← Complex.ofReal_tsum, LSeries]
-    ring_nf
-  linear_combination key
+  obtain ⟨hmass, hsplit⟩ := relMember_primeMass_split (heightCoupledVonMangoldt_nonneg γ) hb
+    (abscissaOfAbsConv_heightCoupledVonMangoldt_le_one γ) habs hL
+    (fun s hs => neg_logDeriv_heightCoupledF_eq_LSeries γ hs)
+  refine ⟨hmass, fun σ hσ => ?_⟩
+  rw [hsplit σ hσ, heightCoupledVonMangoldt_one, sub_zero]
+  rfl
 
 
 /-- **Square-root deficit law.** Let `F ∈ HeightCoupledSystem 2 1 1 γ` with

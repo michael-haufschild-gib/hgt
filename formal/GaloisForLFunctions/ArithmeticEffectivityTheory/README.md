@@ -241,14 +241,17 @@ the horizon `N`. Every theorem states which are fixed and which grow.
     `−Λ(t) t^{−1/2}` off the diagonal and, after subtracting `log 1/(1 − r)`, to minus the
     log-discriminant per point (`weilPrimeKernel_renormalized_torsion_energy`). The prime side of
     Weil's form is a renormalized positive energy; the sign is lost in the renormalization.
-12. **Calibration on curves** (`TheHyperellipticCalibration`, `RHTower.HyperellipticRiemannHypothesis`).
-    For `f ∈ 𝔽_p[X]` squarefree, split, of odd degree `2g + 1`, the L-function of `y² = f(x)` is a
-    curve datum of genus `g` whose Lefschetz numbers are the point counts of the projective curve
-    (`hyperellipticDatum_pointCount`). It is unitary by counting alone — Stepanov's section count on
-    the even extensions bounds `|ω_i| ≤ √p`, and the Gauss-sum modulus fixes `|Π ω_i| = p^g` through
-    the top degree sum (`riemannHypothesis_splitHyperelliptic`) — so every Frobenius window carries
-    an effectivity function and `ℤ[F]` a naive height (`hyperellipticDatum_window_exists_effectivity`,
-    `hyperellipticDatum_exists_naiveHeight`).
+12. **Calibration on curves** (`TheHyperellipticCalibration`, `RHTower.HyperellipticDescent`).
+    For `F` finite of odd characteristic and `f ∈ F[X]` squarefree of odd degree `2g + 1`, the
+    L-function of `y² = f(x)` is a curve datum of genus `g` whose Lefschetz numbers are the point
+    counts of the projective curve (`hyperellipticDatum_pointCount`). It is unitary by counting
+    alone — Stepanov's section count on the even extensions bounds `|ω_i| ≤ √q`, the Gauss-sum
+    modulus fixes `|Π ω_i| = q^g` through the top degree sum where `f` splits, and unitarity
+    descends from the splitting field because power sums are rigid
+    (`riemannHypothesis_oddHyperelliptic`) — so every Frobenius window carries an effectivity
+    function and `ℤ[F]` a naive height (`hyperellipticDatum_window_exists_effectivity`,
+    `hyperellipticDatum_exists_naiveHeight`). In genus one this is Hasse's theorem for every elliptic
+    curve in odd characteristic (`RHTower.EllipticHasse.abs_natCard_point_sub_le`).
 
 ---
 
@@ -263,7 +266,7 @@ the horizon `N`. Every theorem states which are fixed and which grow.
 | **E5 The theta surface** | Riemann–Roch with characteristic; a nonnegative naive height whose Tate limit is `πJ²/t`; the polarization is soft | `thetaH0_riemannRoch`, `abs_log_thetaChar_sub_le`, `tateLimit_log_thetaChar`, `hasSum_shifted_thetaChar` |
 | **E6 Counting gives square roots at each level** | `|τ(χ, ψ)|² = |F|`; unit root numbers | `normSq_gaussSum_eq_card`, `norm_rootNumber_eq_one` |
 | **E7 The Stepanov method reaches the base** | integrality floor `log(1/∫P) ≤ ψ(n+1)`; Nair `ψ(2m+1) ≥ m log 4` | `log_inv_integral_le_psi`, `nair_psi_ge`, `horizon_logTorsion_comparable` |
-| **E8 Calibration** | `ℙ¹ × ℙ¹` satisfies the calculus with dimensions; genus one: naive height ⇔ Hasse; split hyperelliptic curves of every genus are unitary by counting and carry effectivity functions and naive heights; golden datum: abundant, no naive height | `hyperbolicPlane_hodgeIndex`, `genusOne_exists_naiveHeight_iff`, `riemannHypothesis_splitHyperelliptic`, `hyperellipticDatum_window_exists_effectivity`, `goldenDatum_multiplicative_axioms_not_effective` |
+| **E8 Calibration** | `ℙ¹ × ℙ¹` satisfies the calculus with dimensions; genus one: naive height ⇔ Hasse; odd-degree hyperelliptic curves of every genus over every finite field of odd characteristic are unitary by counting and carry effectivity functions and naive heights; golden datum: abundant, no naive height | `hyperbolicPlane_hodgeIndex`, `genusOne_exists_naiveHeight_iff`, `riemannHypothesis_oddHyperelliptic`, `hyperellipticDatum_window_exists_effectivity`, `goldenDatum_multiplicative_axioms_not_effective` |
 | **E9 One statement in five currencies** | RH ⇔ effectivity function ⇔ no abundant class ⇔ naive heights ⇔ fixed tensor loss ⇔ log-torsion law | `riemannHypothesis_effectivity_tfae` |
 | **E10 The prime side is an intersection** | `J(a, b) = gcd(a, b) log lcm(a, b)`; `I(m, mt) = φ(m) Λ(t)`; Weil's prime kernel plus the log-discriminant diagonal is minus the renormalized limit of positive gcd-twisted torsion energies | `logEnergy_eq`, `orbitIntersection_hecke`, `weilPrimeKernel_renormalized_torsion_energy` |
 
@@ -342,8 +345,8 @@ others; none has been constructed.
 fakes, the theta `h⁰` of `Spec ℤ`, the box Euler characteristic and transition groups, the
 correspondence algebra with Rosati and orbit Hodge index, the fixed-loss criterion, the golden
 Beurling system, von Koch; Stepanov's method and the Weil bounds over `𝔽_q` (`RHTower.Stepanov`,
-`RHTower.WeilKloosterman`) and RH for split odd-degree hyperelliptic curves
-(`RHTower.HyperellipticRiemannHypothesis`); from Mathlib: Gaussian Poisson summation, even Hurwitz kernels and their
+`RHTower.WeilKloosterman`) and RH for odd-degree hyperelliptic curves over finite fields
+(`RHTower.HyperellipticDescent`); from Mathlib: Gaussian Poisson summation, even Hurwitz kernels and their
 functional equation, `ZMod` L-functions, Gauss sums, root numbers, Chebyshev's functions and
 `lcmUpto`.
 

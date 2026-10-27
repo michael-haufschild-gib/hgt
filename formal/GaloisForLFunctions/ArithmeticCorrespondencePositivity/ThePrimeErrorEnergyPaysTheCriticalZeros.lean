@@ -283,6 +283,46 @@ theorem exists_logDeriv_symbol_pole_bound {ρ : ℂ} (hρ : riemannZeta ρ = 0) 
 
 /-! ### The critical zeros are paid by the prime-error energy -/
 
+/-- **The window poles of the prime-error symbol.** Under a prime-error budget, at a critical zero
+`ρ` of order `m` the line symbol is `(−m/ρ)/(e + i(y − Im ρ)) + O(1)` on small windows. -/
+theorem exists_primeError_window_pole_bound {S B : ℝ} (hS0 : 0 ≤ S) (hB0 : 0 ≤ B)
+    (hlin : ∀ L : ℝ, 0 ≤ L → ∫ u in (0 : ℝ)..L, logProfile primeErrorRow u ^ 2 ≤ S * L + B)
+    {ρ : ℂ} (hz : riemannZeta ρ = 0) (hre : ρ.re = 1 / 2) :
+    ∃ δ₀ > 0, ∃ M : ℝ, ∀ e ∈ Ioo (0 : ℝ) δ₀, ∀ y ∈ Icc (ρ.im - δ₀) (ρ.im + δ₀),
+      ‖lineSymbol (logProfile primeErrorRow) e y -
+        -(((analyticOrderAt riemannZeta ρ).toNat : ℕ) : ℂ) / ρ /
+          ((e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I)‖ ≤ M := by
+  have hC : ∀ κ : ℝ, 0 < κ → 0 ≤ S / κ + B := fun κ hκ => add_nonneg (div_nonneg hS0 hκ.le) hB0
+  have hE := fun κ (hκ : 0 < κ) T =>
+    pronic_energy_le_of_linear hS0 hB0 hlin (v := primeErrorRow) hκ T
+  have hρ1 : ρ ≠ 1 := fun h => by rw [h, Complex.one_re] at hre; norm_num at hre
+  have hρ0 : ρ ≠ 0 := fun h => by rw [h, Complex.zero_re] at hre; norm_num at hre
+  obtain ⟨η, hη, M, hp⟩ := exists_logDeriv_symbol_pole_bound hz hρ1 hρ0
+  refine ⟨η / 2, by positivity, M, fun e he y hy => ?_⟩
+  set s : ℂ := ((e + 1 / 2 : ℝ) : ℂ) + (y : ℂ) * I with hsdef
+  have hss : s - ρ = (e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I := by
+    apply Complex.ext <;> simp [hsdef, hre]
+  have hnorm : ‖s - ρ‖ < η := by
+    rw [hss]
+    calc ‖(e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I‖ ≤ ‖(e : ℂ)‖ + ‖((y - ρ.im : ℝ) : ℂ) * I‖ :=
+          norm_add_le _ _
+      _ = |e| + |y - ρ.im| := by
+          simp only [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
+      _ < η := by
+          have h1 : |e| < η / 2 := by rw [abs_of_pos he.1]; exact he.2
+          have h2 : |y - ρ.im| ≤ η / 2 :=
+            abs_sub_le_iff.mpr ⟨by linarith [hy.2], by linarith [hy.1]⟩
+          linarith
+  have hne : s ≠ ρ := fun h => by
+    have := congrArg Complex.re (show s - ρ = 0 by rw [h, sub_self])
+    rw [hss] at this; simp at this; linarith [he.1]
+  obtain ⟨hζ, hs1, hb⟩ := hp s hnorm hne
+  rw [lineSymbol_logProfile_eq primeErrorRow_zero (hC e he.1) he.1.le (hE e he.1)
+      (by linarith [he.1]) y,
+    complexMellinPairing_primeErrorRow_eq (hC e he.1) he.1.le (hE e he.1)
+      (by rw [hsdef]; simp; linarith [he.1]) hs1 hζ, ← hss]
+  exact hb
+
 /-- **The prime-error energy pays the critical zeros.** For every finite set `Z` of zeros of `ζ`
 on the critical line and every `S < Σ_{ρ ∈ Z} ‖m_ρ/ρ‖²`, `m_ρ` the order of `ρ`, the log-scale
 prime-error energy `∫_0^L e^{−u}(ψ(⌊e^u⌋) − ⌊e^u⌋)² du` is not bounded by `S L + B` for any `B`. -/
@@ -298,51 +338,12 @@ theorem not_forall_primeError_energy_le_linear (Z : Finset ℂ)
   have hlin' : ∀ L : ℝ, 0 ≤ L → ∫ u in (0 : ℝ)..L, logProfile primeErrorRow u ^ 2 ≤
       S * L + B' := fun L hL => (hlin L hL).trans (by linarith [le_max_left B 0])
   have hB0 : 0 ≤ B' := le_max_right _ _
-  have hC : ∀ κ : ℝ, 0 < κ → 0 ≤ S / κ + B' := fun κ hκ => add_nonneg (div_nonneg hS0 hκ.le) hB0
-  have hE := fun κ (hκ : 0 < κ) T =>
-    pronic_energy_le_of_linear hS0 hB0 hlin' (v := primeErrorRow) hκ T
-  have hsym : ∀ e : ℝ, 0 < e → ∀ y : ℝ,
-      ((((e + 1 / 2 : ℝ) : ℂ) + (y : ℂ) * I) ≠ 1) →
-      riemannZeta (((e + 1 / 2 : ℝ) : ℂ) + (y : ℂ) * I) ≠ 0 →
-      lineSymbol (logProfile primeErrorRow) e y =
-        (-deriv riemannZeta (((e + 1 / 2 : ℝ) : ℂ) + (y : ℂ) * I) /
-            riemannZeta (((e + 1 / 2 : ℝ) : ℂ) + (y : ℂ) * I) -
-          riemannZeta (((e + 1 / 2 : ℝ) : ℂ) + (y : ℂ) * I)) /
-        (((e + 1 / 2 : ℝ) : ℂ) + (y : ℂ) * I) := by
-    intro e he y hs1 hζ
-    rw [lineSymbol_logProfile_eq primeErrorRow_zero (hC e he) he.le (hE e he) (by linarith) y,
-      complexMellinPairing_primeErrorRow_eq (hC e he) he.le (hE e he) (by simp; linarith) hs1 hζ]
   have hpole : ∀ ρ ∈ Z, ∃ δ₀ > 0, ∃ M : ℝ, ∀ e ∈ Ioo (0 : ℝ) δ₀,
       ∀ y ∈ Icc (ρ.im - δ₀) (ρ.im + δ₀),
         ‖lineSymbol (logProfile primeErrorRow) e y -
           -(((analyticOrderAt riemannZeta ρ).toNat : ℕ) : ℂ) / ρ /
-            ((e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I)‖ ≤ M := by
-    intro ρ hρ
-    obtain ⟨hz, hre⟩ := hZ ρ hρ
-    have hρ1 : ρ ≠ 1 := fun h => by rw [h, Complex.one_re] at hre; norm_num at hre
-    have hρ0 : ρ ≠ 0 := fun h => by rw [h, Complex.zero_re] at hre; norm_num at hre
-    obtain ⟨η, hη, M, hp⟩ := exists_logDeriv_symbol_pole_bound hz hρ1 hρ0
-    refine ⟨η / 2, by positivity, M, fun e he y hy => ?_⟩
-    set s : ℂ := ((e + 1 / 2 : ℝ) : ℂ) + (y : ℂ) * I with hsdef
-    have hss : s - ρ = (e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I := by
-      apply Complex.ext <;> simp [hsdef, hre]
-    have hnorm : ‖s - ρ‖ < η := by
-      rw [hss]
-      calc ‖(e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I‖ ≤ ‖(e : ℂ)‖ + ‖((y - ρ.im : ℝ) : ℂ) * I‖ :=
-            norm_add_le _ _
-        _ = |e| + |y - ρ.im| := by
-            simp only [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
-        _ < η := by
-            have h1 : |e| < η / 2 := by rw [abs_of_pos he.1]; exact he.2
-            have h2 : |y - ρ.im| ≤ η / 2 :=
-              abs_sub_le_iff.mpr ⟨by linarith [hy.2], by linarith [hy.1]⟩
-            linarith
-    have hne : s ≠ ρ := fun h => by
-      have := congrArg Complex.re (show s - ρ = 0 by rw [h, sub_self])
-      rw [hss] at this; simp at this; linarith [he.1]
-    obtain ⟨hζ, hs1, hb⟩ := hp s hnorm hne
-    rw [hsym e he.1 y hs1 hζ, ← hss]
-    exact hb
+            ((e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I)‖ ≤ M := fun ρ hρ =>
+    exists_primeError_window_pole_bound hS0 hB0 hlin' (hZ ρ hρ).1 (hZ ρ hρ).2
   have hsep : ∀ ρ ∈ Z, ∀ ρ' ∈ Z, ρ ≠ ρ' → ρ.im ≠ ρ'.im := fun ρ hρ ρ' hρ' hne h =>
     hne (Complex.ext (by rw [(hZ ρ hρ).2, (hZ ρ' hρ').2]) h)
   have hle := sum_residue_le_slope primeErrorRow_zero zero_le_one abs_primeErrorRow_le hS0 hB0

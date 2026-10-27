@@ -1,23 +1,24 @@
-import GaloisForLFunctions.RHTower.HyperellipticRiemannHypothesis
+import GaloisForLFunctions.RHTower.HyperellipticDescent
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheEffectivityCalculus
 import GaloisForLFunctions.ArithmeticEffectivityTheory.NaiveHeightsAreTraces
 
 /-!
 # The hyperelliptic calibration
 
-For an odd prime `p` and `f ∈ 𝔽_p[X]` squarefree, split, of odd degree `m = 2g + 1`, the reciprocal
-roots `ω_i` of the L-function of `y² = f(x)` give a curve datum of genus `g`
-(`hyperellipticDatum`): `q = p`, `β_i = ω_i/√p`. The conjugation symmetry holds because the
+For `F` finite of odd characteristic, `q = |F|`, and `f ∈ F[X]` squarefree of odd degree
+`m = 2g + 1`, the reciprocal roots `ω_i` of the L-function of `y² = f(x)` give a curve datum of
+genus `g` (`hyperellipticDatum`): `β_i = ω_i/√q`. The conjugation symmetry holds because the
 L-polynomial has integer coefficients (`map_conj_lRoots`); the functional equation `β ↦ β⁻¹` is
-conjugation, since the datum is unitary (`hyperellipticDatum_unitary`, by Stepanov's count and the
-Gauss-sum modulus). Its Lefschetz numbers are the point counts of the smooth projective model —
-the affine points plus the one point at infinity (`hyperellipticDatum_pointCount`).
+conjugation, since the datum is unitary (`hyperellipticDatum_unitary`, by Stepanov's count, the
+Gauss-sum modulus and descent from the splitting field). Its Lefschetz numbers are the point
+counts of the smooth projective model — the affine points plus the one point at infinity
+(`hyperellipticDatum_pointCount`).
 
-Hence AET's effectivity laws hold on actual curves of every genus, unconditionally: every
-Frobenius window carries an effectivity function bounded on degree levels
-(`hyperellipticDatum_window_exists_effectivity`) and the integral Rosati form on `ℤ[F]` has a naive
-height (`hyperellipticDatum_exists_naiveHeight`). The sign is carried by two cardinalities:
-Stepanov's auxiliary-section count and `|τ|² = p`.
+Hence AET's effectivity laws hold on actual curves of every genus over every finite field of odd
+characteristic, unconditionally: every Frobenius window carries an effectivity function bounded on
+degree levels (`hyperellipticDatum_window_exists_effectivity`) and the integral Rosati form on
+`ℤ[F]` has a naive height (`hyperellipticDatum_exists_naiveHeight`). The sign is carried by two
+cardinalities: Stepanov's auxiliary-section count and `|τ|² = q`.
 -/
 
 open Polynomial Finset
@@ -75,71 +76,74 @@ theorem exists_conjPerm (f : F[X]) : ∃ σ : Equiv.Perm (Fin (lRoots f).toList.
 
 end Roots
 
-variable {p : ℕ} [hp : Fact p.Prime]
+section Datum
 
-/-- The reciprocal roots of a split odd-degree hyperelliptic curve have modulus `√p`. -/
-theorem norm_rootEnum_eq (hp2 : p ≠ 2) {f : (ZMod p)[X]} (hsq : Squarefree f) (hsplit : f.Splits)
+variable {F : Type*} [Field F] [Fintype F]
+
+/-- The reciprocal roots of an odd-degree hyperelliptic curve have modulus `√q`. -/
+theorem norm_rootEnum_eq (hF : ringChar F ≠ 2) {f : F[X]} (hsq : Squarefree f)
     (hodd : Odd f.natDegree) (i : Fin (lRoots f).toList.length) :
-    ‖rootEnum (lRoots f) i‖ = Real.sqrt p :=
-  (riemannHypothesis_splitHyperelliptic.{0} hp2 hsq hsplit hodd).2.1 _ (rootEnum_mem _ i)
+    ‖rootEnum (lRoots f) i‖ = Real.sqrt (Fintype.card F) :=
+  (riemannHypothesis_oddHyperelliptic.{_, 0} hF hsq hodd).2.1 _ (rootEnum_mem _ i)
 
-theorem sqrt_prime_ne_zero : ((Real.sqrt p : ℝ) : ℂ) ≠ 0 :=
-  Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.mpr (by exact_mod_cast hp.out.pos)).ne'
+omit [Field F] in
+theorem sqrt_card_ne_zero [Nonempty F] : ((Real.sqrt (Fintype.card F) : ℝ) : ℂ) ≠ 0 :=
+  Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.mpr (by exact_mod_cast Fintype.card_pos)).ne'
 
-/-- **The curve datum of `y² = f(x)`**: `q = p`, `β_i = ω_i/√p`, conjugation and the functional
+/-- **The curve datum of `y² = f(x)`**: `q = |F|`, `β_i = ω_i/√q`, conjugation and the functional
 equation both realized by the conjugation permutation of the reciprocal roots. -/
-noncomputable def hyperellipticDatum (hp2 : p ≠ 2) {f : (ZMod p)[X]} (hsq : Squarefree f)
-    (hsplit : f.Splits) (hodd : Odd f.natDegree) : CurveDatum (Fin (lRoots f).toList.length) where
-  q := p
-  one_lt_q := by exact_mod_cast hp.out.one_lt
-  β i := rootEnum (lRoots f) i / (Real.sqrt p : ℂ)
+noncomputable def hyperellipticDatum (hF : ringChar F ≠ 2) {f : F[X]} (hsq : Squarefree f)
+    (hodd : Odd f.natDegree) : CurveDatum (Fin (lRoots f).toList.length) where
+  q := Fintype.card F
+  one_lt_q := by exact_mod_cast Fintype.one_lt_card
+  β i := rootEnum (lRoots f) i / (Real.sqrt (Fintype.card F) : ℂ)
   conjPerm := (exists_conjPerm f).choose
   β_conjPerm i := by
     rw [(exists_conjPerm f).choose_spec i, map_div₀, Complex.conj_ofReal]
   fePerm := (exists_conjPerm f).choose
   β_fePerm i := by
     rw [(exists_conjPerm f).choose_spec i, div_mul_div_comm, Complex.conj_mul',
-      norm_rootEnum_eq hp2 hsq hsplit hodd i, ← Complex.ofReal_mul, ← sq, Complex.ofReal_pow,
-      div_self (pow_ne_zero 2 sqrt_prime_ne_zero)]
+      norm_rootEnum_eq hF hsq hodd i, ← Complex.ofReal_mul, ← sq, Complex.ofReal_pow,
+      div_self (pow_ne_zero 2 sqrt_card_ne_zero)]
 
+omit [Fintype F] in
 /-- The genus: `2g = m − 1` normalized eigenvalues. -/
-theorem card_hyperellipticDatum {f : (ZMod p)[X]} (hodd : Odd f.natDegree) :
+theorem card_hyperellipticDatum [Fintype F] {f : F[X]} (hodd : Odd f.natDegree) :
     Fintype.card (Fin (lRoots f).toList.length) = f.natDegree - 1 := by
   rw [Fintype.card_fin, Multiset.length_toList, card_lRoots f hodd.pos]
 
-variable (hp2 : p ≠ 2) {f : (ZMod p)[X]} (hsq : Squarefree f) (hsplit : f.Splits)
-  (hodd : Odd f.natDegree)
+variable (hF : ringChar F ≠ 2) {f : F[X]} (hsq : Squarefree f) (hodd : Odd f.natDegree)
 
 /-- **Unitarity**, by counting. -/
-theorem hyperellipticDatum_unitary : ∀ i, ‖(hyperellipticDatum hp2 hsq hsplit hodd).β i‖ = 1 := by
+theorem hyperellipticDatum_unitary : ∀ i, ‖(hyperellipticDatum hF hsq hodd).β i‖ = 1 := by
   intro i
-  change ‖rootEnum (lRoots f) i / (Real.sqrt p : ℂ)‖ = 1
-  rw [norm_div, norm_rootEnum_eq hp2 hsq hsplit hodd i, Complex.norm_real, Real.norm_eq_abs,
+  change ‖rootEnum (lRoots f) i / (Real.sqrt (Fintype.card F) : ℂ)‖ = 1
+  rw [norm_div, norm_rootEnum_eq hF hsq hodd i, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (Real.sqrt_nonneg _), div_self (Real.sqrt_pos.mpr
-      (by exact_mod_cast hp.out.pos)).ne']
+      (by exact_mod_cast Fintype.card_pos)).ne']
 
 /-- **The Lefschetz numbers are point counts**: over the extension `E` of degree `n`,
 `N_n = #{(x, y) ∈ E² : y² = f(x)} + 1`, the affine points plus the point at infinity. -/
-theorem hyperellipticDatum_pointCount (E : Type*) [Field E] [Fintype E] [Algebra (ZMod p) E] :
-    (hyperellipticDatum hp2 hsq hsplit hodd).pointCount (Module.finrank (ZMod p) E) =
+theorem hyperellipticDatum_pointCount (E : Type*) [Field E] [Fintype E] [Algebra F E] :
+    (hyperellipticDatum hF hsq hodd).pointCount (Module.finrank F E) =
       (univ.filter fun q : E × E => q.2 ^ 2 = aeval q.1 f).card + 1 := by
-  have hsum := (riemannHypothesis_splitHyperelliptic hp2 hsq hsplit hodd).2.2 E
-  set D := hyperellipticDatum hp2 hsq hsplit hodd
-  set n := Module.finrank (ZMod p) E
-  have hE : ringChar E ≠ 2 := by
-    rw [← Algebra.ringChar_eq (ZMod p) E, ZMod.ringChar_zmod_n]; exact hp2
-  have hcardE : (Fintype.card E : ℝ) = (p : ℝ) ^ n := by
-    rw [Module.card_eq_pow_finrank (K := ZMod p), ZMod.card]; push_cast; rfl
-  have hcount := card_points_eq hE (f.map (algebraMap (ZMod p) E))
+  have hsum := (riemannHypothesis_oddHyperelliptic hF hsq hodd).2.2 E
+  set D := hyperellipticDatum hF hsq hodd
+  set n := Module.finrank F E
+  have hE : ringChar E ≠ 2 := by rwa [← Algebra.ringChar_eq F E]
+  have hcardE : (Fintype.card E : ℝ) = (Fintype.card F : ℝ) ^ n := by
+    rw [Module.card_eq_pow_finrank (K := F)]; push_cast; rfl
+  have hcount := card_points_eq hE (f.map (algebraMap F E))
   simp only [eval_map, ← aeval_def] at hcount
   -- the trace times `√q^n` is the power sum of the `ω_i`
   have hs : (D.sqrtq : ℂ) ^ n * D.powerSum n = ((lRoots f).map (· ^ n)).sum := by
-    change ((Real.sqrt p : ℝ) : ℂ) ^ n * ∑ i, (rootEnum (lRoots f) i / (Real.sqrt p : ℂ)) ^ n = _
+    change ((Real.sqrt (Fintype.card F) : ℝ) : ℂ) ^ n *
+      ∑ i, (rootEnum (lRoots f) i / (Real.sqrt (Fintype.card F) : ℂ)) ^ n = _
     rw [Finset.mul_sum, Finset.sum_eq_multiset_sum]
     conv_rhs => rw [← univ_map_rootEnum (lRoots f), Multiset.map_map]
     congr 1
     refine Multiset.map_congr rfl fun i _ => ?_
-    rw [div_pow, mul_div_cancel₀ _ (pow_ne_zero n sqrt_prime_ne_zero)]
+    rw [div_pow, mul_div_cancel₀ _ (pow_ne_zero n sqrt_card_ne_zero)]
     rfl
   have hext : ((∑ x : E, quadraticChar E (aeval x f) : ℤ) : ℂ) = extHyp (E := E) f := by
     unfold extHyp; push_cast; rfl
@@ -148,7 +152,7 @@ theorem hyperellipticDatum_pointCount (E : Type*) [Field E] [Fintype E] [Algebra
     rw [hext, hsum, neg_neg, Complex.ofReal_mul, Complex.ofReal_pow, ← D.powerSum_eq_trace, hs]
   have hR : D.sqrtq ^ n * D.trace n = -((∑ x : E, quadraticChar E (aeval x f) : ℤ) : ℝ) := by
     exact_mod_cast hC
-  have hq : D.q = p := rfl
+  have hq : D.q = Fintype.card F := rfl
   unfold CurveDatum.pointCount
   rw [hR, hq, ← hcardE]
   have := congrArg (fun z : ℤ => (z : ℝ)) hcount
@@ -160,18 +164,20 @@ function, with the Riemann inequality for any ample-type class and constant, bou
 levels. -/
 theorem hyperellipticDatum_window_exists_effectivity (a b χ₀ : ℝ) (W : Finset ℕ) :
     ∃ h : SpanCycle → ℝ,
-      RiemannInequality ((hyperellipticDatum hp2 hsq hsplit hodd).windowSurface W)
-        (a • ((hyperellipticDatum hp2 hsq hsplit hodd).windowSurface W).H +
-          b • ((hyperellipticDatum hp2 hsq hsplit hodd).windowSurface W).V) χ₀ h ∧
-        DegreeBounded ((hyperellipticDatum hp2 hsq hsplit hodd).windowSurface W) h :=
+      RiemannInequality ((hyperellipticDatum hF hsq hodd).windowSurface W)
+        (a • ((hyperellipticDatum hF hsq hodd).windowSurface W).H +
+          b • ((hyperellipticDatum hF hsq hodd).windowSurface W).V) χ₀ h ∧
+        DegreeBounded ((hyperellipticDatum hF hsq hodd).windowSurface W) h :=
   ((CurveDatum.unitary_iff_forall_window_exists_effectivity _ a b χ₀).mp
-    (hyperellipticDatum_unitary hp2 hsq hsplit hodd)) W
+    (hyperellipticDatum_unitary hF hsq hodd)) W
 
 /-- **Naive heights on actual curves**: the integral Rosati form of `y² = f(x)` on `ℤ[F]` is at
 bounded distance from a function bounded below. -/
 theorem hyperellipticDatum_exists_naiveHeight :
     ∃ h : ℤ[X] → ℝ, ∃ K B : ℝ, (∀ P, -K ≤ h P) ∧
-      ∀ P, |h P - intRosatiDeg (hyperellipticDatum hp2 hsq hsplit hodd) P| ≤ B :=
-  (exists_naiveHeight_iff_unitary _).mpr (hyperellipticDatum_unitary hp2 hsq hsplit hodd)
+      ∀ P, |h P - intRosatiDeg (hyperellipticDatum hF hsq hodd) P| ≤ B :=
+  (exists_naiveHeight_iff_unitary _).mpr (hyperellipticDatum_unitary hF hsq hodd)
+
+end Datum
 
 end GaloisForLFunctions.ArithmeticEffectivityTheory

@@ -10,9 +10,9 @@ For a `C²` test supported in `[−A, A]` Weil's form of `ζ` is the integral of
 density `ν_X = μ + Π_X + P_X`, `X = e^{2A}` (the explicit formula, `Zeta23.paperInputs_zeta`), and
 `|ν_X − μ| ≤ 3X²`. The archimedean density `μ` grows like `log|τ|/2π`.
 
-* **Gårding inequality** (`collidedForm_ge_sub_lowMass`): for every aperture `A` there are `T₀` and
-  `K` with `D(f) ≥ 2π‖f‖₂² − K ∫_{−T₀}^{T₀} |f̂|²` for every such test. Above `T₀` the density
-  exceeds `1`, so `Re W` already dominates the high-frequency mass, and `D ≥ Re W`.
+* **Gårding inequality** (`re_W_ge_sub_lowMass`, `collidedForm_ge_sub_lowMass`): for every aperture
+  `A` there are `T₀` and `K` with `Re W(f) ≥ 2π‖f‖₂² − K ∫_{−T₀}^{T₀} |f̂|²` for every such test,
+  hence the same for `D ≥ Re W`. Above `T₀` the density exceeds `1`.
 
 The collided form therefore controls the `L²` norm up to the low-frequency mass, a compact
 functional of the test: the polarization is coercive modulo a compact term at every aperture.
@@ -55,10 +55,10 @@ theorem re_W_eq_integral_nuX {A : ℝ} (hA : 0 < A) {f : ℝ → ℂ} (hf : Cont
   refine ⟨hi.re, ?_⟩
   rw [he, integral_complex_ofReal, Complex.ofReal_re]
 
-/-- **Gårding inequality for the collided form.** -/
-theorem collidedForm_ge_sub_lowMass {A : ℝ} (hA : 0 < A) :
+/-- **Gårding inequality for Weil's form.** -/
+theorem re_W_ge_sub_lowMass {A : ℝ} (hA : 0 < A) :
     ∃ T₀ K : ℝ, 1 ≤ T₀ ∧ 0 ≤ K ∧ ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-A) A →
-      2 * π * (∫ u, ‖f u‖ ^ 2) - K * lowMass T₀ f ≤ collidedForm zetaZeroConfig f := by
+      2 * π * (∫ u, ‖f u‖ ^ 2) - K * lowMass T₀ f ≤ (zetaZeroConfig.W f f).re := by
   set X := Real.exp (2 * A) with hXdef
   have hX : 1 ≤ X := Real.one_le_exp (by positivity)
   obtain ⟨C, hC0, hC⟩ := RHTower.Littlewood.exists_stirling
@@ -137,10 +137,19 @@ theorem collidedForm_ge_sub_lowMass {A : ℝ} (hA : 0 < A) :
     exact integral_mono ((hF.const_mul m₀).sub (hindInt.const_mul K) |>.congr
       (Filter.Eventually.of_forall fun τ => by simp only [Pi.sub_apply]; ring)) hint hpt
   have hplan := RHTower.integral_norm_sq_paperFT_eq hf hfs
-  have hD := re_W_le_collided (zeta_summable_collided hf hfc)
   have htot : 0 ≤ ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 := integral_nonneg fun _ => sq_nonneg _
   have : ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 ≤ m₀ * (∫ τ : ℝ, ‖paperFT f τ‖ ^ 2) :=
     le_mul_of_one_le_left htot hm₀1
   linarith [hplan]
+
+/-- **Gårding inequality for the collided form.** -/
+theorem collidedForm_ge_sub_lowMass {A : ℝ} (hA : 0 < A) :
+    ∃ T₀ K : ℝ, 1 ≤ T₀ ∧ 0 ≤ K ∧ ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-A) A →
+      2 * π * (∫ u, ‖f u‖ ^ 2) - K * lowMass T₀ f ≤ collidedForm zetaZeroConfig f := by
+  obtain ⟨T₀, K, hT₀, hK, h⟩ := re_W_ge_sub_lowMass hA
+  refine ⟨T₀, K, hT₀, hK, fun f hf hfs => (h f hf hfs).trans ?_⟩
+  have hfc : HasCompactSupport f :=
+    HasCompactSupport.of_support_subset_isCompact isCompact_Icc ((subset_tsupport f).trans hfs)
+  exact re_W_le_collided (zeta_summable_collided hf hfc)
 
 end GaloisForLFunctions.ArithmeticPolarization

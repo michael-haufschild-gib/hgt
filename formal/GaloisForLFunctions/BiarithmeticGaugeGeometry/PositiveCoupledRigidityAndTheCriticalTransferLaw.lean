@@ -1,4 +1,5 @@
 import GaloisForLFunctions.BiarithmeticGaugeGeometry.PositivePrimeMassDeformationsAreRigidOffTheCriticalLine
+import GaloisForLFunctions.BiarithmeticGaugeGeometry.TheAbelGramLawOfPositiveDeformations
 import GaloisForLFunctions.RHTower.FarFieldAnchor
 import GaloisForLFunctions.HTGeometry.OrderOneEntireQuotient
 import GaloisForLFunctions.HTGeometry.EntireLogarithm
@@ -133,44 +134,34 @@ theorem exists_nontrivial_positiveDeformation_of_xi_critical_zero {γ : ℝ}
   show heightCoupledF riemannZeta γ s * criticalSplitMultiplier 1 s = _
   rw [criticalSplitMultiplier_eq_rationalMultiplier]
 
-/-! ## §2. The critical transfer law -/
+/-! ## §2. The critical transfer and Gram laws -/
 
-/-- The Laplace transform of a nonnegative measure is dominated on vertical lines by its value on
-the real axis. -/
-theorem norm_complexLaplace_le (ν : Measure ℝ) (z : ℂ) :
-    ‖complexLaplace ν z‖ ≤ laplaceReal ν z.re := by
-  unfold complexLaplace laplaceReal
-  refine (norm_integral_le_integral_norm _).trans (le_of_eq (integral_congr_ae
-    (ae_of_all _ fun u => ?_)))
-  dsimp only
-  rw [Complex.norm_exp]
-  congr 1
-  simp
-
-/-- A function analytic at `w` with finite order there has no zeros in a punctured
-neighbourhood. -/
-theorem eventually_ne_zero_of_orderAt_ne_top {f : ℂ → ℂ} {w : ℂ} (hf : AnalyticAt ℂ f w)
-    (htop : analyticOrderAt f w ≠ ⊤) : ∀ᶠ z in 𝓝[≠] w, f z ≠ 0 :=
-  hf.eventually_eq_zero_or_eventually_ne_zero.resolve_left fun h =>
-    htop (analyticOrderAt_eq_top.mpr h)
-
-/-- The horizontal approach `σ ↦ σ + it` from the right of `½` reaches `½ + it` from the punctured
-neighbourhood. -/
-theorem tendsto_add_mul_I_nhdsGT (t : ℝ) :
-    Tendsto (fun σ : ℝ => (σ : ℂ) + (t : ℂ) * I) (𝓝[>] (1 / 2 : ℝ))
-      (𝓝[≠] (1 / 2 + (t : ℂ) * I)) := by
-  refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
-  · have h : Continuous fun σ : ℝ => (σ : ℂ) + (t : ℂ) * I := by fun_prop
-    have h' := (h.tendsto (1 / 2 : ℝ)).mono_left (nhdsWithin_le_nhds (s := Ioi (1 / 2 : ℝ)))
-    simpa using h'
-  · filter_upwards [self_mem_nhdsWithin] with σ hσ
-    intro h
-    have hre := congrArg Complex.re h
-    simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im,
-      Complex.I_re, Complex.I_im, mul_zero] at hre
-    have hσ' : (1 / 2 : ℝ) < σ := hσ
-    norm_num at hre
+/-- Without off-critical zeros at ordinate `γ`, a perturbed positive deformation satisfies the
+Landau–Wronskian relation on `Re z > ½`, with integrable Laplace kernel there. -/
+theorem perturbedDeformation_rel_of_offCritical_free {γ : ℝ}
+    (hoff : ∀ x : ℝ, RHTower.xi ((x : ℂ) + (γ : ℂ) * I) = 0 → x = 1 / 2) {F Λ : ℂ → ℂ}
+    (hHC : HeightCoupledSystem 2 1 1 γ F Λ) {ν : Measure ℝ} {σ₁ : ℝ}
+    (hconv : laplaceMass ν σ₁ ≠ ⊤) {E : ℂ → ℂ} {σE : ℝ} (hσE : σE < 1 / 2)
+    (hE : DifferentiableOn ℂ E {s : ℂ | σE < s.re})
+    (hagree : ∀ σ : ℝ, σ₁ < σ →
+      -logDeriv F (σ : ℂ) + logDeriv (heightCoupledF riemannZeta γ) (σ : ℂ) =
+        ((laplaceReal ν σ : ℝ) : ℂ) + E σ) :
+    (∀ z : ℂ, (1 / 2 : ℝ) < z.re → Λ z ≠ 0 →
+      heightCoupledΛ (fun s => 2 * RHTower.xi s) γ z ≠ 0 →
+      logDeriv (heightCoupledΛ (fun s => 2 * RHTower.xi s) γ) z - logDeriv Λ z =
+        complexLaplace ν z + E z) ∧
+    (∀ z : ℂ, (1 / 2 : ℝ) < z.re →
+      Integrable (fun u : ℝ => Complex.exp (-z * (u : ℂ))) (ν.restrict (Ioi (0 : ℝ)))) := by
+  obtain ⟨c, -, -, hanchor, hrel, hint⟩ :=
+    positiveDeformation_orders_and_anchor_of_perturbation hHC hconv hE hagree
+  have hc : c ≤ 1 / 2 := by
+    by_contra hgt
+    push Not at hgt
+    have hz := (hanchor (by linarith) (by linarith)).1
+    have := hoff c (xi_add_eq_zero_of_heightCoupledΛ_real_zero hz)
     linarith
+  exact ⟨fun z hz => hrel z (lt_of_le_of_lt (max_le hc hσE.le) hz),
+    fun z hz => hint z (lt_of_le_of_lt hc hz)⟩
 
 /-- **Abel limits on the critical line.** For a perturbed positive deformation without off-critical
 zeros at ordinate `γ`, `(σ − ½) 𝓛ν(σ + it)` tends to the jump
@@ -188,54 +179,11 @@ theorem tendsto_abel_complexLaplace {γ : ℝ}
       (𝓝 (((analyticOrderAt (heightCoupledΛ (fun s => 2 * RHTower.xi s) γ)
           (1 / 2 + (t : ℂ) * I)).toNat : ℂ) -
         (analyticOrderAt Λ (1 / 2 + (t : ℂ) * I)).toNat)) := by
+  obtain ⟨hrel, -⟩ := perturbedDeformation_rel_of_offCritical_free hoff hHC hconv hσE hE hagree
   have hHC0 := zeta_mem_heightCoupledSystem γ
-  set Λγ := heightCoupledΛ (fun s => 2 * RHTower.xi s) γ with hΛγ
-  obtain ⟨c, -, -, hanchor, hrel, -⟩ :=
-    positiveDeformation_orders_and_anchor_of_perturbation hHC hconv hE hagree
-  have hc : c ≤ 1 / 2 := by
-    by_contra hgt
-    push Not at hgt
-    have hz := (hanchor (by linarith) (by linarith)).1
-    have := hoff c (xi_add_eq_zero_of_heightCoupledΛ_real_zero hz)
-    linarith
-  set w : ℂ := 1 / 2 + (t : ℂ) * I with hw
-  have hwre : w.re = 1 / 2 := by simp [hw]
-  obtain ⟨a, ha⟩ := ENat.ne_top_iff_exists.mp (hHC.orderAt_ne_top w)
-  obtain ⟨k, hk⟩ := ENat.ne_top_iff_exists.mp (hHC0.orderAt_ne_top w)
-  have hΛan : AnalyticAt ℂ Λ w := hHC.analyticOnNhd_univ _ (Set.mem_univ _)
-  have hΛγan : AnalyticAt ℂ Λγ w := hHC0.analyticOnNhd_univ _ (Set.mem_univ _)
-  have hmap := tendsto_add_mul_I_nhdsGT t
-  have hta := (tendsto_sub_mul_logDeriv hΛan ha.symm).comp hmap
-  have htb := (tendsto_sub_mul_logDeriv hΛγan hk.symm).comp hmap
-  -- the perturbation is continuous at `w`, so `(z − w) E(z) → 0`
-  have hEc : Tendsto (fun z => (z - w) * E z) (𝓝[≠] w) (𝓝 0) := by
-    have hwE : {s : ℂ | σE < s.re} ∈ 𝓝 w :=
-      (isOpen_lt continuous_const Complex.continuous_re).mem_nhds
-        (show σE < w.re by rw [hwre]; exact hσE)
-    have h : ContinuousAt (fun z => (z - w) * E z) w :=
-      (continuousAt_id.sub continuousAt_const).mul (hE.continuousOn.continuousAt hwE)
-    have h' := h.tendsto
-    simp only [sub_self, zero_mul] at h'
-    exact h'.mono_left nhdsWithin_le_nhds
-  have hlim := (htb.sub hta).sub (hEc.comp hmap)
-  rw [sub_zero] at hlim
-  rw [← ha, ← hk, ENat.toNat_coe, ENat.toNat_coe]
-  refine hlim.congr' ?_
-  filter_upwards [hmap.eventually (eventually_ne_zero_of_orderAt_ne_top hΛan
-      (hHC.orderAt_ne_top w)),
-    hmap.eventually (eventually_ne_zero_of_orderAt_ne_top hΛγan (hHC0.orderAt_ne_top w)),
-    self_mem_nhdsWithin] with σ h1 h2 h3
-  have hσ : (1 / 2 : ℝ) < σ := h3
-  have hzre : max c σE < ((σ : ℂ) + (t : ℂ) * I).re := by
-    simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im,
-      Complex.I_re, Complex.I_im, mul_zero]
-    exact max_lt (by linarith) (by linarith)
-  have hr := hrel _ hzre h1 h2
-  have hzw : (σ : ℂ) + (t : ℂ) * I - w = ((σ - 1 / 2 : ℝ) : ℂ) := by
-    rw [hw]; push_cast; ring
-  simp only [Function.comp_apply]
-  rw [hzw, ← mul_sub, ← mul_sub, hr]
-  ring
+  have h := tendsto_abel_of_rel hHC.entire_Λ hHC0.entire_Λ hHC.orderAt_ne_top hHC0.orderAt_ne_top
+    hrel (tendsto_sub_mul_of_differentiableOn hσE hE) t
+  rwa [show (((1 / 2 : ℝ)) : ℂ) = 1 / 2 by norm_num] at h
 
 /-- **Critical transfer law.** If `ξ` has no off-critical zero at ordinate `γ`, a perturbed positive
 deformation moves at most as many zeros at any critical height as it removes from the centre:
@@ -252,72 +200,11 @@ theorem abs_criticalTransfer_le_centralDrop {γ : ℝ}
           (1 / 2 + (t : ℂ) * I)).toNat : ℝ) - (analyticOrderAt Λ (1 / 2 + (t : ℂ) * I)).toNat| ≤
       ((analyticOrderAt (heightCoupledΛ (fun s => 2 * RHTower.xi s) γ) (1 / 2)).toNat : ℝ) -
         (analyticOrderAt Λ (1 / 2)).toNat := by
-  have ht := tendsto_abel_complexLaplace hoff hHC hconv hσE hE hagree t
-  have h0 := tendsto_abel_complexLaplace hoff hHC hconv hσE hE hagree 0
-  simp only [Complex.ofReal_zero, zero_mul, add_zero] at h0
-  -- on the real axis the Abel quantity is real: `(σ − ½) 𝓛ν(σ)`
-  have h0r := (Complex.continuous_re.tendsto _).comp h0
-  simp only [Function.comp_def, complexLaplace_ofReal, ← Complex.ofReal_mul, Complex.ofReal_re,
-    Complex.sub_re, Complex.natCast_re] at h0r
-  have hn := (continuous_norm.tendsto _).comp ht
-  have hle : ∀ᶠ σ : ℝ in 𝓝[>] (1 / 2 : ℝ),
-      ‖((σ - 1 / 2 : ℝ) : ℂ) * complexLaplace ν ((σ : ℂ) + (t : ℂ) * I)‖ ≤
-        (σ - 1 / 2) * laplaceReal ν σ := by
-    filter_upwards [self_mem_nhdsWithin] with σ hσ
-    have hσ' : (1 / 2 : ℝ) < σ := hσ
-    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith)]
-    refine mul_le_mul_of_nonneg_left ((norm_complexLaplace_le ν _).trans (le_of_eq ?_))
-      (by linarith)
-    simp
-  have hmain := le_of_tendsto_of_tendsto hn h0r hle
-  have hcast : ∀ p q : ℕ, ‖(p : ℂ) - q‖ = |(p : ℝ) - q| := fun p q => by
-    rw [show (p : ℂ) - q = (((p : ℝ) - q : ℝ) : ℂ) by push_cast; ring, Complex.norm_real,
-      Real.norm_eq_abs]
-  rw [hcast] at hmain
-  exact hmain
-
-/-! ## §3. The critical Gram law -/
-
-/-- The cosine transform `t ↦ ∫ e^{−σu} cos(tu) dν` of a nonnegative measure with integrable
-kernel is even positive definite. -/
-theorem isEvenPosDef_laplace_cos {ν : Measure ℝ} {σ : ℝ}
-    (hint : Integrable (fun u : ℝ => Real.exp (-σ * u)) (ν.restrict (Ioi (0 : ℝ)))) :
-    IsEvenPosDef fun t : ℝ => ∫ u in Ioi (0 : ℝ), Real.exp (-σ * u) * Real.cos (t * u) ∂ν where
-  even t := by simp only [neg_mul, Real.cos_neg]
-  posDef := by
-    intro n x c
-    have hi0 : ∀ τ : ℝ, Integrable (fun u : ℝ => Real.exp (-σ * u) * Real.cos (τ * u))
-        (ν.restrict (Ioi (0 : ℝ))) := fun τ =>
-      hint.mono' (by fun_prop : Continuous fun u : ℝ =>
-          Real.exp (-σ * u) * Real.cos (τ * u)).aestronglyMeasurable
-        (ae_of_all _ fun u => by
-          rw [Real.norm_eq_abs, abs_mul, Real.abs_exp]
-          exact mul_le_of_le_one_right (Real.exp_pos _).le (Real.abs_cos_le_one _))
-    have hi : ∀ i j, Integrable (fun u : ℝ => c i * c j *
-        (Real.exp (-σ * u) * Real.cos ((x i - x j) * u))) (ν.restrict (Ioi (0 : ℝ))) :=
-      fun i j => (hi0 (x i - x j)).const_mul _
-    have h1 : ∀ i, ∑ j, c i * c j *
-        ∫ u in Ioi (0 : ℝ), Real.exp (-σ * u) * Real.cos ((x i - x j) * u) ∂ν =
-        ∫ u in Ioi (0 : ℝ), ∑ j, c i * c j *
-          (Real.exp (-σ * u) * Real.cos ((x i - x j) * u)) ∂ν := fun i => by
-      rw [integral_finsetSum _ fun j _ => hi i j]
-      exact Finset.sum_congr rfl fun j _ => (integral_const_mul _ _).symm
-    rw [Finset.sum_congr rfl fun i _ => h1 i,
-      ← integral_finsetSum _ fun i _ => integrable_finsetSum _ fun j _ => hi i j]
-    refine integral_nonneg fun u => ?_
-    -- `Σᵢⱼ cᵢcⱼ cos((xᵢ − xⱼ)u) = (Σ cᵢ cos xᵢu)² + (Σ cᵢ sin xᵢu)²`
-    have hsq : ∑ i, ∑ j, c i * c j * (Real.exp (-σ * u) * Real.cos ((x i - x j) * u)) =
-        Real.exp (-σ * u) * ((∑ i, c i * Real.cos (x i * u)) ^ 2 +
-          (∑ i, c i * Real.sin (x i * u)) ^ 2) := by
-      rw [sq, sq, Finset.sum_mul_sum, Finset.sum_mul_sum, ← Finset.sum_add_distrib, Finset.mul_sum]
-      refine Finset.sum_congr rfl fun i _ => ?_
-      rw [← Finset.sum_add_distrib, Finset.mul_sum]
-      refine Finset.sum_congr rfl fun j _ => ?_
-      rw [sub_mul, Real.cos_sub]
-      ring
-    simp only
-    rw [hsq]
-    positivity
+  obtain ⟨hrel, -⟩ := perturbedDeformation_rel_of_offCritical_free hoff hHC hconv hσE hE hagree
+  have hHC0 := zeta_mem_heightCoupledSystem γ
+  have h := abs_jump_le_of_rel hHC.entire_Λ hHC0.entire_Λ hHC.orderAt_ne_top hHC0.orderAt_ne_top
+    hrel (tendsto_sub_mul_of_differentiableOn hσE hE) t
+  rwa [show (((1 / 2 : ℝ)) : ℂ) = 1 / 2 by norm_num] at h
 
 /-- **Critical Gram law.** If `ξ` has no off-critical zero at ordinate `γ`, the critical jump
 `t ↦ ord_{½+it} Λ_γ − ord_{½+it} Λ` of a perturbed positive deformation is even positive definite;
@@ -333,50 +220,17 @@ theorem criticalJump_isEvenPosDef {γ : ℝ}
     IsEvenPosDef fun t : ℝ =>
       ((analyticOrderAt (heightCoupledΛ (fun s => 2 * RHTower.xi s) γ)
           (1 / 2 + (t : ℂ) * I)).toNat : ℝ) - (analyticOrderAt Λ (1 / 2 + (t : ℂ) * I)).toNat := by
-  obtain ⟨c, -, -, hanchor, -, hint⟩ :=
-    positiveDeformation_orders_and_anchor_of_perturbation hHC hconv hE hagree
-  have hc : c ≤ 1 / 2 := by
-    by_contra hgt
-    push Not at hgt
-    have hz := (hanchor (by linarith) (by linarith)).1
-    have := hoff c (xi_add_eq_zero_of_heightCoupledΛ_real_zero hz)
-    linarith
-  -- the real part of `(σ − ½) 𝓛ν(σ + it)` is `(σ − ½)` times the cosine transform
-  have hre : ∀ σ : ℝ, 1 / 2 < σ → ∀ t : ℝ,
-      (((σ - 1 / 2 : ℝ) : ℂ) * complexLaplace ν ((σ : ℂ) + (t : ℂ) * I)).re =
-        (σ - 1 / 2) * ∫ u in Ioi (0 : ℝ), Real.exp (-σ * u) * Real.cos (t * u) ∂ν := by
-    intro σ hσ t
-    have hz : c < ((σ : ℂ) + (t : ℂ) * I).re := by simp; linarith
-    have h := integral_re (hint _ hz)
-    simp only [RCLike.re_to_complex] at h
-    rw [Complex.re_ofReal_mul, complexLaplace, ← h]
-    congr 1
-    refine integral_congr_ae (ae_of_all _ fun u => ?_)
-    simp only [Complex.exp_re, Complex.mul_re, Complex.neg_re,
-      Complex.neg_im, Complex.mul_im, Complex.add_re, Complex.add_im, Complex.ofReal_re,
-      Complex.ofReal_im, Complex.I_re, Complex.I_im]
-    ring_nf
-    rw [Real.cos_neg]
-  refine isEvenPosDef_of_tendsto (l := 𝓝[>] (1 / 2 : ℝ))
-    (F := fun σ t => (σ - 1 / 2) * ∫ u in Ioi (0 : ℝ), Real.exp (-σ * u) * Real.cos (t * u) ∂ν)
-    ?_ fun t => ?_
-  · filter_upwards [self_mem_nhdsWithin] with σ hσ
-    have hσ' : (1 / 2 : ℝ) < σ := hσ
-    have hI : Integrable (fun u : ℝ => Real.exp (-σ * u)) (ν.restrict (Ioi (0 : ℝ))) := by
-      refine (hint (σ : ℂ) (by simp; linarith)).norm.congr (ae_of_all _ fun u => ?_)
-      dsimp only
-      rw [Complex.norm_exp]
-      congr 1
-      simp
-    exact (isEvenPosDef_laplace_cos hI).smul (by linarith)
-  · have h := (Complex.continuous_re.tendsto _).comp
-      (tendsto_abel_complexLaplace hoff hHC hconv hσE hE hagree t)
-    simp only [Complex.sub_re, Complex.natCast_re] at h
-    refine h.congr' ?_
-    filter_upwards [self_mem_nhdsWithin] with σ hσ
-    exact hre σ hσ t
+  obtain ⟨hrel, hint⟩ :=
+    perturbedDeformation_rel_of_offCritical_free hoff hHC hconv hσE hE hagree
+  have hHC0 := zeta_mem_heightCoupledSystem γ
+  have h := jump_isEvenPosDef_of_rel hHC.entire_Λ hHC0.entire_Λ hHC.orderAt_ne_top
+    hHC0.orderAt_ne_top hrel (tendsto_sub_mul_of_differentiableOn hσE hE) hint
+  simp only [show (((1 / 2 : ℝ)) : ℂ) = 1 / 2 by norm_num] at h
+  exact h
 
-/-! ## §4. Positive rigidity -/
+/-! ## §3. Divisor rigidity and positive rigidity -/
+
+
 
 /-- Two order-one entire functions with the same divisor, the second with finite orders, differ by
 `K e^{Bs}`, `K ≠ 0`. -/
@@ -404,6 +258,66 @@ theorem exists_eq_const_mul_exp_mul_of_orders_eq {f g : ℂ → ℂ} (hf : Diffe
   obtain ⟨B, hB⟩ := exists_linear_of_ne_zero_of_growth (fun z => (hQa z (mem_univ z)).differentiableAt)
     hQne (by norm_num) (by norm_num) hC hCb
   exact ⟨entireQuotient f g 0, B, hQne 0, fun z => by rw [hfac z, hB z]⟩
+
+/-- An entire function nonvanishing at one point has finite order everywhere. -/
+theorem analyticOrderAt_ne_top_of_ne_zero {f : ℂ → ℂ} (hf : Differentiable ℂ f) {z₀ : ℂ}
+    (hz₀ : f z₀ ≠ 0) (z : ℂ) : analyticOrderAt f z ≠ ⊤ := by
+  have hfa : AnalyticOnNhd ℂ f univ := fun w _ => hf.analyticAt w
+  exact hfa.analyticOrderAt_ne_top_of_isPreconnected isPreconnected_univ (mem_univ z₀)
+    (mem_univ z) (by rw [(hf.analyticAt z₀).analyticOrderAt_eq_zero.mpr hz₀]; exact ENat.zero_ne_top)
+
+/-- **Divisor rigidity for symmetric real functions of order one.** Two entire functions of order
+one, symmetric under `s ↦ 1 − s` and real, with the same divisor, the second nonvanishing on
+`Re s > 1`, are proportional by a nonzero real constant: the zero-free quotient is `K e^{Bs}`, the
+symmetry kills `B`, and the reality makes `K` real. -/
+theorem eq_real_const_mul_of_orders_eq {Λ Λ₀ : ℂ → ℂ} (hΛ : Differentiable ℂ Λ)
+    (hΛ₀ : Differentiable ℂ Λ₀) (hΛo : OrderOneEnvelope Λ) (hΛ₀o : OrderOneEnvelope Λ₀)
+    (hsym : ∀ s, Λ (1 - s) = Λ s) (hsym₀ : ∀ s, Λ₀ (1 - s) = Λ₀ s)
+    (hconj : ∀ s, Λ (starRingEnd ℂ s) = starRingEnd ℂ (Λ s))
+    (hconj₀ : ∀ s, Λ₀ (starRingEnd ℂ s) = starRingEnd ℂ (Λ₀ s))
+    (hne₀ : ∀ s : ℂ, 1 < s.re → Λ₀ s ≠ 0)
+    (hord : ∀ w : ℂ, analyticOrderAt Λ w = analyticOrderAt Λ₀ w) :
+    ∃ K : ℝ, K ≠ 0 ∧ ∀ s, Λ s = K * Λ₀ s := by
+  have h2 : (1 : ℝ) < (2 : ℂ).re := by norm_num
+  obtain ⟨Q, B, hQ, hfac⟩ := exists_eq_const_mul_exp_mul_of_orders_eq hΛ hΛ₀ hΛo hΛ₀o
+    (analyticOrderAt_ne_top_of_ne_zero hΛ₀ (hne₀ 2 h2)) hord
+  have hU : IsOpen {w : ℂ | 1 < w.re} := isOpen_lt continuous_const Complex.continuous_re
+  -- symmetry: `e^{B(1 − 2s)} = 1` on `Re s > 1`, so `B = 0`
+  have hone : ∀ s : ℂ, 1 < s.re → Complex.exp (B * (1 - 2 * s)) = 1 := by
+    intro s hs
+    have h1 := hfac (1 - s)
+    rw [hsym s, hsym₀ s, hfac s] at h1
+    have h2' : Complex.exp (B * s) = Complex.exp (B * (1 - s)) :=
+      mul_left_cancel₀ hQ (mul_right_cancel₀ (hne₀ s hs) h1)
+    rw [show B * (1 - 2 * s) = B * (1 - s) - B * s by ring, Complex.exp_sub, ← h2',
+      div_self (Complex.exp_ne_zero _)]
+  have hB : B = 0 := by
+    have hlin : HasDerivAt (fun s : ℂ => B * (1 - 2 * s)) (B * (-2)) 2 := by
+      have h := (((hasDerivAt_id (2 : ℂ)).const_mul 2).const_sub 1).const_mul B
+      simp only [id, mul_one] at h
+      convert h using 1
+    have hc : HasDerivAt (fun s : ℂ => Complex.exp (B * (1 - 2 * s))) 0 2 :=
+      (hasDerivAt_const (2 : ℂ) (1 : ℂ)).congr_of_eventuallyEq
+        (Filter.eventually_of_mem (hU.mem_nhds h2) fun s hs => hone s hs)
+    have h := hlin.cexp.unique hc
+    rcases mul_eq_zero.mp h with h | h
+    · exact absurd h (Complex.exp_ne_zero _)
+    · rcases mul_eq_zero.mp h with h | h
+      · exact h
+      · norm_num at h
+  have hfac0 : ∀ s, Λ s = Q * Λ₀ s := fun s => by
+    rw [hfac s, hB, zero_mul, Complex.exp_zero, mul_one]
+  -- reality at the real point `2` makes `Q` real
+  have hQreal : starRingEnd ℂ Q = Q := by
+    have hc2 : starRingEnd ℂ (2 : ℂ) = 2 := map_ofNat _ 2
+    have hΛr : starRingEnd ℂ (Λ 2) = Λ 2 := by rw [← hconj, hc2]
+    have hΛ₀r : starRingEnd ℂ (Λ₀ 2) = Λ₀ 2 := by rw [← hconj₀, hc2]
+    have h3 := congrArg (starRingEnd ℂ) (hfac0 2)
+    rw [map_mul, hΛr, hΛ₀r, hfac0 2] at h3
+    exact (mul_right_cancel₀ (hne₀ 2 h2) h3).symm
+  have hQK : Q = ((Q.re : ℝ) : ℂ) := (Complex.conj_eq_iff_re.mp hQreal).symm
+  exact ⟨Q.re, fun h => hQ (by rw [hQK, h, Complex.ofReal_zero]), fun s => by
+    rw [hfac0 s, ← hQK]⟩
 
 /-- `Λ_γ` does not vanish on `Re s > 1`. -/
 theorem heightCoupledΛ_ne_zero_of_one_lt_re (γ : ℝ) {s : ℂ} (hs : 1 < s.re) :
@@ -480,7 +394,7 @@ theorem perturbedDeformation_orders_eq_of_central_le {γ : ℝ}
 /-- **Divisor rigidity of the coupled class.** A member of `HeightCoupledSystem 2 1 1 γ` whose
 completion has the divisor of `Λ_γ` is a nonzero real multiple of `ζ_γ`: the zero-free order-one
 quotient is `K e^{Bs}`, symmetry under `s ↦ 1 − s` kills `B`, and conjugation symmetry makes `K`
-real. -/
+real (`eq_real_const_mul_of_orders_eq`). -/
 theorem eq_const_mul_of_orders_eq {γ : ℝ} {F Λ : ℂ → ℂ} (hHC : HeightCoupledSystem 2 1 1 γ F Λ)
     (hord : ∀ w : ℂ, analyticOrderAt Λ w =
       analyticOrderAt (heightCoupledΛ (fun s => 2 * RHTower.xi s) γ) w) :
@@ -488,56 +402,17 @@ theorem eq_const_mul_of_orders_eq {γ : ℝ} {F Λ : ℂ → ℂ} (hHC : HeightC
       ∀ s : ℂ, 1 < s.re → F s = K * heightCoupledF riemannZeta γ s := by
   have hHC0 := zeta_mem_heightCoupledSystem γ
   set Λγ := heightCoupledΛ (fun s => 2 * RHTower.xi s) γ with hΛγ
-  set Fγ := heightCoupledF riemannZeta γ with hFγ
-  obtain ⟨Q, B, hQ, hfac⟩ := exists_eq_const_mul_exp_mul_of_orders_eq hHC.entire_Λ hHC0.entire_Λ
-    hHC.orderOne_Λ hHC0.orderOne_Λ hHC0.orderAt_ne_top hord
-  have hU : IsOpen {w : ℂ | 1 < w.re} := isOpen_lt continuous_const Complex.continuous_re
-  -- symmetry under `s ↦ 1 − s`: `e^{B(1 − 2s)} = 1` on `Re s > 1`, so `B = 0`
-  have hone : ∀ s : ℂ, 1 < s.re → Complex.exp (B * (1 - 2 * s)) = 1 := by
-    intro s hs
-    have hne := heightCoupledΛ_ne_zero_of_one_lt_re γ hs
-    have h1 := hfac (1 - s)
-    rw [hHC.sym_Λ s, hHC0.sym_Λ s, hfac s] at h1
-    have h2 : Complex.exp (B * s) = Complex.exp (B * (1 - s)) :=
-      mul_left_cancel₀ hQ (mul_right_cancel₀ hne h1)
-    rw [show B * (1 - 2 * s) = B * (1 - s) - B * s by ring, Complex.exp_sub, ← h2,
-      div_self (Complex.exp_ne_zero _)]
-  have hB : B = 0 := by
-    have hlin : HasDerivAt (fun s : ℂ => B * (1 - 2 * s)) (B * (-2)) 2 := by
-      have h := (((hasDerivAt_id (2 : ℂ)).const_mul 2).const_sub 1).const_mul B
-      simp only [id, mul_one] at h
-      convert h using 1
-    have hc : HasDerivAt (fun s : ℂ => Complex.exp (B * (1 - 2 * s))) 0 2 :=
-      (hasDerivAt_const (2 : ℂ) (1 : ℂ)).congr_of_eventuallyEq
-        (Filter.eventually_of_mem (hU.mem_nhds (by norm_num : (1 : ℝ) < (2 : ℂ).re))
-          fun s hs => hone s hs)
-    have h := hlin.cexp.unique hc
-    rcases mul_eq_zero.mp h with h | h
-    · exact absurd h (Complex.exp_ne_zero _)
-    · rcases mul_eq_zero.mp h with h | h
-      · exact h
-      · norm_num at h
-  have hfac0 : ∀ s, Λ s = Q * Λγ s := fun s => by
-    rw [hfac s, hB, zero_mul, Complex.exp_zero, mul_one]
-  -- conjugation symmetry at the real point `2` makes `Q` real
-  have hΛγ2 : Λγ (2 : ℂ) ≠ 0 := heightCoupledΛ_ne_zero_of_one_lt_re γ (by norm_num)
-  have hQreal : starRingEnd ℂ Q = Q := by
-    have hc2 : starRingEnd ℂ (2 : ℂ) = 2 := map_ofNat _ 2
-    have hΛr : starRingEnd ℂ (Λ 2) = Λ 2 := by rw [← hHC.conj_Λ, hc2]
-    have hΛγr : starRingEnd ℂ (Λγ 2) = Λγ 2 := by rw [← hHC0.conj_Λ, hc2]
-    have h3 := congrArg (starRingEnd ℂ) (hfac0 2)
-    rw [map_mul, hΛr, hΛγr, hfac0 2] at h3
-    exact (mul_right_cancel₀ hΛγ2 h3).symm
-  have hQK : Q = ((Q.re : ℝ) : ℂ) := (Complex.conj_eq_iff_re.mp hQreal).symm
-  refine ⟨Q.re, fun h => hQ (by rw [hQK, h, Complex.ofReal_zero]), fun s => by
-    rw [hfac0 s, ← hQK], fun s hs => ?_⟩
+  obtain ⟨K, hK0, hK⟩ := eq_real_const_mul_of_orders_eq hHC.entire_Λ hHC0.entire_Λ
+    hHC.orderOne_Λ hHC0.orderOne_Λ hHC.sym_Λ hHC0.sym_Λ hHC.conj_Λ hHC0.conj_Λ
+    (fun s hs => heightCoupledΛ_ne_zero_of_one_lt_re γ hs) hord
+  refine ⟨K, hK0, hK, fun s hs => ?_⟩
   -- cancel the common archimedean factor on `Re s > 1`
   have hP : (s * (s - 1)) ^ 2 * shiftedPolePoly γ s ^ 1 * coupledGamma γ 1 s ≠ 0 := by
     intro h
     apply heightCoupledΛ_ne_zero_of_one_lt_re γ hs
     rw [← hΛγ, hHC0.completed_eq s hs, h, zero_mul]
   refine mul_left_cancel₀ hP ?_
-  rw [← hHC.completed_eq s hs, hfac0 s, hHC0.completed_eq s hs, ← hQK]
+  rw [← hHC.completed_eq s hs, hK s, hHC0.completed_eq s hs]
   ring
 
 /-- **Positive rigidity.** If `ξ` has no off-critical zero at ordinate `γ` and a positive
@@ -599,7 +474,7 @@ theorem positiveDeformation_trivial_of_central_le {γ : ℝ}
     (hIσ _ (by linarith)) (hIσ _ (by linarith))
     ((hlap0 _ (by linarith)).trans (hlap0 _ (by linarith)).symm)
 
-/-! ## §5. Classification -/
+/-! ## §4. Classification -/
 
 /-- **Positive coupled rigidity at `γ`**: every positive prime-mass deformation of `ζ_γ` is a
 nonzero real multiple of `ζ_γ` on `Re s > 1`. -/

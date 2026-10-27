@@ -191,13 +191,14 @@ theorem cramerZeroEnergyConstant_nonneg : 0 ≤ cramerZeroEnergyConstant := by
   have := cramerCountConstant_pos
   positivity
 
-/-- Uniform mean-square control of every finite critical-line zero sum with `1/|γ|`
-coefficients; the bound is independent of the largest ordinate. -/
-theorem cramer_finite_zero_energy (hRH : RiemannHypothesis) {X D : ℝ}
+/-- The shell form of the mean-square bound: each dyadic shell `k` present in `F` contributes
+`(k + 1)³ (2/3)^k`. -/
+private theorem cramer_finite_zero_energy_shells (hRH : RiemannHypothesis) {X D : ℝ}
     (hX : 0 < X) (hD : 0 ≤ D) (F : Finset XiZeroCopy) (c : XiZeroCopy → ℂ)
     (hc : ∀ q ∈ F, ‖c q‖ ≤ D / |zeroOrdinate q|) :
     ∫ x in X..2 * X, ‖∑ q ∈ F, c q * (x : ℂ) ^ (q.1 : ℂ)‖ ^ 2 / x ^ 3 ≤
-      cramerZeroEnergyConstant * D ^ 2 / X := by
+      (40960 * cramerCountConstant ^ 3 * D ^ 2 / X) *
+        ∑ k ∈ F.image cramerHeightIndex, ((k : ℝ) + 1) ^ 3 * (2 / 3 : ℝ) ^ k := by
   classical
   let S := F.image cramerHeightIndex
   let Fk (k : ℕ) := F.filter (fun q => cramerHeightIndex q = k)
@@ -263,13 +264,69 @@ theorem cramer_finite_zero_energy (hRH : RiemannHypothesis) {X D : ℝ}
       exact hE k
     _ = (40960 * cramerCountConstant ^ 3 * D ^ 2 / X) *
         ∑ k ∈ S, ((k : ℝ) + 1) ^ 3 * (2 / 3 : ℝ) ^ k := by rw [← Finset.mul_sum]; ring
-    _ ≤ (40960 * cramerCountConstant ^ 3 * D ^ 2 / X) *
-        ∑' k : ℕ, ((k : ℝ) + 1) ^ 3 * (2 / 3 : ℝ) ^ k := by
-      apply mul_le_mul_of_nonneg_left
-        (cramer_summable_shell_budget.sum_le_tsum S (by intros; positivity))
-      have := cramerCountConstant_pos
-      positivity
+
+/-- Uniform mean-square control of every finite critical-line zero sum with `1/|γ|`
+coefficients; the bound is independent of the largest ordinate. -/
+theorem cramer_finite_zero_energy (hRH : RiemannHypothesis) {X D : ℝ}
+    (hX : 0 < X) (hD : 0 ≤ D) (F : Finset XiZeroCopy) (c : XiZeroCopy → ℂ)
+    (hc : ∀ q ∈ F, ‖c q‖ ≤ D / |zeroOrdinate q|) :
+    ∫ x in X..2 * X, ‖∑ q ∈ F, c q * (x : ℂ) ^ (q.1 : ℂ)‖ ^ 2 / x ^ 3 ≤
+      cramerZeroEnergyConstant * D ^ 2 / X := by
+  refine (cramer_finite_zero_energy_shells hRH hX hD F c hc).trans ?_
+  calc (40960 * cramerCountConstant ^ 3 * D ^ 2 / X) *
+        ∑ k ∈ F.image cramerHeightIndex, ((k : ℝ) + 1) ^ 3 * (2 / 3 : ℝ) ^ k
+      ≤ (40960 * cramerCountConstant ^ 3 * D ^ 2 / X) *
+          ∑' k : ℕ, ((k : ℝ) + 1) ^ 3 * (2 / 3 : ℝ) ^ k := by
+        apply mul_le_mul_of_nonneg_left
+          (cramer_summable_shell_budget.sum_le_tsum _ (by intros; positivity))
+        have := cramerCountConstant_pos
+        positivity
     _ = _ := by unfold cramerZeroEnergyConstant; ring
+
+/-- The share of the shells `k ≥ k₀`: `Σ_{k ≥ k₀} (k + 1)³ (2/3)^k`. -/
+def cramerShellTail (k₀ : ℕ) : ℝ :=
+  ∑' k : ℕ, (((k + k₀ : ℕ) : ℝ) + 1) ^ 3 * (2 / 3 : ℝ) ^ (k + k₀)
+
+theorem cramerShellTail_nonneg (k₀ : ℕ) : 0 ≤ cramerShellTail k₀ :=
+  tsum_nonneg fun _ => by positivity
+
+/-- The high shells carry a vanishing share: `Σ_{k ≥ k₀} (k + 1)³ (2/3)^k → 0`. -/
+theorem tendsto_cramerShellTail : Tendsto cramerShellTail atTop (𝓝 0) :=
+  tendsto_sum_nat_add fun k : ℕ => ((k : ℝ) + 1) ^ 3 * (2 / 3 : ℝ) ^ k
+
+/-- **The high-shell mean square.** Under RH, a finite zero sum with coefficients
+`‖c_q‖ ≤ D/|γ_q|` supported on `|γ_q| ≥ 2^{k₀}` has dyadic mean square at most
+`40960 C³ D²/X · Σ_{k ≥ k₀} (k + 1)³ (2/3)^k`. -/
+theorem cramer_finite_zero_energy_tail (hRH : RiemannHypothesis) {X D : ℝ}
+    (hX : 0 < X) (hD : 0 ≤ D) (F : Finset XiZeroCopy) (c : XiZeroCopy → ℂ)
+    (hc : ∀ q ∈ F, ‖c q‖ ≤ D / |zeroOrdinate q|) (k₀ : ℕ)
+    (hF : ∀ q ∈ F, (2 : ℝ) ^ k₀ ≤ |zeroOrdinate q|) :
+    ∫ x in X..2 * X, ‖∑ q ∈ F, c q * (x : ℂ) ^ (q.1 : ℂ)‖ ^ 2 / x ^ 3 ≤
+      40960 * cramerCountConstant ^ 3 * D ^ 2 / X * cramerShellTail k₀ := by
+  refine (cramer_finite_zero_energy_shells hRH hX hD F c hc).trans ?_
+  have hk : ∀ k ∈ F.image cramerHeightIndex, k₀ ≤ k := by
+    intro k hk
+    obtain ⟨q, hq, rfl⟩ := Finset.mem_image.mp hk
+    by_contra hlt
+    have h1 := (cramerHeightIndex_spec q).2
+    have h2 : (2 : ℝ) ^ (cramerHeightIndex q + 1) ≤ 2 ^ k₀ :=
+      pow_le_pow_right₀ (by norm_num) (by omega)
+    linarith [hF q hq]
+  have hsum : ∑ k ∈ F.image cramerHeightIndex, ((k : ℝ) + 1) ^ 3 * (2 / 3 : ℝ) ^ k ≤
+      cramerShellTail k₀ := by
+    have hinj : Set.InjOn (fun k : ℕ => k - k₀) (F.image cramerHeightIndex : Set ℕ) :=
+      fun a ha b hb h => by
+        have := hk a ha; have := hk b hb; simp only at h; omega
+    have hre : ∑ k ∈ F.image cramerHeightIndex, ((k : ℝ) + 1) ^ 3 * (2 / 3 : ℝ) ^ k =
+        ∑ j ∈ (F.image cramerHeightIndex).image (fun k => k - k₀),
+          (((j + k₀ : ℕ) : ℝ) + 1) ^ 3 * (2 / 3 : ℝ) ^ (j + k₀) := by
+      rw [Finset.sum_image hinj]
+      refine Finset.sum_congr rfl fun k hk' => ?_
+      rw [Nat.sub_add_cancel (hk k hk')]
+    rw [hre]
+    exact (cramer_summable_shell_budget.comp_injective (add_left_injective k₀)).sum_le_tsum _
+      (fun _ _ => by positivity)
+  exact mul_le_mul_of_nonneg_left hsum (by have := cramerCountConstant_pos; positivity)
 
 /-- The same bound for an absolutely convergent zero sum. This will be applied to
 short-window coefficients before the smoothing parameter tends to zero. -/

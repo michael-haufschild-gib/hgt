@@ -4,14 +4,14 @@ import GaloisForLFunctions.RHTower.WeilKloostermanHasseDavenport
 # The L-function of a hyperelliptic character sum: extensions
 
 For `f ∈ F[X]` and the quadratic character `χ` of a finite field `F` of odd characteristic, the
-weight `w(P) = χ(Res(P, f))` is multiplicative on monic polynomials (`hypW_mul`). When `f` splits
-over `F`, its power sums are the character sums over every finite extension:
+weight `w(P) = χ(Res(P, f))` is multiplicative on monic polynomials (`hypW_mul`), and its power
+sums are the character sums over every finite extension:
 
 * **norms** (`quadraticChar_norm`): `χ_E(y) = χ_F(N_{E/F} y)`, from Euler's criterion and
   `N_{E/F} y = y^{(|E|−1)/(|F|−1)}`;
 * **the norm of `f(x)`** (`norm_aeval_eq_resultant_pow`): `N_{E/F}(f(x)) = Res(P, f)^{n/d}` for
-  `P = minpoly x` of degree `d` and `n = [E : F]`, from `N(x − α) = ((−1)^d P(α))^{n/d}` and
-  `Res(P, f) = (−1)^{dm} c^d Π_i P(α_i)` for `f = c Π_i (X − α_i)`;
+  `P = minpoly x` of degree `d` and `n = [E : F]`: over an algebraic closure `N_{F(x)/F}(f(x))` is
+  the product of `f` over the roots of `P`, which is `Res(P, f)`;
 * **the Hasse–Davenport link** (`extHyp_eq_powerSumW`): grouping `x ∈ E` by minimal polynomial,
   `Σ_{x ∈ E} χ_E(f(x)) = c_n = Σ_{d ∣ n} Σ_{P irreducible, deg P = d} d · w(P)^{n/d}`.
 -/
@@ -98,66 +98,51 @@ theorem quadraticChar_norm (hF : ringChar F ≠ 2) (y : E) :
   exact quadraticChar_values_eq hE (quadraticChar_trichotomy E y)
     (quadraticChar_trichotomy F _) hpow
 
-omit [Fintype F] in
-/-- `N_{E/F}(x − α) = ((−1)^d P(α))^{n/d}` for `P = minpoly x` of degree `d`. -/
-theorem norm_sub_algebraMap (x : E) (α : F) :
-    Algebra.norm F (x - algebraMap F E α) =
-      ((-1) ^ (minpoly F x).natDegree * (minpoly F x).eval α) ^
-        (Module.finrank F E / (minpoly F x).natDegree) := by
-  set y := x - algebraMap F E α
-  have hy : IsIntegral F y := .of_finite F y
+/-- `N_{F(x)/F}(f(x)) = Res(P, f)` for `P = minpoly x`: over an algebraic closure the norm is the
+product of `f` over the conjugates of `x`, which are the roots of `P`. -/
+theorem norm_aeval_gen_eq_resultant (f : F[X]) (x : E) :
+    Algebra.norm F (aeval (AdjoinSimple.gen F x) f) = resultant (minpoly F x) f := by
   have hx : IsIntegral F x := .of_finite F x
-  have hmin : minpoly F y = (minpoly F x).comp (X + C α) := minpoly.sub_algebraMap x α
-  have hdeg : (minpoly F y).natDegree = (minpoly F x).natDegree := by
-    rw [hmin, natDegree_comp]; simp
-  rw [Algebra.norm_eq_norm_adjoin F y]
-  have hgen : Algebra.norm F (AdjoinSimple.gen F y) =
-      (-1) ^ (minpoly F y).natDegree * (minpoly F y).coeff 0 := by
-    have := Algebra.PowerBasis.norm_gen_eq_coeff_zero_minpoly (adjoin.powerBasis hy)
-    simpa [adjoin.powerBasis, minpoly_gen] using this
-  have hcoeff : (minpoly F y).coeff 0 = (minpoly F x).eval α := by
-    rw [hmin, coeff_zero_eq_eval_zero, eval_comp]; simp
-  have hfin : Module.finrank F⟮y⟯ E = Module.finrank F E / (minpoly F x).natDegree := by
-    rw [← Module.finrank_mul_finrank F F⟮y⟯ E, adjoin.finrank hy, hdeg,
-      Nat.mul_div_cancel_left _ (minpoly.natDegree_pos hx)]
-  rw [hgen, hcoeff, hdeg, hfin]
+  set pb := adjoin.powerBasis hx
+  have hgen : pb.gen = AdjoinSimple.gen F x := adjoin.powerBasis_gen hx
+  have hP : minpoly F pb.gen = minpoly F x := by rw [hgen, minpoly_gen]
+  let Ω := AlgebraicClosure F
+  apply (algebraMap F Ω).injective
+  rw [Algebra.norm_eq_prod_embeddings F Ω, ← hgen]
+  have hsep : (minpoly F x).Separable := Algebra.IsSeparable.isSeparable F x
+  rw [Fintype.prod_equiv pb.liftEquiv' (fun σ => σ (aeval pb.gen f))
+    (fun y => aeval (y : Ω) f) (fun σ => by
+      rw [← aeval_algHom_apply]; simp only [PowerBasis.liftEquiv'_apply_coe])]
+  rw [Finset.prod_mem_multiset _ _ (fun y => aeval y f) (fun _ => rfl), Finset.prod_eq_multiset_prod,
+    Multiset.toFinset_val, Multiset.dedup_eq_self.mpr (nodup_roots (hP ▸ hsep.map))]
+  have hmon : ((minpoly F x).map (algebraMap F Ω)).Monic := (minpoly.monic hx).map _
+  have hdeg : ((minpoly F x).map (algebraMap F Ω)).natDegree = (minpoly F x).natDegree :=
+    natDegree_map _
+  rw [← resultant_map_map, ← hdeg, resultant_eq_prod_eval _ _ f.natDegree
+    (natDegree_map_le) (IsAlgClosed.splits _), hmon.leadingCoeff, one_pow, one_mul, hP]
+  congr 1
+  refine Multiset.map_congr rfl fun y _ => ?_
+  rw [eval_map_algebraMap]
 
-omit [Fintype F] in
-/-- **The norm of `f(x)`** for split `f`: `N_{E/F}(f(x)) = Res(minpoly x, f)^{n/d}`. -/
-theorem norm_aeval_eq_resultant_pow {f : F[X]} (hsplit : f.Splits) (x : E) :
+/-- **The norm of `f(x)`**: `N_{E/F}(f(x)) = Res(minpoly x, f)^{n/d}`, `n = [E : F]`,
+`d = [F(x) : F]` (transitivity of the norm through `F(x)`). -/
+theorem norm_aeval_eq_resultant_pow (f : F[X]) (x : E) :
     Algebra.norm F (aeval x f) =
       resultant (minpoly F x) f ^ (Module.finrank F E / (minpoly F x).natDegree) := by
-  set P := minpoly F x
-  set d := P.natDegree
-  set n := Module.finrank F E
   have hx : IsIntegral F x := .of_finite F x
-  have hdn : d ∣ n := minpoly.degree_dvd hx
-  have hroots : Multiset.card f.roots = f.natDegree := splits_iff_card_roots.mp hsplit
-  have hf := C_leadingCoeff_mul_prod_multiset_X_sub_C hroots
-  have hres : resultant P f = (-1) ^ (d * f.natDegree) *
-      (f.leadingCoeff ^ d * (f.roots.map P.eval).prod) := by
-    rw [resultant_comm, resultant_eq_prod_eval f P d le_rfl hsplit]
-  conv_lhs => rw [← hf]
-  rw [map_mul, aeval_C, map_mul, Algebra.norm_algebraMap, map_multiset_prod, Multiset.map_map,
-    map_multiset_prod, Multiset.map_map]
-  have hterm : ∀ α : F, (Algebra.norm F ∘ aeval x ∘ fun a => X - C a) α =
-      ((-1) ^ d * P.eval α) ^ (n / d) := by
-    intro α
-    simp only [Function.comp, map_sub, aeval_X, aeval_C]
-    exact norm_sub_algebraMap x α
-  rw [Multiset.map_congr rfl fun α _ => hterm α, Multiset.prod_map_pow, Multiset.prod_map_mul,
-    Multiset.map_const', Multiset.prod_replicate, hroots, hres]
-  obtain ⟨k, hk⟩ := hdn
-  have hk' : Module.finrank F E = d * k := hk
-  have hd : 0 < d := minpoly.natDegree_pos hx
-  rw [hk', show n = d * k from hk, Nat.mul_div_cancel_left k hd]
-  ring
+  have hfin : Module.finrank F⟮x⟯ E = Module.finrank F E / (minpoly F x).natDegree := by
+    rw [← Module.finrank_mul_finrank F F⟮x⟯ E, adjoin.finrank hx,
+      Nat.mul_div_cancel_left _ (minpoly.natDegree_pos hx)]
+  have hxe : aeval x f = algebraMap F⟮x⟯ E (aeval (AdjoinSimple.gen F x) f) := by
+    rw [← aeval_algebraMap_apply, AdjoinSimple.algebraMap_gen]
+  rw [hxe, ← Algebra.norm_norm (S := F⟮x⟯), Algebra.norm_algebraMap, map_pow,
+    norm_aeval_gen_eq_resultant, hfin]
 
 /-- **The point-wise link**: `χ_E(f(x)) = w(minpoly x)^{n/d}`. -/
-theorem quadraticChar_aeval_eq (hF : ringChar F ≠ 2) {f : F[X]} (hsplit : f.Splits) (x : E) :
+theorem quadraticChar_aeval_eq (hF : ringChar F ≠ 2) (f : F[X]) (x : E) :
     ((quadraticChar E (aeval x f) : ℤ) : ℂ) =
       hypW f (minpoly F x) ^ (Module.finrank F E / (minpoly F x).natDegree) := by
-  rw [quadraticChar_norm hF, norm_aeval_eq_resultant_pow hsplit, map_pow, hypW]
+  rw [quadraticChar_norm hF, norm_aeval_eq_resultant_pow, map_pow, hypW]
   push_cast
   rfl
 
@@ -165,13 +150,13 @@ theorem quadraticChar_aeval_eq (hF : ringChar F ≠ 2) {f : F[X]} (hsplit : f.Sp
 noncomputable def extHyp (f : F[X]) : ℂ := ∑ x : E, ((quadraticChar E (aeval x f) : ℤ) : ℂ)
 
 /-- **Hasse–Davenport link**: the character sum over `E` is the power sum `c_n`, `n = [E : F]`. -/
-theorem extHyp_eq_powerSumW (hF : ringChar F ≠ 2) {f : F[X]} (hsplit : f.Splits) :
+theorem extHyp_eq_powerSumW (hF : ringChar F ≠ 2) (f : F[X]) :
     extHyp (E := E) f = powerSumW (hypW f) (Module.finrank F E) := by
   set n := Module.finrank F E
   have hn : 0 < n := Module.finrank_pos
   set G : F[X] → ℂ := fun P => hypW f P ^ (n / P.natDegree)
   unfold extHyp
-  simp_rw [quadraticChar_aeval_eq hF hsplit]
+  simp_rw [quadraticChar_aeval_eq hF f]
   set t : Finset F[X] := n.divisors.biUnion (irrDeg (F := F))
   have hmaps : ∀ x ∈ (univ : Finset E), minpoly F x ∈ t := by
     intro x _

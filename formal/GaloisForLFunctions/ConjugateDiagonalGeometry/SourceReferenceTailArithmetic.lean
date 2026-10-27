@@ -21,7 +21,9 @@ theorem sourceReferenceTail_le_lorentzMassW {n : ℕ} (hn : 1 ≤ n) :
   have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
   have hn0 : 0 < (n : ℝ) := zero_lt_one.trans_le hn1
   have hs : Summable (fun q : XiZeroCopy => 1 / ((n : ℝ) ^ 2 + (q.1 : ℂ).im ^ 2)) := by
-    simpa only [lorentzMassWTerm, zero_sub, neg_sq] using summable_lorentzMassWTerm hn1 0
+    have h := summable_lorentzMassWTerm hn1 0
+    change Summable (fun q : XiZeroCopy => 1 / ((n : ℝ) ^ 2 + (0 - (q.1 : ℂ).im) ^ 2)) at h
+    simpa only [zero_sub, neg_sq] using h
   have hc := ArithmeticCastelnuovoSeveri.summable_zetaCarrier_of_xiZeroCopy
     (g := fun z : ℂ => 1 / ((n : ℝ) ^ 2 + z.im ^ 2)) (fun z => by positivity) hs
   have hp (ρ : zetaZeroConfig.carrier) :
@@ -44,10 +46,13 @@ theorem sourceReferenceTail_le_lorentzMassW {n : ℕ} (hn : 1 ≤ n) :
       nlinarith only [sq_nonneg (gammaOf (ρ : ℂ)).im]
     have hden : 1 / (1 + Complex.normSq (gammaOf (ρ : ℂ))) ≤
         2 / ((n : ℝ) ^ 2 + (ρ : ℂ).im ^ 2) := by
-      apply (div_le_div_iff₀ (by positivity) (by positivity)).2
+      apply (div_le_div_iff₀
+        (add_pos_of_pos_of_nonneg zero_lt_one (Complex.normSq_nonneg _))
+        (add_pos_of_pos_of_nonneg (sq_pos_of_pos hn0) (sq_nonneg _))).2
       nlinarith only [hn2, hgamma]
     have hq0 : 0 ≤ (zetaZeroConfig.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf (ρ : ℂ))) := by
-      positivity
+      exact div_nonneg (Nat.cast_nonneg _)
+        (add_nonneg zero_le_one (Complex.normSq_nonneg _))
     have hcut : 0 ≤ sourceCutoff n ρ := (sourceCutoff n).nonneg
     calc
       (1 - sourceCutoff n ρ) *
@@ -64,9 +69,16 @@ theorem sourceReferenceTail_le_lorentzMassW {n : ℕ} (hn : 1 ≤ n) :
       (summable_sourceReferenceTail n).tsum_le_tsum hp (hc.mul_left 2)
     _ = 2 * ∑' ρ : zetaZeroConfig.carrier,
         (zetaZeroConfig.mult ρ : ℝ) * (1 / ((n : ℝ) ^ 2 + (ρ : ℂ).im ^ 2)) := tsum_mul_left
+    _ = 2 * ∑' q : XiZeroCopy, 1 / ((n : ℝ) ^ 2 + (q.1 : ℂ).im ^ 2) :=
+      congrArg (fun a : ℝ => 2 * a)
+        (ArithmeticCastelnuovoSeveri.tsum_xiZeroCopy_eq_zetaCarrier
+          (g := fun z : ℂ => 1 / ((n : ℝ) ^ 2 + z.im ^ 2)) hs).symm
     _ = 2 * lorentzMassW (n : ℝ) 0 := by
-      rw [← ArithmeticCastelnuovoSeveri.tsum_xiZeroCopy_eq_zetaCarrier hs]
-      simp only [lorentzMassW, lorentzMassWTerm, zero_sub, neg_sq]
+      congr 1
+      unfold lorentzMassW
+      apply tsum_congr
+      intro q
+      simp only [lorentzMassWTerm, zero_sub, neg_sq]
 
 /-- The omitted spectral reference mass is bounded by xi data on the zero-free right half-plane. -/
 theorem sourceReferenceTail_le_sourceLogDeriv {n : ℕ} (hn : 1 ≤ n) :

@@ -320,10 +320,12 @@ theorem exists_bump {T₀ : ℝ} (hT₀ : 0 < T₀) :
   · rw [hεdef, div_le_div_iff₀ (by positivity) (by norm_num)]; linarith
   · rw [hεdef, div_mul_eq_mul_div, one_mul, div_le_div_iff₀ (by positivity) (by norm_num)]
     linarith
-  · rw [b.tsupport_normed_eq, Real.closedBall_eq_Icc]; simp
+  · rw [b.tsupport_normed_eq, Real.closedBall_eq_Icc]
+    intro x hx
+    simpa using hx
 
 /-- Transforms of functions vanishing outside `[−R, R]` are bounded by the supremum. -/
-theorem norm_tr_le_sup {h : ℝ → ℂ} (hc : Continuous h) {R S : ℝ} (hR : 0 ≤ R)
+theorem norm_tr_le_sup {h : ℝ → ℂ} {R S : ℝ} (hR : 0 ≤ R)
     (hz : ∀ x, R < |x| → h x = 0) (hS : ∀ x, ‖h x‖ ≤ S) {s : ℂ} (hs : |s.re - 1 / 2| ≤ 1 / 2) :
     ‖tr h s‖ ≤ 2 * R * S * Real.exp (R / 2) := by
   rw [tr_eq]
@@ -365,13 +367,272 @@ theorem tr_sub_of_vanish {a b : ℝ → ℂ} (ha : Continuous a) (hb : Continuou
     refine (hc.mul (Complex.continuous_exp.comp (continuous_const.mul
       Complex.continuous_ofReal))).integrable_of_hasCompactSupport ?_
     refine HasCompactSupport.intro (isCompact_Icc (a := -R) (b := R)) fun x hx => ?_
-    rw [hcz x (by
+    have hRx : R < |x| := by
       rw [Set.mem_Icc, not_and_or, not_le, not_le] at hx
       rcases hx with hx | hx
-      · rw [abs_of_neg (by linarith)]; linarith
-      · rw [abs_of_pos (by linarith)]; exact hx), zero_mul]
+      · exact lt_of_lt_of_le (by linarith) (neg_le_abs x)
+      · exact lt_of_lt_of_le hx (le_abs_self x)
+    show c x * Complex.exp ((s - 1 / 2) * x) = 0
+    rw [hcz x hRx, zero_mul]
   rw [tr_eq, tr_eq, tr_eq, ← integral_sub (hcs a ha haz) (hcs b hb hbz)]
   refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
   simp only; ring
+
+/-- **The low frequencies are compact for the collided form.** If `D(f_n) → 0` for `C²` tests in
+`[−A, A]` with `‖f_n‖₂ ≤ 1`, the low-frequency mass tends to `0` along a subsequence. -/
+theorem tendsto_lowMass_subseq {A T₀ : ℝ} (hA : 0 < A) (hT₀ : 0 < T₀) {f : ℕ → ℝ → ℂ}
+    (hf : ∀ n, ContDiff ℝ 2 (f n)) (hfs : ∀ n, tsupport (f n) ⊆ Icc (-A) A)
+    (hL2 : ∀ n, ∫ u, ‖f n u‖ ^ 2 ≤ 1)
+    (hD : Tendsto (fun n => collidedForm zetaZeroConfig (f n)) atTop (𝓝 0)) :
+    ∃ ψ : ℕ → ℕ, StrictMono ψ ∧ Tendsto (fun k => lowMass T₀ (f (ψ k))) atTop (𝓝 0) := by
+  obtain ⟨φ, ε, hφc, hφ0, hφ1, hφcs, hε0, hε1, hεT, hφs⟩ := exists_bump hT₀
+  obtain ⟨M, hM⟩ : ∃ M, ∀ x, |φ x| ≤ M := by
+    obtain ⟨M, hM⟩ := (hφcs.isCompact_range hφc).isBounded.exists_norm_le
+    exact ⟨M, fun x => by rw [← Real.norm_eq_abs]; exact hM _ ⟨x, rfl⟩⟩
+  have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM 0)
+  have hfc : ∀ n, HasCompactSupport (f n) := fun n =>
+    HasCompactSupport.of_support_subset_isCompact isCompact_Icc ((subset_tsupport _).trans (hfs n))
+  set B₁ := A + 1 / 2 with hB₁
+  have hL1 : ∀ n, ∫ y, ‖f n y‖ ≤ B₁ := fun n => by
+    have := integral_norm_le_of_support (hf n).continuous hA.le (hfs n)
+    have := hL2 n
+    linarith
+  set g : ℕ → ℝ → ℂ := fun n => mollify φ (f n) with hgdef
+  set R' := A + ε with hR'
+  have hR'0 : 0 ≤ R' := by positivity
+  -- uniform bounds, equicontinuity and common support
+  have hb : ∀ n x, ‖g n x‖ ≤ M * B₁ := fun n x =>
+    (norm_mollify_le (hf n).continuous (hfc n) hM x).trans
+      (mul_le_mul_of_nonneg_left (hL1 n) hM0)
+  have heq : ∀ e > 0, ∃ δ > 0, ∀ x x', dist x x' < δ → ∀ n, dist (g n x) (g n x') < e := by
+    intro e he
+    obtain ⟨δ, hδ, hφδ⟩ := Metric.uniformContinuous_iff.mp
+      (hφcs.uniformContinuous_of_continuous hφc) (e / (2 * (B₁ + 1))) (by positivity)
+    refine ⟨δ, hδ, fun x x' hxx' n => ?_⟩
+    have hη : ∀ y, |φ (x - y) - φ (x' - y)| ≤ e / (2 * (B₁ + 1)) := fun y => by
+      have := hφδ (a := x - y) (b := x' - y) (by
+        rw [Real.dist_eq, show x - y - (x' - y) = x - x' by ring, ← Real.dist_eq]; exact hxx')
+      rw [Real.dist_eq] at this
+      exact this.le
+    rw [dist_eq_norm]
+    calc ‖g n x - g n x'‖ ≤ e / (2 * (B₁ + 1)) * ∫ y, ‖f n y‖ :=
+          norm_mollify_sub_le (hf n).continuous (hfc n) hφc hη
+      _ ≤ e / (2 * (B₁ + 1)) * B₁ := mul_le_mul_of_nonneg_left (hL1 n) (by positivity)
+      _ < e := by
+          rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+          nlinarith
+  have hz : ∀ n x, R' < |x| → g n x = 0 := fun n x hx => mollify_eq_zero (hfs n) hφs hx
+  have hgc : ∀ n, Continuous (g n) := fun n =>
+    (Metric.uniformContinuous_iff.mpr fun e he => by
+      obtain ⟨δ, hδ, h⟩ := heq e he
+      exact ⟨δ, hδ, fun {x x'} hxx' => h x x' hxx' n⟩).continuous
+  -- Arzelà–Ascoli
+  obtain ⟨ψ, hψ, G, hGc, hGz, hGu⟩ := exists_uniform_subseq hR'0 hb heq hz
+  refine ⟨ψ, hψ, ?_⟩
+  -- the limit is blind to every zero
+  have htrg : ∀ n (ρ : zetaZeroConfig.carrier), tr (g n) ρ = tr (f n) ρ * tr (fun u => (φ u : ℂ)) ρ :=
+    fun n ρ => paperFT_mollify (hf n).continuous (hfs n) hφc hφs _
+  have hGzero : ∀ ρ : zetaZeroConfig.carrier, tr G ρ = 0 := by
+    intro ρ
+    have hstrip := zetaZeroConfig.strip ρ ρ.2
+    have hs : |(ρ : ℂ).re - 1 / 2| ≤ 1 / 2 :=
+      abs_le.mpr ⟨by linarith [hstrip.1], by linarith [hstrip.2]⟩
+    -- `tr g_n(ρ) → 0`
+    have h0 : Tendsto (fun n => tr (g n) ρ) atTop (𝓝 0) := by
+      have hsq : Tendsto (fun n => Complex.normSq (tr (f n) ρ)) atTop (𝓝 0) :=
+        squeeze_zero (fun n => Complex.normSq_nonneg _)
+          (fun n => normSq_tr_le_collidedForm (hf n) (hfc n) ρ) hD
+      have hnorm : Tendsto (fun n => ‖tr (f n) ρ‖) atTop (𝓝 0) := by
+        have h := (Real.continuous_sqrt.tendsto 0).comp hsq
+        rw [Real.sqrt_zero] at h
+        have hfun : (fun n => ‖tr (f n) ρ‖) = fun n => Real.sqrt (Complex.normSq (tr (f n) ρ)) := by
+          funext n; rw [Complex.normSq_eq_norm_sq, Real.sqrt_sq (norm_nonneg _)]
+        rw [hfun]; exact h
+      rw [tendsto_zero_iff_norm_tendsto_zero]
+      refine squeeze_zero (fun n => norm_nonneg _) (fun n => ?_)
+        (by simpa using hnorm.const_mul (Real.exp 1))
+      rw [htrg, norm_mul, mul_comm]
+      exact mul_le_mul_of_nonneg_right
+        (norm_tr_bump_le hφc hφ0 hφcs hφ1 (by linarith) hφs ρ) (norm_nonneg _)
+    -- `tr g_{ψ k}(ρ) → tr G(ρ)`
+    have h1 : Tendsto (fun k => tr (g (ψ k)) ρ) atTop (𝓝 (tr G ρ)) := by
+      rw [tendsto_iff_norm_sub_tendsto_zero]
+      refine Metric.tendsto_atTop.mpr fun e he => ?_
+      obtain ⟨k₀, hk₀⟩ := hGu (e / (2 * (2 * R' + 1) * Real.exp (R' / 2) + 1)) (by positivity)
+      refine ⟨k₀, fun k hk => ?_⟩
+      rw [Real.dist_eq, sub_zero, abs_of_nonneg (norm_nonneg _),
+        ← tr_sub_of_vanish (hgc _) hGc (hz _) hGz]
+      have hbound := norm_tr_le_sup (h := fun x => g (ψ k) x - G x) hR'0
+        (fun x hx => by show g (ψ k) x - G x = 0; rw [hz _ x hx, hGz x hx, sub_zero])
+        (fun x => (hk₀ k hk x).le) hs
+      refine lt_of_le_of_lt hbound ?_
+      set c := e / (2 * (2 * R' + 1) * Real.exp (R' / 2) + 1)
+      have hc0 : 0 < c := by positivity
+      have hexp := Real.exp_pos (R' / 2)
+      have : 2 * R' * c * Real.exp (R' / 2) ≤ c * (2 * (2 * R' + 1) * Real.exp (R' / 2)) := by
+        have := mul_nonneg (mul_nonneg hc0.le (by positivity : (0 : ℝ) ≤ 2 * R' + 2)) hexp.le
+        linarith
+      have h2 : c * (2 * (2 * R' + 1) * Real.exp (R' / 2) + 1) = e := by
+        simp only [c]; field_simp
+      nlinarith
+    exact tendsto_nhds_unique h1 (h0.comp hψ.tendsto_atTop)
+  -- hence the limit vanishes
+  have hGs : tsupport G ⊆ Icc (-R') R' := by
+    refine closure_minimal (fun x hx => ?_) isClosed_Icc
+    by_contra hxI
+    apply hx
+    apply hGz
+    rw [Set.mem_Icc, not_and_or, not_le, not_le] at hxI
+    rcases hxI with h | h
+    · exact lt_of_lt_of_le (by linarith) (neg_le_abs x)
+    · exact lt_of_lt_of_le h (le_abs_self x)
+  have hG0 : G = 0 := by
+    have hsum : Summable fun ρ : zetaZeroConfig.carrier =>
+        (zetaZeroConfig.mult ρ : ℝ) * Complex.normSq (tr G ρ) := by
+      simp only [hGzero, map_zero, mul_zero]; exact summable_zero
+    refine (collidedForm_eq_zero_iff hGc hR'0 hGs hsum).mp ?_
+    simp only [collidedForm, hGzero, map_zero, mul_zero, tsum_zero]
+  -- the low-frequency mass of `f_{ψ k}` is small
+  set C₀ := 2 * R' * Real.exp (R' / 2) with hC₀
+  have hC₀0 : 0 ≤ C₀ := by positivity
+  rw [Metric.tendsto_atTop]
+  intro e he
+  set c := min 1 (e / (2 * (8 * T₀ * C₀ ^ 2 + 1))) with hcdef
+  have hc0 : 0 < c := lt_min one_pos (by positivity)
+  have hc1 : c ≤ 1 := min_le_left _ _
+  obtain ⟨k₀, hk₀⟩ := hGu c hc0
+  refine ⟨k₀, fun k hk => ?_⟩
+  have hgk : ∀ x, ‖g (ψ k) x‖ ≤ c := fun x => by
+    have := hk₀ k hk x
+    rw [hG0, Pi.zero_apply, sub_zero] at this
+    exact this.le
+  have hpt : ∀ τ ∈ Icc (-T₀) T₀, ‖paperFT (f (ψ k)) τ‖ ^ 2 ≤ (2 * c * C₀) ^ 2 := by
+    intro τ hτ
+    have hτ' : |τ| ≤ T₀ := abs_le.mpr ⟨hτ.1, hτ.2⟩
+    have hhalf := half_le_norm_paperFT_bump hφc hφ0 hφcs hφ1 hεT hφs hτ'
+    have hconv := paperFT_mollify (hf (ψ k)).continuous (hfs (ψ k)) hφc hφs (τ : ℂ)
+    have hg : ‖paperFT (g (ψ k)) τ‖ ≤ c * C₀ := by
+      rw [← tr_linePt]
+      have := norm_tr_le_sup (h := g (ψ k)) hR'0 (hz _) hgk
+        (s := RHTower.linePt τ) (by simp [RHTower.linePt])
+      calc ‖tr (g (ψ k)) (RHTower.linePt τ)‖ ≤ 2 * R' * c * Real.exp (R' / 2) := this
+        _ = c * C₀ := by rw [hC₀]; ring
+    have hf2 : ‖paperFT (f (ψ k)) τ‖ ≤ 2 * c * C₀ := by
+      have h1 : ‖paperFT (f (ψ k)) τ‖ * (1 / 2) ≤ ‖paperFT (g (ψ k)) τ‖ := by
+        rw [show g (ψ k) = mollify φ (f (ψ k)) from rfl, hconv, norm_mul]
+        exact mul_le_mul_of_nonneg_left hhalf (norm_nonneg _)
+      linarith
+    exact pow_le_pow_left₀ (norm_nonneg _) hf2 2
+  have hlow : lowMass T₀ (f (ψ k)) ≤ (2 * c * C₀) ^ 2 * (2 * T₀) := by
+    rw [lowMass]
+    calc ∫ τ in Icc (-T₀) T₀, ‖paperFT (f (ψ k)) τ‖ ^ 2
+        ≤ ∫ τ in Icc (-T₀) T₀, (2 * c * C₀) ^ 2 :=
+          setIntegral_mono_on (integrable_norm_sq_paperFT_of_tests (hf _) (hfc _)).integrableOn
+            (continuousOn_const.integrableOn_compact isCompact_Icc) measurableSet_Icc hpt
+      _ = (2 * c * C₀) ^ 2 * (2 * T₀) := by
+          rw [setIntegral_const, Measure.real_def, Real.volume_Icc,
+            ENNReal.toReal_ofReal (by linarith), smul_eq_mul]
+          ring
+  have hsmall : (2 * c * C₀) ^ 2 * (2 * T₀) ≤ c * (8 * T₀ * C₀ ^ 2) := by
+    have hcc : c ^ 2 ≤ c := by nlinarith
+    calc (2 * c * C₀) ^ 2 * (2 * T₀) = (8 * T₀ * C₀ ^ 2) * c ^ 2 := by ring
+      _ ≤ (8 * T₀ * C₀ ^ 2) * c := mul_le_mul_of_nonneg_left hcc (by positivity)
+      _ = c * (8 * T₀ * C₀ ^ 2) := by ring
+  have hce : c * (8 * T₀ * C₀ ^ 2) < e := by
+    have h1 : c ≤ e / (2 * (8 * T₀ * C₀ ^ 2 + 1)) := min_le_right _ _
+    have h2 : e / (2 * (8 * T₀ * C₀ ^ 2 + 1)) * (8 * T₀ * C₀ ^ 2) < e := by
+      rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+      have := mul_pos he (by positivity : (0 : ℝ) < 8 * T₀ * C₀ ^ 2 + 2)
+      linarith
+    calc c * (8 * T₀ * C₀ ^ 2) ≤ e / (2 * (8 * T₀ * C₀ ^ 2 + 1)) * (8 * T₀ * C₀ ^ 2) :=
+          mul_le_mul_of_nonneg_right h1 (by positivity)
+      _ < e := h2
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg (lowMass_nonneg _ _)]
+  linarith
+
+/-! ### Coercivity -/
+
+theorem paperFT_ofReal_mul (l : ℝ) (f : ℝ → ℂ) (z : ℂ) :
+    paperFT (fun u => (l : ℂ) * f u) z = l * paperFT f z := by
+  rw [paperFT, paperFT, ← integral_const_mul]
+  exact integral_congr_ae (Filter.Eventually.of_forall fun u => by simp only; ring)
+
+theorem collidedForm_ofReal_mul (l : ℝ) (f : ℝ → ℂ) :
+    collidedForm zetaZeroConfig (fun u => (l : ℂ) * f u) = l ^ 2 * collidedForm zetaZeroConfig f := by
+  rw [collidedForm, collidedForm, ← tsum_mul_left]
+  refine tsum_congr fun ρ => ?_
+  rw [tr, paperFT_ofReal_mul, Complex.normSq_mul, Complex.normSq_ofReal, ← tr]
+  ring
+
+theorem lowMass_ofReal_mul (l : ℝ) (T : ℝ) (f : ℝ → ℂ) :
+    lowMass T (fun u => (l : ℂ) * f u) = l ^ 2 * lowMass T f := by
+  rw [lowMass, lowMass, ← integral_const_mul]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun τ => ?_)
+  simp only
+  rw [paperFT_ofReal_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs, mul_pow, sq_abs]
+
+theorem integral_norm_sq_ofReal_mul (l : ℝ) (f : ℝ → ℂ) :
+    ∫ u, ‖(l : ℂ) * f u‖ ^ 2 = l ^ 2 * ∫ u, ‖f u‖ ^ 2 := by
+  rw [← integral_const_mul]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+  simp only
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, mul_pow, sq_abs]
+
+/-- **The collided form is coercive at every aperture.** -/
+theorem exists_collidedForm_coercive {A : ℝ} (hA : 0 < A) :
+    ∃ c : ℝ, 0 < c ∧ ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-A) A →
+      c * ∫ u, ‖f u‖ ^ 2 ≤ collidedForm zetaZeroConfig f := by
+  obtain ⟨T₀, K, hT₀, hK, hgard⟩ := collidedForm_ge_sub_lowMass hA
+  by_contra hcon
+  push Not at hcon
+  choose f hf hfs hlt using fun n : ℕ => hcon (1 / ((n : ℝ) + 1)) (by positivity)
+  have hfc : ∀ n, HasCompactSupport (f n) := fun n =>
+    HasCompactSupport.of_support_subset_isCompact isCompact_Icc ((subset_tsupport _).trans (hfs n))
+  have hpos : ∀ n, 0 < ∫ u, ‖f n u‖ ^ 2 := by
+    intro n
+    by_contra h0
+    have hnn : 0 ≤ ∫ u, ‖f n u‖ ^ 2 := integral_nonneg fun _ => sq_nonneg _
+    have : ∫ u, ‖f n u‖ ^ 2 = 0 := le_antisymm (not_lt.mp h0) hnn
+    have := hlt n
+    rw [‹∫ u, ‖f n u‖ ^ 2 = 0›, mul_zero] at this
+    exact absurd (collidedForm_nonneg (Z := zetaZeroConfig) (f n)) (not_le.mpr this)
+  -- normalize
+  set l : ℕ → ℝ := fun n => 1 / Real.sqrt (∫ u, ‖f n u‖ ^ 2) with hldef
+  set g : ℕ → ℝ → ℂ := fun n u => (l n : ℂ) * f n u with hgdef
+  have hl2 : ∀ n, l n ^ 2 * ∫ u, ‖f n u‖ ^ 2 = 1 := fun n => by
+    rw [hldef, div_pow, one_pow, Real.sq_sqrt (hpos n).le, one_div_mul_cancel (hpos n).ne']
+  have hgN : ∀ n, ∫ u, ‖g n u‖ ^ 2 = 1 := fun n => by
+    rw [hgdef]; simp only; rw [integral_norm_sq_ofReal_mul, hl2]
+  have hgc : ∀ n, ContDiff ℝ 2 (g n) := fun n => contDiff_const.mul (hf n)
+  have hgs : ∀ n, tsupport (g n) ⊆ Icc (-A) A := fun n =>
+    (tsupport_mul_subset_right (f := fun _ : ℝ => (l n : ℂ)) (g := f n)).trans (hfs n)
+  have hgD : ∀ n, collidedForm zetaZeroConfig (g n) < 1 / ((n : ℝ) + 1) := fun n => by
+    rw [hgdef]; simp only; rw [collidedForm_ofReal_mul]
+    have hlpos : 0 < l n := by
+      rw [hldef]; exact one_div_pos.mpr (Real.sqrt_pos.mpr (hpos n))
+    have := mul_lt_mul_of_pos_left (hlt n) (pow_pos hlpos 2)
+    calc l n ^ 2 * collidedForm zetaZeroConfig (f n)
+        < l n ^ 2 * (1 / ((n : ℝ) + 1) * ∫ u, ‖f n u‖ ^ 2) := this
+      _ = 1 / ((n : ℝ) + 1) * (l n ^ 2 * ∫ u, ‖f n u‖ ^ 2) := by ring
+      _ = 1 / ((n : ℝ) + 1) := by rw [hl2, mul_one]
+  have hDlim : Tendsto (fun n => collidedForm zetaZeroConfig (g n)) atTop (𝓝 0) :=
+    squeeze_zero (fun n => collidedForm_nonneg _) (fun n => (hgD n).le)
+      tendsto_one_div_add_atTop_nhds_zero_nat
+  -- Gårding keeps the low-frequency mass bounded below
+  have hlow : ∀ n, 1 ≤ K * lowMass T₀ (g n) := fun n => by
+    have h1 := hgard (g n) (hgc n) (hgs n)
+    rw [hgN, mul_one] at h1
+    have h2 := hgD n
+    have h3 : 1 / ((n : ℝ) + 1) ≤ 1 := by
+      rw [div_le_one (by positivity)]; linarith [Nat.cast_nonneg (α := ℝ) n]
+    have hπ : 3 < π := Real.pi_gt_three
+    linarith
+  -- but compactness makes it small along a subsequence
+  obtain ⟨ψ, -, hψ⟩ := tendsto_lowMass_subseq (T₀ := T₀) hA (by linarith) hgc hgs
+    (fun n => (hgN n).le) hDlim
+  have hlim := hψ.const_mul K
+  rw [mul_zero] at hlim
+  obtain ⟨k, hk⟩ := (hlim.eventually (gt_mem_nhds one_pos)).exists
+  exact absurd (hlow (ψ k)) (not_le.mpr hk)
 
 end GaloisForLFunctions.ArithmeticPolarization

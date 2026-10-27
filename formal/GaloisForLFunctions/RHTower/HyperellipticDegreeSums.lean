@@ -13,7 +13,11 @@ Let `f = c Π_{α ∈ R} (X − α)` be squarefree and split over `F`, `m = deg 
   and realize every vector of, their values on `R`.
 * **Vanishing** (`degSumW_eq_zero`): for `k ≥ m`, translating `h` by every `u` of degree `< m`
   makes the values on `R` uniform, and `Σ_t χ(t) = 0`; so `s_k = 0` and the L-function
-  `Σ_k s_k T^k` is a polynomial of degree `< m`.
+  `Σ_k s_k T^k` is a polynomial of degree `< m`. For odd `m` no splitting is needed
+  (`degSumW_eq_zero_of_odd`): a nonsquare `c` acts by `h ↦ h + (c − 1)(h mod f)` and multiplies
+  `Res(h, f)` by `c^m`.
+* **The top degree sum** (`sum_monicDeg_pred_eq`): for odd `m`, Lagrange interpolation and Gauss
+  sums give `Σ_{deg h = m−1} Π_α χ(h(α)) = τ^{m−1} Π_α χ(Π_{β≠α}(α − β))`.
 -/
 
 open Polynomial Finset
@@ -190,6 +194,117 @@ theorem chiC_pow_odd {a : F} (ha : a ≠ 0) {m : ℕ} (hm : Odd m) :
     chiC F a ^ m = chiC F a := by
   obtain ⟨k, rfl⟩ := hm
   rw [pow_succ, pow_mul, chiC_sq ha, one_pow, one_mul]
+
+/-! ### Vanishing for odd degree, without splitting -/
+
+omit [Fintype F] in
+theorem degree_C_mul_le' (a : F) (p : F[X]) : (C a * p).degree ≤ p.degree := by
+  by_cases ha : a = 0
+  · simp [ha]
+  · rw [degree_C_mul ha]
+
+omit [Fintype F] in
+/-- The twist `T_a h = h + (a − 1)(h mod f)` multiplies the residue of `h` by `a`. -/
+theorem twist_modByMonic {f : F[X]} (hf : f.Monic) (a : F) (h : F[X]) :
+    (h + C (a - 1) * (h %ₘ f)) %ₘ f = C a * (h %ₘ f) := by
+  have hlt : (C (a - 1) * (h %ₘ f)).degree < f.degree :=
+    (degree_C_mul_le' _ _).trans_lt (degree_modByMonic_lt h hf)
+  rw [add_modByMonic, (modByMonic_eq_self_iff hf).mpr hlt, C_sub, C_1]
+  ring
+
+omit [Fintype F] in
+theorem twist_twist {f : F[X]} (hf : f.Monic) (a b : F) (h : F[X]) :
+    (h + C (a - 1) * (h %ₘ f)) + C (b - 1) * ((h + C (a - 1) * (h %ₘ f)) %ₘ f) =
+      h + C (b * a - 1) * (h %ₘ f) := by
+  rw [twist_modByMonic hf, C_sub, C_sub, C_sub, C_1, C_mul]
+  ring
+
+omit [Fintype F] in
+theorem twist_mem_monicDeg {f : F[X]} (hf : f.Monic) {k : ℕ} (hk : f.natDegree ≤ k) (a : F)
+    {h : F[X]} (hh : h.Monic ∧ h.natDegree = k) :
+    (h + C (a - 1) * (h %ₘ f)).Monic ∧ (h + C (a - 1) * (h %ₘ f)).natDegree = k := by
+  have hlt : (C (a - 1) * (h %ₘ f)).degree < h.degree := by
+    refine (degree_C_mul_le' _ _).trans_lt ((degree_modByMonic_lt h hf).trans_le ?_)
+    rw [degree_eq_natDegree hf.ne_zero, degree_eq_natDegree hh.1.ne_zero, hh.2]
+    exact_mod_cast hk
+  exact ⟨hh.1.add_of_left hlt, by rw [natDegree_add_eq_left_of_degree_lt hlt, hh.2]⟩
+
+omit [Fintype F] in
+/-- The resultant only sees the residue: `Res(f, T_a h) = a^m Res(f, h)` for `deg h = k ≥ m`. -/
+theorem resultant_twist {f : F[X]} (hf : f.Monic) {k : ℕ} (hk : f.natDegree ≤ k) (a : F)
+    {h : F[X]} (hh : h.natDegree = k) :
+    resultant f (h + C (a - 1) * (h %ₘ f)) f.natDegree k =
+      a ^ f.natDegree * resultant f h f.natDegree k := by
+  have hres : ∀ g : F[X], g.natDegree = k →
+      resultant f g f.natDegree k = resultant f (g %ₘ f) f.natDegree k := by
+    intro g hg
+    conv_lhs => rw [← modByMonic_add_div g f]
+    exact resultant_add_mul_right _ _ _ _ _ (by rw [natDegree_divByMonic g hf, hg]; omega) le_rfl
+  have hdeg : (h + C (a - 1) * (h %ₘ f)).natDegree = k := by
+    rcases eq_or_ne h 0 with rfl | h0
+    · simp at hh ⊢; exact hh
+    have hlt : (C (a - 1) * (h %ₘ f)).degree < h.degree := by
+      refine (degree_C_mul_le' _ _).trans_lt ((degree_modByMonic_lt h hf).trans_le ?_)
+      rw [degree_eq_natDegree hf.ne_zero, degree_eq_natDegree h0, hh]
+      exact_mod_cast hk
+    rw [natDegree_add_eq_left_of_degree_lt hlt, hh]
+  rw [hres _ hdeg, twist_modByMonic hf, resultant_C_mul_right, ← hres h hh]
+
+/-- **Vanishing for odd degree**: if `deg f = m` is odd then `s_k = 0` for `k ≥ m`. A nonsquare
+`c` acts on the monic polynomials of degree `k` by `h ↦ h + (c − 1)(h mod f)`, multiplying
+`Res(h, f)` by `c^m`, and `χ(c^m) = −1`. -/
+theorem degSumW_eq_zero_of_odd (hF : ringChar F ≠ 2) {f : F[X]} (hodd : Odd f.natDegree)
+    {k : ℕ} (hk : f.natDegree ≤ k) : degSumW (hypW f) k = 0 := by
+  have hf0 : f ≠ 0 := by rintro rfl; simp at hodd
+  set m := f.natDegree
+  set g := f * C f.leadingCoeff⁻¹
+  have hg : g.Monic := monic_mul_leadingCoeff_inv hf0
+  have hgdeg : g.natDegree = m := by
+    rw [natDegree_mul_C (inv_ne_zero (leadingCoeff_ne_zero.mpr hf0))]
+  have hfg : f = C f.leadingCoeff * g := by
+    rw [mul_comm, mul_assoc, ← C_mul, inv_mul_cancel₀ (leadingCoeff_ne_zero.mpr hf0), C_1,
+      mul_one]
+  -- reduce to the monic `g`: `w_f(h) = χ(lc^k) w_g(h)` on degree `k`
+  have hred : ∀ h ∈ monicDeg (F := F) k, hypW f h = chiC F (f.leadingCoeff ^ k) * hypW g h := by
+    intro h hh
+    rw [hypW_eq_chiC, hypW_eq_chiC, ← map_mul, (mem_monicDeg.mp hh).2]
+    congr 1
+    conv_lhs => rw [hfg]
+    rw [show (C f.leadingCoeff * g).natDegree = m by rw [← hfg], ← hgdeg,
+      resultant_C_mul_right]
+  unfold degSumW
+  rw [Finset.sum_congr rfl hred, ← Finset.mul_sum]
+  refine mul_eq_zero_of_right _ ?_
+  obtain ⟨c, hc⟩ := FiniteField.exists_nonsquare hF
+  have hc0 : c ≠ 0 := fun h => hc (h ▸ ⟨0, by simp⟩)
+  set S := ∑ h ∈ monicDeg (F := F) k, hypW g h
+  have hkg : g.natDegree ≤ k := hgdeg ▸ hk
+  have hw : ∀ h ∈ monicDeg (F := F) k,
+      hypW g (h + C (c - 1) * (h %ₘ g)) = chiC F c * hypW g h := by
+    intro h hh
+    have hh' := mem_monicDeg.mp hh
+    have hT := twist_mem_monicDeg hg hkg c hh'
+    rw [hypW_eq_chiC, hypW_eq_chiC, hT.2, hh'.2, resultant_comm, resultant_comm h,
+      resultant_twist hg hkg c hh'.2]
+    simp only [map_mul, map_pow (chiC F) c]
+    rw [chiC_pow_odd hc0 (hgdeg ▸ hodd)]
+    ring
+  have hS : S = chiC F c * S := by
+    calc S = ∑ h ∈ monicDeg (F := F) k, hypW g (h + C (c - 1) * (h %ₘ g)) := by
+          refine Finset.sum_nbij' (fun h => h + C (c⁻¹ - 1) * (h %ₘ g))
+            (fun h => h + C (c - 1) * (h %ₘ g)) ?_ ?_ ?_ ?_ ?_
+          · exact fun h hh => mem_monicDeg.mpr (twist_mem_monicDeg hg hkg _ (mem_monicDeg.mp hh))
+          · exact fun h hh => mem_monicDeg.mpr (twist_mem_monicDeg hg hkg c (mem_monicDeg.mp hh))
+          · intro h _
+            rw [twist_twist hg, mul_inv_cancel₀ hc0, sub_self, C_0, zero_mul, add_zero]
+          · intro h _
+            rw [twist_twist hg, inv_mul_cancel₀ hc0, sub_self, C_0, zero_mul, add_zero]
+          · intro h _
+            rw [twist_twist hg, mul_inv_cancel₀ hc0, sub_self, C_0, zero_mul, add_zero]
+      _ = chiC F c * S := by rw [Finset.mul_sum]; exact Finset.sum_congr rfl hw
+  rw [chiC_apply, (quadraticChar_neg_one_iff_not_isSquare).mpr hc] at hS
+  have : (2 : ℂ) * S = 0 := by push_cast at hS; linear_combination hS
+  simpa using this
 
 /-- `Σ_y χ(y) ψ(a y) = χ(a) τ` for `a ≠ 0`. -/
 theorem gaussSum_mulShift_eq (ψ : AddChar F ℂ) {a : F} (ha : a ≠ 0) :

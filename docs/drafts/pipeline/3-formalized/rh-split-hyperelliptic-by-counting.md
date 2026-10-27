@@ -45,3 +45,5 @@ effectivity functions for an actual family of curves of every genus.
 - 2026-10-27 — created; corpus inputs located (RHTower.Stepanov*, RHTower.WeilKloosterman*,
   HTGeometry.MultisetNewton).
 - 2026-10-27 — formalized (all seven steps).
+- 2026-10-27 — generalized to every finite base field and every squarefree odd-degree `f`: card
+  `rh-odd-hyperelliptic-curves-all-finite-fields.md`.

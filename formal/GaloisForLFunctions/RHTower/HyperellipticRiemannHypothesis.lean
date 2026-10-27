@@ -1,22 +1,27 @@
 import GaloisForLFunctions.RHTower.HyperellipticDegreeSums
 import GaloisForLFunctions.RHTower.WeilKloostermanBound
 import GaloisForLFunctions.HTGeometry.MultisetNewton
+import Mathlib.FieldTheory.Finite.Extension
+import Mathlib.NumberTheory.LegendreSymbol.Complex
 
 /-!
 # The Riemann hypothesis for split hyperelliptic curves, by counting
 
-Let `f` be squarefree, split over `F`, of odd degree `m`, and `s_k` the degree sums of the weight
-`w(P) = χ(Res(P, f))`. Then `s_k = 0` for `k ≥ m` and `s_0 = 1`, so the reversed L-polynomial
-`L*(X) = Σ_{k<m} s_k X^{m−1−k}` is monic of degree `m − 1`; let `ω` be its roots.
+Let `F` be finite of odd characteristic, `q = |F|`, `f ∈ F[X]` of odd degree `m`, and `s_k` the
+degree sums of the weight `w(P) = χ(Res(P, f))`. Then `s_k = 0` for `k ≥ m` and `s_0 = 1`, so the
+reversed L-polynomial `L*(X) = Σ_{k<m} s_k X^{m−1−k}` is monic of degree `m − 1`; let `ω` be its
+roots.
 
-* **Vieta and Newton** (`powerSumW_eq_neg_rootPowerSum`): `e_k(ω) = (−1)^k s_k`, and the corpus
-  Newton identity `k s_k = Σ_j c_j s_{k−j}` for the weight, compared with Newton's identity for `ω`,
-  gives `c_n = −Σ ω_i^n` for all `n ≥ 1`; `c_n` is the character sum over the degree-`n` extension.
-* **The product** (`norm_prod_lRoots`): `|Π ω_i| = |s_{m−1}| = q^{(m−1)/2}` (Gauss sums).
-* **The upper bound** (`norm_rootEnum_le`): over `F = 𝔽_p`, Stepanov's count on the extensions of
-  degree `2k` bounds the power sums of `ω_i²` by `O(p^k)`, so `|ω_i| ≤ √p`.
-* **Unitarity** (`riemannHypothesis_splitHyperelliptic`): `m − 1` factors `≤ √p` with product
-  `√p^{m−1}` all equal `√p`; hence the Hasse–Weil bound
+* **Vieta and Newton** (`powerSumW_eq_neg_rootPowerSum`, `extHyp_eq_neg_sum_pow`):
+  `e_k(ω) = (−1)^k s_k`, and the corpus Newton identity `k s_k = Σ_j c_j s_{k−j}` for the weight,
+  compared with Newton's identity for `ω`, gives `c_n = −Σ ω_i^n` for all `n ≥ 1`; `c_n` is the
+  character sum over the degree-`n` extension.
+* **The upper bound** (`norm_rootEnum_le`): for squarefree `f`, Stepanov's count on the extensions
+  of degree `2k` bounds the power sums of `ω_i²` by `O(q^k)`, so `|ω_i| ≤ √q`.
+* **The product** (`norm_prod_lRoots`): for split `f`, `|Π ω_i| = |s_{m−1}| = q^{(m−1)/2}`
+  (Gauss sums).
+* **Unitarity** (`riemannHypothesis_splitHyperelliptic`): `m − 1` factors `≤ √q` with product
+  `√q^{m−1}` all equal `√q`; hence the Hasse–Weil bound
   `|#{y² = f(x)}(E) − |E|| ≤ (m − 1)√|E|` (`abs_card_points_sub_le_splitHyperelliptic`).
 
 The only positivity is counting: Stepanov's auxiliary section and `|τ|² = q`.
@@ -79,9 +84,9 @@ theorem card_lRoots (f : F[X]) (hm : 0 < f.natDegree) :
   rw [lRoots, IsAlgClosed.card_roots_eq_natDegree, lPoly_natDegree f hm]
 
 /-- **Vieta**: `e_k(ω) = (−1)^k s_k`. -/
-theorem esymm_lRoots (hF : ringChar F ≠ 2) {f : F[X]} (hsq : Squarefree f) (hsplit : f.Splits)
-    (hm : 0 < f.natDegree) (k : ℕ) :
+theorem esymm_lRoots (hF : ringChar F ≠ 2) {f : F[X]} (hodd : Odd f.natDegree) (k : ℕ) :
     (lRoots f).esymm k = (-1) ^ k * degSum f k := by
+  have hm := hodd.pos
   rcases Nat.lt_or_ge k f.natDegree with hk | hk
   · have h := coeff_eq_esymm_roots_of_card (p := lPoly f)
       (by rw [IsAlgClosed.card_roots_eq_natDegree]) (k := f.natDegree - 1 - k)
@@ -91,7 +96,7 @@ theorem esymm_lRoots (hF : ringChar F ≠ 2) {f : F[X]} (hsq : Squarefree f) (hs
       show f.natDegree - 1 - (f.natDegree - 1 - k) = k by omega, one_mul] at h
     rw [h, ← mul_assoc, ← pow_add, ← two_mul, pow_mul, neg_one_sq, one_pow, one_mul]
     rfl
-  · rw [show degSum f k = 0 from degSumW_eq_zero hF hsq hsplit hm hk, mul_zero, Multiset.esymm,
+  · rw [show degSum f k = 0 from degSumW_eq_zero_of_odd hF hodd hk, mul_zero, Multiset.esymm,
       Multiset.powersetCard_eq_empty _ (by rw [card_lRoots f hm]; omega)]
     simp
 
@@ -107,8 +112,8 @@ theorem univ_map_rootEnum (s : Multiset ℂ) : (univ.val.map (rootEnum s)) = s :
   rw [List.ofFn_get, Multiset.coe_toList]
 
 /-- **Newton's identity for the reciprocal roots**: `n s_n = −Σ_{k<n} s_k p_{n−k}`, `n ≥ 1`. -/
-theorem newton_lRoots (hF : ringChar F ≠ 2) {f : F[X]} (hsq : Squarefree f) (hsplit : f.Splits)
-    (hm : 0 < f.natDegree) {n : ℕ} (hn : 0 < n) :
+theorem newton_lRoots (hF : ringChar F ≠ 2) {f : F[X]} (hodd : Odd f.natDegree) {n : ℕ}
+    (hn : 0 < n) :
     (n : ℂ) * degSum f n = -∑ k ∈ range n, degSum f k * rootPowerSum f (n - k) := by
   have hN := GaloisForLFunctions.multiset_newton (rootEnum (lRoots f)) n hn
   have hmap : ∀ j, (univ.val.map fun i => rootEnum (lRoots f) i ^ j).sum = rootPowerSum f j := by
@@ -118,7 +123,7 @@ theorem newton_lRoots (hF : ringChar F ≠ 2) {f : F[X]} (hsq : Squarefree f) (h
     rfl
   simp only [hmap] at hN
   rw [univ_map_rootEnum] at hN
-  simp only [esymm_lRoots hF hsq hsplit hm] at hN
+  simp only [esymm_lRoots hF hodd] at hN
   -- rewrite the antidiagonal sum as a sum over `0 < k < n`
   have hanti : ∑ a ∈ {a ∈ antidiagonal n | a.1 ∈ Set.Ioo 0 n},
       (-1) ^ a.1 * ((-1) ^ a.1 * degSum f a.1) * rootPowerSum f a.2 =
@@ -150,14 +155,14 @@ theorem newton_lRoots (hF : ringChar F ≠ 2) {f : F[X]} (hsq : Squarefree f) (h
 
 /-- **The power sums of the weight are minus the power sums of the reciprocal roots**:
 `c_n = −Σ ω_i^n` for `n ≥ 1`. -/
-theorem powerSumW_eq_neg_rootPowerSum (hF : ringChar F ≠ 2) {f : F[X]} (hsq : Squarefree f)
-    (hsplit : f.Splits) (hm : 0 < f.natDegree) {n : ℕ} (hn : 0 < n) :
+theorem powerSumW_eq_neg_rootPowerSum (hF : ringChar F ≠ 2) {f : F[X]} (hodd : Odd f.natDegree)
+    {n : ℕ} (hn : 0 < n) :
     powerSumW (hypW f) n = -rootPowerSum f n := by
   induction n using Nat.strong_induction_on with
   | _ n ih =>
     obtain ⟨n', rfl⟩ : ∃ n', n = n' + 1 := ⟨n - 1, by omega⟩
     have hc := newton_identity (hypW f) (fun _ _ hP hQ => hypW_mul f hP hQ) (hypW_one f) (n' + 1)
-    have hr := newton_lRoots hF hsq hsplit hm hn
+    have hr := newton_lRoots hF hodd hn
     change ((n' + 1 : ℕ) : ℂ) * degSum f (n' + 1) = _ at hc
     -- reindex the corpus identity over `k = n − j`
     have hre : ∑ j ∈ Finset.Icc 1 (n' + 1), powerSumW (hypW f) j * degSumW (hypW f) (n' + 1 - j) =
@@ -236,7 +241,7 @@ theorem norm_prod_lRoots (hF : ringChar F ≠ 2) {f : F[X]} (hsq : Squarefree f)
 
 end GaloisForLFunctions.RHTower.Hyperelliptic
 
-/-! ### Over `𝔽_p`: the Stepanov bound on every even extension -/
+/-! ### The Stepanov bound on every even extension -/
 
 namespace GaloisForLFunctions.RHTower.Hyperelliptic
 
@@ -244,29 +249,31 @@ open WeilKloosterman
 
 attribute [local instance] Classical.propDecidable
 
-variable {p : ℕ} [hp : Fact p.Prime]
+variable {F : Type*} [Field F] [Fintype F]
 
-theorem ringChar_zmod_ne_two (hp2 : p ≠ 2) : ringChar (ZMod p) ≠ 2 := by
-  rw [ZMod.ringChar_zmod_n]; exact hp2
-
-/-- **The Stepanov bound on the reciprocal roots**: power sums of `ω_i²` are `O(p^k)`, so
-`|ω_i| ≤ √p`. -/
-theorem norm_rootEnum_le (hp2 : p ≠ 2) {f : (ZMod p)[X]} (hsq : Squarefree f) (hsplit : f.Splits)
-    (hm : 0 < f.natDegree) (i : Fin (lRoots f).toList.length) :
-    ‖rootEnum (lRoots f) i‖ ≤ Real.sqrt p := by
-  have hF := ringChar_zmod_ne_two hp2
+/-- **The Stepanov bound on the reciprocal roots**: over the extension `E` of degree `2k`,
+`|E| = (q^k)²`, Stepanov's count bounds the power sums of `ω_i²` by `O(q^k)`, so `|ω_i| ≤ √q`.
+No splitting is needed. -/
+theorem norm_rootEnum_le {p : ℕ} [hp : Fact p.Prime] [CharP F p] (hF : ringChar F ≠ 2)
+    {f : F[X]} (hsq : Squarefree f) (hodd : Odd f.natDegree) (i : Fin (lRoots f).toList.length) :
+    ‖rootEnum (lRoots f) i‖ ≤ Real.sqrt (Fintype.card F) := by
   set m := f.natDegree
-  have hp3 : 3 ≤ p := by have := hp.out.two_le; omega
+  set q := Fintype.card F
+  obtain ⟨r, -, hq⟩ := FiniteField.card F p
+  have hqodd : q % 2 = 1 := FiniteField.odd_card_of_char_ne_two hF
+  have hq3 : 3 ≤ q := by have := Fintype.one_lt_card (α := F); omega
   have hbound : ∀ k, m + 5 ≤ k →
-      ‖∑ j ∈ univ, (rootEnum (lRoots f) j ^ 2) ^ k‖ ≤ (3 * m + 2 : ℝ) * (p : ℝ) ^ k := by
+      ‖∑ j ∈ univ, (rootEnum (lRoots f) j ^ 2) ^ k‖ ≤ (3 * m + 2 : ℝ) * (q : ℝ) ^ k := by
     intro k hk
-    let E := GaloisField p (2 * k)
+    haveI : NeZero (2 * k) := ⟨by omega⟩
+    let E := FiniteField.Extension F p (2 * k)
     letI : Fintype E := Fintype.ofFinite E
-    have h2k : 2 * k ≠ 0 := by omega
-    have hfin : Module.finrank (ZMod p) E = 2 * k := GaloisField.finrank p h2k
-    have hcard : Fintype.card E = p ^ (2 * k) := by
-      rw [← Nat.card_eq_fintype_card]; exact GaloisField.card p (2 * k) h2k
-    haveI : CharP E p := charP_of_zmod
+    have hfin : Module.finrank F E = 2 * k := FiniteField.finrank_extension F p (2 * k)
+    have hcardE : Fintype.card E = q ^ (2 * k) := by
+      rw [Fintype.card_eq_nat_card, FiniteField.natCard_extension, Nat.card_eq_fintype_card]
+    haveI : CharP E p := charP_of_injective_algebraMap (algebraMap F E).injective p
+    have hcard : Fintype.card E = p ^ ((r : ℕ) * (2 * k)) := by
+      rw [hcardE, show q = p ^ (r : ℕ) from hq, ← pow_mul]
     have hl : ∑ j ∈ univ, (rootEnum (lRoots f) j ^ 2) ^ k = ((lRoots f).map (· ^ (2 * k))).sum := by
       rw [Finset.sum_eq_multiset_sum]
       conv_rhs => rw [← univ_map_rootEnum (lRoots f)]
@@ -275,22 +282,24 @@ theorem norm_rootEnum_le (hp2 : p ≠ 2) {f : (ZMod p)[X]} (hsq : Squarefree f) 
       refine Multiset.map_congr rfl fun j _ => ?_
       simp [← pow_mul]
     have hsum : ∑ j ∈ univ, (rootEnum (lRoots f) j ^ 2) ^ k = -extHyp (E := E) f := by
-      rw [hl, extHyp_eq_powerSumW hF hsplit, hfin, powerSumW_eq_neg_rootPowerSum hF hsq hsplit hm
-        (by omega), neg_neg, rootPowerSum]
+      rw [hl, extHyp_eq_powerSumW hF f, hfin, powerSumW_eq_neg_rootPowerSum hF hodd (by omega),
+        neg_neg, rootPowerSum]
     rw [hsum, norm_neg]
-    -- Stepanov over `E`, `|E| = (p^k)²`
-    set h := f.map (algebraMap (ZMod p) E)
+    -- Stepanov over `E`, `|E| = (q^k)²`
+    set h := f.map (algebraMap F E)
     have hsep : f.Separable := PerfectField.separable_iff_squarefree.mpr hsq
     have hsqE : Squarefree h := (hsep.map).squarefree
     have hdegE : h.natDegree = m := natDegree_map _
-    have hodd : Odd (p ^ (2 * k)) := (hp.out.eq_two_or_odd'.resolve_left hp2).pow
-    obtain ⟨N, hN⟩ := hodd
-    have hpk : m + 5 ≤ p ^ k := by
+    have hoddE : Odd (p ^ ((r : ℕ) * (2 * k))) := by
+      rw [← hcard, hcardE]; exact (Nat.odd_iff.mpr hqodd).pow
+    obtain ⟨N, hN⟩ := hoddE
+    have hpk : m + 5 ≤ q ^ k := by
       have : k < 2 ^ k := Nat.lt_two_pow_self
-      have : 2 ^ k ≤ p ^ k := Nat.pow_le_pow_left (by omega) k
+      have : 2 ^ k ≤ q ^ k := Nat.pow_le_pow_left (by omega) k
       omega
-    have hst := Stepanov.abs_sum_quadraticChar_le (p := p) (n := 2 * k) hcard hsqE
-      (by rw [hdegE]; omega) (N := N) (s := p ^ k) (by omega) (by ring) (by rw [hdegE]; exact hpk)
+    have hst := Stepanov.abs_sum_quadraticChar_le (p := p) (n := (r : ℕ) * (2 * k)) hcard hsqE
+      (by rw [hdegE]; exact hodd.pos) (N := N) (s := q ^ k) (by omega)
+      (by rw [← hcard, hcardE]; ring) (by rw [hdegE]; exact hpk)
     rw [hdegE] at hst
     have hext : extHyp (E := E) f = ((∑ x : E, (quadraticChar E (h.eval x) : ℤ) : ℤ) : ℂ) := by
       unfold extHyp
@@ -299,13 +308,13 @@ theorem norm_rootEnum_le (hp2 : p ≠ 2) {f : (ZMod p)[X]} (hsq : Squarefree f) 
       rw [eval_map, ← aeval_def]
     rw [hext]
     set S : ℤ := ∑ x : E, (quadraticChar E (h.eval x) : ℤ)
-    have hS : |(S : ℝ)| ≤ 2 * (m + 1) * (p : ℝ) ^ k + m := by exact_mod_cast hst
-    have hpk1 : (1 : ℝ) ≤ (p : ℝ) ^ k := one_le_pow₀ (by exact_mod_cast hp.out.one_lt.le)
+    have hS : |(S : ℝ)| ≤ 2 * (m + 1) * (q : ℝ) ^ k + m := by exact_mod_cast hst
+    have hpk1 : (1 : ℝ) ≤ (q : ℝ) ^ k := one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ q))
     calc ‖(S : ℂ)‖ = |(S : ℝ)| := by
           rw [show ((S : ℂ)) = ((S : ℝ) : ℂ) by push_cast; rfl, Complex.norm_real, Real.norm_eq_abs]
-      _ ≤ (3 * m + 2 : ℝ) * (p : ℝ) ^ k := by nlinarith
+      _ ≤ (3 * m + 2 : ℝ) * (q : ℝ) ^ k := by nlinarith
   have h := norm_le_of_power_sums_bound univ (fun j => rootEnum (lRoots f) j ^ 2)
-    (C := 3 * m + 2) (ρ := p) (m0 := m + 5) (by positivity) hbound i (mem_univ i)
+    (C := 3 * m + 2) (ρ := q) (m0 := m + 5) (by positivity) hbound i (mem_univ i)
   rw [norm_pow] at h
   exact Real.le_sqrt_of_sq_le h
 
@@ -329,34 +338,39 @@ theorem eq_of_prod_eq_pow {ι : Type*} [Fintype ι] {a : ι → ℝ} {c : ℝ} (
   rw [hprod, Finset.prod_const, card_univ] at this
   exact lt_irrefl _ this
 
-/-- **The Riemann hypothesis for split odd-degree hyperelliptic curves over `𝔽_p`.**
-For `p` odd and `f ∈ 𝔽_p[X]` squarefree, split, of odd degree `m`, the `m − 1` reciprocal roots of
-the L-function have modulus `√p`, and for every finite extension `E` of degree `n`,
-`Σ_{x ∈ E} χ_E(f(x)) = −Σ_i ω_i^n`. -/
-theorem riemannHypothesis_splitHyperelliptic (hp2 : p ≠ 2) {f : (ZMod p)[X]} (hsq : Squarefree f)
+/-- The extension sums are the power sums of the reciprocal roots:
+`Σ_{x∈E} χ_E(f(x)) = −Σ_i ω_i^n`, `n = [E : F]`, for every odd-degree `f`. -/
+theorem extHyp_eq_neg_sum_pow (hF : ringChar F ≠ 2) {f : F[X]} (hodd : Odd f.natDegree)
+    (E : Type*) [Field E] [Fintype E] [Algebra F E] :
+    extHyp (E := E) f = -((lRoots f).map (· ^ Module.finrank F E)).sum := by
+  rw [extHyp_eq_powerSumW hF f, powerSumW_eq_neg_rootPowerSum hF hodd Module.finrank_pos,
+    rootPowerSum]
+
+/-- **The Riemann hypothesis for split odd-degree hyperelliptic curves.** For `F` finite of odd
+characteristic, `q = |F|`, and `f ∈ F[X]` squarefree, split, of odd degree `m`, the `m − 1`
+reciprocal roots of the L-function have modulus `√q`, and for every finite extension `E` of degree
+`n`, `Σ_{x ∈ E} χ_E(f(x)) = −Σ_i ω_i^n`. -/
+theorem riemannHypothesis_splitHyperelliptic (hF : ringChar F ≠ 2) {f : F[X]} (hsq : Squarefree f)
     (hsplit : f.Splits) (hodd : Odd f.natDegree) :
-    Multiset.card (lRoots f) = f.natDegree - 1 ∧ (∀ ω ∈ lRoots f, ‖ω‖ = Real.sqrt p) ∧
-      ∀ (E : Type*) [Field E] [Fintype E] [Algebra (ZMod p) E],
-        extHyp (E := E) f = -((lRoots f).map (· ^ Module.finrank (ZMod p) E)).sum := by
-  have hF := ringChar_zmod_ne_two hp2
+    Multiset.card (lRoots f) = f.natDegree - 1 ∧
+      (∀ ω ∈ lRoots f, ‖ω‖ = Real.sqrt (Fintype.card F)) ∧
+      ∀ (E : Type*) [Field E] [Fintype E] [Algebra F E],
+        extHyp (E := E) f = -((lRoots f).map (· ^ Module.finrank F E)).sum := by
+  haveI : Fact (ringChar F).Prime := ⟨CharP.char_is_prime F _⟩
   have hm := hodd.pos
-  refine ⟨card_lRoots f hm, ?_, ?_⟩
-  · -- unitarity: each `≤ √p`, product of modulus `√p^{m−1}`
-    have hprod := norm_prod_lRoots hF hsq hsplit hodd (ZMod.stdAddChar (N := p))
-      (ZMod.isPrimitive_stdAddChar p)
-    rw [ZMod.card] at hprod
-    have hall : ∀ i, ‖rootEnum (lRoots f) i‖ = Real.sqrt p := by
-      refine eq_of_prod_eq_pow (Real.sqrt_pos.mpr (by exact_mod_cast hp.out.pos))
-        (fun i => norm_nonneg _) (norm_rootEnum_le hp2 hsq hsplit hm) ?_
-      rw [← norm_prod, Finset.prod_eq_multiset_prod, univ_map_rootEnum, hprod, Fintype.card_fin,
-        Multiset.length_toList, card_lRoots f hm]
-    intro ω hω
-    obtain ⟨i, hi⟩ := List.mem_iff_get.mp (Multiset.mem_toList.mpr hω)
-    rw [← hi]
-    exact hall i
-  · intro E _ _ _
-    rw [extHyp_eq_powerSumW hF hsplit,
-      powerSumW_eq_neg_rootPowerSum hF hsq hsplit hm Module.finrank_pos, rootPowerSum]
+  refine ⟨card_lRoots f hm, ?_, fun E _ _ _ => extHyp_eq_neg_sum_pow hF hodd E⟩
+  -- unitarity: each `≤ √q`, product of modulus `√q^{m−1}`
+  have hprod := norm_prod_lRoots hF hsq hsplit hodd (AddChar.FiniteField.primitiveChar_to_Complex F)
+    (AddChar.FiniteField.primitiveChar_to_Complex_isPrimitive F)
+  have hall : ∀ i, ‖rootEnum (lRoots f) i‖ = Real.sqrt (Fintype.card F) := by
+    refine eq_of_prod_eq_pow (Real.sqrt_pos.mpr (by exact_mod_cast Fintype.card_pos))
+      (fun i => norm_nonneg _) (norm_rootEnum_le (p := ringChar F) hF hsq hodd) ?_
+    rw [← norm_prod, Finset.prod_eq_multiset_prod, univ_map_rootEnum, hprod, Fintype.card_fin,
+      Multiset.length_toList, card_lRoots f hm]
+  intro ω hω
+  obtain ⟨i, hi⟩ := List.mem_iff_get.mp (Multiset.mem_toList.mpr hω)
+  rw [← hi]
+  exact hall i
 
 /-- **Counting points by the quadratic character**: `#{(x, y) ∈ E² : y² = f(x)} = |E| + Σ_x χ(f(x))`
 for `E` of odd characteristic. -/
@@ -375,20 +389,18 @@ theorem card_points_eq {E : Type*} [Field E] [Fintype E] (hE : ringChar E ≠ 2)
   push_cast
   rfl
 
-/-- **The Hasse–Weil bound** for `y² = f(x)` over every finite extension `E` of `𝔽_p`:
-`|#{(x, y) ∈ E² : y² = f(x)} − |E|| ≤ (m − 1) √|E|`. -/
-theorem abs_card_points_sub_le_splitHyperelliptic (hp2 : p ≠ 2) {f : (ZMod p)[X]}
+/-- **The Hasse–Weil bound** for `y² = f(x)`, `f` split of odd degree, over every finite extension
+`E` of `F`: `|#{(x, y) ∈ E² : y² = f(x)} − |E|| ≤ (m − 1) √|E|`. -/
+theorem abs_card_points_sub_le_splitHyperelliptic (hF : ringChar F ≠ 2) {f : F[X]}
     (hsq : Squarefree f) (hsplit : f.Splits) (hodd : Odd f.natDegree) (E : Type*) [Field E]
-    [Fintype E] [Algebra (ZMod p) E] :
+    [Fintype E] [Algebra F E] :
     |((univ.filter fun q : E × E => q.2 ^ 2 = aeval q.1 f).card : ℝ) - Fintype.card E| ≤
       (f.natDegree - 1 : ℕ) * Real.sqrt (Fintype.card E) := by
-  obtain ⟨hcardω, hnorm, hsum⟩ := riemannHypothesis_splitHyperelliptic hp2 hsq hsplit hodd
-  have hF := ringChar_zmod_ne_two hp2
-  have hE : ringChar E ≠ 2 := by rwa [← Algebra.ringChar_eq (ZMod p) E]
-  set n := Module.finrank (ZMod p) E
-  have hcardE : Fintype.card E = p ^ n := by
-    rw [Module.card_eq_pow_finrank (K := ZMod p), ZMod.card]
-  have hcount := card_points_eq hE (f.map (algebraMap (ZMod p) E))
+  obtain ⟨hcardω, hnorm, hsum⟩ := riemannHypothesis_splitHyperelliptic hF hsq hsplit hodd
+  have hE : ringChar E ≠ 2 := by rwa [← Algebra.ringChar_eq F E]
+  set n := Module.finrank F E
+  have hcardE : Fintype.card E = Fintype.card F ^ n := Module.card_eq_pow_finrank
+  have hcount := card_points_eq hE (f.map (algebraMap F E))
   simp only [eval_map, ← aeval_def] at hcount
   have hR : ((univ.filter fun q : E × E => q.2 ^ 2 = aeval q.1 f).card : ℝ) - Fintype.card E =
       ((∑ x : E, quadraticChar E (aeval x f) : ℤ) : ℝ) := by
@@ -407,7 +419,7 @@ theorem abs_card_points_sub_le_splitHyperelliptic (hp2 : p ≠ 2) {f : (ZMod p)[
   rw [hext, hsum E, norm_neg]
   calc ‖((lRoots f).map (· ^ n)).sum‖ ≤ ((lRoots f).map (fun ω => ‖ω ^ n‖)).sum := by
         simpa [Multiset.map_map] using norm_multiset_sum_le ((lRoots f).map (· ^ n))
-    _ = ((lRoots f).map (fun _ => Real.sqrt p ^ n)).sum := by
+    _ = ((lRoots f).map (fun _ => Real.sqrt (Fintype.card F) ^ n)).sum := by
         congr 1
         exact Multiset.map_congr rfl fun ω hω => by rw [norm_pow, hnorm ω hω]
     _ = (f.natDegree - 1 : ℕ) * Real.sqrt (Fintype.card E) := by

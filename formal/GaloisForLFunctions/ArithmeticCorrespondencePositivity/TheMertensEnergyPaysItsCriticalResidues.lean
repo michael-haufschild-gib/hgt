@@ -470,18 +470,18 @@ theorem mul_integral_norm_sq_lineSymbol_le_of_linear {v : ℕ → ℝ} (hv0 : v 
         gcongr
     _ = Real.pi * S + 2 * Real.pi * e * B := by field_simp
 
-/-- **The residue mass is at most the log-slope.** Let a row with `v(0) = 0` and `|v(n)| ≤ K n²`
-have linear log-energy `∫_0^L g_v² ≤ S L + B`, and let its symbol on the lines `Re s = e` have,
-at finitely many separated heights `Im ρ` of the critical line, simple poles `r_ρ/(e + i(y − Im ρ))`
-with bounded remainders. Then `Σ_ρ ‖r_ρ‖² ≤ S`. -/
-theorem sum_residue_le_slope {v : ℕ → ℝ} (hv0 : v 0 = 0) {K : ℝ} (hK : 0 ≤ K)
-    (hv : ∀ n, |v n| ≤ K * n ^ 2) {S B : ℝ} (hS0 : 0 ≤ S) (hB0 : 0 ≤ B)
+/-- **Abel capacity under a budget.** If a row has a linear log-energy and its line symbol has
+window poles with residues `r ρ` at finitely many separated heights, then
+`e ∫ ‖G(e + iy)‖² dy` eventually exceeds every `M < π Σ_ρ ‖r ρ‖²`. -/
+theorem eventually_le_mul_integral_lineSymbol_of_poles {v : ℕ → ℝ} (hv0 : v 0 = 0) {S B : ℝ}
+    (hS0 : 0 ≤ S) (hB0 : 0 ≤ B)
     (hlin : ∀ L : ℝ, 0 ≤ L → ∫ u in (0 : ℝ)..L, logProfile v u ^ 2 ≤ S * L + B)
     (Z : Finset ℂ) (hsep : ∀ ρ ∈ Z, ∀ ρ' ∈ Z, ρ ≠ ρ' → ρ.im ≠ ρ'.im) (r : ℂ → ℂ)
     (hpole : ∀ ρ ∈ Z, ∃ δ₀ > 0, ∃ M : ℝ, ∀ e ∈ Ioo (0 : ℝ) δ₀,
       ∀ y ∈ Icc (ρ.im - δ₀) (ρ.im + δ₀),
-        ‖lineSymbol (logProfile v) e y - r ρ / ((e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I)‖ ≤ M) :
-    ∑ ρ ∈ Z, ‖r ρ‖ ^ 2 ≤ S := by
+        ‖lineSymbol (logProfile v) e y - r ρ / ((e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I)‖ ≤ M)
+    {M : ℝ} (hM : M < Real.pi * ∑ ρ ∈ Z, ‖r ρ‖ ^ 2) :
+    ∀ᶠ e in 𝓝[>] (0 : ℝ), M ≤ e * ∫ y, ‖lineSymbol (logProfile v) e y‖ ^ 2 := by
   set g := logProfile v with hg
   have hC : ∀ κ : ℝ, 0 < κ → 0 ≤ S / κ + B := fun κ hκ => add_nonneg (div_nonneg hS0 hκ.le) hB0
   have hdata : ∀ e : ℝ, 0 < e → Integrable (dampedProfile g e) ∧ MemLp (dampedProfile g e) 2 :=
@@ -500,14 +500,28 @@ theorem sum_residue_le_slope {v : ℕ → ℝ} (hv0 : v 0 = 0) {K : ℝ} (hK : 0
         ⟨by linarith [hy.1], by linarith [hy.2]⟩).trans (le_abs_self _))
       continuous_const (fun y => by simp) (fun y => by simp)
     simpa only [mul_one] using h
+  exact eventually_le_mul_integral_of_atoms (S := fun e y => lineSymbol g e y) Z
+    r δ₀ hδ₀ hsep hT
+    (fun e he => _root_.RHTower.integrable_norm_sq_laplaceBoundary (hdata e he).1.ofReal
+      (hdata e he).2.ofReal) hM
+
+/-- **The residue mass is at most the log-slope.** Let a row with `v(0) = 0` and `|v(n)| ≤ K n²`
+have linear log-energy `∫_0^L g_v² ≤ S L + B`, and let its symbol on the lines `Re s = e` have,
+at finitely many separated heights `Im ρ` of the critical line, simple poles `r_ρ/(e + i(y − Im ρ))`
+with bounded remainders. Then `Σ_ρ ‖r_ρ‖² ≤ S`. -/
+theorem sum_residue_le_slope {v : ℕ → ℝ} (hv0 : v 0 = 0) {K : ℝ} (hK : 0 ≤ K)
+    (hv : ∀ n, |v n| ≤ K * n ^ 2) {S B : ℝ} (hS0 : 0 ≤ S) (hB0 : 0 ≤ B)
+    (hlin : ∀ L : ℝ, 0 ≤ L → ∫ u in (0 : ℝ)..L, logProfile v u ^ 2 ≤ S * L + B)
+    (Z : Finset ℂ) (hsep : ∀ ρ ∈ Z, ∀ ρ' ∈ Z, ρ ≠ ρ' → ρ.im ≠ ρ'.im) (r : ℂ → ℂ)
+    (hpole : ∀ ρ ∈ Z, ∃ δ₀ > 0, ∃ M : ℝ, ∀ e ∈ Ioo (0 : ℝ) δ₀,
+      ∀ y ∈ Icc (ρ.im - δ₀) (ρ.im + δ₀),
+        ‖lineSymbol (logProfile v) e y - r ρ / ((e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I)‖ ≤ M) :
+    ∑ ρ ∈ Z, ‖r ρ‖ ^ 2 ≤ S := by
   by_contra hlt
   simp only [not_le] at hlt
   set R := ∑ ρ ∈ Z, ‖r ρ‖ ^ 2 with hR
-  have hcap := eventually_le_mul_integral_of_atoms (S := fun e y => lineSymbol g e y) Z
-    r δ₀ hδ₀ hsep hT
-    (fun e he => _root_.RHTower.integrable_norm_sq_laplaceBoundary (hdata e he).1.ofReal
-      (hdata e he).2.ofReal) (M := Real.pi * (S + R) / 2)
-    (by have := Real.pi_pos; nlinarith)
+  have hcap := eventually_le_mul_integral_lineSymbol_of_poles hv0 hS0 hB0 hlin Z hsep r hpole
+    (M := Real.pi * (S + R) / 2) (by have := Real.pi_pos; nlinarith)
   have hgap : 0 < Real.pi * (R - S) / 2 := by have := Real.pi_pos; nlinarith
   have hsmall : ∀ᶠ e in 𝓝[>] (0 : ℝ), 2 * Real.pi * e * B < Real.pi * (R - S) / 2 := by
     have hc : Tendsto (fun e : ℝ => 2 * Real.pi * e * B) (𝓝 0) (𝓝 (2 * Real.pi * 0 * B)) :=
