@@ -34,6 +34,8 @@ theorem xiDampedPairWork_monotoneOn (p q : XiZeroCopy) :
 /-- The completed arithmetic source work increases with scale. -/
 theorem xiDampedSourceWork_monotoneOn : MonotoneOn xiDampedSourceWork (Ici 4) := by
   intro R hR S hS hRS
+  change 4 ≤ R at hR
+  change 4 ≤ S at hS
   apply div_le_div_of_nonneg_right ?_ (by norm_num : (0 : ℝ) ≤ 4)
   exact Summable.tsum_le_tsum (fun pq => xiDampedPairWork_monotoneOn pq.1 pq.2
     (show 0 ≤ R by linarith only [hR]) (show 0 ≤ S by linarith only [hS]) hRS)
@@ -73,8 +75,13 @@ private theorem rightCopyQuartet_injective : Function.Injective rightCopyQuartet
   have h2 := rightCopyVertex_injective (a₁ := (p, c)) (a₂ := (q, e))
     (show rightCopyVertex p c = rightCopyVertex q e from
     congrArg Prod.snd h)
-  exact Prod.ext (congrArg Prod.fst h1)
-    (Prod.ext (congrArg Prod.snd h1) (congrArg Prod.snd h2))
+  have hp : p = q := congrArg (fun pb : RightXiZeroCopy × Bool => pb.1) h1
+  have hb : b = d := congrArg (fun pb : RightXiZeroCopy × Bool => pb.2) h1
+  have hc : c = e := congrArg (fun pb : RightXiZeroCopy × Bool => pb.2) h2
+  subst q
+  subst d
+  subst e
+  rfl
 
 /-- Every ordered pair in one off-line reflection quartet has exactly one damping weight. -/
 theorem xiDampedPairWork_rightCopyVertex (R : ℝ) (p : RightXiZeroCopy) (b c : Bool) :
@@ -86,7 +93,7 @@ theorem xiDampedPairWork_rightCopyVertex (R : ℝ) (p : RightXiZeroCopy) (b c : 
     simp only [rightCopyVertex, Bool.false_eq_true, if_false, if_true, xiDampedPairWork,
       xiSignedDepth_lineConj, xiZeroHeight_lineConj, sub_self, reflectedWork,
       reflectedEnergy, reflectedCross, transverseAngular] <;>
-    (try ring_nf) <;> field_simp [hp] <;> ring
+    (try ring_nf) <;> field_simp [hp]
 
 /-- The entire reflection quartet, including both diagonal pairs, pays a unit damping increment. -/
 theorem sum_damping_increment_le_sourceWork_increment (s : Finset RightXiZeroCopy)
@@ -107,7 +114,7 @@ theorem sum_damping_increment_le_sourceWork_increment (s : Finset RightXiZeroCop
   have hquartet (p : RightXiZeroCopy) :
       (∑ bc : Bool × Bool, F (rightCopyQuartet (p, bc))) =
         4 * (heightDamping S (xiZeroHeight p.1) - heightDamping R (xiZeroHeight p.1)) := by
-    simp [F, rightCopyQuartet, xiDampedPairWork_rightCopyVertex, nsmul_eq_mul, mul_comm]
+    simp [F, rightCopyQuartet, xiDampedPairWork_rightCopyVertex, nsmul_eq_mul, mul_sub]
   simp_rw [hquartet] at hle
   rw [← Finset.mul_sum] at hle
   have htotal : (∑' pq, F pq) = 4 * (xiDampedSourceWork S - xiDampedSourceWork R) := by

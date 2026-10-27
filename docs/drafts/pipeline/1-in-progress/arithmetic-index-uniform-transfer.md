@@ -66,3 +66,26 @@ and convergence of work to total energy. The new result controls each finite
 scale increment, proves monotonicity at the pair level, and quantifies the work
 forced by zeros entering a doubled height annulus. A future arithmetic bound
 can target scale differences rather than the absolute source field.
+
+Formalization state
+-------------------
+DampingIncrementPositivity.lean has passed its individual olean-producing check.
+The two audited central declarations use only propext, Classical.choice, Quot.sound.
+SourceWorkIncrementsPayForNewZeros.lean is undergoing its second individual check.
+First check exposed namespace/API elaboration errors (not a mathematical obstruction):
+xiZeroHeight belongs to ArithmeticCorrespondencePositivity, and tsum comparison is
+Summable.tsum_le_tsum. These are corrected; quartet injection has explicit product indices.
+
+Additional formal statement: finite_offLineSupport_or_arbitrarily_high_quantum_increments.
+If support were infinite, local divisor finiteness supplies an off-line zero above any
+height. Choose its right-hand reflection copy at the same height and apply the singleton
+annular quantum with R=|gamma|. This forces quantum-sized increments arbitrarily high.
+No upper estimate is introduced as a premise.
+
+Source limit: xiTaperedSourceWork_increment_tendsto and
+ eventually_annular_payment_in_finite_sourceWork preserve the lower payment up to any
+positive tolerance in differences of finite completed Laurent-source sums.
+
+Pending before completion: resolve source-file check; final no-olean audits for both new
+modules; wire both into ArithmeticIndexDescent.lean without compiling the umbrella;
+move this card to formalized with exact theorem names and proof; clean own /tmp scratch.

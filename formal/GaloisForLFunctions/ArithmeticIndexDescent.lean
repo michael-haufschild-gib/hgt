@@ -4,6 +4,8 @@ import GaloisForLFunctions.ArithmeticIndexDescent.BoundedSourceWork
 
 import GaloisForLFunctions.ArithmeticIndexDescent.TheEnergyStrictlyExceedsTheIndex
 
+import GaloisForLFunctions.ArithmeticIndexDescent.TheSourceWorkHasAClosedQuantumThreshold
+
 /-!
 # Arithmetic index descent
 

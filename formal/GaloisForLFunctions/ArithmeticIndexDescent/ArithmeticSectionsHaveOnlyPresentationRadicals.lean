@@ -129,6 +129,23 @@ theorem arithmeticSection_radical_annihilates_mixed {ι κ : Type*} [Fintype ι]
   rw [realWeilMixed_mulVec, hzero, map_zero]
   rfl
 
+/-- Distinct coefficient lifts of one mixed column represent the same actual section. -/
+theorem arithmeticSection_lift_unique_test {ι : Type*} [Fintype ι]
+    {N : ℕ} (hN : 1 ≤ N) {w : ℝ} (hw0 : 0 < w)
+    (hw : w ≤ fullSectionRatio * atomSpacing N)
+    (f : ι → arithmeticSectionTests N w) {c d : ι → ℝ}
+    (hcd : (realWeilMixed (fun i => (f i).1) (fun i => (f i).1)).mulVec c =
+      (realWeilMixed (fun i => (f i).1) (fun i => (f i).1)).mulVec d) :
+    realTestSynthesis (fun i => (f i).1) c = realTestSynthesis (fun i => (f i).1) d := by
+  let A := realWeilMixed (fun i => (f i).1) (fun i => (f i).1)
+  have hker : A.mulVecLin (c - d) = 0 := by
+    rw [map_sub]
+    exact sub_eq_zero.mpr hcd
+  have hs := (arithmeticSection_gram_kernel_iff hN hw0 hw f (c - d)).mp hker
+  change realTestSynthesisMap (fun i => (f i).1) (c - d) = 0 at hs
+  rw [map_sub] at hs
+  exact sub_eq_zero.mp hs
+
 /-- Every ambient test has a Weil-orthogonal projection onto a finite narrow section span.
 The coefficients need not be unique, because the presentation may be redundant. -/
 theorem arithmeticSection_exists_mixed_lift {ι : Type*} [Fintype ι]

@@ -201,6 +201,13 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
     complementary weighted moment bounds (`ArithmeticSectionsPayThePole.lean`). The whole linear
     section space has RR, ampleness, and Hodge index on the original scaling subsurface. The support
     restriction remains; no unrestricted section-count or Hodge theorem follows.
+    **Independent separated sections:** for every fixed separation $s>0$ and $0<\kappa<2$,
+    sufficiently narrow profiles of width $\delta$ at arbitrary $s$-separated centres of span
+    at most $\kappa\log(1/\delta)$ satisfy the same square-mass floor, uniformly over all local
+    shapes and signs (`IndependentSeparatedSections.lean`). Mixed correlations are assigned to
+    their separate masses; symmetry converts the prime interactions into row bounds. The entire
+    linear carrier has RR, ampleness, and Hodge index, including non-ratio prime interactions.
+    Full-source coverage beyond this span restriction remains open.
 14. **Finite readings cannot supply Bézout.** Weil Rayleigh quotients are unbounded in every
     finite-reading kernel (smooth unit-mass witnesses in `SmoothFiniteReadingKernels.lean`), so no reserve from finitely many linear
     readings (plus mass) gives Bézout; exact effectivity needs infinitely many degrees; arithmetic

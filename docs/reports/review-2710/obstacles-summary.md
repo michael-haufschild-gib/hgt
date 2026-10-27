@@ -153,7 +153,7 @@ No solution is known, and none is proved RH-equivalent.
 4. The output is not a strip, a collided positivity, a counting reformulation, a gauge-orbit statement, a one-variable system, a deformation equivalence, a zero-side detection, a prime-only renormalization, a separated (universal) positivity or a constructed form.
 5. The question addresses the polarization problem where it now sits: past the point where every universal method stops.
 
-**Why these three.** The previous round asked whether the archimedean place pays the prime place at the spacing. It does, with constant one, and the answer turned out to be universal: it holds for every bounded twist and reads nothing arithmetic. At fixed width the same positivity is RH. Three facts locate the next step. Universal methods stop at a finite overlap ratio `K_univ`, so any further positivity must be arithmetic (Q1). In Lorentzian language every proved atomic positivity is the stability regime of a Metzler form, the Metzler sign holds only for `ζ`, and Weil's theorem over `𝔽_q` is exactly the trickle-down inequality — the one structure that is both positive and selective by hypothesis (Q2). On the zero side the target is now a single number: source work below the quantum `2` (Q3).
+**Why these three.** The archimedean place pays the prime place at the spacing, with constant one, and universally: the statement holds for every bounded twist and reads nothing arithmetic. At fixed width the same positivity is RH. Three facts locate the next step. Universal methods stop at a finite overlap ratio `K_univ`, so any further positivity must be arithmetic (Q1). In Lorentzian language every proved atomic positivity is the stability regime of a Metzler form, the Metzler sign holds only for `ζ`, and Weil's theorem over `𝔽_q` is exactly the trickle-down inequality — the one structure that is both positive and selective by hypothesis (Q2). On the zero side the target is now a single number: source work below the quantum `2` (Q3).
 
 ### Q1. Beyond universality: how far into bounded overlap does Weil's form stay positive?
 
@@ -211,7 +211,7 @@ The three questions are the forcing problem in each wall's currency: Q1 in the o
 
 ### 4.1 Assessment
 
-No theorem shows a new field is necessary. The previous proposal — arithmetic harmonic analysis at the spacing scale — was tested and answered by existing tools: an exact Lévy self-energy, a Schur test with weights tilted across scales, and Dirichlet-polynomial bookkeeping reach a fixed fraction of the spacing. The answer is universal: nothing arithmetic happens there. That is informative. Classical analysis controls a form through the sizes of its coefficients, so it is blind to everything a bounded twist shares with `ζ`; it stops at `K_univ`. Classical algebraic geometry controls a form through a conformal symmetry (Frobenius) and a Metzler sign (effectivity); over `ℤ` the symmetry is missing. Every open B3 obstacle sits where neither applies:
+No theorem shows a new field is necessary. Harmonic analysis at the spacing scale is classical: an exact Lévy self-energy, a Schur test with weights tilted across scales, and Dirichlet-polynomial bookkeeping reach a fixed fraction of the spacing, and the result is universal — nothing arithmetic happens there. Classical analysis controls a form through the sizes of its coefficients, so it is blind to everything a bounded twist shares with `ζ`; it stops at `K_univ`. Classical algebraic geometry controls a form through a conformal symmetry (Frobenius) and a Metzler sign (effectivity); over `ℤ` the symmetry is missing. Every open B3 obstacle sits where neither applies:
 
 | Ingredient over `𝔽_q` | Over `ℤ` | Status |
 |---|---|---|
@@ -225,13 +225,13 @@ No theorem shows a new field is necessary. The previous proposal — arithmetic 
 | Spectrum on a lattice; period of the base point | none at the arithmetic point | missing [L] |
 | Selection of the base point | Metzler sign at Euler; cells; source margin `2 log² p` | exists structurally, not on forms |
 
-New mathematics is likely required [R]: a Hodge theory of the integers in which positivity is proved by trickle-down rather than by a conformal symmetry, the local data are the renormalized tower forms of the primes and the Laplacian of the archimedean place, the selection of `ζ` is the Metzler sign fixed by the archimedean place along the successor, and the decisive scale is bounded overlap, where the zeros sample the arithmetic Dirichlet polynomials at the Nyquist rate. No existing theory supplies arithmetic trickle-down links or a substitute for Frobenius over `ℤ`. In the corpus this is not a new programme: it is the scope of Arithmetic Lorentzian Geometry, extended.
+New mathematics is likely required [R]: a Hodge theory of the integers in which positivity is proved by trickle-down rather than by a conformal symmetry, the local data are the renormalized tower forms of the primes and the Laplacian of the archimedean place, the selection of `ζ` is the Metzler sign fixed by the archimedean place along the successor, and the decisive scale is bounded overlap, where the zeros sample the arithmetic Dirichlet polynomials at the Nyquist rate. No existing theory supplies arithmetic trickle-down links or a substitute for Frobenius over `ℤ`. In the corpus it is the programme Arithmetic Lorentzian Geometry (ALG).
 
-### 4.2 Home: an extension of ALG
+### 4.2 Home: Arithmetic Lorentzian Geometry
 
-ALG already owns construction and composition of signature certificates for the actual scaling-surface form: degree-two signature calculus, polar gluing and its price, the half-defect repair, links and trickle-down with the Metzler dichotomy, gauge fixing and the successor connection, Frobenius conformality against Hecke isometry, local factors, the Turán layer, and the research questions "signed overlap and exhaustion" and "exceptional extinction". Its own boundary rule — connect the analytic results by source-defined comparison and composition, do not rename the missing overlap or exhaustion theorem — applies here too. The extension changes ALG's scope in four places; the analytic and renormalization inputs keep their owners.
+ALG owns construction and composition of signature certificates for the actual scaling-surface form: degree-two signature calculus, polar gluing and its price, the half-defect repair, links and trickle-down with the Metzler dichotomy, gauge fixing and the successor connection, Frobenius conformality against Hecke isometry, local factors and the Turán layer. Its research directions include the four below; the analytic and renormalization inputs keep their owners.
 
-| Extension of ALG | Content | Input owned by |
+| ALG direction | Content | Input owned by |
 |---|---|---|
 | **Renormalized links** | Links of the atomic intersection form built from the horizon finite parts (tower forms with `γ_p`), the archimedean jump Laplacian and the pole plane; a ledger of who pays the deficits `2d_p` at small primes | RAPT (finite parts, sign law), AIT (tower forms) |
 | **The Metzler property beyond atomic resolution** | The sign of overlap entries (overlap Gram, Lévy cross terms, non-ratio prime lags) in the Euler gauge; a gauge making them nonnegative, or its absence | SSHA (overlap calculus), ALG (gauge fixing) |
@@ -240,9 +240,9 @@ ALG already owns construction and composition of signature certificates for the 
 
 Outside ALG: the universal threshold and Lévy synthesis (SSHA, W26, W22); horizon asymptotics (RAPT, W23); the sampling reading (AOT); interior alignment and the source-work quantum (AES, AID; Q3).
 
-### 4.3 The extended programme
+### 4.3 The programme
 
-**Thesis [R].** Over `𝔽_q`, Frobenius supplies the Hasse–Weil inequality through its conformal factor, and Bézout supplies the sign. Over `ℤ` the sign is present (Euler gauge), the local forms are present (tower forms, archimedean Laplacian, renormalized at the horizon), the symmetry is absent. The extended programme replaces the symmetry by a local-to-global law: the defects `Q − QD^{−1}Q` of the local pieces are negative semidefinite and sum. RH is the statement that this trickle-down survives every overlap.
+**Thesis [R].** Over `𝔽_q`, Frobenius supplies the Hasse–Weil inequality through its conformal factor, and Bézout supplies the sign. Over `ℤ` the sign is present (Euler gauge), the local forms are present (tower forms, archimedean Laplacian, renormalized at the horizon), the symmetry is absent. ALG replaces the symmetry by a local-to-global law: the defects `Q − QD^{−1}Q` of the local pieces are negative semidefinite and sum. RH is the statement that this trickle-down survives every overlap.
 
 **Central conjecture [R]: trickle-down at bounded overlap.** For each fixed overlap ratio `K`, `ζ`'s Euler-gauge atomic intersection form of level `N`, completed by its pole plane, is Metzler with connected support and satisfies `(TD_π)` for an explicit weight `π` (the polar weight with a tilt across scales), with a trickle-down defect equal to a sum of archimedean Laplacians, horizon tower forms with local Euler constants and a polar-gluing dispersion, uniformly in `N`. Uniformity in `K` is RH.
 
@@ -254,9 +254,9 @@ Outside ALG: the universal threshold and Lévy synthesis (SSHA, W26, W22); horiz
 - **Like gauge theory:** square-class (blind) and successor (charged) couplings; the diamagnetic inequality; the archimedean kernel as a gauge field fixing the Euler point.
 - **Like logarithmic potential theory:** zeros as charges, quantized energy with a closed threshold.
 
-**Parts already in the corpus.** The ALG core: Lorentzian forms, trickle-down, Metzler dichotomy, `𝔽_q` calibration, gauge fixing, successor gauge field, local factors, conformality, repairs. Inputs from other owners: spacing-scale analysis (SSHA); renormalization and finite parts (RAPT, RBG); intersection theory of the circle and towers (AE, AIT); electrostatics and index descent (AES, AID); gauge geometry (ACG, BGG, RBG, SP); sampling and Nyquist rank bounds (AOT).
+**Parts already in the corpus.** ALG: Lorentzian forms, trickle-down, Metzler dichotomy, `𝔽_q` calibration, gauge fixing, successor gauge field, local factors, conformality, repairs. Inputs from other owners: spacing-scale analysis (SSHA); renormalization and finite parts (RAPT, RBG); intersection theory of the circle and towers (AE, AIT); electrostatics and index descent (AES, AID); gauge geometry (ACG, BGG, RBG, SP); sampling and Nyquist rank bounds (AOT).
 
-### 4.4 Criteria the extended programme must meet
+### 4.4 Criteria ALG must meet
 
 | Criterion | Test against the corpus |
 |---|---|

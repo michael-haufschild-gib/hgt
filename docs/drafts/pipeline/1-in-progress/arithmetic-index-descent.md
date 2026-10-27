@@ -79,7 +79,8 @@ Thus every off-line angular row exceeds one. A nonempty finite right packet toge
 reflected packet has twice as many members, so its global transverse-energy cost strictly exceeds
 its cardinality. Extracting a packet of size equal to a positive finite Weil negative index gives
 `index < distinct energy <= copied energy`. The ordered-limit consequence that source work eventually exceeds the index
-itself is being checked in a separate module. Conjugation supplies two right zeros when RH fails, hence a strict global gap above two.
+itself has passed its direct final check in `TheSourceWorkHasAClosedQuantumThreshold.lean`.
+That module also proves RH iff damped source work is cofinally at most two. Conjugation supplies two right zeros when RH fails, hence a strict global gap above two.
 There is no claimed uniform extra margin: the displayed surplus can tend to zero.
 
 The exact strict-energy proof has passed Lean in `TheEnergyStrictlyExceedsTheIndex.lean`.

@@ -171,9 +171,10 @@ the angular quantum to every member. The second selects one analytic-multiplicit
 distinct zero. Both inequalities allow infinite total energy. The arithmetic intersection Gram
 has at most `1 + E_distinct` positive squares; its extra square belongs to the pole plane.
 
-Existing source-work exhaustion now has a quantitative index consequence. Every amount strictly
-below a finite negative-index witness is eventually exceeded by rationally damped arithmetic
-source work, and then by the finite tapered source work at each sufficiently large damping scale.
+Existing source-work exhaustion now has a quantitative index consequence. Every positive finite
+negative-index witness is eventually exceeded, including its whole integer value, by rationally
+damped arithmetic source work, and then by finite tapered source work at each sufficiently large
+damping scale.
 The order of the two limits matters. Exterior rows, analytic multiplicities, the Laurent source
 and its archimedean completion remain present.
 
@@ -193,8 +194,10 @@ strictly more than its cardinality. Conjugation gives two right zeros whenever o
 \]
 
 This is the global half-ordered-pair energy, distinct from the existing unhalved unit-window
-criterion. No uniform extra margin above an integer index is asserted: the displayed angle can
-approach zero.
+criterion. The same closed threshold holds for copied energy. It also gives an exact arithmetic
+target: RH holds if and only if, for every integer `M`, some `n >= M` has damped source work at
+scale `n+4` at most two. The work itself vanishes under RH. No bound of two is proved here.
+No uniform extra margin above an integer index is asserted: the displayed angle can approach zero.
 
 These are lower bounds on the work forced by defects. An arithmetic upper estimate must still be
 constructed. A global finite work bound and a bound below an exclusion quantum are different
@@ -319,6 +322,7 @@ Quantitative pillars supplied by this programme:
 | Positive scale refinement | The actual zero-free height gap controls derivative weights, making every reflected pair-work monotone; the doubled annulus has sharp scalar damping quantum `21/100` | `DampingIncrementPositivity` |
 | Annular arithmetic payment | Full source-work increments pay right-zero packets with multiplicity; finite source cutoffs retain the payment; infinite off-line support forces arbitrarily high quantum increments | `SourceWorkIncrementsPayForNewZeros` |
 | Strict energy surplus | Every positive finite index lies strictly below distinct energy; the closed global threshold two is equivalent to RH | `TheEnergyStrictlyExceedsTheIndex` |
+| Closed source-work threshold | RH iff cofinally damped source work is at most two; every positive finite index is eventually exceeded by finite source work | `TheSourceWorkHasAClosedQuantumThreshold` |
 
 ## Tools to develop and research topics
 
