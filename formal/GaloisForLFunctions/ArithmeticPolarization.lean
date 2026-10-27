@@ -13,6 +13,16 @@ import GaloisForLFunctions.ArithmeticPolarization.TheOscillatoryCapacity
 import GaloisForLFunctions.ArithmeticPolarization.CouplingCollidesEvenly
 import GaloisForLFunctions.ArithmeticPolarization.EscapeKernelsAreCollidedForms
 import GaloisForLFunctions.ArithmeticPolarization.HeckeInvarianceOfTheCollidedPolarizationIsRH
+import GaloisForLFunctions.ArithmeticPolarization.TheCollidedFormIsAPolarization
+import GaloisForLFunctions.ArithmeticPolarization.TheDepthProfileCarriesTheGlobalCollision
+import GaloisForLFunctions.ArithmeticPolarization.TheLocalWeylLawOfTheCollidedForm
+import GaloisForLFunctions.ArithmeticPolarization.TheLeadingLineIsPositive
+import GaloisForLFunctions.ArithmeticPolarization.PositivityIsInheritedByTheLeadingLine
+import GaloisForLFunctions.ArithmeticPolarization.PositivePolarConfigurationsAreNonnegativeExponentialPolynomials
+import GaloisForLFunctions.ArithmeticPolarization.PositiveLatticeLinesAreCouplings
+import GaloisForLFunctions.ArithmeticPolarization.TheSelectivityBatteryOfPolarization
+import GaloisForLFunctions.ArithmeticPolarization.OneVerticalSectionDecidesPositivity
+import GaloisForLFunctions.ArithmeticPolarization.PositivityDescendsThroughTheZerosOfHigherLines
 
 /-!
 # Arithmetic Polarization
@@ -25,6 +35,10 @@ law and the Fejér barrier for coupled contraction; the collision law; the first
 twist; the forcing half of elliptic localization; rigidity of the coupled class; the diagonal
 collapse of lattice counts; rate neutrality of twists; the oscillatory capacity `W = D − Δ`; the
 parity of couplings and exterior squares; escape kernels as collided forms; Hecke invariance of
-the collided polarization.
+the collided polarization; faithfulness and sampling of the collided form; the depth profile and
+its rate law; the local Weyl law of the collided form; positivity of the leading line and its
+inheritance; the classification of positive polar configurations by their exponential polynomial;
+positive lattice lines as couplings (Fejér–Riesz); the selectivity battery on fake spectra;
+the decision of positivity by one vertical section; the line hierarchy of lattice configurations.
 See `ArithmeticPolarization/README.md`.
 -/

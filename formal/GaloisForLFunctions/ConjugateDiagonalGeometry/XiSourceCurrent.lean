@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ConjugateDiagonalGeometry.ZetaDepthDistribution
-import GaloisForLFunctions.RHTower.EulerShiftPairIncidenceCurrent
+import GaloisForLFunctions.HTGeometry.EntirePoincareLelong
+import GaloisForLFunctions.RHTower.WindingXiCircle
 import GaloisForLFunctions.RHTower.CompletedPrimeFluxFittingAttachment
 import GaloisForLFunctions.RHTower.EvenSectorFullPositivity
 import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
@@ -58,9 +59,7 @@ theorem contDiff_sourceDepthKernel (f : CompactTest) (L : ℝ) (j : ℕ) :
     ContDiff ℝ 2 (sourceDepthKernel f L j) := by
   have htr := contDiff_tr f
   have hn : ContDiff ℝ 2 (fun z => Complex.normSq (tr f.1 z)) := by
-    simp only [Complex.normSq_apply]
-    simpa only [pow_two] using ((Complex.reCLM.contDiff.comp htr).pow 2).add
-      ((Complex.imCLM.contDiff.comp htr).pow 2)
+    simpa only [Complex.normSq_eq_norm_sq] using ContDiff.norm_sq ℂ htr
   have hk : ContDiff ℝ 2 (fun z : ℂ => depthKernel L (z.re - 1 / 2)) := by
     unfold depthKernel
     have hRe : ContDiff ℝ 2 (fun z : ℂ => z.re) := Complex.reCLM.contDiff
@@ -113,8 +112,12 @@ theorem sourceCurrentReading_eq_trace (f : CompactTest) (L : ℝ) (j n : ℕ) :
         sourceCutoff n ρ * (zetaWeight f ρ * depthKernel L (zetaDepth ρ) ^ j) := by
   have hc : HasCompactSupport (fun z => sourceCutoff n z * sourceDepthKernel f L j z) :=
     (sourceCutoff n).hasCompactSupport.mul_right
+  have hPL : IsPoincareLelongOfSmooth xi :=
+    entire_isPoincareLelongOfSmooth
+      (fun z => xi_analyticOnNhd_univ z (Set.mem_univ z))
+      (z₀ := (2 : ℂ)) (xi_ne_zero_of_one_le_re (by norm_num))
   rw [sourceCurrentReading,
-    RHTower.EulerShiftPairIncidenceCurrent.xi_isPoincareLelongOfSmooth _
+    hPL _
       ((sourceCutoff n).contDiff.mul (contDiff_sourceDepthKernel f L j)) hc,
     xi_realDivisorPairing_eq_carrier _ hc]
   congr 1

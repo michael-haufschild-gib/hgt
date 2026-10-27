@@ -608,7 +608,7 @@ theorem deriv_eq_zero_of_re_eq_zero {H : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen
       simpa using ((hasDerivAt_id ((0 : ℝ) : ℂ)).mul_const v).const_add s
     have hd' : HasDerivAt H (deriv H s) (s + ((0 : ℝ) : ℂ) * v) := by simpa using hd
     have hcomp : HasDerivAt (fun w : ℂ => H (s + w * v)) (deriv H s * v) ((0 : ℝ) : ℂ) :=
-      hd'.comp _ hlin
+      HasDerivAt.comp (h := fun w : ℂ => s + w * v) ((0 : ℝ) : ℂ) hd' hlin
     exact hcomp.real_of_complex.unique
       ((hasDerivAt_const (0 : ℝ) (0 : ℝ)).congr_of_eventuallyEq (hev v))
   have h1 := hdir 1
@@ -735,18 +735,21 @@ theorem integral_polarScaleWeight_mul_exp {S : Finset ℂ} {c : ℂ → ℝ} {σ
       ∑ z ∈ S, (c z : ℂ) / 2 * (cexp ((z - s) * t) + cexp ((conj z - s) * t)) := by
     intro t
     unfold polarScaleWeight
-    push_cast
-    rw [Finset.sum_mul]
+    rw [Complex.ofReal_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl fun z _ => ?_
     have hre : ((Real.exp (z.re * t) * Real.cos (z.im * t) : ℝ) : ℂ) =
         (cexp (z * t) + cexp (conj z * t)) / 2 := by
-      have hc : conj (cexp (z * t)) = cexp (conj z * t) := by
+      have hc : cexp (conj z * t) = conj (cexp (z * t)) := by
         rw [← Complex.exp_conj, map_mul, Complex.conj_ofReal]
-      rw [← hc, Complex.add_conj, Complex.exp_re]
-      simp [Complex.mul_re, Complex.mul_im]
+      rw [hc, Complex.add_conj, Complex.exp_re]
+      have h1 : (z * (t : ℂ)).re = z.re * t := by simp
+      have h2 : (z * (t : ℂ)).im = z.im * t := by simp
+      rw [h1, h2]
+      push_cast
       ring
-    rw [mul_assoc, ← Complex.ofReal_mul, hre]
-    rw [show (z - s) * (t : ℂ) = z * t + (-s * t) by ring,
+    rw [show c z * Real.exp (z.re * t) * Real.cos (z.im * t) =
+        c z * (Real.exp (z.re * t) * Real.cos (z.im * t)) by ring, Complex.ofReal_mul, hre,
+      show (z - s) * (t : ℂ) = z * t + (-s * t) by ring,
       show (conj z - s) * (t : ℂ) = conj z * t + (-s * t) by ring, Complex.exp_add,
       Complex.exp_add]
     ring
@@ -760,7 +763,7 @@ theorem integral_polarScaleWeight_mul_exp {S : Finset ℂ} {c : ℂ → ℝ} {σ
     exact ((integrableOn_exp_mul_complex_Ioi h1 0).add
       (integrableOn_exp_mul_complex_Ioi h2 0)).const_mul _
   simp_rw [hpt]
-  rw [integral_finsetSum _ hint, polarSum, Finset.sum_div, ← Finset.sum_add_distrib, Finset.sum_div]
+  rw [integral_finsetSum _ hint, polarSum, ← Finset.sum_add_distrib, Finset.sum_div]
   refine Finset.sum_congr rfl fun z hz => ?_
   by_cases hcz : c z = 0
   · simp [hcz]
@@ -793,11 +796,13 @@ theorem norm_polarSum_le_of_scaleWeight_nonneg {S : Finset ℂ} {c : ℂ → ℝ
   have hxr : σ < (x : ℂ).re := by simpa using hx
   have hreal : ∫ t in Ioi (0 : ℝ), (polarScaleWeight S c t : ℂ) * cexp (-(x : ℂ) * t) =
       ((∫ t in Ioi (0 : ℝ), polarScaleWeight S c t * Real.exp (-x * t) : ℝ) : ℂ) := by
-    rw [← integral_ofReal]
+    refine Eq.trans ?_ (integral_ofReal (𝕜 := ℂ) (μ := volume.restrict (Ioi 0))
+      (f := fun t => polarScaleWeight S c t * Real.exp (-x * t)))
     refine integral_congr_ae (Eventually.of_forall fun t => ?_)
-    simp only
+    show _ = ((polarScaleWeight S c t * Real.exp (-x * t) : ℝ) : ℂ)
+    rw [Complex.ofReal_mul, Complex.ofReal_exp]
     push_cast
-    rw [← Complex.ofReal_neg, ← Complex.ofReal_mul, Complex.ofReal_exp]
+    ring_nf
   rw [hrep _ hxb, hrep _ hxr, hreal, Complex.ofReal_re]
   refine (norm_integral_le_integral_norm _).trans (le_of_eq ?_)
   refine setIntegral_congr_fun measurableSet_Ioi fun t ht => ?_

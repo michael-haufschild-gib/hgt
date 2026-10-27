@@ -14,7 +14,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.ConjugateDiagonalGeometry
 
-open RHTower
+open _root_.RHTower
 
 /-- The exact majorant used by the polar-corrected companion-forcing theorem. -/
 def companionCost (a δ R γ A : ℝ) : ℝ :=
@@ -104,8 +104,9 @@ theorem forcing_requires_exponential_aperture {a δ w R γ A : ℝ}
   have hbound := lt_of_le_of_lt hcost hforce
   have hsignal := two_mul_deepZeroEnergy_sq_le ha hδ hw hwa
   have hN2 := sq_pos_of_pos hN
-  apply (mul_lt_mul_right hN2).mp
-  linarith only [hbound, hsignal]
+  by_contra hneg
+  have hproduct := mul_le_mul_of_nonneg_left (le_of_not_gt hneg) hN2.le
+  nlinarith only [hbound, hsignal, hproduct]
 
 /-- The conductor horizon and the exact sufficient forcing criterion have no common aperture. -/
 theorem conductor_forcing_disjoint {a δ w R γ A C ε : ℝ}
@@ -128,3 +129,7 @@ theorem conductor_forcing_disjoint {a δ w R γ A C ε : ℝ}
   nlinarith only [hhorizon, hnecessary, hexp, hlogcmp, hAlog, hC, heps, hpos]
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry
+
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.two_mul_deepZeroEnergy_sq_le
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.forcing_requires_exponential_aperture
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.conductor_forcing_disjoint

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticPolarization.HeckeInvarianceOfTheCollidedPolarizationIsRH
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.InfiniteGenusLaw
 import GaloisForLFunctions.SquareRootThreshold.WindowCertificatesAndThePrimeWeight
+import GaloisForLFunctions.RHTower.LevinsonDetectorRightCount
 
 /-!
 # The collided form is a polarization
@@ -35,6 +36,7 @@ theorem tr_linePt (f : ℝ → ℂ) (t : ℝ) : tr f (RHTower.linePt t) = paperF
   rw [tr, gammaOf, RHTower.linePt]
   congr 1
   field_simp
+  push_cast
   ring
 
 /-- **Faithfulness of the collided form.** -/
@@ -45,8 +47,12 @@ theorem collidedForm_eq_zero_iff {f : ℝ → ℂ} (hf : Continuous f) {a : ℝ}
     collidedForm zetaZeroConfig f = 0 ↔ f = 0 := by
   constructor
   · intro h0
-    have hterm := (hs.tsum_eq_zero_iff (fun ρ =>
-      mul_nonneg (Nat.cast_nonneg _) (Complex.normSq_nonneg _))).mp h0
+    have hnn : ∀ ρ : zetaZeroConfig.carrier,
+        0 ≤ (zetaZeroConfig.mult ρ : ℝ) * Complex.normSq (tr f ρ) := fun ρ =>
+      mul_nonneg (Nat.cast_nonneg _) (Complex.normSq_nonneg _)
+    have hterm : ∀ ρ : zetaZeroConfig.carrier,
+        (zetaZeroConfig.mult ρ : ℝ) * Complex.normSq (tr f ρ) = 0 := fun ρ =>
+      le_antisymm ((hs.le_tsum ρ fun j _ => hnn j).trans h0.le) (hnn ρ)
     refine ArithmeticCastelnuovoSeveri.eq_zero_of_paperFT_vanish hf ha hfs ∅
       fun t _ htpos hxi _ => ?_
     -- `½ + it` is a nontrivial zero
@@ -56,9 +62,9 @@ theorem collidedForm_eq_zero_iff {f : ℝ → ℂ} (hf : Continuous f) {a : ℝ}
       refine ⟨?_, by rw [hre]; norm_num, by rw [hre]; norm_num⟩
       exact (RHTower.xi_eq_zero_iff_riemannZeta_of_re_pos (by rw [hre]; norm_num)
         (fun h1 => by rw [h1] at hre; norm_num at hre)).mp hxi
-    have h := congrFun hterm ⟨_, hmem⟩
-    have hm : (zetaZeroConfig.mult (RHTower.linePt t) : ℝ) ≠ 0 := by
-      exact_mod_cast (zetaZeroConfig.one_le_mult _ hmem).ne' |>.symm |> fun h' => by omega
+    have h := hterm ⟨_, hmem⟩
+    have hm : (zetaZeroConfig.mult (RHTower.linePt t) : ℝ) ≠ 0 :=
+      Nat.cast_ne_zero.mpr (by have := zetaZeroConfig.one_le_mult _ hmem; omega)
     have hn : Complex.normSq (tr f (RHTower.linePt t)) = 0 :=
       (mul_eq_zero.mp h).resolve_left hm
     rw [← tr_linePt]
@@ -157,13 +163,15 @@ theorem hecke_similitude_iff {L : ℝ} (hL : L ≠ 0) :
         hS2.tsum_sub (hS1.mul_left (2 * c)), tsum_mul_left, tsum_mul_left, ← hD0, ← hD1, ← hD2,
         h2, h1]
       ring
-    have hzero := (hsum.tsum_eq_zero_iff fun ρ =>
-      mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (Complex.normSq_nonneg _)) (sq_nonneg _)).mp htot
+    have hnn : ∀ ρ, 0 ≤ A ρ * (E ρ - c) ^ 2 := fun ρ =>
+      mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (Complex.normSq_nonneg _)) (sq_nonneg _)
+    have hzero : ∀ ρ, A ρ * (E ρ - c) ^ 2 = 0 := fun ρ =>
+      le_antisymm ((hsum.le_tsum ρ fun j _ => hnn j).trans htot.le) (hnn ρ)
     -- both `s` and `1 − s̄` are seen, so `e^{2aL} = c = e^{−2aL}`
     have hseen : ∀ (z : ℂ) (hz : z ∈ zetaZeroConfig.carrier), tr f z ≠ 0 →
         E ⟨z, hz⟩ = c := by
       intro z hz htr
-      have h := congrFun hzero ⟨z, hz⟩
+      have h := hzero ⟨z, hz⟩
       have hm : (1 : ℝ) ≤ zetaZeroConfig.mult z := by exact_mod_cast zetaZeroConfig.one_le_mult z hz
       have hA : 0 < A ⟨z, hz⟩ := mul_pos (by linarith) (Complex.normSq_pos.mpr htr)
       have := (mul_eq_zero.mp h).resolve_left hA.ne'

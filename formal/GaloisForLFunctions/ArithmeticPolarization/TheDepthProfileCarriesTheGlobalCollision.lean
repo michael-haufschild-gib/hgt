@@ -81,14 +81,19 @@ theorem depthProfile_le_of_depth_le {f : ℝ → ℂ} (hs : Summable (depthWeigh
   rw [depthProfile_eq, collidedForm, ← tsum_mul_left]
   refine (summable_depthProfile hs L).tsum_le_tsum (fun ρ => ?_) (hs.mul_left _)
   by_cases h0 : depthWeight Z f ρ = 0
-  · simp [h0, depthWeight] at *; simp [h0]
+  · rw [h0, zero_mul]
+    exact mul_nonneg (Real.exp_pos _).le (depthWeight_nonneg f ρ)
   · rw [mul_comm (Real.exp _)]
     refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (depthWeight_nonneg f ρ)
     have := ha ρ h0
     nlinarith
 
 /-- The supremum of the depths of the zeros seen by `f`. -/
-def seenDepth (f : ℝ → ℂ) : ℝ := sSup (depth Z '' {ρ | depthWeight Z f ρ ≠ 0})
+def seenDepth (Z : Zeta23.ZeroConfig) (f : ℝ → ℂ) : ℝ :=
+  sSup (depth Z '' {ρ | depthWeight Z f ρ ≠ 0})
+
+theorem translate_zero (f : ℝ → ℂ) : translate 0 f = f := by
+  funext u; simp [translate]
 
 theorem bddAbove_seen (f : ℝ → ℂ) : BddAbove (depth Z '' {ρ | depthWeight Z f ρ ≠ 0}) :=
   ⟨1 / 2, by rintro _ ⟨ρ, -, rfl⟩; exact (abs_le.mp (depth_le_half ρ)).2⟩
@@ -96,15 +101,14 @@ theorem bddAbove_seen (f : ℝ → ℂ) : BddAbove (depth Z '' {ρ | depthWeight
 /-- **The rate law.** For a test that sees some zero, `(1/L) log D(T_L f) → 2 a_f`. -/
 theorem tendsto_log_depthProfile_div {f : ℝ → ℂ} (hs : Summable (depthWeight Z f))
     (hseen : ∃ ρ : Z.carrier, depthWeight Z f ρ ≠ 0) :
-    Tendsto (fun L => Real.log (depthProfile Z f L) / L) atTop (𝓝 (2 * seenDepth f)) := by
+    Tendsto (fun L => Real.log (depthProfile Z f L) / L) atTop (𝓝 (2 * seenDepth Z f)) := by
   obtain ⟨ρ₀, hρ₀⟩ := hseen
   have hne : (depth Z '' {ρ | depthWeight Z f ρ ≠ 0}).Nonempty := ⟨_, ρ₀, hρ₀, rfl⟩
   have hbdd := bddAbove_seen (Z := Z) f
   have hw₀ : 0 < depthWeight Z f ρ₀ := lt_of_le_of_ne (depthWeight_nonneg f ρ₀) (Ne.symm hρ₀)
   have hD : 0 < collidedForm Z f := by
     have := term_le_depthProfile hs 0 ρ₀
-    rw [mul_zero, Real.exp_zero, mul_one, depthProfile] at this
-    simp only [translate, sub_zero] at this
+    rw [mul_zero, Real.exp_zero, mul_one, depthProfile, translate_zero] at this
     exact lt_of_lt_of_le hw₀ this
   have hpos : ∀ L, 0 < depthProfile Z f L := fun L =>
     lt_of_lt_of_le (mul_pos hw₀ (Real.exp_pos _)) (term_le_depthProfile hs L ρ₀)
@@ -112,8 +116,8 @@ theorem tendsto_log_depthProfile_div {f : ℝ → ℂ} (hs : Summable (depthWeig
   constructor
   · -- lower bound through one deep seen zero
     intro b hb
-    obtain ⟨_, ⟨ρ₁, hρ₁, rfl⟩, hlt⟩ := exists_lt_of_lt_csSup hne (show b / 2 < seenDepth f by
-      unfold seenDepth; linarith)
+    have hb2 : b / 2 < seenDepth Z f := by linarith
+    obtain ⟨_, ⟨ρ₁, hρ₁, rfl⟩, hlt⟩ := exists_lt_of_lt_csSup hne hb2
     have hw₁ : 0 < depthWeight Z f ρ₁ := lt_of_le_of_ne (depthWeight_nonneg f ρ₁) (Ne.symm hρ₁)
     have hlim : Tendsto (fun L : ℝ => Real.log (depthWeight Z f ρ₁) / L + 2 * depth Z ρ₁) atTop
         (𝓝 (0 + 2 * depth Z ρ₁)) :=
@@ -130,19 +134,19 @@ theorem tendsto_log_depthProfile_div {f : ℝ → ℂ} (hs : Summable (depthWeig
     linarith
   · -- upper bound through the supremum
     intro b hb
-    have hlim : Tendsto (fun L : ℝ => 2 * seenDepth f + Real.log (collidedForm Z f) / L) atTop
-        (𝓝 (2 * seenDepth f + 0)) :=
+    have hlim : Tendsto (fun L : ℝ => 2 * seenDepth Z f + Real.log (collidedForm Z f) / L) atTop
+        (𝓝 (2 * seenDepth Z f + 0)) :=
       tendsto_const_nhds.add (tendsto_const_nhds.div_atTop tendsto_id)
-    have hev := hlim.eventually (gt_mem_nhds (show 2 * seenDepth f + 0 < b by linarith))
+    have hev := hlim.eventually (gt_mem_nhds (show 2 * seenDepth Z f + 0 < b by linarith))
     filter_upwards [hev, eventually_gt_atTop 0] with L hL hL0
     refine lt_of_le_of_lt ?_ hL
     rw [div_le_iff₀ hL0]
-    have hle := depthProfile_le_of_depth_le hs hL0.le (a := seenDepth f) fun ρ hρ =>
+    have hle := depthProfile_le_of_depth_le hs hL0.le (a := seenDepth Z f) fun ρ hρ =>
       le_csSup hbdd ⟨ρ, hρ, rfl⟩
     have h2 := Real.log_le_log (hpos L) hle
     rw [Real.log_mul (Real.exp_pos _).ne' hD.ne', Real.log_exp] at h2
-    have : (2 * seenDepth f + Real.log (collidedForm Z f) / L) * L =
-        2 * seenDepth f * L + Real.log (collidedForm Z f) := by field_simp
+    have : (2 * seenDepth Z f + Real.log (collidedForm Z f) / L) * L =
+        2 * seenDepth Z f * L + Real.log (collidedForm Z f) := by field_simp
     linarith
 
 end GaloisForLFunctions.ArithmeticPolarization

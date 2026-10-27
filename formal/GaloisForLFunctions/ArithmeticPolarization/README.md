@@ -161,7 +161,7 @@ each property of the other form is RH.
 
 | Pillar | Statement | Lean |
 |---|---|---|
-| **Π13 Leading-line law and Fejér barrier** | For a conjugation-symmetric polar configuration with positive-definite vertical sections, the trigonometric sum of its rightmost line is nonnegative wherever it is periodic. A harmonic lift of a deepest quartet puts `2m cos(γt)P(γt)` on that line; for a nonnegative cosine polynomial `P ≢ 0` this is negative somewhere, so no positive multiplier removes the whole lifted divisor. | `polarScaleWeight_eq_leading`, `tendsto_offLeadingSum`, `leadingSum_nonneg_of_periodic`, `harmonicLift_leading`, `exists_cos_mul_neg`, `not_removes_lifted_divisor` |
+| **Π13 Positive configurations, leading-line law and Fejér barrier** | A finite polar configuration `Σ c(z)/(s − z)` has positive-definite vertical sections right of its points iff its exponential polynomial `Σ c(z)e^{zt}` has nonnegative real part on `t > 0` (Laplace–Bochner); one positive-definite vertical section already forces this, with no conjugation symmetry (Fejér sums), so positivity of one section propagates to all sections right of the configuration. On a line with ordinates in `ωℤ`, positivity is a single Hermitian square `|Q(e^{iωt})|²` (Fejér–Riesz): positive completions on commensurable lines are couplings. On a configuration with all ordinates in `ωℤ`, each line's trigonometric sum is nonnegative wherever all the lines to its right vanish (line hierarchy). The trigonometric sum of the rightmost line of a positive configuration is nonnegative for all ordinates (Bohr large returns), and that line is itself a positive configuration. A harmonic lift of a deepest quartet puts `2m cos(γt)P(γt)` on that line; for a nonnegative cosine polynomial `P ≢ 0` this is negative somewhere, so no positive multiplier removes the whole lifted divisor. | `posDef_polarSum_of_scaleWeight_nonneg`, `posDef_polarSum_iff_scaleWeight_nonneg`, `posDef_polarSum_above_leading`, `posDef_section_iff_scaleWeight_nonneg`, `posDef_section_of_posDef_section`, `posDef_latticeLine_iff_normSq`, `leadingSum_eq_normSq`, `leadingSum_nonneg_of_higher_eq_zero`, `secondLine_nonneg_of_lattice`, `leadingSum_nonneg`, `posDef_polarSum_of_line`, `posDef_leadingLine`, `harmonicLift_leading`, `exists_cos_mul_neg`, `not_removes_lifted_divisor` |
 | **Π14 Rigidity excludes zeros** | `ζ_γ ∈ HeightCoupledSystem 2 1 1 γ`; rigidity of that class at `γ` excludes every off-line zero at ordinate `γ` (a zero contracts inside the class and raises the order at `½` by four); rigidity at every ordinate is RH. | `zeta_mem_heightCoupledClass`, `CoupledRigid`, `xi_ne_zero_of_rigid`, `riemannHypothesis_of_forall_rigid` |
 | **Π15 Twists are rate neutral** | The twisted orbit correlation is `e^{iγt}` times the orbit correlation of `Z − iγ`, whose depth spectrum is that of `Z`; every growth bound transfers both ways. | `translate_twist`, `W_translate_twist`, `shiftConfig_re`, `twisted_growth_iff` |
 
@@ -274,8 +274,11 @@ formula, height shifts and single-height detection, window certificates, escape 
 - shifted configurations and the twist identity of Weil's form;
 - the twisted explicit formula, charged weights, the charge theorem;
 - the twisted symmetric Hecke symbols and the dihedral dilemma;
-- the leading-line law of positive polar configurations; cosine polynomials as Chebyshev
-  polynomials; the barrier inequality;
+- the classification of positive polar configurations by their exponential polynomial; the
+  leading-line law; positivity of cosine–Laplace weights from positive-definite sums
+  (`HTGeometry.LaplaceWeights.nonneg_of_laplace_posDef`); the Fejér–Riesz factorization
+  (`HTGeometry.fejerRiesz`); cosine polynomials as
+  Chebyshev polynomials; the barrier inequality;
 - exterior points, collided points, the non-analyticity of global collision;
 - coupled curve data and the parity of collisions;
 - lattice zeta functions of the square and the reflection plane;
@@ -293,8 +296,11 @@ formula, height shifts and single-height detection, window certificates, escape 
 3. **Odd collisions over `ℤ`.** A two-variable structure whose collided points appear with odd
    multiplicity at every ordinate at once; couplings collide evenly, the global exterior square has
    no analytic carrier.
-4. **The central ceiling of the coupled class**: `ord_{½}(Λ) ≤ ord_{½}(Λ_γ)` for every member of
-   `HeightCoupledSystem 2 1 1 γ`, first at zero-free ordinates, from the shifted poles.
+4. **The central ceiling of the coupled class** beyond rational deformations: for rational coupled
+   deformations the ceiling at `γ` is equivalent to the absence of zeros at ordinate `γ`
+   ([BiarithmeticGaugeGeometry](../BiarithmeticGaugeGeometry/README.md),
+   `rationalCentralVanishingCeiling_iff`); what remains is a ceiling for the whole class that does
+   not pass through the zeros at `γ`.
 5. **A two-variable section count** with rank growing in the class and Riemann–Roch whose quadratic
    term is Weil's form.
 6. **The separating aperture of the first twin** (W8): compare `W_ζ(f)` and
@@ -363,3 +369,13 @@ sign last; a reformulation is not a reduction.
 | `TheFirstGaugeChargeIsATwist` | The flip at `2` as the twist at `π / log 2`; the Liouville window identity; the second charge |
 | `TheOscillatoryCapacity` | Collided form and defect; `Re W = D − Δ`; convergence for `ζ`; RH as `W = D` |
 | `HeckeInvarianceOfTheCollidedPolarizationIsRH` | Hecke isometries of `W`; translation of `D`; second differences; RH as equivariance of `D` |
+| `TheCollidedFormIsAPolarization` | Faithfulness of `D`; sampling at aperture `3/10`; Hecke similitudes of `D` are RH |
+| `TheDepthProfileCarriesTheGlobalCollision` | Depth profile `L ↦ D(T_L f)`; its rate law `2 · (deepest seen depth)` |
+| `TheLocalWeylLawOfTheCollidedForm` | `D(e^{−iγu} f) ≍ ‖f‖² log|γ|` |
+| `TheLeadingLineIsPositive` | Leading-line law for arbitrary ordinates via Bohr large returns |
+| `PositivityIsInheritedByTheLeadingLine` | One-line configurations; inheritance of positivity by the leading line |
+| `PositivePolarConfigurationsAreNonnegativeExponentialPolynomials` | Classification of positive polar configurations; positivity at the leading abscissa |
+| `PositiveLatticeLinesAreCouplings` | Positive lattice lines are Hermitian squares; the commensurable leading line is a coupling |
+| `TheSelectivityBatteryOfPolarization` | Golden and complex-fake spectra fail both forms; couplings hide the golden real pair |
+| `OneVerticalSectionDecidesPositivity` | One positive-definite vertical section decides the configuration; rigidity across abscissae |
+| `PositivityDescendsThroughTheZerosOfHigherLines` | Line hierarchy of lattice configurations: each line is nonnegative on the common zeros of the lines to its right |

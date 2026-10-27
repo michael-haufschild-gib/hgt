@@ -35,6 +35,16 @@ import GaloisForLFunctions.ArithmeticCorrespondencePositivity.IntrinsicExteriorA
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheAbelEscapeStateIsTheBoundaryMeasureOfTheSymbol
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheAbelEscapeAtomsOfZetaAreItsDominantZeros
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheAbelEscapeCapacityOfTheDominantZeros
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheAbelCofactorGramsSelectTheDominantZeros
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheCenteredReceiverSymbolIsHardy
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheReceiverEnergyGrowthAtTheZeroAbscissa
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheEscapeEnergyAtTheAbscissaPaysTheResidues
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheMertensEnergyPaysItsCriticalResidues
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.ThePrimeErrorEnergyPaysTheCriticalZeros
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheCurvePrimeErrorBudgetCountsItsSpectrum
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheSuccessorDefectIsABoundedHardyPerturbation
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheBoundaryReceiverPaysTheCriticalShadows
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheMertensBudgetForcesASimpleCriticalSpectrum
 
 /-!
 # Arithmetic Correspondence Positivity
@@ -50,6 +60,10 @@ horizon averages and the coupling of dilations with the archimedean flow on them
 the zeros as dominant configurations; completeness of infinite summable configurations; the escape
 completeness criterion; the escape alternative; section counts and Stepanov counts as the sign; the successor defect in the strip; the gauge-charged window off the edge; elliptic localization as resonance; Abel escape states as
 boundary spectral measures of the symbol, with the dominant zeros of `ζ` as their atoms and the
-escape rate as their capacity. See
+escape rate as their capacity; Abel cofactor Grams and the Abel completeness criterion; the
+endpoint law of escape; residue-mass laws for the Mertens and prime-error energies and their
+`𝔽_q` calibration (the prime-error budget counts the spectrum); the successor defect as a bounded
+Hardy perturbation; the boundary receiver's energy rate priced by the critical values at the
+shadows; the Mertens budget law (a linear Mertens energy forces purity and a simple spectrum). See
 `ArithmeticCorrespondencePositivity/README.md`.
 -/

@@ -125,6 +125,7 @@ the lattice of sections grows with the class and its log-volume grows quadratica
 | principal divisors have degree `0` | product formula `log n = log |ℤ/nℤ| = Σ v_p(n) log p` | Bézout of `Spec ℤ` | `log_eq_logTorsion` |
 | theta divisor, characteristics | theta surface `h⁰(a, d)`, dual `h⁰∨(a, d)`, exponential characteristic `ϑ(J, t)` | even Hurwitz kernels | `thetaH0`, `thetaH0Dual`, `thetaChar` |
 | `ℓ`-adic torsion | torsion characteristics `j/N`, finite Fourier transform, Gauss sums, root numbers | Dirichlet L-functions | Mathlib `ZMod.completedLFunction` |
+| Frobenius graphs meeting the diagonal | torsion orbits `O_n` on the characteristic circle; archimedean intersection `I(m, n) = Σ log |ζ − η| = log |Res(Φ_m, Φ_n)|`; Abel energy `T_r` | `Λ` as an intersection number; Ramanujan sums as Fourier coefficients | `orbitIntersection`, `ramanujanSum`, `torsionEnergy` |
 | Stepanov's auxiliary polynomial | auxiliary integer polynomial; integrality floor; analytic ceiling | `lcm(1..n+1) ∫₀¹ P ∈ ℤ` | `nairPoly` |
 | `ℙ¹ × ℙ¹` | hyperbolic plane with `h⁰ = (a+1)⁺(b+1)⁺` | — | `hyperbolicPlane`, `p1SquareH0` |
 | fake curves | battery: golden datum, complex fake, Beurling systems, shifted pair, twins | — | ACS, ACP |
@@ -142,6 +143,9 @@ the lattice of sections grows with the class and its log-volume grows quadratica
 - *Characteristic*: the translation parameter of a theta series; *torsion characteristic*: `j/N`.
 - *Soft*: holding on every datum of a family, hence carrying none of its arithmetic.
 - *Integrality floor*: `|nonzero integer| ≥ 1`. *Ceiling*: the analytic bound it is compared with.
+- *Torsion orbit*: the primitive roots of unity of one order; *Hecke translate*: `O_m ↦ O_{mt}`.
+  *Renormalized energy*: the finite part of an Abel-regularized log-energy after subtracting the
+  self-energy `log 1/(1 − r)` of each point.
 
 Parameters: the class `x`, its degree `x·A`, the scaling `n`, the characteristic, the degree `d`,
 the horizon `N`. Every theorem states which are fixed and which grow.
@@ -207,6 +211,13 @@ the horizon `N`. Every theorem states which are fixed and which grow.
    with `P = X^m(1 − X)^m` the ceiling `∫₀¹ P ≤ 4^{−m}` gives `lcm(1..2m+1) ≥ 4^m`
    (`nair_four_pow_le_lcmUpto`, `nair_psi_ge`). With `θ(x) ≤ x log 4` the log-torsion and the
    degree are comparable (`horizon_logTorsion_comparable`): the effectivity of the base.
+   Over a finite field `𝔽_q` the same count reaches the sign (Stepanov's method, `RHTower.Stepanov`):
+   the sections `Σ_{j<J} X^{jq}(r_j + s_j h^{(q−1)/2})` outnumber their vanishing conditions because
+   `D^{(k)}(X^{jq} g) = X^{jq} D^{(k)} g` for `k < q` and `x^q = x` (`hasseDeriv_mul_X_pow`), they are
+   nonzero by the Frobenius-flat expansion and descent (`stepanov_independence`), and the degree
+   bound gives the Weil bound for hyperelliptic sums (`stepanov_count`, `abs_sum_quadraticChar_le`)
+   and for Kloosterman sums (`RHTower.WeilKloosterman.kloosterman_weil_bound`). Over `ℤ` the method
+   has the integrality floor and the degree bound but no flat coefficients.
 9. **Calibration on `ℙ¹ × ℙ¹`** (`TheProjectiveSquareCalibration`). `h⁰ = (a+1)⁺(b+1)⁺` satisfies
    the Riemann inequality as `h¹ ≥ 0`, with equality on the effective and anti-effective quadrants
    (`p1SquareH1_nonneg`, `riemannInequality_p1SquareH0`), vanishes in negative degree and is bounded
@@ -216,6 +227,28 @@ the horizon `N`. Every theorem states which are fixed and which grow.
     series and functional equation, has an abundant class and no naive height
     (`goldenDatum_multiplicative_axioms_not_effective`). For `ζ` the currencies of effectivity are
     one statement (`riemannHypothesis_effectivity_tfae`).
+
+11. **The prime side is an intersection** (`TheArchimedeanComputationOfTheLogTorsion`,
+    `TheQDeformationOfTheHorizonPeriod`, `TheFourierCoefficientsOfTheTorsionMeasure`,
+    `TheLogEnergyOfRootsOfUnity`, `TheIntersectionOfTorsionOrbits`,
+    `TheWeilPrimeKernelIsARenormalizedTorsionEnergy`). `Λ(n) = Σ_{ζ ∈ O_n} log |1 − ζ|`, so `ψ(N)` is
+    the potential at `1` of the Farey torsion, whose first Fourier coefficient is `M(N)`; `ψ(N)` is the
+    value at `q = 1` of the count `log Π_{2≤n≤N} Φ_n(q) = Σ_d M(⌊N/d⌋) log [d]_q`. The energy of `μ_a`
+    against `μ_b` is `gcd(a, b) log lcm(a, b)` (`logEnergy_eq`); distinct orbits meet in `φ(n) Λ(m/n)`
+    when `n ∣ m` and not at all otherwise (`orbitIntersection_eq`), so an orbit meets its Hecke
+    translate of degree `t` in `Λ(t)` per point (`orbitIntersection_hecke`). The Abel energies are
+    Gram matrices of Ramanujan sums; twisted by the positive kernel `d/φ(d)` of the gcd they tend to
+    `−Λ(t) t^{−1/2}` off the diagonal and, after subtracting `log 1/(1 − r)`, to minus the
+    log-discriminant per point (`weilPrimeKernel_renormalized_torsion_energy`). The prime side of
+    Weil's form is a renormalized positive energy; the sign is lost in the renormalization.
+12. **Calibration on curves** (`TheHyperellipticCalibration`, `RHTower.HyperellipticRiemannHypothesis`).
+    For `f ∈ 𝔽_p[X]` squarefree, split, of odd degree `2g + 1`, the L-function of `y² = f(x)` is a
+    curve datum of genus `g` whose Lefschetz numbers are the point counts of the projective curve
+    (`hyperellipticDatum_pointCount`). It is unitary by counting alone — Stepanov's section count on
+    the even extensions bounds `|ω_i| ≤ √p`, and the Gauss-sum modulus fixes `|Π ω_i| = p^g` through
+    the top degree sum (`riemannHypothesis_splitHyperelliptic`) — so every Frobenius window carries
+    an effectivity function and `ℤ[F]` a naive height (`hyperellipticDatum_window_exists_effectivity`,
+    `hyperellipticDatum_exists_naiveHeight`).
 
 ---
 
@@ -230,8 +263,9 @@ the horizon `N`. Every theorem states which are fixed and which grow.
 | **E5 The theta surface** | Riemann–Roch with characteristic; a nonnegative naive height whose Tate limit is `πJ²/t`; the polarization is soft | `thetaH0_riemannRoch`, `abs_log_thetaChar_sub_le`, `tateLimit_log_thetaChar`, `hasSum_shifted_thetaChar` |
 | **E6 Counting gives square roots at each level** | `|τ(χ, ψ)|² = |F|`; unit root numbers | `normSq_gaussSum_eq_card`, `norm_rootNumber_eq_one` |
 | **E7 The Stepanov method reaches the base** | integrality floor `log(1/∫P) ≤ ψ(n+1)`; Nair `ψ(2m+1) ≥ m log 4` | `log_inv_integral_le_psi`, `nair_psi_ge`, `horizon_logTorsion_comparable` |
-| **E8 Calibration** | `ℙ¹ × ℙ¹` satisfies the calculus with dimensions; genus one: naive height ⇔ Hasse; golden datum: abundant, no naive height | `hyperbolicPlane_hodgeIndex`, `genusOne_exists_naiveHeight_iff`, `goldenDatum_multiplicative_axioms_not_effective` |
+| **E8 Calibration** | `ℙ¹ × ℙ¹` satisfies the calculus with dimensions; genus one: naive height ⇔ Hasse; split hyperelliptic curves of every genus are unitary by counting and carry effectivity functions and naive heights; golden datum: abundant, no naive height | `hyperbolicPlane_hodgeIndex`, `genusOne_exists_naiveHeight_iff`, `riemannHypothesis_splitHyperelliptic`, `hyperellipticDatum_window_exists_effectivity`, `goldenDatum_multiplicative_axioms_not_effective` |
 | **E9 One statement in five currencies** | RH ⇔ effectivity function ⇔ no abundant class ⇔ naive heights ⇔ fixed tensor loss ⇔ log-torsion law | `riemannHypothesis_effectivity_tfae` |
+| **E10 The prime side is an intersection** | `J(a, b) = gcd(a, b) log lcm(a, b)`; `I(m, mt) = φ(m) Λ(t)`; Weil's prime kernel plus the log-discriminant diagonal is minus the renormalized limit of positive gcd-twisted torsion energies | `logEnergy_eq`, `orbitIntersection_hecke`, `weilPrimeKernel_renormalized_torsion_energy` |
 
 ---
 
@@ -257,7 +291,13 @@ the horizon `N`. Every theorem states which are fixed and which grow.
    `j/N` of the theta surface and multiplicative characters are exchanged by Gauss sums, whose
    modulus `√p` is a count (E6), and the sign of each functional equation is a unit. Square-root
    cancellation from counting holds at every level; the walls ask for it at the arithmetic point,
-   uniformly in the level, where no finite group computes it.
+   uniformly in the level, where no finite group computes it. The archimedean intersection of
+   torsion orbits couples the two operations exactly: the additive positions of the orbits of
+   orders `m` and `mt` meet in `Λ(t)` per point (E10). Over `𝔽_q` the coupling that carries the
+   sign is the Frobenius: `q`-th powers are flat under Hasse derivatives and fixed on points, so
+   Stepanov's auxiliary-section count reaches square roots (`RHTower.Stepanov`) and, with the
+   Gauss-sum modulus in the top degree sum, unitarity of actual curves (E8); over `ℤ` no
+   coefficients are flat.
 4. **How does a positivity proved on average over heights localize at one height below the zero
    spacing?** In AET the sign is pointwise in the class: each class carries its own abundance rate
    `max(0, ½ x²)` (E1). Averaged positivity is a statement about a family of classes and controls no
@@ -285,10 +325,13 @@ others; none has been constructed.
 | Integrality of point counts constrains the sign | The golden datum has integral counts, integral zeta and the functional equation, and an abundant class (E9) |
 | A positive polarization on a surface over `ℤ` is Weil's | The theta surface carries one at every characteristic; it is soft (E5) |
 | The integrality floor reaches the sign | It reaches Chebyshev's bounds (E7); the deviation of log-torsion from degree is invisible to it |
+| Stepanov's method is integrality plus a degree bound | Over `𝔽_q` it needs Frobenius-flat coefficients to make the sections outnumber the conditions (`RHTower.Stepanov`); without them the count stops at Chebyshev's order (E7) |
 | Square-root cancellation needs analysis | At each finite level it is a count (E6); the open part is uniformity at the arithmetic point |
 | A naive height exists because the theorem of the square is free | Freeness of the quadratic part says nothing about a nonnegative function at bounded distance (E3) |
 | Orders of finite kernels give a naive height | They are determinants; the complex fake has nonnegative kernel counts and no naive height (E3) |
 | Positivity on integral correspondences is weaker than on real ones | They are equivalent: rounding transports positivity (E3) |
+| A positive energy whose off-diagonal is Weil's prime kernel gives Weil positivity | The torsion energy carries the divergent self-energy `log 1/(1 − r)` on the diagonal; at atomic resolution it bounds the prime form only as the Schur test does, and atomic tests are blind to the zeros (E10) |
+| The prime matrix separates the gauge twins | `λ(m) λ(mt) = λ(t)`: the Liouville kernel is a `±1` congruence of Weil's; selectivity lives in the archimedean and polar parts |
 | Abundance is a property of a family | It is pointwise: each class has the rate `max(0, ½ x²)` (E1) |
 
 ---
@@ -298,7 +341,9 @@ others; none has been constructed.
 **From sibling programmes:** polar surfaces, the scaling surface and its Hodge index, curve data and
 fakes, the theta `h⁰` of `Spec ℤ`, the box Euler characteristic and transition groups, the
 correspondence algebra with Rosati and orbit Hodge index, the fixed-loss criterion, the golden
-Beurling system, von Koch; from Mathlib: Gaussian Poisson summation, even Hurwitz kernels and their
+Beurling system, von Koch; Stepanov's method and the Weil bounds over `𝔽_q` (`RHTower.Stepanov`,
+`RHTower.WeilKloosterman`) and RH for split odd-degree hyperelliptic curves
+(`RHTower.HyperellipticRiemannHypothesis`); from Mathlib: Gaussian Poisson summation, even Hurwitz kernels and their
 functional equation, `ZMod` L-functions, Gauss sums, root numbers, Chebyshev's functions and
 `lcmUpto`.
 
@@ -308,7 +353,8 @@ machine on abelian groups; integral Rosati forms and the rounding principle; the
 and the box class; the theta surface with characteristic, its free polarization and its softness;
 Gauss-sum moduli and unit root numbers; the integrality floor for auxiliary integer polynomials and
 Nair's bound; the `ℙ¹ × ℙ¹` calibration; the golden base countermodel; the five-currency
-equivalence for `ζ`.
+equivalence for `ζ`; torsion orbits with their intersection law, Ramanujan-sum Fourier
+coefficients, the q-deformed horizon, Abel energies and the gcd twist.
 
 **To build:** a section count on the scaling surface defined without the sign; a naive height on
 `ℤ[G]` from arithmetic; the limit of the Stepanov method (integer Chebyshev constant); charged
@@ -330,12 +376,17 @@ sections at torsion characteristics with selectivity at characteristic `0`.
    separates characteristic `0` from its neighbours, i.e. a non-soft polarization.
 4. **The limit of the Stepanov method over `ℤ`**: how close `log(1/∫₀¹ P)` can come to `ψ(n+1)`
    is the integer Chebyshev problem; a proof that it stays below `n` would show that the
-   integrality floor cannot reach the prime number theorem.
+   integrality floor cannot reach the prime number theorem. Over `𝔽_q` the method reaches the
+   sign through Frobenius-flat coefficients (`RHTower.Stepanov`); its analogue over `ℤ` would be a
+   family of coefficients invisible to the vanishing conditions.
 5. **Uniform square-root cancellation from counting**: a family of finite groups, one per level,
    whose orders compute `ψ(N) − N` at the arithmetic point.
 6. **Emptiness tests**: whether every section count with the Riemann inequality on box classes is
    bounded by a large-sieve count in degree zero; whether a source bound for the collision charge
    exists (AOG, APol).
+7. **The archimedean place of the torsion picture**: a positive structure whose renormalized limit
+   is Weil's archimedean term, so that the whole form, not only its prime side, is a renormalized
+   energy; and a regularization finer than the uniform self-energy of a point.
 
 ---
 

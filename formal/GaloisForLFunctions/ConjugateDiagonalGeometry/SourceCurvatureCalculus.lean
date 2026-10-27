@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.ComplexC2Laplacian
 import GaloisForLFunctions.HTGeometry.ComplexLaplacianGreenIdentity
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
+import Mathlib.Analysis.Calculus.Deriv.Inv
 
 /-!
 # Positive radial curvature and compact source testing
@@ -35,11 +36,11 @@ private theorem radial_first {ε : ℝ} (hε : 0 < ε) (z v : ℂ) :
       (z.re * v.re + z.im * v.im) / (z.re ^ 2 + z.im ^ 2 + ε) := by
   have hq := ((Complex.reCLM.hasFDerivAt (x := z)).pow 2).add
     ((Complex.imCLM.hasFDerivAt (x := z)).pow 2) |>.add_const ε
-  change fderiv ℝ (fun w : ℂ =>
-    (1 / 2 : ℝ) * Real.log (w.re ^ 2 + w.im ^ 2 + ε)) z v = _
-  rw [((hq.log (radial_den_pos hε z).ne').const_mul (1 / 2)).fderiv]
-  simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.add_apply,
-    Complex.reCLM_apply, Complex.imCLM_apply, smul_eq_mul, pow_one]
+  have hd := (hq.log (radial_den_pos hε z).ne').const_mul (1 / 2)
+  change HasFDerivAt (radialLogPotential ε) _ z at hd
+  rw [hd.fderiv]
+  norm_num only [smul_apply, add_apply, Pi.add_apply, Function.comp_apply,
+    Complex.reCLM_apply, Complex.imCLM_apply, smul_eq_mul, nsmul_eq_mul, pow_one]
   ring
 
 private theorem radial_second {ε : ℝ} (hε : 0 < ε) (z v : ℂ) :
@@ -56,10 +57,17 @@ private theorem radial_second {ε : ℝ} (hε : 0 < ε) (z v : ℂ) :
     ((Complex.imCLM.hasFDerivAt (x := z)).mul_const v.im)
   have hq := ((Complex.reCLM.hasFDerivAt (x := z)).pow 2).add
     ((Complex.imCLM.hasFDerivAt (x := z)).pow 2) |>.add_const ε
-  rw [Bottcher.dderiv, he, (hn.div hq (radial_den_pos hε z).ne').fderiv]
-  simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.sub_apply, Complex.reCLM_apply, Complex.imCLM_apply,
-    smul_eq_mul, pow_one]
+  have hi := (hasDerivAt_inv (radial_den_pos hε z).ne').comp_hasFDerivAt z hq
+  rw [Bottcher.dderiv, he]
+  simp_rw [div_eq_mul_inv]
+  have hd := hn.mul hi
+  change HasFDerivAt (fun w : ℂ => (w.re * v.re + w.im * v.im) *
+    (w.re ^ 2 + w.im ^ 2 + ε)⁻¹) _ z at hd
+  rw [hd.fderiv]
+  norm_num only [smul_apply, add_apply, sub_apply, Pi.add_apply, Function.comp_apply,
+    Complex.reCLM_apply, Complex.imCLM_apply,
+    smul_eq_mul, nsmul_eq_mul, pow_one]
+  field_simp [(radial_den_pos hε z).ne']
   ring
 
 /-- The regulator produces nonnegative curvature even where the unregularized log is singular. -/
@@ -82,7 +90,7 @@ private theorem complex_laplacian_eq {f : ℂ → ℂ} (hf : ContDiff ℝ 2 f) (
     rw [iteratedFDeriv_two_apply]
     have hd := ((hf.fderiv_right (m := 1) (by norm_num)).differentiable
       (by norm_num) z).hasFDerivAt
-    exact congrArg (fun L => L v) (hd.clm_apply (hasFDerivAt_const v z)).fderiv
+    simpa using congrArg (fun L => L v) (hd.clm_apply (hasFDerivAt_const v z)).fderiv
   exact congrArg₂ (· + ·) (key 1) (key Complex.I)
 
 /-- Conformal pullback of a real source potential, in the standard planar Laplacian. -/
@@ -93,7 +101,7 @@ theorem laplacian_real_holomorphic_comp (u : ℂ → ℝ) (g : ℂ → ℂ)
   have hgr : ContDiff ℝ 2 g := hgc.restrict_scalars ℝ
   have huc : ContDiff ℝ 2 (Complex.ofRealCLM ∘ u) := Complex.ofRealCLM.contDiff.comp hu
   have hc := HTGeometry.ComplexC2Laplacian.laplacian_holomorphic_comp
-    (f := Complex.ofRealCLM ∘ u) (g := g) huc.contDiffAt hgc.contDiffAt
+    (f := Complex.ofRealCLM ∘ u) (g := g) (z := z) huc.contDiffAt hgc.contDiffAt
   rw [complex_laplacian_eq (huc.comp hgr), complex_laplacian_eq huc] at hc
   have hleft := (hu.comp hgr).contDiffAt.laplacian_CLM_comp_left
     (l := Complex.ofRealCLM) (x := z)
@@ -101,6 +109,8 @@ theorem laplacian_real_holomorphic_comp (u : ℂ → ℝ) (g : ℂ → ℂ)
     (l := Complex.ofRealCLM) (x := g z)
   change Δ (Complex.ofRealCLM ∘ (u ∘ g)) z = _ at hc
   rw [hleft, hright] at hc
+  change ((Δ (u ∘ g) z : ℝ) : ℂ) =
+    (Complex.normSq (deriv g z) : ℂ) * ((Δ u (g z) : ℝ) : ℂ) at hc
   exact_mod_cast hc
 
 private theorem source_second_green (u φ : ℂ → ℝ)
@@ -120,7 +130,8 @@ private theorem source_second_green (u φ : ℂ → ℝ)
     (hDφ.continuous_fderiv (by norm_num)).clm_apply continuous_const
   have hcD : HasCompactSupport Dφ := hc.fderiv_apply ℝ v
   have hcDD : HasCompactSupport (fun z => fderiv ℝ Dφ z v) := hcD.fderiv_apply ℝ v
-  have hi := (hDφ.continuous.mul hDu.continuous).integrable_of_hasCompactSupport
+  have hi : Integrable (fun z => Dφ z * Du z) :=
+    (hDφ.continuous.mul hDu.continuous).integrable_of_hasCompactSupport
     hcD.mul_right
   have hfirst := integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable
     (μ := (volume : Measure ℂ)) (f := φ) (g := Du) (v := v) hi

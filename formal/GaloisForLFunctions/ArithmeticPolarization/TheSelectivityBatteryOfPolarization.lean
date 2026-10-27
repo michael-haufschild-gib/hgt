@@ -34,7 +34,9 @@ theorem refl_ofReal {x : ℝ} : refl (x : ℂ) = ((x⁻¹ : ℝ) : ℂ) := by
 def goldenSpectrum : ReflSpectrum where
   S := {((Real.goldenRatio : ℝ) : ℂ), ((Real.goldenRatio⁻¹ : ℝ) : ℂ)}
   zero_not_mem := by
-    simp [Real.goldenRatio_ne_zero]
+    simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
+    exact ⟨fun h => Real.goldenRatio_ne_zero (Complex.ofReal_eq_zero.mp h.symm),
+      fun h => inv_ne_zero Real.goldenRatio_ne_zero (Complex.ofReal_eq_zero.mp h.symm)⟩
   refl_mem β hβ := by
     simp only [Finset.mem_insert, Finset.mem_singleton] at hβ ⊢
     rcases hβ with rfl | rfl

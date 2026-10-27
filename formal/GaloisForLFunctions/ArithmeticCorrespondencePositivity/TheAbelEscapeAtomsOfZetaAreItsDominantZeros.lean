@@ -21,7 +21,8 @@ from the symbol of a profile on vertical lines. Here the profile is the log prof
 * **Translated simple zeros are simple poles** (`exists_cofactor_pole_bound`). Near `ρ − ε`, for a
   simple zero `ρ`, the symbol is `r/(s − ρ + ε)` plus a bounded function,
   `r = ζ(ρ − ε)/(ζ′(ρ)(ρ − ε))` (difference quotients of `ζ(s + ε)`).
-* **The atom law for `ζ`** (`tendsto_receiver_window_atom`). If `ρ` is dominant — the energy is
+* **The atom law for `ζ`** (`exists_receiver_window_pole_bound`, `tendsto_receiver_window_atom`).
+  If `ρ` is dominant — the energy is
   `O((T+1)^κ)` for every `κ > 2(Re ρ − ε) − 1`, which by `TheEscapeAlternative` is the least
   possible exponent when `ρ` is uncancelled — then at `θ = Re ρ − ε − ½` the scaled spectral measure
   of the lines `Re s = θ + e` carries the atom `π ‖r‖² δ_{Im ρ}`. An uncancelled dominant zero
@@ -479,10 +480,69 @@ theorem exists_cofactor_pole_bound {ε : ℂ} {ρ : ℂ} (m : ℂ) (hρ : rieman
 
 /-! ### The atoms of the Abel escape state of `ζ` -/
 
+/-- **The receiver symbol near a dominant simple zero.** For a simple zero `ρ` of `ζ` with
+`½ + ε < Re ρ < 1`, dominant for the receiver, there are `δ₀ > 0` and `M` such that for
+`0 < e < δ₀` the damped profile at `θ + e`, `θ = Re ρ − ε − ½`, is `L¹ ∩ L²` and on the window
+`|y − Im ρ| ≤ δ₀` its symbol is `r/(e + i(y − Im ρ))` up to `M`, `r = ζ(ρ − ε)/(ζ′(ρ)(ρ − ε))`. -/
+theorem exists_receiver_window_pole_bound {ε : ℝ} (hε : 0 < ε) {ρ : ℂ}
+    (hρ : riemannZeta ρ = 0) (hd : deriv riemannZeta ρ ≠ 0) (hre : 1 / 2 + ε < ρ.re)
+    (hre1 : ρ.re < 1)
+    (hdom : ∀ κ : ℝ, 2 * (ρ.re - ε) - 1 < κ →
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℕ, dampedMobiusEnergy ε T ≤ C * ((T : ℝ) + 1) ^ κ) :
+    ∃ δ₀ > 0, ∃ M : ℝ, ∀ e ∈ Ioo (0 : ℝ) δ₀,
+      Integrable (dampedProfile (receiverLogProfile ε) (ρ.re - ε - 1 / 2 + e)) ∧
+      MemLp (dampedProfile (receiverLogProfile ε) (ρ.re - ε - 1 / 2 + e)) 2 ∧
+      ∀ y ∈ Icc (ρ.im - δ₀) (ρ.im + δ₀),
+        ‖lineSymbol (receiverLogProfile ε) (ρ.re - ε - 1 / 2 + e) y -
+          riemannZeta (ρ - ε) / (deriv riemannZeta ρ * (ρ - ε)) /
+            ((e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I)‖ ≤ M := by
+  set θ := ρ.re - ε - 1 / 2 with hθ
+  have hθ0 : 0 < θ := by linarith
+  have hε1 : ε < 1 := by linarith
+  have hρ1 : ρ ≠ 1 := fun h => by rw [h, Complex.one_re] at hre1; exact lt_irrefl _ hre1
+  have hs0 : ρ - (ε : ℂ) ≠ 0 := fun h => by
+    have := congrArg Complex.re h; simp at this; linarith
+  have hs1 : ρ - (ε : ℂ) ≠ 1 := fun h => by
+    have := congrArg Complex.re h; simp at this; linarith
+  obtain ⟨η, hη, M, hpole⟩ := exists_cofactor_pole_bound (ε := (ε : ℂ)) (dampedDensity ε : ℂ)
+    hρ hd hρ1 hs0 hs1
+  set δ₀ := min (η / 2) ((1 - ρ.re) / 2) with hδ₀
+  have hδ₀0 : 0 < δ₀ := lt_min (by linarith) (by linarith)
+  refine ⟨δ₀, hδ₀0, M, fun e he => ?_⟩
+  obtain ⟨C, hC, hE⟩ := hdom (2 * θ + e) (by rw [hθ]; linarith [he.1])
+  have hκ : 0 ≤ 2 * θ + e := by linarith [he.1]
+  have hc : (2 * θ + e) / 2 < θ + e := by linarith [he.1]
+  obtain ⟨hI, hL⟩ := integrable_and_memLp_dampedProfile_receiver hC hκ hE hc
+  refine ⟨hI, hL, fun y hy => ?_⟩
+  set s : ℂ := ((θ + e + 1 / 2 : ℝ) : ℂ) + (y : ℂ) * I with hs
+  have hss₀ : s - (ρ - ε) = (e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I := by
+    apply Complex.ext <;> simp [hs, hθ]; ring
+  have hnorm : ‖s - (ρ - ε)‖ < η := by
+    rw [hss₀]
+    calc ‖(e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I‖ ≤ ‖(e : ℂ)‖ + ‖((y - ρ.im : ℝ) : ℂ) * I‖ :=
+          norm_add_le _ _
+      _ = |e| + |y - ρ.im| := by
+          simp only [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
+      _ < η := by
+          have h1 : |e| < δ₀ := by rw [abs_of_pos he.1]; exact he.2
+          have h2 : |y - ρ.im| ≤ δ₀ := abs_sub_le_iff.mpr ⟨by linarith [hy.2], by linarith [hy.1]⟩
+          linarith [min_le_left (η / 2) ((1 - ρ.re) / 2)]
+  have hne : s ≠ ρ - ε := fun h => by
+    have := congrArg Complex.re (show s - (ρ - ε) = 0 by rw [h, sub_self])
+    rw [hss₀] at this; simp at this; linarith [he.1]
+  obtain ⟨hζ, hsε, -, -, hbound⟩ := hpole s hnorm hne
+  have hsre : s.re = θ + e + 1 / 2 := by simp [hs]
+  have hΦ := complexMellinPairing_receiver_eq hε hε1 hC hκ hE (s := s)
+    (by rw [hsre]; linarith [he.1]) (by
+      rw [hsre, hθ]; linarith [he.2, min_le_right (η / 2) ((1 - ρ.re) / 2)]) hζ hsε
+  rw [lineSymbol_receiver_eq hC hκ hE hc y, show ((θ + e + 1 / 2 : ℝ) : ℂ) + (y : ℂ) * I = s
+    from rfl, hΦ, ← hss₀]
+  exact hbound
+
 /-- **A dominant simple zero is an atom of the Abel escape state.** Let `ρ` be a simple zero of
 `ζ` with `½ + ε < Re ρ < 1` that is dominant for the receiver at damping `ε` — the energy is
-`O((T+1)^κ)` for every `κ > 2(Re ρ − ε) − 1` — and put `θ = Re ρ − ε − ½`. Then on a window around
-`Im ρ` the scaled spectral measure of the lines `Re s = θ + e` converges to the atom
+`O((T+1)^κ)` for every `κ > 2(Re ρ − ε) − 1` — and put `θ = Re ρ − ε − ½`. Then on every small
+window around `Im ρ` the scaled spectral measure of the lines `Re s = θ + e` converges to the atom
 `π ‖r‖² δ_{Im ρ}`, `r = ζ(ρ − ε)/(ζ′(ρ)(ρ − ε))`:
 `e ∫ ‖G_ε(θ + e + iy)‖² w(y) dy → π ‖r‖² w(Im ρ)` for every Lipschitz bounded weight. The atom
 vanishes exactly when `ρ` is cancelled, `ζ(ρ − ε) = 0`. No explicit formula enters. -/
@@ -496,60 +556,17 @@ theorem tendsto_receiver_window_atom {ε : ℝ} (hε : 0 < ε) {ρ : ℂ} (hρ :
           ‖lineSymbol (receiverLogProfile ε) (ρ.re - ε - 1 / 2 + e) y‖ ^ 2 * w y) (𝓝[>] 0)
         (𝓝 (Real.pi * ‖riemannZeta (ρ - ε) / (deriv riemannZeta ρ * (ρ - ε))‖ ^ 2 *
           w ρ.im)) := by
-  set θ := ρ.re - ε - 1 / 2 with hθ
-  have hθ0 : 0 < θ := by linarith
-  have hε1 : ε < 1 := by linarith
-  have hρ1 : ρ ≠ 1 := fun h => by rw [h, Complex.one_re] at hre1; exact lt_irrefl _ hre1
-  have hs0 : ρ - (ε : ℂ) ≠ 0 := fun h => by
-    have := congrArg Complex.re h; simp at this; linarith
-  have hs1 : ρ - (ε : ℂ) ≠ 1 := fun h => by
-    have := congrArg Complex.re h; simp at this; linarith
-  obtain ⟨η, hη, M, hpole⟩ := exists_cofactor_pole_bound (ε := (ε : ℂ)) (dampedDensity ε : ℂ)
-    hρ hd hρ1 hs0 hs1
-  set δ₀ := min (η / 2) ((1 - ρ.re) / 2) with hδ₀
-  have hδ₀0 : 0 < δ₀ := lt_min (by linarith) (by linarith)
-  refine ⟨δ₀, hδ₀0, fun δ hδ0 hδδ₀ w L W hL hw hwL hwW => ?_⟩
-  -- the damped profiles at `c = θ + e` are `L¹ ∩ L²` and their symbol is `G_ε`
-  have hdata : ∀ e ∈ Ioo (0 : ℝ) δ, Integrable (dampedProfile (receiverLogProfile ε) (θ + e)) ∧
-      ∀ y : ℝ, y ∈ Icc (ρ.im - δ) (ρ.im + δ) →
-        ‖lineSymbol (receiverLogProfile ε) (θ + e) y -
-          riemannZeta (ρ - ε) / (deriv riemannZeta ρ * (ρ - ε)) /
-            ((e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I)‖ ≤ M := by
-    intro e he
-    obtain ⟨C, hC, hE⟩ := hdom (2 * θ + e) (by rw [hθ]; linarith [he.1])
-    have hκ : 0 ≤ 2 * θ + e := by linarith [he.1]
-    have hc : (2 * θ + e) / 2 < θ + e := by linarith [he.1]
-    refine ⟨(integrable_and_memLp_dampedProfile_receiver hC hκ hE hc).1, fun y hy => ?_⟩
-    set s : ℂ := ((θ + e + 1 / 2 : ℝ) : ℂ) + (y : ℂ) * I with hs
-    have hss₀ : s - (ρ - ε) = (e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I := by
-      apply Complex.ext <;> simp [hs, hθ]; ring
-    have hnorm : ‖s - (ρ - ε)‖ < η := by
-      rw [hss₀]
-      calc ‖(e : ℂ) + ((y - ρ.im : ℝ) : ℂ) * I‖ ≤ ‖(e : ℂ)‖ + ‖((y - ρ.im : ℝ) : ℂ) * I‖ :=
-            norm_add_le _ _
-        _ = |e| + |y - ρ.im| := by
-            simp only [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
-        _ < η := by
-            have h1 : |e| < δ := by rw [abs_of_pos he.1]; exact he.2
-            have h2 : |y - ρ.im| ≤ δ := abs_sub_le_iff.mpr ⟨by linarith [hy.2], by linarith [hy.1]⟩
-            linarith [min_le_left (η / 2) ((1 - ρ.re) / 2)]
-    have hne : s ≠ ρ - ε := fun h => by
-      have := congrArg Complex.re (show s - (ρ - ε) = 0 by rw [h, sub_self])
-      rw [hss₀] at this; simp at this; linarith [he.1]
-    obtain ⟨hζ, hsε, -, -, hbound⟩ := hpole s hnorm hne
-    have hsre : s.re = θ + e + 1 / 2 := by simp [hs]
-    have hΦ := complexMellinPairing_receiver_eq hε hε1 hC hκ hE (s := s)
-      (by rw [hsre]; linarith [he.1]) (by
-        rw [hsre, hθ]; linarith [he.2, min_le_right (η / 2) ((1 - ρ.re) / 2)]) hζ hsε
-    rw [lineSymbol_receiver_eq hC hκ hE hc y, show ((θ + e + 1 / 2 : ℝ) : ℂ) + (y : ℂ) * I = s
-      from rfl, hΦ, ← hss₀]
-    exact hbound
-  exact tendsto_window_atom (S := fun e y => lineSymbol (receiverLogProfile ε) (θ + e) y) hδ0
-    (le_trans (norm_nonneg _) (hdata (δ / 2) ⟨by linarith, by linarith⟩ |>.2 ρ.im
-      ⟨by linarith, by linarith⟩)) hL
-    (fun e he => (continuous_lineSymbol (hdata e he).1).continuousOn)
-    (fun e he y hy => (hdata e he).2 y hy) hw hwL hwW
-
+  obtain ⟨δ₀, hδ₀, M, hdata⟩ := exists_receiver_window_pole_bound hε hρ hd hre hre1 hdom
+  refine ⟨δ₀, hδ₀, fun δ hδ0 hδδ₀ w L W hL hw hwL hwW => ?_⟩
+  have hsub : ∀ e ∈ Ioo (0 : ℝ) δ, e ∈ Ioo (0 : ℝ) δ₀ := fun e he => ⟨he.1, he.2.trans_le hδδ₀⟩
+  have hwin : ∀ y ∈ Icc (ρ.im - δ) (ρ.im + δ), y ∈ Icc (ρ.im - δ₀) (ρ.im + δ₀) :=
+    fun y hy => ⟨by linarith [hy.1], by linarith [hy.2]⟩
+  exact tendsto_window_atom
+    (S := fun e y => lineSymbol (receiverLogProfile ε) (ρ.re - ε - 1 / 2 + e) y) hδ0
+    (le_trans (norm_nonneg _) ((hdata (δ / 2) (hsub _ ⟨by linarith, by linarith⟩)).2.2 ρ.im
+      (hwin _ ⟨by linarith, by linarith⟩))) hL
+    (fun e he => (continuous_lineSymbol (hdata e (hsub e he)).1).continuousOn)
+    (fun e he y hy => (hdata e (hsub e he)).2.2 y (hwin y hy)) hw hwL hwW
 
 /-- **A dominant uncancelled zero forces Abel escape at rate `1/e`.** Under the hypotheses of the
 atom law with `ζ(ρ − ε) ≠ 0`, the Abel energy `A_{θ+e}(0, 0)` of the receiver diverges as `e ↓ 0`:

@@ -34,7 +34,8 @@ zero. Let `σ* = max{Re w : M(w) ≠ 0}`. Then `σ*` is a real pole of the multi
 rational `CentralVanishingCeiling γ` ⟺ no off-critical zero at ordinate `γ`, and
 `∀ γ ≠ 0` rational ceiling ⟺ RH.
 
-**Status:** paper proof complete; Lean in progress.
+**Status:** formalized — card `3-formalized/bgg-rational-deformation-classification.md`.
 
 ## Log
 - 2026-10-26 — created; C1 opened.
+- 2026-10-27 — C1 formalized.

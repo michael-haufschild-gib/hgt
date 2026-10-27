@@ -8,8 +8,9 @@
 
 ## Goal
 
-All code belongs to `formal/GaloisForLFunctions/ConjugateDiagonalGeometry/`, with
-its own sibling umbrella. The foundational README explains motivation, objects,
+Programme-specific code belongs to `formal/GaloisForLFunctions/ConjugateDiagonalGeometry/`,
+with its own sibling umbrella. Reusable analysis stays with its existing owner,
+including `HTGeometry`, and is imported here. The foundational README explains motivation, objects,
 language, mechanisms, traps, questions, tools, pillars, programme interfaces and
 contribution/success criteria. Full completion requires answers to all eleven
 questions and all eight missing tool families in §4; several endpoints imply RH.
@@ -34,9 +35,9 @@ central-order reduction, successor-charge question and two-variable carriers.
 | Obligation | Evidence needed | Current status |
 |---|---|---|
 | Foundational README | All requested conceptual sections, mathematically faithful boundaries | Initial draft written |
-| Dedicated code and umbrella | New checked leaves, imports in programme and cross-area umbrellas | Pending |
+| Dedicated code and umbrella | New checked leaves, imports in programme and cross-area umbrellas | Checked moving-source chain wired; no umbrella builds |
 | Q1 conjugation correspondence | Constructed arithmetic action, spectral identification | Open |
-| Q2 arithmetic evaluation of `D` | Exact identity or substantive prime-side defect estimate | Open |
+| Q2 arithmetic evaluation of `D` | Exact identity or substantive prime-side defect estimate | Moving positive theta formula verified; significance audit open |
 | Q3 selective count | Fibre-dependent count with correct quadratic term | Open |
 | Q4 rank growth | Constructed section spaces and rank theorem | Open |
 | Q5 beyond-horizon localization | Odd-sector sign and required exceptional-set control | Open |
@@ -151,16 +152,28 @@ to the collided trace, with constants controlled when reflection partners merge.
 
 ## Current files and validation
 
+Current validation supersedes the historical check notes below: the full
+source chain through `UniformThetaSourceMetric` passes individual Lean checks.
+The final source-only check verifies the moment, collided-norm, and Hecke-defect
+endpoints; all three transitive axiom lists contain only `propext`,
+`Classical.choice`, `Quot.sound`. The exact theorem and remaining significance
+gate are in `../3-formalized/theta-source-moving-collided-trace.md`. The explicit regulator
+remains a separate unproved conjecture. Accepted count remains 0/250.
+
 - `DefectKernel.lean`: individual source check passed; olean built because the
   new `ZetaDepthDistribution.lean` imports it.
 - Missing dependency `ArithmeticPolarization/HeckeInvarianceOfTheCollidedPolarizationIsRH.olean`
   built successfully from its existing source; source unchanged.
 - `ZetaDepthDistribution.lean`: initial source check exposed two elaboration errors,
   fixed by qualifying translation and making indicator cases explicit. Olean check
-  running, exec session `29466`; needed by `TwoScaleDepthRigidity.lean`.
-- `TwoScaleDepthRigidity.lean`, `TheConductorForcingGap.lean`: written, not checked yet.
-- Programme umbrella, cross-area import, transitive axiom audit, final source checks
-  and README theorem references remain pending.
+  passed; needed by `TwoScaleDepthRigidity.lean`.
+- `TwoScaleDepthRigidity.lean`: source check passed after explicit weight/kernel
+  arguments removed costly implicit inference.
+- `TheConductorForcingGap.lean`: source-only check and transitive audits passed
+  for the positive signal bound, necessary aperture law, and separation.
+  Closed card: `../5-failed/conductor-forcing-separation.md`. Excluded from count.
+- Programme umbrella and cross-area import now include the six checked leaves.
+  Transitive axiom audit and final individual source checks remain pending.
 
 ## A nonholomorphic source formula: paper construction
 
@@ -198,7 +211,8 @@ Existing inputs inspected: `EntirePoincareLelong`,
 `EulerShiftPairIncidenceCurrent.xi_isPoincareLelongOfSmooth`,
 `EvenSectorFullPositivity.differentiable_paperFT_of_compact`,
 `CompletedPrimeFluxFittingAttachment.xi_analyticOrderAt_eq_riemannZeta_of_mem_strip`,
-and `ZetaXiZeroCorrespondence`. Construction and Lean verification remain pending.
+and `ZetaXiZeroCorrespondence`. `XiSourceCurrent.lean` now contains the construction
+and passed its individual olean check.
 
 ## A faithful two-scale rigidity criterion: paper argument
 
@@ -220,3 +234,155 @@ divisor and a faithful source. It is a new finite-scale spectral rigidity
 criterion, not a proof that its value vanishes and not an arithmetic upper bound.
 The necessary Hardy input must be an existing analytic theorem, with its
 dependencies audited; no numerical zero certificate is needed.
+
+## Common positive source sequence: paper proof
+
+Let `P_eta(s) = eta |xi'(s)|²/(|xi(s)|²+eta)²`, and fix
+`w(s)=exp((Re s)²)/(1+(Im s)²)²`. The actual transform estimate in
+`IsolatedDeepZeroWeilDetection.norm_paperFT_le_decay` yields
+`|F(s)|² <= C_f w(s)`: square its fourth-order vertical decay and use
+`2a|Re s-1/2| <= (Re s)²+a²+a`. On the open xi strip,
+`w(rho) <= (5 exp(1)/4)/(1+|gammaOf rho|²)`, so the known actual
+zero summability gives `M=Σ m_rho w(rho)<infinity`.
+
+Normalize source readings by `1/pi`. For each `n`, choose the least `k_n>=n`
+whose reading of `chi_n w` differs by less than `1/(n+1)` from
+`(1/(2pi)) integral log|xi| Delta(chi_n w)`. Existence follows from compact
+regulator convergence; the choice condition contains no zero coordinate.
+The normalized weight readings tend to `M`, by the current identity and
+summable cutoff exhaustion. For any fixed compact smooth test, `chi_n=1`
+on its support eventually and `k_n->infinity`, so its readings converge to
+its divisor trace along this same schedule.
+
+For nonnegative smooth `phi<=Cw`, denote the common source reading by `R_n`.
+For each fixed `m`, positivity and linearity give
+
+```
+R_n(chi_m phi) <= R_n(phi)
+  <= R_n(chi_m phi) + C(R_n(w)-R_n(chi_m w)).
+```
+
+Each bound has a limit as `n->infinity`. Their limits both tend to
+`Σ m_rho phi(rho)` as `m->infinity`, using the summable domination by `Cw`.
+Thus `R_n(phi)` converges to that trace. This proves convergence for the
+squared transform of every compact C² source test with one common schedule.
+
+The same weight controls every finite depth moment, without choosing a new
+schedule for scale or moment order. Write `phi_j(f,L)=|F|² k_L^j`. The exact
+pointwise translation identity is
+
+```
+phi_(j+1)(f,L) = phi_j(T_L f,L)+phi_j(T_-L f,L)-2phi_j(f,L).
+```
+
+The last term is nonpositive after subtraction, so universal domination for
+order `j` and the two translated compact tests implies domination for order
+`j+1`. Induction supplies all finite orders. Consequently the same positive
+source sequence simultaneously recovers `D`, the Hecke defect and every
+finite fixed-scale depth moment. This is pointwise convergence for each test,
+scale and order; no unproved uniform convergence across these parameters is
+asserted.
+
+Lean implementation: `UniversalSourceWeight`, `CommonSourceRegulator`,
+`CommonSourceMetric`; each passed its individual olean check. Supporting
+curvature and Green calculus has also passed. Arithmetic source identification,
+the moving-window extension and the final novelty audit remain part of the
+contribution gate.
+
+## Verification update
+
+`SourceCurvatureCalculus.lean` and `XiSourceCurrent.lean` passed their individual
+olean checks. The new programme umbrella imports these and the previously
+checked defect/depth/rigidity leaves; `MainTheorems.lean` imports the programme.
+Neither umbrella was compiled. `XiLogRegularization.lean` also passed its
+individual olean check after API and elaboration repairs. `XiPositiveSourceMetric`,
+`UniversalSourceWeight` and `XiLogL1Convergence` have also passed their individual
+olean checks. `SourceCutoffControl`, `CommonSourceRegulator` and
+`CommonSourceMetric` have also passed. The theta identification and moving-window
+leaves remain unchecked.
+The transitive axiom audit passed for eleven principal checked declarations;
+their closures contain only `propext`, `Classical.choice` and `Quot.sound`.
+No accepted-contribution claim yet.
+
+## Moving logarithmic windows: derivation and further extensions
+
+The C² endpoint with `|τ|≤n/2` and `j|L|≤2log(n+1)` described below is now
+verified. Broader windows using higher regularity remain separate conjectures.
+Historical proof-plan paragraphs below do not certify those extensions.
+
+Strengthen the common-source limit to `|L| <= c log n` for every fixed compact
+smooth test, fixed `c`, and finite moment order. Choose the source regulator by
+local L1 potential error below `exp(-n^4)/M_n`, where
+`M_n=1+||D_1 chi_n||∞+||D_i chi_n||∞+||Delta chi_n||∞`. Entire-transform bounds and Cauchy estimates control
+the compact test Laplacian by `exp(O(n²+n log n))`; the prescribed local error
+wins uniformly in the logarithmic window. On the actual strip, translation
+costs only a fixed power of n. The existing arbitrary-order transform decay
+then controls the full-divisor tail against `summable_zetaZeroConfig`.
+
+The rapid-decay input is already proved in
+`ImaginaryShiftQuadraticFourierDefect.norm_paperFT_mul_one_add_pow_le` and
+`HTGeometry/CompactTestTransformOrder.exists_testTransform_decay_order`.
+The required Cauchy derivative estimate is also available in mathlib and used
+by `HTGeometry/CauchySecondOrderStep`. New obligations are the cutoff seminorm
+construction, quantitative local error bound and moving-window passage.
+This remains a conjecture/proof plan; no uniform-limit theorem has been checked.
+
+The common-index definition now includes both weighted-mass and local-error
+requirements. Both have proved eventually valid certificates, so the least
+index exists without consulting tests or divisor coordinates. Cutoff support
+and supremum bounds are written in `SourceCutoffControl` and under verification.
+`SourceSquareCalculus` contains the written, unchecked product-Laplacian and
+holomorphic-square estimates needed for the quantitative current bound.
+
+The uniform tail admits a finite-regularity refinement. For a compact Cʳ test,
+`|F(rho)|² <= C(1+|Im rho|)^(-2r)`. The reference divisor density is
+`q_rho=m_rho/(1+|gammaOf rho|²)`. On the omitted part of the nth cutoff,
+`|Im rho|>n`; the moment factor is at most `2^j exp(j|L|)`. Therefore
+`|L|<=c log(n+1)` and `cj<=2r-2` leave a summable multiple of `q_rho` as a
+uniform tail majorant. The cutoff eventually equals one at each fixed zero,
+so dominated convergence includes equality at the boundary `cj=2r-2`.
+This is a sufficient regularity range, not a claimed optimal threshold.
+Smooth compact tests supply every finite logarithmic window and moment order.
+The stronger endpoint still requires a Lean proof and novelty audit.
+
+The first uniform endpoint can stay on the existing `CompactTest` domain:
+all C² compact tests and all finite orders `j`, in the joint window
+`j |L| <= 2 log(n+1)`. No new smooth-test wrapper is needed. The already
+proved universal weight gives `|F(rho)|² <= C e/(1+gamma²)²`. On the omitted
+cutoff, `|gamma|>n` and `(n+1)² <= 2(1+gamma²)`. Hence the moment growth
+cancels one of the two quadratic denominators, leaving a fixed multiple of
+the summable reference density. This closes the boundary tail using only
+the checked C² input. The case `j=0` permits every L because that kernel is
+independent of L. Higher regularity enlarges the joint window as described
+above, but is not needed for this first source-evaluation endpoint.
+
+The endpoint should also be uniform for ordinate modulations `twist τ f` with
+`|τ|<=n/2`. This is the form that evaluates a local high-ordinate density
+statistic. The corpus already proves conductor-scale upper/lower bounds for
+`D(twist τ f)` in `TheLocalWeylLawOfTheCollidedForm`; those bounds are not new
+work here. The new obligation is a simultaneous positive arithmetic source
+formula for its logarithmic Hecke moments. Outside the cutoff,
+`|Im rho-τ|>=|Im rho|/2`, so the fourth-order transform decay again leaves a
+summable reference tail. The source Cauchy envelope includes
+`(n+3+|τ|)²`, which stays quadratic on the stated ordinate window.
+`SourceMovedTests` packages actual compact translated/modulated tests and
+identifies their transforms with this two-parameter entire family.
+
+## Source construction: selectivity calibration
+
+The proposed positive metric computes the conjugate diagonal, so it is not a
+positivity selector for the reflection pairing. Entire planted-quartet sources
+would retain their additional positive divisor masses and their nonzero
+translation defects. Multiplicative twins or Beurling completions satisfying
+the same entire-function and summability properties would also have positive
+source metrics; no successor charge or arithmetic-fibre selection is supplied.
+
+Pole-order relaxations require a separate analysis: at a pole, the regulated
+logarithm used here is not a globally smooth potential, and the current has
+signed pole mass. The entire xi completion is an actual input to the proved
+construction, not a property silently assigned to a meromorphic model.
+Height-coupled deformations and escape families are not covered by convergence
+for one fixed source; uniformity over a changing source has not been proved.
+Changing theta characteristic changes the literal source and requires its own
+completion identity. None of these calibrations asserts capacity payment,
+Hecke invariance or an RH conclusion.

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticPolarization.TheCollidedFormIsAPolarization
+import GaloisForLFunctions.ArithmeticPolarization.ThePriceOfEllipticLocalization
 import GaloisForLFunctions.RHTower.LorentzianZeroMass
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.ZeroDensityFilteredWeilPositivityAndCoercivity
 
@@ -146,8 +147,8 @@ theorem eventually_collidedForm_twist_ge {f : ℝ → ℂ} (hf : ContDiff ℝ 2 
   set B := envelope f
   set K := C + (4 + 1) * Real.exp a
   -- `|γ| → ∞` along the cocompact filter
-  have habs : Tendsto (fun γ : ℝ => |γ|) (cocompact ℝ) atTop := by
-    simpa using tendsto_norm_cocompact_atTop (E := ℝ)
+  have habs : Tendsto (fun γ : ℝ => |γ|) (cocompact ℝ) atTop :=
+    (tendsto_norm_cocompact_atTop (E := ℝ)).congr fun γ => Real.norm_eq_abs γ
   have hlog : Tendsto (fun γ : ℝ => Real.log |γ|) (cocompact ℝ) atTop :=
     Real.tendsto_log_atTop.comp habs
   rcases eq_or_lt_of_le hN with hN0 | hNpos
@@ -185,8 +186,8 @@ theorem eventually_collidedForm_twist_le {f : ℝ → ℂ} (hf : ContDiff ℝ 2 
   have hE : 0 ≤ E := by positivity
   set C := RHTower.xiLineTwoLogDerivConstant
   refine ⟨E * 8 * (|C| + 2), ?_⟩
-  have habs : Tendsto (fun γ : ℝ => |γ|) (cocompact ℝ) atTop := by
-    simpa using tendsto_norm_cocompact_atTop (E := ℝ)
+  have habs : Tendsto (fun γ : ℝ => |γ|) (cocompact ℝ) atTop :=
+    (tendsto_norm_cocompact_atTop (E := ℝ)).congr fun γ => Real.norm_eq_abs γ
   have hlog : Tendsto (fun γ : ℝ => Real.log |γ|) (cocompact ℝ) atTop :=
     Real.tendsto_log_atTop.comp habs
   filter_upwards [hlog.eventually_ge_atTop 1, habs.eventually_ge_atTop 4] with γ h1 h4
@@ -198,6 +199,10 @@ theorem eventually_collidedForm_twist_le {f : ℝ → ℂ} (hf : ContDiff ℝ 2 
       _ ≤ 1 + Real.log |γ| := by linarith [Real.log_two_lt_d9]
       _ = _ := by ring
   have hC : C ≤ |C| := le_abs_self C
-  nlinarith [abs_nonneg C]
+  have key : 8 * (C + Real.log (|γ| + 4)) ≤ 8 * (|C| + 2) * Real.log |γ| := by
+    nlinarith [abs_nonneg C, mul_le_mul_of_nonneg_left h1 (abs_nonneg C)]
+  calc E * (8 * (C + Real.log (|γ| + 4))) ≤ E * (8 * (|C| + 2) * Real.log |γ|) :=
+        mul_le_mul_of_nonneg_left key hE
+    _ = E * 8 * (|C| + 2) * Real.log |γ| := by ring
 
 end GaloisForLFunctions.ArithmeticPolarization

@@ -36,8 +36,9 @@ the Stepanov method over `ℤ` (Siegel abundance + integrality floor), the base 
 | E5 theta surface, soft polarization | `TheThetaSurface` | Lean |
 | E6 torsion characteristics, Gauss sums | `TheTorsionCharacteristics` | Lean |
 | E7 Stepanov / Nair | `TheStepanovMethodOverZ` | Lean |
-| E8 `ℙ¹ × ℙ¹` calibration | `TheProjectiveSquareCalibration` | Lean |
+| E8 `ℙ¹ × ℙ¹` calibration; split hyperelliptic curves unitary by counting | `TheProjectiveSquareCalibration`, `TheHyperellipticCalibration`, `RHTower.Hyperelliptic*` | Lean |
 | E9 golden base countermodel, five currencies | `TheBaseAxioms` | Lean |
+| E10 the prime side is an intersection of torsion orbits; renormalized torsion energy | `TheLogEnergyOfRootsOfUnity`, `TheIntersectionOfTorsionOrbits`, `TheWeilPrimeKernelIsARenormalizedTorsionEnergy` | Lean |
 | open: selective (non-soft) polarization; naive height of trace type on `ℤ[G]`; integer Chebyshev limit | — | open |
 
 ## Key paper facts
@@ -52,3 +53,5 @@ the Stepanov method over `ℤ` (Siegel abundance + integrality floor), the base 
 
 ## Log
 - 2026-10-26 — created; README first draft; E1–E9 formalized, README updated with pillars and answers.
+- 2026-10-27 — E10 formalized; `𝔽_q` Stepanov comparison cites `RHTower.Stepanov`; loop in `logs/aet-250-contributions-2026-10-26.md`.
+- 2026-10-27 — curve calibration: RH for split odd-degree hyperelliptic curves (card `3-formalized/rh-split-hyperelliptic-by-counting.md`) and `TheHyperellipticCalibration`.

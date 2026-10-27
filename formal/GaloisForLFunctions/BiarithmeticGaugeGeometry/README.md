@@ -241,6 +241,14 @@ sharp structural obstruction:
 | **G5 Polar-Neutral Rank-One Collapse & Cell Subdivision** | Restoring off-diagonal polar pairs cancels `archReflectedDiagWeight`'s linear growth on $\sum s(n)q_n = 0$; continuum cells $I_n = [\log n, \log(n+1))$ satisfy $\sum_{r<m} w_{am+r} = w_a$ and an $m$-uniform disjoint-block biarithmetic Sobolev remainder bound. | `fullArchCrossingForm_eq_polar_sq_sub_levy`, `reflectedDiag_add_offDiagPolar_eq_neg_levy`, `exists_nonzero_polarNeutral_profile`, `sum_logCellWidth_mul_add_eq`, `continuumCellShiftCorr_eq_spine_add_remainder`, `abs_euclideanCellRemainder_le_of_supported` |
 | **G6 Torsion Stabilizer Escape & Bi-Torsion Contrast** | Separable monomial $\mathbb{Z}^2$ dilations collapse to 1D marginals; dyadic rotation $u \mapsto 2u$ on $(\mathbb{Z}/q\mathbb{Z})^\times$ is fixed-point-free for every odd $q \ge 3$; $\Delta_{q_1, q_2}$ kills the $n=0$ pole mode, is coprime-dilation invariant, and sign-separates $q_1 \mid n$ from $q_2 \mid n$. | `monomial_theta_sum_factors`, `dyadic_torsion_rotation_fixed_point_free`, `ramanujanTorsionSum_coprime_mul`, `sum_normSq_ramanujanTorsionSum`, `biTorsionContrast_zero`, `biTorsionContrast_primes_values` |
 | **G7 Master Synthesis** | Unified unconditional conjunction of Pillars G1–G6. | `biarithmetic_gauge_geometry_master_theorem` |
+| **G8 Lattice Real Anchor & Rational Classification** | A nonnegative Dirichlet lattice plus a finite polar sum with even positive-definite sections has nonnegative polar scale weight, and its rightmost weighted pole is real with dominant weight. Every nontrivial rational deformation `ζ_γ · ∏(s − zᵢ)^{mᵢ}` is anchored at `ξ(σ* + iγ) = 0`: rigid at every height whose line is `ξ`-zero-free (unconditionally at `γ = 0`), exact central descent otherwise; the rational ceiling at `γ ≠ 0` is equivalent to no off-critical zero at ordinate `γ`, and to RH at all heights. | `polarScaleWeight_nonneg_of_lattice_posDef`, `lattice_real_anchor`, `rationalDeformation_real_anchor`, `rationalDeformation_rigid_of_xi_ne_zero_on_line`, `rationalDeformation_central_descent`, `rationalCentralVanishingCeiling_iff`, `riemannHypothesis_iff_forall_rationalCentralVanishingCeiling` |
+| **G9 Anchor-Line Positivity & Capacity** | On every vertical line bounding the weighted poles, the residue divisor of a positive exponential-cosine density is even positive definite; for rational deformations of lattice systems, `β ↦ −M(σ + iβ)` is positive definite. Consequences: in `HeightCoupledSystem 2 1 1 γ` without off-critical zeros at `γ`, each created upper-half critical zero costs two central orders (`W_β` extremal); in `CompletedPositiveSystem κ d`, rational deformations of `ζ^d` have boundary capacity `(κ − d)/2` (the capacity `κ/2` is never attained) and are trivial when `κ ≤ d`. | `lineResidue_isEvenPosDef`, `rationalDeformation_lineResidue_isEvenPosDef`, `analyticOrderAt_add_eq_of_eq_mul_rationalMultiplier`, `rationalDeformation_critical_conservation`, `rationalDeformation_zetaPow_boundary_capacity`, `rationalDeformation_zetaPow_rigid` |
+| **G10 Off-Line Rigidity of Positive Prime-Mass Deformations** | If `−F'/F + ζ_γ'/ζ_γ` is the Laplace transform of any nonnegative measure, then — absent off-critical zeros at ordinate `γ` — `Λ` has exactly the zeros of `Λ_γ` off the critical line and no larger central order (Landau at the abscissa of the Lebesgue-thickened measure). The positive ceiling at `γ ≠ 0` is equivalent to no off-critical zero at `γ`, and to RH at all heights. | `positiveDeformation_orders_and_anchor`, `positiveDeformation_offLine_rigid`, `exists_positiveDeformation_above_ceiling`, `positiveCentralVanishingCeiling_iff`, `riemannHypothesis_iff_forall_positiveCentralVanishingCeiling` |
+| **G11 Square-Root Deficit Law** | The rigidity survives a holomorphic perturbation on `Re s > σ_E`, `σ_E < 1/2`. Hence an arithmetic member `−F'/F = Σ b(n)n^{−s}` (`b ≥ 0`) of `HeightCoupledSystem 2 1 1 γ` that exceeds the central order of `ζ_γ` (without off-critical zeros at `γ`) must remove prime mass of at least square-root size: `Σ (b_γ(n) − b(n))⁺ n^{−s}` has abscissa `≥ 1/2`. | `perturbedDeformation_offLine_rigid`, `latticeMember_offLine_rigid_of_subcritical_deficit`, `centralExcess_forces_squareRoot_deficit` |
+| **G12 Deficit–Excess Law** | At the threshold the deficit's Abelian residue bounds the excess: if `Σ d(n)n^{−s}` converges on `Re s > 1/2`, then `liminf_{σ↓1/2} (σ − ½) Σ d(n)n^{−σ} ≥ ord_{1/2} Λ − ord_{1/2} Λ_γ`. | `deficit_residue_ge_centralExcess` |
+| **G13 Positive Coupled Rigidity** | Without off-critical zeros at `γ`, the critical jump `t ↦ ord_{½+it} Λ_γ − ord_{½+it} Λ` of a positive deformation is even positive definite (so bounded by the central drop), and a deformation with no central drop is `K ζ_γ`. Positive rigidity at `γ` ⟺ no zero of `ξ` on `Im s = γ`; RH ⟺ every positive deformation at every height is trivial or strictly lowers the centre. | `criticalJump_isEvenPosDef`, `positiveDeformation_trivial_of_central_le`, `positiveCoupledRigid_iff`, `riemannHypothesis_iff_forall_positiveChiral` |
+| **G14 Strong Multiplicity One** | Without off-critical zeros at `γ`, an arithmetic member (`−F'/F = Σ b(n)n^{−s}`, `b ≥ 0`) whose deficit against `b_γ` has abscissa `< ½` and which keeps the central order has `b = b_γ` and `F = K ζ_γ`; equal central order with `b ≠ b_γ` forces a square-root deficit. Unconditional at zero-free ordinates. | `latticeMember_eq_of_subcritical_deficit`, `half_le_deficit_abscissa_of_ne`, `latticeMember_eq_of_xi_ne_zero_on_line` |
+| **G15 Multi-Prime Repulsion** | For `N ≥ 2` distinct primes, `Σ_j (1 + cos(γ log p_j)) ≥ γ² e^{−2τL}/(32Nτ²)` with `τ = (N(|γ|L/π + 1))^{1/(N−1)}`, `L = Σ log p_j` (Siegel's lemma + unique factorization, Baker-free); for every `ε > 0` finitely many primes give `≥ exp(−|γ|^ε)` at large height. | `multiPrime_repulsion`, `exists_primes_repulsion_ge_exp_neg_rpow` |
 
 ---
 
@@ -251,7 +259,8 @@ sharp structural obstruction:
    Never through multiplicative diagonal, ratio, or product kernels alone (G1), and locally on
    $\{1, 2, 3, 4\}$ through the successor connection $A_\omega(2), A_\omega(3)$, whose proximity to
    the Liouville vacuum along the Kronecker line costs $|\gamma| \ge \log(1/(50\varepsilon))$ (G2).
-   The open step is upgrading exponential repulsion $e^{-|\gamma|}$ across multi-prime Bézout plaquettes.
+   Across $N$ primes the repulsion is stretched-exponential, $\exp(-c|\gamma|^{1/(N-1)})$, so finitely
+   many primes beat every $\exp(-|\gamma|^\varepsilon)$ (G15).
 
 2. **What replaces false scalar uniqueness (`CoupledRigid γ`) in higher-degree Bochner–Hadamard forcing?**
    Two-sided uniqueness fails because collided critical-line zeros can split *outward* via $W_\beta$
@@ -260,7 +269,13 @@ sharp structural obstruction:
    off-critical quartets ($\Delta\operatorname{ord}_{1/2} = +4$) (G3). Thus the exact surviving target
    is the chiral one-sided ceiling `CentralVanishingCeiling γ` — or restricting the coupled class to
    discrete $O(2^{-\sigma})$ Dirichlet log-lattice support, which blocks rational Hadamard surgery
-   altogether (G3, G4).
+   altogether (G3, G4). On rational deformations the answer is exact (G8): two-sided rigidity holds at
+   every height whose horizontal line carries no zero of $\xi$, outward descent is forced otherwise,
+   and the ceiling at $\gamma \ne 0$ is equivalent to the absence of off-critical zeros at ordinate $\gamma$.
+   The same holds for every deformation adding nonnegative prime mass (G10): a violator of the full
+   ceiling must remove prime mass of at least square-root size (G11). On the positive sector two-sided
+   rigidity holds exactly at the zero-free ordinates (G13): positive deformations are trivial or lower
+   the central order, and pay for every critical zero they move from the centre.
 
 3. **How do continuum translation-invariant Weil forms descend to discrete arithmetic profiles on
    $[1, X]$ without linear diagonal blowup or cutoff smearing?**
@@ -322,7 +337,9 @@ sharp structural obstruction:
    and exits `HasDirichletLatticeDecay` via $\Theta(\sigma^{-3})$ decay, while off-critical quartet
    contractions increase $\operatorname{ord}_{1/2}$ by $+4$ and *also* exit `HasDirichletLatticeDecay`!
    Characterize which Hadamard multipliers preserve **both** `HeightCoupledSystem 2 1 1 γ` and discrete
-   integer log-lattice support $\{\log n : n \ge 1\}$.
+   integer log-lattice support $\{\log n : n \ge 1\}$. The rational class is classified (G8); open:
+   transcendental multipliers with infinitely many singularities, where the Landau anchor needs a
+   lattice-sieve beyond finite polar sums.
 
 2. **Polar-neutral Sobolev vs. divisibility-spine optimization on logarithmic cells.**
    On the codimension-$1$ hyperplane $\sum_{n=2}^X \frac{n-1}{\sqrt{n}} w_n c_n = 0$, the linear
@@ -331,10 +348,9 @@ sharp structural obstruction:
    polar-neutral profiles $c$ on $[1, X]$ whose prime divisibility spine $\sum_p \log p \sum_a w_a c_a c_{ap}$
    dominates $\mathcal{E}_{\mathrm{Sob}}(c)^{1/2}$.
 
-3. **Multi-plaquette Diophantine holonomy on $\Omega_{\mathcal{P}}$.**
-   Using $N$ primes simultaneously in determinant-eliminated successor relations to improve the two-prime
-   Catalan exponent $e^{-|\gamma|}$ to $e^{-c |\gamma|^{1/(N-1)}}$ via Dirichlet pigeonhole / Siegel
-   linear-form geometry without transcendentality axioms.
+3. **Multi-plaquette Diophantine holonomy on $\Omega_{\mathcal{P}}$.** Answered (G15): Siegel's lemma
+   on the odd phase centres and unique factorization give $e^{-c|\gamma|^{1/(N-1)}}$ on $N$ primes.
+   Open: polynomial repulsion $|\gamma|^{-C}$ (Baker strength) from a growing prime set.
 
 4. **Non-separable bi-torsion theta operators on $\mathbb{Z}^2$.**
    Coupling $\Delta_{q_1, q_2}(m_1 + m_2)$ across diagonal sum-lines $m_1 + m_2 \equiv r \pmod{q_1 q_2}$
@@ -378,3 +394,12 @@ Every contribution to `GaloisForLFunctions/BiarithmeticGaugeGeometry/` must:
 - [`EuclideanCellRemainderAndPolarNeutralCollapse.lean`](EuclideanCellRemainderAndPolarNeutralCollapse.lean) — Rank-one polar collapse of `-archPairKernel` across $[2, X]^2$, cancellation of linear reflected-diagonal growth on the polar-neutral hyperplane, exact logarithmic cell subdivision $\sum_{r<m} w_{am+r} = w_a$, and $m$-uniform disjoint-block biarithmetic Sobolev remainder bounds.
 - [`RamanujanTorsionStabilizersAndMonomialCollapse.lean`](RamanujanTorsionStabilizersAndMonomialCollapse.lean) — Marginal collapse of separable monomial $\mathbb{Z}^2$ theta sums, fixed-point-free dyadic torsion rotation on $(\mathbb{Z}/q\mathbb{Z})^\times$ for odd $q \ge 3$, Ramanujan torsion sums & Parseval energy $q\varphi(q)$, and pole-cancelled bi-torsion contrasts $\Delta_{q_1, q_2}$.
 - [`MasterBiarithmeticGaugeGeometryTheorem.lean`](MasterBiarithmeticGaugeGeometryTheorem.lean) — Capstone module synthesizing Pillars G1–G6 into `biarithmetic_gauge_geometry_master_theorem`.
+- [`LatticeSievedPostWidderAndLandauAnchor.lean`](LatticeSievedPostWidderAndLandauAnchor.lean) — Post–Widder annihilation of the logarithmic lattice, positivity of the polar scale weight, evenness ⇒ conjugation symmetry, and the Landau/lattice real anchor.
+- [`RationalBochnerDeformationsOfTheHeightCoupledCarrier.lean`](RationalBochnerDeformationsOfTheHeightCoupledCarrier.lean) — Classification of rational deformations of `ζ_γ`, rational rigidity, exact chiral descent, and the rational ceiling ⟺ horizontal zero-free line ⟺ RH.
+- [`AnchorLinePositivityAndCapacityOfRationalDeformations.lean`](AnchorLinePositivityAndCapacityOfRationalDeformations.lean) — Positive definiteness of line-residue divisors, the local order law, critical-zero conservation in `HeightCoupledSystem`, and the sharp boundary capacity of rational deformations of `ζ^d` in `CompletedPositiveSystem`.
+- [`PositivePrimeMassDeformationsAreRigidOffTheCriticalLine.lean`](PositivePrimeMassDeformationsAreRigidOffTheCriticalLine.lean) — Off-line rigidity and the central ceiling for deformations adding a nonnegative prime-side measure; the positive ceiling ⟺ horizontal zero-free line ⟺ RH.
+- [`CentralExcessForcesASquareRootPrimeDeficit.lean`](CentralExcessForcesASquareRootPrimeDeficit.lean) — Atomic surplus measures on the logarithmic lattice and the square-root deficit law for arithmetic members of `HeightCoupledSystem`.
+- [`TheDeficitResidueBoundsTheCentralExcess.lean`](TheDeficitResidueBoundsTheCentralExcess.lean) — The quantitative deficit–excess law: the Abelian residue of the prime deficit at the centre bounds the central excess.
+- [`PositiveCoupledRigidityAndTheCriticalTransferLaw.lean`](PositiveCoupledRigidityAndTheCriticalTransferLaw.lean) — Critical Gram and transfer laws for positive deformations, Hadamard rigidity at constant central order, and the classification of positive rigidity by horizontal zero-free lines.
+- [`StrongMultiplicityOneBelowTheSquareRootDeficit.lean`](StrongMultiplicityOneBelowTheSquareRootDeficit.lean) — Arithmetic members with sub-square-root deficit that keep the central order have the coefficients of `ζ_γ`.
+- [`MultiPrimeDiophantineRepulsion.lean`](MultiPrimeDiophantineRepulsion.lean) — Siegel-lemma repulsion of the Liouville vacuum on `N` primes, stretched-exponential in the height.
