@@ -56,7 +56,7 @@ theorem abs_sub_le_integral_deriv {ψ ψ' : ℝ → ℝ} (hψ : ∀ s, HasDerivA
 /-- **The cell lemma**: `|Σ_k x_k ψ(r − a_k) − ∫ F(t) ψ(r − t) dt| ≤ M h ‖ψ′‖₁` for `F` supported in
 `[a₀, a_K]`, `|F| ≤ M`, gaps at most `h`. -/
 theorem abs_cellSum_sub_le {F ψ ψ' : ℝ → ℝ} {a : ℕ → ℝ} {K : ℕ} {h M : ℝ}
-    (ha : Monotone a) (hgap : ∀ k < K, a (k + 1) - a k ≤ h) (hF : Continuous F)
+    (ha : Monotone a) (hh : 0 ≤ h) (hgap : ∀ k < K, a (k + 1) - a k ≤ h) (hF : Continuous F)
     (hFM : ∀ t, |F t| ≤ M) (hFsupp : ∀ t, t ∉ Icc (a 0) (a K) → F t = 0)
     (hψ : ∀ s, HasDerivAt ψ (ψ' s) s) (hψc : Continuous ψ) (hψ' : Continuous ψ')
     (hψ'int : Integrable ψ') (r : ℝ) :
@@ -109,11 +109,7 @@ theorem abs_cellSum_sub_le {F ψ ψ' : ℝ → ℝ} {a : ℕ → ℝ} {K : ℕ} 
           rw [intervalIntegral.integral_of_le (ha (Nat.zero_le K))]
           exact setIntegral_le_integral hint (Filter.Eventually.of_forall fun s => abs_nonneg _)
       _ = ∫ s, |ψ' s| := integral_sub_left_eq_self (fun s => |ψ' s|) volume r
-  have hMh : 0 ≤ M * h := by
-    rcases Nat.eq_zero_or_pos K with rfl | hK
-    · simp at hsumV ⊢
-      exact hM
-    · exact mul_nonneg hM ((sub_nonneg.mpr (ha (Nat.le_succ 0))).trans (hgap 0 hK))
+  have hMh : 0 ≤ M * h := mul_nonneg hM hh
   unfold cellSum
   rw [hsupp, hcells, ← Finset.sum_sub_distrib]
   calc |∑ k ∈ Finset.range K, (cellWeight F a k * ψ (r - a k) - ∫ t in a k..a (k + 1), g t)|

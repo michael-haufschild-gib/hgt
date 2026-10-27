@@ -29,14 +29,14 @@ theorem arithmeticSection_exists_unique_projection (g : realTests) :
   obtain ⟨c, hc⟩ := arithmeticSection_exists_mixed_lift hN hw0 hw f g
   let p := realTestSynthesis (fun i => (f i).1) c
   have hp (i : ι) : realWeilForm (f i).1 (g - p) = 0 := by
-    rw [map_sub, ← realWeilMixed_mulVec]
+    rw [map_sub, ← realWeilMixed_mulVec (fun j => (f j).1) (fun j => (f j).1) c i]
     exact sub_eq_zero.mpr (congrFun hc i).symm
   refine ⟨p, ⟨⟨c, rfl⟩, hp⟩, ?_⟩
   rintro q ⟨⟨d, rfl⟩, hq⟩
   apply arithmeticSection_lift_unique_test hN hw0 hw f
   funext i
   have hd := hq i
-  rw [map_sub, ← realWeilMixed_mulVec] at hd
+  rw [map_sub, ← realWeilMixed_mulVec (fun j => (f j).1) (fun j => (f j).1) d i] at hd
   exact (sub_eq_zero.mp hd).symm.trans (congrFun hc i).symm
 
 /-- The actual projected section, independent of any nonunique coefficient lift. -/

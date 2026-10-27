@@ -60,7 +60,7 @@ theorem complexWeilMixed_synthesis_right {ι κ η : Type*} [Fintype κ]
       complexWeilMixed f g * (X.map Complex.ofReal) := by
   ext i j
   change (realWeilForm (f i) (realTestSynthesis g (fun k => X k j)) : ℂ) = _
-  rw [← realWeilMixed_mulVec]
+  rw [← realWeilMixed_mulVec f g (fun k => X k j) i]
   simp only [Matrix.mulVec, dotProduct, Matrix.mul_apply, Matrix.map_apply,
     realWeilMixed, complexWeilMixed, Complex.ofReal_sum, Complex.ofReal_mul]
 
