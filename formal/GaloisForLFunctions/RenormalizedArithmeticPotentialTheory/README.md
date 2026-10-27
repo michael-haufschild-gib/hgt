@@ -274,20 +274,28 @@ the place that pays.
     one prime power, `log p`. The finite part on class combinations is `−2γ_p Σ a_j² |w_j|²` plus
     `log p Σ_{j ≠ j'} a_j a_{j'} |w_{max}|²`; normalized, the coupling is `log p · p^{−|j−j'|/2}`.
 
-### F. Gauge
+### F. Stability
 
-16. **The twisted Mertens sum** (`sum_one_add_liouville_le`, `liouvilleMertensSum_le`,
+16. **The matched stability law** (`markovEnergy_atomicTest_ge_matched`, `matchedAtomicGain_nonneg`,
+    `atomicWidth_le_matchedAtomicWidth`, `markovEnergy_atomicTest_nonneg_matched`). The archimedean
+    Lévy gain `e^{−1/2} log(δ_N/(2w))` of an atomic test pays the covariant counterterm
+    `log N + O(1)`. So the Markov form (archimedean minus prime) is nonnegative at every width
+    `w ≤ (δ_N/4) N^{−e^{1/2}} e^{−C}`, half the exponent needed with the bound `2 log N` (AES).
+
+### G. Gauge
+
+17. **The twisted Mertens sum** (`sum_one_add_liouville_le`, `liouvilleMertensSum_le`,
     `neg_le_liouvilleMertensSum`). `Σ_{t ≤ y} λ(t)Λ(t)/t = −log y + O(1)`: the even prime powers are
     summable.
-17. **Dirichlet's hyperbola identity** (`sum_divisors_div_swap`). The divisor part of a row averages
+18. **Dirichlet's hyperbola identity** (`sum_divisors_div_swap`). The divisor part of a row averages
     to its Mertens part.
-18. **The spectral ends** (`abs_atomicWeilForm_le`, `atomicWeilForm_liouvillePole_le`,
+19. **The spectral ends** (`abs_atomicWeilForm_le`, `atomicWeilForm_liouvillePole_le`,
     `atomicWeilForm_spectrum_ends`). `|P_N| ≤ log N + O(1)`. The pole vector reaches the top and the
     Liouville pole vector the bottom, `−log N + O(1)`.
-19. **The polar divergence flips** (`primeBilinear_liouvilleTrunc_eq`,
+20. **The polar divergence flips** (`primeBilinear_liouvilleTrunc_eq`,
     `abs_primeBilinear_liouvilleTrunc_add_le`, `abs_liouvilleForm_stepProfile_add_le`). On uniform
     profiles `P(λx) = −ℓ(x)² + O(|c|-mass)`.
-20. **The matching law** (`IsSignGauge`, `sum_weilPrimeKernel_gauge`, `primeBilinear_gaugeTrunc_eq`,
+21. **The matching law** (`IsSignGauge`, `sum_weilPrimeKernel_gauge`, `primeBilinear_gaugeTrunc_eq`,
     `abs_primeBilinear_gaugeTrunc_sub_le`, `abs_gaugeForm_stepProfile_sub_le`, `euler_matching`,
     `liouville_matching`, `finiteFlip_matching`). If `A_ε(y) = κ log y + O(1)`, then
     `P(εx) = κ ℓ(x)² + O(|c|-mass)` on uniform profiles. The Euler gauge has `κ = 1`, Liouville
@@ -311,6 +319,7 @@ the place that pays.
 | **RP10 The finite part is Euler's constant** | `P_N = ℓ² − 2γ|x|² + o(|c|-mass)` on step profiles; `P_N = −2γ|x|² + o(·)` on the polar hyperplane | `exists_abs_atomicWeilForm_stepProfile_finitePart_le`, `exists_abs_atomicWeilForm_stepProfile_add_le_of_polar` |
 | **RP11 Matching reads the density of the gauge** | the polar matching coefficient `κ` of a sign gauge, read off `A_ε(y) = κ log y + O(1)`, governs its horizon divergence; finitely many flips leave `κ = 1` | `abs_gaugeForm_stepProfile_sub_le`, `finiteFlip_matching`, `liouville_matching` |
 | **RP12 The finite part is the tower form** | on class combinations `P_M = Σ_j δ_j^{−1} ℓ_j² − 2γ_p Σ_j a_j²|w_j|² + log p Σ_{j≠j'} a_j a_{j'} |w_{max}|² + o(·)`; the cross-class Gram is exact | `exists_abs_atomicWeilForm_classCombination_finitePart_le`, `primeBilinear_classPole_cross_eq`, `classRow_self_eq` |
+| **RP13 The matched stability law** | the Markov form of every atomic test of width `≤ (δ_N/4) N^{−e^{1/2}} e^{−C}` is nonnegative | `markovEnergy_atomicTest_nonneg_matched`, `markovEnergy_atomicTest_ge_matched` |
 
 ---
 
@@ -412,12 +421,13 @@ theorem for characters; the tensor law for several primes at once.
 
 ## 9. Open research topics
 
-1. **The matched stability law.** At width `ε = c/N` the archimedean self-energy `log(1/ε)` and the
-   covariant counterterm `log N + O(1)` agree to `O(1)`. Is `arch_ε + pole − P_N ≥ 0` on atomic tests
-   for some fixed `c`? This is the sharpened central conjecture. All divergences are now computed;
-   the statement concerns `O(1)` finite parts. AES proves the Markov form nonnegative at widths
-   `N^{−O(1)}` with an archimedean gain `e^{−1/2} log(1/w)`. Closing the gap needs the constant-one
-   self-energy.
+1. **The matched stability law at the atomic spacing.** At width `ε = c/N` the archimedean
+   self-energy `log(1/ε)` and the covariant counterterm `log N + O(1)` agree to `O(1)`. Is
+   `arch_ε + pole − P_N ≥ 0` on atomic tests for some fixed `c`? This is the sharpened central
+   conjecture. All divergences are now computed; the statement concerns `O(1)` finite parts. The
+   matched law (RP13) holds at widths `δ_N N^{−e^{1/2}}`. The remaining gap is the constant
+   `e^{−1/2}` of the Lévy gain, together with the shifts beyond the atomic spacing, where the atoms
+   interact through the archimedean kernel and the pole.
 2. **The sign of the prime finite part on the classes.** The prime finite part on the classes is
    `−2γ_p + log p (K_q − 1)` (RP12). Weil's form contains its negative,
    `2γ_p + log p (1 − K_q) ≥ 2γ_p − 2q log p/(1 − q)` by the local tower bounds (AIT). Decide for which
@@ -456,7 +466,8 @@ its present state:
 * Q8 has a theorem-level answer: the matching law for every sign gauge, `κ = −1` for Liouville,
   `κ = 1` for finitely many flips.
 * Q6 is answered through RP2, RP3 and RP5.
-* The central conjecture is replaced by the matched stability law (§9.1).
+* The central conjecture is replaced by the matched stability law (§9.1). It holds at widths
+  `δ_N N^{−e^{1/2}}` (RP13); the atomic spacing itself is open.
 
 A contribution is an unconditional Lean theorem about an object of §3. It names its **regulator**,
 its **counterterm** with rank and survival cone, its **anomaly**, and the **place** that pays. It
@@ -483,6 +494,7 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `TheHorizonCountertermIsHeckeCovariant` | Hecke shifts; invariance of the prime form; class shift by `[p]`; orbit densities scale by the degree; no anomaly |
 | `TheFinitePartIsEulersConstant` | Mertens with Euler's constant; roundoff; the finite part of the pole Gram; `−2γ` on step profiles and on the polar hyperplane |
 | `TheFinitePartIsTheTowerForm` | the local Mertens theorem and local Euler constant; class masses; exact rows inside and across classes; the finite part on the classes is the tower form |
+| `TheMatchedStabilityLaw` | AES's stability law at atomic resolution with the covariant counterterm; the matched width `δ_N N^{−e^{1/2}}` |
 | `TheLiouvilleGaugeFlipsThePolarDivergence` | Liouville signs; the twisted Mertens sum; Dirichlet's hyperbola; spectral ends; the polar flip |
 | `PolarMatchingReadsTheDensityOfTheGauge` | sign gauges; gauged rows and pole Gram; the matching law; Euler, Liouville and finite-flip instances |
 | `TheLawsOfRenormalizedArithmeticPotentialTheory` | the laws in one statement, `renormalized_arithmetic_potential_theory_laws` |

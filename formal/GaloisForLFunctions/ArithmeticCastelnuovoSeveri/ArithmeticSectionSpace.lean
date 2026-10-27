@@ -59,7 +59,8 @@ theorem abs_sectionCorr_le (hg : Continuous g) (hgc : HasCompactSupport g)
       rw [abs_mul]
       nlinarith only [sq_nonneg (|g u| - |h (u + t)|), sq_abs (g u), sq_abs (h (u + t))]
     _ = (sectionMass g + sectionMass h) / 2 := by
-      rw [integral_div, integral_add h1 h2, integral_add_right_eq_self]
+      rw [integral_div, integral_add h1 h2,
+        integral_add_right_eq_self (fun u => h u ^ 2) t]
       rfl
 
 theorem sectionCorr_eq_zero (hg : ∀ u, u ∉ Set.Icc 0 w → g u = 0)
@@ -218,8 +219,7 @@ theorem primeSum_arithmeticSection (hg : ∀ n, Continuous (G n))
           (if n = m * k then 1 else 0))) := by
     intro k
     rcases Nat.eq_zero_or_pos k with rfl | hk1
-    · simp only [vonMangoldtAtom, OfNat.ofNat_le_zero, reduceIte, zero_mul,
-        mul_zero, sum_const_zero]
+    · simp [vonMangoldtAtom]
     have hneg : (fun u => arithmeticSection N G u * arithmeticSection N G (u - Real.log k)) =
         (fun u => arithmeticSection N G u * arithmeticSection N G (u + -Real.log k)) := by
       simp only [sub_eq_add_neg]
@@ -253,7 +253,8 @@ theorem primeSum_arithmeticSection_eq_integral (hg : ∀ n, Continuous (G n))
     (hgc : ∀ n, HasCompactSupport (G n))
     (hs : ∀ n u, u ∉ Set.Icc 0 w → G n u = 0) {N : ℕ} (hw : w < atomSpacing N) :
     primeSum (arithmeticSection N G) = ∫ u, atomicWeilForm N (fun n => G n u) := by
-  rw [primeSum_arithmeticSection hg hgc hs hw, atomicWeilForm]
+  rw [primeSum_arithmeticSection hg hgc hs hw]
+  simp only [ArithmeticElectrostatics.atomicWeilForm]
   have hi (m n : ℕ) : Integrable fun u => G m u * G n u :=
     ((hg m).mul (hg n)).integrable_of_hasCompactSupport (hgc m).mul_right
   rw [integral_finsetSum _ fun m _ => integrable_finsetSum _ fun n _ => (hi m n).mul_const _]
@@ -340,11 +341,11 @@ theorem sum_sectionCrossMass_crossBound (N : ℕ) (G : ℕ → ℝ → ℝ) (w :
     intro m n
     by_cases hmn : m = n
     · subst n; rfl
-    · simp only [B, if_neg hmn, if_neg hmn.symm, crossBound_logGap_comm]
+    · simp only [B, if_neg hmn, if_neg (Ne.symm hmn), crossBound_logGap_comm]
   have hp : ∀ m n, sectionCrossMass G m n * crossBound w (logGap m n) =
       (sectionMass (G m) * B m n + sectionMass (G n) * B n m) / 2 := by
     intro m n
-    rw [hB]
+    rw [hB m n]
     simp only [sectionCrossMass, B]
     split_ifs <;> ring
   simp_rw [hp]
@@ -444,5 +445,180 @@ theorem levyEnergy_arithmeticSection_ge (hg : ∀ n, ContDiff ℝ 2 (G n))
   have hc := hpairs.trans hrows
   have hd := mul_le_mul_of_nonneg_left hdiag hF0
   linarith only [hd, hc, hlower_le, hrestrict]
+
+
+/-- The two places match on the full linear space of arithmetic sections. -/
+theorem markovEnergy_arithmeticSection_ge (hg : ∀ n, ContDiff ℝ 2 (G n))
+    (hs : ∀ n u, u ∉ Set.Icc 0 w → G n u = 0) {N : ℕ} (hN : 1 ≤ N)
+    (hw0 : 0 < w) (hw : w ≤ spacingRatio * atomSpacing N) :
+    (2 * gammaHardyPhaseRate 0 + Real.log (1 / w) - Real.log N - spacingConstant) *
+        ∫ u, arithmeticSection N G u ^ 2 ≤
+      markovEnergy (fun u => (arithmeticSection N G u : ℂ)) := by
+  have hδ := atomSpacing_pos hN
+  have hw2 : w ≤ atomSpacing N / 2 := by
+    nlinarith only [hw, spacingRatio_lt_half, hδ]
+  have hw' : w < atomSpacing N := by linarith only [hw2, hδ]
+  have hwN : w ≤ spacingRatio / N := by
+    calc w ≤ spacingRatio * atomSpacing N := hw
+      _ ≤ spacingRatio * (1 / N) :=
+        mul_le_mul_of_nonneg_left (atomSpacing_le_inv hN) spacingRatio_pos.le
+      _ = spacingRatio / N := by ring
+  have hgc (n : ℕ) := profile_hasCompactSupport (hs n)
+  have hf := contDiff_arithmeticSection hg N
+  have hfc := hasCompactSupport_arithmeticSection hs N
+  have hL := levyEnergy_arithmeticSection_ge hg hs hN hw0 hw2
+  have hP := primeSum_arithmeticSection_le (fun n => (hg n).continuous) hgc hs hw'
+  have hmass := integral_arithmeticSection_sq (fun n => (hg n).continuous) hgc hs hw'
+  have hrow : ∀ m ∈ Icc 1 N,
+      2 * gammaHardyPhaseRate 0 + Real.log (1 / w) - Real.log N - spacingConstant ≤
+      2 * gammaHardyPhaseRate 0 +
+        (Real.log (1 / w) - 8 * Real.exp (5 / 2) * w * m * (1 + Real.log (N + 1))) -
+        (Real.log N + 2 * (Real.log 4 + 4) - (m : ℝ) / (4 * N) * Real.log m) := by
+    intro m hm
+    have hc := crossRow_le_saving (mem_Icc.mp hm).1 (mem_Icc.mp hm).2 hwN
+    unfold spacingConstant
+    linarith only [hc]
+  have hsum := sum_le_sum (s := Icc 1 N) fun m hm =>
+    mul_le_mul_of_nonneg_left (hrow m hm) (sectionMass_nonneg (G m))
+  have hexpand : ∑ m ∈ Icc 1 N, sectionMass (G m) *
+      (2 * gammaHardyPhaseRate 0 +
+        (Real.log (1 / w) - 8 * Real.exp (5 / 2) * w * m * (1 + Real.log (N + 1))) -
+        (Real.log N + 2 * (Real.log 4 + 4) - (m : ℝ) / (4 * N) * Real.log m)) =
+      2 * gammaHardyPhaseRate 0 * (∫ u, arithmeticSection N G u ^ 2) +
+        (∑ m ∈ Icc 1 N, sectionMass (G m) *
+          (Real.log (1 / w) - 8 * Real.exp (5 / 2) * w * m * (1 + Real.log (N + 1)))) -
+        ∑ m ∈ Icc 1 N, sectionMass (G m) *
+          (Real.log N + 2 * (Real.log 4 + 4) - (m : ℝ) / (4 * N) * Real.log m) := by
+    rw [hmass]
+    simp only [mul_sum, ← sum_sub_distrib, ← sum_add_distrib]
+    exact sum_congr rfl fun m _ => by ring
+  rw [hexpand, ← sum_mul, ← hmass] at hsum
+  rw [markovEnergy_ofReal_eq_archForm_sub_primeSum hf hfc, archForm_eq_levyEnergy hf hfc]
+  nlinarith only [hsum, hL, hP]
+
+/-- A fixed arithmetic spacing ratio with one unit of source coercivity. -/
+def arithmeticSectionRatio : ℝ := spacingWidthRatio * Real.exp (-1)
+
+theorem arithmeticSectionRatio_pos : 0 < arithmeticSectionRatio :=
+  mul_pos spacingWidthRatio_pos (Real.exp_pos _)
+
+theorem arithmeticSectionRatio_le : arithmeticSectionRatio ≤ spacingWidthRatio := by
+  have he : Real.exp (-1) ≤ 1 := Real.exp_le_one_iff.mpr (by norm_num)
+  exact (mul_le_mul_of_nonneg_left he spacingWidthRatio_pos.le).trans_eq (mul_one _)
+
+theorem arithmeticSectionGain_ge_one {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w)
+    (hw : w ≤ arithmeticSectionRatio * atomSpacing N) :
+    1 ≤ 2 * gammaHardyPhaseRate 0 + Real.log (1 / w) - Real.log N - spacingConstant := by
+  have hcancel : Real.exp (1 : ℝ) * Real.exp (-1) = 1 := by
+    rw [← Real.exp_add]
+    norm_num
+  have hwscaled : Real.exp 1 * w ≤ spacingWidthRatio * atomSpacing N := by
+    have hh := mul_le_mul_of_nonneg_left hw (Real.exp_pos 1).le
+    have he : Real.exp 1 * (arithmeticSectionRatio * atomSpacing N) =
+        spacingWidthRatio * atomSpacing N := by
+      unfold arithmeticSectionRatio
+      calc Real.exp 1 * (spacingWidthRatio * Real.exp (-1) * atomSpacing N) =
+          spacingWidthRatio * atomSpacing N * (Real.exp 1 * Real.exp (-1)) := by ring
+        _ = _ := by rw [hcancel, mul_one]
+    rwa [he] at hh
+  have hbase := spacingGain_nonneg hN (mul_pos (Real.exp_pos 1) hw0) hwscaled
+  have he : Real.log (1 / (Real.exp 1 * w)) = Real.log (1 / w) - 1 := by
+    rw [Real.log_div (by norm_num) (mul_pos (Real.exp_pos 1) hw0).ne',
+      Real.log_mul (Real.exp_pos 1).ne' hw0.ne', Real.log_exp,
+      Real.log_div (by norm_num) hw0.ne', Real.log_one]
+    ring
+  rw [he] at hbase
+  linarith only [hbase]
+
+/-- A positive source floor, uniform in the number of arithmetic points and in all profiles. -/
+theorem integral_sq_le_markovEnergy_arithmeticSection (hg : ∀ n, ContDiff ℝ 2 (G n))
+    (hs : ∀ n u, u ∉ Set.Icc 0 w → G n u = 0) {N : ℕ} (hN : 1 ≤ N)
+    (hw0 : 0 < w) (hw : w ≤ arithmeticSectionRatio * atomSpacing N) :
+    (∫ u, arithmeticSection N G u ^ 2) ≤
+      markovEnergy (fun u => (arithmeticSection N G u : ℂ)) := by
+  have hw' : w ≤ spacingRatio * atomSpacing N :=
+    hw.trans (mul_le_mul_of_nonneg_right
+      (arithmeticSectionRatio_le.trans spacingWidthRatio_le) (atomSpacing_pos hN).le)
+  have hfloor := markovEnergy_arithmeticSection_ge hg hs hN hw0 hw'
+  have hgain := arithmeticSectionGain_ge_one hN hw0 hw
+  have hmass : 0 ≤ ∫ u, arithmeticSection N G u ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  exact (by simpa only [one_mul] using mul_le_mul_of_nonneg_right hgain hmass).trans hfloor
+
+/-- Real linear sections, with no condition involving the Weil form or its zeros. -/
+def arithmeticSectionTests (N : ℕ) (w : ℝ) : Submodule ℝ realTests where
+  carrier := {f | ∃ G : ℕ → ℝ → ℝ, (∀ n, ContDiff ℝ 2 (G n)) ∧
+    (∀ n u, u ∉ Set.Icc 0 w → G n u = 0) ∧ f.1 = arithmeticSection N G}
+  zero_mem' := by
+    refine ⟨fun _ _ => 0, fun _ => contDiff_const, fun _ _ _ => rfl, ?_⟩
+    funext u
+    simp only [Submodule.coe_zero, Pi.zero_apply, arithmeticSection, sum_const_zero]
+  add_mem' := by
+    rintro f h ⟨G, hG, hsG, heG⟩ ⟨H, hH, hsH, heH⟩
+    refine ⟨fun n u => G n u + H n u, fun n => (hG n).add (hH n), ?_, ?_⟩
+    · intro n u hu
+      rw [hsG n u hu, hsH n u hu, add_zero]
+    · funext u
+      simp only [Submodule.coe_add, Pi.add_apply, heG, heH, arithmeticSection, sum_add_distrib]
+  smul_mem' := by
+    rintro r f ⟨G, hG, hsG, heG⟩
+    refine ⟨fun n u => r * G n u, fun n => (hG n).const_smul r, ?_, ?_⟩
+    · intro n u hu
+      rw [hsG n u hu, mul_zero]
+    · funext u
+      simp only [Submodule.coe_smul, Pi.smul_apply, smul_eq_mul, heG, arithmeticSection, mul_sum]
+
+/-- The odd pole moment is a linear source reading. -/
+def sectionSinhMoment : realTests →ₗ[ℝ] ℝ where
+  toFun f := sinhHalfMoment f.1
+  map_add' f g := by
+    simpa only [Submodule.coe_add, Pi.add_apply, one_mul] using
+      sinhHalfMoment_linear_comb f.2.1.continuous f.2.2 g.2.1.continuous g.2.2 1 1
+  map_smul' r f := by
+    simpa only [Submodule.coe_smul, Pi.smul_apply, smul_eq_mul, RingHom.id_apply,
+      zero_mul, add_zero] using
+      sinhHalfMoment_linear_comb f.2.1.continuous f.2.2 f.2.1.continuous f.2.2 r 0
+
+/-- Arithmetic sections with the single adverse pole reading removed. -/
+def arithmeticPrimitiveSections (N : ℕ) (w : ℝ) : Submodule ℝ realTests :=
+  arithmeticSectionTests N w ⊓ sectionSinhMoment.ker
+
+/-- The full Weil floor includes the Gamma, prime, and both pole terms. -/
+theorem integral_sq_le_weilPair_arithmeticPrimitiveSection {N : ℕ} (hN : 1 ≤ N)
+    {w : ℝ} (hw0 : 0 < w) (hw : w ≤ arithmeticSectionRatio * atomSpacing N)
+    (f : arithmeticPrimitiveSections N w) :
+    (∫ u, f.1.1 u ^ 2) ≤ weilPair f.1.1 f.1.1 := by
+  obtain ⟨G, hG, hsG, heG⟩ := f.2.1
+  have hsin : sinhHalfMoment f.1.1 = 0 := f.2.2
+  have hM : (∫ u, f.1.1 u ^ 2) ≤ markovEnergy (cx f.1.1) := by
+    rw [heG]
+    exact integral_sq_le_markovEnergy_arithmeticSection hG hsG hN hw0 hw
+  have hcd := cx_contDiff f.1.2.1
+  have hcs := cx_hasCompactSupport f.1.2.2
+  have he := markovEnergy_eq_W_sub hcd hcs
+  rw [re_weilPoleTerm_ofReal_eq_two_mul_cosh_sq_sub_sinh_sq
+    f.1.2.1.continuous f.1.2.2, hsin, zero_pow (by decide : (2 : ℕ) ≠ 0),
+    mul_zero, sub_zero] at he
+  have hW : (Zeta23.zetaZeroConfig.W (cx f.1.1) (cx f.1.1)).re =
+      weilPair f.1.1 f.1.1 := by
+    rw [weilPair, zeta_W_eq_weilFullFunctional_mixed hcd hcs hcd hcs]
+  rw [hW] at he
+  nlinarith only [hM, he, sq_nonneg (coshHalfMoment f.1.1)]
+
+/-- Arithmetic source sections supply Riemann–Roch and ampleness on the same subsurface. -/
+theorem arithmeticPrimitiveSections_effectivity {N : ℕ} (hN : 1 ≤ N)
+    {w : ℝ} (hw0 : 0 < w) (hw : w ≤ arithmeticSectionRatio * atomSpacing N) :
+    (scalingSubsurface (arithmeticPrimitiveSections N w)).RiemannRochAxiom
+        (l2SourceCone 1 (arithmeticPrimitiveSections N w)) ∧
+      (scalingSubsurface (arithmeticPrimitiveSections N w)).AmpleAxiom
+        (l2SourceCone 1 (arithmeticPrimitiveSections N w)) ∧
+      (scalingSubsurface (arithmeticPrimitiveSections N w)).HodgeIndex := by
+  have hc : (0 : ℝ) < 1 := zero_lt_one
+  have hf := integral_sq_le_weilPair_arithmeticPrimitiveSection hN hw0 hw
+  refine ⟨(l2SourceCone_riemannRoch_iff_weilPair_ge hc _).mpr ?_,
+    l2SourceCone_ample hc _, (scalingSubsurface_hodgeIndex_iff_weilPair_nonneg _).mpr ?_⟩
+  · intro f
+    simpa only [one_mul] using hf f
+  · intro f
+    exact (integral_nonneg fun _ => sq_nonneg _).trans (hf f)
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

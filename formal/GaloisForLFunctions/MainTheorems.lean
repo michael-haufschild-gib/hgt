@@ -48,3 +48,4 @@ import GaloisForLFunctions.SelectivePositivityAndThresholdLaws
 import GaloisForLFunctions.ArithmeticElectrostatics
 import GaloisForLFunctions.ArithmeticIntersectionTheory
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis
+import GaloisForLFunctions.IncommensurableGaborPinching

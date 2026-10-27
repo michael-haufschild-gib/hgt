@@ -27,7 +27,7 @@ inverse width). A **gauge** is a choice of phases `g_n` on the atoms; it conjuga
   forces `g_m = g_{m+1}`; with the gauge fixed, `K_t(1, p) ≥ 0` forces `χ(p) = 1` because the
   prime weight `t log p/√p` exceeds `ω(log p) = p^{−1/2}/(1 − p^{−2})`.
 * **The Liouville twin fails visibly** (`not_exists_nonneg_gauge_liouville`).
-* **Archimedean characters** (`exists_nonneg_gauge_kronecker_iff`): with the archimedean kernel of
+* **Archimedean characters** (`exists_nonneg_gauge_shifted_iff`, `exists_nonneg_gauge_kronecker`): with the archimedean kernel of
   the shifted function `ζ(s − iτ)`, `conj(m^{iτ}) n^{iτ} A(m, n)`, the nonnegative gauges exist iff
   `χ(p) = p^{iτ}` on the horizon. The Lorentzian locus of the torus is the set of archimedean
   characters `n^{iτ}`, each read with its own archimedean kernel; no other torus point (Dirichlet

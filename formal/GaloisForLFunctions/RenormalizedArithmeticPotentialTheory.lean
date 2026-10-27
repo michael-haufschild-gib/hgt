@@ -10,6 +10,7 @@ import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartIs
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartIsTheTowerForm
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheLiouvilleGaugeFlipsThePolarDivergence
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.PolarMatchingReadsTheDensityOfTheGauge
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheMatchedStabilityLaw
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheLawsOfRenormalizedArithmeticPotentialTheory
 
 /-!
@@ -21,7 +22,7 @@ covariance, the covariant counterterm `log N + O(1)` and the cost of the anomaly
 regulator, its polar divergence on uniform profiles, its unbounded rank on the torsion orbits, the
 tensor law joining the two and its Hecke covariance without anomaly; the finite part `−2γ` on
 uniform profiles and the tower form of `p` on the classes; the spectral ends of the atomic prime
-form, the Liouville flip of the polar divergence and the matching law for sign gauges; the laws in
-one statement.
+form, the Liouville flip of the polar divergence and the matching law for sign gauges; the matched
+stability law at atomic resolution; the laws in one statement.
 See `RenormalizedArithmeticPotentialTheory/README.md`.
 -/

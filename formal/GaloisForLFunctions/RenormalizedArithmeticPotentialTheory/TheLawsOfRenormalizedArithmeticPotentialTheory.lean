@@ -2,6 +2,7 @@ import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheArchimedeanP
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheHorizonCountertermIsHeckeCovariant
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartIsEulersConstant
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.PolarMatchingReadsTheDensityOfTheGauge
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartIsTheTowerForm
 
 /-!
 # The laws of renormalized arithmetic potential theory
@@ -22,6 +23,10 @@ One statement collecting the laws of the programme, each in its sharp form.
 7. **Both ends of the spectrum**: `|P_N| ≤ log N + O(1)`, reached at the top by the pole vector and
    at the bottom by the Liouville pole vector (`atomicWeilForm_spectrum_ends`).
 8. **Finitely many flips are invisible to polar matching** (`finiteFlip_matching`).
+9. **The finite part is `−2γ`** on uniform step profiles
+   (`exists_abs_atomicWeilForm_stepProfile_finitePart_le`).
+10. **Across `p`-adic classes the Gram is one prime power** (`primeBilinear_classPole_cross_eq`): the
+    off-diagonal of the tower form.
 -/
 
 noncomputable section
@@ -70,7 +75,16 @@ theorem renormalized_arithmetic_potential_theory_laws :
     (∀ F : Finset ℕ, (∀ p ∈ F, p.Prime) →
       IsSignGauge (finiteFlip F) ∧ ∀ y : ℕ, 1 ≤ y →
         |gaugeMertensSum (finiteFlip F) y - 1 * Real.log y| ≤
-          Real.log 4 + 4 + 2 * ∑ p ∈ F, Real.log p / ((p : ℝ) - 1)) :=
+          Real.log 4 + 4 + 2 * ∑ p ∈ F, Real.log p / ((p : ℝ) - 1)) ∧
+    -- the finite part is `−2γ`
+    (∀ η : ℝ, 0 < η → ∃ C : ℝ, ∀ {k N : ℕ} (c : Fin k → ℝ) (M : Fin k → ℕ), (∀ i, 1 ≤ M i) →
+      (∀ i, M i ≤ N) →
+      |atomicWeilForm N (stepProfile c M) - polarFunctional N (stepProfile c M) ^ 2 +
+          2 * Real.eulerMascheroniConstant * ∑ n ∈ Icc 1 N, stepProfile c M n ^ 2| ≤
+        ∑ i, ∑ j, |c i| * |c j| * (η * harmonicSum (min (M i) (M j)) + C)) ∧
+    -- across `p`-adic classes the Gram is one prime power
+    (∀ p : ℕ, p.Prime → ∀ {j j' : ℕ}, j < j' → ∀ M : ℕ,
+      primeBilinear M (classPole p j' M) (classPole p j M) = Real.log p * classMass p j' M) :=
   ⟨fun _ _ hv => primeSurvival_rankOne hv,
     heckeCovariant_iff_const,
     fun _ hN => covariantCounterterm_sandwich hN,
@@ -78,6 +92,8 @@ theorem renormalized_arithmetic_potential_theory_laws :
     fun _ hp J K => horizonCounterterm_rank_unbounded hp J K,
     fun _ hp J N x => tensorCounterterm_heckeShift hp J N x,
     fun _ hN => atomicWeilForm_spectrum_ends hN,
-    fun _ hF => finiteFlip_matching hF⟩
+    fun _ hF => finiteFlip_matching hF,
+    fun _ hη => exists_abs_atomicWeilForm_stepProfile_finitePart_le hη,
+    fun _ hp _ _ hjj M => primeBilinear_classPole_cross_eq hp hjj M⟩
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
