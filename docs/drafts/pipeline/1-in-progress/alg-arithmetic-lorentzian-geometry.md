@@ -12,6 +12,7 @@ Folder `formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/`, umbrella
 the tools listed there, record no-go survivors.
 
 ## Module plan (status: todo / done)
+DONE: LorentzianFormsAtDegreeTwo, TheHodgeIndexOfTheScalingSurfaceIsHyperbolicity, TheHodgeIndexTricklesDown (all clean, wired in umbrella).
 1. LorentzianForms — degree-2: hyperbolic ⇔ revCS ⇔ no PD plane ⇔ NSD on hyperplane; Loewner
    domination; pullback; product of nonneg linear forms; sums fail; CND ⇒ hyperbolic; CND sums.
 2. TheArithmeticHodgeIndexIsHyperbolic — hermPosIndex ≤ 1 ⇔ complex revCS; RH ⇔ revCS for scaling
@@ -34,6 +35,10 @@ the tools listed there, record no-go survivors.
 - Beurling systems: nonneg coefficients + Euler product, can violate RH ⇒ multiplicative-only closure blind.
 - Canonical atomic intersection form has negative diagonal ⇒ not a Hessian of a nonneg polynomial;
   only domination available.
+
+- Metzler Hodge index (Lean): connected Metzler Q, D=Q1>0: hyperbolic ⇔ Q[v] ≤ Σ(Qv)_i²/D_i ⇔ hyperbolic links;
+  diagonal unrestricted. Converts one-positive-square (not sum-closed) into NSD of Q − QD⁻¹Q (sum-closed).
+  Euler-point intersection Gram is Metzler in canonical coords (P+J ≥ 0, pole row ≥ 0); twins are not in any gauge.
 
 ## Log
 - 2026-10-27 — created; README first draft written.

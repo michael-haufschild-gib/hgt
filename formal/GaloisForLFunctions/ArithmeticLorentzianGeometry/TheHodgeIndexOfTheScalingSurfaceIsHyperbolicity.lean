@@ -43,7 +43,7 @@ theorem hermPair_swap {H : Matrix ι ι ℂ} (hH : H.IsHermitian) (x y : ι → 
     hermPair H y x = conj (hermPair H x y) := by
   unfold hermPair
   change _ = star _
-  rw [star_dotProduct, star_star, star_mulVec, hH.eq, ← dotProduct_mulVec]
+  rw [star_dotProduct x (H *ᵥ y), star_star, star_mulVec, hH.eq, ← dotProduct_mulVec]
 
 theorem hermPair_self {H : Matrix ι ι ℂ} (hH : H.IsHermitian) (x : ι → ℂ) :
     hermPair H x x = (hermQuad H x : ℂ) := by
@@ -96,6 +96,7 @@ def IsHyperbolicHerm (H : Matrix ι ι ℂ) : Prop :=
 
 variable [DecidableEq ι]
 
+omit [DecidableEq ι] in
 /-- **One positive square ⇔ reverse Cauchy–Schwarz.** -/
 theorem hermPosIndex_le_one_iff {H : Matrix ι ι ℂ} (hH : H.IsHermitian) :
     hermPosIndex H ≤ 1 ↔ IsHyperbolicHerm H := by
@@ -134,7 +135,6 @@ theorem hermPosIndex_le_one_iff {H : Matrix ι ι ℂ} (hH : H.IsHermitian) :
         rw [LinearIndependent.pair_iff]
         intro s t hst
         by_contra hne
-        have hne' : s • x + t • z ≠ 0 ∨ s • x + t • z = 0 := (em _).symm.elim Or.inr Or.inl
         have hpos := hpd s t
         rw [hst] at hpos
         have h0 : ¬ (0 : ℝ) < hermQuad H 0 := by simp [hermQuad]
@@ -216,7 +216,7 @@ theorem riemannHypothesis_iff_intersectionGram_isHyperbolicHerm :
   have hH : (intersectionGram (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) f).IsHermitian := by
     unfold intersectionGram
     exact (Matrix.isHermitian_fromBlocks_iff).mpr ⟨polePlane_isHermitian, rfl,
-      localGram_isHermitian _ f⟩
+      conjTranspose_conjTranspose _, localGram_isHermitian _ f⟩
   rw [← hermPosIndex_le_one_iff hH, posIndex_intersectionGram]
   omega
 
@@ -241,9 +241,16 @@ theorem isHyperbolic_nefShift_iff {G : Matrix (Fin 2 ⊕ ι) (Fin 2 ⊕ ι) ℝ}
     IsHyperbolic ((nefShift t)ᵀ * G * nefShift t) ↔ IsHyperbolic G := by
   refine ⟨fun h => ?_, fun h => h.pullback _⟩
   have := h.pullback (nefShift (-t))
-  rwa [← Matrix.mul_assoc, ← Matrix.mul_assoc, ← transpose_mul, Matrix.mul_assoc,
-    Matrix.mul_assoc, Matrix.mul_assoc, nefShift_mul_neg, Matrix.mul_one, ← Matrix.mul_assoc,
-    nefShift_mul_neg, transpose_one, Matrix.one_mul] at this
+  have h1 : (nefShift t : Matrix (Fin 2 ⊕ ι) (Fin 2 ⊕ ι) ℝ) * nefShift (-t) = 1 :=
+    nefShift_mul_neg t
+  have h2 : (nefShift (-t) : Matrix (Fin 2 ⊕ ι) (Fin 2 ⊕ ι) ℝ)ᵀ * (nefShift t)ᵀ = 1 := by
+    rw [← transpose_mul, h1, transpose_one]
+  have e : (nefShift (-t))ᵀ * ((nefShift t)ᵀ * G * nefShift t) * nefShift (-t) = G := by
+    calc (nefShift (-t))ᵀ * ((nefShift t)ᵀ * G * nefShift t) * nefShift (-t)
+        = ((nefShift (-t))ᵀ * (nefShift t)ᵀ) * G * (nefShift t * nefShift (-t)) := by
+          simp only [Matrix.mul_assoc]
+      _ = G := by rw [h1, h2, Matrix.one_mul, Matrix.mul_one]
+  rwa [e] at this
 
 /-- The pole plane in real form: `H² = V² = 0`, `H·V = 1`. -/
 def realPolePlane : Matrix (Fin 2) (Fin 2) ℝ := !![0, 1; 1, 0]
@@ -252,28 +259,25 @@ def realPolePlane : Matrix (Fin 2) (Fin 2) ℝ := !![0, 1; 1, 0]
 hyperbolic plane, all entries of the shifted Gram are nonnegative once `t` is large. -/
 theorem exists_nef_shift_nonneg (B : Matrix (Fin 2) ι ℝ) (L : Matrix ι ι ℝ) :
     ∃ t₀ : ℝ, ∀ t, t₀ ≤ t → ∀ a b,
-      0 ≤ ((nefShift t)ᵀ * fromBlocks realPolePlane B Bᵀ L * nefShift t) a b := by
-  -- the entries are `L_ij + t (ρ_i + ρ_j) + 2t²`, `B_ki + t` and the pole plane
-  let M : ℝ := 1 + ∑ i, ∑ j, |L i j| + 2 * ∑ k, ∑ i, |B k i|
-  have hM : 1 ≤ M := by
-    have h1 : 0 ≤ ∑ i, ∑ j, |L i j| := sum_nonneg fun _ _ => sum_nonneg fun _ _ => abs_nonneg _
-    have h2 : 0 ≤ ∑ k, ∑ i, |B k i| := sum_nonneg fun _ _ => sum_nonneg fun _ _ => abs_nonneg _
-    simp only [M]; linarith
-  have hL : ∀ i j, |L i j| ≤ M := fun i j => by
-    have h2 : 0 ≤ ∑ k, ∑ i, |B k i| := sum_nonneg fun _ _ => sum_nonneg fun _ _ => abs_nonneg _
-    have := (single_le_sum (fun j _ => abs_nonneg (L i j)) (mem_univ j)).trans
+      0 ≤ ((nefShift t)ᵀ * fromBlocks realPolePlane B Bᵀ L * nefShift t :
+        Matrix (Fin 2 ⊕ ι) (Fin 2 ⊕ ι) ℝ) a b := by
+  -- the entries are `L_ij + t (b_i + b_j) + 2t²`, `B_ki + t` and the pole plane
+  set SL := ∑ i, ∑ j, |L i j|
+  set SB := ∑ k, ∑ i, |B k i|
+  have hSL : 0 ≤ SL := sum_nonneg fun _ _ => sum_nonneg fun _ _ => abs_nonneg _
+  have hSB : 0 ≤ SB := sum_nonneg fun _ _ => sum_nonneg fun _ _ => abs_nonneg _
+  have hL : ∀ i j, |L i j| ≤ SL := fun i j =>
+    (single_le_sum (fun j _ => abs_nonneg (L i j)) (mem_univ j)).trans
       (single_le_sum (f := fun i => ∑ j, |L i j|)
         (fun i _ => sum_nonneg fun _ _ => abs_nonneg _) (mem_univ i))
-    simp only [M]; linarith
-  have hB : ∀ k i, |B k i| ≤ M := fun k i => by
-    have h1 : 0 ≤ ∑ i, ∑ j, |L i j| := sum_nonneg fun _ _ => sum_nonneg fun _ _ => abs_nonneg _
-    have := (single_le_sum (fun i _ => abs_nonneg (B k i)) (mem_univ i)).trans
+  have hB : ∀ k i, |B k i| ≤ SB := fun k i =>
+    (single_le_sum (fun i _ => abs_nonneg (B k i)) (mem_univ i)).trans
       (single_le_sum (f := fun k => ∑ i, |B k i|)
         (fun k _ => sum_nonneg fun _ _ => abs_nonneg _) (mem_univ k))
-    simp only [M]; linarith
-  refine ⟨M, fun t ht a b => ?_⟩
+  refine ⟨1 + SL + 4 * SB, fun t ht a b => ?_⟩
   have ht0 : 0 ≤ t := by linarith
-  rw [nefShift, fromBlocks_transpose, fromBlocks_multiply, fromBlocks_multiply]
+  simp only [nefShift]
+  rw [fromBlocks_transpose, fromBlocks_multiply, fromBlocks_multiply]
   rcases a with a | a <;> rcases b with b | b
   · simp only [fromBlocks_apply₁₁, transpose_one, transpose_zero, Matrix.one_mul, Matrix.zero_mul,
       add_zero, Matrix.mul_one, Matrix.mul_zero]
@@ -283,17 +287,20 @@ theorem exists_nef_shift_nonneg (B : Matrix (Fin 2) ι ℝ) (L : Matrix ι ι �
     simp only [Matrix.add_apply, mul_apply, Fin.sum_univ_two, realPolePlane, Matrix.of_apply]
     fin_cases a <;> simp <;> linarith [neg_abs_le (B 0 b), neg_abs_le (B 1 b), hB 0 b, hB 1 b]
   · simp only [fromBlocks_apply₂₁, transpose_one, transpose_zero, Matrix.one_mul, Matrix.zero_mul,
-      add_zero, Matrix.mul_one, Matrix.mul_zero, zero_add]
+      add_zero, Matrix.mul_one, Matrix.mul_zero]
     simp only [Matrix.add_apply, mul_apply, Fin.sum_univ_two, realPolePlane, Matrix.of_apply,
       transpose_apply]
     fin_cases b <;> simp <;> linarith [neg_abs_le (B 0 a), neg_abs_le (B 1 a), hB 0 a, hB 1 a]
   · simp only [fromBlocks_apply₂₂, transpose_one, transpose_zero, Matrix.one_mul, Matrix.zero_mul,
-      add_zero, Matrix.mul_one, Matrix.mul_zero, zero_add]
+      add_zero, Matrix.mul_one, Matrix.mul_zero]
     simp only [Matrix.add_apply, mul_apply, Fin.sum_univ_two, realPolePlane, Matrix.of_apply,
       transpose_apply]
     simp
-    nlinarith [neg_abs_le (L a b), neg_abs_le (B 0 a), neg_abs_le (B 1 a), neg_abs_le (B 0 b),
-      neg_abs_le (B 1 b), hB 0 a, hB 1 a, hB 0 b, hB 1 b, hL a b]
+    have hsum : -(4 * SB) ≤ B 0 a + B 1 a + B 0 b + B 1 b := by
+      linarith [neg_abs_le (B 0 a), neg_abs_le (B 1 a), neg_abs_le (B 0 b), neg_abs_le (B 1 b),
+        hB 0 a, hB 1 a, hB 0 b, hB 1 b]
+    nlinarith [mul_le_mul_of_nonneg_left hsum ht0, mul_le_mul_of_nonneg_left ht ht0,
+      neg_abs_le (L a b), hL a b]
 
 /-- **Lorentzian in a nef basis is hyperbolic.** For a symmetric Gram matrix with a hyperbolic pole
 plane, the shifted Gram is Lorentzian for all large `t` iff the Gram is hyperbolic: entrywise

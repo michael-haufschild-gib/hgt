@@ -287,9 +287,7 @@ theorem abs_gaugeForm_stepProfile_sub_le (hε : IsSignGauge ε) {κ K : ℝ} (h�
       exact abs_primeBilinear_gaugeTrunc_sub_le hε hκ hA (hM1 j) h (hM i)
   rw [hexp, polarFunctional_stepProfile c M hM, sq, sum_mul_sum, mul_sum, ← sum_sub_distrib]
   simp_rw [mul_sum, ← sum_sub_distrib]
-  rw [mul_sum]
   refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun i _ => ?_)
-  rw [mul_sum]
   refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun j _ => ?_)
   have hrw : c i * c j * primeBilinear N (gaugeTrunc ε (M i)) (gaugeTrunc ε (M j)) -
       κ * (c i * harmonicSum (M i) * (c j * harmonicSum (M j))) =

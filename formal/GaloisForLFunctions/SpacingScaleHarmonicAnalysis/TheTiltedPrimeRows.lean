@@ -32,7 +32,6 @@ separates `m` from `m/2` does.
 noncomputable section
 
 open Finset
-open scoped ArithmeticFunction.vonMangoldt
 
 namespace GaloisForLFunctions.SpacingScaleHarmonicAnalysis
 
@@ -58,14 +57,16 @@ theorem atomicWeilForm_le_of_tiltedRow {N : ℕ} (r : ℕ → ℝ) (hr : ∀ n �
     have hn0 : (0 : ℝ) < n := by exact_mod_cast hpos n hn
     have hrm := hr m hm
     have hrn := hr n hn
-    have ha : 0 < Real.sqrt ((m : ℝ) / n) * (r n / r m) :=
-      mul_pos (Real.sqrt_pos.mpr (by positivity)) (by positivity)
-    have hinv : Real.sqrt ((n : ℝ) / m) * (r m / r n) =
-        (Real.sqrt ((m : ℝ) / n) * (r n / r m))⁻¹ := by
-      rw [mul_inv, ← Real.sqrt_inv, inv_div, inv_div]
-    rw [weilPrimeKernel_comm n m, mul_assoc, mul_assoc (weilPrimeKernel m n), hinv]
+    set a := Real.sqrt ((m : ℝ) / n) * (r n / r m) with ha_def
+    have ha : 0 < a := mul_pos (Real.sqrt_pos.mpr (by positivity)) (by positivity)
+    have hinv : Real.sqrt ((n : ℝ) / m) * (r m / r n) = a⁻¹ := by
+      rw [ha_def, mul_inv, ← Real.sqrt_inv, inv_div, inv_div]
     have hP := weilPrimeKernel_nonneg m n
-    set a := Real.sqrt ((m : ℝ) / n) * (r n / r m)
+    have e1 : weilPrimeKernel m n * Real.sqrt ((m : ℝ) / n) * (r n / r m) =
+        weilPrimeKernel m n * a := by rw [mul_assoc]
+    have e2 : weilPrimeKernel n m * Real.sqrt ((n : ℝ) / m) * (r m / r n) =
+        weilPrimeKernel m n * a⁻¹ := by rw [weilPrimeKernel_comm n m, mul_assoc, hinv]
+    rw [e1, e2]
     have key : x m ^ 2 * a + x n ^ 2 * a⁻¹ - 2 * (x m * x n) = (x m * a - x n) ^ 2 / a := by
       field_simp
       ring
@@ -98,8 +99,8 @@ theorem sum_vonMangoldt_Icc_le (K : ℕ) :
   have hpsi : Chebyshev.psi K = ∑ k ∈ Icc 1 K, Λ k := by
     rw [Chebyshev.psi_eq_sum_Icc, Nat.floor_natCast, ← Finset.add_sum_Ioc_eq_sum_Icc
       (Nat.zero_le K)]
-    simp only [vonMangoldt_apply_zero, zero_add]
-    rfl
+    have hIoc : Finset.Ioc 0 K = Finset.Icc 1 K := by ext; simp; omega
+    simp [hIoc]
   rw [← hpsi]
   have hle := Chebyshev.psi_le hK1
   -- `log K ≤ 2√K`, so `2√K log K ≤ 4K`
@@ -173,8 +174,8 @@ theorem sum_up_tilt_le {m N : ℕ} (hm : 0 < m) (hmN : m ≤ N) :
         _ = Λ k / k + (m : ℝ) / N * Λ k := by field_simp
     · simp
   have hsum := sum_le_sum hterm
-  rw [sum_add_distrib, ← mul_sum, sum_up_reindex hm _ (by simp),
-    sum_up_reindex hm _ (by simp)] at hsum
+  rw [sum_add_distrib, ← mul_sum, sum_up_reindex hm (fun k => Λ k) (by simp),
+    sum_up_reindex hm (fun k => Λ k / (k : ℝ)) (by simp)] at hsum
   refine hsum.trans ?_
   unfold mertensSum
   -- `(m/N) ψ(N/m) ≤ log 4 + 4`
@@ -266,7 +267,7 @@ theorem atomicWeilForm_le_tilted (N : ℕ) (x : ℕ → ℝ) :
     atomicWeilForm N x ≤ ∑ m ∈ Icc 1 N, x m ^ 2 *
       (Real.log N + 2 * (Real.log 4 + 4) - (m : ℝ) / (4 * N) * Real.log m) :=
   (atomicWeilForm_le_of_tiltedRow (tilt N) (fun n _ => tilt_pos N n) x).trans
-    (sum_le_sum fun m hm => mul_le_mul_of_nonneg_left
+    (sum_le_sum fun _ hm => mul_le_mul_of_nonneg_left
       (tiltedRow_le (mem_Icc.mp hm).1 (mem_Icc.mp hm).2) (sq_nonneg _))
 
 end GaloisForLFunctions.SpacingScaleHarmonicAnalysis

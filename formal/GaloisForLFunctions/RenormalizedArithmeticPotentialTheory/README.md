@@ -58,7 +58,7 @@ and Q3 (the gauge charge of a positive form). In wall terms it is Wall 14 (the d
 | [ArithmeticPolarization](../ArithmeticPolarization/README.md), [ConjugateDiagonalGeometry](../ConjugateDiagonalGeometry/README.md) | `W`, `D`, `Δ`, the Hecke defect | the place of the prime form among regularized families |
 | [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md), [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md) | the scaling surface, Hodge index, `𝔽_q` calibration, the pole plane | the renormalized reading of `Δ² = 2 − 2g` |
 | [BiarithmeticGaugeGeometry](../BiarithmeticGaugeGeometry/README.md) | the gauge torus, square-class blindness, sign twins | gauge behaviour of the matching between places |
-| `RHTower` | Mertens' first theorem | — |
+| `RHTower` | Mertens' first theorem; Mertens' theorem with Euler's constant | — |
 
 RAPT does not re-prove what these programmes own; it imports them and proves the laws that join
 them.
@@ -106,9 +106,10 @@ survival cone containing the degree-zero cycles.
    `j + 1`, whose orbit density is `1/p` of the previous one, while the polar functional scales by
    `p^{−1/2}`. The tensor counterterm, and with it the renormalized finite part, is invariant.
 4. *What does covariance cost?* A Hecke-covariant renormalized prime form has a scalar diagonal. Its
-   least positive counterterm on orders `≤ N` is `log N + O(1)`, the anomaly of `[N]` and the
-   archimedean self-energy at the atomic spacing, both with constant one. Keeping the
-   self-intersection, the anomalous torsion renormalization, costs at least `½ log N` more.
+   least positive counterterm on orders `≤ N` is `log N + O(1)`: the anomaly `log #ker[N]` of `[N]`,
+   with constant one. This is the size of the archimedean self-energy `log(1/ε)` of an atom at the
+   atomic spacing `ε ≍ 1/N` (§9.1). Keeping the self-intersection, the anomalous torsion
+   renormalization, costs at least `½ log N` more.
 5. *What is the finite part?* On the polar hyperplane of uniform profiles, the renormalized prime
    form is the scalar `−2γ`, up to `o(1)` per unit mass. In Weil's form, where `P` enters with a
    minus sign, the renormalized prime place is positive there.
@@ -274,6 +275,11 @@ the place that pays.
 18. **The polar divergence flips** (`primeBilinear_liouvilleTrunc_eq`,
     `abs_primeBilinear_liouvilleTrunc_add_le`, `abs_liouvilleForm_stepProfile_add_le`). On uniform
     profiles `P(λx) = −ℓ(x)² + O(|c|-mass)`.
+19. **The matching law** (`IsSignGauge`, `sum_weilPrimeKernel_gauge`, `primeBilinear_gaugeTrunc_eq`,
+    `abs_primeBilinear_gaugeTrunc_sub_le`, `abs_gaugeForm_stepProfile_sub_le`, `euler_matching`,
+    `liouville_matching`, `finiteFlip_matching`). If `A_ε(y) = κ log y + O(1)`, then
+    `P(εx) = κ ℓ(x)² + O(|c|-mass)` on uniform profiles. The Euler gauge has `κ = 1`, Liouville
+    `κ = −1`, and every gauge flipping finitely many primes `κ = 1`.
 
 ---
 
@@ -288,9 +294,10 @@ the place that pays.
 | **RP5 Horizon polarity** | on uniform step profiles `P_N = ℓ² + O(|c|-mass)`; no divergence on `ℓ = 0` | `abs_atomicWeilForm_stepProfile_sub_le`, `abs_atomicWeilForm_stepProfile_le_of_polar` |
 | **RP6 Orbital divergence** | every class combination has `P ≥ (log M − C)|x|²`; the horizon counterterm has unbounded rank | `atomicWeilForm_classCombination_ge`, `horizonCounterterm_rank_unbounded` |
 | **RP7 The tensor law** | `P_N = Σ_j δ_j^{−1} ℓ_j² + O(H_N |c|²)` on class-wise profiles; `δ_j = φ(p^{J+1−j})/p^{J+1}`; survival on the class-wise polar hyperplane | `abs_atomicWeilForm_classProfile_sub_le`, `classDensity_eq_orbit`, `abs_atomicWeilForm_classProfile_le_of_polar` |
-| **RP8 Gauge** | spectral ends `±(log N + O(1))`; the Liouville twin diverges as `−ℓ²` on uniform profiles | `atomicWeilForm_spectrum_ends`, `abs_liouvilleForm_stepProfile_add_le` |
+| **RP8 Spectral ends and the Liouville flip** | spectral ends `±(log N + O(1))`; the Liouville twin diverges as `−ℓ²` on uniform profiles | `atomicWeilForm_spectrum_ends`, `abs_liouvilleForm_stepProfile_add_le` |
 | **RP9 No anomaly at the horizon** | `[p]` shifts the classes and scales the orbit densities by the degree; the tensor counterterm and the finite part are invariant | `tensorCounterterm_heckeShift`, `finitePart_heckeShift`, `heckeShift_classPole` |
 | **RP10 The finite part is Euler's constant** | `P_N = ℓ² − 2γ|x|² + o(|c|-mass)` on step profiles; `P_N = −2γ|x|² + o(·)` on the polar hyperplane | `exists_abs_atomicWeilForm_stepProfile_finitePart_le`, `exists_abs_atomicWeilForm_stepProfile_add_le_of_polar` |
+| **RP11 Matching reads the density of the gauge** | the polar matching coefficient `κ` of a sign gauge, read off `A_ε(y) = κ log y + O(1)`, governs its horizon divergence; finitely many flips leave `κ = 1` | `abs_gaugeForm_stepProfile_sub_le`, `finiteFlip_matching`, `liouville_matching` |
 
 ---
 
@@ -336,13 +343,17 @@ The twelve questions of the report (§4.4), in RAPT's terms.
 8. **What is the non-archimedean gauge charge of a positive form?** Counterterms of each place are
    gauge blind (the twin's prime form is `P` in the gauge `x ↦ εx`), but their **matching** is
    charged. `ζ`'s prime divergence is `+ℓ²` along the archimedean polar direction; the Liouville
-   twin's is `−ℓ²` (RP8). AES adds the coefficient margin of the source and the stability law for
-   every twin. *Answer:* the gauge charge sits in the matching of the two places' counterterms.
+   twin's is `−ℓ²` (RP8). For every sign gauge the matching coefficient `κ` is the density of
+   unflipped minus flipped primes read through `A_ε`. A twin flipping finitely many primes has
+   `κ = 1` and is matched exactly as `ζ` is (RP11). AES adds the coefficient margin `2 log² p` of the
+   source at each flipped prime and the stability law for every twin. *Answer:* the gauge charge
+   sits in the matching of the two places' counterterms, which reads the density of the gauge.
+   Individual primes are separated only by finite parts.
 9. **How does a quantized statistic reach every window?** By window energies (AES).
 10. **Is the coupled class bounded at the centre?** Owned by BGG.
 11. **What selects the fibre?** Divergences are soft: the tensor law holds for every sign twin in
     its gauged coordinates. Selection must come from the finite parts and from the gauge-charged
-    matching (RP8).
+    matching (RP8, RP11), which reads only the density of the gauge.
 12. **What are the escape states of `ζ` at infinite height?** Infinite transverse energy (AES).
 
 ---
@@ -359,6 +370,7 @@ The twelve questions of the report (§4.4), in RAPT's terms.
 | The anomaly is a nuisance to be removed for free | Its potential is the self-intersection; removing it saves at least `½ log N` |
 | At the horizon the divergence is rank one | Only on uniform profiles; on class-wise profiles it is the tensor counterterm, of unbounded rank |
 | A sign twin has the same divergences, so the same renormalization | The same spectrum, but the opposite polar matching at the Liouville gauge |
+| A twin flipping one prime is separated by the coupled renormalization | Its polar matching coefficient is `1`, as for `ζ`; only finite parts see individual primes |
 | The Hecke anomaly `log t` is intrinsic to the prime place | It belongs to the Abel radius; at the horizon `[p]` scales the orbit densities by `1/p` and the anomaly cancels |
 | A matched counterterm proves the sign | It removes the divergence; the sign lives in the finite part |
 | The finite part of the prime place hides the zeros | On uniform profiles it is the scalar `−2γ`; the zeros are invisible at log-scale resolution, and the sign is decided by the archimedean place and the pole |
@@ -400,9 +412,11 @@ theorem for characters; the class-wise finite part.
 4. **The exact torsion constant.** The continuum model predicts `κ_tor(N) ∼ (e/(e − 1)) log N`; the
    Schur test fails on highly composite orders. The proven window is `[3/2, 4]` (with AES's upper
    bound).
-5. **Polar matching for general gauges.** For a sign gauge flipping a set of primes of logarithmic
-   density `ϑ`, the matching coefficient should be `1 − 2ϑ`. The Euler gauge is the unique gauge
-   with coefficient `1` up to density zero.
+5. **Matching coefficients of natural gauges.** The matching law (RP11) turns any asymptotic
+   `A_ε(y) = κ log y + O(1)` into a horizon divergence `κ ℓ²`. For a gauge flipping a set of primes of
+   logarithmic density `ϑ`, `κ = 1 − 2ϑ`. Compute `κ` for the sign patterns of real characters
+   (Chebotarev densities), and decide whether an error `o(log y)` instead of `O(1)` still gives the
+   law.
 6. **Several primes at once.** The tensor law and its covariance are proved for the classes of one
    prime `p`. For a finite set of primes `Q` the classes are `{n : n = d k, (k, Q) = 1}`, indexed by
    the `Q`-parts `d`. The expected counterterm is `Σ_d δ_d^{−1} ℓ_d²` with `δ_d = (1/d) Π_{p ∈ Q}(1 − 1/p)`,
@@ -422,7 +436,8 @@ its present state:
   covariance without anomaly. Of the three conditions of the central conjecture, (i) is false for
   every regulator, (ii) holds at the horizon, and (iii) is the open sign of the finite part.
 * The prime finite part is computed: `−2γ` on the uniform survival cone (RP10).
-* Q8 has a theorem-level answer for the Liouville twin.
+* Q8 has a theorem-level answer: the matching law for every sign gauge, `κ = −1` for Liouville,
+  `κ = 1` for finitely many flips.
 * Q6 is answered through RP2, RP3 and RP5.
 * The central conjecture is replaced by the matched stability law (§9.1).
 
@@ -451,3 +466,5 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `TheHorizonCountertermIsHeckeCovariant` | Hecke shifts; invariance of the prime form; class shift by `[p]`; orbit densities scale by the degree; no anomaly |
 | `TheFinitePartIsEulersConstant` | Mertens with Euler's constant; roundoff; the finite part of the pole Gram; `−2γ` on step profiles and on the polar hyperplane |
 | `TheLiouvilleGaugeFlipsThePolarDivergence` | Liouville signs; the twisted Mertens sum; Dirichlet's hyperbola; spectral ends; the polar flip |
+| `PolarMatchingReadsTheDensityOfTheGauge` | sign gauges; gauged rows and pole Gram; the matching law; Euler, Liouville and finite-flip instances |
+| `TheLawsOfRenormalizedArithmeticPotentialTheory` | the laws in one statement, `renormalized_arithmetic_potential_theory_laws` |

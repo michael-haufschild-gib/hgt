@@ -3,26 +3,38 @@
 - **ID:** rapt
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (Lean) programme
-- **Source:** docs/reports/review-2710/obstacles-summary.md §4 (Q2, B3.25, B3.26, W11, W12)
-- **Statement:** Regulators, counterterms, anomalies and couplings of the places of the explicit formula; programme folder `formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/`.
+- **Source:** docs/reports/review-2710/obstacles-summary.md §4 (Q2, B3.25, B3.26, W11, W12; Q3 gauge face)
+- **Statement:** Regulators, counterterms, anomalies and couplings of the places of the explicit formula; programme folder `formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/` (README there).
 
 ## Goal
-Answer Q2 of the report (coupled renormalization) with theorems: what a coupling can pay (rank), what
-covariance costs (scalar, `log N`), what the anomaly costs (`≥ ½ log N`), which regulator has a
-nontrivial survival cone (horizon: polar on uniform profiles, orbital on sublattices, characters
-survive).
+Answer Q2 of the report (coupled renormalization) and its gauge face with theorems.
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  paper proofs of RP1–RP7
-- [ ] 2 → 3  Lean modules wired into `RenormalizedArithmeticPotentialTheory.lean`
+- [x] 1 → 2  paper proofs of RP1–RP11 (all carried out directly in Lean)
+- [x] 2 → 3  Lean: `renormalized_arithmetic_potential_theory_laws` and the module pillars, all
+      axiom-clean (`propext`, `Classical.choice`, `Quot.sound`), wired into
+      `RenormalizedArithmeticPotentialTheory.lean`
+- [ ] open topics (README §9): matched stability law; class-wise finite part; characters at the
+      horizon; exact torsion constant; matching coefficients of natural gauges; several primes
 
-## Approach (paper proofs)
-- RP1 coupled survival: PSD block `B`; `x = (w, s v)` ⇒ `quad B₁₁ w + 2s wᵀB₁₂v ≥ 0 ∀ s` ⇒ `B₁₂ v = 0` when `B₂₂ v = 0`. Survival `quad B x = 0` ⇒ `B x = 0` (PSD symmetric). Prime projection `= −B₁₁⁻¹ B₁₂ w` factors through `range B₂₂`.
-- RP3 covariant counterterm: Schur weights `n^{−1/2}`: up-row `Σ_{t ≤ N/n} Λ(t)/t ≤ log(N/n) + log 4 + 4`, down-row `Σ_{t∣n} Λ(t) = log n` ⇒ `P_N ≤ (log N + log 4 + 4)|x|²`. Lower: pole vector, `P(u) = 2Σ_{m ≤ N} (1/m) A(N/m)`, Mertens lower bound, `Σ_{m≤N} log m/m ≤ ½ log² N + c`, `log N ≤ H_N ≤ log N + 1`.
-- RP4: `φ(mt) ≤ t φ(m)` ⇒ torsion off-diagonal `≥ P`; diagonal `c(n) = log n − d(n)`, `Σ_{n≤N} d(n)/n ≤ C H_N`.
-- RP5: `B(M, M') = Σ_{m≤M} (1/m)(A(M'/m) + A(M/m))` for `M ≤ M'`; Mertens.
-- RP6: sublattice sums; `lcm`.
+## Results (Lean)
+- RP1 coupled survival law; RP2 the archimedean place pays the arithmetic point.
+- RP3 covariance ⇒ scalar, `κ_cov(N) = log N + O(1)`; RP4 `κ_tor(N) ≥ (3/2) log N − C`.
+- RP5 horizon polarity; RP6 unbounded rank on `p`-adic classes; RP7 tensor law
+  `Σ_j δ_j^{−1} ℓ_j²`, `δ_j = φ(p^{J+1−j})/p^{J+1}`; RP9 no anomaly under `[p]`.
+- RP10 finite part `−2γ`; RP8 spectral ends `±log N`, Liouville flip; RP11 matching law for sign
+  gauges, finite flips invisible.
+
+## No-go closure
+- **Killing theorem:** condition (i) of the central conjecture (bounded counterterm rank on Hecke
+  orbits) fails under the Abel radius (`coupled_torsion_survival`) and at the horizon
+  (`horizonCounterterm_rank_unbounded`).
+- **Positive survivor:** the tensor law (RP7) with Hecke-covariant finite part (RP9) and computed
+  prime finite part (RP10); Lean: `abs_atomicWeilForm_classProfile_sub_le`,
+  `finitePart_heckeShift`, `exists_abs_atomicWeilForm_stepProfile_finitePart_le`.
+- **New insight:** counterterm rank and anomaly belong to the regulator; at the horizon the degree
+  of `[p]` scales orbit densities and cancels.
 
 ## Log
-- 2026-10-27 — created; README first draft written.
+- 2026-10-27 — created; README first draft; RP1–RP11 formalized; laws module.
