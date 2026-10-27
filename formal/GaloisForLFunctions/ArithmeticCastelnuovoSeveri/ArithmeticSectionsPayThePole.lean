@@ -25,7 +25,8 @@ def fullSectionRatio : ℝ :=
 
 theorem fullSectionRatio_pos : 0 < fullSectionRatio := by
   unfold fullSectionRatio
-  exact lt_min arithmeticSectionRatio_pos (lt_min (by positivity) (by positivity))
+  exact lt_min arithmeticSectionRatio_pos
+    (lt_min (div_pos spacingRatio_pos (by norm_num)) (by positivity))
 
 theorem fullSectionRatio_le : fullSectionRatio ≤ arithmeticSectionRatio := min_le_left _ _
 
@@ -41,7 +42,7 @@ def sectionReserveWeight (N n : ℕ) : ℝ := 1 + (n : ℝ) / N * (1 + Real.log 
 theorem sectionReserveWeight_ge_one (N n : ℕ) : 1 ≤ sectionReserveWeight N n := by
   have := Real.log_natCast_nonneg N
   unfold sectionReserveWeight
-  positivity
+  exact le_add_of_nonneg_right (by positivity)
 
 theorem sectionReserveWeight_pos (N n : ℕ) : 0 < sectionReserveWeight N n :=
   zero_lt_one.trans_le (sectionReserveWeight_ge_one N n)
@@ -166,25 +167,29 @@ theorem sectionMoment_sq_le {g k : ℝ → ℝ} {w K : ℝ}
     (hs : ∀ u, u ∉ Set.Icc 0 w → g u = 0)
     (hb : ∀ u ∈ Set.Icc 0 w, k u ^ 2 ≤ K) :
     (∫ u, g u * k u) ^ 2 ≤ w * K * sectionMass g := by
-  have hg2 := (hg.pow 2).integrableOn_Icc
-  have hk2 := (hk.pow 2).integrableOn_Icc
+  have hg2 : IntegrableOn (fun u => g u ^ 2) (Set.Icc 0 w) := (hg.pow 2).integrableOn_Icc
+  have hk2 : IntegrableOn (fun u => k u ^ 2) (Set.Icc 0 w) := (hk.pow 2).integrableOn_Icc
   have hcs := HTGeometry.sq_integral_mul_le (μ := volume.restrict (Set.Icc 0 w))
     hg.aestronglyMeasurable hk.aestronglyMeasurable hg2 hk2
   have hprod : (∫ u, g u * k u) = ∫ u in Set.Icc 0 w, g u * k u := by
-    apply integral_eq_setIntegral_of_support_subset
-    intro u hu
-    by_contra h
-    exact hu (by rw [hs u h, zero_mul])
+    rw [← integral_indicator measurableSet_Icc]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+    by_cases hu : u ∈ Set.Icc 0 w
+    · rw [Set.indicator_of_mem hu]
+    · rw [Set.indicator_of_notMem hu, hs u hu, zero_mul]
   have hmass : sectionMass g = ∫ u in Set.Icc 0 w, g u ^ 2 := by
-    apply integral_eq_setIntegral_of_support_subset
-    intro u hu
-    by_contra h
-    exact hu (by rw [hs u h, zero_pow (by decide : (2 : ℕ) ≠ 0)])
+    rw [sectionMass, ← integral_indicator measurableSet_Icc]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+    by_cases hu : u ∈ Set.Icc 0 w
+    · rw [Set.indicator_of_mem hu]
+    · rw [Set.indicator_of_notMem hu, hs u hu, zero_pow (by decide : (2 : ℕ) ≠ 0)]
   have hkbound : (∫ u in Set.Icc 0 w, k u ^ 2) ≤ w * K := by
     calc (∫ u in Set.Icc 0 w, k u ^ 2) ≤ ∫ _u in Set.Icc 0 w, K :=
         setIntegral_mono_on hk2 continuous_const.integrableOn_Icc measurableSet_Icc hb
       _ = w * K := by
-        rw [setIntegral_const, Real.volume_Icc, sub_zero, ENNReal.toReal_ofReal hw, smul_eq_mul]
+        rw [setIntegral_const]
+        change (volume (Set.Icc (0 : ℝ) w)).toReal * K = w * K
+        rw [Real.volume_Icc, sub_zero, ENNReal.toReal_ofReal hw]
   rw [← hprod, ← hmass] at hcs
   exact hcs.trans (by nlinarith only [mul_le_mul_of_nonneg_left hkbound (sectionMass_nonneg g)])
 
@@ -212,9 +217,9 @@ theorem exponentialMoment_arithmeticSection {G : ℕ → ℝ → ℝ}
     (∫ u, arithmeticSection N G u * Real.exp (a * u)) =
       ∑ n ∈ Icc 1 N, Real.exp (a * Real.log n) * ∫ u, G n u * Real.exp (a * u) := by
   have hi (n : ℕ) : Integrable fun u => G n (u - Real.log n) * Real.exp (a * u) :=
-    ((hg n).comp (continuous_sub_right _)).mul
-      (Real.continuous_exp.comp (continuous_const.mul continuous_id)) |>.integrable_of_hasCompactSupport
-        ((hgc n).comp_homeomorph (Homeomorph.subRight _)).mul_right
+    (((hg n).comp (continuous_sub_right _)).mul
+      (Real.continuous_exp.comp (continuous_const.mul continuous_id))).integrable_of_hasCompactSupport
+      ((hgc n).comp_homeomorph (Homeomorph.subRight _)).mul_right
   simp only [arithmeticSection, sum_mul]
   rw [integral_finsetSum _ fun n _ => hi n]
   refine sum_congr rfl fun n _ => ?_
@@ -245,7 +250,7 @@ theorem poleA_arithmeticSection_sq_le {G : ℕ → ℝ → ℝ} {N : ℕ} {w : �
   let q : ℕ → ℝ := fun n => sectionReserveWeight N n * sectionMass (G n)
   have hcs : (∑ n ∈ Icc 1 N, r n) ^ 2 ≤ (∑ n ∈ Icc 1 N, p n) * ∑ n ∈ Icc 1 N, q n := by
     refine sum_sq_le_sum_mul_sum_of_sq_le_mul (Icc 1 N)
-      (fun n _ => by dsimp [p]; positivity)
+      (fun n _ => by dsimp [p]; have := sectionReserveWeight_pos N n; positivity)
       (fun n _ => mul_nonneg (sectionReserveWeight_pos N n).le (sectionMass_nonneg _)) ?_
     intro n hn
     have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
@@ -280,7 +285,7 @@ theorem poleB_arithmeticSection_sq_le {G : ℕ → ℝ → ℝ} {N : ℕ} {w : �
   let q : ℕ → ℝ := fun n => sectionReserveWeight N n * sectionMass (G n)
   have hcs : (∑ n ∈ Icc 1 N, r n) ^ 2 ≤ (∑ n ∈ Icc 1 N, p n) * ∑ n ∈ Icc 1 N, q n := by
     refine sum_sq_le_sum_mul_sum_of_sq_le_mul (Icc 1 N)
-      (fun n _ => by dsimp [p]; positivity)
+      (fun n _ => by dsimp [p]; have := sectionReserveWeight_pos N n; positivity)
       (fun n _ => mul_nonneg (sectionReserveWeight_pos N n).le (sectionMass_nonneg _)) ?_
     intro n hn
     have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
@@ -335,10 +340,9 @@ theorem neg_sectionReserve_le_poleProduct {G : ℕ → ℝ → ℝ} {N : ℕ} {w
     rw [he, le_div_iff₀ hN0] at h
     exact h
   have hw1 : w ≤ 1 := by
-    have hδ := atomSpacing_le_one hN
-    have hh := fullSectionRatio_le_half_spacing
-    have hp := spacingRatio_pos
-    nlinarith only [hw, hδ, hh, hp, spacingRatio_lt_half, atomSpacing_pos hN]
+    have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
+    have hwwN : w ≤ w * N := by nlinarith only [hw0, hN1]
+    linarith only [hwwN, hwN, fullSectionRatio_le_half_spacing, spacingRatio_lt_half]
   have hc : w * N * (Real.exp w + 1) ≤ 1 / 8 := by
     calc w * N * (Real.exp w + 1) ≤ fullSectionRatio * (Real.exp 1 + 1) :=
         mul_le_mul hwN (add_le_add_right (Real.exp_le_exp.mpr hw1) 1)

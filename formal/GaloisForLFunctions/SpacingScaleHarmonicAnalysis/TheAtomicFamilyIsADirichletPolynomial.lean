@@ -107,6 +107,5 @@ theorem Wsummand_atomicTest_onLine (Z : ZeroConfig) (hg : Continuous g)
     simp [gammaOf, Complex.div_I, hρ]
   rw [Wsummand_atomicTest Z hg hgc, hreal, Complex.mul_conj, Complex.mul_conj,
     Complex.normSq_eq_norm_sq, Complex.normSq_eq_norm_sq]
-  push_cast
 
 end GaloisForLFunctions.SpacingScaleHarmonicAnalysis
