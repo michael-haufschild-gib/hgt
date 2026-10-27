@@ -174,6 +174,12 @@ These are lower bounds on the work forced by defects. An arithmetic upper estima
 constructed. A global finite work bound and a bound below an exclusion quantum are different
 research targets.
 
+The finiteness boundary is exact. Multiplicity-weighted transverse energy is finite if and only if
+the off-line support is finite. Equivalently, damped source work is eventually bounded. With
+infinitely many off-line zeros, that work tends to infinity in the extended nonnegative reals.
+The proof retains the infinitely many critical zeros: they interact only with the finitely many
+off-line rows, and each such row is bounded by a summable Cauchy height weight.
+
 ## Questions the programme aims to answer
 
 1. Which arithmetic operation joins positive sections while paying their mixed Schur or polar
@@ -221,12 +227,13 @@ The programme's own pillars must add a source estimate, a stronger exact transfe
 comparison of these invariants, or a construction not already supplied by this table. Abstract
 matrix tools should be used to isolate the arithmetic input, not presented as its solution.
 
-Two quantitative pillars are supplied by this programme:
+Quantitative pillars supplied by this programme:
 
 | Pillar | Mathematical content | Module |
 |---|---|---|
 | Index is paid by energy | Every finite smooth Weil negative index is at most distinct transverse energy; intersection positive index is at most one plus that energy | `TheIndexIsPaidByTransverseEnergy` |
 | Source work detects finite index witnesses | Distinct energy embeds in copied energy; damping and taper limits detect every amount below a finite negative index | `TheArithmeticSourcePaysTheIndex` |
+| Exact finiteness boundary | Copied energy is finite iff off-line support is finite, iff damped source work is eventually bounded | `BoundedSourceWork` |
 
 ## Tools to develop and research topics
 
@@ -250,9 +257,9 @@ inequalities with a macroscopic gain after arithmetic transfer.
 oscillatory lobes, prime-power reductions, collar losses and the conductor range. A saving in a
 different averaged model is not the required estimate.
 
-**Index–work comparison.** The quantitative lower comparison is established. Develop its strict
-surplus, characterize finite work, and construct arithmetic upper bounds. Distinguish a bounded
-number of exceptions from their absence.
+**Index–work comparison.** The quantitative lower comparison and finiteness classification are
+established. Develop the strict surplus and construct arithmetic upper bounds. Distinguish a
+bounded number of exceptions from their absence.
 
 **Terminal field estimates.** Combine the zero-free lens and lower reserve with an independently
 proved arithmetic upper estimate on a common domain. Subtract singular self-terms without

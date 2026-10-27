@@ -270,20 +270,22 @@ theorem pderiv_finsetProd {α : Type*} [DecidableEq α] (s : Finset α) (f : α 
   induction s using Finset.induction_on with
   | empty => simp
   | insert a s ha ih =>
-    rw [prod_insert ha, pderiv_mul, ih, sum_insert ha, erase_insert ha, mul_sum]
-    rw [add_comm]
-    congr 1
-    · exact sum_congr rfl fun p hp => by
-        rw [erase_insert_of_ne (fun h => ha (h ▸ hp)), prod_insert (fun h => ha (mem_of_mem_erase h))]
-        ring
-    · ring
+    have hs : ∑ p ∈ s, (∏ r ∈ (insert a s).erase p, f r) * pderiv i (f p) =
+        ∑ p ∈ s, f a * ((∏ r ∈ s.erase p, f r) * pderiv i (f p)) :=
+      sum_congr rfl fun p hp => by
+        rw [erase_insert_of_ne (ne_of_mem_of_not_mem hp ha).symm,
+          prod_insert (fun h => ha (mem_of_mem_erase h)), mul_assoc]
+    rw [prod_insert ha, pderiv_mul, ih, sum_insert ha, erase_insert ha, hs, ← mul_sum]
+    ring
 
+omit [Fintype κ] [DecidableEq κ] in
 open MvPolynomial in
 theorem pderiv_localLinear [DecidableEq ι] (L : κ → ι → ℝ) (p : κ) (i : ι) :
     pderiv i (localLinear L p) = C (L p i) := by
   simp only [localLinear, map_sum, pderiv_C_mul, pderiv_X, Pi.single_apply]
   simp [mul_ite]
 
+omit [Fintype κ] [DecidableEq κ] in
 open MvPolynomial in
 theorem eval_localLinear (L : κ → ι → ℝ) (p : κ) (y : ι → ℝ) :
     eval y (localLinear L p) = L p ⬝ᵥ y := by

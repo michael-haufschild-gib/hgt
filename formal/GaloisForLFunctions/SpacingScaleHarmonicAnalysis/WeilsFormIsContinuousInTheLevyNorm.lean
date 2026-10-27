@@ -206,7 +206,9 @@ theorem abs_integral_mul_shift_le {a b : ℝ → ℝ} (ha : Continuous a) (hac :
 def SupportedIn (R : ℝ) (h : ℝ → ℝ) : Prop := ∀ u, R < |u| → h u = 0
 
 theorem supportedIn_add {R : ℝ} {a b : ℝ → ℝ} (ha : SupportedIn R a) (hb : SupportedIn R b) :
-    SupportedIn R fun u => a u + b u := fun u hu => by rw [ha u hu, hb u hu, add_zero]
+    SupportedIn R fun u => a u + b u := fun u hu => by
+  show a u + b u = 0
+  rw [ha u hu, hb u hu, add_zero]
 
 /-- Lags beyond `2R` move a test supported in `[−R, R]` off any other such test. -/
 theorem mul_shift_eq_zero_of_supportedIn {R : ℝ} {a b : ℝ → ℝ} (ha : SupportedIn R a)
@@ -273,7 +275,7 @@ theorem abs_primeSum_add_sub_le {R : ℝ} (hf : Continuous f) (hfc : HasCompactS
   rw [primeSum_eq_sum_of_supportedIn (supportedIn_add hfR hdR), primeSum_eq_sum_of_supportedIn hfR,
     ← Finset.sum_sub_distrib]
   refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
-  rw [primeMass, Finset.sum_mul, Finset.sum_mul]
+  rw [primeMass, Finset.mul_sum, Finset.sum_mul]
   refine Finset.sum_le_sum fun k _ => ?_
   -- one lag: `∫ (f+d)(f+d)_c − ∫ f f_c = ∫ f d_c + ∫ d f_c + ∫ d d_c`
   have hlag : ∀ c : ℝ, |(∫ t, (f t + d t) * (f (t + c) + d (t + c))) - ∫ t, f t * f (t + c)| ≤
@@ -315,7 +317,7 @@ theorem abs_primeSum_add_sub_le {R : ℝ} (hf : Continuous f) (hfc : HasCompactS
         refine mul_le_mul_of_nonneg_left ?_ hk0
         rw [show ∀ a b c e : ℝ, a + b - (c + e) = (a - c) + (b - e) by intros; ring]
         exact (abs_add_le _ _).trans (add_le_add hm hp)
-    _ = vonMangoldtAtom k * 2 * (2 * (nf * nd) + ∫ u, d u ^ 2) := by ring
+    _ = 2 * vonMangoldtAtom k * (2 * (nf * nd) + ∫ u, d u ^ 2) := by ring
 
 /-! ### The pole pieces -/
 
@@ -340,8 +342,15 @@ theorem abs_cosh_half_le {R u : ℝ} (hu : |u| ≤ R) : |Real.cosh (u / 2)| ≤ 
   rw [this]
   linarith [le_abs_self R]
 
+theorem abs_sinh_le_cosh (x : ℝ) : |Real.sinh x| ≤ Real.cosh x := by
+  rw [abs_le]
+  have h1 := Real.sinh_lt_cosh x
+  have h2 := Real.sinh_lt_cosh (-x)
+  rw [Real.sinh_neg, Real.cosh_neg] at h2
+  constructor <;> linarith
+
 theorem abs_sinh_half_le {R u : ℝ} (hu : |u| ≤ R) : |Real.sinh (u / 2)| ≤ Real.cosh (R / 2) :=
-  (Real.abs_sinh_le_cosh _).trans ((le_abs_self _).trans (abs_cosh_half_le hu))
+  (abs_sinh_le_cosh _).trans ((le_abs_self _).trans (abs_cosh_half_le hu))
 
 /-! ### The perturbation bound -/
 
@@ -387,7 +396,8 @@ theorem weilQuad_add_le {R : ℝ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSuppo
       abs_mul, abs_two]
     refine mul_le_mul_of_nonneg_left ?_ (by positivity)
     refine (abs_add_le _ _).trans ?_
-    rw [abs_mul, abs_two, abs_of_nonneg (integral_nonneg fun u => sq_nonneg (d u))]
+    have hd2 : |∫ u, d u ^ 2| = ∫ u, d u ^ 2 := abs_of_nonneg (integral_nonneg fun u => sq_nonneg _)
+    rw [abs_mul, abs_two, hd2]
     linarith
   -- the Lévy piece
   have hlevy := levyEnergy_add_le hf hfc hd hdc
@@ -397,14 +407,20 @@ theorem weilQuad_add_le {R : ℝ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSuppo
   have hcf : Continuous fun u => Real.cosh (u / 2) := Real.continuous_cosh.comp (continuous_id.div_const 2)
   have hsf : Continuous fun u => Real.sinh (u / 2) := Real.continuous_sinh.comp (continuous_id.div_const 2)
   have hCadd : coshHalfMoment (fun u => f u + d u) = coshHalfMoment f + coshHalfMoment d := by
+    have i1 : Integrable fun u => f u * Real.cosh (u / 2) :=
+      (hf.continuous.mul hcf).integrable_of_hasCompactSupport hfc.mul_right
+    have i2 : Integrable fun u => d u * Real.cosh (u / 2) :=
+      (hd.continuous.mul hcf).integrable_of_hasCompactSupport hdc.mul_right
     unfold coshHalfMoment
-    rw [← integral_add ((hf.continuous.mul hcf).integrable_of_hasCompactSupport hfc.mul_right)
-      ((hd.continuous.mul hcf).integrable_of_hasCompactSupport hdc.mul_right)]
+    rw [← integral_add i1 i2]
     congr 1; funext u; ring
   have hSadd : sinhHalfMoment (fun u => f u + d u) = sinhHalfMoment f + sinhHalfMoment d := by
+    have i1 : Integrable fun u => f u * Real.sinh (u / 2) :=
+      (hf.continuous.mul hsf).integrable_of_hasCompactSupport hfc.mul_right
+    have i2 : Integrable fun u => d u * Real.sinh (u / 2) :=
+      (hd.continuous.mul hsf).integrable_of_hasCompactSupport hdc.mul_right
     unfold sinhHalfMoment
-    rw [← integral_add ((hf.continuous.mul hsf).integrable_of_hasCompactSupport hfc.mul_right)
-      ((hd.continuous.mul hsf).integrable_of_hasCompactSupport hdc.mul_right)]
+    rw [← integral_add i1 i2]
     congr 1; funext u; ring
   have hCd : |coshHalfMoment d| ≤ ch * N1 :=
     abs_moment_le hd.continuous hdc hdR hcf fun u hu => abs_cosh_half_le hu

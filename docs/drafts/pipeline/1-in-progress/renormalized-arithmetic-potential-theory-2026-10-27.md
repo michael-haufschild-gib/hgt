@@ -11,13 +11,13 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [x] 1 → 2  paper proofs of RP1–RP14 (all carried out directly in Lean)
+- [x] 1 → 2  paper proofs of RP1–RP17 (all carried out directly in Lean)
 - [x] 2 → 3  Lean: `renormalized_arithmetic_potential_theory_laws` and the module pillars, all
       axiom-clean (`propext`, `Classical.choice`, `Quot.sound`), wired into
       `RenormalizedArithmeticPotentialTheory.lean`
-- [ ] open topics (README §9): matched stability law at the atomic spacing; sign of the prime
-      finite part on the classes; characters at the horizon; exact torsion constant; matching
-      coefficients of natural gauges; several primes
+- [ ] open topics (README §9): matched stability law at the atomic spacing; who pays the tower
+      deficit at small primes; characters at the horizon; exact torsion constant in `[3/2, 2]`;
+      matching coefficients of natural gauges; several primes
 
 ## Results (Lean)
 - RP1 coupled survival law; RP2 the archimedean place pays the arithmetic point.
@@ -28,6 +28,10 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
   `γ_p = γ + log p/(p − 1)`; RP13 matched stability law at widths `δ_N N^{−e^{1/2}}`.
 - RP8 spectral ends `±log N`, Liouville flip; RP11 matching law for sign gauges, finite flips
   invisible; RP14 Gårding ⇔ finite-rank survival (report milestone W18(xi)).
+- RP15 `κ_tor(N) ≤ 2 log N + C`: torsion window `[3/2, 2]`, anomaly cost in `[½, 1]·log N`.
+- RP16 tower finite part ≥ 0 on the classes of `p` iff `√p log p ≤ γ(p − 1)`; deficit `2d_p`
+  sharp; fails at `p = 2`, holds for `p ≥ 2^16`.
+- RP17 Lévy gain with constant `1 − O(1/N)`; matched width `c δ_N/N`.
 
 ## No-go closure
 - **Killing theorem:** condition (i) of the central conjecture (bounded counterterm rank on Hecke
@@ -40,4 +44,4 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
   of `[p]` scales orbit densities and cancels.
 
 ## Log
-- 2026-10-27 — created; README first draft; RP1–RP14 formalized; laws module.
+- 2026-10-27 — created; README first draft; RP1–RP17 formalized; laws module.

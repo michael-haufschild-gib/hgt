@@ -1,14 +1,14 @@
 # Hard mathematical obstacles: routes, candidates and supporting programmes
 
-Status: 2026-10-27, corpus `6046e5478` with working tree. Scope: the 31 live routes, 17 standalone candidates, PW-B and the supporting programmes. Companions: [summary, next questions and new-field assessment](obstacles-summary.md), [walls ledger](walls-ledger.md), [route unification](route-unification-ledger.md).
+Status: 2026-10-27, corpus `3fd844e5f` with working tree. Scope: the 31 live routes, 17 standalone candidates, PW-B and the supporting programmes. Companions: [summary, next questions and new-field assessment](obstacles-summary.md), [walls ledger](walls-ledger.md), [route unification](route-unification-ledger.md).
 
 ## Evidence and classification
 
-**Sources.** Route inventory: the [frontier map](../rh-current-frontier-map.md) and the [killed-routes catalogue](../rh-killed-routes.md). Statuses were researched with `scripts/formal_tools.py research` and by reading module docstrings and theorem statements in `formal/`; findings are recorded in `logs/review-2710-v4-research-log.md`. Nothing was compiled. Labels: `[L]` integrated source, `[S]` working or unintegrated source (as the frontier map marks it), `[P]` paper proof, `[R]` reading or model calculation of this review, not a theorem.
+**Sources.** Route inventory: the [frontier map](../rh-current-frontier-map.md) and the [killed-routes catalogue](../rh-killed-routes.md). Statuses were researched with `scripts/formal_tools.py research` and by reading module docstrings and theorem statements in `formal/`; findings are recorded in `logs/review-2710-v5-research-log.md`. Nothing was compiled. Labels: `[L]` integrated source, `[S]` working or unintegrated source (as the frontier map marks it), `[P]` paper proof, `[R]` reading or model calculation of this review, not a theorem.
 
 **Obstacle classes.**
 
-- **(a) Just work.** Known mathematics suffices: finite certificates, certified computations, premise checks, transport of proved estimates, corollary assembly, sharp constants, imports of published theorems. IDs `W1`–`W21`, defined in the [summary](obstacles-summary.md#1-just-work). A just-work item may have an unknown outcome; what is known is the method.
+- **(a) Just work.** Known mathematics suffices: finite certificates, certified computations, premise checks, transport of proved estimates, corollary assembly, sharp constants, imports of published theorems. IDs `W1`–`W25`, defined in the [summary](obstacles-summary.md#1-just-work). A just-work item may have an unknown outcome; what is known is the method.
 - **(b) Open mathematics.** No known solution. Three tiers, defined in the [summary](obstacles-summary.md#2-open-mathematical-obstacles):
   - `B1.*`: RH-strength closing statements, each equivalent to RH or stronger;
   - `B2.*`: classical open problems weaker than RH;
@@ -16,11 +16,12 @@ Status: 2026-10-27, corpus `6046e5478` with working tree. Scope: the 31 live rou
 
 **Notation.** `Δ = sup_ρ |Re ρ − 1/2|` (zero width), `Θ = 1/2 + Δ` (zero abscissa). A receiver bounded at rate `σ < 1/2` gives `Δ ≤ σ` (quasi-RH); RH is rate zero. `κ` is the pole order at `s = 1`, `d` the archimedean degree. For a zero `ρ` of multiplicity `m`: `ρ* = 1 − ρ̄`, depth `δ = Re ρ − 1/2`. `f̂(s) = ∫ f(u) e^{(s−1/2)u} du`.
 
-- **Two forms.** `W` is Weil's form; `D(f) = Σ_ρ m_ρ |f̂(ρ)|²` the **collided form**; `Δ(f) = Σ_ρ (m_ρ/2)|f̂(ρ) − f̂(ρ*)|²` the **off-line defect**; `T_L` translation by `L`; `E_f(L) = D(T_L f) + D(T_{−L} f) − 2D(f)` the **Hecke defect**; `M_f = Σ_ρ m_ρ δ_ρ² |f̂(ρ)|²` the **moment of inertia**.
-- **Electrostatics.** `E(p) = Σ_{q ≠ p} m_q/(p − q)` the **field** at a zero; `𝓔` the **transverse energy** of the distinct zeros.
-- **Torsion.** `O_n` the primitive `n`-th roots of unity; `I(m, n)` their archimedean intersection; `c(n) = I(n, n)/φ(n)` the self-intersection; `P(m, n) = Λ(n/m)(n/m)^{−1/2}` (for `m ∣ n`, `m ≠ n`) **Weil's prime kernel**; `β(n, t) = c(tn) − c(n)` the Hecke cocycle; `K_q` the tower matrix, `q = p^{−1/2}`; `G_r` the archimedean lattice germ; `Λ₂ = Λ log + Λ ⋆ Λ`.
-- **Atomic resolution.** An **atomic test** is `f = Σ_{n ≤ N} x_n g(· − log n)` with `g` a `C²` bump of width `w`; the atoms `log n` are `δ_N = log(1 + 1/N)` apart. `P_N(x) = Σ x_m x_n P(m, n)`; `u_n = n^{−1/2}` the **pole vector**; `ℓ(x) = Σ x_n n^{−1/2}` the **polar functional**; `M = arch − prime` the Markov form; `C(f) = ∫ f cosh(u/2)`, `S(f) = ∫ f sinh(u/2)`; `E_φ` the **self-energy of an atom**, `K_φ(c)` the **archimedean cross kernel** between atoms at log-distance `c`.
-- **Other.** `σ_γ(s) = 1 + 2iγ − s`; `ζ_γ(s) = ζ(s)²ζ(s + iγ)ζ(s − iγ)`, class `HeightCoupledSystem 2 1 1 γ`; `ν_N` the torsion measure.
+- **Two forms.** `W` is Weil's form; `D(f) = Σ_ρ m_ρ |f̂(ρ)|²` the **collided form**; `Δ(f) = Σ_ρ (m_ρ/2)|f̂(ρ) − f̂(ρ*)|²` the **off-line defect**; `E_f(L) = D(T_L f) + D(T_{−L} f) − 2D(f)` the **Hecke defect**; `M_f = Σ_ρ m_ρ δ_ρ² |f̂(ρ)|²` the **moment of inertia**.
+- **Electrostatics.** `E(p) = Σ_{q ≠ p} m_q/(p − q)` the field at a zero; `𝓔` the transverse energy of the distinct zeros, `𝓔_copy` that of the multiplicity copies; **damped source work** the arithmetic work of `Λ ⋆ Λ` against the divisor at damping `R`.
+- **Torsion.** `I(m, n)` archimedean intersection of torsion orbits; `c(n) = I(n, n)/φ(n)`; `P(m, n) = Λ(n/m)(n/m)^{−1/2}` Weil's prime kernel; `K_q` the Kac–Murdock–Szegő tower matrix, `q = p^{−1/2}`; `Λ₂ = Λ log + Λ ⋆ Λ`.
+- **Atomic families.** `f_x = Σ_{n ≤ N} x_n g(· − log n)` with a real `C²` bump `g` supported in `[0, w]`; spacing `δ_N = log(1 + 1/N)`; **overlap ratio** `K = w/δ_N ≍ wN`. `P_N(x) = Σ x_m x_n P(m, n)`; `ℓ(x) = Σ x_n n^{−1/2}` the polar functional; `M = arch − prime` the Markov form; `C(f) = ∫ f cosh(u/2)`, `S(f) = ∫ f sinh(u/2)`, so `Re W = M + 2C² − 2S²`. Constants: `c₁ = (32e^{5/2})^{−1}`, `C₀ = 2(log 4 + 4) + 1`, `c₀ = c₁ e^{−(C₀ + 2|θ′(0)|)}`.
+- **Lorentzian.** A symmetric form is **hyperbolic** if it has at most one positive square, **Metzler** if its off-diagonal entries are nonnegative; for row sums `D = Q1 > 0` the **trickle-down inequality** is `(TD) Q[v] ≤ Σ_i (Qv)_i²/D_i`, weighted `(TD_π)` with a positive weight `π`.
+- **Horizon classes.** For a prime `p`: classes `v_p(n) = j ≤ J`, densities `δ_j = (1 − 1/p)/p^j`, class polar functionals `ℓ_j`, local Euler constant `γ_p = γ + log p/(p − 1)`, tower deficit `d_p = √p log p/(p − 1) − γ`.
 
 ## 1. Facts that fix the present frontier
 
@@ -32,12 +33,9 @@ Status: 2026-10-27, corpus `6046e5478` with working tree. Scope: the 31 live rou
 | Collided form `D` | yes; faithful; at each aperture the logarithmic Sobolev norm [L] | iff RH [L] | the `ξ` current and polynomially many integer theta values [L] |
 
 - **Capacity identity** [L]. `Re W = D − Δ`; RH iff `W = D` iff `D` Hecke invariant iff one `T_L`, `L ≠ 0`, is a similitude of `D`.
-- **Norm** [L]. `c ∫|f̂(σ)|² log(|σ| + 4) ≤ D(f) ≤ C ∫|f̂(σ)|² log(|σ| + 4)` at each aperture; Gårding; fewer than `2AT₀K/π` negative directions of `W` at aperture `A`; local Weyl law.
-- **Computation** [L]. Integer theta prefixes recover the depth moments with error `O(n^{−2} + log n/n)` for `a + j|L| ≤ 2 log(n + 1)` and detect zeros in discs of radius `1/(16(n + 1)^6)`. The readings are integrals in `z` of finite theta prefixes, not finite quadratures.
-- **Moment of inertia** [L]. `4L² M_f ≤ E_f(L) ≤ 8(cosh L − 1) M_f`, `E_f(L)/L² → 4M_f`.
-- **Depth geometry and amplification** [L/S]. `L ↦ D(T_L f)` is the Laplace transform of the depth measure; two-scale rigidity `E(L)² ≤ D(E(2L) − 4E(L))`; Stieltjes moment problem; dyadic amplification with fixed loss `D(f)`. Amplification is **soft**: it holds for every finite nonnegative depth configuration, golden and fake data included [L].
-- **The one-scale bound is a strip** [S]. `E_f(L) ≤ D(f)(2cosh(2ϑL) − 2)` for every test and scale iff every zero has depth `≤ ϑ` (`zeroFreeStrip_iff_heckeDefect_bound`). Integer prefixes transfer such caps without loss [L]; explicit all-`n` prefix errors give `4L²M_f ≤ reading + error` [S]; at the schedule `n_k = ⌊exp(2^k/2)⌋ + 1`, `Θ ≤ 1 − θ` iff every reading is `O((n_k + 1)^{2(1−2θ)+ε})`, and RH iff every reading is subpolynomial [S]. Vinogradov–Korobov gives readings `o(n²)` throughout the horizon [S], no power saving.
-- **Reading [R].** What computes `D` and what its defect measures is answered; every uniform bound on the defect is a zero-free strip. A bound on `M_f` that is not a strip must depend on the test or be averaged.
+- **Gårding is a finite-rank survival** [S]. `A ≥ 0` on a subspace of codimension `≤ k` iff `A` survives a positive counterterm of rank `≤ k`; the corpus Gårding bound says `W` is a renormalized positive form with finite-rank counterterm at each aperture; RH says the counterterm can be zero.
+- **Moment of inertia** [L]. `4L²M_f ≤ E_f(L) ≤ 8(cosh L − 1)M_f`. Dyadic amplification is soft (valid for every nonnegative depth configuration) [L]. Every all-test, all-scale cap `E_f(L) ≤ D(f)(2cosh(2ϑL) − 2)` is the zero-free strip of width `ϑ` [S]. Integer-theta prefix readings: VK gives `o(n²)`; RH is subpolynomial readings on the dyadic schedule [L].
+- **Reading [R].** What computes `D` and what its defect measures is answered; uniform bounds on the defect are strips; a non-strip bound must depend on the test or be averaged.
 
 ### 1.2 Local type, elliptic localizers and the forcing gap
 
@@ -45,168 +43,157 @@ At an off-line pair the local form is `2 Re(u v̄)` in `(f̂(ρ), f̂(ρ*))`, si
 
 | Type | Action on the fibre | Correspondences | Positivity of a cyclic span forces |
 |---|---|---|---|
-| Hyperbolic | boost, `\|β\| ≠ 1` | Hecke operators, archimedean flow, gauge twists, at off-line pairs | isotropy |
+| Hyperbolic | boost | Hecke operators, archimedean flow, gauge twists, at off-line pairs | isotropy |
 | Elliptic | rotation or swap | Hecke on the line; resonant dilations; `σ_γ`; rotations of the circle | only `Re(u v̄) ≥ 0` |
 | Unipotent | identity on polar parts | the successor | nothing |
 
-- **Resonance** [L]: a symmetric dilation by `a` is elliptic at an off-line ordinate `γ` iff `γ log a ∈ πℤ`. **Elliptic localizers** [L]: the stabilizer of an off-line pair among reflection-compatible affine maps is `{id, σ_γ}`; even sector `+2|G(ρ)|²`, odd sector `−2|G(ρ)|²`. **Symmetric squares** [L]: nonnegative symmetric-square spectra at one prime iff `Re ρ = 1/2`. **Sparse annihilators** [L]: `1 − T_p^N` kills only critical symbols on a lattice of heights.
-- **Rotations of the circle** [L]. `R_ζ: z ↦ ζz` is exact for the Abel pairing (no anomaly) and diagonalizes it; on `μ_N` the rotation spectrum is the lattice germ at `k/N`, renormalized `−(ψ(k/N) + γ + log N)/N`. Rotations localize in the additive dual `ℚ/ℤ`; zero ordinates live in the multiplicative dual; an elliptic localizer for zeros cannot come from torsion rotations.
-- **Conductor horizon** [L]. `Re W_ζ(e^{−iγu} f) ≥ 0` once `C + (4 + ε)e^a + 2 ≤ log(1 + |γ|/8)`; source-blind there.
-- **Forcing half and gap** [L]. One odd-sector sign, a local count and depth dominance force a companion; the certificate needs `e^{2δa} > 768A log(|γ| + 3)`, disjoint from the horizon at every height.
-- **Reading [R].** Beyond the horizon the detector's prime side is a prime polynomial of length `(log γ)^{O(1)}` at the zero's ordinate; its sign is the alignment of `γ log p`.
+- Resonance, `σ_γ` as the only reflection-compatible affine localizer, symmetric squares, sparse annihilators, rotations of the circle localizing in `ℚ/ℤ` [L].
+- **Conductor horizon** [L]: twisted positivity once `C + (4 + ε)e^a + 2 ≤ log(1 + |γ|/8)`, source blind. **Forcing gap** [L]: the companion certificate needs `e^{2δa} > 768A log(|γ| + 3)`, disjoint from the horizon at every height.
+- **Lorentzian reading of the local type** [S]. Hecke dilations `n ↦ pn` preserve every twin's coupled kernel and act on the pole plane by the boost `diag(p^{−1/2}, p^{1/2})`: conformal factor one. Power maps `n ↦ n^k`, `k ≥ 2`, and the successor are not conformal. Over `𝔽_q` Frobenius is a nonnegative conformal map with factor `q`. No map of the atoms available over `ℤ` is conformal with factor `≠ 1`.
 
-### 1.3 Electrostatics of the zero divisor
+### 1.3 Electrostatics and index descent of the zero divisor
 
-- **Computed field** [L]. `L(Λ ⋆ Λ, s) = (ζ′/ζ)²`; the simple Laurent coefficient at a zero is `2m` times the transverse field, completed by the archimedean term.
-- **Virial laws and equilibrium** [L]. Newton, Stieltjes and transverse virial laws; reflection-closed finite configurations are in equilibrium iff critical; energy `0` or `≥ 1`.
-- **Energy of the divisor** [L]. `𝓔 = 0` iff RH iff `𝓔 < 1`; `𝓔 < ∞` iff finitely many off-line zeros; work equals energy; source work exhausts the copy energy `𝓔_copy`.
-- **Energy of one zero** [L]. Every off-line zero has `E(ρ) ≥ 1`; every zero has `E(ρ) ≤ 16(C + log(|γ| + 4))`; a window has energy at most `16(C + log(|T| + H + 4))` per zero. The energy is unconditionally logarithmic; the field is not controlled (near-coincident pairs).
-- **Quantization** [L]. RH iff every unit window has energy `< 2`.
-- **Field threshold** [L]. RH iff every right zero feels a transverse field `≤ 1`, iff (explicit `c`) every such field is `< √(2c log(|γ| + 4))`.
-- **Terminals, rays, lens, Harnack** [L/S]. Every right zero has a terminal within `C log γ` with an outward zero-free ray carrying reserve `≥ m/h + m/(2a + h) + c·a·log γ`; zero-free lens [L]; Harnack on the Carathéodory region spreads the floor to discs with factor `1/3` [S].
-- **Terminal ceiling is a strip** [S]. A ceiling excluding right terminals of depth `> a` is equivalent to the zero-free strip of width `a`; RH iff there is no right terminal.
-- **External field** [L]. For `σ > 1`: `Σ Λ(n) n^{−σ} cos(γ log n) ≤ Re(Γ-part)′ − m/(σ − β)` at a zero `β + iγ`. No interior counterpart.
-- **Selberg's source** [L]. `Λ₂ = μ ⋆ log² ≥ 0`, `L(Λ₂) = ζ″/ζ`; degree renormalization `m² → m(m − 1)`.
-- **Gauge behaviour** [L]. Electrostatics is blind to the archimedean twist; the twisted source `ωΛ₂` is nonnegative at a prime iff `ω(p) = 1`.
-- **Reading [R].** Equilibrium, quantization and the field are computed; uniform ceilings on terminals or on the Hecke defect are zero-free strips; the excluding inequality is a non-uniform upper bound of size `√log γ`.
+- **Computed field** [L]: `L(Λ ⋆ Λ, s) = (ζ′/ζ)²`; Laurent coefficient = `2m` × transverse field. **Equilibrium, quantization** [L]: reflection-closed finite configurations are in equilibrium iff critical; RH iff every unit window has energy `< 2`.
+- **Thresholds** [L/S]: RH iff every right-zero field `≤ 1`, iff `< √(2c log(|γ| + 4))`; `𝓔 < ∞` iff finitely many off-line zeros. **Closed quantum threshold** [S]: RH iff `𝓔 ≤ 2` iff `𝓔_copy ≤ 2` iff the damped source work is cofinally `≤ 2` (an off-line quartet carries energy `> 2`).
+- **Energy of one zero** [L]: every off-line zero has `E(ρ) ≥ 1`; every zero `E(ρ) ≤ 16(C + log(|γ| + 4))`.
+- **Index descent** [S]: the negative index `k` of any finite compact `C²` Weil Gram satisfies `k ≤ 𝓔 ≤ 𝓔_copy`, and `k > 0` forces `k < 𝓔`; damped source work eventually exceeds the whole index. `𝓔_copy < ∞` ⇔ finite off-line support ⇔ eventually bounded damped work ⇔ uniformly bounded index of the integer-log spline Grams. Finite-Gram descent: negative index survives entrywise approximation and cannot grow under rectangular pullback; arithmetic use needs convergence of every mixed entry.
+- **Terminals, rays, lens, Harnack** [L/S]: every right zero has a terminal within `C log γ` whose outward zero-free ray carries `Re(ζ′/ζ + Γ-part) ≥ m/h + m/(2a + h) + c·a·log γ`; terminal ceiling of depth `a` ⇔ strip of width `a` [S].
+- **External field** [L]: for `σ > 1`, `Σ Λ(n) n^{−σ} cos(γ log n) ≤ Re(Γ-part)′ − m/(σ − β)` at a zero `β + iγ`; no interior counterpart.
+- **Selberg's source and its gauge margin** [L]: `Λ₂ ≥ 0`, `L(Λ₂) = ζ″/ζ`; at a flipped prime `Λ₂(p) − ωΛ₂(p) = 2 log² p`, on every window — a coefficient margin.
+- **Reading [R].** The zero side has an exact arithmetic target: an upper bound on damped source work below the quantum `2`. Detection, reserves, index bounds and quantization are all lower-side statements.
 
 ### 1.4 Torsion intersection and renormalization: the regulator decides
 
-- **`Λ` is an intersection number** [L]. `I(m, mt) = φ(m)Λ(t)`; `Λ(n) = log #(𝒪_{ℚ(ζ_n)}/(ζ_n − 1))`; every entry of the prime kernel is a log-order; orbit intersections are digamma sums at rational points [L/S].
-- **Self-intersection** [L]. `c(n) = Σ_{p^a ∥ n}(a − 1/(p − 1)) log p`; along a `p`-tower it grows by `log p`. **The self-intersection dominates the tower** [L]: on each ladder the renormalized torsion form `−P − diag(c)` is negative definite above the second level (`Δ² < 0` for genus `≥ 2`, read prime by prime).
-- **Local Hodge index and the local–global failure** [L/S]. `P = Σ_p L_p`, `L_p = log p (K_q − 1) ⊗ 1`, each two-sided bounded; the global prime form has no `ℓ²` ceiling. Summing the local bounds costs `238√M`; the joint Schur bound is `2 log N + O(1)`: summing local indices in absolute value is the square-root threshold.
-- **Survival law** [L]. Positivity of a regularized family passes to the limit exactly on the null cone of the counterterm.
+- **`Λ` is an intersection number** [L]: `I(m, mt) = φ(m)Λ(t)`, `Λ(n) = log #(𝒪_{ℚ(ζ_n)}/(ζ_n − 1))`. **Self-intersection dominates each tower** [L]. `P = Σ_p L_p`, each local tower form two-sided bounded, no global `ℓ²` ceiling; summing in absolute value costs `238√M`, the joint Schur bound is `log N + O(1)` [L].
+- **Survival law** [L]: positivity passes to a regularized limit exactly on the null cone of the counterterm.
 
 | Regulator | Counterterm | Survival | Hecke behaviour |
 |---|---|---|---|
-| Abel radius `r` on torsion | identity | `{0}`; limit indefinite on `{1, q}` [L] | anomaly `β(n, t) = log t − Σ_{p∣t, p∤n} log p/(p − 1)`, not a bounded coboundary [L] |
-| Abel radius on the lattice germ | `𝟙𝟙ᵀ` | polar hyperplane `Σ c_i = 0` [L] | — |
-| Spacing radius `e^{−ε/n}` | scalar `log(1/2ε)` | `{0}`; limit `−P + diag(tame different)` indefinite on `{1, 2}` [L] | covariant up to tame ramification [L] |
-| Horizon `n ≤ N` (Weil's form) | rank one and polar on uniform log-scale profiles [S]; identity on the `p`-valuation classes, unbounded rank [S] | polar-neutral step profiles bounded; no fixed number of linear constraints removes the divergence [S] | covariant; covariant counterterm `κ_N ∈ [log N − log 8 − 4, log N + log 4 + 4]` [S] |
+| Abel radius on torsion | identity | `{0}` [L] | anomaly cocycle `β(n, t)`, not a bounded coboundary [L] |
+| Abel radius on the lattice germ | `𝟙𝟙ᵀ` | polar hyperplane [L] | — |
+| Spacing radius `e^{−ε/n}` | scalar | `{0}`; limit indefinite on `{1, 2}` [L] | covariant up to tame ramification [L] |
+| Horizon `n ≤ N`, uniform profiles | `ℓ(x)²` | polar hyperplane; finite part `−2γ` [S] | covariant [S] |
+| Horizon, `p`-adic class profiles | tensor `Σ_j δ_j^{−1} ℓ_j(x)²` (torsion ⊗ polar) [S] | class-wise polar hyperplanes; finite part = tower form `−2γ_p + log p (K_q − 1)` [S] | exactly invariant under `[p]` (no anomaly) [S] |
+| Horizon, exhaustion in `J` | unbounded rank | no fixed number of constraints removes the divergence [S] | — |
 
-- **Coupled survival law** [S]. For a PSD coupled counterterm `[[A, C], [Cᵀ, D]]` with injective prime block, no pure prime vector survives and the prime projection of the survival space has dimension at most `rank D`: a partner pays at most as many prime directions as the rank of its own counterterm. Every positive family keeping the Abel torsion block has `A = cI`.
-- **The archimedean place pays the arithmetic point** [S]. Ramanujan modes with any number of constant-mode archimedean nodes give the counterterm `[[1, e₁𝟙ᵀ], [𝟙e₁ᵀ, 𝟙𝟙ᵀ]]`; prime survival is `ℝe₁`; no orbit of order `≥ 2` survives.
-- **Ramanujan twins** [L]. Survival cone = per-order relations; the pole-node block is the torsion energy with limit `−φ(m)Λ(t)`; pole-node completion is PSD but at infinite node height regenerates a full-rank counterterm `φ(m) log u` with survival `{0}`.
-- **Covariance forces a scalar** [S]. `−P + diag(h)` is Hecke covariant iff `h` is constant on orders; a scalar counterterm has survival `{0}`.
-- **The anomaly costs half a logarithm** [S]. Every torsion counterterm (keeping `c(n)`) is `≥ (3/2) log N − C`; the covariant one is `log N + O(1)`. Weil's prime sum, which drops the diagonal, is the anomaly cancellation.
-- **Gauss digamma** [L]. Torsion energy on `μ_N` and the lattice germ at `k/N` are Fourier dual; `log N` is the anomaly of `[N]`.
-- **Reading [R].** The rank of a counterterm is a property of the regulator. No regulator of the prime place alone keeps positivity: Abel leaves `{0}`, spacing is covariant and indefinite, the horizon diverges along every torsion orbit. Coupling cannot lower the torsion rank. The prime divergence at the horizon is the identity on the arithmetic factor times `log N`, which is the shape of the archimedean self-energy: the archimedean place is the covariant counterterm.
+- **Coupling** [S]: a partner pays at most as many prime directions as its own counterterm rank; constant-mode archimedean coupling pays exactly the arithmetic point; pole-node completion relocates a full-rank divergence to infinite node height [L].
+- **Covariance** [L]: a diagonal renormalization is Hecke covariant iff scalar (survival `{0}`); covariant counterterm `log N + O(1)`. **Torsion window** [S]: the minimal torsion counterterm lies in `[(3/2) log N − C₁, 2 log N + C₂]`; retaining self-intersections costs between `½ log N` and `log N` over the covariant one.
+- **Sign of the tower finite part** [S]: in normalized class coordinates the horizon finite part enters Weil's form as `F_p(b) = 2γ_p|b|² + log p(|b|² − K_q(b))`; `F_p + c|·|² ≥ 0` at every depth iff `c ≥ 2d_p`. `d_2 > 0`; `d_p ≤ 0` for `p ≥ 2^16` (numerically for `p ≥ 47`). Large primes pay their own classes; small primes leave a deficit `2d_p`.
+- **Polar matching reads the gauge density** [S]: the coefficient matching the prime divergence to the archimedean polar direction is the weighted density of unflipped minus flipped primes: `+1` for Euler and every finite-flip gauge, `−1` for Liouville.
+- **Reading [R].** The horizon is Weil's own regulator and is the first one that is Hecke covariant with a nontrivial null cone on every finite class space; its finite part is local (tower forms with local Euler constants) and has a sign law decided by one number per prime. What is missing is uniformity under class and prime exhaustion on signed profiles, and payment of the small-prime deficits by the archimedean place and the pole. Divergences cannot separate `ζ` from finite-flip twins; only finite parts can.
 
-### 1.5 Atomic resolution: the archimedean place pays the prime place
+### 1.5 The spacing scale and the overlap ratio
 
-- **Weil's prime functional is the finite intersection** [L]. For log-atom tests of width `δ < log(1 + 1/M)`, only exact ratios `m/n` are seen and the prime sum is `‖φ‖² Σ_p Q_p(x)`.
-- **The polar part pairs the pole direction** [L]. Polar part `= 2αβ ℓ(x)(Σ x_n n^{1/2})`, rank two, signature `(1, 1)`.
-- **Hodge index in tower coordinates** [L]. `Re(arch + polar) = E_φ|x|² + 2αβ ℓ(x)(Σ x_n √n) − Σ_{m<n} x_m x_n K_φ(log(n/m))`, with `E_φ ≥ ‖φ‖²(γ₀ + e^{−1/2} log((1 − δ)/δ))`; under RH the towers plus archimedean couplings are paid by self-energy plus polar pairing. The direction "RH ⇒ inequality" is a receiver.
-- **Stability law** [L]. `M(f) ≥ (2θ′(0) + e^{−1/2} log(δ_N/(2w)) − 2 log N − log 4 − 4) ∫f²`; `M ≥ 0` for `w ≤ atomicWidth N = N^{−O(1)}`.
-- **Coupled form at atomic resolution** [S]. `Re W = M + 2C² − 2S²`; `Re W + 2S² ≥ 0` on atomic tests of width `≤ atomicWidth N`; `Re W ≥ 0` on `|S| ≤ |C|`, in particular for nonnegative weights. A rank-one counterterm couples the two places and the pole.
-- **The gauge at atomic resolution** [L]. `P_ω(m, n) = ω(m)ω(n)P(m, n)`; every sign twin's atomic prime form is ζ's in the gauge `x ↦ ωx`; the stability law holds for every twin. The Weil forms differ only through the archimedean interaction of the charged and neutral parts of the test: `M_ω(f_x) = M(f_{ωx}) + A(f⁺ + f⁻) − A(f⁺ − f⁻)`, with `x = x⁺ + x⁻` split by `ω = ±1`. On nonnegative weights `M_ω − M = (∫g²) Σ x_m x_n (1 − ω(m)ω(n)) P(m, n) ≥ 0`, equal to `2Λ(p)/√p · ∫f²` on the two-atom test `1_{1} + 1_{p}` at a flipped prime, for every `N ≥ p`: `ζ` is the minimum of its gauge orbit on the positive cone. The finite intersection is gauge blind; selectivity in `ζ`'s favour can come only from the pole term and the archimedean cross term, where the self-energy no longer dominates it.
-- **Reading [R].** The leading constants match: covariant prime counterterm `log N + O(1)` against archimedean self-energy `log(1/w) + O(1)` at `w ≍ 1/N`. The corpus's `N^{−O(1)}` width comes from the lossy Lévy constant `e^{−1/2}` and from discarding shifts beyond `δ_N`. With the sharp constant, the RAPT ceiling and a Schur bound on `K_φ` (row sums `≲ 4wN(1 + log N)`), the norm estimate `E_φ − ‖P‖ − ‖K‖ > 0` should hold at `w ≍ δ_N/(C log N)` (W9). At `w = cδ_N` with `c` fixed the norm estimate fails: `K` is of size `c log N` on vectors concentrated near scale `N`, where `P` is small, and `P` is of size `log N` on spread vectors, where `K` is `O(c)`; a joint estimate is needed (B3.25). The same cross kernel, evaluated between charged and neutral atoms, is the only term in which sign twins' Weil forms differ at atomic resolution; at the spacing it stops being dominated. Beyond the spacing the atoms overlap and non-ratio lags `log k` enter the prime sum (B3.26). The spacing scale is the Montgomery–Vaughan regime `T ≍ N` of Dirichlet polynomials of length `N`, where off-diagonal Hilbert terms are as large as the diagonal.
+- **Self-energy of an atom is exactly logarithmic** [L]: `log(1/w)‖g‖² ≤ levyEnergy g ≤ (log(1/w) + C_E)‖g‖² + e^{1/2}K w‖g‖₁` — constant one, the constant of the covariant counterterm `log N`.
+- **Tilted prime rows** [L]: with Schur weight `1 + n/N`, `P_N(x) ≤ Σ x_m²(log N + 2(log 4 + 4) − (m/4N) log m)`; the down-tower saving pays the archimedean cross-kernel row `(m/4N)(1 + log(N + 1))` at `w ≤ c₁/N`.
+- **Stability law at the spacing scale** [L]: `M(f_x) ≥ (2θ′(0) + log(1/(wN)) − C₀)‖f_x‖²` at `w ≤ c₁δ_N`; `M ≥ 0` at `w ≤ c₀δ_N`, every `N`; `Re W + 2S² ≥ 0`; `Re W ≥ 0` on `|S| ≤ |C|`.
+- **The law is universal** [L]: the same constants hold for every real twist `|ω(k)| ≤ 1`, multiplicative or not, and every real `C²` bump. The separated regime sees nothing of the coefficients beyond `|a(k)| ≤ Λ(k)`.
+- **Diamagnetic inequality** [L]: `archForm f − twistedPrimeSum ω f ≥ M(|f|)` for every real compact `C²` `f` and every `|ω| ≤ 1`; on `|·|`-closed families `ζ` is the ground state of its gauge orbit. A form margin in `ζ`'s favour can come only from the pole term (the one anti-Markovian term) or from families not closed under `|·|` (signed bumps, overlapping atoms).
+- **Sections pay the pole** [L]: for independent profiles `F = Σ G_n(· − log n)` of width `w ≤ c_full δ_N`, `Re W(F) ≥ ‖F‖²` with no pole constraint; restricted Riemann–Roch, ampleness and Hodge index hold on the whole section space. Gauge blind.
+- **The gauge enters through non-ratio lags** [L]: at any width `primeSum f_x = Σ_k Λ(k) Σ_{m,n} x_m x_n (G(−log k − s_mn) + G(log k − s_mn))`; for completely multiplicative sign gauges the defect `ω(k) − ω(m)ω(n)` vanishes on ratio lags; below the spacing there are no non-ratio lags; for `N ≥ 3` a non-ratio pair lies within `4δ_N` of lag `log 2`. The infinite-sum identity retains two summability premises.
+- **The atomic family is a Dirichlet polynomial** [L]: `h_{f_x} = h_g · D_x`; on-line zero summands are `m_ρ|h_g(γ_ρ)|²|D_x(γ_ρ)|² ≥ 0`. Below the spacing the zeros up to height `≍ 1/w` oversample the Dirichlet polynomials of length `N`; at the spacing they sample at the Nyquist rate; beyond it they undersample.
+- **Unbounded overlap is RH** [L]: for every fixed width `w > 0`, RH iff all finite Weil Grams of the cubic splines `B_w(· − log n)` are positive semidefinite; the largest negative index is the number of distinct zeros right of the line.
+- **Lévy-norm continuity** [S]: Weil's quadratic form is continuous in the logarithmic Sobolev (Lévy) norm; perturbations of size `ε` and Lipschitz constant `K` move it by `O(ε√log(K/ε))`. The synthesis theorem its docstring announces (`TheCriticalExponent`) is not in the corpus.
+- **Reading [R].** Positivity is unconditional exactly while the overlap ratio stays below `c₀`, and there it is universal; at unbounded overlap it is RH. The open regime is **bounded overlap**, `c₀ < K < ∞` — where non-ratio lags appear (from `K ≈ 4`), where the zeros sample the atomic Dirichlet polynomials at or below the Nyquist rate, and where the Nyquist rank bound of AOT says sampling stops being injective (`N ≍ T`, the square-root threshold read as a sampling threshold).
 
-### 1.6 Weil's argument over `ℤ`, layer by layer
+### 1.6 Arithmetic Lorentzian geometry
+
+- **Hodge index = hyperbolicity** [S]: RH iff every finite Gram of the scaling surface satisfies `D²E² ≤ (D·E)²` whenever `D² > 0`. Any form with a hyperbolic plane becomes entrywise nonnegative in a shifted basis: nonnegativity informs only in a fixed basis.
+- **Sums fail; trickle-down repairs them** [S]: hyperbolicity is not closed under sums; for a Metzler form with positive row sums and connected support, one positive square ⇔ `(TD)` ⇔ hyperbolic links exist; `(TD)` says `Q − QD^{−1}Q ≤ 0`, and negative semidefinite defects do sum. Quantitative `(TD)` with error `ε` plus a gap gives `Q ≤ μ₋(ε)D`.
+- **Metzler dichotomy** [S]: if `Qπ ≤ 0` for some `π > 0` then `Q ≤ 0` — the stability regime, the shape of every unconditional atomic positivity; if `Qπ > 0` with connected support then hyperbolicity ⇔ `(TD_π)` — the trickle-down regime.
+- **Calibration over `𝔽_q`** [S]: Bézout is the Metzler property (point counts `≥ 0`); every curve datum lies in the trickle-down regime; the golden datum (`q = 5`) is Metzler and connected but violates `(TD_π)`. The content of Weil's theorem is the trickle-down inequality.
+- **The sign is a gauge fixing** [S]: the coupled atomic kernel `A + t χ̄(m)χ(n)P` (`N ≥ 6`, `t ≥ 2`) is entrywise nonnegative in some gauge iff `χ(p) = 1` for all `p ≤ N`; the archimedean kernel fixes the gauge along the successor; the Lorentzian locus of the gauge torus is the set of archimedean characters `n^{iτ}`. In the Euler gauge the archimedean phase on the successor edge is the successor connection of BGG.
+- **Local factors** [S]: the prime kernel on a `p`-ladder `1, …, p⁵` has at least two positive squares (no local Lorentzian positivity); the archimedean jump form is a Laplacian (no positive square); the second elementary symmetric form of nonnegative local data is Lorentzian for every choice of data, so the Euler-product closure is blind (Beurling systems and fake curves pass); its identification with the Hessian of `∏⟨L_p, y⟩` is being formalized.
+- **Repairs that change the form** [S]: the odd Frobenius Gram is the minimal-rank positive repair (rank = number of distinct outer eigenvalues), preserving pole couplings; polar gluing gives `reserve(ΣQ_i) = Σ reserve − V` (dispersion of normalized polar rows) and subtracting `V` constructs a hyperbolic form.
+- **Turán layer** [S]: every homogenized Jensen polynomial of `ξ` at the centre (ordinary coefficients) is Lorentzian; strictly weaker than real-rootedness at degree `≥ 3`.
+- **Reading [R].** In this language the atomic positivity proved by SSHA is the stability regime, and the overlap regime is the trickle-down regime. The Lorentzian sign hypothesis (Metzler) holds only at the Euler gauge: selectivity is built into the hypothesis rather than extracted from a margin. Over `ℤ` the missing pieces are a conformal correspondence (Frobenius) and arithmetic trickle-down links.
+
+### 1.7 Weil's argument over `ℤ`, layer by layer
 
 | Layer | Over `𝔽_q` | Over `ℤ` | Forces the sign? |
 |---|---|---|---|
 | L1 Identities | Lefschetz, adjunction | exact | no (golden datum) |
 | L2 Theorem of the square | graph map quadratic | free for normalized graphs | no |
 | L3 Budget | `δ(Δ, Δ) = 2g` | free | no |
-| L4 Kernel counts | `#ker ≥ 0` | collided (complex fake: counts `≥ 0`, Rosati `−2304`) | collided only |
-| L5 Rosati positivity | polarization | `⇔` RH | missing |
-| L5′ Counting origin | RR on `C × C`; Stepanov | each counting currency is RH; Stepanov needs a lattice spectrum | each is RH |
-| L5″ Diagonal | `2 − 2g`, finite | regulator-dependent; no prime-only regulator keeps positivity; at atomic resolution the archimedean self-energy pays with a rank-one pole counterterm [L/S] | missing beyond atomic resolution |
-| L5‴ Local–global | one Frobenius ladder | transverse ladders; local Hodge index at each prime; no `ℓ²` ceiling | missing: archimedean payment at the spacing scale |
-| L5⁗ Base | all places act on one ladder, towers overlap at `lcm` lags | ladders of distinct primes never share a pair; the successor is transverse to every ladder [S] | missing: a common base |
-| L6 Amplification | fixed tensor loss | fixed tensor loss `⇔` RH; dyadic amplification soft | missing |
+| L4 Kernel counts / Bézout | `#ker ≥ 0` = Metzler | collided; atomic kernel Metzler only in the Euler gauge [S] | collided only |
+| L5 Rosati positivity / Hodge | polarization | `⇔` RH; `⇔` hyperbolicity of scaling-surface Grams | missing |
+| L5′ Counting origin | RR on `C × C`; Stepanov | each counting currency is RH | each is RH |
+| L5″ Diagonal | `2 − 2g`, finite | archimedean self-energy pays the prime intersection and the pole up to overlap ratio `c₀` [L]; RH at unbounded overlap [L] | missing at bounded overlap |
+| L5‴ Local–global | trickle-down on one Frobenius ladder | local ladders not Lorentzian; local Hodge index at each prime; horizon finite parts local with deficit `2d_p` at small `p` | missing: trickle-down links |
+| L5⁗ Symmetry | Frobenius conformal, factor `q` | Hecke isometries; power maps and successor not conformal | missing: a conformal correspondence |
+| L6 Amplification | fixed tensor loss | `⇔` RH; dyadic amplification soft | missing |
 
-**Calibration over `𝔽_q`** [L]. Odd-degree hyperelliptic RH by counting, split case included; Hasse; effectivity functions and naive heights exist there. **Completion law** [L]. `|τ|² = q` by counting; Pólya–Vinogradov; Burgess; least non-residue `≤ p^{1/(4√e)+ε}`; the arithmetic point has no period; Nair's floor.
+**Calibration over `𝔽_q`** [L]: odd-degree hyperelliptic RH by counting. **Completion law** [L]: `|τ|² = q`; Burgess; least non-residue; the arithmetic point has no period.
 
-### 1.7 Counting is the sign
+### 1.8 Counting and budgets
 
-- Section counts with RR and Bézout, effectivity functions, naive heights, convex heights, fixed tensor loss, horizon torsion at `√N` precision, the one-sided count `ψ(x) − x ≤ C√x log²x` and the Farey sum at `√N` are each RH [L].
-- The polar box count is an effectivity function iff Hodge; subtracting prime-power nodes destroys RI [L]. Theta-surface counts are fibre-independent; lattice counts give `ζ(s₁ + s₂)` or `ζ(s₁)ζ(s₂)`; Jacobi–Hurwitz packets are blind or inflate; RH iff a bounded-below asymptotic subquadratic height exists [L].
-
-### 1.8 Budget currencies
-
-| Row | Over `ℤ` | Over `𝔽_q` |
-|---|---|---|
-| Prime error | linear log-energy budget iff RH; slope `≥ 2 + γ_E − log 4π`; Abel slope at the genus iff RH with simple zeros [L] | slope `Σ mult(β)²` [L] |
-| Mertens | budget ⇒ RH, simple zeros, `Σ\|ρζ′(ρ)\|^{−2} ≤ S` [L]; converse not formalized | purity with simple spectrum; strict Hasse in genus one [L] |
-| Successor shift | `D_Λ(s)/s ∈ H²(Re s > 1/2)` [L] | — |
+- Section counts, effectivity, naive and convex heights, fixed tensor loss, horizon torsion, the one-sided count `ψ(x) − x ≤ C√x log²x`, the Farey sum: each RH [L]. Nyquist rank bound: readings cannot annihilate more tests than their degrees of freedom allow; injective below the diagonal `N ≪ T` [L].
+- Prime-error linear budget ⇔ RH; Abel slope at the genus ⇔ RH + simple zeros; Mertens budget ⇒ RH + simple + summable residues [L]; over `𝔽_q` slopes `Σ mult(β)²` [L].
 
 ### 1.9 The gauge principle
 
-- **Orbits** [L]. Multiplicative data determine a source up to its gauge orbit; the Möbius half-power law holds Haar-a.e., fails at the Liouville twin, is RH at the gauge point `0`.
-- **Charged couplings** [S]. A coupling `(n; a, b)` is blind under every real sign gauge iff `nab` is a square; successor couplings are charged; dyadic cell dilation is covariant only at the Euler gauge, reaching `ω(p) = 1` for `p ≤ 2X + 1`.
-- **Cell holonomy** [L/S]. The Hilbert–Schmidt covariance defect of the dyadic cell dilation is at least twice the number of charged cells; at Liouville the charged cells are `{a : λ(a) = λ(2a + 1)}` [L]; for every real sign gauge flipping `2`, at least `K` charged cells lie below `162(K + 1)^4`, so the defect grows at least like `X^{1/4}` [L]. Reading [R]: positive logarithmic density `1/2` of `{a : λ(a) = λ(2a + 1)}` follows from Tao's two-point logarithmic Chowla theorem (`a₁b₂ − a₂b₁ = 1 ≠ 0`); lower natural density is two-point Chowla, open.
-- **Coefficient margin** [L]. At a flipped prime, `Λ₂(p) − ωΛ₂(p) = 2 log² p`; on every window some `n ≤ N` has `ωΛ₂(n) ≤ −log² 2`: the coefficient margin never collapses as primes enter. It is not a margin on signed tests.
-- **The gauge below the spacing** [L]. Prime forms conjugate; Weil forms differ by the archimedean charged–neutral cross term; `ζ` is the orbit minimum on nonnegative atomic tests (§1.5).
-- **First windows** [L]. At `181/500` and `23/40` the Liouville and `{2}`-flipped twins fail on witnesses where `ζ` is positive; the Liouville ground eigenvalue stays `< −3/10` at every aperture `≥ 23/40`; nine-modulus collar and Catalan `(8, 9)` separator at `2 log 2`. The full floor of `ζ` at `23/40` is uncertified.
-- **Repulsion; worst twin** [L]. `(1 + cos(γ log 2)) + (1 + cos(γ log 3)) ≥ e^{−|γ|}/50`; on nonnegative tests `Re W_Λ ≤ Re W_w` for `w ≤ Λ`.
+- **Orbits** [L]: multiplicative data determine a source up to its gauge orbit; the Möbius half-power law holds Haar-a.e., fails at Liouville, is RH at the gauge point `0`.
+- **Blind** [L/S]: square-class couplings; the finite intersection; the separated regime of the Markov form for every bounded twist (universal law); `|·|`-closed families (`ζ` the ground state); divergences of the horizon renormalization (polar matching `+1` for every finite flip); the Euler-product closure.
+- **Charged** [L/S]: successor couplings; dyadic cells (defect `≥ 2·#charged cells`, `≥ X^{1/4}` for every gauge flipping `2`; Liouville `≥ 2J` on `[1, 8J⁴]`); the archimedean kernel on successor edges (Lorentzian sign only at Euler); non-ratio prime lags at overlap; finite parts (source margin `2 log² p`; tower finite parts); the pole term.
+- **First windows** [L]: at `181/500` and `23/40` the Liouville and `{2}`-flipped twins fail on witnesses where `ζ` is positive, Liouville permanently from `23/40` on; the full `ζ` floor at `23/40` is uncertified.
+- **Reading [R].** Every gauge-blind statement is now classified by a structural reason; every remaining selective input lives in a finite part, a non-ratio lag, the pole term or the archimedean successor phase.
 
-### 1.10 Positive systems: one variable, polar configurations, deformations
+### 1.10 Positive systems, deformations, escape
 
-- `CompletedPositiveSystem 1 d = ℝ^× · ζ`; pole order pays inserted zeros; quartets contract only against a real anchor; anchored quartet `⇒ κ ≥ 3`; planting `Δκ ≥ 2`; Fejér barrier; no analytic global collision carrier [L].
-- One section decides positivity; independent-ordinate packets buy at most their pole share; harmonic packets `M` times it; every finite lattice cloud has a finite purchase bound (minimal maximal height over admissible weights), with no uniform bound for growing clouds [S].
-- Landau–Wronskian principle; Abel–Gram law; positive deformations form a monoid without nontrivial units [S]; the coupled class is not rigid at critical-zero ordinates; positive rigidity, chirality and central ceilings at `γ` are the absence of (off-line) zeros at `γ`; surplus residues are even central drops `≤ 2 ord ξ`; ceilings transfer to factors [L].
+`CompletedPositiveSystem 1 d = ℝ^× · ζ`; pole order pays inserted zeros; anchored quartet `⇒ κ ≥ 3`; independent-ordinate packets buy their pole share, lattice clouds a finite multiple [L/S]; positive deformations detect zero-free ordinates and are irreversible [S]. RH iff admission at every damping iff positive gauge mass of every escape state; escape classifies, it does not exclude [L].
 
-### 1.11 Escape
+### 1.11 Positivity: windows, averages, statistics, zero ordinates
 
-RH iff admission at every damping iff positive gauge mass of every escape state; energy-rate law both directions; Abel atoms; capacity, endpoint, shadow and infinite-height laws; escape forms collided. Escape classifies, it does not exclude [L].
+- Floors `‖f‖²/5000` (full) and `‖f‖²/1000` (odd) through `181/500`; short-cycle positivity at lag `log 2` [L]. Averaged positivity on `Γ^{99/100} ≤ H ≤ Γ/8`; positive proportion of heights; census `≥ 4/5` of ordinates critical, `≥ 3/4` of copies within `4/log T` [L].
+- **Critical-line proportion** [L]: simple critical zeros `≥ HD(1) + 10^{−8}` (`> 67.250071%`), distinct zeros `≥ GD(1) + ½·10^{−8}`, by disjoint-pair Schur slack and the non-lattice floor of the Montgomery–Taylor cosine kernel.
+- **Alignment counts** [L]: a prime polynomial of length `(log T)^C` reaches `η log T` at `T^{1 − 1/C + o(1)}` zero ordinates; no implication "off-line ⇒ aligned". **Zero moments are Rosati pairings** [L].
 
-### 1.12 Positivity: pointwise, averaged, statistical, quantized; zero ordinates
+### 1.12 Realization and duality; the width currency
 
-- Windows: full `‖f‖²/5000` and odd `‖f‖²/1000` through `181/500` [L]. Short-cycle positivity at lag `log 2`: for even `g` supported in `[−η, η]`, `η ≤ 181/500 − (log 2)/2`, `Re W(g − T_{log 2}g) ≥ ‖g − T_{log 2}g‖²/1000` [L].
-- Averaged positivity on `Γ^{99/100} ≤ H ≤ Γ/8`; zero-ordinate positivity; positive proportion of heights; census: `(2/3 − ε)N + M_off ≤ N₀ˢ`, `≥ 4/5` of ordinates critical, `≥ 3/4` of copies within `4/log T` [L].
-- **Alignment counts at zero ordinates** [L]. Discrete mean value over zero copies in `(A, A + R]`: `Σ_γ |F(γ)|² ≤ K log(A + R + 1)(R + 8N(1 + log N))(2 + log² N) Σ|a_n|²`. A prime polynomial of length `X` reaches `(1 − η) log T` at `O(T log⁴ X/log T)` zero ordinates; higher moments give `T^{1 − 1/C + o(1)}` at `X = (log T)^C`. Counts allow exceptional zeros; no implication "off-line ⇒ aligned" is proved.
-- **Zero moments are Rosati pairings** [L]. Landau–Gonek sums `Σ m_ρ (QQ̃)^k(ρ)` are `|Q(ρ)|^{2k}` on the line and `2 Re(Q(ρ) conj Q(ρ*))^k` for an off-line pair. Their positivity for all `Q`, `k` is a Hodge index of Weil type, not an input.
-- Aperture ceiling `μ(A) ≤ K exp(11A/2 − πe^{2(A−2)})`; ground rate = polar rate = width without clustering; form-norm rates = width [L].
+- Maximal sharp-stable positive Meyer ideal = off-line-blind ideal; coupled point-stable carriers isotropic; positive self-dual measures with a gap are Dirac combs; Hecke states positive definite iff `s ≥ 1/2` [L].
+- **Width currency** [L]: for `0 < θ ≤ 1/2` escaped Möbius `θ`-decay ⇔ receiver rate `≤ 1/2 − θ` ⇔ `Θ ≤ 1 − θ` ⇔ all-test Hecke strip cap ⇔ dyadic rate `1 − 2θ` ⇔ `Re ξ′/ξ ≥ 0` on `Re s > 1 − θ` ⇔ prefix-reading rate; unconditionally only VK rates.
 
-### 1.13 Realization and duality
+**Every unconditional positivity in the corpus is one of:** invariant (blind, half-blind, isotropic); averaged or statistical; non-localizing; on nonnegative tests; collided; twisted below the conductor horizon; a finite-window certificate; local at one prime; carried by a counterterm whose survival cone is `{0}`, a hyperplane or the arithmetic point; coefficient positivity of a source; a zero-side reserve; **separated: overlap ratio `≤ c₀`, universal for every bounded twist, including the full form on independent-profile sections**; a constructed (repaired or glued) form.
 
-Maximal sharp-stable positive Meyer ideal = off-line-blind ideal; coupled point-stable carriers isotropic; positive self-dual measures with a gap are Dirac combs; affine positivity on `Aff(ℚ)` is induced from dilations; Hecke states positive definite iff `s ≥ 1/2`; every nonzero `L²` wave has a visible successor; atomic spectra stay blind [L].
-
-### 1.14 The width currency
-
-For `0 < θ ≤ 1/2` the following are equivalent [L]: escaped Möbius pairings `Σ_{(N−b)/a < j ≤ N} μ(j)/j` decay at power `θ` uniformly in `N, a, b`; the dyadic case; receiver damping rate `≤ 1/2 − θ`; `Θ ≤ 1 − θ`; the all-test Hecke strip cap at depth `1/2 − θ`; dyadic defect growth at rate `1 − 2θ`; `Re ξ′/ξ ≥ 0` on `Re s > 1 − θ` (graded Lagarias). Seven quasi-RH criteria (escaped, dyadic, centred prime band, short-window prime and Möbius savings, receiver below half, `Θ < 1`) are equivalent. Unconditionally the escaped pairings vanish at the Vinogradov–Korobov rate `C exp(−κσ(M)/48)` uniformly in `N, a, b` [L]. The coalescent parametrization `θ(λ) = (λ − 1)/(2λ)` names `θ(4/3) = 1/8`, i.e. `Θ ≤ 7/8`, an open quasi-RH target. Reading [R]: the decay is classical (PNT, VK), the equivalences are classical in substance; the module fixes one currency across five programmes and supplies no strip.
-
-**Every unconditional positivity in the corpus is one of:** invariant (blind, half-blind, isotropic); averaged or statistical; non-localizing; on nonnegative tests; collided; twisted below the conductor horizon; a finite-window certificate; local at one prime; carried by a counterterm whose survival cone is `{0}`, a hyperplane or the arithmetic point; coefficient positivity of a source; a zero-side reserve; **atomic: below the spacing scale, where every sign twin shares it**.
-
-### 1.15 Thresholds where proved positivity stops
+### 1.13 Thresholds where proved positivity stops
 
 | Threshold | Proved below | Open at or beyond |
 |---|---|---|
-| Conductor horizon `e^a ≲ log γ/4` | twisted positivity, source blind | the odd-sector sign; forcing needs `e^{2δa} > 768A log γ` |
-| Atomic width vs spacing `δ_N` | `M ≥ 0`, `Re W + 2S² ≥ 0` at `w ≤ N^{−O(1)}`, for every sign twin | `w ≍ δ_N`, where the archimedean cross term (which carries the gauge) stops being dominated; then overlap, where non-ratio lags enter |
-| Square-root threshold | Landau–Gonek moments from primes; local Hodge indices summed (`√M` price) | Rosati products beyond it; coalescent surplus; joint multiplicative structure |
+| Overlap ratio `K = w/δ_N` | `M ≥ 0`, `Re W + 2S² ≥ 0` at `K ≤ c₀`; `Re W ≥ ‖F‖²` on sections at `K ≤ c_full`; universal | `c₀ < K < ∞`: non-ratio lags from `K ≈ 4`; Nyquist undersampling; `K = ∞` is RH |
+| Metzler stability (`Qπ ≤ 0`) | atom block negative semidefinite | trickle-down regime (`Qπ > 0`): `(TD_π)` |
+| Conductor horizon `e^a ≲ log γ/4` | twisted positivity, source blind | odd-sector sign; forcing needs `e^{2δa} > 768A log γ` |
+| Square-root threshold / Nyquist diagonal `N ≍ T` | Landau–Gonek moments; injective sampling; local indices summed at `√M` | Rosati products beyond; sampling with hiding |
+| Tower deficit `d_p ≤ 0` | prime finite part pays its own classes for `p ≥ 47` | small primes: deficit `2d_p` |
 | Half damping `ε = 1/2` | all receivers bounded | signed sub-half control |
-| Apertures `181/500`, `23/40` | certified floors and separations | all apertures; margin laws |
-| Vinogradov–Korobov | sub-power savings | any power saving (quasi-RH) |
-| Short windows `Γ^{99/100}` | averaged positivity | `Γ^{1/2+ε}` (W7), below `1/2` (B2.10) |
+| Apertures `181/500`, `23/40` | certified floors and separations | all apertures |
+| Vinogradov–Korobov | sub-power savings | any power saving |
 | Detector length `(log T)^C` | power-saving alignment counts | an individual zero |
+| Quantum `2` of source work | index `<` energy; detection of every index | an upper bound |
 
 ## 2. The 31 routes
 
 Each entry: status; (a) just work; (b) open; walls ([walls ledger](walls-ledger.md)).
 
 ### WL — Weil lag function
-**Status.** Spline, lag, deficit, critical-energy and cross-work receivers read `Δ`; RH ⇔ critical energy bounded; high zeros contribute `O(1)`; RH ⇔ `ψ(x) − x ≤ C√x log²x` eventually ⇔ horizon torsion ⇔ the Farey sum at `√N`; RH ⇔ a linear prime-error budget; RH with simple zeros ⇔ the Abel slope tends to the genus; filtered deficit `Γ^{−1/2}`.
+**Status.** Spline, lag, deficit and critical-energy receivers read `Δ`; RH ⇔ critical energy bounded ⇔ `ψ(x) − x ≤ C√x log²x` eventually ⇔ horizon torsion ⇔ the Farey sum ⇔ a linear prime-error budget; RH + simple ⇔ Abel slope at the genus.
 **(a)** Averaged bounded-energy statement (W18); windows `Γ^{1/2+ε}` (W7); finite budgets (W2); census transport (W14).
 **(b)** Signed lag cancellation at every slack (B1.1); an actual budget (B1.10); selection (B1.4); quasi-RH (B2.1).
 **Walls:** 1.0, 1.1, 1.15, 1.19, 3.14.
 
 ### RW — Restricted Weil ground energy
-**Status.** RH ⇔ `μ(A) > 0` for all `A`; the flow never stalls; RH ⇔ cumulative relaxation `≤ μ(3/10)`; ground rate = polar rate; Gårding and finite negative index; floor `1/5000` through `181/500`; no positive exponential floor.
-**(a)** Certified floors past `181/500` (W5); one rate dictionary with SRT and ACS (W18); transport of census and moment-of-inertia law (W4).
+**Status.** RH ⇔ `μ(A) > 0` for all `A`; flow never stalls; cumulative relaxation criterion; ground rate = polar rate; Gårding as a finite-rank survival; floor `1/5000` through `181/500`.
+**(a)** Certified floors past `181/500` (W5); rate dictionary (W18); transport of census, moment-of-inertia and spacing-scale laws (W4).
 **(b)** Zero negative index at every aperture (B1.3); signed shell flux (B3.4); `polarRate = Δ` for clustering zeros (B3.1); selection (B1.4).
 **Walls:** 1.3, 1.11, 1.13, 3.2, 3.14.
 
 ### FU — CCM-FU signed prime scheduling
-**Status.** Both one-sided bounds of the completed Möbius–divisor Abel moment are RH-equivalent; terminal primes realize graph sources; the isolated critical prime channel is negative on narrow windows, not on dyadic windows [S].
+**Status.** Both one-sided bounds of the completed Möbius–divisor Abel moment are RH-equivalent; narrow-window negative prime channel, not on dyadic windows [S].
 **(a)** Finite schedules (W2); wide-window premises (W3).
 **(b)** Complete-history signed cancellation (B1.1).
 **Walls:** 1.1, 1.6, 3.2, 3.4.
 
 ### RP — Route-P / SP-E history floor
-**Status.** An eventual floor on the matched-quantile history is RH-equivalent; hyperbola, centroid, square-debt identities and low-LCM payment proved.
+**Status.** Eventual matched-quantile history floor ⇔ RH; low-LCM payment proved.
 **(a)** Finite floors (W2); low-LCM transport (W4).
 **(b)** Full-history floor with high-LCM pairs, moving core and singular transport (B1.1).
 **Walls:** 1.1, 1.8, 3.6.
@@ -218,43 +205,43 @@ Each entry: status; (a) just work; (b) open; walls ([walls ledger](walls-ledger.
 **Walls:** 1.5, 1.6, 14.1.
 
 ### MC — Möbius cancellation at half power
-**Status.** `M(x) = Ω±(√x)`; `ν̂_N(1) = M(N)`; RH ⇔ `M(N) = O(N^{1/2+δ})` ∀`δ`; a linear Mertens budget forces RH, simple zeros and summable residues; bands ⇔ `Θ < 1`; the width currency of §1.14 with VK-rate escaped decay uniform in `N, a, b`; Pólya–Vinogradov, Burgess, least non-residue; multi-modulus Kloosterman dispersion and simultaneous omitted-class correction; integer-theta prefix readings: `Θ ≤ 1 − θ` iff readings `O(n_k^{2(1−2θ)+ε})` [S].
+**Status.** `M(x) = Ω±(√x)`; RH ⇔ `M(N) = O(N^{1/2+δ})` ∀`δ`; Mertens budget ⇒ RH + simple + summable residues; width currency with VK-rate escaped decay uniform in `N, a, b`; prefix readings; Burgess and least non-residue; Kloosterman dispersion and omitted-class correction.
 **(a)** Mertens converse under RH and `J_{−1}(T) ≪ T` (W18); finite budgets (W2); VK as a growth-to-forcing instance (W16).
-**(b)** Square-root cancellation at `0` (B1.1); an actual Mertens budget (B1.10); quasi-RH, e.g. `Θ ≤ 7/8` (B2.1); power-saving sign correlations (B2.6); a gauge-charged statistic at `0` (B3.15); growing-packet compensation (B3.6).
+**(b)** Square-root cancellation at `0` (B1.1); an actual budget (B1.10); quasi-RH, e.g. `Θ ≤ 7/8` (B2.1); power-saving sign correlations (B2.6); a gauge-charged statistic at `0` (B3.15); growing-packet compensation (B3.6).
 **Walls:** 1.0, 1.1, 1.12, 1.18, 1.19, 1.20, 3.10.
 
 ### TT — Theta tail and heat–Cassini currents
-**Status.** Directed Wold receiver; RH ⇔ the bound at every `t ∈ (0, 1/2)`; restricted current signs and light-cone positivity.
+**Status.** Directed Wold receiver; RH ⇔ the bound at every `t ∈ (0, 1/2)`; restricted current signs.
 **(a)** Finite covariances (W2); ACT/OWU transport (W4).
-**(b)** Signed nonlocal covariance, i.e. complete odd Weil positivity (B1.3).
+**(b)** Complete odd Weil positivity (B1.3).
 **Walls:** 1.3, 1.6, 3.4.
 
 ### LA — Line anchor
-**Status.** RH ⇔ all-height head coefficient positivity at fixed `R² ≥ 1/2`; every positive heat repairs high heads; `0 ≤ Λ < 1/8` for the de Bruijn–Newman constant in the corpus normalization `H_t = ∫Φ(x)e^{tx²}e^{izx}dx` (Rodgers–Tao and Ki–Kim–Lee; standard normalization `0 ≤ Λ < 1/2`) [L].
-**(a)** Explicit residual region (W18); finite heads (W2); import of the Polymath bound `Λ ≤ 0.2` (standard), `0.05` in corpus normalization (W18).
-**(b)** Zero-heat sign on the residual region (B1.5, B3.7); de Bruijn–Newman bounds beyond the literature (B2.9).
+**Status.** RH ⇔ all-height head coefficient positivity at fixed `R² ≥ 1/2`; heat repairs high heads; `0 ≤ Λ < 1/8` in corpus normalization (standard `< 1/2`) [L]; Taylor coefficients of `ξ(1/2 + x)` form a Turán sequence [L]; every homogenized Jensen polynomial at the centre is Lorentzian [S] — the log-concavity layer, not real-rootedness.
+**(a)** Residual region (W18); finite heads (W2); import of the Polymath bound (W18); the factorial-normalized Newton inequalities at fixed degree from existing Turán data (W2).
+**(b)** Zero-heat sign on the residual region (B1.5, B3.7); all-degree real-rootedness (B1.5); de Bruijn–Newman beyond the literature (B2.9).
 **Walls:** 1.2, 1.6, 1.14.
 
 ### TG — Topological sub-unit gate
-**Status.** Anchored cubic trace = winding; an integral nonnegative residual below one vanishes; residual sign and sub-unit bound not derived.
+**Status.** Anchored cubic trace = winding; an integral nonnegative residual below one vanishes.
 **(a)** Disc-wise traces (W2); Gaussian covariance transport (W4).
 **(b)** Residual sign and sub-unit bound for a pre-divisor source (B1.6).
 **Walls:** 1.2, 14.3, 14.8.
 
 ### HF — Positive Hodge form on arithmetic cohomology
-**Status.** `D_idx` even when finite, RH ⇔ `D_idx < 2`; Lefschetz and symmetric-square receivers; counting currencies (§1.7); two forms and the moment of inertia (§1.1), one-scale cap = strip, prefix readings; electrostatics (§1.3) with logarithmic energy of each zero, terminal ceiling = strip, Harnack; torsion and the three regulators (§1.4), coupled survival law, covariance law, anomaly cost; atomic resolution (§1.5): stability law, rank-one coupled form, Hodge index in tower coordinates; zero moments are Rosati pairings; alignment counts (§1.12).
-**(a)** Copy versus distinct energy (W13); quadrature of readings (W8); atomic stability up to a logarithm of the spacing (W9); `κ_min` constant (W11); overlap bookkeeping (W12); transport into HF coordinates (W4).
-**(b)** The Lefschetz part / zero negative index (B1.3); `D_idx < 2` (B1.7); counting forms (B1.9); equivariance of `D` (B1.11); field and energy forms (B1.13); finite off-line index (B2.2); compatible families (B3.8); form positivity of `Λ ⋆ Λ` (B3.17); a non-uniform bound on `M_f` (B3.21); a selective polarization (B3.23); alignment (B3.24); spacing-scale joint estimate (B3.25); overlap regime (B3.26); covariant regulator with a null cone (B3.28); the base (B3.29).
-**Walls:** 1.3, 1.4, 1.16, 1.17, 1.21, 3.13, 3.20, 3.22, 3.23, 3.24, 3.25, 14.2, 14.4, 14.18, 14.21, 14.24, 14.26–14.30.
+**Status.** `D_idx` even when finite, RH ⇔ `D_idx < 2`; the two forms and the moment of inertia (§1.1); electrostatics, closed quantum threshold and index descent (§1.3); the regulator table, horizon tensor counterterm and tower finite-part sign law (§1.4); spacing-scale stability, universality, diamagnetism and unbounded overlap (§1.5); hyperbolicity, trickle-down and gauge fixing (§1.6); zero moments as Rosati pairings; alignment counts.
+**(a)** Copy versus distinct energy (W13); quadrature of readings (W8); overlap certificates (W9); counterterm constants (W11); overlap bookkeeping (W12); Lévy synthesis (W22); horizon class asymptotics (W23); local trickle-down data (W24); small-prime deficit table (W25); working sources (W19).
+**(b)** Zero negative index (B1.3); `D_idx < 2` (B1.7); counting forms (B1.9); equivariance of `D` (B1.11); field, energy and source-work forms (B1.13); finite off-line index (B2.2); compatible families (B3.8); a non-uniform bound on `M_f` (B3.21); alignment (B3.24); bounded overlap (B3.26); horizon finite part (B3.28); conformal symmetry and base (B3.29); trickle-down for `ζ` (B3.30).
+**Walls:** 1.3, 1.4, 1.16, 1.17, 1.21, 3.13, 3.20, 3.22, 3.23, 3.25, 3.26, 14.2, 14.18, 14.21, 14.24, 14.26–14.33.
 
 ### CHMD — Causal hyperbolic–modular duality
 **Status.** Odd energy nonnegative iff no odd bound state above `1/2`; completion, cuts, domains and nodal convergence proved.
 **(a)** Domain premises (W3); RW/SZ transport (W4).
-**(b)** The nodal inequality, i.e. odd Weil positivity (B1.3).
+**(b)** The nodal inequality (B1.3).
 **Walls:** 1.3, 3.3, 3.4.
 
 ### TH — Theta moment positivity
-**Status.** All-rank strict positivity on the orthant at small time; fixed-rank coercivity; rank-`N` tests blind above height `O(N√log N)`.
+**Status.** All-rank strict positivity on the orthant at small time; fixed-rank coercivity.
 **(a)** Explicit fixed-rank regions (W5).
 **(b)** Signed coefficients at all degrees under one heat time (B1.5); decoupling rank from time (B3.10).
 **Walls:** 1.6, 3.11.
@@ -266,13 +253,13 @@ Each entry: status; (a) just work; (b) open; walls ([walls ledger](walls-ledger.
 **Walls:** 1.2, 14.1, 14.3.
 
 ### WD — Ward orientation and horizontal collision
-**Status.** Global cap vanishes iff RH; collision masses even; Hermite barrier, optimal heat and large-height repair formalized.
+**Status.** Global cap vanishes iff RH; Hermite barrier, optimal heat and large-height repair formalized.
 **(a)** Residual region (W18); finite heads (W2).
 **(b)** Cap vanishing (B1.6); residual heat sign (B1.5).
 **Walls:** 1.2, 1.14, 3.8.
 
 ### LI — Paired Li and prime–Gamma balances
-**Status.** RH ⇔ subexponential lower floors at every positive rate; reciprocal-depth rates `≤ 1/431`.
+**Status.** RH ⇔ subexponential lower floors at every positive rate; reciprocal-depth rate `≤ 1/431`.
 **(a)** Finite floors (W2); constants (W5).
 **(b)** The subexponential floor (B1.7).
 **Walls:** 1.5, 3.8.
@@ -284,13 +271,13 @@ Each entry: status; (a) just work; (b) open; walls ([walls ledger](walls-ledger.
 **Walls:** 1.3, 3.3, 3.6.
 
 ### PM — Physical-model Haar approximation (FZZ-P)
-**Status.** RH ⇔ admission at every damping ⇔ positive gauge mass; energy-rate law; Abel atoms; infinite-height laws; escape forms collided.
-**(a)** Cofactor premises (W3); transport of VK-rate decay and Kloosterman dispersion (W4); working sources (W19).
+**Status.** RH ⇔ admission at every damping ⇔ positive gauge mass; energy-rate law; Abel atoms; escape classified.
+**(a)** Cofactor premises (W3); transport of VK-rate decay and Kloosterman dispersion (W4).
 **(b)** Signed small-damping energy (B1.2); infinite-height escape (B3.2); inverse coercivity (B3.3); sub-half control (B3.9); paid ideal on escape (B3.12).
 **Walls:** 1.8–1.10, 3.7, 3.12, 3.15.
 
 ### JAS — Joint ancestry
-**Status.** Positive level-one budget ⇔ half-plane bound; half-power endpoint is RH; Gamma–theta source admitted; unconditional positivity reaches a logarithmic prime budget.
+**Status.** Positive level-one budget ⇔ half-plane bound; unconditional positivity reaches a logarithmic prime budget.
 **(a)** Finite budgets (W2).
 **(b)** The half-power budget (B1.1); quasi-RH (B2.1).
 **Walls:** 1.0, 1.1, 3.4.
@@ -308,7 +295,7 @@ Each entry: status; (a) just work; (b) open; walls ([walls ledger](walls-ledger.
 **Walls:** 1.6, 3.4, 3.11.
 
 ### XN — Xi Newton invariant discs
-**Status.** Line-centred Newton discs covering every zero ⇔ RH; the margin is subharmonic.
+**Status.** Line-centred Newton discs covering every zero ⇔ RH; margin subharmonic.
 **(a)** Finite covers (W2).
 **(b)** Covering discs with nonnegative margin (B1.5).
 **Walls:** 1.2, 3.2, 14.3.
@@ -320,9 +307,9 @@ Each entry: status; (a) just work; (b) open; walls ([walls ledger](walls-ledger.
 **Walls:** 1.2, 3.2.
 
 ### EWU — Even pole-weight uniqueness
-**Status.** Blind minima nonnegative at every aperture ⇔ RH; source selection; finite-level existence ⇔ RH; floor `1/5000` through `181/500`, shared by every weight with `w(2) = log 2`.
+**Status.** Blind minima nonnegative at every aperture ⇔ RH; source selection; floor `1/5000` through `181/500`, shared by every weight with `w(2) = log 2`.
 **(a)** Certified floors (W5); margin table (W6).
-**(b)** Low and mixed modes (B1.3).
+**(b)** Low and mixed modes (B1.3); gauge form margin (B3.16).
 **Walls:** 1.3, 1.4, 3.3.
 
 ### GTA — Transverse Schur charge
@@ -332,14 +319,14 @@ Each entry: status; (a) just work; (b) open; walls ([walls ledger](walls-ledger.
 **Walls:** 1.6, 3.2.
 
 ### OWU — Odd Weil-weight uniqueness
-**Status.** Odd positivity RH-equivalent; light-cone variation positive; at `181/500` and `23/40` the Liouville and atom-2 twins fail on witnesses where `ζ` is positive, permanently from `23/40` on; nine-modulus collar at `2 log 2`; short-cycle positivity at lag `log 2` with midpoint parity transposition [L]; companion certificate and conductor horizon disjoint; zero-side reserve and exterior law at the same ordinates; alignment counts at zero ordinates [L].
-**(a)** Full floor at `23/40`, margin table of the `{2, 3}` twins, the `{2, 3, 5}` window (W5, W6); interior reading of the reserve (W10); exceptional-set accounting (W21).
-**(b)** Odd Weil positivity (B1.3); gauge form-margin (B3.16); odd-sector sign beyond the horizon (B3.20); alignment (B3.24); overlap regime (B3.26); terminal control off a sparse set (B3.27).
-**Walls:** 1.3, 1.18, 1.21, 3.4, 3.19.
+**Status.** Odd positivity RH-equivalent; at `181/500` and `23/40` the Liouville and atom-2 twins fail where `ζ` is positive, permanently from `23/40` on; short-cycle positivity at lag `log 2`; companion certificate and conductor horizon disjoint; zero-side reserve and exterior law at the same ordinates; alignment counts.
+**(a)** Full floor at `23/40`, margin tables (W5, W6); interior reading of the reserve (W10); exceptional-set accounting (W21); twins at overlap (W9).
+**(b)** Odd Weil positivity (B1.3); gauge form margin (B3.16); odd-sector sign beyond the horizon (B3.20); alignment (B3.24); bounded overlap (B3.26); terminal control off a sparse set (B3.27).
+**Walls:** 1.3, 1.18, 1.21, 3.4, 3.19, 3.26.
 
 ### PBM — Regularized prime/log-ζ abscissa
 **Status.** Half-plane bound at `α` ⇔ convergence on `Re s > 1/2 + α`; RH is `α = 0`.
-**(a)** Width-functor transport (W4).
+**(a)** Width-currency transport (W4).
 **(b)** Quasi-RH (B2.1); critical cancellation (B1.1).
 **Walls:** 1.0, 1.1.
 
@@ -350,46 +337,45 @@ Each entry: status; (a) just work; (b) open; walls ([walls ledger](walls-ledger.
 **Walls:** 1.1, 1.6.
 
 ### SRT — Prime-side one-parameter lag localization
-**Status.** One fixed-width late-lag family decides RH; smooth detector at aperture `Cδ^{−2}(4 + |γ|)²`; single-height phase-selective law; eventual all-height saving refuted; one- and two-prime Lefschetz receivers are the strip; detector = odd sector of `σ_γ`; conductor horizon; forcing gap; exterior law; terminal lens; Kronecker dilution; alignment counts at zero ordinates with power saving [L]; short-cycle positivity at lag `log 2` [L].
-**(a)** Rate dictionary (W18); interior reading of the reserve (W10); exceptional-set accounting (W21); windows `Γ^{1/2+ε}` (W7).
-**(b)** Selection (B1.4); critical cancellation (B1.1); Weil positivity (B1.3); counting forms (B1.9); near-coincidence beyond `½ log Γ` (B3.14); odd-sector sign beyond the horizon (B3.20); alignment (B3.24); terminal control off a sparse set (B3.27).
-**Walls:** 1.17, 1.21, 3.1, 3.2, 3.14, 3.19.
+**Status.** One fixed-width late-lag family decides RH; smooth detector; one- and two-prime Lefschetz receivers are the strip; detector = odd sector of `σ_γ`; conductor horizon; forcing gap; exterior law; alignment counts; short-cycle positivity. For every fixed `w > 0` the integer-log spline Grams have negative index zero iff RH and their maximal index counts the distinct right zeros [L]; a uniform finite index bound ⇔ finite off-line support [S].
+**(a)** Rate dictionary (W18); interior reading of the reserve (W10); exceptional-set accounting (W21); windows (W7); overlap certificates (W9).
+**(b)** Selection (B1.4); critical cancellation (B1.1); Weil positivity (B1.3); counting forms (B1.9); near-coincidence beyond `½ log Γ` (B3.14); odd-sector sign beyond the horizon (B3.20); alignment (B3.24); bounded overlap (B3.26); terminal control off a sparse set (B3.27).
+**Walls:** 1.17, 1.21, 3.1, 3.2, 3.14, 3.19, 3.26.
 
 ### ACT — Arithmetic criticality / single-shift variation
 **Status.** One fixed shift against all even compact profiles decides RH; light-cone kernel positive; sub-unit collar paid for `log d ≤ a − R`.
 **(a)** Collar constants (W5); TT/OWU transport (W4).
-**(b)** The uniform all-profile collar, i.e. Weil positivity (B1.3).
+**(b)** The uniform all-profile collar (B1.3).
 **Walls:** 1.3, 3.1, 3.4.
 
 ### AIP — Arithmetic incidence positivity
-**Status.** Allocation for all tests ⇔ RH; shared-budget descent; joint `2, 3` payment at `23/40`; nine-modulus ledger; linear diagonal reserve cancels on the polar-neutral hyperplane; raw continuum towers have negative edge energy `≥ c e^A`. Atomic resolution (§1.5): the prime functional is the finite intersection; polar part rank two; tower-coordinate Hodge index; stability law; `Re W + 2S² ≥ 0` [S]; every twin shares atomic positivity, `ζ` is the orbit minimum on nonnegative atomic tests [L]. Horizon (§1.4): polar on uniform profiles, unbounded rank on valuation classes [S]. Square-class couplings blind; cells charged.
-**(a)** Certified joint payments at larger apertures (W5); atomic stability to `δ_N/(C log N)` (W9); overlap bookkeeping and finite-`N` certificates (W12); premises for the pole-neutralized form (W3).
-**(b)** Weil positivity (B1.3); prime-weighted shared budget for the pole-neutralized continuum form (B3.6); spacing-scale joint estimate (B3.25); overlap regime (B3.26); the base (B3.29).
-**Walls:** 1.3, 3.4, 3.21, 3.23, 3.24, 3.25.
+**Status.** Allocation for all tests ⇔ RH; shared-budget descent; joint `2, 3` payment at `23/40`; raw continuum towers negative `≥ c e^A`. Spacing scale (§1.5): Markov stability at `c₀δ_N` for every bounded twist; diamagnetism; non-ratio lags; tilted rows; full pole payment on independent-profile sections. Horizon (§1.4): tensor counterterm, covariance, tower finite part and sign law. Lorentzian (§1.6): the atomic kernel is Metzler only in the Euler gauge; prime ladders not Lorentzian; finite-product closure nonselective.
+**(a)** Certified joint payments at larger apertures (W5); overlap certificates (W9); overlap bookkeeping (W12); Lévy synthesis (W22); horizon asymptotics (W23); local trickle-down data (W24); small-prime deficits (W25).
+**(b)** Weil positivity (B1.3); prime-weighted shared budget for the pole-neutralized continuum form (B3.6); gauge form margin (B3.16); bounded overlap (B3.26); horizon finite part (B3.28); trickle-down for `ζ` (B3.30).
+**Walls:** 1.3, 1.18, 3.4, 3.21, 3.23, 3.25, 3.26, 14.31, 14.32.
 
 ### ACS — Arithmetic Castelnuovo–Severi effectivity
 **Status.**
-- Source RR; Meyer RR + Bézout; maximal blind ideal; isotropy; non-localizing positivity; Lefschetz receivers; Weil's layers (§1.6); faithful degree needs RH + simple zeros.
-- Counting (§1.7); one-variable systems and deformations (§1.10); two forms, electrostatics, torsion, atomic resolution (§1.1–§1.5); census and alignment counts (§1.12).
-- Selberg's source with gauge margin `2 log² p`; torsion adjunction, log-orders, rotations, spacing regulator, tower-coordinate Hodge index.
-**(a)** Selectivity battery (W1); ceilings as central nonvanishing and quantization in ACS coordinates (W18); contraction last items (W17); `κ_min` constant (W11); working sources (W19).
-**(b)** Forcing for a realization (B1.6); faithful branch (B1.8); counting forms (B1.9); equivariance of `D` (B1.11); ceilings and chirality (B1.12); field forms (B1.13); collar equality (B3.13); `Λ ⋆ Λ` form positivity (B3.17); full coupled class (B3.22); selective polarization (B3.23); spacing scale and overlap (B3.25, B3.26); covariant regulator (B3.28); the base (B3.29); `3/4` (B2.5).
-**Walls:** 1.3, 1.15–1.18, 1.21, 3.8, 3.14, 3.18, 3.23–3.25, 14.4, 14.8, 14.10–14.30.
+- Source RR; Meyer RR + Bézout; maximal blind ideal; isotropy; Lefschetz receivers; faithful degree needs RH + simple zeros; counting and deformations; Selberg's source with gauge margin `2 log² p`.
+- Arithmetic sections [L]: on independent-profile sections at a fixed fraction of the spacing, `Re W ≥ ‖F‖²` with no pole constraint; restricted Riemann–Roch, ampleness and Hodge index on the whole section space. Width shrinks with `N`; no source-complete exhaustion.
+- Scaling-surface Hodge index ⇔ hyperbolicity ⇔ RH; Frobenius calibration and half-defect repair [S].
+**(a)** Selectivity battery (W1); ceilings and quantization in ACS coordinates (W18); contraction (W17); counterterm constants (W11); working sources (W19); section exhaustion bookkeeping with Lévy continuity (W22).
+**(b)** Forcing for a realization (B1.6); faithful branch (B1.8); counting forms (B1.9); equivariance of `D` (B1.11); ceilings and chirality (B1.12); field forms (B1.13); collar equality (B3.13); `Λ ⋆ Λ` form positivity (B3.17); full coupled class (B3.22); selective polarization (B3.23); bounded overlap (B3.26); horizon finite part (B3.28); conformal symmetry and base (B3.29); trickle-down for `ζ` (B3.30); `3/4` (B2.5).
+**Walls:** 1.3, 1.15–1.18, 1.21, 3.8, 3.14, 3.18, 3.23–3.26, 14.4, 14.8, 14.10–14.33.
 
 ## 3. The 17 candidates and PW-B
 
 A candidate lacks an independent source construction or landing; each faces B1.6. These theorems constrain every candidate:
 
 - single-channel sharp-stable positivity certifies only blindness; coupled point-stable positivity only isotropy; non-localizing positivity holds for every prime weight;
-- multiplicative correspondences act hyperbolically at off-line pairs; elliptic localization is resonance; `σ_γ` is the only reflection-compatible affine localizer, its certificate separated from the conductor horizon; rotations of the circle have archimedean spectrum and cannot localize zeros;
-- positivity on nonnegative tests is shared by dominated twins; square-class couplings and the finite intersection are gauge blind; atomic-resolution positivity holds for every twin, and on nonnegative atomic tests `ζ` is the orbit minimum;
+- multiplicative correspondences act hyperbolically at off-line pairs; `σ_γ` is the only reflection-compatible affine localizer; rotations of the circle cannot localize zeros; no correspondence over `ℤ` is conformal with factor `≠ 1`;
+- positivity on nonnegative tests is shared by dominated twins; square-class couplings, the finite intersection, the separated regime and `|·|`-closed families are gauge blind;
 - finite multiplicative certificates are capped by growth input; packets on independent ordinates buy at most their pole share;
 - kernel, coupled and escape-form positivity and `D` are collided; zero-ordinate moments are Rosati pairings;
-- every counting currency is the sign;
-- one-variable positive constructions remove a quartet only against a real anchor; positive deformations keep the off-line divisor and are irreversible;
-- no regulator of the prime place alone keeps positivity; coupling pays at most the partner's rank; covariant diagonal counterterms are scalar; the horizon divergence has unbounded rank on torsion orbits;
-- local positivity at each prime does not sum; there is no common ladder over `ℤ`;
-- uniform ceilings on terminals or Hecke defects are zero-free strips; zero-side reserves detect without bounding.
+- every counting currency is the sign; Euler-product closures are Lorentzian for every nonnegative local datum;
+- positive deformations keep the off-line divisor and are irreversible;
+- no regulator of the prime place alone keeps positivity on the full space; the horizon keeps it only on class-wise polar-neutral profiles, with unbounded rank;
+- uniform ceilings on terminals or Hecke defects are zero-free strips; zero-side reserves detect without bounding; finite Weil indices are bounded by energy, not by arithmetic.
 
 | Candidate | Present construction / exact boundary | (a) | (b) |
 |---|---|---|---|
@@ -412,45 +398,39 @@ A candidate lacks an independent source construction or landing; each faces B1.6
 | **WBF** genealogy Gram | Completion ⇔ square-summable coefficients. | W2 | Arithmetic certificate stream (B1.6). |
 | **PW-B** two-response action | Indexed by `XiZeroCopy`. | W2 | Pre-divisor form; zero-damping landing (B1.6, B1.2). |
 
-The zero-indexed diagnostics of HJ, SEC, CDC, BSH, IRK and W1C read whether a zero's Hecke symbol is elliptic; they detect, they do not force. FEL's contrast, `Δ`, `M_f` and `𝓔` are depth capacities vanishing exactly on critical zeros; none has an arithmetic upper bound.
+The zero-indexed diagnostics of HJ, SEC, CDC, BSH, IRK and W1C read whether a zero's Hecke symbol is elliptic; they detect, they do not force. FEL's contrast, `Δ`, `M_f`, `𝓔` and the damped source work are depth capacities vanishing exactly on critical zeros; none has an arithmetic upper bound.
 
 ## 4. Supporting programmes
 
 | Programme | Established | (a) | (b) |
 |---|---|---|---|
-| **BVI** rows and Vaughan | Minor arcs; all-modulus savings; bands ⇔ `Θ < 1`; width currency with VK decay (§1.14) [L]; single-scale prefix readings [S]. | W4, W16 | B2.1; B1.2 |
-| **ACCE / ACCC** | Aperture flow; long-modulus decomposition; Kloosterman dispersion and omitted-class correction [L]. | W18 | B3.1, B3.4, B3.6 |
-| **ADR / AOT** | Record minima; translated-zero escape rows; Mellin residues. | — | B3.2, B3.3, B3.12 |
-| **ACS / Meyer** | §1.6, §1.12, §1.13. | W1 | B1.6, B1.8 |
-| **ACP** | Correspondences, local types, counts, budgets, escape, terminals, the source field. | W10, W18 | B1.10, B3.16, B3.18, B3.19, B3.27 |
-| **AES** electrostatics | §1.3; zero-ordinate counts; zero energy logarithmic; atomic stability law; the gauge at atomic resolution (orbit minimum on the positive cone); gauge margin of the source [L/S]. | W9, W13, W21 | B1.13, B3.21, B3.24, B3.25 |
-| **AIT** intersection theory | §1.4–§1.6: log-orders, different, cocycle, towers, local forms do not sum, square-root price, self-intersection dominates, spacing regulator, rotations, gauge-blind intersection, prime functional as finite intersection, polar part, tower-coordinate Hodge index, zero moments as Rosati pairings [L]; the base [S]. | W11, W12 | B3.26, B3.28, B3.29 |
-| **RAPT** renormalized potential theory | Coupled survival law; arithmetic point matched to the archimedean place; covariance forces a scalar; covariant counterterm `log N + O(1)`; anomaly cost `½ log N`; horizon polar on uniform profiles, unbounded on torsion orbits [S]. | W11, W12 | B3.25, B3.26, B3.28 |
-| **RBG** | Survival law; rank dichotomy; polar hyperplane; pole node; periodic germs; Ramanujan twins; dyadic amplification (soft); one-scale cap and terminal ceiling = strips; Harnack; cells; cell-holonomy defect; Kronecker dilution; lattice-cloud purchase bound [L/S]. | W12, W20 | B3.16, B3.21, B3.25 |
-| **PL** | Polarization law; localizers; horizon; forcing half; `D` faithful, log-Sobolev; Gårding; negative index; selectivity battery. | W5, W18 | B1.11, B3.20 |
-| **CDG** | `ξ` current; theta metrics; local detector; depth rigidity; forcing gap. | W8 | B3.20, B3.21 |
-| **AE** | Effectivity calculus; heights; polar box; torsion potential; completion; Burgess; least non-residue; hyperelliptic calibration. | — | B1.9, B3.19, B3.23 |
-| **BGG** | Gauge torus; successor holonomy; repulsion; deformation principle; quantization; ceiling transfer; `ζ^d` capacity. | W18 | B1.12, B3.16, B3.22 |
-| **SP** | `181/500` and `23/40` separations; continuum-tower obstruction; escaped pairings; parity lobes; Jacobi–Hurwitz heights. | W5, W6 | B3.6, B3.16, B3.23 |
-| **ACG** | Gauge invariance; a.e. laws; charged boundaries; gauge mass; coalescent surplus as gauge charge; sub-progression stabilizer inversion and `X^{1/4}` cell growth [S]. | W15, W20 | B1.2, B3.15 |
-| **TTPC** | Census; `29/36` certificate; Ramanujan parity-twin limits, ultraviolet cancellation and infrared relocation; short-cycle positivity at lag `log 2` [L]. | W14 | B2.5, B2.7, B3.15 |
-| **APD** | §1.13; Hecke states; Kakutani wall. | — | B1.6 |
-| **MPG** | Boundary forcing; capacity; packets; height law. | W16 | — |
-| **SBWF** | Collars; `κ = 1` class; `5d < 9κ`. | — | B3.13 |
-| **AKT / AOG / ALDG / APT / BiScale / SAEI / SSA / THIM / Biarithmetic / HTG** | As in the frontier map; no change of boundary. | W4, W7, W18 | B1.4, B2.4, B3.3, B3.7–B3.11 |
-| **Analytic inputs** | Guth–Maynard; 30/13 density; Selberg near-line density on `U^{99/100}`; Heath-Brown; dlVP, Littlewood, VK; smoothed Landau; discrete mean value at zero ordinates; the two-thirds certificate. | W7, W21 | B2.4, B2.8, B2.10 |
+| **SSHA** spacing-scale harmonic analysis | Exact self-energy; tilted rows; stability at `c₀δ_N`; universal law; diamagnetism; non-ratio lags; Dirichlet-polynomial dictionary; unbounded overlap = RH [L]; Lévy continuity [S]. | W9, W12, W22 | B3.16, B3.26 |
+| **ALG** arithmetic Lorentzian geometry | Hyperbolicity; trickle-down; Metzler dichotomy; `𝔽_q` calibration; gauge fixing; successor gauge field; local factors; conformality; half-defect repair; polar gluing; Turán layer [S]. | W1, W24 | B3.29, B3.30 |
+| **AID** arithmetic index descent | Index `≤ 𝓔 ≤ 𝓔_copy`; index `< 𝓔`; closed quantum threshold `2`; finite stratum; finite-Gram descent; singular refinement [S]. | W13, W19 | B1.13, B2.2 |
+| **RAPT** renormalized potential theory | Coupled survival; arithmetic point; covariance; torsion window; Gårding as survival; horizon polar, tensor and covariant counterterms; finite parts `−2γ` and tower forms; sign law `d_p`; polar matching [L/S]. | W11, W23, W25 | B3.28 |
+| **IGP** incommensurable Gabor pinching | Disjoint-pair Schur slack; Montgomery–Taylor non-lattice floor; simple critical proportion `> 67.250071%` [L]. | W14 | B2.5 |
+| **AES** electrostatics | §1.3; zero-ordinate counts; energy of a zero; atomic stability; gauge at atomic resolution; gauge margin of the source [L/S]. | W13, W21 | B1.13, B3.21, B3.24 |
+| **AIT** intersection theory | Log-orders, cocycle, towers, local forms do not sum, square-root price, self-intersection dominance, spacing regulator, rotations, finite intersection, polar part, tower coordinates, zero moments; the base [S]. | W11 | B3.29 |
+| **RBG** | Survival law; rank dichotomy; Ramanujan twins; dyadic amplification; strips; Harnack; cells and Liouville fourth-root growth; Kronecker dilution; lattice clouds [L/S]. | W20 | B3.16, B3.21 |
+| **PL / CDG** | Polarization law; localizers; horizon; forcing half; `D` faithful, log-Sobolev; `ξ` current; theta metrics; forcing gap [L]. | W5, W8 | B1.11, B3.20 |
+| **AE / AOT** | Effectivity; heights; polar box; completion; Burgess; hyperelliptic calibration; Nyquist rank bounds [L]. | — | B1.9, B3.19, B3.23 |
+| **BGG / SP / ACG** | Gauge torus; successor holonomy; repulsion; deformation principle; quantization; `181/500`, `23/40` separations; cell growth [L]. | W5, W6, W20 | B1.12, B3.15, B3.16, B3.22 |
+| **BVI / ACCE / ADR / ACP** | Width currency; VK decay; prefix readings; Kloosterman dispersion; escape; budgets; terminals [L]. | W4, W16, W18 | B1.2, B1.10, B2.1, B3.1–B3.6, B3.12 |
+| **TTPC / APD / MPG / SBWF** | Census; Hecke states; boundary forcing; collars [L]. | W14, W16 | B2.5, B2.7, B3.13 |
+| **AKT / AOG / ALDG / APT / BiScale / SAEI / SSA / THIM / Biarithmetic / HTG** | As in the frontier map. | W4, W7, W18 | B1.4, B2.4, B3.3, B3.7–B3.11 |
+| **Analytic inputs** | Guth–Maynard; 30/13 density; Selberg near-line density; Heath-Brown; VK; discrete mean value at zero ordinates. | W7, W21 | B2.4, B2.8, B2.10 |
 
 ## 5. Not open tasks
 
 - **Settled questions.**
-  - What computes `D`, which norm it is, what its defect measures; every uniform bound on the defect or on terminals is a zero-free strip.
-  - The electrostatic forms of RH and their quantization; the energy of one zero is between `1` (off-line) and `O(log γ)`.
-  - Whether an off-line zero is visible at its own height (yes) and how often short prime polynomials align at zero ordinates (rarely: power-saving counts).
-  - What zero-ordinate moments are: Rosati pairings.
-  - Whether the prime place can be renormalized alone: no, under the Abel, spacing and horizon regulators; coupling pays at most the partner's rank; covariant diagonal counterterms are scalar; pole-node completion relocates the divergence to infinite node height.
-  - Whether the archimedean place pays the prime place: yes at atomic resolution, with a rank-one pole counterterm, for every sign twin alike; on nonnegative atomic tests `ζ` is the orbit minimum.
-  - Whether local positivity at each prime sums: no; summing in absolute value is the square-root threshold; there is no common ladder.
-  - Which couplings are gauge charged; whether the source's gauge margin collapses (no: `2 log² p`, fixed by the smallest flipped prime).
-  - The forcing gap; the first gauge-charged windows; escape classification; deformations of the coupled carrier; how far statistics reach; counting over `𝔽_q`; the width currency (§1.14).
-- **Excluded mechanisms** (in addition to the [killed-routes catalogue](../rh-killed-routes.md)): collided positivity as Weil's sign; computed quantities offered as bounds on themselves; dyadic amplification as more than a rate (it is soft); the companion certificate spliced with the horizon; reserves, lenses and detectors as exclusion; the exterior law continued into the strip without an interior estimate; torsion-energy positivity or scalar-counterterm renormalization as Weil positivity; low-rank coupling of the Abel torsion block; fixed-rank subtraction of the horizon divergence; atomic-resolution positivity or the coefficient gauge margin offered as selective form positivity; square-class couplings as gauge selectors; alignment counts as exclusion of an individual zero; zero-ordinate moments as positivity input; uniform defect or terminal ceilings as weaker than a strip; budget currencies, heights or Farey sums as weaker inputs; raw continuum towers; completion at the arithmetic point; statistics as exclusion.
-- **Substitutions that do not hold.** Computed for bounded; detected for excluded; counted for excluded; collided for Rosati; positive for equivariant; equivariant for positive; norm for sign; finite index for zero index; resonance for localization; twist for gauge charge; coefficient margin for form margin; gauge fixing for positivity; regularized limit for limit of positivity; scalar counterterm for renormalized positivity; covariance for survival; atomic resolution for the spacing scale; local Hodge index for global; exterior estimate for interior; amplification for rate improvement; uniform ceiling for non-uniform bound; finite window for all apertures; averages for individual zeros; nonnegative tests for the full cone; zero-indexed objects for pre-divisor constructions.
+  - What computes `D`, which norm it is, what its defect measures; uniform caps on the defect or on terminals are strips.
+  - The electrostatic forms of RH, their quantization and the closed threshold `2` for energy and source work; finite indices are paid by energy.
+  - Whether the archimedean place pays the prime place: yes, up to overlap ratio `c₀`, with constant one on both sides, for every bounded twist; the full form including the pole is paid on independent-profile sections.
+  - Whether the separated regime can select `ζ`: no (universal law); whether `|·|`-closed families can: no (diamagnetism).
+  - Whether positivity at fixed width is weaker than RH: no (unbounded overlap is RH).
+  - Whether the horizon regulator is covariant with a nontrivial null cone: yes on each finite class space; what its finite part is (tower forms with local Euler constants) and when it is nonnegative (`d_p ≤ 0`).
+  - Whether divergences can separate `ζ` from finite-flip twins: no (polar matching).
+  - Whether local Lorentzian structure exists at a prime: no; whether the Euler-product closure selects: no; whether Hecke, power or successor maps are conformal: no.
+  - Whether local positivity at each prime sums: no; the forcing gap; escape classification; deformations; counting over `𝔽_q`; the width currency; the census and alignment frequencies.
+- **Excluded mechanisms** (in addition to the [killed-routes catalogue](../rh-killed-routes.md)): collided positivity as Weil's sign; computed quantities as bounds on themselves; dyadic amplification as more than a rate; the companion certificate spliced with the horizon; reserves, lenses, detectors and index bounds as exclusion; torsion-energy positivity or scalar-counterterm renormalization as Weil positivity; low-rank coupling of the Abel torsion block; fixed-rank subtraction of the horizon divergence; separated-regime, `|·|`-closed or section positivity as selective; polar matching as a selector; separate Lorentzian blocks or a nef shift as a Hodge sign; repaired or glued forms as the actual form; Hecke, power or successor maps as Frobenius; the Euler-product closure as a selector; alignment counts as exclusion; zero moments as positivity input; budgets, heights or Farey sums as weaker inputs; statistics as exclusion.
+- **Substitutions that do not hold.** Computed for bounded; detected for excluded; counted for excluded; collided for Rosati; positive for equivariant; equivariant for positive; norm for sign; finite index for zero index; index for energy bound; resonance for localization; twist for gauge charge; coefficient margin for form margin; gauge fixing for positivity; Metzler for hyperbolic; constructed form for actual form; regularized limit for limit of positivity; scalar counterterm for renormalized positivity; covariance for survival; separated regime for overlap; local Hodge index for global; isometry for conformality; exterior estimate for interior; uniform ceiling for non-uniform bound; finite window for all apertures; averages for individual zeros; nonnegative tests for the full cone; zero-indexed objects for pre-divisor constructions.

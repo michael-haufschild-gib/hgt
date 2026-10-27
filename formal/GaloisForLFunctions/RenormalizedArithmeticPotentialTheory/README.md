@@ -109,8 +109,8 @@ survival cone containing the degree-zero cycles.
 4. *What does covariance cost?* A Hecke-covariant renormalized prime form has a scalar diagonal. Its
    least positive counterterm on orders `≤ N` is `log N + O(1)`: the anomaly `log #ker[N]` of `[N]`,
    with constant one. This is the size of the archimedean self-energy `log(1/ε)` of an atom at the
-   atomic spacing `ε ≍ 1/N` (§9.1). With it the archimedean Lévy gain pays the prime place at widths
-   `δ_N N^{−e^{1/2}}`. Keeping the self-intersection, the anomalous torsion renormalization, costs
+   atomic spacing `ε ≍ 1/N` (§9.1). With it the archimedean Lévy gain, whose constant is also one,
+   pays the prime place at widths `c δ_N/N`. Keeping the self-intersection, the anomalous torsion renormalization, costs
    between `½ log N` and `log N` more.
 5. *What is the finite part?* On the polar hyperplane of uniform profiles, the renormalized prime
    form is the scalar `−2γ`, up to `o(1)` per unit mass. In Weil's form, where `P` enters with a
@@ -306,20 +306,28 @@ the place that pays.
     `log N + O(1)`. So the Markov form (archimedean minus prime) is nonnegative at every width
     `w ≤ (δ_N/4) N^{−e^{1/2}} e^{−C}`, half the exponent needed with the bound `2 log N` (AES).
 
+20. **The self-energy has constant one** (`archLevyDensity_ge_of_le`,
+    `levyEnergy_ge_of_disjoint_shifts_sharp`, `levyEnergy_atomicTest_ge_sharp`,
+    `markovEnergy_atomicTest_nonneg_sharp`, `sharpAtomicWidth_ge`). On the shifts `x ≤ δ_N/2`
+    that separate atoms the Lévy density is `ω(x) ≥ e^{−δ_N/4}/(2x)`, so the gain is
+    `e^{−δ_N/4} log(δ_N/(2w))`, constant `1 − O(1/N)`. Against the covariant counterterm this
+    gives nonnegativity at every width `w ≤ c δ_N/N`. The remaining factor `N` is `1/δ_N`: the
+    self-energy is counted relative to the spacing because the longer shifts make atoms overlap.
+
 ### G. Gauge
 
-20. **The twisted Mertens sum** (`sum_one_add_liouville_le`, `liouvilleMertensSum_le`,
+21. **The twisted Mertens sum** (`sum_one_add_liouville_le`, `liouvilleMertensSum_le`,
     `neg_le_liouvilleMertensSum`). `Σ_{t ≤ y} λ(t)Λ(t)/t = −log y + O(1)`: the even prime powers are
     summable.
-21. **Dirichlet's hyperbola identity** (`sum_divisors_div_swap`). The divisor part of a row averages
+22. **Dirichlet's hyperbola identity** (`sum_divisors_div_swap`). The divisor part of a row averages
     to its Mertens part.
-22. **The spectral ends** (`abs_atomicWeilForm_le`, `atomicWeilForm_liouvillePole_le`,
+23. **The spectral ends** (`abs_atomicWeilForm_le`, `atomicWeilForm_liouvillePole_le`,
     `atomicWeilForm_spectrum_ends`). `|P_N| ≤ log N + O(1)`. The pole vector reaches the top and the
     Liouville pole vector the bottom, `−log N + O(1)`.
-23. **The polar divergence flips** (`primeBilinear_liouvilleTrunc_eq`,
+24. **The polar divergence flips** (`primeBilinear_liouvilleTrunc_eq`,
     `abs_primeBilinear_liouvilleTrunc_add_le`, `abs_liouvilleForm_stepProfile_add_le`). On uniform
     profiles `P(λx) = −ℓ(x)² + O(|c|-mass)`.
-24. **The matching law** (`IsSignGauge`, `sum_weilPrimeKernel_gauge`, `primeBilinear_gaugeTrunc_eq`,
+25. **The matching law** (`IsSignGauge`, `sum_weilPrimeKernel_gauge`, `primeBilinear_gaugeTrunc_eq`,
     `abs_primeBilinear_gaugeTrunc_sub_le`, `abs_gaugeForm_stepProfile_sub_le`, `euler_matching`,
     `liouville_matching`, `finiteFlip_matching`). If `A_ε(y) = κ log y + O(1)`, then
     `P(εx) = κ ℓ(x)² + O(|c|-mass)` on uniform profiles. The Euler gauge has `κ = 1`, Liouville
@@ -347,6 +355,7 @@ the place that pays.
 | **RP14 Gårding is a finite-rank survival** | nonnegative on codimension `≤ k` ⇔ survival with a positive counterterm of rank `≤ k` ⇔ renormalized limit of positive forms; at most `k` negative directions | `garding_iff_survival`, `garding_iff_regularized`, `finrank_le_of_garding` |
 | **RP15 The anomaly costs at most one logarithm** | `κ_tor(N) ≤ 2 log N + log 4 + 4 + 2C_e`; the window `[(3/2) log N − C₁, 2 log N + C₂]` | `renormalizesAt_two_log`, `torsionCounterterm_window`, `anomaly_cost_window` |
 | **RP16 The sign of the tower finite part** | `F_p + c|·|² ≥ 0` on every depth iff `c ≥ 2d_p`, `d_p = √p log p/(p − 1) − γ`; `d_2 > 0`, `d_p ≤ 0` for `p ≥ 2^16` | `towerFinitePart_add_nonneg_iff`, `towerFinitePart_nonneg_iff`, `towerDeficit_two_pos`, `towerDeficit_nonpos` |
+| **RP17 The self-energy has constant one** | Lévy gain `e^{−δ_N/4} log(δ_N/(2w))`; the Markov form of every atomic test of width `≤ sharpAtomicWidth N` is nonnegative, and `sharpAtomicWidth N ≥ c δ_N/N` | `levyEnergy_atomicTest_ge_sharp`, `markovEnergy_atomicTest_nonneg_sharp`, `sharpAtomicWidth_ge` |
 
 ---
 
@@ -455,9 +464,10 @@ theorem for characters; the tensor law for several primes at once.
    self-energy `log(1/ε)` and the covariant counterterm `log N + O(1)` agree to `O(1)`. Is
    `arch_ε + pole − P_N ≥ 0` on atomic tests for some fixed `c`? This is the sharpened central
    conjecture. All divergences are now computed; the statement concerns `O(1)` finite parts. The
-   matched law (RP13) holds at widths `δ_N N^{−e^{1/2}}`. The remaining gap is the constant
-   `e^{−1/2}` of the Lévy gain, together with the shifts beyond the atomic spacing, where the atoms
-   interact through the archimedean kernel and the pole.
+   matched law holds at widths `c δ_N/N` with constant-one self-energy (RP13, RP17). The remaining
+   factor `N` is exactly the spacing: the self-energy is counted relative to `δ_N` because the shifts
+   beyond `δ_N/2` make atoms overlap. Closing it needs the archimedean interaction of distinct atoms,
+   `≈ log(1/|log m − log n|)`, against the prime form and the pole.
 2. **Who pays the tower deficit.** The sign of the prime finite part on the classes is decided
    (RP16): it is nonnegative on the classes of `p` iff `d_p = √p log p/(p − 1) − γ ≤ 0`, and
    otherwise exactly `2d_p` is missing on the uniform class profile. The small primes (`p ≤ 43`)
@@ -499,7 +509,7 @@ its present state:
   `κ = 1` for finitely many flips.
 * Q6 is answered through RP2, RP3 and RP5.
 * The central conjecture is replaced by the matched stability law (§9.1). It holds at widths
-  `δ_N N^{−e^{1/2}}` (RP13); the atomic spacing itself is open.
+  `c δ_N/N` (RP17); the atomic spacing itself is open.
 
 A contribution is an unconditional Lean theorem about an object of §3. It names its **regulator**,
 its **counterterm** with rank and survival cone, its **anomaly**, and the **place** that pays. It
@@ -529,6 +539,7 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `TheFinitePartIsEulersConstant` | Mertens with Euler's constant; roundoff; the finite part of the pole Gram; `−2γ` on step profiles and on the polar hyperplane |
 | `TheFinitePartIsTheTowerForm` | the local Mertens theorem and local Euler constant; class masses; exact rows inside and across classes; the finite part on the classes is the tower form |
 | `TheMatchedStabilityLaw` | AES's stability law at atomic resolution with the covariant counterterm; the matched width `δ_N N^{−e^{1/2}}` |
+| `TheSelfEnergyHasConstantOne` | sharp Lévy density on short shifts; Lévy gain with constant `1 − O(1/N)`; nonnegativity at width `c δ_N/N` |
 | `TheSignOfTheTowerFinitePart` | the tower deficit; the KMS bound and the uniform class profile; the sign law; `p = 2` and large `p` |
 | `TheLiouvilleGaugeFlipsThePolarDivergence` | Liouville signs; the twisted Mertens sum; Dirichlet's hyperbola; spectral ends; the polar flip |
 | `PolarMatchingReadsTheDensityOfTheGauge` | sign gauges; gauged rows and pole Gram; the matching law; Euler, Liouville and finite-flip instances |
