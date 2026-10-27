@@ -293,15 +293,19 @@ theorem abs_primeSum_add_sub_le {R : ℝ} (hf : Continuous f) (hfc : HasCompactS
         (∫ t, f t * d (t + c)) + (∫ t, d t * f (t + c)) + ∫ t, d t * d (t + c) := by
       rw [show (fun t => (f t + d t) * (f (t + c) + d (t + c))) =
           fun t => f t * f (t + c) + (f t * d (t + c) + d t * f (t + c) + d t * d (t + c)) by
-        funext t; ring, integral_add i0 ((i1.add i2).add i3), integral_add (i1.add i2) i3,
-        integral_add i1 i2]
+        funext t; ring,
+        integral_add (f := fun t => f t * f (t + c))
+          (g := fun t => f t * d (t + c) + d t * f (t + c) + d t * d (t + c)) i0 ((i1.add i2).add i3),
+        integral_add (f := fun t => f t * d (t + c) + d t * f (t + c))
+          (g := fun t => d t * d (t + c)) (i1.add i2) i3,
+        integral_add (f := fun t => f t * d (t + c)) (g := fun t => d t * f (t + c)) i1 i2]
       ring
     rw [e]
     have b1 := abs_integral_mul_shift_le hf hfc hd hdc c
     have b2 := abs_integral_mul_shift_le hd hdc hf hfc c
     have b3 := abs_integral_mul_shift_le hd hdc hd hdc c
     calc _ ≤ |∫ t, f t * d (t + c)| + |∫ t, d t * f (t + c)| + |∫ t, d t * d (t + c)| :=
-          (abs_add_le _ _).trans (add_le_add_right (abs_add_le _ _) _)
+          (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
       _ ≤ nf * nd + nd * nf + nd * nd := add_le_add (add_le_add b1 b2) b3
       _ = 2 * (nf * nd) + nd * nd := by ring
   have hk0 := vonMangoldtAtom_nonneg' k
@@ -309,7 +313,7 @@ theorem abs_primeSum_add_sub_le {R : ℝ} (hf : Continuous f) (hfc : HasCompactS
   have hp := hlag (Real.log k)
   simp only [← sub_eq_add_neg] at hm
   rw [← mul_sub, abs_mul, abs_of_nonneg hk0]
-  rw [hnd2] at hm hp ⊢
+  rw [hnd2] at hm hp
   calc vonMangoldtAtom k * |(∫ t, (f t + d t) * (f (t - Real.log k) + d (t - Real.log k))) +
         (∫ t, (f t + d t) * (f (t + Real.log k) + d (t + Real.log k))) -
         ((∫ t, f t * f (t - Real.log k)) + ∫ t, f t * f (t + Real.log k))|
@@ -440,9 +444,6 @@ theorem weilQuad_add_le {R : ℝ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSuppo
           4 * sinhHalfMoment f * sinhHalfMoment d - 2 * sinhHalfMoment d ^ 2 := by ring
     rw [e]
     have h1 : 4 * coshHalfMoment f * coshHalfMoment d ≤ 4 * |coshHalfMoment f| * (ch * N1) := by
-      have := mul_le_mul (le_abs_self (coshHalfMoment f * coshHalfMoment d)).le le_rfl
-        (by norm_num : (0 : ℝ) ≤ 4) (abs_nonneg _)
-      rw [abs_mul] at this
       nlinarith [abs_nonneg (coshHalfMoment f), mul_le_mul_of_nonneg_left hCd
         (abs_nonneg (coshHalfMoment f)), le_abs_self (coshHalfMoment f * coshHalfMoment d),
         abs_mul (coshHalfMoment f) (coshHalfMoment d)]
@@ -455,7 +456,6 @@ theorem weilQuad_add_le {R : ℝ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSuppo
     nlinarith [sq_nonneg (sinhHalfMoment d)]
   have hP := (abs_le.mp hprime).1
   have hL := (abs_le.mp hL2).2
-  rw [hnd2] at hP
   linarith
 
 end GaloisForLFunctions.SpacingScaleHarmonicAnalysis

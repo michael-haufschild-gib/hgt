@@ -65,7 +65,7 @@ Companions: [complete report](route-obstacles.md), [summary](obstacles-summary.m
 | 14.24 | Sharpened | Torsion window `[(3/2) log N − C₁, 2 log N + C₂]`; Gårding is finite-rank survival [S]. |
 | 14.28 | Resolved | The horizon counterterm on `p`-adic classes is a tensor product, Hecke covariant, with class-wise polar null cone [S]; remainder at 14.31. |
 | 14.29 | Sharpened | Euler-product closure Lorentzian for every nonnegative datum; local ladders not Lorentzian; sign hypothesis = archimedean gauge fixing [S]. |
-| 14.31 | New | Horizon finite part: tower forms with local Euler constants; sign law `c ≥ 2d_p`; deficit at `p < 47` [S]; B3.28. |
+| 14.31 | New | Horizon finite part: tower forms with local Euler constants; sign law `c ≥ 2d_p`; `d_p ≤ 0` proved for `p ≥ 2^16`, numerically from `47` [S]; B3.28. |
 | 14.32 | New | Trickle-down for `ζ`: stability regime proved; trickle-down regime open; golden datum fails `(TD_π)` [S]; Q2. |
 | 14.33 | New | Conformal symmetry: Frobenius conformal with factor `q`; over `ℤ` Hecke isometries, power maps and successor not conformal [S]; B3.29. |
 

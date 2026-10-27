@@ -58,7 +58,7 @@ theorem one_add_diagonalAngle_le_angularEnergy {j : XiDivisorSupport}
     exact xiSupport_im_ne_zero j (by linarith only [hi])
   have hsum := (summable_angularEnergyTerm j).sum_le_tsum
     {supportPartner j, xiZeroReflectEquiv j} (fun k _ => angularEnergyTerm_nonneg j k)
-  simpa only [Finset.sum_pair hne, angularEnergyTerm_supportPartner hj,
+  simpa only [angularEnergy, Finset.sum_pair hne, angularEnergyTerm_supportPartner hj,
     angularEnergyTerm_reflect hj] using hsum
 
 /-- An actual off-line Xi zero carries strictly more than its horizontal unit quantum. -/

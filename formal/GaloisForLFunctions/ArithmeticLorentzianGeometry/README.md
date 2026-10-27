@@ -290,10 +290,30 @@ theorem for a nonnegative symmetric incidence tensor with hyperbolic links and c
 support. Connectivity joins the local positive directions; without it, separate components can
 supply separate positive squares.
 
+For a symmetric Metzler form (nonnegative off-diagonal entries, arbitrary diagonal) with positive
+row sums `D = Q·1` and connected support, the statement is an equivalence
+(`isHyperbolic_iff_trickleDownIneq`, `isHyperbolic_iff_hasHyperbolicLinks`):
+
+\[
+ \text{one positive square}\iff Q[v]\le\sum_i\frac{(Qv)_i^2}{D_i}\ \text{for all }v
+ \iff\text{hyperbolic links exist},
+\]
+
+and the links may be taken rank one plus negative semidefinite. The middle inequality says that
+`QD⁻¹Q−Q` is positive semidefinite, a condition closed under addition, unlike hyperbolicity.
+Both side conditions are necessary (`trickleDown_disconnected`, `trickleDown_not_metzler`).
+The variational step is `exists_max_generalizedEigen`; its quantitative form
+`qf_le_of_approxTrickleDown` turns the inequality up to `ε‖v‖²_D`, together with a gap on the
+primitive hyperplane, into `Q≤μ₋(ε)D` there. This is a tool for theorems short of exact
+positivity; it does not supply the arithmetic gap.
+
 [TheMetzlerDichotomy](TheMetzlerDichotomy.lean) identifies the remaining burden sharply. In the
 connected Metzler regime with a positive weight whose image is positive, weighted trickle-down
-is equivalent to hyperbolicity. Producing that inequality is substantive; introducing it as a
-hypothesis does not construct a Hodge index.
+is equivalent to hyperbolicity (`isHyperbolic_iff_weightedTrickleDown`). Producing that
+inequality is substantive; introducing it as a hypothesis does not construct a Hodge index. The
+opposite regime, `Qπ≤0` for a positive weight, gives negative semidefiniteness through the
+weighted Laplacian identity (`qf_nonpos_of_mulVec_nonpos`): this is the algebraic shape of the
+atomic-width stability results, where the diagonal pays the row sums.
 
 [TheFrobeniusLadderIsMetzler](TheFrobeniusLadderIsMetzler.lean) calibrates this against curve
 data. The Frobenius Gram has the expected entrywise sign and connected support, but the golden
@@ -315,10 +335,28 @@ finite horizon. Successor shift itself has examples of both signs for its change
 prime form, even on nonnegative profiles. The useful object is therefore its connection and
 compatibility with the other kernels; a monotonicity assertion for the shift would be false.
 
+The finite statement is `exists_nonneg_gauge_iff`: for `N≥6` and relative prime weight `t≥2`,
+the coupled kernel `A+t·conj χ(m)χ(n)P` of a unimodular twin has an entrywise nonnegative gauge on
+`[1,N]` exactly when `χ(p)=1` for every prime `p≤N`. The archimedean kernel fixes the gauge along
+successor edges, where the prime kernel vanishes. With the archimedean kernel of `ζ(s−iτ)` the
+condition becomes `χ(p)=p^{iτ}` (`exists_nonneg_gauge_shifted_iff`).
+
 These are finite, specified-kernel results. They do not classify a global positivity locus of
 all completed twists. Dirichlet characters vanish at nonunits and therefore are not points of
 the full unit prime torus. Vertical characters also change which completed archimedean data are
 being compared. Both distinctions must be retained in any classification.
+
+### Conformal maps: Frobenius against Hecke
+
+[FrobeniusIsConformalHeckeIsABoost](FrobeniusIsConformalHeckeIsABoost.lean) states what kind of
+symmetry Weil's proof uses. Over `𝔽_q`, `(F×1)^*` sends `H↦qH`, `V↦V`, `Γ_k↦Γ_{k+1}`; it is
+entrywise nonnegative and satisfies `TᵀG_{K+1}T=qG_K` on the Frobenius Gram
+(`frobeniusPullback_conformal`). Over `ℤ`, the dilations `n↦pn` preserve the coupled kernel of
+every twin (`coupledKernel_mul_left`) and act on the pole plane by a boost (`boost_isometry`):
+conformal factor one. Power maps `n↦n^k`, `k≥2`, are not conformal for the prime kernel
+(`not_conformal_powerMap`), and the successor shift is not conformal for the atomic prime form
+(`not_conformal_succShift`). These statements concern the specified kernels and maps; they do
+not exclude a conformal structure on another arithmetic object.
 
 ### The arithmetic bridge and the critical domain
 
@@ -350,6 +388,25 @@ It also proves Lorentzianity of every homogenized binomial transform
 factorially normalized sequence `k! γ_k`; its Newton inequalities are stronger, and
 Lorentzianity still does not give real-rootedness. The coefficient normalization is part of
 the theorem, not a dispensable convention.
+
+### Local factors and the Euler product closure
+
+[LocalFactorsAndTheEulerProductClosure](LocalFactorsAndTheEulerProductClosure.lean) separates three
+local ingredients.
+
+* The prime kernel on a single ladder `1,p,…,p⁵` is Metzler but has two positive squares for
+  every prime (`not_isHyperbolic_ladderGram`): no local Lorentzian sign exists factor by factor.
+* A nonnegative kernel minus its row sums on the diagonal is negative semidefinite
+  (`qf_jumpForm_nonpos`): a pure jump form contributes no positive square.
+* For the Euler product polynomial `∏_p ℓ_p` of local linear forms, the Hessian at `y` is
+  `Σ_{p≠q}(∏_{r≠p,q}ℓ_r(y))L_pL_qᵀ` (`eval_pderiv_pderiv_eulerProduct`, from the finite product
+  rule `pderiv_finsetProd`). With nonnegative coefficients and positive factors it is a positive
+  multiple of a second elementary symmetric form and hence Lorentzian
+  (`isLorentzian_esymm2Form`, `isLorentzian_eulerHessian`).
+
+The last statement holds for every nonnegative local datum. The product closure therefore
+cannot by itself distinguish the Euler point from other nonnegative Euler products; it also does
+not contain the Γ-term, the pole plane or the diagonal of the actual pairing.
 
 ## Research questions and tools to develop
 
@@ -421,7 +478,8 @@ law contradicting a global budget, could exclude an off-line zero. Average rarit
 | Every prime piece is positive, so the global form has Hodge index | Specify the forms, their common pole allocation, and the dispersion or cross-term payment |
 | Subtracting a positive correction proves the original signature | It proves the signature of a different, smaller form; identify the target or prove the required domination |
 | Nonnegative coefficients and connectivity imply Hodge index | The golden calibration passes these tests; local signature still needs proof |
-| A positive Euler product gives a Lorentzian arithmetic Hessian | Define the polynomial and prove the Hessian identity, including mixed derivatives |
+| A positive Euler product gives a Lorentzian arithmetic Hessian, hence the arithmetic sign | The Hessian identity holds and is Lorentzian for every nonnegative local datum; it does not identify the Weil pairing |
+| A Hecke dilation can play the role of Frobenius | Dilations are isometries (boosts); Weil uses a conformal factor `q` |
 | The scale map is the archimedean place | A substitution is not an identity with the completed Γ-term and finite part |
 | A nef shift repairs the arithmetic form | It changes coordinates; a regulator subtraction changes the form |
 | A common gauge proves positivity | It selects coordinates or a source; it does not prove a signature |
@@ -454,7 +512,10 @@ explicit.
 
 The foundation rests on the degree-two equivalences and domination theorem; the finite-Gram
 bridge to the actual scaling surface; the trickle-down theorem and its Metzler boundary; common
-gauge rigidity; the bivariate Lorentzian–Turán equivalence; the reserve–dispersion gluing
+gauge rigidity; the Metzler equivalence between one positive square, the trickle-down
+inequality and hyperbolic links; Frobenius conformality against Hecke isometry; the Euler-product
+Hessian identity with its Lorentzian but data-blind closure; the bivariate Lorentzian–Turán
+equivalence; the reserve–dispersion gluing
 law with its matrix correction, composition rules and sharp calibration; and the coherent
 half-defect repair, its optimal rank and exact pole-preserving Hodge threshold. These pillars
 describe valid mechanisms and their limits. They do not assert the

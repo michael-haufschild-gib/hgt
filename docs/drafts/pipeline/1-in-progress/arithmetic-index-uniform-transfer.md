@@ -36,3 +36,33 @@ increments. This supplies a new local quantitative estimate, not another finiten
 
 The source-compatible Schur alternative is parked: useful, but the scale-increment estimate
 more directly advances the finite-exception budget. No finiteness bound is assumed or asserted.
+
+Paper argument (formalization in progress)
+-----------------------------------------
+Write a=|t|, b=|u|, T=a²+b² and P=a²b². For a,b>=4,
+T>=4(a+b) and a⁴+b⁴>=2(a+b)T. Clearing the positive denominator of
+v_R(a)-v_R(b), its numerator is (a-b)(a+b)Q, where
+Q=R⁶-P(3R²+T). The sum numerator is S=a²(R²+b²)³+b²(R²+a²)³.
+Both S-2(a+b)Q and S+2(a+b)Q are sums of nonnegative terms using those
+ two inequalities. Hence 2|v_R(t)-v_R(u)|<=|t-u|(v_R(t)+v_R(u)).
+The existing near-field estimate |d cross|<=2E and far-field estimate
+|cross|<=E imply reflectedWork(v_R(t),v_R(u))>=0. Since
+partial_R h_R(t)=4R³v_R(t), pair work is monotone for R>=0.
+Actual pair summability for R>=4 permits subtraction of the two tsums.
+
+For each right-hand multiplicity copy p, inject the four ordered pairs in
+{p,lineConj(p)}². Each has pair work h_R(height(p)); distinct right copies
+produce disjoint quartets. The full nonnegative increment sum, divided by4,
+therefore dominates the sum of damping increments over any right packet.
+
+For R<=|t|<=2R, the numerator of h_(2R)(t)-h_R(t)-21/100 is
+(4R²-t²)[21t⁶+294R²t⁴+369R⁴(t²-R²)+285R⁶], with positive denominator
+100(4R²+t²)²(R²+t²)². This proves the sharp annular quantum; equality
+holds at t=2R. Finite tapered source-work increments converge to this full
+increment while retaining all exterior rows.
+
+Novelty: the existing corpus proves eventual detection of a fixed finite index
+and convergence of work to total energy. The new result controls each finite
+scale increment, proves monotonicity at the pair level, and quantifies the work
+forced by zeros entering a doubled height annulus. A future arithmetic bound
+can target scale differences rather than the absolute source field.

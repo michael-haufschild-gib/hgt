@@ -16,8 +16,10 @@ Where can the Lorentzian signature of Weil's form come from, place by place?
   positive square, and its self-energy is what pays the row sums (the stability regime of
   `TheMetzlerDichotomy` with `π = 1`).
 * **The Euler product closure is Lorentzian and blind** (`isLorentzian_esymm2Form`,
-  `isLorentzian_eulerHessian`). The Hessian of a product `∏_p ⟨L_p, y⟩` of nonnegative local linear
-  forms at a positive point is `Σ_{p≠q} (∏_{r≠p,q} ⟨L_r, y⟩) L_p L_qᵀ`, a positive multiple of the
+  `isLorentzian_eulerHessian`). The Hessian of the Euler product polynomial `∏_p ℓ_p`,
+  `ℓ_p = Σ_i L_{p,i} X_i`, at a point `y` is `Σ_{p≠q} (∏_{r≠p,q} ⟨L_r, y⟩) L_p L_qᵀ`
+  (`eval_pderiv_pderiv_eulerProduct`, via the finite product rule `pderiv_finsetProd`); at a point
+  where every local factor is positive it is a positive multiple of the
   second elementary symmetric form `(Σ M_p)(Σ M_p)ᵀ − Σ M_p M_pᵀ`: rank one minus positive
   semidefinite, hence Lorentzian — for **every** nonnegative choice of local data. Products
   preserve the class where sums do not, but the closure is blind to which Euler product it is fed:
@@ -263,6 +265,7 @@ open MvPolynomial in
 /-- The Euler product polynomial `∏_p ℓ_p`. -/
 def eulerProduct (L : κ → ι → ℝ) : MvPolynomial ι ℝ := ∏ p, localLinear L p
 
+omit [Fintype ι] in
 open MvPolynomial in
 /-- **The product rule** for a finite product: `∂_i ∏_{p ∈ s} f_p = Σ_{p ∈ s} (∏_{r ∈ s ∖ p} f_r) ∂_i f_p`. -/
 theorem pderiv_finsetProd {α : Type*} [DecidableEq α] (s : Finset α) (f : α → MvPolynomial ι ℝ)

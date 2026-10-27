@@ -2,6 +2,8 @@ import GaloisForLFunctions.ArithmeticIndexDescent.TheIndexIsPaidByTransverseEner
 import GaloisForLFunctions.ArithmeticIndexDescent.TheArithmeticSourcePaysTheIndex
 import GaloisForLFunctions.ArithmeticIndexDescent.BoundedSourceWork
 
+import GaloisForLFunctions.ArithmeticIndexDescent.TheEnergyStrictlyExceedsTheIndex
+
 /-!
 # Arithmetic index descent
 

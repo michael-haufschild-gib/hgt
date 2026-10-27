@@ -1,5 +1,7 @@
 import GaloisForLFunctions.ArithmeticElectrostatics.ReflectedTransverseWork
-import Mathlib.Analysis.Calculus.MeanValue
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
+import Mathlib.Analysis.Calculus.Deriv.Pow
+import Mathlib.Analysis.Calculus.Deriv.Inv
 
 /-!
 # Positive scale increments of reflected work
@@ -116,11 +118,11 @@ theorem hasDerivAt_heightDamping (R t : ℝ) (ht : t ≠ 0) :
   have hden : R ^ 2 + t ^ 2 ≠ 0 :=
     ne_of_gt (add_pos_of_nonneg_of_pos (sq_nonneg R) (sq_pos_of_ne_zero ht))
   convert ((hasDerivAt_id R).pow 4).div
-    (((hasDerivAt_id R).pow 2).add_const (t ^ 2) |>.pow 2) (pow_ne_zero 2 hden) using 1
-  · rfl
-  · dsimp only [dampingVelocity]
-    field_simp
-    <;> ring
+    (((hasDerivAt_id R).pow 2).add_const (t ^ 2) |>.pow 2) (pow_ne_zero 2 hden) using 1 <;>
+    try rfl
+  dsimp [dampingVelocity]
+  field_simp
+  ring
 
 /-- Every reflected pair above the height gap increases with damping scale. -/
 theorem reflectedWork_monotoneOn_scale (x y t u : ℝ)
@@ -137,16 +139,51 @@ theorem reflectedWork_monotoneOn_scale (x y t u : ℝ)
       (hasDerivAt_heightDamping R u hu0)).mul_const (reflectedEnergy x y (t - u))).add
       (((hasDerivAt_heightDamping R t ht0).sub
         (hasDerivAt_heightDamping R u hu0)).mul_const (reflectedCross x y (t - u)))).div_const 2
-    convert h using 1
-    · rfl
-    · unfold reflectedWork
-      ring
+    convert h using 1 <;> try rfl
+    unfold reflectedWork
+    ring
   refine monotoneOn_of_hasDerivWithinAt_nonneg (convex_Ici 0)
     (fun R _ => (hd R).continuousAt.continuousWithinAt)
     (fun R _ => (hd R).hasDerivWithinAt) ?_
   intro R hR
   rw [interior_Ici] at hR
+  have hR0 : 0 < R := hR
   exact mul_nonneg (by positivity : 0 ≤ 4 * R ^ 3)
     (dampingVelocity_work_nonneg R x y t u hxy ht hu)
 
+/-- A height in the doubled annulus receives at least `21/100` of new damping mass. -/
+theorem heightDamping_doubling_gap {R t : ℝ} (hR : 0 < R)
+    (ht : R ≤ |t|) (ht' : |t| ≤ 2 * R) :
+    (21 / 100 : ℝ) ≤ heightDamping (2 * R) t - heightDamping R t := by
+  have hlo : R ^ 2 ≤ t ^ 2 := by
+    simpa only [sq_abs] using (sq_le_sq₀ hR.le (abs_nonneg t)).mpr ht
+  have hhi : t ^ 2 ≤ 4 * R ^ 2 := by
+    have h := (sq_le_sq₀ (abs_nonneg t) (show 0 ≤ 2 * R by positivity)).mpr ht'
+    nlinarith only [h, sq_abs t]
+  have hA : 0 < R ^ 2 + t ^ 2 := add_pos_of_pos_of_nonneg (sq_pos_of_pos hR) (sq_nonneg t)
+  have hB : 0 < 4 * R ^ 2 + t ^ 2 := by positivity
+  have hid : heightDamping (2 * R) t - heightDamping R t - 21 / 100 =
+      (4 * R ^ 2 - t ^ 2) *
+        (21 * t ^ 6 + 294 * R ^ 2 * t ^ 4 + 369 * R ^ 4 * (t ^ 2 - R ^ 2) + 285 * R ^ 6) /
+        (100 * (4 * R ^ 2 + t ^ 2) ^ 2 * (R ^ 2 + t ^ 2) ^ 2) := by
+    unfold heightDamping
+    have hB' : (2 * R) ^ 2 + t ^ 2 ≠ 0 := by nlinarith only [hB]
+    field_simp
+    ring
+  have hn : 0 ≤ heightDamping (2 * R) t - heightDamping R t - 21 / 100 := by
+    rw [hid]
+    exact div_nonneg (mul_nonneg (sub_nonneg.mpr hhi) (by positivity)) (by positivity)
+  linarith only [hn]
+
+/-- The annular coefficient is attained at the outer endpoint. -/
+theorem heightDamping_doubling_gap_endpoint {R : ℝ} (hR : 0 < R) :
+    heightDamping (2 * R) (2 * R) - heightDamping R (2 * R) = 21 / 100 := by
+  unfold heightDamping
+  have hR0 : R ≠ 0 := ne_of_gt hR
+  field_simp
+  ring
+
 end GaloisForLFunctions.ArithmeticIndexDescent
+
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.reflectedWork_monotoneOn_scale
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.heightDamping_doubling_gap

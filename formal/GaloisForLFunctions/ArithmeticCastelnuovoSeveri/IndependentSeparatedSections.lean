@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.ArithmeticSectionSpace
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SourceDeterminantalSectionsAndArithmeticRiemannRoch
 import GaloisForLFunctions.RHTower.SeparatedBumpWeilPositivity
 
 /-!
@@ -15,9 +15,15 @@ open MeasureTheory Set Filter Topology Finset RHTower Zeta23
 
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SeparatedSections
 
-open RHTower.SeparatedBump
+open RHTower.SeparatedBump RHTower.WeilLevyPole
 
 variable {N : ℕ}
+
+/-- Square mass of a local profile. -/
+def profileMass (g : ℝ → ℝ) : ℝ := ∫ u, g u ^ 2
+
+theorem profileMass_nonneg (g : ℝ → ℝ) : 0 ≤ profileMass g :=
+  integral_nonneg fun _ => sq_nonneg _
 
 /-- Independent local profiles translated to prescribed centres. -/
 def sectionSum (G : Fin N → ℝ → ℝ) (x : Fin N → ℝ) (u : ℝ) : ℝ :=
@@ -42,7 +48,8 @@ theorem sectionSum_eq_zero {G : Fin N → ℝ → ℝ} {δ : ℝ}
 theorem hasCompactSupport_sectionSum {G : Fin N → ℝ → ℝ} {δ : ℝ}
     (hs : ∀ i u, δ / 2 < |u| → G i u = 0) (x : Fin N → ℝ) :
     HasCompactSupport (sectionSum G x) := by
-  exact hasCompactSupport_of_abs_gt fun _ hu => sectionSum_eq_zero hs x hu
+  exact hasCompactSupport_of_abs_gt (R := (∑ i, |x i|) + δ / 2)
+    fun u hu => sectionSum_eq_zero hs x hu
 
 /-- Two profiles cannot meet when their centres are farther apart than their width. -/
 theorem mixed_translate_eq_zero {g h : ℝ → ℝ} {δ p q : ℝ}
@@ -167,11 +174,19 @@ theorem integral_sectionSum_sub_translate_sq {G : Fin N → ℝ → ℝ} {δ s t
   have hfd := (contDiff_sectionSum hG x).continuous
   have hi : Integrable fun u => sectionSum G x u ^ 2 := by
     apply (hfd.pow 2).integrable_of_hasCompactSupport
-    exact hasCompactSupport_of_abs_gt fun _ hu => by
+    exact hasCompactSupport_of_abs_gt (R := (∑ i, |x i|) + δ / 2) fun u hu => by
+      change sectionSum G x u ^ 2 = 0
       rw [sectionSum_eq_zero hs x hu]
       norm_num
   have hi' : Integrable fun u => sectionSum G x (u + t) ^ 2 := by
-    exact hi.comp_add_right t
+    apply ((hfd.comp (continuous_id.add continuous_const)).pow 2).integrable_of_hasCompactSupport
+    refine hasCompactSupport_of_abs_gt
+      (R := (∑ i, |x i|) + δ / 2 + |t|) fun u hu => ?_
+    have ht := abs_sub_abs_le_abs_sub u (-t)
+    rw [abs_neg, sub_neg_eq_add] at ht
+    change sectionSum G x (u + t) ^ 2 = 0
+    rw [sectionSum_eq_zero hs x (by linarith only [hu, ht])]
+    norm_num
   have he : ∀ u, (sectionSum G x u - sectionSum G x (u + t)) ^ 2 =
       sectionSum G x u ^ 2 + sectionSum G x (u + t) ^ 2 := by
     intro u
@@ -236,7 +251,6 @@ theorem integral_sectionSum_mul_exp {G : Fin N → ℝ → ℝ} {δ : ℝ}
         (Real.continuous_exp.comp (continuous_const.mul continuous_id))
     exact hc.integrable_of_hasCompactSupport
       (hasCompactSupport_of_abs_gt (R := |x i| + δ / 2) fun u hu => by
-        change G i (u - x i) * Real.exp (k * u) = 0
         rw [translate_eq_zero (hs i) (x i) hu, zero_mul])
   simp only [sectionSum, sum_mul]
   rw [integral_finsetSum _ fun i _ => hint i]
@@ -281,6 +295,8 @@ theorem abs_pole_sectionSum_le {G : Fin N → ℝ → ℝ} {δ s D : ℝ}
     apply (abs_sum_le_sum_abs _ _).trans
     apply sum_le_sum
     intro j _
+    have hLi := hL0 i
+    have hLj := hL0 j
     calc |Real.exp (1 / 2 * x i) * A i * (Real.exp (-1 / 2 * x j) * B j)|
         = (Real.exp (1 / 2 * x i) * Real.exp (-1 / 2 * x j)) * (|A i| * |B j|) := by
           simp only [abs_mul, abs_of_pos (Real.exp_pos _)]
@@ -309,14 +325,14 @@ theorem abs_pole_sectionSum_le {G : Fin N → ℝ → ℝ} {δ s D : ℝ}
   have h := hab.trans (mul_le_mul_of_nonneg_left hsq (by positivity))
   change 2 * |(∑ i, Real.exp (1 / 2 * x i) * A i) *
     ∑ j, Real.exp (-1 / 2 * x j) * B j| ≤ _
-  nlinarith only [h]
+  linarith only [h]
 
 /-- Only pairs whose intervals align at the chosen lag can contribute. -/
 theorem abs_correlation_sectionSum_le {G : Fin N → ℝ → ℝ} {δ : ℝ}
     (hG : ∀ i, ContDiff ℝ 2 (G i)) (hs : ∀ i u, δ / 2 < |u| → G i u = 0)
     (x : Fin N → ℝ) (t : ℝ) :
     |∫ u, sectionSum G x u * sectionSum G x (u - t)| ≤
-      ∑ i, ∑ j, ((sectionMass (G i) + sectionMass (G j)) / 2) *
+      ∑ i, ∑ j, ((profileMass (G i) + profileMass (G j)) / 2) *
         (if |t - (x i - x j)| ≤ δ then 1 else 0) := by
   rw [integral_sectionSum_mul_sub hG hs]
   apply (abs_sum_le_sum_abs _ _).trans
@@ -337,24 +353,25 @@ theorem abs_correlation_sectionSum_le {G : Fin N → ℝ → ℝ} {δ : ℝ}
 /-- Symmetric row bounds act on independent square masses, without a common profile. -/
 theorem mass_pairKernel_le {G : Fin N → ℝ → ℝ} {x : Fin N → ℝ} {δ R : ℝ}
     (hrow : ∀ i, ∑ j, pairKernel δ x i j ≤ R) :
-    ∑ i, ∑ j, ((sectionMass (G i) + sectionMass (G j)) / 2) * pairKernel δ x i j ≤
-      R * ∑ i, sectionMass (G i) := by
-  have he : (∑ i, ∑ j, ((sectionMass (G i) + sectionMass (G j)) / 2) * pairKernel δ x i j) =
-      ∑ i, sectionMass (G i) * ∑ j, pairKernel δ x i j := by
+    ∑ i, ∑ j, ((profileMass (G i) + profileMass (G j)) / 2) * pairKernel δ x i j ≤
+      R * ∑ i, profileMass (G i) := by
+  have he : (∑ i, ∑ j, ((profileMass (G i) + profileMass (G j)) / 2) * pairKernel δ x i j) =
+      ∑ i, profileMass (G i) * ∑ j, pairKernel δ x i j := by
     simp only [add_div, add_mul, sum_add_distrib, ← sum_div, div_mul_eq_mul_div]
-    have hsym : (∑ i, ∑ j, sectionMass (G j) * pairKernel δ x i j) =
-        ∑ i, ∑ j, sectionMass (G i) * pairKernel δ x i j := by
+    have hsym : (∑ i, ∑ j, profileMass (G j) * pairKernel δ x i j) =
+        ∑ i, ∑ j, profileMass (G i) * pairKernel δ x i j := by
       rw [sum_comm]
       exact sum_congr rfl fun i _ => sum_congr rfl fun j _ => by
         rw [pairKernel_symm δ x j i]
-    simp only [← sum_div, hsym, ← mul_sum]
+    simp only [hsym, ← mul_sum]
     ring
   rw [he, mul_sum]
   exact sum_le_sum fun i _ => by
-    simpa only [mul_comm R] using mul_le_mul_of_nonneg_left (hrow i) (sectionMass_nonneg _)
+    simpa only [mul_comm R] using mul_le_mul_of_nonneg_left (hrow i) (profileMass_nonneg _)
 
+/-- The arithmetic mass at one integer, restricted to aligned interval pairs. -/
 def primeMajorant (δ : ℝ) (G : Fin N → ℝ → ℝ) (x : Fin N → ℝ) (n : ℕ) : ℝ :=
-  ∑ i, ∑ j, ((sectionMass (G i) + sectionMass (G j)) / 2) *
+  ∑ i, ∑ j, ((profileMass (G i) + profileMass (G j)) / 2) *
     (ArithmeticFunction.vonMangoldt n / Real.sqrt n *
         (if |Real.log n - (x i - x j)| ≤ δ then 1 else 0) +
       ArithmeticFunction.vonMangoldt n / Real.sqrt n *
@@ -399,7 +416,7 @@ theorem vonMangoldt_mul_abs_sectionSum_logValue_le {G : Fin N → ℝ → ℝ} {
 theorem sum_primeMajorant_le (δ : ℝ) (G : Fin N → ℝ → ℝ) (x : Fin N → ℝ)
     (T : Finset ℕ) :
     ∑ n ∈ T, primeMajorant δ G x n ≤
-      ∑ i, ∑ j, ((sectionMass (G i) + sectionMass (G j)) / 2) * pairKernel δ x i j := by
+      ∑ i, ∑ j, ((profileMass (G i) + profileMass (G j)) / 2) * pairKernel δ x i j := by
   unfold primeMajorant
   rw [sum_comm]
   apply sum_le_sum
@@ -408,7 +425,7 @@ theorem sum_primeMajorant_le (δ : ℝ) (G : Fin N → ℝ → ℝ) (x : Fin N �
   apply sum_le_sum
   intro j _
   rw [← mul_sum, sum_add_distrib]
-  apply mul_le_mul_of_nonneg_left _ (div_nonneg (add_nonneg (sectionMass_nonneg _) (sectionMass_nonneg _)) (by norm_num))
+  apply mul_le_mul_of_nonneg_left _ (div_nonneg (add_nonneg (profileMass_nonneg _) (profileMass_nonneg _)) (by norm_num))
   exact add_le_add (sum_indicator_le_nodeWeight T δ (x i - x j))
     (sum_indicator_le_nodeWeight T δ (x j - x i))
 
@@ -418,7 +435,7 @@ theorem abs_linearCombination_sectionSum_le {G : Fin N → ℝ → ℝ} {δ R : 
     (x : Fin N → ℝ) (hrow : ∀ i, ∑ j, pairKernel δ x i j ≤ R)
     (F : WeilOneSided.WeilTestFn) (hF : F.1 = fun u => (sectionSum G x u : ℂ)) :
     |Finsupp.linearCombination ℝ (fun j : WeilOneSided.LogIndex => ArithmeticFunction.vonMangoldt j)
-      (WeilOneSided.logVector F)| ≤ R * ∑ i, sectionMass (G i) := by
+      (WeilOneSided.logVector F)| ≤ R * ∑ i, profileMass (G i) := by
   apply le_trans _ (mass_pairKernel_le (G := G) hrow)
   let T := (WeilOneSided.logVector F).support
   rw [Finsupp.linearCombination_apply]
@@ -468,13 +485,115 @@ theorem le_weil_sectionSum {G : Fin N → ℝ → ℝ} {δ s D M : ℝ}
     (by linarith only [hδ, hδs]) hM hsep hspan
   have hprime := abs_linearCombination_sectionSum_le hG hs x hrow F rfl
   have hmass := integral_sectionSum_sq hG hs (by linarith only [hδ, hδs]) hsep
-  change (∫ u, sectionSum G x u ^ 2) = ∑ i, sectionMass (G i) at hmass
+  change (∫ u, sectionSum G x u ^ 2) = ∑ i, profileMass (G i) at hmass
   rw [← hmass] at hprime
   have hprime' := le_abs_self (Finsupp.linearCombination ℝ
     (fun j : WeilOneSided.LogIndex => ArithmeticFunction.vonMangoldt j) (WeilOneSided.logVector F))
   change _ ≤ WeilOneSided.weilArchRe (EF.weilTest (fun u => (sectionSum G x u : ℂ))
     (fun u => (sectionSum G x u : ℂ))) - _
   rw [weilArchRe_eq_levy_pole hfd hfc]
-  nlinarith only [hlev, hgain, hpole, hneg, hprime, hprime']
+  linarith only [hlev, hgain, hpole, hneg, hprime, hprime']
+
+/-- Below the pole scale, every independent section retains its full square mass. -/
+theorem exists_integral_sq_le_weil_sectionSum {s κ : ℝ}
+    (hs : 0 < s) (hκ0 : 0 < κ) (hκ2 : κ < 2) :
+    ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∀ δ : ℝ, 0 < δ → δ < δ₀ →
+      ∀ (N : ℕ) (G : Fin N → ℝ → ℝ) (x : Fin N → ℝ),
+        (∀ i, ContDiff ℝ 2 (G i)) → (∀ i u, δ / 2 < |u| → G i u = 0) →
+        (∀ i j, i ≠ j → s ≤ |x i - x j|) →
+        (∀ i j, |x i - x j| ≤ κ * Real.log (1 / δ)) →
+        (∫ u, sectionSum G x u ^ 2) ≤
+          (weilFullFunctional (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
+            (EF.weilTest (fun u => (sectionSum G x u : ℂ))
+              (fun u => (sectionSum G x u : ℂ)))).re := by
+  have hc0 : 0 < Real.exp (-s / 2) := Real.exp_pos _
+  obtain ⟨L₀, hL₀⟩ := exists_margin (s := s) (κ := κ)
+    (θ := s * Real.exp (-s / 2) / 64) (c := Real.exp (-s / 2))
+    (C := 17 + |EF.gammaBracket 0 - 1| + Real.exp (-s / 2) * |Real.log (s / 2)|)
+    hκ2 (by positivity) hc0
+  refine ⟨min (min (1 / 2) (s / 4)) (Real.exp (-L₀)), by positivity,
+    fun δ hδ hδlt N G x hG hGs hsep hspan => ?_⟩
+  have hd1 : δ < 1 / 2 := lt_of_lt_of_le hδlt ((min_le_left _ _).trans (min_le_left _ _))
+  have hd2 : δ < s / 4 := lt_of_lt_of_le hδlt ((min_le_left _ _).trans (min_le_right _ _))
+  have hd3 : δ < Real.exp (-L₀) := lt_of_lt_of_le hδlt (min_le_right _ _)
+  have hLL₀ : L₀ ≤ Real.log (1 / δ) := by
+    have : Real.exp L₀ < 1 / δ := by
+      rw [lt_div_iff₀ hδ, mul_comm, ← lt_div_iff₀ (Real.exp_pos _), div_eq_mul_inv,
+        one_mul, ← Real.exp_neg]
+      exact hd3
+    exact ((Real.lt_log_iff_exp_lt (by positivity)).mpr this).le
+  obtain ⟨hLpos, hmargin⟩ := hL₀ _ hLL₀
+  have hδL : δ = Real.exp (-Real.log (1 / δ)) := by
+    rw [Real.exp_neg, Real.exp_log (by positivity), one_div, inv_inv]
+  have hN : (N : ℝ) ≤ 2 + κ * Real.log (1 / δ) / s := by
+    have h := natCast_le_one_add_div_of_separated hs
+      (by positivity : (0 : ℝ) ≤ κ * Real.log (1 / δ) + s) hsep
+      fun i j _ => lt_of_le_of_lt (hspan i j) (by linarith only [hs])
+    calc (N : ℝ) ≤ 1 + (κ * Real.log (1 / δ) + s) / s := h
+      _ = 2 + κ * Real.log (1 / δ) / s := by field_simp; ring
+  have hcoef := coefficient_nonneg (γ := EF.gammaBracket 0 - 1) hs hκ0 hδ hd1.le
+    (by linarith only [hd2, hδ]) hδL hLpos (Nat.cast_nonneg N) hN hmargin
+  have hE0 : 0 ≤ ∫ u, sectionSum G x u ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  have hfloor := mul_nonneg hcoef hE0
+  have hmain := le_weil_sectionSum (M := s * Real.exp (-s / 2) / 64 * Real.log (1 / δ))
+    hG hGs hδ hd1.le (by linarith only [hd2, hδ]) (by positivity) hsep hspan
+  linarith only [hfloor, hmain]
+
+/-- A source-defined linear carrier; no positivity or zero-location condition enters membership. -/
+def separatedSectionTests (δ : ℝ) (x : Fin N → ℝ) : Submodule ℝ realTests where
+  carrier := {f | ∃ G : Fin N → ℝ → ℝ, (∀ i, ContDiff ℝ 2 (G i)) ∧
+    (∀ i u, δ / 2 < |u| → G i u = 0) ∧ f.1 = sectionSum G x}
+  zero_mem' := by
+    refine ⟨fun _ _ => 0, fun _ => contDiff_const, fun _ _ _ => rfl, ?_⟩
+    funext u
+    simp only [Submodule.coe_zero, Pi.zero_apply, sectionSum, sum_const_zero]
+  add_mem' := by
+    rintro f h ⟨G, hG, hsG, heG⟩ ⟨H, hH, hsH, heH⟩
+    refine ⟨fun i u => G i u + H i u, fun i => (hG i).add (hH i), ?_, ?_⟩
+    · intro i u hu
+      change G i u + H i u = 0
+      rw [hsG i u hu, hsH i u hu, add_zero]
+    · funext u
+      simp only [Submodule.coe_add, Pi.add_apply, heG, heH, sectionSum, sum_add_distrib]
+  smul_mem' := by
+    rintro r f ⟨G, hG, hsG, heG⟩
+    refine ⟨fun i u => r * G i u, fun i => (hG i).const_smul r, ?_, ?_⟩
+    · intro i u hu
+      change r * G i u = 0
+      rw [hsG i u hu, mul_zero]
+    · funext u
+      simp only [Submodule.coe_smul, Pi.smul_apply, smul_eq_mul, heG, sectionSum, mul_sum]
+
+/-- Independent separated sections have Riemann–Roch, ampleness, and Hodge index for the
+original scaling pairing, uniformly below the pole scale. -/
+theorem exists_separatedSections_effectivity {s κ : ℝ}
+    (hs : 0 < s) (hκ0 : 0 < κ) (hκ2 : κ < 2) :
+    ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∀ δ : ℝ, 0 < δ → δ < δ₀ →
+      ∀ (N : ℕ) (x : Fin N → ℝ),
+        (∀ i j, i ≠ j → s ≤ |x i - x j|) →
+        (∀ i j, |x i - x j| ≤ κ * Real.log (1 / δ)) →
+        (scalingSubsurface (separatedSectionTests δ x)).RiemannRochAxiom
+            (l2SourceCone 1 (separatedSectionTests δ x)) ∧
+          (scalingSubsurface (separatedSectionTests δ x)).AmpleAxiom
+            (l2SourceCone 1 (separatedSectionTests δ x)) ∧
+          (scalingSubsurface (separatedSectionTests δ x)).HodgeIndex := by
+  obtain ⟨δ₀, hδ₀, hfloor⟩ := exists_integral_sq_le_weil_sectionSum hs hκ0 hκ2
+  refine ⟨δ₀, hδ₀, fun δ hδ hδlt N x hsep hspan => ?_⟩
+  have hf : ∀ f : separatedSectionTests δ x, (∫ u, f.1.1 u ^ 2) ≤ weilPair f.1.1 f.1.1 := by
+    intro f
+    obtain ⟨G, hG, hGs, heG⟩ := f.2
+    have h := hfloor δ hδ hδlt N G x hG hGs hsep hspan
+    rw [heG]
+    exact h
+  refine ⟨(l2SourceCone_riemannRoch_iff_weilPair_ge zero_lt_one _).mpr ?_,
+    l2SourceCone_ample zero_lt_one _, (scalingSubsurface_hodgeIndex_iff_weilPair_nonneg _).mpr ?_⟩
+  · intro f
+    simpa only [one_mul] using hf f
+  · intro f
+    exact (integral_nonneg fun _ => sq_nonneg _).trans (hf f)
+
+#print axioms le_weil_sectionSum
+#print axioms exists_integral_sq_le_weil_sectionSum
+#print axioms exists_separatedSections_effectivity
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SeparatedSections

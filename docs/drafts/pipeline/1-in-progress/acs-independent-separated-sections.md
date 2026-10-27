@@ -28,4 +28,10 @@ Write `f(u) = Σᵢ Gᵢ(u-xᵢ)` and `Eᵢ = ∫ Gᵢ²`. Disjoint supports giv
 
 ## Status
 
-No proof claimed until Lean checks. Full-source ACS effectivity remains open.
+Lean implementation: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/IndependentSeparatedSections.lean`.
+Main declarations: `SeparatedSections.le_weil_sectionSum`,
+`SeparatedSections.exists_integral_sq_le_weil_sectionSum`, and
+`SeparatedSections.exists_separatedSections_effectivity`.
+
+Exact-file checking and axiom audits are pending. No proof claimed until those pass.
+Full-source ACS effectivity remains open.

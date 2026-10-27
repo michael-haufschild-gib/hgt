@@ -30,8 +30,10 @@ inverse width). A **gauge** is a choice of phases `g_n` on the atoms; it conjuga
 * **Archimedean characters** (`exists_nonneg_gauge_shifted_iff`, `exists_nonneg_gauge_kronecker`): with the archimedean kernel of
   the shifted function `ζ(s − iτ)`, `conj(m^{iτ}) n^{iτ} A(m, n)`, the nonnegative gauges exist iff
   `χ(p) = p^{iτ}` on the horizon. The Lorentzian locus of the torus is the set of archimedean
-  characters `n^{iτ}`, each read with its own archimedean kernel; no other torus point (Dirichlet
-  characters included) admits a nonnegative gauge.
+  characters `n^{iτ}`, each read with its own archimedean kernel; no other unimodular twin admits
+  a nonnegative gauge on a horizon containing a prime where it differs from `p^{iτ}`. (Dirichlet
+  characters vanish at the primes of their conductor and are not unimodular twins; with their own
+  archimedean kernel they enter as isotypic components of Euler points of cyclotomic fields.)
 
 The sign hypothesis of Lorentzian theory is therefore a gauge-fixing performed by the archimedean
 place along the successor. It is invisible to every form built from the prime kernel alone.
