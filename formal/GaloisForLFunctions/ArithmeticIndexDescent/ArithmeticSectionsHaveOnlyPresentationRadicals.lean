@@ -48,6 +48,16 @@ theorem realWeilForm_symm (f g : realTests) : realWeilForm f g = realWeilForm g 
 def realTestSynthesis {ι : Type*} [Fintype ι] (f : ι → realTests) (x : ι → ℝ) : realTests :=
   ∑ i, x i • f i
 
+/-- The linear synthesis map retains all coefficient relations. -/
+def realTestSynthesisMap {ι : Type*} [Fintype ι] (f : ι → realTests) :
+    (ι → ℝ) →ₗ[ℝ] realTests where
+  toFun := realTestSynthesis f
+  map_add' x y := by
+    simp only [realTestSynthesis, Pi.add_apply, add_smul, Finset.sum_add_distrib]
+  map_smul' c x := by
+    simp only [realTestSynthesis, Pi.smul_apply, smul_eq_mul, mul_smul,
+      RingHom.id_apply, Finset.smul_sum]
+
 /-- Mixed entries of the complete Weil form. -/
 def realWeilMixed {ι κ : Type*} (f : ι → realTests) (g : κ → realTests) : Matrix ι κ ℝ :=
   fun i j => realWeilForm (f i) (g j)
@@ -119,7 +129,66 @@ theorem arithmeticSection_radical_annihilates_mixed {ι κ : Type*} [Fintype ι]
   rw [realWeilMixed_mulVec, hzero, map_zero]
   rfl
 
+/-- Every ambient test has a Weil-orthogonal projection onto a finite narrow section span.
+The coefficients need not be unique, because the presentation may be redundant. -/
+theorem arithmeticSection_exists_mixed_lift {ι : Type*} [Fintype ι]
+    {N : ℕ} (hN : 1 ≤ N) {w : ℝ} (hw0 : 0 < w)
+    (hw : w ≤ fullSectionRatio * atomSpacing N)
+    (f : ι → arithmeticSectionTests N w) (g : realTests) :
+    ∃ c : ι → ℝ,
+      (realWeilMixed (fun i => (f i).1) (fun i => (f i).1)).mulVec c =
+        fun i => realWeilForm (f i).1 g := by
+  classical
+  let A := realWeilMixed (fun i => (f i).1) (fun i => (f i).1)
+  let φ := (realWeilForm g).comp (realTestSynthesisMap (fun i => (f i).1))
+  have hker (x : ι → ℝ) (hx : A.mulVecLin x = 0) : φ x = 0 := by
+    have hzero := (arithmeticSection_gram_kernel_iff hN hw0 hw f x).mp hx
+    change realWeilForm g (realTestSynthesis (fun i => (f i).1) x) = 0
+    rw [hzero, map_zero]
+  obtain ⟨L, hL⟩ := LinearMap.exists_extend (factorRange A.mulVecLin φ hker)
+  have hfactor (x : ι → ℝ) : L (A.mulVec x) = φ x := by
+    let v : LinearMap.range A.mulVecLin := ⟨A.mulVec x, ⟨x, rfl⟩⟩
+    have h := LinearMap.congr_fun hL v
+    exact h.trans (factorRange_apply_of_eq A.mulVecLin φ hker (x := x) rfl)
+  let e (i : ι) : ι → ℝ := fun j => if i = j then 1 else 0
+  refine ⟨fun i => L (e i), ?_⟩
+  funext i
+  have hei : A.mulVec (e i) = fun j => A j i := by
+    funext j
+    simp [Matrix.mulVec, dotProduct, e]
+  have hsyn : realTestSynthesis (fun j => (f j).1) (e i) = (f i).1 := by
+    simp [realTestSynthesis, e, ite_smul]
+  calc
+    A.mulVec (fun j => L (e j)) i = ∑ j, A i j * L (e j) := rfl
+    _ = ∑ j, A j i * L (e j) := by
+      apply Finset.sum_congr rfl
+      intro j _
+      exact congrArg (fun a : ℝ => a * L (e j)) (realWeilForm_symm _ _)
+    _ = L (A.mulVec (e i)) := by
+      rw [hei, LinearMap.pi_apply_eq_sum_univ]
+      rfl
+    _ = φ (e i) := hfactor (e i)
+    _ = realWeilForm g (f i).1 := by
+      change realWeilForm g (realTestSynthesis (fun j => (f j).1) (e i)) = _
+      rw [hsyn]
+    _ = realWeilForm (f i).1 g := realWeilForm_symm _ _
+
+/-- The mixed block lies in the old Gram range, unconditionally at the arithmetic source. -/
+theorem arithmeticSection_mixed_range {ι κ : Type*} [Fintype ι]
+    {N : ℕ} (hN : 1 ≤ N) {w : ℝ} (hw0 : 0 < w)
+    (hw : w ≤ fullSectionRatio * atomSpacing N)
+    (f : ι → arithmeticSectionTests N w) (g : κ → realTests) :
+    ∃ X : Matrix ι κ ℝ,
+      realWeilMixed (fun i => (f i).1) g =
+        realWeilMixed (fun i => (f i).1) (fun i => (f i).1) * X := by
+  classical
+  choose c hc using fun j => arithmeticSection_exists_mixed_lift hN hw0 hw f (g j)
+  refine ⟨fun i j => c j i, ?_⟩
+  ext i j
+  exact (congrFun (hc j) i).symm
+
 end GaloisForLFunctions.ArithmeticIndexDescent
 
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.arithmeticSection_gram_kernel_iff
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.arithmeticSection_radical_annihilates_mixed
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.arithmeticSection_mixed_range

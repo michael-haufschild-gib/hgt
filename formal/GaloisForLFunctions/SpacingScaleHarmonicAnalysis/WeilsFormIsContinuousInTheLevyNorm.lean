@@ -458,4 +458,126 @@ theorem weilQuad_add_le {R : ℝ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSuppo
   have hL := (abs_le.mp hL2).2
   linarith
 
+/-! ### The Lévy energy of a Lipschitz perturbation -/
+
+/-- The constant `C₁ = e^{1/2} + 8e^{−1/2}/(1 − e^{−2})` of the Lipschitz Lévy bound. -/
+def levyLipConstant : ℝ := Real.exp (1 / 2) + 8 * Real.exp (-(1 / 2)) / (1 - Real.exp (-2))
+
+/-- `‖d − d(· + y)‖² ≤ 4‖d‖²`. -/
+theorem integral_sub_shift_sq_le_four (hd : Continuous d) (hdc : HasCompactSupport d) (y : ℝ) :
+    ∫ u, (d u - d (u + y)) ^ 2 ≤ 4 * ∫ u, d u ^ 2 := by
+  have h1 := integrable_sq_of_continuous hd hdc
+  have h2 : Integrable fun u => d (u + y) ^ 2 := h1.comp_add_right y
+  calc ∫ u, (d u - d (u + y)) ^ 2 ≤ ∫ u, (2 * d u ^ 2 + 2 * d (u + y) ^ 2) :=
+        integral_mono (RHTower.WeilMarkovPole.integrable_sub_shift_sq hd hdc y)
+          ((h1.const_mul 2).add (h2.const_mul 2)) fun u => by nlinarith [sq_nonneg (d u + d (u + y))]
+    _ = 4 * ∫ u, d u ^ 2 := by
+        rw [integral_add (h1.const_mul 2) (h2.const_mul 2), integral_const_mul, integral_const_mul,
+          integral_add_right_eq_self (fun u => d u ^ 2) y]
+        ring
+
+/-- **The Lévy energy of a Lipschitz perturbation**: for a `K`-Lipschitz `C²` compactly supported
+`d` and `0 < δ ≤ 1`, `levyEnergy d ≤ e^{1/2} K δ ‖d‖₁ + (2 log(1/δ) + C₁)‖d‖₂²`. -/
+theorem levyEnergy_le_lipschitz (hd : ContDiff ℝ 2 d) (hdc : HasCompactSupport d) {K : ℝ}
+    (hK : ∀ u v, |d u - d v| ≤ K * |u - v|) {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1) :
+    levyEnergy d ≤ Real.exp (1 / 2) * K * δ * (∫ u, |d u|) +
+      (2 * Real.log (1 / δ) + levyLipConstant) * ∫ u, d u ^ 2 := by
+  set M := ∫ u, d u ^ 2
+  set A := ∫ u, |d u|
+  have hM : 0 ≤ M := integral_nonneg fun u => sq_nonneg _
+  set L : ℝ → ℝ := fun y => archLevyDensity y * ∫ u, (d u - d (u + y)) ^ 2
+  have hLint : IntegrableOn L (Ioi 0) := integrableOn_levyIntegrand hd hdc
+  have hfar : ∀ y, 0 < y → L y ≤ 4 * M * archLevyDensity y := fun y hy => by
+    simp only [L]
+    have := integral_sub_shift_sq_le_four hd.continuous hdc y
+    nlinarith [(archLevyDensity_pos hy).le]
+  have hsplit1 : Ioi (0 : ℝ) = Ioc 0 1 ∪ Ioi 1 := (Ioc_union_Ioi_eq_Ioi zero_le_one).symm
+  have hsplit2 : Ioc (0 : ℝ) 1 = Ioc 0 δ ∪ Ioc δ 1 := (Ioc_union_Ioc_eq_Ioc hδ0.le hδ1).symm
+  have hI1 : IntegrableOn L (Ioc 0 1) := hLint.mono_set fun y hy => hy.1
+  have hI2 : IntegrableOn L (Ioi 1) :=
+    hLint.mono_set fun y hy => mem_Ioi.mpr (lt_trans one_pos (mem_Ioi.mp hy))
+  have hI3 : IntegrableOn L (Ioc 0 δ) := hI1.mono_set fun y hy => ⟨hy.1, hy.2.trans hδ1⟩
+  have hI4 : IntegrableOn L (Ioc δ 1) := hI1.mono_set fun y hy => ⟨lt_trans hδ0 hy.1, hy.2⟩
+  have hunion : ∫ y in Ioi 0, L y =
+      (∫ y in Ioc 0 δ, L y) + (∫ y in Ioc δ 1, L y) + ∫ y in Ioi 1, L y := by
+    rw [hsplit1, setIntegral_union (Ioc_disjoint_Ioi le_rfl) measurableSet_Ioi hI1 hI2, hsplit2,
+      setIntegral_union (Ioc_disjoint_Ioc_of_le le_rfl) measurableSet_Ioc hI3 hI4]
+  -- near range
+  have hnear : ∫ y in Ioc 0 δ, L y ≤ Real.exp (1 / 2) * K * δ * A := by
+    have hb : ∀ y ∈ Ioc 0 δ, L y ≤ Real.exp (1 / 2) * K * A := by
+      intro y hy
+      have hy0 : 0 < y := hy.1
+      have hdens := archLevyDensity_le_sqrt_e_div hy0 (hy.2.trans hδ1)
+      have hinc := integral_sub_shift_sq_le_lipschitz hd.continuous hdc hK y
+      rw [abs_of_pos hy0] at hinc
+      have hω0 : 0 ≤ archLevyDensity y := (archLevyDensity_pos hy0).le
+      have hA : 0 ≤ A := integral_nonneg fun u => abs_nonneg _
+      have hK0 : 0 ≤ K := by
+        have := hK 1 0
+        simp at this
+        linarith [abs_nonneg (d 1 - d 0)]
+      calc L y ≤ archLevyDensity y * (2 * K * y * A) := mul_le_mul_of_nonneg_left hinc hω0
+        _ ≤ Real.exp (1 / 2) / (2 * y) * (2 * K * y * A) :=
+            mul_le_mul_of_nonneg_right hdens (by positivity)
+        _ = Real.exp (1 / 2) * K * A := by field_simp
+    have := setIntegral_mono_on hI3 (integrableOn_const (by simp)) measurableSet_Ioc hb
+    rw [setIntegral_const, smul_eq_mul, Real.volume_real_Ioc_of_le hδ0.le, sub_zero] at this
+    linarith
+  -- middle range
+  have hmid : ∫ y in Ioc δ 1, L y ≤ (2 * Real.log (1 / δ) + Real.exp (1 / 2)) * M := by
+    have hinv : IntegrableOn (fun y : ℝ => y⁻¹) (Ioc δ 1) := by
+      have hc : ContinuousOn (fun y : ℝ => y⁻¹) (Icc δ 1) :=
+        continuousOn_inv₀.mono fun y hy => ne_of_gt (lt_of_lt_of_le hδ0 hy.1)
+      exact (hc.integrableOn_compact isCompact_Icc).mono_set Ioc_subset_Icc_self
+    have hU : IntegrableOn (fun y : ℝ => 2 * M * y⁻¹ + M * Real.exp (1 / 2)) (Ioc δ 1) :=
+      (hinv.const_mul _).add (integrableOn_const (by simp))
+    have hb : ∀ y ∈ Ioc δ 1, L y ≤ 2 * M * y⁻¹ + M * Real.exp (1 / 2) := by
+      intro y hy
+      have hy0 : 0 < y := lt_trans hδ0 hy.1
+      have hdens := archLevyDensity_le_inv_two_mul_add hy0 hy.2
+      have e : 4 * M * (1 / (2 * y) + Real.exp (1 / 2) / 4) = 2 * M * y⁻¹ + M * Real.exp (1 / 2) := by
+        field_simp
+        ring
+      nlinarith [hfar y hy0, mul_le_mul_of_nonneg_left hdens (by linarith : (0 : ℝ) ≤ 4 * M)]
+    have hval : ∫ y in Ioc δ 1, (2 * M * y⁻¹ + M * Real.exp (1 / 2)) =
+        2 * M * Real.log (1 / δ) + M * Real.exp (1 / 2) * (1 - δ) := by
+      rw [integral_add (hinv.const_mul _) (integrableOn_const (by simp)), integral_const_mul,
+        setIntegral_const, smul_eq_mul, Real.volume_real_Ioc_of_le hδ1,
+        ← intervalIntegral.integral_of_le hδ1, integral_inv_of_pos hδ0 one_pos, one_div]
+      ring
+    have := setIntegral_mono_on hI4 hU measurableSet_Ioc hb
+    rw [hval] at this
+    have : M * Real.exp (1 / 2) * (1 - δ) ≤ M * Real.exp (1 / 2) := by
+      have : 0 ≤ M * Real.exp (1 / 2) := by positivity
+      nlinarith
+    nlinarith
+  -- tail
+  have htail : ∫ y in Ioi 1, L y ≤ 8 * Real.exp (-(1 / 2)) / (1 - Real.exp (-2)) * M := by
+    have h2 : Real.exp (-2) < 1 := Real.exp_lt_one_iff.mpr (by norm_num)
+    have hden : 0 < 1 - Real.exp (-2) := by linarith
+    have hexp : IntegrableOn (fun y : ℝ => Real.exp (-(1 / 2) * y)) (Ioi 1) :=
+      integrableOn_exp_mul_Ioi (by norm_num) 1
+    have hU : IntegrableOn (fun y : ℝ => 4 * M / (1 - Real.exp (-2)) * Real.exp (-(1 / 2) * y))
+        (Ioi 1) := hexp.const_mul _
+    have hb : ∀ y ∈ Ioi 1, L y ≤ 4 * M / (1 - Real.exp (-2)) * Real.exp (-(1 / 2) * y) := by
+      intro y hy
+      have hy1 : (1 : ℝ) ≤ y := le_of_lt hy
+      have hdens := archLevyDensity_le_exp_tail hy1
+      rw [show -y / 2 = -(1 / 2) * y by ring] at hdens
+      calc L y ≤ 4 * M * archLevyDensity y := hfar y (lt_of_lt_of_le one_pos hy1)
+        _ ≤ 4 * M * (Real.exp (-(1 / 2) * y) / (1 - Real.exp (-2))) :=
+            mul_le_mul_of_nonneg_left hdens (by linarith)
+        _ = _ := by ring
+    have := setIntegral_mono_on hI2 hU measurableSet_Ioi hb
+    rw [integral_const_mul, integral_exp_mul_Ioi (by norm_num) 1] at this
+    have e : 4 * M / (1 - Real.exp (-2)) * (-Real.exp (-(1 / 2) * 1) / -(1 / 2)) =
+        8 * Real.exp (-(1 / 2)) / (1 - Real.exp (-2)) * M := by
+      field_simp
+      ring_nf
+    linarith
+  unfold levyEnergy
+  rw [hunion]
+  unfold levyLipConstant
+  nlinarith
+
 end GaloisForLFunctions.SpacingScaleHarmonicAnalysis

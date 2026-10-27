@@ -30,9 +30,11 @@ Determine which of the following advances are already in the corpus, then pursue
 
 ## Evidence and status
 
-The initial foundational README has been written. No new mathematical theorem is claimed yet.
-Corpus searches are running; existing local section positivity, polar gluing, spline index laws,
-source-work exhaustion and matrix inertia are starting tools.
+The foundational README is in place. Four modules have passed dependency-producing Lean checks:
+index-energy comparison, source-work detection, the exact finiteness classification, and strict
+energy surplus. Their printed endpoint axioms contain only the standard logical axioms. Final
+direct audits remain. Existing local section positivity, polar gluing, spline index laws,
+source-work exhaustion and matrix inertia are reused explicitly.
 
 No missing analytic estimate may be introduced as a hypothesis to obtain the desired endpoint.
 General structural theorems must expose their conditions and discharge them in actual arithmetic
@@ -54,10 +56,10 @@ positive survivor and formalizes it when ready.
   remains.
 - `TheArithmeticSourcePaysTheIndex.lean`: select one multiplicity copy per support point to compare
   distinct and copied energy. Ordered damping/taper limits turn each finite index witness into a
-  finite arithmetic source-work witness. Draft, not yet checked.
+  finite arithmetic source-work witness. Dependency-producing check passed; final direct audit remains.
 - `BoundedSourceWork.lean`: the angular kernel is bounded rowwise by the summable Cauchy height
   weight. Finite off-line support therefore gives finite copied energy; the reverse follows from
-  the distinct-energy bound. Draft, not yet checked.
+  the distinct-energy bound. Dependency-producing check passed; final direct audit remains.
 - `TheWorkAndIndexHaveTheSameFiniteStratum.lean`: the fixed spline integer-log index is uniformly
   bounded iff damped source work is eventually bounded. Both are exactly finite off-line support.
   Draft, not yet checked. This is a finiteness classification, not an extinction theorem.
@@ -65,7 +67,7 @@ positive survivor and formalizes it when ready.
   inertia additivity laws without inverting `A`; the Schur complement is independent of the lift
   `X`. Draft, not yet checked. Arithmetic range compatibility and payment remain separate duties.
 
-## Strict energy margin: proposed proof
+## Strict energy margin: checked argument
 
 Let `rho=beta+i gamma` be an off-line Xi support. Its horizontal partner `1-conj(rho)` contributes
 one to its angular row. The second zero `1-rho` is distinct from that partner because Xi has no
@@ -76,10 +78,20 @@ real zeros. Its contribution is
 Thus every off-line angular row exceeds one. A nonempty finite right packet together with its
 reflected packet has twice as many members, so its global transverse-energy cost strictly exceeds
 its cardinality. Extracting a packet of size equal to a positive finite Weil negative index gives
-`index < distinct energy <= copied energy`. Source work should then eventually exceed the index
-itself. Conjugation supplies two right zeros when RH fails, hence a strict global gap above two.
+`index < distinct energy <= copied energy`. The ordered-limit consequence that source work eventually exceeds the index
+itself is being checked in a separate module. Conjugation supplies two right zeros when RH fails, hence a strict global gap above two.
 There is no claimed uniform extra margin: the displayed surplus can tend to zero.
 
-This proof must be formalized before it is recorded as a theorem. The central arithmetic upper
+The exact strict-energy proof has passed Lean in `TheEnergyStrictlyExceedsTheIndex.lean`.
+Its direct final audit remains. The central arithmetic upper
 estimate, signed-overlap payment, exhaustive descent, signed prime surplus, terminal exclusion and
 finite-field realization remain open programme tasks.
+
+## Arithmetic singular range: new source application
+
+The narrow-section floor `W >= L2` implies that a section Gram null vector synthesizes the
+zero test. It therefore annihilates all mixed Weil entries against arbitrary ambient tests.
+Factoring each mixed functional through the old Gram range and extending it linearly gives
+`B=A X` even for redundant section presentations. This is drafted in
+`ArithmeticSectionsHaveOnlyPresentationRadicals.lean`; it has not yet passed Lean.
+The signed Schur complement remains to be bounded arithmetically.

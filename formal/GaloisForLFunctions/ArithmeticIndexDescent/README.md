@@ -44,6 +44,12 @@ decay. A bounded negative index can survive without such a lower bound. Converse
 of a counterterm for the prime form alone is obstructed by its valuation-class divergence. The
 quantity to control is the index of the completed form after all places are combined.
 
+Scale refinement of arithmetic source work provides a second form of descent. The actual
+zero-free height gap makes every reflected pair-work increase with its damping scale. A new
+off-line zero in a doubled height annulus therefore forces a fixed increment of completed work.
+This separates the cost of high defects from the accumulated contribution of low zeros and
+opens a local target for arithmetic cancellation estimates.
+
 Three distinctions organize the programme:
 
 1. **Construction:** an arithmetic operation produces a reserve or an index bound.
@@ -70,6 +76,7 @@ itself. An RH-equivalent condition identifies the desired endpoint but does not 
 | Renormalization | Regulator, divergent form, finite part, survival space and correspondence anomaly |
 | Exhaustion | Approximation of every required finite test family controlling all mixed form entries |
 | Source work | A damped arithmetic reading of transverse energy, with multiplicities and exterior rows retained |
+| Scale increment | `W(S)-W(R)`, with a nonnegative reflected-pair decomposition and a quantified annular defect cost |
 
 An *index budget* bounds negative directions, not their amplitudes. A *payment* is a proved
 inequality absorbing an adverse interaction in a source reserve. *Descent* transports the specified
@@ -170,6 +177,25 @@ source work, and then by the finite tapered source work at each sufficiently lar
 The order of the two limits matters. Exterior rows, analytic multiplicities, the Laurent source
 and its archimedean completion remain present.
 
+The distinct-energy inequality is strict whenever the index is positive. Besides the horizontal
+partner, every off-line zero has the different reflected neighbour `1-rho`. Writing
+`rho = beta + i gamma`, the latter contributes the additional angle
+
+\[
+  \frac{(2\beta-1)^2}{(2\beta-1)^2+(2\gamma)^2}>0.
+\]
+
+Xi has no real zeros, so these two neighbours are distinct. Each nonempty right packet costs
+strictly more than its cardinality. Conjugation gives two right zeros whenever one exists, hence
+
+\[
+  \mathrm{RH}\quad\Longleftrightarrow\quad\mathcal E_{\mathrm{distinct}}\le2.
+\]
+
+This is the global half-ordered-pair energy, distinct from the existing unhalved unit-window
+criterion. No uniform extra margin above an integer index is asserted: the displayed angle can
+approach zero.
+
 These are lower bounds on the work forced by defects. An arithmetic upper estimate must still be
 constructed. A global finite work bound and a bound below an exclusion quantum are different
 research targets.
@@ -179,6 +205,60 @@ the off-line support is finite. Equivalently, damped source work is eventually b
 infinitely many off-line zeros, that work tends to infinity in the extended nonnegative reals.
 The proof retains the infinitely many critical zeros: they interact only with the finitely many
 off-line rows, and each such row is bounded by a summable Cauchy height weight.
+
+### Scale increments and quantized escape
+
+Write
+
+\[
+ h_R(t)=\frac{R^4}{(R^2+t^2)^2},\qquad
+ W(R)=\frac14\sum_{p,q}\operatorname{reflectedWork}_{p,q}(h_R),\qquad
+ \Delta W(R)=W(2R)-W(R).
+\]
+
+Here `p,q` range over all analytic-multiplicity copies of the actual Xi divisor, and `W` is
+the limit of the completed arithmetic Laurent-source work with compact height tapers.
+The unconditional gap `|Im ρ| ≥ 4` supplies more than separation from the real axis. For
+
+\[
+ v_R(t)=\frac{t^2}{(R^2+t^2)^3},\qquad \partial_R h_R(t)=4R^3v_R(t),
+\]
+
+it gives
+
+\[
+ 2|v_R(t)-v_R(u)|\le |t-u|\bigl(v_R(t)+v_R(u)\bigr).
+\]
+
+The near-collision and far-field estimates from Arithmetic Electrostatics absorb the derivative's
+mixed term. Each actual reflected pair-work is consequently monotone for `R ≥ 0`, and absolute
+summability makes the completed work monotone for `R ≥ 4`. This is stronger than positivity of
+work at each separate scale: it permits subtraction without losing control of the other pairs.
+
+For any finite packet `P` of right-hand zero copies and `4 ≤ R ≤ S`, its disjoint reflection
+quartets give the exact weighted payment
+
+\[
+ \sum_{p\in P}\bigl(h_S(\gamma_p)-h_R(\gamma_p)\bigr)\le W(S)-W(R).
+\]
+
+Every quartet retains all four ordered pairs, including the diagonal entries of the reflected
+kernel. If `R ≤ |γ_p| ≤ 2R` throughout the packet, this yields
+
+\[
+ \boxed{\quad \frac{21}{100}|P|\le\Delta W(R).\quad}
+\]
+
+The coefficient `21/100` is the sharp scalar damping minimum on that annulus, attained at
+`|γ|=2R`; optimality for the full arithmetic work is not asserted. Multiplicities are counted
+separately. The same lower payment, with any positive tolerance, eventually holds for the
+difference of the two finite tapered arithmetic source works, with exterior rows still present.
+
+Local finiteness of the divisor now gives an unconditional escape alternative: either off-line
+support is finite, or arbitrarily large scales satisfy `ΔW(R) ≥ 21/100`. In particular, a proved
+arithmetic estimate making these increments eventually smaller than that quantum would exclude
+all sufficiently high off-line zeros. Establishing such an upper estimate remains open; neither
+monotonicity nor the lower payment supplies it.
 
 ## Questions the programme aims to answer
 
@@ -198,6 +278,8 @@ off-line rows, and each such row is bounded by a summable Cauchy height weight.
    the zero count, giving the `3/4` simple-critical target?
 8. Which arithmetic source estimate bounds global off-line index, and which quantum bound or paid
    propagation eliminates the finite remainder?
+   Can cancellation in the scale difference `W(2R)-W(R)` instead prove eventual work below the
+   annular quantum, or convergence of that difference to zero?
 9. Can terminal geometry support a boundary-to-interior estimate for the regularized arithmetic
    field with its singularities and archimedean background accounted for?
 10. Which construction recovers the curve case from actual arithmetic sections or incidence, with
@@ -234,6 +316,9 @@ Quantitative pillars supplied by this programme:
 | Index is paid by energy | Every finite smooth Weil negative index is at most distinct transverse energy; intersection positive index is at most one plus that energy | `TheIndexIsPaidByTransverseEnergy` |
 | Source work detects finite index witnesses | Distinct energy embeds in copied energy; damping and taper limits detect every amount below a finite negative index | `TheArithmeticSourcePaysTheIndex` |
 | Exact finiteness boundary | Copied energy is finite iff off-line support is finite, iff damped source work is eventually bounded | `BoundedSourceWork` |
+| Positive scale refinement | The actual zero-free height gap controls derivative weights, making every reflected pair-work monotone; the doubled annulus has sharp scalar damping quantum `21/100` | `DampingIncrementPositivity` |
+| Annular arithmetic payment | Full source-work increments pay right-zero packets with multiplicity; finite source cutoffs retain the payment; infinite off-line support forces arbitrarily high quantum increments | `SourceWorkIncrementsPayForNewZeros` |
+| Strict energy surplus | Every positive finite index lies strictly below distinct energy; the closed global threshold two is equivalent to RH | `TheEnergyStrictlyExceedsTheIndex` |
 
 ## Tools to develop and research topics
 
@@ -258,12 +343,20 @@ oscillatory lobes, prime-power reductions, collar losses and the conductor range
 different averaged model is not the required estimate.
 
 **Index–work comparison.** The quantitative lower comparison and finiteness classification are
-established. Develop the strict surplus and construct arithmetic upper bounds. Distinguish a
+established, as is the strict surplus above every positive index. Construct arithmetic upper bounds. Distinguish a
 bounded number of exceptions from their absence.
 
 **Terminal field estimates.** Combine the zero-free lens and lower reserve with an independently
 proved arithmetic upper estimate on a common domain. Subtract singular self-terms without
 discarding reflected-partner or exterior contributions.
+
+**Cancellation across scales.** Estimate the actual completed Laurent-source work against
+`h_(2R)-h_R`, retaining its signed source coefficients and all exterior interactions. The
+nonnegative reflected representation supplies a lower count; an arithmetic upper estimate must
+come from the source. Fixed low-height contributions lose weight in this difference. Determine
+whether this permits a vanishing or uniformly subcritical increment estimate even when absolute
+source-field bounds grow with the observation height. Control the removal of the compact taper
+at both scales together; separate absolute estimates can destroy the desired cancellation.
 
 **Finite-field realization.** Derive the required signatures from actual section or incidence
 structure. Explain both the bounded genus loss and the failure of golden or complex fake data.
@@ -296,6 +389,9 @@ index receivers. ALG supplies polar compatibility. SSHA supplies the joint estim
 kernels. RAPT and RBG supply counterterms, finite parts and survival domains. BGG and the correlation
 programmes supply charged relations. TTPC supplies explicit averaged consumers. IGP supplies
 rigidity of Gram equality. AES and CDG supply source currents, work and localized defect measures.
+The zero-free height gap in RHTower combines with AES's near/far reflected estimates to give the
+positive scale refinement used here; local divisor finiteness converts its annular quantum into
+the high-scale escape alternative.
 
 This connects the critical-sign wall, the transfer wall and the realization wall. It does not
 identify their missing constructions merely because their endpoints lead to the same RH statement.

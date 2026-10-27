@@ -225,11 +225,24 @@ No theorem shows a new field is necessary. The previous proposal — arithmetic 
 | Spectrum on a lattice; period of the base point | none at the arithmetic point | missing [L] |
 | Selection of the base point | Metzler sign at Euler; cells; source margin `2 log² p` | exists structurally, not on forms |
 
-A new field is likely required [R]: a **renormalized Lorentzian geometry of the integers at critical sampling** — a Hodge theory in which positivity is proved by trickle-down rather than by a conformal symmetry, the local data are the renormalized tower forms of the primes and the Laplacian of the archimedean place, the selection of `ζ` is the Metzler sign fixed by the archimedean place along the successor, and the scale is the one where the zeros sample the arithmetic Dirichlet polynomials at the Nyquist rate.
+New mathematics is likely required [R]: a Hodge theory of the integers in which positivity is proved by trickle-down rather than by a conformal symmetry, the local data are the renormalized tower forms of the primes and the Laplacian of the archimedean place, the selection of `ζ` is the Metzler sign fixed by the archimedean place along the successor, and the decisive scale is bounded overlap, where the zeros sample the arithmetic Dirichlet polynomials at the Nyquist rate. No existing theory supplies arithmetic trickle-down links or a substitute for Frobenius over `ℤ`. In the corpus this is not a new programme: it is the scope of Arithmetic Lorentzian Geometry, extended.
 
-### 4.2 The field
+### 4.2 Home: an extension of ALG
 
-**Thesis [R].** Over `𝔽_q`, Frobenius supplies the Hasse–Weil inequality through its conformal factor, and Bézout supplies the sign. Over `ℤ` the sign is present (Euler gauge), the local forms are present (tower forms, archimedean Laplacian, renormalized at the horizon), the symmetry is absent. The field replaces the symmetry by a local-to-global law: the defects `Q − QD^{−1}Q` of the local pieces are negative semidefinite and sum. RH is the statement that this trickle-down survives every overlap.
+ALG already owns construction and composition of signature certificates for the actual scaling-surface form: degree-two signature calculus, polar gluing and its price, the half-defect repair, links and trickle-down with the Metzler dichotomy, gauge fixing and the successor connection, Frobenius conformality against Hecke isometry, local factors, the Turán layer, and the research questions "signed overlap and exhaustion" and "exceptional extinction". Its own boundary rule — connect the analytic results by source-defined comparison and composition, do not rename the missing overlap or exhaustion theorem — applies here too. The extension changes ALG's scope in four places; the analytic and renormalization inputs keep their owners.
+
+| Extension of ALG | Content | Input owned by |
+|---|---|---|
+| **Renormalized links** | Links of the atomic intersection form built from the horizon finite parts (tower forms with `γ_p`), the archimedean jump Laplacian and the pole plane; a ledger of who pays the deficits `2d_p` at small primes | RAPT (finite parts, sign law), AIT (tower forms) |
+| **The Metzler property beyond atomic resolution** | The sign of overlap entries (overlap Gram, Lévy cross terms, non-ratio prime lags) in the Euler gauge; a gauge making them nonnegative, or its absence | SSHA (overlap calculus), ALG (gauge fixing) |
+| **Trickle-down along the overlap ratio** | `(TD_π)` and quantitative trickle-down with a gap as functions of `K`; the stability regime `K ≤ c₀` as the base case; Q2 as the first target | SSHA (separated law, `K_univ`), ALG (Metzler dichotomy) |
+| **Universality as a calibration** | Every proposed certificate must fail for some bounded twist beyond `K_univ` and for the golden datum, for a named reason | SSHA (universal law, diamagnetism), ALG (`𝔽_q` calibration) |
+
+Outside ALG: the universal threshold and Lévy synthesis (SSHA, W26, W22); horizon asymptotics (RAPT, W23); the sampling reading (AOT); interior alignment and the source-work quantum (AES, AID; Q3).
+
+### 4.3 The extended programme
+
+**Thesis [R].** Over `𝔽_q`, Frobenius supplies the Hasse–Weil inequality through its conformal factor, and Bézout supplies the sign. Over `ℤ` the sign is present (Euler gauge), the local forms are present (tower forms, archimedean Laplacian, renormalized at the horizon), the symmetry is absent. The extended programme replaces the symmetry by a local-to-global law: the defects `Q − QD^{−1}Q` of the local pieces are negative semidefinite and sum. RH is the statement that this trickle-down survives every overlap.
 
 **Central conjecture [R]: trickle-down at bounded overlap.** For each fixed overlap ratio `K`, `ζ`'s Euler-gauge atomic intersection form of level `N`, completed by its pole plane, is Metzler with connected support and satisfies `(TD_π)` for an explicit weight `π` (the polar weight with a tilt across scales), with a trickle-down defect equal to a sum of archimedean Laplacians, horizon tower forms with local Euler constants and a polar-gluing dispersion, uniformly in `N`. Uniformity in `K` is RH.
 
@@ -241,9 +254,9 @@ A new field is likely required [R]: a **renormalized Lorentzian geometry of the 
 - **Like gauge theory:** square-class (blind) and successor (charged) couplings; the diamagnetic inequality; the archimedean kernel as a gauge field fixing the Euler point.
 - **Like logarithmic potential theory:** zeros as charges, quantized energy with a closed threshold.
 
-**Parts already in the corpus.** Lorentzian forms, trickle-down, Metzler dichotomy, `𝔽_q` calibration, gauge fixing, successor gauge field, local factors, conformality, repairs (ALG); spacing-scale analysis (SSHA); renormalization and finite parts (RAPT, RBG); intersection theory of the circle and towers (AE, AIT); electrostatics and index descent (AES, AID); gauge geometry (ACG, BGG, RBG, SP); sampling and Nyquist rank bounds (AOT).
+**Parts already in the corpus.** The ALG core: Lorentzian forms, trickle-down, Metzler dichotomy, `𝔽_q` calibration, gauge fixing, successor gauge field, local factors, conformality, repairs. Inputs from other owners: spacing-scale analysis (SSHA); renormalization and finite parts (RAPT, RBG); intersection theory of the circle and towers (AE, AIT); electrostatics and index descent (AES, AID); gauge geometry (ACG, BGG, RBG, SP); sampling and Nyquist rank bounds (AOT).
 
-### 4.3 Criteria the field must meet
+### 4.4 Criteria the extended programme must meet
 
 | Criterion | Test against the corpus |
 |---|---|
@@ -258,7 +271,7 @@ A new field is likely required [R]: a **renormalized Lorentzian geometry of the 
 | **Non-circularity and uniformity** | No premise contains the conclusion; overlap, aperture, height and rank controlled together. |
 | **New partial results** | Outputs that are not strips: positivity at a fixed overlap ratio, a trickle-down inequality with a gap, a critical ratio, a non-isolation law. |
 
-### 4.4 Questions it must answer
+### 4.5 Questions it must answer
 
 1. How far beyond `K_univ` does `ζ`'s form stay positive, and what is the critical overlap ratio (Q1)?
 2. Is `ζ`'s Euler-gauge intersection form Metzler at overlap, and does it satisfy trickle-down (Q2)?
@@ -271,7 +284,7 @@ A new field is likely required [R]: a **renormalized Lorentzian geometry of the 
 9. Which correspondence acts as conjugation on the zeros, as the power map `−1` does on torsion cycles?
 10. Is the coupled class bounded at the centre (B3.22)? What selects the fibre (B3.23)?
 
-### 4.5 Tools
+### 4.6 Tools
 
 **Built:** capacity identity and Hecke law of `D`; log-Sobolev norm; `ξ` current and theta readings; moment of inertia, dyadic amplification; terminals, rays, lens, Harnack; field, energy, quantization, closed quantum threshold, index–energy inequality; Selberg's source and its margin; log-orders, towers, square-root price, self-intersection dominance; survival, rank dichotomy, coupled survival, covariance, torsion window, Gårding as survival; horizon polar, tensor and covariant counterterms, finite parts `−2γ` and tower forms, sign law `d_p`, polar matching; exact self-energy, tilted rows, spacing law, universality, diamagnetism, section positivity with the pole; non-ratio lag calculus, Dirichlet dictionary, unbounded-overlap theorem, Lévy continuity; hyperbolicity, trickle-down, Metzler dichotomy, `𝔽_q` calibration, gauge fixing, successor gauge field, local factors, conformality, half-defect repair, polar gluing; width currency; counting and budget calculus; Nyquist rank bounds; gauge torus, cells, cell defects.
 
@@ -282,7 +295,7 @@ A new field is likely required [R]: a **renormalized Lorentzian geometry of the 
 - **A conformal correspondence or its replacement.**
 - **Interior anti-alignment** (W10) and exceptional-set extinction.
 
-### 4.6 Objects, language and mechanisms
+### 4.7 Objects, language and mechanisms
 
 | Layer | Content |
 |---|---|

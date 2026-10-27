@@ -17,6 +17,7 @@ noncomputable section
 open Filter Finset Set RHTower
 open scoped Topology
 open GaloisForLFunctions.ArithmeticElectrostatics
+open GaloisForLFunctions.ArithmeticCorrespondencePositivity
 
 namespace GaloisForLFunctions.ArithmeticIndexDescent
 
@@ -34,7 +35,7 @@ theorem xiDampedPairWork_monotoneOn (p q : XiZeroCopy) :
 theorem xiDampedSourceWork_monotoneOn : MonotoneOn xiDampedSourceWork (Ici 4) := by
   intro R hR S hS hRS
   apply div_le_div_of_nonneg_right ?_ (by norm_num : (0 : ℝ) ≤ 4)
-  exact tsum_le_tsum (fun pq => xiDampedPairWork_monotoneOn pq.1 pq.2
+  exact Summable.tsum_le_tsum (fun pq => xiDampedPairWork_monotoneOn pq.1 pq.2
     (show 0 ≤ R by linarith only [hR]) (show 0 ≤ S by linarith only [hS]) hRS)
     (xiDampedPairWork_summable hR) (xiDampedPairWork_summable hS)
 
@@ -66,9 +67,11 @@ private def rightCopyQuartet (pbc : RightXiZeroCopy × (Bool × Bool)) :
 
 private theorem rightCopyQuartet_injective : Function.Injective rightCopyQuartet := by
   rintro ⟨p, b, c⟩ ⟨q, d, e⟩ h
-  have h1 := rightCopyVertex_injective (show rightCopyVertex p b = rightCopyVertex q d from
+  have h1 := rightCopyVertex_injective (a₁ := (p, b)) (a₂ := (q, d))
+    (show rightCopyVertex p b = rightCopyVertex q d from
     congrArg Prod.fst h)
-  have h2 := rightCopyVertex_injective (show rightCopyVertex p c = rightCopyVertex q e from
+  have h2 := rightCopyVertex_injective (a₁ := (p, c)) (a₂ := (q, e))
+    (show rightCopyVertex p c = rightCopyVertex q e from
     congrArg Prod.snd h)
   exact Prod.ext (congrArg Prod.fst h1)
     (Prod.ext (congrArg Prod.snd h1) (congrArg Prod.snd h2))
@@ -83,7 +86,7 @@ theorem xiDampedPairWork_rightCopyVertex (R : ℝ) (p : RightXiZeroCopy) (b c : 
     simp only [rightCopyVertex, Bool.false_eq_true, if_false, if_true, xiDampedPairWork,
       xiSignedDepth_lineConj, xiZeroHeight_lineConj, sub_self, reflectedWork,
       reflectedEnergy, reflectedCross, transverseAngular] <;>
-    ring_nf <;> field_simp <;> ring
+    (try ring_nf) <;> field_simp [hp] <;> ring
 
 /-- The entire reflection quartet, including both diagonal pairs, pays a unit damping increment. -/
 theorem sum_damping_increment_le_sourceWork_increment (s : Finset RightXiZeroCopy)
@@ -104,9 +107,7 @@ theorem sum_damping_increment_le_sourceWork_increment (s : Finset RightXiZeroCop
   have hquartet (p : RightXiZeroCopy) :
       (∑ bc : Bool × Bool, F (rightCopyQuartet (p, bc))) =
         4 * (heightDamping S (xiZeroHeight p.1) - heightDamping R (xiZeroHeight p.1)) := by
-    simp only [F, rightCopyQuartet, xiDampedPairWork_rightCopyVertex,
-      Fintype.sum_prod_type, Finset.sum_bool]
-    ring
+    simp [F, rightCopyQuartet, xiDampedPairWork_rightCopyVertex, nsmul_eq_mul, mul_comm]
   simp_rw [hquartet] at hle
   rw [← Finset.mul_sum] at hle
   have htotal : (∑' pq, F pq) = 4 * (xiDampedSourceWork S - xiDampedSourceWork R) := by
@@ -133,8 +134,65 @@ theorem annular_zero_copies_paid_by_sourceWork_increment (s : Finset RightXiZero
     _ ≤ xiDampedSourceWork (2 * R) - xiDampedSourceWork R :=
       sum_damping_increment_le_sourceWork_increment s hR (by linarith only [hR0])
 
+/-- Removing the compact taper preserves the difference between two scales. -/
+theorem xiTaperedSourceWork_increment_tendsto {R S : ℝ} (hR : 4 ≤ R) (hS : 4 ≤ S) :
+    Tendsto (fun N : ℕ => xiTaperedSourceWork S N - xiTaperedSourceWork R N) atTop
+      (𝓝 (xiDampedSourceWork S - xiDampedSourceWork R)) :=
+  (xiTaperedSourceWork_tendsto hS).sub (xiTaperedSourceWork_tendsto hR)
+
+/-- The annular payment is visible in finite work of the completed Laurent source;
+the taper never removes the exterior interaction rows. -/
+theorem eventually_annular_payment_in_finite_sourceWork (s : Finset RightXiZeroCopy)
+    {R : ℝ} (hR : 4 ≤ R)
+    (hs : ∀ p ∈ s, R ≤ |xiZeroHeight p.1| ∧ |xiZeroHeight p.1| ≤ 2 * R)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N : ℕ in atTop, (21 / 100 : ℝ) * s.card - ε <
+      xiTaperedSourceWork (2 * R) N - xiTaperedSourceWork R N := by
+  have h := annular_zero_copies_paid_by_sourceWork_increment s hR hs
+  exact (xiTaperedSourceWork_increment_tendsto hR (by linarith only [hR])).eventually
+    (lt_mem_nhds (by linarith only [h, hε]))
+
+/-- Infinite off-line support forces fixed-size work increments at arbitrarily high scales.
+Thus escape cannot hide in an everywhere vanishing scale increment. -/
+theorem finite_offLineSupport_or_arbitrarily_high_quantum_increments :
+    offLineSupport.Finite ∨ ∀ T : ℝ, ∃ R : ℝ, T ≤ R ∧ 4 ≤ R ∧
+      (21 / 100 : ℝ) ≤ xiDampedSourceWork (2 * R) - xiDampedSourceWork R := by
+  classical
+  by_cases hfin : offLineSupport.Finite
+  · exact Or.inl hfin
+  right
+  intro T
+  have hM : 0 ≤ max 4 T := le_trans (by norm_num) (le_max_left 4 T)
+  obtain ⟨j, hj, hjhigh⟩ : ∃ j ∈ offLineSupport, max 4 T < |(j : ℂ).im| := by
+    by_contra! h
+    apply hfin
+    apply (finite_xiDivisorSupport_band 0 hM).subset
+    intro j hj
+    simpa only [Set.mem_setOf_eq, sub_zero] using h j hj
+  have hR : 4 ≤ |(j : ℂ).im| := (le_max_left 4 T).trans hjhigh.le
+  have hp0 : xiSignedDepth (firstZeroCopy j) ≠ 0 := by
+    exact sub_ne_zero.mpr (show (j : ℂ).re ≠ 1 / 2 from hj)
+  obtain ⟨p, hpheight⟩ : ∃ p : RightXiZeroCopy, xiZeroHeight p.1 = (j : ℂ).im := by
+    by_cases hp : 0 < xiSignedDepth (firstZeroCopy j)
+    · exact ⟨⟨firstZeroCopy j, hp⟩, rfl⟩
+    · have hn : xiSignedDepth (firstZeroCopy j) < 0 := lt_of_le_of_ne (le_of_not_gt hp) hp0
+      refine ⟨⟨xiZeroCopyLineConjEquiv (firstZeroCopy j), ?_⟩, ?_⟩
+      · rw [xiSignedDepth_lineConj]
+        exact neg_pos.mpr hn
+      · exact xiZeroHeight_lineConj (firstZeroCopy j)
+  refine ⟨|(j : ℂ).im|, (le_max_right 4 T).trans hjhigh.le, hR, ?_⟩
+  have h := annular_zero_copies_paid_by_sourceWork_increment ({p} : Finset RightXiZeroCopy)
+    hR (by
+      intro q hq
+      obtain rfl := Finset.mem_singleton.mp hq
+      rw [hpheight]
+      exact ⟨le_rfl, by linarith only [hR]⟩)
+  simpa only [Finset.card_singleton, Nat.cast_one, mul_one] using h
+
 end GaloisForLFunctions.ArithmeticIndexDescent
 
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.xiDampedSourceWork_monotoneOn
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.sum_damping_increment_le_sourceWork_increment
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.annular_zero_copies_paid_by_sourceWork_increment
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.eventually_annular_payment_in_finite_sourceWork
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.finite_offLineSupport_or_arbitrarily_high_quantum_increments

@@ -36,7 +36,8 @@ theorem xiCopyTransverseEnergy_eq_zero_iff : xiCopyTransverseEnergy = 0 ↔ Riem
         (xiZeroCopy_re_eq_half_of_riemannHypothesis h p)
         (xiZeroCopy_re_eq_half_of_riemannHypothesis h q)
     rw [xiCopyTransverseEnergy_eq_half_rowSum]
-    simp only [copyAngularEnergy, hterm, tsum_zero, ENNReal.ofReal_zero, zero_div]
+    simp only [copyAngularEnergy, hterm, tsum_zero, ENNReal.ofReal_zero,
+      div_eq_mul_inv, zero_mul]
 
 /-- The threshold is closed because every actual off-line quartet has a positive diagonal surplus. -/
 theorem riemannHypothesis_iff_xiCopyTransverseEnergy_le_two :
