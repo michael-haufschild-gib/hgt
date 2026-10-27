@@ -479,7 +479,7 @@ theorem sum_range_omittedClassWeight_mul_bernoulliKernel_sub_mean_of_ne
   have hcop : q.Coprime p := (Nat.coprime_primes hq hp).mpr hqp
   have hper_q : Function.Periodic (omittedClassWeight q) q := omittedClassWeight_add_period q
   have hper_p : Function.Periodic (fun n => bernoulliKernel p n - primeKernelMean p) p :=
-    fun n => by rw [bernoulliKernel_add_period]
+    fun n => by dsimp only; rw [bernoulliKernel_add_period]
   rw [RHTower.DeletionCoprimeWords.coprime_period_sum_mul hq.pos hp.pos hcop hper_q hper_p,
     sum_range_omittedClassWeight hq, zero_mul]
 
@@ -615,7 +615,7 @@ theorem tendsto_mul_kernelStatistic_centredPrimeBlock_add_packetCorrector
   have hoff : Tendsto (fun Q : ℕ =>
       ∑ q ∈ S.erase p, (Q : ℝ) * kernelStatistic (2 * Q) (omittedClassCorrector q Q) p)
       atTop (𝓝 0) := by
-    simpa using tendsto_finset_sum (S.erase p) fun q hq =>
+    simpa using tendsto_finsetSum (S.erase p) fun q hq =>
       tendsto_mul_kernelStatistic_omittedClassCorrector_of_ne
         (hS q (mem_of_mem_erase hq)) hp (ne_of_mem_erase hq)
   have htot := hdiag.add hoff
@@ -623,7 +623,7 @@ theorem tendsto_mul_kernelStatistic_centredPrimeBlock_add_packetCorrector
   refine htot.congr fun Q => ?_
   rw [ArithmeticCompensationTheory.kernelStatistic_add,
     ArithmeticCompensationTheory.kernelStatistic_add,
-    kernelStatistic_packetOmittedCorrector, ← add_sum_erase _ _ hpS, mul_sum]
+    kernelStatistic_packetOmittedCorrector, ← add_sum_erase _ _ hpS, ← mul_sum]
   ring
 
 /-- The multi-prime packet corrector has inverse-square dyadic block mass at most

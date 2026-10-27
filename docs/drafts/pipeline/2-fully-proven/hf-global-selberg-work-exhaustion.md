@@ -154,6 +154,13 @@ construction: actual-copy product summability, taper convergence, finite source
 identification, and the extended-real outer limit. This card remains stage 2
 until the complete source formula and its dependency audit pass.
 
+The first check of the application module accepted the full-row absolute
+summability and four-row reflection identity. Three local rewrite errors were
+identified in the majorant and taper-limit presentation and corrected; a clean
+application-module audit is still required. The outer extended-real limit is
+being checked separately before insertion. No partial result is being treated
+as the complete target.
+
 ## Relation to the closing obstacle
 
 This target would remove a global exhaustion/summability premise in passing from

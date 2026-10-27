@@ -30,7 +30,7 @@ and the coalescent pair-correlation threshold `θ(λ) = (λ - 1) / (2λ)`:
    (`exists_abs_escapedPairing_moebiusSource_le_vk_rate`,
    `exists_abs_moebiusHarmonicTail_le_vk_rate`):**
    Splitting the Vinogradov–Korobov Mertens exponent `-(κ σ(j) / 24)` into a monotone endpoint
-   factor `-(κ σ(M) / 48)` (`M = (N - b) / a`) and a summable `(1/2) √(log j)` harmonic tail proves
+   factor `-(κ σ(M) / 48)` (`M = (N - b) / a`) and a summable `(1/24) √(log j)` harmonic tail proves
    that there exist explicit `C > 0` and `M₀ ≥ 1` such that for **all** `N, a, b` with `b ≤ N` and
    `M₀ ≤ (N - b) / a`,
    `|escapedPairing N a b (moebiusSource N) (flatSource N)|
@@ -155,8 +155,8 @@ theorem exists_abs_escapedPairing_moebiusSource_le_vk_rate :
   obtain ⟨M₁, hM₁⟩ := Filter.eventually_atTop.mp hev
   set M₀ : ℕ := max M₁ 1
   have hsum := GaloisForLFunctions.HTGeometry.summable_exp_neg_sqrt_log_div
-    (show (0 : ℝ) < 1 / 2 by norm_num)
-  set S : ℝ := ∑' m : ℕ, Real.exp (-(1 / 2 * Real.sqrt (Real.log m))) / (m : ℝ)
+    (show (0 : ℝ) < 1 / 24 by norm_num)
+  set S : ℝ := ∑' m : ℕ, Real.exp (-(1 / 24 * Real.sqrt (Real.log m))) / (m : ℝ)
   have hS0 : 0 ≤ S := tsum_nonneg fun m =>
     div_nonneg (Real.exp_pos _).le (Nat.cast_nonneg m)
   set C : ℝ := 1 + B * (2 + S)
@@ -177,7 +177,7 @@ theorem exists_abs_escapedPairing_moebiusSource_le_vk_rate :
     have hpoint : ∀ j : ℕ, M ≤ j →
         |∑ k ∈ Icc 1 j, moebiusReal k| ≤
           B * (j : ℝ) * Real.exp (-(vkKappa * vkScale (j : ℝ) / 24)) ∧
-        Real.sqrt (Real.log (j : ℝ)) ≤ vkKappa * vkScale (j : ℝ) / 24 ∧
+        2 * Real.sqrt (Real.log (j : ℝ)) ≤ vkKappa * vkScale (j : ℝ) ∧
         vkScale (M : ℝ) ≤ vkScale (j : ℝ) := by
       intro j hj
       obtain ⟨⟨hj_mert, hj_vk⟩, _⟩ := hM₁ j (le_trans hMM₁ hj)
@@ -189,11 +189,11 @@ theorem exists_abs_escapedPairing_moebiusSource_le_vk_rate :
     have hbN_bound : |(∑ k ∈ Icc 1 N, moebiusReal k) / (N : ℝ)| ≤
         B * Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) := by
       obtain ⟨hNm, hNsq, hNmono⟩ := hpoint N hMN
-      have hgN_nonneg : 0 ≤ vkKappa * vkScale (N : ℝ) / 24 :=
-        le_trans (Real.sqrt_nonneg _) hNsq
+      have hgN_nonneg : 0 ≤ vkKappa * vkScale (N : ℝ) :=
+        le_trans (by positivity) hNsq
       have hexp_le : Real.exp (-(vkKappa * vkScale (N : ℝ) / 24)) ≤
           Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) :=
-        Real.exp_le_exp.mpr (by nlinarith)
+        Real.exp_le_exp.mpr (by linarith)
       rw [abs_div, abs_of_pos hN0_pos]
       calc |∑ k ∈ Icc 1 N, moebiusReal k| / (N : ℝ)
           ≤ (B * (N : ℝ) * Real.exp (-(vkKappa * vkScale (N : ℝ) / 24))) / (N : ℝ) :=
@@ -205,8 +205,8 @@ theorem exists_abs_escapedPairing_moebiusSource_le_vk_rate :
     have hbM_bound : |(∑ k ∈ Icc 1 M, moebiusReal k) / ((M : ℝ) + 1)| ≤
         B * Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) := by
       obtain ⟨hMm, hMsq, _⟩ := hpoint M le_rfl
-      have hgM_nonneg : 0 ≤ vkKappa * vkScale (M : ℝ) / 24 :=
-        le_trans (Real.sqrt_nonneg _) hMsq
+      have hgM_nonneg : 0 ≤ vkKappa * vkScale (M : ℝ) :=
+        le_trans (by positivity) hMsq
       have hexp_le : Real.exp (-(vkKappa * vkScale (M : ℝ) / 24)) ≤
           Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) :=
         Real.exp_le_exp.mpr (by linarith)
@@ -227,7 +227,7 @@ theorem exists_abs_escapedPairing_moebiusSource_le_vk_rate :
       have hterm : ∀ j ∈ Ico (M + 1) N,
           |(∑ k ∈ Icc 1 j, moebiusReal k) * (1 / (j : ℝ) - 1 / ((j : ℝ) + 1))| ≤
             B * Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) *
-              (Real.exp (-(1 / 2 * Real.sqrt (Real.log (j : ℝ)))) / (j : ℝ)) := by
+              (Real.exp (-(1 / 24 * Real.sqrt (Real.log (j : ℝ)))) / (j : ℝ)) := by
         intro j hj
         have hjM : M ≤ j := le_trans (Nat.le_succ M) (mem_Ico.mp hj).1
         have hj1 : 1 ≤ j := le_trans hM1 hjM
@@ -243,9 +243,11 @@ theorem exists_abs_escapedPairing_moebiusSource_le_vk_rate :
           exact one_div_le_one_div_of_le (by positivity) (by nlinarith)
         have hexp_split : Real.exp (-(vkKappa * vkScale (j : ℝ) / 24)) ≤
             Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) *
-              Real.exp (-(1 / 2 * Real.sqrt (Real.log (j : ℝ)))) := by
+              Real.exp (-(1 / 24 * Real.sqrt (Real.log (j : ℝ)))) := by
           rw [← Real.exp_add]
-          exact Real.exp_le_exp.mpr (by nlinarith)
+          have h1 : vkKappa * vkScale (M : ℝ) ≤ vkKappa * vkScale (j : ℝ) :=
+            mul_le_mul_of_nonneg_left hjmono hκ.le
+          exact Real.exp_le_exp.mpr (by linarith)
         rw [abs_mul, abs_of_nonneg hdiff_nn]
         calc |∑ k ∈ Icc 1 j, moebiusReal k| * (1 / (j : ℝ) - 1 / ((j : ℝ) + 1))
             ≤ (B * (j : ℝ) * Real.exp (-(vkKappa * vkScale (j : ℝ) / 24))) * (1 / (j : ℝ) ^ 2) :=
@@ -253,28 +255,28 @@ theorem exists_abs_escapedPairing_moebiusSource_le_vk_rate :
           _ = B * (Real.exp (-(vkKappa * vkScale (j : ℝ) / 24)) / (j : ℝ)) := by
               field_simp [hj0.ne']
           _ ≤ B * ((Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) *
-                Real.exp (-(1 / 2 * Real.sqrt (Real.log (j : ℝ))))) / (j : ℝ)) :=
+                Real.exp (-(1 / 24 * Real.sqrt (Real.log (j : ℝ))))) / (j : ℝ)) :=
               mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hexp_split hj0.le) hB
           _ = B * Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) *
-                (Real.exp (-(1 / 2 * Real.sqrt (Real.log (j : ℝ)))) / (j : ℝ)) := by ring
+                (Real.exp (-(1 / 24 * Real.sqrt (Real.log (j : ℝ)))) / (j : ℝ)) := by ring
       calc |∑ j ∈ Ico (M + 1) N,
               (∑ k ∈ Icc 1 j, moebiusReal k) * (1 / (j : ℝ) - 1 / ((j : ℝ) + 1))|
           ≤ ∑ j ∈ Ico (M + 1) N,
               |(∑ k ∈ Icc 1 j, moebiusReal k) * (1 / (j : ℝ) - 1 / ((j : ℝ) + 1))| :=
             abs_sum_le_sum_abs _ _
-        _ ≤ ∑ j ∈ Ico (M + 1) N, B * Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) *
-              (Real.exp (-(1 / 2 * Real.sqrt (Real.log (j : ℝ)))) / (j : ℝ)) :=
+          _ ≤ ∑ j ∈ Ico (M + 1) N, B * Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) *
+              (Real.exp (-(1 / 24 * Real.sqrt (Real.log (j : ℝ)))) / (j : ℝ)) :=
             sum_le_sum hterm
-        _ = B * Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) *
+          _ = B * Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) *
               ∑ j ∈ Ico (M + 1) N,
-                Real.exp (-(1 / 2 * Real.sqrt (Real.log (j : ℝ)))) / (j : ℝ) := by
+                Real.exp (-(1 / 24 * Real.sqrt (Real.log (j : ℝ)))) / (j : ℝ) := by
             rw [← mul_sum]
-        _ ≤ B * Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) * S :=
+          _ ≤ B * Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) * S :=
             mul_le_mul_of_nonneg_left
               (hsum.sum_le_tsum _ fun m _ =>
                 div_nonneg (Real.exp_pos _).le (Nat.cast_nonneg m))
               (by positivity)
-        _ = B * S * Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) := by ring
+          _ = B * S * Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) := by ring
     calc |(∑ k ∈ Icc 1 N, moebiusReal k) / (N : ℝ) -
             (∑ k ∈ Icc 1 M, moebiusReal k) / ((M : ℝ) + 1) +
             ∑ j ∈ Ico (M + 1) N,

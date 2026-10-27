@@ -127,9 +127,19 @@ evenness, unit bounds and representative invariance, and uses literal finite
 cycle products. Its exact norm and measured-array recovery theorems require
 only the original control conditions. The modulus is monotone only on the
 nonnegative ray, matching its mathematical domain. All seventeen public
-declarations have appended axiom queries in
-`/tmp/leftovers_l2_closed_cycle_recovery_audit.lean`, currently being checked
-with log `/tmp/leftovers-cycle-l2-audit.log`.
+declarations had appended axiom queries in
+`/tmp/leftovers_l2_closed_cycle_recovery_audit.lean`. The first check found
+two interface issues: `Velocity` does not support field notation `f.memLp`,
+and bounded-continuous-function notation needed its scope opened. The source
+now derives the bound and continuity directly from the proved translation
+matrix coefficient and translation isometry, adding a named continuity lemma.
+The third **18-declaration** audit passed with only standard axioms and no
+diagnostics (`/tmp/leftovers-cycle-l2-audit-r3.log`, session 37236, exit 0).
+An explicit argument fixed the remaining modulus-membership elaboration.
+The identical canonical `L2ClosedCycleRecovery.lean` is wired, and its direct
+final source check is running (session 85675,
+`/tmp/leftovers-cycle-l2-final.log`). No new hypothesis or mathematical
+statement weakening was used to resolve the errors.
 
 ### Exact-incidence and common-model completion argument
 

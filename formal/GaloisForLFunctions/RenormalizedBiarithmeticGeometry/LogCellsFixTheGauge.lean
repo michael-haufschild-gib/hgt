@@ -200,6 +200,96 @@ theorem cellDilate_two_covariant_iff (ω : PrimeGauge) :
   · rintro rfl
     exact ⟨1, fun q hq => by rw [one_smul, gaugeTwist_cellDilate_euler 2 hq]⟩
 
+/-! ### Finite horizons -/
+
+/-- A profile supported on the horizon `[1, X]`. -/
+def SupportedOn (q : ℕ → ℂ) (X : ℕ) : Prop := ∀ n, q n ≠ 0 → 1 ≤ n ∧ n ≤ X
+
+/-- Halving relations up to `B` force the character to be `1` up to `B`. -/
+theorem gaugeChar_eq_one_of_halving_le {ω : PrimeGauge} {B : ℕ}
+    (h : ∀ n, 2 ≤ n → n ≤ B → ω.gaugeChar n = ω.gaugeChar (n / 2)) :
+    ∀ n, n ≠ 0 → n ≤ B → ω.gaugeChar n = 1 := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    intro hn hnB
+    by_cases h1 : n = 1
+    · subst h1; exact PrimeGauge.gaugeChar_one ω
+    · rw [h n (by omega) hnB]
+      exact ih (n / 2) (Nat.div_lt_self (by omega) (by norm_num)) (by omega)
+        (le_trans (Nat.div_le_self n 2) hnB)
+
+/-- If every prime up to `B` has phase `1`, the character is `1` up to `B`. -/
+theorem gaugeChar_eq_one_of_primes_le {ω : PrimeGauge} {B : ℕ}
+    (h : ∀ p, p.Prime → p ≤ B → ω.val p = 1) : ∀ m, m ≠ 0 → m ≤ B → ω.gaugeChar m = 1 := by
+  intro m
+  induction m using Nat.strong_induction_on with
+  | _ m ih =>
+    intro hm hmB
+    by_cases h1 : m = 1
+    · subst h1; exact PrimeGauge.gaugeChar_one ω
+    · have hp := Nat.minFac_prime h1
+      have hdvd := Nat.minFac_dvd m
+      have hpm : m.minFac ≤ m := Nat.minFac_le (by omega)
+      obtain ⟨k, hk⟩ := hdvd
+      have hk0 : k ≠ 0 := by rintro rfl; simp at hk; exact hm hk
+      have hklt : k < m := by
+        rw [hk]
+        exact lt_mul_left (by omega) hp.one_lt
+      rw [hk, PrimeGauge.gaugeChar_mul, PrimeGauge.gaugeChar_prime ω hp, h _ hp (by omega),
+        one_mul]
+      exact ih k hklt hk0 (by omega)
+
+/-- **Finite-horizon gauge fixing.** On profiles supported on `[1, X]` (`X ≥ 4`), the dyadic cell
+dilation is covariant up to a scalar iff every prime `p ≤ 2X + 1` has phase `1`. A cell profile of
+horizon `X` sees the primes up to `2X + 1`; successor flatness on `[1, N]` sees those up to
+`N + 1` (BGG `succConn_flat_iff_primes_eq_one`). -/
+theorem cellDilate_two_covariant_on_horizon_iff (ω : PrimeGauge) {X : ℕ} (hX : 4 ≤ X) :
+    (∃ c : ℂ, ∀ q : ℕ → ℂ, SupportedOn q X →
+      gaugeTwist ω (cellDilate 2 q) = c • cellDilate 2 (gaugeTwist ω q)) ↔
+      ∀ p, p.Prime → p ≤ 2 * X + 1 → ω.val p = 1 := by
+  classical
+  constructor
+  · rintro ⟨c, hc⟩
+    -- Point masses at `a ∈ [1, X]` give `χ(n) = c χ(⌊n/2⌋)` for `2 ≤ n ≤ 2X + 1`.
+    have hrel : ∀ n, 2 ≤ n → n ≤ 2 * X + 1 → ω.gaugeChar n = c * ω.gaugeChar (n / 2) := by
+      intro n hn hnX
+      have h := congrFun (hc (fun k => if k = n / 2 then 1 else 0) (fun k hk => by
+        by_cases hkn : k = n / 2
+        · subst hkn; omega
+        · simp [hkn] at hk)) n
+      simpa [gaugeTwist, cellDilate] using h
+    have h2 : ω.gaugeChar 2 = c := by simpa using hrel 2 le_rfl (by omega)
+    have h3 : ω.gaugeChar 3 = c := by simpa using hrel 3 (by norm_num) (by omega)
+    have h9 : ω.gaugeChar 9 = c * ω.gaugeChar 4 := hrel 9 (by norm_num) (by omega)
+    have h4 : ω.gaugeChar 4 = c ^ 2 := by
+      rw [show (4 : ℕ) = 2 * 2 by rfl, PrimeGauge.gaugeChar_mul, h2, sq]
+    have h9' : ω.gaugeChar 9 = c ^ 2 := by
+      rw [show (9 : ℕ) = 3 * 3 by rfl, PrimeGauge.gaugeChar_mul, h3, sq]
+    have hc0 : c ≠ 0 := by
+      rw [← h2]
+      exact PrimeGauge.gaugeChar_prime ω Nat.prime_two ▸ ω.val_ne_zero 2
+    have hc1 : c = 1 := by
+      rw [h9', h4] at h9
+      have : c ^ 2 * (c - 1) = 0 := by linear_combination -h9
+      rcases mul_eq_zero.mp this with h | h
+      · exact absurd (pow_eq_zero_iff (n := 2) (by norm_num) |>.mp h) hc0
+      · exact sub_eq_zero.mp h
+    subst hc1
+    have hone := gaugeChar_eq_one_of_halving_le (ω := ω) (B := 2 * X + 1)
+      fun n hn hnX => by rw [hrel n hn hnX, one_mul]
+    intro p hp hpX
+    rw [← PrimeGauge.gaugeChar_prime ω hp]
+    exact hone p hp.ne_zero hpX
+  · intro h
+    have hone := gaugeChar_eq_one_of_primes_le h
+    refine ⟨1, fun q hq => funext fun n => ?_⟩
+    simp only [gaugeTwist, cellDilate, one_smul]
+    by_cases hqn : q (n / 2) = 0
+    · rw [hqn, mul_zero, mul_zero]
+    · obtain ⟨h1, h2⟩ := hq _ hqn
+      rw [hone n (by omega) (by omega), hone (n / 2) (by omega) (by omega)]
+
 /-- **Lattice forms are blind, cell forms fix the gauge.** Every gauge commutes with the lattice
 dilation up to its character value; only the Euler gauge commutes with the dyadic cell dilation. -/
 theorem lattice_blind_and_cells_fix_gauge :
