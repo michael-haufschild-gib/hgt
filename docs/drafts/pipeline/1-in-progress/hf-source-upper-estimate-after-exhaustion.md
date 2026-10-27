@@ -192,6 +192,41 @@ and polar terms retained. Do not repeat a restricted-height sign, a radical
 identity, a finite-rank positive cone, or a finite-matrix norm bound as closure.
 No Lean file was changed or compiled; no new hypotheses were introduced.
 
+## Terminal regular-part upper estimate
+
+The following continuation is again **no mathematical progress**. It investigated
+an explicit analytic route to the missing upper field estimate, rather than
+reusing the terminal lower bound as though it were an upper bound.
+
+For a zero `rho` of multiplicity `m`, locally write
+`xi(z) = (z-rho)^m G(z)` with `G(rho) != 0`. The completed regular field is
+`Re(G'(rho)/G(rho))`. The corpus's
+`Sieve.BorelCaratheodoryLogDeriv.norm_deriv_div_le_of_norm_le` bounds this
+logarithmic derivative by `8 log M / R` on a quarter-disc, provided `G` is
+zero-free on the whole disc and `|G(z)| <= M |G(rho)|` there.
+
+`XiTerminalRegularField` provides the analytic regular part, and
+`XiTerminalOutwardLogDeriv` provides the outward zero-free ray and a lower
+field reserve. Neither supplies the required normalized modulus estimate or
+a radius with a controlled quotient `log M / R`. A bound for `|xi|` alone
+does not provide the lower control of the deflated value needed in that
+normalization. No separation estimate or derivative lower bound was assumed.
+The proposed upper estimate therefore has an unproved analytic input and was
+not formalized as a theorem with that input hidden in a hypothesis.
+
+Also checked the current working sources
+`ArithmeticElectrostatics/TheWeilPrimeFormOnAtomsIsLogarithmic` and
+`ArithmeticIntersectionTheory/TheFiniteIntersectionIsGaugeBlind`. The former
+gives a finite atomic prime-form bound; it does not pay that bound with the
+actual Gamma and polar terms. The latter identifies precisely why a prime-form
+bound alone cannot distinguish the sign twins. These are other work, not new
+results of this continuation. No changes were made to those files.
+
+HF remains open. No paper proof, new criterion, new no-go, or Lean assumption
+interface was produced. Future attacks must prove the normalized interior
+estimate from the arithmetic source or obtain a different actual signed
+upper estimate; local analyticity by itself is not the missing estimate.
+
 ## Log
 
 - 2026-10-27 — revalidated the previous source exhaustion theorem and current HF

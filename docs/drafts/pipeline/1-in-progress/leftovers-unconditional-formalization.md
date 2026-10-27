@@ -2,7 +2,7 @@
 
 - **ID:** leftovers-unconditional-formalization
 - **Stage:** 1-in-progress
-- **Execution:** ACTIVE; resumed by the user's 2026-10-27 attachment.
+- **Execution:** INACTIVE; user cleared the goal after the resumed batch.
 - **Type:** FORMALIZATION PROGRAMME
 - **Source:** user attachment `7b8e0d61-b048-4085-aa55-1ca6d2ead9d1/pasted-text-1.txt`
 - **Scope:** Every proven theorem in all 14 cards initially in
@@ -18,6 +18,31 @@ corpus before mathlib or new proof code. Compile each changed leaf directly with
 with `#print axioms`. Wire leaves into their owning umbrellas without compiling umbrellas.
 Move each card to stage 3 only after every theorem on that card is covered and audited.
 Existing unrelated worktree changes must be preserved.
+
+## Latest checkpoint: user cleared the goal
+
+Autonomous work stopped. The active Whittaker scratch audit was terminated
+by its owned process group and exited 143 (session 61715). No further Lean
+check or research job was started. Four of the original fourteen cards are
+promoted; ten remain at stage 2. The full programme is not complete.
+
+The latest canonical additions `BinaryPathWeights` and `DyadicTentLevelCounts`
+passed direct final source checks, standard-axiom audits and umbrella wiring.
+Their matching plain scratch mirrors were removed. Missing dependency oleans
+were built individually for the pending imports; no existing olean was rebuilt.
+
+Four unfinished drafts and their metadata are preserved in
+[the checkpoint directory](leftovers-formalization-checkpoint/README.md):
+finite-sieve graph transport, perturbed correlation samples, integer-gap
+correlation peaks, and the Whittaker corner-flux correction. None is counted
+as fully certified. The Whittaker draft's first audit proved its mode
+smoothness, boundedness, PDE and finite-mode corner identities, but found
+three elaboration errors. Fixes are drafted; the interrupted second audit
+provides no certification. The original twisted-minimum card records the
+false smooth-data corner-flux assertion and the correct boundary-jet mechanism.
+
+The following active/resumed language describes work before this stop and is
+superseded by this checkpoint. Resume only on a new instruction.
 
 ## Resumed scope and current evidence (2026-10-27)
 

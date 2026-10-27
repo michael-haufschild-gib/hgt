@@ -1654,7 +1654,8 @@ theorem zeta_primeCoalescent_certificate_simple_and_offLineMultiple
       |>.congr' (Eventually.of_forall fun T => by rw [neg_neg])
     simpa using hr.const_mul (1024 * Real.sqrt 2)
   filter_upwards [hcert,
-    eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le_mul_Ncount hu (by linarith),
+    eventually_abs_coalescentSurplus_sub_primeCoalescentSurplus_le_mul_Ncount hu
+      (by linarith : η < 1),
     htend.eventually (Iic_mem_nhds (by positivity : (0 : ℝ) < ε / 2))] with T hT hdiff hsmall
   have hN0 : 0 ≤ (Ncount T (2 * T) : ℝ) := Nat.cast_nonneg _
   have hsmall' : 1024 * Real.sqrt 2 * T ^ (-1 / 3 + η) ≤ ε / 2 := hsmall

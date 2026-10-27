@@ -1,0 +1,212 @@
+[
+  {
+    "draft": "/tmp/leftovers_exact_doubling_energy.lean",
+    "audit_source": "/tmp/leftovers_exact_doubling_energy_audit.lean",
+    "canonical": "formal/GaloisForLFunctions/BiScaleUncertainty/ExactDoublingEnergy.lean",
+    "public_names": [
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.exactDoublingEnergy",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.exactDoublingEnergy_nonneg",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.exactDoublingEnergy_eq_zero_of_no_incidence",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.exactDoublingEnergy_integer",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.exactDoubling_integer_coercivity",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.exactDoublingEnergy_quadraticPerturbedNode",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.exactDoubling_quadratic_coercivity_lower",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.exists_small_incidence_free_grid"
+    ],
+    "status": "complete: canonical final check exit 0; wired; eight standard-axiom declarations",
+    "log": "/tmp/leftovers-exact-doubling-audit-r2.log",
+    "sha256": "6911de68ae9da0a97ae843072c5c5b756c1282366eb0d611211f3002c94f66ce",
+    "final_log": "/tmp/leftovers-exact-doubling-final.log"
+  },
+  {
+    "draft": "/tmp/leftovers_finite_sieve_graph_transport.lean",
+    "audit_source": "/tmp/leftovers_finite_sieve_graph_transport_audit.lean",
+    "canonical": "formal/GaloisForLFunctions/BiScaleUncertainty/FiniteSieveGraphEnergyTransport.lean",
+    "public_names": [
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.realizedSieveSignal",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.realizedSieveSignal_eq",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.realizedSieveSignal_centered",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.realizedSieveSignal_mean",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.realizedSieveSignal_variance",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.realizedSieveSignal_additive_energy",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.realizedSieveSignal_doubling_energy",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.realizedSieveSignal_joint_energy",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.realizedSieveSignal_exact_energy",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.realizedSieveSignal_soft_energy",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.softDoublingEnergy_exp_log",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.exists_sieveSeq_graph_realization",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.sieveSeq_joint_coercivity_iff",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.sieveSeq_exact_quadratic_coercivity_lower",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.sieveSeq_soft_coercivity",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.sieveSeq_soft_coercivity_iff",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.softDoubling_dyadic_coercivity_lower",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.sieveSeq_soft_dyadic_coercivity_lower"
+    ],
+    "status": "not compiled",
+    "additional_audit_names": [
+      "GaloisForLFunctions.BiScaleUncertainty.biScaleJointEnergy_eq_zero_iff_const"
+    ],
+    "checkpoint_draft": "docs/drafts/pipeline/1-in-progress/leftovers-formalization-checkpoint/FiniteSieveGraphEnergyTransport.lean.draft",
+    "checkpoint_sha256": "6949509fb2ea7d87e183ace1001773b6e174f13272ec745dae52f680899191c9"
+  },
+  {
+    "draft": "/tmp/leftovers_binary_depth_coercivity.lean",
+    "audit_source": "/tmp/leftovers_binary_depth_coercivity_audit.lean",
+    "canonical": "formal/GaloisForLFunctions/BiScaleUncertainty/BinaryDepthCoercivity.lean",
+    "public_names": [
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.binary_path_geometric_sum",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.binary_path_geometric_cauchy",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.binary_descendant_depth_bound",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.binary_descendant_depth_charge",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.binary_descendant_depth_charge_le",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.binary_parent_window_bound_eight"
+    ],
+    "status": "complete: canonical final check exit 0; wired; six standard-axiom declarations",
+    "log": "/tmp/leftovers-binary-depth-audit-r3.log",
+    "sha256": "191737d6df3292e4828c6fdcbc53e6df5f4d27de6b633163bef0d714f91e3ddc",
+    "final_log": "/tmp/leftovers-binary-depth-final.log"
+  },
+  {
+    "draft": "/tmp/leftovers_dyadic_level_counts.lean",
+    "audit_source": "/tmp/leftovers_dyadic_level_counts_audit.lean",
+    "canonical": "formal/GaloisForLFunctions/BiScaleUncertainty/DyadicTentLevelCounts.lean",
+    "public_names": [
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.dyadicMantissaTent_high_block",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.dyadicMantissaTent_low_blocks",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.dyadicMantissaTent_high_count",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.dyadicMantissaTent_low_count",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.dyadicMantissaTent_last_level_counts",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.not_doubling_only_window_coercivity"
+    ],
+    "status": "complete: canonical final check exit 0; wired; six standard-axiom declarations",
+    "log": "/tmp/leftovers-dyadic-level-counts-audit.log",
+    "sha256": "a291633785b914aabed2f29b8a04392ac4f4a51c148a84e21248da519f551bdc",
+    "final_log": "/tmp/leftovers-dyadic-level-counts-final.log"
+  },
+  {
+    "draft": "/tmp/leftovers_perturbed_correlation_samples.lean",
+    "audit_source": "/tmp/leftovers_perturbed_correlation_samples_audit.lean",
+    "canonical": "formal/GaloisForLFunctions/BiScaleUncertainty/PerturbedCorrelationSamples.lean",
+    "public_names": [
+      "GaloisForLFunctions.BiScaleUncertainty.quadratic_correlation_samples_close",
+      "GaloisForLFunctions.BiScaleUncertainty.quadratic_correlation_of_integer_zero",
+      "GaloisForLFunctions.BiScaleUncertainty.integer_correlation_of_quadratic_zero",
+      "GaloisForLFunctions.BiScaleUncertainty.correlation_zero_half_energy_barrier",
+      "GaloisForLFunctions.BiScaleUncertainty.quadratic_correlation_half_energy_barrier"
+    ],
+    "status": "not compiled",
+    "checkpoint_draft": "docs/drafts/pipeline/1-in-progress/leftovers-formalization-checkpoint/PerturbedCorrelationSamples.lean.draft",
+    "checkpoint_sha256": "9dc9dff46ca05a37dcfdab9e365a490676d65e00f7395686393dab68d5219aa9"
+  },
+  {
+    "draft": "/tmp/leftovers_integer_gap_correlation_peak.lean",
+    "audit_source": "/tmp/leftovers_integer_gap_correlation_peak_audit.lean",
+    "canonical": "formal/GaloisForLFunctions/BiScaleUncertainty/IntegerGapCorrelationPeak.lean",
+    "public_names": [
+      "GaloisForLFunctions.BiScaleUncertainty.integerLogGapRadius",
+      "GaloisForLFunctions.BiScaleUncertainty.integerLogGapRadius_pos",
+      "GaloisForLFunctions.BiScaleUncertainty.exists_smooth_integer_gap_peak",
+      "GaloisForLFunctions.BiScaleUncertainty.exists_quadratic_integer_grid_blind_violation"
+    ],
+    "status": "not compiled",
+    "checkpoint_draft": "docs/drafts/pipeline/1-in-progress/leftovers-formalization-checkpoint/IntegerGapCorrelationPeak.lean.draft",
+    "checkpoint_sha256": "9280bc765e2098817ee94687146b0fb847fe08ba2b18c48c4a5c2c3268cc72fe"
+  },
+  {
+    "draft": "/tmp/leftovers_finite_net_derivative_recovery.lean",
+    "audit_source": "/tmp/leftovers_finite_net_derivative_recovery_audit.lean",
+    "canonical": "formal/GaloisForLFunctions/BiScaleUncertainty/FiniteNetDerivativeRecovery.lean",
+    "public_names": [
+      "GaloisForLFunctions.BiScaleUncertainty.EnergyCycle.finiteNet_derivative_recovery_norm",
+      "GaloisForLFunctions.BiScaleUncertainty.EnergyCycle.finiteNet_derivative_recovery_from_measured_array"
+    ],
+    "status": "complete: canonical direct check exit 0; wired; 2 standard-axiom declarations",
+    "log": "/tmp/leftovers-cycle-finite-net-derivative-audit.log",
+    "sha256": "b5003d1a916f58649a5f0214ae7a2164c54321e312b30a4591b39c78664ea6f4",
+    "final_log": "/tmp/leftovers-cycle-finite-net-derivative-final.log"
+  },
+  {
+    "draft": "/tmp/leftovers_l2_closed_cycle_recovery.lean",
+    "audit_source": "/tmp/leftovers_l2_closed_cycle_recovery_audit.lean",
+    "canonical": "formal/GaloisForLFunctions/BiScaleUncertainty/L2ClosedCycleRecovery.lean",
+    "public_names": [
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.correlation",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.mass_eq_norm_sq",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.correlation_zero",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.correlation_neg",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.abs_correlation_le_one",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.continuous_correlation",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.complexCorrelation",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.correlation_toLp",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.value",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.value_pair",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.value_spoke",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.pairError",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.spokeError",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.sample_recovery",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.global_recovery_norm",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.dataResidual",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.discrepancy_le_residual_sum",
+      "GaloisForLFunctions.BiScaleUncertainty.L2Cycle.recovery_from_measured_array"
+    ],
+    "status": "complete: canonical direct check exit 0; wired; 18 standard-axiom declarations",
+    "log": "/tmp/leftovers-cycle-l2-audit-r3.log",
+    "sha256": "e5c8619c7059039704b60013e8137e740706a1d3597f234345e744091a5b608c",
+    "final_log": "/tmp/leftovers-cycle-l2-final.log"
+  },
+  {
+    "draft": "/tmp/leftovers_binary_path_weights.lean",
+    "audit_source": "/tmp/leftovers_binary_path_weights_audit.lean",
+    "canonical": "formal/GaloisForLFunctions/BiScaleUncertainty/BinaryPathWeights.lean",
+    "public_names": [
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.sum_binaryAncestors_by_depth",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.card_binaryAncestors_eq_log",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.binary_ancestor_geometric_sum",
+      "GaloisForLFunctions.BiScaleUncertainty.FiniteHorizon.binary_parent_geometric_point_bound"
+    ],
+    "status": "complete: canonical final check exit 0; wired; four standard-axiom declarations",
+    "log": "/tmp/leftovers-binary-path-weights-audit-r2.log",
+    "sha256": "242066169074414632fe4dd411e4620a85684441c1ed43965e30985394c2fb6c",
+    "final_log": "/tmp/leftovers-binary-path-weights-final.log"
+  },
+  {
+    "draft": "/tmp/leftovers_whittaker_corner_flux.lean",
+    "audit_source": "/tmp/leftovers_whittaker_corner_flux_audit.lean",
+    "canonical": "formal/GaloisForLFunctions/RHTower/WhittakerCornerFlux.lean",
+    "public_names": [
+      "RHTower.ModularCorner.contDiffOn_kMoment",
+      "RHTower.ModularCorner.cosineMode",
+      "RHTower.ModularCorner.cosineRadialFlux",
+      "RHTower.ModularCorner.cosineArcFlux",
+      "RHTower.ModularCorner.arcCornerDistance",
+      "RHTower.ModularCorner.continuous_arcCornerDistance",
+      "RHTower.ModularCorner.arcCornerDistance_corner",
+      "RHTower.ModularCorner.corner_radial_deriv_eq_trace_deriv",
+      "RHTower.ModularCorner.cosineMode_even",
+      "RHTower.ModularCorner.cosineMode_periodic",
+      "RHTower.ModularCorner.contDiffOn_cosineMode",
+      "RHTower.ModularCorner.hasDerivAt_cosineMode_x",
+      "RHTower.ModularCorner.hasDerivAt_cosineMode_y",
+      "RHTower.ModularCorner.hasDerivAt_cosineArcTrace",
+      "RHTower.ModularCorner.contDiffOn_cosineArcTrace",
+      "RHTower.ModularCorner.hasDerivAt_cosineMode_ray",
+      "RHTower.ModularCorner.cosineMode_axisymmetric_equation",
+      "RHTower.ModularCorner.abs_cosineMode_le",
+      "RHTower.ModularCorner.modularCornerHeight_le",
+      "RHTower.ModularCorner.cosineMode_modular_strip_bound",
+      "RHTower.ModularCorner.cosineArcFlux_corner",
+      "RHTower.ModularCorner.cosineArcFlux_corner_eq_slope",
+      "RHTower.ModularCorner.sum_cosineArcFlux_corner_eq_slope",
+      "RHTower.ModularCorner.hasDerivAt_cosineArcSum_corner",
+      "RHTower.ModularCorner.sum_cosineArcFlux_corner_eq_zero_iff",
+      "RHTower.ModularCorner.cosineArcFlux_second_corner_neg",
+      "RHTower.ModularCorner.continuousAt_cosineArcFlux_corner",
+      "RHTower.ModularCorner.not_isBigO_cosineArcFlux_corner_sqrt_distance",
+      "RHTower.ModularCorner.not_isBigO_cosineMode_corner_radial_deriv"
+    ],
+    "status": "unfinished: audit 1 had three elaboration errors; fixes drafted; audit 2 cancelled after user cleared goal (session 61715, exit 143)",
+    "last_audit_log": "/tmp/leftovers-whittaker-corner-flux-audit-r2.log",
+    "checkpoint_draft": "docs/drafts/pipeline/1-in-progress/leftovers-formalization-checkpoint/WhittakerCornerFlux.lean.draft",
+    "checkpoint_sha256": "2b62a77a2b232597a96a6b48ff24508870609cdfcb8cea93ac54ca12d3f1ffab"
+  }
+]

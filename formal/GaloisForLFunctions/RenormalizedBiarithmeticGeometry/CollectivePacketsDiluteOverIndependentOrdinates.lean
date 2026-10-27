@@ -187,7 +187,7 @@ theorem diagonal_nonneg_of_packet_nonneg {ι : Type*} [Fintype ι] [DecidableEq 
             (Complex.exp ((θ : ℝ) * Complex.I)) ^ (k + 1) := by
           rw [← Complex.exp_nat_mul]; congr 1; push_cast; ring
         rw [e1, e2]
-        refine (norm_pow_sub_pow_le (by simp [expChar]) (by
+        refine (norm_pow_sub_pow_le (by rw [norm_expChar]) (by
           rw [Complex.norm_exp_ofReal_mul_I]) (k + 1)).trans ?_
         push_cast
         exact mul_le_mul hkM (ht i).le (norm_nonneg _) (by positivity)

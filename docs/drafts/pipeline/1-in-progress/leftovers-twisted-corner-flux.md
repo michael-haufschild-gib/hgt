@@ -79,5 +79,12 @@ smoothness/evenness/periodicity, literal first and second derivatives and
 the axisymmetric equation, a bound on the whole modular strip, exact
 the general even-periodic corner-jet identity, exact single/finite-mode identities, and failure of the square-root
 distance estimate for the literal radial derivative. The draft is not
-certified; its first source/axiom check remains pending. This is a classical
+certified. Its first source/axiom check (session 9319) found three
+elaboration errors in a reflected derivative, a product curve and a
+continuity composition. Smoothness, boundedness, the literal PDE, trace
+derivatives and all finite-mode endpoint identities already had standard
+axioms. Explicit compositions and conversions address these errors; the
+revised full audit was cancelled after the user cleared the goal
+(session 61715, exit 143). Fixes remain unchecked. The draft is preserved
+in [the checkpoint](leftovers-formalization-checkpoint/WhittakerCornerFlux.lean.draft). This is a classical
 calculus correction, with no claim of scientific novelty.

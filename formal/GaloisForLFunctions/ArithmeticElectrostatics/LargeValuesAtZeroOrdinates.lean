@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.LargeValues
 import GaloisForLFunctions.RHTower.Sieve.DirichletMVT
 import GaloisForLFunctions.RHTower.XiZeroCountLocalCeiling
+import GaloisForLFunctions.RHTower.MertensFirst
 
 /-!
 # Large values of Dirichlet polynomials at zero ordinates
@@ -21,6 +22,9 @@ frequency by a second moment.
   its cell's mean square.
 * **Large values** (`exists_card_largeValues_le`): the number of zero copies in the window at which
   `|F(γ)| ≥ V` is at most the same bound divided by `V²`.
+* **The prime polynomial** (`coeffMass_primeCoeff_le`, `exists_card_aligned_le`): for
+  `a_n = w_n Λ(n)/√n`, `|w_n| ≤ 1`, the mass is at most `log N (log N + log 4 + 4)` (Mertens), which
+  gives the explicit alignment law.
 
 For the detector polynomial with `a_n = Λ(n)/√n`, `n ≤ X`, the coefficient mass is `O(log² X)`, so the
 zero ordinates in `(T, 2T]` at which the polynomial reaches `(1 − η) log T` number
@@ -221,5 +225,75 @@ theorem exists_card_largeValues_le :
         rw [sum_const, nsmul_eq_mul]
     _ ≤ ∑ q ∈ G.filter (fun q => V ≤ ‖dirPoly N a (q.1 : ℂ).im‖), ‖dirPoly N a (q.1 : ℂ).im‖ ^ 2 :=
         sum_le_sum fun q hq => pow_le_pow_left₀ hV (mem_filter.mp hq).2 2
+
+/-! ### The prime polynomial -/
+
+/-- The coefficients `w_n Λ(n)/√n`, indexed by `n − 1`. -/
+def primeCoeff {N : ℕ} (w : Fin N → ℂ) : Fin N → ℂ := fun m =>
+  w m * ((ArithmeticFunction.vonMangoldt ((m : ℕ) + 1) / Real.sqrt (((m : ℕ) : ℝ) + 1) : ℝ) : ℂ)
+
+/-- **The mass of the prime polynomial**: `Σ |w_n Λ(n)/√n|² ≤ log N (log N + log 4 + 4)`. -/
+theorem coeffMass_primeCoeff_le {N : ℕ} (hN : 1 ≤ N) (w : Fin N → ℂ) (hw : ∀ m, ‖w m‖ ≤ 1) :
+    coeffMass (primeCoeff w) ≤ Real.log N * (Real.log N + (Real.log 4 + 4)) := by
+  have hterm : ∀ m : Fin N, ‖primeCoeff w m‖ ^ 2 ≤
+      Real.log N * (ArithmeticFunction.vonMangoldt ((m : ℕ) + 1) / (((m : ℕ) + 1 : ℕ) : ℝ)) := by
+    intro m
+    have hn : (0 : ℝ) < ((m : ℕ) : ℝ) + 1 := by positivity
+    have hΛ := ArithmeticFunction.vonMangoldt_nonneg (n := (m : ℕ) + 1)
+    have hΛle : ArithmeticFunction.vonMangoldt ((m : ℕ) + 1) ≤ Real.log N := by
+      have h1 := ArithmeticFunction.vonMangoldt_le_log (n := (m : ℕ) + 1)
+      have h2 : Real.log (((m : ℕ) + 1 : ℕ) : ℝ) ≤ Real.log N :=
+        Real.log_le_log (by positivity) (by exact_mod_cast Nat.succ_le_of_lt m.2)
+      linarith
+    rw [primeCoeff, norm_mul, Complex.norm_real, Real.norm_eq_abs, mul_pow, sq_abs, div_pow,
+      Real.sq_sqrt hn.le]
+    have hw2 : ‖w m‖ ^ 2 ≤ 1 := by
+      have := hw m; nlinarith [norm_nonneg (w m)]
+    push_cast
+    calc ‖w m‖ ^ 2 * (ArithmeticFunction.vonMangoldt ((m : ℕ) + 1) ^ 2 / (((m : ℕ) : ℝ) + 1))
+        ≤ 1 * (ArithmeticFunction.vonMangoldt ((m : ℕ) + 1) ^ 2 / (((m : ℕ) : ℝ) + 1)) :=
+          mul_le_mul_of_nonneg_right hw2 (by positivity)
+      _ ≤ Real.log N * (ArithmeticFunction.vonMangoldt ((m : ℕ) + 1) / (((m : ℕ) : ℝ) + 1)) := by
+          rw [one_mul, sq, mul_div_assoc, mul_comm]
+          rw [mul_comm (Real.log N)]
+          exact mul_le_mul_of_nonneg_left hΛle (div_nonneg hΛ hn.le)
+  have hsum : ∑ m : Fin N, ArithmeticFunction.vonMangoldt ((m : ℕ) + 1) / (((m : ℕ) + 1 : ℕ) : ℝ) =
+      ∑ d ∈ Finset.Icc 1 N, ArithmeticFunction.vonMangoldt d / d := by
+    rw [Fin.sum_univ_eq_sum_range (fun m => ArithmeticFunction.vonMangoldt (m + 1) /
+      ((m + 1 : ℕ) : ℝ)) N, Finset.range_eq_Ico]
+    rw [Finset.sum_Ico_add' (fun d => ArithmeticFunction.vonMangoldt d / (d : ℝ)) 0 N 1]
+    rfl
+  have hmert := (abs_le.mp (RHTower.Mertens.mertens_first N hN)).2
+  have hlogN : 0 ≤ Real.log N := Real.log_natCast_nonneg N
+  calc coeffMass (primeCoeff w) ≤ ∑ m : Fin N, Real.log N *
+        (ArithmeticFunction.vonMangoldt ((m : ℕ) + 1) / (((m : ℕ) + 1 : ℕ) : ℝ)) :=
+        sum_le_sum fun m _ => hterm m
+    _ = Real.log N * ∑ d ∈ Finset.Icc 1 N, ArithmeticFunction.vonMangoldt d / d := by
+        rw [← mul_sum, hsum]
+    _ ≤ Real.log N * (Real.log N + (Real.log 4 + 4)) :=
+        mul_le_mul_of_nonneg_left (by linarith) hlogN
+
+/-- **The alignment law at zero ordinates**: the zero copies in `(A, A + R]` at which the prime
+polynomial `Σ_{n ≤ N} w_n Λ(n) n^{−1/2 + iγ}` (`|w_n| ≤ 1`) has modulus at least `V` number at most
+`K log(A + R + 1)(R + 8N(1 + log N))(2 + log² N) log N (log N + log 4 + 4)/V²`. -/
+theorem exists_card_aligned_le :
+    ∃ K T₀ : ℝ, 0 < K ∧ 4 ≤ T₀ ∧ ∀ A : ℝ, T₀ ≤ A → ∀ R : ℕ, ∀ G : Finset XiZeroCopy,
+      (∀ q ∈ G, A < (q.1 : ℂ).im ∧ (q.1 : ℂ).im ≤ A + R) → ∀ (N : ℕ), 1 ≤ N →
+      ∀ (w : Fin N → ℂ), (∀ m, ‖w m‖ ≤ 1) → ∀ V : ℝ, 0 ≤ V →
+      ((G.filter fun q => V ≤ ‖dirPoly N (primeCoeff w) (q.1 : ℂ).im‖).card : ℝ) * V ^ 2 ≤
+        K * Real.log (A + R + 1) * ((R + 8 * N * (1 + Real.log N)) *
+          ((2 + Real.log N ^ 2) * (Real.log N * (Real.log N + (Real.log 4 + 4))))) := by
+  obtain ⟨K, T₀, hK, hT₀, h⟩ := exists_card_largeValues_le
+  refine ⟨K, T₀, hK, hT₀, fun A hA R G hG N hN w hw V hV => ?_⟩
+  refine (h A hA R G hG N (primeCoeff w) V hV).trans ?_
+  have hlog : 0 ≤ Real.log (A + R + 1) := Real.log_nonneg (by
+    have : (0 : ℝ) ≤ R := Nat.cast_nonneg R
+    linarith)
+  have hR : 0 ≤ (R : ℝ) + 8 * N * (1 + Real.log N) := by
+    have := Real.log_natCast_nonneg N
+    positivity
+  have h2 : 0 ≤ 2 + Real.log N ^ 2 := by positivity
+  refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left
+    (mul_le_mul_of_nonneg_left (coeffMass_primeCoeff_le hN w hw) h2) hR) (by positivity)
 
 end GaloisForLFunctions.ArithmeticElectrostatics

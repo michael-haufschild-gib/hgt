@@ -531,7 +531,6 @@ theorem heckeDefect_le_depthKernel_of_dyadic_exp_rate
   have hexp_arg : (2 * φ + ε) * (2 ^ k * L) = (ψ₀ + δ / 2) * 2 ^ k := by
     dsimp [ψ₀, ε, δ]
     field_simp [hL_pos.ne']
-    ring
   have hup : heckeDefect f (2 ^ k * L) ≤ |C| * E₀ := by
     have hk_up := hC k
     rw [hexp_arg] at hk_up
@@ -547,17 +546,17 @@ theorem heckeDefect_le_depthKernel_of_dyadic_exp_rate
     (mul_le_mul_of_nonneg_left (by linarith) hD.le).trans (hlow.trans hup)
   have hM_mul : (|C| + 2 * mass f + mass f) * E₀ < mass f * E₀ * Real.exp (δ / 2 * 2 ^ k) := by
     have hM' : |C| + 2 * mass f + mass f < mass f * Real.exp (δ / 2 * 2 ^ k) := by
-      dsimp [M] at hyM
-      rw [← div_lt_iff₀ hD]
-      have : (|C| + 2 * mass f + mass f) / mass f = (|C| + 2 * mass f) / mass f + 1 := by
-        field_simp [hD.ne']
-      linarith
+      calc |C| + 2 * mass f + mass f
+          = (|C| + 2 * mass f) / mass f * mass f + mass f := by rw [div_mul_cancel₀ _ hD.ne']
+        _ = M * mass f := by dsimp [M]; ring
+        _ < Real.exp (δ / 2 * 2 ^ k) * mass f := mul_lt_mul_of_pos_right hyM hD
+        _ = mass f * Real.exp (δ / 2 * 2 ^ k) := mul_comm _ _
     nlinarith
   nlinarith [abs_nonneg C]
 
 /-- Under `zetaZeroAbscissa ≤ 1 - θ` (`0 < θ ≤ 1 / 2`), every nontrivial zero `ρ` satisfies
 `|zetaDepth ρ| ≤ 1 / 2 - θ`. -/
-theorem abs_zetaDepth_le_of_zetaZeroAbscissa_le {θ : ℝ} (_hθ0 : 0 < θ) (hθ2 : θ ≤ 1 / 2)
+theorem abs_zetaDepth_le_of_zetaZeroAbscissa_le {θ : ℝ} (_hθ0 : 0 < θ) (_hθ2 : θ ≤ 1 / 2)
     (habs : zetaZeroAbscissa ≤ 1 - θ) (ρ : zetaZeroConfig.carrier) :
     |zetaDepth ρ| ≤ 1 / 2 - θ := by
   have hρ : IsNontrivialZero (ρ : ℂ) := ρ.2
@@ -576,7 +575,8 @@ If `zetaZeroAbscissa ≤ 1 - θ` (`0 < θ ≤ 1 / 2`), then for every `f : Compa
 theorem heckeDefect_le_of_zetaZeroAbscissa_le {θ : ℝ} (hθ0 : 0 < θ) (hθ2 : θ ≤ 1 / 2)
     (habs : zetaZeroAbscissa ≤ 1 - θ) (f : CompactTest) (L : ℝ) :
     heckeDefect f L ≤ depthKernel L (1 / 2 - θ) * mass f := by
-  rw [mass, collidedForm, ← tsum_mul_left]
+  change heckeDefect f L ≤ depthKernel L (1 / 2 - θ) * ∑' ρ, zetaWeight f ρ
+  rw [← tsum_mul_left]
   refine (summable_heckeDefect f L).tsum_le_tsum (fun ρ => ?_)
     ((summable_zetaWeight f).mul_left (depthKernel L (1 / 2 - θ)))
   change zetaWeight f ρ * depthKernel L (zetaDepth ρ) ≤
@@ -655,7 +655,7 @@ theorem zetaZeroAbscissa_le_of_heckeDefect_le {θ : ℝ} (_hθ0 : 0 < θ) (hθ2 
   have hδ : 0 < δ := by dsimp [δ]; linarith
   set M : ℝ := (2 * mass f + 2 * zetaWeight f ρ₀) / zetaWeight f ρ₀ + 1
   obtain ⟨k, hk⟩ := exists_nat_gt (M / δ + 1)
-  set L : ℝ := k
+  set L : ℝ := (k : ℝ)
   have hL_pos : 0 < L := by
     have : 0 ≤ M / δ := div_nonneg (by dsimp [M]; positivity) hδ.le
     dsimp [L]; linarith
@@ -692,12 +692,12 @@ theorem zetaZeroAbscissa_le_of_heckeDefect_le {θ : ℝ} (_hθ0 : 0 < θ) (hθ2 
       _ = 2 * E₀ * mass f := by ring
   have hM_mul : 2 * mass f + 2 * zetaWeight f ρ₀ + zetaWeight f ρ₀ <
       zetaWeight f ρ₀ * Real.exp (δ * L) := by
-    dsimp [M] at hexpM
-    rw [← div_lt_iff₀ hw_pos]
-    have : (2 * mass f + 2 * zetaWeight f ρ₀ + zetaWeight f ρ₀) / zetaWeight f ρ₀ =
-        (2 * mass f + 2 * zetaWeight f ρ₀) / zetaWeight f ρ₀ + 1 := by
-      field_simp [hw_pos.ne']
-    linarith
+    calc 2 * mass f + 2 * zetaWeight f ρ₀ + zetaWeight f ρ₀
+        = (2 * mass f + 2 * zetaWeight f ρ₀) / zetaWeight f ρ₀ * zetaWeight f ρ₀ +
+            zetaWeight f ρ₀ := by rw [div_mul_cancel₀ _ hw_pos.ne']
+      _ = M * zetaWeight f ρ₀ := by dsimp [M]; ring
+      _ < Real.exp (δ * L) * zetaWeight f ρ₀ := mul_lt_mul_of_pos_right hexpM hw_pos
+      _ = zetaWeight f ρ₀ * Real.exp (δ * L) := mul_comm _ _
   nlinarith [mass_nonneg f]
 
 /-- **Forward `RBG` Carathéodory Half-Plane Law:**
@@ -760,16 +760,16 @@ theorem zetaZeroAbscissa_le_of_re_logDeriv_xi_nonneg {θ : ℝ} (_hθ0 : 0 < θ)
     · filter_upwards [self_mem_nhdsWithin] with r hr
       have hr0 : (r : ℝ) ≠ 0 := (Set.mem_Ioi.mp hr).ne'
       intro heq
-      have : (r : ℂ) = 0 := by linear_combination -heq
-      exact hr0 (Complex.ofReal_eq_zero.mp this)
+      exact hr0 (Complex.ofReal_eq_zero.mp (sub_eq_self.mp (Set.mem_singleton_iff.mp heq)))
   have hlim_re : Tendsto (fun r : ℝ => (((ρ - (r : ℂ)) - ρ) * logDeriv RHTower.xi (ρ - (r : ℂ))).re)
       (𝓝[>] 0) (𝓝 (m : ℝ)) := by
     have hcomp := (Complex.continuous_re.tendsto ((m : ℤ) : ℂ)).comp (hres.comp hray)
-    simpa using hcomp
-  have hev_pos := hlim_re.eventually (gt_mem_nhds hm_pos)
+    rw [Complex.intCast_re, Int.cast_natCast] at hcomp
+    exact hcomp
+  have hev_pos := hlim_re.eventually (Ioi_mem_nhds hm_pos)
   have hev_small : ∀ᶠ r : ℝ in 𝓝[>] 0, r < ρ.re - (1 - θ) :=
     (tendsto_id.mono_left nhdsWithin_le_nhds).eventually
-      (lt_mem_nhds (by linarith : (0 : ℝ) < ρ.re - (1 - θ)))
+      (Iio_mem_nhds (by linarith : (0 : ℝ) < ρ.re - (1 - θ)))
   obtain ⟨r, ⟨hr_res, hr_small⟩, hr_gt0⟩ :=
     ((hev_pos.and hev_small).and self_mem_nhdsWithin).exists
   have hr0 : 0 < r := hr_gt0
@@ -782,7 +782,7 @@ theorem zetaZeroAbscissa_le_of_re_logDeriv_xi_nonneg {θ : ℝ} (_hθ0 : 0 < θ)
     have hsub : (ρ - (r : ℂ)) - ρ = -(r : ℂ) := by ring
     rw [hsub, neg_mul, Complex.neg_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
       zero_mul, sub_zero, neg_mul]
-  rw [hval] at hr_res
+  have hr_res' : 0 < -r * (logDeriv RHTower.xi (ρ - (r : ℂ))).re := hval ▸ Set.mem_Ioi.mp hr_res
   nlinarith
 
 /-- **Seven-Way Cross-Programme Pointwise Unification (`SPTL` / `ACG` / `BVI` / `RHTower` / `CDG` / `RBG`):**
@@ -866,12 +866,12 @@ theorem escapedMoebius_rbg_seven_way_tfae {θ : ℝ} (hθ0 : 0 < θ) (hθ2 : θ 
       rw [← hprod]; exact hlow.trans hup
     have hM_mul : |C| + 2 * zetaWeight f ρ₀ + zetaWeight f ρ₀ <
         zetaWeight f ρ₀ * Real.exp (ε * 2 ^ k) := by
-      dsimp [M] at hexpM
-      rw [← div_lt_iff₀ hw_pos]
-      have : (|C| + 2 * zetaWeight f ρ₀ + zetaWeight f ρ₀) / zetaWeight f ρ₀ =
-          (|C| + 2 * zetaWeight f ρ₀) / zetaWeight f ρ₀ + 1 := by
-        field_simp [hw_pos.ne']
-      linarith
+      calc |C| + 2 * zetaWeight f ρ₀ + zetaWeight f ρ₀
+          = (|C| + 2 * zetaWeight f ρ₀) / zetaWeight f ρ₀ * zetaWeight f ρ₀ +
+              zetaWeight f ρ₀ := by rw [div_mul_cancel₀ _ hw_pos.ne']
+        _ = M * zetaWeight f ρ₀ := by dsimp [M]; ring
+        _ < Real.exp (ε * 2 ^ k) * zetaWeight f ρ₀ := mul_lt_mul_of_pos_right hexpM hw_pos
+        _ = zetaWeight f ρ₀ * Real.exp (ε * 2 ^ k) := mul_comm _ _
     nlinarith [abs_nonneg C]
   tfae_have 4 → 7 := fun habs s hs => re_logDeriv_xi_nonneg_of_zetaZeroAbscissa_le hθ0 hθ2 habs hs
   tfae_have 7 → 4 := fun hcar => zetaZeroAbscissa_le_of_re_logDeriv_xi_nonneg hθ0 hθ2 hcar
