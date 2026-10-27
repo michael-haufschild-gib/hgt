@@ -61,14 +61,16 @@ theorem weilQuad_comp_sub (f : ℝ → ℝ) (c : ℝ) : weilQuad (fun u => f (u 
     funext y
     have := ArithmeticCastelnuovoSeveri.weilTest_translate c c (fun u => (f u : ℂ))
       (fun u => (f u : ℂ)) y
-    simpa [ArithmeticCastelnuovoSeveri.translate] using this
+    simp only [sub_self, sub_zero] at this
+    exact this
   rw [h]
 
 /-! ### Cauchy–Schwarz by the discriminant -/
 
 /-- `∫ (α p + β q + r) = α ∫ p + β ∫ q + ∫ r`. -/
-theorem integral_lin3 {p q r : ℝ → ℝ} (hp : Integrable p) (hq : Integrable q) (hr : Integrable r)
-    (α β : ℝ) : ∫ u, (α * p u + β * q u + r u) = α * (∫ u, p u) + β * (∫ u, q u) + ∫ u, r u := by
+theorem integral_lin3 {μ : Measure ℝ} {p q r : ℝ → ℝ} (hp : Integrable p μ) (hq : Integrable q μ)
+    (hr : Integrable r μ) (α β : ℝ) :
+    ∫ u, (α * p u + β * q u + r u) ∂μ = α * (∫ u, p u ∂μ) + β * (∫ u, q u ∂μ) + ∫ u, r u ∂μ := by
   rw [integral_add (f := fun u => α * p u + β * q u) (g := r) ((hp.const_mul α).add (hq.const_mul β))
     hr, integral_add (f := fun u => α * p u) (g := fun u => β * q u) (hp.const_mul α)
     (hq.const_mul β), integral_const_mul, integral_const_mul]
@@ -168,7 +170,7 @@ theorem levyEnergy_smul_add (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
   exact integral_lin3 h1 h3 h2 _ _
 
 theorem levyEnergy_nonneg' (h : ℝ → ℝ) : 0 ≤ levyEnergy h :=
-  setIntegral_nonneg_ae measurableSet_Ioi (levyIntegrand_nonneg h)
+  integral_nonneg_of_ae (levyIntegrand_nonneg h)
 
 /-- **Cauchy–Schwarz for the Lévy energy**:
 `levyEnergy (f + d) ≤ levyEnergy f + 2√(levyEnergy f) √(levyEnergy d) + levyEnergy d`. -/

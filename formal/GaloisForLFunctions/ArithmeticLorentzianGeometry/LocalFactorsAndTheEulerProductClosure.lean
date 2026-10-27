@@ -162,6 +162,7 @@ theorem esymm2Form_apply (M : κ → ι → ℝ) (i j : ι) :
   congr 1
   exact Finset.sum_comm
 
+omit [Fintype ι] in
 theorem esymm2Form_eq (M : κ → ι → ℝ) :
     esymm2Form M = vecMulVec (∑ p, M p) (∑ p, M p) - ∑ p, vecMulVec (M p) (M p) := by
   ext i j
