@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheWeilPrimeKernelIsARenormalizedTorsionEnergy
+import GaloisForLFunctions.ArithmeticIntersectionTheory.TheDifferentOfATorsionOrbit
 
 /-!
 # The self-intersection of a torsion orbit
@@ -18,6 +19,9 @@ This file computes it and finds an adjunction law.
   local correction obeys the Leibniz rule `D(ab) = φ(a)D(b) + φ(b)D(a)` on coprime orders, so the
   self-intersection per point `ℓ_n = I(n, n)/φ(n)` is additive: `ℓ_{ab} = ℓ_a + ℓ_b`, the orbit of a
   coprime product being the product of the orbits.
+* **Place by place** (`localCorrection_eq_totient_mul_tameDifferent`): `(φ ⋆ Λ)(n) = φ(n) Σ_{p ∣ n}
+  log p/(p − 1)`, `φ(n)` times the tame different; the closed local form
+  `ℓ_n = Σ_{p^a ∥ n} (a − 1/(p − 1)) log p` is `ArithmeticIntersectionTheory.selfIntersection_eq_sum_local`.
 * **Adjunction along the tower of `p`** (`orbitIntersection_self_prime_pow_succ`): for `a ≥ 1`,
   `I(p^{a+1}, p^{a+1}) = p · I(p^a, p^a) + φ(p^a) · p log p`: the orbit `O_{p^{a+1}}` is the `p`-fold
   cover of `O_{p^a}` under `z ↦ z^p`, its self-energy is `p` times that of the base plus `p log p`
@@ -165,6 +169,14 @@ theorem localCorrection_eq_mul_log :
     localCorrection = (totientR * (μ : ArithmeticFunction ℝ)) * ArithmeticFunction.log := by
   rw [localCorrection, ← log_mul_moebius_eq_vonMangoldt, mul_assoc,
     mul_comm ArithmeticFunction.log]
+
+/-- The local correction is `φ(n)` times the tame different `Σ_{p ∣ n} log p/(p − 1)`
+(`ArithmeticIntersectionTheory.totient_mul_vonMangoldt_eq`). -/
+theorem localCorrection_eq_totient_mul_tameDifferent (n : ℕ) :
+    localCorrection n = Nat.totient n * ArithmeticIntersectionTheory.tameDifferent n := by
+  rw [localCorrection, mul_apply,
+    Nat.sum_divisorsAntidiagonal' (fun a b => totientR a * vonMangoldt b)]
+  exact ArithmeticIntersectionTheory.totient_mul_vonMangoldt_eq n
 
 /-- **The Leibniz rule**: on coprime orders `D(ab) = φ(a) D(b) + φ(b) D(a)`. -/
 theorem localCorrection_mul_of_coprime {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (hab : a.Coprime b) :

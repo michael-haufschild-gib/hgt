@@ -49,7 +49,8 @@ damped source-work modules (`ReflectedTransverseWork`, `TheSelbergWorkExhaustsTh
 | ES19 gauge margin of the source | `TheGaugeMarginOfTheRenormalizedSource` | Lean |
 | ES11 (prime side) atomic Weil prime form `Θ(log N)` | `TheWeilPrimeFormOnAtomsIsLogarithmic` | Lean |
 | ES20 power saving for aligned zero ordinates (higher moments) | `HigherMomentsAtZeroOrdinates` | Lean |
-| ES21 gauge invisibility at atomic resolution; stability law for every sign twin | `TheGaugeIsInvisibleAtAtomicResolution` | Lean |
+| ES21 gauge invisibility at atomic resolution; stability law for every sign twin; positive-cone margin | `TheGaugeIsInvisibleAtAtomicResolution` | Lean |
+| ES22 coupled renormalization with the pole at atomic resolution: `Re W + 2S² ≥ 0` | `TheWeilFormAtAtomicResolution` | Lean |
 
 ## Open (RH-strength or beyond the present inputs)
 - Field law: arithmetic upper bound for the field below `max(1, √(2c log γ))`.
@@ -71,3 +72,5 @@ damped source-work modules (`ReflectedTransverseWork`, `TheSelbergWorkExhaustsTh
 - 2026-10-27 — ES5, ES6, ES8, ES12–ES15 formalized; README rewritten with answers to the twelve questions.
 - 2026-10-27 — ES16–ES19 and the atomic Weil prime form formalized; README updated.
 - 2026-10-27 — ES20, ES21 formalized; README updated.
+- 2026-10-27 — ES22 and the positive-cone margin formalized; the place-by-place self-intersection is
+  imported from AIT (`selfIntersection_eq_sum_local`), bridged by `localCorrection_eq_totient_mul_tameDifferent`.

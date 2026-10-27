@@ -44,7 +44,8 @@ correspondences, anomaly, cocycle, towers, Fourier duality, transfer.
 | XIV adjunction beats the tower (index ≤ 2 per ladder) | `TheSelfIntersectionDominatesTheTower` | Lean |
 | XV polar part on log-atom tests | `ThePolarPartPairsThePoleDirection` | Lean |
 | XVI square-root price of separate towers | `TheSquareRootPriceOfSeparateTowers` | Lean |
-| XVII RH in tower coordinates | `TheHodgeIndexInTowerCoordinates` | Lean |
+| XVII RH in tower coordinates; E_φ ≥ log(1/δ) bound | `TheHodgeIndexInTowerCoordinates` | Lean |
+| XVIII base (disjoint ladder supports vs 𝔽_q overlap), successor transversality | `TheBaseAndTheSuccessor` | Lean |
 
 Open (README §9): covariant regulator with nontrivial null cone; asymptotics of E_φ, K_φ;
 arithmetic RR on torsion orbits; discriminant for all n; indices on boxes; weight filtration.

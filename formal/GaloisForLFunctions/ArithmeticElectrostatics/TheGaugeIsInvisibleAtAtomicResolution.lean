@@ -5,8 +5,9 @@ import GaloisForLFunctions.ArithmeticElectrostatics.TheStabilityLawAtAtomicResol
 
 A sign twin of `ζ` replaces `Λ` by `ωΛ` for a completely multiplicative `ω` with `ω(n) = ±1` on
 `n ≥ 1`. Its renormalized source differs from `ζ`'s by a margin `2 log² p` at every flipped prime
-(`TheGaugeMarginOfTheRenormalizedSource`). This file shows that no such margin survives at the level
-of Weil forms on atomic tests — narrow bumps at the points `log n`, `n ≤ N`.
+(`TheGaugeMarginOfTheRenormalizedSource`). This file shows that on atomic tests — narrow bumps at
+the points `log n`, `n ≤ N` — the prime side carries no spectral margin: the gauge is invisible to
+the prime form, and what remains of it in Weil's form is archimedean.
 
 * **The gauge is a diagonal of signs** (`twistedWeilPrimeKernel_eq`): the twin's prime kernel is
   `P_ω(m, n) = ω(n/m) P(m, n) = ω(m) ω(n) P(m, n)`, since `ω(n) = ω(m) ω(n/m)` and `ω(m)² = 1`.
@@ -27,10 +28,14 @@ of Weil forms on atomic tests — narrow bumps at the points `log n`, `n ≤ N`.
   equals `2 Λ(p)/√p · ∫ f²` for every window `N ≥ p`. On nonnegative atomic tests `ζ` is the minimum
   of its gauge orbit, by a margin that does not collapse as primes enter.
 
-So atomic resolution cannot separate `ζ` from any sign twin in `ζ`'s favour — for instance from the Liouville twin
-`ζ(2s)/ζ(s)`, whose logarithmic derivative has poles at the zeros of `ζ`. The gauge charge is seen
-by the source coefficient by coefficient, and by Weil forms only through lags `log k` that are not
-exact ratios `log(m/n)` of atoms: at widths comparable to the spacing, where atoms overlap.
+* **The archimedean place sees the gauge** (`twinMarkov_atomicTest_eq`): with `x = x⁺ + x⁻` split by
+  `ω = 1` and `ω = −1`, `M_ω(f_x) = M(f_{ωx}) + A(f⁺ + f⁻) − A(f⁺ − f⁻)`, `A` the archimedean form.
+
+So atomic resolution cannot separate `ζ` from any sign twin in `ζ`'s favour — for instance from the
+Liouville twin `ζ(2s)/ζ(s)`, whose logarithmic derivative has poles at the zeros of `ζ`. The gauge
+charge is seen by the source coefficient by coefficient; on atomic tests the prime forms are
+conjugate, and what separates the Weil forms is the archimedean interaction of the neutral and
+charged parts of the test, which the Lévy gain of narrow atoms dominates.
 -/
 
 noncomputable section
@@ -369,6 +374,63 @@ theorem twinMarkov_sub_markov_pairWeights (hω : ∀ a b, ω (a * b) = ω a * ω
   obtain ⟨hmargin, hmass⟩ := gaugeMargin_atomicWeilForm hω hsign hp hpN hflip
   rw [twinMarkov_sub_markov_atomicTest hω hsign hg hgc hgsupp hw, hmargin,
     integral_atomicTest_sq hg hgc hgsupp hw, hmass]
+  ring
+
+/-! ### The archimedean place sees the gauge -/
+
+/-- The atomic test is additive in the weights. -/
+theorem atomicTest_add_weights (N : ℕ) (x y : ℕ → ℝ) (g : ℝ → ℝ) :
+    atomicTest N (fun n => x n + y n) g = fun u => atomicTest N x g u + atomicTest N y g u := by
+  funext u
+  simp only [atomicTest, add_mul, sum_add_distrib]
+
+/-- The **neutral part** `x⁺ = x · [ω = 1]` of the weights. -/
+def neutralPart (ω : ArithmeticFunction ℝ) (x : ℕ → ℝ) : ℕ → ℝ := fun n => if ω n = 1 then x n else 0
+
+/-- The **charged part** `x⁻ = x · [ω ≠ 1]` of the weights. -/
+def chargedPart (ω : ArithmeticFunction ℝ) (x : ℕ → ℝ) : ℕ → ℝ := fun n => if ω n = 1 then 0 else x n
+
+/-- `f_x = f⁺ + f⁻`. -/
+theorem atomicTest_eq_neutral_add_charged (N : ℕ) (x : ℕ → ℝ) (g : ℝ → ℝ) :
+    atomicTest N x g =
+      fun u => atomicTest N (neutralPart ω x) g u + atomicTest N (chargedPart ω x) g u := by
+  rw [← atomicTest_add_weights]
+  congr 1
+  funext n
+  simp only [neutralPart, chargedPart]
+  split_ifs <;> ring
+
+/-- `f_{ωx} = f⁺ − f⁻`: the gauge flips the charged part. -/
+theorem atomicTest_gauge_eq_neutral_sub_charged (hsign : ∀ n, 0 < n → ω n = 1 ∨ ω n = -1)
+    (N : ℕ) (x : ℕ → ℝ) (g : ℝ → ℝ) :
+    atomicTest N (fun n => ω n * x n) g =
+      fun u => atomicTest N (neutralPart ω x) g u - atomicTest N (chargedPart ω x) g u := by
+  funext u
+  simp only [atomicTest, ← sum_sub_distrib]
+  refine sum_congr rfl fun n hn => ?_
+  simp only [neutralPart, chargedPart]
+  rcases hsign n (mem_Icc.mp hn).1 with h | h
+  · rw [if_pos h, if_pos h, h]; ring
+  · rw [if_neg (by rw [h]; norm_num), if_neg (by rw [h]; norm_num), h]; ring
+
+/-- **The archimedean place sees the gauge.** Below the spacing, a twin's Weil form without its pole
+is `ζ`'s on the gauged test plus the archimedean polarization of the neutral and charged parts:
+`M_ω(f_x) = M(f_{ωx}) + A(f⁺ + f⁻) − A(f⁺ − f⁻)`. The prime forms are gauge conjugate; every
+difference between `ζ` and a twin on atomic tests is archimedean interaction across the charge. -/
+theorem twinMarkov_atomicTest_eq (hω : ∀ a b, ω (a * b) = ω a * ω b)
+    (hsign : ∀ n, 0 < n → ω n = 1 ∨ ω n = -1) {g : ℝ → ℝ} {w : ℝ} (hg : ContDiff ℝ 2 g)
+    (hgc : HasCompactSupport g) (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) {N : ℕ}
+    (hw : w < atomSpacing N) (x : ℕ → ℝ) :
+    archForm (atomicTest N x g) - twistedPrimeSum ω (atomicTest N x g) =
+      markovEnergy (fun u => (atomicTest N (fun n => ω n * x n) g u : ℂ)) +
+        (archForm (fun u => atomicTest N (neutralPart ω x) g u +
+            atomicTest N (chargedPart ω x) g u) -
+          archForm (fun u => atomicTest N (neutralPart ω x) g u -
+            atomicTest N (chargedPart ω x) g u)) := by
+  rw [(twistedPrimeSum_atomicTest hω hsign hg hgc hgsupp hw x).1,
+    markovEnergy_ofReal_eq_archForm_sub_primeSum (contDiff_atomicTest hg N _)
+      (hasCompactSupport_atomicTest hgsupp N _),
+    ← atomicTest_eq_neutral_add_charged, ← atomicTest_gauge_eq_neutral_sub_charged hsign]
   ring
 
 end GaloisForLFunctions.ArithmeticElectrostatics

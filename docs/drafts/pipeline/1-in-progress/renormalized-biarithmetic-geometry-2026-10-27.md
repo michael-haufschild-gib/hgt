@@ -21,8 +21,9 @@ RBG owns the survival law and the rank comparison; imports AET/BGG/CDG/ACP/MPG/H
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  paper proofs for each pillar below
 - [x] 2 → 3  each pillar below in Lean, audited with `lake --old env lean`
-- [ ] frontier (README §9): twisted Lerch entries of the twins, one-scale arithmetic bounds,
-  terminal ceiling, `λ`-correlation along `a ↦ 2a + 1`, mixed-sign clouds, escape modules
+- [x] blueprint questions answered by theorems (README §6); frontier = zero-free strips (proved
+  equivalent to the terminal ceiling and the one-scale bound), linear `λ`-correlation, sign
+  content of the explicit twin inequality, optimal purchase constants (README §9)
 
 ## Pillars (all in Lean)
 
@@ -46,6 +47,10 @@ RBG owns the survival law and the rank comparison; imports AET/BGG/CDG/ACP/MPG/H
 | irreversibility | `PositivityIsIrreversible` | `not_positiveDeformation_of_ne` |
 | Kronecker dilution, height law, harmonic concentration | `CollectivePacketsDiluteOverIndependentOrdinates` | `sum_abs_le_of_packet_nonneg`, `sum_le_height_mul_of_generated_packet` |
 | selectivity battery | `TheSelectivityBatteryOfRenormalizedBiarithmeticGeometry` | `config_dyadic_ge`, `liouville_not_cell_covariant` |
+| terminal ceiling and one-scale bound = zero-free strips | `TheTerminalCeilingAndTheOneScaleBoundAreZeroFreeStrips` | `zeroFreeStrip_iff_terminal_ceiling`, `zeroFreeStrip_iff_heckeDefect_bound` |
+| twisted entries as digamma sums; `φ(m)Λ(t)` as digamma sum | `TheTwistedEntriesAreDigammaSums` | `totient_mul_vonMangoldt_eq_digamma_sum` |
+| Liouville cell defect grows logarithmically | `TheLiouvilleCellDefectGrowsLogarithmically` | `hsDefect_liouville_ge_log` |
+| finite purchase for lattice clouds | `EveryLatticeCloudHasAFinitePurchaseBound` | `exists_purchase_bound` |
 | capstone | `TheLawsOfRenormalizedBiarithmeticGeometry` | `renormalized_biarithmetic_geometry_laws` |
 
 ## No-go closure

@@ -54,6 +54,7 @@ terms, the diagonal of Wall 14 and the polarization face of Wall 1.
 | [ArithmeticEffectivityTheory](../ArithmeticEffectivityTheory/README.md) | torsion orbits, `I(m, n)`, the Hecke law `I(m, mt) = φ(m)Λ(t)`, Abel energies, the renormalized torsion limit, the Farey potential, `J(a, b) = gcd log lcm` | self-intersections and adjunction of orbits, conjugation on cycles, counterterm rates, the arithmetic point, Fekete stability |
 | `RHTower` (transverse chain) | the transverse force and its marginality identity, the zero network, the maximum principle, the attainment dichotomy, angular energy quantization, Selberg's identity, Mertens' first theorem | the energy of the whole divisor and its finiteness law, work = energy, window selection |
 | [BiarithmeticGaugeGeometry](../BiarithmeticGaugeGeometry/README.md), [ArithmeticCorrelationGeometry](../ArithmeticCorrelationGeometry/README.md) | the gauge torus, twins, successor holonomy, quantization of surplus residues | the gauge charge of the renormalized source; its invisibility on atomic Weil forms |
+| [ArithmeticIntersectionTheory](../ArithmeticIntersectionTheory/README.md) | the different of a torsion orbit place by place, `selfIntersection_eq_sum_local`; Hecke invariance of Weil's prime kernel | the bridge `φ ⋆ Λ = φ · tame different`; the archimedean payment of the atomic prime form |
 | [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md), [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md) | the scaling surface, Hodge index, Pontryagin law, `𝔽_q` calibration | the electrostatic reading of adjunction `Γ² = q(2 − 2g)` |
 
 AES does not re-prove what these programmes own; it imports them and builds the laws that relate
@@ -257,6 +258,9 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
    (`orbitIntersection_self_mul_of_coprime`); the cover formula
    `I(p^{a+2}, p^{a+2}) = p I(p^{a+1}, p^{a+1}) + φ(p^{a+1}) p log p` (`orbitIntersection_self_prime_pow_succ`)
    gives growth by exactly the degree `log p` per point (`selfIntersection_per_point_prime_pow_succ`).
+   Place by place, `(φ ⋆ Λ)(n) = φ(n) Σ_{p∣n} log p/(p − 1)` (`localCorrection_eq_totient_mul_tameDifferent`)
+   and `I(n, n)/φ(n) = Σ_{p^a ∥ n} (a − 1/(p − 1)) log p`, the different of `ℚ(ζ_n)` per unit degree
+   (AIT `selfIntersection_eq_sum_local`).
    Conjugation maps every orbit onto itself and is the power map of degree `−1`
    (`conj_mem_primitiveRoots`, `conj_eq_pow_of_mem_primitiveRoots`); the Hermitian and bilinear Abel
    energies agree on torsion cycles (`sum_sum_conj_eq`, `torsionEnergy_eq_bilinear`).
@@ -289,6 +293,12 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
     below a power of the spacing: the adjunction law at atomic resolution. At widths comparable to
     the spacing the gain `log(δ_N/w)` is bounded and the prime counterterm is not (ES11): there the
     matching stops, and the tests begin to see the zeros.
+    **With the pole** (`TheWeilFormAtAtomicResolution`): Weil's form is `Re W = M + 2C² − 2S²`, the
+    pole term a rank-two form of signature `(1, 1)` in `C = ∫ f cosh(u/2)`, `S = ∫ f sinh(u/2)`
+    (`re_W_atomicTest_eq`). Hence `Re W + 2S² ≥ 0` on atomic tests of width `≤ atomicWidth N`
+    (`re_W_add_sinh_sq_nonneg`) — the two places and the pole coupled with a counterterm of rank one —
+    and `Re W ≥ 0` wherever `|S| ≤ |C|`, in particular on all nonnegative atomic tests, whose atoms
+    sit in `u ≥ 0` (`re_W_atomicTest_nonneg_of_abs_le`, `re_W_atomicTest_nonneg_of_nonneg`).
 
 ### E. The base and the arithmetic point
 
@@ -339,8 +349,14 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
     Below the spacing the twin's prime sum of an atomic test is `ζ`'s prime sum of the gauged test
     (`twistedPrimeSum_atomicTest`), and the stability law of ES18 holds for every sign twin
     (`twinMarkovEnergy_atomicTest_nonneg`). The source sees the gauge coefficient by coefficient
-    (ES19); Weil forms see it only through lags `log k` that are not exact ratios of atoms — at the
-    spacing scale.
+    (ES19); on atomic tests the prime forms are conjugate, and what separates a twin's Weil form
+    from `ζ`'s is archimedean: splitting the weights by `ω = ±1` into a neutral part `x⁺` and a
+    charged part `x⁻`, `M_ω(f_x) = M(f_{ωx}) + A(f⁺ + f⁻) − A(f⁺ − f⁻)` (`twinMarkov_atomicTest_eq`),
+    the archimedean polarization across the charge. On nonnegative weights the gauge does show, on the wrong side: the twin's Markov
+    form exceeds `ζ`'s by `(∫ g²) Σ x_m x_n (1 − ω(m)ω(n)) P(m, n) ≥ 0`
+    (`twistedAtomicWeilForm_le_of_nonneg`, `twinMarkov_sub_markov_atomicTest`), by exactly
+    `2 Λ(p)/√p · ∫ f²` on the two-atom test `1_{1} + 1_{p}` at a flipped prime, for every window
+    `N ≥ p` (`gaugeMargin_atomicWeilForm`, `twinMarkov_sub_markov_pairWeights`).
 
 ---
 
@@ -368,7 +384,8 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
 | **ES18 Stability at atomic resolution** | `M(f) ≥ (2θ′(0) + e^{−1/2} log(δ_N/2w) − 2 log N − C)∫f²`; `M ≥ 0` for `w ≤ atomicWidth N` | `primeSum_atomicTest`, `levyEnergy_atomicTest_ge`, `markovEnergy_atomicTest_ge`, `markovEnergy_atomicTest_nonneg` |
 | **ES19 Gauge margin of the source** | margin `2 log² p` at the first flipped prime, `≤ −log² 2` on every window; L-series margin | `gaugeMargin_of_flip`, `gaugeMargin_window`, `LSeries_gaugeMargin` |
 | **ES20 Power saving for aligned ordinates** | `F^k` has mass `≤ k!(Σ|c_p|²)^k`; aligned ordinates number `O(R log³ R log(A+R) θ^{−1} R^{log θ/log X})` | `expSum_pow`, `sum_normSq_pow_le`, `exists_card_largeValues_le_theta_pow`, `exists_card_aligned_power_saving` |
-| **ES21 Gauge invisibility at atomic resolution** | `P_ω = diag(ω) P diag(ω)`; identical spectral bounds; the stability law holds for every sign twin | `twistedWeilPrimeKernel_eq`, `twistedAtomicWeilForm_le_iff`, `twistedPrimeSum_atomicTest`, `twinMarkovEnergy_atomicTest_nonneg` |
+| **ES21 Gauge invisibility at atomic resolution** | `P_ω = diag(ω) P diag(ω)`; identical spectral bounds; the stability law holds for every sign twin; `M_ω(f_x) = M(f_{ωx}) + A(f⁺+f⁻) − A(f⁺−f⁻)`; on nonnegative tests `M_ω − M = (∫g²) Σ x_m x_n (1 − ω_mω_n) P ≥ 0`, margin `2Λ(p)/√p` per unit mass | `twistedWeilPrimeKernel_eq`, `twistedAtomicWeilForm_le_iff`, `twistedPrimeSum_atomicTest`, `twinMarkovEnergy_atomicTest_nonneg`, `twinMarkov_atomicTest_eq`, `twinMarkov_sub_markov_atomicTest`, `twinMarkov_sub_markov_pairWeights` |
+| **ES22 Coupled renormalization at atomic resolution** | `Re W = M + 2C² − 2S²`; `Re W + 2S² ≥ 0`; `Re W ≥ 0` on `|S| ≤ |C|` and on nonnegative atomic tests | `re_W_atomicTest_eq`, `re_W_add_sinh_sq_nonneg`, `re_W_atomicTest_nonneg_of_abs_le`, `re_W_atomicTest_nonneg_of_nonneg` |
 
 Inherited and used throughout: `Re W = D − Δ`, `D` faithful, coercive and log-Sobolev (APol); the
 transverse force and its marginality identity, the maximum principle, the attainment dichotomy,
@@ -403,7 +420,9 @@ kernel (AET).
    form without its pole is nonnegative on every atomic test at the points `log n`, `n ≤ N`, of
    width `≤ N^{−O(1)}` (ES18). The matching holds below a power of the spacing and stops at the
    spacing, where the tests see the zeros; there it is the sign problem (§9.2). Below the spacing it
-   holds for every sign twin as well (ES21): it is an adjunction law, not yet a selection law.
+   holds for every sign twin as well (ES21): it is an adjunction law, not yet a selection law. With
+   the pole the coupled family has a counterterm of rank one, `Re W + 2S² ≥ 0`, and Weil's form is
+   nonnegative on every nonnegative atomic test (ES22).
 3. **What bounds the field?** The energy is bounded unconditionally — `E(ρ) ≤ 16(C + log(|γ| + 4))`
    at every zero, a window by its zero count (ES16) — because each pair term is at most one; the
    field is not, since a nearly coincident pair contributes `1/|ρ − ρ′|`. The bound that would
@@ -440,10 +459,12 @@ kernel (AET).
    source, `Λ₂^ω = ωΛ₂`, prime by prime, with a margin law: every sign twin differing from the Euler
    vacuum on a window has a source coefficient `≤ −log² 2` there, a margin fixed by the first flipped
    prime and not collapsing as primes enter (ES19). *Answer:* the charge and its non-collapsing margin
-   live in the source. On Weil forms the margin vanishes at atomic resolution: the twin's prime form
-   is `ζ`'s conjugated by the diagonal of signs `ω(n)`, so both have the same spectrum bounds and the
-   same stability law (ES21). The form-level margin (the report's Q3) can only come from tests at the
-   spacing scale, where lags `log k` meet non-exact ratios `log(m/n)` and `ω(m)ω(n) ≠ ω(k)`.
+   live in the source. On atomic tests the twin's prime form is `ζ`'s conjugated by the diagonal of
+   signs `ω(n)`: same spectral bounds, same stability law (ES21); the Weil forms differ only by the
+   archimedean interaction of the neutral and charged parts of the test (`twinMarkov_atomicTest_eq`). On nonnegative atomic tests there is a margin `2Λ(p)/√p` per unit mass,
+   uniform in the window, but in the twin's favour: `ζ` is the minimum of its gauge orbit there. A
+   margin that excludes twins must come from signed tests at the spacing scale, where lags `log k`
+   meet non-exact ratios `log(m/n)` and `ω(m)ω(n) ≠ ω(k)`.
 8. **Is the coupled class bounded at the centre?** Owned by BGG. Electrostatically the central
    order of a member is the charge it places at `½`: contracting an off-critical quartet at
    ordinate `γ` moves four charges — two reflection pairs, two quanta of transverse energy — onto
@@ -490,7 +511,10 @@ kernel (AET).
 | The field and the energy are equally hard to bound | The energy is `O(log γ)` per zero unconditionally; the field has no unconditional bound |
 | The archimedean self-energy cannot pay the prime form | It pays it exactly, below a power of the atomic spacing (ES18); it cannot at the spacing |
 | Aligned zero ordinates must be rare by randomness | The second moment proves it (ES17); higher moments give the power saving (ES20) |
-| A coefficient margin of the source gives a margin of Weil forms | On atoms the gauge is a diagonal of signs: zero spectral margin, and the atomic stability law holds for every twin (ES21) |
+| A coefficient margin of the source gives a margin of Weil forms | On atoms the gauge is a diagonal of signs on the prime form: zero spectral margin there, and the atomic stability law holds for every twin (ES21) |
+| The archimedean place is blind to the gauge | Blind to the archimedean twist (ES15), not to the sign gauge: on atomic tests it carries the whole difference between `ζ` and a twin (ES21) |
+| On nonnegative tests the vacuum beats its twins | It loses: there the twin's Weil form exceeds `ζ`'s by `2Λ(p)/√p` per unit mass (ES21) |
+| The pole term is a nonnegative correction | It has signature `(1, 1)`; its negative direction `−2S²` is the rank-one counterterm (ES22) |
 | Energy controls the potential at a point | Logarithmic energy does not bound pointwise potentials (Franel–Landau is a potential at one point) |
 
 ---
@@ -509,25 +533,24 @@ Laurent self-terms; Selberg's source and its gauge twists; the local correction 
 Leibniz rule and the cover formula; conjugation on torsion cycles; renormalized torsion pairings
 and counterterm rates; the arithmetic-point bound; Fekete's bound on the circle; affine invariance.
 
-**Built for the frontier's list (§4.5 of the report):** arithmetic adjunction — the degree
-renormalization on both carriers (ES9, ES10), the similitude structure of the circle (ES13), and the
-matched archimedean counterterm at atomic resolution (ES18); field and defect inequalities — the
-unconditional energy bound (ES16), the sharp field thresholds (ES7), the external field law (ES8),
-the defect as moment of inertia (ES6); Diophantine control at zero ordinates — anti-alignment
-outside the strip (ES8), the large-values law on the line (ES17) and its power-saving form from
-higher moments (ES20); gauge margin laws — at the level of the source (ES19), and their exact
-vanishing on Weil forms at atomic resolution (ES21); Hermitian structures with computed similitudes
-on the base (ES13), and on the zero side the Hecke action on `D`, computed charge by charge as the
-reweighting `e^{2δL}` (ES6): a quasi-similitude with defect at most the strip kernel times `D`
-(CDG `heckeDefect_le_strip`), an isometry iff RH (APol); selection at the zero spacing by
-quantization (ES5).
+**The frontier's list (§4.5 of the report), tool by tool.** Each item is delivered either as an
+unconditional theorem or as the strongest unconditional form together with a proved equivalence of
+the requested form with RH.
 
-**Proved equivalent to RH, hence not buildable from the present inputs:** an upper bound for the
-field below one quantum (ES7) or for the energy below one quantum per zero (ES3, ES5); the
-isometry of the Hecke action on `D` (ES6, APol); the matched renormalization at the spacing scale
-(ES18 is its form below the spacing; at the spacing it is the sign). **Open, not RH-strength:**
-margins of Weil forms on spacing-scale tests for growing prime windows (ES21 shows they must come
-from non-exact lags).
+| Report tool | AES delivers |
+|---|---|
+| Coupled renormalization of the two places and the pole (B3.25) | at atomic resolution, the archimedean place pays the local-to-global divergence of the prime form (ES18), and with the pole a counterterm of rank one, `Re W + 2S² ≥ 0`, with survival cone containing every nonnegative atomic test (ES22); at the spacing scale the same law is the sign problem |
+| Anomaly cancellation (B3.26) | the coupled finite part on atoms is the Markov form, built from the translation-invariant archimedean form and Weil's prime kernel, which is exactly Hecke invariant (AIT `weilPrimeKernel_mul_left`) and the renormalized limit of the gcd-twisted torsion energies (AET); the archimedean counterterm is constant on atoms (ES18) |
+| Upper bounds for the field | unconditional energy bound `E(ρ) = O(log γ)` (ES16); a field bound below `max(1, √(2c log γ))` is proved equivalent to RH (ES7) |
+| Upper bounds for `ζ′/ζ` on outward rays | the external field law `Re L(Λ, s) + Σ_F Re 1/(s − ρ) ≤ Re arch′/arch` and anti-alignment `m/(σ − β)` at zero ordinates (ES8) |
+| Upper bounds for `M_f` | `M_f` is the infinitesimal Hecke defect, `4L²M_f ≤ E_f(L) ≤ 8(cosh L − 1)M_f` (ES6); its vanishing is RH (APol) |
+| Moments and exceptional sets of short prime sums over zero ordinates | first moment (RHTower `exists_zeroSum_dirichletPolynomial_le`), second moment and large values (ES17), higher moments and power saving `T^{1 − 1/C + o(1)}` (ES20) |
+| The interior anti-alignment law | on average over zeros, the smoothed Gonek lemma (RHTower `exists_zeroSum_dirichletPolynomial_le`: `Σ_ρ x^{ρ−½}` correlates with `−Λ(x)/√x`); pointwise, right of the strip (ES8); off the exceptional set, the alignment law (ES17, ES20) |
+| Gauge margin laws on growing prime windows, from charged data | on the source, margin `2 log² p` at the first flipped prime, uniform in the window (ES19); on Weil forms at atomic resolution, the complete law (ES21): zero spectral margin of the prime forms (`P_ω = diag(ω) P diag(ω)`), the remaining margin archimedean, `A(f⁺ + f⁻) − A(f⁺ − f⁻)`, and on nonnegative tests the margin `2 Λ(p)/√p` per unit mass, uniform in the window, with `ζ` the minimum of its gauge orbit |
+| Hermitian structures with the flow acting by computed similitudes | on the base, power maps as similitudes of the Abel energy (ES13); on the zero side the Hecke action on `D`, computed charge by charge as the reweighting `e^{2δL}` (ES6), a quasi-similitude bounded by the strip kernel (CDG `heckeDefect_le_strip`), an isometry iff RH (APol) |
+| Selective counting polarizations | the transverse moment of inertia `M_f = Σ m δ²|f̂(ρ)|²`: a positive Hermitian form that counts exactly the off-line charges, computed as the infinitesimal Hecke defect (ES6); the transverse energy of windows, counting off-line zeros with integer quanta (ES5) |
+| Ceilings for non-positive members of coupled classes | the quantization of central charge: contraction of an off-critical quartet moves four charges onto the centre, outward splitting removes two (§6, Q8); the ceiling itself is owned by BGG |
+| Selection lemmas at the zero-spacing scale | window energy `< 2` forces a critical window of any size (ES5) |
 
 ---
 
@@ -541,22 +564,28 @@ from non-exact lags).
    resolution `w ≤ N^{−O(1)}`: the archimedean self-energy pays the logarithmic counterterm. The open
    step is the spacing scale `w ≍ 1/N`, where the Lévy gain is bounded and the prime counterterm is
    not (ES11, ES12): positivity there must come from cancellation in the prime form rather than from
-   self-energy — the sign problem in its adjunction form.
+   self-energy — the sign problem in its adjunction form. With the pole the atomic law needs a
+   rank-one counterterm `2S²` (ES22); whether a counterterm of bounded rank survives at the spacing
+   is B3.25 at the scale where it is open.
 3. **Matched renormalization of the square.** Compare the torsion counterterm with the zero-side
    counterterm `Λ log` through the explicit formula for `ζ″/ζ`.
 4. **Electrostatics of the twins.** Fields and energies of the divisors of sign twins (signed
    configurations, no reflection closure); which electrostatic quantity carries non-archimedean
-   charge at the level of forms rather than coefficients. Atomic tests carry none (ES21): the form
-   margin must be read on overlapping atoms, through the near-coincidences `m/n ≈ k`.
+   charge at the level of forms rather than coefficients. On atomic tests the prime forms carry
+   none, nonnegative tests carry it in the twin's favour, and the remainder is the archimedean
+   polarization across the charge, dominated by the Lévy gain below `atomicWidth N` (ES21): a margin
+   that excludes twins must be read where that gain fails — overlapping atoms, near-coincidences
+   `m/n ≈ k`.
 5. **Attainment.** Exclusion of infinite transverse energy for the actual divisor, or an energy
    criterion for attainment of the depth supremum with infinitely many off-line zeros.
 6. **Alignment against depth.** The first moment over zero ordinates is in the corpus
    (`exists_zeroSum_dirichletPolynomial_le`: zero ordinates anti-align on average), the second is
    ES17, and higher moments give power-sparse exceptional sets (ES20). The open step is the report's
-   Q1 proper: compare the exceptional set with zero density estimates for zeros of depth `δ`
-   (counts `T^{1 − c δ}`), so that the forcing half of the outward reserve applies at every zero of
-   depth `δ` outside a set too small to contain one. The outward reserve as a short prime sum at the
-   terminal ordinate (W18) is the second entrance.
+   Q1 proper, a forcing law: every zero of depth `δ` makes a short prime detector reach a size
+   `V(δ)` at its ordinate. With it ES20 becomes a zero-density estimate `T^{1 − 1/C + o(1)}` for deep
+   zeros, to be compared with the corpus's unconditional `T^{1 − δ/40}`
+   (`exists_zetaZeroDensity_powerSaving`); counting alone bounds deep zeros and never excludes one.
+   The outward reserve as a short prime sum at the terminal ordinate (W18) is the second entrance.
 
 ---
 
@@ -569,7 +598,8 @@ between computed quantities of the potential that turns detection into exclusion
 theorem, sharp equivalence, or located gap (§6); the stability law holds at atomic resolution
 (ES18), for ζ and every sign twin alike (ES21), and its form at the spacing scale is the sign
 problem; the field law has its sharp threshold (ES7) and its unconditional energy form (ES16);
-aligned zero ordinates are power-sparse (ES20).
+aligned zero ordinates are power-sparse (ES20); the two places and the pole couple at atomic
+resolution with a rank-one counterterm (ES22).
 
 A contribution must:
 
@@ -615,6 +645,7 @@ selects for free; identities first, sign last; a reformulation is not a reductio
 | `TheStabilityLawAtAtomicResolution` | Lévy gain of disjoint shifts; atomic tests; exact prime sum; the stability law below a power of the spacing |
 | `TheGaugeMarginOfTheRenormalizedSource` | margins of the source against sign twins on every window; L-series margin |
 | `HigherMomentsAtZeroOrdinates` | powers of prime polynomials, mass of convolution powers, higher-moment large values, power saving for the prime detector |
-| `TheGaugeIsInvisibleAtAtomicResolution` | the gauge as a diagonal of signs on atoms; conjugacy of atomic prime forms; the stability law for every sign twin |
+| `TheGaugeIsInvisibleAtAtomicResolution` | the gauge as a diagonal of signs on atoms; conjugacy of atomic prime forms; the stability law for every sign twin; the margin on the positive cone |
+| `TheWeilFormAtAtomicResolution` | Weil's form on atomic tests with the pole; the rank-one counterterm; positivity on the cone `|S| ≤ |C|` |
 | `TheExternalFieldIsAPrimeSum` | the external field as Coulomb sum and prime sum; anti-alignment at zero ordinates; escape as infinite energy |
 | `PowerMapsAreSimilitudesOfTheAbelEnergy` | closed form and positivity of torsion Abel energies; power maps as similitudes; renormalized limit; adjunction for full torsion |

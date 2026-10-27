@@ -10,6 +10,10 @@ import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.CollectivePacketsDil
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheRamanujanTwinsSurviveExactlyOnPerOrderRelations
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheCellHolonomyDefectCountsChargedCells
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.HarnackOnTheCaratheodoryRegion
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheTerminalCeilingAndTheOneScaleBoundAreZeroFreeStrips
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheTwistedEntriesAreDigammaSums
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheLiouvilleCellDefectGrowsLogarithmically
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.EveryLatticeCloudHasAFinitePurchaseBound
 
 /-!
 # The laws of Renormalized Biarithmetic Geometry
@@ -36,6 +40,14 @@ One statement collecting the laws proved in the programme:
    between `2N₊` and `4N₊`, `N₊ = #{a ≤ X : λ(a) = λ(2a + 1)}`.
 9. **Ramanujan orthogonality.** Ramanujan modes of different orders are orthogonal over a common
    period, so twins survive exactly on per-order relations.
+10. **Zero-free strips.** The terminal ceiling at depth `a` and the uniform one-scale Hecke bound
+    with angle `ϑ` are each equivalent to a zero-free strip.
+11. **Primes as digamma sums.** `φ(m)Λ(t)` is a sum of digamma values at rational points, read off
+    the pole-node block of the twins.
+12. **Logarithmic gauge charge.** The Liouville cell defect is at least `2(K + 1)` on
+    `[1, 4^{K+2}]`.
+13. **Finite purchase.** Every finite cloud of nonzero lattice ordinates has a finite purchase
+    bound.
 -/
 
 noncomputable section
@@ -113,7 +125,25 @@ theorem renormalized_biarithmetic_geometry_laws :
         ∀ s : ℂ, ‖s - ((p.1 : ℂ) + h)‖ ≤ rayRadius (xiZeroDepth p) * h / 2 →
           (((xiZeroCopyFiber p.1).card : ℝ) / h +
             ((xiZeroCopyFiber p.1).card : ℝ) / (2 * xiZeroDepth p + h) +
-            c * xiZeroDepth p * Real.log (|xiZeroHeight p| + 4)) / 3 ≤ (logDeriv xi s).re) :=
+            c * xiZeroDepth p * Real.log (|xiZeroHeight p| + 4)) / 3 ≤ (logDeriv xi s).re) ∧
+    -- Zero-free strips: the terminal ceiling and the one-scale bound
+    (∀ {a : ℝ}, 0 ≤ a → ((∀ q : XiZeroCopy, xiZeroDepth q ≤ a) ↔
+      ∀ p : XiZeroCopy, 1 / 2 < (p.1 : ℂ).re → IsTerminal p → xiZeroDepth p ≤ a)) ∧
+    (∀ {ϑ : ℝ}, 0 ≤ ϑ → ((∀ ρ : zetaZeroConfig.carrier, |zetaDepth ρ| ≤ ϑ) ↔
+      ∀ (f : CompactTest) (L : ℝ), heckeDefect f L ≤ mass f * (2 * Real.cosh (2 * ϑ * L) - 2))) ∧
+    -- Primes as digamma sums
+    (∀ {m t : ℕ}, 0 < m → 1 < t →
+      (Nat.totient m : ℝ) * ArithmeticFunction.vonMangoldt t =
+        -((1 / (m * (m * t) : ℕ)) * ∑ j ∈ range (m * (m * t)),
+          shiftedMode m j * shiftedMode (m * t) j *
+            latticeGermLimit ((j + 1) / (m * (m * t) : ℕ)))) ∧
+    -- Logarithmic gauge charge at the Liouville gauge
+    (∀ (K : ℕ) (c : ℝ), 2 * ((K : ℝ) + 1) ≤ hsDefect PrimeGauge.liouvilleGauge (4 ^ (K + 2)) c) ∧
+    -- Finite purchase for lattice clouds
+    (∀ {d : ℕ} {κ : Type} [Fintype κ] {g : Fin d → ℝ}, LinearIndependent ℚ g →
+      ∀ n : κ → Fin d → ℤ, (∀ j, n j ≠ 0) → ∃ M : ℕ, ∀ (a₀ : ℝ) (a : κ → ℝ),
+        (∀ t : ℝ, 0 ≤ a₀ + ∑ j, a j * Real.cos ((∑ i, (n j i : ℝ) * g i) * t)) →
+          ∑ j, a j ≤ M * a₀) :=
   ⟨fun _ a _ hq hper _ hx => periodicGerm_survival a hq hper hx,
     fun _ hS hne _ _ _ hC => torsion_survivalCone_eq hS hne hC,
     fun _ hq => torsionLimitForm_neg hq,
@@ -130,6 +160,11 @@ theorem renormalized_biarithmetic_geometry_laws :
     fun hind n M hh a₀ a hP => sum_le_height_mul_of_generated_packet hind n M hh a₀ a hP,
     hsDefect_liouville_sandwich,
     fun hm hn hmq hnq => sum_ramanujanMode_mul hm hn hmq hnq,
-    exists_terminal_floor_spreads⟩
+    exists_terminal_floor_spreads,
+    fun ha => zeroFreeStrip_iff_terminal_ceiling ha,
+    fun hϑ => zeroFreeStrip_iff_heckeDefect_bound hϑ,
+    fun hm ht => totient_mul_vonMangoldt_eq_digamma_sum hm ht,
+    hsDefect_liouville_ge_log,
+    fun hind n hn => exists_purchase_bound hind n hn⟩
 
 end GaloisForLFunctions.RenormalizedBiarithmeticGeometry

@@ -132,7 +132,11 @@ theorem tendsto_thetaPrefixError_zero (B D : ℝ) :
         ≤ (16 / (n : ℝ)) * (2 * (Real.sqrt 2 * Real.sqrt (n : ℝ))) :=
           mul_le_mul_of_nonneg_left (hlog_le.trans (by linarith)) (by positivity)
       _ = 32 * Real.sqrt 2 * (Real.sqrt (n : ℝ))⁻¹ := by
-          rw [← hsn]; field_simp [hsn_pos.ne']; ring
+          have hn_div : 16 / (n : ℝ) = 16 / (Real.sqrt (n : ℝ) * Real.sqrt (n : ℝ)) := by
+            rw [hsn]
+          rw [hn_div]
+          field_simp [hsn_pos.ne']
+          ring
   have ht2 : Tendsto (fun n : ℕ =>
       D * ((16 / (n : ℝ)) * (xiLineTwoLogDerivConstant + Real.log ((n : ℝ) + 4)))) atTop (𝓝 0) := by
     have hsum := ((hinv.mul_const xiLineTwoLogDerivConstant).add hlog_div).const_mul D
@@ -331,7 +335,9 @@ theorem zetaZeroAbscissa_le_iff_singleScale_reading_rate {θ : ℝ} (hθ0 : 0 < 
       have hmul_rpow : (9 * Real.exp ((2 : ℝ) ^ k)) ^ (q / 2) =
           (9 : ℝ) ^ (q / 2) * Real.exp ((q / 2) * (2 : ℝ) ^ k) := by
         rw [Real.mul_rpow (by norm_num) (Real.exp_pos _).le,
-          Real.rpow_def_of_pos (Real.exp_pos _), Real.log_exp, mul_comm]
+          Real.rpow_def_of_pos (Real.exp_pos _), Real.log_exp]
+        congr 2
+        ring
       have hexp_le : Real.exp ((q / 2) * (2 : ℝ) ^ k) ≤
           Real.exp ((1 - 2 * θ + ε) * (2 : ℝ) ^ k) := by
         apply Real.exp_le_exp.mpr
@@ -346,7 +352,7 @@ theorem zetaZeroAbscissa_le_iff_singleScale_reading_rate {θ : ℝ} (hθ0 : 0 < 
         _ ≤ (9 : ℝ) ^ (q / 2) * Real.exp ((1 - 2 * θ + ε) * (2 : ℝ) ^ k) :=
             mul_le_mul_of_nonneg_left hexp_le (Real.rpow_nonneg (by norm_num) _)
     have hexp_ge1 : 1 ≤ Real.exp ((1 - 2 * θ + ε) * (2 : ℝ) ^ k) :=
-      Real.one_le_exp (by have : (0 : ℝ) < 2 ^ k := by positivity; nlinarith)
+      Real.one_le_exp (mul_nonneg (by linarith) (by positivity))
     calc heckeDefect f ((2 : ℝ) ^ k)
         ≤ reading f ((2 : ℝ) ^ k) 1 (dyadicThetaPrefix k) + Emax := by linarith
       _ ≤ |C₁| * ((dyadicThetaPrefix k : ℝ) + 1) ^ q + Emax := by linarith
@@ -597,10 +603,12 @@ theorem tendsto_reading_logHorizon_div_sq_zero (f : CompactTest) {L : ℕ → �
             (Real.log ((n : ℝ) + 2)) ^ (1 / 18 : ℝ))) atTop atTop := by
       rw [Filter.tendsto_atTop]
       intro b
+      set c₂ : ℝ := 1 / (2 * 10 ^ 8 * (6 : ℝ) ^ (5 / 3 : ℝ))
+      have hc₂ : 0 < c₂ := by dsimp [c₂]; positivity
       have hb1 := ((hy_atTop.atTop_div_const two_pos).const_mul_atTop hη₁_pos).eventually
         (eventually_ge_atTop b)
       have hb2 := (((tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 18)).comp
-        hy_atTop).const_mul_atTop (by positivity)).eventually (eventually_ge_atTop b)
+        hy_atTop).const_mul_atTop hc₂).eventually (eventually_ge_atTop b)
       filter_upwards [hb1, hb2] with n h1 h2
       exact le_min h1 h2
     refine tendsto_atTop_mono' atTop ?_ hlow_atTop
@@ -720,6 +728,7 @@ theorem tendsto_reading_logHorizon_div_sq_zero (f : CompactTest) {L : ℕ → �
         Real.exp (-4 * min η₁ (vkZeroFreeWidth ((n : ℝ) + 2)) * Real.log ((n : ℝ) + 1)) +
         C_tail * sourceReferenceTail n + thetaPrefixError B₁ D₁ n := by
       field_simp [hsq_pos.ne']
+      ring
     linarith [hbd, hid]
 
 end GaloisForLFunctions.BezoutValuationIncidence

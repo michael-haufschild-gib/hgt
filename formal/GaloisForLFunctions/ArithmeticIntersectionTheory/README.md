@@ -177,7 +177,11 @@ hyperbolic Hecke correspondences that glue the levels.
     prime form on orders `≤ M` by `238 √M |x|²`, against `≍ log M` along the pole direction.
 17. **Tower coordinates** (`autocorr_logAtom`, `weilArchRe_logAtom`). The exact archimedean form turns the
     archimedean and polar part of a log-atom test into `E_φ|x|² + 2αβ(Σ x_n n^{−1/2})(Σ x_n n^{1/2}) −
-    Σ_{m<n} x_m x_n K_φ(log(n/m))`, with the self-energy `E_φ` and the archimedean kernel `K_φ` of the atom.
+    Σ_{m<n} x_m x_n K_φ(log(n/m))`, with the self-energy `E_φ` and the archimedean kernel `K_φ` of the atom;
+    `E_φ ≥ ‖φ‖²(γ₀ + e^{−1/2} log((1−δ)/δ))` (`atomSelfEnergy_ge`).
+18. **Base and successor** (`ladderKernel_mul_ladderKernel_eq_zero`, `frobeniusTower_lcm_ne_zero`,
+    `sameLadder_succ_iff`). Distinct primes never charge the same pair of orders; over `𝔽_q` two places
+    share the lags divisible by `lcm` of their degrees; `n` and `n + 1` share a ladder only for `1 → 2`.
 
 ---
 
@@ -202,6 +206,7 @@ hyperbolic Hecke correspondences that glue the levels.
 | XV. The polar part | rank-two pairing of `Σ x_n n^{−1/2}` with `Σ x_n n^{1/2}`; under RH, on the polar hyperplane the `Γ`-part alone dominates `‖φ‖² Σ_p Q_p` | `ThePolarPartPairsThePoleDirection` |
 | XVI. The square-root price | summing the local tower bounds costs `238 √M`; the joint structure costs `log M` | `TheSquareRootPriceOfSeparateTowers` |
 | XVII. RH in tower coordinates | `Re(archimedean + polar) = E_φ|x|² + 2αβ(Σ x/√n)(Σ x√n) − Σ_{m<n} x_m x_n K_φ`; under RH, `‖φ‖² Σ_p Q_p + Σ_{m<n} x_m x_n K_φ ≤ E_φ|x|² + 2αβ(Σ x/√n)(Σ x√n)` | `TheHodgeIndexInTowerCoordinates` |
+| XVIII. Base and successor | ladder kernels of distinct primes have disjoint supports, Frobenius towers of places overlap; the successor is transverse to every ladder except at `1 → 2` | `TheBaseAndTheSuccessor` |
 
 ---
 
@@ -227,8 +232,11 @@ hyperbolic Hecke correspondences that glue the levels.
 4. **What is the base?** Over `𝔽_q` all places act on one Frobenius ladder. Over `ℤ` each prime has
    its own ladders, transverse to those of every other prime; the prime kernel is a sum of commuting
    local operators `log p (K_p − 1) ⊗ 1` on `ℓ²(⊕_p ℕ)` (Pillar VII), whose joint symbol lives on the
-   gauge torus with the heights `n^{it}` on its Kronecker line. The finite intersection is blind to the
-   order-two points of that torus (Pillar IX). There is no common ladder: that is the absence of a base.
+   gauge torus with the heights `n^{it}` on its Kronecker line. Distinct primes never charge the same
+   pair of orders, while over `𝔽_q` any two places share lags (Pillar XVIII). The finite intersection
+   is blind to the order-two points of the torus (Pillar IX). There is no common ladder: that is the
+   absence of a base. The only other structure, the successor, crosses ladders at every edge except
+   `1 → 2` (Pillar XVIII): additive information lives between the towers, never inside one.
 5. **Which positivity holds where?** At finite regulator, archimedean positivity on every point cycle
    (`hasSum_pointEnergy`) and on orbit cycles (AET); at each prime, the local Hodge index with explicit
    bounds (Pillars VI–VII); globally, the sum of local forms is unbounded (Pillar VIII), Weil's prime
@@ -282,8 +290,9 @@ ladder kernels and the transverse decomposition of Weil's prime kernel; the pole
 bound; sign gauges; the rotation diagonalization of point cycles and the folding of frequencies on
 `μ_N`; Gauss's digamma theorem; log-atom tests, the transfer identity and their Mellin values at
 `±½`; the polar part on log-atom tests; the square-root price of separate towers; the autocorrelation
-of log-atom tests and the archimedean part in tower coordinates; the spacing regulator; Rosati
-moments; the ladder index bound.
+of log-atom tests, the archimedean part in tower coordinates and the self-energy bound; the
+spacing regulator; Rosati moments; the ladder index bound; disjointness of ladder supports, the
+Frobenius ladder, and successor transversality.
 
 ---
 
@@ -292,8 +301,9 @@ moments; the ladder index bound.
 1. **A covariant regulator with a nontrivial null cone.** A family of positive pairings on torsion
    cycles, Hecke covariant up to tame ramification, whose counterterm is not a multiple of the
    identity. By the survival law this is exactly what a sign through the limit requires.
-2. **Asymptotics of the archimedean constants.** Pillar XVII is exact. Prove
-   `E_φ = ‖φ‖² log(1/δ) + O(‖φ‖²)` (the jump weight is `≍ 1/y` near `0` and `Φ` vanishes beyond `δ`) and
+2. **Sharp asymptotics of the archimedean constants.** Pillar XVII is exact, and
+   `E_φ ≥ ‖φ‖²(γ₀ + e^{−1/2} log((1−δ)/δ))` is proved. Show `E_φ = ‖φ‖² log(1/δ) + O(‖φ‖²)` with coefficient
+   `1` (the jump weight is `≍ 1/y` near `0` and `Φ` vanishes beyond `δ`) and
    `K_φ(c) = (∫φ)² e^{c/2}/sinh c + O(δ)`; then the tower inequality on the polar hyperplane at the widest
    admissible atoms `δ ≍ 1/M` is the sharp form of the question.
 3. **Arithmetic Riemann–Roch on torsion orbits.** The lattice `𝓞_{ℚ(ζ_n)}` with its trace form has a

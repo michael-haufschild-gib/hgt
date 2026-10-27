@@ -1,21 +1,22 @@
 # Quantitative Single-Scale Integer Theta Prefix Transfer and Unconditional Vinogradov–Korobov Sub-Trivial Prefix Ceiling (`RBG` Open Topic #2)
 
 - **ID:** astra-next-t3-single-scale-theta-prefix-and-vk-ceiling
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4 formalized)
 - **Source:** docs/reports/review-2710/astra.md · Focus Question 3 / `RenormalizedBiarithmeticGeometry/README.md` Open Topic #2
-- **Statement:** Explicit finite-`n` integer-theta prefix-to-defect bound (`heckeDefect_le_of_explicit_reading`), exact single-scale logarithmic-horizon integer-prefix equivalence (`zetaZeroAbscissa ≤ 1 - θ ↔` polynomial growth `(n + 1)^{2(1 - 2θ) + ε}` of `RBG.reading f (2^k L_0) 1 ⌊exp(2^{k-1} L_0)⌋₊`), and the first unconditional sub-trivial single-scale upper bound on `RBG.reading f L 1 n` along `|L| ≤ 2 log(n + 1)` beating the trivial strip ceiling `mass f · (n + 1)^2` by the Vinogradov–Korobov factor `exp(-c (log(n + 1))^{1/3} (log log(n + 1))^{-5/3})`.
+- **Statement:** Explicit all-`n ≥ 1` integer-theta prefix-to-defect and electrostatic moment-of-inertia bounds (`heckeDefect_le_of_explicit_reading`, `depthSecondMoment_le_of_explicit_reading`), exact single-scale logarithmic-horizon integer-prefix equivalence (`zetaZeroAbscissa ≤ 1 - θ`, `GrowingEndpointEscapedMoebiusLaw θ`, and `RiemannHypothesis` along `dyadicThetaPrefix k = ⌊exp(2^k/2)⌋₊ + 1`), and the first unconditional sub-trivial single-scale upper bound on `RBG.reading f L 1 n` across `|L| ≤ 2 log(n + 1)` beating the trivial strip ceiling `mass f · (n + 1)^2` by the Vinogradov–Korobov factor `exp(-4 δ_VK(n + 2) log(n + 1))` (`tendsto_reading_logHorizon_div_sq_zero`).
+- **Lean Module:** `formal/GaloisForLFunctions/BezoutValuationIncidence/SingleScaleThetaPrefixTransferAndVKCeiling.lean`
 
 ## Goal
-Attack `RenormalizedBiarithmeticGeometry` Open Topic #2 ("Single-scale bounds on the integer theta prefix readings") via `heckeDefect_le_depthKernel_of_dyadic_exp_rate` (`UnconditionalEscapedMoebiusDecayAndCrossRouteBridge.lean`) and `RBG.heckeDefect_le_of_readings` (`IntegerThetaPrefixesReadTheDefectWithoutLoss.lean`):
-1. Replace the existential `∃ N(f, ε)` threshold in `RBG.heckeDefect_le_of_readings` by a quantitative all-`n ≥ 1` finite-prefix transfer certificate using `CDG.exists_finiteThetaSource_logarithmic_error_bound`.
-2. Establish the exact single-scale logarithmic-horizon integer-prefix equivalence for `zetaZeroAbscissa ≤ 1 - θ` (`0 < θ ≤ 1/2`) and `RiemannHypothesis`.
-3. Prove unconditionally that at the single-scale logarithmic horizon `|L| ≤ 2 log(n + 1)`, both `heckeDefect f L` and the finite integer-theta curvature reading `RBG.reading f L 1 n` beat the trivial strip ceiling `mass f · (n + 1)^2` by an explicit Vinogradov–Korobov factor `exp(-c (log(n + 1))^{1/3} (log log(n + 1))^{-5/3}) + O_f((log n)/n)`, forcing `reading f (2 log(n + 1)) 1 n / (n + 1)^2 → 0` for every `f : CompactTest`.
+Attack `RenormalizedBiarithmeticGeometry` Open Topic #2 ("Single-scale bounds on the integer theta prefix readings") via `heckeDefect_le_depthKernel_of_dyadic_exp_rate` (`UnconditionalEscapedMoebiusDecayAndCrossRouteBridge.lean`), `RBG.heckeDefect_le_of_readings` (`IntegerThetaPrefixesReadTheDefectWithoutLoss.lean`), and `AES.moment_le_heckeDefect` (`TheHeckeDefectIsTheMomentOfInertia.lean`):
+1. Replace the existential `∃ N(f, ε)` threshold in `RBG.heckeDefect_le_of_readings` by a quantitative all-`n ≥ 1` finite-prefix transfer certificate and electrostatic transverse moment-of-inertia bound using `CDG.exists_finiteThetaSource_logarithmic_error_bound`.
+2. Establish the exact single-scale logarithmic-horizon integer-prefix equivalence for `zetaZeroAbscissa ≤ 1 - θ` (`0 < θ ≤ 1/2`), `GrowingEndpointEscapedMoebiusLaw θ`, and `RiemannHypothesis`.
+3. Prove unconditionally that at the single-scale logarithmic horizon `|L| ≤ 2 log(n + 1)`, both `heckeDefect f L` and the finite integer-theta curvature reading `RBG.reading f L 1 n` beat the trivial strip ceiling `mass f · (n + 1)^2` by an explicit Vinogradov–Korobov factor `exp(-4 min(η₁, vkZeroFreeWidth(n + 2)) log(n + 1)) + O_f((log n)/n)`, forcing `reading f (L n) 1 n / (n + 1)^2 → 0` for every `f : CompactTest` and every `|L n| ≤ 2 log(n + 1)`.
 
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, internal corpus audit completed
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean module `SingleScaleThetaPrefixTransferAndVKCeiling.lean`, `lake --old env lean` green, axiom check PASS
+- [x] 2 → 3  formalized: Lean module `SingleScaleThetaPrefixTransferAndVKCeiling.lean`, `lake --old env lean` green, axiom check PASS
 
 ## Approach & Complete Dependency-Closed Paper Proof (`[PROVED HERE]`)
 
@@ -64,3 +65,4 @@ We prove unconditionally that `RBG.reading f L 1 n` beats the trivial strip ceil
 
 ## Log
 - 2026-10-27 — created and completed dependency-closed paper proof in `2-fully-proven/`
+- 2026-10-27 — formalized unconditionally in `SingleScaleThetaPrefixTransferAndVKCeiling.lean` (`lake --old env lean` exit 0, zero warnings, wired into `BezoutValuationIncidence.lean`), moved to `3-formalized/`

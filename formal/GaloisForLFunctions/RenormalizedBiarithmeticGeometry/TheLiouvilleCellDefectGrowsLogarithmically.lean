@@ -127,8 +127,9 @@ theorem card_liouvilleAgreements_ge (K : ℕ) : K + 1 ≤ (liouvilleAgreements (
           obtain ⟨k, hk, rfl⟩ := mem_image.mp ha
           exact hmaps k hk
 
-/-- **The Liouville cell defect grows logarithmically**: on the horizon `[1, 4^{K+2}]` the covariance
-defect of the dyadic cell dilation at the Liouville gauge is at least `2(K + 1)` for every scalar. -/
+/-- **The Liouville cell defect grows logarithmically**: on the horizon `[1, 4^{K+2}]` the
+covariance defect of the dyadic cell dilation at the Liouville gauge is at least `2(K + 1)` for
+every scalar. -/
 theorem hsDefect_liouville_ge_log (K : ℕ) (c : ℝ) :
     2 * ((K : ℝ) + 1) ≤ hsDefect PrimeGauge.liouvilleGauge (4 ^ (K + 2)) c := by
   have h := (hsDefect_liouville_sandwich (4 ^ (K + 2))).1 c

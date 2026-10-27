@@ -149,7 +149,7 @@ theorem sum_divisors_dvd_vonMangoldt_le (hp : p.Prime) {m : ℕ} (hm : m ≠ 0) 
 /-! ### Leaving a valuation class -/
 
 /-- Along a Hecke pair `m ∣ n` a change of valuation is a factor `p` of `n/m`. -/
-theorem dvd_div_of_factorization_ne (hp : p.Prime) {m n : ℕ} (hm : m ≠ 0) (hn : n ≠ 0)
+theorem dvd_div_of_factorization_ne {m n : ℕ} (hm : m ≠ 0) (hn : n ≠ 0)
     (hmn : m ∣ n) (hv : n.factorization p ≠ m.factorization p) : p ∣ n / m := by
   by_contra hpt
   apply hv
@@ -189,11 +189,11 @@ theorem offClassRow_le (hp : p.Prime) {M m : ℕ} (hm : 0 < m) (hmM : m ≤ M) :
     · rw [if_pos hv, weilPrimeKernel_mul_sqrt_ratio hm (Nat.pos_of_ne_zero hn0)]
       refine add_le_add ?_ ?_
       · by_cases h1 : m ∣ n ∧ m ≠ n
-        · rw [if_pos h1, if_pos h1.1, if_pos (dvd_div_of_factorization_ne hp hm0 hn0 h1.1 hv)]
+        · rw [if_pos h1, if_pos h1.1, if_pos (dvd_div_of_factorization_ne hm0 hn0 h1.1 hv)]
         · rw [if_neg h1]; exact hnn
       · by_cases h2 : n ∣ m ∧ n ≠ m
         · rw [if_pos h2, if_pos h2.1,
-            if_pos (dvd_div_of_factorization_ne hp hn0 hm0 h2.1 (Ne.symm hv))]
+            if_pos (dvd_div_of_factorization_ne hn0 hm0 h2.1 (Ne.symm hv))]
         · rw [if_neg h2]; exact hnn'
     · rw [if_neg hv]; exact add_nonneg hnn hnn'
   calc ∑ n ∈ Icc 1 M, (if n.factorization p ≠ m.factorization p then
@@ -203,12 +203,18 @@ theorem offClassRow_le (hp : p.Prime) {M m : ℕ} (hm : 0 < m) (hmM : m ≤ M) :
         sum_le_sum hsplit
     _ = ∑ t ∈ Icc 1 (M / m), (if p ∣ t then Λ t / t else 0) +
           ∑ t ∈ m.divisors, (if p ∣ t then Λ t else 0) := by
-        rw [sum_add_distrib, ← sum_filter, filter_dvd_Icc_eq_image hm,
-          sum_image fun a _ b _ h => Nat.eq_of_mul_eq_mul_left hm h, ← sum_filter,
-          filter_Icc_dvd_eq_divisors hm hmM, Nat.sum_div_divisors m
-            (fun t => if p ∣ t then Λ t else 0)]
+        rw [sum_add_distrib]
         congr 1
-        exact sum_congr rfl fun t _ => by rw [Nat.mul_div_cancel_left t hm]
+        · rw [show (∑ n ∈ Icc 1 M, if m ∣ n then (if p ∣ n / m then Λ (n / m) / ((n / m : ℕ) : ℝ)
+              else 0) else 0) = ∑ n ∈ (Icc 1 M).filter (m ∣ ·),
+                (if p ∣ n / m then Λ (n / m) / ((n / m : ℕ) : ℝ) else 0) from (sum_filter _ _).symm,
+            filter_dvd_Icc_eq_image hm,
+            sum_image fun a _ b _ h => Nat.eq_of_mul_eq_mul_left hm h]
+          exact sum_congr rfl fun t _ => by rw [Nat.mul_div_cancel_left t hm]
+        · rw [show (∑ n ∈ Icc 1 M, if n ∣ m then (if p ∣ m / n then Λ (m / n) else 0) else 0) =
+              ∑ n ∈ (Icc 1 M).filter (· ∣ m), (if p ∣ m / n then Λ (m / n) else 0) from
+                (sum_filter _ _).symm, filter_Icc_dvd_eq_divisors hm hmM]
+          exact Nat.sum_div_divisors m (fun t => if p ∣ t then Λ t else 0)
     _ ≤ Real.log p / ((p : ℝ) - 1) + m.factorization p * Real.log p :=
         add_le_add (sum_dvd_vonMangoldt_div_le hp _) (sum_divisors_dvd_vonMangoldt_le hp hm0)
 
@@ -271,6 +277,7 @@ theorem poleVector_mul_poleVector_mul {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
   have hsm : Real.sqrt m ≠ 0 := (Real.sqrt_pos.mpr hm').ne'
   have hsn : Real.sqrt n ≠ 0 := (Real.sqrt_pos.mpr hn').ne'
   field_simp
+  rw [Real.sq_sqrt hm'.le]
   ring
 
 /-- **The class Gram through rows**: `⟨w_{j'}, P w_j⟩ = Σ_{m ≤ M, v_p(m) = j'} classRow_j(m)/m`. -/
@@ -281,15 +288,17 @@ theorem primeBilinear_classPole_eq (p j j' M : ℕ) :
   refine sum_congr rfl fun m hm => ?_
   have hm0 := pos_of_mem_Icc' hm
   have hmM := (mem_Icc.mp hm).2
-  unfold classPole truncPole
-  split_ifs with hj
-  · rw [if_pos hmM, classRow, sum_div]
+  by_cases hj : m.factorization p = j'
+  · rw [if_pos hj, classRow, sum_div]
     refine sum_congr rfl fun n hn => ?_
     have hn0 := pos_of_mem_Icc' hn
+    have hnM := (mem_Icc.mp hn).2
+    simp only [classPole, truncPole, if_pos hj, if_pos hmM, if_pos hnM]
     split_ifs with h1
-    · rw [if_pos (mem_Icc.mp hn).2, poleVector_mul_poleVector_mul hm0 hn0]
+    · rw [poleVector_mul_poleVector_mul hm0 hn0]
     · simp
-  · simp
+  · rw [if_neg hj]
+    simp [classPole, hj]
 
 theorem classMass_eq (p j M : ℕ) :
     ∑ n ∈ Icc 1 M, classPole p j M n ^ 2 = classMass p j M := by
@@ -542,7 +551,7 @@ theorem horizonCounterterm_rank_unbounded (hp : p.Prime) (J : ℕ) (K : ℝ) :
   · rw [sum_classCombination_sq]
     obtain ⟨j₀, hj₀⟩ : ∃ j, a j ≠ 0 := by
       by_contra h
-      push_neg at h
+      push Not at h
       exact ha0 (funext h)
     have hpos : 0 < a j₀ ^ 2 * classMass p j₀ M :=
       mul_pos (pow_pos (abs_pos.mpr hj₀) 2 |>.trans_eq (sq_abs _))
@@ -553,7 +562,7 @@ theorem horizonCounterterm_rank_unbounded (hp : p.Prime) (J : ℕ) (K : ℝ) :
     rw [sum_classCombination_sq] at hge ⊢
     obtain ⟨j₀, hj₀⟩ : ∃ j, a j ≠ 0 := by
       by_contra h
-      push_neg at h
+      push Not at h
       exact ha0 (funext h)
     have hpos : 0 < ∑ j : Fin (J + 1), a j ^ 2 * classMass p j M := by
       have h1 : 0 < a j₀ ^ 2 * classMass p j₀ M :=

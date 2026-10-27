@@ -15,6 +15,7 @@ import GaloisForLFunctions.ArithmeticIntersectionTheory.TheSelfIntersectionDomin
 import GaloisForLFunctions.ArithmeticIntersectionTheory.ThePolarPartPairsThePoleDirection
 import GaloisForLFunctions.ArithmeticIntersectionTheory.TheSquareRootPriceOfSeparateTowers
 import GaloisForLFunctions.ArithmeticIntersectionTheory.TheHodgeIndexInTowerCoordinates
+import GaloisForLFunctions.ArithmeticIntersectionTheory.TheBaseAndTheSuccessor
 
 /-!
 # Arithmetic Intersection Theory
@@ -25,6 +26,6 @@ log-orders of cyclotomic rings and the discriminant as self-intersection; the di
 cocycle and the spacing regulator; the tower form of a prime, the transverse decomposition of Weil's
 prime kernel, gauge blindness, the index bound on ladders, and the failure of local bounds to sum;
 Fourier duality with the archimedean digamma and the rotation spectrum of `μ_N`; the transfer to
-log-atom tests, the polar part, and RH as one inequality in tower coordinates; zero moments as Rosati
-pairings. See `ArithmeticIntersectionTheory/README.md`.
+log-atom tests, the polar part, and RH as one inequality in tower coordinates; the base and the
+successor; zero moments as Rosati pairings. See `ArithmeticIntersectionTheory/README.md`.
 -/

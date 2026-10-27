@@ -177,7 +177,8 @@ theorem orbitIntersection_eq_digamma_sum {m n q : ℕ} (hm : 0 < m) (hn : 0 < n)
 theorem totient_mul_vonMangoldt_eq_digamma_sum {m t : ℕ} (hm : 0 < m) (ht : 1 < t) :
     (Nat.totient m : ℝ) * ArithmeticFunction.vonMangoldt t =
       -((1 / (m * (m * t) : ℕ)) * ∑ j ∈ range (m * (m * t)),
-        shiftedMode m j * shiftedMode (m * t) j * latticeGermLimit ((j + 1) / (m * (m * t) : ℕ))) := by
+        shiftedMode m j * shiftedMode (m * t) j *
+          latticeGermLimit ((j + 1) / (m * (m * t) : ℕ))) := by
   have hmt : 0 < m * t := Nat.mul_pos hm (by omega)
   have hne : m ≠ m * t := by
     intro h
