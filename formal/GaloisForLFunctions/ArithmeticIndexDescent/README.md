@@ -151,10 +151,28 @@ identity.
 ### Index and work
 
 Negative index counts spectral defects, while transverse energy assigns a quantum to every
-off-line reflection pair. Arithmetic source work computes the latter with damping. A useful bridge
-would compare a finite index witness with a quantitative amount of source work, preserving the
-distinction between distinct zeros and multiplicity-weighted copies. Two separate equivalences
-with RH do not themselves provide this comparison.
+off-line reflection pair. For every finite family of compactly supported `C²` tests, the programme
+proves
+
+\[
+  \nu_-(W_f)\le \mathcal E_{\mathrm{distinct}}
+       \le \mathcal E_{\mathrm{copies}}.
+\]
+
+The first inequality doubles a finite right-hand packet by critical-line reflection, then applies
+the angular quantum to every member. The second selects one analytic-multiplicity copy of each
+distinct zero. Both inequalities allow infinite total energy. The arithmetic intersection Gram
+has at most `1 + E_distinct` positive squares; its extra square belongs to the pole plane.
+
+Existing source-work exhaustion now has a quantitative index consequence. Every amount strictly
+below a finite negative-index witness is eventually exceeded by rationally damped arithmetic
+source work, and then by the finite tapered source work at each sufficiently large damping scale.
+The order of the two limits matters. Exterior rows, analytic multiplicities, the Laurent source
+and its archimedean completion remain present.
+
+These are lower bounds on the work forced by defects. An arithmetic upper estimate must still be
+constructed. A global finite work bound and a bound below an exclusion quantum are different
+research targets.
 
 ## Questions the programme aims to answer
 
@@ -172,8 +190,8 @@ with RH do not themselves provide this comparison.
    disjoint-pair slack?
 7. Can the actual same-profile signed prime surplus at bandwidth `4/3` be bounded by `1/18` of
    the zero count, giving the `3/4` simple-critical target?
-8. Can a source-work upper bound control the global off-line index, and can a local bound or paid
-   propagation eliminate the finite remainder?
+8. Which arithmetic source estimate bounds global off-line index, and which quantum bound or paid
+   propagation eliminates the finite remainder?
 9. Can terminal geometry support a boundary-to-interior estimate for the regularized arithmetic
    field with its singularities and archimedean background accounted for?
 10. Which construction recovers the curve case from actual arithmetic sections or incidence, with
@@ -203,6 +221,13 @@ The programme's own pillars must add a source estimate, a stronger exact transfe
 comparison of these invariants, or a construction not already supplied by this table. Abstract
 matrix tools should be used to isolate the arithmetic input, not presented as its solution.
 
+Two quantitative pillars are supplied by this programme:
+
+| Pillar | Mathematical content | Module |
+|---|---|---|
+| Index is paid by energy | Every finite smooth Weil negative index is at most distinct transverse energy; intersection positive index is at most one plus that energy | `TheIndexIsPaidByTransverseEnergy` |
+| Source work detects finite index witnesses | Distinct energy embeds in copied energy; damping and taper limits detect every amount below a finite negative index | `TheArithmeticSourcePaysTheIndex` |
+
 ## Tools to develop and research topics
 
 **Completed-form refinement calculus.** Track the complete Weil matrix, overlap relations, polar
@@ -225,8 +250,9 @@ inequalities with a macroscopic gain after arithmetic transfer.
 oscillatory lobes, prime-power reductions, collar losses and the conductor range. A saving in a
 different averaged model is not the required estimate.
 
-**Index–work comparison.** Quantify the source work forced by a negative subspace and the index
-allowed by a work budget. Distinguish a bounded number of exceptions from their absence.
+**Index–work comparison.** The quantitative lower comparison is established. Develop its strict
+surplus, characterize finite work, and construct arithmetic upper bounds. Distinguish a bounded
+number of exceptions from their absence.
 
 **Terminal field estimates.** Combine the zero-free lens and lower reserve with an independently
 proved arithmetic upper estimate on a common domain. Subtract singular self-terms without

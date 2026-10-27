@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticIndexDescent.TheIndexIsPaidByTransverseEnergy
+import GaloisForLFunctions.ArithmeticIndexDescent.TheArithmeticSourcePaysTheIndex
 
 /-!
 # Arithmetic index descent

@@ -13,6 +13,7 @@ energy and therefore forces finite off-line support.
 
 open Filter Finset RHTower
 open GaloisForLFunctions.ArithmeticElectrostatics
+open GaloisForLFunctions.ArithmeticCorrespondencePositivity
 open scoped ENNReal Topology
 
 noncomputable section
@@ -28,7 +29,7 @@ theorem copyAngularTerm_nonneg (p q : XiZeroCopy) : 0 ≤ copyAngularTerm p q :=
 
 theorem copyAngularTerm_comm (p q : XiZeroCopy) : copyAngularTerm p q = copyAngularTerm q p := by
   unfold copyAngularTerm transverseAngular
-  rw [sq_sub_comm (xiSignedDepth p), sq_sub_comm (xiZeroHeight p)]
+  congr 1 <;> ring
 
 /-- Strip confinement provides a summable bound for each full interaction row. -/
 theorem copyAngularTerm_le_cauchyWeight (p q : XiZeroCopy) :
@@ -65,7 +66,7 @@ theorem xiCopyTransverseEnergy_eq_half_rowSum :
   simp_rw [ENNReal.ofReal_div_of_pos (by norm_num : (0 : ℝ) < 2)]
   simp only [ENNReal.ofReal_ofNat, div_eq_mul_inv, ENNReal.tsum_mul_right]
   congr 1
-  rw [ENNReal.tsum_prod]
+  rw [ENNReal.tsum_prod']
   exact tsum_congr fun p => (ofReal_copyAngularEnergy p).symm
 
 theorem copyAngularTerm_eq_zero_of_critical {p q : XiZeroCopy}
@@ -170,3 +171,7 @@ theorem dampedSourceWork_tendsto_top_iff :
     simpa only [htop.mpr h] using xiDampedSourceWork_tendsto_energy
 
 end GaloisForLFunctions.ArithmeticIndexDescent
+
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.xiCopyTransverseEnergy_lt_top_iff
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.eventually_bounded_dampedSourceWork_iff
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.dampedSourceWork_tendsto_top_iff

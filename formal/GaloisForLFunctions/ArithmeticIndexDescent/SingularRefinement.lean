@@ -78,3 +78,6 @@ theorem nullIndex_singular_refinement {A : Matrix ι ι ℂ} (hA : A.IsHermitian
     nullIndex_fromBlocks_zero hA (isHermitian_singular_schur hA X hC)]
 
 end GaloisForLFunctions.ArithmeticIndexDescent
+
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.singular_schur_independent_of_lift
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.negIndex_singular_refinement

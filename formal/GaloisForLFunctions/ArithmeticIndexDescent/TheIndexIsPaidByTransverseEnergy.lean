@@ -99,3 +99,6 @@ theorem posIndex_intersectionGram_le_one_add_divisorTransverseEnergy
   exact add_le_add le_rfl (negIndex_weilGram_le_divisorTransverseEnergy f hf hfc)
 
 end GaloisForLFunctions.ArithmeticIndexDescent
+
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.negIndex_weilGram_le_divisorTransverseEnergy
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.posIndex_intersectionGram_le_one_add_divisorTransverseEnergy

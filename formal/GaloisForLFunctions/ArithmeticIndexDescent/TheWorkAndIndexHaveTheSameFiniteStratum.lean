@@ -80,3 +80,5 @@ theorem bounded_splineIndex_iff_eventually_bounded_dampedSourceWork :
     eventually_bounded_dampedSourceWork_iff.symm
 
 end GaloisForLFunctions.ArithmeticIndexDescent
+
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.bounded_splineIndex_iff_eventually_bounded_dampedSourceWork

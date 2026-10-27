@@ -248,7 +248,8 @@ theorem sharpAtomicWidth_ge {N : ℕ} (hN : 1 ≤ N) :
         _ = 1 := by field_simp
     have h2 : δ * C₀ ≤ C₀ := by nlinarith
     nlinarith [mul_le_mul_of_nonneg_right hexp (by positivity : 0 ≤ Real.log N + C₀)]
-  rw [hC, mul_div_assoc]
+  rw [show Real.log N + (Real.log 4 + 4) + 2 * |gammaHardyPhaseRate 0| = Real.log N + C₀ by
+    rw [← hC]; ring, mul_div_assoc]
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)
   rw [div_le_iff₀ (by positivity)]
   calc Real.exp (-((3 * C₀ + 1) / 2))
