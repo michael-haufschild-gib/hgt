@@ -198,6 +198,18 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
    `1/(2δ) + cδ log γ` is minimized at `δ = (2c log γ)^{−1/2}`. The field law that would exclude
    off-line zeros is an upper bound of size `max(1, √(2c log γ))`, not an exact equilibrium.
 
+7a. **The external field is a prime sum** (`TheExternalFieldIsAPrimeSum`). For `Re s > 1` the field
+    of the divisor is a sum of positive Coulomb terms, `Re ξ′/ξ(s) = Σ_ρ Re 1/(s − ρ)`
+    (`re_logDeriv_xi_eq_tsum_of_one_lt_re`, `re_reciprocal_pos_of_one_lt_re`), and the explicit
+    formula computes it from the primes: `Re L(Λ, s) + Σ_{ρ∈F} Re 1/(s − ρ) ≤ Re (archFactor′/archFactor)(s)`
+    for every finite `F` (`re_LSeries_vonMangoldt_add_sum_le`), with
+    `Re L(Λ, σ + it) = Σ Λ(n) n^{−σ} cos(t log n)` (`re_LSeries_vonMangoldt_eq`). At the ordinate `γ`
+    of a zero of real part `β` and multiplicity `m`, **anti-alignment**:
+    `Σ Λ(n) n^{−σ} cos(γ log n) ≤ Re (archFactor′/archFactor)(σ + iγ) − m/(σ − β)`
+    (`re_LSeries_vonMangoldt_le_at_zero_ordinate`). Outside the strip a charge pushes the primes out
+    of alignment at its own height by its full Coulomb term; inside the strip the outward reserve is
+    the matching lower bound on the other side of the charge.
+
 ### D. Renormalization of the diagonal
 
 8. **The zero side** (`TheRenormalizedSquareIsSelbergsSource`). The counterterm identity
@@ -228,11 +240,21 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
 
 ### E. The base and the arithmetic point
 
-11. **The torsion is the stable equilibrium of the circle** (`TheTorsionIsTheStableEquilibriumOfTheCircle`).
+11. **Power maps are similitudes** (`PowerMapsAreSimilitudesOfTheAbelEnergy`). The Abel energy of
+    the torsion groups `μ_A`, `μ_B` has the closed form `T_r(A, B) = gcd(A, B) log(1/(1 − r^{lcm(A,B)}))`
+    (`fullTorsionEnergy_eq`); the matrix is positive semidefinite (`sum_sum_fullTorsionEnergy_nonneg`);
+    pulling back by `z ↦ z^t` multiplies it by the degree and rescales the cutoff,
+    `T_r(At, Bt) = t · T_{r^t}(A, B)` (`fullTorsionEnergy_mul`); removing the self-energy of the
+    `gcd(A, B)` common points leaves `−J(A, B) = −gcd log lcm` as `r → 1` (`tendsto_fullTorsionEnergy_sub_log`);
+    and `J(At, Bt) = t (J(A, B) + gcd(A, B) log t)` (`logEnergy_mul`): the adjunction term is the shift
+    of the self-energy under the rescaled cutoff. On the base the Hecke correspondences are computed
+    similitudes of a positive Hermitian structure.
+
+12. **The torsion is the stable equilibrium of the circle** (`TheTorsionIsTheStableEquilibriumOfTheCircle`).
     `N` distinct points of the unit circle satisfy `Σ_{i≠j} log |z_i − z_j| ≤ N log N`
     (`sum_sum_log_norm_sub_le`: Vandermonde and Hadamard), and the `N`-th roots of unity attain it
     (`logEnergy_self_eq`). Discrete energy on the circle is bounded below; the torsion is a minimizer.
-12. **The arithmetic point carries the divergence** (`TheArithmeticPointCarriesTheDivergence`).
+13. **The arithmetic point carries the divergence** (`TheArithmeticPointCarriesTheDivergence`).
     `1` is the only point of the circle fixed by the power maps (`eq_one_of_forall_pow_eq_self`),
     `O_1 = {1}` (`primitiveRoots_one`), `I(1, n) = Λ(n)` (`orbitIntersection_one_left`). Every
     counterterm `c(n)` renormalizing the orders `≤ N` satisfies `c(1) ≥ Σ_{2≤n≤N} Λ(n)²/(c(n)φ(n))`
@@ -243,11 +265,11 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
 
 ### F. Gauge
 
-13. **Blindness to the archimedean place** (`QuantizationTurnsWindowsIntoPoints`). The
+14. **Blindness to the archimedean place** (`QuantizationTurnsWindowsIntoPoints`). The
     reflection-commuting affine maps `s ↦ ½ + λ(s − ½) + iκ` preserve the transverse energy
     (`transverseEnergy_affine`) and scale the field by `λ⁻¹` (`fieldAt_affine`): dilations and the
     archimedean twist — hence the first gauge charge — are invisible to electrostatic quantities.
-14. **Gauge charge of the source**. For a completely multiplicative gauge `ω`, the renormalized
+15. **Gauge charge of the source**. For a completely multiplicative gauge `ω`, the renormalized
     source of the twin `ωΛ` is `ωΛ₂` (`pmul_mul_pmul`, `selbergSource_twist`); its nonnegativity at a
     prime forces `ω(p) = 1` for sign gauges (`eq_one_of_twisted_selbergSource_nonneg`). The charge
     enters through the arithmetic computation, prime by prime.
@@ -264,12 +286,14 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
 | **ES4 Global source-work exhaustion** | damped tapered Laurent-residue work exhausts the multiplicity-weighted energy, finite or infinite | `xiTaperedSourceWork_tendsto`, `xiDampedSourceWork_tendsto_energy` |
 | **ES5 Window selection** | window energy counts off-line zeros; `< 2` ⇒ critical | `card_offLine_le_windowEnergy`, `critical_of_windowEnergy_lt_two`, `riemannHypothesis_iff_windowEnergy_lt_two` |
 | **ES6 Field threshold** | RH ⇔ field `≤ 1` ⇔ field `< √(2c log γ)` at right zeros | `riemannHypothesis_iff_forall_transverseField_le_one`, `exists_riemannHypothesis_iff_transverseField_lt_sqrt_log` |
+| **ES6a External field and alignment** | `Re L(Λ, s) + Σ_F Re 1/(s − ρ) ≤ Re arch′/arch`; anti-alignment `m/(σ − β)` at zero ordinates | `re_LSeries_vonMangoldt_add_sum_le`, `re_LSeries_vonMangoldt_eq`, `re_LSeries_vonMangoldt_le_at_zero_ordinate` |
 | **ES7 The renormalized square** | self-term `m² → m(m − 1)`, residue `2mR`; `Λ₂ = μ ⋆ log² ≥ 0`, `L(Λ₂) = ζ″/ζ` | `selfTerm_and_residue_of_analyticOrderAt`, `selbergSource_nonneg`, `selbergSource_prime_pow`, `LSeries_selbergSource` |
 | **ES8 Torsion adjunction** | `I(n,n) = φ log n − φ ⋆ Λ`; additivity; cover formula; conjugation on cycles | `orbitIntersection_self_eq`, `orbitIntersection_self_mul_of_coprime`, `orbitIntersection_self_prime_pow_succ`, `torsionEnergy_eq_bilinear` |
 | **ES9 Logarithmic counterterm** | minimal constant counterterm on orders `≤ N` in `[½ log(N/2), 4 log N + O(1)]` | `torsionCounterterm_rate` |
 | **ES10 The arithmetic point** | `I(1, n) = Λ(n)`; `c(1) ≥ Σ Λ²/(cφ)` | `orbitIntersection_one_left`, `le_counterterm_one` |
-| **ES11 Stability of the base** | Fekete bound `N log N`, attained by the torsion | `sum_sum_log_norm_sub_le`, `logEnergy_self_eq` |
-| **ES12 Gauge** | affine invariance; `Λ₂^ω = ωΛ₂` | `transverseEnergy_affine`, `selbergSource_twist`, `eq_one_of_twisted_selbergSource_nonneg` |
+| **ES11 Similitudes on the base** | `T_r(A,B) = gcd log 1/(1 − r^{lcm})`, PSD; `T_r(At, Bt) = t T_{r^t}(A, B)`; renormalized limit `−J` | `fullTorsionEnergy_eq`, `sum_sum_fullTorsionEnergy_nonneg`, `fullTorsionEnergy_mul`, `tendsto_fullTorsionEnergy_sub_log`, `logEnergy_mul` |
+| **ES12 Stability of the base** | Fekete bound `N log N`, attained by the torsion | `sum_sum_log_norm_sub_le`, `logEnergy_self_eq` |
+| **ES13 Gauge** | affine invariance; `Λ₂^ω = ωΛ₂` | `transverseEnergy_affine`, `selbergSource_twist`, `eq_one_of_twisted_selbergSource_nonneg` |
 
 Inherited and used throughout: `Re W = D − Δ`, `D` faithful, coercive and log-Sobolev (APol); the
 transverse force and its marginality identity, the maximum principle, the attainment dichotomy,
@@ -284,7 +308,9 @@ kernel (AET).
 
 1. **What is the Frobenius at infinity as a correspondence?** On the circle it is algebraic:
    conjugation is the power map of degree `−1`, fixes every torsion cycle, and identifies the
-   Hermitian (collided) and bilinear (reflection) torsion pairings (ES8). On the divisor,
+   Hermitian (collided) and bilinear (reflection) torsion pairings (ES8); the Hecke correspondences
+   are computed similitudes of the regularized Hermitian structure, with the cutoff rescaled by the
+   degree (ES11). On the divisor,
    conjugation composed with reflection is the Hermitian reflection `ρ ↦ 1 − ρ̄`, trivial iff RH
    (`riemannHypothesis_iff_supportPartner_eq_id`); its pairing is `D`, whose Hecke equivariance is
    RH (APol). The disagreement of the two involutions is counted by the transverse energy (ES3).
@@ -313,28 +339,33 @@ kernel (AET).
    Frobenius-flat structure that gives Stepanov's method its period over `𝔽_q` has no analogue there
    (AET).
 6. **How does `σ_γ` localize beyond the conductor; are zero ordinates aligned with small primes?**
-   Not answered by AES. Electrostatically the outward reserve at a terminal is the field at a point
-   just off the charge, and through the explicit formula a large value of a short prime sum (§9.6).
+   Right of the strip, alignment is controlled: at the ordinate of a zero of real part `β` the
+   prime cosine sum `Σ Λ(n) n^{−σ} cos(γ log n)` is at most the archimedean field minus `m/(σ − β)`
+   (ES6a) — zero ordinates are anti-aligned by their own Coulomb term. Inside the strip, between the
+   conductor horizon and the forcing threshold, the outward reserve needs the opposite inequality
+   for a short prime polynomial (§9.6). *Answer:* the external regime is settled by positivity of the
+   field; the interior regime, where Q1 lives, is open.
 7. **What is the non-archimedean gauge charge?** Electrostatic quantities are invariant under the
-   reflection-commuting affine group, hence blind to every archimedean twist (ES12); the gauge enters
+   reflection-commuting affine group, hence blind to every archimedean twist (ES13); the gauge enters
    through the arithmetic source, `Λ₂^ω = ωΛ₂`, prime by prime. *Answer:* located in the source;
    margin laws on growing prime windows remain open (Q3 of the report).
 8. **Is the coupled class bounded at the centre?** Not answered by AES (BGG).
 9. **What selects the fibre?** The finite laws (ES1, ES2) hold on every reflection-closed
-   configuration, fake ones included, and the circle laws (ES8–ES11) on every torsion cycle:
+   configuration, fake ones included, and the circle laws (ES8–ES12) on every torsion cycle:
    electrostatic geometry is soft. *Answer:* selection must come from the arithmetic computation of
    the source or the counterterm, never from the geometry of the charges.
 10. **What are the escape states of `ζ` at infinite height?** Infinite transverse energy is exactly
-    an infinite off-line set (ES3); finite energy forces attainment of the depth supremum and then the
-    marginality identity gives RH (RHTower). The arithmetic work exhausts the energy without any
+    an infinite off-line set (ES3); finite energy forces attainment of the depth supremum, and then the
+    marginality identity gives RH (`riemannHypothesis_of_transverseForce_zero_of_energy_lt_top`). The arithmetic work exhausts the energy without any
     finiteness premise (ES4). *Answer:* escape is the infinite-energy regime; its exclusion is open.
 11. **How does an average become a point?** By quantization: the energy of a window of any size
     counts its off-line zeros, and a window of energy below `2` is critical (ES5). *Answer:* for a
     quantized quantity selection below the zero spacing is free; the difficulty moves entirely into
     bounding the quantity.
 12. **What is the base?** The characteristic circle with its torsion: discrete energy bounded below
-    and attained by the roots of unity (ES11), the torsion pairing positive before renormalization
-    and Hecke equivariant after (AET, ES8). *Answer:* the base carries stability for free; the
+    and attained by the roots of unity (ES12), a positive Hermitian structure on which the power maps
+    act as similitudes up to rescaling of the cutoff (ES11), the torsion pairing positive before
+    renormalization and Hecke equivariant after (AET, ES8). *Answer:* the base carries stability for free; the
     divisor must inherit it through an adjunction that matches the logarithmic counterterm.
 
 ---
@@ -373,8 +404,8 @@ and counterterm rates; the arithmetic-point bound; Fekete's bound on the circle;
 
 **Not yet built anywhere:** an arithmetic upper bound for the field or the energy; a matched
 renormalization (torsion counterterm = archimedean self-energy); Diophantine control of zero
-ordinates; gauge margin laws; Hermitian structures on correspondence spaces with computed
-similitudes beyond the circle.
+ordinates; gauge margin laws; a Hermitian structure with computed Hecke similitudes on the zero
+side (on the circle it is ES11).
 
 ---
 
@@ -445,3 +476,5 @@ selects for free; identities first, sign last; a reformulation is not a reductio
 | `TheArithmeticPointCarriesTheDivergence` | the arithmetic point; nonnegative self-intersections; the bound at `z = 1` |
 | `TheTorsionIsTheStableEquilibriumOfTheCircle` | Fekete's bound on the circle, attained by the torsion |
 | `QuantizationTurnsWindowsIntoPoints` | window energies; affine invariance; gauge twists of the source |
+| `TheExternalFieldIsAPrimeSum` | the external field as Coulomb sum and prime sum; anti-alignment at zero ordinates; escape as infinite energy |
+| `PowerMapsAreSimilitudesOfTheAbelEnergy` | closed form and positivity of torsion Abel energies; power maps as similitudes; renormalized limit; adjunction for full torsion |

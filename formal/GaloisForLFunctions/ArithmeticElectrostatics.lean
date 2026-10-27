@@ -8,6 +8,8 @@ import GaloisForLFunctions.ArithmeticElectrostatics.TheTorsionCountertermIsLogar
 import GaloisForLFunctions.ArithmeticElectrostatics.TheArithmeticPointCarriesTheDivergence
 import GaloisForLFunctions.ArithmeticElectrostatics.TheTorsionIsTheStableEquilibriumOfTheCircle
 import GaloisForLFunctions.ArithmeticElectrostatics.QuantizationTurnsWindowsIntoPoints
+import GaloisForLFunctions.ArithmeticElectrostatics.PowerMapsAreSimilitudesOfTheAbelEnergy
+import GaloisForLFunctions.ArithmeticElectrostatics.TheExternalFieldIsAPrimeSum
 import GaloisForLFunctions.ArithmeticElectrostatics.ReflectedTransverseWork
 import GaloisForLFunctions.ArithmeticElectrostatics.TheSelbergWorkExhaustsTheTransverseEnergy
 
@@ -19,8 +21,8 @@ characteristic circle: virial laws, transverse equilibrium and its quantization,
 energy of the divisor, the multiplicity-exact damped source-work exhaustion, the threshold form
 of the field law, the renormalized Rankin–Selberg square
 (Selberg's source), self-intersections and adjunction of torsion orbits, conjugation on torsion
-cycles, the logarithmic rate of the torsion counterterm and its concentration at the arithmetic
+cycles, power maps as similitudes of the Abel energy, the logarithmic rate of the torsion counterterm and its concentration at the arithmetic
 point, the torsion as the stable (Fekete) equilibrium of the circle, window selection by
-quantization, and the gauge behaviour of electrostatic quantities. See
+quantization, the external field as a prime sum and the anti-alignment law at zero ordinates, and the gauge behaviour of electrostatic quantities. See
 `ArithmeticElectrostatics/README.md`.
 -/

@@ -110,7 +110,7 @@ theorem weilPrimeKernel_eq_sum_ladderKernel {m n : ℕ} (hm : m ≠ 0) (hn : n �
       rintro ⟨-, he'⟩
       exact hmn (eq_of_sameLadder_of_sameLadder (Ne.symm hp') hm hn he he')
     · intro h; exact absurd hp h
-  · push_neg at hex
+  · push Not at hex
     rw [sum_eq_zero fun p hp => by
       rw [ladderKernel, if_neg fun h => hex p hp h.1 h.2]]
     by_contra h
@@ -132,6 +132,7 @@ theorem ladderKernel_eq_zero_of_not_mem {p m n : ℕ} (hm : m ≠ 0) (hn : n ≠
       (Nat.support_factorization n ▸ Finsupp.mem_support_iff.mpr hv))
   exact hmn (eq_of_sameLadder_of_factorization_eq h (hvm.trans hvn.symm))
 
+open scoped Classical in
 /-- **Tensor form of a ladder kernel**: on `⊕_ℓ ℕ`, `L_p = log p (K_p − 1) ⊗ 1`. -/
 theorem ladderKernel_eq_tensor {p m n : ℕ} (hp : p.Prime) (hm : m ≠ 0) (hn : n ≠ 0) :
     ladderKernel p m n =
@@ -188,12 +189,12 @@ theorem primeForm_eq_sum_localForm (hS : ∀ n ∈ S, n ≠ 0) :
     exact sum_subset (hsub m hm n hn) fun p _ hp =>
       ladderKernel_eq_zero_of_not_mem (hS m hm) (hS n hn) hp
   simp only [primeForm, localForm]
-  rw [sum_comm]
-  simp_rw [← sum_comm (s := S) (t := (∏ k ∈ S, k).primeFactors)]
-  refine sum_congr rfl fun m hm => ?_
-  rw [sum_comm]
-  refine sum_congr rfl fun n hn => ?_
-  rw [hentry m hm n hn, mul_sum]
+  calc ∑ m ∈ S, ∑ n ∈ S, x m * x n * weilPrimeKernel m n
+      = ∑ m ∈ S, ∑ n ∈ S, ∑ p ∈ (∏ k ∈ S, k).primeFactors, x m * x n * ladderKernel p m n :=
+        sum_congr rfl fun m hm => sum_congr rfl fun n hn => by rw [hentry m hm n hn, mul_sum]
+    _ = ∑ m ∈ S, ∑ p ∈ (∏ k ∈ S, k).primeFactors, ∑ n ∈ S, x m * x n * ladderKernel p m n :=
+        sum_congr rfl fun m _ => sum_comm
+    _ = _ := sum_comm
 
 /-! ### Local bounds -/
 
@@ -243,7 +244,7 @@ theorem localForm_eq (p : ℕ) :
   ring
 
 /-- The tower form on a set of orders is a sum over ladders of interval tower forms. -/
-theorem towerOnSet_eq_sum_fibres (p : ℕ) (hp : p.Prime) (hS : ∀ n ∈ S, n ≠ 0) :
+theorem towerOnSet_eq_sum_fibres (p : ℕ) :
     towerOnSet S x p = ∑ c ∈ S.image (fun m => ordCompl[p] m),
       ∑ a ∈ (S.filter fun m => ordCompl[p] m = c).image (fun m => m.factorization p),
       ∑ b ∈ (S.filter fun m => ordCompl[p] m = c).image (fun m => m.factorization p),
@@ -254,7 +255,8 @@ theorem towerOnSet_eq_sum_fibres (p : ℕ) (hp : p.Prime) (hS : ∀ n ∈ S, n �
     (fun m hm => mem_image_of_mem _ hm)]
   refine sum_congr rfl fun c _ => ?_
   -- on a ladder the exponent map is injective
-  have hinj : Set.InjOn (fun m => m.factorization p) (S.filter fun m => ordCompl[p] m = c) := by
+  have hinj : Set.InjOn (fun m : ℕ => m.factorization p)
+      ↑(S.filter fun m => ordCompl[p] m = c) := by
     intro m hm n hn hv
     simp only [coe_filter, Set.mem_setOf_eq] at hm hn
     exact eq_of_sameLadder_of_factorization_eq (hm.2.trans hn.2.symm) hv
@@ -265,18 +267,19 @@ theorem towerOnSet_eq_sum_fibres (p : ℕ) (hp : p.Prime) (hS : ∀ n ∈ S, n �
   refine sum_congr rfl fun m hm => ?_
   rw [sum_image hinj, ← sum_filter_add_sum_filter_not S (fun n => ordCompl[p] n = c)]
   rw [sum_eq_zero (s := S.filter fun n => ¬ ordCompl[p] n = c) fun n hn => by
-    rw [if_neg]; rw [(mem_filter.mp hm).2]; exact (mem_filter.mp hn).2, add_zero]
+    rw [if_neg]; rw [(mem_filter.mp hm).2]; exact fun h => (mem_filter.mp hn).2 h.symm, add_zero]
   refine sum_congr rfl fun n hn => ?_
   rw [if_pos ((mem_filter.mp hm).2.trans (mem_filter.mp hn).2.symm), ← hx m hm, ← hx n hn]
 
-theorem sum_sq_eq_sum_fibres (p : ℕ) (hp : p.Prime) :
+theorem sum_sq_eq_sum_fibres (p : ℕ) :
     ∑ n ∈ S, x n ^ 2 = ∑ c ∈ S.image (fun m => ordCompl[p] m),
       ∑ a ∈ (S.filter fun m => ordCompl[p] m = c).image (fun m => m.factorization p),
         x (c * p ^ a) ^ 2 := by
   rw [← sum_fiberwise_of_maps_to (g := fun m => ordCompl[p] m) (t := S.image fun m => ordCompl[p] m)
     (fun m hm => mem_image_of_mem _ hm)]
   refine sum_congr rfl fun c _ => ?_
-  have hinj : Set.InjOn (fun m => m.factorization p) (S.filter fun m => ordCompl[p] m = c) := by
+  have hinj : Set.InjOn (fun m : ℕ => m.factorization p)
+      ↑(S.filter fun m => ordCompl[p] m = c) := by
     intro m hm n hn hv
     simp only [coe_filter, Set.mem_setOf_eq] at hm hn
     exact eq_of_sameLadder_of_factorization_eq (hm.2.trans hn.2.symm) hv
@@ -285,7 +288,7 @@ theorem sum_sq_eq_sum_fibres (p : ℕ) (hp : p.Prime) :
   rw [(mem_filter.mp hm).2.symm, ← eq_ordCompl_mul_pow]
 
 /-- **Local Hodge index at `p`, lower half**: `−2q log p |x|² ≤ (1 + q) Q_p(x)`, `q = p^{−1/2}`. -/
-theorem localForm_lower {p : ℕ} (hp : p.Prime) (hS : ∀ n ∈ S, n ≠ 0) :
+theorem localForm_lower {p : ℕ} (hp : p.Prime) :
     -(2 * (1 / Real.sqrt p) * Real.log p * ∑ n ∈ S, x n ^ 2) ≤
       (1 + 1 / Real.sqrt p) * localForm S x p := by
   set q := 1 / Real.sqrt p
@@ -294,7 +297,7 @@ theorem localForm_lower {p : ℕ} (hp : p.Prime) (hS : ∀ n ∈ S, n ≠ 0) :
   have hlog : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hp.one_lt.le)
   -- the tower form dominates `(1 − q)/(1 + q)` times the mass, fibre by fibre
   have htower : (1 - q) * ∑ n ∈ S, x n ^ 2 ≤ (1 + q) * towerOnSet S x p := by
-    rw [towerOnSet_eq_sum_fibres S x p hp hS, sum_sq_eq_sum_fibres S x p hp, mul_sum, mul_sum]
+    rw [towerOnSet_eq_sum_fibres S x p, sum_sq_eq_sum_fibres S x p, mul_sum, mul_sum]
     refine sum_le_sum fun c _ => ?_
     set E := (S.filter fun m => ordCompl[p] m = c).image (fun m => m.factorization p)
     obtain ⟨N, hN⟩ : ∃ N, E ⊆ range N := ⟨E.sup id + 1, fun a ha => mem_range.mpr
@@ -306,7 +309,7 @@ theorem localForm_lower {p : ℕ} (hp : p.Prime) (hS : ∀ n ∈ S, n ≠ 0) :
   nlinarith [mul_le_mul_of_nonneg_left htower hlog]
 
 /-- **Local Hodge index at `p`, upper half**: `(1 − q) Q_p(x) ≤ 2q log p |x|²`, `q = p^{−1/2}`. -/
-theorem localForm_upper {p : ℕ} (hp : p.Prime) (hS : ∀ n ∈ S, n ≠ 0) :
+theorem localForm_upper {p : ℕ} (hp : p.Prime) :
     (1 - 1 / Real.sqrt p) * localForm S x p ≤
       2 * (1 / Real.sqrt p) * Real.log p * ∑ n ∈ S, x n ^ 2 := by
   set q := 1 / Real.sqrt p
@@ -314,7 +317,7 @@ theorem localForm_upper {p : ℕ} (hp : p.Prime) (hS : ∀ n ∈ S, n ≠ 0) :
   have hq1 : q < 1 := inv_sqrt_prime_lt_one hp
   have hlog : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hp.one_lt.le)
   have htower : (1 - q) * towerOnSet S x p ≤ (1 + q) * ∑ n ∈ S, x n ^ 2 := by
-    rw [towerOnSet_eq_sum_fibres S x p hp hS, sum_sq_eq_sum_fibres S x p hp, mul_sum, mul_sum]
+    rw [towerOnSet_eq_sum_fibres S x p, sum_sq_eq_sum_fibres S x p, mul_sum, mul_sum]
     refine sum_le_sum fun c _ => ?_
     set E := (S.filter fun m => ordCompl[p] m = c).image (fun m => m.factorization p)
     obtain ⟨N, hN⟩ : ∃ N, E ⊆ range N := ⟨E.sup id + 1, fun a ha => mem_range.mpr

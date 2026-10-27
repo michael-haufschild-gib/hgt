@@ -94,14 +94,17 @@ theorem hasSum_multiples {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) {L : ℕ} (hL :
     Nat.eq_of_mul_eq_mul_left hL h
   rw [← hinj.hasSum_iff fun k hk => by
     rw [if_neg]; rintro ⟨j, rfl⟩; exact hk ⟨j, rfl⟩]
-  convert hlog.mul_left (1 / (L : ℝ)) using 1
-  funext j
-  simp only [Function.comp, dvd_mul_right, if_true, Nat.cast_mul, pow_mul]
-  rcases Nat.eq_zero_or_pos j with rfl | hj
-  · simp
-  · have hL0 : (L : ℝ) ≠ 0 := by exact_mod_cast hL.ne'
-    have hj0 : (j : ℝ) ≠ 0 := by exact_mod_cast hj.ne'
-    field_simp
+  have hfun : ((fun k : ℕ => if L ∣ k then r ^ k / k else 0) ∘ fun j : ℕ => L * j) =
+      fun j : ℕ => (1 / (L : ℝ)) * ((r ^ L) ^ j / j) := by
+    funext j
+    simp only [Function.comp, dvd_mul_right, if_true, Nat.cast_mul, pow_mul]
+    rcases Nat.eq_zero_or_pos j with rfl | hj
+    · simp
+    · have hL0 : (L : ℝ) ≠ 0 := by exact_mod_cast hL.ne'
+      have hj0 : (j : ℝ) ≠ 0 := by exact_mod_cast hj.ne'
+      field_simp
+  rw [hfun]
+  exact hlog.mul_left _
 
 /-- **Closed form**: `T_r(A, B) = gcd(A, B) · log(1/(1 − r^{lcm(A, B)}))`. -/
 theorem fullTorsionEnergy_eq {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) {A B : ℕ} (hA : 0 < A)

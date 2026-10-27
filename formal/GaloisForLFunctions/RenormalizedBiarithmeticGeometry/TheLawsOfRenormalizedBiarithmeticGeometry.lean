@@ -29,12 +29,12 @@ One statement collecting the laws proved in the programme:
 
 noncomputable section
 
-open Filter Topology Finset
+open Filter Topology Finset RHTower
 
 namespace GaloisForLFunctions.RenormalizedBiarithmeticGeometry
 
 open Zeta23 GaloisForLFunctions.ConjugateDiagonalGeometry GaloisForLFunctions.ArithmeticPolarization
-  BiarithmeticGaugeGeometry RHTower ArithmeticCorrespondencePositivity
+  BiarithmeticGaugeGeometry ArithmeticCorrespondencePositivity
 
 /-- **The laws of Renormalized Biarithmetic Geometry.** -/
 theorem renormalized_biarithmetic_geometry_laws :

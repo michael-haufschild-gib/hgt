@@ -200,10 +200,18 @@ eighteen public declarations.
 
 Uncertified drafts: `/tmp/leftovers_exact_doubling_energy.lean` and
 `/tmp/leftovers_finite_sieve_graph_transport.lean`. Their imported existing
-leaves `QuadraticPerturbedNodes`, `IntegerLinearVariance`,
-`FiniteSieveRealization`, and `WeightedDoublingIncidence` lack oleans and
-require individual direct dependency builds before these drafts can compile.
-No second Lean process is started while a check is live.
+leaves `QuadraticPerturbedNodes` and `IntegerLinearVariance` had their missing
+oleans built individually, with exit 0 and empty logs
+`/tmp/leftovers-quadratic-nodes-build.log` (session 33661) and
+`/tmp/leftovers-integer-variance-build.log` (session 32559). The exact-doubling
+draft's first eight-declaration source/axiom audit found two explicit
+simplification issues: a true incidence conditional and unfolding the mean
+variance. Both have been made explicit. The revised audit is running
+(session 23429, `/tmp/leftovers-exact-doubling-audit-r2.log`), with a diagnostic
+print of the imported variance definition to verify the interface.
+`FiniteSieveRealization`, `WeightedDoublingIncidence`, and
+`DyadicMantissaVariance` still need their missing oleans for the transport
+draft. No second Lean process is started while a check is live.
 
 ### Original dyadic ancillary statements
 
@@ -214,8 +222,17 @@ sum, weighted Cauchy--Schwarz, descendant bound at actual binary depth,
 Its first six-declaration audit found a rewrite issue in the geometric path
 sum; the four descendant/tree declarations already had standard axioms.
 The successor step now uses the qualified `Finset.sum_range_succ` rewrite.
-The revised audit is running (session 79411,
-`/tmp/leftovers-binary-depth-audit-r2.log`).
+The second check reached the exact scalar algebra and rejected a redundant
+second power rewrite. Removing that rewrite leaves the ring identity.
+The third audit passed all six declarations with standard axioms and no
+diagnostics (session 31998, exit 0,
+`/tmp/leftovers-binary-depth-audit-r3.log`). The identical canonical
+`BinaryDepthCoercivity.lean` is wired and passed its final direct source
+check (session 24003, exit 0, empty `/tmp/leftovers-binary-depth-final.log`).
+Source hash: `191737d6df3292e4828c6fdcbc53e6df5f4d27de6b633163bef0d714f91e3ddc`.
+The eight
+previous dyadic/perturbation source hashes and clean canonical final logs
+were reverified in `/tmp/leftovers-dyadic-perturb-current-source-evidence.json`.
 `/tmp/leftovers_dyadic_level_counts.lean` counts explicit last-level blocks:
 `[10r,14r)` is high, `[8r,9r) ∪ [15r,16r)` is low, where `r=2^h`.
 Their counts are `4r=q/2` and `2r=q/4`, respectively. The original tent
@@ -272,6 +289,18 @@ or zeta-zero dictionary. The card's warning about residual eigenvalues at the
 reflected root remains material: proving only the upper root does not certify
 the original two-root assertion. No substitute spectral-parameter polynomial
 or assumed trace formula will be treated as a solution.
+
+### Stein geometry route
+
+[The geometry subtask](leftovers-stein-contact-geometry.md) records a faithful
+alternative contact-branch proof using the invariant metric derived from the
+actual CR structure, compact isometry-group closure and minimality. Its
+classical K-contact parent has been checked in primary literature. No Lean
+closure is claimed. Corpus search now surfaces substantial genuine manifold,
+Riemannian, geodesic and exponential-map infrastructure in the vendored
+`DifferentialGeometry` library; this must be inspected before rebuilding
+geometric prerequisites. The original dimension and Bohr-rank conclusions
+remain unchanged.
 
 ## Historical user steering: finish started Lean work, then pause (superseded)
 

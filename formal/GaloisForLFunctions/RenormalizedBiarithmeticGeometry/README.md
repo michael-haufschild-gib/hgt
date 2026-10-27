@@ -111,6 +111,9 @@ BGG).
    disc; terminals are the zeros outside every disc, and each terminal carries a zero-free lens on
    which `Re ξ′/ξ ≥ 0`.
 5. *Chirality.* Positive deformations form a monoid without nontrivial units.
+6. *Dilution.* A positive packet on `ℚ`-independent ordinates buys in total at most its pole share;
+   on `M` harmonic ordinates it can buy `M` times the pole share. Collective amortization over a
+   cloud of companions exists only through arithmetic relations among their ordinates.
 
 ---
 
@@ -134,6 +137,7 @@ BGG).
 | Critical disc | `{s : |s − (½ + iγ_ρ)| < |δ_ρ|}` | `InCriticalDisc` |
 | Terminal and lens | right zero outside every critical disc; region right of the two radius-`½` circles through it | `IsTerminal`, `InTerminalLens`, `lensWidth` |
 | Positive deformation | `Λ₀′/Λ₀ − Λ′/Λ` is the Laplace transform of a measure on a ray | `PositiveDeformation` |
+| Positive packet | `a_0 + Σ_j a_j cos(ω_j t) ≥ 0`: pole share `a_0`, purchase `a_j` | `sum_abs_le_of_packet_nonneg`, `exists_harmonic_packet` |
 
 ### 3.2 Twelve distinctions
 
@@ -239,6 +243,14 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
     (`PositiveDeformation.trans`); mutual positive deformations have equal logarithmic derivatives on
     a ray (`PositiveDeformation.antisymm`); a nontrivial one cannot be undone
     (`not_positiveDeformation_of_ne`).
+12. **Kronecker dilution** (`CollectivePacketsDiluteOverIndependentOrdinates`). Kronecker's theorem
+    puts every `cos(ω_j t)` near `−sign(a_j)` at one time, so a nonnegative packet on independent
+    ordinates satisfies `Σ_j |a_j| ≤ a_0` (`sum_abs_le_of_packet_nonneg`), sharply
+    (`packet_nonneg_of_sum_abs_le`), and its peak is at most twice its pole share
+    (`packet_peak_le_two_mul`). The Fejér packet on `γ, …, Mγ` buys `M` times its pole share
+    (`exists_harmonic_packet`, `harmonic_purchase_eq`).
+13. **The laws** (`TheLawsOfRenormalizedBiarithmeticGeometry`): one conjunction of the laws above,
+    `renormalized_biarithmetic_geometry_laws`.
 
 ---
 
@@ -251,7 +263,7 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
 | III. Gauge blindness = square class | blind ⇔ `nab` square; square-class criteria accept `Λ` iff `λΛ`; successor charged | `realSignBlind_iff_isSquare`, `sourceForm_nonneg_twist_iff`, `successor_coupling_charged` |
 | IV. Interior–boundary duality | global states decouple `+1` and `×p` (APD); cells couple them and fix the gauge, with reach `2X + 1` on horizon `X` | APD; `cellDilate_two_covariant_iff`, `cellDilate_two_covariant_on_horizon_iff` |
 | V. Self-energy survival | positivity passes a scale limit exactly on the survival cone, independent of scheme; prime place: `{0}`, indefinite limit; archimedean place: polar-neutral hyperplane; pole node completes it | `quad_nonneg_on_survivalCone_iff`, `survivalCone_eq_of_regularized`, `counterterm_rank_dichotomy`, `harmonicKernel_nonneg` |
-| VI. Chirality and quantization | positive deformations form a monoid with trivial units; central excess quantized in `2ℕ` | `PositiveDeformation.antisymm`, `not_positiveDeformation_of_ne`; BGG G19 |
+| VI. Chirality, quantization and dilution | positive deformations form a monoid with trivial units; central excess quantized in `2ℕ`; collective packets on independent ordinates buy at most the pole share | `PositiveDeformation.antisymm`, `not_positiveDeformation_of_ne`, `sum_abs_le_of_packet_nonneg`; BGG G19 |
 | VII. Surface effectivity vs base non-extension | Hodge index ⇔ Serre-dual real effectivity with quadratic growth; the base theta count does not extend | AET |
 | VIII. Terminal replacement of extrema | every off-line zero ascends to a terminal; terminals = zeros outside every critical disc; each carries a zero-free lens with `Re ξ′/ξ ≥ 0` | ACP; `isTerminal_iff_outside_discs`, `xi_ne_zero_of_mem_terminalLens`, `re_logDeriv_xi_nonneg_of_mem_terminalLens` |
 
@@ -280,7 +292,9 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
 4. **Chiral moduli.** *What is the geometry of one-way positive deformations?* A monoid without
    nontrivial units: positivity orders deformations and cannot be undone. With BGG's Landau–Wronskian
    principle a positive deformation can only lower the order at its abscissa, and the central excess
-   is quantized.
+   is quantized. Coupling many ordinates does not help unless they are commensurable: over
+   independent ordinates a positive packet buys at most its pole share in total, over harmonic
+   ones up to `M` times it.
 5. **Zero-cone potential.** *How do `F(p) = 0` and an empty cone constrain the outward ray?* The empty
    cone of a terminal is the statement that `p` lies outside every critical disc. That condition
    extends from the ray to a two-dimensional lens bounded by two circles of radius `½` through `p`;
@@ -310,7 +324,7 @@ outside every critical disc. *Lens*: the zero-free sector of a terminal.
 | Dyadic amplification is selective | It holds on every positive depth configuration; its content is the transfer of a source bound |
 | The terminal ray is special | It lies in a two-dimensional zero-free lens |
 | Positive deformations can be undone | Units are trivial |
-| Collective packets amortize pole cost | A positive multi-frequency certificate purchases at most twice the pole share per frequency (MPG `multiFrequency_purchase_le_two`) |
+| Collective packets amortize pole cost | Over `ℚ`-independent ordinates the whole packet buys at most the pole share (`sum_abs_le_of_packet_nonneg`); only commensurable clouds concentrate (`exists_harmonic_packet`) |
 
 ---
 
@@ -327,20 +341,24 @@ lattice germ and its digamma limit; counterterm rank of both places; pole-node c
 amplification and the effective angle; the Hecke moment problem; integer-prefix transfer; gauge
 charge of couplings and the square-class criterion; cell and lattice dilation with finite-horizon
 gauge fixing; critical discs, the Carathéodory region and the terminal lens; the positive
-deformation monoid.
+deformation monoid; Kronecker dilution and harmonic concentration of positive packets.
 
 **To build**: a twin for higher torsion orbits; arithmetic upper bounds for prefix readings at one
 dyadic scale; Harnack and harmonic-measure estimates on the lens; quantitative cell holonomy at the
-Liouville gauge; Kronecker dilution of collective packets over independent ordinates; Wiener escape
-modules as boundary objects.
+Liouville gauge; Wiener escape modules as boundary objects.
 
 ---
 
 ## 9. Open research topics
 
-1. **Twins for higher torsion orbits.** A positive germ whose Cesàro statistics against the
-   Ramanujan modes `c_n` (`n ≥ 2`) match those of the torsion germ, so that the joint counterterm has
-   a null cone meeting the short-cycle differences `g − T_{2^m} g`.
+1. **Twins for higher torsion orbits.** Candidate: the Ramanujan-twisted lattice germs
+   `Σ_{k≥1} r^k c_m(k) c_n(k)/(k + x + y)`, Gram matrices of `c_n(k) t^x` in
+   `L²(ℕ × [0, 1], r^k t^{k−1})`. At `x = y = 0` they are the torsion energies `T_r(m, n)`; their
+   counterterm is expected to be block-diagonal with blocks `φ(n) 𝟙𝟙ᵀ` (the Cesàro means of
+   `c_m c_n`). Base-point completion at every pole node would then give a positive kernel in which
+   the orbit intersections `I(m, mt) = φ(m)Λ(t)` enter through the `x = 0` entries, against twisted
+   Lerch values. Prove the counterterm, compute the twisted limits, and decide whether the resulting
+   bound on the prime form reaches the short-cycle differences `g − T_{2^m} g`.
 2. **One-scale arithmetic bounds.** An upper bound for `R_n(f, 2^k L, 1)` at `2^k L ≍ log n` from
    integer arithmetic; by lossless transfer it bounds `E_f(L)`. Any bound `E ≪ e^{2ϑ L} D` at one
    scale gives zero-density control.
@@ -348,10 +366,11 @@ modules as boundary objects.
    the outward floor of ACP, toward the terminal ceiling problem.
 4. **Quantitative cell holonomy.** Lower bounds for the gauge defect of cell correlations at the
    Liouville gauge for smooth short-cycle profiles.
-5. **Collective packets.** Whether commensurable companion clouds can beat the per-frequency cap
-   collectively, and the exact dilution over independent ordinates.
-6. **Escape modules.** Contractive `𝒲_{1/2}`-modules of damped limits as the boundary objects where
-   `(+1, ×p)` coupling survives.
+5. **Collective packets on mixed clouds.** Purchase bounds for clouds whose ordinates satisfy a
+   prescribed lattice of integer relations, interpolating between dilution (no relations) and
+   concentration (one generator).
+6. **Escape modules.** The contractive `𝒲_{1/2}`-modules `ActualCofactorLimit` of ADR (faithful
+   or the receiver escapes) as the boundary objects where `(+1, ×p)` coupling survives.
 
 ---
 
@@ -390,3 +409,5 @@ state mathematics only.
 - [`LogCellsFixTheGauge.lean`](LogCellsFixTheGauge.lean) — cell and lattice dilation, Baumslag–Solitar, gauge fixing, finite horizons.
 - [`CriticalDiscsAndTheTerminalLens.lean`](CriticalDiscsAndTheTerminalLens.lean) — pair sign law, Carathéodory region, terminals, the lens.
 - [`PositivityIsIrreversible.lean`](PositivityIsIrreversible.lean) — the positive deformation monoid.
+- [`CollectivePacketsDiluteOverIndependentOrdinates.lean`](CollectivePacketsDiluteOverIndependentOrdinates.lean) — Kronecker dilution and harmonic concentration of positive packets.
+- [`TheLawsOfRenormalizedBiarithmeticGeometry.lean`](TheLawsOfRenormalizedBiarithmeticGeometry.lean) — the laws in one statement.
