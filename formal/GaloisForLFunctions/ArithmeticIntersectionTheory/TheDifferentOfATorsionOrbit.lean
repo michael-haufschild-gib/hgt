@@ -14,15 +14,15 @@ exponent of the different of `ℚ_p(ζ_{p^a})/ℚ_p` per unit degree: the self-i
 orbit is the canonical degree of its cyclotomic field, summed over the places.
 
 The proof is the logarithmic derivation of Dirichlet convolution. `log` is a derivation
-(`pmul_log_mul`); from `φ * ζ = id` and `μ * log = Λ`,
-`μ * (id · log) = φ · log + φ * Λ` (`moebius_mul_id_pmul_log`), and `(φ * Λ)(n) = φ(n) Σ_{p ∣ n} log p/(p − 1)`
+(`pmul_log_mul`); from `φ * ζ = id` and `μ * log = Λ`, `μ * (id · log) = φ · log + φ * Λ`
+(`moebius_mul_id_pmul_log`), and `(φ * Λ)(n) = φ(n) Σ_{p ∣ n} log p/(p − 1)`
 (`totient_mul_vonMangoldt_eq`), since `Λ` lives on prime powers and `Σ_{j < k} φ(p^j) = p^{k−1}`.
 -/
 
 noncomputable section
 
 open Finset ArithmeticFunction
-open scoped ArithmeticFunction.Moebius ArithmeticFunction.vonMangoldt ArithmeticFunction.zeta
+open scoped ArithmeticFunction.Moebius ArithmeticFunction.zeta
 
 namespace GaloisForLFunctions.ArithmeticIntersectionTheory
 
@@ -34,7 +34,8 @@ open ArithmeticEffectivityTheory
 theorem pmul_log_mul (f g : ArithmeticFunction ℝ) :
     (f * g).pmul log = f.pmul log * g + f * g.pmul log := by
   ext n
-  simp only [pmul_apply, mul_apply, add_apply, log_apply, sum_mul, ← sum_add_distrib]
+  simp only [pmul_apply, mul_apply, ArithmeticFunction.add_apply, log_apply, sum_mul]
+  rw [← sum_add_distrib]
   refine sum_congr rfl fun x hx => ?_
   obtain ⟨hmul, hn⟩ := Nat.mem_divisorsAntidiagonal.mp hx
   have h1 : (x.1 : ℝ) ≠ 0 := by exact_mod_cast left_ne_zero_of_mul (hmul.symm ▸ hn)
@@ -63,23 +64,23 @@ theorem zeta_pmul_log : (ζ : ArithmeticFunction ℝ).pmul log = log := by
   ext n
   rcases eq_or_ne n 0 with rfl | hn
   · simp
-  · simp [pmul_apply, natCoe_apply, zeta_apply, hn]
+  · simp
 
 /-- **`μ * (id · log) = φ · log + φ * Λ`.** -/
 theorem moebius_mul_id_pmul_log :
-    (μ : ArithmeticFunction ℝ) * idFn.pmul log = totientFn.pmul log + totientFn * Λ := by
+    (μ : ArithmeticFunction ℝ) * idFn.pmul log = totientFn.pmul log + totientFn * vonMangoldt := by
   rw [← totientFn_mul_zeta, pmul_log_mul, zeta_pmul_log, mul_add, mul_left_comm,
     coe_moebius_mul_coe_zeta, mul_one, mul_left_comm, moebius_mul_log_eq_vonMangoldt]
 
 /-- The Möbius transform of `k log k` is `φ(n) log n + Σ_{d ∣ n} φ(n/d) Λ(d)`. -/
 theorem kLogKernel_eq (n : ℕ) :
     kLogKernel n = Nat.totient n * Real.log n +
-      ∑ d ∈ n.divisors, (Nat.totient (n / d) : ℝ) * Λ d := by
+      ∑ d ∈ n.divisors, (Nat.totient (n / d) : ℝ) * vonMangoldt d := by
   have h := congrArg (fun F : ArithmeticFunction ℝ => F n) moebius_mul_id_pmul_log
-  simp only [mul_apply, add_apply, pmul_apply, totientFn_apply, idFn_apply, log_apply,
-    intCoe_apply] at h
+  simp only [mul_apply, ArithmeticFunction.add_apply, pmul_apply, totientFn_apply, idFn_apply,
+    log_apply, intCoe_apply] at h
   rw [Nat.sum_divisorsAntidiagonal' (fun a b => ((μ a : ℤ) : ℝ) * ((b : ℝ) * Real.log b)),
-    Nat.sum_divisorsAntidiagonal' (fun a b => (Nat.totient a : ℝ) * Λ b)] at h
+    Nat.sum_divisorsAntidiagonal' (fun a b => (Nat.totient a : ℝ) * vonMangoldt b)] at h
   rw [kLogKernel, h]
 
 /-! ### The tame part of the ramification -/
@@ -105,30 +106,33 @@ theorem sum_range_totient_prime_pow {p k : ℕ} (hp : p.Prime) (hk : 0 < k) :
 
 /-- **`(φ * Λ)(n) = φ(n) Σ_{p ∣ n} log p/(p − 1)`.** -/
 theorem totient_mul_vonMangoldt_eq (n : ℕ) :
-    ∑ d ∈ n.divisors, (Nat.totient (n / d) : ℝ) * Λ d = Nat.totient n * tameDifferent n := by
+    ∑ d ∈ n.divisors, (Nat.totient (n / d) : ℝ) * vonMangoldt d =
+      Nat.totient n * tameDifferent n := by
   induction n using Nat.recOnPosPrimePosCoprime with
   | zero => simp [tameDifferent]
   | one => simp [tameDifferent]
   | prime_pow p k hp hk =>
     rw [Nat.sum_divisors_prime_pow hp, sum_range_succ', tameDifferent_prime_pow hp hk.ne']
     simp only [pow_zero, vonMangoldt_apply_one, mul_zero, add_zero]
-    have hΛ : ∀ j ∈ range k, (Nat.totient (p ^ k / p ^ (j + 1)) : ℝ) * Λ (p ^ (j + 1)) =
-        (Nat.totient (p ^ (k - 1 - j)) : ℝ) * Real.log p := by
+    have hΛ : ∀ j ∈ range k,
+        (Nat.totient (p ^ k / p ^ (j + 1)) : ℝ) * vonMangoldt (p ^ (j + 1)) =
+          (Nat.totient (p ^ (k - 1 - j)) : ℝ) * Real.log p := by
       intro j hj
       have hjk : j + 1 ≤ k := mem_range.mp hj
       rw [Nat.pow_div hjk hp.pos, vonMangoldt_apply_pow (Nat.succ_ne_zero j),
         vonMangoldt_apply_prime hp, show k - (j + 1) = k - 1 - j by omega]
-    rw [sum_congr rfl hΛ, ← sum_mul, sum_range_reflect (fun j => (Nat.totient (p ^ j) : ℝ)) k,
+    rw [sum_congr rfl hΛ, ← sum_mul,
+      sum_range_reflect (fun j => (Nat.totient (p ^ j) : ℝ)) k,
       sum_range_totient_prime_pow hp hk, Nat.totient_prime_pow hp hk]
-    have hp1 : (1 : ℝ) < p := by exact_mod_cast hp.one_lt
+    have hne : (p : ℝ) - 1 ≠ 0 := by
+      have : (1 : ℝ) < p := by exact_mod_cast hp.one_lt
+      linarith
     push_cast
-    rw [Nat.cast_sub hp.one_le]
+    rw [Nat.cast_sub hp.one_le, Nat.cast_one]
     field_simp
-    push_cast
-    ring
   | coprime a b ha hb hab iha ihb =>
-    have hfilter : ∀ m : ℕ, ∑ d ∈ m.divisors, (Nat.totient (m / d) : ℝ) * Λ d =
-        ∑ d ∈ m.divisors with IsPrimePow d, (Nat.totient (m / d) : ℝ) * Λ d := by
+    have hfilter : ∀ m : ℕ, ∑ d ∈ m.divisors, (Nat.totient (m / d) : ℝ) * vonMangoldt d =
+        ∑ d ∈ m.divisors with IsPrimePow d, (Nat.totient (m / d) : ℝ) * vonMangoldt d := by
       intro m
       rw [sum_filter]
       refine sum_congr rfl fun d _ => ?_
@@ -137,15 +141,15 @@ theorem totient_mul_vonMangoldt_eq (n : ℕ) :
       · rw [vonMangoldt_apply, if_neg h, mul_zero]
     rw [hfilter, Nat.mul_divisors_filter_prime_pow hab, filter_union,
       sum_union (Nat.disjoint_divisors_filter_isPrimePow hab)]
-    have hA : ∀ d ∈ a.divisors with IsPrimePow d, (Nat.totient (a * b / d) : ℝ) * Λ d =
-        Nat.totient b * ((Nat.totient (a / d) : ℝ) * Λ d) := by
+    have hA : ∀ d ∈ a.divisors.filter IsPrimePow, (Nat.totient (a * b / d) : ℝ) * vonMangoldt d =
+        Nat.totient b * ((Nat.totient (a / d) : ℝ) * vonMangoldt d) := by
       intro d hd
       have hda : d ∣ a := Nat.dvd_of_mem_divisors (mem_filter.mp hd).1
       rw [Nat.mul_comm a b, Nat.mul_div_assoc b hda, Nat.mul_comm b,
         Nat.totient_mul (hab.coprime_dvd_left (Nat.div_dvd_of_dvd hda))]
       push_cast; ring
-    have hB : ∀ d ∈ b.divisors with IsPrimePow d, (Nat.totient (a * b / d) : ℝ) * Λ d =
-        Nat.totient a * ((Nat.totient (b / d) : ℝ) * Λ d) := by
+    have hB : ∀ d ∈ b.divisors.filter IsPrimePow, (Nat.totient (a * b / d) : ℝ) * vonMangoldt d =
+        Nat.totient a * ((Nat.totient (b / d) : ℝ) * vonMangoldt d) := by
       intro d hd
       have hdb : d ∣ b := Nat.dvd_of_mem_divisors (mem_filter.mp hd).1
       rw [Nat.mul_div_assoc a hdb,

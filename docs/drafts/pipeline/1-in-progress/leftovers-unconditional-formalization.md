@@ -64,18 +64,43 @@ statement, including endpoints and radius zero, without imposing
 uniform spacing. Formalization of these exact ancillary claims is
 the active dependency-complete step; all other cards remain in scope.
 
-Current drafts are `/tmp/leftovers_grid_cycle_parameters.lean` (automatic
-parameters, literal finite family, threshold, measured-array residuals) and
-`/tmp/leftovers_finite_net_cycle.lean` (arbitrary finite nets). Neither is
-certified yet. `GridFiniteCycleRecovery`'s missing olean was built successfully
-by the required direct command for the parameter draft's import (tool session
-91383, exit 0, no diagnostics). `ClosedCycleDataResiduals` is the other missing
-import; its direct build completed with exit 0 and no diagnostics in
-`/tmp/leftovers-cycle-residuals-resume-build.log` (tool session 74044).
-The parameter draft and its complete transitive axiom queries are being
-checked in tool session 27782, log `/tmp/leftovers-cycle-parameters-audit.log`.
-The arbitrary-net draft also includes arbitrary measured-array residuals,
-with the exact coefficient `(1+(d+1)/(2κ))/κ^(d+1)`.
+`GridCycleRecoveryParameters.lean` is certified and wired. The second
+scratch audit exited 0 with all 21 declarations depending only on
+`propext`, `Classical.choice`, `Quot.sound`. The identical canonical leaf
+passed its direct final check with exit 0 and no diagnostics (tool session
+66674, `/tmp/leftovers-cycle-parameters-final.log`). Source hash:
+`9aba018dce162eb2d792fc34587a546921693300f07cca511692a845cf8f7931`.
+Its new declarations are indexed. The first audit's two elaboration errors
+were resolved; no mathematical statement changed.
+
+Only the missing `GridFiniteCycleRecovery` and `ClosedCycleDataResiduals`
+oleans were built for the parameter leaf's imports (sessions 91383 and
+74044, both exit 0, no diagnostics). No existing olean was rebuilt, and
+no olean was written for the new parameter leaf because no new file imports it.
+
+`/tmp/leftovers_finite_net_cycle.lean` includes arbitrary finite nets and
+measured-array residuals with exact coefficient
+`(1+(d+1)/(2κ))/κ^(d+1)`. Its first source/axiom audit passed all 12
+declarations using only standard axioms; it reported three unused-instance
+warnings. The section variables were narrowed to remove those warnings.
+The revised audit exited 0 without warnings, with the same twelve
+standard-axiom declarations (`/tmp/leftovers-cycle-finite-net-audit-r2.log`).
+The identical canonical `FiniteNetClosedCycleRecovery.lean` now undergoes
+its direct final check, log `/tmp/leftovers-cycle-finite-net-final.log`.
+After it passes, wire its import, complete the derivative extension below,
+then finish the card coverage audit and promote the card.
+
+Full source review found that the existing exact derivative-conditioned
+bound still specializes to uniform meshes. The same scalar derivative bound
+at arbitrary net points, followed by the two source Lipschitz estimates,
+gives `2δ_C+2(d+1)δ₂+2sqrt(B)η` for every finite net. For measured arrays,
+replace both discrepancies by the total fitting residual, yielding coefficient
+`2(d+2)`. This exact remaining coverage is drafted in
+`/tmp/leftovers_finite_net_derivative_recovery.lean`, intended canonical
+`FiniteNetDerivativeRecovery.lean`. It imports the new finite-net base and
+`DerivativeCycleConditioning`; each needs its missing olean built only when
+this downstream draft is ready to check. No card is promoted before this
+extension passes source and axiom audits.
 
 ### Exact-incidence and common-model completion argument
 
@@ -103,7 +128,46 @@ Uncertified drafts: `/tmp/leftovers_exact_doubling_energy.lean` and
 leaves `QuadraticPerturbedNodes`, `IntegerLinearVariance`,
 `FiniteSieveRealization`, and `WeightedDoublingIncidence` lack oleans and
 require individual direct dependency builds before these drafts can compile.
-No build is started while the cycle parameter check is live.
+No second Lean process is started while a check is live.
+
+### Original dyadic ancillary statements
+
+Further uncertified drafts preserve the paper's separate intermediate claims:
+`/tmp/leftovers_binary_depth_coercivity.lean` has the exact geometric path
+sum, weighted Cauchy--Schwarz, descendant bound at actual binary depth,
+`8N(2/3)^k` edge charge, and the stated `8NT` tree bound.
+`/tmp/leftovers_dyadic_level_counts.lean` counts explicit last-level blocks:
+`[10r,14r)` is high, `[8r,9r) ∪ [15r,16r)` is low, where `r=2^h`.
+Their counts are `4r=q/2` and `2r=q/4`, respectively. The original tent
+also disproves doubling-only coercivity on every stated dyadic window.
+
+### Continuum comparison argument
+
+The actual quadratic logarithmic displacement is at most `δ/N`. The
+existing singular-energy modulus therefore gives, for the same actual
+source, a sample change at most
+`sqrt(8E/(exp(-1/2)(-log(δ/N))))`. This transfers exact zeros to approximate
+zeros in either direction without identifying correlation constraints with
+graph incidence. A zero-to-half correlation jump at displacement `d≤1`
+forces `E≥exp(-1/2)(-log d)/32` directly from the squared-increment bound.
+These exact statements are drafted in
+`/tmp/leftovers_perturbed_correlation_samples.lean`, not yet certified.
+
+For the complementary exact-zero obstruction, let `log 2<T<log 3` and
+choose a smooth positive-mass seed with correlation support radius
+`ρ=min(1,log(2)/2,(T-log(2))/2,(log(3)-T)/2)`. Two equal copies separated by
+`T` have normalized correlation `1/2` at `T` and zero at every `log n`,
+`n≥2`: every such lag and both shifted lags miss all three correlation
+packets. The existing small-support producer has energy at most `C-log ρ`.
+The two-copy normalized correlation agrees with the seed on the fixed
+origin interval of radius `log(2)/4`, so the existing local-energy stability
+theorem bounds the additional energy by a fixed kernel-tail constant.
+Thus exact constraints can fail maximally close to an integer lag only
+with logarithmically increasing energy, while bounded-energy sample data
+remain quantitatively stable. This is an elementary consequence of existing
+source constructions, not an external novelty claim; Lean construction and
+the exact quadratic-node specialization are drafted in
+`/tmp/leftovers_integer_gap_correlation_peak.lean`, awaiting compilation.
 
 Both Route-E cards have now been read in full. Current lexical corpus search
 and direct inspection of `MatomakiTeravainenTwistedFourthMoments` and

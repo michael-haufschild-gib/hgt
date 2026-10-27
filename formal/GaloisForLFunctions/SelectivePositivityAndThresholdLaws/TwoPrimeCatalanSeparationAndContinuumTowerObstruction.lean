@@ -166,7 +166,7 @@ theorem catalan_finite_gauge_separation :
         rw [← Real.mul_rpow (by norm_num) (by norm_num)]
         norm_num
       calc ((2 : ℕ) : ℝ) ^ σ * Real.log 2 * (((4 : ℕ) : ℝ) ^ σ * Real.log 2)
-          = ((2 : ℝ) ^ σ * (4 : ℝ) ^ σ) * (Real.log 2) ^ 2 := by norm_num; ring
+          = ((2 : ℝ) ^ σ * (4 : ℝ) ^ σ) * (Real.log 2) ^ 2 := by push_cast; ring
         _ = (8 : ℝ) ^ σ * (Real.log 2) ^ 2 := by rw [hmul]
     exact ⟨heq, heq ▸ mul_pos (Real.rpow_pos_of_pos (by norm_num) σ) (sq_pos_of_pos hl2)⟩
   · have heq : catalanSuccessorSquareForm liouvilleTwistedVonMangoldt = -(Real.log 2) ^ 2 := by

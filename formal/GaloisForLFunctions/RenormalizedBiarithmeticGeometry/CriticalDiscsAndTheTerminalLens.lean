@@ -64,7 +64,7 @@ theorem xiLinePairRe_nonneg_of_not_inCriticalDisc {R a u : ℝ} (hR : 0 < R)
       have hRa : a = -R := by nlinarith [sq_nonneg (R + a), sq_nonneg u]
       subst hu hRa
       simp only [add_neg_cancel, zero_div, add_zero]
-      positivity
+      exact div_nonneg (by linarith) (by positivity)
     have hd1 : 0 < (R - a) ^ 2 + u ^ 2 := lt_of_le_of_ne (by positivity) (Ne.symm h1)
     have hd2 : 0 < (R + a) ^ 2 + u ^ 2 := lt_of_le_of_ne (by positivity) (Ne.symm h2)
     have := xiLinePairRe_eq_div R a u hd1 hd2

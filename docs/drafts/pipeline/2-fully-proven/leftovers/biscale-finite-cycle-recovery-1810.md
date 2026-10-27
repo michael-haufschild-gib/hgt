@@ -1,7 +1,7 @@
 # Finite closed-cycle recovery on controlled correlations
 
 - **ID:** biscale-finite-cycle-recovery-1810
-- **Stage:** 2-fully-proven; recovery, source controls and sharpness in Lean, ancillary coverage audit pending
+- **Stage:** 2-fully-proven; explicit automatic parameters certified, arbitrary-net source audit pending
 - **Type:** BRIDGE; quantitative extension of existing cycle completeness
 - **Parent:** [field programme](../../1-in-progress/rh/bi-scale-uncertainty/biscale-field-development-1810.md), item 9
 
@@ -111,11 +111,21 @@ paper order `n=k+1`; its total cycle order is `k+2`. Accordingly the displayed
 Actual source construction discharges source regularity and normalization;
 the recovery theorems retain only the stated domain/control conditions.
 
-The card remains at stage 2 pending a complete audit of its ancillary claims,
-including explicit automatic selection of all recovery parameters and noise
-thresholds from `E,ε`. The finished drafts give exact bounds at supplied
-admissible parameters. No additional parameter-selection draft is started
-under the user's pause instruction, and item 9 is not declared closed.
+The resumed task has completed automatic parameter selection in
+`GridCycleRecoveryParameters.lean`. Set
+`R=max(1,32E/(cε²))`, `η=exp(-1-128E/(cε²))`,
+`d=ceil(R/ρ_E)`, `A=2^(d+1)(d+2)`, and `τ=ε/(2A)`.
+The literal finite family is closed, has maximum order `d+2`, and uses at
+most `2(ceil(2R/η)+1)` observations. Every discrepancy at most `τ`, or total
+fitting residual at most `τ`, guarantees global error at most `ε`.
+All 21 new public declarations have transitive standard-axiom audits, and
+the canonical leaf passed its final direct source check without diagnostics.
+Its umbrella import and corpus indexing are verified.
+
+The card remains at stage 2 while the arbitrary-finite-net and corresponding
+measured-array recovery draft undergoes its source and transitive axiom audit.
+This is the remaining explicit ancillary coverage check; item 9 is not yet
+declared closed.
 
 Evidence: `/tmp/leftovers-cycle-public-names.json`,
 `/tmp/leftovers-cycle-complete-audit-r2.log`, and
@@ -127,9 +137,11 @@ Evidence: `/tmp/leftovers-cycle-public-names.json`,
 
 Every row passed a direct `lake --old env lean -j 1` check from `formal/`,
 without writing an olean. The first five leaves supplied the only new oleans
-needed by the remaining started modules. The source statements retain the
-exact paper constants; remaining unstarted parameter-selection work stays
-paused and this partially covered card is not promoted.
+needed by the remaining started modules in the historical first batch.
+The source statements retain the exact paper constants; new checks are
+appended below. The resumed parameter leaf additionally required the missing
+`GridFiniteCycleRecovery` and `ClosedCycleDataResiduals` oleans; both built
+successfully by direct commands, without rebuilding any existing olean.
 
 | Leaf | SHA-256 | Final direct-check log |
 |---|---|---|
@@ -143,3 +155,4 @@ paused and this partially covered card is not promoted.
 | `DerivativeCycleConditioning` | `a636c585ded88d88feb2cefb216c8254b412e4fbb63b016a8a3ca769a9c878e4` | `/tmp/leftovers-cycle-conditioning-final.log` |
 | `ClosedCycleDataResiduals` | `2c6240f3264fa3d0268ee73e742d2d4041b7198a57d6674026967585d7b674aa` | `/tmp/leftovers-cycle-residuals-final.log` |
 | `UnitMassCompactSources` | `e25513b2ddf29de14278ed9edaba87a3cac69cd4dc1bca461af8e902d307a38a` | `/tmp/leftovers-cycle-unit-mass-final.log` |
+| `GridCycleRecoveryParameters` | `9aba018dce162eb2d792fc34587a546921693300f07cca511692a845cf8f7931` | `/tmp/leftovers-cycle-parameters-final.log` |

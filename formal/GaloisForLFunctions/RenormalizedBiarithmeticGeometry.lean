@@ -1,0 +1,18 @@
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheRenormalizationSurvivalLaw
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheArchimedeanGermSurvivesOnItsPolarHyperplane
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheCountertermRankDichotomy
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheDyadicAmplificationOfTheHeckeDefect
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheGaugeChargeOfACoupling
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.LogCellsFixTheGauge
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.CriticalDiscsAndTheTerminalLens
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.PositivityIsIrreversible
+
+/-!
+# Renormalized Biarithmetic Geometry
+
+Umbrella for the geometry of the renormalized coupled triple: survival of positivity through
+renormalization and the counterterm rank of the two places of the explicit formula; dyadic
+amplification of the Hecke defect; gauge charge of couplings and gauge fixing by logarithmic
+cells; critical discs, the Carathéodory region of `ξ′/ξ` and the terminal lens; irreversibility of
+positive deformations. See `RenormalizedBiarithmeticGeometry/README.md`.
+-/
