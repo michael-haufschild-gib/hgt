@@ -47,8 +47,8 @@ theorem heckeCocycle_eq {n t : ℕ} (hn : 0 < n) (ht : 0 < t) :
       Real.log t - ∑ p ∈ t.primeFactors \ n.primeFactors, Real.log p / ((p : ℝ) - 1) := by
   have htn : 0 < t * n := Nat.mul_pos ht hn
   rw [heckeCocycle, selfIntersection_eq htn, selfIntersection_eq hn, tameDifferent, tameDifferent,
-    Nat.primeFactors_mul ht.ne' hn.ne', ← union_sdiff_self_eq_union, union_comm,
-    sum_union (disjoint_sdiff_self_right), Nat.cast_mul,
+    Nat.primeFactors_mul ht.ne' hn.ne', union_comm, ← union_sdiff_self_eq_union,
+    sum_union disjoint_sdiff, Nat.cast_mul,
     Real.log_mul (by exact_mod_cast ht.ne') (by exact_mod_cast hn.ne')]
   ring
 
@@ -185,10 +185,9 @@ theorem tendsto_heckeVariation (hS : ∀ n ∈ S, 0 < n) {t : ℕ} (ht : 0 < t) 
     rw [sum_image_mul_left ht]
     simp only [heckeTransport_mul ht]
   have h := (tendsto_torsionForm hS' (heckeTransport t x)).sub (tendsto_torsionForm hS x)
-  rw [renormalizedTorsionForm_transport ht, hmass] at h
-  convert h using 1
-  · funext r; ring
-  · ring
+  rw [renormalizedTorsionForm_transport ht, hmass,
+    show ∀ R c : ℝ, R - c - R = -c from fun R c => by ring] at h
+  exact Tendsto.congr (fun r => by ring) h
 
 /-- **Covariance up to the degree character.** On saturated cycles (every prime of `t` divides every
 order in `S`) the Hecke variation is `−log t Σ x_n²`. -/

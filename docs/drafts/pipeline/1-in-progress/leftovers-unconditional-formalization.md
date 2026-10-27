@@ -85,10 +85,13 @@ declarations using only standard axioms; it reported three unused-instance
 warnings. The section variables were narrowed to remove those warnings.
 The revised audit exited 0 without warnings, with the same twelve
 standard-axiom declarations (`/tmp/leftovers-cycle-finite-net-audit-r2.log`).
-The identical canonical `FiniteNetClosedCycleRecovery.lean` now undergoes
-its direct final check, log `/tmp/leftovers-cycle-finite-net-final.log`.
-After it passes, wire its import, complete the derivative extension below,
-then finish the card coverage audit and promote the card.
+The identical canonical `FiniteNetClosedCycleRecovery.lean` passed its
+direct final check with exit 0 and no diagnostics (session 13857,
+`/tmp/leftovers-cycle-finite-net-final.log`); its umbrella import is wired.
+Source hash: `d02e14edf392e0876441cb577887f1c9e1f7e076426236a570ae8bde53f838e9`.
+Its missing olean was built successfully solely for the downstream derivative
+and L² imports (session 79035, exit 0, no diagnostics;
+`/tmp/leftovers-cycle-finite-net-build.log`).
 
 Full source review found that the existing exact derivative-conditioned
 bound still specializes to uniform meshes. The same scalar derivative bound
@@ -101,6 +104,32 @@ replace both discrepancies by the total fitting residual, yielding coefficient
 `DerivativeCycleConditioning`; each needs its missing olean built only when
 this downstream draft is ready to check. No card is promoted before this
 extension passes source and axiom audits.
+
+The base collar theorem has an additional source-domain obligation: its
+paper statement uses nonzero real L² sources, whereas the existing
+`LevyEnergySource` wrappers require compact C² sources. Corpus search found
+`RHTower/Suzuki/SuzukiCriticalL2Energy.lean`, whose actual `MemLp` lemmas prove
+continuity, the translation matrix-coefficient identity, origin mass equal
+to squared L² norm, and the absolute correlation bound. Its olean already
+exists. A full L² source extension must use these proved inputs, literal
+normalized cycle products and the same scalar recovery lemma; no finite
+energy, compact-source or smooth-source premise is allowed in this base
+extension. The actual correlation-support, collar, modulus and finite-net
+conditions are precisely the original controlled-class conditions. The
+derivative and singular-energy specializations retain their stated source
+regularity assumptions. Card promotion waits for this full-domain extension
+as well. No scope reduction is accepted.
+
+The full-domain draft is `/tmp/leftovers_l2_closed_cycle_recovery.lean`
+(intended canonical `L2ClosedCycleRecovery.lean`). It defines actual integral
+correlations of `SobolevShear.Velocity=L²(ℝ,ℝ)` sources, proves normalization,
+evenness, unit bounds and representative invariance, and uses literal finite
+cycle products. Its exact norm and measured-array recovery theorems require
+only the original control conditions. The modulus is monotone only on the
+nonnegative ray, matching its mathematical domain. All seventeen public
+declarations have appended axiom queries in
+`/tmp/leftovers_l2_closed_cycle_recovery_audit.lean`, currently being checked
+with log `/tmp/leftovers-cycle-l2-audit.log`.
 
 ### Exact-incidence and common-model completion argument
 

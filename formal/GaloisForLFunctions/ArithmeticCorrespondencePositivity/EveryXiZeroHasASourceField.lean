@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.XiTerminalRegularField
 
-/-!+# The arithmetic source field at every Xi zero
+/-!
+# The arithmetic source field at every Xi zero
 
 The simple Laurent coefficient of `(ζ′/ζ)²`, divided by twice the zero's
 multiplicity and completed by the archimedean logarithmic derivative, equals

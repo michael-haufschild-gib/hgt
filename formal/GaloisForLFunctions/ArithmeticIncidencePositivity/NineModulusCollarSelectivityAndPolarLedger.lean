@@ -41,10 +41,13 @@ collar:
    incidence ledger floor (`fullZeroForm_ge_nineModulusCollar_combLedger`).
 -/
 
+set_option autoImplicit false
+
 open MeasureTheory Set Filter Finset Topology
 open scoped BigOperators ArithmeticFunction
-open _root_.RHTower _root_.RHTower.CHMDPolar _root_.RHTower.WeilLevyPoleGauss
+open _root_.Zeta23 _root_.RHTower _root_.RHTower.CHMDPolar _root_.RHTower.WeilLevyPoleGauss
 open _root_.RHTower.ArchimedeanAnomaly
+open GaloisForLFunctions.SquareRootThreshold
 open GaloisForLFunctions.ArithmeticCriticalityTheory
 open GaloisForLFunctions.SelectivePositivityAndThresholdLaws
 
@@ -320,33 +323,9 @@ theorem autoCorr_neg_eq (F : ℝ → ℝ) (t : ℝ) : autoCorr F (-t) = autoCorr
         (integral_add_right_eq_self (fun u => F u * F (u + -t)) t).symm
     _ = ∫ u, F u * F (u + t) := by
         refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+        dsimp only
         have h : u + t + -t = u := by ring
         rw [h, mul_comm]
-
-/-- Endpoint-inclusive support vanishing of `autoCorr`: if `F x = 0` for `B < |x|`, then
-`autoCorr F t = 0` for every `t` with `2 * B ≤ |t|` (the boundary `x = ±B` has measure zero). -/
-theorem autoCorr_eq_zero_of_support_le {F : ℝ → ℝ} {B : ℝ}
-    (hsupp : ∀ x, B < |x| → F x = 0) {t : ℝ} (ht : 2 * B ≤ |t|) :
-    autoCorr F t = 0 := by
-  have hae : ∀ᵐ x : ℝ ∂volume, F x * F (x + t) = 0 := by
-    have h1 : ∀ᵐ x : ℝ ∂volume, x ≠ B := ae_iff.mpr (by simp)
-    have h2 : ∀ᵐ x : ℝ ∂volume, x ≠ -B := ae_iff.mpr (by simp)
-    filter_upwards [h1, h2] with x hxB hxmB
-    by_cases hf1 : F x = 0
-    · simp [hf1]
-    by_cases hf2 : F (x + t) = 0
-    · simp [hf2]
-    have b1 : |x| ≤ B := not_lt.mp fun h => hf1 (hsupp x h)
-    have b2 : |x + t| ≤ B := not_lt.mp fun h => hf2 (hsupp _ h)
-    have b1_lt : |x| < B := lt_of_le_of_ne b1 fun heq => by
-      rcases (abs_eq (le_trans (abs_nonneg x) b1)).mp heq with rfl | rfl
-      · exact hxB rfl
-      · exact hxmB rfl
-    have h3 : |t| ≤ |x + t| + |x| := by
-      have := abs_sub (x + t) x
-      rwa [add_sub_cancel_left] at this
-    linarith
-  exact integral_eq_zero_of_ae hae
 
 /-- Pointwise evaluation of `liouvilleTwistedVonMangoldt` vs `vonMangoldt` across the nine-modulus
 collar: on `collarPositiveLiouvilleModuli = {4, 9}` they agree identically, while on
@@ -368,9 +347,11 @@ theorem liouvilleTwistedVonMangoldt_collar_cases :
     · rw [liouvilleTwistedVonMangoldt_four, show (4 : ℕ) = 2 ^ 2 by norm_num,
         ArithmeticFunction.vonMangoldt_apply_pow (by norm_num),
         ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+      norm_num
     · rw [liouvilleTwistedVonMangoldt_nine, show (9 : ℕ) = 3 ^ 2 by norm_num,
         ArithmeticFunction.vonMangoldt_apply_pow (by norm_num),
         ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_three]
+      norm_num
   · intro n hn
     simp only [collarNegativeLiouvilleModuli, Finset.mem_insert, Finset.mem_singleton] at hn
     rcases hn with rfl | rfl | rfl | rfl | rfl | rfl | rfl
@@ -381,6 +362,7 @@ theorem liouvilleTwistedVonMangoldt_collar_cases :
     · rw [liouvilleTwistedVonMangoldt_eight, show (8 : ℕ) = 2 ^ 3 by norm_num,
         ArithmeticFunction.vonMangoldt_apply_pow (by norm_num),
         ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+      norm_num
     · exact hprime_eq (by norm_num : Nat.Prime 11)
     · exact hprime_eq (by norm_num : Nat.Prime 13)
 
@@ -402,7 +384,9 @@ theorem re_weilFullFunctional_liouville_sub_vonMangoldt_collar {F : ℝ → ℝ}
     intro t
     have h := _root_.RHTower.ArchimedeanExactForm.autocorr_eq_weilTest F (-t)
     rw [neg_neg] at h
-    rw [← h, ← autoCorr_eq_autocorr, autoCorr_neg_eq]
+    dsimp only [k]
+    rw [← h]
+    exact congrArg Complex.ofReal (autoCorr_neg_eq F t)
   have hzero_ge16 : ∀ {n : ℕ}, 16 ≤ n → k (Real.log n) = 0 ∧ k (-Real.log n) = 0 := by
     intro n hn16
     have hlog16 : 2 * (2 * Real.log 2) ≤ Real.log n := by
@@ -443,7 +427,8 @@ theorem re_weilFullFunctional_liouville_sub_vonMangoldt_collar {F : ℝ → ℝ}
     unfold weilFullFunctional
     rw [htsum liouvilleTwistedVonMangoldt,
       htsum (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))]
-    rw [← Complex.ofReal_sub]
+    have hring : ∀ z w (a b : ℂ), (z - a + w) - (z - b + w) = b - a := fun _ _ _ _ => by ring
+    rw [hring, ← Complex.ofReal_sub]
     congr 1
     rw [← mul_sub, ← Finset.sum_sub_distrib]
     congr 1
@@ -468,7 +453,8 @@ theorem re_weilFullFunctional_liouville_sub_vonMangoldt_collar {F : ℝ → ℝ}
     have hΛ0 : (ArithmeticFunction.vonMangoldt n : ℝ) = 0 := by
       exact_mod_cast le_antisymm (not_lt.mp hnot_pos) ArithmeticFunction.vonMangoldt_nonneg
     have hL0 : liouvilleTwistedVonMangoldt n = 0 := by
-      rw [liouvilleTwistedVonMangoldt, hΛ0, mul_zero]
+      unfold liouvilleTwistedVonMangoldt
+      rw [hΛ0, mul_zero]
     rw [hΛ0, hL0]
     ring
   rw [hsub_collar, hpart, Finset.sum_union hdisj]

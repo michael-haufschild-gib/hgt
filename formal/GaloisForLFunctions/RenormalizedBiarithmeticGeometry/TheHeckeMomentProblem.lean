@@ -71,8 +71,11 @@ theorem hasSum_hankelForm (f : CompactTest) (L : ℝ) (s : ℕ) {n : ℕ} (c : F
     hasSum_sum fun (j : Fin n) (_ : j ∈ univ) =>
       ((summable_zeta_kernel_pow f L ((i : ℕ) + j + s)).hasSum).mul_left (c i * c j)
   refine h.congr_fun fun ρ => ?_
-  simp only [coeffEval, sq, sum_mul_sum, mul_sum]
-  refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
+  simp only [coeffEval]
+  rw [sq, sum_mul_sum, mul_sum]
+  refine sum_congr rfl fun i _ => ?_
+  rw [mul_sum]
+  refine sum_congr rfl fun j _ => ?_
   rw [pow_add, pow_add]
   ring
 

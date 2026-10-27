@@ -1,7 +1,7 @@
 # Finite closed-cycle recovery on controlled correlations
 
 - **ID:** biscale-finite-cycle-recovery-1810
-- **Stage:** 2-fully-proven; explicit automatic parameters certified, arbitrary-net source audit pending
+- **Stage:** 2-fully-proven; automatic parameters and arbitrary nets certified; full L² and derivative-net extensions pending
 - **Type:** BRIDGE; quantitative extension of existing cycle completeness
 - **Parent:** [field programme](../../1-in-progress/rh/bi-scale-uncertainty/biscale-field-development-1810.md), item 9
 
@@ -122,10 +122,18 @@ All 21 new public declarations have transitive standard-axiom audits, and
 the canonical leaf passed its final direct source check without diagnostics.
 Its umbrella import and corpus indexing are verified.
 
-The card remains at stage 2 while the arbitrary-finite-net and corresponding
-measured-array recovery draft undergoes its source and transitive axiom audit.
-This is the remaining explicit ancillary coverage check; item 9 is not yet
-declared closed.
+`FiniteNetClosedCycleRecovery.lean` proves the arbitrary-finite-net estimate
+and the corresponding arbitrary measured-array bound for the compact C²
+source domain. Its twelve declarations have clean transitive axiom audits,
+and its final direct source check passed without diagnostics. Its umbrella
+import is wired.
+
+The card remains at stage 2 until two source-domain extensions are checked:
+the base collar estimate on all nonzero real L² sources, and the exact
+derivative-conditioned estimate on arbitrary finite nets. The first uses
+proved L² translation/correlation lemmas; the second uses the existing
+actual-source derivative estimate. Both retain the original constants.
+Item 9 is not yet declared closed.
 
 Evidence: `/tmp/leftovers-cycle-public-names.json`,
 `/tmp/leftovers-cycle-complete-audit-r2.log`, and
@@ -156,3 +164,4 @@ successfully by direct commands, without rebuilding any existing olean.
 | `ClosedCycleDataResiduals` | `2c6240f3264fa3d0268ee73e742d2d4041b7198a57d6674026967585d7b674aa` | `/tmp/leftovers-cycle-residuals-final.log` |
 | `UnitMassCompactSources` | `e25513b2ddf29de14278ed9edaba87a3cac69cd4dc1bca461af8e902d307a38a` | `/tmp/leftovers-cycle-unit-mass-final.log` |
 | `GridCycleRecoveryParameters` | `9aba018dce162eb2d792fc34587a546921693300f07cca511692a845cf8f7931` | `/tmp/leftovers-cycle-parameters-final.log` |
+| `FiniteNetClosedCycleRecovery` | `d02e14edf392e0876441cb577887f1c9e1f7e076426236a570ae8bde53f838e9` | `/tmp/leftovers-cycle-finite-net-final.log` |

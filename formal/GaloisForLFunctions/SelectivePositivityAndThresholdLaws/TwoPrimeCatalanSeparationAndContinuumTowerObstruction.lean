@@ -1581,7 +1581,7 @@ private theorem edgeTowerBump_properties {A : ℝ} (hA : 4 ≤ A) :
     have hval : ∫ x in J, edgeTowerBump A x ^ 2 = 1 / 4 := by
       rw [setIntegral_congr_fun measurableSet_Icc hJ1, setIntegral_const,
         Real.volume_real_Icc_of_le hJle, smul_eq_mul]
-      ring
+      ring_nf
     have hd_nn : 0 ≤ ∫ x, deriv (edgeTowerBump A) x ^ 2 :=
       integral_nonneg fun _ => sq_nonneg _
     unfold dyadicH1NormSq
@@ -1712,6 +1712,7 @@ private theorem continuumPrimeTower_edgeTowerBump_bounds {A : ℝ} (hA : 4 ≤ A
     dsimp [term]
     rw [hratio_zero 1 le_rfl, pow_one, ArithmeticFunction.vonMangoldt_apply_prime hp]
     push_cast
+    simp only [one_mul]
     ring
   have hp0 : (0 : ℝ) < p := by positivity
   have hrpow_ge : Real.exp (-A) ≤ (p : ℝ) ^ (-(1 / 2 : ℝ)) := by

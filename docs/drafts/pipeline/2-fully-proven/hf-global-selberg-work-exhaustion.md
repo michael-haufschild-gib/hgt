@@ -109,6 +109,22 @@ source rows are absolutely summable because there are finitely many nonzero
 rows, each already absolutely summable. No pointwise bound on the regular part
 or on zero separation is assumed.
 
+An algebraically simpler version of step 4, used in Lean, is
+
+    angular(x,t-u) ≤ 2(1+t²)/(1+u²),  x²≤1.
+
+For nonzero angular denominator, clear the two positive denominators and use
+`u²≤2t²+2(t-u)²` and `x²≤1`; the difference is bounded below by
+`x²+2(t-u)²(1+t²-x²)≥0`. At zero denominator the angular term is zero.
+For `R≥1`, `w_R(t)≤R⁴/(1+t²)²`, hence
+
+    w_R(t) angular(x,t-u) ≤ 2R⁴/((1+t²)(1+u²)).
+
+The sequence `1/(1+t_p²)` is summable by comparison with the known inverse
+square ordinate sequence. Reflection and swapping now give a product majorant
+`8R⁴/((1+t_p²)(1+t_q²))` for `(w_p+w_q)E`, uniformly also at small heights.
+This proves the same global target without the near/far height split in step 4.
+
 In step 6 take `R=n+4`. When total energy is finite, use the majorant `2E`.
 When it is infinite, any finite set of pairs has arbitrarily large total
 energy; pointwise convergence on that finite set and nonnegativity of all
@@ -124,6 +140,19 @@ the extended-real limit and does not require interchange of divergent signed sum
   exterior rows; truncating both indices would be a different object.
 - Audit final source theorems with `#print axioms`; use only foreground
   `lake --old env lean` checks and wire the completed module into its umbrella.
+
+## Lean progress
+
+`ArithmeticElectrostatics/ReflectedTransverseWork.lean` now checks and its missing
+olean was produced for the importing source module. It proves the near/far mixed
+term estimates, rational relative-variation law, nonnegative damped work, uniform
+compact-taper bound, and inverse-quadratic product majorant, including collisions.
+No limit changes or added mathematical premises were used.
+
+`ArithmeticElectrostatics/TheSelbergWorkExhaustsTheTransverseEnergy.lean` is under
+construction: actual-copy product summability, taper convergence, finite source
+identification, and the extended-real outer limit. This card remains stage 2
+until the complete source formula and its dependency audit pass.
 
 ## Relation to the closing obstacle
 
