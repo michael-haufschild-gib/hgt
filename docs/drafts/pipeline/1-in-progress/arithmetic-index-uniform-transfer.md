@@ -1,91 +1,124 @@
-# Arithmetic index control across refinement
+# Arithmetic source-work increments pay for annular defects
 
-Status: research. Target is a significant unconditional theorem for Arithmetic Index Descent,
-advancing the route to finite off-line support without assuming a global work or index bound.
+Status: paper argument complete; individual Lean checks in progress.
+Programme: ArithmeticIndexDescent.
 
-Existing receivers: finite off-line support iff finite copied energy iff bounded damped source
-work iff a uniform index budget on fixed-spline integer-log families. Existing source inputs:
-positive independent arithmetic sections and spacing-scale reserves. Existing algebra:
-singular range-compatible Schur refinement and finite-rank perturbation inequalities.
+## Statement
 
-Novelty requirement: produce a new source estimate or substantive exact/quantitative transfer;
-do not count a repackaged finiteness equivalence or an assumed analytic budget as a contribution.
-Current investigation compares compact-tail control, stability of finite-Gram indices without
-spectral gaps, and extension of actual positive arithmetic section spaces by signed interactions.
+Let W(R) be the completed damped arithmetic source work, with analytic multiplicity
+copies and every exterior interaction retained. For any finite packet P of right-hand
+zero copies, 4 <= R <= S,
 
-No finiteness conclusion is currently proved. Every claimed theorem will be formalized and
-checked individually with lake --old env lean; no full builds or computations.
+    sum_{p in P} [h_S(gamma_p)-h_R(gamma_p)] <= W(S)-W(R),
+    h_R(t) = R^4/(R^2+t^2)^2.
 
-Selected stronger source contribution: scale increments of arithmetic source work.
+Consequently, if R <= |gamma_p| <= 2R for every p in P,
 
-New input found in the corpus: every zeta zero with Re>0 has |Im|>=4
-(RHTower/ZetaZeroFreeRegionAllZeros). For h_R(t)=R^4/(R²+t²)²,
-its R derivative is 4R³ t²/(R²+t²)³. On |t|,|u|>=4 these derivative weights obey
-2|v(t)-v(u)| <= |t-u|(v(t)+v(u)). This follows from a factorization of their rational
-numerator, using t²>=4t and u²>=4u after replacing heights by absolute values.
-The existing near/far reflected-cross estimates then make the R derivative of every
-actual reflected pair-work nonnegative. Thus the completed source work is monotone in R.
+    (21/100) card(P) <= W(2R)-W(R).
 
-For an off-line right zero, its self/reflection quartet contributes exactly
-h_S(gamma)-h_R(gamma) to the work increment. All other increments are nonnegative.
-Target quantitative theorem: for any finite right-zero packet with R<=|gamma|<=2R,
-(21/100)*card(packet) <= xiDampedSourceWork(2R)-xiDampedSourceWork(R), R>=4.
-The constant is the sharp minimum of 16/(4+x)^2-1/(1+x)^2 for 1<=x<=4.
-A telescoping consequence should pay disjoint dyadic shells from accumulated source-work
-increments. This supplies a new local quantitative estimate, not another finiteness equivalence.
+No RH, finite-energy assertion, source upper bound or negative-index budget is assumed.
+The scale and packet restrictions specify the domain of the estimate. The constant
+21/100 is sharp for the scalar damping increment on the annulus, not asserted optimal
+for the complete arithmetic work.
 
-The source-compatible Schur alternative is parked: useful, but the scale-increment estimate
-more directly advances the finite-exception budget. No finiteness bound is assumed or asserted.
+Two further unconditional conclusions:
 
-Paper argument (formalization in progress)
------------------------------------------
-Write a=|t|, b=|u|, T=a²+b² and P=a²b². For a,b>=4,
-T>=4(a+b) and a⁴+b⁴>=2(a+b)T. Clearing the positive denominator of
-v_R(a)-v_R(b), its numerator is (a-b)(a+b)Q, where
-Q=R⁶-P(3R²+T). The sum numerator is S=a²(R²+b²)³+b²(R²+a²)³.
-Both S-2(a+b)Q and S+2(a+b)Q are sums of nonnegative terms using those
- two inequalities. Hence 2|v_R(t)-v_R(u)|<=|t-u|(v_R(t)+v_R(u)).
-The existing near-field estimate |d cross|<=2E and far-field estimate
-|cross|<=E imply reflectedWork(v_R(t),v_R(u))>=0. Since
-partial_R h_R(t)=4R³v_R(t), pair work is monotone for R>=0.
-Actual pair summability for R>=4 permits subtraction of the two tsums.
+- The completed work W is monotone on [4,infinity).
+- Either off-line support is finite, or arbitrarily large R have
+  W(2R)-W(R) >= 21/100.
 
-For each right-hand multiplicity copy p, inject the four ordered pairs in
-{p,lineConj(p)}². Each has pair work h_R(height(p)); distinct right copies
-produce disjoint quartets. The full nonnegative increment sum, divided by4,
-therefore dominates the sum of damping increments over any right packet.
+For every positive tolerance, the annular payment also holds eventually for the
+difference of the two finite tapered Laurent-source works, up to that tolerance.
 
-For R<=|t|<=2R, the numerator of h_(2R)(t)-h_R(t)-21/100 is
-(4R²-t²)[21t⁶+294R²t⁴+369R⁴(t²-R²)+285R⁶], with positive denominator
-100(4R²+t²)²(R²+t²)². This proves the sharp annular quantum; equality
-holds at t=2R. Finite tapered source-work increments converge to this full
-increment while retaining all exterior rows.
+## Existing inputs and novelty
 
-Novelty: the existing corpus proves eventual detection of a fixed finite index
-and convergence of work to total energy. The new result controls each finite
-scale increment, proves monotonicity at the pair level, and quantifies the work
-forced by zeros entering a doubled height annulus. A future arithmetic bound
-can target scale differences rather than the absolute source field.
+ArithmeticElectrostatics supplies the reflected energy/cross decomposition, its near-
+and far-field estimates, absolute summability at finite damping scale, and the exact
+identification with the completed arithmetic Laurent source. RHTower supplies the
+unconditional height gap |Im rho|>=4 and finiteness of divisor support in height bands.
+ArithmeticIndexDescent supplies the map selecting one multiplicity copy of each zero.
 
-Formalization state
--------------------
-DampingIncrementPositivity.lean has passed its individual olean-producing check.
-The two audited central declarations use only propext, Classical.choice, Quot.sound.
-SourceWorkIncrementsPayForNewZeros.lean is undergoing its second individual check.
-First check exposed namespace/API elaboration errors (not a mathematical obstruction):
-xiZeroHeight belongs to ArithmeticCorrespondencePositivity, and tsum comparison is
-Summable.tsum_le_tsum. These are corrected; quartet injection has explicit product indices.
+Earlier work detects fixed index witnesses after damping is removed and identifies
+bounded total work with finite off-line support. The new estimate controls each scale
+increment. Pairwise monotonicity is essential: positivity at two separate scales would
+not justify dropping the remaining interactions from their difference. The resulting
+local target is cancellation in W(2R)-W(R), rather than a global absolute source bound.
 
-Additional formal statement: finite_offLineSupport_or_arbitrarily_high_quantum_increments.
-If support were infinite, local divisor finiteness supplies an off-line zero above any
-height. Choose its right-hand reflection copy at the same height and apply the singleton
-annular quantum with R=|gamma|. This forces quantum-sized increments arbitrarily high.
-No upper estimate is introduced as a premise.
+Corpus search found no earlier scale-monotonicity or annular-increment theorem. The
+search indexed the new files while this proof was developed, so those self-hits were
+excluded from the novelty comparison.
 
-Source limit: xiTaperedSourceWork_increment_tendsto and
- eventually_annular_payment_in_finite_sourceWork preserve the lower payment up to any
-positive tolerance in differences of finite completed Laurent-source sums.
+## Paper proof
 
-Pending before completion: resolve source-file check; final no-olean audits for both new
-modules; wire both into ArithmeticIndexDescent.lean without compiling the umbrella;
-move this card to formalized with exact theorem names and proof; clean own /tmp scratch.
+1. Put v_R(t)=t^2/(R^2+t^2)^3. For a=|t|>=4 and b=|u|>=4, let
+   T=a^2+b^2, P=a^2 b^2, Q=R^6-P(3R^2+T),
+   S=a^2(R^2+b^2)^3+b^2(R^2+a^2)^3 and
+   D=(R^2+a^2)^3(R^2+b^2)^3>0. The difference of the two velocities is
+   (a-b)(a+b)Q/D and their sum is S/D. The inequalities
+   T>=4(a+b) and a^4+b^4>=2(a+b)T make both S-2(a+b)Q and
+   S+2(a+b)Q nonnegative by polynomial expansion. Thus
+
+       2|v_R(t)-v_R(u)| <= |t-u|(v_R(t)+v_R(u)).
+
+2. In the near field, multiply this inequality by the absolute reflected cross term
+   and use |(t-u) cross|<=2E. In the far field use |cross|<=E and
+   |v_R(t)-v_R(u)|<=v_R(t)+v_R(u). Both give nonnegative reflected work
+   for the velocity weights. Since partial_R h_R(t)=4R^3 v_R(t), every actual
+   reflected pair-work is monotone on [0,infinity). The actual height gap discharges
+   the general kernel's height conditions; strip confinement discharges x^2+y^2<=1.
+
+3. At scales at least four both pair kernels are absolutely summable. Their difference
+   is summable and termwise nonnegative. For each right copy p, the four ordered pairs
+   in {p,lineConj(p)}^2 have pair work exactly h_R(gamma_p). The quartet map is
+   injective across different right copies, including different multiplicity indices
+   at one support point. Its finite sum is bounded by the full increment tsum.
+   The factor 1/4 in W then gives the weighted packet inequality.
+
+4. The difference h_(2R)(t)-h_R(t)-21/100 has positive denominator
+   100(4R^2+t^2)^2(R^2+t^2)^2 and numerator
+
+       (4R^2-t^2)
+         [21t^6+294R^2t^4+369R^4(t^2-R^2)+285R^6].
+
+   This is nonnegative for R<=|t|<=2R. Equality holds at |t|=2R. Summing
+   gives the annular quantum.
+
+5. The existing compact-taper limit at each of the two scales gives convergence of
+   their difference. Every strict lower payment therefore appears in the finite
+   completed source differences. No exterior field is truncated.
+
+6. If off-line support is infinite, local divisor finiteness supplies an off-line
+   point above any prescribed height. Choose its right-hand critical-line reflection
+   copy at the same height and apply the singleton annular theorem with R=|gamma|.
+   This proves the arbitrarily-high quantum-increment alternative.
+
+## Lean declarations
+
+`DampingIncrementPositivity.lean`:
+
+- `dampingVelocity_relative`
+- `dampingVelocity_work_nonneg`
+- `hasDerivAt_heightDamping`
+- `reflectedWork_monotoneOn_scale`
+- `heightDamping_doubling_gap`
+- `heightDamping_doubling_gap_endpoint`
+
+`SourceWorkIncrementsPayForNewZeros.lean`:
+
+- `xiDampedPairWork_monotoneOn`
+- `xiDampedSourceWork_monotoneOn`
+- `sum_damping_increment_le_sourceWork_increment`
+- `annular_zero_copies_paid_by_sourceWork_increment`
+- `xiTaperedSourceWork_increment_tendsto`
+- `eventually_annular_payment_in_finite_sourceWork`
+- `finite_offLineSupport_or_arbitrarily_high_quantum_increments`
+
+All names are in `GaloisForLFunctions.ArithmeticIndexDescent`.
+
+## Exact remaining obstacle
+
+No arithmetic upper bound on these scale differences is proved here. An eventual
+uniform bound strictly below the quantum, or a proof that the differences tend to
+zero, would exclude all sufficiently high off-line zeros and hence prove finite
+exceptionality. The escape alternative identifies this target; it does not select
+its finite-support branch. Elimination of a finite remainder is a separate question.
