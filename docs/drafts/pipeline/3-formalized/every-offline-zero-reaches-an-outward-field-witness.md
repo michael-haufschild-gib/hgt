@@ -1,11 +1,12 @@
 # Every off-line zero reaches an outward-field witness
 
 - **ID:** offline-outward-field-witness
-- **Stage:** 2-fully-proven; Lean formalization pending
-- **Type:** THEOREM (paper)
-- **Source:** B3.28; `ArithmeticCorrespondencePositivity/TheRankinSelbergSquareSeesTheFieldOfTheOtherZeros.lean`.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Source:** ACS outward-field forcing input; `ArithmeticCorrespondencePositivity/TheRankinSelbergSquareSeesTheFieldOfTheOtherZeros.lean`.
+- **Lean:** `GaloisForLFunctions.ArithmeticCorrespondencePositivity.exists_local_outward_field_witness` in `ArithmeticCorrespondencePositivity/EveryOffLineZeroHasALocalOutwardFieldWitness.lean`.
 
-## Exact statement [PROVED HERE]
+## Exact statement [FORMALIZED]
 
 There are absolute constants `C,c > 0` such that, for every Xi zero
 `rho = 1/2 + a + i gamma` with `a > 0`, there is an Xi zero
@@ -46,7 +47,7 @@ for the analytic continuation of the actual Rankin–Selberg square, whose
 Dirichlet coefficients on `Re s > 1` are `Lambda * Lambda`. It does not
 assert a positive uncorrected zeta field or prove RH.
 
-## Proof [PROVED HERE]
+## Proof [FORMALIZED]
 
 **Pair sign and cone.** Reflection sends a zero of depth `b` and ordinate
 `eta` to one of depth `-b` at the same ordinate, with the same multiplicity.
@@ -142,10 +143,32 @@ inequality. The same factorization identifies the Xi regular part with `E`.
   multiplicity-counted logarithmic band and their Xi-ray combination are
   Lean-checked and use only standard axioms. The Gamma-corrected zeta-ray
   consequence is also Lean-checked with only standard axioms.
-- [ ] Regular field, multiplicity, and Gamma/pole-corrected Rankin–Selberg coefficient.
+- [x] Regular field, multiplicity, and Gamma/pole-corrected Rankin–Selberg coefficient:
+  `xiRealAwayReciprocal_tsum_tendsto`, `xiZero_exists_zeta_regular_part`,
+  `xiTransverseField_eq_zeta_regular_part`, and the assembled
+  `exists_local_outward_field_witness`.
 - The unconditional Λ∗Λ Dirichlet-series identity is Lean-checked and uses
   only standard axioms in `TheVonMangoldtSquareIsTheZetaSource.lean`.
   `WeilSingularArithmetic.LSeries_sourceSquareCoeff` assumes Weil positivity
   and is not used as an input.
-- [ ] Final leaf checks, standard-axiom audits, and umbrella imports.
-- [ ] Significance assessment and contribution count.
+- [x] Final exact-file check, transitive standard-axiom audits, and umbrella imports.
+
+## Verification
+
+The final source check passed without warnings:
+
+```sh
+cd formal
+lake --old env lean GaloisForLFunctions/ArithmeticCorrespondencePositivity/EveryOffLineZeroHasALocalOutwardFieldWitness.lean
+```
+
+The file audits the deflated-field limit, the analytic regular part with its
+Laurent coefficient, and the complete witness theorem with `#print axioms`.
+All three report only `propext`, `Classical.choice`, and `Quot.sound`.
+The ACP umbrella imports both `XiTerminalRegularField` and the complete
+witness leaf. No umbrella build or existing-olean rebuild was performed.
+
+The existing Lean source covers every claim above; final integration removes
+the pending paper-proof status. The theorem supplies the actual source's
+positive field and corrected-residue lower bounds. An arithmetic upper bound
+excluding these witnesses, and full-source ACS effectivity, remain open.
