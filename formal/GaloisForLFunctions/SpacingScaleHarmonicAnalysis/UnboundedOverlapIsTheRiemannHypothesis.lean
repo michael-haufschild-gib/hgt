@@ -15,6 +15,9 @@ spline `B = U_1^{⋆4}`, whose transform `(sin z/z)⁴` vanishes only on the rea
 * **The rational Hecke orbit lives in the atomic family** (`exists_add_mem_logShifts`): every finite
   set of shifts `log r`, `r ∈ ℚ_{>0}`, moves into `{log n : n ≥ 1}` after one common shift by the
   logarithm of a common denominator.
+* **At every fixed width** (`riemannHypothesis_iff_splineAtomic_negIndex_eq_zero_of_width`,
+  `zeta_splineAtomic_negIndex_law_of_width`): the same holds for the spline `B_w = U_w^{⋆4}` of any
+  width `w > 0`, however small; at fixed width the overlap ratio `wN` is unbounded in `N`.
 * **Unbounded overlap is RH** (`riemannHypothesis_iff_splineAtomic_negIndex_eq_zero`): RH holds iff
   for every finite set of atoms `S ⊆ {log n : n ≥ 1}` the prime-side Weil Gram matrix of the
   translates `B(· − s)`, `s ∈ S`, is positive semidefinite; quantitatively, the largest negative
@@ -153,5 +156,73 @@ theorem zeta_splineAtomic_negIndex_law (n : ℕ) :
     refine ⟨S.image (· + c), fun t ht => ?_, by rw [negIndex_translate_add]; exact hn⟩
     obtain ⟨s, hs, rfl⟩ := Finset.mem_image.mp ht
     exact hc s hs
+
+/-! ### Every fixed width -/
+
+open RHTower.WeilDeletion (upow paperFT_upow hasCompactSupport_upow)
+open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (contDiff_upow paperFT_unif_ne_zero)
+
+/-- The cubic spline of width `w`: `B_w = U_w^{⋆4}`, supported in `[−4w, 4w]`, `C²`. -/
+theorem upow_mem_realTests {w : ℝ} (hw : 0 < w) : upow w 3 ∈ realTests :=
+  ⟨by exact_mod_cast contDiff_upow hw 2, hasCompactSupport_upow w 3⟩
+
+/-- `B_w` sees every zero right of the line: its transform `(sin(wz)/(wz))⁴` is real-rooted. -/
+theorem seenRightZeros_upow (Z : ZeroConfig) {w : ℝ} (hw : 0 < w) :
+    seenRightZeros Z (upow w 3) = {ρ ∈ Z.carrier | 1 / 2 < ρ.re} := by
+  have hne : ∀ z : ℂ, z.im ≠ 0 → paperFT (cx (upow w 3)) z ≠ 0 := fun z hz => by
+    simp only [cx]
+    rw [paperFT_upow]
+    exact pow_ne_zero _ (paperFT_unif_ne_zero hw hz)
+  ext ρ
+  simp only [seenRightZeros, Set.mem_setOf_eq]
+  constructor
+  · rintro ⟨h1, h2, -⟩
+    exact ⟨h1, h2⟩
+  · rintro ⟨h1, h2⟩
+    have hre : ρ.re ≠ 1 / 2 := ne_of_gt h2
+    refine ⟨h1, h2, hne _ (GaloisForLFunctions.SquareRootThreshold.im_gammaOf_ne_zero hre),
+      hne _ ?_⟩
+    rw [Complex.conj_im]
+    exact neg_ne_zero.mpr (GaloisForLFunctions.SquareRootThreshold.im_gammaOf_ne_zero hre)
+
+/-- **At every fixed width the atomic families count the right zeros**: for `w > 0`, some finite set
+of atoms carries a Weil Gram of translates of `B_w` with at least `n` negative squares iff `ζ` has at
+least `n` distinct zeros right of the critical line. -/
+theorem zeta_splineAtomic_negIndex_law_of_width {w : ℝ} (hw : 0 < w) (n : ℕ) :
+    (∃ S : Finset ℝ, ↑S ⊆ logShifts ∧ n ≤ hermNegIndex (weilGram
+      (fun k => (ArithmeticFunction.vonMangoldt k : ℝ)) fun s : S =>
+        ArithmeticCastelnuovoSeveri.translate s (cx (upow w 3)))) ↔
+      (n : ℕ∞) ≤ {ρ ∈ zetaZeroConfig.carrier | 1 / 2 < ρ.re}.encard := by
+  rw [← seenRightZeros_upow zetaZeroConfig hw,
+    ← zeta_orientationIndex_law (upow_mem_realTests hw) denseShifts_ratHecke n]
+  constructor
+  · rintro ⟨S, hS, hn⟩
+    exact ⟨S, hS.trans logShifts_subset_ratHeckeShifts, hn⟩
+  · rintro ⟨S, hS, hn⟩
+    obtain ⟨c, hc⟩ := exists_add_mem_logShifts S hS
+    refine ⟨S.image (· + c), fun t ht => ?_, by rw [negIndex_translate_add]; exact hn⟩
+    obtain ⟨s, hs, rfl⟩ := Finset.mem_image.mp ht
+    exact hc s hs
+
+/-- **At every fixed width, unbounded overlap is RH**: for every `w > 0`, RH holds iff every Weil
+Gram of translates `B_w(· − log n)` over a finite set of atoms is positive semidefinite. -/
+theorem riemannHypothesis_iff_splineAtomic_negIndex_eq_zero_of_width {w : ℝ} (hw : 0 < w) :
+    RiemannHypothesis ↔ ∀ S : Finset ℝ, ↑S ⊆ logShifts → hermNegIndex (weilGram
+      (fun k => (ArithmeticFunction.vonMangoldt k : ℝ)) fun s : S =>
+        ArithmeticCastelnuovoSeveri.translate s (cx (upow w 3))) = 0 := by
+  rw [riemannHypothesis_iff_no_rightZero]
+  constructor
+  · intro h S hS
+    by_contra hne
+    obtain := (zeta_splineAtomic_negIndex_law_of_width hw 1).mp
+      ⟨S, hS, Nat.one_le_iff_ne_zero.mpr hne⟩
+    rw [h, Set.encard_empty] at *
+    simp_all
+  · intro h
+    by_contra hne
+    obtain ⟨S, hS, hn⟩ := (zeta_splineAtomic_negIndex_law_of_width hw 1).mpr
+      (Set.one_le_encard_iff_nonempty.mpr (Set.nonempty_iff_ne_empty.mpr hne))
+    rw [h S hS] at hn
+    exact absurd hn (by norm_num)
 
 end GaloisForLFunctions.SpacingScaleHarmonicAnalysis

@@ -1,268 +1,398 @@
-# Arithmetic Lorentzian Geometry (ALG)
+# Arithmetic Lorentzian Geometry
 
-**One question.** The Hodge index theorem was proved for matroids with no variety: start from
-objects that are trivially Lorentzian, apply only operations that provably preserve the Lorentzian
-signature, and arrive at the form whose signature is wanted. Weil's form of `ζ` has exactly that
-signature problem: RH is the statement that the intersection form of the scaling surface of `ℤ`
-has one positive square (`riemannHypothesis_iff_one_positive_square`). **Which part of that
-signature can be produced by closure — by products, nonnegative substitutions, derivatives and a
-local-to-global principle — from elementary positive objects attached to the primes, the scale and
-the successor; what does each closure operation cost; and where exactly does closure stop?**
+Arithmetic Lorentzian geometry studies how arithmetic constructions produce a quadratic form
+with at most one positive square, and how that signature survives composition and passage to a
+limit. Its target is the specified intersection form of the scaling surface, including the
+infinite place and the pole plane. The Hodge index of that form is equivalent to RH. A useful
+construction must therefore explain the origin of its sign, not merely express that sign in
+another language.
 
-ALG is the combinatorial Hodge theory of the **affine monoid of the integers** `ℕ ⋊ ℕ^×`
-(successor `S`, dilations `M_p`, `M_p S = S^p M_p`). Basic object: a **Lorentzian form**, a real
-symmetric form with at most one positive square. Basic hypothesis: **a sign**, the nonnegativity of
-the coefficients in a fixed gauge. Basic operation: a **closure step** that maps Lorentzian objects
-to Lorentzian objects. Everything is unconditional; RH appears only inside equivalences.
+Its scope includes both constructing individual signature certificates and controlling their
+compatibility. Anchors, Schur reserves and polar dispersion quantify that compatibility;
+corrected gluing, grouping and linear restriction supply a composition calculus. The arithmetic
+question is which source energy pays these costs while retaining the specified pairing.
 
-Namespace `GaloisForLFunctions.ArithmeticLorentzianGeometry`; umbrella `ArithmeticLorentzianGeometry.lean`.
+The guiding analogy with combinatorial Hodge theory is an inductively closed class of objects:
+elementary objects have a proved signature; restriction, links and composition preserve it;
+the constructed pairing is the pairing of interest. An arithmetic version needs all three
+steps. Nonnegative coefficients, connected support and a Frobenius-shaped identity do not by
+themselves complete them.
 
-## Foundational contract
+Namespace: `GaloisForLFunctions.ArithmeticLorentzianGeometry`.
+Umbrella: [ArithmeticLorentzianGeometry.lean](../ArithmeticLorentzianGeometry.lean).
 
-The arithmetic target is a signature theorem for the **specified Weil intersection form**,
-including its archimedean term, pole plane and limiting test space. A Lorentzian form constructed
-from prime data is useful only together with an exact identification, a valid pullback, or a
-proved domination of that target. Positivity of coefficients, a scale substitution and a
-Frobenius-shaped symmetry do not supply this bridge by themselves.
+## Motivation and mathematical target
 
-Three logically separate problems govern the programme: construct elementary forms and closure
-operations; identify the arithmetic form they produce; preserve the resulting inequality in the
-critical limit. A theorem solving the first problem must not be advertised as solving the other
-two. In particular, lifting a quadratic form to higher degree helps only when the lift's local
-signature is established independently of the desired global signature.
+The corpus has several descriptions of the missing arithmetic sign. Weil positivity, Hodge
+index, positive equivariant realization and certain critical cancellation estimates have
+receivers that lead to RH. These receivers do not provide the arithmetic input they consume.
+Meanwhile, local positive models, gauge rigidity, source currents and finite parts explain
+increasingly precisely what a successful input must retain.
 
-Gauge selection is likewise distinct from positivity. A fixed successor or archimedean kernel
-can select a common nonnegative gauge, but uniqueness of that gauge does not establish a Hodge
-index. Periodic Dirichlet characters with zeros at nonunits are not unit-valued points of the
-full prime torus; any character comparison must specify its domain and local factors. The
-relation between height-averaged pair correlation and a uniform inequality for all tests is a
-research question, not an identification assumed by the programme.
+ALG asks whether the sign can be produced by an arithmetic construction whose elementary steps
+can each be justified. Its language combines the affine monoid of the integers—successor `S`,
+dilations `M_p`, and `M_p S = S^p M_p`—with signatures, primitive hyperplanes, links and comparison
+of quadratic forms. The monoid supplies operations, not an automatic positivity theorem.
 
----
+Local Hodge inequalities can fail to combine because their normalized polar rows disagree.
+The reserve–dispersion identity makes this failure quantitative: a global signature requires
+local reserves to pay the disagreement. This gives the programme a concrete construction
+problem—derive that payment from arithmetic—and a way to test proposed local-to-global routes
+before passing to an infinite family.
 
-## 1. Place in the research
+Three problems must remain separate:
 
-The corpus has three walls (`docs/reports/review-2710/fable2.md`, §1.7): **W1** the critical
-arithmetic sign (no positivity input distinguishes `ζ` from its sign twins), **W3** transfer (no
-principle carries a sign from one local tower to another), **W14** realization (no variety, no
-Frobenius over `ℤ`). Read as missing tools they ask for a Hodge index without a variety (W14), a
-positivity theory whose hypothesis is a sign and not a symmetry (W1), and a local-to-global
-principle that preserves positivity (W3). In the theory of Lorentzian polynomials, real-stable
-polynomials and combinatorial Hodge theory all three are theorems. ALG is the arithmetic form of
-that theory: it does not change any theorem of the corpus; it reorganizes the corpus around the
-direction *elementary positive objects → closure → Weil's form*, instead of *Weil's form → search
-for a symmetry*.
+1. **Construction:** build a form with a proved signature from elementary arithmetic objects.
+2. **Identification:** prove its equality with, pullback relation to, or suitable domination of
+   the actual intersection form. Include the Γ-term, the two pole moments and the diagonal.
+3. **Exhaustion:** carry the comparison to every required signed test in a topology controlling
+   the full pairing.
 
-| Programme | Interface |
+An abstract Lorentzian model solves only the first problem. A finite positive family solves a
+restricted instance. Neither becomes an RH proof without the remaining bridges.
+
+## Objects and language
+
+For a finite real symmetric matrix `Q`, write
+
+\[
+ B_Q(x,y)=x^TQy,\qquad Q[x]=B_Q(x,x).
+\]
+
+`IsHyperbolic Q` means the reverse Cauchy–Schwarz inequality
+
+\[
+ Q[x]Q[y]\le B_Q(x,y)^2\quad\text{whenever }Q[x]>0.
+\]
+
+For symmetric matrices this is equivalent to having at most one positive square. The term
+*hyperbolic* here describes a quadratic form; it does not assert real-rootedness of an associated
+univariate polynomial. `IsLorentzian Q` adds entrywise nonnegativity in the specified coordinates.
+That extra condition depends on the coordinates.
+
+The programme uses the following objects.
+
+| Object | Mathematical role |
 |---|---|
-| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | The target: the scaling-surface intersection form, its signature law, Hodge index = RH, the `𝔽_q` calibration and fake curves |
-| [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md) | Weil planes, orbit correlations, Rosati positivity: the degree-2 face of the same signature problem |
-| [ArithmeticIntersectionTheory](../ArithmeticIntersectionTheory/README.md) | Prime kernel = sum of transverse ladders; the base and the successor; the Hecke cocycle of renormalization |
-| [RenormalizedArithmeticPotentialTheory](../RenormalizedArithmeticPotentialTheory/README.md) | Counterterm rank and survival; the regulator class read here as Loewner domination |
-| [ArithmeticElectrostatics](../ArithmeticElectrostatics/README.md) | Atomic tests, the stability law, the coupled form `M + 2C² − 2S²`: the base cases of closure |
-| [SpacingScaleHarmonicAnalysis](../SpacingScaleHarmonicAnalysis/README.md) | Owns the spacing scale `w ≍ 1/N` (question Q5 below); ALG supplies the signature language |
-| [BiarithmeticGaugeGeometry](../BiarithmeticGaugeGeometry/README.md), [ArithmeticCorrelationGeometry](../ArithmeticCorrelationGeometry/README.md) | Gauge torus, real-sign unitary equivalence, successor connection, finite gauge subgroups |
-| [RenormalizedBiarithmeticGeometry](../RenormalizedBiarithmeticGeometry/README.md), [ArithmeticPositiveDuality](../ArithmeticPositiveDuality/README.md) | Baumslag–Solitar relation on cells; the Bost–Connes successor forces the Hecke exponent |
-| `RHTower` | Explicit formula, Weil criterion, pole term `2C² − 2S²`, Turán slices of `ξ`, Kloosterman–Weil bound |
-| `HTGeometry/HermitianInertia` | Positive/negative index of Hermitian matrices, congruence invariance |
+| Finite test spaces and their actual Gram matrices | Keep the target pairing visible throughout construction |
+| Pole plane `⟨H,V⟩`, with `H²=V²=0` and `H·V=1` | Supplies a positive direction and records global degree data |
+| Positive anchor `e`, with `Q[e]>0` | Defines the polar row and the primitive hyperplane |
+| Polar row `B_Q(e,−)/Q[e]` | Measures the degree normalization seen by a local form |
+| Schur reserve `R_Q(x)=B_Q(e,x)²/Q[e]−Q[x]` | Measures the negative energy left after the positive direction is removed |
+| Polar dispersion `V_e` and its positive semidefinite matrix `C_e` | Measure the exact incompatibility of local polar rows |
+| Corrected assembly `Glue_e(Q_i)=Σ_i Q_i−C_e(Q_i)` | Combines local reserves while preserving the total anchor row |
+| Links and symmetric incidence tensors | Encode a local-to-global construction with independently proved local signs |
+| Prime ladders, successor maps and logarithmic cells | Supply arithmetic operations and their compatibility relations |
+| Gauges with a fixed infinite-place and pole structure | Distinguish changing coordinates from changing the completed arithmetic source |
+| Counterterms, finite parts and comparison maps | Record exactly which form and which test space survive renormalization |
+| Exhaustions with explicit norms | Specify what a finite signature theorem can reach |
 
----
+Real quadratic forms and Hermitian forms have distinct APIs. Complex test spaces must retain
+conjugation and the relevant Hermitian inertia; a real calculation is not automatically its
+complex analogue.
 
-## 2. Why
+## Foundational principles
 
-**Positivity by closure.** Weil read the Hodge index off a variety. The corpus has shown that no
-variety and no symmetry is available: every symmetry of Weil's form acts on an off-line fibre as a
-boost, and a form invariant under a boost cannot be definite on the plane the boost preserves. The
-alternative is the one that worked for matroids [Adiprasito–Huh–Katz; Brändén–Huh]: build the form
-from trivially Lorentzian pieces by operations that preserve the signature. Three features of that
-theory match the three walls.
+**Fix the pairing.** Every arithmetic signature claim must name the full form and its test
+space. A positive form manufactured from prime data is insufficient without identification or
+comparison in the direction needed by the target.
 
-* **The hypothesis is a sign.** A Lorentzian polynomial has nonnegative coefficients. A gauge twist
-  of the primes destroys nonnegativity visibly, so a closure argument consumes the gauge charge at
-  its input instead of hoping to find it at its output.
-* **Local-to-global is a theorem.** The trickle-down theorem (Oppenheim; Anari–Liu–Oveis Gharan–
-  Vinzant) derives the global signature of a weighted complex from the signatures of its links and
-  the connectivity of the complex.
-* **No variety is needed.** For matroids the links are again matroids and the base case is
-  elementary; the Hodge index is a combinatorial consequence.
+**Prove local signature from the source.** A link definition cannot contain the desired Hodge
+inequality as an unproved field. In a successful induction the links belong to a class whose
+signature has already been proved by arithmetic, counting or a valid closure operation.
 
-**The decomposition matters.** Sums of Lorentzian forms are not Lorentzian (`x² + y²`); products,
-nonnegative substitutions and derivatives preserve the class. The explicit formula decomposes
-Weil's form as a *sum* over primes and is therefore the wrong decomposition for closure; the Euler
-product is a *product* in disjoint variables (the prime ladders are transverse,
-`ladderKernel_mul_ladderKernel_eq_zero`). The archimedean place enters as the scale map
-`n = ∏ p^{a_p} ↦ Σ a_p log p`, a nonnegative substitution of the ladder variables into one scale
-variable. The pole plane `⟨H, V⟩` (`H² = V² = 0`, `H·V = 1`) is the single positive direction.
+**Measure compatibility.** Local signatures need not add. Local polar directions can disagree;
+overlapping tests have cross terms; separate local regulators can spend the same pole budget
+repeatedly. These costs belong in the theorem.
 
----
+**Separate gauge selection from sign production.** The successor connection and the fixed
+archimedean kernel can identify the Euler gauge. This does not establish Hodge index in that
+gauge. Conversely, prime-side unitary equivalence can preserve spectrum while erasing the
+arithmetic distinction needed by a proof.
 
-## 3. Objects and language
+**Keep global resources global.** The two pole moments and the positive direction cannot be
+allocated independently at every prime. A comparison must show how the allocations recombine.
 
-| Lorentzian theory | Arithmetic | Lean |
-|---|---|---|
-| symmetric form `Q`, quadratic `Q[x] = xᵀQx` | intersection form of the scaling surface on a finite family | `qf`, `bil` |
-| at most one positive square | Hodge index; RH | `IsHyperbolic` |
-| Lorentzian quadratic: `Q ≥ 0` entrywise and hyperbolic | intersection form in a nonnegative gauge | `IsLorentzian` |
-| reverse Cauchy–Schwarz `Q[x]Q[y] ≤ (xᵀQy)²` for `Q[x] > 0` | Hodge index inequality `D²E² ≤ (D·E)²` (Khovanskii–Teissier at degree 2) | `IsHyperbolic` (definition) |
-| negative semidefinite on a hyperplane | Weil positivity on degree-zero cycles | `isHyperbolic_of_nonpos_on_ker` |
-| Loewner domination `Q ≼ Q'` | renormalization: a counterterm dominates | `IsHyperbolic.of_loewner` |
-| conditionally negative definite (CND) kernel | Lévy–Khintchine/Markov forms; ladder metrics | `IsCND` |
-| link `Q_i` of a vertex, contraction `Q = Σ_i Q_i` | local form at an atom/prime; global form | `TrickleDownDatum` |
-| gauge (diagonal unitary conjugation) | prime gauge torus `Ω = ∏_p S¹` | — |
-| ultra-log-concave coefficient sequence | Turán inequalities of `ξ` | — |
+**Treat the limit as mathematics.** Growing dimension, shrinking support and fixed-scale
+overlap are different properties. Prove density or a sufficient orbit criterion in the topology
+required by the form. Height-averaged pair correlation does not imply a uniform all-vector
+inequality without a separate argument.
 
-**Words.** *Hyperbolic*: at most one positive square. *Lorentzian*: hyperbolic with nonnegative
-entries in the given coordinates. *Gauge*: a choice of unimodular phases on the atoms; the
-signature is gauge-invariant, entrywise nonnegativity is not. *Nonnegative gauge*: a gauge in which
-every kernel of the form is entrywise nonnegative. *Link*: the restriction of a symmetric 3-tensor
-to one vertex. *Counterterm*: a positive semidefinite correction that dominates the form.
-*Closure class*: the forms reachable from given elementary objects by the closure operations.
+**State the scope of an obstruction.** Failure of one localizer, counterterm class or symmetry
+mechanism does not exclude every future geometry. Extract the sharp boundary or positive
+construction exposed by that failure.
 
----
+## Core mechanisms
 
-## 4. Principles
+### Degree-two signature calculus
 
-* **P1. Positivity by closure, never by symmetry.** A statement of the field produces a signature
-  from operations that preserve it; an invariance of Weil's form is never an input.
-* **P2. The sign is a gauge-fixing.** Entrywise nonnegativity is not gauge-invariant. Every twin of
-  the prime kernel by a completely multiplicative unimodular `ε` is diagonally unitarily equivalent
-  to the Euler kernel, so the prime kernel alone carries no sign. The sign becomes a hypothesis only
-  when two kernels must be nonnegative *in one gauge*: the prime kernel and a kernel the torus does
-  not act on (the archimedean kernel, the pole row, the successor).
-* **P3. Local-to-global is multiplicative or it is a trickle-down.** The explicit formula's prime
-  sum is a bookkeeping identity. Positivity transfers through products in disjoint variables, or
-  through links and connectivity.
-* **P4. The archimedean place is a substitution and a gauge-fixer**, not a kernel to be matched
-  term by term.
-* **P5. The pole is the positive direction.** The regulator freedom is Loewner domination: a form
-  dominated by a hyperbolic form is hyperbolic.
-* **P6. Truncation stability.** Statements must survive `N → ∞` with widths at the local spacing,
-  where the tests see the zeros and every present theorem stops.
+[LorentzianFormsAtDegreeTwo](LorentzianFormsAtDegreeTwo.lean) proves the equivalence between
+reverse Cauchy–Schwarz, absence of a positive definite plane, and nonpositivity on the kernel of
+a linear functional. It supplies three basic construction operations:
 
----
+* Pullback by any linear map preserves hyperbolicity. A nonnegative map also preserves the
+  entrywise sign of a Lorentzian form.
+* If `Q[x] ≤ Q′[x]` for every `x` and `Q′` is hyperbolic, then `Q` is hyperbolic
+  (`IsHyperbolic.of_le`). Subtracting a positive semidefinite form is an instance.
+* Forms nonpositive on a common fixed hyperplane can be added. The CND API uses the hyperplane
+  `Σ x_i=0`. Unrestricted addition fails, even for positive rank-one forms.
 
-## 5. Mechanisms
+The symmetric product of two nonnegative linear forms gives an elementary Lorentzian quadratic.
+Higher-degree products and derivatives require a higher-degree theory with its support and
+signature conditions; they are not consequences of the quadratic API alone.
 
-1. **Degree two.** For a real symmetric form the following are equivalent: at most one positive
-   square; reverse Cauchy–Schwarz at every vector of positive square; no positive definite plane;
-   negative semidefinite on some hyperplane. With nonnegative entries this is the Lorentzian
-   property at degree two. At degree two Lorentzian = Hodge index: there is no gain over ACS; the
-   gain is in closure and in the higher-degree lifts.
-2. **Counterterms dominate.** If `Q' − Q` is positive semidefinite and `Q'` is hyperbolic, so is
-   `Q`. Adding a negative semidefinite form preserves hyperbolicity; adding a positive semidefinite
-   rank-one form raises the positive index by at most one.
-3. **Closure at degree two.** Pullback along any linear map preserves hyperbolicity; along a
-   nonnegative map it preserves the Lorentzian property. The product of two nonnegative linear forms
-   is Lorentzian. Sums fail. CND forms with nonnegative entries are Lorentzian, and CND is closed
-   under sums and nonnegative scaling: the one class in which local-to-global *by sum* works.
-4. **Trickle-down.** If a symmetric 3-tensor with nonnegative entries has hyperbolic links, its
-   contraction `Q` satisfies `Q[v] ≤ (Qv)ᵀ D⁻¹ (Qv)` with `D = diag(Q·1)`; every positive square of
-   `Q` then has normalized eigenvalue exactly one, and connectivity of the support of `Q` makes `Q`
-   hyperbolic. Global signature from local signature and connectivity, with no variety.
-5. **The gauge charge sits on the non-multiplicative kernels.** In canonical atomic coordinates the
-   twisted prime kernel `ε(n/m)Λ(n/m)(n/m)^{−1/2}` is conjugate to the Euler kernel by the gauge
-   `diag(ε(n))`. A kernel positive on every pair of atoms (the archimedean kernel) admits only the
-   constant gauge. Hence a twin has a nonnegative gauge for both kernels iff `ε(p) = 1` on the primes
-   of the horizon: the Lorentzian hypothesis selects the Euler point exactly through the place the
-   torus does not act on.
-6. **The univariate face.** A bivariate homogeneous polynomial with nonnegative coefficients is
-   Lorentzian iff its normalized coefficients are log-concave with no internal zeros (Turán). For
-   Jensen polynomials of `ξ` this is the Turán layer of Pólya's criterion; real-rootedness (RH) is
-   strictly stronger. Lorentzian is the degree-two shadow of real stability.
+### Polar gluing and its exact price
 
----
+For forms `Q_i` sharing a positive anchor `e`, put
 
-## 6. Traps
+\[
+ a_i=Q_i[e],\quad b_i(x)=B_{Q_i}(e,x),\quad
+ A=\sum_i a_i,\quad b(x)=\sum_i b_i(x).
+\]
 
-| Trap | Truth |
+Their polar dispersion is
+
+\[
+ V_e(x)=\sum_i a_i\left(\frac{b_i(x)}{a_i}-\frac{b(x)}A\right)^2.
+\]
+
+[PolarGluingAndDispersion](PolarGluingAndDispersion.lean) establishes the exact gluing law
+
+\[
+ R_{\sum_iQ_i}(x)=\sum_i R_{Q_i}(x)-V_e(x).
+\]
+
+Thus the sum is hyperbolic exactly when summed reserves pay dispersion for every vector. This
+criterion does not assume that the local forms are hyperbolic. When their reserves vanish,
+alignment of the normalized polar rows is necessary and sufficient.
+
+The dispersion has a canonical matrix
+
+\[
+ C_e(Q_i)=\sum_i\frac{(Q_i e)(Q_i e)^T}{a_i}
+       -\frac{((\sum_i Q_i)e)((\sum_i Q_i)e)^T}{A}.
+\]
+
+It is positive semidefinite and its bilinear pairing with `e` vanishes. The corrected form
+
+\[
+ \operatorname{Glue}_e(Q_i)=\sum_iQ_i-C_e(Q_i)
+\]
+
+preserves the total polar row and adds local reserves exactly. Consequently it is hyperbolic
+for an anchored family of hyperbolic forms. Grouping pieces decomposes the correction into
+within-group and between-group corrections without changing the total correction. Corrected
+assembly is associative as a quadratic form. Both correction and assembly commute with linear
+pullback when the anchor is carried along with the tests. These identities support coherent
+finite restrictions; they do not supply an analytic limit theorem.
+
+The sharp two-plane calibration is
+
+\[
+ Q_{t,r}=\begin{pmatrix}1&t\\t&t^2-r\end{pmatrix}.
+\]
+
+Each plane is hyperbolic exactly when `r≥0`; `Q_{t,r}+Q_{−t,r}` is hyperbolic exactly when
+`r≥t²`. Their gluing correction is `diag(0,2t²)`. Thus arbitrarily good local signatures still
+require a quantitative compatibility estimate. The correction need not be the smallest repair
+when local reserves are already available.
+
+The scalar variance identity is reused from `HTGeometry.schurComplement_sum_eq`; the matrix
+construction, reserve criterion and signature closure are its role here. An arithmetic
+application must identify or pay this correction in the *actual* pairing. Hyperbolicity of
+`Q−C_e` alone cannot imply hyperbolicity of the larger form `Q`.
+
+The reusable tools expose each part of this mechanism:
+
+| Tool | Role in a construction |
 |---|---|
-| Nonnegative coefficients are a property of the form | They are a property of a basis: any finite family on a surface with a hyperbolic plane becomes entrywise nonnegative after the nef shift `f ↦ f + t(H + V)` |
-| Lorentzian at degree two is new information | It is the Hodge index itself |
-| Nonnegative coefficients single out the Euler point | Every unimodular twin of the prime kernel is gauge-equivalent to the Euler kernel; only a second, gauge-rigid kernel makes the sign a hypothesis |
-| Nonnegative Euler products are positive | Beurling systems have nonnegative coefficients and an Euler product and can violate RH; any closure from nonnegative multiplicative local data alone is blind to that |
-| Local Lorentzian pieces sum to a Lorentzian form | Sums do not preserve the class; only CND forms or a trickle-down datum transfer |
-| The canonical intersection form is a Hessian of a nonnegative polynomial | Its diagonal is negative (atoms have negative self-intersection); only domination by a hyperbolic form is available |
-| The positivity locus of the gauge torus is the successor-periodic locus | The archimedean characters `n^{iτ}` are torus points, not periodic, with prime form unitarily equivalent to Euler's; the correct locus is stated modulo them (Hecke characters `χ(n)n^{iτ}`), with asymptotic successor flatness |
-| Lorentzian polynomials give real-rootedness | Lorentzian = log-concavity layer; real stability is strictly stronger (Turán vs Jensen hyperbolicity) |
-| Trickle-down works without connectivity | Each connected component of the support contributes one positive square |
+| `anchorReserve_sum` | Compute the exact reserve lost under addition |
+| `isHyperbolic_sum_iff_dispersion_le` | Test whether available reserves pay the loss |
+| `isHyperbolic_polarGlue` | Construct a hyperbolic corrected assembly |
+| `isHyperbolic_sum_iff_alignment_of_zero_reserve` | Identify the rigidity required when no local reserve remains |
+| `polarGluingCorrection_group`, `qf_polarGlue_group` | Compose corrections and assemblies consistently across a hierarchy |
+| `qf_polarGluingCorrection_pullback`, `qf_polarGlue_pullback` | Transport the construction through finite linear restrictions |
 
----
+### Links and trickle-down
 
-## 7. Questions
+[TheHodgeIndexTricklesDown](TheHodgeIndexTricklesDown.lean) proves a local-to-global signature
+theorem for a nonnegative symmetric incidence tensor with hyperbolic links and connected
+support. Connectivity joins the local positive directions; without it, separate components can
+supply separate positive squares.
 
-1. **Hodge index without a surface.** Which quadratic forms on the atoms `log n` are contractions
-   of nonnegative 3-tensors with hyperbolic links, or Hessians of Lorentzian objects built from
-   local factors at the primes and the scale map?
-2. **The sign as a hypothesis.** In which gauges is the intersection form nonnegative, and which
-   twins of the torus admit such a gauge? What is the positivity locus of the torus, modulo the
-   archimedean characters?
-3. **Transfer.** Which operations preserve the Lorentzian property on the affine monoid; is the
-   Euler product one of them; is the successor?
-4. **Realization.** What replaces Frobenius: a nonnegative operator `T` with `TᵀQT = λQ` on the
-   Lorentzian structure, rather than an endomorphism of the ring `ℤ`?
-5. **The critical regime.** What does the spacing scale `α = 1` look like in signature language?
-   (Owned analytically by SSHA.)
+[TheMetzlerDichotomy](TheMetzlerDichotomy.lean) identifies the remaining burden sharply. In the
+connected Metzler regime with a positive weight whose image is positive, weighted trickle-down
+is equivalent to hyperbolicity. Producing that inequality is substantive; introducing it as a
+hypothesis does not construct a Hodge index.
 
----
+[TheFrobeniusLadderIsMetzler](TheFrobeniusLadderIsMetzler.lean) calibrates this against curve
+data. The Frobenius Gram has the expected entrywise sign and connected support, but the golden
+fake still fails weighted trickle-down. Actual section or incidence structure must distinguish
+curves from the fake. A proof starting with purity may calibrate the language, but cannot count
+as an independent proof of purity.
 
-## 8. Tools
+### Gauge fixing and the successor connection
 
-To build, in order: the degree-two theory (hyperbolic and Lorentzian forms, the four
-characterizations, domination, closure, CND); the bridge to the scaling surface (RH ⇔ reverse
-Cauchy–Schwarz for cycles; the nef shift); the trickle-down theorem; the gauge-fixing theorem for
-twins; Lorentzian polynomials of degree `d` in coefficient form (M-convex support, quadratic
-derivatives), the bivariate = ultra-log-concave theorem and disjoint products; the successor defect
-of the atomic prime form; the `𝔽_q` calibration of the trickle-down datum on the Frobenius ladder.
+[TheSignIsAGaugeFixing](TheSignIsAGaugeFixing.lean) formalizes why the prime kernel alone does
+not select the Euler point: completely multiplicative unit phases act by diagonal unitary
+conjugacy. Requiring simultaneous nonnegative entries with a fixed positive coupling kernel
+can rigidify the gauge.
 
----
+[TheSuccessorConnectionIsTheArchimedeanGaugeField](TheSuccessorConnectionIsTheArchimedeanGaugeField.lean)
+identifies the successor connection on the adjacent archimedean edges after the prime twist is
+removed. Nonnegative adjacent couplings recover trivial prime phases on the corresponding
+finite horizon. Successor shift itself has examples of both signs for its change in the atomic
+prime form, even on nonnegative profiles. The useful object is therefore its connection and
+compatibility with the other kernels; a monotonicity assertion for the shift would be false.
 
-## 9. Research topics
+These are finite, specified-kernel results. They do not classify a global positivity locus of
+all completed twists. Dirichlet characters vanish at nonunits and therefore are not points of
+the full unit prime torus. Vertical characters also change which completed archimedean data are
+being compared. Both distinctions must be retained in any classification.
 
-1. Degree-two foundations and the scaling-surface bridge.
-2. Gauges: nonnegative gauges for the prime, archimedean and pole kernels; the twin classification.
-3. Trickle-down data on atoms: links at an atom, at a prime ladder, at a scale; connectivity.
-4. The `𝔽_q` calibration: is the Frobenius span form a trickle-down contraction with elementary
-   links (the Lorentzian lift of `frobeniusTower`)? A bounded-degree no would say the base is a weight.
-5. Product versus sum: Lorentzian polynomials from the ladders in disjoint variables, the scale
-   substitution, and the blindness of the multiplicative closure (Beurling data).
-6. The successor as a closure operation: the successor defect `P_N(Sx) − P_N(x)` as a shifted-divisor
-   correlation and its sign on the nonnegative cone.
-7. The positivity locus of the torus modulo archimedean characters; asymptotic successor flatness.
-8. The univariate face: Turán/Jensen as bivariate Lorentzian statements about `ξ`.
-9. Frobenius substitutes: conformal Lorentzian maps `TᵀQT = λQ` among Hecke operators.
-10. The dynamical layer: reflection positivity of the functional equation on the affine algebra.
+### The arithmetic bridge and the critical domain
 
----
+[TheHodgeIndexOfTheScalingSurfaceIsHyperbolicity](TheHodgeIndexOfTheScalingSurfaceIsHyperbolicity.lean)
+relates the actual scaling-surface signature to finite Hermitian Gram matrices and RH. It also
+shows why entrywise nonnegativity in a freely chosen finite nef basis does not certify the
+signature: a basis change preserves inertia.
 
-## 10. Pillar theorems
+The analytic source of usable finite certificates lies partly outside ALG. SSHA proves
+stability at a fixed small fraction of the atomic spacing. ACS further pays both pole moments
+on independent arithmetic sections, obtaining the full Weil lower bound by square mass.
+These are genuine arithmetic positive spaces. They are not known to exhaust the target space.
+SSHA's fixed-spline integer-log family supplies a precise exhaustive endpoint: vanishing
+negative index for every finite subfamily is equivalent to RH.
 
-Targets of the programme; each is stated unconditionally.
+ALG should connect these results by source-defined comparison and composition. It should not
+replace the missing overlap or exhaustion theorem by a new name for it.
 
-1. **Degree-two equivalences** and **domination** (counterterm principle).
-2. **Scaling-surface Hodge index as reverse Cauchy–Schwarz**: RH ⇔ `D²E² ≤ (D·E)²` for all finite
-   families of cycles with `D² > 0`.
-3. **Nef shift**: entrywise nonnegativity in some nef basis is automatic.
-4. **Trickle-down**: hyperbolic links + connectivity ⇒ one positive square.
-5. **Gauge-fixing**: a twin admits a gauge making the prime kernel and a pairwise-positive kernel
-   simultaneously nonnegative iff it is the Euler point on the primes of the horizon.
-6. **Bivariate Lorentzian = ultra-log-concave.**
+### Higher-degree coefficients and the Turán layer
 
----
+[LorentzianPolynomialsAndTheTuranLayer](LorentzianPolynomialsAndTheTuranLayer.lean) defines
+homogeneous Lorentzian coefficient functions using nonnegative coefficients, M-convex support
+and hyperbolicity of every quadratic derivative. In two variables it proves equivalence with
+interval support and ultra-log-concavity of the binomially normalized coefficients.
 
-## 11. Success criteria and contributions
+It also proves Lorentzianity of every homogenized binomial transform
+`Σ_k binom(d,k) γ_(n+k) x^k y^(d−k)` of the even Taylor coefficient sequence
+`ξ(1/2+x)=Σ_k γ_k x^(2k)`. This is an unconditional Turán layer. Pólya's criterion uses the
+factorially normalized sequence `k! γ_k`; its Newton inequalities are stronger, and
+Lorentzianity still does not give real-rootedness. The coefficient normalization is part of
+the theorem, not a dispensable convention.
 
-Success:
+## Research questions and tools to develop
 
-* **C1.** Reproduce Weil's theorem for curves from the Frobenius ladder by closure (no surface), or
-  prove that no bounded-degree closure from the ladder exists.
-* **C2.** Fail visibly at the Liouville point: the hypothesis is lost and the pole on the line is
-  the consequence.
-* **C3.** Separate Hecke characters from the rest of the torus by the successor.
-* **C4.** Recover every unconditional positivity of the corpus as an easy closure statement and
-  locate the single missing closure operation at the spacing scale.
-* **C5.** No hidden hypotheses: everything unconditional and formalized.
-* **C6.** Theorems short of RH on the way.
+**Arithmetic polar compatibility.** Find a decomposition of the complete intersection form
+whose anchors and reserves are source-defined. Determine whether the infinite-place cross
+energy, section relations or successor connection pay polar dispersion. The first useful
+result is an exact identity and payment on a larger explicit test family, with a reserve that
+can survive extension.
 
-A contribution is unconditional; is stated in signatures, gauges, closure operations or links;
-says what it gives over `𝔽_q`, at a sign twin and on a Beurling or fake datum; names the closure
-operation it uses or rules out; and records the positive survivor of every no-go.
+**Coherent multiscale assembly.** Construct arithmetic decompositions whose anchors and
+restriction maps respect the gluing calculus. Use the grouping law to separate within-block
+and between-block costs, then seek bounds uniform under refinement. Determine how much
+correction remains necessary after available local reserves are allocated. Associativity and
+pullback compatibility settle the finite algebra; uniform payment and passage to the limiting
+arithmetic form remain research questions.
+
+**An inductive arithmetic class.** Construct sections or incidence objects whose links remain
+in the same class. Prove the local signature from counting or another independent arithmetic
+operation. Over finite fields, this construction must reject the golden and complex fake data
+for a named reason. Over the integers, identify which operation replaces the relevant count,
+flatness or product-formula estimate.
+
+**Signed overlap and exhaustion.** Retain the overlap Gram, prime lag form, archimedean cross
+form and both poles in one estimate. Quantify errors in the actual overlap norm. Establish a
+transfer theorem to an exhaustive family; do not infer it from increasing dimension or a
+height-averaged statistic.
+
+**Higher-degree arithmetic lifts.** Extend the coefficient theory with products, nonnegative
+substitutions and derivatives when a candidate arithmetic lift requires them. The decisive
+theorem is an identity for its Hessian or links. The Euler product
+and the scale substitution `a ↦ Σ a_p log p` alone do not realize the Γ-factor or the pole plane.
+
+**Finite-field realization.** Recover the curve signature from actual sections or counting
+without using the desired purity as input. Determine which primitive operations carry the
+information absent from abstract point counts. Do not claim a universal impossibility of
+bounded-degree lifts from the failure of one proposed lift.
+
+**Gauge classification.** Study simultaneous gauges for the full specified kernels, including
+boundary and conductor data. Determine what successor curvature or quantitative flatness
+forces. Separate classification of sources from positivity at a selected source.
+
+**Turán and stability.** Identify an arithmetic operation producing the stronger factorially
+normalized inequalities or real stability beyond the established Turán layer. Real stability
+and Jensen real-rootedness impose stronger requirements. A log-concavity theorem must not be
+promoted to RH.
+
+**Conformal dynamics and reflection.** Study maps satisfying `TᵀQT=λQ`, and reflection forms on
+the affine algebra, when those maps arise from an arithmetic construction. A boost on an
+indefinite fibre does not create a positive invariant metric. Construct the positive source or
+identify the exact obstruction and its survivor.
+
+**Exceptional extinction.** Combine the geometric defect with the energy and work theories of
+AES. A pointwise source estimate below one transverse-energy quantum, or a proved propagation
+law contradicting a global budget, could exclude an off-line zero. Average rarity alone cannot.
+
+## Traps and boundaries
+
+| Tempting inference | Required correction |
+|---|---|
+| Every prime piece is positive, so the global form has Hodge index | Specify the forms, their common pole allocation, and the dispersion or cross-term payment |
+| Subtracting a positive correction proves the original signature | It proves the signature of a different, smaller form; identify the target or prove the required domination |
+| Nonnegative coefficients and connectivity imply Hodge index | The golden calibration passes these tests; local signature still needs proof |
+| A positive Euler product gives a Lorentzian arithmetic Hessian | Define the polynomial and prove the Hessian identity, including mixed derivatives |
+| The scale map is the archimedean place | A substitution is not an identity with the completed Γ-term and finite part |
+| A nef shift repairs the arithmetic form | It changes coordinates; a regulator subtraction changes the form |
+| A common gauge proves positivity | It selects coordinates or a source; it does not prove a signature |
+| Positive local sections already exhaust the Weil criterion | Their shrinking supports require a separate signed transfer theorem |
+| Fixed-scale average statistics control every signed vector | The quantifiers and norms differ; prove the passage |
+| Lorentzian log-concavity implies Jensen real-rootedness | Real stability is stronger |
+| A symmetry obstruction excludes every geometry | The conclusion applies to the specified localization and invariance mechanism |
+
+## Relation to the surrounding research
+
+| Programme | Interface with ALG |
+|---|---|
+| ArithmeticCastelnuovoSeveri | Scaling surface, pole plane, Hodge target, curve calibrations and source-defined arithmetic sections |
+| ArithmeticOrientationGeometry | Weil planes, correlations and Rosati signs |
+| ArithmeticIntersectionTheory | Prime ladders, transfers and renormalization cocycles |
+| ArithmeticEffectivityTheory | Counting, Riemann–Roch growth and the distinction between a constructed cone and assumed effectivity |
+| BiarithmeticGaugeGeometry; ArithmeticCorrelationGeometry | Prime gauge torus, successor connection and source selection |
+| ArithmeticPolarization; ConjugateDiagonalGeometry | Positive versus equivariant pairings and their exact defect |
+| ArithmeticElectrostatics | Currents, transverse energy, quantization and source work |
+| RenormalizedArithmeticPotentialTheory; RenormalizedBiarithmeticGeometry | Counterterm rank, finite parts and surviving domains |
+| SpacingScaleHarmonicAnalysis | Joint analytic payment, overlap kernels and exhaustive test criteria |
+| IncommensurableGaborPinching | Retaining structural Gram slack when separate scalar estimates discard it |
+| HTGeometry | Inertia, Schur complements and projection identities reused by the signature calculus |
+
+ALG owns construction and composition of signature certificates. It should reuse the source
+estimates and exact identities in these programmes, while making the missing arithmetic bridge
+explicit.
+
+## Pillar theorems and success criteria
+
+The foundation rests on the degree-two equivalences and domination theorem; the finite-Gram
+bridge to the actual scaling surface; the trickle-down theorem and its Metzler boundary; common
+gauge rigidity; the bivariate Lorentzian–Turán equivalence; and the reserve–dispersion gluing
+law with its matrix correction, composition rules and sharp calibration. These pillars
+describe valid mechanisms and their limits. They do not assert the
+unproved arithmetic input needed to reach the full Weil form.
+
+A contribution must supply an unconditional theorem about explicitly defined objects. General
+algebraic criteria must expose their structural conditions and prove them when applied to
+arithmetic. An unknown analytic estimate cannot be hidden in a premise, instance or structure.
+The Lean development, not a paper-only argument, establishes the result.
+
+A contribution toward RH must identify the producer or transfer step it improves. If it claims
+to distinguish the arithmetic source, it must explain its behavior on the relevant sign twin or
+fake datum. If it retires a mechanism, it must retain its strongest positive boundary,
+classification or replacement construction. New vocabulary or another RH-equivalent endpoint
+alone is not enough.
+
+Full success means a source-defined signature construction for the actual Weil intersection
+form on an exhaustive signed family. Intermediate successes include a new arithmetic section
+space, a proved dispersion payment, an independently constructed link signature, a quantitative
+overlap transfer, or an exceptional-extinction theorem. Each must say exactly which domain it
+controls and which arithmetic step remains open.

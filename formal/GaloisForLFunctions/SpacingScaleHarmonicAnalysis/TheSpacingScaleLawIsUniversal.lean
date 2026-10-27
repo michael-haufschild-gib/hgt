@@ -118,9 +118,9 @@ theorem twistedPrimeSum_atomicTest_le (hω : ∀ k, |ω k| ≤ 1) (hg : ContDiff
     _ = |ω k| * vonMangoldtAtom k * (G2 * |A k x|) := by
         rw [abs_mul, abs_mul, abs_mul, abs_of_nonneg (hΛ k), abs_of_nonneg hG2]
     _ ≤ 1 * vonMangoldtAtom k * (G2 * A k fun n => |x n|) := by
-        gcongr
-        · exact hω k
-        · exact hAbs
+        exact mul_le_mul (mul_le_mul_of_nonneg_right (hω k) (hΛ k))
+          (mul_le_mul_of_nonneg_left hAbs hG2) (mul_nonneg hG2 (abs_nonneg _))
+          (by rw [one_mul]; exact hΛ k)
     _ = vonMangoldtAtom k * (G2 * A k fun n => |x n|) := by ring
 
 /-- **The universal spacing-scale law, quantitative form**: for every real twist `|ω| ≤ 1` and

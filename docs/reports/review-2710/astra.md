@@ -52,6 +52,7 @@ Several proposed questions require updating before they become a foundation.
 | Montgomery at `α=1` is equivalent to an `o(log N)` worst-eigenvalue bound. | `fable2.md` labels this an interpretation. An averaged pair statistic and a uniform inequality over signed coefficient vectors have different quantifiers. The identification requires a theorem. |
 | Every unbounded overlap schedule is already covered. | The exact inspected SSHA theorem uses one fixed cubic spline and all finite integer-log translates. Its negative index detects all distinct right-half-strip zeros. A general moving-width schedule needs its own transfer proof. |
 | Nonnegative coefficients and connected links supply the curve sign. | ALG's golden datum has the Metzler sign, connected support and a positive weight with positive image, yet fails weighted trickle-down. The local signature input still carries substantive information. |
+| Successor shift itself could preserve the needed prime-form order. | The exact successor module gives changes of both signs, even on nonnegative profiles. Its positive survivor identifies the successor connection on adjacent archimedean edges and proves finite-horizon gauge rigidity. |
 | Dirichlet characters form the periodic part of the full unit prime torus. | Characters at primes dividing the conductor vanish; full-torus characters have unit modulus. Their domains and missing local factors must be specified. Vertical characters also preclude the proposed naive periodicity classification. |
 | The scale map already realizes the archimedean factor. | A substitution of variables is defined; equality with the required Γ-term, polar terms and renormalized diagonal is a separate, unproved construction. |
 
@@ -117,6 +118,25 @@ It is positive semidefinite and annihilates `e`. Subtracting it from `Q` leaves 
 unchanged and adds the local reserves exactly. Thus `Q-C_e(Q_i)` is hyperbolic whenever the local
 forms are. This is a precise closure operation, not a claim that the original sum has the same
 signature. See [PolarGluingAndDispersion](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/PolarGluingAndDispersion.lean).
+
+The correction also has an exact grouping law: correcting within blocks and then between their
+sums gives the correction of the entire family. This is useful for multiscale constructions,
+where the same incompatibility must not be charged repeatedly. Corrected assembly is associative
+as a quadratic form and commutes with linear restriction carrying the anchor along. Neither
+identity substitutes for convergence in a form-controlling topology.
+
+There is a sharp calibration, valid for every real `t,r`:
+
+\[
+Q_{t,r}=\begin{pmatrix}1&t\\t&t^2-r\end{pmatrix},\qquad
+Q_{t,r}\text{ hyperbolic}\ \Longleftrightarrow\ r\ge0,
+\]
+\[
+Q_{t,r}+Q_{-t,r}\text{ hyperbolic}\ \Longleftrightarrow\ r\ge t^2.
+\]
+
+The correction is `diag(0,2t²)`. Local reserves can already pay part or all of the dispersion;
+the canonical correction is therefore not claimed to be the smallest possible repair.
 
 **Arithmetic opportunity.** Seek a source-defined decomposition of the *whole* intersection
 form, together with an archimedean, successor or overlap energy that pays this dispersion.
@@ -289,8 +309,15 @@ The degree-two foundation is already strong: reverse Cauchy–Schwarz, hyperplan
 pullback, domination, CND closure, the scaling-surface bridge and nef shifts. Trickle-down and
 the Metzler dichotomy add local-to-global tests and a sharp calibration failure. The development
 here adds polar gluing: the reserve identity, the positive correction and the constructed
-hyperbolic form. These are tools for producing and comparing certificates; their application
+hyperbolic form, together with exact grouping and a sharp two-plane threshold. These are tools
+for producing and comparing certificates; their application
 to the full arithmetic target remains a mathematical question.
+
+The current coefficient theory also proves the bivariate Lorentzian–ultra-log-concave
+equivalence and an unconditional Turán layer for the even Taylor coefficients of `ξ`. The
+formal statement concerns their homogenized binomial transforms. The factorial normalization
+in Pólya's criterion and the stronger demand of real-rootedness must be kept separate. See
+[LorentzianPolynomialsAndTheTuranLayer](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/LorentzianPolynomialsAndTheTuranLayer.lean).
 
 The next tools should be a source-defined link calculus; multiscale gluing with the actual
 cross forms; a quantitative overlap transfer; and a signature argument retaining structural
@@ -319,3 +346,9 @@ the actual Weil form on an exhaustive family and proves the needed signature. Th
 foundations, exact gluing laws and local arithmetic positivity do not complete that programme.
 The three priority questions above remain open; they are the work required to turn this field
 from a useful language into a proof mechanism.
+
+The accompanying polar-gluing development is formalized and wired into the ALG umbrella.
+Its final single-file audit used `lake --old env lean` and passed without errors or warnings;
+the ten printed principal declarations use only `propext`, `Classical.choice` and `Quot.sound`.
+The exact mathematical statements, proof and remaining arithmetic boundary are recorded in
+[the formalized gluing card](../../drafts/pipeline/3-formalized/arithmetic-lorentzian-polar-gluing.md).

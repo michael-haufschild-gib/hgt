@@ -4,9 +4,9 @@ import GaloisForLFunctions.HTGeometry.QuotientFusionProjectionGenesis
 /-!
 # Polar gluing and dispersion
 
-Local Hodge inequalities do not add unless their polar directions agree. With a common positive
-anchor `e`, the reserve of a sum is the sum of the local reserves minus the weighted variance of
-the normalized polar rows. This identifies the exact cost of gluing.
+Local Hodge inequalities require a compatibility estimate before they can be added. With a
+common positive anchor `e`, the reserve of a sum is the sum of the local reserves minus the
+weighted variance of the normalized polar rows. This identifies the exact cost of gluing.
 
 Subtracting the dispersion matrix preserves the anchor row and adds the reserves without loss.
 It therefore constructs a hyperbolic form from any anchored family of hyperbolic forms. This is
@@ -21,13 +21,14 @@ namespace GaloisForLFunctions.ArithmeticLorentzianGeometry
 
 variable {ι κ τ : Type*} [Fintype ι] [Fintype κ] [Fintype τ]
 
-theorem bil_sum_matrix (Q : κ → Matrix ι ι ℝ) (x y : ι → ℝ) :
+theorem bil_sum_family (Q : κ → Matrix ι ι ℝ) (x y : ι → ℝ) :
     bil (∑ i, Q i) x y = ∑ i, bil (Q i) x y := by
   simp only [bil, sum_mulVec, dotProduct_sum]
 
 theorem qf_sum_matrix (Q : κ → Matrix ι ι ℝ) (x : ι → ℝ) :
-    qf (∑ i, Q i) x = ∑ i, qf (Q i) x := bil_sum_matrix Q x x
+    qf (∑ i, Q i) x = ∑ i, qf (Q i) x := bil_sum_family Q x x
 
+omit [Fintype ι] in
 theorem isSymm_sum_matrix (Q : κ → Matrix ι ι ℝ) (hQ : ∀ i, (Q i).IsSymm) :
     (∑ i, Q i).IsSymm := by
   change (∑ i, Q i)ᵀ = ∑ i, Q i
@@ -40,6 +41,9 @@ theorem bil_sub_matrix (Q R : Matrix ι ι ℝ) (x y : ι → ℝ) :
 
 theorem qf_sub_matrix (Q R : Matrix ι ι ℝ) (x : ι → ℝ) :
     qf (Q - R) x = qf Q x - qf R x := bil_sub_matrix Q R x x
+
+theorem qf_matrix_pullback (Q : Matrix ι ι ℝ) (A : Matrix ι τ ℝ) (x : τ → ℝ) :
+    qf (Aᵀ * Q * A) x = qf Q (A *ᵥ x) := bil_pullback Q A x x
 
 /-- The rank-one form agreeing with `Q` along its positive anchor. -/
 def anchorSquare (Q : Matrix ι ι ℝ) (e : ι → ℝ) : Matrix ι ι ℝ :=
@@ -122,7 +126,7 @@ theorem qf_polarGluingCorrection (Q : κ → Matrix ι ι ℝ) (e x : ι → ℝ
     (fun i => bil (Q i) e x) (fun i => qf (Q i) e) he
   simp only [sum_const_zero, zero_sub, sum_neg_distrib] at h
   simp only [polarGluingCorrection, qf_sub_matrix, qf_sum_matrix, qf_anchorSquare,
-    polarDispersion, bil_sum_matrix]
+    polarDispersion, bil_sum_family]
   linarith
 
 theorem polarGluingCorrection_nonneg (Q : κ → Matrix ι ι ℝ) (e x : ι → ℝ)
@@ -156,14 +160,23 @@ theorem isHyperbolic_sum_iff_dispersion_le (Q : κ → Matrix ι ι ℝ)
 def polarGlue (Q : κ → Matrix ι ι ℝ) (e : ι → ℝ) : Matrix ι ι ℝ :=
   (∑ i, Q i) - polarGluingCorrection Q e
 
+omit [Nonempty κ] in
+/-- A glued form consists of one total polar square minus the sum of local reserves. -/
+theorem qf_polarGlue (Q : κ → Matrix ι ι ℝ) (e x : ι → ℝ) :
+    qf (polarGlue Q e) x = bil (∑ i, Q i) e x ^ 2 / qf (∑ i, Q i) e -
+      ∑ i, anchorReserve (Q i) e x := by
+  simp only [polarGlue, polarGluingCorrection, qf_sub_matrix, qf_sum_matrix,
+    qf_anchorSquare, anchorReserve, sum_sub_distrib]
+  ring
+
 theorem bil_polarGluingCorrection_anchor (Q : κ → Matrix ι ι ℝ) (e x : ι → ℝ)
     (he : ∀ i, 0 < qf (Q i) e) : bil (polarGluingCorrection Q e) e x = 0 := by
   have ha : 0 < qf (∑ i, Q i) e := by
     rw [qf_sum_matrix]
     exact sum_pos (fun i _ => he i) univ_nonempty
-  simp only [polarGluingCorrection, bil_sub_matrix, bil_sum_matrix]
+  simp only [polarGluingCorrection, bil_sub_matrix, bil_sum_family]
   rw [bil_anchorSquare_anchor ha.ne']
-  rw [sum_congr rfl (fun i _ => bil_anchorSquare_anchor (he i).ne' x), bil_sum_matrix]
+  rw [sum_congr rfl (fun i _ => bil_anchorSquare_anchor (he i).ne' x), bil_sum_family]
   exact sub_self _
 
 theorem bil_polarGlue_anchor (Q : κ → Matrix ι ι ℝ) (e x : ι → ℝ)
@@ -190,7 +203,7 @@ theorem isHyperbolic_polarGlue (Q : κ → Matrix ι ι ℝ) (hQ : ∀ i, (Q i).
   have hg : (polarGlue Q e).IsSymm := hs.sub (polarGluingCorrection_isSymm Q e)
   have ha : 0 < qf (polarGlue Q e) e := by
     change 0 < bil (polarGlue Q e) e e
-    rw [bil_polarGlue_anchor Q e e he, bil_sum_matrix]
+    rw [bil_polarGlue_anchor Q e e he, bil_sum_family]
     exact sum_pos (fun i _ => he i) univ_nonempty
   apply (isHyperbolic_iff_anchorReserve_nonneg hg ha).mpr
   intro x
@@ -238,6 +251,40 @@ theorem polarGluingCorrection_group (Q : κ → τ → Matrix ι ι ℝ) (e : ι
         polarGluingCorrection (fun i => ∑ j, Q i j) e := by
   simp only [polarGluingCorrection, Fintype.sum_prod_type, sum_sub_distrib]
   abel
+
+omit [Nonempty κ] in
+/-- Corrected assembly is associative as a quadratic form. -/
+theorem qf_polarGlue_group [Nonempty τ] (Q : κ → τ → Matrix ι ι ℝ)
+    (e x : ι → ℝ) (he : ∀ i j, 0 < qf (Q i j) e) :
+    qf (polarGlue (fun i => polarGlue (Q i) e) e) x =
+      qf (polarGlue (fun i : κ × τ => Q i.1 i.2) e) x := by
+  have hb (i : κ) : bil (polarGlue (Q i) e) e x = ∑ j, bil (Q i j) e x := by
+    rw [bil_polarGlue_anchor (Q i) e x (he i), bil_sum_family]
+  have ha (i : κ) : qf (polarGlue (Q i) e) e = ∑ j, qf (Q i j) e := by
+    change bil (polarGlue (Q i) e) e e = _
+    rw [bil_polarGlue_anchor (Q i) e e (he i), bil_sum_family]
+    rfl
+  have hr (i : κ) := anchorReserve_polarGlue (Q i) e x (he i)
+  rw [qf_polarGlue, qf_polarGlue]
+  simp only [bil_sum_family, qf_sum_matrix, hb, ha, hr, Fintype.sum_prod_type]
+
+omit [Nonempty κ] in
+/-- Polar correction commutes with linear restriction when the anchor is mapped with the tests. -/
+theorem qf_polarGluingCorrection_pullback (Q : κ → Matrix ι ι ℝ)
+    (A : Matrix ι τ ℝ) (e x : τ → ℝ) :
+    qf (polarGluingCorrection (fun i => Aᵀ * Q i * A) e) x =
+      qf (polarGluingCorrection Q (A *ᵥ e)) (A *ᵥ x) := by
+  simp only [polarGluingCorrection, qf_sub_matrix, qf_sum_matrix, qf_anchorSquare,
+    bil_sum_family, bil_pullback, qf_matrix_pullback]
+
+omit [Nonempty κ] in
+/-- Gluing and anchor-preserving linear restriction give the same quadratic form. -/
+theorem qf_polarGlue_pullback (Q : κ → Matrix ι ι ℝ)
+    (A : Matrix ι τ ℝ) (e x : τ → ℝ) :
+    qf (polarGlue (fun i => Aᵀ * Q i * A) e) x =
+      qf (polarGlue Q (A *ᵥ e)) (A *ᵥ x) := by
+  simp only [polarGlue, qf_sub_matrix, qf_sum_matrix, qf_matrix_pullback,
+    qf_polarGluingCorrection_pullback]
 
 /-! ### Sharp two-plane calibration -/
 
@@ -304,13 +351,16 @@ theorem polarGluingCorrection_opposite_tiltedPlanes (t r : ℝ) :
   all_goals
     simp [polarGluingCorrection, anchorSquare, qf, bil, tiltedPlane, mulVec,
       dotProduct, Fin.sum_univ_two, vecMulVec]
-    ring
+  ring
 
 #print axioms anchorReserve_sum
 #print axioms isHyperbolic_sum_iff_dispersion_le
 #print axioms isHyperbolic_polarGlue
 #print axioms isHyperbolic_sum_iff_alignment_of_zero_reserve
 #print axioms polarGluingCorrection_group
+#print axioms qf_polarGlue_group
+#print axioms qf_polarGluingCorrection_pullback
+#print axioms qf_polarGlue_pullback
 #print axioms isHyperbolic_opposite_tiltedPlanes_iff
 #print axioms polarGluingCorrection_opposite_tiltedPlanes
 

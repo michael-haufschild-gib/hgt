@@ -27,6 +27,11 @@ hyperbolicity is not closed under sums, but (TD) says that `Q − Q D⁻¹ Q` is
 semidefinite, and negative semidefinite forms *are* closed under sums. Local-to-global for the
 Hodge index of a Metzler form is a sum of local semidefinite defects.
 
+**Quantitative trickle-down** (`qf_le_of_approxTrickleDown`): (TD) up to `ε ‖v‖²_D` together with a
+gap `Q ≤ (1 − g) D` on the constraint hyperplane gives `Q ≤ μ₋(ε) D` there, `μ₋ = (1 − √(1 − 4ε))/2`:
+approximate links give an approximate Hodge index. The variational step is
+`exists_max_generalizedEigen`.
+
 Both side conditions are necessary: a disconnected form satisfies (TD) with two positive squares
 (`trickleDown_disconnected`), and a form with a negative off-diagonal entry satisfies (TD) while
 positive definite (`trickleDown_not_metzler`). The sign hypothesis of Lorentzian theory is used
@@ -283,18 +288,15 @@ theorem mulVec_single_dotProduct {Q : Matrix ι ι ℝ} (hQ : Q.IsSymm) (i : ι)
     mem_univ, if_true]
   exact sum_congr rfl fun j _ => by rw [hsym]
 
-/-- **(TD) ⇒ hyperbolic** for a connected Metzler form with positive row sums. -/
-theorem isHyperbolic_of_trickleDownIneq {Q : Matrix ι ι ℝ} (hQ : Q.IsSymm) (hM : IsMetzler Q)
-    (hD : ∀ i, 0 < rowSum Q i) (hconn : IsConnectedSupport Q) (h : TrickleDownIneq Q) :
-    IsHyperbolic Q := by
-  refine isHyperbolic_of_nonpos_on_ker hQ (dotLeft (rowSum Q)) fun z hz => ?_
-  have hzH : z ∈ dHyperplane Q := by
-    have : rowSum Q ⬝ᵥ z = 0 := hz
-    simpa [dHyperplane, dotProduct] using this
-  by_contra hpos
-  push Not at hpos
-  have hz0 : z ≠ 0 := by rintro rfl; simp [qf, bil] at hpos
-  have hNz := dNormSq_pos hD hz0
+/-- **The variational principle on the constraint hyperplane.** If the hyperplane
+`{Σ D_i v_i = 0}` contains a nonzero vector, `Q` attains its maximum `m` on the `D`-unit sphere of
+the hyperplane at a generalized eigenvector `Q v₀ = m D v₀`, and `Q[v] ≤ m ‖v‖²_D` on the
+hyperplane. -/
+theorem exists_max_generalizedEigen {Q : Matrix ι ι ℝ} (hQ : Q.IsSymm)
+    (hD : ∀ i, 0 < rowSum Q i) {z : ι → ℝ} (hzH : z ∈ dHyperplane Q) (hz0 : z ≠ 0) :
+    ∃ v₀ ∈ dHyperplane Q, dNormSq Q v₀ = 1 ∧
+      (∀ i, (Q *ᵥ v₀) i = qf Q v₀ * (rowSum Q i * v₀ i)) ∧
+      ∀ v ∈ dHyperplane Q, qf Q v ≤ qf Q v₀ * dNormSq Q v := by
   have hι : Nonempty ι := by
     obtain ⟨i, -⟩ := Function.ne_iff.mp hz0; exact ⟨i⟩
   have hSD : 0 < ∑ i, rowSum Q i := sum_pos (fun i _ => hD i) univ_nonempty
@@ -329,9 +331,6 @@ theorem isHyperbolic_of_trickleDownIneq {Q : Matrix ι ι ℝ} (hQ : Q.IsSymm) (
         rw [this, div_pow, Real.sq_sqrt hN.le]; ring
       rw [e, div_le_iff₀ hN] at this
       exact this
-  have hm0 : 0 < m := by
-    have := hhom z hzH
-    nlinarith
   have hv₀H : v₀ ∈ dHyperplane Q := hv₀K.1
   have hv₀1 : dNormSq Q v₀ = 1 := hv₀K.2
   -- first variation: `v₀ᵀ Q z' = m ⟨v₀, z'⟩_D` on the hyperplane
@@ -381,6 +380,28 @@ theorem isHyperbolic_of_trickleDownIneq {Q : Matrix ι ι ℝ} (hQ : Q.IsSymm) (
       simp only [dPair, y, Pi.single_apply, mul_ite, mul_one, mul_zero, sum_ite_eq', mem_univ,
         if_true]
     rw [← hb, ← hd]; linarith
+  exact ⟨v₀, hv₀H, hv₀1, heig, hhom⟩
+
+/-- **(TD) ⇒ hyperbolic** for a connected Metzler form with positive row sums. -/
+theorem isHyperbolic_of_trickleDownIneq {Q : Matrix ι ι ℝ} (hQ : Q.IsSymm) (hM : IsMetzler Q)
+    (hD : ∀ i, 0 < rowSum Q i) (hconn : IsConnectedSupport Q) (h : TrickleDownIneq Q) :
+    IsHyperbolic Q := by
+  refine isHyperbolic_of_nonpos_on_ker hQ (dotLeft (rowSum Q)) fun z hz => ?_
+  have hzH : z ∈ dHyperplane Q := by
+    have : rowSum Q ⬝ᵥ z = 0 := hz
+    simpa [dHyperplane, dotProduct] using this
+  by_contra hpos
+  push Not at hpos
+  have hz0 : z ≠ 0 := by rintro rfl; simp [qf, bil] at hpos
+  have hNz := dNormSq_pos hD hz0
+  have hι : Nonempty ι := by
+    obtain ⟨i, -⟩ := Function.ne_iff.mp hz0; exact ⟨i⟩
+  have hSD : 0 < ∑ i, rowSum Q i := sum_pos (fun i _ => hD i) univ_nonempty
+  obtain ⟨v₀, hv₀H, hv₀1, heig, hhom⟩ := exists_max_generalizedEigen hQ hD hzH hz0
+  set m := qf Q v₀
+  have hm0 : 0 < m := by
+    have := hhom z hzH
+    nlinarith
   -- (TD) at `v₀`: `m ≤ m²`
   have hTD := h v₀
   have hrhs : ∑ i, (Q *ᵥ v₀) i ^ 2 / rowSum Q i = m ^ 2 := by
@@ -413,6 +434,46 @@ theorem isHyperbolic_of_trickleDownIneq {Q : Matrix ι ι ℝ} (hQ : Q.IsSymm) (
     rw [hv₀c, hc0]; simp [dNormSq]
   rw [hv₀1] at this
   exact one_ne_zero this
+
+/-! ### Quantitative trickle-down -/
+
+/-- **Quantitative trickle-down.** If the trickle-down inequality holds up to `ε ‖v‖²_D` and the form
+has a gap `Q[v] ≤ (1 − g) ‖v‖²_D` on the constraint hyperplane that excludes the upper root
+`μ₊ = (1 + √(1 − 4ε))/2`, then `Q[v] ≤ μ₋ ‖v‖²_D` on the hyperplane, `μ₋ = (1 − √(1 − 4ε))/2`.
+Approximate links and a gap give an approximate Hodge index; no sign condition is used, the sign
+enters through the gap (the graph Laplacian for Metzler forms). -/
+theorem qf_le_of_approxTrickleDown {Q : Matrix ι ι ℝ} (hQ : Q.IsSymm) (hD : ∀ i, 0 < rowSum Q i)
+    {ε g : ℝ} (h4 : 4 * ε ≤ 1)
+    (hTD : ∀ v, qf Q v ≤ ∑ i, (Q *ᵥ v) i ^ 2 / rowSum Q i + ε * dNormSq Q v)
+    (hgap : ∀ v ∈ dHyperplane Q, qf Q v ≤ (1 - g) * dNormSq Q v)
+    (hg : 1 - g < (1 + Real.sqrt (1 - 4 * ε)) / 2) :
+    ∀ v ∈ dHyperplane Q, qf Q v ≤ (1 - Real.sqrt (1 - 4 * ε)) / 2 * dNormSq Q v := by
+  intro v hv
+  rcases eq_or_ne v 0 with rfl | hv0
+  · simp [qf, bil, dNormSq]
+  obtain ⟨v₀, hv₀H, hv₀1, heig, hhom⟩ := exists_max_generalizedEigen hQ hD hv hv0
+  set m := qf Q v₀
+  set r := Real.sqrt (1 - 4 * ε)
+  have hr : r ^ 2 = 1 - 4 * ε := Real.sq_sqrt (by linarith)
+  have hr0 : 0 ≤ r := Real.sqrt_nonneg _
+  -- (TD_ε) at `v₀`: `m ≤ m² + ε`
+  have hTD0 := hTD v₀
+  have hrhs : ∑ i, (Q *ᵥ v₀) i ^ 2 / rowSum Q i = m ^ 2 := by
+    rw [← mul_one (m ^ 2), ← hv₀1, dNormSq, mul_sum]
+    exact sum_congr rfl fun i _ => by rw [heig i]; field_simp [(hD i).ne']
+  rw [hrhs, hv₀1, mul_one] at hTD0
+  -- `(m − μ₋)(m − μ₊) ≥ 0` and the gap excludes `m ≥ μ₊`
+  have hfac : 0 ≤ (m - (1 - r) / 2) * (m - (1 + r) / 2) := by nlinarith
+  have hmgap : m < (1 + r) / 2 := by
+    have := hgap v₀ hv₀H; rw [hv₀1, mul_one] at this; linarith
+  have hm : m ≤ (1 - r) / 2 := by
+    by_contra hlt; push Not at hlt
+    have : 0 < (m - (1 - r) / 2) := by linarith
+    have : (m - (1 + r) / 2) < 0 := by linarith
+    nlinarith
+  calc qf Q v ≤ m * dNormSq Q v := hhom v hv
+    _ ≤ (1 - r) / 2 * dNormSq Q v :=
+      mul_le_mul_of_nonneg_right hm (sum_nonneg fun i _ => mul_nonneg (hD i).le (sq_nonneg _))
 
 /-! ### Links from (TD) -/
 

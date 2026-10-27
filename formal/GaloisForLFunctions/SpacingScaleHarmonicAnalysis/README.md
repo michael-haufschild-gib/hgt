@@ -119,14 +119,14 @@ the zeros it can see and positivity becomes a statement about zeros.
 | Lévy density | `ω(y) = e^{−y/2}/(1 − e^{−2y})`; `1/(2y) ≤ ω(y) ≤ e^{y/2}/(2y)` on `(0, 1]` | `archLevyDensity` |
 | windowed autocorrelation | `∫ f_x(u) f_x(u + y) du = Σ x_m x_n G(y − s_{mn})` | `integral_atomicTest_mul_shift` |
 | pair window | `[s − w, s + w]`, the shifts on which atoms at log-distance `s` interact | `pairWindow` |
-| cross bound | `2e^{1/2} w/|s|` for `|s| ≤ 2`, else `0` | `crossBound` |
+| cross bound | `2e^{1/2} w/\|s\|` for `\|s\| ≤ 2`, else `0` | `crossBound` |
 | atomic prime form | `P_N(x)`, kernel `P(m, n) = Λ(n/m)(n/m)^{−1/2}` on `m ∣ n` | `atomicWeilForm` (AES) |
 | tilt | `r(n) = 1 + n/N` | `tilt` |
 | tilted row | `Σ_n P(m, n) √(m/n) r(n)/r(m)` | `tiltedRow_le` |
 | lag form | `Σ_{m,n} x_m x_n (G(−log k − s_{mn}) + G(log k − s_{mn}))` | `lagForm` |
 | gauge factor | `ω(k) − ω(m) ω(n)` | `gaugeFactor_eq_zero_of_ratio` |
 | pole moments | `C(f) = ∫ f cosh(u/2)`, `S(f) = ∫ f sinh(u/2)`; `Re W = M + 2C² − 2S²` | `re_W_atomicTest_eq` (AES) |
-| constants | `c₁ = 1/(32 e^{5/2})`, `C = 2(log 4 + 4) + 1`, `c₀ = c₁ e^{−(C + 2|θ′(0)|)}` | `spacingRatio`, `spacingConstant`, `spacingWidthRatio` |
+| constants | `c₁ = 1/(32 e^{5/2})`, `C = 2(log 4 + 4) + 1`, `c₀ = c₁ e^{−(C + 2\|θ′(0)\|)}` | `spacingRatio`, `spacingConstant`, `spacingWidthRatio` |
 
 ### 3.3 Words
 
@@ -152,8 +152,9 @@ blind.
 
 1. **Lévy density.** `ω(y) ≥ 1/(2y)` on `(0, 1]` ⇔ `sinh y ≤ y e^{y/2}`, from the cubic Taylor
    bounds of `e^{±y}`; and `ω(y) ≤ e^{y/2}/(2y)` ⇔ `y ≤ sinh y`. A bump supported in `[0, w]` is
-   moved off itself by every shift `y > w`, so `levyEnergy g ≥ log(1/w)‖g‖²`. The corpus constant
-   `e^{−1/2}` falls short of `log N` at every `w ≥ N^{−e^{1/2}}`.
+   moved off itself by every shift `y > w`, so `levyEnergy g ≥ log(1/w)‖g‖²`; splitting the Lévy
+   integral at `w` and `1` gives the matching upper bound `(log(1/w) + O(1))‖g‖²` for dilated
+   profiles. The corpus constant `e^{−1/2}` falls short of `log N` at every `w ≥ N^{−e^{1/2}}`.
 2. **Prime norm.** The Schur rows of `P_N` with weights `n^{−1/2}` are `A(⌊N/m⌋) + log m`, at most
    `log N + O(1)` (RAPT), and the pole vector shows the constant one is attained.
 
@@ -188,9 +189,11 @@ blind.
    `archForm f − twistedPrimeSum ω f ≥ levyMarkovForm |f|`. Below the spacing with a nonnegative
    bump, `|f_x| = f_{|x|}`: `ζ` is the ground state of its gauge orbit on the atomic family, and every
    lower bound for `ζ` holds for every twin.
-9. **Blindness of the stability law.** The proof uses only `|ω(n)Λ(n)| ≤ Λ(n)` through the gauged
-   weights `ωx`, whose squares are those of `x`: every completely multiplicative sign twin satisfies
-   the spacing-scale law with the same constants.
+9. **Blindness and universality of the stability law.** Below the spacing every prime pairing of an
+   atomic test is an exact Hecke pairing, so a twisted prime sum with `|ω(k)| ≤ 1` is at most
+   `‖g‖² P_N(|x|)`, and the tilted rows bound `P_N(|x|)` with the squares of `x`: every real twist —
+   completely multiplicative or not — satisfies the spacing-scale law with the same constants. The
+   separated regime of the Markov form carries no arithmetic beyond `|a(k)| ≤ Λ(k)`.
 10. **Non-ratio lags.** At every width, `primeSum f_x = Σ_k Λ_k · lagForm_k(x)` and the twin's sum
     carries `ω(k)`. The difference between a twin at `x` and `ζ` at `ωx` is the lag form weighted by
     `ω(k) − ω(m)ω(n)`, which vanishes on every ratio lag (`n = km` or `m = kn`). Below the spacing
@@ -221,10 +224,12 @@ blind.
 | Pillar | Statement | Module |
 |---|---|---|
 | **SH1 Constant one** | `1/(2y) ≤ ω(y) ≤ e^{y/2}/(2y)`; `levyEnergy g ≥ log(1/w)‖g‖²` (`archLevyDensity_ge_inv_two_mul`, `levyEnergy_atom_ge`) | `TheSelfEnergyOfAnAtomHasConstantOne` |
+| **SH1′ Exactly logarithmic** | `levyEnergy g ≤ (log(1/w) + C₀)‖g‖² + e^{1/2} K w ‖g‖₁` for a `K`-Lipschitz bump; for dilates `φ(·/w)` the self-energy is `(log(1/w) + O_φ(1))‖g‖²` (`levyEnergy_atom_le`, `archForm_atom_le`) | `TheSelfEnergyOfAnAtomIsExactlyLogarithmic` |
 | **SH2 Cross-kernel law** | windowed autocorrelation; row `≤ 4e^{5/2} w m (1 + log(N+1))`; Lévy energy of atomic tests (`levyEnergy_atomicTest_ge`) | `TheArchimedeanCrossKernel` |
 | **SH3 Tilted rows** | `P_N(x) ≤ Σ x_m² (log N + 2(log 4 + 4) − (m/4N) log m)` (`atomicWeilForm_le_tilted`) | `TheTiltedPrimeRows` |
 | **SH4 Stability at the spacing** | `M ≥ (2θ′(0) + log(1/(wN)) − C)‖f‖²` at `w ≤ c₁δ_N`; `M ≥ 0`, `Re W + 2S² ≥ 0` at `w ≤ c₀δ_N`; the same for every twin (`re_W_add_sinh_sq_nonneg_spacing`, `twinMarkov_atomicTest_nonneg_spacing`) | `TheStabilityLawAtTheSpacingScale` |
-| **SH5 Diamagnetic inequality** | `archForm f − twistedPrimeSum ω f ≥ levyMarkovForm |f|`; `ζ` is the ground state (`diamagnetic_inequality`, `twinMarkov_ge_of_markov_ge`) | `TheDiamagneticInequality` |
+| **SH4′ Universality** | the law holds for every real twist `\|ω\| ≤ 1`, multiplicative or not, and every real bump (`twistedPrimeSum_atomicTest_le`, `twistedMarkov_atomicTest_nonneg_spacing_of_abs_le`) | `TheSpacingScaleLawIsUniversal` |
+| **SH5 Diamagnetic inequality** | `archForm f − twistedPrimeSum ω f ≥ levyMarkovForm \|f\|`; `ζ` is the ground state (`diamagnetic_inequality`, `twinMarkov_ge_of_markov_ge`) | `TheDiamagneticInequality` |
 | **SH6 Unbounded overlap** | RH iff all spline Grams on `{log n}` are PSD; negative index = right zeros (`riemannHypothesis_iff_splineAtomic_negIndex_eq_zero`, `zeta_splineAtomic_negIndex_law`) | `UnboundedOverlapIsTheRiemannHypothesis` |
 | **SH7 Non-ratio lags** | the overlap calculus; the gauge defect lives on non-ratio lags; none below the spacing, some within `4δ_N` (`twistedPrimeSum_sub_primeSum_gauge_eq`, `nonRatio_lag_vanishes_below_spacing`, `exists_nonRatio_pair`) | `TheGaugeEntersThroughNonRatioLags` |
 | **SH8 Dictionary** | `h_{f_x} = h_g D_x`; zero terms factor; on-line zeros are squares (`paperFT_atomicTest`, `Wsummand_atomicTest_onLine`) | `TheAtomicFamilyIsADirichletPolynomial` |
@@ -292,15 +297,16 @@ Mertens' first theorem (RAPT, RHTower); the Lévy form of `archForm`, the Markov
 contraction lemma (RHTower); Weil Grams, translates, the rational Hecke orbit (ACS); the spline
 orbit law (AOG); harmonic row sums (RHTower/Sieve); Chebyshev's bound (Mathlib).
 
-**Built here.** Constant-one Lévy density bounds; the self-energy of an atom; bump autocorrelations,
+**Built here.** Constant-one Lévy density bounds; the two-sided self-energy of an atom; the
+domination of twisted prime sums below the spacing; bump autocorrelations,
 windowed autocorrelations and pair windows; the cross-kernel row; the tilted Schur test and tilted
 rows; the spacing-scale constants and law; the Lévy–Markov form and the diamagnetic inequality;
 closure of atomic tests under `|·|`; translation invariance of Weil Grams and the transfer of the
 rational Hecke orbit to the atom positions; lag forms, the gauge factor and the non-ratio lag law;
 the Dirichlet-polynomial factorization of atomic tests.
 
-**To build.** The upper half of the self-energy, `levyEnergy g ≤ (log(1/w) + C_φ)‖g‖²`, and the
-Robin constant `C_φ` of a bump profile; the critical constant; a quantitative aperture embedding of
+**To build.** The exact Robin constant `lim (levyEnergy g/‖g‖² − log(1/w))` of a bump profile; the
+critical constant; a quantitative aperture embedding of
 bounded overlap; Riemann sums on the log-lattice with continuity of `W`; the weight of a single zero
 at the spacing.
 
