@@ -84,7 +84,7 @@ theorem pPowerMertensSum_ge (hp : p.Prime) {K y : ℕ} (hK : p ^ K ≤ y) :
     induction K' with
     | zero => simp
     | succ K' ih =>
-      rw [sum_range_succ, ih]
+      rw [Finset.sum_range_succ, ih]
       have hp1' : (p : ℝ) - 1 ≠ 0 := by linarith
       field_simp
       ring
@@ -265,8 +265,7 @@ theorem classRow_up_term (hp : p.Prime) {j m n : ℕ} (hm : 0 < m) (hn : 0 < n)
         rw [← hv]; exact factorization_mul_eq_iff hp hm.ne' ht
       by_cases hpt : p ∣ t
       · rw [if_neg (fun h => (hiff.mp h) hpt), if_pos hpt]
-      · rw [if_pos (hiff.mpr hpt), if_neg hpt, if_pos ⟨dvd_mul_right m t, hne⟩,
-          Nat.mul_div_cancel_left t hm]
+      · rw [if_pos (hiff.mpr hpt), if_neg hpt, if_pos ⟨dvd_mul_right m t, hne⟩]
   · rw [if_neg hmn]
     split_ifs with h1 h2
     · exact absurd h2.1 hmn
@@ -282,7 +281,8 @@ theorem classRow_down_term (hp : p.Prime) {j m n : ℕ} (hm : 0 < m) (hn : 0 < n
   · obtain ⟨t, ht⟩ := hnm
     have ht0 : t ≠ 0 := by rintro rfl; rw [mul_zero] at ht; omega
     have hmn : m / n = t := by rw [ht, Nat.mul_div_cancel_left t hn]
-    rw [if_pos ⟨t, ht⟩, hmn]
+    have hdvd : n ∣ m := ⟨t, ht⟩
+    rw [if_pos hdvd, hmn]
     by_cases ht1 : t = 1
     · subst ht1
       rw [mul_one] at ht
@@ -293,7 +293,7 @@ theorem classRow_down_term (hp : p.Prime) {j m n : ℕ} (hm : 0 < m) (hn : 0 < n
         rw [← hv, ht, eq_comm]; exact factorization_mul_eq_iff hp hn.ne' ht0
       by_cases hpt : p ∣ t
       · rw [if_neg (fun h => (hiff.mp h) hpt), if_pos hpt]
-      · rw [if_pos (hiff.mpr hpt), if_neg hpt, if_pos ⟨⟨t, ht⟩, hne⟩, hmn]
+      · rw [if_pos (hiff.mpr hpt), if_neg hpt, if_pos ⟨hdvd, hne⟩]
   · rw [if_neg hnm]
     split_ifs with h1 h2
     · exact absurd h2.1 hnm
@@ -362,7 +362,7 @@ theorem classRow_of_lt (hp : p.Prime) {j M m : ℕ} (hm : 0 < m) (hmM : m ≤ M)
   -- the term `n₀ = m/p^k` carries `Λ(p^k) = log p`; every other term vanishes
   have hterm : weilPrimeKernel m n₀ * Real.sqrt ((m : ℝ) / n₀) = Real.log p := by
     rw [weilPrimeKernel_mul_sqrt_ratio hm hn₀0]
-    have hdvd : n₀ ∣ m := ⟨p ^ k, hn₀.symm.trans (mul_comm _ _) |>.symm ▸ rfl⟩
+    have hdvd : n₀ ∣ m := ⟨p ^ k, hn₀.symm⟩
     have hne : n₀ ≠ m := by
       intro h
       have : n₀ * p ^ k = n₀ * 1 := by rw [hn₀, h, mul_one]
@@ -439,7 +439,7 @@ theorem exists_abs_classGram_self_finitePart_le (hp : p.Prime) (j : ℕ) {η : �
   obtain ⟨Y₁, hY₁⟩ := (Metric.tendsto_atTop.mp (tendsto_unitMertensSum_sub_log hp)) (η / 4)
     (by positivity)
   obtain ⟨M₀, hM₀⟩ := (Metric.tendsto_atTop.mp (tendsto_classMass_sub hp j)) (η * classDensity p j / 4)
-    (by positivity)
+    (div_pos (mul_pos hη hδ) (by norm_num))
   set Y : ℕ := max Y₁ (⌈4 / η⌉₊ + 1)
   -- a uniform bound for `|A_{p'}(y) − log y + γ_p|`
   set Ce : ℝ := Real.log 4 + 4 + Real.log p / ((p : ℝ) - 1) + |localEuler p|

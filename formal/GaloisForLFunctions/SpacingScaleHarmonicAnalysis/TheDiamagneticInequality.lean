@@ -1,4 +1,5 @@
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheStabilityLawAtTheSpacingScale
+import GaloisForLFunctions.RHTower.WeilMarkovPoleCapacity
 
 /-!
 # The diamagnetic inequality
@@ -52,24 +53,8 @@ theorem levyMarkovForm_eq_markovEnergy {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f)
 /-- **Normal contraction lowers the Lévy energy**: `levyEnergy |f| ≤ levyEnergy f`. -/
 theorem levyEnergy_abs_le {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :
     levyEnergy (fun u => |f u|) ≤ levyEnergy f := by
-  have hc : Continuous f := hf.continuous
-  have hpt : ∀ y : ℝ, ∫ u, (|f u| - |f (u + y)|) ^ 2 ≤ ∫ u, (f u - f (u + y)) ^ 2 := by
-    intro y
-    have hfy : HasCompactSupport fun u => f u - f (u + y) :=
-      hfc.sub (hfc.comp_homeomorph (Homeomorph.addRight y))
-    have hint : Integrable fun u => (f u - f (u + y)) ^ 2 :=
-      ((hc.sub (hc.comp (continuous_add_const y))).pow 2).integrable_of_hasCompactSupport
-        (hfy.comp_left (g := fun t : ℝ => t ^ 2) (by norm_num))
-    have habs : HasCompactSupport fun u => |f u| - |f (u + y)| :=
-      hfc.abs.sub ((hfc.comp_homeomorph (Homeomorph.addRight y)).abs)
-    have hint' : Integrable fun u => (|f u| - |f (u + y)|) ^ 2 :=
-      (((continuous_abs.comp hc).sub (continuous_abs.comp (hc.comp (continuous_add_const y)))).pow
-        2).integrable_of_hasCompactSupport
-        (habs.comp_left (g := fun t : ℝ => t ^ 2) (by norm_num))
-    refine integral_mono hint' hint fun u => ?_
-    have := abs_abs_sub_abs_le_abs_sub (f u) (f (u + y))
-    rw [← sq_abs (f u - f (u + y)), ← sq_abs (|f u| - |f (u + y)|)]
-    exact pow_le_pow_left₀ (abs_nonneg _) this 2
+  have hpt : ∀ y : ℝ, ∫ u, (|f u| - |f (u + y)|) ^ 2 ≤ ∫ u, (f u - f (u + y)) ^ 2 :=
+    RHTower.WeilMarkovPole.integral_abs_sub_shift_sq_le hf.continuous hfc
   unfold levyEnergy
   refine integral_mono_of_nonneg (levyIntegrand_nonneg _) (integrableOn_levyIntegrand hf hfc) ?_
   refine (ae_restrict_mem measurableSet_Ioi).mono fun y hy => ?_
