@@ -7,6 +7,9 @@ import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.LogCellsFixTheGauge
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.CriticalDiscsAndTheTerminalLens
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.PositivityIsIrreversible
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.CollectivePacketsDiluteOverIndependentOrdinates
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheRamanujanTwinsSurviveExactlyOnPerOrderRelations
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheCellHolonomyDefectCountsChargedCells
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.HarnackOnTheCaratheodoryRegion
 
 /-!
 # The laws of Renormalized Biarithmetic Geometry
@@ -24,9 +27,15 @@ One statement collecting the laws proved in the programme:
 3. **Gauge charge.** A coupling is blind under every real sign gauge iff it is of square class;
    successor couplings are charged.
 4. **Cells fix the gauge.** The dyadic cell dilation is covariant only at the Euler gauge.
-5. **Terminal lens.** The lens of a terminal is zero-free away from the terminal.
+5. **Terminal lens.** The lens of a terminal is zero-free away from the terminal, and the outward
+   floor of `Re ξ′/ξ` spreads to discs about the ray.
 6. **Irreversibility.** A nontrivial positive deformation cannot be undone.
-7. **Kronecker dilution.** A positive packet on independent ordinates buys at most its pole share.
+7. **Height law.** A positive packet on a cloud of nonnegative integer combinations of independent
+   generators, with heights `≤ M`, buys at most `M` times its pole share.
+8. **Quantitative cell holonomy.** At the Liouville gauge the minimal cell covariance defect lies
+   between `2N₊` and `4N₊`, `N₊ = #{a ≤ X : λ(a) = λ(2a + 1)}`.
+9. **Ramanujan orthogonality.** Ramanujan modes of different orders are orthogonal over a common
+   period, so twins survive exactly on per-order relations.
 -/
 
 noncomputable section
@@ -83,7 +92,28 @@ theorem renormalized_biarithmetic_geometry_laws :
     -- Kronecker dilution
     (∀ {ι : Type} [Fintype ι] [DecidableEq ι] {ω : ι → ℝ}, LinearIndependent ℚ ω →
       ∀ (a₀ : ℝ) (a : ι → ℝ), (∀ t : ℝ, 0 ≤ a₀ + ∑ j, a j * Real.cos (ω j * t)) →
-        ∑ j, |a j| ≤ a₀) :=
+        ∑ j, |a j| ≤ a₀) ∧
+    -- The height law
+    (∀ {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ] {g : ι → ℝ},
+      LinearIndependent ℚ g → ∀ (n : κ → ι → ℕ) (M : ℕ),
+        (∀ j, 1 ≤ ∑ i, n j i ∧ ∑ i, n j i ≤ M) → ∀ (a₀ : ℝ) (a : κ → ℝ),
+          (∀ t : ℝ, 0 ≤ a₀ + ∑ j, a j * Real.cos ((∑ i, (n j i : ℝ) * g i) * t)) →
+            ∑ j, a j ≤ M * a₀) ∧
+    -- Quantitative cell holonomy at the Liouville gauge
+    (∀ X : ℕ, (∀ c : ℝ, 2 * ((liouvilleAgreements X).card : ℝ) ≤
+        hsDefect PrimeGauge.liouvilleGauge X c) ∧
+      hsDefect PrimeGauge.liouvilleGauge X ((-1 : ℝ) : ℂ) = 4 * (liouvilleAgreements X).card) ∧
+    -- Ramanujan orthogonality
+    (∀ {m n q : ℕ}, 0 < m → 0 < n → m ∣ q → n ∣ q →
+      ∑ k ∈ range q, ramanujanMode m k * ramanujanMode n k =
+        if m = n then (q : ℝ) * Nat.totient n else 0) ∧
+    -- The outward floor spreads
+    (∃ c : ℝ, 0 < c ∧ ∀ p : XiZeroCopy, 1 / 2 < (p.1 : ℂ).re → IsTerminal p →
+      ∀ h : ℝ, 0 < h → h < 1 / 2 - xiZeroDepth p →
+        ∀ s : ℂ, ‖s - ((p.1 : ℂ) + h)‖ ≤ rayRadius (xiZeroDepth p) * h / 2 →
+          (((xiZeroCopyFiber p.1).card : ℝ) / h +
+            ((xiZeroCopyFiber p.1).card : ℝ) / (2 * xiZeroDepth p + h) +
+            c * xiZeroDepth p * Real.log (|xiZeroHeight p| + 4)) / 3 ≤ (logDeriv xi s).re) :=
   ⟨fun _ a _ hq hper _ hx => periodicGerm_survival a hq hper hx,
     fun _ hS hne _ _ _ hC => torsion_survivalCone_eq hS hne hC,
     fun _ hq => torsionLimitForm_neg hq,
@@ -96,6 +126,10 @@ theorem renormalized_biarithmetic_geometry_laws :
     cellDilate_two_covariant_iff,
     fun hp hright _ hs hlt hsp => xi_ne_zero_of_mem_terminalLens hp hright hs hlt hsp,
     fun h hne => not_positiveDeformation_of_ne h hne,
-    fun hind a₀ a hP => sum_abs_le_of_packet_nonneg hind a₀ a hP⟩
+    fun hind a₀ a hP => sum_abs_le_of_packet_nonneg hind a₀ a hP,
+    fun hind n M hh a₀ a hP => sum_le_height_mul_of_generated_packet hind n M hh a₀ a hP,
+    hsDefect_liouville_sandwich,
+    fun hm hn hmq hnq => sum_ramanujanMode_mul hm hn hmq hnq,
+    exists_terminal_floor_spreads⟩
 
 end GaloisForLFunctions.RenormalizedBiarithmeticGeometry

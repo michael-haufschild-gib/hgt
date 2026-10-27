@@ -16,8 +16,8 @@ inequality then compares its values across any disc inside the region.
   `0 < h < ½ − a`, the disc of radius `ρ h`, `ρ = a/(2(a + T))`, `T = √(¼ − a²)`, about `p + h` lies
   strictly outside every critical disc.
 * **The outward floor spreads** (`exists_terminal_floor_spreads`). ACP's floor
-  `u(p + h) ≥ m/h + m/(2a + h) + c a log(|γ_p| + 4)` holds, up to the factor `1/3`, on the whole disc
-  of radius `ρh/2` about `p + h`.
+  `u(p + h) ≥ m/h + m/(2a + h) + c a log(|γ_p| + 4)` holds, up to the factor `1/3`, on the whole
+  disc of radius `ρh/2` about `p + h`.
 
 This is the harmonic-measure tool on the terminal geometry: positivity of the pair field transports
 two-sided bounds for `Re ξ′/ξ` through the zero-free lens.
@@ -123,7 +123,8 @@ theorem terminalRayBall_subset {p : XiZeroCopy} (hp : IsTerminal p) (hright : 1 
     simp only [a, xiZeroDepth]; rw [abs_of_pos (by linarith)]
   have ha0 : 0 < a := by rw [ha]; linarith
   have ha2 : a ≤ 1 / 2 := (xiZeroDepth_bounds p).2
-  have ha2' : a ^ 2 ≤ 1 / 4 := by nlinarith [mul_le_mul ha2 ha2 ha0.le (by norm_num : (0:ℝ) ≤ 1 / 2)]
+  have ha2' : a ^ 2 ≤ 1 / 4 := by
+    nlinarith [mul_le_mul ha2 ha2 ha0.le (by norm_num : (0:ℝ) ≤ 1 / 2)]
   have hTsq : T ^ 2 = 1 / 4 - a ^ 2 := by
     rw [show T = Real.sqrt (1 / 4 - a ^ 2) from rfl, Real.sq_sqrt (by linarith)]
   have hT0 : 0 ≤ T := Real.sqrt_nonneg _

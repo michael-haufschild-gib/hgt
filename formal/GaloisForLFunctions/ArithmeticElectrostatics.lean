@@ -14,17 +14,27 @@ import GaloisForLFunctions.ArithmeticElectrostatics.TheExternalFieldIsAPrimeSum
 import GaloisForLFunctions.ArithmeticElectrostatics.TheHeckeDefectIsTheMomentOfInertia
 import GaloisForLFunctions.ArithmeticElectrostatics.ReflectedTransverseWork
 import GaloisForLFunctions.ArithmeticElectrostatics.TheSelbergWorkExhaustsTheTransverseEnergy
+import GaloisForLFunctions.ArithmeticElectrostatics.LargeValuesAtZeroOrdinates
+import GaloisForLFunctions.ArithmeticElectrostatics.TheGaugeMarginOfTheRenormalizedSource
+import GaloisForLFunctions.ArithmeticElectrostatics.TheStabilityLawAtAtomicResolution
+import GaloisForLFunctions.ArithmeticElectrostatics.TheEnergyOfAZeroIsLogarithmic
 
 /-!
 # Arithmetic Electrostatics of the Zero Divisor
 
 Umbrella for the potential theory of the zero divisor of `ξ` and of the torsion of the
-characteristic circle: virial laws, transverse equilibrium and its quantization, the transverse
-energy of the divisor, the multiplicity-exact damped source-work exhaustion, the threshold form
-of the field law, the renormalized Rankin–Selberg square
-(Selberg's source), self-intersections and adjunction of torsion orbits, conjugation on torsion
-cycles, power maps as similitudes of the Abel energy, the logarithmic rate of the torsion counterterm and of the atomic Weil prime form, and its concentration at the arithmetic
-point, the torsion as the stable (Fekete) equilibrium of the circle, window selection by
-quantization, the external field as a prime sum and the anti-alignment law at zero ordinates, the Hecke defect as transverse moment of inertia, and the gauge behaviour of electrostatic quantities. See
-`ArithmeticElectrostatics/README.md`.
+characteristic circle:
+
+* finite configurations: virial laws, transverse equilibrium, quantization, maximum principle;
+* the divisor: transverse energy and its unconditional logarithmic bound, damped arithmetic source
+  work, window selection, the Hecke defect as transverse moment of inertia;
+* the field: Laurent self-terms, threshold forms of the field law, the external field as a prime
+  sum, large values of Dirichlet polynomials at zero ordinates;
+* the diagonal: Selberg's renormalized source, self-intersections and adjunction of torsion orbits,
+  power maps as similitudes of the Abel energy, logarithmic counterterms on the circle and on the
+  atomic Weil prime form, the arithmetic point, the stability law at atomic resolution;
+* the base and gauge: Fekete stability of the circle, affine invariance, gauge margins of the
+  renormalized source.
+
+See `ArithmeticElectrostatics/README.md`.
 -/

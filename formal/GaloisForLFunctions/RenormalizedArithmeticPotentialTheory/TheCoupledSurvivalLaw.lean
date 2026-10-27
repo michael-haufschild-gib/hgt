@@ -73,7 +73,8 @@ theorem survivalCone_eq_ker {B : Matrix ι ι ℝ} (hBs : B.IsSymm) (hB : ∀ x,
   simp
 
 /-- A rank-one matrix acts by the dot product: `(u vᵀ) w = (v · w) u`. -/
-theorem vecMulVec_mulVec' (u v w : ι → ℝ) : vecMulVec u v *ᵥ w = (v ⬝ᵥ w) • u := by
+theorem vecMulVec_mulVec' {κ : Type*} (u : κ → ℝ) (v w : ι → ℝ) :
+    vecMulVec u v *ᵥ w = (v ⬝ᵥ w) • u := by
   ext i
   simp only [mulVec, dotProduct, vecMulVec, of_apply, Pi.smul_apply, smul_eq_mul, sum_mul]
   exact sum_congr rfl fun j _ => by ring
@@ -96,6 +97,7 @@ def primeSurvival (A : Matrix α α ℝ) (C : Matrix α β ℝ) (D : Matrix β �
     Submodule ℝ (α → ℝ) :=
   (LinearMap.ker (coupled A C D).mulVecLin).map (LinearMap.funLeft ℝ ℝ Sum.inl)
 
+omit [Fintype α] [Fintype β] in
 theorem coupled_isSymm {A : Matrix α α ℝ} {D : Matrix β β ℝ} (hA : A.IsSymm) (hD : D.IsSymm)
     (C : Matrix α β ℝ) : (coupled A C D).IsSymm :=
   IsSymm.fromBlocks hA rfl hD
@@ -106,6 +108,7 @@ theorem coupled_mulVec (A : Matrix α α ℝ) (C : Matrix α β ℝ) (D : Matrix
   rw [coupled, fromBlocks_mulVec]
   rfl
 
+omit [Fintype α] [Fintype β] in
 theorem sum_elim_eq_zero_iff (u : α → ℝ) (w : β → ℝ) :
     Sum.elim u w = 0 ↔ u = 0 ∧ w = 0 := by
   constructor
@@ -135,10 +138,10 @@ theorem mem_survivalCone_coupled_iff (hA : A.IsSymm) (hD : D.IsSymm)
 vector of the partner block is annihilated by the coupling. -/
 theorem coupling_mulVec_eq_zero (hA : A.IsSymm) (hD : D.IsSymm)
     (hB : ∀ x, 0 ≤ quad (coupled A C D) x) {w : β → ℝ} (hw : D *ᵥ w = 0) : C *ᵥ w = 0 := by
-  have hnull : Sum.elim 0 w ∈ survivalCone (coupled A C D) := by
+  have hnull : Sum.elim (0 : α → ℝ) w ∈ survivalCone (coupled A C D) := by
     show quad _ _ = 0
-    rw [quad_eq_dotProduct, coupled_mulVec, sumElim_dotProduct_sumElim, hw, zero_dotProduct,
-      dotProduct_zero, zero_add]
+    rw [quad_eq_dotProduct, coupled_mulVec, sumElim_dotProduct_sumElim, hw]
+    simp
   have h := ((mem_survivalCone_coupled_iff hA hD hB 0 w).mp hnull).1
   simpa using h
 
@@ -173,7 +176,7 @@ theorem injective_partnerProjection :
       (LinearMap.ker (coupled A C D).mulVecLin)) := by
   rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
   rintro ⟨x, hx⟩ h0
-  have hw : x ∘ Sum.inr = 0 := congrArg Subtype.val h0
+  have hw : x ∘ Sum.inr = 0 := h0
   have hx' : Sum.elim (x ∘ Sum.inl) (0 : β → ℝ) ∈ LinearMap.ker (coupled A C D).mulVecLin := by
     rw [← hw, Sum.elim_comp_inl_inr]
     exact hx
@@ -185,14 +188,18 @@ theorem injective_partnerProjection :
 /-- **The survival space has dimension at most `#β`.** -/
 theorem finrank_survival_le_card :
     Module.finrank ℝ (LinearMap.ker (coupled A C D).mulVecLin) ≤ Fintype.card β := by
-  have h := LinearMap.finrank_le_finrank_of_injective (injective_partnerProjection hAinj)
-  simpa [Module.finrank_fintype_fun_eq_card] using h
+  have h : Module.finrank ℝ (LinearMap.ker (coupled A C D).mulVecLin) ≤
+      Module.finrank ℝ (β → ℝ) :=
+    LinearMap.finrank_le_finrank_of_injective (injective_partnerProjection hAinj)
+  rwa [Module.finrank_fintype_fun_eq_card] at h
 
 /-- **The coupled counterterm has rank at least `#α`**: coupling never lowers the rank of a
 nondegenerate prime block. -/
 theorem card_le_rank_coupled : Fintype.card α ≤ (coupled A C D).rank := by
-  have h1 := LinearMap.finrank_range_add_finrank_ker (coupled A C D).mulVecLin
-  have h2 := finrank_survival_le_card hAinj
+  have h1 : Module.finrank ℝ (LinearMap.range (coupled A C D).mulVecLin) +
+      Module.finrank ℝ (LinearMap.ker (coupled A C D).mulVecLin) = Module.finrank ℝ (α ⊕ β → ℝ) :=
+    LinearMap.finrank_range_add_finrank_ker _
+  have h2 := finrank_survival_le_card (C := C) (D := D) hAinj
   rw [Module.finrank_fintype_fun_eq_card, Fintype.card_sum] at h1
   unfold Matrix.rank
   omega
@@ -210,10 +217,9 @@ theorem finrank_primeSurvival_le_rank (hA : A.IsSymm) (hD : D.IsSymm)
       rw [Sum.elim_comp_inl_inr]; exact hx
     have h := ((mem_ker_coupled_iff A C D _ _).mp hx').1
     refine ⟨-(x ∘ Sum.inr), ?_⟩
-    simp only [mulVecLin_apply, mulVec_neg, LinearMap.funLeft_apply]
+    simp only [mulVecLin_apply, mulVec_neg]
     have : A *ᵥ (x ∘ Sum.inl) = -(C *ᵥ (x ∘ Sum.inr)) := eq_neg_of_add_eq_zero_left h
-    rw [this]
-    rfl
+    exact this.symm
   have hinj : Function.Injective A.mulVecLin := by
     rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
     exact fun u hu => hAinj u hu
@@ -242,7 +248,7 @@ theorem coupling_eq_vecMulVec {C : Matrix α β ℝ} {v : β → ℝ} (hv : v �
     intro h
     exact hv (dotProduct_self_eq_zero.mp h)
   have hD : (vecMulVec v v).IsSymm := by
-    rw [IsSymm, transpose_vecMulVec]
+    unfold Matrix.IsSymm; rw [transpose_vecMulVec]
   ext i j
   -- `w = e_j − (v_j/(v·v)) v` is orthogonal to `v`, hence killed by `C`.
   set w : β → ℝ := Pi.single j 1 - (v j / (v ⬝ᵥ v)) • v
@@ -262,23 +268,26 @@ theorem coupling_eq_vecMulVec {C : Matrix α β ℝ} {v : β → ℝ} (hv : v �
   rw [this]
   field_simp
 
+/-- The form of the matched coupling: `|u|² + 2(b · u)(v · w) + (v · w)²`. -/
+theorem quad_coupled_rankOne (b u : α → ℝ) (v w : β → ℝ) :
+    quad (coupled 1 (vecMulVec b v) (vecMulVec v v)) (Sum.elim u w) =
+      u ⬝ᵥ u + 2 * (b ⬝ᵥ u) * (v ⬝ᵥ w) + (v ⬝ᵥ w) ^ 2 := by
+  rw [quad_eq_dotProduct, coupled_mulVec, sumElim_dotProduct_sumElim, transpose_vecMulVec,
+    vecMulVec_mulVec', vecMulVec_mulVec', vecMulVec_mulVec', one_mulVec]
+  simp only [dotProduct_add, dotProduct_smul, smul_eq_mul]
+  rw [dotProduct_comm u b, dotProduct_comm w v]
+  ring
+
 /-- **Cauchy–Schwarz for the matched coupling**: positivity of `[[1, b vᵀ], [v bᵀ, v vᵀ]]` forces
 `b · b ≤ 1`. -/
 theorem dotProduct_self_le_one {b : α → ℝ} {v : β → ℝ} (hv : v ≠ 0)
     (hB : ∀ x, 0 ≤ quad (coupled 1 (vecMulVec b v) (vecMulVec v v)) x) : b ⬝ᵥ b ≤ 1 := by
-  have hvv : 0 < v ⬝ᵥ v := by
-    rcases (dotProduct_self_star_nonneg v).lt_or_eq with h | h
-    · simpa using h
-    · exact absurd (dotProduct_self_eq_zero.mp (by simpa using h.symm)) hv
-  set β2 := b ⬝ᵥ b
-  have h := hB (Sum.elim b ((-(β2 / (v ⬝ᵥ v))) • v))
-  rw [quad_eq_dotProduct, coupled_mulVec, sumElim_dotProduct_sumElim, transpose_vecMulVec,
-    vecMulVec_mulVec', vecMulVec_mulVec', vecMulVec_mulVec', one_mulVec] at h
-  simp only [dotProduct_smul, dotProduct_add, smul_eq_mul] at h
-  have hval : v ⬝ᵥ (-(β2 / (v ⬝ᵥ v)) • v) = -β2 := by
-    rw [dotProduct_smul, smul_eq_mul]; field_simp
-  rw [hval] at h
-  have hb0 : 0 ≤ β2 := by simpa using dotProduct_self_star_nonneg b
+  have hvv : v ⬝ᵥ v ≠ 0 := fun h => hv (dotProduct_self_eq_zero.mp h)
+  -- test vector `(b, −|b|² v/|v|²)`: the form is `|b|² − |b|⁴`.
+  have h := hB (Sum.elim b ((-((b ⬝ᵥ b) / (v ⬝ᵥ v))) • v))
+  rw [quad_coupled_rankOne, dotProduct_smul, smul_eq_mul,
+    show -((b ⬝ᵥ b) / (v ⬝ᵥ v)) * (v ⬝ᵥ v) = -(b ⬝ᵥ b) by field_simp] at h
+  have hb0 : 0 ≤ b ⬝ᵥ b := by simpa using dotProduct_self_star_nonneg b
   rcases hb0.lt_or_eq with hpos | hzero
   · nlinarith
   · rw [← hzero]; norm_num
@@ -310,9 +319,8 @@ theorem primeSurvival_rankOne {b : α → ℝ} {v : β → ℝ} (hv : v ≠ 0) :
     intro u
     constructor
     · rintro ⟨x, hx, rfl⟩
-      refine ⟨x ∘ Sum.inr, ?_⟩
-      rw [← hker]
-      rw [Sum.elim_comp_inl_inr] at *
+      refine ⟨x ∘ Sum.inr, (hker (x ∘ Sum.inl) (x ∘ Sum.inr)).mp ?_⟩
+      rw [Sum.elim_comp_inl_inr]
       exact hx
     · rintro ⟨w, hw⟩
       exact ⟨Sum.elim u w, (hker u w).mpr hw, rfl⟩
@@ -328,8 +336,7 @@ theorem primeSurvival_rankOne {b : α → ℝ} {v : β → ℝ} (hv : v ≠ 0) :
       · rw [dotProduct_smul, smul_eq_mul]
         congr 1
         field_simp
-      · rw [dotProduct_smul, dotProduct_smul, hb, dotProduct_smul, smul_eq_mul, smul_eq_mul,
-          smul_eq_mul]
+      · rw [dotProduct_smul, dotProduct_smul, hb, smul_eq_mul, smul_eq_mul]
         field_simp
         ring
   · rw [Submodule.mem_bot]
@@ -368,20 +375,23 @@ theorem counterterm_isSymm {ι : Type*} {Q : ℝ → Matrix ι ι ℝ} {s : ℝ 
     (hlim : ∀ i j, Tendsto (fun r => Q r i j - s r * B i j) (𝓝[<] 1) (𝓝 (L i j))) :
     B.IsSymm := by
   ext i j
-  -- `s (B j i − B i j)` converges while `s → ∞`.
-  have h := ((hlim j i).sub (hlim i j)).div_atTop hs
-  have h' : Tendsto (fun r => B i j - B j i) (𝓝[<] 1) (𝓝 0) := h.congr' (by
-    filter_upwards [hs.eventually_ne_atTop 0] with r hr
+  -- `s (B i j − B j i)` converges while `s → ∞`, so `B i j = B j i`.
+  have hconv : Tendsto (fun r => s r * (B i j - B j i)) (𝓝[<] 1) (𝓝 (L j i - L i j)) := by
+    refine ((hlim j i).sub (hlim i j)).congr fun r => ?_
     have hQ : Q r j i = Q r i j := by
       have := congrFun (congrFun (hQs r) i) j
       simpa [transpose_apply] using this
     rw [hQ]
-    field_simp
-    ring)
-  have := tendsto_nhds_unique tendsto_const_nhds h'
+    ring
+  have hzero : B i j - B j i = 0 := by
+    by_contra hne
+    rcases lt_or_gt_of_ne hne with hneg | hpos
+    · exact not_tendsto_nhds_of_tendsto_atBot (hs.atTop_mul_const_of_neg hneg) _ hconv
+    · exact not_tendsto_nhds_of_tendsto_atTop (hs.atTop_mul_const hpos) _ hconv
   simp only [transpose_apply]
   linarith
 
+omit [Fintype β] in
 /-- A matrix on `S ⊕ β` is the coupled counterterm of its blocks, once it is symmetric. -/
 theorem eq_coupled_of_isSymm {B : Matrix (S ⊕ β) (S ⊕ β) ℝ} (hB : B.IsSymm) :
     B = coupled (primeBlock B) B.toBlocks₁₂ (partnerBlock B) := by
@@ -391,6 +401,7 @@ theorem eq_coupled_of_isSymm {B : Matrix (S ⊕ β) (S ⊕ β) ℝ} (hB : B.IsSy
     exact (congrFun (congrFun hB (Sum.inr i)) (Sum.inl j)).symm
   rw [coupled, primeBlock, partnerBlock, ← h21, fromBlocks_toBlocks]
 
+omit [Fintype β] in
 /-- **The prime block of a coupled torsion counterterm is a positive multiple of the identity.**
 If a regularized family on `S ⊕ β` has the torsion germ as prime block and divergence `s → ∞`, the
 prime block of its counterterm is `c · 1` with `c > 0`. -/
@@ -453,7 +464,8 @@ theorem coupled_torsion_survival (hS : ∀ n ∈ S, 0 < n) (hne : S.Nonempty)
   have hAs : (primeBlock B).IsSymm := by rw [hBc]; exact (isSymm_one).smul c
   have hDs : (partnerBlock B).IsSymm := by
     ext i j
-    exact congrFun (congrFun hBs (Sum.inr j)) (Sum.inr i)
+    have := congrFun (congrFun hBs (Sum.inr i)) (Sum.inr j)
+    simpa [transpose_apply, partnerBlock, toBlocks₂₂] using this
   have hpos : ∀ x, 0 ≤ quad (coupled (primeBlock B) B.toBlocks₁₂ (partnerBlock B)) x := by
     rw [← hB]; exact hBpos
   have hinj : ∀ u, primeBlock B *ᵥ u = 0 → u = 0 := fun u hu => by
@@ -480,9 +492,12 @@ theorem coupled_lattice_primeSurvival_le_one (hS : ∀ n ∈ S, 0 < n) (hne : S.
     Module.finrank ℝ (primeSurvival (primeBlock B) B.toBlocks₁₂ (partnerBlock B)) ≤ 1 := by
   refine (coupled_torsion_survival hS hne hQs hQ hprime hs hlim).2.2.trans ?_
   rw [hpartner, latticeCounterterm]
-  calc (a • vecMulVec (fun _ : Fin k => (1 : ℝ)) fun _ => 1).rank
-      ≤ (vecMulVec (fun _ : Fin k => (1 : ℝ)) fun _ => 1).rank := rank_smul_le _ _
-    _ ≤ 1 := rank_vecMulVec_le _ _
+  have h : a • vecMulVec (fun _ : Fin k => (1 : ℝ)) (fun _ : Fin k => (1 : ℝ)) =
+      vecMulVec (fun _ : Fin k => a) (fun _ : Fin k => (1 : ℝ)) := by
+    ext i j
+    simp [vecMulVec]
+  rw [h]
+  exact rank_vecMulVec_le _ _
 
 end Torsion
 

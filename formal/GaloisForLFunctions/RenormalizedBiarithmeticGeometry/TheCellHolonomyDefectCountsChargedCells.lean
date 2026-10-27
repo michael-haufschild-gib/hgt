@@ -39,12 +39,14 @@ def pointMass (a : ℕ) : ℕ → ℂ := fun n => if n = a then 1 else 0
 /-- The Hilbert–Schmidt defect of covariance of the dyadic cell dilation on `[1, X]`. -/
 def hsDefect (ω : PrimeGauge) (X : ℕ) (c : ℂ) : ℝ :=
   ∑ a ∈ Icc 1 X, ∑ n ∈ range (2 * X + 2),
-    ‖gaugeTwist ω (cellDilate 2 (pointMass a)) n - c * cellDilate 2 (gaugeTwist ω (pointMass a)) n‖ ^ 2
+    ‖gaugeTwist ω (cellDilate 2 (pointMass a)) n -
+      c * cellDilate 2 (gaugeTwist ω (pointMass a)) n‖ ^ 2
 
 /-- The defect of one cell `a`: only `n = 2a, 2a + 1` contribute. -/
 theorem hsDefect_cell (ω : PrimeGauge) {X a : ℕ} (ha : a ≤ X) (c : ℂ) :
     ∑ n ∈ range (2 * X + 2),
-      ‖gaugeTwist ω (cellDilate 2 (pointMass a)) n - c * cellDilate 2 (gaugeTwist ω (pointMass a)) n‖ ^ 2
+      ‖gaugeTwist ω (cellDilate 2 (pointMass a)) n -
+      c * cellDilate 2 (gaugeTwist ω (pointMass a)) n‖ ^ 2
       = ‖ω.gaugeChar (2 * a) - c * ω.gaugeChar a‖ ^ 2 +
         ‖ω.gaugeChar (2 * a + 1) - c * ω.gaugeChar a‖ ^ 2 := by
   have hterm : ∀ n, ‖gaugeTwist ω (cellDilate 2 (pointMass a)) n -
@@ -154,7 +156,8 @@ theorem exists_hsDefect_eq_zero_iff {ω : PrimeGauge} (hω : IsRealSignGauge ω)
 /-- The cells where `λ(a) = λ(2a + 1)`: the charged cells of the Liouville gauge. -/
 def liouvilleAgreements (X : ℕ) : Finset ℕ :=
   (Icc 1 X).filter fun a =>
-    realSignChar PrimeGauge.liouvilleGauge a * realSignChar PrimeGauge.liouvilleGauge (2 * a + 1) = 1
+    realSignChar PrimeGauge.liouvilleGauge a *
+      realSignChar PrimeGauge.liouvilleGauge (2 * a + 1) = 1
 
 theorem realSignChar_liouville_prime {p : ℕ} (hp : p.Prime) :
     realSignChar PrimeGauge.liouvilleGauge p = -1 := by

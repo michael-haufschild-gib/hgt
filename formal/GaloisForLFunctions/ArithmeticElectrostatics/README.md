@@ -183,7 +183,13 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
    with an off-line zero has energy at least `2` (`two_le_windowEnergy`); a window of energy below `2`
    is critical at any scale (`critical_of_windowEnergy_lt_two`); RH ⇔ every unit window has energy
    below `2` (`riemannHypothesis_iff_windowEnergy_lt_two`).
-6. **The Hecke defect is the moment of inertia** (`TheHeckeDefectIsTheMomentOfInertia`). On the
+6. **The energy of a zero is logarithmic** (`TheEnergyOfAZeroIsLogarithmic`). Each pair term is at
+    most `2/(1 + (γ − γ′)²)` (`angularEnergyTerm_le_lorentz`), so the Lorentzian zero mass gives
+    `E(ρ) ≤ 16(C + log(|γ| + 4))` for every zero (`angularEnergy_le_log`) and a window bound by its
+    number of zeros (`windowEnergy_le`): `1 ≤ E(ρ) ≤ 16(C + log(|γ| + 4))` at every off-line zero
+    (`one_le_angularEnergy_le_log`). The energy is controlled unconditionally; the field is not
+    (a nearly coincident pair contributes `1/|ρ − ρ′|`).
+7. **The Hecke defect is the moment of inertia** (`TheHeckeDefectIsTheMomentOfInertia`). On the
     strip `2cosh(2δL) − 2 ≤ 4δ²(2cosh L − 2)` (`depthKernel_le_mul_half`), so the symmetric
     equivariance defect of `D` and the transverse moment of inertia `M_f = Σ m δ²|f̂(ρ)|²` satisfy
     `4L² M_f ≤ E_f(L) ≤ 8(cosh L − 1) M_f` (`moment_le_heckeDefect`, `heckeDefect_le_moment`) and
@@ -191,18 +197,18 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
 
 ### C. The field
 
-7. **The field is computed** (`TheRenormalizedSquareIsSelbergsSource`; ACP `EveryXiZeroHasASourceField`).
+8. **The field is computed** (`TheRenormalizedSquareIsSelbergsSource`; ACP `EveryXiZeroHasASourceField`).
    At a zero of order `m` of an analytic `F`, the regular part `R` of `F′/F` is analytic, the
    double-pole coefficient of `(F′/F)²` is `m²` and that of `F″/F` is `m(m − 1)`, and both residues are
    `2m R(ρ)` (`selfTerm_and_residue_of_analyticOrderAt`). For `ξ` the regular part is the field of the
    other zeros at every zero.
-8. **The field law has a threshold** (`TheFieldLawHasAThreshold`). RH ⇔ every zero right of the
+9. **The field law has a threshold** (`TheFieldLawHasAThreshold`). RH ⇔ every zero right of the
    line feels a transverse field at most `1` (`riemannHypothesis_iff_forall_transverseField_le_one`);
    for an explicit `c > 0`, RH ⇔ every such zero feels a field below `√(2c log(|γ| + 4))`
    (`exists_riemannHypothesis_iff_transverseField_lt_sqrt_log`). The terminal reserve
    `1/(2δ) + cδ log γ` is minimized at `δ = (2c log γ)^{−1/2}`. The field law that would exclude
    off-line zeros is an upper bound of size `max(1, √(2c log γ))`, not an exact equilibrium.
-9. **The external field is a prime sum** (`TheExternalFieldIsAPrimeSum`). For `Re s > 1` the field
+10. **The external field is a prime sum** (`TheExternalFieldIsAPrimeSum`). For `Re s > 1` the field
     of the divisor is a sum of positive Coulomb terms, `Re ξ′/ξ(s) = Σ_ρ Re 1/(s − ρ)`
     (`re_logDeriv_xi_eq_tsum_of_one_lt_re`, `re_reciprocal_pos_of_one_lt_re`), and the explicit
     formula computes it from the primes: `Re L(Λ, s) + Σ_{ρ∈F} Re 1/(s − ρ) ≤ Re (archFactor′/archFactor)(s)`
@@ -214,15 +220,26 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
     of alignment at its own height by its full Coulomb term; inside the strip the outward reserve is
     the matching lower bound on the other side of the charge.
 
+11. **Large values at zero ordinates** (`LargeValuesAtZeroOrdinates`). For a Dirichlet polynomial
+    `F(t) = Σ_{n≤N} a_n n^{it}` and zero copies with ordinates in `(A, A + R]`, `A ≥ T₀`:
+    `Σ_γ |F(γ)|² ≤ K log(A + R + 1)(R + 8N(1 + log N))(2 + log² N) Σ|a_n|²`
+    (`exists_sum_zeroOrdinates_normSq_le`: Sobolev on unit cells, `O(log)` zeros per cell by the
+    local zero ceiling, the mean-value theorem on the window), hence the large-values count
+    (`exists_card_largeValues_le`). For the prime polynomial `a_n = w_n Λ(n)/√n` the mass is at most
+    `log N (log N + log 4 + 4)` (`coeffMass_primeCoeff_le`), giving the **alignment law**
+    (`exists_card_aligned_le`): the zero ordinates in `(T, 2T]` at which the prime polynomial of
+    length `X` reaches `(1 − η) log T` number `O(T log⁴ X / log T)`, a vanishing proportion of the
+    zeros for `log X = o(√log T)` — every aperture up to the forcing threshold.
+
 ### D. Renormalization of the diagonal
 
-10. **The zero side** (`TheRenormalizedSquareIsSelbergsSource`). The counterterm identity
+12. **The zero side** (`TheRenormalizedSquareIsSelbergsSource`). The counterterm identity
    `F″/F = (F′/F)² + (F′/F)′` (`deriv_deriv_div_eq`); Selberg's source `Λ₂ = Λ log + Λ ⋆ Λ = μ ⋆ log²`
    (`selbergSource_eq`), nonnegative (`selbergSource_nonneg`), `Λ₂(p^k) = (2k − 1) log² p`
    (`selbergSource_prime_pow`), with `L(Λ₂, s) = ζ″(s)/ζ(s)` on `Re s > 1` (`LSeries_selbergSource`).
    The degree counterterm `Λ log` removes the self-term at simple zeros, keeps the source
    nonnegative, and leaves the field as residue.
-11. **The circle** (`TheSelfIntersectionOfATorsionOrbit`). `I(n, n) = φ(n) log n − (φ ⋆ Λ)(n)`
+13. **The circle** (`TheSelfIntersectionOfATorsionOrbit`). `I(n, n) = φ(n) log n − (φ ⋆ Λ)(n)`
    (`orbitIntersection_self_eq`), `0 ≤ I(n, n) ≤ φ(n) log n` (`orbitIntersection_self_le`,
    `orbitIntersection_self_nonneg`); `(φ ⋆ Λ)(p^{a+1}) = p^a log p` (`localCorrection_prime_pow`), so
    per point `ℓ_{p^a} = a log p − log p/(p − 1)`; the Leibniz rule `D(ab) = φ(a)D(b) + φ(b)D(a)` on
@@ -233,7 +250,7 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
    Conjugation maps every orbit onto itself and is the power map of degree `−1`
    (`conj_mem_primitiveRoots`, `conj_eq_pow_of_mem_primitiveRoots`); the Hermitian and bilinear Abel
    energies agree on torsion cycles (`sum_sum_conj_eq`, `torsionEnergy_eq_bilinear`).
-12. **The counterterm rate** (`TheTorsionCountertermIsLogarithmic`). A constant counterterm `κ` per
+14. **The counterterm rate** (`TheTorsionCountertermIsLogarithmic`). A constant counterterm `κ` per
     point renormalizes the orders `≤ N` (`RenormalizesAt`) for `κ = 4 log N + log 4 + 4`
     (`renormalizesAt_log`: diagonal `I(n, n) ≤ φ(n) log n`, Schur test with weights `1/n`, the Hecke
     law, Mertens, super-multiplicativity of `φ`) and only if `κ ≥ ((p − 2)/(p − 1)) log p` for every
@@ -248,9 +265,24 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
     at the arithmetic point `log 1 = 0`. The counterterm the archimedean place must supply at atomic
     resolution `N` is logarithmic on both carriers.
 
+15. **The stability law at atomic resolution** (`TheStabilityLawAtAtomicResolution`). Put a `C²`
+    bump `g` of width `w` at each atom `log n`, `n ≤ N`, with weights `x_n` (`atomicTest`). Below the
+    spacing `δ_N = log(1 + 1/N)` the atoms are orthogonal (`integral_atomicTest_sq`), the Lévy
+    self-energy of the archimedean place is at least `e^{−1/2} log(δ_N/(2w))` per unit mass
+    (`levyEnergy_ge_of_disjoint_shifts`, `levyEnergy_atomicTest_ge`), and the prime sum is exactly
+    `(∫ g²) × atomicWeilForm` — only the Hecke relations `m = nk` survive (`primeSum_atomicTest`,
+    `sum_vonMangoldtAtom_hecke`). Hence the Weil form without its pole, `M = archForm − primeSum`,
+    satisfies `M(f) ≥ (2θ′(0) + e^{−1/2} log(δ_N/(2w)) − 2 log N − log 4 − 4) ∫ f²`
+    (`markovEnergy_atomicTest_ge`) and is nonnegative for every width `w ≤ atomicWidth N`, a fixed
+    power `N^{−O(1)}` (`markovEnergy_atomicTest_nonneg`). The archimedean self-energy is a counterterm
+    constant on the atoms — compatible with every Hecke translation — that preserves positivity
+    below a power of the spacing: the adjunction law at atomic resolution. At widths comparable to
+    the spacing the gain `log(δ_N/w)` is bounded and the prime counterterm is not (ES11): there the
+    matching stops, and the tests begin to see the zeros.
+
 ### E. The base and the arithmetic point
 
-13. **Power maps are similitudes** (`PowerMapsAreSimilitudesOfTheAbelEnergy`). The Abel energy of
+16. **Power maps are similitudes** (`PowerMapsAreSimilitudesOfTheAbelEnergy`). The Abel energy of
     the torsion groups `μ_A`, `μ_B` has the closed form `T_r(A, B) = gcd(A, B) log(1/(1 − r^{lcm(A,B)}))`
     (`fullTorsionEnergy_eq`); the matrix is positive semidefinite (`sum_sum_fullTorsionEnergy_nonneg`);
     pulling back by `z ↦ z^t` multiplies it by the degree and rescales the cutoff,
@@ -259,11 +291,11 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
     and `J(At, Bt) = t (J(A, B) + gcd(A, B) log t)` (`logEnergy_mul`): the adjunction term is the shift
     of the self-energy under the rescaled cutoff. On the base the Hecke correspondences are computed
     similitudes of a positive Hermitian structure.
-14. **The torsion is the stable equilibrium of the circle** (`TheTorsionIsTheStableEquilibriumOfTheCircle`).
+17. **The torsion is the stable equilibrium of the circle** (`TheTorsionIsTheStableEquilibriumOfTheCircle`).
     `N` distinct points of the unit circle satisfy `Σ_{i≠j} log |z_i − z_j| ≤ N log N`
     (`sum_sum_log_norm_sub_le`: Vandermonde and Hadamard), and the `N`-th roots of unity attain it
     (`logEnergy_self_eq`). Discrete energy on the circle is bounded below; the torsion is a minimizer.
-15. **The arithmetic point carries the divergence** (`TheArithmeticPointCarriesTheDivergence`).
+18. **The arithmetic point carries the divergence** (`TheArithmeticPointCarriesTheDivergence`).
     `1` is the only point of the circle fixed by the power maps (`eq_one_of_forall_pow_eq_self`),
     `O_1 = {1}` (`primitiveRoots_one`), `I(1, n) = Λ(n)` (`orbitIntersection_one_left`). Every
     counterterm `c(n)` renormalizing the orders `≤ N` satisfies `c(1) ≥ Σ_{2≤n≤N} Λ(n)²/(c(n)φ(n))`
@@ -274,14 +306,20 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
 
 ### F. Gauge
 
-16. **Blindness to the archimedean place** (`QuantizationTurnsWindowsIntoPoints`). The
+19. **Blindness to the archimedean place** (`QuantizationTurnsWindowsIntoPoints`). The
     reflection-commuting affine maps `s ↦ ½ + λ(s − ½) + iκ` preserve the transverse energy
     (`transverseEnergy_affine`) and scale the field by `λ⁻¹` (`fieldAt_affine`): dilations and the
     archimedean twist — hence the first gauge charge — are invisible to electrostatic quantities.
-17. **Gauge charge of the source**. For a completely multiplicative gauge `ω`, the renormalized
+20. **Gauge charge of the source**. For a completely multiplicative gauge `ω`, the renormalized
     source of the twin `ωΛ` is `ωΛ₂` (`pmul_mul_pmul`, `selbergSource_twist`); its nonnegativity at a
     prime forces `ω(p) = 1` for sign gauges (`eq_one_of_twisted_selbergSource_nonneg`). The charge
     enters through the arithmetic computation, prime by prime.
+21. **The gauge margin law of the source** (`TheGaugeMarginOfTheRenormalizedSource`). For a sign gauge
+    flipping a prime `p`, `ωΛ₂(p) = −log² p` against `Λ₂(p) = log² p` (`gaugeMargin_of_flip`); on
+    every window `N` containing a flipped prime some coefficient is `≤ −log² 2` while `Λ₂ ≥ 0`
+    (`gaugeMargin_window`) — a margin fixed by the first flipped prime, not collapsing as primes
+    enter; for real `σ > 1`, `L(Λ₂, σ) − L(ωΛ₂, σ) ≥ 2 log² p · p^{−σ}` (`LSeries_gaugeMargin`, with
+    `Σ Λ₂(n) n^{−σ}` convergent by `Λ₂ ≤ 3 log²`, `summable_selbergSource_rpow`).
 
 ---
 
@@ -304,6 +342,10 @@ bound `N`, the counterterm `κ` or `c(n)`. Every theorem states which are fixed 
 | **ES13 Similitudes on the base** | `T_r(A,B) = gcd log 1/(1 − r^{lcm})`, PSD; `T_r(At, Bt) = t T_{r^t}(A, B)`; renormalized limit `−J` | `fullTorsionEnergy_eq`, `sum_sum_fullTorsionEnergy_nonneg`, `fullTorsionEnergy_mul`, `tendsto_fullTorsionEnergy_sub_log`, `logEnergy_mul` |
 | **ES14 Stability of the base** | Fekete bound `N log N`, attained by the torsion | `sum_sum_log_norm_sub_le`, `logEnergy_self_eq` |
 | **ES15 Gauge** | affine invariance; `Λ₂^ω = ωΛ₂` | `transverseEnergy_affine`, `selbergSource_twist`, `eq_one_of_twisted_selbergSource_nonneg` |
+| **ES16 The energy of a zero** | `1 ≤ E(ρ) ≤ 16(C + log(|γ| + 4))` off the line; window energy `≤` zero count × `O(log)` | `angularEnergy_le_log`, `windowEnergy_le`, `one_le_angularEnergy_le_log` |
+| **ES17 Large values at zero ordinates** | `Σ_γ |F(γ)|² ≤ K log(A+R+1)(R + 8N(1+log N))(2 + log²N) Σ|a_n|²`; alignment law for prime polynomials | `exists_sum_zeroOrdinates_normSq_le`, `exists_card_largeValues_le`, `exists_card_aligned_le` |
+| **ES18 Stability at atomic resolution** | `M(f) ≥ (2θ′(0) + e^{−1/2} log(δ_N/2w) − 2 log N − C)∫f²`; `M ≥ 0` for `w ≤ atomicWidth N` | `primeSum_atomicTest`, `levyEnergy_atomicTest_ge`, `markovEnergy_atomicTest_ge`, `markovEnergy_atomicTest_nonneg` |
+| **ES19 Gauge margin of the source** | margin `2 log² p` at the first flipped prime, `≤ −log² 2` on every window; L-series margin | `gaugeMargin_of_flip`, `gaugeMargin_window`, `LSeries_gaugeMargin` |
 
 Inherited and used throughout: `Re W = D − Δ`, `D` faithful, coercive and log-Sobolev (APol); the
 transverse force and its marginality identity, the maximum principle, the attainment dichotomy,
@@ -330,13 +372,19 @@ kernel (AET).
    additive over coprime orders and growing by `log p` per point along the tower of `p` (ES10).
    *Answer:* Hecke-compatible renormalizations exist and preserve positivity of coefficients; on the
    circle they preserve positivity of the pairing only with a counterterm of size `Θ(log N)`
-   (ES11), concentrated at the arithmetic point (ES12). Whether this counterterm equals the
-   archimedean self-energy at matched scale is open (§9.2).
-3. **What bounds the field?** No unconditional upper bound is known; the needed one is now sharp:
-   at right zeros, any bound `≤ 1`, or `< √(2c log γ)`, is RH (ES7); equivalently total energy `< 1`
-   (ES3), unit-window energy `< 2` (ES5). *Answer:* the field law is an upper bound of definite size,
-   RH-strength; its weaker-than-RH forms are finite energy (finite off-line index) and window
-   bounds.
+   (ES11), concentrated at the arithmetic point (ES12). The archimedean place supplies exactly such
+   a counterterm: its Lévy self-energy `e^{−1/2} log(1/w)` pays the prime counterterm, and Weil's
+   form without its pole is nonnegative on every atomic test at the points `log n`, `n ≤ N`, of
+   width `≤ N^{−O(1)}` (ES18). The matching holds below a power of the spacing and stops at the
+   spacing, where the tests see the zeros; there it is the sign problem (§9.2).
+3. **What bounds the field?** The energy is bounded unconditionally — `E(ρ) ≤ 16(C + log(|γ| + 4))`
+   at every zero, a window by its zero count (ES16) — because each pair term is at most one; the
+   field is not, since a nearly coincident pair contributes `1/|ρ − ρ′|`. The bound that would
+   exclude off-line zeros is sharp: at right zeros a field `≤ 1`, or `< √(2c log γ)`, is RH (ES7);
+   equivalently energy `< 1` per zero or total (ES3), unit-window energy `< 2` (ES5). *Answer:*
+   unconditionally `O(log γ)` per zero for the energy; the improvement from `O(log γ)` to below one
+   quantum is RH; its weaker-than-RH forms are finite total energy (finite off-line index) and
+   window bounds.
 4. **What bounds the equivariance defect of `D`?** Hecke translation by `L` reweights the charges by
    `e^{2δL}`, and the defect is the transverse moment of inertia `M_f = Σ m δ² |f̂(ρ)|²` of the
    weighted divisor at every scale: `4L² M_f ≤ E_f(L) ≤ 8(cosh L − 1) M_f`, `E_f(L)/L² → 4M_f`
@@ -349,16 +397,23 @@ kernel (AET).
    Frobenius-flat structure that gives Stepanov's method its period over `𝔽_q` has no analogue there
    (AET).
 6. **How does `σ_γ` localize beyond the conductor; are zero ordinates aligned with small primes?**
-   Right of the strip, alignment is controlled: at the ordinate of a zero of real part `β` the
-   prime cosine sum `Σ Λ(n) n^{−σ} cos(γ log n)` is at most the archimedean field minus `m/(σ − β)`
-   (ES8) — zero ordinates are anti-aligned by their own Coulomb term. Inside the strip, between the
-   conductor horizon and the forcing threshold, the outward reserve needs the opposite inequality
-   for a short prime polynomial (§9.6). *Answer:* the external regime is settled by positivity of the
-   field; the interior regime, where Q1 lives, is open.
+   Right of the strip alignment is controlled pointwise: at the ordinate of a zero of real part `β`
+   the prime cosine sum `Σ Λ(n) n^{−σ} cos(γ log n)` is at most the archimedean field minus
+   `m/(σ − β)` (ES8). On the critical side alignment is rare: the discrete mean value over zero
+   ordinates (ES17) shows that the zeros in `(T, 2T]` at which a prime polynomial of length `X`
+   reaches `(1 − η) log T` number `O(T log⁴ X/ log T)`, a vanishing proportion for
+   `log X = o(√log T)`, which covers every aperture between the conductor horizon and the forcing
+   threshold. *Answer:* zero ordinates are aligned with small primes only on a set of zero density;
+   excluding isolated deep zeros needs a power saving, which the same law gives from higher moments
+   `F^k` once the coefficient mass of the convolution powers is controlled (§9.6).
 7. **What is the non-archimedean gauge charge?** Electrostatic quantities are invariant under the
-   reflection-commuting affine group, hence blind to every archimedean twist (ES15); the gauge enters
-   through the arithmetic source, `Λ₂^ω = ωΛ₂`, prime by prime. *Answer:* located in the source;
-   margin laws on growing prime windows remain open (Q3 of the report).
+   reflection-commuting affine group, hence blind to every archimedean twist (ES15), and the circle's
+   positivity holds for every charge configuration (ES13); the gauge enters through the arithmetic
+   source, `Λ₂^ω = ωΛ₂`, prime by prime, with a margin law: every sign twin differing from the Euler
+   vacuum on a window has a source coefficient `≤ −log² 2` there, a margin fixed by the first flipped
+   prime and not collapsing as primes enter (ES19). *Answer:* the charge and its non-collapsing margin
+   live in the source; the margin of the corresponding Weil forms on signed tests (the report's Q3)
+   is not supplied by coefficient positivity and remains a certified-window question.
 8. **Is the coupled class bounded at the centre?** Owned by BGG. Electrostatically the central
    order of a member is the charge it places at `½`: contracting an off-critical quartet at
    ordinate `γ` moves four charges — two reflection pairs, two quanta of transverse energy — onto
@@ -402,6 +457,9 @@ kernel (AET).
 | The torsion pairing lacks Hecke equivariance | It has the Hecke law exactly; it lacks positivity only at the diagonal |
 | Conjugation is the missing correspondence over `ℤ` | On the circle it is a power map; on the divisor its pairing is `D`, not computed by the explicit formula |
 | Electrostatic quantities see the first gauge charge | They are invariant under every archimedean twist |
+| The field and the energy are equally hard to bound | The energy is `O(log γ)` per zero unconditionally; the field has no unconditional bound |
+| The archimedean self-energy cannot pay the prime form | It pays it exactly, below a power of the atomic spacing (ES18); it cannot at the spacing |
+| Aligned zero ordinates must be rare by randomness | The second moment proves it (ES17); the needed power saving is a higher-moment statement |
 | Energy controls the potential at a point | Logarithmic energy does not bound pointwise potentials (Franel–Landau is a potential at one point) |
 
 ---
@@ -420,24 +478,34 @@ Laurent self-terms; Selberg's source and its gauge twists; the local correction 
 Leibniz rule and the cover formula; conjugation on torsion cycles; renormalized torsion pairings
 and counterterm rates; the arithmetic-point bound; Fekete's bound on the circle; affine invariance.
 
-**Not yet built anywhere:** an arithmetic upper bound for the field or the energy; a matched
-renormalization (torsion counterterm = archimedean self-energy); Diophantine control of zero
-ordinates; gauge margin laws; a Hermitian structure with computed Hecke similitudes on the zero
-side (on the circle it is ES13).
+**Built for the frontier's list (§4.5 of the report):** arithmetic adjunction — the degree
+renormalization on both carriers (ES9, ES10), the similitude structure of the circle (ES13), and the
+matched archimedean counterterm at atomic resolution (ES18); field and defect inequalities — the
+unconditional energy bound (ES16), the sharp field thresholds (ES7), the external field law (ES8),
+the defect as moment of inertia (ES6); Diophantine control at zero ordinates — anti-alignment
+outside the strip (ES8) and the large-values law on the line (ES17); gauge margin laws at the level
+of the source (ES19); Hermitian structures with computed similitudes on the base (ES13); selection at
+the zero spacing by quantization (ES5).
+
+**Not yet built anywhere:** an arithmetic upper bound for the field or the energy below one
+quantum (RH-strength); the matched renormalization at the spacing scale (the sign itself); power
+saving for aligned zero ordinates (needs the mass of convolution powers); margins of Weil forms on
+signed tests for growing prime windows; a Hermitian structure with computed Hecke similitudes on
+the zero side.
 
 ---
 
 ## 9. Open research topics
 
 1. **The field law.** An arithmetic upper bound for the transverse field at right zeros below
-   `max(1, √(2c log γ))`, or for the energy of unit windows below `2`. RH-strength. Partial forms:
-   finite total energy (finite off-line index, B2.2); energy bounds for windows at large height.
-2. **The stability law (Hodge index with adjunction).** On torsion cycles supported on orders `≤ N`,
-   the renormalized pairing plus the archimedean self-energy of the atoms `log n` at width `1/N` is
-   nonnegative, the renormalization being the one that turns the double pole of `Λ ⋆ Λ` into the
-   field. ES11 and ES12 give the size of the counterterm on both carriers (torsion pairing and
-   atomic Weil prime form) and its location at the arithmetic point; the open step is the
-   identification with the archimedean self-energy of the atoms, constants included.
+   `max(1, √(2c log γ))`, or for the energy of unit windows below `2`. RH-strength. The energy is
+   `O(log γ)` per zero unconditionally (ES16); partial forms are finite total energy (finite
+   off-line index, B2.2) and window energies below the zero count at large height.
+2. **The stability law (Hodge index with adjunction) at the spacing.** ES18 proves it at atomic
+   resolution `w ≤ N^{−O(1)}`: the archimedean self-energy pays the logarithmic counterterm. The open
+   step is the spacing scale `w ≍ 1/N`, where the Lévy gain is bounded and the prime counterterm is
+   not (ES11, ES12): positivity there must come from cancellation in the prime form rather than from
+   self-energy — the sign problem in its adjunction form.
 3. **Matched renormalization of the square.** Compare the torsion counterterm with the zero-side
    counterterm `Λ log` through the explicit formula for `ζ″/ζ`.
 4. **Electrostatics of the twins.** Fields and energies of the divisors of sign twins (signed
@@ -445,13 +513,13 @@ side (on the circle it is ES13).
    charge at the level of forms rather than coefficients.
 5. **Attainment.** Exclusion of infinite transverse energy for the actual divisor, or an energy
    criterion for attainment of the depth supremum with infinitely many off-line zeros.
-6. **Alignment inside the strip.** The outward reserve as a short prime sum at the terminal ordinate
-   (W18), and moments of short prime polynomials at zero ordinates (W15): the Diophantine face of the
-   field law. First moments over the zeros are in the corpus
-   (`exists_zeroSum_dirichletPolynomial_le`: the zero average of `Σ a_n n^{−(ρ−½)}` is
-   `−T w(0) Σ a_n Λ(n)/√n` plus the count term — zero ordinates anti-align on average, as they do
-   pointwise outside the strip, ES8); second moments need the Landau formula at rational points
-   `m/n`, which the corpus has only at integers.
+6. **Power saving for alignment.** The second moment over zero ordinates is ES17, the first moment
+   is in the corpus (`exists_zeroSum_dirichletPolynomial_le`: zero ordinates anti-align on average).
+   Applied to `F^k` the large-values law gives power-saving exceptional sets as soon as the
+   coefficient mass of the convolution powers of the prime polynomial is bounded by `k! (½ log² X)^k`
+   (the multinomial count over prime factorizations); with that, compare the exceptional set with
+   zero density and iterate the forcing half outside it (the report's Q1). The outward reserve as a
+   short prime sum at the terminal ordinate (W18) is the second entrance.
 
 ---
 
@@ -461,7 +529,9 @@ AES succeeds when it proves a stability law of a type the corpus does not contai
 between computed quantities of the potential that turns detection into exclusion on a stated class
 — or a sharp no-go naming the missing input with its positive survivor, and when every question of
 §6 has an answer of that kind. Its present state: every question has an answer of the form
-theorem, sharp equivalence, or located gap (§6); the stability law itself is open.
+theorem, sharp equivalence, or located gap (§6); the stability law holds at atomic resolution
+(ES18) and its form at the spacing scale is the sign problem; the field law has its sharp
+threshold (ES7) and its unconditional energy form (ES16).
 
 A contribution must:
 
@@ -502,5 +572,9 @@ selects for free; identities first, sign last; a reformulation is not a reductio
 | `TheTorsionIsTheStableEquilibriumOfTheCircle` | Fekete's bound on the circle, attained by the torsion |
 | `QuantizationTurnsWindowsIntoPoints` | window energies; affine invariance; gauge twists of the source |
 | `TheHeckeDefectIsTheMomentOfInertia` | the equivariance defect of `D` against the transverse moment of inertia, at every scale and infinitesimally |
+| `TheEnergyOfAZeroIsLogarithmic` | pair bound by the Lorentzian kernel; `E(ρ) = O(log γ)`; window energies by zero counts |
+| `LargeValuesAtZeroOrdinates` | Sobolev on cells, window mean value, discrete mean value over zeros, large values, the alignment law for prime polynomials |
+| `TheStabilityLawAtAtomicResolution` | Lévy gain of disjoint shifts; atomic tests; exact prime sum; the stability law below a power of the spacing |
+| `TheGaugeMarginOfTheRenormalizedSource` | margins of the source against sign twins on every window; L-series margin |
 | `TheExternalFieldIsAPrimeSum` | the external field as Coulomb sum and prime sum; anti-alignment at zero ordinates; escape as infinite energy |
 | `PowerMapsAreSimilitudesOfTheAbelEnergy` | closed form and positivity of torsion Abel energies; power maps as similitudes; renormalized limit; adjunction for full torsion |

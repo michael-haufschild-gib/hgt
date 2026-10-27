@@ -41,6 +41,8 @@ open scoped Real
 
 namespace GaloisForLFunctions.ArithmeticElectrostatics
 
+open ArithmeticEffectivityTheory
+
 /-! ### The Lévy gain of disjoint shifts -/
 
 /-- If a shift moves the support off itself, `∫ (f(u) − f(u + x))² = 2 ∫ f²`. -/
@@ -80,7 +82,6 @@ theorem levyEnergy_ge_of_disjoint_shifts {f : ℝ → ℝ} (hf : ContDiff ℝ 2 
           field_simp
       _ ≤ archLevyDensity x * (2 * M) := by
           gcongr
-          exact (integral_nonneg fun u => sq_nonneg _)
   have hcont : ContinuousOn (fun x : ℝ => Real.exp (-(1 / 2)) * M * x⁻¹) (Set.Icc w s) :=
     continuousOn_const.mul (continuousOn_inv₀.mono fun x hx => ne_of_gt (lt_of_lt_of_le hw0 hx.1))
   have hlint : IntegrableOn (fun x : ℝ => Real.exp (-(1 / 2)) * M * x⁻¹) (Set.Ioc w s) :=
@@ -141,14 +142,21 @@ theorem bump_mul_eq_zero (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) {N a b 
     g (t - Real.log a) * g (t - Real.log b) = 0 := by
   by_contra hne
   have h1 : t - Real.log a ∈ Set.Icc 0 w := by
-    by_contra h; exact hne (by simp [hgsupp _ h])
+    by_contra h
+    apply hne
+    simp only [hgsupp _ h, zero_mul]
   have h2 : t - Real.log b ∈ Set.Icc 0 w := by
-    by_contra h; exact hne (by simp [hgsupp _ h])
+    by_contra h
+    apply hne
+    simp only [hgsupp _ h, mul_zero]
+  rw [Set.mem_Icc] at h1 h2
   rcases lt_or_gt_of_ne hab with hlt | hgt
-  · have := atomSpacing_le_log_sub ha (by rwa [min_eq_left hlt.le] at hmin) hlt
-    rw [Set.mem_Icc] at h1 h2; linarith
-  · have := atomSpacing_le_log_sub hb (by rwa [min_eq_right hgt.le] at hmin) hgt
-    rw [Set.mem_Icc] at h1 h2; linarith
+  · have hmin' : a ≤ N := by rwa [min_eq_left hlt.le] at hmin
+    have := atomSpacing_le_log_sub (N := N) ha hmin' hlt
+    linarith
+  · have hmin' : b ≤ N := by rwa [min_eq_right hgt.le] at hmin
+    have := atomSpacing_le_log_sub (N := N) hb hmin' hgt
+    linarith
 
 theorem contDiff_atomicTest (hg : ContDiff ℝ 2 g) (N : ℕ) (x : ℕ → ℝ) :
     ContDiff ℝ 2 (atomicTest N x g) := by
@@ -198,7 +206,7 @@ theorem integral_atomicTest_sq (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport 
 
 /-- **No archimedean interaction below the spacing**: for `w ≤ δ_N/4`,
 `levyEnergy f ≥ e^{−1/2} log(δ_N/(2w)) ∫ f²`. -/
-theorem levyEnergy_atomicTest_ge (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
+theorem levyEnergy_atomicTest_ge (hg : ContDiff ℝ 2 g)
     (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w)
     (hw : w ≤ atomSpacing N / 4) (x : ℕ → ℝ) :
     Real.exp (-(1 / 2)) * Real.log (atomSpacing N / 2 / w) * ∫ u, atomicTest N x g u ^ 2 ≤
@@ -214,9 +222,13 @@ theorem levyEnergy_atomicTest_ge (hg : ContDiff ℝ 2 g) (hgc : HasCompactSuppor
   refine mul_eq_zero_of_right _ ?_
   by_contra hne
   have h1 : u - Real.log m ∈ Set.Icc 0 w := by
-    by_contra h; exact hne (by simp [hgsupp _ h])
+    by_contra h
+    apply hne
+    simp only [hgsupp _ h, zero_mul]
   have h2 : u + y - Real.log n ∈ Set.Icc 0 w := by
-    by_contra h; exact hne (by simp [hgsupp _ h])
+    by_contra h
+    apply hne
+    simp only [hgsupp _ h, mul_zero]
   rw [Set.mem_Icc] at h1 h2
   obtain ⟨hy1, hy2⟩ := hy
   rcases lt_trichotomy m n with hlt | rfl | hgt
@@ -306,33 +318,177 @@ theorem integral_atomicTest_mul_shift_pos (hg : ContDiff ℝ 2 g) (hgc : HasComp
   · rw [integral_const_mul, integral_sub_right_eq_self (fun u => g u ^ 2)]
   · simp
 
-/-- The Hecke weights of the atoms: `Σ_k Λ_k ([m = nk] + [n = mk]) = P(m, n)`. -/
+/-- One Hecke direction: `Σ_{k ≤ N} Λ_k [a = bk] = [b ∣ a, b ≠ a] Λ(a/b)/√(a/b)`. -/
+theorem sum_vonMangoldtAtom_eq {N a b : ℕ} (ha : 1 ≤ a) (haN : a ≤ N) (hb : 1 ≤ b) :
+    ∑ k ∈ range (N + 1), vonMangoldtAtom k * (if a = b * k then 1 else 0) =
+      if b ∣ a ∧ b ≠ a then ArithmeticFunction.vonMangoldt (a / b) / Real.sqrt ((a / b : ℕ) : ℝ)
+      else 0 := by
+  by_cases hd : b ∣ a
+  · have hk : a / b ∈ range (N + 1) :=
+      mem_range.mpr (Nat.lt_succ_of_le ((Nat.div_le_self a b).trans haN))
+    have hterm : ∀ k ∈ range (N + 1), vonMangoldtAtom k * (if a = b * k then 1 else 0) =
+        if k = a / b then vonMangoldtAtom (a / b) else 0 := by
+      intro k _
+      by_cases hka : k = a / b
+      · rw [if_pos hka, hka, if_pos (Nat.mul_div_cancel' hd).symm, mul_one]
+      · rw [if_neg hka, if_neg, mul_zero]
+        rintro rfl
+        exact hka (Nat.mul_div_cancel_left k (by omega)).symm
+    rw [sum_congr rfl hterm, sum_ite_eq' (range (N + 1)) (a / b), if_pos hk, vonMangoldtAtom]
+    by_cases hba : b = a
+    · subst hba
+      rw [Nat.div_self (by omega), if_neg (by norm_num), if_neg (fun h => h.2 rfl)]
+    · obtain ⟨q, rfl⟩ := hd
+      have hq2 : 2 ≤ b * q / b := by
+        rw [Nat.mul_div_cancel_left q (by omega)]
+        rcases Nat.lt_or_ge q 2 with h | h
+        · interval_cases q
+          · omega
+          · exact absurd (mul_one b).symm hba
+        · exact h
+      rw [if_pos hq2, if_pos ⟨dvd_mul_right b q, hba⟩]
+  · rw [sum_eq_zero fun k _ => by rw [if_neg fun h => hd ⟨k, h⟩, mul_zero],
+      if_neg fun h => hd h.1]
+
+/-- **The Hecke weights of the atoms**: `Σ_{k ≤ N} Λ_k ([m = nk] + [n = mk]) = P(m, n)`. -/
 theorem sum_vonMangoldtAtom_hecke {N m n : ℕ} (hm : m ∈ Icc 1 N) (hn : n ∈ Icc 1 N) :
     ∑ k ∈ range (N + 1), vonMangoldtAtom k *
         ((if m = n * k then 1 else 0) + (if n = m * k then 1 else 0)) =
       weilPrimeKernel m n := by
-  have hm1 := (Finset.mem_Icc.mp hm).1
-  have hn1 := (Finset.mem_Icc.mp hn).1
-  have hmN := (Finset.mem_Icc.mp hm).2
-  have hnN := (Finset.mem_Icc.mp hn).2
-  -- one Hecke direction: `Σ_k Λ_k [a = b k] = [b ∣ a, b ≠ a] Λ(a/b)/√(a/b)`
-  have hone : ∀ a b : ℕ, 1 ≤ a → a ≤ N → 1 ≤ b →
-      ∑ k ∈ range (N + 1), vonMangoldtAtom k * (if a = b * k then 1 else 0) =
-        if b ∣ a ∧ b ≠ a then ArithmeticFunction.vonMangoldt (a / b) / Real.sqrt ((a / b : ℕ) : ℝ)
-        else 0 := by
-    intro a b ha haN hb
-    have hcond : ∀ k, (a = b * k) ↔ (b ∣ a ∧ k = a / b) := by
-      intro k
-      constructor
-      · rintro rfl; exact ⟨dvd_mul_right b k, (Nat.mul_div_cancel_left k (by omega)).symm⟩
-      · rintro ⟨hd, rfl⟩; exact (Nat.mul_div_cancel' hd).symm
-    simp_rw [mul_ite, mul_one, mul_zero]
-    by_cases hd : b ∣ a
-    · have hk : a / b ∈ range (N + 1) :=
-        mem_range.mpr (Nat.lt_succ_of_le ((Nat.div_le_self a b).trans haN))
-      rw [sum_ite_eq_of_mem' ?_]
-      sorry
-    · rw [sum_eq_zero fun k _ => if_neg fun h => hd ((hcond k).mp h).1, if_neg fun h => hd h.1]
-  sorry
+  obtain ⟨hm1, hmN⟩ := Finset.mem_Icc.mp hm
+  obtain ⟨hn1, hnN⟩ := Finset.mem_Icc.mp hn
+  simp_rw [mul_add]
+  rw [sum_add_distrib, sum_vonMangoldtAtom_eq hm1 hmN hn1, sum_vonMangoldtAtom_eq hn1 hnN hm1,
+    weilPrimeKernel]
+  by_cases h1 : m ∣ n ∧ m ≠ n
+  · have h2 : ¬ (n ∣ m ∧ n ≠ m) := fun h => h1.2 (Nat.dvd_antisymm h1.1 h.1)
+    rw [if_pos h1, if_neg h2, if_pos h1, zero_add]
+  · rw [if_neg h1, if_neg h1, add_zero]
+
+/-- **The prime sum of an atomic test is the atomic Weil prime form**: below the spacing,
+`primeSum f = (∫ g²) Σ_{m,n} x_m x_n P(m, n)`. -/
+theorem primeSum_atomicTest (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
+    (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) {N : ℕ} (hw : w < atomSpacing N) (x : ℕ → ℝ) :
+    primeSum (atomicTest N x g) = (∫ u, g u ^ 2) * atomicWeilForm N x := by
+  set G := ∫ u, g u ^ 2
+  -- the summand at every order
+  have hk : ∀ k : ℕ, vonMangoldtAtom k *
+      ((∫ t, atomicTest N x g t * atomicTest N x g (t - Real.log k)) +
+        ∫ t, atomicTest N x g t * atomicTest N x g (t + Real.log k)) =
+      G * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, x m * x n * (vonMangoldtAtom k *
+        ((if m = n * k then 1 else 0) + (if n = m * k then 1 else 0))) := by
+    intro k
+    rcases Nat.eq_zero_or_pos k with rfl | hk1
+    · simp [vonMangoldtAtom]
+    rw [integral_atomicTest_mul_shift_neg hg hgc hgsupp hw x hk1,
+      integral_atomicTest_mul_shift_pos hg hgc hgsupp hw x hk1]
+    calc _ = G * (vonMangoldtAtom k * ∑ m ∈ Icc 1 N,
+          ((∑ n ∈ Icc 1 N, if m = n * k then x m * x n else 0) +
+            ∑ n ∈ Icc 1 N, if n = m * k then x m * x n else 0)) := by
+          rw [sum_add_distrib]; ring
+      _ = _ := by
+          rw [mul_sum]
+          congr 1
+          refine sum_congr rfl fun m _ => ?_
+          rw [← sum_add_distrib, mul_sum]
+          refine sum_congr rfl fun n _ => ?_
+          split_ifs <;> ring
+  -- only the orders `k ≤ N` contribute
+  have hvanish : ∀ k ∉ range (N + 1), vonMangoldtAtom k *
+      ((∫ t, atomicTest N x g t * atomicTest N x g (t - Real.log k)) +
+        ∫ t, atomicTest N x g t * atomicTest N x g (t + Real.log k)) = 0 := by
+    intro k hk'
+    have hkN : N < k := by simpa using hk'
+    rw [hk k]
+    refine mul_eq_zero_of_right _ (sum_eq_zero fun m hm => sum_eq_zero fun n hn => ?_)
+    have hm1 := (Finset.mem_Icc.mp hm)
+    have hn1 := (Finset.mem_Icc.mp hn)
+    rw [if_neg (by intro h; nlinarith), if_neg (by intro h; nlinarith)]
+    simp
+  rw [primeSum, tsum_eq_sum hvanish, sum_congr rfl fun k _ => hk k, ← mul_sum, atomicWeilForm]
+  congr 1
+  rw [sum_comm]
+  refine sum_congr rfl fun m hm => ?_
+  rw [sum_comm]
+  refine sum_congr rfl fun n hn => ?_
+  rw [← mul_sum, sum_vonMangoldtAtom_hecke hm hn]
+
+/-! ### The stability law -/
+
+/-- **The stability law at atomic resolution, quantitative form**:
+`M(f) ≥ (2θ′(0) + e^{−1/2} log(δ_N/(2w)) − 2 log N − log 4 − 4) ∫ f²`. -/
+theorem markovEnergy_atomicTest_ge (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
+    (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w)
+    (hw : w ≤ atomSpacing N / 4) (x : ℕ → ℝ) :
+    (2 * gammaHardyPhaseRate 0 + Real.exp (-(1 / 2)) * Real.log (atomSpacing N / 2 / w) -
+        (2 * Real.log N + (Real.log 4 + 4))) * ∫ u, atomicTest N x g u ^ 2 ≤
+      markovEnergy (fun u => (atomicTest N x g u : ℂ)) := by
+  have hδ := atomSpacing_pos hN
+  have hw' : w < atomSpacing N := by linarith
+  have hf := contDiff_atomicTest hg N x
+  have hfc := hasCompactSupport_atomicTest hgsupp N x
+  rw [markovEnergy_ofReal_eq_archForm_sub_primeSum hf hfc, archForm_eq_levyEnergy hf hfc,
+    primeSum_atomicTest hg hgc hgsupp hw' x]
+  have hlevy := levyEnergy_atomicTest_ge hg hgsupp hN hw0 hw x
+  have hsq := integral_atomicTest_sq hg hgc hgsupp hw' x
+  have hW := atomicWeilForm_le N x
+  have hG : 0 ≤ ∫ u, g u ^ 2 := integral_nonneg fun u => sq_nonneg _
+  have hprime : (∫ u, g u ^ 2) * atomicWeilForm N x ≤
+      (2 * Real.log N + (Real.log 4 + 4)) * ∫ u, atomicTest N x g u ^ 2 := by
+    rw [hsq]
+    calc (∫ u, g u ^ 2) * atomicWeilForm N x
+        ≤ (∫ u, g u ^ 2) * ((2 * Real.log N + (Real.log 4 + 4)) * ∑ n ∈ Icc 1 N, x n ^ 2) :=
+          mul_le_mul_of_nonneg_left hW hG
+      _ = _ := by ring
+  nlinarith
+
+/-- The **atomic width** `(δ_N/4) exp(−e^{1/2}(2 log N + log 4 + 4 + 2|θ′(0)|))`. -/
+def atomicWidth (N : ℕ) : ℝ :=
+  atomSpacing N / 4 *
+    Real.exp (-(Real.exp (1 / 2) * (2 * Real.log N + (Real.log 4 + 4) + 2 * |gammaHardyPhaseRate 0|)))
+
+theorem atomicWidth_pos {N : ℕ} (hN : 1 ≤ N) : 0 < atomicWidth N :=
+  mul_pos (by linarith [atomSpacing_pos hN]) (Real.exp_pos _)
+
+/-- **The stability law at atomic resolution**: every atomic test of width at most
+`atomicWidth N` at the points `log n`, `n ≤ N`, has nonnegative Markov form. -/
+theorem markovEnergy_atomicTest_nonneg (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
+    (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w)
+    (hw : w ≤ atomicWidth N) (x : ℕ → ℝ) :
+    0 ≤ markovEnergy (fun u => (atomicTest N x g u : ℂ)) := by
+  have hδ := atomSpacing_pos hN
+  set X := Real.exp (1 / 2) * (2 * Real.log N + (Real.log 4 + 4) + 2 * |gammaHardyPhaseRate 0|)
+  have hX : 0 ≤ X := by
+    have := Real.log_natCast_nonneg N
+    have : (0 : ℝ) ≤ Real.log 4 := Real.log_nonneg (by norm_num)
+    positivity
+  have hexp : Real.exp (-X) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+  have hw4 : w ≤ atomSpacing N / 4 :=
+    hw.trans (by rw [atomicWidth]; nlinarith [Real.exp_pos (-X)])
+  have h := markovEnergy_atomicTest_ge hg hgc hgsupp hN hw0 hw4 x
+  -- the Lévy gain beats the prime counterterm
+  have hlog : X ≤ Real.log (atomSpacing N / 2 / w) := by
+    have hle : atomSpacing N / 2 / atomicWidth N ≤ atomSpacing N / 2 / w :=
+      div_le_div_of_nonneg_left (by positivity) hw0 hw
+    have hval : atomSpacing N / 2 / atomicWidth N = 2 * Real.exp X := by
+      rw [atomicWidth, Real.exp_neg]
+      field_simp
+      ring
+    have h2 : X ≤ Real.log (2 * Real.exp X) := by
+      rw [Real.log_mul (by norm_num) (Real.exp_pos X).ne', Real.log_exp]
+      linarith [Real.log_nonneg (show (1 : ℝ) ≤ 2 by norm_num)]
+    exact h2.trans (Real.log_le_log (by positivity) (hval ▸ hle))
+  have hcoef : 0 ≤ 2 * gammaHardyPhaseRate 0 + Real.exp (-(1 / 2)) *
+      Real.log (atomSpacing N / 2 / w) - (2 * Real.log N + (Real.log 4 + 4)) := by
+    have he : Real.exp (-(1 / 2)) * Real.exp (1 / 2) = 1 := by
+      rw [← Real.exp_add]; simp
+    have h3 : Real.exp (-(1 / 2)) * X ≤ Real.exp (-(1 / 2)) * Real.log (atomSpacing N / 2 / w) :=
+      mul_le_mul_of_nonneg_left hlog (Real.exp_pos _).le
+    have h4 : Real.exp (-(1 / 2)) * X =
+        2 * Real.log N + (Real.log 4 + 4) + 2 * |gammaHardyPhaseRate 0| := by
+      simp only [X]; rw [← mul_assoc, he, one_mul]
+    linarith [neg_abs_le (gammaHardyPhaseRate 0)]
+  have hint : 0 ≤ ∫ u, atomicTest N x g u ^ 2 := integral_nonneg fun u => sq_nonneg _
+  exact le_trans (mul_nonneg hcoef hint) h
 
 end GaloisForLFunctions.ArithmeticElectrostatics

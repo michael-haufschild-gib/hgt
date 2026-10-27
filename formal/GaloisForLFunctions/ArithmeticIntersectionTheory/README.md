@@ -168,6 +168,11 @@ hyperbolic Hecke correspondences that glue the levels.
     leave only tame ramification as Hecke variation.
 13. **Rosati moments** (`dualPoly_eq_conj`, `mul_dualPoly_of_critical`, `pair_pow_eq_two_re`). Zero moments
     of Dirichlet polynomials are collided on the line and Rosati-paired off it.
+14. **Adjunction beats the tower** (`selfIntersection_ladder_ge`, `renormalized_ladder_le`). Along a ladder
+    the self-intersection grows like `(j − 1/(p−1)) log p`, the tower stays below `2q log p/(1 + q)`; from
+    the second level on the renormalized torsion form is negative definite.
+15. **The polar part** (`paperFT_logAtom_half`, `weilPoleTerm_logAtom`). On log-atom tests
+    `k̂(i/2) + k̂(−i/2) = 2αβ (Σ x_n n^{−1/2})(Σ x_n n^{1/2})`: the pole pairs the pole direction with its dual.
 
 ---
 
@@ -188,6 +193,8 @@ hyperbolic Hecke correspondences that glue the levels.
 | XI. Transfer | prime functional on log-atom tests = `‖φ‖² Σ_p Q_p`; under RH, `‖φ‖² Σ_p Q_p ≤ Re(archimedean + polar part)` | `WeilsPrimeFunctionalIsTheFiniteIntersection` |
 | XII. Spacing regulator | positive at every `ε`; scalar counterterm; Hecke covariant up to tame ramification; indefinite limit | `TheSpacingRegulatorRemovesTheAnomaly` |
 | XIII. Rosati moments | zero moments collided on the line, Rosati off it; real on reflection-closed configurations | `ZeroMomentsAreRosatiPairings` |
+| XIV. Adjunction beats the tower | renormalized torsion form `≤ −((1−q)/(1+q)) log p |x|²` above the second level of every ladder; positive index `≤ 2` per ladder | `TheSelfIntersectionDominatesTheTower` |
+| XV. The polar part | rank-two pairing of `Σ x_n n^{−1/2}` with `Σ x_n n^{1/2}`; under RH, on the polar hyperplane the `Γ`-part alone dominates `‖φ‖² Σ_p Q_p` | `ThePolarPartPairsThePoleDirection` |
 
 ---
 
@@ -219,9 +226,13 @@ hyperbolic Hecke correspondences that glue the levels.
    (`hasSum_pointEnergy`) and on orbit cycles (AET); at each prime, the local Hodge index with explicit
    bounds (Pillars VI–VII); globally, the sum of local forms is unbounded (Pillar VIII), Weil's prime
    functional on log-atom tests equals that sum (Pillar XI), and RH is the statement that the
-   archimedean and polar parts dominate it. The archimedean self-energy of an atom of width `δ` grows
-   like `log(1/δ)` (RHTower separated bumps), the sum of towers like `log M` along the pole direction:
-   the global sign is the comparison of these two growths.
+   archimedean and polar parts dominate it. The polar part is rank two and pairs exactly the pole
+   direction, along which the sum of towers is unbounded (Pillar XV); on the polar hyperplane the
+   `Γ`-factor pays alone. The archimedean self-energy of an atom of width `δ` grows like `log(1/δ)`
+   (RHTower separated bumps): at fixed orders narrow atoms are always positive, and the content of RH
+   is the regime `δ ≍ 1/M` of the widest admissible atoms. On the torsion side the diagonal is
+   already decisive one prime at a time: the self-intersection makes the renormalized form negative
+   definite above the second level of every ladder (Pillar XIV).
 6. **What is the two-point form of the missing statement?** Moments of Dirichlet polynomials over the
    zeros, computable from primes up to the square-root threshold, are Rosati pairings: positive on
    critical configurations, `2 Re(Q(ρ)conj Q(ρ*))^k` on off-line pairs (Pillar XIII). Their positivity is
@@ -260,8 +271,8 @@ cyclotomic intersection rings; the derivation `μ * (id·log) = φ·log + φ*Λ`
 cocycle and the Hecke variation law; the Kac–Murdock–Szegő tower calculus (tails, levels, bounds);
 ladder kernels and the transverse decomposition of Weil's prime kernel; the pole-direction lower
 bound; sign gauges; the rotation diagonalization of point cycles and the folding of frequencies on
-`μ_N`; Gauss's digamma theorem; log-atom tests and the transfer identity; the spacing regulator;
-Rosati moments.
+`μ_N`; Gauss's digamma theorem; log-atom tests, the transfer identity and their Mellin values at
+`±½`; the polar part on log-atom tests; the spacing regulator; Rosati moments; the ladder index bound.
 
 ---
 
@@ -270,17 +281,20 @@ Rosati moments.
 1. **A covariant regulator with a nontrivial null cone.** A family of positive pairings on torsion
    cycles, Hecke covariant up to tame ramification, whose counterterm is not a multiple of the
    identity. By the survival law this is exactly what a sign through the limit requires.
-2. **The archimedean side of the transfer.** Compute the archimedean and polar part of Weil's form on
-   log-atom tests in the same tower coordinates, so that the comparison of Question 5 becomes one
-   inequality between explicit forms on `ℓ²(⊕_p ℕ)`.
+2. **The `Γ`-part in tower coordinates.** The polar part is computed (Pillar XV). Compute the
+   `Γ`-part on log-atom tests as an explicit form on `ℓ²(⊕_p ℕ)` — diagonal `log(1/δ)` plus the
+   archimedean kernel at the lags `log(m/n)` — so that RH on log-atom tests becomes one inequality
+   between explicit forms on the polar hyperplane.
 3. **Arithmetic Riemann–Roch on torsion orbits.** The lattice `𝓞_{ℚ(ζ_n)}` with its trace form has a
    theta `h⁰` whose Riemann–Roch defect is `½ log|d|`, the self-intersection of Pillar IV; a section
-   functor on the scaling surface with this defect would be the `F3` question of the review.
+   functor on the scaling surface with this defect is the `F3` question of the review.
 4. **The discriminant for all `n`.** `I(n,n) = log|d_{ℚ(ζ_n)}|` beyond prime powers.
-5. **Indices.** The positive index of the renormalized torsion form on a ladder is bounded by the
-   number of levels whose self-intersection lies below the local bound; an index law for finite boxes.
-6. **Thresholds as weights.** The ratio of the log-atom width to the largest order as a weight
-   variable; the square-root threshold as weight `½`.
+5. **Indices on boxes.** Pillar XIV bounds the positive index by `2` on each ladder; the positive
+   index of the renormalized torsion form on the box `[1, N]`, where the ladders of different primes
+   interact.
+6. **Thresholds as weights.** The ratio `log(1/δ)/log M` of log-atom width to largest order as a
+   weight variable; the square-root threshold as the weight where the polar hyperplane must be paid by
+   the `Γ`-factor alone.
 
 ---
 
