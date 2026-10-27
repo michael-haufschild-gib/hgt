@@ -28,13 +28,14 @@ correspondences, anomaly, cocycle, towers, Fourier duality, transfer.
 
 | Pillar | Module | Status |
 |---|---|---|
-| I correspondences, projection formula | `TheCorrespondencesOfTheCharacteristicCircle` | planned |
-| II regulator anomaly | `TheRegulatorAnomaly` | planned |
+| I–II projection formula, regulator anomaly | `TheProjectionFormulaAndTheRegulatorAnomaly` | Lean, compiles |
+| I' orbit pushforward (Galois fibres) | `TheCorrespondencesOfTheCharacteristicCircle` | planned |
 | III Λ(n) = log #(𝓞/(ζ_n − 1)) | `IntersectionNumbersAreLogOrders` | planned |
-| IV different c(n) | `TheDifferentOfATorsionOrbit` | planned |
-| V Hecke cocycle | `TheHeckeCocycleOfRenormalization` | planned |
-| VI towers, KMS, P = Σ log p (K_p − 1) | `TheTowerDecompositionOfThePrimeKernel` | planned |
-| VII Fourier duality, Gauss digamma | `GaussDigammaIsTheFourierTransformOfTheTorsionEnergy` | planned |
+| IV different c(n) | `TheDifferentOfATorsionOrbit` | Lean, compiles |
+| V Hecke cocycle | `TheHeckeCocycleOfRenormalization` | Lean, compiles |
+| VI towers, KMS, ladder bounds | `TheTowerFormOfAPrime` | Lean, compiles |
+| VI' P = Σ_p log p (K_p − 1), transverse ladders | `ThePrimeKernelIsASumOfTransverseTowers` | in progress |
+| VII Fourier duality, Gauss digamma | `GaussDigammaIsTheFourierTransformOfTheTorsionEnergy` | Lean, compiles |
 | VIII transfer, RH in tower form | `TheHodgeIndexInTowerForm` | planned |
 
 ## Paper proofs (key facts)

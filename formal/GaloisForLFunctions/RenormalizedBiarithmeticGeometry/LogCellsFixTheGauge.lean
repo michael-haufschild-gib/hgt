@@ -19,7 +19,11 @@ the lattice dilation spread over the successor orbit, `M_m = Σ_{r<m} S^r D_m`
   (`gaugeTwist_latticeDilate`) — lattice forms are gauge-blind;
 * the dyadic cell dilation is covariant (up to any scalar) **only at the Euler gauge**
   (`cellDilate_two_covariant_iff`): `χ(2a) = cχ(a)` and `χ(2a + 1) = cχ(a)` force `c = 1` through
-  `9 = 3²`, and then `χ ≡ 1` by induction.
+  `9 = 3²`, and then `χ ≡ 1` by induction;
+* on a finite horizon the same holds with an explicit reach
+  (`cellDilate_two_covariant_on_horizon_iff`):
+  covariance on profiles supported on `[1, X]` (`X ≥ 4`) is equivalent to `ω(p) = 1` for every
+  prime `p ≤ 2X + 1`, twice the reach of successor flatness on the same horizon.
 
 So passing from the lattice to the cells turns a blind dilation into a gauge-fixing one: the cells
 carry the successor holonomy that pins the arithmetic point `𝟏 ∈ Ω_𝒫`.

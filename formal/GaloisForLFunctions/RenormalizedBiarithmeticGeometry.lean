@@ -9,6 +9,7 @@ import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheGaugeChargeOfACou
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.LogCellsFixTheGauge
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.CriticalDiscsAndTheTerminalLens
 import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.PositivityIsIrreversible
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.CollectivePacketsDiluteOverIndependentOrdinates
 
 /-!
 # Renormalized Biarithmetic Geometry
@@ -18,5 +19,6 @@ renormalization, the counterterm rank of the two places of the explicit formula 
 completion of the archimedean germ; dyadic amplification of the Hecke defect, the Hecke moment
 problem and its reading from integer theta prefixes; gauge charge of couplings and gauge fixing by
 logarithmic cells; critical discs, the Carathéodory region of `ξ′/ξ` and the terminal lens;
-irreversibility of positive deformations. See `RenormalizedBiarithmeticGeometry/README.md`.
+irreversibility of positive deformations; Kronecker dilution of collective packets. See
+`RenormalizedBiarithmeticGeometry/README.md`.
 -/

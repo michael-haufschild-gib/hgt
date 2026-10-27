@@ -1,6 +1,5 @@
 import GaloisForLFunctions.TransThresholdPairCorrelation.CoalescentPrimeReductionAndParitySieve
 import GaloisForLFunctions.TransThresholdPairCorrelation.RamanujanDirichletCoalescentTransfer
-import GaloisForLFunctions.RHTower.ZetaThreeQuartersReduction
 
 /-!
 # Parity-Sensitive Ramanujan Stabilizer Transfer on Even Coalescent Shifts
@@ -43,14 +42,16 @@ in this module:
    even shifts `2r` to `-Ω̂(0) ∑_{3≤q≤Q, q odd} sqfreeTotientInv q`, so the complete parity-locked
    singular series transfers unconditionally to `-Ω̂(0) ∑_{1≤q≤Q, q odd} sqfreeTotientInv q`.
 
-4. **Stabilizer-Centered Decomposition and Critical-Line Proportion Milestones
+4. **Stabilizer-Centered Decomposition and Actual Prime-Pair Parity Lock
    (`oddEvenShiftPrimeCoalSum_eq_stabilizerModel_add_discrepancy`,
-   `coalescent_stabilizer_proportion_milestones`):**
+   `primeCoalSum_ramanujan_two_eq`, `primeCoalSum_ramanujan_two_mul_odd_eq`):**
    Decomposes `oddEvenShiftPrimeCoalSum` around any parity-sensitive `Q`-modulus Ramanujan
-   stabilizer model into its singular-series baseline plus centered discrepancy, and proves the
-   unconditional critical-line simple-zero proportion payoffs of `PrimeCoalescentSurplusAtMost β`
-   at `β < 5/36` (`> 2/3`), `β ≤ 577/4500` (`≥ 254/375`), and `β ≤ 1/18` (`≥ 3/4` critical-line
-   simple zeros).
+   stabilizer model into its singular-series baseline plus centered discrepancy
+   `stabilizerDiscrepancyOddCoalSum`, and proves unconditionally that for `θ₀ < 1/3` the `q = 2`
+   Ramanujan projection on actual coalescent prime pairs equals `primeCoalSum` identically while
+   every doubled odd modulus `2q` agrees identically with `q`. Bounding
+   `stabilizerDiscrepancyOddCoalSum` at bandwidth `λ = 4/3` remains the open analytic discrepancy
+   problem.
 -/
 
 open MeasureTheory Real Set Finset Filter Topology ArithmeticFunction
@@ -768,7 +769,7 @@ theorem abs_sum_full_evenShift_singularSeries_cosTransform_add_le
   have hadd := add_le_add hbase hodd
   linarith
 
-/-! ## §4. Stabilizer-Centered Decomposition of `oddEvenShiftPrimeCoalSum` & Proportion Milestones -/
+/-! ## §4. Stabilizer-Centered Decomposition and Actual Prime-Pair Parity Lock -/
 
 /-- The `Q`-modulus parity-locked Hardy–Littlewood singular-series weight at integer lag `h`:
 `2 ∑_{1≤q≤Q, q odd} (sqfreeTotientInv q / φ(q)) c_q(h)`. On even shifts `h = 2r`, this equals the
@@ -841,54 +842,60 @@ theorem oddEvenShiftPrimeCoalSum_eq_stabilizerModel_add_discrepancy
       exact hodd ⟨hn3, hm3, hn_odd, hm_odd, hne, hgap⟩
     rw [if_neg hnp_cond, if_neg hodd, if_neg hodd, add_zero]
 
-/-- **Milestone 1 Critical-Line Simple-Zero Proportion Package (`4/3` Coalescent Thresholds).**
-Unconditionally packages the three critical-line simple-zero proportion thresholds certified by
-`PrimeCoalescentSurplusAtMost β` at bandwidth `λ = 4/3`:
-1. **First Blood (`β < 5 / 36`):** `N₀*(T, 2T) ≥ (2 / 3 + (5 / 36 - β) / 2) N(T, 2T)` eventually,
-   strictly breaking the `2 / 3` threshold by `(5 / 36 - β) / 2 > 0`;
-2. **Surpassing `HD(1)` (`β ≤ 577 / 4500`):** `N₀*(T, 2T) ≥ (254 / 375 - ε) N(T, 2T)` eventually
-   (`254 / 375 = 0.67733... > 0.67727...`);
-3. **Three-Quarters Simple Critical-Line Zeros (`β ≤ 1 / 18`):** `N₀*(T, 2T) ≥ (3 / 4 - ε) N(T, 2T)`
-   eventually — at least `3 / 4` of nontrivial zeros in `[T, 2T]` are simple and lie on `Re s = 1/2`. -/
-theorem coalescent_stabilizer_proportion_milestones :
-    (∀ {β : ℝ}, β < 5 / 36 → PrimeCoalescentSurplusAtMost β →
-      0 < (5 / 36 - β) / 2 ∧
-      ∀ᶠ T in atTop,
-        (2 / 3 + (5 / 36 - β) / 2) * (Ncount T (2 * T) : ℝ) ≤ (N0star T (2 * T) : ℝ)) ∧
-    (∀ {β : ℝ}, β ≤ 577 / 4500 → PrimeCoalescentSurplusAtMost β →
-      ∀ ε > 0, ∀ᶠ T in atTop,
-        (254 / 375 - ε) * (Ncount T (2 * T) : ℝ) ≤ (N0star T (2 * T) : ℝ)) ∧
-    (∀ {β : ℝ}, β ≤ 1 / 18 → PrimeCoalescentSurplusAtMost β →
-      ∀ ε > 0, ∀ᶠ T in atTop,
-        (3 / 4 - ε) * (Ncount T (2 * T) : ℝ) ≤ (N0star T (2 * T) : ℝ)) := by
-  refine ⟨?_, ?_, ?_⟩
-  · intro β hβ hP
-    have hpos : 0 < (5 / 36 - β) / 2 := by linarith
-    refine ⟨hpos, ?_⟩
-    obtain ⟨η, u, ε₁, _, _, _, hev⟩ := hP ((5 / 36 - β) / 4) (by linarith)
-    filter_upwards [hev] with T ⟨hcert, hsurp⟩
-    linarith
-  · intro β hβ hP ε hε
-    obtain ⟨η, u, ε₁, _, _, _, hev⟩ := hP (ε / 2) (by linarith)
-    filter_upwards [hev] with T ⟨hcert, hsurp⟩
-    have hN0 : 0 ≤ (Ncount T (2 * T) : ℝ) := Nat.cast_nonneg _
-    have hle : (254 / 375 - ε) * (Ncount T (2 * T) : ℝ) ≤
-        (29 / 36 - β - ε) * (Ncount T (2 * T) : ℝ) :=
-      mul_le_mul_of_nonneg_right (by linarith) hN0
-    have hcomb : (29 / 36 - β - ε) * (Ncount T (2 * T) : ℝ) =
-        (29 / 36 - ε / 2) * (Ncount T (2 * T) : ℝ) -
-          (β + ε / 2) * (Ncount T (2 * T) : ℝ) := by ring
-    linarith
-  · intro β hβ hP ε hε
-    obtain ⟨η, u, ε₁, _, _, _, hev⟩ := hP (ε / 2) (by linarith)
-    filter_upwards [hev] with T ⟨hcert, hsurp⟩
-    have hN0 : 0 ≤ (Ncount T (2 * T) : ℝ) := Nat.cast_nonneg _
-    have hle : (3 / 4 - ε) * (Ncount T (2 * T) : ℝ) ≤
-        (29 / 36 - β - ε) * (Ncount T (2 * T) : ℝ) :=
-      mul_le_mul_of_nonneg_right (by linarith) hN0
-    have hcomb : (29 / 36 - β - ε) * (Ncount T (2 * T) : ℝ) =
-        (29 / 36 - ε / 2) * (Ncount T (2 * T) : ℝ) -
-          (β + ε / 2) * (Ncount T (2 * T) : ℝ) := by ring
-    linarith
+/-- **Actual Prime-Pair Parity Lock at `q = 2` (`θ₀ < 1 / 3`):**
+For every coalescent aperture `θ₀ < 1 / 3`, weighting each contributing prime pair `(n, m)` in
+`primeCoalSum Ω g X θ₀` by `ramanujanLagCoefficient 2 (Nat.dist n m)` reproduces
+`primeCoalSum Ω g X θ₀` identically (`c_2(|n - m|) = +1` on every coalescent prime pair). -/
+theorem primeCoalSum_ramanujan_two_eq (Ω g : ℝ → ℝ) (X : ℝ) {θ₀ : ℝ} (hθ₀ : θ₀ < 1 / 3) :
+    (1 / π) * (∑ n ∈ primeRange X, ∑ m ∈ primeRange X,
+      if n.Prime ∧ m.Prime ∧ n ≠ m ∧ |Real.log n - Real.log m| ≤ θ₀
+      then ramanujanLagCoefficient 2 (Nat.dist n m) *
+        (acoef n * acoef m * g (Real.log m) * cosTransform Ω (Real.log n - Real.log m))
+      else 0) = primeCoalSum Ω g X θ₀ := by
+  unfold primeCoalSum
+  congr 1
+  refine Finset.sum_congr rfl fun n _ => Finset.sum_congr rfl fun m _ => ?_
+  split_ifs with h
+  · obtain ⟨hnP, hmP, hne, hgap⟩ := h
+    obtain ⟨_, _, _, _, hpar⟩ := odd_and_even_gap_of_prime_coalescent hnP hmP hne hgap hθ₀
+    have heven : Nat.dist n m = 2 * (Nat.dist n m / 2) := by
+      rcases le_total n m with hnm | hmn
+      · rw [Nat.dist_eq_sub_of_le hnm]
+        omega
+      · rw [Nat.dist_comm, Nat.dist_eq_sub_of_le hmn]
+        omega
+    rw [heven, ramanujanLagCoefficient_two_even, one_mul]
+  · rfl
+
+/-- **Actual Prime-Pair Odd-Modulus Doubling Invariance (`θ₀ < 1 / 3`):**
+For every odd modulus `q` (`q % 2 = 1`) and every coalescent aperture `θ₀ < 1 / 3`, the `(2 * q)`
+Ramanujan lag-weighted prime coalescent sum equals the `q` Ramanujan lag-weighted prime coalescent
+sum identically on actual prime pairs. -/
+theorem primeCoalSum_ramanujan_two_mul_odd_eq {q : ℕ} (hq : q % 2 = 1)
+    (Ω g : ℝ → ℝ) (X : ℝ) {θ₀ : ℝ} (hθ₀ : θ₀ < 1 / 3) :
+    (1 / π) * (∑ n ∈ primeRange X, ∑ m ∈ primeRange X,
+      if n.Prime ∧ m.Prime ∧ n ≠ m ∧ |Real.log n - Real.log m| ≤ θ₀
+      then ramanujanLagCoefficient (2 * q) (Nat.dist n m) *
+        (acoef n * acoef m * g (Real.log m) * cosTransform Ω (Real.log n - Real.log m))
+      else 0) =
+    (1 / π) * (∑ n ∈ primeRange X, ∑ m ∈ primeRange X,
+      if n.Prime ∧ m.Prime ∧ n ≠ m ∧ |Real.log n - Real.log m| ≤ θ₀
+      then ramanujanLagCoefficient q (Nat.dist n m) *
+        (acoef n * acoef m * g (Real.log m) * cosTransform Ω (Real.log n - Real.log m))
+      else 0) := by
+  congr 1
+  refine Finset.sum_congr rfl fun n _ => Finset.sum_congr rfl fun m _ => ?_
+  split_ifs with h
+  · obtain ⟨hnP, hmP, hne, hgap⟩ := h
+    obtain ⟨_, _, _, _, hpar⟩ := odd_and_even_gap_of_prime_coalescent hnP hmP hne hgap hθ₀
+    have heven : Nat.dist n m = 2 * (Nat.dist n m / 2) := by
+      rcases le_total n m with hnm | hmn
+      · rw [Nat.dist_eq_sub_of_le hnm]
+        omega
+      · rw [Nat.dist_comm, Nat.dist_eq_sub_of_le hmn]
+        omega
+    rw [heven, ramanujanLagCoefficient_two_mul_odd_two_mul hq,
+      ramanujanLagCoefficient_odd_two_mul hq]
+  · rfl
 
 end GaloisForLFunctions.TransThresholdPairCorrelation

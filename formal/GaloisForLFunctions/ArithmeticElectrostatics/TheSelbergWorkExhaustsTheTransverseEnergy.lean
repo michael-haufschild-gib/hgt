@@ -13,7 +13,7 @@ are kept throughout, including coincident copies of one zero.
 -/
 
 open Finset Filter Set RHTower
-open scoped Topology
+open scoped Topology ENNReal
 
 noncomputable section
 
@@ -98,7 +98,10 @@ theorem xiTaperedPairWork_norm_le {R : ℝ} (hR : 4 ≤ R) (N : ℕ) (p q : XiZe
           (xiZeroHeight p - xiZeroHeight q)) := by ring
     _ ≤ 2 * (8 * R ^ 4 / ((1 + xiZeroHeight p ^ 2) * (1 + xiZeroHeight q ^ 2))) :=
       mul_le_mul_of_nonneg_left h2 (by norm_num)
-    _ = xiWorkMajorant R (p, q) := by unfold xiWorkMajorant; field_simp
+    _ = xiWorkMajorant R (p, q) := by
+      unfold xiWorkMajorant
+      field_simp
+      norm_num
 
 /-- Absolute convergence holds on the full product of multiplicity copies. -/
 theorem xiDampedPairWork_summable {R : ℝ} (hR : 4 ≤ R) :
@@ -293,7 +296,8 @@ theorem xiDampedPairWork_le_two_energy {R : ℝ} (hR : 4 ≤ R) (p q : XiZeroCop
   have hw := mul_le_mul_of_nonneg_right
     (add_le_add (heightDamping_le_one hRpos (xiZeroHeight p))
       (heightDamping_le_one hRpos (xiZeroHeight q))) (xiReflectedPairEnergy_nonneg p q)
-  exact hwork.trans (by simpa only [show (1 : ℝ) + 1 = 2 by norm_num] using hw)
+  exact hwork.trans (by
+    simpa only [xiReflectedPairEnergy, show (1 : ℝ) + 1 = 2 by norm_num] using hw)
 
 /-- Transverse energy with the analytic multiplicity of every zero retained.
 Each ordered pair contributes half its angular energy; coincident copies contribute zero. -/

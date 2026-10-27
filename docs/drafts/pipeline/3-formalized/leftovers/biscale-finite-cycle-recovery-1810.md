@@ -1,7 +1,7 @@
 # Finite closed-cycle recovery on controlled correlations
 
 - **ID:** biscale-finite-cycle-recovery-1810
-- **Stage:** 2-fully-proven; automatic parameters and arbitrary nets certified; full L² and derivative-net extensions pending
+- **Stage:** 3-formalized; all statements and infrastructure certified
 - **Type:** BRIDGE; quantitative extension of existing cycle completeness
 - **Parent:** [field programme](../../1-in-progress/rh/bi-scale-uncertainty/biscale-field-development-1810.md), item 9
 
@@ -71,15 +71,22 @@ Source ingredients inspected: `InfiniteGridUniformTail.lean` contains the global
 - [Jaming–Kolountzakis](https://nyjm.albany.edu/j/2003/9-12p.pdf) studies triple-correlation reconstruction and stability. The observations here are products of correlation values along closed cycles. Those two observation models must not be identified without a proved transfer.
 - Corpus query `closed cycle positive collar quantitative recovery finite order noise` returned all-orders cycle recovery and collar-energy results, without this finite sampling estimate among returned candidates. Coverage was a source snapshot, semantic completeness unmeasured.
 - [x] Finite-cycle factorization and elementary conditional noise estimate proved symbolically.
-- [ ] Lean finite-cycle and sampling identities, including zero-radius and endpoint cases.
+- [x] Lean finite-cycle and sampling identities, including zero-radius and endpoint cases, arbitrary finite nets and the full real L² source domain.
 - [x] Actual smooth-source derivative bounds, explicit normalization and nonempty controlled classes; no assumed convergence or assumed recovery.
 - [x] Existing distant-copy obstruction transported into the controlled class with quantified parameters.
 - [x] Formalize the singular-energy collar and the grid/energy finite-accuracy theorem above by reusing the existing modulus and tail estimates; inspect the exact corpus query before claiming any extension absent.
 - [x] Named-source/axiom audits, umbrella wiring, index and scoped lint. Global unrelated failures are recorded below.
 
-This component does not close item 9.
+All statements on this card are formalized. The broader thirteen-item field programme remains separate.
 
-## Frozen Lean completion
+## Lean completion
+
+Fourteen canonical leaves cover the entire card. Their 133 public declarations
+have transitive audits using only `propext`, `Classical.choice`, `Quot.sound`.
+All final direct source checks passed. Unchanged earlier sources match their
+recorded hashes; the four resumed leaves have unique umbrella imports and
+indexed declarations. No numerical experiment, added analytic premise, raised
+Lean limit, existing-olean rebuild or umbrella build was used.
 
 All ten started leaves passed their final direct source checks with no errors
 or warnings. Nine logs are empty; `DerivativeCycleConditioning` emits two
@@ -103,6 +110,10 @@ and 417 size warnings). No umbrella or existing olean was rebuilt.
 | Derivative-energy conditioning and exact `2δ_C+2nδ₂+2√Bη` bound | `DerivativeCycleConditioning.lean`: `derivative_inner_power_ge_half`, `derivative_global_recovery_norm` |
 | Arbitrary measured arrays, actual fitting residuals and reconstruction coefficient | `ClosedCycleDataResiduals.lean`: `controlled_recovery_from_measured_array` |
 | Actual unit-mass compact sources, preserved correlation/normalized derivative energy and a nonempty controlled class | `UnitMassCompactSources.lean`: `autocorr_unitMassCompactSource_zero`, `normalizedDirichletEnergy_unitMassCompactSource`, `exists_unit_mass_derivative_controlled_source` |
+| Explicit radius, mesh, order, observation count and positive noise threshold depending only on `E,ε` | `GridCycleRecoveryParameters.lean`: `grid_recovery_at_noise_threshold`, `grid_recovery_from_residual_threshold` |
+| Arbitrary finite nets and measured arrays for compact smooth sources | `FiniteNetClosedCycleRecovery.lean`: `finiteNet_global_recovery_norm`, `finiteNet_recovery_from_measured_array` |
+| Full real L² source domain, integral correlations, literal products and exact arbitrary-net recovery | `L2ClosedCycleRecovery.lean`: `L2Cycle.correlation_toLp`, `L2Cycle.global_recovery_norm`, `L2Cycle.recovery_from_measured_array` |
+| Exact derivative conditioning on arbitrary finite nets and arbitrary measured arrays | `FiniteNetDerivativeRecovery.lean`: `finiteNet_derivative_recovery_norm`, `finiteNet_derivative_recovery_from_measured_array` |
 
 Leaves reside in `formal/GaloisForLFunctions/BiScaleUncertainty/`.
 The literal spoke implementation uses a natural index `k` for the positive
@@ -128,20 +139,30 @@ source domain. Its twelve declarations have clean transitive axiom audits,
 and its final direct source check passed without diagnostics. Its umbrella
 import is wired.
 
-The card remains at stage 2 until two source-domain extensions are checked:
-the base collar estimate on all nonzero real L² sources, and the exact
-derivative-conditioned estimate on arbitrary finite nets. The first uses
-proved L² translation/correlation lemmas; the second uses the existing
-actual-source derivative estimate. Both retain the original constants.
-Item 9 is not yet declared closed.
+`L2ClosedCycleRecovery.lean` completes the base collar estimate on the full
+real L² source domain. Actual translation matrix coefficients prove continuity,
+evenness and the unit envelope; `correlation_toLp` identifies the integral
+correlation of every square-integrable representative. Its norm bound retains
+only the original support, positive collar, modulus and finite-net conditions.
+All eighteen declarations passed their transitive axiom audit, and the
+canonical final source check passed without diagnostics.
+
+`FiniteNetDerivativeRecovery.lean` completes the exact derivative-conditioned
+bound on arbitrary finite nets. It retains `2δ_C+2nδ₂+2sqrt(B)η`; arbitrary
+measured arrays have residual coefficient `2(n+1)`. The common energy-source
+packaging adds no restriction: `exists_common_levyEnergySource` constructs it
+for every pair of nonzero compact C² sources while preserving correlations.
+Both new declarations passed axiom audits and the canonical final source
+check without diagnostics. Both new leaves are wired exactly once.
 
 Evidence: `/tmp/leftovers-cycle-public-names.json`,
 `/tmp/leftovers-cycle-complete-audit-r2.log`, and
-[the frozen-scope tracker](../../1-in-progress/leftovers-unconditional-formalization.md).
+`/tmp/leftovers-cycle-resume-public-names.json`, with the resumed audit logs
+recorded in [the programme tracker](../../1-in-progress/leftovers-unconditional-formalization.md).
 
-2026-10-18 checkpoint: `EnergyControlledClosedCycleRecovery.lean` now proves the energy-derived κ=1/2 reconstruction protocol, with explicit mesh size/order and signed trace error retained. `EnergyCycle.global_recovery` and `fixed_integer_grid_recovery` passed a direct named-source Lean check with no warnings and are wired into the field umbrella. The modulus-based collar is exp(-(1+32 max(K,0)/exp(-1/2))); no derivative bound is assumed. The arbitrary-κ statement and the other unchecked gates above remain separate. This formalizes existing paper work and is not counted as a new contribution in the 100-contribution programme; its associated exact-order obstruction is tracked in `../../3-formalized/biscale-energy-controlled-cycle-observability-2026-10-18.md`.
+2026-10-18 checkpoint: `EnergyControlledClosedCycleRecovery.lean` now proves the energy-derived κ=1/2 reconstruction protocol, with explicit mesh size/order and signed trace error retained. `EnergyCycle.global_recovery` and `fixed_integer_grid_recovery` passed a direct named-source Lean check with no warnings and are wired into the field umbrella. The modulus-based collar is exp(-(1+32 max(K,0)/exp(-1/2))); no derivative bound is assumed. The arbitrary-κ statement and the remaining controls are certified above. This formalizes existing paper work and is not counted as a new contribution in the 100-contribution programme; its associated exact-order obstruction is tracked in `../../3-formalized/biscale-energy-controlled-cycle-observability-2026-10-18.md`.
 
-## Final source checks for the started scope
+## Final source checks
 
 Every row passed a direct `lake --old env lean -j 1` check from `formal/`,
 without writing an olean. The first five leaves supplied the only new oleans
@@ -165,3 +186,5 @@ successfully by direct commands, without rebuilding any existing olean.
 | `UnitMassCompactSources` | `e25513b2ddf29de14278ed9edaba87a3cac69cd4dc1bca461af8e902d307a38a` | `/tmp/leftovers-cycle-unit-mass-final.log` |
 | `GridCycleRecoveryParameters` | `9aba018dce162eb2d792fc34587a546921693300f07cca511692a845cf8f7931` | `/tmp/leftovers-cycle-parameters-final.log` |
 | `FiniteNetClosedCycleRecovery` | `d02e14edf392e0876441cb577887f1c9e1f7e076426236a570ae8bde53f838e9` | `/tmp/leftovers-cycle-finite-net-final.log` |
+| `L2ClosedCycleRecovery` | `e5c8619c7059039704b60013e8137e740706a1d3597f234345e744091a5b608c` | `/tmp/leftovers-cycle-l2-final.log` |
+| `FiniteNetDerivativeRecovery` | `b5003d1a916f58649a5f0214ae7a2164c54321e312b30a4591b39c78664ea6f4` | `/tmp/leftovers-cycle-finite-net-derivative-final.log` |

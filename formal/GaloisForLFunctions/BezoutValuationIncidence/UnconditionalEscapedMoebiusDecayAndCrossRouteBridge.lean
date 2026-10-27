@@ -50,7 +50,7 @@ and the coalescent pair-correlation threshold `θ(λ) = (λ - 1) / (2λ)`:
    landmark `θ(4 / 3) = 1 / 8` (`zetaZeroAbscissa ≤ 7 / 8`, `receiverDampingRate ≤ 3 / 8`).
 -/
 
-open Finset Filter Topology Set RHTower RHTower.Sieve
+open Finset Filter Topology RHTower RHTower.Sieve
 open GaloisForLFunctions.TransHorizonIncidenceMechanics
 open GaloisForLFunctions.ArithmeticCorrelationGeometry
 open GaloisForLFunctions.SelectivePositivityAndThresholdLaws
@@ -98,7 +98,7 @@ theorem escapedPairing_flatSource_dyadic_ge_half {N : ℕ} (hN : 1 ≤ N) :
 /-- Exact difference identity expressing `escapedPairing N a b (moebiusSource N) (flatSource N)` via
 `moebiusHarmonicTail` at `(N - b) / a` and `N`. -/
 theorem escapedPairing_moebiusSource_eq_moebiusHarmonicTail_sub
-    {N : ℕ} (a : ℕ+) {b : ℕ} (hbN : b ≤ N) :
+    (N : ℕ) (a : ℕ+) (b : ℕ) :
     escapedPairing N a b (moebiusSource N) (flatSource N) =
       moebiusHarmonicTail ((N - b) / a) - moebiusHarmonicTail N := by
   have hMN : (N - b) / a ≤ N := (Nat.div_le_self _ _).trans (Nat.sub_le N b)
@@ -119,7 +119,7 @@ theorem escapedPairing_moebiusSource_uniform_tendsto_zero :
     unfold moebiusHarmonicTail
     simpa using RHTower.tendsto_sum_range_succ_moebius_div.neg
   obtain ⟨M₀, hM₀⟩ := Metric.tendsto_atTop.mp htend (ε / 2) (half_pos hε)
-  refine ⟨M₀, fun N a b hbN hM => ?_⟩
+  refine ⟨M₀, fun N a b _ hM => ?_⟩
   have hMN : (N - b) / a ≤ N := (Nat.div_le_self _ _).trans (Nat.sub_le N b)
   have h1 : |moebiusHarmonicTail ((N - b) / a)| ≤ ε / 2 := by
     have hd := hM₀ ((N - b) / a) hM
@@ -129,7 +129,7 @@ theorem escapedPairing_moebiusSource_uniform_tendsto_zero :
     have hd := hM₀ N (le_trans hM hMN)
     rw [Real.dist_eq, sub_zero] at hd
     exact hd.le
-  rw [escapedPairing_moebiusSource_eq_moebiusHarmonicTail_sub a hbN]
+  rw [escapedPairing_moebiusSource_eq_moebiusHarmonicTail_sub N a b]
   calc |moebiusHarmonicTail ((N - b) / a) - moebiusHarmonicTail N|
       ≤ |moebiusHarmonicTail ((N - b) / a)| + |moebiusHarmonicTail N| := abs_sub _ _
     _ ≤ ε / 2 + ε / 2 := add_le_add h1 h2
@@ -191,6 +191,8 @@ theorem exists_abs_escapedPairing_moebiusSource_le_vk_rate :
       obtain ⟨hNm, hNsq, hNmono⟩ := hpoint N hMN
       have hgN_nonneg : 0 ≤ vkKappa * vkScale (N : ℝ) :=
         le_trans (by positivity) hNsq
+      have hMN_scale : vkKappa * vkScale (M : ℝ) ≤ vkKappa * vkScale (N : ℝ) :=
+        mul_le_mul_of_nonneg_left hNmono hκ.le
       have hexp_le : Real.exp (-(vkKappa * vkScale (N : ℝ) / 24)) ≤
           Real.exp (-(vkKappa * vkScale (M : ℝ) / 48)) :=
         Real.exp_le_exp.mpr (by linarith)
@@ -315,8 +317,8 @@ theorem exists_abs_moebiusHarmonicTail_le_vk_rate :
   have hdiv : (N - (N - M)) / (1 : ℕ+) = M := by
     simp only [PNat.val_ofNat, Nat.div_one]
     omega
-  have hesc := hbd N 1 (N - M) hbN (hdiv ▸ hM)
-  rw [escapedPairing_moebiusSource_eq_moebiusHarmonicTail_sub 1 hbN, hdiv] at hesc
+  have hesc := hbd N 1 (N - M) hbN (by rwa [hdiv])
+  rw [escapedPairing_moebiusSource_eq_moebiusHarmonicTail_sub N 1 (N - M), hdiv] at hesc
   exact hesc
 
 /-! ## §3. Pointwise Escaped/Receiver/Abscissa Equivalence, Seven-Way Quasi-RH, and `θ(λ) → 1 / 2⁻` -/
@@ -409,7 +411,6 @@ theorem coalescentResonanceExponent_properties :
     refine hlim.congr' (eventually_gt_atTop (0 : ℝ) |>.mono fun lam hlam => ?_)
     unfold coalescentResonanceExponent
     field_simp [hlam.ne']
-    ring
 
 /-- **First-Blood Landmark Equivalence (`λ = 4 / 3`, `θ = 1 / 8`):**
 At the pair-correlation aperture `λ = 4 / 3`, `GrowingEndpointEscapedMoebiusLaw (1 / 8)` is

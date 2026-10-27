@@ -75,8 +75,12 @@ prove the original tent's variance and its finite divisor-sieve realization.
 This remains a partial card. A dedicated exact-incidence energy and its
 vanishing/coercivity consequence, transport of energies into the common
 arithmetic model, and a statement for actual continuum correlation constraints
-are not formalized here. The user paused further work; these gaps remain open.
-No graph statement is asserted to settle the continuum question.
+remain under active formalization in the resumed programme. Drafts include
+exact graph-energy identities, all-energy sieve transport, weighted sharpness,
+quantitative correlation-sample stability, and actual smooth integer-grid-blind
+sources with half-sized perturbed-node violations. No draft is counted as
+certified before its direct source and transitive axiom checks pass. Current
+evidence is recorded in [the full programme](../../1-in-progress/leftovers-unconditional-formalization.md).
 
 Evidence: `/tmp/leftovers-dyadic-perturbed-public-names.json` and
 `/tmp/leftovers-dyadic-perturbed-audit-r2.log` (62 declarations across both cards).

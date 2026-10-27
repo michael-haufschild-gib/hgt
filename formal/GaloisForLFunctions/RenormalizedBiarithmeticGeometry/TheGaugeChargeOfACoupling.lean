@@ -9,12 +9,15 @@ acts on the kernel by the conjugation `K(a, b) ↦ σ(a)σ(b)K(a, b)` exactly wh
 `(n; a, b)` in its support satisfies `σ(n) = σ(a)σ(b)` for every `σ`. Such couplings are *blind*:
 the kernel cannot tell `ζ` from Liouville's `ζ(2s)/ζ(s)`.
 
-* **Classification** (`realSignBlind_iff_isSquare`). A coupling `(n; a, b)` is blind under every real
-  sign gauge iff `n a b` is a perfect square. The proof uses the prime-flip gauges
+* **Classification** (`realSignBlind_iff_isSquare`). A coupling `(n; a, b)` is blind under every
+  real sign gauge iff `n a b` is a perfect square. The proof uses the prime-flip gauges
   (`flipGauge`), with character `(−1)^{v_p}` (`gaugeChar_flipGauge`), and the square criterion
   `IsSquare N ↔ ∀ p, Even (v_p N)` (`isSquare_iff_even_factorization`).
 * **Kernel form** (`sourceKernel_twist_iff`). The source twist acts on a kernel by conjugation for
   every real gauge iff every coupling in its support is of square class.
+* **Square-class criteria cannot select the Euler point** (`sourceForm_twist_eq`,
+  `sourceForm_nonneg_twist_iff`). For square-class kernels the real-gauge twist of the source is the
+  sign change `x ↦ σx` of the modes, so a positivity criterion holds for `Λ` iff it holds for `λΛ`.
 * **Diagonal, ratio and product couplings are blind** (`diagonal_coupling_blind`,
   `ratio_coupling_blind`, `product_coupling_blind`): `a·a`, `n·a·(an)` and `(ab)·a·b` are squares.
   This is the structural reason behind unitary gauge blindness of multiplicative lattice forms.
@@ -155,6 +158,52 @@ theorem sourceKernel_twist_iff {S : Finset ℕ} (hS : ∀ n ∈ S, n ≠ 0) {a b
     · simp [hc]
     · rw [gaugeTwist, (realSignBlind_iff_isSquare (hS n hn) ha hb).mpr (h n hn hc) ω hω]
       ring
+
+/-! ### Square-class criteria cannot select the Euler point -/
+
+/-- The quadratic form on modes `T` of the kernel built from the source `F`. -/
+def sourceForm (T S : Finset ℕ) (c : ℕ → ℕ → ℕ → ℂ) (F : ℕ → ℂ) (x : ℕ → ℝ) : ℂ :=
+  ∑ a ∈ T, ∑ b ∈ T, (x a : ℂ) * x b * sourceKernel S (fun n => c n a b) F
+
+/-- Twisting a square-class source by a real gauge is the sign change `x ↦ σx` of the modes. -/
+theorem sourceForm_twist_eq {T S : Finset ℕ} (hT : ∀ a ∈ T, a ≠ 0) (hS : ∀ n ∈ S, n ≠ 0)
+    {c : ℕ → ℕ → ℕ → ℂ}
+    (hsq : ∀ a ∈ T, ∀ b ∈ T, ∀ n ∈ S, c n a b ≠ 0 → IsSquare (n * a * b))
+    {ω : PrimeGauge} (hω : IsRealSignGauge ω) (F : ℕ → ℂ) (x : ℕ → ℝ) :
+    sourceForm T S c (gaugeTwist ω F) x =
+      sourceForm T S c F fun a => realSignChar ω a * x a := by
+  unfold sourceForm
+  refine Finset.sum_congr rfl fun a ha => Finset.sum_congr rfl fun b hb => ?_
+  rw [(sourceKernel_twist_iff hS (hT a ha) (hT b hb) (fun n => c n a b)).mpr
+    (fun n hn hc => hsq a ha b hb n hn hc) ω hω F,
+    gaugeChar_eq_realSignChar hω a, gaugeChar_eq_realSignChar hω b]
+  push_cast
+  ring
+
+/-- **Square-class criteria cannot tell a source from its real-gauge twin.** A positivity criterion
+built from square-class couplings holds for `F` iff it holds for `σF`; at the Liouville gauge,
+for `Λ` iff for `λΛ`. -/
+theorem sourceForm_nonneg_twist_iff {T S : Finset ℕ} (hT : ∀ a ∈ T, a ≠ 0)
+    (hS : ∀ n ∈ S, n ≠ 0) {c : ℕ → ℕ → ℕ → ℂ}
+    (hsq : ∀ a ∈ T, ∀ b ∈ T, ∀ n ∈ S, c n a b ≠ 0 → IsSquare (n * a * b))
+    {ω : PrimeGauge} (hω : IsRealSignGauge ω) (F : ℕ → ℂ) :
+    (∀ x : ℕ → ℝ, 0 ≤ (sourceForm T S c F x).re) ↔
+      ∀ x : ℕ → ℝ, 0 ≤ (sourceForm T S c (gaugeTwist ω F) x).re := by
+  have hsq1 : ∀ a ∈ T, realSignChar ω a * realSignChar ω a = 1 := fun a ha => by
+    rw [← sq]; exact realSignChar_sq_eq_one hω (hT a ha)
+  constructor
+  · intro h x
+    rw [sourceForm_twist_eq hT hS hsq hω]
+    exact h _
+  · intro h x
+    have hx := h fun a => realSignChar ω a * x a
+    rw [sourceForm_twist_eq hT hS hsq hω] at hx
+    have heq : sourceForm T S c F (fun a => realSignChar ω a * (realSignChar ω a * x a)) =
+        sourceForm T S c F x := by
+      unfold sourceForm
+      refine Finset.sum_congr rfl fun a ha => Finset.sum_congr rfl fun b hb => ?_
+      simp only [← mul_assoc, hsq1 a ha, hsq1 b hb, one_mul]
+    rwa [heq] at hx
 
 /-! ### Which couplings are blind -/
 

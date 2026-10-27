@@ -145,7 +145,8 @@ theorem seenLevels_subset_roots (f : CompactTest) (L : ℝ) {n : ℕ} {c : Fin n
   simp only [Set.mem_setOf_eq, eval_coeffPoly]
   exact (hankelForm_eq_zero_iff f L c).mp hnull ρ hρ
 
-/-- **Shell rigidity, finiteness.** A nonzero Hankel null vector forces finitely many seen levels. -/
+/-- **Shell rigidity, finiteness.** A nonzero Hankel null vector forces finitely many seen
+levels. -/
 theorem seenLevels_finite_of_hankel_null (f : CompactTest) (L : ℝ) {n : ℕ} {c : Fin n → ℝ}
     (hc : c ≠ 0) (hnull : hankelForm f L 0 c = 0) : (seenLevels f L).Finite := by
   refine Set.Finite.subset (coeffPoly c).roots.toFinset.finite_toSet fun t ht => ?_

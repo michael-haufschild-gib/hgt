@@ -1,0 +1,91 @@
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheCountertermRankDichotomy
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.ThePoleNodeCompletesTheArchimedeanGerm
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.IntegerThetaPrefixesReadTheDefectWithoutLoss
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheGaugeChargeOfACoupling
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.LogCellsFixTheGauge
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.CriticalDiscsAndTheTerminalLens
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.PositivityIsIrreversible
+import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.CollectivePacketsDiluteOverIndependentOrdinates
+
+/-!
+# The laws of Renormalized Biarithmetic Geometry
+
+One statement collecting the laws proved in the programme:
+
+1. **Self-energy survival.** Every renormalization of the prime-place torsion germ has trivial
+   survival cone and the renormalized limit is indefinite at every prime power; every
+   renormalization of the archimedean lattice germ has the polar-neutral hyperplane as survival
+   cone, where the digamma Hankel form is positive; the pole node completes it to the positive
+   harmonic-number kernel.
+2. **Lossless amplification.** A positive Hecke defect amplifies dyadically with loss `D(f)`, and RH
+   is sub-doubly-exponential dyadic growth of every Hecke defect.
+3. **Gauge charge.** A coupling is blind under every real sign gauge iff it is of square class;
+   successor couplings are charged.
+4. **Cells fix the gauge.** The dyadic cell dilation is covariant only at the Euler gauge.
+5. **Terminal lens.** The lens of a terminal is zero-free away from the terminal.
+6. **Irreversibility.** A nontrivial positive deformation cannot be undone.
+7. **Kronecker dilution.** A positive packet on independent ordinates buys at most its pole share.
+-/
+
+noncomputable section
+
+open Filter Topology Finset
+
+namespace GaloisForLFunctions.RenormalizedBiarithmeticGeometry
+
+open Zeta23 GaloisForLFunctions.ConjugateDiagonalGeometry GaloisForLFunctions.ArithmeticPolarization
+  BiarithmeticGaugeGeometry RHTower ArithmeticCorrespondencePositivity
+
+/-- **The laws of Renormalized Biarithmetic Geometry.** -/
+theorem renormalized_biarithmetic_geometry_laws :
+    -- Self-energy survival: prime place
+    (∀ (S : Finset ℕ), (∀ n ∈ S, 0 < n) → S.Nonempty →
+      ∀ (t : ℝ → ℝ) (C A' : Matrix S S ℝ),
+        (∀ i j, Tendsto (fun r => torsionGerm S r i j - t r * C i j) (𝓝[<] 1) (𝓝 (A' i j))) →
+          survivalCone C = {0}) ∧
+    (∀ q : ℕ, IsPrimePow q → ∃ x : ℕ → ℝ, torsionLimitForm {1, q} x < 0) ∧
+    -- Self-energy survival: archimedean place and the pole node
+    (∀ (n : ℕ) (x : Fin n → ℝ), (∀ i, 0 < x i) → ∀ c : Fin n → ℝ, ∑ i, c i = 0 →
+      0 ≤ ∑ i, ∑ j, c i * c j * (-(Complex.digamma ((x i + x j : ℝ) : ℂ)).re)) ∧
+    (∀ (n : ℕ) (x : Fin n → ℝ), (∀ i, 0 ≤ x i) → ∀ c : Fin n → ℝ,
+      0 ≤ ∑ i, ∑ j, c i * c j * (harmonicFn (x i) + harmonicFn (x j) - harmonicFn (x i + x j))) ∧
+    -- Lossless amplification
+    (∀ (f : CompactTest) (L θ : ℝ), mass f * (2 * Real.cosh θ - 2) ≤ heckeDefect f L →
+      ∀ k : ℕ, mass f * (2 * Real.cosh (2 ^ k * θ) - 2) ≤ heckeDefect f (2 ^ k * L)) ∧
+    (RiemannHypothesis ↔ ∀ f : CompactTest, ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, ∀ k : ℕ,
+      heckeDefect f (2 ^ k) ≤ C * Real.exp (ε * 2 ^ k)) ∧
+    -- Gauge charge
+    (∀ {n a b : ℕ}, n ≠ 0 → a ≠ 0 → b ≠ 0 →
+      ((∀ ω : PrimeGauge, IsRealSignGauge ω → ω.gaugeChar n = ω.gaugeChar a * ω.gaugeChar b) ↔
+        IsSquare (n * a * b))) ∧
+    (∀ {a : ℕ}, 0 < a →
+      ∃ ω : PrimeGauge, IsRealSignGauge ω ∧ ω.gaugeChar a * ω.gaugeChar (a + 1) ≠ 1) ∧
+    -- Cells fix the gauge
+    (∀ ω : PrimeGauge, (∃ c : ℂ, ∀ q : ℕ → ℂ, q 0 = 0 →
+      gaugeTwist ω (cellDilate 2 q) = c • cellDilate 2 (gaugeTwist ω q)) ↔
+        ω = PrimeGauge.eulerGauge) ∧
+    -- Terminal lens
+    (∀ {p : XiZeroCopy}, IsTerminal p → 1 / 2 < (p.1 : ℂ).re → ∀ {s : ℂ}, InTerminalLens p s →
+      |s.im - xiZeroHeight p| < lensWidth (xiZeroDepth p) → s ≠ (p.1 : ℂ) → xi s ≠ 0) ∧
+    -- Irreversibility
+    (∀ {Λ₀ Λ : ℂ → ℂ}, PositiveDeformation Λ₀ Λ →
+      (∀ σ₂ : ℝ, ∃ σ : ℝ, σ₂ < σ ∧ logDeriv Λ₀ (σ : ℂ) ≠ logDeriv Λ (σ : ℂ)) →
+        ¬ PositiveDeformation Λ Λ₀) ∧
+    -- Kronecker dilution
+    (∀ {ι : Type} [Fintype ι] [DecidableEq ι] {ω : ι → ℝ}, LinearIndependent ℚ ω →
+      ∀ (a₀ : ℝ) (a : ι → ℝ), (∀ t : ℝ, 0 ≤ a₀ + ∑ j, a j * Real.cos (ω j * t)) →
+        ∑ j, |a j| ≤ a₀) :=
+  ⟨fun _ hS hne _ _ _ hC => torsion_survivalCone_eq hS hne hC,
+    fun _ hq => torsionLimitForm_neg hq,
+    fun _ _ hx _ hc => neg_digamma_hankel_nonneg hx hc,
+    fun _ _ hx c => harmonicKernel_nonneg hx c,
+    fun f L θ h k => heckeDefect_dyadic_ge f L θ h k,
+    riemannHypothesis_iff_dyadic_subexp,
+    fun hn ha hb => realSignBlind_iff_isSquare hn ha hb,
+    fun ha => successor_coupling_charged ha,
+    cellDilate_two_covariant_iff,
+    fun hp hright _ hs hlt hsp => xi_ne_zero_of_mem_terminalLens hp hright hs hlt hsp,
+    fun h hne => not_positiveDeformation_of_ne h hne,
+    fun hind a₀ a hP => sum_abs_le_of_packet_nonneg hind a₀ a hP⟩
+
+end GaloisForLFunctions.RenormalizedBiarithmeticGeometry

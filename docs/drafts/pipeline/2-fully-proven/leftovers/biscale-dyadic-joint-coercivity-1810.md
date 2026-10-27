@@ -112,8 +112,11 @@ counts, explicit high/low level counts, standalone doubling-only failure
 statement, and transport of all energies through the common arithmetic model
 are not claimed as separately formalized. The paired-block proof above
 formalizes the exact advertised lower conclusion. Perturbed weights and node
-geometry are recorded on the companion card. The user paused further work;
-no additional draft is started to close these remaining gates.
+geometry are recorded on the companion card. The resumed formalization is
+active: exact path/depth estimates, high/low counts, doubling-only failure,
+and common-model energy transport are drafted and undergoing individual
+source and axiom checks. Current evidence and pending checks are tracked in
+[the full programme](../../1-in-progress/leftovers-unconditional-formalization.md).
 
 Evidence: `/tmp/leftovers-dyadic-perturbed-public-names.json` and
 `/tmp/leftovers-dyadic-perturbed-audit-r2.log` (62 declarations across both cards).

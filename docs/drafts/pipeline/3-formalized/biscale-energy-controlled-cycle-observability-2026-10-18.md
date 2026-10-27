@@ -12,7 +12,7 @@ Use actual normalized autocorrelations `H_f` and the singular archimedean energy
 
 For an energy ceiling K, derive an explicit positive collar radius rho from the existing logarithmic increment estimate. At nodes x in a finite mesh choose n with |x|/n <= rho. Two literal cycles measure H_f(x/n)^2 and H_f(x) H_f(x/n)^n. Their errors control signed H_f(x)-H_g(x), including negative outer correlations. The energy modulus controls interpolation between mesh nodes. Beyond a chosen radius, the logarithmic ceiling-node sampling estimate controls the difference by the actual signed trace discrepancy plus an explicit O(sqrt(K/radius)) term. The grid-blind case is a specialization, not the theorem's domain.
 
-This extends the positive mechanism in [the earlier finite-cycle card](../2-fully-proven/biscale-finite-cycle-recovery-1810.md); that supporting formalization is not separately counted.
+This extends the positive mechanism in [the earlier finite-cycle card](leftovers/biscale-finite-cycle-recovery-1810.md); that supporting formalization is not separately counted.
 
 ## Exact-order obstruction: paper construction
 

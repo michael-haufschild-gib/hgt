@@ -96,15 +96,17 @@ theorem kmsForm_eq_tail (q : ℝ) (N : ℕ) (x : ℕ → ℝ) :
   | succ N ih =>
     set y : ℕ → ℝ := fun i => x (i + 1)
     have hK : kmsForm q (N + 1) x = x 0 ^ 2 + 2 * x 0 * (q * towerTail q N y 0) + kmsForm q N y := by
-      simp only [kmsForm, Finset.sum_range_succ', kmsEntry_succ_succ, kmsEntry_succ_zero,
-        kmsEntry_zero_succ, kmsEntry_self, towerTail, Nat.sub_zero, add_zero, y]
-      rw [mul_sum, mul_sum]
-      simp only [sum_add_distrib]
-      have h1 : ∀ i ∈ range N, x (i + 1) * x 0 * q ^ (i + 1) = x 0 * (q * (x (i + 1) * q ^ i)) :=
+      have hT : q * towerTail q N y 0 = ∑ i ∈ range N, x (i + 1) * q ^ (i + 1) := by
+        simp only [towerTail, Nat.sub_zero, add_zero, y, mul_sum]
+        exact sum_congr rfl fun i _ => by ring
+      have h1 : ∀ i ∈ range N, x (i + 1) * x 0 * q ^ (i + 1) = x 0 * (x (i + 1) * q ^ (i + 1)) :=
         fun i _ => by ring
-      have h2 : ∀ j ∈ range N, x 0 * x (j + 1) * q ^ (j + 1) = x 0 * (q * (x (j + 1) * q ^ j)) :=
+      have h2 : ∀ j ∈ range N, x 0 * x (j + 1) * q ^ (j + 1) = x 0 * (x (j + 1) * q ^ (j + 1)) :=
         fun j _ => by ring
-      rw [sum_congr rfl h1, sum_congr rfl h2, ← mul_sum, ← mul_sum]
+      rw [hT]
+      simp only [kmsForm, Finset.sum_range_succ', kmsEntry_succ_succ, kmsEntry_succ_zero,
+        kmsEntry_zero_succ, kmsEntry_self, y, sum_add_distrib]
+      rw [sum_congr rfl h1, sum_congr rfl h2, ← mul_sum]
       ring
     have hS : ∑ k ∈ range (N + 1), towerTail q (N + 1) x (k + 1) ^ 2 =
         towerTail q N y 0 ^ 2 + ∑ k ∈ range N, towerTail q N y (k + 1) ^ 2 := by
@@ -225,7 +227,7 @@ theorem kmsForm_eq_orbit_levels {p : ℕ} (hp : p.Prime) (N : ℕ) (x : ℕ → 
     Finset.sum_range_succ' (fun k => (Nat.totient (p ^ k) : ℝ) *
       (∑ i ∈ Ico k (M + 1), x i * q ^ i) ^ 2) M, sum_congr rfl hk, hlev 0 (Nat.zero_le _)]
   simp only [pow_zero, one_mul, Nat.totient_one, Nat.cast_one]
-  rw [mul_sum]
+  rw [show (0 : ℝ) ^ 2 = 0 by norm_num, add_zero, mul_sum]
   ring
 
 /-! ### Weil's prime kernel on a ladder -/
@@ -242,9 +244,14 @@ theorem weilPrimeKernel_ladder {p c : ℕ} (hp : p.Prime) (hc : 0 < c) (i j : �
   have hent : ∀ d, 0 < d → Λ (p ^ d) / Real.sqrt ((p ^ d : ℕ) : ℝ) =
       Real.log p * (1 / Real.sqrt p) ^ d := by
     intro d hd
-    rw [ArithmeticFunction.vonMangoldt_apply_pow hd.ne', ArithmeticFunction.vonMangoldt_apply_prime hp,
-      Nat.cast_pow, Real.sqrt_pow (by positivity : (0 : ℝ) ≤ p), one_div_pow, div_eq_mul_inv,
-      one_div]
+    have hp0 : (0 : ℝ) ≤ p := Nat.cast_nonneg p
+    have hsq : Real.sqrt ((p : ℝ) ^ d) = Real.sqrt p ^ d := by
+      rw [show ((p : ℝ)) ^ d = (Real.sqrt p ^ d) ^ 2 by
+        rw [← pow_mul, mul_comm, pow_mul, Real.sq_sqrt hp0]]
+      exact Real.sqrt_sq (by positivity)
+    rw [ArithmeticFunction.vonMangoldt_apply_pow hd.ne',
+      ArithmeticFunction.vonMangoldt_apply_prime hp, Nat.cast_pow, hsq, one_div_pow,
+      div_eq_mul_inv, one_div]
   rcases lt_trichotomy i j with hij | rfl | hij
   · have hdvd : c * p ^ i ∣ c * p ^ j := Nat.mul_dvd_mul_left c (pow_dvd_pow p hij.le)
     have hdiv : c * p ^ j / (c * p ^ i) = p ^ (j - i) := by
@@ -275,7 +282,7 @@ theorem ladderForm_eq {p c : ℕ} (hp : p.Prime) (hc : 0 < c) (N : ℕ) (x : ℕ
   rw [← sum_sub_distrib]
   refine sum_congr rfl fun i hi => ?_
   rw [← Finset.sum_erase_add _ _ hi, ← Finset.sum_erase_add (range N) _ hi]
-  simp only [eq_self_iff_true, if_true, kmsEntry_self]
+  simp only [if_true, kmsEntry_self]
   have : ∀ j ∈ (range N).erase i, x i * x j * (if i = j then 0 else
       Real.log p * kmsEntry (1 / Real.sqrt p) i j) =
         Real.log p * (x i * x j * kmsEntry (1 / Real.sqrt p) i j) := by

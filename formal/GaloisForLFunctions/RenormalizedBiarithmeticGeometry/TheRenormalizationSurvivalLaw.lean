@@ -21,8 +21,8 @@ renormalized part `Q_r − s_r B` converges to a limit form `A`. The divergent p
   (compactness of the unit sphere).
 * **The survival equivalence** (`quad_nonneg_on_survivalCone_iff`). For `B ⪰ 0`: `A ≥ 0` on the
   survival cone iff `A + sB + εI` is eventually positive for every `ε > 0`.
-* **Scalar counterterms carry nothing** (`survivalCone_one`, `exists_quad_add_smul_one_pos`). For the
-  identity counterterm the survival cone is `{0}` and every symmetric form is the renormalized
+* **Scalar counterterms carry nothing** (`survivalCone_one`, `exists_quad_add_smul_one_pos`). For
+  the identity counterterm the survival cone is `{0}` and every symmetric form is the renormalized
   limit of positive definite forms.
 * **Rank-one counterterms** (`quad_vecMulVec_self`, `mem_survivalCone_vecMulVec_iff`). For
   `B = v vᵀ` the survival cone is the hyperplane `⟪v, x⟫ = 0`.

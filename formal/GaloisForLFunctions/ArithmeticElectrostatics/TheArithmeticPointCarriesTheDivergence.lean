@@ -60,7 +60,7 @@ theorem orbitIntersection_one_left {n : ℕ} (hn : 2 ≤ n) : orbitIntersection 
 
 /-- The arithmetic point does not interact with itself. -/
 theorem orbitIntersection_one_one : orbitIntersection 1 1 = 0 := by
-  simp [orbitIntersection, primitiveRoots_one]
+  simp [orbitIntersection]
 
 /-! ### Nonnegative self-intersections -/
 
@@ -68,10 +68,7 @@ theorem orbitIntersection_one_one : orbitIntersection 1 1 = 0 := by
 theorem localCorrection_le {n : ℕ} (hn : 0 < n) :
     localCorrection n ≤ (Nat.totient n : ℝ) * Real.log n := by
   rw [localCorrection, mul_apply, ← vonMangoldt_sum, mul_sum,
-    ← Nat.sum_divisorsAntidiagonal' (fun a b => (Nat.totient n : ℝ) * Λ a)]
-  rw [Nat.sum_divisorsAntidiagonal (fun a b => (Nat.totient n : ℝ) * Λ a)] at *
-  rw [← Nat.sum_divisorsAntidiagonal (fun a b => totientR a * Λ b),
-    ← Nat.sum_divisorsAntidiagonal' (fun a b => (Nat.totient n : ℝ) * Λ a)]
+    ← Nat.sum_divisorsAntidiagonal' (fun _ b => (Nat.totient n : ℝ) * Λ b)]
   refine sum_le_sum fun x hx => ?_
   obtain ⟨hmul, -⟩ := Nat.mem_divisorsAntidiagonal.mp hx
   rw [totientR_apply]
@@ -146,7 +143,6 @@ theorem le_counterterm_one {N : ℕ} (hN : 1 ≤ N) {c : ℕ → ℝ} (hc : ∀ 
     rw [if_neg hn1]
     have := (hden n hn).ne'
     field_simp
-    ring
   linarith
 
 /-- A constant counterterm `κ` satisfies `κ² ≥ Σ_{2 ≤ n ≤ N} Λ(n)²/φ(n)`. -/

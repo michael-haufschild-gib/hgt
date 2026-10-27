@@ -29,11 +29,23 @@ Stage-3 promotion still requires exact statement coverage, direct source
 checks, transitive axiom audits and umbrella wiring; historical logs alone
 do not establish current completion.
 
-Current inventory confirms eleven stage-2 cards. Initial source search
+The resumed inventory contained eleven stage-2 cards. Initial source search
 located existing cycle-recovery leaves. The near-complete bi-scale cards
 still explicitly record missing parameter selection, counting, exact-incidence
 energy and common-model transport. The geometric and analytic cards retain
-their complete original scope. No card has been promoted in this resumed run.
+their complete original scope. The finite-cycle card is now promoted;
+ten stage-2 cards remain. Four of the original fourteen cards are fully
+formalized, including the three cards completed before the resumption.
+
+**Completed resumed card:**
+[finite closed-cycle recovery](../3-formalized/leftovers/biscale-finite-cycle-recovery-1810.md).
+All fourteen canonical leaves have final direct source checks, and all 133
+public declarations have standard-axiom audits. Source hashes, final logs
+and unique imports are verified together in
+`/tmp/leftovers-cycle-full-evidence.json`. The historical combined audit
+contains one redundant-tactic warning, already removed before its canonical
+final check; every canonical final log is free of errors and warnings.
+The full programme remains active.
 
 Pre-existing edits to the RH reports, the arithmetic-electrostatics source,
 renormalization sources, and selective-positivity source are unrelated and
@@ -101,9 +113,19 @@ replace both discrepancies by the total fitting residual, yielding coefficient
 `2(d+2)`. This exact remaining coverage is drafted in
 `/tmp/leftovers_finite_net_derivative_recovery.lean`, intended canonical
 `FiniteNetDerivativeRecovery.lean`. It imports the new finite-net base and
-`DerivativeCycleConditioning`; each needs its missing olean built only when
-this downstream draft is ready to check. No card is promoted before this
-extension passes source and axiom audits.
+`DerivativeCycleConditioning`. Both missing dependency oleans have now been
+built individually. The derivative-conditioning build exited 0 (session
+45794, `/tmp/leftovers-cycle-conditioning-build.log`), with the same two
+informational ring notices already recorded for that unchanged source.
+The two-declaration derivative-net audit passed without diagnostics and with
+only standard axioms (session 55203,
+`/tmp/leftovers-cycle-finite-net-derivative-audit.log`). The identical canonical
+leaf is wired and passed its final direct check (session 33158, exit 0,
+empty `/tmp/leftovers-cycle-finite-net-derivative-final.log`). Source hash:
+`b5003d1a916f58649a5f0214ae7a2164c54321e312b30a4591b39c78664ea6f4`.
+The complete statement review and source-hash/import checks passed, and the
+card was moved to stage 3. Matching plain scratch mirrors were removed;
+the audit sources and evidence logs remain.
 
 The base collar theorem has an additional source-domain obligation: its
 paper statement uses nonzero real L² sources, whereas the existing
@@ -136,9 +158,9 @@ matrix coefficient and translation isometry, adding a named continuity lemma.
 The third **18-declaration** audit passed with only standard axioms and no
 diagnostics (`/tmp/leftovers-cycle-l2-audit-r3.log`, session 37236, exit 0).
 An explicit argument fixed the remaining modulus-membership elaboration.
-The identical canonical `L2ClosedCycleRecovery.lean` is wired, and its direct
-final source check is running (session 85675,
-`/tmp/leftovers-cycle-l2-final.log`). No new hypothesis or mathematical
+The identical canonical `L2ClosedCycleRecovery.lean` is wired and passed its
+direct final source check (session 85675, exit 0, empty
+`/tmp/leftovers-cycle-l2-final.log`). Source hash: `e5c8619c7059039704b60013e8137e740706a1d3597f234345e744091a5b608c`. No new hypothesis or mathematical
 statement weakening was used to resolve the errors.
 
 ### Exact-incidence and common-model completion argument
@@ -162,6 +184,20 @@ identical for arbitrary finite signals and actual divisor sieves. The
 perturbed quadratic lower bound and weighted positive survivor use the same
 coefficient model, with no additional premise.
 
+The weighted survivor's stated sharpness is also made explicit. For
+`N=2^(h+4)-1`, the original tent has weighted energy zero, additive energy
+at most two, and variance at least `N/2048`. Any valid constant `C` must be
+nonnegative, since otherwise its nonnegative-energy right side contradicts
+the positive variance. Thus `N/2048≤2C`, yielding `N/4096≤C` for every
+allowed perturbation. Exact finite-sieve energy transport gives an equivalence
+of the valid weighted constants and the same lower bound on actual divisor
+sieves. These three consequences are included in the arithmetic transport
+draft. It additionally imports the existing `DyadicMantissaVariance` leaf.
+The logarithmic-coordinate identity is explicit as well: each physical node
+is at least `1−δ>0`, so exponentiating its logarithm recovers the node and
+preserves every actual all-pairs weight. The transport audit now contains
+eighteen public declarations.
+
 Uncertified drafts: `/tmp/leftovers_exact_doubling_energy.lean` and
 `/tmp/leftovers_finite_sieve_graph_transport.lean`. Their imported existing
 leaves `QuadraticPerturbedNodes`, `IntegerLinearVariance`,
@@ -175,6 +211,11 @@ Further uncertified drafts preserve the paper's separate intermediate claims:
 `/tmp/leftovers_binary_depth_coercivity.lean` has the exact geometric path
 sum, weighted Cauchy--Schwarz, descendant bound at actual binary depth,
 `8N(2/3)^k` edge charge, and the stated `8NT` tree bound.
+Its first six-declaration audit found a rewrite issue in the geometric path
+sum; the four descendant/tree declarations already had standard axioms.
+The successor step now uses the qualified `Finset.sum_range_succ` rewrite.
+The revised audit is running (session 79411,
+`/tmp/leftovers-binary-depth-audit-r2.log`).
 `/tmp/leftovers_dyadic_level_counts.lean` counts explicit last-level blocks:
 `[10r,14r)` is high, `[8r,9r) ∪ [15r,16r)` is low, where `r=2^h`.
 Their counts are `4r=q/2` and `2r=q/4`, respectively. The original tent
@@ -214,6 +255,23 @@ and direct inspection of `MatomakiTeravainenTwistedFourthMoments` and
 remain `Prop` definitions and short-case consumers, not discharged inputs.
 The historical exponent retune to `123/79` does not establish the original
 `1.55` statement requested here. Full exact-exponent completion remains required.
+
+### Selberg spectral dictionary re-audit
+
+The non-vacuous witness card's source audit is partly stale: current corpus
+search locates `RHTower/HyperbolicOrbitalIntegral.lean`, including actual
+hyperbolic dilation orbital integrals, conjugated annuli, and the Abel-transform
+formula. This supplies a genuine geometric ingredient, not the zeta dictionary.
+The existing `NonvacuousSmallEigenvalue` source remains the small-eigenvalue
+producer. Searches for `selbergZeta` in this corpus and then mathlib returned
+no matching declaration; searches for representation-valued Eisenstein/Fredholm
+continuation did not surface the required noncongruence continuation.
+The current sources do not yet discharge the actual Euler product, primitive
+class decomposition, noncongruence continuation, truncated trace identity,
+or zeta-zero dictionary. The card's warning about residual eigenvalues at the
+reflected root remains material: proving only the upper root does not certify
+the original two-root assertion. No substitute spectral-parameter polynomial
+or assumed trace formula will be treated as a solution.
 
 ## Historical user steering: finish started Lean work, then pause (superseded)
 

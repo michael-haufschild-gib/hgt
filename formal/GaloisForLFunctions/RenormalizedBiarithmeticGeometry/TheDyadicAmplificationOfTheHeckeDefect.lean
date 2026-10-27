@@ -148,7 +148,8 @@ theorem heckeDefect_dyadic_ge (f : CompactTest) (L θ : ℝ)
   · rw [← hD, zero_mul]
     exact heckeDefect_nonneg f _
 
-/-- **The dyadic sandwich**: between the effective angle `θ` read at scale `L` and the strip angle. -/
+/-- **The dyadic sandwich**: between the effective angle `θ` read at scale `L` and the strip
+angle. -/
 theorem heckeDefect_dyadic_sandwich (f : CompactTest) (L θ : ℝ)
     (h : mass f * (2 * Real.cosh θ - 2) ≤ heckeDefect f L) (k : ℕ) :
     mass f * (2 * Real.cosh (2 ^ k * θ) - 2) ≤ heckeDefect f (2 ^ k * L) ∧

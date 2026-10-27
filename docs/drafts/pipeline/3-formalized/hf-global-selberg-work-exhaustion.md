@@ -1,8 +1,8 @@
 # HF: global Selberg work and transverse energy
 
 - **ID:** hf-global-selberg-work-exhaustion
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean formalization in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM; unconditional paper proof and Lean formalization
 - **Parent goal:** unconditional Lean closure of HF, unchanged.
 - **Frontier input:** the source field is now identified at every Xi zero; full source
   sign and an upper bound on transverse energy remain open.
@@ -131,43 +131,64 @@ energy; pointwise convergence on that finite set and nonnegativity of all
 paired kernels force `W_R` eventually above every finite real bound. This is
 the extended-real limit and does not require interchange of divergent signed sums.
 
-## Proof checks still required
+## Lean theorem and audit
 
-- Verify the pairwise estimates with totalized denominators; do not divide by a
-  zero separation between multiplicity copies.
-- Prove product summability before exchanging infinite sums.
-- Prove that the finite source sum equals the paired kernel sum, including all
-  exterior rows; truncating both indices would be a different object.
-- Audit final source theorems with `#print axioms`; use only foreground
-  `lake --old env lean` checks and wire the completed module into its umbrella.
+Files under `formal/GaloisForLFunctions/ArithmeticElectrostatics/`:
 
-## Lean progress
+- `ReflectedTransverseWork.lean`: near/far mixed-term estimates, rational relative
+  variation, nonnegative damped work, uniform compact-taper bound, and the
+  inverse-quadratic product majorant, including all coincidence cases.
+- `TheSelbergWorkExhaustsTheTransverseEnergy.lean`: actual copied divisor and
+  arithmetic Laurent-residue source; absolute summability before reindexing;
+  complete finite-source identity; both limits, including infinite energy.
 
-`ArithmeticElectrostatics/ReflectedTransverseWork.lean` now checks and its missing
-olean was produced for the importing source module. It proves the near/far mixed
-term estimates, rational relative-variation law, nonnegative damped work, uniform
-compact-taper bound, and inverse-quadratic product majorant, including collisions.
-No limit changes or added mathematical premises were used.
+Exact declarations in `GaloisForLFunctions.ArithmeticElectrostatics`:
 
-`ArithmeticElectrostatics/TheSelbergWorkExhaustsTheTransverseEnergy.lean` is under
-construction: actual-copy product summability, taper convergence, finite source
-identification, and the extended-real outer limit. This card remains stage 2
-until the complete source formula and its dependency audit pass.
+- `xiTaperedSourceWork_eq_paired_tsum`: every compact arithmetic source work
+  equals one quarter of the reflected pair sum, with exterior rows retained.
+- `xiDampedSourceWork_nonneg`: damped work is nonnegative for every `R≥4`.
+- `xiTaperedSourceWork_tendsto`: the inner compact-cutoff limit equals this
+  finite damped work.
+- `xiCopyTransverseEnergy_eq_half_tsum`: the energy is exactly half the ordered
+  geometric pair sum over analytic multiplicity copies.
+- `xiDampedSourceWork_tendsto_energy`: `ofReal(W_(n+4))` converges to this full
+  extended energy without finite off-line support, simple-zero, separation,
+  ordinary undamped-work summability, or source-sign assumptions.
 
-The first check of the application module accepted the full-row absolute
-summability and four-row reflection identity. Three local rewrite errors were
-identified in the majorant and taper-limit presentation and corrected; a clean
-application-module audit is still required. The outer extended-real limit is
-being checked separately before insertion. No partial result is being treated
-as the complete target.
+The full application file passed the exact foreground check
+`lake --old env lean GaloisForLFunctions/ArithmeticElectrostatics/TheSelbergWorkExhaustsTheTransverseEnergy.lean`.
+The three source identity/limit audits report only `propext`, `Classical.choice`,
+and `Quot.sound`. No placeholders, new axioms, trusted-computation shortcuts, or
+limit increases were used. Both leaves are imported by the AES umbrella; the
+umbrella is not compiled. Only the two genuinely missing import dependencies
+(`ReflectedTransverseWork`, `EveryXiZeroHasASourceField`) had oleans written.
 
 ## Relation to the closing obstacle
 
-This target would remove a global exhaustion/summability premise in passing from
-arithmetic Laurent residues to energy. It supplies a source formula, not the
-required arithmetic upper bound. After it, the closing task remains controlling
+This theorem supplies a global exhaustion from arithmetic Laurent residues to
+energy. It supplies a source formula, not the required arithmetic upper bound.
+The closing task remains controlling
 the actual `W_R` above by a sub-unit bound or proving the full Weil sign.
 No external search, novelty audit, numerical experiment or new RH criterion.
+
+## Significance and next conjecture loop
+
+Verdict: **BRIDGE**, not closure of HF. The new corpus result is the complete
+multiplicity-exact two-stage source-work/energy identity, valid even with
+infinite energy. It does not assert convergence of the ordinary undamped signed
+source series. No external novelty claim is made: the user explicitly excluded
+external search and novelty audits.
+
+The mathematical gain is removal of the global source-exhaustion gap. The hard
+gap is unchanged in type: prove an actual arithmetic upper estimate on these
+source works that beats the off-line reserve, or prove full Weil positivity.
+The next cycle must attack that upper estimate directly. More characterizations,
+zero-side lower bounds, and finite-dimensional virial identities do not close it.
+
+Anti-theatre/anti-laziness audit: a substantive source theorem is now proved and
+formalized, but no HF sign premise was discharged. The corpus was searched for
+existing source, reflection, and convergence machinery; no difficulty-based
+downscoping was used. The parent goal remains active and unresolved.
 
 ## Log
 
@@ -176,3 +197,5 @@ No external search, novelty audit, numerical experiment or new RH criterion.
 - 2026-10-27 — exponential damping led to a good-height boundary argument;
   replaced it by rational damping and compact Lipschitz tapers, which permit
   absolute pairwise domination and avoid zero-separation assumptions.
+- 2026-10-27 — completed both limits and the actual arithmetic-source identity;
+  full application check and dependency audits passed.
