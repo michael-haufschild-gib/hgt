@@ -43,13 +43,8 @@ theorem atomicWeilForm_succShift (N : ℕ) (x : ℕ → ℝ) :
       ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, x m * x n * weilPrimeKernel (m + 1) (n + 1) := by
   have hsplit : ∀ f : ℕ → ℝ, ∑ n ∈ Icc 1 (N + 1), f n = f 1 + ∑ n ∈ Icc 1 N, f (n + 1) := by
     intro f
-    rw [← Nat.Icc_insert_succ_left (by omega : 1 ≤ N + 1), sum_insert (by simp)]
-    congr 1
-    rw [show Icc (1 + 1) (N + 1) = (Icc 1 N).map (addRightEmbedding 1) by
-      ext k; simp only [mem_Icc, mem_map, addRightEmbedding_apply]
-      constructor
-      · intro h; exact ⟨k - 1, by omega, by omega⟩
-      · rintro ⟨a, ha, rfl⟩; omega, sum_map]
+    rw [← insert_Icc_add_one_left_eq_Icc (by omega : 1 ≤ N + 1), sum_insert (by simp),
+      ← map_add_right_Icc 1 N 1, sum_map]
     rfl
   unfold atomicWeilForm
   rw [hsplit]
@@ -117,15 +112,13 @@ theorem atomicWeilForm_succShift_not_monotone :
     div_pos (Real.log_pos (by norm_num)) (by positivity)
   constructor
   · rw [show (4 : ℕ) = 3 + 1 from rfl, atomicWeilForm_succShift]
-    simp only [atomicWeilForm, show Icc 1 3 = {1, 2, 3} by decide, sum_insert, mem_insert,
-      mem_singleton, sum_singleton]
+    simp only [atomicWeilForm, show Icc 1 3 = {1, 2, 3} by decide]
     norm_num [weilPrimeKernel_self, k13, k24, hsym 3 1, hsym 4 2]
     linarith
   · rw [show (6 : ℕ) = 5 + 1 from rfl, atomicWeilForm_succShift]
-    simp only [atomicWeilForm, show Icc 1 5 = {1, 2, 3, 4, 5} by decide, sum_insert, mem_insert,
-      mem_singleton, sum_singleton]
+    simp only [atomicWeilForm, show Icc 1 5 = {1, 2, 3, 4, 5} by decide]
     norm_num [weilPrimeKernel_self, k25, k36, hsym 5 2, hsym 6 3]
-    linarith
+    linarith [Real.log_pos (by norm_num : (1 : ℝ) < 2)]
 
 /-! ### The successor connection as the archimedean gauge field -/
 

@@ -82,8 +82,10 @@ theorem markovEnergy_arithmeticSection_ge_reserve {G : ℕ → ℝ → ℝ} {N :
     nlinarith only [hwhalf, spacingRatio_lt_half, hδ]
   have hw' : w < atomSpacing N := by linarith only [hw2, hδ]
   have hwN : 2 * w ≤ spacingRatio / N := by
-    have h := mul_le_mul_of_nonneg_left (atomSpacing_le_inv hN) spacingRatio_pos.le
-    nlinarith only [hwhalf, h]
+    calc 2 * w ≤ spacingRatio * atomSpacing N := by nlinarith only [hwhalf]
+      _ ≤ spacingRatio * (1 / N) :=
+        mul_le_mul_of_nonneg_left (atomSpacing_le_inv hN) spacingRatio_pos.le
+      _ = spacingRatio / N := by ring
   have hgc (n : ℕ) := profile_hasCompactSupport (hs n)
   have hf := contDiff_arithmeticSection hg N
   have hfc := hasCompactSupport_arithmeticSection hs N
@@ -158,7 +160,7 @@ theorem sum_inv_nat_mul_sectionReserveWeight_le (N : ℕ) :
           (by simpa only [mul_one] using
             mul_le_mul_of_nonneg_left (sectionReserveWeight_ge_one N n) hn0.le)
     _ ≤ 1 + Real.log N := by
-      simpa only [harmonic_eq_sum_Icc, Rat.cast_sum, Rat.cast_inv, Rat.cast_natCast]
+      simpa only [_root_.harmonic_eq_sum_Icc, Rat.cast_sum, Rat.cast_inv, Rat.cast_natCast]
         using harmonic_le_one_add_log N
 
 /-- Cauchy–Schwarz on the support interval controls any bounded local moment. -/
@@ -176,13 +178,17 @@ theorem sectionMoment_sq_le {g k : ℝ → ℝ} {w K : ℝ}
     refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
     by_cases hu : u ∈ Set.Icc 0 w
     · rw [Set.indicator_of_mem hu]
-    · rw [Set.indicator_of_notMem hu, hs u hu, zero_mul]
+    · rw [Set.indicator_of_notMem hu]
+      change g u * k u = 0
+      rw [hs u hu, zero_mul]
   have hmass : sectionMass g = ∫ u in Set.Icc 0 w, g u ^ 2 := by
     rw [sectionMass, ← integral_indicator measurableSet_Icc]
     refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
     by_cases hu : u ∈ Set.Icc 0 w
     · rw [Set.indicator_of_mem hu]
-    · rw [Set.indicator_of_notMem hu, hs u hu, zero_pow (by decide : (2 : ℕ) ≠ 0)]
+    · rw [Set.indicator_of_notMem hu]
+      change g u ^ 2 = 0
+      rw [hs u hu, zero_pow (by decide : (2 : ℕ) ≠ 0)]
   have hkbound : (∫ u in Set.Icc 0 w, k u ^ 2) ≤ w * K := by
     calc (∫ u in Set.Icc 0 w, k u ^ 2) ≤ ∫ _u in Set.Icc 0 w, K :=
         setIntegral_mono_on hk2 continuous_const.integrableOn_Icc measurableSet_Icc hb
@@ -204,12 +210,12 @@ theorem poleA_profile_sq_le {g : ℝ → ℝ} {w : ℝ} (hg : Continuous g) (hw 
 theorem poleB_profile_sq_le {g : ℝ → ℝ} {w : ℝ} (hg : Continuous g) (hw : 0 ≤ w)
     (hs : ∀ u, u ∉ Set.Icc 0 w → g u = 0) :
     poleB g ^ 2 ≤ w * sectionMass g := by
-  have h := sectionMoment_sq_le hg
+  have h := sectionMoment_sq_le (k := fun u => Real.exp (-u / 2)) hg
     (Real.continuous_exp.comp (continuous_id.neg.div_const 2)) hw hs
     (K := 1) (fun u hu => by
       rw [pow_two, ← Real.exp_add, show -u / 2 + -u / 2 = -u by ring]
       exact Real.exp_le_one_iff.mpr (neg_nonpos.mpr hu.1))
-  simpa only [mul_one] using h
+  simpa only [poleB, mul_one] using h
 
 /-- Translating a local section multiplies its exponential moment by the arithmetic character. -/
 theorem exponentialMoment_arithmeticSection {G : ℕ → ℝ → ℝ}
@@ -244,7 +250,7 @@ theorem poleA_arithmeticSection_sq_le {G : ℕ → ℝ → ℝ} {N : ℕ} {w : �
   have he : ∀ u : ℝ, (1 / 2) * u = u / 2 := fun u => by ring
   have hA : poleA (arithmeticSection N G) =
       ∑ n ∈ Icc 1 N, Real.exp (Real.log n / 2) * poleA (G n) := by
-    simpa only [he, ← poleA] using exponentialMoment_arithmeticSection hg hgc N (1 / 2)
+    simpa only [he, poleA] using exponentialMoment_arithmeticSection hg hgc N (1 / 2)
   let r : ℕ → ℝ := fun n => Real.exp (Real.log n / 2) * poleA (G n)
   let p : ℕ → ℝ := fun n => w * Real.exp w * ((n : ℝ) / sectionReserveWeight N n)
   let q : ℕ → ℝ := fun n => sectionReserveWeight N n * sectionMass (G n)
@@ -262,7 +268,7 @@ theorem poleA_arithmeticSection_sq_le {G : ℕ → ℝ → ℝ} {N : ℕ} {w : �
     calc (n : ℝ) * poleA (G n) ^ 2
         ≤ n * (w * Real.exp w * sectionMass (G n)) :=
           mul_le_mul_of_nonneg_left (poleA_profile_sq_le (hg n) hw (hs n)) hn0.le
-      _ = _ := by field_simp [(sectionReserveWeight_pos N n).ne']; ring
+      _ = _ := by field_simp [(sectionReserveWeight_pos N n).ne']
   have hp : ∑ n ∈ Icc 1 N, p n ≤ w * Real.exp w * ((N : ℝ) ^ 2 / (1 + Real.log N)) := by
     simpa only [p, mul_sum] using mul_le_mul_of_nonneg_left
       (sum_nat_div_sectionReserveWeight_le hN) (mul_nonneg hw (Real.exp_pos w).le)
@@ -279,7 +285,7 @@ theorem poleB_arithmeticSection_sq_le {G : ℕ → ℝ → ℝ} {N : ℕ} {w : �
   have he : ∀ u : ℝ, -(1 / 2) * u = -u / 2 := fun u => by ring
   have hB : poleB (arithmeticSection N G) =
       ∑ n ∈ Icc 1 N, Real.exp (-Real.log n / 2) * poleB (G n) := by
-    simpa only [he, ← poleB] using exponentialMoment_arithmeticSection hg hgc N (-(1 / 2))
+    simpa only [he, poleB] using exponentialMoment_arithmeticSection hg hgc N (-(1 / 2))
   let r : ℕ → ℝ := fun n => Real.exp (-Real.log n / 2) * poleB (G n)
   let p : ℕ → ℝ := fun n => w * (1 / ((n : ℝ) * sectionReserveWeight N n))
   let q : ℕ → ℝ := fun n => sectionReserveWeight N n * sectionMass (G n)
@@ -320,11 +326,11 @@ theorem neg_sectionReserve_le_poleProduct {G : ℕ → ℝ → ℝ} {N : ℕ} {w
   have hD : 0 ≤ D := sectionReserve_nonneg N G
   have hA := mul_le_mul_of_nonneg_left (poleA_arithmeticSection_sq_le hg hs hN hw0.le)
     (show 0 ≤ L / N by positivity)
-  have hB := mul_le_mul_of_nonneg_left (poleB_arithmeticSection_sq_le hg hs hw0.le)
+  have hB := mul_le_mul_of_nonneg_left (poleB_arithmeticSection_sq_le (N := N) hg hs hw0.le)
     (show 0 ≤ (N : ℝ) / L by positivity)
   have heA : L / N * ((w * Real.exp w * ((N : ℝ) ^ 2 / L)) * D) =
-      w * N * Real.exp w * D := by field_simp; ring
-  have heB : (N : ℝ) / L * ((w * L) * D) = w * N * D := by field_simp; ring
+      w * N * Real.exp w * D := by field_simp
+  have heB : (N : ℝ) / L * ((w * L) * D) = w * N * D := by field_simp
   change L / N * A ^ 2 ≤ L / N * ((w * Real.exp w * ((N : ℝ) ^ 2 / L)) * D) at hA
   change (N : ℝ) / L * B ^ 2 ≤ (N : ℝ) / L * ((w * L) * D) at hB
   rw [heA] at hA
@@ -345,7 +351,7 @@ theorem neg_sectionReserve_le_poleProduct {G : ℕ → ℝ → ℝ} {N : ℕ} {w
     linarith only [hwwN, hwN, fullSectionRatio_le_half_spacing, spacingRatio_lt_half]
   have hc : w * N * (Real.exp w + 1) ≤ 1 / 8 := by
     calc w * N * (Real.exp w + 1) ≤ fullSectionRatio * (Real.exp 1 + 1) :=
-        mul_le_mul hwN (add_le_add_right (Real.exp_le_exp.mpr hw1) 1)
+        mul_le_mul hwN (by linarith only [Real.exp_le_exp.mpr hw1])
           (by positivity) fullSectionRatio_pos.le
       _ ≤ (1 / (8 * (Real.exp 1 + 1))) * (Real.exp 1 + 1) :=
         mul_le_mul_of_nonneg_right fullSectionRatio_le_pole (by positivity)
@@ -367,7 +373,8 @@ theorem weilPair_eq_markovEnergy_add_poleProduct {f : ℝ → ℝ} (hf : f ∈ r
       poleB f = coshHalfMoment f - sinhHalfMoment f at hm
     have h := re_weilPoleTerm_ofReal_eq_two_mul_cosh_sq_sub_sinh_sq hf.1.continuous hf.2
     rw [hm.1, hm.2]
-    convert h using 1 <;> ring
+    calc _ = 2 * coshHalfMoment f ^ 2 - 2 * sinhHalfMoment f ^ 2 := h
+      _ = _ := by ring
   have hW : (Zeta23.zetaZeroConfig.W (cx f) (cx f)).re = weilPair f f := by
     rw [weilPair, zeta_W_eq_weilFullFunctional_mixed hcd hcs hcd hcs]
   rw [hpole, hW] at he

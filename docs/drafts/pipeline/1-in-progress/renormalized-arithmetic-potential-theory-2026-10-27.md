@@ -11,7 +11,7 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [x] 1 → 2  paper proofs of RP1–RP13 (all carried out directly in Lean)
+- [x] 1 → 2  paper proofs of RP1–RP14 (all carried out directly in Lean)
 - [x] 2 → 3  Lean: `renormalized_arithmetic_potential_theory_laws` and the module pillars, all
       axiom-clean (`propext`, `Classical.choice`, `Quot.sound`), wired into
       `RenormalizedArithmeticPotentialTheory.lean`
@@ -27,7 +27,7 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
 - RP10 finite part `−2γ`; RP12 on the classes the finite part is the tower form of `p` with
   `γ_p = γ + log p/(p − 1)`; RP13 matched stability law at widths `δ_N N^{−e^{1/2}}`.
 - RP8 spectral ends `±log N`, Liouville flip; RP11 matching law for sign gauges, finite flips
-  invisible.
+  invisible; RP14 Gårding ⇔ finite-rank survival (report milestone W18(xi)).
 
 ## No-go closure
 - **Killing theorem:** condition (i) of the central conjecture (bounded counterterm rank on Hecke
@@ -40,4 +40,4 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
   of `[p]` scales orbit densities and cancels.
 
 ## Log
-- 2026-10-27 — created; README first draft; RP1–RP13 formalized; laws module.
+- 2026-10-27 — created; README first draft; RP1–RP14 formalized; laws module.

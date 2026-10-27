@@ -1,236 +1,321 @@
-# Astra Report: Unified Architecture of the Walls, Breakthrough Mechanisms, Priority Questions, and Blueprint for Renormalized Biarithmetic Geometry
+# Arithmetic Lorentzian geometry: what could produce the missing sign?
 
-**Scope & Basis:** Synthesis of the 5 frontier/obstacle ledgers ([rh-current-frontier-map.md](file:///Users/michael/Documents/code/hgt/docs/reports/rh-current-frontier-map.md), [rh-killed-routes.md](file:///Users/michael/Documents/code/hgt/docs/reports/rh-killed-routes.md), [route-unification-ledger.md](file:///Users/michael/Documents/code/hgt/docs/reports/review-2710/route-unification-ledger.md), [route-obstacles.md](file:///Users/michael/Documents/code/hgt/docs/reports/review-2710/route-obstacles.md), [walls-ledger.md](file:///Users/michael/Documents/code/hgt/docs/reports/review-2710/walls-ledger.md)), all 30 research programme `README.md` ledgers, and direct inspection of the formalized Lean 4 corpus (`GaloisForLFunctions`).
+This report uses the route ledger, killed-route ledger, route-unification ledger,
+`route-obstacles.md`, walls ledger, `fable2.md`, and the requested programme READMEs in their
+specified order. Repeated README paths were read once. Mathematical leads were followed through
+the corpus search tool into Lean statements. No web sources or numerical experiments were used.
+The research log is [astra-arithmetic-lorentzian-2026-10-27.log](../../../logs/astra-arithmetic-lorentzian-2026-10-27.log).
 
----
+## 1. Assessment
 
-## Executive Synthesis: One Structural Fission Behind Fifteen Walls
+**The best opportunity is to construct a compatible arithmetic sign, rather than another
+equivalent formulation of it.** Arithmetic Lorentzian geometry is a useful programme for this
+purpose, provided it distinguishes three tasks:
 
-Across 30 research programmes, 31 live routes, and hundreds of unconditional Lean theorems, our research has converged on a single organizing discovery. All routes (`U1` Critical Arithmetic Cancellation, `U2` Complete Signed Positivity, `U3` Faithful Realization & Forcing) ask one geometric question:
+1. Construct forms whose signature follows from elementary operations.
+2. Identify those forms with, or prove the required domination of, the actual Weil intersection
+   form, including its poles and infinite place.
+3. Preserve that comparison on an exhaustive family of signed tests.
 
-> **The Reflection–Conjugation Mystery:** *What arithmetic mechanism forces functional-equation reflection $\rho \mapsto 1-\rho$ and complex conjugation $\rho \mapsto \bar\rho$ to coincide on actual $\xi$-zeros ($\rho = 1-\bar\rho$, i.e. $\delta_\rho := \operatorname{Re}\rho - \tfrac{1}{2} = 0$)?*
+The corpus contains substantial solutions to parts of each task. It does not yet contain their
+composition into an RH proof. The walls restrict particular mechanisms; they do not establish
+that all symmetry, all geometry, or all future realizations are impossible. Nor can a corpus
+review establish that mathematics as a whole lacks every suitable tool.
 
-Over a finite field $\mathbb{F}_q$, Weil's proof for a smooth projective curve $C/\mathbb{F}_q$ answers this in one stroke because $C \times_{\mathbb{F}_q} C$ supplies **one single pairing** (the intersection / Rosati trace form polarized by the ample $\Theta$-divisor) that simultaneously possesses four properties:
+### 1.1 What the programmes collectively establish
 
-1. **Positivity** (distinct irreducible curves meet nonnegatively; $\Theta$ is ample);
-2. **Scale/Frobenius equivariance** (the Frobenius graph $\Gamma_F$ is an algebraic correspondence on $C \times C$);
-3. **Arithmetic selectivity** (pinned to actual $\mathbb{F}_{q^n}$-points via Frobenius flatness $D^{(k)}(X^{jq}g) = X^{jq}D^{(k)}g$);
-4. **A non-scaling base** ($\Delta \cdot \Delta = 2 - 2g$ and finite period $q$, making tensor/correspondence amplification beat genus error).
+The early incidence programmes locate the square-root threshold and the loss of sign in unsigned
+estimates. Orientation and criticality translate that loss into an arithmetic energy or defect.
+The surface and correspondence programmes identify the missing sign as Hodge index, distinguish
+identities from positivity, and provide fake data that satisfy the identities. Gauge and duality
+programmes identify what multiplicative information forgets and what successor information
+recovers. Polarization and conjugate-diagonal geometry separate the positive form from the
+equivariant form. Electrostatics computes their discrepancy through currents, moments and work.
+Renormalization determines which signs survive subtraction. Spacing analysis starts paying the
+actual interactions jointly. Lorentzian geometry asks whether that payment can become a
+construction principle.
 
-What our Lean corpus has proved — with a precision that did not previously exist in mathematics — is that **over $\mathbb{Z}$, these four properties fission into four distinct, mutually non-isometric projections**, and the 15 Exhaustion Laws recorded in [walls-ledger.md](file:///Users/michael/Documents/code/hgt/docs/reports/review-2710/walls-ledger.md) are exact projections of this fission:
+This progression is mathematically cumulative. A stronger receiver, a computed defect, or an
+exact equivalence remains valuable: it exposes precisely what a new producer must deliver. But
+describing an escape state does not exclude it; computing a nonnegative defect does not bound it;
+and recognizing an RH-equivalent signature does not construct it.
 
-| Property over $\mathbb{F}_q$ | What happens over $\mathbb{Z}$ in the Lean corpus | Proved Lean avatar & structural gap |
-| :--- | :--- | :--- |
-| **Positivity + Equivariance in one form** | Splits into **two** forms ([ArithmeticPolarization](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticPolarization/README.md), [ConjugateDiagonalGeometry](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/README.md)): Weil's 1D reflection form $W(f) = \sum_\rho m_\rho \hat f(\rho)\overline{\hat f(1-\bar\rho)}$ (Hecke-equivariant, positivity $\iff \text{RH}$) vs. the 2D collided form $D(f) = \sum_\rho m_\rho |\hat f(\rho)|^2$ (positive & log-Sobolev coercive, Hecke-invariance $\iff \text{RH}$). | $\operatorname{Re} W = D - \Delta$. Literal finite integer theta prefixes compute $D(f)$ and its Hecke defect $E_f(L)$ unconditionally via 2D Poincaré–Lelong curvature ([`finiteThetaSource_uniform_moving_collided`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/FiniteThetaReadingError.lean#L244-L280)), but 1D Hecke shift multiplies 2D Green weights by $e^{2(\operatorname{Re} z - 1/2)L} \ne 1$ off $\operatorname{Re} z = \tfrac{1}{2}$. |
-| **Finite self-intersection $\Delta^2 = 2-2g$** | Splits positivity from Hecke equivariance **exclusively along a divergent diagonal self-energy** ([ArithmeticEffectivityTheory](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticEffectivityTheory/README.md), [ArithmeticCorrespondencePositivity](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/README.md)). | For $0 \le r < 1$, gcd-twisted Ramanujan/Farey torsion energy $Q_r$ is **unconditionally PSD**; as $r \to 1^-$, off-diagonal entries converge to $-P_{\mathrm{Weil}}(m,n)$ while the diagonal blows up as $-\log(1-r)\sum x_n^2$ ([`weilPrimeKernel_renormalized_torsion_energy`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticEffectivityTheory/TheWeilPrimeKernelIsARenormalizedTorsionEnergy.lean#L345-L384)) — dual to the double pole $m_j^2/(s-\rho_j)^2$ in $(\zeta'/\zeta)^2 = \mathcal{L}(\Lambda \star \Lambda)$ ([`laurentCoeff_square_of_pole_and_regular`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/TheSquareSeesTheRegularLogDerivative.lean#L54-L90)). |
-| **Frobenius localizes & commutes** | Local symmetries on $\{\rho, 1-\bar\rho\}$ split into a strict **trichotomy**: multiplicative/Hecke/archimedean twists are **hyperbolic boosts** (making positive invariant cones isotropic, [`CoupledPositivityIsIsotropy.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticPositiveDuality/CoupledPositivityIsIsotropy.lean)), $+1$ is **unipotent** ($D_\Lambda(s)/s \in H^2(\operatorname{Re} s > \tfrac{1}{2})$, [`TheSuccessorDefectIsABoundedHardyPerturbation.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/TheSuccessorDefectIsABoundedHardyPerturbation.lean)), and the **unique** elliptic localizers are point reflections $\sigma_\gamma(s)=1+2i\gamma-s$ ([`TheEllipticLocalizers.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticPolarization/TheEllipticLocalizers.lean)). | Combining $\sigma_\gamma$ with any Hecke boost blinds the pair, while its odd sector faces a strict disjointness at every height between the source-blind conductor horizon $(4+\varepsilon)e^a \le \log(1+|\gamma|/8)$ and the companion-forcing threshold $e^{2\delta a} > 768A\log(|\gamma|+3)$ ([`conductor_forcing_disjoint`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/TheConductorForcingGap.lean#L179-L216)). |
-| **Pinned arithmetic base** | Purely multiplicative lattice forms on $[1,X]$ are **unitarily blind across all real sign gauges** $\omega \in \{\pm 1\}^{\mathcal{P}}$ ([`realSign_latticeForm_eq`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/PrimeGaugeTorusAndVacuumIntertwiners.lean#L312-L355)), identifying $\zeta$ with Liouville $\zeta(2s)/\zeta(s)$ (dense poles on $\operatorname{Re} s = \tfrac{1}{2}$!), while global $\operatorname{Aff}(\mathbb{Q})$ states shatter on the **Kakutani Wall** ([`TheCriticalLineOfTheIntegerSuccessorIsTheKakutaniWall.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticPositiveDuality/TheCriticalLineOfTheIntegerSuccessorIsTheKakutaniWall.lean)): prescribing $\mathbf{1}_{\mathbb{Z}}$ forces a Kronecker-null Hecke measure ([`isPosDefOnGroup_heckeState_iff`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticPositiveDuality/TheCriticalLineIsThePositivityThresholdOfTheIntegerSuccessor.lean#L264-L280)) and atomic zero spectra blind every successor ([`WeilsCorrelationCarriesNoSuccessor.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticPositiveDuality/WeilsCorrelationCarriesNoSuccessor.lean)). | **Crucial opening:** Kakutani blindness holds *only* on global $\operatorname{Aff}(\mathbb{Q})$ states and pure atomic spectra! On **finite horizon boundaries, continuum log-cells $I_n = [\log n, \log(n+1))$, signed smooth windows, and damped escape limits**, $(+1, \times p)$ holonomy *does* couple and separate $\zeta$ from its fake twins ([`threeHundredSixtyTwoThousandths_selectivity_battery`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SelectivePositivityAndThresholdLaws/LiouvilleOddWindowRefutationAndSelectiveFullPositivity.lean#L29786-L29830), [`growingEndpointEscapedMoebiusLaw_tfae`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SelectivePositivityAndThresholdLaws/MoebiusEscapedPairingBoundaryLaw.lean#L479-L530), [`OnEscapeStatesDilationIsTheArchimedeanFlow.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/OnEscapeStatesDilationIsTheArchimedeanFlow.lean)). |
+### 1.2 Changes to the picture in `fable2.md`
 
----
+Several proposed questions require updating before they become a foundation.
 
-## Question 1: Opportunities for a New Proof Mechanism or Route That Circumvents or Destroys a Wall
+| Proposal or older frontier description | Current mathematical position |
+|---|---|
+| Stability stops below the atomic spacing. | SSHA proves Markov positivity at `w ≤ c₀ log(1+1/N)`, uniformly in `N`, and full Weil positivity after a rank-one pole correction. |
+| Paying that pole correction is always still missing. | The current ACS section theorem retains a weighted reserve and pays both pole moments on independent arithmetic sections at a smaller fixed spacing fraction. It proves the full Weil form dominates their square mass. |
+| Zero defect at any fixed spacing fraction would prove RH. | These separated families already have unconditional positive results. Their dimensions grow, but their shrinking supports do not by themselves give an exhaustive test space. |
+| Montgomery at `α=1` is equivalent to an `o(log N)` worst-eigenvalue bound. | `fable2.md` labels this an interpretation. An averaged pair statistic and a uniform inequality over signed coefficient vectors have different quantifiers. The identification requires a theorem. |
+| Every unbounded overlap schedule is already covered. | The exact inspected SSHA theorem uses one fixed cubic spline and all finite integer-log translates. Its negative index detects all distinct right-half-strip zeros. A general moving-width schedule needs its own transfer proof. |
+| Nonnegative coefficients and connected links supply the curve sign. | ALG's golden datum has the Metzler sign, connected support and a positive weight with positive image, yet fails weighted trickle-down. The local signature input still carries substantive information. |
+| Dirichlet characters form the periodic part of the full unit prime torus. | Characters at primes dividing the conductor vanish; full-torus characters have unit modulus. Their domains and missing local factors must be specified. Vertical characters also preclude the proposed naive periodicity classification. |
+| The scale map already realizes the archimedean factor. | A substitution of variables is defined; equality with the required Γ-term, polar terms and renormalized diagonal is a separate, unproved construction. |
 
-Every classical shortcut — reweighting/Kron reduction, exponent self-improvement, external tensor powers, $\operatorname{Re} s = 1$ boundary positivity, unsigned test cones, bare functional-equation Hamburger theory, soft theta heights, and two-sided height-coupled rigidity — has been **formally refuted** in our corpus (see [rh-killed-routes.md](file:///Users/michael/Documents/code/hgt/docs/reports/rh-killed-routes.md)). Any viable mechanism must survive all 15 Exhaustion Laws simultaneously.
+The relevant exact statements are
+`markovEnergy_atomicTest_nonneg_spacing` and `re_W_add_sinh_sq_nonneg_spacing` in
+[SSHA's stability module](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheStabilityLawAtTheSpacingScale.lean),
+`integral_sq_le_weilPair_arithmeticSection` and `arithmeticSections_effectivity` in
+[ArithmeticSectionsPayThePole](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/ArithmeticSectionsPayThePole.lean),
+and `riemannHypothesis_iff_splineAtomic_negIndex_eq_zero` in
+[UnboundedOverlapIsTheRiemannHypothesis](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/UnboundedOverlapIsTheRiemannHypothesis.lean).
+These statements concern different families; they must not be substituted for one another.
 
-Inspecting the newest theorems across `ACP`, `CDG`, `AET`, `BGG`, and `SPTL` reveals **three concrete, previously uncoupled proof mechanisms** — two that **circumvent** major walls by changing the geometric ambient space, and one that directly **attacks/destroys** the diagonal-renormalization wall.
+Two further advances change priorities. The simple-pole completed positive class identifies
+`ζ` up to a nonzero real scalar; identity of the source no longer needs to be rediscovered in
+that class. And IGP proves a strict gain over the Montgomery–Taylor simple-critical proportion
+by retaining Gram slack below the pair-correlation barrier. Thus a threshold of a particular
+estimate is not necessarily a threshold of all arguments using the same range. Neither result
+supplies all-test Weil positivity. See
+[TheSimplePoleClassIsZeta](../../../formal/GaloisForLFunctions/StripBochnerWeilForcing/TheSimplePoleClassIsZeta.lean)
+and `HD_one_add_pos_le_liminf_xiSimpleCriticalRatio` in
+[CriticalLineZeroProportion](../../../formal/GaloisForLFunctions/IncommensurableGaborPinching/CriticalLineZeroProportion.lean).
 
-### Mechanism 1 (Circumventing Unattained Suprema, Boundary Blindness & Generic-Height Bohr–Kronecker): Zero-Anchored Carleman/Mollifier Potential Theory on Empty Quadratic Terminal Cones
+## 2. Question 1: opportunities for a different proof mechanism
 
-* **Walls circumvented:**
-  1. *Unattained-supremum / ascending-zero-sequence wall* ($\sup_\rho \operatorname{Re}\rho$ need not be attained, blocking naive "pick a rightmost zero" arguments);
-  2. *Boundary-positivity interior blindness & Fejér width cap* ([MultiplicativePositivityGeometry](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md): boundary divisors on $\operatorname{Re} s = 1$ cannot see interior zeros like $\zeta(s)/\zeta(s+1-\beta)$, and positive cosine polynomials obey $a_1 \le 2a_0$, capping classical de la Vallée Poussin width);
-  3. *Generic-ordinate Bohr–Kronecker alignment wall* ([arithmetic-positivity-theory](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md): uniform eventual power savings on $P_X(\tau)$ for *all* heights $\tau$ are impossible because generic ordinates align prime phases).
+### 2.1 Compatible gluing, with an exact cost
 
-* **What is already proved unconditionally in Lean:**
-  In [`EveryOffLineZeroHasALocalOutwardFieldWitness.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/EveryOffLineZeroHasALocalOutwardFieldWitness.lean), [`exists_local_outward_field_witness`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/EveryOffLineZeroHasALocalOutwardFieldWitness.lean#L55-L122) proves via **local quadratic ascent** ([`exists_right_xi_quadratic_terminal_near`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/RightQuadraticTerminalsNearOffLineZeros.lean#L58-L115)) that *every* hypothetical off-line zero $q$ reaches within $|\gamma_p - \gamma_q| \le C\log(|\gamma_q|+3)$ an actual right-hand $\xi$-zero $p = \tfrac{1}{2} + a + i\gamma_p$ ($0 < a < \tfrac{1}{2}$, $a \ge \mathrm{depth}(q)$, multiplicity $m \ge 1$) whose **entire open 2D quadratic cone**
-  $$\mathcal{K}_p := \left\{ s = \tfrac{1}{2} + x + iy \in \mathbb{C} \;:\; x^2 > a^2 + (y - \gamma_p)^2 \right\}$$
-  contains **zero $\xi$-zeros**. Because the boundary hyperbola $x^2 - (y-\gamma_p)^2 = a^2$ is the exact locus where the reflected Hadamard pair kernel changes sign, [`xiTerminal_pair_nonneg`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/XiTerminalPairRay.lean#L60-L108) and [`exists_local_outward_zeta_ray`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/EveryRightZeroReachesAnOutwardZetaRay.lean#L55-L118) establish unconditionally along the entire interior outward segment $s = p + h$ ($0 < h < \tfrac{1}{2} - a$):
-  1. $\zeta(p+h) \ne 0$;
-  2. **Every reflected zero pair $\{\rho_r, 1-\bar\rho_r\}$ in $\mathbb{C}$ contributes $\ge 0$** (zero sign cancellation across the entire spectrum);
-  3. $\operatorname{Re}\frac{\zeta'}{\zeta}(p+h) + \operatorname{Re}\frac{\mathrm{archFactor}'}{\mathrm{archFactor}}(p+h) \ge \frac{m}{h} + \frac{m}{2a+h} + c a \log(|\gamma_p|+4)$;
-  4. At $p$ itself, $(\zeta'/\zeta)^2(s) = \sum_{n\ge 1}(\Lambda \star \Lambda)(n)n^{-s}$ has $(-1)$ Laurent coefficient $2m B(p)$ satisfying $\operatorname{Re} B(p) + \operatorname{Re}\frac{\mathrm{archFactor}'}{\mathrm{archFactor}}(p) \ge \frac{m}{2a} + c a \log(|\gamma_p|+4)$ ([`exists_xiTerminal_transverseField_and_ray_lower`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/XiTerminalRegularField.lean#L70-L135)).
+The statement “local Hodge inequalities do not add” is too coarse to guide construction. It has
+an exact positive successor.
 
-* **Exact seam and the new proof mechanism:**
-  Since $\operatorname{Re}(\mathrm{archFactor}'/\mathrm{archFactor}(p+h)) = \tfrac{1}{2}\log(|\gamma_p|/2\pi) + O(1)$, integrating the ray inequality from $h_1$ to $h_2$ yields an unconditional **outward log-modulus floor**:
-  $$\log\left|\frac{\zeta(p+h_2)}{\zeta(p+h_1)}\right| \ge m\log\frac{h_2(2a+h_2)}{h_1(2a+h_1)} - \left(\frac{1}{2} - c a\right)(h_2 - h_1)\log(|\gamma_p|+4) - O(h_2-h_1).$$
-  Unconditional convexity bounds on $|\zeta|$ at a *generic* ordinate $\gamma$ have exponent $\tfrac{1}{2}(1-\sigma)$, matching the $\tfrac{1}{2}\log|\gamma_p|$ archimedean drift and missing contradiction by $( \tfrac{1}{2} - ca )\log|\gamma_p|$.
-  **Why quadratic terminals break out of generic-ordinate convexity:** At $p$, we possess *two* simultaneous structural constraints unavailable at generic heights:
-  1. **Zero-pinning $\zeta(p) = 0$** (the approximate functional equation / Dirichlet polynomial sum is pinned to vanish at $p$, which is non-generic on the Kronecker torus — in `APT`, single-height phase savings are obstructed only where companions exist, *and here companions inside $\mathcal{K}_p$ are already empty!*);
-  2. **A macroscopic 2D zero-free cone $\mathcal{K}_p$** surrounding $[p, \tfrac{3}{2}+i\gamma_p]$.
-  Multiplying $\zeta(s)$ by a short Selberg/Levinson Dirichlet mollifier $M_X(s) = \sum_{n \le X} \mu(n)P(\frac{\log(X/n)}{\log X})n^{-s}$ ($X = |\gamma_p|^\theta$) **does not add poles** inside $\mathcal{K}_p$, leaves $\zeta(s)M_X(s)$ vanishing to order $\ge m$ at $p$ (while $M_X$ damps $\zeta$ on $\operatorname{Re} s = 1+\eta$ in $L^2$/subharmonic average or via stationary-phase AFE at the pinned zero $p$), and allows **Carleman / Jensen / Borel–Carathéodory harmonic-measure estimates on the zero-free domain $\mathcal{K}_p \cap \{\operatorname{Re} s \le 1+\eta\}$**! Any harmonic-measure / mollified upper ceiling on $\mathcal{K}_p$ whose effective $\log|\gamma_p|$ coefficient drops below $\tfrac{1}{2} - ca$ refutes the terminal $p$ immediately.
+Let `Q_i` be finite symmetric forms and let `e` have positive square for each. Put
 
----
+\[
+a_i=Q_i(e,e)>0,\qquad b_i(x)=Q_i(e,x),\qquad
+R_i(x)=\frac{b_i(x)^2}{a_i}-Q_i(x,x).
+\]
 
-### Mechanism 2 (Attacking/Destroying the Diagonal-Renormalization & Polarization-Split Wall): Matched Self-Energy Cancellation Between Torsion Orbits and Polar-Neutral Continuum Log-Cells
+Each local form is hyperbolic exactly when `R_i ≥ 0`. For `Q=Σ_i Q_i`, `A=Σ_i a_i`, define
 
-* **Walls targeted for destruction:**
-  *Wall 5 / Exhaustion Law 14 (Diagonal Renormalization Wall)* and *Exhaustion Law 1 (Conjugate $D$ vs. Reflection $W$ Split)*, engineered specifically to respect *Exhaustion Law 6 ($\Omega_{\mathcal{P}}$ Sign-Gauge Blindness)*.
+\[
+V(x)=\sum_i a_i\left(\frac{b_i(x)}{a_i}-\frac{\sum_jb_j(x)}A\right)^2.
+\]
 
-* **Three recently proved Lean theorems from three separate programmes (`AET`, `BGG`, `SPTL`) that have never yet been joined:**
-  1. **Discrete Torsion PSD Germ (`AET`, [`weilPrimeKernel_renormalized_torsion_energy`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticEffectivityTheory/TheWeilPrimeKernelIsARenormalizedTorsionEnergy.lean#L345-L384)):** For every $0 \le r < 1$, the gcd-twisted Farey/Ramanujan torsion matrix
-     $$K_r(m,n) := \frac{\gcd(m,n)}{\varphi(\gcd(m,n))\sqrt{mn}}\sum_{k=1}^\infty \frac{r^k}{k}\operatorname{Re}\bigl(c_m(k)\overline{c_n(k)}\bigr)$$
-     is **unconditionally positive semidefinite** (as a Schur product of two Gram matrices). As $r \to 1^-$, off-diagonal entries converge to $-P_{\mathrm{Weil}}(m,n) = -\Lambda(n/m)(n/m)^{-1/2}$, while diagonal entries equal $-\log(1-r) - \frac{I(n,n)}{\varphi(n)}$. Positivity was lost *solely* because $-\log(1-r)\sum x_n^2$ was subtracted as a dead scalar multiple of the identity!
-  2. **Polar-Neutral Continuum Log-Cell Collapse (`BGG`, [`fullArchCrossingForm_eq_polar_sq_sub_levy`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/EuclideanCellRemainderAndPolarNeutralCollapse.lean#L118-L145) & [`fullArchCrossingForm_polarNeutral_eq`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/EuclideanCellRemainderAndPolarNeutralCollapse.lean#L146-L170)):** Restricting the archimedean Weil kernel to discrete lattice nodes $\log n$ previously caused linear $O(e^A)$ blowup (`AIP`, `SPTL`). Restoring off-diagonal polar pairs on continuum cells $I_n = [\log n, \log(n+1))$ collapses the **entire** archimedean crossing polar divergence into a **single rank-one square** $\tfrac{1}{2}\bigl(\sum_{n=2}^X \frac{n-1}{\sqrt{n}}q_n\bigr)^2$ — vanishing identically on the codimension-$1$ polar-neutral hyperplane and leaving pure negative-definite Lévy curvature $-\sum \frac{(ab)^{3/2}}{(ab)^2-1}q_a q_b$ — while multiplicative dilation $I_a + \log m = \bigsqcup_{r=0}^{m-1} I_{am+r}$ couples to Euclidean remainders $+r$ with an **$m$-uniform Sobolev bound**!
-  3. **Short-Cycle One-Prime Reduction + Local Selectivity (`ACS` + `SPTL`):** On $[-181/500, 181/500]$ (strictly past $\tfrac{1}{2}\log 2$), full-sector coercive Weil positivity $\operatorname{Re} W_\zeta \ge \tfrac{1}{5000}\|F\|_2^2$ **and** simultaneous refutation of both Liouville $\lambda\Lambda$ and `shiftedPairVonMangoldt a` are **already proved** ([`threeHundredSixtyTwoThousandths_selectivity_battery`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SelectivePositivityAndThresholdLaws/LiouvilleOddWindowRefutationAndSelectiveFullPositivity.lean#L29786-L29830)), while [`TheStripLivesOnShortCycles.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheStripLivesOnShortCycles.lean) proves that on any such short window, **all of RH reduces to the single-prime Lefschetz inequality $\operatorname{Re} W(g - T_{2^m}g) \ge 0$ for all $m \ge 1$**!
+The exact law is
 
-* **How joining them attacks the wall without hitting Gauge Blindness:**
-  By [`realSign_latticeForm_eq`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/PrimeGaugeTorusAndVacuumIntertwiners.lean#L312-L355), any renormalization living purely on discrete multiplicative lattice indices $[1,X]$ is unitarily equivalent to Liouville ($\omega = \boldsymbol{-1}$) and is guaranteed to fail.
-  By contrast, if we embed both the discrete Ramanujan torsion modes $\{c_n(k)/\sqrt{n}\}_{k\ge 1}$ and the continuum archimedean log-cell modes on $I_n = [\log n, \log(n+1))$ into a **common $r$-regularized Fourier/Poisson Hilbert space** on the polar-neutral subspace (using pole-cancelled bi-torsion contrasts $\Delta_{q_1,q_2}(n) = \varphi(q_2)c_{q_1}(n)-\varphi(q_1)c_{q_2}(n)$ from `BGG G6` to kill the $k=0$ Poisson pole):
-  1. Both the discrete torsion diagonal $K_r(n,n)$ and the continuum log-cell Poisson kernel $-\log|1 - r e^{i(\theta-\theta')}|$ carry the **identical universal $-\log(1-r)$ short-distance singularity**;
-  2. Forming a **matched relative/cross Gram operator** before sending $r \to 1^-$ cancels $-\log(1-r)$ *at the operator/vector level* rather than subtracting an uncoupled scalar $\infty$;
-  3. Crucially, the continuum cell partition $I_a + \log 2^m = \bigsqcup_{r < 2^m} I_{2^m a + r}$ **breaks $\Omega_{\mathcal{P}}$ sign-gauge invariance**, because smooth short-cycle waves $g - T_{2^m}g$ vary by $O(2^{-m}a^{-1})$ across the $2^m$ consecutive integers $2^m a + r$, whereas Liouville's sign $\lambda(2^m a + r)$ oscillates across them with universal $\ge 1/3$ successor disagreement ([`SignedSuccessorArithmetic`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedSuccessorArithmetic/README.md))!
+\[
+\boxed{R_Q(x)=\sum_iR_i(x)-V(x).}
+\]
 
----
+Consequently, the sum is hyperbolic **exactly when its local reserves dominate the dispersion
+of its local polar rows**. Common negative hyperplanes are the zero-dispersion case. Local
+hyperbolicity alone misses the cost `V`.
 
-### Mechanism 3 (Circumventing Single-Ordinate Conductor & Lattice-Escape Walls): Collective Multi-Ordinate Chiral Fejér Packets + Parity-Sensitive Congruence Stabilizers
+The scalar weighted-variance identity already exists as `HTGeometry.schurComplement_sum_eq` in
+[QuotientFusionProjectionGenesis](../../../formal/GaloisForLFunctions/HTGeometry/QuotientFusionProjectionGenesis.lean).
+The ALG development here uses it to construct the matrix
 
-* **Walls circumvented:**
-  1. *Refutation of two-sided `CoupledRigid γ`* (`BGG`: outward critical splitting $W_\beta(s) = \frac{(s-1/2)^2+\beta^2}{(s-1/2)^2}$ and level-1 Maass Rankin–Selberg $L(s, u\times u) = \zeta(s)L(s,\operatorname{sym}^2 u)$ lower $\operatorname{ord}_{1/2}$ legitimately);
-  2. *Single-ordinate shifted-Gamma cost* (`ACP`: [`FejerCoupledSystem`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/ExteriorAndHeightCoupledQuartetContractions.lean#L2570-L2630) halves normalized central pole cost from $9\kappa$ to $\frac{9(K+1)}{2K}\kappa \searrow \frac{9}{2}\kappa$, but a *single* isolated ordinate $\gamma$ still pays $\Theta(\log|\gamma|)$);
-  3. *Single-ordinate conductor–forcing gap* ([`conductor_forcing_disjoint`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/TheConductorForcingGap.lean#L179-L216)) and *square-root coalescence blind spot* (`TTPC`).
+\[
+C_e(Q_i)=\sum_i\frac{(Q_i e)(Q_i e)^T}{a_i}
+          -\frac{(Qe)(Qe)^T}{A}.
+\]
 
-* **How the collective chiral mechanism works:**
-  `BGG` proved that although downward deformations exist, **upward central vanishing is chirally rigid**: `PositiveCentralVanishingCeiling γ` holds over continuous positive-mass deformations iff $\xi$ has no off-critical zero at ordinate $\gamma$ ([`positiveCentralVanishingCeiling_iff`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/PositivePrimeMassDeformationsAreRigidOffTheCriticalLine.lean#L168-L195)), and any discrete arithmetic lattice violation (`b(n) \ge 0`) must excavate prime mass of abscissa $\ge \tfrac{1}{2}$ with quantized even residue $D \in 2\mathbb{N}$ ([`centralExcess_forces_squareRoot_deficit`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/CentralExcessForcesASquareRootPrimeDeficit.lean#L152-L210), [`TheQuantizationOfTheSquareRootSurplus.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/TheQuantizationOfTheSquareRootSurplus.lean)).
-  Simultaneously, `SquareRootThreshold` and `APT` prove that near-record or conductor-violating off-line zeros **cannot be isolated**: they force dense quasi-periodic companion clouds (`polarGroundEnergyRate_eq_zetaZeroWidth_or_offLineCopies_cluster`, `odd_sector_nonneg_forces_offLine_companion`).
-  Instead of testing one ordinate $\gamma$ in isolation via `FejerCoupledSystem K`, coupling a **multi-frequency positive trigonometric packet** $\prod_j \zeta(s + i\omega_j)^{w_j}$ across an entire companion cloud — combined with the **functor-independent unshifted floor** $16M + \frac{144M}{9+4\gamma^2} + 5d < 9\kappa$ (`plantDoubleRealAnchor` in [`ExteriorAndHeightCoupledQuartetContractions.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/ExteriorAndHeightCoupledQuartetContractions.lean#L210-L260)) and the **parity-sensitive congruence-stabilizer split** ([`primeCoalSum_eq_stabilizer_add_discrepancy`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/TheCoalescentSurplusDecomposesOverItsStabilizers.lean#L126-L150), [`coalescent_surplus_battery_laws`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SelectivePositivityAndThresholdLaws/ParityLobeObstructionAndEscapeLaplaceSplit.lean#L580-L635)) — amortizes the central pole budget across *collective* off-line configurations, directly attacking the clustering branch of `SRT` and the $\ge 3/4$ critical-line proportion barrier.
+It is positive semidefinite and annihilates `e`. Subtracting it from `Q` leaves the anchor row
+unchanged and adds the local reserves exactly. Thus `Q-C_e(Q_i)` is hyperbolic whenever the local
+forms are. This is a precise closure operation, not a claim that the original sum has the same
+signature. See [PolarGluingAndDispersion](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/PolarGluingAndDispersion.lean).
 
----
+**Arithmetic opportunity.** Seek a source-defined decomposition of the *whole* intersection
+form, together with an archimedean, successor or overlap energy that pays this dispersion.
+The question becomes a comparison of explicit forms. It is no longer “find a common base”
+without specifying what compatibility costs. SSHA's joint use of tilted prime rows and the
+archimedean cross kernel is evidence that paying two interacting costs together can succeed
+where their separate norms fail.
 
-## Question 2: The 3 Open Questions to Focus Research On for Maximum Breakthrough Leverage
+**Boundary.** The prime towers in AIT are not automatically the `Q_i` of such a decomposition.
+Their positive local KMS forms and a one-positive-square intersection form are different
+objects. Adding a pole to each tower can overcount the same global pole. The anchor, all local
+reserves, and the comparison with the actual target must be constructed explicitly. Subtracting
+`C_e` merely because it would help changes the problem.
 
-To achieve genuine, non-circular progress toward RH, our top priority questions must **not** be disguised restatements of RH. Each question below sits at a razor-sharp seam isolated by Lean, avoids every killed route, and admits **graded unconditional intermediate theorems** (new zero-free regions, zero-density exponents, critical-line zero proportions $> 2/3 \to 3/4$, and explicit aperture bounds) before full RH.
+### 2.2 Construct links from arithmetic sections
 
-### Focus Question 1: The Terminal Outward-Ray Ceiling Problem
-> **Precise Problem:** *Let $p = \tfrac{1}{2} + a + i\gamma_p$ ($0 < a < \tfrac{1}{2}$) be a right-hand quadratic terminal of $\xi$ of multiplicity $m \ge 1$ ([`exists_local_outward_field_witness`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/EveryOffLineZeroHasALocalOutwardFieldWitness.lean#L55-L122)), so $\xi(p)=0$ and the entire open quadratic cone $\mathcal{K}_p = \{x^2 > a^2 + (y-\gamma_p)^2\}$ is zero-free. Using both $\zeta(p)=0$ and harmonicity of $\log|\zeta(s)M_X(s)/(s-p)^m|$ on $\mathcal{K}_p$, prove an interior upper bound on the outward log-modulus growth $\log|\zeta(p+h_2)/\zeta(p+h_1)|$ (or on a mollified contour pairing of $(\zeta'/\zeta)^2 = \mathcal{L}(\Lambda \star \Lambda)$ at $p$) whose $\log|\gamma_p|$ slope is $(\tfrac{1}{2} - \eta(a))\log(|\gamma_p|+4)$ with $\eta(a) > c a$.*
+The most promising higher-degree version of `fable2.md` is a section or incidence construction
+whose links inherit a signature theorem for an independently proved reason. The important
+analogy with combinatorial Hodge theory is the inductively closed class of objects, not the word
+“Lorentzian.” A proposed cubic lift whose links are assumed hyperbolic has moved the question.
 
-* **Why focus here:** Half of the contradiction — the non-vanishing outward ray, the universal nonnegativity of *all* reflected zero pairs in $\mathbb{C}$, and the interior lower bound $\ge \frac{m}{h} + \frac{m}{2a+h} - (\tfrac{1}{2}-ca)\log|\gamma_p|$ — is **already proved unconditionally in Lean** ([`exists_local_outward_zeta_ray`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/EveryRightZeroReachesAnOutwardZetaRay.lean#L55-L118)). Classical zero-free region methods never exploited an interior 2D zero-free quadratic cone anchored at $\zeta(p)=0$.
-* **Graded Breakthrough Milestones:**
-  1. **First Blood:** Combine Borel–Carathéodory / Carleman Jensen on $\mathcal{K}_p$ with a zero-pinned short Dirichlet mollifier $M_X$ to constrain terminal spacing or sharpen near-1 zero-free regions without cosine-polynomial Fejér caps.
-  2. **Quasi-RH Breakthrough:** Prove $\eta(a) > ca$ for some $a_0 < \tfrac{1}{2}$, yielding an unconditional **fixed zero-free strip** $\Theta_\zeta \le \tfrac{1}{2}+a_0 < 1$ (which by `U1` First-Rung Coincidence simultaneously unlocks power savings across all 12 arithmetic receivers).
-  3. **Full Target:** Prove $\eta(a) > ca$ for all $a \in (0, \tfrac{1}{2})$, eliminating all off-line terminals and proving RH.
+ALG already makes this diagnostic exact. For connected Metzler forms in the positive-image
+regime, weighted trickle-down is equivalent to hyperbolicity. The golden datum passes the
+entrywise sign and connectivity tests but fails the inequality. See
+[TheMetzlerDichotomy](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheMetzlerDichotomy.lean)
+and [TheFrobeniusLadderIsMetzler](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheFrobeniusLadderIsMetzler.lean).
 
-### Focus Question 2: Source-Intrinsic Bounds on the Symmetric Hecke Defect & Matched Continuum-Cell Torsion Renormalization
-> **Precise Problem:** *Bound the symmetric Hecke defect*
-> $$E_f(L) := D(T_L f) + D(T_{-L}f) - 2D(f) = \sum_\rho m_\rho \cdot 4\sinh^2(\delta_\rho L)\,|\hat f(\rho)|^2$$
-> *directly from its zero-free arithmetic realizations — either from the 2D finite-theta regularized Poincaré–Lelong curvature ([`finiteThetaSource_uniform_moving_heckeDefect`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/FiniteThetaReadingError.lean#L282-L325)) or via matched $r \to 1^-$ renormalization of the positive Farey/Ramanujan torsion kernel ([`weilPrimeKernel_renormalized_torsion_energy`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticEffectivityTheory/TheWeilPrimeKernelIsARenormalizedTorsionEnergy.lean#L345-L384)) coupled to polar-neutral continuum log-cells $I_n = [\log n, \log(n+1))$ ([`fullArchCrossingForm_polarNeutral_eq`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/EuclideanCellRemainderAndPolarNeutralCollapse.lean#L146-L170)) — on short smooth tests $\operatorname{supp}(f) \subseteq [-181/500, 181/500]$.*
+A productive calibration would therefore start with actual finite-field sections or an actual
+counting construction, produce the links, and recover their signature without inserting purity
+as an input. The corpus already has counting proofs for actual curves; those are a stronger
+starting point than abstract nonnegative point counts, which the fake curves share. The
+transport problem is then which arithmetic operation over `ℤ` replaces the relevant flatness,
+dimension count or product-formula estimate.
 
-* **Why focus here:** `CDG` and `APol` reduced the entire gap between positive 2D currents ($D$) and 1D prime explicit formulas ($W$) to $E_f(L)$ (or equivalently $\Delta(g - T_{2^m}g) \le D(g - T_{2^m}g)$ on a single short window where $W_\zeta \ge \tfrac{1}{5000}\|\cdot\|_2^2$ is *already* proved!). Furthermore, [`heckeDefect_sq_le_two_scale`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/TwoScaleDepthRigidity.lean#L120-L155) gives exact two-scale variance amplification $E_f(L)^2 \le D(f)(E_f(2L)-4E_f(L))$: any nonzero defect must explode exponentially along $2^k L$, so sub-exponential source control at large dyadic scales kills off-line depth shells outright.
-* **Graded Breakthrough Milestones:**
-  1. **First Blood:** Construct the explicit matched continuum-cell counter-operator cancelling $-\log(1-r)$ inside a positive operator difference as $r \to 1^-$ on polar-neutral tests, proving a uniform Gårding/Sobolev remainder bound that explicitly rejects $\lambda\Lambda$ via Euclidean cell-remainder holonomy.
-  2. **Zero-Density Breakthrough:** Prove any source-side bound $E_{f_\tau}(L) \ll e^{2\vartheta L} D(f_\tau)$ (in $\tau$-mean or individually at $L \asymp \log T$), immediately improving zero-density exponents beyond Guth–Maynard ($30/13$) via $4\sinh^2(\delta_\rho L)$.
-  3. **Full Target:** Prove $E_f(\log 2) = 0$ (or $\operatorname{Re} W(g - T_{2^m}g) \ge 0$ for $\operatorname{supp} g \subseteq [-181/500, 181/500]$ and $m \ge 1$) $\implies \text{RH}$ ([`TheStripLivesOnShortCycles.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheStripLivesOnShortCycles.lean)).
+### 2.3 Retain structural slack before seeking a stronger analytic range
 
-### Focus Question 3: Parity-Sensitive Stabilizer Discrepancy & Biarithmetic Holonomy Past the Square-Root Horizon
-> **Precise Problem:** *Across the trans-threshold regime $\lambda = \frac{\log X}{\log(T/2\pi)} > 1$, control the non-abelian coupling of $+1$ and $\times p$ via two quantitative targets:*
-> *(a) Prove a parity-sensitive bound on `oddEvenShiftPrimeCoalescentSurplus` via the multi-modulus Dirichlet/Ramanujan stabilizer decomposition ([`primeCoalSum_eq_stabilizer_add_discrepancy`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/TheCoalescentSurplusDecomposesOverItsStabilizers.lean#L126-L150), [`coalescent_surplus_battery_laws`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SelectivePositivityAndThresholdLaws/ParityLobeObstructionAndEscapeLaplaceSplit.lean#L580-L635)) achieving $\beta < 5/36$ and pushing to $\beta \le 1/18$ at $\lambda = 4/3$;*
-> *(b) Establish a power-saving bound on the growing-endpoint escaped Möbius bilinear form ([`growingEndpointEscapedMoebiusLaw_tfae`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SelectivePositivityAndThresholdLaws/MoebiusEscapedPairingBoundaryLaw.lean#L479-L530)) or extend explicit gauge-separation margins between $\Lambda$ and $\lambda\Lambda$ across the nine-modulus collar $\{2,3,4,5,7,8,9,11,13\}$.*
+IGP provides a concrete success of this principle: an equality pattern allowed by a trace
+estimate is incompatible with the non-lattice zero set of the actual correlation kernel.
+Keeping the resulting slack gives a strict unconditional improvement.
 
-* **Why focus here:** Below $X = T$ ($\lambda \le 1$), `SquareRootThreshold` proves that an off-line zero lattice is *indistinguishable* from an on-line lattice by bounded-precision 1D correlation, and `TTPC` proves that Montgomery–Vaughan stalls at $2 - 4/3 = 2/3$ critical-line zeros. Above $X = T$, `SPTL` proves that parity-blind dispersion diverges as $T^{1+\delta}/\log^2 T$. Therefore, **parity-sensitive congruence stabilizers + Bézout/Kloosterman modulus dispersion** are the *only* mathematically viable bridge across $X = T$.
-* **Graded Breakthrough Milestones:**
-  1. **First Blood ($\kappa < 4/3 \to 5/4$):** Certify `PrimeCoalescentSurplusAtMost β` with $\beta < 5/36$ at $\lambda > 1$ via parity-sensitive multi-modulus Ramanujan stabilizers, and push to $\beta \le 1/18$ to prove unconditionally that **at least $3/4$ of nontrivial zeros lie on the critical line** via coalescent repulsion.
-  2. **Collar & Dispersion Breakthrough:** Extend smooth selective Weil positivity and explicit Liouville refutation from $[-23/40, 23/40]$ (`{2,3}`) across the nine-modulus collar (`AIP`), and extend `ACCC`'s Guth–Maynard short-window prime-row bilinear transfer via multi-modulus Kloosterman averaging (`BVI`).
-  3. **Full Target:** Certify `GrowingEndpointEscapedMoebiusLaw θ` for $\theta \to \tfrac{1}{2}^- \implies \text{RH}$.
+The corresponding opportunity for Weil positivity is to identify incompatible near-equality
+patterns for the prime, archimedean and pole estimates. A norm bound optimized independently
+for each term may pay for vectors that cannot simultaneously be extremal. The polar-dispersion
+law is one algebraic language for such incompatibility; tilted Schur weights are an existing
+analytic instance. A useful result must quantify the slack on signed vectors in the required
+norm, not merely exhibit different extremizers.
 
----
+This can circumvent a wall attached to a particular estimate. It does not destroy the general
+need for an arithmetic sign or prove RH from a positive-density gain.
 
-## Question 3: Blueprint for a New Field of Mathematics — *Renormalized Biarithmetic Geometry*
+## 3. Question 2: three research questions to prioritize
 
-If we interpret the 15 walls in [walls-ledger.md](file:///Users/michael/Documents/code/hgt/docs/reports/review-2710/walls-ledger.md) not merely as roadblocks for existing techniques, but as **impossibility theorems proving that existing mathematical disciplines lack the foundational structures required to answer reflection questions over $\mathbb{Z}$**, a remarkably sharp blueprint emerges for the missing discipline.
+### Priority 1 — What arithmetic construction pays polar incompatibility?
 
-We call this field **Renormalized Biarithmetic Geometry (RBG)**. Every word in its name carries an exact theorem-level necessity established by our corpus:
-* **Biarithmetic:** Purely multiplicative data determine an arithmetic source *only up to its torus gauge orbit* $\Omega_{\mathcal{P}} = \prod_p S^1$ ([`PrimeGaugeTorusAndVacuumIntertwiners.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/PrimeGaugeTorusAndVacuumIntertwiners.lean)), confusing $\zeta$ with Liouville's $\zeta(2s)/\zeta(s)$. Only the non-commuting interaction of **successor ($+1$)** and **scaling ($\times p$)** pins down the Euler point $\mathbf{1} \in \Omega_{\mathcal{P}}$, yet globally on $\operatorname{Aff}(\mathbb{Q})$ they split across the Kakutani singularity wall ([`TheCriticalLineOfTheIntegerSuccessorIsTheKakutaniWall.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticPositiveDuality/TheCriticalLineOfTheIntegerSuccessorIsTheKakutaniWall.lean)).
-* **Renormalized:** Over $\mathbb{Z}$, positivity ($D$, $Q_r$ for $r<1$, continuum cells) and scale equivariance ($W$, $r \to 1^-$ prime kernel) separate **exclusively at divergent diagonal self-energies and rank-one polar residues** ([`weilPrimeKernel_renormalized_torsion_energy`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticEffectivityTheory/TheWeilPrimeKernelIsARenormalizedTorsionEnergy.lean#L345-L384), [`fullArchCrossingForm_eq_polar_sq_sub_levy`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/EuclideanCellRemainderAndPolarNeutralCollapse.lean#L118-L145)).
-* **Geometry:** Sign, zero location, and multiplicity cannot be extracted by 1D analytic norm inequalities or unsigned sieves; they require **intersection forms, real-valued Serre-dual log-volume cohomologies, connection holonomies, quadratic ascent cones, and chiral deformation cones**.
+**Precise target.** Construct finite arithmetic forms, their anchor and their link or gluing
+maps from the source. Prove their identification with the required intersection form. Then
+derive the dispersion payment or weighted trickle-down inequality from an independent
+arithmetic operation.
 
-### 3.1 Why Existing Fields of Mathematics Cannot Supply These Tools
+An acceptable finite-field prototype must distinguish actual curves from the golden datum
+and complex fake for a named structural reason. A theorem for all abstract curve data with
+nonnegative counts cannot do this. For `ℤ`, an acceptable construction must explain where the
+successor or the fixed infinite place enters; prime-side diagonal conjugacy otherwise transports
+the construction to sign twins.
 
-| Existing Discipline | Where Its Machinery Breaks Against the Corpus Walls |
-| :--- | :--- |
-| **Classical Analytic Number Theory** (moments, large sieve, Vaughan/Heath-Brown identities) | Operates on 1D vertical lines and unsigned $L^2$ norms. Stalls at the square-root Nyquist threshold $X = T$ (`SRT`), triggers $T^{1+\delta}/\log^2 T$ parity-blind lobe blowup above $X=T$ (`SPTL`), and computes depth-homogeneous external moments incapable of distinguishing off-line configurations (`AKT`). |
-| **Algebraic & Arakelov Geometry** (Weil/Deligne $C \times_{\mathbb{F}_q} C$, Gillet–Soulé, Faltings heights) | Over $\mathbb{F}_q$, relies on $\operatorname{Spec}\mathbb{F}_q$ making $C \times_{\mathbb{F}_q} C$ a surface with non-scaling $\Delta^2 = 2-2g$, ample Frobenius-compatible $\Theta$, and Frobenius-flat derivatives $D^{(k)}(X^{jq}g)=X^{jq}D^{(k)}g$. Over $\mathbb{Z}$, $\operatorname{Spec}\mathbb{Z}\times\operatorname{Spec}\mathbb{Z}=\operatorname{Spec}\mathbb{Z}$ collapses (`APol`), base `log θ` is linear in degree and *never* extends to a quadratic surface $h^0$ ([`TheBaseDoesNotExtend.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticEffectivityTheory/TheBaseDoesNotExtend.lean)), and classical Jacobi–Hurwitz theta metrics are *soft* (identical on every fibre, `AET`). |
-| **Operator Algebras & Noncommutative Geometry** (Bost–Connes, $\operatorname{Aff}(\mathbb{Q})$, Meyer adele class spaces) | Global positive-definite states on $\operatorname{Aff}(\mathbb{Q})$ hit the **Kakutani Wall**: enforcing $\mathbf{1}_{\mathbb{Z}}$ forces a Kronecker-null dilation spectrum, while Weil's atomic zero correlation blinds every successor (`APD`). Meanwhile, in Meyer's origin Hilbert space, Poisson principal cycles are norm-dense, forcing every continuous class invariant to be constant ([`OriginHilbertCohomologyObstruction.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/OriginHilbertCohomologyObstruction.lean)). |
-| **Classical Bochner–Weil, Total Positivity & Pólya–Schur Theory** | Blind to interior strip zeros (`MPG`), symmetric under two-sided deformations (`BGG` $W_\beta$ splitting refutes two-sided rigidity), and blocked by the Post–Widder real-anchor obstruction from contracting nonreal quartets without coupled real anchors (`ACP`). |
+**First substantive milestone.** An exact decomposition and payment on a larger explicit
+family than the already positive spacing-scale sections, with a quantified reserve that remains
+available for extension. The new gluing law supplies an invariant to calculate, not its desired
+arithmetic bound.
 
-### 3.2 The Core Questions of the New Field
+**Why first.** This addresses the producer common to the three unified routes. More receivers
+will not substitute for it.
 
-Renormalized Biarithmetic Geometry is organized around **seven foundational questions** (the direct mathematical translations of the walls):
+### Priority 2 — Can signed positivity survive overlap on an exhaustive family?
 
-1. **The Split-Polarization Question:** *Given a scaling system carrying both a positive 2D subharmonic/Poincaré–Lelong trace $D$ and a 1D scale-equivariant reflection trace $W$, what source-intrinsic mechanism bounds the hyperbolic coboundary $E_f(L) = D(T_L f)+D(T_{-L}f)-2D(f)$ without an underlying fibered product scheme?*
-2. **The Matched Self-Energy Question:** *When a family of positive arithmetic intersection kernels $\{K_r\}_{r<1}$ becomes scale-equivariant as $r \to 1^-$ across a universal logarithmic self-energy $-\log(1-r)I$, how does one construct a canonical continuum/archimedean twin in the same Hilbert space so that the $-\log(1-r)$ divergence cancels inside the positive cone?*
-3. **The Finite-Horizon Holonomy Question:** *Since $+1$ and $\times p$ decouple singularly in global infinite-volume limits, how much $(+1,\times p)$ curvature survives on finite-horizon boundaries, continuum log-cells $I_n = [\log n, \log(n+1))$, and damped escape modules as scale $X$ crosses the conductor/Nyquist horizon?*
-4. **The Chiral Moduli & Quantization Question:** *What is the global geometry of directed (one-way) positive deformation cones of Euler systems, where downward critical splitting is continuous and free while upward central vanishing is capped and quantized in $2\mathbb{N}$?*
-5. **The Zero-Cone Potential Question:** *How does conditioning simultaneously on a spectral zero $F(p)=0$ and an empty 2D hyperbolic/quadratic ascent cone $\mathcal{K}_p$ constrain oscillatory Dirichlet series along interior outward rays beyond generic-height Kronecker limits?*
-6. **The Fibre-Selective Real Effectivity Question:** *How do real-valued log-volume/entropy cohomology functionals $(h^0, h^1) \in \mathbb{R}_{\ge 0}^2$ satisfy Serre duality and quadratic Hilbert–Samuel growth ($\chi \sim N$) while remaining strictly selective against prime-gauge and shift countermodels?*
-7. **The Fixed-Loss Amplification Question:** *In the absence of Frobenius flatness $D^{(k)}(X^{jq})=0$ and a finite period $q$, what non-scaling base invariant or multi-ordinate collective coupling breaks depth homogeneity under amplification?*
+**Precise target.** Extend source-defined positivity from separated sections to overlapping
+tests while controlling the actual overlap Gram, prime lag form, archimedean cross form and both
+pole moments together. Establish transfer in a topology controlling Weil's form. Growing
+dimension alone is insufficient.
 
-### 3.3 Point of View / Paradigm
+The non-ratio terms have the explicit gauge factor
 
-The central philosophical shift of RBG can be stated in four tenets:
-1. **Never work in a pure 1D multiplicative or global affine completion.** Purely multiplicative expressions are $\Omega_{\mathcal{P}}$-blind; global $\operatorname{Aff}(\mathbb{Q})$ states are Kakutani-singular. Every theorem must live on a **coupled triple**: *(2D subharmonic current / torsion orbit, 1D scale boundary, continuum log-cell successor connection)*.
-2. **Cancel divergences before projecting signs.** Never split an expression into $\infty - \infty$ (raw prime tower minus raw archimedean diagonal, or $\lim_{r\to 1^-} K_r$ minus $-\log(1-r)I$) and attempt to bound pieces separately. Neutralize rank-one polar vectors (`BGG G5`) and match logarithmic self-energies *inside* a joint positive operator first.
-3. **Replace symmetry with chirality.** Arithmetic positivity is fundamentally **irreversible**: outward critical splitting ($W_\beta$) is positive while inward collapse ($W_\beta^{-1}$) is not; outward terminal rays have positive pair sums while inward rays oscillate; forward polynomial heat repairs roots while backward heat diverges; refutation is finite while confirmation is cofinal (`SSIC`).
-4. **Replace unattained global extrema with local quadratic terminals and finite horizon boundaries.** Never assume $\sup \operatorname{Re}\rho$ is attained or take naive $N \to \infty$ limits before extracting boundary/escaped pairings (`HorizonSpace N`, `ActualCofactorLimit`, `exists_local_outward_field_witness`).
+\[
+\omega(k)-\omega(m)\omega(n),\qquad
+|\log k-\log(n/m)|\lesssim w.
+\]
 
-### 3.4 Primitive Objects & Morphisms
+It vanishes on exact ratios. This identifies where prime-side gauge information reappears.
+But a coefficient margin does not imply a signed form margin, and the diamagnetic inequality
+still makes a modulus-closed Markov lower-bound argument accept dominated twins. The pole and
+the chosen signed domain must be accounted for. See
+[TheGaugeEntersThroughNonRatioLags](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheGaugeEntersThroughNonRatioLags.lean)
+and [TheDiamagneticInequality](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheDiamagneticInequality.lean).
 
-1. **Split-Polarized Scaling Spaces $(\mathcal{S}, D, W, \{T_L\}_{L\in\mathbb{R}})$:** Test spaces carrying a positive log-Sobolev collided trace $D$, a reflection-symmetric $T_L$-equivariant trace $W$, capacity defect $\Delta = D - \operatorname{Re} W \ge 0$, and scale-doubling defect functional $E_f(L)$ ([`DefectKernel.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/DefectKernel.lean)).
-2. **Polar-Neutral Continuum Log-Cell Complexes $(\mathcal{C}_{\mathbb{Z}}, \{I_n\}_{n\ge 1}, \Pi_{\mathrm{PN}})$:** Partition of $[0,\infty)$ into cells $I_n = [\log n, \log(n+1))$ equipped with the codimension-$1$ projection $\Pi_{\mathrm{PN}}$ orthogonal to $s(n)=(n-1)/\sqrt{n}$ and exact Euclidean subdivision $I_a + \log m = \bigsqcup_{r<m} I_{am+r}$ ([`EuclideanCellRemainderAndPolarNeutralCollapse.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/EuclideanCellRemainderAndPolarNeutralCollapse.lean)).
-3. **Prime-Gauge Bundles $\mathcal{E} \to \Omega_{\mathcal{P}}$ with Successor Connection $A_\omega$:** Unitary prime-phase bundles over $\Omega_{\mathcal{P}} = \prod_p S^1$ carrying the discrete connection $A_\omega(n) = \overline{\chi_\omega(n)}\chi_\omega(n+1)$, Catalan/Pell plaquette holonomies, and finite Dirichlet stabilizer projections $\Omega_{\mathcal{P}} \to \widehat{(\mathbb{Z}/q\mathbb{Z})^\times}$ ([`QuantitativeCatalanDiophantineRepulsion.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/QuantitativeCatalanDiophantineRepulsion.lean), [`TheCoalescentSurplusDecomposesOverItsStabilizers.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/TheCoalescentSurplusDecomposesOverItsStabilizers.lean)).
-4. **Renormalized Cyclotomic Torsion Germs $\{K_r\}_{0 \le r < 1}$:** Positive-definite gcd-twisted Abel pairings over primitive cyclotomic orbits $\mathcal{O}_m = \mu_m^*$ and pole-cancelled bi-torsion contrasts $\Delta_{q_1,q_2}$ ([`TheWeilPrimeKernelIsARenormalizedTorsionEnergy.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticEffectivityTheory/TheWeilPrimeKernelIsARenormalizedTorsionEnergy.lean)).
-5. **Chiral Bochner–Fejér Quivers:** Directed categories of completed $L$-data (`CompletedPositiveSystem`, `HeightCoupledSystem`, `FejerCoupledSystem K`) whose morphisms are continuous Post–Widder Laplace measures vs. discrete arithmetic prime-mass modifications ([`ExteriorAndHeightCoupledQuartetContractions.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/ExteriorAndHeightCoupledQuartetContractions.lean), [`PositivePrimeMassDeformationsAreRigidOffTheCriticalLine.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/PositivePrimeMassDeformationsAreRigidOffTheCriticalLine.lean)).
-6. **Terminal Ascent Cones $(p, \mathcal{K}_p, E_{\mathrm{trans}})$:** Right-hand spectral zeros equipped with empty open quadratic cones $\mathcal{K}_p$ and regular transverse electrostatic fields $E(p) = \sum_{q\ne p} m_q/(p-q)$ read by the Rankin–Selberg square $(\zeta'/\zeta)^2$ ([`EveryOffLineZeroHasALocalOutwardFieldWitness.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/EveryOffLineZeroHasALocalOutwardFieldWitness.lean)).
-7. **Serre-Dual Real Effectivity Pairs $(h^0, h^1)$ & Wiener Escape Modules:** Real-valued section functionals (`thetaBoxH0`, `thetaBoxH1`, horizon log-torsion $\psi(N) = \log|\mathbb{Z}/\operatorname{lcm}(1..N)\mathbb{Z}|$) and contractive $\mathcal{W}_{1/2}$-modules `ActualCofactorLimit` extracted from normalized damping escape (`ADR`, `SPTL`).
+**First substantive milestone.** A bounded-overlap inequality with an explicit error measured
+in the overlap norm, plus a transfer theorem identifying which aperture or orbit it controls.
+Next, determine whether its reserve survives iteration. The fixed-spline negative-index theorem
+provides a precise exhaustive endpoint; it does not license every unbounded-overlap schedule.
 
-### 3.5 Formal Language: Twelve Mandatory Distinctions
+**Why second.** The corpus has now paid the full form on real arithmetic section spaces. The
+remaining question is their extension, not another coarse self-energy constant or an assumed
+average-to-operator equivalence.
 
-In RBG, conflating any of the pairs below is a type error:
+### Priority 3 — What forces the exceptional set to be empty?
 
-1. **Collided Positivity ($D$)** vs. **Reflected Equivariance ($W$)** ($\rho \leftrightarrow \bar\rho$ vs. $\rho \leftrightarrow 1-\bar\rho$).
-2. **Even Collision** (multiplicative/height couplings, blind to $H^1$ determinant signs on `complexFake`) vs. **Odd Collision** ($\Lambda^2$ exterior counts, catching `complexFake`).
-3. **Inserted Pole Charge** (counted by pole order $\kappa$ under deformations) vs. **Intrinsic Oscillatory Charge** (paid by zero-sum oscillation at $\kappa = 1$).
-4. **Hyperbolic Boost** (Hecke/dilation, forcing isotropy) vs. **Elliptic Point-Reflection** ($\sigma_\gamma(s)=1+2i\gamma-s$) vs. **Unipotent Perturbation** (successor $D_\Lambda(s)/s \in H^2$).
-5. **Gauge-Blind Multiplicative Form** (invariant under $U_\omega$ on $\Omega_{\mathcal{P}}$) vs. **Holonomy-Charged Biarithmetic Observable** (sensitive to $A_\omega$, log-cell remainders, or escaped boundaries).
-6. **Atomic Dilation Spectrum** (blinds all successors) vs. **Continuous Dilation Spectrum** (visible to successors).
-7. **Soft Polarization** (fibre-constant Jacobi–Hurwitz $\log\vartheta$) vs. **Fibre-Selective Real Effectivity** (`thetaBoxH0/H1`, Frobenius-mass energy).
-8. **Outward Critical Surgery** ($W_\beta$, Bochner-admissible, lowers $\operatorname{ord}_{1/2}$) vs. **Inward Quartet Surgery** (`coupledQuartetSymSquare`, raises $\operatorname{ord}_{1/2}$ by $+4$, defining chiral ceilings).
-9. **Continuous $\Theta(\sigma^{-3})$ Laplace Tail** vs. **Discrete $O(2^{-\sigma})$ Dirichlet Log-Lattice Support** (which forces a quantized $\ge \sqrt{x}$ prime-mass deficit).
-10. **Integer Vector-Space Rank** ($\dim \in \mathbb{N}$, reweighting-blind) vs. **Real Log-Torsion Volume** ($\log|\mathbb{Z}/\operatorname{lcm}(1..N)\mathbb{Z}| = \psi(N)$).
-11. **Pointwise Parameter Bound** (false even under RH!) vs. **Cesàro/Averaged or Terminal-Cone Bound** (exact RH strength).
-12. **Parity-Blind Dispersion** (diverges as $T^{1+\delta}/\log^2 T$ for $\lambda > 1$) vs. **Parity-Sensitive Stabilizer Projection**.
+**Precise target.** Turn the arithmetic reading of a candidate off-line zero into an upper
+bound below one transverse-energy quantum, or prove a propagation law that makes one exception
+incompatible with an available global budget.
 
-### 3.6 Foundational Principles (The Eight Laws of RBG)
+AES supplies source-work exhaustion, energy quantization and power-sparse alignment sets.
+The missing implication is pointwise: an off-line zero must force a sufficiently large signed
+prime statistic at its own ordinate, or enough companions to exhaust the budget. The outward
+reserve inside the strip cannot simply be continued into `Re s>1`; the archimedean background
+and the signs of other zero contributions matter.
 
-Every deduction in the field rests on eight proven structural laws:
+**First substantive milestone.** A depth-dependent forcing law at the actual zero ordinates,
+with the needed length and conductor stated. Compare its exceptional-set bound with existing
+zero-density results. For exclusion, strengthen it to a subquantum bound or a proved
+exception-propagation contradiction. A vanishing proportion still permits one zero.
 
-1. **Principle I — Split-Polarization & Two-Scale Rigidity:** $\operatorname{Re} W = D - \Delta$ with $D \ge 0$, $\Delta \ge 0$, exact kernel doubling $k(2L,d)=4k(L,d)+k(L,d)^2$, and Cauchy–Schwarz variance rigidity $E_f(L)^2 \le D(f)(E_f(2L)-4E_f(L))$ ([`TwoScaleDepthRigidity.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/TwoScaleDepthRigidity.lean)).
-2. **Principle II — Local Fibre Trichotomy:** Every reflection-commuting affine action on $\{\rho, 1-\bar\rho\}$ is a hyperbolic boost, a unipotent Hardy perturbation, or an elliptic point-reflection $\sigma_\gamma$; positive cones invariant under boosts are isotropic.
-3. **Principle III — Unitary Multiplicative Gauge-Blindness:** Purely multiplicative quadratic forms over $[1,X]$ are constant across real sign gauges $\omega \in \{\pm 1\}^{\mathcal{P}}$; on nonnegative tests, the Euler point $\mathbf{1}$ is the *minimum* (worst twin). Selectivity requires signed smooth tests + $(+1,\times p)$ holonomy.
-4. **Principle IV — Kakutani Interior–Boundary Duality:** Global $\operatorname{Aff}(\mathbb{Q})$ states decouple $+1$ (Kronecker-null) from atomic $\times p$ spectra; $(+1,\times p)$ coupling lives strictly on finite horizon boundaries (`HorizonSpace N` at critical exponent $\sigma = \tfrac{1}{2}$), continuum log-cells $I_n$, and damped escape limits where prime dilation becomes archimedean flow.
-5. **Principle V — Self-Energy Conservation & Polar-Neutral Collapse:** Both the $r \to 1^-$ discrete torsion blowup $-\log(1-r)I$ and the continuum archimedean $s=1$ crossing blowup $\tfrac{1}{2}(\sum s(n)q_n)^2$ are universal scalar/rank-one self-energies; positivity survives scale limits iff they are cancelled by matched embeddings on the polar-neutral hyperplane prior to taking limits.
-6. **Principle VI — Chiral Anchor & Quantization Law:** Post–Widder real-anchor asymmetry makes positive Bochner surgery chiral: critical zeros can split outward, off-critical quartets contract inward raising central order, and any discrete log-lattice compensation excavates prime mass at abscissa $\ge \tfrac{1}{2}$ with quantized residue in $2\mathbb{N}$ ([`TheQuantizationOfTheSquareRootSurplus.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/TheQuantizationOfTheSquareRootSurplus.lean)).
-7. **Principle VII — Quadratic Surface Effectivity vs. Linear Base Non-Extension:** On any polar surface, the Hodge index theorem is equivalent to a Serre-dual real effectivity functional $h$ with quadratic growth $\chi \sim N$ and subquadratic growth in degree $0$; linear base theta counts ($\sim \log N$) never lift to surface effectivity ([`ArithmeticEffectivityTheory`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticEffectivityTheory/README.md)).
-8. **Principle VIII — Terminal Ascent Replacement of Global Extrema:** Every off-line spectral point ascends within $O(\log(|\gamma|+3))$ to a local quadratic terminal $p$ whose outward interior ray is zero-free and pair-positive across the entire complex plane.
+**Why third.** This is an independent route to exclusion. It tests whether the newly computed
+positive quantities can constrain the divisor, rather than only describe it. The objects and
+thresholds are in [ArithmeticElectrostatics](../../../formal/GaloisForLFunctions/ArithmeticElectrostatics/README.md).
 
-### 3.7 Mandatory Criteria: The 10-Point Falsifiability & Selectivity Battery
+## 4. Question 3: a field capable of supplying these tools
 
-No invariant, functional, or candidate theorem enters RBG unless it passes **all ten gatekeeper tests** formalized across the corpus:
+**Arithmetic Lorentzian geometry should be the theory of source-defined signature certificates
+and their compatibility under arithmetic operations.** The affine monoid supplies its arithmetic
+language; anchored forms, links and finite parts supply its geometric language. The aim is a
+Hodge index theorem for the specified arithmetic pairing, with the origin of its sign visible.
 
-1. **Positive Curve Calibration:** Specializes over $\mathbb{F}_q$ to prove Hasse–Weil / odd-hyperelliptic RH with exact genus cost $2g$ ([`curve_frobMass_cohomology_calibration`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SelectivePositivityAndThresholdLaws/SerreDualScalingCohomologyAndLargeSieveSections.lean#L306-L345), [`riemannHypothesis_oddHyperelliptic`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/HyperellipticDescent.lean#L84-L115)).
-2. **Golden Beurling Rejection:** Fails on $1 - 5X + 5X^2$ (filtering out pure L1–L3 / Künneth / bare functional-equation tautologies).
-3. **Complex Quartet Rejection:** Fails on $X^4 + 68X^2 + 256$ ($\pm 8i, \pm 2i$), filtering out even-collided $H^1$ determinant counts that lack Rosati or $\Lambda^2$ odd collision.
-4. **Pole-Budget-2 Refund Awareness:** Respects `CompletedPositiveSystem 2 1` refunded quartets (`exists_completedPositiveSystem_two_complex_offCritical`).
-5. **Chiral Splitting & Maass Compatibility:** Consistent with outward $W_\beta$ splittings and level-1 Maass $L(s, u\times u) = \zeta(s)L(s,\operatorname{sym}^2 u)$ cofactors at $\gamma = 2r_u$ (`BGG`).
-6. **Liouville Twin Rejection:** Positively accepts $\Lambda$ while refuting $\lambda\Lambda$ ($\zeta(2s)/\zeta(s)$), proving genuine $\Omega_{\mathcal{P}}$ gauge selectivity ([`threeHundredSixtyTwoThousandths_selectivity_battery`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SelectivePositivityAndThresholdLaws/LiouvilleOddWindowRefutationAndSelectiveFullPositivity.lean#L29786-L29830)).
-7. **Shifted Zeta Pair Rejection:** Separates $\Lambda$ from `shiftedPairVonMangoldt a` ($\zeta(s-a)\zeta(s+a)$), filtering out soft theta heights and rank-only $h^0/h^1$ ([`thetaBox_strict_selectivity_shiftedPair`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SelectivePositivityAndThresholdLaws/SerreDualScalingCohomologyAndLargeSieveSections.lean#L176-L215)).
-8. **Prime-Power Node Criticality:** Breaks when $\log 4$ (prime squares) is dropped while tolerating composite non-prime-powers like $\log 6$ (`BiScaleUncertainty`).
-9. **Interior Zero Visibility:** Rejects $\zeta(s)/\zeta(s+1-\beta)$ ($\beta < 1$), proving genuine interior strip sensitivity beyond $\operatorname{Re} s = 1$ boundary divisors (`MPG`).
-10. **Trans-Threshold Parity Survival:** Remains finite for $\lambda = \frac{\log X}{\log(T/2\pi)} > 1$ without suffering parity-blind $T^{1+\delta}/\log^2 T$ lobe divergence (`SPTL`).
+### Objects
 
-### 3.8 Concrete Research Topics of the Field
+* Finite spaces of real or complex arithmetic tests and their exact Gram matrices, with the
+  pole plane retained. Real hyperbolicity and Hermitian inertia are related but distinct APIs.
+* Anchored symmetric forms, their polar rows, Schur reserves and dispersion corrections.
+* Source-defined section spaces and incidence complexes with restriction or link operations.
+  A positive signature is a theorem about these objects, not a field in their definition.
+* Prime ladders, successor maps and logarithmic cells, with their exact affine relations.
+* Gauge-twisted kernels together with a fixed archimedean and polar structure. The common
+  gauge matters; the spectrum of the prime kernel alone does not select the source.
+* Regulated families, counterterms, finite parts and comparison maps. Changing a basis,
+  changing a regulator, and changing the quadratic form are different operations.
+* Exhaustions and their analytic norms, recording which tests the finite certificates reach.
 
-1. **Matched Torsion–Continuum Renormalization Theory:** Constructing joint $r$-regularized Hilbert-space embeddings of cyclotomic/Farey torsion orbits (`AET`) and polar-neutral continuum log-cells (`BGG G5`) so that $-\log(1-r)$ cancels prior to $r \to 1^-$, yielding trace-class/Sobolev control of short-cycle Lefschetz differences $W(g - T_{2^m}g)$.
-2. **Harmonic Measure & Mollified Potential Theory on Quadratic Terminal Cones:** Developing zero-pinned Carleman, Jensen, and Borel–Carathéodory inequalities on $\mathcal{K}_p$ for $\zeta(s)M_X(s)/(s-p)^m$ coupled to the $(\zeta'/\zeta)^2$ regular transverse field.
-3. **Finite-Theta 2D Poincaré–Lelong Flow & Two-Scale Shell Exclusion:** Studying the transport of [`FiniteThetaSourceCurvature.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/FiniteThetaSourceCurvature.lean) under dyadic Hecke shifts $2^k L$ using [`TwoScaleDepthRigidity.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/TwoScaleDepthRigidity.lean) to obtain source-side zero-density theorems and rule out constant-depth shells.
-4. **Non-Abelian $(+1,\times p)$ Cell Holonomy & Multi-Modulus Kloosterman Dispersion:** Quantifying Euclidean cell-remainder Sobolev matrices across the nine-modulus collar and multi-modulus Kloosterman cancellations (`BVI`, `ACCC`, `SPTL`) for `GrowingEndpointEscapedMoebiusLaw θ` and `oddEvenShiftPrimeCoalescentSurplus`.
-5. **Chiral Automorphic & Rankin–Selberg Vanishing Ceilings:** Applying [`TheCentralCeilingTransfersToFactors.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/TheCentralCeilingTransfersToFactors.lean) (`centralOrder_factor_le_of_ceiling`) and collective multi-ordinate `FejerCoupledSystem` packets to bound central vanishing orders $\operatorname{ord}_{1/2} L(s, \operatorname{sym}^2 u)$ and exclude clustered off-line companion clouds.
-6. **Contractive Wiener Escape Module Classification:** Analysing the cyclic $\mathcal{W}_{1/2}$-modules `ActualCofactorLimit` (`ADR`, `ACP`) — where prime dilations act as archimedean flows and dominant zeros generate finite-rank Cauchy phase kernels — to force positive gauge mass (`ACG`) across damping thresholds.
+### Language and principles
+
+Use signature, primitive hyperplane, reserve, dispersion, link, pullback, domination, finite
+part and exhaustion. Introduce higher-degree support conditions only with the operations that
+need them. Lorentzian log-concavity must not be conflated with real stability or real-rootedness.
+
+1. **Fix the target before constructing its certificate.** An identity or domination theorem
+   must connect the constructed object to the full arithmetic form.
+2. **Keep the sign local enough to prove and strong enough to transfer.** Connectivity alone
+   does not supply local signature. Count or construct the links.
+3. **Measure compatibility.** A sum pays polar dispersion; a regulator pays its counterterm;
+   an overlap extension pays its cross terms; a localizer pays its conductor.
+4. **Separate source selection from sign production.** Successor flatness may identify the
+   Euler gauge without proving any Hodge inequality there.
+5. **Keep a common budget.** The two global pole moments cannot be spent independently at
+   every prime or every link.
+6. **Treat the limit as a theorem.** Control signed tests in a form-controlling topology;
+   specify what survives and what exhausts the target space.
+7. **Scope obstructions.** A failure of scalar counterterms or multiplicative localizers
+   constrains that construction class. Extract its exact positive survivor.
+
+### Tools and foundational pillars
+
+The degree-two foundation is already strong: reverse Cauchy–Schwarz, hyperplane criteria,
+pullback, domination, CND closure, the scaling-surface bridge and nef shifts. Trickle-down and
+the Metzler dichotomy add local-to-global tests and a sharp calibration failure. The development
+here adds polar gluing: the reserve identity, the positive correction and the constructed
+hyperbolic form. These are tools for producing and comparing certificates; their application
+to the full arithmetic target remains a mathematical question.
+
+The next tools should be a source-defined link calculus; multiscale gluing with the actual
+cross forms; a quantitative overlap transfer; and a signature argument retaining structural
+slack. Higher-degree Lorentzian polynomials belong when a constructed polynomial has an
+arithmetic Hessian identity. An Euler product with positive coefficients alone does not supply
+that identity or the required signature of its derivatives.
+
+### Position among the programmes
+
+ACS and AOG specify the target and calibrations. AIT supplies local towers and exact transfers.
+AET supplies counts and growth laws. BGG and ACG supply gauge selection and charged operations.
+APol and CDG supply the distinction between positive and equivariant pairings. AES supplies
+quantized defect and work. RBG and RAPT supply the rules of subtraction and survival. SSHA
+supplies joint analytic payment. ALG should own the construction and composition of signature
+certificates connecting these results. It should import these tools rather than rename them.
+
+### Success criteria
+
+A contribution must prove an unconditional theorem about a constructed object, state its exact
+domain, and identify its arithmetic content. Algebraic structural conditions must remain
+explicit; no unknown arithmetic estimate may be hidden in an interface. A claimed advance toward
+RH must identify which producer or transfer step it improves, and which fake or twin it excludes.
+
+The programme succeeds at its full RH target only when a source-defined construction reaches
+the actual Weil form on an exhaustive family and proves the needed signature. The present
+foundations, exact gluing laws and local arithmetic positivity do not complete that programme.
+The three priority questions above remain open; they are the work required to turn this field
+from a useful language into a proof mechanism.

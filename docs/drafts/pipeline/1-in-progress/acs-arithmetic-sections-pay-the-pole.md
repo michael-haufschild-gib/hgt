@@ -75,6 +75,21 @@ The exact pole decomposition is `W(f,f)=M(f)+2AB`. Hence `W(f,f) ≥ ∫f²` for
 - New content: the non-neutral pole directions are included in the same source-defined linear space.
 - Full ACS remains open: sparse support does not give arbitrary compactly supported tests or unrestricted section growth.
 
+## Lean verification
+
+Implementation: `formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/ArithmeticSectionsPayThePole.lean`.
+
+Main declarations:
+
+- `markovEnergy_arithmeticSection_ge_reserve`
+- `neg_sectionReserve_le_poleProduct`
+- `integral_sq_le_weilPair_arithmeticSection`
+- `arithmeticSections_effectivity`
+
+Kernel verification is pending. The initial leaf check found elaboration and rewrite errors;
+these have been corrected and the revised leaf is being checked. This card stays in stage 1
+until the exact file passes and all four declarations have clean transitive axiom audits.
+
 ## Log
 
 - 2026-10-27 — Candidate isolated; complete algebraic argument written for audit and formalization.

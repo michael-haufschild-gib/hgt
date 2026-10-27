@@ -4,6 +4,7 @@ import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheHodgeIndexTricklesDow
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheSignIsAGaugeFixing
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheMetzlerDichotomy
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheFrobeniusLadderIsMetzler
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheSuccessorConnectionIsTheArchimedeanGaugeField
 
 /-!
 # Arithmetic Lorentzian Geometry
