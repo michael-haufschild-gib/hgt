@@ -60,7 +60,7 @@ theorem archLevyDensity_le {s : ℝ} (hs : 0 < s) : archLevyDensity s ≤ 1 / (2
   calc Real.exp (-s / 2) / (1 - Real.exp (-2 * s))
       ≤ 1 / (1 - Real.exp (-2 * s)) := div_le_div_of_nonneg_right h1 (by linarith)
     _ ≤ 1 / (2 * s / (1 + 2 * s)) := one_div_le_one_div_of_le hpos hden
-    _ = 1 / (2 * s) + 1 := by field_simp; ring
+    _ = 1 / (2 * s) + 1 := by field_simp
 
 /-- `ω(s) ≥ 1/(2s) − 1/4`, from `ω(s) ≥ e^{−s/2}/(2s)` and `e^{−s/2} ≥ 1 − s/2`. -/
 theorem archLevyDensity_ge_sub {s : ℝ} (hs : 0 < s) : 1 / (2 * s) - 1 / 4 ≤ archLevyDensity s := by
@@ -109,7 +109,7 @@ theorem integral_atomicTest_mul_shift (hg : ContDiff ℝ 2 g) (hgc : HasCompactS
 theorem integral_sub_shift_sq (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
     (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (N : ℕ) (x : ℕ → ℝ) (s : ℝ) :
     ∫ u, (atomicTest N x g u - atomicTest N x g (u + s)) ^ 2 =
-      2 * ∫ u, atomicTest N x g u ^ 2 -
+      2 * (∫ u, atomicTest N x g u ^ 2) -
         2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, x m * x n * bumpPairing g m n s := by
   have hf := contDiff_atomicTest hg N x
   have hfc := hasCompactSupport_atomicTest hgsupp N x
@@ -124,8 +124,9 @@ theorem integral_sub_shift_sq (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g
       hfc.mul_right
   have hpt : ∀ u, (f u - f (u + s)) ^ 2 = f u ^ 2 + f (u + s) ^ 2 - 2 * (f u * f (u + s)) :=
     fun u => by ring
+  have h12 : Integrable fun u => f u ^ 2 + f (u + s) ^ 2 := h1.add h2
   simp_rw [hpt]
-  rw [integral_sub (h1.add h2) (h3.const_mul 2), integral_add h1 h2, integral_const_mul,
+  rw [integral_sub h12 (h3.const_mul 2), integral_add h1 h2, integral_const_mul,
     integral_add_right_eq_self (fun u => f u ^ 2) s, integral_atomicTest_mul_shift hg hgc N x s]
   ring
 
@@ -253,7 +254,7 @@ theorem integral_crossMajorant_le (N : ℕ) (x : ℕ → ℝ) (hw0 : 0 ≤ w) (a
   have hint : ∀ m n : ℕ, IntegrableOn (fun s =>
       (Set.Icc (Real.log n - Real.log m - w) (Real.log n - Real.log m + w)).indicator
         (fun _ => crossCoeff x m n) s) (Set.Ioc a b) :=
-    fun m n => IntegrableOn.indicator integrableOn_const measurableSet_Icc
+    fun m n => IntegrableOn.indicator (integrableOn_const measure_Ioc_lt_top.ne) measurableSet_Icc
   rw [integral_finsetSum _ fun m _ => integrable_finsetSum _ fun n _ => hint m n, mul_sum]
   refine sum_le_sum fun m _ => ?_
   rw [integral_finsetSum _ fun n _ => hint m n, mul_sum]
@@ -264,7 +265,7 @@ theorem integral_crossMajorant_le (N : ℕ) (x : ℕ → ℝ) (hw0 : 0 ≤ w) (a
       Set.Icc (Real.log n - Real.log m - w) (Real.log n - Real.log m + w)) ≤ 2 * w :=
     calc _ ≤ volume.real
           (Set.Icc (Real.log n - Real.log m - w) (Real.log n - Real.log m + w)) :=
-          measureReal_mono Set.inter_subset_right
+          measureReal_mono Set.inter_subset_right measure_Icc_lt_top.ne
       _ = 2 * w := by rw [Real.volume_real_Icc_of_le (by linarith)]; ring
   exact mul_le_mul_of_nonneg_right hvol (crossCoeff_nonneg x m n)
 
@@ -286,6 +287,12 @@ theorem abs_sub_div_le_abs_log_sub {m n N : ℕ} (hm : m ∈ Icc 1 N) (hn : n �
   calc ((n : ℝ) - m) / N ≤ ((n : ℝ) - m) / n := div_le_div_of_nonneg_left (by linarith) hn0 hnN
     _ = 1 - m / n := by field_simp
     _ ≤ _ := h
+
+/-- `H_N ≤ 1 + log N`. -/
+theorem harmonicSum_le_one_add_log (N : ℕ) : harmonicSum N ≤ 1 + Real.log N := by
+  have h := harmonic_le_one_add_log N
+  simp_rw [harmonic_eq_sum_Icc, Rat.cast_sum, Rat.cast_inv, Rat.cast_natCast] at h
+  simpa [harmonicSum, one_div] using h
 
 /-- Reindexing a sum of reciprocals into the harmonic sum. -/
 theorem sum_le_harmonicSum_of_injOn {T : Finset ℕ} {φ : ℕ → ℕ} {N : ℕ}
@@ -322,7 +329,6 @@ theorem sum_erase_inv_abs_sub_le {m N : ℕ} (hm : m ∈ Icc 1 N) :
     exact mem_Icc.mpr ⟨by omega, by omega⟩
   · have ha' := (mem_filter.mp ha).2
     have hb' := (mem_filter.mp hb).2
-    simp only at h
     omega
   · obtain ⟨he, hlt⟩ := mem_filter.mp hn
     have := mem_Icc.mp (mem_of_mem_erase he)
@@ -330,7 +336,6 @@ theorem sum_erase_inv_abs_sub_le {m N : ℕ} (hm : m ∈ Icc 1 N) :
     exact mem_Icc.mpr ⟨by omega, by omega⟩
   · have ha' := (mem_filter.mp ha).2
     have hb' := (mem_filter.mp hb).2
-    simp only at h
     omega
 
 /-- The symmetric kernel `2N/(3|n − m|) + 1` off the diagonal. -/
@@ -413,7 +418,7 @@ theorem sum_crossCoeff_le (N : ℕ) (x : ℕ → ℝ) :
 theorem levyEnergy_atomicTest_ge_cross (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
     (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w)
     (hw : w ≤ atomSpacing N / 4) (x : ℕ → ℝ) :
-    (Real.log (1 / w) - 1 / 2) * ∫ u, atomicTest N x g u ^ 2 -
+    (Real.log (1 / w) - 1 / 2) * (∫ u, atomicTest N x g u ^ 2) -
         4 * w * (∫ u, g u ^ 2) * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, crossCoeff x m n ≤
       levyEnergy (atomicTest N x g) := by
   have hδ1 := atomSpacing_le_one hN
@@ -442,24 +447,35 @@ theorem levyEnergy_atomicTest_ge_cross (hg : ContDiff ℝ 2 g) (hgc : HasCompact
     rw [integral_sub_shift_sq hg hgc hgsupp N x s]
     have hinv : 1 / 2 * s⁻¹ = 1 / (2 * s) := by field_simp
     rw [hinv]
-    nlinarith [mul_le_mul_of_nonneg_left hωge
-      (by positivity : (0 : ℝ) ≤ 2 * ∫ u, atomicTest N x g u ^ 2)]
+    have e1 := mul_le_mul_of_nonneg_left hωge (by positivity : (0 : ℝ) ≤ 2 * ∫ u, atomicTest N x g u ^ 2)
+    have e2 : archLevyDensity s * (2 * (∫ u, atomicTest N x g u ^ 2) -
+        2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, x m * x n * bumpPairing g m n s) =
+        2 * (∫ u, atomicTest N x g u ^ 2) * archLevyDensity s -
+          2 * (archLevyDensity s * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, x m * x n * bumpPairing g m n s) := by
+      ring
+    rw [e2]
+    linarith
   have hinv_int : IntegrableOn (fun s : ℝ => s⁻¹) (Set.Ioc w 1) := by
     have hc : ContinuousOn (fun s : ℝ => s⁻¹) (Set.Icc w 1) :=
       continuousOn_inv₀.mono fun s hs => ne_of_gt (lt_of_lt_of_le hw0 hs.1)
     exact (hc.integrableOn_compact isCompact_Icc).mono_set Set.Ioc_subset_Icc_self
   have hself_int : IntegrableOn (fun s : ℝ => 1 / 2 * s⁻¹ - 1 / 4) (Set.Ioc w 1) :=
-    (hinv_int.const_mul _).sub integrableOn_const
+    (hinv_int.const_mul _).sub (integrableOn_const measure_Ioc_lt_top.ne)
   have hCM_int : IntegrableOn (fun s => crossMajorant N x w s) (Set.Ioc w 1) := by
     unfold crossMajorant
     exact integrable_finsetSum _ fun m _ => integrable_finsetSum _ fun n _ =>
-      IntegrableOn.indicator integrableOn_const measurableSet_Icc
-  have hstep2 := setIntegral_mono_on ((hself_int.const_mul (2 * ∫ u, atomicTest N x g u ^ 2)).sub
-    (hCM_int.const_mul (2 * ∫ u, g u ^ 2))) (hLint.mono_set hsub) measurableSet_Ioc hlow
+      IntegrableOn.indicator (integrableOn_const measure_Ioc_lt_top.ne) measurableSet_Icc
+  have hstep2 : ∫ s in Set.Ioc w 1, (2 * (∫ u, atomicTest N x g u ^ 2) * (1 / 2 * s⁻¹ - 1 / 4) -
+        2 * (∫ u, g u ^ 2) * crossMajorant N x w s) ≤
+      ∫ s in Set.Ioc w 1, archLevyDensity s *
+        ∫ u, (atomicTest N x g u - atomicTest N x g (u + s)) ^ 2 :=
+    setIntegral_mono_on ((hself_int.const_mul (2 * ∫ u, atomicTest N x g u ^ 2)).sub
+      (hCM_int.const_mul (2 * ∫ u, g u ^ 2))) (hLint.mono_set hsub) measurableSet_Ioc hlow
   -- `∫_w^1 (1/(2s) − 1/4) ds = ½ log(1/w) − (1 − w)/4`
   have hval1 : ∫ s in Set.Ioc w 1, (1 / 2 * s⁻¹ - 1 / 4) =
       1 / 2 * Real.log (1 / w) - (1 - w) / 4 := by
-    rw [integral_sub (hinv_int.const_mul _) integrableOn_const, integral_const_mul,
+    rw [integral_sub (hinv_int.const_mul _) (integrableOn_const measure_Ioc_lt_top.ne),
+      integral_const_mul,
       ← intervalIntegral.integral_of_le hw1, integral_inv_of_pos hw0 one_pos, setIntegral_const,
       Real.volume_real_Ioc_of_le hw1, smul_eq_mul]
     ring
@@ -491,14 +507,14 @@ theorem markovEnergy_atomicTest_ge_cross (hg : ContDiff ℝ 2 g) (hgc : HasCompa
   have hlevy := levyEnergy_atomicTest_ge_cross hg hgc hgsupp hN hw0 hw x
   have hsq := integral_atomicTest_sq hg hgc hgsupp hw' x
   have hW := atomicWeilForm_le_log N x
-  have hΣ := sum_crossCoeff_le N x
+  have hsum := sum_crossCoeff_le N x
   have hG : 0 ≤ ∫ u, g u ^ 2 := integral_nonneg fun u => sq_nonneg _
   have h1 : 4 * w * (∫ u, g u ^ 2) * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, crossCoeff x m n ≤
       4 * w * N * (4 / 3 * harmonicSum N + 1) * ∫ u, atomicTest N x g u ^ 2 := by
     rw [hsq]
     calc _ ≤ 4 * w * (∫ u, g u ^ 2) *
           (N * (4 / 3 * harmonicSum N + 1) * ∑ n ∈ Icc 1 N, x n ^ 2) :=
-          mul_le_mul_of_nonneg_left hΣ (mul_nonneg (by positivity) hG)
+          mul_le_mul_of_nonneg_left hsum (mul_nonneg (by positivity) hG)
       _ = _ := by ring
   have h2 : (∫ u, g u ^ 2) * atomicWeilForm N x ≤
       (Real.log N + (Real.log 4 + 4)) * ∫ u, atomicTest N x g u ^ 2 := by
@@ -577,7 +593,7 @@ theorem markovEnergy_atomicTest_nonneg_logSpacing (hg : ContDiff ℝ 2 g)
     linarith
   -- the interaction: `4wN((4/3)H_N + 1) ≤ (28/3) w N (1 + log N) ≤ 10`
   have hcross : 4 * w * N * (4 / 3 * harmonicSum N + 1) ≤ 10 := by
-    have hH := harmonicSum_le N
+    have hH := harmonicSum_le_one_add_log N
     have hwN : w * (N * (1 + Real.log N)) ≤ Real.exp (-spacingConstant) :=
       (le_div_iff₀ hD).mp hw
     have hH' : 4 / 3 * harmonicSum N + 1 ≤ 7 / 3 * (1 + Real.log N) := by linarith

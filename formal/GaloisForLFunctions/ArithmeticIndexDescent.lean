@@ -5,6 +5,10 @@ import GaloisForLFunctions.ArithmeticIndexDescent.BoundedSourceWork
 import GaloisForLFunctions.ArithmeticIndexDescent.TheEnergyStrictlyExceedsTheIndex
 
 import GaloisForLFunctions.ArithmeticIndexDescent.TheSourceWorkHasAClosedQuantumThreshold
+import GaloisForLFunctions.ArithmeticIndexDescent.DampingIncrementPositivity
+import GaloisForLFunctions.ArithmeticIndexDescent.SourceWorkIncrementsPayForNewZeros
+
+import GaloisForLFunctions.ArithmeticIndexDescent.TheWorkAndIndexHaveTheSameFiniteStratum
 
 /-!
 # Arithmetic index descent

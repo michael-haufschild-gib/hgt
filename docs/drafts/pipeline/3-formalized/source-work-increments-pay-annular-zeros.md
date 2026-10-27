@@ -1,6 +1,6 @@
 # Arithmetic source-work increments pay for annular defects
 
-Status: paper argument complete; individual Lean checks in progress.
+Status: formalized. Both modules passed final individual no-olean Lean audits.
 Programme: ArithmeticIndexDescent.
 
 ## Statement
@@ -114,6 +114,20 @@ excluded from the novelty comparison.
 - `finite_offLineSupport_or_arbitrarily_high_quantum_increments`
 
 All names are in `GaloisForLFunctions.ArithmeticIndexDescent`.
+
+## Validation
+
+Both final checks ran from `formal/` and exited successfully, without warnings:
+
+```text
+lake --old env lean GaloisForLFunctions/ArithmeticIndexDescent/DampingIncrementPositivity.lean
+lake --old env lean GaloisForLFunctions/ArithmeticIndexDescent/SourceWorkIncrementsPayForNewZeros.lean
+```
+
+Seven central declarations were audited with `#print axioms`; every output contains
+only `propext`, `Classical.choice`, and `Quot.sound`. Both modules are imported by the
+programme umbrella. No full or umbrella build was run. The supporting kernel's olean
+was produced solely for the arithmetic module that imports it.
 
 ## Exact remaining obstacle
 

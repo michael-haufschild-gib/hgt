@@ -9,13 +9,13 @@ affect this section. Subtracting it is orthogonal removal inside the original
 completed Weil form, and its residual Gram is the exact Schur complement.
 -/
 
-open Matrix
+open Matrix MeasureTheory
 
 noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticIndexDescent
 
-open ArithmeticCastelnuovoSeveri
+open ArithmeticCastelnuovoSeveri ArithmeticElectrostatics
 
 variable {ι : Type*} [Fintype ι] {N : ℕ} (hN : 1 ≤ N)
   {w : ℝ} (hw0 : 0 < w) (hw : w ≤ fullSectionRatio * atomSpacing N)
@@ -78,6 +78,43 @@ theorem arithmeticSectionProjection_idempotent (g : realTests) :
   obtain ⟨c, hc⟩ := (arithmeticSectionProjection_spec hN hw0 hw f g).1
   rw [hc, arithmeticSectionProjection_reproduces]
 
+theorem arithmeticSectionProjection_add (g h : realTests) :
+    arithmeticSectionProjection hN hw0 hw f (g + h) =
+      arithmeticSectionProjection hN hw0 hw f g + arithmeticSectionProjection hN hw0 hw f h := by
+  obtain ⟨c, hc⟩ := (arithmeticSectionProjection_spec hN hw0 hw f g).1
+  obtain ⟨d, hd⟩ := (arithmeticSectionProjection_spec hN hw0 hw f h).1
+  symm
+  apply arithmeticSectionProjection_unique hN hw0 hw f
+  · refine ⟨c + d, ?_⟩
+    rw [hc, hd]
+    exact (map_add (realTestSynthesisMap (fun i => (f i).1)) c d).symm
+  · intro i
+    have hg := (arithmeticSectionProjection_spec hN hw0 hw f g).2 i
+    have hh := (arithmeticSectionProjection_spec hN hw0 hw f h).2 i
+    rw [map_sub] at hg hh
+    rw [map_sub, map_add, map_add]
+    linarith only [hg, hh]
+
+theorem arithmeticSectionProjection_smul (a : ℝ) (g : realTests) :
+    arithmeticSectionProjection hN hw0 hw f (a • g) =
+      a • arithmeticSectionProjection hN hw0 hw f g := by
+  obtain ⟨c, hc⟩ := (arithmeticSectionProjection_spec hN hw0 hw f g).1
+  symm
+  apply arithmeticSectionProjection_unique hN hw0 hw f
+  · refine ⟨a • c, ?_⟩
+    rw [hc]
+    exact (map_smul (realTestSynthesisMap (fun i => (f i).1)) a c).symm
+  · intro i
+    have hg := (arithmeticSectionProjection_spec hN hw0 hw f g).2 i
+    rw [map_sub] at hg
+    rw [map_sub, map_smul, map_smul, ← smul_sub, hg, smul_zero]
+
+/-- A source-defined idempotent projection for the original Weil pairing. -/
+def arithmeticSectionProjectionMap : realTests →ₗ[ℝ] realTests where
+  toFun := arithmeticSectionProjection hN hw0 hw f
+  map_add' := arithmeticSectionProjection_add hN hw0 hw f
+  map_smul' := arithmeticSectionProjection_smul hN hw0 hw f
+
 /-- The residual identity retains the entire completed form, with both pole moments. -/
 theorem arithmeticSectionProjection_residual_pair (g h : realTests) :
     realWeilForm (g - arithmeticSectionProjection hN hw0 hw f g)
@@ -94,7 +131,68 @@ theorem arithmeticSectionProjection_residual_pair (g h : realTests) :
   simp only [map_sub, LinearMap.sub_apply]
   linarith only [hleft, hright]
 
+/-- The removed section has nonnegative completed energy, from its arithmetic square-mass floor. -/
+theorem arithmeticSectionProjection_energy_nonneg (g : realTests) :
+    0 ≤ realWeilForm (arithmeticSectionProjection hN hw0 hw f g)
+      (arithmeticSectionProjection hN hw0 hw f g) := by
+  obtain ⟨c, hc⟩ := (arithmeticSectionProjection_spec hN hw0 hw f g).1
+  let p := arithmeticSectionProjection hN hw0 hw f g
+  have hp : p ∈ arithmeticSectionTests N w := by
+    rw [show p = realTestSynthesis (fun i => (f i).1) c from hc]
+    exact (arithmeticSectionTests N w).sum_mem fun i _ =>
+      (arithmeticSectionTests N w).smul_mem (c i) (f i).2
+  exact (integral_nonneg fun u => sq_nonneg (p.1 u)).trans
+    (integral_sq_le_weilPair_arithmeticSection hN hw0 hw ⟨p, hp⟩)
+
+/-- Removing a positive section does not improve the signed energy of a negative witness. -/
+theorem arithmeticSectionProjection_residual_energy_le (g : realTests) :
+    realWeilForm (g - arithmeticSectionProjection hN hw0 hw f g)
+      (g - arithmeticSectionProjection hN hw0 hw f g) ≤ realWeilForm g g := by
+  rw [arithmeticSectionProjection_residual_pair]
+  exact sub_le_self _ (arithmeticSectionProjection_energy_nonneg hN hw0 hw f g)
+
+/-- Orthogonal removal minimizes residual Weil energy with an actual-test square-mass gap.
+No norm on a redundant coefficient presentation is used. -/
+theorem arithmeticSectionProjection_minimizes_with_square_gap
+    (g : realTests) (c : ι → ℝ) :
+    realWeilForm (g - arithmeticSectionProjection hN hw0 hw f g)
+        (g - arithmeticSectionProjection hN hw0 hw f g) +
+      (∫ u, ((arithmeticSectionProjection hN hw0 hw f g).1 u -
+        (realTestSynthesis (fun i => (f i).1) c).1 u) ^ 2) ≤
+    realWeilForm (g - realTestSynthesis (fun i => (f i).1) c)
+      (g - realTestSynthesis (fun i => (f i).1) c) := by
+  let p := arithmeticSectionProjection hN hw0 hw f g
+  let q := realTestSynthesis (fun i => (f i).1) c
+  obtain ⟨d, hd⟩ := (arithmeticSectionProjection_spec hN hw0 hw f g).1
+  have hp : p ∈ arithmeticSectionTests N w := by
+    rw [show p = realTestSynthesis (fun i => (f i).1) d from hd]
+    exact (arithmeticSectionTests N w).sum_mem fun i _ =>
+      (arithmeticSectionTests N w).smul_mem (d i) (f i).2
+  have hq : q ∈ arithmeticSectionTests N w :=
+    (arithmeticSectionTests N w).sum_mem fun i _ =>
+      (arithmeticSectionTests N w).smul_mem (c i) (f i).2
+  have hfloor := integral_sq_le_weilPair_arithmeticSection hN hw0 hw
+    ⟨p - q, (arithmeticSectionTests N w).sub_mem hp hq⟩
+  have hporth := arithmeticSectionProjection_orthogonal hN hw0 hw f d g
+  rw [← hd] at hporth
+  have hqorth := arithmeticSectionProjection_orthogonal hN hw0 hw f c g
+  have horth : realWeilForm (p - q) (g - p) = 0 := by
+    rw [map_sub, LinearMap.sub_apply]
+    exact sub_eq_zero.mpr (hporth.trans hqorth.symm)
+  have hsum : g - q = (g - p) + (p - q) := by abel
+  have henergy : realWeilForm (g - q) (g - q) =
+      realWeilForm (g - p) (g - p) + realWeilForm (p - q) (p - q) := by
+    rw [hsum, map_add, LinearMap.add_apply, map_add, map_add,
+      realWeilForm_symm (g - p) (p - q), horth]
+    ring
+  change realWeilForm (g - p) (g - p) + (∫ u, (p.1 u - q.1 u) ^ 2) ≤
+    realWeilForm (g - q) (g - q)
+  rw [henergy]
+  exact add_le_add_left hfloor _
+
 end GaloisForLFunctions.ArithmeticIndexDescent
 
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.arithmeticSection_exists_unique_projection
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.arithmeticSectionProjection_residual_pair
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.arithmeticSectionProjection_residual_energy_le
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.arithmeticSectionProjection_minimizes_with_square_gap

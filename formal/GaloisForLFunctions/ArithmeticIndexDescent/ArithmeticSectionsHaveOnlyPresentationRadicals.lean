@@ -2,6 +2,7 @@ import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.ArithmeticSectionsPayTheP
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SourceDeterminantalSectionsAndArithmeticRiemannRoch
 import GaloisForLFunctions.HTGeometry.FactorThroughRange
 import Mathlib.LinearAlgebra.Basis.VectorSpace
+import Mathlib.LinearAlgebra.Matrix.ToLin
 
 /-!
 # Arithmetic section radicals are presentation relations
@@ -21,7 +22,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticIndexDescent
 
-open ArithmeticCastelnuovoSeveri HTGeometry
+open ArithmeticCastelnuovoSeveri ArithmeticElectrostatics HTGeometry
 
 /-- The complete real Weil pairing, bundled as a bilinear form. -/
 def realWeilForm : LinearMap.BilinForm ℝ realTests where

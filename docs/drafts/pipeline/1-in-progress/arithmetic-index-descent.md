@@ -62,7 +62,7 @@ positive survivor and formalizes it when ready.
   the distinct-energy bound. Dependency-producing check passed; final direct audit remains.
 - `TheWorkAndIndexHaveTheSameFiniteStratum.lean`: the fixed spline integer-log index is uniformly
   bounded iff damped source work is eventually bounded. Both are exactly finite off-line support.
-  Draft, not yet checked. This is a finiteness classification, not an extinction theorem.
+  Direct final check passed; wired into umbrella. This is a finiteness classification, not an extinction theorem.
 - `SingularRefinement.lean`: for a mixed block `B=A X`, triangular congruence gives all three
   inertia additivity laws without inverting `A`; the Schur complement is independent of the lift
   `X`. Draft, not yet checked. Arithmetic range compatibility and payment remain separate duties.
@@ -96,3 +96,14 @@ Factoring each mixed functional through the old Gram range and extending it line
 `B=A X` even for redundant section presentations. This is drafted in
 `ArithmeticSectionsHaveOnlyPresentationRadicals.lean`; it has not yet passed Lean.
 The signed Schur complement remains to be bounded arithmetically.
+
+## Source projection: proposed positive survivor
+
+The range theorem gives a unique actual projected section P(g), despite nonunique coefficients.
+The projection is linear and idempotent. Its residual satisfies the exact identity
+`W(g-Pg,h-Ph)=W(g,h)-W(Pg,Ph)`. The removed energy is nonnegative from the existing
+arithmetic square-mass floor; therefore removing a positive section cannot improve a negative
+witness. It isolates the signed obstruction rather than paying it. These statements are drafted
+in `ArithmeticSectionProjection.lean`, awaiting Lean checks. The next matrix application should
+identify the complexified real pairing with the actual Weil Gram, then identify its residual
+Gram with the singular Schur complement and transport negative index exactly.

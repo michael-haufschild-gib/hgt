@@ -206,6 +206,9 @@ research targets.
 The finiteness boundary is exact. Multiplicity-weighted transverse energy is finite if and only if
 the off-line support is finite. Equivalently, damped source work is eventually bounded. With
 infinitely many off-line zeros, that work tends to infinity in the extended nonnegative reals.
+A uniform finite bound on the fixed-spline integer-log negative indices describes this same
+finite stratum. Thus index and work agree on finiteness, while a generic finite budget supplies
+no exclusion of the remaining defects.
 The proof retains the infinitely many critical zeros: they interact only with the finitely many
 off-line rows, and each such row is bounded by a summable Cauchy height weight.
 
@@ -323,6 +326,7 @@ Quantitative pillars supplied by this programme:
 | Annular arithmetic payment | Full source-work increments pay right-zero packets with multiplicity; finite source cutoffs retain the payment; infinite off-line support forces arbitrarily high quantum increments | `SourceWorkIncrementsPayForNewZeros` |
 | Strict energy surplus | Every positive finite index lies strictly below distinct energy; the closed global threshold two is equivalent to RH | `TheEnergyStrictlyExceedsTheIndex` |
 | Closed source-work threshold | RH iff cofinally damped source work is at most two; every positive finite index is eventually exceeded by finite source work | `TheSourceWorkHasAClosedQuantumThreshold` |
+| Common finite stratum | Fixed-spline integer-log indices are uniformly bounded iff damped source work is eventually bounded | `TheWorkAndIndexHaveTheSameFiniteStratum` |
 
 ## Tools to develop and research topics
 
