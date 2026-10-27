@@ -1,8 +1,8 @@
 # Arithmetic sections pay the pole
 
 - **ID:** acs-arithmetic-sections-pay-the-pole
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE — Lean formalization in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** ACS; `acs-arithmetic-section-space`
 - **Statement:** At a fixed positive fraction of integer-log spacing, the full Weil form dominates square mass on every independent arithmetic section, without a pole-moment constraint.
 
@@ -14,7 +14,7 @@ Remove the sinh-neutral restriction from the existing arithmetic section-space t
 
 - [x] 0 → 1: source-defined section space; no spectral premise.
 - [x] Paper argument audited; not counted as proved until Lean verifies it.
-- [ ] 2 → 3: exact Lean theorem, leaf check, transitive axiom audit.
+- [x] Lean formalization: exact theorem, final leaf check, and transitive axiom audit passed. Moved directly from stage 1 to stage 3.
 
 ## Paper argument
 
@@ -70,7 +70,7 @@ The exact pole decomposition is `W(f,f)=M(f)+2AB`. Hence `W(f,f) ≥ ∫f²` for
 ## Dependency and scope audit
 
 - Arithmetic inputs: the existing tilted prime-row estimate and independent-profile archimedean cross-kernel estimate.
-- Remaining elementary inputs: integral and finite weighted Cauchy–Schwarz, harmonic-sum bound, `log x ≤ x-1`, and exact pole decomposition.
+- Formalized elementary inputs: integral and finite weighted Cauchy–Schwarz, harmonic-sum bound, `log x ≤ x-1`, and exact pole decomposition.
 - No zero-location, Weil-sign, or unproved section-growth premise.
 - New content: the non-neutral pole directions are included in the same source-defined linear space.
 - Full ACS remains open: sparse support does not give arbitrary compactly supported tests or unrestricted section growth.
@@ -86,10 +86,18 @@ Main declarations:
 - `integral_sq_le_weilPair_arithmeticSection`
 - `arithmeticSections_effectivity`
 
-Kernel verification is pending. The initial leaf check found elaboration and rewrite errors;
-these have been corrected and the revised leaf is being checked. This card stays in stage 1
-until the exact file passes and all four declarations have clean transitive axiom audits.
+Final exact-file check passed with exit code 0 and no warnings, run from `formal/`:
+
+```sh
+lake --old env lean GaloisForLFunctions/ArithmeticCastelnuovoSeveri/ArithmeticSectionsPayThePole.lean
+```
+
+All four transitive axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
+The leaf is wired into the ACS umbrella; the umbrella was not compiled. No unproved analytic
+premise or pole-moment condition occurs in the main theorem.
 
 ## Log
 
 - 2026-10-27 — Candidate isolated; complete algebraic argument written for audit and formalization.
+
+- 2026-10-27 — Exact theorem formalized, final leaf and axiom audits passed; moved directly from stage 1 to stage 3.

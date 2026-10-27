@@ -1,7 +1,8 @@
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.LorentzianFormsAtDegreeTwo
 import GaloisForLFunctions.HTGeometry.QuotientFusionProjectionGenesis
 
-/-!+# Polar gluing and dispersion
+/-!
+# Polar gluing and dispersion
 
 Local Hodge inequalities do not add unless their polar directions agree. With a common positive
 anchor `e`, the reserve of a sum is the sum of the local reserves minus the weighted variance of
@@ -26,6 +27,12 @@ theorem bil_sum_matrix (Q : κ → Matrix ι ι ℝ) (x y : ι → ℝ) :
 
 theorem qf_sum_matrix (Q : κ → Matrix ι ι ℝ) (x : ι → ℝ) :
     qf (∑ i, Q i) x = ∑ i, qf (Q i) x := bil_sum_matrix Q x x
+
+theorem isSymm_sum_matrix (Q : κ → Matrix ι ι ℝ) (hQ : ∀ i, (Q i).IsSymm) :
+    (∑ i, Q i).IsSymm := by
+  change (∑ i, Q i)ᵀ = ∑ i, Q i
+  rw [Matrix.transpose_sum]
+  exact sum_congr rfl fun i _ => (hQ i).eq
 
 theorem bil_sub_matrix (Q R : Matrix ι ι ℝ) (x y : ι → ℝ) :
     bil (Q - R) x y = bil Q x y - bil R x y := by
@@ -97,13 +104,9 @@ def polarGluingCorrection (Q : κ → Matrix ι ι ℝ) (e : ι → ℝ) : Matri
   (∑ i, anchorSquare (Q i) e) - anchorSquare (∑ i, Q i) e
 
 theorem polarGluingCorrection_isSymm (Q : κ → Matrix ι ι ℝ) (e : ι → ℝ) :
-    (polarGluingCorrection Q e).IsSymm := by
-  apply Matrix.IsSymm.ext
-  intro i j
-  simp only [polarGluingCorrection, Matrix.sub_apply, Finset.sum_apply]
-  rw [(anchorSquare_isSymm _ _).apply i j]
-  congr 1
-  exact sum_congr rfl fun k _ => (anchorSquare_isSymm _ _).apply i j
+    (polarGluingCorrection Q e).IsSymm :=
+  (isSymm_sum_matrix _ fun i => anchorSquare_isSymm (Q i) e).sub
+    (anchorSquare_isSymm _ _)
 
 theorem polarDispersion_nonneg (Q : κ → Matrix ι ι ℝ) (e x : ι → ℝ)
     (he : ∀ i, 0 ≤ qf (Q i) e) : 0 ≤ polarDispersion Q e x :=
@@ -122,6 +125,11 @@ theorem qf_polarGluingCorrection (Q : κ → Matrix ι ι ℝ) (e x : ι → ℝ
     polarDispersion, bil_sum_matrix]
   linarith
 
+theorem polarGluingCorrection_nonneg (Q : κ → Matrix ι ι ℝ) (e x : ι → ℝ)
+    (he : ∀ i, 0 < qf (Q i) e) : 0 ≤ qf (polarGluingCorrection Q e) x := by
+  rw [qf_polarGluingCorrection Q e x he]
+  exact polarDispersion_nonneg Q e x fun i => (he i).le
+
 /-- Exact gluing law: local reserves pay the dispersion of their polar directions. -/
 theorem anchorReserve_sum (Q : κ → Matrix ι ι ℝ) (e x : ι → ℝ)
     (he : ∀ i, 0 < qf (Q i) e) :
@@ -137,11 +145,7 @@ theorem isHyperbolic_sum_iff_dispersion_le (Q : κ → Matrix ι ι ℝ)
     (hQ : ∀ i, (Q i).IsSymm) (e : ι → ℝ) (he : ∀ i, 0 < qf (Q i) e) :
     IsHyperbolic (∑ i, Q i) ↔
       ∀ x, polarDispersion Q e x ≤ ∑ i, anchorReserve (Q i) e x := by
-  have hs : (∑ i, Q i).IsSymm := by
-    apply Matrix.IsSymm.ext
-    intro i j
-    simp only [Finset.sum_apply]
-    exact sum_congr rfl fun k _ => (hQ k).apply i j
+  have hs := isSymm_sum_matrix Q hQ
   have ha : 0 < qf (∑ i, Q i) e := by
     rw [qf_sum_matrix]
     exact sum_pos (fun i _ => he i) univ_nonempty
@@ -175,18 +179,14 @@ theorem anchorReserve_polarGlue (Q : κ → Matrix ι ι ℝ) (e x : ι → ℝ)
   rw [anchorReserve, bil_polarGlue_anchor Q e x he, hq,
     polarGlue, qf_sub_matrix, qf_polarGluingCorrection Q e x he]
   have h := anchorReserve_sum Q e x he
-  unfold anchorReserve at h
+  unfold anchorReserve at h ⊢
   linarith
 
 /-- Constructive closure under polar gluing. The correction is part of the constructed form. -/
 theorem isHyperbolic_polarGlue (Q : κ → Matrix ι ι ℝ) (hQ : ∀ i, (Q i).IsSymm)
     (e : ι → ℝ) (he : ∀ i, 0 < qf (Q i) e) (hH : ∀ i, IsHyperbolic (Q i)) :
     IsHyperbolic (polarGlue Q e) := by
-  have hs : (∑ i, Q i).IsSymm := by
-    apply Matrix.IsSymm.ext
-    intro i j
-    simp only [Finset.sum_apply]
-    exact sum_congr rfl fun k _ => (hQ k).apply i j
+  have hs := isSymm_sum_matrix Q hQ
   have hg : (polarGlue Q e).IsSymm := hs.sub (polarGluingCorrection_isSymm Q e)
   have ha : 0 < qf (polarGlue Q e) e := by
     change 0 < bil (polarGlue Q e) e e
@@ -198,6 +198,7 @@ theorem isHyperbolic_polarGlue (Q : κ → Matrix ι ι ℝ) (hQ : ∀ i, (Q i).
   exact sum_nonneg fun i _ =>
     (isHyperbolic_iff_anchorReserve_nonneg (hQ i) (he i)).mp (hH i) x
 
+omit [Nonempty κ] in
 /-- Dispersion vanishes precisely when all normalized polar readings agree. -/
 theorem polarDispersion_eq_zero_iff (Q : κ → Matrix ι ι ℝ) (e x : ι → ℝ)
     (he : ∀ i, 0 < qf (Q i) e) :
@@ -259,7 +260,8 @@ theorem isHyperbolic_tiltedPlane_iff (t r : ℝ) :
   constructor
   · intro h
     have h' := h ![1, 0] ![0, 1] (by simp [qf_tiltedPlane])
-    simp [qf_tiltedPlane, bil, tiltedPlane, mulVec, dotProduct, Fin.sum_univ_two] at h'
+    rw [qf_tiltedPlane, qf_tiltedPlane] at h'
+    simp [bil, tiltedPlane, mulVec, dotProduct, Fin.sum_univ_two] at h'
     linarith only [h']
   · intro hr
     apply isHyperbolic_of_nonpos_on_ker (tiltedPlane_isSymm t r) (dotLeft ![1, t])
@@ -298,9 +300,11 @@ theorem polarGluingCorrection_opposite_tiltedPlanes (t r : ℝ) :
     polarGluingCorrection ![tiltedPlane t r, tiltedPlane (-t) r] ![1, 0] =
       !![0, 0; 0, 2 * t ^ 2] := by
   ext i j
-  fin_cases i <;> fin_cases j <;>
+  fin_cases i <;> fin_cases j
+  all_goals
     simp [polarGluingCorrection, anchorSquare, qf, bil, tiltedPlane, mulVec,
-      dotProduct, Fin.sum_univ_two, vecMulVec] <;> ring
+      dotProduct, Fin.sum_univ_two, vecMulVec]
+    ring
 
 #print axioms anchorReserve_sum
 #print axioms isHyperbolic_sum_iff_dispersion_le
