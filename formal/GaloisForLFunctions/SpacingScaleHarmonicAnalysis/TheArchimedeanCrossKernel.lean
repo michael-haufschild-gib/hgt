@@ -113,7 +113,7 @@ theorem integral_atomicTest_mul_shift (hg : Continuous g) (hgc : HasCompactSuppo
 /-- `∫ (f(u) − f(u + y))² = 2‖f‖² − 2 ∫ f(u) f(u + y)`. -/
 theorem integral_sub_shift_sq_eq {f : ℝ → ℝ} (hf : Continuous f) (hfc : HasCompactSupport f)
     (y : ℝ) :
-    ∫ u, (f u - f (u + y)) ^ 2 = 2 * ∫ u, f u ^ 2 - 2 * ∫ u, f u * f (u + y) := by
+    ∫ u, (f u - f (u + y)) ^ 2 = 2 * (∫ u, f u ^ 2) - 2 * ∫ u, f u * f (u + y) := by
   have h1 := integrable_sq_of_continuous hf hfc
   have h2 : Integrable fun u => f (u + y) ^ 2 := h1.comp_add_right y
   have h3 : Integrable fun u => f u * f (u + y) := by
@@ -121,9 +121,12 @@ theorem integral_sub_shift_sq_eq {f : ℝ → ℝ} (hf : Continuous f) (hfc : Ha
   have hpt : ∀ u, (f u - f (u + y)) ^ 2 = f u ^ 2 + f (u + y) ^ 2 - 2 * (f u * f (u + y)) :=
     fun u => by ring
   simp_rw [hpt]
-  rw [integral_sub (h1.add h2 : Integrable fun u => f u ^ 2 + f (u + y) ^ 2) (h3.const_mul 2),
-    integral_add h1 h2, integral_const_mul,
-    integral_add_right_eq_self (fun u => f u ^ 2) y]
+  have e1 := integral_sub (f := fun u => f u ^ 2 + f (u + y) ^ 2)
+    (g := fun u => 2 * (f u * f (u + y))) (h1.add h2) (h3.const_mul 2)
+  have e2 := integral_add h1 h2
+  have e3 : ∫ u, f (u + y) ^ 2 = ∫ u, f u ^ 2 := integral_add_right_eq_self (fun u => f u ^ 2) y
+  have e4 : ∫ u, 2 * (f u * f (u + y)) = 2 * ∫ u, f u * f (u + y) := integral_const_mul _ _
+  rw [e1, e2, e3, e4]
   ring
 
 /-! ### The pair window -/
@@ -161,9 +164,10 @@ theorem setIntegral_indicator_archLevyDensity_le {s : ℝ} (hw0 : 0 < w) (hw1 : 
       (integrableOn_archLevyDensity_Ioc hw0).mono_set Set.inter_subset_left
     have hle : ∫ y in Set.Ioc w 1 ∩ pairWindow w s, archLevyDensity y ≤
         ∫ y in Set.Ioc w 1 ∩ pairWindow w s, Real.exp (1 / 2) / |s| := by
-      refine setIntegral_mono_on hint (integrableOn_const ?_ ) (measurableSet_Ioc.inter
+      have hfin : volume (Set.Ioc w 1 ∩ pairWindow w s) ≠ ⊤ :=
+        ((measure_mono Set.inter_subset_right).trans_lt measure_Icc_lt_top).ne
+      refine setIntegral_mono_on hint (integrableOn_const hfin) (measurableSet_Ioc.inter
         measurableSet_Icc) fun y hy => ?_
-      · exact (measure_mono Set.inter_subset_right).trans_lt (by simp [pairWindow])
       obtain ⟨hs0, hys, -⟩ := hwin y hy
       have hy0 : 0 < y := lt_trans hw0 hy.1.1
       calc archLevyDensity y ≤ Real.exp (1 / 2) / (2 * y) :=
@@ -294,13 +298,13 @@ inside their pair windows. -/
 theorem integral_sub_shift_sq_atomicTest_ge (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
     (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (hw0 : 0 ≤ w) (N : ℕ) (x : ℕ → ℝ) {y : ℝ}
     (hy : w < y) :
-    2 * ∫ u, atomicTest N x g u ^ 2 - 2 * (∫ u, g u ^ 2) * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
+    2 * (∫ u, atomicTest N x g u ^ 2) - 2 * (∫ u, g u ^ 2) * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
         (if m = n then 0 else |x m| * |x n| * (pairWindow w (logGap m n)).indicator 1 y) ≤
       ∫ u, (atomicTest N x g u - atomicTest N x g (u + y)) ^ 2 := by
   have hf := (contDiff_atomicTest hg N x).continuous
   have hfc := hasCompactSupport_atomicTest hgsupp N x
   rw [integral_sub_shift_sq_eq hf hfc, integral_atomicTest_mul_shift hg.continuous hgc]
-  have hG := integral_nonneg fun u => sq_nonneg (g u)
+  have hG : 0 ≤ ∫ u, g u ^ 2 := integral_nonneg fun u => sq_nonneg _
   have hpair : ∀ m n : ℕ, x m * x n * bumpCorr g (y - (Real.log n - Real.log m)) ≤
       (∫ u, g u ^ 2) *
         (if m = n then 0 else |x m| * |x n| * (pairWindow w (logGap m n)).indicator 1 y) := by
@@ -323,8 +327,10 @@ theorem integral_sub_shift_sq_atomicTest_ge (hg : ContDiff ℝ 2 g) (hgc : HasCo
     · rw [Set.indicator_of_notMem hwin, mul_zero, mul_zero]
       have hout : w < |y - (Real.log n - Real.log m)| := by
         by_contra h
-        push_neg at h
-        exact hwin ⟨by linarith [(abs_le.mp h).2, logGap], by linarith [(abs_le.mp h).1, logGap]⟩
+        push Not at h
+        have hgap : logGap m n = Real.log n - Real.log m := rfl
+        obtain ⟨h1, h2⟩ := abs_le.mp h
+        exact hwin ⟨by linarith, by linarith⟩
       rw [bumpCorr_eq_zero hgsupp hout, mul_zero]
   have hsum : ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, x m * x n * bumpCorr g (y - (Real.log n - Real.log m))
       ≤ (∫ u, g u ^ 2) * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
@@ -334,5 +340,150 @@ theorem integral_sub_shift_sq_atomicTest_ge (hg : ContDiff ℝ 2 g) (hgc : HasCo
     rw [mul_sum]
     exact sum_le_sum fun n _ => hpair m n
   linarith
+
+theorem crossBound_logGap_comm (w : ℝ) (m n : ℕ) :
+    crossBound w (logGap n m) = crossBound w (logGap m n) := by
+  rw [show logGap n m = -logGap m n by simp only [logGap]; ring, crossBound, crossBound, abs_neg]
+
+/-- **Symmetric Schur test for the cross kernel**:
+`Σ_{m ≠ n} |x_m| |x_n| B_{mn} ≤ Σ_m x_m² Σ_{n ≠ m} B_{mn}` for the symmetric bound `B`. -/
+theorem sum_abs_mul_crossBound_le (hw : 0 ≤ w) (N : ℕ) (x : ℕ → ℝ) :
+    ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
+        (if m = n then 0 else |x m| * |x n| * crossBound w (logGap m n)) ≤
+      ∑ m ∈ Icc 1 N, x m ^ 2 *
+        ∑ n ∈ Icc 1 N, (if m = n then 0 else crossBound w (logGap m n)) := by
+  set B : ℕ → ℕ → ℝ := fun m n => if m = n then 0 else crossBound w (logGap m n)
+  have hB : ∀ m n, 0 ≤ B m n := fun m n => by
+    simp only [B]; split_ifs
+    · exact le_rfl
+    · exact crossBound_nonneg hw _
+  have hBs : ∀ m n, B n m = B m n := fun m n => by
+    simp only [B]
+    by_cases h : m = n
+    · subst h; rfl
+    · rw [if_neg (Ne.symm h), if_neg h, crossBound_logGap_comm]
+  have hpt : ∀ m n, (if m = n then 0 else |x m| * |x n| * crossBound w (logGap m n)) ≤
+      (x m ^ 2 * B m n + x n ^ 2 * B n m) / 2 := fun m n => by
+    rw [hBs m n]
+    have hle : |x m| * |x n| ≤ (x m ^ 2 + x n ^ 2) / 2 := by
+      nlinarith [sq_nonneg (|x m| - |x n|), sq_abs (x m), sq_abs (x n)]
+    simp only [B]
+    split_ifs
+    · simp
+    · nlinarith [crossBound_nonneg hw (logGap m n)]
+  calc ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
+        (if m = n then 0 else |x m| * |x n| * crossBound w (logGap m n))
+      ≤ ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (x m ^ 2 * B m n + x n ^ 2 * B n m) / 2 :=
+        sum_le_sum fun m _ => sum_le_sum fun n _ => hpt m n
+    _ = ∑ m ∈ Icc 1 N, x m ^ 2 * ∑ n ∈ Icc 1 N, B m n := by
+        have hswap : ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, x n ^ 2 * B n m =
+            ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, x m ^ 2 * B m n := sum_comm
+        simp only [← sum_div, sum_add_distrib, hswap, mul_sum]
+        ring
+
+/-- **The Lévy energy of an atomic test at the spacing scale**: for `w ≤ δ_N/2`,
+`levyEnergy f ≥ ‖g‖² Σ_m x_m² (log(1/w) − 8e^{5/2} w m (1 + log(N + 1)))`. -/
+theorem levyEnergy_atomicTest_ge (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
+    (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w)
+    (hw : w ≤ atomSpacing N / 2) (x : ℕ → ℝ) :
+    (∫ u, g u ^ 2) * ∑ m ∈ Icc 1 N, x m ^ 2 *
+        (Real.log (1 / w) - 8 * Real.exp (5 / 2) * w * m * (1 + Real.log (N + 1))) ≤
+      levyEnergy (atomicTest N x g) := by
+  set f := atomicTest N x g
+  set G2 : ℝ := ∫ u, g u ^ 2
+  set F2 : ℝ := ∫ u, f u ^ 2
+  have hδ := atomSpacing_pos hN
+  have hδ1 := atomSpacing_le_one hN
+  have hw1 : w < 1 := by linarith
+  have hG2 : 0 ≤ G2 := integral_nonneg fun u => sq_nonneg _
+  have hF2 : F2 = (∑ m ∈ Icc 1 N, x m ^ 2) * G2 :=
+    integral_atomicTest_sq hg hgc hgsupp (by linarith) x
+  have hf := contDiff_atomicTest hg N x
+  have hfc := hasCompactSupport_atomicTest hgsupp N x
+  set ω := archLevyDensity
+  set c : ℕ → ℕ → ℝ := fun m n => if m = n then 0 else |x m| * |x n|
+  -- the lower integrand
+  set ℓ : ℝ → ℝ := fun y => 2 * F2 * ω y - 2 * G2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
+    c m n * (pairWindow w (logGap m n)).indicator ω y
+  have hω : IntegrableOn ω (Set.Ioc w 1) := integrableOn_archLevyDensity_Ioc hw0
+  have hind : ∀ m n, IntegrableOn ((pairWindow w (logGap m n)).indicator ω) (Set.Ioc w 1) :=
+    fun m n => hω.indicator measurableSet_Icc
+  have hℓint : IntegrableOn ℓ (Set.Ioc w 1) :=
+    (hω.const_mul _).sub ((integrable_finsetSum _ fun m _ => integrable_finsetSum _ fun n _ =>
+      (hind m n).const_mul _).const_mul _)
+  -- step 1: restrict the Lévy integral to `(w, 1]`
+  set L : ℝ → ℝ := fun y => ω y * ∫ u, (f u - f (u + y)) ^ 2
+  have hLint : IntegrableOn L (Set.Ioi 0) := integrableOn_levyIntegrand hf hfc
+  have hstep1 : ∫ y in Set.Ioc w 1, L y ≤ levyEnergy f :=
+    setIntegral_mono_set hLint (levyIntegrand_nonneg f)
+      (Filter.Eventually.of_forall fun y hy => lt_trans hw0 hy.1)
+  -- step 2: the pointwise lower bound
+  have hstep2 : ∫ y in Set.Ioc w 1, ℓ y ≤ ∫ y in Set.Ioc w 1, L y := by
+    refine setIntegral_mono_on hℓint (hLint.mono_set fun y hy => lt_trans hw0 hy.1)
+      measurableSet_Ioc fun y hy => ?_
+    have hy0 : 0 < y := lt_trans hw0 hy.1
+    have hωy : 0 ≤ ω y := (archLevyDensity_pos hy0).le
+    have hpt := integral_sub_shift_sq_atomicTest_ge hg hgc hgsupp hw0.le N x hy.1
+    have hterm : ∀ m n, c m n * (pairWindow w (logGap m n)).indicator ω y =
+        ω y * (if m = n then 0 else |x m| * |x n| * (pairWindow w (logGap m n)).indicator 1 y) := by
+      intro m n
+      simp only [c]
+      by_cases hmem : y ∈ pairWindow w (logGap m n)
+      · rw [Set.indicator_of_mem hmem, Set.indicator_of_mem hmem, Pi.one_apply]
+        split_ifs <;> ring
+      · rw [Set.indicator_of_notMem hmem, Set.indicator_of_notMem hmem]
+        split_ifs <;> ring
+    have hident : ℓ y = ω y * (2 * F2 - 2 * G2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
+        (if m = n then 0 else |x m| * |x n| * (pairWindow w (logGap m n)).indicator 1 y)) := by
+      simp only [ℓ, hterm, ← mul_sum]
+      ring
+    rw [hident]
+    exact mul_le_mul_of_nonneg_left hpt hωy
+  -- step 3: integrate the lower bound
+  have hstep3 : ∫ y in Set.Ioc w 1, ℓ y = 2 * F2 * (∫ y in Set.Ioc w 1, ω y) -
+      2 * G2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
+        c m n * ∫ y in Set.Ioc w 1, (pairWindow w (logGap m n)).indicator ω y := by
+    simp only [ℓ]
+    rw [integral_sub (hω.const_mul _) ((integrable_finsetSum _ fun m _ => integrable_finsetSum _
+      fun n _ => (hind m n).const_mul _).const_mul _), integral_const_mul, integral_const_mul,
+      integral_finsetSum _ fun m _ => integrable_finsetSum _ fun n _ => (hind m n).const_mul _]
+    congr 2
+    refine sum_congr rfl fun m _ => ?_
+    rw [integral_finsetSum _ fun n _ => (hind m n).const_mul _]
+    exact sum_congr rfl fun n _ => integral_const_mul _ _
+  -- step 4: bound the pair windows and the diagonal
+  have hpairs : ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
+      c m n * ∫ y in Set.Ioc w 1, (pairWindow w (logGap m n)).indicator ω y ≤
+      ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
+        (if m = n then 0 else |x m| * |x n| * crossBound w (logGap m n)) := by
+    refine sum_le_sum fun m hm => sum_le_sum fun n hn => ?_
+    simp only [c]
+    split_ifs with hmn
+    · simp
+    · have h2w : 2 * w ≤ |logGap m n| := by
+        have := atomSpacing_le_abs_logGap hm hn hmn
+        linarith
+      exact mul_le_mul_of_nonneg_left (setIntegral_indicator_archLevyDensity_le hw0 hw1 h2w)
+        (by positivity)
+  have hrows : ∑ m ∈ Icc 1 N, x m ^ 2 *
+      ∑ n ∈ Icc 1 N, (if m = n then 0 else crossBound w (logGap m n)) ≤
+      ∑ m ∈ Icc 1 N, x m ^ 2 * (4 * Real.exp (5 / 2) * w * m * (1 + Real.log (N + 1))) :=
+    sum_le_sum fun m hm => mul_le_mul_of_nonneg_left (sum_crossBound_le hm hw0.le) (sq_nonneg _)
+  have hdiag : Real.log (1 / w) ≤ 2 * ∫ y in Set.Ioc w 1, ω y :=
+    log_div_le_two_mul_setIntegral_archLevyDensity hw0 hw1.le le_rfl
+  have hcross := (hpairs.trans (sum_abs_mul_crossBound_le hw0.le N x)).trans hrows
+  -- assemble
+  have hX : 0 ≤ ∑ m ∈ Icc 1 N, x m ^ 2 := sum_nonneg fun _ _ => sq_nonneg _
+  have hmain : G2 * ∑ m ∈ Icc 1 N, x m ^ 2 *
+      (Real.log (1 / w) - 8 * Real.exp (5 / 2) * w * m * (1 + Real.log (N + 1))) =
+      F2 * Real.log (1 / w) - 2 * G2 *
+        ∑ m ∈ Icc 1 N, x m ^ 2 * (4 * Real.exp (5 / 2) * w * m * (1 + Real.log (N + 1))) := by
+    rw [hF2]
+    simp only [mul_sum, sum_mul, ← sum_sub_distrib]
+    refine sum_congr rfl fun m _ => ?_
+    ring
+  rw [hmain]
+  have hF2' : 0 ≤ F2 := integral_nonneg fun u => sq_nonneg _
+  nlinarith [mul_le_mul_of_nonneg_left hdiag hF2', mul_le_mul_of_nonneg_left hcross hG2]
 
 end GaloisForLFunctions.SpacingScaleHarmonicAnalysis

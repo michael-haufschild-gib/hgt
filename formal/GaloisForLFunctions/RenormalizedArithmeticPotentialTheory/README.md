@@ -24,8 +24,9 @@ sentence:
 > pays exactly one direction, the arithmetic point. Covariance forces a scalar counterterm. The
 > scalar the archimedean place must supply at atomic resolution `N` is `log N + O(1)`, with
 > constant one: the anomaly of `[N]`. The anomalous torsion renormalization costs at least half a
-> logarithm more. Polar matching selects the Euler gauge: the Liouville twin diverges with the
-> opposite sign.*
+> logarithm more. What remains after the polar counterterm is the scalar `−2γ`: the constant term
+> of `−ζ′/ζ` at its pole, once for each Hecke direction. Polar matching selects the Euler gauge: the
+> Liouville twin diverges with the opposite sign.*
 
 Namespace `GaloisForLFunctions.RenormalizedArithmeticPotentialTheory`; umbrella
 `RenormalizedArithmeticPotentialTheory.lean`. Everything is unconditional; RH and its partial forms
@@ -108,12 +109,16 @@ survival cone containing the degree-zero cycles.
    least positive counterterm on orders `≤ N` is `log N + O(1)`, the anomaly of `[N]` and the
    archimedean self-energy at the atomic spacing, both with constant one. Keeping the
    self-intersection, the anomalous torsion renormalization, costs at least `½ log N` more.
-5. *Is the matching of the places gauge blind?* No. Each place's counterterm is gauge blind, but
+5. *What is the finite part?* On the polar hyperplane of uniform profiles, the renormalized prime
+   form is the scalar `−2γ`, up to `o(1)` per unit mass. In Weil's form, where `P` enters with a
+   minus sign, the renormalized prime place is positive there.
+6. *Is the matching of the places gauge blind?* No. Each place's counterterm is gauge blind, but
    their matching is not: the prime place of `ζ` diverges along the archimedean polar direction
    with coefficient `+1`, the Liouville twin with coefficient `−1`.
 
 These answers replace the report's central conjecture by a statement in which every divergence is
-computed and matched, and only a finite part is open (§9.1).
+computed and matched, the prime finite part is computed, and only the finite parts of the
+archimedean place and the pole are open (§9.1).
 
 ---
 
@@ -247,17 +252,26 @@ the place that pays.
     `ℓ_{j+1}(T_p x) = ℓ_j(x)/√p` and `δ_{j+1} = δ_j/p`. Hence `C(T_p x) = C(x)`, and the finite part
     `P − C` is invariant under `[p]`.
 
-### E. Gauge
+### E. The finite part
 
-14. **The twisted Mertens sum** (`sum_one_add_liouville_le`, `liouvilleMertensSum_le`,
+14. **Euler's constant** (`tendsto_mertensSum_sub_log`, `tendsto_harmonicSum_sub_log`, `roundoff_le`,
+    `exists_abs_primeBilinear_truncPole_finitePart_le`,
+    `exists_abs_atomicWeilForm_stepProfile_finitePart_le`,
+    `exists_abs_atomicWeilForm_stepProfile_add_le_of_polar`). With `Σ_{t ≤ y} Λ(t)/t = log y − γ + o(1)`
+    and `H_M = log M + γ + o(1)`, the pole Gram is `H_M H_{M'} − 2γ H_{min} + o(H_{min})`. Hence
+    `P_N = ℓ² − 2γ |x|² + o(|c|-mass)` on step profiles.
+
+### F. Gauge
+
+15. **The twisted Mertens sum** (`sum_one_add_liouville_le`, `liouvilleMertensSum_le`,
     `neg_le_liouvilleMertensSum`). `Σ_{t ≤ y} λ(t)Λ(t)/t = −log y + O(1)`: the even prime powers are
     summable.
-15. **Dirichlet's hyperbola identity** (`sum_divisors_div_swap`). The divisor part of a row averages
+16. **Dirichlet's hyperbola identity** (`sum_divisors_div_swap`). The divisor part of a row averages
     to its Mertens part.
-16. **The spectral ends** (`abs_atomicWeilForm_le`, `atomicWeilForm_liouvillePole_le`,
+17. **The spectral ends** (`abs_atomicWeilForm_le`, `atomicWeilForm_liouvillePole_le`,
     `atomicWeilForm_spectrum_ends`). `|P_N| ≤ log N + O(1)`. The pole vector reaches the top and the
     Liouville pole vector the bottom, `−log N + O(1)`.
-17. **The polar divergence flips** (`primeBilinear_liouvilleTrunc_eq`,
+18. **The polar divergence flips** (`primeBilinear_liouvilleTrunc_eq`,
     `abs_primeBilinear_liouvilleTrunc_add_le`, `abs_liouvilleForm_stepProfile_add_le`). On uniform
     profiles `P(λx) = −ℓ(x)² + O(|c|-mass)`.
 
@@ -276,6 +290,7 @@ the place that pays.
 | **RP7 The tensor law** | `P_N = Σ_j δ_j^{−1} ℓ_j² + O(H_N |c|²)` on class-wise profiles; `δ_j = φ(p^{J+1−j})/p^{J+1}`; survival on the class-wise polar hyperplane | `abs_atomicWeilForm_classProfile_sub_le`, `classDensity_eq_orbit`, `abs_atomicWeilForm_classProfile_le_of_polar` |
 | **RP8 Gauge** | spectral ends `±(log N + O(1))`; the Liouville twin diverges as `−ℓ²` on uniform profiles | `atomicWeilForm_spectrum_ends`, `abs_liouvilleForm_stepProfile_add_le` |
 | **RP9 No anomaly at the horizon** | `[p]` shifts the classes and scales the orbit densities by the degree; the tensor counterterm and the finite part are invariant | `tensorCounterterm_heckeShift`, `finitePart_heckeShift`, `heckeShift_classPole` |
+| **RP10 The finite part is Euler's constant** | `P_N = ℓ² − 2γ|x|² + o(|c|-mass)` on step profiles; `P_N = −2γ|x|² + o(·)` on the polar hyperplane | `exists_abs_atomicWeilForm_stepProfile_finitePart_le`, `exists_abs_atomicWeilForm_stepProfile_add_le_of_polar` |
 
 ---
 
@@ -291,8 +306,9 @@ The twelve questions of the report (§4.4), in RAPT's terms.
    condition (i) of the central conjecture (bounded rank on Hecke orbits) is false for every
    regulator in the corpus (RP1, RP6). What replaces it is the tensor law. Condition (ii) holds:
    the finite part is covariant under `[p]` (RP9). Condition (iii) is the sign of the finite part on
-   the degree-zero classes (§9.1). *Answer:* the admissible regulator is the horizon, and its metric
-   is the tensor counterterm.
+   the degree-zero classes. Its prime component is the positive scalar `+2γ` in Weil's form on
+   uniform profiles (RP10); the archimedean and polar components are open (§9.1). *Answer:* the
+   admissible regulator is the horizon, and its metric is the tensor counterterm.
 2. **Does the anomaly cancel?** Yes, in two ways. Removing the self-intersection, as Weil's prime
    sum does, gives a covariant renormalized form. Covariance then forces a scalar counterterm,
    `log N + O(1)` with constant one (RP3), and keeping the anomaly costs at least `½ log N` (RP4).
@@ -302,15 +318,17 @@ The twelve questions of the report (§4.4), in RAPT's terms.
    cancels exactly, and the archimedean place pays the scalar `log N`.
 3. **What bounds the field?** The field law is RH-strength (AES `TheFieldLawHasAThreshold`). The
    energy of a zero is `O(log γ)` (AES `TheEnergyOfAZeroIsLogarithmic`). RAPT locates the missing
-   inequality as a bound on a *finite part*: every divergence is computed and matched (RP3, RP7), so
-   no further counterterm can supply it. *Answer:* located; open.
+   inequality as a bound on a *finite part*. Every divergence is computed and matched (RP3, RP7),
+   and the prime finite part is the scalar `−2γ` (RP10), so neither a counterterm nor the prime
+   place can supply it. *Answer:* located in the archimedean and polar finite parts; open.
 4. **What bounds the moment of inertia?** Uniform bounds are strips and height averages are density
    estimates (AES `TheHeckeDefectIsTheMomentOfInertia`). *Answer:* located (AES).
 5. **What is the Frobenius at infinity?** On the circle, conjugation is the power map of degree `−1`;
    on the divisor its realization by a correspondence is RH (AES). *Answer:* AES.
 6. **What is the arithmetic point?** It is the unique orbit coupled to the archimedean germ (RP2).
-   Its pole carries the polar divergence of the horizon: the pole vector is the top eigenvector with
-   eigenvalue `log N` (RP3, RP5). It is the class `j = 0` limit of the orbital decomposition (RP7).
+   Its pole carries the polar divergence of the horizon: the pole vector is an approximate
+   eigenvector at the top of the spectrum, with eigenvalue `log N` (RP3, RP5). In the orbital
+   decomposition of `μ_{p^{J+1}}` it is dual to the residue `0`, the one-point orbit (RP7).
    *Answer:* the matched direction of the coupled renormalization.
 7. **How does `σ_γ` localize beyond the conductor; are zero ordinates aligned with small primes?**
    The alignment law at zero ordinates and its higher moments are in AES
@@ -343,6 +361,7 @@ The twelve questions of the report (§4.4), in RAPT's terms.
 | A sign twin has the same divergences, so the same renormalization | The same spectrum, but the opposite polar matching at the Liouville gauge |
 | The Hecke anomaly `log t` is intrinsic to the prime place | It belongs to the Abel radius; at the horizon `[p]` scales the orbit densities by `1/p` and the anomaly cancels |
 | A matched counterterm proves the sign | It removes the divergence; the sign lives in the finite part |
+| The finite part of the prime place hides the zeros | On uniform profiles it is the scalar `−2γ`; the zeros are invisible at log-scale resolution, and the sign is decided by the archimedean place and the pole |
 
 ---
 
@@ -350,16 +369,17 @@ The twelve questions of the report (§4.4), in RAPT's terms.
 
 **Imported.** Survival law, germs, Ramanujan relations, Cesàro Grams (RBG); orbit intersections,
 the different, the Hecke cocycle and transport (AIT); torsion pairing, atomic Weil form, Schur
-machinery (AES); Mertens' first theorem (RHTower).
+machinery (AES); Mertens' first theorem and Mertens' theorem with Euler's constant (RHTower).
 
-**Built here.** Coupled counterterms and the partner-rank calculus; the joint germ of the two
+**Built here.** Coupled counterterms and the partner-rank calculus; Hecke shifts and the covariance
+of the tensor counterterm; the finite part with Euler's constant; the joint germ of the two
 places; covariance of diagonals; the exact Schur rows and sharp two-sided bounds for the atomic
 prime form; pole vectors, the polar functional, step profiles and their Gram; `p`-adic class pole
 vectors, prime-power sums, class masses and the class Gram; the tensor law; Liouville signs, the
 twisted Mertens sum and Dirichlet's hyperbola identity; telescoping bounds for `Σ log n/n`.
 
 **To build.** The archimedean self-energy of an atom with constant one at width `ε ≍ 1/N`; Mertens'
-theorem for characters; the finite part of the horizon renormalization.
+theorem for characters; the class-wise finite part.
 
 ---
 
@@ -371,9 +391,9 @@ theorem for characters; the finite part of the horizon renormalization.
    the statement concerns `O(1)` finite parts. AES proves the Markov form nonnegative at widths
    `N^{−O(1)}` with an archimedean gain `e^{−1/2} log(1/w)`. Closing the gap needs the constant-one
    self-energy.
-2. **The finite part on the survival cone.** On polar-neutral uniform profiles the prime form is
-   bounded. With the prime number theorem its limit is expected to be `−2γ`, the Laurent constant of
-   `ζ′/ζ` at `1` counted in both directions. What is it on the class-wise survival cone?
+2. **The finite part on the class-wise survival cone.** On uniform profiles it is `−2γ` (RP10). On
+   class-wise profiles the class Gram should carry the same constant per class, corrected by the
+   local Euler factor at `p`: compute it, and identify the finite part as a function on the orbits.
 3. **Characters at the horizon.** Profiles twisted by a non-principal character should have bounded
    prime form, with finite part `−L′/L(1, χ)`. This needs Mertens' theorem for characters, and would
    identify the survival cone on residue classes mod `q` with the character space.
@@ -401,6 +421,7 @@ its present state:
   survivor; covariance ⇒ scalar with constant one; the cost of the anomaly; the tensor law and its
   covariance without anomaly. Of the three conditions of the central conjecture, (i) is false for
   every regulator, (ii) holds at the horizon, and (iii) is the open sign of the finite part.
+* The prime finite part is computed: `−2γ` on the uniform survival cone (RP10).
 * Q8 has a theorem-level answer for the Liouville twin.
 * Q6 is answered through RP2, RP3 and RP5.
 * The central conjecture is replaced by the matched stability law (§9.1).
@@ -428,4 +449,5 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `TheHorizonDivergenceLivesOnTheTorsionOrbits` | prime-power sums; class pole vectors; class rows; full rank on the arithmetic factor; unbounded rank |
 | `TheHorizonCountertermIsATensorProduct` | class densities and orbit sizes; class masses; the class Gram at two horizons; the tensor law |
 | `TheHorizonCountertermIsHeckeCovariant` | Hecke shifts; invariance of the prime form; class shift by `[p]`; orbit densities scale by the degree; no anomaly |
+| `TheFinitePartIsEulersConstant` | Mertens with Euler's constant; roundoff; the finite part of the pole Gram; `−2γ` on step profiles and on the polar hyperplane |
 | `TheLiouvilleGaugeFlipsThePolarDivergence` | Liouville signs; the twisted Mertens sum; Dirichlet's hyperbola; spectral ends; the polar flip |
