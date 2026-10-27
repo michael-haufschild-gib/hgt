@@ -13,6 +13,9 @@ renormalized part `Q_r − s_r B` converges to a limit form `A`. The divergent p
   `A` is nonnegative on the survival cone, whatever the divergence `s_r` does.
 * **The counterterm of a positive regularization is positive** (`counterterm_nonneg`) when
   `s_r → +∞`.
+* **The counterterm is an invariant** (`counterterm_eq_smul`, `survivalCone_eq_of_regularized`).
+  Two renormalizations of one family with divergent coefficients have proportional counterterms;
+  the survival cone does not depend on the renormalization scheme.
 * **Finsler–Debreu converse** (`exists_quad_add_smul_pos`). If `B ⪰ 0` and `A` is positive on the
   survival cone minus the origin, then `A + sB` is positive definite for all large `s`
   (compactness of the unit sphere).
@@ -141,6 +144,67 @@ theorem counterterm_nonneg {α : Type*} {l : Filter α} [l.NeBot]
     simpa using ha
   obtain ⟨a, ha1, ha2⟩ := (hneg'.and hQ).exists
   exact (lt_irrefl 0) (lt_of_le_of_lt (ha2 x) ha1)
+
+/-! ### The counterterm is an invariant of the family -/
+
+omit [Fintype ι] in
+/-- **Counterterm uniqueness.** If one renormalization `Q − sB` converges with `s → +∞` and another
+`Q − tC` converges with `C ≠ 0`, then `t/s` converges to some `c` and `B = c C`. -/
+theorem counterterm_eq_smul {α : Type*} {l : Filter α} [l.NeBot]
+    {Q : α → Matrix ι ι ℝ} {s t : α → ℝ} {A A' B C : Matrix ι ι ℝ}
+    (hB : ∀ i j, Tendsto (fun a => Q a i j - s a * B i j) l (𝓝 (A i j)))
+    (hC : ∀ i j, Tendsto (fun a => Q a i j - t a * C i j) l (𝓝 (A' i j)))
+    (hs : Tendsto s l atTop) {i₀ j₀ : ι} (hC0 : C i₀ j₀ ≠ 0) :
+    ∃ c : ℝ, Tendsto (fun a => t a / s a) l (𝓝 c) ∧ B = c • C := by
+  -- `(t/s) C − B = ((Q − sB) − (Q − tC))/s → 0`.
+  have hdiff : ∀ i j, Tendsto (fun a => t a / s a * C i j - B i j) l (𝓝 0) := by
+    intro i j
+    have h := ((hB i j).sub (hC i j)).div_atTop hs
+    refine h.congr' ?_
+    filter_upwards [hs.eventually_ne_atTop 0] with a ha
+    field_simp
+    ring
+  have hratio : ∀ i j, Tendsto (fun a => t a / s a * C i j) l (𝓝 (B i j)) := fun i j => by
+    simpa using (hdiff i j).add_const (B i j)
+  set c := B i₀ j₀ / C i₀ j₀
+  have hc : Tendsto (fun a => t a / s a) l (𝓝 c) := by
+    have h := (hratio i₀ j₀).div_const (C i₀ j₀)
+    refine h.congr fun a => ?_
+    field_simp
+  refine ⟨c, hc, ?_⟩
+  ext i j
+  exact tendsto_nhds_unique (hratio i j) ((hc.mul_const (C i j)).congr fun a => rfl)
+    |>.trans (by simp [Matrix.smul_apply, smul_eq_mul])
+
+/-- **The survival cone is scheme independent.** If the family renormalizes with a nonzero
+counterterm `B` and divergence `s → +∞`, then every counterterm `C` of every other renormalization
+has the same survival cone. -/
+theorem survivalCone_eq_of_regularized {α : Type*} {l : Filter α} [l.NeBot]
+    {Q : α → Matrix ι ι ℝ} {s t : α → ℝ} {A A' B C : Matrix ι ι ℝ}
+    (hB : ∀ i j, Tendsto (fun a => Q a i j - s a * B i j) l (𝓝 (A i j)))
+    (hC : ∀ i j, Tendsto (fun a => Q a i j - t a * C i j) l (𝓝 (A' i j)))
+    (hs : Tendsto s l atTop) (hB0 : B ≠ 0) :
+    survivalCone C = survivalCone B := by
+  -- A zero counterterm would make `Q` converge, hence `B = (sB)/s → 0`.
+  have hC0 : ∃ i₀ j₀, C i₀ j₀ ≠ 0 := by
+    by_contra hcon
+    push Not at hcon
+    apply hB0
+    ext i j
+    have h := ((hC i j).sub (hB i j)).div_atTop hs
+    have h' : Tendsto (fun a => B i j) l (𝓝 0) := h.congr' (by
+      filter_upwards [hs.eventually_ne_atTop 0] with a ha
+      rw [hcon i j]
+      field_simp
+      ring)
+    exact tendsto_nhds_unique tendsto_const_nhds h'
+  obtain ⟨i₀, j₀, hij⟩ := hC0
+  obtain ⟨c, -, hBc⟩ := counterterm_eq_smul hB hC hs hij
+  have hc0 : c ≠ 0 := by
+    rintro rfl
+    exact hB0 (by rw [hBc, zero_smul])
+  ext x
+  simp only [survivalCone, Set.mem_setOf_eq, hBc, quad_smul, mul_eq_zero, hc0, false_or]
 
 /-! ### The Finsler–Debreu converse -/
 

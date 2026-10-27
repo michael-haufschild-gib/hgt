@@ -44,3 +44,4 @@ import GaloisForLFunctions.StripBochnerWeilForcing
 import GaloisForLFunctions.ArithmeticCorrelationGeometry
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity
 import GaloisForLFunctions.BiarithmeticGaugeGeometry
+import GaloisForLFunctions.SelectivePositivityAndThresholdLaws

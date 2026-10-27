@@ -2,7 +2,7 @@
 
 - **ID:** leftovers-unconditional-formalization
 - **Stage:** 1-in-progress
-- **Execution:** PAUSED at the user's request; started Lean work finished and wired.
+- **Execution:** ACTIVE; resumed by the user's 2026-10-27 attachment.
 - **Type:** FORMALIZATION PROGRAMME
 - **Source:** user attachment `7b8e0d61-b048-4085-aa55-1ca6d2ead9d1/pasted-text-1.txt`
 - **Scope:** Every proven theorem in all 14 cards initially in
@@ -19,7 +19,100 @@ with `#print axioms`. Wire leaves into their owning umbrellas without compiling 
 Move each card to stage 3 only after every theorem on that card is covered and audited.
 Existing unrelated worktree changes must be preserved.
 
-## User steering: finish started Lean work, then pause
+## Resumed scope and current evidence (2026-10-27)
+
+The new attachment `de463029-56c4-4da2-b432-00025a675f49/pasted-text-1.txt`
+resumes the full programme. All eleven cards currently under
+`2-fully-proven/leftovers/` remain in scope, including every proved ancillary
+claim and required infrastructure. The historical pause below is superseded.
+Stage-3 promotion still requires exact statement coverage, direct source
+checks, transitive axiom audits and umbrella wiring; historical logs alone
+do not establish current completion.
+
+Current inventory confirms eleven stage-2 cards. Initial source search
+located existing cycle-recovery leaves. The near-complete bi-scale cards
+still explicitly record missing parameter selection, counting, exact-incidence
+energy and common-model transport. The geometric and analytic cards retain
+their complete original scope. No card has been promoted in this resumed run.
+
+Pre-existing edits to the RH reports, the arithmetic-electrostatics source,
+renormalization sources, and selective-positivity source are unrelated and
+must be preserved.
+
+### Finite-cycle completion argument
+
+Set `c=exp(-1/2)`, `R=max(1,32E/(c ε²))`,
+`η=exp(-1-128E/(c ε²))`, `d=ceil(R/ρ_E)`, where
+`ρ_E=exp(-1-8E/c)`. Then `R≤(d+1)ρ_E` by the ceiling
+inequality. The literal pair/spoke family has at most
+`2(ceil(2R/η)+1)` observations, each closed and of length at most
+`d+2`. The exact existing grid theorem gives
+`‖h-g‖∞≤max(ε,2^(d+1)(δ_C+(d+1)δ₂)+ε/2)`.
+Writing `A=2^(d+1)(d+2)`, any common bound `δ` on every
+literal observation discrepancy gives `‖h-g‖∞≤max(ε,Aδ+ε/2)`.
+Thus the explicit positive threshold `ε/(2A)` guarantees error
+at most `ε`. Against arbitrary measured arrays the sum of both
+source fitting residuals is such a discrepancy bound, by the
+triangle inequality. Every parameter depends only on `E,ε`.
+
+For a general finite η-net, the scalar recovery theorem at each
+sample gives the same separate pair/spoke maximum bound. For any
+window point select a net point and use two modulus inequalities
+and the triangle inequality. Outside the common support both
+correlations vanish. This establishes the paper's arbitrary-net
+statement, including endpoints and radius zero, without imposing
+uniform spacing. Formalization of these exact ancillary claims is
+the active dependency-complete step; all other cards remain in scope.
+
+Current drafts are `/tmp/leftovers_grid_cycle_parameters.lean` (automatic
+parameters, literal finite family, threshold, measured-array residuals) and
+`/tmp/leftovers_finite_net_cycle.lean` (arbitrary finite nets). Neither is
+certified yet. `GridFiniteCycleRecovery`'s missing olean was built successfully
+by the required direct command for the parameter draft's import (tool session
+91383, exit 0, no diagnostics). `ClosedCycleDataResiduals` is the other missing
+import; its direct build completed with exit 0 and no diagnostics in
+`/tmp/leftovers-cycle-residuals-resume-build.log` (tool session 74044).
+The parameter draft and its complete transitive axiom queries are being
+checked in tool session 27782, log `/tmp/leftovers-cycle-parameters-audit.log`.
+The arbitrary-net draft also includes arbitrary measured-array residuals,
+with the exact coefficient `(1+(d+1)/(2κ))/κ^(d+1)`.
+
+### Exact-incidence and common-model completion argument
+
+Define the physical exact energy as the sum over all ordered window pairs
+of `(f(j)-f(i))²` when `x(j)=2x(i)`, and zero otherwise. For integer positions,
+the sum reduces exactly to the existing doubling energy. For the specified
+quadratic nodes, the proved incidence exclusion makes every term vanish.
+The already proved exact linear-signal variance then forces the original
+lower constant `N(N+1)/12`, whereas integer positions retain `24N`.
+Choosing `δ=min(ε/2,1/8)` gives a strictly ordered incidence-free grid within
+any positive displacement tolerance.
+
+The finite Möbius coefficients already reconstruct every prescribed value
+on `1,…,N`. Every endpoint used by the adjacent and doubling sums lies in
+this window; all-pairs physical energies use only its values as well.
+Termwise substitution therefore preserves every centered sum, its minimizing
+mean and variance, and adjacent, doubling, exact-incidence and weighted
+energies simultaneously. Consequently the set of valid joint constants is
+identical for arbitrary finite signals and actual divisor sieves. The
+perturbed quadratic lower bound and weighted positive survivor use the same
+coefficient model, with no additional premise.
+
+Uncertified drafts: `/tmp/leftovers_exact_doubling_energy.lean` and
+`/tmp/leftovers_finite_sieve_graph_transport.lean`. Their imported existing
+leaves `QuadraticPerturbedNodes`, `IntegerLinearVariance`,
+`FiniteSieveRealization`, and `WeightedDoublingIncidence` lack oleans and
+require individual direct dependency builds before these drafts can compile.
+No build is started while the cycle parameter check is live.
+
+Both Route-E cards have now been read in full. Current lexical corpus search
+and direct inspection of `MatomakiTeravainenTwistedFourthMoments` and
+`MatomakiTeravainenWattReflection` confirm that their universal Watt/DI bounds
+remain `Prop` definitions and short-case consumers, not discharged inputs.
+The historical exponent retune to `123/79` does not establish the original
+`1.55` statement requested here. Full exact-exponent completion remains required.
+
+## Historical user steering: finish started Lean work, then pause (superseded)
 
 The requested closure is complete. All already-started Lean work is checked,
 audited, wired and recorded. No Lean process or search job remains active.
@@ -30,7 +123,7 @@ The frozen work comprised physical-producer supplements, four PM leaves,
 five dyadic leaves and the edited tree owner, two perturbed-incidence leaves,
 and ten finite-cycle leaves. All are complete within that frozen scope.
 
-## Current checkpoint (authoritative over chronological notes)
+## Frozen checkpoint before the 2026-10-27 resumption
 
 - Three of the 14 original cards are fully formalized and promoted:
   [Nyquist](../3-formalized/leftovers/nyquist-critical-finite-part-2026-10-18.md),

@@ -50,9 +50,9 @@ theorem deriv_deriv_div_eq {F : ℂ → ℂ} {s : ℂ} (hF : DifferentiableAt �
 /-- The derivative of the polar part `m/(z − ρ)`. -/
 theorem hasDerivAt_polar (m ρ : ℂ) {z : ℂ} (hz : z ≠ ρ) :
     HasDerivAt (fun w => m / (w - ρ)) (-m / (z - ρ) ^ 2) z := by
-  have h := (hasDerivAt_const z m).div ((hasDerivAt_id' z).sub_const ρ) (sub_ne_zero.mpr hz)
-  convert h using 1
-  ring
+  have h : HasDerivAt (fun w => m / (w - ρ)) ((0 * (z - ρ) - m * 1) / (z - ρ) ^ 2) z :=
+    (hasDerivAt_const z m).div ((hasDerivAt_id' z).sub_const ρ) (sub_ne_zero.mpr hz)
+  exact h.congr_deriv (by ring)
 
 /-! ### Self-terms at a zero -/
 
@@ -91,7 +91,7 @@ theorem selfTerm_and_residue_of_analyticOrderAt {F : ℂ → ℂ} {ρ : ℂ} {m 
     rw [logDeriv_apply, hFz.deriv_eq, (hVsub hz).1, ← logDeriv_apply,
       logDeriv_mul (f := fun w => (w - ρ) ^ m) (g := g) z (pow_ne_zero _ (sub_ne_zero.mpr hzρ)) hgz.2
         ((differentiableAt_id.sub_const ρ).pow m) hgz.1.differentiableAt,
-      logDeriv_fun_pow (differentiableAt_id.sub_const ρ) m]
+      logDeriv_fun_pow (f := fun w => w - ρ) (differentiableAt_id.sub_const ρ) m]
     simp only [R, logDeriv_apply, deriv_sub_const, deriv_id'']
     ring
   -- the renormalized square on the punctured neighbourhood
@@ -106,8 +106,10 @@ theorem selfTerm_and_residue_of_analyticOrderAt {F : ℂ → ℂ} {ρ : ℂ} {m 
     have hloc : logDeriv F =ᶠ[𝓝 z] fun w => m / (w - ρ) + R w := by
       filter_upwards [(hVopen.inter isOpen_ne).mem_nhds ⟨hz, hzρ⟩] with w hw
       exact hlog w hw.1 hw.2
+    have hd2 : HasDerivAt (fun w => m / (w - ρ) + R w) (-m / (z - ρ) ^ 2 + deriv R z) z :=
+      (hasDerivAt_polar (m : ℂ) ρ hzρ).add hRz.hasDerivAt
     rw [deriv_deriv_div_eq hFan.differentiableAt hFan.deriv.differentiableAt hFz0, hloc.deriv_eq,
-      ((hasDerivAt_polar (m : ℂ) ρ hzρ).add hRz.hasDerivAt).deriv, hlog z hz hzρ]
+      hd2.deriv, hlog z hz hzρ]
     have hd : z - ρ ≠ 0 := sub_ne_zero.mpr hzρ
     field_simp
     ring
@@ -127,6 +129,7 @@ theorem selfTerm_and_residue_of_analyticOrderAt {F : ℂ → ℂ} {ρ : ℂ} {m 
       simpa using this
     refine hlim.congr' (hV.mono fun z hz => ?_)
     have hd : z - ρ ≠ 0 := sub_ne_zero.mpr hz.2
+    dsimp only
     rw [hlog z hz.1 hz.2]
     field_simp
   · have hlim : Tendsto (fun z => 2 * m * R z + (z - ρ) * R z ^ 2) (𝓝[≠] ρ)
@@ -135,6 +138,7 @@ theorem selfTerm_and_residue_of_analyticOrderAt {F : ℂ → ℂ} {ρ : ℂ} {m 
       simpa using this
     refine hlim.congr' (hV.mono fun z hz => ?_)
     have hd : z - ρ ≠ 0 := sub_ne_zero.mpr hz.2
+    dsimp only
     rw [hlog z hz.1 hz.2]
     field_simp
     ring
@@ -145,6 +149,7 @@ theorem selfTerm_and_residue_of_analyticOrderAt {F : ℂ → ℂ} {ρ : ℂ} {m 
       simpa using this
     refine hlim.congr' (hV.mono fun z hz => ?_)
     have hd : z - ρ ≠ 0 := sub_ne_zero.mpr hz.2
+    dsimp only
     rw [hsecond z hz.1 hz.2]
     field_simp
     ring
@@ -154,6 +159,7 @@ theorem selfTerm_and_residue_of_analyticOrderAt {F : ℂ → ℂ} {ρ : ℂ} {m 
       simpa using this
     refine hlim.congr' (hV.mono fun z hz => ?_)
     have hd : z - ρ ≠ 0 := sub_ne_zero.mpr hz.2
+    dsimp only
     rw [hsecond z hz.1 hz.2]
     field_simp
     ring
@@ -188,10 +194,10 @@ theorem selbergSource_prime_pow {p : ℕ} (hp : p.Prime) {k : ℕ} (hk : 1 ≤ k
     Finset.sum_eq_zero fun i _ => by
       rw [intCoe_apply, moebius_apply_prime_pow hp (by omega), if_neg (by omega)]; simp
   rw [htail, zero_add, intCoe_apply, intCoe_apply, pow_zero, moebius_apply_one,
-    zero_add, pow_one, moebius_apply_prime hp, Nat.div_one,
-    Nat.pow_div (by omega) hp.pos, pmul_apply, pmul_apply, log_apply, log_apply]
+    zero_add, pow_one, moebius_apply_prime hp, Nat.div_one, pow_succ,
+    Nat.mul_div_cancel _ hp.pos, ← pow_succ, pmul_apply, pmul_apply, log_apply, log_apply]
   push_cast
-  rw [show j + 1 - 1 = j by omega, Real.log_pow, Real.log_pow]
+  rw [Real.log_pow, Real.log_pow]
   push_cast
   ring
 
@@ -224,7 +230,7 @@ theorem LSeries_selbergSource {s : ℂ} (hs : 1 < s.re) :
     have : (fun z => -deriv riemannZeta z / riemannZeta z) = fun z => -logDeriv riemannZeta z := by
       funext z; rw [logDeriv_apply, neg_div]
     rw [this]
-    simp [deriv.neg']
+    simp
   -- the coefficients split as counterterm plus square
   have hcoeff : (fun n => (selbergSource n : ℂ)) =
       LSeries.logMul Λc + fun n => (((vonMangoldt * vonMangoldt) n : ℝ) : ℂ) := by
@@ -232,16 +238,13 @@ theorem LSeries_selbergSource {s : ℂ} (hs : 1 < s.re) :
     simp only [selbergSource, ArithmeticFunction.add_apply, pmul_apply, log_apply, Pi.add_apply,
       LSeries.logMul, Λc]
     push_cast
-    rw [Complex.ofReal_log (Nat.cast_nonneg n), Complex.ofReal_natCast]
     ring
   have hsq := ArithmeticCorrespondencePositivity.LSeries_vonMangoldtSelfConvolution_eq_logDeriv_sq hs
   have hsqSumm : LSeriesSummable (fun n => (((vonMangoldt * vonMangoldt) n : ℝ) : ℂ)) s := by
     have h := (LSeriesSummable_vonMangoldt hs).convolution (LSeriesSummable_vonMangoldt hs)
     have heq : (fun n => (((vonMangoldt * vonMangoldt) n : ℝ) : ℂ)) =
         LSeries.convolution (fun n => (vonMangoldt n : ℂ)) (fun n => (vonMangoldt n : ℂ)) := by
-      have := RHTower.Sieve.complexCoeff_mul vonMangoldt vonMangoldt
-      simp only [RHTower.Sieve.complexCoeff] at this
-      exact this
+      exact RHTower.Sieve.complexCoeff_mul vonMangoldt vonMangoldt
     rw [heq]
     exact h
   rw [hcoeff, LSeries_add (LSeriesSummable_logMul_of_lt_re habs) hsqSumm, hlogMul, hsq,

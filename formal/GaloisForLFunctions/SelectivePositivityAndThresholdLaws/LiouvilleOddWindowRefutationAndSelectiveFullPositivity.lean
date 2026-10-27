@@ -18821,7 +18821,7 @@ def bRad (i j : Fin 23) : ℝ :=
           else
             bRadRow_22 j.1
 
-private theorem bEx_err_row_0_lo (m2 : Fin 23) (hm : m2.1 < 12) :
+private theorem bEx_err_row_0_lo1 (m2 : Fin 23) (hm : m2.1 < 6) :
     |bEx ⟨0, by omega⟩ m2 - bMid ⟨0, by omega⟩ m2| ≤ bRad ⟨0, by omega⟩ m2 := by
   refine dot23_vec_err_le
     (fun m1 => qtEx ⟨0, by omega⟩ m1) (fun m1 => jNormEx (m1.1 + m2.1))
@@ -18829,10 +18829,37 @@ private theorem bEx_err_row_0_lo (m2 : Fin 23) (hm : m2.1 < 12) :
     (fun m1 => jMid (m1.1 + m2.1)) (fun _ => (1 / 10000000000000000 : ℝ))
     (bMidRow_0 m2.1) (bRadRow_0 m2.1)
     (fun m1 => qtEx_err_row_0 m1) (fun m1 => jNorm_err_le (m1.1 + m2.1) (by omega)) ?_
-  fin_cases m2 <;>
-    first
-    | (exfalso; dsimp at hm; omega)
-    | (rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_0, bMidRow_0, bRadRow_0])
+  fin_cases m2
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_0, bMidRow_0, bRadRow_0]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_0, bMidRow_0, bRadRow_0]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_0, bMidRow_0, bRadRow_0]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_0, bMidRow_0, bRadRow_0]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_0, bMidRow_0, bRadRow_0]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_0, bMidRow_0, bRadRow_0]
+  all_goals (exfalso; dsimp at hm; omega)
+
+private theorem bEx_err_row_0_lo2 (m2 : Fin 23) (hm1 : 6 ≤ m2.1) (hm2 : m2.1 < 12) :
+    |bEx ⟨0, by omega⟩ m2 - bMid ⟨0, by omega⟩ m2| ≤ bRad ⟨0, by omega⟩ m2 := by
+  refine dot23_vec_err_le
+    (fun m1 => qtEx ⟨0, by omega⟩ m1) (fun m1 => jNormEx (m1.1 + m2.1))
+    (fun m1 => qtMidRow_0 m1.1) (fun m1 => qtRad ⟨0, by omega⟩ m1)
+    (fun m1 => jMid (m1.1 + m2.1)) (fun _ => (1 / 10000000000000000 : ℝ))
+    (bMidRow_0 m2.1) (bRadRow_0 m2.1)
+    (fun m1 => qtEx_err_row_0 m1) (fun m1 => jNorm_err_le (m1.1 + m2.1) (by omega)) ?_
+  fin_cases m2
+  · exfalso; dsimp at hm1; omega
+  · exfalso; dsimp at hm1; omega
+  · exfalso; dsimp at hm1; omega
+  · exfalso; dsimp at hm1; omega
+  · exfalso; dsimp at hm1; omega
+  · exfalso; dsimp at hm1; omega
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_0, bMidRow_0, bRadRow_0]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_0, bMidRow_0, bRadRow_0]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_0, bMidRow_0, bRadRow_0]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_0, bMidRow_0, bRadRow_0]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_0, bMidRow_0, bRadRow_0]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_0, bMidRow_0, bRadRow_0]
+  all_goals (exfalso; dsimp at hm2; omega)
 
 private theorem bEx_err_row_0_hi (m2 : Fin 23) (hm : 12 ≤ m2.1) :
     |bEx ⟨0, by omega⟩ m2 - bMid ⟨0, by omega⟩ m2| ≤ bRad ⟨0, by omega⟩ m2 := by
@@ -18849,11 +18876,13 @@ private theorem bEx_err_row_0_hi (m2 : Fin 23) (hm : 12 ≤ m2.1) :
 
 private theorem bEx_err_row_0 (m2 : Fin 23) :
     |bEx ⟨0, by omega⟩ m2 - bMid ⟨0, by omega⟩ m2| ≤ bRad ⟨0, by omega⟩ m2 := by
-  rcases lt_or_ge m2.1 12 with hm | hm
-  · exact bEx_err_row_0_lo m2 hm
-  · exact bEx_err_row_0_hi m2 hm
+  rcases lt_or_ge m2.1 6 with h6 | h6
+  · exact bEx_err_row_0_lo1 m2 h6
+  · rcases lt_or_ge m2.1 12 with h12 | h12
+    · exact bEx_err_row_0_lo2 m2 h6 h12
+    · exact bEx_err_row_0_hi m2 h12
 
-private theorem bEx_err_row_1_lo (m2 : Fin 23) (hm : m2.1 < 12) :
+private theorem bEx_err_row_1_lo1 (m2 : Fin 23) (hm : m2.1 < 6) :
     |bEx ⟨1, by omega⟩ m2 - bMid ⟨1, by omega⟩ m2| ≤ bRad ⟨1, by omega⟩ m2 := by
   refine dot23_vec_err_le
     (fun m1 => qtEx ⟨1, by omega⟩ m1) (fun m1 => jNormEx (m1.1 + m2.1))
@@ -18861,10 +18890,37 @@ private theorem bEx_err_row_1_lo (m2 : Fin 23) (hm : m2.1 < 12) :
     (fun m1 => jMid (m1.1 + m2.1)) (fun _ => (1 / 10000000000000000 : ℝ))
     (bMidRow_1 m2.1) (bRadRow_1 m2.1)
     (fun m1 => qtEx_err_row_1 m1) (fun m1 => jNorm_err_le (m1.1 + m2.1) (by omega)) ?_
-  fin_cases m2 <;>
-    first
-    | (exfalso; dsimp at hm; omega)
-    | (rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_1, bMidRow_1, bRadRow_1])
+  fin_cases m2
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_1, bMidRow_1, bRadRow_1]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_1, bMidRow_1, bRadRow_1]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_1, bMidRow_1, bRadRow_1]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_1, bMidRow_1, bRadRow_1]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_1, bMidRow_1, bRadRow_1]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_1, bMidRow_1, bRadRow_1]
+  all_goals (exfalso; dsimp at hm; omega)
+
+private theorem bEx_err_row_1_lo2 (m2 : Fin 23) (hm1 : 6 ≤ m2.1) (hm2 : m2.1 < 12) :
+    |bEx ⟨1, by omega⟩ m2 - bMid ⟨1, by omega⟩ m2| ≤ bRad ⟨1, by omega⟩ m2 := by
+  refine dot23_vec_err_le
+    (fun m1 => qtEx ⟨1, by omega⟩ m1) (fun m1 => jNormEx (m1.1 + m2.1))
+    (fun m1 => qtMidRow_1 m1.1) (fun m1 => qtRad ⟨1, by omega⟩ m1)
+    (fun m1 => jMid (m1.1 + m2.1)) (fun _ => (1 / 10000000000000000 : ℝ))
+    (bMidRow_1 m2.1) (bRadRow_1 m2.1)
+    (fun m1 => qtEx_err_row_1 m1) (fun m1 => jNorm_err_le (m1.1 + m2.1) (by omega)) ?_
+  fin_cases m2
+  · exfalso; dsimp at hm1; omega
+  · exfalso; dsimp at hm1; omega
+  · exfalso; dsimp at hm1; omega
+  · exfalso; dsimp at hm1; omega
+  · exfalso; dsimp at hm1; omega
+  · exfalso; dsimp at hm1; omega
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_1, bMidRow_1, bRadRow_1]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_1, bMidRow_1, bRadRow_1]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_1, bMidRow_1, bRadRow_1]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_1, bMidRow_1, bRadRow_1]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_1, bMidRow_1, bRadRow_1]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_1, bMidRow_1, bRadRow_1]
+  all_goals (exfalso; dsimp at hm2; omega)
 
 private theorem bEx_err_row_1_hi (m2 : Fin 23) (hm : 12 ≤ m2.1) :
     |bEx ⟨1, by omega⟩ m2 - bMid ⟨1, by omega⟩ m2| ≤ bRad ⟨1, by omega⟩ m2 := by
@@ -18881,11 +18937,13 @@ private theorem bEx_err_row_1_hi (m2 : Fin 23) (hm : 12 ≤ m2.1) :
 
 private theorem bEx_err_row_1 (m2 : Fin 23) :
     |bEx ⟨1, by omega⟩ m2 - bMid ⟨1, by omega⟩ m2| ≤ bRad ⟨1, by omega⟩ m2 := by
-  rcases lt_or_ge m2.1 12 with hm | hm
-  · exact bEx_err_row_1_lo m2 hm
-  · exact bEx_err_row_1_hi m2 hm
+  rcases lt_or_ge m2.1 6 with h6 | h6
+  · exact bEx_err_row_1_lo1 m2 h6
+  · rcases lt_or_ge m2.1 12 with h12 | h12
+    · exact bEx_err_row_1_lo2 m2 h6 h12
+    · exact bEx_err_row_1_hi m2 h12
 
-private theorem bEx_err_row_2_lo (m2 : Fin 23) (hm : m2.1 < 12) :
+private theorem bEx_err_row_2_lo1 (m2 : Fin 23) (hm : m2.1 < 6) :
     |bEx ⟨2, by omega⟩ m2 - bMid ⟨2, by omega⟩ m2| ≤ bRad ⟨2, by omega⟩ m2 := by
   refine dot23_vec_err_le
     (fun m1 => qtEx ⟨2, by omega⟩ m1) (fun m1 => jNormEx (m1.1 + m2.1))
@@ -18893,10 +18951,37 @@ private theorem bEx_err_row_2_lo (m2 : Fin 23) (hm : m2.1 < 12) :
     (fun m1 => jMid (m1.1 + m2.1)) (fun _ => (1 / 10000000000000000 : ℝ))
     (bMidRow_2 m2.1) (bRadRow_2 m2.1)
     (fun m1 => qtEx_err_row_2 m1) (fun m1 => jNorm_err_le (m1.1 + m2.1) (by omega)) ?_
-  fin_cases m2 <;>
-    first
-    | (exfalso; dsimp at hm; omega)
-    | (rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_2, bMidRow_2, bRadRow_2])
+  fin_cases m2
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_2, bMidRow_2, bRadRow_2]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_2, bMidRow_2, bRadRow_2]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_2, bMidRow_2, bRadRow_2]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_2, bMidRow_2, bRadRow_2]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_2, bMidRow_2, bRadRow_2]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_2, bMidRow_2, bRadRow_2]
+  all_goals (exfalso; dsimp at hm; omega)
+
+private theorem bEx_err_row_2_lo2 (m2 : Fin 23) (hm1 : 6 ≤ m2.1) (hm2 : m2.1 < 12) :
+    |bEx ⟨2, by omega⟩ m2 - bMid ⟨2, by omega⟩ m2| ≤ bRad ⟨2, by omega⟩ m2 := by
+  refine dot23_vec_err_le
+    (fun m1 => qtEx ⟨2, by omega⟩ m1) (fun m1 => jNormEx (m1.1 + m2.1))
+    (fun m1 => qtMidRow_2 m1.1) (fun m1 => qtRad ⟨2, by omega⟩ m1)
+    (fun m1 => jMid (m1.1 + m2.1)) (fun _ => (1 / 10000000000000000 : ℝ))
+    (bMidRow_2 m2.1) (bRadRow_2 m2.1)
+    (fun m1 => qtEx_err_row_2 m1) (fun m1 => jNorm_err_le (m1.1 + m2.1) (by omega)) ?_
+  fin_cases m2
+  · exfalso; dsimp at hm1; omega
+  · exfalso; dsimp at hm1; omega
+  · exfalso; dsimp at hm1; omega
+  · exfalso; dsimp at hm1; omega
+  · exfalso; dsimp at hm1; omega
+  · exfalso; dsimp at hm1; omega
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_2, bMidRow_2, bRadRow_2]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_2, bMidRow_2, bRadRow_2]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_2, bMidRow_2, bRadRow_2]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_2, bMidRow_2, bRadRow_2]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_2, bMidRow_2, bRadRow_2]
+  · rw [sum_fin23, sum_fin23]; unfold qtRad jMid; dsimp; norm_num [qtMidRow_2, bMidRow_2, bRadRow_2]
+  all_goals (exfalso; dsimp at hm2; omega)
 
 private theorem bEx_err_row_2_hi (m2 : Fin 23) (hm : 12 ≤ m2.1) :
     |bEx ⟨2, by omega⟩ m2 - bMid ⟨2, by omega⟩ m2| ≤ bRad ⟨2, by omega⟩ m2 := by
@@ -18913,9 +18998,11 @@ private theorem bEx_err_row_2_hi (m2 : Fin 23) (hm : 12 ≤ m2.1) :
 
 private theorem bEx_err_row_2 (m2 : Fin 23) :
     |bEx ⟨2, by omega⟩ m2 - bMid ⟨2, by omega⟩ m2| ≤ bRad ⟨2, by omega⟩ m2 := by
-  rcases lt_or_ge m2.1 12 with hm | hm
-  · exact bEx_err_row_2_lo m2 hm
-  · exact bEx_err_row_2_hi m2 hm
+  rcases lt_or_ge m2.1 6 with h6 | h6
+  · exact bEx_err_row_2_lo1 m2 h6
+  · rcases lt_or_ge m2.1 12 with h12 | h12
+    · exact bEx_err_row_2_lo2 m2 h6 h12
+    · exact bEx_err_row_2_hi m2 h12
 
 private theorem bEx_err_row_3_lo (m2 : Fin 23) (hm : m2.1 < 12) :
     |bEx ⟨3, by omega⟩ m2 - bMid ⟨3, by omega⟩ m2| ≤ bRad ⟨3, by omega⟩ m2 := by
@@ -22887,7 +22974,7 @@ private theorem mEx_err_of_dot_err (j k : Fin 23) (hjk : j.1 ≤ k.1)
   rw [if_pos hjk, if_pos hjk, ← mul_sub, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 69 / 2)]
   exact mul_le_mul_of_nonneg_left hdot (by norm_num)
 
-private theorem mDot_err_0_a (k : Fin 23) (hk : k.1 < 8) :
+private theorem mDot_err_0_a1 (k : Fin 23) (hk : k.1 < 4) :
     |(∑ m2 : Fin 23, bEx ⟨0, by omega⟩ m2 * qtEx k m2) - mDotUpperMid ⟨0, by omega⟩ k| ≤
       mDotUpperRad ⟨0, by omega⟩ k := by
   refine dot23_vec_err_le (fun m2 => bEx ⟨0, by omega⟩ m2) (fun m2 => qtEx k m2)
@@ -22900,11 +22987,26 @@ private theorem mDot_err_0_a (k : Fin 23) (hk : k.1 < 8) :
   · rw [sum_fin23, sum_fin23]; unfold qtMid qtRad; dsimp; norm_num [bMidRow_0, bRadRow_0, qtMidRow_1, mDotUpperMidRow_0, mDotUpperRadRow_0]
   · rw [sum_fin23, sum_fin23]; unfold qtMid qtRad; dsimp; norm_num [bMidRow_0, bRadRow_0, qtMidRow_2, mDotUpperMidRow_0, mDotUpperRadRow_0]
   · rw [sum_fin23, sum_fin23]; unfold qtMid qtRad; dsimp; norm_num [bMidRow_0, bRadRow_0, qtMidRow_3, mDotUpperMidRow_0, mDotUpperRadRow_0]
+  all_goals (exfalso; dsimp at hk; omega)
+
+private theorem mDot_err_0_a2 (k : Fin 23) (hk1 : 4 ≤ k.1) (hk2 : k.1 < 8) :
+    |(∑ m2 : Fin 23, bEx ⟨0, by omega⟩ m2 * qtEx k m2) - mDotUpperMid ⟨0, by omega⟩ k| ≤
+      mDotUpperRad ⟨0, by omega⟩ k := by
+  refine dot23_vec_err_le (fun m2 => bEx ⟨0, by omega⟩ m2) (fun m2 => qtEx k m2)
+    (fun m2 => bMidRow_0 m2.1) (fun m2 => bRadRow_0 m2.1)
+    (fun m2 => qtMid k m2) (fun m2 => qtRad k m2)
+    (mDotUpperMidRow_0 k.1) (mDotUpperRadRow_0 k.1)
+    (fun m2 => bEx_err_row_0 m2) (fun m2 => qtEx_err_le k m2) ?_
+  fin_cases k
+  · exfalso; dsimp at hk1; omega
+  · exfalso; dsimp at hk1; omega
+  · exfalso; dsimp at hk1; omega
+  · exfalso; dsimp at hk1; omega
   · rw [sum_fin23, sum_fin23]; unfold qtMid qtRad; dsimp; norm_num [bMidRow_0, bRadRow_0, qtMidRow_4, mDotUpperMidRow_0, mDotUpperRadRow_0]
   · rw [sum_fin23, sum_fin23]; unfold qtMid qtRad; dsimp; norm_num [bMidRow_0, bRadRow_0, qtMidRow_5, mDotUpperMidRow_0, mDotUpperRadRow_0]
   · rw [sum_fin23, sum_fin23]; unfold qtMid qtRad; dsimp; norm_num [bMidRow_0, bRadRow_0, qtMidRow_6, mDotUpperMidRow_0, mDotUpperRadRow_0]
   · rw [sum_fin23, sum_fin23]; unfold qtMid qtRad; dsimp; norm_num [bMidRow_0, bRadRow_0, qtMidRow_7, mDotUpperMidRow_0, mDotUpperRadRow_0]
-  all_goals (exfalso; dsimp at hk; omega)
+  all_goals (exfalso; dsimp at hk2; omega)
 
 private theorem mDot_err_0_b (k : Fin 23) (hk1 : 8 ≤ k.1) (hk2 : k.1 < 16) :
     |(∑ m2 : Fin 23, bEx ⟨0, by omega⟩ m2 * qtEx k m2) - mDotUpperMid ⟨0, by omega⟩ k| ≤
@@ -22969,11 +23071,13 @@ private theorem mDot_err_0_c (k : Fin 23) (hk : 16 ≤ k.1) :
 private theorem mEx_err_upper_0 (k : Fin 23) (hjk : 0 ≤ k.1) :
     |mEx ⟨0, by omega⟩ k - mMid ⟨0, by omega⟩ k| ≤ mRad ⟨0, by omega⟩ k := by
   refine mEx_err_of_dot_err ⟨0, by omega⟩ k hjk ?_
-  rcases lt_or_ge k.1 8 with h8 | h8
-  · exact mDot_err_0_a k h8
-  · rcases lt_or_ge k.1 16 with h16 | h16
-    · exact mDot_err_0_b k h8 h16
-    · exact mDot_err_0_c k h16
+  rcases lt_or_ge k.1 4 with h4 | h4
+  · exact mDot_err_0_a1 k h4
+  · rcases lt_or_ge k.1 8 with h8 | h8
+    · exact mDot_err_0_a2 k h4 h8
+    · rcases lt_or_ge k.1 16 with h16 | h16
+      · exact mDot_err_0_b k h8 h16
+      · exact mDot_err_0_c k h16
 
 private theorem mDot_err_1_a (k : Fin 23) (hjk : 1 ≤ k.1) (hk : k.1 < 8) :
     |(∑ m2 : Fin 23, bEx ⟨1, by omega⟩ m2 * qtEx k m2) - mDotUpperMid ⟨1, by omega⟩ k| ≤
@@ -29831,8 +29935,8 @@ private theorem integral_cosT44_sq_mul_evenEnvW_eq {F : ℝ → ℝ} (hF : Conti
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun k _ => ?_
     refine Finset.sum_congr rfl fun m _ => ?_
+    rw [div_pow r (69 / 2 : ℝ) (2 * m.1)]
     unfold qtEx
-    rw [div_pow]
     have hT_ne : (69 / 2 : ℝ) ^ (2 * m.1) ≠ 0 := by positivity
     calc (-1 : ℝ) ^ m.1 / ((2 * m.1).factorial : ℝ) * r ^ (2 * m.1) * (evenLegCoeff F k * muEx k.1 m.1)
         = (-1 : ℝ) ^ m.1 / ((2 * m.1).factorial : ℝ) * r ^ (2 * m.1) * (evenLegCoeff F k * muEx k.1 m.1) *
