@@ -31,6 +31,8 @@ open MeasureTheory Finset RHTower
 
 namespace GaloisForLFunctions.ArithmeticElectrostatics
 
+open Zeta23
+
 variable {g : ℝ → ℝ} {w : ℝ}
 
 theorem contDiff_ofReal_atomicTest (hg : ContDiff ℝ 2 g) (N : ℕ) (x : ℕ → ℝ) :
@@ -39,7 +41,8 @@ theorem contDiff_ofReal_atomicTest (hg : ContDiff ℝ 2 g) (N : ℕ) (x : ℕ �
 
 theorem hasCompactSupport_ofReal_atomicTest (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (N : ℕ)
     (x : ℕ → ℝ) : HasCompactSupport fun u => (atomicTest N x g u : ℂ) :=
-  (hasCompactSupport_atomicTest hgsupp N x).comp_left Complex.ofReal_zero
+  HasCompactSupport.comp_left (g := ((↑) : ℝ → ℂ)) (hasCompactSupport_atomicTest hgsupp N x)
+    Complex.ofReal_zero
 
 /-- **The coupled form**: `Re W(f) = M(f) + 2C(f)² − 2S(f)²` on atomic tests. -/
 theorem re_W_atomicTest_eq (hg : ContDiff ℝ 2 g) (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0)
@@ -95,8 +98,9 @@ theorem re_W_atomicTest_nonneg_of_nonneg (hg : ContDiff ℝ 2 g) (hgc : HasCompa
   have hint : ∀ φ : ℝ → ℝ, Continuous φ → Integrable fun u => f u * φ u := fun φ hφ =>
     (hf.continuous.mul hφ).integrable_of_hasCompactSupport (hfc.mul_right)
   have hS0 : 0 ≤ sinhHalfMoment f := integral_nonneg fun u => by
+    show 0 ≤ f u * Real.sinh (u / 2)
     rcases lt_or_ge u 0 with hu | hu
-    · simp only [hneg u hu, zero_mul, le_refl]
+    · rw [hneg u hu, zero_mul]
     · exact mul_nonneg (hf0 u) (Real.sinh_nonneg_iff.mpr (by linarith))
   have hSC : sinhHalfMoment f ≤ coshHalfMoment f :=
     integral_mono (hint _ (Real.continuous_sinh.comp (continuous_id.div_const 2)))

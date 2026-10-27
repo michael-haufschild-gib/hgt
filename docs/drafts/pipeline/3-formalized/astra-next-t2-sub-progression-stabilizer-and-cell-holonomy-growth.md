@@ -1,9 +1,22 @@
 # Sub-Progression Dirichlet Stabilizer Inversion & Universal Polynomial Cell-Holonomy Growth Along `(+1, ×2)`
 
-- **Route / Programme:** `ArithmeticCorrelationGeometry` (`ACG`) × `RenormalizedBiarithmeticGeometry` (`RBG` §9 Open Topic #4) × `BiarithmeticGaugeGeometry` (`BGG`)
-- **Status:** Fully proven on paper; proceeding directly to Lean 4 formalization in `formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/SubProgressionStabilizerInversionAndCellHolonomyGrowth.lean`
+- **ID:** astra-next-t2-sub-progression-stabilizer-and-cell-holonomy-growth
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4 formalized)
+- **Source:** docs/reports/review-2710/astra.md · `ArithmeticCorrelationGeometry` (`ACG`) × `RenormalizedBiarithmeticGeometry` (`RBG` §9 Open Topic #4) × `BiarithmeticGaugeGeometry` (`BGG`)
+- **Statement:** Zero-ramification principal Dirichlet gauge identity and pure nontrivial-character inversion of `primeCoalSum` in the sub-progression window `θ₀ * X < q`, `2 * q * θ₀ < 1`, paired with an unconditional `X^{1/4}` lower bound `Nat.sqrt (Nat.sqrt (X / 162)) - 1 ≤ (chargedCells ω X).card` (hence `≤ (liouvilleAgreements X).card` and `2 K ≤ hsDefect ω X c` on `162 (K + 1)^4 ≤ X`) for every real sign gauge `ω` with `realSignChar ω 2 = -1`.
+- **Lean Module:** `formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/SubProgressionStabilizerInversionAndCellHolonomyGrowth.lean`
 
-## 1. Statements (100% Unconditional)
+## Goal
+1. Eliminate both congruent-pair and ramified-prime errors in `ACG`'s finite Dirichlet subgroup stabilizer decomposition (`sum_twistedPrimeCoalSum_dirichletGauge`) across the intermediate sub-progression window `θ₀ * X < q`, `2 * q * θ₀ < 1`.
+2. Resolve `RenormalizedBiarithmeticGeometry` Open Topic #4 quantitatively by upgrading `RBG.one_le_liouvilleAgreements` (`1 ≤ N₊`) to an unconditional all-`X` polynomial lower bound `Nat.sqrt (Nat.sqrt (X / 162)) - 1 ≤ (chargedCells ω X).card` uniformly across every real sign gauge `ω` flipping `2`.
+
+## Gates
+- [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, internal corpus audit completed
+- [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 2 → 3  formalized: Lean module `SubProgressionStabilizerInversionAndCellHolonomyGrowth.lean`, `lake --old env lean` green, axiom check PASS
+
+## Approach & Statements (100% Unconditional)
 
 ### Part A — Zero-Ramification Sub-Progression Stabilizer Inversion (`ACG`)
 1. **Principal Gauge Identity (`dirichletGauge_one_eq_zero`, `twistedPrimeCoalSum_dirichletGauge_one`):**
@@ -35,3 +48,8 @@
    - If $L \le 2u$, then $4u^2 \ge L^2 \ge 36u \implies u \ge 9$, $2u < DL \le dL \implies 2u + 1 \le dL$, and $(d - 1)L \le 2\lfloor 2u/L\rfloor L \le 4u \implies 36u(d-1)^2 \le L^2(d-1)^2 \le 16u^2 \implies 9(d - 1)^2 \le 4u$. For $d \in \{1, 2\}$, $d^2 - 1 \le 3 < 9 \le u$; for $d \ge 3$, $4(d^2 - 1) \le 9(d - 1)^2 - (d - 1)(5d - 13) \le 9(d - 1)^2 \le 4u$, so $d^2 - 1 \le u$ in all cases. Hence $u + d^2 - 1 \le 2u < dL$, i.e. $(d + 1)(u + d - 1) \le d(u + L)$, so $d(d + 1)q \le d(u + L) \implies (d + 1)q \le u + L$.
    Since $\sigma_\omega(q) \in \{\pm 1\}$, $\sigma_\omega(dq) = \sigma_\omega(d)\sigma_\omega(q) \ne \sigma_\omega(d + 1)\sigma_\omega(q) = \sigma_\omega((d + 1)q)$, so some $t \in [dq, (d + 1)q - 1] \subseteq [u, u + L - 1]$ satisfies $\sigma_\omega(t) \ne \sigma_\omega(t + 1)$.
 3. **Disjoint Parabolic Blocks:** For $1 \le k \le K$, take $u_k = 9k^2$ and $L_k = 18k$, satisfying $L_k \ge 18 \ge 6$, $L_k^2 = 324 k^2 = 36 u_k$, and $u_k + L_k - 1 = 9k^2 + 18k - 1 < 9(k + 1)^2 = u_{k+1}$. Picking $t_k \in [u_k, u_k + L_k - 1]$ yields $K$ strictly increasing witnesses $t_k < 9(K + 1)^2$, hence $K$ distinct charged cells $a_k = 2 t_k (t_k + 1) \le 2 \cdot 9(K + 1)^2 \cdot 9(K + 1)^2 = 162(K + 1)^4 \le X$.
+
+
+## Log
+- 2026-10-27 — created and completed dependency-closed paper proof in `2-fully-proven/`
+- 2026-10-27 — formalized unconditionally in `SubProgressionStabilizerInversionAndCellHolonomyGrowth.lean` (`lake --old env lean` exit 0, zero warnings, wired into `ArithmeticCorrelationGeometry.lean`), moved to `3-formalized/`

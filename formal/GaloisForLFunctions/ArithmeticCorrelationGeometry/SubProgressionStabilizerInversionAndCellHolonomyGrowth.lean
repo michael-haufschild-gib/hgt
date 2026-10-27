@@ -4,9 +4,9 @@ import GaloisForLFunctions.RenormalizedBiarithmeticGeometry.TheCellHolonomyDefec
 /-!
 # Sub-Progression Dirichlet Stabilizer Inversion and Universal Polynomial Cell-Holonomy Growth
 
-This module advances the gauge-stabilizer and cell-holonomy programmes across
-`ArithmeticCorrelationGeometry` (`ACG`), `BiarithmeticGaugeGeometry` (`BGG`), and
-`RenormalizedBiarithmeticGeometry` (`RBG` §9 Open Topic #4) via two unconditional results:
+This module advances the gauge-stabilizer and cell-holonomy theory across
+`ArithmeticCorrelationGeometry`, `BiarithmeticGaugeGeometry`, and
+`RenormalizedBiarithmeticGeometry` via two unconditional results:
 
 1. **Zero-Ramification Sub-Progression Dirichlet Stabilizer Inversion
    (`dirichletGauge_one_eq_zero`, `congruent_coalWeight_sum_eq_zero_of_mul_lt`,
@@ -26,9 +26,8 @@ This module advances the gauge-stabilizer and cell-holonomy programmes across
    `card_chargedCells_ge_of_fourth_pow`, `sqrt_sqrt_div_sub_one_le_card_chargedCells`,
    `sqrt_sqrt_div_sub_one_le_card_liouvilleAgreements`, `hsDefect_liouville_ge_of_fourth_pow`,
    `eventually_forall_le_hsDefect_realSign`):**
-   Resolves the quantitative cell-holonomy growth problem of `RBG` §9 Open Topic #4 unconditionally
-   across **every** real sign gauge `ω` flipping `2` (`realSignChar ω 2 = -1`, in particular
-   `PrimeGauge.liouvilleGauge`):
+   Establishes polynomial cell-holonomy growth unconditionally across **every** real sign gauge `ω`
+   flipping `2` (`realSignChar ω 2 = -1`, in particular `PrimeGauge.liouvilleGauge`):
    * Along the quadratic square-absorber locus `a = 2 * t * (t + 1)`, `2 * a + 1 = (2 * t + 1) ^ 2`
      is an odd square (`σ_ω(2a + 1) = +1`), reducing the affine holonomy charge `a ∈ chargedCells ω X`
      to a unit-shift sign change `σ_ω(t) ≠ σ_ω(t + 1)`.
@@ -258,8 +257,11 @@ theorem eventually_bandwidth43_subProgression_window {η κ : ℝ}
   have hq_gt : T ^ κ - 1 < (⌊T ^ κ⌋₊ : ℝ) := Nat.sub_one_lt_floor (T ^ κ)
   have h2qθ : 2 * (⌊T ^ κ⌋₊ : ℝ) * T ^ (-1 + η) < 1 := by
     have hle : 2 * (⌊T ^ κ⌋₊ : ℝ) * T ^ (-1 + η) ≤ 2 * T ^ (κ + (-1 + η)) := by
-      rw [Real.rpow_add hT0, ← mul_assoc]
-      exact mul_le_mul_of_nonneg_right (by linarith) hθ_pos.le
+      calc 2 * (⌊T ^ κ⌋₊ : ℝ) * T ^ (-1 + η)
+          ≤ 2 * T ^ κ * T ^ (-1 + η) :=
+            mul_le_mul_of_nonneg_right (by linarith) hθ_pos.le
+        _ = 2 * (T ^ κ * T ^ (-1 + η)) := by ring
+        _ = 2 * T ^ (κ + (-1 + η)) := by rw [← Real.rpow_add hT0]
     exact lt_of_le_of_lt hle hThi
   have hθX : T ^ (-1 + η) * (T / (2 * Real.pi)) ^ (4 / 3 : ℝ) < (⌊T ^ κ⌋₊ : ℝ) := by
     have h2pi_gt : (1 : ℝ) ≤ 2 * Real.pi := by linarith [Real.pi_gt_three]
@@ -276,7 +278,7 @@ theorem eventually_bandwidth43_subProgression_window {η κ : ℝ}
     linarith [hTlo, hq_gt]
   exact ⟨hq3, hθ_pos, hTθ, h2qθ, hθX⟩
 
-/-! ## §2. Universal Polynomial Cell-Holonomy and Liouville Agreement Growth (`RBG` Open Topic #4) -/
+/-! ## §2. Universal Polynomial Cell-Holonomy and Liouville Agreement Growth -/
 
 /-- Discrete intermediate-value witness: if `f a ≠ f b` on `a < b`, some step `n ∈ [a, b - 1]`
 changes value (`f n ≠ f (n + 1)`). -/
@@ -318,7 +320,7 @@ theorem two_mul_mul_succ_mem_chargedCells_iff {ω : PrimeGauge} (hω : IsRealSig
   rw [and_iff_right hmem, hodd_one, hev_eq, mul_one, h2]
   have ht_pm := realSignChar_eq_one_or hω (by omega : t ≠ 0)
   have ht1_pm := realSignChar_eq_one_or hω (by omega : t + 1 ≠ 0)
-  rcases ht_pm with ht1 | ht1 <;> rcases ht1_pm with hs1 | hs1 <;> simp [ht1, hs1]
+  rcases ht_pm with ht1 | ht1 <;> rcases ht1_pm with hs1 | hs1 <;> norm_num [ht1, hs1]
 
 /-- **Universal Short-Block Sign-Change Witness:**
 For every real sign gauge `ω` with `realSignChar ω 2 = -1` and every block `[u, u + L]` with
@@ -328,7 +330,7 @@ theorem exists_realSignChar_ne_succ_in_block {ω : PrimeGauge} (hω : IsRealSign
     (h2 : realSignChar ω 2 = -1) {u L : ℕ} (hu : 1 ≤ u) (hL : 6 ≤ L) (hsq : 36 * u ≤ L ^ 2) :
     ∃ t ∈ Icc u (u + L - 1), realSignChar ω t ≠ realSignChar ω (t + 1) := by
   set D : ℕ := 2 * u / L + 1
-  have hD_pos : 1 ≤ D := by omega
+  have hD_pos : 1 ≤ D := Nat.le_add_left 1 (2 * u / L)
   have hD_nz : realSignChar ω D ≠ 0 := by
     intro h0
     have h1 := realSignChar_sq_eq_one hω (by omega : D ≠ 0)
@@ -343,10 +345,10 @@ theorem exists_realSignChar_ne_succ_in_block {ω : PrimeGauge} (hω : IsRealSign
   have hd_pos : 1 ≤ d := le_trans hD_pos hDd
   set q : ℕ := (u + d - 1) / d
   have hq_pos : 1 ≤ q := Nat.div_pos (by omega) (by omega)
-  have hdiv_mod := Nat.div_add_mod (u + d - 1) d
+  have hdiv_mod : d * q + (u + d - 1) % d = u + d - 1 := Nat.div_add_mod (u + d - 1) d
   have hmod_lt : (u + d - 1) % d < d := Nat.mod_lt _ (by omega)
   have hdq_lo : u ≤ d * q := by omega
-  have hdq_hi : d * q ≤ u + d - 1 := by omega
+  have hdq_hi : d * q ≤ u + d - 1 := Nat.mul_div_le (u + d - 1) d
   have hd1q_le : (d + 1) * q ≤ u + L := by
     have hstep1 : d * ((d + 1) * q) ≤ (d + 1) * (u + d - 1) := by
       rw [show d * ((d + 1) * q) = (d + 1) * (d * q) by ring]
@@ -403,7 +405,7 @@ theorem exists_realSignChar_ne_succ_in_block {ω : PrimeGauge} (hω : IsRealSign
         linarith [show ((d : ℤ) + 1) * ((u : ℤ) + d - 1) = (d : ℤ) * u + u + (d : ℤ) ^ 2 - 1 by ring,
           show (d : ℤ) * ((u : ℤ) + L) = (d : ℤ) * u + (d : ℤ) * L by ring]
       have hcast_lhs : (((d + 1) * (u + d - 1) : ℕ) : ℤ) = ((d : ℤ) + 1) * ((u : ℤ) + d - 1) := by
-        rw [Nat.cast_mul, Nat.cast_add, Nat.cast_one, Nat.cast_sub (by omega), Nat.cast_add]
+        simp only [Nat.cast_mul, Nat.cast_add, Nat.cast_sub (by omega : 1 ≤ u + d), Nat.cast_one]
       have hcast_rhs : ((d * (u + L) : ℕ) : ℤ) = (d : ℤ) * ((u : ℤ) + L) := by push_cast; rfl
       exact_mod_cast (hcast_lhs ▸ hcast_rhs ▸ hz_goal)
   have hq_nz : realSignChar ω q ≠ 0 := by
@@ -510,7 +512,7 @@ theorem sqrt_sqrt_div_sub_one_le_card_chargedCells {ω : PrimeGauge} (hω : IsRe
         _ ≤ X := Nat.mul_div_le X 162
     exact card_chargedCells_ge_of_fourth_pow hω h2 h162
 
-/-- **Unconditional `X^{1/4}` Growth of Liouville Agreements Along `(+1, ×2)` (`RBG` §9.4):**
+/-- **Unconditional `X^{1/4}` Growth of Liouville Agreements Along `(+1, ×2)`:**
 For **every** `X : ℕ`, `Nat.sqrt (Nat.sqrt (X / 162)) - 1 ≤ (liouvilleAgreements X).card`,
 and whenever `162 * (K + 1) ^ 4 ≤ X`, `K ≤ (liouvilleAgreements X).card`. -/
 theorem sqrt_sqrt_div_sub_one_le_card_liouvilleAgreements (X : ℕ) :

@@ -6,9 +6,9 @@ import GaloisForLFunctions.SquareRootThreshold.ZetaLagFamilyVinogradovKorobovEnv
 /-!
 # Quantitative Single-Scale Integer Theta Prefix Transfer and Vinogradov–Korobov Sub-Trivial Ceiling
 
-This module advances Open Topic #2 of `RenormalizedBiarithmeticGeometry` ("Single-scale bounds on
-the integer theta prefix readings") and bridges `RBG`, `CDG`, `AES`, `SRT`, and `BVI` via three
-unconditional results:
+This module establishes quantitative single-scale bounds and equivalences for the integer theta
+prefix readings across `RenormalizedBiarithmeticGeometry`, `ConjugateDiagonalGeometry`,
+`ArithmeticElectrostatics`, `SquareRootThreshold`, and `BezoutValuationIncidence`:
 
 1. **All-`n` Quantitative Lossless Prefix-to-Defect and Moment-of-Inertia Transfer
    (`exists_explicit_reading_transfer_constants`, `heckeDefect_le_of_explicit_reading`,
@@ -51,6 +51,9 @@ noncomputable section
 namespace GaloisForLFunctions.BezoutValuationIncidence
 
 open Zeta23 _root_.RHTower
+open GaloisForLFunctions.ArithmeticPolarization
+open GaloisForLFunctions.TransHorizonIncidenceMechanics
+open GaloisForLFunctions.SelectivePositivityAndThresholdLaws
 open GaloisForLFunctions.ConjugateDiagonalGeometry
 open GaloisForLFunctions.RenormalizedBiarithmeticGeometry
 open GaloisForLFunctions.ArithmeticElectrostatics
@@ -100,9 +103,14 @@ theorem tendsto_thetaPrefixError_zero (B D : ℝ) :
   have hinv : Tendsto (fun n : ℕ => 16 / (n : ℝ)) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
   have hlog_div : Tendsto (fun n : ℕ => (16 / (n : ℝ)) * Real.log ((n : ℝ) + 4)) atTop (𝓝 0) := by
-    refine squeeze_zero_norm' ?_ (by
-      simpa using (tendsto_inv_atTop_zero.comp
-        (Real.tendsto_sqrt.comp tendsto_natCast_atTop_atTop)).const_mul (32 * Real.sqrt 2))
+    have hsqrt_atTop : Tendsto (fun n : ℕ => Real.sqrt (n : ℝ)) atTop atTop := by
+      rw [Filter.tendsto_atTop]
+      intro b
+      refine (eventually_ge_atTop ⌈max b 0 ^ 2⌉₊).mono fun n hn => ?_
+      have h1 : max b 0 ^ 2 ≤ (n : ℝ) := (Nat.le_ceil _).trans (by exact_mod_cast hn)
+      exact (le_max_left b 0).trans (Real.le_sqrt_of_sq_le h1)
+    refine squeeze_zero_norm' ?_
+      (by simpa using (tendsto_inv_atTop_zero.comp hsqrt_atTop).const_mul (32 * Real.sqrt 2))
     filter_upwards [eventually_ge_atTop 4] with n hn
     have hn4 : (4 : ℝ) ≤ n := by exact_mod_cast hn
     have hn_pos : (0 : ℝ) < n := by linarith
@@ -129,7 +137,9 @@ theorem tendsto_thetaPrefixError_zero (B D : ℝ) :
       D * ((16 / (n : ℝ)) * (xiLineTwoLogDerivConstant + Real.log ((n : ℝ) + 4)))) atTop (𝓝 0) := by
     have hsum := ((hinv.mul_const xiLineTwoLogDerivConstant).add hlog_div).const_mul D
     simpa [mul_add] using hsum
-  simpa [thetaPrefixError] using ht1.add ht2
+  have hadd := ht1.add ht2
+  rw [add_zero] at hadd
+  exact hadd
 
 /-- **Quantitative All-`n` Prefix Error Certificate for `reading` (`j = 1` and `j = 0`):**
 For every `f : CompactTest`, there exist `B₁, D₁, B₀, D₀ ≥ 0` such that for every `n ≥ 1`:
@@ -150,7 +160,8 @@ theorem exists_explicit_reading_transfer_constants (f : CompactTest) :
       mul_nonneg (by norm_num) (Real.log_nonneg (by linarith [n.cast_nonneg (α := ℝ)]))
     have h := hb₀ n hn 0 0 (by simp; positivity) (by simp [hlog])
     rw [sourceTwist_zero] at h
-    simpa [reading, mass, pow_zero, mul_one, thetaPrefixError] using h
+    unfold reading mass thetaPrefixError
+    simpa only [pow_zero, mul_one, zetaWeight, collidedForm] using h
 
 /-- **Quantitative Lossless Finite-Prefix-to-Defect Transfer (`heckeDefect_le_of_explicit_reading`):**
 Given the explicit prefix error constants `(B₁, D₁, B₀, D₀)` of `f`, a single integer-prefix check
@@ -236,7 +247,7 @@ theorem dyadicThetaPrefix_properties (k : ℕ) :
       _ = 9 * Real.exp ((2 : ℝ) ^ k / 2) ^ 2 := by ring
       _ = 9 * Real.exp ((2 : ℝ) ^ k) := by rw [hexp_sq]
 
-/-- **Single-Scale Logarithmic-Horizon Integer-Prefix Equivalence (`RBG` Open Topic #2):**
+/-- **Single-Scale Logarithmic-Horizon Integer-Prefix Equivalence:**
 For every `0 < θ ≤ 1 / 2`, `zetaZeroAbscissa ≤ 1 - θ` holds if and only if for every
 `f : CompactTest` and every `ε > 0`, the single-scale integer-theta prefix readings along
 `dyadicThetaPrefix k` grow at most like `(dyadicThetaPrefix k + 1)^{2(1 - 2θ) + ε}`. -/
@@ -245,11 +256,15 @@ theorem zetaZeroAbscissa_le_iff_singleScale_reading_rate {θ : ℝ} (hθ0 : 0 < 
       ∀ (f : CompactTest) (ε : ℝ), 0 < ε → ∃ C : ℝ, ∀ k : ℕ,
         reading f ((2 : ℝ) ^ k) 1 (dyadicThetaPrefix k) ≤
           C * ((dyadicThetaPrefix k : ℝ) + 1) ^ (2 * (1 - 2 * θ) + ε) := by
-  rw [(escapedMoebius_rbg_seven_way_tfae hθ0 hθ2).out 3 5]
+  have h35 : zetaZeroAbscissa ≤ 1 - θ ↔
+      ∀ (f : CompactTest) (ε : ℝ), 0 < ε → ∃ C : ℝ, ∀ k : ℕ,
+        heckeDefect f (2 ^ k) ≤ C * Real.exp ((1 - 2 * θ + ε) * 2 ^ k) :=
+    (escapedMoebius_rbg_seven_way_tfae hθ0 hθ2).out 3 5
+  rw [h35]
   constructor
   · intro hdef f ε hε
     obtain ⟨C₁, hC₁⟩ := hdef f (ε / 2) (half_pos hε)
-    obtain ⟨B₁, D₁, _, _, hB₁, hD₁, herr₁, -⟩ := exists_explicit_reading_transfer_constants f
+    obtain ⟨B₁, D₁, _, _, hB₁, hD₁, _, _, herr₁, -⟩ := exists_explicit_reading_transfer_constants f
     set Emax : ℝ := B₁ * Real.exp 846 + D₁ * (16 * |xiLineTwoLogDerivConstant| + 80)
     have hEmax0 : 0 ≤ Emax := by
       dsimp [Emax]; exact add_nonneg (by positivity) (mul_nonneg hD₁ (by positivity))
@@ -290,7 +305,7 @@ theorem zetaZeroAbscissa_le_iff_singleScale_reading_rate {θ : ℝ} (hθ0 : 0 < 
       _ = (|C₁| + Emax) * ((dyadicThetaPrefix k : ℝ) + 1) ^ (2 * (1 - 2 * θ) + ε) := by ring
   · intro hread f ε hε
     obtain ⟨C₁, hC₁⟩ := hread f ε hε
-    obtain ⟨B₁, D₁, _, _, hB₁, hD₁, herr₁, -⟩ := exists_explicit_reading_transfer_constants f
+    obtain ⟨B₁, D₁, _, _, hB₁, hD₁, _, _, herr₁, -⟩ := exists_explicit_reading_transfer_constants f
     set Emax : ℝ := B₁ * Real.exp 846 + D₁ * (16 * |xiLineTwoLogDerivConstant| + 80)
     have hEmax0 : 0 ≤ Emax := by
       dsimp [Emax]; exact add_nonneg (by positivity) (mul_nonneg hD₁ (by positivity))
@@ -347,9 +362,10 @@ theorem growingEndpointEscapedMoebiusLaw_iff_singleScale_reading_rate
     GrowingEndpointEscapedMoebiusLaw θ ↔
       ∀ (f : CompactTest) (ε : ℝ), 0 < ε → ∃ C : ℝ, ∀ k : ℕ,
         reading f ((2 : ℝ) ^ k) 1 (dyadicThetaPrefix k) ≤
-          C * ((dyadicThetaPrefix k : ℝ) + 1) ^ (2 * (1 - 2 * θ) + ε) :=
-  ((escapedMoebius_rbg_seven_way_tfae hθ0 hθ2).out 0 3).trans
-    (zetaZeroAbscissa_le_iff_singleScale_reading_rate hθ0 hθ2)
+          C * ((dyadicThetaPrefix k : ℝ) + 1) ^ (2 * (1 - 2 * θ) + ε) := by
+  have h03 : GrowingEndpointEscapedMoebiusLaw θ ↔ zetaZeroAbscissa ≤ 1 - θ :=
+    (escapedMoebius_rbg_seven_way_tfae hθ0 hθ2).out 0 3
+  exact h03.trans (zetaZeroAbscissa_le_iff_singleScale_reading_rate hθ0 hθ2)
 
 /-- **Endpoint (`θ = 1 / 2`) Single-Scale Sub-Polynomial Integer-Prefix Criterion for `RH`:**
 `RiemannHypothesis` holds if and only if for every `f : CompactTest` and `ε > 0`,
@@ -465,7 +481,7 @@ theorem exists_reading_logHorizon_vk_ceiling (f : CompactTest) :
           C_tail * sourceReferenceTail n + thetaPrefixError B₁ D₁ n := by
   obtain ⟨γ₀, η₁, hγ₀e, hη₁_pos, hη₁_lt, hvk_prof⟩ := exists_vk_carrier_depth_profile
   obtain ⟨C_tail, hC_tail, htail_bd⟩ := moving_depth_trace_tail_le f 1
-  obtain ⟨B₁, D₁, _, _, hB₁, hD₁, herr₁, -⟩ := exists_explicit_reading_transfer_constants f
+  obtain ⟨B₁, D₁, _, _, hB₁, hD₁, _, _, herr₁, -⟩ := exists_explicit_reading_transfer_constants f
   set N₀ : ℕ := max 1 ⌈γ₀⌉₊
   refine ⟨N₀, η₁, C_tail, B₁, D₁, le_max_left _ _, hη₁_pos, hη₁_lt, hC_tail, hB₁, hD₁,
     fun n hn L hL => ?_⟩
@@ -562,7 +578,7 @@ theorem exists_reading_logHorizon_vk_ceiling (f : CompactTest) :
   · dsimp [Kcap] at hhd_le; linarith
   · dsimp [Kcap] at hhd_le; linarith
 
-/-- **Asymptotic Sub-Triviality of Single-Scale Prefix Readings (`RBG` Open Topic #2):**
+/-- **Asymptotic Sub-Triviality of Single-Scale Prefix Readings:**
 For every `f : CompactTest` and every scale schedule `L : ℕ → ℝ` inside the logarithmic horizon
 `∀ n, |L n| ≤ 2 * log(n + 1)` (in particular `L n = 2 * log(n + 1)`),
 `reading f (L n) 1 n / (n + 1)² → 0` as `n → ∞`. -/
@@ -579,9 +595,14 @@ theorem tendsto_reading_logHorizon_div_sq_zero (f : CompactTest) {L : ℕ → �
         (fun n : ℕ => min (η₁ * (Real.log ((n : ℝ) + 2) / 2))
           ((1 / (2 * 10 ^ 8 * (6 : ℝ) ^ (5 / 3 : ℝ))) *
             (Real.log ((n : ℝ) + 2)) ^ (1 / 18 : ℝ))) atTop atTop := by
-      refine Tendsto.min ((hy_atTop.atTop_div_const two_pos).const_mul_atTop hη₁_pos) ?_
-      exact ( (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 18)).comp hy_atTop ).const_mul_atTop
-        (by positivity)
+      rw [Filter.tendsto_atTop]
+      intro b
+      have hb1 := ((hy_atTop.atTop_div_const two_pos).const_mul_atTop hη₁_pos).eventually
+        (eventually_ge_atTop b)
+      have hb2 := (((tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 18)).comp
+        hy_atTop).const_mul_atTop (by positivity)).eventually (eventually_ge_atTop b)
+      filter_upwards [hb1, hb2] with n h1 h2
+      exact le_min h1 h2
     refine tendsto_atTop_mono' atTop ?_ hlow_atTop
     filter_upwards [eventually_ge_atTop (max N₀ 2),
       hy_atTop.eventually (eventually_ge_atTop (Real.exp 1))] with n hn hy1
@@ -636,7 +657,9 @@ theorem tendsto_reading_logHorizon_div_sq_zero (f : CompactTest) {L : ℕ → �
         inv_anti₀ hden_pos hden_le
       calc (1 / (2 * 10 ^ 8 * (6 : ℝ) ^ (5 / 3 : ℝ))) * y ^ (1 / 18 : ℝ)
           = ((6 : ℝ) ^ (5 / 3 : ℝ) * y ^ (17 / 18 : ℝ))⁻¹ / 10 ^ 8 * (y / 2) := by
-            conv_rhs => rw [hy_split]
+            have hy_div : y / 2 = y ^ (17 / 18 : ℝ) * y ^ (1 / 18 : ℝ) / 2 := by
+              rw [← hy_split]
+            rw [hy_div]
             have hp17 : (y ^ (17 / 18 : ℝ)) ≠ 0 := (Real.rpow_pos_of_pos hy_pos _).ne'
             have hp6 : ((6 : ℝ) ^ (5 / 3 : ℝ)) ≠ 0 := (Real.rpow_pos_of_pos (by norm_num) _).ne'
             field_simp [hp17, hp6]
@@ -652,10 +675,15 @@ theorem tendsto_reading_logHorizon_div_sq_zero (f : CompactTest) {L : ℕ → �
     · rw [min_eq_right hmin]
       exact (min_le_right _ _).trans hvk_lo
   have hexp_zero : Tendsto (fun n : ℕ =>
-      mass f * Real.exp (-4 * (δ n * Real.log ((n : ℝ) + 1)))) atTop (𝓝 0) := by
-    have hneg : Tendsto (fun n : ℕ => -4 * (δ n * Real.log ((n : ℝ) + 1))) atTop atBot :=
-      Tendsto.neg_const_mul_atTop (by norm_num : (-4 : ℝ) < 0) hvk_prod_atTop
-    simpa using (Real.tendsto_exp_atBot.comp hneg).const_mul (mass f)
+      mass f * Real.exp (-4 * δ n * Real.log ((n : ℝ) + 1))) atTop (𝓝 0) := by
+    have hneg : Tendsto (fun n : ℕ => -4 * δ n * Real.log ((n : ℝ) + 1)) atTop atBot := by
+      rw [Filter.tendsto_atBot]
+      intro b
+      filter_upwards [hvk_prod_atTop.eventually (eventually_ge_atTop (-b / 4))] with n hn
+      linarith
+    have hc := (Real.tendsto_exp_atBot.comp hneg).const_mul (mass f)
+    rw [mul_zero] at hc
+    exact hc
   have htail_zero : Tendsto (fun n : ℕ =>
       (C_tail * sourceReferenceTail n + thetaPrefixError B₁ D₁ n) / ((n : ℝ) + 1) ^ 2)
       atTop (𝓝 0) := by
@@ -667,10 +695,16 @@ theorem tendsto_reading_logHorizon_div_sq_zero (f : CompactTest) {L : ℕ → �
     filter_upwards [eventually_ge_atTop 1] with n _
     have hsq1 : (1 : ℝ) ≤ ((n : ℝ) + 1) ^ 2 := by
       have : (0 : ℝ) ≤ n := Nat.cast_nonneg n; nlinarith
-    rw [norm_div, Real.norm_of_nonneg (by positivity)]
+    rw [norm_div, Real.norm_of_nonneg (sq_nonneg ((n : ℝ) + 1))]
     exact div_le_self (norm_nonneg _) hsq1
-  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
-    (by simpa using hexp_zero.add htail_zero) ?_ ?_
+  have hup_zero : Tendsto (fun n : ℕ =>
+      mass f * Real.exp (-4 * δ n * Real.log ((n : ℝ) + 1)) +
+        (C_tail * sourceReferenceTail n + thetaPrefixError B₁ D₁ n) / ((n : ℝ) + 1) ^ 2)
+      atTop (𝓝 0) := by
+    have h := hexp_zero.add htail_zero
+    rw [add_zero] at h
+    exact h
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hup_zero ?_ ?_
   · filter_upwards with n
     exact div_nonneg (finiteThetaSourceMomentReading_nonneg f (L n) 1 n) (sq_nonneg _)
   · filter_upwards [eventually_ge_atTop N₀] with n hn
@@ -678,14 +712,15 @@ theorem tendsto_reading_logHorizon_div_sq_zero (f : CompactTest) {L : ℕ → �
     have hsq_pos : 0 < ((n : ℝ) + 1) ^ 2 := by positivity
     rw [div_le_iff₀ hsq_pos]
     dsimp only [δ]
-    linarith [show (mass f * Real.exp (-4 * (min η₁ (vkZeroFreeWidth ((n : ℝ) + 2)) *
-        Real.log ((n : ℝ) + 1))) +
+    have hid : (mass f * Real.exp (-4 * min η₁ (vkZeroFreeWidth ((n : ℝ) + 2)) *
+          Real.log ((n : ℝ) + 1)) +
         (C_tail * sourceReferenceTail n + thetaPrefixError B₁ D₁ n) / ((n : ℝ) + 1) ^ 2) *
         ((n : ℝ) + 1) ^ 2 =
       mass f * ((n : ℝ) + 1) ^ 2 *
         Real.exp (-4 * min η₁ (vkZeroFreeWidth ((n : ℝ) + 2)) * Real.log ((n : ℝ) + 1)) +
-        C_tail * sourceReferenceTail n + thetaPrefixError B₁ D₁ n by
-      field_simp [hsq_pos.ne']; ring]
+        C_tail * sourceReferenceTail n + thetaPrefixError B₁ D₁ n := by
+      field_simp [hsq_pos.ne']
+    linarith [hbd, hid]
 
 end GaloisForLFunctions.BezoutValuationIncidence
 

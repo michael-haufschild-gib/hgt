@@ -9,12 +9,11 @@ import GaloisForLFunctions.ArithmeticCriticalityTheory.ParityFoldedCurvedGaugeWe
 /-!
 # Closed-Form Ramanujan Parity-Twin Limits, Ultraviolet-to-Infrared Relocation, and Short-Cycle Positivity
 
-This module extends `TheRamanujanTwinsCarryThePrimes` and resolves Open Topic #1 of
-`RenormalizedBiarithmeticGeometry` unconditionally by evaluating in closed form the Cesàro Gram
-matrices, scheme-independent survival cones, and renormalized `r → 1⁻` limit matrices of both
-even-shifted (`2k`) and torsion-aligned (`shiftedMode`, `k + 1`) Ramanujan periodic germs, proving
-the **Ultraviolet Pole-Node Cancellation vs. Infrared Relocation Law** for `-φ(m) Λ(t)`, and
-establishing three unconditional positive survivors:
+This module extends `TheRamanujanTwinsCarryThePrimes` unconditionally by evaluating in closed form
+the Cesàro Gram matrices, scheme-independent survival cones, and renormalized `r → 1⁻` limit
+matrices of both even-shifted (`2k`) and torsion-aligned (`shiftedMode`, `k + 1`) Ramanujan periodic
+germs, proving the **Ultraviolet Pole-Node Cancellation vs. Infrared Relocation Law** for
+`-φ(m) Λ(t)`, and establishing three unconditional positive survivors:
 
 1. **Closed-Form Cesàro Gram and Scheme-Independent `{q, 2q}` Survival Cone
    (`cesaroGram_evenShift_ramanujanMode_eq`, `evenShift_ramanujanParityTwin_survivalCone_eq`,
@@ -746,7 +745,7 @@ theorem shiftedMode_ramanujanTwin_limit_eq {N : ℕ} (ord : Fin N → ℕ)
       cyclotomicHarmonic (ord α) (ord β) (x α + x β) :=
   tendsto_nhds_unique (hA α β) (tendsto_shiftedMode_ramanujanGerm_closedForm ord hord hx α β)
 
-/-! ## §4. Exact Obstruction (`RBG` Open Topic #1): Pole-Node Erasure of `orbitIntersection` -/
+/-! ## §4. Pole-Node Erasure of `orbitIntersection` on the Survival Cone -/
 
 /-- **Pole-Node Erasure Law:**
 Any kernel `K (q α) (q β)` that depends only on the discrete fiber map `q : Fin N → ℕ` (and is

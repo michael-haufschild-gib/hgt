@@ -20,8 +20,14 @@ of Weil forms on atomic tests — narrow bumps at the points `log n`, `n ≤ N`.
   with weights `x` is `ζ`'s prime sum of the test with weights `ωx`.
 * **The stability law is gauge blind** (`twinMarkovEnergy_atomicTest_nonneg`): every sign twin has
   nonnegative archimedean-minus-prime form on every atomic test of width at most `atomicWidth N`.
+* **The margin lives on the positive cone, on the wrong side** (`twistedAtomicWeilForm_le_of_nonneg`,
+  `gaugeMargin_atomicWeilForm`, `twinMarkov_sub_markov_atomicTest`,
+  `twinMarkov_sub_markov_pairWeights`): `M_ω(f) − M(f) = (∫ g²) Σ x_m x_n (1 − ω(m)ω(n)) P(m, n)`,
+  nonnegative for nonnegative weights; on the two-atom test `1_{1} + 1_{p}` at a flipped prime it
+  equals `2 Λ(p)/√p · ∫ f²` for every window `N ≥ p`. On nonnegative atomic tests `ζ` is the minimum
+  of its gauge orbit, by a margin that does not collapse as primes enter.
 
-So atomic resolution cannot separate `ζ` from any sign twin — for instance from the Liouville twin
+So atomic resolution cannot separate `ζ` from any sign twin in `ζ`'s favour — for instance from the Liouville twin
 `ζ(2s)/ζ(s)`, whose logarithmic derivative has poles at the zeros of `ζ`. The gauge charge is seen
 by the source coefficient by coefficient, and by Weil forms only through lags `log k` that are not
 exact ratios `log(m/n)` of atoms: at widths comparable to the spacing, where atoms overlap.
@@ -225,5 +231,144 @@ theorem twinMarkovEnergy_atomicTest_nonneg (hω : ∀ a b, ω (a * b) = ω a * �
       _ = _ := by ring
   have hint : 0 ≤ ∫ u, atomicTest N x g u ^ 2 := integral_nonneg fun u => sq_nonneg _
   nlinarith [mul_nonneg hcoef hint]
+
+/-! ### The margin on the positive cone -/
+
+/-- **The vacuum is extremal on the positive cone**: for nonnegative weights the twin's atomic prime
+form is at most `ζ`'s, since `ω(m)ω(n) ≤ 1` and the kernel is nonnegative. -/
+theorem twistedAtomicWeilForm_le_of_nonneg (hω : ∀ a b, ω (a * b) = ω a * ω b)
+    (hsign : ∀ n, 0 < n → ω n = 1 ∨ ω n = -1) (N : ℕ) {x : ℕ → ℝ} (hx : ∀ n, 0 ≤ x n) :
+    twistedAtomicWeilForm ω N x ≤ atomicWeilForm N x := by
+  unfold twistedAtomicWeilForm atomicWeilForm
+  refine sum_le_sum fun m hm => sum_le_sum fun n hn => ?_
+  have hm1 := (mem_Icc.mp hm).1
+  have hn1 := (mem_Icc.mp hn).1
+  rw [twistedWeilPrimeKernel_eq hω hsign hm1 hn1]
+  have hxx : 0 ≤ x m * x n * weilPrimeKernel m n :=
+    mul_nonneg (mul_nonneg (hx m) (hx n)) (weilPrimeKernel_nonneg m n)
+  have hωω : ω m * ω n ≤ 1 := by
+    rcases hsign m hm1 with h | h <;> rcases hsign n hn1 with h' | h' <;> rw [h, h'] <;> norm_num
+  calc x m * x n * (ω m * ω n * weilPrimeKernel m n)
+      = (ω m * ω n) * (x m * x n * weilPrimeKernel m n) := by ring
+    _ ≤ 1 * (x m * x n * weilPrimeKernel m n) := mul_le_mul_of_nonneg_right hωω hxx
+    _ = x m * x n * weilPrimeKernel m n := one_mul _
+
+/-- The atomic form only reads the weights on their support. -/
+theorem atomicWeilForm_eq_of_support {N : ℕ} {S : Finset ℕ} (hS : S ⊆ Icc 1 N) {x : ℕ → ℝ}
+    (hx : ∀ n, n ∉ S → x n = 0) :
+    atomicWeilForm N x = ∑ m ∈ S, ∑ n ∈ S, x m * x n * weilPrimeKernel m n := by
+  unfold atomicWeilForm
+  calc ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, x m * x n * weilPrimeKernel m n
+      = ∑ m ∈ S, ∑ n ∈ Icc 1 N, x m * x n * weilPrimeKernel m n :=
+        (sum_subset hS fun m _ hm => sum_eq_zero fun n _ => by rw [hx m hm]; ring).symm
+    _ = _ := sum_congr rfl fun m _ =>
+        (sum_subset hS fun n _ hn => by rw [hx n hn]; ring).symm
+
+/-- The **two-atom weights** `1_{1} + 1_{p}`: the arithmetic point and one prime. -/
+def pairWeights (p : ℕ) : ℕ → ℝ := fun n => if n = 1 ∨ n = p then 1 else 0
+
+theorem atomicWeilForm_pairWeights_scaled {N p : ℕ} (hp : p.Prime) (hpN : p ≤ N) (a b : ℝ) :
+    atomicWeilForm N (fun n => (if n = 1 then a else if n = p then b else 0)) =
+      2 * a * b * (Λ p / Real.sqrt p) := by
+  have h1p : (1 : ℕ) ≠ p := hp.one_lt.ne
+  have hS : ({1, p} : Finset ℕ) ⊆ Icc 1 N := by
+    intro n hn
+    rcases mem_insert.mp hn with rfl | hn
+    · exact mem_Icc.mpr ⟨le_rfl, hp.one_lt.le.trans hpN⟩
+    · rw [mem_singleton.mp hn]; exact mem_Icc.mpr ⟨hp.one_lt.le, hpN⟩
+  rw [atomicWeilForm_eq_of_support hS (fun n hn => by
+      rw [mem_insert, mem_singleton, not_or] at hn
+      rw [if_neg hn.1, if_neg hn.2]),
+    sum_pair h1p, sum_pair h1p, sum_pair h1p]
+  simp only [↓reduceIte, h1p.symm, weilPrimeKernel_self]
+  rw [weilPrimeKernel_comm p 1, weilPrimeKernel_one_left hp.two_le]
+  ring
+
+theorem atomicWeilForm_pairWeights {N p : ℕ} (hp : p.Prime) (hpN : p ≤ N) :
+    atomicWeilForm N (pairWeights p) = 2 * (Λ p / Real.sqrt p) := by
+  have h : pairWeights p = fun n => if n = 1 then (1 : ℝ) else if n = p then 1 else 0 := by
+    funext n
+    simp only [pairWeights]
+    by_cases h1 : n = 1
+    · simp [h1]
+    · by_cases h2 : n = p <;> simp [h1, h2]
+  rw [h, atomicWeilForm_pairWeights_scaled hp hpN]
+  ring
+
+theorem sum_sq_pairWeights {N p : ℕ} (hp : p.Prime) (hpN : p ≤ N) :
+    ∑ n ∈ Icc 1 N, pairWeights p n ^ 2 = 2 := by
+  have h1p : (1 : ℕ) ≠ p := hp.one_lt.ne
+  have hS : ({1, p} : Finset ℕ) ⊆ Icc 1 N := by
+    intro n hn
+    rcases mem_insert.mp hn with rfl | hn
+    · exact mem_Icc.mpr ⟨le_rfl, hp.one_lt.le.trans hpN⟩
+    · rw [mem_singleton.mp hn]; exact mem_Icc.mpr ⟨hp.one_lt.le, hpN⟩
+  rw [← sum_subset hS fun n _ hn => by
+      rw [mem_insert, mem_singleton, not_or] at hn
+      simp [pairWeights, hn.1, hn.2],
+    sum_pair h1p]
+  simp [pairWeights]
+  norm_num
+
+/-- `ω(1) = 1` for a sign gauge. -/
+theorem gauge_one (hω : ∀ a b, ω (a * b) = ω a * ω b)
+    (hsign : ∀ n, 0 < n → ω n = 1 ∨ ω n = -1) : ω 1 = 1 := by
+  have h := hω 1 1
+  rw [one_mul] at h
+  rcases hsign 1 one_pos with h1 | h1
+  · exact h1
+  · rw [h1] at h; norm_num at h
+
+/-- **The margin law on growing windows**: at a flipped prime `p ≤ N`, the two-atom test
+`1_{1} + 1_{p}` (mass `2`) has `ζ`'s atomic form exceeding the twin's by `4 Λ(p)/√p`, for every
+`N ≥ p`. -/
+theorem gaugeMargin_atomicWeilForm (hω : ∀ a b, ω (a * b) = ω a * ω b)
+    (hsign : ∀ n, 0 < n → ω n = 1 ∨ ω n = -1) {N p : ℕ} (hp : p.Prime) (hpN : p ≤ N)
+    (hflip : ω p = -1) :
+    atomicWeilForm N (pairWeights p) - twistedAtomicWeilForm ω N (pairWeights p) =
+        4 * (Λ p / Real.sqrt p) ∧ ∑ n ∈ Icc 1 N, pairWeights p n ^ 2 = 2 := by
+  refine ⟨?_, sum_sq_pairWeights hp hpN⟩
+  have hgauged : (fun n => ω n * pairWeights p n) =
+      fun n => if n = 1 then (1 : ℝ) else if n = p then -1 else 0 := by
+    funext n
+    simp only [pairWeights]
+    by_cases h1 : n = 1
+    · rw [if_pos (Or.inl h1), if_pos h1, h1, gauge_one hω hsign, mul_one]
+    · by_cases h2 : n = p
+      · rw [if_pos (Or.inr h2), if_neg h1, if_pos h2, h2, hflip, mul_one]
+      · rw [if_neg (not_or.mpr ⟨h1, h2⟩), if_neg h1, if_neg h2, mul_zero]
+  rw [twistedAtomicWeilForm_eq hω hsign, hgauged, atomicWeilForm_pairWeights_scaled hp hpN,
+    atomicWeilForm_pairWeights hp hpN]
+  ring
+
+/-- **The twin's Weil form exceeds `ζ`'s on atomic tests by the charged pairs**: below the spacing,
+`M_ω(f) − M(f) = (∫ g²)(Σ x_m x_n P(m, n) − Σ x_m x_n P_ω(m, n))`, nonnegative for nonnegative
+weights, and equal to `2 Λ(p)/√p · ∫ f²` on the two-atom test at a flipped prime `p ≤ N`. -/
+theorem twinMarkov_sub_markov_atomicTest (hω : ∀ a b, ω (a * b) = ω a * ω b)
+    (hsign : ∀ n, 0 < n → ω n = 1 ∨ ω n = -1) {g : ℝ → ℝ} {w : ℝ} (hg : ContDiff ℝ 2 g)
+    (hgc : HasCompactSupport g) (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) {N : ℕ}
+    (hw : w < atomSpacing N) (x : ℕ → ℝ) :
+    (archForm (atomicTest N x g) - twistedPrimeSum ω (atomicTest N x g)) -
+        markovEnergy (fun u => (atomicTest N x g u : ℂ)) =
+      (∫ u, g u ^ 2) * (atomicWeilForm N x - twistedAtomicWeilForm ω N x) := by
+  rw [markovEnergy_ofReal_eq_archForm_sub_primeSum (contDiff_atomicTest hg N x)
+      (hasCompactSupport_atomicTest hgsupp N x), primeSum_atomicTest hg hgc hgsupp hw x,
+    (twistedPrimeSum_atomicTest hω hsign hg hgc hgsupp hw x).2]
+  ring
+
+/-- On the two-atom test at a flipped prime the twin's Weil form exceeds `ζ`'s by
+`2 Λ(p)/√p · ∫ f²`: `ζ` is the minimum of its gauge orbit there, with a margin that does not
+depend on the window. -/
+theorem twinMarkov_sub_markov_pairWeights (hω : ∀ a b, ω (a * b) = ω a * ω b)
+    (hsign : ∀ n, 0 < n → ω n = 1 ∨ ω n = -1) {g : ℝ → ℝ} {w : ℝ} (hg : ContDiff ℝ 2 g)
+    (hgc : HasCompactSupport g) (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) {N p : ℕ}
+    (hw : w < atomSpacing N) (hp : p.Prime) (hpN : p ≤ N) (hflip : ω p = -1) :
+    (archForm (atomicTest N (pairWeights p) g) - twistedPrimeSum ω (atomicTest N (pairWeights p) g)) -
+        markovEnergy (fun u => (atomicTest N (pairWeights p) g u : ℂ)) =
+      2 * (Λ p / Real.sqrt p) * ∫ u, atomicTest N (pairWeights p) g u ^ 2 := by
+  obtain ⟨hmargin, hmass⟩ := gaugeMargin_atomicWeilForm hω hsign hp hpN hflip
+  rw [twinMarkov_sub_markov_atomicTest hω hsign hg hgc hgsupp hw, hmargin,
+    integral_atomicTest_sq hg hgc hgsupp hw, hmass]
+  ring
 
 end GaloisForLFunctions.ArithmeticElectrostatics
